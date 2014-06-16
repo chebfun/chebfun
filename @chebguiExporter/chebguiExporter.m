@@ -17,7 +17,7 @@ classdef chebguiExporter
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
     
-    properties ( Abstract )
+    properties ( Abstract = true )
         
         % Default file name to be saved to
         defaultFileName
@@ -63,7 +63,7 @@ classdef chebguiExporter
     
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CONCRETE METHODS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    methods ( Access = public )
+    methods ( Access = public, Static = false )
         
         function toFile(exporter, guifile, fileName, pathName)
         %TOFILE   Export a CHEBGUI to an .m-file
@@ -116,7 +116,7 @@ classdef chebguiExporter
     
 %% %%%%%%%%%%%%%%%%%%%%%%%%% CONCRETE STATIC METHODS %%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    methods ( Static = true )
+    methods ( Access = public, Static = true )
         function obj = constructor(type)
         %CONSTRUCTOR   Constructor for the CHEBGUIEXPORTER class.
         %   OBJ = CONSTRUCTOR(TYPE), where TYPE = 'bvp', 'eig' or 'pde' returns

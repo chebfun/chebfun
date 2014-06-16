@@ -21,7 +21,7 @@ classdef chebguiExporterBVP < chebguiExporter
     
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CONSTRUCTOR %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    methods ( Access = public )
+    methods ( Access = public, Static = false )
         
         function A = chebguiExporterBVP(varargin)
             % Do nothing!
@@ -31,7 +31,7 @@ classdef chebguiExporterBVP < chebguiExporter
     
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% STATIC METHODS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    methods ( Static = true )
+    methods ( Access = public, Static = true )
         
         % Extract information from the CHEBGUI object to a struct
         expInfo = exportInfo(guifile)

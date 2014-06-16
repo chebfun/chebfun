@@ -9,7 +9,7 @@ classdef chebguiExporterPDE < chebguiExporter
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
     
-    properties
+    properties ( Access = public )
         
         % The default file name when exporting to an .m-file:
         defaultFileName = 'pde.m';
@@ -21,7 +21,7 @@ classdef chebguiExporterPDE < chebguiExporter
     
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CONSTRUCTOR %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    methods ( Access = public )
+    methods ( Access = public, Static = false )
         
         function A = chebguiExporterPDE(varargin)
             % Do nothing!
@@ -31,7 +31,7 @@ classdef chebguiExporterPDE < chebguiExporter
     
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% STATIC METHODS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
     
-    methods ( Static = true )
+    methods ( Access = public, Static = true )
         
         % Extract information from the CHEBGUI object to a struct
         expInfo = exportInfo(guifile)

@@ -9,7 +9,7 @@ classdef chebguiExporterEIG < chebguiExporter
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
     
-    properties
+    properties ( Access = public )
         
         % The default file name when exporting to an .m-file:
         defaultFileName = 'bvpeig.m';
@@ -21,7 +21,7 @@ classdef chebguiExporterEIG < chebguiExporter
     
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CONSTRUCTOR %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    methods ( Access = public )
+    methods ( Access = public, Static = false )
         
         function A = chebguiExporterEIG(varargin)
             % Do nothing!
@@ -31,7 +31,7 @@ classdef chebguiExporterEIG < chebguiExporter
     
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% STATIC METHODS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    methods ( Static = true )
+    methods ( Access = public, Static = true )
         
         % Extract information from the CHEBGUI object to a struct
         expInfo = exportInfo(guifile)

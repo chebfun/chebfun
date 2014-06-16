@@ -65,21 +65,21 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
 %                anti-derivative gives -1.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    properties
+    properties ( Access = public )
         % A cell used to store the components of a CHEBMATRIX internally.
         blocks = {}   % ( Cell Array )
         % Domain of the CHEBMATRIX.
         domain = []   % ( Kx1 double )
     end
     
-    properties ( Dependent )
+    properties ( Dependent = true )
         % DIFFORDER is a dependent property.
         diffOrder
     end
     
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CONSTRUCTOR % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    methods
+    methods ( Access = public, Static = false )
         
         % Constructor.
         function A = chebmatrix(data, dom)
@@ -222,7 +222,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         
     end
     
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%% CELLFUN METHODS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% %%%%%%%%%%%%%% CELLFUN METHODS IMPLEMENTED IN THIS FILE %%%%%%%%%%%%%%%%%
     
     methods 
         
@@ -250,135 +250,179 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         function A = abs(A)
             A = cellfun(A, @abs);
         end
+        
         function A = acos(A)
             A = cellfun(A, @acos);
         end
+        
         function A = acosd(A)
             A = cellfun(A, @acosd);
         end
+        
         function A = acosh(A)
             A = cellfun(A, @acosh);
         end
+        
         function A = acot(A)
             A = cellfun(A, @acot);
         end
+        
         function A = acotd(A)
             A = cellfun(A, @acotd);
         end
+        
         function A = acoth(A)
             A = cellfun(A, @acoth);
         end 
+        
         function A = acsc(A)
             A = cellfun(A, @acsc);
         end
+        
         function A = acscd(A)
             A = cellfun(A, @acscd);
         end
+        
         function A = acsch(A)
             A = cellfun(A, @acsch);
         end
+        
         function A = asec(A)
             A = cellfun(A, @asec);
         end
+        
         function A = asecd(A)
             A = cellfun(A, @asecd);
         end
+        
         function A = asech(A)
             A = cellfun(A, @asech);
         end
+        
         function A = asin(A)
             A = cellfun(A, @asin);
         end
+        
         function A = asind(A)
             A = cellfun(A, @asind);
         end
+        
         function A = asinh(A)
             A = cellfun(A, @asinh);
         end
+        
         function A = atan(A)
             A = cellfun(A, @atan);
         end
+        
         function A = atand(A)
             A = cellfun(A, @atand);
         end
+        
         function A = atanh(A)
             A = cellfun(A, @atanh);
-        end    
+        end
+        
         function A = cos(A)
             A = cellfun(A, @cos);
-        end    
+        end 
+        
         function A = cosd(A)
             A = cellfun(A, @cosd);
         end
+        
         function A = cosh(A)
             A = cellfun(A, @cosh);
-        end  
+        end
+        
         function A = cot(A)
             A = cellfun(A, @cot);
-        end    
+        end
+        
         function A = cotd(A)
             A = cellfun(A, @cotd);
         end
+        
         function A = coth(A)
             A = cellfun(A, @coth);
-        end  
+        end
+        
         function A = csc(A)
             A = cellfun(A, @csc);
-        end    
+        end
+        
         function A = cscd(A)
             A = cellfun(A, @cscd);
         end
+        
         function A = csch(A)
             A = cellfun(A, @csch);
-        end        
+        end
+        
         function A = diff(A, varargin)
             A = cellfun(A, @(A) diff(A, varargin{:}));
-        end  
+        end
+        
         function A = erf(A)
             A = cellfun(A, @erf);
-        end    
+        end
+        
         function A = erfc(A)
             A = cellfun(A, @erfc);
         end
+        
         function A = erfcinv(A)
             A = cellfun(A, @erfcinv);
-        end 
+        end
+        
         function A = erfcx(A)
             A = cellfun(A, @erfcx);
         end
+        
         function A = erfinv(A)
             A = cellfun(A, @erfinv);
-        end 
+        end
+        
         function A = exp(A)
             A = cellfun(A, @exp);
         end
+        
         function A = expm1(A)
             A = cellfun(A, @expm1);
-        end 
+        end
+        
         function A = fix(A)
             A = cellfun(A, @fix);
-        end    
+        end
+        
         function A = floor(A)
             A = cellfun(A, @floor);
-        end         
+        end
+        
         function A = heaviside(A)
             A = cellfun(A, @heaviside);
-        end  
+        end
+        
         function A = imag(A)
             A = cellfun(A, @imag);
         end
+        
         function A = log(A)
             A = cellfun(A, @log);
-        end         
+        end
+        
         function A = log10(A)
             A = cellfun(A, @log10);
-        end     
+        end
+        
         function A = log1p(A)
             A = cellfun(A, @log1p);
-        end     
+        end
+        
         function A = log2(A)
             A = cellfun(A, @log2);
-        end      
+        end
+        
         function A = power(A, b)
             if ( isnumeric(b) )
                 A = cellfun(A, @(A) power(A, b));
@@ -388,58 +432,76 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
                 A.blocks = cellfun(@power, A.blocks, b.blocks, ...
                     'UniformOutput', false);
             end
-        end      
+        end
+        
         function A = real(A)
             A = cellfun(A, @real);
         end
+        
         function A = reallog(A)
             A = cellfun(A, @reallog);
-        end        
+        end
+        
         function A = round(A)
             A = cellfun(A, @round);
         end
+        
         function A = sec(A)
             A = cellfun(A, @sec);
         end
+        
         function A = secd(A)
             A = cellfun(A, @secd);
         end
+        
         function A = sech(A)
             A = cellfun(A, @sech);
         end
+        
         function A = sign(A)
             A = cellfun(A, @sign);
-        end   
+        end
+        
         function A = sin(A)
             A = cellfun(A, @sin);
         end
+        
         function A = sinc(A)
             A = cellfun(A, @sinc);
         end
+        
         function A = sind(A)
             A = cellfun(A, @sind);
         end
+        
         function A = sinh(A)
             A = cellfun(A, @sinh);
         end
+        
         function A = sqrt(A)
             A = cellfun(A, @sqrt);
-        end        
+        end
+        
         function A = sum(A)
             A = cellfun(A, @sum);
-        end        
+        end
+        
         function A = tan(A)
             A = cellfun(A, @tan);
         end
+        
         function A = tand(A)
             A = cellfun(A, @tand);
         end
+        
         function A = tanh(A)
             A = cellfun(A, @tanh);
         end
+        
         function A = uminus(A)
             A = cellfun(A, @uminus);
-        end       
+        end
+        
         function A = uplus(A)
         end
         
@@ -447,7 +509,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
     
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%% STATIC METHODS  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
     
-    methods ( Static = true, Access = protected )
+    methods ( Access = protected, Static = true )
         
         % Merges domains (union of breakpoints, while checking endpoints).
         d = mergeDomains(varargin)
