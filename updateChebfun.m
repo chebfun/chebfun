@@ -45,7 +45,7 @@ end
 % Remember the current directory:
 startDir = pwd;
 % Find directory in which Chebfun was installed:
-installDir = fileparts(which('chebtest'));
+installDir = chebfunroot();
 % Navigate there:
 cd(installDir)
 
