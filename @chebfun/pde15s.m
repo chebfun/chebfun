@@ -465,7 +465,7 @@ else
             v = 0;
         end
         if ( ~isnumeric(v) )
-            error('CHEBFUN:CHEBFUN:pde15s:nonNumericVal1' ...
+            error('CHEBFUN:CHEBFUN:pde15s:nonNumericVal1',...
                 'For BCs of the form {char, val} val must be numeric.')
         end
         if ( strcmpi(bc.left, 'dirichlet') )
