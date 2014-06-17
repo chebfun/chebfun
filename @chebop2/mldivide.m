@@ -1,7 +1,7 @@
-function varargout = mldivide( varargin )
-%\    MLDIVIDE   Solve CHEBOP2 partial differential equation.
+function varargout = mldivide(varargin)
+%\   MLDIVIDE   Solve CHEBOP2 partial differential equations.
 %   MLDIVIDE is a convenient wrapper for CHEBOP2/SOLVEPDE, but is limited in
-%   that it is adaptive. See CHEBOP/SOLVEPDE documentation for further 
+%   that it is adaptive. See CHEBOP2/SOLVEPDE documentation for further 
 %   details.
 %
 % For further details about the PDE solver, see: 
@@ -17,6 +17,6 @@ function varargout = mldivide( varargin )
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Call CHEBOP2/SOLVEPDE:
-[ varargout{1:nargout} ] = solvepde( varargin{:} );
+[varargout{1:nargout}] = solvepde(varargin{:});
 
 end
