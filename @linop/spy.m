@@ -1,20 +1,12 @@
 function spy(L, varargin)
 %SPY    Visualize a LINOP.
-%   SPY(A) creates a picture of the nonzero pattern of the default
-%   discretization of the LINOP A. Block boundaries are indicated by gray lines,
-%   and side condition rows are marked off by dashed lines (boundary and
-%   continuity conditions).
+%   SPY(A) creates a picture of the sparsity and constraint patterns of the
+%   LINOP A. 
 %
-%   SPY(A, S) allows modification of the SPY plot as with the built in method.
+%   SPY(A, S) allows modification of the plot attributes, as with the built
+%   in method.
 %   
-%   SPY(A, 'dimension', DIM, ...) uses the dimension vector DIM and SPY(A,
-%   'disc', DISCTYPE, ...) uses the discretization DISCTYPE for the
-%   visualization. All optional inputs can be used in tandem.
-%
-%   SPY(A, PREFS, ...), where PREFS is a CHEBOPPREF object, modifies the default
-%   discretization type and dimension.
-%
-% See also LINOP.
+% See also CHEBDISCRETIZATION.SPY.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
@@ -76,12 +68,12 @@ if ( isempty(L.continuity) )
 end
 disc.source = L;
 
-% Spy the matrix, with a useful label.
+% Get the matrix.
 data = matrix(disc);
-spy(data, varargin{:}), hold on
-s =  sprintf('%i,', dim);    % list of sizes
-s = [ 'discretization = [', s(1:end-1), ']' ];
-xlabel(s)
+%spy(data, varargin{:}), hold on
+% s =  sprintf('%i,', dim);    % list of sizes
+% s = [ 'discretization = [', s(1:end-1), ']' ];
+% xlabel(s)
 
 % Find the number of constraints and continuity conditions
 nbc = length(L.constraint);
@@ -122,12 +114,12 @@ a = .65;
 b = .35;
 for k = 1:(numel(cscol)-1)
     fill([cscol(k)+a cscol(k)+a cscol(k+1)+b cscol(k+1)+b], ...
-        [a nbc+b nbc+b a], 'b', 'facealpha', .05, 'edgealpha', 0)
+        [a nbc+b nbc+b a], 'b', 'facealpha', 1, 'edgealpha', 0)
     hold on
 end
 for k = 1:(numel(cscol)-1)
     fill([cscol(k)+a cscol(k)+a cscol(k+1)+b cscol(k+1)+b], ...
-        nbc+[a ncon+b ncon+b a], 'b', 'facealpha', .05, 'edgealpha', 0)
+        nbc+[a ncon+b ncon+b a], 'b', 'facealpha', 1, 'edgealpha', 0)
     hold on
 end
 for k = 1:(numel(cscol)-1)
@@ -137,9 +129,13 @@ for k = 1:(numel(cscol)-1)
         end
         fill([cscol(k)+a cscol(k)+a cscol(k+1)+b cscol(k+1)+b], ...
             [csrow(j)+a csrow(j+1)+b csrow(j+1)+b csrow(j)+a], 'b', ...
-            'facealpha', .05, 'edgealpha', 0)
+            'facealpha', 1, 'edgealpha', 0)
     end
 end
+
+axis equal, axis square, axis tight
+set(gca,'xtick',[],'ytick',[])  % TODO: Ticks by blocks
+
 
 % Reset hold state.
 if ( ~holdState )
