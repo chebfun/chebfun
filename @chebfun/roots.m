@@ -131,7 +131,7 @@ for k = 1:numFuns
 end
 
 % Set any ridiculously small roots to zero:
-r(abs(r) < el*vs*hs/10) = 0;
+r(abs(r) < eps*vs*hs/10) = 0;
 
 % Remove unnecessary NaNs:
 r = sort(r, 1);             % Sort will place NaNs in the final rows.
@@ -174,9 +174,9 @@ for k = 1:numel(varargin)
         case 'nojump'
             rootsPref.jumpRoot = 0;
         case 'imps'
-            rootsPref.jumpRoot = 1;
+            rootsPref.impRoot = 1;
         case 'noimps'
-            rootsPref.jumpRoot = 0;  
+            rootsPref.impRoot = 0;  
         case 'qz'
             rootsPref.qz = 1; 
         case {'recursion', 'recurse'}
