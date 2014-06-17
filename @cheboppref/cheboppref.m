@@ -142,7 +142,7 @@ classdef cheboppref < chebpref
             outPref.prefList = cheboppref.manageDefaultPrefs('get');
 
             % Copy fields from q, merging incomplete substructures.
-            for field = fieldnames(inPref).'CHEBOP
+            for field = fieldnames(inPref).'
                 field1 = field{1};
                 if ( isfield(outPref.prefList, field1) )
                     if ( isstruct(outPref.prefList.(field1)) )
