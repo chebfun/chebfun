@@ -12,7 +12,7 @@ function w = baryWeights(x)
 [n, m] = size(x);
 if ( m > 1 )
     if ( n > 1 )
-        error('CHEBFUN:baryweights:matrix', 'Input must be a vector.')
+        error('CHEBFUN:baryWeights:matrix', 'Input must be a vector.')
     else
         % Allow a row vector:
         n = m;

@@ -17,9 +17,9 @@ elseif ( isnumeric(B) && (numel(B)==1) )
 else
     % Ensure both A and B are CHEBMATRICES so that we can compare blocks:
     if ( ~isa(A, 'chebmatrix') )
-        A = chebmatrix({A});
+        A = chebmatrix(A);
     elseif ( ~isa(B, 'chebmatrix') )
-        B = chebmatrix({B});
+        B = chebmatrix(B);
     end
     
     % Setup before we can start composition:
@@ -28,7 +28,8 @@ else
     Bdata = B.blocks;
     [nB, p] = size(B);
     if ( n ~= nB )
-        error('Operand inner dimensions must agree.')
+        error('CHEBFUN:CHEBMATRIX:mtimes:dims', ...
+            'Operand inner dimensions must agree.')
     end
     
     C = cell(m, p);    

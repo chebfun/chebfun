@@ -15,7 +15,7 @@ function F = bessely(nu, F, scale, pref)
 % See also AIRY, BESSELH, BESSELI, BESSELJ, BESSELK.
 %
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin < 4 )
     pref = chebfunpref();
@@ -36,7 +36,7 @@ function g = columnBessely(nu, f, scale, pref)
 % Check for roots:
 r = roots(f, 'nojump', 'nozerofun');
 if ( numel(r) > 0 )
-    error('CHEBFUN:bessely:zero', 'F has roots in its domain.');
+    error('CHEBFUN:CHEBFUN:bessely:zero', 'F has roots in its domain.');
 end
 
 % Compose:

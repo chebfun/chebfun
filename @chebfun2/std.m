@@ -16,7 +16,7 @@ function g = std( f, varargin )
 % See also CHEBFUN/STD, CHEBFUN2/MEAN.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 
 if ( isempty( f ) ) 
@@ -30,7 +30,7 @@ if ( nargin < 3 )
 elseif ( nargin == 3 )
     dim = varargin{ 2 }; 
 else 
-   error( 'CHEBFUN2:STD:NARGIN', 'Too many input arguments.' ); 
+    error( 'CHEBFUN:CHEBFUN2:std:nargin', 'Too many input arguments.' ); 
 end
 
 if ( dim == 1 )          % y-variable.
@@ -40,7 +40,8 @@ elseif ( dim == 2 )      %  x-variable.
     my = chebfun2( @(x,y) feval( mean(f, 1), y), dom );
     g = sqrt( 1/( diff( rect(1:2) ) ) * sum( ( f - my ).^2, 2 ) );
 else
-   error('CHEBFUN2:STD:DIM', 'Third argument should have value 1 or 2.'); 
+    error('CHEBFUN:CHEBFUN2:std:dim', ...
+        'Third argument should have value 1 or 2.');
 end
 
 end

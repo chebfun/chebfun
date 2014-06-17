@@ -55,7 +55,7 @@ end
 if ( (newDomain(1) < oldDomain(1)) || (newDomain(end) > oldDomain(end)) || ...
         any(diff(newDomain) < 0) )
     % newDom is not a valid subinterval of oldDom!
-    error('CHEBFUN:restrict:subdom', 'Not a valid subdomain.');
+    error('CHEBFUN:CHEBFUN:restrict:subdom', 'Not a valid subdomain.');
 end
 
 % Obtain FUN cell and pointValues from f:

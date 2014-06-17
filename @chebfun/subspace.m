@@ -20,16 +20,17 @@ function theta = subspace(A, B)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( ~isa(A, 'chebfun') || ~isa(B, 'chebfun') )
-    error('CHEBFUN:subspace:argin', ...
+    error('CHEBFUN:CHEBFUN:subspace:argin', ...
         'Both A and B must be column CHEBFUN.')
 end
 if ( ~domainCheck(A, B) )
-    error('CHEBFUN:subspace:domain', ...
+    error('CHEBFUN:CHEBFUN:subspace:domain', ...
         'Domain mismatch.')
 end
 if ( A(1).isTransposed )
     if ( ~B(1).isTransposed )
-        error('CHEBFUN:subspace:trans', 'Dimension mismatch (transpose).');
+        error('CHEBFUN:CHEBFUN:subspace:trans', ...
+            'Dimension mismatch (transpose).');
     end
     A = A.';
     B = B.';

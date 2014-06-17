@@ -11,7 +11,7 @@ function f = diff(f, k, dim)
 % See also SUM, CUMSUM.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % First derivative by default:
 if ( nargin < 2 || isempty(k) )

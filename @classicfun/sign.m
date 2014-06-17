@@ -9,7 +9,7 @@ function f = sign(f, varargin)
 % See also ABS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Take the absolute value of the ONEFUN:
 f.onefun = sign(f.onefun, varargin{:});

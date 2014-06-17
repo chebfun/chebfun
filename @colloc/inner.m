@@ -8,7 +8,7 @@ function F = inner(disc, f)
 %   performance reasons.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Get nodes and Clenshaw-Curtis quadrature weights:
 [x, w] = functionPoints(disc);

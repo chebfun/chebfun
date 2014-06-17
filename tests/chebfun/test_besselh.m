@@ -62,7 +62,7 @@ err = feval(h, xr) - besselh(nu, 1, f_op(xr), 1);
 pass(10) = norm(err(:), inf) < 10*epslevel(h)*vscale(h);
 
 % Test for complex values.
-pref.enableBreakpointDetection = 1;
+pref.splitting = 1;
 f_op = @scalar_test_fn;
 f = chebfun(f_op, [-1 0 0.5 1], pref);
 
@@ -76,7 +76,7 @@ try
     h = besselh(nu, f);
     pass(12) = false;
 catch ME
-    pass(12) = strcmp(ME.identifier, 'CHEBFUN:besselh:zero');
+    pass(12) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:besselh:zero');
 end
 
 end

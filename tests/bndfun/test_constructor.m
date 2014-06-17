@@ -72,10 +72,10 @@ end
 powl = -0.5;
 powr = -1.6;
 op = @(x) (x - dom(1)).^powl.*(x - dom(2)).^powr.*sin(x);
-pref.enableSingularityDetection = true;
+pref.blowup = true;
 data.domain = dom;
 data.exponents = [powl powr];
-f = bndfun(op, struct('domain', dom), pref);
+f = bndfun(op, data, pref);
 vals_f = feval(f, x);
 vals_exact = feval(op, x);
 err = vals_f-vals_exact;

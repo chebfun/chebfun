@@ -33,7 +33,7 @@ try
     g = unwrap(f);
     pass(5) = false;
 catch ME
-    pass(5) = strcmp(ME.identifier, 'CHEBFUN:unwrap:array');
+    pass(5) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:unwrap:array');
 end
 
 end

@@ -11,7 +11,7 @@ function out = sum(f, dim)
 % See also CUMSUM, DIFF.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 %%
 % Sum across array-valued BNDFUN columns if dim = 2:

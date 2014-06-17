@@ -39,12 +39,12 @@ elseif ( isa(c, 'double') )         % CLASSICFUN * double
     
 elseif ( isa(c, 'classicfun') )            % CLASSICFUN * CLASSICFUN
     
-    error('CHEBFUN:CLASSICFUN:mtimes:CLASSICFUNMtimesCLASSICFUN', ...
+    error('CHEBFUN:CLASSICFUN:mtimes:classicfunMtimesClassicfun', ...
         'Use .* to multiply CLASSICFUN objects.');
     
 else                                % CLASSICFUN * ???
     
-    error('CHEBFUN:CLASSICFUN:mtimes:CLASSICFUNMtimesUnknown',...
+    error('CHEBFUN:CLASSICFUN:mtimes:classicfunMtimesUnknown',...
         'mtimes does not know how to multiply a CLASSICFUN and a %s.', class(c));
     
 end

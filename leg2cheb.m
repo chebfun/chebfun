@@ -1,10 +1,16 @@
-function c_cheb = leg2cheb(c_leg, M)
-%LEG2CHEB   Convert Legendre coefficients to Chebyshev coefficients. 
+function c_cheb = leg2cheb(c_leg, normalize, M)
+%LEG2CHEB convert Legendre coefficients to Chebyshev coefficients. 
 %   C_CHEB = LEG2CHEB(C_LEG) converts the vector C_LEG of Legendre coefficients
-%   to a vector C_CHEB of Chebyshev coefficients such that
-%   C_CHEB(N)*T0 + ... + C_CHEB(1)*T{N-1} = C_LEG(N)*P0 + ... + C_LEG(1)*P{N-1}.
+%   to a vector C_CHEB of Chebyshev coefficients such that C_CHEB(N)*T0 + ... +
+%   C_CHEB(1)*T{N-1} = C_LEG(N)*P0 + ... + C_LEG(1)*P{N-1}, where P{k} is the
+%   degree k Legendre polynomial normalized so that max(|P{k}| = 1.
+% 
+%   C_CHEB = LEG2CHEB(C_LEG, 'norm') is as above, but with the Legendre
+%   polynomials normalized to be orthonormal.
 %
 %   If C_LEG is a matrix then the LEG2CHEB operation is applied to each column.
+%
+% See also CHEB2LEG. 
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -22,7 +28,14 @@ function c_cheb = leg2cheb(c_leg, M)
 c_leg = flipud(c_leg);                          % Lowest order coeffs first.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Initialise  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-if ( nargin == 1 ), M = 10; end                 % No. of terms in expansion.
+if ( nargin < 2 ), normalize = 0; end           % Normalize so max(|P{k}|) = 1.
+if ( (nargin == 2) && strncmpi(normalize, 'norm', 4) )
+    normalize = 1;                              % Orthanormal Legendre Polys.
+end
+if ( nargin < 3 ), M = 10; end                  % No. of terms in expansion.
+if ( normalize ) 
+    c_leg = bsxfun(@times, c_leg, sqrt((0:N-1)'+1/2) ); 
+end
 N = N - 1; NN = (0:N)';                         % Degree of polynomial.
 nM0 = min(floor(.5*(.25*eps*pi^1.5*gamma(M+1)/gamma(M+.5)^2)^(-1/(M+.5))), N);
 aM = min(1/log(N/nM0), .5);                     % Block reduction factor (alpha)

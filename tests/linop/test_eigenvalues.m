@@ -17,22 +17,24 @@ e_true = flipud(-(1:6).'.^2);
 %%
 prefs = cheboppref;
 prefs.discretization = @colloc2;
-e = eigs(L, 6, prefs);
+[V, D] = eigs(L, 6, prefs);
+e = diag(D);
 err(1) = norm(e - e_true, inf);
-
+% Check that we actually computed eigenfunctions
+err(2) = norm(L*V-V*D);
 %%
 prefs.discretization = @ultraS;
-e = eigs(L, 6, 0, prefs);
-err(2) = norm(e - e_true, inf);
-
+[V, D] = eigs(L, 6, 0, prefs);
+e = diag(D);
+err(3) = norm(e - e_true, inf);
+err(4) = norm(L*V-V*D);
 %%
 prefs.discretization = @colloc1;
-e = eigs(L, 6, 0, prefs);
-err(3) = norm(e - e_true, inf);
-
+[V, D] = eigs(L, 6, prefs);
+e = diag(D);
+err(5) = norm(e - e_true, inf);
+err(6) = norm(L*V-V*D);
 %%
-
-
 pass = err < tol;
 
 end

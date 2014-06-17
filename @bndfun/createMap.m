@@ -7,7 +7,7 @@ function map = createMap(ends)
 %      MAP.DER is the derivative of the map defined in MAP.FOR
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 map = mapping.linear(ends);
 return

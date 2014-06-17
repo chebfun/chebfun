@@ -18,7 +18,8 @@ if ( isa(f, 'smoothfun') )
     f = singfun.zeroSingFun();
     f.smoothPart = g; 
 else
-    error('CHEBFUN:SINGFUN:SMOOTHFUN2SINGFUN', 'Unknown type of function passed.');
+    error('CHEBFUN:SINGFUN:smoothFun2SingFun:unknownType', ...
+        'Unknown type of function passed.');
 end
 
 end

@@ -133,7 +133,7 @@ end
 
 % Did the user specify the problem using old-school concatenation?
 if ( size(Nu, 1) < size(Nu, 2) )
-    warning('CHEBFUN:chebop:linearize:vertcatop', ...
+    warning('CHEBFUN:CHEBOP:linearize:vertcatOp', ...
         ['N.op should return a column vector.\n', ...
         'Row vectors are deprecated and may not be supported in future releases.'])
 end
@@ -232,7 +232,10 @@ if ( ~isempty(N.bc) )
         vals = cat(1, get(bcU, 'func'));
         % Loop through the conditions and append to the BC object.
         for k = 1:numel(bcU)
-            BC = append(BC, get(bcU, 'jacobian', k), vals(k));
+            J = get(bcU,'jacobian',k);
+            BC = append(BC, J , vals(k));
+            jumps = get(bcU, 'jumpLocations', k);
+            L = addGivenJumpAt(L,jumps);
         end
         % Update linearity information.
         isLinear(4) = all(all(get(bcU, 'linearity')));

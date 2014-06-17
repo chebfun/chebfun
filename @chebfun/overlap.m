@@ -12,7 +12,7 @@ function [f, g] = overlap(f, g)
 
 % Check that the domains are valid:
 if ( ~domainCheck(f, g) )
-    error('CHEBFUN:overlap:domains', ...
+    error('CHEBFUN:CHEBFUN:overlap:domains', ...
         'Inconsistent domains; domain(f) ~= domain(g).')
 end
 

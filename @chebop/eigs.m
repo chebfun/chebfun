@@ -49,8 +49,9 @@ if ( ~fail && nargin > 1 && isa(varargin{1}, 'chebop') )
 end
 
 if ( fail )
-    error('CHEBOP:eigs', ['The operator appears to be nonlinear.\n', ...
-        'EIGS() supports only linear CHEBOP instances.']);
+    error('CHEBFUN:CHEBOP:eigs:nonlinear', ...
+        ['The operator appears to be nonlinear.\n', ...
+         'EIGS() supports only linear CHEBOP instances.']);
 end
 
 [varargout{1:nargout}] = eigs(L, varargin{:});

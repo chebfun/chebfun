@@ -16,7 +16,7 @@ function f = cumsum(f, m, dim)
 % See also SUM, INTEGRAL.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % TODO: The input sequence is not the same as MATLAB. In particular, MATLAB only
 % supports m = 1.
@@ -38,7 +38,7 @@ end
 if ( round(m) ~= m )
     % Fractional integral:
     % [TODO]: Implement this!
-    error('CHEBFUN:cumsum:notImplemented', ...
+    error('CHEBFUN:CHEBFUN:cumsum:notImplemented', ...
         'Fractional antiderivatives not yet implemented.');
     f = fracCalc(f, m);
     return

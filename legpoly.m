@@ -11,11 +11,11 @@ function p = legpoly(n, dom, normalize, method)
 %   integrate(P(:,j).*P(:,k)) = delta_{j,k}.
 %
 %   For N <= 1000 LEGPOLY uses a weighted QR factorisation of a 2*(N+1) x
-%   2*(N+1) Chebyshev Vandermonde matrix. For scalar N > 1000 it uses the
-%   LEG2CHEB method and for a vector of N with any entry > 1000 it uses the
-%   standard recurrence relation. This default can be overwritten by passing a
-%   fourth input LEGPOLY(N, D, NORM, METHOD), where METHOD is 1, 2, or 3
-%   respectively.
+%   2*(N+1) Chebyshev Vandermonde matrix. For scalar N > 1000 (or a short
+%   vector) it uses the LEG2CHEB method and for a vector of N with any entry >
+%   1000 it uses the standard recurrence relation. This default can be
+%   overwritten by passing a fourth input LEGPOLY(N, D, NORM, METHOD), where
+%   METHOD is 1, 2, or 3 respectively.
 %
 % See also CHEBPOLY, LEGPTS, and LEG2CHEB.
 
@@ -23,6 +23,7 @@ function p = legpoly(n, dom, normalize, method)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Parse input:
+methodIsSet = false;
 if ( isempty(n) )
     p = chebfun; 
     return
@@ -34,6 +35,12 @@ if ( nargin < 3 || isempty(normalize) )
     normalize = 0; 
 end
 if ( ischar(dom) )
+    if ( nargin == 3 )
+        method = normalize;
+        if ( ~isempty(method) )
+            methodIsSet = true;
+        end
+    end
     normalize = dom;
     dom = [-1,1]; 
 end
@@ -41,6 +48,9 @@ if ( strncmp(normalize, 'norm', 4) )
     normalize = 1;
 elseif ( ischar(normalize) )
     normalize = 0; 
+end
+if ( (nargin == 4) && ~isempty(method) )
+    methodIsSet = true;
 end
     
 % Unbounded domains aren't supported/defined.
@@ -63,24 +73,20 @@ nMax1 = nMax + 1;
 domIn = dom;
 dom = dom([1 end]);
 
-% Determine which method
-if ( nargin == 4 )
-    % Method has been passed as an input
-elseif ( nMax > 1000 )
-    if ( numel(n) == 1 )
-        % Use LEG2CHEB():
-        method = 3;
-    else
-        % Use three-term recurrence (possible loss of orthogonality)
-        method = 1;
-    end
-else
-    % Use QR orthogonalization of Chebyshev polynomials for moderate nmax
+% Determine which method:
+if ( ~methodIsSet && nMax > 1000 )
+    % Use LEG2CHEB():
+    method = 3;
+elseif ( ~methodIsSet )
+    % Use QR orthogonalization of Chebyshev polynomials for moderate nmax.
     method = 2;
 end
-if ( ~isscalar(n) && method == 3 )
-    % Can only use method 3 for scalar inputs.
-    method = 2;
+
+% If the user wants most of the Legendre polynomials then it is faster to use
+% the recurrence: TODO: "most" is most than 20% of the [0:nMax]. Should this
+% percentage vary with nMax?
+if ( ~methodIsSet && (method == 3) && (nMax < 5000) && (numel(n) > nMax/5) ) 
+    method = 1; % Do not go above 5000 with the recurrence.
 end
 
 switch method
@@ -110,12 +116,12 @@ switch method
     case 2 % QR
 
         pts = 2*nMax1;              % Expand on Chebyshev grid of twice the size
-        [~, w] = chebpts(pts, 2);   % Grab the Clenshaw-Curtis weights
+        [ignored, w] = chebpts(pts, 2);   % Grab the Clenshaw-Curtis weights
         theta = pi*(pts-1:-1:0)'/(pts-1);
         A = cos(theta*(0:nMax));                  % Vandemonde-type matrix
         D = spdiags(sqrt(w(:)), 0, pts, pts);     % C-C quad weights
         Dinv = spdiags(1./sqrt(w(:)), 0, pts, pts);
-        [Q, ~] = qr(D*A, 0);                      % Weighted QR
+        [Q, ignored] = qr(D*A, 0);                % Weighted QR
         P = Dinv*Q;
         if ( normalize )
             PP = P(:,n+1) * diag(sqrt(2/diff(dom)) * sign(P(end,n+1)));
@@ -126,11 +132,13 @@ switch method
         C(1:nMax1,:) = [];                        % Trim coefficients > nMax+1
         
     case 3 % LEG2CHEB
-
-        c_leg = [1 ; zeros(n, 1)];                % Legendre coefficients
-        C = leg2cheb(c_leg);                      % Chebyshev coefficients
+        
+        c_leg = zeros(nMax+1, numel(n));
+        c_leg(n+1,:) = eye(numel(n));             % Legendre coefficients          
         if ( normalize )
-            C = C*sqrt((n+.5));
+            C = leg2cheb(flipud(c_leg), 'norm');  % Chebyshev coefficients
+        else
+            C = leg2cheb(flipud(c_leg));          % Chebyshev coefficients
         end
     
 end

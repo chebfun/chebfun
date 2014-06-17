@@ -8,10 +8,10 @@ pass(1) = isequalNaN(p, chebfunpref(p));
 
 % Test construction from a struct.
 q = struct();
-q.enableBreakpointDetection = true;
+q.splitting = true;
 q.testPref = 'test';
 p = chebfunpref(q);
-pass(2) = p.enableBreakpointDetection && strcmp(p.techPrefs.testPref, 'test');
+pass(2) = p.splitting && strcmp(p.techPrefs.testPref, 'test');
 
 % Test construction from a struct in which incomplete techPrefs substructures
 % will need to be merged.
@@ -51,12 +51,12 @@ p.maxLength = 1337;
 p.bogusPref = true;
 
 q = chebfunpref();
-q.enableBreakpointDetection = true;
+q.splitting = true;
 q.eps = 1.0e-12;
 
 r = chebfunpref(p, q);
 pass(9) = isequal(r.domain, q.domain) && ...
-    isequal(r.enableBreakpointDetection, q.enableBreakpointDetection) && ...
+    isequal(r.splitting, q.splitting) && ...
     isequal(r.eps, q.eps) && ...
     isequal(r.maxLength, q.maxLength) && ...
     isequal(r.bogusPref, p.bogusPref);
@@ -64,12 +64,12 @@ pass(9) = isequal(r.domain, q.domain) && ...
 % Test construction with a non-default base set of preferences and a struct
 % with differences that need to be merged into that set.
 q = struct();
-q.enableBreakpointDetection = true;
+q.splitting = true;
 q.eps = 1.0e-12;
 
 r = chebfunpref(p, q);
 pass(10) = isequal(r.domain, p.domain) && ...
-    isequal(r.enableBreakpointDetection, q.enableBreakpointDetection) && ...
+    isequal(r.splitting, q.splitting) && ...
     isequal(r.eps, q.eps) && ...
     isequal(r.maxLength, p.maxLength) && ...
     isequal(r.bogusPref, p.bogusPref);
@@ -135,7 +135,7 @@ try
 
     % Test getting defaults:
     pass(21) = isnumeric(chebfunpref().eps);
-    pass(22) = ischar(chebfunpref().singPrefs.defaultSingType);
+    pass(22) = ischar(chebfunpref().blowupPrefs.defaultSingType);
     pass(23) = ischar(chebfunpref().refinementFunction);
     
 catch ME

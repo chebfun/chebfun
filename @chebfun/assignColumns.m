@@ -22,7 +22,8 @@ function f = assignColumns(f, colIdx, g)
 
 % This shouldn't happen:
 if ( ~isa(f, 'chebfun') )
-    error('CHEBFUN:assigncColumns:notChebfun', 'First input must be a CHEBFUN.')
+    error('CHEBFUN:CHEBFUN:assignColumns:notChebfun', ...
+        'First input must be a CHEBFUN.')
 end
 
 % Number of columns (or rows if f.isTransposed) of f:
@@ -45,7 +46,7 @@ end
 
 % Check dimensions of g:
 if ( xor(f(1).isTransposed, g(1).isTransposed) || (numel(colIdx) ~= numColumns(g)) )
-    error('CHEBFUN:assignColumns:numCols', ...
+    error('CHEBFUN:CHEBFUN:assignColumns:numCols', ...
         'Subscripted assignment dimension mismatch.')
 end
 
@@ -53,7 +54,7 @@ end
 if ( (numel(colIdx) == numColsF) && isequal(colIdx, 1:numColsF) )
     % Verify domain:
     if ( ~domainCheck(f, g) )
-        error('CHEBFUN:assignColumns:domain', ...
+        error('CHEBFUN:CHEBFUN:assignColumns:domain', ...
             'Inconsistent domains; domain(f) ~= domain(g).');
     end
     f = g;
@@ -62,7 +63,7 @@ end
 
 % Check dimensions of f:
 if ( max(colIdx) > numColsF )
-%     error('CHEBFUN:assignColumns:dims', 'Index exceeds CHEBFUN dimensions.')
+%     error('CHEBFUN:CHEBFUN:assignColumns:dims', 'Index exceeds CHEBFUN dimensions.')
 
     if ( isempty(f) )
         dom = g.domain;

@@ -2,7 +2,6 @@
 *.swp
 *~
 *.asv
-
 *.m.orig
-
+*.DS_Store
 logs/

@@ -7,7 +7,7 @@ function out = cov(f, g, varargin)
 % See also VAR, MEAN.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Empty case:
 if ( isempty(f) )
@@ -17,10 +17,11 @@ end
 
 % Error checking:
 if ( (nargin == 2) && ~all(size(f) == size(g)) )
-    error('CHEBFUN:cov:size',' CHEBFUN dimensions do not agree.');
+    error('CHEBFUN:CHEBFUN:cov:size',' CHEBFUN dimensions do not agree.');
 end
 if ( nargin == 3 )
-    error('CHEBFUN:cov:nargin', 'CHEBFUN/COV does not support normalization.');
+    error('CHEBFUN:CHEBFUN:cov:nargin', ...
+        'CHEBFUN/COV does not support normalization.');
 end
 
 % Deal with row CHEBFUN objects:

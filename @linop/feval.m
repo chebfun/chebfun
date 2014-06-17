@@ -4,13 +4,14 @@ function M = feval(L, n, flag)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-warning('CHEBFUN:linop:fevalDeprecated',...
+warning('CHEBFUN:LINOP:feval:deprecated',...
     ['This function is provided only for limited backward compatibility.',...
     ' Use MATRIX instead.'] );
-warning('off', 'CHEBFUN:linop:fevalDeprecated')
+warning('off', 'CHEBFUN:LINOP:feval:deprecated')
 
 if ( prod(size(L)) > 1 ) %#ok<PSIZE>
-    error('This syntax is not available for multivariable systems.')
+    error('CHEBFUN:LINOP:feval:multivariable', ...
+        'This syntax is not available for multivariable systems.')
 end
 
 if ( nargin < 3 )
@@ -39,7 +40,7 @@ else
         disc.dimAdjust = 0;
     end
     
-    [PA, ~, B, A] = matrix(disc);
+    [PA, ignored, B, A] = matrix(disc);
     
     % Depending on the flag, we will do different things about boundary
     % conditions.
@@ -55,7 +56,7 @@ else
             try 
                 A = cell2mat(A);
             catch
-                error('CHEBFUN:linop:feval:oldschool', ...
+                error('CHEBFUN:LINOP:feval:oldschool', ...
                     'oldschool does not support this problem');
             end
             if ( k2 > 0 )

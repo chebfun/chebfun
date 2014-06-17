@@ -27,7 +27,7 @@ elseif ( narargin == 3 )
     varargout = {U S V};
     
 else
-    error('CHEBFUN2:COEFFS2VALS:inputs', ...
+    error('CHEBFUN:CHEBFUN2:coeffs2vals:inputs', ...
         'The number of input arguments should be one or two.');
     
 end

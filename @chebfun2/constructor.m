@@ -18,6 +18,8 @@ function g = constructor(g, op, domain, varargin)
 % Sampling along each slice is increased until the Chebyshev coefficients of the
 % slice fall below machine precision.
 %
+% Chebfun2 does not currently work with Chebyshev grids of the 1st kind.
+%
 % The algorithm is fully described in:
 %  A. Townsend and L. N. Trefethen, An extension of Chebfun to two dimensions,
 %  SISC, 35 (2013), C495-C518.
@@ -38,11 +40,26 @@ if ( nargin < 3 || isempty(domain) )
     domain = [-1 1 -1 1];
 end
 
+% Get preferences:
 if ( nargin > 3 && isa(varargin{1}, 'chebfunpref') )
     pref = chebfunpref(varargin{1});
 else
     pref = chebfunpref();
 end
+
+% Get default preferences from chebfunpref:
+prefStruct = pref.cheb2Prefs;
+sampleTest = prefStruct.sampleTest;
+maxRank = prefStruct.maxRank;
+
+% Go find out what tech I'm based on:
+tech = pref.tech();
+
+% Get default preferences from the techPref:
+tpref = chebfunpref.mergePrefs(pref, tech.techPref);
+minSample = tpref.minPoints; 
+maxSample = tpref.maxPoints;
+pseudoLevel = tpref.eps;
 
 if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
     if ( numel( op ) == 1 )
@@ -81,7 +98,6 @@ if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
         % The tolerance assumes the samples are from a function. It depends
         % on the size of the sample matrix, hscale of domain, vscale of
         % the samples, and the accuracy target in chebfun2 preferences. 
-        pseudoLevel = pref.cheb2Prefs.eps;
         grid = max( size( op ) ); 
         vscale = max( op(:) ); 
         tol = grid.^(2/3) * max( max( abs(domain(:))), 1) * vscale * pseudoLevel;
@@ -129,36 +145,19 @@ if ( numel(domain) == 2 )
         if ( numel( ends ) == 2 )
             domain = [domain(:) ; ends(:)].';
         else
-            error('CHEBFUN2:CONSTRUCTOR:DOMAIN', 'Domain not fully determined.');
+            error('CHEBFUN:CHEBFUN2:constructor:domain1', ...
+                'Domain not fully determined.');
         end
     else
-        error('CHEBFUN2:CONSTRUCTOR:DOMAIN', 'Domain not fully determined.');
+        error('CHEBFUN:CHEBFUN2:constructor:domain2', ...
+            'Domain not fully determined.');
     end
 elseif ( numel(domain) == 1 )
     fixedRank = domain;
     domain = [-1 1 -1 1];
 elseif ( numel(domain) ~= 4 )
-    error('CHEBFUN2:CONSTRUCTOR:DOMAIN', 'Domain not fully determined.');
-end
-
-% Get default preferences from chebfunpref:
-prefStruct = pref.cheb2Prefs;
-maxRank = prefStruct.maxRank;
-maxLength = prefStruct.maxLength;
-pseudoLevel = prefStruct.eps;
-sampleTest = prefStruct.sampleTest;
-% TODO: This should probably be taken from the techPref prefences?
-minsample = 17;   % minsample
-
-% Go find out what tech I'm based on:
-tech = chebfunpref().tech();
-
-factor = 4;  % grid to rank ratio.
-if ( isa(tech, 'fourtech') ) 
-    minsample = 8; 
-end
-if ( isa(tech, 'chebtech1') )
-    factor = 5; 
+    error('CHEBFUN:CHEBFUN2:constructor:DOMAIN', ...
+        'Domain not fully determined.');
 end
 
 % If the vectorize flag is off, do we need to give user a warning?
@@ -175,7 +174,7 @@ if ( vectorize == 0 ) % another check
     if ( any(any( abs(A - B.') > min( 1000*pseudoLevel, 1e-4 ) ) ) )
         % Function handle probably needs vectorizing, give user a warning and
         % then vectorize.
-        warning('CHEBFUN2:CTOR:VECTORIZE','Function did not correctly evaluate on an array. Turning on the ''vectorize'' flag. Did you intend this? Use the ''vectorize'' flag in the chebfun2 constructor call to avoid this warning message.');
+        warning('CHEBFUN:CHEBFUN2:constructor:vectorize', 'Function did not correctly evaluate on an array. Turning on the ''vectorize'' flag. Did you intend this? Use the ''vectorize'' flag in the chebfun2 constructor call to avoid this warning message.');
         g = chebfun2(op, domain, 'vectorize');
         return
     end
@@ -183,9 +182,9 @@ end
 
 factor = 4;  % ratio between size of matrix and no. pivots. 
 isHappy = 0; % If we are currently unresolved. 
-Failure = 0; % Reached max discretization size without being happy. 
-while ( ~isHappy && ~Failure )
-    grid = minsample; 
+failure = 0; % Reached max discretization size without being happy. 
+while ( ~isHappy && ~failure )
+    grid = minSample; 
     
     % Sample function on a Chebyshev tensor grid:
     [xx, yy] = points2D(grid, grid, domain);
@@ -194,9 +193,11 @@ while ( ~isHappy && ~Failure )
     % Does the function blow up or evaluate to NaN?:
     vscale = max(abs(vals(:)));
     if ( isinf(vscale) )
-        error('CHEBFUN2:CTOR', 'Function returned INF when evaluated');
+        error('CHEBFUN:CHEBFUN2:constructor:inf', ...
+            'Function returned INF when evaluated');
     elseif ( any(isnan(vals(:)) ) )
-        error('CHEBFUN2:CTOR', 'Function returned NaN when evaluated');
+        error('CHEBFUN:CHEBFUN2:constructor:nan', ...
+            'Function returned NaN when evaluated');
     end
     
     % Two-dimensional version of CHEBFUN's tolerance:
@@ -226,16 +227,17 @@ while ( ~isHappy && ~Failure )
     
     % If the rank of the function is above maxRank then stop.
     if ( grid > factor*(maxRank-1)+1 )
-        warning('CHEBFUN2:CTOR', 'Not a low-rank function.');
-        Failure = 1; 
+        warning('CHEBFUN:CHEBFUN2:constructor:rank', ...
+            'Not a low-rank function.');
+        failure = 1; 
     end
     
     % Check if the column and row slices are resolved.
     colData.vscale = domain(3:4);
-    colChebtech = chebtech2(sum(colValues,2), colData);
+    colChebtech = tech.make(sum(colValues,2), colData);
     resolvedCols = happinessCheck(colChebtech,[],sum(colValues,2));
     rowData.vscale = domain(1:2);
-    rowChebtech = chebtech2(sum(rowValues.',2), rowData);
+    rowChebtech = tech.make(sum(rowValues.',2), rowData);
     resolvedRows = happinessCheck(rowChebtech,[],sum(rowValues.',2));
     isHappy = resolvedRows & resolvedCols;
     
@@ -264,7 +266,7 @@ while ( ~isHappy && ~Failure )
             colValues = evaluate(op, xx, yy, vectorize);
         end
         if ( ~resolvedRows )
-            [m, nesting] = gridRefine( m );
+            [m, nesting] = gridRefine( m ); 
             [xx, yy] = meshgrid(mypoints(m, domain(1:2)), PivPos(:, 2));
             rowValues = evaluate(op, xx, yy, vectorize);
             % find location of pivots on new grid  (using nesting property).
@@ -300,9 +302,10 @@ while ( ~isHappy && ~Failure )
         isHappy = resolvedRows & resolvedCols;
         
         % STOP if degree is over maxLength:
-        if ( max(m, n) >= maxLength )
-            warning('CHEBFUN2:CTOR', 'Unresolved with maximum CHEBFUN length: %u.', maxLength);
-            Failure = 1;
+        if ( max(m, n) >= maxSample )
+            warning('CHEBFUN:CHEBFUN2:constructor:notResolved', ...
+                'Unresolved with maximum CHEBFUN length: %u.', maxSample);
+            failure = 1;
         end
         
     end
@@ -310,7 +313,7 @@ while ( ~isHappy && ~Failure )
     % For some reason, on some computers simplify is giving back a scalar zero.
     % In which case the function is numerically zero. Artifically set the
     % columns and rows to zero.
-    if ( norm(colValues) == 0 || norm(rowValues) == 0)
+    if ( (norm(colValues) == 0) || (norm(rowValues) == 0) )
         colValues = 0;
         rowValues = 0;
         pivotValue = Inf;
@@ -320,7 +323,7 @@ while ( ~isHappy && ~Failure )
     
     % Construct a CHEBFUN2:
     g.pivotValues = pivotValue;
-    g.cols = chebfun(colValues, domain(3:4) );
+    g.cols = chebfun(colValues, domain(3:4));
     g.rows = chebfun(rowValues.', domain(1:2) );
     g.pivotLocations = PivPos;
     g.domain = domain;
@@ -334,7 +337,7 @@ while ( ~isHappy && ~Failure )
         pass = g.sampleTest( sampleOP, tol, vectorize);
         if ( ~pass )
             % Increase minsamples and try again.
-            minsample = gridRefine( minsample );
+            minSample = gridRefine( minSample );
             isHappy = 0;
         end
     end
@@ -346,7 +349,8 @@ g = fixTheRank( g , fixedRank );
 
 end
 
-function [pivotValue, pivotElement, rows, cols, ifail] = CompleteACA(A, tol, factor)
+function [pivotValue, pivotElement, rows, cols, ifail] = ...
+    CompleteACA(A, tol, factor)
 % Adaptive Cross Approximation with complete pivoting. This command is
 % the continuous analogue of Gaussian elimination with complete pivoting.
 % Here, we attempt to adaptively find the numerical rank of the function.
@@ -366,7 +370,7 @@ zRows = 0;                  % count number of zero cols/rows.
 % Bias toward diagonal for square matrices (see reasoning below):
 if ( ( nx == ny ) && ( max( abs( diag( A ) ) ) - infNorm ) > -tol )
     [infNorm, ind] = max( abs ( diag( A ) ) );
-    row = ind; 
+    row = ind;
     col = ind;
 end
 
@@ -383,7 +387,7 @@ else
     cols(:,1) = zeros(size(A, 1), 1);
 end
 
-while ( ( infNorm > tol ) && ( zRows < width / factor)...
+while ( ( infNorm > tol ) && ( zRows < width / factor) ...
         && ( zRows < min(nx, ny) ) )
     rows(zRows+1,:) = A(row,:);
     cols(:,zRows+1) = A(:,col);              % Extract the columns.
@@ -406,7 +410,7 @@ while ( ( infNorm > tol ) && ( zRows < width / factor)...
     % absolute maximum. Bias toward diagonal maxima to prevent this.)
     if ( ( nx == ny ) && ( max( abs( diag( A ) ) ) - infNorm ) > -tol )
         [infNorm, ind] = max( abs ( diag( A ) ) );
-        row = ind; 
+        row = ind;
         col = ind;
     end
 end
@@ -414,12 +418,11 @@ end
 if ( infNorm <= tol )
     ifail = 0;                               % We didn't fail.
 end
-if (zRows >= width / factor)
+if ( zRows >= (width/factor) )
     ifail = 1;                               % We did fail.
 end
 
 end
-
 
 
 function [row, col] = myind2sub(siz, ndx)
@@ -458,17 +461,20 @@ function op = str2op( op )
 
 depvar = symvar( op );
 if ( numel(depvar) > 2 )
-    error('CHEBFUN2:fun2:depvars', 'Too many dependent variables in string input.');
+    error('CHEBFUN:CHEBFUN2:constructor:str2op:depvars', ...
+        'Too many dependent variables in string input.');
 end
 op = eval(['@(' depvar{1} ',' depvar{2} ')' op]);
 
 end
 
+
 function g = fixTheRank( g , fixedRank )
 % Fix the rank of a CHEBFUN2. Used for nonadaptive calls to the constructor.
 
 if ( fixedRank < 0 )
-    error('CHEBFUN2:CONSTRUCTOR','Nonadaptive rank should be positive.')
+    error('CHEBFUN:CHEBFUN2:constructor:fixTheRank:negative', ...
+        'Nonadaptive rank should be positive.')
 end
 
 if ( fixedRank > 0 )
@@ -491,6 +497,7 @@ end
 
 end
 
+
 function [xx, yy] = points2D(m, n, dom)
 % Get the sample points that correspond to the right grid for a particular
 % technology.
@@ -507,14 +514,16 @@ elseif ( isa(tech, 'chebtech1') )
     y = chebpts( n, dom(3:4), 1 ); 
     [xx, yy] = meshgrid( x, y ); 
 elseif ( isa(tech, 'fourtech') )
-    x = fourierpts( m, dom(1:2) );   % x grid.
-    y = fourierpts( n, dom(3:4) );
+    x = fourpts( m, dom(1:2) );   % x grid.
+    y = fourpts( n, dom(3:4) );
     [xx, yy] = meshgrid( x, y );
 else
-    error('CHEBFUN2:POINTS2D', 'Unrecognized technology');
+    error('CHEBFUN:CHEBFUN2:constructor:points2D:tecType', ...
+        'Unrecognized technology');
 end
 
 end
+
 
 function x = mypoints(n, dom)
 % Get the sample points that correspond to the right grid for a particular
@@ -528,13 +537,13 @@ if ( isa(tech, 'chebtech2') )
 elseif ( isa(tech, 'chebtech1') )
     x = chebpts( n, dom, 1 );   % x grid.
 elseif ( isa(tech, 'fourtech') )
-    x = fourierpts( n, dom );   % x grid.
+    x = fourpts( n, dom );   % x grid.
 else
-    error('CHEBFUN2:PTS', 'Unrecognized technology');
+    error('CHEBFUN:CHEBFUN2:constructor:mypoints:techType', ...
+        'Unrecognized technology');
 end
 
 end
-
 
 function [grid, nesting] = gridRefine( grid )
 % Hard code grid refinement strategy for tech. 
@@ -555,6 +564,8 @@ elseif ( isa(tech, 'chebtech1' ) )
     grid = 3 * grid; 
     nesting = 2:3:grid; 
 else
-    error('CHEBFUN2:TECHTYPE','Technology is unrecognized.');
+    error('CHEBFUN:CHEBFUN2:constructor:gridRefine:techType', ...
+        'Technology is unrecognized.');
 end
+
 end

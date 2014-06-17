@@ -173,7 +173,8 @@ classdef mapping
                 
             else
                 
-                error('CHEBFUN:unbounded:input', 'Error: Check input.')
+                 error('CHEBFUN:UNBNDFUN:createMap:input', ...
+                     'Error: Check input.')
                 
             end
             

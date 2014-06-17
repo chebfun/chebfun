@@ -25,8 +25,10 @@ classdef smoothfun < onefun % (Abstract)
 % Class diagram: [<<onefun>>] <-- [<<SMOOTHFUN>>] <-- [<<chebtech>>]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    %% Constructor for the SMOOTHFUN class.
-    methods (Static)
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS CONSTRUCTOR:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = true )
         
         function obj = constructor(op, data, pref)
             
@@ -56,15 +58,17 @@ classdef smoothfun < onefun % (Abstract)
                     pref.tech = @chebtech2;
                 end
             end
-
+            
             % Call the TECH constructor.
             obj = feval(pref.tech, op, data, pref.techPrefs);
         end
         
     end
 
-    %% Static methods implemented by SMOOTHFUN class.
-    methods ( Static = true ) 
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% STATIC METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = true ) 
         
         % Construct a rational interpolant to equispaced data.
         f = funqui(vals)
@@ -75,6 +79,10 @@ classdef smoothfun < onefun % (Abstract)
     end
     
 end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% PRIVATE METHODS IMPLEMENTED IN THIS FILE:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function f = funqui(vals)
 %FUNQUI   Rational interpolant of equispaced data.
@@ -134,7 +142,7 @@ else
         end
     end
     % Find the index of the smallest error:
-    [~, minInd] = min(errs); 
+    [ignored, minInd] = min(errs); 
     dOpt = min(minInd) - 1;
 end
 

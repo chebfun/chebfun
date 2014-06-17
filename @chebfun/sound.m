@@ -10,7 +10,7 @@ function sound(f, varargin)
 % TODO: Document this?
 
 if ( numColumns(f) > 1 )
-    error('CHEBFUN:sound:quasi', ...
+    error('CHEBFUN:CHEBFUN:sound:quasi', ...
         'CHEBFUN/SOUND() is not defined for array-valued CHEBFUN objects');
 end
 

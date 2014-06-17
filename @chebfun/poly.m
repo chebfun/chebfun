@@ -5,16 +5,16 @@ function out = poly(f, n)
 %   POLY(F, N) returns the polynomial coefficients of the Nth FUN of F. 
 %
 %   For numerical work, the Chebyshev polynomial coefficients returned by
-%   CHEBPOLY() are more useful.
+%   CHEBCOEFFS() are more useful.
 %
-% See also CHEBPOLY.
+% See also CHEBCOEFFS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% TODO: Should this attempt to return Taylor coefficients of the global Chebfun
-% if f is not smooth? (i.e., in the same way as LEGPOLY does).
-% TODO: Or perhaps throw an error if there are multiple funs?
+% TODO: Should this attempt to return Taylor coefficients of the global CHEBFUN
+% if f is not smooth? (i.e., in the same way as LEGPOLY does). TODO: Or perhaps
+% throw an error if there are multiple funs?
 
 % Deal with quasimatrices:
 if ( numel(f) > 1 )
@@ -22,7 +22,7 @@ if ( numel(f) > 1 )
         % Attempt to convert to an array-valued CHEBFUN:
         f = quasi2cheb(f);
     catch ME
-        error('CHEBFUN:poly:quasi', ...
+        error('CHEBFUN:CHEBFUN:poly:quasi', ...
             'POLY does not support quasimatrices.')
     end
 end
@@ -31,17 +31,20 @@ end
 nfuns = numel(f.funs);
 if ( nargin == 1 )
     if ( nfuns > 1 )
-        warning('CHEBFUN:poly', ['F has more than one FUN. ', ...
-         'Only the polynomial coefficients of the first FUN are returned.']);
+        warning('CHEBFUN:CHEBFUN:poly:multipleFuns', ...
+               ['F has more than one FUN.  Only the polynomial ' ...
+                'coefficients of the first FUN are returned.']);
     end
     n = 1;
 end
 
 % Catch some errors:
 if ( n > nfuns )
-    error('CHEBFUN:poly:nfuns', 'Chebfun only has %s FUNS', num2str(nfuns))
+    error('CHEBFUN:CHEBFUN:poly:nfuns', ...
+        'Chebfun only has %s FUNS', num2str(nfuns))
 elseif ( ~isscalar(n) || n < 0 || round(n) ~= n )
-    error('CHEBFUN:poly:input2', 'N should be a positive scalar integer.');
+    error('CHEBFUN:CHEBFUN:poly:input2', ...
+        'N should be a positive scalar integer.');
 end
 
 % Call @FUN/POLY.m

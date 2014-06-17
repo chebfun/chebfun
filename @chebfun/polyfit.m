@@ -17,14 +17,15 @@ function f = polyfit(y, n)
 % See also INTERP1.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( ~isscalar(n) || round(n) ~= n )
-    error('CHEBFUN:polyfit:input2', 'N must be scalar integer.')
+    error('CHEBFUN:CHEBFUN:polyfit:input2', 'N must be scalar integer.')
 end
     
 if ( any(isinf(y.domain)) )
-    error('CHEBFUN:polyfit:unbounded', 'Unbounded domains are not supported.');
+    error('CHEBFUN:CHEBFUN:polyfit:unbounded', ...
+        'Unbounded domains are not supported.');
 end
 
 if ( n > length(y) && numel(y.funs) == 1 && isa(y.funs{1}.onefun, 'chebtech') )
@@ -34,7 +35,7 @@ if ( n > length(y) && numel(y.funs) == 1 && isa(y.funs{1}.onefun, 'chebtech') )
 end
 
 % Compute first n Legendre coeffs:
-cleg = legpoly(y, n+1).';
+cleg = legcoeffs(y, n+1).';
 
 % Convert to Chebyshev coeffs:
 c = zeros(size(cleg));

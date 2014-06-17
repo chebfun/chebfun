@@ -16,17 +16,24 @@ classdef linopConstraint
 %   The preferred way to add contraints to a linop is through LINOP.ADDBC,
 %   not through direct use of this class.
 %
-%   See also LINOP, LINOP.ADDBC.
+% See also LINOP, LINOP.ADDBC.
 
 %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
+%  See http://www.chebfun.org/ for Chebfun information.
 
-    properties
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS PROPERTIES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    properties ( Access = public )
         functional    % applied to the variable to get values
         values        % constraint on the result of the functional
     end
     
-    methods
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS CONSTRUCTOR:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
+        
         % Input a functional and a value to create a constraint, or create
         % an empty constraint if no inputs.
         function C = linopConstraint(op, vals)
@@ -36,6 +43,13 @@ classdef linopConstraint
             C.functional = op;
             C.values = vals;
         end
+        
+    end
+       
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
         
         function n = length(C)
         %LENGTH    Number of constraints in the object.            
@@ -51,7 +65,6 @@ classdef linopConstraint
         %APPEND    Insert an additional constraint.
         %   C = APPEND(C, FUNC, VAL) appends the constraint FUNC*u=VAL to the
         %   current list. If VAL is omitted, it defaults to zero.
-            n = length(C);
             
             % Check if func is of an allowed class.
             validateattributes(func, {'linBlock', 'chebmatrix'}, {})
@@ -67,8 +80,7 @@ classdef linopConstraint
         end
         
         function C = uminus(C)
-        %-      Negate the VALUES property of a LINOPCONSTRAINT.
-        %
+        %-   Negate the VALUES property of a LINOPCONSTRAINT.
         %   This is useful at the CHEBOP level, where we need different signs
         %   for the boundary conditions of a LINOP when we call LINOP(N) where N
         %   is a CHEBOP, compared to what we want when we call LINEARIZE() from

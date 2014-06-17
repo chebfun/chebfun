@@ -6,7 +6,7 @@ function h = and(f, g)
 %   a non-zero value at that point, otherwise it is set to 0.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with the empty case:
 if ( isempty(f) || isempty(g) )
@@ -16,9 +16,9 @@ end
 
 % Make sure dimensions and domains are the same:
 if ( ~isequal(size(f), size(g)) )
-    error('CHEBFUN:and:dims', 'Dimensions of f and g must agree.');
+    error('CHEBFUN:CHEBFUN:and:dims', 'Dimensions of f and g must agree.');
 elseif ( ~domainCheck(f, g) )
-    error('CHEBFUN:and:doms', 'Domains of f and g must agree.');
+    error('CHEBFUN:CHEBFUN:and:doms', 'Domains of f and g must agree.');
 end
 
 % Split up f and g at their roots, and ensure breakpoints are the same:
