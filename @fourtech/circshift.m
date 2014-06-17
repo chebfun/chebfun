@@ -8,7 +8,7 @@ function f = circshift(f,a)
 % See also FOURTECH.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/for Chebfun information.
 
 [n,m] = size(f);
 

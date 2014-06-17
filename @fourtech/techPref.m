@@ -61,7 +61,7 @@ function outPref = techPref(inPref)
 % See also FOURTECH, CHEBTECH, CHEBTECH1, CHEBTECH2
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/for Chebfun information.
 
 outPref.eps                = 2^-52;
 outPref.gridType           = 2;
