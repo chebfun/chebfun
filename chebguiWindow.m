@@ -171,8 +171,10 @@ end
 % Load the input fields
 chebguiController.populate(handles, handles.guifile);
 
-% Make sure the GUI starts in the correct mode
-chebguiController.switchMode(handles, handles.guifile.type);
+% Make sure the GUI starts in the correct mode. We call SWITCHMODE() with the
+% third argument equal to 'demo' so that we will plot the initial guess of the
+% solution if it exists.
+chebguiController.switchMode(handles, handles.guifile.type, 'demo');
 
 % Get the system font size and store in handles
 s = char(com.mathworks.services.FontPrefs.getCodeFont);
@@ -720,7 +722,7 @@ if ( get(handles.button_ode, 'Value') )
         
     else % Show PLOTCOEFFS
         plotcoeffs(latestSolution, 'linewidth', 2)
-        title('Coeffs of solution')
+        title('Chebyshev coefficients of the solution')
         grid on
         set(handles.popupmenu_bottomFig, 'Value', 2);
     end
@@ -2072,7 +2074,7 @@ switch ( newVal )
         % User wants to see a PLOTCOEFFS plot..
         plotcoeffs(handles.latest.solution, 'linewidth', 2);
         grid on
-
+        title('Chebyshev coefficients of the solution')
 end
 
 end

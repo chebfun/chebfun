@@ -115,7 +115,7 @@ set(handles.input_RBC, 'Enable', 'on');
 % Try to plot the initial guess/condition if one exist in the CHEBGUI
 % object. If an error is returned, we keep calm and carry on.
 if ( ~isempty(chebg.init) )
-    
+
     try
         initString = chebg.init;
         % Obtain the name of the independent variable from the init field.
@@ -142,6 +142,9 @@ if ( ~isempty(chebg.init) )
         
         % Create a domain and a temporary independent variable
         dom = str2num(chebg.domain); %#ok<*ST2NM>
+        
+        % Create the independent space variable:
+        xTemp = chebfun(@(x) x, dom);
         % Only support one independent variable for initial
         % guesses/condition.
         if ( length(indVar) > 1 )
@@ -179,6 +182,12 @@ if ( ~isempty(chebg.init) )
         % Show grid?
         if ( chebg.options.grid )
             grid on
+        end
+        
+        if ( strcmpi(chebg.type, 'bvp') )
+            title('Initial guess of solution')
+        else
+            title('Initial condition')
         end
         
         % Hurray, managed to do everything we wanted.
