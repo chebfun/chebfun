@@ -179,7 +179,7 @@ newDom = f.domain(1);
 
 if ( pref.splitting) % Is splitting on?
     % Set the maximum length (i.e., number of sample points for CHEBTECH):
-    pref.techPrefs.maxLength = pref.breakpointPrefs.splitMaxLength;
+    pref.techPrefs.maxLength = pref.splitPrefs.splitMaxLength;
 end
 
 % Suppress growing vector Mlint warnings (which are inevitable here):

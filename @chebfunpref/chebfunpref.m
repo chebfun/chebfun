@@ -26,7 +26,7 @@ classdef chebfunpref < chebpref
 %     introduced only at points where discontinuities are being created (e.g.,
 %     by ABS(F) at points where a CHEBFUN F passes through zero).
 %
-%   breakpointPrefs            - Preferences for breakpoint detection.
+%   splitPrefs                 - Preferences for breakpoint detection.
 %
 %      splitMaxLength          - Maximum FUN length.
 %       [160]
@@ -152,7 +152,7 @@ classdef chebfunpref < chebpref
 %   associated to that field in Q.  Any fields of Q that are not properties of
 %   P are interpreted as preferences for the constructor of the underlying
 %   representation technology and are placed in P.TECHPREFS.  The exceptions to
-%   this are the fields BREAKPOINTPREFS, BLOWUPPREFS, and TECHPREFS.  If Q has
+%   this are the fields SPLITPREFS, BLOWUPPREFS, and TECHPREFS.  If Q has
 %   fields with these names, they will be assumed to be MATLAB structures and
 %   will be "merged" with the structures of default preferences stored in the
 %   properties of the same names in P using CHEBFUNPREF.MERGEPREFS().
@@ -184,13 +184,13 @@ classdef chebfunpref < chebpref
 %   breakpoint detection, a splitting length of 257 (pieces of polynomial degree
 %   256, and a custom CHEBTECH refinement function:
 %      p.splitting = true;
-%      p.breakpointPrefs.splitLength = 257;
+%      p.splitPrefs.splitLength = 257;
 %      p.techPrefs.refinementFunction = @custom;
 %      pref = chebfunpref(p);
 %
 %   Same thing with a slightly shorter syntax:
 %      p.splitting = true;
-%      p.breakpointPrefs.splitLength = 257;
+%      p.splitPrefs.splitLength = 257;
 %      p.refinementFunction = @custom;
 %      pref = chebfunpref(p);
 %
@@ -414,11 +414,11 @@ classdef chebfunpref < chebpref
                 prefList.domain(1), prefList.domain(end));
             fprintf([padString('    splitting:') '%d\n'], ...
                 prefList.splitting);
-            fprintf('    breakpointPrefs\n');
+            fprintf('    splitPrefs\n');
             fprintf([padString('        splitMaxLength:') '%d\n'], ...
-                prefList.breakpointPrefs.splitMaxLength');
+                prefList.splitPrefs.splitMaxLength');
             fprintf([padString('        splitMaxTotalLength:') '%d\n'], ...
-                prefList.breakpointPrefs.splitMaxTotalLength');
+                prefList.splitPrefs.splitMaxTotalLength');
             fprintf([padString('    blowup:') '%d\n'], ...
                 prefList.blowup);
             fprintf('    blowupPrefs\n');
@@ -552,8 +552,8 @@ classdef chebfunpref < chebpref
         %   as the defaults.
         %
         %   To set defaults for second tier preferences, such as
-        %   breakpointPrefs.splitMaxLength, one can use the syntax
-        %   CHEBFUNPREF.SETDEFAULT({'breakpointPrefs', 'splitMaxLength'}, 257).
+        %   splitPrefs.splitMaxLength, one can use the syntax
+        %   CHEBFUNPREF.SETDEFAULT({'splitPrefs', 'splitMaxLength'}, 257).
         %   However, this syntax is still experimental.
         %
         %   CHEBFUNPREF.SETDEFAULTS(PREF) sets the default values to the
@@ -660,8 +660,8 @@ classdef chebfunpref < chebpref
 
             factoryPrefs.domain = [-1 1];
             factoryPrefs.splitting = false;
-                factoryPrefs.breakpointPrefs.splitMaxLength = 160;
-                factoryPrefs.breakpointPrefs.splitMaxTotalLength = 6000;
+                factoryPrefs.splitPrefs.splitMaxLength = 160;
+                factoryPrefs.splitPrefs.splitMaxTotalLength = 6000;
             factoryPrefs.blowup = false;
                 factoryPrefs.blowupPrefs.exponentTol = 1.1*1e-11;
                 factoryPrefs.blowupPrefs.maxPoleOrder = 20;

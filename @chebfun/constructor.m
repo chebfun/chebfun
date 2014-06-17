@@ -130,7 +130,7 @@ numIntervals = numel(dom) - 1;
 ends = dom;
 
 % Set the maximum length (i.e., number of sample points for CHEBTECH):
-pref.techPrefs.maxLength = pref.breakpointPrefs.splitMaxLength;
+pref.techPrefs.maxLength = pref.splitPrefs.splitMaxLength;
 
 % We extrapolate when splitting so that we can construct functions like
 % chebfun(@sign,[-1 1]), which otherwise would not be happy at x = 0.
@@ -259,7 +259,7 @@ while ( any(sad) )
 
     % Fail if too many points are required:
     len = sum(cellfun(@length, funs));
-    if ( len > pref.breakpointPrefs.splitMaxTotalLength )
+    if ( len > pref.splitPrefs.splitMaxTotalLength )
         warning('Function not resolved using %d pts.', ...
             sum(cellfun(@length, funs)));
         return
