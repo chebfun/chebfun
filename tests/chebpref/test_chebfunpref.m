@@ -135,7 +135,7 @@ try
 
     % Test getting defaults:
     pass(21) = isnumeric(chebfunpref().eps);
-    pass(22) = ischar(chebfunpref().singPrefs.defaultSingType);
+    pass(22) = ischar(chebfunpref().blowupPrefs.defaultSingType);
     pass(23) = ischar(chebfunpref().refinementFunction);
     
 catch ME

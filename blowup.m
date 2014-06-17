@@ -96,11 +96,11 @@ else
         
     elseif ( on_off == 1 )
         chebfunpref.setDefaults('blowup', true);
-        chebfunpref.setDefaults({'singPrefs', 'defaultSingType'}, 'pole')
+        chebfunpref.setDefaults({'blowupPrefs', 'defaultSingType'}, 'pole')
         
     elseif ( on_off == 2 )
         chebfunpref.setDefaults('blowup', true);
-        chebfunpref.setDefaults({'singPrefs', 'defaultSingType'}, 'sing')
+        chebfunpref.setDefaults({'blowupPrefs', 'defaultSingType'}, 'sing')
         
     else
         error('CHEBFUN:blowup:UnknownOption',...
@@ -119,7 +119,7 @@ end
 function state = getBlowupState()
     state = chebfunpref().blowup;
     if ( state )
-        type = chebfunpref().singPrefs.defaultSingType;
+        type = chebfunpref().blowupPrefs.defaultSingType;
         if ( any(strcmpi(type, 'sing')) )
             state = 2;
         end

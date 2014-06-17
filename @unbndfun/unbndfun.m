@@ -113,7 +113,7 @@ classdef unbndfun < classicfun
                 rVal = feval(op, 1);
                 if ( any(isinf([lVal rVal])) )
                     pref.blowup = true;
-                    singType = pref.singPrefs.defaultSingType;
+                    singType = pref.blowupPrefs.defaultSingType;
                     data.singType = {singType, singType};
                 end
             else

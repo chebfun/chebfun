@@ -73,7 +73,7 @@ classdef chebfunpref < chebpref
 %         If two delta functions are located closer than this tolerance, they 
 %         will be merged.
 %
-%   singPrefs                  - Preferences for singularity detection.
+%   blowupPrefs                - Preferences for blowup / singularity detection.
 %
 %      exponentTol             - Tolerance for exponents.
 %       [1.1*1e-11]
@@ -152,7 +152,7 @@ classdef chebfunpref < chebpref
 %   associated to that field in Q.  Any fields of Q that are not properties of
 %   P are interpreted as preferences for the constructor of the underlying
 %   representation technology and are placed in P.TECHPREFS.  The exceptions to
-%   this are the fields BREAKPOINTPREFS, SINGPREFS, and TECHPREFS.  If Q has
+%   this are the fields BREAKPOINTPREFS, BLOWUPPREFS, and TECHPREFS.  If Q has
 %   fields with these names, they will be assumed to be MATLAB structures and
 %   will be "merged" with the structures of default preferences stored in the
 %   properties of the same names in P using CHEBFUNPREF.MERGEPREFS().
@@ -421,13 +421,13 @@ classdef chebfunpref < chebpref
                 prefList.breakpointPrefs.splitMaxTotalLength');
             fprintf([padString('    blowup:') '%d\n'], ...
                 prefList.blowup);
-            fprintf('    singPrefs\n');
+            fprintf('    blowupPrefs\n');
             fprintf([padString('        exponentTol:') '%d\n'], ...
-                prefList.singPrefs.exponentTol');
+                prefList.blowupPrefs.exponentTol');
             fprintf([padString('        maxPoleOrder:') '%d\n'], ...
-                prefList.singPrefs.maxPoleOrder');
+                prefList.blowupPrefs.maxPoleOrder');
             fprintf([padString('        defaultSingType:') '''%s''\n'], ...
-                prefList.singPrefs.defaultSingType');            
+                prefList.blowupPrefs.defaultSingType');            
             fprintf([padString('    enableDeltaFunctions:') '%d\n'], ...
                 prefList.enableDeltaFunctions);
             fprintf('    deltaPrefs\n');
@@ -663,9 +663,9 @@ classdef chebfunpref < chebpref
                 factoryPrefs.breakpointPrefs.splitMaxLength = 160;
                 factoryPrefs.breakpointPrefs.splitMaxTotalLength = 6000;
             factoryPrefs.blowup = false;
-                factoryPrefs.singPrefs.exponentTol = 1.1*1e-11;
-                factoryPrefs.singPrefs.maxPoleOrder = 20;
-                factoryPrefs.singPrefs.defaultSingType = 'sing';                
+                factoryPrefs.blowupPrefs.exponentTol = 1.1*1e-11;
+                factoryPrefs.blowupPrefs.maxPoleOrder = 20;
+                factoryPrefs.blowupPrefs.defaultSingType = 'sing';                
             factoryPrefs.enableDeltaFunctions = true;
                 factoryPrefs.deltaPrefs.deltaTol = 1e-9;
                 factoryPrefs.deltaPrefs.proximityTol = 1e-11;
