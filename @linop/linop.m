@@ -95,7 +95,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) linop 
         %   Note that the 'linop' is just a convenient name. The outputs are
         %   *not* linops.
         %
-        %   See also OPERATORBLOCK.
+        % See also OPERATORBLOCK.
             
             if ( nargin == 0 )
                 domain = [-1 1];

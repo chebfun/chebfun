@@ -4,7 +4,7 @@ function C = vertcat(varargin)
 %   chebfuns, and scalars given in the call, if their column sizes are
 %   compatible.
 %
-%   See also CHEBMATRIX.CAT, CHEBMATRIX.HORZCAT.
+% See also CHEBMATRIX.CAT, CHEBMATRIX.HORZCAT.
 
 %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org/ for Chebfun information.

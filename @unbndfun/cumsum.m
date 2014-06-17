@@ -66,7 +66,7 @@ g = f;
 
 % Rescaling factor is the derivative of the forward map:
 pref.blowup = true;
-rescaleFactor = onefun.constructor(@(x) g.mapping.der(x), [], pref);
+rescaleFactor = onefun.constructor(@(x) g.mapping.Der(x), [], pref);
 exps = get(rescaleFactor, 'exponents');
 numRoots = -repmat(exps.', 1, size(g, 2));
 

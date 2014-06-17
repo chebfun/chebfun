@@ -8,7 +8,7 @@ function f = changeMap(f, newdom)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Assign a new linear map to f, obtained from the BNDFUN.CREATEMAP() method:
-f.mapping = bndfun.createMap(newdom);
+f.mapping = mapping.linear(newdom);
 
 % Assign the new endpoints of f to the domain property:
 f.domain = newdom;

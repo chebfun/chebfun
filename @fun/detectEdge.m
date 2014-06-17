@@ -61,8 +61,8 @@ if ( all( isfinite( dom ) ) )
     
 else
     % unbounded domain
-    forHandle = f.mapping.for;
-    derHandle = f.mapping.der;
+    forHandle = f.mapping.For;
+    derHandle = f.mapping.Der;
     dom = [-1+eps, 1-eps];
     op = @(x) op(forHandle(x));
     if ( any(exps) )

@@ -4,7 +4,7 @@ domain = '[-3 3]';
 t = '0:.1:6';
 DE = 'u_t = 0.1*u" + u''';
 LBC = 'neumann'; RBC = 'dirichlet';
-init = 'u = sin(2*x)';
+init = 'u = sin(pi*x).*(x/6+1/2)^2';
 tol = '1e-6'; plotting = 'on';
 fixYaxisLower = '-1'; fixYaxisUpper = '1';
 type = 'pde';

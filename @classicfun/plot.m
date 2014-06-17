@@ -35,7 +35,7 @@ function varargout = plot(f, varargin)
 %   [H1, H2] returns a second vector of column handles, this time for each of
 %   the marker plots.
 %
-%  See also PLOTDATA.
+% See also PLOTDATA.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.

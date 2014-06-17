@@ -11,7 +11,7 @@ function [x, w, v] = lobpts(n, varargin)
 %
 %  In each case, N should be an integer greater than or equal to 2.
 %
-%  See also CHEBPTS, LEGPTS, JACPTS, LEGPOLY, RADAUPTS.
+% See also CHEBPTS, LEGPTS, JACPTS, LEGPOLY, RADAUPTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

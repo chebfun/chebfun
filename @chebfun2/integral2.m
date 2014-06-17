@@ -43,8 +43,21 @@ elseif ( nargin == 2 )
             
             % Green's theorem tells that you can integrate a function over a
             % region by integration along the boundary of the region's boundary.
-            % There are plenty of different ways of applying Green's thoerem and
-            % this is AT's choice.
+            % There are plenty of different ways of applying Green's theorem and
+            % this is AT's choice. AT's choice treats both variables equally,
+            % but is very slow. If you don't treat variables equally it may be
+            % fast.
+            % 
+            % HOW IT WORKS: Green's theorem states that: 
+            % 
+            %  (*) int_c dot((M;L), normal(c)) = intt_D div( dM/dx ; dL/dy)dxdy. 
+            % 
+            % The algorithm below writes f = div( dM/dx ; dL/dy) and constructs
+            % functions M(x,y) and L(x,y) so the equality (*) holds. (We have
+            % selected op (below) so that M = -op*y and L = op*x.) There is a
+            % lot of freedom in choosing M and L. It may be better to pick M and
+            % L that are easier to construct.
+            
             op = @(x,y) sum( chebfun(@(s) feval(f, s*x, s*y).*s, [0 1] ) );
             Fs = chebfun2(op , dom, 'vectorize');
             

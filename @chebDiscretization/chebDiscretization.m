@@ -2,7 +2,7 @@ classdef chebDiscretization
 %CHEBDISCRETIZATION Convert a chebmatrix or linop to discrete form.
 %   This class is not called directly by the end user. 
 %
-%   See also COLLOC, ULTRAS.
+% See also COLLOC, ULTRAS.
 
 %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org/ for Chebfun information.

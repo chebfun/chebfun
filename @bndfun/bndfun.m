@@ -96,7 +96,7 @@ classdef bndfun < classicfun
             linmap = bndfun.createMap(data.domain);
             if ( isa(op, 'function_handle') && ~all(data.domain == [-1, 1]) ...
                     && ~isnumeric(op) )
-                op = @(x) op(linmap.for(x));
+                op = @(x) op(linmap.For(x));
             end
 
             % Call the ONEFUN constructor:

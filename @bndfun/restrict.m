@@ -43,7 +43,7 @@ if ( (numel(s) == 2) && all( s == f.domain) )
 end
 
 % Compute the breaks in [-1,1] space and restrict the onefun:
-t = f.mapping.inv(s);
+t = f.mapping.Inv(s);
 
 % Restrict the ONEFUN field of f.
 restrictedOnefuns = restrict(f.onefun, t);
