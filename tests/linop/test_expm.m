@@ -28,7 +28,7 @@ d = [-pi pi];
 x = chebfun('x',d);
 [Z, I, D, C] = linop.primitiveOperators(d);
 [z, E, s] = linop.primitiveFunctionals(d);
-A = linop( D^2 );
+A = linop( D^2 + D );
 A = addConstraint(A, E(-pi), 0);
 A = addConstraint(A, E(pi), 0);
 
@@ -69,7 +69,7 @@ err(4,3) = abs( u(pi) );
 %%
 
 u0 = exp(-55*x.^2);
-A = linop( D^2 );
+A = linop( D^2 + D );
 A = addConstraint(A, E(-pi), 0);
 A = addConstraint(A, E(pi), 0);
 v = expm(A, 0, u0);

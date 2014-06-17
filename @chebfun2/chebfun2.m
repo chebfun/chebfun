@@ -132,4 +132,3 @@ classdef chebfun2
     
     
 end
-

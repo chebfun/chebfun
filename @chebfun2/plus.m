@@ -1,16 +1,16 @@
 function h = plus(f, g)
-%+	  Plus for CHEBFUN2 objects.
+%+   Plus for CHEBFUN2 objects.
 %
 % F + G adds F and G. F and G can be scalars or CHEBFUN2 objects.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( ~isa(f, 'chebfun2') )      % ??? + CHEBFUN2
+if ( ~isa(f, 'chebfun2') ) % ??? + CHEBFUN2
     
     h = plus(g, f);
     
-elseif ( isempty( g ) || isempty( f ))  % CHEBFUN2 + []
+elseif ( isempty(g) || isempty(f) ) % CHEBFUN2 + []
     
     % Return empty CHEBFUN2.
     h = chebfun2();
@@ -25,9 +25,9 @@ elseif ( ~isa(g, 'chebfun2') )          % CHEBFUN2 + ???
     
     error( 'CHEBFUN:CHEBFUN2:plus:unknown', ...
         ['Undefined function ''plus'' for input arguments of type %s ' ...
-        'and %s.'], class(f), class(g) );
+        'and %s.'], class(f), class(g));
     
-else                                    % CHEBFUN2 + CHEBFUN2
+else                                     % CHEBFUN2 + CHEBFUN2
     
     % Domain Check:
     if ( ~domainCheck(f, g) )
@@ -40,10 +40,11 @@ else                                    % CHEBFUN2 + CHEBFUN2
     elseif ( iszero(g) )
         h = f;
     else
-        % Add together two nonzero CHEBFUN2 objects
+        % Add together two nonzero CHEBFUN2 objects:
         h = compression_plus(f, g);
-        %h = chebfun2(@(x, y) feval(f, x, y) + feval(g, x, y), f.domain);
-    end
+        %h = chebfun2(@(x, y) feval(f, x, y) + feval(g, x, y), f.domain); 
+    end 
+    
 end
 
 end
@@ -61,7 +62,7 @@ function h = compression_plus(f, g)
 
 % Hack: Ensure g has the smaller pivot values.
 if ( norm(f.pivotValues, -inf) < norm(g.pivotValues, -inf) )
-    % TODO: Understand why this works!
+    % [TODO]: Understand why this works!
     h = compression_plus(g, f);
     return
 end
@@ -74,15 +75,15 @@ rows = [f.rows, g.rows];
 [Qcols, Rcols] = qr(cols);
 [Qrows, Rrows] = qr(rows);
 
-Z = zeros( length(fScl), length(gScl) );
-D = [fScl Z ; Z.' gScl];
+Z = zeros(length(fScl), length(gScl));
+D = [ fScl, Z ; Z.', gScl ];
 [U, S, V] = svd(Rcols * D * Rrows.');
 % If V is complex-valued, then conjugate: 
 V = conj( V ); 
 % Take diagonal from SIGMA:
 s = diag(S);
 
-% compress the format if possible.
+% Compress the format if possible.
 % [TODO]: What should EPS be in the tolerance check below? Can we base it on
 % EPSLEVELS?
 vf = vscale(f); 

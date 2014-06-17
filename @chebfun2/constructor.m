@@ -94,12 +94,13 @@ if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
             % Otherwise its an adaptive call:
             fixedRank = 0;
         end
+
         % Calculate a tolerance and find numerical rank to this tolerance: 
         % The tolerance assumes the samples are from a function. It depends
         % on the size of the sample matrix, hscale of domain, vscale of
         % the samples, and the accuracy target in chebfun2 preferences. 
         grid = max( size( op ) ); 
-        vscale = max( op(:) ); 
+        vscale = max( abs(op(:)) ); 
         tol = grid.^(2/3) * max( max( abs(domain(:))), 1) * vscale * pseudoLevel;
         
         % Perform GE with complete pivoting:
