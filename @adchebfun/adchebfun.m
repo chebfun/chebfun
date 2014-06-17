@@ -947,10 +947,12 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             else
                 % Update linearity information
                 f.linearity = f.linearity & g.linearity;
-                % Derivative part
+                % Value part
                 f.func = f.func + g.func;
                 % Derivative part
                 f.jacobian = f.jacobian + g.jacobian;
+                % Jumps
+                f.jumpLocations = union(f.jumpLocations,g.jumpLocations);
             end
             
             % Need to update domain in case new breakpoints were introduced
