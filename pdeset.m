@@ -119,7 +119,7 @@ for k = 1:2:length(pdeOpts)
             break
         end
         if ( j == m )
-            error('CHEBFUN:pdeset:UnknownOption', ...
+            error('CHEBFUN:pdeset:unknownOption', ...
                 ['Unrecognized property name ', pdeOpts{k}, '.'])
         end
     end

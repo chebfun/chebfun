@@ -183,7 +183,7 @@ classdef chebgui
                     % Calling with a single string loads a .guifile`
                     if ( ~exist(v1,'file') )
                         % Throw a method if this .guifie is not found
-                        error('CHEBFUN:chebgui:missingfile', ...
+                        error('CHEBFUN:CHEBGUI:chebgui:missingFile', ...
                               'Unable to find file: %s', v1);
                     end
                     % Load the existing demp

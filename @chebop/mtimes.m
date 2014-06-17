@@ -18,7 +18,7 @@ function C = mtimes(A, B)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isa(A, 'chebfun') )
-    error('CHEBOP:mtimes:invalid', 'Operation is undefined.');
+    error('CHEBFUN:CHEBOP:mtimes:invalid', 'Operation is undefined.');
     
 elseif ( isa(B, 'chebfun') || isa(B, 'chebmatrix') )    
     % Let A operate on B:
@@ -31,7 +31,7 @@ elseif ( isnumeric(B) )
 elseif ( isnumeric(A) )
     
     if ( ~isscalar(A) )
-        error('CHEBFUN:chebop:mtimes:nonscalar', ...
+        error('CHEBFUN:CHEBOP:mtimes:nonScalar', ...
             'CHEBOP * DOUBLE multiplication is defined only for scalars.');
     end
     
@@ -49,11 +49,12 @@ elseif ( isa(A,'chebop') && isa(B,'chebop') )
     % CHEBOP composition is not yet supported. It will probably be a mess once
     % we start getting systems involved, as the inputs need to be shuffled
     % correctly. A remedy might be through a nested function in this file.
-    error('CHEBFUN:CHEBOP:MTIMES:COMPOSITIONS',...
+    error('CHEBFUN:CHEBOP:mtimes:notSupported1',...
         'CHEBOP composition is not supported.');   
     
 else 
-    error('%s * %s multiplication is not supported.', class(A), class(B));
+    error('CHEBFUN:CHEBOP:mtimes:notSupported2', ...
+        '%s * %s multiplication is not supported.', class(A), class(B));
     
 end
     

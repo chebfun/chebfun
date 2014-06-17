@@ -9,7 +9,7 @@ function F = expm1(F, varargin)
 % See also EXP, LOG1P.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Call the compose method:
 F = compose(F, @expm1, varargin{:});

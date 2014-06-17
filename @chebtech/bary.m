@@ -10,7 +10,7 @@ function fx = bary(x, fvals, xk, vk)
 % [TODO]: Move this to either the trunk/ folder or an @utils class.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Parse inputs
 [n, m] = size(fvals);
@@ -24,7 +24,7 @@ end
 
 % Check that input is a column vector:
 if ( (ndimsx > 2) || (sizex(2) > 1) ) 
-    warning('CHEBFUN:chebtech:bary:colvec', 'Input should be a column vector.');
+    warning('CHEBFUN:CHEBTECH:bary:colvec', 'Input should be a column vector.');
     x = x(:);
 end
 

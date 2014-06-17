@@ -16,10 +16,10 @@ nu = 1.663;
 for (n = 1:2)
     if (n == 1)
         testfn = @bessely;
-        errid = 'CHEBFUN:bessely:zero';
+        errid = 'CHEBFUN:CHEBFUN:bessely:zero';
     else
         testfn = @besselk;
-        errid = 'CHEBFUN:besselk:zero';
+        errid = 'CHEBFUN:CHEBFUN:besselk:zero';
     end
 
     f = chebfun(@(x) exp(x), [-1 -0.5 0 0.5 1], pref);

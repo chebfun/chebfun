@@ -47,9 +47,9 @@ while ( k <= numel(varargin) )
         varargin(k:k+1) = [];
     elseif ( strcmpi(varargin{k}, 'fill') )
         varargin(k) = [];
-        warning('CHEBFUN:waterfall:fill', ...
+        warning('CHEBFUN:CHEBFUN:waterfall:fill', ...
             'The ''fill'' option is no longer supported.');
-        warning('off', 'CHEBFUN:waterfall:fill');
+        warning('off', 'CHEBFUN:CHEBFUN:waterfall:fill');
     else
         k = k + 1;
     end
@@ -78,11 +78,11 @@ end
 
 % Some error checking:
 if ( length(t) ~= n )
-    error('CHEBFUN:waterfall:szet', ...
+    error('CHEBFUN:CHEBFUN:waterfall:sizeT', ...
         'Length of T should equal the number of quasimatrices in U');
 end
 if ( ~isreal(u) || ~all(isreal(t)) )
-    warning('CHEBFUN:waterfall:imaginary',...
+    warning('CHEBFUN:CHEBFUN:waterfall:imaginary',...
         'Imaginary parts of complex T and/or U arguments ignored');
     u = real(u); 
     t = real(t);

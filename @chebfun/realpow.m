@@ -12,7 +12,8 @@ Z = power(X, Y);
         
 % Check for complex Z:
 if ( ~isreal(Z) )
-    error('CHEBFUN:realpow:complexRes', 'REALPOW produced complex result.');
+    error('CHEBFUN:CHEBFUN:realpow:complexRes', ...
+        'REALPOW produced complex result.');
 end
 
 end

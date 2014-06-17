@@ -128,7 +128,7 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
                 % Check values of supplied exponents.
                 if ( any(size(data.exponents) ~= [1, 2]) || ...
                         ~isa(data.exponents, 'double') )
-                    error('CHEBFUN:SINGFUN:constructor', ...
+                    error('CHEBFUN:SINGFUN:singfun:badExponents', ...
                         'Exponents must be a 1x2 vector of doubles.');
                 end
 
@@ -147,14 +147,14 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
 
             % Make sure that op is a function handle or a smoothfun.
             if ( ~isa(op, 'function_handle') && ~isa(op, 'smoothfun') )
-                error( 'CHEBFUN:SINGFUN:constructor', ...
+                error( 'CHEBFUN:SINGFUN:singfun:badOp', ...
                     ['First argument must be a function handle or a ', ...
                      'SMOOTHFUN, not a %s.'], class(op));
             end
 
             % Check to avoid array-valued operators.
             if ( size(feval(op, 0), 2) > 1 )
-                error('CHEBFUN:SINGFUN:constructor', ...
+                error('CHEBFUN:SINGFUN:singfun:arrayValued', ...
                     'SINGFUN does not support array-valued construction.');
             end
 
@@ -413,7 +413,7 @@ function checkSingTypes(singType)
 %   thrown.
 
 if ( ~isa(singType, 'cell') )
-    error( 'CHEBFUN:SINGFUN:constructor', ...
+    error( 'CHEBFUN:SINGFUN:checkSingTypes:notCell', ...
         'singType must be a 1x2 cell with two strings');
 end
 
@@ -421,7 +421,8 @@ check(1) = any(strcmpi(singType{1}, {'pole', 'sing', 'root', 'none'}));
 check(2) = any(strcmpi(singType{2}, {'pole', 'sing', 'root', 'none'}));
 
 if ( ~all(check) )
-    error('CHEBFUN:SINGFUN:checkSingTypes', 'Unknown singularity type.');
+    error('CHEBFUN:SINGFUN:checkSingTypes:badType', ...
+        'Unknown singularity type.');
 end
 
 end

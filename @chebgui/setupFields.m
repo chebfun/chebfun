@@ -67,14 +67,14 @@ if ( numOfRows == 1 )
         % Check whether we have a match of variable names, i.e. we want u
         % and u_t, not u and v_t:
         if ( (length(allVarNames) > 1) || (length(pdeVarNames) > 1) )
-            error('Chebgui:setupFields:NumberOfVariables', ...
+            error('CHEBFUN:CHEBGUI:setupFields:numberOfVariables', ...
                 'Too many variables.');
         end
         
         % Find where the PDE variable appears:
         underScoreLocation = strfind(pdeVarNames{1},'_');
         if ( ~strcmp(allVarNames{1}, pdeVarNames{1}(1:underScoreLocation-1)) )
-            error('Chebgui:setupFields:VariableNames', ...
+            error('CHEBFUN:CHEBGUI:setupFields:variableNames', ...
                 'Inconsistent variable names.');
         end
     end
@@ -135,7 +135,7 @@ else % Have a system, go through each row
         
         % Only allow one time derivative in each line
         if ( length(pdeVarNames) > 1 )
-            error('Chebgui:setupField:TooManyTimeDerivatives', ...
+            error('CHEBFUN:CHEBGUI:setupFields:tooManyTimeDerivatives', ...
                 'Only one time derivative per line allowed')
         end
         
@@ -151,7 +151,7 @@ else % Have a system, go through each row
             indVarName = indVarNameTemp;
         elseif ( ~myStringCompare(indVarName{1}, indVarNameTemp{1}) || ...
                 ~myStringCompare(indVarName{2}, indVarNameTemp{2}) )
-            error('Chebgui:Lexer:setupFields', ...
+            error('CHEBFUN:CHEBGUI:setupFields:differentIndepVars', ...
                 'Different names for independent variables detected')
         end
         

@@ -53,10 +53,12 @@ smoothVals(ind) = [];
 x(ind) = [];
 
 if ( any(isinf(smoothVals)) )
-    error('CHEBFUN:SINGFUN:findPoleOrder', 'Function returned inf value.')
+    error('CHEBFUN:SINGFUN:findPoleOrder:infEval', ...
+        'Function returned inf value.')
 end
 if ( any(isnan(smoothVals)) )
-    error('CHEBFUN:SINGFUN:findPoleOrder', 'Function returned NaN value.')
+    error('CHEBFUN:SINGFUN:findPoleOrder:nanEval', ...
+        'Function returned NaN value.')
 end
 
 % Test parameters
@@ -76,7 +78,7 @@ end
 
 if ( poleOrder > maxPoleOrder )
     % Method failed.
-    error('CHEBFUN:SINGFUN:fail', ...
+    error('CHEBFUN:SINGFUN:findPoleOrder:fail', ...
             'Pole order exceeds limit for maximum pole order.');
 end
 

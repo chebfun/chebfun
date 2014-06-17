@@ -112,7 +112,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         
         function f = abs(f) %#ok<MANU>
             % ABS   ABS is not Frechet differentiable, so an error is thrown.
-            error('CHEBFUN:AD:abs:NotDifferentiable', ...
+            error('CHEBFUN:ADCHEBFUN:abs:notDifferentiable', ...
                 'ABS() is not Frechet differentiable.');
         end
 
@@ -521,7 +521,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % Either F or M could be an ADCHEBFUN, but be we currently only
             % support the case where the first argument is an ADCHEBFUN
             if ( ~isa(f, 'adchebfun') )
-               error('CHEBFUN:ADCHEBFUN:ellipj', ...
+               error('CHEBFUN:ADCHEBFUN:ellipj:badInput', ...
                    ['Currently, ADCHEBFUN only supports calls to ELLIPJ() ' ...
                    'where the first input is a ADCHEBFUN.']);
             end
@@ -735,7 +735,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         
         function f = heaviside(f) %#ok<MANU>
             % HEAVISIDE is not Frechet differentiable, so an error is thrown.
-            error('CHEBFUN:AD:heaviside:NotDifferentiable', ...
+            error('CHEBFUN:ADCHEBFUN:heaviside:notDifferentiable', ...
                 'HEAVISIDE() is not Frechet differentiable.');
         end
         
@@ -875,7 +875,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             if ( isnumeric(g) )
                 f = rdivide(f, g);
             else
-                error('CHEBFUN:AD:mrdivide:dims', ...
+                error('CHEBFUN:ADCHEBFUN:mrdivide:dims', ...
                     ['Matrix dimensions must agree. Use f./g to divide' ...
                     'ADCHEBFUN objects.']);
             end
@@ -889,7 +889,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             if ( isnumeric(f) || isnumeric(g) )
                 f = times(f, g);  
             else
-                error('CHEBFUN:AD:mtimes:dims', ...
+                error('CHEBFUN:ADCHEBFUN:mtimes:dims', ...
                     ['Matrix dimensions must agree. Use f.*g to multiply ' ...
                      'two ADCHEBFUN or CHEBFUN objects.']);
             end

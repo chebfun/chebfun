@@ -15,15 +15,18 @@ function handles = solveGUI(guifile, handles)
 
 % Check whether some input is missing
 if ( isempty(guifile.domain) )
-    error('Chebgui:EmptyDomain','The domain must be defined.');
+    error('CHEBFUN:CHEBGUI:solveGUI:emptyDomain', ...
+        'The domain must be defined.');
 end
 
 if ( isempty(guifile.DE) )
-    error('Chebgui:EmptyDE','The differential equation can not be empty.');
+    error('CHEBFUN:CHEBGUI:solveGUI:emptyDE', ...
+        'The differential equation can not be empty.');
 end
 
 if ( isempty(guifile.LBC) && isempty(guifile.RBC) && isempty(guifile.BC) )
-    error('Chebgui:EmptyBC','Boundary conditions must be defined.');
+    error('CHEBFUN:CHEBGUI:solveGUI:emptyBC', ...
+        'Boundary conditions must be defined.');
 end
 
 if ( strcmp(get(handles.button_solve, 'string'), 'Solve') )   % In solve mode
@@ -33,7 +36,7 @@ if ( strcmp(get(handles.button_solve, 'string'), 'Solve') )   % In solve mode
     a = dom(1);
     b = dom(end);
     if ( b <= a )
-        error('CHEBFUN:CHEBGUI:solveeGUI:IncorrectDomain', ...
+        error('CHEBFUN:CHEBGUI:solveGUI:incorrectDomain', ...
             'Error in constructing domain. %s is not valid.',dom);
     end
 
@@ -42,7 +45,7 @@ if ( strcmp(get(handles.button_solve, 'string'), 'Solve') )   % In solve mode
     if ( ~isempty(tol) )
         tolnum = str2double(tol);
         if ( isnan(tolnum) || isinf(tolnum) || isempty(tolnum) )
-            error('Chebgui:InvalidTolerance', ...
+            error('CHEBFUN:CHEBGUI:solveGUI:invalidTolerance', ...
                 'Invalid tolerance, ''%s''.', tol);
         end
     end   
@@ -51,11 +54,11 @@ if ( strcmp(get(handles.button_solve, 'string'), 'Solve') )   % In solve mode
         % If we're in PDE mode, need to have time information.
         tt = str2num(guifile.timedomain);
         if ( isempty(tt) )
-            error('Chebgui:IncorrectTimeInterval', ...
+            error('CHEBFUN:CHEBGUI:solveGUI:incorrectTimeInterval', ...
                 'Error in constructing time interval.');
         end
         if ( isempty(guifile.init) )
-            error('Chebgui:EmptyInitialCondition', ...
+            error('CHEBFUN:CHEBGUI:solveGUI:emptyInitialCondition', ...
                 'Initial condition is empty.');
         end
         if ( str2double(tol) < 1e-6 )

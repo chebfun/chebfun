@@ -103,7 +103,7 @@ else
         chebfunpref.setDefaults({'singPrefs', 'defaultSingType'}, 'sing')
         
     else
-        error('CHEBFUN:blowup:UnknownOption',...
+        error('CHEBFUN:blowup:unknownOption',...
           'Unknown blowup option: only ON, OFF, 0, 1, 2 are valid options.')
     end
     

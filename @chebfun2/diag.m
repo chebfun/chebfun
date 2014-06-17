@@ -7,7 +7,7 @@ function f = diag( f, varargin )
 % See also TRACE.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Check for empty:
 if ( isempty( f ) ) 
@@ -21,7 +21,8 @@ if ( nargin == 1 )
 else 
     c = varargin{1};
     if ( ~isa(c, 'double') )
-        error('CHEBFUN2:DIAG', 'Second argument to diag should be a double.');
+        error('CHEBFUN:CHEBFUN2:diag:diag', ...
+            'Second argument to diag should be a double.');
     end
 end
 

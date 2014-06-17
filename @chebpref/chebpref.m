@@ -43,7 +43,7 @@ classdef chebpref
                         out = subsref(out, ind(2:end));
                     end
                 otherwise
-                    error('CHEBPREF:subsref:badType', ...
+                    error('CHEBFUN:CHEBPREF:chebpref:badType', ...
                         'Invalid subscripted reference type.')
             end
         end
@@ -64,7 +64,7 @@ classdef chebpref
                             ind, val);
                     end
                 otherwise
-                    error('CHEBPREF:subsasgn:badType', ...
+                    error('CHEBFUN:CHEBPREF:chebpref:badType', ...
                         'Invalid subscripted assignment type.')
             end
         end
@@ -146,7 +146,7 @@ classdef chebpref
             nargs = length(varargin);
 
             if ( nargs < 1)
-                error('CHEBPREF:setDefaults:notEnoughArguments', ...
+                error('CHEBFUN:CHEBPREF:chebpref:notEnoughArguments', ...
                     'Not enough arguments.');
             end
 
@@ -160,7 +160,7 @@ classdef chebpref
                 elseif ( isa(varargin{1}, 'chebpref') )
                     manageSCDefaults('set', varargin{1}.prefList);
                 else
-                    error('CHEBPREF:setDefaults:badArg', ...
+                    error('CHEBFUN:CHEBPREF:chebpref:badArg', ...
                         ['When calling chebpref.setDefaults() with just ' ...
                          'one argument, that argument must be ''factory'', ' ...
                          'a subclass of CHEBPREF, or a MATLAB structure.']);
@@ -168,7 +168,7 @@ classdef chebpref
             elseif ( mod(nargs, 2) == 0 )
                 manageSCDefaults('set', varargin{:});
             else
-                error('CHEBPREF:setDefaults:unpairedArg', ...
+                error('CHEBFUN:CHEBPREF:chebpref:unpairedArg', ...
                     'Unpaired argument in name-value pair list.');
             end
         end

@@ -412,11 +412,12 @@ for k = 1:numel(str)
     strk = str{k};
     equalSigns = find(strk == '=');
     if ( numel(equalSigns) > 1 )
-        error('Chebgui:InitInput', 'Too many equals signs in input.');
+        error('CHEBFUN:chebguiWindow:initInput', ...
+            'Too many equals signs in input.');
     elseif ( numel(equalSigns) == 1 )
         strk = strk(equalSigns+1:end);
     elseif ( numel(str) > 1 )
-        error('Chebgui:InitInput', ...
+        error('CHEBFUN:chebguiWindow:initInput', ...
             ['Error constructing initial guess. Input must include the ' ...
              'names of the dependent variables, i.e. be on the form ' ...
              '"u = %s", ...'], strk)
@@ -428,7 +429,7 @@ for k = 1:numel(str)
             init = [init eval(strk)]; %#ok<AGROW>
         end
     catch ME
-        error('Chebgui:InitInput', ME.message)
+        error('CHEBFUN:chebguiWindow:initInput', ME.message)
     end
 end
 
@@ -1470,7 +1471,7 @@ function button_export_Callback(hObject, eventdata, handles)
     catch ME
         % TODO: Which error do we want to throw?
 %         rethrow(ME)
-        error('Chebgui:Export', ...
+        error('CHEBFUN:chebguiWindow:export', ...
             ['Error in exporting to .m file. Please make ' ...
             'sure there are no syntax errors.']);
     end
@@ -1965,7 +1966,7 @@ for k = 1:numel(folders)
                 catch
                     %
                 end
-                error('CHEBGUI:test:NoSol', 'No solution returned.');
+                error('CHEBFUN:chebguiWindow:noSol', 'No solution returned.');
             end
             fprintf('  passed in %4.4f seconds.\n', t);
         catch ME

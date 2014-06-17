@@ -21,7 +21,7 @@ function varargout = contourf( f, varargin )
 % See also CONTOUR.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % TODO: Refactor to reduce duplication.
 
@@ -44,7 +44,8 @@ while ( ~isempty( varargin ) )
     elseif ( strcmpi(varargin{1}, 'pivots') ) % If given numpts then use them.
         doPivotPlot = 1;
         if ( length( varargin ) < 2 ) 
-            error('CHEBFUN2:CONTOUR:PIVOTSTYLE', 'Pivot style undefined.')
+            error('CHEBFUN:CHEBFUN2:contourf:pivotStyle', ...
+                'Pivot style undefined.')
         end
         argin{j} = varargin{2};
         varargin(1:2) = [];
@@ -79,7 +80,8 @@ if ( isa(f, 'double') )
         vals = feval(f, xx, yy);
         
     else
-        error('CHEBFUN2:CONTOUR:INPUTS', 'Unrecognised input arguments.');
+        error('CHEBFUN:CHEBFUN2:contourf:inputs1', ...
+            'Unrecognised input arguments.');
     end
     
 elseif ( isa(f, 'chebfun2') ) 
@@ -105,7 +107,7 @@ elseif ( isa(f, 'chebfun2') )
         
         % Check CONTOUR objects are on the same domain.
         if ( ~domainCheck(xx, yy) || ~domainCheck(yy, f) )
-            error('CHEBFUN2:CONTOUR:DOMAIN', ...
+            error('CHEBFUN:CHEBFUN2:contourf:domainMismatch', ...
                 'Domains of chebfun2 objects are not consistent.');
         end
         
@@ -127,12 +129,14 @@ elseif ( isa(f, 'chebfun2') )
         vals = feval(f, xx, yy );
         
     else
-        error('CHEBFUN2:CONTOUR:INPUTS','Unrecognised input arguments.');
+        error('CHEBFUN:CHEBFUN2:contourf:inputs2', ...
+            'Unrecognised input arguments.');
     end
     
 else
     
-    error('CHEBFUN2:CONTOUR:INPUTS','Unrecognised input arguments.');
+    error('CHEBFUN:CHEBFUN2:contourf:inputs3', ...
+        'Unrecognised input arguments.');
     
 end
 

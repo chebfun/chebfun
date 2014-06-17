@@ -7,7 +7,7 @@ function C = cumsum(disc, m)
 %   CUMSUM(DISC, M) for positive integer M returns C^M.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Store information about domain and dimensions.
 d = disc.domain;

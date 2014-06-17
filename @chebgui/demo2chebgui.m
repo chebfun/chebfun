@@ -11,7 +11,8 @@ fid = fopen(demoPath);
 
 % Make sure the file exists:
 if ( fid == -1 )
-    error('CHEBGUI:noload', 'Unable to open demo file: %s.', demoPath)
+    error('CHEBFUN:CHEBGUI:demo2chebgui:noload', ...
+        'Unable to open demo file: %s.', demoPath)
 end
 
 % Load the data to the workspace
@@ -54,7 +55,7 @@ for k = 1:numel(vars)
     try
         cg = set(cg, vars{k}, eval(vars{k}));
     catch ME %#ok<NASGU>
-        warning('CHEBGUI:loaddemos:unknown',...
+        warning('CHEBFUN:CHEBGUI:loaddemos:unknown',...
             [vars{k} ' is an unknown CHEBGUI property. Ignoring.']);
     end
 end

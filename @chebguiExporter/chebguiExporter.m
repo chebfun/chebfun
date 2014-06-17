@@ -144,7 +144,7 @@ classdef chebguiExporter
                     obj = chebguiExporterPDE;
                     
                 otherwise
-                    error('CHEBFUN:CHEBGUIEXPORTER:constructor', ...
+                    error('CHEBFUN:CHEBGUIEXPORTER:chebguiExporter:constructor', ...
                         'Unknown type for CHEBGUIEXPORTER constructor.')
             end
             

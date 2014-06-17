@@ -59,7 +59,7 @@ classdef (InferiorClasses = {?chebfun}) domain < double
                 out = false;
             end
             if ( out == false && nargout == 0 )
-                error('DOMAIN:validate:invalid', ...
+                error('CHEBFUN:DOMAIN:domain:invalid', ...
                     'Ends must be a 1xM vector of ordered doubles.');
             end
         end

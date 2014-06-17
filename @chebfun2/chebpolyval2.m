@@ -12,7 +12,7 @@ function varargout = chebpolyval2( f, varargin )
 % See also CHEBPOLY2, CHEBPOLYPLOT2. 
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check. 
 if ( isempty( f ) )
@@ -24,7 +24,7 @@ if ( nargin == 1 )
     % Get degrees:
     [m, n] = length( f );  
 elseif ( nargin == 2 ) 
-    error('CHEBFUN2:CHEBPOLYVAL2:INPUTS', 'Dimension not specified.'); 
+    error('CHEBFUN:CHEBFUN2:chebpolyval2:inputs', 'Dimension not specified.'); 
 else
     m = varargin{ 1 }; 
     n = varargin{ 2 }; 

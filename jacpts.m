@@ -73,7 +73,7 @@ elseif ( n == 1 )
 end
 
 if ( a <= -1 || b <= -1 )
-    error('CHEBFUN:jacpts:SizeAB', 'Alpha and beta must be greater than -1')
+    error('CHEBFUN:jacpts:sizeAB', 'Alpha and beta must be greater than -1')
 elseif ( max(a, b) > 5 )
     warning('CHEBFUN:jacpts:largeAB',...
         'MAX(ALPHA, BETA) > 5. Results may not be accurate')
@@ -100,10 +100,10 @@ if ( nargin > 3 )
     validStrings = {'default', 'GW', 'ASY', 'REC'};
     if ( ~any(strcmpi(method, validStrings)) )
         if ( strcmpi(method, 'GLR') )
-            error('CHEBFUN:legpts:glr', ...
+            error('CHEBFUN:jacpts:glr', ...
                 'The GLR algorithm is no longer supported.');
         end
-        error('CHEBFUN:legpts:inputs', ['Unrecognised input string: ', method]);
+        error('CHEBFUN:jacpts:inputs', ['Unrecognised input string: ', method]);
     end
 end
 

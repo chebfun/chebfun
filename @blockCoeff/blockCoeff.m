@@ -77,7 +77,8 @@ classdef blockCoeff
         end
         
         function C = cumsum(A, m)
-            error('Conversion of integration to coefficients is not supported.')
+            error('CHEBFUN:BLOCKCOEFF:cumsum:notSupported', ...
+                'Conversion of integration to coefficients is not supported.')
         end
         
         function D = diff(A, order)
@@ -110,15 +111,18 @@ classdef blockCoeff
         end
         
         function S = sum(A)
-            error('Conversion of integration to coefficients is not supported.')
+            error('CHEBFUN:BLOCKCOEFF:sum:notSupported', ...
+                'Conversion of integration to coefficients is not supported.')
         end
         
         function E = feval(A, location, direction)
-            error('Conversion of evaluation to coefficients is not supported.')
+            error('CHEBFUN:BLOCKCOEFF:feval:notSupported', ...
+                'Conversion of evaluation to coefficients is not supported.')
         end
         
         function F = inner(f)
-            error('Conversion of inner product to coefficients is not supported.')
+            error('CHEBFUN:BLOCKCOEFF:inner:notSupported', ...
+                'Conversion of inner product to coefficients is not supported.')
         end
         
     end
@@ -208,5 +212,5 @@ classdef blockCoeff
         end
         
     end
-            
+    
 end

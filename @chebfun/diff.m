@@ -25,7 +25,7 @@ function F = diff(F, n, dim)
 %   'Caputo'). [Requires SINGFUN].
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Trivial case:
 if ( isempty(F) )
@@ -41,13 +41,13 @@ if ( nargin < 3 )
 end
 
 if ( ~any(dim == [1, 2]) )
-    error('CHEBFUN:diff:dim', 'Dimension must either be 1 or 2.');
+    error('CHEBFUN:CHEBFUN:diff:dim', 'Dimension must either be 1 or 2.');
 end
     
 if ( round(n) ~= n )
     % Fractional integral:
     % [TODO]: Implement this!
-    error('CHEBFUN:diff:notImplemented', ...
+    error('CHEBFUN:CHEBFUN:diff:notImplemented', ...
         'Fractional derivatives not yet implemented.');
     F = fracCalc(F, n);
     return
@@ -161,8 +161,7 @@ f.pointValues = pointValues;
         if ( any(abs(deltaMag(:)) > deltaTol) )
             % [TODO]: This does not handle array-valuedness at the moment.
             if ( size(deltaMag, 2) > 1 )
-                warning('CHEBFUN:diff:dirac:array', ...
-                    'No support here for array-valuedness at the moment.');
+                warning('CHEBFUN:CHEBFUN:diff:diffContinuousDim:makeDeltaFun:array', 'No support here for array-valuedness at the moment.');
                 deltaMag = [0 ; 0];
             end
             % New delta functions are only possible at the ends of the domain:

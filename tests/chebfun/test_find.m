@@ -36,7 +36,7 @@ try
     x = find(f);
     pass(8) = false;
 catch ME
-    pass(8) = strcmp(ME.identifier, 'CHEBFUN:find:arrout');
+    pass(8) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:find:arrout');
 end
 
 try
@@ -44,7 +44,7 @@ try
     g = find(f);
     pass(9) = false;
 catch ME
-    pass(9) = strcmp(ME.identifier, 'CHEBFUN:find:infset');
+    pass(9) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:find:infset');
 end
 
 end

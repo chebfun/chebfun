@@ -32,7 +32,8 @@ if ( numel(f) > 1 )
     try
         f = quasi2cheb(f);
     catch ME
-        error('CHEBFUN:area:quasi', 'AREA() does not support quasimatrices.');
+        error('CHEBFUN:CHEBFUN:area:quasi', ...
+            'AREA() does not support quasimatrices.');
     end
 end
 
@@ -43,7 +44,8 @@ if ( (nargin > 1) && isa(varargin{1}, 'chebfun') )
         try
             g = quasi2cheb(g);
         catch ME
-            error('CHEBFUN:area:quasi', 'AREA() does not support quasimatrices.');
+            error('CHEBFUN:CHEBFUN:area:quasi', ...
+                'AREA() does not support quasimatrices.');
         end
     end
     varargin(1) = [];

@@ -108,9 +108,9 @@ opi = {opi1, opi2, opi3};
 f = chebfun(op, dom, 'exps', [0 0 -0.5 0 0 0]);
 
 % We temporarily disable this warning: 
-warning('off', 'CHEBFUN:SINGFUN:plus');
+warning('off', 'CHEBFUN:SINGFUN:plus:exponentDiff');
 g = cumsum(f);
-warning('on', 'CHEBFUN:SINGFUN:plus');
+warning('on', 'CHEBFUN:SINGFUN:plus:exponentDiff');
 
 % check values:
 result = zeros(1,3);
@@ -138,9 +138,9 @@ domCheck = [dom(1)+0.1 dom(2)-0.1];
 op = @(x) sin(100*x)./((x-dom(1)).^0.5.*(x-dom(2)).^0.5);
 f = chebfun(op, dom, 'exps', [-0.5 -0.5]);
 % We temporarily disable this warning: 1
-warning('off', 'CHEBFUN:SINGFUN:plus');
+warning('off', 'CHEBFUN:SINGFUN:plus:exponentDiff');
 g = cumsum(f);
-warning('on', 'CHEBFUN:SINGFUN:plus');
+warning('on', 'CHEBFUN:SINGFUN:plus:exponentDiff');
 
 %%
 % check values:

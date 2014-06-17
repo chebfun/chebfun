@@ -106,11 +106,11 @@ classdef chebdouble
                 x = chebpts(N, u.domain);
                 if ( length(b) > 1 )
                     if ( ~all(b == x) )
-                        error('CHEBFUN:pde15s:sumb', ...
+                        error('CHEBFUN:CHEBDOUBLE:sum:sumb', ...
                             ['Limits in sum must be scalars or the ', ...
                             'independent space variable (typically ''x'').']);
                     elseif ( a < x(1) )
-                        error('CHEBFUN:pde15s:sumint', ...
+                        error('CHEBFUN:CHEBDOUBLE:sum:sumint', ...
                             'Limits of integration outside of domain.');
                     end
                     I = cumsum(u);
@@ -118,11 +118,11 @@ classdef chebdouble
                     return
                 elseif ( length(a) > 1 )
                     if ( ~all(a == x) )
-                        error('CHEBFUN:pde15s:suma', ...
+                        error('CHEBFUN:CHEBDOUBLE:sum:suma', ...
                             ['Limits in sum must be scalars or the ', ...
                             'independent space variable (typically ''x'').']);
                     elseif ( b > x(end) )
-                        error('CHEBFUN:pde15s:sumint', ...
+                        error('CHEBFUN:CHEBDOUBLE:sum:sumint', ...
                             'Limits of integration outside of domain.');
                     end
                     I = cumsum(u);
@@ -130,7 +130,7 @@ classdef chebdouble
                     return
                 elseif ( a ~= x(1) || b ~= x(end) )
                     if ( a < x(1) || b > x(end) )
-                        error('CHEBFUN:pde15s:sumint', ...
+                        error('CHEBFUN:CHEBDOUBLE:sum:sumint', ...
                             'Limits of integration outside of domain.');
                     end
                     I = cumsum(u);
@@ -501,7 +501,7 @@ classdef chebdouble
                 v.values = u/v.values;
                 u = v;
             else
-                error('CHEBFUN:chebdouble:rdivide:dim', ...
+                error('CHEBFUN:CHEBDOUBLE:mrdivide:dim', ...
                     'Matrix dimensions must agree.');
             end
         end
@@ -513,7 +513,7 @@ classdef chebdouble
                 v.values = u*v.values;
                 u = v;
             else
-                error('CHEBFUN:chebdouble:rdivide:dim', ...
+                error('CHEBFUN:CHEBDOUBLE:mtimes:dim', ...
                     'Matrix dimensions must agree.');
             end
         end

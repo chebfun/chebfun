@@ -24,7 +24,7 @@ function [f, R, E] = qr(f, outputFlag, methodFlag)
 % Simply call innerProduct:
 R = sqrt(innerProduct(f, f));
 if ( isinf(R) )
-    error('SINGFUN:qr:infNorm', ...
+    error('CHEBFUN:SINGFUN:qr:infNorm', ...
         'The L^2 norm of the input SINGFUN is infinite.')
 end
 

@@ -94,7 +94,8 @@ classdef functionalBlock < linBlock
                 C.diffOrder = A.diffOrder + B.diffOrder;
                 C.iszero  = ( A.iszero || B.iszero);
             else
-                error('Unrecognized operand types.')
+                error('CHEBFUN:FUNCTIONALBLOCK:mtimes:badType', ...
+                    'Unrecognized operand types.')
             end
         end
 
@@ -188,7 +189,8 @@ classdef functionalBlock < linBlock
 
             % Sanity check.
             if ( location < domain(1) ) | ( location > domain(end) )
-                error('Evaluation location is not in the domain.')
+                error('CHEBFUN:FUNCTIONALBLOCK:feval:badLocation', ...
+                    'Evaluation location is not in the domain.')
             end
 
             % Convert direction argument into a number.
@@ -198,8 +200,9 @@ classdef functionalBlock < linBlock
                 elseif any( strncmpi(direction, {'right', '+'}, 1) )
                     direction = +1;
                 else
-                    error(['Direction must be ''left'', ''right'', ' ...
-                        '''+'', or ''-''.'])
+                    error('CHEBFUN:FUNCTIONALBLOCK:feval:badDirection', ...
+                        ['Direction must be ''left'', ''right'', ' ...
+                         '''+'', or ''-''.'])
                 end
             end
 

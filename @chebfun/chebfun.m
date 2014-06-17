@@ -173,7 +173,7 @@ classdef chebfun
                 % Construct a CHEBFUN from a cell array of FUN objects:
                 
                 if ( nargin > 1 )
-                    error('CHEBFUN:chebfun:nargin', ...
+                    error('CHEBFUN:CHEBFUN:chebfun:nargin', ...
                      'Only one input is allowed when passing an array of FUNs.')
                 end
                 
@@ -542,7 +542,7 @@ function op = str2op(op)
     else
         depVar = symvar(op);
         if ( numel(depVar) ~= 1 )
-            error('CHEBFUN:STR2OP:indepvars', ...
+            error('CHEBFUN:CHEBFUN:str2op:indepvars', ...
                 'Incorrect number of independent variables in string input.');
         end
         op = eval(['@(' depVar{:} ')', op]);
@@ -598,7 +598,7 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
                 prefWasPassed = true;
                 args(1) = [];
             else
-                error('CHEBFUN:parseInputs:twoPrefs', ...
+                error('CHEBFUN:CHEBFUN:parseInputs:twoPrefs', ...
                     'Multiple preference inputs are not allowed.');
             end
         elseif ( strcmpi(args{1}, 'equi') )
@@ -615,7 +615,7 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
             op = {{[], op}};
             args(1) = [];
         elseif ( strcmpi(args{1}, 'coeffs') && iscell(op) )
-            error('CHEBFUN:parseInputs:coeffcell', ...
+            error('CHEBFUN:CHEBFUN:parseInputs:coeffcell', ...
                 'Cannot construct CHEBFUN from a cell array of coefficidnts.');
         elseif ( strcmpi(args{1}, 'trunc') )
             % Pull out this preference, which is checked for later.
@@ -655,7 +655,7 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
                     keywordPrefs.enableSingularityDetection = 1;
                     data.singType = {'sing'};
                 else
-                    error('CHEBFUN:parseInputs:badBlowupOption', ...
+                    error('CHEBFUN:CHEBFUN:parseInputs:badBlowupOption', ...
                         'Invalid value for ''blowup'' option.');
                 end
             end
@@ -685,7 +685,7 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
                      (ischar(args{2}) && strncmpi(args{2}, '2nd', 1)) )
                 keywordPrefs.tech = @chebtech2;
             else
-                error('CHEBFUN:constructor:parseInputs', ...
+                error('CHEBFUN:CHEBFUN:parseInputs:badChebkind', ...
                     'Invalid value for ''chebkind'' option.');
             end
             args(1:2) = [];
@@ -695,12 +695,12 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
             args(1:2) = [];
         else
             if ( isnumeric(args{1}) )
-                error('CHEBFUN:parseInputs:badInputNumeric', ...
+                error('CHEBFUN:CHEBFUN:parseInputs:badInputNumeric', ...
                     ['Could not parse input argument sequence.\n' ...
                      '(Perhaps the construction domain is not the second ' ...
                      'argument?)']);
             else
-                error('CHEBFUN:parseInputs:badInput', ...
+                error('CHEBFUN:CHEBFUN:parseInputs:badInput', ...
                     'Could not parse input argument sequence.');
             end
         end
@@ -767,8 +767,8 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
             (numel(data.singType) ~= 2*numIntervals) )
         % If the number of exponents supplied by user isn't equal to twice the
         % the number of the FUNs, throw an error message:
-        error('CHEBFUN:constructor', ['The number of the exponents is ' ...
-            'inappropriate.']);
+        error('CHEBFUN:CHEBFUN:parseInputs:badExponents', ...
+            ['The number of the exponents is inappropriate.']);
     end
     % Sort out the exponents:
     if ( ~isempty(data.exponents) )
@@ -789,7 +789,7 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
             exps = exps(ceil(1:0.5:nExps - 0.5));
         elseif( nExps ~= 2*numIntervals )
             % The number of exponents supplied by user makes no sense.
-            error('CHEBFUN:constructor', ...
+            error('CHEBFUN:CHEBFUN:chebfun:parseInputs', ...
                 'Invalid length for vector of exponents.');
         end
         data.exponents = exps;

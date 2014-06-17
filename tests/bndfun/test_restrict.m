@@ -26,21 +26,21 @@ try
     g = restrict(f, [dom(1) - 1, dom(2) + 1]); %#ok<NASGU>
     pass(3) = 0;
 catch ME
-    pass(3) = strcmp(ME.identifier, 'BNDFUN:restrict:badinterval');
+    pass(3) = strcmp(ME.identifier, 'CHEBFUN:BNDFUN:restrict:badInterval');
 end
 
 try
     g = restrict(f, [-Inf, 1]); %#ok<NASGU>
     pass(4) = 0;
 catch ME
-    pass(4) = strcmp(ME.identifier, 'BNDFUN:restrict:badinterval');
+    pass(4) = strcmp(ME.identifier, 'CHEBFUN:BNDFUN:restrict:badInterval');
 end
 
 try
     g = restrict(f, [-1 -0.25 0.3 0.1 1]); %#ok<NASGU>
     pass(5) = 0;
 catch ME
-    pass(5) = strcmp(ME.identifier, 'BNDFUN:restrict:badinterval');
+    pass(5) = strcmp(ME.identifier, 'CHEBFUN:BNDFUN:restrict:badInterval');
 end
 
 %%

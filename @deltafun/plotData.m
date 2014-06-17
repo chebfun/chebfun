@@ -28,7 +28,7 @@ elseif ( nargin == 2 )
     % Make sure f has no delta functions.
     if ( isa(f, 'deltafun') )  
         if ( ~isempty(f.deltaMag) )
-            warning('CHEBFUN:deltafun:plot', ...
+            warning('CHEBFUN:DELTAFUN:plot:deltas', ...
                 'Deltas in plot(f, g) are ignored.')
         end
         f = f.funPart;

@@ -4,7 +4,7 @@ function F = rdivide( F, G )
 % See also LDIVIDE.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 
 if ( isempty(F) || isempty(G) )
@@ -18,7 +18,7 @@ if ( isa(F, 'chebfun2v') && isa(G, 'chebfun2v') )
     nF = F.nComponents; 
     nG = F.nComponents; 
     if ( nF ~= nG ) 
-        error('CHEBFUN2V:RDIVIDE:DIM','Dimension Mismatch.');
+        error('CHEBFUN:CHEBFUN2V:rdivide:dim','Dimension mismatch.');
     end
     for jj = 1 : nF 
         F.components{jj} = rdivide( F.components{jj}, G.components{jj} ); 
@@ -42,7 +42,7 @@ elseif  ( isa(G, 'chebfun2v') && ( isa(F, 'chebfun2') || isa(F, 'double') ) )
     
 else
     
-   error('CHEBFUN2V:RDIVIDE:INPUTS','Unrecognized input arguments.') 
+   error('CHEBFUN:CHEBFUN2V:rdivide:inputs','Unrecognized input arguments.')
    
 end
     

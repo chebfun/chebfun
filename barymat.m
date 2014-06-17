@@ -8,7 +8,7 @@ function B = barymat(y, x, w)
 %   2nd-kind Chebyshev grid: W(j) = (-1)^j, W([1, N]) = 0.5*W([1, N]).
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty(y) || isempty(x) )
     % Nothing to do here!
