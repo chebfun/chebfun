@@ -1,6 +1,5 @@
-function out = get(f,propName)
-% GET   GET method for the CHEBOP2 class
-%
+function out = get(f, propName)
+%GET   GET method for the CHEBOP2 class.
 %   P = GET(N, PROP) returns the property P specified in the string PROP from
 %   the CHEBOP2 N. Valid entries for the string PROP are:
 %       'DOMAIN'         - The domain of defintion of N.
@@ -11,7 +10,11 @@ function out = get(f,propName)
 %       'DBC'            - The bottom boundary constraints of N.
 % 
 % The following are also supported: 
+%       'DIM'            - The size of the system.
+%       'SCALE'          - The relative scale of the solution.
 %       'COEFFS'         - The variable coefficients of N.
+%       'XORDER'         - The order of differentiation in the x-direction.
+%       'YORDER'         - The order of differentiation in the y-direction.
 %       'U', 'S', 'V'    - The low rank structure of N.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
@@ -30,5 +33,5 @@ switch propName
         % Allow access to any of the properties of F via GET:
         out = f.(propName);
     otherwise
-        error('CHEBFUN2:get:propnam',[propName,' is not a valid chebfun2 property.'])
+        error('CHEBOP2:get:propnam', [propName,' is not a valid chebop2 property.'])
 end
