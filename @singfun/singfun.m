@@ -123,7 +123,7 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
                 end
             end
 
-            % Find exponents.
+            % Find exponents.poly
             if ( ~isempty(data.exponents) )
                 % Check values of supplied exponents.
                 if ( any(size(data.exponents) ~= [1, 2]) || ...
@@ -152,7 +152,7 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
                      'SMOOTHFUN, not a %s.'], class(op));
             end
 
-            % Check to avoid array-valued operators.
+            % Check to avoid array-vapolylued operators.
             if ( size(feval(op, 0), 2) > 1 )
                 error('CHEBFUN:SINGFUN:singfun:arrayValued', ...
                     'SINGFUN does not support array-valued construction.');
@@ -270,6 +270,9 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         
         % True for zero SINGFUN objects
         out = iszero(f)
+        
+        % Legendre coeffs of a SINGFUN.
+        c = legcoeffs(f, n)
         
         % Length of a SINGFUN.
         len = length(f)
@@ -466,7 +469,7 @@ if ( ~isfield(data, 'exponents') || isempty(data.exponents) )
 end
 
 if ( ~isfield(data, 'singType') || isempty(data.singType) )
-    defaultSingType = pref.singPrefs.defaultSingType;
+    defaultSingType = pref.blowupPrefs.defaultSingType;
     data.singType = {defaultSingType, defaultSingType};
 end
 

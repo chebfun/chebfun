@@ -9,7 +9,7 @@ function varargout = chebpolyval2( f, varargin )
 %   [U, D, V] = CHEBPOLYVAL2(F,M,N) returns the values of F on a M-by-N
 %   Chebyshev tensor grid.
 %
-% See also CHEBPOLY2, CHEBPOLYPLOT2. 
+% See also CHEBCOEFFS2, PLOTCOEFFS2. 
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -35,8 +35,8 @@ end
 
 tech = chebfunpref().tech(); 
 
-C = tech.coeffs2vals(chebpoly( cols, m ).'); 
-R = tech.coeffs2vals(chebpoly( rows, n ).'); 
+C = tech.coeffs2vals(chebcoeffs( cols, m ).'); 
+R = tech.coeffs2vals(chebcoeffs( rows, n ).'); 
 
 % Evaluate: 
 if ( nargout <= 1 )

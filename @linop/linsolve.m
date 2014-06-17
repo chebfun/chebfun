@@ -22,7 +22,7 @@ function [u, disc] = linsolve(L, f, varargin)
 %     u = A \ chebfun('x',d);
 %     plot(u{1})
 %
-%   See also CHEBOPPREF, CHEBOP.MLDIVIDE.
+% See also CHEBOPPREF, CHEBOP.MLDIVIDE.
 
 %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org/ for Chebfun information.

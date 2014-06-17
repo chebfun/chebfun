@@ -5,16 +5,16 @@ function out = poly(f, n)
 %   POLY(F, N) returns the polynomial coefficients of the Nth FUN of F. 
 %
 %   For numerical work, the Chebyshev polynomial coefficients returned by
-%   CHEBPOLY() are more useful.
+%   CHEBCOEFFS() are more useful.
 %
-% See also CHEBPOLY.
+% See also CHEBCOEFFS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% TODO: Should this attempt to return Taylor coefficients of the global Chebfun
-% if f is not smooth? (i.e., in the same way as LEGPOLY does).
-% TODO: Or perhaps throw an error if there are multiple funs?
+% TODO: Should this attempt to return Taylor coefficients of the global CHEBFUN
+% if f is not smooth? (i.e., in the same way as LEGPOLY does). TODO: Or perhaps
+% throw an error if there are multiple funs?
 
 % Deal with quasimatrices:
 if ( numel(f) > 1 )

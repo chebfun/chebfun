@@ -24,7 +24,7 @@ pass(1) = isempty(f*[]);
 pass(2) = isempty(f*chebfun());
 
 % Turn on splitting, since we'll need it for the rest of the tests.
-pref.enableBreakpointDetection = 1;
+pref.splitting = 1;
 
 % Test multiplication by scalars.
 f1_op = @(x) sin(x).*abs(x - 0.1);

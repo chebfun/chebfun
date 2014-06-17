@@ -124,7 +124,7 @@ classdef chebtech < smoothfun % (Abstract)
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% ABSTRACT METHODS REQUIRED BY THIS CLASS:
+    %% ABSTRACT METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false, Abstract = true )
 
@@ -137,7 +137,7 @@ classdef chebtech < smoothfun % (Abstract)
     end
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% ABSTRACT STATIC METHODS REQUIRED BY THIS CLASS:
+    %% ABSTRACT STATIC METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true, Abstract = true )
         
@@ -186,7 +186,7 @@ classdef chebtech < smoothfun % (Abstract)
         f = cell2mat(f)
 
         % Plot (semilogy) the Chebyshev coefficients of a CHEBTECH object.
-        h = chebpolyplot(f, varargin)
+        [h1, h2] = plotcoeffs(f, varargin)
 
         % Check the happiness of a CHEBTECH. (Classic definition).
         [ishappy, epslevel, cutoff] = classicCheck(f, values, pref)
@@ -264,7 +264,7 @@ classdef chebtech < smoothfun % (Abstract)
         out = iszero(f)
         
         % Return Legendre coefficients of a CHEBTECH.
-        c_leg = legpoly(f, n)
+        c_leg = legcoeffs(f, n)
         
         % Length of a CHEBTECH.
         len = length(f)
@@ -338,7 +338,7 @@ classdef chebtech < smoothfun % (Abstract)
         % Right array divide for a CHEBTECH.
         f = rdivide(f, c, pref)
 
-        % Real part of a CHEBTECH.
+        % Real part of a CHEBTECH. REQUIRED BY THIS CLASS:
         f = real(f)
 
         % Restrict a CHEBTECH to a subinterval.
@@ -370,7 +370,7 @@ classdef chebtech < smoothfun % (Abstract)
 
         % CHEBTECH multiplication.
         f = times(f, g, varargin)
-        
+         
         % CHEBTECH obects are not transposable.
         f = transpose(f)
 

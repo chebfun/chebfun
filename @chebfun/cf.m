@@ -91,7 +91,7 @@ if ( m >= M )
 end
 
 % Extract the Chebyshev coefficients to be used in computing the approximation.
-a = chebpoly(f, length(f));
+a = chebcoeffs(f, length(f));
 a = a((end-M):end);
 
 % Deal with complex-valued functions.
@@ -274,7 +274,7 @@ s = abs(s);
 % know the exact ellipse of analyticity for 1./q, so use this knowledge to
 % obtain its Chebyshev coefficients (see line below).
 qRecip = chebfun(@(x) 1./feval(q, x), dom, ceil(log(4/eps/(rho - 1))/log(rho)));
-gam = chebpoly(qRecip, length(qRecip));
+gam = chebcoeffs(qRecip, length(qRecip));
 gam = [zeros(1, 2*m + 1 - length(gam)) gam];
 gam = gam(end:-1:end-2*m);
 gam(1) = 2*gam(1);

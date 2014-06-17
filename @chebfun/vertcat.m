@@ -34,6 +34,7 @@ if ( any(numElements > 1) )
         varargin{k} = chebmatrix(num2cell(varargin{k}));
     end
     out = vertcat(varargin{:});
+    % TODO: This warning should be removed eventually.
     warning('CHEBFUN:CHEBFUN:vertcat:join', ...
         ['Vertical concatenation of CHEBFUN objects now produces a CHEBMATRIX\n', ...
          'The V4 behaviour can be reproduced using the JOIN() method.']);

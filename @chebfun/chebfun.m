@@ -81,6 +81,13 @@ classdef chebfun
 % computing the first N Chebyshev coefficients from their integral form, rather
 % than by interpolation at Chebyshev points.
 %
+% CHEBFUN(F, 'periodic') constructs a CHEBFUN object representing a smooth and
+% periodic function F on the interval [-1,1]. The resulting CHEBFUN is
+% represented using a Fourier series. All operation done of F should preserve
+% smoothness and periodicity or the results may be inaccurate. Similar options
+% as discussed above may be combined with the 'periodic' flag, with exception to
+% the 'chebkind' and 'splitting' flags.
+%
 % See also CHEBFUNPREF, CHEBPTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
@@ -166,7 +173,7 @@ classdef chebfun
                     doTrunc = true;
                     truncLength = varargin{k+1};
                     break
-                end
+                end                
             end
             
             if ( iscell(op) && all(cellfun(@(x) isa(x, 'fun'), op)) )
@@ -209,9 +216,14 @@ classdef chebfun
 
             if ( doTrunc )
                 % Truncate the CHEBFUN to the required length:
-                c = chebpoly(f, truncLength);
-                f = chebfun(c.', f.domain([1, end]), 'coeffs');
+                if ( isa( pref.tech(),'chebtech' ) ) 
+                    c = chebcoeffs(f, truncLength);
+                else
+                    c = fourcoeffs(f, truncLength);
+                end
+                f = chebfun(c.', f.domain([1,end]), 'coeffs', pref);
             end
+            
         end
         
     end
@@ -240,7 +252,7 @@ classdef chebfun
         g = ceil(f)
         
         % Plot information regarding the representation of a CHEBFUN object:
-        h = chebpolyplot(f, varargin);
+        h = plotcoeffs(f, varargin);
 
         % Construct complex CHEBFUN from real and imaginary parts.
         C = complex(A, B)
@@ -588,6 +600,7 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
 
     % Parse the remaining arguments.
     prefWasPassed = false;
+    isPeriodic = false;
     vectorize = false;
     while ( ~isempty(args) )
         if ( isstruct(args{1}) || isa(args{1}, 'chebfunpref') )
@@ -614,20 +627,22 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
             % Hack to support construction from coefficients.
             op = {{[], op}};
             args(1) = [];
+        elseif ( strcmpi(args{1}, 'periodic') )
+            isPeriodic = true;
+            args(1) = [];
         elseif ( strcmpi(args{1}, 'coeffs') && iscell(op) )
             error('CHEBFUN:CHEBFUN:parseInputs:coeffcell', ...
-                'Cannot construct CHEBFUN from a cell array of coefficidnts.');
+                'Cannot construct CHEBFUN from a cell array of coefficients.');
         elseif ( strcmpi(args{1}, 'trunc') )
             % Pull out this preference, which is checked for later.
-            keywordPrefs.enableBreakpointDetection = true;
+            keywordPrefs.splitting = true;
             args(1:2) = [];
         elseif ( isnumeric(args{1}) && isscalar(args{1}) )
             % g = chebfun(@(x) f(x), N)
             keywordPrefs.techPrefs.exactLength = args{1};
             args(1) = [];
         elseif ( strcmpi(args{1}, 'splitting') )
-            % Translate "splitting" --> "enableBreakpointDetection".
-            keywordPrefs.enableBreakpointDetection = strcmpi(args{2}, 'on');
+            keywordPrefs.splitting = strcmpi(args{2}, 'on');
             args(1:2) = [];
         elseif ( strcmpi(args{1}, 'minsamples') )
             % Translate "minsamples" --> "techPrefs.minPoints".
@@ -636,7 +651,7 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
         elseif ( strcmpi(args{1}, 'blowup') )
             if ( strcmpi(args{2}, 'off') )
                 % If 'blowup' is 'off'.
-                keywordPrefs.enableSingularityDetection = 0;
+                keywordPrefs.blowup = 0;
             else
                 % If 'blowup' is not 'off', set the singTypes.  (NB:  These
                 % cells really need to store a left and right singType for each
@@ -646,13 +661,13 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
                 if ( (isnumeric(args{2}) && args{2} == 1 ) || ...
                         strcmpi(args{2}, 'on') )
                     % Translate "blowup" and flag "1" -->
-                    % "enableSingularityDetection" and "poles only".
-                    keywordPrefs.enableSingularityDetection = 1;
+                    % "blowup" and "poles only".
+                    keywordPrefs.blowup = 1;
                     data.singType = {'pole'};
                 elseif ( args{2} == 2 )
                     % Translate "blowup" and flag "2" -->
-                    % "enableSingularityDetection" and "fractional singularity".
-                    keywordPrefs.enableSingularityDetection = 1;
+                    % "blowup" and "fractional singularity".
+                    keywordPrefs.blowup = 1;
                     data.singType = {'sing'};
                 else
                     error('CHEBFUN:CHEBFUN:parseInputs:badBlowupOption', ...
@@ -720,6 +735,17 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
     end
     numIntervals = numel(dom) - 1;
 
+    % Deal with the 'periodic' flag:
+    if ( isPeriodic )
+        % Translate "periodic".
+        pref.tech = @fourtech;
+        pref.splitting = false;
+        if ( numel(dom) > 2 )
+            error('CHEBFUN:parseInputs:periodic', ...
+                '''periodic'' option is only supported for smooth domains.');
+        end
+    end
+
     % Parse the OP (handle the vectorize flag, etc.).
     if ( iscell(op) )
         for k = 1:numel(op)
@@ -754,7 +780,7 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
 
     % Enable singularity detection if we have exponents or singTypes:
     if ( any(data.exponents) || ~isempty(data.singType) )
-        pref.enableSingularityDetection = true;
+        pref.blowup = true;
     end
     % Sort out the singularity types:
     if ( numel(data.singType) == 1 )

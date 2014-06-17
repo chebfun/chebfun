@@ -21,7 +21,7 @@ function varargout = surf( f, varargin )
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check:
-if ( isempty(f) )  
+if ( isempty(f) )
     h = surf([]);
     if ( nargout == 1 )
         varargout = {h};
@@ -30,7 +30,7 @@ if ( isempty(f) )
 end
 
 % How dense to make the samples.
-minPlotNum = 200; 
+minPlotNum = 200;
 defaultOpts = {'facecolor', 'interp', 'edgealpha', .5, 'edgecolor', 'none'};
 
 % Number of points to plot
@@ -58,19 +58,28 @@ if ( isa(f,'chebfun2') )
         % surf(f,...)
         
         dom = f.domain;
-        x = chebfun2(@(x,y) x,dom); 
-        y = chebfun2(@(x,y) y,dom);
-        h = surf(x, y, f, defaultOpts{:}, argin{:}, 'numpts', minPlotNum);
+        xdata = linspace(dom(1), dom(2), minPlotNum);
+        ydata = linspace(dom(3), dom(4), minPlotNum);
+        [xx, yy] = meshgrid(xdata, ydata);
+        C = feval(f, xx, yy); 
+        % Make some corrections to C for prettier plotting.
+        if ( norm(C - C(1,1),inf) < 1e-10 )
+            % If vals are very close up to round off then the color scale is
+            % hugely distorted. This fixes that.
+            [n, m] = size(C);
+            C = C(1,1)*ones(n, m);
+        end
+        h = surf(xx, yy, C, defaultOpts{:}, argin{:});
         xlim(dom(1:2)), ylim(dom(3:4))
         
-    elseif ( nargin > 2)                    
+    elseif ( nargin > 2)
         % surf(x,y,f,...), with x, y, f CHEBFUN2 objects
         
-        x = f; 
+        x = f;
         y = argin{1};
         if ( isa(y, 'chebfun2') )
             % Check domains of x and y are the same.
-            dom = x.domain; 
+            dom = x.domain;
             rectcheck = y.domain;
             if ( any(dom - rectcheck) )
                 error('CHEBFUN:CHEBFUN2:surf:domainMismatch', ...
@@ -80,7 +89,7 @@ if ( isa(f,'chebfun2') )
         xdata = linspace(dom(1), dom(2), minPlotNum);
         ydata = linspace(dom(3), dom(4), minPlotNum);
         [xx, yy] = meshgrid(xdata, ydata);
-        x = feval(x, xx, yy); 
+        x = feval(x, xx, yy);
         y = feval(y, xx, yy);
         if ( isa(argin{2}, 'chebfun2') )         % surf(x,y,f,...)
             vals = feval(argin{2}, xx, yy);
@@ -111,7 +120,7 @@ if ( isa(f,'chebfun2') )
             % constant. Fix this manually by resetting axis scaling.
             if ( norm(vals - vals(1,1),inf) < 1e-10*norm(vals,inf) && ...
                     norm(vals - vals(1,1),inf) > 0 )
-                v = vals(1,1); 
+                v = vals(1,1);
                 absv = abs(v);
                 zlim([v-.5*absv v+.5*absv])
             end
@@ -123,7 +132,7 @@ if ( isa(f,'chebfun2') )
         
     else  %surf(f,C)
         dom = f.domain;
-        x = chebfun2(@(x,y) x,dom); 
+        x = chebfun2(@(x,y) x,dom);
         y = chebfun2(@(x,y) y,dom);
         h = surf(x, y, f, argin{1}, defaultOpts{:}, argin{2:end});
         xlim(dom(1:2)), ylim(dom(3:4))

@@ -7,7 +7,7 @@ function varargout = surface( f, varargin )
 %   See SURF for a complete description of the various forms that X,Y,Z,C can
 %   take.
 % 
-% See SURF. 
+% See also SURF. 
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

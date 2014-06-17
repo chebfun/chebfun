@@ -2,7 +2,7 @@ classdef functionalBlock < linBlock
 %FUNCTIONALBLOCK  Class to convert linear map of function to scalar.
 %   This class is not intended to be called directly by the end user.
 %
-%   See also LINBLOCK, LINOP, CHEBOP, CHEBOPPREF.
+% See also LINBLOCK, LINOP, CHEBOP, CHEBOPPREF.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

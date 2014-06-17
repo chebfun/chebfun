@@ -41,6 +41,7 @@ npts = min(max(501, round(4*pi*len)), chebtech.techPref().maxPoints);
 % Initialise the output structure:
 data = struct('xLine', [], 'yLine', [], 'xPoints', [], 'yPoints', [], ...
     'yLim', [], 'defaultXLim', 1, 'defaultYLim', 1);
+
 if ( isempty(g) )       
     % PLOT(F):
     
@@ -103,8 +104,8 @@ elseif ( isa(g, 'chebtech') )
     end
     
 else
-    error('CHEBFUN:CHEBTECH:plotData:dataType', ...
-        'Invalid data types.');
+
+    error('CHEBFUN:CHEBTECH:plotData:dataType', 'Invalid data types.');
     
 end
 

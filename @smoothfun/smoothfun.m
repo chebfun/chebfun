@@ -58,7 +58,7 @@ classdef smoothfun < onefun % (Abstract)
                     pref.tech = @chebtech2;
                 end
             end
-
+            
             % Call the TECH constructor.
             obj = feval(pref.tech, op, data, pref.techPrefs);
         end

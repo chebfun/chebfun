@@ -7,7 +7,7 @@ if ( nargin < 1 )
 end
 
 singPref = pref;
-singPref.enableSingularityDetection = true;
+singPref.blowup = true;
 
 % Seed for random number:
 seedRNG(6178);

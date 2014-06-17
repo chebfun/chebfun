@@ -6,7 +6,7 @@ function p = unwrap(p, jumpTol)
 %
 %   UNWRAP(P, TOL) uses a jump tolerance TOL, rather than the default TOL = pi.
 %
-%   See also ABS, ANGLE.
+% See also ABS, ANGLE.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

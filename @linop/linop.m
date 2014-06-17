@@ -56,6 +56,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) linop 
     properties ( Access = public )
         constraint = linopConstraint()
         continuity = linopConstraint()
+        hasGivenJumpsAt = []; 
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -68,6 +69,10 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) linop 
             end
             
             L = L@chebmatrix(M);
+        end
+        
+        function L = addGivenJumpAt(L,location)
+            L.hasGivenJumpsAt = union(L.hasGivenJumpsAt,location);
         end
     end
     
@@ -90,7 +95,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) linop 
         %   Note that the 'linop' is just a convenient name. The outputs are
         %   *not* linops.
         %
-        %   See also OPERATORBLOCK.
+        % See also OPERATORBLOCK.
             
             if ( nargin == 0 )
                 domain = [-1 1];

@@ -3,10 +3,9 @@ function [f, mergedPts] = merge(f, index, pref)
 %   F = MERGE(F, PREF) removes unnecessary breakpoints from a CHEBFUN F. In
 %   particular the kth breakpoint is removed if the resulting FUN on the
 %   interval [x_{k-1}, x_{k+1}] can be represented with a fewer than
-%   PREF.MAXLENGTH points when PREF.ENABLEBREAKPOINTDETECTION = 0 and
-%   PREF.BREAKPOINTPREFS.SPLITMAXLENGTH points when
-%   PREF.ENABLEBREAKPOINTDETECTION = 1. If a PREF is not passed, then the
-%   default CHEBFUN.PREF() is used.
+%   PREF.MAXLENGTH points when PREF.SPLITTING = 0 and
+%   PREF.SPLITPREFS.SPLITMAXLENGTH points when PREF.SPLITTING = 1. If a PREF is
+%   not passed, then the default CHEBFUN.PREF() is used.
 %
 %   [F, MERGEDPTS] = MERGE(F) returns the index of the merged endpoints in the
 %   vector MERGEDPTS.
@@ -95,15 +94,15 @@ else
 end
 
 % Determine the maximum length of the merged pieces:
-if ( ~pref.enableBreakpointDetection )
+if ( ~pref.splitting )
     maxn = pref.techPrefs.maxLength;
 else
-    maxn = pref.breakpointPrefs.splitMaxLength;
+    maxn = pref.splitPrefs.splitMaxLength;
 end
 pref.techPrefs.maxLength = maxn;
 
 % Splitting forces extrapolate:
-if ( pref.enableBreakpointDetection )
+if ( pref.splitting )
     pref.techPrefs.extrapolate = true;
 end
 

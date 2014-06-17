@@ -5,10 +5,10 @@ classdef onefun % (Abstract)
 %
 % Constructor inputs:
 %   ONEFUN.CONSTRUCTOR(OP, DATA, PREF) creates a representation of the operator
-%   OP defined on the interval [-1,1]. If PREF.ENABLESINGULARITYDETECTION = 0
-%   (which is the default) then the ONEFUN constructor calls
-%   SMOOTHFUN.CONSTRUCTOR(OP, DATA, PREF), else it calls
-%   SINGFUN.CONSTRUCTOR(OP, DATA, PREF) if PREF.ENABLESINGULARITYDETECTION = 1.
+%   OP defined on the interval [-1,1]. If PREF.BLOWUP = 0 (which is the
+%   default) then the ONEFUN constructor calls SMOOTHFUN.CONSTRUCTOR(OP, DATA,
+%   PREF), else it calls SINGFUN.CONSTRUCTOR(OP, DATA, PREF) if PREF.BLOWUP is
+%   nonzero.
 %
 % See also SINGFUN, SMOOTHFUN.
 
@@ -59,7 +59,7 @@ classdef onefun % (Abstract)
             if ( isa(op, 'onefun') )
                 % OP is already a ONEFUN!
                 obj = op;
-            elseif ( pref.enableSingularityDetection )
+            elseif ( pref.blowup )
                 obj = singfun(op, data, pref);
 
                 % Return just a SMOOTHFUN if no singularities found:
@@ -162,7 +162,7 @@ classdef onefun % (Abstract)
         f = mtimes(f, c)
         
         % Compute a Legendre series expansion of a ONEFUN object:
-        c = legpoly(f)
+        c = legcoeffs(f)
 
         % ONEFUN logical OR.
         h = or(f, g)

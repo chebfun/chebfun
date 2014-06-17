@@ -94,7 +94,7 @@ classdef unbndfun < classicfun
             % Remap the OP to be a function on [-1, 1].
             unbndmap = unbndfun.createMap(data.domain);
             if ( isa(op, 'function_handle') )
-                op = @(x) op(unbndmap.for(x));
+                op = @(x) op(unbndmap.For(x));
             elseif ( isnumeric(op) )
                 if ( ~any(op(:)) )
                     op = @(x) zeros(length(x), size(op, 2));
@@ -115,15 +115,15 @@ classdef unbndfun < classicfun
                 lVal = feval(op, -1);
                 rVal = feval(op, 1);
                 if ( any(isinf([lVal rVal])) )
-                    pref.enableSingularityDetection = true;
-                    singType = pref.singPrefs.defaultSingType;
+                    pref.blowup = true;
+                    singType = pref.blowupPrefs.defaultSingType;
                     data.singType = {singType, singType};
                 end
             else
                 % Remapping to [-1, 1] negates exponents, which are given with
                 % respect to the function on the infinite domain.
                 ind = isinf(data.domain);
-                pref.enableSingularityDetection = true;
+                pref.blowup = true;
                 data.exponents(ind) = -data.exponents(ind);
             end
 
