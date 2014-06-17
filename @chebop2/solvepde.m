@@ -126,7 +126,7 @@ while ( ( ~Resolved ) && ( m < maxDiscretise_y ) &&...
     Resolved = Resolved_x & Resolved_y;
     
     % Check we do not have NANs/INFs:
-    if ( any(isnan(X)) || any(isinf(X)) )
+    if ( any( isnan(X(:)) | isinf(X(:)) ) )
         error('CHEBOP2:MLDIVIDE:NANINF', 'Nonunique solution to PDE.')
     end
     
