@@ -1,5 +1,5 @@
 classdef chebfun2
-% CHEBFUN2 CHEBFUN2 class for constructing functions on [a,b]x[c,d].
+%CHEBFUN2   CHEBFUN2 class for constructing functions on [a,b]x[c,d].
 % 
 %   Class for approximating functions defined on finite rectangles. The 
 %   functions should be smooth.
@@ -31,7 +31,9 @@ classdef chebfun2
 
 % TODO: Improve documentation of input options.
 
-    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS PROPERTIES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
         % COLS: column slices used in low rank representation.
         cols 
@@ -46,7 +48,7 @@ classdef chebfun2
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% Constructor:
+    %% CLASS CONSTRUCTOR:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
         

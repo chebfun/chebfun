@@ -16,6 +16,9 @@ classdef chebdouble
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS PROPERTIES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
         
         % VALUES: Values of a Chebyshev interpolant.
@@ -30,9 +33,8 @@ classdef chebdouble
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% CONSTRUCTOR:
+    %% CLASS CONSTRUCTOR:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
     methods ( Access = public, Static = false )
         
         function obj = chebdouble(vals, dom)
@@ -49,7 +51,7 @@ classdef chebdouble
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
       
-        %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  DIFF  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  DIFF  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         function u = diff(u, k)
             %DIFF   Compute the k-th derivative of u using Chebyshev
             % differentiation matrices defined by diffmat.
@@ -83,7 +85,7 @@ classdef chebdouble
             
         end
         
-        %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  SUM  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  SUM  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % The differential operators
         function I = sum(u, a, b)
             %SIM  Compute the integral of u using Clenshaw-Curtis nodes and
@@ -155,7 +157,7 @@ classdef chebdouble
             I = sum(varargin{:});
         end
         
-        %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  CUMSUM  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  CUMSUM  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % The differential operators
         function u = cumsum(u)
             %CUMSUM   Compute the indefinite integral of the Chebyshev
@@ -180,7 +182,7 @@ classdef chebdouble
             
         end
         
-        %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  FRED  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  FRED  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         function u = fred(K, u)
             %FRED  Fredholm operator with kernel K.
             %   FRED(K, U) computes the action of the Fredholm operator with
@@ -209,7 +211,7 @@ classdef chebdouble
             
         end
         
-        %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  VOLT  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  VOLT  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         function u = volt(K, u)
             %VOLT  Volterra operator with kernel K.
             %   VOLT(K, U) computes the action of the Volterra operator with
@@ -234,7 +236,7 @@ classdef chebdouble
             
         end
 
-        %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  FEVAL  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  FEVAL  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         function out = feval(u, y)
             %FEVAL   Evaluate polynomial interpolant of data {X_cheb, U} at a
@@ -243,7 +245,7 @@ classdef chebdouble
             out = chebtech.bary(y, u.values, x, v);
         end
         
-        %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  MISC  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  MISC  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % Standard Matlab methods. Most of these proceed by simply calling the
         % corresponding method on the values property of the CHEBDOUBLE object.
         

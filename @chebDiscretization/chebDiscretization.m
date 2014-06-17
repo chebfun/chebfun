@@ -8,18 +8,20 @@ classdef chebDiscretization
 %  See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Developer notes:
-%
-% Objects of this class store a source (either a CHEBMATRIX or a LINOP), domain,
-% and dimension (vector of discretization lengths). In other words, they have a
-% CHEBMATRIX or LINOP object, which represent an abstract linear operator (with
-% or without constraints). Most importantly, objects of types of concrete
-% implementation of CHEBDISCRETIZATION are able to instantianate themselves to a
-% matrix corresponding to discretization of the operator on a Chebyshev grid.
-% Objects of this type also have to implement a mldivide (backslash) method,
-% which yields solution to problems of ODEs.
+% DEVELOPER NOTE:
+%   Objects of this class store a source (either a CHEBMATRIX or a LINOP),
+%   domain, and dimension (vector of discretization lengths). In other words,
+%   they have a CHEBMATRIX or LINOP object, which represent an abstract linear
+%   operator (with or without constraints). Most importantly, objects of types
+%   of concrete implementation of CHEBDISCRETIZATION are able to instantianate
+%   themselves to a matrix corresponding to discretization of the operator on a
+%   Chebyshev grid. Objects of this type also have to implement a mldivide
+%   (backslash) method, which yields solution to problems of ODEs.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS PROPERTIES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
         source = []       % linop or chebmatrix to be discretized
         domain = []       % may generalize that of the source
@@ -33,10 +35,8 @@ classdef chebDiscretization
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% Non-Static methods.
+    %% Non-Static methods. (ABSTRACT)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % Abstract non-static methods.
-    
     methods ( Access = public, Abstract = true, Static = false )   
         
         % Converts a CHEBFUN into a vector of values (or coefficients,
@@ -59,11 +59,8 @@ classdef chebDiscretization
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% STATIC METHODS:
+    %% STATIC METHODS: (ABSTRACT)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-    % Abstract static methods.
-    
     methods ( Access = public, Abstract = true, Static = true )
         
         % Return a vector of desired discretization sizes.
@@ -71,8 +68,9 @@ classdef chebDiscretization
         
     end
     
-    % Concrete static methods.
-    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% STATIC METHODS: (CONCRETE)
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
         
         % Get dimension adjustment:
@@ -86,7 +84,6 @@ classdef chebDiscretization
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% METHODS IMPLEMENTED IN THIS FILE:    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
     methods
         
         function n = get.numIntervals(disc)

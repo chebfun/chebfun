@@ -7,7 +7,7 @@ classdef chebguiExporter
 % See also CHEBGUI, CHEBGUIBVPEXPORTER, CHEBGUIEIGEXPORTER, CHEBGUIPDEEXPOERTER.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Developer note:
+% DEVELOPER NOTE:
 %   The CHEBGUIEXPORTER class defines a number of abstract methods, used to
 %   export problems from CHEBGUI. In v4, this functionality used to live in the
 %   @chebgui folder, but to increase modularity, it has been spun off to its own
@@ -17,6 +17,9 @@ classdef chebguiExporter
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
     
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% ABSTRACT METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Abstract = true )
         
         % Default file name to be saved to

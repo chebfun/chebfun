@@ -174,6 +174,7 @@ classdef bndfun < classicfun
         f = make(varargin);
         
     end
+    
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

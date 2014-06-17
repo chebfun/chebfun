@@ -200,7 +200,7 @@ classdef chebfunpref < chebpref
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Developer note:
+% DEVELOPER NOTE:
 %
 % The reason this object was introduced is to allow for a simplified approach
 % to preferences in the upper layers (i.e., CHEBFUN, FUN, and SINGFUN) which

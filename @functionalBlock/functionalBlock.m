@@ -8,11 +8,10 @@ classdef functionalBlock < linBlock
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Developer notes
-%
-% One of the two concrete implementations of the abstract type LINBLOCK.
-% Functionals can be composed with operators, added, and applied to CHEBFUN
-% objects.
+% DEVELOPER NOTE:
+%   One of the two concrete implementations of the abstract type LINBLOCK.
+%   Functionals can be composed with operators, added, and applied to CHEBFUN
+%   objects.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

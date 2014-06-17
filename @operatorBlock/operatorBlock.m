@@ -16,7 +16,7 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% Constructor:
+    %% CLASS CONSTRUCTOR:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
         function A = operatorBlock(domain)
@@ -422,4 +422,5 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
         end
         
     end
+    
 end

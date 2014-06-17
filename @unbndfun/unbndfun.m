@@ -34,7 +34,7 @@ classdef unbndfun < classicfun
 % See also CLASSICFUN, CHEBFUNPREF, ONEFUN.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % UNBNDFUN Class Description:
@@ -60,6 +60,7 @@ classdef unbndfun < classicfun
     methods ( Access = public, Static = false )
         
         function obj = unbndfun(op, data, pref)
+            
             % Parse inputs.
             if ( (nargin < 1) || isempty(op) )
                 obj.domain = [];
@@ -133,6 +134,7 @@ classdef unbndfun < classicfun
             obj.domain = data.domain;
             obj.mapping = unbndmap;
         end
+        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -206,7 +208,6 @@ classdef unbndfun < classicfun
     end
     
 end
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Methods implemented in this file:

@@ -12,21 +12,24 @@ classdef ultraS < chebDiscretization
 % ULTRAS(SOURCE, DIMESION) takes the DOMAIN from SOURCE.
 %
 % ULTRAS(SOURCE) takes the dimension from SOURCE.
-
-% For more details about the ultrapsherical spectral methods, see:
-% S. Olver and A. Townsend, A fast and well-conditioned spectral method, SIAM
-% Review, 55 (2013), pp. 462-489.
+%
+% For more details about the ultrapsherical spectral methods, see: S. Olver and
+% A. Townsend, A fast and well-conditioned spectral method, SIAM Review, 55
+% (2013), pp. 462-489.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
     
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS PROPERTIES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
         coeffs        % Coefficients of the operator
         outputSpace   % The range of the ultraspherical spectral operator
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% Constructor:
+    %% CLASS CONSTRUCTOR:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
         

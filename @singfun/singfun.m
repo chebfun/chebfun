@@ -64,14 +64,18 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-%% NOTES:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% DEVELOPER NOTES:
 %   It is a Matlab requirement to specify exactly which classes are inferior to
 %   a given class. One might think that writing "InferiorClasses = {?smoothfun}"
 %   should be OK but it turns out that subclasses do not inherit the attribute
 %   of being inferior and all inferior clases/subclasses should be mentioned 
 %   explicitly.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    %% Properties of SINGFUN objects
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS PROPERTIES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
         % Smooth part of the representation.
         smoothPart      % (SMOOTHFUN)
@@ -81,11 +85,12 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% CLASS CONSTRUCTOR (IMPLEMENTED IN THIS M-FILE):
+    %% CLASS CONSTRUCTOR:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
         
         function obj = singfun(op, data, pref)
+            
             % Parse inputs.
             if ( nargin < 1 )
                 % No input arguments; return an empty SINGFUN.
@@ -163,7 +168,7 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
                 % smoothPart was handed to us.
                 obj.smoothPart = op;
             else
-                %% Construct New Function Handle
+                % Construct New Function Handle
                 
                 % Loosen tolerance:
                 if ( any(obj.exponents) )

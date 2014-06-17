@@ -1,27 +1,29 @@
 classdef colloc2 < colloc
-    %COLLOC2    Collocation discretization on 2nd kind points.
-    %   COLLOC2 is an implementation of COLLOC that implements spectral
-    %   collocation on 2nd-kind Chebyshev points for differential and integral
-    %   operators.
-    %
-    %   Linear algebra operations generally take O(N^3) flops, where N is determined
-    %   automatically to resolve the solution. You can control the allowed values of
-    %   N through CHEBOPPREF.
-    %
-    %   See also COLLOC, CHEBDISCRETIZATION, CHEBOPPREF, CHEBOP.
-    
-    % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-    % See http://www.chebfun.org/ for Chebfun information.
-    
-    % No subclass-specific properties needed, and no special constructor either.
-    
+%COLLOC2    Collocation discretization on 2nd kind points.
+%   COLLOC2 is an implementation of COLLOC that implements spectral
+%   collocation on 2nd-kind Chebyshev points for differential and integral
+%   operators.
+%
+%   Linear algebra operations generally take O(N^3) flops, where N is determined
+%   automatically to resolve the solution. You can control the allowed values of
+%   N through CHEBOPPREF.
+%
+%   See also COLLOC, CHEBDISCRETIZATION, CHEBOPPREF, CHEBOP.
+
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+% No subclass-specific properties needed, and no special constructor either.
+
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% Constructor.
+    %% CLASS CONSTRUCTOR:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
+        
         function disc = colloc2(varargin)
             disc = disc@colloc(varargin{:});
         end
+        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -90,9 +92,10 @@ classdef colloc2 < colloc
         
         function Q = cumsummat(N)
             %CUMSUMMAT   Chebyshev integration matrix.
-            %   Q = CUMSUMMAT(N) is the matrix that maps function values at N Chebyshev
-            %   points to values of the integral of the interpolating polynomial at
-            %   those points, with the convention that the first value is zero.
+            %   Q = CUMSUMMAT(N) is the matrix that maps function values at N
+            %   Chebyshev points to values of the integral of the interpolating
+            %   polynomial at those points, with the convention that the first
+            %   value is zero.
             
             % TODO: More efficient implementation?
             % TODO: This is duplicated in a number of places.

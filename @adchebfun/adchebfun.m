@@ -27,7 +27,6 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
 %   which blocks are zero blocks and what block is the identity
 %   block) have to be seeded using the ADCHEBFUN/SEED() method.
 %
-%
 % See also CHEBFUN, LINBLOCK, LINOP, CHEBOP, ADCHEBFUN/SEED.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
@@ -45,7 +44,9 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    %% Properties of ADCHEBFUN objects.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS PROPERTIES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
         % FUNC: A CHEBFUN (or double) , which corresponds to the function the
         % ADCHEBFUN  represents.
@@ -222,8 +223,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % Update CHEBFUN part.
             f.func = acsch(f.func);
         end
-        
-                
+           
         function f = airy(k, f)
             % F = AIRY(K,F)   Airy function of an ADCHEBFUN.
             
@@ -1261,7 +1261,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end
         
         function out = subsref(f, index)
-        %  subsref   ADCHEBFUN subsref.
+        %SUBSREF   ADCHEBFUN subsref.
         %   ( )
         %     F(X) returns the value of the CHEBFUN part of the ADCHEBFUN F
         %     evaluated on the array X.
@@ -1276,7 +1276,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         %     F{S1, S2} restricts F to the domain [S1, S2] < [F.ENDS(1),
         %     F.ENDS(end)].
         %
-        %   See also: feval, get, restrict, chebfun/subsref
+        %   See also: FEVAL, GET, RESTRICT, CHEBFUN/SUBSREF.
         
             switch index(1).type
                 case '()'
@@ -1491,6 +1491,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             f.domain = union(f.domain, f.jacobian.domain);
             f.jacobian.domain = f.domain;
         end
+        
     end
     
 end

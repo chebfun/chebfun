@@ -2,18 +2,21 @@ classdef blockCoeff
 %BLOCKCOEFF   Class to convert linear operator to derivative coefficents.
 %   This class is not intended to be called directly by the end user.
 %
-%   See also LINOP, CHEBOP, CHEBOPPREF.
+% See also LINOP, CHEBOP, CHEBOPPREF.
     
-    % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-    % See http://www.chebfun.org/ for Chebfun information.
-    
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % Developer notes
-    %
-    % This class converts a linBlock object into a list of coefficients for the
-    % (descending) powers of the derivative in the operator. 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Developer notes
+%
+% This class converts a linBlock object into a list of coefficients for the
+% (descending) powers of the derivative in the operator. 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS PROPERTIES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
         coeffs = [];
         domain
@@ -110,14 +113,13 @@ classdef blockCoeff
             error('Conversion of integration to coefficients is not supported.')
         end
         
-        function E = feval(A,location,direction)
+        function E = feval(A, location, direction)
             error('Conversion of evaluation to coefficients is not supported.')
         end
         
         function F = inner(f)
             error('Conversion of inner product to coefficients is not supported.')
         end
-        
         
     end
         

@@ -11,7 +11,9 @@ classdef chebpref
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS PROPERTIES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = protected )
         % MATLAB struct to hold a list of preferences for a given subsystem.
         prefList
@@ -129,7 +131,7 @@ classdef chebpref
         %   be altered instead.
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        % Developer notes:
+        % DEVELOPER NOTES:
         %  - This is a template method to prevent subclasses from needing to
         %    duplicate the logic required to set persistently-stored defaults
         %    As the help text says, this method is not user-facing.

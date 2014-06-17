@@ -112,7 +112,7 @@ classdef cheboppref < chebpref
 % TODO:  Further documentation of CHEBOPPREF preferences.
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% Constructor.
+    %% CLASS METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
 
@@ -268,7 +268,7 @@ classdef cheboppref < chebpref
     end
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% Private static methods
+    %% PRIVATE STATIC METHODS
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Static = true, Access = private )
 
@@ -291,7 +291,7 @@ classdef cheboppref < chebpref
         %   ..., etc.
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        % Developer notes:
+        % DEVELOPER NOTE:
         %  - MATLAB has no equivalent to what might be called a "static" class
         %    variable in other languages, so a persistent variable is the best
         %    we can do for providing this feature.  Persistent variables are
@@ -323,8 +323,8 @@ classdef cheboppref < chebpref
                         prefName = varargin{1};
                         prefValue = varargin{2};
                         
-                        % Support user-friendlier syntax for specifying discretization
-                        % choice:
+                        % Support user-friendlier syntax for specifying
+                        % discretization choice:
                         prefValue = cheboppref.parseDiscretization(prefValue);
                         if ( isfield(defaultPrefs, prefName) )
                             defaultPrefs.(prefName) = prefValue;

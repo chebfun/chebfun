@@ -21,15 +21,19 @@ classdef linopConstraint
 %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS PROPERTIES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
         functional    % applied to the variable to get values
         values        % constraint on the result of the functional
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% Constructor:
+    %% CLASS CONSTRUCTOR:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
+        
         % Input a functional and a value to create a constraint, or create
         % an empty constraint if no inputs.
         function C = linopConstraint(op, vals)
@@ -39,6 +43,7 @@ classdef linopConstraint
             C.functional = op;
             C.values = vals;
         end
+        
     end
        
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -75,8 +80,7 @@ classdef linopConstraint
         end
         
         function C = uminus(C)
-        %-      Negate the VALUES property of a LINOPCONSTRAINT.
-        %
+        %-   Negate the VALUES property of a LINOPCONSTRAINT.
         %   This is useful at the CHEBOP level, where we need different signs
         %   for the boundary conditions of a LINOP when we call LINOP(N) where N
         %   is a CHEBOP, compared to what we want when we call LINEARIZE() from

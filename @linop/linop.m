@@ -37,26 +37,30 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) linop 
 %     u = A\f;
 %     plot( chebfun(u) )
 %
-%   See also CHEBOPPREF, CHEBOP, CHEBMATRIX, LINOP.ADDBC.
+% See also CHEBOPPREF, CHEBOP, CHEBMATRIX, LINOP.ADDBC.
     
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Developer notes
-%
-% The LINOP class is essentially a CHEBMATRIX with two additional properties:
-% linop.constraint and linop.continuity which allow imposing conditions on the
-% solution (e.g. boundary conditions) and continuity conditions. Both
-% linop.constraint and linop.continuity are of the type LINOPCONSTRAINT.
+% DEVELOPER NOTE:
+%   The LINOP class is essentially a CHEBMATRIX with two additional properties:
+%   linop.constraint and linop.continuity which allow imposing conditions on the
+%   solution (e.g. boundary conditions) and continuity conditions. Both
+%   linop.constraint and linop.continuity are of the type LINOPCONSTRAINT.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS PROPERTIES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
         constraint = linopConstraint()
         continuity = linopConstraint()
     end
     
-    %% CONSTRUCTOR:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS CONSTRUCTOR:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
         function L = linop(M)
             if ( nargin == 0 )
@@ -67,7 +71,10 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) linop 
         end
     end
     
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% STATIC METHODS IMPLEMENTED BY THIS CLASS
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
         
         function [Z, I, D, C, M] = primitiveOperators(domain)
@@ -120,6 +127,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) linop 
             su = functionalBlock.sum(domain);
             dt = @(f) functionalBlock.inner(f);
         end
+        
     end
 
 end
