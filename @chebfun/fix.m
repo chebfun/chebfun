@@ -17,7 +17,7 @@ end
 
 % Deal with unbounded functions:
 if ( ~isfinite(f) )
-    error('CHEBFUN:fix:inf', ...
+    error('CHEBFUN:CHEBFUN:fix:inf', ...
         'fix() is not defined for functions which diverge to infinity.');
 end
 

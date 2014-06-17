@@ -7,7 +7,7 @@ classdef chebguiExporter
 % See also CHEBGUI, CHEBGUIBVPEXPORTER, CHEBGUIEIGEXPORTER, CHEBGUIPDEEXPOERTER.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Developer note:
+% DEVELOPER NOTE:
 %   The CHEBGUIEXPORTER class defines a number of abstract methods, used to
 %   export problems from CHEBGUI. In v4, this functionality used to live in the
 %   @chebgui folder, but to increase modularity, it has been spun off to its own
@@ -17,7 +17,10 @@ classdef chebguiExporter
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
     
-    properties ( Abstract )
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% ABSTRACT METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    properties ( Abstract = true )
         
         % Default file name to be saved to
         defaultFileName
@@ -27,8 +30,9 @@ classdef chebguiExporter
         
     end
     
-%% %%%%%%%%%%%%%%%%%%%%%%% ABSTRACT STATIC DECLARATIONS %%%%%%%%%%%%%%%%%%%%%%%%
-    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% ABSTRACT STATIC METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Abstract = true, Static = true )
         
         % Extract information from the CHEBGUI object to a struct:
@@ -60,10 +64,10 @@ classdef chebguiExporter
 
     end
     
-    
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CONCRETE METHODS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-    methods ( Access = public )
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CONCRETE METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
+    methods ( Access = public, Static = false )
         
         function toFile(exporter, guifile, fileName, pathName)
         %TOFILE   Export a CHEBGUI to an .m-file
@@ -114,9 +118,10 @@ classdef chebguiExporter
         
     end    
     
-%% %%%%%%%%%%%%%%%%%%%%%%%%% CONCRETE STATIC METHODS %%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-    methods ( Static = true )
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CONCRETE STATIC METHODS
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = true )
         function obj = constructor(type)
         %CONSTRUCTOR   Constructor for the CHEBGUIEXPORTER class.
         %   OBJ = CONSTRUCTOR(TYPE), where TYPE = 'bvp', 'eig' or 'pde' returns
@@ -139,7 +144,7 @@ classdef chebguiExporter
                     obj = chebguiExporterPDE;
                     
                 otherwise
-                    error('CHEBFUN:CHEBGUIEXPORTER:constructor', ...
+                    error('CHEBFUN:CHEBGUIEXPORTER:chebguiExporter:constructor', ...
                         'Unknown type for CHEBGUIEXPORTER constructor.')
             end
             
@@ -193,9 +198,9 @@ classdef chebguiExporter
         
     end
     
-    
-%% %%%%%%%%%%%%%%%%%%%%%%%%% CONCRETE PROTECTED METHODS %%%%%%%%%%%%%%%%%%%%%%%%
-    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CONCRETE PROTECTED METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = protected )
         
         function writeHeader(e, fid, filename)

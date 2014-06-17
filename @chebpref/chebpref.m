@@ -11,13 +11,18 @@ classdef chebpref
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS PROPERTIES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = protected )
         % MATLAB struct to hold a list of preferences for a given subsystem.
         prefList
     end
-
-    methods
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% Non-Static methods implemented by this class.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
 
         function out = subsref(pref, ind)
         %SUBSREF   Subscripted referencing for CHEBPREF.
@@ -38,7 +43,7 @@ classdef chebpref
                         out = subsref(out, ind(2:end));
                     end
                 otherwise
-                    error('CHEBPREF:subsref:badType', ...
+                    error('CHEBFUN:CHEBPREF:chebpref:badType', ...
                         'Invalid subscripted reference type.')
             end
         end
@@ -59,19 +64,25 @@ classdef chebpref
                             ind, val);
                     end
                 otherwise
-                    error('CHEBPREF:subsasgn:badType', ...
+                    error('CHEBFUN:CHEBPREF:chebpref:badType', ...
                         'Invalid subscripted assignment type.')
             end
         end
 
     end
-
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% Abstract methods
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Abstract = true )
         % Display information about a CHEBPREF object.
         display(pref)
     end
-
-    methods ( Static = true )
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% Static methods
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = true )
 
         function pref1 = mergePrefs(pref1, pref2, map)
         %MERGEPREFS   Merge preference structures.
@@ -101,8 +112,11 @@ classdef chebpref
         end
 
     end
-
-    methods ( Static = true, Hidden = true  )
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% Hidden static methods.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = true, Hidden = true  )
 
         function setDefaults(makeSC, manageSCDefaults, varargin)
         %SETDEFAULTS   Set default preferences.
@@ -117,7 +131,7 @@ classdef chebpref
         %   be altered instead.
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        % Developer notes:
+        % DEVELOPER NOTES:
         %  - This is a template method to prevent subclasses from needing to
         %    duplicate the logic required to set persistently-stored defaults
         %    As the help text says, this method is not user-facing.
@@ -132,7 +146,7 @@ classdef chebpref
             nargs = length(varargin);
 
             if ( nargs < 1)
-                error('CHEBPREF:setDefaults:notEnoughArguments', ...
+                error('CHEBFUN:CHEBPREF:chebpref:notEnoughArguments', ...
                     'Not enough arguments.');
             end
 
@@ -146,7 +160,7 @@ classdef chebpref
                 elseif ( isa(varargin{1}, 'chebpref') )
                     manageSCDefaults('set', varargin{1}.prefList);
                 else
-                    error('CHEBPREF:setDefaults:badArg', ...
+                    error('CHEBFUN:CHEBPREF:chebpref:badArg', ...
                         ['When calling chebpref.setDefaults() with just ' ...
                          'one argument, that argument must be ''factory'', ' ...
                          'a subclass of CHEBPREF, or a MATLAB structure.']);
@@ -154,7 +168,7 @@ classdef chebpref
             elseif ( mod(nargs, 2) == 0 )
                 manageSCDefaults('set', varargin{:});
             else
-                error('CHEBPREF:setDefaults:unpairedArg', ...
+                error('CHEBFUN:CHEBPREF:chebpref:unpairedArg', ...
                     'Unpaired argument in name-value pair list.');
             end
         end

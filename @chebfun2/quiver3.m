@@ -22,12 +22,13 @@ function varargout = quiver3( Z, F, varargin )
 % See also CHEBFUN2V/QUIVER3.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 numpts = 20; 
 
 if ( ~isa(Z, 'chebfun2') )
-    error('CHEBFUN2:QUIVER3:INPUT','First argument to this command should be CHEBFUN2.');
+    error('CHEBFUN:CHEBFUN2:quiver3:inputs1', ...
+        'First argument to this command should be CHEBFUN2.');
 end
 
 if ( isempty(varargin) )
@@ -74,10 +75,11 @@ elseif ( nargin > 3 )
         FF = vertcat( vertcat(varargin{2}, varargin{3}), varargin{4} );
         h = quiver3(Z, F, varargin{1}, FF, varargin{5:end} );  % call quiver3(X,Y,Z,F,...)
     else
-        error('CHEBFUN2:QUIVER:INPUTS', 'Unrecognised input arguments.');
+        error('CHEBFUN:CHEBFUN2:quiver3:inputs2', ...
+            'Unrecognised input arguments.');
     end
 else
-    error('CHEBFUN2:QUIVER:INPUTS', 'Unrecognised input arguments.');
+    error('CHEBFUN:CHEBFUN2:quiver3:inputs3', 'Unrecognised input arguments.');
 end
 
 if ( nargout > 0 )

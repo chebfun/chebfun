@@ -14,8 +14,11 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
 % Operators can be composed using *, added, exponentiated, and applied to
 % CHEBFUN objects.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-    methods
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS CONSTRUCTOR:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
         function A = operatorBlock(domain)
         % OPERATORBLOCK constructor
 
@@ -23,6 +26,13 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
             A = A@linBlock(domain);
             
         end
+        
+    end
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
         
         function out = iszero(A)
         %ISZERO   Returns TRUE for a zero OPERATORBLOCK.
@@ -52,7 +62,8 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
 
             % Check second argument is accepted.
             if ( pow ~= round(pow) || pow < 0 )
-                error('Power must be a positive integer.')
+                error('CHEBFUN:OPERATORBLOCK:mpower:badPower', ...
+                    'Power must be a positive integer.')
             end
 
             % Construct OPERATORBLOCK for repeated application.
@@ -80,7 +91,7 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
                 % Simply reciricate and call MTIMES():
                 C = mtimes(A, 1./B);
             else
-                error('CHEBFUN:operatorBlock:mrdivide:unknonn', ...
+                error('CHEBFUN:OPERATORBLOCK:mrdivide:unknown', ...
                     '%s-%s division is not supported.', class(A), class(B));
             end
         end
@@ -206,8 +217,11 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
         end
 
     end
-
-    methods (Static = true)
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% STATIC METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = true )
 
         function C = cumsum(varargin)
         %OPERATORBLOCK.CUMSUM   Antiderivative operator.
@@ -409,4 +423,5 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
         end
         
     end
+    
 end

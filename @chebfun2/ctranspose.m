@@ -6,7 +6,7 @@ function f = ctranspose( f )
 % See also CONJ, TRANSPOSE.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Take conj part:
 f = conj( f ); 

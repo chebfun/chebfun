@@ -14,7 +14,7 @@ function I = integral2( f, c )
 % See also INTEGRAL, SUM2, QUAD2D.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check:
 if ( isempty( f ) ) 
@@ -56,7 +56,7 @@ elseif ( nargin == 2 )
             I = integral(F, c);
             
         else
-            error('CHEBFUN2:integral2:input', ...
+            error('CHEBFUN:CHEBFUN2:integral2:input', ...
                 'Integration path must be complex-valued');
         end
         
@@ -73,12 +73,12 @@ elseif ( nargin == 2 )
                 I = sum( restrict ( f,restriction ) );
             end
         else
-            error('CHEBFUN2:integral2:baddomain', ...
+            error('CHEBFUN:CHEBFUN2:integral2:baddomain', ...
             'Domain should have four corners.');
         end
         
     else
-        error('CHEBFUN2:integral2:nargin', 'Too many input arguments.');
+        error('CHEBFUN:CHEBFUN2:integral2:nargin', 'Too many input arguments.');
     end
     
 end

@@ -118,7 +118,7 @@ end
 
 % If testDirNames is empty here, something is wrong.
 if ( isempty(testDirNames) )
-    error('CHEBFUN:chebtest:TestsNotFound', ...
+    error('CHEBFUN:chebtest:testsNotFound', ...
         ['Could not locate test directories. ' ...
          'Please check that Chebfun has been installed correctly.']);
 end
@@ -141,7 +141,7 @@ for k = 1:numDirs
         nextResults = runTestsInDirectory(testDir, quietMode);
         allResults = [allResults ; nextResults]; %#ok<AGROW>
     else
-        warning('CHEBFUN:chebtest:DirNotFound', ...
+        warning('CHEBFUN:chebtest:dirNotFound', ...
             'Test directory ''%s'' not found. Skipping.', testDir);
     end
     fprintf('\n');
@@ -181,7 +181,7 @@ if ( writeLog )
     if ( ~exist(logDir, 'dir') )
         [success, msg] = mkdir(installDir, 'logs');
         if ( ~success )
-            warning('CHEBFUN:chebtest:writepermission', msg);
+            warning('CHEBFUN:chebtest:writePermission', msg);
         end
     end
     filename = ['chebtest-' datestr(now, 'yyyymmddHHMMSS') '.log'];
@@ -404,7 +404,7 @@ data = data';
 
 fid = fopen(filename, 'w+');
 if ( fid < 0 )
-    warning('CHEBFUN:chebtest:writepermission', ...
+    warning('CHEBFUN:chebtest:writePermission', ...
         'Unable to write to file %s', filename);
 else
     fprintf(fid, '%s,%s,%s\n', columnTitles{:});

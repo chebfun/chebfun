@@ -4,7 +4,7 @@ function H = ldivide( F, G )
 % See also RDIVIDE.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( ( isempty(F) ) || ( isempty(G) ) )
     H = chebfun2v;
@@ -29,7 +29,7 @@ else                                     % CHEBFUN2V .\ CHEBFUN2V
     nF = F.nComponents;
     nG = G.nComponents;
     if ( nF ~= nG )
-        error('CHEBFUN2V:LDIVIDE', ...
+        error('CHEBFUN:CHEBFUN2V:ldivide:dimensionMismatch', ...
             'CHEBFUN2V do not have the same number of components.')
     end
     H = F;

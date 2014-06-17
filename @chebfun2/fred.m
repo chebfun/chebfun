@@ -11,7 +11,7 @@ function f = fred( K, v )
 % See also VOLT.
 
 % Copyright 2014 by The University of Oxford and The Chebfun2 Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check:
 if ( isempty( K ) )
@@ -30,7 +30,8 @@ if ( isa( v, 'function_handle' ) )
 else
     % Check that the domain of CHEBFUN2 and chebfun are correct.
     if ( ~domainCheck( v, cols ) )
-        error('CHEBFUN2:FRED:CHEBDOMAIN','Domain of CHEBFUN and CHEBFUN2 kernel do not match');
+        error('CHEBFUN:CHEBFUN2:fred:domainMismatch', ...
+            'Domain of CHEBFUN and CHEBFUN2 kernel do not match');
     end
 end
 

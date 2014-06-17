@@ -80,7 +80,7 @@ pass(9) = all(all(abs(fx - f_exact) < ...
 
 pow = -0.5;
 op = @(x) (x - dom(1)).^pow.*sin(x);
-pref.enableSingularityDetection = true;
+pref.blowup = true;
 data.domain = dom;
 data.exponents = [pow 0];
 f = bndfun(op, data, pref);

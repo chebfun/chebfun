@@ -94,7 +94,7 @@ if ( ~isreal(f) )
             x(idxr) = x(idxr) + eps(x(idxr));  % Shift x right by a tiny amount.
             idx = idx | idxr;                  % Merge index.
             if ( ~all(idx) )                   % Throw warning if still not OK.
-                warning('CHEBFUN:minandmax:complexfail', ...
+                warning('CHEBFUN:CHEBFUN:minandmax:complexFail', ...
                     'Something has gone wrong in locating complex-valued min/max.');
             end
         end

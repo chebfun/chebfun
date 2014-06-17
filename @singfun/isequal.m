@@ -7,7 +7,7 @@ function out = isequal(f, g)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-tol = chebfunpref().singPrefs.exponentTol;
+tol = chebfunpref().blowupPrefs.exponentTol;
 
 if ( isa(f, 'smoothfun') )
     f = singfun.smoothFun2SingFun(f);

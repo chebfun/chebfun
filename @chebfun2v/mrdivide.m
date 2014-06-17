@@ -8,7 +8,7 @@ function H = mrdivide(F,g)
 % See also MLDIVIDE.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( ( isempty(F) ) || ( isempty(g) ) )
    H = chebfun2v;
@@ -16,7 +16,8 @@ if ( ( isempty(F) ) || ( isempty(g) ) )
 end
 
 if ( ~isa(g,'double') && ~isa(g,'chebfun2') )
-   error('CHEBFUN2:MRDIVIDE:NONSCALAR','Division must be scalar valued.'); 
+    error('CHEBFUN:CHEBFUN2V:mrdivide:nonScalar', ...
+        'Division must be scalar valued.');
 end
 
 
