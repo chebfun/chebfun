@@ -10,6 +10,14 @@ function N = set(N, varargin)
 % 
 %   N.domain = F sets the domain of the CHEBOP2. F is expected to be a
 %   vector of length 4. 
+% 
+%   N.xorder = Kx sets the differential order of N in the x-variable to Kx.
+%   N.yorder = Ky sets the differential order of N in the y-variable to Ky.
+%
+%   N.op = fh sets the partial differential operator to fh. 
+% 
+%   N.U = U, N.S = S, N.V = V, sets the rank approximation to the partial
+%   differential operator. 
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
