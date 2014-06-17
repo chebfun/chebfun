@@ -57,7 +57,7 @@ classdef chebop2
             
             % Get chebfun2 preferences
             prefs = chebfunpref();
-            tol = prefs.cheb2Prefs.eps;
+            tol = prefs.techPrefs.eps;
             
             % If empty input arguments then return an empty chebop2 object.
             if ( isempty( varargin ) )

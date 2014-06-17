@@ -24,7 +24,7 @@ if ( isa(bcArg, 'chebfun') )
         % Dirichlet conditions at x = bcpos (or y = bcpos):
         bcrow = cos( ( 0:bcn-1 ) * acos( bcpos ) );
     end
-    bcvalue = resize( flipud(bcArg.coeffs{:}), een );
+    bcvalue = resize( flipud(bcArg.coeffs), een );
 elseif ( isa( bcArg, 'function_handle' ) )
     % More general conditions are sorted out here: 
     if ( nargin(bcArg) == 1 )
@@ -79,7 +79,7 @@ elseif ( isa( bcArg, 'function_handle' ) )
         for jj = 1:nf
             g = f{jj};
             % bcvalue = -f as it's going in the RHS: 
-            bcvalue(:,jj) = -resize(cc(jj)*flipud(g.coeffs{:}), een);
+            bcvalue(:,jj) = -resize(cc(jj)*flipud(g.coeffs), een);
         end
         
         % Now go find the constants in the boundary conditions: 

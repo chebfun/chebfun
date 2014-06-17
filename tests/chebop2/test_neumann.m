@@ -5,7 +5,7 @@ function pass = test_neumann( prefs )
 if ( nargin < 1 ) 
     prefs = chebfunpref(); 
 end 
-tol = 100*prefs.cheb2Prefs.eps; 
+tol = 100*prefs.techPrefs.eps; 
 
 d = [-2 3 -1 1];
 N = chebop2(@(u) laplacian(u), d); 

@@ -6,7 +6,7 @@ function pass = test_univariate( prefs )
 if ( nargin < 1 ) 
     prefs = chebfunpref(); 
 end 
-tol = 1000*prefs.cheb2Prefs.eps; 
+tol = 1000*prefs.techPrefs.eps; 
 
 % Simple example in y-variable.
 N = chebop2(@(u) diff(u,2,1) + u); N.dbc = 1; N.ubc = 1; u = N \ 0; 

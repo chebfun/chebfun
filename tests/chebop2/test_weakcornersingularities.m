@@ -6,7 +6,7 @@ function pass = test_weakcornersingularities( prefs )
 if ( nargin < 1 ) 
     prefs = chebfunpref(); 
 end 
-tol = 1e6*prefs.cheb2Prefs.eps; 
+tol = 1e6*prefs.techPrefs.eps; 
 
 f = @(x,y) (x.^2+y.^2).*(log(sqrt(x.^2+y.^2)).*sin(2*atan(y./x)) + atan(y./x).*cos(2*atan(y./x)));
 

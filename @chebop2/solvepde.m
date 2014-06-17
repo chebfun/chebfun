@@ -38,7 +38,7 @@ end
 rect = N.domain; 
 f = chebfun2(f, rect);
 prefs = chebfunpref();
-tol = max( prefs.cheb2Prefs.eps, 1e-14 );     % Be gentle!    
+tol = max( prefs.techPrefs.eps, 1e-14 );     % Be gentle!    
 maxDiscretise_x = 2*prefs.cheb2Prefs.maxRank; % Use maxRank to get max disc 
 maxDiscretise_y = maxDiscretise_x;
 minsample = 9;

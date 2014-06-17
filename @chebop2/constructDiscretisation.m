@@ -31,7 +31,7 @@ end
 A = N.coeffs;
 rect = N.domain;
 prefs = chebfunpref(); 
-tol = prefs.cheb2Prefs.eps; 
+tol = prefs.techPrefs.eps; 
 xorder = N.xorder;
 yorder = N.yorder;
 

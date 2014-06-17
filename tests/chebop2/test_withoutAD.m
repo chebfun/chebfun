@@ -5,7 +5,7 @@ function pass = test_withoutAD( prefs )
 if ( nargin < 1 ) 
     prefs = chebfunpref(); 
 end 
-tol = 100*prefs.cheb2Prefs.eps; 
+tol = 100*prefs.techPrefs.eps; 
 
 
 state = warning;

@@ -4,7 +4,7 @@ function pass = test_advectionDiffusion( prefs )
 if ( nargin < 1 ) 
     prefs = chebfunpref(); 
 end 
-tol = 1e10*prefs.cheb2Prefs.eps; 
+tol = 1e10*prefs.techPrefs.eps; 
 
 % Advection-diffusion 1
 N = chebop2(@(u) diff(u,1,1) - .1*diff(u,2,2) - diff(u,1,2), [-2.5 3 0 6]); 

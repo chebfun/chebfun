@@ -4,7 +4,7 @@ function pass = test_construction( prefs )
 if ( nargin < 1 ) 
     prefs = chebfunpref(); 
 end 
-tol = 10*prefs.cheb2Prefs.eps;
+tol = 10*prefs.techPrefs.eps;
 
 % form laplacian: 
 N = chebop2(@(u) laplacian(u)); 

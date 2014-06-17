@@ -5,7 +5,7 @@ function pass = test_heatequation( prefs )
 if ( nargin < 1 ) 
     prefs = chebfunpref(); 
 end 
-tol = 1e10*prefs.cheb2Prefs.eps; 
+tol = 1e10*prefs.techPrefs.eps; 
 
 % Solution to heat equation should not depend on the time interval. 
 d = [-1 1 0 1]; k = 1; 

@@ -5,7 +5,7 @@ function pass = test_adtest( prefs )
 if ( nargin < 1 ) 
     prefs = chebfunpref(); 
 end 
-tol = prefs.cheb2Prefs.eps; 
+tol = prefs.techPrefs.eps; 
 
 % simple case. 
 N = chebop2(@(u) diffx(u,2) + diffy(u,2));

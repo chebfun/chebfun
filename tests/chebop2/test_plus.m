@@ -4,7 +4,7 @@ function pass = test_plus( prefs )
 if ( nargin < 1 ) 
     prefs = chebfunpref(); 
 end
-tol = prefs.cheb2Prefs.eps;
+tol = prefs.techPrefs.eps;
 
 % Make a laplacian: 
 N1 = chebop2(@(u) diff(u,2,2)); 

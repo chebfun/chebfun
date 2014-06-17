@@ -5,7 +5,7 @@ function pass = test_helmholtz( prefs )
 if ( nargin < 1 ) 
     prefs = chebfunpref(); 
 end 
-tol = prefs.cheb2Prefs.eps; 
+tol = prefs.techPrefs.eps; 
 
 % on [-1,1]x[-1,1]: 
 mu1 = 3/pi; mu2 = pi/6; lam = mu1^2 + mu2^2; 

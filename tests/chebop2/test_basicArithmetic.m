@@ -5,7 +5,7 @@ function pass = test_basicArithmetic( prefs )
 if ( nargin < 1 ) 
     prefs = chebfunpref(); 
 end 
-tol = 10*prefs.cheb2Prefs.eps; 
+tol = 10*prefs.techPrefs.eps; 
 
 N1 = chebop2(@(x,y,u) diff(u,2,2)); 
 N2 = chebop2(@(x,y,u) x.*diff(u,2,1));

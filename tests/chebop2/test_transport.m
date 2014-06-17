@@ -5,7 +5,7 @@ function pass = test_transport( prefs )
 if ( nargin < 1 ) 
     prefs = chebfunpref(); 
 end 
-tol = 100*prefs.cheb2Prefs.eps; 
+tol = 100*prefs.techPrefs.eps; 
 
 %% Simple example of a transport equation. 
 

@@ -7,7 +7,7 @@ function pass = test_waveequation( prefs )
 if ( nargin < 1 ) 
     prefs = chebfunpref(); 
 end 
-tol = 100*prefs.cheb2Prefs.eps; 
+tol = 100*prefs.techPrefs.eps; 
 
 %%  Standard wave equation on a non-square domain. 
 

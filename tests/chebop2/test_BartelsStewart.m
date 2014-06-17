@@ -4,7 +4,7 @@ function pass = test_bartelsStewart( prefs )
 if ( nargin < 1 )
     prefs = chebfunpref(); 
 end
-tol = 1e4*prefs.cheb2Prefs.eps;
+tol = 1e4*prefs.techPrefs.eps;
 
 n = 10; 
 rng(0)
