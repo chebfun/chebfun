@@ -3,7 +3,7 @@ function [CC, rhs, bb, gg, Px, Py, xsplit, ysplit] = constructDiscretisation(N, 
 %
 %  sum_i  kron(A_i,B_i)
 %
-% and computes the discretisation as a cell array
+% and computes the discretisation as a cell array: 
 %
 %  {{
 %
@@ -15,6 +15,27 @@ function [CC, rhs, bb, gg, Px, Py, xsplit, ysplit] = constructDiscretisation(N, 
 %       A_k , B_k
 %
 %                   }}
+%
+%    INPUTS: 
+%      N = PDE (chebop2). 
+%      f = forcing term (chebfun2).
+%      m = discretization size in 1st variable
+%      n = discretization size in 2nd variable
+%      flag = 0 (default) means assigned boundary conditions. flag = 1
+%      means do not assign boundary conditions. 
+%
+%    OUTPUTS:
+%      CC = cell array of matrices storing the terms in the matrix
+%      equation.
+%      rhs = matrix discretizing forcing term. 
+%      bb = cell array storing the discretized linear constraints. 
+%      gg = cell array storing the discretized nonhomogeneous part of the 
+%      constraints. 
+%      Px, Py = store permutation matrix to ensure bcs are linear
+%      dependent.
+%      XSPLIT, YSPLIT = 0 if subproblems cannot be formed. XSPLIT = 1 if
+%      even and odd modes decouple in 1st variable. YSPLIT = 1 if even and
+%      odd modes decouple in 2nd variable. 
 %
 % Returns RHS with degrees of freedom removed and bb which stores
 % elminated boundary conditions, gg eliminated boundary rows.

@@ -1,13 +1,19 @@
 function [bcrow, bcvalue] = constructBC( bcArg, bcpos, een, bcn, dom, scl, order)
 % CONSTRUCTBC  discretizes the boundary conditions. 
 % 
-% bcArg = linear constraint.
-% bcpos = position of constraint in the other variable
-% een = discretization size for bcvalue.
-% bcn = discretization size for bcrow
-% dom = domain of functions that bcArg acts on
-% scl = length of domain in other variable
-% order = for periodic constraints only. 
+% INPUTS: 
+%   bcArg = linear constraint.
+%   bcpos = position of constraint in the other variable
+%   een = discretization size for bcvalue.
+%   bcn = discretization size for bcrow
+%   dom = domain of functions that bcArg acts on
+%   scl = length of domain in other variable
+%   order = for periodic constraints only. 
+% 
+% OUTPUTS: 
+%   bcrow = discretized constraint
+%   bcvalue = vector of discretized nonhomogeneous part of the constraint. 
+%   ( satisfying   bcrow * X = bcvalue or X * bcrow' = bcvalue'  )
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
