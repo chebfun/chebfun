@@ -16,7 +16,7 @@ function X = denseSolve(N, f, m, n)
 
 % Construct discretisation for PDE:
 [CC, RHS, bb, gg, Px, Py, xsplit, ysplit] =...
-    chebop2.constructDiscretisation(N, f, m, n); 
+    chebop2.discretize(N, f, m, n); 
 
 % Rank-1 PDE operator.
 if ( size(CC, 1) == 1 )  

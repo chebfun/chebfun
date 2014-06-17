@@ -1,4 +1,4 @@
-function [CC, rhs, bb, gg, Px, Py, xsplit, ysplit] = constructDiscretisation(N, f, m, n, flag)
+function [CC, rhs, bb, gg, Px, Py, xsplit, ysplit] = discretize(N, f, m, n, flag)
 % Given a chebop2, this function converts the problem to one of the form
 %
 %  sum_i  kron(A_i,B_i)

@@ -212,7 +212,7 @@ classdef chebop2
         
         % This is used to discretize the PDE:
         [CC, rhs, bb, gg, Px, Py, xsplit, ysplit] =...
-            constructDiscretisation(N, f, m, n, flag);
+            discretize(N, f, m, n, flag);
         
         % Convert all the different user inputs for bc into uniform format:
         bc = createBC(bcArg, ends);
