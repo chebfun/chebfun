@@ -20,7 +20,7 @@ function varargout = subsref(f, index)
 % See also FEVAL, GET, RESTRICT, SUBSREF.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 idx = index(1).subs;
 switch index(1).type
@@ -49,7 +49,7 @@ switch index(1).type
             varargout = { out }; 
             return
         else
-            error('CHEBFUN2:SUBSREF:INPUTS', ...
+            error('CHEBFUN:CHEBFUN2:subsref:inputs', ...
                 'Can only evaluate at functions (X,Y)')
         end
         
@@ -64,11 +64,12 @@ switch index(1).type
             out = feval(f, x, y) ;
         elseif ( isa(x,'chebfun') && isa(y,'chebfun') )
             if ( ~isreal(x) || ~isreal(y) ) 
-                error('CHEBFUN2:subsref:real','Both chebfuns must be real-valued.')
+                error('CHEBFUN:CHEBFUN2:subsref:real', ...
+                    'Both chebfuns must be real-valued.')
             end
             out = feval(f, x, y) ;
         else
-            error('CHEBFUN2:subsref:nonnumeric',...
+            error('CHEBFUN:CHEBFUN2:subsref:nonnumeric',...
               'Cannot evaluate chebfun2 for these inputs type.');
         end
     
@@ -89,13 +90,13 @@ switch index(1).type
         if ( length(idx) == 4 ) 
             out = restrict( f, [ idx{ : } ] );
         else
-            error('CHEBFUN:subsref:dimensions', ...
+            error('CHEBFUN:CHEBFUN2:subsref:dimensions', ...
                 'Index exceeds chebfun dimensions.')          
         end
         
     otherwise
         
-        error('CHEBFUN:subsref:unexpectedType',...
+        error('CHEBFUN:CHEBFUN2:subsref:unexpectedType',...
             ['??? Unexpected index.type of ', index(1).type]);
 end
 

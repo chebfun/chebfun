@@ -40,7 +40,9 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-    %% Properties of DELTAFUN objects
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS PROPERTIES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
         
         % Smooth part of the representation.
@@ -57,8 +59,10 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         
     end
     
-    %% DELTAFUN CLASS CONSTRUCTOR:
-    methods ( Static = true )
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS CONSTRUCTOR:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = true )
         
         function obj = deltafun(op, data, pref)
             
@@ -109,7 +113,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
             % Make sure location is a row vector.
             if ( ~isempty(data.deltaLoc) )
                 if ( min(size(data.deltaLoc)) > 1 )
-                    error('CHEBFUN:DELTAFUN:dim', ...
+                    error('CHEBFUN:DELTAFUN:deltafun:dim', ...
                         'deltaLoc should be a vector.');
                 end
                 data.deltaLoc = data.deltaLoc(:).';
@@ -118,7 +122,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
             % Check sizes:
             if ( ~isempty(data.deltaMag) && ...
                     (size(data.deltaMag, 2) ~= length(data.deltaLoc)) )
-                error('CHEBFUN:DELTAFUN:dim', ...
+                error('CHEBFUN:DELTAFUN:deltafun:dim', ...
                     ['Impulse matrix (deltaMag) should have the same number' ...
                      ' of columns as locations (deltaLoc).']);
             end
@@ -128,7 +132,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
                 dom = obj.funPart.domain;
                 if ( (max(data.deltaLoc) > dom(2)) || ...
                      (min(data.deltaLoc) < dom(1)) )
-                    error('CHEBFUN:deltafun:domain', ...
+                    error('CHEBFUN:DELTAFUN:deltafun:domain', ...
                         'Location of a delta fun is outside the domain.');
                 end
             end
@@ -147,9 +151,10 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         
     end
     
-    
-    %% METHODS IMPLEMENTED BY THIS CLASS.
-    methods
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
+    %% CLASS METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
         
         % True if the DELTAFUN object has no delta functions       
         out = anyDelta(f)
@@ -160,7 +165,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         % Complex conjugate of a DELTAFUN.
         f = conj(f)
         
-        % DELTAFUN obects are not transposable.
+        % DELTAFUN obects are not tCOLLOC2ransposable.
         f = ctranspose(f)
         
         % Indefinite integral of a DELTAFUN.
@@ -287,8 +292,11 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         f = uplus(f)                
     end
     
-    %% STATIC METHODS IMPLEMENTED BY THIS CLASS.
-    methods ( Static = true )
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% STATIC METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = true )
+        
         % smooth fun constructor
         s = constructFunPart( op, pref)
         
@@ -319,6 +327,10 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
     end
     
 end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% METHODS IMPLEENTED IN THIS FILE:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function data = parseDataInputs(data, pref)
 %PARSEDATAINPUTS   Parse inputs from the DATA structure and assign defaults.

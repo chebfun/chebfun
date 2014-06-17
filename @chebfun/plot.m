@@ -49,16 +49,15 @@ function varargout = plot(varargin)
 %   if the interval flag is used.
 %
 %   Besides the usual parameters that control the specifications of lines (see
-%   linespec), the parameter JumpLine and DeltaLine determines the linestyle 
-%   for the discontinuities and the delta functions of the CHEBFUN F, 
-%   respetively. For example, PLOT(F, 'JumpLine', '-r') will plot 
-%   discontinuities as solid red lines and PLOT(F, 'deltaline', '-r') will 
-%   plot the delta functions as solid red lines. By default the plotting style
-%   for JumpLine is ':', and '-' for delta functions and colours are chosen 
-%   to match the lines they correspond to. It is possible to modify other 
-%   properties of JumpLines syntax like 
-%   PLOT(F, 'JumpLine', {'color', 'r', 'LineWidth', 5}). 
-%   JumpLines and deltaLines can be suppresse with the argument 'none'.
+%   linespec), the parameter JumpLine and DeltaLine determines the linestyle for
+%   the discontinuities and the delta functions of the CHEBFUN F, respetively.
+%   For example, PLOT(F, 'JumpLine', '-r') will plot discontinuities as solid
+%   red lines and PLOT(F, 'deltaline', '-r') will plot the delta functions as
+%   solid red lines. By default the plotting style for JumpLine is ':', and '-'
+%   for delta functions and colours are chosen to match the lines they
+%   correspond to. It is possible to modify other properties of JumpLines syntax
+%   like PLOT(F, 'JumpLine', {'color', 'r', 'LineWidth', 5}). JumpLines and
+%   deltaLines can be suppressed with the argument 'none'.
 %
 %   Note that the PLOT(F, 'numpts', N) option for V4 is deprecated, and this
 %   call now has no effect.
@@ -66,7 +65,26 @@ function varargout = plot(varargin)
 % See also PLOTDATA, PLOT3.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% DEVELOPER NOTE:
+%  We actually plot a fifth 'dummy' plot which contains both the line and marker
+%  styles. This is the only plot which has 'handlevis', 'on', and so will be
+%  included in subsequent calls to LEGEND(). The handle to this plot is included
+%  as the fifth output, and the plot itself is set to 'visible', 'off'. Note
+%  that if a user modifies the plot by adjusting HLINE or HPOINT, subsequent
+%  calls the LEGEND will not have the updated style. There's no way to get
+%  around this without a complicated callback procedure.
+%
+%  Note, to clarify, the reason we need all this is that we must plot the line
+%  and points as different plots. MATLAB/PLOT() doesn't have this problem.
+%
+%  Also note that the handles are now output as individually, rather than
+%  forced in to an array.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% TODO: Document plotting of DELTFAFUN objects. (In particular, handle output)
 
 %% Deal with an empty input:
 if ( isempty(varargin{1}) )
@@ -77,6 +95,9 @@ if ( isempty(varargin{1}) )
 end
 
 %% Initialization:
+
+% Suppress inevitable warning for growing these arrays:
+%#ok<*AGROW>
 
 % Store the hold state of the current axis:
 holdState = ishold;
@@ -100,9 +121,6 @@ xLim = [inf, -inf];
 yLim = [inf, -inf];
 defaultXLim = 1;
 defaultYLim = 1;
-
-% Suppress inevitable warning for growing these arrays:
-%#ok<*AGROW>
 
 % Check to see if the 'interval' flag has been set:
 interval = [];
@@ -141,7 +159,7 @@ lineData = {};
 pointData = {};
 jumpData = {};
 deltaData = {};
-jumpLineSet = any(cellfun(@(v) strcmpi(v, 'JumpLine'), varargin));
+jumpLineIsSet = any(cellfun(@(v) strcmpi(v, 'JumpLine'), varargin));
 
 % Remove global plotting options from input arguments.
 [lineStyle, pointStyle, jumpStyle, deltaStyle, varargin] = ...
@@ -163,7 +181,7 @@ while ( ~isempty(varargin) )
         % We can only plot real against real:
         isComplex = false;
         if ( ~isreal(f) || ~isreal(g) )
-            warning('CHEBFUN:plot:complex', ...
+            warning('CHEBFUN:CHEBFUN:plot:complex', ...
                 'Imaginary parts of complex X and/or Y arguments ignored.');
             f = real(f);
             g = real(g);
@@ -191,7 +209,7 @@ while ( ~isempty(varargin) )
             g = num2cell(g);
             if ( numel(f) > 1 && numel(g) > 1 )
                 if ( numel(f) ~= numel(g) )
-                    error('CHEBFUN:plot:dim', ...
+                    error('CHEBFUN:CHEBFUN:plot:dim', ...
                     'CHEBFUN objects must have the same number of columns.');
                 end
                 for k = 1:numel(f)
@@ -299,18 +317,17 @@ if ( intervalIsSet )
     % Markers are meaningless if the 'interval' flag is used.
     set(h2, 'Marker', 'none', pointStyle{:})
 end
+
 % Plot the jumps:
 if ( isempty(jumpData) || ischar(jumpData{1}) )
     jumpData = {[]};
 end
 h3 = plot(jumpData{:});
-
 % Change the style accordingly:
 if ( ~isempty(jumpStyle) )
     set(h3, jumpStyle{:});
 end
-
-if ( ~jumpLineSet )
+if ( ~jumpLineIsSet )
     if ( isComplex )
         set(h3, 'LineStyle', 'none') 
     else
@@ -325,10 +342,15 @@ if ( isempty(deltaData) || ~isnumeric(deltaData{1}) )
 else
     h4 = mystem(deltaData{:});
 end
-
 if ( ~isempty(deltaStyle) )
     set(h4, deltaStyle{:});
 end    
+
+% Plot the dummy data, which includes both line and point style:
+hDummy = plot(lineData{:});
+if ( ~isempty(lineStyle) || ~isempty(pointStyle) )
+    set(hDummy, lineStyle{:}, pointStyle{:});
+end
 
 %% Setting xLim and yLim:
 
@@ -356,9 +378,17 @@ if ( ~holdState )
     hold off
 end
 
+% We don't want these guys to be included in LEGEND(), so we turn them off.
+set(h1, 'handlevis', 'off');
+set(h2, 'handlevis', 'off');
+set(h3, 'handlevis', 'off');
+set(h4, 'handlevis', 'off');
+% The dummy plot is invisible, but its handle is visible (for LEGEND).
+set(hDummy, 'handlevis', 'on', 'visible', 'off');     %  ¯\_(o.O)_/¯
+
 % Give an output to the plot handles if requested:
 if ( nargout > 0 )
-    varargout = {h1 ; h2 ; h3 ; h4};
+    varargout = {h1 ; h2 ; h3 ; h4 ; hDummy};
 end
 
 end

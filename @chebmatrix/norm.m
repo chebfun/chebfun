@@ -28,7 +28,7 @@ end
 % The norm of a CHEBMATRIX with inf x inf block(s) is not supported.
 s = cellfun(@(b) min(size(b)), A.blocks);
 if ( ~all(isfinite(s(:))) )
-    error('CHEBFUN:chebmatrix:norm', ...
+    error('CHEBFUN:CHEBMATRIX:norm:notSupported', ...
     'Norm of a chebmatrix with inf x inf block(s) is not supported.')
 end
 
@@ -47,7 +47,7 @@ switch n
         if ( ~ischar(n) )
             n = num2str(n);
         end
-        error('CHEBFUN:chebmatrix:norm:uknown', ...
+        error('CHEBFUN:CHEBMATRIX:norm:uknown', ...
             'unsupported norm type ''%s''', n)
         
 end

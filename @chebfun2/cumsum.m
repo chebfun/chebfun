@@ -10,7 +10,7 @@ function f = cumsum(f, dim)
 % See also CUMSUM2.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Check for empty:
 if ( isempty( f ) )  
@@ -30,7 +30,8 @@ elseif ( dim == 2 )
     % CUMSUM along the rows.
     f.rows = cumsum( f.rows );
 else
-    error('CHEBFUN2:CUMSUM:DIM', 'Integration direction must be x or y.');
+    error('CHEBFUN:CHEBFUN2:cumsum:dim', ...
+        'Integration direction must be x or y.');
 end
 
 end

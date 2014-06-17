@@ -26,7 +26,8 @@ elseif ( nargin == 3 )
     pointsFun = varargin{3};
     
 else
-    error('Must be called with two or three arguments.')
+    error('CHEBFUN:COLLOC:points:nargin', ...
+        'Must be called with two or three arguments.')
     
 end
 

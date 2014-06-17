@@ -9,7 +9,7 @@ function p = unwrap(p, jumpTol)
 %   See also ABS, ANGLE.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Get the shifts. By default these are pi.
 if ( nargin == 1 )
@@ -31,7 +31,7 @@ if ( isempty(p) || (numel(p.funs) == 1) )
 end
 
 if ( size(p.funs{1}, 2) > 1 )
-    error('CHEBFUN:unwrap:array', ...
+    error('CHEBFUN:CHEBFUN:unwrap:array', ...
         'UNWRAP() does not support array-valued CHEBFUN objects.');
 end
 

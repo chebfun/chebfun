@@ -64,7 +64,7 @@ if ( usejava('jvm') )
     ap = audioplayer(s, Fc);
     play(ap);
 else
-    warning('MATLAB:sound:unsupportedoption', ...
+    warning('CHEBFUN:CHEBFUN:chebtune:unsupportedPlatform', ...
         ['This platform does not support specifing FS or BITS when not '
          'using Java.']);
 end

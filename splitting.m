@@ -23,11 +23,11 @@ function varargout = splitting(on_off)
 
 if ( nargout > 0 && nargin == 0 )
     % Return current splitting state:
-    splitState = chebfunpref().enableBreakpointDetection;
+    splitState = chebfunpref().splitting;
     
 elseif ( nargin == 0 )
     % Display splitting state:
-    switch ( chebfunpref().enableBreakpointDetection )
+    switch ( chebfunpref().splitting )
         case 1
             disp('SPLITTING is currently ON.')
         case 0
@@ -43,17 +43,17 @@ else
     warning('off', 'CHEBFUN:splitting:deprecated');
     
     if ( nargout > 0 )
-        splitState = chebfunpref().enableBreakpointDetection;
+        splitState = chebfunpref().splitting;
     end
     
     if ( strcmpi(on_off, 'on') )
-        chebfunpref.setDefaults('enableBreakpointDetection', true);
+        chebfunpref.setDefaults('splitting', true);
         
     elseif strcmpi(on_off, 'off')
-        chebfunpref.setDefaults('enableBreakpointDetection', false);
+        chebfunpref.setDefaults('splitting', false);
         
     else
-        error('CHEBFUN:split:UnknownOption',...
+        error('CHEBFUN:splitting:UnknownOption',...
             'Unknown splitting option: only ON and OFF are valid options.')
     end
     

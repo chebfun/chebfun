@@ -12,20 +12,27 @@ classdef ultraS < chebDiscretization
 % ULTRAS(SOURCE, DIMESION) takes the DOMAIN from SOURCE.
 %
 % ULTRAS(SOURCE) takes the dimension from SOURCE.
-
-% For more details about the ultrapsherical spectral methods, see:
-% S. Olver and A. Townsend, A fast and well-conditioned spectral method, SIAM
-% Review, 55 (2013), pp. 462-489.
+%
+% For more details about the ultrapsherical spectral methods, see: S. Olver and
+% A. Townsend, A fast and well-conditioned spectral method, SIAM Review, 55
+% (2013), pp. 462-489.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
     
-    properties
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS PROPERTIES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    properties ( Access = public )
         coeffs        % Coefficients of the operator
         outputSpace   % The range of the ultraspherical spectral operator
     end
     
-    methods
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS CONSTRUCTOR:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
+        
         function disc = ultraS(source, dimension, domain)
             %ULTRAS(SOURCE, DIMENSION, DOMAIN)   ULTRAS constructor.
             
@@ -56,14 +63,20 @@ classdef ultraS < chebDiscretization
         
     end
     
-    methods ( Access = private )
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% PRIVATE METHODS
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = private, Static = false )
         
         % Conversion (transformation) operator for Ultraspherical method.
         S = convert(A, K1, K2)
         
     end
     
-    methods ( Static = true)
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% STATIC METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = true)
         
         % Conversion matrix used in the ultraspherical spectral method.
         S = convertmat(n, K1, K2)
@@ -88,7 +101,7 @@ classdef ultraS < chebDiscretization
             maxPow = log2(pref.maxDimension);
             
             if ( minPow > maxPow )
-                error('CHEBFUN:COLLOC:dimensionValues', ...
+                error('CHEBFUN:ULTRAS:ultraS:dimensionValues', ...
                     ['Minimum discretiation specified is greater than ' ...
                     'maximum discretization specified']);
             end
@@ -101,6 +114,9 @@ classdef ultraS < chebDiscretization
         
     end
     
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% PRIVATE STATIC METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = private, Static = true)
         
         % Get coefficient representation of the source.

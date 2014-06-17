@@ -55,8 +55,9 @@ initRHSInput = cellstr(repmat('0', numel(initInput), 1));
 [deString, allVarString, indVarNameDE, pdeVarName, pdeflag, ignored, allVarNames] ...
     = setupFields(guifile, deInput, 'DE');
 if ( ~any(pdeflag) )
-    error('Chebgui:chebpde:notapde', ['Input does not appear to be a PDE, ', ...
-        'or at least is not a supported type.']);
+    error('CHEBFUN:CHEBGUIEXPORTERPDE:exportInfo:notPDE', ...
+        ['Input does not appear to be a PDE, ', ...
+         'or at least is not a supported type.']);
 end
 
 % Obtain the independent variable name appearing in the initial condition
@@ -74,7 +75,8 @@ if ( ~isempty(indVarNameInit{1}) && ~isempty(indVarNameDE{1}) )
     if ( strcmp(indVarNameDE{1}, indVarNameInit{1}) )
         indVarName{1} = indVarNameDE{1};
     else
-        error('Chebgui:SolveGUIpde','Independent variable names do not agree')
+        error('CHEBFUN:CHEBGUIEXPORTERPDE:exportInfo:solveGUIpde', ...
+            'Independent variable names do not agree')
     end
 elseif ( ~isempty(indVarNameInit{1}) && isempty(indVarNameDE{1}) )
     indVarName{1} = indVarNameInit{1};
@@ -92,7 +94,7 @@ end
 
 % Check that we're not using the same variable for space and time!
 if ( strcmp(indVarName{1}, indVarName{2}) )
-     error('Chebgui:SolveGUIpde', ...
+     error('CHEBFUN:CHEBGUIEXPORTERPDE:exportInfo:solveGUIpde', ...
         'The same variable appears to be used as space and time variable');
 end
 
@@ -101,7 +103,7 @@ if ( ~isempty(indVarNameDE{2}) )
     % Find what the name of the time variable specified is:
     indVarName{2} = indVarNameDE{2};
 else
-    error('Chebgui:SolveGUIpde', ...
+    error('CHEBFUN:CHEBGUIEXPORTERPDE:exportInfo:solveGUIpde', ...
         'No time variable specified, please do so via using subscript.');
 end
 

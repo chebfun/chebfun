@@ -56,7 +56,7 @@ end
 
 % Catch a potential error.
 if ( (~isempty(t)) && (length(t) ~= size(F,2)) )
-    error('CHEBFUN:movie:timesize',...
+    error('CHEBFUN:CHEBFUN:movie:timesize',...
     'Length of the time vector must equal the finite size of the quasimatrix.')
 end
 

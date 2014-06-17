@@ -48,14 +48,14 @@ try
     h = f ~= g
     pass(7) = false;
 catch ME
-    pass(7) = strcmp(ME.identifier, 'CHEBFUN:ne:array');
+    pass(7) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:ne:array');
 end
 
 try
     h = g ~= f
     pass(8) = false;
 catch ME
-    pass(8) = strcmp(ME.identifier, 'CHEBFUN:ne:array');
+    pass(8) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:ne:array');
 end
 
 %% Test for singular function:

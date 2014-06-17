@@ -5,7 +5,7 @@ function f = toFunctionIn(disc, coeffs)
 %   property of the discretization.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 dom = disc.domain;         % Domain we're working on, including breakpoints
 c = mat2cell(full(coeffs), disc.dimension); % Break into smooth pieces

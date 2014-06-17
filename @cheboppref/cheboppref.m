@@ -111,7 +111,10 @@ classdef cheboppref < chebpref
 
 % TODO:  Further documentation of CHEBOPPREF preferences.
 
-    methods
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS CONSTRUCTOR:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
 
         function outPref = cheboppref(inPref, varargin)
             if ( (nargin == 1) && isa(inPref, 'cheboppref') )
@@ -121,18 +124,19 @@ classdef cheboppref < chebpref
                 inPref = struct();
             elseif ( ischar(inPref) )
                 if ( nargin == 1 )
-                    error('CHEBFUN:cheboppref:deprecated', ...
+                    error('CHEBFUN:CHEBOPPREF:cheboppref:deprecated', ...
                         ['cheboppref() no longer supports queries of ', ...
                          'the form cheboppref(''prop'').\n', ...
                          'Please use cheboppref().prop.']);
                 else
-                    error('CHEBFUN:cheboppref:deprecated', ...
+                    error('CHEBFUN:CHEBOPPREF:cheboppref:deprecated', ...
                         ['chebfoppref() no longer assignment ', ...
                          'via cheboppref(''prop'', val).\n', ...
                          'Please use cheboppref.setDefaults(''prop'', val).']);
                 end
             elseif ( nargin > 1 )
-                error('CHEBFUN:cheboppref:inputs', 'Too many input arguments.')
+                error('CHEBFUN:CHEBOPPREF:cheboppref:inputs', ...
+                    'Too many input arguments.')
             end
 
             % Initialize default preference values.
@@ -150,11 +154,19 @@ classdef cheboppref < chebpref
                         outPref.prefList.(field1) = inPref.(field1);
                     end
                 else
-                    error('CHEBOPPREF:cheboppref:badPref', ...
+                    error('CHEBFUN:CHEBOPPREF:cheboppref:badPref', ...
                         'Unrecognized preference name.');
                 end
             end
         end
+        
+    end
+    
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
 
        function display(pref)
        %DISPLAY   Display a CHEBOPPREF object.
@@ -162,7 +174,7 @@ classdef cheboppref < chebpref
        %   CHEBOPPREF object PREF.
 
             % Compute the screen column in which pref values start.
-            valueCol = 24; % length('    enableSingularityDetection:   ');
+            valueCol = 24; % length('    blowup:   ');
 
             % A subfunction to pad strings for formatting.
             function s = padString(s)
@@ -214,8 +226,12 @@ classdef cheboppref < chebpref
         end 
        
     end
-
-    methods ( Static = true )
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% STATIC METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
+    methods ( Access = public, Static = true )
+        
         function pref = getFactoryDefaults()
         %GETFACTORYDEFAULTS   Get factory default preferences.
         %   PREF = CHEBOPPREF.GETFACTORYDEFAULTS() returns a CHEBOPPREF
@@ -260,6 +276,9 @@ classdef cheboppref < chebpref
         end
     end
 
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% PRIVATE STATIC METHODS
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Static = true, Access = private )
 
         function varargout = manageDefaultPrefs(varargin)
@@ -281,7 +300,7 @@ classdef cheboppref < chebpref
         %   ..., etc.
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        % Developer notes:
+        % DEVELOPER NOTE:
         %  - MATLAB has no equivalent to what might be called a "static" class
         %    variable in other languages, so a persistent variable is the best
         %    we can do for providing this feature.  Persistent variables are
@@ -313,13 +332,13 @@ classdef cheboppref < chebpref
                         prefName = varargin{1};
                         prefValue = varargin{2};
                         
-                        % Support user-friendlier syntax for specifying discretization
-                        % choice:
+                        % Support user-friendlier syntax for specifying
+                        % discretization choice:
                         prefValue = cheboppref.parseDiscretization(prefValue);
                         if ( isfield(defaultPrefs, prefName) )
                             defaultPrefs.(prefName) = prefValue;
                         else
-                            error('CHEBOPPREF:manageDefaultPrefs:badPref', ...
+                            error('CHEBFUN:CHEBOPPREF:cheboppref:badPref', ...
                                 'Unrecognized preference name.');
                         end
                         varargin(1:2) = [];

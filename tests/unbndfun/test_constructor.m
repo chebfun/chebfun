@@ -7,7 +7,7 @@ if ( nargin < 1 )
 end
 
 singPref = pref;
-singPref.enableSingularityDetection = true;
+singPref.blowup = true;
 
 % Seed for random number:
 seedRNG(6178);
@@ -154,7 +154,7 @@ try
     f = unbndfun(@(x) exp(-x.^2), struct('domain', [0 1]));
     pass(16) = fail;
 catch ME
-    pass(16) = strcmp(ME.identifier, 'CHEBFUN:UNBNDFUN:boundedDomain');
+    pass(16) = strcmp(ME.identifier, 'CHEBFUN:UNBNDFUN:unbndfun:boundedDomain');
 end
     
 end

@@ -12,7 +12,7 @@ function [Y, X] = minandmax2( f )
 % See also MAX2, MIN2, NORM.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % check for empty CHEBFUN2.
 if ( isempty( f ) )
@@ -160,7 +160,7 @@ elseif ( length(f) <= maxsize )
     
 elseif ( length(f) >= maxsize )
     
-    error('CHEBFUN2:max:length', 'Rank is too large.');
+    error('CHEBFUN:CHEBFUN2:minandmax2:length', 'Rank is too large.');
     
 end
 

@@ -16,7 +16,7 @@ function I = integral(f, a, b, varargin)
 
 if ( nargin > 3 )
     % We'll allow this to slide...
-    warning('CHEBFUN:integral:nargin', 'Too many input arguments.');
+    warning('CHEBFUN:CHEBFUN:integral:nargin', 'Too many input arguments.');
 end
 
 % Compute the integral with SUM:

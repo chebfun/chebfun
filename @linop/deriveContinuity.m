@@ -5,8 +5,12 @@ function L = deriveContinuity(L, domain, makePeriodic)
 %   the appropriate continuity conditions for each variable at every
 %   breakpoint. The results are stored in the 'continuity' property of L.
 %
+%   L has a property called hasGivenJumpAt that signals where automatic
+%   continuity conditions are NOT to be applied, because they have been
+%   given explicitly in the constraints. 
+%
 %   L = DERIVECONTINUITY(L,DOMAIN) uses the given domain, merged with
-%   L.domain, in order to derive continuity. In this way you can introduce
+%   L.DOMAIN, in order to derive continuity. In this way you can introduce
 %   new breakpoints.
 %
 %   L = DERIVECONTINUITY(L,DOMAIN,TRUE) ignores breakpoints and enforces
@@ -15,7 +19,7 @@ function L = deriveContinuity(L, domain, makePeriodic)
 %   the conditions to the 'constraint' property.
 
 %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
+%  See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin < 3 )
     makePeriodic = false;
@@ -34,6 +38,9 @@ cont = L.continuity;            % append, don't overwrite
 if ( ( nargin < 2 ) || ~makePeriodic )
     % Use the interior breakpoints for continuity.
     left = dom(2:end-1);
+    % Remove any where jumps were given explicitly.
+    left = setdiff( left, L.hasGivenJumpsAt ); 
+    % Points are the same from both directions. 
     right = left;
 else
     % Create periodic conditions, using only endpoints.

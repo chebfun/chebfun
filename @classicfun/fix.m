@@ -11,7 +11,7 @@ function f = fix(f)
 % See also ROUND, CEIL, FLOOR.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 f.onefun = fix(f.onefun);
 

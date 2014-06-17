@@ -53,8 +53,11 @@ classdef bndfun < classicfun
 %                [bndfun]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% CLASS CONSTRUCTOR:
-    methods
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
+        
         function obj = bndfun(op, data, pref)
             % Parse inputs.
             if ( (nargin < 1) || isempty(op) )
@@ -78,11 +81,11 @@ classdef bndfun < classicfun
 
             % Check the domain input.
             if ( ~all(size(data.domain) == [1, 2]) || (diff(data.domain) <= 0) )
-                error('CHEBFUN:BNDFUN:badDomain', ...
+                error('CHEBFUN:BNDFUN:bndfun:badDomain', ...
                     ['Domain argument should be a row vector with two ', ...
                     'entries in increasing order.']);
             elseif ( any(isinf(data.domain)) )
-                error('CHEBFUN:BNDFUN:unboundedDomain', ...
+                error('CHEBFUN:BNDFUN:bndfun:unboundedDomain', ...
                     'Should not encounter unbounded domain in bndfun class.');
             end
 
@@ -103,21 +106,12 @@ classdef bndfun < classicfun
             obj.domain = data.domain;
             obj.mapping = linmap;
         end
-    end
+    end       
     
-    %% STATIC METHODS IMPLEMENTED BY BNDFUN CLASS.
-    methods ( Static = true ) 
-
-        % Linear map from [-1, 1] to the domain of the BNDFUN.
-        m = createMap(domain);
-        
-        % Make a BNDFUN (constructor shortcut):
-        f = make(varargin);
-        
-    end
-    
-    %% METHODS IMPLEMENTED BY THIS CLASS.
-    methods
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
         
         % Convolution of BNDFUN F with BNDFUN G.
         h = conv(f, g)
@@ -167,7 +161,25 @@ classdef bndfun < classicfun
         % Definite integral of a BNDFUN on the interval [a, b].
         out = sum(f, dim)
     end
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% STATIC METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = true ) 
+
+        % Linear map from [-1, 1] to the domain of the BNDFUN.
+        m = createMap(domain);
+        
+        % Make a BNDFUN (constructor shortcut):
+        f = make(varargin);
+        
+    end
+    
 end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% METHODS IMPLEMENTED IN THIS FILE:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function data = parseDataInputs(data, pref)
 %PARSEDATAINPUTS   Parse inputs from the DATA structure and assign defaults.

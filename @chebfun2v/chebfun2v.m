@@ -1,8 +1,9 @@
-% CHEBFUN2V Class constructor for CHEBFUN2V objects
+%CHEBFUN2V   Class constructor for CHEBFUN2V objects.
 % 
-% CHEBFUN2V(F,G) constructs a CHEBFUN2V with two components from the function handles F
-% and G.  F and G can also be CHEBFUN2 objects or any other object that the
-% CHEBFUN2 constructor accepts.  Each component is represented as a CHEBFUN2. 
+% CHEBFUN2V(F,G) constructs a CHEBFUN2V with two components from the function
+% handles F and G.  F and G can also be CHEBFUN2 objects or any other object
+% that the CHEBFUN2 constructor accepts.  Each component is represented as a
+% CHEBFUN2.
 %
 % CHEBFUN2V(F,G,H) constructs a CHEBFUN2V with three components from the
 % function handles F, G, and H.  F, G, and H can also be CHEBFUN2 objects 
@@ -17,17 +18,23 @@
 % See also CHEBFUN2. 
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information. 
+% See http://www.chebfun.org/ for Chebfun information. 
 
 classdef chebfun2v
     
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS PROPERTIES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
         components   % Array of CHEBFUN2 objects.
         nComponents  % Number of components
         isTransposed % transposed?
     end
     
-    methods
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS CONSTRUCTOR:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
         
         function F = chebfun2v( varargin )
             % The main CHEBFUN2V constructor!
@@ -96,13 +103,13 @@ classdef chebfun2v
             
             % Stop now if there are too many components
             if ( numel( fh ) > 3 ) 
-                error('CHEBFUN2:CONSTRUCTOR:ARRAYVALUED',...
+                error('CHEBFUN:CHEBFUN2V:chebfun2v:arrayValued', ...
                           'More than three components is not supported.')
             end 
             
             % Stop now if there are no components: 
             if ( numel( fh ) == 0 ) 
-                error('CHEBFUN2:CONSTRUCTOR:EMPTY',...
+                error('CHEBFUN:CHEBFUN2V:chebfun2v:empty', ...
                 'The Chebfun2 constructor needs to be given function handles or chebfun2 objects.')
             end
             
@@ -113,7 +120,7 @@ classdef chebfun2v
             end
             
             if ( ~all(pass) )
-                error('CHEBFUN2:DOMAINCHECK',... 
+                error('CHEBFUN:CHEBFUN2V:chebfun2v:domainCheck', ...
                     'All chebfun2 objects need to have the same domain.');
             end
             

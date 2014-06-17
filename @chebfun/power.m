@@ -27,7 +27,7 @@ if ( isa(f, 'chebfun') && isa(b, 'chebfun') )
     
     % Check the number of columns match:
     if ( numColumns(f) ~= numColumns(b) )
-        error('CHEBFUN:power:quasi', ...
+        error('CHEBFUN:CHEBFUN:power:quasi', ...
             'Chebfun quasimatrix dimensions must agree.')
     end
     
@@ -80,7 +80,7 @@ elseif ( isa(f, 'chebfun') )
             g(k) = columnPower(f{k}, b(k), pref);
         end
     else
-        error('CHEBFUN:power:dim', ...
+        error('CHEBFUN:CHEBFUN:power:dim', ...
             'Chebfun quasimatrix dimensions must agree.');
     end
     
@@ -118,7 +118,7 @@ else
             g  = quasi2cheb(g);
         end
     else
-        error('CHEBFUN:power:dim', ...
+        error('CHEBFUN:CHEBFUN:power:dim', ...
             'Chebfun quasimatrix dimensions must agree.');
     end
 

@@ -35,7 +35,7 @@ elseif ( isa(f, 'double') ) % double + CHEBTECH
     % Switch argument order and call CHEBTECH/PLUS again:
     f = plus(g, f);
     
-else % CHEBTECH + CHEBTECH
+elseif ( isa(f, 'chebtech') && isa(g, 'chebtech') )  % CHEBTECH + CHEBTECH
     
     % Make both CHEBTECH objects have the same length:
     nf = size(f.coeffs, 1);
@@ -71,6 +71,12 @@ else % CHEBTECH + CHEBTECH
         f.vscale = vscaleNew;
         f.ishappy = f.ishappy && g.ishappy;
     end
+
+else    % Don't know how to do the addition of the objects
+    
+    error('CHEBFUN:CHEBTECH:plus:typeMismatch', ...
+        ['Incompatible operation between objects.\n', ...
+         'Make sure functions are of the same type.']);
     
 end
 

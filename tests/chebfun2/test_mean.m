@@ -5,7 +5,7 @@ if ( nargin < 1 )
     pref = chebfunpref; 
 end 
 
-tol = pref.cheb2Prefs.eps; 
+tol = pref.eps; 
 j = 1; 
 
 f = chebfun2(@(x,y) sin((x-.1).*y)); 

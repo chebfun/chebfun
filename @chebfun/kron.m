@@ -17,7 +17,7 @@ function h = kron(f, g)
 % LINOPs/CHEBOPs. 
 
 if ( ( ~isa(f, 'chebfun') || ~isa(g, 'chebfun') ) )
-    error('CHEBFUN:KRON:INPUTS', 'Both inputs should be CHEBFUNs.');
+    error('CHEBFUN:CHEBFUN:kron:inputs', 'Both inputs should be CHEBFUNs.');
 end
 
 if ( isempty(f) || isempty(g) )
@@ -30,7 +30,7 @@ fDom = f.domain;
 gDom = g.domain;
 
 if ( (length(fDom) > 2) || (length(gDom) > 2) )
-    error('CHEBFUN:KRON:BREAKPTS',...
+    error('CHEBFUN:CHEBFUN:kron:breakpts',...
         'The two CHEBFUNs must be smooth and contain no break points.');
 end
 
@@ -39,7 +39,7 @@ end
 [mg, ng] = size( g );
 
 if ( (mf ~= ng) || (nf ~= mg) )
-    error('CHEBFUN:KRON:SIZES',...
+    error('CHEBFUN:CHEBFUN:kron:sizes',...
         'Inconsistent sizes for the Kronecker product of CHEBFUNs.');
 end
 

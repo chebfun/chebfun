@@ -39,7 +39,7 @@ function [x, w, v] = lobpts(n, varargin)
 
 %% Trivial cases:
 if ( n == 1 )
-    error('CHEBFUN:lobpts', 'N = 1 is not supported.');
+    error('CHEBFUN:lobpts:notSupported', 'N = 1 is not supported.');
 elseif ( n == 2 )
     x = [-1 ; 1];
     w = [1, 1];

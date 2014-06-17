@@ -24,7 +24,7 @@ pass(1) = isempty(f*[]);
 pass(2) = isempty(f*chebfun());
 
 % Turn on splitting, since we'll need it for the rest of the tests.
-pref.enableBreakpointDetection = 1;
+pref.splitting = 1;
 
 % Test multiplication by scalars.
 f1_op = @(x) sin(x).*abs(x - 0.1);
@@ -103,21 +103,21 @@ try
     h = f*'X';
     pass(18) = false;
 catch ME
-    pass(18) = strcmp(ME.identifier, 'CHEBFUN:mtimes:unknown');
+    pass(18) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:mtimes:unknown');
 end
 
 try
     h = f*f1;
     pass(19) = false;
 catch ME
-    pass(19) = strcmp(ME.identifier, 'CHEBFUN:mtimes:dims');
+    pass(19) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:mtimes:dims');
 end
 
 try
     h = f*g;
     pass(20) = false;
 catch ME
-    pass(20) = strcmp(ME.identifier, 'CHEBFUN:mtimes:dims');
+    pass(20) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:mtimes:dims');
 end
 
 %% Test on SINGFUN - multiplication by scalar:
@@ -130,7 +130,7 @@ h_exact = h_op(x);
 err = h_vals - h_exact;
 pass(21) = norm(err, inf) < 2e2*vscale(h)*epslevel(h);
 
-%% Test on SINGFUN - multiplication of a column CHEBFUN and a row CHEBFUN:
+%% Test on SINGFUN - multiplication of a column CHEBFUN and a row CHEBFUN:CHEBFUN:
 
 f = chebfun(@(x) sin(20*x)./((x+1).^0.5), 'exps', [-0.5 0], 'splitting', 'on');
 f = f.';

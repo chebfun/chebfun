@@ -8,7 +8,7 @@ function f = sum( f, dim )
 % See also SUM2. 
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 
 if ( isempty( f ) ) 
@@ -43,7 +43,7 @@ elseif ( dim == 2 )
         f = chebfun( f, dom(3:4) ); 
     end
 else 
-    error('CHEBFUN2:SUM:unknown', ...
+    error('CHEBFUN:CHEBFUN2:sum:unknown', ...
           'Undefined function ''sum'' for that dimension');
 end
 

@@ -127,7 +127,7 @@ pass(15) = (isempty(dim2df));
 
 pow = -0.5;
 op = @(x) (x - dom(1)).^pow.*sin(x);
-pref.enableSingularityDetection = true;
+pref.blowup = true;
 data.domain = dom;
 data.exponents = [pow 0];
 f = bndfun(op, data, pref);

@@ -47,7 +47,7 @@ try
     h = f | g;
     pass(6) = false;
 catch ME
-    pass(6) = strcmp(ME.identifier, 'CHEBFUN:or:dims');
+    pass(6) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:or:dims');
 end
 
 try
@@ -56,7 +56,7 @@ try
     h = f | g;
     pass(7) = false;
 catch ME
-    pass(7) = strcmp(ME.identifier, 'CHEBFUN:or:doms');
+    pass(7) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:or:doms');
 end
 
 %% Test for singular function:

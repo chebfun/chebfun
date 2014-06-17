@@ -11,7 +11,7 @@ function I = identity(A)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( size(A, 1) ~= size(A, 2) )
-    error('Chebmatrix must be square.')
+    error('CHEBFUN:CHEBMATRIX:identity:notSquare', 'Chebmatrix must be square.')
 end
 
 % Start with a chebmatrix of correct dimensions.

@@ -42,7 +42,7 @@ n = length(coeff);
 
 % NaNs are not allowed.
 if ( any(isnan(coeff)) )
-    error('CHEBFUN:FUN:plateauCheck:NaNeval', ...
+    error('CHEBFUN:CHEBTECH:plateauCheck:nanEval', ...
         'Function returned NaN when evaluated.')
 end
 
