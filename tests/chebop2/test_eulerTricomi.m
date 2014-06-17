@@ -39,7 +39,7 @@ u = N \ 0 ;
 pass(4) = ( norm( u - exact ) < tol );
 
 exact = chebfun2(@(x,y) 3*y.^2+x.^3);
-% exact = chebfun2(@(x,y) y.^2-x.^2);
+%exact = chebfun2(@(x,y) y.^2-x.^2);
 N = chebop2(@(x,y,u) diff(u,2,2) - x.*diff(u,2,1)); 
 N.lbc = exact(-1,:); N.rbc = exact(1,:); 
 N.ubc = exact(:,1); N.dbc = exact(:,-1); 
