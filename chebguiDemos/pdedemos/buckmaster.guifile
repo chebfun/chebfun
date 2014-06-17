@@ -2,7 +2,7 @@
 'scalar'
 domain = '[0 1]';
 t = '0:.001:.03';
-DE = 'u_t = (u^4)" + (u^3)''';
+DE = 'u_t = .5*(u^4)" + (u^3)''';
 LBC = 'neumann'; RBC = 'neumann';
 init = 'u = exp(-10*x^2)';
 tol = '1e-6'; plotting = 'on';
