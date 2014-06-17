@@ -199,6 +199,17 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             A.blocks = transpose(A.blocks);
         end
         
+        function A = simplify(A, varargin)
+        %SIMPLIFY   Simplify CHEBFUN components in a CHEBMATRIX.
+        %   SIMPLIFY(A) simplifies the CHEBFUN elements in a CHEBMATRIX, as
+        %   defined by CHEBFUN/SIMPLIFY(). Other entries in A are not affected.
+        %
+        % See also CHEBFUN/SIMPLIFY().
+            isCheb = cellfun(@(v) isa(v, 'chebfun'), A.blocks);
+            A.blocks(isCheb) = cellfun(@(v) simplify(v, varargin{:}), ...
+                A.blocks(isCheb), 'UniformOutput', false);
+        end
+        
         function A = transpose(A)
         %TRANSPOSE   Transpose a CHEBMATRIX.
         %   TRANSPOSE(A) transposes A.BLOCKS, but _not_ its entries.
