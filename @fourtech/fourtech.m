@@ -1,16 +1,17 @@
 classdef fourtech < smoothfun
-%FOURTECH   Approximate smooth periodic functions on [-1,1] with Fourier interpolants.
+%FOURTECH   Approximate smooth periodic functions on [-1,1] with Fourier 
+%           interpolants.
 %
 %   Class for approximating smooth periodic functions on the interval [-1,1]
 %   using function values at equally spaced points on [-1,1).
 %
 % Constructor inputs:
 %   FOURTECH(OP) constructs a FOURTECH object from the function handle OP. OP
-%   should be vectorized (i.e., accept a vector input) and ouput a vector of
-%   the same length. FOURTECH objects allow for array-valued construction
-%   (i.e., of array-valued function), in which case OP should accept a vector
-%   of length N and return a matrix of size NxM, where M is number of columns
-%   of the multi -valued function.
+%   should be vectorized (i.e., accept a vector input) and ouput a vector of the
+%   same length. FOURTECH objects allow for array-valued construction (i.e., of
+%   array-valued function), in which case OP should accept a vector of length N
+%   and return a matrix of size NxM, where M is number of columns of the multi
+%   -valued function.
 %
 %   FOURTECH(OP, DATA) constructs a FOURTECH using the additional data
 %   supplied in the DATA structure.  Fields currently recognized are:
@@ -49,9 +50,9 @@ classdef fourtech < smoothfun
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FOURTECH Class Description:
 %
-% The FOURTECH class is for representations of smooth periodic 
-% functions on the interval [-1,1] via interpolated function values at
-% equally spaced points using Fourier series.
+% The FOURTECH class is for representations of smooth periodic functions on the
+% interval [-1,1] via interpolated function values at equally spaced points
+% using Fourier series.
 %
 % The vertical scale VSCALE is used to enforce scale invariance in FOURTECH
 % construction and subsequent operations. For example, that
@@ -101,30 +102,32 @@ classdef fourtech < smoothfun
 % any of the sample points used by the constructor, then an error is thrown.
 %
 % The FOURTECH class supports the representation of array-valued functions (for
-% example, f = fourtech(@(x) [sin(pi*x), cos(pi*x)])). In such cases, the values and
-% coefficients are stored in a matrix (column-wise), and as such each component
-% of the array-valued function is truncated to the same length, even if the
-% demands of 'happiness' imply that one of the components could be truncated to
-% a shorter length than the others. All FOURTECH methods should accept such
-% array-valued forms. Note that this representation is distinct from an array of
-% FOURTECH objects, for which there is little to no support.
+% example, f = fourtech(@(x) [sin(pi*x), cos(pi*x)])). In such cases, the values
+% and coefficients are stored in a matrix (column-wise), and as such each
+% component of the array-valued function is truncated to the same length, even
+% if the demands of 'happiness' imply that one of the components could be
+% truncated to a shorter length than the others. All FOURTECH methods should
+% accept such array-valued forms. Note that this representation is distinct from
+% an array of FOURTECH objects, for which there is little to no support.
 %
 % Class diagram: [<<smoothfun>>] <-- [fourtech]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    %% Properties of FOURTECH objects.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS PROPERTIES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
 
-        % Values of FOURTECH at equally spaced points from [-1,1).
-        % For array-valued FOURTECH objects, each column
-        % represents the interpolated values of a single function.
+        % Values of FOURTECH at equally spaced points from [-1,1). For
+        % array-valued FOURTECH objects, each column represents the interpolated
+        % values of a single function.
         values % (nxm double)
 
-        % Coefficients are represented for the complex exponential form of
-        % the interpolant. The coefficients are stored in descending order
-        % so that c_{(N-1)/2} is the first entry and c_{-(N-1)/2} is the
-        % last. For array-valued FOURTECH objects, each column represents
-        % the coefficients of a single function.
+        % Coefficients are represented for the complex exponential form of the
+        % interpolant. The coefficients are stored in descending order so that
+        % c_{(N-1)/2} is the first entry and c_{-(N-1)/2} is the last. For
+        % array-valued FOURTECH objects, each column represents the coefficients
+        % of a single function.
         coeffs % (nxm double)
 
         % Vertical scale of the FOURTECH. This is a row vector storing the
@@ -132,12 +135,12 @@ classdef fourtech < smoothfun
         % convenient to store this as a property.
         vscale = 0 % (1xm double >= 0)
 
-        % Horizontal scale of the FOURTECH. Although FOURTECH objects have
-        % in principle no notion of horizontal scale invariance (since they
-        % always live on [-1,1)), the input OP may have been implicitly
-        % mapped. HSCALE is then used to enforce horizontal scale
-        % invariance in construction and other subsequent operations that
-        % require it. It defaults to 1 and is never updated.
+        % Horizontal scale of the FOURTECH. Although FOURTECH objects have in
+        % principle no notion of horizontal scale invariance (since they always
+        % live on [-1,1)), the input OP may have been implicitly mapped. HSCALE
+        % is then used to enforce horizontal scale invariance in construction
+        % and other subsequent operations that require it. It defaults to 1 and
+        % is never updated.
         hscale = 1 % (scalar > 0)
 
         % Boolean value designating whether the FOURTECH is 'happy' or not.
@@ -145,19 +148,21 @@ classdef fourtech < smoothfun
         ishappy % (logical)
 
         % Happiness level to which the FOURTECH was constructed (See
-        % HAPPINESSCHECK.m for full documentation) or a rough accuracy
-        % estimate of subsequent operations (See FOURTECH class
-        % documentation for details).
+        % HAPPINESSCHECK.m for full documentation) or a rough accuracy estimate
+        % of subsequent operations (See FOURTECH class documentation for
+        % details).
         epslevel % (double >= 0)
         
         % Boolean value designating whether the FOURTECH represents a
-        % real-valued function. This allows us to always return a real
-        % result for things like evaluating a fourtech.
+        % real-valued function. This allows us to always return a real result
+        % for things like evaluating a FOURTECH.
         isReal % (logical)
         
     end
 
-    %% METHODS IMPLEMENTED BY THIS M-FILE:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS CONSTRUCTOR:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods
         
         function obj = fourtech(op, data, pref)
@@ -196,37 +201,9 @@ classdef fourtech < smoothfun
         
     end
     
-    %% STATIC METHODS IMPLEMENTED BY THIS CLASS:
-    methods ( Static = true )
-        
-        % Aliasing:
-        coeffs = alias(coeffs, m)
-        
-        % Compute Fourier points (x) and optionally quadrature (w)
-        % and barycentric (v) weights:
-        [x, w, v] = fourpts(n);
-        
-        % Convert coefficients to values:
-        values = coeffs2vals(coeffs);
-        
-        % Make a FOURTECH (constructor shortcut):
-        f = make(varargin);
-        
-        % Compute Fourier quadrature weights (trapezoidal rule):
-        w = quadwts(n)
-        
-        % Refinement function for FOURTECH construction (evaluates OP on grid):
-        [values, points, giveUp] = refine(op, values, pref)
-        
-        % Retrieve and modify preferences for this class.
-        p = techPref(q)
-
-        % Convert values to coefficients:
-        coeffs = vals2coeffs(values)
-
-    end
-    
-    %% METHODS IMPLEMENTED BY THIS CLASS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods
         
         % Absolute value of a FOURTECH. (f should have no zeros in its domain)
@@ -423,21 +400,43 @@ classdef fourtech < smoothfun
         
     end
     
-    methods       
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% STATIC METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Static = true )
         
-        function c = legpoly(f)
-            error('CHEBFUN:FOURTECH:legpoly:notAvailable',...
-                'Cannot convert a Fourier based chebfun to a Legendre Series. Try first converting f to a Chebyshev-based chebfun');
-        end
+        % Aliasing:
+        coeffs = alias(coeffs, m)
         
-        function [f, rootsLeft, rootsRight] = extractBoundaryRoots(f, numRoots)
-            error('CHEBFUN:FOURTECH:extractBoundaryRoots:notAvailable',...
-                'Function not implemented. Try first converting f to a Chebyshev based chebfun');
-        end
+        % Compute Fourier points (x) and optionally quadrature (w)
+        % and barycentric (v) weights:
+        [x, w, v] = fourpts(n);
         
+        % Convert coefficients to values:
+        values = coeffs2vals(coeffs);
+        
+        % Make a FOURTECH (constructor shortcut):
+        f = make(varargin);
+        
+        % Compute Fourier quadrature weights (trapezoidal rule):
+        w = quadwts(n)
+        
+        % Refinement function for FOURTECH construction (evaluates OP on grid):
+        [values, points, giveUp] = refine(op, values, pref)
+        
+        % Retrieve and modify preferences for this class.
+        p = techPref(q)
+
+        % Convert values to coefficients:
+        coeffs = vals2coeffs(values)
+
     end
     
 end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% METHODS IMPLEMENTED IN THIS FILE:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function data = parseDataInputs(data, pref)
 %PARSEDATAINPUTS   Parse inputs from the DATA structure and assign defaults.
