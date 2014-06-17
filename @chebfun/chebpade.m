@@ -103,7 +103,7 @@ elseif ( numel(F.funs) > 1 )
 end
 
 % Get the Chebyshev coefficients and pad if necessary.
-c = fliplr(chebpoly(F, length(F))).';
+c = fliplr(chebcoeffs(F, length(F))).';
 if ( length(F) < m + 2*n + 1 )
     %c = [c ; zeros(m + 2*n+1 - length(F), 1)];
 
@@ -168,7 +168,7 @@ function [p, q, r_handle] = chebpadeMaehly(F, m, n)
 tol = 1e-10;
 
 % Get the Chebyshev coefficients and pad if necessary.
-a = chebpoly(F, length(F)).';
+a = chebcoeffs(F, length(F)).';
 a = a(end:-1:1);
 if ( length(F) < m + 2*n + 1 )
     %a = [a ; zeros(m + 2*n + 1 - length(F), 1)];

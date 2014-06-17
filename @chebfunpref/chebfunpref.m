@@ -458,7 +458,7 @@ classdef chebfunpref < chebpref
                 link = '    <a href="matlab: help %s/techPref">techPrefs</a>\n';
                 fprintf(link, techStr)
             else
-                fprintf('    techPrefs\n', techStr)
+                fprintf('    techPrefs\n')
             end
 
             % Format and print values of tech preferences.

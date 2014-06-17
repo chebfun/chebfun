@@ -8,6 +8,9 @@ function [xx, yy] = chebpts2(nx, ny, D)
 %
 %   [XX YY] = CHEBPTS2(NX,NY,D) constructs an NX by NY grid of Chebyshev tensor
 %   points on the rectangle [a b] x [c d], where D = [a b c d].
+% 
+%   The particular tensor grid that is returned is based on the currently
+%   underlying technology. 
 %
 % See also CHEBPTS.
 
@@ -31,12 +34,18 @@ end
 
 tech = chebfunpref().tech(); 
 
-x = tech.chebpts(nx); 
-y = tech.chebpts(ny); 
-
-% scale to domain: 
-x = (D(2) - D(1))/2*(x+1) + D(1); 
-y = (D(4) - D(3))/2*(y+1) + D(3); 
-[xx, yy] = meshgrid(x, y);   % Tensor product. 
-
+if ( isa(tech, 'chebtech2') )
+    x = chebpts( nx, D(1:2), 2 );   % x grid.
+    y = chebpts( ny, D(3:4), 2 );   % y grid
+    [xx, yy] = meshgrid(x, y);   % Tensor product. 
+elseif ( isa(tech, 'chebtech1') ) 
+    x = chebpts( nx, D(1:2), 1 );   % x grid.
+    y = chebpts( ny, D(3:4), 1 );   % y grid
+    [xx, yy] = meshgrid(x, y);   % Tensor product
+elseif ( isa(tech, 'fourtech') ) 
+    x = fourpts( nx, D(1:2) );   % x grid.
+    y = fourpts( ny, D(3:4) );   % y grid
+    [xx, yy] = meshgrid(x, y);   % Tensor product
+else
+    error('CHEBFUN2:PTS', 'Unrecognized technology');
 end 

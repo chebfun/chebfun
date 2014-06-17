@@ -162,7 +162,7 @@ classdef onefun % (Abstract)
         f = mtimes(f, c)
         
         % Compute a Legendre series expansion of a ONEFUN object:
-        c = legpoly(f)
+        c = legcoeffs(f)
 
         % ONEFUN logical OR.
         h = or(f, g)

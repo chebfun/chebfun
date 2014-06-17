@@ -8,7 +8,7 @@ function [x, w, v] = chebpts(n)
 %   [X, W, V] = CHEBPTS(N) returns, in addition to X and W, the weights V
 %   for barycentric polynomial interpolation in the Chebyshev points X.
 %
-% See also LEGPTS, JACPTS, LAGPTS, and HERMPTS.
+% See also FOURPTS, LEGPTS, JACPTS, LAGPTS, and HERMPTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
