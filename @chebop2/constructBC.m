@@ -213,12 +213,13 @@ for hh = 1:s(2)                 % Loop over each of the dependant variables
 end
 end
 
-function val = chebValues(k, bcn, pos)
-% CHEBBALUES. Return the values, of ChebT. 
+function val = chebValues(k, n, x)
+% CHEBBALUES. Return the values of Chebyshev {T0^(k)(x),..Tn^(k)(x)}, x is 
+% 1 or -1. 
 if ( k == 0 )
-    val = pos.^((0:bcn-1).');
+    val = x.^((0:n-1).');
 else
-    [ll, kk] = meshgrid((0:bcn-1),(0:k-1));
-    val = (pos).^((1:bcn).').*prod( (ll.^2 - kk.^2)./(2*kk+1), 1 ).';
+    [ll, kk] = meshgrid((0:n-1),(0:k-1));
+    val = (x).^((1:n).').*prod( (ll.^2 - kk.^2)./(2*kk+1), 1 ).';
 end
 end
