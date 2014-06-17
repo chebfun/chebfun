@@ -40,7 +40,7 @@ function out = movie(F,varargin)
 % See also CHEBFUN/PLOT, MOVIE, MOVIE2AVI.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www..chebfun.org/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( isinf(size(F, 2)) )
     % Force column quasimatrix:
