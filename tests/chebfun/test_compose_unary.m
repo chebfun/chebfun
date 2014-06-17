@@ -111,7 +111,7 @@ vals = [...
    3.141507475435311
    3.141489646225016
    3.141482861866948];
-u = chebfun(vals);
+u = chebfun(vals, 'tech', @chebtech2);
 v = sin(u);
 pass(12) = ishappy(v) && length(v) < 1e3;
 
