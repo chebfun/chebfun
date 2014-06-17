@@ -24,7 +24,7 @@ switch ( ref(1).type )
         if ( length(indx) == 2 )
             n = indx{1}; 
             m = indx{2};
-            CC = chebop2.constructDiscretisation(N, chebfun2(0), m+2, n+2);
+            CC = chebop2.discretize(N, chebfun2(0), m+2, n+2);
             sz = size(CC{1,1}, 1)*size(CC{1,2}, 2);
             
             % Return as a matrix: 
