@@ -74,6 +74,11 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         
         % DOMAIN: Domain of the ADchebfun.
         domain
+        
+        % These track where explicit jumps have been given, so that
+        % automatic continuity conditions are deactivated. Only the JUMP
+        % method changes this property. 
+        jumpLocations = [];
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -700,6 +705,9 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             %       'LINEARITY'  -   Whether F has a constant derivative w.r.t.
             %                        the seeding variable (useful for linearity
             %                        detection).
+            %       'JUMPLOCATIONS'  - Points where explicit jump
+            %                          conditions were given.
+            %                          
             %
             %   In case F is an ADCHEBFUN array, use the call
             %       P = GET(F, PROP, POS)
@@ -710,7 +718,11 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             
             % Allow access to any of F's properties via GET.
             if ( nargin == 2 )
-                out = vertcat(f.(prop));
+                if ( strcmp(prop,'jumpLocations') )
+                    error('Must specify position.')
+                else
+                    out = vertcat(f.(prop));
+                end
             else
                 out = f(pos).(prop);
             end
@@ -769,7 +781,11 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         
               
         function u = jump(u, x, c)
-            % U = JUMP(U)       JUMP of an ADCHEBFUN
+            %JUMP    JUMP of an ADCHEBFUN
+            %
+            %   V = JUMP(U, X, C), where U is an ADCHEBFUN, and X and C are
+            %   scalar returns the ADCHEBFUN V, so that
+            %        V =  U(X, 'right') - U(X, 'left') - C
             %
             % See also: chebfun/jump, functionalBlock.jump
             
@@ -784,6 +800,9 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             u.func = jump(u.func, x, c);
             % Derivative part
             u.jacobian = functionalBlock.jump(x, u.domain, 0)*u.jacobian;
+            % Signal that an explicit jump condition has been given, so
+            % that automatic continuity won't be applied.
+            u.jumpLocations = union(u.jumpLocations, x);
         end 
         
         function f = log(f)
@@ -931,10 +950,12 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             else
                 % Update linearity information
                 f.linearity = f.linearity & g.linearity;
-                % Derivative part
+                % Value part
                 f.func = f.func + g.func;
                 % Derivative part
                 f.jacobian = f.jacobian + g.jacobian;
+                % Jumps
+                f.jumpLocations = union(f.jumpLocations,g.jumpLocations);
             end
             
             % Need to update domain in case new breakpoints were introduced
@@ -1140,7 +1161,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
 
                 % Convert the cell-array to a CHEBMATRIX and assign to the
                 % derivative field of U:
-                u.jacobian = chebmatrix(blocks);
+                u.jacobian = linop( blocks );
                 
                 % Initalise linearity information. The output is linear in all
                 % variables.
