@@ -26,7 +26,7 @@ end
 
 % Check they are both chebfun objects 
 if ( ~isa(f, 'chebfun') || ~isa(g, 'chebfun') ) 
-   error('CHEBFUN:CHEBFUN2:outerProduct:INPUTS', ...
+   error('CHEBFUN:CHEBFUN2:outerProduct:badInputs', ...
        'Outer product must involve two chebfun objects.');
 end
 
@@ -43,7 +43,7 @@ if ( size(f, 2) == size(g, 1) )
     h.pivotValues = ones(size(f, 2), 1);
     h.domain = dom; 
 else
-    error('CHEBFUN:CHEBFUN2:outerProduct:SIZES', ...
+    error('CHEBFUN:CHEBFUN2:outerProduct:sizes', ...
         'Sizes not consistent for outer product.');
 end
 

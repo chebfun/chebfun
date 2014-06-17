@@ -26,7 +26,7 @@ if ( isempty( A ) )
 end
 
 if ( A(1).isTransposed )
-    error('CHEBFUN:CHEBFUN:lu:SIZES',...
+    error('CHEBFUN:CHEBFUN:lu:sizes',...
         'CHEBFUN LU works only for column CHEBFUN objects.');
 end
 
@@ -45,7 +45,7 @@ for j = 1 : size(A, 2)
     Arow = feval(A, pos);     
     
     if ( ismember(pos, p) )
-        error('CHEBFUN:CHEBFUN:lu:PIVOT',...
+        error('CHEBFUN:CHEBFUN:lu:pivot',...
             'Duplicated pivot location, likely due to ill-conditioning.');
     end
     

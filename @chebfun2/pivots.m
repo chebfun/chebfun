@@ -20,7 +20,7 @@ if ( nargin > 1 )
         % Normalized pivots:
         p = p.*cscl.*rscl;  
     else
-        error('CHEBFUN:CHEBFUN2:pivots:Inputs', ...
+        error('CHEBFUN:CHEBFUN2:pivots:badInputs', ...
             'Unrecognised second argument.');
     end
     
