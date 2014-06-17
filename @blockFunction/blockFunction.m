@@ -2,7 +2,7 @@ classdef blockFunction
 %BLOCKFUNCTION   Convert linear operator to callable function.
 %   This class is not intended to be called directly by the end user.
 %
-%   See also LINOP, CHEBOP, CHEBOPPREF.
+% See also LINOP, CHEBOP, CHEBOPPREF.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

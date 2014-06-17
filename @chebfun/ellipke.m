@@ -10,7 +10,7 @@ function [k, e] = ellipke(m, pref)
 %   Some definitions of the complete elliptic integrals use the modulus k
 %   instead of the parameter M.  They are related by M = k^2.
 %
-%   See also ELLIPJ.
+% See also ELLIPJ.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

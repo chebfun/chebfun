@@ -4,7 +4,7 @@ function C = horzcat(varargin)
 %   blocks, chebfuns, and scalars given in the call, if their row sizes
 %   are compatible. 
 %
-%   See also CHEBMATRIX.CAT, CHEBMATRIX.VERTCAT.
+% See also CHEBMATRIX.CAT, CHEBMATRIX.VERTCAT.
 
 %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org/ for Chebfun information.
