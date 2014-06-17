@@ -242,9 +242,6 @@ classdef chebfun
 
         %Convert a cell array of CHEBFUN objects to a quasimatrix.
         G = cell2quasi(F)
-
-        % Edge detector.
-        [edge, vscale] = detectEdge(op, domain, hscale, vscale, derHandle);
         
         % Determine values of CHEBFUN at breakpoints.
         vals = getValuesAtBreakpoints(funs, ends, op);
@@ -538,8 +535,11 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
     % might be useful in the future.
 
     % Initialize data output.
+    data.hscale = [];
+    data.vscale = [];
     data.exponents = [];
     data.singType = [];
+    
     args = varargin;
 
     % An op-only constructor call.
@@ -600,7 +600,7 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
             % Pull out this preference, which is checked for later.
             keywordPrefs.enableBreakpointDetection = true;
             args(1:2) = [];
-        elseif ( isnumeric(args{1}) )
+        elseif ( isnumeric(args{1}) && isscalar(args{1}) )
             % g = chebfun(@(x) f(x), N)
             keywordPrefs.techPrefs.exactLength = args{1};
             args(1) = [];
@@ -639,10 +639,18 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
                 end
             end
             args(1:2) = [];
+        elseif ( strcmpi(args{1}, 'vscale') )
+            % Store vscale types.
+            data.vscale = args{2};
+            args(1:2) = [];
+        elseif ( strcmpi(args{1}, 'hscale') )
+            % Store vscale types.
+            data.vscale = args{2};
+            args(1:2) = [];            
         elseif ( strcmpi(args{1}, 'singType') )
             % Store singularity types.
             data.singType = args{2};
-            args(1:2) = [];
+            args(1:2) = [];            
         elseif ( strcmpi(args{1}, 'exps') )
             % Store exponents.
             data.exponents = args{2};
@@ -660,10 +668,20 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
                     'Invalid value for ''chebkind'' option.');
             end
             args(1:2) = [];
-        else
+        elseif ( ischar(args{1}) )
             % Update these preferences:
             keywordPrefs.(args{1}) = args{2};
             args(1:2) = [];
+        else
+            if ( isnumeric(args{1}) )
+                error('CHEBFUN:parseInputs:badInputNumeric', ...
+                    ['Could not parse input argument sequence.\n' ...
+                     '(Perhaps the construction domain is not the second ' ...
+                     'argument?)']);
+            else
+                error('CHEBFUN:parseInputs:badInput', ...
+                    'Could not parse input argument sequence.');
+            end
         end
     end
 

@@ -348,7 +348,8 @@ function [xk, norme, err_handle, flag] = exchange(xk, h, method, f, p, q, Npts)
 
 % Compute extrema of the error.
 e_num = (q.^2).*diff(f) - q.*diff(p) + p.*diff(q);
-rr = [f.domain(1) ; roots(e_num); f.domain(end)];
+rts = roots(e_num, 'noImps');
+rr = [f.domain(1) ; rts; f.domain(end)];
 
 % Function handle output for evaluating the error.
 err_handle = @(x) feval(f, x) - feval(p, x)./feval(q, x);

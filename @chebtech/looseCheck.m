@@ -38,7 +38,7 @@ dq2(dq2 < 0) = 0;
 
 % The magix formula:
 r = abs(lq(3:end).^5).*(dq2);
-[~, idx] = max(r);
+[ignored, idx] = max(r);
 cutoff = nn(idx+2);
 qq = q(idx:end);
 epslevel = max(mean(qq)/5, min(qq));

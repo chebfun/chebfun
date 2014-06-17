@@ -4,7 +4,7 @@ function pass = test_constructor( pref )
 if ( nargin < 1 ) 
     pref = chebfunpref; 
 end 
-tol = 1e2 * pref.cheb2Prefs.eps; 
+tol = 1e2 * pref.eps; 
 
 % Can we make a chebfun2: 
 f = @(x,y) cos( x ) + sin( x .* y );  % simple function. 
@@ -49,7 +49,7 @@ err = g(xx,yy)-f(xx,yy);
 pass(8) = ( norm(err(:),inf ) < 2e3*tol );
 
 % Test building Chebfun2 objects from sample data: 
-rng(0);
+seedRNG(0);
 r = rand(3);
 pass(9) = norm( r - chebpoly2(chebfun2(r, 'coeffs')) ) < 10*tol; 
 r = rand(4);

@@ -68,7 +68,7 @@ end
 
 for k = 1:numel(ltgtLoc)
     idx = find((pairsLoc(:, 1) < ltgtLoc(k)) & (pairsLoc(:, 2) > ltgtLoc(k)));
-    [~, idx2] = max(pairsLoc(idx, 1));
+    [ignored, idx2] = max(pairsLoc(idx, 1));
     charLoc = sort([charLoc pairsLoc(idx(idx2), :)]);
     pairsLoc(idx(idx2),:) = [];
     numOfPars = numOfPars - 1;

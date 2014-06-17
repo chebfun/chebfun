@@ -6,7 +6,7 @@ function pass = test_twocomponents( pref )
 if ( nargin < 1 ) 
     pref = chebfunpref; 
 end 
-tol = 1e5 * pref.cheb2Prefs.eps; 
+tol = 1e5 * pref.eps; 
 j = 1;
 
 % Different calls to the constructor. 
@@ -72,8 +72,8 @@ end
 f = chebfun2(@(x,y) sin(x.*y)); 
 
 pass(j) = ( norm(curl( F1 + G ) - (curl(F1) + curl(G))) < 100*tol); j=j+1; 
-pass(j) = ( norm(div( f*G ) - (dot(G,grad(f)) + f.*div(G))) <100*tol); j=j+1; 
+pass(j) = ( norm(divergence( f*G ) - (dot(G,grad(f)) + f.*divergence(G))) <100*tol); j=j+1; 
 pass(j) = ( norm(diff(curl(G),1,1) + diff(curl(G),1,2)) < 10*tol); j = j + 1; 
-pass(j) = ( norm(div(grad(f)) - lap(f)) < 10*tol); j = j + 1; 
+pass(j) = ( norm(divergence(grad(f)) - laplacian(f)) < 10*tol); j = j + 1; 
 
 end

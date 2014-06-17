@@ -5,7 +5,7 @@ if ( nargin == 0)
     pref = chebfunpref; 
 end
 
-tol = 100*pref.cheb2Prefs.eps;  
+tol = 100*pref.eps;  
 
 f = chebfun2(@(x,y) x); 
 pass(1) = (abs(f(pi/6,pi/12)-pi/6) < tol); 
@@ -28,7 +28,7 @@ r = 0.126986816293506; s = 0.632359246225410; % two fixed random number in domai
 pass(6) = (abs(f(r,s) - g(r,s))<tol);
 
 % Are we evaluating on arrays correctly
-rng(0)
+seedRNG(0)
 r = rand(10,1); 
 s = rand(10,1); 
 [rr, ss]=meshgrid(r,s);

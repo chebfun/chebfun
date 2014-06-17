@@ -1,4 +1,4 @@
-function pass = test_nonlinearSystemDamping(pref)
+function pass = test_nonlinSysDamping_C2(pref)
 % Test 2x2 system (sin/cos) where damping is required
 %
 % Asgeir Birkisson, May 2014.
@@ -17,6 +17,7 @@ A.rbc = @(u,v) [v-1/2; diff(v)];
 x = chebfun('x',d);
 f = [ 0*x ; 0*x ];
 
+%% COLLOC2
 pref.discretization = @colloc2;
 [u12, info] = solvebvp(A, f, pref);
 
@@ -28,19 +29,6 @@ bcFunRight = chebfun(A.rbc(u1,u2));
 
 pass(1) = info.error < tol;
 pass(2) = norm(bcFunLeft(d(1))) < tol && norm(bcFunRight(d(end))) < tol;
-
-%% Try with ultraS
-pref.discretization = @ultraS;
-u34 = mldivide(A, f, pref);
-
-u3 = u34{1}; u4 = u34{2};
-
-% Want to check BCs as well.
-bcFunLeft = chebfun(A.lbc(u3,u4));
-bcFunRight = chebfun(A.rbc(u3,u4));
-
-pass(3) = norm( chebfun(A(x, u3, u4))) < tol;
-pass(4) = norm(bcFunLeft(d(1))) < tol && norm(bcFunRight(d(end))) < tol;
 
 end
 

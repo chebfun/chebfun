@@ -29,9 +29,9 @@ elseif ( nargin > 1 )
             h = Fc{2};
             F = chebfun2v({f, g, h});
         end
-    elseif ( isa(varargin{2}, 'chebfun2') )
-        % Call the CHEBFUN2V constructor.
-        F = chebfun2v( varargin );
+    elseif ( isa(varargin{ 2 }, 'chebfun2' ) )
+        % call the CHEBFUN2V constructor.
+        F = chebfun2v( varargin{:} );
     end
 else
     error('CHEBFUN2:VERTCAT',...

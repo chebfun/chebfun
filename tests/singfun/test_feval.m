@@ -33,7 +33,9 @@ fh = @(x) sin(cos(10*x.^2))./((1+x).^a.*(1-x).^b);
 data.exponents = [-a, -b];
 data.singType = {'sing', 'sing'};
 f = singfun(fh, data, pref);
-pass(3) = norm(feval(f,x) - feval(fh,x), inf) < 1e2*get(f, 'epslevel');
+err = norm(feval(f,x) - feval(fh,x), inf);
+tol = 1e3*get(f, 'epslevel');
+pass(3) = err < tol;
 
 %%
 % Check feval on a SINGFUN with positive exponents

@@ -93,6 +93,6 @@ end
 f = chebfun(@(x) [sin(x - 0.1) cos(x - 0.2)]);
 err = norm(f{-1, -0.1, 0.2, 1} - restrict(f, [-1 -0.1 0.2 1]), inf);
 tol = epslevel(f);
-pass(22) = err < tol;
+pass(22) = err < 5*tol;
 
 end
