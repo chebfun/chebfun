@@ -220,7 +220,7 @@ end
                 % Shorten the representation. The happiness cutoff seems to
                 % be safer than the epslevel simplification.
 %                 uCurrent = simplify(uCurrent, epslevel);
-                uPoly = get(uCurrent,'coeffs');
+                uPoly = chebcoeffs(uCurrent);
                 firstKept = size(uPoly, 2) - (cutoff-1);
                 if ( firstKept <= 0 )
                     firstKept = 1;
