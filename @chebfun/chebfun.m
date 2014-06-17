@@ -399,7 +399,7 @@ classdef chebfun
         f = uplus(f)
         
         % Vertical scale of a CHEBFUN object.
-        out = vscale(f);
+        out = vscale(f, s);
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

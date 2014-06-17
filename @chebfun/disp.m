@@ -121,16 +121,16 @@ end
 
 % Display epslevel:
 s = [s, sprintf('Epslevel = %i.', epslevel(f))];
-s = [s, sprintf('  Vscale = %i.', vscale(f))];
+s = [s, sprintf('  Vscale = %i.', vscale(f, 'sup'))];
 
 % Display total length for piecewise chebfuns:
 if ( numFuns > 1 )
     s = [s, sprintf('  Total length = %i.', sum(len))];
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Dispaly for delta functions:
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 out = get(f, 'deltas');
 if ( ~isempty(out) )
     deltaLoc = out(1, :);
@@ -147,6 +147,6 @@ if ( ~isempty(out) )
     s = [s, sprintf( 'Locations:\n')];
     s = [s, sprintf('%8.2g', deltaLoc)];
 end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 end
