@@ -109,6 +109,9 @@ classdef chebfun
 % Class diagram: [ADchebfun] <>-- [CHEBFUN] <>-- [<<fun>>]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS PROPERTIES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties (Access = public)
         % DOMAIN of definition of a CHEBFUN object. If K = length(F.DOMAIN) is
         % greater than 1 then the CHEBFUN is referred to as a "piecewise".
@@ -139,7 +142,10 @@ classdef chebfun
         isTransposed = 0;   % (logical)
     end
     
-    methods
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS CONSTRUCTOR:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
         
         function f = chebfun(varargin)
             % The main CHEBFUN constructor!
@@ -167,8 +173,8 @@ classdef chebfun
                 % Construct a CHEBFUN from a cell array of FUN objects:
                 
                 if ( nargin > 1 )
-                    error('CHEBFUN:chebfun:nargin', ...
-                        'Only one input is allowed when passing an array of FUNs.')
+                    error('CHEBFUN:CHEBFUN:chebfun:nargin', ...
+                     'Only one input is allowed when passing an array of FUNs.')
                 end
                 
                 % Assign the cell to the .FUNS property:
@@ -192,7 +198,8 @@ classdef chebfun
                 [f.funs, f.domain] = chebfun.constructor(op, dom, data, pref);
                 
                 % Update values at breakpoints (first row of f.pointValues):
-                f.pointValues = chebfun.getValuesAtBreakpoints(f.funs, f.domain, op);
+                f.pointValues = chebfun.getValuesAtBreakpoints(f.funs, ...
+                    f.domain, op);
                 
                 % Remove unnecessary breaks (but not those that were given):
                 [ignored, index] = setdiff(f.domain, dom);
@@ -206,82 +213,13 @@ classdef chebfun
                 f = chebfun(c.', f.domain([1, end]), 'coeffs');
             end
         end
-    end
-    
-    % Static methods implemented by CHEBFUN class.
-    methods ( Static = true )
-        
-        % Main constructor.
-        [funs, ends] = constructor(op, domain, data, pref);
-
-        % Interpolate data:
-        f = interp1(x, y, method, dom);
-
-        % Compute Lagrange basis functions for a given set of points.
-        f = lagrange(x, varargin);
-
-        % ODE113 with CHEBFUN output.
-        [t, y] = ode113(varargin);
-        
-        % ODE15S with CHEBFUN output.
-        [t, y] = ode15s(varargin);
-        
-        % ODE45 with CHEBFUN output.
-        [t, y] = ode45(varargin);
-        
-        % Cubic Hermite interpolation:
-        f = pchip(x, y, method);
-        
-        % Cubic spline interpolant:
-        f = spline(x, y, d);
         
     end
     
-        % Static methods implemented by CHEBFUN class.
-    methods ( Hidden = true, Static = true )
-
-        %Convert a cell array of CHEBFUN objects to a quasimatrix.
-        G = cell2quasi(F)
-        
-        % Determine values of CHEBFUN at breakpoints.
-        vals = getValuesAtBreakpoints(funs, ends, op);
-        
-        % Merge domains.
-        newDom = mergeDomains(varargin)
-                
-        % Which interval is a point in?
-        out = whichInterval(dom, x, direction);
-        
-    end
-
-    methods ( Access = private )
-        % Set small breakpoint values to zero.
-        f = thresholdBreakpointValues(f);
-    end
-    
-    % Static private methods implemented by CHEBFUN class.
-    methods ( Static = true, Access = private )
-        
-        % Convert ODE solutions into CHEBFUN objects:
-        [y, t] = odesol(sol, opt);
-        
-        % Parse the inputs to the CHEBFUN constructor.
-        [op, domain, pref] = parseInputs(op, domain, varargin);
-
-        % Parse inputs to PLOT. Extract 'lineWidth', etc.
-        [lineStyle, pointStyle, jumpStyle, deltaStyle, out] = ...
-            parsePlotStyle(varargin)
-        
-        % Convert a string input to a function_handle.
-        op = str2op(op);
-        
-        % Vectorise a function handle input.
-        op = vec(op);
-        
-    end
-    
-    % Methods implemented by CHEBFUN class.
-    methods
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
 
         % Absolute value of a CHEBFUN.
         f = abs(f, pref)
@@ -452,9 +390,10 @@ classdef chebfun
         out = vscale(f);
     end
     
-    % Hidden methods implemented by CHEBFUN class.
-    
-    methods ( Hidden = true )
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% HIDDEN METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Hidden = true, Static = false )
         
         % Add breakpoints to the domain of a CHEBFUN.
         f = addBreaks(f, breaks, tol)
@@ -506,6 +445,88 @@ classdef chebfun
         
     end
     
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% PRIVATE METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = private, Static = false )
+        % Set small breakpoint values to zero.
+        f = thresholdBreakpointValues(f);
+    end
+    
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% STATIC METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = true )
+        
+        % Main constructor.
+        [funs, ends] = constructor(op, domain, data, pref);
+
+        % Interpolate data:
+        f = interp1(x, y, method, dom);
+
+        % Compute Lagrange basis functions for a given set of points.
+        f = lagrange(x, varargin);
+
+        % ODE113 with CHEBFUN output.
+        [t, y] = ode113(varargin);
+        
+        % ODE15S with CHEBFUN output.
+        [t, y] = ode15s(varargin);
+        
+        % ODE45 with CHEBFUN output.
+        [t, y] = ode45(varargin);
+        
+        % Cubic Hermite interpolation:
+        f = pchip(x, y, method);
+        
+        % Cubic spline interpolant:
+        f = spline(x, y, d);
+        
+    end
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% HIDDEN STATIC METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Hidden = true, Static = true )
+
+        %Convert a cell array of CHEBFUN objects to a quasimatrix.
+        G = cell2quasi(F)
+        
+        % Determine values of CHEBFUN at breakpoints.
+        vals = getValuesAtBreakpoints(funs, ends, op);
+        
+        % Merge domains.
+        newDom = mergeDomains(varargin)
+                
+        % Which interval is a point in?
+        out = whichInterval(dom, x, direction);
+        
+    end
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% PRIVATE STATIC METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = private, Static = true )
+        
+        % Convert ODE solutions into CHEBFUN objects:
+        [y, t] = odesol(sol, opt);
+        
+        % Parse the inputs to the CHEBFUN constructor.
+        [op, domain, pref] = parseInputs(op, domain, varargin);
+
+        % Parse inputs to PLOT. Extract 'lineWidth', etc.
+        [lineStyle, pointStyle, jumpStyle, deltaStyle, out] = ...
+            parsePlotStyle(varargin)
+        
+        % Convert a string input to a function_handle.
+        op = str2op(op);
+        
+        % Vectorise a function handle input.
+        op = vec(op);
+        
+    end
+    
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -521,7 +542,7 @@ function op = str2op(op)
     else
         depVar = symvar(op);
         if ( numel(depVar) ~= 1 )
-            error('CHEBFUN:STR2OP:indepvars', ...
+            error('CHEBFUN:CHEBFUN:str2op:indepvars', ...
                 'Incorrect number of independent variables in string input.');
         end
         op = eval(['@(' depVar{:} ')', op]);
@@ -535,8 +556,11 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
     % might be useful in the future.
 
     % Initialize data output.
+    data.hscale = [];
+    data.vscale = [];
     data.exponents = [];
     data.singType = [];
+    
     args = varargin;
 
     % An op-only constructor call.
@@ -574,7 +598,7 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
                 prefWasPassed = true;
                 args(1) = [];
             else
-                error('CHEBFUN:parseInputs:twoPrefs', ...
+                error('CHEBFUN:CHEBFUN:parseInputs:twoPrefs', ...
                     'Multiple preference inputs are not allowed.');
             end
         elseif ( strcmpi(args{1}, 'equi') )
@@ -591,7 +615,7 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
             op = {{[], op}};
             args(1) = [];
         elseif ( strcmpi(args{1}, 'coeffs') && iscell(op) )
-            error('CHEBFUN:parseInputs:coeffcell', ...
+            error('CHEBFUN:CHEBFUN:parseInputs:coeffcell', ...
                 'Cannot construct CHEBFUN from a cell array of coefficidnts.');
         elseif ( strcmpi(args{1}, 'trunc') )
             % Pull out this preference, which is checked for later.
@@ -631,15 +655,23 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
                     keywordPrefs.enableSingularityDetection = 1;
                     data.singType = {'sing'};
                 else
-                    error('CHEBFUN:parseInputs:badBlowupOption', ...
+                    error('CHEBFUN:CHEBFUN:parseInputs:badBlowupOption', ...
                         'Invalid value for ''blowup'' option.');
                 end
             end
             args(1:2) = [];
+        elseif ( strcmpi(args{1}, 'vscale') )
+            % Store vscale types.
+            data.vscale = args{2};
+            args(1:2) = [];
+        elseif ( strcmpi(args{1}, 'hscale') )
+            % Store vscale types.
+            data.vscale = args{2};
+            args(1:2) = [];            
         elseif ( strcmpi(args{1}, 'singType') )
             % Store singularity types.
             data.singType = args{2};
-            args(1:2) = [];
+            args(1:2) = [];            
         elseif ( strcmpi(args{1}, 'exps') )
             % Store exponents.
             data.exponents = args{2};
@@ -653,7 +685,7 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
                      (ischar(args{2}) && strncmpi(args{2}, '2nd', 1)) )
                 keywordPrefs.tech = @chebtech2;
             else
-                error('CHEBFUN:constructor:parseInputs', ...
+                error('CHEBFUN:CHEBFUN:parseInputs:badChebkind', ...
                     'Invalid value for ''chebkind'' option.');
             end
             args(1:2) = [];
@@ -663,12 +695,12 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
             args(1:2) = [];
         else
             if ( isnumeric(args{1}) )
-                error('CHEBFUN:parseInputs:badInputNumeric', ...
+                error('CHEBFUN:CHEBFUN:parseInputs:badInputNumeric', ...
                     ['Could not parse input argument sequence.\n' ...
                      '(Perhaps the construction domain is not the second ' ...
                      'argument?)']);
             else
-                error('CHEBFUN:parseInputs:badInput', ...
+                error('CHEBFUN:CHEBFUN:parseInputs:badInput', ...
                     'Could not parse input argument sequence.');
             end
         end
@@ -735,8 +767,8 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
             (numel(data.singType) ~= 2*numIntervals) )
         % If the number of exponents supplied by user isn't equal to twice the
         % the number of the FUNs, throw an error message:
-        error('CHEBFUN:constructor', ['The number of the exponents is ' ...
-            'inappropriate.']);
+        error('CHEBFUN:CHEBFUN:parseInputs:badExponents', ...
+            ['The number of the exponents is inappropriate.']);
     end
     % Sort out the exponents:
     if ( ~isempty(data.exponents) )
@@ -757,7 +789,7 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
             exps = exps(ceil(1:0.5:nExps - 0.5));
         elseif( nExps ~= 2*numIntervals )
             % The number of exponents supplied by user makes no sense.
-            error('CHEBFUN:constructor', ...
+            error('CHEBFUN:CHEBFUN:chebfun:parseInputs', ...
                 'Invalid length for vector of exponents.');
         end
         data.exponents = exps;

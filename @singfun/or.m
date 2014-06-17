@@ -8,7 +8,7 @@ function h = or(f, g)
 %   If this is not the case, garbage is returned with no warning.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( isa(f, 'singfun') )
     f = f.smoothPart;

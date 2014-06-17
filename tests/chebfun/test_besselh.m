@@ -76,7 +76,7 @@ try
     h = besselh(nu, f);
     pass(12) = false;
 catch ME
-    pass(12) = strcmp(ME.identifier, 'CHEBFUN:besselh:zero');
+    pass(12) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:besselh:zero');
 end
 
 end

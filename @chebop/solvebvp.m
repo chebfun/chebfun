@@ -116,7 +116,7 @@ if ( isnumeric(rhs) )
     % Check whether dimensions match:
     if ( ~(all(size(rhs) == [numRow, numCol])) &&  (max(size(rhs)) > 1) )
         if ( all(size(rhs) == [numCol, numRow]) )
-            warning('CHEBFUN:CHEBOP:solvebvp', ...
+            warning('CHEBFUN:CHEBOP:solvebvp:vertcat1', ...
                 'Please concatenate the right-hand side of the BVP vertically. Transposing.')
             rhs = rhs.';
         else
@@ -131,7 +131,7 @@ if ( isnumeric(rhs) )
     
 elseif ( isa(rhs, 'chebfun') && size(rhs, 2) > 1 )
     rhs = chebmatrix(mat2cell(rhs).');
-    warning('CHEBFUN:CHEBOP:solvebvp:vertcat', ...
+    warning('CHEBFUN:CHEBOP:solvebvp:vertcat2', ...
         'Please use vertical concatenation for the right-side data.')
 end
 
@@ -140,7 +140,7 @@ if ( isnumeric(u0) )
     % Check whether dimensions match:
     if ( ~all(size(u0) == [numRow, numCol]) )
         if ( all(size(u0) == [numCol, numRow]) )
-            warning('CHEBFUN:CHEBOP:solvebvp', ...
+            warning('CHEBFUN:CHEBOP:solvebvp:vertcat3', ...
                 ['Please concatenate the initial guess of the solution for '...
                 'the BVP vertically. Transposing.']);
             u0 = u0.';

@@ -11,7 +11,7 @@ function [x, y, z] = sph2cart( th, phi, r )
 %   See also POL2CART.
 
 % Copyright 2014 by The University of Oxford and The Chebfun2 Developers. 
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun2 information. 
+% See http://www.chebfun.org/ for Chebfun2 information. 
 
 % Spherical coordinates: 
 z = r .* sin( phi );

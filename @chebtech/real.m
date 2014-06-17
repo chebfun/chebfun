@@ -5,7 +5,7 @@ function f = real(f)
 % See also ISREAL, IMAG, CONJ.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Compute the real part of the coefficients:
 f.coeffs = real(f.coeffs);

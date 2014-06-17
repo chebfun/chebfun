@@ -8,7 +8,7 @@ function S = convert(A, K1, K2)
 %   coefficients of ultraspherical C^{(K2)} coefficients.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin < 3 )
     K2 = A.outputSpace;

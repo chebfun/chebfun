@@ -37,7 +37,7 @@ try
     badval = feval(f, '???');
     pass(4) = false;
 catch ME
-    pass(4) = strcmp(ME.identifier, 'CHEBFUN:feval:strInput');
+    pass(4) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:feval:strInput');
 end
 
 % Test evaluation with and without left/right limit values.
@@ -66,14 +66,14 @@ try
     badval = feval(f, x, '???');
     pass(8) = false;
 catch ME
-    pass(8) = strcmp(ME.identifier, 'CHEBFUN:feval:leftrightchar');
+    pass(8) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:feval:leftRightChar');
 end
 
 try
     badval = feval(f, x, []);
     pass(9) = false;
 catch ME
-    pass(9) = strcmp(ME.identifier, 'CHEBFUN:feval:leftright');
+    pass(9) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:feval:leftRight');
 end
 
 % Spot-check a few functions.

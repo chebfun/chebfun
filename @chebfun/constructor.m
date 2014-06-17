@@ -46,11 +46,13 @@ data.hscale = norm(dom, inf);
 if ( isinf(data.hscale) )
     data.hscale = 1;
 end
-data.vscale = pref.scale;
+if ( isempty(data.vscale) )
+    data.vscale = 0;
+end
 
 % Sanity check:
 if ( iscell(op) && (numel(op) ~= numIntervals) )
-    error('CHEBFUN:constructor:cellInput', ...
+    error('CHEBFUN:CHEBFUN:constructor:cellInput', ...
         ['Number of cell elements in OP must match the number of ', ...
          'intervals in DOMAIN.'])
 end
@@ -110,7 +112,7 @@ for k = 1:numIntervals
 
     % Warn if unhappy (as we're unable to split the domain to improve):
     if ( ~ishappy && ~warningThrown )
-        warning('CHEBFUN:constructor:notResolved', ...
+        warning('CHEBFUN:CHEBFUN:constructor:notResolved', ...
             ['Function not resolved using %d pts.', ...
             ' Have you tried ''splitting on''?'], pref.techPrefs.maxLength);
         warningThrown = true;
@@ -259,7 +261,8 @@ while ( any(sad) )
     % Fail if too many points are required:
     len = sum(cellfun(@length, funs));
     if ( len > pref.breakpointPrefs.splitMaxTotalLength )
-        warning('Function not resolved using %d pts.', ...
+        warning('CHEBFUN:CHEBFUN:constructor:funNotResolved', ...
+            'Function not resolved using %d pts.', ...
             sum(cellfun(@length, funs)));
         return
     end

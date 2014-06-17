@@ -12,7 +12,7 @@ function f = cumsum2( f )
 % See also CUMSUM, SUM, SUM2.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Check for empty:
 if ( isempty( f ) ) 

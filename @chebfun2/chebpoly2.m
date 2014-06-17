@@ -10,7 +10,7 @@ function varargout = chebpoly2( f )
 % See also CHEBPOLYPLOT2, CHEBPOLYPLOT.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty( f ) )
     varargout = { [ ] }; 
@@ -31,7 +31,7 @@ elseif ( nargout <= 3 )
     varargout = {cols_coeffs, d, rows_coeffs};
 else
     % Two output variables are not allowed.
-    error('CHEBFUN2:CHEBPOLY2:outputs', 'Incorrect number of outputs.'); 
+    error('CHEBFUN:CHEBFUN2:chebpoly2:outputs', 'Incorrect number of outputs.');
 end
 
 end

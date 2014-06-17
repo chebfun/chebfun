@@ -52,7 +52,6 @@ function v = applyVolt(u, dom, kernel)
     
     nrmu = max(1, norm(u));
     p.techPrefs.sampleTest = false;
-    p.scale = nrmu;
     
     % TODO: Explore the correct preferences for best behavior.
     %    p.techPrefs.eps = nrmu*eps;
@@ -61,7 +60,6 @@ function v = applyVolt(u, dom, kernel)
     
     breaks = dom(2:end-1);
     
-     
     v = chebfun(@integral, [dom(1) breaks dom(end)], ...
         'vectorize', 'sampletest', 0, 'chebkind', 1 );
     
@@ -70,7 +68,7 @@ function v = applyVolt(u, dom, kernel)
             h = 0;
         else
             tmp = chebfun(@(y) feval(u,y).*kernel(x,y), ...
-                [dom(1) breaks(breaks<x) x], p);
+                [dom(1) breaks(breaks<x) x], p, 'vscale', nrmu);
             h = sum( tmp );
         end
     end

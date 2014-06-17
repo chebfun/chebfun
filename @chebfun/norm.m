@@ -54,14 +54,14 @@ if ( numCols == 1 )
     switch n
         case 1
             if ( nargout == 2 )
-                error('CHEBFUN:norm:argout', ...
+                error('CHEBFUN:CHEBFUN:norm:argout', ...
                         'Cannot return two outputs for 1-norms');
             end
             normF = sum(abs(f));
 
         case {2, 'fro'}
             if ( nargout == 2 )
-                error('CHEBFUN:norm:argout', ...
+                error('CHEBFUN:CHEBFUN:norm:argout', ...
                         'Cannot return two outputs for ''fro''-norms');
             end
             f.isTransposed = 0;
@@ -84,7 +84,7 @@ if ( numCols == 1 )
         otherwise
             if ( isnumeric(n) && isreal(n) )
                 if ( nargout == 2 )
-                    error('CHEBFUN:norm:argout', ...
+                    error('CHEBFUN:CHEBFUN:norm:argout', ...
                             'Cannot return two outputs for p-norms.');
                 end
                 if ( mod(n, 2) == 0 )
@@ -93,7 +93,7 @@ if ( numCols == 1 )
                     normF = sum(abs(f).^n)^(1/n);
                 end
             else
-                error('CHEBFUN:norm:unknownNorm', ...
+                error('CHEBFUN:CHEBFUN:norm:unknownNorm', ...
                  'The only matrix norms available are 1, 2, inf, and ''fro''.');
             end
     end
@@ -115,7 +115,7 @@ else
 
         case 2
             if (nargout == 2 )
-                error('CHEBFUN:norm:argout', ...
+                error('CHEBFUN:CHEBFUN:norm:argout', ...
                     ['Cannot return two outputs for 2-norms of ' ...
                      'array-valued CHEBFUNs.']);
             end
@@ -124,7 +124,7 @@ else
 
         case 'fro'
             if ( nargout == 2 )
-                error('CHEBFUN:norm:argout', ...
+                error('CHEBFUN:CHEBFUN:norm:argout', ...
                     ['Cannot return two outputs for ''fro''-norms of ' ...
                      'array-valued CHEBFUNs.']);
             end
@@ -141,7 +141,7 @@ else
                 [normF, normLoc] = max(sum(abs(f).^n, 2));
                 normF = normF^(1/n);
             else
-                error('CHEBFUN:norm:unknownNorm', ...
+                error('CHEBFUN:CHEBFUN:norm:unknownNorm', ...
                  'The only matrix norms available are 1, 2, inf, and ''fro''.');
             end
 

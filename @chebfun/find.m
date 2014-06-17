@@ -27,7 +27,7 @@ if ( isempty(f) )
 end
 
 if ( (size(f.funs{1}, 2) > 1) && (nargout < 2) )
-    error('CHEBFUN:find:arrout', ...
+    error('CHEBFUN:CHEBFUN:find:arrout', ...
         'Use two output arguments for array-valued CHEBFUN objects.');
 end
 
@@ -43,7 +43,7 @@ for j = 1:size(f.funs{1}, 2)
     for k = 1:numel(fj.funs)
         if ( ~iszero(fj.funs{k}) )
             % Continuous part is not identically zero!
-            error('CHEBFUN:find:infset', ...
+            error('CHEBFUN:CHEBFUN:find:infset', ...
                 'Nonzero locations are not a finite set.')
         end
     end

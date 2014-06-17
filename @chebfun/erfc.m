@@ -8,11 +8,11 @@ function F = erfc(F, varargin)
 % See also ERF, ERFCX, ERFINV, ERFCINV.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Input must be real:
 if ( ~isreal(F) )
-    error('CHEBFUN:erfc:notreal', 'Input must be real.');
+    error('CHEBFUN:CHEBFUN:erfc:notreal', 'Input must be real.');
 end
 
 % Call the compose method:

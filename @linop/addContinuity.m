@@ -6,7 +6,7 @@ function L = addContinuity(L, varargin)
 %   See also LINOP.ADDCONSTRAINT, LINOPCONSTRAINT. 
 
 %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
+%  See http://www.chebfun.org/ for Chebfun information.
 
 % We don't really care about the content. But because the continuity property is
 % modified, other linop calls will not apply automatically derived continuity

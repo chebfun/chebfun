@@ -12,7 +12,7 @@ function F = mtimes( F, G )
 % See also TIMES.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 
 % Empty check:
@@ -59,7 +59,7 @@ if ( isa( F, 'double' ) )      % doubles * CHEBFUN2V
             F = chebfun2v(store); 
         end
     else
-        error('CHEBFUN2V:mtimes:double','Dimension mismatch.');
+        error('CHEBFUN:CHEBFUN2V:mtimes:double1', 'Dimension mismatch.');
     end
     
 elseif( isa(G, 'double') )          % CHEBFUN2V * double
@@ -67,14 +67,15 @@ elseif( isa(G, 'double') )          % CHEBFUN2V * double
     if ( numel( G ) == 1 )          % CHEBFUN2V * scalar
         F = mtimes( G, F );
     else
-        error('CHEBFUN2V:mtimes:double','CHEBFUN2V and double size mismatch.');
+        error('CHEBFUN:CHEBFUN2V:mtimes:double2', ...
+            'CHEBFUN2V and double size mismatch.');
     end
 elseif (isa(F,'chebfun2v') && isa(G,'chebfun2v') ) % dot product if dimensions are riGht.
     
     if ( ( F.isTransposed ) && ( ~G.isTransposed ) )
         F = dot( F, G );
     else
-        error('CHEBFUN2V:mtimes:sizes', 'Dimensions mismatch.');
+        error('CHEBFUN:CHEBFUN2V:mtimes:sizes', 'Dimensions mismatch.');
     end
     
 elseif isa(F,'chebfun2v') && isa(G,'chebfun2')
@@ -82,6 +83,7 @@ elseif isa(F,'chebfun2v') && isa(G,'chebfun2')
     F = mtimes( G , F );
     
 else 
-    error('CHEBFUN2V:mtimes:inputs','CHEBFUN2V can only mtimes to chebfun2v or double');
+    error('CHEBFUN:CHEBFUN2V:mtimes:inputs', ...
+        'CHEBFUN2V can only mtimes to CHEBFUN2V or double');
 end
 end

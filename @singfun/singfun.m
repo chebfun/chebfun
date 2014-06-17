@@ -64,14 +64,18 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-%% NOTES:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% DEVELOPER NOTES:
 %   It is a Matlab requirement to specify exactly which classes are inferior to
 %   a given class. One might think that writing "InferiorClasses = {?smoothfun}"
 %   should be OK but it turns out that subclasses do not inherit the attribute
 %   of being inferior and all inferior clases/subclasses should be mentioned 
 %   explicitly.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    %% Properties of SINGFUN objects
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS PROPERTIES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
         % Smooth part of the representation.
         smoothPart      % (SMOOTHFUN)
@@ -80,9 +84,13 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         exponents       % (1x2 double)
     end
     
-    %% CLASS CONSTRUCTOR (IMPLEMENTED BY THIS M-FILE):
-    methods
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS CONSTRUCTOR:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
+        
         function obj = singfun(op, data, pref)
+            
             % Parse inputs.
             if ( nargin < 1 )
                 % No input arguments; return an empty SINGFUN.
@@ -120,7 +128,7 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
                 % Check values of supplied exponents.
                 if ( any(size(data.exponents) ~= [1, 2]) || ...
                         ~isa(data.exponents, 'double') )
-                    error('CHEBFUN:SINGFUN:constructor', ...
+                    error('CHEBFUN:SINGFUN:singfun:badExponents', ...
                         'Exponents must be a 1x2 vector of doubles.');
                 end
 
@@ -139,14 +147,14 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
 
             % Make sure that op is a function handle or a smoothfun.
             if ( ~isa(op, 'function_handle') && ~isa(op, 'smoothfun') )
-                error( 'CHEBFUN:SINGFUN:constructor', ...
+                error( 'CHEBFUN:SINGFUN:singfun:badOp', ...
                     ['First argument must be a function handle or a ', ...
                      'SMOOTHFUN, not a %s.'], class(op));
             end
 
             % Check to avoid array-valued operators.
             if ( size(feval(op, 0), 2) > 1 )
-                error('CHEBFUN:SINGFUN:constructor', ...
+                error('CHEBFUN:SINGFUN:singfun:arrayValued', ...
                     'SINGFUN does not support array-valued construction.');
             end
 
@@ -160,7 +168,7 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
                 % smoothPart was handed to us.
                 obj.smoothPart = op;
             else
-                %% Construct New Function Handle
+                % Construct New Function Handle
                 
                 % Loosen tolerance:
                 if ( any(obj.exponents) )
@@ -174,10 +182,13 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
                     pref);
             end
         end
+        
     end
     
-    %% METHODS (NON-STATIC) IMPLEMENTED BY THIS CLASS.
-    methods
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
         
         % SINGFUN logical AND.
         h = and(f, g)
@@ -361,8 +372,11 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         
     end
     
-    %% STATIC METHODS IMPLEMENTED BY THIS CLASS.
-    methods ( Static = true )
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% STATIC METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = true )
+        
         % SmoothPart constructor
         s = constructSmoothPart( op, vscale, hscale, pref )
         
@@ -383,11 +397,14 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         
         % Construct a zero SINGFUN
         s = zeroSingFun()
+        
     end
     
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% OTHER FUNCTIONS IMPLEMENTED IN THIS M-FILE:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function checkSingTypes(singType)
 %CHECKSINGTYPES   Function to check types of exponents in a SINGFUN object.
@@ -396,7 +413,7 @@ function checkSingTypes(singType)
 %   thrown.
 
 if ( ~isa(singType, 'cell') )
-    error( 'CHEBFUN:SINGFUN:constructor', ...
+    error( 'CHEBFUN:SINGFUN:checkSingTypes:notCell', ...
         'singType must be a 1x2 cell with two strings');
 end
 
@@ -404,7 +421,8 @@ check(1) = any(strcmpi(singType{1}, {'pole', 'sing', 'root', 'none'}));
 check(2) = any(strcmpi(singType{2}, {'pole', 'sing', 'root', 'none'}));
 
 if ( ~all(check) )
-    error('CHEBFUN:SINGFUN:checkSingTypes', 'Unknown singularity type.');
+    error('CHEBFUN:SINGFUN:checkSingTypes:badType', ...
+        'Unknown singularity type.');
 end
 
 end

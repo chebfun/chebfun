@@ -73,14 +73,6 @@ classdef chebfunpref < chebpref
 %         If two delta functions are located closer than this tolerance, they 
 %         will be merged.
 %
-%   scale                      - The vertical scale constructor should use.
-%    [0]
-%
-%      Typically the CHEBFUN constructor will resolve relative to a vertical
-%      scale determined by it's own function evaluations. However, in some
-%      situations one would like to the resolve relative to a fixed vertical
-%      scale. This can be set using this preference.
-%
 %   singPrefs                  - Preferences for singularity detection.
 %
 %      exponentTol             - Tolerance for exponents.
@@ -98,14 +90,6 @@ classdef chebfunpref < chebpref
 %         
 %         The default singularity type to be used when singularity detection is
 %         enabled and no singType is provided.
-%
-%   scale                      - The vertical scale the constructor should use.
-%    [0]
-%
-%      Typically the CHEBFUN constructor will resolve relative to a vertical
-%      scale determined by it's own function evaluations. However, in some
-%      situations one would like to the resolve relative to a fixed vertical
-%      scale. This can be set using this preference.
 %
 %   tech                       - Representation technology.
 %    ['chebtech2']
@@ -187,7 +171,7 @@ classdef chebfunpref < chebpref
 %   to be a copy of Q plus any additional TECHPREFS stored in P that were not
 %   stored in Q.
 %
-% Notes:
+% Notes:CHEBOP
 %   When building a CHEBFUNPREF from a structure using the second calling
 %   syntax above, one should take care to ensure that preferences for the
 %   underlying representation technology are specified once and only once;
@@ -216,7 +200,7 @@ classdef chebfunpref < chebpref
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Developer note:
+% DEVELOPER NOTE:
 %
 % The reason this object was introduced is to allow for a simplified approach
 % to preferences in the upper layers (i.e., CHEBFUN, FUN, and SINGFUN) which
@@ -252,19 +236,22 @@ classdef chebfunpref < chebpref
 % the function.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    methods
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS CONSTRUCTOR:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
 
         function outPref = chebfunpref(varargin)
             if ( nargin < 1 )
                 inPrefList = struct();
             elseif ( ischar(varargin{1}) )
                 if ( nargin == 1 )
-                    error('CHEBFUN:chebfunpref:deprecated', ...
+                    error('CHEBFUN:CHEBFUNPREF:chebfunpref:deprecated', ...
                         ['chebfunpref() no longer supports queries of ', ...
                          'the form chebfunpref(''prop'').\n', ...
                          'Please use chebfunpref().prop.']);
                 else
-                    error('CHEBFUN:chebfunpref:deprecated', ...
+                    error('CHEBFUN:CHEBFUNPREF:chebfunpref:deprecated', ...
                         ['chebfunpref() no longer supports assignment ', ...
                          'via chebfunpref(''prop'', val).\n', ...
                          'Please use chebfunpref.setDefaults(''prop'', val).']);
@@ -280,7 +267,7 @@ classdef chebfunpref < chebpref
                 if ( ~isa(varargin{1}, 'chebfunpref') || ...
                      (~isa(varargin{2}, 'chebfunpref') && ...
                       ~isstruct(varargin{2})) )
-                      error('CHEBFUN:chebfunpref:badTwoArgCall', ...
+                      error('CHEBFUN:CHEBFUNPREF:chebfunpref:badTwoArgCall', ...
                         ['When calling CHEBFUNPREF with two arguments, ' ...
                         'the first must be a CHEBFUNPREF, and the ' ...
                         'second must be a CHEBFUNPREF or a struct.']);
@@ -290,7 +277,7 @@ classdef chebfunpref < chebpref
                     inPrefList = varargin{2};
                 end
             elseif ( nargin > 2 )
-                error('CHEBFUN:chebfunpref:tooManyInputs', ...
+                error('CHEBFUN:CHEBFUNPREF:chebfunpref:tooManyInputs', ...
                     'Too many input arguments.')
             end
 
@@ -319,6 +306,13 @@ classdef chebfunpref < chebpref
                 end
             end
         end
+        
+    end
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
 
         function out = subsref(pref, ind)
         %SUBSREF   Subscripted referencing for CHEBFUNPREF.
@@ -363,7 +357,7 @@ classdef chebfunpref < chebpref
                         out = subsref(out, ind(2:end));
                     end
                 otherwise
-                    error('CHEBFUNPREF:subsref:badType', ...
+                    error('CHEBFUN:CHEBFUNPREF:subsref:badType', ...
                         'Invalid subscripted reference type.')
             end
         end
@@ -391,7 +385,7 @@ classdef chebfunpref < chebpref
                             pref.prefList.techPrefs, ind, val);
                     end
                 otherwise
-                    error('CHEBFUNPREF:subsasgn:badType', ...
+                    error('CHEBFUN:CHEBFUNPREF:subsasgn:badType', ...
                         'Invalid subscripted assignment type.')
             end
         end
@@ -454,16 +448,8 @@ classdef chebfunpref < chebpref
             fprintf('    cheb2Prefs\n');
             fprintf([padString('        maxRank:') '%d\n'], ...
                 prefList.cheb2Prefs.maxRank');
-            fprintf([padString('        maxLength:') '%d\n'], ...
-                prefList.cheb2Prefs.maxLength');            
-            fprintf([padString('        eps:') '%d\n'], ...
-                prefList.cheb2Prefs.eps');            
-            fprintf([padString('        exactLength:') '%d\n'], ...
-                prefList.cheb2Prefs.exactLength');            
             fprintf([padString('        sampleTest:') '%d\n'], ...
-                prefList.cheb2Prefs.sampleTest');            
-            fprintf([padString('    scale:') '%d\n'], ...
-                prefList.scale);
+                prefList.cheb2Prefs.sampleTest');
             
             techStr = func2str(tech);
             fprintf([padString('    tech:') '@%s\n'], techStr)
@@ -500,7 +486,10 @@ classdef chebfunpref < chebpref
 
     end
 
-    methods ( Static = true )
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% STATIC METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
+    methods ( Access = public, Static = true )
 
         function pref1 = mergePrefs(pref1, pref2, map)
         %MERGEPREFS   Merge preference structures.
@@ -522,7 +511,7 @@ classdef chebfunpref < chebpref
         %   argument to a "tech" constructor.
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        % Developer notes:
+        % DEVELOPER NOTES:
         %  - This function is a helper function intended for use by "technology"
         %    objects (usually subclasses of SMOOTHFUN) for managing their
         %    preferences.  See CHEBTECH.TECHPREF for an illustration.
@@ -607,7 +596,10 @@ classdef chebfunpref < chebpref
         end
     end
 
-    methods ( Static = true, Access = private)
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% PRIVATE STATIC METHODS
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Static = true, Access = private )
 
         function varargout = manageDefaultPrefs(varargin)
         %MANAGEDEFAULTPREFS   Private method for handling default preferences.
@@ -693,7 +685,6 @@ classdef chebfunpref < chebpref
             factoryPrefs.enableDeltaFunctions = true;
                 factoryPrefs.deltaPrefs.deltaTol = 1e-9;
                 factoryPrefs.deltaPrefs.proximityTol = 1e-11;
-            factoryPrefs.scale = 0;
             factoryPrefs.tech = @chebtech2;
             factoryPrefs.techPrefs = struct();
                 factoryPrefs.techPrefs.eps = 2^(-52);
@@ -703,11 +694,9 @@ classdef chebfunpref < chebpref
                 factoryPrefs.techPrefs.sampleTest = true;
             factoryPrefs.cheb2Prefs = struct(); 
                 factoryPrefs.cheb2Prefs.maxRank = 513;   
-                factoryPrefs.cheb2Prefs.maxLength = 65537;   
-                factoryPrefs.cheb2Prefs.eps = 2^(-52);   
-                factoryPrefs.cheb2Prefs.exactLength = 0; 
                 factoryPrefs.cheb2Prefs.sampleTest = 1;
         end
 
     end
+    
 end

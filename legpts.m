@@ -50,7 +50,7 @@ method_set = nargin == 3;
 
 % Deal with trivial cases:
 if ( n < 0 )
-    error('CHEBFUN:legpts:n_negative', ...
+    error('CHEBFUN:legpts:nNegative', ...
         'First input should be a positive number.');
 elseif ( n == 0 )   % Return empty vectors if n == 0:
     x = [];
@@ -464,7 +464,7 @@ function [x, w, v, t, ders] = asy2(n, npts)
 %ASY2 Boundary asymptotics method.
 
 if ( npts > ceil((n+1)/2) )
-    error('CHEBFUN:legpts:asy2:N', 'NPTS must be <= N/2');
+    error('CHEBFUN:legpts:N', 'NPTS must be <= N/2');
 end
 
 %%%%%%%% Approximation for Legendre roots: (See Olver 1974) %%%%%%%%

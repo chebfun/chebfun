@@ -8,12 +8,12 @@ function F = cot(F, varargin)
 % See also ACOT, COTD.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % [TODO]:  Restore or change this once we have decided the proper behavior or
 % isfinite() and defined that function.
 % if ( ~isfinite(f) )
-%     error('CHEBFUN:cot:inf',...
+%     error('CHEBFUN:CHEBFUN:cot:inf',...
 %         'COT is not defined for functions which diverge to infinity');
 % end
 

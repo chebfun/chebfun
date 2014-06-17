@@ -11,7 +11,7 @@ function B = subsref(A, sr)
 %   See also CHEBMATRIX.SUBSASGN.
 
 %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
+%  See http://www.chebfun.org/ for Chebfun information.
 
 % The only reason this method exists is to provide backward compatibility with
 % the A(n) realization syntax from version 4, which is referenced in

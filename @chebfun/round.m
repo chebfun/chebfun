@@ -17,7 +17,7 @@ end
 
 % Deal with unbounded functions:
 if ( ~isfinite(f) )
-    error('CHEBFUN:round:inf', ...
+    error('CHEBFUN:CHEBFUN:round:inf', ...
         'round() is not defined for functions which diverge to infinity.');
 end
 
