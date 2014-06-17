@@ -9,7 +9,8 @@ function out = vscale(F, supString)
 %   VSCALE(F, 'ess-sup') is the same as VSCALE(F)
 % 
 %   VSCALE(F, 'sup') also takes into account the point values of the object 
-%   F at its break points while computing its VSCALE.
+%   F at its break points while computing its VSCALE. This is the vscale
+%   returned in CHEBFUN/DISPLAY.
 %
 % See also MAX, MINANADMAX.
 
