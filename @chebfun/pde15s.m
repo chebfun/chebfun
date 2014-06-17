@@ -220,12 +220,12 @@ end
                 % Shorten the representation. The happiness cutoff seems to
                 % be safer than the epslevel simplification.
 %                 uCurrent = simplify(uCurrent, epslevel);
-                uPoly = chebpoly(uCurrent);
+                uPoly = get(uCurrent,'coeffs');
                 firstKept = size(uPoly, 2) - (cutoff-1);
                 if ( firstKept <= 0 )
                     firstKept = 1;
                 end
-                uCurrent = chebfun(uPoly(:,firstKept:end).', DOMAIN, 'coeffs');
+                uCurrent = chebfun(uPoly(firstKept:end,:), DOMAIN, 'coeffs');
                 
                 ctr = ctr + 1;
                 uOut{ctr} = uCurrent;
@@ -300,7 +300,6 @@ end
             status = guiEvent(status);
         end
     end
-
 
     function varargout = plotFun(U, t)
         %PLOTFUN    Plot current solution U at a time t.
@@ -465,7 +464,7 @@ else
             v = 0;
         end
         if ( ~isnumeric(v) )
-            error('CHEBFUN:CHEBFUN:pde15s:nonNumericVal1' ...
+            error('CHEBFUN:CHEBFUN:pde15s:nonNumericVal1', ...
                 'For BCs of the form {char, val} val must be numeric.')
         end
         if ( strcmpi(bc.left, 'dirichlet') )
@@ -704,7 +703,16 @@ clear global SYSSIZE
         % much trickier. Find out what the BC deviance from nominal really is:
         BCVALOFFSET = 0;            % recover nominal value in next call
         F = odeFun(tSpan(1),U0(:)); % also assigns to "rows" and "q"
-        BCVALOFFSET = F(rows);
+        
+        % If this is for the initial chunk, check whether the initial
+        % condition nearly satisfies the BCs.
+        % We're quite lax about this, because discretization at low N can
+        % cause derivatives to look fairly bad. 
+        if ( length(uOut) > 1 ) && ( norm(F(rows)) > 0.05*norm(F) )  
+            warning('Chebfun:pde15s:BadIC',...
+                'Initial state may not satisfy the boundary conditions.')
+        end
+        BCVALOFFSET = F(rows) - q;
         
         % Solve ODE over time chunk with ode15s:
         try
