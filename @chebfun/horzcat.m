@@ -16,7 +16,7 @@ function out = horzcat(varargin)
 % See also VERTCAT, CAT, QUASIMATRIX, CHEBMATRIX.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Remove empties:
 empties = cellfun(@isempty, varargin);
@@ -75,7 +75,7 @@ allDomainsCell = cellfun(@(f) f.domain, varargin, 'UniformOutput', false);
 % Ensure that the domains match:
 domainEnds = allDomainsCell{1}([1 end]);
 if ( any(cellfun(@(d) any(d([1 end]) ~= domainEnds), allDomainsCell)) )
-    error('CHEBFUN:horzcat:domains', 'Inconsistent domains.');
+    error('CHEBFUN:CHEBFUN:horzcat:domains', 'Inconsistent domains.');
 end
 % [TODO]: checkDomains?
 

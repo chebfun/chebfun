@@ -14,7 +14,8 @@ if ( isscalar(A) )
     X = B*(1/A);
     
 elseif ( size(A, 2) ~= size(B, 2) )
-    error('CHEBFUN:mldivide:dimensions', 'Matrix dimensions must agree.')
+    error('CHEBFUN:CHEBFUN:mrdivide:dimensions', ...
+        'Matrix dimensions must agree.')
     
 elseif ( isnumeric(A) )
     % [INF x M] * [M x N] = [INF x N]:

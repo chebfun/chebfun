@@ -4,10 +4,10 @@ function C = horzcat(varargin)
 %   blocks, chebfuns, and scalars given in the call, if their row sizes
 %   are compatible. 
 %
-%   See also CHEBMATRIX.CAT, CHEBMATRIX.VERTCAT.
+% See also CHEBMATRIX.CAT, CHEBMATRIX.VERTCAT.
 
 %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
+%  See http://www.chebfun.org/ for Chebfun information.
 
 % Remove empty arguments.
 isemp = cellfun(@isempty,varargin);
@@ -34,7 +34,8 @@ end
 if ( all(m==m(1)) )
     B = cell( m(1), sum(n) );
 else
-    error('Incompatible row sizes.')
+    error('CHEBFUN:CHEBMATRIX:horzcat:sizeMismatch', ...
+        'Incompatible row sizes.')
 end
 
 % Now we need to flatten out all the inner nested cell divisons, leaving
@@ -50,7 +51,8 @@ C = chebmatrix( B );
 % Finally, check block size compatibility.
 [row, col] = blockSizes(C);
 if ( any( any( bsxfun(@ne, row(:,1), row) ) ) )
-    error('Block row sizes must be the same.')
+    error('CHEBFUN:CHEBMATRIX:horzcat:blockSizeMismatch', ...
+        'Block row sizes must be the same.')
 end
 
 end

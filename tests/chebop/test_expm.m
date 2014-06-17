@@ -37,7 +37,7 @@ err(1) = norm(V4 - feval(u{6}, chebpts(15)));
 %%
 % Test backward compatibility:
 A = chebop(@(u) diff(u, 2), [-1, 1], 0);
-warnState = warning('off', 'CHEBFUN:chebop:expm:deprecated');
+warnState = warning('off', 'CHEBFUN:CHEBOP:expm:deprecated');
 E = expm(A, t);
 warning(warnState);
 u6 = E*u0;

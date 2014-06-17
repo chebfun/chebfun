@@ -9,10 +9,10 @@ function [x, w, v] = chebpts(n)
 %   weights V corresponding to the Chebyshev points X. The barycentric weights
 %   are normalised to have infinity norm equal to 1 and a positive first entry.
 %
-% See also BARY, QUADWTS, BARYWTS, LEGPTS, JACPTS, LAGPTS, and HERMPTS.
+% See also BARY, QUADWTS, BARYWTS, FOURPTS, LEGPTS, JACPTS, LAGPTS, and HERMPTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( n == 0 )     % Special case (no points)
     x = []; 

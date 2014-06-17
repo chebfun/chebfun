@@ -4,7 +4,7 @@ function f = log( f )
 %   function passes through or becomes numerically close to zero.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 
 if ( isempty( f ) ) 
@@ -15,7 +15,7 @@ end
 [bol, wzero] = singleSignTest( f ); 
 
 if ( bol == 0 ) || ( wzero == 1 )
-    error('CHEBFUN2:LOG', ...
+    error('CHEBFUN:CHEBFUN2:log:notSmooth', ...
     'A change of sign/zero has been detected, unable to represent the result.'); 
 end
 

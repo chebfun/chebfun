@@ -7,7 +7,7 @@ function edge = detectEdge(f, op, vscale, hscale, pref)
 %   of DOMAIN.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % PSEUDOCODE. Taken from Pachon, Platte and Trefethen, "Piecewise smooth
@@ -61,8 +61,8 @@ if ( all( isfinite( dom ) ) )
     
 else
     % unbounded domain
-    forHandle = f.mapping.for;
-    derHandle = f.mapping.der;
+    forHandle = f.mapping.For;
+    derHandle = f.mapping.Der;
     dom = [-1+eps, 1-eps];
     op = @(x) op(forHandle(x));
     if ( any(exps) )
@@ -130,7 +130,7 @@ gridSize234 = 15; % Grid size for higher derivative computations in loop.
 ends = [new_a(numTestDers), new_b(numTestDers)];
 
 % Main loop:
-checkBlowUp = pref.enableSingularityDetection;
+checkBlowUp = pref.blowup;
 while ( (maxDer(numTestDers) ~= inf) && ~isnan(maxDer(numTestDers)) ...
     &&  (diff(ends) > eps*hscale) )
 

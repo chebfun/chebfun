@@ -33,7 +33,7 @@ function varargout = ode45(F,tspan,init,varargin)
 %  indices in vector SOL.ie specify which event occurred.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % [TODO: When using events the default tolerance should be machine precision.]
 
@@ -83,7 +83,8 @@ end
 
 t = chebfun(tspan([1 end]), tspan);
 if ( any(any(isnan(sol.y))) )
-    error('CHEBFUN2V:ODE45:NaN', 'IVP returned NaN, try shorter time domain.')
+    error('CHEBFUN:CHEBFUN2V:ode45:nan', ...
+        'IVP returned NaN, try shorter time domain.')
 else
     ys = sol.y;
 end

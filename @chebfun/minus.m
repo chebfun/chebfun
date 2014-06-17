@@ -6,7 +6,7 @@ function f = minus(f, g)
 %   H = MINUS(F, G) is called for the syntax 'F - G'.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 f = plus(f, uminus(g));
 

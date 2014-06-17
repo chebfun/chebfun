@@ -9,7 +9,7 @@ function f = chebfun(A)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( ~any( size(A) == 1 ) )
-    error('CHEBFUN:CHEBMATRIX:chebfun', ...
+    error('CHEBFUN:CHEBMATRIX:chebfun:badInput', ...
         'Only a row or column CHEBMATRIX can be converted to CHEBFUN.')
 end
 
@@ -25,7 +25,8 @@ for n = 1:length(A.blocks)
     elseif ( isVal(n) )
         f = [f, chebfun(A.blocks{n}, A.domain)];
     else
-        error('Cannot convert element %i to a CHEBFUN.', n)
+        error('CHEBFUN:CHEBMATRIX:chebfun:cannotConvert', ...
+            'Cannot convert element %i to a CHEBFUN.', n)
     end
 end
 

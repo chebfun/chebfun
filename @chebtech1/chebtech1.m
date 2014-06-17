@@ -63,9 +63,11 @@ classdef chebtech1 < chebtech
 %
 % Class diagram: [<<CHEBTECH>>] <-- [CHEBTECH1]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-    %% METHODS IMPLEMENTED BY THIS M-FILE:
-    methods
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS CONSTRUCTOR:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
         function obj = chebtech1(op, data, pref)
             % Parse inputs.
             if ( (nargin == 0) || isempty(op) )
@@ -102,14 +104,29 @@ classdef chebtech1 < chebtech
             % Check for NaNs (if not happy):
             if ( any(isnan(obj.coeffs(:))) )
                 % Here we throw an error if NaNs were encountered anywhere.
-                error('CHEBFUN:CHEBTECH1:constructor:naneval', ...
+                error('CHEBFUN:CHEBTECH1:chebtech1:nanEval', ...
                     'Function returned NaN when evaluated.')
             end
         end
     end
     
-    %% STATIC METHODS IMPLEMENTED BY THIS CLASS:
-    methods ( Static = true )
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
+        
+        % Compose two CHEBTECH1 objects or a CHEBTECH1 with a function handle:
+        h = compose(f, op, g, data, pref)
+        
+        % Get method:
+        val = get(f, prop);
+
+    end
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% STATIC METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = true )
         
         % Aliasing:
         coeffs = alias(coeffs, m)
@@ -140,19 +157,12 @@ classdef chebtech1 < chebtech
         coeffs = vals2coeffs(values)
         
     end
-    
-    %% METHODS IMPLEMENTED BY THIS CLASS:
-    methods
         
-        % Compose two CHEBTECH1 objects or a CHEBTECH1 with a function handle:
-        h = compose(f, op, g, data, pref)
-        
-        % Get method:
-        val = get(f, prop);
-
-    end
-    
 end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% METHODS IMPLEMENTED IN THIS FILE:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function data = parseDataInputs(data, pref)
 %PARSEDATAINPUTS   Parse inputs from the DATA structure and assign defaults.

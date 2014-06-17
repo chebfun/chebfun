@@ -5,10 +5,10 @@ function F = exp(F, varargin)
 %   EXP(F, PREF) does the same but uses the CHEBFUNPREF object PREF when computing
 %   the composition.
 %
-%   See also EXPM1.
+% See also EXPM1.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Call the compose method:
 F = compose(F, @exp, varargin{:});

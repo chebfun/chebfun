@@ -51,14 +51,14 @@ try
     h = f == g
     pass(7) = false;
 catch ME
-    pass(7) = strcmp(ME.identifier, 'CHEBFUN:eq:array');
+    pass(7) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:eq:array');
 end
 
 try
     h = g == f
     pass(8) = false;
 catch ME
-    pass(8) = strcmp(ME.identifier, 'CHEBFUN:eq:array');
+    pass(8) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:eq:array');
 end
 
 % Test for singular function:

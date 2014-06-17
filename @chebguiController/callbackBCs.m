@@ -90,7 +90,7 @@ elseif ( strcmp(type, 'bc') )
     end
     
 else
-    error('CHEBFUN:chebguiController:unknown', ...
+    error('CHEBFUN:CHEBGUICONTROLLER:callbackBCs:unknown', ...
         'Unknown BC type %s.', type);
     
 end

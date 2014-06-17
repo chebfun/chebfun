@@ -54,7 +54,7 @@ if ( ~isempty(indVarNameInit{1}) && ~isempty(indVarNameDE{1}) )
     if ( strcmp(indVarNameDE{1}, indVarNameInit{1}) )
         indVarNameSpace = indVarNameDE{1};
     else
-        error('Chebgui:SolveGUIbvp', 'Independent variable names do not agree')
+        error('CHEBFUN:CHEBGUIEXPORTERBVP:exportInfo:SolveGUIbvp', 'Independent variable names do not agree')
     end
 elseif ( ~isempty(indVarNameInit{1}) && isempty(indVarNameDE{1}) )
     indVarNameSpace = indVarNameInit{1};

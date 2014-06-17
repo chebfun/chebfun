@@ -11,7 +11,7 @@ function [x, w, v] = lobpts(n, varargin)
 %
 %  In each case, N should be an integer greater than or equal to 2.
 %
-%  See also CHEBPTS, LEGPTS, JACPTS, LEGPOLY, RADAUPTS.
+% See also CHEBPTS, LEGPTS, JACPTS, LEGPOLY, RADAUPTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -39,7 +39,7 @@ function [x, w, v] = lobpts(n, varargin)
 
 %% Trivial cases:
 if ( n == 1 )
-    error('CHEBFUN:lobpts', 'N = 1 is not supported.');
+    error('CHEBFUN:lobpts:notSupported', 'N = 1 is not supported.');
 elseif ( n == 2 )
     x = [-1 ; 1];
     w = [1, 1];

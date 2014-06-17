@@ -28,7 +28,8 @@ else
     Bdata = B.blocks;
     [nB, p] = size(B);
     if ( n ~= nB )
-        error('Operand inner dimensions must agree.')
+        error('CHEBFUN:CHEBMATRIX:mtimes:dims', ...
+            'Operand inner dimensions must agree.')
     end
     
     C = cell(m, p);    

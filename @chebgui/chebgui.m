@@ -107,7 +107,10 @@ classdef chebgui
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
     
-    properties
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS PROPERTIES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    properties ( Access = public )
         type = '';          % Type of chebgui (bvp, pde, or eig)
         domain = '';        % Spacial domain (may contain breakpoints)
         DE = '';            % Differential equation, or rhs in u_t = ... for PDEs
@@ -142,7 +145,10 @@ classdef chebgui
             'numeigs', '');
     end
     
-    methods
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS CONSTRUCTOR:.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
         
         function c = chebgui(varargin)
         %CHEBGUI    The CHEBGUI constructor
@@ -177,7 +183,7 @@ classdef chebgui
                     % Calling with a single string loads a .guifile`
                     if ( ~exist(v1,'file') )
                         % Throw a method if this .guifie is not found
-                        error('CHEBFUN:chebgui:missingfile', ...
+                        error('CHEBFUN:CHEBGUI:chebgui:missingFile', ...
                               'Unable to find file: %s', v1);
                     end
                     % Load the existing demp
@@ -199,34 +205,10 @@ classdef chebgui
         end
     end
     
-    methods ( Static = true )
-        
-        % Information shown during BVP solving.
-        [dummy, displayTimer] = displayBVPinfo(handles, mode, varargin);
-        
-        % Return a random BVP CHEBGUI demo.
-        cg = demo()
-
-        % Load a demo stored in a .guifile to a CHEBGUI object
-        cg = demo2chebgui(demoPath)
-        
-        function initialiseFigures(handles)
-            %INITIALISEFIGURES    Reset figures in the CHEBGUI window.
-
-            % Reset the top figures
-            cla(handles.fig_sol, 'reset');
-            title('Solutions')
-            box on
-
-            % Reset the bottom figure
-            cla(handles.fig_norm, 'reset');
-            title('Updates')
-	    box on
-        end
-        
-    end
-    
-    methods( Access = public )
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   
+    methods ( Access = public, Static = false )
        
         % Export a BVP to an .m file
         exportBVP2mfile(guifile, pathname, filename)
@@ -249,4 +231,34 @@ classdef chebgui
         
     end
     
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% STATIC METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = true )
+        
+        % Information shown during BVP solving.
+        [dummy, displayTimer] = displayBVPinfo(handles, mode, varargin);
+        
+        % Return a random BVP CHEBGUI demo.
+        cg = demo()
+
+        % Load a demo stored in a .guifile to a CHEBGUI object
+        cg = demo2chebgui(demoPath)
+        
+        function initialiseFigures(handles)
+            %INITIALISEFIGURES    Reset figures in the CHEBGUI window.
+
+            % Reset the top figures
+            cla(handles.fig_sol, 'reset');
+            title('Solutions')
+            box on
+
+            % Reset the bottom figure
+            cla(handles.fig_norm, 'reset');
+            title('Updates')
+            box on
+        end
+        
+    end
+         
 end

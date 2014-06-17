@@ -141,6 +141,5 @@ pass(13) = ( norm(errV, inf) < epslevel(f)*vscale(f) ) && ...
 gam = chebfun('gamma(x)',[-4 4],'blowup','on','splitting','on');
 mm = minandmax(1./gam);
 pass(14) = norm(mm - [-1.125953228398760;4.079508980001102]) < 100*epslevel(gam);
-      
 
 end

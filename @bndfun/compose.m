@@ -41,7 +41,7 @@ if ( nargin == 2 )
         % with the onefun of G, we apply the inverse map for the domain of G to
         % find the (sub)interval on [-1, 1] on which the range of F (and hence
         % its ONEFUN) lives.
-        fMapped  = g.mapping.inv(f.onefun);
+        fMapped  = g.mapping.Inv(f.onefun);
         % Try to do the composition, will only work if the range of F lies in
         % the domain of G.
         f.onefun = compose(fMapped, g.onefun);

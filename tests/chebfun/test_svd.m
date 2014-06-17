@@ -29,7 +29,7 @@ try
     g = svd(f, 1);
     pass(7) = false;
 catch ME
-    pass(7) = strcmp(ME.identifier, 'CHEBFUN:svd:twoargs');
+    pass(7) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:svd:twoArgs');
 end
 
 end

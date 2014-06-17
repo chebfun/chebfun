@@ -42,7 +42,7 @@ elseif ( isa(A, 'double') )  % double / UNBNDFUN
         'by an UNBNDFUN.']);
     
 elseif ( isa(B, 'unbndfun') && isa(A, 'unbndfun') )
-    error('CHEBFUN:UNBNDFUN:mrdivide:UnbndfunDivUnbndfun', ...
+    error('CHEBFUN:UNBNDFUN:mrdivide:unbndfunDivUnbndfun', ...
         'Use ./ to divide UNBNDFUN by an UNBNDFUN.');
     
 else

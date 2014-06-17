@@ -15,9 +15,9 @@ if ( nargin == 1 || isempty(g) )
     % Get the data from the ONEFUN:
     data = plotData(f.onefun);
     
-    % Map the 'x' data using f.mapping.for:
-    data.xLine = f.mapping.for(data.xLine);
-    data.xPoints = f.mapping.for(data.xPoints);
+    % Map the 'x' data using f.mapping.For:
+    data.xLine = f.mapping.For(data.xLine);
+    data.xPoints = f.mapping.For(data.xPoints);
     
     %% Figure out the xlim:
     data.xLim = get(f, 'domain');

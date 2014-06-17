@@ -7,7 +7,7 @@ if ( nargin < 1 )
     pref = chebfunpref();
 end
 
-pref.enableBreakpointDetection = 1;
+pref.splitting = 1;
 
 % Check empty case.
 f = chebfun();

@@ -6,7 +6,7 @@ function n = normal(c, unit)
 %   N = NORMAL(C, 'unit') returns the unit normal vector to the curve C. 
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % [TODO]:  Reconsider how this function should behave in the presence of cusps
 % once we have singfun in place.
@@ -17,12 +17,13 @@ if ( nargin > 1 )
     if ( strcmpi(unit, 'unit') )
         nrmn = norm(n);
         if ( nrmn == 0 )
-            error('CHEBFUN:normal:zero', 'Normal vector is zero.'); 
+            error('CHEBFUN:CHEBFUN:normal:zero', 'Normal vector is zero.'); 
         else
             n = n./nrmn;
         end
     else
-        error('CHEBFUN:normal:args', 'Second argument is not recognised.');
+        error('CHEBFUN:CHEBFUN:normal:args', ...
+            'Second argument is not recognised.');
     end
 end
 

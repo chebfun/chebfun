@@ -67,7 +67,7 @@ pow = -0.5;
 op = @(x) (x - dom(1)).^pow.*sin(x);
 
 % construction:
-f = chebfun(op, dom, 'enableSingularityDetection', true, ...
+f = chebfun(op, dom, 'blowup', 2, ...
     'singType', {'sing', 'none'});
 
 % check values:
@@ -121,7 +121,7 @@ pow = -1;
 op = @(x) (x - dom(1)).^pow.*sin(x);
 
 % construction:
-f = chebfun(op, dom, 'enableSingularityDetection', true, ...
+f = chebfun(op, dom, 'blowup', 2, ...
     'singType', {'pole', 'none'});
 
 % check values:
@@ -174,7 +174,7 @@ pow = -0.5;
 op = @(x) (x - dom(1)).^pow.*sin(x);
 
 % construction:
-f = chebfun(op, 'enableSingularityDetection', true, ...
+f = chebfun(op, 'blowup', 2, ...
     'singType', {'sing', 'none'});
 
 % check values:
@@ -221,7 +221,7 @@ pow = -1;
 op = @(x) (x - dom(1)).^pow.*sin(x);
 
 % construction:
-f = chebfun(op, 'enableSingularityDetection', true, ...
+f = chebfun(op, 'blowup', 2, ...
     'singType', {'pole', 'none'});
 
 % check values:

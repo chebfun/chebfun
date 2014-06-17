@@ -9,7 +9,7 @@ function f = plus(f, g)
 %   _not_ supported if both F and G are CHEBFUN objects.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( ~isa(f, 'chebfun') )   % ??? + CHEBFUN
     
@@ -52,7 +52,7 @@ elseif ( isnumeric(g) )     % CHEBFUN + double
         if ( isscalar(g) )
             g = repmat(g, 1, numCols);
         elseif ( length(g) ~= numCols || min(size(g)) ~= 1 )
-            error('CHEBFUN:plus:dims', 'Matrix dimensions must agree.');
+            error('CHEBFUN:CHEBFUN:plus:dims', 'Matrix dimensions must agree.');
         end
         % Transpose g if f is a row CHEBFUN:
         if ( f(1).isTransposed )
@@ -67,7 +67,7 @@ elseif ( isnumeric(g) )     % CHEBFUN + double
     
 elseif ( ~isa(g, 'chebfun') ) % CHEBFUN + ???
     
-    error('CHEBFUN:plus:unknown', ...
+    error('CHEBFUN:CHEBFUN:plus:unknown', ...
         ['Undefined function ''plus'' for input arguments of type %s ' ...
         'and %s.'], class(f), class(g));
     
@@ -80,10 +80,10 @@ else                          % CHEBFUN + CHEBFUN
     
     % Check to see if one CHEBFUN is transposed:
     if ( xor(f(1).isTransposed, g(1).isTransposed) )
-        error('CHEBFUN:plus:matdim', ...
+        error('CHEBFUN:CHEBFUN:plus:matdim', ...
             'Matrix dimensions must agree. (One input is transposed).');
     elseif ( numColumns(f) ~= numColumns(g) )
-        error('CHEBFUN:plus:dims', 'Matrix dimensions must agree.')
+        error('CHEBFUN:CHEBFUN:plus:dims', 'Matrix dimensions must agree.')
     end
     
     if ( numel(f) == 1 && numel(g) == 1 )

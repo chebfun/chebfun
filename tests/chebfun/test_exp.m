@@ -7,7 +7,7 @@ if ( nargin < 1 )
     pref = chebfunpref();
 end
 
-pref.enableBreakpointDetection = 1;
+pref.splitting = 1;
 
 % Generate a few random points in [-1 1] to use as test values.
 seedRNG(7681);

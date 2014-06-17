@@ -62,7 +62,7 @@ try
     df3 = diff(f3, 1, 3);
     pass(9) = false;
 catch ME
-    pass(9) = strcmp(ME.identifier, 'CHEBFUN:diff:dim');
+    pass(9) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:diff:dim');
 end
 
 %% Test on singular function: splitting on.

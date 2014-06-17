@@ -4,7 +4,7 @@ function transpose(f) %#ok<*INUSD>
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-error('CHEBFUN:FUN:CLASSICFUN:transpose:notpossible', ...
+error('CHEBFUN:CLASSICFUN:transpose:notpossible', ...
     'CLASSICFUN objects are not transposable.')
 
 end

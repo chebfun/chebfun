@@ -8,7 +8,7 @@ function F = sec(F, varargin)
 % See also ASEC, SECD.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Call the compose method:
 F = compose(F, @sec, varargin{:});

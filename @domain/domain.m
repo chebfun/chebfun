@@ -1,25 +1,29 @@
 classdef (InferiorClasses = {?chebfun}) domain < double
-    %DOMAIN   Utility class for CHEBFUN. Mostly for backward compatibility.
+%DOMAIN   Utility class for CHEBFUN. Mostly for backward compatibility.
+
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% DOMAIN Class Description:
+%
+% DOMAIN inherits from a standard Matlab DOUBLE. A domain object only
+% contains vector for the endpoints and breakpoints of the interval it
+% represents. This class is lightly documented, since it is mostly intended
+% for backward compatibility.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-    % See http://www.chebfun.org/ for Chebfun information.
-    
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % DOMAIN Class Description:
-    %
-    % DOMAIN inherits from a standard Matlab DOUBLE. A domain object only
-    % contains vector for the endpoints and breakpoints of the interval it
-    % represents. This class is lightly documented, since it is mostly intended
-    % for backward compatibility.
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-    %% PROPERTIES OF DOMAIN OBJECTS.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS PROPERTIES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
         
     end
     
-    %% METHODS IMPLEMENTED BY THIS M-FILE:
-    methods
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS CONSTRUCTOR:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
 
         function obj = domain(varargin)
             %Constructor for the DOMIAN class.
@@ -36,25 +40,12 @@ classdef (InferiorClasses = {?chebfun}) domain < double
             
         end
         
-    end
+    end     
     
-    %% STATIC METHODS IMPLEMENTED BY THIS CLASS:
-    methods ( Static = true )
-        
-        function varargin = toDouble(varargin)
-            % Cast DOMAIN to DOUBLE:
-            for k = 1:nargin
-                if ( isa(varargin{k}, 'domain') )
-                    varargin{k} = double(varargin{k});
-                end
-            end
-            
-        end
-        
-    end
-    
-    %% METHODS IMPLEMENTED BY THIS CLASS:
-    methods
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
         
         function out = validate(dom)
             out = true;
@@ -68,7 +59,7 @@ classdef (InferiorClasses = {?chebfun}) domain < double
                 out = false;
             end
             if ( out == false && nargout == 0 )
-                error('DOMAIN:validate:invalid', ...
+                error('CHEBFUN:DOMAIN:domain:invalid', ...
                     'Ends must be a 1xM vector of ordered doubles.');
             end
         end
@@ -92,6 +83,23 @@ classdef (InferiorClasses = {?chebfun}) domain < double
             varargout{1:nargout} = sprintf(varargin{:});
         end
                    
+    end
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% STATIC METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = true )
+        
+        function varargin = toDouble(varargin)
+            % Cast DOMAIN to DOUBLE:
+            for k = 1:nargin
+                if ( isa(varargin{k}, 'domain') )
+                    varargin{k} = double(varargin{k});
+                end
+            end
+            
+        end
+        
     end
     
 end

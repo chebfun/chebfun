@@ -10,7 +10,7 @@ function [k, e] = ellipke(m, pref)
 %   Some definitions of the complete elliptic integrals use the modulus k
 %   instead of the parameter M.  They are related by M = k^2.
 %
-%   See also ELLIPJ.
+% See also ELLIPJ.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -42,7 +42,7 @@ for j = numel(m):-1:1
         k(j) = compose(m(j), @(m) ellipke(fudge(m, mTol), .1*tol), pref);
     catch ME
         if ( strcmp(ME.identifier, 'MATLAB:ellipke:MOutOfRange') )
-            error('CHEBFUN:ellipke:MOutOfRange', ...
+            error('CHEBFUN:CHEBFUN:ellipke:MOutOfRange', ...
                 'M must be in the range 0 <= M <= 1.');
         else
             rethrow(ME)
