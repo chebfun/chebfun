@@ -16,7 +16,7 @@ classdef chebfunpref < chebpref
 %      construction if no domain argument is explicitly passed to the
 %      constructor.
 %
-%   enableBreakpointDetection  - Enable/disable breakpoint detection.
+%   splitting                  - Enable/disable breakpoint detection.
 %     true
 %    [false]
 %
@@ -26,7 +26,7 @@ classdef chebfunpref < chebpref
 %     introduced only at points where discontinuities are being created (e.g.,
 %     by ABS(F) at points where a CHEBFUN F passes through zero).
 %
-%   breakpointPrefs            - Preferences for breakpoint detection.
+%   splitPrefs                 - Preferences for breakpoint detection.
 %
 %      splitMaxLength          - Maximum FUN length.
 %       [160]
@@ -43,7 +43,7 @@ classdef chebfunpref < chebpref
 %         lengths of all the FUNs) allowed by the constructor when breakpoint
 %         detection is enabled.
 %
-%   enableSingularityDetection - Enable/disable singularity detection.
+%   blowup                     - Enable/disable singularity detection.
 %     true
 %    [false]
 %
@@ -73,7 +73,7 @@ classdef chebfunpref < chebpref
 %         If two delta functions are located closer than this tolerance, they 
 %         will be merged.
 %
-%   singPrefs                  - Preferences for singularity detection.
+%   blowupPrefs                - Preferences for blowup / singularity detection.
 %
 %      exponentTol             - Tolerance for exponents.
 %       [1.1*1e-11]
@@ -152,7 +152,7 @@ classdef chebfunpref < chebpref
 %   associated to that field in Q.  Any fields of Q that are not properties of
 %   P are interpreted as preferences for the constructor of the underlying
 %   representation technology and are placed in P.TECHPREFS.  The exceptions to
-%   this are the fields BREAKPOINTPREFS, SINGPREFS, and TECHPREFS.  If Q has
+%   this are the fields SPLITPREFS, BLOWUPPREFS, and TECHPREFS.  If Q has
 %   fields with these names, they will be assumed to be MATLAB structures and
 %   will be "merged" with the structures of default preferences stored in the
 %   properties of the same names in P using CHEBFUNPREF.MERGEPREFS().
@@ -183,14 +183,14 @@ classdef chebfunpref < chebpref
 %   Create a CHEBFUNPREF for building a CHEBFUN based on CHEBTECH (default) with
 %   breakpoint detection, a splitting length of 257 (pieces of polynomial degree
 %   256, and a custom CHEBTECH refinement function:
-%      p.enableBreakpointDetection = true;
-%      p.breakpointPrefs.splitLength = 257;
+%      p.splitting = true;
+%      p.splitPrefs.splitLength = 257;
 %      p.techPrefs.refinementFunction = @custom;
 %      pref = chebfunpref(p);
 %
 %   Same thing with a slightly shorter syntax:
-%      p.enableBreakpointDetection = true;
-%      p.breakpointPrefs.splitLength = 257;
+%      p.splitting = true;
+%      p.splitPrefs.splitLength = 257;
 %      p.refinementFunction = @custom;
 %      pref = chebfunpref(p);
 %
@@ -403,7 +403,7 @@ classdef chebfunpref < chebpref
             techPrefs = techObj.techPref(prefList.techPrefs);
 
             % Compute the screen column in which pref values start.
-            valueCol = 34; % length('    enableSingularityDetection:   ');
+            valueCol = 34; % length('    blowup:   ');
             for field = fieldnames(techPrefs).'
                 field1 = field{1};
                 col = length(['        ' field1 '  ']);
@@ -422,22 +422,22 @@ classdef chebfunpref < chebpref
             fprintf('chebfunpref object with the following preferences:\n');
             fprintf([padString('    domain:') '[%g, %g]\n'], ...
                 prefList.domain(1), prefList.domain(end));
-            fprintf([padString('    enableBreakpointDetection:') '%d\n'], ...
-                prefList.enableBreakpointDetection);
-            fprintf('    breakpointPrefs\n');
+            fprintf([padString('    splitting:') '%d\n'], ...
+                prefList.splitting);
+            fprintf('    splitPrefs\n');
             fprintf([padString('        splitMaxLength:') '%d\n'], ...
-                prefList.breakpointPrefs.splitMaxLength');
+                prefList.splitPrefs.splitMaxLength');
             fprintf([padString('        splitMaxTotalLength:') '%d\n'], ...
-                prefList.breakpointPrefs.splitMaxTotalLength');
-            fprintf([padString('    enableSingularityDetection:') '%d\n'], ...
-                prefList.enableSingularityDetection);
-            fprintf('    singPrefs\n');
+                prefList.splitPrefs.splitMaxTotalLength');
+            fprintf([padString('    blowup:') '%d\n'], ...
+                prefList.blowup);
+            fprintf('    blowupPrefs\n');
             fprintf([padString('        exponentTol:') '%d\n'], ...
-                prefList.singPrefs.exponentTol');
+                prefList.blowupPrefs.exponentTol');
             fprintf([padString('        maxPoleOrder:') '%d\n'], ...
-                prefList.singPrefs.maxPoleOrder');
+                prefList.blowupPrefs.maxPoleOrder');
             fprintf([padString('        defaultSingType:') '''%s''\n'], ...
-                prefList.singPrefs.defaultSingType');            
+                prefList.blowupPrefs.defaultSingType');            
             fprintf([padString('    enableDeltaFunctions:') '%d\n'], ...
                 prefList.enableDeltaFunctions);
             fprintf('    deltaPrefs\n');
@@ -565,8 +565,8 @@ classdef chebfunpref < chebpref
         %   as the defaults.
         %
         %   To set defaults for second tier preferences, such as
-        %   breakpointPrefs.splitMaxLength, one can use the syntax
-        %   CHEBFUNPREF.SETDEFAULT({'breakpointPrefs', 'splitMaxLength'}, 257).
+        %   splitPrefs.splitMaxLength, one can use the syntax
+        %   CHEBFUNPREF.SETDEFAULT({'splitPrefs', 'splitMaxLength'}, 257).
         %   However, this syntax is still experimental.
         %
         %   CHEBFUNPREF.SETDEFAULTS(PREF) sets the default values to the
@@ -675,13 +675,13 @@ classdef chebfunpref < chebpref
         %   construction-time preferences.
 
             factoryPrefs.domain = [-1 1];
-            factoryPrefs.enableBreakpointDetection = false;
-                factoryPrefs.breakpointPrefs.splitMaxLength = 160;
-                factoryPrefs.breakpointPrefs.splitMaxTotalLength = 6000;
-            factoryPrefs.enableSingularityDetection = false;
-                factoryPrefs.singPrefs.exponentTol = 1.1*1e-11;
-                factoryPrefs.singPrefs.maxPoleOrder = 20;
-                factoryPrefs.singPrefs.defaultSingType = 'sing';                
+            factoryPrefs.splitting = false;
+                factoryPrefs.splitPrefs.splitMaxLength = 160;
+                factoryPrefs.splitPrefs.splitMaxTotalLength = 6000;
+            factoryPrefs.blowup = false;
+                factoryPrefs.blowupPrefs.exponentTol = 1.1*1e-11;
+                factoryPrefs.blowupPrefs.maxPoleOrder = 20;
+                factoryPrefs.blowupPrefs.defaultSingType = 'sing';                
             factoryPrefs.enableDeltaFunctions = true;
                 factoryPrefs.deltaPrefs.deltaTol = 1e-9;
                 factoryPrefs.deltaPrefs.proximityTol = 1e-11;

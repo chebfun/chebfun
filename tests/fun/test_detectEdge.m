@@ -80,7 +80,7 @@ pass(6) = ( err < 5*eps );
 % relevant part in findBlowup@detectEdge.
 f = classicfun.constructor(0, struct('domain', [1 2]));
 op = @(x) tan(x);
-pref.enableSingularityDetection = true;
+pref.blowup = true;
 edge = fun.detectEdge(f, op, 1, 1, pref);
 err = abs(edge - pi/2);
 pass(7) = ( err < 5*eps );

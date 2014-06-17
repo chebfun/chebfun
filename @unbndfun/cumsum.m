@@ -65,7 +65,7 @@ function g = cumsumCtsDim(f, pref)
 g = f;
 
 % Rescaling factor is the derivative of the forward map:
-pref.enableSingularityDetection = true;
+pref.blowup = true;
 rescaleFactor = onefun.constructor(@(x) g.mapping.der(x), [], pref);
 exps = get(rescaleFactor, 'exponents');
 numRoots = -repmat(exps.', 1, size(g, 2));

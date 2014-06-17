@@ -93,7 +93,7 @@ pass(14) = err1 < tol && err2 < tol;
 
 pow = -0.5;
 op = @(x) (x - dom(1)).^pow.*sin(x);
-pref.enableSingularityDetection = true;
+pref.blowup = true;
 data.exponents = [pow 0];
 pass(15) = test_spotcheck_restrict(op, dom, [-1 -0.7], data, pref);
 

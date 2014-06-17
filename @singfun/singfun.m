@@ -469,7 +469,7 @@ if ( ~isfield(data, 'exponents') || isempty(data.exponents) )
 end
 
 if ( ~isfield(data, 'singType') || isempty(data.singType) )
-    defaultSingType = pref.singPrefs.defaultSingType;
+    defaultSingType = pref.blowupPrefs.defaultSingType;
     data.singType = {defaultSingType, defaultSingType};
 end
 

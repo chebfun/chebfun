@@ -130,7 +130,7 @@ gridSize234 = 15; % Grid size for higher derivative computations in loop.
 ends = [new_a(numTestDers), new_b(numTestDers)];
 
 % Main loop:
-checkBlowUp = pref.enableSingularityDetection;
+checkBlowUp = pref.blowup;
 while ( (maxDer(numTestDers) ~= inf) && ~isnan(maxDer(numTestDers)) ...
     &&  (diff(ends) > eps*hscale) )
 
