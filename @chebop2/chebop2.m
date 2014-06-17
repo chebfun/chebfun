@@ -1,5 +1,5 @@
 classdef chebop2
-%CHEBOP2  CHEBOP2 class for representing partial differential equations
+%CHEBOP2   CHEBOP2 class for representing partial differential operators.
 %
 % Class used to solve PDEs defined on rectangular domains that have
 % unique and globally smooth solutions.
@@ -33,59 +33,63 @@ classdef chebop2
 % Copyright 2014 by The University of Oxford and The Chebfun2 Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
     
+    %% PROPERTIES.
     properties ( GetAccess = 'public', SetAccess = 'public' )
-        domain = [];  % Domain of the operator
-        op = [];      % The operator
-        ubc = [];     % Up boundary condition(s)
-        lbc = [];     % Left boundary condition(s)
-        rbc = [];     % Right boundary condition(s)
-        dbc = [];     % Down boundary condition(s)
-        dim = [];     % Size of the system (number of eqns)
-        scale = [];   % Relative solution scale
-        coeffs = [];  % matrix storing constant coefficients
-        xorder = 0;   % diff order in the x-variable
-        yorder = 0;   % diff order in the y-variable
+        
+        domain = [];  % Domain of the operator.
+        op = [];      % The operator.
+        ubc = [];     % Up boundary condition(s).
+        lbc = [];     % Left boundary condition(s).
+        rbc = [];     % Right boundary condition(s).
+        dbc = [];     % Down boundary condition(s).
+        dim = [];     % Size of the system (number of eqns).
+        scale = [];   % Relative solution scale.
+        coeffs = [];  % Matrix storing constant coefficients.
+        xorder = 0;   % Diff order in the x-variable.
+        yorder = 0;   % Diff order in the y-variable.
         U             %
         S             % Low rank form of the partial differential operator.
         V             %
+        
     end
     
+    %% CONSTRUCTOR.
     methods
         
-        function N = chebop2( varargin )
-            % Constructing the chebop2 object.
+        function N = chebop2(varargin)
+            % CHEBOP2 CONSTRUCTOR.
             
-            % Get chebfun2 preferences
+            % Get CHEBFUN2 preferences.
             prefs = chebfunpref();
             tol = prefs.techPrefs.eps;
             
-            % If empty input arguments then return an empty chebop2 object.
-            if ( isempty( varargin ) )
+            % If empty input arguments then return an empty CHEBOP2 object.
+            if ( isempty(varargin) )
                 return
             end
             
             % What domain is the operator defined on?
-            if ( numel( varargin ) > 1 )
-                ends = varargin{2};      % second argument should be a domain.
-                if ( length( ends ) == 4 )
-                    % valid domain?
-                    if ( (diff(ends(1:2)) > 0 )&& (diff(ends(3:4)) > 0 ) )  
+            if ( numel(varargin) > 1 )
+                ends = varargin{2}; % Second argument should be a domain.
+                if ( length(ends) == 4 )
+                    % Valid domain?
+                    if ( diff(ends(1:2)) > 0 && diff(ends(3:4)) > 0 )  
                         dom = ends;
                     else
-                        error('CHEBOP2:CONSTRUCTOR:DOMAIN','Empty domain');
+                        error('CHEBOP2:CONSTRUCTOR:DOMAIN', 'Empty domain.');
                     end
                 else
                     error('CHEBOP2:CONSTRUCTOR:INPUT',...
-                        'Argument should be a domain given by four doubles')
+                        'Argument should be a domain given by four doubles.')
                 end
             else
-                if ( isa( varargin{1}, 'function_handle' ) )
-                    % pick the default domain
-                    rect1 = [-1,1];
-                    rect2 = [-1,1];
-                    dom = [rect1 rect2];
-                elseif ( isa( varargin{1},'double' ) )
-                    % set up identity operator on the domain.
+                if ( isa(varargin{1}, 'function_handle') )
+                    % Pick the default domain.
+                    rect1 = [-1, 1];
+                    rect2 = [-1, 1];
+                    dom = [rect1, rect2];
+                elseif ( isa( varargin{1}, 'double') )
+                    % Set up identity operator on the domain.
                     N = chebop2(@(u) u, varargin{1});  
                     return
                 else
@@ -94,19 +98,17 @@ classdef chebop2
                 end
             end
 
-            % First argument in the constructor is the operator.  If the 
+            % First argument in the constructor is the operator. If the 
             % operator is univariate then it's a constant coefficient PDE, 
             % otherwise assume it is a variable coefficient.
-            
             if ( isa(varargin{1},'function_handle') )
                 fh = varargin{1};
                 
                 if ( nargin(fh) == 1 )  % The PDE has constant coefficients.
-                    
-                    % Trust that the user has formed the chebfun2 objects 
-                    % outside of chebop2.
-                    u = adchebfun2( chebfun2(@(x,y) x.*y, dom) );
-                    v = fh( u );
+                                        % Trust that the user has formed the CHEBFUN2 objects 
+                    % outside of CHEBOP2.
+                    u = adchebfun2(chebfun2(@(x,y) x.*y, dom));
+                    v = fh(u);
                     % If the PDO has constant coefficients then convert to 
                     % double:
                     try
@@ -124,16 +126,17 @@ classdef chebop2
                     % coefficient.
                     
                     % Setup a chebfun2 on the right domain
-                    u = adchebfun2( chebfun2(@(x,y) x.*y, dom) );
-                    x = chebfun2( @(x,y) x, dom );
-                    y = chebfun2( @(x,y) y, dom );
-                    % apply it to the operator
-                    v = fh( x, y, u );
-                    A = v.jacobian;  % cell array of variable coefficients.
+                    u = adchebfun2(chebfun2(@(x,y) x.*y, dom));
+                    x = chebfun2(@(x,y) x, dom);
+                    y = chebfun2(@(x,y) y, dom);
+                    % Apply it to the operator.
+                    v = fh(x, y, u);
+                    A = v.jacobian;  % Cell array of variable coefficients.
                 else
                     error('CHEBOP2:CONSTRUCTOR:INPUT',...
                         'Operator should be @(u) or @(x,y,u).')
                 end
+                
             else
                 error('CHEBOP2:CONSTRUCTOR:INPUT',...
                     'First argument should be an operator')
@@ -142,19 +145,19 @@ classdef chebop2
             % Often the coefficients are obtained with small rounding errors
             % and it is important to remove the very small non-zero ones to
             % have rank(A) correct.
-            if iscell(A)
-                for jj = size(A,1)
-                    for kk = size(A,2)
-                        if isa(A{jj,kk},'double') && abs(A{jj,kk})<10*tol
+            if ( iscell(A) )
+                for jj = size(A, 1)
+                    for kk = size(A, 2)
+                        if ( isa(A{jj,kk}, 'double') && abs(A{jj,kk}) < 10*tol )
                             A{jj,kk} = 0;
                         end
                     end
                 end
             else
-                A( abs(A) < 10*tol ) = 0;
+                A(abs(A) < 10*tol) = 0;
             end
             
-            % Construct chebop2 object. The boundary conditions will be 
+            % Construct CHEBOP2 object. The boundary conditions will be 
             % given later.
             N.domain = dom;
             N.op = fh;
@@ -162,12 +165,12 @@ classdef chebop2
             
             % Calculate xorder and yorder of PDE.
             % Find the differential order of the PDE operator.
-            if ( iscell( A ) )
+            if ( iscell(A) )
                 xdifforder = size(A, 2) - 1;
                 ydifforder = size(A, 1) - 1;
-            elseif ( min( size( A ) ) > 1 )
-                xdifforder = find( sum( abs( A ), 2 ) > 100*tol, 1, 'last') - 1;
-                ydifforder = find( sum( abs( A ) ) > 100*tol, 1, 'last' ) - 1;
+            elseif ( min(size(A)) > 1 )
+                xdifforder = find(sum(abs(A), 2) > 100*tol, 1, 'last') - 1;
+                ydifforder = find(sum(abs(A)) > 100*tol, 1, 'last' ) - 1;
             else
                 if ( size(A, 1) == 1 )
                     ydifforder = length(A) - 1;
@@ -180,25 +183,28 @@ classdef chebop2
             N.xorder = xdifforder;
             N.yorder = ydifforder;
             
-            % Issue a warning to the user for the first chebop2:
+            % Issue a warning to the user for the first CHEBOP2:
             warning('CHEBOP2:EXPERIMENTAL',...
                 ['Chebop2 is a new experimental feature.'...
                 'It has not been tested to the same extent as other'...
                 'parts of the software.']);
             % Turn it off:
             warning('off', 'CHEBOP2:EXPERIMENTAL');
+            
         end
         
     end
-    
+     
+    %% STATIC HIDDEN METHODS.
     methods ( Static = true, Hidden = true )
+        
         % Matrix equation solver: AXB^T + CXD^T = E. xsplit, ysplit = 1 if
         % the even and odd modes (coefficients) decouple.
         X = bartelsStewart(A, B, C, D, E, xsplit, ysplit);
         
         % Use automatic differentiation to pull out the coeffs of the
         % operator:
-        deriv = chebfun2deriv( op );
+        deriv = chebfun2deriv(op);
         
         % This is used to discretize the linear constrains:
         [bcrow, bcvalue] = constructBC(bcArg, bcpos,...
@@ -218,4 +224,5 @@ classdef chebop2
         a = truncate(a, tol);
         
     end
+    
 end

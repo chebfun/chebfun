@@ -45,7 +45,7 @@ function [L, res, isLinear, u] = linearize(N, u, x, flag)
 % Start by assuming that N is linear.
 isLinear = true(1, 4);
 
-% The domain that the problem is specified on
+% The domain that the problem is specified on.
 dom = N.domain;
 
 %% Construct a suitable function to linearize about:
@@ -122,12 +122,12 @@ end
 
 % Evaluate N.op. The output will be the ADCHEBFUN NU. In case of systems, NU
 % will be an array-valued ADCHEBFUN. We need different calling sequences
-% depending on whether N has a cell-argument or not
+% depending on whether N has a cell-argument or not.
 if ( cellArg )
-    % No need to expand the cell U
+    % No need to expand the cell U.
     Nu = feval(N, x, u);
 else
-    % Need to expand the cell U
+    % Need to expand the cell U.
     Nu = feval(N, x, u{:});
 end
 
@@ -189,7 +189,7 @@ if ( all(isFun) && numParams > 0 )
     return
 end
 
-%% Add BCs
+%% Add BCs.
 
 % Initialise an empty LINOPCONSTRAINT.
 BC = linopConstraint();
@@ -225,7 +225,7 @@ if ( ~isempty(N.bc) )
             bcU = N.bc(x, u{:});
         end
 
-        % Ensure conditions were concatenated vertically, not horizontally
+        % Ensure conditions were concatenated vertically, not horizontally.
         bcU = checkConcat(bcU);
 
         % Gather all residuals of evaluating N.BC in one column vector.
@@ -243,7 +243,7 @@ if ( ~isempty(N.bc) )
     
 end
 
-% If N is nonlinear, and we were looking to only test linearity, return
+% If N is nonlinear, and we were looking to only test linearity, return.
 if ( flag && ~all(isLinear) )
     L = linop();
     return
@@ -252,7 +252,7 @@ end
 % Append all constraints to the LINOP returned.
 L.constraint = BC;
 
-% Cast the cell U back to a CHEBMATRIX, consisting of CHEBFUNs and scalars
+% Cast the cell U back to a CHEBMATRIX, consisting of CHEBFUNs and scalars.
 if ( nargout == 4)
     for k = 1:nVars
         u{k} = u{k}.func;
@@ -263,7 +263,7 @@ end
 end
 
 function [BC, isLinLR] = linearizeLRbc(op, u, evalPoint, BC, cellArg)
-%LINEARIZELRBC  Linearize left and right boundary conditions
+%LINEARIZELRBC   Linearize left and right boundary conditions.
 
 % Evaluate N.lbc or N.rbc. The output will be the ADCHEBFUN LRBC. In case of
 % systems, LRBC will be an array-valued ADCHEBFUN. We need different calling
@@ -303,4 +303,5 @@ if ( size(bc, 2) > 1 )
         'not be supported in future release.']);
     bc = bc.';
 end
+
 end
