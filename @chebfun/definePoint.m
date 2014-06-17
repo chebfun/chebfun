@@ -78,8 +78,9 @@ elseif ( (numel(s) ~= size(v, 1)) || (numCols ~= size(v, 2)) )
 end
 
 % Restrict f to the new subdomains:
-snew = [f.domain(1) ; s(:) ; f.domain(end)]';
-f = restrict(f, snew);
+sNew = [f.domain(1) ; s(:) ; f.domain(end)]';
+sNew = unique(sNew);
+f = restrict(f, sNew);
 
 % Assign the values in v to the new pointValues;
 [mem, loc] = ismember(s, f.domain);
