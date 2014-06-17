@@ -230,6 +230,10 @@ numFiles  = numel(testFiles);
 durations = zeros(numFiles, 1);
 errorMessages = {'FAILED', 'CRASHED'};
 
+% TODO: Eventually this should be removed.
+% We don't want this warning to be displayed in CHEBTEST:
+warnState = warning('off', 'CHEBFUN:CHEBFUN:vertcat:join');
+
 % Attempt to run all of the tests:
 try % Note, we try-catch as we've CD'd and really don't want to end up elsewhere
     
@@ -264,7 +268,11 @@ try % Note, we try-catch as we've CD'd and really don't want to end up elsewhere
 
     end
     
+    warning(warnState);
+    
 catch ME
+    
+    warning(warnState);
     
     % We failed. Return to the starting directory and rethrow the error:
     cd(currDir)

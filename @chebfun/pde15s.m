@@ -220,7 +220,7 @@ end
                 % Shorten the representation. The happiness cutoff seems to
                 % be safer than the epslevel simplification.
 %                 uCurrent = simplify(uCurrent, epslevel);
-                uPoly = chebpoly(uCurrent);
+                uPoly = chebcoeffs(uCurrent);
                 firstKept = size(uPoly, 2) - (cutoff-1);
                 if ( firstKept <= 0 )
                     firstKept = 1;
@@ -465,7 +465,7 @@ else
             v = 0;
         end
         if ( ~isnumeric(v) )
-            error('CHEBFUN:CHEBFUN:pde15s:nonNumericVal1',...
+            error('CHEBFUN:CHEBFUN:pde15s:nonNumericVal1', ...
                 'For BCs of the form {char, val} val must be numeric.')
         end
         if ( strcmpi(bc.left, 'dirichlet') )
