@@ -60,8 +60,8 @@ absCoeffs = abs(f.coeffs);
 % Add a tiny amount to zeros to make plots look nicer:
 if ( f.vscale > 0 )
     % (Min of epslevel*vscale and the miniumum non-zero coefficient)
-    absCoeffs(~absCoeffs) = min( min(f.epslevel.*f.vscale), ...
-                                 min(absCoeffs(logical(absCoeffs))) );                             
+%     absCoeffs(~absCoeffs) = min( min(f.epslevel.*f.vscale), ...
+%                                  min(absCoeffs(logical(absCoeffs))) );                             
 else
     % (add epslevel for zero CHEBTECHs)
     absCoeffs = absCoeffs + f.epslevel;
