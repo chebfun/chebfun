@@ -13,7 +13,7 @@ isLinop = cellfun(@(v) isa(v, 'linop'));
 if ( nargin > 2 && any(isLinop(3:end)) )
     
     % POLYEIGS is not yet supported.
-    error('CHEBFUN:linop:polyeigs:nosupport', ...
+    error('CHEBFUN:LINOP:polyeigs:noSupport', ...
         'CHEBOP/POLYEIGS() is not currently supported.');
     
 else

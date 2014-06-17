@@ -14,7 +14,7 @@ function g = cumsum(f, dim)
 % See also SUM.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % [TODO]: Improvement on the algorithm to handle the case with singularities at
 % both the end points. Improvement on the whole SINGFUN class to handle
@@ -33,7 +33,7 @@ function g = cumsum(f, dim)
 
 % Check the dimension, i.e. the third argument:
 if ( nargin == 2 ) && ( dim ~= 1 )
-    error('SINGFUN:cumsum:nosupport', ...
+    error('CHEBFUN:SINGFUN:cumsum:noSupport', ...
         'SINGFUN does not support array-valued objects.')
 end
 
@@ -54,7 +54,7 @@ elseif ( all(f.exponents) ) % Singularities at both endpoints:
     rVal = get(g{1}, 'rval');
     g{2} = g{2} + rVal;
 else % Error message thrown for other cases:
-    error('SINGFUN:cumsum:nosupport', ...
+    error('CHEBFUN:SINGFUN:cumsum:noSupport', ...
         'CUMSUM() does not support the given case.')
 end
 
@@ -71,7 +71,7 @@ end
 function g = singIntegral(f)
 
     if ( ~isa(f.smoothPart, 'chebtech') )
-        error('SINGFUN:cumsum:nosupport', ...
+        error('CHEBFUN:SINGFUN:cumsum:noSupport', ...
             ['CUMSUM() does not support a singfun with the current type of ' ...
             'smoothPart.'])
     end
@@ -174,26 +174,27 @@ function g = singIntegral(f)
             g.smoothPart = f.smoothPart.make(@(x) CM + 0*x);
             g.exponents = [ra - a 0];
         elseif ( ~iszero(u) && abs(CM) < tol*f.smoothPart.vscale )
-            [u, rootsLeft, ~] = extractBoundaryRoots(u);
+            [u, rootsLeft, ignored] = extractBoundaryRoots(u);
             g.smoothPart = u;
             g.exponents = [exps(1)+rootsLeft 0];
         else % The general case that both terms are non-trivial
             g.smoothPart = u + CM*xa;
-            [g.smoothPart, rootsLeft, ~] = ...
+            [g.smoothPart, rootsLeft, ignored] = ...
                 extractBoundaryRoots(g.smoothPart);
             g.exponents = [exps(1)+rootsLeft 0];
         end
         
     elseif ( abs(Cm) < tol*f.smoothPart.vscale )
         % No log term: fractional poles with non-constant smooth part:
-        [u, rootsLeft, ~] = extractBoundaryRoots(u);
+        [u, rootsLeft, ignored] = extractBoundaryRoots(u);
         g.smoothPart = u;
         g.exponents = [exps(1)+rootsLeft 0];
     else
         % Log term: integer poles with constant or non-constant smooth part:
         % [TODO]: Construct a representation of log.
-        error('SINGFUN:cumsum:nolog',['cumsum does not support the case ', ...
-            'in which the indefinite integral has a logarithmic term.'])
+        error('CHEBFUN:SINGFUN:cumsum:noLog', ...
+            ['cumsum does not support the case in which the indefinite ' ...
+             'integral has a logarithmic term.'])
     end
     
     % Flip back so singularity is on the right for the case with singularity at
@@ -205,7 +206,7 @@ function g = singIntegral(f)
     % If G is not blowing up, ensure G(-1) == 0.
     if ( g.exponents(1) >= 0 )
         % suppress the warning:
-        warnState = warning('off', 'CHEBFUN:SINGFUN:plus');
+        warnState = warning('off', 'CHEBFUN:SINGFUN:plus:exponentDiff');
         g = g - get(g, 'lval');
         warning(warnState)        
     end

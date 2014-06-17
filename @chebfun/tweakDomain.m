@@ -60,7 +60,8 @@ if ( isnumeric(g) || isa(g, 'domain' ) )
     dummy = chebfun(0, dom);            % A dummy CHEBFUN to tweak against.
     newBreaksLocF = cell(1, numel(f));  % Initialise storage.
     for k = 1:numel(f)                  % Loop over columns of f.
-        [f(k), dummy, newBreaksLocF{k}, ~] = tweakDomain(f(k), dummy, tol, 1);
+        [f(k), dummy, newBreaksLocF{k}, ignored] = ...
+            tweakDomain(f(k), dummy, tol, 1);
     end
     if ( domGiven )
         g = domain(dummy);
@@ -76,7 +77,7 @@ if ( isempty(f) || isempty(g) )
 end
 
 if ( numel(f) > 1 || numel(g) > 1 )
-    error('CHEBFUN:tweakDomain:quasi', ...
+    error('CHEBFUN:CHEBFUN:tweakDomain:quasi', ...
         'tweakDomain does not support multiple quasimatrix inputs.');
 end
 

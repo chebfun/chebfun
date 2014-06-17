@@ -26,11 +26,12 @@ function [f, mergedPts] = merge(f, index, pref)
 % See also CHEBFUNPREF.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( numel(f) > 1 )
     % TODO:  Implement this.
-    error('CHEBFUN:merge:quasi', 'MERGE does not support quasimatrices.');
+    error('CHEBFUN:CHEBFUN:merge:quasi', ...
+        'MERGE does not support quasimatrices.');
 end
 
 % Convert to a column CHEBFUN so that feval(f, x) returns a column instead of a

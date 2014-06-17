@@ -21,7 +21,7 @@ function out = jaccoeffs(f, n, a, b)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( numel(f) > 1 )
-    error('CHEBFUN:jaccoeffs:quasi', ...
+    error('CHEBFUN:CHEBFUN:jaccoeffs:quasi', ...
         'JACCOEFFS does not support quasimatrices.');
 end
 

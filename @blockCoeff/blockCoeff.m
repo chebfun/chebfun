@@ -2,24 +2,31 @@ classdef blockCoeff
 %BLOCKCOEFF   Class to convert linear operator to derivative coefficents.
 %   This class is not intended to be called directly by the end user.
 %
-%   See also LINOP, CHEBOP, CHEBOPPREF.
+% See also LINOP, CHEBOP, CHEBOPPREF.
     
-    % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-    % See http://www.chebfun.org/ for Chebfun information.
-    
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % Developer notes
-    %
-    % This class converts a linBlock object into a list of coefficients for the
-    % (descending) powers of the derivative in the operator. 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Developer notes
+%
+% This class converts a linBlock object into a list of coefficients for the
+% (descending) powers of the derivative in the operator. 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS PROPERTIES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
         coeffs = [];
         domain
     end
     
-    methods
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS CONSTRUCTOR:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
+        
         function A = blockCoeff(varargin)
             % When called with no arguments, the returned object causes the
             % block's stack to be evaluated with these methods to produce
@@ -48,8 +55,83 @@ classdef blockCoeff
                 A.domain = varargin{2};
             end
         end
+    end
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% OTHER BASIC CONSTRUCTORS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
         
+        % These are the basic constructors.
         
+        function I = eye(A)
+            I = blockCoeff( chebfun(1, A.domain), A.domain );
+        end
+        
+        function I = zeros(A)
+            I = blockCoeff( chebfun(0, A.domain), A.domain );
+        end
+        
+        function F = mult(A, f)
+            F = blockCoeff( f, A.domain );
+        end
+        
+        function C = cumsum(A, m)
+            error('CHEBFUN:BLOCKCOEFF:cumsum:notSupported', ...
+                'Conversion of integration to coefficients is not supported.')
+        end
+        
+        function D = diff(A, order)
+            
+            if ( nargin < 2 )
+                order = 1;
+            end
+            
+            if ( ~isempty(A.coeffs) )
+                % This syntax is used by the mtimes method to differentiate
+                % an existing operator.
+                D = A;
+            else
+                % Initialize with an identity. 
+                D = eye(A);
+            end
+            
+            % Differentiate the requested number of times.
+            c = D.coeffs;
+            for d = 1:order
+                m = numel(c);
+                c = c([1, 1:m]);
+                for k = 2:m
+                    c{k} = diff(c{k}) + c{k+1};
+                end
+                c{m+1} = diff(c{m+1});
+            end
+            D = blockCoeff(c, A.domain);
+            
+        end
+        
+        function S = sum(A)
+            error('CHEBFUN:BLOCKCOEFF:sum:notSupported', ...
+                'Conversion of integration to coefficients is not supported.')
+        end
+        
+        function E = feval(A, location, direction)
+            error('CHEBFUN:BLOCKCOEFF:feval:notSupported', ...
+                'Conversion of evaluation to coefficients is not supported.')
+        end
+        
+        function F = inner(f)
+            error('CHEBFUN:BLOCKCOEFF:inner:notSupported', ...
+                'Conversion of inner product to coefficients is not supported.')
+        end
+        
+    end
+        
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
+    
         function C = mtimes(A, B)
             
             if ( isnumeric(A) )
@@ -99,7 +181,7 @@ classdef blockCoeff
             sB = numel(B.coeffs);
             
             % Empty operand returns empty result. 
-            if ( (sA == 0) || (sB==0) )
+            if ( (sA == 0) || (sB == 0) )
                 C = blockCoeff([]);
                 return
             end
@@ -128,73 +210,7 @@ classdef blockCoeff
         
         function A = uplus(A)
         end
-
-        
-    end
-    
-    methods
-        
-        % These are the basic constructors.
-        
-        function I = eye(A)
-            I = blockCoeff( chebfun(1, A.domain), A.domain );
-        end
-        
-        function I = zeros(A)
-            I = blockCoeff( chebfun(0, A.domain), A.domain );
-        end
-        
-        function F = mult(A,f)
-            F = blockCoeff( f, A.domain );
-        end
-        
-        function C = cumsum(A,m)
-            error('Conversion of integration to coefficients is not supported.')
-        end
-        
-        function D = diff(A,order)
-            
-            if ( nargin < 2 )
-                order = 1;
-            end
-            
-            if ( ~isempty(A.coeffs) )
-                % This syntax is used by the mtimes method to differentiate
-                % an existing operator.
-                D = A;
-            else
-                % Initialize with an identity. 
-                D = eye(A);
-            end
-            
-            % Differentiate the requested number of times.
-            c = D.coeffs;
-            for d = 1:order
-                m = numel(c);
-                c = c([1, 1:m]);
-                for k = 2:m
-                    c{k} = diff(c{k}) + c{k+1};
-                end
-                c{m+1} = diff(c{m+1});
-            end
-            D = blockCoeff(c, A.domain);
-            
-        end
-        
-        function S = sum(A)
-            error('Conversion of integration to coefficients is not supported.')
-        end
-        
-        function E = feval(A,location,direction)
-            error('Conversion of evaluation to coefficients is not supported.')
-        end
-        
-        function F = inner(f)
-            error('Conversion of inner product to coefficients is not supported.')
-        end
-        
         
     end
     
 end
-

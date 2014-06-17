@@ -19,7 +19,8 @@ function out = legcoeffs(f, varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( numel(f) > 1 )
-    error('CHEBFUN:legcoeffs:quasi', 'LEGCOEFFS does not support quasimatrices.');
+    error('CHEBFUN:CHEBFUN:legcoeffs:quasi', ...
+        'LEGCOEFFS does not support quasimatrices.');
 end
 
 % Call FUN/LEGCOEFFS():
@@ -27,7 +28,7 @@ if ( numel( f.funs ) == 1 )
     out = legcoeffs(f.funs{1}, varargin{:}).';
 else
     if ( nargin < 2 )
-        error('CHEBFUN:legcoeffs:n', ...
+        error('CHEBFUN:CHEBFUN:legcoeffs:n', ...
             'Input is piecewise, so LEGCOEFFS() expects a second input argument.')
     end
     out = legcoeffsPiecewise(f, varargin{:});

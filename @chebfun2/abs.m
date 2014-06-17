@@ -14,7 +14,7 @@ end
 bol = singleSignTest( f );  % Returns TRUE if there is no sign change.
 
 if ( ~bol )
-   error('CHEBFUN2:ABS', ...
+   error('CHEBFUN:CHEBFUN2:abs:notSmooth', ...
        'Sign change detected. Unable to represent the result.'); 
 end
 

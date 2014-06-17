@@ -23,8 +23,8 @@ s = cellfun(@(b) min(size(b)), A.blocks);
 isQuasi = all(isfinite(s(:)));
 
 if ( ~isQuasi )
-    % If A contains inf x inf blocks, call SPY():
-    error('CHEBFUN:chebmatrix:plotcoeffs:notaquasi', ...
+    % If A contains inf x inf blocks throw an error:
+    error('CHEBFUN:CHEBMATRIX:plotcoeffs:notQuasi', ...
         'PLOTCOEFFS does not support CHEBMATRIX objects of size INFxINF.');
 end
      

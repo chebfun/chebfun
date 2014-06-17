@@ -14,7 +14,7 @@ function varargout = gmres(A, varargin)
 % See also CHEBFUN/GMRES, GMRES.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 op = @(u) A*u;
 [varargout{1:nargout}] = gmres(op, varargin{:});

@@ -8,7 +8,7 @@ function varargout = plotcoeffs2( f )
 % See also PLOTCOEFFS, CHEBCOEFFS2.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Compute the bivariate coefficients, truncate them when then fall below
 % tolerance for better visual, use stem3.

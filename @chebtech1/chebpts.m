@@ -11,7 +11,7 @@ function [x, w, v] = chebpts(n)
 % See also FOURPTS, LEGPTS, JACPTS, LAGPTS, and HERMPTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( n == 0 )     % Special case (no points)
     x = []; 

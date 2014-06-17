@@ -9,7 +9,8 @@ function Z = null(A)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( A(1).isTransposed )
-	error('CHEBFUN:null:row', 'NULL() only defined for column CHEBFUN objects.')
+	error('CHEBFUN:CHEBFUN:null:row', ...
+        'NULL() only defined for column CHEBFUN objects.')
 end
 
 % Compute the SVD:

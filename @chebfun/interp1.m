@@ -82,7 +82,8 @@ switch method
     case 'linear'
         p = interp1Linear(x, y, dom);
     otherwise
-        error('CHEBFUN:interp1:method', 'Unknown method ''%s''', method);
+        error('CHEBFUN:CHEBFUN:interp1:method', 'Unknown method ''%s''', ...
+            method);
 end
 
 end

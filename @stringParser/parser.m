@@ -274,7 +274,7 @@ if ( match('LPAR') )
     
     rightArg =  pop();
     if ( rightArg.pdeflag )
-        error('Chebgui:Parse:PDE', ...
+        error('CHEBFUN:STRINGPARSER:parser:PDE', ...
             'Cannot use time derivative as function arguments.')
     end
     % Can assume no pde if we reach here
@@ -306,7 +306,7 @@ if ( strcmp(NEXT, 'LPAR') )
     
     firstArg =  pop();
     if ( firstArg.pdeflag )
-        error('Chebgui:Parse:PDE', ...
+        error('CHEBFUN:STRINGPARSER:parser:PDE', ...
             'Cannot use time derivative as function arguments.')
     end
     
@@ -321,7 +321,7 @@ if ( strcmp(NEXT, 'LPAR') )
         
         secondArg =  pop();
         if ( secondArg.pdeflag )
-            error('Chebgui:Parse:PDE', ...
+            error('CHEBFUN:STRINGPARSER:parser:PDE', ...
                 'Cannot use time derivative as function arguments.')
         end
 
@@ -375,7 +375,7 @@ if ( strcmp(NEXT, 'LPAR') )
     parseExp1();
     firstArg = pop();
     if ( firstArg.pdeflag )
-        error('Chebgui:Parse:PDE', ...
+        error('CHEBFUN:STRINGPARSER:parser:PDE', ...
             'Cannot use time derivative as function arguments.')
     end
     
@@ -384,7 +384,7 @@ if ( strcmp(NEXT, 'LPAR') )
         parseExp1();
         secondArg = pop();
         if ( secondArg.pdeflag )
-            error('Chebgui:Parse:PDE', ...
+            error('CHEBFUN:STRINGPARSER:parser:PDE', ...
                 'Cannot use time derivative as function arguments.')
         end
 
@@ -487,7 +487,7 @@ if ( strcmp(NEXT,'OP*') )
 
     % Check whether we have _ variables
     if ( leftArg.pdeflag || rightArg.pdeflag )
-        error('Chebgui:Parse:PDE','Cannot multiply time derivative')
+        error('CHEBFUN:STRINGPARSER:parser:PDE','Cannot multiply time derivative')
     end
 
     % Can assume no PDE if we reach here
@@ -504,7 +504,7 @@ elseif ( strcmp(NEXT,'OP/') )
 
     % Check whether we have _ variables
     if ( leftArg.pdeflag || rightArg.pdeflag )
-        error('Chebgui:Parse:PDE','Cannot divide with time derivatives')
+        error('CHEBFUN:STRINGPARSER:parser:PDE','Cannot divide with time derivatives')
     end
 
     % Can assume no PDE if we reach here
@@ -530,7 +530,7 @@ if ( strcmp(NEXT,'OP^') )
 
     % Check whether we have _ variables
     if ( leftArg.pdeflag || rightArg.pdeflag )
-        error('Chebgui:Parse:PDE','Cannot take powers with time derivative')
+        error('CHEBFUN:STRINGPARSER:parser:PDE','Cannot take powers with time derivative')
     end
 
     % Can assume no pde if we reach here
@@ -544,7 +544,7 @@ elseif ( ~isempty(strfind(NEXT, 'DER')) )
 
     % Check whether we have _ variables
     if ( leftArg.pdeflag )
-        error('Chebgui:Parse:PDE','Cannot differentiate time derivative')
+        error('CHEBFUN:STRINGPARSER:parser:PDE','Cannot differentiate time derivative')
     end
 
     newTree = struct('center', {{'D', NEXT}}, 'right', leftArg, 'pdeflag', 0);
@@ -568,7 +568,7 @@ if ( ~isempty(strfind(NEXT, 'DER')) )
 
     % Check whether we have _ variables
     if ( leftArg.pdeflag )
-        error('Chebgui:Parse:PDE','Cannot differentiate time derivative')
+        error('CHEBFUN:STRINGPARSER:parser:PDE','Cannot differentiate time derivative')
     end
 
     newTree = struct('center', {{'D', NEXT}}, 'right', leftArg, 'pdeflag', 0);

@@ -53,6 +53,7 @@ err = norm(c_cheb2 - c_cheb, inf);
 pass(6) = err < tol;
 
 % Test vectorization: 
+seedRNG(0)
 A = rand(3,10); E = A; 
 B = cheb2leg( A );
 for jj = 1:size(A,2)
@@ -68,4 +69,19 @@ for jj = 1:size(A,2)
 end
 pass(8) = ( norm( B - E ) < tol ); 
 
+% Test normalization: 
+A = rand(10, 2); 
+B = cheb2leg( A ); 
+C = cheb2leg( A, 1); 
+D = cheb2leg( A, 'normalized'); 
+pass(9) = ( norm( diag(1./(sqrt((9:-1:0)' + 1/2)))*B - C ) < 10*tol ); 
+pass(10) = ( norm( C - D ) < tol ); 
+
+% Test normalization: 
+A = rand(1000, 2);  
+B = cheb2leg( A ); 
+C = cheb2leg( A, 1); 
+D = cheb2leg( A, 'normalized'); 
+pass(11) = ( norm( diag(1./(sqrt((999:-1:0)' + 1/2)))*B - C ) < tol ); 
+pass(12) = ( norm( C - D ) < tol ); 
 end

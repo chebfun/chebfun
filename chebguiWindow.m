@@ -85,9 +85,51 @@ function chebguiWindow_OpeningFcn(hObject, eventdata, handles, varargin)
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to chebguiWindow (see VARARGIN)
 
+% Set input boxes to command window font:
+try
+    % Obtain the font information:
+    s = char(com.mathworks.services.FontPrefs.getCodeFont);
+    idx = strfind(s, 'name=');
+    s1 = s(idx+5:end);
+    idx = strfind(s1, ',');
+    s1 = s1(1:idx(1)-1);
+    myFont = s1;
+    idx = strfind(s, 'size=');
+    s2 = s(idx+5:end-1);
+    mySize = str2double(s2);
+catch
+    % If this fails, fall back to this default:
+    myFont = 'Monospaced';
+    mySize = 14;
+end
+
+% Obtain a list of all GUI elements.
+names = fieldnames(handles);
+% Find what elements are input elements
+inputLocs = strfind(names, 'input_');
+% Also want the same font for the iter_list information box.
+iterListLoc = strfind(names, 'iter_list');
+% Combine all the locations of elements whose font we wish to change
+allLocs = strcat(inputLocs, iterListLoc);
+
+% Loop through the elements we want to specify the font of.
+for fieldCounter = 1:length(inputLocs)
+    if ( ~isempty(allLocs{fieldCounter}) )
+        % Access the field values dynamically using the .( ) call.
+        set(handles.(names{fieldCounter}), 'FontName', myFont);
+        set(handles.(names{fieldCounter}), 'FontSize', mySize);
+    end
+end
+
+% Set the string for popup-menu for the choice of plots:
+set(handles.popupmenu_bottomFig,'String', ...
+    {'Convergence of Newton iteration', ...
+    'Chebyshev coefficients'});
+
 % Choose default command line output for chebguiWindow
 handles.output = hObject;
 
+% Initialise figures:
 chebgui.initialiseFigures(handles)
 
 % Variable that determines whether a solution is available
@@ -370,11 +412,12 @@ for k = 1:numel(str)
     strk = str{k};
     equalSigns = find(strk == '=');
     if ( numel(equalSigns) > 1 )
-        error('Chebgui:InitInput', 'Too many equals signs in input.');
+        error('CHEBFUN:chebguiWindow:initInput', ...
+            'Too many equals signs in input.');
     elseif ( numel(equalSigns) == 1 )
         strk = strk(equalSigns+1:end);
     elseif ( numel(str) > 1 )
-        error('Chebgui:InitInput', ...
+        error('CHEBFUN:chebguiWindow:initInput', ...
             ['Error constructing initial guess. Input must include the ' ...
              'names of the dependent variables, i.e. be on the form ' ...
              '"u = %s", ...'], strk)
@@ -386,7 +429,7 @@ for k = 1:numel(str)
             init = [init eval(strk)]; %#ok<AGROW>
         end
     catch ME
-        error('Chebgui:InitInput', ME.message)
+        error('CHEBFUN:chebguiWindow:initInput', ME.message)
     end
 end
 
@@ -1428,7 +1471,7 @@ function button_export_Callback(hObject, eventdata, handles)
     catch ME
         % TODO: Which error do we want to throw?
 %         rethrow(ME)
-        error('Chebgui:Export', ...
+        error('CHEBFUN:chebguiWindow:export', ...
             ['Error in exporting to .m file. Please make ' ...
             'sure there are no syntax errors.']);
     end
@@ -1889,8 +1932,7 @@ function menu_test_Callback(hObject, eventdata, handles)
 T = 0;
 folders = {'bvpdemos', 'pdedemos', 'eigdemos'};
 for k = 1:numel(folders)
-    subdir = fullfile(fileparts(which('chebtest')), '@chebgui', 'private', ...
-        folders{k});
+    subdir = fullfile(chebfunroot(), '@chebgui', 'private', folders{k});
     subdirlist = dir(subdir);
     subdirnames = { subdirlist.name };
     fprintf([folders{k}(1:3) , '\n']);
@@ -1924,7 +1966,7 @@ for k = 1:numel(folders)
                 catch
                     %
                 end
-                error('CHEBGUI:test:NoSol', 'No solution returned.');
+                error('CHEBFUN:chebguiWindow:noSol', 'No solution returned.');
             end
             fprintf('  passed in %4.4f seconds.\n', t);
         catch ME

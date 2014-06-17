@@ -57,12 +57,12 @@ function [p, q, r, s] = cf(f, m, n, M)
 
 % Check the inputs.
 if ( any(isinf(domain(f))) )
-    error('CHEBFUN:cf:unboundedDomain', ...
+    error('CHEBFUN:CHEBFUN:cf:unboundedDomain', ...
         'CF does not work for CHEBFUNs with unbounded domains.');
 end
 
 if ( (numel(f.funs) > 1) && (nargin < 4) )
-    error('CHEBFUN:cf:multipleFuns', ...
+    error('CHEBFUN:CHEBFUN:cf:multipleFuns', ...
         'For CHEBFUNs with multiple FUNs, CF must be called with 4 arguments.');
 end
 
@@ -84,7 +84,7 @@ end
 % Trivial case: approximation length exceeds that of the expansion length.
 if ( m >= M )
     p = f;
-    q = chebfun(1, dom);
+    q = chebfun(1, domain(f));
     r = @(x) feval(p, x);
     s = 0;
     return
@@ -96,7 +96,7 @@ a = a((end-M):end);
 
 % Deal with complex-valued functions.
 if ( any(imag(a) ~= 0) )
-    warning('CHEBFUN:cf:complex', ...
+    warning('CHEBFUN:CHEBFUN:cf:complex', ...
         'CF does not work for complex valued functions. Taking real part.');
     a = real(a);
 end
@@ -202,7 +202,7 @@ if ( (k > 0) || (l > 0) )
     if ( rflag )
         [p, q, r] = chebpade(f, m - k, n - k);
         s = eps;
-        %warning('CHEBFUN:cf:chebpade', ...
+        %warning('CHEBFUN:CHEBFUN:cf:chebpade', ...
         %  'Function looks close to rational; switching to CHEBPADE.');
         return;
     end
@@ -238,7 +238,7 @@ end
 
 z = roots(b);
 if ( any(abs(z) > 1) )
-    warning('CHEBFUN:cf:illConditioned', ...
+    warning('CHEBFUN:CHEBFUN:cf:illConditioned', ...
       'Ill-conditioning detected. Results may be inaccurate.');
 end
 
@@ -289,7 +289,7 @@ C = gam(1:m,end:-1:m+2);
 G = A + C - 2*(B*B')/gam(1,1);
 
 if ( (cond(G)/s > tolCond) && (cond(G) > tolCondG) )
-  warning('CHEBFUN:cf:illConditioned', ...
+  warning('CHEBFUN:CHEBFUN:cf:illConditioned', ...
     'Ill-conditioning detected. Results may be inaccurate.');
 end
 

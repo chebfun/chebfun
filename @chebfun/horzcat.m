@@ -1,19 +1,22 @@
 function out = horzcat(varargin)
 %HORZCAT   Horizontal concatenation of CHEBFUN objects.
-%   [A B] horizontally concatenates the CHEBFUN objects A and B to form an
-%   array-valued CHEBFUN or an array of CHEBFUN objects (depending on whether
+%   [A B] horizontally concatenates the column CHEBFUN objects A and B to form
+%   an array-valued CHEBFUN or an array of CHEBFUN objects (depending on whether
 %   the interior breakpoints of A and B match or not). [A,B] does the same. Any
 %   number of CHEBFUN objects can be concatenated within one pair of brackets.
 %
-% See also VERTCAT, CAT.
+%   If one of A or B is a scalar or a row vector, it is cast to a constant
+%   CHEBFUN.
+%
+%   If A and B are row CHEBFUN objects then C = [A B] will be a CHEBMATRIX. See
+%   CHEBFUN/VERTCAT for more details.
+%
+%   [A1, A2, ...] concatenates multiple objects.
+%
+% See also VERTCAT, CAT, QUASIMATRIX, CHEBMATRIX.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
-% error('CHEBFUN:horzcat:noSupport', 'HORZCAT of a CHEBFUN is not yet supported.');
-
-% TODO: Document quasimatrix vs array-valued CHEBFUN
-
-% [TODO]: Vertical concatenation. (Chebmatrix / quasimatrix).
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Remove empties:
 empties = cellfun(@isempty, varargin);
@@ -31,8 +34,15 @@ if ( numel(varargin) == 1 )
 end
 
 % Promote doubles to CHEBFUN objects:
-chebfunLocs = cellfun('isclass', varargin, 'chebfun');
-chebfun1 = varargin{find(chebfunLocs, 1, 'first')};
+isCheb = cellfun('isclass', varargin, 'chebfun');
+chebfun1 = varargin{find(isCheb, 1, 'first')};
+
+% Check transpose state:
+if ( ~all(chebfun1(1).isTransposed == ...
+        cellfun(@(f) double(f(1).isTransposed), varargin(isCheb)) ) )
+    error('CHEBFUN:CHEBFUN:horzcat:transpose', ...
+        'Dimensions of matrices being concatenated are not consistent. ');
+end
 
 % Horizontal concatenation of row CHEBFUN objects produces a CHEBMATRIX:
 if ( chebfun1(1).isTransposed )
@@ -42,7 +52,7 @@ end
 
 % Promote doubles to CHEBFUN objects:
 domain1 = chebfun1.domain;
-doubleLocs = find(~chebfunLocs);
+doubleLocs = find(~isCheb);
 for k = doubleLocs
     varargin{k} = chebfun(varargin{k}, domain1);
 end
@@ -65,7 +75,7 @@ allDomainsCell = cellfun(@(f) f.domain, varargin, 'UniformOutput', false);
 % Ensure that the domains match:
 domainEnds = allDomainsCell{1}([1 end]);
 if ( any(cellfun(@(d) any(d([1 end]) ~= domainEnds), allDomainsCell)) )
-    error('CHEBFUN:horzcat:domains', 'Inconsistent domains.');
+    error('CHEBFUN:CHEBFUN:horzcat:domains', 'Inconsistent domains.');
 end
 % [TODO]: checkDomains?
 

@@ -17,8 +17,8 @@ function f = polyfit(f, n)
 % [TODO]: 
 %   Array-valued CHEBFUN objects.
 if ( size(f, 2) > 1 )
-    error('CHEBFUN:chebtech:polyfit', ...
-        'Array-valued CHEBTECH objects are ot supported by POLYFIT().');
+    error('CHEBFUN:CHEBTECH:polyfit:polyfit', ...
+        'Array-valued CHEBTECH objects are not supported by POLYFIT().');
 end
 
 if ( n <= length(f) )

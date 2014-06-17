@@ -8,12 +8,12 @@ function F = sin(F, varargin)
 % See also ASIN, SIND.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % [TODO]:  Restore or change this once we have decided the proper behavior or
 % isfinite() and defined that function.
 % if ( ~isfinite(f) )
-%     error('CHEBFUN:sin:inf',...
+%     error('CHEBFUN:CHEBFUN:sin:inf',...
 %         'SIN is not defined for functions which diverge to infinity');
 % end
 

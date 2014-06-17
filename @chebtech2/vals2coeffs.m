@@ -13,7 +13,7 @@ function coeffs = vals2coeffs(values)
 % See also COEFFS2VALS, CHEBPTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % [Developer Note]: This is equivalent to the Inverse Discrete Cosine Transform

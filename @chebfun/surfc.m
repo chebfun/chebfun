@@ -22,16 +22,16 @@ end
 if ( (numel(varargin) > 1) && strcmpi(varargin{1}, 'numpts') )
     numpts = varargin{2};
     varargin(1:2) = [];
-    warning('CHEBFUN:surf:numpts', 'NUMPTS option is deprecated.');
+    warning('CHEBFUN:CHEBFUN:surf:numpts', 'NUMPTS option is deprecated.');
 end
 
 if ( length(t) ~= n )
-    error('CHEBFUN:surf:szet', ...
+    error('CHEBFUN:CHEBFUN:surfc:szet', ...
         'Length of T should equal the number of quasimatrices in U');
 end
 
 if ( ~isreal(u) || ~all(isreal(t)) )
-    warning('CHEBFUN:surf:imaginary',...
+    warning('CHEBFUN:CHEBFUN:surfc:imaginary', ...
         'Imaginary parts of complex T and/or U arguments ignored');
     u = real(u); t = real(t);
 end
@@ -44,7 +44,8 @@ end
 % Convert to a quasimatrix:
 u = quasi2cheb(u);
 if ( numel(u) > 1 )
-    error('CHEBFUN:suf:quasi', 'SURF does not support quasimatrices.');
+    error('CHEBFUN:CHEBFUN:surfc:quasi', ...
+        'SURF does not support quasimatrices.');
 end
 
 % Get the data:

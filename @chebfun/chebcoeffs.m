@@ -26,7 +26,7 @@ end
 
 if ( numel(f) > 1 )
     % TODO: Why not?
-    error('CHEBFUN:chebcoeffs:quasia', ...
+    error('CHEBFUN:CHEBFUN:chebcoeffs:quasia', ...
         'CHEBCOEFFS does not support quasimatrices.');
 end
 
@@ -55,15 +55,15 @@ if ( isempty(N) && numFuns == 1 )
     N = length(f);
 end
 if ( isempty(N) )
-    error('CHEBFUN:chebcoeffs:inputN', ...
+    error('CHEBFUN:CHEBFUN:chebcoeffs:inputN', ...
         'Input N is required for piecewise CHEBFUN objects.');
 end
 if ( ~isscalar(N) || isnan(N) )
-    error('CHEBFUN:chebcoeffs:inputN', 'Input N must be a scalar.');
+    error('CHEBFUN:CHEBFUN:chebcoeffs:inputN', 'Input N must be a scalar.');
 end
 if ( any(isinf(f.domain)) )
 % Chebyshev coefficients are not defined on an unbounded domain.
-    error('CHEBFUN:chebcoeffs:infint', ...
+    error('CHEBFUN:CHEBFUN:chebcoeffs:infint', ...
         'Infinite intervals are not supported here.');
 end
 

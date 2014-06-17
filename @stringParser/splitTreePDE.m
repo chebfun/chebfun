@@ -14,7 +14,7 @@ function [newTree, pdeSign] = splitTreePDE(treeIn)
 % See http://www.chebfun.org/chebfun/ for Chebfun information.
 
 % Begin by replacing the subtree which contains the pde_variable with a 0
-[newTree, ~, pdeSign] = findPDE(treeIn, 1);
+[newTree, ignored, pdeSign] = findPDE(treeIn, 1);
 
 % Do the basic splitting (converting = into -) in newTree
 newTree = stringParser.splitTree(newTree);

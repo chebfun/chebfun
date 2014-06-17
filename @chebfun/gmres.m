@@ -111,7 +111,7 @@ while ( (normres(j) > tol) && (j < maxiter) )      % outer iterations
         
         % Give up?
         if ( j == maxiter + 1 )
-            warning('CHEBFUN:gmres:maxiter', ...
+            warning('CHEBFUN:CHEBFUN:gmres:maxiter', ...
                 'Maximum number of iterations reached.')
             showtrace = false;
             break
@@ -119,7 +119,7 @@ while ( (normres(j) > tol) && (j < maxiter) )      % outer iterations
         
         % Reorthogonalize (for research only--not an official option).
         if ( rem(n, Inf) == 0 )
-            [Q, ~] = qr(Q, 0);
+            [Q, ignored] = qr(Q, 0);
         end
         
     end   % end inner iterations

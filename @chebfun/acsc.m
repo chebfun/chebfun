@@ -8,7 +8,7 @@ function F = acsc(F, varargin)
 % See also CSC, ACSCD.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. See
-% http://www.chebfun.org for Chebfun information.
+% http://www.chebfun.org/ for Chebfun information.
 
 % Call the compose method:
 F = compose(F, @acsc, varargin{:});

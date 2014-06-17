@@ -40,12 +40,14 @@ end
 
 % No support for quasimatrices:
 if ( numColumns(f) > 1 || numColumns(g) > 1 )
-    error('CHEBFUN:conv:quasi', 'No support for array-valued CHEBFUN objects.');
+    error('CHEBFUN:CHEBFUN:conv:quasi', ...
+        'No support for array-valued CHEBFUN objects.');
 end
 
 % Check transpose state:
 if ( xor(f(1).isTransposed, g(1).isTransposed) )
-    error('CHEBFUN:conv:transposed', 'CHEBFUN dimensions do not agree.');
+    error('CHEBFUN:CHEBFUN:conv:transposed', ...
+        'CHEBFUN dimensions do not agree.');
 end
 transState = f(1).isTransposed;
 
@@ -53,9 +55,9 @@ transState = f(1).isTransposed;
 [a, b] = domain(f);
 [c, d] = domain(g);
 
-% No support for unbounded domains:s
+% No support for unbounded domains:
 if ( any(isinf([a b c d])) )
-    error('CHEBFUN:conv:bounded', ...
+    error('CHEBFUN:CHEBFUN:conv:bounded', ...
         'CONV only supports CHEBFUN objects on bounded domains.');
 end
 
@@ -172,8 +174,16 @@ for k = 1:length(x)
         ends = union(x(k) - g.domain, f.domain);
         dom = [A, ends((A < ends) & (ends < B)), B];
         for j = 1:length(dom)-1
-            out(k) = out(k) + integral(@(t) feval(f, t).*feval(g, x(k) - t), ...
-                dom(j), dom(j+1), 'AbsTol', 1e-15, 'RelTol', 1e-15);
+            % INTEGRAL is not available in versions of MATLAB prior to R2012a,
+            % so if we're running on an older version, fall back to QUADGK.
+            integrand = @(t) feval(f, t).*feval(g, x(k) - t);
+            if ( verLessThan('matlab', '7.14') )
+                out(k) = out(k) + quadgk(integrand, dom(j), dom(j+1), ...
+                    'AbsTol', 1e-15, 'RelTol', 100*eps);
+            else
+                out(k) = out(k) + integral(integrand, dom(j), dom(j+1), ...
+                    'AbsTol', 1e-15, 'RelTol', 1e-15);
+            end
         end
     end
 end

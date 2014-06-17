@@ -10,9 +10,10 @@ function C = complex(A, B)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( ~isreal(A) )
-    error('CHEBFUN:complex:AisNotReal', 'Real input A must be real.');
+    error('CHEBFUN:CHEBFUN:complex:AisNotReal', 'Real input A must be real.');
 elseif ( (nargin == 2) && ~isreal(B) )
-    error('CHEBFUN:complex:BisNotReal', 'Imaginary input B must be real.');
+    error('CHEBFUN:CHEBFUN:complex:BisNotReal', ...
+        'Imaginary input B must be real.');
 end
 
 if ( nargin == 2 )

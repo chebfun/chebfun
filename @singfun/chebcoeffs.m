@@ -12,12 +12,12 @@ function out = chebcoeffs(f, N)
 % TODO: This requires a test.
 
 if ( any(f.exponents <= -.5 ) )
-    error('CHEBFUN:singfun:chebcoeffs:notintegrable', ...
+    error('CHEBFUN:SINGFUN:chebcoeffs:notIntegrable', ...
         'F does not have a well-defined Chebyshev expansion.');
 end
 
 if ( (nargin == 1) || isempty(N) )
-    error('CHEBFUN:singfun:chebcoeffs:input', ...
+    error('CHEBFUN:SINGFUN:chebcoeffs:input', ...
         'F does not have a finite Chebyshev series. Please input N.');
 end
 

@@ -46,7 +46,7 @@ if ( length(n) == 1 && length(dom) > 1 )
     % Ignore interior breaks in this instance.
     dom = dom([1,end]); 
 elseif ( length(n) ~= length(dom) - 1 )
-    error('CHEBFUN:chebpts:NDmismatch', 'Vector N does not match domain D.'); 
+    error('CHEBFUN:chebpts:mismatchND', 'Vector N does not match domain D.'); 
 end
 
 % Create a dummy CHEBTECH of appropriate type to access static methods.

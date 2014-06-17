@@ -14,7 +14,8 @@ if ( isempty(f) )
     g = f;
     return
 elseif ( ~isreal(f) )
-    error('CHEBFUN:nextpow2:complex', 'Input to NEXTPOW() must be real.'); 
+    error('CHEBFUN:CHEBFUN:nextpow2:complex', ...
+        'Input to NEXTPOW() must be real.');
 end
 
 % Grab preferences:
@@ -22,12 +23,20 @@ if ( nargin < 2 )
     pref = chebfunpref();
 end
 
+% NEXTPOW2 is not vectorized in versions of MATLAB prior to R2010a.  Vectorize
+% it manually if we're running on older platforms.
+if ( verLessThan('matlab', '7.10') )
+    mynextpow2 = @nextpow2Vectorized;
+else
+    mynextpow2 = @nextpow2;
+end
+
 % Compute the absolute value of f:
 absf = abs(f);
 
 % Result will have breaks where |f| is a power of 2.
 mm = minandmax(absf);
-pows = 2.^(nextpow2(mm(1,:)):nextpow2(mm(2,:)));
+pows = 2.^(mynextpow2(mm(1,:)):mynextpow2(mm(2,:)));
 r = f.domain.';
 for k = 1:numel(pows)
     rk = roots(absf - pows(k));
@@ -42,9 +51,20 @@ f = addBreaks(f, r.');
 pref.extrapolate = true;
 
 % Call COMPOSE():
-g = compose(f, @(n) nextpow2(n), [], pref);
+g = compose(f, @(n) mynextpow2(n), [], pref);
 
 % Attempt to remove unnecessary breaks:
 g = merge(g); % TODO: Could we work this out in advance?
+
+end
+
+function y = nextpow2Vectorized(x)
+%NEXTPOW2VECTORIZED   A manually vectorized NEXTPOW2 for compabibility with
+%   versions of MATLAB prior to R2010a.
+
+y = zeros(size(x));
+for n = 1:1:numel(x)
+    y(n) = nextpow2(x(n));
+end
 
 end

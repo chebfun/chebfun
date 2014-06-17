@@ -18,7 +18,7 @@ function varargout = surf( f, varargin )
 % See also PLOT, SURFC.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check:
 if ( isempty(f) )
@@ -82,7 +82,7 @@ if ( isa(f,'chebfun2') )
             dom = x.domain;
             rectcheck = y.domain;
             if ( any(dom - rectcheck) )
-                error('CHEBFUN2:SURF:DATADOMAINS', ...
+                error('CHEBFUN:CHEBFUN2:surf:domainMismatch', ...
                     'Domains of CHEBFUN2 objects do not match.');
             end
         end
@@ -125,7 +125,7 @@ if ( isa(f,'chebfun2') )
                 zlim([v-.5*absv v+.5*absv])
             end
         else
-            error('CHEBFUN2:SURF:INPUTS', ...
+            error('CHEBFUN:CHEBFUN2:surf:inputs1', ...
                 ['The third argument should be a CHEBFUN2 ', ...
                 'if you want to supply CHEBFUN2 data.'])
         end
@@ -140,7 +140,7 @@ if ( isa(f,'chebfun2') )
     end
     
 else     % surf(X,Y,f,...)
-    error('CHEBFUN2:SURF:INPUTS', ...
+    error('CHEBFUN:CHEBFUN2:surf:inputs2', ...
         ['Data should be given as CHEBFUN2 objects \n ', ...
         'For example: \n x = chebfun2(@(x,y)x); ', ...
         'y = chebfun2(@(x,y)y);\n surf(x,y,f)']);

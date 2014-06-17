@@ -58,7 +58,7 @@ try
     any(f, 3)
     pass(12) = false;
 catch ME
-    pass(12) = strcmp(ME.identifier, 'CHEBFUN:any:dim');
+    pass(12) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:any:dim');
 end
 
 %% Test for singular function:

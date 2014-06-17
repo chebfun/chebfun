@@ -5,7 +5,7 @@ if ( nargin < 1 )
     prefs = chebfunpref(); 
 end 
 
-tol = 10*prefs.cheb2Prefs.eps; 
+tol = 10*prefs.eps; 
 
 % All these calls to the constructor should be the same: 
 f1 = chebfun2(@(x,y) x); 

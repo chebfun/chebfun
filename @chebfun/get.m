@@ -133,7 +133,13 @@ switch prop
         out = getSimpleNumericLocalProp(f, prop, simpLevel);
     case {'exps', 'exponents'}
         out = getArbitraryLocalProp(f, 'exponents', simpLevel);
-        if ( isvector(out) )
+
+        % If we want to simplify exponents to numeric matrix, we have to do it
+        % manually:  the fact that exponents are stored as a row vector instead
+        % of a column vector means that we have to use getArbitraryLocalProp
+        % instead of getSimpleNumericLocalProp, and the former doesn't know how
+        % to do this simplification.
+        if ( (simpLevel > 1) && iscell(out) && (size(out, 2) == 1) )
             out = cell2mat(out);
         end
     case 'deltas'
@@ -155,11 +161,11 @@ switch prop
     case 'deltas-local'
         out = getArbitraryLocalProp(f, 'deltas', simpLevel);
     case 'imps'
-        warning('CHEBFUN:get:imps', ...
+        warning('CHEBFUN:CHEBFUN:get:imps', ...
             '''imps'' property is deprecated.  Use ''deltas'' instead.');
         out = get(f, 'deltas');
     otherwise
-        error('CHEBFUN:get:badProp', ...
+        error('CHEBFUN:CHEBFUN:get:badProp', ...
             '''%s'' is not a recognized CHEBFUN property name.', prop);
 end
 
@@ -294,7 +300,7 @@ for j = 1:nFuns
     if ( funPropValCols == 1 )
         funPropVal = repmat(funPropVal, 1, nCols);
     elseif ( funPropValCols ~= nCols )
-        error('CHEBFUN:get:notSimple', 'Property is not simple.');
+        error('CHEBFUN:CHEBFUN:get:getSimpleNumericLocalPropArrayValued:notSimple', 'Property is not simple.');
     end
 
     tmp(j, :) = mat2cell(funPropVal, funPropValRows, ones(nCols, 1));

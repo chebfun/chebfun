@@ -46,11 +46,13 @@ data.hscale = norm(dom, inf);
 if ( isinf(data.hscale) )
     data.hscale = 1;
 end
-data.vscale = pref.scale;
+if ( isempty(data.vscale) )
+    data.vscale = 0;
+end
 
 % Sanity check:
 if ( iscell(op) && (numel(op) ~= numIntervals) )
-    error('CHEBFUN:constructor:cellInput', ...
+    error('CHEBFUN:CHEBFUN:constructor:cellInput', ...
         ['Number of cell elements in OP must match the number of ', ...
          'intervals in DOMAIN.'])
 end
@@ -110,7 +112,7 @@ for k = 1:numIntervals
 
     % Warn if unhappy (as we're unable to split the domain to improve):
     if ( ~ishappy && ~warningThrown )
-        warning('CHEBFUN:constructor:notResolved', ...
+        warning('CHEBFUN:CHEBFUN:constructor:notResolved', ...
             ['Function not resolved using %d pts.', ...
             ' Have you tried ''splitting on''?'], pref.techPrefs.maxLength);
         warningThrown = true;
@@ -185,7 +187,7 @@ while ( any(sad) )
     % New choice = the largest sad interval:
     diffEnds = diff(ends);
     diffEnds(~sad) = 0;
-    [~, k] = max(diffEnds);
+    [ignored, k] = max(diffEnds);
     
     % Ends of this subinterval:
     a = ends(k);
@@ -197,37 +199,10 @@ while ( any(sad) )
     else
         opk = op;
     end
-    
-    % Locate the edges/splitting locations:
-    if ( all( isfinite( ends(k:k+1) ) ) )  % bounded domain
-        if ( isempty(exps) || ~any(exps(2*k-1:2*k)) )  % no exponents
-            edge = chebfun.detectEdge(opk, [a, b], data.vscale, data.hscale);
-        elseif ( ~isempty(exps) && any( exps(2*k-1:2*k) ) )  % nonzero exponents
-            % Compensating for exponents:
-            opkDetectEdge = @(x) opk(x)./((x - a).^exps(2*k - 1) .* ...
-                (b - x).^exps(2*k));
-            edge = chebfun.detectEdge(opkDetectEdge, [a, b], data.vscale, ...
-                data.hscale);
-        end
-    else % unbounded domain
-        if ( isempty(exps) || ~any(exps(2*k-1:2*k)) )  % no exponents
-            forHandle = funs{k}.mapping.for;
-            opkDetectEdge = @(x) opk(forHandle(x));
-            forDer = funs{k}.mapping.der;
-            edge = chebfun.detectEdge(opkDetectEdge, [-1+eps, 1-eps], ...
-                data.vscale, data.hscale, forDer);
-            edge = forHandle(edge);
-        elseif ( ~isempty(exps) && any( exps(2*k-1:2*k) ) )  % nonzero exponents
-            forHandle = funs{k}.mapping.for;
-            opkDetectEdge = @(x) opk(forHandle(x)).* ...
-                ((x + 1).^exps(2*k - 1) .* (1 - x).^exps(2*k));
-            forDer = funs{k}.mapping.der;
-            edge = chebfun.detectEdge(opkDetectEdge, [-1+eps, 1-eps], ...
-                data.vscale, data.hscale, forDer);
-            edge = forHandle(edge);
-        end
-    end
-    
+
+    % Look for an edge:
+    edge = fun.detectEdge(funs{k}, op, data.hscale, data.vscale, pref);
+
     if ( singDetect )
         % Update singularity info:
         if ( ~isempty(exps) )
@@ -286,7 +261,8 @@ while ( any(sad) )
     % Fail if too many points are required:
     len = sum(cellfun(@length, funs));
     if ( len > pref.breakpointPrefs.splitMaxTotalLength )
-        warning('Function not resolved using %d pts.', ...
+        warning('CHEBFUN:CHEBFUN:constructor:funNotResolved', ...
+            'Function not resolved using %d pts.', ...
             sum(cellfun(@length, funs)));
         return
     end

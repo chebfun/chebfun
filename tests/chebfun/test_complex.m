@@ -59,14 +59,14 @@ try
     h = complex(g, f);
     pass(9) = false;
 catch ME
-    pass(9) = strcmp(ME.identifier, 'CHEBFUN:complex:AisNotReal');
+    pass(9) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:complex:AisNotReal');
 end
 
 try
     h = complex(f, g);
     pass(10) = false;
 catch ME
-    pass(10) = strcmp(ME.identifier, 'CHEBFUN:complex:BisNotReal');
+    pass(10) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:complex:BisNotReal');
 end
 
 %% Test on singular function:

@@ -10,12 +10,19 @@ classdef colloc < chebDiscretization
 %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org/ for Chebfun information.
     
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS PROPERTIES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = private )
         % Stores LU factors of a matrix, for repeated solves at fixed size:
         mldivideData = [];
     end
     
-    methods
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS CONSTRUCTOR:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
+        
         function disc = colloc(source, dimension, domain)
             %COLLOC    Collocation discretization constructor.
             %   (Called by subclasses for parts in common.)
@@ -44,8 +51,10 @@ classdef colloc < chebDiscretization
         
     end
     
-    % These must be implemented by a subclass.
-    methods ( Abstract )
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% ABSTRACT METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false, Abstract = true )
         
         % Indefinite integration:
         C = cumsum(disc)
@@ -61,7 +70,10 @@ classdef colloc < chebDiscretization
         
     end
     
-    methods ( Static )
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS METHODS (IMPLEMENTED BY THIS ABSTRACT CLASS.)
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = true )
         
         % Discretization points: (used by both colloc1 and colloc2)
         [x, w, v] = points(varargin);
@@ -81,7 +93,7 @@ classdef colloc < chebDiscretization
             maxPow = log2(pref.maxDimension);
             
             if ( minPow > maxPow )
-                error('CHEBFUN:COLLOC:dimensionValues', ...
+                error('CHEBFUN:COLLOC:colloc:dimensionValues', ...
                     ['Minimum discretiation specified is greater than ' ...
                      'maximum discretization specified.']);
             end

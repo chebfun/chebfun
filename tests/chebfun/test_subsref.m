@@ -26,7 +26,7 @@ try
     y = f('X');
     pass(6) = false;
 catch ME
-    pass(6) = strcmp(ME.identifier, 'CHEBFUN:subsref:nonnumeric');
+    pass(6) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:subsref:nonnumeric');
 end
 
 x_mtx = reshape(xr, [100 10]);
@@ -68,7 +68,7 @@ try
     y = f{'X'};
     pass(19) = false;
 catch ME
-    pass(19) = strcmp(ME.identifier, 'CHEBFUN:subsref:baddomain');
+    pass(19) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:subsref:badDomain');
 end
 
 try
@@ -77,7 +77,7 @@ try
     y = subsref(f, index);
     pass(20) = false;
 catch ME
-    pass(20) = strcmp(ME.identifier, 'CHEBFUN:subsref:dimensions');
+    pass(20) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:subsref:dimensions');
 end
 
 try
@@ -86,13 +86,13 @@ try
     y = subsref(f, index);
     pass(21) = false;
 catch ME
-    pass(21) = strcmp(ME.identifier, 'CHEBFUN:subsref:unexpectedType');
+    pass(21) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:subsref:unexpectedType');
 end
 
 % Test {} syntaxes with an array-valued chebfun.
 f = chebfun(@(x) [sin(x - 0.1) cos(x - 0.2)]);
 err = norm(f{-1, -0.1, 0.2, 1} - restrict(f, [-1 -0.1 0.2 1]), inf);
 tol = epslevel(f);
-pass(22) = err < tol;
+pass(22) = err < 5*tol;
 
 end

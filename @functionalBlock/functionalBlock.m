@@ -8,20 +8,29 @@ classdef functionalBlock < linBlock
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Developer notes
-%
-% One of the two concrete implementations of the abstract type LINBLOCK.
-% Functionals can be composed with operators, added, and applied to CHEBFUN
-% objects.
+% DEVELOPER NOTE:
+%   One of the two concrete implementations of the abstract type LINBLOCK.
+%   Functionals can be composed with operators, added, and applied to CHEBFUN
+%   objects.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-    methods
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS CONSTRUCTOR:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
+        
         function A = functionalBlock(domain)
         % FUNCTIONALBLOCK constructor, simply calls the LINBLOCK
         % constructor.
             A = A@linBlock(domain);
         end
-
+        
+    end
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
         function varargout = size(A, dim) %#ok<INUSL>
         %SIZE   Size of a FUNCTIONALBLOCK.
         %   The commands
@@ -85,7 +94,8 @@ classdef functionalBlock < linBlock
                 C.diffOrder = A.diffOrder + B.diffOrder;
                 C.iszero  = ( A.iszero || B.iszero);
             else
-                error('Unrecognized operand types.')
+                error('CHEBFUN:FUNCTIONALBLOCK:mtimes:badType', ...
+                    'Unrecognized operand types.')
             end
         end
 
@@ -105,8 +115,11 @@ classdef functionalBlock < linBlock
         end
 
     end
-
-    methods (Static = true)
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% STATIC METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = true )
 
         function F = dot(f)   % synonym for inner()
         %FUNCTIONALBLOCK.DOT   Synonym for FUNCTIONALBLOCK.INNER.
@@ -176,7 +189,8 @@ classdef functionalBlock < linBlock
 
             % Sanity check.
             if ( location < domain(1) ) | ( location > domain(end) )
-                error('Evaluation location is not in the domain.')
+                error('CHEBFUN:FUNCTIONALBLOCK:feval:badLocation', ...
+                    'Evaluation location is not in the domain.')
             end
 
             % Convert direction argument into a number.
@@ -186,8 +200,9 @@ classdef functionalBlock < linBlock
                 elseif any( strncmpi(direction, {'right', '+'}, 1) )
                     direction = +1;
                 else
-                    error(['Direction must be ''left'', ''right'', ' ...
-                        '''+'', or ''-''.'])
+                    error('CHEBFUN:FUNCTIONALBLOCK:feval:badDirection', ...
+                        ['Direction must be ''left'', ''right'', ' ...
+                         '''+'', or ''-''.'])
                 end
             end
 
@@ -250,6 +265,7 @@ classdef functionalBlock < linBlock
             % This is the zero functional:
             Z.iszero = true;
         end
+        
     end
 
 end

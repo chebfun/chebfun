@@ -14,7 +14,7 @@ function d = dirac(f, varargin)
 % See also HEAVISIDE.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Empty argument:
 if ( isempty(f) )
@@ -35,13 +35,13 @@ end
 % Handle the case for derivatives of delta function:
 if ( nargin > 1 )
     if ( nargin > 2 )
-        error('CHEBFUN:dirac', 'Too many input arguments.');
+        error('CHEBFUN:CHEBFUN:dirac:dirac', 'Too many input arguments.');
     end
     
     % Order of the derivative of dirac delta function:
     n = varargin{1};
     if ( ~isnumeric(n) || n < 0 || round(n) ~= n || ~isscalar(n) )
-        error('CHEBFUN:dirac', ...
+        error('CHEBFUN:CHEBFUN:dirac:dirac', ...
             'Order of the derivative must be be a non-negative integer.');
     end
     
@@ -115,7 +115,8 @@ fpVals = feval(fp, r);
  
 % Check root order for interior break-points:
 if ( any(abs(fpVals) < 100*tol*fp.vscale) )
-    error('CHEBFUN:dirac', 'Function has a root which is not simple');
+    error('CHEBFUN:CHEBFUN:dirac:dirac', ...
+        'Function has a root which is not simple');
 else
     % Place deltas with appropriate scaling at interior roots.
     deltaMag = 1./abs(fpVals);

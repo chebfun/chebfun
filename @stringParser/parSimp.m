@@ -41,7 +41,7 @@ ltgtLoc = regexp(str, '[\<\>]');
 
 % Error if the number of ( and ) are not equal
 if ( length(leftParLoc) ~= length(rightParLoc) )
-    error('CHEBFUN:STRINGPARSER:strinchebgui:parenth_simplify', ...
+    error('CHEBFUN:STRINGPARSER:parSimp:parenthSimplify', ...
         'Incorrect number of parenthesis.');
 end
 
@@ -68,7 +68,7 @@ end
 
 for k = 1:numel(ltgtLoc)
     idx = find((pairsLoc(:, 1) < ltgtLoc(k)) & (pairsLoc(:, 2) > ltgtLoc(k)));
-    [~, idx2] = max(pairsLoc(idx, 1));
+    [ignored, idx2] = max(pairsLoc(idx, 1));
     charLoc = sort([charLoc pairsLoc(idx(idx2), :)]);
     pairsLoc(idx(idx2),:) = [];
     numOfPars = numOfPars - 1;

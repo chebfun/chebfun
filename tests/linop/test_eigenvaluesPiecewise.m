@@ -17,11 +17,11 @@ b = -1;
 c = 0.9;
 
 % Primitive operator blocks
-[Z, I, D, C, M] = linop.primitiveOperators(d);
+[Z, I, diffOp, C, M] = linop.primitiveOperators(d);
 [z, e, s, r] = linop.primitiveFunctionals(d);
 
 % Build the operator
-L = linop(-h*D^2 + M(a*(sign(x-b)-sign(x-c))));
+L = linop(-h*diffOp^2 + M(a*(sign(x-b)-sign(x-c))));
 L = addbc( L, e(-5), 0 );
 L = addbc( L, e(5), 0 );
 
@@ -37,22 +37,29 @@ prefs = cheboppref;
 
 %% Solve with colloc1
 prefs.discretization = @colloc1;
-e = eigs(L, 6, prefs);
+[V, D] = eigs(L, 6, prefs);
+e = diag(D);
 err(1) = norm(e - v4results, inf);
-
+% Check that we actually computed eigenfunctions
+err(2) = norm(L*V-V*D);
 %% Solve with colloc2
 prefs.discretization = @colloc2;
-e = eigs(L, 6, prefs);
-err(2) = norm(e - v4results, inf);
+[V, D] = eigs(L, 6, prefs);
+e = diag(D);
+err(3) = norm(e - v4results, inf);
+% Check that we actually computed eigenfunctions
+err(4) = norm(L*V-V*D);
 
 %% Solve with ultraS
 prefs.discretization = @ultraS;
-e = eigs(L, 6, 0, prefs);
-err(3) = norm(e - v4results, inf);
+[V, D] = eigs(L, 6, prefs);
+e = diag(D);
+err(5) = norm(e - v4results, inf);
+% Check that we actually computed eigenfunctions
+err(6) = norm(L*V-V*D);
 
 %%
-
-tol = 1e-10;
+tol = [1e-10 5e-8 1e-10 5e-8 1e-10 5e-8];
 pass = err < tol;
 
 end

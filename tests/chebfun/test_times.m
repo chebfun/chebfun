@@ -67,21 +67,21 @@ try
     h = f1.*'X';
     pass(21) = false;
 catch ME
-    pass(21) = strcmp(ME.identifier, 'CHEBFUN:times:unknown');
+    pass(21) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:times:unknown');
 end
 
 try
     h = f1.*f1.';
     pass(22) = false;
 catch ME
-    pass(22) = strcmp(ME.identifier, 'CHEBFUN:times:matdim');
+    pass(22) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:times:matdim');
 end
 
 try
     h = f1.*g2q.';
     pass(23) = false;
 catch ME
-    pass(23) = strcmp(ME.identifier, 'CHEBFUN:times:matdim');
+    pass(23) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:times:matdim');
 end
 
 %% Test on singular function:

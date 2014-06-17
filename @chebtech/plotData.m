@@ -104,7 +104,8 @@ elseif ( isa(g, 'chebtech') )
     end
     
 else
-    error('CHEBFUN:CHEBTECH:plotdata:DataType', 'Invalid data types.');
+
+    error('CHEBFUN:CHEBTECH:plotData:dataType', 'Invalid data types.');
     
 end
 

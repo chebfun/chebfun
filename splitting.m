@@ -53,7 +53,7 @@ else
         chebfunpref.setDefaults('enableBreakpointDetection', false);
         
     else
-        error('CHEBFUN:split:UnknownOption',...
+        error('CHEBFUN:splitting:UnknownOption',...
             'Unknown splitting option: only ON and OFF are valid options.')
     end
     

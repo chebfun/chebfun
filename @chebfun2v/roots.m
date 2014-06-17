@@ -44,7 +44,8 @@ dd = max([mf, nf, mg, ng]);
 
 validArgs = {'ms', 'marchingsquares', 'resultant'};
 if ( (nargin > 1) && ~any(strcmpi(varargin{1}, validArgs)) )
-    error('CHEBFUN2V:ROOTS', 'Unrecognised optional argument.');
+    error('CHEBFUN:CHEBFUN2V:roots:badInput', ...
+        'Unrecognised optional argument.');
 end
 
 if ( (isempty(varargin) && dd <= max_degree) || ...
@@ -717,7 +718,8 @@ function D = matrixChebfft(A)
 n = size(A,1); k = size(A,2)/size(A,1);  % get matrix size and degree.
 
 if ( abs( k - round(k) ) > 0 )
-    error('Degree must be integer'); 
+    error('CHEBFUN:CHEBFUN2V:roots:matrixChebfft:badDegree', ...
+        'Degree must be integer');
 end
 
 D = A;
@@ -885,7 +887,8 @@ dom = fy.domain;
 
 nf = f.nComponents; 
 if ( nf > 2 )
-    error('CHEBFUN2:ROOTS','CHEBFUN2 is unable to find zero surfaces.');
+    error('CHEBFUN:CHEBFUN2V:roots:zeroSurface', ...
+        'CHEBFUN2 is unable to find zero surfaces.');
 end
 
 if ( length(fx) == 1 || length(fy) == 1 )   % one of them is of the form u(x)v(y)
@@ -968,7 +971,7 @@ else
     J = @(x,y) [feval(fx,x,y) feval(fy,x,y);...
                                     feval(gx,x,y) feval(gy,x,y)];  % Jacobian
     
-    warnstate = warning('off','CHEBFUN2:NEWTON');   % turn warnings off, and capture Newton failure instead.
+    warnstate = warning('off','CHEBFUN:CHEBFUN2:NEWTON');   % turn warnings off, and capture Newton failure instead.
     for kk = 1:size(r,1)
         x0 = [r(kk,1), r(kk,2)].';
         dx = 1; 
@@ -989,7 +992,8 @@ else
     % If all the Newton iterations failed then some roots may be
     % inaccurate.
     if ( NewtonFail )
-        warning('CHEBFUN2V:ROOTS:NewtonFail','Iterates may have diverged some of the computed roots may be not be accurate.')
+        warning('CHEBFUN:CHEBFUN2V:roots:newtonFail', ...
+            'Iterates may have diverged some of the computed roots may be not be accurate.')
     end
 end
 
@@ -1153,12 +1157,14 @@ end
 % x1 and y1 must be vectors with same number of points (at least 2).
 if sum(size(x1) > 1) ~= 1 || sum(size(y1) > 1) ~= 1 || ...
         length(x1) ~= length(y1)
-    error('X1 and Y1 must be equal-length vectors of at least 2 points.')
+    error('CHEBFUN:CHEBFUN2:roots:intersections:badInputs1', ...
+        'X1 and Y1 must be equal-length vectors of at least 2 points.')
 end
 % x2 and y2 must be vectors with same number of points (at least 2).
 if sum(size(x2) > 1) ~= 1 || sum(size(y2) > 1) ~= 1 || ...
         length(x2) ~= length(y2)
-    error('X2 and Y2 must be equal-length vectors of at least 2 points.')
+    error('CHEBFUN:CHEBFUN2:roots:intersections:badInputs2', ...
+        'X2 and Y2 must be equal-length vectors of at least 2 points.')
 end
 
 
@@ -1332,7 +1338,7 @@ elseif ( isa(tech, 'chebtech1') )
 elseif ( isa(tech, 'fourtech') )
     x = fourpts( n, dom );   % x grid.
 else
-    error('CHEBFUN2:PTS', 'Unrecognized technology');
+    error('CHEBFUN:CHEBFUN2V:roots:techType', 'Unrecognized technology');
 end
 
 end

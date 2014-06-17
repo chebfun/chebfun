@@ -115,9 +115,9 @@ data.exponents = [pow1 pow2];
 f = bndfun(op, data, pref);
 
 % We temporarily disable this warning: 
-warning('off', 'CHEBFUN:SINGFUN:plus');
+warning('off', 'CHEBFUN:SINGFUN:plus:exponentDiff');
 g = cumsum(f);
-warning('on', 'CHEBFUN:SINGFUN:plus');
+warning('on', 'CHEBFUN:SINGFUN:plus:exponentDiff');
 x = sort(x);
 x1 = x(x <= mid);
 x2 = x(x > mid);

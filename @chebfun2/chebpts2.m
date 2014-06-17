@@ -15,13 +15,13 @@ function [xx, yy] = chebpts2(nx, ny, D)
 % See also CHEBPTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin > 2 )  
    % Third argument should be a domain. 
    D = D(:).';  % make a row vector.   
    if ( ~all( size( D ) == [1 4] ) )
-        error('CHEBFUN2:CHEBPTS2:DOMAIN', 'Unrecognised domain.');
+        error('CHEBFUN:CHEBFUN2:chebpts2:domain', 'Unrecognised domain.');
    end
 else  % Default to the canoncial domain.  
     D = [-1, 1, -1, 1];

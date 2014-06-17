@@ -95,7 +95,7 @@ end
 % Check for square operator. (This is not strict enough, technically.)
 m = size(L, 2);
 if ( m ~= size(L, 1) )
-    error('LINOP:eigs:notsquare','Block size must be square.')
+    error('CHEBFUN:LINOP:eigs:notSquare','Block size must be square.')
 end
 
 % Set up the discretization:
@@ -130,12 +130,12 @@ if ( ~isempty(B) )
     % We can ignore constraints and continuity--enforced on the left side.
     if ( ~isempty(discB.source.constraint) )
         discB.source.constraint = [];
-        warning('CHEBFUN:linop:eigs:constraints', ...
+        warning('CHEBFUN:LINOP:eigs:constraints', ...
                 'Constraints on B are ignored.')
     end
     if ( ~isempty(discB.source.continuity) )
         discB.source.continuity = [];
-        warning('CHEBFUN:linop:eigs:continuity', ...
+        warning('CHEBFUN:LINOP:eigs:continuity', ...
                 'Continuity conditions on B are ignored.')
     end       
     
@@ -182,7 +182,7 @@ if ( isempty(sigma) )
 
     if ( all(bigDel) )
         % All values changed somewhat-- choose the one changing the least.
-        [~, idx] = min(delta);
+        [ignored, idx] = min(delta);
         sigma = lam1(idx);
     else
         % One by one, convert the eigenvectors to functions and check their cheb
@@ -209,7 +209,7 @@ if ( isempty(sigma) )
             onenorm = onenorm + sum(abs(coeffs{j}), 1 ).';
         end
         
-        [~, index] = min(onenorm);
+        [ignored, index] = min(onenorm);
         sigma = lam2(index);
     end
 end
@@ -245,7 +245,7 @@ end
 % Detect finite rank operators.
 if ( size(D,1) < k )
     if ( gotk )
-        warning('CHEBFUN:linop:eigs:rank',...
+        warning('CHEBFUN:LINOP:eigs:rank',...
             'Input has finite rank, only %d eigenvalues returned.', size(D,1));
     end
     k = size(D,1);
@@ -263,23 +263,50 @@ else            % Unwrap the eigenvectors for output
 
     u = mat2fun(discA, P*V);
 
+    % For normalizing eigenfunctions, so that they always have the same sign:
+    signMat = [];
+    
     % Find the norm in each eigenfunction (aggregated over variables).
     nrmsq = zeros(1,k);
     for j = 1:length(u)
         if ( isFun(j) )
             % Compress the representation.
             u{j} = simplify(u{j}, max(eps,epsLevel));
+            if (isempty(signMat))
+                % Find what domain we are working on:
+                dom = domain(u{j});
+                % Arbitrary point just to the right of the middle of the domain:
+                fevalPoint = dom(1) + diff([dom(1) dom(end)])*.500023981;
+                % Find out what sign the real part of the function have there:
+                fevalSigns = sign(real(feval(u{j}, fevalPoint)));
+                % Diagonal matrix with elements equal to the sign at our
+                % arbitrary point. Add 0.1 and take signs again to ensure we
+                % don't end up with any zeros (in case we were very unlucky).
+                signMat = diag(sign(fevalSigns + 0.1));
+            end
         end
         nrmsq = nrmsq + sum(u{j}.*conj(u{j}), 1);
     end
-
+    
     % Normalize each eigenfunction.
     scale = diag( 1./sqrt(nrmsq') );
     for j = 1:length(u)
-        u{j} = u{j}*scale;
+        u{j} = u{j}*scale*signMat;
     end
 
-     varargout = {chebmatrix(u), D};
+    % TODO: Can we move this to the CHEBMATRIX constructor?
+    % NOTE: The following is required because block entries of a CHEBMATRIX
+    % should only contain scalar objects (in particular, _not_ array-valued
+    % CHEBFUNS or quasimatrices). Here we unwrap everything so that each
+    % component of each eigenfunction is a single entry in a cell array.
+    for j = 1:numel(u)
+        % Convert each solution to it's own entry in a cell.
+        u{j} = num2cell(u{j});
+    end
+    u = chebmatrix(vertcat(u{:}));
+   
+    % Output:
+    varargout = {u, D};
 end
 
 end
@@ -359,7 +386,7 @@ else
         case 'SM'
             [junk, idx] = sort(abs(lam), 'ascend');
         otherwise
-            error('CHEBFUN:linop:eigs:sigma', 'Unidentified input ''sigma''.');
+            error('CHEBFUN:LINOP:eigs:sigma', 'Unidentified input ''sigma''.');
     end
 end
 

@@ -33,18 +33,18 @@ function [coeffs, poles, k] = residue(u, v, k)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( min(size(u)) > 1 || min(size(v)) > 1 )
-    error('CHEBFUN:residue:quasi', ...
+    error('CHEBFUN:CHEBFUN:residue:quasi', ...
           'Residue does not support CHEBFUN objects with multiple columns.');
 end
 
 if ( nargin == 2 )
     
     if ( (numel(u.funs) > 1) || (numel(v.funs) > 1) )
-        error('CHEBFUN:residue:multiple_funs', ...
+        error('CHEBFUN:CHEBFUN:residue:multipleFuns', ...
               'Residue does not support CHEBFUNs consisting of multiple FUNs.');
     end
     if ( ~isfinite(u) || ~isfinite(v) )
-        error('CHEBFUN:residue:inf', ...
+        error('CHEBFUN:CHEBFUN:residue:inf', ...
               'Residue does not support functions with nonzero exponents.');
     end
     
@@ -60,12 +60,12 @@ elseif ( nargin == 3 )
         k = 0;
     else
         if ( numel(k.funs) > 1 )
-            error('CHEBFUN:residue:multiple_funs', ...
+            error('CHEBFUN:CHEBFUN:residue:multipleFuns', ...
                   'RESIDUE does not support CHEBFUNs with multiple FUNS.');
         end
 
         if ( ~isfinite(k) )
-            error('CHEBFUN:residue:inf', ...
+            error('CHEBFUN:CHEBFUN:residue:inf', ...
                   'RESIDUE does not support functions which are unbounded.');
         end
 
@@ -78,7 +78,8 @@ elseif ( nargin == 3 )
     
 else
     
-    error('CHEBFUN:residue:args', 'Residue requires either 2 or 3 arguments.');
+    error('CHEBFUN:CHEBFUN:residue:args', ...
+        'Residue requires either 2 or 3 arguments.');
     
 end
 

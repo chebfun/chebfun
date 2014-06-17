@@ -22,21 +22,29 @@ d = [0, pi];
 A = chebop(@(x, u, v) [-u + diff(v) ; diff(u)], d);
 A.lbc = @(u, v) u;
 A.rbc = @(u, v) u;
-[~, D] = eigs(A, 5, pref);
+[V, D] = eigs(A, 5, pref);
 lam = diag(D);
 lam = abs(lam);
 lamCorrect = abs(lamCorrect);
+AV = [];
+for vCounter = 1:size(V, 2)
+    AV = [AV, A(V(:, vCounter))];
+end
 err(1) = norm( lam - lamCorrect, inf );
-
+err(2) = norm(AV - V*D);
 %% Piecewise domain
 A.domain = [0, pi/2, pi];
-[~, D] = eigs(A, 5, pref);
+[V, D] = eigs(A, 5, pref);
 lam_pw = diag(D);
 lam_pw = abs(lam_pw);
-err(2) = norm( lam_pw - lamCorrect, inf );
-
+AV = [];
+for vCounter = 1:size(V, 2)
+    AV = [AV, A(V(:, vCounter))];
+end
+err(3) = norm( lam_pw - lamCorrect, inf );
+err(4) = norm(AV - V*D);
 %%
 
-pass = err < 1e-12;
+pass = err < 1e-11;
 
 end

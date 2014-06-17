@@ -18,14 +18,15 @@ end
 % Check if inputs are other than DELTAFUNs, CLASSICFUNs or doubles.
 if ( (~isa(f, 'deltafun') && ~isa(f, 'classicfun') && ~isa(f, 'double')) || ...
      (~isa(g, 'deltafun') && ~isa(g, 'classicfun') && ~isa(g, 'double')) )   
-    error('DELTAFUN:rdivide', ...
+    error('CHEBFUN:DELTAFUN:rdivide:rdivide', ...
         'Input can only be a DELTAFUN, a CLASSICFUN or a double')
 end
 
 %% Reciprocal: ( CLASSICFUN or DOUBLE ). / DELTAFUN
 if ( isa(f, 'double') || isa( f, 'classicfun') && isa(g, 'deltafun') )    
     if ( anyDelta(g) )
-        error('DELTAFUN:rdivide', 'Division by delta functions is not defined.');
+        error('CHEBFUN:DELTAFUN:rdivide:rdivide',
+            'Division by delta functions is not defined.');
     end
     % A smooth function is returned in this case:
     s = f ./ g.funPart;
@@ -58,7 +59,8 @@ end
 %% DELTAFUN./DELTAFUN
 if ( isa(f, 'deltafun') && isa(g, 'deltafun') )
     if ( anyDelta(g) )
-        error('DELTAFUN:rdivide', 'Division by delta functions is not defined.');
+        error('CHEBFUN:DELTAFUN:rdivide:rdivide',
+            'Division by delta functions is not defined.');
     end
     % Take reciprocal of the funPart only and make a DELTAFUN:
     g = deltafun( 1 ./ g.funPart, [], []);
