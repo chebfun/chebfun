@@ -13,7 +13,7 @@ warning('off','CHEBOP2:EXPERIMENTAL');
 d = [-5 1 0 .1];
 N = chebop2(@(u) diffy(u) + diffx(u,3),d);
 N.dbc = @(x) exp(-10*x.^2);
-N.rbc = @(t,u) [u diff(u)];
+N.rbc = @(t,u) [u ; diff(u)];
 N.lbc = 0;
 u1 = mldivide(N, 0, 200, inf);
 [m, n] = length( u1 ); 

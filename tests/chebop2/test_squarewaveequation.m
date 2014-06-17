@@ -14,7 +14,7 @@ exact = chebfun2(@(x,t) sin(x+t) + sin(x-t), d);
 N = chebop2(@(u) diff(u,2,1) - diff(u,2,2), d);
 N.lbc = @(t) sin(t) + sin(-t);
 N.rbc = @(t) sin(10+t) + sin(10-t);
-N.dbc = @(x,u) [u - 2*sin(x) diff(u)];
+N.dbc = @(x,u) [u - 2*sin(x) ; diff(u)];
 u = N \ 0;
 
 pass(1) = ( norm(u - exact) < 150*tol ); 
@@ -25,7 +25,7 @@ exact = chebfun2(@(x,t) sin(x+t) + cos(x-t),d);
 N = chebop2(@(u) diff(u,2,1) - diff(u,2,2),d);
 N.lbc = @(t) sin(t) + cos(-t);
 N.rbc = @(t) sin(1+t) + cos(1-t);
-N.dbc = @(x,u) [u - sin(x) - cos(x) diff(u)-cos(x)-sin(x)];
+N.dbc = @(x,u) [u - sin(x) - cos(x) ; diff(u)-cos(x)-sin(x)];
 u = N \ 0;
 
 pass(2) = ( norm(u - exact) < tol ); 
@@ -36,7 +36,7 @@ exact = chebfun2(@(x,t) sin(x+t), d);
 N = chebop2(@(u) diff(u,2,1) - diff(u,2,2), d);
 N.lbc = @(t) sin(t);
 N.rbc = @(t) sin(pi+t);
-N.dbc = @(x,u) [u - sin(x) diff(u) - cos(x)];
+N.dbc = @(x,u) [u - sin(x) ; diff(u) - cos(x)];
 u = N \ 0;
 
 pass(3) = ( norm(u - exact) < 4*tol ); 
