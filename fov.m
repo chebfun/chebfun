@@ -24,8 +24,8 @@ function f = fov(A, pref)
 %   e = eig(A);
 %   hold on, plot(real(e), imag(e), '.k', 'markersize', 16)
 
-%   Copyright 2014 by The University of Oxford and The Chebfun Developers.
-%   See http://www.chebfun.org/ for Chebfun information.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin < 2 )
     % Obtain preferences:

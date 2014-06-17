@@ -28,7 +28,7 @@ function varargout = pdeset(varargin)
 %       PDEflag - Specify which entries correspond to time derivatives. 
 %           [ vector of logicals {true} ].
 %
-%   See also: odeset
+% See also ODESET.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
