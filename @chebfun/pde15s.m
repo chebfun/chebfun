@@ -85,6 +85,7 @@ tol = 1e-6;             % 'eps' in Chebfun terminology
 doPlot = 1;             % Plot after every time chunk?
 doHold = 0;             % Hold plot?
 plotOpts = {'-'};       % Plotting style
+throwBCwarning = true;  % Throw a warning for inconsistent BCs
 
 % Parse the variable inputs:
 if ( numel(varargin) == 2 )
@@ -220,12 +221,12 @@ end
                 % Shorten the representation. The happiness cutoff seems to
                 % be safer than the epslevel simplification.
 %                 uCurrent = simplify(uCurrent, epslevel);
-                uPoly = chebcoeffs(uCurrent);
+                uPoly = get(uCurrent, 'coeffs');
                 firstKept = size(uPoly, 2) - (cutoff-1);
                 if ( firstKept <= 0 )
                     firstKept = 1;
                 end
-                uCurrent = chebfun(uPoly(:,firstKept:end).', DOMAIN, 'coeffs');
+                uCurrent = chebfun(uPoly(firstKept:end,:), DOMAIN, 'coeffs');
                 
                 ctr = ctr + 1;
                 uOut{ctr} = uCurrent;
@@ -300,7 +301,6 @@ end
             status = guiEvent(status);
         end
     end
-
 
     function varargout = plotFun(U, t)
         %PLOTFUN    Plot current solution U at a time t.
@@ -704,7 +704,17 @@ clear global SYSSIZE
         % much trickier. Find out what the BC deviance from nominal really is:
         BCVALOFFSET = 0;            % recover nominal value in next call
         F = odeFun(tSpan(1),U0(:)); % also assigns to "rows" and "q"
-        BCVALOFFSET = F(rows);
+        
+        % If this is for the initial chunk, check whether the initial
+        % condition nearly satisfies the BCs.
+        % We're quite lax about this, because discretization at low N can
+        % cause derivatives to look fairly bad. 
+        if ( throwBCwarning && (length(uOut) > 1) && (norm(F(rows)) > 0.05*norm(F)) )
+            warning('CHEBFUN:CHEBFUN:pde15s:BadIC',...
+                'Initial state may not satisfy the boundary conditions.')
+            throwBCwarning = false;
+        end
+        BCVALOFFSET = F(rows) - q;
         
         % Solve ODE over time chunk with ode15s:
         try
