@@ -4,7 +4,7 @@ function disp(f)
 % See also DISPLAY.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % If the 'format loose' setting is enabled, we print additional linebreaks:
 loose = strcmp(get(0, 'FormatSpacing'), 'loose');

@@ -42,7 +42,7 @@ for j = numel(m):-1:1
         k(j) = compose(m(j), @(m) ellipke(fudge(m, mTol), .1*tol), pref);
     catch ME
         if ( strcmp(ME.identifier, 'MATLAB:ellipke:MOutOfRange') )
-            error('CHEBFUN:ellipke:MOutOfRange', ...
+            error('CHEBFUN:CHEBFUN:ellipke:MOutOfRange', ...
                 'M must be in the range 0 <= M <= 1.');
         else
             rethrow(ME)

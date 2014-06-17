@@ -12,7 +12,7 @@ function g = ceil(f)
 
 % Deal with unbounded functions:
 if ( ~isfinite(f) )
-    error('CHEBFUN:ceil:inf', ...
+    error('CHEBFUN:CHEBFUN:ceil:inf', ...
         'Ceil is not defined for functions which diverge to infinity.');
 end
 

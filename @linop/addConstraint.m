@@ -22,11 +22,12 @@ function L = addConstraint(L, varargin)
 %   See also LINOP.ADDCONTINUITY, LINOPCONSTRAINT. 
 
 %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
+%  See http://www.chebfun.org/ for Chebfun information.
 
 if ( isequal(varargin{1}, 'periodic') )
     if ( ~isempty(L.constraint) )
-        warning('Clearing existing constraints to replace with periodicity.')
+        warning('CHEBFUN:LINOP:addConstraint:overwrite', ...
+            'Clearing existing constraints to replace with periodicity.')
     end
     
     L = deriveContinuity(L, L.domain, true);  % modifies continuity property

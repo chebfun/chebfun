@@ -59,8 +59,8 @@ c3 = [feval(diff(f2,2), l1(3));
 
 deltas1 = .5*[c1, c2, c3];
 
-error = s.deltaMag - deltas1;
-pass(7) = norm(error(:), inf) < dTol;
+err = s.deltaMag - deltas1;
+pass(7) = norm(err(:), inf) < dTol;
     
 
 d2 = .8*[1 0 1;
@@ -86,7 +86,7 @@ c3 = [feval(diff(f1,0), l2(3));
 
 deltas2 = .8*[c1, c2, c3];
 
-error = [deltas1, deltas2] - s.deltaMag;
-pass(10) = norm(error(:), inf) < dTol;
+err = [deltas1, deltas2] - s.deltaMag;
+pass(10) = norm(err(:), inf) < dTol;
 %%
 end

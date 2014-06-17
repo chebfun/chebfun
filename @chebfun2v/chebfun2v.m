@@ -17,7 +17,7 @@
 % See also CHEBFUN2. 
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information. 
+% See http://www.chebfun.org/ for Chebfun information. 
 
 classdef chebfun2v
     
@@ -96,13 +96,13 @@ classdef chebfun2v
             
             % Stop now if there are too many components
             if ( numel( fh ) > 3 ) 
-                error('CHEBFUN2:CONSTRUCTOR:ARRAYVALUED',...
+                error('CHEBFUN:CHEBFUN2V:chebfun2v:arrayValued', ...
                           'More than three components is not supported.')
             end 
             
             % Stop now if there are no components: 
             if ( numel( fh ) == 0 ) 
-                error('CHEBFUN2:CONSTRUCTOR:EMPTY',...
+                error('CHEBFUN:CHEBFUN2V:chebfun2v:empty', ...
                 'The Chebfun2 constructor needs to be given function handles or chebfun2 objects.')
             end
             
@@ -113,7 +113,7 @@ classdef chebfun2v
             end
             
             if ( ~all(pass) )
-                error('CHEBFUN2:DOMAINCHECK',... 
+                error('CHEBFUN:CHEBFUN2V:chebfun2v:domainCheck', ...
                     'All chebfun2 objects need to have the same domain.');
             end
             

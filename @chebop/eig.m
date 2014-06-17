@@ -7,7 +7,7 @@ function eig(varargin)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-error('CHEBFUN:chebop:eig:useEIGS',...
+error('CHEBFUN:CHEBOP:eig:useEIGS',...
     'Use EIGS to find selected eigenvalues of a linear operator.')
 
 end

@@ -19,7 +19,8 @@ function out = legpoly(f, varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( numel(f) > 1 )
-    error('CHEBFUN:legpoly:quasi', 'LEGPOLY does not support quasimatrices.');
+    error('CHEBFUN:CHEBFUN:legpoly:quasi', ...
+        'LEGPOLY does not support quasimatrices.');
 end
 
 % Call FUN/LEGPOLY():
@@ -27,7 +28,7 @@ if ( numel( f.funs ) == 1 )
     out = legpoly(f.funs{1}, varargin{:}).';
 else
     if ( nargin < 2 )
-        error('CHEBFUN:legpoly:n', ...
+        error('CHEBFUN:CHEBFUN:legpoly:n', ...
             'Input is piecewise, so LEGPOLY() expects a second input argument.')
     end
     out = legpolyPiecewise(f, varargin{:});

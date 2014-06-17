@@ -52,7 +52,8 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
 
             % Check second argument is accepted.
             if ( pow ~= round(pow) || pow < 0 )
-                error('Power must be a positive integer.')
+                error('CHEBFUN:OPERATORBLOCK:mpower:badPower', ...
+                    'Power must be a positive integer.')
             end
 
             % Construct OPERATORBLOCK for repeated application.
@@ -80,7 +81,7 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
                 % Simply reciricate and call MTIMES():
                 C = mtimes(A, 1./B);
             else
-                error('CHEBFUN:operatorBlock:mrdivide:unknonn', ...
+                error('CHEBFUN:OPERATORBLOCK:mrdivide:unknown', ...
                     '%s-%s division is not supported.', class(A), class(B));
             end
         end

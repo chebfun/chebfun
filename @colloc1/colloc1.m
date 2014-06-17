@@ -82,7 +82,7 @@ classdef colloc1 < colloc
             % TODO: This is duplicated in a number of places.
             
             % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-            % See http://www.chebfun.org for Chebfun information.
+            % See http://www.chebfun.org/ for Chebfun information.
             
             N = N-1;
             

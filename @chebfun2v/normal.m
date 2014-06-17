@@ -9,7 +9,7 @@ function N = normal( F, varargin )
 % See also CHEBFUN/NORMAL. 
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 N = cross( diff( F, 1, 2 ), diff( F, 1, 1 ) );
 
@@ -18,15 +18,18 @@ if ( nargin > 1 )
         if ( N.nComponents == 2 )
             r = roots( N );
             if ( ( ~isempty(r) ) || ( norm(N) == 0 ) )
-                error('CHEBFUN:NORMAL:ZERO', 'Normal vector is zero.');
+                error('CHEBFUN:CHEBFUN2V:normal:zeroNormal1', ...
+                    'Normal vector is zero.');
             end
             N = N ./ abs( N );
         elseif ( norm(N) == 0 )
-            error('CHEBFUN:NORMAL:ZERO', 'Normal vector is zero');
+            error('CHEBFUN:CHEBFUN2V:normal:zeroNormal2', ...
+                'Normal vector is zero');
         end          
         
     else
-        error('CHEBFUN:NORMAL', 'Second argument is not recognised.');
+        error('CHEBFUN:CHEBFUN2V:normal:badInput', ...
+            'Second argument is not recognised.');
     end
 end
 

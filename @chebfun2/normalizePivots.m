@@ -4,7 +4,7 @@ function F = normalizePivots(F)
 % Additionally, the norm of the kth row and column will be the same.
 
 % Copyright 2014 by The University of Oxford and The Chebfun2 Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun2 information.
+% See http://www.chebfun.org/ for Chebfun2 information.
 
 % TODO: Document
 % TODO: is this useful?

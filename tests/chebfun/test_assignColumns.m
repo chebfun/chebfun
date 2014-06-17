@@ -66,14 +66,16 @@ for k = 1:2
         h = assignColumns(f, [1 2 3], g.');
         pass(k,9) = false;
     catch ME
-        pass(k,9) = strcmp(ME.identifier, 'CHEBFUN:assignColumns:numCols');
+        pass(k,9) = strcmp(ME.identifier, ...
+            'CHEBFUN:CHEBFUN:assignColumns:numCols');
     end
 
     try
         h = assignColumns(f, [1 2], g);
         pass(k,10) = false;
     catch ME
-        pass(k,10) = strcmp(ME.identifier, 'CHEBFUN:assignColumns:numCols');
+        pass(k,10) = strcmp(ME.identifier, ...
+            'CHEBFUN:CHEBFUN:assignColumns:numCols');
     end
 
     try
@@ -81,7 +83,8 @@ for k = 1:2
         h = assignColumns(f, [1 2 3], g2);
         pass(k,11) = false;
     catch ME
-        pass(k,11) = strcmp(ME.identifier, 'CHEBFUN:assignColumns:domain');
+        pass(k,11) = strcmp(ME.identifier, ...
+            'CHEBFUN:CHEBFUN:assignColumns:domain');
     end
 
     % Test assign outside of dimension of f:

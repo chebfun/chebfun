@@ -9,7 +9,7 @@ function F = vertcat( F , G )
 %   the second and third are the first and second components of F.
 
 % Copyright 2014 by The University of Oxford and The Chebfun2 Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun2 information.
+% See http://www.chebfun.org/ for Chebfun2 information.
 
 if ( isempty( F ) || isempty( G ) )
     F = chebfun2v;
@@ -26,11 +26,11 @@ elseif ( isa(F, 'double') )
     F = chebfun2( F, Gc{1}.domain ); 
 elseif ( isa(G, 'chebfun2') )
     if ( ~domainCheck(F.components{1}, G) ) 
-        error('CHEBFUN2V:VERTCAT:DOMAIN', 'Inconsistent domains.')
+        error('CHEBFUN:CHEBFUN2V:vertcat:domain', 'Inconsistent domains.')
     end
     dom = G.domain; 
 else
-    error('CHEBFUN2V:VERTCAT', ...
+    error('CHEBFUN:CHEBFUN2V:vertcat:notSupported', ...
         'Vertical concatenation of these objects is not supported.')
 end
 

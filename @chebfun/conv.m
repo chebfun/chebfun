@@ -40,12 +40,14 @@ end
 
 % No support for quasimatrices:
 if ( numColumns(f) > 1 || numColumns(g) > 1 )
-    error('CHEBFUN:conv:quasi', 'No support for array-valued CHEBFUN objects.');
+    error('CHEBFUN:CHEBFUN:conv:quasi', ...
+        'No support for array-valued CHEBFUN objects.');
 end
 
 % Check transpose state:
 if ( xor(f(1).isTransposed, g(1).isTransposed) )
-    error('CHEBFUN:conv:transposed', 'CHEBFUN dimensions do not agree.');
+    error('CHEBFUN:CHEBFUN:conv:transposed', ...
+        'CHEBFUN dimensions do not agree.');
 end
 transState = f(1).isTransposed;
 
@@ -53,9 +55,9 @@ transState = f(1).isTransposed;
 [a, b] = domain(f);
 [c, d] = domain(g);
 
-% No support for unbounded domains:s
+% No support for unbounded domains:
 if ( any(isinf([a b c d])) )
-    error('CHEBFUN:conv:bounded', ...
+    error('CHEBFUN:CHEBFUN:conv:bounded', ...
         'CONV only supports CHEBFUN objects on bounded domains.');
 end
 

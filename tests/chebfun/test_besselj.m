@@ -58,7 +58,7 @@ try
     h = besselj(1i + 3, f);
     pass(8) = false;
 catch ME
-    pass(8) = strcmp(ME.identifier, 'CHEBFUN:besselj:nu');
+    pass(8) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:besselj:nu');
 end
 
 end

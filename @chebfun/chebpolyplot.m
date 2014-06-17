@@ -36,7 +36,7 @@ if ( nargin > 1 && ischar(varargin{1}) && numel(varargin{1}) < 4 )
     % parameters have more than characters.)
     col = regexp(varargin{1}, '[bgrcmykw]', 'match');
     if ( numel(col) > 1 )
-        error('CHEBFUN:chebpolyplot:color', ...
+        error('CHEBFUN:CHEBFUN:chebpolyplot:color', ...
             'Error in color/linetype argument.');
     elseif ( ~isempty(col) )
         col = col{:};

@@ -34,7 +34,7 @@ classdef unbndfun < classicfun
 % See also CLASSICFUN, CHEBFUNPREF, ONEFUN.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % UNBNDFUN Class Description:
@@ -80,11 +80,11 @@ classdef unbndfun < classicfun
 
             % Check domain
             if ( ~all(size(data.domain) == [1, 2]) || (diff(data.domain) <= 0) )
-                error('CHEBFUN:UNBNDFUN:domain',...
+                error('CHEBFUN:UNBNDFUN:unbndfun:domain',...
                     ['Domain argument should be a row vector with two ', ...
                     'entries in increasing order.']);
             elseif ( ~any(isinf(data.domain)) )
-                error('CHEBFUN:UNBNDFUN:boundedDomain',...
+                error('CHEBFUN:UNBNDFUN:unbndfun:boundedDomain',...
                     'Domain argument should be unbounded.');
             end
 
@@ -97,7 +97,7 @@ classdef unbndfun < classicfun
                     op = @(x) zeros(length(x), size(op, 2));
                 else
                     %[TODO]: Implement this.
-                    error('CHEBFUN:UNBNDFUN:inputValues',...
+                    error('CHEBFUN:UNBNDFUN:unbndfun:inputValues',...
                         ['UNBNDFUN does not support non-zero construction ' ...
                          'from values.']);
                 end

@@ -20,7 +20,7 @@ end
 
 % Check if the argument s is actually a subinterval:
 if ( s(1) < f.domain(1) || s(end) > f.domain(2) || any(diff(s) <= 0) )
-    error('CHEBFUN:UNBNDFUN:restrict:badinterval', 'Not a valid interval.')
+    error('CHEBFUN:UNBNDFUN:restrict:badInterval', 'Not a valid interval.')
 elseif ( numel(s) == 2 && all(s == f.domain) )
     % Nothing to do here!
     g = f;

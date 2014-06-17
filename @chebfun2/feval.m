@@ -12,7 +12,7 @@ function out = feval(f, x, y)
 % See also SUBSREF.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check:
 if ( isempty(f) )
@@ -100,7 +100,7 @@ elseif ( isnumeric( x ) && isnumeric( y ) )  % f(x, y)
     
 elseif ( isa(x, 'chebfun') )
     if ( min( size( x ) ) > 1 )
-        error('CHEBFUN2:FEVAL', ...
+        error('CHEBFUN:CHEBFUN2:feval:arrayValued', ...
             'Cannot evaluate a CHEBFUN2 at an array-valued CHEBFUN.');
     end
     
@@ -113,11 +113,11 @@ elseif ( isa(x, 'chebfun') )
             if( domainCheck(x, y) )
                 out = chebfun( @(t) feval(f, x(t), y(t)), x.domain, 'vectorize');
             else
-                error('CHEBFUN2:feval:path', ...
+                error('CHEBFUN:CHEBFUN2:feval:path', ...
                     'CHEBFUN path has domain inconsistency.');
             end
         else
-            error('CHEBFUN2:feval:complex', ...
+            error('CHEBFUN:CHEBFUN2:feval:complex', ...
                 'Cannot evaluate along complex-valued CHEBFUN.');
         end
     end
@@ -128,7 +128,8 @@ elseif ( isa(x, 'chebfun2v') )
     out = chebfun2(@(s,t) feval(f, feval(components{1},s,t),...
                                         feval(components{2},s,t)), domain);
 else
-    error('CHEBFUN2:FEVAL:INPUTS', 'Unrecognized arguments for evaluation.');
+    error('CHEBFUN:CHEBFUN2:feval:inputs', ...
+        'Unrecognized arguments for evaluation.');
     
 end
 

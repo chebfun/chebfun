@@ -24,7 +24,7 @@ isQuasi = all(isfinite(s(:)));
 
 if ( ~isQuasi )
     % If A contains inf x inf blocks, call SPY():
-    error('CHEBFUN:chebmatrix:chebpolyplot:notaquasi', ...
+    error('CHEBFUN:CHEBMATRIX:chebpolyplot:notQuasi', ...
         'CHEBPOLYPLOT does not support CHEBMATRIX objects of size INFxINF.');
 end
      

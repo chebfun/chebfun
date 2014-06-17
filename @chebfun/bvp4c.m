@@ -40,7 +40,7 @@ for k = 1:nargin-3
 end
 
 if ( ~isfinite(y0) )
-    error('CHEBFUN:bvp4c:inf',...
+    error('CHEBFUN:CHEBFUN:bvp4c:inf',...
       'BVP4C() does not currently support functions which diverge to infinity');
 end
 

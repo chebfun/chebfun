@@ -185,7 +185,8 @@ for k = 1:numel(varargin)
         case {'norecursion', 'norecurse'}
             rootsPref.recurse = 0;
         otherwise
-            error('CHEBFUN:roots:UnknownOption', 'Unknown option in ROOTS.')
+            error('CHEBFUN:CHEBFUN:roots:parseInputs:UnknownOption', ...
+                'Unknown option in ROOTS.')
     end
 end
 
