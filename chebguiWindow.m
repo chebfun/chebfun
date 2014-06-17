@@ -1454,6 +1454,14 @@ function menu_eigsscalar_Callback(hObject, eventdata, handles)
 end
 
 function button_export_Callback(hObject, eventdata, handles)
+
+    % What discretization do we want to use?
+    if ( get(handles.button_Collocation, 'Value') )
+        handles.guifile.options.discretization = @colloc2;
+    else
+        handles.guifile.options.discretization = @ultraS;
+    end
+
     % Create a CHEBGUIEXPORTER object of the correct type:
     exporter = chebguiExporter.constructor(handles.guifile.type);    
     % Call the export method of the E object:
