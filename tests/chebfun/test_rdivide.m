@@ -91,30 +91,34 @@ try
     h = f./0;
     pass(13) = false;
 catch ME
-    pass(13) = strcmp(ME.identifier, 'CHEBFUN:rdivide:DivisionByZero');
+    pass(13) = strcmp(ME.identifier, ...
+        'CHEBFUN:CHEBFUN:rdivide:columnRdivide:divisionByZero');
 end
 
 try
     h = chebfun(@(x) 1+0*x)./chebfun(@(x) 0*x);
     pass(13) = false;
 catch ME
-    pass(13) = strcmp(ME.identifier, 'CHEBFUN:rdivide:DivisionByZeroChebfun');
+    pass(13) = strcmp(ME.identifier, ...
+        'CHEBFUN:CHEBFUN:rdivide:columnRdivide:divisionByZeroChebfun');
 end
 
 try
     f./gt;
-    pass(10) = false;
+    pass(14) = false;
 catch ME
-    pass(10) = strcmp(ME.identifier, 'CHEBFUN:rdivide:dim');
+    pass(14) = strcmp(ME.identifier, ...
+        'CHEBFUN:CHEBFUN:rdivide:columnRdivide:dim');
 end
 
 try
     f = chebfun(@(x) exp(x), [-1 1]);
     g = chebfun(@(x) exp(x), [0 2]);
     h = f./g;
-    pass(11) = false;
+    pass(15) = false;
 catch ME
-    pass(11) = strcmp(ME.identifier, 'CHEBFUN:rdivide:domain');
+    pass(15) = strcmp(ME.identifier, ...
+        'CHEBFUN:CHEBFUN:rdivide:columnRdivide:domain');
 end
 
 %% Test on singular function: piecewise smooth chebfun - splitting on.
@@ -135,7 +139,7 @@ vals_h = feval(h, x);
 pow = pow1-pow2;
 op = @(x) (x - dom(2)).^pow.*(sin(100*x)./(cos(300*x).^2+1));
 h_exact = op(x);
-pass(12) = ( norm(vals_h-h_exact, inf) < 1e1*max(get(f, 'epslevel'), ...
+pass(16) = ( norm(vals_h-h_exact, inf) < 1e1*max(get(f, 'epslevel'), ...
     get(g, 'epslevel'))*norm(h_exact, inf) );
 
 %% Test for function defined on unbounded domain:
@@ -158,6 +162,6 @@ h = f./g;
 hVals = feval(h, x);
 hExact = oph(x);
 err = hVals - hExact;
-pass(13) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
+pass(17) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
 
 end

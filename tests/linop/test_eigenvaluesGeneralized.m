@@ -144,7 +144,7 @@ err(3,6) = norm(AV - BV*D);
 
 %%
 tolVals = repmat(6e-9, 3, 1);
-tolFuns = repmat(4e-8, 3, 1);
+tolFuns = repmat(4e-7, 3, 1);
 
 tol = repmat([tolVals, tolFuns], 1, 3);
 

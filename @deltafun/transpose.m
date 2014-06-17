@@ -4,7 +4,7 @@ function varargout = transpose(varargin) %#ok<STOUT,*INUSD>
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-error('DELTAFUN:transpose:notpossible', ...
+error('CHEBFUN:DELTAFUN:transpose:notPossible', ...
     'DELTAFUN objects are not transposable.')
 
 end

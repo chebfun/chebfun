@@ -30,7 +30,7 @@ if ( isa(f,'chebfun') && isa(g, 'chebfun') )
 
     % Check the number of columns match:
     if ( numColumns(f) ~= numColumns(g) )
-        error('CHEBFUN:rdivide:quasi', ...
+        error('CHEBFUN:CHEBFUN:rdivide:quasi', ...
             'Chebfun quasimatrix dimensions must agree.')
     end
     
@@ -76,7 +76,7 @@ elseif ( isa(f, 'chebfun') )
             end
         end
     else
-        error('CHEBFUN:power:dim', ...
+        error('CHEBFUN:CHEBFUN:rdivide:dim', ...
             'Chebfun quasimatrix dimensions must agree.');
     end
     
@@ -110,7 +110,7 @@ else
         end
         try h = quasi2cheb(h); catch, end
     else
-        error('CHEBFUN:power:dim', ...
+        error('CHEBFUN:CHEBFUN:rdivide:dim', ...
             'Chebfun quasimatrix dimensions must agree.');
     end
 
@@ -124,7 +124,8 @@ function h = columnRdivide(f, g, pref)
 if ( isnumeric(g) )
     if ( g == 0 )
         % TODO:  Return identically Inf/NaN CHEBFUN instead?
-        error('CHEBFUN:rdivide:DivisionByZero', 'Division by zero.')
+        error('CHEBFUN:CHEBFUN:rdivide:columnRdivide:divisionByZero', ...
+            'Division by zero.')
     end
     h = f.*(1./g);  
     return
@@ -134,7 +135,7 @@ end
 for k = 1:numel(g.funs)
     if ( iszero(g.funs{k}) )
         % TODO:  Return CHEBFUN with identically Inf/NaN FUN instead?
-        error('CHEBFUN:rdivide:DivisionByZeroChebfun', ...
+        error('CHEBFUN:CHEBFUN:rdivide:columnRdivide:divisionByZeroChebfun', ...
             'Division by CHEBFUN with identically zero FUN.');
     end
 end
@@ -146,12 +147,13 @@ if ( isa(f, 'chebfun') )
     
     % Check that the domains are the same:
     if ( ~domainCheck(f, g) )
-        error('CHEBFUN:rdivide:domain', 'Inconsistent domains.');
+        error('CHEBFUN:CHEBFUN:rdivide:columnRdivide:domain', ...
+            'Inconsistent domains.');
     end
     
     % Check that the orientation is the same:
     if ( xor(f.isTransposed, g.isTransposed) )
-        error('CHEBFUN:rdivide:dim', ...
+        error('CHEBFUN:CHEBFUN:rdivide:columnRdivide:dim', ...
             'Matrix dimension do not agree (transposed)');
     end
     

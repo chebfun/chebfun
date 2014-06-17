@@ -111,7 +111,7 @@ while ( (normres(j) > tol) && (j < maxiter) )      % outer iterations
         
         % Give up?
         if ( j == maxiter + 1 )
-            warning('CHEBFUN:gmres:maxiter', ...
+            warning('CHEBFUN:CHEBFUN:gmres:maxiter', ...
                 'Maximum number of iterations reached.')
             showtrace = false;
             break

@@ -34,7 +34,7 @@ classdef unbndfun < classicfun
 % See also CLASSICFUN, CHEBFUNPREF, ONEFUN.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % UNBNDFUN Class Description:
@@ -49,15 +49,18 @@ classdef unbndfun < classicfun
 % meaningful under that circumstance.
 %
 % Class diagram: [<<CLASSICFUN>>] <>-- [<<onefun>>]
-%                    ^
-%                    |
-%                [unbndfun]
+%                       ^
+%                       |
+%                   [unbndfun]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    %% CLASS CONSTRUCTOR:   
-    methods
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS CONSTRUCTOR:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
         
         function obj = unbndfun(op, data, pref)
+            
             % Parse inputs.
             if ( (nargin < 1) || isempty(op) )
                 obj.domain = [];
@@ -80,11 +83,11 @@ classdef unbndfun < classicfun
 
             % Check domain
             if ( ~all(size(data.domain) == [1, 2]) || (diff(data.domain) <= 0) )
-                error('CHEBFUN:UNBNDFUN:domain',...
+                error('CHEBFUN:UNBNDFUN:unbndfun:domain',...
                     ['Domain argument should be a row vector with two ', ...
                     'entries in increasing order.']);
             elseif ( ~any(isinf(data.domain)) )
-                error('CHEBFUN:UNBNDFUN:boundedDomain',...
+                error('CHEBFUN:UNBNDFUN:unbndfun:boundedDomain',...
                     'Domain argument should be unbounded.');
             end
 
@@ -97,7 +100,7 @@ classdef unbndfun < classicfun
                     op = @(x) zeros(length(x), size(op, 2));
                 else
                     %[TODO]: Implement this.
-                    error('CHEBFUN:UNBNDFUN:inputValues',...
+                    error('CHEBFUN:UNBNDFUN:unbndfun:inputValues',...
                         ['UNBNDFUN does not support non-zero construction ' ...
                          'from values.']);
                 end
@@ -112,15 +115,15 @@ classdef unbndfun < classicfun
                 lVal = feval(op, -1);
                 rVal = feval(op, 1);
                 if ( any(isinf([lVal rVal])) )
-                    pref.enableSingularityDetection = true;
-                    singType = pref.singPrefs.defaultSingType;
+                    pref.blowup = true;
+                    singType = pref.blowupPrefs.defaultSingType;
                     data.singType = {singType, singType};
                 end
             else
                 % Remapping to [-1, 1] negates exponents, which are given with
                 % respect to the function on the infinite domain.
                 ind = isinf(data.domain);
-                pref.enableSingularityDetection = true;
+                pref.blowup = true;
                 data.exponents(ind) = -data.exponents(ind);
             end
 
@@ -131,24 +134,13 @@ classdef unbndfun < classicfun
             obj.domain = data.domain;
             obj.mapping = unbndmap;
         end
+        
     end
     
-    %% STATIC METHODS IMPLEMENTED BY UNBNDFUN CLASS.
-    methods ( Static = true ) 
-        
-        % Retrieve and modify preferences for this class.
-        prefs = pref(varargin);
-        
-        % Noninear map from [-1, 1] to the domain of the UNBNDFUN.
-        m = createMap(domain);
-        
-        % Make a UNBNDFUN (constructor shortcut):
-        f = make(varargin); 
-        
-    end
-       
-    %% METHODS IMPLEMENTED BY THIS CLASS.
-    methods
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
         
         % Compose an UNBNDFUN with an operator or another FUN.
         f = compose(f, op, g, data, pref)
@@ -197,8 +189,29 @@ classdef unbndfun < classicfun
         
         % Definite integral of an UNBNDFUN on the its domain.
         out = sum(f, dim)
-    end    
+    end
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% STATIC METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = true ) 
+        
+        % Retrieve and modify preferences for this class.
+        prefs = pref(varargin);
+        
+        % Noninear map from [-1, 1] to the domain of the UNBNDFUN.
+        m = createMap(domain);
+        
+        % Make a UNBNDFUN (constructor shortcut):
+        f = make(varargin); 
+        
+    end
+    
 end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% PRIVATE METHODS IMPLEMENTED IN THIE FILE:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function data = parseDataInputs(data, pref)
 %PARSEDATAINPUTS   Parse inputs from the DATA structure and assign defaults.

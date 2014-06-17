@@ -19,7 +19,7 @@ function L = deriveContinuity(L, domain, makePeriodic)
 %   the conditions to the 'constraint' property.
 
 %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
+%  See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin < 3 )
     makePeriodic = false;

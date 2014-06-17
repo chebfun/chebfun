@@ -72,7 +72,7 @@ end
 powl = -0.5;
 powr = -1.6;
 op = @(x) (x - dom(1)).^powl.*(x - dom(2)).^powr.*sin(x);
-pref.enableSingularityDetection = true;
+pref.blowup = true;
 data.domain = dom;
 data.exponents = [powl powr];
 f = bndfun(op, data, pref);

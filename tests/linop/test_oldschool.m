@@ -16,7 +16,7 @@ pass(7) = doesNotCrash( @() zeros(d) );
 
 %% Test the feval-style instantiation syntax.
 D = diff(d);
-warnState = warning('off', 'chebfun:linop:fevalDeprecated');
+warnState = warning('off', 'CHEBFUN:LINOP:feval:deprecated');
 pass(8) = norm( D(8) - matrix(D,8) ) < 2e-14;
 warning(warnState);
 
@@ -29,7 +29,7 @@ A = addConstraint(A,e(d(end))*D,0);
 A1 = matrix(A,10);   % first two rows hold BCs
 correct = cell2mat(A0); 
 correct([1 end],:) = A1(1:2,:);  % classic row replacement
-warnState = warning('off', 'chebfun:linop:fevalDeprecated');
+warnState = warning('off', 'CHEBFUN:LINOP:feval:deprecated');
 Aold = feval(A,12,'oldschool');
 warning(warnState);
 pass(9) = norm( correct - Aold ) < 2e-14;

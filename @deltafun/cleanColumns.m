@@ -9,7 +9,7 @@ function [A, v] = cleanColumns(A, v, pref)
 % See also MERGECOLUMNS, MERGEDELTAS, CLEANROWS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Get the tolerance:
 if ( nargin < 3 || isempty(pref) )
@@ -20,7 +20,7 @@ deltaTol = pref.deltaPrefs.deltaTol;
 % Check sizes:
 m = size(A, 2);
 if ( length(v) ~= m || size(v, 1) > 1 )
-    error( 'DELTAFUN:cleanColumns', ...
+    error( 'CHEBFUN:DELTAFUN:cleanColumns:cleanColumns', ...
         'Number of columns of A should equal the length of the vector v.' );
 end
 

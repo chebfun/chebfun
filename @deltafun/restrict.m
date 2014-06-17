@@ -23,7 +23,7 @@ b = dom(2);
 
 % Check if s is actually a subinterval:
 if ( (s(1) < a) || (s(end) > b) || (any(diff(s) <= 0)) )
-    error('DELTAFUN:restrict:badinterval', 'Not a valid subinterval.')
+    error('CHEBFUN:DELTAFUN:restrict:badInterval', 'Not a valid subinterval.')
 elseif ( (numel(s) == 2) && all(s == [a, b]) )
     % Nothing to do here!
     g = f;

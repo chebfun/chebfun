@@ -18,11 +18,10 @@ function [funs, ends] = constructor(op, dom, data, pref)
 %   construction preferences to be passed to the constructor.  See CHEBFUNPREF
 %   for more details on preferences.
 %
-%   In particular, if PREF.ENABLEBREAKPOINTDETECTION = TRUE and OP is a
-%   function_handle or a string, then the constructor adaptively introduces
-%   additional breakpoints into the domain so as to better represent the
-%   function. These are returned as the second output argument in [FUNS, END] =
-%   CONSTRUCTOR(OP, DOM).
+%   In particular, if PREF.SPLITTING = TRUE and OP is a function_handle or a
+%   string, then the constructor adaptively introduces additional breakpoints
+%   into the domain so as to better represent the function. These are returned
+%   as the second output argument in [FUNS, END] = CONSTRUCTOR(OP, DOM).
 %
 %   The DATA structure input contains information which needs to be passed to
 %   the lower layers about parameters which may affect the construction process.
@@ -52,13 +51,13 @@ end
 
 % Sanity check:
 if ( iscell(op) && (numel(op) ~= numIntervals) )
-    error('CHEBFUN:constructor:cellInput', ...
+    error('CHEBFUN:CHEBFUN:constructor:cellInput', ...
         ['Number of cell elements in OP must match the number of ', ...
          'intervals in DOMAIN.'])
 end
 
 % Construct the FUNs.
-if ( pref.enableBreakpointDetection )
+if ( pref.splitting )
     [funs, ends] = constructorSplit(op, dom, data, pref);
 else
     [funs, ends] = constructorNoSplit(op, dom, data, pref);
@@ -82,7 +81,7 @@ funs = cell(1, numIntervals);
 % We only want to throw the warning 'CHEBFUN:constructor:notResolved'once:
 warningThrown = false;
 
-singDetect = pref.enableSingularityDetection;
+singDetect = pref.blowup;
 exps = data.exponents;
 singTypes = data.singType;
 
@@ -112,7 +111,7 @@ for k = 1:numIntervals
 
     % Warn if unhappy (as we're unable to split the domain to improve):
     if ( ~ishappy && ~warningThrown )
-        warning('CHEBFUN:constructor:notResolved', ...
+        warning('CHEBFUN:CHEBFUN:constructor:notResolved', ...
             ['Function not resolved using %d pts.', ...
             ' Have you tried ''splitting on''?'], pref.techPrefs.maxLength);
         warningThrown = true;
@@ -131,7 +130,7 @@ numIntervals = numel(dom) - 1;
 ends = dom;
 
 % Set the maximum length (i.e., number of sample points for CHEBTECH):
-pref.techPrefs.maxLength = pref.breakpointPrefs.splitMaxLength;
+pref.techPrefs.maxLength = pref.splitPrefs.splitMaxLength;
 
 % We extrapolate when splitting so that we can construct functions like
 % chebfun(@sign,[-1 1]), which otherwise would not be happy at x = 0.
@@ -142,7 +141,7 @@ funs = cell(1, numIntervals);
 % Initialise happiness:
 ishappy = ones(1, numel(ends) - 1);
 
-singDetect = pref.enableSingularityDetection;
+singDetect = pref.blowup;
 exps = data.exponents;
 singTypes = data.singType;
 
@@ -260,8 +259,9 @@ while ( any(sad) )
 
     % Fail if too many points are required:
     len = sum(cellfun(@length, funs));
-    if ( len > pref.breakpointPrefs.splitMaxTotalLength )
-        warning('Function not resolved using %d pts.', ...
+    if ( len > pref.splitPrefs.splitMaxTotalLength )
+        warning('CHEBFUN:CHEBFUN:constructor:funNotResolved', ...
+            'Function not resolved using %d pts.', ...
             sum(cellfun(@length, funs)));
         return
     end

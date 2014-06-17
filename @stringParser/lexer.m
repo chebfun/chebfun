@@ -260,7 +260,7 @@ while ( ~strcmp(str, '$') )
                         exprEnd = 2;
                         out = [out ; {'~=', 'OP~='}];
                     else
-                        error('Chebgui:Lexer:UnsupportedOperator', ...
+                        error('CHEBFUN:STRINGPARSER:lexer:UnsupportedOperator', ...
                             'Unsupported operator ~.');
                     end
             end
@@ -338,7 +338,7 @@ while ( ~strcmp(str, '$') )
             out = [out ; {char1,'COMMA'}];
             
         case 'error'
-            error('CHEBFUN:CHEBGUI:strConvLexer:UnknownType', ...
+            error('CHEBFUN:STRINGPARSER:lexer:unknownType', ...
                 'Unrecognized type of lexer input.');
     end
     
@@ -358,10 +358,10 @@ out = [out ; {'', '$'}];
 % Return the name of the independent variable. Use x if none is found.
 % Check whether we have too many independent variables.
 if ( strcmp(problemType, 'pde') && ((rExists + tExists + xExists) > 2) )
-        error('Chebgui:solve:Lexer:TooManyIndVars', ...
+        error('CHEBFUN:STRINGPARSER:lexer:tooManyIndVars', ...
             'Too many independent variables in input.');
 elseif ( (rExists + tExists + xExists) > 1 ) % Must be in BVP or EIG mode
-        error('Chebgui:solve:Lexer:TooManyIndVars', ...
+        error('CHEBFUN:STRINGPARSER:lexer:tooManyIndVars', ...
             'Too many independent variables in input.');     
 end
 

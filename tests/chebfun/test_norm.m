@@ -61,49 +61,49 @@ try
     [x, y] = norm(g, 1);
     pass(15) = false;
 catch ME
-    pass(15) = strcmp(ME.identifier, 'CHEBFUN:norm:argout');
+    pass(15) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:norm:argout');
 end
 
 try
     [x, y] = norm(g, 2);
     pass(16) = false;
 catch ME
-    pass(16) = strcmp(ME.identifier, 'CHEBFUN:norm:argout');
+    pass(16) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:norm:argout');
 end
 
 try
     [x, y] = norm(g, 0.4);
     pass(17) = false;
 catch ME
-    pass(17) = strcmp(ME.identifier, 'CHEBFUN:norm:argout');
+    pass(17) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:norm:argout');
 end
 
 try
     [x, y] = norm(g, 'bad');
     pass(18) = false;
 catch ME
-    pass(18) = strcmp(ME.identifier, 'CHEBFUN:norm:unknownNorm');
+    pass(18) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:norm:unknownNorm');
 end
 
 try
     [x, y] = norm(f, 2);
     pass(19) = false;
 catch ME
-    pass(19) = strcmp(ME.identifier, 'CHEBFUN:norm:argout');
+    pass(19) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:norm:argout');
 end
 
 try
     [x, y] = norm(f, 'fro');
     pass(20) = false;
 catch ME
-    pass(20) = strcmp(ME.identifier, 'CHEBFUN:norm:argout');
+    pass(20) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:norm:argout');
 end
 
 try
     [x, y] = norm(f, 'bad');
     pass(21) = false;
 catch ME
-    pass(21) = strcmp(ME.identifier, 'CHEBFUN:norm:unknownNorm');
+    pass(21) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:norm:unknownNorm');
 end
 
 %% Tests for singular functions:

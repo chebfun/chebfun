@@ -12,7 +12,7 @@ function values = coeffs2vals(coeffs)
 % See also VALS2COEFFS, CHEBPTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % [Developer Note]: This is equivalent to Discrete Cosine Transform of Type III.

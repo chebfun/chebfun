@@ -11,7 +11,8 @@ function g = reallog(f, pref)
 
 % Check for complex CHEBFUN objects:
 if ( ~isreal(f) )
-    error('CHEBFUN:reallog:complex', 'Reallog produced complex result.');
+    error('CHEBFUN:CHEBFUN:reallog:complex', ...
+        'Reallog produced complex result.');
 end
 
 % Obtain preferences:

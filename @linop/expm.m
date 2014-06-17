@@ -78,7 +78,7 @@ isDone = false(1, numInt);
 if ( isa(u0, 'chebfun') )
     u0 = chebmatrix({u0}); 
 elseif ( ~isa(u0, 'chebmatrix') )
-    error('CHEBFUN:linop:expm:unknown', ...
+    error('CHEBFUN:LINOP:expm:unknown', ...
         'No support for inputs of type %s.', class(u0));
 end
 
@@ -127,7 +127,7 @@ for i = 1:length(t)
     end
     
     if ( ~all(isDone) )
-        warning('LINOP:expm:NoConverge', ...
+        warning('CHEBFUN:LINOP:expm:noConverge', ...
             'Matrix exponential may not have converged.')
     end
     

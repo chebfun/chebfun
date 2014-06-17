@@ -30,21 +30,24 @@ for n = 1:2
         g = restrict(f, [-1, 3]); %#ok<NASGU>
         pass(n, 3) = 0;
     catch ME
-        pass(n, 3) = strcmp(ME.identifier, 'CHEBTECH:restrict:badinterval');
+        pass(n, 3) = strcmp(ME.identifier, ...
+            'CHEBFUN:CHEBTECH:restrict:badInterval');
     end
 
     try
         g = restrict(f, [-2, 1]); %#ok<NASGU>
         pass(n, 4) = 0;
     catch ME
-        pass(n, 4) = strcmp(ME.identifier, 'CHEBTECH:restrict:badinterval');
+        pass(n, 4) = strcmp(ME.identifier, ...
+            'CHEBFUN:CHEBTECH:restrict:badInterval');
     end
 
     try
         g = restrict(f, [-1 -0.25 0.3 0.1 1]); %#ok<NASGU>
         pass(n, 5) = 0;
     catch ME
-        pass(n, 5) = strcmp(ME.identifier, 'CHEBTECH:restrict:badinterval');
+        pass(n, 5) = strcmp(ME.identifier, ...
+            'CHEBFUN:CHEBTECH:restrict:badInterval');
     end
 
     %%

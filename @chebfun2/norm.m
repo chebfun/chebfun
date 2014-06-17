@@ -13,7 +13,7 @@ function [normF, normloc] = norm( f, p )
 % giving a position where the max occurs.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin == 1 ) 
     % Default to 2-norm.
@@ -27,7 +27,8 @@ if ( isempty( f ) )
 else
     switch ( p )  % Different cases on different norms.
         case 1
-            error('CHEBFUN2:norm', 'CHEBFUN2 does not support L1-norm, yet');
+            error('CHEBFUN:CHEBFUN2:norm:norm', ...
+                'CHEBFUN2 does not support L1-norm, yet');
             
         case {2, 'fro'}  % Definite integral of f.^2
             % L^2-norm is sum of squares of sv.
@@ -39,7 +40,8 @@ else
             normloc = X( idx, : );
             
         case {-inf, '-inf', 'min'}
-            error('CHEBFUN2:norm', 'CHEBFUN2 does not support this norm.');
+            error('CHEBFUN:CHEBFUN2:norm:norm', ...
+                'CHEBFUN2 does not support this norm.');
             
         case {'op', 'operator'}
             [C, D, R] = cdr( f ); 
@@ -54,15 +56,15 @@ else
                     if ( ~mod(p,2) )
                         normF = ( sum2( f ) ).^( 1/p );
                     else
-                        error('CHEBFUN2:norm', ...
+                        error('CHEBFUN:CHEBFUN2:norm:norm', ...
                             'p-norm must have p even for now.');
                     end
                 else
-                    error('CHEBFUN2:norm', ...
+                    error('CHEBFUN:CHEBFUN2:norm:norm', ...
                         'CHEBFUN2 does not support this norm.');
                 end
             else
-                error('CHEBFUN:norm:unknown', 'Unknown norm.');
+                error('CHEBFUN:CHEBFUN2:norm:unknown', 'Unknown norm.');
             end
             
     end

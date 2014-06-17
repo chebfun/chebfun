@@ -22,7 +22,7 @@ try
     g = pinv(f.');
     pass(5) = false;
 catch ME
-    pass(5) = strcmp(ME.identifier, 'CHEBFUN:pinv:row');
+    pass(5) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:pinv:row');
 end
 
 end

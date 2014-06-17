@@ -95,7 +95,7 @@ end
 % Check for square operator. (This is not strict enough, technically.)
 m = size(L, 2);
 if ( m ~= size(L, 1) )
-    error('LINOP:eigs:notsquare','Block size must be square.')
+    error('CHEBFUN:LINOP:eigs:notSquare','Block size must be square.')
 end
 
 % Set up the discretization:
@@ -130,12 +130,12 @@ if ( ~isempty(B) )
     % We can ignore constraints and continuity--enforced on the left side.
     if ( ~isempty(discB.source.constraint) )
         discB.source.constraint = [];
-        warning('CHEBFUN:linop:eigs:constraints', ...
+        warning('CHEBFUN:LINOP:eigs:constraints', ...
                 'Constraints on B are ignored.')
     end
     if ( ~isempty(discB.source.continuity) )
         discB.source.continuity = [];
-        warning('CHEBFUN:linop:eigs:continuity', ...
+        warning('CHEBFUN:LINOP:eigs:continuity', ...
                 'Continuity conditions on B are ignored.')
     end       
     
@@ -245,7 +245,7 @@ end
 % Detect finite rank operators.
 if ( size(D,1) < k )
     if ( gotk )
-        warning('CHEBFUN:linop:eigs:rank',...
+        warning('CHEBFUN:LINOP:eigs:rank',...
             'Input has finite rank, only %d eigenvalues returned.', size(D,1));
     end
     k = size(D,1);
@@ -386,7 +386,7 @@ else
         case 'SM'
             [junk, idx] = sort(abs(lam), 'ascend');
         otherwise
-            error('CHEBFUN:linop:eigs:sigma', 'Unidentified input ''sigma''.');
+            error('CHEBFUN:LINOP:eigs:sigma', 'Unidentified input ''sigma''.');
     end
 end
 

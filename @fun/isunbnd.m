@@ -7,7 +7,7 @@ function out = isunbnd(f)
 % function are named without camel case.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 out = any( isinf(f.domain) );
 

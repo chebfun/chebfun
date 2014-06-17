@@ -5,7 +5,7 @@ function [U, S, V] = svds(L, k, sigma)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-error('CHEBFUN:chebop:svds:nosupport', ...
+error('CHEBFUN:CHEBOP:svds:nosupport', ...
     'CHEBOP/SVDS() is not currently supported.');
 
 end

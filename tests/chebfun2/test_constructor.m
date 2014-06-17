@@ -51,9 +51,9 @@ pass(8) = ( norm(err(:),inf ) < 2e3*tol );
 % Test building Chebfun2 objects from sample data: 
 seedRNG(0);
 r = rand(3);
-pass(9) = norm( r - chebpoly2(chebfun2(r, 'coeffs')) ) < 10*tol; 
+pass(9) = norm( r - chebcoeffs2(chebfun2(r, 'coeffs')) ) < 10*tol; 
 r = rand(4);
-pass(10) = norm( r - chebpoly2(chebfun2(r, 'coeffs')) ) < 10*tol;
+pass(10) = norm( r - chebcoeffs2(chebfun2(r, 'coeffs')) ) < 10*tol;
 r = rand(4);
 pass(11) = norm( r - chebpolyval2(chebfun2(r)) ) < 10*tol;
 

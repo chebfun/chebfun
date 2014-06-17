@@ -7,7 +7,7 @@ function f = mat2cell(f, varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( any(cellfun(@(v) v ~= 0, varargin)) )
-    error('CHEBFUN:mat2cell:inputs', ...
+    error('CHEBFUN:DELTAFUN:mat2cell:inputs', ...
         'DELTAFUN objects are not array-valued, so M and n must equal 1.');
 end
 

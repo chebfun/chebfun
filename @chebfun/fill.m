@@ -32,7 +32,8 @@ k = 1;
 while ( k < (length(varargin) - 1) )
     if ( isa(varargin{k}, 'chebfun') )
         if ( numel(varargin{k}) > 1 || numel(varargin{k+1}) > 1 )
-            error('CHEBFUN:fill:quasi', 'FILL does not support quasimatrices.');
+            error('CHEBFUN:CHEBFUN:fill:quasi', ...
+                'FILL does not support quasimatrices.');
         end
         % Call plotData():
         data = plotData(varargin{k}, varargin{k+1});
@@ -45,7 +46,7 @@ while ( k < (length(varargin) - 1) )
 end
 
 if ( any(cellfun(@(f) isa(f, 'chebfun'), varargin)) )
-    error('CHEBFUN:fill:oops', 'Unrecognised input sequence.');
+    error('CHEBFUN:CHEBFUN:fill:oops', 'Unrecognised input sequence.');
 end
 
 % Call the built in FILL():

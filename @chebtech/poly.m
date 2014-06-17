@@ -12,7 +12,7 @@ function out = poly(f)
 %   This strange behaviour is a result of MATLAB's decision to return a row
 %   vector from the POLY command, even for column vector input.
 %
-% See also CHEBPOLY, LEFGPOLY.
+% See also CHEBCOEFFS, FOURCOEFFS, LEGCOEFFS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -70,4 +70,6 @@ else
         tnold1 = tn;
     end
     
+end
+
 end
