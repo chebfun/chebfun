@@ -80,8 +80,8 @@ function y = unbndfunIntegrand(x, g)
 %   which can then be integrated with the ONEFUN's implementation of SUM.
 
 tol = 10*get(g, 'epslevel')*get(g, 'vscale');
-y = feval(g, g.mapping.for(x));
+y = feval(g, g.mapping.For(x));
 y(abs(y) < tol) = 0;
-y = y.*g.mapping.der(x);
+y = y.*g.mapping.Der(x);
 
 end

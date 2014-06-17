@@ -219,8 +219,7 @@ while ( any(sad) )
     end
     
     % Try to obtain happy child FUN objects on each new subinterval:
-    [childLeft, happyLeft, data.vscale] = ...
-        getFun(opk, [a, edge], data, pref);
+    [childLeft, happyLeft, data.vscale] = getFun(opk, [a, edge], data, pref);
     
     % For the case where vscale is Inf due to blowup in the interior of the
     % domain:

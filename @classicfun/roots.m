@@ -25,6 +25,6 @@ end
 onefunRoots = roots(f.onefun, varargin{:});
 
 % Map the roots found on [-1,1] to the interval [a,b]:
-r = f.mapping.for(onefunRoots);
+r = f.mapping.For(onefunRoots);
 
 end

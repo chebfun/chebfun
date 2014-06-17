@@ -6,7 +6,7 @@ function out = feval(f, x, varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Map the input:
-z = f.mapping.inv(x);
+z = f.mapping.Inv(x);
 
 % Evaluate the onefun:
 out = feval(f.onefun, z);

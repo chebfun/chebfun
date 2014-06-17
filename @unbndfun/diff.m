@@ -30,7 +30,7 @@ else
     % (Note that this is the reciprical of the forward derivative, by the
     % inverse function theorem).
     invDer = f; 
-    invDer.onefun = onefun.constructor(@(x) 1./f.mapping.der(x));
+    invDer.onefun = onefun.constructor(@(x) 1./f.mapping.Der(x));
 
     % Loop for higher derivatives:
     for j = 1:k
