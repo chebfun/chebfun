@@ -1,7 +1,7 @@
 'Buckmaster equation'
 'scalar'
 domain = '[0 1]';
-t = '0:.001:.03';
+t = '0:.001:.1';
 DE = 'u_t = .5*(u^4)" + (u^3)''';
 LBC = 'neumann'; RBC = 'neumann';
 init = 'u = exp(-10*x^2)';
