@@ -56,6 +56,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) linop 
     properties ( Access = public )
         constraint = linopConstraint()
         continuity = linopConstraint()
+        hasGivenJumpsAt = []; 
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -68,6 +69,10 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) linop 
             end
             
             L = L@chebmatrix(M);
+        end
+        
+        function L = addGivenJumpAt(L,location)
+            L.hasGivenJumpsAt = union(L.hasGivenJumpsAt,location);
         end
     end
     

@@ -23,7 +23,7 @@ pref.errTol = 1e-10;
 
 %% Start with colloc2
 pref.discretization = @colloc2;
-
+pref.errTol = 1e-13;
 [u1, info1] = solvebvp(N, rhs, pref);
 err(1) = norm(N(u1));
 

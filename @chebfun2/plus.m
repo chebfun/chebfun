@@ -23,11 +23,7 @@ elseif ( isa( g, 'double' ) )           % CHEBFUN2 + DOUBLE
     
 elseif ( ~isa(g, 'chebfun2') )          % CHEBFUN2 + ???
     
-<<<<<<< HEAD
-    error('CHEBFUN2:plus:unknown', ...
-=======
     error( 'CHEBFUN:CHEBFUN2:plus:unknown', ...
->>>>>>> development
         ['Undefined function ''plus'' for input arguments of type %s ' ...
         'and %s.'], class(f), class(g));
     

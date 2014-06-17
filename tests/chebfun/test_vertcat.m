@@ -4,8 +4,6 @@ if ( nargin == 0 )
     pref = chebfunpref();
 end
 
-warnState = warning('off', 'CHEBFUN:CHEBFUN:vertcat:join');
-
 % [CHEBFUN ; DOUBLE]
 x = chebfun('x', pref);
 f = [x ; 1];
@@ -44,7 +42,5 @@ try
 catch
     pass(6) = true;
 end
-
-warning(warnState);
 
 end

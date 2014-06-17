@@ -13,7 +13,7 @@ exact = chebfun2(@(x,t) exp(-t).*exp(x),d);
 
 N = chebop2(@(u) diffy(u) + diffx(u,3),d);
 N.dbc = @(x) exp(x);
-N.rbc = @(t,u) [u - exp(-t).*exp(1) diff(u)-exp(-t).*exp(1)];
+N.rbc = @(t,u) [u - exp(-t).*exp(1) ; diff(u)-exp(-t).*exp(1)];
 N.lbc = @(t) exp(-t).*exp(-1);
 u = N \ 0;
  
@@ -26,7 +26,7 @@ exact = chebfun2(@(x,t) exp(-t).*exp(x),d);
 
 N = chebop2(@(u) diffy(u) + diffx(u,3),d);
 N.dbc = @(x) exp(x);
-N.rbc = @(t,u) [u - exp(-t).*exp(1) diff(u)-exp(-t).*exp(1)];
+N.rbc = @(t,u) [u - exp(-t).*exp(1) ; diff(u)-exp(-t).*exp(1)];
 N.lbc = @(t,u) diff(u) - exp(-t).*exp(-1);
 u = N \ 0;
  
@@ -38,7 +38,7 @@ exact = chebfun2(@(x,t) exp(-t).*exp(x),d);
 
 N = chebop2(@(u) diffy(u) + diffx(u,3),d);
 N.dbc = @(x) exp(x);
-N.rbc = @(t,u) [u - exp(-t).*exp(1) diff(u,2)-exp(-t).*exp(1)];
+N.rbc = @(t,u) [u - exp(-t).*exp(1) ; diff(u,2)-exp(-t).*exp(1)];
 N.lbc = @(t,u) diff(u) - exp(-t).*exp(-1);
 u = N \ 0;
  
@@ -50,7 +50,7 @@ exact = chebfun2(@(x,t) exp(-t).*exp(x),d);
 
 N = chebop2(@(u) diffy(u) + diffx(u,3),d);
 N.dbc = @(x) exp(x);
-N.rbc = @(t,u) [u - exp(-t).*exp(1) diff(u,2)-exp(-t).*exp(1)];
+N.rbc = @(t,u) [u - exp(-t).*exp(1) ; diff(u,2)-exp(-t).*exp(1)];
 N.lbc = @(t,u) u - exp(-t).*exp(-1);
 u = N \ 0;
  
