@@ -94,8 +94,9 @@ while ( ~terminate )
     if ( newtonCounter == 0)
         % Did we actually get an initial passed that solves the BVP?
         if ( normDelta/vscale(u) < errTol/100 )
-            disp('Initial guess appears to be a solution of the BVP')
-            info = [];
+            displayInfo('exactInitial', pref);
+            info.error = NaN;
+            info.normDelta = normDelta;
             return
         else
             % We actually have to start the Newton iteration. Print info to
