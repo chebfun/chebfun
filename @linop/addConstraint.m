@@ -19,7 +19,7 @@ function L = addConstraint(L, varargin)
 %     op4 = [ s, z ];
 %     A = addConstraint(A, op4, 1);   % impose sum(u{1}) + 0*u{2} = 1
 %
-%   See also LINOP.ADDCONTINUITY, LINOPCONSTRAINT. 
+% See also LINOP.ADDCONTINUITY, LINOPCONSTRAINT. 
 
 %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org/ for Chebfun information.

@@ -16,7 +16,7 @@ classdef linopConstraint
 %   The preferred way to add contraints to a linop is through LINOP.ADDBC,
 %   not through direct use of this class.
 %
-%   See also LINOP, LINOP.ADDBC.
+% See also LINOP, LINOP.ADDBC.
 
 %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org/ for Chebfun information.

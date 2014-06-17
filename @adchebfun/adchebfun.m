@@ -1276,7 +1276,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         %     F{S1, S2} restricts F to the domain [S1, S2] < [F.ENDS(1),
         %     F.ENDS(end)].
         %
-        %   See also: FEVAL, GET, RESTRICT, CHEBFUN/SUBSREF.
+        % See also: FEVAL, GET, RESTRICT, CHEBFUN/SUBSREF.
         
             switch index(1).type
                 case '()'

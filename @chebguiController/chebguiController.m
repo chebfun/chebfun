@@ -2,7 +2,7 @@ classdef chebguiController
 %CHEBGUICONTROLLER   Control the layout of CHEBGUI.
 %   This class is not intended to be called directly by the end user.
 %
-%   See also CHEBGUI.
+% See also CHEBGUI.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % DEVELOPER NOTE

@@ -11,7 +11,7 @@ function [x, w, v] = radaupts(n, varargin)
 %
 %  In each case, N should be a positive integer.
 %
-%  See also CHEBPTS, LEGPTS, JACPTS, LEGPOLY, LOBPTS.
+% See also CHEBPTS, LEGPTS, JACPTS, LEGPOLY, LOBPTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
