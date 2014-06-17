@@ -84,7 +84,7 @@ end
 % Trivial case: approximation length exceeds that of the expansion length.
 if ( m >= M )
     p = f;
-    q = chebfun(1, dom);
+    q = chebfun(1, domain(f));
     r = @(x) feval(p, x);
     s = 0;
     return

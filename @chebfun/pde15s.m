@@ -233,16 +233,17 @@ end
                 % Plot current solution:
                 plotFun(uCurrent, tCurrent);
 
-                % If we have 2.5 times as many coefficients as we need, shorten
-                % the representation and cause the integrator to stop. 
-                if ( cutoff < 0.4*n && n > 17)
-                    currentLength = round(1.25*cutoff)';
-                    %currentLength = floor( currentLength / 1.5  );
-                    currentLength = currentLength + 1 - rem(currentLength,2);
-                    currentLength = max(currentLength, 17);
-                    status = true;
-                    return
-                end
+                % TODO: Re-insert this.
+%                 % If we have 2.5 times as many coefficients as we need, shorten
+%                 % the representation and cause the integrator to stop. 
+%                 if ( cutoff < 0.4*n && n > 17)
+%                     currentLength = round(1.25*cutoff)';
+%                     %currentLength = floor( currentLength / 1.5  );
+%                     currentLength = currentLength + 1 - rem(currentLength,2);
+%                     currentLength = max(currentLength, 17);
+%                     status = true;
+%                     return
+%                 end
                 
             else 
 
@@ -705,7 +706,7 @@ clear global SYSSIZE
         
         % Solve ODE over time chunk with ode15s:
         try
-            [~, ~] = ode15s(@odeFun, tSpan, U0, opt);
+            [ignored1, ignored2] = ode15s(@odeFun, tSpan, U0, opt);
         catch ME
             if ( strcmp(ME.identifier, 'MATLAB:odearguments:SizeIC') )
                 error('Dimension mismatch. Check boundary conditions.');

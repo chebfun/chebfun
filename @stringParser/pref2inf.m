@@ -118,7 +118,8 @@ elseif ( strcmp(next, 'FUNC2') )
     elseif ( any(strcmp(nextFun, {'fred', 'volt'})) )
         % For fred() and volt(), we need to find what arguments denote the
         % kernel variable.
-        [~, yFredVar, ~, ~, xFredVar] = stringParser.lexer(funcArg1, 'bvp');        
+        [ignored1, yFredVar, ignored2, ignored3, xFredVar] = ...
+            stringParser.lexer(funcArg1, 'bvp');
         anonStr = ['@(' xFredVar{1} ',' yFredVar{1} ')'];
         infixOut = [nextFun, '(', anonStr, funcArg1 , ',', funcArg2 ,  ')'];
         NOTAVAROUT = [NOTAVAROUT ;  yFredVar];

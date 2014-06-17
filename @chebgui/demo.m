@@ -8,7 +8,7 @@ function cg = demo()
 
 % Find the folders which demos are stored in. The chebguiDemos folder lives in
 % the trunk folder, find the path of the Chebfun trunk.
-trunkPath = fileparts(which('chebguiWindow'));
+trunkPath = chebfunroot();
 
 % Append directory information:
 bvppath = fullfile(trunkPath, 'chebguiDemos', 'bvpdemos');

@@ -53,7 +53,7 @@ err = norm(c_cheb2 - c_cheb, inf);
 pass(6) = err < tol;
 
 % Test vectorization: 
-rng(0)
+seedRNG(0)
 A = rand(3,10); E = A; 
 B = cheb2leg( A );
 for jj = 1:size(A,2)

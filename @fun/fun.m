@@ -22,11 +22,8 @@ classdef fun % (Abstract)
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
-    
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% Constructor.
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    methods ( Access = public, Static = true ) 
+
+    methods (Static)
         
         function obj = constructor(op, data, pref)
             
@@ -57,18 +54,9 @@ classdef fun % (Abstract)
         end
         
     end
-    
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% ABSTRACT NON-STATIC METHODS REQUIRED BY THIS CLASS.
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    methods ( Access = public, Abstract = true, Static = false )
-        
-    end
-    
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
     %% ABSTRACT STATIC METHODS REQUIRED BY THIS CLASS.
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    methods ( Access = public, Abstract = true, Static = false )
+    methods ( Abstract = true, Static = true )
 
         % Map from [-1, 1] to the domain of the FUN.
         m = createMap(domain);  
@@ -76,5 +64,15 @@ classdef fun % (Abstract)
         % Make a FUN. (Constructor shortcut)
         f = make(varargin);
     end
+    
+    %% PRIVATE STATIC METHODS REQUIRED BY THIS CLASS.
+    methods ( Static = true )
+        % Edge detector.
+        [edge, vscale] = detectEdge(op, domain, hscale, vscale, pref);
+    end
+    
+    methods ( Abstract = true, Static = false )
         
+    end
+    
 end

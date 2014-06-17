@@ -5,9 +5,9 @@ function pass = test_basicCLA( pref )
 if ( nargin < 1 )
     pref = chebfunpref; 
 end
-tol = 100*pref.cheb2Prefs.eps; 
+tol = 100*pref.eps; 
 
-rng(0)
+seedRNG(0)
 gam = 10;
 % Add some Gaussians:
 f = @(x, y) 0;

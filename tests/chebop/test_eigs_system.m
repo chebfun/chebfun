@@ -26,17 +26,23 @@ A.rbc = @(u, v) u;
 lam = diag(D);
 lam = abs(lam);
 lamCorrect = abs(lamCorrect);
-AV = A(V);
+AV = [];
+for vCounter = 1:size(V, 2)
+    AV = [AV, A(V(:, vCounter))];
+end
 err(1) = norm( lam - lamCorrect, inf );
-err(2) = norm(AV - [V{1}*D; V{2}*D]);
+err(2) = norm(AV - V*D);
 %% Piecewise domain
 A.domain = [0, pi/2, pi];
 [V, D] = eigs(A, 5, pref);
 lam_pw = diag(D);
 lam_pw = abs(lam_pw);
-AV = A(V);
+AV = [];
+for vCounter = 1:size(V, 2)
+    AV = [AV, A(V(:, vCounter))];
+end
 err(3) = norm( lam_pw - lamCorrect, inf );
-err(4) = norm(AV - [V{1}*D; V{2}*D]);
+err(4) = norm(AV - V*D);
 %%
 
 pass = err < 1e-11;

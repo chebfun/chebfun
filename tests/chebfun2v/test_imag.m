@@ -5,7 +5,7 @@ if ( nargin == 0 )
     pref = chebfunpref; 
 end
 
-tol = 10*pref.cheb2Prefs.eps; 
+tol = 10*pref.eps; 
 
 f = chebfun2v(@(x,y) cos(x.*y),@(x,y) cos(x.*y)); 
 g = imag( f ); 

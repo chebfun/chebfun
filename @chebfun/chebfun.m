@@ -109,7 +109,7 @@ classdef chebfun
 % Class diagram: [ADchebfun] <>-- [CHEBFUN] <>-- [<<fun>>]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    properties ( Access = public )
+    properties (Access = public)
         % DOMAIN of definition of a CHEBFUN object. If K = length(F.DOMAIN) is
         % greater than 1 then the CHEBFUN is referred to as a "piecewise".
         % CHEBFUN. The first and last values of this vector define the left and
@@ -139,10 +139,7 @@ classdef chebfun
         isTransposed = 0;   % (logical)
     end
     
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% The Constructor:
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    methods ( Access = public, Static = false )
+    methods
         
         function f = chebfun(varargin)
             % The main CHEBFUN constructor!
@@ -210,11 +207,81 @@ classdef chebfun
             end
         end
     end
+    
+    % Static methods implemented by CHEBFUN class.
+    methods ( Static = true )
         
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% Public Non-Static Methods implemented by CHEBFUN class.
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    methods ( Access = public, Static = false )
+        % Main constructor.
+        [funs, ends] = constructor(op, domain, data, pref);
+
+        % Interpolate data:
+        f = interp1(x, y, method, dom);
+
+        % Compute Lagrange basis functions for a given set of points.
+        f = lagrange(x, varargin);
+
+        % ODE113 with CHEBFUN output.
+        [t, y] = ode113(varargin);
+        
+        % ODE15S with CHEBFUN output.
+        [t, y] = ode15s(varargin);
+        
+        % ODE45 with CHEBFUN output.
+        [t, y] = ode45(varargin);
+        
+        % Cubic Hermite interpolation:
+        f = pchip(x, y, method);
+        
+        % Cubic spline interpolant:
+        f = spline(x, y, d);
+        
+    end
+    
+        % Static methods implemented by CHEBFUN class.
+    methods ( Hidden = true, Static = true )
+
+        %Convert a cell array of CHEBFUN objects to a quasimatrix.
+        G = cell2quasi(F)
+        
+        % Determine values of CHEBFUN at breakpoints.
+        vals = getValuesAtBreakpoints(funs, ends, op);
+        
+        % Merge domains.
+        newDom = mergeDomains(varargin)
+                
+        % Which interval is a point in?
+        out = whichInterval(dom, x, direction);
+        
+    end
+
+    methods ( Access = private )
+        % Set small breakpoint values to zero.
+        f = thresholdBreakpointValues(f);
+    end
+    
+    % Static private methods implemented by CHEBFUN class.
+    methods ( Static = true, Access = private )
+        
+        % Convert ODE solutions into CHEBFUN objects:
+        [y, t] = odesol(sol, opt);
+        
+        % Parse the inputs to the CHEBFUN constructor.
+        [op, domain, pref] = parseInputs(op, domain, varargin);
+
+        % Parse inputs to PLOT. Extract 'lineWidth', etc.
+        [lineStyle, pointStyle, jumpStyle, deltaStyle, out] = ...
+            parsePlotStyle(varargin)
+        
+        % Convert a string input to a function_handle.
+        op = str2op(op);
+        
+        % Vectorise a function handle input.
+        op = vec(op);
+        
+    end
+    
+    % Methods implemented by CHEBFUN class.
+    methods
 
         % Absolute value of a CHEBFUN.
         f = abs(f, pref)
@@ -369,9 +436,6 @@ classdef chebfun
         % Retrieve and modify preferences for this class.
         varargout = subsasgn(f, varargin);
         
-        % Set small breakpoint values to zero.
-        f = thresholdBreakpointValues(f);
-    
         % CHEBFUN multiplication.
         f = times(f, g, varargin)
         
@@ -388,11 +452,9 @@ classdef chebfun
         out = vscale(f);
     end
     
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% Hidden non-static methods implemented by CHEBFUN class.
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Hidden methods implemented by CHEBFUN class.
     
-    methods ( Access = public, Static = false, Hidden = true )
+    methods ( Hidden = true )
         
         % Add breakpoints to the domain of a CHEBFUN.
         f = addBreaks(f, breaks, tol)
@@ -444,84 +506,6 @@ classdef chebfun
         
     end
     
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% Static methods implemented by the CHEBFUN class.
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-    % Public static methods
-    methods ( Access = public, Static = true )
-        
-        % Main constructor.
-        [funs, ends] = constructor(op, domain, data, pref);
-
-        % Interpolate data:
-        f = interp1(x, y, method, dom);
-
-        % Compute Lagrange basis functions for a given set of points.
-        f = lagrange(x, varargin);
-
-        % ODE113 with CHEBFUN output.
-        [t, y] = ode113(varargin);
-        
-        % ODE15S with CHEBFUN output.
-        [t, y] = ode15s(varargin);
-        
-        % ODE45 with CHEBFUN output.
-        [t, y] = ode45(varargin);
-        
-        % Cubic Hermite interpolation:
-        f = pchip(x, y, method);
-        
-        % Cubic spline interpolant:
-        f = spline(x, y, d);
-        
-    end
-    
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% Hidden public static methods implemented by the CHEBFUN class.
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    methods ( Access = public, Static = true, Hidden = true )
-
-        %Convert a cell array of CHEBFUN objects to a quasimatrix.
-        G = cell2quasi(F)
-
-        % Edge detector.
-        [edge, vscale] = detectEdge(op, domain, hscale, vscale, derHandle);
-        
-        % Determine values of CHEBFUN at breakpoints.
-        vals = getValuesAtBreakpoints(funs, ends, op);
-        
-        % Merge domains.
-        newDom = mergeDomains(varargin)
-                
-        % Which interval is a point in?
-        out = whichInterval(dom, x, direction);
-        
-    end
-    
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% Private static methods implemented by CHEBFUN class.
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    methods ( Access = private, Static = true )
-        
-        % Convert ODE solutions into CHEBFUN objects:
-        [y, t] = odesol(sol, opt);
-        
-        % Parse the inputs to the CHEBFUN constructor.
-        [op, domain, pref] = parseInputs(op, domain, varargin);
-
-        % Parse inputs to PLOT. Extract 'lineWidth', etc.
-        [lineStyle, pointStyle, jumpStyle, deltaStyle, out] = ...
-            parsePlotStyle(varargin)
-        
-        % Convert a string input to a function_handle.
-        op = str2op(op);
-        
-        % Vectorise a function handle input.
-        op = vec(op);
-        
-    end
-        
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -551,8 +535,11 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
     % might be useful in the future.
 
     % Initialize data output.
+    data.hscale = [];
+    data.vscale = [];
     data.exponents = [];
     data.singType = [];
+    
     args = varargin;
 
     % An op-only constructor call.
@@ -652,10 +639,18 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
                 end
             end
             args(1:2) = [];
+        elseif ( strcmpi(args{1}, 'vscale') )
+            % Store vscale types.
+            data.vscale = args{2};
+            args(1:2) = [];
+        elseif ( strcmpi(args{1}, 'hscale') )
+            % Store vscale types.
+            data.vscale = args{2};
+            args(1:2) = [];            
         elseif ( strcmpi(args{1}, 'singType') )
             % Store singularity types.
             data.singType = args{2};
-            args(1:2) = [];
+            args(1:2) = [];            
         elseif ( strcmpi(args{1}, 'exps') )
             % Store exponents.
             data.exponents = args{2};
