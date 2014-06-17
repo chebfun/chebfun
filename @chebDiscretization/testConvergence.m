@@ -39,7 +39,7 @@ epsLevel = 0;
 
 % If an external vscale was supplied, it can supplant the inherent scale of the
 % result.
-vscale = max(u.vscale, vscale);
+vscale = max(u.vscale, max(vscale));
 prefTech = chebtech.techPref();
 prefTech.eps = pref.errTol;
 
