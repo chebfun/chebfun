@@ -384,7 +384,7 @@ set(h2, 'handlevis', 'off');
 set(h3, 'handlevis', 'off');
 set(h4, 'handlevis', 'off');
 % The dummy plot is invisible, but its handle is visible (for LEGEND).
-set(hDummy, 'handlevis', 'on', 'visible', 'off');     %  ¯\_(o.O)_/¯
+set(hDummy, 'handlevis', 'on', 'visible', 'off');     %  Â¯\_(o.O)_/Â¯
 
 % Give an output to the plot handles if requested:
 if ( nargout > 0 )
