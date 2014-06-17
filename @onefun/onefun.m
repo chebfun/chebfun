@@ -74,7 +74,7 @@ classdef onefun % (Abstract)
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% ABSTRACT (NON-STATIC) METHODS REQUIRED BY ONEFUN CLASS.
+    %% ABSTRACT METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Abstract = true, Static = false )
         % ONEFUN logical AND.

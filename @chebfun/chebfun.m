@@ -143,7 +143,7 @@ classdef chebfun
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % CLASS CONSTRUCTOR:
+    %% CLASS CONSTRUCTOR:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
         
@@ -174,7 +174,7 @@ classdef chebfun
                 
                 if ( nargin > 1 )
                     error('CHEBFUN:chebfun:nargin', ...
-                        'Only one input is allowed when passing an array of FUNs.')
+                     'Only one input is allowed when passing an array of FUNs.')
                 end
                 
                 % Assign the cell to the .FUNS property:
@@ -198,7 +198,8 @@ classdef chebfun
                 [f.funs, f.domain] = chebfun.constructor(op, dom, data, pref);
                 
                 % Update values at breakpoints (first row of f.pointValues):
-                f.pointValues = chebfun.getValuesAtBreakpoints(f.funs, f.domain, op);
+                f.pointValues = chebfun.getValuesAtBreakpoints(f.funs, ...
+                    f.domain, op);
                 
                 % Remove unnecessary breaks (but not those that were given):
                 [ignored, index] = setdiff(f.domain, dom);
@@ -216,7 +217,7 @@ classdef chebfun
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % Public Non-Static Methods implemented by the CHEBFUN class.
+    %% CLASS METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
 
@@ -390,7 +391,7 @@ classdef chebfun
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% Hidden Non-Static methods implemented by CHEBFUN class.
+    %% HIDDEN METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Hidden = true, Static = false )
         
@@ -445,7 +446,7 @@ classdef chebfun
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% Private Non-Static methods implemented by this class.
+    %% PRIVATE METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = private, Static = false )
         % Set small breakpoint values to zero.
@@ -454,7 +455,7 @@ classdef chebfun
     
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% Public Static methods implemented by the CHEBFUN class.
+    %% STATIC METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
         
@@ -485,7 +486,7 @@ classdef chebfun
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% Hidden Static methods implemented by the CHEBFUN class.
+    %% HIDDEN STATIC METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Hidden = true, Static = true )
 
@@ -504,7 +505,7 @@ classdef chebfun
     end
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% Private Static methods implemented by the CHEBFUN class.
+    %% PRIVATE STATIC METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = private, Static = true )
         

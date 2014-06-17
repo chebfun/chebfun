@@ -107,7 +107,7 @@ classdef (InferiorClasses = {?double}) chebop
 %   plot(N\1)
 %
 % %% PARAMETER DEPENDENT PROBLEMS: %%
-%
+%CHEBGUIexporterEIG
 % CHEBOP supports solving systems of equations containing unknown parameters
 % without the need to introduce extra equations into the system. Simply add the
 % unknown parameters as the final variables.
@@ -142,7 +142,7 @@ classdef (InferiorClasses = {?double}) chebop
     properties ( Access = public )
         domain = [];    % Domain of the operator
         op = [];        % The operator
-        lbc = [];       % Left boundary condition(s)
+        lbc = [];       % Left boCHEBGUIexporterEIGundary condition(s)
         rbc = [];       % Right boundary condition(s)
         bc = [];        % Other/internal/mixed boundary conditions
         init = [];      % Initial guess of a solution
@@ -207,7 +207,7 @@ classdef (InferiorClasses = {?double}) chebop
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% Public Non-Static methods implemented by this class.
+    %% CLASS METHODS
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
         
@@ -229,7 +229,7 @@ classdef (InferiorClasses = {?double}) chebop
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% Private Non-Static methods implemented by this class.
+    %% PRIVATE METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = private, Static = false )
 
@@ -346,7 +346,6 @@ classdef (InferiorClasses = {?double}) chebop
                 N.bc = parseBC(N, val, 'bc');
                 
             end
-            
             
         end
         

@@ -206,7 +206,7 @@ classdef chebgui
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% Non-Static methdos implemented by the CHEBGUI class.
+    %% CLASS METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   
     methods ( Access = public, Static = false )
        
@@ -232,7 +232,7 @@ classdef chebgui
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% Static methdos implemented by the CHEBGUI class.
+    %% STATIC METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
         
@@ -256,7 +256,7 @@ classdef chebgui
             % Reset the bottom figure
             cla(handles.fig_norm, 'reset');
             title('Updates')
-	    box on
+            box on
         end
         
     end

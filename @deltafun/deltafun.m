@@ -152,7 +152,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
-    %% NON-STATIC METHODS IMPLEMENTED BY THIS CLASS.
+    %% CLASS METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
         
@@ -165,7 +165,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         % Complex conjugate of a DELTAFUN.
         f = conj(f)
         
-        % DELTAFUN obects are not transposable.
+        % DELTAFUN obects are not tCOLLOC2ransposable.
         f = ctranspose(f)
         
         % Indefinite integral of a DELTAFUN.
@@ -293,7 +293,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% STATIC METHODS IMPLEMENTED BY THIS CLASS.
+    %% STATIC METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
         
@@ -329,7 +329,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Methods implemented in this class.
+%% METHODS IMPLEENTED IN THIS FILE:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function data = parseDataInputs(data, pref)

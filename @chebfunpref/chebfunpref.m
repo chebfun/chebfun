@@ -171,7 +171,7 @@ classdef chebfunpref < chebpref
 %   to be a copy of Q plus any additional TECHPREFS stored in P that were not
 %   stored in Q.
 %
-% Notes:
+% Notes:CHEBOP
 %   When building a CHEBFUNPREF from a structure using the second calling
 %   syntax above, one should take care to ensure that preferences for the
 %   underlying representation technology are specified once and only once;
@@ -236,7 +236,10 @@ classdef chebfunpref < chebpref
 % the function.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    methods
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS CONSTRUCTOR:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
 
         function outPref = chebfunpref(varargin)
             if ( nargin < 1 )
@@ -303,6 +306,13 @@ classdef chebfunpref < chebpref
                 end
             end
         end
+        
+    end
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
 
         function out = subsref(pref, ind)
         %SUBSREF   Subscripted referencing for CHEBFUNPREF.
@@ -476,7 +486,10 @@ classdef chebfunpref < chebpref
 
     end
 
-    methods ( Static = true )
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% STATIC METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
+    methods ( Access = public, Static = true )
 
         function pref1 = mergePrefs(pref1, pref2, map)
         %MERGEPREFS   Merge preference structures.
@@ -498,7 +511,7 @@ classdef chebfunpref < chebpref
         %   argument to a "tech" constructor.
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        % Developer notes:
+        % DEVELOPER NOTES:
         %  - This function is a helper function intended for use by "technology"
         %    objects (usually subclasses of SMOOTHFUN) for managing their
         %    preferences.  See CHEBTECH.TECHPREF for an illustration.
@@ -583,7 +596,10 @@ classdef chebfunpref < chebpref
         end
     end
 
-    methods ( Static = true, Access = private)
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% PRIVATE STATIC METHODS
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Static = true, Access = private )
 
         function varargout = manageDefaultPrefs(varargin)
         %MANAGEDEFAULTPREFS   Private method for handling default preferences.
@@ -682,4 +698,5 @@ classdef chebfunpref < chebpref
         end
 
     end
+    
 end

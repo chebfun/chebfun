@@ -35,7 +35,7 @@ classdef chebDiscretization
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% Non-Static methods. (ABSTRACT)
+    %% CLASS METHODS: (ABSTRACT)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Abstract = true, Static = false )   
         

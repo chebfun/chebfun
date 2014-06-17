@@ -112,7 +112,7 @@ classdef cheboppref < chebpref
 % TODO:  Further documentation of CHEBOPPREF preferences.
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% CLASS METHODS:
+    %% CLASS CONSTRUCTOR:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
 
@@ -142,7 +142,7 @@ classdef cheboppref < chebpref
             outPref.prefList = cheboppref.manageDefaultPrefs('get');
 
             % Copy fields from q, merging incomplete substructures.
-            for field = fieldnames(inPref).'
+            for field = fieldnames(inPref).'CHEBOP
                 field1 = field{1};
                 if ( isfield(outPref.prefList, field1) )
                     if ( isstruct(outPref.prefList.(field1)) )
@@ -158,6 +158,14 @@ classdef cheboppref < chebpref
                 end
             end
         end
+        
+    end
+    
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
 
        function display(pref)
        %DISPLAY   Display a CHEBOPPREF object.
@@ -219,7 +227,7 @@ classdef cheboppref < chebpref
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% PUBLIC STATIC METHODS
+    %% STATIC METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
     methods ( Access = public, Static = true )
         

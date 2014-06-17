@@ -108,7 +108,7 @@ classdef classicfun < fun % (Abstract)
     end
            
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% NON-STATIC ABSTRACT METHODS REQUIRED BY THIS CLASS.
+    %% ABSTRACT METHODS REQUIRED BY THIS CLASS.
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false, Abstract = true )
         % [TODO]: Once UNBNDFUN and CHEBFUN advance, we should revisit this
@@ -153,7 +153,7 @@ classdef classicfun < fun % (Abstract)
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%       
-    %% NON-STATIC METHODS IMPLEMENTED BY THIS CLASS.
+    %% CONCRETE METHODS (IMPLEMENTED BY THIS ABSTRACT CLASS.)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
         
@@ -258,7 +258,7 @@ classdef classicfun < fun % (Abstract)
         
         % Signum of a CLASSICFUN. (f should have no zeros in its domain)
         f = sign(f, pref)
-
+    
         % Simplify the ONEFUN of a CLASSICFUN object.
         f = simplify(f, tol)
 
@@ -281,7 +281,7 @@ classdef classicfun < fun % (Abstract)
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Methods implemented in this file:
+%% METHODS IMPLEMENTED IN THIS FILE:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function data = parseDataInputs(data, pref)

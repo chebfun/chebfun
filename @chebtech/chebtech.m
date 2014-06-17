@@ -124,7 +124,7 @@ classdef chebtech < smoothfun % (Abstract)
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% ABSTRACT (NON-STATIC) METHODS REQUIRED BY THIS CLASS.
+    %% ABSTRACT METHODS REQUIRED BY THIS CLASS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false, Abstract = true )
 
@@ -137,7 +137,7 @@ classdef chebtech < smoothfun % (Abstract)
     end
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% ABSTRACT STATIC METHODS REQUIRED BY THIS CLASS.
+    %% ABSTRACT STATIC METHODS REQUIRED BY THIS CLASS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true, Abstract = true )
         
@@ -169,7 +169,7 @@ classdef chebtech < smoothfun % (Abstract)
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% NON-STATIC METHODS IMPLEMENTED BY THIS CLASS.
+    %% CONCRETE METHODS (IMPLEMENTED BY THIS ABSTRACT CLASS.)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
         
@@ -383,7 +383,7 @@ classdef chebtech < smoothfun % (Abstract)
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% STATIC METHODS IMPLEMENTED BY THIS CLASS.
+    %% STATIC METHODS (IMPLEMENTED BY THIS CLASS.)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
 

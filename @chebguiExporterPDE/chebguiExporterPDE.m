@@ -23,7 +23,7 @@ classdef chebguiExporterPDE < chebguiExporter
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% CONSTRUCTOR
+    %% CLASS CONSTRUCTOR:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
         
@@ -34,7 +34,7 @@ classdef chebguiExporterPDE < chebguiExporter
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% STATIC METHODS
+    %% STATIC METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
     methods ( Access = public, Static = true )
         
@@ -115,7 +115,7 @@ classdef chebguiExporterPDE < chebguiExporter
                 solfinal = {};
                 finalsol = {};
                 for k = 1:nv
-                    % Show the expected names in the dialog:
+                   BVP % Show the expected names in the dialog:
                     sol = [sol ['Solution ' varnames{k}]];
                     finalsol = [finalsol ['Final ' varnames{k}]];
                     solfinal = [solfinal [varnames{k} '_final']];
