@@ -7,6 +7,13 @@ if ( nargin < 1 )
 end 
 tol = 100 * pref.eps; 
 
+kind = 2;
+if ( isa( pref.tech(), 'chebtech2' ) )
+    kind = 2; 
+elseif ( isa( pref.tech(), 'chebtech1' ) )
+    kind = 1; 
+end
+
 n = 10; 
 f = chebpoly(n); 
 g = chebpoly(n); 
@@ -21,7 +28,7 @@ pass(2) =  (norm(X) < tol );
 f = chebfun2( @(x,y) cos(x+y) ); 
 lenc = length(f.cols); 
 lenr = length(f.rows);
-[xx, yy] = chebfun2.chebpts2(lenc,lenr); 
+[xx, yy] = chebfun2.chebpts2(lenc,lenr,[-1,1,-1,1],kind); 
 vals = f(xx, yy); 
 X = chebfun2.coeffs2vals( chebcoeffs2( f ) ); 
 pass(3) = ( (norm(X-vals)) < tol );
