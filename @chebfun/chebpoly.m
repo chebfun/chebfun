@@ -11,6 +11,6 @@ warning('CHEBFUN:chebpoly:deprecated', ...
     'CHEBPOLY is deprecated. Please use CHEBCOEFFS instead.');
 warning('off', 'CHEBFUN:CHEBFUN:chebpoly:deprecated');
 
-[varargout{1:nargout}] = chebcoeffscoeffs(varargin{:});
+[varargout{1:nargout}] = chebcoeffs(varargin{:});
 
 end
