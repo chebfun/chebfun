@@ -77,9 +77,9 @@ u0 = sin(exp(x)).*(pi^2-x.^2);
 u = expm(A,0.02,u0,prefs);
 
 exact = -4.720369127510475;
-err(3,1) = abs( u(pi/2) - exact);
-err(3,2) = abs( u(-pi) );
-err(3,3) = abs( u(pi) );
+err(5,1) = abs( u(pi/2) - exact);
+err(5,2) = abs( u(-pi) );
+err(5,3) = abs( u(pi) );
 
 %%
 % piecewise IC
@@ -88,9 +88,9 @@ u0 = chebfun(@(x) -abs(x)/pi+1, [-pi 0 pi]);
 u = expm(A,0.01,u0,prefs);
 
 exact = 0.95545945604534127;  % mathematica
-err(4,1) = abs( u(.1) - exact);
-err(4,2) = abs( u(-pi) );
-err(4,3) = abs( u(pi) );
+err(6,1) = abs( u(.1) - exact);
+err(6,2) = abs( u(-pi) );
+err(6,3) = abs( u(pi) );
 
 %%
 
@@ -99,8 +99,8 @@ A = linop( D^2 + D );
 A = addConstraint(A, E(-pi), 0);
 A = addConstraint(A, E(pi), 0);
 v = expm(A, 0, u0);
-err(5, 1) = norm(u0 - v, inf);
-err(5, 2) = length(u0) ~= length(v);
+err(7, 1) = norm(u0 - v, inf);
+err(7, 2) = length(u0) ~= length(v);
 
 %%
 
