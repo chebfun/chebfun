@@ -124,7 +124,7 @@ while ( ~terminate )
         damped = dampingInfo.damped;
         
         % Is the damping strategy telling us to give up?
-        giveUp = dampingInfo.giveUp*0;
+        giveUp = dampingInfo.giveUp;
         
     else % We are in undamped phase
         
