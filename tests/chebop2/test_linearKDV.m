@@ -30,7 +30,7 @@ N.rbc = @(t,u) [u - exp(-t).*exp(1) ; diff(u)-exp(-t).*exp(1)];
 N.lbc = @(t,u) diff(u) - exp(-t).*exp(-1);
 u = N \ 0;
  
-pass(2) = ( norm(u-exact) < tol); 
+pass(2) = ( norm(u-exact) < 2*tol); 
 
 % Different boundary conditions. 
 d = [-1 1 0 1];
@@ -42,7 +42,7 @@ N.rbc = @(t,u) [u - exp(-t).*exp(1) ; diff(u,2)-exp(-t).*exp(1)];
 N.lbc = @(t,u) diff(u) - exp(-t).*exp(-1);
 u = N \ 0;
  
-pass(3) = ( norm(u-exact) < 100*tol);
+pass(3) = ( norm(u-exact) < 300*tol);
 
 % Different boundary conditions. 
 d = [-1 1 0 1];

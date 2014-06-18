@@ -16,6 +16,6 @@ N.lbc = @(t) sin(-pi+t);
 N.rbc = @(t) sin(pi+t);
 N.ubc = @(x,u) [u-sin(x+1) ; diff(u)-cos(x+1)];
 u = N \ 0;
-pass(1) = ( norm(u - exact) < tol ) ;
+pass(1) = ( norm(u - exact) < 10*tol ) ;
 
 end
