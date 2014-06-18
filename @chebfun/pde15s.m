@@ -216,10 +216,7 @@ end
 
                 % Store these values:
                 tCurrent = t(kk);
-                % Make sure we assume Uk is a vector of 2nd kind values:
-                kindpref = pref; 
-                kindpref.tech = @chebtech2;
-                uCurrent = chebfun(Uk, DOMAIN, kindpref);
+                uCurrent = chebfun(Uk, DOMAIN, 'tech', @chebtech2);
                 
                 % Shorten the representation. The happiness cutoff seems to
                 % be safer than the epslevel simplification.
