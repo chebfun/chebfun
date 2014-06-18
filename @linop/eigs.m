@@ -228,10 +228,11 @@ for dim = dimVals
 
     % Convert the different components into cells
     u = partition(discA, P*v);
+    
 
-    % Test the happieness of the function pieces:
-    scale = 1;
-    [isDone, epsLevel] = testConvergence(discA, u(isFun), scale, prefs);
+    % Test the happiness of the function pieces:
+    vscale = zeros(sum(isFun),1);   % intrinsic scaling only
+    [isDone, epsLevel] = testConvergence(discA, u(isFun), vscale, prefs);
 
     if ( all(isDone) )
         break
