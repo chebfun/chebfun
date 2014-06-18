@@ -84,30 +84,15 @@ classdef chebpref
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
 
-        function pref1 = mergePrefs(pref1, pref2, map)
+        function pref1 = mergePrefs(pref1, pref2)
         %MERGEPREFS   Merge preference structures.
         %   P = CHEBPREF.MERGEPREFS(P, Q), where P and Q are MATLAB structures,
         %   "merges" Q into P by replacing the contents of fields in P with
         %   those of identically-named fields in Q.  If Q has a field whose
         %   name does not match any of those in P, it is added to P.
-        %
-        %   P = CHEBPREF.MERGEPREFS(P, Q, MAP) does the same but uses the
-        %   structure MAP to "translate" the names of fields of Q into names of
-        %   fields of P.  If Q has a field FIELD and MAP has a field of the
-        %   same name, then the value of P.(MAP.FIELD) will be replaced by the
-        %   contents of Q.FIELD.  If P does not have a field matching the
-        %   string stored in MAP.FIELD, one will be added to P.
-
-            if ( nargin < 3 )
-                map = struct();
-            end
 
             for field = fieldnames(pref2).'
-                if ( isfield(map, field{1}) )
-                    pref1.(map.(field{1})) = pref2.(field{1});
-                else
-                    pref1.(field{1}) = pref2.(field{1});
-                end
+                pref1.(field{1}) = pref2.(field{1});
             end
         end
 

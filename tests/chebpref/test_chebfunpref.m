@@ -83,24 +83,19 @@ pass(11) = isequalNaN(chebfunpref.mergePrefs(p, q), p);
 q.testPref = 'testq';
 pass(12) = strcmp(chebfunpref.mergePrefs(p, q).testPref, 'testq');
 
-p.testPref2 = 'test2';
-q.testPref2q = 'test2q';
-map.testPref2q = 'testPref2';
-pass(13) = strcmp(chebfunpref.mergePrefs(p, q, map).testPref2, 'test2q');
-
 % Test behavior of mergePrefs() for chebfunpref inputs.
 p = chebfunpref();
 p.techPrefs.testPref = 'test';
 q = struct();
 q.testPref = 'testq';
-pass(14) = isequalNaN(chebfunpref.mergePrefs(p, q), ...
+pass(13) = isequalNaN(chebfunpref.mergePrefs(p, q), ...
     chebfunpref.mergePrefs(p.techPrefs, q));
-pass(15) = isequalNaN(chebfunpref.mergePrefs(q, p), ...
+pass(14) = isequalNaN(chebfunpref.mergePrefs(q, p), ...
     chebfunpref.mergePrefs(q, p.techPrefs));
 
 q = chebfunpref();
 q.techPrefs.testPref = 'testq';
-pass(16) = isequalNaN(chebfunpref.mergePrefs(p, q), ...
+pass(15) = isequalNaN(chebfunpref.mergePrefs(p, q), ...
     chebfunpref.mergePrefs(p.techPrefs, q.techPrefs));
 
 % Test functions for managing default preferences.
@@ -110,14 +105,14 @@ try
     chebfunpref.setDefaults('factory');
     factoryPrefs = chebfunpref.getFactoryDefaults();
     p = chebfunpref();
-    pass(17) = isequalNaN(p, factoryPrefs);
+    pass(16) = isequalNaN(p, factoryPrefs);
 
     chebfunpref.setDefaults('factory');
     p = chebfunpref();
     p.domain = [-2 7];
     p.testPref = 'testq';
     chebfunpref.setDefaults(p);
-    pass(18) = strcmp(chebfunpref().testPref, 'testq') && ...
+    pass(17) = strcmp(chebfunpref().testPref, 'testq') && ...
         isequal(chebfunpref().domain, [-2 7]);
 
     chebfunpref.setDefaults('factory');
@@ -125,18 +120,18 @@ try
     p.domain = [-2 7];
     p.testPref = 'testq';
     chebfunpref.setDefaults(p);
-    pass(19) = strcmp(chebfunpref().testPref, 'testq') && ...
+    pass(18) = strcmp(chebfunpref().testPref, 'testq') && ...
         isequal(chebfunpref().domain, [-2 7]);
 
     chebfunpref.setDefaults('factory');
     chebfunpref.setDefaults('domain', [-2 7], 'testPref', 'testq');
-    pass(20) = strcmp(chebfunpref().testPref, 'testq') && ...
+    pass(19) = strcmp(chebfunpref().testPref, 'testq') && ...
         isequal(chebfunpref().domain, [-2 7]);
 
     % Test getting defaults:
-    pass(21) = isnumeric(chebfunpref().eps);
-    pass(22) = ischar(chebfunpref().blowupPrefs.defaultSingType);
-    pass(23) = ischar(chebfunpref().refinementFunction);
+    pass(20) = isnumeric(chebfunpref().eps);
+    pass(21) = ischar(chebfunpref().blowupPrefs.defaultSingType);
+    pass(22) = ischar(chebfunpref().refinementFunction);
     
 catch ME
     
