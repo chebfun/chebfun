@@ -4,7 +4,7 @@ function disp(f)
 % See also DISPLAY.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % If the 'format loose' setting is enabled, we print additional linebreaks:
 loose = strcmp(get(0, 'FormatSpacing'), 'loose');
@@ -121,16 +121,16 @@ end
 
 % Display epslevel:
 s = [s, sprintf('Epslevel = %i.', epslevel(f))];
-s = [s, sprintf('  Vscale = %i.', vscale(f))];
+s = [s, sprintf('  Vscale = %i.', vscale(f, 'sup'))];
 
 % Display total length for piecewise chebfuns:
 if ( numFuns > 1 )
     s = [s, sprintf('  Total length = %i.', sum(len))];
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Dispaly for delta functions:
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 out = get(f, 'deltas');
 if ( ~isempty(out) )
     deltaLoc = out(1, :);
@@ -147,6 +147,6 @@ if ( ~isempty(out) )
     s = [s, sprintf( 'Locations:\n')];
     s = [s, sprintf('%8.2g', deltaLoc)];
 end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 end

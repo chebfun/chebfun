@@ -11,7 +11,7 @@ function f = round(f)
 % See also CEIL, FLOOR, FIX.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % ROUND() the ONEFUN:
 f.onefun = round(f.onefun);

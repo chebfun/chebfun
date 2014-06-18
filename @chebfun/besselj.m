@@ -11,7 +11,7 @@ function F = besselj(nu, F, scale, pref)
 % See also AIRY, BESSELH, BESSLI, BESSELK, BESSELY.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin < 4 )
     pref = chebfunpref();
@@ -21,7 +21,7 @@ if ( nargin < 3 )
 end
 
 if ( any(size(nu) > 1) || ~isreal(nu) )
-    error('CHEBFUN:besselj:nu', ...
+    error('CHEBFUN:CHEBFUN:besselj:nu', ...
         'The first argument of besselj must be a real-valued scalar.');
 end
 

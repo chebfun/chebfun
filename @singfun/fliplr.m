@@ -3,6 +3,6 @@ function f = fliplr(f) %#ok<INUSD>
 %   Since SINGFUN objects cannot be array-valued FLIPLR(F) returns F.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 end

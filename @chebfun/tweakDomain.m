@@ -77,7 +77,7 @@ if ( isempty(f) || isempty(g) )
 end
 
 if ( numel(f) > 1 || numel(g) > 1 )
-    error('CHEBFUN:tweakDomain:quasi', ...
+    error('CHEBFUN:CHEBFUN:tweakDomain:quasi', ...
         'tweakDomain does not support multiple quasimatrix inputs.');
 end
 

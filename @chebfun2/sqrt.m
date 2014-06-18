@@ -3,7 +3,7 @@ function f = sqrt( f )
 %   SQRT(F) returns the square root of a positive CHEBFUN2 F.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check:
 if ( isempty( f ) )
@@ -15,7 +15,7 @@ end
 [bol, wzero] = singleSignTest( f );
 
 if ( ( bol == 0 ) || ( wzero == 1 ) )
-    error('CHEBFUN2:SQRT', ...
+    error('CHEBFUN:CHEBFUN2:sqrt:notSmooth', ...
         'A change of sign/zero has been detected, unable to represent the result.');
 end
 

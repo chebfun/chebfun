@@ -12,7 +12,7 @@ function H = discriminant(f, x, y, varargin)
 % See also JACOBIAN. 
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check:
 if ( isempty( f ) )
@@ -53,7 +53,7 @@ elseif ( nargin == 4 )  % Bordered Hessian
     H = -gx.*(gx.*fyy - gy.*fxy) + gy.*(gx.*fxy - gy.*fxx);
     
 else
-    error('CHEBFUN2:DISCRIMINANT', 'Invalid input arguments.');
+    error('CHEBFUN:CHEBFUN2:discriminant:badInput', 'Invalid input arguments.');
 end
 
 end

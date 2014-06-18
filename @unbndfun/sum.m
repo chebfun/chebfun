@@ -39,7 +39,7 @@ end
 % Check 2: Check the speed of decay at infinity/ties. The integrand is
 % integrable only when it decays faster than 1/x towards infinity/ties.
 if ( any(~isdecay(g.onefun) & isinf(dom)) )
-    warning('CHEBFUN:UNBNDFUN:sum:slowdecay', ...
+    warning('CHEBFUN:UNBNDFUN:sum:slowDecay', ...
         ['Result may not be accurate ' ...
          'as the function decays slowly at infinity.'])
 end
@@ -80,8 +80,8 @@ function y = unbndfunIntegrand(x, g)
 %   which can then be integrated with the ONEFUN's implementation of SUM.
 
 tol = 10*get(g, 'epslevel')*get(g, 'vscale');
-y = feval(g, g.mapping.for(x));
+y = feval(g, g.mapping.For(x));
 y(abs(y) < tol) = 0;
-y = y.*g.mapping.der(x);
+y = y.*g.mapping.Der(x);
 
 end

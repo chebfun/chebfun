@@ -5,10 +5,10 @@ function f = changeMap(f, newdom)
 %       G(x) = F(a*(d - x)/(d - c) + b*(x - c)/(d - c)) for all x in [c, d].
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Assign a new linear map to f, obtained from the BNDFUN.CREATEMAP() method:
-f.mapping = bndfun.createMap(newdom);
+f.mapping = mapping.linear(newdom);
 
 % Assign the new endpoints of f to the domain property:
 f.domain = newdom;

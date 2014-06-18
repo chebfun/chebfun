@@ -12,7 +12,7 @@ function varargout = surf(F, varargin)
 % See also CHEBFUN2/SURF.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 numpts = 100; 
 
@@ -27,7 +27,8 @@ ish = ishold;
 nF = F.nComponents;
 
 if ( nF == 2 )
-    error('CHEBFUN2V:SURF','CHEBFUN2V does not represent a surface as it has only two components');
+    error('CHEBFUN:CHEBFUN2V:surf:notEnoughComponents', ...
+        'CHEBFUN2V does not represent a surface as it has only two components');
 end
 
 % Making varargin non-empty

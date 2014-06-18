@@ -7,7 +7,7 @@ if ( nargin < 1 )
 end
 
 singPref = pref;
-singPref.enableSingularityDetection = true;
+singPref.blowup = true;
 
 % Set a domain for BNDFUN.
 data.domain = [-2 7];

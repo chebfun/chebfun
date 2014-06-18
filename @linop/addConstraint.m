@@ -19,14 +19,15 @@ function L = addConstraint(L, varargin)
 %     op4 = [ s, z ];
 %     A = addConstraint(A, op4, 1);   % impose sum(u{1}) + 0*u{2} = 1
 %
-%   See also LINOP.ADDCONTINUITY, LINOPCONSTRAINT. 
+% See also LINOP.ADDCONTINUITY, LINOPCONSTRAINT. 
 
 %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
+%  See http://www.chebfun.org/ for Chebfun information.
 
 if ( isequal(varargin{1}, 'periodic') )
     if ( ~isempty(L.constraint) )
-        warning('Clearing existing constraints to replace with periodicity.')
+        warning('CHEBFUN:LINOP:addConstraint:overwrite', ...
+            'Clearing existing constraints to replace with periodicity.')
     end
     
     L = deriveContinuity(L, L.domain, true);  % modifies continuity property

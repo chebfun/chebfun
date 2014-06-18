@@ -34,7 +34,7 @@ tol = max(pref.eps);
 
 % Check the domains:
 if ( abs(domF(2) - domG(1)) > hscale*tol )
-    error('CHEBFUN:fun:merge:domains', ...
+    error('CHEBFUN:FUN:merge:domains', ...
         'F and G must be on consecutive domains.');
 end
 
@@ -59,7 +59,7 @@ h = fun.constructor(@(x) myFun(x, f, g, dom), data, pref);
 
 ishappy = get(h, 'ishappy');
 if ( ~ishappy && (nargout < 2) )
-    warning('CHEBFUN:fun:merge:unsuccessful', ...
+    warning('CHEBFUN:FUN:merge:unsuccessful', ...
         'Attempted merge was unnsuccessful with %d points.', length(h));
 end
 

@@ -15,10 +15,11 @@ function varargout = gmres(A, varargin)
 % See also CHEBFUN/GMRES, GMRES.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( ~all(islinear(A)) )
-    error('CHEBOP:gmres','GMRES supports only linear CHEBOP instances.');
+    error('CHEBFUN:CHEBOP:gmres:nonlinear', ...
+        'GMRES supports only linear CHEBOP instances.');
 end
 
 op = @(u) A*u;

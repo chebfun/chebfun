@@ -13,7 +13,7 @@ function a = any(f, dim)
 % See also ALL.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information
+% See http://www.chebfun.org/ for Chebfun information
 
 % Parse inputs:
 if ( nargin < 2 )
@@ -21,7 +21,7 @@ if ( nargin < 2 )
 end
 
 if ( (dim ~= 1) && (dim ~= 2) )
-    error('CHEBFUN:any:dim', 'DIM input must be 1 or 2.');
+    error('CHEBFUN:CHEBFUN:any:dim', 'DIM input must be 1 or 2.');
 end
 
 % Deal with row CHEBFUNs by transposing first:

@@ -3,7 +3,7 @@ function I = surfacearea(f , varargin )
 %   SURFACEAREA(F) computes the surface area of the CHEBFUN2 in the domain of F.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin > 1 )
     if ( isa(varargin{1}, 'double') )
@@ -12,7 +12,7 @@ if ( nargin > 1 )
             dom = varargin{1}; 
             f = restrict( f, dom );
         else
-            error('CHEBFUN2:SURFACEAREA:domain', 'Bad domain.');
+            error('CHEBFUN:CHEBFUN2:surfacearea:domain', 'Bad domain.');
         end
     elseif ( isa(varargin{1}, 'chebfun') )
         f = restrict( f, varargin{1} );
@@ -20,7 +20,7 @@ if ( nargin > 1 )
         I = sum( sqrt( 1 + diff( f ).^2 ) ); 
         return
     else
-        error('CHEBFUN2:SURFACEAREA:domain','Bad restricting domain.');
+        error('CHEBFUN:CHEBFUN2:surfacearea:domain','Bad restricting domain.');
     end
 end
 

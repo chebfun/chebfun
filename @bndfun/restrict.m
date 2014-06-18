@@ -22,18 +22,18 @@ if ( s(1) < f.domain(1) )
     if ( abs(s(1) - f.domain(1)) < hs )
         s(1) = f.domain(1);
     else
-        error('BNDFUN:restrict:badinterval', 'Not a valid interval.')
+        error('CHEBFUN:BNDFUN:restrict:badInterval', 'Not a valid interval.')
     end
 end
 if ( s(end) > f.domain(2) )
     if ( abs(s(end) - f.domain(2)) < hs )
         s(end) = f.domain(2);
     else
-        error('BNDFUN:restrict:badinterval', 'Not a valid interval.')
+        error('CHEBFUN:BNDFUN:restrict:badInterval', 'Not a valid interval.')
     end
 end
 if ( any(diff(s) <= 0) )
-    error('BNDFUN:restrict:badinterval', 'Not a valid interval.')
+    error('CHEBFUN:BNDFUN:restrict:badInterval', 'Not a valid interval.')
 end
 
 if ( (numel(s) == 2) && all( s == f.domain) )    
@@ -43,7 +43,7 @@ if ( (numel(s) == 2) && all( s == f.domain) )
 end
 
 % Compute the breaks in [-1,1] space and restrict the onefun:
-t = f.mapping.inv(s);
+t = f.mapping.Inv(s);
 
 % Restrict the ONEFUN field of f.
 restrictedOnefuns = restrict(f.onefun, t);

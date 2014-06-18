@@ -4,7 +4,7 @@ function h = mldivide(f, g)
 % Left divide for a CHEBFUN2. Only allowed to divide by scalars.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty(f) || isempty(g) )
     h = chebfun2;
@@ -12,7 +12,8 @@ if ( isempty(f) || isempty(g) )
 end
 
 if ( ~isa(f, 'double') )
-    error('CHEBFUN2:MRDIVIDE:NONSCALAR', 'Division must be by a scalar.');
+    error('CHEBFUN:CHEBFUN2:mldivide:nonScalar', ...
+        'Division must be by a scalar.');
 end
 
 % Left divide:

@@ -51,8 +51,10 @@ classdef classicfun < fun % (Abstract)
 %                                               [bndfun]   [unbndfun]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    %% Properties of CLASSICFUN objects.
-    properties (Access = public)
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS PROPERTIES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    properties ( Access = public )
         % The domain of the CLASSICFUN object, [a, b].
         domain
 
@@ -67,8 +69,10 @@ classdef classicfun < fun % (Abstract)
         onefun
     end
     
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% CLASS CONSTRUCTOR:
-    methods (Static = true)
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = true )
         
         function obj = constructor(op, data, pref)
             
@@ -102,24 +106,11 @@ classdef classicfun < fun % (Abstract)
         end
         
     end
-    
-    %% STATIC METHODS IMPLEMENTED BY THIS CLASS.
-    methods (Static = true)
-
-    end
-    
-    %% ABSTRACT STATIC METHODS REQUIRED BY THIS CLASS.
-    methods(Abstract = true, Static = true)
-                
-        % Map from [-1, 1] to the domain of the CLASSICFUN.
-        m = createMap(domain);  
-        
-        % Make a CLASSICFUN. (Constructor shortcut)
-        f = make(varargin);
-    end
-    
+           
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% ABSTRACT METHODS REQUIRED BY THIS CLASS.
-    methods ( Abstract = true )
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false, Abstract = true )
         % [TODO]: Once UNBNDFUN and CHEBFUN advance, we should revisit this
         % list, and add/throw away abstract methods as appropriate.
         
@@ -147,10 +138,24 @@ classdef classicfun < fun % (Abstract)
         % Definite integral of a CLASSICFUN on its domain of definition.
         out = sum(f, dim)
         
-    end           
+    end
     
-    %% METHODS IMPLEMENTED BY THIS CLASS.
-    methods
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% STATIC ABSTRACT METHODS REQUIRED BY THIS CLASS.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = true, Abstract = true )
+                
+        % Map from [-1, 1] to the domain of the CLASSICFUN.
+        m = createMap(domain);  
+        
+        % Make a CLASSICFUN. (Constructor shortcut)
+        f = make(varargin);
+    end
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%       
+    %% CONCRETE METHODS (IMPLEMENTED BY THIS ABSTRACT CLASS.)
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
         
         % Extract information for DISPLAY.
         info = dispData(f)
@@ -253,7 +258,7 @@ classdef classicfun < fun % (Abstract)
         
         % Signum of a CLASSICFUN. (f should have no zeros in its domain)
         f = sign(f, pref)
-
+    
         % Simplify the ONEFUN of a CLASSICFUN object.
         f = simplify(f, tol)
 
@@ -274,6 +279,10 @@ classdef classicfun < fun % (Abstract)
 
     end
 end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% METHODS IMPLEMENTED IN THIS FILE:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function data = parseDataInputs(data, pref)
 %PARSEDATAINPUTS   Parse inputs from the DATA structure and assign defaults.

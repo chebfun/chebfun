@@ -8,7 +8,7 @@ function f = extractColumns(f, colIdx)
 
 % Extract/re-order the columns from f.coeffs, f.vscale, and f.epslevel:
 if ( numel(colIdx) ~= 1 || colIdx ~= 1 )
-    error('CHEBFUN:singfun:extractColumns:dim', ...
+    error('CHEBFUN:SINGFUN:extractColumns:dim', ...
         'Index exceeds matrix dimensions.');
 end   
     

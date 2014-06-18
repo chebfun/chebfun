@@ -38,7 +38,8 @@ end
 
 if ( nargin == 3 )
     if ( ~any(dim == [1 2]) )
-        error('CHEBFUN:min:badDim', 'DIM input to CHEBFUN MIN must be 1 or 2.');
+        error('CHEBFUN:CHEBFUN:min:badDim', ...
+            'DIM input to CHEBFUN MIN must be 1 or 2.');
     end
 
     if ( dim ~= 1 + f(1).isTransposed )
@@ -71,7 +72,7 @@ elseif ( strcmp(flag, 'local') )
     [y, x] = localMin(f);
     
 else
-    error('CHEBFUN:min:flag', 'Unrecognized flag.');
+    error('CHEBFUN:CHEBFUN:min:flag', 'Unrecognized flag.');
     
 end
 

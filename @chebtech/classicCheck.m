@@ -92,7 +92,7 @@ f.vscale(ind) = eps;
 
 % NaNs are not allowed.
 if ( any(isnan(f.coeffs(:))) )
-    error('CHEBFUN:FUN:classicCheck:NaNeval', ...
+    error('CHEBFUN:CHEBTECH:classicCheck:nanEval', ...
         'Function returned NaN when evaluated.')
 end
 

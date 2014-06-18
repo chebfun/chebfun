@@ -3,7 +3,7 @@ function F = real( F )
 %   REAL(F) returns the CHEBFUN2V representing the real part.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 
 if ( isempty( F ) )

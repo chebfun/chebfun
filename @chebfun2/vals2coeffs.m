@@ -11,7 +11,7 @@ function varargout = vals2coeffs( U, S, V )
 % See also COEFFS2VALS
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 tech = chebfunpref().tech();
 
@@ -24,7 +24,7 @@ elseif ( narargin == 3 )
     V = tech.vals2coeffs( V.' ).'; 
     varargout = {U S V};
 else
-    error('CHEBFUN2:VALS2COEFFS:inputs', ...
+    error('CHEBFUN:CHEBFUN2:vals2coeffs:inputs', ...
         'The number of input arguments should be one or two.');
 end
 

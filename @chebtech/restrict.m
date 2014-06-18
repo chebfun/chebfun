@@ -24,7 +24,7 @@ end
 
 % Check if s is actually a subinterval:
 if ( (s(1) < -1) || (s(end) > 1) || (any(diff(s) <= 0)) )
-    error('CHEBTECH:restrict:badinterval', 'Not a valid interval.')
+    error('CHEBFUN:CHEBTECH:restrict:badInterval', 'Not a valid interval.')
 elseif ( (numel(s) == 2) && all(s == [-1, 1]) )
     % Nothing to do here!
     return

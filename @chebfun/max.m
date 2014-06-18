@@ -38,7 +38,8 @@ end
 
 if ( nargin == 3 )
     if ( ~any(dim == [1 2]) )
-        error('CHEBFUN:max:badDim', 'DIM input to CHEBFUN MAX must be 1 or 2.');
+        error('CHEBFUN:CHEBFUN:max:badDim', ...
+            'DIM input to CHEBFUN MAX must be 1 or 2.');
     end
 
     if ( dim ~= 1 + f(1).isTransposed )
@@ -71,7 +72,7 @@ elseif ( strcmp(flag, 'local') )
     [y, x] = localMax(f);
     
 else
-    error('CHEBFUN:max:flag', 'Unrecognized flag.');
+    error('CHEBFUN:CHEBFUN:max:flag', 'Unrecognized flag.');
     
 end
 

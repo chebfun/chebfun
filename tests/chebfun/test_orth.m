@@ -22,7 +22,7 @@ try
     Q = orth(f.');
     pass(5) = false;
 catch ME
-    pass(5) = strcmp(ME.identifier, 'CHEBFUN:orth:row');
+    pass(5) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:orth:row');
 end
 
 end

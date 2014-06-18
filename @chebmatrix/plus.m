@@ -28,7 +28,8 @@ if ( isnumeric(B) )
             C.blocks{k} = C.blocks{k} + B(k);
         end
     else
-        error('CHEBFUN:CHEBMATRIX:plus', 'Operands must have the same size.')
+        error('CHEBFUN:CHEBMATRIX:plus:sizeMismatch1', ...
+            'Operands must have the same size.')
     end
     
     return
@@ -45,7 +46,8 @@ end
 
 % Check that dimension of two CHEBMATRIX objects match.
 if (  (m ~= mB ) || (n ~= nB) )
-    error('CHEBFUN:CHEBMATRIX:plus', 'Operands must have the same size.')
+    error('CHEBFUN:CHEBMATRIX:plus:sizeMismatch2', ...
+        'Operands must have the same size.')
 end
 
 % Initalize a cell for addition.

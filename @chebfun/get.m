@@ -161,11 +161,11 @@ switch prop
     case 'deltas-local'
         out = getArbitraryLocalProp(f, 'deltas', simpLevel);
     case 'imps'
-        warning('CHEBFUN:get:imps', ...
+        warning('CHEBFUN:CHEBFUN:get:imps', ...
             '''imps'' property is deprecated.  Use ''deltas'' instead.');
         out = get(f, 'deltas');
     otherwise
-        error('CHEBFUN:get:badProp', ...
+        error('CHEBFUN:CHEBFUN:get:badProp', ...
             '''%s'' is not a recognized CHEBFUN property name.', prop);
 end
 
@@ -300,7 +300,7 @@ for j = 1:nFuns
     if ( funPropValCols == 1 )
         funPropVal = repmat(funPropVal, 1, nCols);
     elseif ( funPropValCols ~= nCols )
-        error('CHEBFUN:get:notSimple', 'Property is not simple.');
+        error('CHEBFUN:CHEBFUN:get:getSimpleNumericLocalPropArrayValued:notSimple', 'Property is not simple.');
     end
 
     tmp(j, :) = mat2cell(funPropVal, funPropValRows, ones(nCols, 1));

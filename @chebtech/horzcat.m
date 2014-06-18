@@ -6,7 +6,7 @@ function out = horzcat(varargin)
 %   not supported.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Remove empties:
 empties = cellfun(@isempty, varargin);
@@ -16,7 +16,13 @@ if ( all(empties) )
 else
     varargin(empties) = [];
 end
-  
+
+% Check that all objects are CHEBTECHs. If not we cannot concatenate.
+if ( ~all( cellfun(@(f) isa(f, 'chebtech'), varargin) ) )
+    error('CHEBFUN:CHEBTECH:horzcat:typeMismatch', ...
+    'Incompatible concatenation. Ensure discretizations are of the same type.');
+end
+
 % Prolong each Chebtech to the same length:
 n = max(cellfun(@length, varargin));
 F = cellfun(@(f) prolong(f, n), varargin, 'UniformOutput', false);

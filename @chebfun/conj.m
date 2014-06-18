@@ -5,7 +5,7 @@ function F = conj(F)
 % See also REAL, IMAG.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Loop over the columns of F:
 for j = 1:numel(F)

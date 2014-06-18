@@ -45,7 +45,8 @@ try
     f_inv = inv(f, pref, 'splitting', 'on', 'monocheck', 'on');
     pass(:,6) = false;
 catch ME
-    if ( strcmpi(ME.identifier, 'CHEBFUN:inv:notMonotonic') )
+    if ( strcmpi(ME.identifier, ...
+            'CHEBFUN:CHEBFUN:inv:doMonoCheck:notMonotonic') )
         pass(:,6) = true;
     else
         pass(:,6) = false;

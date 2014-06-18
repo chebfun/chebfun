@@ -7,7 +7,7 @@ function F = curl(F)
 %   returns the CHEBFUN2V representing the 3D curl operation.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.  
+% See http://www.chebfun.org/ for Chebfun information.  
 
 % Empty check: 
 if ( isempty( F ) )

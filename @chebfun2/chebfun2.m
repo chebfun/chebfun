@@ -1,5 +1,5 @@
 classdef chebfun2
-% CHEBFUN2 CHEBFUN2 class for constructing functions on [a,b]x[c,d].
+%CHEBFUN2   CHEBFUN2 class for constructing functions on [a,b]x[c,d].
 % 
 %   Class for approximating functions defined on finite rectangles. The 
 %   functions should be smooth.
@@ -27,11 +27,13 @@ classdef chebfun2
 % See also CHEBFUN, CHEBFUN2V.
 
 % Copyright 2014 by The University of Oxford and The Chebfun2 Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun2 information.
+% See http://www.chebfun.org/ for Chebfun2 information.
 
 % TODO: Improve documentation of input options.
 
-    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS PROPERTIES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
         % COLS: column slices used in low rank representation.
         cols 
@@ -45,7 +47,10 @@ classdef chebfun2
         domain = [-1 1 -1 1];
     end
     
-    methods
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS CONSTRUCTOR:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
         
         function f = chebfun2(varargin)
             % The main CHEBFUN2 constructor!
@@ -60,26 +65,19 @@ classdef chebfun2
             
         end
         
+    end        
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods
+         f = conj(f);
     end
     
-    % Static methods implemented by CHEBFUN class.
-    methods ( Static = true )
-        
-        X = coeffs2vals(U); 
-        
-        X = vals2coeffs(U); 
-        
-        % Padua points to tensor grid:
-        [C, V, X, Y] = paduaVals2coeffs( F, dom ); 
-        
-        [xx, yy] = chebpts2(nx, ny, domain);
-        
-        % Outer-product of two chebfuns.
-        F = outerProduct(f, g);   
-        
-    end
-    
-    methods ( Hidden = true )
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% HIDDEN METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false, Hidden = true )
         % Check to see if domains are equal.
         out = domainCheck(f, g)
         
@@ -99,20 +97,38 @@ classdef chebfun2
         vscl = vscale(f) 
     end
 
-    % Private methods implemented by CHEBFUN2 class.
-    methods ( Access = private )
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% PRIVATE METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = private, Static = false )
+        
+    end
+            
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% STATIC METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = true )
+        
+        X = coeffs2vals(U); 
+        
+        X = vals2coeffs(U); 
+        
+        % Padua points to tensor grid:
+        [C, V, X, Y] = paduaVals2coeffs( F, dom ); 
+        
+        [xx, yy] = chebpts2(nx, ny, domain);
+        
+        % Outer-product of two chebfuns.
+        F = outerProduct(f, g);   
         
     end
     
-    % Static private methods implemented by CHEBFUN2 class.
-    methods ( Static = true, Access = private )
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% Private Static methods implemented by CHEBFUN2 class.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = private, Static = true )
         
     end
     
-    % Methods implemented by CHEBFUN2 class.
-    methods
-         f = conj(f);
-    end
     
 end
-
