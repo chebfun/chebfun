@@ -443,6 +443,15 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             A = cellfun(A, @log2);
         end
         
+        function A = mrdivide(A, b)
+            if ( isnumeric(b) && isscalar(b) )
+                A = cellfun(A, @(A) mrdivide(A, b));
+            else
+                error('CHEBFUN:CHEBMATRIX:mrdivide:notScalar', ...
+                    'CHEBMATRIX/MRDIVIDE only supports division by scalars.');
+            end
+        end
+        
         function A = power(A, b)
             if ( isnumeric(b) )
                 A = cellfun(A, @(A) power(A, b));
@@ -460,6 +469,17 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         
         function A = reallog(A)
             A = cellfun(A, @reallog);
+        end
+        
+        function A = rdivide(A, b)
+            if ( isnumeric(b) )
+                A = cellfun(A, @(A) rdivide(A, b));
+            elseif ( isnumeric(A) )
+                A = cellfun(b, @(b) rdivide(A, b));
+            else
+                A.blocks = cellfun(@rdivide, A.blocks, b.blocks, ...
+                    'UniformOutput', false);
+            end
         end
         
         function A = round(A)
@@ -516,6 +536,17 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         
         function A = tanh(A)
             A = cellfun(A, @tanh);
+        end
+        
+        function A = times(A, b)
+            if ( isnumeric(b) )
+                A = cellfun(A, @(A) times(A, b));
+            elseif ( isnumeric(A) )
+                A = cellfun(b, @(b) times(A, b));
+            else
+                A.blocks = cellfun(@times, A.blocks, b.blocks, ...
+                    'UniformOutput', false);
+            end
         end
         
         function A = uminus(A)
