@@ -199,6 +199,73 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             A.blocks = transpose(A.blocks);
         end
         
+        function varargout = loglog(varargin)
+        %LOGLOG   Log-log plot of a CHEBMATRIX.
+        %   Note that no warning is thrown for negative data.
+        
+            % Standard CHEBMATRIX/PLOT():
+            [h{1:3}] = plot(varargin{:});
+            % Strip negative data:
+            for j = 1:3 % TODO: This 
+                for k = 1:numel(h{j})
+                    xData = get(h{j}(k), 'xData');
+                    xData(xData < 0) = 0;
+                    set(h{j}(k), 'yData', xData);
+                    yData = get(h{j}(k), 'yData');
+                    yData(yData < 0) = 0;
+                    set(h{j}(k), 'yData', yData);
+                end
+            end
+            % Set the X and Y Scale to be logarithmic:
+            set(gca, 'XScale', 'log', 'YScale', 'log');  
+            if ( nargout > 0 )
+                varargout = h;
+            end
+        end
+        
+        function varargout = semilogx(varargin)
+        %SEMILOGX   Semilogx plot of a CHEBMATRIX.
+        %   Note that no warning is thrown for negative data.
+        
+            % Standard CHEBMATRIX/PLOT():
+            [h{1:3}] = plot(varargin{:});
+            % Strip negative data:
+            for j = 1:3 % TODO: This 
+                for k = 1:numel(h{j})
+                    xData = get(h{j}(k), 'xData');
+                    xData(xData < 0) = 0;
+                    set(h{j}(k), 'xData', xData);
+                end
+            end
+            % Set the XScale to be logarithmic:
+            set(gca, 'XScale', 'log');  
+            if ( nargout > 0 )
+                varargout = h;
+            end
+        end
+        
+        function varargout = semilogy(varargin)
+        %SEMILOGY   Semilogy plot of a CHEBMATRIX.
+        %   Note that no warning is thrown for negative data.
+        
+            % Standard CHEBMATRIX/PLOT():
+            [h{1:3}] = plot(varargin{:});
+            % Strip negative data:
+            for j = 1:3 % TODO: This 
+                for k = 1:numel(h{j})
+                    yData = get(h{j}(k), 'yData');
+                    yData(yData < 0) = 0;
+                    set(h{j}(k), 'yData', yData);
+                end
+            end
+            % Set the YScale to be logarithmic:
+            set(gca, 'YScale', 'log');  
+            if ( nargout > 0 )
+                varargout = h;
+            end
+        end
+
+        
         function A = simplify(A, varargin)
         %SIMPLIFY   Simplify CHEBFUN components in a CHEBMATRIX.
         %   SIMPLIFY(A) simplifies the CHEBFUN elements in a CHEBMATRIX, as
