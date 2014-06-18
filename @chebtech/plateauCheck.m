@@ -16,11 +16,15 @@ function [ishappy, epsLevel, cutoff] = plateauCheck(f, values, pref)
 %   number that prevents convergence to the full requested accuracy, as often
 %   happens in the collocation of differential equations.
 %
+%   Output EPSLEVEL is an estimate of the relative size of the last
+%   "meaningful" expansion coefficients of the function, and the output 
+%   CUTOFF is an estimate of how many of the coefficients are useful.
+%
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = PLATEAUCHECK(F, VALUES, PREF) allows
 %   additional preferences to be passed. In particular, one can adjust the
 %   target accuracy with PREF.EPS.
 %
-% See also STRICTCHECK, CLASSICCHECK.
+% See also LINOPV4CHECK, STRICTCHECK, CLASSICCHECK.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

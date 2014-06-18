@@ -1,8 +1,12 @@
 function [ishappy, epsLevel, cutoff] = linopV4Check(f, values, pref)
-%PLATEAUCHECK   Attempt to trim trailing Chebyshev coefficients in a CHEBTECH.
-%   [ISHAPPY, EPSLEVEL, CUTOFF] = PLATEAUCHECK(F, VALUES) returns an estimated
-%   location, the CUTOFF, at which the CHEBTECH F could be truncated. One of two
-%   criteria must be met: Either:
+%LINOPV4CHECK   Attempt to trim trailing Chebyshev coefficients in a CHEBTECH.
+%   [ISHAPPY, EPSLEVEL, CUTOFF] = LINOPV4CHECK(F, VALUES) returns an estimated
+%   location, the CUTOFF, at which the CHEBTECH F could be truncated. It's
+%   based on the same functionality provided in Version 4 of Chebfun and is
+%   more aggressive about truncation than the alternative PLATEAUCHECK.
+%
+%   The first output measures "happiness" (sufficient resolution). One of two
+%   criteria must be met. Either:
 %
 %     (1) The coefficients are sufficiently small (as specified by the default
 %     EPS property of CHEBTECH) relative to F.VSCALE (or using absolute size if
@@ -16,11 +20,15 @@ function [ishappy, epsLevel, cutoff] = linopV4Check(f, values, pref)
 %   number that prevents convergence to the full requested accuracy, as often
 %   happens in the collocation of differential equations.
 %
-%   [ISHAPPY, EPSLEVEL, CUTOFF] = PLATEAUCHECK(F, VALUES, PREF) allows additional
-%   preferences to be passed. In particular, one can adjust the target accuracy
-%   with PREF.EPS.
+%   Output EPSLEVEL is an estimate of the relative size of the last
+%   "meaningful" expansion coefficients of the function, and the output 
+%   CUTOFF is an estimate of how many of the coefficients are useful.
 %
-% See also STRICTCHECK, CLASSICCHECK.
+%   [...] = LINOPV4CHECK(F, VALUES, PREF) allows additional
+%   preferences to be passed. In particular, one can adjust the target 
+%   accuracy with PREF.EPS.
+%
+% See also PLATEAUCHECK, STRICTCHECK, CLASSICCHECK.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -93,8 +101,7 @@ end
 function [ishappy, epslevel, cutoff] = checkColumn(absCoeff,epslevel)
 
 % There are two ways to pass the test. Either the coefficients have achieved the
-% goal epslevel or the convergence appears to have levelled off for good
-% (plateau).
+% goal epslevel or the convergence appears to have leveled off for good
 
 % Guilty until proven innocent.
 ishappy = false;
