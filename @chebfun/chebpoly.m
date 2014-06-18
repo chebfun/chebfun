@@ -1,5 +1,5 @@
 function varargout = chebpoly(varargin)
-%CHEBPOLY   Chebyshev polynomial coefficients
+%CHEBPOLY   Chebyshev polynomial coefficients.
 %   CHEBPOLY(F) is deprecated. Please use CHEBCOEFFS().
 %
 % See also PLOTCOEFFS.
