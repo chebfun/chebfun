@@ -6,7 +6,7 @@ function f = assignColumns(f, colIdx, g)
 %   increasing in order or unique but must contain only integers in the range
 %   [1, M] (where F has M columns) and have a length equal to the number of
 %   columns (or rows) of G. Setting COLIDX to ':' has the same effect as setting
-%   it to 1:SIZE(F, 2). If ISEMPTY(G) then columns of F are removed.
+%   it to 1:SIZE(F, 2). If G is empty, then columns of F are removed.
 %
 %   If F is a row CHEBFUN, then ASSIGNCOLUMNS(F, ROWIDX, G) behaves as described
 %   above, except that it assigns the rows of F so that F(ROWIDX,:) = G.
@@ -34,7 +34,7 @@ if ( ~isnumeric(colIdx) && strcmp(colIdx, ':') )
     colIdx = 1:numColsF;
 end
 
-% G is empty - Remove columns!
+% g is empty - Remove columns!
 if ( isempty(g) )
     if ( numel(f) > 1 )
         f(colIdx) = [];
