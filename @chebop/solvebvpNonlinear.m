@@ -39,9 +39,6 @@ u = u0;
 % Initialise the independent variable:
 x = chebfun(@(x) x, N.domain);
 
-% Print info to command window, and/or show plot of progress:
-[displayFig, displayTimer] = displayInfo('init', u0, pref);
-
 % Counter for number of Newton steps taken.
 newtonCounter = 0;
 
@@ -61,6 +58,9 @@ lambda = 1;
 
 % Need to subtract the rhs from the residual passed in.
 res = res - rhs;
+
+% Initial estimate of error
+errEst = inf;
 
 % Some initializations of the DAMPINGINFO struct. See 
 %   >> help dampingErrorBased 
@@ -92,6 +92,21 @@ while ( ~terminate )
     
     % Assign to the DAMPINGINFO struct:
     dampingInfo.normDelta = normDelta;
+    
+    % At the first Newton iteration, we have to do additional checks.
+    if ( newtonCounter == 0)
+        % Did we actually get an initial passed that solves the BVP?
+        if ( normDelta/vscale(u) < errTol/100 )
+            displayInfo('exactInitial', pref);
+            info.error = NaN;
+            info.normDelta = normDelta;
+            return
+        else
+            % We actually have to start the Newton iteration. Print info to
+            % command window, and/or show plot of progress:
+            [displayFig, displayTimer] = displayInfo('init', u0, pref);
+        end
+    end
     
     % Are we in damped mode?
     if ( damped )

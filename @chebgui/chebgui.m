@@ -250,12 +250,14 @@ classdef chebgui
 
             % Reset the top figures
             cla(handles.fig_sol, 'reset');
-            title('Solutions')
+            axes(handles.fig_sol)
+            title('Solution')
             box on
 
             % Reset the bottom figure
             cla(handles.fig_norm, 'reset');
-            title('Updates')
+            axes(handles.fig_norm)
+%             title('Updates')
             box on
         end
         

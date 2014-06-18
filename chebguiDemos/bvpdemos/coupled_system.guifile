@@ -3,6 +3,6 @@
 domain = '[-1 1]';
 DE = {'u" - sin(v) = 0';'cos(u) + v" = 0'};
 BC = {'u(-1) = 1';'v''(-1) = 0';'u''(1) = 0';'v(1) = 0'};
-init = ''; tol = '1e-10';
+init =  {'u = (x-1)^2-3';'v = -(x+1)^2+4'};; tol = '1e-10';
 damping = '0'; plotting = '0.4';
 type = 'bvp';

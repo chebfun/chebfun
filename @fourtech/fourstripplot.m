@@ -16,7 +16,7 @@ function varargout = fourstripplot(u, varargin)
 %       fourstripplot(u, 'r--');
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( size(u, 2) > 1 )
     error('CHEBFUN:FOURTECH:fourstripplot:quasi', ...

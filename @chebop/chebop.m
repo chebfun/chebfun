@@ -267,6 +267,9 @@ classdef (InferiorClasses = {?double}) chebop
         displayInfoFinal(u, delta, iterNo, errEstDE, errEstBC, displayFig, ...
             displayTimer, pref)
         
+        % Display special information when N.INIT solves the BVP:
+        displayInfoExactInitial(pref)
+        
         % Display at the start of Newton iteration.
         [displayFig, displayTimer] = displayInfoInit(u,pref);
         

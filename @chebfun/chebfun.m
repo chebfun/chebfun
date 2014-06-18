@@ -399,7 +399,7 @@ classdef chebfun
         f = uplus(f)
         
         % Vertical scale of a CHEBFUN object.
-        out = vscale(f);
+        out = vscale(f, s);
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -760,14 +760,12 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
         if ( ischar(op) )
             op = str2op(op);
         end
-        if ( isa(op, 'function_handle') && vectorize )
-            % [TODO]: Should we reinstate VECTORCHECK()?
-            op = vec(op);
+        if ( isa(op, 'function_handle') )
+            op = vectorCheck(op, dom, vectorize);
         end
         if ( isa(op, 'chebfun') )
             op = @(x) feval(op, x);
         end
-
         if ( isa(op, 'function_handle') && strcmp(pref.tech, 'funqui') )
             if ( isfield(pref.techPrefs, 'exactLength') && ...
                  ~isnan(pref.techPrefs.exactLength) )
@@ -823,16 +821,104 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
 
 end
 
-function g = vec(f)
+function op = vectorCheck(op, dom, vectorize)
+%VECTORCHECK   Try to determine whether op is vectorized. 
+%   It's impossible to conver all enevtualities without being too expensive. 
+%   We do the best we can. "Do. Or do no. There is not try."
+
+if ( vectorize )
+    op = vec(op);
+end
+
+% Make a slightly narrower domain to evaluate on. (Endpoints can be tricky).
+y = dom([1 end]);
+if ( y(1) > 0 )
+    y(1) = 1.01*y(1); 
+else
+    y(1) = .99*y(1); 
+end
+if ( y(end) > 0 )
+    y(end) = .99*y(end); 
+else
+    y(end) = 1.01*y(end); 
+end
+y = y(:);
+
+try
+    % Evaluate a vector of (near the) endpoints
+    v = op(y);
+    
+    % Get the size of the output:
+    sv = size(v);
+    sy = size(y);
+    
+    % Check the sizes:
+    if ( sv(1) == sy(1) )
+        % Here things seem OK! 
+        
+        % However, we _an_ possibly be fooled if we have a array-valued function
+        % whos number of columns equals the number of test points. We choose one
+        % additional point as a final check:
+        if ( sv(2) == sy(1) )
+            v = op(y(1));
+            if ( size(v, 1) > 1 )
+                op = @(x) op(x).';
+                warning('CHEBFUN:CHEBFUN:vectorCheck:transpose',...
+                    ['Chebfun input should return a COLUMN array.\n', ...
+                     'Attempting to transpose.'])
+            end
+        end
+        
+    elseif ( all( sv == 1 ) )
+        % The operator always returns a scalar:
+        op = @(x) repmat(op(x), length(x), 1);
+        
+    elseif ( any(sv == sy(1)) )
+        op = @(x) op(x).';
+        warning('CHEBFUN:CHEBFUN:vectorCheck:transpose',...
+                ['Chebfun input should return a COLUMN array.\n', ...
+                 'Attempting to transpose.'])
+             
+    elseif ( any(sv == 1) )
+        % The operator always returns a scalar:
+        op = @(x) repmat(op(x), length(x), 1);
+        
+    end
+
+    
+catch ME
+    % The above didn't work. :(
+    
+    if ( vectorize )
+        % We've already tried vectorizing, so we've failed.
+        rethrow(ME)
+        
+    else
+        % Try vectorizing.
+        op = vectorCheck(op, dom, 1);
+                warning('CHEBFUN:CHEBFUN:vectorcheck:vectorize',...
+        ['Function failed to evaluate on array inputs.\n',...
+        'Vectorizing the function may speed up its evaluation\n',...
+        'and avoid the need to loop over array elements.\n',...
+        'Use ''vectorize'' flag in the CHEBFUN constructor call\n', ...
+        'to avoid this warning message.'])
+    
+    end
+    
+end
+
+end
+
+function g = vec(op)
 %VEC  Vectorize a function or string expression.
 %   VEC(F), if F is a function handle or anonymous function, returns a function
 %   that returns vector outputs for vector inputs by wrapping F inside a loop.
-    g = @loopwrapper;
+    g = @loopWrapper;
     % Nested function:
-    function v = loopwrapper(x)
+    function v = loopWrapper(x)
         v = zeros(size(x));
         for j = 1:numel(v)
-            v(j) = f(x(j));
+            v(j) = op(x(j));
         end
     end
 end

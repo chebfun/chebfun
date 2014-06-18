@@ -5,7 +5,7 @@ classdef colloc < chebDiscretization
 %   used directly as a discretization for linops. Both COLLOC1 and COLLOC2 are
 %   full implementations.
 %
-%   See also COLLOC1, COLLOC2, CHEBDISCRETIZATION.
+% See also COLLOC1, COLLOC2, CHEBDISCRETIZATION.
 
 %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org/ for Chebfun information.

@@ -81,7 +81,7 @@ plot(h, 'k', rr, h(rr), 'ro')   % Plot h and its roots
 License
 =======
 
-See `LICENSE.txt` for Chebfun's licensing informtion.
+See `LICENSE.txt` for Chebfun's licensing information.
 
 
 

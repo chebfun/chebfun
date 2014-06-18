@@ -6,7 +6,7 @@ function f = mtimes(f, g)
 %   returns the m-by-n matrix of pairwise inner products. F and G must have
 %   the same domain.
 %
-%   See also TIMES.
+% See also TIMES.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

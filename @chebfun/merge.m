@@ -137,7 +137,7 @@ for k = index
 
     % Prevent merging if there are jumps:
     v = [oldPointVals(k,:); get(oldFuns{k-1}, 'rval'); get(oldFuns{k}, 'lval')];
-    if ( norm(v([1,1],:) - v(2:3,:), inf) >= 1e3*tol )
+    if ( all( norm(v([1, 1],:) - v(2:3,:), inf) >= 1e3*tol ) || any(isinf(v(:))) )
         % Skip to next breakpoint:
         continue
     end

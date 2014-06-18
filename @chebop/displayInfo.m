@@ -30,6 +30,10 @@ function varargout = displayInfo(mode, varargin)
 % Display information depending on what phase in the Newton iteration we're in.
 switch ( mode )
     
+    % If we get passed an initial guess that satisfies the BCs.
+    case 'exactInitial'
+        chebop.displayInfoExactInitial(varargin{:});
+        
     % Start of iteration
     case 'init'
         [displayFig, displayTimer] = chebop.displayInfoInit(varargin{:});
@@ -40,6 +44,7 @@ switch ( mode )
     case 'iter'
         varargout{1} = chebop.displayInfoIter(varargin{:});
         varargout{2} = false;
+
     % Once iteration is over
     case 'final'
         chebop.displayInfoFinal(varargin{:});
@@ -47,7 +52,8 @@ switch ( mode )
     % Display special information in case of linear problems
     case 'linear'
         chebop.displayInfoLinear(varargin{:});
-        
+    
+
 end
 
 end

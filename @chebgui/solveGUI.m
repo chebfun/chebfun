@@ -94,6 +94,13 @@ if ( strcmp(get(handles.button_solve, 'string'), 'Solve') )   % In solve mode
     drawnow
     set(handles.menu_demos, 'Enable','off');
 
+    % What discretization do we want to use?
+    if ( get(handles.button_Collocation, 'Value') )
+        guifile.options.discretization = @colloc2;
+    else
+        guifile.options.discretization = @ultraS;
+    end
+    
     % Call the private method solveGUIbvp, pde, or eig, which do the work.
     try
         if ( strcmpi(handles.guifile.type, 'bvp') )

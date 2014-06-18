@@ -115,6 +115,24 @@ for k = 1:2
     err = feval(h, x) - oph(x);    
     pass(k,13) = norm(err, inf) < 2*vscale(h)*epslevel(h);
     
+    %% Test removing columns (#889)
+    
+    x = chebfun('x');
+    xx = [x 2*x];
+    if ( k == 2 )
+        xx = cheb2quasi(xx);
+    end
+    xx(:,2) = [];
+    pass(k,14) = numColumns(xx) == 1 && norm(x - xx) < epslevel(x);
+    
+    x = chebfun('x');
+    xx = [x 2*abs(x)];
+    if ( k == 1 )
+        xx = quasi2cheb(xx);
+    end
+    xx(:,2) = [];
+    pass(k,15) = numColumns(xx) == 1 && norm(x - xx) < epslevel(x);
+    
 end
 
 end

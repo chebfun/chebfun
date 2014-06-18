@@ -94,7 +94,7 @@ classdef unbndfun < classicfun
             % Remap the OP to be a function on [-1, 1].
             unbndmap = unbndfun.createMap(data.domain);
             if ( isa(op, 'function_handle') )
-                op = @(x) op(unbndmap.for(x));
+                op = @(x) op(unbndmap.For(x));
             elseif ( isnumeric(op) )
                 if ( ~any(op(:)) )
                     op = @(x) zeros(length(x), size(op, 2));

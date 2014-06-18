@@ -128,7 +128,7 @@ elseif ( nargin > 3 )
         F = varargin{3};
         % Check that we have the right input types: 
         if ( ~isa(yy,'double') || ~isa(zz,'double') || ~isa(F,'chebfun2v') )
-            error('CHEBFUN:CHEBFUN2V:quiver3:badInputs1',
+            error('CHEBFUN:CHEBFUN2V:quiver3:badInputs1',...
                 'Unrecognised input arguments.');
         end
         % Get plotting data: 
@@ -157,7 +157,7 @@ elseif ( nargin > 3 )
         end
         % Check domains: 
         if ( ~domainCheck(X, Y) || (~domainCheck(Y, Z) ) )
-            error('CHEBFUN:CHEBFUN2V:quiver3:domain',
+            error('CHEBFUN:CHEBFUN2V:quiver3:domain',...
                 'Object are not on the same domain.');
         end
         
@@ -171,7 +171,7 @@ elseif ( nargin > 3 )
     end
     
 else
-    error('CHEBFUN:CHEBFUN2V:quiver3:badInputs3',
+    error('CHEBFUN:CHEBFUN2V:quiver3:badInputs3',...
         'Unrecognised input arguments.');
 end
 

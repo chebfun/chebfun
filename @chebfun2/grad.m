@@ -10,7 +10,7 @@ function varargout = grad( f )
 %
 %  This command is shorthand for GRADIENT(F).
 %
-%  See also GRADIENT.
+% See also GRADIENT.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
