@@ -20,7 +20,7 @@ for n = 1:2
     pass(n, 2) = all(size(f) == size(f.coeffs));
     
     p = pref;
-    p.numPoints = 101;
+    p.fixedLength = 101;
     f = testclass.make(@(x) [sin(x), cos(x), 1i*exp(x)], [], p);
     pass(n, 3) = all(size(f) == [101, 3]);
 end

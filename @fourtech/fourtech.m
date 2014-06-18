@@ -186,10 +186,10 @@ classdef fourtech < smoothfun
 
             data = parseDataInputs(data, pref);
 
-            % Force nonadaptive construction if PREF.NUMPOINTS is numeric:
-            if ( ~isempty(pref.numPoints) && ~isnan(pref.numPoints) )
+            % Force nonadaptive construction if PREF.FIXEDLENGTH is numeric:
+            if ( ~isempty(pref.fixedLength) && ~isnan(pref.fixedLength) )
                 % Evaluate op on the Fourier grid of given size:
-                vals = feval(op, fourtech.fourpts(pref.numPoints));
+                vals = feval(op, fourtech.fourpts(pref.fixedLength));
                 vals(1,:) = 0.5*(vals(1,:) + feval(op, 1));
                 op = vals;
             end

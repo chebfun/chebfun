@@ -49,7 +49,7 @@ end
 
 tech = get(g.onefun, 'tech');
 if ( isa(tech(), 'chebtech') )
-    techPrefs.exactLength = length(g);
+    techPrefs.fixedLength = length(g);
     % TODO: Using an exact-length construction here is a hack. It only works if
     % g.onefun is a CHEBTECH, and, even then, the idea that it "works" is merely
     % heuristic; there's no a priori reason that it should. We really would like

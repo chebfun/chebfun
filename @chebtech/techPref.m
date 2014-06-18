@@ -19,7 +19,8 @@ function outPref = techPref(inPref)
 %     maxLength    - Maximum number of points used by the constructor.
 %      [2^16+1]
 %
-%     exactLength  - This preference is mapped to numPoints (see below).
+%     fixedLength  - Fixed number of points used by constructor.  NaN allows
+%      [NaN]         adaptive construction.
 %
 %     extrapolate
 %       true       - Function values at endpoints may be extrapolated from
@@ -36,9 +37,6 @@ function outPref = techPref(inPref)
 %
 %     minSamples   - Minimum number of points used by the constructor.  Should
 %      [17]          be of the form 2^n + 1.  If not, it is rounded as such.
-%
-%     numPoints    - Fixed number of points used by constructor.  NaN allows
-%      [NaN]         adaptive construction.
 %
 %     refinementFunction - Define function for refining sample values.
 %      ['nested']        - Use the default process (nested evaluation).
@@ -60,15 +58,14 @@ function outPref = techPref(inPref)
 outPref.eps                = 2^-52;
 outPref.minSamples         = 17;
 outPref.maxLength          = 2^16 + 1;
-outPref.numPoints          = NaN;
+outPref.fixedLength        = NaN;
 outPref.extrapolate        = false;
 outPref.sampleTest         = true;
 outPref.refinementFunction = 'nested';
 outPref.happinessCheck     = 'classic';
 
 if ( nargin == 1 )
-    map.exactLength = 'numPoints';
-    outPref = chebfunpref.mergePrefs(outPref, inPref, map);
+    outPref = chebfunpref.mergePrefs(outPref, inPref);
 end
 
 end

@@ -115,7 +115,7 @@ classdef chebfunpref < chebpref
 %
 %        Maximum length of the underlying representation.
 %
-%      exactLength             - Exact representation length.
+%      fixedLength             - Exact representation length.
 %       [NaN]
 %
 %        Exact length of the underlying representation to be used.  A NaN value
@@ -213,7 +213,7 @@ classdef chebfunpref < chebpref
 %    preferences that affect the constructors for the individual techs.
 %    Designers of techs should ensure that their classes respond to the
 %    following "abstract" preferences in an appropriate manner:  eps,
-%    maxLength, exactLength, extrapolate, and sampleTest.
+%    maxLength, fixedLength, extrapolate, and sampleTest.
 %
 %  - The original idea was that the techPrefs field of the CHEBFUNPREF would be
 %    the only thing that gets passed to the tech constructor.  This is
@@ -689,7 +689,7 @@ classdef chebfunpref < chebpref
             factoryPrefs.techPrefs = struct();
                 factoryPrefs.techPrefs.eps = 2^(-52);
                 factoryPrefs.techPrefs.maxLength = 65537;
-                factoryPrefs.techPrefs.exactLength = NaN;
+                factoryPrefs.techPrefs.fixedLength = NaN;
                 factoryPrefs.techPrefs.extrapolate = false;
                 factoryPrefs.techPrefs.sampleTest = true;
             factoryPrefs.cheb2Prefs = struct(); 

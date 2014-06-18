@@ -639,7 +639,7 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
             args(1:2) = [];
         elseif ( isnumeric(args{1}) && isscalar(args{1}) )
             % g = chebfun(@(x) f(x), N)
-            keywordPrefs.techPrefs.exactLength = args{1};
+            keywordPrefs.techPrefs.fixedLength = args{1};
             args(1) = [];
         elseif ( strcmpi(args{1}, 'splitting') )
             keywordPrefs.splitting = strcmpi(args{2}, 'on');
@@ -767,11 +767,11 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
             op = @(x) feval(op, x);
         end
         if ( isa(op, 'function_handle') && strcmp(pref.tech, 'funqui') )
-            if ( isfield(pref.techPrefs, 'exactLength') && ...
-                 ~isnan(pref.techPrefs.exactLength) )
-                x = linspace(dom(1), dom(end), pref.techPrefs.exactLength).';
+            if ( isfield(pref.techPrefs, 'fixedLength') && ...
+                 ~isnan(pref.techPrefs.fixedLength) )
+                x = linspace(dom(1), dom(end), pref.techPrefs.fixedLength).';
                 op = feval(op, x);
-                pref.techPrefs.exactLength = NaN;
+                pref.techPrefs.fixedLength = NaN;
             end
         end
     end

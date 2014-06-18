@@ -90,10 +90,10 @@ classdef chebtech2 < chebtech
 
             data = parseDataInputs(data, pref);
 
-            % Force nonadaptive construction if PREF.NUMPOINTS is numeric:
-            if ( ~isempty(pref.numPoints) && ~isnan(pref.numPoints) )
+            % Force nonadaptive construction if PREF.FIXEDLENGTH is numeric:
+            if ( ~isempty(pref.fixedLength) && ~isnan(pref.fixedLength) )
                 % Evaluate op on the Chebyshev grid of given size:
-                op = feval(op, chebtech2.chebpts(pref.numPoints));
+                op = feval(op, chebtech2.chebpts(pref.fixedLength));
             end
 
             % Actual construction takes place here:
