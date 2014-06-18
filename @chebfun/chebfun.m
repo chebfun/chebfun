@@ -792,7 +792,7 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
         % If the number of exponents supplied by user isn't equal to twice the
         % the number of the FUNs, throw an error message:
         error('CHEBFUN:CHEBFUN:parseInputs:badExponents', ...
-            ['The number of the exponents is inappropriate.']);
+            'The number of the exponents is inappropriate.');
     end
     % Sort out the exponents:
     if ( ~isempty(data.exponents) )
