@@ -823,21 +823,24 @@ end
 
 function op = vectorCheck(op, dom, vectorize)
 %VECTORCHECK   Try to determine whether op is vectorized. 
-%   It's impossible to conver all enevtualities without being too expensive. 
+%   It's impossible to cover all eventualities without being too expensive. 
 %   We do the best we can. "Do. Or do no. There is not try."
 
 % Make a slightly narrower domain to evaluate on. (Endpoints can be tricky).
 y = dom([1 end]);
+
 if ( y(1) > 0 )
     y(1) = 1.01*y(1); 
 else
     y(1) = .99*y(1); 
 end
+
 if ( y(end) > 0 )
     y(end) = .99*y(end); 
 else
     y(end) = 1.01*y(end); 
 end
+
 y = y(:);
 
 if ( vectorize )
@@ -925,7 +928,7 @@ function g = vec(op, y)
     if ( nargin > 1 )
         opy = op(y);
         if ( any(size(opy) > 1) )
-            % Use the array-valuedd wrapper:
+            % Use the array-valued wrapper:
             g = @loopWrapperArray;
             return
         end
@@ -940,6 +943,7 @@ function g = vec(op, y)
             v(j) = op(x(j));
         end
     end
+
     % Nested function:
     function v = loopWrapperArray(x)
         v = cell(size(x));
