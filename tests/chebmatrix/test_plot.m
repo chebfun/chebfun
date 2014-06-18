@@ -19,6 +19,23 @@ A = [ I+D, abs(x), M; S, 0, E(2); D, x.^2, I ];
 
 pass(1) = doesNotCrash(@() plot(A));
 
+try
+    loglog(A);
+catch ME
+    pass(2) = strcmpi(ME.message, 'loglog plot of infinite blocks is not supported.'); 
+end
+
+try
+    semilogx(A);
+catch ME
+    pass(3) = strcmpi(ME.message, 'semilogx plot of infinite blocks is not supported.'); 
+end
+
+try
+    semilogy(A);
+catch ME
+    pass(4) = strcmpi(ME.message, 'semilogy plot of infinite blocks is not supported.'); 
+end
 
 %% 
 % The entries of A are only CHEBFUN or DOUBLE.
@@ -28,7 +45,10 @@ f = chebfun(@(x) x, d);
 g = chebfun(@(x) exp(x), d);
 A = [f, g; 2*f, 3*g];
 
-pass(2) = doesNotCrash(@() plot(A, '.-'));
+pass(5) = doesNotCrash(@() plot(A, '.-'));
+pass(6) = doesNotCrash(@() loglog(A));
+pass(7) = doesNotCrash(@() semilogx(A));
+pass(8) = doesNotCrash(@() semilogy(A));
 
 close(hfig);
 
@@ -44,4 +64,3 @@ catch ME;
 end
 
 end
-
