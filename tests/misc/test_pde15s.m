@@ -3,8 +3,9 @@ function pass = test_pde15s(pref, flag)
 if ( nargin == 0 )
     pref = chebfunpref();
 end
+tol =1e5* pref.eps;
 
-pass = 1;
+pass(1) = 1;
 
 if ( nargin < 2  )
     pause(.1+ .1*rand())
@@ -12,10 +13,34 @@ else
     try
         doTests()
     catch
-        pass = 0;
+        pass(1) = 0;
     end
 end
 
+%% 1st KIND GRIDS
+% get global prefs:
+globalpref = chebfunpref; 
+
+% Set 1st kind grids:
+chebfunpref.setDefaults('tech',@chebtech1);
+f = chebfun(@(x) sin(pi*x), [-2.5 3]);
+bc.left = @(u) diff(u);
+bc.right = 0;
+opts = pdeset('plot','off');
+uu = pde15s(@(t,x,u) .1*diff(u,2) + diff(u), 0:.1:6, f, bc, opts);
+
+% Set 2nd kind grids:
+chebfunpref.setDefaults('tech',@chebtech2);
+f = chebfun(@(x) sin(pi*x), [-2.5 3]);
+bc.left = @(u) diff(u);
+bc.right = 0;
+opts = pdeset('plot','off');
+vv = pde15s(@(t,x,u) .1*diff(u,2) + diff(u), 0:.1:6, f, bc, opts);
+
+pass(2) = norm( uu - vv ) < 10*tol ; 
+
+% Reset preferences: 
+chebfunpref.setDefaults(globalpref); 
 end
 
 function doTests()
@@ -252,5 +277,5 @@ uu = pde15s(f, 0:.025:.5, u, bcc, opts);
                         .001*diff(w,2) + 2*100*u.*v ];
    bc = 'neumann';     
    uu = pde15s(f,0:.1:3,u,bc);
-
+   
 end
