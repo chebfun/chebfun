@@ -33,7 +33,7 @@ N = chebop2(@(u) diffy(u,1) + diffx(u,1), d);
 N.dbc = @(x) exp(-x) + exp(-.5*x);
 N.lbc = @(t) exp(1).*exp(t) + exp(.5).*exp(.5*t);
 u = N \ 0;
-pass(3) = ( abs(norm(u - exact) < tol)); 
+pass(3) = ( abs(norm(u - exact) < 5*tol)); 
 
 
 %% Transport equation with different transport parameter. 
