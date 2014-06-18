@@ -7,7 +7,7 @@ end
 tol = 100 * pref.eps; 
 
 % Trivial check for ODE45 for now:
-t0 = 0; Tend = 50;
+t0 = 0; Tend = 30;
 F = chebfun2v(@(h,hp)hp, @(h,hp)-1-.01*hp, @(h,hp)1+0*h,[0 30 0 2]);
 u0 = [2 0 0];  % u0 = [h(0) h'(0) x(0)]
 options = odeset('RelTol',100*eps, 'events', @p1Event1);
@@ -20,7 +20,7 @@ pass(2) = 1;
 try 
 g = chebfun2v(@(x,y) x, @(x,y) y);   % identity chebfun2v
 A = [2 -2;0 1];                     % matrix of the system and eigenvalues
-G = A*g; T = [0 3];                  % phase plane and time interval
+G = A*g; T = [0 1];                  % phase plane and time interval
 
 initvals = [.1 .05; -.1 -.05; -.1,-.05; -.1,0; .1,0];
 for k = 1:size(initvals,1)
