@@ -75,7 +75,11 @@ if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
         op = chebfun2.paduaVals2coeffs( op );
         op = chebfun2.coeffs2vals( op );
         g = chebfun2( op, 'coeffs' );
-        return        
+        return
+    elseif ( any(strcmpi(domain, 'periodic')) )
+        % If periodic flag, then map chebfun2 with fourtechs. 
+        pref.tech = @fourtech; 
+        tech = @fourtech;
     elseif ( (nargin > 3) && (any(strcmpi(varargin{1}, 'coeffs'))) )
         op = chebfun2.coeffs2vals( op );
         g = chebfun2( op, domain );
@@ -84,7 +88,11 @@ if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
         op = chebfun2.paduaVals2coeffs( op, domain );
         op = chebfun2.coeffs2vals( op );
         g = chebfun2( op, domain );
-        return        
+        return 
+    elseif ( (nargin > 3) && (any(strcmpi(varargin{1}, 'periodic'))) )
+        % If periodic flag, then map chebfun2 with fourtechs. 
+        pref.tech = @fourtech; 
+        tech = @fourtech; 
     else
         % If CHEBFUN2(f, rk), then nonadaptive call:
         if ( numel(domain) == 1 )
@@ -108,8 +116,8 @@ if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
         
         % Construct a CHEBFUN2:
         g.pivotValues = pivotValue;
-        g.cols = chebfun(colValues, domain(3:4) );
-        g.rows = chebfun(rowValues.', domain(1:2) );
+        g.cols = chebfun(colValues, domain(3:4), pref );
+        g.rows = chebfun(rowValues.', domain(1:2), pref );
         g.domain = domain;
         
         % Did we have a nonadaptive construction?:
@@ -175,8 +183,12 @@ if ( vectorize == 0 ) % another check
     if ( any(any( abs(A - B.') > min( 1000*pseudoLevel, 1e-4 ) ) ) )
         % Function handle probably needs vectorizing, give user a warning and
         % then vectorize.
-        warning('CHEBFUN:CHEBFUN2:constructor:vectorize', 'Function did not correctly evaluate on an array. Turning on the ''vectorize'' flag. Did you intend this? Use the ''vectorize'' flag in the chebfun2 constructor call to avoid this warning message.');
-        g = chebfun2(op, domain, 'vectorize');
+        warning('CHEBFUN:CHEBFUN2:constructor:vectorize',...
+            ['Function did not correctly evaluate on an array.',
+             'Turning on the ''vectorize'' flag. Did you intend this?',
+             'Use the ''vectorize'' flag in the chebfun2 constructor call',
+             ' to avoid this warning message.']);
+        g = chebfun2(op, domain, 'vectorize', pref);
         return
     end
 end
@@ -188,7 +200,7 @@ while ( ~isHappy && ~failure )
     grid = minSample; 
     
     % Sample function on a Chebyshev tensor grid:
-    [xx, yy] = points2D(grid, grid, domain);
+    [xx, yy] = points2D(grid, grid, domain, pref);
     vals = evaluate(op, xx, yy, vectorize);
     
     % Does the function blow up or evaluate to NaN?:
@@ -212,8 +224,8 @@ while ( ~isHappy && ~failure )
     % grid <= 4*(maxRank-1)+1, see Chebfun2 paper. 
     while ( iFail && grid <= factor*(maxRank-1)+1 && strike < 3)
         % Refine sampling on tensor grid:
-        grid = gridRefine( grid );
-        [xx, yy] = points2D(grid, grid, domain);
+        grid = gridRefine( grid , pref);
+        [xx, yy] = points2D(grid, grid, domain, pref);
         vals = evaluate(op, xx, yy, vectorize); % resample
         vscale = max(abs(vals(:)));
         % New tolerance:
@@ -257,23 +269,23 @@ while ( ~isHappy && ~failure )
     while ( ~isHappy )
         if ( ~resolvedCols )
             % Double sampling along columns
-            [n, nesting] = gridRefine( n );
-            [xx, yy] = meshgrid(PivPos(:, 1), mypoints(n, domain(3:4)));
+            [n, nesting] = gridRefine( n , pref );
+            [xx, yy] = meshgrid(PivPos(:, 1), mypoints(n, domain(3:4), pref));
             colValues = evaluate(op, xx, yy, vectorize);
             % Find location of pivots on new grid (using nesting property).
             PP(:, 1) = nesting(PP(:, 1));
         else
-            [xx, yy] = meshgrid(PivPos(:, 1), mypoints(n, domain(3:4)));
+            [xx, yy] = meshgrid(PivPos(:, 1), mypoints(n, domain(3:4), pref));
             colValues = evaluate(op, xx, yy, vectorize);
         end
         if ( ~resolvedRows )
-            [m, nesting] = gridRefine( m ); 
-            [xx, yy] = meshgrid(mypoints(m, domain(1:2)), PivPos(:, 2));
+            [m, nesting] = gridRefine( m , pref ); 
+            [xx, yy] = meshgrid(mypoints(m, domain(1:2), pref), PivPos(:, 2));
             rowValues = evaluate(op, xx, yy, vectorize);
             % find location of pivots on new grid  (using nesting property).
             PP(:, 2) = nesting(PP(:, 2));
         else
-            [xx, yy] = meshgrid(mypoints(m, domain(1:2)), PivPos(:, 2));
+            [xx, yy] = meshgrid(mypoints(m, domain(1:2), pref), PivPos(:, 2));
             rowValues = evaluate(op, xx, yy, vectorize);
         end
         
@@ -324,8 +336,8 @@ while ( ~isHappy && ~failure )
     
     % Construct a CHEBFUN2:
     g.pivotValues = pivotValue;
-    g.cols = chebfun(colValues, domain(3:4));
-    g.rows = chebfun(rowValues.', domain(1:2) );
+    g.cols = chebfun(colValues, domain(3:4), pref);
+    g.rows = chebfun(rowValues.', domain(1:2), pref );
     g.pivotLocations = PivPos;
     g.domain = domain;
     
@@ -338,7 +350,7 @@ while ( ~isHappy && ~failure )
         pass = g.sampleTest( sampleOP, tol, vectorize);
         if ( ~pass )
             % Increase minsamples and try again.
-            minSample = gridRefine( minSample );
+            minSample = gridRefine( minSample, pref );
             isHappy = 0;
         end
     end
@@ -499,12 +511,12 @@ end
 end
 
 
-function [xx, yy] = points2D(m, n, dom)
+function [xx, yy] = points2D(m, n, dom, pref)
 % Get the sample points that correspond to the right grid for a particular
 % technology.
 
 % What tech am I based on?:
-tech = chebfunpref().tech();
+tech = pref.tech();
 
 if ( isa(tech, 'chebtech2') )
     x = chebpts( m, dom(1:2), 2 );   % x grid.
@@ -526,12 +538,12 @@ end
 end
 
 
-function x = mypoints(n, dom)
+function x = mypoints(n, dom, pref)
 % Get the sample points that correspond to the right grid for a particular
 % technology.
 
 % What tech am I based on?:
-tech = chebfunpref().tech();
+tech = pref.tech();
 
 if ( isa(tech, 'chebtech2') )
     x = chebpts( n, dom, 2 );   % x grid.
@@ -546,11 +558,11 @@ end
 
 end
 
-function [grid, nesting] = gridRefine( grid )
+function [grid, nesting] = gridRefine( grid, pref )
 % Hard code grid refinement strategy for tech. 
 
 % What tech am I based on?:
-tech = chebfunpref().tech();
+tech = pref.tech();
 
 % What is the next grid size?
 if ( isa(tech, 'chebtech2') )
