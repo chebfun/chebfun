@@ -54,7 +54,7 @@ maxRank = prefStruct.maxRank;
 
 % Get default preferences from the techPref:
 tech = pref.tech();
-tpref = chebfunpref.mergePrefs(pref, tech.techPref);
+tpref = chebfunpref.mergeTechPrefs(pref, tech.techPref);
 minSample = tpref.minSamples; 
 maxSample = tpref.maxLength;
 pseudoLevel = tpref.eps;
@@ -62,7 +62,7 @@ pseudoLevel = tpref.eps;
 if ( any(strcmpi(domain, 'periodic')) )
         % If periodic flag, then map chebfun2 with fourtechs. 
         pref.tech = @fourtech;
-        tpref = chebfunpref.mergePrefs(pref, tech.techPref);
+        tpref = chebfunpref.mergeTechPrefs(pref, tech.techPref);
         minSample = tpref.minSamples;
         maxSample = tpref.maxLength;
         pseudoLevel = tpref.eps;
@@ -70,7 +70,7 @@ if ( any(strcmpi(domain, 'periodic')) )
 elseif ( (nargin > 3) && (any(strcmpi(varargin{1}, 'periodic'))) )
         % If periodic flag, then map chebfun2 with fourtechs. 
         pref.tech = @fourtech; 
-        tpref = chebfunpref.mergePrefs(pref, tech.techPref);
+        tpref = chebfunpref.mergeTechPrefs(pref, tech.techPref);
         minSample = tpref.minSamples;
         maxSample = tpref.maxLength;
         pseudoLevel = tpref.eps;

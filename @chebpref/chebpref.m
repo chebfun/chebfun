@@ -84,12 +84,12 @@ classdef chebpref
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
 
-        function pref1 = mergePrefs(pref1, pref2)
-        %MERGEPREFS   Merge preference structures.
-        %   P = CHEBPREF.MERGEPREFS(P, Q), where P and Q are MATLAB structures,
-        %   "merges" Q into P by replacing the contents of fields in P with
-        %   those of identically-named fields in Q.  If Q has a field whose
-        %   name does not match any of those in P, it is added to P.
+        function pref1 = mergePrefStructs(pref1, pref2)
+        %MERGEPREFSTRUCTS   Merge preference structures.
+        %   P = CHEBPREF.MERGEPREFSTRUCTS(P, Q), where P and Q are MATLAB
+        %   structures, "merges" Q into P by replacing the contents of fields
+        %   in P with those of identically-named fields in Q.  If Q has a field
+        %   whose name does not match any of those in P, it is added to P.
 
             for field = fieldnames(pref2).'
                 pref1.(field{1}) = pref2.(field{1});

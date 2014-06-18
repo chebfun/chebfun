@@ -295,8 +295,9 @@ classdef chebfunpref < chebpref
                 if ( isfield(outPref.prefList, field{1}) )
                     if ( isstruct(outPref.prefList.(field{1})) )
                         outPref.prefList.(field{1}) = ...
-                            chebfunpref.mergePrefs(outPref.prefList.(field{1}), ...
-                            inPrefList.(field{1}));
+                            chebfunpref.mergeTechPrefs(...
+                                outPref.prefList.(field{1}), ...
+                                inPrefList.(field{1}));
                     else
                         outPref.prefList.(field{1}) = inPrefList.(field{1});
                     end
@@ -491,9 +492,9 @@ classdef chebfunpref < chebpref
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
     methods ( Access = public, Static = true )
 
-        function pref1 = mergePrefs(pref1, pref2)
-        %MERGEPREFS   Merge preference structures.
-        %   P = CHEBFUNPREF.MERGEPREFS(P, Q), where P and Q are MATLAB
+        function pref1 = mergeTechPrefs(pref1, pref2)
+        %MERGETECHPREFS   Merge tech preference structures.
+        %   P = CHEBFUNPREF.MERGETECHPREFS(P, Q), where P and Q are MATLAB
         %   structures, "merges" Q into P by replacing the contents of fields
         %   in P with those of identically-named fields in Q.  If Q has a field
         %   whose name does not match any of those in P, it is added to P.
@@ -518,7 +519,7 @@ classdef chebfunpref < chebpref
                 pref2 = pref2.prefList.techPrefs;
             end
 
-            pref1 = chebpref.mergePrefs(pref1, pref2);
+            pref1 = chebpref.mergePrefStructs(pref1, pref2);
         end
 
         function pref = getFactoryDefaults()

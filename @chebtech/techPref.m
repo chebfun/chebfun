@@ -65,7 +65,7 @@ outPref.refinementFunction = 'nested';
 outPref.happinessCheck     = 'classic';
 
 if ( nargin == 1 )
-    outPref = chebfunpref.mergePrefs(outPref, inPref);
+    outPref = chebfunpref.mergeTechPrefs(outPref, inPref);
 end
 
 end

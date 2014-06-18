@@ -74,29 +74,29 @@ pass(10) = isequal(r.domain, p.domain) && ...
     isequal(r.maxLength, p.maxLength) && ...
     isequal(r.bogusPref, p.bogusPref);
 
-% Test behavior of mergePrefs().
+% Test behavior of mergeTechPrefs().
 p = struct();
 p.testPref = 'test';
 q = struct();
-pass(11) = isequalNaN(chebfunpref.mergePrefs(p, q), p);
+pass(11) = isequalNaN(chebfunpref.mergeTechPrefs(p, q), p);
 
 q.testPref = 'testq';
-pass(12) = strcmp(chebfunpref.mergePrefs(p, q).testPref, 'testq');
+pass(12) = strcmp(chebfunpref.mergeTechPrefs(p, q).testPref, 'testq');
 
-% Test behavior of mergePrefs() for chebfunpref inputs.
+% Test behavior of mergeTechPrefs() for chebfunpref inputs.
 p = chebfunpref();
 p.techPrefs.testPref = 'test';
 q = struct();
 q.testPref = 'testq';
-pass(13) = isequalNaN(chebfunpref.mergePrefs(p, q), ...
-    chebfunpref.mergePrefs(p.techPrefs, q));
-pass(14) = isequalNaN(chebfunpref.mergePrefs(q, p), ...
-    chebfunpref.mergePrefs(q, p.techPrefs));
+pass(13) = isequalNaN(chebfunpref.mergeTechPrefs(p, q), ...
+    chebfunpref.mergeTechPrefs(p.techPrefs, q));
+pass(14) = isequalNaN(chebfunpref.mergeTechPrefs(q, p), ...
+    chebfunpref.mergeTechPrefs(q, p.techPrefs));
 
 q = chebfunpref();
 q.techPrefs.testPref = 'testq';
-pass(15) = isequalNaN(chebfunpref.mergePrefs(p, q), ...
-    chebfunpref.mergePrefs(p.techPrefs, q.techPrefs));
+pass(15) = isequalNaN(chebfunpref.mergeTechPrefs(p, q), ...
+    chebfunpref.mergeTechPrefs(p.techPrefs, q.techPrefs));
 
 % Test functions for managing default preferences.
 savedPrefs = chebfunpref();
