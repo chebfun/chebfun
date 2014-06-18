@@ -7,6 +7,9 @@ function vscl = vscale(f)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% TODO: Should this also be taking the maximum along the edges when we are
+% evaluating at 1st kind grids. 
+
 % If f is an empty Chebfun2, VSCL = 0: 
 if ( isempty(f) ) 
     vscl = 0; 
