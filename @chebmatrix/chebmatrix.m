@@ -129,7 +129,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
     %% METHODS IMPLEMENTED IN THIS FILE:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods
-           
+                   
         function A = set.domain(A, d)
         %SET.DOMAIN   Insert breakpoints in the domain of the CHEBMATRIX.
         %   We don't allow removing breakpoints, or changing endpoints.
@@ -221,6 +221,11 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             if ( nargout > 0 )
                 varargout = h;
             end
+        end
+        
+        function out = num2cell(A)
+        %NUM2CELL   Extract block entries of a CHEBMATRIX:
+            out = A.blocks;
         end
         
         function varargout = semilogx(varargin)
