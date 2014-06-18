@@ -159,7 +159,7 @@ lineData = {};
 pointData = {};
 jumpData = {};
 deltaData = {};
-jumpLineIsSet = any(cellfun(@(v) strcmpi(v, 'JumpLine'), varargin));
+jumpLineIsSet = any(cellfun(@(v) ischar(v) && strcmpi(v, 'JumpLine'), varargin));
 
 % Remove global plotting options from input arguments.
 [lineStyle, pointStyle, jumpStyle, deltaStyle, varargin] = ...
