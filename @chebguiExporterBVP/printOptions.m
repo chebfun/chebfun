@@ -33,9 +33,9 @@ end
 % Option for damping:
 fprintf(fid, '\n%% Option for damping.\n');
 if ( strcmp(dampedOn, '1') )
-    fprintf(fid, 'options.damped = ''on'';\n');
+    fprintf(fid, 'options.damped = true;\n');
 else
-    fprintf(fid, 'options.damped = ''off'';\n');
+    fprintf(fid, 'options.damped = false;\n');
 end
 
 % Option for discretization:
