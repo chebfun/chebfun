@@ -121,7 +121,6 @@ while ( ~terminate )
         lambda = 1;
         
         % Take a full Newton step:
-        %u = cellfun(u, @(f) chebfun(f.coeffs{1},u.domain,'coeffs'));
         u = u + delta;
         
         % Compute a contraction factor and an error estimate. Can only do so
@@ -146,13 +145,6 @@ while ( ~terminate )
         end
         
     end
-    
-    epsLevel = min( normDelta^2, pref.errTol/10 );
-    if ( ~isnan(errEst) )
-        epsLevel = min( epsLevel, errEst );
-    end
-    %fprintf('   %.3e\n',epsLevel)
-    %u = cellfun(u,@(f) simplify(f,max(eps,epsLevel)));
     
     % Update counter of Newton steps taken:
     newtonCounter = newtonCounter + 1;
