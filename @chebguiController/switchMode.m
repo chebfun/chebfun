@@ -37,7 +37,6 @@ if ( strcmp(newMode, 'bvp') ) % Going into BVP mode
     
     set(handles.button_realplot, 'Visible', 'off')
     set(handles.button_imagplot, 'Visible', 'off')
-    set(handles.button_envelope, 'Visible', 'off')
     set(handles.popupmenu_bottomFig, 'Visible', 'on')
     set(handles.toggle_useLatest, 'Value', 0)
     
@@ -102,7 +101,6 @@ elseif ( strcmp(newMode, 'pde') ) % Going into PDE mode
     
     set(handles.button_realplot, 'Visible', 'off')
     set(handles.button_imagplot, 'Visible', 'off')
-    set(handles.button_envelope, 'Visible', 'off')
     set(handles.popupmenu_bottomFig, 'Visible', 'off')
 
     set(handles.panel_eigopts, 'Visible', 'Off')
@@ -157,7 +155,6 @@ else % Going into EIG mode
     set(handles.button_realplot, 'Value', 1)
     set(handles.button_imagplot, 'Visible', 'on')
     set(handles.button_imagplot, 'Value', 0)
-    set(handles.button_envelope, 'Visible', 'off')
     set(handles.popupmenu_bottomFig, 'Visible', 'off')
 
     set(handles.panel_eigopts,'Visible','On')

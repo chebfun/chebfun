@@ -45,7 +45,7 @@ for k = 1:numel(F)
     % Compute the maximum:
     out = max(out, max(v(:)));
     if ( ~ignoreBreaks )
-        out = max(out, max(F(k).pointValues(:)));
+        out = max(out, max(abs(F(k).pointValues(:))));
     end
 end
 
