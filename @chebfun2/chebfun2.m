@@ -109,16 +109,19 @@ classdef chebfun2
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
         
+        % Convert Chebyshev coefficients to values:
         X = coeffs2vals(U); 
         
+        % Convert values to Chebyshev coefficients:
         X = vals2coeffs(U); 
         
         % Padua points to tensor grid:
         [C, V, X, Y] = paduaVals2coeffs( F, dom ); 
         
-        [xx, yy] = chebpts2(nx, ny, domain);
+        % Tensor product of Chebyshev points:
+        [xx, yy] = chebpts2(nx, ny, domain, kind);
         
-        % Outer-product of two chebfuns.
+        % Outer-product of two chebfuns:
         F = outerProduct(f, g);   
         
     end

@@ -6,9 +6,16 @@ if ( nargin < 1 )
 end 
 tol = 100 * pref.eps; 
 
+kind = 2;
+if ( isa( pref.tech(), 'chebtech2' ) )
+    kind = 2; 
+elseif ( isa( pref.tech(), 'chebtech1' ) )
+    kind = 1; 
+end
+
 % check the trunk chebpolyval2 command.
 T = chebpoly(20); 
-[xx, yy] = chebfun2.chebpts2(100,100); 
+[xx, yy] = chebfun2.chebpts2(100,100,[-1 1 -1 1],kind); 
 A = T(xx).*T(yy);  
 
 C = zeros(100); C(end-20,end-20)=1;   
