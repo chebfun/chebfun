@@ -568,7 +568,17 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         
         function A = rdivide(A, b)
             if ( isnumeric(b) )
-                A = cellfun(A, @(A) rdivide(A, b));
+                if ( isscalar(b) )
+                    A = cellfun(A, @(A) rdivide(A, b));
+                else
+                    if ( ~all(size(A.blocks) == size(b)) )
+                        error('CHEBFUN:CHEBMATRIX:rdivide:dimensions', ...
+                            'Matrix dimensions must agree.');
+                    end
+                    for k = 1:numel(b)
+                        A.blocks{k} = A.blocks{k}/b(k);
+                    end
+                end    
             elseif ( isnumeric(A) )
                 A = cellfun(b, @(b) rdivide(A, b));
             else
