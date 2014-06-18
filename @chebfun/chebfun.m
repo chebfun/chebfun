@@ -937,6 +937,8 @@ function g = vec(op, y)
     end
     
     % Nested function:
+    
+    % Scalar case:
     function v = loopWrapperScalar(x)
         v = zeros(size(x));
         for j = 1:numel(v)
@@ -944,13 +946,14 @@ function g = vec(op, y)
         end
     end
 
-    % Nested function:
+    % Array-valued case:
     function v = loopWrapperArray(x)
-        v = cell(size(x));
-        for j = 1:numel(v)
-            v{j} = op(x(j));
+        numCol = size(op(x(1)), 2);
+        numRow = size(x, 1);
+        v = zeros(numRow, numCol);
+        for j = 1:numRow
+            v(j,:) = op(x(j));
         end
-        v = cell2mat(v);
     end
 
 end
