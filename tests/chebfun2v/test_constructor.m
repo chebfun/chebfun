@@ -83,7 +83,7 @@ z = 0.5*v.*sin(u/2);
 r = [x;y;z];
 ru = diff(r,1,1);
 rv = diff(r,1,2);
-pass(15) = ( norm(ru'*rv,inf) < tol ); 
+pass(15) = ( norm(ru'*rv,inf) < 10*tol ); 
 
 V = [sin(5*u);cos(5*v);0];    
 pass(16) = (V.nComponents == 3); 
