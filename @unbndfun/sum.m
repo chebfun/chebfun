@@ -39,7 +39,7 @@ end
 
 % If there is any function not integrable, figure out if the result is Inf or 
 % -Inf. If none, set the output empty:
-if ( any(unbounded) )
+if ( any(unbounded(:)) )
     out = sum(unbounded);
 else
     out= [];
@@ -56,7 +56,7 @@ tmp_out = out;
 
 % Check 2: Check the speed of decay at infinity/ties. The integrand is
 % integrable only when it decays faster than 1/x towards infinity/ties.
-if ( any(~isdecay(g.onefun) & isinf(repmat(dom, 1, size(g, 2)))) )
+if ( any(~isdecay(g.onefun) & isinf(repmat(dom, 1, size(g, 2))) & ~unbounded) )
     warning('CHEBFUN:UNBNDFUN:sum:slowDecay', ...
         ['Result may not be accurate ' ...
          'as the function decays slowly at infinity.'])

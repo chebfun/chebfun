@@ -210,14 +210,23 @@ f = chebfun(@(x) exp(-[x x].^2), [0 Inf]);
 I = sum(f);
 % The following exact value is obtained by Mathematica.
 I_exact = 0.886226925452758*ones(1, 2);
-pass(32) = norm(I-I_exact, inf) < get(f,'epslevel')*get(f,'vscale');
+pass(32) = norm(I-I_exact, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
 
 % #920: sum of array-valued chebfun defined on unbounded domain: 
-% (different function but both decay fast so that integrable)
+% (different functions but both decay fast so that integrable)
 f = chebfun(@(x)[exp(-x.^2) 1./(x.^3)], [1 Inf]);
 I = sum(f);
 % The following exact value is obtained by Mathematica.
 I_exact = [0.139402792640331 0.5];
 pass(33) = norm(I-I_exact, inf) < 1e6*get(f,'epslevel')*get(f,'vscale');
+
+% #920: sum of array-valued chebfun defined on unbounded domain: 
+% (two different functions one of which is integrable and the other one is not):
+f = chebfun(@(x)[exp(-x.^2) 0*x+1], [1 Inf]);
+I = sum(f);
+% The following exact value is obtained by Mathematica.
+I_exact = 0.139402792640331;
+pass(34) = abs(I(1)-I_exact) < get(f,'epslevel')*get(f,'vscale') && ...
+    isinf(I(2));
 
 end

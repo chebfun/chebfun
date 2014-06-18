@@ -36,7 +36,7 @@ if ( any(maskLeft) )
     
     % Check decaying speed:
     mask = abs(get(g, 'lval')) < 1e3*tol;
-    if ( mask )
+    if ( any(mask) )
         out(1, mask) = 1;
     end
 end
@@ -52,7 +52,7 @@ if ( any(maskRight) )
     
     % Check decaying speed:
     mask = abs(get(g, 'rval')) < 1e3*tol;
-    if ( mask )
+    if ( any(mask) )
         out(2, mask) = 1;
     end
 end
