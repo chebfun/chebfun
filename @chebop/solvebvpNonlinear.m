@@ -82,7 +82,7 @@ linpref.errTol = pref.errTol/10;
 while ( ~terminate )
     
     % Compute a Newton update:
-    [delta, disc] = linsolve(L, res, pref, vscale(u)/1000);
+    [delta, disc] = linsolve(L, res, linpref, vscale(u));
 
     % We had two output arguments above, need to negate DELTA.
     delta = -delta;
