@@ -60,10 +60,10 @@ catch ME
     pass(6) = strcmp(ME.message, 'Too many NaNs/Infs to handle.');
 end
 
-% Check that things don't crash if pref.minSamples and pref.maxPoints are equal.
+% Check that things don't crash if pref.minSamples and pref.maxLength are equal.
 try
     pref.minSamples = 8;
-    pref.maxPoints = 8;
+    pref.maxLength = 8;
     populate(chebtech1, @sin, [], [], pref);
     pass(7) = true;
 catch

@@ -84,10 +84,10 @@ function [values, giveUp] = composeResample1(op, values, pref, f)
     end
 
     % n is too large:
-    if ( n > pref.maxPoints )
+    if ( n > pref.maxLength )
         % Don't give up if we haven't sampled at least once.
         if ( isempty(values) )
-            n = pref.maxPoints;
+            n = pref.maxLength;
             giveUp = false;
         else
             giveUp = true;
@@ -123,10 +123,10 @@ function [values, giveUp] = composeResample2(op, values, pref, f, g)
     end
 
     % n is too large:
-    if ( n > pref.maxPoints )
+    if ( n > pref.maxLength )
         % Don't give up if we haven't sampled at least once.
         if ( isempty(values) )
-            n = pref.maxPoints;
+            n = pref.maxLength;
             giveUp = false;
         else
             giveUp = true;

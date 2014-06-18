@@ -56,7 +56,7 @@ maxRank = prefStruct.maxRank;
 tech = pref.tech();
 tpref = chebfunpref.mergePrefs(pref, tech.techPref);
 minSample = tpref.minSamples; 
-maxSample = tpref.maxPoints;
+maxSample = tpref.maxLength;
 pseudoLevel = tpref.eps;
 
 if ( any(strcmpi(domain, 'periodic')) )
@@ -64,7 +64,7 @@ if ( any(strcmpi(domain, 'periodic')) )
         pref.tech = @fourtech;
         tpref = chebfunpref.mergePrefs(pref, tech.techPref);
         minSample = tpref.minSamples;
-        maxSample = tpref.maxPoints;
+        maxSample = tpref.maxLength;
         pseudoLevel = tpref.eps;
         domain = [-1 1 -1 1];
 elseif ( (nargin > 3) && (any(strcmpi(varargin{1}, 'periodic'))) )
@@ -72,7 +72,7 @@ elseif ( (nargin > 3) && (any(strcmpi(varargin{1}, 'periodic'))) )
         pref.tech = @fourtech; 
         tpref = chebfunpref.mergePrefs(pref, tech.techPref);
         minSample = tpref.minSamples;
-        maxSample = tpref.maxPoints;
+        maxSample = tpref.maxLength;
         pseudoLevel = tpref.eps;
 end
 

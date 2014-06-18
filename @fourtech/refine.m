@@ -50,7 +50,7 @@ function [values, giveUp] = refineResampling(op, values, pref)
     end
     
     % n is too large:
-    if ( n > pref.maxPoints )
+    if ( n > pref.maxLength )
         giveUp = true;
         return
     else
@@ -84,7 +84,7 @@ function [values, giveUp] = refineNested(op, values, pref)
         n = 2*size(values, 1);
         
         % n is too large:
-        if ( n > pref.maxPoints )
+        if ( n > pref.maxLength )
             giveUp = true;
             return
         else

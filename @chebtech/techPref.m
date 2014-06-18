@@ -16,7 +16,8 @@ function outPref = techPref(inPref)
 %     eps          - Relative tolerance used in construction and subsequent
 %      [2^-52]       operations.  See CHEBTECH.HAPPINESSCHECK for more details.
 %
-%     maxLength    - This preference is mapped to maxPoints (see below).
+%     maxLength    - Maximum number of points used by the constructor.
+%      [2^16+1]
 %
 %     exactLength  - This preference is mapped to numPoints (see below).
 %
@@ -35,9 +36,6 @@ function outPref = techPref(inPref)
 %
 %     minSamples   - Minimum number of points used by the constructor.  Should
 %      [17]          be of the form 2^n + 1.  If not, it is rounded as such.
-%
-%     maxPoints    - Maximum number of points used by the constructor.
-%      [2^16+1]
 %
 %     numPoints    - Fixed number of points used by constructor.  NaN allows
 %      [NaN]         adaptive construction.
@@ -61,7 +59,7 @@ function outPref = techPref(inPref)
 
 outPref.eps                = 2^-52;
 outPref.minSamples         = 17;
-outPref.maxPoints          = 2^16 + 1;
+outPref.maxLength          = 2^16 + 1;
 outPref.numPoints          = NaN;
 outPref.extrapolate        = false;
 outPref.sampleTest         = true;
@@ -69,7 +67,6 @@ outPref.refinementFunction = 'nested';
 outPref.happinessCheck     = 'classic';
 
 if ( nargin == 1 )
-    map.maxLength = 'maxPoints';
     map.exactLength = 'numPoints';
     outPref = chebfunpref.mergePrefs(outPref, inPref, map);
 end

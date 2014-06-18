@@ -36,7 +36,7 @@ end
 
 % Get the number of points: (Oversample the wavelength)
 len = max([length(f), length(g), length(h)]);
-npts = min(max(501, round(4*pi*len)), chebtech.techPref().maxPoints);
+npts = min(max(501, round(4*pi*len)), chebtech.techPref().maxLength);
 
 % Initialise the output structure:
 data = struct('xLine', [], 'yLine', [], 'xPoints', [], 'yPoints', [], ...
