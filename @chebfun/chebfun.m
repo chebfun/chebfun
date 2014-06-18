@@ -921,20 +921,20 @@ end
 
 function g = vec(op, y)
 %VEC  Vectorize a function or string expression.
-%   VEC(F), if F is a function handle or anonymous function, returns a function
-%   that returns vector outputs for vector inputs by wrapping F inside a loop.
+%   VEC(OP, Y), if OP is a function handle or anonymous function, returns a 
+%   function that returns vector outputs for vector inputs by wrapping F inside 
+%   a loop. Y, serving as a testing point, is a point in the domain where OP is 
+%   defined.
     
     % Check to see if OP is array-valued:
-    if ( nargin > 1 )
-        opy = op(y);
-        if ( any(size(opy) > 1) )
-            % Use the array-valued wrapper:
-            g = @loopWrapperArray;
-            return
-        end
+    opy = op(y);
+    if ( any(size(opy) > 1) )
+        % Use the array-valued wrapper:
+        g = @loopWrapperArray;    
+    else
+        % It's not array-valued. Use the scalar wrapper:
+        g = @loopWrapperScalar;
     end
-    % It's not array-valued. Use the scalar wrapper:
-    g = @loopWrapperScalar;
     
     % Nested function:
     function v = loopWrapperScalar(x)
@@ -952,4 +952,5 @@ function g = vec(op, y)
         end
         v = cell2mat(v);
     end
+
 end
