@@ -7,13 +7,13 @@ if ( nargin < 1 )
 end
 tol = 1e4*prefs.eps; 
 
-% Add 100 functions together: 
+% Add 50 functions together: 
 f = chebfun2(@(x,y) cos(x.*y)); 
 g = chebfun2(0);
-for jj = 1:100 
+for jj = 1:50 
     g = g + f; 
 end
-pass(1) = ( norm( g - 100*f ) < 10 * tol ); 
+pass(1) = ( norm( g - 50*f ) < 10 * tol ); 
 
 % Multiply 10 functions together: 
 f = chebfun2(@(x,y) cos(x.*y)); 
@@ -23,13 +23,13 @@ for jj = 1:10
 end
 pass(2) = ( norm( g - f.^11 ) < tol );
 
-% Multiply 30 functions together: 
+% Multiply 20 functions together: 
 f = chebfun2(@(x,y) sin(x.*y)); 
 g = f;
-for jj = 1:30 
+for jj = 1:20 
     g = g .* f; 
 end
-pass(3) = ( norm( g - f.^31 ) < tol );
+pass(3) = ( norm( g - f.^21 ) < tol );
 
 % Near cancellation not causing problems: 
 f = chebfun2(@(x,y) cos(x.*y)); 

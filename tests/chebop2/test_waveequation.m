@@ -18,7 +18,7 @@ N.lbc = @(t) sin(-pi+t);
 N.rbc = @(t) sin(pi+t);
 N.dbc = @(x,u) [u - sin(x) ; diff(u) - cos(x)];
 u = N \ 0;
-pass(1) = ( norm(u - exact) < tol); 
+pass(1) = ( norm(u - exact) < 5*tol); 
 
 %% Another standard example on a non-square domain. 
 

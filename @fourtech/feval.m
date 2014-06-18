@@ -32,21 +32,21 @@ x = x(:);
 
 if m > 1
     % If N is odd, no modification is needed.
-    if ( mod(N,2) == 1 )
-       % Compute using vectorized polyval (Horner's scheme)
+    if ( mod(N, 2) == 1 )
+       % Compute using vectorized polyval (Horner's scheme):
        y = bsxfun(@times, exp(-1i*pi*(N-1)/2*x), polyvalv(fourierCoeff, exp(1i*pi*x)));
-    else % The the degree (N/2 term) needs to be handled separately.   
-       % Compute using vectorized polyval (Horner's scheme)
+    else % The degree N/2 term needs to be handled separately.   
+       % Compute using vectorized polyval (Horner's scheme):
        y = cos(N/2*pi*x)*fourierCoeff(N,:) + ...
            bsxfun(@times, exp(-1i*pi*(N/2-1)*x), polyvalv(fourierCoeff(1:N-1,:), exp(1i*pi*x)));
     end
 else
     % If N is odd, no modification is needed.
-    if ( mod(N,2) == 1 )
-       % Compute using polyval (Horner's scheme)
+    if ( mod(N, 2) == 1 )
+       % Compute using polyval (Horner's scheme):
        y = exp(-1i*pi*(N-1)/2*x).*polyval(fourierCoeff, exp(1i*pi*x));
     else % The the degree (N/2 term) needs to be handled separately.   
-       % Compute using polyval (Horner's scheme)
+       % Compute using polyval (Horner's scheme):
        y = cos(N/2*pi*x)*fourierCoeff(N) + ...
            exp(-1i*pi*(N/2-1)*x).*polyval(fourierCoeff(1:N-1), exp(1i*pi*x));
     end
@@ -63,7 +63,7 @@ elseif ( (m > 1) && ( (ndimsx == 2) || (sizex(2) > 1) ) )
 end
 
 % Vectorized version of Horner's scheme for evaluating multiple
-% polynomilas of the same degree at the same locations.
+% polynomials of the same degree at the same locations.
 function q = polyvalv(c, x)
 nValsX = size(x, 1);
 degreePoly = size(c, 1);

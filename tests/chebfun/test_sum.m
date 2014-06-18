@@ -202,7 +202,7 @@ I = sum(f);
 % The following exact result is obtained using Matlab symbolic toolbox:
 I_exact = 0.385602012136694;
 err = abs(I-I_exact);
-pass(31) = err < 1e1*get(f,'epslevel')*get(f,'vscale');
+pass(31) = err < 2e1*get(f,'epslevel')*get(f,'vscale');
 
 % #920: sum of array-valued chebfun defined on unbounded domain:
 % (same function which decays fast enough to be integrable):

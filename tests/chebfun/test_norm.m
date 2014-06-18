@@ -204,7 +204,9 @@ pass(32) = abs(err) < 1e-2;
 
 %% #578
 f = chebfun(@(x) cos(x)./(1e5+(x-30).^6),[0 inf]);
+warning('off', 'CHEBFUN:UNBNDFUN:sum:slowdecay')
 I = norm(f);
+warning('on', 'CHEBFUN:UNBNDFUN:sum:slowdecay')
 % The following result is obtained using Mathematica:
 Iexact = 2.4419616835794597e-5;
 err = abs(I - Iexact);
