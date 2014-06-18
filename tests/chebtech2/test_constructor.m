@@ -113,9 +113,9 @@ pref.extrapolate = 0;
         y = sin(x);
     end
 
-% Check that things don't crash if pref.minPoints and pref.maxPoints are equal.
+% Check that things don't crash if pref.minSamples and pref.maxPoints are equal.
 try
-    pref.minPoints = 8;
+    pref.minSamples = 8;
     pref.maxPoints = 8;
     populate(chebtech2, @sin, [], [], pref);
     pass(16) = true;

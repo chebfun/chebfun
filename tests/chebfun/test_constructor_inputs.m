@@ -77,11 +77,11 @@ f = chebfun(chebfun({'x','x'}, [-1 0 1]));
 x = [-.5, .5];
 pass(14) = numel(f.funs) == 1  && norm(feval(f, x) - x) < get(f, 'epslevel');
 
-% Test 'minsamples' flag.
+% Test 'minSamples' flag.
 f_op = @(x) -x - x.^2 + exp(-(30*(x - .5)).^4);
-f1 = chebfun(f_op, 'minsamples', 9);
+f1 = chebfun(f_op, 'minSamples', 9);
 err1 = norm(feval(f1, xx) - f_op(xx), inf);
-f2 = chebfun(f_op, 'minsamples', 17);
+f2 = chebfun(f_op, 'minSamples', 17);
 err2 = norm(feval(f2, xx) - f_op(xx), inf);
 pass(15) = (err1 > 1e-3) && (err2 < 10*vscale(f2)*epslevel(f2));
 

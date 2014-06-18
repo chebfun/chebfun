@@ -37,7 +37,7 @@ else
 end
 
 % Set some preferences:
-pref.minPoints = max(pref.minPoints, length(f));
+pref.minSamples = max(pref.minSamples, length(f));
 pref.eps = max(pref.eps, f.epslevel);
 pref.sampleTest = false;
 
@@ -49,7 +49,7 @@ if ( nfuns == 2 )
     end
 
     % Grab some data from G:
-    pref.minPoints = max(pref.minPoints, length(g));
+    pref.minSamples = max(pref.minSamples, length(g));
     pref.eps = max(pref.eps, g.epslevel);
     
 elseif ( isa(op, 'chebtech') )
@@ -67,7 +67,7 @@ elseif ( isa(op, 'chebtech') )
 %     end
     
     % If OP is a CHEBTECH, we grab some of its data:
-    pref.minPoints = max(pref.minPoints, length(op));
+    pref.minSamples = max(pref.minSamples, length(op));
     pref.eps = max(pref.eps, op.epslevel);
     
 end

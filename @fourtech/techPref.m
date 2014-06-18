@@ -37,7 +37,7 @@ function outPref = techPref(inPref)
 %         1        - Equally spaced grid starting at -1+h/2
 %        [2]        - Equally spaced grid starting at -1
 %
-%     minPoints    - Minimum number of points used by the constructor.  Should
+%     minSamples    - Minimum number of points used by the constructor.  Should
 %      [17]          be of the form 2^n + 1.  If not, it is rounded as such.
 %
 %     maxPoints    - Maximum number of points used by the constructor.
@@ -65,7 +65,7 @@ function outPref = techPref(inPref)
 
 outPref.eps                = 2^-52;
 outPref.gridType           = 2;
-outPref.minPoints          = 17;
+outPref.minSamples         = 17;
 outPref.maxPoints          = 2^16 + 1;
 outPref.numPoints          = NaN;
 outPref.extrapolate        = false;

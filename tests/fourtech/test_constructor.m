@@ -58,9 +58,9 @@ catch ME
     pass(6) = strcmp(ME.message, 'Cannot handle functions that evaluate to Inf or NaN.');
 end
 
-% Check that things don't crash if pref.minPoints and pref.maxPoints are equal.
+% Check that things don't crash if pref.minSamples and pref.maxPoints are equal.
 try
-    pref.minPoints = 8;
+    pref.minSamples = 8;
     pref.maxPoints = 8;
     populate(fourtech, @(x) sin(pi*x), [], [], pref);
     pass(7) = true;

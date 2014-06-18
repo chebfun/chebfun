@@ -37,7 +37,7 @@ end
 
 % Set some preferences:
 vscale = f.vscale;
-pref.minPoints = max(pref.minPoints, length(f));
+pref.minSamples = max(pref.minSamples, length(f));
 pref.eps = max(pref.eps, f.epslevel);
 pref.sampleTest = false;
 
@@ -49,7 +49,7 @@ if ( nfuns == 2 )
 
     % Grab some data from G2:
     vscale = max(vscale, g.vscale);
-    pref.minPoints = max(pref.minPoints, length(g));
+    pref.minSamples = max(pref.minSamples, length(g));
     pref.eps = max(pref.eps, g.epslevel);
     
 elseif ( isa(op, 'fourtech') )
@@ -65,7 +65,7 @@ elseif ( isa(op, 'fourtech') )
     end
 
     vscale = max(vscale, op.vscale);
-    pref.minPoints = max(pref.minPoints, length(op));
+    pref.minSamples = max(pref.minSamples, length(op));
     pref.eps = max(pref.eps, op.epslevel);
     
 end

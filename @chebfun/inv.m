@@ -131,7 +131,7 @@ end
 % Assign preferences:
 pref.techPrefs.resampling = 1;
 pref.techPrefs.eps = tol;
-pref.techPrefs.minsamples = length(f);
+pref.techPrefs.minSamples = length(f);
 pref.techPrefs.sampleTest = 0;
 
 end

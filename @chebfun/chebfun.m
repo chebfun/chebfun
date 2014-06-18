@@ -645,8 +645,8 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
             keywordPrefs.splitting = strcmpi(args{2}, 'on');
             args(1:2) = [];
         elseif ( strcmpi(args{1}, 'minsamples') )
-            % Translate "minsamples" --> "techPrefs.minPoints".
-            keywordPrefs.techPrefs.minPoints = args{2};
+            % Translate "minsamples" --> "techPrefs.minSamples".
+            keywordPrefs.techPrefs.minSamples = args{2};
             args(1:2) = [];
         elseif ( strcmpi(args{1}, 'blowup') )
             if ( strcmpi(args{2}, 'off') )

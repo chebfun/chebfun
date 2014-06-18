@@ -76,8 +76,8 @@ function [values, giveUp] = composeResample1(op, values, pref, f)
 %resampling.
     
     if ( isempty(values) )
-        % Choose initial n based upon minPoints.
-        n = 2^ceil(log2(pref.minPoints - 1)) + 1;
+        % Choose initial n based upon minSamples.
+        n = 2^ceil(log2(pref.minSamples - 1)) + 1;
     else
         % (Approximately) powers of sqrt(2):
         pow = log2(size(values, 1) - 1);
@@ -123,8 +123,8 @@ function [values, giveUp] = composeResample2(op, values, pref, f, g)
 %resampling.
     
     if ( isempty(values) )
-        % Choose initial n based upon minPoints.
-        n = 2^ceil(log2(pref.minPoints - 1)) + 1;
+        % Choose initial n based upon minSamples.
+        n = 2^ceil(log2(pref.minSamples - 1)) + 1;
     else
         % (Approximately) powers of sqrt(2):
         pow = log2(size(values, 1) - 1);
