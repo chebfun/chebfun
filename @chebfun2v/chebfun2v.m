@@ -57,9 +57,11 @@ classdef chebfun2v
             % Go and try find the domain: 
             domain = [-1 1 -1 1]; 
             for jj = 1:numel(varargin)
-               if ( isa( varargin{jj}, 'double') ) 
+               if ( isa( varargin{jj}, 'double') && numel( varargin{jj}) == 4 ) 
                    domain = varargin{jj}; 
                    varargin(jj) = []; 
+               elseif ( isa( varargin{jj}, 'chebfun2') ) 
+                   domain = varargin{jj}.domain;  
                end
             end
             
@@ -98,6 +100,8 @@ classdef chebfun2v
                     fh{jj} = newcheb;
                 elseif ( isa( varargin{jj}, 'chebfun2') )
                     fh{jj} = varargin{jj};
+                elseif ( isa( varargin{jj}, 'double') )
+                    fh{jj} = chebfun2( varargin{jj}, domain);  
                 end
             end
             
