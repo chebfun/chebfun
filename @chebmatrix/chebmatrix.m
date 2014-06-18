@@ -199,12 +199,14 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             A.blocks = transpose(A.blocks);
         end
         
-        function varargout = loglog(varargin)
+        function varargout = loglog(A, varargin)
         %LOGLOG   Log-log plot of a CHEBMATRIX.
         %   Note that no warning is thrown for negative data.
+            
+            % TODO: Throw a sensible error if A contains linear operators.
         
             % Standard CHEBMATRIX/PLOT():
-            [h{1:3}] = plot(varargin{:});
+            [h{1:3}] = plot(A, varargin{:});
             % Strip negative data:
             for j = 1:3 % TODO: This 
                 for k = 1:numel(h{j})
@@ -221,6 +223,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             if ( nargout > 0 )
                 varargout = h;
             end
+            
         end
         
         function out = num2cell(A)
@@ -228,12 +231,14 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             out = A.blocks;
         end
         
-        function varargout = semilogx(varargin)
+        function varargout = semilogx(A, varargin)
         %SEMILOGX   Semilogx plot of a CHEBMATRIX.
         %   Note that no warning is thrown for negative data.
         
+            % TODO: Throw a sensible error if A contains linear operators.
+        
             % Standard CHEBMATRIX/PLOT():
-            [h{1:3}] = plot(varargin{:});
+            [h{1:3}] = plot(A, varargin{:});
             % Strip negative data:
             for j = 1:3 % TODO: This 
                 for k = 1:numel(h{j})
@@ -247,14 +252,17 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             if ( nargout > 0 )
                 varargout = h;
             end
+            
         end
         
-        function varargout = semilogy(varargin)
+        function varargout = semilogy(A, varargin)
         %SEMILOGY   Semilogy plot of a CHEBMATRIX.
         %   Note that no warning is thrown for negative data.
         
+            % TODO: Throw a sensible error if A contains linear operators.
+        
             % Standard CHEBMATRIX/PLOT():
-            [h{1:3}] = plot(varargin{:});
+            [h{1:3}] = plot(A, varargin{:});
             % Strip negative data:
             for j = 1:3 % TODO: This 
                 for k = 1:numel(h{j})
@@ -268,6 +276,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             if ( nargout > 0 )
                 varargout = h;
             end
+            
         end
 
         
