@@ -826,10 +826,6 @@ function op = vectorCheck(op, dom, vectorize)
 %   It's impossible to conver all enevtualities without being too expensive. 
 %   We do the best we can. "Do. Or do no. There is not try."
 
-if ( vectorize )
-    op = vec(op);
-end
-
 % Make a slightly narrower domain to evaluate on. (Endpoints can be tricky).
 y = dom([1 end]);
 if ( y(1) > 0 )
@@ -843,6 +839,10 @@ else
     y(end) = 1.01*y(end); 
 end
 y = y(:);
+
+if ( vectorize )
+    op = vec(op, y(1));
+end
 
 try
     % Evaluate a vector of (near the) endpoints
@@ -874,6 +874,13 @@ try
         op = @(x) repmat(op(x), length(x), 1);
         
     elseif ( any(sv == sy(1)) )
+        if ( any(sv) == 1 )
+            v = op(y(1));
+            if ( all(size(v) == sv) )
+                op = @(x) repmat(op(x), length(x), 1);
+                return
+            end
+        end
         op = @(x) op(x).';
         warning('CHEBFUN:CHEBFUN:vectorCheck:transpose',...
                 ['Chebfun input should return a COLUMN array.\n', ...
@@ -909,16 +916,36 @@ end
 
 end
 
-function g = vec(op)
+function g = vec(op, y)
 %VEC  Vectorize a function or string expression.
 %   VEC(F), if F is a function handle or anonymous function, returns a function
 %   that returns vector outputs for vector inputs by wrapping F inside a loop.
-    g = @loopWrapper;
+    
+    % Check to see if OP is array-valued:
+    if ( nargin > 1 )
+        opy = op(y);
+        if ( any(size(opy) > 1) )
+            % Use the array-valuedd wrapper:
+            g = @loopWrapperArray;
+            return
+        end
+    end
+    % It's not array-valued. Use the scalar wrapper:
+    g = @loopWrapperScalar;
+    
     % Nested function:
-    function v = loopWrapper(x)
+    function v = loopWrapperScalar(x)
         v = zeros(size(x));
         for j = 1:numel(v)
             v(j) = op(x(j));
         end
+    end
+    % Nested function:
+    function v = loopWrapperArray(x)
+        v = cell(size(x));
+        for j = 1:numel(v)
+            v{j} = op(x(j));
+        end
+        v = cell2mat(v);
     end
 end

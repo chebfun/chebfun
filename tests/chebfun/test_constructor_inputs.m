@@ -100,4 +100,12 @@ pass(18) = get(f, 'ishappy') && isa(f.funs{1}.onefun.smoothPart, 'chebtech1');
 f = chebfun(@(x) 1./x, [0 1], p, 'exps', [-1 0]);
 pass(19) = get(f, 'ishappy') && isa(f.funs{1}.onefun.smoothPart, 'chebtech1');
 
+% Test the vectorise flag on an array-valued function:
+try
+    f = chebfun(@(x) [x^2 sin(x)*cos(x)], pref, 'vectorize'); %#ok<NASGU>
+    pass(20) = true;
+catch
+    pass(20) = false;
+end
+
 end
