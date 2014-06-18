@@ -129,7 +129,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
     %% METHODS IMPLEMENTED IN THIS FILE:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods
-           
+                   
         function A = set.domain(A, d)
         %SET.DOMAIN   Insert breakpoints in the domain of the CHEBMATRIX.
         %   We don't allow removing breakpoints, or changing endpoints.
@@ -198,6 +198,101 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             end
             A.blocks = transpose(A.blocks);
         end
+        
+        function varargout = loglog(A, varargin)
+        %LOGLOG   Log-log plot of a CHEBMATRIX.
+        %   Note that no warning is thrown for negative data.
+
+            s = cellfun(@(b) min(size(b)), A.blocks);
+            % Throw an error if A contains linear operators.
+            if ( ~all(isfinite(s(:))) )
+                error('CHEBFUN:CHEBMATRIX:loglog:infBlock', ...
+                        'LOGLOG plot of infinite blocks is not supported.')
+            end
+            
+            % Standard CHEBMATRIX/PLOT():
+            [h{1:3}] = plot(A, varargin{:});
+            % Strip negative data:
+            for j = 1:3 
+                for k = 1:numel(h{j})
+                    xData = get(h{j}(k), 'xData');
+                    xData(xData < 0) = 0;
+                    set(h{j}(k), 'yData', xData);
+                    yData = get(h{j}(k), 'yData');
+                    yData(yData < 0) = 0;
+                    set(h{j}(k), 'yData', yData);
+                end
+            end
+            % Set the X and Y Scale to be logarithmic:
+            set(gca, 'XScale', 'log', 'YScale', 'log');
+            if ( nargout > 0 )
+                varargout = h;
+            end 
+
+        end
+        
+        function out = num2cell(A)
+        %NUM2CELL   Extract block entries of a CHEBMATRIX:
+            out = A.blocks;
+        end
+        
+        function varargout = semilogx(A, varargin)
+        %SEMILOGX   Semilogx plot of a CHEBMATRIX.
+        %   Note that no warning is thrown for negative data.
+            
+            s = cellfun(@(b) min(size(b)), A.blocks);
+            % Throw an error if A contains linear operators.
+            if ( ~all(isfinite(s(:))) )
+                error('CHEBFUN:CHEBMATRIX:semilogx:infBlock', ...
+                        'SEMILOGX plot of infinite blocks is not supported.')
+            end
+
+            % Standard CHEBMATRIX/PLOT():
+            [h{1:3}] = plot(A, varargin{:});
+            % Strip negative data:
+            for j = 1:3 % TODO: This
+                for k = 1:numel(h{j})
+                    xData = get(h{j}(k), 'xData');
+                    xData(xData < 0) = 0;
+                    set(h{j}(k), 'xData', xData);
+                end
+            end
+            % Set the XScale to be logarithmic:
+            set(gca, 'XScale', 'log');
+            if ( nargout > 0 )
+                varargout = h;
+            end
+                
+        end
+        
+        function varargout = semilogy(A, varargin)
+        %SEMILOGY   Semilogy plot of a CHEBMATRIX.
+        %   Note that no warning is thrown for negative data.
+        
+            s = cellfun(@(b) min(size(b)), A.blocks);
+            % Throw an error if A contains linear operators.
+            if ( ~all(isfinite(s(:))) )
+                error('CHEBFUN:CHEBMATRIX:semilogy:infBlock', ...
+                        'SEMILOGY plot of infinite blocks is not supported.')
+            end
+
+            % Standard CHEBMATRIX/PLOT():
+            [h{1:3}] = plot(A, varargin{:});
+            % Strip negative data:
+            for j = 1:3 % TODO: This
+                for k = 1:numel(h{j})
+                    yData = get(h{j}(k), 'yData');
+                    yData(yData < 0) = 0;
+                    set(h{j}(k), 'yData', yData);
+                end
+            end
+            % Set the YScale to be logarithmic:
+            set(gca, 'YScale', 'log');
+            if ( nargout > 0 )
+                varargout = h;
+            end
+        end
+
         
         function A = simplify(A, varargin)
         %SIMPLIFY   Simplify CHEBFUN components in a CHEBMATRIX.
@@ -443,6 +538,29 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             A = cellfun(A, @log2);
         end
         
+        function A = max(A)
+            A = cellfun(A, @max);
+            if ( all(cellfun(@isnumeric, A.blocks)) )
+                A = cell2mat(A.blocks);
+            end
+        end
+        
+        function A = min(A)
+            A = cellfun(A, @min);
+            if ( all(cellfun(@isnumeric, A.blocks)) )
+                A = cell2mat(A.blocks);
+            end
+        end
+        
+        function A = mrdivide(A, b)
+            if ( isnumeric(b) && isscalar(b) )
+                A = cellfun(A, @(A) mrdivide(A, b));
+            else
+                error('CHEBFUN:CHEBMATRIX:mrdivide:notScalar', ...
+                    'CHEBMATRIX/MRDIVIDE only supports division by scalars.');
+            end
+        end
+        
         function A = power(A, b)
             if ( isnumeric(b) )
                 A = cellfun(A, @(A) power(A, b));
@@ -460,6 +578,27 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         
         function A = reallog(A)
             A = cellfun(A, @reallog);
+        end
+        
+        function A = rdivide(A, b)
+            if ( isnumeric(b) )
+                if ( isscalar(b) )
+                    A = cellfun(A, @(A) rdivide(A, b));
+                else
+                    if ( ~all(size(A.blocks) == size(b)) )
+                        error('CHEBFUN:CHEBMATRIX:rdivide:dimensions', ...
+                            'Matrix dimensions must agree.');
+                    end
+                    for k = 1:numel(b)
+                        A.blocks{k} = A.blocks{k}/b(k);
+                    end
+                end    
+            elseif ( isnumeric(A) )
+                A = cellfun(b, @(b) rdivide(A, b));
+            else
+                A.blocks = cellfun(@rdivide, A.blocks, b.blocks, ...
+                    'UniformOutput', false);
+            end
         end
         
         function A = round(A)
@@ -516,6 +655,17 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         
         function A = tanh(A)
             A = cellfun(A, @tanh);
+        end
+        
+        function A = times(A, b)
+            if ( isnumeric(b) )
+                A = cellfun(A, @(A) times(A, b));
+            elseif ( isnumeric(A) )
+                A = cellfun(b, @(b) times(A, b));
+            else
+                A.blocks = cellfun(@times, A.blocks, b.blocks, ...
+                    'UniformOutput', false);
+            end
         end
         
         function A = uminus(A)

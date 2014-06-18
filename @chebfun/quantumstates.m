@@ -110,7 +110,7 @@ axis([xmin - dx, xmax + dx, ymin - dy, ymax]), drawnow
 
 % Plot the eigenfunction, lifted by the corresponding eigenvalue:
 W = dy*U;
-W = cheb2cell(W);
+W = num2cell(W);
 for j = 1:n
     umm = minandmax(W{j});
     if ( umm(2) < -umm(1) )

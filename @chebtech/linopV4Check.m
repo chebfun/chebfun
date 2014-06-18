@@ -1,4 +1,4 @@
-function [ishappy, epsLevel, cutoff] = plateauCheck(f, values, pref)
+function [ishappy, epsLevel, cutoff] = linopV4Check(f, values, pref)
 %PLATEAUCHECK   Attempt to trim trailing Chebyshev coefficients in a CHEBTECH.
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = PLATEAUCHECK(F, VALUES) returns an estimated
 %   location, the CUTOFF, at which the CHEBTECH F could be truncated. One of two
@@ -16,9 +16,9 @@ function [ishappy, epsLevel, cutoff] = plateauCheck(f, values, pref)
 %   number that prevents convergence to the full requested accuracy, as often
 %   happens in the collocation of differential equations.
 %
-%   [ISHAPPY, EPSLEVEL, CUTOFF] = PLATEAUCHECK(F, VALUES, PREF) allows
-%   additional preferences to be passed. In particular, one can adjust the
-%   target accuracy with PREF.EPS.
+%   [ISHAPPY, EPSLEVEL, CUTOFF] = PLATEAUCHECK(F, VALUES, PREF) allows additional
+%   preferences to be passed. In particular, one can adjust the target accuracy
+%   with PREF.EPS.
 %
 % See also STRICTCHECK, CLASSICCHECK.
 
@@ -28,12 +28,12 @@ function [ishappy, epsLevel, cutoff] = plateauCheck(f, values, pref)
 % Grab some preferences:
 if ( nargin == 1 )
     pref = f.techPref();
-    epsLevel = pref.eps;
+    epslevel = pref.eps;
 elseif ( isnumeric(pref) )
-    epsLevel = pref;
+    epslevel = pref;
     pref = f.techPref();
 else
-    epsLevel = pref.eps;
+    epslevel = pref.eps;
 end
 
 % Grab the coefficients:
@@ -42,7 +42,7 @@ n = length(coeff);
 
 % NaNs are not allowed.
 if ( any(isnan(coeff)) )
-    error('CHEBFUN:CHEBTECH:plateauCheck:nanEval', ...
+    error('CHEBFUN:FUN:plateauCheck:NaNeval', ...
         'Function returned NaN when evaluated.')
 end
 
@@ -57,7 +57,6 @@ if ( max(maxvals) == 0 )
     return
 elseif ( any(isinf(maxvals)) )
     % Inf located. No cutoff.
-    ishappy = false;
     cutoff = n;
     return
 end
@@ -66,9 +65,10 @@ end
 % We omit the last 10% because aliasing can pollute them significantly.
 n90 = ceil( 0.90*n );
 absCoeff = abs( coeff(end:-1:end+1-n90,:) );  % switch to low->high ordering
-vscale = max(absCoeff,[],1)          % scaling in each column
+vscale = max(absCoeff,[],1);          % scaling in each column
 vscale = max( [vscale(:); f.vscale] );
 absCoeff = absCoeff / vscale;
+
 
 %% Deal with array-valued functions.
 
@@ -77,7 +77,7 @@ ishappy = false(1,numCol);
 epsLevel = zeros(1,numCol);
 cutoff = zeros(1,numCol);
 for m = 1:numCol
-    [ishappy(m), epsLevel(m), cutoff(m)] = checkColumn(absCoeff(:,m),epslevel);
+    [ishappy(m), epsLevel(m), cutoff(m)] = checkColumn(absCoeff(:,m),pref.eps);
     if ( ~ishappy(m) )
         % No need to continue if it fails on any column.
         break
@@ -109,12 +109,14 @@ cutoff = 4 + find( absCoeff >= epslevel/50, 1, 'last' );
 if ( cutoff < 0.95*n )
     % Achieved the strict test.
     ishappy = true;
-       
+        
 %% 2. Plateau test.
 else
     
     % Demand at least this much accuracy.
     thresh = max((2/3)*log(epslevel), log(1e-7));
+    
+    
     
     % Convergence is usually not far from linear in the log scale.
     logAbs = log(absCoeff);
@@ -138,47 +140,26 @@ else
     end
     n = length(winMax);
     
-    %%% Alternative windowed max: This avoids the for loop but might hog memory.
-    %%index = bsxfun(@plus, (1:n)', 0:winsize-1);
-    %%logabs = max(logabs(index),[],2);
-    
-    % Start with a low pass smoothing filter that introduces a lag.
-    lag = 6;
-    LPA = [1, zeros(1,lag-1), -2, zeros(1, lag-1), 1] / (lag^2);
-    LPB = [1, -2, 1];
-    smoothLAC = filter(LPA, LPB, winMax);  % smoothed logabs coeffs
-    
     % If too little accuracy has been achieved, do nothing.
-    tOK = find(smoothLAC < thresh, 1) - lag;
+    tOK = find(winMax < thresh, 1);
     if ( isempty(tOK) || (n - tOK < 16) )
         return
     end
     
-    % Fit a least-squares line to windowed data.
-    LSWindow = 24;
-    A = [ ones(LSWindow,1), (1:LSWindow)'/LSWindow ];  % [1,x] quasimatrix
-    % Create coefficients of all the windows: [ (1:LSW)', (2:LSW+1)', ... ]
-    index = bsxfun(@plus, (0:LSWindow-1)', 1:length(smoothLAC)-LSWindow);
-    LSLines = A \ smoothLAC(index);  % second row has all of the slopes
-    slopes = LSLines(2,:);
-        
-    % Where is the decrease most rapid?
-    slopeMin = min(slopes);
-    
-    % Don't look at anything until all substantial decrease has ended.
-    tstart = find( slopes < 0.25*slopeMin, 1, 'last' );
-    
-    % Find where the decrease has permanently slowed to 1% of the fastest.
-    isSlow = slopes(tstart:end) > 0.01*slopeMin;
-    slow = tstart - 1 + find( isSlow );
-    
-    % Find the first run of 8 consecutive slow hits.
-    first = find( slow(8:end) - slow(1:end-7) == 7, 1 );  % may be empty
-    cutoff = slow(first);  % may be empty
+    % Smooth, then difference the windowed max.
+    diffMax = diff( conv( [1 1 1 1]/4, winMax(tOK:end) ) );
+
+    % Do a windowed min. 
+    winMinDiffMax = diffMax;
+    winMinDiffMax = min(winMinDiffMax(1:end-1),diffMax(2:end));
+
+    cutoff = find(winMinDiffMax > 0.01*min(winMinDiffMax), 3);
     if ( isempty(cutoff) )
         cutoff = n;
+    else
+        cutoff = cutoff(end) + tOK + 2 + 3;
     end
-    
+   
     % If the cut location is within the coefficient sequence, we're done.
     if ( cutoff < n )
         ishappy = true;
@@ -188,8 +169,6 @@ end
 
 % Deduce an epslevel. 
 if ( ishappy )
-    %cutoff=n;
-
     winEnd = min( n, cutoff + 4 );
     epslevel = max( absCoeff(cutoff:winEnd) );
 else
