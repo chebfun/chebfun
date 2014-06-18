@@ -515,6 +515,20 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             A = cellfun(A, @log2);
         end
         
+        function A = max(A)
+            A = cellfun(A, @max);
+            if ( all(cellfun(@isnumeric, A.blocks)) )
+                A = cell2mat(A.blocks);
+            end
+        end
+        
+        function A = min(A)
+            A = cellfun(A, @min);
+            if ( all(cellfun(@isnumeric, A.blocks)) )
+                A = cell2mat(A.blocks);
+            end
+        end
+        
         function A = mrdivide(A, b)
             if ( isnumeric(b) && isscalar(b) )
                 A = cellfun(A, @(A) mrdivide(A, b));
