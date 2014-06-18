@@ -81,20 +81,11 @@ x = (1+0.5*v.*cos(u/2)).*cos(u);
 y = (1+0.5*v.*cos(u/2)).*sin(u);
 z = 0.5*v.*sin(u/2);
 r = [x;y;z];
-n = normal(r);
 ru = diff(r,1,1);
 rv = diff(r,1,2);
 pass(15) = ( norm(ru'*rv,inf) < tol ); 
 
-R1 = ru/sqrt(ru'*ru);
-R2 = rv/sqrt(rv'*rv);
 V = [sin(5*u);cos(5*v);0];    
-% Can we construct PV?:
-pass(16) = 1; 
-try 
-    PV = (R1'*V)*R1 + (R2'*V)*R2;
-catch
-    pass(16) = 0; 
-end
+pass(16) = (V.nComponents == 3); 
 
 end
