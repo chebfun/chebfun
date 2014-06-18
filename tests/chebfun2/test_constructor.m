@@ -69,6 +69,9 @@ f2 = chebfun2(@(x,y) cos(pi*x).*sin(pi*y),[-1 1 -1 1],'periodic');
 pass(13) = ( norm( f1 - f2 ) < tol );
 
 % Check underlying tech is a fourtech: 
-pass(14) = ( isa(f1.cols.funs{:}.onefun, 'fourtech') ); 
-pass(15) = ( isa(f1.rows.funs{:}.onefun, 'fourtech') ); 
+techRow = get(f1.cols.funs{1}, 'tech');
+techCol = get(f1.rows.funs{1}, 'tech');
+pass(14) = ( isa(techRow(), 'fourtech') ); 
+pass(15) = ( isa(techCol(), 'fourtech') ); 
+
 end
