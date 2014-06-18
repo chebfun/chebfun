@@ -216,7 +216,7 @@ end
 
                 % Store these values:
                 tCurrent = t(kk);
-                uCurrent = chebfun(Uk, DOMAIN);
+                uCurrent = chebfun(Uk, DOMAIN, 'tech', @chebtech2);
                 
                 % Shorten the representation. The happiness cutoff seems to
                 % be safer than the epslevel simplification.
