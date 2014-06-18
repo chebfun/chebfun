@@ -63,4 +63,12 @@ f = chebfun2(g,[-pi,pi,-pi,pi]);
 err = g(xx,yy)-f(xx,yy);
 pass(12) = ( norm(err(:),inf ) < 2e7*tol );
 
+% Make a chebfun2 based on fourtech by calling the periodic flag: 
+f1 = chebfun2(@(x,y) cos(pi*x).*sin(pi*y),'periodic'); 
+f2 = chebfun2(@(x,y) cos(pi*x).*sin(pi*y),[-1 1 -1 1],'periodic');
+pass(13) = ( norm( f1 - f2 ) < tol );
+
+% Check underlying tech is a fourtech: 
+pass(14) = ( isa(f1.cols.funs{:}.onefun, 'fourtech') ); 
+pass(15) = ( isa(f1.rows.funs{:}.onefun, 'fourtech') ); 
 end

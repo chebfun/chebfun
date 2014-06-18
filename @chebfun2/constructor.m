@@ -52,14 +52,29 @@ prefStruct = pref.cheb2Prefs;
 sampleTest = prefStruct.sampleTest;
 maxRank = prefStruct.maxRank;
 
-% Go find out what tech I'm based on:
-tech = pref.tech();
-
 % Get default preferences from the techPref:
+tech = pref.tech();
 tpref = chebfunpref.mergePrefs(pref, tech.techPref);
 minSample = tpref.minPoints; 
 maxSample = tpref.maxPoints;
 pseudoLevel = tpref.eps;
+
+if ( any(strcmpi(domain, 'periodic')) )
+        % If periodic flag, then map chebfun2 with fourtechs. 
+        pref.tech = @fourtech;
+        tpref = chebfunpref.mergePrefs(pref, tech.techPref);
+        minSample = tpref.minPoints; 
+        maxSample = tpref.maxPoints;
+        pseudoLevel = tpref.eps;
+        domain = [-1 1 -1 1];
+elseif ( (nargin > 3) && (any(strcmpi(varargin{1}, 'periodic'))) )
+        % If periodic flag, then map chebfun2 with fourtechs. 
+        pref.tech = @fourtech; 
+        tpref = chebfunpref.mergePrefs(pref, tech.techPref);
+        minSample = tpref.minPoints; 
+        maxSample = tpref.maxPoints;
+        pseudoLevel = tpref.eps;
+end
 
 if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
     if ( numel( op ) == 1 )
@@ -76,10 +91,6 @@ if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
         op = chebfun2.coeffs2vals( op );
         g = chebfun2( op, 'coeffs' );
         return
-    elseif ( any(strcmpi(domain, 'periodic')) )
-        % If periodic flag, then map chebfun2 with fourtechs. 
-        pref.tech = @fourtech; 
-        tech = @fourtech;
     elseif ( (nargin > 3) && (any(strcmpi(varargin{1}, 'coeffs'))) )
         op = chebfun2.coeffs2vals( op );
         g = chebfun2( op, domain );
@@ -88,11 +99,7 @@ if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
         op = chebfun2.paduaVals2coeffs( op, domain );
         op = chebfun2.coeffs2vals( op );
         g = chebfun2( op, domain );
-        return 
-    elseif ( (nargin > 3) && (any(strcmpi(varargin{1}, 'periodic'))) )
-        % If periodic flag, then map chebfun2 with fourtechs. 
-        pref.tech = @fourtech; 
-        tech = @fourtech; 
+        return
     else
         % If CHEBFUN2(f, rk), then nonadaptive call:
         if ( numel(domain) == 1 )
@@ -183,11 +190,9 @@ if ( vectorize == 0 ) % another check
     if ( any(any( abs(A - B.') > min( 1000*pseudoLevel, 1e-4 ) ) ) )
         % Function handle probably needs vectorizing, give user a warning and
         % then vectorize.
+        
         warning('CHEBFUN:CHEBFUN2:constructor:vectorize',...
-            ['Function did not correctly evaluate on an array.',
-             'Turning on the ''vectorize'' flag. Did you intend this?',
-             'Use the ''vectorize'' flag in the chebfun2 constructor call',
-             ' to avoid this warning message.']);
+            'Function did not correctly evaluate on an array. Turning on the ''vectorize'' flag. Did you intend this? Use the ''vectorize'' flag in the chebfun2 constructor call to avoid this warning message.');
         g = chebfun2(op, domain, 'vectorize', pref);
         return
     end
@@ -247,6 +252,7 @@ while ( ~isHappy && ~failure )
     
     % Check if the column and row slices are resolved.
     colData.vscale = domain(3:4);
+    tech = pref.tech(); 
     colChebtech = tech.make(sum(colValues,2), colData);
     resolvedCols = happinessCheck(colChebtech,[],sum(colValues,2));
     rowData.vscale = domain(1:2);
