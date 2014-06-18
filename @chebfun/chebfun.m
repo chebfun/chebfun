@@ -859,9 +859,9 @@ try
     if ( sv(1) == sy(1) )
         % Here things seem OK! 
         
-        % However, we _an_ possibly be fooled if we have a array-valued function
-        % whos number of columns equals the number of test points. We choose one
-        % additional point as a final check:
+        % However, we may possibly be fooled if we have an array-valued function
+        % whose number of columns equals the number of test points. We choose 
+        % one additional point as a final check:
         if ( sv(2) == sy(1) )
             v = op(y(1));
             if ( size(v, 1) > 1 )
@@ -906,7 +906,7 @@ catch ME
     else
         % Try vectorizing.
         op = vectorCheck(op, dom, 1);
-                warning('CHEBFUN:CHEBFUN:vectorcheck:vectorize',...
+        warning('CHEBFUN:CHEBFUN:vectorcheck:vectorize',...
         ['Function failed to evaluate on array inputs.\n',...
         'Vectorizing the function may speed up its evaluation\n',...
         'and avoid the need to loop over array elements.\n',...
