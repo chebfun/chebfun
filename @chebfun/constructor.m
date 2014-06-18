@@ -130,7 +130,7 @@ numIntervals = numel(dom) - 1;
 ends = dom;
 
 % Set the maximum length (i.e., number of sample points for CHEBTECH):
-pref.techPrefs.maxLength = pref.splitPrefs.splitMaxLength;
+pref.techPrefs.maxLength = pref.splitPrefs.splitLength;
 
 % We extrapolate when splitting so that we can construct functions like
 % chebfun(@sign,[-1 1]), which otherwise would not be happy at x = 0.

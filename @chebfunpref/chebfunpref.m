@@ -28,7 +28,7 @@ classdef chebfunpref < chebpref
 %
 %   splitPrefs                 - Preferences for breakpoint detection.
 %
-%      splitMaxLength          - Maximum FUN length.
+%      splitLength             - Maximum FUN length.
 %       [160]
 %
 %         This is the maximum length of a single FUN (e.g., the number of
@@ -425,8 +425,8 @@ classdef chebfunpref < chebpref
             fprintf([padString('    splitting:') '%d\n'], ...
                 prefList.splitting);
             fprintf('    splitPrefs\n');
-            fprintf([padString('        splitMaxLength:') '%d\n'], ...
-                prefList.splitPrefs.splitMaxLength');
+            fprintf([padString('        splitLength:') '%d\n'], ...
+                prefList.splitPrefs.splitLength');
             fprintf([padString('        splitMaxTotalLength:') '%d\n'], ...
                 prefList.splitPrefs.splitMaxTotalLength');
             fprintf([padString('    blowup:') '%d\n'], ...
@@ -565,8 +565,8 @@ classdef chebfunpref < chebpref
         %   as the defaults.
         %
         %   To set defaults for second tier preferences, such as
-        %   splitPrefs.splitMaxLength, one can use the syntax
-        %   CHEBFUNPREF.SETDEFAULT({'splitPrefs', 'splitMaxLength'}, 257).
+        %   splitPrefs.splitLength, one can use the syntax
+        %   CHEBFUNPREF.SETDEFAULT({'splitPrefs', 'splitLength'}, 257).
         %   However, this syntax is still experimental.
         %
         %   CHEBFUNPREF.SETDEFAULTS(PREF) sets the default values to the
@@ -676,7 +676,7 @@ classdef chebfunpref < chebpref
 
             factoryPrefs.domain = [-1 1];
             factoryPrefs.splitting = false;
-                factoryPrefs.splitPrefs.splitMaxLength = 160;
+                factoryPrefs.splitPrefs.splitLength = 160;
                 factoryPrefs.splitPrefs.splitMaxTotalLength = 6000;
             factoryPrefs.blowup = false;
                 factoryPrefs.blowupPrefs.exponentTol = 1.1*1e-11;
