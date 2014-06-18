@@ -202,32 +202,33 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         function varargout = loglog(A, varargin)
         %LOGLOG   Log-log plot of a CHEBMATRIX.
         %   Note that no warning is thrown for negative data.
+
             s = cellfun(@(b) min(size(b)), A.blocks);
-            isQuasi = all(isfinite(s(:)));
             % Throw an error if A contains linear operators.
-            if ( ~isQuasi )
-                error('CHEBMATRIX:loglog:infBlock', ...
-                        'loglog plot of infinite blocks is not supported.')
-            else   
-                % Standard CHEBMATRIX/PLOT():
-                [h{1:3}] = plot(A, varargin{:});
-                % Strip negative data:
-                for j = 1:3 
-                    for k = 1:numel(h{j})
-                        xData = get(h{j}(k), 'xData');
-                        xData(xData < 0) = 0;
-                        set(h{j}(k), 'yData', xData);
-                        yData = get(h{j}(k), 'yData');
-                        yData(yData < 0) = 0;
-                        set(h{j}(k), 'yData', yData);
-                    end
-                end
-                % Set the X and Y Scale to be logarithmic:
-                set(gca, 'XScale', 'log', 'YScale', 'log');
-                if ( nargout > 0 )
-                    varargout = h;
-                end 
+            if ( ~all(isfinite(s(:))) )
+                error('CHEBFUN:CHEBMATRIX:loglog:infBlock', ...
+                        'LOGLOG plot of infinite blocks is not supported.')
             end
+            
+            % Standard CHEBMATRIX/PLOT():
+            [h{1:3}] = plot(A, varargin{:});
+            % Strip negative data:
+            for j = 1:3 
+                for k = 1:numel(h{j})
+                    xData = get(h{j}(k), 'xData');
+                    xData(xData < 0) = 0;
+                    set(h{j}(k), 'yData', xData);
+                    yData = get(h{j}(k), 'yData');
+                    yData(yData < 0) = 0;
+                    set(h{j}(k), 'yData', yData);
+                end
+            end
+            % Set the X and Y Scale to be logarithmic:
+            set(gca, 'XScale', 'log', 'YScale', 'log');
+            if ( nargout > 0 )
+                varargout = h;
+            end 
+
         end
         
         function out = num2cell(A)
@@ -238,56 +239,57 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         function varargout = semilogx(A, varargin)
         %SEMILOGX   Semilogx plot of a CHEBMATRIX.
         %   Note that no warning is thrown for negative data.
+            
             s = cellfun(@(b) min(size(b)), A.blocks);
-            isQuasi = all(isfinite(s(:)));
             % Throw an error if A contains linear operators.
-            if ( ~isQuasi )
-                error('CHEBMATRIX:loglog:infBlock', ...
-                        'semilogx plot of infinite blocks is not supported.')
-            else  
-                % Standard CHEBMATRIX/PLOT():
-                [h{1:3}] = plot(A, varargin{:});
-                % Strip negative data:
-                for j = 1:3 % TODO: This
-                    for k = 1:numel(h{j})
-                        xData = get(h{j}(k), 'xData');
-                        xData(xData < 0) = 0;
-                        set(h{j}(k), 'xData', xData);
-                    end
-                end
-                % Set the XScale to be logarithmic:
-                set(gca, 'XScale', 'log');
-                if ( nargout > 0 )
-                    varargout = h;
+            if ( ~all(isfinite(s(:))) )
+                error('CHEBFUN:CHEBMATRIX:semilogx:infBlock', ...
+                        'SEMILOGX plot of infinite blocks is not supported.')
+            end
+
+            % Standard CHEBMATRIX/PLOT():
+            [h{1:3}] = plot(A, varargin{:});
+            % Strip negative data:
+            for j = 1:3 % TODO: This
+                for k = 1:numel(h{j})
+                    xData = get(h{j}(k), 'xData');
+                    xData(xData < 0) = 0;
+                    set(h{j}(k), 'xData', xData);
                 end
             end
+            % Set the XScale to be logarithmic:
+            set(gca, 'XScale', 'log');
+            if ( nargout > 0 )
+                varargout = h;
+            end
+                
         end
         
         function varargout = semilogy(A, varargin)
         %SEMILOGY   Semilogy plot of a CHEBMATRIX.
         %   Note that no warning is thrown for negative data.
+        
             s = cellfun(@(b) min(size(b)), A.blocks);
-            isQuasi = all(isfinite(s(:)));
             % Throw an error if A contains linear operators.
-            if ( ~isQuasi )
-                error('CHEBMATRIX:loglog:infBlock', ...
-                        'semilogy plot of infinite blocks is not supported.')
-            else  
-                % Standard CHEBMATRIX/PLOT():
-                [h{1:3}] = plot(A, varargin{:});
-                % Strip negative data:
-                for j = 1:3 % TODO: This
-                    for k = 1:numel(h{j})
-                        yData = get(h{j}(k), 'yData');
-                        yData(yData < 0) = 0;
-                        set(h{j}(k), 'yData', yData);
-                    end
+            if ( ~all(isfinite(s(:))) )
+                error('CHEBFUN:CHEBMATRIX:semilogy:infBlock', ...
+                        'SEMILOGY plot of infinite blocks is not supported.')
+            end
+
+            % Standard CHEBMATRIX/PLOT():
+            [h{1:3}] = plot(A, varargin{:});
+            % Strip negative data:
+            for j = 1:3 % TODO: This
+                for k = 1:numel(h{j})
+                    yData = get(h{j}(k), 'yData');
+                    yData(yData < 0) = 0;
+                    set(h{j}(k), 'yData', yData);
                 end
-                % Set the YScale to be logarithmic:
-                set(gca, 'YScale', 'log');
-                if ( nargout > 0 )
-                    varargout = h;
-                end
+            end
+            % Set the YScale to be logarithmic:
+            set(gca, 'YScale', 'log');
+            if ( nargout > 0 )
+                varargout = h;
             end
         end
 
