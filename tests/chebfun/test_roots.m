@@ -136,5 +136,18 @@ rExact = [0.33529141416564289113;
           1.7760894757659030239];
 err = r - rExact;
 pass(11) = norm(err, inf) < epslevel(f)*vscale(f);
-    
+
+%% Test sale invariance (#911)
+
+f = chebfun('exp(x)'); 
+r = roots(f-1);
+pass(12) = abs(r - eps) < 10*epslevel(f);
+f = chebfun('exp(1e-50*x)',[-1e50 1e50]);
+r = roots(f-1);
+pass(13) = abs(r - 1e50*eps) < 1e50*epslevel(f);
+f = chebfun('exp(1e50*x)',[-1e-50 1e-50]); 
+r = roots(f-1);
+pass(14) = abs(r - 1e-50*eps) < 1e-50*epslevel(f);
+
+
 end

@@ -91,7 +91,7 @@ NaNRow = NaN(1, numCols);
 r = NaNRow;
 
 % Zero pointValues are roots.
-index = abs(f.pointValues(1,:)) < vs*htol;
+index = abs(f.pointValues(1,:)) < vs*el;
 if ( any(index) )
     % Left pointValues is zero: (or sufficiently close)
     r(index) = dom(1);
