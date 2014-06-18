@@ -124,7 +124,7 @@ while ( ~terminate )
         damped = dampingInfo.damped;
         
         % Is the damping strategy telling us to give up?
-        giveUp = dampingInfo.giveUp;
+        giveUp = dampingInfo.giveUp*0;
         
     else % We are in undamped phase
         
@@ -148,12 +148,14 @@ while ( ~terminate )
                 % anymore. Have to resort back to damped iteration (but only if
                 % the user wanted damped Newton in the first place).
                 damped = prefDamped;
-                continue    % Go back to the start of loop
+                if ( damped ) 
+                    continue    % Go back to the start of loop
+                end
+            else
+                % Error estimate based on the norm of the update and the contraction
+                % factor.
+                errEst =  normDelta / (1 - cFactor^2);
             end
-            
-            % Error estimate based on the norm of the update and the contraction
-            % factor.
-            errEst =  normDelta / (1 - cFactor^2);
         end
         
     end
