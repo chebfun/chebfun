@@ -41,7 +41,7 @@ holdState = ishold;
 
 % We can only plot real against real:
 if ( ~isreal(f) || ~isreal(g) || ~isreal(h) )
-    warning('CHEBFUN:plot:complex', ...
+    warning('CHEBFUN:CHEBFUN:plot:complex', ...
         'Warning: Imaginary parts of complex X, Y, and/or Z arguments ignored.');
 end
 f = real(f);
@@ -140,7 +140,7 @@ set(h1, 'handlevis', 'off');
 set(h2, 'handlevis', 'off');
 set(h3, 'handlevis', 'off');
 % The dummy plot is invisible, but its handle is visible (for LEGEND).
-set(hDummy, 'handlevis', 'on', 'visible', 'off');     %  ¯\_(o.O)_/¯
+set(hDummy, 'handlevis', 'on', 'visible', 'off');     %  Â¯\_(o.O)_/Â¯
 
 % Give an output to the plot handles if requested:
 if ( nargout > 0 )
@@ -156,7 +156,7 @@ if ( numel(f) ~= numCols )
     if ( numel(f) == 1 )
         f = repmat(f, 1, numCols);
     else
-        error('CHEBFUN:plot:dim', ...
+        error('CHEBFUN:CHEBFUN:plot3:expand:dim', ...
               'CHEBFUN objects must have the same number of columns.');
     end
 end

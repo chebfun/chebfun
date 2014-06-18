@@ -1,5 +1,6 @@
 function [displayFig, displayTimer] = displayInfoInit(u0, pref)
 %DISPLAYINFOINIT   Utility routine for displaying linear solve progress.
+%
 % [displayFig, displayTimer] = displayInfoInit(U0, PREF) prints out information
 % before the Newton iteration starts. In particular if PREF.display = true it
 % prints the header information for subsequent calls to DISPLAYINFOITER. If

@@ -20,7 +20,7 @@ elseif ( isnumeric(BC) )
     % This means a Dirichlet condition set to the given value. 
     if ( numIn > 2 )
         % Allow only if we are dealing with a scalar problem.
-        error('CHEBFUN:chebop:parsebc:numeric', ...
+        error('CHEBFUN:CHEBOP:parseBC:numeric', ...
             'Can only assign scalar BCs to scalar problems');
     else
         result = @(u) u - BC;
@@ -38,7 +38,7 @@ elseif ( isa(BC, 'function_handle') )
             ( strcmp(type,'bc') && (nargin(BC) == numIn + 1) ) )
         result = BC;
     else
-        error('CHEBFUN:chebop:parsebc:inputs', ...
+        error('CHEBFUN:CHEBOP:parseBC:inputs', ...
             'Number of inputs to BCs do not match operator.');
     end
     
@@ -47,7 +47,7 @@ elseif ( strcmpi(BC, 'neumann') )
     if ( numIn <= 2 )
         result = @(u) diff(u);
     else
-        error('CHEBFUN:chebop:parsebc:neuman', ...
+        error('CHEBFUN:CHEBOP:parseBC:neuman', ...
             'Can only assign scalar BCs to scalar problems.');
     end
     
@@ -56,7 +56,7 @@ elseif ( strcmpi(BC, 'dirichlet') )
     if ( numIn <= 2 )
         result = @(u) u;
     else
-        error('CHEBFUN:chebop:parsebc:dirichlet', ...
+        error('CHEBFUN:CHEBOP:parseBC:dirichlet', ...
             'Can only assign scalar BCs to scalar problems.');
     end
     
@@ -67,7 +67,7 @@ elseif ( iscell(BC) ) && ( length(BC) == 2 ) && ( ischar(BC{2}) ) && ...
     
     % This behavior is retained only for backward compatibility and only for
     % problems with one variable. 
-    warning('CHEBFUN:chebop:parsebc:keywordbc',...
+    warning('CHEBFUN:CHEBOP:parseBC:keywordbc',...
         ['Keyword/value specifications of boundary conditions are ', ...
          'deprecated and may be removed in future versions of Chebfun.'])
             
@@ -76,12 +76,12 @@ elseif ( iscell(BC) ) && ( length(BC) == 2 ) && ( ischar(BC{2}) ) && ...
     elseif ( strcmpi(BC{2}, 'dirichlet') && ( numIn <= 2 ) )
         result = @(u) u - BC{1};
     else
-         error('CHEBFUN:chebop:parsebc:cell', ...
+         error('CHEBFUN:CHEBOP:parseBC:cell', ...
             'Unable to parse cell input to set BC.');
     end
     
 else
-    error('CHEBFUN:chebop:parsebc:unknown', 'Unsupported format of BCs.')
+    error('CHEBFUN:CHEBOP:parseBC:unknown', 'Unsupported format of BCs.')
 
 end
 

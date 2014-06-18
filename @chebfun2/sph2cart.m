@@ -8,10 +8,10 @@ function [x, y, z] = sph2cart( th, phi, r )
 %   TH is the counterclockwise angle in the xy plane measured from the
 %   positive x axis.  PHI is the elevation angle from the xy plane.
 %
-%   See also POL2CART.
+% See also POL2CART.
 
 % Copyright 2014 by The University of Oxford and The Chebfun2 Developers. 
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun2 information. 
+% See http://www.chebfun.org/ for Chebfun2 information. 
 
 % Spherical coordinates: 
 z = r .* sin( phi );

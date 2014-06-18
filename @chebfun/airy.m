@@ -16,7 +16,7 @@ function F = airy(K, F, scale, pref)
 % See also BESSELJ.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Parse the inputs as described in help text:
 if ( nargin == 1 )
@@ -63,7 +63,7 @@ elseif ( (scale == 1) && ((K == 2) || (K == 3)) )
 
 else
     % Invalid parameter sequence:
-    error('CHEBFUN:airy:params', 'Invalid paramter selection.');
+    error('CHEBFUN:CHEBFUN:airy:params', 'Invalid paramter selection.');
 
 end
 

@@ -181,7 +181,7 @@ while ( ~isempty(varargin) )
         % We can only plot real against real:
         isComplex = false;
         if ( ~isreal(f) || ~isreal(g) )
-            warning('CHEBFUN:plot:complex', ...
+            warning('CHEBFUN:CHEBFUN:plot:complex', ...
                 'Imaginary parts of complex X and/or Y arguments ignored.');
             f = real(f);
             g = real(g);
@@ -209,7 +209,7 @@ while ( ~isempty(varargin) )
             g = num2cell(g);
             if ( numel(f) > 1 && numel(g) > 1 )
                 if ( numel(f) ~= numel(g) )
-                    error('CHEBFUN:plot:dim', ...
+                    error('CHEBFUN:CHEBFUN:plot:dim', ...
                     'CHEBFUN objects must have the same number of columns.');
                 end
                 for k = 1:numel(f)
@@ -384,7 +384,7 @@ set(h2, 'handlevis', 'off');
 set(h3, 'handlevis', 'off');
 set(h4, 'handlevis', 'off');
 % The dummy plot is invisible, but its handle is visible (for LEGEND).
-set(hDummy, 'handlevis', 'on', 'visible', 'off');     %  ¯\_(o.O)_/¯
+set(hDummy, 'handlevis', 'on', 'visible', 'off');     %  Â¯\_(o.O)_/Â¯
 
 % Give an output to the plot handles if requested:
 if ( nargout > 0 )

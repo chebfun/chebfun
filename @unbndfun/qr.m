@@ -4,7 +4,7 @@ function varargout = qr(varargin) %#ok<STOUT>
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-error('CHEBFUN:UNBNDFUN:qr', ...
+error('CHEBFUN:UNBNDFUN:qr:qr', ...
     'QR decomposition for UNBNDFUN is not supported.');
 
 end

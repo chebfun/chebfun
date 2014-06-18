@@ -12,7 +12,7 @@ function h = rdivide(f,g)
 % See also LDIVIDE.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 
 if ( isempty( f ) || isempty( g ) ) 
@@ -22,13 +22,13 @@ end
 
 if ( isa(f, 'chebfun2') && isa(g, 'chebfun2') )    % CHEBFUN2 ./ CHEBFUN2 
     if ( ~domainCheck(f, g))
-       error('CHEBFUN2:RDIVIDE:DOMAINS', 'Domains inconsistent.') 
+       error('CHEBFUN:CHEBFUN2:rdivide:domains', 'Domains inconsistent.') 
     end
     h = chebfun2( @(x,y) feval(f,x,y)./feval(g,x,y) , f.domain ); 
     
 elseif ( isa(f, 'chebfun2') && isa(g, 'double') )  % CHEBFUN2 ./ double 
     if ( g == 0 )
-        error('CHEBFUN2:rdivide:DivisionByZero', ...
+        error('CHEBFUN:CHEBFUN2:rdivide:divByZero', ...
             'Division by zero or near zero.')
     end
     h = f.* ( 1 / g ) ;
@@ -38,7 +38,7 @@ elseif ( isa(f, 'double') && isa(g, 'chebfun2') )
        if ( ( bol == 1 ) && ( wzero == 0 ) )
            h = chebfun2( @(x,y) f ./ feval(g, x, y) , g.domain );
        else
-          error('CHEBFUN2:RDIVIDE:ZERO', ...
+          error('CHEBFUN:CHEBFUN2:rdivide:zero', ...
               'Attempting to invert a CHEBFUN2 with a root.'); 
        end
        
@@ -46,7 +46,7 @@ elseif ( isa(f,'chebfun2') && isa(g,'chebfun2v') )
     % TODO: RDIVIDE on the components: 
     
 else
-    error('CHEBFUN2:rdivide:Inputs', 'Unrecognised operation.');
+    error('CHEBFUN:CHEBFUN2:rdivide:badInputs', 'Unrecognised operation.');
     
 end
 

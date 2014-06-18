@@ -19,11 +19,12 @@ function f = defineInterval(f, subInt, g)
 % See also SUBSASGN, RESTRICT, DEFINEPOINT.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Not a valid subdomain:
 if ( any(diff(subInt) <= 0) )
-    error('CHEBFUN:defineInterval:invalidDomain', 'Not a valid domain.');
+    error('CHEBFUN:CHEBFUN:defineInterval:invalidDomain', ...
+        'Not a valid domain.');
 end
 
 % Number of columns of F.
@@ -56,7 +57,7 @@ end
 % Make sure dimensions add up:
 numColsG = numColumns(g);
 if ( ~isempty(g) && (numColsG ~= numColsF) )
-    error('CHEBFUN:defineInterval:numCols', ...
+    error('CHEBFUN:CHEBFUN:defineInterval:numCols', ...
         'Dimensions of matrices being concatenated are not consistent.');
 end
 
@@ -105,7 +106,7 @@ if ( ~isempty(g) )
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% DELETION %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 else
     if ( (subInt(2) < f.domain(1)) || (subInt(1) > f.domain(2)) )
-        error('CHEBFUN:define:badremoveinterval',...
+        error('CHEBFUN:CHEBFUN:defineInterval:badremoveinterval',...
             'Interval to be removed is outside the domain.')
         
     else

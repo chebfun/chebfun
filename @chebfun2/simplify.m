@@ -6,7 +6,7 @@ function f = simplify( f )
 % simplifies the polynomial degree of F, but not the rank. 
 
 % Copyright 2014 by The University of Oxford and The Chebfun2 Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun2 information.
+% See http://www.chebfun.org/ for Chebfun2 information.
 
 % Simplify the column and row slices. 
 f.cols = simplify( f.cols ); 

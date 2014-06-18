@@ -145,7 +145,7 @@ delta = deltamin;
 
 % Warn the user if we failed to converge.
 if ( delta/normf > opts.tol )
-    warning('CHEBFUN:remez:convergence', ...
+    warning('CHEBFUN:CHEBFUN:remez:convergence', ...
         ['Remez algorithm did not converge after ', num2str(iter), ...
          ' iterations to the tolerance ', num2str(opts.tol), '.']);
 end
@@ -201,7 +201,7 @@ for k = 1:2:length(varargin)
     elseif ( strcmpi('plotfcns', varargin{k}) )
         opts.plotIter = true;
     else
-        error('CHEBFUN:remez:badInput', ...
+        error('CHEBFUN:CHEBFUN:remez:badInput', ...
             'Unrecognized sequence of input parameters.')
     end
 end
@@ -226,7 +226,7 @@ if ( (numel(f.funs) > 1) || (length(f) > 128) )
 end
 
 % Compute the Chebyshev coefficients.
-c = chebpoly(f, length(f));
+c = chebcoeffs(f, length(f));
 c(end) = 2*c(end);
 
 % Check for symmetries and reduce degrees accordingly.
@@ -312,7 +312,8 @@ qk_all = C(:,1:n+1)*v;
 pos =  find(abs(sum(sign(qk_all))) == N + 2);  % Sign changes of each qk.
 
 if ( isempty(pos) || (length(pos) > 1) )
-    error('CHEBFUN:remez:badGuess', 'Trial interpolant too far from optimal');
+    error('CHEBFUN:CHEBFUN:remez:badGuess', ...
+        'Trial interpolant too far from optimal');
 end
 
 qk = qk_all(:,pos);       % Keep qk with unchanged sign.
@@ -348,7 +349,8 @@ function [xk, norme, err_handle, flag] = exchange(xk, h, method, f, p, q, Npts)
 
 % Compute extrema of the error.
 e_num = (q.^2).*diff(f) - q.*diff(p) + p.*diff(q);
-rr = [f.domain(1) ; roots(e_num); f.domain(end)];
+rts = roots(e_num, 'noImps');
+rr = [f.domain(1) ; rts; f.domain(end)];
 
 % Function handle output for evaluating the error.
 err_handle = @(x) feval(f, x) - feval(p, x)./feval(q, x);

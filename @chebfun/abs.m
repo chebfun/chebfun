@@ -5,7 +5,7 @@ function F = abs(F, pref)
 % See also SIGN, ANGLE, UNWRAP, HYPOT.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Trivial case: (F is empty)
 if ( isempty(F) )

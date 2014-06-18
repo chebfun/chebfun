@@ -8,7 +8,7 @@ function H = cross( F, G )
 %   product.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information. 
+% See http://www.chebfun.org/ for Chebfun information. 
 
 % Empty check: 
 if ( isempty( F ) || isempty( G ) )
@@ -28,7 +28,8 @@ elseif ( F.nComponents == 3 && G.nComponents == 3 ) % 3D curl
           Fc{3} .* Gc{1} - Fc{1} .* Gc{3} ; ...
           Fc{1} .* Gc{2} - Fc{2} .* Gc{1} ];
 else
-    error('CHEBFUN2V:CROSS', 'CHEBFUN2V objects must be both 2- or 3-vectors.');
+    error('CHEBFUN:CHEBFUN2V:cross:components', ...
+        'CHEBFUN2V objects must be both 2- or 3-vectors.');
 end
 
 end

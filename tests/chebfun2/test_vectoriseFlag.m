@@ -22,7 +22,7 @@ f2 = chebfun2(@(x,y) x*y, 'vectorize');
 pass(4) = ( norm( f1 - f2 ) < tol ); 
 
 % Check the following complex example: 
-g = chebfun2(@(z) sum(z.^(0:9)),[-1 1 -1 1]*pi/2,'vectorise');
+g = chebfun2(@(z) sum(z.^(0:9)),[-1 1 -1 1]*pi/2, 'vectorise');
 % Are the zeros of the roots of unity? 
 r = roots( g ); 
 pass(5) = all( abs( abs( r ) - 1 ) < 50*tol );

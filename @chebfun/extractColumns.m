@@ -27,7 +27,8 @@ elseif ( (numel(colIdx) == numel(numCols)) && all(colIdx == 1:numCols) )
     return
     
 elseif ( max(colIdx) > numCols )
-    error('CHEBFUN:subsref:dimensions', 'Index exceeds CHEBFUN dimensions.')    
+    error('CHEBFUN:CHEBFUN:extractColumns:dimensions', ...
+        'Index exceeds CHEBFUN dimensions.')
     
 end
 

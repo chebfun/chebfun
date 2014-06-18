@@ -9,7 +9,7 @@ end
 
 % Create preference structure with splitting enabled.
 pref_split = pref;
-pref_split.enableBreakpointDetection = 1;
+pref_split.splitting = 1;
 
 % Smooth operator with smooth functions.
 pass(1) = test_one_compose_binary(@(x) cos(2*(x + 0.2)), [-1, 1], ...

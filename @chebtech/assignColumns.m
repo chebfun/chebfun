@@ -3,12 +3,22 @@ function h = assignColumns(f, colIdx, g)
 %   G = ASSIGNCOLUMNS(F, COLIDX, G) assigns the columns specified by the row
 %   vector COLIDX from the FUN F so that F(:, COLIDX) = G. COLIDX need not be
 %   increasing in order or unique, but must contain only integers in the range
-%   [1, M] (where F has M columns) and satisfy LENGTH(COLIDX) = SIZE(G, 2).
+%   [1, M] (where F has M columns) and satisfy LENGTH(COLIDX) = SIZE(G, 2) or
+%   ISEMPTY(G);
 %
 % See also EXTRACTCOLUMNS, MAT2CELL.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
+
+% g is empty - remove columns:
+if ( isempty(g) )
+    h = f;
+    h.coeffs(:, colIdx) = [];
+    h.vscale = h.vscale(colIdx);
+    h.epslevel = f.epslevel(colIdx);
+    return
+end
 
 % Prolong so that f and g have the same length:
 if ( length(f) > length(g) )

@@ -11,7 +11,8 @@ function X = pinv(A, tol)
 % See http://www.chebfun.org/ for Chebfun information. 
 
 if ( A(1).isTransposed ) 
-   error('CHEBFUN:pinv:row', 'PINV only defined for column CHEBFUN objects.')
+    error('CHEBFUN:CHEBFUN:pinv:row', ...
+        'PINV only defined for column CHEBFUN objects.')
 end
 
 % Compute the SVD:

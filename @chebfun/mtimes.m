@@ -6,10 +6,10 @@ function f = mtimes(f, g)
 %   returns the m-by-n matrix of pairwise inner products. F and G must have
 %   the same domain.
 %
-%   See also TIMES.
+% See also TIMES.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( ~isa(f, 'chebfun') )   % ??? * CHEBFUN
 
@@ -46,7 +46,8 @@ elseif ( isnumeric(g) )     % CHEBFUN * double
         % QUASIMATRIX case:
         numCols = numel(f);
         if ( length(g) ~= numCols && min(size(g)) ~= 1 )
-            error('CHEBFUN:plus:dims', 'Matrix dimensions must agree.');
+            error('CHEBFUN:CHEBFUN:mtimes:dims', ...
+                'Matrix dimensions must agree.');
         end
         % Transpose g if f is a row CHEBFUN:
         if ( f(1).isTransposed )
@@ -62,7 +63,7 @@ elseif ( isnumeric(g) )     % CHEBFUN * double
 
 elseif ( ~isa(g, 'chebfun') )
 
-    error('CHEBFUN:mtimes:unknown', ...
+    error('CHEBFUN:CHEBFUN:mtimes:unknown', ...
           ['Undefined function ''mtimes'' for input arguments of type ' ...
            '%s and %s.'], class(f), class(g));
 else                        % CHEBFUN' * CHEBFUN
@@ -70,11 +71,11 @@ else                        % CHEBFUN' * CHEBFUN
     % We can't do MTIMES() on two CHEBFUNs that have the same transpose state.
     if ( f(1).isTransposed == g(1).isTransposed )
         if ( numColumns(f) ~= numColumns(g) )
-            error('CHEBFUN:mtimes:dims', ...
+            error('CHEBFUN:CHEBFUN:mtimes:dims', ...
                 ['Matrix dimensions must agree. Use f.*g to multiply ' ...
                  'two CHEBFUN objects.']);
         else
-            error('CHEBFUN:mtimes:dims', ...
+            error('CHEBFUN:CHEBFUN:mtimes:dims', ...
                 'Matrix dimensions must agree.');
         end
     end

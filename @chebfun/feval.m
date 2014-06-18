@@ -22,7 +22,7 @@ function out = feval(F, x, varargin)
 % See also SUBSREF.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % If F or x are empty, there's nothing to do.
 if ( isempty(F) )
@@ -48,7 +48,8 @@ if ( ischar(x) )
     elseif ( any(strcmpi(x, {'right', 'end', '+'})) )
         out = feval(F, dom(end));
     else
-        error('CHEBFUN:feval:strInput', 'Unknown input argument "%s".', x);
+        error('CHEBFUN:CHEBFUN:feval:strInput', ...
+            'Unknown input argument "%s".', x);
     end
     return
 end
@@ -95,10 +96,10 @@ if ( nargin > 2 )
     lrFlag = strcmpi(lr, {'left', 'right', '-', '+'});
     if ( ~any(lrFlag) )
         if ( ischar(lr) )
-            error('CHEBFUN:feval:leftrightchar',...
+            error('CHEBFUN:CHEBFUN:feval:leftRightChar',...
                 'Unknown input argument "%s".', lr);
         else
-            error('CHEBFUN:feval:leftright', 'Unknown input argument.');
+            error('CHEBFUN:CHEBFUN:feval:leftRight', 'Unknown input argument.');
         end
     end
 end

@@ -22,7 +22,7 @@ try
     Q = null(f.');
     pass(5) = false;
 catch ME
-    pass(5) = strcmp(ME.identifier, 'CHEBFUN:null:row');
+    pass(5) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:null:row');
 end
 
 end

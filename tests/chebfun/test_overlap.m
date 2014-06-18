@@ -23,7 +23,7 @@ try
     [f2, g2] = overlap(f, g);
     pass(2) = false;
 catch ME
-    pass(2) = strcmp(ME.identifier, 'CHEBFUN:overlap:domains');
+    pass(2) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:overlap:domains');
 end
 
 % Check behavior in the basic case.

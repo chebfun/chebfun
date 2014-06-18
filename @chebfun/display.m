@@ -6,6 +6,8 @@ function display(X)
 %   DISPLAY(F) is called automatically when the semicolon is not used at the end
 %   of a statement that results in a CHEBFUN.
 %
+%   Note that the VSCALE displayed is that returned by VSCALE(F, 'SUP').
+%
 % See also DISP.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
