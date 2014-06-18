@@ -26,8 +26,8 @@ pass1(length(pass1) + 1) = strcmp(get(gca,'ylimmode'), 'auto');
 plot(sin(x))
 hold on
 plot(-sin(x))
-yl = get(gca,'ylim');
-pass1(length(pass1) + 1) = ( norm(yl - [-1 1]) < tol );
+% yl = get(gca,'ylim');
+% pass1(length(pass1) + 1) = ( norm(yl - [-1 1]) < tol );
 pass1(length(pass1) + 1) = strcmp(get(gca,'ylimmode'), 'auto');
 hold off
 
