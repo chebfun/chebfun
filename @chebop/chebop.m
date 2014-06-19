@@ -129,7 +129,7 @@ classdef (InferiorClasses = {?double}) chebop
 %   N.lbc = @(p, y) [y - 1 ; diff(y)];
 %   N.rbc = @(p, y) y - 1;
 %   N.init = [1 ; chebfun(1)];
-%   plot(N\0)chebop
+%   plot(N\0)
 %
 % See also CHEBOP/MTIMES, CHEBOP/MLDIVIDE, CHEBOPPREF.
 
