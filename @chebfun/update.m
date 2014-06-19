@@ -48,6 +48,8 @@ end
 startDir = pwd;
 % Find directory in which Chebfun was installed:
 installDir = chebfunroot();
+% homeDir is the directory below installDir:
+homeDir = fileparts(installDir);
 % Navigate there:
 cd(installDir)
 
@@ -113,24 +115,33 @@ try % Wrap everything in a try-catch statement to avoid a disaster.
 
     % Navigate down a directory:
     cd ..
+    
+    % Get the requested version of Chebfun:
+    if ( strcmp(version, 'release') )
+        disp('Downloading .zip file of latest stable release ...')
+        unzip([gitHubURL, 'archive/master.zip'], homeDir);
+    else
+        disp('Downloading .zip file of latest development version ...')
+        unzip([gitHubURL, 'archive/development.zip'], homeDir);
+    end
+    
     % Remove the Chebfun directory:
     disp(['Removing ', installDir, '/ ...']);
     warnState = warning('off', 'MATLAB:RMDIR:RemovedFromPath');
     rmdir(installDir, 's');
     warning(warnState);
-    
-    % Get the requested version of Chebfun:
+            
+    % Move the unpacked zip file to the chebfunroot direcrtory.
+    disp('Extracting .zip file ...')
     if ( strcmp(version, 'release') )
-        disp('Downloading .zip file of latest stable release ...')
-        unzip([gitHubURL, 'archive/master.zip'], installDir);
         % Move things out of the chebfun-master folder to the root folder.
-        movefile(fullfile(installDir, 'chebfun-master', '*'), installDir, 'f')
+        movefile(fullfile(homeDir, 'chebfun-master', '*'), installDir, 'f')
+        rmdir(fullfile(homeDir, 'chebfun-master'), 's');
     else
-        disp('Downloading .zip file of latest development version ...')
-        unzip([gitHubURL, 'archive/development.zip'], installDir);
         % Move things out of the chebfun-development folder to the root folder.
-        movefile(fullfile(installDir, 'chebfun-development', '*'), ...
+        movefile(fullfile(homeDir, 'chebfun-development', '*'), ...
             installDir, 'f')
+        rmdir(fullfile(homeDir, 'chebfun-development'), 's');
     end
     disp('Extracting .zip file ...')
     
@@ -164,8 +175,9 @@ try % Wrap everything in a try-catch statement to avoid a disaster.
 %     disp(['We recommend you run ' str ' to ensure everything is working.'])
     
 catch ME
-    
+       
     % Return to the starting directory:
+    mkdir(startDir)
     cd(startDir)
     
     % Something went wrong. Throw an error:
