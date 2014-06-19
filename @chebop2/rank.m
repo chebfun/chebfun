@@ -6,7 +6,9 @@ function r = rank(N)
 
 A = N.coeffs; 
 if ( iscell(A) )
-   error('The operator has non-scalar variable coefficients. We do not support this.')
+    error('CHEBFUN:CHEBOP2:rank:variableCoeffs', ...
+        ['The operator has non-scalar variable coefficients. We do not ' ...
+         'support this.'])
 else
     r = rank(A);
 end

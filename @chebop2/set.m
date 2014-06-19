@@ -58,7 +58,8 @@ while ( length(propertyArgIn) >= 2 )
             if isa(val, 'function_handle')
                 % Do nothing.
             else
-                error('CHEBOP2:set:opType', 'Operator must be a function handle.')
+                error('CHEBFUN:CHEBOP2:set:opType', ...
+                    'Operator must be a function handle.')
             end
             N.op = val;
         case 'xorder'
@@ -72,7 +73,8 @@ while ( length(propertyArgIn) >= 2 )
         case 'V'
             N.V = val;
         otherwise
-            error('CHEBOP2:set:unknownprop','Unknown chebop2 property.')
+            error('CHEBFUN:CHEBOP2:set:unknownProp', ...
+                'Unknown CHEBOP2 property.')
     end
     
 end

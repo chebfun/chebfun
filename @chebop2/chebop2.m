@@ -76,10 +76,11 @@ classdef chebop2
                     if ( diff(ends(1:2)) > 0 && diff(ends(3:4)) > 0 )  
                         dom = ends;
                     else
-                        error('CHEBOP2:CONSTRUCTOR:DOMAIN', 'Empty domain.');
+                        error('CHEBFUN:CHEBOP2:chebop2:emptyDomain', ...
+                            'Empty domain.');
                     end
                 else
-                    error('CHEBOP2:CONSTRUCTOR:INPUT',...
+                    error('CHEBFUN:CHEBOP2:chebop2:badDomain',...
                         'Argument should be a domain given by four doubles.')
                 end
             else
@@ -93,7 +94,7 @@ classdef chebop2
                     N = chebop2(@(u) u, varargin{1});  
                     return
                 else
-                    error('CHEBOP2:INPUTS',...
+                    error('CHEBFUN:CHEBOP2:chebop2:badArg',...
                         'First argument is not an operator or domain.')
                 end
             end
@@ -120,7 +121,8 @@ classdef chebop2
                     end
                     
                 elseif ( nargin(fh) == 2 )
-                    error('Did you intend to have @(x,y,u)?')
+                    error('CHEBFUN:CHEBOP2:chebop2:badOp1', ...
+                        'Did you intend to have @(x,y,u)?')
                 elseif ( nargin(fh) == 3 )
                     % The coefficients of the PDE are now variable 
                     % coefficient.
@@ -133,12 +135,12 @@ classdef chebop2
                     v = fh(x, y, u);
                     A = v.jacobian;  % Cell array of variable coefficients.
                 else
-                    error('CHEBOP2:CONSTRUCTOR:INPUT',...
+                    error('CHEBFUN:CHEBOP2:chebop2:badOp2',...
                         'Operator should be @(u) or @(x,y,u).')
                 end
                 
             else
-                error('CHEBOP2:CONSTRUCTOR:INPUT',...
+                error('CHEBFUN:CHEBOP2:chebop2:badOp3',...
                     'First argument should be an operator')
             end
             
@@ -184,12 +186,12 @@ classdef chebop2
             N.yorder = ydifforder;
             
             % Issue a warning to the user for the first CHEBOP2:
-            warning('CHEBOP2:EXPERIMENTAL',...
-                ['Chebop2 is a new experimental feature.'...
+            warning('CHEBFUN:CHEBOP2:chebop2:experimental',...
+                ['CHEBOP2 is a new experimental feature.'...
                 'It has not been tested to the same extent as other'...
                 'parts of the software.']);
             % Turn it off:
-            warning('off', 'CHEBOP2:EXPERIMENTAL');
+            warning('off', 'CHEBFUN:CHEBOP2:chebop2:experimental');
             
         end
         

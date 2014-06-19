@@ -33,5 +33,6 @@ switch propName
         % Allow access to any of the properties of F via GET:
         out = f.(propName);
     otherwise
-        error('CHEBOP2:get:propnam', [propName,' is not a valid chebop2 property.'])
+        error('CHEBFUN:CHEBOP2:get:propName', ...
+            [propName,' is not a valid chebop2 property.'])
 end
