@@ -53,26 +53,6 @@ classdef chebfunpref < chebpref
 %      singularities are being created, (e.g., by SQRT(F) at points where a
 %      CHEBFUN F passes through zero). See SINGFUN for more information.
 %
-%   enableDeltaFunctions - Enable delta functions.
-%     true
-%    [false]
-%       
-%      If true, the deltafun class will be invoked to manage any delta 
-%      functions present in the object.
-%
-%   deltaPrefs                 - Preferences for delta functions.
-%
-%      deltaTol                - Tolerance for magnitude of delta functions.
-%       [1e-11]
-%
-%         This is the tolerance up to which delta functions will be negligible.
-%
-%      proximityTol            - Minimum distance between delta functions.
-%       [1e-11]
-%
-%         If two delta functions are located closer than this tolerance, they 
-%         will be merged.
-%
 %   blowupPrefs                - Preferences for blowup / singularity detection.
 %
 %      exponentTol             - Tolerance for exponents.
@@ -90,6 +70,26 @@ classdef chebfunpref < chebpref
 %         
 %         The default singularity type to be used when singularity detection is
 %         enabled and no singType is provided.
+%
+%   enableDeltaFunctions - Enable delta functions.
+%     true
+%    [false]
+%       
+%      If true, the DELTAFUN class will be invoked to manage any delta 
+%      functions present in the object.
+%
+%   deltaPrefs                 - Preferences for delta functions.
+%
+%      deltaTol                - Tolerance for magnitude of delta functions.
+%       [1e-11]
+%
+%         This is the tolerance up to which delta functions will be negligible.
+%
+%      proximityTol            - Minimum distance between delta functions.
+%       [1e-11]
+%
+%         If two delta functions are located closer than this tolerance, they 
+%         will be merged.
 %
 %   tech                       - Representation technology.
 %    ['chebtech2']
