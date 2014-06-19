@@ -10,12 +10,12 @@ function varargout = plotcoeffs(f, varargin)
 %   'LOGLOG', the coefficients will be displayed on a log-log scale. If S
 %   contains a string 'NOEPSLEVEL', the EPSLEVEL is not plotted.
 %
-%   H = PLOTCOEFFS(F) returns a column vector of handles to lineseries
-%   objects. The final entry is that of the EPSLEVEL plot.
+%   H = PLOTCOEFFS(F) returns a column vector of handles to lineseries objects.
+%   The final entry is that of the EPSLEVEL plot.
 %
-%   Note: to make the PLOTCOEFFS easier to read, zero coefficients have a
-%   small value added to them (typically F.EPSLEVEL) so that the curve displayed
-%   is continuous.
+%   Note: to make the PLOTCOEFFS easier to read, zero coefficients have a small
+%   value added to them (typically F.EPSLEVEL) so that the curve displayed is
+%   continuous.
 %
 % See also CHEBCOEFFS, PLOT.
 
@@ -33,6 +33,7 @@ end
 % Set defaults:
 loglogPlot = false;
 plotEpsLevel = true;
+doBar = false;
 
 % Copy input arguments:
 args = varargin;
@@ -45,6 +46,9 @@ while ( j <= length(args) )
         args(j) = [];
     elseif ( strcmpi(args{j}, 'noepslevel') )
         plotEpsLevel = false; 
+        args(j) = [];
+    elseif ( strcmpi(args{j}, 'barplot') )
+        doBar = true;
         args(j) = [];
     else
         j = j + 1;
@@ -60,8 +64,8 @@ absCoeffs = abs(f.coeffs);
 % Add a tiny amount to zeros to make plots look nicer:
 if ( f.vscale > 0 )
     % (Min of epslevel*vscale and the miniumum non-zero coefficient)
-    absCoeffs(~absCoeffs) = min( min(f.epslevel.*f.vscale), ...
-                                 min(absCoeffs(logical(absCoeffs))) );                             
+%     absCoeffs(~absCoeffs) = min( min(f.epslevel.*f.vscale), ...
+%                                  min(absCoeffs(logical(absCoeffs))) );                             
 else
     % (add epslevel for zero CHEBTECHs)
     absCoeffs = absCoeffs + f.epslevel;
@@ -70,25 +74,26 @@ end
 % Get the size:
 [n, m] = size(absCoeffs);
 
+xx = n-1:-1:0;
+yy = absCoeffs;
+if ( any(doBar) )
+    [xx, yy] = padData(xx,yy);
+end
+
+% Plot the coeffs:
+h = semilogy(xx, yy, args{:}); hold on
+
 if ( plotEpsLevel )
-    % Plot the coeffs AND the epslevel:
-    h = semilogy(n-1:-1:0, absCoeffs, args{:});
-    hold on
+    % Plot the epslevel:
     h2 = semilogy([0 n-1], repmat(f.vscale.*f.epslevel, 2, 1), args{:});
     for k = 1:m
         c = get(h(k), 'color');
         set(h2(k), 'linestyle', ':', 'linewidth', 1, 'marker', 'none', 'color', c);
     end
+    set(h2, 'handlevis', 'off');
 else
-    % Plot just the coefficients:
-    h = semilogy(n:-1:1, absCoeffs, args{:});
     h2 = plot([]);
-end
-
-% For constant functions, plot a dot:
-if ( n == 1 )
-    set(h, 'marker', 'o');
-    set(h2, 'marker', 'o');
+    set(h2, 'handlevis', 'off');
 end
 
 % Do a loglog plot:
@@ -101,10 +106,30 @@ if ( ~holdState )
     hold off
 end
 
+% Adjust xLim:
+xLim = get(gca, 'xlim');
+set(gca, 'xLim', [min(xLim(1), 0), max(xLim(2), n)])
+
 % Give an output if one was requested:
 if ( nargout > 0 )
     varargout{1} = h;
     varargout{2} = h2;
 end
 
+end
+
+function [xx, yy] = padData(x, y)
+% Pad the x and y data to make a bar plot:
+xx = [x+.5 ; x-.5 ; x-.5];
+xx(xx<0) = 0;
+xx = xx(:);
+
+[n, m] = size(y);
+nans = NaN(n, 1);
+yy = zeros(3*n, m);
+for k = 1:size(y,2)
+    yk = y(:,k);
+    yk = [yk yk nans].';
+    yy(:,k) = yk(:);
+end
 end
