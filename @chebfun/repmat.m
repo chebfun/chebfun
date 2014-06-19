@@ -13,7 +13,7 @@ function G = repmat(f, M, N)
 % Parse inputs:
 if ( nargin == 2 )
     if ( length(M) ~= 2 )
-        error('CHEBFUN:repmat:NotEnoughInputs', ...
+        error('CHEBFUN:CHEBFUN:repmat:notEnoughInputs', ...
             'Requires REPMAT(F, M, N) or REPMAT(F, [M, N]).')
     end
     N = M(2);  
@@ -23,7 +23,7 @@ end
 if ( f(1).isTransposed )
     % REPMAT a row CHEBFUN:
     if ( N ~= 1 )
-        error('CHEBFUN:repmat:row',...
+        error('CHEBFUN:CHEBFUN:repmat:row',...
             'Use REPMAT(F, M, 1) to replicate and tile row CHEBFUN objects.')
     else
         G = repmat({f}, M, 1);
@@ -32,7 +32,7 @@ if ( f(1).isTransposed )
 else
     % REPMAT a column CHEBFUN:
     if ( M ~= 1 )
-        error('CHEBFUN:repmat:col',...
+        error('CHEBFUN:CHEBFUN:repmat:col',...
             'Use REPMAT(F, 1, N) to replicate and tile column CHEBFUN objects.')
     else
         G = repmat({f}, 1, N);

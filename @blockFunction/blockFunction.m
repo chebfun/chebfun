@@ -2,19 +2,21 @@ classdef blockFunction
 %BLOCKFUNCTION   Convert linear operator to callable function.
 %   This class is not intended to be called directly by the end user.
 %
-%   See also LINOP, CHEBOP, CHEBOPPREF.
+% See also LINOP, CHEBOP, CHEBOPPREF.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Developer notes
-%
-% This class converts a LINBLOCK object into a callable function suitable
-% for application to a CHEBFUN.
+% DEVELOPER NOTE:
+%   This class converts a LINBLOCK object into a callable function suitable for
+%   application to a CHEBFUN.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    properties ( Access=public )
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS PROPERTIES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    properties ( Access = public )
         % This property is assigned the callable function that does the
         % correct operation when called on CHEBFUN objects.
         func = [];
@@ -22,7 +24,10 @@ classdef blockFunction
         domain;
     end
     
-    methods
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS CONSTRUCTOR:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
         
         function A = blockFunction(varargin)
         % BLOCKFUNCTION     Constructor of BLOCKFUNCTION objects.
@@ -54,6 +59,12 @@ classdef blockFunction
                 A.func = varargin{1};
             end
         end
+    end    
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
         
         function C = cumsum(A, m)
         %CUMSUM   
@@ -98,7 +109,7 @@ classdef blockFunction
         end
                                
         function C = mtimes(A, B)
-%*      Composition of BLOCKFUNCTION objects.
+        %*      Composition of BLOCKFUNCTION objects.
             if ( isnumeric(A) )
                 C = blockFunction( @(z) A*B.func(z) );
             else
@@ -107,10 +118,26 @@ classdef blockFunction
         end
 
         function F = mult(A, f)
-        %MULT 
-        %
-        % Returns a BLOCKFUNCTION corresponding to a call to chebfun/times.
-            F = blockFunction( @(z) times(f, z) );
+            %MULT
+            %
+            % Returns a BLOCKFUNCTION corresponding to a call to CHEBFUN/TIMES.
+            
+            % Note, we wrap this in a nested function to support scalar
+            % expansion.
+            F = blockFunction( @(z) mytimes(f, z) );
+            
+            function out = mytimes(f, z)
+                % Allow scalar expansion.
+                if ( size(f, 2) == 1 )
+                    for k = 1:size(z, 2)
+                        z(:,k) = times(f, z(:,k));
+                    end
+                    out = z;
+                else
+                    out = times(f, z);
+                end
+            end
+            
         end
                 
         function C = plus(A, B)

@@ -10,7 +10,7 @@ function f = definePoint(f, s, v)
 % See also SUBSASGN, RESTRICT, DEFINEINTERVAL.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Trival empty case:
 if ( isempty(s) )
@@ -45,13 +45,13 @@ function f = columnDefinePoint(f, s, v)
 
 % Some error checking:
 if ( isempty(v) )
-    error('CHEBFUN:definePoint:conversion',...
+    error('CHEBFUN:CHEBFUN:definePoint:columnDefinePoint:conversion',...
             'Cannot assign empty values to points.')
 elseif ( ~isa(v, 'numeric') )
-    error('CHEBFUN:definePoint:conversion',...
+    error('CHEBFUN:CHEBFUN:definePoint:columnDefinePoint:conversion',...
             ['Conversion to numeric from ', class(v), ' is not possible.'])
 elseif ( (min(s) < f.domain(1)) || (max(s) > f.domain(end)) )
-    error('CHEBFUN:definePoint:outbounds',...
+    error('CHEBFUN:CHEBFUN:definePoint:columnDefinePoint:outbounds',...
         'Cannot introduce points outside the domain.')
 end
 
@@ -73,13 +73,14 @@ elseif ( (size(v, 2) == numCols) && (size(v, 1) == 1) )
 elseif ( (numCols == 1) && (min(size(v)) == 1) && (length(v) == length(s)) )
     v = v(:);
 elseif ( (numel(s) ~= size(v, 1)) || (numCols ~= size(v, 2)) )
-    error('CHEBFUN:definePoint:dimensions',...
+    error('CHEBFUN:CHEBFUN:definePoint:columnDefinePoint:dimensions',...
             'Subscripted assignment dimension mismatch.')
 end
 
 % Restrict f to the new subdomains:
-snew = [f.domain(1) ; s(:) ; f.domain(end)]';
-f = restrict(f, snew);
+sNew = [f.domain(1) ; s(:) ; f.domain(end)]';
+sNew = unique(sNew);
+f = restrict(f, sNew);
 
 % Assign the values in v to the new pointValues;
 [mem, loc] = ismember(s, f.domain);

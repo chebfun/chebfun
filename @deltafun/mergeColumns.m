@@ -16,7 +16,7 @@ tol = pref.deltaPrefs.proximityTol;
 
 m = size(A, 2);
 if ( length(v) ~= m || size(v, 1) > 1 )
-    error('CHEBFUN:DELTAFUN:mergeColumns', ...
+    error('CHEBFUN:DELTAFUN:mergeColumns:mergeColumns', ...
         'Number of columns of A should be equal to the length of the vector v.');
 end
 

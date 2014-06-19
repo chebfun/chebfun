@@ -9,10 +9,10 @@ function varargout = chebpolyval2( f, varargin )
 %   [U, D, V] = CHEBPOLYVAL2(F,M,N) returns the values of F on a M-by-N
 %   Chebyshev tensor grid.
 %
-% See also CHEBPOLY2, CHEBPOLYPLOT2. 
+% See also CHEBCOEFFS2, PLOTCOEFFS2. 
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check. 
 if ( isempty( f ) )
@@ -24,7 +24,7 @@ if ( nargin == 1 )
     % Get degrees:
     [m, n] = length( f );  
 elseif ( nargin == 2 ) 
-    error('CHEBFUN2:CHEBPOLYVAL2:INPUTS', 'Dimension not specified.'); 
+    error('CHEBFUN:CHEBFUN2:chebpolyval2:inputs', 'Dimension not specified.'); 
 else
     m = varargin{ 1 }; 
     n = varargin{ 2 }; 
@@ -35,8 +35,8 @@ end
 
 tech = chebfunpref().tech(); 
 
-C = tech.coeffs2vals(chebpoly( cols, m ).'); 
-R = tech.coeffs2vals(chebpoly( rows, n ).'); 
+C = tech.coeffs2vals(chebcoeffs( cols, n ).'); 
+R = tech.coeffs2vals(chebcoeffs( rows, m ).'); 
 
 % Evaluate: 
 if ( nargout <= 1 )

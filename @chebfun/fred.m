@@ -51,10 +51,12 @@ function F = fred_col(k, v, onevar)
     normv = norm(v);
     d = domain(v);
 
-    opt1 = {'resampling', false, 'splitting', true, 'blowup', 'off', 'scale', normv};
+    opt1 = {'resampling', false, 'splitting', true, 'blowup', 'off', ...
+        'vscale', normv};
     int = @(x) sum(chebfun(@(y) feval(v,y).*k(x,y), d, opt1{:}));
 
-    opt2 = {'sampletest', false, 'resampling', false, 'blowup', 'off', 'vectorize', 'scale', normv};
+    opt2 = {'sampletest', false, 'resampling', false, 'blowup', 'off', ...
+        'vectorize', 'vscale', normv};
     F = chebfun(int, d, opt2{:});
 
 end

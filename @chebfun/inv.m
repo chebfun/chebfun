@@ -43,7 +43,7 @@ function g = inv(f, varargin)
 
 % No quasimatrix support:
 if ( numColumns(f) > 1 )
-    error('CHEBFUN:inv:noquasi', ...
+    error('CHEBFUN:CHEBFUN:inv:noquasi', ...
         'INV does not support array-valued CHEBFUN objects or quasimatrices.');
 end
 
@@ -54,7 +54,7 @@ if ( opts.monoCheck )
     % Compute the derivative:
     fp = diff(f);
     % Monotonicity check:
-    doMonoCheck(f, fp, tol, pref.enableBreakpointDetection);
+    doMonoCheck(f, fp, tol, pref.splitting);
 else
     fp = [];
 end
@@ -97,13 +97,13 @@ end
 
 % Enable breakpoint detection if F is piecewise:
 if ( length(f.domain) > 2 )
-    p.enableBreakpointDetection = true;
+    p.splitting = true;
 end
 
 % Parse name/value pairs.
 while ( numel(varargin) > 1 )
     if ( strcmpi(varargin{1}, 'splitting') )
-        pref.enableBreakpointDetection = checkOnOff(varargin{2});
+        pref.splitting = checkOnOff(varargin{2});
     elseif ( strcmpi(varargin{1}, 'eps') )
         tol = varargin{2};
     elseif ( strcmpi(varargin{1}, 'monocheck') )
@@ -118,11 +118,11 @@ while ( numel(varargin) > 1 )
         elseif ( strcmpi(varargin{2}, 'bisection') )
             opts.algorithm = 3;
         else
-            error('CHEBFUN:inv:badAlgo', ...
+            error('CHEBFUN:CHEBFUN:inv:badAlgo', ...
                 'Unrecognized value for ''algorithm'' input.');
         end
     else
-        error('CHEBFUN:inv:inputs', ...
+        error('CHEBFUN:CHEBFUN:inv:inputs', ...
             [varargin{1} ' is an unrecognised input to INV().']);
     end
     varargin(1:2) = [];
@@ -131,7 +131,7 @@ end
 % Assign preferences:
 pref.techPrefs.resampling = 1;
 pref.techPrefs.eps = tol;
-pref.techPrefs.minsamples = length(f);
+pref.techPrefs.minSamples = length(f);
 pref.techPrefs.sampleTest = 0;
 
 end
@@ -163,10 +163,10 @@ if ( ~isempty(tPoints) )
         endtest(k) = min(abs(tPoints(k) - f.domain));
     end
     if ( any(endtest > 100*abs(feval(f, tPoints))*tol) )
-        error('CHEBFUN:inv:notMonotonic', ...
+        error('CHEBFUN:CHEBFUN:inv:doMonoCheck:notMonotonic', ...
             'F must be monotonic on its domain.');
     elseif ( ~splitYesNo )
-        warning('CHEBFUN:inv:singularEndpoints', ...
+        warning('CHEBFUN:CHEBFUN:inv:doMonoCheck:singularEndpoints', ...
             ['F is monotonic, but its inverse has singular endpoints. ' ...
             'Enabling breakpoint detection is advised.']);
     end
@@ -196,10 +196,11 @@ for j = 1:length(x)
     if ( length(temp) ~= 1 )
         fvals = feval(f, f.domain);
         err = abs(fvals - x(j));
-        [temp, k] = min(err);
+        [ignored, k] = min(err);
         if ( err(k) > 100*tol*abs(fvals(k)))
-            error('CHEBFUN:inv:notmonotonic2', 'f must be monotonic.');
+            error('CHEBFUN:CHEBFUN:inv:notmonotonic2', 'f must be monotonic.');
         end
+        temp = temp(k);
     end
     y(j, 1) = temp;
 end

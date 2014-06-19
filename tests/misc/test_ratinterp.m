@@ -89,4 +89,21 @@ zk = exp(2*pi*1i*(0:1:31).'/32);
 [p, q, r, mu, nu, pol] = ratinterp(f, 30, 1, [], zk, 1e-14);
 pass(19) = abs(pol - 0.1) < 1e-10;
 
+% Check that ratinterp accepts a domain input: (#841)
+[p1,q1] = ratinterp([-1,1], @exp, 1, 1);
+warnState = warning('off', 'CHEBFUN:ratinterp:domainDeprecated');
+[p2,q2] = ratinterp(domain(-1,1), @exp, 1, 1);
+warning(warnState);
+pass(20) = norm(p1-p2) == 0 && norm(q1-q2) == 0;
+
+%% Test the examples from the m-file:
+f = @(x) 1./(x - 0.2);
+xx = linspace(-1,1,20);
+[p, q, r] = ratinterp([-1 1], f, 10, 10, [], 'type2', 0);
+err = norm(r(xx) - f(xx));
+pass(21) = err < 1e-10;
+[p, q, r] = ratinterp([-1 1], f, 10, 10, [], 'type2', 0);
+err = norm(r(xx) - f(xx));
+pass(22) = err < 1e-10;
+
 end

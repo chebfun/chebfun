@@ -26,6 +26,11 @@ function out = roots(f, varargin)
 %        1  - Use the colleague matrix pencil linearization and the QZ 
 %             algorithm for potentially extra numerical stability. 
 %
+%   FILTER:
+%       [ ]
+%   @filter(R,F) - A function handle which accepts the sorted computed roots, R, 
+%                  and the CHEBTECH, F, and filters the roots as it see fit.
+%
 %   If F is an array-valued CHEBTECH then there is no reason to expect each
 %   column to have the same number of roots. In order to return a useful output,
 %   the roots of each column are computed and then padded with NaNs so that a
@@ -105,15 +110,15 @@ else                            % Support for array-valued CHEBTECH objects.
     % Convert to an array for output:
     out = cell2mat(r);
 
-end
-    
+end    
 
 end
 
 function out = roots_scalar(f, varargin)
 
 % Default preferences:
-rootsPref = struct('all', 0, 'recurse', 1, 'prune', 0, 'zeroFun', 1, 'qz', 0);
+rootsPref = struct('all', 0, 'recurse', 1, 'prune', 0, 'zeroFun', 1, ...
+    'qz', 0, 'filter', []);
 % Subdivision maps [-1,1] into [-1, splitPoint] and [splitPoint, 1].
 splitPoint = -0.004849834917525; % This is an arbitrary number.
 
@@ -156,6 +161,12 @@ c = flipud(f.coeffs)/f.vscale;
 
 % Call the recursive rootsunit function:
 r = rootsunit_coeffs(c, 100*eps*max(f.hscale, 1));
+
+% Try to filter out spurious roots:
+if ( ~isempty(rootsPref.filter) )
+    r = sort(r, 'ascend');
+    r = rootsPref.filter(r, f);
+end
 
 % Prune the roots, if required:
 if ( rootsPref.prune && ~rootsPref.recurse )

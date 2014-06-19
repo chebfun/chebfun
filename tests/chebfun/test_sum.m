@@ -99,21 +99,21 @@ try
     s = sum(f, -2, 2);
     pass(19) = false;
 catch ME
-    pass(19) = strcmp(ME.identifier, 'CHEBFUN:sum:ab');
+    pass(19) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:sum:sumSubDom:ab');
 end
 
 try
     s = sum(f, -2, b);
     pass(20) = false;
 catch ME
-    pass(20) = strcmp(ME.identifier, 'CHEBFUN:sum:a');
+    pass(20) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:sum:sumSubDom:a');
 end
 
 try
     s = sum(f, a, 2);
     pass(21) = false;
 catch ME
-    pass(21) = strcmp(ME.identifier, 'CHEBFUN:sum:b');
+    pass(21) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:sum:sumSubDom:b');
 end
 
 %% QUASIMATRICES:
@@ -175,7 +175,9 @@ pass(28) = err1 < 2e5*get(f,'epslevel')*get(f,'vscale');
 
 x = chebfun('x', dom);
 g = x.*exp(-x);
+warning('off', 'CHEBFUN:UNBNDFUN:sum:slowDecay');
 I2 = sum(g);
+warning('on', 'CHEBFUN:UNBNDFUN:sum:slowdDecay');
 err2 = abs(I2 - IExact);
 tol = 2e10*get(f,'epslevel')*get(f,'vscale');
 pass(29) = err2 < tol;
@@ -184,12 +186,47 @@ pass(29) = err2 < tol;
 f = chebfun('exp(-x.^2/16).*(1+.2*cos(10*x))',[-inf,inf]);
 
 % Suppress expected warnings which may occur on certain machines:
-warning('off','CHEBFUN:UNBNDFUN:sum:slowdecay'); 
+warning('off','CHEBFUN:UNBNDFUN:sum:slowDecay'); 
 I = sum(f);
 % Re-enable warnings:
-warning('on','CHEBFUN:UNBNDFUN:sum:slowdecay');  
+warning('on','CHEBFUN:UNBNDFUN:sum:slowDecay');  
 IExact = 7.0898154036220641;
 err = abs(I - IExact);
 pass(30) = err < 1e9*get(f,'epslevel')*get(f,'vscale');
+
+% #496
+k = 3;
+op = @(t) exp(-t)./(1+k*t);
+f = chebfun(op, [0 inf]);
+I = sum(f);
+% The following exact result is obtained using Matlab symbolic toolbox:
+I_exact = 0.385602012136694;
+err = abs(I-I_exact);
+pass(31) = err < 2e1*get(f,'epslevel')*get(f,'vscale');
+
+% #920: sum of array-valued chebfun defined on unbounded domain:
+% (same function which decays fast enough to be integrable):
+f = chebfun(@(x) exp(-[x x].^2), [0 Inf]);
+I = sum(f);
+% The following exact value is obtained by Mathematica.
+I_exact = 0.886226925452758*ones(1, 2);
+pass(32) = norm(I-I_exact, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
+
+% #920: sum of array-valued chebfun defined on unbounded domain: 
+% (different functions but both decay fast so that integrable)
+f = chebfun(@(x)[exp(-x.^2) 1./(x.^3)], [1 Inf]);
+I = sum(f);
+% The following exact value is obtained by Mathematica.
+I_exact = [0.139402792640331 0.5];
+pass(33) = norm(I-I_exact, inf) < 1e6*get(f,'epslevel')*get(f,'vscale');
+
+% #920: sum of array-valued chebfun defined on unbounded domain: 
+% (two different functions one of which is integrable and the other one is not):
+f = chebfun(@(x)[exp(-x.^2) 0*x+1], [1 Inf]);
+I = sum(f);
+% The following exact value is obtained by Mathematica.
+I_exact = 0.139402792640331;
+pass(34) = abs(I(1)-I_exact) < get(f,'epslevel')*get(f,'vscale') && ...
+    isinf(I(2));
 
 end

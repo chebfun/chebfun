@@ -65,9 +65,12 @@ classdef chebtech2 < chebtech
 %
 % Class diagram: [<<CHEBTECH>>] <-- [CHEBTECH2]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-    %% METHODS IMPLEMENTED BY THIS M-FILE:
-    methods
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS CONSTRUCTOR:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
+        
         function obj = chebtech2(op, data, pref)
             % Parse inputs.
             if ( (nargin == 0) || isempty(op) )
@@ -87,10 +90,10 @@ classdef chebtech2 < chebtech
 
             data = parseDataInputs(data, pref);
 
-            % Force nonadaptive construction if PREF.NUMPOINTS is numeric:
-            if ( ~isempty(pref.numPoints) && ~isnan(pref.numPoints) )
+            % Force nonadaptive construction if PREF.FIXEDLENGTH is numeric:
+            if ( ~isempty(pref.fixedLength) && ~isnan(pref.fixedLength) )
                 % Evaluate op on the Chebyshev grid of given size:
-                op = feval(op, chebtech2.chebpts(pref.numPoints));
+                op = feval(op, chebtech2.chebpts(pref.fixedLength));
             end
 
             % Actual construction takes place here:
@@ -105,7 +108,7 @@ classdef chebtech2 < chebtech
             if ( pref.extrapolate )
                 % Check for NaNs in interior only (because extrapolate was on):
                 if ( any(any(isnan(obj.coeffs(2:end-1,:)))) )
-                    error('CHEBFUN:CHEBTECH2:constructor:naneval', ...
+                    error('CHEBFUN:CHEBTECH2:chebtech2:nanEval', ...
                         'Function returned NaN when evaluated.')
                 end
                 % We make sure not to return NaNs at +1 and -1.
@@ -114,14 +117,29 @@ classdef chebtech2 < chebtech
                 obj.coeffs = obj.vals2coeffs(valuesTemp);
             elseif ( any(isnan(obj.coeffs(:))) )
                 % Here we throw an error if NaNs were encountered anywhere.
-                error('CHEBFUN:CHEBTECH2:constructor:naneval2', ...
+                error('CHEBFUN:CHEBTECH2:chebtech2:nanEval2', ...
                     'Function returned NaN when evaluated.')
             end
         end
     end
     
-    %% STATIC METHODS IMPLEMENTED BY THIS CLASS:
-    methods ( Static = true )
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
+        
+        % Compose two CHEBTECH2 objects or a CHEBTECH2 with a function handle:
+        h = compose(f, op, g, data, pref)
+        
+        % Get method:
+        val = get(f, prop);
+        
+    end
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% STATIC METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = true )
         
         % Aliasing:
         coeffs = alias(coeffs, m)
@@ -152,19 +170,12 @@ classdef chebtech2 < chebtech
         coeffs = vals2coeffs(values)
         
     end
-    
-    %% METHODS IMPLEMENTED BY THIS CLASS:
-    methods
-        
-        % Compose two CHEBTECH2 objects or a CHEBTECH2 with a function handle:
-        h = compose(f, op, g, data, pref)
-        
-        % Get method:
-        val = get(f, prop);
-        
-    end
-    
+            
 end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% METHODS IMPLEMENTED IN THIS M-FILE:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function data = parseDataInputs(data, pref)
 %PARSEDATAINPUTS   Parse inputs from the DATA structure and assign defaults.

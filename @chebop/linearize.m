@@ -45,7 +45,7 @@ function [L, res, isLinear, u] = linearize(N, u, x, flag)
 % Start by assuming that N is linear.
 isLinear = true(1, 4);
 
-% The domain that the problem is specified on
+% The domain that the problem is specified on.
 dom = N.domain;
 
 %% Construct a suitable function to linearize about:
@@ -122,18 +122,18 @@ end
 
 % Evaluate N.op. The output will be the ADCHEBFUN NU. In case of systems, NU
 % will be an array-valued ADCHEBFUN. We need different calling sequences
-% depending on whether N has a cell-argument or not
+% depending on whether N has a cell-argument or not.
 if ( cellArg )
-    % No need to expand the cell U
+    % No need to expand the cell U.
     Nu = feval(N, x, u);
 else
-    % Need to expand the cell U
+    % Need to expand the cell U.
     Nu = feval(N, x, u{:});
 end
 
 % Did the user specify the problem using old-school concatenation?
 if ( size(Nu, 1) < size(Nu, 2) )
-    warning('CHEBFUN:chebop:linearize:vertcatop', ...
+    warning('CHEBFUN:CHEBOP:linearize:vertcatOp', ...
         ['N.op should return a column vector.\n', ...
         'Row vectors are deprecated and may not be supported in future releases.'])
 end
@@ -189,7 +189,7 @@ if ( all(isFun) && numParams > 0 )
     return
 end
 
-%% Add BCs
+%% Add BCs.
 
 % Initialise an empty LINOPCONSTRAINT.
 BC = linopConstraint();
@@ -225,14 +225,17 @@ if ( ~isempty(N.bc) )
             bcU = N.bc(x, u{:});
         end
 
-        % Ensure conditions were concatenated vertically, not horizontally
+        % Ensure conditions were concatenated vertically, not horizontally.
         bcU = checkConcat(bcU);
 
         % Gather all residuals of evaluating N.BC in one column vector.
         vals = cat(1, get(bcU, 'func'));
         % Loop through the conditions and append to the BC object.
         for k = 1:numel(bcU)
-            BC = append(BC, get(bcU, 'jacobian', k), vals(k));
+            J = get(bcU,'jacobian',k);
+            BC = append(BC, J , vals(k));
+            jumps = get(bcU, 'jumpLocations', k);
+            L = addGivenJumpAt(L,jumps);
         end
         % Update linearity information.
         isLinear(4) = all(all(get(bcU, 'linearity')));
@@ -243,7 +246,7 @@ if ( ~isempty(N.bc) )
     
 end
 
-% If N is nonlinear, and we were looking to only test linearity, return
+% If N is nonlinear, and we were looking to only test linearity, return.
 if ( flag && ~all(isLinear) )
     L = linop();
     return
@@ -252,7 +255,7 @@ end
 % Append all constraints to the LINOP returned.
 L.constraint = BC;
 
-% Cast the cell U back to a CHEBMATRIX, consisting of CHEBFUNs and scalars
+% Cast the cell U back to a CHEBMATRIX, consisting of CHEBFUNs and scalars.
 if ( nargout == 4)
     for k = 1:nVars
         u{k} = u{k}.func;
@@ -263,7 +266,7 @@ end
 end
 
 function [BC, isLinLR] = linearizeLRbc(op, u, evalPoint, BC, cellArg)
-%LINEARIZELRBC  Linearize left and right boundary conditions
+%LINEARIZELRBC   Linearize left and right boundary conditions.
 
 % Evaluate N.lbc or N.rbc. The output will be the ADCHEBFUN LRBC. In case of
 % systems, LRBC will be an array-valued ADCHEBFUN. We need different calling
@@ -298,9 +301,10 @@ function bc = checkConcat(bc)
 % Ensure conditions were concatenated vertically, not horizontally.
 if ( size(bc, 2) > 1 )
     warning('CHEBFUN:CHEBOP:linearize:bcConcat', ...
-        ['CHEBOP conditions should be vertically concatenated with a '';'', ' ...
-        'not horizontally with a '',''.\nHorizontal concatenation may ' ...
-        'not be supported in future release.']);
+        ['CHEBOP conditions should be vertically concatenated with a '';'',\n' ...
+        'not horizontally with a '',''. Horizontal concatenation may ' ...
+        'not be supported\nin future releases.']);
     bc = bc.';
 end
+
 end

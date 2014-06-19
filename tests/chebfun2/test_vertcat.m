@@ -4,7 +4,7 @@ function pass = test_vertcat( prefs )
 if ( nargin < 1 ) 
     prefs = chebfunpref(); 
 end
-tol = 10*prefs.cheb2Prefs.eps;
+tol = 10*prefs.eps;
 
 f = chebfun2(@(x,y) x); 
 g = chebfun2(@(x,y) y);

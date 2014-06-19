@@ -64,7 +64,7 @@ L.op = @(x,u) -h^2*diff(u,2) + V.*u;               % Schroedinger operator
 [U, D] = eigs(L, n, 'sr');                         % compute evals/efuns
 d = diag(D);                                       % vector of evals
 [d, ii] = sort(d);                                 % sort them
-U = extractColumns(U, ii);                    
+U = U(:,ii);                    
 
 %% Outputs:
 if ( nargout == 2 )
@@ -110,7 +110,7 @@ axis([xmin - dx, xmax + dx, ymin - dy, ymax]), drawnow
 
 % Plot the eigenfunction, lifted by the corresponding eigenvalue:
 W = dy*U;
-W = cheb2cell(W);
+W = num2cell(W);
 for j = 1:n
     umm = minandmax(W{j});
     if ( umm(2) < -umm(1) )

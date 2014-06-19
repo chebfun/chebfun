@@ -39,14 +39,14 @@ try
     fr = restrict(f, [-2 0.5]);
     pass(4) = false;
 catch ME
-    pass(4) = strcmp(ME.identifier, 'CHEBFUN:restrict:subdom');
+    pass(4) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:restrict:subdom');
 end
 
 try
     fr = restrict(f, [-0.5 2]);
     pass(5) = false;
 catch ME
-    pass(5) = strcmp(ME.identifier, 'CHEBFUN:restrict:subdom');
+    pass(5) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:restrict:subdom');
 end
 
 try
@@ -152,5 +152,5 @@ function pass = test_restrict_one_function(f, f_exact, dom, map, xr)
 %     err2 = max(cellfun(@(d) min(abs(d-fr.domain)), num2cell(dom)))
 %     pass = err2 < tol && all(err(:) < tol); % TODO: remove?
     pass = all(ismember(dom, fr.domain)) && ...
-        all(err(:) < 3e2*fr.vscale*fr.epslevel); 
+        all(err(:) < 5e2*fr.vscale*fr.epslevel); 
 end

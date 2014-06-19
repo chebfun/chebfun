@@ -20,7 +20,7 @@ hh = hypot(ff, gg);
 pass(1) = norm(feval(h, xx) - hh, inf)/vscale(h) < epslevel(h);
 
 % Test a function with breakpoints.
-pref.enableBreakpointDetection = 1;
+pref.splitting = 1;
 base_op = @(x) sign(x - 0.1).*abs(x + 0.2).*sin(3*x)*(pi/16) + pi/8;
 f = chebfun(base_op, [-1 -0.2 0.1 1], pref);
 g = hypot(f, f);

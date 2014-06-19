@@ -27,7 +27,7 @@ function [out, varNames, pdeVarNames, eigVarNames, indVarNames] = ...
 % See also STRINGPARSER/PARSER.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.chebfun.org/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Initialize an empty output.
 out = [];
@@ -150,7 +150,7 @@ while ( ~strcmp(str, '$') )
             % Obtain the numbers continously (with match), their start and end
             % positions.
             regex = '[\+\-]?(([0-9]+(\.[0-9]*)?|\.[0-9]+)([eE][\+\-]?[0-9]+)?[ij]?)';
-            [m, ~, e] = regexp(str, regex, 'match', 'start', 'end');
+            [m, ignored, e] = regexp(str, regex, 'match', 'start', 'end');
             
             % We can run into trouble with string such as 2*3 which will become
             % 2.*3 as we vectorize. But the . here should be a part of the
@@ -195,7 +195,8 @@ while ( ~strcmp(str, '$') )
             switch type2               
                 case 'num'      % We have a floating point number
                     regex = '[0-9]+([eE][\+\-]?[0-9]+)?[ij]?';
-                    [m, ~, e] = regexp(str, regex, 'match', 'start', 'end');
+                    [m, ignored, e] = ...
+                        regexp(str, regex, 'match', 'start', 'end');
 
                     % Add a . and convert from cell to string
                     nextnum = ['.', char(m(1))];
@@ -259,7 +260,7 @@ while ( ~strcmp(str, '$') )
                         exprEnd = 2;
                         out = [out ; {'~=', 'OP~='}];
                     else
-                        error('Chebgui:Lexer:UnsupportedOperator', ...
+                        error('CHEBFUN:STRINGPARSER:lexer:UnsupportedOperator', ...
                             'Unsupported operator ~.');
                     end
             end
@@ -274,7 +275,7 @@ while ( ~strcmp(str, '$') )
             
         case 'char'
             regex = '[a-zA-Z_][a-zA-Z_0-9]*';
-            [m, ~, e] = regexp(str, regex, 'match', 'start', 'end');
+            [m, ignored, e] = regexp(str, regex, 'match', 'start', 'end');
             nextString = char(m(1));   % Convert from cell to string
             exprEnd = e(1);
 
@@ -337,7 +338,7 @@ while ( ~strcmp(str, '$') )
             out = [out ; {char1,'COMMA'}];
             
         case 'error'
-            error('CHEBFUN:CHEBGUI:strConvLexer:UnknownType', ...
+            error('CHEBFUN:STRINGPARSER:lexer:unknownType', ...
                 'Unrecognized type of lexer input.');
     end
     
@@ -357,10 +358,10 @@ out = [out ; {'', '$'}];
 % Return the name of the independent variable. Use x if none is found.
 % Check whether we have too many independent variables.
 if ( strcmp(problemType, 'pde') && ((rExists + tExists + xExists) > 2) )
-        error('Chebgui:solve:Lexer:TooManyIndVars', ...
+        error('CHEBFUN:STRINGPARSER:lexer:tooManyIndVars', ...
             'Too many independent variables in input.');
 elseif ( (rExists + tExists + xExists) > 1 ) % Must be in BVP or EIG mode
-        error('Chebgui:solve:Lexer:TooManyIndVars', ...
+        error('CHEBFUN:STRINGPARSER:lexer:tooManyIndVars', ...
             'Too many independent variables in input.');     
 end
 

@@ -22,10 +22,10 @@ function [u, disc] = linsolve(L, f, varargin)
 %     u = A \ chebfun('x',d);
 %     plot(u{1})
 %
-%   See also CHEBOPPREF, CHEBOP.MLDIVIDE.
+% See also CHEBOPPREF, CHEBOP.MLDIVIDE.
 
 %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
+%  See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Developer note: The second output is a discretization that contains the
@@ -37,7 +37,7 @@ function [u, disc] = linsolve(L, f, varargin)
 % Parse input
 prefs = [];    % no prefs given
 disc = [];     % no discretization given
-vscale = 0;
+vscale = zeros(size(L,2),1);
 for j = 1:nargin-2
     item = varargin{j};
     if ( isa(item, 'cheboppref') )
@@ -47,7 +47,8 @@ for j = 1:nargin-2
     elseif ( isnumeric(item) )
         vscale = item;
     else
-        error('Could not parse argument number %i.',j+2)
+        error('CHEBFUN:LINOP:linsolve:badInput', ...
+            'Could not parse argument number %i.',j+2)
     end
 end
 
@@ -109,7 +110,8 @@ for dim = [dimVals inf]
         [A, P] = matrix(disc);
         if ( size(A, 1) ~= size(A, 2) )
             % TODO: Improve this warning.
-            warning('Matrix is not square!');
+            warning('CHEBFUN:LINOP:linsolve:notSquare', ...
+                'Matrix is not square!');
         end
     end
     
@@ -130,9 +132,14 @@ for dim = [dimVals inf]
     % Convert the different components into cells
     u = partition(disc, v);
     
+    % Need a vector of vscales.
+    if ( numel(vscale)==1 ) 
+        vscale = repmat(vscale,sum(isFun),1);
+    end
+    
     % Test the happiness of the function pieces:
     [isDone, epsLevel, vscale, cutoff] = ...
-        testConvergence(disc, u(isFun), vscale, prefs);
+        testConvergence(disc, u(isFun), vscale(isFun), prefs);
     
     if ( all(isDone) || isinf(dim) )
         break
@@ -144,7 +151,7 @@ for dim = [dimVals inf]
 end
 
 if ( ~all(isDone) )
-    warning('LINOP:linsolve:NoConverge', ...
+    warning('CHEBFUN:LINOP:linsolve:noConverge', ...
         'Linear system solution may not have converged.')
 end
 
@@ -155,11 +162,6 @@ end
 values = cat(2,u{isFun});
 for k = 1:size(values,2)
     v = disc.toFunctionOut(values(:,k));
-    coeffs = get(v,'coeffs');  % one cell entry per interval
-    for i = 1:numInt
-        f = chebfun( coeffs{i}(end+1-cutoff(i,k):end), disc.domain(i:i+1), 'coeffs' );
-        v.funs{i} = f.funs{1};
-    end
     uOut{k} = v;
 end
 

@@ -12,7 +12,7 @@ function newDom = mergeDomains(varargin)
 % See also WHICHDOMAIN, TWEAKDOMAIN, DOMAINCHECK.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 
 % Relabel the input variable:
@@ -38,7 +38,7 @@ end
 ends = cellfun(@(dom) dom([1 end]), doms, 'UniformOutput', false);
 diffEnds = cell2mat(ends.') - repmat(ends{1}, numel(doms), 1);
 if ( any(diffEnds(:) > tol) )
-    error('CHEBFUN:mergeDomains:incompat', 'Incompatible domains.');
+    error('CHEBFUN:CHEBFUN:mergeDomains:incompat', 'Incompatible domains.');
 end
 
 j = 1;

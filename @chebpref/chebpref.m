@@ -1,5 +1,6 @@
 classdef chebpref
-%CHEBPREF   Abstract class for Chebfun system preferences.
+%CHEBPREF   Abstract class for Chebfun preferences.
+%
 %   CHEBPREF is an abstract class for managing preferences of the various
 %   subsystems comprising Chebfun.  On its own, it provides little more than a
 %   wrapper around a MATLAB struct.  Concrete preference classes inherit from
@@ -10,13 +11,18 @@ classdef chebpref
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS PROPERTIES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = protected )
         % MATLAB struct to hold a list of preferences for a given subsystem.
         prefList
     end
-
-    methods
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% Non-Static methods implemented by this class.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
 
         function out = subsref(pref, ind)
         %SUBSREF   Subscripted referencing for CHEBPREF.
@@ -37,7 +43,7 @@ classdef chebpref
                         out = subsref(out, ind(2:end));
                     end
                 otherwise
-                    error('CHEBPREF:subsref:badType', ...
+                    error('CHEBFUN:CHEBPREF:chebpref:badType', ...
                         'Invalid subscripted reference type.')
             end
         end
@@ -58,50 +64,44 @@ classdef chebpref
                             ind, val);
                     end
                 otherwise
-                    error('CHEBPREF:subsasgn:badType', ...
+                    error('CHEBFUN:CHEBPREF:chebpref:badType', ...
                         'Invalid subscripted assignment type.')
             end
         end
 
     end
-
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% Abstract methods
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Abstract = true )
         % Display information about a CHEBPREF object.
         display(pref)
     end
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% Static methods
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = true )
 
-    methods ( Static = true )
-
-        function pref1 = mergePrefs(pref1, pref2, map)
-        %MERGEPREFS   Merge preference structures.
-        %   P = CHEBPREF.MERGEPREFS(P, Q), where P and Q are MATLAB structures,
-        %   "merges" Q into P by replacing the contents of fields in P with
-        %   those of identically-named fields in Q.  If Q has a field whose
-        %   name does not match any of those in P, it is added to P.
-        %
-        %   P = CHEBPREF.MERGEPREFS(P, Q, MAP) does the same but uses the
-        %   structure MAP to "translate" the names of fields of Q into names of
-        %   fields of P.  If Q has a field FIELD and MAP has a field of the
-        %   same name, then the value of P.(MAP.FIELD) will be replaced by the
-        %   contents of Q.FIELD.  If P does not have a field matching the
-        %   string stored in MAP.FIELD, one will be added to P.
-
-            if ( nargin < 3 )
-                map = struct();
-            end
+        function pref1 = mergePrefStructs(pref1, pref2)
+        %MERGEPREFSTRUCTS   Merge preference structures.
+        %   P = CHEBPREF.MERGEPREFSTRUCTS(P, Q), where P and Q are MATLAB
+        %   structures, "merges" Q into P by replacing the contents of fields
+        %   in P with those of identically-named fields in Q.  If Q has a field
+        %   whose name does not match any of those in P, it is added to P.
 
             for field = fieldnames(pref2).'
-                if ( isfield(map, field{1}) )
-                    pref1.(map.(field{1})) = pref2.(field{1});
-                else
-                    pref1.(field{1}) = pref2.(field{1});
-                end
+                pref1.(field{1}) = pref2.(field{1});
             end
         end
 
     end
-
-    methods ( Static = true, Hidden = true  )
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% Hidden static methods.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = true, Hidden = true  )
 
         function setDefaults(makeSC, manageSCDefaults, varargin)
         %SETDEFAULTS   Set default preferences.
@@ -116,7 +116,7 @@ classdef chebpref
         %   be altered instead.
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        % Developer notes:
+        % DEVELOPER NOTES:
         %  - This is a template method to prevent subclasses from needing to
         %    duplicate the logic required to set persistently-stored defaults
         %    As the help text says, this method is not user-facing.
@@ -131,7 +131,7 @@ classdef chebpref
             nargs = length(varargin);
 
             if ( nargs < 1)
-                error('CHEBPREF:setDefaults:notEnoughArguments', ...
+                error('CHEBFUN:CHEBPREF:chebpref:notEnoughArguments', ...
                     'Not enough arguments.');
             end
 
@@ -145,7 +145,7 @@ classdef chebpref
                 elseif ( isa(varargin{1}, 'chebpref') )
                     manageSCDefaults('set', varargin{1}.prefList);
                 else
-                    error('CHEBPREF:setDefaults:badArg', ...
+                    error('CHEBFUN:CHEBPREF:chebpref:badArg', ...
                         ['When calling chebpref.setDefaults() with just ' ...
                          'one argument, that argument must be ''factory'', ' ...
                          'a subclass of CHEBPREF, or a MATLAB structure.']);
@@ -153,7 +153,7 @@ classdef chebpref
             elseif ( mod(nargs, 2) == 0 )
                 manageSCDefaults('set', varargin{:});
             else
-                error('CHEBPREF:setDefaults:unpairedArg', ...
+                error('CHEBFUN:CHEBPREF:chebpref:unpairedArg', ...
                     'Unpaired argument in name-value pair list.');
             end
         end

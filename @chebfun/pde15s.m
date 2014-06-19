@@ -1,5 +1,6 @@
 function varargout = pde15s(pdeFun, tt, u0, bc, varargin)
-%PDE15S   Solve PDEs using the CHEBFUN system.
+%PDE15S   Solve PDEs using Chebfun.
+%
 %   UU = PDE15s(PDEFUN, TT, U0, BC) where PDEFUN is a handle to a function with
 %   arguments u, t, x, and D, TT is a vector, U0 is a CHEBFUN or a CHEBMATRIX,
 %   and BC is a CHEBOP boundary condition structure will solve the PDE dUdt =
@@ -84,6 +85,7 @@ tol = 1e-6;             % 'eps' in Chebfun terminology
 doPlot = 1;             % Plot after every time chunk?
 doHold = 0;             % Hold plot?
 plotOpts = {'-'};       % Plotting style
+throwBCwarning = true;  % Throw a warning for inconsistent BCs
 
 % Parse the variable inputs:
 if ( numel(varargin) == 2 )
@@ -163,6 +165,12 @@ end
         
         % Sometimes we get given more than one time slice.
         for kk = 1:numel(t)
+            
+            if ( ~any(abs(tSpan - t(kk)) < 1e-6) )
+                % This is not a designated time slice!
+                continue
+            end
+                
             % Reshape solution:
             Uk = reshape(U(:,kk), n, SYSSIZE);
             uCurrent = chebfun(Uk, DOMAIN);
@@ -200,17 +208,25 @@ end
             [ishappy, epslevel, cutoff] = classicCheck(uk2, Uk2, pref);
 
             if ( ishappy )  
+                
+                if ( ~any(abs(tSpan - t(kk)) < 1e-6) )
+                    % This is not a designated time slice!
+                    continue
+                end
 
                 % Store these values:
                 tCurrent = t(kk);
-                uCurrent = chebfun(Uk, DOMAIN);
+                uCurrent = chebfun(Uk, DOMAIN, 'tech', @chebtech2);
                 
                 % Shorten the representation. The happiness cutoff seems to
                 % be safer than the epslevel simplification.
-                %uCurrent = simplify(uCurrent, epslevel);
-                uPoly = chebpoly(uCurrent);
-                firstKept = size(uPoly,2) - max(17,cutoff-1);
-                uCurrent = chebfun(uPoly(:,firstKept:end).',DOMAIN,'coeffs');
+%                 uCurrent = simplify(uCurrent, epslevel);
+                uPoly = get(uCurrent, 'coeffs');
+                firstKept = size(uPoly, 2) - (cutoff-1);
+                if ( firstKept <= 0 )
+                    firstKept = 1;
+                end
+                uCurrent = chebfun(uPoly(firstKept:end,:), DOMAIN, 'coeffs');
                 
                 ctr = ctr + 1;
                 uOut{ctr} = uCurrent;
@@ -218,14 +234,18 @@ end
                 % Plot current solution:
                 plotFun(uCurrent, tCurrent);
 
-                % If we have 2.5 times as many coefficients as we need, shorten
-                % the representation and cause the integrator to stop. 
-                if ( cutoff < 0.4*n )
-                    currentLength = round(1.25*cutoff)';
-                    %currentLength = floor( currentLength / 1.5  );
-                    currentLength = currentLength + 1 - rem(currentLength,2);
-                    status = true;
-                end
+                % TODO: Re-insert this.
+%                 % If we have 2.5 times as many coefficients as we need, shorten
+%                 % the representation and cause the integrator to stop. 
+%                 if ( cutoff < 0.4*n && n > 17)
+%                     currentLength = round(1.25*cutoff)';
+%                     %currentLength = floor( currentLength / 1.5  );
+%                     currentLength = currentLength + 1 - rem(currentLength,2);
+%                     currentLength = max(currentLength, 17);
+%                     status = true;
+%                     return
+%                 end
+                
             else 
 
                 % Increase length and bail out:
@@ -281,7 +301,6 @@ end
             status = guiEvent(status);
         end
     end
-
 
     function varargout = plotFun(U, t)
         %PLOTFUN    Plot current solution U at a time t.
@@ -356,7 +375,7 @@ for k = 1:numel(u0)
     if ( numel(u0(k).funs) > 1 )
         u0(k) = merge(u0(k), 'all', 1025, tol);
         if ( u0(k).nfuns > 1 )
-            error('CHEBFUN:pde15s:piecewise', ...
+            error('CHEBFUN:CHEBFUN:pde15s:piecewise', ...
                 'Piecewise initial conditions are not supported.');
         end
     end
@@ -446,7 +465,8 @@ else
             v = 0;
         end
         if ( ~isnumeric(v) )
-            error('For BCs of the form {char, val} val must be numeric.')
+            error('CHEBFUN:CHEBFUN:pde15s:nonNumericVal1', ...
+                'For BCs of the form {char, val} val must be numeric.')
         end
         if ( strcmpi(bc.left, 'dirichlet') )
             A = @(n) [1 zeros(1, n - 1)];
@@ -454,7 +474,7 @@ else
             % TODO: Make left diff operator explicitly.
             A = @(n) [1 zeros(1, n-1)]*colloc2.diffmat(n)*diff(DOMAIN)/2;
         else
-            error('Unknown BC syntax');
+            error('CHEBFUN:CHEBFUN:pde15s:bcSyntax1', 'Unknown BC syntax');
         end
         bc.left.op = cell(SYSSIZE, 1);
         for k = 1:SYSSIZE
@@ -473,7 +493,7 @@ else
         BCRHS = num2cell(zeros(1, max(sizeOp)));
         leftNonlinBCFuns = op;
     else
-        error('Unknown BC syntax');
+        error('CHEBFUN:CHEBFUN:pde15s:bcSyntax2', 'Unknown BC syntax');
     end
     
     if ( isfield(bc, 'middle') && isa(bc.middle, 'function_handle') )
@@ -499,7 +519,8 @@ else
             v = 0;
         end
         if ( ~isnumeric(v) )
-            error('For BCs of the form {char, val} val must be numeric.')
+            error('CHEBFUN:CHEBFUN:pde15s:nonNumericVal1', ...
+                'For BCs of the form {char, val} val must be numeric.')
         end
         
             
@@ -509,7 +530,7 @@ else
             % TODO: Make right diff operator explicitly.
             A = @(n) [zeros(1, n-1) 1]*colloc2.diffmat(n)*diff(DOMAIN)/2;
         else
-            error('Unknown BC syntax');
+            error('CHEBFUN:CHEBFUN:pde15s:bcSyntax3', 'Unknown BC syntax');
         end
         bc.right.op = cell(SYSSIZE, 1);
         for k = 1:SYSSIZE
@@ -528,7 +549,7 @@ else
         BCRHS = [BCRHS num2cell(zeros(1, max(sizeOp)))];
         rightNonlinBCFuns = op;
     else
-        error('Unknown BC syntax');
+        error('CHEBFUN:CHEBFUN:pde15s:bcSyntax4', 'Unknown BC syntax');
     end
     
 end
@@ -612,7 +633,7 @@ switch nargout
         varargout{1} = tt;
         varargout{2} = uOut;
         varargout{3:nargout} = [];
-        warning('CHEBFUN:pde15s:output', ...
+        warning('CHEBFUN:CHEBFUN:pde15s:output', ...
             'PDE15S has a maximum of two outputs.');
 end
 
@@ -683,14 +704,25 @@ clear global SYSSIZE
         % much trickier. Find out what the BC deviance from nominal really is:
         BCVALOFFSET = 0;            % recover nominal value in next call
         F = odeFun(tSpan(1),U0(:)); % also assigns to "rows" and "q"
-        BCVALOFFSET = F(rows);
+        
+        % If this is for the initial chunk, check whether the initial
+        % condition nearly satisfies the BCs.
+        % We're quite lax about this, because discretization at low N can
+        % cause derivatives to look fairly bad. 
+        if ( throwBCwarning && (length(uOut) > 1) && (norm(F(rows)) > 0.05*norm(F)) )
+            warning('CHEBFUN:CHEBFUN:pde15s:BadIC',...
+                'Initial state may not satisfy the boundary conditions.')
+            throwBCwarning = false;
+        end
+        BCVALOFFSET = F(rows) - q;
         
         % Solve ODE over time chunk with ode15s:
         try
-            [~, ~] = ode15s(@odeFun, tSpan, U0, opt);
+            [ignored1, ignored2] = ode15s(@odeFun, tSpan, U0, opt);
         catch ME
             if ( strcmp(ME.identifier, 'MATLAB:odearguments:SizeIC') )
-                error('Dimension mismatch. Check boundary conditions.');
+                error('CHEBFUN:CHEBFUN:pde15s:dims', ...
+                    'Dimension mismatch. Check boundary conditions.');
             else
                 rethrow(ME)
             end
@@ -783,9 +815,10 @@ if ( Nind == 0 )
 elseif ( Nind == 1 )
     if ( nargin > 1 )
         if ( strcmp(bcFlag, 'bc') )
-            warning('CHEBFUN:pde15s:bcinput', ...
+            warning('CHEBFUN:CHEBFUN:pde15s:bcInput', ...
                 ['Please input both time and space independent variable to ' ...
-                 '.BC function handle inputs.\nAssuming given variable is time.']);
+                 '.BC function handle inputs.\nAssuming given variable is ' ...
+                 'time.']);
              outFun = @(t, x, u) conv2cell(inFun, u, x);
         else
             outFun = @(t, x, u) conv2cell(inFun, u, t);
@@ -796,8 +829,9 @@ elseif ( Nind == 1 )
 elseif ( Nind == 2 )
     outFun = @(t, x, u) conv2cell(inFun, u, t, x);
 else
-    error('CHEBFUN:pde15s:inputs_ind', ['Incorrect number of independant ' ...
-        'variables in input function. (Must be 0, 1, or 2).']);
+    error('CHEBFUN:CHEBFUN:pde15s:inputs_ind', ...
+        ['Incorrect number of independant variables in input function. ' ...
+         '(Must be 0, 1, or 2).']);
 end
 
 end
@@ -836,7 +870,7 @@ function out = dealWithStructInput(in)
 % Throw a warning or an error for a struct. Convert numeric value to 'dirichet'.
 if ( isstruct(in) )
     if ( numel(in) == 1)
-        warning('CHEBFUN:pde15s:bcstruct', ...
+        warning('CHEBFUN:CHEBFUN:pde15s:bcstruct', ...
             'PDE15S no longer supports struct inputs for bc.left and bc.right.')
         if ( isfield(in, 'val') )
             out = {in.op, in.val};
@@ -844,7 +878,7 @@ if ( isstruct(in) )
             out = in.op;
         end
     else
-        error('CHEBFUN:pde15s:bcstruct', ...
+        error('CHEBFUN:CHEBFUN:pde15s:bcstruct', ...
             'PDE15S no longer supports struct inputs for bc.left and bc.right.')
     end
 elseif ( isempty(in) )
@@ -892,7 +926,7 @@ if ( isempty(idx) )
     return
 end
 
-warning('CHEBFUN:pde15s:oldSyntax', ...
+warning('CHEBFUN:CHEBFUN:pde15s:oldSyntax', ...
     ['The syntax\n ' str '\nis deprecated and may not be supported in ', ...
      'future releases.\n Please see the PDE15S documentation for details.'] )
 

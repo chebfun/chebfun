@@ -14,7 +14,7 @@ function p = atan2d(varargin)
 % See also ATAN, ATAN2.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Simply call ATAN2() and rescale:
 p = (180/pi)*atan2(varargin{:});

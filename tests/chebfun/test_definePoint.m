@@ -106,4 +106,9 @@ check(4) = all(g.pointValues == [f.pointValues(1); 3; 4; f.pointValues(end)]);
 
 pass(12) = all( check );
 
+%% Test assigning to an endpoint (#896)
+f = chebfun(0, [-1, 1]);
+f(1) = 1;
+pass(13) = abs(feval(f, 1) - 1) < epslevel(f);
+
 end

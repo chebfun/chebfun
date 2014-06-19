@@ -11,13 +11,13 @@ function f = diff(f, k, dim)
 % See also SUM, CUMSUM.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 %% Check the inputs:
 
 % Check the dimension, i.e. the third argument:
 if ( (nargin == 3) && (dim ~= 1) )
-    warning('SINGFUN:cumsum:nosupport', ...
+    warning('CHEBFUN:SINGFUN:diff:noSupport', ...
         'SINGFUN does not support array-valued objects.')
 end
 
@@ -69,9 +69,8 @@ while ( k > 0 )
 end
 
 %% 
-% If f has negligible exponents, return the SMOOTHPART object instead of a
-% SINGFUN:
-if ( issmooth(f) )
+% If f has negligible exponents return just the SMOOTHPART:
+if ( isa(f, 'singfun') && issmooth(f) )
     f = f.smoothPart;
 end
 

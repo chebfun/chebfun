@@ -10,7 +10,7 @@ function r = roots(f, varargin)
 %   of each column are computed and then padded with NaNs so that a matrix may
 %   be returned. The columns of R = ROOTS(F) correspond to the columns of F.
 %
-%   See also ONEFUN. [TODO]: Why may we also want to see ONEFUN?
+% See also ONEFUN. [TODO]: Why may we also want to see ONEFUN?
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -25,6 +25,6 @@ end
 onefunRoots = roots(f.onefun, varargin{:});
 
 % Map the roots found on [-1,1] to the interval [a,b]:
-r = f.mapping.for(onefunRoots);
+r = f.mapping.For(onefunRoots);
 
 end

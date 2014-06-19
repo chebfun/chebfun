@@ -22,7 +22,7 @@ function [U, S, V] = svd(A, econ)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( (nargin > 2) || ((nargin == 2) && (econ ~= 0)) )
-    error('CHEBFUN:svd:twoargs',...
+    error('CHEBFUN:CHEBFUN:svd:twoArgs',...
           'Use svd(A) or svd(A, 0) for SVD of array-valued CHEBFUN.');
 end
 

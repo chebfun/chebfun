@@ -23,15 +23,15 @@ function [Q, R] = qr(A, econ)
 
 % Check inputs
 if ( (nargin == 2) && (econ ~= 0) )
-    error('CHEBFUN:qr:twoargs',...
+    error('CHEBFUN:CHEBFUN:qr:twoargs',...
       'Use qr(A) or qr(A, 0) for QR decomposition of an array-valued CHEBFUN.');
 end
 if ( A(1).isTransposed )
-    error('CHEBFUN:qr:transpose',...
+    error('CHEBFUN:CHEBFUN:qr:transpose',...
         'CHEBFUN QR works only for column CHEBFUN objects.')
 end
 if ( ~all(isfinite(A(1).domain)) )
-    error('CHEBFUN:QR:infdomain', ...
+    error('CHEBFUN:CHEBFUN:qr:infdomain', ...
         'CHEBFUN QR does not support unbounded domains.');
 end
 
@@ -134,7 +134,7 @@ ip = @(f, g) w * (conj(f) .* g);
 % Make the discrete analog of A:
 A = get(A, 'values');
 if ( iscell(A) )
-    A = cat(1, A{:});
+    A = cell2mat(A);
 end
 
 % Generate a discrete E (Legendre-Chebyshev-Vandermonde matrix) directly:

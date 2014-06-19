@@ -47,7 +47,7 @@ pref.techPrefs.sampleTest = false;
 if ( isa(pref.tech(), 'chebtech') )
     % In between the interpolation nodes, the Lebesgue function is guaranteed
     % by definition to be a polynomial of degree at most length(x) - 1.
-    pref.techPrefs.exactLength = length(x);
+    pref.techPrefs.fixedLength = length(x);
 end
 
 % Set breakpoints at the interpolation nodes.  (NB:  unique() returns the

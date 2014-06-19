@@ -16,7 +16,7 @@ function [f, R, E] = qr(f, outputFlag, methodFlag)
 %   which is expected to be a string. This is only to keep the calling sequence 
 %   to be consistent with that of the SMOOTHFUN counterpart.
 %
-%   See also innerProduct.
+% See also innerProduct.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -24,7 +24,7 @@ function [f, R, E] = qr(f, outputFlag, methodFlag)
 % Simply call innerProduct:
 R = sqrt(innerProduct(f, f));
 if ( isinf(R) )
-    error('SINGFUN:qr:infNorm', ...
+    error('CHEBFUN:SINGFUN:qr:infNorm', ...
         'The L^2 norm of the input SINGFUN is infinite.')
 end
 

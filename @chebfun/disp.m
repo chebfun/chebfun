@@ -1,32 +1,28 @@
-function s = disp(f, name)
-%DISPLAY   Display a chebfun object.
-%   DISPLAY(F) outputs important information about the chebfun F to the command
-%   window, including its domain of definition, its length (number of sample
-%   values used to represent it), and a summary of its values at its endpoints.
-%   DISPLAY(F) is called automatically when the semicolon is not used at the end
-%   of a statement that results in a CHEBFUN.
+function disp(f)
+%DISP   Display a CHEBFUN object.
+%
+% See also DISPLAY.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % If the 'format loose' setting is enabled, we print additional linebreaks:
 loose = strcmp(get(0, 'FormatSpacing'), 'loose');
 
-if ( nargin < 2 ) 
-    name = inputname(1);
-end
-
-% Print the variable name if possible:
-if ( loose )
-    s = sprintf('\n%s = \n\n', name);
-else
-    s = sprintf('%s = \n', name);
-end
+s = '';
 
 % Trivial case: (empty chebfun)
 if ( isempty(f) )
-    s = [s, sprintf('   empty chebfun')];
+    fprintf('   empty chebfun\n');
+    if ( loose )
+        fprintf('\n');
+    end
     return
+end
+
+% Convert array-valued CHEBFUN to a quasimatrx for unified output.
+if ( (numColumns(f) > 1) && (numel(f) == 1) )
+    f = cheb2quasi(f);
 end
 
 if ( numel(f) > 1 )
@@ -38,23 +34,13 @@ if ( numel(f) > 1 )
             columnString = ['   chebfun column', int2str(k)];
         end
         % Call the column display subfunction:
-        s = [s, colDisp(f(k), columnString)];
-        if ( k ~= numel(f) )
-            s = [s, sprintf('\n')];
-        end
+        fprintf(colDisp(f(k), columnString));
+        fprintf('\n');
         % Final line break:
         if ( loose )
-            s = [s, sprintf('\n')];
+            fprintf('\n');
         end
     end
-    
-elseif ( numColumns(f) > 1 )
-    % Convert to a quasimatrx for unified output.
-    f = cheb2quasi(f);
-    s = disp(f, name);
-    % TODO: Remove this!
-    s = [s, sprintf('\n(P.S. I am an array-valued CHEBFUN!)')];
-    return
     
 else
     % Transpose information:
@@ -64,12 +50,14 @@ else
         columnString = '   chebfun column';
     end
     % Call the column display subfunction:
-    s = [s, colDisp(f, columnString)];
+    fprintf(colDisp(f, columnString));
+    fprintf('\n');
 end
 
 if ( loose )
-    s = [s, sprintf('\n')];
+    fprintf('\n');
 end
+
 
 end
 
@@ -122,7 +110,7 @@ for j = 1:numFuns
         % Cheat zeros on unbounded domains:
 %         endvals(abs(endvals) < zeroTol & isinf(f.domain(j:j+1))) = 0; %TODO
         % Cheat zeros on bounded domains!:
-        endvals(abs(endvals) < zeroTol) = 0;
+%         endvals(abs(endvals) < zeroTol) = 0; %TODO
 
         % Print information to screen:
         s = [s, sprintf('[%8.2g,%8.2g]   %6i  %8.2g %8.2g %s\n', ...
@@ -133,16 +121,16 @@ end
 
 % Display epslevel:
 s = [s, sprintf('Epslevel = %i.', epslevel(f))];
-s = [s, sprintf('  Vscale = %i.', vscale(f))];
+s = [s, sprintf('  Vscale = %i.', vscale(f, 'sup'))];
 
 % Display total length for piecewise chebfuns:
 if ( numFuns > 1 )
     s = [s, sprintf('  Total length = %i.', sum(len))];
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Dispaly for delta functions:
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 out = get(f, 'deltas');
 if ( ~isempty(out) )
     deltaLoc = out(1, :);
@@ -158,8 +146,7 @@ if ( ~isempty(out) )
     end
     s = [s, sprintf( 'Locations:\n')];
     s = [s, sprintf('%8.2g', deltaLoc)];
-    s = [s, sprintf('\n')];
 end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 end

@@ -9,7 +9,7 @@ end
 
 % Create preference structure with splitting enabled.
 pref_split = pref;
-pref_split.enableBreakpointDetection = 1;
+pref_split.splitting = 1;
 
 % Test empty input.
 f = chebfun();
@@ -31,7 +31,7 @@ pass(4) = test_one_compose_unary(@(x) abs(x + 0.2) + abs(x - 0.3), ...
 warnstate = warning('off');
 test_one_compose_unary(@(x) sin(10*(x - 0.1)), [-1 1], @abs, pref);
 [warnmsg, warnid] = lastwarn();
-pass(5) = strcmp(warnid, 'CHEBFUN:compose:resolve');
+pass(5) = strcmp(warnid, 'CHEBFUN:CHEBFUN:compose:resolve');
 warning(warnstate);
 
 % Non-smooth operator with smooth function, splitting enabled.
@@ -84,6 +84,36 @@ gVals = feval(g, x);
 gExact = opg(x);
 err = gVals - gExact;
 pass(11) = norm(err, inf) < get(g,'epslevel')*get(g,'vscale');
+
+%% Test related to #686
+
+vals = [...
+   3.141592652798157
+   3.141592652796547
+   3.141592652772516
+   3.141592652667793
+   3.141592652373061
+   3.141592651675060
+   3.141592650102323
+   3.141592646526151
+   3.141592638146115
+   3.141592617916730
+   3.141592568136906
+   3.141592445124339
+   3.141592145023115
+   3.141591435222665
+   3.141589837802166
+   3.141586481864910
+   3.141580027749437
+   3.141568894324190
+   3.141552052732393
+   3.141530333262496
+   3.141507475435311
+   3.141489646225016
+   3.141482861866948];
+u = chebfun(vals, 'tech', @chebtech2);
+v = sin(u);
+pass(12) = ishappy(v) && length(v) < 1e3;
 
 end
 

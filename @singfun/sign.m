@@ -9,7 +9,7 @@ function g = sign(f, pref)
 % See also ABS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Extract the smoothPart of F:
 g = f.smoothPart;

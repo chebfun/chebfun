@@ -1,19 +1,24 @@
 function g = min( f, g, dim )
-%MIN  Minimum value of a CHEBFUN2.
-%   MIN(F), returns a CHEBFUN representing the minimum of the CHEBFUN2 along the
-%   y direction, i.e., MIN(F) = @(x) min( F ( x, : ) )
+%MIN   Minimum value of a CHEBFUN in one direction.
+%   MIN(f) returns a chebfun representing the minimum of the CHEBFUN2 along the
+%   y direction, i.e, MIN(f) = @(x) max( f ( x, : ) )
+%
+%   MIN(f, [], dim) returns a CHEFBUN representing the minimum of f along the
+%   DIM direction. If DIM = 1 is along the y-direction and DIM = 2 is along the
+%   x-direction.
+%
+%   WARNING: This function is not always accurate to full machine precision. 
 % 
-%   MIN(F,[],DIM) returns a CHEBFUN representing the minimum of f along the DIM
-%   direction.
-% 
-% See also MAX. 
+%   For the global minimum use MIN2.
+%
+% See also MAX, MAX2, MIN2, MINANDMAX2.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 
 if ( isempty( f ) ) 
-    error('CHEBFUN2:MIN:INPUT','CHEBFUN2 is empty');
+    error('CHEBFUN:CHEBFUN2:min:input','CHEBFUN2 is empty');
 end
 
 % Default to max of one chebfun2:
@@ -28,7 +33,8 @@ end
 
 % Do not allow min(F, G).
 if ( nargin > 1 && ~isempty(g) )   
-    error('CHEBFUN2:MIN', 'Unable to minimise two CHEBFUN2 objects.');
+    error('CHEBFUN:CHEBFUN2:min:twoChebfun2Inputs', ...
+        'Unable to minimise two CHEBFUN2 objects.');
 end
 
 % min(f) = - max ( -f )  

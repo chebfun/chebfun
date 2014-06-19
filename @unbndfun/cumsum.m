@@ -13,7 +13,7 @@ function [f, rVal] = cumsum(f, dim)
 % See also DIFF, SUM.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Trivial case of an empty UNBNDFUN:
 if ( isempty(f) )
@@ -65,9 +65,10 @@ function g = cumsumCtsDim(f, pref)
 g = f;
 
 % Rescaling factor is the derivative of the forward map:
-pref.enableSingularityDetection = true;
-rescaleFactor = onefun.constructor(@(x) g.mapping.forDer(x), [], pref);
-numRoots = -repmat(g.mapping.forDerExps.', 1, size(g, 2));
+pref.blowup = true;
+rescaleFactor = onefun.constructor(@(x) g.mapping.Der(x), [], pref);
+exps = get(rescaleFactor, 'exponents');
+numRoots = -repmat(exps.', 1, size(g, 2));
 
 % Try to see if we can extract boundary roots:
 [h, rootsLeft, rootsRight] = extractBoundaryRoots(g.onefun, numRoots);
@@ -84,8 +85,7 @@ else
     
     % The ONEFUN of the integral of F should be the integral of the ONEFUN of 
     % the F multiplied by the derivative of the forward map.
-    g.onefun = g.onefun.*rescaleFactor;
-    g.onefun = cumsum(g.onefun);
+    g.onefun = cumsum(g.onefun.*rescaleFactor);
     
 end
 

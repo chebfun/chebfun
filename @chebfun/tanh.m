@@ -8,7 +8,7 @@ function F = tanh(F, varargin)
 % See also ATANH.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Call the compose method:
 F = compose(F, @tanh, varargin{:});

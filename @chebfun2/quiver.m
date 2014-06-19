@@ -24,7 +24,7 @@ function varargout = quiver( f1, f2, varargin )
 % See also CHEBFUN2V/QUIVER.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty(varargin) )
     varargin = {};
@@ -64,7 +64,7 @@ if ( isa(f1, 'chebfun2') && isa(f2, 'chebfun2') )  % quiver(f,g)
         elseif ( ~isa(varargin{1}, 'chebfun2') )   % quiver(x,y,S) or quiver(x,y,'linespec')
             h = quiver( [f1;f2], varargin{:} );
         else
-            error('CHEBFUN2:QUIVER:INPUT', ...
+            error('CHEBFUN:CHEBFUN2:quiver:input', ...
                 'Stretching parameter should not be a chebfun2 object.');
         end
         
@@ -77,7 +77,7 @@ if ( isa(f1, 'chebfun2') && isa(f2, 'chebfun2') )  % quiver(f,g)
         f4 = varargin{2};
         if (isa(f3, 'chebfun2') && isa(f4, 'chebfun2') ) % quiver(x,y,f,g,...)
             if ( any( f1.corners - f3.corners ) )
-                error('CHEBFUN2:QUIVER:DOMAINCHECK', ...
+                error('CHEBFUN:CHEBFUN2:quiver:domainCheck', ...
                     'CHEBFUN2s objects not on the same domain.');
             end
             h = quiver( xx, yy, [f3;f4], varargin{3:end} );
@@ -89,18 +89,18 @@ if ( isa(f1, 'chebfun2') && isa(f2, 'chebfun2') )  % quiver(f,g)
 elseif ( isa(f1,'double') && isa(f2,'double') )
     
     if ( nargin < 4 )
-        error('CHEBFUN2:QUIVER:NARGIN', 'Not enough input arguments.');
+        error('CHEBFUN:CHEBFUN2:quiver:nargin', 'Not enough input arguments.');
     end
     f3 = varargin{1}; f4 = varargin{2};
     if ( (isa(f3, 'chebfun2') && isa(f4, 'chebfun2') ) ) % quiver(x,y,f,g,...)
         h = quiver( f1, f2, [f3;f4], varargin{3:end} );
     else
-        error('CHEBFUN2:QUIVER:ONECHEBFUN2', ...
+        error('CHEBFUN:CHEBFUN2:quiver:oneChebfun2', ...
             'Two CHEBFUN2 object were not passed to quiver.');
     end
     
 else
-    error('CHEBFUN2:QUIVER:INPUTS', 'Data locations not prescribed.');
+    error('CHEBFUN:CHEBFUN2:quiver:inputs', 'Data locations not prescribed.');
 end
 
 if ( nargout == 1 )
@@ -114,7 +114,8 @@ function [xx, yy] = new_data_locations( f1, f2, numpts )
 
 % Domain Check: 
 if ( ~domainCheck(f1, f2) )
-    error('CHEBFUN2:QUIVER', 'CHEBFUN2 objects are not on the same domain.');
+    error('CHEBFUN:CHEBFUN2:quiver:new_data_locations:differentDomains', ...
+        'CHEBFUN2 objects are not on the same domain.');
 end
 % mesh 'em up for the quiver arrows.
 dom = f1.domain; 

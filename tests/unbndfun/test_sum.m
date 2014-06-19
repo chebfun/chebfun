@@ -7,7 +7,7 @@ if ( nargin < 1 )
 end
 
 singPref = pref;
-singPref.enableSingularityDetection = true;
+singPref.blowup = true;
 
 % Seed for random number:
 seedRNG(6178);
@@ -39,7 +39,7 @@ I = sum(f);
 IExact = 2*sqrt(pi);
 err = abs(I - IExact);
 tol = 3e4*get(f,'epslevel')*get(f,'vscale');
-pass(3) = err < tol;
+pass(3) = err < 2*tol;
 
 % Blow-up function:
 op = @(x) x.^2.*(1-exp(-x.^2));

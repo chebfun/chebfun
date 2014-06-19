@@ -7,7 +7,7 @@ function h = outerProduct(f, g)
 %   f*g.'
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % TODO: This command could use a compression-like algorithm, but instead we will
 % just concatenate the rows and columns.
@@ -26,7 +26,7 @@ end
 
 % Check they are both chebfun objects 
 if ( ~isa(f, 'chebfun') || ~isa(g, 'chebfun') ) 
-   error('CHEBFUN2:OUTERPRODUCT:INPUTS', ...
+   error('CHEBFUN:CHEBFUN2:outerProduct:badInputs', ...
        'Outer product must involve two chebfun objects.');
 end
 
@@ -43,7 +43,7 @@ if ( size(f, 2) == size(g, 1) )
     h.pivotValues = ones(size(f, 2), 1);
     h.domain = dom; 
 else
-    error('CHEBFUN2:OUTERPRODUCT:SIZES', ...
+    error('CHEBFUN:CHEBFUN2:outerProduct:sizes', ...
         'Sizes not consistent for outer product.');
 end
 

@@ -33,15 +33,20 @@ end
 % Option for damping:
 fprintf(fid, '\n%% Option for damping.\n');
 if ( strcmp(dampedOn, '1') )
-    fprintf(fid, 'options.damped = ''on'';\n');
+    fprintf(fid, 'options.damped = true;\n');
 else
-    fprintf(fid, 'options.damped = ''off'';\n');
+    fprintf(fid, 'options.damped = false;\n');
 end
 
 % Option for discretization:
-fprintf(fid, '\n%% Option for discretization (either @colloc2 or @ultraS).\n');
-fprintf(fid, 'options.discretization = @%s;\n', ...
-    func2str(discretization));
+fprintf(fid, ['\n%% Option for discretization (either ''collocation'' ' ...
+    'or ''ultraspherical'').\n']);
+if ( isa(discretization(), 'colloc') )
+    discString = 'collocation';
+else
+    discString = 'ultraspherical';
+end
+fprintf(fid, 'options.discretization = ''%s'';\n', discString);
 
 % Plot during Newton iteration?
 if ( ~strcmp(plotting, 'off') )

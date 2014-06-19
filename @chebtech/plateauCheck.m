@@ -16,11 +16,15 @@ function [ishappy, epsLevel, cutoff] = plateauCheck(f, values, pref)
 %   number that prevents convergence to the full requested accuracy, as often
 %   happens in the collocation of differential equations.
 %
-%   [ISHAPPY, EPSLEVEL, CUTOFF] = PLATEAUCHECK(F, VALUES, PREF) allows additional
-%   preferences to be passed. In particular, one can adjust the target accuracy
-%   with PREF.EPS.
+%   Output EPSLEVEL is an estimate of the relative size of the last
+%   "meaningful" expansion coefficients of the function, and the output 
+%   CUTOFF is an estimate of how many of the coefficients are useful.
 %
-% See also STRICTCHECK, CLASSICCHECK.
+%   [ISHAPPY, EPSLEVEL, CUTOFF] = PLATEAUCHECK(F, VALUES, PREF) allows
+%   additional preferences to be passed. In particular, one can adjust the
+%   target accuracy with PREF.EPS.
+%
+% See also LINOPV4CHECK, STRICTCHECK, CLASSICCHECK.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -28,12 +32,12 @@ function [ishappy, epsLevel, cutoff] = plateauCheck(f, values, pref)
 % Grab some preferences:
 if ( nargin == 1 )
     pref = f.techPref();
-    epslevel = pref.eps;
+    epsLevel = pref.eps;
 elseif ( isnumeric(pref) )
-    epslevel = pref;
+    epsLevel = pref;
     pref = f.techPref();
 else
-    epslevel = pref.eps;
+    epsLevel = pref.eps;
 end
 
 % Grab the coefficients:
@@ -42,7 +46,7 @@ n = length(coeff);
 
 % NaNs are not allowed.
 if ( any(isnan(coeff)) )
-    error('CHEBFUN:FUN:plateauCheck:NaNeval', ...
+    error('CHEBFUN:CHEBTECH:plateauCheck:nanEval', ...
         'Function returned NaN when evaluated.')
 end
 
@@ -57,6 +61,7 @@ if ( max(maxvals) == 0 )
     return
 elseif ( any(isinf(maxvals)) )
     % Inf located. No cutoff.
+    ishappy = false;
     cutoff = n;
     return
 end
@@ -65,9 +70,9 @@ end
 % We omit the last 10% because aliasing can pollute them significantly.
 n90 = ceil( 0.90*n );
 absCoeff = abs( coeff(end:-1:end+1-n90,:) );  % switch to low->high ordering
-vscale = max(absCoeff,[],1);          % scaling in each column
-absCoeff = absCoeff * diag(1./vscale);
-
+vscale = max(absCoeff,[],1)          % scaling in each column
+vscale = max( [vscale(:); f.vscale] );
+absCoeff = absCoeff / vscale;
 
 %% Deal with array-valued functions.
 
@@ -76,7 +81,7 @@ ishappy = false(1,numCol);
 epsLevel = zeros(1,numCol);
 cutoff = zeros(1,numCol);
 for m = 1:numCol
-    [ishappy(m), epsLevel(m), cutoff(m)] = checkColumn(absCoeff(:,m),pref.eps);
+    [ishappy(m), epsLevel(m), cutoff(m)] = checkColumn(absCoeff(:,m),epslevel);
     if ( ~ishappy(m) )
         % No need to continue if it fails on any column.
         break
@@ -103,16 +108,12 @@ n = length(absCoeff);
 
 % Find the last place where the coeffs exceed the allowable level.
 % Then go out a bit further to be safe.
-cutoff = 4 + find( absCoeff >= epslevel, 1, 'last' );
+cutoff = 4 + find( absCoeff >= epslevel/50, 1, 'last' );
 
 if ( cutoff < 0.95*n )
     % Achieved the strict test.
     ishappy = true;
-    
-elseif ( n < 17 )
-    % If there aren't enough coefficients, give up checking.
-    cutoff = n;
-    
+       
 %% 2. Plateau test.
 else
     
@@ -191,6 +192,8 @@ end
 
 % Deduce an epslevel. 
 if ( ishappy )
+    %cutoff=n;
+
     winEnd = min( n, cutoff + 4 );
     epslevel = max( absCoeff(cutoff:winEnd) );
 else

@@ -91,7 +91,7 @@ NaNRow = NaN(1, numCols);
 r = NaNRow;
 
 % Zero pointValues are roots.
-index = abs(f.pointValues(1,:)) < vs*htol;
+index = abs(f.pointValues(1,:)) < vs*el;
 if ( any(index) )
     % Left pointValues is zero: (or sufficiently close)
     r(index) = dom(1);
@@ -131,7 +131,7 @@ for k = 1:numFuns
 end
 
 % Set any ridiculously small roots to zero:
-r(abs(r) < el*vs*hs/10) = 0;
+r(abs(r) < eps*vs*hs/10) = 0;
 
 % Remove unnecessary NaNs:
 r = sort(r, 1);             % Sort will place NaNs in the final rows.
@@ -144,7 +144,7 @@ function rootsPref = parseInputs(f, varargin)
 
 % Defaults:
 rootsPref = struct('all', 0, 'recurse', 1, 'prune', 0,  'zeroFun', 1, ...
-    'jumpRoot', 1, 'impRoot', 1, 'qz', 0);
+    'jumpRoot', 1, 'impRoot', 1, 'qz', 0, 'filter', []);
 
 if ( ~isreal(f) )
     % 'jumpRoots' only makes sense for real-valued functions, so disable it:
@@ -174,9 +174,9 @@ for k = 1:numel(varargin)
         case 'nojump'
             rootsPref.jumpRoot = 0;
         case 'imps'
-            rootsPref.jumpRoot = 1;
+            rootsPref.impRoot = 1;
         case 'noimps'
-            rootsPref.jumpRoot = 0;  
+            rootsPref.impRoot = 0;  
         case 'qz'
             rootsPref.qz = 1; 
         case {'recursion', 'recurse'}
@@ -185,7 +185,8 @@ for k = 1:numel(varargin)
         case {'norecursion', 'norecurse'}
             rootsPref.recurse = 0;
         otherwise
-            error('CHEBFUN:roots:UnknownOption', 'Unknown option in ROOTS.')
+            error('CHEBFUN:CHEBFUN:roots:parseInputs:UnknownOption', ...
+                'Unknown option in ROOTS.')
     end
 end
 

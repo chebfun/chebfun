@@ -5,7 +5,7 @@ if ( nargin == 0 )
     pref = chebfunpref; 
 end
 
-tol = 1000*pref.cheb2Prefs.eps;
+tol = 1000*pref.eps;
 j = 1; 
 
 f = chebfun2(@(x,y) cos(x.*y) + sin(x.*y) + y -.1); 

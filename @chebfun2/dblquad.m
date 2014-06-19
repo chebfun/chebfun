@@ -8,7 +8,7 @@ function I = dblquad(f, a, b, c, d, varargin)
 % See also QUAD2D, INTEGRAL2, SUM2.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % (Any extra arguments are ignored.)
 I = quad2d( f, a, b, c, d ); 

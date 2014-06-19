@@ -68,10 +68,10 @@ end
 
 %% Assemble output:
 
-[~, ~, cc] = unique(n);             % Extract required column indices.
-cc = nMax1 + 1 - cc;                % P is ordered low to high.
-C = chebtech2.vals2coeffs(P(:,cc)); % Convert to coefficients
-C = fliplr(C);                      % C is ordered low to high.
+[ignored1, ignored2, cc] = unique(n);  % Extract required column indices.
+cc = nMax1 + 1 - cc;                   % P is ordered low to high.
+C = chebtech2.vals2coeffs(P(:,cc));    % Convert to coefficients
+C = fliplr(C);                         % C is ordered low to high.
 
 % Construct CHEBFUN from coeffs:
 p = chebfun(C, dom, pref, 'coeffs');   

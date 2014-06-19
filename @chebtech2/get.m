@@ -1,36 +1,43 @@
 function out = get(f, prop)
-%GET   GET method for the CHEBTECH2 class.
-%   P = GET(F,PROP) returns the property P specified in the string PROP from
-%   the fun F. Valid entries for the string PROP are:
-%       'VALUES' - Values of F at Chebyshev points.
-%       'COEFFS' - Chebyshev coefficients of F.
-%       'VSCALE' - Vertical scale of F.
-%       'EPSLEVEL' - Happiness level of F.
-%       'POINTS' - 2nd-kind Chebyshev grid corresponding to F.
-%       'LVAL' - Value of F at -1.
-%       'RVAL' - Value of F at +1.
+%GET   GET method for the CHEBTECH2 class
+%   P = GET(F, PROP) returns the property P specified in the string PROP from
+%   the CHEBTECH2 F.  The string PROP may be the name of a CHEBTECH2 property
+%   (see the CHEBTECH and CHEBTECH2 classdef files for lists) or any of the
+%   following strings:
+%       'POINTS'          - 2nd-kind Chebyshev grid corresponding to F.
+%       'VALUES'          - Values of F at Chebyshev points.
+%       'LVAL'            - Value of F at -1.
+%       'RVAL'            - Value of F at +1.
+%       'TECH'            - Handle to the CHEBTECH2 constructor. *
+%
+% See also CHEBTECH, CHEBTECH2.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% DEVELOPER NOTE:
+%  * Currently get(f, 'tech') returns a function handle to the tech constructor.
+%    This may change in future to return instead an empty instance of the tech.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 switch prop
     case fieldnames(f)
-        % Allow access to any of the properties of F via GET:
         out = f.(prop);
     case 'points'
-        % Get the Chebyshev grid corresponding to the VALUES:
         out = f.points();
     case 'lval'
-        % The value at -1:
-        out = feval(f,-1); 
+        out = feval(f, -1);
     case 'rval'
-        % The value at +1:
-        out = feval(f,1);
+        out = feval(f, 1);
     case 'values'
         out = f.coeffs2vals(f.coeffs);
+    case 'tech'
+        % TODO: Return function handle, or empty instance of the tech?
+        out = @chebtech2;
     otherwise
-        error('CHEBFUN:CHEBTECH2:GET:proname', ...
-            'Unknown property name ''%s'' for object of type chebtech2.', prop);
+        error('CHEBFUN:CHEBTECH2:get:propName', ...
+            'Unknown property name ''%s'' for object of type CHEBTECH2.', prop);
 end
 
 end

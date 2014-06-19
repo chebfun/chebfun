@@ -127,7 +127,7 @@ if ( ~isempty(initInput{1}) && isempty(guess) )
             
             guess = chebmatrix(guess);
         else % throw an error
-            error('Chebgui:InitialGuess', ...
+            error('CHEBFUN:CHEBGUI:solveGUIbvp:initialGuess', ...
                 ['Error constructing initial guess.  Please make sure ' ...
                  'guesses are of the form u = 2*x, v = sin(x), ...']);
         end
@@ -186,9 +186,9 @@ dampedOnInput = str2num(guifile.options.damping);
 plottingOnInput = str2num(guifile.options.plotting);
 
 if ( dampedOnInput )
-    options.damped = 'on';
+    options.damped = 1;
 else
-    options.damped = 'off';
+    options.damped = 0;
 end
 
 if ( isempty(plottingOnInput) ) % If empty, we have either 'off' or 'pause'
@@ -287,7 +287,7 @@ if ( guiMode )
 
     % If we were solving a nonlinear problem, we show a plot of the norm of the
     % Newton updates after solution has been found. For a linear problem, we
-    % show a chebpolyplot.
+    % show a PLOTCOEFFS plot.
     if ( ~isLinear )
         % Store the norm of the Newton updates
         handles.normDelta = info.normDelta;
@@ -308,8 +308,8 @@ if ( guiMode )
         end
     else
         axes(handles.fig_norm)
-        chebpolyplot(u, 'linewidth', 2)
-        title('Chebpolyplot of solution')
+        plotcoeffs(u, 'linewidth', 2)
+        title('Chebyshev coefficients of the solution')
         set(handles.popupmenu_bottomFig, 'Value', 2);
         grid on
     end

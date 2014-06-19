@@ -6,7 +6,7 @@ function f = assignColumns(f, colIdx, g)
 %   increasing in order or unique but must contain only integers in the range
 %   [1, M] (where F has M columns) and have a length equal to the number of
 %   columns (or rows) of G. Setting COLIDX to ':' has the same effect as setting
-%   it to 1:SIZE(F, 2).
+%   it to 1:SIZE(F, 2). If G is empty, then columns of F are removed.
 %
 %   If F is a row CHEBFUN, then ASSIGNCOLUMNS(F, ROWIDX, G) behaves as described
 %   above, except that it assigns the rows of F so that F(ROWIDX,:) = G.
@@ -22,7 +22,8 @@ function f = assignColumns(f, colIdx, g)
 
 % This shouldn't happen:
 if ( ~isa(f, 'chebfun') )
-    error('CHEBFUN:assigncColumns:notChebfun', 'First input must be a CHEBFUN.')
+    error('CHEBFUN:CHEBFUN:assignColumns:notChebfun', ...
+        'First input must be a CHEBFUN.')
 end
 
 % Number of columns (or rows if f.isTransposed) of f:
@@ -31,6 +32,23 @@ numColsF = numColumns(f);
 % Expand ':' to 1:end:
 if ( ~isnumeric(colIdx) && strcmp(colIdx, ':') )
     colIdx = 1:numColsF;
+end
+
+% g is empty - Remove columns!
+if ( isempty(g) )
+    if ( numel(f) > 1 )
+        f(colIdx) = [];
+    else
+        for k = 1:numel(f.funs)
+            f.funs{k} = assignColumns(f.funs{k}, colIdx, []);
+        end
+        f.pointValues(:,colIdx) = [];
+    end
+    if ( numel(f) == 0 )
+        % Create an empty CHEBFUN if we have removed all columns:
+        f = chebfun();
+    end
+    return
 end
 
 % Allow scalar expansion:
@@ -45,7 +63,7 @@ end
 
 % Check dimensions of g:
 if ( xor(f(1).isTransposed, g(1).isTransposed) || (numel(colIdx) ~= numColumns(g)) )
-    error('CHEBFUN:assignColumns:numCols', ...
+    error('CHEBFUN:CHEBFUN:assignColumns:numCols', ...
         'Subscripted assignment dimension mismatch.')
 end
 
@@ -53,7 +71,7 @@ end
 if ( (numel(colIdx) == numColsF) && isequal(colIdx, 1:numColsF) )
     % Verify domain:
     if ( ~domainCheck(f, g) )
-        error('CHEBFUN:assignColumns:domain', ...
+        error('CHEBFUN:CHEBFUN:assignColumns:domain', ...
             'Inconsistent domains; domain(f) ~= domain(g).');
     end
     f = g;
@@ -62,7 +80,7 @@ end
 
 % Check dimensions of f:
 if ( max(colIdx) > numColsF )
-%     error('CHEBFUN:assignColumns:dims', 'Index exceeds CHEBFUN dimensions.')
+%     error('CHEBFUN:CHEBFUN:assignColumns:dims', 'Index exceeds CHEBFUN dimensions.')
 
     if ( isempty(f) )
         dom = g.domain;

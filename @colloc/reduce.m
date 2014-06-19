@@ -28,7 +28,7 @@ P = cell(1, size(A, 2));
 % Do reduction for each block column:
 for k = 1:size(A, 2) 
     [PA{k}, P{k}] = reduceOne(disc, A(:,k), r(k), dim + dimAdjust(k));  
-%     [PS{k}, ~] = reduceOne(disc, S(:,k), r(k), dim + dimAdjust(k));      
+%     [PS{k}, ignored] = reduceOne(disc, S(:,k), r(k), dim + dimAdjust(k));
 end
 
 % Convert cell arrays to matrices:
@@ -56,7 +56,7 @@ for k = 1:numInt
     disc.dimension = n(k)-m;
     xOut = equationPoints(disc);
     disc.dimension = n(k);
-    [xIn, ~, baryWt] = functionPoints(disc);
+    [xIn, ignored, baryWt] = functionPoints(disc);
     % Store the kth projection matrix in the cell P
     P{k} = barymat(xOut, xIn, baryWt);
 end

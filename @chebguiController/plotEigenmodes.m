@@ -11,7 +11,7 @@ function plotEigenmodes(handles, selection, h1, h2)
 %   H2:         A handle to the bottom plot of the CHEBGUI figure.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.chebfun.org/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % No recent solution available
 if ( ~handles.hasSolution )
@@ -49,16 +49,7 @@ if ( selection )
     D = D(selection);
     
     % Go through the rows of the CHEBMATRIX V and pick out the selected entries
-    chebfunSelection = cell(numVar, 1);
-    
-    % Loop through the rows of the CHEBMATRIX V
-    for selCounter = 1:numVar
-        Vtemp = V{selCounter};
-        chebfunSelection{selCounter} = Vtemp(:,selection);
-    end
-    
-    % Convert the cell of selected CHEBFUNS to a CHEBMATRIX
-    V = chebmatrix(chebfunSelection);
+    V = V(:,selection);
 
     % Pick out the colour needed for plotting the selected eigenvalues.
     C = C(selection,:);
@@ -93,7 +84,6 @@ if ( ~isempty(h1) )
         xlim(h1, xlim_sol);
         ylim(h1, ylim_sol);
     end
-%     axis equal
     
 end
 
@@ -104,34 +94,24 @@ end
 % Do we have a coupled system?
 isSystem = numVar > 1;
 
-% Number of unknown variables.
-nV = max(size(V));
-
 % Do we want to plot the real or the imaginary parts of the eigenvalues?
 realplot = get(handles.button_realplot, 'Value');
 W = V;
 if ( realplot )
-    for k = 1:numVar
-        V(k) = real(V{k});
-    end
+    V = real(V);
     s = 'Real part of eigenmodes';
 else
-    for k = 1:nV
-        V(k) = imag(V{k});
-    end
+    V = imag(V);
     s = 'Imaginary part of eigenmodes';
 end
 
-% TODO: This used to be a chebfunpref('plot_numpts'), do we still want to allow
-% that?
+% The number of points we use for plotting:
 maxPlotPoints = 2001;
 
 axes(h2)
-% set(h2,'NextPlot','add')
 set(h2, 'ColorOrder', C)
 if ( any(selection) && (nargin < 4) )
     xlim_norm = xlim(h2);
-    ylim_norm = ylim(h2);
 end
 
 % Do the plotting for the bottom figure. Coupled systems are more tricky than
@@ -142,15 +122,12 @@ if ( ~isSystem )
     if ( (length(selection) == 1) && (selection > 0) && ~isreal(W{1}) && ~isreal(1i*W{1}) )
         d = V.domain;
         xx = union(linspace(d(1), d(end), maxPlotPoints), d).';
-        WW = abs(feval(W{1}, xx));
-        
+        WW = abs(feval(W{1}, xx));       
         plot(V{1}, '-', 'LineWidth', 2, 'color', C(1,:)); hold on
         plot(xx, WW, '-', xx, -WW, '-', 'LineWidth', 1, 'color', 'k'); hold off
     else
-        % Convert to a CHEBFUN
-        V = chebfun(V);
         for k = 1:size(V,2)
-            plot(V(:,k), 'LineWidth', 2, 'color', C(k,:));
+            plot(V{k}, 'LineWidth', 2, 'color', C(k,:));
             hold on
         end
         hold off
@@ -160,6 +137,7 @@ if ( ~isSystem )
     if ( handles.guifile.options.grid )
         grid on
     end
+    
     % ylabel:
     ylabel(handles.varnames);
     
@@ -168,39 +146,21 @@ else
     LS = repmat({'-', '--', ':', '-.'}, 1, ceil(numVar/4));
     % Label for the y-axis.
     ylab = [];
-    % Deal with different kinds of plotting required depending on whether we
-    % have real+imaginary parts or not.
-    
-    % TODO: Do we want to plot envelopes for systems? It lokos messy..
-%     if ( (length(selection) == 1) && (selection > 0) && ~isreal(W{1}) && ~isreal(1i*W{1}) )
-%         V1 = V{1};
-%         d = domain(V1);
-%         xx = union(linspace(d(1), d(end), maxPlotPoints), d).';
-%         for selCounter = 1:nV
-%             WW = abs(feval(W{selCounter}, xx));
-%             plot(real(V{selCounter}), '-', 'LineWidth', 2, 'lineStyle', ...
-%                 LS{selCounter}, 'Color', C(1,:));
-%             hold on
-%             plot(xx, WW, 'k', xx, -WW, 'k', 'lineStyle', LS{selCounter});
-%         end
-%     else
-        for selCounter = 1:numVar
-            % If we are plotting selected e-funs, we need to pick out the colors
-            if ( any(selection) )
-                for sCounter = 1:length(selection)
-                    plot(real(V{selCounter}(:,sCounter)), 'linewidth', 2, ...
-                        'linestyle', LS{selCounter}, 'Color', C(sCounter,:));
-                    hold on
-                end
-                xLims = V{selCounter}(:,sCounter).domain;
-            else
-                plot(real(V{selCounter}), 'linewidth', 2, 'linestyle',  ...
-                    LS{selCounter});
+%     V = real(V);
+    for varCounter = 1:numVar
+        % If we are plotting selected e-funs, we need to pick out the colors
+        if ( any(selection) )
+            for sCounter = 1:length(selection)
+                plot(V{varCounter,sCounter}, 'LineWidth', 2, ...
+                    'LineStyle', LS{varCounter}, 'Color', C(sCounter,:));
                 hold on
             end
-            ylab = [ylab handles.varnames{selCounter} ', ' ]; %#ok<AGROW>
+        else
+            plot(V(varCounter,:), 'LineWidth', 2, 'LineStyle', LS{varCounter});
+            hold on
         end
-%     end
+        ylab = [ylab handles.varnames{varCounter} ', ' ]; %#ok<AGROW>
+    end
     hold off
     
     % ylabel:
@@ -208,7 +168,7 @@ else
     
 end
 
-% Set limits:
+% Set the xlim:
 if ( any(selection) && (nargin < 4) )
     xlim(xlim_norm);
 else
@@ -217,7 +177,7 @@ else
 end
 set(h2, 'NextPlot', 'replace')
 
-% Set the xlim according to the domain of the function
+% Set x-label and title of the plot.
 xlabel(handles.indVarName);
 title(s);
 

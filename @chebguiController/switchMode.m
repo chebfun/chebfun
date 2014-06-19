@@ -37,7 +37,6 @@ if ( strcmp(newMode, 'bvp') ) % Going into BVP mode
     
     set(handles.button_realplot, 'Visible', 'off')
     set(handles.button_imagplot, 'Visible', 'off')
-    set(handles.button_envelope, 'Visible', 'off')
     set(handles.popupmenu_bottomFig, 'Visible', 'on')
     set(handles.toggle_useLatest, 'Value', 0)
     
@@ -72,7 +71,9 @@ if ( strcmp(newMode, 'bvp') ) % Going into BVP mode
     set(handles.menu_fixN, 'Enable', 'Off')
     
     % Clear the figures
-    initialisefigures(handles, callMode)
+    if ( ~strcmp(callMode, 'demo') )
+        chebgui.initialiseFigures(handles)
+    end
     
     % Enable all childrens of discretisation panel
     set(findall(handles.panel_discretization,  '-property',  'enable'),  ...
@@ -100,7 +101,6 @@ elseif ( strcmp(newMode, 'pde') ) % Going into PDE mode
     
     set(handles.button_realplot, 'Visible', 'off')
     set(handles.button_imagplot, 'Visible', 'off')
-    set(handles.button_envelope, 'Visible', 'off')
     set(handles.popupmenu_bottomFig, 'Visible', 'off')
 
     set(handles.panel_eigopts, 'Visible', 'Off')
@@ -124,7 +124,9 @@ elseif ( strcmp(newMode, 'pde') ) % Going into PDE mode
     set(handles.menu_fixN, 'Enable', 'On')
     
     % Clear the figures
-    initialisefigures(handles, ls)
+    if ( ~strcmp(callMode, 'demo') )
+        chebgui.initialiseFigures(handles)
+    end
     
     % Disable all childrens of discretisation panel
     set(findall(handles.panel_discretization, '-property', 'enable'),  ...
@@ -153,7 +155,6 @@ else % Going into EIG mode
     set(handles.button_realplot, 'Value', 1)
     set(handles.button_imagplot, 'Visible', 'on')
     set(handles.button_imagplot, 'Value', 0)
-    set(handles.button_envelope, 'Visible', 'off')
     set(handles.popupmenu_bottomFig, 'Visible', 'off')
 
     set(handles.panel_eigopts,'Visible','On')
@@ -217,21 +218,10 @@ else % Going into EIG mode
         'enable',  'on')
     
     % Clear the figures
-    initialisefigures(handles, callMode)
+    if ( ~strcmp(callMode, 'demo') )
+        chebgui.initialiseFigures(handles)
+    end
     
 end
-
-end
-
-function initialisefigures(handles, callMode)
-
-if ( ~strcmpi(callMode, 'demo') )
-    cla(handles.fig_sol, 'reset');
-    axes(handles.fig_sol);
-    title('Solutions'), % axis off
-end
-
-cla(handles.fig_norm, 'reset');
-title('Updates')
 
 end

@@ -136,6 +136,10 @@ errV = vals - vExact;
 errP = pos - pExact;
 pass(13) = ( norm(errV, inf) < epslevel(f)*vscale(f) ) && ...
     ( norm(errP, inf) < 5*epslevel(f)*vscale(f) );
-      
+
+%% from #824
+gam = chebfun('gamma(x)',[-4 4],'blowup','on','splitting','on');
+mm = minandmax(1./gam);
+pass(14) = norm(mm - [-1.125953228398760;4.079508980001102]) < 100*epslevel(gam);
 
 end

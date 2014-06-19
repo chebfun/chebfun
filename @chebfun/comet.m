@@ -15,7 +15,7 @@ if ( nargin == 1 ) % COMET(F)
     data = plotData(f);
 else               % COMET(F, G)
     if ( nargin > 2 )
-        warning('CHEBFUN:comet:nargin', ...
+        warning('CHEBFUN:CHEBFUN:comet:nargin', ...
             'Third input to @CHEBFUN/COMET() is ignored.');
     end
     data = plotData(f, g);

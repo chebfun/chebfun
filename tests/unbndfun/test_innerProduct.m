@@ -5,7 +5,7 @@ if ( nargin < 1 )
 end
 
 singPref = pref;
-singPref.enableSingularityDetection = true;
+singPref.blowup = true;
 
 % Seed for random number:
 seedRNG(6178);
@@ -36,7 +36,9 @@ opg = @(x) exp(-x);
 pref = chebfunpref();
 f = unbndfun(opf, struct('domain', dom, 'exponents', [0 1]), pref);
 g = unbndfun(opg, struct('domain', dom));
+warning('off', 'CHEBFUN:UNBNDFUN:sum:slowDecay');
 I = innerProduct(f, g);
+warning('off', 'CHEBFUN:UNBNDFUN:sum:slowDecay');
 IExact = 2*exp(-1);
 err = abs(I - IExact);
 pass(2) = err < 2e8*max(get(f,'epslevel')*get(f,'vscale'), ...

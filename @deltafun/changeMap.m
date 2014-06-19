@@ -5,7 +5,7 @@ function f = changeMap(f, newdom)
 %       G(x) = F(a*(d - x)/(d - c) + b*(x - c)/(d - c)) for all x in [c, d].
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Store the old mapping:
 oldMapping = f.funPart.mapping;

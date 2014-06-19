@@ -131,7 +131,7 @@ if ( nargin == 7 )
     varargin(1) = [];
 
     if ( ~isempty(dom) && ...
-        (~isfloat(dom) || ~isequal(size(varargin{1}), [1 2])) )
+        (~isfloat(dom) || ~isequal(size(dom), [1 2])) )
         error('CHEBFUN:ratinterp:badDom1', ...
             'Domain should be a 1 x 2 row vector of endpoints.');
     end
@@ -166,6 +166,15 @@ if ( isempty(dom) )
     else
         dom = [-1 1];
     end
+end
+
+% Ensure dom is not a domain object (since we lazily call diff(dom) below).
+if ( isa(dom, 'domain') )
+    warning('CHEBFUN:ratinterp:domainDeprecated', ...
+        ['Using a DOMAIN object as an input to RATINTERP is deprecated.\n' ...
+         'Specify domains using a two-element row vector instead.']);
+    warning('off', 'CHEBFUN:ratinterp:domainDeprecated');
+    dom = double(dom);
 end
 
 % Determine the number of interpolation nodes.

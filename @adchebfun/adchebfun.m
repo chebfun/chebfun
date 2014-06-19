@@ -27,7 +27,6 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
 %   which blocks are zero blocks and what block is the identity
 %   block) have to be seeded using the ADCHEBFUN/SEED() method.
 %
-%
 % See also CHEBFUN, LINBLOCK, LINOP, CHEBOP, ADCHEBFUN/SEED.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
@@ -45,7 +44,9 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    %% Properties of ADCHEBFUN objects.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS PROPERTIES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
         % FUNC: A CHEBFUN (or double) , which corresponds to the function the
         % ADCHEBFUN  represents.
@@ -73,10 +74,16 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         
         % DOMAIN: Domain of the ADchebfun.
         domain
+        
+        % These track where explicit jumps have been given, so that
+        % automatic continuity conditions are deactivated. Only the JUMP
+        % method changes this property. 
+        jumpLocations = [];
     end
     
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% CLASS CONSTRUCTOR:
-    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods
         
         function obj = adchebfun(u, varargin)
@@ -103,12 +110,14 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         
     end
     
-    %% METHODS IMPLEMENTED BY THIS CLASS.
-    methods
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
         
         function f = abs(f) %#ok<MANU>
             % ABS   ABS is not Frechet differentiable, so an error is thrown.
-            error('CHEBFUN:AD:abs:NotDifferentiable', ...
+            error('CHEBFUN:ADCHEBFUN:abs:notDifferentiable', ...
                 'ABS() is not Frechet differentiable.');
         end
 
@@ -219,8 +228,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % Update CHEBFUN part.
             f.func = acsch(f.func);
         end
-        
-                
+           
         function f = airy(k, f)
             % F = AIRY(K,F)   Airy function of an ADCHEBFUN.
             
@@ -518,7 +526,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % Either F or M could be an ADCHEBFUN, but be we currently only
             % support the case where the first argument is an ADCHEBFUN
             if ( ~isa(f, 'adchebfun') )
-               error('CHEBFUN:ADCHEBFUN:ellipj', ...
+               error('CHEBFUN:ADCHEBFUN:ellipj:badInput', ...
                    ['Currently, ADCHEBFUN only supports calls to ELLIPJ() ' ...
                    'where the first input is a ADCHEBFUN.']);
             end
@@ -697,6 +705,9 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             %       'LINEARITY'  -   Whether F has a constant derivative w.r.t.
             %                        the seeding variable (useful for linearity
             %                        detection).
+            %       'JUMPLOCATIONS'  - Points where explicit jump
+            %                          conditions were given.
+            %                          
             %
             %   In case F is an ADCHEBFUN array, use the call
             %       P = GET(F, PROP, POS)
@@ -707,7 +718,11 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             
             % Allow access to any of F's properties via GET.
             if ( nargin == 2 )
-                out = vertcat(f.(prop));
+                if ( strcmp(prop,'jumpLocations') )
+                    error('Must specify position.')
+                else
+                    out = vertcat(f.(prop));
+                end
             else
                 out = f(pos).(prop);
             end
@@ -732,7 +747,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         
         function f = heaviside(f) %#ok<MANU>
             % HEAVISIDE is not Frechet differentiable, so an error is thrown.
-            error('CHEBFUN:AD:heaviside:NotDifferentiable', ...
+            error('CHEBFUN:ADCHEBFUN:heaviside:notDifferentiable', ...
                 'HEAVISIDE() is not Frechet differentiable.');
         end
         
@@ -766,7 +781,11 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         
               
         function u = jump(u, x, c)
-            % U = JUMP(U)       JUMP of an ADCHEBFUN
+            %JUMP    JUMP of an ADCHEBFUN
+            %
+            %   V = JUMP(U, X, C), where U is an ADCHEBFUN, and X and C are
+            %   scalar returns the ADCHEBFUN V, so that
+            %        V =  U(X, 'right') - U(X, 'left') - C
             %
             % See also: chebfun/jump, functionalBlock.jump
             
@@ -781,6 +800,9 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             u.func = jump(u.func, x, c);
             % Derivative part
             u.jacobian = functionalBlock.jump(x, u.domain, 0)*u.jacobian;
+            % Signal that an explicit jump condition has been given, so
+            % that automatic continuity won't be applied.
+            u.jumpLocations = union(u.jumpLocations, x);
         end 
         
         function f = log(f)
@@ -872,7 +894,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             if ( isnumeric(g) )
                 f = rdivide(f, g);
             else
-                error('CHEBFUN:AD:mrdivide:dims', ...
+                error('CHEBFUN:ADCHEBFUN:mrdivide:dims', ...
                     ['Matrix dimensions must agree. Use f./g to divide' ...
                     'ADCHEBFUN objects.']);
             end
@@ -886,7 +908,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             if ( isnumeric(f) || isnumeric(g) )
                 f = times(f, g);  
             else
-                error('CHEBFUN:AD:mtimes:dims', ...
+                error('CHEBFUN:ADCHEBFUN:mtimes:dims', ...
                     ['Matrix dimensions must agree. Use f.*g to multiply ' ...
                      'two ADCHEBFUN or CHEBFUN objects.']);
             end
@@ -928,10 +950,12 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             else
                 % Update linearity information
                 f.linearity = f.linearity & g.linearity;
-                % Derivative part
+                % Value part
                 f.func = f.func + g.func;
                 % Derivative part
                 f.jacobian = f.jacobian + g.jacobian;
+                % Jumps
+                f.jumpLocations = union(f.jumpLocations,g.jumpLocations);
             end
             
             % Need to update domain in case new breakpoints were introduced
@@ -1137,7 +1161,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
 
                 % Convert the cell-array to a CHEBMATRIX and assign to the
                 % derivative field of U:
-                u.jacobian = chebmatrix(blocks);
+                u.jacobian = linop( blocks );
                 
                 % Initalise linearity information. The output is linear in all
                 % variables.
@@ -1219,7 +1243,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % Linearity information
             f.linearity = iszero(f.jacobian);
             % Update derivative part
-            Jop = @(u) (pi*u.*cos(pi*u) - sin(pi*u))./(pi*u.^2);
+            Jop = @(u) (u.*cos(u) - sin(u))./(u.^2);
             f.jacobian = operatorBlock.mult(compose(f.func, Jop), ...
                 f.domain)*f.jacobian;
             % Update CHEBFUN part
@@ -1258,7 +1282,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end
         
         function out = subsref(f, index)
-        %  subsref   ADCHEBFUN subsref.
+        %SUBSREF   ADCHEBFUN subsref.
         %   ( )
         %     F(X) returns the value of the CHEBFUN part of the ADCHEBFUN F
         %     evaluated on the array X.
@@ -1273,7 +1297,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         %     F{S1, S2} restricts F to the domain [S1, S2] < [F.ENDS(1),
         %     F.ENDS(end)].
         %
-        %   See also: feval, get, restrict, chebfun/subsref
+        % See also: FEVAL, GET, RESTRICT, CHEBFUN/SUBSREF.
         
             switch index(1).type
                 case '()'
@@ -1466,7 +1490,10 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         [err, lin] = valueTestingBinary(f)
     end
     
-    methods ( Access = private )
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% PRIVATE METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = private, Static = false )
         
         function f = updateDomain(f)
             % UPDATEDOMAIN      Update the domain of an ADCHEBFUN
@@ -1485,6 +1512,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             f.domain = union(f.domain, f.jacobian.domain);
             f.jacobian.domain = f.domain;
         end
+        
     end
     
 end

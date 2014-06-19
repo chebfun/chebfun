@@ -17,7 +17,7 @@ end
 
 % Deal with unbounded functions:
 if ( ~isfinite(f) )
-    error('CHEBFUN:floor:inf', ...
+    error('CHEBFUN:CHEBFUN:floor:inf', ...
         'Floor is not defined for functions which diverge to infinity.');
 end
 

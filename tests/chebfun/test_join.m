@@ -54,8 +54,8 @@ try
     f = join(f1, f2.');
     pass(7) = false;
 catch ME
-    pass(7) = strcmp(ME.identifier, 'CHEBFUN:join:trans') || ...
-        strcmp(ME.identifier, 'CHEBFUN:join:dim');
+    pass(7) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:join:columnJoin:trans') ...
+        || strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:join:dim');
 end
 
 % Test for singular function:

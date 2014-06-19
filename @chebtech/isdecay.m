@@ -5,47 +5,55 @@ function out = isdecay(f)
 %   returned if F has a boundary root with multiplicity larger than one, FALSE
 %   otherwise. 
 %
-%   Note that ISDECAY is designed and expected to be called only by UNBNDFUN
+%   Note that ISDECAY is designed for and expected to be called only by UNBNDFUN
 %   class for handling functions defined on unbounded domains.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
-out = zeros(1, 2);
+out = zeros(2, size(f, 2));
 
 % Set a tolerance:
-tol = 1e2*get(f, 'epslevel')*get(f, 'vscale');
+tol = 1e2*get(f, 'epslevel').*get(f, 'vscale');
 
-%% If G is a constant:
-
+%% If F is a constant:
 if ( length(f) == 1 )
-    if ( ( f.coeffs < tol ) || ( f.coeffs == 0 ) )
-        out = ones(1, 2);
+    mask = ( f.coeffs < tol ) | ( f.coeffs == 0 );
+    if ( any(mask) )
+        out(:, mask) = 1;
     end
     return
 end
 
 %% Left endpoint:
-
-if ( abs(get(f, 'lval')) < tol )
+rootsLeft = zeros(2, size(f, 2));
+maskLeft = abs(get(f, 'lval')) < tol;
+if ( any(maskLeft) )
+    rootsLeft(1, maskLeft) = 1;
+    
     % Extract a single boundary root at the left end points:
-    g = extractBoundaryRoots(f, [1 ; 0]);
+    g = extractBoundaryRoots(f, rootsLeft);
     
     % Check decaying speed:
-    if ( abs(get(g, 'lval')) < 1e3*tol )
-        out(1) = 1;
+    mask = abs(get(g, 'lval')) < 1e3*tol;
+    if ( any(mask) )
+        out(1, mask) = 1;
     end
 end
 
 %% Right endpoint:
-
-if ( abs(get(f, 'rval')) < tol )
+rootsRight = zeros(2, size(f, 2));
+maskRight = abs(get(f, 'rval')) < tol;
+if ( any(maskRight) )
+    rootsRight(2, maskRight) = 1;
+    
     % Extract a single boundary root at the left end points:
-    g = extractBoundaryRoots(f, [0 ; 1]);
+    g = extractBoundaryRoots(f, rootsRight);
     
     % Check decaying speed:
-    if ( abs(get(g, 'rval')) < 1e3*tol )
-        out(2) = 1;
+    mask = abs(get(g, 'rval')) < 1e3*tol;
+    if ( any(mask) )
+        out(2, mask) = 1;
     end
 end
 

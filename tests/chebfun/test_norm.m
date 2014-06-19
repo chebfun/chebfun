@@ -61,49 +61,49 @@ try
     [x, y] = norm(g, 1);
     pass(15) = false;
 catch ME
-    pass(15) = strcmp(ME.identifier, 'CHEBFUN:norm:argout');
+    pass(15) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:norm:argout');
 end
 
 try
     [x, y] = norm(g, 2);
     pass(16) = false;
 catch ME
-    pass(16) = strcmp(ME.identifier, 'CHEBFUN:norm:argout');
+    pass(16) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:norm:argout');
 end
 
 try
     [x, y] = norm(g, 0.4);
     pass(17) = false;
 catch ME
-    pass(17) = strcmp(ME.identifier, 'CHEBFUN:norm:argout');
+    pass(17) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:norm:argout');
 end
 
 try
     [x, y] = norm(g, 'bad');
     pass(18) = false;
 catch ME
-    pass(18) = strcmp(ME.identifier, 'CHEBFUN:norm:unknownNorm');
+    pass(18) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:norm:unknownNorm');
 end
 
 try
     [x, y] = norm(f, 2);
     pass(19) = false;
 catch ME
-    pass(19) = strcmp(ME.identifier, 'CHEBFUN:norm:argout');
+    pass(19) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:norm:argout');
 end
 
 try
     [x, y] = norm(f, 'fro');
     pass(20) = false;
 catch ME
-    pass(20) = strcmp(ME.identifier, 'CHEBFUN:norm:argout');
+    pass(20) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:norm:argout');
 end
 
 try
     [x, y] = norm(f, 'bad');
     pass(21) = false;
 catch ME
-    pass(21) = strcmp(ME.identifier, 'CHEBFUN:norm:unknownNorm');
+    pass(21) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:norm:unknownNorm');
 end
 
 %% Tests for singular functions:
@@ -159,17 +159,12 @@ err = p - pExact;
 pass(27) = abs(err) < 1e7*epslevel(f)*vscale(f);
 
 % 1-norm:
-% op = @(x) (1-exp(-x))./(x.^2);
-% f = chebfun(op, dom);
-% p = norm(f, 1);
-% pExact = 0.851504493224078;  % This is obtained using Matlab symbolic toolbox.
-% err = p - pExact
-% pass(28) = abs(err) < 1e-1; % This test is executing a numerically 
-% % unstable algorithm in norm(f,1). Let's just all move on with our lives. 
-
-% TODO: Reinstate the above test once we've figured out how to avoid spurious
-% roots in UNBNDFUN.
-pass(28) = true;
+op = @(x) (1-exp(-x))./(x.^2);
+f = chebfun(op, dom);
+p = norm(f, 1);
+pExact = 0.851504493224078;  % This is obtained using Matlab symbolic toolbox.
+err = p - pExact;
+pass(28) = abs(err) < 1e5*epslevel(f)*vscale(f);
 
 % P-norm (here P = 3):
 op = @(x) (1-exp(-x))./x;
@@ -206,5 +201,23 @@ pExact = 0.851504493224078;  % This is obtained using Matlab symbolic toolbox.
 err = p - pExact;
 % The tolerance below is loosen to allow certain spurious roots:
 pass(32) = abs(err) < 1e-2;
-    
+
+%% #578
+f = chebfun(@(x) cos(x)./(1e5+(x-30).^6),[0 inf]);
+warning('off', 'CHEBFUN:UNBNDFUN:sum:slowdecay')
+I = norm(f);
+warning('on', 'CHEBFUN:UNBNDFUN:sum:slowdecay')
+% The following result is obtained using Mathematica:
+Iexact = 2.4419616835794597e-5;
+err = abs(I - Iexact);
+pass(33) = ( err < 1e2*vscale(f)*epslevel(f) );
+
+% #920: sum of array-valued chebfun defined on unbounded domain:
+% (same function which decays fast enough to be integrable):
+f = chebfun(@(x) exp(-[x x].^2), [0 Inf]);
+I = norm(f);
+% The following exact value is obtained by Mathematica.
+I_exact = 1.119515134920248;
+pass(34) = norm(I-I_exact, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
+
 end
