@@ -37,7 +37,7 @@ u = L\x;
 %     'automatically determined grid'],FS,9)
 length(u);
 pass(4) = norm(L*u-x) < 1e-10;
-L.bc = 'neumann'; format short, feval(L,5,'oldschool');
+L.bc = 'neumann'; feval(L,5,'oldschool');
 u = L\x; 
 % plot(u), ylim([-0.015 0.015])
 % title('Solution to (21.3) except with Neumann BCs',FS,9)
