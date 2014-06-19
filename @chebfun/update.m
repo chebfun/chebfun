@@ -48,8 +48,6 @@ end
 startDir = pwd;
 % Find directory in which Chebfun was installed:
 installDir = chebfunroot();
-% homeDir is the directory below installDir:
-homeDir = fileparts(installDir);
 % Navigate there:
 cd(installDir)
 
@@ -102,55 +100,59 @@ end
 
 try % Wrap everything in a try-catch statement to avoid a disaster.
         
+    dstr = datestr(now, 'yyyymmddHHMMSS');
     if ( backup ) %#ok<*UNRCH>
         % Make a back up, so that we can recover things if needs be.
-        filename = ['chebfun_backup_', datestr(now, 'yyyymmddHHMMSS'), '.zip']; 
-        saveDir = fileparts(pwd);
-        fprintf('Saving backup .zip to %s/ ...\n', fullfile(saveDir, filename));
+        filename = ['chebfun_backup_', dstr, '.zip']; 
+        fprintf('Saving backup .zip to %s/ ...\n', fullfile(startDir, filename));
         warnState = warning('off', 'MATLAB:zip:archiveName');
         zip(filename, '*', pwd);
         warning(warnState);
-        movefile(filename, saveDir, 'f')
+        movefile(filename, startDir, 'f')
     end
-
-    % Navigate down a directory:
-    cd ..
     
     % Get the requested version of Chebfun:
     if ( strcmp(version, 'release') )
+        zipDirName = 'chebfun-master';
         disp('Downloading .zip file of latest stable release ...')
-        unzip([gitHubURL, 'archive/master.zip'], homeDir);
+        unzip([gitHubURL, 'archive/master.zip'], installDir);
     else
+        zipDirName = 'chebfun-development';
         disp('Downloading .zip file of latest development version ...')
-        unzip([gitHubURL, 'archive/development.zip'], homeDir);
-    end
+        unzip([gitHubURL, 'archive/development.zip'], installDir);
+    end 
     
-    % Remove the Chebfun directory:
-    disp(['Removing ', installDir, '/ ...']);
-    warnState = warning('off', 'MATLAB:RMDIR:RemovedFromPath');
-    rmdir(installDir, 's');
-    warning(warnState);
-            
-    % Move the unpacked zip file to the chebfunroot direcrtory.
-    disp('Extracting .zip file ...')
-    if ( strcmp(version, 'release') )
-        % Move things out of the chebfun-master folder to the root folder.
-        movefile(fullfile(homeDir, 'chebfun-master', '*'), installDir, 'f')
-        rmdir(fullfile(homeDir, 'chebfun-master'), 's');
-    else
-        % Move things out of the chebfun-development folder to the root folder.
-        movefile(fullfile(homeDir, 'chebfun-development', '*'), ...
-            installDir, 'f')
-        rmdir(fullfile(homeDir, 'chebfun-development'), 's');
+    if ( exist(fullfile(installDir, 'tmp'), 'dir') )
+        rmdir(fullfile(installDir, 'tmp'), 's');
     end
+        
+    disp('Removing old files ...')   
+    d = dir;
+    mkdir(fullfile(installDir, 'tmp'));
+    for k = 1:numel(d)
+        % Remove subdirectories:
+        if ( any(strcmp(d(k).name, {zipDirName, '.', '..'})) )
+            % Don't remove downloaded zip, or current directory.
+            continue
+        end
+        if ( d(k).isdir )
+            rmdir(fullfile(installDir, d(k).name), 's');
+        else
+            % Move files to a tmp dir:
+            movefile(fullfile(installDir, d(k).name), ...
+                fullfile(installDir, 'tmp'), 'f');
+        end
+    end
+    % remove the tmp dir:
+    rmdir(fullfile(installDir, 'tmp'), 's');
+
     disp('Extracting .zip file ...')
-    
+    movefile(fullfile(installDir, zipDirName, '*'), installDir, 'f')
+    rmdir(fullfile(installDir, zipDirName), 's')
     % Save the path:
     disp('Saving path ...')
     addpath(installDir)
-    try
-        savepath
-    catch
+    if ( savepath() )
         warning('CHEBFUN:TRUNKDIR:updateChebfun:savepath', ...
             'Unable to save path. Check with with your local sysadmin.');
     end
@@ -176,16 +178,12 @@ try % Wrap everything in a try-catch statement to avoid a disaster.
     
 catch ME
        
-    % Return to the starting directory:
-    mkdir(startDir)
+    Return to the starting directory:
     cd(startDir)
     
-    % Something went wrong. Throw an error:
+    Something went wrong. Throw an error:
     disp('Update failed.');
     rethrow(ME)
-    
-    % Not that even if the $chebfunroot/ folder was removed, it is recovered by
-    % the try-catch statement.
     
 end
 
