@@ -6,17 +6,17 @@ function varargout = plotcoeffs(f, varargin)
 %   curve is plotted for each FUN of each component (column) of F.
 %
 %   PLOTCOEFFS(F, S) allows further plotting options, such as linestyle,
-%   linecolor, etc, in the standard MATLAB manner. If S contains a string
+%   linecolor, etc, as in the standard MATLAB manner. If S contains a string
 %   'LOGLOG', the coefficients will be displayed on a log-log scale. If S
-%   contains a string 'NOEPSLEVEL' the epslevel is not plotted.
+%   contains a string 'NOEPSLEVEL', the epslevel is not plotted.
 %
 %   H = PLOTCOEFFS(F) returns a column vector of handles to lineseries objects.
 %   The final entry is that of the epslevel plot.
 %
-%   What 'coefficients' means in this context is dictated by the 'tech' is being
-%   used to represent F. See the PLOTCOEFFS method at the relevent tech level
-%   for more details. note that you can find what tech is being used by calling
-%   >> get(F, 'tech');.
+%   What 'coefficients' means in this context is dictated by the 'tech' that is
+%   being used to represent F. See the PLOTCOEFFS method at the relevent tech 
+%   levelfor more details. Note that you can find what tech is being used by 
+%   calling GET(F, 'tech').
 %
 % See also CHEBFUN/PLOT.
 
@@ -61,9 +61,9 @@ if ( isempty(col) )
 end
 
 % Deal with 'LogLog' and 'noEpsLevel' input:
-doLoglog = cellfun(@(s) strcmpi(s, 'loglog'), varargin);
+doLogLog = cellfun(@(s) strcmpi(s, 'loglog'), varargin);
 % varargin(doLoglog) = [];
-doLoglog = any(doLoglog);
+doLogLog = any(doLogLog);
 noEpsLevel = cellfun(@(s) strcmpi(s, 'noEpsLevel'), varargin);
 varargin(noEpsLevel) = []; % Strip this out, as we don't want to pass it down.
 doEpsLevel = ~any(noEpsLevel);
@@ -93,7 +93,7 @@ if ( ~holdState )
 end
 
 % Set xScale to logarithmic if requested:
-if ( doLoglog )
+if ( doLogLog )
     set(gca, 'xScale', 'Log');
 end
 
