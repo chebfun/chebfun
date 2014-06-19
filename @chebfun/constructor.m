@@ -258,7 +258,7 @@ while ( any(sad) )
 
     % Fail if too many points are required:
     len = sum(cellfun(@length, funs));
-    if ( len > pref.splitPrefs.splitMaxTotalLength )
+    if ( len > pref.splitPrefs.splitMaxLength )
         warning('CHEBFUN:CHEBFUN:constructor:funNotResolved', ...
             'Function not resolved using %d pts.', ...
             sum(cellfun(@length, funs)));

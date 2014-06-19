@@ -36,7 +36,7 @@ classdef chebfunpref < chebpref
 %         interpolation) allowed by the constructor when breakpoint detection
 %         is enabled.
 %
-%      splitMaxTotalLength     - Maximum total CHEBFUN length.
+%      splitMaxLength          - Maximum total CHEBFUN length.
 %       [6000]
 %
 %         This is the maximum total length of the CHEBFUN (i.e., the sum of the
@@ -427,8 +427,8 @@ classdef chebfunpref < chebpref
             fprintf('    splitPrefs\n');
             fprintf([padString('        splitLength:') '%d\n'], ...
                 prefList.splitPrefs.splitLength');
-            fprintf([padString('        splitMaxTotalLength:') '%d\n'], ...
-                prefList.splitPrefs.splitMaxTotalLength');
+            fprintf([padString('        splitMaxLength:') '%d\n'], ...
+                prefList.splitPrefs.splitMaxLength');
             fprintf([padString('    blowup:') '%d\n'], ...
                 prefList.blowup);
             fprintf('    blowupPrefs\n');
@@ -677,7 +677,7 @@ classdef chebfunpref < chebpref
             factoryPrefs.domain = [-1 1];
             factoryPrefs.splitting = false;
                 factoryPrefs.splitPrefs.splitLength = 160;
-                factoryPrefs.splitPrefs.splitMaxTotalLength = 6000;
+                factoryPrefs.splitPrefs.splitMaxLength = 6000;
             factoryPrefs.blowup = false;
                 factoryPrefs.blowupPrefs.exponentTol = 1.1*1e-11;
                 factoryPrefs.blowupPrefs.maxPoleOrder = 20;
