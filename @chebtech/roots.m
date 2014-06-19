@@ -110,8 +110,7 @@ else                            % Support for array-valued CHEBTECH objects.
     % Convert to an array for output:
     out = cell2mat(r);
 
-end
-    
+end    
 
 end
 
