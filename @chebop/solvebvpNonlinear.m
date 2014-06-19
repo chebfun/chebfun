@@ -151,12 +151,14 @@ while ( ~terminate )
                 % anymore. Have to resort back to damped iteration (but only if
                 % the user wanted damped Newton in the first place).
                 damped = prefDamped;
-                continue    % Go back to the start of loop
+                if ( damped ) 
+                    continue    % Go back to the start of loop
+                end
+            else
+                % Error estimate based on the norm of the update and the contraction
+                % factor.
+                errEst =  normDelta / (1 - cFactor^2);
             end
-            
-            % Error estimate based on the norm of the update and the contraction
-            % factor.
-            errEst =  normDelta / (1 - cFactor^2);
         end
         
     end

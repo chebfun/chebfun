@@ -186,9 +186,9 @@ dampedOnInput = str2num(guifile.options.damping);
 plottingOnInput = str2num(guifile.options.plotting);
 
 if ( dampedOnInput )
-    options.damped = 'on';
+    options.damped = 1;
 else
-    options.damped = 'off';
+    options.damped = 0;
 end
 
 if ( isempty(plottingOnInput) ) % If empty, we have either 'off' or 'pause'
