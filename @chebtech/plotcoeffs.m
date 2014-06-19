@@ -72,12 +72,12 @@ if ( f.vscale > 0 )
     if ( doBar )
         absCoeffs(absCoeffs < min(f.epslevel.*f.vscale)/100) = 0;
     else
-        % (Min of epslevel*vscale and the miniumum non-zero coefficient)
+        % Min of epslevel*vscale and the miniumum non-zero coefficient:
         absCoeffs(~absCoeffs) = min( min(f.epslevel.*f.vscale), ...
                                  min(absCoeffs(logical(absCoeffs))) );                             
     end
 else
-    % (add epslevel for zero CHEBTECHs)
+    % Add epslevel for zero CHEBTECHs:
     absCoeffs = absCoeffs + f.epslevel;
 end
 
@@ -91,7 +91,8 @@ if ( any(doBar) )
 end
 
 % Plot the coeffs:
-h = semilogy(xx, yy, args{:}); hold on
+h = semilogy(xx, yy, args{:}); 
+hold on
 
 if ( plotEpsLevel )
     % Plot the epslevel:
@@ -129,7 +130,7 @@ end
 end
 
 function [xx, yy] = padData(x, y)
-% Pad the x and y data to make a bar plot:
+%PADDATA   Pad the x and y data to make a bar plot:
 xx = [x+.5 ; x-.5 ; x-.5];
 xx(xx<0) = 0;
 xx = xx(:);
