@@ -182,13 +182,13 @@ options.errTol = tolNum;
 options.display = 'iter';
 
 % Obtain information about damping and plotting
-dampedOnInput = str2num(guifile.options.damping);
+dampingOnInput = str2num(guifile.options.damping);
 plottingOnInput = str2num(guifile.options.plotting);
 
-if ( dampedOnInput )
-    options.damped = 1;
+if ( dampingOnInput )
+    options.damping = 1;
 else
-    options.damped = 0;
+    options.damping = 0;
 end
 
 if ( isempty(plottingOnInput) ) % If empty, we have either 'off' or 'pause'

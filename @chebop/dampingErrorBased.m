@@ -156,7 +156,7 @@ while ( ~accept )
     
     % Switch to pure Newton if we are experiencing good convergence
     if ( lambdaPrime == 1 && cFactor < .5 )
-        dampingInfo.damped = 0;
+        dampingInfo.damping = 0;
     end
     
     % TODO: Document

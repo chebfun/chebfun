@@ -90,7 +90,7 @@ expInfo.useLatest = useLatest;
 
 % Information related to options set-up
 expInfo.tol = guifile.tol;
-expInfo.dampedOn = guifile.options.damping;
+expInfo.dampingOn = guifile.options.damping;
 expInfo.discretization = guifile.options.discretization;
 expInfo.plotting = guifile.options.plotting;
 
