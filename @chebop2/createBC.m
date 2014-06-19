@@ -36,10 +36,12 @@ elseif ( isa(bcArg, 'char') )
         % Pass on to SOLVER.
         bc = 'periodic'; 
     else
-        error('CHEBOP2:bcArg:word', 'Unrecognised boundary condition string.');
+        error('CHEBFUN:CHEBOP2:createBC:word', ...
+            'Unrecognised boundary condition string.');
     end
 else
-    error('CHEBOP2:bcArg:type', 'Unrecognised boundary condition syntax.');
+    error('CHEBFUN:CHEBOP2:createBC:type', ...
+        'Unrecognised boundary condition syntax.');
 end
 
 end

@@ -21,7 +21,7 @@ classdef cheboppref < chebpref
 %     This options determines whether linear operators are discretized using
 %     rectangular collocation methods or the ultraspherical method.
 %  
-%   damped                      - Should Newton's method be damped?
+%   damping                     - Should Newton's method be damped?
 %     [true]
 %     false
 %
@@ -191,8 +191,8 @@ classdef cheboppref < chebpref
                 prefList.domain(1), prefList.domain(end));
             fprintf([padString('    discretization:') '%s\n'], ...
                 func2str(prefList.discretization));
-            fprintf([padString('    damped:') '%d\n'], ...
-                prefList.damped);
+            fprintf([padString('    damping:') '%d\n'], ...
+                prefList.damping);
             fprintf([padString('    display:') '%s\n'], ...
                 prefList.display);
             fprintf([padString('    errTol:') '%g\n'], ...
@@ -358,7 +358,7 @@ classdef cheboppref < chebpref
             factoryPrefs.domain = [-1 1];
             factoryPrefs.discretization = @colloc2;
             factoryPrefs.scale = NaN;
-            factoryPrefs.damped = 1;
+            factoryPrefs.damping = 1;
             factoryPrefs.display = 'off';
             factoryPrefs.errTol = 1e-10;
             factoryPrefs.lambdaMin = 1e-6;

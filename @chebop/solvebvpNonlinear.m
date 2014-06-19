@@ -30,8 +30,8 @@ errTol   = pref.errTol;
 
 % Did the user request damped or undamped Newton iteration? Start in mode
 % requested (later on, the code can switch between modes).
-prefDamped = pref.damped;
-damped =     prefDamped;
+prefDamping = pref.damping;
+damping =      prefDamping;
 
 % Assign initial guess to u:
 u = u0;
@@ -72,7 +72,7 @@ dampingInfo.lambda =        lambda;
 dampingInfo.lambdaMin =     pref.lambdaMin;
 dampingInfo.newtonCounter = newtonCounter;
 dampingInfo.deltaBar =      [];
-dampingInfo.damped =        damped;
+dampingInfo.damping =       damping;
 dampingInfo.x =             x;
 
 linpref = pref;
@@ -109,7 +109,7 @@ while ( ~terminate )
     end
     
     % Are we in damped mode?
-    if ( damped )
+    if ( damping )
         
         % Find the next Newton iterate (the method finds the step-size, then
         % takes the damped Newton and returns the next iterate).
@@ -124,7 +124,7 @@ while ( ~terminate )
         cFactor = dampingInfo.cFactor;
         
         % Do we want to keep Newton in damped mode?
-        damped = dampingInfo.damped;
+        damping = dampingInfo.damping;
         
         % Is the damping strategy telling us to give up?
         giveUp = dampingInfo.giveUp;
@@ -150,8 +150,8 @@ while ( ~terminate )
                 % We're not observing the nice convergence of Newton iteration
                 % anymore. Have to resort back to damped iteration (but only if
                 % the user wanted damped Newton in the first place).
-                damped = prefDamped;
-                if ( damped ) 
+                damping = prefDamping;
+                if ( damping ) 
                     continue    % Go back to the start of loop
                 end
             else

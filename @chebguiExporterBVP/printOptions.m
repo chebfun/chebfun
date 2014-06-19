@@ -12,7 +12,7 @@ function printOptions(fid, expInfo)
 
 % Extract info from the expInfo struct:
 tol = expInfo.tol;
-dampedOn = expInfo.dampedOn;
+dampingOn = expInfo.dampingOn;
 discretization = expInfo.discretization;
 plotting = expInfo.plotting;
 
@@ -32,10 +32,10 @@ end
 
 % Option for damping:
 fprintf(fid, '\n%% Option for damping.\n');
-if ( strcmp(dampedOn, '1') )
-    fprintf(fid, 'options.damped = true;\n');
+if ( strcmp(dampingOn, '1') )
+    fprintf(fid, 'options.damping = true;\n');
 else
-    fprintf(fid, 'options.damped = false;\n');
+    fprintf(fid, 'options.damping = false;\n');
 end
 
 % Option for discretization:

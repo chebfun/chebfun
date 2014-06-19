@@ -127,10 +127,12 @@ elseif ( isa(bcArg, 'char') )
            bcrow(:,jj) = chebValues(jj-1, bcn, 1) - chebValues(jj-1, bcn, -1);
         end
     else
-        error('CHEBOP2:constructBC:word','Unrecognised boundary condition string.');
+        error('CHEBFUN:CHEBOP2:constructBC:word', ...
+            'Unrecognised boundary condition string.');
     end
 else
-    error('CHEBOP2:constructBC:type','Unrecognised boundary condition syntax.');
+    error('CHEBFUN:CHEBOP2:constructBC:type', ...
+        'Unrecognised boundary condition syntax.');
 end
 
 end
