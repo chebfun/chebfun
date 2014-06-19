@@ -75,11 +75,14 @@ dampingInfo.deltaBar =      [];
 dampingInfo.damped =        damped;
 dampingInfo.x =             x;
 
+linpref = pref;
+linpref.errTol = pref.errTol/10;
+
 % Start the Newton iteration!
 while ( ~terminate )
     
     % Compute a Newton update:
-    [delta, disc] = linsolve(L, res, pref, vscale(u));
+    [delta, disc] = linsolve(L, res, linpref, vscale(u));
 
     % We had two output arguments above, need to negate DELTA.
     delta = -delta;
@@ -148,12 +151,14 @@ while ( ~terminate )
                 % anymore. Have to resort back to damped iteration (but only if
                 % the user wanted damped Newton in the first place).
                 damped = prefDamped;
-                continue    % Go back to the start of loop
+                if ( damped ) 
+                    continue    % Go back to the start of loop
+                end
+            else
+                % Error estimate based on the norm of the update and the contraction
+                % factor.
+                errEst =  normDelta / (1 - cFactor^2);
             end
-            
-            % Error estimate based on the norm of the update and the contraction
-            % factor.
-            errEst =  normDelta / (1 - cFactor^2);
         end
         
     end

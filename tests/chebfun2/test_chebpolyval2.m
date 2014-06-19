@@ -28,4 +28,9 @@ f = chebfun2(@(x,y) cos(x.*y) );
 X = chebpolyval2( f ); 
 pass(2) = ( norm(X - A1*A2*A3.') < tol);
 
+% Check when degree in x \neq degree in y: 
+A = rand(10,11);
+f = chebfun2(A);
+B = chebpolyval2(f);
+pass(2) = ( norm(A - B) < tol);
 end

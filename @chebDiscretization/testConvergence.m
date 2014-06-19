@@ -39,15 +39,16 @@ epsLevel = 0;
 
 % If an external vscale was supplied, it can supplant the inherent scale of the
 % result.
-vscale = max(u.vscale, vscale);
+vscale = max(u.vscale, max(vscale));
 prefTech = chebtech.techPref();
 prefTech.eps = pref.errTol;
 
 % Test convergence on each piece.
 for i = 1:numInt
-    f = chebtech2( {[],coeffs{i}} );
+    c = cat(2,coeffs{i,:});
+    f = chebtech2( {[],c} );
     f.vscale = vscale;
-    [isDone(i), neweps, cutoff(i,:)] = plateauCheck(f, get(f,'values'), prefTech);
+    [isDone(i), neweps, cutoff(i,:)] = linopV4Check(f, get(f,'values'), prefTech);
     epsLevel = max(epsLevel, neweps);
 end
 
