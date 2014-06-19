@@ -85,19 +85,41 @@ f2 = chebfun(f_op, 'minSamples', 17);
 err2 = norm(feval(f2, xx) - f_op(xx), inf);
 pass(15) = (err1 > 1e-3) && (err2 < 10*vscale(f2)*epslevel(f2));
 
+% Test support for "legacy" preferences.
+f_op = @(x) sin(200*x);
+
+f = chebfun(f_op, 'resampling', 'on');
+pass(16) = ishappy(f);
+
+warnstate = warning('off','CHEBFUN:CHEBFUN:constructor:notResolved');
+f = chebfun(f_op, 'maxdegree', 129, 'tech', @chebtech2);
+pass(17) = ~ishappy(f) && (length(f) == 129);
+warning(warnstate);
+
+f = chebfun(f_op, 'splitting', 'on', 'splitdegree', 65);
+pass(18) = ishappy(f) && all(cellfun(@(fk) length(fk) <= 65, f.funs));
+
+warnstate = warning('off','CHEBFUN:CHEBFUN:constructor:funNotResolved');
+f = chebfun(f_op, 'splitting', 'on', 'splitLength', 65, 'splitMaxLength', 200);
+pass(19) = ~ishappy(f) && (length(f) <= 65*4);
+warning(warnstate);
+
 % Test construction with a mixture of preference object and keyword inputs.
 p = pref;
 p.tech = @chebtech1;
 f = chebfun(@(x) 1./x, [0 1], 'exps', [-1 0], p);
-pass(16) = get(f, 'ishappy') && isa(f.funs{1}.onefun.smoothPart, 'chebtech1');
+pass(20) = get(f, 'ishappy') && isa(f.funs{1}.onefun.smoothPart, 'chebtech1');
 f = chebfun(@(x) 1./x, [0 1], p, 'exps', [-1 0]);
-pass(17) = get(f, 'ishappy') && isa(f.funs{1}.onefun.smoothPart, 'chebtech1');
+pass(21) = get(f, 'ishappy') && isa(f.funs{1}.onefun.smoothPart, 'chebtech1');
 
 p = struct();
 p.tech = @chebtech1;
 f = chebfun(@(x) 1./x, [0 1], 'exps', [-1 0], p);
-pass(18) = get(f, 'ishappy') && isa(f.funs{1}.onefun.smoothPart, 'chebtech1');
+pass(22) = get(f, 'ishappy') && isa(f.funs{1}.onefun.smoothPart, 'chebtech1');
 f = chebfun(@(x) 1./x, [0 1], p, 'exps', [-1 0]);
-pass(19) = get(f, 'ishappy') && isa(f.funs{1}.onefun.smoothPart, 'chebtech1');
+pass(23) = get(f, 'ishappy') && isa(f.funs{1}.onefun.smoothPart, 'chebtech1');
+
+
+
 
 end

@@ -704,6 +704,26 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
                     'Invalid value for ''chebkind'' option.');
             end
             args(1:2) = [];
+        elseif ( strcmpi(args{1}, 'resampling') )
+            % Translate "resampling" --> "techPrefs.refinementFunction".
+            if ( strcmpi(args{2}, 'on') )
+                keywordPrefs.techPrefs.refinementFunction = 'resampling';
+            elseif ( strcmpi(args{2}, 'off') )
+                keywordPrefs.techPrefs.refinementFunction = 'nested';
+            end
+            args(1:2) = [];
+        elseif ( strcmpi(args{1}, 'maxdegree') )
+            % Translate "maxdegree" --> "techPrefs.maxLength".
+            keywordPrefs.techPrefs.maxLength = args{2};
+            args(1:2) = [];
+        elseif ( any(strcmpi(args{1}, {'splitLength', 'splitdegree'})) )
+            % Translate "splitdegree" --> "splitPrefs.splitLength".
+            keywordPrefs.splitPrefs.splitLength = args{2};
+            args(1:2) = [];
+        elseif ( strcmpi(args{1}, 'splitMaxLength') )
+            % Translate "splitMaxLength" --> "splitPrefs.splitMaxLength".
+            keywordPrefs.splitPrefs.splitMaxLength = args{2};
+            args(1:2) = [];
         elseif ( ischar(args{1}) )
             % Update these preferences:
             keywordPrefs.(args{1}) = args{2};
