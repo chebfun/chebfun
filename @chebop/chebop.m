@@ -129,7 +129,7 @@ classdef (InferiorClasses = {?double}) chebop
 %   N.lbc = @(p, y) [y - 1 ; diff(y)];
 %   N.rbc = @(p, y) y - 1;
 %   N.init = [1 ; chebfun(1)];
-%   plot(N\0)
+%   plot(N\0)chebop
 %
 % See also CHEBOP/MTIMES, CHEBOP/MLDIVIDE, CHEBOPPREF.
 
@@ -395,7 +395,19 @@ classdef (InferiorClasses = {?double}) chebop
             
             N.init = val;
             
-        end        
+        end   
+        
+        function out = isempty(N)
+            out = true;
+            for prop = fieldnames(N).'
+                p = char(prop);
+                if ( ~isempty(N.(p)) )
+                    out = false;
+                    break
+                end
+            end
+        end
+                
         
     end   
     
