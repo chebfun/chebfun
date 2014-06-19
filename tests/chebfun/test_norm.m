@@ -212,4 +212,12 @@ Iexact = 2.4419616835794597e-5;
 err = abs(I - Iexact);
 pass(33) = ( err < 1e2*vscale(f)*epslevel(f) );
 
+% #920: sum of array-valued chebfun defined on unbounded domain:
+% (same function which decays fast enough to be integrable):
+f = chebfun(@(x) exp(-[x x].^2), [0 Inf]);
+I = norm(f);
+% The following exact value is obtained by Mathematica.
+I_exact = 1.119515134920248;
+pass(34) = norm(I-I_exact, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
+
 end
