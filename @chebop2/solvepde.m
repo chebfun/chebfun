@@ -22,7 +22,7 @@ function u = solvepde(N, f, varargin)
 % publicly advertised.  
         
 % Copyright 2014 by The University of Oxford and The Chebfun2 Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Try and make a CHEBFUN2 out of right hand side.
 if isa(f, 'chebfun')
