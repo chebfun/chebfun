@@ -398,10 +398,13 @@ classdef (InferiorClasses = {?double}) chebop
         end   
         
         function out = isempty(N)
+            %ISEMPTY   Check if the CHEBOP N is empty.            
             out = true;
+            % Loop through all the fields of N:
             for prop = fieldnames(N).'
                 p = char(prop);
                 if ( ~isempty(N.(p)) )
+                    % If any field is non-empty, return false:
                     out = false;
                     break
                 end

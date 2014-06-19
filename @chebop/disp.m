@@ -1,5 +1,7 @@
-function s = disp(A)
-% CHAR  Convert CHEBOP to pretty-printed string.
+function disp(A)
+%DISP   Display a CHEBOP by converting it to a pretty-printed string.
+%
+% See also DISPLAY.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -93,7 +95,7 @@ else
 
 end
 
-end  % main function
+end  % End of function DISP().
 
 function str = stripHandle(op)
 idx = strfind(op, ')');
@@ -104,7 +106,10 @@ end
 
 function s = bc2char(b)
 
-if ~iscell(b), b = {b}; end
+% Make sure b is a cell:
+if ( ~iscell(b) )
+    b = {b}; 
+end
 
 s = repmat({'     '},1,length(b));
 for k = 1:length(b)
@@ -113,7 +118,7 @@ for k = 1:length(b)
     elseif ischar(b{k})  % string
         s{k} = [s{k}, b{k}];
     else  % function
-        s{k} = [s{k},char(b{k}),' = 0'];
+        s{k} = [s{k}, char(b{k}), ' = 0'];
     end
 end
 
@@ -122,28 +127,33 @@ end
 function s = mat2char(V)
 % MAT2CHAR  Convert the varmat to pretty-print string (incl. BCs)
 
-print_bc = true; % Print BCs or not
-defreal = 6;  % Size of matrix to display
+print_bc = true;       % Print BCs or not
+defreal = 6;           % Size of matrix to display
 dom = get(V,'domain');
 numints = numel(dom.endsandbreaks);
+
 if numints == 1 && isempty(V,'bcs')
     print_bc = false;
 end
+
 defreal = max(2,ceil(defreal/(numints-1)));
 s1 = ['   with n = ',int2str(defreal),' realization:'];
+
 % Evaluate the linop
 if print_bc && ~isempty(V,'bcs')
     Vmat = feval(V,defreal,'bc',dom);
 else
     Vmat = feval(V,defreal,'nobc',dom);
 end
+
 % Some pretty scaling for large/small numbers
 M = max(max(abs(Vmat)));
-if (M > 1e2 || M < 1) && M ~= 0
+if ( (M > 1e2 || M < 1) && M ~= 0 )
     M = 10^round(log10(M)-1);
     Vmat = Vmat/M;
     s1 = [s1 sprintf('\n    %2.1e * ',M)];
 end
+
 if isreal(Vmat)
     s2 = num2str(Vmat,'  %8.4f');
     for k = 1:size(s2,1)
@@ -159,6 +169,7 @@ else
         s2(k,:) = strrep(s2(k,:),'0.00 ','   0 ');
     end
 end
+
 % Pad with appropriate spaces
 s2 = [ repmat(' ',size(s2,1),5) s2 ];
 s = char(s1,'',s2);
