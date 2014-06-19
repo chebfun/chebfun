@@ -172,7 +172,7 @@ classdef chebfunpref < chebpref
 %   to be a copy of Q plus any additional TECHPREFS stored in P that were not
 %   stored in Q.
 %
-% Notes: CHEBOP
+% Notes: Creating preferences from structures.
 %   When building a CHEBFUNPREF from a structure using the second calling
 %   syntax above, one should take care to ensure that preferences for the
 %   underlying representation technology are specified once and only once;
@@ -181,10 +181,11 @@ classdef chebfunpref < chebpref
 %   this circumstance is implementation-defined.
 %
 % Notes: Relationship to V4 preferences.
-%   All V4 syntax is supported in calls to the CHEBFUN constructor (although
-%   this may be removed in a future release). Here is a rough guide to how the
-%   new V5 preferences relate to the old V4 syntax. Note that the V5 syntax
-%   _must_ be used in CHEBFUNPREF(), which does _not_ support the V4 syntax.
+%   All V4 preference names are supported in calls to the CHEBFUN constructor
+%   (although support for this may be removed in a future release). Here is a
+%   rough guide to how the new V5 preferences relate to the old V4 ones. Note
+%   that the V5 names _must_ be used in CHEBFUNPREF(), which does _not_ support
+%   the V4 names.
 %        V4                  V5
 %    'maxdegree'   -->   'maxLength'
 %    'maxlength'   -->  {'splitPrefs', 'splitMaxLength'}
@@ -197,7 +198,7 @@ classdef chebfunpref < chebpref
 %    'ADdepth'           removed
 %   (Note that when setting preferences directly via the constructor, one should
 %   only include the second entry in those preferences given as cell arrays
-%   above. For example, chebfun(@abs, 'splitLength', 10);.
+%   above. For example, chebfun(@abs, 'splitLength', 10);.)
 %
 % Examples:
 %   Create a CHEBFUNPREF for building a CHEBFUN based on CHEBTECH (default) with
