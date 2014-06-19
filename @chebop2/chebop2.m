@@ -31,7 +31,7 @@ classdef chebop2
 % publicly advertised.  
         
 % Copyright 2014 by The University of Oxford and The Chebfun2 Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
     
     %% PROPERTIES.
     properties ( GetAccess = 'public', SetAccess = 'public' )

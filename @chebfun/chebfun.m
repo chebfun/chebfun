@@ -812,7 +812,7 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
         % If the number of exponents supplied by user isn't equal to twice the
         % the number of the FUNs, throw an error message:
         error('CHEBFUN:CHEBFUN:parseInputs:badExponents', ...
-            ['The number of the exponents is inappropriate.']);
+            'The number of the exponents is inappropriate.');
     end
     % Sort out the exponents:
     if ( ~isempty(data.exponents) )
@@ -843,26 +843,29 @@ end
 
 function op = vectorCheck(op, dom, vectorize)
 %VECTORCHECK   Try to determine whether op is vectorized. 
-%   It's impossible to conver all enevtualities without being too expensive. 
+%   It's impossible to cover all eventualities without being too expensive. 
 %   We do the best we can. "Do. Or do no. There is not try."
-
-if ( vectorize )
-    op = vec(op);
-end
 
 % Make a slightly narrower domain to evaluate on. (Endpoints can be tricky).
 y = dom([1 end]);
+
 if ( y(1) > 0 )
     y(1) = 1.01*y(1); 
 else
     y(1) = .99*y(1); 
 end
+
 if ( y(end) > 0 )
     y(end) = .99*y(end); 
 else
     y(end) = 1.01*y(end); 
 end
+
 y = y(:);
+
+if ( vectorize )
+    op = vec(op, y(1));
+end
 
 try
     % Evaluate a vector of (near the) endpoints
@@ -876,9 +879,9 @@ try
     if ( sv(1) == sy(1) )
         % Here things seem OK! 
         
-        % However, we _an_ possibly be fooled if we have a array-valued function
-        % whos number of columns equals the number of test points. We choose one
-        % additional point as a final check:
+        % However, we may possibly be fooled if we have an array-valued function
+        % whose number of columns equals the number of test points(i.e., 2). We
+        % choose one additional point as a final check:
         if ( sv(2) == sy(1) )
             v = op(y(1));
             if ( size(v, 1) > 1 )
@@ -894,6 +897,18 @@ try
         op = @(x) repmat(op(x), length(x), 1);
         
     elseif ( any(sv == sy(1)) )
+        
+        if ( any(sv) == 1 )
+            % We check to see if we have something like @(x) [1 1].
+            v = op(y(1)); % Should evaluate to a scalar, unless array-valued.
+            if ( all(size(v) == sv) )
+                % Scalar expand:
+                op = @(x) repmat(op(x), length(x), 1);
+                return
+            end
+        end
+        
+        % Try and transpose:
         op = @(x) op(x).';
         warning('CHEBFUN:CHEBFUN:vectorCheck:transpose',...
                 ['Chebfun input should return a COLUMN array.\n', ...
@@ -905,7 +920,6 @@ try
         
     end
 
-    
 catch ME
     % The above didn't work. :(
     
@@ -916,7 +930,7 @@ catch ME
     else
         % Try vectorizing.
         op = vectorCheck(op, dom, 1);
-                warning('CHEBFUN:CHEBFUN:vectorcheck:vectorize',...
+        warning('CHEBFUN:CHEBFUN:vectorcheck:vectorize',...
         ['Function failed to evaluate on array inputs.\n',...
         'Vectorizing the function may speed up its evaluation\n',...
         'and avoid the need to loop over array elements.\n',...
@@ -929,16 +943,41 @@ end
 
 end
 
-function g = vec(op)
+function g = vec(op, y)
 %VEC  Vectorize a function or string expression.
-%   VEC(F), if F is a function handle or anonymous function, returns a function
-%   that returns vector outputs for vector inputs by wrapping F inside a loop.
-    g = @loopWrapper;
-    % Nested function:
-    function v = loopWrapper(x)
+%   VEC(OP, Y), if OP is a function handle or anonymous function, returns a
+%   function that returns vector outputs for vector inputs by wrapping F inside
+%   a loop. Y, serving as a testing point, is a point in the domain where OP is
+%   defined and is used to determine if OP is array-valued or not.
+    
+    % Check to see if OP is array-valued:
+    opy = op(y);
+    if ( any(size(opy) > 1) )
+        % Use the array-valued wrapper:
+        g = @loopWrapperArray;    
+    else
+        % It's not array-valued. Use the scalar wrapper:
+        g = @loopWrapperScalar;
+    end
+    
+    % Nested functions:
+    
+    % Scalar case:
+    function v = loopWrapperScalar(x)
         v = zeros(size(x));
         for j = 1:numel(v)
             v(j) = op(x(j));
         end
     end
+
+    % Array-valued case:
+    function v = loopWrapperArray(x)
+        numCol = size(op(x(1)), 2);
+        numRow = size(x, 1);
+        v = zeros(numRow, numCol);
+        for j = 1:numRow
+            v(j,:) = op(x(j));
+        end
+    end
+
 end

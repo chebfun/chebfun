@@ -5,7 +5,7 @@ function f = abs(f, varargin)
 %   ~isempty(roots(F)), then ABS(F) will return garbage with no warning.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.cd hebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Take the absolute values:
 f.funPart = abs(f.funPart, varargin{:});

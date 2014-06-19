@@ -8,7 +8,7 @@ function bc = createBC(bcArg, ends)
 %   resposibility to the solver. 
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% Developer note %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % This command attempts to convert the "boundary" data into CHEBFUNs. It is

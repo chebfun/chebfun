@@ -16,7 +16,7 @@ function [bcrow, bcvalue] = constructBC(bcArg, bcpos, een, bcn, dom, scl, order)
 %   (satisfying bcrow * X = bcvalue, or X * bcrow' = bcvalue').
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( isa(bcArg, 'chebfun') )
     % Dirichlet conditions are sorted out here: 

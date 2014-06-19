@@ -5,7 +5,7 @@ function x = fourpts(n)
 % See also CHEBPTS, LEGPTS, JACPTS, LAGPTS, and HERMPTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.chebfun.org/for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 x = linspace(-1, 1, n+1).';
 x(end) = [];
