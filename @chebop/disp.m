@@ -4,42 +4,45 @@ function s = disp(A)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+loose = strcmp(get(0, 'FormatSpacing'), 'loose');
+
 if ( isempty(A) )
     fprintf('   (empty chebop)\n');
+    if ( loose )
+        fprintf('\n')
+    end
     
 else
     % Check whether the chebop is linear in order to be able to display
-    % linearity information. If we get an error, that's a indicator that
-    % the operator is nonlinear, as it means that it can't operate on any
-    % initial guess (i.e. it could be @(u) diff(u,2) + 1./u)
-    
-%     if ( islinear(A) )
-%         fprintf('   Linear operator operating on chebfun objects defined on:\n');
-%     else
-%         fprintf('   Nonlinear operator operating on chebfuns object defined on:\n');
-%     end
-%     fprintf('      [%s]\n', num2str(A.domain));
-%     if ( ~isempty(A.op) )
-%         fprintf('   representing the operator:\n');
-%         str = stripHandle(func2str(A.op));
-%         fprintf('      %s = 0\n', str);
-%     end
-    
-    if ( islinear(A) )
+    % linearity information. 
+    if ( isempty(A.op) )
+        fprintf('   Empty operator');
+    elseif ( islinear(A) )
         fprintf('   Linear operator');
     else
-        fprintf('   Nonlinear operator operating on chebfuns object defined on:\n');
+        fprintf('   Nonlinear operator');
     end
     if ( ~isempty(A.op) )
         fprintf(':\n')
         str = stripHandle(func2str(A.op));
         fprintf('      %s = 0\n', str);
+        if ( loose )
+            fprintf('\n')
+        end
+        fprintf('  ');
     end
-    fprintf('   operating on chebfun objects defined on:\n')
-    fprintf('      [%s]\n', num2str(A.domain));
+    fprintf(' operating on chebfun objects defined on:\n')
+    dom = strtrim(sprintf('%g ', A.domain));
+    fprintf('      [%s]\n', dom);
+    if ( loose )
+        fprintf('\n')
+    end
     
     if ( ~isempty(A.lbc) || ~isempty(A.rbc) || ~isempty(A.bc) )
         fprintf('   with\n');
+        if ( loose )
+            fprintf('\n')
+        end
     end
     
     if ( ~isempty(A.lbc) )
@@ -52,6 +55,9 @@ else
             str = stripHandle(func2str(A.lbc));
             fprintf('      %s = 0\n', str);
         end
+        if ( loose )
+            fprintf('\n')
+        end
     end
     
     if ( ~isempty(A.rbc) )
@@ -62,6 +68,9 @@ else
             fprintf('      %s\n', num2str(A.rbc));
         else
             fprintf('      %s = 0\n', func2str(A.rbc));
+        end
+        if ( loose )
+            fprintf('\n')
         end
     end
     
@@ -76,6 +85,9 @@ else
                 str = stripHandle(func2str(A.bc));
                 fprintf('      %s = 0\n', str);
             end
+        end
+        if ( loose )
+            fprintf('\n')
         end
     end
 
