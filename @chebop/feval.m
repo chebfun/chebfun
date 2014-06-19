@@ -74,7 +74,7 @@ if ( (nargin == 2) && isnumeric(varargin{1}) )
         % We only support COLLOC2 discretizations!
         error('CHEBFUN:CHEBOP:feval:notColloc2', ...
             ['FEVAL(N, DIM) only supports COLLOC2 discretizations.\n', ...
-             'Use MATRIX(N, DIM) or chenge the discrewtization in CHEBOPPREF.']);
+             'Use MATRIX(N, DIM) or change the discretization in CHEBOPPREF.']);
     end
     A = matrix(L, n); % has n rows but maybe more columns
     
