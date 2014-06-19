@@ -11,7 +11,7 @@ function plotEigenmodes(handles, selection, h1, h2)
 %   H2:         A handle to the bottom plot of the CHEBGUI figure.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.chebfun.org/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % No recent solution available
 if ( ~handles.hasSolution )

@@ -11,7 +11,7 @@ function [newTree, pdeSign] = splitTreePDE(treeIn)
 % See also: STRINGPARSER/SPLITTREE.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.chebfun.org/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Begin by replacing the subtree which contains the pde_variable with a 0
 [newTree, ignored, pdeSign] = findPDE(treeIn, 1);

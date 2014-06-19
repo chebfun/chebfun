@@ -5,7 +5,7 @@ function f = abs(f, varargin)
 %   with no warning. F may be complex.
 
 %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org/for Chebfun information.
+%  See http://www.chebfun.org/ for Chebfun information.
 
 if ( isreal(f) || isreal(1i*f) )    
     % Convert values and then compute ABS(). 
