@@ -75,6 +75,7 @@ data = matrix(disc);
 % s = [ 'discretization = [', s(1:end-1), ']' ];
 % xlabel(s)
 
+% TODO: Better documentation.
 % Find the number of constraints and continuity conditions
 nbc = length(L.constraint);
 ncon = length(L.continuity);
@@ -90,13 +91,14 @@ cscol = cumsum(n(1,:));
 coldiv = cscol(1:end-1) + 1/2;
 rowmax = size(data, 1);
 plot([coldiv ; coldiv], [ 0; rowmax+1]*ones(size(coldiv)), 'color', [.6 .6 .6])
+hold on
 
 % Draw horizontal block boundaries. Account for the down-sampling of each row.
 csrow = cumsum( m(:, 1)');                          % remove down-sampling
 rowdiv = csrow(1:end - 1) + 1/2;                    % boundary after each block
 rowdiv = nbc + ncon + rowdiv;                       % offset from top rows
 colmax = size(data, 2);
-% plot([0; colmax+1]*ones(size(rowdiv)), [rowdiv; rowdiv], 'color', [.6 .6 .6])
+plot([0; colmax+1]*ones(size(rowdiv)), [rowdiv; rowdiv], 'color', [.6 .6 .6])
 
 % Draw horizontal BC and continuity boundaries.
 y = nbc + 1/2;
@@ -112,16 +114,22 @@ cscol = [0 cscol];
 csrow = ncon + nbc + [0 csrow];
 a = .65;
 b = .35;
-for k = 1:(numel(cscol)-1)
-    fill([cscol(k)+a cscol(k)+a cscol(k+1)+b cscol(k+1)+b], ...
-        [a nbc+b nbc+b a], 'b', 'facealpha', 1, 'edgealpha', 0)
-    hold on
+
+% BC and continuity blocks. 
+for j = 0:nbc-1
+    for k = 1:(numel(cscol)-1)
+        fill([cscol(k)+a cscol(k)+a cscol(k+1)+b cscol(k+1)+b], ...
+            j+b+[a b b a], 'b', 'facealpha', 0.8, 'edgealpha', 0)
+    end
 end
-for k = 1:(numel(cscol)-1)
-    fill([cscol(k)+a cscol(k)+a cscol(k+1)+b cscol(k+1)+b], ...
-        nbc+[a ncon+b ncon+b a], 'b', 'facealpha', 1, 'edgealpha', 0)
-    hold on
+for j = 0:ncon-1
+    for k = 1:(numel(cscol)-1)
+        fill([cscol(k)+a cscol(k)+a cscol(k+1)+b cscol(k+1)+b], ...
+            nbc+j+b+[a b b a], 'b', 'facealpha', 0.8, 'edgealpha', 0)
+    end
 end
+
+% Main operator blocks.
 for k = 1:(numel(cscol)-1)
     for j = 1:(numel(csrow)-1)
         if ( myiszero(L.blocks{j,k}) )
