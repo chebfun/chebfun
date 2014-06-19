@@ -860,8 +860,8 @@ try
         % Here things seem OK! 
         
         % However, we may possibly be fooled if we have an array-valued function
-        % whose number of columns equals the number of test points. We choose 
-        % one additional point as a final check:
+        % whose number of columns equals the number of test points(i.e., 2). We
+        % choose one additional point as a final check:
         if ( sv(2) == sy(1) )
             v = op(y(1));
             if ( size(v, 1) > 1 )
@@ -877,13 +877,18 @@ try
         op = @(x) repmat(op(x), length(x), 1);
         
     elseif ( any(sv == sy(1)) )
+        
         if ( any(sv) == 1 )
-            v = op(y(1));
+            % We check to see if we have something like @(x) [1 1].
+            v = op(y(1)); % Should evaluate to a scalar, unless array-valued.
             if ( all(size(v) == sv) )
+                % Scalar expand:
                 op = @(x) repmat(op(x), length(x), 1);
                 return
             end
         end
+        
+        % Try and transpose:
         op = @(x) op(x).';
         warning('CHEBFUN:CHEBFUN:vectorCheck:transpose',...
                 ['Chebfun input should return a COLUMN array.\n', ...
@@ -895,7 +900,6 @@ try
         
     end
 
-    
 catch ME
     % The above didn't work. :(
     
@@ -921,10 +925,10 @@ end
 
 function g = vec(op, y)
 %VEC  Vectorize a function or string expression.
-%   VEC(OP, Y), if OP is a function handle or anonymous function, returns a 
-%   function that returns vector outputs for vector inputs by wrapping F inside 
-%   a loop. Y, serving as a testing point, is a point in the domain where OP is 
-%   defined.
+%   VEC(OP, Y), if OP is a function handle or anonymous function, returns a
+%   function that returns vector outputs for vector inputs by wrapping F inside
+%   a loop. Y, serving as a testing point, is a point in the domain where OP is
+%   defined and is used to determine if OP is array-valued or not.
     
     % Check to see if OP is array-valued:
     opy = op(y);
@@ -936,7 +940,7 @@ function g = vec(op, y)
         g = @loopWrapperScalar;
     end
     
-    % Nested function:
+    % Nested functions:
     
     % Scalar case:
     function v = loopWrapperScalar(x)
