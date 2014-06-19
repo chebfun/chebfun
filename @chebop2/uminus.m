@@ -16,9 +16,10 @@ else
     A = -A; 
 end
 
-% Do not negative the BCS: 
+% Do not negate the BCs:
 if ( ~isempty(N.lbc) || ~isempty(N.rbc) || ~isempty(N.ubc) || ~isempty(N.dbc) )
-    warning('Operator has BCs. These were not negated.');
+    warning('CHEBFUN:CHEBOP2:unimus:BCs', ...
+        'Operator has BCs. These were not negated.');
 end
 
 % Update the properties of the CHEBOP2:

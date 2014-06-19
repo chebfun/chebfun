@@ -49,10 +49,11 @@ switch ( ref(1).type )
             op = N.op; 
             varargout = { op(indx{1}) }; 
         else
-            error('CHEBOP2:subsref:nonnumeric',...
+            error('CHEBFUN:CHEBOP2:subsref:nonnumeric',...
                 'Only numeric values and chebfun2 are recognised.')
         end
     otherwise
-        error('CHEBOP2:UnexpectedType', ['??? Unexpected index.type of ' index(1).type]);
+        error('CHEBFUN:CHEBOP2:subsref:unexpectedType', ...
+            ['??? Unexpected index.type of ' index(1).type]);
         
 end

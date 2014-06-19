@@ -8,7 +8,8 @@ function N1 = plus(N1, N2)
  
 % Check domains are the same. 
 if ( all( N1.domain ~= N1.domain ) )
-   error('CHEBOP2:PLUS', 'Domains of operators must be identical.'); 
+    error('CHEBFUN:CHEBOP2:plus:domain', ...
+        'Domains of operators must be identical.');
 end
 
 % Plus the coefficient matrices together. 
@@ -93,7 +94,7 @@ end
 % Do not add boundary conditions together. Ignore them. 
 if ( ~isempty(N1.lbc) || ~isempty(N1.rbc) ||...
         ~isempty(N1.ubc) || ~isempty(N1.dbc) )
-    warning('BCs were ignored.');
+    warning('CHEBFUN:CHEBOP2:plus:ignoredBCs', 'BCs were ignored.');
     N1.lbc =[]; 
     N1.rbc =[];
     N1.ubc =[]; 
@@ -101,7 +102,7 @@ if ( ~isempty(N1.lbc) || ~isempty(N1.rbc) ||...
 end
 if ( ~isempty(N2.lbc) || ~isempty(N2.rbc) ||...
         ~isempty(N2.ubc) || ~isempty(N2.dbc) )
-    warning('BCs were ignored.');
+    warning('CHEBFUN:CHEBOP2:plus:ignoredBCs', 'BCs were ignored.');
     N2.lbc =[]; 
     N2.rbc =[]; 
     N2.ubc =[]; 

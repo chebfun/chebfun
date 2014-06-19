@@ -181,6 +181,10 @@ if ( vectorize == 0 ) % another check
     % Check for cases: @(x,y) x*y, and @(x,y) x*y'
     [xx, yy] = meshgrid( domain(1:2), domain(3:4));
     A = op(xx, yy);
+    if ( isscalar(A) )
+        op = @(x,y) op(x,y) + 0*x + 0*y;
+        A = op(xx, yy);
+    end
     B = zeros(2);
     for j = 1:2
         for k = 1:2
@@ -192,7 +196,10 @@ if ( vectorize == 0 ) % another check
         % then vectorize.
         
         warning('CHEBFUN:CHEBFUN2:constructor:vectorize',...
-            'Function did not correctly evaluate on an array. Turning on the ''vectorize'' flag. Did you intend this? Use the ''vectorize'' flag in the chebfun2 constructor call to avoid this warning message.');
+            ['Function did not correctly evaluate on an array.\n', ...
+             'Turning on the ''vectorize'' flag. Did you intend this?\n', ...
+             'Use the ''vectorize'' flag in the CHEBFUN2 constructor\n', ...
+             'call to avoid this warning message.']);
         g = chebfun2(op, domain, 'vectorize', pref);
         return
     end

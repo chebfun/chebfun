@@ -231,8 +231,9 @@ durations = zeros(numFiles, 1);
 errorMessages = {'FAILED', 'CRASHED'};
 
 % TODO: Eventually this should be removed.
-% We don't want this warning to be displayed in CHEBTEST:
+% We don't want these warning to be displayed in CHEBTEST:
 warnState = warning('off', 'CHEBFUN:CHEBFUN:vertcat:join');
+warning('off', 'CHEBFUN:CHEBOP2:chebop2:experimental')
 
 % Attempt to run all of the tests:
 try % Note, we try-catch as we've CD'd and really don't want to end up elsewhere
