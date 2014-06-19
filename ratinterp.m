@@ -131,7 +131,7 @@ if ( nargin == 7 )
     varargin(1) = [];
 
     if ( ~isempty(dom) && ...
-        (~isfloat(dom) || ~isequal(size(varargin{1}), [1 2])) )
+        (~isfloat(dom) || ~isequal(size(dom), [1 2])) )
         error('CHEBFUN:ratinterp:badDom1', ...
             'Domain should be a 1 x 2 row vector of endpoints.');
     end

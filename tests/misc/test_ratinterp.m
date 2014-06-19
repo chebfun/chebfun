@@ -96,4 +96,14 @@ warnState = warning('off', 'CHEBFUN:ratinterp:domainDeprecated');
 warning(warnState);
 pass(20) = norm(p1-p2) == 0 && norm(q1-q2) == 0;
 
+%% Test the examples from the m-file:
+f = @(x) 1./(x - 0.2);
+xx = linspace(-1,1,20);
+[p, q, r] = ratinterp([-1 1], f, 10, 10, [], 'type2', 0);
+err = norm(r(xx) - f(xx));
+pass(21) = err < 1e-10;
+[p, q, r] = ratinterp([-1 1], f, 10, 10, [], 'type2', 0);
+err = norm(r(xx) - f(xx));
+pass(22) = err < 1e-10;
+
 end
