@@ -70,12 +70,16 @@ if ( (nargin == 2) && isnumeric(varargin{1}) )
     % cases.
     n = varargin{1};
     L = linop(N);
-    pref = cheboppref;  pref.discretization = @colloc2;
-    A = matrix(L, n, pref); % has n rows but maybe more columns
+    if ( ~isa(cheboppref().discretization(), 'colloc2') )
+        % We only support COLLOC2 discretizations!
+        error('CHEBFUN:CHEBOP:feval:notColloc2', ...
+            ['FEVAL(N, DIM) only supports COLLOC2 discretizations.\n', ...
+             'Use MATRIX(N, DIM) or chenge the discrewtization in CHEBOPPREF.']);
+    end
+    A = matrix(L, n); % has n rows but maybe more columns
     
-    % We want an n by n result. We have that A is (n-d) x n where
-    % d=L.diffOrder. Also, the output of A is at 1st kind points. We need
-    % to do:
+    % We want an n by n result. We have that A is (n-d) x n where d =
+    % L.diffOrder. Also, the output of A is at 1st kind points. We need to do:
     %  (map from n 1st kind to n 2nd kind) * A * (map from n 2nd kind to
     %  n+d 2nd kind).
     
