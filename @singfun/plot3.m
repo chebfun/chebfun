@@ -33,7 +33,7 @@ holdState = ishold;
 % We can only plot real data in this way:
 isDataReal = isreal(f) && isreal(g) && isreal(h);
 if ( ~isDataReal )
-    error( 'CHEBFUN:SINGFUN:PLOT3', 'Functions must be real-valued.');
+    error( 'CHEBFUN:SINGFUN:plot3:complex', 'Functions must be real-valued.');
 end
 
 % Get the data for plotting from PLOTDATA():

@@ -37,26 +37,32 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) linop 
 %     u = A\f;
 %     plot( chebfun(u) )
 %
-%   See also CHEBOPPREF, CHEBOP, CHEBMATRIX, LINOP.ADDBC.
+% See also CHEBOPPREF, CHEBOP, CHEBMATRIX, LINOP.ADDBC.
     
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Developer notes
-%
-% The LINOP class is essentially a CHEBMATRIX with two additional properties:
-% linop.constraint and linop.continuity which allow imposing conditions on the
-% solution (e.g. boundary conditions) and continuity conditions. Both
-% linop.constraint and linop.continuity are of the type LINOPCONSTRAINT.
+% DEVELOPER NOTE:
+%   The LINOP class is essentially a CHEBMATRIX with two additional properties:
+%   linop.constraint and linop.continuity which allow imposing conditions on the
+%   solution (e.g. boundary conditions) and continuity conditions. Both
+%   linop.constraint and linop.continuity are of the type LINOPCONSTRAINT.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    properties
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS PROPERTIES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    properties ( Access = public )
         constraint = linopConstraint()
         continuity = linopConstraint()
+        hasGivenJumpsAt = []; 
     end
     
-    methods
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS CONSTRUCTOR:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
         function L = linop(M)
             if ( nargin == 0 )
                 M = 0;
@@ -64,9 +70,18 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) linop 
             
             L = L@chebmatrix(M);
         end
+        
+        function L = addGivenJumpAt(L,location)
+            L.hasGivenJumpsAt = union(L.hasGivenJumpsAt,location);
+        end
     end
     
-    methods ( Static )
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% STATIC METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = true )
+        
         function [Z, I, D, C, M] = primitiveOperators(domain)
         %LINOP.PRIMITIVEOPERATORS   Frequently used operator blocks.
         %   [Z, I, D, C, M] = LINOP.PRIMITIVEOPERATORS(DOMAIN) returns shortcuts
@@ -80,7 +95,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) linop 
         %   Note that the 'linop' is just a convenient name. The outputs are
         %   *not* linops.
         %
-        %   See also OPERATORBLOCK.
+        % See also OPERATORBLOCK.
             
             if ( nargin == 0 )
                 domain = [-1 1];
@@ -117,6 +132,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) linop 
             su = functionalBlock.sum(domain);
             dt = @(f) functionalBlock.inner(f);
         end
+        
     end
 
 end

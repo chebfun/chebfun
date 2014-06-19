@@ -7,7 +7,7 @@ function F = power( F, G )
 %   powers.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check:
 if ( isempty( F ) || isempty( G ) )
@@ -24,7 +24,7 @@ if ( isa( F ,'double' ) )       % scalar . ^ CHEBFUN2V
             F.components{jj} = power( scalar, G.components{jj} );
         end
     else
-        error('CHEBFUN2V:mtimes:double', 'Dimension mismatch.');
+        error('CHEBFUN:CHEBFUN2V:power:double', 'Dimension mismatch.');
     end
     
 elseif ( isa(G, 'double') )      % CHEBFUN2V . ^ scalar
@@ -35,16 +35,19 @@ elseif ( isa(G, 'double') )      % CHEBFUN2V . ^ scalar
             F.components{jj} = power( F.components{jj}, scalar );
         end
     else
-        error('CHEBFUN2V:mtimes:double', 'CHEBFUN2V and double size mismatch.');
+        error('CHEBFUN:CHEBFUN2V:power:double', ...
+            'CHEBFUN2V and double size mismatch.');
     end
     
 elseif (isa(F,'chebfun2v') && isa(G,'chebfun2v') )  % CHEBFUN2V.^CHEBFUN2V
     
-    error('CHEBFUN2V:power:size', 'CHEBFUN2V dimension mismatch.');
+    error('CHEBFUN:CHEBFUN2V:power:size', ...
+        'CHEBFUN2V dimension mismatch.');
     
 else  % error
     
-    error('CHEBFUN2V:power:inputs', 'Unrecognized input arguments.');
+    error('CHEBFUN:CHEBFUN2V:power:inputs', ...
+        'Unrecognized input arguments.');
     
 end
 

@@ -107,7 +107,7 @@ classdef (InferiorClasses = {?double}) chebop
 %   plot(N\1)
 %
 % %% PARAMETER DEPENDENT PROBLEMS: %%
-%
+%CHEBGUIexporterEIG
 % CHEBOP supports solving systems of equations containing unknown parameters
 % without the need to introduce extra equations into the system. Simply add the
 % unknown parameters as the final variables.
@@ -136,18 +136,23 @@ classdef (InferiorClasses = {?double}) chebop
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.
     
-    properties ( GetAccess = 'public', SetAccess = 'public' )
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS PROPERTIES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    properties ( Access = public )
         domain = [];    % Domain of the operator
         op = [];        % The operator
-        lbc = [];       % Left boundary condition(s)
+        lbc = [];       % Left boCHEBGUIexporterEIGundary condition(s)
         rbc = [];       % Right boundary condition(s)
         bc = [];        % Other/internal/mixed boundary conditions
         init = [];      % Initial guess of a solution
         numVars = [];   % Number of variables the the CHEBOP operates on.
     end
     
-    %% CONSTRUCTOR:
-    methods
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS CONSTRUCTOR:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
         
         function N = chebop(op, dom, lbcIn, rbcIn, init)
             % CHEBOP constructor
@@ -201,8 +206,89 @@ classdef (InferiorClasses = {?double}) chebop
         end
     end
     
-    %% METHODS IMPLEMENTED IN THIS FILE:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS METHODS
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
+        
+        % Find selected eigenvalues and eigenfunctions of a linear CHEBOP.
+        varargout = eigs(N, varargin)
+        
+        % Linearize a CHEBOP around a CHEBFUN u.
+        [L, res, isLinear, u] = linearize(N, u, x, flag);  
+        
+        %\   Chebop backslash.
+        u = mldivide(N, rhs, pref)
+        
+        % The number of input arguments to a CHEBOP .OP field.
+        nIn = nargin(N)
+        
+        % Alternate & syntax for BC's.
+        N = and(N,BC)
+        
+    end
     
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% PRIVATE METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = private, Static = false )
+
+        % Find damped Newton step.
+        [u, dampingInfo] = dampingErrorBased(N, u, rhs, delta, L, ...
+            disc, dampingInfo)
+        
+        % Parse boundary conditions for CHEBOP object.
+        result = parseBC(N, BC, type)
+        
+        % Solve a nonlinear problem posed with CHEBOP
+        [u, info] = solvebvpNonlinear(N, rhs, L, u0, res, pref, displayInfo)
+        
+    end
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% HIDDEN NON-STATIC METHODS IMPLEMENTED IN OTHER FILES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false, Hidden = true )
+        
+        % Find selected eigenvalues and eigenfunctions of a linear CHEBOP.
+        varargout = eig(varargin);
+        
+    end
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% STATIC HIDDEN METHODS:       
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = private, Static = true )
+        
+        % Controls information displayed for Newton iterations
+        [displayFig, displayTimer] = displayInfo(mode, varargin);
+        
+        % Display at the finish of Newton iteration.
+        displayInfoFinal(u, delta, iterNo, errEstDE, errEstBC, displayFig, ...
+            displayTimer, pref)
+        
+        % Display special information when N.INIT solves the BVP:
+        displayInfoExactInitial(pref)
+        
+        % Display at the start of Newton iteration.
+        [displayFig, displayTimer] = displayInfoInit(u,pref);
+        
+        % Display during Newton iteration.        
+        [displayTimer, stopReq] = displayInfoIter(u, delta, iterNo, normdu, ...
+            cFactor, errEst, lendu, lambda, lenu, displayFig, displayTimer, ...
+            pref);
+        
+        % Display special information for linear problems.
+        displayInfoLinear(u, normRes, pref)
+
+        % Solve a linear problem posed with CHEBOP.
+        [u, info] = solvebvpLinear(L, rhs, residual, displayInfo, pref)
+        
+    end
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
+    %% METHODS IMPLEMENTED IN THIS FILE:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
     methods
         
         function N = set.lbc(N, val)
@@ -264,7 +350,6 @@ classdef (InferiorClasses = {?double}) chebop
                 
             end
             
-            
         end
         
         function N = set.op(N, val)
@@ -310,79 +395,9 @@ classdef (InferiorClasses = {?double}) chebop
             
             N.init = val;
             
-        end
+        end        
         
-        
-    end
+    end   
     
-    %% METHODS IMPLEMENTED IN OTHER FILES:
-    
-    methods
-        
-        % Find selected eigenvalues and eigenfunctions of a linear CHEBOP.
-        varargout = eigs(N, varargin)
-        
-        % Linearize a CHEBOP around a CHEBFUN u.
-        [L, res, isLinear, u] = linearize(N, u, x, flag);  
-        
-        %\   Chebop backslash.
-        u = mldivide(N, rhs, pref)
-        
-        % The number of input arguments to a CHEBOP .OP field.
-        nIn = nargin(N)
-        
-        % Alternate & syntax for BC's.
-        N = and(N,BC)
-        
-    end
-    
-    %% HIDDEN METHODS IMPLEMENTED IN OTHER FILES:
-    
-    methods ( Hidden = true )
-        
-        % Find selected eigenvalues and eigenfunctions of a linear CHEBOP.
-        varargout = eig(varargin);
-        
-    end
-    
-    %% STATIC HIDDEN METHODS:       
-    methods ( Static = true, Access = private )
-        
-        % Controls information displayed for Newton iterations
-        [displayFig, displayTimer] = displayInfo(mode, varargin);
-        
-        % Display at the finish of Newton iteration.
-        displayInfoFinal(u, delta, iterNo, errEstDE, errEstBC, displayFig, ...
-            displayTimer, pref)
-        
-        % Display at the start of Newton iteration.
-        [displayFig, displayTimer] = displayInfoInit(u,pref);
-        
-        % Display during Newton iteration.        
-        [displayTimer, stopReq] = displayInfoIter(u, delta, iterNo, normdu, ...
-            cFactor, errEst, lendu, lambda, lenu, displayFig, displayTimer, ...
-            pref);
-        
-        % Display special information for linear problems.
-        displayInfoLinear(u, normRes, pref)
-
-        % Solve a linear problem posed with CHEBOP.
-        [u, info] = solvebvpLinear(L, rhs, residual, displayInfo, pref)
-        
-    end
-    
-    methods ( Access = private )
-
-        % Find damped Newton step.
-        [u, dampingInfo] = dampingErrorBased(N, u, rhs, delta, L, ...
-            disc, dampingInfo)
-        
-        % Parse boundary conditions for CHEBOP object.
-        result = parseBC(N, BC, type)
-        
-        % Solve a nonlinear problem posed with CHEBOP
-        [u, info] = solvebvpNonlinear(N, rhs, L, u0, res, pref, displayInfo)
-        
-    end
 end
 

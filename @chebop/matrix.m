@@ -10,12 +10,12 @@ function out = matrix(N, varargin)
 
 [L, ignored, fail] = linop(N);
 if ( fail )
-    error('CHEBFUN:chebop:feval:nonlinear',...
+    error('CHEBFUN:CHEBOP:matrix:nonlinear',...
         'Matrix expansion is only allowed for linear CHEBOP objects.')
 end
 
 if ( (numel(varargin) > 1) && strcmpi(varargin{2}, 'oldschool') )
-    warnState = warning('off', 'CHEBFUN:linop:fevalDeprecated');
+    warnState = warning('off', 'CHEBFUN:LINOP:feval:deprecated');
     out = feval(L, varargin{:});
     warning(warnState);
 else

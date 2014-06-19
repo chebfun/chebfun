@@ -23,6 +23,8 @@ function varargout = displayBVPinfo(handles, mode, varargin)
 
 % Go into different modes, depending on where in the Newton iteration we are.
 switch mode
+    case 'exactInitial'
+        displayBVPinfoExactInitial(handles, varargin{:});
     case 'init'
         [displayFig, displayTimer] = displayBVPinfoInit(handles, varargin{:});
         varargout{1} = displayFig;
@@ -36,6 +38,21 @@ switch mode
 end
 
 end
+
+function displayBVPinfoExactInitial(handles, pref)
+%DISPLAYINFOEXACTINITIAL    Called if we pass CHEBOP/SOLVEBVP an initial guess
+%                           that solves the BVP.
+
+% Show that we got passed an initial guess that solves the BVP:
+str = {'Initial guess appears to be a solution of the BVP.';
+    'Returning initial guess as the solution.'};
+
+% Update the informtion on the GUI:
+set(handles.iter_list, 'String',  str);
+set(handles.iter_list, 'Value', 1);
+
+end
+
 
 function [displayFig, displayTimer] = displayBVPinfoInit(handles, u, pref)
 %DISPLAYBVPINFOINIT   Show information at the start of Newton iteration

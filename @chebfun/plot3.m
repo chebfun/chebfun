@@ -21,11 +21,9 @@ function varargout = plot3(f, g, h, varargin)
 % See also PLOT, PLOTDATA.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
-% [TODO]: Implement plotting of delta functions.
-
-% Deal with an empty input:
+%% Deal with an empty input:
 if ( isempty(f) || isempty(g) || isempty(h) )
     if ( nargout == 1 )
         varargout{1} = plot3([]);
@@ -33,12 +31,17 @@ if ( isempty(f) || isempty(g) || isempty(h) )
     return
 end
 
+%% Initialization:
+
+% Suppress inevitable warning for growing these arrays:
+%#ok<*AGROW>
+
 % Store the hold state of the current axis:
 holdState = ishold;
 
 % We can only plot real against real:
 if ( ~isreal(f) || ~isreal(g) || ~isreal(h) )
-    warning('CHEBFUN:plot:complex', ...
+    warning('CHEBFUN:CHEBFUN:plot:complex', ...
         'Warning: Imaginary parts of complex X, Y, and/or Z arguments ignored.');
 end
 f = real(f);
@@ -60,9 +63,8 @@ else
     end
 end
 
-
 % Remove global plotting options from input arguments.
-[lineStyle, pointStyle, jumpStyle, varargin] = ...
+[lineStyle, pointStyle, jumpStyle, deltaStyle, varargin] = ...
     chebfun.parsePlotStyle(varargin{:});
 
 % Style data.
@@ -81,6 +83,7 @@ lineData = {};
 pointData = {};
 jumpData = {};
 
+%% Preparation of the data:
 
 % Loop over the columns:
 for k = 1:numel(newData)
@@ -92,6 +95,8 @@ for k = 1:numel(newData)
     jumpData = [jumpData, newData(k).xJumps, newData(k).yJumps, ...
         newData(k).zJumps, styleData];
 end
+
+%% Plotting starts here:
 
 % Plot the curve
 h1 = plot3(lineData{:});
@@ -117,17 +122,32 @@ else
     set(h3, jumpStyle{:});
 end
 
+% Plot the dummy data, which includes both line and point style:
+hDummy = plot3(lineData{:}); % See CHEBFUN/PLOT() for details.
+if ( ~isempty(lineStyle) || ~isempty(pointStyle) )
+    set(hDummy, lineStyle{:}, pointStyle{:});
+end
+
+%% Misc:
+
 % Return hold state to what it was before:
 if ( ~holdState )
     hold off
 end
 
-% Give an output if one was requested:
+% We don't want these guys to be included in LEGEND(), so we turn them off.
+set(h1, 'handlevis', 'off');
+set(h2, 'handlevis', 'off');
+set(h3, 'handlevis', 'off');
+% The dummy plot is invisible, but its handle is visible (for LEGEND).
+set(hDummy, 'handlevis', 'on', 'visible', 'off');     %  ¯\_(o.O)_/¯
+
+% Give an output to the plot handles if requested:
 if ( nargout > 0 )
-    varargout{1} = h1;
-    varargout{2} = h2;
-    varargout{3} = h3;
+    varargout = {h1 ; h2 ; h3 ; hDummy};
 end
+
+%%
 
 end
 
@@ -136,7 +156,7 @@ if ( numel(f) ~= numCols )
     if ( numel(f) == 1 )
         f = repmat(f, 1, numCols);
     else
-        error('CHEBFUN:plot:dim', ...
+        error('CHEBFUN:CHEBFUN:plot3:expand:dim', ...
               'CHEBFUN objects must have the same number of columns.');
     end
 end

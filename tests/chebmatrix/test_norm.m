@@ -12,6 +12,7 @@ end
 f = chebfun(@(x) sin(x), [-1 -0.5 0 0.5 1], pref);
 g = chebfun(@(x) cos(x), [-1 -0.5 0 0.5 1], pref);
 h = chebfun(@(x) exp(x), [-1 -0.5 0 0.5 1], pref);
+
 A = [ f ; g ; h ];
 
 chebA = chebfun(A);

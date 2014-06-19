@@ -36,7 +36,7 @@ pass(2) = norm(fv - gv, inf) < 10*get(f, 'vscale')*get(f, 'epslevel');
 
 %% tests on singfun:
 
-pref.enableSingularityDetection = 1;
+pref.blowup = 1;
 op = @(x) 1./((x - a).*(x - b));
 f = bndfun(op, struct('domain', dom1), pref);
 

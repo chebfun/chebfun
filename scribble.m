@@ -11,7 +11,7 @@ function f = scribble(s, dom)
 %  The full United States QWERTY keyboard layout is supported (though
 %  letters will be printed only in upper-case), as well as some special and
 %  international characters. To contribute a character, please write it and
-%  email it to develop@chebfun.org.
+%  email it to help@chebfun.org.
 %
 %  Example:
 %   f = scribble('The quick brown fox jumps over the lazy dog. 0123456789');
@@ -104,9 +104,9 @@ for j = 1:lengthS
             
         otherwise,
             t = [];
-            warning('CHEBFUN:scribble:unknownchar', ...
+            warning('CHEBFUN:scribble:unknownChar', ...
                 ['"', s(j), '" is not supported by scribble. (But please feel ', ...
-                'free write it and email it to develop@chebfun.org)']);
+                'free write it and email it to help@chebfun.org)']);
     end
     
     if ( ~isempty(t) )

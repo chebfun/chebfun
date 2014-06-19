@@ -5,7 +5,7 @@ function intNum = whichInterval(disc, location, direction)
 %   indicates approach from the right or left (zero means don't care).
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % [TODO]: How does this differ from chebfun.whichInterval?
 
@@ -23,7 +23,8 @@ intNum = find( location >= disc.domain, 1, 'last' );
 % check for being at the right endpoint.
 if ( intNum == numIntervals )
     if ( direction > 0 )
-        error('Evaluation direction is undefined at the location.')
+        error('CHEBFUN:CHEBDISCRETIZATION:whichInterval:undefined', ...
+            'Evaluation direction is undefined at the location.')
     end
     direction = -1;  % this forces the adjustment below
 end

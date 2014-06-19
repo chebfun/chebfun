@@ -36,7 +36,7 @@ switch prop
         % TODO: Return function handle, or empty instance of the tech?
         out = @chebtech1;
     otherwise
-        error('CHEBFUN:CHEBTECH1:GET:proname', ...
+        error('CHEBFUN:CHEBTECH1:get:propName', ...
             'Unknown property name ''%s'' for object of type CHEBTECH1.', prop);
 end
 

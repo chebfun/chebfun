@@ -2,13 +2,25 @@ function M = multmat(n, f, lambda)
 % MULTMAT  multiplication matrices for ultraS
 %
 %  M = MULTMAT(N, F, LAMBDA) forms the nxn multiplication matrix
-%  representing the multiplication of F in the C^{(LAMBDA)} basis. 
+%  representing the multiplication of F in the C^{(LAMBDA)} basis.
+% 
+%  M = MULTMAT(N, F, LAMBDA) also works when F is a vector of Chebyshev
+%  coefficients.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Get Chebyshev T coefficients
-a = flipud(get(f, 'coeffs'));
+if ( isa(f, 'chebfun') ) 
+    % Get Chebyshev T coefficients
+    a = flipud(get(f, 'coeffs'));
+elseif ( isa(f, 'bndfun') ) 
+    % Get Chebyshev T coefficients
+    a = flipud(get(f, 'coeffs'));
+elseif ( isa( f, 'double') )
+    a = f; 
+else
+    error('ULTRAS:ARGIN:TYPE', 'Unrecognised 2nd argument.');
+end
 
 % Multiplying by a scalar is easy.
 if ( numel(a) == 1 )

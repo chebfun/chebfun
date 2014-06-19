@@ -5,7 +5,7 @@ function F = imag(F)
 % See also REAL.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Handle the empty case:
 if ( isempty(F) )

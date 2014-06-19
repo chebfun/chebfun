@@ -22,7 +22,7 @@ elseif ( numel(newDom) == 2 )
     b = newDom(2);
     newDom = (b - a)*(oldDom - c)/(d - c) + a;
 else
-    error('CHEBFUN:newDomain:numints', 'Inconsistent domains.');
+    error('CHEBFUN:CHEBFUN:newDomain:numints', 'Inconsistent domains.');
 end
 
 for k = 1:numel(g.funs)

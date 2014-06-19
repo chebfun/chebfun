@@ -5,7 +5,7 @@ function g = squeeze(f)
 %   y-variable a column CHEBFUN is returned.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty( f ) )  % Check for an empty CHEBFUN2.
     g = chebfun();    % Return an empty CHEBFUN because we are squeezing.

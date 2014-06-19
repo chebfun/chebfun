@@ -10,7 +10,7 @@ x = 2 * rand(100, 1) - 1;
 hvsde = @(x) .5*(sign(x) + 1);
 
 %% Simple tests
-pref.enableBreakpointDetection = 0;
+pref.splitting = 0;
 f = chebfun('x.^2', pref);   
 tol = get(f, 'epslevel')*get(f, 'hscale');
 f1 = sign(f);
@@ -43,7 +43,7 @@ g = chebfun(@(x) gHandle1(x), -3:3, pref);
 g1 = sign(g);
 pass(2,1) = length(g1.funs) == 6;
 pass(2,2) = normest(f - g1) < tol;
-pref.enableBreakpointDetection = 1;
+pref.splitting = 1;
 h1 = chebfun(@(x) sign(gHandle1(x)), -3:3, pref);
 pass(2,3) = length(h1.funs) == 6;
 pass(2,4) = normest(f - h1) < 100*tol;

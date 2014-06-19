@@ -36,7 +36,7 @@ elseif ( isa(c, 'deltafun') )        % DELTAFUN * DELTAFUN
     
 else                                % DELTAFUN * ???
     
-    error('CHEBFUN:DELTAFUN:mtimes:singfunMtimesUnknown', ...
+    error('CHEBFUN:DELTAFUN:mtimes:deltafunMtimesUnknown', ...
           'mtimes does not know how to multiply a DELTAFUN and a %s.', class(c));
 end
 

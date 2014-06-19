@@ -40,7 +40,7 @@ function out = movie(F,varargin)
 % See also CHEBFUN/PLOT, MOVIE, MOVIE2AVI.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www..chebfun.org/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( isinf(size(F, 2)) )
     % Force column quasimatrix:
@@ -56,7 +56,7 @@ end
 
 % Catch a potential error.
 if ( (~isempty(t)) && (length(t) ~= size(F,2)) )
-    error('CHEBFUN:movie:timesize',...
+    error('CHEBFUN:CHEBFUN:movie:timesize',...
     'Length of the time vector must equal the finite size of the quasimatrix.')
 end
 

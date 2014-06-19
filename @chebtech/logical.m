@@ -6,7 +6,7 @@ function f = logical(f)
 %   may be complex.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % TODO:  Should we use a tolerance here instead of any()?
 values = f.coeffs2vals(f.coeffs); 

@@ -16,7 +16,8 @@ if ( dim == 1 )
 elseif ( dim == 2 )
     C = horzcat(varargin{:});
 else
-    error('Must concatenate along dimension 1 or 2.')
+    error('CHEBFUN:CHEBMATRIX:cat:dim', ...
+        'Must concatenate along dimension 1 or 2.')
 end  
 
 end

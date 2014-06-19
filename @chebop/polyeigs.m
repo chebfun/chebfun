@@ -13,7 +13,7 @@ isChebop = cellfun(@(v) isa(v, 'chebop'));
 if ( nargin > 2 && any(isChebop(3:end)) )
     
     % POLYEIGS is not yet supported.
-    error('CHEBFUN:chebop:polyeigs:nosupport', ...
+    error('CHEBFUN:CHEBOP:polyeigs:notSupported', ...
         'CHEBOP/POLYEIGS() is not currently supported.');
     
 else

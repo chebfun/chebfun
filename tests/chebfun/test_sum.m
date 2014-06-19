@@ -99,21 +99,21 @@ try
     s = sum(f, -2, 2);
     pass(19) = false;
 catch ME
-    pass(19) = strcmp(ME.identifier, 'CHEBFUN:sum:ab');
+    pass(19) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:sum:sumSubDom:ab');
 end
 
 try
     s = sum(f, -2, b);
     pass(20) = false;
 catch ME
-    pass(20) = strcmp(ME.identifier, 'CHEBFUN:sum:a');
+    pass(20) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:sum:sumSubDom:a');
 end
 
 try
     s = sum(f, a, 2);
     pass(21) = false;
 catch ME
-    pass(21) = strcmp(ME.identifier, 'CHEBFUN:sum:b');
+    pass(21) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:sum:sumSubDom:b');
 end
 
 %% QUASIMATRICES:
@@ -175,9 +175,9 @@ pass(28) = err1 < 2e5*get(f,'epslevel')*get(f,'vscale');
 
 x = chebfun('x', dom);
 g = x.*exp(-x);
-warning('off', 'CHEBFUN:UNBNDFUN:sum:slowdecay');
+warning('off', 'CHEBFUN:UNBNDFUN:sum:slowDecay');
 I2 = sum(g);
-warning('on', 'CHEBFUN:UNBNDFUN:sum:slowdecay');
+warning('on', 'CHEBFUN:UNBNDFUN:sum:slowdDecay');
 err2 = abs(I2 - IExact);
 tol = 2e10*get(f,'epslevel')*get(f,'vscale');
 pass(29) = err2 < tol;
@@ -186,10 +186,10 @@ pass(29) = err2 < tol;
 f = chebfun('exp(-x.^2/16).*(1+.2*cos(10*x))',[-inf,inf]);
 
 % Suppress expected warnings which may occur on certain machines:
-warning('off','CHEBFUN:UNBNDFUN:sum:slowdecay'); 
+warning('off','CHEBFUN:UNBNDFUN:sum:slowDecay'); 
 I = sum(f);
 % Re-enable warnings:
-warning('on','CHEBFUN:UNBNDFUN:sum:slowdecay');  
+warning('on','CHEBFUN:UNBNDFUN:sum:slowDecay');  
 IExact = 7.0898154036220641;
 err = abs(I - IExact);
 pass(30) = err < 1e9*get(f,'epslevel')*get(f,'vscale');
@@ -202,6 +202,6 @@ I = sum(f);
 % The following exact result is obtained using Matlab symbolic toolbox:
 I_exact = 0.385602012136694;
 err = abs(I-I_exact);
-pass(31) = err < 1e1*get(f,'epslevel')*get(f,'vscale');
+pass(31) = err < 2e1*get(f,'epslevel')*get(f,'vscale');
 
 end

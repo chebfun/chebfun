@@ -16,7 +16,7 @@ classdef chebfunpref < chebpref
 %      construction if no domain argument is explicitly passed to the
 %      constructor.
 %
-%   enableBreakpointDetection  - Enable/disable breakpoint detection.
+%   splitting                  - Enable/disable breakpoint detection.
 %     true
 %    [false]
 %
@@ -26,7 +26,7 @@ classdef chebfunpref < chebpref
 %     introduced only at points where discontinuities are being created (e.g.,
 %     by ABS(F) at points where a CHEBFUN F passes through zero).
 %
-%   breakpointPrefs            - Preferences for breakpoint detection.
+%   splitPrefs                 - Preferences for breakpoint detection.
 %
 %      splitMaxLength          - Maximum FUN length.
 %       [160]
@@ -43,7 +43,7 @@ classdef chebfunpref < chebpref
 %         lengths of all the FUNs) allowed by the constructor when breakpoint
 %         detection is enabled.
 %
-%   enableSingularityDetection - Enable/disable singularity detection.
+%   blowup                     - Enable/disable singularity detection.
 %     true
 %    [false]
 %
@@ -73,15 +73,7 @@ classdef chebfunpref < chebpref
 %         If two delta functions are located closer than this tolerance, they 
 %         will be merged.
 %
-%   scale                      - The vertical scale constructor should use.
-%    [0]
-%
-%      Typically the CHEBFUN constructor will resolve relative to a vertical
-%      scale determined by it's own function evaluations. However, in some
-%      situations one would like to the resolve relative to a fixed vertical
-%      scale. This can be set using this preference.
-%
-%   singPrefs                  - Preferences for singularity detection.
+%   blowupPrefs                - Preferences for blowup / singularity detection.
 %
 %      exponentTol             - Tolerance for exponents.
 %       [1.1*1e-11]
@@ -98,14 +90,6 @@ classdef chebfunpref < chebpref
 %         
 %         The default singularity type to be used when singularity detection is
 %         enabled and no singType is provided.
-%
-%   scale                      - The vertical scale the constructor should use.
-%    [0]
-%
-%      Typically the CHEBFUN constructor will resolve relative to a vertical
-%      scale determined by it's own function evaluations. However, in some
-%      situations one would like to the resolve relative to a fixed vertical
-%      scale. This can be set using this preference.
 %
 %   tech                       - Representation technology.
 %    ['chebtech2']
@@ -168,7 +152,7 @@ classdef chebfunpref < chebpref
 %   associated to that field in Q.  Any fields of Q that are not properties of
 %   P are interpreted as preferences for the constructor of the underlying
 %   representation technology and are placed in P.TECHPREFS.  The exceptions to
-%   this are the fields BREAKPOINTPREFS, SINGPREFS, and TECHPREFS.  If Q has
+%   this are the fields SPLITPREFS, BLOWUPPREFS, and TECHPREFS.  If Q has
 %   fields with these names, they will be assumed to be MATLAB structures and
 %   will be "merged" with the structures of default preferences stored in the
 %   properties of the same names in P using CHEBFUNPREF.MERGEPREFS().
@@ -187,7 +171,7 @@ classdef chebfunpref < chebpref
 %   to be a copy of Q plus any additional TECHPREFS stored in P that were not
 %   stored in Q.
 %
-% Notes:
+% Notes:CHEBOP
 %   When building a CHEBFUNPREF from a structure using the second calling
 %   syntax above, one should take care to ensure that preferences for the
 %   underlying representation technology are specified once and only once;
@@ -199,14 +183,14 @@ classdef chebfunpref < chebpref
 %   Create a CHEBFUNPREF for building a CHEBFUN based on CHEBTECH (default) with
 %   breakpoint detection, a splitting length of 257 (pieces of polynomial degree
 %   256, and a custom CHEBTECH refinement function:
-%      p.enableBreakpointDetection = true;
-%      p.breakpointPrefs.splitLength = 257;
+%      p.splitting = true;
+%      p.splitPrefs.splitLength = 257;
 %      p.techPrefs.refinementFunction = @custom;
 %      pref = chebfunpref(p);
 %
 %   Same thing with a slightly shorter syntax:
-%      p.enableBreakpointDetection = true;
-%      p.breakpointPrefs.splitLength = 257;
+%      p.splitting = true;
+%      p.splitPrefs.splitLength = 257;
 %      p.refinementFunction = @custom;
 %      pref = chebfunpref(p);
 %
@@ -216,7 +200,7 @@ classdef chebfunpref < chebpref
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Developer note:
+% DEVELOPER NOTE:
 %
 % The reason this object was introduced is to allow for a simplified approach
 % to preferences in the upper layers (i.e., CHEBFUN, FUN, and SINGFUN) which
@@ -252,19 +236,22 @@ classdef chebfunpref < chebpref
 % the function.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    methods
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS CONSTRUCTOR:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
 
         function outPref = chebfunpref(varargin)
             if ( nargin < 1 )
                 inPrefList = struct();
             elseif ( ischar(varargin{1}) )
                 if ( nargin == 1 )
-                    error('CHEBFUN:chebfunpref:deprecated', ...
+                    error('CHEBFUN:CHEBFUNPREF:chebfunpref:deprecated', ...
                         ['chebfunpref() no longer supports queries of ', ...
                          'the form chebfunpref(''prop'').\n', ...
                          'Please use chebfunpref().prop.']);
                 else
-                    error('CHEBFUN:chebfunpref:deprecated', ...
+                    error('CHEBFUN:CHEBFUNPREF:chebfunpref:deprecated', ...
                         ['chebfunpref() no longer supports assignment ', ...
                          'via chebfunpref(''prop'', val).\n', ...
                          'Please use chebfunpref.setDefaults(''prop'', val).']);
@@ -280,7 +267,7 @@ classdef chebfunpref < chebpref
                 if ( ~isa(varargin{1}, 'chebfunpref') || ...
                      (~isa(varargin{2}, 'chebfunpref') && ...
                       ~isstruct(varargin{2})) )
-                      error('CHEBFUN:chebfunpref:badTwoArgCall', ...
+                      error('CHEBFUN:CHEBFUNPREF:chebfunpref:badTwoArgCall', ...
                         ['When calling CHEBFUNPREF with two arguments, ' ...
                         'the first must be a CHEBFUNPREF, and the ' ...
                         'second must be a CHEBFUNPREF or a struct.']);
@@ -290,7 +277,7 @@ classdef chebfunpref < chebpref
                     inPrefList = varargin{2};
                 end
             elseif ( nargin > 2 )
-                error('CHEBFUN:chebfunpref:tooManyInputs', ...
+                error('CHEBFUN:CHEBFUNPREF:chebfunpref:tooManyInputs', ...
                     'Too many input arguments.')
             end
 
@@ -319,6 +306,13 @@ classdef chebfunpref < chebpref
                 end
             end
         end
+        
+    end
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
 
         function out = subsref(pref, ind)
         %SUBSREF   Subscripted referencing for CHEBFUNPREF.
@@ -363,7 +357,7 @@ classdef chebfunpref < chebpref
                         out = subsref(out, ind(2:end));
                     end
                 otherwise
-                    error('CHEBFUNPREF:subsref:badType', ...
+                    error('CHEBFUN:CHEBFUNPREF:subsref:badType', ...
                         'Invalid subscripted reference type.')
             end
         end
@@ -391,7 +385,7 @@ classdef chebfunpref < chebpref
                             pref.prefList.techPrefs, ind, val);
                     end
                 otherwise
-                    error('CHEBFUNPREF:subsasgn:badType', ...
+                    error('CHEBFUN:CHEBFUNPREF:subsasgn:badType', ...
                         'Invalid subscripted assignment type.')
             end
         end
@@ -409,7 +403,7 @@ classdef chebfunpref < chebpref
             techPrefs = techObj.techPref(prefList.techPrefs);
 
             % Compute the screen column in which pref values start.
-            valueCol = 34; % length('    enableSingularityDetection:   ');
+            valueCol = 34; % length('    blowup:   ');
             for field = fieldnames(techPrefs).'
                 field1 = field{1};
                 col = length(['        ' field1 '  ']);
@@ -428,22 +422,22 @@ classdef chebfunpref < chebpref
             fprintf('chebfunpref object with the following preferences:\n');
             fprintf([padString('    domain:') '[%g, %g]\n'], ...
                 prefList.domain(1), prefList.domain(end));
-            fprintf([padString('    enableBreakpointDetection:') '%d\n'], ...
-                prefList.enableBreakpointDetection);
-            fprintf('    breakpointPrefs\n');
+            fprintf([padString('    splitting:') '%d\n'], ...
+                prefList.splitting);
+            fprintf('    splitPrefs\n');
             fprintf([padString('        splitMaxLength:') '%d\n'], ...
-                prefList.breakpointPrefs.splitMaxLength');
+                prefList.splitPrefs.splitMaxLength');
             fprintf([padString('        splitMaxTotalLength:') '%d\n'], ...
-                prefList.breakpointPrefs.splitMaxTotalLength');
-            fprintf([padString('    enableSingularityDetection:') '%d\n'], ...
-                prefList.enableSingularityDetection);
-            fprintf('    singPrefs\n');
+                prefList.splitPrefs.splitMaxTotalLength');
+            fprintf([padString('    blowup:') '%d\n'], ...
+                prefList.blowup);
+            fprintf('    blowupPrefs\n');
             fprintf([padString('        exponentTol:') '%d\n'], ...
-                prefList.singPrefs.exponentTol');
+                prefList.blowupPrefs.exponentTol');
             fprintf([padString('        maxPoleOrder:') '%d\n'], ...
-                prefList.singPrefs.maxPoleOrder');
+                prefList.blowupPrefs.maxPoleOrder');
             fprintf([padString('        defaultSingType:') '''%s''\n'], ...
-                prefList.singPrefs.defaultSingType');            
+                prefList.blowupPrefs.defaultSingType');            
             fprintf([padString('    enableDeltaFunctions:') '%d\n'], ...
                 prefList.enableDeltaFunctions);
             fprintf('    deltaPrefs\n');
@@ -454,16 +448,8 @@ classdef chebfunpref < chebpref
             fprintf('    cheb2Prefs\n');
             fprintf([padString('        maxRank:') '%d\n'], ...
                 prefList.cheb2Prefs.maxRank');
-            fprintf([padString('        maxLength:') '%d\n'], ...
-                prefList.cheb2Prefs.maxLength');            
-            fprintf([padString('        eps:') '%d\n'], ...
-                prefList.cheb2Prefs.eps');            
-            fprintf([padString('        exactLength:') '%d\n'], ...
-                prefList.cheb2Prefs.exactLength');            
             fprintf([padString('        sampleTest:') '%d\n'], ...
-                prefList.cheb2Prefs.sampleTest');            
-            fprintf([padString('    scale:') '%d\n'], ...
-                prefList.scale);
+                prefList.cheb2Prefs.sampleTest');
             
             techStr = func2str(tech);
             fprintf([padString('    tech:') '@%s\n'], techStr)
@@ -472,7 +458,7 @@ classdef chebfunpref < chebpref
                 link = '    <a href="matlab: help %s/techPref">techPrefs</a>\n';
                 fprintf(link, techStr)
             else
-                fprintf('    techPrefs\n', techStr)
+                fprintf('    techPrefs\n')
             end
 
             % Format and print values of tech preferences.
@@ -500,7 +486,10 @@ classdef chebfunpref < chebpref
 
     end
 
-    methods ( Static = true )
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% STATIC METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
+    methods ( Access = public, Static = true )
 
         function pref1 = mergePrefs(pref1, pref2, map)
         %MERGEPREFS   Merge preference structures.
@@ -522,7 +511,7 @@ classdef chebfunpref < chebpref
         %   argument to a "tech" constructor.
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        % Developer notes:
+        % DEVELOPER NOTES:
         %  - This function is a helper function intended for use by "technology"
         %    objects (usually subclasses of SMOOTHFUN) for managing their
         %    preferences.  See CHEBTECH.TECHPREF for an illustration.
@@ -576,8 +565,8 @@ classdef chebfunpref < chebpref
         %   as the defaults.
         %
         %   To set defaults for second tier preferences, such as
-        %   breakpointPrefs.splitMaxLength, one can use the syntax
-        %   CHEBFUNPREF.SETDEFAULT({'breakpointPrefs', 'splitMaxLength'}, 257).
+        %   splitPrefs.splitMaxLength, one can use the syntax
+        %   CHEBFUNPREF.SETDEFAULT({'splitPrefs', 'splitMaxLength'}, 257).
         %   However, this syntax is still experimental.
         %
         %   CHEBFUNPREF.SETDEFAULTS(PREF) sets the default values to the
@@ -607,7 +596,10 @@ classdef chebfunpref < chebpref
         end
     end
 
-    methods ( Static = true, Access = private)
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% PRIVATE STATIC METHODS
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Static = true, Access = private )
 
         function varargout = manageDefaultPrefs(varargin)
         %MANAGEDEFAULTPREFS   Private method for handling default preferences.
@@ -683,17 +675,16 @@ classdef chebfunpref < chebpref
         %   construction-time preferences.
 
             factoryPrefs.domain = [-1 1];
-            factoryPrefs.enableBreakpointDetection = false;
-                factoryPrefs.breakpointPrefs.splitMaxLength = 160;
-                factoryPrefs.breakpointPrefs.splitMaxTotalLength = 6000;
-            factoryPrefs.enableSingularityDetection = false;
-                factoryPrefs.singPrefs.exponentTol = 1.1*1e-11;
-                factoryPrefs.singPrefs.maxPoleOrder = 20;
-                factoryPrefs.singPrefs.defaultSingType = 'sing';                
+            factoryPrefs.splitting = false;
+                factoryPrefs.splitPrefs.splitMaxLength = 160;
+                factoryPrefs.splitPrefs.splitMaxTotalLength = 6000;
+            factoryPrefs.blowup = false;
+                factoryPrefs.blowupPrefs.exponentTol = 1.1*1e-11;
+                factoryPrefs.blowupPrefs.maxPoleOrder = 20;
+                factoryPrefs.blowupPrefs.defaultSingType = 'sing';                
             factoryPrefs.enableDeltaFunctions = true;
                 factoryPrefs.deltaPrefs.deltaTol = 1e-9;
                 factoryPrefs.deltaPrefs.proximityTol = 1e-11;
-            factoryPrefs.scale = 0;
             factoryPrefs.tech = @chebtech2;
             factoryPrefs.techPrefs = struct();
                 factoryPrefs.techPrefs.eps = 2^(-52);
@@ -703,11 +694,9 @@ classdef chebfunpref < chebpref
                 factoryPrefs.techPrefs.sampleTest = true;
             factoryPrefs.cheb2Prefs = struct(); 
                 factoryPrefs.cheb2Prefs.maxRank = 513;   
-                factoryPrefs.cheb2Prefs.maxLength = 65537;   
-                factoryPrefs.cheb2Prefs.eps = 2^(-52);   
-                factoryPrefs.cheb2Prefs.exactLength = 0; 
                 factoryPrefs.cheb2Prefs.sampleTest = 1;
         end
 
     end
+    
 end

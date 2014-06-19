@@ -4,7 +4,7 @@ function B = mpower(A,pow)
 %   of A. Note that boundary conditions are not carried into the result. 
 
 %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
+%  See http://www.chebfun.org/ for Chebfun information.
 
 B = linop( mpower@chebmatrix(A,pow) );
 

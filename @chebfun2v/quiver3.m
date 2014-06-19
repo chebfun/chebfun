@@ -32,7 +32,7 @@ function varargout = quiver3( F, varargin )
 % See also QUIVER.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 numpts = 20; 
 
@@ -89,7 +89,8 @@ elseif ( isa(F, 'chebfun2') && isa(varargin{1}, 'chebfun2v') )
     F = varargin{1};
     % Domain check:
     if ( ~domainCheck(Z, F.components{1} ) )
-        error('CHEBFUN2V:QUIVER3', 'Object are not on the same domain.');
+        error('CHEBFUN:CHEBFUN2V:quiver3:domain', ...
+            'Object are not on the same domain.');
     end
     % Workout plotting locations:
     zz = new_data_locations( Z, numpts );
@@ -127,7 +128,8 @@ elseif ( nargin > 3 )
         F = varargin{3};
         % Check that we have the right input types: 
         if ( ~isa(yy,'double') || ~isa(zz,'double') || ~isa(F,'chebfun2v') )
-            error('CHEBFUN2V:QUIVER3:INPUTS','Unrecognised input arguments.');
+            error('CHEBFUN:CHEBFUN2V:quiver3:badInputs1',...
+                'Unrecognised input arguments.');
         end
         % Get plotting data: 
         dom = F.components{1}.domain;
@@ -150,11 +152,13 @@ elseif ( nargin > 3 )
         F = varargin{3};
         % Check that we have the right input types: 
         if ( ~isa(Y,'chebfun2') || ~isa(Z,'chebfun2') || ~isa(F,'chebfun2v') )
-            error('CHEBFUN2V:QUIVER3:INPUTS','Unrecognised input arguments.');
+            error('CHEBFUN:CHEBFUN2V:quiver3:badInputs2', ...
+                'Unrecognised input arguments.');
         end
         % Check domains: 
         if ( ~domainCheck(X, Y) || (~domainCheck(Y, Z) ) )
-            error('CHEBFUN2V:QUIVER3','Object are not on the same domain.');
+            error('CHEBFUN:CHEBFUN2V:quiver3:domain',...
+                'Object are not on the same domain.');
         end
         
         % Get new data locations.
@@ -167,7 +171,8 @@ elseif ( nargin > 3 )
     end
     
 else
-    error('CHEBFUN2V:QUIVER3:INPUTS','Unrecognised input arguments.');
+    error('CHEBFUN:CHEBFUN2V:quiver3:badInputs3',...
+        'Unrecognised input arguments.');
 end
 
 if ( nargout > 0 )

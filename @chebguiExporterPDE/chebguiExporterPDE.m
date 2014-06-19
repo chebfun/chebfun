@@ -9,7 +9,10 @@ classdef chebguiExporterPDE < chebguiExporter
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
     
-    properties
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS PROPERTIES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    properties ( Access = public )
         
         % The default file name when exporting to an .m-file:
         defaultFileName = 'pde.m';
@@ -19,9 +22,10 @@ classdef chebguiExporterPDE < chebguiExporter
         
     end
     
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CONSTRUCTOR %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-    methods ( Access = public )
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS CONSTRUCTOR:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
         
         function A = chebguiExporterPDE(varargin)
             % Do nothing!
@@ -29,9 +33,10 @@ classdef chebguiExporterPDE < chebguiExporter
         
     end
     
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% STATIC METHODS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
-    
-    methods ( Static = true )
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% STATIC METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
+    methods ( Access = public, Static = true )
         
         % Extract information from the CHEBGUI object to a struct
         expInfo = exportInfo(guifile)
@@ -110,7 +115,7 @@ classdef chebguiExporterPDE < chebguiExporter
                 solfinal = {};
                 finalsol = {};
                 for k = 1:nv
-                    % Show the expected names in the dialog:
+                   BVP % Show the expected names in the dialog:
                     sol = [sol ['Solution ' varnames{k}]];
                     finalsol = [finalsol ['Final ' varnames{k}]];
                     solfinal = [solfinal [varnames{k} '_final']];

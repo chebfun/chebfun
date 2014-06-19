@@ -6,7 +6,7 @@ function out = innerProduct(f, g)
 % See also SUM.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with empty case:
 if ( isempty(f) || isempty(g) )

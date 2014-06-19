@@ -62,7 +62,7 @@ function varargout = chebtest(varargin)
 % [TODO]: Preferences.
 
 % Find directory in which Chebfun was installed:
-installDir = fileparts(which('chebtest'));
+installDir = chebfunroot();
 
 % Set path to the tests/ subdirectory:
 testsDir = fullfile(installDir, 'tests');
@@ -118,7 +118,7 @@ end
 
 % If testDirNames is empty here, something is wrong.
 if ( isempty(testDirNames) )
-    error('CHEBFUN:chebtest:TestsNotFound', ...
+    error('CHEBFUN:chebtest:testsNotFound', ...
         ['Could not locate test directories. ' ...
          'Please check that Chebfun has been installed correctly.']);
 end
@@ -141,7 +141,7 @@ for k = 1:numDirs
         nextResults = runTestsInDirectory(testDir, quietMode);
         allResults = [allResults ; nextResults]; %#ok<AGROW>
     else
-        warning('CHEBFUN:chebtest:DirNotFound', ...
+        warning('CHEBFUN:chebtest:dirNotFound', ...
             'Test directory ''%s'' not found. Skipping.', testDir);
     end
     fprintf('\n');
@@ -181,7 +181,7 @@ if ( writeLog )
     if ( ~exist(logDir, 'dir') )
         [success, msg] = mkdir(installDir, 'logs');
         if ( ~success )
-            warning('CHEBFUN:chebtest:writepermission', msg);
+            warning('CHEBFUN:chebtest:writePermission', msg);
         end
     end
     filename = ['chebtest-' datestr(now, 'yyyymmddHHMMSS') '.log'];
@@ -230,6 +230,10 @@ numFiles  = numel(testFiles);
 durations = zeros(numFiles, 1);
 errorMessages = {'FAILED', 'CRASHED'};
 
+% TODO: Eventually this should be removed.
+% We don't want this warning to be displayed in CHEBTEST:
+warnState = warning('off', 'CHEBFUN:CHEBFUN:vertcat:join');
+
 % Attempt to run all of the tests:
 try % Note, we try-catch as we've CD'd and really don't want to end up elsewhere
     
@@ -264,7 +268,11 @@ try % Note, we try-catch as we've CD'd and really don't want to end up elsewhere
 
     end
     
+    warning(warnState);
+    
 catch ME
+    
+    warning(warnState);
     
     % We failed. Return to the starting directory and rethrow the error:
     cd(currDir)
@@ -404,7 +412,7 @@ data = data';
 
 fid = fopen(filename, 'w+');
 if ( fid < 0 )
-    warning('CHEBFUN:chebtest:writepermission', ...
+    warning('CHEBFUN:chebtest:writePermission', ...
         'Unable to write to file %s', filename);
 else
     fprintf(fid, '%s,%s,%s\n', columnTitles{:});

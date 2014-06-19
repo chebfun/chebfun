@@ -8,12 +8,12 @@ function F = cos(F, varargin)
 % See also ACOS, COSD.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. See
-% http://www.chebfun.org for Chebfun information.
+% http://www.chebfun.org/ for Chebfun information.
 
 % [TODO]:  Restore or change this once we have decided the proper behavior or
 % isfinite() and defined that function.
 %if ( ~isfinite(f) )
-%    error('CHEBFUN:cos:inf',...
+%    error('CHEBFUN:CHEBFUN:cos:inf',...
 %        'COS is not defined for functions which diverge to infinity');
 %end
 

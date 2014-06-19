@@ -4,7 +4,7 @@ function pass = test_plus( pref )
 if ( nargin < 1 ) 
     pref = chebfunpref; 
 end 
-tol = 1e5 * pref.cheb2Prefs.eps; 
+tol = 1e5 * pref.eps; 
 j = 1;
 
 D = [-1 1 -1 1; -2 2 -2 2; -1 pi 0 2*pi];
@@ -40,6 +40,6 @@ pass(6) = ( abs( vscale( g ) - 2e-100 ) < tol );
 f = chebfun2(@(x,y) 1e100*x); 
 g = f + f; 
 pass(7) = ( length(g) == length(f) ); 
-pass(8) = ( abs( vscale( g ) - 2e100 )/2e100 < tol ); 
+pass(8) = ( abs( vscale( g ) - 2e100 )/2e100 < 1e-2 ); 
 
 end

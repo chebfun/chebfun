@@ -4,7 +4,7 @@ function out = issing(f)
 %   SINGFUN and false otherwise.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( ~issing(f.funPart) )
     out = false;

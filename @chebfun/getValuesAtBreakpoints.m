@@ -7,7 +7,7 @@ function vals = getValuesAtBreakpoints(funs, ends, op)
 %   left and right for the VALS(1) and VALS(end), respectively.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Determine the number of intervals:
 numFuns = numel(funs);

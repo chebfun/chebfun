@@ -20,11 +20,11 @@ gg = feval(g, xx);
 hh = atan2(ff, gg);
 pass(1) = norm(feval(h, xx) - hh, inf) < 3*tol;
 
-ends = h.domain;
+ends = h.domain([1 end]);
 fi = feval(f, ends);
 gi = feval(g, ends);
 hi = atan2(fi, gi).';
-pass(2) = norm(hi - h.pointValues) < tol;
+pass(2) = norm(hi - h.pointValues([1 end])) < 2*tol;
 
 %% Scalar-valued, tan(g, f):
 h = atan2(g, f);
@@ -33,9 +33,9 @@ hh = atan2(gg, ff);
 err = norm(feval(h, xx) - hh, inf);
 pass(3) = err < tol;
 
-ends = h.domain;
+ends = h.domain([1 end]);
 hi = atan2(feval(g, ends), feval(f, ends)).';
-pass(4) = norm(hi - h.pointValues) < tol;
+pass(4) = norm(hi - h.pointValues([1 end])) < tol;
 
 %% y has a zero FUN:
 x = chebfun('x');

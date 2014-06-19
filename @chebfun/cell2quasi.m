@@ -9,7 +9,7 @@ function G = cell2quasi(F)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( ~iscell(F) )
-    error('CHEBFUN:cell2quasi:notacell', ...
+    error('CHEBFUN:CHEBFUN:cell2quasi:notacell', ...
         'Input must be a cell array of scalar CHEBFUN objects.');
 end
 
@@ -17,13 +17,13 @@ end
 isCheb = cellfun(@(f) isa(f, 'chebfun'), F);
 chebIdx = find(isCheb);
 if ( isempty(chebIdx) )
-    error('CHEBFUN:cell2quasi:notacheb', ...
+    error('CHEBFUN:CHEBFUN:cell2quasi:notacheb', ...
         'Input must be a cell array of scalar CHEBFUN objects.');
 end
 
 minSizeF = cellfun(@(f) min(size(f)), F);
 if ( max(minSizeF) > 1 )
-    error('CHEBFUN:cell2quasi:notascalar', ...
+    error('CHEBFUN:CHEBFUN:cell2quasi:notascalar', ...
         'Input must be a cell array of scalar CHEBFUN objects.');
 end
 
@@ -35,7 +35,7 @@ dom = G.domain;
 for k = chebIdx
     pass = domainCheck(dom, F{k});
     if ( ~pass )
-        error('CHEBFUN:cell2quasi:domaion', 'Inconsistent domains.');
+        error('CHEBFUN:CHEBFUN:cell2quasi:domaion', 'Inconsistent domains.');
     end
 end
 

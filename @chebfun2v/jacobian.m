@@ -9,7 +9,7 @@ function J = jacobian( F )
 % See also CHEBFUN2/GRADIENT. 
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check. 
 if ( isempty(F) )  
@@ -18,7 +18,8 @@ if ( isempty(F) )
 end
 
 if ( F.nComponents == 3 )
-    error('CHEBFUN2V:JACOBIAN', 'Jacobian matrix is not square.')
+    error('CHEBFUN:CHEBFUN2V:jacobian:notSquare', ...
+        'Jacobian matrix is not square.')
 end
 
 % Determinant formula: 

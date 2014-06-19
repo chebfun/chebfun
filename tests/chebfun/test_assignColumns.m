@@ -66,14 +66,16 @@ for k = 1:2
         h = assignColumns(f, [1 2 3], g.');
         pass(k,9) = false;
     catch ME
-        pass(k,9) = strcmp(ME.identifier, 'CHEBFUN:assignColumns:numCols');
+        pass(k,9) = strcmp(ME.identifier, ...
+            'CHEBFUN:CHEBFUN:assignColumns:numCols');
     end
 
     try
         h = assignColumns(f, [1 2], g);
         pass(k,10) = false;
     catch ME
-        pass(k,10) = strcmp(ME.identifier, 'CHEBFUN:assignColumns:numCols');
+        pass(k,10) = strcmp(ME.identifier, ...
+            'CHEBFUN:CHEBFUN:assignColumns:numCols');
     end
 
     try
@@ -81,7 +83,8 @@ for k = 1:2
         h = assignColumns(f, [1 2 3], g2);
         pass(k,11) = false;
     catch ME
-        pass(k,11) = strcmp(ME.identifier, 'CHEBFUN:assignColumns:domain');
+        pass(k,11) = strcmp(ME.identifier, ...
+            'CHEBFUN:CHEBFUN:assignColumns:domain');
     end
 
     % Test assign outside of dimension of f:
@@ -111,6 +114,24 @@ for k = 1:2
     h = assignColumns(f, 2, g);
     err = feval(h, x) - oph(x);    
     pass(k,13) = norm(err, inf) < 2*vscale(h)*epslevel(h);
+    
+    %% Test removing columns (#889)
+    
+    x = chebfun('x');
+    xx = [x 2*x];
+    if ( k == 2 )
+        xx = cheb2quasi(xx);
+    end
+    xx(:,2) = [];
+    pass(k,14) = numColumns(xx) == 1 && norm(x - xx) < epslevel(x);
+    
+    x = chebfun('x');
+    xx = [x 2*abs(x)];
+    if ( k == 1 )
+        xx = quasi2cheb(xx);
+    end
+    xx(:,2) = [];
+    pass(k,15) = numColumns(xx) == 1 && norm(x - xx) < epslevel(x);
     
 end
 

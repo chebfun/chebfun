@@ -1,4 +1,4 @@
-function [xx, yy] = chebpts2(nx, ny, D)
+function [xx, yy] = chebpts2(nx, ny, D, kind)
 %CHEBPTS2 Chebyshev tensor points
 %   [XX YY] = CHEBPTS2(N) constructs an N by N grid of Chebyshev tensor points
 %   on [-1 1]^2.
@@ -8,19 +8,25 @@ function [xx, yy] = chebpts2(nx, ny, D)
 %
 %   [XX YY] = CHEBPTS2(NX,NY,D) constructs an NX by NY grid of Chebyshev tensor
 %   points on the rectangle [a b] x [c d], where D = [a b c d].
+% 
+%   The particular tensor grid that is returned is based on the currently
+%   underlying technology. 
 %
+%   [XX YY] = CHEBPTS2(NX,NY,D,KIND) constructor Chebyshev tensor grid of
+%   the kind KIND. KIND = 2 is default. 
+% 
 % See also CHEBPTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin > 2 )  
    % Third argument should be a domain. 
    D = D(:).';  % make a row vector.   
    if ( ~all( size( D ) == [1 4] ) )
-        error('CHEBFUN2:CHEBPTS2:DOMAIN', 'Unrecognised domain.');
+        error('CHEBFUN:CHEBFUN2:chebpts2:domain', 'Unrecognised domain.');
    end
-else  % Default to the canoncial domain.  
+else  % Default to the canoncial domain.
     D = [-1, 1, -1, 1];
 end
 
@@ -28,15 +34,16 @@ if ( nargin == 1 )
     % Make it a square Chebyshev grid if only one input. 
     ny = nx; 
 end
+if ( nargin < 4 )
+    % default to Chebyshev point of the 2nd kind. 
+    kind = 2; 
+end
 
-tech = chebfunpref().tech(); 
+% Get points: 
+x = chebpts(nx, D(1:2), kind); 
+y = chebpts(ny, D(3:4), kind); 
 
-x = tech.chebpts(nx); 
-y = tech.chebpts(ny); 
-
-% scale to domain: 
-x = (D(2) - D(1))/2*(x+1) + D(1); 
-y = (D(4) - D(3))/2*(y+1) + D(3); 
-[xx, yy] = meshgrid(x, y);   % Tensor product. 
+% Tensor product. 
+[xx, yy] = meshgrid(x, y); 
 
 end 

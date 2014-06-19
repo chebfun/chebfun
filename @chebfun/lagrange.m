@@ -18,13 +18,14 @@ if ( n == 0 )
     f = chebfun();
     return
 elseif ( n == 1 && nargin < 2 )
-    error('CHEBFUN:LAGRANGE:nodomain', ...
+    error('CHEBFUN:CHEBFUN:lagrange:nodomain', ...
         'Domain must be specfied when X is a scalar.')
 end
 
 % Check for uniqueness:
 if ( length(unique(x)) ~= n )
-    error('CHEBFUN:LAGRANGE:nonunique', 'Interpolation points must be unique.')
+    error('CHEBFUN:CHEBFUN:lagrange:nonunique', ..
+        'Interpolation points must be unique.')
 end
 
 % Make interpolation data (identity matrix):

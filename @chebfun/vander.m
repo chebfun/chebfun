@@ -7,7 +7,8 @@ function A = vander(f, n)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( f(1).isTransposed || numColumns(f) > 1 )
-    error('CHEBFUN:vander:row', 'Input must be a scalar-valued column CHEBFUN.')
+    error('CHEBFUN:CHEBFUN:vander:row', ...
+        'Input must be a scalar-valued column CHEBFUN.')
 end
 
 % Initialise a cell for storage:
