@@ -25,7 +25,7 @@ function varargout = quiver( F, varargin )
 % See also QUIVER3.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 numpts = 10;
 
@@ -88,7 +88,7 @@ elseif ( nargin >= 3 )                 % quiver(x,y,F,...)
             axis(1.1*dom);
         end
     else
-        error('CHEBFUN2V:QUIVER:INPUTS', ...
+        error('CHEBFUN:CHEBFUN2V:quiver:inputs', ...
             'Third argument should be a chebfun2v.');
     end
     

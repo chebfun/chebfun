@@ -33,6 +33,6 @@ switch ( propName )
     case 'pivotLocations'
         val = f.pivotLocations;
     otherwise
-        error('CHEBFUN2:get:propnam', ...
+        error('CHEBFUN:CHEBFUN2:get:propName', ...
             [propName,' is not a valid CHEBFUN2 property.'])
 end

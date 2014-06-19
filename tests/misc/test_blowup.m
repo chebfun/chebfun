@@ -26,7 +26,7 @@ try
     pass(4) = err < tol;
     
     p2 = chebfunpref();
-    pass(5) = all(strcmp(p2.singPrefs.defaultSingType, 'pole'));
+    pass(5) = all(strcmp(p2.blowupPrefs.defaultSingType, 'pole'));
     
     pass(6) = blowup(2) == 1;
     

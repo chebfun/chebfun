@@ -144,7 +144,7 @@ try
     y = min(Q, [], 3);
     pass(17) = false;
 catch ME
-    pass(17) = strcmp(ME.identifier, 'CHEBFUN:min:badDim');
+    pass(17) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:min:badDim');
 end
 
 % Check error condition.
@@ -152,7 +152,7 @@ try
     y = max(f, 'bad');
     pass(18) = false;
 catch ME
-    pass(18) = strcmp(ME.identifier, 'CHEBFUN:max:flag');
+    pass(18) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:max:flag');
 end
 
 %% Check min of a CHEBFUN and a scalar:

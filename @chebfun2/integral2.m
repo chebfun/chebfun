@@ -14,7 +14,7 @@ function I = integral2( f, c )
 % See also INTEGRAL, SUM2, QUAD2D.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check:
 if ( isempty( f ) ) 
@@ -43,8 +43,21 @@ elseif ( nargin == 2 )
             
             % Green's theorem tells that you can integrate a function over a
             % region by integration along the boundary of the region's boundary.
-            % There are plenty of different ways of applying Green's thoerem and
-            % this is AT's choice.
+            % There are plenty of different ways of applying Green's theorem and
+            % this is AT's choice. AT's choice treats both variables equally,
+            % but is very slow. If you don't treat variables equally it may be
+            % fast.
+            % 
+            % HOW IT WORKS: Green's theorem states that: 
+            % 
+            %  (*) int_c dot((M;L), normal(c)) = intt_D div( dM/dx ; dL/dy)dxdy. 
+            % 
+            % The algorithm below writes f = div( dM/dx ; dL/dy) and constructs
+            % functions M(x,y) and L(x,y) so the equality (*) holds. (We have
+            % selected op (below) so that M = -op*y and L = op*x.) There is a
+            % lot of freedom in choosing M and L. It may be better to pick M and
+            % L that are easier to construct.
+            
             op = @(x,y) sum( chebfun(@(s) feval(f, s*x, s*y).*s, [0 1] ) );
             Fs = chebfun2(op , dom, 'vectorize');
             
@@ -56,7 +69,7 @@ elseif ( nargin == 2 )
             I = integral(F, c);
             
         else
-            error('CHEBFUN2:integral2:input', ...
+            error('CHEBFUN:CHEBFUN2:integral2:input', ...
                 'Integration path must be complex-valued');
         end
         
@@ -73,12 +86,12 @@ elseif ( nargin == 2 )
                 I = sum( restrict ( f,restriction ) );
             end
         else
-            error('CHEBFUN2:integral2:baddomain', ...
+            error('CHEBFUN:CHEBFUN2:integral2:baddomain', ...
             'Domain should have four corners.');
         end
         
     else
-        error('CHEBFUN2:integral2:nargin', 'Too many input arguments.');
+        error('CHEBFUN:CHEBFUN2:integral2:nargin', 'Too many input arguments.');
     end
     
 end

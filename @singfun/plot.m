@@ -48,7 +48,7 @@ if ( nargin > 1 && isa(varargin{1}, 'singfun') )
     varargin(1) = [];
     % We can only plot real against real:
     if ( ~isreal(f) || ~isreal(g) )
-        error( 'CHEBFUN:SINGFUN:plot', 'Functions must be real valued.');
+        error( 'CHEBFUN:SINGFUN:plot:plot', 'Functions must be real valued.');
     end    
     % Call PLOTDATA():
     data = plotData(f, g);

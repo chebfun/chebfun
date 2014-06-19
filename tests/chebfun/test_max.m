@@ -148,7 +148,7 @@ try
     y = max(Q, [], 3)
     pass(18) = false;
 catch ME
-    pass(18) = strcmp(ME.identifier, 'CHEBFUN:max:badDim');
+    pass(18) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:max:badDim');
 end
 
 % Check error condition.
@@ -156,7 +156,7 @@ try
     y = max(f, 'bad');
     pass(19) = false;
 catch ME
-    pass(19) = strcmp(ME.identifier, 'CHEBFUN:max:flag');
+    pass(19) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:max:flag');
 end
 
 f = chebfun({@(x) exp((1 + 1i)*x), @(x) sec(1i*(x - 0.5))}, [-1 0 1]);

@@ -7,7 +7,7 @@ function varargout = scribble2( s, rk )
 %   f = scribble('Happy birthday LNT!');
 %   contour(f,.2:.1:.85), axis equal
 %
-%  See also scribble.
+% See also scribble.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.

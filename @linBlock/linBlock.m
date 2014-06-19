@@ -2,13 +2,13 @@ classdef (InferiorClasses = {?chebfun}) linBlock
 %LINBLOCK   Linear operator on a single function.
 %   This class is not intended to be called directly by the end user.
 %
-%   See also LINOP, CHEBOP, CHEBOPPREF.
+% See also LINOP, CHEBOP, CHEBOPPREF.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Developer notes
+% DEVELOPER NOTE:
 %
 % A LINBLOCK is an abstract representation of a linear operator on a single
 % function defined on a fixed domain. Its main purpose is to maintain an
@@ -29,8 +29,10 @@ classdef (InferiorClasses = {?chebfun}) linBlock
 %           CHEBFUN. (See the method toFunction.)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    
-    properties
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS PROPERTIES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    properties ( Access = public )
         % The domain of CHEBFUN objects that are operated upon.
         domain = [];
         
@@ -47,7 +49,11 @@ classdef (InferiorClasses = {?chebfun}) linBlock
         iszero = false;
     end
     
-    methods
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS CONSTRUCTOR:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
+        
         function A = linBlock(varargin)
             % A = LINBLOCK()        Use the default preference domain. 
             % A = LINBLOCK(B)       Self-return for the same type.
@@ -62,7 +68,15 @@ classdef (InferiorClasses = {?chebfun}) linBlock
             else
                 A.domain = varargin{1};
             end
+            
         end
+        
+    end
+        
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
         
         function f = toFunction(A)
             % Convert the LINBLOCK to a callable anonymous function that can be

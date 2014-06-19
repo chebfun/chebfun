@@ -8,7 +8,7 @@ function varargout = size( f , dim) %#ok<INUSL>
 %   always inf.
 
 % Copyright 2014 by The University of Oxford and The Chebfun2 Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun2 information.
+% See http://www.chebfun.org/ for Chebfun2 information.
 
 % NOTE: The size of a CHEBFUN object does not depend on f!
 
@@ -19,7 +19,7 @@ elseif ( ( nargout == 2 ) && ( nargout <=1 ) )
 elseif ( ( nargin == 2 ) && ( ( dim == 1 ) || ( dim == 2 ) ) )
     varargout = { Inf };
 else
-    error('CHEBFUN2:SIZE:OUTPUTS', 'Too many output arguments.');
+    error('CHEBFUN:CHEBFUN2:size:outputs', 'Too many output arguments.');
 end
 
 end

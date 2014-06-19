@@ -22,7 +22,7 @@ function [x, w, v] = chebpts(n, dom, type)
 %   [1] Jarg Waldvogel, "Fast construction of the Fejer and Clenshaw-Curtis
 %   quadrature rules", BIT Numerical Mathematics, 46, (2006), pp 195-202. 
 %
-% See also LEGPTS, JACPTS, LAGPTS, and HERMPTS.
+% See also FOURPTS, LEGPTS, JACPTS, LAGPTS, and HERMPTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -46,7 +46,7 @@ if ( length(n) == 1 && length(dom) > 1 )
     % Ignore interior breaks in this instance.
     dom = dom([1,end]); 
 elseif ( length(n) ~= length(dom) - 1 )
-    error('CHEBFUN:chebpts:NDmismatch', 'Vector N does not match domain D.'); 
+    error('CHEBFUN:chebpts:mismatchND', 'Vector N does not match domain D.'); 
 end
 
 % Create a dummy CHEBTECH of appropriate type to access static methods.

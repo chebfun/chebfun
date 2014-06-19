@@ -19,7 +19,7 @@ elseif ( isa(c, 'double') )         % SINGFUN * double
 
     % SINGFUN*DOUBLE requires that the double is scalar.
     if ( numel(c) > 1 )
-        error('SINGFUN:SINGFUN:mtimes:size', ...
+        error('CHEBFUN:SINGFUN:mtimes:size', ...
               'Inner matrix dimensions must agree.');
     end
     

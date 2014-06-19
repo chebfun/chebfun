@@ -85,46 +85,8 @@ function chebguiWindow_OpeningFcn(hObject, eventdata, handles, varargin)
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to chebguiWindow (see VARARGIN)
 
-% Set input boxes to command window font:
-try
-    % Obtain the font information:
-    s = char(com.mathworks.services.FontPrefs.getCodeFont);
-    idx = strfind(s, 'name=');
-    s1 = s(idx+5:end);
-    idx = strfind(s1, ',');
-    s1 = s1(1:idx(1)-1);
-    myFont = s1;
-    idx = strfind(s, 'size=');
-    s2 = s(idx+5:end-1);
-    mySize = str2double(s2);
-catch
-    % If this fails, fall back to this default:
-    myFont = 'Monospaced';
-    mySize = 14;
-end
-
-% Obtain a list of all GUI elements.
-names = fieldnames(handles);
-% Find what elements are input elements
-inputLocs = strfind(names, 'input_');
-% Also want the same font for the iter_list information box.
-iterListLoc = strfind(names, 'iter_list');
-% Combine all the locations of elements whose font we wish to change
-allLocs = strcat(inputLocs, iterListLoc);
-
-% Loop through the elements we want to specify the font of.
-for fieldCounter = 1:length(inputLocs)
-    if ( ~isempty(allLocs{fieldCounter}) )
-        % Access the field values dynamically using the .( ) call.
-        set(handles.(names{fieldCounter}), 'FontName', myFont);
-        set(handles.(names{fieldCounter}), 'FontSize', mySize);
-    end
-end
-
-% Set the string for popup-menu for the choice of plots:
-set(handles.popupmenu_bottomFig,'String', ...
-    {'Convergence of Newton iteration', ...
-    'Chebyshev coefficients'});
+% Initalize fonts in the CHEBGUI window:
+chebguiController.initalizeFields(handles);
 
 % Choose default command line output for chebguiWindow
 handles.output = hObject;
@@ -171,8 +133,10 @@ end
 % Load the input fields
 chebguiController.populate(handles, handles.guifile);
 
-% Make sure the GUI starts in the correct mode
-chebguiController.switchMode(handles, handles.guifile.type);
+% Make sure the GUI starts in the correct mode. We call SWITCHMODE() with the
+% third argument equal to 'demo' so that we will plot the initial guess of the
+% solution if it exists.
+chebguiController.switchMode(handles, handles.guifile.type, 'demo');
 
 % Get the system font size and store in handles
 s = char(com.mathworks.services.FontPrefs.getCodeFont);
@@ -187,7 +151,7 @@ set(handles.tempedit, 'FontSize', fs);
 set(handles.button_solve, 'String', 'Solve');
 set(handles.button_solve, 'BackgroundColor', [43 129 86]/256);
 
-% Ensure that we have a light-grey color in background
+% Ensure that we have a light-blue color in background
 set(handles.mainWindow, 'BackgroundColor', [.702 .78 1]);
 
 % Default discretization is colloc2
@@ -412,11 +376,12 @@ for k = 1:numel(str)
     strk = str{k};
     equalSigns = find(strk == '=');
     if ( numel(equalSigns) > 1 )
-        error('Chebgui:InitInput', 'Too many equals signs in input.');
+        error('CHEBFUN:chebguiWindow:initInput', ...
+            'Too many equals signs in input.');
     elseif ( numel(equalSigns) == 1 )
         strk = strk(equalSigns+1:end);
     elseif ( numel(str) > 1 )
-        error('Chebgui:InitInput', ...
+        error('CHEBFUN:chebguiWindow:initInput', ...
             ['Error constructing initial guess. Input must include the ' ...
              'names of the dependent variables, i.e. be on the form ' ...
              '"u = %s", ...'], strk)
@@ -428,7 +393,7 @@ for k = 1:numel(str)
             init = [init eval(strk)]; %#ok<AGROW>
         end
     catch ME
-        error('Chebgui:InitInput', ME.message)
+        error('CHEBFUN:chebguiWindow:initInput', ME.message)
     end
 end
 
@@ -696,7 +661,7 @@ if ( get(handles.button_ode, 'Value') )
     latestNorms = handles.latest.norms;
 
     % Also open the bottom figure in now window. This is either going to be the
-    % chebpolyplot, or a plot showing the norm of the updates during the Newton
+    % PLOTCOEFFS, or a plot showing the norm of the updates during the Newton
     % iteration:
     figure
     
@@ -717,9 +682,9 @@ if ( get(handles.button_ode, 'Value') )
             set(gca, 'XTick',  1)
         end
         
-    else % Show chebpolyplot
-        chebpolyplot(latestSolution, 'linewidth', 2)
-        title('Chebpolyplot of solution')
+    else % Show PLOTCOEFFS
+        plotcoeffs(latestSolution, 'linewidth', 2)
+        title('Chebyshev coefficients of the solution')
         grid on
         set(handles.popupmenu_bottomFig, 'Value', 2);
     end
@@ -1453,6 +1418,14 @@ function menu_eigsscalar_Callback(hObject, eventdata, handles)
 end
 
 function button_export_Callback(hObject, eventdata, handles)
+
+    % What discretization do we want to use?
+    if ( get(handles.button_Collocation, 'Value') )
+        handles.guifile.options.discretization = @colloc2;
+    else
+        handles.guifile.options.discretization = @ultraS;
+    end
+
     % Create a CHEBGUIEXPORTER object of the correct type:
     exporter = chebguiExporter.constructor(handles.guifile.type);    
     % Call the export method of the E object:
@@ -1470,7 +1443,7 @@ function button_export_Callback(hObject, eventdata, handles)
     catch ME
         % TODO: Which error do we want to throw?
 %         rethrow(ME)
-        error('Chebgui:Export', ...
+        error('CHEBFUN:chebguiWindow:export', ...
             ['Error in exporting to .m file. Please make ' ...
             'sure there are no syntax errors.']);
     end
@@ -1480,7 +1453,6 @@ function button_realplot_Callback(hObject, eventdata, handles)
 % We want to show the real part of eigenfunctions.
 set(handles.button_realplot, 'Value', 1)
 set(handles.button_imagplot, 'Value', 0)
-set(handles.button_envelope, 'Value', 0)
 selection = get(handles.iter_list, 'Value');
 chebguiController.plotEigenmodes(handles, selection)
 end
@@ -1489,16 +1461,6 @@ function button_imagplot_Callback(hObject, eventdata, handles)
 % We want to show the imaginary part of eigenfunctions.
 set(handles.button_realplot, 'Value', 0)
 set(handles.button_imagplot, 'Value', 1)
-set(handles.button_envelope, 'Value', 0)
-selection = get(handles.iter_list, 'Value');
-chebguiController.plotEigenmodes(handles, selection)
-end
-
-function button_envelope_Callback(hObject, eventdata, handles)
-% Show the envelope of eigenfunctions?
-set(handles.button_realplot, 'Value', 0)
-set(handles.button_imagplot, 'Value', 0)
-set(handles.button_envelope, 'Value', 1)
 selection = get(handles.iter_list, 'Value');
 chebguiController.plotEigenmodes(handles, selection)
 end
@@ -1965,7 +1927,7 @@ for k = 1:numel(folders)
                 catch
                     %
                 end
-                error('CHEBGUI:test:NoSol', 'No solution returned.');
+                error('CHEBFUN:chebguiWindow:noSol', 'No solution returned.');
             end
             fprintf('  passed in %4.4f seconds.\n', t);
         catch ME
@@ -2060,9 +2022,10 @@ switch ( newVal )
         end
         
     case 2
-        % User wants to see a chebpolyplot.
-        chebpolyplot(handles.latest.solution, 'linewidth', 2);
+        % User wants to see a PLOTCOEFFS plot..
+        plotcoeffs(handles.latest.solution, 'linewidth', 2);
         grid on
+        title('Chebyshev coefficients of the solution')
 end
 
 end

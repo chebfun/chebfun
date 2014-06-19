@@ -29,7 +29,7 @@ if ( dim == 1 )
 elseif ( dim == 2 )
     s = s / diff( dom(1:2) ); % Mean in the x direction
 else
-    error('CHEBFUN2:MEAN:DIM', 'Mean not in x or y direction.')
+    error('CHEBFUN:CHEBFUN2:mean:dim', 'Mean not in x or y direction.')
 end
 
 end

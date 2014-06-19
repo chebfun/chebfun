@@ -39,14 +39,14 @@ try
     fr = restrict(f, [-2 0.5]);
     pass(4) = false;
 catch ME
-    pass(4) = strcmp(ME.identifier, 'CHEBFUN:restrict:subdom');
+    pass(4) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:restrict:subdom');
 end
 
 try
     fr = restrict(f, [-0.5 2]);
     pass(5) = false;
 catch ME
-    pass(5) = strcmp(ME.identifier, 'CHEBFUN:restrict:subdom');
+    pass(5) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:restrict:subdom');
 end
 
 try

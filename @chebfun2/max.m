@@ -14,11 +14,11 @@ function h = max( f, g, dim )
 % See also MIN, MAX2, MIN2, MINANDMAX2.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 
 if ( isempty(f) ) 
-    error('CHEBFUN2:MAX:INPUT', 'CHEBFUN2 is empty');
+    error('CHEBFUN:CHEBFUN2:max:input', 'CHEBFUN2 is empty');
 end
 
 % Default to max of one chebfun2:
@@ -33,7 +33,8 @@ end
 
 % Do not allow max(F, G): 
 if ( nargin > 1 && ~isempty(g) )
-    error('CHEBFUN2:max', 'Unable to maximise two CHEBFUN2 objects.');
+    error('CHEBFUN:CHEBFUN2:max:twoChebfun2Inputs', ...
+        'Unable to maximise two CHEBFUN2 objects.');
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -53,7 +54,7 @@ elseif ( dim == 2 )
     h = chebfun( max( vals, [], 2 ), dom(3:4), 'splitting', 'on' );
     h = simplify( h );
 elseif ( dim == 0 ) 
-    error('CHEBFUN2:MAX:DIM',...
+    error('CHEBFUN:CHEBFUN2:max:dim', ...
         'Dimension argument must be a positive integer scalar within indexing range.')
 else
    % return the chebfun2. This is analogous to that MAX() command in

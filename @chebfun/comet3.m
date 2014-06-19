@@ -20,7 +20,7 @@ if ( (nargin == 1) && (numColumns(f) == 3) )
 end
 
 if ( nargin > 3 )
-    warning('CHEBFUN:comet3:nargin', ...
+    warning('CHEBFUN:CHEBFUN:comet3:nargin', ...
         'Fourth input to @CHEBFUN/COMET() is ignored.');
 end
 

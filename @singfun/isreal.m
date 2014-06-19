@@ -5,7 +5,7 @@ function out = isreal(f)
 % See also REAL, IMAG.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Check if the smooth part is real:
 out = isreal(f.smoothPart);

@@ -105,12 +105,13 @@ fd2 = fs2 + dirac(x - 0.5) + dirac(x + 0.5);
 fd3 = [fd1 fd2];
 
 c = get(fd1, 'deltas');
-pass(29) = isequal(c, [0 ; 1]);
+pass(29) = ( norm(c - [0 ; 1], inf) < 5*eps );
 c = get(fd2, 'deltas');
-pass(30) = isequal(c, [-0.5 0.5 ; 1 1]);
+pass(30) = ( norm(c - [-0.5 0.5 ; 1 1], inf) < 5*eps );
 c = get(fd3, 'deltas');
 pass(31) = iscell(c) && isequal(size(c), [1 2]) && ...
-    isequal(c{1}, [0 ; 1]) && isequal(c{2}, [-0.5 0.5 ; 1 1]);
+    ( norm(c{1} - [0 ; 1], inf) < 5*eps ) && ...
+    ( norm(c{2} - [-0.5 0.5 ; 1 1], inf) < 5*eps );
 
 % Check getting of exponents.
 fse1 = chebfun(@(x) 1./(x + 2), [-2 2], 'exps', [-1 0]);

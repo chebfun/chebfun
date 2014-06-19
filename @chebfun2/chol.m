@@ -26,7 +26,7 @@ function varargout = chol( f, varargin )
 % See also LU, and QR. 
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 
 if ( isempty( f ) ) 
@@ -36,7 +36,8 @@ end
 
 % Is the chebfun2 on a square domain?: 
 if ( ~domainCheck(f.cols, f.rows) )
-    error('CHEBFUN2:CHOL:DOMAIN', 'Chebfun2 is not on a square domain.');
+    error('CHEBFUN:CHEBFUN2:chol:domain', ...
+        'Chebfun2 is not on a square domain.');
 end
 
 % Get rank of f: 
@@ -59,7 +60,8 @@ posdef = ( k == length( f ) );
 
 % Return an error if the function is not nonnegative definite: 
 if ( nargout < 2 && ~isempty( posdef ) && ~posdef )
-    error('Chebfun2:chol:definite','Chebfun2 is not nonnegative definite.');
+    error('CHEBFUN:CHEBFUN2:chol:definite', ...
+        'Chebfun2 is not nonnegative definite.');
 end
 
 % Get the CDR decomposition (already computed by constructor):

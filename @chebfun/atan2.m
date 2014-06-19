@@ -14,7 +14,7 @@ function p = atan2(y, x, pref)
 % See also ATAN, ATAN2D.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 %% Set up:
 % Grab some preferences:
@@ -23,13 +23,13 @@ if ( nargin < 3)
 end
 
 if ( ~isreal(y) || ~isreal(x) )
-    error('CHEBFUN:atan2:real', 'Inputs ust be real.');
+    error('CHEBFUN:CHEBFUN:atan2:real', 'Inputs ust be real.');
 end
 
 numColsY = numColumns(y);
 numColsX = numColumns(x);
 if ( numColsY ~= numColsX )
-    error('CHEBFUN:atan2:dim', 'Chebfun quasimatrix dimensions must agree.');
+    error('CHEBFUN:CHEBFUN:atan2:dim', 'Quasimatrix dimensions must agree.');
 end
 
 % Convert columns to a cell array:

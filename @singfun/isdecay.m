@@ -9,7 +9,7 @@ function out = isdecay(f)
 %   class for handling functions defined on unbounded domains.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 out = isdecay(f.smoothPart);
 

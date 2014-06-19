@@ -16,7 +16,10 @@ classdef chebdouble
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-    properties ( GetAccess = 'public', SetAccess = 'public' )
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS PROPERTIES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    properties ( Access = public )
         
         % VALUES: Values of a Chebyshev interpolant.
         values = [];
@@ -29,9 +32,10 @@ classdef chebdouble
         diffOrder = 0;
     end
     
-    methods
-        
-        %% %%%%%%%%%%%%%%%%%%%%%%%%%%%  CONSTRUCTOR  %%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS CONSTRUCTOR:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
         
         function obj = chebdouble(vals, dom)
             obj.values = vals;
@@ -39,8 +43,15 @@ classdef chebdouble
                 obj.domain = dom;
             end
         end
-
-        %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  DIFF  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    end
+    
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
+      
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  DIFF  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         function u = diff(u, k)
             %DIFF   Compute the k-th derivative of u using Chebyshev
             % differentiation matrices defined by diffmat.
@@ -74,7 +85,7 @@ classdef chebdouble
             
         end
         
-        %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  SUM  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  SUM  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % The differential operators
         function I = sum(u, a, b)
             %SIM  Compute the integral of u using Clenshaw-Curtis nodes and
@@ -95,11 +106,11 @@ classdef chebdouble
                 x = chebpts(N, u.domain);
                 if ( length(b) > 1 )
                     if ( ~all(b == x) )
-                        error('CHEBFUN:pde15s:sumb', ...
+                        error('CHEBFUN:CHEBDOUBLE:sum:sumb', ...
                             ['Limits in sum must be scalars or the ', ...
                             'independent space variable (typically ''x'').']);
                     elseif ( a < x(1) )
-                        error('CHEBFUN:pde15s:sumint', ...
+                        error('CHEBFUN:CHEBDOUBLE:sum:sumint', ...
                             'Limits of integration outside of domain.');
                     end
                     I = cumsum(u);
@@ -107,11 +118,11 @@ classdef chebdouble
                     return
                 elseif ( length(a) > 1 )
                     if ( ~all(a == x) )
-                        error('CHEBFUN:pde15s:suma', ...
+                        error('CHEBFUN:CHEBDOUBLE:sum:suma', ...
                             ['Limits in sum must be scalars or the ', ...
                             'independent space variable (typically ''x'').']);
                     elseif ( b > x(end) )
-                        error('CHEBFUN:pde15s:sumint', ...
+                        error('CHEBFUN:CHEBDOUBLE:sum:sumint', ...
                             'Limits of integration outside of domain.');
                     end
                     I = cumsum(u);
@@ -119,7 +130,7 @@ classdef chebdouble
                     return
                 elseif ( a ~= x(1) || b ~= x(end) )
                     if ( a < x(1) || b > x(end) )
-                        error('CHEBFUN:pde15s:sumint', ...
+                        error('CHEBFUN:CHEBDOUBLE:sum:sumint', ...
                             'Limits of integration outside of domain.');
                     end
                     I = cumsum(u);
@@ -146,7 +157,7 @@ classdef chebdouble
             I = sum(varargin{:});
         end
         
-        %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  CUMSUM  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  CUMSUM  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % The differential operators
         function u = cumsum(u)
             %CUMSUM   Compute the indefinite integral of the Chebyshev
@@ -171,7 +182,7 @@ classdef chebdouble
             
         end
         
-        %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  FRED  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  FRED  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         function u = fred(K, u)
             %FRED  Fredholm operator with kernel K.
             %   FRED(K, U) computes the action of the Fredholm operator with
@@ -200,7 +211,7 @@ classdef chebdouble
             
         end
         
-        %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  VOLT  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  VOLT  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         function u = volt(K, u)
             %VOLT  Volterra operator with kernel K.
             %   VOLT(K, U) computes the action of the Volterra operator with
@@ -225,7 +236,7 @@ classdef chebdouble
             
         end
 
-        %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  FEVAL  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  FEVAL  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         function out = feval(u, y)
             %FEVAL   Evaluate polynomial interpolant of data {X_cheb, U} at a
@@ -234,40 +245,50 @@ classdef chebdouble
             out = chebtech.bary(y, u.values, x, v);
         end
         
-        %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  MISC  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  MISC  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % Standard Matlab methods. Most of these proceed by simply calling the
         % corresponding method on the values property of the CHEBDOUBLE object.
         
         function u = abs(u)
             u.values = abs(u.values);
         end
+        
         function u = acos(u)
             u.values = acos(u.values);
         end
+        
         function u = acosd(u)
             u.values = acosd(u.values);
         end
+        
         function u = acosh(u)
             u.values = acosh(u.values);
         end
+        
         function u = acot(u)
             u.values = acot(u.values);
         end
+        
         function u = acotd(u)
             u.values = acotd(u.values);
         end
+        
         function u = acoth(u)
             u.values = acoth(u.values);
         end
+        
         function u = acsc(u)
             u.values = acsc(u.values);
         end
+        
         function u = acscd(u)
             u.values = acscd(u.values);
         end
+        
         function u = acsch(u)
             u.values = acsch(u.values);
         end
+        
         function u = airy(k, z, varargin)
             if ( nargin == 1 )
                 u = k;
@@ -277,33 +298,42 @@ classdef chebdouble
                 u.values = airy(k, u.values, varargin{:});
             end
         end
+        
         function u = asec(u)
             u.values = asec(u.values);
         end
+        
         function u = asecd(u)
             u.values = asecd(u.values);
         end
+        
         function u = asech(u)
             u.values = asech(u.values);
         end
         function u = asin(u)
             u.values = asin(u.values);
         end
+        
         function u = asind(u)
             u.values = asind(u.values);
         end
+        
         function u = asinh(u)
             u.values = asinh(u.values);
         end
+        
         function u = atan(u)
             u.values = atan(u.values);
         end
+        
         function u = atand(u)
             u.values = atand(u.values);
-        end        
+        end 
+        
         function u = atanh(u)
             u.values = atanh(u.values);
         end
+        
         function u = besselh(nu, k, u, varargin)
             if ( nargin == 2 )
                 u = k;
@@ -312,57 +342,73 @@ classdef chebdouble
                 u.values = besselh(nu, k, u.values, varargin{:});
             end
         end
+        
         function u = besseli(nu, u, varargin)
             u.values = besseli(nu, u.values, varargin{:});
         end
+        
         function u = besselj(nu, u, varargin)
             u.values = besselj(nu, u.values, varargin{:});
         end
+        
         function u = besselk(nu, u, varargin)
             u.values = besselk(nu, u.values, varargin{:});
-        end                
+        end  
+        
         function u = bessely(nu, u, varargin)
             u.values = bessely(nu, u.values, varargin{:});
-        end  
+        end 
+        
         function u = conj(u)
             u.values = conj(u.values);
         end
+        
         function u = cos(u)
             u.values = cos(u.values);
         end
+        
         function u = cosd(u)
             u.values = cosd(u.values);
         end
         function u = cosh(u)
             u.values = cosh(u.values);
         end
+        
         function u = cot(u)
             u.values = cot(u.values);
         end
+        
         function u = cotd(u)
             u.values = cotd(u.values);
-        end        
+        end
+        
         function u = coth(u)
             u.values = coth(u.values);
         end
+        
         function u = csc(u)
             u.values = csc(u.values);
         end
+        
         function u = cscd(u)
             u.values = cscd(u.values);
         end
+        
         function u = csch(u)
             u.values = csch(u.values);
         end
+        
         function u = ctranspose(u)
             u.values = ctranspose(u.values);
         end
+        
         function d = double(u)
             d = zeros(length(u), numel(u));
             for k = 1:numel(u)
                 d(:,k) = u(k).values;
             end
         end
+        
         function varargout = ellipj(u, M, varargin)
             [varargout{1:nargout}] = ellipj(u.values, M, varargin{:});
             for k = 1:nargout
@@ -370,37 +416,47 @@ classdef chebdouble
                 varargout{k} = u;
             end
         end
+        
         function varargout = ellipke(M, varargin)
             [varargout{1:nargout}] = ellipke(M.values, varargin{:});
             for k = 1:nargout
                 M.values = varargout{k};
                 varargout{k} = M;
             end
-        end        
+        end 
+        
         function u = erf(u)
             u.values = erf(u.values);
         end
+        
         function u = erfc(u)
             u.values = erfc(u.values);
         end
+        
         function u = erfcinv(u)
             u.values = erfcinv(u.values);
         end
+        
         function u = erfcx(u)
             u.values = erfcx(u.values);
         end
+        
         function u = erfinv(u)
             u.values = erfinv(u.values);
         end
+        
         function u = exp(u)
             u.values = exp(u.values);
         end
+        
         function u = expm1(u)
             u.values = expm1(u.values);
         end
+        
         function u = extractColumns(u, k)
             u.values = u.values(:, k);
         end
+        
         function val = get(u, prop)
             switch prop
                 case 'diffOrder'
@@ -412,25 +468,32 @@ classdef chebdouble
                 case 'values'
                     val = u.values;
             end
-        end        
+        end  
+        
         function u = heaviside(u)
             u.values = heaviside(u.values);
         end
+        
         function u = imag(u)
             u.values = imag(u.values);
         end
+        
         function out = isnan(u)
             out = isnan(u.values);
         end
+        
         function out = length(u)
             out = length(u(1).values);
         end
+        
         function out = mean(f)
             out = sum(f)/diff(f.domain);
         end
+        
         function u = minus(u, v)
             u = plus(u, -v);
         end
+        
         function u = mrdivide(u, v)
              if ( isnumeric(v) )
                 u.values = u.values/v;
@@ -438,10 +501,11 @@ classdef chebdouble
                 v.values = u/v.values;
                 u = v;
             else
-                error('CHEBFUN:chebdouble:rdivide:dim', ...
+                error('CHEBFUN:CHEBDOUBLE:mrdivide:dim', ...
                     'Matrix dimensions must agree.');
             end
         end
+        
         function u = mtimes(u, v)
             if ( isnumeric(v) )
                 u.values = u.values*v;
@@ -449,13 +513,15 @@ classdef chebdouble
                 v.values = u*v.values;
                 u = v;
             else
-                error('CHEBFUN:chebdouble:rdivide:dim', ...
+                error('CHEBFUN:CHEBDOUBLE:mtimes:dim', ...
                     'Matrix dimensions must agree.');
             end
         end
+        
         function out = norm(u)
             out = sqrt(sum(u.*u));
         end
+        
         function u = rdivide(u, v)
             if ( isnumeric(v) )
                 u.values = u.values./v;
@@ -467,6 +533,7 @@ classdef chebdouble
                 u.diffOrder = max(u.diffOrder, v.diffOrder);
             end
         end
+        
         function u = plus(u, v)
             if ( isnumeric(v) )
                 u.values = u.values + v;
@@ -478,6 +545,7 @@ classdef chebdouble
                 u.diffOrder = max(u.diffOrder, v.diffOrder);
             end
         end
+        
         function u = power(u, b)
             if ( isnumeric(b) )
                 u.values = u.values.^b;
@@ -489,22 +557,28 @@ classdef chebdouble
                 u.diffOrder = max(u.diffOrder, b.diffOrder);
             end
         end
+        
         function u = real(u)
             u.values = real(u.values);
         end
+        
         function u = sin(u)
             u.values = sin(u.values);
         end
+        
         function u = sinc(u)
             u.values = sin(pi*u.values)./(pi*u.values);
             u.values(isnan(u.values)) = 1;
         end
+        
         function u = sind(u)
             u.values = sind(u.values);
         end
+        
         function u = sinh(u)
             u.values = sinh(u.values);
         end
+        
         function u = subsref(u, s)
             if ( isnumeric(s.subs{1}) )
                 u = feval(u, s.subs{1});
@@ -512,15 +586,19 @@ classdef chebdouble
                 u = subsref(u.values, s);
             end
         end
+        
         function u = tan(u)
             u.values = tan(u.values);
         end
+        
         function u = tand(u)
             u.values = tand(u.values);
         end
+        
         function u = tanh(u)
             u.values = tanh(u.values);
         end
+        
         function u = times(u, v)
             if ( isnumeric(v) )
                 u.values = u.values.*v;
@@ -532,12 +610,15 @@ classdef chebdouble
                 u.diffOrder = max(u.diffOrder, v.diffOrder);                
             end
         end
+        
         function u = transpose(u)
             u.values = transpose(u.values);
         end
+        
         function u = uminus(u)
             u.values = -u.values;
         end
+        
         function u = uplus(u)
         end
                 

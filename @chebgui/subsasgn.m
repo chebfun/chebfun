@@ -16,7 +16,7 @@ switch ( index(1).type )
         varargout = {set(cg, idx, vin)};
         
     otherwise
-        error('CHEBGUI:subsasgn:indexType', ...
+        error('CHEBFUN:CHEBGUI:subsasgn:indexType', ...
             ['Unexpected index.type of ' index(1).type]);
         
 end

@@ -60,14 +60,14 @@ try
     C = cov(f, g);
     pass(9) = false;
 catch ME
-    pass(9) = strcmp(ME.identifier, 'CHEBFUN:cov:size');
+    pass(9) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:cov:size');
 end
 
 try
     C = cov(f, g, 1);
     pass(10) = false;
 catch ME
-    pass(10) = strcmp(ME.identifier, 'CHEBFUN:cov:nargin');
+    pass(10) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:cov:nargin');
 end
 
 end
