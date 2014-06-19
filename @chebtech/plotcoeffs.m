@@ -22,6 +22,12 @@ function varargout = plotcoeffs(f, varargin)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% DEVELOPER NOTE:
+%  The undocumented featrue plotcoeffs(f, 'barplot') shows a different kind of
+%  coeffs plot, which can be more attractive in some situations.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 % Deal with an empty input:
 if ( isempty(f) )
     if ( nargout == 1 )
@@ -63,9 +69,13 @@ absCoeffs = abs(f.coeffs);
 
 % Add a tiny amount to zeros to make plots look nicer:
 if ( f.vscale > 0 )
-    % (Min of epslevel*vscale and the miniumum non-zero coefficient)
-%     absCoeffs(~absCoeffs) = min( min(f.epslevel.*f.vscale), ...
-%                                  min(absCoeffs(logical(absCoeffs))) );                             
+    if ( doBar )
+        absCoeffs(absCoeffs < min(f.epslevel.*f.vscale)/100) = 0;
+    else
+        % (Min of epslevel*vscale and the miniumum non-zero coefficient)
+        absCoeffs(~absCoeffs) = min( min(f.epslevel.*f.vscale), ...
+                                 min(absCoeffs(logical(absCoeffs))) );                             
+    end
 else
     % (add epslevel for zero CHEBTECHs)
     absCoeffs = absCoeffs + f.epslevel;
