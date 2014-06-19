@@ -33,4 +33,12 @@ xx = linspace(-2,2);
 [XX,YY] = meshgrid(xx,xx);
 pass(6) = ( max(max( abs(f(XX,YY) - ffch(XX,YY) ))) < 2e4*tol );
 
+% Test that #928 is fixed.
+f = chebfun2(@(x,y) 1, 'vectorize');
+g = chebfun2(1);
+pass(7) = norm(f - g) < tol;
+f = chebfun2(@(x,y) 1, 'vectorize');
+g = chebfun2(1);
+pass(8) = norm(f - g) < tol;
+
 end
