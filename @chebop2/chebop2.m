@@ -184,12 +184,12 @@ classdef chebop2
             N.yorder = ydifforder;
             
             % Issue a warning to the user for the first CHEBOP2:
-            warning('CHEBOP2:EXPERIMENTAL',...
+            warning('CHEBFUN:CHEBOP2:chebop2:experimental',...
                 ['Chebop2 is a new experimental feature.'...
                 'It has not been tested to the same extent as other'...
                 'parts of the software.']);
             % Turn it off:
-            warning('off', 'CHEBOP2:EXPERIMENTAL');
+            warning('off', 'CHEBFUN:CHEBOP2:chebop2:experimental');
             
         end
         
