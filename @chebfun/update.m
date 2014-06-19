@@ -153,7 +153,7 @@ try % Wrap everything in a try-catch statement to avoid a disaster.
     disp('Saving path ...')
     addpath(installDir)
     if ( savepath() )
-        warning('CHEBFUN:TRUNKDIR:updateChebfun:savepath', ...
+        warning('CHEBFUN:CHEBFUN:update:savepath', ...
             'Unable to save path. Check with with your local sysadmin.');
     end
     
@@ -167,21 +167,13 @@ try % Wrap everything in a try-catch statement to avoid a disaster.
     
     % Display outgoing info:
     disp('Installation complete!')
-    
-%     % Suggest they run CHEBTEST():
-%     if ( usejava('jvm') && usejava('desktop') )
-%         str = '<a href="matlab: chebtest">chebtest</a>';
-%     else
-%         str = 'chebtest';
-%     end
-%     disp(['We recommend you run ' str ' to ensure everything is working.'])
-    
+
 catch ME
        
-    Return to the starting directory:
+    % Return to the starting directory:
     cd(startDir)
     
-    Something went wrong. Throw an error:
+    % Something went wrong. Throw an error:
     disp('Update failed.');
     rethrow(ME)
     
