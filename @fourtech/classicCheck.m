@@ -28,7 +28,7 @@ function [ishappy, epslevel, cutoff] = classicCheck(f, pref)
 %
 %   EPSLEVEL is essentially the maximum of:
 %       * pref.eps
-%       * eps*TESTLENGTH^(2/3)
+%       * eps*TESTLENGTH
 %       * eps*condEst (where condEst is an estimate of the condition number
 %                      based upon a finite difference approximation to the
 %                      gradient of the function from F.VALUES.).
@@ -186,7 +186,7 @@ minPrec = 1e-4; % Worst case precision!
 testLength = min(n, max(3, round((n-1)/8)));
 
 % Look at length of tail to loosen tolerance:
-tailErr = eps*testLength^(2/3);
+tailErr = eps*testLength;
 tailErr = min(tailErr, minPrec);
 
 % Estimate the condition number of the input function by
