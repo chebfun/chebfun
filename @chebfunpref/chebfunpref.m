@@ -5,7 +5,8 @@ classdef chebfunpref < chebpref
 %   singularity detection, and the various options that those features require.
 %   These objects can be supplied to the CHEBFUN constructor (as well as the
 %   constructors of other classes in Chebfun), which will interpret them and
-%   adjust the construction process accordingly.
+%   adjust the construction process accordingly. Note that all preferences _are_
+%   case sensitive.
 %
 % Available Preferences:
 %
