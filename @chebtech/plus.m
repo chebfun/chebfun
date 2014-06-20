@@ -52,7 +52,11 @@ elseif ( isa(f, 'chebtech') && isa(g, 'chebtech') )  % CHEBTECH + CHEBTECH
     f.coeffs = f.coeffs + g.coeffs;
     
     % Look for a zero output:
-    if ( ~any(f.coeffs(:)) )
+    tol = max(f.epslevel.*f.vscale, g.epslevel.*g.vscale);
+    absCoeffs = abs(f.coeffs);
+    isz = bsxfun(@lt, absCoeffs, .1*tol); % Are coeffs below .1*el*vs?
+    
+    if ( all(isz(:)) )
         % Create a zero CHEBTECH:
         epslevel = max(f.epslevel, g.epslevel);
         ishappy = f.ishappy && g.ishappy;
