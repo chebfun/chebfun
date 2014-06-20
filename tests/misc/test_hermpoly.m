@@ -49,9 +49,7 @@ err = norm( h1 - chebfun(@(x) x, [-inf,inf] ) );
 pass(9) = err < tol;
 
 h2 = hermpoly(2, 'prob');
-g2 = chebfun(@(x) x.^2-1, [-inf,inf] );
-plot(h2, 'b', g2, 'r')
-err = norm( h2 - chebfun(@(x) x.^2-1, [-inf,inf] ) )
+err = norm( h2 - chebfun(@(x) x.^2-1, [-inf,inf] ) );
 pass(10) = err < tol;
 
 h3 = hermpoly(3, 'prob'); 
