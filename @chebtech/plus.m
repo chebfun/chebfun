@@ -67,7 +67,8 @@ elseif ( isa(f, 'chebtech') && isa(g, 'chebtech') )  % CHEBTECH + CHEBTECH
         % Update vscale, epslevel, and ishappy:
         vscaleNew = getvscl(f); 
         % See CHEBTECH CLASSDEF file for documentation on this:
-        f.epslevel = (f.epslevel.*f.vscale + g.epslevel.*g.vscale)./vscaleNew;
+        epslevelBound = (f.epslevel.*f.vscale + g.epslevel.*g.vscale)./vscaleNew;
+        f.epslevel = updateEpslevel(f, epslevelBound);
         f.vscale = vscaleNew;
         f.ishappy = f.ishappy && g.ishappy;
     end
