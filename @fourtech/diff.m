@@ -98,13 +98,14 @@ function f = diffContinuousDim(f, k)
     v = f.coeffs2vals(c);
     v(:,f.isReal) = real(v(:,f.isReal));
 
-    % Update epslevel and the vertical scale: (See FOURTECH CLASSDEF file
-    % for documentation.)
-    f.epslevel = (N*log(N)).^k*(f.epslevel.*f.vscale);
-    f.vscale = max(abs(v), [], 1);
-
     % Store new coefficients and values:
     f.coeffs = c;
     f.values = v;
-    
+
+    % Update epslevel and the vertical scale: (See FOURTECH CLASSDEF file
+    % for documentation.)
+    newVScale = max(abs(v), [], 1); 
+    epslevelBnd = (N*log(N)).^k*(f.epslevel.*f.vscale)./newVScale;
+    f.epslevel = updateEpslevel(f, epslevelBnd);
+    f.vscale = newVScale;    
 end
