@@ -2069,3 +2069,11 @@ guidata(hObject, handles);
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% FIN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+function fig_logo_CreateFcn(hObject, eventdata, handles)
+% Hint: place code in OpeningFcn to populate
+logoMat = imread(fullfile(chebfunroot(),'chebguiDemos','chebfunLogo.png'));
+image(logoMat)
+axis off
+end
