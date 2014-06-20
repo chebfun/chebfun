@@ -177,16 +177,6 @@ for k = 1:numel(varargin)
             rootsPref.breakRoot = 1;
         case 'nobreaks'
             rootsPref.breakRoot = 0;
-        case 'imps'   % Deprecated synonym for "breaks".
-            rootsPref.breakRoot = 1;
-            warning('CHEBFUN:CHEBFUN:roots:parseInputs:imps', ...
-                ['''noimps'' option to ROOTS is deprecated.  Use ' ...
-                 '''breaks'' instead.']);
-        case 'noimps' % Deprecated synonym for "nobreaks".
-            warning('CHEBFUN:CHEBFUN:roots:parseInputs:noimps', ...
-                ['''noimps'' option to ROOTS is deprecated.  Use ' ...
-                 '''nobreaks'' instead.']);
-            rootsPref.breakRoot = 0;
         case 'qz'
             rootsPref.qz = 1; 
         case {'recursion', 'recurse'}
