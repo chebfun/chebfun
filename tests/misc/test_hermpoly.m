@@ -8,53 +8,67 @@ tol = 1e5*prefs.techPrefs.eps;
 
 % Physicists' Hermite polynomials
 h0 = hermpoly(0); 
-pass(1) = norm( h0 - chebfun(@(x) 1+0*x, [-inf,inf] ) ) < tol;
+err = norm( h0 - chebfun(@(x) 1+0*x, [-inf,inf] ) );
+pass(1) = err < tol;
 
 h1 = hermpoly(1); 
-pass(2) = norm( h1 - chebfun(@(x) 2*x, [-inf,inf] ) ) < tol;
+err = norm( h1 - chebfun(@(x) 2*x, [-inf,inf] ) );
+pass(2) = err < tol;
 
 h2 = hermpoly(2); 
-pass(3) = norm( h2 - chebfun(@(x) 4*x.^2-2, [-inf,inf] ) ) < tol;
+err = norm( h2 - chebfun(@(x) 4*x.^2-2, [-inf,inf] ) );
+pass(3) = err < tol;
 
 h3 = hermpoly(3); 
 x = linspace(-1,1);
-pass(4) = norm( feval(h3,x) - 8*x.^3+12*x ) < tol;
+err = norm( feval(h3,x) - 8*x.^3+12*x );
+pass(4) = err < tol;
 
 h4 = hermpoly(4); 
 x = linspace(-1,1);
-pass(5) = norm( feval(h4,x) - (16*x.^4-48*x.^2+12) ) < tol;
+err = norm( feval(h4,x) - (16*x.^4-48*x.^2+12) );
+pass(5) = err < tol;
 
 h5 = hermpoly(5); 
 x = linspace(-1,1);
-pass(6) = norm( feval(h5,x) - (32*x.^5-160*x.^3+120*x) ) < 10*tol;
+err = norm( feval(h5,x) - (32*x.^5-160*x.^3+120*x) );
+pass(6) = err < 10*tol;
 
 h6 = hermpoly(6); 
 x = linspace(-1,1);
-pass(7) = norm( feval(h6,x) - (64*x.^6-480*x.^4+720*x.^2-120) ) < 100*tol;
-
+err = norm( feval(h6,x) - (64*x.^6-480*x.^4+720*x.^2-120) );
+pass(7) = err < 100*tol;
 
 % probabilists' Hermite polynomials:
 h0 = hermpoly(0, 'prob'); 
-pass(8) = norm( h0 - chebfun(@(x) 1+0*x, [-inf,inf] ) ) < tol;
+err = norm( h0 - chebfun(@(x) 1+0*x, [-inf,inf] ) );
+pass(8) = err < tol;
 
 h1 = hermpoly(1, 'prob'); 
-pass(9) = norm( h1 - chebfun(@(x) x, [-inf,inf] ) ) < tol;
+err = norm( h1 - chebfun(@(x) x, [-inf,inf] ) );
+pass(9) = err < tol;
 
-h2 = hermpoly(2, 'prob'); 
-pass(10) = norm( h2 - chebfun(@(x) x.^2-1, [-inf,inf] ) ) < tol;
+h2 = hermpoly(2, 'prob');
+g2 = chebfun(@(x) x.^2-1, [-inf,inf] );
+err = norm( h2 - chebfun(@(x) x.^2-1, [-inf,inf] ) );
+pass(10) = err < tol;
 
 h3 = hermpoly(3, 'prob'); 
 x = linspace(-1,1);
-pass(11) = norm( feval(h3,x) - (x.^3-3*x) ) < tol;
+err = norm( feval(h3,x) - (x.^3-3*x) );
+pass(11) = err < tol;
 
 h4 = hermpoly(4, 'prob'); 
 x = linspace(-1,1);
-pass(12) = norm( feval(h4,x) - (x.^4-6*x.^2+3) ) < tol;
+err = norm( feval(h4,x) - (x.^4-6*x.^2+3) );
+pass(12) = err < tol;
 
 h5 = hermpoly(5, 'prob'); 
 x = linspace(-1,1);
-pass(13) = norm( feval(h5,x) - (x.^5-10*x.^3+15*x) ) < tol;
+err = norm( feval(h5,x) - (x.^5-10*x.^3+15*x) );
+pass(13) = err < tol;
 
 h6 = hermpoly(6, 'prob'); 
 x = linspace(-1,1);
-pass(14) = norm( feval(h6,x) - (x.^6-15*x.^4+45*x.^2-15) ) < 10*tol;
+norm( feval(h6,x) - (x.^6-15*x.^4+45*x.^2-15) );
+pass(14) = err < 10*tol;

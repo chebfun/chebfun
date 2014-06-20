@@ -5,7 +5,7 @@ function pass = test_CLA( pref )
 if ( nargin < 1 )
     pref = chebfunpref; 
 end
-tol = 100*pref.eps; 
+tol = 200*pref.eps; 
 
 seedRNG(0)
 gam = 10;

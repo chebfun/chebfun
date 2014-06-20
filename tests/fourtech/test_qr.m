@@ -47,7 +47,7 @@ pass(17) = all(err(:) == 0);
 % [TODO]: Is this correct?
 f = testclass.make(@(x) [cos(pi*x) cos(pi*x) cos(pi*x)], [], pref);
 [Q, R] = qr(f, []);
-Q = simplify(Q,10*f.epslevel);
+Q = simplify(Q,100*f.epslevel);
 pass(18) = all(size(Q) == 3) && all(size(R) == 3);
 I = eye(3);
 pass(19) = norm(innerProduct(Q, Q) - I, inf) < ...

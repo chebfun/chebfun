@@ -25,8 +25,6 @@ function [p, q, r_handle] = chebpade(F, m, n, varargin)
 
 % TODO:  Handle quasimatrices/array-valued CHEBFUNs.
 
-% TODO:  Raise error on CHEBFUNs with singular FUNs.
-
 % TODO:  References?
 
 % Parse the inputs.
@@ -65,6 +63,11 @@ elseif ( nargin == 5 ) % CHEBPADE(F, M, N, TYPE, K) or CHEPADE(F, M, N, K, TYPE)
     end
 else
     error('CHEBFUN:CHEBFUN:chebpade:tooManyArgs', 'Too many arguments.')
+end
+
+if ( issing(F) )
+    error('CHEBFUN:chebpade:singularFunction', ...
+        'CHEBPADE does not currently support functions with singularities.');
 end
 
 % Compute the Chebyshev-Pade approximation of choice.

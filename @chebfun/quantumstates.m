@@ -31,8 +31,6 @@ function varargout = quantumstates(varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 % Nick Trefethen, January 2012
 
-% TODO: This method requires a test.
-
 %% Parsing of inputs:
 noplot = strcmpi(varargin{nargin}, 'noplot');      % check for no plot
 nargin1 = nargin;                                  % no of input args

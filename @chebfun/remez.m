@@ -48,14 +48,17 @@ function varargout = remez(f, varargin)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% TODO:  Raise error on CHEBFUNs with singular FUNs.
-
 dom = f.domain([1, end]);
 normf = norm(f);
 
 if ( numColumns(f) > 1 )
     error ('CHEBFUN:remez:quasi', ...
         'REMEZ does not currently support quasimatrices.');
+end
+
+if ( issing(f) )
+    error('CHEBFUN:remez:singularFunction', ...
+        'REMEZ does not currently support functions with singularities.');
 end
 
 % Parse the inputs.
@@ -349,7 +352,7 @@ function [xk, norme, err_handle, flag] = exchange(xk, h, method, f, p, q, Npts)
 
 % Compute extrema of the error.
 e_num = (q.^2).*diff(f) - q.*diff(p) + p.*diff(q);
-rts = roots(e_num, 'noImps');
+rts = roots(e_num, 'nobreaks');
 rr = [f.domain(1) ; rts; f.domain(end)];
 
 % Function handle output for evaluating the error.

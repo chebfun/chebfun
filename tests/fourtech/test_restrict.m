@@ -70,8 +70,6 @@ g = testclass.make(@(x) -sin(pi*x), [], pref);
 x = linspace(-1, 1, 100).';
 err1 = norm(feval(g - h1, x), inf);
 err2 = norm(feval(g - h2, x), inf);
-plot(h1); hold on
-plot(g, 'r'); hold off
 pass(9) = err1 + err2 < f.epslevel;
 
 % %%
