@@ -58,7 +58,7 @@ end
 % Do we want to show a plot of the solution?
 if ( ~strcmpi(plotMode, 'off') )
     figure
-    h = plot(chebfun(u), '.-')
+    h = plot(chebfun(u), '.-');
     title('Solution of linear ODE')    
 else
     h = [];
