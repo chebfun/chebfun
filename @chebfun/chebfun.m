@@ -167,6 +167,26 @@ classdef chebfun
             if ( (nargin == 0) || isempty(varargin{1}) )
                 return
             end
+            
+            if ( iscell(varargin{1}) && ...
+                    all(cellfun(@(x) isa(x, 'fun'),  varargin{1})) )
+                % Construct a CHEBFUN from a cell array of FUN objects.               
+                %  Note, this is not affected by the input parser (see error
+                %  message below) and must be _fast_ as it is done often.
+                if ( nargin > 1 )
+                    error('CHEBFUN:CHEBFUN:chebfun:nargin', ...
+                     'Only one input is allowed when passing an array of FUNs.')
+                end
+                % Assign the cell to the .FUNS property:
+                f.funs = varargin{1};
+                % Collect the domains together:
+                dom = cellfun(@(fun) get(fun, 'domain'), f.funs, ...
+                    'uniformOutput', false);
+                f.domain = unique([dom{:}]);
+                % Update values at breakpoints (first row of f.pointValues):
+                f.pointValues = chebfun.getValuesAtBreakpoints(f.funs, f.domain);
+                return
+            end
                        
             % Parse inputs:
             [op, dom, data, pref] = parseInputs(varargin{:});
@@ -187,28 +207,11 @@ classdef chebfun
                 end                
             end
             
-            if ( iscell(op) && all(cellfun(@(x) isa(x, 'fun'), op)) )
-                % Construct a CHEBFUN from a cell array of FUN objects:
-                
-                if ( nargin > 1 )
-                    error('CHEBFUN:CHEBFUN:chebfun:nargin', ...
-                     'Only one input is allowed when passing an array of FUNs.')
-                end
-                
-                % Assign the cell to the .FUNS property:
-                f.funs = op;
-                % Collect the domains together:
-                dom = cellfun(@(fun) get(fun, 'domain'), f.funs, ...
-                    'uniformOutput', false);
-                f.domain = unique([dom{:}]);
-                % Update values at breakpoints (first row of f.pointValues):
-                f.pointValues = chebfun.getValuesAtBreakpoints(f.funs, f.domain);
-                
-            elseif ( isa(op, 'chebfun') && doTrunc )
+            if ( isa(op, 'chebfun') && doTrunc )
                 % Deal with the particular case when we're asked to truncate a
                 % CHEBFUN:
                 f = op;
-                UPDATECHEBFUN
+                
             else
                 % Construct from function_handle, numeric, or string input:
                 
