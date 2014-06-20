@@ -29,7 +29,7 @@ k = 1; % Look at all remaining arguments.
 while ( k < numel(varargin) )
     vk = varargin{k};
 
-    if ( any(strcmpi(vk, lineOpts)) )
+    if ( any(strncmpi(vk, lineOpts, 5)) )
         % Line option:
         lineStyle = [lineStyle, vk, varargin{k+1}]; 
         varargin(k:k+1) = [];

@@ -107,6 +107,10 @@ pass(40) = doesNotCrash(@() surfc(fqr1));
 pass(41) = doesNotCrash(@() mesh(far1));
 pass(42) = doesNotCrash(@() mesh(fqr1));
 
+% test linew and lines
+pass(43) = doesNotCrash(@() plot(fsr1, 'linew', 15));
+pass(44) = doesNotCrash(@() plot(fsr1, 'lines', '--'));
+
 close(hfig);
 
 end
@@ -116,7 +120,7 @@ function pass = doesNotCrash(fn)
 try
     fn();
     pass = true;
-catch ME;
+catch ME %#ok<NASGU>
     pass = false;
 end
 
