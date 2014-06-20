@@ -54,7 +54,7 @@ elseif ( isa(f, 'chebtech') && isa(g, 'chebtech') )  % CHEBTECH + CHEBTECH
     % Look for a zero output:
     tol = max(f.epslevel.*f.vscale, g.epslevel.*g.vscale);
     absCoeffs = abs(f.coeffs);
-    isz = bsxfun(@lt, absCoeffs, .1*tol); % Are coeffs below .1*el*vs?
+    isz = bsxfun(@lt, absCoeffs, .2*tol); % Are coeffs below .1*el*vs?
     
     if ( all(isz(:)) )
         % Create a zero CHEBTECH:
