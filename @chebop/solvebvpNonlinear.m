@@ -74,6 +74,7 @@ dampingInfo.newtonCounter = newtonCounter;
 dampingInfo.deltaBar =      [];
 dampingInfo.damping =       damping;
 dampingInfo.x =             x;
+dampingInfo.giveUp =        0;
 
 linpref = pref;
 linpref.errTol = pref.errTol/10;
@@ -128,6 +129,9 @@ while ( ~terminate )
         
         % Is the damping strategy telling us to give up?
         giveUp = dampingInfo.giveUp;
+        
+        % Did we converge within the damped phase?
+        success = dampingInfo.success;
         
     else % We are in undamped phase
         
@@ -201,7 +205,7 @@ while ( ~terminate )
     end
     
     % Should we stop the Newton iteration?
-    if ( success || maxIterExceeded || giveUp || stopReq )
+    if ( success || maxIterExceeded || ( giveUp == 1) || stopReq )
         break
     end
     

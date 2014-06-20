@@ -17,6 +17,8 @@ function varargout = bvp4c(fun1, fun2, y0, varargin)
 %   variation of the problem, then using the resulting CHEBFUN as the initial
 %   guess for a more difficult version.
 %
+%   Note that CHEBFUN/BVP4C() uses a default RELTOL of 1e-6.
+%
 % Example (using built-in BVP demo functions):
 %   y0 = chebfun([0, 0], [0, 4]);
 %   y = bvp4c(@twoode, @twobc, y0);

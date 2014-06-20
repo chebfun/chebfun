@@ -1,7 +1,7 @@
 function [rBreaks, rAll] = getRootsForBreaks(f, tol)
 %GETROOTSFORBREAKS   Get roots of a CHEBFUN and polish for use as breakpoints.
 %   GETROOTSFORBREKAS(F) computes the roots of F (more specifically, ROOTS(F,
-%   'nozerofun', 'nojump', 'noimps')) and then eliminates ones which are too
+%   'nozerofun', 'nojump', 'nobreaks')) and then eliminates ones which are too
 %   close together to be introduced into F (or into some other CHEBFUN with the
 %   same domain as F) as breakpoints.  The roots are returned in a form
 %   suitable for passing to ADDBREAKS().
@@ -24,7 +24,7 @@ if ( nargin == 1 )
 end
 
 % Locate roots:
-rAll = roots(f, 'nozerofun', 'nojump', 'noimps');
+rAll = roots(f, 'nozerofun', 'nojump', 'nobreaks');
 
 % Reshape to a column vector, sort, and remove NaNs:
 rBreaks = sort(rAll(:));

@@ -10,12 +10,17 @@ function out = roots(f, varargin)
 %        1  - Return roots outside of [-1,1] (including complex roots).
 %
 %   COMPLEX:
-%       [0]
-%        1  - Return real and complex roots inside a Bernstein ellipse. 
+%       [0] - No effect.
+%        1  - Equivalent to setting both PRUNE and ALL = 1.
 %
+%   FILTER:
+%       [ ]
+%   @filter(R,F) - A function handle which accepts the sorted computed roots, R, 
+%                  and the CHEBTECH, F, and filters the roots as it see fit.
 %   RECURSE:
 %        0  - Compute roots without interval subdivision (slower).
-%       [1] - Subdivide until length(F) < 50. (can cause additional complex roots).
+%       [1] - Subdivide until length(F) < 50. (Can cause additional complex
+%             roots).
 %
 %   PRUNE:
 %       [0]
@@ -26,10 +31,9 @@ function out = roots(f, varargin)
 %        1  - Use the colleague matrix pencil linearization and the QZ 
 %             algorithm for potentially extra numerical stability. 
 %
-%   FILTER:
-%       [ ]
-%   @filter(R,F) - A function handle which accepts the sorted computed roots, R, 
-%                  and the CHEBTECH, F, and filters the roots as it see fit.
+%   ZEROFUN:
+%        0  - Return empty if F is identically 0.
+%       [1] - Return a root at x = 0 if F is idnetically 0.
 %
 %   If F is an array-valued CHEBTECH then there is no reason to expect each
 %   column to have the same number of roots. In order to return a useful output,
@@ -129,16 +133,28 @@ end
 
 % Filter out the arguments:
 j = 1;
-while ( j <= length(varargin) )
-    if ( any(strcmp(lower(varargin{j}), fieldnames(rootsPref))) ) %#ok<STCI>
-        rootsPref.(varargin{j}) = varargin{j+1};
+while ( j < length(varargin) )
+    if ( strcmpi(varargin{j}, 'complex') && varargin{j+1} )
+        rootsPref.prune = true;
+        rootsPref.all = true;
         j = j + 2;
-    elseif ( strcmpi(varargin{j}, 'complex') )
+    elseif ( strcmpi(varargin{j}, 'all') )
         rootsPref.all = varargin{j+1};
+    elseif ( strcmpi(varargin{j}, 'recurse') )
+        rootsPref.recurse = varargin{j+1};
+        j = j + 2;    
+    elseif ( strcmpi(varargin{j}, 'prune') )
+        rootsPref.prune = varargin{j+1};
+        j = j + 2;            
+    elseif ( strcmpi(varargin{j}, 'zeroFun') )
+        rootsPref.zeroFun = varargin{j+1};        
         j = j + 2;
     elseif ( strcmpi(varargin{j}, 'qz') )
-        rootsPref.qz = varargin{j+1}; 
-        j = j + 2; 
+        rootsPref.qz = varargin{j+1};
+        j = j + 2;        
+    elseif ( strcmpi(varargin{j}, 'filter') )
+        rootsPref.filter = varargin{j+1};
+        j = j + 2;                
     else
         j = j + 1;
     end

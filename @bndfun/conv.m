@@ -216,10 +216,8 @@ end
 
 function [gammaL, gammaR] = easyConv(alpha, beta)
 % Convolution using Legendre expansions and the analoguous convolution theorem.
-% See Hale and Townsend, "The convolution of compactly supported functions", (In
-% prep)
-
-% TODO: Document the simple case a little more fully? (Wait until paper done).
+% See Hale and Townsend, "The convolution of compactly supported functions",
+% (Accepted, SISC).
 
 % Better computational efficiency is achieved when g has the lower degree:
 if ( length(beta) > length(alpha) )

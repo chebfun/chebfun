@@ -93,15 +93,16 @@ end
 
 tol = 100*eps;
 
+xx = linspace(-1,1,10);
 f = testclass.make(@(x) sin(10*pi*x), [], pref);
 h1 = f ./ alpha;
 h2 = testclass.make(@(x) sin(10*pi*x) ./ alpha, [], pref);
-pass(12) = norm(h1.coeffs - h2.coeffs, inf) < tol;
+pass(12) = norm(feval(h1, xx) - feval(h2,xx), inf) < tol;
 
 g = testclass.make(@(x) exp(cos(pi*x)), [], pref);
 h1 = f ./ g;
 h2 = testclass.make(@(x) sin(10*pi*x) ./ exp(cos(pi*x)), [], pref);
-pass(13) = norm(h1.coeffs - h2.coeffs, inf) < tol;
+pass(13) = norm(feval(h1, xx) - feval(h2,xx), inf) < tol;
 end
 
 % Test the division of a FOURTECH F, specified by F_OP, by a scalar ALPHA using

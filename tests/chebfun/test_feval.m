@@ -128,7 +128,7 @@ pass(17) = isequal(size(err), [5 4 5 10]) && (norm(err(:), inf) < ...
     10*f.epslevel*f.vscale);
 
 % Check behavior for transposed chebfuns.
-f.isTransposed = 1; % [TODO]:  Replace with call to transpose().
+f = transpose(f);
 
 err = feval(f, x_mtx) - f_exact(x_mtx).';
 pass(18) = isequal(size(err), [10 100]) && (norm(err(:), inf) < ...
@@ -138,7 +138,7 @@ err = feval(f, x_3mtx) - permute(f_exact(x_3mtx), [2 1 3]);
 pass(19) = isequal(size(err), [20 5 10]) && (norm(err(:), inf) < ...
     10*f.epslevel*f.vscale);
 
-f.isTransposed = 0; % [TODO]:  Replace with call to transpose().
+f = transpose(f);
 
 % Check evaluation at points just outside the domain.
 x = [(-1 - 1e-6) ; 1e-6 + 1e-6i ; (1 + 1e-6)];
