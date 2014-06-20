@@ -9,7 +9,7 @@ function varargout = ode15s(varargin)
 %   One can also write [T, Y] = ODE15S(...), in which case T is a linear CHEBFUN
 %   on the domain D.
 %
-%   Note that CHEBFUN/ODE45() uses a default RELTOL of 1e-6.
+%   Note that CHEBFUN/ODE15S() uses a default RELTOL of 1e-6.
 %
 % Example:
 %   y = chebfun.ode15s(@vdp1000, [0, 3000], [2; 0]); % Solve Van der Pol problem
