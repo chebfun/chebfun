@@ -1,4 +1,4 @@
-function g = constructor(g, op, domain, varargin)
+function g = constructor(g, op, dom, varargin)
 %CONSTRUCTOR   The main CHEBFUN2 constructor.
 %
 % This code is when functions of two variables are represented as CHEBFUN2
@@ -18,13 +18,16 @@ function g = constructor(g, op, domain, varargin)
 % Sampling along each slice is increased until the Chebyshev coefficients of the
 % slice fall below machine precision.
 %
-% Chebfun2 does not currently work with Chebyshev grids of the 1st kind.
-%
 % The algorithm is fully described in:
 %  A. Townsend and L. N. Trefethen, An extension of Chebfun to two dimensions,
 %  SISC, 35 (2013), C495-C518.
 %
 % See also CHEBFUN2.
+
+% Copyright 2014 by The University of Oxford and The Chebfun2 Developers.
+% See http://www.chebfun.org/ for Chebfun2 information.
+
+% TODO: The input parsing of CHEBFUN2 needs to be improved.
 
 if ( nargin == 0 )          % CHEBFUN2( )
     return
@@ -36,10 +39,9 @@ if ( isa(op, 'chebfun2') )  % CHEBFUN2( CHEBFUN2 )
 end
 
 % If domain is empty take [-1 1 -1 1]:
-if ( nargin < 3 || isempty(domain) )
-    domain = [-1 1 -1 1];
+if ( nargin < 3 || isempty(dom) )
+    dom = [-1 1 -1 1];
 end
-
 % Get preferences:
 if ( nargin > 3 && isa(varargin{1}, 'chebfunpref') )
     pref = chebfunpref(varargin{1});
@@ -47,6 +49,12 @@ else
     pref = chebfunpref();
 end
 
+if ( isa(dom, 'chebfunpref') )
+    % Support chebfun2(op, pref);
+    pref = dom;
+    dom = [-1 1 -1 1];
+end
+    
 % Get default preferences from chebfunpref:
 prefStruct = pref.cheb2Prefs;
 sampleTest = prefStruct.sampleTest;
@@ -59,14 +67,14 @@ minSample = tpref.minSamples;
 maxSample = tpref.maxLength;
 pseudoLevel = tpref.eps;
 
-if ( any(strcmpi(domain, 'periodic')) )
+if ( any(strcmpi(dom, 'periodic')) )
         % If periodic flag, then map chebfun2 with fourtechs. 
         pref.tech = @fourtech;
         tpref = chebfunpref.mergeTechPrefs(pref, tech.techPref);
         minSample = tpref.minSamples;
         maxSample = tpref.maxLength;
         pseudoLevel = tpref.eps;
-        domain = [-1 1 -1 1];
+        dom = [-1 1 -1 1];
 elseif ( (nargin > 3) && (any(strcmpi(varargin{1}, 'periodic'))) )
         % If periodic flag, then map chebfun2 with fourtechs. 
         pref.tech = @fourtech; 
@@ -79,32 +87,32 @@ end
 if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
     if ( numel( op ) == 1 )
         % LNT wants this:
-        g = constructor(g, @(x,y) op + 0*x, domain);
+        g = constructor(g, @(x,y) op + 0*x, dom);
         
-    elseif ( any(strcmpi(domain, 'coeffs')) )
+    elseif ( any(strcmpi(dom, 'coeffs')) )
         % Look for coeffs flag:
         op = chebfun2.coeffs2vals( op );
         g = chebfun2( op, varargin{:} );
         return
-    elseif ( any(strcmpi(domain, 'padua')) )
+    elseif ( any(strcmpi(dom, 'padua')) )
         op = chebfun2.paduaVals2coeffs( op );
         op = chebfun2.coeffs2vals( op );
         g = chebfun2( op, 'coeffs' );
         return
     elseif ( (nargin > 3) && (any(strcmpi(varargin{1}, 'coeffs'))) )
         op = chebfun2.coeffs2vals( op );
-        g = chebfun2( op, domain );
+        g = chebfun2( op, dom );
         return
     elseif ( (nargin > 3) && (any(strcmpi(varargin{1}, 'padua'))) )
-        op = chebfun2.paduaVals2coeffs( op, domain );
+        op = chebfun2.paduaVals2coeffs( op, dom );
         op = chebfun2.coeffs2vals( op );
-        g = chebfun2( op, domain );
+        g = chebfun2( op, dom );
         return
     else
         % If CHEBFUN2(f, rk), then nonadaptive call:
-        if ( numel(domain) == 1 )
-            fixedRank = domain;
-            domain = [-1 1 -1 1];
+        if ( numel(dom) == 1 )
+            fixedRank = dom;
+            dom = [-1 1 -1 1];
         else
             % Otherwise its an adaptive call:
             fixedRank = 0;
@@ -116,16 +124,16 @@ if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
         % the samples, and the accuracy target in chebfun2 preferences. 
         grid = max( size( op ) ); 
         vscale = max( abs(op(:)) ); 
-        tol = grid.^(2/3) * max( max( abs(domain(:))), 1) * vscale * pseudoLevel;
+        tol = grid.^(2/3) * max( max( abs(dom(:))), 1) * vscale * pseudoLevel;
         
         % Perform GE with complete pivoting:
         [pivotValue, ignored, rowValues, colValues] = CompleteACA(op, tol, 0);
         
         % Construct a CHEBFUN2:
         g.pivotValues = pivotValue;
-        g.cols = chebfun(colValues, domain(3:4), pref );
-        g.rows = chebfun(rowValues.', domain(1:2), pref );
-        g.domain = domain;
+        g.cols = chebfun(colValues, dom(3:4), pref );
+        g.rows = chebfun(rowValues.', dom(1:2), pref );
+        g.domain = dom;
         
         % Did we have a nonadaptive construction?:
         g = fixTheRank(g, fixedRank);
@@ -144,9 +152,9 @@ end
 
 % Look for vectorize flag:
 vectorize = 0;
-if (any(strcmpi(domain, 'vectorize')) || any(strcmpi(domain, 'vectorise')))
+if (any(strcmpi(dom, 'vectorize')) || any(strcmpi(dom, 'vectorise')))
     vectorize = 1;
-    domain = [-1 1 -1 1];
+    dom = [-1 1 -1 1];
 elseif ( (nargin > 3) && (any(strcmpi(varargin{1}, 'vectorize')) ||...
         any(strcmpi(varargin{1}, 'vectorise'))))
     vectorize = 1;
@@ -155,11 +163,11 @@ end
 fixedRank = 0;
 % If the domain isn't of length 4, search for the other 2 endpoints: For
 % instance, allow CHEBFUN2( OP, [-1 1], [-1 1]).
-if ( numel(domain) == 2 )
+if ( numel(dom) == 2 )
     if ( ( nargin > 3) && isa(varargin{1}, 'double') )
         ends = varargin{1};
         if ( numel( ends ) == 2 )
-            domain = [domain(:) ; ends(:)].';
+            dom = [dom(:) ; ends(:)].';
         else
             error('CHEBFUN:CHEBFUN2:constructor:domain1', ...
                 'Domain not fully determined.');
@@ -168,10 +176,10 @@ if ( numel(domain) == 2 )
         error('CHEBFUN:CHEBFUN2:constructor:domain2', ...
             'Domain not fully determined.');
     end
-elseif ( numel(domain) == 1 )
-    fixedRank = domain;
-    domain = [-1 1 -1 1];
-elseif ( numel(domain) ~= 4 )
+elseif ( numel(dom) == 1 )
+    fixedRank = dom;
+    dom = [-1 1 -1 1];
+elseif ( numel(dom) ~= 4 )
     error('CHEBFUN:CHEBFUN2:constructor:DOMAIN', ...
         'Domain not fully determined.');
 end
@@ -179,7 +187,7 @@ end
 % If the vectorize flag is off, do we need to give user a warning?
 if ( vectorize == 0 ) % another check
     % Check for cases: @(x,y) x*y, and @(x,y) x*y'
-    [xx, yy] = meshgrid( domain(1:2), domain(3:4));
+    [xx, yy] = meshgrid( dom(1:2), dom(3:4));
     A = op(xx, yy);
     if ( isscalar(A) )
         op = @(x,y) op(x,y) + 0*x + 0*y;
@@ -188,7 +196,7 @@ if ( vectorize == 0 ) % another check
     B = zeros(2);
     for j = 1:2
         for k = 1:2
-            B(j,k) = op(domain(j), domain(2+k));
+            B(j,k) = op(dom(j), dom(2+k));
         end
     end
     if ( any(any( abs(A - B.') > min( 1000*pseudoLevel, 1e-4 ) ) ) )
@@ -200,7 +208,7 @@ if ( vectorize == 0 ) % another check
              'Turning on the ''vectorize'' flag. Did you intend this?\n', ...
              'Use the ''vectorize'' flag in the CHEBFUN2 constructor\n', ...
              'call to avoid this warning message.']);
-        g = chebfun2(op, domain, 'vectorize', pref);
+        g = chebfun2(op, dom, 'vectorize', pref);
         return
     end
 end
@@ -212,7 +220,7 @@ while ( ~isHappy && ~failure )
     grid = minSample; 
     
     % Sample function on a Chebyshev tensor grid:
-    [xx, yy] = points2D(grid, grid, domain, pref);
+    [xx, yy] = points2D(grid, grid, dom, pref);
     vals = evaluate(op, xx, yy, vectorize);
     
     % Does the function blow up or evaluate to NaN?:
@@ -226,7 +234,7 @@ while ( ~isHappy && ~failure )
     end
     
     % Two-dimensional version of CHEBFUN's tolerance:
-    tol = grid.^(2/3) * max( max( abs(domain(:))), 1) * vscale * pseudoLevel;
+    tol = grid.^(2/3) * max( max( abs(dom(:))), 1) * vscale * pseudoLevel;
     
     %%% PHASE 1: %%%
     % Do GE with complete pivoting:
@@ -237,11 +245,11 @@ while ( ~isHappy && ~failure )
     while ( iFail && grid <= factor*(maxRank-1)+1 && strike < 3)
         % Refine sampling on tensor grid:
         grid = gridRefine( grid , pref);
-        [xx, yy] = points2D(grid, grid, domain, pref);
+        [xx, yy] = points2D(grid, grid, dom, pref);
         vals = evaluate(op, xx, yy, vectorize); % resample
         vscale = max(abs(vals(:)));
         % New tolerance:
-        tol = grid.^(2/3) * max( max( abs(domain(:))), 1) * vscale * pseudoLevel;
+        tol = grid.^(2/3) * max( max( abs(dom(:))), 1) * vscale * pseudoLevel;
         % New GE:
         [pivotValue, pivotPosition, rowValues, colValues, iFail] = CompleteACA(vals, tol, factor);
         % If the function is 0+noise then stop after three strikes.
@@ -258,11 +266,11 @@ while ( ~isHappy && ~failure )
     end
     
     % Check if the column and row slices are resolved.
-    colData.vscale = domain(3:4);
+    colData.vscale = dom(3:4);
     tech = pref.tech(); 
     colChebtech = tech.make(sum(colValues,2), colData);
     resolvedCols = happinessCheck(colChebtech,[],sum(colValues,2));
-    rowData.vscale = domain(1:2);
+    rowData.vscale = dom(1:2);
     rowChebtech = tech.make(sum(rowValues.',2), rowData);
     resolvedRows = happinessCheck(rowChebtech,[],sum(rowValues.',2));
     isHappy = resolvedRows & resolvedCols;
@@ -283,22 +291,22 @@ while ( ~isHappy && ~failure )
         if ( ~resolvedCols )
             % Double sampling along columns
             [n, nesting] = gridRefine( n , pref );
-            [xx, yy] = meshgrid(PivPos(:, 1), mypoints(n, domain(3:4), pref));
+            [xx, yy] = meshgrid(PivPos(:, 1), mypoints(n, dom(3:4), pref));
             colValues = evaluate(op, xx, yy, vectorize);
             % Find location of pivots on new grid (using nesting property).
             PP(:, 1) = nesting(PP(:, 1));
         else
-            [xx, yy] = meshgrid(PivPos(:, 1), mypoints(n, domain(3:4), pref));
+            [xx, yy] = meshgrid(PivPos(:, 1), mypoints(n, dom(3:4), pref));
             colValues = evaluate(op, xx, yy, vectorize);
         end
         if ( ~resolvedRows )
             [m, nesting] = gridRefine( m , pref ); 
-            [xx, yy] = meshgrid(mypoints(m, domain(1:2), pref), PivPos(:, 2));
+            [xx, yy] = meshgrid(mypoints(m, dom(1:2), pref), PivPos(:, 2));
             rowValues = evaluate(op, xx, yy, vectorize);
             % find location of pivots on new grid  (using nesting property).
             PP(:, 2) = nesting(PP(:, 2));
         else
-            [xx, yy] = meshgrid(mypoints(m, domain(1:2), pref), PivPos(:, 2));
+            [xx, yy] = meshgrid(mypoints(m, dom(1:2), pref), PivPos(:, 2));
             rowValues = evaluate(op, xx, yy, vectorize);
         end
         
@@ -349,10 +357,10 @@ while ( ~isHappy && ~failure )
     
     % Construct a CHEBFUN2:
     g.pivotValues = pivotValue;
-    g.cols = chebfun(colValues, domain(3:4), pref);
-    g.rows = chebfun(rowValues.', domain(1:2), pref );
+    g.cols = chebfun(colValues, dom(3:4), pref);
+    g.rows = chebfun(rowValues.', dom(1:2), pref );
     g.pivotLocations = PivPos;
-    g.domain = domain;
+    g.domain = dom;
     
     % Sample Test:
     if ( sampleTest )
