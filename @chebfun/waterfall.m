@@ -135,17 +135,6 @@ if ( ~holdState )
     hold off
 end
 
-% % TODO: Figure out what this does. (Legacy V4 code.)
-% u = reshape(uu, numel(uu), 1);
-% uMin = min(u); 
-% uMax = max(u);
-% if ( ((uMin - uMax) == 0) )
-%     zl = get(gca, 'zlim');
-%     if ( abs(diff(zl)) < 1e-6 )
-%         set(gca, 'zlim', uMin + 1e-2*[-1 1]);
-%     end
-% end
-
 % Output figure handles:
 if ( nargout > 0 )
     h = [h1 ; h2];

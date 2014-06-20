@@ -14,13 +14,6 @@ if ( ~isreal(X) )
         'REALSQRT produced complex result.');
 end
 
-% TODO: It's probably cheaper to just check the result?
-% % Check for negative X:
-% minX = min(X);
-% if ( any(minX(:) < 0) )
-%     error('CHEBFUN:CHEBFUN:realsqrt:complex', 'Realsqrt produced complex result.');
-% end
-
 % X is real positive, so call SQRT.
 R = sqrt(X);
 
