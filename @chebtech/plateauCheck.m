@@ -70,7 +70,7 @@ end
 % We omit the last 10% because aliasing can pollute them significantly.
 n90 = ceil( 0.90*n );
 absCoeff = abs( coeff(end:-1:end+1-n90,:) );  % switch to low->high ordering
-vscale = max(absCoeff,[],1)          % scaling in each column
+vscale = max(absCoeff,[],1);          % scaling in each column
 vscale = max( [vscale(:); f.vscale] );
 absCoeff = absCoeff / vscale;
 
@@ -78,17 +78,17 @@ absCoeff = absCoeff / vscale;
 
 numCol = size(coeff, 2);
 ishappy = false(1,numCol);
-epsLevel = zeros(1,numCol);
+epsLevels = zeros(1,numCol);
 cutoff = zeros(1,numCol);
 for m = 1:numCol
-    [ishappy(m), epsLevel(m), cutoff(m)] = checkColumn(absCoeff(:,m),epslevel);
+    [ishappy(m), epsLevels(m), cutoff(m)] = checkColumn(absCoeff(:,m),epsLevel);
     if ( ~ishappy(m) )
         % No need to continue if it fails on any column.
         break
     end
 end
 
-epsLevel = max(epsLevel);
+epsLevel = max(epsLevels);
 ishappy = all(ishappy); 
 
 end
@@ -165,19 +165,21 @@ else
     index = bsxfun(@plus, (0:LSWindow-1)', 1:length(smoothLAC)-LSWindow);
     LSLines = A \ smoothLAC(index);  % second row has all of the slopes
     slopes = LSLines(2,:);
+    slopes = [ nan(1,LSWindow), slopes ];
         
     % Where is the decrease most rapid?
     slopeMin = min(slopes);
     
     % Don't look at anything until all substantial decrease has ended.
-    tstart = find( slopes < 0.25*slopeMin, 1, 'last' );
+    tstart = find( slopes < 0.3*slopeMin, 1, 'last' );
     
-    % Find where the decrease has permanently slowed to 1% of the fastest.
+    % Find where the decrease has slowed to 1% of the fastest.
     isSlow = slopes(tstart:end) > 0.01*slopeMin;
     slow = tstart - 1 + find( isSlow );
     
-    % Find the first run of 8 consecutive slow hits.
-    first = find( slow(8:end) - slow(1:end-7) == 7, 1 );  % may be empty
+    % Find the first run of consecutive slow hits.
+    numHits = 6;
+    first = find( slow(numHits:end) - slow(1:end-numHits+1) == numHits-1, 1 );  % may be empty
     cutoff = slow(first);  % may be empty
     if ( isempty(cutoff) )
         cutoff = n;
@@ -192,9 +194,7 @@ end
 
 % Deduce an epslevel. 
 if ( ishappy )
-    %cutoff=n;
-
-    winEnd = min( n, cutoff + 4 );
+    winEnd = min( n, cutoff + 6 );
     epslevel = max( absCoeff(cutoff:winEnd) );
 else
     epslevel = absCoeff(n);
