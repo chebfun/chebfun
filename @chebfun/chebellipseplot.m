@@ -53,6 +53,8 @@ u = simplify(u);
 if ( isnan(ee) )
     ee = epslevel(u);
 end
+[lineStyle, pointStyle, jumpStyle, deltaStyle, args] = ...
+    chebfun.parsePlotStyle(args{:});
 
 % If k==0 (as by default), we will plot all funs.
 if ( k == 0 )
@@ -86,7 +88,7 @@ end
 holdState = ishold();
 
 % Plot the ellipses.
-h = plot(UK{:}); 
+h = plot(UK{:}, lineStyle{:}); 
 hold on
 
 % Add the legend.
@@ -96,8 +98,8 @@ end
 
 % Plot the interval (with ticks).
 dom = u.domain;
-h2 = plot(dom, 0*dom, args{:});
-set(h2, 'color', [0 0 0], 'marker', '+');
+h2 = plot(dom, 0*dom, args{:}, lineStyle{:}, pointStyle{:});
+set(h2, 'color', [0 0 0], 'marker', '+', 'LineStyle', '-');
 h = [h ; h2];
 
 if ( ~holdState )
