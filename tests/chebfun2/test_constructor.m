@@ -41,4 +41,11 @@ f = chebfun2(@(x,y) 1, 'vectorize');
 g = chebfun2(1);
 pass(8) = norm(f - g) < tol;
 
+% Test that the 2nd argument can be a preference:
+p = pref;
+p.tech = @fourtech;
+f = chebfun2(@(x,y) sin(pi*x).*cos(pi*y), p);
+g = chebfun2(@(x,y) sin(pi*x).*cos(pi*y), [-1 1 -1 1], p);
+pass(9) = norm(f - g) < tol;
+
 end

@@ -78,6 +78,7 @@ classdef chebfun2
     %% HIDDEN METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false, Hidden = true )
+        
         % Check to see if domains are equal.
         out = domainCheck(f, g)
         
@@ -101,6 +102,9 @@ classdef chebfun2
     %% PRIVATE METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = private, Static = false )
+        
+        % The main bulk of the CHEBFUN2 constructor:
+        g = constructor(g, op, dom, varargin);
         
     end
             

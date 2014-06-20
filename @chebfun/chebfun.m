@@ -482,9 +482,6 @@ classdef chebfun
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
         
-        % Main constructor.
-        [funs, ends] = constructor(op, domain, data, pref);
-
         % Interpolate data:
         f = interp1(x, y, method, dom);
 
@@ -534,6 +531,9 @@ classdef chebfun
     %% PRIVATE STATIC METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = private, Static = true )
+        
+        % Main constructor.
+        [funs, ends] = constructor(op, domain, data, pref);
         
         % Convert ODE solutions into CHEBFUN objects:
         [y, t] = odesol(sol, opt);
