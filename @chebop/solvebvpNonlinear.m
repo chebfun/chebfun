@@ -129,6 +129,9 @@ while ( ~terminate )
         % Is the damping strategy telling us to give up?
         giveUp = dampingInfo.giveUp;
         
+        % Did we converge within the damped phase?
+        success = dampingInfo.success;
+        
     else % We are in undamped phase
         
         % Update lambda so that we will print correct information in the
