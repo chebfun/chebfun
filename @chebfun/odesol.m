@@ -31,7 +31,7 @@ end
 
 %% Find relative tolerances used in computations.
 % Start with odeset default values:
-relTol = 1e-3*ones(numCols, 1);         % Relative
+relTol = 1e-6*ones(numCols, 1);         % Relative
 absTol = 1e-6*ones(numCols, 1);         % Absolute
 % Update if user used different tolerances:
 if ( ~isempty(opt) )
