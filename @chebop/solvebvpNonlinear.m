@@ -74,6 +74,7 @@ dampingInfo.newtonCounter = newtonCounter;
 dampingInfo.deltaBar =      [];
 dampingInfo.damping =       damping;
 dampingInfo.x =             x;
+dampingInfo.giveUp =        0;
 
 linpref = pref;
 linpref.errTol = pref.errTol/10;
@@ -201,7 +202,7 @@ while ( ~terminate )
     end
     
     % Should we stop the Newton iteration?
-    if ( success || maxIterExceeded || giveUp || stopReq )
+    if ( success || maxIterExceeded || ( giveUp == 1) || stopReq )
         break
     end
     

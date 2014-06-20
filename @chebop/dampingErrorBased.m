@@ -53,6 +53,7 @@ normDeltaBar =  dampingInfo.normDeltaBar;
 normDeltaOld =  dampingInfo.normDeltaOld;
 deltaBar =      dampingInfo.deltaBar;
 x =             dampingInfo.x;
+giveUp =        dampingInfo.giveUp;
 
 % Determine how many arguments N.op expects, so that we know whether we need to
 % pass x or not:
@@ -93,7 +94,7 @@ while ( ~accept )
         normDeltaOld = normDelta;
         initPrediction = 1;
         lambda = 1;
-        giveUp = 1;
+        giveUp = giveUp + 1/2;
         cFactor = NaN;
         continue
     end
