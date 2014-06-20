@@ -107,6 +107,11 @@ pass(40) = doesNotCrash(@() surfc(fqr1));
 pass(41) = doesNotCrash(@() mesh(far1));
 pass(42) = doesNotCrash(@() mesh(fqr1));
 
+% Test abbreviated plot styles.
+pass(43) = doesNotCrash(@() plot(fsr1, 'linew', 15));
+pass(44) = doesNotCrash(@() plot(fsr1, 'lines', '--'));
+pass(45) = doesNotCrash(@() plot(fsr1, 'markers', 10));
+
 close(hfig);
 
 end
@@ -116,7 +121,7 @@ function pass = doesNotCrash(fn)
 try
     fn();
     pass = true;
-catch ME;
+catch ME %#ok<NASGU>
     pass = false;
 end
 
