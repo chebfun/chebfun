@@ -37,7 +37,5 @@ tol = pref.errTol;
 pass(1) = norm(N(u1)) < tol;
 pass(2) = norm(N(u2)) < tol;
 pass(3) = norm(N(u3)) < tol;
-pass(4) = ( (norm(u1 - u2) ~= 0) && (norm(u2 - u3) ~= 0) && ...
-    (norm(u1 - u3) ~= 0));
 
 end

@@ -29,12 +29,15 @@ k = 1; % Look at all remaining arguments.
 while ( k < numel(varargin) )
     vk = varargin{k};
 
-    if ( any(strcmpi(vk, lineOpts)) )
+    % Using strncmp() here is technically incorrect, but it's easier than
+    % writing the code to properly do the name matching, and it's highly
+    % unlikely that it will ever actually cause us any problems.
+    if ( any(strncmpi(vk, lineOpts, 5)) )
         % Line option:
         lineStyle = [lineStyle, vk, varargin{k+1}]; 
         varargin(k:k+1) = [];
         
-    elseif ( any(strcmpi(vk, pointOpts)) )
+    elseif ( any(strncmpi(vk, pointOpts, 6)) )
         % Point option:
         pointStyle = [pointStyle, vk, varargin{k+1}];
         varargin(k:k+1) = [];

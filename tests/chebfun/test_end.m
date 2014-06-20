@@ -42,12 +42,14 @@ pass(7) = isnumeric(out) && all(size(out) == [1, 3]) && ...
 
 out = f(:, end);
 x = chebfun(@(x) x);
-pass(8) = normest(out - x);
+err = normest(out - x);
+pass(8) = err < epslevel(f);
 
 % Transpose:
 g = f.';
 out = g(end, :);
-pass(9) = normest(out - x.');
+err = normest(out - x.');
+pass(9) = err < epslevel(f);
 
 out = g(:, end);
 pass(10) = isnumeric(out) && all(size(out) == [3, 1]) && ... 

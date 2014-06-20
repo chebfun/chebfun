@@ -44,7 +44,5 @@ err(3) = norm(N(u3));
 
 tol = 1e-9;
 pass = err < tol;
-pass(4) = ( (norm(u1 - u2) ~= 0) && (norm(u2 - u3) ~= 0) && ...
-    (norm(u1 - u3) ~= 0));
 
 end

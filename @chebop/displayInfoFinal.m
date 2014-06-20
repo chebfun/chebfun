@@ -37,7 +37,7 @@ if ( strcmp(display,'iter') || strcmp(display,'final') )
     
     % How many steps did we need
     if ( iterNo == 1 )
-        fprintf('Newton''s method converged in 1 iteration\n');
+        fprintf('Newton''s method converged in 1 iteration.\n');
     else
         fprintf('Newton''s method converged in %i iterations.\n', iterNo);
     end

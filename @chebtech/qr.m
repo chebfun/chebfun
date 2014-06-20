@@ -66,9 +66,8 @@ if ( size(f, 2) == 1 )
     return
 end
 
-% TODO: This should probably be put back in if possible? NH Apr 2014
 % Simplify so that we don't do any extra work: (QR is O(m*n^2)? :/ )
-% f = simplify(f);
+f = simplify(f);
 
 % Decide which algorithm to use:
 if ( strcmpi(methodFlag, 'householder') )
