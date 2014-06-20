@@ -21,28 +21,28 @@ function G = quasimatrix(F, varargin)
 %
 %   Q: So why bother with arrays of CHEBFUN objects (i.e., quasimatrices)?
 %   A: It's not always convenient to store things in the array-valued format,
-%      and sometimes it not even  impossible. Currently the classes that handle
-%      singularaties and delta functions are not vectorized, and the support for
+%      and sometimes it is not even possible. Currently the classes that handle
+%      singularities and delta functions are not vectorized, and the support for
 %      multiple columns must come at the CHEBFUN level. (This situation is not
-%      ideal and we hope to rectify it in future releases..)
+%      ideal and we hope to rectify it in a future release.)
 %
 %   Q: What's the difference in how the two are used?
 %   A: We've tried very hard to make user interaction with quasimatrices and
 %      array-valued CHEBFUNs be as similar as possible. If you run the examples
-%      below, you'll see, for instance, that the display of both is identical.
-%      The easiest way to check if a CHEBFUN F, is a quasimatrix is via
-%      ISQUASI(F). The size SIZE(F) of a quasimatrix and its equivalent
-%      array-valued CHEBFUN will always be the same, but a quasimatrix will
-%      always have NUMEL(F) > 1. You can check the number of columns (or rows,
-%      if transposed) for both a quasimatrix and an array-valued CHEBFUN with
-%      NUMCOLUMNS(F).
+%      below, you'll see, for instance, that both produce identical output
+%      when displayed.  The easiest way to check if a CHEBFUN F, is a
+%      quasimatrix is via ISQUASI(F). The size SIZE(F) of a quasimatrix and its
+%      equivalent array-valued CHEBFUN will always be the same, but a
+%      quasimatrix will always have NUMEL(F) > 1. You can check the number of
+%      columns (or rows, if transposed) for both a quasimatrix and an
+%      array-valued CHEBFUN with NUMCOLUMNS(F).
 %
 %   Q: Why do some methods support array-valued CHEBFUNS but not quasimatrices?
 %   A: Partly because there are some operations that only make sense for the
 %      array-valued representation, and partly because we haven't gotten around
 %      to doing all the quasimatrix stuff yet. (Sorry!)
 %
-%   Q: How do I convert between the two represenations?
+%   Q: How do I convert between the two representations?
 %   A: You can use the CHEB2QUASI(F) or QUASI2CHEB(F) methods.
 %
 % Examples:
