@@ -58,14 +58,7 @@ elseif ( isa(op, 'chebtech') )
         error('CHEBFUN:CHEBTECH:compose:arrval', ...
               'Cannot compose two array-valued CHEBTECH objects.')
     end
-    
-    % TODO: Do we need this? Removed by NH Apr 2014.
-%     values = f.coeffs2vals(f.coeffs);
-%     if ( norm(values(:), inf) > 1 )
-%         error('CHEBFUN:CHEBTECH:compose:range', ...
-%               'The range of f is not contained in the domain of g.')
-%     end
-    
+
     % If OP is a CHEBTECH, we grab some of its data:
     pref.minSamples = max(pref.minSamples, length(op));
     pref.eps = max(pref.eps, op.epslevel);
@@ -86,12 +79,5 @@ if ( ~isfield(data, 'hscale') || isempty(data.hscale) )
     data.hscale = f.hscale;
 end
 f = f.make(op, data, pref);
-
-% % Throw a warning: (Removed by NH Apr 2014. See #282)
-% if ( ~f.ishappy )
-%     warning('CHEBFUN:CHEBTECH:compose:convfail', ...
-%         [ 'Composition with ', func2str(op), ...
-%           ' failed to converge with ', int2str(length(f)), ' points.' ]);
-% end
 
 end
