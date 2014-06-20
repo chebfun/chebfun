@@ -10,7 +10,10 @@ function update(varargin)
 %   http://chebfun.github.io/develop/ for details.
 %
 %   CHEBFUN.UPDATE(..., '--backup') makes a backup .zip file of the
-%   $chebfunroot/ folder before removing and replacing it.
+%   $chebfunroot/ folder before removing and replacing it.  The backup will be
+%   placed in the directory in which CHEBFUN.UPDATE was executed and has a name
+%   of the form "chebfun_backup_yyyymmddHHMMSS.zip", where "yyyymmddHHMMSS" is
+%   the current date and time.
 %
 %   CHEBFUN.UPDATE(..., '--force') skips the warning dialogues before updating.
 %
@@ -93,6 +96,25 @@ if ( ~force )
             end
         end
     end
+
+    % Prompt for backup if the --backup flag was not passed.
+    if ( ~backup )
+        fprintf(2, ['Would you like to create a backup of your Chebfun ' ...
+            'installation first?\n']);
+        fprintf(2, ['If so, the backup will be placed in ' startDir '.\n']);
+        yesno = '';
+        while ( ~any(strcmp(yesno, {'yes', 'no'}))  )
+            fprintf(2, 'Create a backup (yes / no)? ');
+            yesno = input('', 's');
+            if ( strcmpi(yesno, 'yes') )
+                backup = true;
+                break
+            elseif ( strcmpi(yesno, 'no') )
+                backup = false;
+                break
+            end
+        end
+    end
     
 end
 
@@ -102,9 +124,21 @@ try % Wrap everything in a try-catch statement to avoid a disaster.
         
     dstr = datestr(now, 'yyyymmddHHMMSS');
     if ( backup ) %#ok<*UNRCH>
+
+        % We don't want to create a backup in any subdirectory of $chebfunroot.
+        % (NB:  This check can probably be fooled by symlinks, but it ought to
+        % be good enough for 90% of the cases.)
+        if ( ~isempty(strfind(startDir, installDir)) )
+            error('CHEBFUN:CHEBFUN:update:cannotBackup', ...
+                ['Cannot create backup inside Chebfun install root.\n' ...
+                 'Please change to a directory not inside the Chebfun ' ...
+                 'install root and try again.']);
+        end
+
         % Make a back up, so that we can recover things if needs be.
         filename = ['chebfun_backup_', dstr, '.zip']; 
-        fprintf('Saving backup .zip to %s/ ...\n', fullfile(startDir, filename));
+        fprintf('Saving backup .zip to %s/ ...\n', ...
+            fullfile(startDir, filename));
         warnState = warning('off', 'MATLAB:zip:archiveName');
         zip(filename, '*', pwd);
         warning(warnState);
@@ -153,7 +187,7 @@ try % Wrap everything in a try-catch statement to avoid a disaster.
     disp('Saving path ...')
     addpath(installDir)
     if ( savepath() )
-        warning('CHEBFUN:TRUNKDIR:updateChebfun:savepath', ...
+        warning('CHEBFUN:CHEBFUN:update:savepath', ...
             'Unable to save path. Check with with your local sysadmin.');
     end
     
@@ -167,21 +201,13 @@ try % Wrap everything in a try-catch statement to avoid a disaster.
     
     % Display outgoing info:
     disp('Installation complete!')
-    
-%     % Suggest they run CHEBTEST():
-%     if ( usejava('jvm') && usejava('desktop') )
-%         str = '<a href="matlab: chebtest">chebtest</a>';
-%     else
-%         str = 'chebtest';
-%     end
-%     disp(['We recommend you run ' str ' to ensure everything is working.'])
-    
+
 catch ME
        
-    Return to the starting directory:
+    % Return to the starting directory:
     cd(startDir)
     
-    Something went wrong. Throw an error:
+    % Something went wrong. Throw an error:
     disp('Update failed.');
     rethrow(ME)
     
