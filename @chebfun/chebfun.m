@@ -454,6 +454,9 @@ classdef chebfun
         % Get roots of a CHEBFUN and polish for use as breakpoints.        
         [rBreaks, rAll] = getRootsForBreaks(f, tol)
         
+        % Returns true if numel(f) > 1
+        out = isQuasi(f)
+        
         % Number of columns (or rows) of a CHEBFUN quasimatrix.
         out = numColumns(f)
         
