@@ -17,8 +17,6 @@ function f = join(varargin)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% [TODO]:  Deal with functions on unbounded intervals. (Requires UNBNDFUN.)
-
 % Trivial cases:
 if ( nargin == 0 )
     f = chebfun();
