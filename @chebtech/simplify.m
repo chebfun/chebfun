@@ -52,7 +52,6 @@ if ( firstNonZeroRow > 0 )
 end
 
 % Update values and epslevel:
-f.vscale = getvscl(f);
 f.epslevel = max(f.epslevel, tol);
 
 end
