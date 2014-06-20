@@ -1,8 +1,8 @@
 function varargout = cheb2logo
-%CHEB2LOGO   The unofficial Chebfun2 logot.
-%   CHEBLOGO() plots the Chebfun logo.
+%CHEB2LOGO   The unofficial Chebfun2 logo.
+%   CHEB2LOGO() plots the Chebfun2 logo.
 %
-%   H = CHEB2LOGO; returns a figure handle to the logo.
+%   H = CHEB2LOGO() returns a figure handle to the logo.
 %
 % See also CHEBLOGO.
 
@@ -65,7 +65,6 @@ set(gca, 'pos', [0 0 1 1]);
 
 hold on
 C = [0.2 0.2 1];
-C = [0 0 1];
 lw = 3;
 
 plot3(0*xx, -xx, f(xx), LW, lw, 'Color', C)
@@ -93,12 +92,15 @@ set(gcf, 'Units', 'pixels');
 scrpos = get(gcf, 'Position');
 
 newpos = scrpos/100;
-set(gcf,'PaperUnits','inches', 'PaperPosition',newpos);
-print -dpng andbeyond_white
+set(gcf, 'PaperUnits', 'inches', 'PaperPosition', newpos);
+% print -dpng andbeyond_white
 drawnow
 
 set(gcf, 'Units', oldscreenunits, 'PaperUnits', oldpaperunits, ...
     'PaperPosition', oldpaperpos)
+
+set(gcf, 'unit', 'cent', 'menuBar', 'none', ...
+    'name', 'Chebfun2 logo', 'numbertitle', 'off', 'color', 'w')
 
 if ( nargout == 1 )
     varargout = {h};
