@@ -59,8 +59,6 @@ function varargout = chebtest(varargin)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% [TODO]: Preferences.
-
 % Find directory in which Chebfun was installed:
 installDir = chebfunroot();
 
