@@ -38,19 +38,44 @@ end
 % Determine number of intervals.
 numInts = numel(s) - 1;
 
-% Simply make a new fourtech object on the restricted domains.  
-% This handled by the linear scaling of the input arguments to f.
-F = cell(numInts,1);
-for j=1:numInts
-    op = @(x) feval(f,.5*[1 - x, 1 + x] * [s(j) ; s(j+1)]);
-    data.vscale = f.vscale;
-    data.hscale = f.hscale;
-    F{j} = f.make(op, data, f.techPref());
+if ( numInts > 1 )
+    error('CHEBFUN:FOURTECH:restrict:multIntervals', ...
+        'Cannot restrict a FOURTECH to multiple intervals.');
 end
 
-if ( numInts == 1 )
-    % Remove f from the cell.
-    F = F{1};
+op = @(x) feval(f, .5 * [1 - x, 1 + x] * [s(1) ; s(end)]);
+data.vscale = f.vscale;
+data.hscale = f.hscale;
+pref = f.techPref;
+pref.maxLength = 2*length(f);
+pref.minSamples = min(length(f), pref.minSamples);
+F = f.make(op, data, pref);
+
+if ( f.ishappy && ~F.ishappy )
+    error('CHEBFUN:FOURTECH:restrict:notPeriodic', ...
+        'Restrict failed. Perhaps f is not perioidic in [s(1), s(2)]?');
 end
+  
+% TODO: The code below produces a CHEBTECH on the subdomains. Should we do this?
+% % Simply make a new chebtech object on the restricted domains.  
+% % This handled by the linear scaling of the input arguments to f.
+% F = cell(numInts, 1);
+% for j = 1:numInts
+%     op = @(x) feval(f,.5*[1 - x, 1 + x] * [s(j) ; s(j+1)]);
+%     data.vscale = f.vscale;
+%     data.hscale = f.hscale;
+%     F{j} = f.make(op, data, f.chebtech());
+% end
+% 
+% if ( numInts == 1 )
+%     % Remove f from the cell.
+%     F = F{1};
+% end
 
 end
+
+%RESTRICT   Restrict a FOURTECH to a subinterval.
+%   Since restrictions of F will, in general, not be perioidic, RESTRICT(F, S)
+%   throws an error unless S = F.domain or ISEMPTY(F). 
+%
+%   In future, this behaviour might change.

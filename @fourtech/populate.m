@@ -90,7 +90,7 @@ if any(isnan(rndval)) || any(isinf(rndval))
 end
 
 f.isReal = false(size(rndval));
-for k=1:numel(rndval)
+for k = 1:numel(rndval)
     f.isReal(k) = isreal(rndval(k));
 end
 
@@ -116,7 +116,8 @@ while ( 1 )
     % Check for happiness:
     f.coeffs = coeffs;
     f.vscale = vscale;
-    [ishappy, epslevel, cutoff] = happinessCheck(f, op, pref); 
+    [ishappy, epslevel, cutoff] = happinessCheck(f, op, pref);
+    
         
     % We're happy! :)
     if ( ishappy ) 
