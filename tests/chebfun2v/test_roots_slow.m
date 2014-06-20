@@ -1,4 +1,4 @@
-function pass = test_roots2c( pref )
+function pass = test_roots_slow( pref )
 % Check that the marching squares and Bezoutian agree with each other. 
 %%
 
