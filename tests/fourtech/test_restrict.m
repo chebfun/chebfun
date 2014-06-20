@@ -54,18 +54,30 @@ pass(8) = test_spotcheck_restrict(testclass, ...
 %%
 % Check multiple subinterval restriction.
 f = testclass.make(@(x) sin(4*pi*x), [], pref);
-g = restrict(f, [-1 -0.5 0 0.5]);
+try
+    g = restrict(f, [-1 -0.5 0 0.5]);
+    pass(9) = false;
+catch ME
+    if ( strcmp(ME.identifier, 'CHEBFUN:FOURTECH:restrict:multIntervals') )
+        pass(9) = true;
+    else
+        rethrow(ME)
+    end
+end
 h1 = restrict(f, [-1 -0.5]);
 h2 = restrict(f, [0 0.5]);
+g = testclass.make(@(x) -sin(pi*x), [], pref);
 x = linspace(-1, 1, 100).';
-err1 = feval(g{1} - h1, x);
-err2 = feval(g{3} - h2, x);
-pass(9) = all(err1(:) == 0) && all(err2(:) == 0);
+err1 = norm(feval(g - h1, x), inf);
+err2 = norm(feval(g - h2, x), inf);
+plot(h1); hold on
+plot(g, 'r'); hold off
+pass(9) = err1 + err2 < f.epslevel;
 
-%%
-% Check operation for array-valued functions.
-pass(10) = test_spotcheck_restrict(testclass, ...
-    @(x) [sin(2*pi*x) cos(4*pi*x) exp(cos(2*pi*x))], [-0.5 0.5], pref);
+% %%
+% % Check operation for array-valued functions.
+% pass(10) = test_spotcheck_restrict(testclass, ...
+%     @(x) [sin(2*pi*x) cos(4*pi*x) exp(cos(2*pi*x))], [-0.5 0.5], pref);
 
 end
 
