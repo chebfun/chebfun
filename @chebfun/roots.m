@@ -114,7 +114,7 @@ for k = 1:numFuns
         
     %% Look for roots at next breakpoint:
     index = false(1, numCols);
-    if ( rootsPref.impRoot )    
+    if ( rootsPref.breakRoot )
         index = abs(f.pointValues(k+1,:)) < vtol; % Include if zero pointValues
     end
     if ( rootsPref.jumpRoot && k < numFuns )     % Or a change in sign in a jump
@@ -144,7 +144,7 @@ function rootsPref = parseInputs(f, varargin)
 
 % Defaults:
 rootsPref = struct('all', 0, 'recurse', 1, 'prune', 0,  'zeroFun', 1, ...
-    'jumpRoot', 1, 'impRoot', 1, 'qz', 0, 'filter', []);
+    'jumpRoot', 1, 'breakRoot', 1, 'qz', 0, 'filter', []);
 
 if ( ~isreal(f) )
     % 'jumpRoots' only makes sense for real-valued functions, so disable it:
@@ -173,10 +173,20 @@ for k = 1:numel(varargin)
             rootsPref.jumpRoot = 1;
         case 'nojump'
             rootsPref.jumpRoot = 0;
-        case 'imps'
-            rootsPref.impRoot = 1;
-        case 'noimps'
-            rootsPref.impRoot = 0;  
+        case 'breaks'
+            rootsPref.breakRoot = 1;
+        case 'nobreaks'
+            rootsPref.breakRoot = 0;
+        case 'imps'   % Deprecated synonym for "breaks".
+            rootsPref.breakRoot = 1;
+            warning('CHEBFUN:CHEBFUN:roots:parseInputs:imps', ...
+                ['''noimps'' option to ROOTS is deprecated.  Use ' ...
+                 '''breaks'' instead.']);
+        case 'noimps' % Deprecated synonym for "nobreaks".
+            warning('CHEBFUN:CHEBFUN:roots:parseInputs:noimps', ...
+                ['''noimps'' option to ROOTS is deprecated.  Use ' ...
+                 '''nobreaks'' instead.']);
+            rootsPref.breakRoot = 0;
         case 'qz'
             rootsPref.qz = 1; 
         case {'recursion', 'recurse'}
