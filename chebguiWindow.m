@@ -92,7 +92,7 @@ chebguiController.initalizeFields(handles);
 handles.output = hObject;
 
 % Initialise figures:
-chebgui.initialiseFigures(handles)
+chebguiController.initialiseFigures(handles)
 
 % Variable that determines whether a solution is available
 handles.hasSolution = 0;

@@ -36,6 +36,33 @@ classdef chebguiController
         
         % Clear everything in the CHEBGUI window
         handles = clear(handles)
+
+        function initialiseFigureBottom(handles)
+            %INITIALISEFIGUREBOTTOM    Reset bottom figure of CHEBGUI.
+
+            cla(handles.fig_norm, 'reset');
+            axes(handles.fig_norm)
+            box on
+        end
+        
+        function initialiseFigureTop(handles)
+            %INITIALISEFIGURETOP    Reset top figure of CHEBGUI.
+
+            cla(handles.fig_sol, 'reset');
+            axes(handles.fig_sol)
+            title('Solution')
+            box on
+
+        end
+
+        function initialiseFigures(handles)
+            %INITIALISEFIGURES    Reset top and bottom figures of CHEBGUI.
+            
+            chebguiController.initialiseFigureBottom(handles);
+            chebguiController.initialiseFigureTop(handles);
+        end
+
+        
         
         % Initialize fonts of the CHEBGUI window
         handles = initalizeFields(handles)

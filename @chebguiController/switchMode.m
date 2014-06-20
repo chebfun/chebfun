@@ -70,10 +70,12 @@ if ( strcmp(newMode, 'bvp') ) % Going into BVP mode
     set(handles.menu_pdefix, 'Enable', 'Off')
     set(handles.menu_fixN, 'Enable', 'Off')
     
-    % Clear the figures
+    % Clear the top figure
     if ( ~strcmp(callMode, 'demo') )
-        chebgui.initialiseFigures(handles)
+        chebguiController.initialiseFigureTop(handles)
     end
+    % Always clear the bottom figure
+    chebguiController.initialiseFigureBottom(handles)
     
     % Make the discretization panel visible
     set(handles.panel_discretization, 'Visible', 'on')
@@ -128,10 +130,12 @@ elseif ( strcmp(newMode, 'pde') ) % Going into PDE mode
     set(handles.menu_pdefix, 'Enable', 'On')
     set(handles.menu_fixN, 'Enable', 'On')
     
-    % Clear the figures
+    % Clear the top figure
     if ( ~strcmp(callMode, 'demo') )
-        chebgui.initialiseFigures(handles)
+        chebguiController.initialiseFigureTop(handles)
     end
+    % Always clear the bottom figure
+    chebguiController.initialiseFigureBottom(handles)
     
     % Hide the discretization panel
     set(handles.panel_discretization, 'Visible', 'off')
@@ -220,10 +224,13 @@ else % Going into EIG mode
     % Make the discretization panel visible
     set(handles.panel_discretization, 'Visible', 'on')
     
-    % Clear the figures
+    % Clear the top figure
     if ( ~strcmp(callMode, 'demo') )
-        chebgui.initialiseFigures(handles)
+        chebguiController.initialiseFigureTop(handles)
     end
+    % Always clear the bottom figure
+    chebguiController.initialiseFigureBottom(handles)
+    
     
 end
 
