@@ -430,6 +430,9 @@ classdef chebfun
         % Assign columns (or rows) of an array-valued CHEBFUN.
         f = assignColumns(f, colIdx, g)
         
+        % Deprecated function.
+        f = define(f,s,v);
+        
         % Supply a new definition for a CHEBFUN on a subinterval.
         f = defineInterval(f, subInt, g)
         
@@ -448,6 +451,9 @@ classdef chebfun
         % Extract columns of an array-valued CHEBFUN object.
         f = extractColumns(f, columnIndex);
         
+        % Deprecated function.
+        varargin = fzero(varargout);
+        
         % Get Delta functions within a CHEBFUN.
         [deltaMag, deltLoc] = getDeltaFunctions(f);
         
@@ -459,6 +465,9 @@ classdef chebfun
         
         % Obtain data used for plotting a CHEBFUN object:
         data = plotData(f, g, h)
+        
+        % Deprecated function.
+        varargin = quad(varargout);
         
         % Set pointValues property:
         f = setPointValues(f, j, k, vals)

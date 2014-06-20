@@ -83,3 +83,16 @@ u = N \ 0;
 pass(4) = ( norm(uu(:,end) - u(:,1).') < tol );
 
 end
+
+% % Heat equation 
+% N = chebop2(@(u) diff(u,1,1) - .1*diff(u,2,2), [-4 4 0 6]); 
+% N.dbc = chebfun(@(x) sin(pi*x/4) + sin(pi*3*x/4) + sin(pi*12*x/4), [-4,4]); 
+% N.lbc = 0; 
+% N.rbc = 0; 
+% u = N \ 0; 
+% 
+% for t = [0:.001:.2]
+%    plot(u(:,t)), hold on, shg
+%    axis([-4 4 -3 3]), pause(.01)
+%    hold off
+% end
