@@ -8,7 +8,7 @@ tol = 100*prefs.techPrefs.eps;
 
 % This is the first test so remove the warning: 
 state = warning; 
-warning('off','CHEBOP2:EXPERIMENTAL');
+warning('off','CHEBFUN:CHEBOP2:chebop2:experimental');
 
 d = [-5 1 0 .1];
 N = chebop2(@(u) diffy(u) + diffx(u,3),d);

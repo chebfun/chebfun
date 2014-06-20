@@ -22,12 +22,12 @@ function u = solvepde(N, f, varargin)
 % publicly advertised.  
         
 % Copyright 2014 by The University of Oxford and The Chebfun2 Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Try and make a CHEBFUN2 out of right hand side.
 if isa(f, 'chebfun')
     f = @(x,y) f(x) + 0*y;
-    warning('Chebop2:mldivide:rhs','Univariate righthand side.');
+    warning('CHEBFUN:CHEBOP2:solvepde:rhs', 'Univariate righthand side.');
 end
 if isa(f, 'double')
     f = @(x,y) f + 0*x;
@@ -86,12 +86,13 @@ elseif ( nargin == 2 || ( nargin == 4 && isinf(varargin{2}) && isinf(varargin{1}
     adaptive_x = 1;
     adaptive_y = 1;
 else
-    error('CHEBOP2:MLDIVIDE:SYNTAX', 'Unrecognized input syntax.')
+    error('CHEBFUN:CHEBOP2:solvepde:syntax', 'Unrecognized input syntax.')
 end
 
 % Check if the discreizations make sense: 
 if ( abs(round(n) - n) > 0 || abs(round(m) - m) > 0)
-    error('CHEBOP2:MLDIVIDE:DISC', 'Discretization size should be an integer.');
+    error('CHEBFUN:CHEBOP2:solvepde:discSize', ...
+        'Discretization size should be an integer.');
 end
 
 % Adaptive solver.
@@ -127,14 +128,14 @@ while ( ( ~Resolved ) && ( m < maxDiscretise_y ) &&...
     
     % Check we do not have NANs/INFs:
     if ( any( isnan(X(:)) | isinf(X(:)) ) )
-        error('CHEBOP2:MLDIVIDE:NANINF', 'Nonunique solution to PDE.')
+        error('CHEBFUN:CHEBOP2:solvepde:nanInf', 'Nonunique solution to PDE.')
     end
     
 end
 
 % Did we stop without resolving:
 if ( ( m >= maxDiscretise_y ) || ( n >= maxDiscretise_x ) )
-    warning('CHEBOP2:MAXDISC',...
+    warning('CHEBFUN:CHEBOP2:solvepde:maxDisc', ...
         'Maximum discretization reached. Solution may not be accurate.')
 end
 

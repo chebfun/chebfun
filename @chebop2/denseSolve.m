@@ -12,7 +12,7 @@ function X = denseSolve(N, f, m, n)
 % publicly advertised. 
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Construct discretisation for PDE:
 [CC, RHS, bb, gg, Px, Py, xsplit, ysplit] =...
@@ -69,7 +69,7 @@ elseif ( size(CC, 1) == 2 )
 
     % Quick check that nothing was singular: 
     if ( any( isnan(X(:)) | isinf(X(:)) ) )
-        error('CHEBOP2:MLDIVIDE:NANINF', 'Nonunique solution to PDE.')
+        error('CHEBFUN:CHEBOP2:denseSolve:nanInf', 'Nonunique solution to PDE.')
     end
     
 % Rank-k > 2 PDE operator.
@@ -78,7 +78,8 @@ else
     % Make massive mn by mn matrix.
     sz = size(CC{1,1}, 1) * size(CC{2,1}, 2);
     if sz > 60^2
-        error('CHEBOP2:MLDIVIDE','Solution was unresolved on a 60 by 60 grid.');
+        error('CHEBFUN:CHEBOP2:denseSolve:unresolved1', ...
+            'Solution was unresolved on a 60 by 60 grid.');
     end
     
     % Form the massive mn by mn matrix.
@@ -95,7 +96,8 @@ else
     
     % Avoid filling the memory: 
     if ( max(size(X)) > 4000 )
-        error('CHEBOP2:DENSESOLVE:SIZE', 'Unresolved for n > 4000.');
+        error('CHEBFUN:CHEBOP2:denseSolve:unresolved2', ...
+            'Unresolved for n > 4000.');
     end
     
     % Unvectorize.

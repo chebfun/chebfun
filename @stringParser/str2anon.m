@@ -36,7 +36,7 @@ function varargout = str2anon(str, problemType, fieldType)
 %                    e.g., 'u(-1) = 0, u(1) = 1'. Equal to 0 otherwise.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.chebfun.org/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin < 3 )
     fieldType = [];

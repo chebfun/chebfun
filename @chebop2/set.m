@@ -20,7 +20,7 @@ function N = set(N, varargin)
 %   differential operator. 
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check.
 if ( isempty(N) ) 
@@ -58,7 +58,8 @@ while ( length(propertyArgIn) >= 2 )
             if isa(val, 'function_handle')
                 % Do nothing.
             else
-                error('CHEBOP2:set:opType', 'Operator must be a function handle.')
+                error('CHEBFUN:CHEBOP2:set:opType', ...
+                    'Operator must be a function handle.')
             end
             N.op = val;
         case 'xorder'
@@ -72,7 +73,8 @@ while ( length(propertyArgIn) >= 2 )
         case 'V'
             N.V = val;
         otherwise
-            error('CHEBOP2:set:unknownprop','Unknown chebop2 property.')
+            error('CHEBFUN:CHEBOP2:set:unknownProp', ...
+                'Unknown CHEBOP2 property.')
     end
     
 end

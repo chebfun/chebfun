@@ -16,7 +16,7 @@ function [bcrow, bcvalue] = constructBC(bcArg, bcpos, een, bcn, dom, scl, order)
 %   (satisfying bcrow * X = bcvalue, or X * bcrow' = bcvalue').
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( isa(bcArg, 'chebfun') )
     % Dirichlet conditions are sorted out here: 
@@ -127,10 +127,12 @@ elseif ( isa(bcArg, 'char') )
            bcrow(:,jj) = chebValues(jj-1, bcn, 1) - chebValues(jj-1, bcn, -1);
         end
     else
-        error('CHEBOP2:constructBC:word','Unrecognised boundary condition string.');
+        error('CHEBFUN:CHEBOP2:constructBC:word', ...
+            'Unrecognised boundary condition string.');
     end
 else
-    error('CHEBOP2:constructBC:type','Unrecognised boundary condition syntax.');
+    error('CHEBFUN:CHEBOP2:constructBC:type', ...
+        'Unrecognised boundary condition syntax.');
 end
 
 end

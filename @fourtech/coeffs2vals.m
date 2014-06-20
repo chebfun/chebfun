@@ -17,7 +17,7 @@ function values = coeffs2vals(coeffs)
 % See also VALS2COEFFS, FOURPTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.chebfun.org/for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Get the length of the input:
 n = size(coeffs, 1);

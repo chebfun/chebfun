@@ -45,6 +45,15 @@ try
     g = chebfun(@(x) [exp(-x.^2) exp(-x.^2)], [0, inf], pref);
     pass(8) = normest(f - g) < 1e-10;
     
+    % Tests from #937
+    f = chebfun(@(x)[sin(x) 1], pref);
+    g = chebfun(@(x) [sin(x) 1+0*x], pref);
+    pass(9) = norm(f - g) == 0;
+    
+    f = chebfun(@(x)[1 1], pref);
+    g = chebfun([1 1], pref);
+    pass(10) = norm(f - g) == 0;
+    
     warning(warnState);
     
 catch ME

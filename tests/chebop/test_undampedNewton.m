@@ -9,7 +9,7 @@ if ( nargin == 0 )
 end
 
 % Turn off damping
-pref.damped = 0;
+pref.damping = 0;
 
 %% Setup and solve
 dom = [0, 10];
@@ -21,3 +21,5 @@ u = solvebvp(N, f, pref);
 % Happy?
 err = norm(N(u) - f);
 pass = ( err < 1e-8 );
+
+% end

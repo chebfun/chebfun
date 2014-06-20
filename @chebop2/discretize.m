@@ -41,7 +41,7 @@ function [CC, rhs, bb, gg, Px, Py, xsplit, ysplit] = discretize(N, f, m, n, flag
 % elminated boundary conditions, gg eliminated boundary rows.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Parse inputs.
 if nargin < 5
@@ -266,7 +266,7 @@ end
 %
 % if allbc >= 100*sqrt(tol)
 %     s = sprintf('Boundary conditions differ by %1.4f', allbc');
-%     warning('CONSTRUCTDISCRETISATION:BCS', s)
+%     warning('CHEBFUN:CHEBOP2:discretize:BCs', s)
 % end
 
 end
@@ -346,7 +346,8 @@ k = 1;
 while ( rank(B(:,k:m+k-1)) < m )
     k = k+1;
     if ( m+k > size(B, 2) )
-        error('CHEBOP2:BCS', 'Boundary conditions are linearly dependent.');
+        error('CHEBFUN:CHEBOP2:discretize:nonsingularPermute:BCs', ...
+            'Boundary conditions are linearly dependent.');
     end
 end
 

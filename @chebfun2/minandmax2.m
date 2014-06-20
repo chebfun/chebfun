@@ -132,11 +132,11 @@ elseif ( length(f) <= maxsize )
             map1 = bndfun.createMap(dom(1:2));
             map2 = bndfun.createMap(dom(3:4));
             % Unconstrained initial guesses:
-            Z(:,1) = asin(map1.inv(X(:,1)));
-            Z(:,2) = asin(map2.inv(X(:,2)));
+            Z(:,1) = asin(map1.Inv(X(:,1)));
+            Z(:,2) = asin(map2.Inv(X(:,2)));
             % Maps from R to [dom(1), dom(2)] and [dom(3), dom(4)], respectively.
-            map1 = @(x) map1.for(sin(x));
-            map2 = @(x) map2.for(sin(x));
+            map1 = @(x) map1.For(sin(x));
+            map2 = @(x) map2.For(sin(x));
             % Set options:
             options = optimset('Display', 'off', 'TolFun', eps, 'TolX', eps);
             warnstate = warning;

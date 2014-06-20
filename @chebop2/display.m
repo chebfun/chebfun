@@ -4,7 +4,7 @@ function display(N)
 % CHEBOP2 output is not terminated with a semicolon.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 loose = ~isequal(get(0, 'FormatSpacing'), 'compact');
 

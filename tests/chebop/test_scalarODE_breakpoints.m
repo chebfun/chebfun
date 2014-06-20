@@ -12,7 +12,7 @@ if ( nargin == 0 )
 end
 
 dom = [0 1 2 pi];
-pref.damped = 1;
+pref.damping = 1;
 
 N = chebop(@(x,u) diff(u,2) + sin(u-.2), dom);
 N.lbc = @(u) u - 2;
