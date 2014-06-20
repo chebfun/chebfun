@@ -16,7 +16,8 @@ elseif ( isa(N, 'chebop2') && isa(u, 'double') )
 elseif ( isa(u, 'chebop2') && isa(N, 'double') )
     N = mtimes(u, N);
 else
-    error('CHEBOP2:MTIMES','Can only times a chebop2 by a double, or forward apply to a chebfun2.'); 
+    error('CHEBFUN:CHEBOP2:mtimes:badInput', ...
+        'Can only times a CHEBOP2 by a double or forward apply to a CHEBFUN2.');
 end
 
 end

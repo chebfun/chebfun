@@ -17,6 +17,6 @@ f.funPart = changeMap(f.funPart, newdom);
 newMapping = f.funPart.mapping;
 
 % Map the deltaLocs:
-f.deltaLoc = newMapping.for(oldMapping.inv(f.deltaLoc));
+f.deltaLoc = newMapping.For(oldMapping.Inv(f.deltaLoc));
 
 end

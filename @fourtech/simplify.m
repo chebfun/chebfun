@@ -33,7 +33,7 @@ end
 
 % Use the default tolerance if none was supplied:
 if ( nargin < 2 )
-    tol = f.epslevel/10;
+    tol = f.epslevel/2;
 end
 
 c = f.coeffs;  % Obtain Fourier coefficients {c_k}

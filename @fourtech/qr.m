@@ -56,7 +56,8 @@ f = simplify(f);
 % knowledge of R here?
 col_acc = f.epslevel.*f.vscale;  % Accuracy of each column in f.
 glob_acc = max(col_acc);         % The best of these.
-Q.epslevel = glob_acc./Q.vscale; % Scale out vscale of Q.
+epslevelApprox = glob_acc./Q.vscale; % Scale out vscale of Q.
+Q.epslevel = updateEpslevel(Q, epslevelApprox);
 
 end
 

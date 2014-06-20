@@ -88,6 +88,12 @@ classdef chebfun
 % as discussed above may be combined with the 'periodic' flag, with exception to
 % the 'chebkind' and 'splitting' flags.
 %
+% CHEBFUN --UPDATE can be used to update to the latest stable release of CHEBFUN
+% (obviously an internet connection is required!). CHEBFUN --UPDATE-DEVEL will
+% update to the latest development release, but we recommend instead that you
+% checkout from the Github repo https://github.com/chebfun/chebfun/. See
+% CHEBFUN.UPDATE() for further details.
+%
 % See also CHEBFUNPREF, CHEBPTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
@@ -164,6 +170,11 @@ classdef chebfun
                        
             % Parse inputs:
             [op, dom, data, pref] = parseInputs(varargin{:});
+                        
+            if ( strcmp(op, 'done') )
+                % An update was performed. Exit gracefully:
+                throwAsCaller(MException('', ''))
+            end
             
             % Deal with 'trunc' option:
             doTrunc = false;
@@ -197,7 +208,7 @@ classdef chebfun
                 % Deal with the particular case when we're asked to truncate a
                 % CHEBFUN:
                 f = op;
-                
+                UPDATECHEBFUN
             else
                 % Construct from function_handle, numeric, or string input:
                 
@@ -495,6 +506,9 @@ classdef chebfun
         % Cubic spline interpolant:
         f = spline(x, y, d);
         
+        % Update Chebun source files:
+        update(varargin)
+        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -566,6 +580,31 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
     % TODO: Should we 'data' structure to be passed to the constructor?
     % Currently, like in CHEBFUN/COMPOSE(), we don't have a use for this, but it
     % might be useful in the future.
+
+    % Deal with string input options.
+    if ( strncmp(op, '--', 2) )
+        % An option has been passed to the constructor.
+        if ( strcmpi(op, '--update') )
+            chebfun.update();
+        elseif ( strcmpi(op, '--update-devel') )
+            chebfun.update('development');
+        elseif ( strcmpi(op, '--version') )
+            installDir = chebfunroot();
+            fid = fopen(fullfile(installDir, 'Contents.m'), 'r');
+            fgetl(fid);
+            str = fgetl(fid);
+            disp(['Chebfun ', str(3:end)]);
+            fclose(fid);
+        else
+            error('CHEBFUN:parseInputs:unknown', ...
+                'Unknow command %s.', op);
+        end
+        op = 'done';
+        dom = [];
+        data = struct();
+        pref = [];
+        return
+    end
 
     % Initialize data output.
     data.hscale = [];
