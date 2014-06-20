@@ -2,6 +2,6 @@
 'scalar'
 domain = '[0 10]';
 DE = 'u" + u'' = lambda*u';
-BC = {'u(0) = 0','u(10) = 0'};
+BC = {'u(0)  = 0','u(10) = 0'};
 tol = '1e-10';
 type = 'eig';

@@ -75,9 +75,14 @@ if ( strcmp(newMode, 'bvp') ) % Going into BVP mode
         chebgui.initialiseFigures(handles)
     end
     
+    % Make the discretization panel visible
+    set(handles.panel_discretization, 'Visible', 'on')
+    
+    % Note: The line below is a nice way to disable to objects, rather than hide
+    % them.
     % Enable all childrens of discretisation panel
-    set(findall(handles.panel_discretization,  '-property',  'enable'),  ...
-        'enable',  'on')
+    %     set(findall(handles.panel_discretization,  '-property',  'enable'),  ...
+    %         'visible',  'on')
     
 elseif ( strcmp(newMode, 'pde') ) % Going into PDE mode
     handles.guifile.type = 'pde';
@@ -128,9 +133,8 @@ elseif ( strcmp(newMode, 'pde') ) % Going into PDE mode
         chebgui.initialiseFigures(handles)
     end
     
-    % Disable all childrens of discretisation panel
-    set(findall(handles.panel_discretization, '-property', 'enable'),  ...
-        'enable', 'off')
+    % Hide the discretization panel
+    set(handles.panel_discretization, 'Visible', 'off')
     
     
 else % Going into EIG mode
@@ -213,9 +217,8 @@ else % Going into EIG mode
     set(handles.menu_fixN, 'Enable', 'Off')
     
     
-    % Enable all childrens of discretisation panel
-    set(findall(handles.panel_discretization,  '-property',  'enable'),  ...
-        'enable',  'on')
+    % Make the discretization panel visible
+    set(handles.panel_discretization, 'Visible', 'on')
     
     % Clear the figures
     if ( ~strcmp(callMode, 'demo') )
