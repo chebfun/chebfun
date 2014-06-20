@@ -1,4 +1,4 @@
-function pass = test_eigenvalues()
+function pass = test_eigs()
 % TAD, 10 Jan 2014
 
 tol = 1e-8;
