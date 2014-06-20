@@ -2,7 +2,7 @@
 'bvp'
 domain = '[0 10]';
 DE = 'u'''' = -sin(u)';
-BC = {'u(0) = 2','u(10) = 2'};
+BC = {'u(0)  = 2','u(10) = 2'};
 init = 'u = 2 + sin(pi*x/10)'; tol = '1e-10';
 damping = '1'; plotting = '0.1';
 type = 'bvp';
