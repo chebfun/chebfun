@@ -38,8 +38,8 @@ classdef colloc1 < colloc
             %   those points.
             %
             %   D = DIFFMAT(N,K) is the same, but for the Kth derivative.
-            
-            % TODO: Duplicated?
+
+            % TODO: This can probably be factored out to the chebtech level.
             % TODO: Cache this?
             
             if ( nargin < 2 ), k = 1; end

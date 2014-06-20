@@ -105,13 +105,6 @@ for j = 1:numFuns
             endvals(~logical(abs(endvals))) = 0;
         end
 
-        % Cheat zeros:
-        zeroTol = 100*max(get(f.funs{j}, 'vscale')*get(f.funs{j}, 'epslevel'));
-        % Cheat zeros on unbounded domains:
-%         endvals(abs(endvals) < zeroTol & isinf(f.domain(j:j+1))) = 0; %TODO
-        % Cheat zeros on bounded domains!:
-%         endvals(abs(endvals) < zeroTol) = 0; %TODO
-
         % Print information to screen:
         s = [s, sprintf('[%8.2g,%8.2g]   %6i  %8.2g %8.2g %s\n', ...
             f.domain(j), f.domain(j+1), len(j), endvals, extraData{j})];

@@ -9,6 +9,8 @@ function varargout = ode113(varargin)
 %   One can also write [T, Y] = ODE113(...), in which case T is a linear CHEBFUN
 %   on the domain D.
 %
+%   Note that CHEBFUN/ODE113() uses a default RELTOL of 1e-6.
+%
 % Example:
 %   y = chebfun.ode113(@vdp1, [0, 20], [2 ; 0]); % Solve Van der Pol problem
 %   roots(y(:,1) - 1);                           % Find when y = 1
