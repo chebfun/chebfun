@@ -56,7 +56,7 @@ N.lbc = exact(d(1),:); N.rbc = exact(d(2),:);
 N.dbc = exact(:,d(3)); N.ubc = exact(:,d(4)); 
 u = N \ (diff(exact,2,2) - m.*diff(exact,2,1));
 err = norm(u - exact);
-pass(5) = ( err < tol ); 
+pass(5) = ( err < 5*tol ); 
 
 d = [-2 0 -4.1 pi];
 x = chebfun2(@(x,y) x, d); y = chebfun2(@(x,y) y, d); 
