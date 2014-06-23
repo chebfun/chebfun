@@ -33,7 +33,7 @@ end
 
 % Use the default tolerance if none was supplied:
 if ( nargin < 2 )
-    tol = f.epslevel/10;
+    tol = f.epslevel/2;
 end
 
 c = f.coeffs;  % Obtain Fourier coefficients {c_k}
@@ -41,7 +41,7 @@ numCoeffs = size(c, 1);
 fIsEven = ( mod(numCoeffs, 2) == 0 );
 
 % Split the coefficients into the positive and negative Fourier modes.
-if fIsEven
+if ( fIsEven )
     % In this case the negative cofficients have an additional term
     % corresponding to the cos(N/2*x) coefficient. We account for this by
     % making the positive coefficients symmetric.

@@ -88,6 +88,12 @@ classdef chebfun
 % as discussed above may be combined with the 'periodic' flag, with exception to
 % the 'chebkind' and 'splitting' flags.
 %
+% CHEBFUN --UPDATE can be used to update to the latest stable release of CHEBFUN
+% (obviously an internet connection is required!). CHEBFUN --UPDATE-DEVEL will
+% update to the latest development release, but we recommend instead that you
+% checkout from the Github repo https://github.com/chebfun/chebfun/. See
+% CHEBFUN.UPDATE() for further details.
+%
 % See also CHEBFUNPREF, CHEBPTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
@@ -161,9 +167,34 @@ classdef chebfun
             if ( (nargin == 0) || isempty(varargin{1}) )
                 return
             end
+            
+            if ( iscell(varargin{1}) && ...
+                    all(cellfun(@(x) isa(x, 'fun'),  varargin{1})) )
+                % Construct a CHEBFUN from a cell array of FUN objects.               
+                %  Note, this is not affected by the input parser (see error
+                %  message below) and must be _fast_ as it is done often.
+                if ( nargin > 1 )
+                    error('CHEBFUN:CHEBFUN:chebfun:nargin', ...
+                     'Only one input is allowed when passing an array of FUNs.')
+                end
+                % Assign the cell to the .FUNS property:
+                f.funs = varargin{1};
+                % Collect the domains together:
+                dom = cellfun(@(fun) get(fun, 'domain'), f.funs, ...
+                    'uniformOutput', false);
+                f.domain = unique([dom{:}]);
+                % Update values at breakpoints (first row of f.pointValues):
+                f.pointValues = chebfun.getValuesAtBreakpoints(f.funs, f.domain);
+                return
+            end
                        
             % Parse inputs:
             [op, dom, data, pref] = parseInputs(varargin{:});
+                        
+            if ( strcmp(op, 'done') )
+                % An update was performed. Exit gracefully:
+                throwAsCaller(MException('', ''))
+            end
             
             % Deal with 'trunc' option:
             doTrunc = false;
@@ -176,24 +207,7 @@ classdef chebfun
                 end                
             end
             
-            if ( iscell(op) && all(cellfun(@(x) isa(x, 'fun'), op)) )
-                % Construct a CHEBFUN from a cell array of FUN objects:
-                
-                if ( nargin > 1 )
-                    error('CHEBFUN:CHEBFUN:chebfun:nargin', ...
-                     'Only one input is allowed when passing an array of FUNs.')
-                end
-                
-                % Assign the cell to the .FUNS property:
-                f.funs = op;
-                % Collect the domains together:
-                dom = cellfun(@(fun) get(fun, 'domain'), f.funs, ...
-                    'uniformOutput', false);
-                f.domain = unique([dom{:}]);
-                % Update values at breakpoints (first row of f.pointValues):
-                f.pointValues = chebfun.getValuesAtBreakpoints(f.funs, f.domain);
-                
-            elseif ( isa(op, 'chebfun') && doTrunc )
+            if ( isa(op, 'chebfun') && doTrunc )
                 % Deal with the particular case when we're asked to truncate a
                 % CHEBFUN:
                 f = op;
@@ -416,6 +430,9 @@ classdef chebfun
         % Assign columns (or rows) of an array-valued CHEBFUN.
         f = assignColumns(f, colIdx, g)
         
+        % Deprecated function.
+        f = define(f,s,v);
+        
         % Supply a new definition for a CHEBFUN on a subinterval.
         f = defineInterval(f, subInt, g)
         
@@ -434,17 +451,26 @@ classdef chebfun
         % Extract columns of an array-valued CHEBFUN object.
         f = extractColumns(f, columnIndex);
         
+        % Deprecated function.
+        varargin = fzero(varargout);
+        
         % Get Delta functions within a CHEBFUN.
         [deltaMag, deltLoc] = getDeltaFunctions(f);
         
         % Get roots of a CHEBFUN and polish for use as breakpoints.        
         [rBreaks, rAll] = getRootsForBreaks(f, tol)
         
+        % Returns true if numel(f) > 1
+        out = isQuasi(f)
+        
         % Number of columns (or rows) of a CHEBFUN quasimatrix.
         out = numColumns(f)
         
         % Obtain data used for plotting a CHEBFUN object:
         data = plotData(f, g, h)
+        
+        % Deprecated function.
+        varargin = quad(varargout);
         
         % Set pointValues property:
         f = setPointValues(f, j, k, vals)
@@ -471,9 +497,6 @@ classdef chebfun
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
         
-        % Main constructor.
-        [funs, ends] = constructor(op, domain, data, pref);
-
         % Interpolate data:
         f = interp1(x, y, method, dom);
 
@@ -494,6 +517,9 @@ classdef chebfun
         
         % Cubic spline interpolant:
         f = spline(x, y, d);
+        
+        % Update Chebun source files:
+        update(varargin)
         
     end
     
@@ -520,6 +546,9 @@ classdef chebfun
     %% PRIVATE STATIC METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = private, Static = true )
+        
+        % Main constructor.
+        [funs, ends] = constructor(op, domain, data, pref);
         
         % Convert ODE solutions into CHEBFUN objects:
         [y, t] = odesol(sol, opt);
@@ -566,6 +595,31 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
     % TODO: Should we 'data' structure to be passed to the constructor?
     % Currently, like in CHEBFUN/COMPOSE(), we don't have a use for this, but it
     % might be useful in the future.
+
+    % Deal with string input options.
+    if ( strncmp(op, '--', 2) )
+        % An option has been passed to the constructor.
+        if ( strcmpi(op, '--update') )
+            chebfun.update();
+        elseif ( strcmpi(op, '--update-devel') )
+            chebfun.update('development');
+        elseif ( strcmpi(op, '--version') )
+            installDir = chebfunroot();
+            fid = fopen(fullfile(installDir, 'Contents.m'), 'r');
+            fgetl(fid);
+            str = fgetl(fid);
+            disp(['Chebfun ', str(3:end)]);
+            fclose(fid);
+        else
+            error('CHEBFUN:parseInputs:unknown', ...
+                'Unknow command %s.', op);
+        end
+        op = 'done';
+        dom = [];
+        data = struct();
+        pref = [];
+        return
+    end
 
     % Initialize data output.
     data.hscale = [];

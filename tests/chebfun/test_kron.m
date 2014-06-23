@@ -5,7 +5,7 @@ if ( nargin < 1 )
     pref = chebfunpref(); 
 end 
 
-tol = 100*pref.eps; 
+tol = 200*pref.eps; 
 
 % Rank 1 chebfun2 
 f = chebfun(@(x) x.^2, pref);

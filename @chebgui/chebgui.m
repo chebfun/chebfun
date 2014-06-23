@@ -244,23 +244,7 @@ classdef chebgui
 
         % Load a demo stored in a .guifile to a CHEBGUI object
         cg = demo2chebgui(demoPath)
-        
-        function initialiseFigures(handles)
-            %INITIALISEFIGURES    Reset figures in the CHEBGUI window.
-
-            % Reset the top figures
-            cla(handles.fig_sol, 'reset');
-            axes(handles.fig_sol)
-            title('Solution')
-            box on
-
-            % Reset the bottom figure
-            cla(handles.fig_norm, 'reset');
-            axes(handles.fig_norm)
-%             title('Updates')
-            box on
-        end
-        
+                
     end
          
 end

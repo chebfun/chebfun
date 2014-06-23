@@ -70,7 +70,7 @@ classdef mapping
         
         function out = feval(map, x)
         %FEVAL   Evaluate the orward part of a map.
-            out = feval(map.for, x);
+            out = feval(map.For, x);
         end
         
         function out = inv(map)

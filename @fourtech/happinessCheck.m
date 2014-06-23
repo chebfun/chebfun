@@ -1,7 +1,7 @@
 function  [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, pref)
 %HAPPINESSCHECK   Happiness test for a FOURTECH
 %
-% See also CLASSICCHECK, LOOSECHECK, STRICTCHECK, SAMPLETEST.
+% See also CLASSICCHECK, SAMPLETEST.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.

@@ -23,7 +23,7 @@ set(handles.input_GUESS, 'String', '');
 set(handles.menu_tolerance, 'UserData', '1e-10'); % The default tolerance
 
 % Clear the figures:
-chebgui.initialiseFigures(handles)
+chebguiController.initialiseFigures(handles)
 
 % Hide the iteration information:
 set(handles.iter_list, 'String', '');

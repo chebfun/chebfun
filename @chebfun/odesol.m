@@ -5,7 +5,7 @@ function varargout = odesol(sol, opt)
 %   representation Y. SOL is the one-output form of any solver such as ODE45,
 %   ODE15S, BVP5C, etc. OPT is the option structure used by the ODE solver. If
 %   OPT is not passed, it is extracted from SOL.EXTDATA.OPTIONS if available.
-%   The result is a piecewise CHEBFUN of low polynomial degree on each piece.
+%   The result is a piecewise CHEBFUN representing the solution.
 %
 %   [Y, T] = ODESOL(SOL, OPT) returns also the linear CHEBFUN T on the domain of
 %   Y. Note that the order of outputs is the reverse of that from calls to
@@ -14,11 +14,8 @@ function varargout = odesol(sol, opt)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% [TODO]: Think about tolerances.
-
 %% Extract data from sol:
 d = sol.x([1, end]);
-hscale = diff(d);
 vscale = max(abs(sol.y), [], 2); % Vertical scale (needed for RelTol)
 numCols = size(sol.y, 1);
 
@@ -34,7 +31,7 @@ end
 
 %% Find relative tolerances used in computations.
 % Start with odeset default values:
-relTol = 1e-3*ones(numCols, 1);         % Relative
+relTol = 1e-6*ones(numCols, 1);         % Relative
 absTol = 1e-6*ones(numCols, 1);         % Absolute
 % Update if user used different tolerances:
 if ( ~isempty(opt) )
@@ -55,6 +52,7 @@ relTol = max(relTol(:), absTol(:)./vscale(:));
 %% Create a CHEBFUN object.
 p = chebfunpref();
 p.techPrefs.eps = max(relTol); % Use the same tolerance for each column.
+p.splitting = true;            % use splitting, always, or there is no hope.
 y = chebfun(@(x) deval(sol, x).', d, p);
 
 % Parse outputs:

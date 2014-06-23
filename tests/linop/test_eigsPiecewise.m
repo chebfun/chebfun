@@ -1,4 +1,4 @@
-function pass = test_eigenvaluesPiecewise(pref)
+function pass = test_eigsPiecewise(pref)
 % TEST_EIGVENVALUESPIECEWISE    Solve Schrodinger equation with a piecewise well
 % AB + H, 2014/03/10
 

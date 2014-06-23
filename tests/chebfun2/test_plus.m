@@ -40,6 +40,6 @@ pass(6) = ( abs( vscale( g ) - 2e-100 ) < tol );
 f = chebfun2(@(x,y) 1e100*x); 
 g = f + f; 
 pass(7) = ( length(g) == length(f) ); 
-pass(8) = ( abs( vscale( g ) - 2e100 )/2e100 < 1e-2 ); 
+pass(8) = ( abs( vscale( g ) - 2e100 )/2e100 < 2e-2 ); 
 
 end

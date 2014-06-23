@@ -31,11 +31,13 @@ pass(6) = (all(abs(y - exact_min) < 10*f.epslevel) && ...
            all(abs(fx - exact_min) < 10*f.epslevel));
 
 %%
-% Test for complex-valued chebtech objects.
-pass(7) = test_spotcheck_min(testclass, ...
-    @(x) cos(pi*x) + exp(1i*pi*x), ...
-    -1i, pref);
-          
+% Test for complex-valued fourtech objects.
+f = testclass.make(@(x) cos(pi*x) + exp(1i*pi*x), [], pref);
+[y, x] = min(f);
+exact_min = 1i; % Could be +/- 1i depending on machine.
+pass(7) = ( (abs(y - exact_min) < 10*f.vscale.*f.epslevel) || ...
+            (abs(y + exact_min) < 10*f.vscale.*f.epslevel) );
+                
 end
 
 % Spot-check the results for a given function.

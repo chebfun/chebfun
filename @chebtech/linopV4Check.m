@@ -36,12 +36,12 @@ function [ishappy, epsLevel, cutoff] = linopV4Check(f, values, pref)
 % Grab some preferences:
 if ( nargin == 1 )
     pref = f.techPref();
-    epslevel = pref.eps;
+    epsLevel = pref.eps;
 elseif ( isnumeric(pref) )
-    epslevel = pref;
+    epsLevel = pref;
     pref = f.techPref();
 else
-    epslevel = pref.eps;
+    epsLevel = pref.eps;
 end
 
 % Grab the coefficients:

@@ -32,6 +32,8 @@ function [u, dampingInfo] = dampingErrorBased(N, u, rhs, delta, L, disc, damping
 %   normDeltaOld:   Norm of previous Newton correction.
 %   deltaBar:       Previous simplified Newton step.
 %   x:              The independent variable on the interval.
+%   success:        Equal to 1 if we converge within the damped phase, 0
+%                   otherwise.
 %   
 %   For further details, see
 %    [1] P. Deuflhard. Newton Methods for Nonlinear Problems. Springer, 2004.
@@ -53,6 +55,7 @@ normDeltaBar =  dampingInfo.normDeltaBar;
 normDeltaOld =  dampingInfo.normDeltaOld;
 deltaBar =      dampingInfo.deltaBar;
 x =             dampingInfo.x;
+giveUp =        dampingInfo.giveUp;
 
 % Determine how many arguments N.op expects, so that we know whether we need to
 % pass x or not:
@@ -65,6 +68,10 @@ accept = 0;
 % are finding the first value of lambda at a given Newton step, or whether we
 % are correcting the value initially predicted for that step).
 initPrediction = 1;
+
+% Usually, the overall Newton iteration will not converge within the damped
+% phase
+success = 0;
 
 % Iterate until we find a step-size lambda that we accept:
 while ( ~accept )
@@ -93,7 +100,7 @@ while ( ~accept )
         normDeltaOld = normDelta;
         initPrediction = 1;
         lambda = 1;
-        giveUp = 1;
+        giveUp = giveUp + 1/2;
         cFactor = NaN;
         continue
     end
@@ -147,9 +154,10 @@ while ( ~accept )
     lambdaPrime = min(1, muPrime);
     
     if ( lambdaPrime == 1 && normDeltaBar < errTol )
-        % TODO: We have converged within the damped phase! 
-        % Do we need to treat this case separately within solvebvpNonlinear?
+        % We have converged within the damped phase! 
+        % solvebvpNonlinear will find out about our success.
         u = uTrial + deltaBar; %#ok<NASGU>
+        success = 1;
         giveUp = 0; 
         break
     end
@@ -181,5 +189,5 @@ dampingInfo.cFactor =       cFactor;
 dampingInfo.normDeltaBar =  normDeltaBar;
 dampingInfo.deltaBar =      deltaBar;
 dampingInfo.giveUp =        giveUp;
-
+dampingInfo.success =       success;
 end

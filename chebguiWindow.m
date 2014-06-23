@@ -92,7 +92,7 @@ chebguiController.initalizeFields(handles);
 handles.output = hObject;
 
 % Initialise figures:
-chebgui.initialiseFigures(handles)
+chebguiController.initialiseFigures(handles)
 
 % Variable that determines whether a solution is available
 handles.hasSolution = 0;
@@ -2069,3 +2069,11 @@ guidata(hObject, handles);
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% FIN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+function fig_logo_CreateFcn(hObject, eventdata, handles)
+% Hint: place code in OpeningFcn to populate
+logoMat = imread(fullfile(chebfunroot(),'chebguiDemos','chebfunLogo.png'));
+image(logoMat)
+axis off
+end

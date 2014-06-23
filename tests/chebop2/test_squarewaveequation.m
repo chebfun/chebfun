@@ -39,7 +39,7 @@ N.rbc = @(t) sin(pi+t);
 N.dbc = @(x,u) [u - sin(x) ; diff(u) - cos(x)];
 u = N \ 0;
 
-pass(3) = ( norm(u - exact) < 4*tol ); 
+pass(3) = ( norm(u - exact) < 5*tol ); 
 
 
 %% different wave number. 
