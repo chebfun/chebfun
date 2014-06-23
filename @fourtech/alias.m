@@ -49,74 +49,98 @@ if ( m > n )
     
 end
 
-isOdd = mod(n,2);
+% If the number of coefficients is even then we extend them by one so they
+% are odd by exploiting the symmetry property.  This makes the code below a
+% little cleaner since fewer cases need to be handled.
+if ~mod(n,2)
+    coeffs(n,:) = 0.5*coeffs(n,:);
+    coeffs = [coeffs(n,:);coeffs];
+    n = n+1;
+end
 
-% Extract coefficients and flip then to start from lower modes (in
-% absolute value) to higher modes.
-if ( isOdd )
-    constCoeffs = coeffs((n-1)/2+1,:);
-    posCoeffs = coeffs((n-1)/2:-1:1,:);
-    negCoeffs = coeffs((n-1)/2+2:n,:);
-    
+% Need to handle the odd and even case differently.
+isOdd = mod(m,2);
+
+if ( isOdd )    
+
     if ( m == 1 )
+
         % Reduce to a single point:
+        constCoeffs = coeffs((n-1)/2+1,:);
+        posCoeffs = coeffs((n-1)/2:-1:1,:);
+        negCoeffs = coeffs((n-1)/2+2:n,:);
         e = ones(1, ceil((n-1)/2));
         e(1:2:end) = -1;
         coeffs = constCoeffs + (e*posCoeffs + e*negCoeffs);
+
     else
+        
         m2 = (m-1)/2;
         n2 = (n-1)/2;
-        % It's more natural to work with the coefficients in the other order:
+        % Extract coefficients and flip them to start from lower modes (in
+        % absolute value) to higher modes since this is more natrual.
         coeffs = coeffs(end:-1:1,:);
-        newCoeffs = 0*coeffs(n2-m2+1:n2+m2+1,:);
-%         newCoeffs(m2+1,:) = 2*newCoeffs(m2+1,:);
-        for j = -n2:0
+        aliasedCoeffs = coeffs(n2-m2+1:n2+m2+1,:);
+        %
+        % The code below aliases the coefficients from the higher modes
+        % onto the lower modes. The principle behind the formula is figure
+        % out which of the higher Fourier modes are indistinguishable from
+        % the lower Fouirer modes on the grid consisting of m equally
+        % spaced points from [-1,1). In general, when m and n are odd the
+        % following will be equal for j=-(n-1)/2 to -(m+1)/2
+        % exp(1i*pi*j*x) = sgn*exp(1i*pi*k*x) where
+        % k = mod(j+(m+1)/2,-m) + (m-1)/2 and sgn = (-1)^mod(j+k,2);
+        for j = -n2:-m2-1
             k = mod(j+m2+1,-m) + m2;
-            coeffIndexK = k+m2+1;
-            ceoffIndexJ = j+n2+1;
-            newCoeffs(coeffIndexK,:) = newCoeffs(coeffIndexK,:) - (-1)^(k*j)*coeffs(ceoffIndexJ,:);
+            coeffIndexK = k+m2+1;  % Index into aliasedCoeffs for mode k.
+            coeffIndexJ = j+n2+1;  % Index into coeffs for mode j.
+            sgn = (-1)^mod(j+k,2);
+            aliasedCoeffs(coeffIndexK,:) = aliasedCoeffs(coeffIndexK,:) + sgn*coeffs(coeffIndexJ,:);
             coeffIndexK = -k+m2+1;
-            ceoffIndexJ = -j+n2+1;
-            newCoeffs(coeffIndexK,:) = newCoeffs(coeffIndexK,:) - (-1)^(k*j)*coeffs(ceoffIndexJ,:);
+            coeffIndexJ = -j+n2+1;
+            aliasedCoeffs(coeffIndexK,:) = aliasedCoeffs(coeffIndexK,:) + sgn*coeffs(coeffIndexJ,:);
         end
-%         newCoeffs(m2+1,:) = 0.5*newCoeffs(m2+1,:);
-        coeffs = flipud(newCoeffs);
+        coeffs = flipud(aliasedCoeffs);
+
     end
+else
+    
+    m2 = m/2;
+    n2 = (n-1)/2;
+    % Extract coefficients and flip them to start from lower modes (in
+    % absolute value) to higher modes since this is more natrual.
+    coeffs = coeffs(end:-1:1,:);
+    % Put the coefficient for the cos(m/2*pi*x) in the first entry of the
+    % coefficient vector.  This corresopnds to the exp(-1i*pi*m/2*x).  
+    aliasedCoeffs = coeffs(n2+1-m2:n2+m2,:);
+    % Extend the aliased cofficient vector so it is symmetric.  This allows
+    % us to easily account for aliasing on the exp(-1i*pi*m/2*x) and 
+    % exp(1i*pi*m/2*x) term in the code below without the need for a 
+    % special if check.  The negative allows contribution for sin(m/2*pi*x)
+    % to be removed.    
+    aliasedCoeffs = [aliasedCoeffs;-aliasedCoeffs(1,:)];
+    
+    %
+    % Follow a similar structure to the odd m case above.  The main
+    % difference is that the higher order modes do not change sign when
+    % aliased onto an even point grid.
+    for j = -n2:-m2
+        k = mod(j+m2,-m) + m2;
+        coeffIndexK = k+m2+1;  % Index into aliasedCoeffs for mode k.
+        coeffIndexJ = j+n2+1;  % Index into coeffs for mode j.
+        aliasedCoeffs(coeffIndexK,:) = aliasedCoeffs(coeffIndexK,:) + coeffs(coeffIndexJ,:);
+        coeffIndexK = -k+m2+1;
+        coeffIndexJ = -j+n2+1;
+        aliasedCoeffs(coeffIndexK,:) = aliasedCoeffs(coeffIndexK,:) + coeffs(coeffIndexJ,:);
+    end
+    % Collapse the aliased coefficient vector down to an even number of
+    % terms by adding in the aliasing of the exp(1i*pi*m/2*x) terms to the
+    % exp(-1i*pi*m/2*x).
+    aliasedCoeffs(1,:) = aliasedCoeffs(1,:) + aliasedCoeffs(end,:);
+    aliasedCoeffs(end,:) = [];
+
+    coeffs = flipud(aliasedCoeffs);
+
 end
-% 
-% % Simple solution
-% x = fourtech.fourpts(m);
-% values = feval(f,x);
-% 
-% if ( m == 1 )
-%     % Reduce to a single point:
-%     e = ones(1, ceil(n/2)); 
-%     e(2:2:end) = -1;
-%     coeffs = e*coeffs(1:2:end,:);
-% elseif ( m > n/2 )
-%     % If m > n/2, only single coefficients are aliased, and we can vectorise.
-%     j = (m + 1):n;
-%     k = abs(mod(j + m - 3, 2*m - 2) - m + 2) + 1;
-%     coeffs(k,:) = coeffs(k,:) + coeffs(j,:);
-% else
-%     % Otherwise we must do everything in a tight loop. (Which is slower!)
-%     for j = (m + 1):n
-%         k = abs(mod(j + m - 3, 2*m - 2) - m + 2) + 1;
-%         coeffs(k,:) = coeffs(k,:) + coeffs(j,:);
-%     end
-% end
-% 
-% % For now we just chop off the unwanted coefficients.
-% % [TODO]: Use the aliasing formula for Fourier coefficients.
-% 
-% % This code simply chops off the unwanted coefficients.
-% n = size(coeffs, 1);
-% n2 = floor(n/2);
-% % Negative modes to remove:
-% negModeIndex = (n + 1 - n2 + floor(m/2)):n;
-% % Positive modes to remove
-% posModeIndex = 1:(n2-ceil(m/2)+mod(n, 2));
-% coeffs(negModeIndex,:) = [];
-% coeffs(posModeIndex,:) = [];
 
 end
