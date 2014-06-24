@@ -36,12 +36,13 @@ classdef colloc2 < colloc
             %   D = DIFFMAT(N) is the matrix that maps function values at N Chebyshev points
             %   to values of the derivative of the interpolating polynomial at those points.
             %
-            %   D = DIFFMAT(N,K) is the same, but for the Kth derivative.
+            %   D = DIFFMAT(N, K) is the same, but for the Kth derivative.
             %
             %   The matrices are computed using the 'hybrid' formula of Schneider & Werner
             %   [1] and Welfert [2] proposed by Tee [3].
             
             % TODO: Cache this?
+            % TODO: Implement this at the COLLOC level?
             
             % Copyright 2014 by The University of Oxford and The Chebfun Developers.
             % See http://www.chebfun.org/ for Chebfun information.
@@ -64,13 +65,13 @@ classdef colloc2 < colloc
             
             % construct Chebyshev grid and weights
             x = chebtech2.chebpts(N);
-            w = [.5 ; ones(N-1,1)]; w(2:2:end) = -1; w(N) = .5*w(N);
+            w = chebtech2.barywts(N);
             
             ii = (1:N+1:N^2)';              % indices of diagonal
             Dx = bsxfun(@minus,x,x');       % all pairwise differences
             Dx(ii) = Dx(ii) + 1;            % add identity
             Dxi = 1./Dx;                    % reciprocal
-            Dw = bsxfun(@rdivide,w.',w);    % pairwise divisions
+            Dw = bsxfun(@rdivide, w',w);    % pairwise divisions
             Dw(ii) = Dw(ii) - 1;            % subtract identity
             
             % k = 1
@@ -98,7 +99,7 @@ classdef colloc2 < colloc
             %   value is zero.
             
             % TODO: More efficient implementation?
-            % TODO: This is duplicated in a number of places.
+            % TODO: Implement this at the COLLOC level?
             
             %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
             %  See http://www.chebfun.org/ for Chebfun information.
