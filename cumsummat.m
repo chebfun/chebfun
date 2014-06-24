@@ -30,7 +30,7 @@ elseif ( nargin == 1 )
 end
 % Ensure DISC is a sicretization:
 if ( ischar(disc) )
-    disc = str2fun(disc);
+    disc = str2func(disc);
 end
 if ( isa(disc, 'function_handle') )
     disc = disc();

@@ -1,4 +1,4 @@
-function C = diffmat(N, k, dom, disc)
+function C = diffmat(N, varargin)
 %DIFFMAT   Differentiation matrix.
 %   D = DIFFMAT(N) returns the NxN differentiation matrix associated with the
 %   Chebyshev spectral collocation method at second-kind Chebyshev points. D =
@@ -17,23 +17,28 @@ function C = diffmat(N, k, dom, disc)
 % See http://www.chebfun.org/ for Chebfun information.
 
 %% Parse the inputs:
-if ( (nargin < 2) || isempty(k))
-    k = 1;
-end
-if ( (nargin == 3) )
-    if ( isa(dom, 'function_handle') || ischar(dom) )
-        disc = dom;
-        dom = cheboppref().domain;
+k = 1;
+dom = [-1 1];
+disc = colloc2();
+for j = 1:numel(varargin)
+    v = varargin{j};
+    if ( isnumeric(v) )
+        if ( isscalar(v) )
+            k = v;
+        else
+            dom = v;
+        end
+    elseif ( isa(v, 'function_handle') || ischar(v) || ...
+        isa(v, 'chebDiscretization') )
+        disc = v;
     else
-        disc = colloc2();
+        error('CHEBFUN:TRUNK:diffmat:unknown', ...
+            'Unknown input of type %s.', class(v));
     end
-elseif ( nargin <= 2 )
-    disc = colloc2();
-    dom = cheboppref().domain;
 end
 % Ensure DISC is a sicretization:
 if ( ischar(disc) )
-    disc = str2fun(disc);
+    disc = str2func(disc);
 end
 if ( isa(disc, 'function_handle') )
     disc = disc();
