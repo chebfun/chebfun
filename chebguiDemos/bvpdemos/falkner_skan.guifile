@@ -1,0 +1,9 @@
+'Falkner-Skan equation'
+'bvp'
+domain = '[0 10]';
+DE = 'f'''''' + 0.5*f*f'''' = -(2/3)*(1 - f''^2)';
+BC = {'f(0)   = 0', 'f''(0)  = 0', 'f''(10) = 1'};
+init = '';
+tol = '1e-10';
+damping = '1'; plotting = '0.1';
+type = 'bvp';
