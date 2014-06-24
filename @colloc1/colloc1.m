@@ -120,8 +120,6 @@ classdef colloc1 < colloc
             B(:,1) = 2*B(:,1);
             
             Q = T*B(end:-1:1,end:-1:1)*Tinv;
-            % Make exact:
-            Q(1,:) = 0;
             
             %Store:
             CACHE{N} = Q;
