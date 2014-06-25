@@ -36,7 +36,7 @@ for j = 1:numel(varargin)
             'Unknown input of type %s.', class(v));
     end
 end
-% Ensure DISC is a sicretization:
+% Ensure DISC is a discretization:
 if ( ischar(disc) )
     disc = str2func(disc);
 end
