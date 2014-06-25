@@ -88,7 +88,6 @@ classdef colloc < chebDiscretization
             
             % We want to go up in powers of 2 up to a point, after which, we go
             % up in half powers of two.
-            
             minPow = log2(pref.minDimension);
             maxPow = log2(pref.maxDimension);
             
