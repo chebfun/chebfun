@@ -47,7 +47,7 @@ switch n
         if ( ~ischar(n) )
             n = num2str(n);
         end
-        error('CHEBFUN:CHEBMATRIX:norm:uknown', ...
+        error('CHEBFUN:CHEBMATRIX:norm:unknown', ...
             'unsupported norm type ''%s''', n)
         
 end
