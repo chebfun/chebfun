@@ -1,9 +1,13 @@
-function D = diffmat(N, k, tech)
-%DIFFMAT  Chebyshev differentiation matrix
-%   D = DIFFMAT(N) is the matrix that maps function values at N Chebyshev points
-%   to values of the derivative of the interpolating polynomial at those points.
+function D = baryDiffMat(x, w, k)
+%BARYDIFFMAT  Barycentric differentiation matrix.
+%   D = BARYDIFFMAT(N, X) is the matrix that maps function values at the points
+%   X to values of the derivative of the interpolating polynomial at those
+%   points.
 %
-%   D = DIFFMAT(N, K) is the same, but for the Kth derivative.
+%   D = BARYDIFFMAT(X, W) is the same, but here the derivative is of the
+%   barycentrix interpolant defined by the points X and the weights W.
+%
+%   D = BARYDIFFMAT(X, W, K) is the same, but for the Kth derivative.
 %
 %   The matrices are computed using the 'hybrid' formula of Schneider & Werner
 %   [1] and Welfert [2] proposed by Tee [3].
@@ -19,7 +23,7 @@ function D = diffmat(N, k, tech)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% TODO: Cache this?
+N = length(x);
 
 %% Parse inputs and check for trivial cases:
 if ( N == 0 )
@@ -29,7 +33,7 @@ elseif ( N == 1 )
     D = 0; 
     return
 end
-if ( nargin < 2 )
+if ( nargin < 3 )
     k = 1; 
 end
 if ( k == 0 )
@@ -37,12 +41,13 @@ if ( k == 0 )
     return
 end
 if ( nargin < 3 )
-    tech = colloc2();
+    w = baryWeights(x);
 end
 
-%% Construct Chebyshev grid and weights of appropriate type:
-x = tech.chebpts(N);
-w = tech.barywts(N);
+if ( length(x) ~= length(w) )
+    error('CHEBFUN:COLLOC:baryDiffMat:xwlengths', ...
+        'length(x) must equal length(w).');
+end
 
 %% Construct Dx and Dw:
 ii = (1:N+1:N^2)';              % Indices of diagonal.

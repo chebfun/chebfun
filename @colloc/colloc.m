@@ -55,7 +55,7 @@ classdef colloc < chebDiscretization
     %% ABSTRACT METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false, Abstract = true )
-        
+
         % Indefinite integration:
         C = cumsum(disc)
         
@@ -74,6 +74,9 @@ classdef colloc < chebDiscretization
     %% CLASS METHODS (IMPLEMENTED BY THIS ABSTRACT CLASS.)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
+        
+        % Barycentric differentiation matrix:
+        D = baryDiffMat(x, w, k);
         
         % Discretization points: (used by both colloc1 and colloc2)
         [x, w, v] = points(varargin);

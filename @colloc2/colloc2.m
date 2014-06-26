@@ -45,9 +45,9 @@ classdef colloc2 < colloc
                 k = 1;
             end
 
-            % Call the parent class method:
-            tech = chebtech2();
-            D = diffmat@colloc(N, k, tech);
+            x = chebtech2.chebpts(N);        % First kind points.
+            w = chebtech2.barywts(N);        % Barycentric weights.
+            D = colloc.baryDiffMat(x, w, k); % Construct matrix.
             
         end
         

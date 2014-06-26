@@ -39,15 +39,15 @@ classdef colloc1 < colloc
             %
             %   D = DIFFMAT(N, K) is the same, but for the Kth derivative.
             %
-            % See also COLLOC/DIFFMAT.
+            % See also COLLOC/BARYDIFFMAT.
 
             if ( nargin < 2 )
                 k = 1;
             end
 
-            % Call the parent class method:
-            tech = chebtech1();
-            D = diffmat@colloc(N, k, tech);
+            x = chebtech1.chebpts(N);        % First kind points.
+            w = chebtech1.barywts(N);        % Barycentric weights.
+            D = colloc.baryDiffMat(x, w, k); % Construct matrix.
             
         end
         
