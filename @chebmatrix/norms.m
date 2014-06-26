@@ -31,22 +31,6 @@ if ( ~all(isfinite(s(:))) )
     'Norms of a chebmatrix with inf x inf block(s) is not supported.')
 end
 
-% Deal with different cases.
-switch n
-
-    case {'fro', 2}
-        normA = cellfun(@(v) norm(v, 2), A.blocks);
-
-    case {inf, 'inf'}
-        normA = cellfun(@(v) norm(v, inf), A.blocks);
-
-    otherwise
-        if ( ~ischar(n) )
-            n = num2str(n);
-        end
-        error('CHEBFUN:CHEBMATRIX:norms:unknown', ...
-            'unsupported norm type ''%s''', n)
-
-end
+normA = cellfun(@(v) norm(v, n), A.blocks);
 
 end
