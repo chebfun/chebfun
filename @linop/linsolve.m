@@ -52,6 +52,12 @@ for j = 1:nargin-2
     end
 end
 
+% Check for unbounded domains:
+if ( ~all(isfinite(L.domain)) )
+    error('CHEBFUN:LINOP:linsolve:infDom', ...
+        'Unbounded domains are not supported.');
+end
+
 % Grab defaults.
 if ( isempty(prefs) )
     prefs = cheboppref;

@@ -82,6 +82,12 @@ elseif ( ~isa(u0, 'chebmatrix') )
         'No support for inputs of type %s.', class(u0));
 end
 
+% Check for unbounded domains:
+if ( ~all(isfinite(L.domain)) )
+    error('CHEBFUN:LINOP:expm:infDom', ...
+        'Unbounded domains are not supported.');
+end
+
 %% Loop over different times.
 allU = chebmatrix({});
 for i = 1:length(t)

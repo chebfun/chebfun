@@ -76,6 +76,12 @@ for j = 1:nargin-1
     end
 end
 
+% Check for unbounded domains:
+if ( ~all(isfinite(L.domain)) )
+    error('CHEBFUN:LINOP:eigs:infDom', ...
+        'Unbounded domains are not supported.');
+end
+
 %#ok<*ASGLU> % Prevent MLINT warnings for unused variables, which are used in 
              % many places in this code to avoid the [~, arg2] = ... syntax.
 
