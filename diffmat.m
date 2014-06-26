@@ -9,7 +9,7 @@ function C = diffmat(N, varargin)
 %   DOM. DOM should be a 1x2 vector.
 %
 %   D = DIFF(N, K, DOM, DISC) or DIFF(N, K, DISC) returns the differentiation
-%   matrix associated with the tech DISC.
+%   matrix associated with the CHEBDISCRETIZATION DISC.
 %
 % See also DIFF, COLLOC2.DIFFMAT, CUMSUMMAT.
 
@@ -32,7 +32,7 @@ for j = 1:numel(varargin)
         isa(v, 'chebDiscretization') )
         disc = v;
     else
-        error('CHEBFUN:TRUNK:diffmat:unknown', ...
+        error('CHEBFUN:diffmat:unknown', ...
             'Unknown input of type %s.', class(v));
     end
 end
@@ -46,12 +46,12 @@ end
 % No breakpoints allowed:
 if ( numel(dom) > 2 )
     dom = dom([1 end]);
-    warning('CHEBFUN:TRUNK:diffmat:noBreaks', ...
+    warning('CHEBFUN:diffmat:noBreaks', ...
         'DIFFMAT does not support domains with  breakpoints.');
 end
 
 %% Call DISC.DIFFMAT(N) and scale appropriately.
-scl = (2/(dom(end)-dom(1)))^k;
+scl = (2/(dom(end) - dom(1)))^k;
 C = scl*disc.diffmat(N, k);
 
 end
