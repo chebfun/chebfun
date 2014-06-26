@@ -121,7 +121,7 @@ end
 if ( ~isempty(B) )
     
     % Update the discretization domain for L:
-    discA.domain = chebfun.mergeDomains(discA.domain, B.domain);
+    discA.domain = domain.merge(discA.domain, B.domain);
     
     % Construct a discretization for B:
     constructor = str2func( class(discA) );   % constructor handle

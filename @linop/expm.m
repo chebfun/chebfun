@@ -49,7 +49,7 @@ if ( isa(discType, 'function_handle') )
     disc = discType(L);  
     
     % Merge domains of the operator and the initial condition.
-    disc.domain = chebfun.mergeDomains(disc.domain, u0.domain); 
+    disc.domain = domain.merge(disc.domain, u0.domain); 
     
     % Set the allowed discretisation lengths: 
     dimVals = disc.dimensionValues(prefs);
