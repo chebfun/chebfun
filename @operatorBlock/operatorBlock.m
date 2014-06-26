@@ -234,7 +234,7 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
         %   antiderivative operator C which applies to functions defined on
         %   DOMAIN, which may include breakpoints.
         %
-        %   C = OPERATORBLOCK.CUMSUM(DOMAIN, M) is the mth-repeated
+        %   C = OPERATORBLOCK.CUMSUM(DOM, M) is the mth-repeated
         %   antiderivative.
 
             % Use inputParser to parse the arguments to the method.
@@ -247,6 +247,11 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
             parse(p, varargin{:});
             dom = p.Results.domain;
             m = p.Results.m;
+            
+            if ( ~all(isfinite(dom)) )
+                error('CHEBFUN:OPERATORBLOCK:cumsum:infdom', ...
+                   'The operatorBlock class does not support infinite domains.')
+            end
 
             % Create the OPERATORBLOCK with information now available.
             C = operatorBlock(dom);
@@ -275,6 +280,11 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
             parse(p, varargin{:});
             dom = p.Results.domain;
             m = p.Results.m;
+            
+            if ( ~all(isfinite(dom)) )
+                error('CHEBFUN:OPERATORBLOCK:diff:infdom', ...
+                   'The operatorBlock class does not support infinite domains.')
+            end
 
             % Create the OPERATORBLOCK with information now available.
             D = operatorBlock(dom);
@@ -282,25 +292,30 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
             D.diffOrder = m;
         end
 
-        function I = eye(domain)
+        function I = eye(dom)
         %OPERATORBLOCK.EYE   Identity operator.
-        %   I = OPERATORBLOCK.EYE(DOMAIN) returns the identity operator for
-        %   functions on the domain DOMAIN.
+        %   I = OPERATORBLOCK.EYE(DOM) returns the identity operator for
+        %   functions on the domain DOM.
             pref = cheboppref;
             if ( nargin == 0 )
-                domain = pref.domain;
+                dom = pref.domain;
+            end
+            
+            if ( ~all(isfinite(dom)) )
+                error('CHEBFUN:OPERATORBLOCK:eye:infdom', ...
+                   'The operatorBlock class does not support infinite domains.')
             end
 
             % Create the OPERATORBLOCK with information now available.
-            I = operatorBlock(domain);
+            I = operatorBlock(dom);
             I.stack = @(z) eye(z);
             I.diffOrder = 0;
         end
         
-        function F = fred(domain, kernel, varargin)
+        function F = fred(dom, kernel, varargin)
         %FRED   Fredholm integral operator.
         %   F = FRED(K, D) constructs the Fredholm integral operator with kernel
-        %   K for functions in domain D=[a,b]:
+        %   K for functions in domain D = [a,b]:
         %
         %      (F*v)(x) = int( K(x,y)*v(y), y=a..b )
         %
@@ -326,13 +341,13 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
         %   format allows a separable or sparse representation for increased
         %   efficiency in some cases.
         %
-        %   Example: Continuing the previous example, to exploit
-        %   exp(x-y)=exp(x)*exp(-y), first write:
+        %   Example: Continuing the previous example, to exploit exp(x-y) =
+        %   exp(x)*exp(-y), first write:
         %
         %     function K = kernel(X,Y)
-        %       if nargin==1   % tensor product call
-        %         K = exp(X)*exp(-X');   % vector outer product
-        %       else  % normal call
+        %       if ( nargin == 1 )     % tensor product call
+        %         K = exp(X)*exp(-X'); % vector outer product
+        %       else                   % normal call
         %         K = exp(X-Y);
         %       end
         %     end
@@ -344,8 +359,13 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
         %        %  (Elapsed time is 0.500 seconds.)
         %
         % See also OPERATORBLOCK.VOLT.
+        
+            if ( ~all(isfinite(dom)) )
+                error('CHEBFUN:OPERATORBLOCK:fred:infdom', ...
+                   'The operatorBlock class does not support infinite domains.')
+            end
 
-            F = operatorBlock(domain);
+            F = operatorBlock(dom);
             F.stack = @(z) fred(z, kernel, varargin{:});
             F.diffOrder = 0;
         end        
@@ -363,6 +383,11 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
             if ( nargin < 2 )
                 dom = u.domain;
             end
+            
+            if ( ~all(isfinite(dom)) )
+                error('CHEBFUN:OPERATORBLOCK:mult:infdom', ...
+                   'The operatorBlock class does not support infinite domains.')
+            end
 
             % Create the OPERATORBLOCK with information now available.
             M = operatorBlock(dom);
@@ -370,7 +395,7 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
             M.diffOrder = 0;
         end
 
-        function V = volt(domain, kernel, varargin)
+        function V = volt(dom, kernel, varargin)
         %VOLT   Volterra integral operator.
         %   V = VOLT(K, D) constructs the Volterra integral operator with kernel
         %   K for functions in domain D=[a, b]:
@@ -394,26 +419,36 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
         %     plot(u{1})
         %
         % See also OPERATORBLOCK.FRED.
+        
+            if ( ~all(isfinite(dom)) )
+                error('CHEBFUN:OPERATORBLOCK:volt:infdom', ...
+                   'The operatorBlock class does not support infinite domains.')
+            end
 
-            V = operatorBlock(domain);
+            V = operatorBlock(dom);
             V.stack = @(z) volt(z, kernel, varargin{:});
             V.diffOrder = 0;
             
         end
         
-        function Z = zeros(domain)
+        function Z = zeros(dom)
         %OPERATORBLOCK.ZEROS   Zero operator.
-        %   Z = OPERATORBLOCK.ZEROS(DOMAIN) returns the zero operator for
-        %   functions on the domain DOMAIN (i.e., the operator that maps all
-        %   functions to the zero function on the DOMAIN).
+        %   Z = OPERATORBLOCK.ZEROS(DOM) returns the zero operator for
+        %   functions on the domain DOM (i.e., the operator that maps all
+        %   functions to the zero function on the domain DOM).
         
             pref = cheboppref;
             if ( nargin == 0 )
-                domain = pref.domain;
+                dom = pref.domain;
+            end
+            
+            if ( ~all(isfinite(dom)) )
+                error('CHEBFUN:OPERATORBLOCK:zeros:infdom', ...
+                   'The operatorBlock class does not support infinite domains.')
             end
 
             % Create the OPERATORBLOCK with information now available.
-            Z = operatorBlock(domain);
+            Z = operatorBlock(dom);
             Z.stack = @(z) zeros(z);
             Z.diffOrder = 0;
             
