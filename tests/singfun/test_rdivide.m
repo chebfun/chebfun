@@ -83,6 +83,29 @@ tol = 1e2*max(get(h1, 'vscale')*get(h1, 'epslevel'), ...
     get(h2, 'vscale')*get(h2, 'epslevel'));
 pass(9) = norm(feval(h1, x) - feval(h2, x), inf) < tol;
 
+%%
+% Check exponents of reciprocals of singfuns.
+a = randi(20); b = randi(20);
+
+% flip the exponents from positive to negative
+gh = @(x) ((1+x).^a).*((1-x).^b);
+data.exponents = [ a b ];
+data.singType = {'pole', 'pole'};
+g = singfun(gh, data, pref);
+h = 1./g;
+pass(10) = all( h.exponents == [ -a -b ] );
+
+% simplify / smooth out exponents when greater than or equal to 1
+gh = @(x) ((1+x).^-a).*((1-x).^-b);
+data.exponents = [];
+data.singType = {'pole', 'pole'};
+g = singfun(gh, data, pref);
+h = 1./g;
+if isa(h,'singfun')
+    pass(11) = all( get(1./g,'exponents') < 1);
+else
+    pass(11) = true;
+end
 
 end
 
