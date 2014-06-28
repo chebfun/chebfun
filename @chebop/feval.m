@@ -187,6 +187,9 @@ elseif ( numberOfInputs == 2 )
 else
     % The operator is specified on the form
     %   N.op = @(x, u, v) = [diff(u,2) + v; u + diff(v)]
+    
+    % Count the number of RHSs:
+    numCols = max(max(cellfun(@(v) size(v, 2), varargin)));
 
     % We must expand CHEBMATRIX entries out to a cell for {:} to work below.
     isChebMat = cellfun(@(u) isa(u, 'chebmatrix'), varargin);
@@ -200,18 +203,35 @@ else
                 args = [args , varargin(k)];          %#ok<AGROW>
             end
         end
+        args = args.';
     else
-        args = varargin;
+        args = varargin.';
     end
+    
+    if ( numCols > 1 )
+        % Deal with multiple RHS
+        out = cell(1, numCols);
+        for k = 1:numCols
+            out{k} = doEval(N, args(:,k));
+        end
+        out = horzcat(out{:});
+    else
+        out = doEval(N, args);
+    end
+    
+end
 
+end
+
+function out = doEval(N, args)
+
+    numberOfInputs = nargin(N);
     if ( numel(args) == numberOfInputs - 1 )
         % Check if we need to include an x (independent variable):
         x = chebfun(@(x) x, N.domain);
-        args = [ {x} , args ];
+        args = [ {x} ; args ];
     end
-
     % Evaluate the operator:
     out = N.op(args{:});
-end
-
+    
 end
