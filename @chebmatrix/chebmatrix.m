@@ -682,6 +682,13 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         end
         
         function A = times(A, b)
+            % Convert matrices to chebmatrices:
+            if ( ~isscalar(b) )
+                b = chebmatrix(b);
+            end
+            if ( ~isscalar(A) )
+                A = chebmatrix(A);
+            end
             if ( isnumeric(b) )
                 A = cellfun(@(A) times(A, b), A);
             elseif ( isnumeric(A) )
