@@ -84,6 +84,9 @@ if ( isa(f, 'singfun') && isa(g, 'singfun') )
     end
 end
 
+%% Simplify and replace the boundary roots:
+s = simplify(s);
+
 %% 
 % Check if after division s has become smooth:
 if ( issmooth(s) )
