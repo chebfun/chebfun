@@ -107,6 +107,26 @@ else
     pass(11) = true;
 end
 
+%% 
+% Check division as differentiation
+d = [1,Inf]; r = chebfun(@(r) r,d); 
+f = 1./r;
+h = diff(f) - f./(-r);
+% tol = 1e2 * get(h, 'vscale') * get(h, 'epslevel') % too tight a tolerance
+tol = 1e2 * get(h, 'vscale');                       % only for small vscale
+pass(12) = get(h, 'vscale') < 10e-12;               % so we check that here
+pass(13) = norm(h,Inf) < tol;
+
+%%
+% Check division as negative powers
+d = [1,Inf]; r = chebfun(@(r) r,d); 
+f = 1./r - r.^-1;               % rdivide == power
+g = (1./r)./r - r.^-2;          % rdivides == times
+h = 1./(r.^2) - (1./r).^2;      % associativity
+pass(14) = norm(f,Inf) < tol;
+pass(15) = norm(g,Inf) < tol;
+pass(16) = norm(h,Inf) < tol;
+
 end
 
 % Test the division of a SINGFUN F, specified by Fh, by a scalar C using
