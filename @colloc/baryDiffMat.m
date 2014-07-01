@@ -40,7 +40,7 @@ if ( k == 0 )
     D = eye(N);
     return
 end
-if ( nargin < 3 )
+if ( nargin < 2 )
     w = baryWeights(x);
 end
 
