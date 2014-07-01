@@ -44,7 +44,10 @@ pass(6) = all( r(:) - r2 < 10*length(f)*max(f.epslevel) | isnan(r2) );
 
 f = testclass.make(@(x) [cos(2*pi*x), sin(pi*x)], [], pref);
 r = roots(f, 'complex', 1);
-r2 = [0.75 -0.75 0.25 -0.25 0 -1 NaN NaN].';
-pass(7) = all( r(:) - r2 < 10*length(f)*max(f.epslevel) | isnan(r2) );
+r = r(:);
+[temp, id] = sort(real(r));
+r = r(id);
+r2 = [0.75 -0.75 0.25 -0.25 0 1 NaN NaN].';
+pass(7) = all( abs(r(:) - sort(r2)) < 10*length(f)*max(f.epslevel) | isnan(r2) );
 
 end
