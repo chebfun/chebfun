@@ -20,28 +20,28 @@ for j=1:numel(n)
     pass(start+j) = test_alias_by_interpolating(@(x) cos(1+sin(2*pi*x)), n(j), tol);
 end
 
-% Complex function
+% Complex function:
 n = [1 2 3 7 10 12 15];
 start = length(pass);
 for j=1:numel(n)
     pass(start+j) = test_alias_by_interpolating(@(x) cos(1+sin(pi*x)) + 1i*exp(cos(pi*x)), n(j), tol);
 end
 
-% Larger grid
+% Larger grid:
 n = [8 15];
 start = length(pass);
 for j=1:numel(n)
     pass(start+j) = test_alias_by_interpolating(@(x) 1 + cos(3*pi*x), n(j), tol);
 end
 
-% Complex function
+% Complex function:
 n = [8 15];
 start = length(pass);
 for j=1:numel(n)
     pass(start+j) = test_alias_by_interpolating(@(x) 1 + cos(3*pi*x) + 1i*sin(2*pi*x), n(j), tol);
 end
 
-% Array-valued function
+% Array-valued function:
 start = length(pass);
 n = [1 2 3 7 10 12 15];
 for j=1:numel(n)
@@ -54,9 +54,9 @@ function pass = test_alias_by_interpolating(op, n, tol)
 
 f = fourtech.make(op);
 c = f.alias(f.coeffs, n);
-x = fourtech.fourpts(size(c,1));
+x = fourtech.fourpts(size(c, 1));
 cexact = f.vals2coeffs(op(x));
 
-pass = norm(c - cexact,inf) < tol;
+pass = norm(c - cexact, inf) < tol;
 
 end

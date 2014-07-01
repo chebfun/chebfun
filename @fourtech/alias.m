@@ -10,6 +10,7 @@ function coeffs = alias(coeffs, m)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Get the number of coefficients.
 n = size(coeffs, 1);
 
 % Pad with zeros:
@@ -19,28 +20,31 @@ if ( m > n )
     z = zeros(k, size(coeffs, 2));
     
     % Need to handle the odd vs. even case separately.
-    if mod(n, 2) == 0
+    if ( ~mod(n, 2) ) % n even.
         
         % First, account for the asymmetry in the coefficients when n is even.
         % This will account for the cos(N/2) coefficient, which is stored
         % in the coeffs(n,:) entry, using properties of the complex
         % exponential.
-        coeffs = [coeffs(n,:)/2;coeffs(1:n-1,:);coeffs(n,:)/2];
-        coeffs = [z(1:end-1,:); coeffs; z];
+        coeffs = [ coeffs(n,:)/2; coeffs(1:n-1,:); coeffs(n,:)/2 ];
+        coeffs = [ z(1:end-1,:); coeffs; z ];
         
-        % Next, check if m is odd.  If it is then coeffs is too long and we
-        % need to remove the last row.
-        if mod(m, 2) == 1
+        % Next, check if m is odd. If it is, then coeffs is too long and we
+        % need to remove the last row (the lowest degree
+        % coefficients).
+        if ( mod(m, 2) ) % m odd.
             coeffs = coeffs(1:end-1,:);
         end
         
-    else
+    else % n odd.
         
         % There is no asymmetry in the coefficients, just pad them.
         coeffs = [ z; coeffs; z ];
+        
         % Only need to check if m is even, in which case coeffs is too 
-        % long and we need to remove the first row.
-        if ( mod(m, 2) == 0 )
+        % long and we need to remove the first row (the highest degree
+        % coefficients).
+        if ( ~mod(m, 2) ) % m even.
             coeffs = coeffs(2:end,:);
         end
     end
@@ -52,16 +56,14 @@ end
 % If the number of coefficients is even then we extend them by one so they
 % are odd by exploiting the symmetry property.  This makes the code below a
 % little cleaner since fewer cases need to be handled.
-if ~mod(n,2)
+if ( ~mod(n, 2) ) % n even.
     coeffs(n,:) = 0.5*coeffs(n,:);
-    coeffs = [coeffs(n,:);coeffs];
-    n = n+1;
+    coeffs = [ coeffs(n,:); coeffs ];
+    n = n + 1;
 end
 
-% Need to handle the odd and even case differently.
-isOdd = mod(m,2);
-
-if ( isOdd )    
+% Need to handle the odd and even case (for m) differently.
+if ( mod(m, 2) ) % m is odd.
 
     if ( m == 1 )
 
@@ -77,11 +79,11 @@ if ( isOdd )
         
         m2 = (m-1)/2;
         n2 = (n-1)/2;
-        % Extract coefficients and flip them to start from lower modes (in
-        % absolute value) to higher modes since this is more natrual.
+        % Extract coefficients and flip them to start from lower modes
+        % to higher modes since this is more natrual.
         coeffs = coeffs(end:-1:1,:);
         aliasedCoeffs = coeffs(n2-m2+1:n2+m2+1,:);
-        %
+        
         % The code below aliases the coefficients from the higher modes
         % onto the lower modes. The principle behind the formula is figure
         % out which of the higher Fourier modes are indistinguishable from
@@ -89,21 +91,22 @@ if ( isOdd )
         % spaced points from [-1,1). In general, when m and n are odd the
         % following will be equal for j=-(n-1)/2 to -(m+1)/2
         % exp(1i*pi*j*x) = sgn*exp(1i*pi*k*x) where
-        % k = mod(j+(m+1)/2,-m) + (m-1)/2 and sgn = (-1)^mod(j+k,2);
+        % k = mod(j+(m+1)/2, -m) + (m-1)/2 and sgn = (-1)^mod(j+k, 2);
         for j = -n2:-m2-1
-            k = mod(j+m2+1,-m) + m2;
-            coeffIndexK = k+m2+1;  % Index into aliasedCoeffs for mode k.
-            coeffIndexJ = j+n2+1;  % Index into coeffs for mode j.
-            sgn = (-1)^mod(j+k,2);
+            k = mod(j+m2+1, -m) + m2;
+            coeffIndexK = k + m2 + 1;  % Index into aliasedCoeffs for mode k.
+            coeffIndexJ = j + n2 + 1;  % Index into coeffs for mode j.
+            sgn = (-1)^mod(j+k, 2);
             aliasedCoeffs(coeffIndexK,:) = aliasedCoeffs(coeffIndexK,:) + sgn*coeffs(coeffIndexJ,:);
-            coeffIndexK = -k+m2+1;
-            coeffIndexJ = -j+n2+1;
+            coeffIndexK = -k + m2 + 1;
+            coeffIndexJ = -j + n2 + 1;
             aliasedCoeffs(coeffIndexK,:) = aliasedCoeffs(coeffIndexK,:) + sgn*coeffs(coeffIndexJ,:);
         end
         coeffs = flipud(aliasedCoeffs);
 
     end
-else
+    
+else % m is even.
     
     m2 = m/2;
     n2 = (n-1)/2;
@@ -118,19 +121,18 @@ else
     % exp(1i*pi*m/2*x) term in the code below without the need for a 
     % special if check.  The negative allows contribution for sin(m/2*pi*x)
     % to be removed.    
-    aliasedCoeffs = [aliasedCoeffs;-aliasedCoeffs(1,:)];
+    aliasedCoeffs = [ aliasedCoeffs; -aliasedCoeffs(1,:) ];
     
-    %
     % Follow a similar structure to the odd m case above.  The main
     % difference is that the higher order modes do not change sign when
     % aliased onto an even point grid.
     for j = -n2:-m2
         k = mod(j+m2,-m) + m2;
-        coeffIndexK = k+m2+1;  % Index into aliasedCoeffs for mode k.
-        coeffIndexJ = j+n2+1;  % Index into coeffs for mode j.
+        coeffIndexK = k + m2 + 1;  % Index into aliasedCoeffs for mode k.
+        coeffIndexJ = j + n2 + 1;  % Index into coeffs for mode j.
         aliasedCoeffs(coeffIndexK,:) = aliasedCoeffs(coeffIndexK,:) + coeffs(coeffIndexJ,:);
-        coeffIndexK = -k+m2+1;
-        coeffIndexJ = -j+n2+1;
+        coeffIndexK = -k + m2 + 1;
+        coeffIndexJ = -j + n2 + 1;
         aliasedCoeffs(coeffIndexK,:) = aliasedCoeffs(coeffIndexK,:) + coeffs(coeffIndexJ,:);
     end
     % Collapse the aliased coefficient vector down to an even number of

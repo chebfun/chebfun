@@ -7,8 +7,10 @@ function x = fourpts(n)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( n <= 0 )     % Special case (no points)
+% Special case (no points).
+if ( n <= 0 )     
     x = []; 
+    
 else
     x = linspace(-1, 1, n+1).';
     x(end) = [];
