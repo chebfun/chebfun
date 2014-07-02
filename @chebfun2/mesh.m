@@ -1,11 +1,12 @@
-function varargout = mesh( f, varargin )
-%MESH   3-D mesh surface of a chebfun2.
+function varargout = mesh( varargin ) %#ok<STOUT>
+%MESH   3-D mesh surface of a CHEBFUN2.
+%   MESH is not supported for CHEBFUN2 objects, and so returns an error.
 %
-% This is NOT supported so returns an error.
+% See also SURF.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
-error('CHEBFUN2:MESH', 'This is not supported by Chebfun2.'); 
+error('CHEBFUN:CHEBFUN2:mesh:noSupport', 'MESH is not supported by Chebfun2.'); 
 
 end
