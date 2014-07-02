@@ -270,6 +270,7 @@ else
     w = [];
 end
 
+% TODO: Compute these via the given formula in [(6.5)-(6.8), 2]
 % Barycentric weights:
 if ( nargout > 2 )
     v = sin(t)./sqrt(2./w);
