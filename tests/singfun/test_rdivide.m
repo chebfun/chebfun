@@ -89,11 +89,11 @@ a = randi(20); b = randi(20);
 
 % flip the exponents from positive to negative
 gh = @(x) ((1+x).^a).*((1-x).^b);
-data.exponents = [ a b ];
+data.exponents = [a b];
 data.singType = {'pole', 'pole'};
 g = singfun(gh, data, pref);
 h = 1./g;
-pass(10) = all( h.exponents == [ -a -b ] );
+pass(10) = all( h.exponents == [-a -b] );
 
 % simplify / smooth out exponents when greater than or equal to 1
 gh = @(x) ((1+x).^-a).*((1-x).^-b);
@@ -102,30 +102,25 @@ data.singType = {'pole', 'pole'};
 g = singfun(gh, data, pref);
 h = 1./g;
 if isa(h,'singfun')
-    pass(11) = all( get(1./g,'exponents') < 1);
+    pass(11) = all( get(h, 'exponents') < 1);
 else
     pass(11) = true;
 end
 
-%% 
-% Check division as differentiation
-d = [1,Inf]; r = chebfun(@(r) r,d); 
+%% Check division as differentiation
+dom = [1, Inf]; 
+r = chebfun(@(x) x, dom); 
 f = 1./r;
-h = diff(f) - f./(-r);
-% tol = 1e2 * get(h, 'vscale') * get(h, 'epslevel') % too tight a tolerance
-tol = 1e2 * get(h, 'vscale');                       % only for small vscale
-pass(12) = get(h, 'vscale') < 10e-12;               % so we check that here
-pass(13) = norm(h,Inf) < tol;
+err = diff(f) + f./r;
+pass(12) = ( norm(err, Inf) < 1e2*get(r, 'vscale')*get(r, 'epslevel') );
 
-%%
-% Check division as negative powers
-d = [1,Inf]; r = chebfun(@(r) r,d); 
+%% Check division as negative powers
 f = 1./r - r.^-1;               % rdivide == power
 g = (1./r)./r - r.^-2;          % rdivides == times
 h = 1./(r.^2) - (1./r).^2;      % associativity
-pass(14) = norm(f,Inf) < tol;
-pass(15) = norm(g,Inf) < tol;
-pass(16) = norm(h,Inf) < tol;
+pass(13) = ( norm(f, Inf) < get(r, 'vscale')*get(r, 'epslevel') );
+pass(14) = ( norm(g, Inf) < get(r, 'vscale')*get(r, 'epslevel') );
+pass(15) = ( norm(h, Inf) < get(r, 'vscale')*get(r, 'epslevel') );
 
 end
 
