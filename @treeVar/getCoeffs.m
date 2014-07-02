@@ -1,4 +1,4 @@
-function anonFun = toAnon(infix, varArray)
+function coeff = getCoeffs(infix, varArray)
 % FEVAL Evaluates an anon with an input argument, similar to f(u) where f
 % is an anonymous function and u is the argument.
 
@@ -9,7 +9,7 @@ function anonFun = toAnon(infix, varArray)
 loadVariables(varArray)
 
 % Add the @(u) part
-infix = ['@(u) ', infix];
+infix = ['@(t, u) [u(2); ', infix, ']'];
 
 anonFun = eval(infix);
 

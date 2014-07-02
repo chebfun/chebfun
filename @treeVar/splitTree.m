@@ -9,10 +9,11 @@ if ( ~isstruct(tree) || tree.diffOrder < maxOrder )
 else
     switch tree.numArgs
         case 1
+            % We're dealing with a unary operator, 
             [newTree, derTree] = splitTree(tree, maxOrder);
             
         case 2
-            if ( strcmp(tree.method, 'diff') )
+            if ( any(strcmp(tree.method, {'diff','times'})) )
                 newTree = [];
                 derTree = tree;
             else
@@ -22,9 +23,9 @@ else
                     treeVar.splitTree(tree.right, maxOrder);
                 
                 if ( isempty(newTreeLeft) )
-                    newTree = oneTree(newTreeRight, tree.method);
+                    newTree = oneTreeFromRight(newTreeRight, tree.method);
                 elseif (isempty(newTreeRight) )
-                    newTree = oneTree(newTreeLeft, tree.method);
+                    newTree = newTreeLeft;
                 else
                     if ( ~isstruct(newTreeLeft) )
                         newDiffOrder = newTreeRight.diffOrder;
@@ -42,9 +43,9 @@ else
                 end
                 
                 if ( isempty(derTreeLeft) )
-                    derTree = oneTree(derTreeRight, tree.method);
+                    derTree = oneTreeFromRight(derTreeRight, tree.method);
                 elseif (isempty(derTreeRight) )
-                    derTree = oneTree(derTreeLeft, tree.method);
+                    derTree = derTreeLeft;
                 else
                     derTree = struct('method', tree.method, ...
                         'numArgs', tree.numArgs, ...
@@ -58,7 +59,7 @@ else
 end
 end
 
-function ot = oneTree(tree, operator)
+function ot = oneTreeFromRight(tree, operator)
 if ( strcmp(operator,'minus') )
     ot = struct('method', 'uminus', 'numArgs', 1, 'center', tree, ...
         'diffOrder', tree.diffOrder);
