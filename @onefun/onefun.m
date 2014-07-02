@@ -59,7 +59,8 @@ classdef onefun % (Abstract)
             if ( isa(op, 'onefun') )
                 % OP is already a ONEFUN!
                 obj = op;
-            elseif ( pref.blowup )
+            elseif ( pref.blowup || ...
+                    ( isfield(data, 'exponents') && any(data.exponents) ) )
                 obj = singfun(op, data, pref);
 
                 % Return just a SMOOTHFUN if no singularities found:
