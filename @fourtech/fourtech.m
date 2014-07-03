@@ -410,7 +410,7 @@ classdef fourtech < smoothfun
         
         % Compute Fourier points (x) and optionally quadrature (w)
         % and barycentric (v) weights:
-        [x, w, v] = fourpts(n);
+        [x, w] = fourpts(n);
         
         % Convert coefficients to values:
         values = coeffs2vals(coeffs);
