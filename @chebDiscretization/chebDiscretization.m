@@ -1,5 +1,5 @@
 classdef chebDiscretization 
-%CHEBDISCRETIZATION Convert a chebmatrix or linop to discrete form.
+%CHEBDISCRETIZATION   Convert a chebmatrix or linop to discrete form.
 %   This class is not called directly by the end user. 
 %
 % See also COLLOC, ULTRAS.
