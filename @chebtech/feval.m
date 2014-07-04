@@ -32,6 +32,12 @@ sizex = size(x);
 ndimsx = ndims(x);
 x = x(:);
 
+if ( (m > 1) && (ndimsx > 2) )
+    error('CHEBFUN:CHEBTECH:feval:evalArrayAtNDArray', ...
+        ['Evaluation of a CHEBTECH with more than one column at inputs ' ...
+         'with more than two dimensions is not supported.']);
+end
+
 % Evaluate using Clenshaw's algorithm:
 y = f.clenshaw(x, f.coeffs);
 

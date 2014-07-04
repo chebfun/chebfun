@@ -33,6 +33,12 @@ function fx = bary(x, fvals, xk, vk)
 sizex = size(x);
 ndimsx = ndims(x);
 
+if ( (m > 1) && (ndimsx > 2) )
+    error('CHEBFUN:bary:evalArrayAtNDArray', ...
+        ['BARY does not support evaluation of vectors of polynomials at ' ...
+         'inputs with more than two dimensions.']);
+end
+
 % Default to Chebyshev nodes and barycentric weights:
 if ( nargin < 3 )
     xk = chebtech2.chebpts(n);
@@ -49,7 +55,6 @@ end
 
 % Check that input is a column vector:
 if ( (ndimsx > 2) || (sizex(2) > 1) )
-%     warning('CHEBFUN:bary:colvec', 'Input should be a column vector.');
     x = x(:);
 end
 
