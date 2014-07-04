@@ -22,7 +22,6 @@ function fx = bary(x, fvals, xk, vk)
 %     view(0, 90), shg
 %     colormap(hsv)
 %
-%
 % See also CHEBTECH.CLENSHAW.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
