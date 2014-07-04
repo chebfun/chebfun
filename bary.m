@@ -13,22 +13,75 @@ function fx = bary(x, fvals, xk, vk)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% DEVELOPER NOTE: This is simply a wrapper for CHEBTECH.BARY().
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 % Parse inputs:
-n = size(fvals, 1);
+[n, m] = size(fvals);
+sizex = size(x);
+ndimsx = ndims(x);
 
 % Default to Chebyshev nodes and barycentric weights:
 if ( nargin < 3 )
     xk = chebtech2.chebpts(n);
 end
+
 if ( nargin < 4 )
     vk = chebtech2.barywts(n);
 end
-    
-% Call CHEBETCH.BARY.
-fx = chebtech.bary(x, fvals, xk, vk);
+
+if ( ~all(sizex) )
+    fx = x;
+    return
+end
+
+% Check that input is a column vector:
+if ( (ndimsx > 2) || (sizex(2) > 1) )
+    warning('CHEBFUN:bary:colvec', 'Input should be a column vector.');
+    x = x(:);
+end
+
+% The function is a constant.
+if ( n == 1 )
+    fx = repmat(fvals, length(x), 1);
+    return
+end
+
+% The function is NaN.
+if ( any(isnan(fvals)) )
+    fx = NaN(length(x), m);
+    return
+end
+
+% The main loop:
+if ( numel(x) < 4*length(xk) )  % Loop over evaluation points
+    % Note: The value "4" here was detemined experimentally.
+
+    % Initialise return value:
+    fx = zeros(size(x, 1), m);
+
+    % Loop:
+    for j = 1:numel(x),
+        xx = vk ./ (x(j) - xk);
+        fx(j,:) = (xx.'*fvals) / sum(xx);
+    end
+else                            % Loop over barycentric nodes
+    % Initialise:
+    num = zeros(size(x, 1), m);
+    denom = num;
+
+    % Loop:
+    for j = 1:length(xk),
+        tmp = (vk(j) ./ (x - xk(j)));
+        num = num + bsxfun(@times, tmp, fvals(j,:));
+        denom = bsxfun(@plus, denom, tmp);
+    end
+    fx = num ./ denom;
+end
+
+% Try to clean up NaNs:
+for k = find(isnan(fx(:,1)))'       % (Transpose as Matlab loops over columns)
+    index = find(x(k) == xk, 1);    % Find the corresponding node
+    if ( ~isempty(index) )
+        fx(k,:) = fvals(index,:);   % Set entry/entries to the correct value
+    end
+end
 
 end
