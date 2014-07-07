@@ -341,9 +341,9 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods 
         
-        function A = cellfun(A, op)
+        function A = cellfun(op, A)
         %CELLFUN   Apply an operation to each block of a CHEBMATRIX.
-        %   CELLFUN(A, OP) applies the operator OP to each of the blocks of
+        %   CELLFUN(OP, A) applies the operator OP to each of the blocks of
         %   A. If OP is not defined for one of the block entry types, then an
         %   error is thrown.
         %
@@ -363,190 +363,190 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         end
                 
         function A = abs(A)
-            A = cellfun(A, @abs);
+            A = cellfun(@abs, A);
         end
         
         function A = acos(A)
-            A = cellfun(A, @acos);
+            A = cellfun(@acos, A);
         end
         
         function A = acosd(A)
-            A = cellfun(A, @acosd);
+            A = cellfun(@acosd, A);
         end
         
         function A = acosh(A)
-            A = cellfun(A, @acosh);
+            A = cellfun(@acosh, A);
         end
         
         function A = acot(A)
-            A = cellfun(A, @acot);
+            A = cellfun(@acot, A);
         end
         
         function A = acotd(A)
-            A = cellfun(A, @acotd);
+            A = cellfun(@acotd, A);
         end
         
         function A = acoth(A)
-            A = cellfun(A, @acoth);
+            A = cellfun(@acoth, A);
         end 
         
         function A = acsc(A)
-            A = cellfun(A, @acsc);
+            A = cellfun(@acsc, A);
         end
         
         function A = acscd(A)
-            A = cellfun(A, @acscd);
+            A = cellfun(@acscd, A);
         end
         
         function A = acsch(A)
-            A = cellfun(A, @acsch);
+            A = cellfun(@acsch, A);
         end
         
         function A = asec(A)
-            A = cellfun(A, @asec);
+            A = cellfun(@asec, A);
         end
         
         function A = asecd(A)
-            A = cellfun(A, @asecd);
+            A = cellfun(@asecd, A);
         end
         
         function A = asech(A)
-            A = cellfun(A, @asech);
+            A = cellfun(@asech, A);
         end
         
         function A = asin(A)
-            A = cellfun(A, @asin);
+            A = cellfun(@asin, A);
         end
         
         function A = asind(A)
-            A = cellfun(A, @asind);
+            A = cellfun(@asind, A);
         end
         
         function A = asinh(A)
-            A = cellfun(A, @asinh);
+            A = cellfun(@asinh, A);
         end
         
         function A = atan(A)
-            A = cellfun(A, @atan);
+            A = cellfun(@atan, A);
         end
         
         function A = atand(A)
-            A = cellfun(A, @atand);
+            A = cellfun(@atand, A);
         end
         
         function A = atanh(A)
-            A = cellfun(A, @atanh);
+            A = cellfun(@atanh, A);
         end
         
         function A = cos(A)
-            A = cellfun(A, @cos);
+            A = cellfun(@cos, A);
         end 
         
         function A = cosd(A)
-            A = cellfun(A, @cosd);
+            A = cellfun(@cosd, A);
         end
         
         function A = cosh(A)
-            A = cellfun(A, @cosh);
+            A = cellfun(@cosh, A);
         end
         
         function A = cot(A)
-            A = cellfun(A, @cot);
+            A = cellfun(@cot, A);
         end
         
         function A = cotd(A)
-            A = cellfun(A, @cotd);
+            A = cellfun(@cotd, A);
         end
         
         function A = coth(A)
-            A = cellfun(A, @coth);
+            A = cellfun(@coth, A);
         end
         
         function A = csc(A)
-            A = cellfun(A, @csc);
+            A = cellfun(@csc, A);
         end
         
         function A = cscd(A)
-            A = cellfun(A, @cscd);
+            A = cellfun(@cscd, A);
         end
         
         function A = csch(A)
-            A = cellfun(A, @csch);
+            A = cellfun(@csch, A);
         end
         
         function A = diff(A, varargin)
-            A = cellfun(A, @(A) diff(A, varargin{:}));
+            A = cellfun(@(A) diff(A, varargin{:}), A);
         end
         
         function A = erf(A)
-            A = cellfun(A, @erf);
+            A = cellfun(@erf, A);
         end
         
         function A = erfc(A)
-            A = cellfun(A, @erfc);
+            A = cellfun(@erfc, A);
         end
         
         function A = erfcinv(A)
-            A = cellfun(A, @erfcinv);
+            A = cellfun(@erfcinv, A);
         end
         
         function A = erfcx(A)
-            A = cellfun(A, @erfcx);
+            A = cellfun(@erfcx, A);
         end
         
         function A = erfinv(A)
-            A = cellfun(A, @erfinv);
+            A = cellfun(@erfinv, A);
         end
         
         function A = exp(A)
-            A = cellfun(A, @exp);
+            A = cellfun(@exp, A);
         end
         
         function A = expm1(A)
-            A = cellfun(A, @expm1);
+            A = cellfun(@expm1, A);
         end
         
         function A = fix(A)
-            A = cellfun(A, @fix);
+            A = cellfun(@fix, A);
         end
         
         function A = floor(A)
-            A = cellfun(A, @floor);
+            A = cellfun(@floor, A);
         end
         
         function A = heaviside(A)
-            A = cellfun(A, @heaviside);
+            A = cellfun(@heaviside, A);
         end
         
         function A = imag(A)
-            A = cellfun(A, @imag);
+            A = cellfun(@imag, A);
         end
         
         function A = log(A)
-            A = cellfun(A, @log);
+            A = cellfun(@log, A);
         end
         
         function A = log10(A)
-            A = cellfun(A, @log10);
+            A = cellfun(@log10, A);
         end
         
         function A = log1p(A)
-            A = cellfun(A, @log1p);
+            A = cellfun(@log1p, A);
         end
         
         function A = log2(A)
-            A = cellfun(A, @log2);
+            A = cellfun(@log2, A);
         end
         
         function A = max(A)
-            A = cellfun(A, @max);
+            A = cellfun(@max, A);
             if ( all(cellfun(@isnumeric, A.blocks)) )
                 A = cell2mat(A.blocks);
             end
         end
         
         function A = min(A)
-            A = cellfun(A, @min);
+            A = cellfun(@min, A);
             if ( all(cellfun(@isnumeric, A.blocks)) )
                 A = cell2mat(A.blocks);
             end
@@ -554,7 +554,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         
         function A = mrdivide(A, b)
             if ( isnumeric(b) && isscalar(b) )
-                A = cellfun(A, @(A) mrdivide(A, b));
+                A = cellfun(@(A) mrdivide(A, b), A);
             else
                 error('CHEBFUN:CHEBMATRIX:mrdivide:notScalar', ...
                     'CHEBMATRIX/MRDIVIDE only supports division by scalars.');
@@ -563,9 +563,9 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         
         function A = power(A, b)
             if ( isnumeric(b) )
-                A = cellfun(A, @(A) power(A, b));
+                A = cellfun(@(A) power(A, b), A);
             elseif ( isnumeric(A) )
-                A = cellfun(b, @(b) power(A, b));
+                A = cellfun(@(b) power(A, b), b);
             else
                 A.blocks = cellfun(@power, A.blocks, b.blocks, ...
                     'UniformOutput', false);
@@ -573,17 +573,17 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         end
         
         function A = real(A)
-            A = cellfun(A, @real);
+            A = cellfun(@real, A);
         end
         
         function A = reallog(A)
-            A = cellfun(A, @reallog);
+            A = cellfun(@reallog, A);
         end
         
         function A = rdivide(A, b)
             if ( isnumeric(b) )
                 if ( isscalar(b) )
-                    A = cellfun(A, @(A) rdivide(A, b));
+                    A = cellfun(@(A) rdivide(A, b), A);
                 else
                     if ( ~all(size(A.blocks) == size(b)) )
                         error('CHEBFUN:CHEBMATRIX:rdivide:dimensions', ...
@@ -594,7 +594,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
                     end
                 end    
             elseif ( isnumeric(A) )
-                A = cellfun(b, @(b) rdivide(A, b));
+                A = cellfun(@(b) rdivide(A, b), b);
             else
                 A.blocks = cellfun(@rdivide, A.blocks, b.blocks, ...
                     'UniformOutput', false);
@@ -602,66 +602,66 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         end
         
         function A = round(A)
-            A = cellfun(A, @round);
+            A = cellfun(@round, A);
         end
         
         function A = sec(A)
-            A = cellfun(A, @sec);
+            A = cellfun(@sec, A);
         end
         
         function A = secd(A)
-            A = cellfun(A, @secd);
+            A = cellfun(@secd, A);
         end
         
         function A = sech(A)
-            A = cellfun(A, @sech);
+            A = cellfun(@sech, A);
         end
         
         function A = sign(A)
-            A = cellfun(A, @sign);
+            A = cellfun(@sign, A);
         end
         
         function A = sin(A)
-            A = cellfun(A, @sin);
+            A = cellfun(@sin, A);
         end
         
         function A = sinc(A)
-            A = cellfun(A, @sinc);
+            A = cellfun(@sinc, A);
         end
         
         function A = sind(A)
-            A = cellfun(A, @sind);
+            A = cellfun(@sind, A);
         end
         
         function A = sinh(A)
-            A = cellfun(A, @sinh);
+            A = cellfun(@sinh, A);
         end
         
         function A = sqrt(A)
-            A = cellfun(A, @sqrt);
+            A = cellfun(@sqrt, A);
         end
         
         function A = sum(A)
-            A = cellfun(A, @sum);
+            A = cellfun(@sum, A);
         end
         
         function A = tan(A)
-            A = cellfun(A, @tan);
+            A = cellfun(@tan, A);
         end
         
         function A = tand(A)
-            A = cellfun(A, @tand);
+            A = cellfun(@tand, A);
         end
         
         function A = tanh(A)
-            A = cellfun(A, @tanh);
+            A = cellfun(@tanh, A);
         end
         
         function A = times(A, b)
             if ( isnumeric(b) )
-                A = cellfun(A, @(A) times(A, b));
+                A = cellfun(@(A) times(A, b), A);
             elseif ( isnumeric(A) )
-                A = cellfun(b, @(b) times(A, b));
+                A = cellfun(@(b) times(A, b), b);
             else
                 A.blocks = cellfun(@times, A.blocks, b.blocks, ...
                     'UniformOutput', false);
@@ -669,7 +669,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         end
         
         function A = uminus(A)
-            A = cellfun(A, @uminus);
+            A = cellfun(@uminus, A);
         end
         
         function A = uplus(A)

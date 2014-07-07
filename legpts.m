@@ -26,7 +26,7 @@ function [x, w, v, t] = legpts(n, int, meth)
 %   In some situations (in particular with 'ASY') these can be computed to a
 %   much better relative precision than X.
 %
-% See also CHEBPTS.
+% See also CHEBPTS, JACPTS, LOBPTS, RADAUPTS, HERMPTS, LAGPTS, and FOURPTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -660,8 +660,8 @@ A2 = A2 - A2(1);
 
 if ( nargout < 3 )
     % Make function for output
-    tB1 = @(theta) chebtech.bary(theta,tB1,t,v);
-    A2 = @(theta) chebtech.bary(theta,A2,t,v);
+    tB1 = @(theta) bary(theta,tB1,t,v);
+    A2 = @(theta) bary(theta,A2,t,v);
     return
 end
 
@@ -688,10 +688,10 @@ A3 = A3 - A3(1);
 
 if ( nargout < 6 )
     % Make function for output
-    tB1 = @(theta) chebtech.bary(theta, tB1, t, v);
-    A2 = @(theta) chebtech.bary(theta, A2, t, v);
-    tB2 = @(theta) chebtech.bary(theta, tB2, t, v);
-    A3 = @(theta) chebtech.bary(theta, A3, t, v);
+    tB1 = @(theta) bary(theta, tB1, t, v);
+    A2 = @(theta) bary(theta, A2, t, v);
+    tB2 = @(theta) bary(theta, tB2, t, v);
+    A3 = @(theta) bary(theta, A3, t, v);
     return
 end
 
@@ -716,11 +716,11 @@ A4 = .5*(D*tB3) - (.5+alph)*B3 - .5*K;
 A4 = A4 - A4(1);
 
 % Make function for output:
-tB1 = @(theta) chebtech.bary(theta, tB1, t, v);
-A2 = @(theta) chebtech.bary(theta, A2, t, v);
-tB2 = @(theta) chebtech.bary(theta, tB2, t, v);
-A3 = @(theta) chebtech.bary(theta, A3, t, v);
-tB3 = @(theta) chebtech.bary(theta, tB3, t, v);
-A4 = @(theta) chebtech.bary(theta, A4, t, v);
+tB1 = @(theta) bary(theta, tB1, t, v);
+A2 = @(theta) bary(theta, A2, t, v);
+tB2 = @(theta) bary(theta, tB2, t, v);
+A3 = @(theta) bary(theta, A3, t, v);
+tB3 = @(theta) bary(theta, tB3, t, v);
+A4 = @(theta) bary(theta, A4, t, v);
 
 end
