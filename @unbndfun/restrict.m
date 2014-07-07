@@ -86,6 +86,8 @@ for k = 1:numSubDom
         if ( (k == 1) || (k == numSubDom) )
             pref.techPrefs.extrapolate = 1;
         end
+    else
+        data.exponents = [];
     end
     
     data.domain = s(k:k+1);

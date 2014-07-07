@@ -134,7 +134,7 @@ else
         else
             w = fhBaryWts(xrm, d);
         end
-        yyrm = chebtech.bary(x(rmIndex), fvalsrm, xrm, w);
+        yyrm = bary(x(rmIndex), fvalsrm, xrm, w);
         errs(d+1) = max(abs(yyrm - fvals(rmIndex)));
         if ( errs(d+1) > 1000*min(errs(1:d+1)) )
             errs(d+2:end) = [];
@@ -163,7 +163,7 @@ else
 end
 
 % Create a function handle for the computed rational interpolant to the data:
-f = @(zz) chebtech.bary(zz, vals, x, w);
+f = @(zz) bary(zz, vals, x, w);
 
 end
 

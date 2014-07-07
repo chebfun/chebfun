@@ -290,7 +290,7 @@ h = (w'*fk) / (w'*sigma);                          % Levelled reference error.
 pk = (fk - h*sigma);                               % Vals. of r*q in reference.
 
 % Trial polynomial.
-p = chebfun(@(x) chebtech.bary(x, pk, xk, w), dom, m + 1);
+p = chebfun(@(x) bary(x, pk, xk, w), dom, m + 1);
 
 end
 
@@ -324,8 +324,8 @@ h = d(pos, pos);          % Levelled reference error.
 pk = (fk - h*sigma).*qk;  % Vals. of r*q in reference.
 
 % Trial numerator and denominator.
-p = chebfun(@(x) chebtech.bary(x, pk, xk, w), dom, m + 1);
-q = chebfun(@(x) chebtech.bary(x, qk, xk, w), dom, n + 1);
+p = chebfun(@(x) bary(x, pk, xk, w), dom, m + 1);
+q = chebfun(@(x) bary(x, qk, xk, w), dom, n + 1);
 
 end
 

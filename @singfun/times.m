@@ -46,6 +46,8 @@ if ( isa(f, 'singfun') && isa(g, 'singfun') )
     h.exponents = f.exponents + g.exponents;
 end
 
+h = cancelExponents(h);
+
 %% Simplify and replace the boundary roots:
 h = simplify(h);
 

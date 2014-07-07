@@ -71,6 +71,7 @@ while ( ( ( nargin == 1 ) && any( min(endValues, [], 1) <= tol ) ) ...
                 rootsLeft = rootsLeft + 1;
             else
                 numRoots(1,:) = 0;
+                continue
             end
             
         elseif ( any( numRoots(2,:) ) )
@@ -83,6 +84,7 @@ while ( ( ( nargin == 1 ) && any( min(endValues, [], 1) <= tol ) ) ...
                 rootsRight = rootsRight + 1;
             else
                 numRoots(2,:) = 0;
+                continue
             end
         end
     end
