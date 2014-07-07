@@ -2,7 +2,7 @@
 
 function pass = test_bary(pref)
 
-% Note. Bary is tested fairly extensively by TEST_FEVAL().
+% TODO:  Beef up this test, as bary() is no longer tested by test_feval().
 
 if ( nargin < 1 )
     pref = chebtech.techPref();
