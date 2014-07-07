@@ -46,7 +46,7 @@ if ( (nargin == 2) && isnumeric(varargin{1}) )
         'CHEBOP discretizes differential operators.'])
     warning('off', 'CHEBFUN:CHEBOP:feval:deprecated');
 
-    % We cannot support boundry conditions in this way.
+    % We cannot support boundary conditions in this way.
     throwBCwarning = false;
     if ( ~isempty(N.lbc) )
         N.lbc = [];
