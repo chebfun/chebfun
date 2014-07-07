@@ -369,10 +369,10 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         %       SINC(), SIND(), SINH(), SQRT(), SUM(), TAN(), TAND(), TANH(),
         %       UMINUS(), UPLUS().
         
-            uo = false;
+            uniOut = false;
             for k = numel(varargin)-1:-1:1
                 if ( strcmpi(varargin{k}, 'UniformOutput') )
-                    uo = varargin{k+1};
+                    uniOut = varargin{k+1};
                     varargin(k:k+1) = [];
                     break
                 end
@@ -381,7 +381,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             % Convert additional inouts to arrays of cells (i.e., just .blocks).
             varargin = cellfun(@(v) v.blocks, varargin, 'UniformOutput', false);
                   
-            if ( ~uo )
+            if ( ~uniOut )
                 A.blocks = cellfun(op, A.blocks, varargin{:}, ...
                     'UniformOutput', false);
             else
