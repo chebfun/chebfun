@@ -281,12 +281,10 @@ else
     w = [];
 end
 
-% TODO: Compute barycentric weights via the given formula in [(6.5)-(6.8), 2]
-% NOTE: There seems to be a mistake in the paper for these, so we don't use it.
-% v = legpts_baryweights();
-
 % Barycentric weights:
 if ( nout > 2 )
+    % TODO: Compute bary weights via the given formula in [(6.5)-(6.8), 2]?
+%     v = legpts_baryweights();
     v = sin(t)./sqrt(2./w);
     v = v./v(end);
 else
@@ -380,8 +378,6 @@ end
         
     end
 
-% % TODO: There appears to be a mistake in the paper for L3.
-% 
 %     function v = legpts_baryweights()
 %         % TODO: Include higher-order terms (i.e., V_4 and V_5).
 % 
@@ -401,7 +397,7 @@ end
 %             V33 = -227/12288*u - 85/24576*u3; 
 %             V34 = -149/8192*u2 + 145/8192; 
 %             V35 = -11861/40960*u; 
-%             V36 = 4343/8129;
+%             V36 = 4343/8192;
 %             L3 = V30 + V31./a + V32./a2 + V33./a3 + V34./a4 + ...
 %                 V35./a5 + V36./a6;
 %         else
