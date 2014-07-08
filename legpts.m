@@ -119,13 +119,15 @@ if ( (n < 100 && ~method_set) || strcmpi(method, 'rec') )
 elseif ( strcmpi(method, 'GW') )
     [x, w, v] = gw(n);         % GW see [1]
 else
-    [x, w, v, t] = asy(n);     % HT see [2]
+    [x, w, v, t] = asy(n, nargout); % ASY see [2]
 end
 
 % Normalise the barycentric weights:
-v = abs(v);
-v = v./max(v);
-v(2:2:end) = -v(2:2:end);
+if ( nargout > 2 )
+    v = abs(v);
+    v = v./max(v);
+    v(2:2:end) = -v(2:2:end);
+end
 
 % Compute a T is one is asked for:
 if ( nargout == 4 && isempty(t) )
@@ -244,35 +246,47 @@ v = 1./ders;
 
 end
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% -------------------- Routines for ASY algorithm ------------------------%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [x, w, v, t] = asy(n)
+function [x, w, v, t] = asy(n, nout)
 
 % Compute roots of BesselJ(0, x);
 m = ceil(n/2);
 jk = bessel0Roots(m);
 
 % Useful values:
-vn = 1./(n+.5);
+vn = 1./(n + .5);
 a = jk*vn;
 u = cot(a);
+ua = u.*a;
+u2 = u.^2;
+a2 = a.^2;
+
+% Initialise for storage (so as to only compute once):
+Jk2 = [];
+u3 = []; a3 = [];
+u4 = []; a4 = [];
+u5 = []; a5 = [];
+u6 = []; a6 = [];
 
 % Nodes:
 [x, t] = legpts_nodes();
 
 % Quadrature weights:
-if ( nargout > 1 )
+if ( nout > 1 )
     w = legpts_weights();
 else
     w = [];
 end
 
-% TODO: Compute these via the given formula in [(6.5)-(6.8), 2]
+% TODO: Compute barycentric weights via the given formula in [(6.5)-(6.8), 2]
+% NOTE: There seems to be a mistake in the paper for these, so we don't use it.
+% v = legpts_baryweights();
+
 % Barycentric weights:
-if ( nargout > 2 )
+if ( nout > 2 )
     v = sin(t)./sqrt(2./w);
     v = v./v(end);
 else
@@ -293,22 +307,29 @@ else
 end
 
     function [x, t] = legpts_nodes()
-        % TODO; Include higher-order terms.
+        % TODO: Include higher-order terms (i.e., F_4 and F_5).
         
         % Assemble coefficients:
-        F0 = a; F1 = 1/8*(u.*a-1)./a;
+        F0 = a; 
+        F1 = 1/8*(u.*a-1)./a;
         if ( n < 1e4 )
-            F2 = 1/384*( 6*a.^2.*(1+u.^2) + 25 - u.*(31*u.^2+33).*a.^3 )./a.^3;
+            a3 = a.^3;
+            F2 = 1/384*( 6*a2.*(1+u2) + 25 - u.*(31*u2+33).*a3 )./a3;
         else
             F2 = 0;
         end
         if ( n < 1e3 )
-            R30 = u.*(2595 + 6350*u.^2 + 3779*u.^4)/15360;
-            R31 = -(31*u.^2 + 11)/1024; R32 = u/512; R33 = -25/3072; R35 = -1073/5120;
-            F3 = R30 + R35./a.^5 + (1+u.^2).*(R31./a + R32./a.^2 + R33./a.^3);
+            u4 = u.^4;
+            a5 = a.^5;
+            R30 = u.*(2595 + 6350*u2 + 3779*u4)/15360;
+            R31 = -(31*u2 + 11)/1024; 
+            R32 = u/512; 
+            R33 = -25/3072; 
+            R35 = -1073/5120;
+            F3 = R30 + R35./a5 + (1+u2).*(R31./a + R32./a2 + R33./a3);
         else
             F3 = 0;
-        end
+        end       
         
         % The asymptotic expansion for the roots:
         t = F0 + F1*vn^2 + F2*vn^4 + F3*vn^6;
@@ -318,33 +339,78 @@ end
     end
 
     function w = legpts_weights()
-        % TODO; Include higher-order terms.
+        % TODO: Include higher-order terms (i.e., W_4 and W_5).
         
         % Assemble coefficients:
-        W0 = 1; W1 = 1/8*(u.*a + a.^2 - 1)./a.^2;
+        W0 = 1; 
+        W1 = 1/8*(ua + a2 - 1)./a.^2;
         if ( n < 1e4 )
-            W2 = 1/384*( 81 - 31*u.*a - 3*(1-2*u.^2).*a.^2 + 6*u.*a.^3 - ...
-                (27 + 84*u.^2 + 56*u.^4).*a.^4 )./a.^4;
+            a3 = a.^3;
+            a4 = a2.^2;
+            u4 = u.^4;
+            W2 = 1/384*( 81 - 31*ua - 3*(1-2*u2).*a2 + 6*u.*a3 - ...
+                (27 + 84*u2 + 56*u4).*a4 )./a4;
         else
             W2 = 0;
         end
-        if ( n < 1e5 )
-            Q30 = 187/96*u.^4 + 295/256*u.^2 + 151/160*u.^6 + 153/1024;
-            Q31 = -119/768*u.^3 -35/384*u.^5 - 65/1024*u;
-            Q32 = 5/512 + 7/384*u.^4 + 15/512*u.^2; Q33 = u.^3/512 - 13/1536*u;
-            Q34 = -7/384*u.^2 + 53/3072; Q35 = 3749/15360*u; Q36 = -1125/1024;
-            W3 = Q30 + Q31./a + Q32./a.^2 + Q33./a.^3 + Q34./a.^4 + ...
-                Q35./a.^5 + Q36./a.^6;
+        if ( n < 1e3 )
+            u3 = u.^3;
+            u5 = u.^5;
+            u6 = u3.^2;
+            a5 = a.^5;
+            a6 = a3.^2;
+            Q30 = 187/96*u4 + 295/256*u2 + 151/160*u6 + 153/1024;
+            Q31 = -119/768*u.^3 -35/384*u5 - 65/1024*u;
+            Q32 = 5/512 + 7/384*u4 + 15/512*u2; 
+            Q33 = u3/512 - 13/1536*u;
+            Q34 = -7/384*u.^2 + 53/3072; 
+            Q35 = 3749/15360*u; 
+            Q36 = -1125/1024;
+            W3 = Q30 + Q31./a + Q32./a2 + Q33./a3 + Q34./a4 + ...
+                Q35./a5 + Q36./a6;
         else
             W3 = 0;
         end
         
         % Compute the values of Bessel1(j0k)^2:
-        Jk2 = bessel1atj0k(m);
+        Jk2 = bessel12atj0k(m);
         
         % The asymptotic expansion for the weights:
         w = 2./((Jk2/vn.^2).*(a./sin(a)).*(W0 + W1*vn^2 + W2*vn^4 + W3*vn^6));
+        
     end
+
+% % TODO: There appears to be a mistake in the paper for L3.
+% 
+%     function v = legpts_baryweights()
+%         % TODO: Include higher-order terms (i.e., V_4 and V_5).
+% 
+%         % Assemble coefficients:
+%         L0 = 1; 
+%         L1 = 1/16*(3*(ua).^2 - 3*ua - (a2-1).*(u2+1) - u2 )./a2;
+%         if ( n < 1e4 )
+%             L2 = 1/512*( 44*ua + 4*ua.^3 + 22*u.*a3 - 4*ua.^4 + 7*ua.^2 - ...
+%                 4*u2.*a4 - 8*a2 + 21*a4 - 51 )./a4;
+%         else
+%             L2 = 0;
+%         end
+%         if ( n < 1e3 )
+%             V30 = -3353/6144*u4 - 671/8192 - 1663/4096*u2 - 3329/15360*u6;
+%             V31 = -5/2048*u5 - 47/8192*u - 7/2048*u3;
+%             V32 = 1/4096*u4 + 5/8192*u2 + 43/8192;
+%             V33 = -227/12288*u - 85/24576*u3; 
+%             V34 = -149/8192*u2 + 145/8192; 
+%             V35 = -11861/40960*u; 
+%             V36 = 4343/8129;
+%             L3 = V30 + V31./a + V32./a2 + V33./a3 + V34./a4 + ...
+%                 V35./a5 + V36./a6;
+%         else
+%             L3 = 0;
+%         end
+% 
+%         % The asymptotic expansion for the weights:
+%         v = vn.*sqrt(sin(a).^3./(a.*Jk2)).*(L0 + L1*vn^2 + L2*vn^4 + L3*vn^6);
+%     end
 
 end
 
@@ -394,9 +460,9 @@ jk(k) = ak + .125./ak.*(1 + ak82.*(p(7) + ak82.*(p(5) + ak82.*(p(3) + ...
 
 end
 
-function Jk2 = bessel1atj0k(m)
-%BESSEL1ATJ0k   Evalute besselj(1,x) at roots of besselj(0,x).
-% BESSEL1ATJ0K(M) return besselj(1, bessel0Roots(m)).
+function Jk2 = bessel12atj0k(m)
+%BESSEL12ATJ0k   Evalute besselj(1,x).^2 at roots of besselj(0,x).
+% BESSEL12ATJ0K(M) return besselj(1, bessel0Roots(m)).^2.
 
 % Initialise storage:
 Jk2 = zeros(m, 1);
