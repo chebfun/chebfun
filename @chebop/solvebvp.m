@@ -61,7 +61,7 @@ function [u, info] = solvebvp(N, rhs, varargin)
 %   details.
 
 % Parse inputs:
-[pref, displayInfo] = parseInputs(N, varargin{:});
+[pref, displayInfo] = parseInputs(varargin{:});
 
 % Find out how many variables N operates on:
 nVars = numVars(N);
@@ -194,7 +194,7 @@ info.isLinear = isLinear;
 
 end
 
-function [pref, displayInfo] = parseInputs(N, varargin)
+function [pref, displayInfo] = parseInputs(varargin)
 %PARSEINPUTS   Parse the input arguments to SOLVEBVP.
 
 % Initialise the outputs:
@@ -226,7 +226,7 @@ end
 
 % If no DISPLAYINFO function handle passed, use the default CHEBOP one.
 if ( isempty(displayInfo) )
-    displayInfo = @N.displayInfo;
+    displayInfo = @chebop.displayInfo;
 end
 
 end
