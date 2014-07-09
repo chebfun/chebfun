@@ -101,6 +101,12 @@ x = chebfun(@(x) x, dom);
 % Linearize and attach preferences.
 [L, residual, isLinear] = linearize(N, u0, x);
 
+warnState = warning();
+[ignored, lastwarnID] = lastwarn(); %#ok<ASGLU>
+if ( strcmp(lastwarnID, 'CHEBFUN:CHEBOP:linearize:bcConcat') )
+    warning('off', 'CHEBFUN:CHEBOP:linearize:bcConcat');
+end
+
 % Check the size of the residual (the output the dimensions of the CHEBOP).
 [numRow, numCol] = size(residual);
 
@@ -172,6 +178,9 @@ else
     [u, info] = solvebvpNonlinear(N, rhs, L, u0, residual, pref, displayInfo);
     
 end
+
+% Revert warning state:
+warning(warnState);
 
 % Return a CHEBFUN rather than a CHEBMATRIX for scalar problems:
 if ( all(size(u) == [1 1]) )
