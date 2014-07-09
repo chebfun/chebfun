@@ -1,5 +1,4 @@
 function [u, info] = solvebvp(N, rhs, varargin)
-% function [u, info] = solvebvp(N, rhs, pref, displayInfo)
 %SOLVEBVP  Solve a linear or nonlinear CHEBOP BVP system.
 %
 %   U = SOLVEBVP(N, RHS), where N is a CHEBOP and RHS is a CHEBMATRIX, CHEBFUN
