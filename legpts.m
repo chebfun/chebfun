@@ -19,7 +19,7 @@ function [x, w, v, t] = legpts(n, int, meth)
 %     to the roots. Default for N < 100.
 %    METHOD = 'ASY' uses Bogaert's fast algorithm based upon asymptotic 
 %     formulae, which is fast and accurate for large N. Default for N >= 100.
-%    METHOD = 'GW' will use the traditional Golub-Welsch eigenvalue method,
+%    METHOD = 'GW' uses the traditional Golub-Welsch eigenvalue method,
 %     which is maintained mostly for historical reasons.
 %
 %   [X, W, V, T] = LEGPTS(N) returns also the arccos of the nodes, T = acos(X).
@@ -32,15 +32,27 @@ function [x, w, v, t] = legpts(n, int, meth)
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% DEVELOPER NOTES AND REFERENCES:
 %  'GW' by Nick Trefethen, March 2009 - algorithm adapted from [1].
 %  'REC' by Nick Hale, July 2011.
 %  'ASY' algorithm by Bogaert [2]. Matlab code by Nick Hale, July 2014.
 %
 %  References:
 %   [1] G. H. Golub and J. A. Welsch, "Calculation of Gauss quadrature rules",
-%       Math. Comp. 23, 221-230, 1969,
+%       Math. Comp. 23, 221-230, 1969.
 %   [2] I. Bogaert, "Iteration-free computation of Gauss-Legendre quadrature
-%       nodes and weights", SISC, 36(3), A1008-A1026, 2014.
+%       nodes and weights", SIAM J. Sci. Comput., 36(3), A1008-A1026, 2014.
+%   [3] A. Glaser, X. Liu and V. Rokhlin, "A fast algorithm for the calculation 
+%       of the roots of special functions", SIAM J. Sci. Comput., 2007.
+%   [4] N. Hale and A. Townsend, "Fast computation of Gauss-Jacobi quadrature 
+%       nodes and weights", SIAM J. Sci. Comput., 2012.
+%
+%  Historical note:
+%   March 2009 - GW [1] algorithm.
+%   April 2009 - GLR [3] added for N >= 129.
+%     Feb 2011 - REC for N < 129, GLR for large N.
+%     Aug 2012 - HT [4] replaces GLR for N >= 129.
+%    July 2014 - Bogaert's algorithm [2] replaces HT for N > 129.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Defaults
