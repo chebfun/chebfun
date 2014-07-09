@@ -34,7 +34,7 @@ function [x, w, v, t] = legpts(n, int, meth)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  'GW' by Nick Trefethen, March 2009 - algorithm adapted from [1].
 %  'REC' by Nick Hale, July 2011.
-%  'ASY' algorithm by Bogeart [2]. Matlab code by Nick Hale, July 2014.
+%  'ASY' algorithm by Bogaert [2]. Matlab code by Nick Hale, July 2014.
 %
 %  References:
 %   [1] G. H. Golub and J. A. Welsch, "Calculation of Gauss quadrature rules",
