@@ -28,7 +28,7 @@ function varargout = ode45(F,tspan,init,varargin)
 %  vector IE specify which event occurred.
 %
 %  SOL = ODE45(F,TSPAN,Y0,...) returns a structure storing information about
-%  events. If events were detected, SOL.xe is a row vector of points at which
+%  events. If events were detected, SOL.x is a row vector of points at which
 %  events occurred. Columns of SOL.ye are the corresponding solutions, and
 %  indices in vector SOL.ie specify which event occurred.
 
@@ -76,8 +76,8 @@ if ( abs(tvec(end) - tspan(end)) > abstol )
 end
 
 % Split solution at event locations.
-if ( isfield(sol,'xe') )
-    tvec = sol.xe;
+if ( isfield(sol,'x') )
+    tvec = sol.x;
     if ( ~isempty( tvec ) )
         tspan = [tspan tvec];
         tspan = unique( sort( tspan ) );
@@ -85,7 +85,7 @@ if ( isfield(sol,'xe') )
 end
 
 t = chebfun(tspan([1 end]), tspan);
-if ( any(any(isnan(sol.y))) )
+if ( any(any(isnan(sol.ye))) )
     error('CHEBFUN:CHEBFUN2V:ode45:nan', ...
         'IVP returned NaN, try shorter time domain.')
 else
@@ -113,12 +113,12 @@ if ( nargout > 1 )
     if ( nargout == 2 )
         varargout = {t, y};
     else
-        varargout = {t, y, sol.xe, sol.ye, sol.ie};
+        varargout = {t, y, sol.x, sol.ye, sol.ie};
     end
 elseif ( nargout == 1 )
     cheb_sol = sol;
     cheb_sol.x = t;
-    cheb_sol.y = y;
+    cheb_sol.ye = y;
     varargout = {cheb_sol};
 end
 
