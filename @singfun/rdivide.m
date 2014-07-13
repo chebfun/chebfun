@@ -57,32 +57,34 @@ end
 % singular with non trivial exponents. So the result of f./g in general is a
 % generic SINGFUN with possibly non-trivial exponents.
 
-if ( isa(f, 'singfun') && isa(g, 'singfun') )
-    
-    % Extract boundary roots:
-    g = extractBoundaryRoots(g);
-    
-    % Grab the boundary values of the smooth part of G:
-    boundaryValues = [get(g.smoothPart, 'lval') get(g.smoothPart, 'rval')];
-    
-    % Set a tolerance:
-    tol = 1e2*get(g, 'vscale')*eps;
-    
-    if ( all(abs(boundaryValues) > tol) )
-        % No vanishing boundary values, then take advantage of the information
-        % we know about the exponents:
-        
-        pref.extrapolate = 1;
-        h = f.constructSmoothPart(@(x) feval(f.smoothPart, x)./ ...
-            feval(g.smoothPart, x), [], pref);
-        data.exponents = f.exponents - g.exponents;
-        s = singfun(h, data);
+% Note: Once we reach here, both f and g are SINGFUN objects.
 
-    else
-        % Construct the SINGFUN by a direct call to the constructor:
-        s = singfun(@(x) feval(f, x)./feval(g, x));
-    end
+% Extract boundary roots:
+g = extractBoundaryRoots(g);
+
+% Grab the boundary values of the smooth part of G:
+boundaryValues = [get(g.smoothPart, 'lval') get(g.smoothPart, 'rval')];
+
+% Set a tolerance:
+tol = 1e2*get(g, 'vscale')*eps;
+
+if ( all(abs(boundaryValues) > tol) )
+    % No vanishing boundary values, then take advantage of the information
+    % we know about the exponents:
+
+    pref.extrapolate = 1;
+    h = f.constructSmoothPart(@(x) feval(f.smoothPart, x)./ ...
+        feval(g.smoothPart, x), [], pref);
+    data.exponents = f.exponents - g.exponents;
+    s = singfun(h, data);
+
+else
+    % Construct the SINGFUN by a direct call to the constructor:
+    s = singfun(@(x) feval(f, x)./feval(g, x));
 end
+
+%% Simplify and replace the boundary roots:
+s = simplify(s);
 
 %% 
 % Check if after division s has become smooth:

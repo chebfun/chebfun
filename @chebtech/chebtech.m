@@ -387,9 +387,6 @@ classdef chebtech < smoothfun % (Abstract)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
 
-        % Evaluation using the barycentric interpolation formula.
-        fx = bary(x, gvals, xk, vk)
-
         % Clenshaw's algorithm for evaluating a Chebyshev polynomial.
         out = clenshaw(x, coeffs)
 

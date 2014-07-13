@@ -20,7 +20,7 @@ f = testclass.make(@(x) exp(cos(pi*x)), [], pref);
 df = diff(f);
 df_exact = @(x) -pi*sin(pi*x).*exp(cos(pi*x));
 err = df_exact(x) - feval(df, x);
-pass(1) = (norm(err, inf) < 10*df.vscale.*df.epslevel);
+pass(1) = (norm(err, inf) < 100*df.vscale.*df.epslevel);
 
 a = 10; b = 20;
 f = testclass.make(@(x) cos(a*pi*sin(b*pi*x)), [], pref);

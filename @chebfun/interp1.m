@@ -94,7 +94,7 @@ function p = interp1Poly(x, y, dom)
 % Compute barycentric weights for these points:
 w = baryWeights(x);
 % Define the interpolant using CHEBTECH.BARY():
-f = @(z) chebtech.bary(z, y, x, w);
+f = @(z) bary(z, y, x, w);
 % Construct a CHEBFUN:
 p = chebfun(f, dom, length(x));
 

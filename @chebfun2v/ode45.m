@@ -28,8 +28,8 @@ function varargout = ode45(F,tspan,init,varargin)
 %  vector IE specify which event occurred.
 %
 %  SOL = ODE45(F,TSPAN,Y0,...) returns a structure storing information about
-%  events. If events were detected, SOL.xe is a row vector of points at which
-%  events occurred. Columns of SOL.ye are the corresponding solutions, and
+%  events. If events were detected, SOL.x is a row vector of points at which
+%  events occurred. Columns of SOL.y are the corresponding solutions, and
 %  indices in vector SOL.ie specify which event occurred.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
@@ -113,7 +113,7 @@ if ( nargout > 1 )
     if ( nargout == 2 )
         varargout = {t, y};
     else
-        varargout = {t, y, sol.xe, sol.ye, sol.ie};
+        varargout = {t, y, sol.x, sol.y, sol.ie};
     end
 elseif ( nargout == 1 )
     cheb_sol = sol;

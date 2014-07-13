@@ -39,31 +39,57 @@ end
 % [TODO]: Figure out a more elegant way to find roots of a FOURTECH.
 
 useMatlabsRootsCommand = false;
+pruneRoots = false;
 
 if ( nargin > 1 )
-    j = 1;
-    while ( j <= length(varargin) )
-        % Determine if the 'all' or 'complex' flag was passed in.
-        if ( any(strcmp(lower(varargin{j}), 'complex')) || ...
-             any(strcmp(lower(varargin{j}), 'all'))   ) %#ok<STCI>
+    if isa(varargin{1}, 'struct')
+        rootsPref = varargin{1};
+        useMatlabsRootsCommand = rootsPref.all;
+        pruneRoots = rootsPref.prune;
+    else
+        j = 1;
+        while ( j <= length(varargin) )
+            % Determine if the 'all' or 'complex' flag was passed in.
+            if ( any(strcmp(lower(varargin{j}), 'complex')) ) %#ok<STCI>
                 useMatlabsRootsCommand = varargin{j+1};
-            break;
+                pruneRoots = true;
+                break;
+            elseif ( any(strcmp(lower(varargin{j}), 'all')) ) %#ok<STCI>
+                useMatlabsRootsCommand = varargin{j+1};                
+                break;
+            end
+            j = j+2;
         end
-        j = j+2;
     end
 end
 
-if useMatlabsRootsCommand
-    numCols = size(f.coeffs,2);
+if ( useMatlabsRootsCommand )
+    numCols = size(f.coeffs, 2);
     r = cell(1,numCols);
-    for j=1:numCols
+    for j = 1:numCols
         % Simplify the current column to get the minimal number of
         % roots.
         fj = simplify(extractColumns(f,j));
-        temp = roots(fj.coeffs);
+        rTemp = roots(fj.coeffs);
         % Roots here finds the roots in the transformed variable z=exp(i*pi*x)
         % so we need to take the log (and scale it) to get back the roots in x.
-        r{j} = -1i/pi*log(temp);
+        rTemp = -1i/pi*log(rTemp);
+       
+        % Prune the roots if required.  
+        if ( pruneRoots )
+            % For fourtech pruning means only keep the roots that fit in
+            % the strip of analyticity (estimated using 10*machine eps).
+            % This is the analog to what chebtech does by pruning to the
+            % Bernstein ellipse.  The distance from the real-axis of the
+            % strip is given by a = 1i/N/pi*log(4/e + 1), where e is the
+            % defined max precision (10*eps)) and N is the highest non-zero
+            % Fourier term.
+            N = ceil(length(fj.coeffs)/2) - 1;
+            a = 1/N/pi*log(4/(10*eps) + 1);
+            rTemp = rTemp(abs(imag(rTemp)) <= a); 
+        end
+        
+        r{j} = rTemp;
     end
     % Find the max length of r:
     mlr = max(cellfun(@length, r)); 

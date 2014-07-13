@@ -10,10 +10,10 @@ function y = feval(f, x)
 %     f = chebtech2(@(x) 1./( 1 + 25*x.^2 ) );
 %     x = linspace(-1, 1, 1000);
 %     [xx, yy] = meshgrid(x, x);
-%     ff = feval(f, xx+1i*yy);
+%     ff = feval(f, xx + 1i*yy);
 %     h = surf(xx, yy, 0*xx, angle(-ff));
 %     set(h, 'edgealpha', 0)
-%     view(0,90), shg
+%     view(0, 90), shg
 %     colormap(hsv)
 %
 % See also BARY, CLENSHAW.
@@ -31,6 +31,12 @@ end
 sizex = size(x);
 ndimsx = ndims(x);
 x = x(:);
+
+if ( (m > 1) && (ndimsx > 2) )
+    error('CHEBFUN:CHEBTECH:feval:evalArrayAtNDArray', ...
+        ['Evaluation of a CHEBTECH with more than one column at inputs ' ...
+         'with more than two dimensions is not supported.']);
+end
 
 % Evaluate using Clenshaw's algorithm:
 y = f.clenshaw(x, f.coeffs);

@@ -140,6 +140,13 @@ f = chebfun(@(x) 4*x.^2-2, [-Inf, Inf]);
 g = restrict(f, [-1,1]);
 pass(26) = abs(f(1)-g(1)) < epslevel(f)*vscale(f);
 
+%% Test a bug from #1026:
+
+f = chebfun(@(t) t.^0.5./exp(t), [0,inf], 'exps', [0.5 0]);
+g = f;
+f(1) = f(1); % restrict@unbndfun is called.
+pass(27) = ( norm(f-g, inf) < epslevel(f) );
+
 end
 
 % Check restriction of a single function.

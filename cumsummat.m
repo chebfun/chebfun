@@ -9,7 +9,7 @@ function C = cumsummat(N, dom, disc)
 %   domain DOM. DOM should be a 1x2 vector.
 %
 %   D = CUMSUMMAT(N, DOM, DISC) or CUMSUMMAT(N, DISC) returns the indefinite
-%   integration matrix associated with the tech DISC.
+%   integration matrix associated with the CHEBDISCRETIZATION DISC.
 %
 % See also CUMSUM, COLLOC2.DIFFMAT, DIFFMAT.
 
@@ -38,12 +38,12 @@ end
 % No breakpoints allowed:
 if ( numel(dom) > 2 )
     dom = dom([1 end]);
-    warning('CHEBFUN:TRUNK:cumsummat:noBreaks', ...
+    warning('CHEBFUN:cumsummat:noBreaks', ...
         'CUMSUMMAT does not support domains with breakpoints.');
 end
 
 %% Call DISC.DIFFMAT(N) and scale appropriately.
-scl = .5*(dom(end)-dom(1));
+scl = .5*(dom(end) - dom(1));
 C = scl*disc.cumsummat(N);
 
 end
