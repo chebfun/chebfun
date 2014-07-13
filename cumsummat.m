@@ -28,7 +28,7 @@ elseif ( nargin == 1 )
     disc = colloc2();
     dom = cheboppref().domain;
 end
-% Ensure DISC is a sicretization:
+% Ensure DISC is a discretization:
 if ( ischar(disc) )
     disc = str2func(disc);
 end

@@ -1,8 +1,9 @@
 function C = diffmat(N, varargin)
 %DIFFMAT   Differentiation matrix.
 %   D = DIFFMAT(N) returns the NxN differentiation matrix associated with the
-%   Chebyshev spectral collocation method at second-kind Chebyshev points. D =
-%   DIFFMAT(N, K) returns the differentiation matrix of order K. See
+%   Chebyshev spectral collocation method at second-kind Chebyshev points. 
+%
+%   D = DIFFMAT(N, K) returns the differentiation matrix of order K. See
 %   COLLOC2.DIFFMAT for further details.
 %
 %   D = DIFFMAT(N, K, DOM) scales the differentiation matrix D to the domain
@@ -36,7 +37,7 @@ for j = 1:numel(varargin)
             'Unknown input of type %s.', class(v));
     end
 end
-% Ensure DISC is a sicretization:
+% Ensure DISC is a discretization:
 if ( ischar(disc) )
     disc = str2func(disc);
 end
