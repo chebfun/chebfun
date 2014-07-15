@@ -43,16 +43,16 @@ if ( isempty( F ) )
 end
 
 nF = F.nComponents;
-dom = F.components{1}.domain; 
+% dom = F.components{1}.domain; 
 
 prefs = chebfunpref;
-abstol = 100*prefs.techPrefs.eps;
+abstol = prefs.techPrefs.eps;
 % We don't expect 16 digits of relative tolerance, but at least require some.
-reltol = 1e8*abstol;
+reltol = abstol;
 
 % indicator function: 
-ind = @(y) (y(1)>=dom(1)).*(y(1)<=dom(2)).*(y(2)>=dom(3)).*(y(2)<=dom(4));
-g = @(t,y) feval(F, y(1), y(2)).*ind(y);
+%ind = @(y) (y(1)>=dom(1)).*(y(1)<=dom(2)).*(y(2)>=dom(3)).*(y(2)<=dom(4));
+g = @(t,y) feval(F, y(1), y(2));%.*ind(y);
 if ( nargin == 3 )
     opts = odeset('RelTol', reltol, 'AbsTol', abstol);
     sol = ode45(g, tspan, init, opts);
@@ -113,7 +113,7 @@ if ( nargout > 1 )
     if ( nargout == 2 )
         varargout = {t, y};
     else
-        varargout = {t, y, sol.x, sol.y, sol.ie};
+        varargout = {t, y, sol.xe, sol.ye, sol.ie};
     end
 elseif ( nargout == 1 )
     cheb_sol = sol;
