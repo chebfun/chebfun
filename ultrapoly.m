@@ -1,7 +1,7 @@
 function p = ultrapoly(n, lam, dom)
 %ULTRAPOLY   Ultraspherical polynomials.
 %   P = ULTRAPOLY(N, LAM) computes a CHEBFUN of the ultraspherical polynomial of
-%   degree N with parameters LAM, where the Jacobi weight function is
+%   degree N with parameters LAM, where the weight function is
 %   defined by w(x) = (1-x^2)^(LAM-.5). N may be a vector of integers.
 %
 %   P = ULTRAPOLY(N, LAM, DOM) computes the ultraspherical polynomials as above,
@@ -9,7 +9,7 @@ function p = ultrapoly(n, lam, dom)
 %
 %   P is computed via the standard recurrence relation for ultraspherical polynomials.
 %
-% See also LEGPOLY, CHEBPOLY.
+% See also LEGPOLY, CHEBPOLY, JACPOLY. 
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -23,8 +23,8 @@ if ( nargin < 4 )
 end
 % Unbounded domains aren't supported/defined.
 if ( any(isinf(dom)) )
-    error('CHEBFUN:jacpoly:infdomain', ...
-        'Jacobi polynomials are not defined over an unbounded domain.');
+    error('CHEBFUN:ultrapoly:infdomain', ...
+        'Ultraspherical polynomials are not defined over an unbounded domain.');
 end
 
 %% Setup:
