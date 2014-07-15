@@ -1,5 +1,5 @@
 function varargout = chebpolyplot( varargin )
-%CHEBPOLYPLOT   Display Chebyshev coefficients graphically.
+%CHEBPOLYPLOT   Display Chebyshev coefficients of slices graphically.
 %   CHEBPOLYPLOT(F) is deprecated. Please use PLOTCOEFFS().
 %
 % See also PLOTCOEFFS.
