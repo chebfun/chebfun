@@ -35,7 +35,6 @@ end
 % Set splitting to 'on' and the domain to [0, 2*pi].
 pref.splitting = true;
 pref.domain = [0, 2*pi];
-pref.tech = @chebtech2; 
 
 % Construct a CHEBFUN of the FOV curve:
 f = chebfun(@(theta) fovCurve(theta, A), pref);
