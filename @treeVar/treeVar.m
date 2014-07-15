@@ -108,7 +108,8 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         
         function f = sin(f)
             f.tree = struct('method', 'sin', 'numArgs', 1, 'center', f.tree, ...
-                'diffOrder', f.tree.diffOrder);
+                'diffOrder', f.tree.diffOrder, 'height', f.tree.height + 1, ...
+                'multCoeff', 1);
         end
         
         function h = times(f, g)
@@ -147,6 +148,8 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         
         newTree = expandTree(tree, maxOrder)
         
+        plotTree(tree, varargin)
+        
         function out = tree2prefix(tree)
             
             switch tree.numArgs
@@ -176,7 +179,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             [infixDer, dummy, varArrayDer] = treeVar.tree2infix(derTree);
             coeffFun = treeVar.toAnon(infixDer, varArrayDer);
             coeffArg = [zeros(1, expTree.diffOrder), 1];
-            coeff = coeffFun(coeffArg)
+            coeff = coeffFun(coeffArg);
             
             newTree = struct('method', 'uminus', 'numArgs', 1, 'center', newTree);
             [infix, varCounter, varArray] = treeVar.tree2infix(newTree);

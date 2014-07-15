@@ -53,6 +53,7 @@ relTol = max(relTol(:), absTol(:)./vscale(:));
 p = chebfunpref();
 p.techPrefs.eps = max(relTol); % Use the same tolerance for each column.
 p.splitting = true;            % use splitting, always, or there is no hope.
+p.splitPrefs.splitLength = 300;
 y = chebfun(@(x) deval(sol, x).', d, p);
 
 % Parse outputs:

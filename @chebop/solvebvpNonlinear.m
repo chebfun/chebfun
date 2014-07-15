@@ -309,9 +309,13 @@ end
 
 % Evaluate and linearise the remaining constraints:
 if ( ~isempty(N.bc) )
-    % Evaluate. The output, BCU, will be a vector.
-    bcU = N.bc(x, uBlocks{:});
-    bcNorm = bcNorm + norm(bcU, 2).^2;
+    if (~strcmp(N.bc, 'periodic') )
+        % Evaluate. The output, BCU, will be a vector.
+        bcU = N.bc(x, uBlocks{:});
+        bcNorm = bcNorm + norm(bcU, 2).^2;
+    else
+        bcNorm = 0;
+    end
 end
 
 bcNorm = sqrt(bcNorm);

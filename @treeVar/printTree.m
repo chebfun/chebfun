@@ -31,14 +31,19 @@ switch tree.numArgs
 
         if ( isstruct(tree.left) )
             treeVar.printTree(tree.left, ind+1, [indStr, '|']);
-        else
+        elseif ( isnumeric(tree.left) )
             fprintf('%s|--numerical \tValue: %4.2f\n', indStr, tree.left)
+        else
+            fprintf('%s|--chebfun\n', indStr)            
         end
         
         if ( isstruct(tree.right) )
             treeVar.printTree(tree.right, ind+1, [indStr, ' ']);
+        elseif ( isnumeric(tree.right) )
+            fprintf('%s|--numerical \tValue: %4.2f\n', indStr, tree.right)
         else
-            fprintf('%s|--numerical  \tValue: %4.2f\n', indStr, tree.right)
+            fprintf('%s|--chebfun\n', indStr)            
         end
+        
 end
 end
