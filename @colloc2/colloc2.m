@@ -45,9 +45,10 @@ classdef colloc2 < colloc
                 k = 1;
             end
 
-            x = chebtech2.chebpts(N);        % First kind points.
-            w = chebtech2.barywts(N);        % Barycentric weights.
-            D = colloc.baryDiffMat(x, w, k); % Construct matrix.
+            x = chebtech2.chebpts(N);           % First kind points.
+            w = chebtech2.barywts(N);           % Barycentric weights.
+            t = (N-1:-1:0).'*pi/(N-1);          % acos(x).
+            D = colloc.baryDiffMat(x, w, k, t); % Construct matrix.
             
         end
         

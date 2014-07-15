@@ -76,7 +76,7 @@ classdef colloc < chebDiscretization
     methods ( Access = public, Static = true )
         
         % Barycentric differentiation matrix:
-        D = baryDiffMat(x, w, k);
+        D = baryDiffMat(x, w, k, t);
         
         % Discretization points: (used by both colloc1 and colloc2)
         [x, w, v] = points(varargin);
