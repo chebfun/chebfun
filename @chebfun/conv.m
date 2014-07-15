@@ -53,6 +53,10 @@ if ( xor(f(1).isTransposed, g(1).isTransposed) )
 end
 transState = f(1).isTransposed;
 
+% Breakpoints are a new nusiance, so attempt to merge first.
+f = merge(f);
+g = merge(g);
+
 % Extract the domain:
 [a, b] = domain(f);
 [c, d] = domain(g);
@@ -89,7 +93,7 @@ for j = 1:numel(f.funs)
     end
 end
 
-% Attempt to merge:
+% Attempt to merge result:
 h = merge(h);
 
 if ( transState )
