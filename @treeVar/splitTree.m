@@ -3,7 +3,16 @@ function [newTree, derTree] = splitTree(tree, maxOrder)
 
 % If the highest order derivative is lower than the maximum order of
 % the overall expression, we don't need to investigate it further.
-if ( ~isstruct(tree) || tree.diffOrder < maxOrder )
+
+% Find what variables we have actually computed derivatives of.
+diffVar = maxOrder > 0;
+
+% If our tree don't have any derivatives of highest order that appear in the
+% problem, we can return the subtree. But only need to check for those variables
+% that we actually differentiate with respect to, e.g. if maxOrder = 0, we can
+% return the subtree as well.
+treeDiffOrder = tree.diffOrder;
+if ( ~isstruct(tree) || all(treeDiffOrder(diffVar) < maxOrder(diffVar)) )
     newTree = tree;
     derTree = [];
 else
@@ -39,7 +48,8 @@ else
                     newTree = struct('method', tree.method, ...
                         'numArgs', tree.numArgs, ...
                         'left', newTreeLeft, 'right', newTreeRight, ...
-                        'diffOrder', newDiffOrder);
+                        'diffOrder', newDiffOrder, ...
+                        'height', max(newTreeLeft.height, newTreeRight.height));
                 end
                 
                 if ( isempty(derTreeLeft) )
@@ -51,7 +61,8 @@ else
                         'numArgs', tree.numArgs, ...
                         'left', derTreeLeft, 'right', derTreeRight, ...
                         'diffOrder', max(derTreeLeft.diffOrder, ...
-                        derTreeRight.diffOrder));
+                        derTreeRight.diffOrder), ...
+                        'height', max(derTreeLeft.height, derTreeRight.height));
                 end
                 
             end

@@ -1,7 +1,7 @@
 function newTree = expandTree(tree, maxOrder)
 % EXPANDTREE. Convert expressions like 5*(diff(u) + u) to 5*diff(u) + 5*u.
 
-if ( ~isstruct(tree) || tree.height <= 1 || tree.diffOrder < maxOrder )
+if ( ~isstruct(tree) || tree.height <= 1 || all(tree.diffOrder < maxOrder) )
     % If the input is not a tree, it is a very short tree, or its diffOrder is
     % less than the maxOrder we consider, don't need to do anything.
     newTree = tree;

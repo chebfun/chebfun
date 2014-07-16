@@ -1,5 +1,5 @@
-function [out, varCounter, varArray] = tree2infix(tree, varCounter, varArray)
-if ( nargin < 2 )
+function [out, varCounter, varArray] = tree2infix(tree, indexStart, varCounter, varArray)
+if ( nargin < 3 )
     varCounter = 1;
     varArray = [];
 end
@@ -11,33 +11,47 @@ end
 
 switch tree.numArgs
     case 0
-        out = 'u(1)';
+        out = sprintf('u(%i)', indexStart(tree.ID));
     case 1
         [tempOut, varCounter, varArray] = ...
-            treeVar.tree2infix(tree.center, varCounter, varArray);
+            treeVar.tree2infix(tree.center, indexStart, varCounter, varArray);
         out = sprintf('%s(%s)', tree.method, tempOut);
     case 2
         if ( strcmp(tree.method, 'diff') )
-            out = sprintf('u(%i)', tree.right + 1);
+            out = sprintf('u(%i)', tree.right + indexStart(tree.ID));
             return
         end
         
         if ( isstruct(tree.left) )
             [leftInfix, varCounter, varArray] = ...
-                treeVar.tree2infix(tree.left, varCounter, varArray);
+                treeVar.tree2infix(tree.left, indexStart, varCounter, varArray);
         else
             varName = sprintf('var%i', varCounter);
-            leftInfix = varName;
+            if ( isnumeric(tree.left) )
+                % The left tree is a scalar.
+                leftInfix = varName;
+            else
+                % The left tree must be a chebfun -- need to be able to evaluate
+                % it on gridpoints
+                leftInfix = [varName, '(t)'];
+            end
             varArray = [varArray; {varName, tree.left}];
             varCounter = varCounter + 1;
         end
         
         if ( isstruct(tree.right) )
             [rightInfix, varCounter, varArray] = ...
-                treeVar.tree2infix(tree.right, varCounter, varArray);
+                treeVar.tree2infix(tree.right, indexStart, varCounter, varArray);
         else
             varName = sprintf('var%i', varCounter);
-            rightInfix = varName;
+            if ( isnumeric(tree.right) )
+                % The left tree is a scalar.
+                rightInfix = varName;
+            else
+                % The left tree must be a chebfun -- need to be able to evaluate
+                % it on gridpoints
+                rightInfix = [varName, '(t)'];    
+            end
             varArray = [varArray; {varName, tree.right}];
             varCounter = varCounter + 1;
         end
