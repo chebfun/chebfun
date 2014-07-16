@@ -27,6 +27,18 @@ if ( any(isinf(dom)) )
         'Ultraspherical polynomials are not defined over an unbounded domain.');
 end
 
+if ( lam == .5 ) 
+   % default to LEGPOLY: 
+   p = legpoly(n, dom);
+   return
+end
+
+if ( lam == 1 ) 
+    % default to CHEBPOLY of 2nd kind: 
+   p = chebpoly(n, dom, 2);
+   return
+end
+
 %% Setup:
 
 % Force a CHEBTECH basis.
