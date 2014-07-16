@@ -9,7 +9,7 @@ function p = jacpoly(n, a, b, dom)
 %
 %   P is computed via the standard recurrence relation for Jacobi polynomials.
 %
-% See also LEGPOLY, CHEBPOLY.
+% See also LEGPOLY, CHEBPOLY, ULTRAPOLY.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
