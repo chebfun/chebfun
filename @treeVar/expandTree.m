@@ -48,7 +48,7 @@ else
             leftHeight = 0;
             splitLeft = false;
         elseif ( leftNumArgs == 1 )
-            leftTree = expandTree(tree.left, maxOrder);
+            leftTree = treeVar.expandTree(tree.left, maxOrder);
             leftDiffOrder = leftTree.diffOrder;
             leftHeight = leftTree.height;
             splitLeft = false;
@@ -65,7 +65,7 @@ else
             rightHeight = 0;
             splitRight = false;
         elseif ( rightNumArgs == 1 )
-            rightTree = expandTree(tree.right, maxOrder);
+            rightTree = treeVar.expandTree(tree.right, maxOrder);
             rightDiffOrder = rightTree.diffOrder;
             rightHeight = 0;
             splitRight = false;
@@ -85,6 +85,13 @@ else
                 'left', leftRight, ...
                 'right', rightTree, ...
                 'diffOrder', max(leftRight.diffOrder, rightDiffOrder) + 1);
+        elseif ( ~splitLeft && splitRight )
+            disp('Do something here for times')
+        elseif ( splitLeft && splitRight )
+            disp('Split both?')
+        elseif ( ~splitLeft && ~splitRight )
+            newLeft = leftTree;
+            newRight = rightTree;
         elseif ( leftNumArgs < 2 && rightNumArgs == 2 )
             newLeft = struct('method','times', 'numArgs', 2, ...
                 'left', leftTree, ...

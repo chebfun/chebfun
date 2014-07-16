@@ -54,18 +54,11 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         function h = minus(f, g)
             h = treeVar();
             if ( ~isa(f, 'treeVar') )
-                h.tree = struct('method', 'minus', 'numArgs', 2, ...
-                    'left', f, 'right', g.tree, 'diffOrder', g.tree.diffOrder,  ...
-                    'height', g.tree.height + 1, 'multCoeff', 1);
+                h.tree = treeVar.bivariate(f, g.tree, 'minus', 1);
             elseif ( ~isa(g, 'treeVar') )
-                h.tree = struct('method', 'minus', 'numArgs', 2, ...
-                    'left', f.tree, 'right', g, 'diffOrder', f.tree.diffOrder,  ...
-                    'height', f.tree.height + 1, 'multCoeff', 1);
+                h.tree = treeVar.bivariate(f.tree, g, 'minus', 0);
             else
-                h.tree = struct('method', 'minus', 'numArgs', 2, ...
-                    'left', f.tree, 'right', g.tree, ...
-                    'diffOrder', max(f.tree.diffOrder, g.tree.diffOrder), ...
-                    'height', max(f.tree.height, g.tree.height) + 1, 'multCoeff', 1);
+                h.tree = treeVar.bivariate(f.tree, g.tree, 'minus', 2);
             end
         end
         
@@ -84,12 +77,6 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
                 h.tree = treeVar.bivariate(f, g.tree, 'plus', 1);
             elseif ( ~isa(g, 'treeVar') )
                 h.tree = treeVar.bivariate(f.tree, g, 'plus', 0);
-%                 h.tree = struct('method', 'plus', 'numArgs', 2, ...
-%                     'left', f.tree, 'right', g, ...
-%                     'diffOrder', f.tree.diffOrder, ...
-%                     'ID', f.tree.ID, ...
-%                     'height', f.tree.height + 1, ...
-%                     'multCoeff', 1);
             else
                 h.tree = treeVar.bivariate(f.tree, g.tree, 'plus', 2);
             end
@@ -132,7 +119,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
 %                     'left', f.tree, 'right', g, 'diffOrder', f.tree.diffOrder, ...
 %                     'height', f.tree.height + 1);
             else
-                h.tree = treeVar.bivariate(f.tree, g.tree, 'times');
+                h.tree = treeVar.bivariate(f.tree, g.tree, 'times', 2);
             end
         end
         
@@ -178,7 +165,9 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
                 
             end
         end
+       
         
+        funOut = systemToRHS(infix, varArray, coeff, indexStart, totalDiffOrders);
         
         [newTree, derTree] = splitTree(tree, maxOrder)
         
@@ -228,7 +217,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             coeff = coeffFun(coeffArg);
             
             newTree = struct('method', 'uminus', 'numArgs', 1, 'center', newTree);
-            [infix, varCounter, varArray] = treeVar.tree2infix(newTree);
+            [infix, varCounter, varArray] = treeVar.tree2infix(varargin);
             funOut = treeVar.toRHS(infix, varArray, coeff);
         end
         

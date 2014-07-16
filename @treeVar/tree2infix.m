@@ -1,20 +1,25 @@
-function [out, varCounter, varArray] = tree2infix(tree, indexStart, varCounter, varArray)
-if ( nargin < 3 )
-    varCounter = 1;
-    varArray = [];
-end
+function [out, varCounter, varArray] = tree2infix(tree, eqno, indexStart)
+varCounter = 1;
+varArray = [];
 
 if isempty(tree)
     out = '';
     return
 end
 
+[out, varCounter, varArray] = ...
+    toInfix(tree, eqno, indexStart, varCounter, varArray);
+
+end
+
+function [out, varCounter, varArray] = toInfix(tree, eqno, indexStart, varCounter, varArray)
+
 switch tree.numArgs
     case 0
         out = sprintf('u(%i)', indexStart(tree.ID));
     case 1
         [tempOut, varCounter, varArray] = ...
-            treeVar.tree2infix(tree.center, indexStart, varCounter, varArray);
+            toInfix(tree.center, eqno, indexStart, varCounter, varArray);
         out = sprintf('%s(%s)', tree.method, tempOut);
     case 2
         if ( strcmp(tree.method, 'diff') )
@@ -24,9 +29,9 @@ switch tree.numArgs
         
         if ( isstruct(tree.left) )
             [leftInfix, varCounter, varArray] = ...
-                treeVar.tree2infix(tree.left, indexStart, varCounter, varArray);
+                toInfix(tree.left, eqno, indexStart, varCounter, varArray);
         else
-            varName = sprintf('var%i', varCounter);
+            varName = sprintf('eq%i_var%i', eqno, varCounter);
             if ( isnumeric(tree.left) )
                 % The left tree is a scalar.
                 leftInfix = varName;
@@ -41,9 +46,9 @@ switch tree.numArgs
         
         if ( isstruct(tree.right) )
             [rightInfix, varCounter, varArray] = ...
-                treeVar.tree2infix(tree.right, indexStart, varCounter, varArray);
+                toInfix(tree.right, eqno, indexStart, varCounter, varArray);
         else
-            varName = sprintf('var%i', varCounter);
+            varName = sprintf('eq%i_var%i', eqno, varCounter);
             if ( isnumeric(tree.right) )
                 % The left tree is a scalar.
                 rightInfix = varName;
