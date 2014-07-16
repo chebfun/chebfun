@@ -70,7 +70,7 @@ end
 
 % Add a tiny amount to zeros to make plots look nicer:
 if ( f.vscale > 0 )
-    % (Min of epslevel*vscale and the miniumum non-zero coefficient)
+    % (Min of epslevel*vscale and the minimum non-zero coefficient)
     absCoeffs(~absCoeffs) = min( min(f.epslevel.*f.vscale), ...
                                  min(absCoeffs(logical(absCoeffs))) );                             
 else
