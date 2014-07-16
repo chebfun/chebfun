@@ -18,17 +18,19 @@ function h = conv(f, g, flag)
 %
 %   Note that CONV only supports piecewise-smooth functions on bounded domains.
 %
-%   Example:
+% Example:
 %     f = chebfun(1/2); g = f;
 %     subplot(2, 2, 1), plot(f)
 %     for j = 2:4, g = conv(f, g); subplot(2, 2, j), plot(g), end
 %     figure, for j = 1:4, subplot(2,2,j), plot(g), g = diff(g); end
+%
+% REFERENCES:
+%   [1] N. Hale and A. Townsend, "An algorithm for the convolution of Legendre
+%   series", SIAM Journal on Scientific Computing, Vol. 36, No. 3, pages
+%   A1207-A1220, 2014.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
-%
-% [1] N. Hale and A. Townsend, "An algorithm for the convolution of Legendre
-% series", (To appear in SISC)
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -50,6 +52,10 @@ if ( xor(f(1).isTransposed, g(1).isTransposed) )
         'CHEBFUN dimensions do not agree.');
 end
 transState = f(1).isTransposed;
+
+% Breakpoints are a new nusiance, so attempt to merge first.
+f = merge(f);
+g = merge(g);
 
 % Extract the domain:
 [a, b] = domain(f);
@@ -87,6 +93,9 @@ for j = 1:numel(f.funs)
     end
 end
 
+% Attempt to merge result:
+h = merge(h);
+
 if ( transState )
     h = h.';
 end
@@ -109,7 +118,8 @@ f = defineInterval(f, [c, d], fTmp + g); % f{c, d} = f{c, d} + g;
 % Make sure that point values are not added twice:
 dom = domain(f);
 intDom = dom(2:end-1);
-f.pointValues(2:end-1) = 1/2*(feval(f, intDom.', 'left') + feval(f, intDom.', 'right'));
+f.pointValues(2:end-1) = 1/2*(feval(f, intDom.', 'left') + ...
+    feval(f, intDom.', 'right'));
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
