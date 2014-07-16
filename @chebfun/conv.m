@@ -57,6 +57,14 @@ transState = f(1).isTransposed;
 f = merge(f);
 g = merge(g);
 
+% Return a warning if F and G have too many pieces after attempting to merge 
+% (the computation is probably going to be very slow): 
+if ( ( numel(f.funs) + numel(g.funs) ) > 50 ) 
+    % Give a warning and proceed. 
+   warning('CHEBFUN:CHEBFUN:conv:piecewise',...
+                   'Convolving chebfuns with many pieces can be very slow.');  
+end
+
 % Extract the domain:
 [a, b] = domain(f);
 [c, d] = domain(g);
