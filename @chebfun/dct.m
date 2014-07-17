@@ -2,16 +2,20 @@ function y = dct(u, type)
 %CHEBFUN.DCT   Discrete cosine transform.
 %   CHEBFUN.DCT(U, TYPE) returns in the discrete cosine transform (DCT) of type
 %   KIND on the column vector U. If TYPE is not given it defaults to 2. So far,
-%   only types 1-4 are supported.
+%   types 1-4 are supported.
 %
 %   If U is a matrix, the DCT is applied to each column.
 %
-% See also CHEBFUN.IDCT.
+%   DCTs are scaled in many different ways. We have decided to be
+%   consistent with wikipedia:
+%   http://en.wikipedia.org/wiki/Discrete_cosine_transform.
+%
+% See also CHEBFUN.IDCT, CHEBFUN.DST, CHEBFUN.IDST.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% TODO: Check normalization and document in help text.
+% TODO: Implement DCT5-8. 
 
 % Default to kind 2.
 if ( nargin < 2 )

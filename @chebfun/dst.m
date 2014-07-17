@@ -6,12 +6,16 @@ function y = dst(u, type)
 %
 %   If U is a matrix, the DST is applied to each column.
 %
-% See also CHEBFUN.IDST.
+%   DSTs are scaled in many different ways. We have decided to be
+%   consistent with wikipedia:
+%   http://en.wikipedia.org/wiki/Discrete_sine_transform.
+%
+% See also CHEBFUN.IDST, CHEBFUN.DCT, CHEBFUN.IDCT.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% TODO: Check normalization and document in help text.
+% TODO: Implement DST5-8. 
 
 % Default to kind 2.
 if ( nargin < 2 )
@@ -40,9 +44,6 @@ switch type
         end
         y = chebfun.dst(y, 4);
         y = bsxfun( @times, y, 2*cos(pi/2/n*((0:n-1)'+1/2)) );
-        
-%         y = chebfun.dct( u(end:-1:1,:) , 2);
-%         y = bsxfun(@times, y, (-1).^(0:n-1)' );
         
     case 3
         

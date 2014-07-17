@@ -6,12 +6,16 @@ function y = idst(u, type)
 %
 %   If U is a matrix, the inverse DST is applied to each column.
 %
-% See also CHEBFUN.DST.
+%   IDSTs are scaled in many different ways. We have decided to be
+%   consistent with wikipedia:
+%   http://en.wikipedia.org/wiki/Discrete_sine_transform.
+%
+% See also CHEBFUN.DST, CHEBFUN.DCT, CHEBFUN.IDCT.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% TODO: Check normalization and document in help text.
+% TODO: Implement IDST5-8. 
 
 % Default to kind 3:
 if ( nargin < 2 )

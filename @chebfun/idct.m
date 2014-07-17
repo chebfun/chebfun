@@ -6,12 +6,16 @@ function y = idct(u, type)
 %
 %   If U is a matrix, the inverse DCT is applied to each column.
 %
-% See also CHEBFUN.DCT.
+%   IDCTs are scaled in many different ways. We have decided to be
+%   consistent with wikipedia:
+%   http://en.wikipedia.org/wiki/Discrete_cosine_transform.
+%
+% See also CHEBFUN.DCT, CHEBFUN.DST, CHEBFUN.IDST.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% TODO: Check normalization and document in help text.
+% TODO: Implement IDCT5-8. 
 
 % Default to kind 3:
 if ( nargin < 2 )
