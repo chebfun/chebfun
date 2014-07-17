@@ -25,28 +25,22 @@ switch type
     case 1
         
         % IDCT-I is a scaled DCT-I.
-    
-        u = flipud(u);
         y = 2/(n-1)*chebfun.dct(u, 1);
-        y = flipud(y);
     
     case 2
-        
+
         % IDCT-II is a scaled DCT-III.
-        
-        u = sqrt(2/n)*u;
-        u(1,:) = sqrt(2)*u(1,:);
-        y = chebfun.dct(u, 3); 
-        y = flipud(y);
+        y = (2/n)*chebfun.dct(u, 3); 
     
     case 3
         
         % IDCT-III is a scaled DCT-II:
-
-        u = flipud(u);
-        y = chebfun.dct(u, 2);
-        y = sqrt(2/n)*y;
-        y(1,:) = sqrt(2)*y(1,:);
+        y = (2/n)*chebfun.dct(u, 2);
+        
+    case 4
+        
+        % IDCT-IV is a DCT-IV:
+        y = (2/n)*chebfun.dct(u, 4);
         
     otherwise
     
