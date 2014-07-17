@@ -53,16 +53,13 @@ if ( xor(f(1).isTransposed, g(1).isTransposed) )
 end
 transState = f(1).isTransposed;
 
-% Breakpoints are a new nusiance, so attempt to merge first.
-f = merge(f);
-g = merge(g);
-
 % Return a warning if F and G have too many pieces after attempting to merge 
 % (the computation is probably going to be very slow): 
 if ( ( numel(f.funs) + numel(g.funs) ) > 50 ) 
     % Give a warning and proceed. 
    warning('CHEBFUN:CHEBFUN:conv:piecewise',...
-                   'Convolving chebfuns with many pieces can be very slow.');  
+       ['Convolving chebfuns with many pieces can be very slow.\n', ...
+        'Try calling MERGE() on the inputs before calling CONV().']);
 end
 
 % Extract the domain:
@@ -100,9 +97,6 @@ for j = 1:numel(f.funs)
         end
     end
 end
-
-% Attempt to merge result:
-h = merge(h);
 
 if ( transState )
     h = h.';
