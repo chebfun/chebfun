@@ -43,7 +43,7 @@ end
 
 j = 1;
 while ( ~isempty(doms) )
-    % Find the minium remaining domain entry:
+    % Find the minimum remaining domain entry:
     newDom(j) = min(cellfun(@min, doms));
     for k = numel(doms):-1:1
         % Remove subsequent domains less than tol away:

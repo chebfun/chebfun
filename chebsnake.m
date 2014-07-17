@@ -125,7 +125,7 @@ while ( d ~= 0 ) % until quit
             yy = linspace(-1, 1, 5*length(y)).';
             xx = linspace(-1, 1, length(y)).';
             ww = fhweights(length(y)-1, fhd);
-            c = chebtech.bary(yy, y.', xx, ww);
+            c = bary(yy, y.', xx, ww);
         elseif ( nodes == 0 )
             yy = linspace(-1, 1, length(y)).';
             c = polyfit(yy, y, length(y) - 1, dom);

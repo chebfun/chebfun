@@ -1,5 +1,5 @@
 function [xx, yy] = chebpts2(nx, ny, D, kind)
-%CHEBPTS2 Chebyshev tensor points
+%CHEBPTS2   Chebyshev tensor product grid.
 %   [XX YY] = CHEBPTS2(N) constructs an N by N grid of Chebyshev tensor points
 %   on [-1 1]^2.
 %
@@ -8,9 +8,6 @@ function [xx, yy] = chebpts2(nx, ny, D, kind)
 %
 %   [XX YY] = CHEBPTS2(NX,NY,D) constructs an NX by NY grid of Chebyshev tensor
 %   points on the rectangle [a b] x [c d], where D = [a b c d].
-% 
-%   The particular tensor grid that is returned is based on the currently
-%   underlying technology. 
 %
 %   [XX YY] = CHEBPTS2(NX,NY,D,KIND) constructor Chebyshev tensor grid of
 %   the kind KIND. KIND = 2 is default. 
