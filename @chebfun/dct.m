@@ -60,10 +60,10 @@ switch type
         % Equivalent to evaluating a ChebV expansion at 1st kind points 
         % (up to a diagonal scaling).
         
-        y = bsxfun(@times, cos(pi/2/n*((0:(n-1))'+1/2)), u);
+        y = bsxfun(@times, u, cos(pi/2/n*((0:(n-1))'+1/2)));
         y = chebfun.dct( y, 2 );
-        y(2:n) = 2 * y(2:n);
-        for k = 2:n, y(k) = y(k) - y(k-1); end
+        y(2:n,:) = 2 * y(2:n,:);
+        for k = 2:n, y(k,:) = y(k,:) - y(k-1,:); end
 
     otherwise
     
