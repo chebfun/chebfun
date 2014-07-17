@@ -44,24 +44,18 @@ y = DCT4 * x;
 pass(8) = norm( y - chebfun.dct(x, 4) ) < 10*tol; 
 
 % IDCT-I 
-DCT1 = cos(pi/(N-1)*(0:(N-1))'*(0:(N-1)));
-DCT1(:,[1,end]) = .5*DCT1(:,[1,end]);
 y = DCT1 \ x;
 pass(9) = norm( y - chebfun.idct(x, 1) ) < tol; 
 
 % IDCT-II
-DCT2 = cos(pi/N*(0:N-1)'*((0:N-1)+1/2));
 y = DCT2 \ x; 
 pass(10) = norm( y - chebfun.idct(x, 2) ) < tol; 
 
 % IDCT-III
-DCT3 = cos(pi/N*((0:N-1)+1/2)'*(0:N-1));
-DCT3(:,1) = .5*DCT3(:,1);
 y = DCT3 \ x; 
 pass(11) = norm( y - chebfun.idct(x, 3) ) < tol; 
 
 % IDCT-IV
-DCT4 = cos(pi/N*((0:N-1)+1/2)'*((0:N-1)+1/2));
 y = DCT4 \ x; 
 pass(12) = norm( y - chebfun.idct(x, 4) ) < tol; 
 

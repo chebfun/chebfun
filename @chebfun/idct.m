@@ -18,29 +18,29 @@ if ( nargin < 2 )
     type = 3;
 end
 
-n = size(u, 1);
+[n, m] = size(u);
 
 switch type
     
     case 1
         
         % IDCT-I is a scaled DCT-I.
-        y = 2/(n-1)*chebfun.dct(u, 1);
+        y = ( 2 / (n-1) ) * chebfun.dct(u, 1);
     
     case 2
 
         % IDCT-II is a scaled DCT-III.
-        y = (2/n)*chebfun.dct(u, 3); 
+        y = ( 2 / n ) * chebfun.dct(u, 3); 
     
     case 3
         
         % IDCT-III is a scaled DCT-II:
-        y = (2/n)*chebfun.dct(u, 2);
+        y = ( 2 / n ) * chebfun.dct(u, 2);
         
     case 4
         
         % IDCT-IV is a DCT-IV:
-        y = (2/n)*chebfun.dct(u, 4);
+        y = ( 2 / n ) * chebfun.dct(u, 4);
         
     otherwise
     

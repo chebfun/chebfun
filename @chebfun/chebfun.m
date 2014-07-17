@@ -503,6 +503,12 @@ classdef chebfun
         % Inverse discrete cosine transform:
         u = idct(y, kind);
         
+        % Discrete sine transform:
+        y = dst(u, kind);
+        
+        % Inverse discrete sine transform:
+        u = idst(y, kind);
+        
         % Interpolate data:
         f = interp1(x, y, method, dom);
 

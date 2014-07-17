@@ -18,7 +18,7 @@ if ( nargin < 2 )
     type = 2;
 end
 
-n = length(u);
+[n, m] = size(u);
 
 switch type
     
@@ -28,10 +28,10 @@ switch type
         % (up to a diagonal scaling). Implemented using the connection to 
         % a real-even DFT, see CHEBTECH2.COEFFS2VALS().
         
-        u([1,end],:) = .5*u([1,end],:);
-        u = flipud(u);
-        y = chebtech2.coeffs2vals(u);
-        y = flipud(y); 
+        u([1,end], :) = .5 * u([1,end], :);
+        u = flipud( u );
+        y = chebtech2.coeffs2vals( u );
+        y = flipud( y ); 
         
     case 2
         
@@ -39,10 +39,10 @@ switch type
         % (up to a diagonal scaling). Also the inverse of DCT-III 
         % (up to a diagonal scaling) and this is how it is implemented.  
         
-        u = flipud(u);
-        y = (n/2)*chebtech1.vals2coeffs(u);
-        y = flipud(y);
-        y(1,:) = 2*y(1,:); 
+        u = flipud( u );
+        y = ( n / 2 ) * chebtech1.vals2coeffs( u );
+        y = flipud( y );
+        y(1,:) = 2 * y(1, :); 
         
     case 3
         
@@ -50,9 +50,9 @@ switch type
         % (up to a diagonal scaling). Implemented using the connection to a 
         % real-even DFT of half-shifted output, see CHEBTECH2.COEFFS2VALS().  
         
-        u(1,:) = .5*u(1,:);
-        u = flipud(u);
-        y = chebtech1.coeffs2vals(u);    
+        u(1,:) = .5*u(1, :);
+        u = flipud( u );
+        y = chebtech1.coeffs2vals( u );    
         y = flipud( y ); 
         
     case 4 
@@ -60,10 +60,12 @@ switch type
         % Equivalent to evaluating a ChebV expansion at 1st kind points 
         % (up to a diagonal scaling).
         
-        y = bsxfun(@times, u, cos(pi/2/n*((0:(n-1))'+1/2)));
+        y = bsxfun( @times, u, cos(pi/2/n*((0:(n-1))'+1/2)) );
         y = chebfun.dct( y, 2 );
-        y(2:n,:) = 2 * y(2:n,:);
-        for k = 2:n, y(k,:) = y(k,:) - y(k-1,:); end
+        y(2:n, :) = 2 * y(2:n, :);
+        for k = 2 : n
+            y(k, :) = y(k, :) - y(k-1, :); 
+        end
 
     otherwise
     
