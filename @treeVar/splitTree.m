@@ -73,7 +73,7 @@ end
 function ot = oneTreeFromRight(tree, operator)
 if ( strcmp(operator,'minus') )
     ot = struct('method', 'uminus', 'numArgs', 1, 'center', tree, ...
-        'diffOrder', tree.diffOrder);
+        'diffOrder', tree.diffOrder, 'ID', tree.ID, 'height', tree.height + 1);
 else
     ot = tree;
 end

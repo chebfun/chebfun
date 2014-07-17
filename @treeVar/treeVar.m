@@ -87,16 +87,19 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             if ( ~isa(f, 'treeVar') )
                 h.tree = struct('method', 'power', 'numArgs', 2, ...
                     'left', f, 'right', g.tree, 'diffOrder', g.tree.diffOrder, ...
-                    'height', g.tree.height + 1);
+                    'height', g.tree.height + 1, ...
+                    'ID', g.tree.ID);
             elseif ( ~isa(g, 'treeVar') )
                 h.tree = struct('method', 'power', 'numArgs', 2, ...
                     'left', f.tree, 'right', g, 'diffOrder', f.tree.diffOrder, ...
-                    'height', f.tree.height + 1);
+                    'height', f.tree.height + 1, ...
+                    'ID', f.tree.ID);
             else
                 h.tree = struct('method', 'power', 'numArgs', 2, ...
                     'left', f.tree, 'right', g.tree, ...
                     'diffOrder', max(f.tree.diffOrder, g.tree.diffOrder), ...
-                    'height', max(f.tree.height, g.tree.height) + 1);
+                    'height', max(f.tree.height, g.tree.height) + 1, ...
+                    'ID', f.tree.ID | g.tree.ID);
             end
         end
         
@@ -211,13 +214,13 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             [newTree, derTree] = treeVar.splitTree(expTree, ...
                 problemFun.tree.diffOrder);
             
-            [infixDer, dummy, varArrayDer] = treeVar.tree2infix(derTree);
+            [infixDer, dummy, varArrayDer] = treeVar.tree2infix(derTree, 1, 1);
             coeffFun = treeVar.toAnon(infixDer, varArrayDer);
             coeffArg = [zeros(1, expTree.diffOrder), 1];
             coeff = coeffFun(coeffArg);
             
             newTree = struct('method', 'uminus', 'numArgs', 1, 'center', newTree);
-            [infix, varCounter, varArray] = treeVar.tree2infix(varargin);
+            [infix, varCounter, varArray] = treeVar.tree2infix(newTree, 1, 1);
             funOut = treeVar.toRHS(infix, varArray, coeff);
         end
         
