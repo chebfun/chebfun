@@ -3,7 +3,7 @@ function pass = test_eigs_orrsom(pref)
 % Orr-Sommerfeld eigenvalues
 % Toby Driscoll and Nick Trefethen, October 2010
 
-%TODO: These eigenvalues aren't as accurate as they should be. 
+% TODO: These eigenvalues aren't as accurate as they should be. 
 % It's not reliable as a test.
 
 pass = true;
@@ -21,7 +21,7 @@ B = chebop(@(x,u) diff(u, 2) - u, [-1 1]);
 A.lbc = @(u) [u ; diff(u)];
 A.rbc = @(u) [u ; diff(u)];
 
-discType = {@colloc2,@ultraS,@colloc1};
+discType = {@colloc2, @ultraS, @colloc1};
 
 %TODO: Why does colloc1 have so much larger error?
 %TODO: It's not for me on my Mac. NH 21/06/2014.
