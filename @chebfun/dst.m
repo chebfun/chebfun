@@ -1,13 +1,15 @@
 function y = dst(u, type)
 %CHEBFUN.DST   Discrete sine transform.
 %   CHEBFUN.DST(U, TYPE) returns in the discrete sine transform (DST) of type
-%   KIND on the column vector U. If TYPE is not given it defaults to 2. So far,
-%   only types 1-4 are supported.
+%   KIND on the column vector U. If TYPE is not given it defaults to 1 (which is
+%   consistent with Matlab's PDE toolbox). So far, only types 1-4 are supported.
 %
 %   If U is a matrix, the DST is applied to each column.
 %
 %   DSTs are scaled in many different ways. We have decided to be consistent
 %   with Wikipedia: http://en.wikipedia.org/wiki/Discrete_sine_transform.
+%
+%   Note that CHEBFUN.DST(U) is the same as DST(U) from Matlab's PDE toolbox.
 %
 % See also CHEBFUN.IDST, CHEBFUN.DCT, CHEBFUN.IDCT.
 
@@ -16,9 +18,9 @@ function y = dst(u, type)
 
 % TODO: Implement DST5-8. 
 
-% Default to kind 2.
+% Default to kind 1:
 if ( nargin < 2 )
-    type = 2;
+    type = 1;
 end
 
 [n, m] = size(u);

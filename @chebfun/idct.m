@@ -9,10 +9,10 @@ function y = idct(u, type)
 %   IDCTs are scaled in many different ways. We have decided to be consistent
 %   with Wikipedia: http://en.wikipedia.org/wiki/Discrete_cosine_transform.
 %
-%   Note that the above means that CHEBFUN.IDCT(R) is not the same as IDCT(R),
-%   where IDCT() is the implementation in the Matlab signal processing toolbox.
+%   Note that the above means that CHEBFUN.IDCT(U) is not the same as IDCT(U),
+%   where IDCT(U) is the implementation in the Matlab signal processing toolbox.
 %   The two are related by 
-%       IDCT(R) = CHEBFUN.DCT(E*R)
+%       IDCT(U) = CHEBFUN.DCT(E*U)
 %   where E = sqrt(2)*eye(n); E(1,1) = 2;
 %
 % See also CHEBFUN.DCT, CHEBFUN.DST, CHEBFUN.IDST.

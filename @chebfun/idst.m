@@ -2,12 +2,15 @@ function y = idst(u, type)
 %CHEBFUN.IDST   Inverse discrete sine transform.
 %   CHEBFUN.IDST(U, TYPE) returns in the inverse discrete sine transform
 %   (inverse DST) of type KIND on the column vector U. If TYPE is not given it
-%   defaults to 2. So far, only types 1-4 are supported.
+%   defaults to 1 (which is consistent with Matlab's PDE toolbox). So far, only
+%   types 1-4 are supported.
 %
 %   If U is a matrix, the inverse DST is applied to each column.
 %
 %   IDSTs are scaled in many different ways. We have decided to be consistent
 %   with Wikipedia: http://en.wikipedia.org/wiki/Discrete_sine_transform.
+%
+%   Note that CHEBFUN.IDST(U) is the same as IDST(U) from Matlab's PDE toolbox.
 %
 % See also CHEBFUN.DST, CHEBFUN.DCT, CHEBFUN.IDCT.
 
@@ -16,9 +19,9 @@ function y = idst(u, type)
 
 % TODO: Implement IDST5-8. 
 
-% Default to kind 2:
+% Default to kind 1:
 if ( nargin < 2 )
-    type = 2;
+    type = 1;
 end
 
 [n, m] = size(u);

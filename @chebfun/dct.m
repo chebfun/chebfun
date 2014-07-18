@@ -9,11 +9,11 @@ function y = dct(u, type)
 %   DCTs are scaled in many different ways. We have decided to be consistent
 %   with Wikipedia: http://en.wikipedia.org/wiki/Discrete_cosine_transform.
 %
-%   Note that the above means that CHEBFUN.DCT(R) is not the same as DCT(R),
-%   where DCT() is the implementation in the Matlab signal processing toolbox.
+%   Note that the above means that CHEBFUN.DCT(R) is not the same as DCT(U),
+%   where DCT(U) is the implementation in the Matlab signal processing toolbox.
 %   The two are related by 
-%       DCT(R) = E*CHEBFUN.DCT(R)
-%   where n = size(R, 1) and E = sqrt(2/n)*speye(n); E(1,1) = 1/sqrt(n).
+%       DCT(U) = E*CHEBFUN.DCT(U)
+%   where n = size(U, 1) and E = sqrt(2/n)*speye(n); E(1,1) = 1/sqrt(n).
 %
 % See also CHEBFUN.IDCT, CHEBFUN.DST, CHEBFUN.IDST.
 
