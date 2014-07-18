@@ -546,9 +546,6 @@ classdef chebfun
         % Determine values of CHEBFUN at breakpoints.
         vals = getValuesAtBreakpoints(funs, ends, op);
         
-        % Merge domains.
-        newDom = mergeDomains(varargin)
-                
         % Which interval is a point in?
         out = whichInterval(dom, x, direction);
         
