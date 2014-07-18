@@ -497,6 +497,18 @@ classdef chebfun
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
         
+        % Discrete cosine transform:
+        y = dct(u, kind);
+        
+        % Inverse discrete cosine transform:
+        u = idct(y, kind);
+        
+        % Discrete sine transform:
+        y = dst(u, kind);
+        
+        % Inverse discrete sine transform:
+        u = idst(y, kind);
+        
         % Interpolate data:
         f = interp1(x, y, method, dom);
 
