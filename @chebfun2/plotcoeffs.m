@@ -28,11 +28,11 @@ rows = f.rows;
 
 figure % First figure plots column slices.
 h1 = plotcoeffs( cols, varargin{:} ); % PLOTCOEFFS of column slices.
-title('column slices', 'FontSize', 16)
+title('Column slices', 'FontSize', 16)
 
 figure % Second figure plots row slices.
 h2 = plotcoeffs( rows, varargin{:} ); % PLOTCOEFFS of row slices.
-title('row slices', 'FontSize', 16)
+title('Row slices', 'FontSize', 16)
  
 % Return plot handles when appropriate.
 if ( nargout == 1 )
