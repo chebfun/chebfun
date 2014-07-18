@@ -2,13 +2,18 @@ function y = idct(u, type)
 %CHEBFUN.IDCT   Inverse discrete cosine transform.
 %   CHEBFUN.IDCT(U, TYPE) returns in the inverse discrete cosine transform
 %   (inverse DCT) of type KIND on the column vector U. If TYPE is not given it
-%   defaults to 3. So far, only types 1, 2, and 3 are supported.
+%   defaults to 2. So far, types 1-4 are supported.
 %
 %   If U is a matrix, the inverse DCT is applied to each column.
 %
-%   IDCTs are scaled in many different ways. We have decided to be
-%   consistent with wikipedia:
-%   http://en.wikipedia.org/wiki/Discrete_cosine_transform.
+%   IDCTs are scaled in many different ways. We have decided to be consistent
+%   with Wikipedia: http://en.wikipedia.org/wiki/Discrete_cosine_transform.
+%
+%   Note that the above means that CHEBFUN.IDCT(R) is not the same as IDCT(R),
+%   where IDCT() is the implementation in the Matlab signal processing toolbox.
+%   The two are related by 
+%       IDCT(R) = CHEBFUN.DCT(E*R)
+%   where E = sqrt(2)*eye(n); E(1,1) = 2;
 %
 % See also CHEBFUN.DCT, CHEBFUN.DST, CHEBFUN.IDST.
 
@@ -19,7 +24,7 @@ function y = idct(u, type)
 
 % Default to kind 3:
 if ( nargin < 2 )
-    type = 3;
+    type = 2;
 end
 
 [n, m] = size(u);

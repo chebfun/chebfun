@@ -6,9 +6,8 @@ function y = dst(u, type)
 %
 %   If U is a matrix, the DST is applied to each column.
 %
-%   DSTs are scaled in many different ways. We have decided to be
-%   consistent with wikipedia:
-%   http://en.wikipedia.org/wiki/Discrete_sine_transform.
+%   DSTs are scaled in many different ways. We have decided to be consistent
+%   with Wikipedia: http://en.wikipedia.org/wiki/Discrete_sine_transform.
 %
 % See also CHEBFUN.IDST, CHEBFUN.DCT, CHEBFUN.IDCT.
 
@@ -65,7 +64,7 @@ switch type
         
     otherwise
     
-        error('CHEBEFUN:CHEBFUN:dct:type', 'Unknown/unimplemented DCT type.');
+        error('CHEBEFUN:CHEBFUN:dct:type', 'Unknown/unimplemented DST type.');
         
 end
 
