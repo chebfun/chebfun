@@ -284,7 +284,7 @@ classdef chebfun
         display(f);
 
         % Accuracy estimate of a CHEBFUN object.
-        out = epslevel(f);
+        out = epslevel(f, flag);
         
         % Evaluate a CHEBFUN.
         y = feval(f, x, varargin)
