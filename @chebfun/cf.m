@@ -391,7 +391,7 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Trigonometric Polynomial CF approximation.
-[p, q, r, s] = function trigpolyCF(f, n)
+function [p, q, r, s] = trigpolyCF(f, n)
 % TRIGPOLYCF   CF approximation for real, periodic chebfuns based on fourtech.
 % P is the trigonometirc polynomial of length 2*n+1.
 % S is the absolute value of the eigenvalue used for the approximation.
@@ -400,7 +400,8 @@ end
 N = (length(f)-1)/2;
 
 % Extract one half of the coefficients including the zeroth:
-a = f.coeffs(N+1:end);
+a = get(f, 'coeffs');
+a = a(N+1:end);
 
 % Get the real and imaginary parts of the tail coefficients:
 ck = real(a(n+2:N+1));
@@ -422,10 +423,11 @@ if ( norm(dk, inf) > eps )
 end
 s = norm([s1, s2], 1);
 
+dom = domain(f);
 %% Construct the CF approximation:
 a = [conj(a(n+1:-1:2)); a(1:n+1)] - b1 - flipud(b1) - 1i*b2 + 1i*flipud(b2);
-p = real(chebfun(a, [-pi, pi], 'coeffs', 'periodic'));
-q = @(x) 0*x + 1;
+p = real(chebfun(a, dom, 'coeffs', 'periodic'));
+q = chebfun(1, dom, 'periodic');
 r = @(x) p(x);
 end
 
