@@ -137,7 +137,11 @@ end
 
 % Compute the CF approximation.
 if ( isempty(n) || (n == 0) )
-    [p, q, r, s] = polynomialCF(f, a, m, M);
+    if ( isa(f.funs{1}.onefun, 'fourtech') )
+        [p, q, r, s] = trigpolyCF(f, m);
+    else
+        [p, q, r, s] = polynomialCF(f, a, m, M);
+    end
 else
     [p, q, r, s] = rationalCF(f, a, m, n, M);
 end
@@ -383,4 +387,67 @@ end
 % Flag indicating if the function is actually rational.
 rFlag = (n + l + 2) == length(tmp);
 
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Trigonometric Polynomial CF approximation.
+[p, q, r, s] = function trigpolyCF(f, n)
+% TRIGPOLYCF   CF approximation for real, periodic chebfuns based on fourtech.
+% P is the trigonometirc polynomial of length 2*n+1.
+% S is the absolute value of the eigenvalue used for the approximation.
+
+% N is the number of non-negatively indexed coefficients:
+N = (length(f)-1)/2;
+
+% Extract one half of the coefficients including the zeroth:
+a = f.coeffs(N+1:end);
+
+% Get the real and imaginary parts of the tail coefficients:
+ck = real(a(n+2:N+1));
+dk = imag(a(n+2:N+1));
+
+% Initialse arrays:
+b1 = zeros(2*n+1, 1);
+b2 = zeros(2*n+1, 1);
+s1 = [];
+s2 = [];
+
+% Solve the eigenvalue problem twice:
+if ( norm(ck, inf) > eps )
+    [b1, s1] = getCoeffs(real(a(n+2:N+1)), N, n);
+end
+
+if ( norm(dk, inf) > eps )
+    [b2, s2] = getCoeffs(imag(a(n+2:N+1)), N, n);
+end
+s = norm([s1, s2], 1);
+
+%% Construct the CF approximation:
+a = [conj(a(n+1:-1:2)); a(1:n+1)] - b1 - flipud(b1) - 1i*b2 + 1i*flipud(b2);
+p = real(chebfun(a, [-pi, pi], 'coeffs', 'periodic'));
+q = @(x) 0*x + 1;
+r = @(x) p(x);
+end
+
+function [b, s] = getCoeffs(c, N, n)
+% Solve the eigenvalue problem:
+[V, D] = eig(hankel(c));
+d = diag(D);
+[s, i] = max(abs(d));
+u = V(:,i);
+% Compute the coefficients b recursively:
+u1 = u(1);
+while ( abs(u(1)) < eps )
+    d(i) = [];
+    V(:, i) = [];
+    [s, i] = max(abs(d));
+    u = V(:, i);
+    u1 = u(1);
+end    
+uu = u(2:(N-n));
+b = c.';
+for k = n:-1:-n
+    b = [-(b(1:(N-n-1))*uu)/u1, b]; %#ok<AGROW>
+end
+b = b(1:2*n+1).';
 end
