@@ -184,7 +184,7 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
             end
 
             % Operator addition.
-            dom = chebfun.mergeDomains(A.domain, B.domain);
+            dom = domain.merge(A.domain, B.domain);
             C = operatorBlock(dom);
             C.stack = @(z) A.stack(z) + B.stack(z);
             C.diffOrder = max(A.diffOrder, B.diffOrder);

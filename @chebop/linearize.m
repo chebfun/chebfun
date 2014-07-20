@@ -157,7 +157,7 @@ end
 % Merge the domains of L obtained from evaluating the operator part above, with
 % the domain of N, as we want to respect the breakpoints originally assigned
 % to N (when its domain was defined)
-L.domain = chebfun.mergeDomains(L.domain, dom);
+L.domain = domain.merge(L.domain, dom);
 
 %% Deal with parameterized problems:
 
@@ -241,7 +241,7 @@ if ( ~isempty(N.bc) )
         isLinear(4) = all(all(get(bcU, 'linearity')));
         
         % Update domain:
-        L.domain = chebfun.mergeDomains(L.domain, BC.functional.domain);
+        L.domain = domain.merge(L.domain, BC.functional.domain);
     end
     
 end
@@ -301,9 +301,9 @@ function bc = checkConcat(bc)
 % Ensure conditions were concatenated vertically, not horizontally.
 if ( size(bc, 2) > 1 )
     warning('CHEBFUN:CHEBOP:linearize:bcConcat', ...
-        ['CHEBOP conditions should be vertically concatenated with a '';'',\n' ...
-        'not horizontally with a '',''. Horizontal concatenation may ' ...
-        'not be supported\nin future releases.']);
+        ['CHEBOP conditions should be vertically concatenated with\n' ...
+        'a '';'', not horizontally with a '',''. Horizontal concatenation may\n' ...
+        'not be supported in future releases.']);
     bc = bc.';
 end
 
