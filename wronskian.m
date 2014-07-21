@@ -14,6 +14,11 @@ function w = wronskian(L, varargin)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% At the moment, we do not support systems of ODEs:
+if ( numVars(L) > 1 )
+    error( 'CHEBFUN:WRONSKIAN', 'ODE systems not supported');
+end
+    
 F = {};
 % Quasimatrix case:
 if ( isa(varargin{1}, 'cell') )
