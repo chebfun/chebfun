@@ -204,8 +204,12 @@ else
                 args = [args , varargin(k)];          %#ok<AGROW>
             end
         end
+        % ARGS need to be vertically concatenated for operator to be evaluated
+        % correctly.
         args = args.';
     else
+        % ARGS need to be vertically concatenated for operator to be evaluated
+        % correctly.
         args = varargin.';
     end
     
