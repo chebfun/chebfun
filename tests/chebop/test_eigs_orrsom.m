@@ -3,8 +3,8 @@ function pass = test_eigs_orrsom(pref)
 % Orr-Sommerfeld eigenvalues
 % Toby Driscoll and Nick Trefethen, October 2010
 
-%TODO: These eigenvalues aren't as accurate as they should be. 
-%It's not reliable as a test.
+% TODO: These eigenvalues aren't as accurate as they should be. 
+% It's not reliable as a test.
 
 pass = true;
 
@@ -21,7 +21,12 @@ B = chebop(@(x,u) diff(u, 2) - u, [-1 1]);
 A.lbc = @(u) [u ; diff(u)];
 A.rbc = @(u) [u ; diff(u)];
 
-discType = {@colloc2,@ultraS,@colloc1};
+discType = {@colloc2, @ultraS, @colloc1};
+
+%TODO: Why does colloc1 have so much larger error?
+%TODO: It's not for me on my Mac. NH 21/06/2014.
+%TODO: It is for me on my Linux Mint. AB, 07/07/2014.
+tol = [1e-3 ; 1e-6 ; 1e-3];
 
 for disc = 1:3
     pref.discretization = discType{disc};
@@ -33,14 +38,11 @@ for disc = 1:3
 
     e_crit_v4 = -0.000078029804093 - 0.261565915010080i;
     err = abs(e_crit - e_crit_v4);
-
-    %TODO: Why does colloc1 have so much larger error?
-    %TODO: It's not for me on my Mac. NH 21/06/2014.
-    %TODO: It is for me on my Linux Mint. AB, 07/07/2014.
-    tol = 4e-6 + (2e-2)*(disc==3) + (1e-6)*(disc==1);
-    pass(disc) = err < tol;
-
+    pass(disc) = err < tol(disc);
+    
     % If we had to remove some entries, then there were spurious eigenvalues..
     pass(disc+3) = (numel(e) == 20);
+
+end
 
 end

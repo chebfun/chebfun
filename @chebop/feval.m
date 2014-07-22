@@ -45,8 +45,8 @@ if ( (nargin == 2) && isnumeric(varargin{1}) )
         'that these may not give the same result due to changes in how\n', ...
         'CHEBOP discretizes differential operators.'])
     warning('off', 'CHEBFUN:CHEBOP:feval:deprecated');
-    
-    % We cannot support boundry conditions in this way.
+
+    % We cannot support boundary conditions in this way.
     throwBCwarning = false;
     if ( ~isempty(N.lbc) )
         N.lbc = [];
@@ -64,7 +64,7 @@ if ( (nargin == 2) && isnumeric(varargin{1}) )
         warning('CHEBFUN:CHEBOP:feval:BCs', ...
             'Boundary conditions are not supported in FEVAL(N, DIM).')
     end
-    
+
     % Because the native V5 matrix is rectangular, we have to do some resizing
     % to recapture V4 behavior. Note: this may break for systems, piecewise
     % cases.
@@ -77,25 +77,25 @@ if ( (nargin == 2) && isnumeric(varargin{1}) )
              'Use MATRIX(N, DIM) or change the discretization in CHEBOPPREF.']);
     end
     A = matrix(L, n); % has n rows but maybe more columns
-    
+
     % We want an n by n result. We have that A is (n-d) x n where d =
     % L.diffOrder. Also, the output of A is at 1st kind points. We need to do:
     %  (map from n 1st kind to n 2nd kind) * A * (map from n 2nd kind to
     %  n+d 2nd kind).
-    
+
     % Note that we don't have to translate/scale to the domain for barymat
     % matrices that go between grids.
     d = L.diffOrder;
     [x1,~,w1] = chebtech1.chebpts( n );
     x2 = chebtech2.chebpts( n );
     x3 = chebtech2.chebpts( n + d );
-    
+
     out = barymat(x2, x1, w1) * A * barymat(x3, x2);
     return
-    
+
 elseif ((nargin == 3) && ischar(varargin{2}) ...
         && strcmpi(varargin{2}, 'oldschool'))
-    
+
     % TODO: Is this still correct?
     out = matrix(N, varargin{:});
     return
@@ -132,7 +132,7 @@ if ( numberOfInputs == 1)
     %   N.op = @(u) [ diff(u{1},2) + u{2}; u{1} + diff(u{2}];
     % Here, importantly, x does not appear in the argument list for N.op.
     u = varargin{1};
-    
+
     % If we have a scalar problem, but U is still a CHEBMATRIX, we need to
     % extract the BLOCK of U in order to be evaluate N. If on the other hand, U
     % has more than one block, but NUMBEROFINPUTS is still equal to 1 (which got
@@ -142,31 +142,35 @@ if ( numberOfInputs == 1)
     if ( isa(u, 'chebmatrix') && max(size(u)) == 1 )
         u = u.blocks{1};
     end
-    
+
     out = N.op(u);
-    
+
 elseif ( numberOfInputs == 2 )
     % If N has two input arguments, either we have a scalar problem, or the
     % problem is specified on chebmatrix format, e.g.,
     %   N.op = @(x, u) [ diff(u{1},2) + u{2}; u{1} + diff(u{2}];
     % Here, importantly, x must appear in the argument list for N.op.
-    
+
     % Did we not get the x variable passed in as argument?
     if ( numel(varargin) == 1 )
+        u = varargin{1};
+
         % Construct the independent variable X.
         x = chebfun(@(x) x, N.domain);
-        u = varargin{1};
-        
+        % If the CHEBFUN U passed in is a quasimatrix, we need to tile the
+        % independent variable X to have the same dimensions as U:
+        x = repmat(x, 1, size(u,2));
+
     elseif ( numel(varargin) == numberOfInputs )
-        % Got passed both x and u.
+        % Got passed both X and U.
         x = varargin{1};
         u = varargin{2};
-        
+
     else
         error('CHEBFUN:CHEBOP:feval:numInputs', ...
             'Unexpected number of input arguments.')
     end
-    
+
     % If we have a scalar problem, but U is still a CHEBMATRIX, we need to
     % extract the BLOCK of U in order to be evaluate N. If on the other
     % hand, U has more than one block, but NUMBEROFINPUTS is still less than
@@ -177,14 +181,17 @@ elseif ( numberOfInputs == 2 )
     if ( isa(u, 'chebmatrix') && max(size(u)) == 1 )
         u = u.blocks{1};
     end
-    
+
     % Evaluate the operator!
     out = N.op(x, u);
-    
+
 else
     % The operator is specified on the form
     %   N.op = @(x, u, v) = [diff(u,2) + v; u + diff(v)]
     
+    % Count the number of RHSs:
+    numCols = max(max(cellfun(@(v) size(v, 2), varargin)));
+
     % We must expand CHEBMATRIX entries out to a cell for {:} to work below.
     isChebMat = cellfun(@(u) isa(u, 'chebmatrix'), varargin);
     if ( any(isChebMat) )
@@ -197,18 +204,39 @@ else
                 args = [args , varargin(k)];          %#ok<AGROW>
             end
         end
+        % ARGS need to be vertically concatenated for operator to be evaluated
+        % correctly.
+        args = args.';
     else
-        args = varargin;
+        % ARGS need to be vertically concatenated for operator to be evaluated
+        % correctly.
+        args = varargin.';
     end
     
+    if ( numCols > 1 )
+        % Deal with multiple RHS
+        out = cell(1, numCols);
+        for k = 1:numCols
+            out{k} = doEval(N, args(:,k));
+        end
+        out = horzcat(out{:});
+    else
+        out = doEval(N, args);
+    end
+    
+end
+
+end
+
+function out = doEval(N, args)
+
+    numberOfInputs = nargin(N);
     if ( numel(args) == numberOfInputs - 1 )
         % Check if we need to include an x (independent variable):
         x = chebfun(@(x) x, N.domain);
-        args = [ {x} , args ];
+        args = [ {x} ; args ];
     end
-    
     % Evaluate the operator:
     out = N.op(args{:});
-end
-
+    
 end

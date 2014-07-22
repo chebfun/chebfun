@@ -52,6 +52,12 @@ for j = 1:nargin-2
     end
 end
 
+% Check for unbounded domains:
+if ( ~all(isfinite(L.domain)) )
+    error('CHEBFUN:LINOP:linsolve:infDom', ...
+        'Unbounded domains are not supported.');
+end
+
 % Grab defaults.
 if ( isempty(prefs) )
     prefs = cheboppref;
@@ -72,7 +78,7 @@ if ( isempty(disc) )
     % What values for the discretization do we want to consider?
     dimVals = disc.dimensionValues(prefs);
     % Update the domain if new breakpoints are needed:
-    disc.domain = chebfun.mergeDomains(disc.domain, f.domain);
+    disc.domain = domain.merge(disc.domain, f.domain);
     % Update the dimensions to work with the correct number of breakpoints
     disc.dimension = repmat(dimVals(1), 1, numel(disc.domain) - 1);
     dimVals(1) = [];

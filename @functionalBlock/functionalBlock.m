@@ -138,7 +138,7 @@ classdef functionalBlock < linBlock
             E = @(x) functionalBlock.feval(x, varargin{:});
         end
 
-        function J = jump(location,domain,order)
+        function J = jump(location,dom,order)
         %JUMP   Jump at a point.
         %
         %   JUMP(LOC,DOMAIN,ORDER) returns a functional evaluating the jump
@@ -146,12 +146,12 @@ classdef functionalBlock < linBlock
         %   ORDER at the point LOC.
 
             % Introduce the jump location as a breakpoint.
-            withBreak = sort( [ domain location ] );
-            domain = chebfun.mergeDomains(domain,withBreak);
+            withBreak = sort( [ dom location ] );
+            dom = domain.merge(dom, withBreak);
 
-            Er = functionalBlock.feval(location,domain,1);
-            El = functionalBlock.feval(location,domain,-1);
-            J = (Er-El)*operatorBlock.diff(domain,order);
+            Er = functionalBlock.feval(location, dom, 1);
+            El = functionalBlock.feval(location, dom, -1);
+            J = (Er - El)*operatorBlock.diff(dom, order);
         end
 
         function J = jumpAt(domain)

@@ -97,7 +97,7 @@ while ( ~terminate )
     % At the first Newton iteration, we have to do additional checks.
     if ( newtonCounter == 0)
         % Did we actually get an initial passed that solves the BVP?
-        if ( normDelta/vscale(u) < errTol/100 )
+        if ( normDelta/sum(vscale(u)) < errTol/100 )
             displayInfo('exactInitial', pref);
             info.error = NaN;
             info.normDelta = normDelta;

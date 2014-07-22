@@ -2,8 +2,7 @@ function varargout = plotcoeffs( f, varargin )
 %PLOTCOEFFS   Display the PLOTCOEFFS of the column and row slices.
 %   PLOTCOEFFS(F) plots the Chebyshev coefficients of the one-dimensional slices
 %   that form F on a semilogy scale. It returns two figures one for the row
-%   slices and one for the column slices. By default only the first six row and
-%   column slices are plotted.
+%   slices and one for the column slices.
 %
 %   PLOTCOEFFS(F, S) allows further plotting options, such as linestyle,
 %   linecolor, etc. If S contains a string 'LOGLOG', the coefficients will be
@@ -29,11 +28,11 @@ rows = f.rows;
 
 figure % First figure plots column slices.
 h1 = plotcoeffs( cols, varargin{:} ); % PLOTCOEFFS of column slices.
-title('Coeffs of column slices', 'FontSize', 16)
+title('Column slices', 'FontSize', 16)
 
 figure % Second figure plots row slices.
 h2 = plotcoeffs( rows, varargin{:} ); % PLOTCOEFFS of row slices.
-title('Coeffs of row slices', 'FontSize', 16)
+title('Row slices', 'FontSize', 16)
  
 % Return plot handles when appropriate.
 if ( nargout == 1 )

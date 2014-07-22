@@ -69,6 +69,14 @@ err(length(err) + 1) = norm(feval(N, u) - Nu);
 err(length(err) + 1) = norm(N(u) - Nu);
 err(length(err) + 1) = norm(N*u - Nu);
 
+%% Test multiple RHS on an e-val problem: (From #1022)
+dom = [0 pi];
+op = @(x,u,v) [ -diff(v) ; diff(u) ];
+bc = @(x,u,v) [ u(0) ; u(pi) ];
+A = chebop(op, dom, bc);
+[ev, ew] = eigs(A);
+err(length(err) + 1) = norm(A*ev - ev*ew)/1e3;
+
 %% Happy?
 
 tol = 1e-14;

@@ -534,6 +534,10 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             A = cellfun(@expm1, A);
         end
         
+        function A = feval(A, varargin)
+            A = cellfun(@(a) feval(a, varargin{:}), A, 'UniformOutput', true);
+        end
+        
         function A = fix(A)
             A = cellfun(@fix, A);
         end
