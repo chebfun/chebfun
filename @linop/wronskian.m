@@ -15,8 +15,8 @@ function w = wronskian(L, varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % At the moment, we do not support systems of ODEs:
-if ( numVars(L) > 1 )
-    error('CHEBFUN:CHEBFUN:wronskian:system', 'ODE systems not supported.');
+if ( min(size(L.blocks)) > 1 )
+    error('CHEBFUN:LINOP:wronskian:system', 'ODE systems not supported.');
 end
 
 if ( nargin > 2 )
@@ -25,13 +25,6 @@ if ( nargin > 2 )
 else
     % F is either a quasimatrx, array-valued Chebfun, or chebmatrix.
     F = varargin{1};
-end
-
-% Convert to a Linop (if possible):
-[L, ignored, fail] = linop(L); %#ok<ASGLU>
-if ( fail ) % Throw an error if the operator is not linear.
-    error('CHEBFUN:CHEBFUN:wronskian:nonlinear', ...
-        'WRONSKIAN() only support linear operators.')
 end
 
 % Extract the coefficients of the operator:
@@ -44,8 +37,8 @@ n = size(c, 2) - 1;
 nFuns = size(F, 2);
 
 if ( nFuns ~= n )
-    error('CHEBFUN:CHEBFUN:wronskian:nFuns', ...
-        'Number of Chebfuns is not the same as the order of the operator.')
+    error('CHEBFUN:LINOP:wronskian:nFuns', ...
+        'Number of functions is not the same as the order of the operator.')
 end
 
 W = zeros(n);
