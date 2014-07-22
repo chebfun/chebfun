@@ -18,37 +18,16 @@ function w = wronskian(L, varargin)
 if ( numVars(L) > 1 )
     error('CHEBFUN:CHEBFUN:wronskian:system', 'ODE systems not supported.');
 end
-    
-F = {};
-% Quasimatrix case:
-if ( isa(varargin{1}, 'cell') )
-    F = varargin{1};
+
+if ( nargin > 2 )
+    % Input is a comma separated list of CHEBFUNs.
+    F = horzcat(varargin{:});
 else
-    if ( isa(varargin{1}, 'chebfun') )
-        G = varargin{1};
-        nCols = size(G, 2);
-        % Array valued chebfuns
-        if (  nCols > 1 )
-            for i = 1:nCols
-                F{i} = G(:, i); %#ok<AGROW>
-            end
-        else
-            % Chebfuns:
-            for i = 1:length(varargin)
-                F{i} = varargin{i}; %#ok<AGROW>
-            end
-        end
-    else
-        if ( isa(varargin{1}, 'chebmatrix') )
-            G = varargin{1};
-            G = (G.blocks).';
-            w = wronskian(L, G);
-            return                
-        end
-    end
+    % F is either a quasimatrx, array-valued Chebfun, or chebmatrix.
+    F = varargin{1};
 end
 
-% Convert to a linop (if possible):
+% Convert to a Linop (if possible):
 [L, ignored, fail] = linop(L); %#ok<ASGLU>
 if ( fail ) % Throw an error if the operator is not linear.
     error('CHEBFUN:CHEBFUN:wronskian:nonlinear', ...
@@ -69,14 +48,10 @@ if ( nFuns ~= n )
         'Number of Chebfuns is not the same as the order of the operator.')
 end
 
-% [TODO]: This can be vectorized using fancy chembatrices etc?
 W = zeros(n);
 for i = 1:n
-    for j = 1:n
-        f = F{j};
-        W(i, j) = f(a);
-        F{j} = diff(f); %#ok<AGROW>
-    end   
+    W(i,:) = feval(F, a);
+    F = diff(F); 
 end
 
 % Compute the determinant at the left end of the domain:

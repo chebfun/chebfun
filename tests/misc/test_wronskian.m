@@ -11,7 +11,7 @@ w = wronskian(L, cos(x), sin(x));
 pass(1) = norm(w - 1, inf) < tol;
 w = wronskian(L, [cos(x), sin(x)]);
 pass(2) = norm(w - 1, inf) < tol;
-w = wronskian(L, [cos(x); sin(x)]);
+w = wronskian(L, chebmatrix({cos(x), sin(x)}));
 pass(3) = norm(w - 1, inf) < tol;
 
 
