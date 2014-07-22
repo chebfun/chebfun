@@ -112,9 +112,20 @@ function plotTreePlot(tree, h, maxDiffOrder, varargin)
 %         col{k} = 'b';
 %     end
 % end
+colours = [160, 255, 0; 27, 244, 125; 0, 185, 140; 49, 105, 255; ...
+    114, 109, 255; 137, 0, 211; 220, 44, 148; 255, 51, 91; ...
+    252, 103, 1; 255, 145, 0; 255, 216, 0]/255;
+numCols = size(colours, 1);
 col = {'b', 'b', 'b'};
 switch tree.numArgs
     case 0
+        % Plot the constructor leaves in different colours.
+        if ( strcmp(tree.method, 'constr') )
+            varID = find(tree.ID == 1);
+            colID = colours(mod(varID, numCols) + 1, :);
+            plot(tree.x,tree.y,'o', 'color', colID);
+            plot(tree.x,tree.y,'.', 'markersize', 20, 'color', colID);
+        end
         % Do nothing
     case 1
         plot(tree.center.x,tree.center.y,'bo');
@@ -160,7 +171,20 @@ switch tree.numArgs
         plot([tree.x tree.right.x],[tree.y tree.right.y],'-','color',col{3},varargin{:})
         plotTreePlot(tree.right,h,varargin{:})
 end
-text(tree.x + 0.02, tree.y - 0.01, tree.method, 'Interpreter', 'none')
+
+% Add the method name to the plot:
+if ( strcmp(tree.method, 'constr') )
+    % If we're at a constructor leave, change the text slightly:
+    if ( length(tree.ID) == 1)
+        varString = 'u';    
+    else
+        varString = sprintf('u%i', find(tree.ID == 1));
+    end
+    text(tree.x + 0.02, tree.y - 0.01, varString, 'Interpreter', 'none')
+else
+    text(tree.x + 0.02, tree.y - 0.01, tree.method, 'Interpreter', 'none')
+end
+
 end
 
 

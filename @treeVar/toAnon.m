@@ -9,7 +9,7 @@ function anonFun = toAnon(infix, varArray)
 loadVariables(varArray)
 
 % Add the @(u) part
-infix = ['@(u) ', infix];
+infix = ['@(t, u) ', infix];
 
 anonFun = eval(infix);
 

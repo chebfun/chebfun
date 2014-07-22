@@ -205,7 +205,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             end
         end
         
-        function funOut = toFirstOrder(funIn)
+        function funOut = toFirstOrder(funIn, domain)
             problemFun = funIn(treeVar());
             
             expTree = treeVar.expandTree(problemFun.tree, ...
@@ -217,7 +217,10 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             [infixDer, dummy, varArrayDer] = treeVar.tree2infix(derTree, 1, 1);
             coeffFun = treeVar.toAnon(infixDer, varArrayDer);
             coeffArg = [zeros(1, expTree.diffOrder), 1];
-            coeff = coeffFun(coeffArg);
+            
+            % Independent variable on the domain
+            t = chebfun(@(t) t, domain);
+            coeff = coeffFun(t, coeffArg);
             
             newTree = struct('method', 'uminus', 'numArgs', 1, 'center', newTree);
             [infix, varCounter, varArray] = treeVar.tree2infix(newTree, 1, 1);
