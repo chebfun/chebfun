@@ -156,8 +156,9 @@ elseif ( numberOfInputs == 2 )
         u = varargin{1};
 
         % Construct the independent variable X.
-        % If U is a quasimatrix, so must be X, so tile it.
         x = chebfun(@(x) x, N.domain);
+        % If the CHEBFUN U passed in is a quasimatrix, we need to tile the
+        % independent variable X to have the same dimensions as U:
         x = repmat(x, 1, size(u,2));
 
     elseif ( numel(varargin) == numberOfInputs )

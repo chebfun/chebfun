@@ -12,9 +12,7 @@ A = chebop(op, [-1,1], bc);
 [ev, ew] = eigs(A);
 pass(1) = doesNotCrash(@() A*chebfun(ev));
 pass(2) = doesNotCrash(@() A*quasimatrix(ev));
-
-%% Eventually we'd like to be able to do this.
-% pass(3) = doesNotCrash(@() A*ev);
+pass(3) = doesNotCrash(@() A*ev);
 
 end
 
