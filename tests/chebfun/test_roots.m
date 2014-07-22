@@ -149,5 +149,24 @@ f = chebfun('exp(1e50*x)',[-1e-50 1e-50]);
 r = roots(f-1);
 pass(14) = abs(r - 1e-50*eps) < 1e-50*epslevel(f);
 
+%% Test roots with periodic option
+
+f = chebfun('cos(5*x).*exp(cos(x))',[-pi,pi],'periodic');
+r = roots(f);
+rExact = (-9:2:9)'*pi/10;
+err = r - rExact;
+pass(15) = norm(err, inf) < epslevel(f)*vscale(f);
+
+f = chebfun('1i+cos(5*x).*exp(cos(x))',[-pi,pi],'periodic');
+r = roots(f);
+pass(16) = isempty(r);
+
+f = chebfun('cos(5*(1i+x)).*exp(cos(x))',[-pi,pi],'periodic');
+r = roots(f,'complex');
+[ignore,id] = sort(real(r));
+r = r(id);
+rExact = (-9:2:9)'*pi/10 - 1i;
+err = r - rExact;
+pass(17) = norm(err, inf) < 1e8*epslevel(f)*vscale(f);
 
 end

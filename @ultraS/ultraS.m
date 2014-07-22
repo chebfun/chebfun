@@ -33,7 +33,7 @@ classdef ultraS < chebDiscretization
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
         
-        function disc = ultraS(source, dimension, domain)
+        function disc = ultraS(source, dimension, dom)
             %ULTRAS(SOURCE, DIMENSION, DOMAIN)   ULTRAS constructor.
             
             if ( (nargin == 0) || isempty(source) )
@@ -56,7 +56,7 @@ classdef ultraS < chebDiscretization
                 disc.dimension = dimension;
             end
             if ( nargin > 2 )
-                disc.domain = chebfun.mergeDomains(domain, disc.domain);
+                disc.domain = domain.merge(dom, disc.domain);
             end
             
         end

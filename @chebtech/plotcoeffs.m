@@ -72,7 +72,7 @@ if ( f.vscale > 0 )
     if ( doBar )
         absCoeffs(absCoeffs < min(f.epslevel.*f.vscale)/100) = 0;
     else
-        % Min of epslevel*vscale and the miniumum non-zero coefficient:
+        % Min of epslevel*vscale and the minimum non-zero coefficient:
         absCoeffs(~absCoeffs) = min( min(f.epslevel.*f.vscale), ...
                                  min(absCoeffs(logical(absCoeffs))) );                             
     end

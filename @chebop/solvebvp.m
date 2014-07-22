@@ -1,4 +1,4 @@
-function [u, info] = solvebvp(N, rhs, pref, displayInfo)
+function [u, info] = solvebvp(N, rhs, varargin)
 %SOLVEBVP  Solve a linear or nonlinear CHEBOP BVP system.
 %
 %   U = SOLVEBVP(N, RHS), where N is a CHEBOP and RHS is a CHEBMATRIX, CHEBFUN
@@ -60,15 +60,8 @@ function [u, info] = solvebvp(N, rhs, pref, displayInfo)
 %   CHEBGUI. See chebop/displayInfo() and chebgui/displayInfo() for more
 %   details.
 
-% No preferences passed; use the current chebopprefs:
-if ( nargin < 3 )
-    pref = cheboppref();
-end
-
-% If no DISPLAYINFO function handle passed, use the default CHEBOP one.
-if ( nargin < 4 )
-    displayInfo = @N.displayInfo;
-end
+% Parse inputs:
+[pref, displayInfo] = parseInputs(varargin{:});
 
 % Find out how many variables N operates on:
 nVars = numVars(N);
@@ -106,6 +99,12 @@ x = chebfun(@(x) x, dom);
 
 % Linearize and attach preferences.
 [L, residual, isLinear] = linearize(N, u0, x);
+
+warnState = warning();
+[ignored, lastwarnID] = lastwarn(); %#ok<ASGLU>
+if ( strcmp(lastwarnID, 'CHEBFUN:CHEBOP:linearize:bcConcat') )
+    warning('off', 'CHEBFUN:CHEBOP:linearize:bcConcat');
+end
 
 % Check the size of the residual (the output the dimensions of the CHEBOP).
 [numRow, numCol] = size(residual);
@@ -179,6 +178,9 @@ else
     
 end
 
+% Revert warning state:
+warning(warnState);
+
 % Return a CHEBFUN rather than a CHEBMATRIX for scalar problems:
 if ( all(size(u) == [1 1]) )
     u = u{1};
@@ -189,5 +191,42 @@ u = simplify(u);
 
 % Return the linearity information as well:
 info.isLinear = isLinear;
+
+end
+
+function [pref, displayInfo] = parseInputs(varargin)
+%PARSEINPUTS   Parse the input arguments to SOLVEBVP.
+
+% Initialise the outputs:
+pref = [];
+displayInfo = [];
+
+% Loop over varargin:
+while ( ~isempty(varargin) )
+    if ( ischar(varargin{1}) )
+        warning('CHEBFUN:CHEBOP:solvebvp:stringInput', ...
+            'String inputs to SOLVEBVP are deprecated.');
+        varargin(1) = [];
+    elseif ( isa(varargin{1}, 'cheboppref') )
+        pref = varargin{1};
+        varargin(1) = [];
+    elseif ( isa(varargin{1}, 'function_handle') )
+        displayInfo = varargin{1};
+        varargin(1) = [];
+    else
+        error('CHEBFUN:CHEBOP:solvebvp', ...
+            'Unknown input of type %s to SOLVEBVP.', class(varargin{1}));
+    end
+end
+
+% No preferences passed; use the current chebopprefs:
+if ( isempty(pref) )
+    pref = cheboppref();
+end
+
+% If no DISPLAYINFO function handle passed, use the default CHEBOP one.
+if ( isempty(displayInfo) )
+    displayInfo = @chebop.displayInfo;
+end
 
 end

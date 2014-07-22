@@ -341,11 +341,22 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods 
         
-        function A = cellfun(op, A)
+        function A = cellfun(op, A, varargin)
         %CELLFUN   Apply an operation to each block of a CHEBMATRIX.
-        %   CELLFUN(OP, A) applies the operator OP to each of the blocks of
-        %   A. If OP is not defined for one of the block entry types, then an
-        %   error is thrown.
+        %   B = CELLFUN(OP, A) applies the operator OP to each of the blocks of
+        %   A and returns another CHEBMATRIX B. If OP is not defined for one of
+        %   the block entry types then an error is thrown.
+        %
+        %   C = CELLFUN(OP, A, 'UniformOutput', true) applies the operator OP to
+        %   each block of A and returns the result in the matrix C. This is only
+        %   possible if OP(A.blocks) returns a scalar result. Note that in
+        %   contrast to the built-in CELLFUN method, 'UniformOutput' is false by
+        %   default in the CHEBMATRIX method.
+        %
+        %   CELLFUN(OP, A1, A2, ..., AN) applies OP(x1, x2, ..., xN) to each of
+        %   the blocks of A1, A2, ..., AN. A1, ..., AN should have the same
+        %   number of blocks. The 'UniformOutput' flag can also be used as
+        %   above.
         %
         %   The following methods are supported:
         %       ABS(), ACOS(), ACOSD(), ACOSH(), ACOT(), ACOTD(), ACOTH(),
@@ -358,7 +369,24 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         %       SINC(), SIND(), SINH(), SQRT(), SUM(), TAN(), TAND(), TANH(),
         %       UMINUS(), UPLUS().
         
-            A.blocks = cellfun(op, A.blocks, 'UniformOutput', false);
+            uniOut = false;
+            for k = numel(varargin)-1:-1:1
+                if ( strcmpi(varargin{k}, 'UniformOutput') )
+                    uniOut = varargin{k+1};
+                    varargin(k:k+1) = [];
+                    break
+                end
+            end
+            
+            % Convert additional inouts to arrays of cells (i.e., just .blocks).
+            varargin = cellfun(@(v) v.blocks, varargin, 'UniformOutput', false);
+                  
+            if ( ~uniOut )
+                A.blocks = cellfun(op, A.blocks, varargin{:}, ...
+                    'UniformOutput', false);
+            else
+                A = cellfun(op, A.blocks, varargin{:}, 'UniformOutput', true);
+            end
             
         end
                 
@@ -518,6 +546,10 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             A = cellfun(@heaviside, A);
         end
         
+        function A = integral(A)
+            A = cellfun(@integral, A, 'UniformOutput', true);
+        end    
+        
         function A = imag(A)
             A = cellfun(@imag, A);
         end
@@ -539,17 +571,11 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         end
         
         function A = max(A)
-            A = cellfun(@max, A);
-            if ( all(cellfun(@isnumeric, A.blocks)) )
-                A = cell2mat(A.blocks);
-            end
+            A = cellfun(@max, A, 'UniformOutput', true);
         end
         
         function A = min(A)
-            A = cellfun(@min, A);
-            if ( all(cellfun(@isnumeric, A.blocks)) )
-                A = cell2mat(A.blocks);
-            end
+            A = cellfun(@min, A, 'UniformOutput', true);
         end
         
         function A = mrdivide(A, b)
@@ -567,8 +593,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             elseif ( isnumeric(A) )
                 A = cellfun(@(b) power(A, b), b);
             else
-                A.blocks = cellfun(@power, A.blocks, b.blocks, ...
-                    'UniformOutput', false);
+                A = cellfun(@power, A, b);
             end
         end
         
@@ -596,8 +621,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             elseif ( isnumeric(A) )
                 A = cellfun(@(b) rdivide(A, b), b);
             else
-                A.blocks = cellfun(@rdivide, A.blocks, b.blocks, ...
-                    'UniformOutput', false);
+                A = cellfun(@rdivide, A, b);
             end
         end
         
@@ -642,7 +666,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         end
         
         function A = sum(A)
-            A = cellfun(@sum, A);
+            A = cellfun(@sum, A, 'UniformOutput', true);
         end
         
         function A = tan(A)
@@ -658,13 +682,19 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         end
         
         function A = times(A, b)
+            % Convert matrices to chebmatrices:
+            if ( ~isscalar(b) )
+                b = chebmatrix(b);
+            end
+            if ( ~isscalar(A) )
+                A = chebmatrix(A);
+            end
             if ( isnumeric(b) )
                 A = cellfun(@(A) times(A, b), A);
             elseif ( isnumeric(A) )
                 A = cellfun(@(b) times(A, b), b);
             else
-                A.blocks = cellfun(@times, A.blocks, b.blocks, ...
-                    'UniformOutput', false);
+                A = cellfun(@times, A, b);
             end
         end
         

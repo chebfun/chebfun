@@ -46,7 +46,7 @@ if ( (nargin == 2) && isnumeric(varargin{1}) )
         'CHEBOP discretizes differential operators.'])
     warning('off', 'CHEBFUN:CHEBOP:feval:deprecated');
 
-    % We cannot support boundry conditions in this way.
+    % We cannot support boundary conditions in this way.
     throwBCwarning = false;
     if ( ~isempty(N.lbc) )
         N.lbc = [];
@@ -156,8 +156,9 @@ elseif ( numberOfInputs == 2 )
         u = varargin{1};
 
         % Construct the independent variable X.
-        % If U is a quasimatrix, so must be X, so tile it.
         x = chebfun(@(x) x, N.domain);
+        % If the CHEBFUN U passed in is a quasimatrix, we need to tile the
+        % independent variable X to have the same dimensions as U:
         x = repmat(x, 1, size(u,2));
 
     elseif ( numel(varargin) == numberOfInputs )
