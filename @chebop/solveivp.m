@@ -3,7 +3,7 @@ function y = solveivp(N, varargin)
 disp('Initial value problem detected.')
 
 % Convert to first order format
-anonFun = treeVar.toFirstOrder(N.op);
+anonFun = treeVar.toFirstOrder(N.op, N.domain);
 
 %% Obtain information about the initial conditions.
 % Begin by evaluation N.lbc with a zero chebfun to pick up the desired values:
