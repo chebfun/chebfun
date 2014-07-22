@@ -206,7 +206,17 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         end
         
         function funOut = toFirstOrder(funIn, domain)
-            problemFun = funIn(treeVar());
+            % Independent variable on the domain
+            t = chebfun(@(t) t, domain);
+            
+            % If funIn only has one input argument, we just give it a treeVar()
+            % argument. Otherwise, the first input will be the independent
+            % variable on the domain:
+            if ( nargin(funIn) == 1 ) 
+                problemFun = funIn(treeVar());
+            else
+                problemFun = funIn(t, treeVar());
+            end
             
             expTree = treeVar.expandTree(problemFun.tree, ...
                 problemFun.tree.diffOrder);
@@ -218,8 +228,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             coeffFun = treeVar.toAnon(infixDer, varArrayDer);
             coeffArg = [zeros(1, expTree.diffOrder), 1];
             
-            % Independent variable on the domain
-            t = chebfun(@(t) t, domain);
+
             coeff = coeffFun(t, coeffArg);
             
             newTree = struct('method', 'uminus', 'numArgs', 1, 'center', newTree);

@@ -11,62 +11,72 @@ diffVar = maxOrder > 0;
 % problem, we can return the subtree. But only need to check for those variables
 % that we actually differentiate with respect to, e.g. if maxOrder = 0, we can
 % return the subtree as well.
-treeDiffOrder = tree.diffOrder;
-if ( ~isstruct(tree) || all(treeDiffOrder(diffVar) < maxOrder(diffVar)) )
+if ( ~isstruct(tree) )
     newTree = tree;
     derTree = [];
-else
-    switch tree.numArgs
-        case 1
-            % We're dealing with a unary operator, 
-            [newTree, derTree] = splitTree(tree, maxOrder);
+    return
+end
+
+treeDiffOrder = tree.diffOrder;
+if ( all(treeDiffOrder(diffVar) < maxOrder(diffVar)) )
+    newTree = tree;
+    derTree = [];
+    return
+end
+
+switch tree.numArgs
+    case 1
+        % We're dealing with a unary operator,
+        [newTree, derTree] = splitTree(tree, maxOrder);
+        
+    case 2
+        if ( any(strcmp(tree.method, {'diff','times'})) )
+            newTree = [];
+            derTree = tree;
+        else
+            [newTreeLeft, derTreeLeft] = ...
+                treeVar.splitTree(tree.left, maxOrder);
+            [newTreeRight, derTreeRight] = ...
+                treeVar.splitTree(tree.right, maxOrder);
             
-        case 2
-            if ( any(strcmp(tree.method, {'diff','times'})) )
-                newTree = [];
-                derTree = tree;
+            if ( isempty(newTreeLeft) )
+                newTree = oneTreeFromRight(newTreeRight, tree.method);
+            elseif (isempty(newTreeRight) )
+                newTree = newTreeLeft;
             else
-                [newTreeLeft, derTreeLeft] = ...
-                    treeVar.splitTree(tree.left, maxOrder);
-                [newTreeRight, derTreeRight] = ...
-                    treeVar.splitTree(tree.right, maxOrder);
-                
-                if ( isempty(newTreeLeft) )
-                    newTree = oneTreeFromRight(newTreeRight, tree.method);
-                elseif (isempty(newTreeRight) )
-                    newTree = newTreeLeft;
+                if ( ~isstruct(newTreeLeft) )
+                    newDiffOrder = newTreeRight.diffOrder;
+                    newHeight = newTreeRight.height;
+                elseif ( ~isstruct(newTreeRight) )
+                    newDiffOrder = newTreeLeft.diffOrder;
+                    newHeight = newTreeLeft.height;
                 else
-                    if ( ~isstruct(newTreeLeft) )
-                        newDiffOrder = newTreeRight.diffOrder;
-                    elseif ( ~isstruct(newTreeRight) )
-                        newDiffOrder = newTreeLeft.diffOrder;
-                    else
-                        newDiffOrder = max(newTreeLeft.diffOrder, ...
-                            newTreeRight.diffOrder);
-                    end
-                    
-                    newTree = struct('method', tree.method, ...
-                        'numArgs', tree.numArgs, ...
-                        'left', newTreeLeft, 'right', newTreeRight, ...
-                        'diffOrder', newDiffOrder, ...
-                        'height', max(newTreeLeft.height, newTreeRight.height));
+                    newDiffOrder = max(newTreeLeft.diffOrder, ...
+                        newTreeRight.diffOrder);
+                    newHeight = max(newTreeLeft.height, newTreeRight.height);
                 end
                 
-                if ( isempty(derTreeLeft) )
-                    derTree = oneTreeFromRight(derTreeRight, tree.method);
-                elseif (isempty(derTreeRight) )
-                    derTree = derTreeLeft;
-                else
-                    derTree = struct('method', tree.method, ...
-                        'numArgs', tree.numArgs, ...
-                        'left', derTreeLeft, 'right', derTreeRight, ...
-                        'diffOrder', max(derTreeLeft.diffOrder, ...
-                        derTreeRight.diffOrder), ...
-                        'height', max(derTreeLeft.height, derTreeRight.height));
-                end
-                
+                newTree = struct('method', tree.method, ...
+                    'numArgs', tree.numArgs, ...
+                    'left', newTreeLeft, 'right', newTreeRight, ...
+                    'diffOrder', newDiffOrder, ...
+                    'height', newHeight);
             end
-    end
+            
+            if ( isempty(derTreeLeft) )
+                derTree = oneTreeFromRight(derTreeRight, tree.method);
+            elseif (isempty(derTreeRight) )
+                derTree = derTreeLeft;
+            else
+                derTree = struct('method', tree.method, ...
+                    'numArgs', tree.numArgs, ...
+                    'left', derTreeLeft, 'right', derTreeRight, ...
+                    'diffOrder', max(derTreeLeft.diffOrder, ...
+                    derTreeRight.diffOrder), ...
+                    'height', max(derTreeLeft.height, derTreeRight.height));
+            end
+            
+        end
 end
 end
 
