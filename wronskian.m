@@ -1,13 +1,13 @@
 function w = wronskian(L, varargin)
 %WRONSKIAN   Wronskian of chebfuns.
-%   WRONSKIAN(L, f1, ..., fn) computes the wronskian of the chebfuns.
+%   WRONSKIAN(L, f1, ..., fn) computes the wronskian of the CHEBFUN objects fk.
 %   L is the linear differential operator and f1, ..., fn are solutions of the
 %   homogenous problem. The algorithm is based on Abel's identity for computing
 %   the wronskian.
 %   
-%   WRONSKIAN(L, F) does the same where F is a quasimatrix or an array valued
-%   chebfun or a chebmatrix. If F is a chebmatrix, then the form of F is assumed
-%   to be a chebmatrix with a single column with n chebfuns.
+%   WRONSKIAN(L, F) does the same where F is a quasimatrix or an array-valued
+%   CHEBFUN or a CHEBMATRIX. If F is a CHEBMATRIX, then the form of F is assumed
+%   to be a CHEBMATRIX with a single column with n CHEBFUNs.
 %
 % See also LINOP
 
@@ -16,7 +16,7 @@ function w = wronskian(L, varargin)
 
 % At the moment, we do not support systems of ODEs:
 if ( numVars(L) > 1 )
-    error( 'CHEBFUN:WRONSKIAN', 'ODE systems not supported');
+    error('CHEBFUN:CHEBFUN:wronskian:system', 'ODE systems not supported.');
 end
     
 F = {};
@@ -47,17 +47,26 @@ else
         end
     end
 end
+
+% Convert to a linop (if possible):
+[L, ignored, fail] = linop(L); %#ok<ASGLU>
+if ( fail ) % Throw an error if the operator is not linear.
+    error('CHEBFUN:CHEBFUN:wronskian:nonlinear', ...
+        'WRONSKIAN() only support linear operators.')
+end
+
 % Extract the coefficients of the operator:
-L = linop(L);
 c = toCoeff(L.blocks{1});
 % The (n-1)th coefficient in standard form:
 p = c{2}./c{1};
 dom = L.domain;
 a = dom(1);
-n = size(c, 2)-1;
+n = size(c, 2) - 1;
 nFuns = size(F, 2);
+
 if ( nFuns ~= n )
-    error( 'CHEBFUN:WRONSKIAN', 'Number of chebfuns is not the same as the order of the operator' )
+    error('CHEBFUN:CHEBFUN:wronskian:nFuns', ...
+        'Number of Chebfuns is not the same as the order of the operator.')
 end
 
 % [TODO]: This can be vectorized using fancy chembatrices etc?
@@ -73,10 +82,12 @@ end
 % Compute the determinant at the left end of the domain:
 A = det(W);
 
-% Apply Abel's identity
+% Apply Abel's identity:
 w = A*exp(-cumsum(p));
-% Make sure w(a) = A
+
+% Ensure w(a) = A:
 w = (w - w(a)) + A;
+
 end
     
     
