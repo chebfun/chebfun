@@ -415,11 +415,11 @@ s2 = [];
 
 % Solve the eigenvalue problem twice:
 if ( norm(ck, inf) > eps )
-    [b1, s1] = getCoeffs(real(a(n+2:N+1)), N, n);
+    [b1, s1] = getLaurentCoeffs(real(a(n+2:N+1)), N, n);
 end
 
 if ( norm(dk, inf) > eps )
-    [b2, s2] = getCoeffs(imag(a(n+2:N+1)), N, n);
+    [b2, s2] = getLaurentCoeffs(imag(a(n+2:N+1)), N, n);
 end
 s = norm([s1, s2], 1);
 
@@ -431,14 +431,15 @@ q = chebfun(1, dom, 'periodic');
 r = @(x) p(x);
 end
 
-function [b, s] = getCoeffs(c, N, n)
+function [b, s] = getLaurentCoeffs(c, N, n)
 % Solve the eigenvalue problem:
 [V, D] = eig(hankel(c));
 d = diag(D);
 [s, i] = max(abs(d));
 u = V(:,i);
-% Compute the coefficients b recursively:
 u1 = u(1);
+% Make sure that the eigenvector corresponding to the largest eigenvalue has the
+% first entry u(1) non-zero:
 while ( abs(u(1)) < eps )
     d(i) = [];
     V(:, i) = [];
@@ -447,6 +448,7 @@ while ( abs(u(1)) < eps )
     u1 = u(1);
 end    
 uu = u(2:(N-n));
+% Compute the coefficients b recursively:
 b = c.';
 for k = n:-1:-n
     b = [-(b(1:(N-n-1))*uu)/u1, b]; %#ok<AGROW>
