@@ -7,11 +7,20 @@ anonFun = treeVar.toFirstOrder(N.op, N.domain);
 
 %% Obtain information about the initial conditions.
 % Begin by evaluation N.lbc with a zero chebfun to pick up the desired values:
+
+% Should check whether we have N.lbc or N.rbc non-empty.
 cheb0 = chebfun(@(x) 0*x, N.domain);
 Nl0 = N.lbc(cheb0);
 leftEnd = N.domain(1);
-initVals = -[Nl0{1}(leftEnd), Nl0{2}(leftEnd)];
 
+% Should sort the results. This requires evaluating N.LBC/RBC with a treeVar,
+% looking at the IDs and the diffOrders.
+if ( isa(Nl0, 'chebfun') )
+    initVals = -Nl0(leftEnd);
+else
+    initVals = -cellfun(@feval, Nl0.blocks, ...
+        repmat({leftEnd}, length(Nl0.blocks), 1) );
+end
 % Create an ODESET struct for specifying tolerance:
 opts = odeset('absTol',1e-12,'relTol',1e-12);
 

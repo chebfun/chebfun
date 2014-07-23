@@ -9,9 +9,15 @@ function varargout = mldivide(N, varargin)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( isempty(N.rbc) && isempty(N.bc) )
-    % Both N.RBC and N.BC are empty, we must be dealing with an IVP where all
-    % conditions are imposed via N.LBC
+if ( ( ~isempty(N.lbc) && isempty(N.rbc) && isempty(N.bc) ) || ...
+     ( isempty(N.lbc) && ~isempty(N.rbc) && isempty(N.bc) ) )
+    % Either we have: 
+    %   - N.LBC is nonempty, but both N.RBC and N.BC are empty. Here, we are
+    %     dealing with an initial value problem, where all conditions are
+    %     imposed via N.LBC.
+    %   - N.RBC is nonempty, but both N.LBC and N.BC are empty. Here, we are
+    %     dealing with a final value problem, where all conditions are imposed
+    %     via N.RBC.
     [varargout{1:nargout}] = solveivp(N, varargin{:});
 else
     % We have conditions in other fields, call CHEBOP/SOLVEBVP:
