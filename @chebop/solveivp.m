@@ -1,7 +1,5 @@
 function y = solveivp(N, varargin)
 
-disp('Initial value problem detected.')
-
 % Convert to first order format
 anonFun = treeVar.toFirstOrder(N.op, N.domain);
 
@@ -14,10 +12,12 @@ cheb0 = chebfun(@(x) 0*x, N.domain);
 
 % Evaluate N.LBC or N.RBC:
 if ( ~isempty(N.lbc) )
+    disp('Initial value problem detected.')
     bcEvalFun = N.lbc(cheb0);
     evalPoint = N.domain(1);
     odeDom = N.domain;
 else
+    disp('Final value problem detected.')
     bcEvalFun = N.rbc(cheb0);
     evalPoint = N.domain(end);
     odeDom = fliplr(N.domain);
