@@ -32,24 +32,21 @@ end
     
 % Default to the Chebyshev barycentric weights:
 if ( nargin < 3 ) 
-    w = ones(N, 1); 
+    w = ones(1, N); 
     w(2:2:end) = -1; 
     w([1, N]) = 0.5*w([1, N]);
 end
 
-% Make sure everything is oriented correctly:
-w = w(:).';
-
 % Construct the matrix
 if ( M >= 500 && N >= 1000 )     % <-- Experimentally determined.
     % Testing shows BSXFUN is faster in this regime
-    B = bsxfun(@minus, y, x');   % Repmat(Y-X')
-    B = bsxfun(@rdivide, w, B); % w(k)/(y(j)-x(k))
+    B = bsxfun(@minus, y, x.');  % Repmat(Y-X')
+    B = bsxfun(@rdivide, w, B);  % w(k)/(y(j)-x(k))
     c = 1./sum(B, 2);            % Normalisation ('denom' in bary-speak).
     B = bsxfun(@times, B, c);
 else
     % Else use FOR loops
-    B = bsxfun(@minus, y, x');   % Repmat(Y-X')
+    B = bsxfun(@minus, y, x.');  % Repmat(Y-X')
     for k = 1:N
         B(:,k) = w(k)./B(:,k);   % w(k)/(y(j)-x(k))
     end
@@ -62,3 +59,5 @@ end
 % Where points coincide there will be division by zeros (as with bary.m).
 % Replace these entries with the identity:
 B(isnan(B)) = 1;
+
+end
