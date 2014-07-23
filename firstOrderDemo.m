@@ -110,3 +110,17 @@ plot(u)
 fprintf('Norm of residual: %4.2e.\n', norm(N(u)))
 fprintf('Residual of final condition: %4.2e.\n\n', ...
     norm(feval(N.rbc(u), dom(end))))
+
+%% Coupled system (in progress)
+dom = [0, 10];
+op = @(t, u, v, w) [diff(u) + 10*u - 10*v, diff(v) + v - 28*u + u.*w, ...
+    diff(w) + (8/3).*w - u.*v];
+N = chebop(op, dom);
+N.lbc = @(u,v,w) [u+14; v+15; w-20];
+uvw = N\0
+u = uvw{1}; v = uvw{2}; w = uvw{3};
+plot3(u, v, w), view(20,20)
+axis([-20 20 -40 40 5 45]), grid on
+xlabel 'x(t)', ylabel 'y(t)', zlabel 'z(t)'
+title('A 3D Trajectory of the Lorenz Attractor - Chebfun solution', ...
+    'Fontsize', 14)
