@@ -31,6 +31,12 @@ if ( isempty(f) )
     return
 end
 
+% We can only plot the coefficients of one CHEBFUN at a time:
+if ( any(cellfun(@(f) isa(f, 'chebfun'), varargin)) )
+    error('CHEBFUN:CHEBFUN:plotcoeffs:multipleChebfuns', ...
+        'Calls of the form PLOTCOEFFS(F, ''b'',  G, ''r'') are not supported.');
+end
+
 % Store the hold state of the current axis:
 holdState = ishold;
 
@@ -45,7 +51,7 @@ if ( nargin > 1 && ischar(varargin{1}) && numel(varargin{1}) < 4 )
             'Error in color/linetype argument.');
     elseif ( ~isempty(col) )
         col = col{:};
-        varargin(1) = [];
+%         varargin(1) = []; % Don't remove as we need marker information.
     end
 end
 if ( isempty(col) )
