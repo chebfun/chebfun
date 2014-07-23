@@ -54,7 +54,9 @@ p = chebfunpref();
 p.techPrefs.eps = max(relTol); % Use the same tolerance for each column.
 p.splitting = true;            % use splitting, always, or there is no hope.
 p.splitPrefs.splitLength = 300;
-y = chebfun(@(x) deval(sol, x).', d, p);
+% Need to sort the domain D, since if we solve a final value problem, it will
+% have been flipped.
+y = chebfun(@(x) deval(sol, x).', sort(d), p);
 
 % Parse outputs:
 if ( nargout > 1 )

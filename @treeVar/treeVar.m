@@ -257,6 +257,8 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             end
                 
             
+            result = funIn(t, args{:});
+            
             funOut = 1;
         end
         
