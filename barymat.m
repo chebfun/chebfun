@@ -37,7 +37,6 @@ if ( nargin < 3 )
     w([1, N]) = 0.5*w([1, N]);
 end
 
-error
 % Construct the matrix
 if ( M >= 500 && N >= 1000 )     % <-- Experimentally determined.
     % Testing shows BSXFUN is faster in this regime
