@@ -7,7 +7,7 @@ if ( nargin == 0 )
 end
 
 x = chebfun('x');
-ep = 0.25; % this works; 0.25 does not
+ep = 0.25;
 F = (abs(x) < ep)/(2*ep);
 L = chebop(@(x,u) diff(u,2), [-1 1], 0, 0);
 M = chebop(@(x,u) F(x).*u);
