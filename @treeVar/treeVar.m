@@ -170,16 +170,14 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         end
        
         
-        funOut = systemToRHS(infix, varArray, coeff, indexStart, totalDiffOrders);
+        funOut = toRHS(infix, varArray, coeff, indexStart, totalDiffOrders);
         
         [newTree, derTree] = splitTree(tree, maxOrder)
         
         [infix, varCounter, varArray] = tree2infix(tree, diffOrders, varCounter, varArray)
         
         anonFun = toAnon(infix, varArray)
-        
-        anonFun = toRHS(infix, varArray, coeff)
-        
+                
         coeff = getCoeffs(infix, varArray)
         
         printTree(tree, ind, indStr)
@@ -208,18 +206,20 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         function funOut = toFirstOrder(funIn, domain)
             % Independent variable on the domain
             t = chebfun(@(t) t, domain);
+            arg = treeVar(1);
             
             % If funIn only has one input argument, we just give it a treeVar()
             % argument. Otherwise, the first input will be the independent
             % variable on the domain:
             if ( nargin(funIn) == 1 ) 
-                problemFun = funIn(treeVar());
+                problemFun = funIn(arg);
             else
-                problemFun = funIn(t, treeVar());
+                problemFun = funIn(t, arg);
             end
             
-            expTree = treeVar.expandTree(problemFun.tree, ...
-                problemFun.tree.diffOrder);
+            maxDifforder = problemFun.tree.diffOrder;
+            
+            expTree = treeVar.expandTree(problemFun.tree, maxDifforder);
             
             [newTree, derTree] = treeVar.splitTree(expTree, ...
                 problemFun.tree.diffOrder);
@@ -229,14 +229,36 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             coeffArg = [zeros(1, expTree.diffOrder), 1];
             
 
-            coeff = coeffFun(t, coeffArg);
+            coeff = {coeffFun(t, coeffArg)};
             
             newTree = struct('method', 'uminus', 'numArgs', 1, 'center', newTree);
             [infix, varCounter, varArray] = treeVar.tree2infix(newTree, 1, 1);
-            funOut = treeVar.toRHS(infix, varArray, coeff);
+            infix = {infix};
+            varArray = {varArray};
+            funOut = treeVar.toRHS(infix, varArray, coeff, 1, maxDifforder);
         end
         
-        
+        function funOut = toFirstOrderSystem(funIn, domain)
+            % Independent variable on the domain
+            t = chebfun(@(t) t, domain);
+            
+            % The first argument to funIn must be the independent time variable.
+            % So the number of treeVar arguments needed is one less:
+            numArgs = nargin(funIn) - 1;
+            args = cell(numArgs, 1);
+            argsVec = zeros(1, numArgs);
+            
+            % Populate the args cell
+            for argCount = 1:numArgs
+                argsVec(argCount) = 1;
+                args{argCount} = treeVar(argsVec);
+                % Reset the index vector
+                argsVec = 0*argsVec;
+            end
+                
+            
+            funOut = 1;
+        end
         
     end
     

@@ -1,30 +1,47 @@
-function anonFun = toRHS(infix, varArray, coeff)
+function anonFun = toRHS(systemInfix, varArrays, coeffs,  indexStart, totalDiffOrders)
 % FEVAL Evaluates an anon with an input argument, similar to f(u) where f
 % is an anonymous function and u is the argument.
 
-% Copyright 2011 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2011 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 % Load these variables into workspace
-loadVariables(varArray)
+loadVariables(varArrays)
 
 % Add the @(u) part
+infixForm = '';
+for sysCounter = 1:length(systemInfix)
+    varString = '';
+    for orderCounter = 1:totalDiffOrders(sysCounter)-1
+        varString = [varString, ...
+            sprintf('u(%i); ', orderCounter + indexStart(sysCounter))];
+    end
+    if ( isnumeric(coeffs{sysCounter}) )
+        coeffStr = sprintf('coeffs{%i}', sysCounter);
 
-if ( isnumeric(coeff) )
-    infix = ['@(t, u) [u(2); ', infix, './coeff]'];
-else
-    % If COEFF is not numeric, it must be a CHEBFUN. But that requires us to
-    % evaluate it at every point T when we evaluate the ODE fun.
-    infix = ['@(t, u) [u(2); ', infix, './coeff(t)]'];
+    else
+        % If COEFF is not numeric, it must be a CHEBFUN. But that requires us to
+        % evaluate it at every point T when we evaluate the ODE fun.
+        coeffStr = sprintf('coeffs{%i}(t)', sysCounter);
+
+    end
+    infixForm = [infixForm, varString , systemInfix{sysCounter}, ...
+        './' coeffStr, '; '];
 end
-anonFun = eval(infix);
+% Get rid of the last ; 
+infixForm(end-1:end) = [];
+infixForm = ['@(t,u)[', infixForm , ']'];
+anonFun = eval(infixForm);
 
 end
 
-function loadVariables(varArray)
+function loadVariables(varArrays)
 
-for i=1:size(varArray, 1)
-    assignin('caller',varArray{i, 1}, varArray{i, 2})
+for arrCounter = 1:length(varArrays)
+    varArray = varArrays{arrCounter};
+    
+    for i=1:size(varArray, 1)
+        assignin('caller',varArray{i, 1}, varArray{i, 2})
+    end
 end
-
 end
