@@ -183,6 +183,11 @@ if ( pref.splitting) % Is splitting on?
     pref.techPrefs.maxLength = pref.splitPrefs.splitLength;
 end
 
+if ( numInts > 1 )
+    % Force extrapolation if there are multiple pieces:
+    pref.extrapolate = 1;
+end
+
 % Suppress growing vector Mlint warnings (which are inevitable here):
 %#ok<*AGROW>
 

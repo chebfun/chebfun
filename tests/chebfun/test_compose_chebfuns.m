@@ -85,6 +85,12 @@ hExact = oph(x);
 err = hVals - hExact;
 pass(11) = norm(err, inf) < get(h,'epslevel')*get(h,'vscale');
 
+%% Test compose with a discontinuous breakpoint. See #1074.
+ep = 0.25;
+x = chebfun('x');
+F = (abs(x) < ep)/(2*ep);
+pass(12) = get(F(x), 'ishappy');
+
 end
 
 % Test composition of two chebfuns.
