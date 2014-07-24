@@ -45,9 +45,10 @@ end
 opts = odeset('absTol',1e-12,'relTol',1e-12);
 
 [t, y]=chebfun.ode113(anonFun, odeDom, initVals, opts);
-% To fit in with CHEBOP backslash, just return the solution (first column of the
-% output), rather than all columns (the second column corresponds to the
-% first derivative etc.).
+% To fit in with CHEBOP backslash, just return the functions, not their
+% derivatives as well, as is normally done in the MATLAB ode solvers. Above, we
+% determined and stored in VARINDEX what columns of Y will correspond to the
+% functions.
 y = y(:, varIndex);
 
 % Return the solution as a CHEBMATRIX to be consistent with standard CHEBOP \:

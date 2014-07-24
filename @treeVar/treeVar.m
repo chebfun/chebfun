@@ -376,6 +376,27 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
 
         end
         
+        function sortBCs(funIn)
+           %SORTBCS    Return a vector with indices on how to sort the results
+           %            of evaluating N.LBC/RBC
+           
+            numArgs = nargin(funIn);
+            args = cell(numArgs, 1);
+            argsVec = zeros(1, numArgs);
+            
+            % Populate the args cell
+            for argCount = 1:numArgs
+                argsVec(argCount) = 1;
+                args{argCount} = treeVar(argsVec);
+                % Reset the index vector
+                argsVec = 0*argsVec;
+            end
+           
+            % Evaluate FUNIN with the TREEVAR arguments:
+            bcResults = funIn(args{:});
+            1+2
+        end
+        
     end
     
 end
