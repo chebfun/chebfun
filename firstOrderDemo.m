@@ -62,7 +62,7 @@ fprintf('Residual of final condition: %4.2e.\n\n', ...
 %% Second order initial value problem
 dom = [0, 1];
 N = chebop(@(x,u) diff(u, 2) + u, dom);
-N.lbc = @(u) [u-1; diff(u)-1];
+N.lbc = @(u) [u-1; diff(u)];
 u = N\0
 plot(u), shg
 fprintf('Norm of residual: %4.2e.\n', norm(N(u)))
@@ -96,7 +96,9 @@ dom = [0, 50];
 vdpFun = @(y) diff(y, 2) - mu.*(1-y.^2).*diff(y) + y;
 N = chebop(vdpFun, dom);
 N.lbc = @(u) [u-2; diff(u)];
+tic,
 y = N\0;
+toc
 plot(y), shg
 % Show where breakpoints got introduced
 hold on, plot(y.domain, y(y.domain),'k*')
@@ -113,19 +115,23 @@ fprintf('Residual of final condition: %4.2e.\n\n', ...
 
 %% Coupled system - Lotka-Volterra
 dom = [0, 50];
-N = chebop(@(t,u,v) [diff(u) - u + u.*v; diff(v) + v - u.*v], dom);
+N = chebop(@(t,u,v) [diff(u) - u + u.*v; ...
+    diff(v) + v - u.*v], dom);
 N.lbc = @(u,v) [u-1.2; v-1.2];
 uv = N\0
 plot(uv,'linewidth', 2)
 legend('u','v')
 title('Lotka-Volterra, solved with chebop IVP \.','fontsize',14)
-%% Coupled system (in progress)
+%% Coupled system -- Lorenz equation
 dom = [0, 10];
-op = @(t, u, v, w) [diff(u) + 10*u - 10*v; diff(v) + v - 28*u + u.*w; ...
+op = @(t, u, v, w) [diff(u) + 10*u - 10*v; ...
+    diff(v) + v - 28*u + u.*w; ...
     diff(w) + (8/3).*w - u.*v];
 N = chebop(op, dom);
 N.lbc = @(u,v,w) [u+14; v+15; w-20];
-uvw = N\0
+tic,
+uvw = N\0;
+toc
 u = uvw{1}; v = uvw{2}; w = uvw{3};
 plot3(u, v, w), view(20,20)
 axis([-20 20 -40 40 5 45]), grid on

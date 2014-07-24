@@ -11,7 +11,7 @@ else
     [anonFun, varIndex] = treeVar.toFirstOrderSystem(N.op, N.domain);
 end
 %% Obtain information about the initial conditions.
-% Begin by evaluation N.lbc with a zero chebfun to pick up the desired values:
+% Begin by evaluating N.lbc with a zero chebfun to pick up the desired values:
 
 % Create a zero CHEBFUN for evaluating N.LBC or N.RBC. This gives us the correct
 % values we need for passing as initial/final conditions to the ODE solver.

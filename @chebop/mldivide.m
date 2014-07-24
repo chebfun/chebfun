@@ -1,5 +1,5 @@
 function varargout = mldivide(N, varargin)
-%\    MLDIVIDE   Solve CHEBOP BVP system.
+%\    MLDIVIDE   Solve CHEBOP BVP or IVP system.
 %   MLDIVIDE is a convenient wrapper for CHEBOP/SOLVEBVP, but is limited in that
 %   it only supports a single output. See CHEBOP/SOLVEBVP documentation for
 %   further details.
