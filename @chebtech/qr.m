@@ -112,7 +112,7 @@ end
 
 % Project the values onto a Legendre grid: (where integrals of polynomials
 % p_n*q_n will be computed exactly and on an n-point grid)
-if ( length(WP) ~= n || type ~= class(f))
+if ( length(WP) ~= n || (~isempty(type) && isa(f, type)) )
     xc = f.chebpts(n);
     vc = f.barywts(n);
     [xl, wl, vl] = legpts(n);
