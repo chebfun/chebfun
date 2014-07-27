@@ -48,14 +48,28 @@ if ( (nargin > 1) && ~any(strcmpi(varargin{1}, validArgs)) )
         'Unrecognised optional argument.');
 end
 
-if ( (isempty(varargin) && dd <= max_degree) || ...
-        strcmpi(varargin{1}, 'resultant') )
+
+if ( isempty(varargin) )
+    % If rootfinding method has not been defined, then use resultant if
+    % degrees are small: 
+    if ( dd <= max_degree ) 
+        [xroots, yroots] = roots_resultant(F);
+    else
+        [xroots, yroots] = roots_marchingSquares(F);
+        xroots = xroots.'; 
+        yroots = yroots.';
+    end
+elseif ( strcmpi(varargin{1}, 'resultant') )
+    % If the user wants the resultant method, then use it: 
     [xroots, yroots] = roots_resultant(F);
-elseif ( isempty(varargin) || ...
-        any(strcmpi(varargin{1}, {'ms', 'marchingsquares'})) )
+elseif ( any( strcmpi(varargin{1}, {'ms', 'marchingsquares'} ) ) )
+    % If the user wants the marching squares method, then use it: 
     [xroots, yroots] = roots_marchingSquares(F);
     xroots = xroots.'; 
     yroots = yroots.';
+else
+    % Print error. Unknown method. 
+    error('CHEBFUN2V:ROOTS:METHOD', 'Unknown rootfinding method.') 
 end
 
 if ( nargout <= 1 )
