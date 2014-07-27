@@ -137,14 +137,14 @@ function [nullity, V, P] = getNullVectors(discA, tol)
     
     % Construct one big matrix from the unprojected block entries:
     A = cell2mat(A);
-
-    % Compute the discrete SVD:
+    
+    % Compute the discrete SVD. (Note: It saves no time to calll the built-in
+    % NULL() method, and this simply calls the built-in SVD method.)
     [U, S, V] = svd(full(A), 0);
     S = diag(S);
-
     % Numerical nullity:
     nullity = length(find(S/S(1) < tol));
-    
+
     % Extract null vectors:
     if ( nullity ~= 0 )
         V = V(:,end+1-nullity:end);        % Numerical null vectors.
