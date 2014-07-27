@@ -74,6 +74,7 @@ idn = bsxfun(@minus, abs(cn), tol.*f.vscale) < 0;
 % If the whole thing's now zero, leave just one coefficient:
 if ( isempty(firstNonZeroRowP) && isempty(firstNonZeroRowN) )
     firstNonZeroRow = size(cp, 1);
+    cp = 0*cp; cn = 0*cn;
 % The negative and positive cofficient vectors need to be the same length
 % So, we remove the smaller of the tails from both.
 else

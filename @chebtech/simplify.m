@@ -48,6 +48,7 @@ smallcoeffs = (bsxfun(@minus, abs(f.coeffs), tol.*f.vscale) < 0);
 % If the whole thing is now zero, leave just one coefficient:
 if ( isempty(firstNonZeroRow) )
     firstNonZeroRow = size(f, 1);
+    f.coeffs = 0*f.coeffs;
 end
 
 % Remove trailing zeros:
