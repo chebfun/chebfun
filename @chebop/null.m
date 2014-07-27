@@ -43,8 +43,8 @@ end
 v = null(L, pref);
 
 % Return a CHEBFUN rather than a CHEBMATRIX for scalar problems:
-if ( isa(v, 'chebmatrix') && all(size(v) == [1 1]) )
-    v = v{1};
+if ( isa(v, 'chebmatrix') && all(size(v, 1) == 1) )
+    v = chebfun(v);
 end
 
 end

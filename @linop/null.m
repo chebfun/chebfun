@@ -139,7 +139,7 @@ function [nullity, V, P] = getNullVectors(discA, tol)
     A = cell2mat(A);
 
     % Compute the discrete SVD:
-    [U, S, V] = svd(A, 0);
+    [U, S, V] = svd(full(A), 0);
     S = diag(S);
 
     % Numerical nullity:
