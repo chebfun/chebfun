@@ -901,6 +901,9 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
         end
         data.exponents = exps;
     end
+    
+    % Ensure DOM is a double (i.e., not a domain object).
+    dom = double(dom);
 
 end
 
