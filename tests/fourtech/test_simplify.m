@@ -54,11 +54,9 @@ pass(7) = length(g2) == length(g);
 
 f = testclass.make(@(x) [exp(sin(2*pi*x)) exp(cos(3*pi*x)) 3./(4-cos(pi*x))]);
 g = simplify(f, 1e-6);
-pass(8) = all(all((abs(g.coeffs) > ...
-    repmat(simptol*g.vscale, length(g), 1)) | (g.coeffs == 0)));
-pass(9) = any(abs(g.coeffs(1, :)) ~= 0);
-pass(10) = length(g) < length(f);
-pass(11) = all(norm(feval(f, x) - feval(g, x), inf) < ...
+pass(8) = any(abs(g.coeffs(1, :)) ~= 0);
+pass(9) = length(g) < length(f);
+pass(10) = all(norm(feval(f, x) - feval(g, x), inf) < ...
     10*max(g.epslevel.*g.vscale));
 
 %%
@@ -66,6 +64,6 @@ pass(11) = all(norm(feval(f, x) - feval(g, x), inf) < ...
 
 f = testclass.make(@(x) sin(100*pi*(x + 0.1)));
 g = simplify(f, 1e20);
-pass(12) = iszero(g);
+pass(11) = iszero(g);
 
 end
