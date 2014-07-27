@@ -42,7 +42,7 @@ fIsEven = ( mod(numCoeffs, 2) == 0 );
 
 % Split the coefficients into the positive and negative Fourier modes.
 if ( fIsEven )
-    % In this case the negative cofficients have an additional term
+    % In this case the negative coefficients have an additional term
     % corresponding to the cos(N/2*x) coefficient. We account for this by
     % making the positive coefficients symmetric.
     cn = c(numCoeffs:-1:numCoeffs/2,:);
@@ -53,16 +53,21 @@ else
     cp = c(1:(numCoeffs+1)/2,:);
 end
 
-% Need to check both the positive and negative coeficients in the Fourier
+% Need to check both the positive and negative coefficients in the Fourier
 % expansion.
 
 % Zero all coefficients smaller than the tolerance relative to F.VSCALE:
 idp = bsxfun(@minus, abs(cp), tol.*f.vscale) < 0;
 idn = bsxfun(@minus, abs(cn), tol.*f.vscale) < 0;
-cp(idp) = 0;
-cn(idn) = 0;
 
+% Before July 2014 we used to zero all small coefficients:
+% cp(idp) = 0;
+% cn(idn) = 0;
 % Check for trailing zero coefficients:
+% [ignored, firstNonZeroRowP] = find(cp.' ~= 0, 1);
+% [ignored, firstNonZeroRowN] = find(cn.' ~= 0, 1);
+
+% Check for trailing small coefficients:
 [ignored, firstNonZeroRowP] = find(cp.' ~= 0, 1);
 [ignored, firstNonZeroRowN] = find(cn.' ~= 0, 1);
 

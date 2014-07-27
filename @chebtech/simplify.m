@@ -43,7 +43,7 @@ end
 % Check for trailing coefficients smaller than the tolerance relative
 % to F.VSCALE:
 smallcoeffs = (bsxfun(@minus, abs(f.coeffs), tol.*f.vscale) < 0);
-[ignored, firstNonZeroRow] = find(smallcoeffs.' ~= 0, 1);
+[ignored, firstNonZeroRow] = find(smallcoeffs.' == 0, 1);
 
 % If the whole thing is now zero, leave just one coefficient:
 if ( isempty(firstNonZeroRow) )
