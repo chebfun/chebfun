@@ -2,7 +2,7 @@ function [y, x] = max(f, flag, dim)
 %MAX   Maximum value of a CHEBFUN.
 %   MAX(F) and MAX(F, 'global') return the maximum value of the CHEBFUN F.
 %
-%   [Y, X] = MAX(F) returns also points X such that F(X) = Y.
+%   [Y, X] = MAX(F) returns also a point X such that F(X) = Y.
 %
 %   [Y, X] = MAX(F, 'local') returns not just the global maximum value but all
 %   of the local maxima.
