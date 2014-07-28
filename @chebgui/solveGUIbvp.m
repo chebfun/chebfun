@@ -52,12 +52,18 @@ handles.indVarName = {indVarNameSpace};
 % scalar problem.
 scalarProblem = length(allVarNames) == 1;
 
+% Are we dealing with an initial, final, or boundary value problem?
+isIorF = isIVPorFVP(guifile, expInfo.bcInput, expInfo.allVarString);
+
 % Obtain the boundary conditions to be imposed.
-if ( ~isempty(bcInput{1}) )
-    bcString = setupFields(guifile, bcInput, 'BCnew', allVarString);
-else
+if ( isempty(bcInput{1}) )
     bcString = '';
     BC = [];
+elseif ( isIorF == 0 )
+    bcString = setupFields(guifile, bcInput, 'BCnew', allVarString);
+else
+    newBCinput = bcReform(guifile, expInfo.dom, bcInput, isIorF);
+    bcString = setupFields(guifile, newBCinput, 'BC', allVarString);
 end
 
 % Set up the initial guesses.
@@ -147,11 +153,22 @@ end
 % updates in the handles struct:
 handles.normDelta = [];
 
-% Create the CHEBOP:
-if ( ~isempty(guess) )
-    N = chebop(DE, dom, BC, guess);
+% Create the CHEBOP.
+N = chebop(DE, dom);
+
+% Assign boundary conditions, depending on whether we're solving an initial
+% value problem, final value problem, or boundary value problem
+if ( isIorF == 0 )
+    N.bc = BC;
+elseif ( isIorF == 1 )
+    N.lbc = BC;
 else
-    N = chebop(DE, dom, BC);
+    N.rbc = BC;
+end
+
+% Assign initial guess if it was passed
+if ( ~isempty(guess) )
+    N.init = guess;
 end
 
 % Construct a CHEBOPPREF object
@@ -227,9 +244,18 @@ end
 if ( guiMode )
     displayFunction = ...
         @(mode, varargin) chebgui.displayBVPinfo(handles, mode, varargin{:});
-    [u, info] = solvebvp(N, 0, options, displayFunction);
+    if ( ~isIorF )
+        [u, info] = solvebvp(N, 0, options, displayFunction);
+    else
+        u = solveivp(N, 0, options);
+        info = struct('isLinear', 1, 'error', 0);
+    end
 else
-    [u, info] = solvebvp(N, 0, options);
+    if ( ~isIorF ) 
+        [u, info] = solvebvp(N, 0, options);
+    else
+        u = solveivp(N, 0, options);
+    end
     varargout{1} = u;
     varargout{2} = vec;
 end

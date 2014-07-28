@@ -50,6 +50,10 @@ end
 fprintf(fid, 'rhs = %s;\n', deRHSprint);
 
 % Make assignments for BCs.
+
+% Are we dealing with an initial or final value problem?
+isIorF = isIVPorFVP(guifile, dom, bcInput, allVarString)
+
 fprintf(fid, '\n%% Assign boundary conditions to the chebop.\n');
 if ( ~isempty(bcInput{1}) )
     bcString = setupFields(guifile, bcInput, 'BCnew', allVarString );
