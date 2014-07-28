@@ -68,7 +68,6 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             else
                 error('Dimension mismatch');
             end
-            
         end
         
         function h = plus(f, g)
@@ -103,6 +102,17 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             end
         end
         
+        function h = rdivide(f, g)
+            h = treeVar();
+            if ( ~isa(f, 'treeVar') )
+                h.tree = treeVar.bivariate(f, g.tree, 'rdivide', 1);
+            elseif ( ~isa(g, 'treeVar') )
+                h.tree = treeVar.bivariate(f.tree, g, 'rdivide', 0);
+            else
+                h.tree = treeVar.bivariate(f.tree, g.tree, 'rdivide', 2);
+            end
+        end
+        
         function f = sin(f)
             f.tree = f.univariate(f.tree, 'sin');
         end
@@ -111,20 +121,13 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             h = treeVar();
             if ( ~isa(f, 'treeVar') )
                 h.tree = treeVar.bivariate(f, g.tree, 'times', 1);
-                
-                %                 h.tree = struct('method', 'times', 'numArgs', 2, ...
-                %                     'left', f, 'right', g.tree, 'diffOrder', g.tree.diffOrder, ...
-                %                     'height', g.tree.height + 1);
             elseif ( ~isa(g, 'treeVar') )
                 h.tree = treeVar.bivariate(f.tree, g, 'times', 0);
-                %
-                %                 h.tree = struct('method', 'times', 'numArgs', 2, ...
-                %                     'left', f.tree, 'right', g, 'diffOrder', f.tree.diffOrder, ...
-                %                     'height', f.tree.height + 1);
             else
                 h.tree = treeVar.bivariate(f.tree, g.tree, 'times', 2);
             end
         end
+        
         
     end
     
