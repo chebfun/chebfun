@@ -2,7 +2,7 @@ function [y, x] = min(f, flag, dim)
 %MIN   Minimum values of a CHEBFUN.
 %   MIN(F) and MIN(F, 'global') return the minimum value of the CHEBFUN F.
 %
-%   [Y, X] = MIN(F) returns also points X such that F(X) = Y.
+%   [Y, X] = MIN(F) returns also a point X such that F(X) = Y.
 %
 %   [Y, X] = MIN(F, 'local') returns not just the global minimum value but all
 %   of the local minima.
