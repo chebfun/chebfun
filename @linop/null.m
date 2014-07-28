@@ -97,7 +97,7 @@ for dim = dimVals
 end
 
 if ( nullity == 0 )
-    v = chebmatrix(chebfun());
+    v = [];
     return
 end
 
@@ -142,6 +142,7 @@ function [nullity, V, P] = getNullVectors(discA, tol)
     % NULL() method, and this simply calls the built-in SVD method.)
     [U, S, V] = svd(full(A), 0);
     S = diag(S);
+
     % Numerical nullity:
     nullity = length(find(S/S(1) < tol));
 
@@ -152,6 +153,7 @@ function [nullity, V, P] = getNullVectors(discA, tol)
         if ( ~isempty(B) )
             V = V*null(B*V);               % Store output in V.
         end
+        nullity = size(V, 2);
     else
         V = V(:,end); % Check for convergence in smallest singular value.
     end
