@@ -318,7 +318,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
                 
                 % Expand the tree, so that PLUS rather than TIMES is sitting at
                 % the top of it.
-                expTree = treeVar.expandTree(res.tree, diffOrders);
+                expTree = treeVar.expandTree(res.tree, totalDiffOrders);
                 
                 % Split the tree into derivative part and non-derivative part.
                 [newTree, derTree] = treeVar.splitTree(expTree, diffOrders);
