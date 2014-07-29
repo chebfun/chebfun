@@ -7,6 +7,7 @@ function y = chebpolyval(p, x)
 %     Y = P(1)*T_N(X) + P(2)*T_{N-1}(X) + ... + P(N)*T_1(X) + P(N+1)*I
 %
 %   If X is a matrix or vector, the polynomial is evaluated at all points in X.
+%   If X is a CHEBFUN it should be scalar-valued, i.e., not a quasimatrix.
 %
 %   If P is an (N+1) x M matrix, then CHEBPOLYVAL interprets each of the columns
 %   of P as coefficients of a degree N polynomial and evaluates the M Chebyshev
@@ -23,10 +24,34 @@ function y = chebpolyval(p, x)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Construct a CHEBTECH2 with the given coeffficients:
-f = chebtech2({[], p});
+if ( isnumeric(x) )
+    % Construct a CHEBTECH2 with the given coeffficients:
+    f = chebtech2({[], p});
 
-% Call CHEBTECH/FEVAL:
-y = feval(f, x);
-
+    % Call CHEBTECH/FEVAL:
+    y = feval(f, x);
+    
+else
+    
+    if ( min(size(x) > 1) )
+        error('CHEBFUN:chebpolyval:columns', ...
+            'For non-numeric types CHEBPOLYVAL supports only scaler-valued X.');
+    end
+    
+    isTransposed = size(x, 2) > 1;
+    if ( isTransposed )
+        x = x.';
+    end
+    
+    y = [];
+    for k = 1:size(p, 2)
+        y = [y, chebtech.clenshaw(x, p(:,k))];
+    end
+    
+    if ( isTransposed )
+        y = y.';
+    end
+    
+end
+    
 end
