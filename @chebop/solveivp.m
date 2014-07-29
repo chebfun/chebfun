@@ -51,9 +51,12 @@ opts = odeset('absTol',1e-12,'relTol',1e-12);
 % functions.
 y = y(:, varIndex);
 
+numColY = numColumns(y);
 % Return the solution as a CHEBMATRIX to be consistent with standard CHEBOP \:
-if (numColumns(y) > 1)
-    y = chebmatrix(y)';
+if (numColY > 1)
+    y = chebmatrix(y);
+    % Transpose that doesn't convert row chebfuns to column ones:
+    y.blocks = reshape(y.blocks, numColY, 1); 
 end
 
 end
