@@ -59,7 +59,7 @@ elseif ( isa(op, 'fourtech') )
               'Cannot compose two array-valued FOURTECH objects.')
     end
 
-    if ( norm(f.values(:), inf) > 1 )
+    if ( norm(f.values(:), inf) > 1 + eps )
         error('CHEBFUN:FOURTECH:compose:range', ...
               'The range of f is not contained in the domain of g.')
     end
