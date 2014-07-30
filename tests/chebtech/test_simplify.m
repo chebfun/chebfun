@@ -11,15 +11,15 @@ end
 seedRNG(6178);
 x = 2 * rand(100, 1) - 1;
 
+% Tolerance for passing to simplify:
+simptol = 1e-6;
+
 for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();
     else
         testclass = chebtech2();
     end
-
-    % Tolerance for passing to simplify:
-    simptol = 1e-6;
 
     %%
     % Test pathological inputs.
@@ -61,7 +61,7 @@ for n = 1:2
     % Test for an array-valued function:
 
     f = testclass.make(@(x) [sin(100*(x + 0.1)) cos(100*(x + 0.1)) exp(x)]);
-    g = simplify(f, 1e-6);
+    g = simplify(f, simptol);
     pass(n, 11) = any(abs(g.coeffs(1, :)) ~= 0);
     pass(n, 12) = length(g) < length(f);
     pass(n, 13) = all(norm(feval(f, x) - feval(g, x), inf) < ...

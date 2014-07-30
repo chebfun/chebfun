@@ -53,7 +53,7 @@ pass(7) = length(g2) == length(g);
 % Test for an array-valued function:
 
 f = testclass.make(@(x) [exp(sin(2*pi*x)) exp(cos(3*pi*x)) 3./(4-cos(pi*x))]);
-g = simplify(f, 1e-6);
+g = simplify(f, simptol);
 pass(8) = any(abs(g.coeffs(1, :)) ~= 0);
 pass(9) = length(g) < length(f);
 pass(10) = all(norm(feval(f, x) - feval(g, x), inf) < ...
