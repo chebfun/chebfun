@@ -1,20 +1,18 @@
 function f = simplify(f, tol)
-%SIMPLIFY  Zero small Fourier coefficients of a happy FOURTECH object.
+%SIMPLIFY  Remove small trailing Fourier coefficients of a happy FOURTECH object.
 %  G = SIMPLIFY(F) attempts to compute a 'simplified' version G of the happy
 %  FOURTECH object F such that LENGTH(G) <= LENGTH(F) but ||G - F|| is small in
-%  a relative sense: ||G - F|| < G.EPSLEVEL*G.VSCALE. It does this by zeroing
-%  out all coefficients of F that are relatively small; more precisely, it sets
-%  to zero all coefficients smaller in magnitude than the product of F.VSCALE
-%  and the default FOURTECH EPS preference. It then removes all trailing zero
-%  coefficients from F if there are any. G.EPSLEVEL is set to the maximum of
-%  F.EPSLEVEL and the default FOURTECH EPS.
+%  a relative sense: ||G - F|| < G.EPSLEVEL*G.VSCALE. It does this by removing
+%  trailing coefficients of F that are relatively small; more precisely, those 
+%  that are smaller in magnitude than the product of F.VSCALE and F.EPSLEVEL. 
+%  G.EPSLEVEL is set to F.EPSLEVEL.
 %
 %  If F is not happy, F is returned unchanged.
 %
-%  G = SIMPLIFY(F, TOL) does the same as above but uses TOL instead of the
-%  default FOURTECH EPS preference as the relative threshold level for deciding
-%  whether a coefficient is small enough to be zeroed. Here, G.EPSLEVEL is set
-%  to the maximum of F.EPSLEVEL and TOL.
+%  G = SIMPLIFY(F, TOL) does the same as above but uses TOL instead of 
+%  F.EPSLEVEL as the relative threshold level for deciding whether a coefficient
+%  is small enough to be removed. Here, G.EPSLEVEL is set to the maximum of 
+%  F.EPSLEVEL and TOL.
 %
 % See also HAPPINESSCHECK.
 
@@ -74,7 +72,8 @@ idn = bsxfun(@minus, abs(cn), tol.*f.vscale) < 0;
 % If the whole thing's now zero, leave just one coefficient:
 if ( isempty(firstNonZeroRowP) && isempty(firstNonZeroRowN) )
     firstNonZeroRow = size(cp, 1);
-    cp = 0*cp; cn = 0*cn;
+    cp = 0*cp; 
+    cn = 0*cn;
 % The negative and positive cofficient vectors need to be the same length
 % So, we remove the smaller of the tails from both.
 else

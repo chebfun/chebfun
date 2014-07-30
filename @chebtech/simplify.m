@@ -9,7 +9,7 @@ function f = simplify(f, tol)
 %
 %  If F is not happy, F is returned unchanged.
 %
-%  G = SIMPLIFY(F, TOL) does the same as above but uses TOL instead of the
+%  G = SIMPLIFY(F, TOL) does the same as above but uses TOL instead of
 %  F.EPSLEVEL as the relative threshold level for deciding whether a coefficient
 %  is small enough to be removed. Here, G.EPSLEVEL is set to the maximum of
 %  F.EPSLEVEL and TOL.
