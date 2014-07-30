@@ -138,7 +138,9 @@ end
 % Compute the CF approximation.
 if ( isempty(n) || (n == 0) )
     if ( isa(f.funs{1}.onefun, 'fourtech') )
-        [p, q, r, s] = trigpolyCF(f, m);
+        M = ceil(M/2); 
+        m = floor(m/2);
+        [p, q, r, s] = trigpolyCF(f, m, M);
     else
         [p, q, r, s] = polynomialCF(f, a, m, M);
     end
@@ -391,7 +393,7 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Trigonometric Polynomial CF approximation.
-function [p, q, r, s] = trigpolyCF(f, n)
+function [p, q, r, s] = trigpolyCF(f, n, M)
 % TRIGPOLYCF   CF approximation for real, periodic chebfuns based on fourtech.
 % P is the trigonometirc polynomial of length 2*n+1.
 % S is the absolute value of the eigenvalue used for the approximation.
@@ -399,13 +401,30 @@ function [p, q, r, s] = trigpolyCF(f, n)
 % N is the number of non-negatively indexed coefficients:
 N = (length(f)-1)/2;
 
-% Extract one half of the coefficients including the zeroth:
-a = get(f, 'coeffs');
-a = a(N+1:end);
+dom = domain(f);
+
+if ( nargin < 3 )
+    M = N;
+end
+
+if ( n >= M )
+    p = f;
+    q = chebfun(1, dom, 'periodic' );
+    r = @(x) feval(f, x);
+    s = 0;
+    return
+else
+    % Extract one half of the coefficients including the zeroth:
+    a = get(f, 'coeffs');
+    a = a(N+1:end);
+    % Only retain the first M of these:
+    a = a(1:M+1);    
+end
+
 
 % Get the real and imaginary parts of the tail coefficients:
-ck = real(a(n+2:N+1));
-dk = imag(a(n+2:N+1));
+ck = real(a(n+2:M+1));
+dk = imag(a(n+2:M+1));
 
 % Initialse arrays:
 b1 = zeros(2*n+1, 1);
@@ -415,15 +434,14 @@ s2 = [];
 
 % Solve the eigenvalue problem twice:
 if ( norm(ck, inf) > eps )
-    [b1, s1] = getLaurentCoeffs(real(a(n+2:N+1)), N, n);
+    [b1, s1] = getLaurentCoeffs(real(a(n+2:M+1)), M, n);
 end
 
 if ( norm(dk, inf) > eps )
-    [b2, s2] = getLaurentCoeffs(imag(a(n+2:N+1)), N, n);
+    [b2, s2] = getLaurentCoeffs(imag(a(n+2:M+1)), M, n);
 end
 s = norm([s1, s2], 1);
 
-dom = domain(f);
 %% Construct the CF approximation:
 a = [conj(a(n+1:-1:2)); a(1:n+1)] - b1 - flipud(b1) - 1i*b2 + 1i*flipud(b2);
 p = real(chebfun(a, dom, 'coeffs', 'periodic'));
