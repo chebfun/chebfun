@@ -25,7 +25,7 @@ function y = chebpolyval(p, x)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isnumeric(x) )
-    % Construct a CHEBTECH2 with the given coeffficients:
+    % Construct a CHEBTECH2 with the given coefficients:
     f = chebtech2({[], p});
 
     % Call CHEBTECH/FEVAL:
@@ -34,11 +34,11 @@ if ( isnumeric(x) )
 else
     
     if ( min(size(x) > 1) )
-        error('CHEBFUN:chebpolyval:columns', ...
-            'For non-numeric types CHEBPOLYVAL supports only scaler-valued X.');
+        error('CHEBFUN:chebpolyval:columnInput', ...
+            'For non-numeric types CHEBPOLYVAL supports only scalar-valued X.');
     end
     
-    isTransposed = size(x, 2) > 1;
+    isTransposed = get(x, 'isTransposed');
     if ( isTransposed )
         x = x.';
     end

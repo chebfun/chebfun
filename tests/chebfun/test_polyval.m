@@ -1,4 +1,6 @@
-function pass = test_poly(pref)
+% Test file for @chebfun/polyval.m.
+
+function pass = test_polyval(pref)
 
 if ( nargin == 0 )
     pref = chebfunpref();
