@@ -1,4 +1,4 @@
-function [x, w, v] = chebpts(n, dom, type)
+function [x, w, v, t] = chebpts(n, dom, type)
 %CHEBPTS    Chebyshev points.
 %   CHEBPTS(N) returns N Chebyshev points of the 2nd-kind in [-1,1].
 %
@@ -16,8 +16,11 @@ function [x, w, v] = chebpts(n, dom, type)
 %   weights V corresponding to the Chebyshev points X. The weights are scaled to
 %   have infinity norm 1.
 %
-%   [X, W, V] = CHEBPTS(N, KIND) or CHEBPTS(N, D, KIND) returns Chebyshev points
-%   and weights of the 1st-kind if KIND = 1 and 2nd-kind if KIND = 2 (default).
+%   [X, W, V, T] = CHEBPTS(N) returns also the angles T so that cos(T) = X.
+%
+%   [X, W, V, T] = CHEBPTS(N, KIND) or CHEBPTS(N, D, KIND) returns Chebyshev
+%   points, weights, and angle of the 1st-kind if KIND = 1 and 2nd-kind if KIND
+%   = 2 (default).
 %
 %   [1] Jarg Waldvogel, "Fast construction of the Fejer and Clenshaw-Curtis
 %   quadrature rules", BIT Numerical Mathematics, 46, (2006), pp 195-202. 
@@ -68,6 +71,9 @@ if ( length(n) == 1 ) % Single grid.
     if ( nargout > 2 )
         v = f.barywts(n);
     end
+    if ( nargout > 3 )
+        t = f.angles(n);
+    end
     
 else                  % Piecewise grid.
     
@@ -91,6 +97,12 @@ else                  % Piecewise grid.
     x = cell2mat(x);
     w = cell2mat(w);
     v = cell2mat(v);
+    if ( nargout > 3 )
+        a = dom(1);
+        b = dom(end);
+        tmp = (x - a)/(b - a) - (b - x)/(b - a);
+        t = acos(tmp);
+    end
     
 end
 

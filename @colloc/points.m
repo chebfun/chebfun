@@ -1,4 +1,4 @@
-function [x, w, v] = points(varargin)
+function [x, w, v, t] = points(varargin)
 %POINTS    Discretization points.
 %   X = COLLOC.POINTS(DISC, POINTSFUN) returns points to be for the domain and
 %   dimension stored in DISC. POINTSFUN should be a function handle taking a
@@ -10,6 +10,9 @@ function [x, w, v] = points(varargin)
 %   [X, W, V] = COLLOC.POINTS(DISC, POINTSFUN) also returns quadrature weights
 %   and barycentric interpolation weights, respectively, appropriately scaled to
 %   DISC.DOMAIN, if these are also returned by POINTSFUN.
+%
+%   [X, W, V, T] = COLLOC.POINTS(DISC, POINTSFUN) returns also the angles T so
+%   that T = COS(X). This can often be computed more accurately than X itself.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -37,6 +40,7 @@ numInt = length(n);
 x = cell(numInt, 1);
 w = cell(1, numInt);
 v = cell(numInt, 1);
+t = cell(numInt, 1);
 
 for k = 1:numInt
     
@@ -48,16 +52,16 @@ for k = 1:numInt
     
     % The points and weights returned by the CHEBTECH methods above live on
     % [-1, 1]. Transform the points to the interval we're working on.
-
     x{k} = d(k+1)*(x0 + 1)/2 + d(k)*(1 - x0)/2;
-%     dif = (d(k + 1) - d(k))/2;
-%     x{k} = x0*dif + (d(k +1) + d(k))/2;
     
     if ( nargout > 1 )
         dif = (d(k+1) - d(k))/2;
         w{k} = varargout{2}*dif;
         if ( nargout > 2 )
             v{k} = varargout{3};
+            if ( nargout > 3 )
+                t{k} = varargout{4};
+            end
         end
     end
     
@@ -69,6 +73,9 @@ if ( nargout > 1 )
     w = cell2mat(w);
     if ( nargout > 2 )
         v = cell2mat(v);
+    end
+    if ( nargout > 3 )
+        t = cell2mat(t);
     end
 end
 

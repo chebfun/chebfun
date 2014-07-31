@@ -1,4 +1,4 @@
-function [x, w, v] = chebpts(n)
+function [x, w, v, t] = chebpts(n)
 %CHEBPTS   Chebyshev points in [-1, 1].
 %   CHEBPTS(N) returns N Chebyshev points of the 2nd kind in [-1,1].
 %
@@ -37,6 +37,11 @@ else              % General case
     % Barycentric weights:            
     if ( nargout > 2 )
         v = chebtech2.barywts(n); 
+    end
+    
+    % Angles:
+    if ( nargout > 2 )
+        t = chebtech2.angles(n);
     end
     
 end
