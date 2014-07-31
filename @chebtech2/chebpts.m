@@ -9,6 +9,8 @@ function [x, w, v, t] = chebpts(n)
 %   weights V corresponding to the Chebyshev points X. The barycentric weights
 %   are normalised to have infinity norm equal to 1 and a positive first entry.
 %
+%   [X, W, V, T] = CHEBPTS(N) returns also the angles of X.
+%
 % See also BARY, QUADWTS, BARYWTS, FOURPTS, LEGPTS, JACPTS, LAGPTS, and HERMPTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
@@ -40,7 +42,7 @@ else              % General case
     end
     
     % Angles:
-    if ( nargout > 2 )
+    if ( nargout > 3 )
         t = chebtech2.angles(n);
     end
     

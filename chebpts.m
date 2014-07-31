@@ -19,16 +19,19 @@ function [x, w, v, t] = chebpts(n, dom, type)
 %   [X, W, V, T] = CHEBPTS(N) returns also the angles T so that cos(T) = X.
 %
 %   [X, W, V, T] = CHEBPTS(N, KIND) or CHEBPTS(N, D, KIND) returns Chebyshev
-%   points, weights, and angle of the 1st-kind if KIND = 1 and 2nd-kind if KIND
+%   points, weights, and angles of the 1st-kind if KIND = 1 and 2nd-kind if KIND
 %   = 2 (default).
-%
-%   [1] Jarg Waldvogel, "Fast construction of the Fejer and Clenshaw-Curtis
-%   quadrature rules", BIT Numerical Mathematics, 46, (2006), pp 195-202. 
 %
 % See also FOURPTS, LEGPTS, JACPTS, LAGPTS, HERMPTS, LOBPTS, and RADAUPTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% [Mathematical reference]:
+%   Jarg Waldvogel, "Fast construction of the Fejer and Clenshaw-Curtis
+%   quadrature rules", BIT Numerical Mathematics, 46, (2006), pp 195-202.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Parse inputs:
 if ( nargin == 2 )

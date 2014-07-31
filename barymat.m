@@ -51,7 +51,7 @@ if ( nargin < 5 )
     B = bsxfun(@minus, y, x.');  
 else
     % Use the 'trig trick' that cos(r) - cos(s) = 2*sin((r+s)/2)*sin((r-s)/2).
-    B = -2*bsxfun(@(r,s) sin((s+r)/2) .* sin((s-r)/2), r, s.');
+    B = 2*bsxfun(@(r,s) sin((s+r)/2) .* sin((r-s)/2), r, s.');
 end
 
 % Construct the matrix:
@@ -76,7 +76,8 @@ B(isnan(B)) = 1;
 
 % Flipping trick:
 if ( nargin > 5 && doFlip )
-    ii = logical(rot90(tril(ones(M, N)), 2)); ii = fliplr(ii);
+    ii = logical(rot90(tril(ones(M, N)), 2)); 
+    ii = fliplr(ii);
     rot90D = rot90(B, 2);
     B(ii) = rot90D(ii);
     B(isnan(B)) = 1;

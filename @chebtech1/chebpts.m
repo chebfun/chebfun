@@ -8,7 +8,9 @@ function [x, w, v, t] = chebpts(n)
 %   [X, W, V] = CHEBPTS(N) returns, in addition to X and W, the weights V
 %   for barycentric polynomial interpolation in the Chebyshev points X.
 %
-% See also FOURPTS, LEGPTS, JACPTS, LAGPTS, and HERMPTS.
+%   [X, W, V, T] = CHEBPTS(N) returns also the angles of X.
+%
+% See also ANGLES, FOURPTS, LEGPTS, JACPTS, LAGPTS, and HERMPTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -40,7 +42,7 @@ else              % General case
     end
     
     % Angles:
-    if ( nargout > 2 )
+    if ( nargout > 3 )
         t = chebtech1.angles(n);
     end
     
