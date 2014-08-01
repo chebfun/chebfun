@@ -24,7 +24,7 @@ A.rbc = @(u) [u ; diff(u)];
 
 discType = {@colloc2, @ultraS, @colloc1};
 
-tol = 1e-6;
+tol = 5e-6;
 
 for disc = 1:3
     pref.discretization = discType{disc};
