@@ -30,7 +30,7 @@ if ( ~isnumeric(p) )
 end
 
 if ( isnumeric(x) )
-    % Construct a CHEBTECH2 with the given coeffficients:
+    % Construct a CHEBTECH2 with the given coefficients:
     f = chebtech2({[], p});
 
     % Call CHEBTECH/FEVAL:
@@ -40,11 +40,11 @@ else
     
     if ( min(size(x) > 1) )
         % TODO: We could support this is we wanted, but it would be messy.
-        error('CHEBFUN:chebpolyval:columns', ...
+        error('CHEBFUN:chebpolyval:columnInput', ...
             'For non-numeric types CHEBPOLYVAL supports only scalar-valued X.');
     end
     
-    isTransposed = size(x, 2) > 1;
+    isTransposed = get(x, 'isTransposed');
     if ( isTransposed )
         x = x.';
     end

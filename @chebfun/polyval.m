@@ -1,6 +1,6 @@
 function y = polyval(p, x)
 %POLYVAL  Evaluate polynomial with CHEBFUN argument.
-%   Y = polyval(P, X) returns the value of a polynomial P evaluated at the
+%   Y = POLYVAL(P, X) returns the value of a polynomial P evaluated at the
 %   CHEBFUNX. P is a column vector of length N + 1 whose elements are the
 %   coefficients of the polynomial in descending powers.
 %        Y = P(1)*X^N + P(2)*X^(N-1) + ... + P(N)*X + P(N+1)
@@ -17,8 +17,8 @@ function y = polyval(p, x)
 %
 % See also CHEBPOLYVAL.
 
-if ( size(p, 2) > 1 && numColumns(x) > 1 )
-    error('CHEBFUN:CHEBFUN:polyval:dimmismatch', ...
+if ( (size(p, 2) > 1) && (numColumns(x) > 1) )
+    error('CHEBFUN:CHEBFUN:polyval:dimMismatch', ...
         'Input P must be a column vector or X must be a scalar-valued CHEBFUN.');
 elseif ( ~isnumeric(p) )
     error('CHEBFUN:CHEBFUN:polval:firstArg', ...

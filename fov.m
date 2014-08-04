@@ -31,7 +31,7 @@ function [f, lineSegs, theta] = fov(A, pref)
 %   F = fov(A);
 %   hold off, plot(F, '-b')
 %   e = eig(A);
-%   hold on, plot(e, *k'), hold off, axis equal
+%   hold on, plot(e, '*k'), hold off, axis equal
 %
 % Example 2 (boundary has a corner)
 %   A = [0 1 0 ; 0 0 0 ; 0 0 1];
@@ -81,13 +81,13 @@ lVal = feval(f, ends(1:end-1), 'left');  % Values to left of break points.
 lVal(1) = feval(f, ends(end),  'left');  % Value to left of 2*pi.
 rVal = feval(f, ends(1:end-1), 'right'); % Values to right of break points.
 
-% Determine which points correspond to dicontinuities:
+% Determine which points correspond to discontinuities:
 tol = 10*delta*max(abs([lVal, rVal]), [], 2);
 discont = abs(lVal - rVal) > tol;
 
 % Define additional CHEBFUNs for the line segments joining discontinuities.
 % (First idea was to do this by inserting tiny intervals with steep slopes into
-% the chebfun f, but this leads to loss of accuracy.) Each column of lineSegs
+% the CHEBFUN f, but this leads to loss of accuracy.) Each column of lineSegs
 % represents a line in the complex plane connecting the points lVal(j) and
 % rVal(j) to each other, along with the corresponding theta value in [0,2*pi].
 theta = ends(discont);
