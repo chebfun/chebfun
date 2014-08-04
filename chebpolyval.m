@@ -1,6 +1,6 @@
 function y = chebpolyval(p, x)
 %CHEBPOLYVAL   Evaluate Chebyshev polynomial. 
-%   Y = CHEBPOLYVALM(P, X), when P is a column vector of length N+1 whose
+%   Y = CHEBPOLYVAL(P, X), when P is a column vector of length N+1 whose
 %   elements are the Chebyshev coefficients of a polynomial, is the value of the
 %   polynomial evaluated at X, i.e.,
 %
@@ -24,6 +24,11 @@ function y = chebpolyval(p, x)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
+if ( ~isnumeric(p) )
+    error('CHEBFUN:chebpolval:firstArg', ...
+        'First input argument must be a vector or a matrix.');
+end
+
 if ( isnumeric(x) )
     % Construct a CHEBTECH2 with the given coeffficients:
     f = chebtech2({[], p});
@@ -34,8 +39,9 @@ if ( isnumeric(x) )
 else
     
     if ( min(size(x) > 1) )
+        % TODO: We could support this is we wanted, but it would be messy.
         error('CHEBFUN:chebpolyval:columns', ...
-            'For non-numeric types CHEBPOLYVAL supports only scaler-valued X.');
+            'For non-numeric types CHEBPOLYVAL supports only scalar-valued X.');
     end
     
     isTransposed = size(x, 2) > 1;

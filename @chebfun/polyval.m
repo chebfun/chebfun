@@ -14,10 +14,15 @@ function y = polyval(p, x)
 %   p = [3 2 1].;
 %   x = chebfun('x');
 %   polyval(p, x)
+%
+% See also CHEBPOLYVAL.
 
 if ( size(p, 2) > 1 && numColumns(x) > 1 )
     error('CHEBFUN:CHEBFUN:polyval:dimmismatch', ...
         'Input P must be a column vector or X must be a scalar-valued CHEBFUN.');
+elseif ( ~isnumeric(p) )
+    error('CHEBFUN:CHEBFUN:polval:firstArg', ...
+        'First input argument must be a vector or a matrix.');
 end
 
 % Ensure column CHEBFUN:
