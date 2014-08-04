@@ -512,6 +512,9 @@ classdef chebdouble
             elseif ( isnumeric(u) )
                 v.values = u*v.values;
                 u = v;
+            elseif ( numel(u.values) < 2 || numel(v.values) < 2 )
+                u.values = u.values*v;
+                u.diffOrder = max(u.diffOrder, v.diffOrder);   
             else
                 error('CHEBFUN:CHEBDOUBLE:mtimes:dim', ...
                     'Matrix dimensions must agree.');
