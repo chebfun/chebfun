@@ -52,7 +52,7 @@ function [x, w, v, t] = legpts(n, int, meth)
 %   April 2009 - GLR [3] added for N >= 129.
 %     Feb 2011 - REC for N < 129, GLR for large N.
 %     Aug 2012 - HT [4] replaces GLR for N >= 129.
-%    July 2014 - Bogaert's algorithm [2] replaces HT for N > 129.
+%    July 2014 - Bogaert's algorithm [2] replaces HT for N >= 100.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Defaults
