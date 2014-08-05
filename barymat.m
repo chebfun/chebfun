@@ -7,10 +7,10 @@ function B = barymat(y, x, w, r, s, doFlip)
 %   supplied it is assumed to be the weights for polynomial interpolation at a
 %   2nd-kind Chebyshev grid: W(j) = (-1)^j, W([1, N]) = 0.5*W([1, N]).
 %
-%   BARYMAT(Y, X, W, S, R) is the same, where S = acos(Y) and R = acos(X). The
+%   BARYMAT(Y, X, W, R, S) is the same, where R = acos(Y) and S = acos(X). The
 %   purpose of this is that Y(j) - X(k) can be more accurately comuted in this
 %   'theta space'. This is sometimes referred to as the 'trig trick' in spectral
-%   collocation. BARYMAT(Y, X, W, S, R, 1) also performs the 'flipping trick', 
+%   collocation. BARYMAT(Y, X, W, R, S, 1) also performs the 'flipping trick', 
 %   which takes advantage of the fact that the smaller entries in R and S can be
 %   computed more accurately. Note that X and Y should be symmetric about zero
 %   for this work, and it is assumed that R and S are sorted in descending

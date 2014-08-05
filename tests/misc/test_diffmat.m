@@ -175,4 +175,267 @@ fp = D*f;
 err = norm(fp_exact - fp, inf);
 pass(18) = ( err < tol );
 
+%% Boundary conditions:
+
+%% 1st-kind grid -> 1st-kind grid:
+
+% 1st-order problem: u' = exp(x); u(-2) = exp(-2):
+op = @(x)exp(x);
+dom = [-2 7];
+N = 30;
+p = 1;
+M = N - p;
+x = chebpts(N, dom, 1);
+y = chebpts(M, dom, 1);
+f = op(x);
+fp = op(y);
+rhs = [op(dom(1)); fp];
+D = diffmat([M N], p, dom, 'colloc1', {'d'});
+ff = D\rhs;
+err = norm(ff-f, inf);
+pass(19) = ( err < tol );
+
+% 1st-order problem: u' = exp(x); u(7) = exp(7):
+op = @(x)exp(x);
+dom = [-2 7];
+N = 30;
+p = 1;
+M = N - p;
+x = chebpts(N, dom, 1);
+y = chebpts(M, dom, 1);
+f = op(x);
+fp = op(y);
+rhs = [fp; op(dom(2))];
+D = diffmat([M N], p, dom, 'colloc1', {}, {'d'});
+ff = D\rhs;
+err = norm(ff-f, inf);
+pass(20) = ( err < tol );
+
+
+% 2nd-order problem: u" = exp(x); u(-2) = exp(-2); u(7) = exp(7);
+op = @(x)exp(x);
+dom = [-2 7];
+N = 30;
+p = 2;
+M = N - p;
+x = chebpts(N, dom, 1);
+y = chebpts(M, dom, 1);
+f = op(x);
+fp = op(y);
+rhs = [op(dom(1)); fp; op(dom(2))];
+D = diffmat([M N], p, dom, 'colloc1', {'d'}, {'d'});
+ff = D\rhs;
+err = norm(ff-f, inf);
+pass(21) = ( err < 1e1*tol );
+
+% 2nd-order problem: u" = exp(x); u'(2) = exp(2); u(2) = exp(2);
+op = @(x)exp(x);
+dom = [-2 7];
+N = 30;
+p = 2;
+M = N - p;
+x = chebpts(N, dom, 1);
+y = chebpts(M, dom, 1);
+f = op(x);
+fp = op(y);
+rhs = [op(dom(1)); op(dom(1)); fp];
+D = diffmat([M N], p, dom, 'colloc1', {'d' 'n'}, {});
+ff = D\rhs;
+err = norm(ff-f, inf);
+pass(22) = ( err < 1e2*tol );
+
+% 2nd-order problem: u" = exp(x); u'(7) = exp(7); u(7) = exp(7);
+op = @(x)exp(x);
+dom = [-2 7];
+N = 30;
+p = 2;
+M = N - p;
+x = chebpts(N, dom, 1);
+y = chebpts(M, dom, 1);
+f = op(x);
+fp = op(y);
+rhs = [fp; op(dom(2)); op(dom(2))];
+D = diffmat([M N], p, dom, 'colloc1', {}, {'n' 'd'});
+ff = D\rhs;
+err = norm(ff-f, inf);
+pass(23) = ( err < 1e1*tol );
+
+% 2nd-order problem: u" = exp(x); u(-2) = exp(-2); u'(7) = exp(7);
+op = @(x)exp(x);
+dom = [-2 7];
+N = 30;
+p = 2;
+M = N - p;
+x = chebpts(N, dom, 1);
+y = chebpts(M, dom, 1);
+f = op(x);
+fp = op(y);
+rhs = [op(dom(1)); fp; op(dom(2))];
+D = diffmat([M N], p, dom, 'colloc1', {'d'}, {'n'});
+ff = D\rhs;
+err = norm(ff-f, inf);
+pass(24) = ( err < 1e1*tol );
+
+% 2nd-order problem: u" = exp(x); u'(-2) = exp(-2); u(7) = exp(7);
+op = @(x)exp(x);
+dom = [-2 7];
+N = 30;
+p = 2;
+M = N - p;
+x = chebpts(N, dom, 1);
+y = chebpts(M, dom, 1);
+f = op(x);
+fp = op(y);
+rhs = [op(dom(1)); fp; op(dom(2))];
+D = diffmat([M N], p, dom, 'colloc1', {'n'}, {'d'});
+ff = D\rhs;
+err = norm(ff-f, inf);
+pass(25) = ( err < 1e2*tol );
+
+% 2nd-order problem: u" = exp(x); sum(u) = exp(7)-exp(-2); u'(-2) = exp(-2);
+op = @(x)exp(x);
+dom = [-2 7];
+N = 30;
+p = 2;
+M = N - p;
+x = chebpts(N, dom, 1);
+y = chebpts(M, dom, 1);
+f = op(x);
+fp = op(y);
+rhs = [op(dom(1)); fp; op(dom(2))-op(dom(1))];
+D = diffmat([M N], p, dom, 'colloc1', {'n'}, {'s'});
+ff = D\rhs;
+err = norm(ff-f, inf);
+pass(26) = ( err < 1e1*tol );
+
+%% 2nd-kind grid -> 1st-kind grid:
+
+% 1st-order problem: u' = exp(x); u(-2) = exp(-2):
+op = @(x)exp(x);
+dom = [-2 7];
+N = 30;
+p = 1;
+M = N - p;
+x = chebpts(N, dom);
+y = chebpts(M, dom, 1);
+f = op(x);
+fp = op(y);
+rhs = [op(dom(1)); fp];
+D = diffmat([N -p], p, dom, 'colloc2', {'d'});
+ff = D\rhs;
+err = norm(ff-f, inf);
+pass(27) = ( err < tol );
+
+% 1st-order problem: u' = exp(x); u(7) = exp(7):
+op = @(x)exp(x);
+dom = [-2 7];
+N = 30;
+p = 1;
+M = N - p;
+x = chebpts(N, dom);
+y = chebpts(M, dom, 1);
+f = op(x);
+fp = op(y);
+rhs = [fp; op(dom(2))];
+D = diffmat([N -p], p, dom, 'colloc2', {}, {'d'});
+ff = D\rhs;
+err = norm(ff-f, inf);
+pass(28) = ( err < tol );
+
+% 2nd-order problem: u" = exp(x); u(-2) = exp(-2); u(7) = exp(7);
+op = @(x)exp(x);
+dom = [-2 7];
+N = 30;
+p = 2;
+M = N - p;
+x = chebpts(N, dom);
+y = chebpts(M, dom, 1);
+f = op(x);
+fp = op(y);
+rhs = [op(dom(1)); fp; op(dom(2))];
+D = diffmat([M N], p, dom, 'colloc2', {'d'}, {'d'});
+ff = D\rhs;
+err = norm(ff-f, inf);
+pass(29) = ( err < 1e1*tol );
+
+% 2nd-order problem: u" = exp(x); u'(2) = exp(2); u(2) = exp(2);
+op = @(x)exp(x);
+dom = [-2 7];
+N = 30;
+p = 2;
+M = N - p;
+x = chebpts(N, dom);
+y = chebpts(M, dom, 1);
+f = op(x);
+fp = op(y);
+rhs = [op(dom(1)); op(dom(1)); fp];
+D = diffmat([M N], p, dom, 'colloc2', {'d' 'n'}, {});
+ff = D\rhs;
+err = norm(ff-f, inf);
+pass(30) = ( err < 1e2*tol );
+
+% 2nd-order problem: u" = exp(x); u'(7) = exp(7); u(7) = exp(7);
+op = @(x)exp(x);
+dom = [-2 7];
+N = 30;
+p = 2;
+M = N - p;
+x = chebpts(N, dom);
+y = chebpts(M, dom, 1);
+f = op(x);
+fp = op(y);
+rhs = [fp; op(dom(2)); op(dom(2))];
+D = diffmat([M N], p, dom, 'colloc2', {}, {'n' 'd'});
+ff = D\rhs;
+err = norm(ff-f, inf);
+pass(31) = ( err < 1e2*tol );
+
+% 2nd-order problem: u" = exp(x); u(-2) = exp(-2); u'(7) = exp(7);
+op = @(x)exp(x);
+dom = [-2 7];
+N = 30;
+p = 2;
+M = N - p;
+x = chebpts(N, dom);
+y = chebpts(M, dom, 1);
+f = op(x);
+fp = op(y);
+rhs = [op(dom(1)); fp; op(dom(2))];
+D = diffmat([M N], p, dom, 'colloc2', {'d'}, {'n'});
+ff = D\rhs;
+err = norm(ff-f, inf);
+pass(32) = ( err < 1e2*tol );
+
+% 2nd-order problem: u" = exp(x); u'(-2) = exp(-2); u(7) = exp(7);
+op = @(x)exp(x);
+dom = [-2 7];
+N = 30;
+p = 2;
+M = N - p;
+x = chebpts(N, dom);
+y = chebpts(M, dom, 1);
+f = op(x);
+fp = op(y);
+rhs = [op(dom(1)); fp; op(dom(2))];
+D = diffmat([M N], p, dom, 'colloc2', {'n'}, {'d'});
+ff = D\rhs;
+err = norm(ff-f, inf);
+pass(33) = ( err < 1e2*tol );
+
+% 2nd-order problem: u" = exp(x); sum(u) = exp(7)-exp(-2); u(7) = exp(7);
+op = @(x)exp(x);
+dom = [-2 7];
+N = 30;
+p = 2;
+M = N - p;
+x = chebpts(N, dom);
+y = chebpts(M, dom, 1);
+f = op(x);
+fp = op(y);
+rhs = [fp; op(dom(2))-op(dom(1)); op(dom(2))];
+D = diffmat([M N], p, dom, 'colloc2', {}, {'s' 'd'});
+ff = D\rhs;
+err = norm(ff-f, inf);
+pass(34) = ( err < 1e1*tol );
+
 end

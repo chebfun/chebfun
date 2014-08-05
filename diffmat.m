@@ -21,6 +21,9 @@ function D = diffmat(N, varargin)
 p = 1;
 dom = [-1 1];
 disc = colloc2();
+lbc = {};
+rbc = {};
+islbc = 1;
 
 if ( isscalar(N) )
     n = N;
@@ -46,6 +49,13 @@ for j = 1:numel(varargin)
     elseif ( isa(v, 'function_handle') || ischar(v) || ...
         isa(v, 'chebDiscretization') )
         disc = v;
+    elseif ( iscell(v) )
+        if ( islbc )
+            lbc = v;
+            islbc = 0;
+        else
+            rbc = v;
+        end
     else
         error('CHEBFUN:diffmat:unknown', ...
             'Unknown input of type %s.', class(v));
@@ -77,6 +87,23 @@ if ( numel(dom) > 2 )
         'DIFFMAT does not support domains with breakpoints.');
 end
 
+% Boundary conditions:
+bc = [lbc rbc];
+if ( ~isempty(bc) )
+    nlbc = numel(lbc);
+    nrbc = numel(rbc);
+    nbc = nlbc + nrbc;
+    if ( ~isa(disc, 'fourtech') && ( nbc ~= p ) )
+        error('CHEBFUN:diffmat:wrongBC', ...
+            'The number of boundary conditions must match differentiation order p');
+    end
+end
+
+if ( isa(disc, 'fourtech') && ~isempty(bc) )
+    error('CHEBFUN:diffmat:wrongBC', ...
+        'For periodic functions, there is no need to specify boundary conditions.');
+end
+
 %% Different cases:
 
 if ( m == n ) % Square case:
@@ -101,7 +128,71 @@ end
 scl = (2/(dom(end) - dom(1)))^p;
 D = scl*D;
 
+%% Boundary conditions:
+if ( ~isempty(bc) )
+    BC = zeros(nbc, n);
+    for j = 1:nbc
+        if ( j <= nlbc )
+            y = -1;
+            r = pi;
+            idx = 1;
+        else
+            y = 1;
+            r = 0;
+            idx = n;
+        end
+        
+        switch bc{j}
+            case {'d', 'D'}
+                if ( isa(disc, 'colloc1') )
+                    [x, ignored, v, t] = chebpts(n, 1);
+                    BC(j,:) = barymat(y, x, v, r, t);
+                else
+                    I = eye(n);
+                    BC(j, :) = I(idx, :);
+                end
+                
+            case {'n', 'N'}
+                
+                if ( isa(disc, 'colloc1') )
+                    DD = diffmat(n, 1, dom, 'colloc1');
+                    [x, ignored, v, t] = chebpts(n, 1);
+                    P = barymat(y, x, v, r, t);
+                    DD = P*DD;
+                    BC(j, :) = DD;
+                else
+                    DD = diffmat(n, 1, dom);
+                    BC(j, :) = DD(idx, :);
+                end
+                
+            case {'s', 'S', 'sum', 'i', 'I'}
+                
+                if ( isa(disc, 'colloc1') )
+                    [ignored, w] = chebpts(n, dom, 1);
+                else
+                    [ignored, w] = chebpts(n, dom);
+                end
+                
+                BC(j, :) = w;
+                
+            otherwise
+                error('CHEBFUN:diffmat:wrongBC', ...
+                    'Unknown type of boundary conditions.');
+        end
+    end
 end
+
+%% Replace or append the boundary conditions:
+if ( ~isempty(bc) && ( m == n ) )
+    % Replacement for square case:
+    D(1:nlbc, :) = BC(1:nlbc, :);
+    D(end-nrbc+1:end, :) = BC(nlbc+1:end, :);
+elseif ( ~isempty(bc) )
+    D = [BC(1:nlbc, :); D; BC(nlbc+1:end, :)];
+end
+
+end
+
 
 function D = rectdiff1(m, n)
 %RECTDIFF1  Explicit constrcution rectangular differentiation matrix mapping 
