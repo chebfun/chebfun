@@ -29,8 +29,9 @@ function g = inv(f, varargin)
 %
 %   Example:
 %      x = chebfun('x');
-%      f = sign(x) + x;
-%      g = inv(f, 'splitting', 'on');
+%      f = x + .5*abs(x) + .6*sign(x-.5);
+%      g = inv(f);
+%      plot(f, x, 'b', g, '--r') % <-- Note, plot(f, x) not plot(x, f).
 %
 %   NB:  This function is experimental and slow!  Use of the 'BISECTION'
 %   (default) and 'ROOTS' algorithm may be the better choice for piecewise
@@ -59,8 +60,15 @@ else
     fp = [];
 end
 
+% Find the domain of the output:
+gEnds = minandmax(f).';
+fBreaks = f.domain(2:end-1);
+gBreaksL = feval(f, fBreaks, 'left');  % We must evaluate to the left and the 
+gBreaksR = feval(f, fBreaks, 'right'); % of breaks in f in case there are jumps.
+gBreaks = union(gBreaksL, gBreaksR);   % TODO: Include a tolerance?
+gDomain = union(gEnds, gBreaks);       % TODO: Include a tolerance?
+
 % Compute the inverse:
-gDomain = minandmax(f).';
 if ( opts.algorithm == 1 )     % Algorithm based on ROOTS.
     g = chebfun(@(x) fInverseRoots(f, x, tol), gDomain, pref);
 elseif ( opts.algorithm == 2 ) % Newton iteration algorithm.
@@ -68,6 +76,7 @@ elseif ( opts.algorithm == 2 ) % Newton iteration algorithm.
 elseif ( opts.algorithm == 3 ) % Bisection based algorithm.
     g = chebfun(@(x) fInverseBisection(f, x), gDomain, pref);
 end
+
 
 % Scale so that the range of g is the domain of f:
 if ( opts.rangeCheck )
@@ -93,11 +102,6 @@ if ( (nargin > 1) && isa(varargin{1}, 'chebfunpref') )
     varargin(1) = [];
 else
     pref = chebfunpref();
-end
-
-% Enable breakpoint detection if F is piecewise:
-if ( length(f.domain) > 2 )
-    p.splitting = true;
 end
 
 % Parse name/value pairs.
@@ -249,21 +253,22 @@ end
 function y = fInverseBisection(f, x)
 %FINVERSEBISECTION(F, X)   Compute F^{-1}(X) using Bisection.
 
-a = f.domain(1)*ones(length(x), 1);
-b = f.domain(end)*ones(length(x), 1);
+a = f.domain(1);
+b = f.domain(end);
 c = (a + b)/2;
 
 while ( norm(b - a, inf) >= eps )   
-    vals = feval(f, c);
+    vals = feval(f, c) - x;
     % Bisection:
-    I1 = ((vals-x) <= -eps);
-    I2 = ((vals-x) >= eps);
+    I1 = (vals <= -eps);
+    I2 = (vals >=  eps);
     I3 = ~I1 & ~I2;
     a = I1.*c + I2.*a + I3.*c;
     b = I1.*b + I2.*c + I3.*c;
-    c = (a+b)/2;
+    c = (a + b)/2;
 end
 
 y = c;
 
 end
+
