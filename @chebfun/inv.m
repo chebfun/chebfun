@@ -7,7 +7,8 @@ function g = inv(f, varargin)
 %      'ROOTS'  - Compute the inverse using ROOTS().
 %      'NEWTON' - Compute the inverse using a Newton iteration.
 %      'BISECTION' - Compute the inverse using bisection as the rootfinder.
-%   The default algorithm is 'BISECTION'.
+%      'REGULAFALSI' - Compute the inverse using Regula Falsi as the rootfinder.
+%   The default algorithm is 'Regula Falsi'.
 %
 %   FINV = INV(F, PREF) uses the preferences specified by the structure or
 %   CHEBFUNPREF object PREF when constructing the inverse.
@@ -75,8 +76,9 @@ elseif ( opts.algorithm == 2 ) % Newton iteration algorithm.
     g = chebfun(@(x) fInverseNewton(f, fp, x, tol), gDomain, pref);
 elseif ( opts.algorithm == 3 ) % Bisection based algorithm.
     g = chebfun(@(x) fInverseBisection(f, x), gDomain, pref);
+elseif ( opts.algorithm == 4 ) % Regula Falsi based algorithm.
+    g = chebfun(@(x) fInverseRegulaFalsi(f, x), gDomain, pref);
 end
-
 
 % Scale so that the range of g is the domain of f:
 if ( opts.rangeCheck )
@@ -94,7 +96,7 @@ function [tol, opts, pref] = parseInputs(f, varargin)
 tol = epslevel(f);
 opts.monoCheck = false;
 opts.rangeCheck = false;
-opts.algorithm = 3;
+opts.algorithm = 4;
 
 % Parse preference input:
 if ( (nargin > 1) && isa(varargin{1}, 'chebfunpref') )
@@ -121,6 +123,8 @@ while ( numel(varargin) > 1 )
             opts.algorithm = 2;
         elseif ( strcmpi(varargin{2}, 'bisection') )
             opts.algorithm = 3;
+        elseif ( strcmpi(varargin{2}, 'regulafalsi') )
+            opts.algorithm = 4;            
         else
             error('CHEBFUN:CHEBFUN:inv:badAlgo', ...
                 'Unrecognized value for ''algorithm'' input.');
@@ -267,7 +271,35 @@ while ( norm(b - a, inf) >= eps )
     b = I1.*b + I2.*c + I3.*c;
     c = (a + b)/2;
 end
+y = c;
 
+end
+
+function y = fInverseRegulaFalsi(f, x)
+%FINVERSEREGULAFALSI(F, X)   Compute F^{-1}(X) using Regula Falsi.
+a = f.domain(1);
+b = f.domain(end);
+fa = feval(f, a) - x;
+fb = feval(f, b) - x;
+c = b - fb.*(b - a)./(fb - fa);  % Regula Falsi
+cOld = inf;
+
+while ( norm(c - cOld, inf) >= eps )   
+    cOld = c;
+    fc = feval(f, c) - x;
+    
+    I1 = (fc < 0);
+    I2 = (fc > 0);
+    I3 = ~I1 & ~I2;
+    a = I1.*c + I2.*a + I3.*c;
+    b = I1.*b + I2.*c + I3.*c;
+    fa = I1.*fc + I2.*fa + I3.*fc;
+    fb = I1.*fb + I2.*fc + I3.*fc;
+    step = -fb.*(b - a)./(fb - fa);
+    step(isnan(step)) = 0;
+    c = b + step;
+    
+end
 y = c;
 
 end
