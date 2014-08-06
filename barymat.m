@@ -44,6 +44,9 @@ if ( nargin < 3 || isempty(w) )
     w = ones(1, N); 
     w(2:2:end) = -1; 
     w([1, N]) = 0.5*w([1, N]);
+else
+    % Ensure w is a row vector:
+    w = reshape(w, 1, N);
 end
 
 % Repmat(Y-X'):
