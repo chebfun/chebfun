@@ -9,8 +9,73 @@ function D = diffmat(N, varargin)
 %   D = DIFFMAT(N, K, DOM) scales the differentiation matrix D to the domain
 %   DOM. DOM should be a 1x2 vector.
 %
-%   D = DIFF(N, K, DOM, DISC) or DIFF(N, K, DISC) returns the differentiation
+%   D = DIFFMAT(N, K, DOM, DISC) or DIFF(N, K, DISC) returns the differentiation
 %   matrix associated with the CHEBDISCRETIZATION DISC.
+%
+%   D = DIFFMAT(N, 'periodic') returns the N x N first-order Fourier 
+%   differentiation matrix 1st-order Fourier diff mat.
+%
+%   D = DIFFMAT(N, K, 'periodic') returns the N x N Fourier differentiation 
+%   matrix of order K.
+%
+%   D = DIFFMAT(N, K, 'periodic', DOM) scales the Kth-order Fourier 
+%   differetiation matrix to the domain DOM.
+%
+%   D = DIFFMAT(N, K, 'rect') or D = DIFFMAT([N -K], K) returns (N-K) x N 
+%   rectangular differentiation matrix of order K which maps from an N-point 
+%   Chebyshev grid of second kind to an (N-K)-point Chebyshev grid of first kind.
+%
+%   D = DIFFMAT([N -K], K, DOM) returns (N-K) x N rectangular differentiation 
+%   matrix of order K which is scaled to the domain DOM.
+%
+%   D = DIFFMAT([N -K], K, DOM, DISC) returns the Kth-order(N-K) x N rectangular 
+%   differentiation matrix on domain DOM associated with the CHEBDISCRETIZATION 
+%   DISC. When DISC is specified as 'colloc1' or colloc1() or @colloc1, D maps
+%   between Chebyshev grids of first kind of size N and (N-K). when DISC is set
+%   'colloc2' or colloc2() or @colloc2, D is same as default and maps from a 
+%   second-kind Chebyshev grid.
+%
+%   D = DIFFMAT([M N]) returns an M x N first-order rectangular differentiation 
+%   matrix which maps from an N-point Chebyshev grid of second kind to an 
+%   M-point Chebyshev grid of first kind.
+%   
+%   D = DIFFMAT([M N], K) returns an M x N rectangular differentiation matrix of 
+%   order K which maps from an N-point Chebyshev grid of second kind to an 
+%   M-point Chebyshev grid of first kind.
+%
+%   D = DIFFMAT([M N], K, DOM) returns the same D but scaled to the domain DOM.
+%
+%   D = DIFFMAT([M N], K, DOM, DISC) returns a rectangular differentiation 
+%   matrix associated with the CHEBDISCRETIZATION DISC. D maps from the N-point
+%   Chebyshev grid of first kind when DISC is specified as 'colloc1' or 
+%   colloc1() or @colloc1. It is same as default when DISC is 'colloc2' or 
+%   colloc2() or @colloc2. 
+%
+%   D = DIFFMAT(N, K, DOM, DISC, LBC, RBC) or D = DIFFMAT([N -K], K, DOM, DISC, 
+%   LBC, RBC) or D = DIFFMAT([N-K N], K, DOM, DISC, LBC, RBC) returns a square
+%   differentiation matrix which is deflated by including information about the
+%   boundary conditions specified by the cell structures LBC and RBC. When the
+%   original differentiation matrix (without boundary condition information) is 
+%   square, the boundary conditions are included by row replacement, whereas 
+%   this is done by row appending when the original differentiation matrix is 
+%   rectangular. The string specifier 'd' (or 'D') and 'n' (or 'N') indicate
+%   Dirichlet and Neumann boundary conditions respectively. The character or
+%   string 's', 'S', 'sum', 'i', 'I' indicates a side condition of definite 
+%   integral i.e. sum(U), where U is the solution to the system formed by D.
+%
+%   Example 1: D = DIFFMAT(N, K, DOM, DISC, {'d'}, {'n'}) replaces the first and
+%   the last row of a square differentiation matrix by Dirichlet and Neumann
+%   boundary conditions respectively.
+%
+%   Example 2: D = DIFFMAT([N -K], K, DOM, DISC, {}, {'n' 's'}) appends two rows 
+%   to an (N-K) x N rectangular differentiation matrix to square it up. The 
+%   first appended row corresponds to Neumann boundary condition at the right 
+%   endpoint while the second appended row corresponds to a side condition 
+%   sum(U) = I for a scalar I, where U is the solution to the resulting system.
+%   
+%   Note that for the case of row appending, the number of the boundary 
+%   conditions given by LBC and RBC must total K. Also note that RBC can be 
+%   omitted if there are only left boundary conditions.
 %
 % See also DIFF, COLLOC2.DIFFMAT, CUMSUMMAT.
 
@@ -195,8 +260,8 @@ end
 
 
 function D = rectdiff1(m, n)
-%RECTDIFF1  Explicit constrcution rectangular differentiation matrix mapping 
-%from 1st-kind grid.
+%RECTDIFF1  Explicit constrcution of 1st-order rectangular differentiation  
+%matrix mapping from 1st-kind grid.
 
 % mapping-from grid (angles):
 T = chebtech1.angles(n).';
@@ -228,11 +293,18 @@ idx = sub2ind([m n], 1:m, idx.');
 D(idx) = 0;
 D(idx) = -sum(D, 2);
 
+if ( c == 1 )
+    % Flipping trick:
+    ii = logical(rot90(tril(ones(m, n)), 2));
+    rot90D = rot90(D,2);
+    D(ii) = -rot90D(ii);
+end
+
 end
 
 function D = rectdiff2(m, n)
-%RECTDIFF2  Explicit constrcution rectangular differentiation matrix mapping 
-%from a 2nd-kind grid.
+%RECTDIFF2  Explicit constrcution of 1st-order rectangular differentiation   
+%matrix mapping from a 2nd-kind grid.
 
 nm1 = n - 1;                    % For convenience.
 cm1 = nm1 - m;                  % Difference between dimensions:
@@ -255,10 +327,12 @@ else
 end
 D(:,[1,n]) = .5*D(:,[1,n]);     % Scaling for first and last columns.
 
-% Flipping trick:
-ii = logical(rot90(tril(ones(m, n)), 2));
-rot90D = rot90(D,2);
-D(ii) = sgn*rot90D(ii);
+if ( cm1 == 0 )
+    % Flipping trick:
+    ii = logical(rot90(tril(ones(m, n)), 2));
+    rot90D = rot90(D,2);
+    D(ii) = sgn*rot90D(ii);
+end
 
 % Sign:
 D(1:2:end,1:2:end) = -D(1:2:end,1:2:end);
@@ -279,6 +353,7 @@ end
 end
     
 function D = rectdiff_rec(m, n, p, kind)
+%Recursive construction for high-order rectangular differentiation matrices
 
 % Sign and scaling:
 sgn = ones(1, n);
@@ -287,12 +362,14 @@ sgn(1:2:end) = -1;
 if ( kind == 1 )
     % mapped-from angles (1st-kind):
     T = chebtech1.angles(n).';
+    
     % Compute the first order diff matrix:
     D = rectdiff1(m, n);
     
     % Preparation for higher order (p>1):
     a = [1; zeros(n,1)];
     
+    % Signs:
     sgn = (-1)^(n-1)*sgn.*sin(T)/n;
     
 else
@@ -305,6 +382,7 @@ else
     % Preparation for higher order (p>1):
     a = [1; 0; -1; zeros(n-2,1)];
     
+    % Signs:
     sgn = (-1)^(n-1)*sgn/(2*(n-1));
     sgn([1 n]) = sgn([1 n])/2;
     
@@ -314,7 +392,7 @@ end
 tau = chebpts(m, 1);
 TAU = chebtech1.angles(m);
 
-a = deri(a);
+a = computeDerCoeffs(a);
 
 % Denominator:
 denom = bsxfun(@(u,v) 2*sin((v+u)/2).*sin((v-u)/2), T, TAU);
@@ -327,10 +405,10 @@ idx = sub2ind([m n], 1:m, idx.');
 for l = 2:p
     
     % Compute coefficients of the derivative of T_n:
-    a = deri(a);
+    a = computeDerCoeffs(a);
     
     % Evaluating at tau by Clenshaw method:
-    Tt = clen(tau, a);
+    Tt = chebtech.clenshaw(tau, a);
     D = (Tt*sgn + l*D)./denom;
     
 end
@@ -339,4 +417,19 @@ end
 D(idx) = 0;
 D(idx) = -sum(D, 2);
 
+end
+
+function cout = computeDerCoeffs(c)
+%COMPUTEDERCOEFFS   Recurrence relation for coefficients of derivative.
+%   C is the matrix of Chebyshev coefficients of a (possibly array-valued)
+%   CHEBTECH object.  COUT is the matrix of coefficients for a CHEBTECH object
+%   whose columns are the derivatives of those of the original.
+    
+    [n, m] = size(c);
+    cout = zeros(n-1, m);                     % Initialize vector {c_r}
+    w = repmat(2*(n-1:-1:1)', 1, m);
+    v = w.*c(1:end-1,:);                      % Temporal vector
+    cout(1:2:end,:) = cumsum(v(1:2:end,:));   % Compute c_{n-2}, c_{n-4},...
+    cout(2:2:end,:) = cumsum(v(2:2:end,:));   % Compute c_{n-3}, c_{n-5},...
+    cout(end,:) = .5*cout(end,:);             % Adjust the value for c_0
 end
