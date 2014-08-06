@@ -1,4 +1,23 @@
 function D = diffmat(n, p)
+%DIFFMAT  Fourier differentiation matrix.
+%   D = DIFFMAT(N) is the matrix that maps function values at N equally-spaced 
+%   points in [0 2*pi) to values of the derivative of the Fourier interpolant 
+%   at those points.
+%
+%   D = DIFFMAT(N, K) is the same, but for the Kth derivative.
+%
+% See also DIFF.
+
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% References for the rectangular differentiation matrices:
+%
+% J.A.C. Weideman and S.C. Reddy, A MATLAB differentiation matrix suite, ACM
+% Transcations on Mathematical Software, Vol. 26, No. 4, Page 465--519, 2000. 
+% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % grid spacing:
 h = 2*pi/n;

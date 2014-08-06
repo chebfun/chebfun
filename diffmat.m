@@ -82,6 +82,13 @@ function D = diffmat(N, varargin)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% References for the rectangular differentiation matrices:
+%
+% Xu, K. and Hale, N., Explicit construction of rectangular differentiation
+% matrices, submitted 2014.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 %% Parse the inputs:
 p = 1;
 dom = [-1 1];
