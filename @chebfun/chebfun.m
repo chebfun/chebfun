@@ -665,6 +665,7 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
     prefWasPassed = false;
     isPeriodic = false;
     vectorize = false;
+    doVectorCheck = true;
     while ( ~isempty(args) )
         if ( isstruct(args{1}) || isa(args{1}, 'chebfunpref') )
             % Preference object input.  (Struct inputs not tied to a keyword
@@ -686,6 +687,10 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
             % Vectorize flag for function_handles.
             vectorize = true;
             args(1) = [];
+        elseif ( strcmpi(args{1}, 'novectorcheck') )
+            % Vector check for function_handles.
+            doVectorCheck = false;
+            args(1) = [];            
         elseif ( strcmpi(args{1}, 'coeffs') && isnumeric(op) )
             % Hack to support construction from coefficients.
             op = {{[], op}};
@@ -843,7 +848,7 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
         if ( ischar(op) )
             op = str2op(op);
         end
-        if ( isa(op, 'function_handle') )
+        if ( doVectorCheck && isa(op, 'function_handle') )
             op = vectorCheck(op, dom, vectorize);
         end
         if ( isa(op, 'chebfun') )

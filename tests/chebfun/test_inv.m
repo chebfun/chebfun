@@ -8,9 +8,9 @@ if ( nargin == 0 )
     pref = chebfunpref();
 end
 
-algoList = {'roots', 'newton', 'bisection', 'regulafalsi', 'illinois'};
+algoList = {'roots', 'newton', 'bisection', 'regulafalsi', 'illinois', 'brent'};
 
-for k = 1:5
+for k = 1:6
     x = chebfun('x');
     f = sin(x);
     g = chebfun(@(x) asin(x), [sin(-1), sin(1)]);

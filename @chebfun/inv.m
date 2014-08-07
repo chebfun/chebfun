@@ -72,15 +72,17 @@ gDomain = union(gEnds, gBreaks);       % TODO: Include a tolerance?
 
 % Compute the inverse:
 if ( opts.algorithm == 1 )     % Algorithm based on ROOTS.
-    g = chebfun(@(x) fInverseRoots(f, x, tol), gDomain, pref);
+    g = chebfun(@(x) fInverseRoots(f, x, tol), gDomain, pref, 'noVectorCheck');
 elseif ( opts.algorithm == 2 ) % Newton iteration algorithm.
-    g = chebfun(@(x) fInverseNewton(f, fp, x, tol), gDomain, pref);
+    g = chebfun(@(x) fInverseNewton(f, fp, x, tol), gDomain, pref, 'noVectorCheck');
 elseif ( opts.algorithm == 3 ) % Bisection based algorithm.
-    g = chebfun(@(x) fInverseBisection(f, x), gDomain, pref);
+    g = chebfun(@(x) fInverseBisection(f, x), gDomain, pref, 'noVectorCheck');
 elseif ( opts.algorithm == 4 ) % Regula Falsi based algorithm.
-    g = chebfun(@(x) fInverseRegulaFalsi(f, x), gDomain, pref);
+    g = chebfun(@(x) fInverseRegulaFalsi(f, x), gDomain, pref, 'noVectorCheck');
 elseif ( opts.algorithm == 5 ) % Illinois based algorithm.
-    g = chebfun(@(x) fInverseIllionois(f, x), gDomain, pref);
+    g = chebfun(@(x) fInverseIllionois(f, x), gDomain, pref, 'noVectorCheck');
+elseif ( opts.algorithm == 6 ) % Brent's method.
+    g = chebfun(@(x) fInverseBrent(f, x), gDomain, pref, 'noVectorCheck');    
 else
     error('CHEBFUN:CHEBFUN:inv:algorithm', 'Invalid algorithm selected.');
 end
@@ -131,7 +133,9 @@ while ( numel(varargin) > 1 )
         elseif ( strcmpi(varargin{2}, 'regulafalsi') )
             opts.algorithm = 4;            
         elseif ( strcmpi(varargin{2}, 'illinois') )
-            opts.algorithm = 5;                        
+            opts.algorithm = 5;
+        elseif ( strcmpi(varargin{2}, 'brent') )
+            opts.algorithm = 6;            
         else
             error('CHEBFUN:CHEBFUN:inv:badAlgo', ...
                 'Unrecognized value for ''algorithm'' input.');
@@ -144,7 +148,9 @@ while ( numel(varargin) > 1 )
 end
 
 % Assign preferences:
-pref.techPrefs.resampling = 1;
+if ( opts.algorithm == 2 );
+    pref.techPrefs.resampling = 1;
+end
 pref.techPrefs.eps = tol;
 pref.techPrefs.minSamples = length(f);
 pref.techPrefs.sampleTest = 0;
@@ -348,3 +354,81 @@ y = c;
 
 end
 
+function y = fInverseBrent(f, x)
+%FINVERSEBRENT(F, X)   Compute F^{-1}(X) using Brent's method.
+
+% See http://en.wikipedia.org/wiki/Brent's_method#Algorithm
+
+% Set a and b:
+a = f.domain(1);
+b = f.domain(end);
+
+% Calculate f(a) and f(b):
+fa = feval(f, a) - x;
+fb = feval(f, b) - x;
+fs = inf;
+
+% Make a and b vectors:
+z = zeros(size(x));
+a = a + z;
+b = b + z;
+
+% if |f(a)| < |f(b)| then swap (a,b) end if:
+idx = abs(fa) < abs(fb);
+tmp = a(idx); a(idx) = b(idx); b(idx) = tmp;
+tmp = fa(idx); fa(idx) = fb(idx); fb(idx) = tmp;
+
+% Set c = a;
+c = a;
+fc = fa;
+
+% Set mFlag and delta:
+mFlag = true(size(x));
+delt = eps;
+
+% Initialse these too:
+s = a;
+d = c;
+
+while ( norm(fs, inf) > eps && norm(b-a, inf) > eps  )   
+    
+    s_iq = a.*fb.*fc./((fa-fb).*(fa-fc)) + b.*fa.*fc./((fb-fa).*(fb-fc)) + ...
+        c.*fa.*fb./((fc-fa).*(fc-fb));
+    s_sc = b - fb.*(b-a)./(fb-fa);
+    s_bi = (a + b)/2;
+    
+    % if f(a) ≠ f(c) and f(b) ≠ f(c) then
+    idx = ( fa ~= fc ) & ( fb ~= fc );
+    s(idx)  = s_iq(idx);
+    s(~idx) = s_sc(~idx);
+
+    % Conditions:
+    idx = ( (3*a+b)/4 < b  & (s < (3*a+b)/4 | s > b) ) | ...     % condition 1a
+          ( b <= (3*a+b)/4 & (s < b | s > (3*a+b)/4) ) | ...     % condition 1b
+          ( mFlag  & abs(s-b) >= abs(b-c)/2 ) | ...              % condition 2
+          ( ~mFlag & abs(s-b) >= abs(c-d)/2 ) | ...              % condition 3
+          ( mFlag  & abs(b-c) < delt ) | ...                     % condition 4
+          ( ~mFlag & abs(c-d) < delt );                          % condition 5
+    s(idx) = s_bi(idx);
+    mFlag = idx;
+    
+    % Calculate f(s):
+    fs = feval(f, s) - x;
+    
+    d = c;
+    c = b;
+    
+    % if f(a) f(s) < 0 then b := s else a := s end if
+    idx = fa.*fs <= 0;
+    b(idx) = s(idx);
+    a(~idx) = s(~idx);
+    
+    % if |f(a)| < |f(b)| then swap (a,b) end if:
+    idx = abs(fa) < abs(fb);
+    tmp = a(idx); a(idx) = b(idx); b(idx) = tmp;
+    tmp = fa(idx); fa(idx) = fb(idx); fb(idx) = tmp;
+    
+end
+y = s;
+
+end
