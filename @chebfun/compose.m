@@ -308,20 +308,22 @@ if ( ~isreal(f) )
     warning('CHEBFUN:CHEBFUN:compose:composeTwoChebfuns:complex', ...
         ['F should be real valued to construct G(F).\n', ...
          'Results may be inaccurate if G is not a polynomial.']);
-end
+     warning('off', 'CHEBFUN:CHEBFUN:compose:composeTwoChebfuns:complex');
+else
 
-% Get epslevels and set a tolerance:
-tol = 10*max(vscale(f).*epslevel(f), vscale(g).*epslevel(g));
-hsf = hscale(f); 
-% Find the range of F:
-mmF = minandmax(f);
-minF = min(mmF(:));
-maxF = max(mmF(:));
-% Range of f must be in the domain of g:
-if ( g.domain(1) > minF + tol*hsf || g.domain(end) < maxF - tol*hsf )
-    error('CHEBFUN:CHEBFUN:compose:domain', ...
-        'Range of F, [%g, %g], must be in the domain of G, [%g, %g].', ...
-        minF, maxF, g.domain(1), g.domain(end))
+    % Get epslevels and set a tolerance:
+    tol = 10*max(vscale(f).*epslevel(f), vscale(g).*epslevel(g));
+    hsf = hscale(f); 
+    % Find the range of F:
+    mmF = minandmax(f);
+    minF = min(mmF(:));
+    maxF = max(mmF(:));
+    % Range of f must be in the domain of g:
+    if ( g.domain(1) > minF + tol*hsf || g.domain(end) < maxF - tol*hsf )
+        error('CHEBFUN:CHEBFUN:compose:domain', ...
+            'Range of F, [%g, %g], must be in the domain of G, [%g, %g].', ...
+            minF, maxF, g.domain(1), g.domain(end))
+    end
 end
 
 if ( isdelta(f) || isdelta(g) )
