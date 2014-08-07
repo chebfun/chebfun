@@ -59,6 +59,13 @@ g = inv(f);
 xx = linspace(f.domain(1), f.domain(end), 10);
 pass(:,7) = norm(g(f(xx)) - xx, inf) < 10*vscale(g)*epslevel(g);
 
+% Test the inverse of a decreasing function (see #1098).
+x = chebfun('x');
+f = -sin(x);
+g = inv(f);
+xx = linspace(f.domain(1), f.domain(end), 10);
+pass(:,8) = norm(g(f(xx)) - xx, inf) < 10*vscale(g)*epslevel(g);
+
 end
 
 function g = sausagemap(s,d)

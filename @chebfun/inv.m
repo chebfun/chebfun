@@ -275,8 +275,12 @@ a = f.domain(1);
 b = f.domain(end);
 c = (a + b)/2;
 
+% The loop below is written for functions which are monotone increasing.
+% Flip the signs if this is not the case.
+sgn = sign(diff(feval(f, [a b])));
+
 while ( norm(b - a, inf) >= eps )   
-    vals = feval(f, c) - x;
+    vals = sgn*(feval(f, c) - x);
     % Bisection:
     I1 = (vals <= -eps);
     I2 = (vals >=  eps);
