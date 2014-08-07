@@ -61,7 +61,7 @@ function D = diffmat(N, varargin)
 %   rectangular. The string specifier 'd' (or 'D') and 'n' (or 'N') indicate
 %   Dirichlet and Neumann boundary conditions respectively. The character or
 %   string 's', 'S', 'sum', 'i', 'I' indicates a side condition of definite 
-%   integral i.e. sum(U), where U is the solution to the system formed by D.
+%   integral i.e., sum(U), where U is the solution to the system formed by D.
 %
 %   Example 1: D = DIFFMAT(N, K, DOM, DISC, {'d'}, {'n'}) replaces the first and
 %   the last row of a square differentiation matrix by Dirichlet and Neumann
@@ -83,101 +83,15 @@ function D = diffmat(N, varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% References for the rectangular differentiation matrices:
-%
-% Xu, K. and Hale, N., Explicit construction of rectangular differentiation
-% matrices, submitted 2014.
+% References:
+%   Xu, K. and Hale, N., Explicit construction of rectangular differentiation
+%   matrices, submitted 2014.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Parse the inputs:
-p = 1;
-dom = [-1 1];
-disc = colloc2();
-lbc = {};
-rbc = {};
-islbc = 1;
-
-if ( isscalar(N) )
-    n = N;
-    m = n;
-elseif ( N(2) < 0 )
-    n = N(1);
-    m = n + N(2);
-else
-    m = N(1);
-    n = N(2);
-end
-
-for j = 1:numel(varargin)
-    v = varargin{j};
-    if ( isnumeric(v) )
-        if ( isscalar(v) )
-            p = v;
-        else
-            dom = v;
-        end
-    elseif ( ischar(v) && strcmpi(v, 'rect') )
-        m = n - p;
-    elseif ( isa(v, 'function_handle') || ischar(v) || ...
-        isa(v, 'chebDiscretization') )
-        disc = v;
-    elseif ( iscell(v) )
-        if ( islbc )
-            lbc = v;
-            islbc = 0;
-        else
-            rbc = v;
-        end
-    else
-        error('CHEBFUN:diffmat:unknown', ...
-            'Unknown input of type %s.', class(v));
-    end
-end
-
-if ( p < 0 )
-    error('CHEBFUN:diffmat:wrongInput', ...
-            'The order of differentiation matrix must be non-negative');
-end
-
-% Ensure DISC is a discretization:
-if ( ischar(disc) )
-    if ( strcmpi(disc, 'periodic') )
-        disc = fourtech();
-    else
-        disc = str2func(disc);
-    end
-end
-
-if ( isa(disc, 'function_handle') )
-    disc = disc();
-end
-
-% No breakpoints allowed:
-if ( numel(dom) > 2 )
-    dom = dom([1 end]);
-    warning('CHEBFUN:diffmat:noBreaks', ...
-        'DIFFMAT does not support domains with breakpoints.');
-end
-
-% Boundary conditions:
-bc = [lbc rbc];
-if ( ~isempty(bc) )
-    nlbc = numel(lbc);
-    nrbc = numel(rbc);
-    nbc = nlbc + nrbc;
-    if ( ~isa(disc, 'fourtech') && ( nbc ~= p ) )
-        error('CHEBFUN:diffmat:wrongBC', ...
-            'The number of boundary conditions must match differentiation order p');
-    end
-end
-
-if ( isa(disc, 'fourtech') && ~isempty(bc) )
-    error('CHEBFUN:diffmat:wrongBC', ...
-        'For periodic functions, there is no need to specify boundary conditions.');
-end
+[m, n, p, dom, bc, nlbc, nrbc, disc] = parseInputs(N, varargin{:});
 
 %% Different cases:
-
 if ( m == n ) % Square case:
     D = disc.diffmat(n, p);
 else
@@ -202,6 +116,7 @@ D = scl*D;
 
 %% Boundary conditions:
 if ( ~isempty(bc) )
+    nbc = nlbc + nrbc;
     BC = zeros(nbc, n);
     for j = 1:nbc
         if ( j <= nlbc )
@@ -221,7 +136,7 @@ if ( ~isempty(bc) )
                     BC(j,:) = barymat(y, x, v, r, t);
                 else
                     I = eye(n);
-                    BC(j, :) = I(idx, :);
+                    BC(j,:) = I(idx,:);
                 end
                 
             case {'n', 'N'}
@@ -231,10 +146,10 @@ if ( ~isempty(bc) )
                     [x, ignored, v, t] = chebpts(n, 1);
                     P = barymat(y, x, v, r, t);
                     DD = P*DD;
-                    BC(j, :) = DD;
+                    BC(j,:) = DD;
                 else
                     DD = diffmat(n, 1, dom);
-                    BC(j, :) = DD(idx, :);
+                    BC(j,:) = DD(idx,:);
                 end
                 
             case {'s', 'S', 'sum', 'i', 'I'}
@@ -245,7 +160,7 @@ if ( ~isempty(bc) )
                     [ignored, w] = chebpts(n, dom);
                 end
                 
-                BC(j, :) = w;
+                BC(j,:) = w;
                 
             otherwise
                 error('CHEBFUN:diffmat:wrongBC', ...
@@ -258,9 +173,9 @@ end
 if ( ~isempty(bc) && ( m == n ) )
     % Replacement for square case:
     D(1:nlbc, :) = BC(1:nlbc, :);
-    D(end-nrbc+1:end, :) = BC(nlbc+1:end, :);
+    D(end-nrbc+1:end,:) = BC(nlbc+1:end,:);
 elseif ( ~isempty(bc) )
-    D = [BC(1:nlbc, :); D; BC(nlbc+1:end, :)];
+    D = [BC(1:nlbc,:); D; BC(nlbc+1:end,:)];
 end
 
 end
@@ -439,4 +354,103 @@ function cout = computeDerCoeffs(c)
     cout(1:2:end,:) = cumsum(v(1:2:end,:));   % Compute c_{n-2}, c_{n-4},...
     cout(2:2:end,:) = cumsum(v(2:2:end,:));   % Compute c_{n-3}, c_{n-5},...
     cout(end,:) = .5*cout(end,:);             % Adjust the value for c_0
+end
+
+function [m, n, p, dom, bc, nlbc, nrbc, disc] = parseInputs(N, varargin)
+% Parse the inputs to DIFFMAT.
+
+p = 1;
+dom = [-1 1];
+disc = colloc2();
+bc = [];
+lbc = {};
+nlbc = 0;
+rbc = {};
+nrbc = 0;
+islbc = 1;
+
+if ( isscalar(N) )
+    n = N;
+    m = n;
+elseif ( N(2) < 0 )
+    n = N(1);
+    m = n + N(2);
+else
+    m = N(1);
+    n = N(2);
+end
+
+if ( numel(varargin) == 0 )
+    % Trivial case.
+    return
+end
+
+for j = 1:numel(varargin)
+    v = varargin{j};
+    if ( isnumeric(v) )
+        if ( isscalar(v) )
+            p = v;
+        else
+            dom = v;
+        end
+    elseif ( ischar(v) && strcmpi(v, 'rect') )
+        m = n - p;
+    elseif ( isa(v, 'function_handle') || ischar(v) || ...
+        isa(v, 'chebDiscretization') )
+        disc = v;
+    elseif ( iscell(v) )
+        if ( islbc )
+            lbc = v;
+            islbc = 0;
+        else
+            rbc = v;
+        end
+    else
+        error('CHEBFUN:diffmat:unknown', ...
+            'Unknown input of type %s.', class(v));
+    end
+end
+
+if ( p < 0 )
+    error('CHEBFUN:diffmat:wrongInput', ...
+            'The order of differentiation matrix must be non-negative.');
+end
+
+% Ensure DISC is a discretization:
+if ( ischar(disc) )
+    if ( strcmpi(disc, 'periodic') )
+        disc = fourtech();
+    else
+        disc = str2func(disc);
+    end
+end
+if ( isa(disc, 'function_handle') )
+    disc = disc();
+end
+
+% No breakpoints allowed:
+if ( numel(dom) > 2 )
+    dom = dom([1 end]);
+    warning('CHEBFUN:diffmat:noBreaks', ...
+        'DIFFMAT does not support domains with breakpoints.');
+end
+
+% Boundary conditions:
+bc = [lbc rbc];
+if ( ~isempty(bc) )
+    if ( isa(disc, 'fourtech')  )
+        error('CHEBFUN:diffmat:wrongBC', ...
+            ['For periodic functions, there is no need to specify boundary ' ...
+             'conditions.']);
+    end
+    nlbc = numel(lbc);
+    nrbc = numel(rbc);
+    nbc = nlbc + nrbc;
+    if ( nbc ~= p )
+        error('CHEBFUN:diffmat:wrongBC', ...
+            ['The number of boundary conditions must match differentiation ' ...
+             'order p.']);
+    end
+end
+
 end
