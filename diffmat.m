@@ -3,35 +3,35 @@ function D = diffmat(N, varargin)
 %   D = DIFFMAT(N) returns the NxN differentiation matrix associated with the
 %   Chebyshev spectral collocation method at second-kind Chebyshev points. 
 %
-%   D = DIFFMAT(N, K) returns the differentiation matrix of order K. See
+%   D = DIFFMAT(N, P) returns the differentiation matrix of order P. See
 %   COLLOC2.DIFFMAT for further details.
 %
-%   D = DIFFMAT(N, K, DOM) scales the differentiation matrix D to the domain
+%   D = DIFFMAT(N, P, DOM) scales the differentiation matrix D to the domain
 %   DOM. DOM should be a 1x2 vector.
 %
-%   D = DIFFMAT(N, K, DOM, DISC) or DIFF(N, K, DISC) returns the differentiation
+%   D = DIFFMAT(N, P, DOM, DISC) or DIFF(N, P, DISC) returns the differentiation
 %   matrix associated with the CHEBDISCRETIZATION DISC.
 %
 %   D = DIFFMAT(N, 'periodic') returns the N x N first-order Fourier 
 %   differentiation matrix 1st-order Fourier diff mat.
 %
-%   D = DIFFMAT(N, K, 'periodic') returns the N x N Fourier differentiation 
-%   matrix of order K.
+%   D = DIFFMAT(N, P, 'periodic') returns the N x N Fourier differentiation 
+%   matrix of order P.
 %
-%   D = DIFFMAT(N, K, 'periodic', DOM) scales the Kth-order Fourier 
+%   D = DIFFMAT(N, P, 'periodic', DOM) scales the Pth-order Fourier 
 %   differetiation matrix to the domain DOM.
 %
-%   D = DIFFMAT(N, K, 'rect') or D = DIFFMAT([N -K], K) returns (N-K) x N 
-%   rectangular differentiation matrix of order K which maps from an N-point 
-%   Chebyshev grid of second kind to an (N-K)-point Chebyshev grid of first kind.
+%   D = DIFFMAT(N, P, 'rect') or D = DIFFMAT([N -P], P) returns (N-P) x N 
+%   rectangular differentiation matrix of order P which maps from an N-point 
+%   Chebyshev grid of second kind to an (N-P)-point Chebyshev grid of first kind.
 %
-%   D = DIFFMAT([N -K], K, DOM) returns (N-K) x N rectangular differentiation 
-%   matrix of order K which is scaled to the domain DOM.
+%   D = DIFFMAT([N -P], P, DOM) returns (N-P) x N rectangular differentiation 
+%   matrix of order P which is scaled to the domain DOM.
 %
-%   D = DIFFMAT([N -K], K, DOM, DISC) returns the Kth-order(N-K) x N rectangular 
+%   D = DIFFMAT([N -P], P, DOM, DISC) returns the Pth-order(N-P) x N rectangular 
 %   differentiation matrix on domain DOM associated with the CHEBDISCRETIZATION 
 %   DISC. When DISC is specified as 'colloc1' or colloc1() or @colloc1, D maps
-%   between Chebyshev grids of first kind of size N and (N-K). when DISC is set
+%   between Chebyshev grids of first kind of size N and (N-P). when DISC is set
 %   'colloc2' or colloc2() or @colloc2, D is same as default and maps from a 
 %   second-kind Chebyshev grid.
 %
@@ -39,42 +39,42 @@ function D = diffmat(N, varargin)
 %   matrix which maps from an N-point Chebyshev grid of second kind to an 
 %   M-point Chebyshev grid of first kind.
 %   
-%   D = DIFFMAT([M N], K) returns an M x N rectangular differentiation matrix of 
-%   order K which maps from an N-point Chebyshev grid of second kind to an 
+%   D = DIFFMAT([M N], P) returns an M x N rectangular differentiation matrix of 
+%   order P which maps from an N-point Chebyshev grid of second kind to an 
 %   M-point Chebyshev grid of first kind.
 %
-%   D = DIFFMAT([M N], K, DOM) returns the same D but scaled to the domain DOM.
+%   D = DIFFMAT([M N], P, DOM) returns the same D but scaled to the domain DOM.
 %
-%   D = DIFFMAT([M N], K, DOM, DISC) returns a rectangular differentiation 
+%   D = DIFFMAT([M N], P, DOM, DISC) returns a rectangular differentiation 
 %   matrix associated with the CHEBDISCRETIZATION DISC. D maps from the N-point
 %   Chebyshev grid of first kind when DISC is specified as 'colloc1' or 
 %   colloc1() or @colloc1. It is same as default when DISC is 'colloc2' or 
 %   colloc2() or @colloc2. 
 %
-%   D = DIFFMAT(N, K, DOM, DISC, LBC, RBC) or D = DIFFMAT([N -K], K, DOM, DISC, 
-%   LBC, RBC) or D = DIFFMAT([N-K N], K, DOM, DISC, LBC, RBC) returns a square
+%   D = DIFFMAT(N, P, DOM, DISC, LBC, RBC) or D = DIFFMAT([N -P], P, DOM, DISC, 
+%   LBC, RBC) or D = DIFFMAT([N-P N], P, DOM, DISC, LBC, RBC) returns a square
 %   differentiation matrix which is deflated by including information about the
 %   boundary conditions specified by the cell structures LBC and RBC. When the
 %   original differentiation matrix (without boundary condition information) is 
 %   square, the boundary conditions are included by row replacement, whereas 
 %   this is done by row appending when the original differentiation matrix is 
-%   rectangular. The string specifier 'd' (or 'D') and 'n' (or 'N') indicate
-%   Dirichlet and Neumann boundary conditions respectively. The character or
-%   string 's', 'S', 'sum', 'i', 'I' indicates a side condition of definite 
-%   integral i.e., sum(U), where U is the solution to the system formed by D.
+%   rectangular. The string specifier 'dirichlet' and 'neumann' indicate
+%   Dirichlet and Neumann boundary conditions respectively. The string 'sum' 
+%   indicates a side condition of definite integral i.e., sum(U), where U is the
+%   solution to the system formed by D.
 %
-%   Example 1: D = DIFFMAT(N, K, DOM, DISC, {'d'}, {'n'}) replaces the first and
-%   the last row of a square differentiation matrix by Dirichlet and Neumann
-%   boundary conditions respectively.
+%   Example 1: D = DIFFMAT(N, P, DOM, DISC, {'dirichlet'}, {'neumann'}) replaces
+%   the first and the last row of a square differentiation matrix by Dirichlet 
+%   and Neumann boundary conditions respectively.
 %
-%   Example 2: D = DIFFMAT([N -K], K, DOM, DISC, {}, {'n' 's'}) appends two rows 
-%   to an (N-K) x N rectangular differentiation matrix to square it up. The 
-%   first appended row corresponds to Neumann boundary condition at the right 
-%   endpoint while the second appended row corresponds to a side condition 
+%   Example 2: D = DIFFMAT([N -P], P, DOM, DISC, {}, {'neumann' 'sum'}) appends 
+%   two rows to an (N-P) x N rectangular differentiation matrix to square it up.
+%   The first appended row corresponds to Neumann boundary condition at the 
+%   right endpoint while the second appended row corresponds to a side condition 
 %   sum(U) = I for a scalar I, where U is the solution to the resulting system.
 %   
 %   Note that for the case of row appending, the number of the boundary 
-%   conditions given by LBC and RBC must total K. Also note that RBC can be 
+%   conditions given by LBC and RBC must total P. Also note that RBC can be 
 %   omitted if there are only left boundary conditions.
 %
 % See also DIFF, COLLOC2.DIFFMAT, CUMSUMMAT.
@@ -130,7 +130,7 @@ if ( ~isempty(bc) )
         end
         
         switch bc{j}
-            case {'d', 'D'}
+            case 'dirichlet'
                 if ( isa(disc, 'colloc1') )
                     [x, ignored, v, t] = chebpts(n, 1);
                     BC(j,:) = barymat(y, x, v, r, t);
@@ -139,7 +139,7 @@ if ( ~isempty(bc) )
                     BC(j,:) = I(idx,:);
                 end
                 
-            case {'n', 'N'}
+            case 'neumann'
                 
                 if ( isa(disc, 'colloc1') )
                     DD = diffmat(n, 1, dom, 'colloc1');
@@ -152,7 +152,7 @@ if ( ~isempty(bc) )
                     BC(j,:) = DD(idx,:);
                 end
                 
-            case {'s', 'S', 'sum', 'i', 'I'}
+            case 'sum'
                 
                 if ( isa(disc, 'colloc1') )
                     [ignored, w] = chebpts(n, dom, 1);
@@ -420,6 +420,10 @@ end
 if ( ischar(disc) )
     if ( strcmpi(disc, 'periodic') )
         disc = fourtech();
+        if ( m ~= n )
+            error('CHEBFUN:diffmat:wrongInput', ...
+                'Rectangular Fourier differentiation matrices are not supported.');
+        end
     else
         disc = str2func(disc);
     end
