@@ -9,6 +9,7 @@ function g = inv(f, varargin)
 %      'BISECTION' - Compute the inverse using bisection as the rootfinder.
 %      'REGULAFALSI' - Compute the inverse using Regula Falsi as the rootfinder.
 %      'ILLINOIS' - Compute the inverse using Illinois as the rootfinder.
+%      'BRENT' - Compute the inverse using Brent's method as the rootfinder.
 %   The default algorithm is 'ILLINOIS'.
 %
 %   FINV = INV(F, PREF) uses the preferences specified by the structure or
