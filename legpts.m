@@ -313,7 +313,7 @@ else
     x = [-x(1:end-1) ; 0 ; x(end-1:-1:1)];
     w = [w(1:end) ; w(end-1:-1:1)].';
     v = [v(1:end) ; v(end-1:-1:1)];
-    t = [pi-t ; pi/2 ; t(end-1:-1:1)];
+    t = [pi-t ; t(end-1:-1:1)];
 end
 
     function [x, t] = legpts_nodes()
