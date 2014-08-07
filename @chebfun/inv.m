@@ -10,7 +10,7 @@ function g = inv(f, varargin)
 %      'REGULAFALSI' - Compute the inverse using Regula Falsi as the rootfinder.
 %      'ILLINOIS' - Compute the inverse using Illinois as the rootfinder.
 %      'BRENT' - Compute the inverse using Brent's method as the rootfinder.
-%   The default algorithm is 'ILLINOIS'.
+%   The default algorithm is 'BRENT'.
 %
 %   FINV = INV(F, PREF) uses the preferences specified by the structure or
 %   CHEBFUNPREF object PREF when constructing the inverse.
@@ -391,7 +391,8 @@ delt = eps;
 s = a;
 d = c;
 
-while ( norm(fs, inf) > eps && norm(b-a, inf) > eps  )   
+while ( norm(fs, inf) > eps && norm(b - a, inf) > eps  )   
+
     
     s_iq = a.*fb.*fc./((fa-fb).*(fa-fc)) + b.*fa.*fc./((fb-fa).*(fb-fc)) + ...
         c.*fa.*fb./((fc-fa).*(fc-fb));
@@ -409,7 +410,8 @@ while ( norm(fs, inf) > eps && norm(b-a, inf) > eps  )
           ( mFlag  & abs(s-b) >= abs(b-c)/2 ) | ...              % condition 2
           ( ~mFlag & abs(s-b) >= abs(c-d)/2 ) | ...              % condition 3
           ( mFlag  & abs(b-c) < delt ) | ...                     % condition 4
-          ( ~mFlag & abs(c-d) < delt );                          % condition 5
+          ( ~mFlag & abs(c-d) < delt ) | ...                     % condition 5
+          ( abs(b-a) < delt );
     s(idx) = s_bi(idx);
     mFlag = idx;
     
@@ -418,17 +420,18 @@ while ( norm(fs, inf) > eps && norm(b-a, inf) > eps  )
     
     d = c;
     c = b;
+    fc = fb;
     
     % if f(a) f(s) < 0 then b := s else a := s end if
     idx = fa.*fs <= 0;
-    b(idx) = s(idx);
-    a(~idx) = s(~idx);
+    b(idx) = s(idx);   fb(idx) = fs(idx);
+    a(~idx) = s(~idx); fa(~idx) = fs(~idx);
     
     % if |f(a)| < |f(b)| then swap (a,b) end if:
     idx = abs(fa) < abs(fb);
     tmp = a(idx); a(idx) = b(idx); b(idx) = tmp;
     tmp = fa(idx); fa(idx) = fb(idx); fb(idx) = tmp;
-    
+
 end
 y = s;
 
