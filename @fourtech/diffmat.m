@@ -34,7 +34,7 @@ v = (1:n2)'*h/2;
 
 % For different p:
 if ( p == 0 )           % Zeroth-derivative
-    D = eyes(n);
+    D = eye(n);
 else
     switch p
         case 1          % 1st-derivative
