@@ -47,21 +47,36 @@ classdef collocFour < colloc
 
             % References:
             %  [1] L.N. Trefethen, "Spectral Methods in Matlab", SIAM, Philadelphia, 2000. 
-
+            
+            if ( N == 0 )
+                D = []; 
+                return
+            end
+     
+            if ( N == 1 )
+                D = 0;
+                return
+            end
+            
+            if ( nargin < 2 )
+                m = 1; 
+            end
+            
             % Grid point spacing h.
             h = 2*pi/N; 
-
-            % No differentiation.
+            
+            % No differentiation: identity matrix.
             if ( m == 0 )
-                D = eye(n);
-
+                D = eye(N);
+                return
+            
             % First-order Fourier differentiation matrix.
             elseif ( m == 1 )
 
                 if ( mod(N, 2) ) % N is odd.
-                    column = [0 .5*csc((1:N-1)*h/2)]';
+                    column = [0, .5*csc((1:N-1)*h/2)]';
                 else % N is even.
-                    column = [0 .5*cot((1:N-1)*h/2)]';
+                    column = [0, .5*cot((1:N-1)*h/2)]';
                 end
                 column(2:2:end) = -column(2:2:end);
                 row = column([1 N:-1:2]);
@@ -72,13 +87,43 @@ classdef collocFour < colloc
 
                 if ( mod(N, 2) ) % N is odd.
                     tmp = csc((1:N-1)*h/2).*cot((1:N-1)*h/2);
-                    column = [pi^2/3/h^2-1/12 .5*tmp].';
+                    column = [pi^2/3/h^2-1/12, .5*tmp].';
                 else % N is even.
-                    column = [pi^2/3/h^2+1/6 .5*csc((1:N-1)*h/2).^2].';
+                    column = [pi^2/3/h^2+1/6, .5*csc((1:N-1)*h/2).^2].';
                 end
                 column(1:2:end) = -column(1:2:end);
                 D = toeplitz(column);
 
+            % Third-order Fourier differentiation matrix.
+            elseif ( m == 3 )
+
+                if ( mod(N, 2) ) % N is odd.
+                    cscc = csc((1:N-1)*h/2);
+                    cott = cot((1:N-1)*h/2);
+                    column = [0, 3/8*cscc.*cott.^2 + 3/8*cscc.^3 - pi^2/2/h^2*cscc];  
+                else % N is even.
+                    tmp = csc((1:N-1)*h/2).^2.*cot((1:N-1)*h/2);
+                    column = [0, 3/4*tmp - pi^2/2/h^2*cot((1:N-1)*h/2)].';
+                end
+                column(2:2:end) = -column(2:2:end);
+                row = column([1 N:-1:2]);
+                D = toeplitz(column, row);
+            
+            % Fourth-order Fourier differentiation matrix.
+            elseif ( m == 4 )
+                
+                cscc = csc((1:N-1)*h/2);
+                cott = cot((1:N-1)*h/2);
+                if ( mod(N, 2) ) % N is odd.
+                    column = [- pi^4/5/h^4 + pi^2/6/h^2 - 7/240, ...
+                              5/4*cott.*cscc.^3 + 1/4*cott.^3.*cscc - (pi^2/h^2)*cott.*cscc].';              
+                else % N is even.
+                    column = [- pi^4/5/h^4 - pi^2/3/h^2 + 1/30, ...
+                               cscc.^2.*cott.^2 + .5*cscc.^4 - (pi^2/h^2)*cscc.^2].';
+                end
+                column(1:2:end) = -column(1:2:end);
+                D = toeplitz(column);  
+                
             % Higher-orders Fourier differentiation matrices.
             else
 

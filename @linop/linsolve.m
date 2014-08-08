@@ -1,7 +1,7 @@
 function [u, disc] = linsolve(L, f, varargin)
 %LINSOLVE  Solve a linear differential/integral equation.
 %   U = LINSOLVE(L, F), or U = L\F, solves the linear system defined by L*U=F
-%   for a linop L and chebmatrix F. The result is a chebmatrix.
+%   for a LINOP L and CHEBMATRIX F. The result is a CHEBMATRIX.
 %
 %   An equivalent syntax to U = LINSOLVE(L, F) is U = L\F.
 %
