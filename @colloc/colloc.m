@@ -55,7 +55,7 @@ classdef colloc < chebDiscretization
     %% ABSTRACT METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false, Abstract = true )
-        
+
         % Indefinite integration:
         C = cumsum(disc)
         
@@ -63,10 +63,10 @@ classdef colloc < chebDiscretization
         D = diff(disc, m)
         
         % Points where function values are represented:
-        [x, w] = functionPoints(disc)
+        [x, w, v, t] = functionPoints(disc)
         
         % Points where equations are enforced:
-        [x, w] = equationPoints(disc)
+        [x, w, v, t] = equationPoints(disc)
         
     end
     
@@ -75,8 +75,11 @@ classdef colloc < chebDiscretization
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
         
+        % Barycentric differentiation matrix:
+        D = baryDiffMat(x, w, k, t);
+        
         % Discretization points: (used by both colloc1 and colloc2)
-        [x, w, v] = points(varargin);
+        [x, w, v, t] = points(varargin);
         
         function dimVals = dimensionValues(pref)
             %DIMENSIONVALUES   Return a vector of desired discretization sizes.
@@ -88,7 +91,6 @@ classdef colloc < chebDiscretization
             
             % We want to go up in powers of 2 up to a point, after which, we go
             % up in half powers of two.
-            
             minPow = log2(pref.minDimension);
             maxPow = log2(pref.maxDimension);
             

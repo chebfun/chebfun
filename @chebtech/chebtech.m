@@ -143,6 +143,9 @@ classdef chebtech < smoothfun % (Abstract)
         
         % Alias Chebyshev coefficients.
         coeffs = alias(coeffs, m)
+        
+        % Angles of Chebyshev points. (i.e., acos(chebpts(n))
+        t = angles(n)
 
         % Compute Chebyshev barycentric weights.
         w = barywts(n)

@@ -87,7 +87,7 @@ f = testclass.make(@(x) sin(pi*x), [], pref);
 df6 = diff(f, 6);
 df6_exact = -pi^6*f;
 err = feval(df6_exact,x) - feval(df6, x);
-pass(10) = (norm(err, inf) == 0);
+pass(10) = (norm(err, inf) < 100*df6.vscale.*df6.epslevel);
 
 f = testclass.make(@(x) (1/10/pi)*cos(10*pi*sin(pi*x)), [], pref);
 df5 = diff(f, 5);

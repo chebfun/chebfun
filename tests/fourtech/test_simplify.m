@@ -34,32 +34,29 @@ pass(2) = ~f.ishappy && isequal(f, g);
 
 f = testclass.make(@(x) exp(sin(2*pi*x)) + exp(cos(3*pi*x)));
 g = simplify(f, simptol);
-pass(3) = all((abs(g.coeffs) > simptol*g.vscale) | (g.coeffs == 0));
-pass(4) = abs(g.coeffs(end)) ~= 0;
-pass(5) = length(g) < length(f);
-pass(6) = norm(feval(f, x) - feval(g, x), inf) < 10*g.epslevel*g.vscale;
+pass(3) = abs(g.coeffs(end)) ~= 0;
+pass(4) = length(g) < length(f);
+pass(5) = norm(feval(f, x) - feval(g, x), inf) < 10*g.epslevel*g.vscale;
 
 %%
 % Lengths of simplifications should be invariant under scaling:
 
 f1 = 1e-8*f;
 g1 = simplify(f1, simptol);
-pass(7) = length(g1) == length(g);
+pass(6) = length(g1) == length(g);
 
 f2 = 1e8*f;
 g2 = simplify(f2, simptol);
-pass(8) = length(g2) == length(g);
+pass(7) = length(g2) == length(g);
 
 %%
 % Test for an array-valued function:
 
 f = testclass.make(@(x) [exp(sin(2*pi*x)) exp(cos(3*pi*x)) 3./(4-cos(pi*x))]);
-g = simplify(f, 1e-6);
-pass(9) = all(all((abs(g.coeffs) > ...
-    repmat(simptol*g.vscale, length(g), 1)) | (g.coeffs == 0)));
-pass(10) = any(abs(g.coeffs(1, :)) ~= 0);
-pass(11) = length(g) < length(f);
-pass(12) = all(norm(feval(f, x) - feval(g, x), inf) < ...
+g = simplify(f, simptol);
+pass(8) = any(abs(g.coeffs(1, :)) ~= 0);
+pass(9) = length(g) < length(f);
+pass(10) = all(norm(feval(f, x) - feval(g, x), inf) < ...
     10*max(g.epslevel.*g.vscale));
 
 %%
@@ -67,16 +64,6 @@ pass(12) = all(norm(feval(f, x) - feval(g, x), inf) < ...
 
 f = testclass.make(@(x) sin(100*pi*(x + 0.1)));
 g = simplify(f, 1e20);
-pass(13) = iszero(g);
-
-%%
-% Try an example that zeros only interior coefficients, not the tail:
-
-f = testclass.make(@(x) (1) + (1e-10*cos(pi*x).*sin(2*pi*x)) + cos(15*pi*x).*sin(15*pi*x));
-g = simplify(f, 1e-6);
-pass(14) = all((abs(g.coeffs) > simptol*g.vscale) | (g.coeffs == 0));
-pass(15) = abs(g.coeffs(end)) ~= 0;
-pass(16) = length(g) == length(f);
-pass(17) = norm(feval(f, x) - feval(g, x), inf) < 10*g.epslevel*g.vscale;
+pass(11) = iszero(g);
 
 end

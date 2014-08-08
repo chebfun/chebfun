@@ -43,12 +43,12 @@ fun_op = @(x) [((x-2).^2/4+1).*exp(1i*(x/2)) ...
     -((x+1).^2/4+1).*exp(1i*(x/2))];
 f = bndfun(fun_op, data, pref);
 [y, x] = min(f);
-exact_max = [exp(1i) -exp(-1i/2)];
+exact_min = [exp(1i) -exp(-1i/2)];
 fx = fun_op(x); 
 fx = fx([1 4]);
 tol = 10*max(get(f, 'vscale').*get(f, 'epslevel'));
-pass(7) = (all(abs(y - exact_max) < tol) && ...
-    all(abs(fx - exact_max) < tol));
+pass(7) = (all(abs(y - exact_min) < 10*tol) && ...
+    all(abs(fx - exact_min) < 10*tol));
 
 %% Test for UNBNDFUN:
 

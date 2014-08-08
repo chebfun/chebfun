@@ -2,6 +2,8 @@ function f = divergence( F )
 %DIVERGENCE   Divergence of a CHEBFUN2V.
 %   DIVERGENCE(F) returns the divergence of the CHEBFUN2V i.e.,
 %       divergence(F) = F_x + F_y.
+%
+% See also DIV.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information. 

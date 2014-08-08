@@ -33,7 +33,7 @@ else
     for k = 1:numel(f)
         dom{k} = f(k).domain;
     end
-    A = chebfun.mergeDomains(dom{:});
+    A = domain.merge(dom{:});
 end
 
 end

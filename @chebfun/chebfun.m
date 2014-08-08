@@ -284,7 +284,7 @@ classdef chebfun
         display(f);
 
         % Accuracy estimate of a CHEBFUN object.
-        out = epslevel(f);
+        out = epslevel(f, flag);
         
         % Evaluate a CHEBFUN.
         y = feval(f, x, varargin)
@@ -497,6 +497,18 @@ classdef chebfun
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
         
+        % Discrete cosine transform:
+        y = dct(u, kind);
+        
+        % Inverse discrete cosine transform:
+        u = idct(y, kind);
+        
+        % Discrete sine transform:
+        y = dst(u, kind);
+        
+        % Inverse discrete sine transform:
+        u = idst(y, kind);
+        
         % Interpolate data:
         f = interp1(x, y, method, dom);
 
@@ -534,9 +546,6 @@ classdef chebfun
         % Determine values of CHEBFUN at breakpoints.
         vals = getValuesAtBreakpoints(funs, ends, op);
         
-        % Merge domains.
-        newDom = mergeDomains(varargin)
-                
         % Which interval is a point in?
         out = whichInterval(dom, x, direction);
         
@@ -892,6 +901,9 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
         end
         data.exponents = exps;
     end
+    
+    % Ensure DOM is a double (i.e., not a domain object).
+    dom = double(dom);
 
 end
 

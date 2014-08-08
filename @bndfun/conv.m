@@ -19,10 +19,11 @@ function h = conv(f, g)
 % Nick Hale and Alex Townsend, 2014
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Devoloper note:
+% DEVELOPER NOTE:
 %
 % For further details, see Hale and Townsend, "An algorithm for the convolution
-% of Legendre series", (To appear in SISC)
+% of Legendre series", SIAM Journal on Scientific Computing, Vol. 36, No. 3,
+% pages A1207-A1220, 2014.
 % 
 % In the following, it is assumed that the length of the domain of g is greater
 % than the length of the domain of f. If this is not the case, then simply
@@ -105,6 +106,12 @@ y = 0*x;                                     % Initialise values in interior
 map = @(x, a, b) (x-a)/(b-a) - (b-x)/(b-a);  % Map from [a, b] --> [-1, 1]
 f_leg = cheb2leg(get(f, 'coeffs')); % Legendre coefficients of f
 
+if ( numPatches > 100 )
+    error('CHEBFUN:BNDFUN:conv:tooManyPatches', ...
+        ['Max number of patches (100) exceeded. ', ...
+         'Small interval? Check breakpoints.']);
+end
+
 % Restrict g:
 doms = c + (b - a)*(0:numPatches);
 g_restricted = restrict(g, doms);
@@ -122,15 +129,15 @@ for k = 1:numPatches
     dk_right = b + dk(2); %  dkl  dkm   dkr
     gk = g_restricted{k};                          % g on this subdomain
     gk = simplify(gk);                             % Simplify for efficiency
-    gk_leg = cheb2leg(get(gk, 'coeffs')); % Its Legendre coefficients
+    gk_leg = cheb2leg(get(gk, 'coeffs'));          % Legendre coefficients
     [hLegL, hLegR] = easyConv(f_leg, gk_leg);      % Convolution on this domain
     
     % The left triangle for the kth patch:
     ind = (dk_left <= x) & (x < dk_mid); % Locate the grid values in [dkl, dkr]:
     if ( k == 1 ) % First piece:
-        hLegL = leg2cheb(flipud(hLegL));  % Cheb. coeffs of left tri.
+        hLegL = leg2cheb(flipud(hLegL));           % Cheb. coeffs of left tri.
         data.domain = [dk_left, dk_mid];
-        h_left = bndfun({[], hLegL}, data); % Make BNDFUN from coeffs
+        h_left = bndfun({[], hLegL}, data);        % Make BNDFUN from coeffs
     else          % Subsequent left pieces
         z = map(x(ind), dk_left, dk_mid);          % Map grid points to [-1, 1]
         tmp = clenshawLegendre(z, hLegL);          % Evaluate via recurrence
@@ -138,7 +145,7 @@ for k = 1:numPatches
     end
     
     % The right triangle for the kth patch:
-    if ( k < numPatches )                         % Not needed for final patch!
+    if ( k < numPatches )                          % Not needed for final patch!
         % Locate the grid values in [dkl, dkr]:
         ind = (dk_mid <= x) & (x < dk_right);
         z = map(x(ind), dk_mid, dk_right);
@@ -166,11 +173,11 @@ else
     finishLocation = a + c + numPatches*(b - a);    % Where patches got to. (fl) 
     gk = restrict(g, d-[(b-a) 0]);                  % g on appropriate domain   
     gk = simplify(gk);                              % Simplify for efficiency
-    gk_leg = cheb2leg(get(gk, 'coeffs'));  % Legendre coeffs
+    gk_leg = cheb2leg(get(gk, 'coeffs'));           % Legendre coeffs
     [hLegL, hLegR] = easyConv(f_leg, gk_leg);       % Conv on A and B
-    hLegR = leg2cheb(flipud(hLegR));       % Cheb coeffs on A
+    hLegR = leg2cheb(flipud(hLegR));                % Cheb coeffs on A
     data.domain = [d+a, d+b];
-    h_right = bndfun({[], hLegR}, data);      % Make BNDFUN from coeffs
+    h_right = bndfun({[], hLegR}, data);            % Make BNDFUN from coeffs
     
     % Remainder piece: (between fl and a+d)
     remainderWidth = d + a - finishLocation; % b+d-fl-(b-a)
@@ -185,10 +192,10 @@ else
         % C: 
         fk = restrict(f, b + [-remainderWidth, 0]);     % Restrict f
         fk = simplify(fk);                              % Simplify f
-        fk_leg = cheb2leg(get(fk, 'coeffs'));  % Legendre coeffs
+        fk_leg = cheb2leg(get(fk, 'coeffs'));           % Legendre coeffs
         gk = restrict(g, [finishLocation, d + a] - b);  % Restrict g
         gk = simplify(gk);                              % Simplify g
-        gk_leg = cheb2leg(get(gk, 'coeffs'));  % Legendre coeffs
+        gk_leg = cheb2leg(get(gk, 'coeffs'));           % Legendre coeffs
         [ignored, hLegR] = easyConv(fk_leg, gk_leg);    % Conv 
         z = map(x(ind), finishLocation, d + a);         % Map to [-1, 1]
         tmp = clenshawLegendre(z, hLegR);               % Eval via recurrence
@@ -216,8 +223,8 @@ end
 
 function [gammaL, gammaR] = easyConv(alpha, beta)
 % Convolution using Legendre expansions and the analoguous convolution theorem.
-% See Hale and Townsend, "The convolution of compactly supported functions",
-% (Accepted, SISC).
+% See Hale and Townsend, "An algorithm for the convolution of Legendre series",
+% SIAM Journal on Scientific Computing, Vol. 36, No. 3, pages A1207-A1220, 2014.
 
 % Better computational efficiency is achieved when g has the lower degree:
 if ( length(beta) > length(alpha) )

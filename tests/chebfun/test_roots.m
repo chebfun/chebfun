@@ -161,12 +161,4 @@ f = chebfun('1i+cos(5*x).*exp(cos(x))',[-pi,pi],'periodic');
 r = roots(f);
 pass(16) = isempty(r);
 
-f = chebfun('cos(5*(1i+x)).*exp(cos(x))',[-pi,pi],'periodic');
-r = roots(f,'complex');
-[ignore,id] = sort(real(r));
-r = r(id);
-rExact = (-9:2:9)'*pi/10 - 1i;
-err = r - rExact;
-pass(17) = norm(err, inf) < 1e8*epslevel(f)*vscale(f);
-
 end

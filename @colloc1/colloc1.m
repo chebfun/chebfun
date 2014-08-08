@@ -31,52 +31,25 @@ classdef colloc1 < colloc
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
         
-        function D = diffmat(N, k)
-            %DIFFMAT   Chebyshev differentiation matrix
-            %   D = DIFFMAT(N) is the matrix that maps function values at N Chebyshev
-            %   points to values of the derivative of the interpolating polynomial at
-            %   those points.
+       function D = diffmat(N, k)
+            %DIFFMAT  Chebyshev differentiation matrix.
+            %   D = DIFFMAT(N) is the matrix that maps function values at N
+            %   Chebyshev points of the 1st kind  to values of the derivative of
+            %   the interpolating polynomial at those points.
             %
             %   D = DIFFMAT(N, K) is the same, but for the Kth derivative.
+            %
+            % See also COLLOC/BARYDIFFMAT.
 
-            % TODO: Implement this at the COLLOC level?
-            % TODO: Cache this?
-            
-            if ( nargin < 2 ), k = 1; end
-            if ( N == 0 ), D = []; return, end
-            if ( k == 0 )
-                D = eye(N);
-                return
+            if ( nargin < 2 )
+                k = 1;
             end
-            if ( N == 1 ), D = 0; return, end
-            
-            % 1st-kind Chebyshev grid:
-            x = chebtech1.chebpts(N);
-            % 1st-kind Barycentric weights:
-            w = chebtech1.barywts(N);
-            
-            ii = (1:N+1:N^2)';              % indices of diagonal
-            Dx = bsxfun(@minus,x,x');       % all pairwise differences
-            Dx(ii) = Dx(ii) + 1;            % add identity
-            Dxi = 1./Dx;                    % reciprocal
-            Dw = bsxfun(@rdivide,w.',w);    % pairwise divisions
-            Dw(ii) = Dw(ii) - 1;            % subtract identity
-            
-            % k = 1
-            D = Dw .* Dxi;
-            D(ii) = 0; D(ii) = - sum(D,2);                  % negative sum trick
-            
-            if ( k > 1 )
-                % 2nd order
-                D = 2*D .* (repmat(D(ii),1,N) - Dxi);
-                D(ii) = 0; D(ii) = - sum(D,2);              % negative sum trick
-                
-                % higher orders
-                for m = 3:k
-                    D = m*Dxi .* (Dw.*repmat(D(ii),1,N) - D);
-                    D(ii) = 0; D(ii) = - sum(D,2);          % negative sum trick
-                end
-            end
+
+            x = chebtech1.chebpts(N);           % First kind points.
+            w = chebtech1.barywts(N);           % Barycentric weights.
+%             t = (2*(N:-1:1).'-1)*pi/(2*N);      % acos(x).
+            t = chebtech1.angles(N);            % acos(x).
+            D = colloc.baryDiffMat(x, w, k, t); % Construct matrix.
             
         end
         

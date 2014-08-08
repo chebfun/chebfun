@@ -16,8 +16,7 @@ xx = 2 * rand(100, 1) - 1;
 ff = 3*[1e300*xx 1e-300*xx];
 gg = 4*[1e300*xx 1e-300*xx];
 hh = hypot(ff, gg);
-
-pass(1) = norm(feval(h, xx) - hh, inf)/vscale(h) < epslevel(h);
+pass(1) = norm(feval(h, xx) - hh, inf)/vscale(h) < 10*epslevel(h);
 
 % Test a function with breakpoints.
 pref.splitting = 1;
