@@ -25,4 +25,12 @@ err = abs(mean(F) - .25i);
 tol = 10*vscale(F)*epslevel(F);
 pass(3) = err < tol;
 
+A = [0 1 0 ; 0 0 0 ; 0 0 1];
+[F, lineSegs, theta] = fov(A);
+err = norm(theta - pi/3*[1 5], inf);
+pass(4) = err < tol;
+tmp = feval(lineSegs, [-1;1]);
+err = norm(real(tmp) - [1 0.25 ; 0.25 1], inf);
+pass(5) = err < tol;
+
 end
