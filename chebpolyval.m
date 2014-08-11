@@ -25,7 +25,7 @@ function y = chebpolyval(p, x)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( ~isnumeric(p) )
-    error('CHEBFUN:chebpolval:firstArg', ...
+    error('CHEBFUN:chebpolyval:firstArg', ...
         'First input argument must be a vector or a matrix.');
 end
 
