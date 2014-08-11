@@ -55,7 +55,7 @@ end
 
 % function y = clenshaw_scl(x, c)
 % % Clenshaw scheme for scalar-valued functions.
-% bk1 = zeros(size(x)); 
+% bk1 = 0*x; 
 % bk2 = bk1;
 % x = 2*x;
 % for k = 1:size(c,1)-1
@@ -87,13 +87,13 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % These code are the same as above with the exception that it does two steps of
-% the algorithm at once. This means that the intermediate variablesdo not need
+% the algorithm at once. This means that the intermediate variables do not need
 % to be updated at each step, and can result in a non-trivial speedup. NH 02/14
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function y = clenshaw_scl(x, c)
 % Clenshaw scheme for scalar-valued functions.
-bk1 = zeros(size(x)); 
+bk1 = 0*x; 
 bk2 = bk1;
 x = 2*x;
 n = size(c,1)-1;
