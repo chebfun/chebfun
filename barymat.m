@@ -1,4 +1,4 @@
-function B = barymat(y, x, w, s, r, doFlip)
+function B = barymat(y, x, w, r, s, doFlip)
 %BARYMAT  Barycentric Interpolation Matrix.
 %   BARYMAT(Y, X, W), where Y is a column vector of length M and X and W are
 %   column and row vectors of length N, respectively, returns the M*N matrix
