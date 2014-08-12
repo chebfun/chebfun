@@ -116,7 +116,7 @@ classdef collocFour < colloc
                 cott = cot((1:N-1)*h/2);
                 if ( mod(N, 2) ) % N is odd.
                     column = [- pi^4/5/h^4 + pi^2/6/h^2 - 7/240, ...
-                              5/4*cott.*cscc.^3 + 1/4*cott.^3.*cscc - (pi^2/h^2)*cott.*cscc].';              
+                              5/4*cscc.^3.*cott + 1/4*cscc.*cott.^3 - (pi^2/h^2)*cscc.*cott].';              
                 else % N is even.
                     column = [- pi^4/5/h^4 - pi^2/3/h^2 + 1/30, ...
                                cscc.^2.*cott.^2 + .5*cscc.^4 - (pi^2/h^2)*cscc.^2].';
