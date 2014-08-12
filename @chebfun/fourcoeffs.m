@@ -86,10 +86,10 @@ end
 
 %% Compute the coefficients.
 
-d = f.domain([1, end]); % Domain of integration
-L = diff(d); % Length of the domain
+d = f.domain([1, end]); % Domain of the function
+L = diff(d);            % Length of the domain
 
-% Modes to compute coefficients.  Need to handle the possible non-symmetry 
+% Modes to compute coefficients. Need to handle the possible non-symmetry 
 % in the modes.
 if ( mod(N, 2) == 1 )
     modes = (N-1)/2:-1:-(N-1)/2;
@@ -162,4 +162,3 @@ else
 end
 
 end
-
