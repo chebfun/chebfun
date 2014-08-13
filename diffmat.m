@@ -1,5 +1,5 @@
 function D = diffmat(N, varargin)
-%DIFFMAT   Differentiation matrix.
+%DIFFMAT   Spectral differentiation matrix.
 %   D = DIFFMAT(N) returns the N x N differentiation matrix associated with the
 %   Chebyshev spectral collocation method at second-kind Chebyshev points. 
 %
