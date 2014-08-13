@@ -36,29 +36,34 @@ function D = diffmat(N, varargin)
 %   row of an N x N differentiation matrix by a Dirichlet boundary condition.
 %
 %   Example 3: D = DIFFMAT(N, 2, DOM, GRID, 'dirichlet', 'neumann') replaces
-%   the first and the last row of an N x N differentiation matrix by a Dirichlet 
+%   the first and last rows of an N x N differentiation matrix by a Dirichlet 
 %   and a Neumann boundary conditions respectively.
 %
 %   Example 4: D = DIFFMAT(N, 3, DOM, GRID, 'dirichlet', {'dirichlet' 'neumann'}) 
 %   replaces the first row of an N x N differentiation matrix by a Dirichlet
-%   boundary condition and the last two row by a Dirichlet and a Neumann 
-%   boundary conditions.
+%   boundary condition and the last two rows by Dirichlet and Neumann boundary 
+%   conditions.
 %
 %   D = DIFFMAT(N, 'periodic') returns the N x N first-order Fourier 
-%   differentiation matrix.
+%   differentiation matrix on the default interval [-1 1].
 %
 %   D = DIFFMAT(N, P, 'periodic') returns the N x N Fourier differentiation 
-%   matrix of order P.
+%   matrix of order P  on the default interval [-1 1].
 %
 %   D = DIFFMAT(N, P, 'periodic', DOM) scales the Pth-order Fourier 
 %   differetiation matrix to domain DOM.
 %
-%   D = DIFFMAT([M N]) returns an M x N first-order rectangular differentiation 
-%   matrix which maps from an N-point Chebyshev grid of second kind to an 
+%   The remaining options concern rectangular spectral differentiation matrices,
+%   as introduced in [Driscoll & Hale 2014]. Chebfun uses these to solve ODE
+%   boundary value problems in the mode GRID1 = 'chebkind2', GRID2 =
+%   'chebkind1'. See also [Xu & Hale 2014].
+%
+%   D = DIFFMAT([M N]) returns the M x N first-order rectangular differentiation 
+%   matrix which maps from an N-point Chebyshev grid of the second kind to an 
 %   M-point Chebyshev grid of the same kind.
 %   
 %   D = DIFFMAT([M N], P) returns an M x N rectangular differentiation matrix of 
-%   order P which maps between an N-point and an M-point Chebyshev grid, both of
+%   order P which maps from an N-point to an M-point Chebyshev grid, both of
 %   second kind.
 %
 %   D = DIFFMAT([M N], P, DOM) returns the same D but scaled to the domain DOM.
@@ -84,24 +89,6 @@ function D = diffmat(N, varargin)
 %   the right endpoint while the second appended row corresponds to a side 
 %   condition sum(U) = I for a scalar I, where U is the solution to the 
 %   resulting system.
-%  
-%   D = DIFFMAT(N, 'rect') returns the same (N-1) x N rectangular 
-%   differentiation matrix of first order given by DIFFMAT([N-1 N]).
-%
-%   D = DIFFMAT(N, P, 'rect') returns the same (N-P) x N rectangular 
-%   differentiation matrix of order P given by DIFFMAT([N-P N], P).
-%
-%   D = DIFFMAT(N, P, 'rect', DOM) returns the same (N-P) x N rectangular 
-%   differentiation matrix of order P, but scaled to domain DOM.
-%
-%   D = DIFFMAT(N, P, 'rect', DOM, GRID1, GRID2) returns the same Pth-order 
-%   (N-P) x N rectangular differentiation matrix on domain DOM but mapping from 
-%   grid GRID1 to grid GRID2. If only GRID1 is specified, than GRID2 is set same
-%   as GRID1.
-%
-%   D = DIFFMAT(N, P, 'rect', DOM, GRID1, GRID2, LBC, RBC) returns the same 
-%   rectangular differentiation matrix as above but with boundary conditions
-%   specified by LBC and RBC appended.
 %
 % See also DIFF, COLLOC2.DIFFMAT, CUMSUMMAT.
 
@@ -109,7 +96,10 @@ function D = diffmat(N, varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% References:
+% References for rectangular differentiation matrices:
+%
+%   Driscoll, T. and Hale, N., Rectangular spectral collocation, submitted 2014.
+%
 %   Xu, K. and Hale, N., Explicit construction of rectangular differentiation
 %   matrices, submitted 2014.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
