@@ -94,7 +94,7 @@ end
 
 if ( numFuns == 1 )
     
-    % CHEBCOEFFS() of a smooth piece:
+    % FOURCOEFFS() of a smooth piece:
     C = fourcoeffs(f.funs{1}, N).';
 
 else

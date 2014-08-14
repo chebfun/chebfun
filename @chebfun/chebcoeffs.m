@@ -10,8 +10,8 @@ function out = chebcoeffs(f, varargin)
 %   If F is array-valued with M columns, then A is an MxN matrix.
 %
 %   C = CHEBCOEFFS(F, N, 'kind', 2) returns the vector of coefficients for the
-%   Chebyshev expansion of F in 2nd-kind Chebyshev polynomials F = ... + C(1)
-%   U_N(x) + ... + C(N) U_1(x) + C(N+1) U_0(x).
+%   Chebyshev expansion of F in 2nd-kind Chebyshev polynomials F = C_0 + C(1)
+%   U_1(x) + ... + C_(N-1) U_(N-1)(x).
 %
 % See also LEGCOEFFS, FOURCOEFFS.
 

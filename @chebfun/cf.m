@@ -126,7 +126,7 @@ end
 
 % Extract the Chebyshev coefficients to be used in computing the approximation.
 a = chebcoeffs(f, length(f));
-a = a((end-M):end);
+a = a(1:(M+1));
 
 % Deal with complex-valued functions.
 if ( any(imag(a) ~= 0) )

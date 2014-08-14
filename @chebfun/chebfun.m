@@ -35,7 +35,7 @@ classdef chebfun
 % CHEBFUN(F, N, 'chebkind', 2) is equivalent to CHEBFUN(feval(F, chebpts(N)).
 %
 % CHEBFUN(C, 'coeffs'), where C is an Nx1 matrix, constructs a CHEBFUN object
-% representing the polynomial C(1) T_N(x) + ... + C(N) T_1(x) + C(N+1) T_0(x),
+% representing the polynomial C(1) T_0(x) + ... + C(N) T_(N-1)(x),
 % where T_K(x) denotes the K-th Chebyshev polynomial. This is equivalent to
 % CHEBFUN({{[], C}}). C may also be an NxM matrix, as described below.
 %
@@ -235,7 +235,7 @@ classdef chebfun
                 else
                     c = fourcoeffs(f, truncLength);
                 end
-                f = chebfun(c.', f.domain([1,end]), 'coeffs', pref);
+                f = chebfun(c, f.domain([1,end]), 'coeffs', pref);
             end
             
         end
@@ -687,7 +687,11 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
             vectorize = true;
             args(1) = [];
         elseif ( strcmpi(args{1}, 'coeffs') && isnumeric(op) )
-            % Hack to support construction from coefficients.
+            % Flip the coefficients, since at the user level the coefficients
+            % start from the lowes to the highest while the lower layers operate
+            % opposite to this:
+            op = flipud(op);
+            % Hack to support construction from coefficients.            
             op = {{[], op}};
             args(1) = [];
         elseif ( strcmpi(args{1}, 'periodic') )
