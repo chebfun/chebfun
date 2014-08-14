@@ -95,7 +95,7 @@ end
 if ( numFuns == 1 )
     
     % FOURCOEFFS() of a smooth piece:
-    C = fourcoeffs(f.funs{1}, N).';
+    C = fourcoeffs(f.funs{1}, N);
 
 else
     % Compute the coefficients via inner products.
@@ -105,7 +105,7 @@ else
     omega = 2*pi/L;
     x = chebfun('x', d);
     numCols = numColumns(f);
-    C = zeros(numCols, N);
+    C = zeros(N, numCols);
     f = mat2cell(f);
     % Handle the possible non-symmetry in the modes.
     if ( mod(N, 2) == 1 )
@@ -118,7 +118,7 @@ else
         for k = modes
             F = exp(-1i*k*omega*x);
             I = (f{j}.*F);
-            C(j, coeffsIndex) = 1/L*sum(I);
+            C(coeffsIndex, j) = 1/L*sum(I);
             coeffsIndex = coeffsIndex + 1;
         end
     end
@@ -132,13 +132,13 @@ else
     fisOdd = mod(N, 2);
     if ( fisOdd )
         zeroMode = (N+1)/2;
-        A = [( C(:,1:zeroMode-1) + C(:,N:-1:zeroMode+1) ), C(:,zeroMode)];
-        B = 1i*( C(:,1:zeroMode-1) - C(:,N:-1:zeroMode+1) );
+        A = [( C(1:zeroMode-1,:) + C(N:-1:zeroMode+1,:) ); C(zeroMode,:)];
+        B = 1i*( C(1:zeroMode-1,:) - C(N:-1:zeroMode+1,:) );
     else  % Non-symmetric case
         zeroMode = N/2;
-        A = [C(:,N), ( C(:,1:zeroMode-1) + C(:,N-1:-1:zeroMode+1) ), ...
-            C(:,zeroMode)];
-        B = 1i*( C(:,1:zeroMode-1) - C(:,N-1:-1:zeroMode+1) );
+        A = [C(N,:); ( C(1:zeroMode-1,:) + C(N-1:-1:zeroMode+1,:) ); ...
+            C(zeroMode,:)];
+        B = 1i*( C(1:zeroMode-1,:) - C(N-1:-1:zeroMode+1,:) );
     end
     if ( isreal(f) )
         A = real(A);

@@ -144,7 +144,7 @@ switch method
 end
 
 % Construct CHEBFUN from coeffs:
-p = chebfun(C, dom, pref, 'coeffs');              
+p = chebfun(flipud(C), dom, pref, 'coeffs');              
 
 if ( numel(domIn) > 2 )
     p = restrict(p, domIn);
