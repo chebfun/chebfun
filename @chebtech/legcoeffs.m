@@ -15,14 +15,14 @@ function b = legcoeffs(f, n)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-b = cheb2leg(f.coeffs);
+b = cheb2leg(flipud(f.coeffs));
 
 if ( nargin > 1 )
     s = size(b);
     if ( s(1) > n + 1 )
-        b = b(end-n+1:end, :);
+        b = b(1:n, :);
     else
-        b = [zeros(n-s(1), s(2)) ; b];
+        b = [b; zeros(n-s(1), s(2))];
     end
 end
 

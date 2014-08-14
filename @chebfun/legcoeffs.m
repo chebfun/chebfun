@@ -25,7 +25,7 @@ end
 
 % Call FUN/LEGCOEFFS():
 if ( numel( f.funs ) == 1 )
-    out = flipud(legcoeffs(f.funs{1}, varargin{:}));
+    out = legcoeffs(f.funs{1}, varargin{:});
 else
     if ( nargin < 2 )
         error('CHEBFUN:CHEBFUN:legcoeffs:n', ...
