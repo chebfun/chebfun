@@ -117,7 +117,7 @@ elseif ( n == 1 )
     return
 elseif ( n == 2 )
     x0 = [-1 ; 1]/sqrt(3);
-    x = diff(interval)/2 * (x0+1) + interval(1); % map from [-1,1] to int. 
+    x = diff(interval)/2 * (x0+1) + interval(1); % map from [-1,1] to interval. 
     w = [1 1]*diff(interval)/2;
     v = [1 ; -1];
     t = acos(x0);

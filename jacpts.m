@@ -57,21 +57,6 @@ interval = [-1, 1];
 method = 'default';
 method_set = 0;
 
-% Deal with trivial cases:
-if ( n < 0 )
-    error('CHEBFUN:jacpts:n', 'First input should be a positive number.');
-elseif ( n == 0 )   % Return empty vectors if n == 0:
-    x = []; 
-    w = []; 
-    v = []; 
-    return
-elseif ( n == 1 )
-    x = (b-a)/(a+b+2);
-    w = 2^(a+b+1)*beta(a+1, b+1);
-    v = 1;
-    return
-end
-
 if ( a <= -1 || b <= -1 )
     error('CHEBFUN:jacpts:sizeAB', 'Alpha and beta must be greater than -1')
 elseif ( max(a, b) > 5 )
@@ -115,6 +100,22 @@ elseif ( numel(interval) > 2 )
     warning('CHEBFUN:legpts:domain',...
         'Piecewise intervals are not supported and will be ignored.');
     interval = interval([1, end]);
+end
+
+% Deal with trivial cases:
+if ( n < 0 )
+    error('CHEBFUN:jacpts:n', 'First input should be a positive number.');
+elseif ( n == 0 )   % Return empty vectors if n == 0:
+    x = []; 
+    w = []; 
+    v = []; 
+    return
+elseif ( n == 1 )
+    x0 = (b-a)/(a+b+2);
+    x = diff(interval)/2 * (x0+1) + interval(1); % map from [-1,1] to interval. 
+    w = 2^(a+b+1)*beta(a+1, b+1) * diff(interval)/2;
+    v = 1;
+    return
 end
 
 % Special cases:
