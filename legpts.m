@@ -60,29 +60,6 @@ interval = [-1, 1];
 method = 'default';
 method_set = nargin == 3;
 
-% Deal with trivial cases:
-if ( n < 0 )
-    error('CHEBFUN:legpts:nNegative', ...
-        'First input should be a positive number.');
-elseif ( n == 0 )   % Return empty vectors if n == 0:
-    x = [];
-    w = [];
-    v = [];
-    t = [];
-    return
-elseif ( n == 1 )
-    x = 0;
-    w = 2;
-    v = 1;
-    t = 1;
-    return
-elseif ( n == 2 )
-    x = [-1 ; 1]/sqrt(3);
-    w = [1 1];
-    v = [1 ; -1];
-    t = acos(x);
-    return
-end
 
 % Check the inputs:
 if ( nargin > 1 )
@@ -116,6 +93,35 @@ if ( nargin > 1 )
 end
 if ( any(isinf(interval)) )
     error('CHEBFUN:legpts:interval', 'Unbounded intervals are not supported.');
+end
+
+% Deal with trivial cases:
+if ( n < 0 )
+    error('CHEBFUN:legpts:nNegative', ...
+        'First input should be a positive number.');
+elseif ( n == 0 )   % Return empty vectors if n == 0:
+    x = [];
+    w = [];
+    v = [];
+    t = [];
+    return
+elseif ( n == 1 )
+    % x = midpoint of interval
+    % w = length of interval 
+    % v = 1
+    % t = 1 
+    x = mean(interval);
+    w = diff(interval);
+    v = 1;
+    t = 1;
+    return
+elseif ( n == 2 )
+    x0 = [-1 ; 1]/sqrt(3);
+    x = diff(interval)/2 * (x0+1) + interval(1); % map from [-1,1] to interval. 
+    w = [1 1]*diff(interval)/2;
+    v = [1 ; -1];
+    t = acos(x0);
+    return
 end
 
 if ( n <= 20 )
