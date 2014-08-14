@@ -115,7 +115,7 @@ g.pointValues(1) = 2*g.pointValues(1);
 g.pointValues(end) = 2*g.pointValues(end);
 pass(11) = norm(g , inf ) < 1e3*tol;
 
-% Marice's Cox examples: 
+% Maurice's Cox examples: 
 fX1 = chebfun(@(x) exp(x), [0, log(2)]);
 fX2 = chebfun(@(x) exp(x), [log(2), log(3)]);
 fX3 = chebfun(@(x) exp(x), [log(3), log(4)]);
