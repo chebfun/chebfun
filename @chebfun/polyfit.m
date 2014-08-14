@@ -35,7 +35,7 @@ if ( n > length(y) && numel(y.funs) == 1 && isa(y.funs{1}.onefun, 'chebtech') )
 end
 
 % Compute first n Legendre coeffs:
-cleg = legcoeffs(y, n+1).';
+cleg = legcoeffs(y, n+1);
 
 % Convert to Chebyshev coeffs:
 c = zeros(size(cleg));
