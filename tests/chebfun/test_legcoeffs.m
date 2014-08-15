@@ -18,7 +18,7 @@ pass(2) = norm(legcoeffs(Qv) - v, Inf) < 10*vscale(Qv)*epslevel(Qv);
 
 % Check a less trivial smooth example.
 f = chebfun(@(x) [sin(x - 0.3) cos(x - 0.3)]);
-c = legcoeffs(f, 5);
+c = legcoeffs(f, 4);
 c_exact = [ -0.2486716793299505096289379  0.8038879363274420091869815;
              0.8631522851187122776801783  0.2670042907205986623437124;
              0.0916630569532407635738723 -0.2963217439563513424659842;

@@ -1,6 +1,6 @@
 function out = legcoeffs(f, varargin)
 %LEGCOEFFS    Legendre polynomial coefficients of a CHEBFUN.
-%   A = LEGCOEFFS(F, N) returns the first N+1 coefficients in the Legendre
+%   A = LEGCOEFFS(F, N) returns the first N coefficients in the Legendre
 %   series expansion of the CHEBFUN F, so that such that F approximately equals
 %   A(1) P_0(x) + ... + A(N) P_(N-1)(x), where P_N(x) denotes the
 %   N-th Legendre polynomial. A is a column vector.
