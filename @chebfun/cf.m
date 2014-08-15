@@ -153,14 +153,15 @@ dom = domain(f);
 
 % Trivial case:  approximation length is the length of the CHEBFUN.
 if ( m == M - 1 )
-    p = chebfun(a(2:(M+1)), dom, 'coeffs');
+    p = chebfun(a(1:M), dom, 'coeffs');
     q = chebfun(1, dom);
     r = @(x) feval(p, x);
-    s = abs(a(1));
+    s = abs(a(M+1));
     return
 end
 
-c = a((M-m):-1:1);
+%c = a((M-m):-1:1);
+c = a(m+2:M+1);
 if ( length(c) > 1024 )
     opts.disp = 0;
     opts.issym = 1;
@@ -179,11 +180,11 @@ uu = u(2:(M-m));
 
 b = c;
 for k = m:-1:-m
-    b = [-(b(1:(M-m-1))*uu)/u1, b]; %#ok<AGROW>
+    b = [-(b(1:(M-m-1)).'*uu)/u1; b]; %#ok<AGROW>
 end
-
-pk = a((M-m+1):(M+1)) - [b(1:m) 0] - b((2*m+1):-1:(m+1));
-p = chebfun(pk.', dom, 'coeffs');
+bb = b(m+1:2*m+1) + [b(m:-1:1); 0];
+pk = a(1:m+1)-bb;
+p = chebfun(pk, dom, 'coeffs');
 q = chebfun(1, dom);
 r = @(x) feval(p,x);
 
@@ -204,10 +205,10 @@ tolCond = 1e13;
 tolCondG = 1e3;
 
 % Scaling of T_0 coefficient.
-a(end) = 2*a(end);
+a(1) = 2*a(1);
 
 % Check even / odd symmetries.
-if ( max(abs(a(end-1:-2:1)))/vscale(f) < eps )    % f is even.
+if ( max(abs(a(2:2:end)))/vscale(f) < eps )    % f is even.
     if ( ~(mod(m, 2) || mod(n, 2)) )
         m = m + 1;
     elseif ( mod(m, 2) && mod(n, 2) )
@@ -217,7 +218,7 @@ if ( max(abs(a(end-1:-2:1)))/vscale(f) < eps )    % f is even.
             return;
         end
     end
-elseif ( max(abs(a(end:-2:1)))/vscale(f) < eps )  % f is odd.
+elseif ( max(abs(a(1:2:end)))/vscale(f) < eps )  % f is odd.
     if ( mod(m,2) && ~mod(n,2) )
         m = m + 1;
     elseif ( ~mod(m,2) && mod(n,2) )
