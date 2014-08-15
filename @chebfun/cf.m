@@ -126,7 +126,7 @@ end
 
 % Extract the Chebyshev coefficients to be used in computing the approximation.
 a = chebcoeffs(f, length(f));
-a = a(1:(M+1));
+a = a(1:M+1);
 
 % Deal with complex-valued functions.
 if ( any(imag(a) ~= 0) )
@@ -139,7 +139,7 @@ end
 if ( isempty(n) || (n == 0) )
     [p, q, r, s] = polynomialCF(f, a, m, M);
 else
-    [p, q, r, s] = rationalCF(f, a, m, n, M);
+    [p, q, r, s] = rationalCF(f, a(end:-1:1).', m, n, M);
 end
 
 end
@@ -205,10 +205,10 @@ tolCond = 1e13;
 tolCondG = 1e3;
 
 % Scaling of T_0 coefficient.
-a(1) = 2*a(1);
+a(end) = 2*a(end);
 
 % Check even / odd symmetries.
-if ( max(abs(a(2:2:end)))/vscale(f) < eps )    % f is even.
+if ( max(abs(a(end-1:-2:1)))/vscale(f) < eps )    % f is even.
     if ( ~(mod(m, 2) || mod(n, 2)) )
         m = m + 1;
     elseif ( mod(m, 2) && mod(n, 2) )
@@ -218,7 +218,7 @@ if ( max(abs(a(2:2:end)))/vscale(f) < eps )    % f is even.
             return;
         end
     end
-elseif ( max(abs(a(1:2:end)))/vscale(f) < eps )  % f is odd.
+elseif ( max(abs(a(end:-2:1)))/vscale(f) < eps )  % f is odd.
     if ( mod(m,2) && ~mod(n,2) )
         m = m + 1;
     elseif ( ~mod(m,2) && mod(n,2) )
@@ -309,7 +309,8 @@ s = abs(s);
 % know the exact ellipse of analyticity for 1./q, so use this knowledge to
 % obtain its Chebyshev coefficients (see line below).
 qRecip = chebfun(@(x) 1./feval(q, x), dom, ceil(log(4/eps/(rho - 1))/log(rho)));
-gam = chebcoeffs(qRecip, length(qRecip));
+gam = flipud(chebcoeffs(qRecip, length(qRecip)));
+gam = gam.';
 gam = [zeros(1, 2*m + 1 - length(gam)) gam];
 gam = gam(end:-1:end-2*m);
 gam(1) = 2*gam(1);
@@ -331,7 +332,7 @@ end
 bc = G\(-2*(B*ct(1)/gam(1,1) -ct(m+1:-1:2)'));
 bc0 = (ct(1) - B'*bc)/gam(1,1);
 bc = [bc0, bc(end:-1:1)'];
-p = chebfun(bc(end:-1:1).', dom, 'coeffs');
+p = chebfun(bc.', dom, 'coeffs');
 r = @(x) feval(p, x)./feval(q, x);
 
 end
