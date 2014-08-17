@@ -205,7 +205,7 @@ else
         [ignored, hLegR] = easyConv(fk_leg, gk_leg);    % Conv 
         z = map(x(ind), finishLocation, d + a);         % Map to [-1, 1]
         tmp = clenshawLegendre(z, hLegR);               % Eval via recurrence
-        y(ind) = y(ind) + tmp*remainderWidth/(b - a);   % Scale and append    end
+        y(ind) = y(ind) + tmp*remainderWidth/(b - a);   % Scale and append
     end
     % Convert values to coeffs (we don't want to construct a chebtech1)
     y = chebtech1.vals2coeffs(y);
