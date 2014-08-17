@@ -115,5 +115,20 @@ g.pointValues(1) = 2*g.pointValues(1);
 g.pointValues(end) = 2*g.pointValues(end);
 pass(11) = norm(g , inf ) < 1e3*tol;
 
+% Maurice's Cox examples: 
+fX1 = chebfun(@(x) exp(x), [0, log(2)]);
+fX2 = chebfun(@(x) exp(x), [log(2), log(3)]);
+fX3 = chebfun(@(x) exp(x), [log(3), log(4)]);
+g1 = conv(fX1, fX3);
+g2 = conv(g1, fX2);
+
+g3 = conv(fX1, fX2);
+g4 = conv(g3, fX3);
+pass(12) = normest( g2 - g4 ) < tol; 
+g5 = conv(fX2, fX3);
+g6 = conv(g5, fX1);
+pass(13) = normest( g2 - g6 ) < tol; 
+
+
 end
 
