@@ -562,7 +562,7 @@ rhs = [op(dom(1)); fp; op(dom(2))];
 D = diffmat([M N], p, dom, 'chebkind2', 'chebkind1', {'neumann'}, {'dirichlet'});
 ff = D\rhs;
 err = norm(ff-f, inf);
-pass(47) = ( err < 1e2*tol );
+pass(47) = ( err < 1e3*tol );
 
 % 2nd-order problem: u" = exp(x); sum(u) = exp(7)-exp(-2); u(7) = exp(7);
 op = @(x)exp(x);
