@@ -106,6 +106,12 @@ isFun = isFunVariable(L);
 
 for dim = [dimVals inf]
     
+    % [TODO]: is it the right way to do it?
+    if ( isa(disc, 'collocFour') )
+        disc.dimAdjust = 0;
+        disc.projOrder = 0;
+    end
+    
     % TODO: It's weird that the current value of dim is the _next_ disc size.
     
     % Discretize the operator (incl. constraints/continuity), unless there is a
@@ -120,7 +126,7 @@ for dim = [dimVals inf]
                 'Matrix is not square!');
         end
     end
-    
+
     % Discretize the RHS (incl. constraints/continuity):
     b = rhs(disc, f);
     
@@ -128,19 +134,27 @@ for dim = [dimVals inf]
     [v, disc] = mldivide(disc, A, b);
     
     % Project the solution:
-    v = P*v;
+    % [TODO]: is it the right way to do it?
+    if ( ~isa(disc, 'collocFour') )
+        v = P*v;
+    end
     
     % TODO: We could test each variable at their input dimension, but then
     % each would be different and we would nopt be able to use the trick of
     % taking a linear combination. Instead we project and test convergence
     % at the size of the output dimension.
     
-    % Convert the different components into cells
-    u = partition(disc, v);
+    % Convert the different components into cells:
+    % [TODO]: is it the right way to do it?
+    if ( ~isa(disc, 'collocFour') )
+        u = partition(disc, v);
+    else
+        u = mat2cell(v, size(v, 1));
+    end
     
     % Need a vector of vscales.
     if ( numel(vscale)==1 ) 
-        vscale = repmat(vscale,sum(isFun),1);
+        vscale = repmat(vscale, sum(isFun), 1);
     end
     
     % Test the happiness of the function pieces:
@@ -165,8 +179,8 @@ end
 % The variable u is a cell array with the different components of the solution.
 % Because each function component may be piecewise defined, we will loop through
 % one by one.
-values = cat(2,u{isFun});
-for k = 1:size(values,2)
+values = cat(2, u{isFun});
+for k = 1:size(values, 2)
     v = disc.toFunctionOut(values(:,k));
     uOut{k} = v;
 end

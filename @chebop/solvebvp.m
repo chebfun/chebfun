@@ -74,10 +74,24 @@ end
 % Store the domain we're working with.
 dom = N.domain;
 
+% [TODO]: imrpove this.
+% This is needed because the variable RESIDUAL (output of
+% LINEARIZE (l.112 of this file) has to be discretized the 
+% same way as the variable RHS. We make the assumption that
+% the user gives a rhs discretized with the same grid as 
+% the operator.
+if ( isequal(cheboppref().discretization, @colloc1) )
+    tech = 'chebtech1';
+elseif ( isequal(cheboppref().discretization, @colloc2) )
+    tech = 'chebtech2';
+elseif ( isequal(cheboppref().discretization, @collocFour) )
+    tech = 'fourtech';
+end
+
 % Create an initial guess if none is passed
 if ( isempty(N.init) )
     % Initialise a zero CHEBFUN:
-    zeroFun = chebfun(0, dom);
+    zeroFun = chebfun(0, dom, 'tech', tech);
     % Convert to a chebmatrix of correct dimensions:
     u0 = cell(nVars, 1);
     for k = 1:nVars
@@ -157,7 +171,6 @@ end
 if ( all(isLinear) )
     % Call solver method for linear problems.
     [u, info] = N.solvebvpLinear(L, rhs - residual, N.init, pref, displayInfo);
-    
 else
     % TODO: Switch between residual and error oriented Newton methods.
     
