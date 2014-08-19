@@ -41,7 +41,13 @@ end
 if ( nargin < 3 )
     tol = [];
 end
-    
+% Return if either f or g are empty as there is nothing to do here:
+if ( isempty(f) || isempty(g) )
+    newBreaksLocF = [];
+    newBreaksLocG = [];
+    return
+end
+
 if ( isnumeric(g) || isa(g, 'domain' ) )
     % Deal with single input case, where F is typically an quasimatrix. Here we
     % want to ensure that all the columns of F have compatable breaks.
@@ -57,22 +63,23 @@ if ( isnumeric(g) || isa(g, 'domain' ) )
         domGiven = false;
         dom = domain(f);                % If not, then use the domain of f.
     end
-    dummy = chebfun(0, dom);            % A dummy CHEBFUN to tweak against.
+    if ( isempty(tol) )
+    % Set a tolerance relative to the horizontal scale:
+        hsg = norm(dom([1, end]), inf);
+        % Unbounded domains are defined to have hscale = 1:
+        if ( isinf(hsg) ), hsg = 1; end
+        tol = 1e-15*max(hscale(f), hsg);
+    end
+%     dummy = chebfun(0, dom);            % A dummy CHEBFUN to tweak against.
+    dummy = struct('domain', dom);      % No - Use struct to avoid overhead!
     newBreaksLocF = cell(1, numel(f));  % Initialise storage.
     for k = 1:numel(f)                  % Loop over columns of f.
         [f(k), dummy, newBreaksLocF{k}, ignored] = ...
             tweakDomain(f(k), dummy, tol, 1);
     end
     if ( domGiven )
-        g = domain(dummy);
+        g = dummy.domain;
     end
-    return
-end
-
-% Return if either f or g are empty as there is nothing to do here:
-if ( isempty(f) || isempty(g) )
-    newBreaksLocF = [];
-    newBreaksLocG = [];
     return
 end
 
@@ -81,7 +88,7 @@ if ( numel(f) > 1 || numel(g) > 1 )
         'tweakDomain does not support multiple quasimatrix inputs.');
 end
 
-if ( nargin < 3 || isempty(tol) )
+if ( isempty(tol) )
     % Set a tolerance relative to the horizontal scale:
     hs = max(hscale(f), hscale(g));
     tol = 1e-15*hs;
@@ -147,7 +154,9 @@ for k = newBreaksLocF
 end
 for k = newBreaksLocG
     % Change the FUN objects belonging to g:
-    if ( k == 1 )                       % First break point is special.
+    if ( ~isa(g, 'chebfun') )
+        return
+    elseif ( k == 1 )                   % First break point is special.
         g.funs{k} = changeMap(g.funs{k}, g.domain([k,k+1]));
     elseif ( k == numel(g.funs) + 1 )   % As is the last.
         g.funs{k-1} = changeMap(g.funs{k-1}, g.domain([k-1,k]));

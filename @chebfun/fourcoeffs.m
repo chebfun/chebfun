@@ -46,12 +46,6 @@ if ( isempty(f) )
     return
 end
 
-% if ( numel(f) > 1 )
-%     % TODO: Why not?
-%     error('CHEBFUN:fourcoeffs:quasia', ...
-%         'FOURCOEFFS does not support quasimatrices.');
-% end
-
 %% Initialize and error checking
 numFuns = numel(f.funs);
 
@@ -92,27 +86,29 @@ end
 
 %% Compute the coefficients.
 
+d = f.domain([1, end]); % Domain of the function
+L = diff(d);            % Length of the domain
+
+% Modes to compute coefficients. Need to handle the possible non-symmetry 
+% in the modes.
+if ( mod(N, 2) == 1 )
+    modes = (N-1)/2:-1:-(N-1)/2;
+else
+    modes = N/2-1:-1:-N/2;
+end
+
 if ( numFuns == 1 )
     
     % FOURCOEFFS() of a smooth piece:
     C = fourcoeffs(f.funs{1}, N);
 
 else
-    % Compute the coefficients via inner products.
-    
-    d = f.domain([1, end]);
-    L = diff(d);
+    % Compute the coefficients via inner products.    
     omega = 2*pi/L;
     x = chebfun('x', d);
     numCols = numColumns(f);
     C = zeros(N, numCols);
     f = mat2cell(f);
-    % Handle the possible non-symmetry in the modes.
-    if ( mod(N, 2) == 1 )
-        modes = (N-1)/2:-1:-(N-1)/2;
-    else
-        modes = N/2-1:-1:-N/2;
-    end
     for j = 1:numCols
         coeffsIndex = 1;
         for k = modes
@@ -123,6 +119,22 @@ else
         end
     end
 end
+
+% The formulas used for computing the coefficients above are explicitly for
+% interval [-L/2,L/2] (in the case of one smooth chebfun they are are for
+% [-1,1]), not for the domain of f.  We must correct these values to the
+% correct interval [a,a+L] by using a change of variables:
+%          
+% c_n =   \frac{1}{L} \int_{a}^{a+L} f(x) exp(-ikx2\pi/L) dx 
+%     =   exp(-ik2\pi(a+L/2)/L) \frac{1}{L} \int_{-L/2}^{L/2} f(t) exp(-ikt2\pi/L) dx 
+%
+if ( mod(N, 2) == 1 )
+    modes = (N-1)/2:-1:-(N-1)/2;
+else
+    modes = N/2-1:-1:-N/2;
+end
+change_variables = exp(-1i*modes*2*pi*(d(1) + L/2)/L);
+C = bsxfun(@times,C,change_variables);
 
 if ( nargout <= 1 )
     varargout{1} = C;
@@ -150,4 +162,3 @@ else
 end
 
 end
-

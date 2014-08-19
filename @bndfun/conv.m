@@ -190,10 +190,16 @@ else
         y(ind) = tmp;                        % Store
         
         % C: 
-        fk = restrict(f, b + [-remainderWidth, 0]);     % Restrict f
+        domfk = b + [-remainderWidth, 0];               % Domain of fk
+        domfk(1) = max(domfk(1), f.domain(1));          % Ensure domfk is a
+        domfk(end) = min(domfk(end), f.domain(end));    %  valid subdomain
+        fk = restrict(f, domfk);                        % Restrict f
         fk = simplify(fk);                              % Simplify f
         fk_leg = cheb2leg(flipud(get(fk, 'coeffs')));   % Legendre coeffs
-        gk = restrict(g, [finishLocation, d + a] - b);  % Restrict g
+        domgk = [finishLocation, d + a] - b;            % Domain of gk
+        domgk(1) = max(domgk(1), g.domain(1));          % Ensure domgk is a
+        domgk(end) = min(domgk(end), g.domain(end));    %  valid subdomain
+        gk = restrict(g, domgk);                        % Restrict g
         gk = simplify(gk);                              % Simplify g
         gk_leg = cheb2leg(flipud(get(gk, 'coeffs')));   % Legendre coeffs
         [ignored, hLegR] = easyConv(fk_leg, gk_leg);    % Conv 
@@ -201,7 +207,6 @@ else
         tmp = clenshawLegendre(z, hLegR);               % Eval via recurrence
         y(ind) = y(ind) + tmp*remainderWidth/(b - a);   % Scale and append
     end
-    
     % Convert values to coeffs (we don't want to construct a chebtech1)
     y = chebtech1.vals2coeffs(y);
     % Construct BNDFUN of the interior (rectangle) using coefficients:
