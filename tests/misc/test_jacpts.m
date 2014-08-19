@@ -41,4 +41,9 @@ pass(18) = abs(x(38) - 0.562894092705871) < tol;
 pass(19) = abs(w(38) - 0.002830847963541) < tol;
 pass(20) = abs(v(38) + 0.045147639085330) < tol;
 
+% Test n = 1: 
+a = 1; b = 2; 
+[x, w] = jacpts( 1, a, b ); 
+pass(21) = abs( x - (b-a)/(a+b+2) ) < tol ; 
+pass(22) = abs( w - 2^(a+b+1)*beta(a+1, b+1) ) < tol; 
 end
