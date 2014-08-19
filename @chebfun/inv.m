@@ -36,10 +36,6 @@ function g = inv(f, varargin)
 %      g = inv(f);
 %      plot(f, x, 'b', g, '--r') % <-- Note, plot(f, x) not plot(x, f).
 %
-%   NB:  This function is experimental and slow!  Use of the 'BISECTION'
-%   (default) and 'ROOTS' algorithm may be the better choice for piecewise
-%   functions, whereas the 'NEWTON' algorithm is good for smooth functions.
-%
 % See also ROOTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
@@ -104,7 +100,7 @@ function [tol, opts, pref] = parseInputs(f, varargin)
 tol = epslevel(f);
 opts.monoCheck = false;
 opts.rangeCheck = false;
-opts.algorithm = 5;
+opts.algorithm = 6; % Default  = brent's method.
 
 % Parse preference input:
 if ( (nargin > 1) && isa(varargin{1}, 'chebfunpref') )
@@ -362,13 +358,17 @@ end
 function y = fInverseBrent(f, x)
 %FINVERSEBRENT(F, X)   Compute F^{-1}(X) using Brent's method.
 
-% See http://en.wikipedia.org/wiki/Brent's_method#Algorithm
+% References:
+% [1] en.wikipedia.org/w/index.php?title=Brent%27s_method&oldid=610174347
+% [2] Brent, R. P. (1973), "Chapter 4: An Algorithm with Guaranteed Convergence 
+%     for Finding a Zero of a Function", Algorithms for Minimization without 
+%     Derivatives, Englewood Cliffs, NJ: Prentice-Hall, (1973).
 
 % Set a and b:
 a = f.domain(1);
 b = f.domain(end);
 
-% Calculate f(a) and f(b):
+% Calculate f(a) and f(b) (including x shift):
 fa = feval(f, a) - x;
 fb = feval(f, b) - x;
 fs = inf;
@@ -394,7 +394,7 @@ c = a;
 fc = fa;
 
 % Set mFlag and delta:
-mFlag = true(size(x));
+mFlag = true(size(x)); % <-- Stores previous decision state.
 delt = eps;
 
 % Initialise these too:
@@ -402,17 +402,23 @@ s = a;
 d = c;
 
 while ( (norm(fs, inf) > eps) && (norm(b - a, inf) > eps)  )
+    % Inverse quadratic:
     s_iq = a.*fb.*fc./((fa-fb).*(fa-fc)) + b.*fa.*fc./((fb-fa).*(fb-fc)) + ...
         c.*fa.*fb./((fc-fa).*(fc-fb));
+    % Secant:
     s_sc = b - fb.*(b-a)./(fb-fa);
+    % Bisection:
     s_bi = (a + b)/2;
     
-    % if f(a) ~= f(c) and f(b) ~= f(c) then
+    % Decide which update to use. Essentially the same as described on the
+    % Wikipedia page given above (permalink).
+    
+    % if f(a) ~= f(c) and f(b) ~= f(c) then (vectorized)
     idx = (fa ~= fc) & (fb ~= fc);
-    s(idx)  = s_iq(idx);
-    s(~idx) = s_sc(~idx);
+    s(idx)  = s_iq(idx);  % Take the inverse quadratic step.
+    s(~idx) = s_sc(~idx); % Take the secant step.
 
-    % Conditions:
+    % Conditions for bisection:
     idx = ( (3*a+b)/4 < b  & (s < (3*a+b)/4 | s > b) ) | ...     % condition 1a
           ( b <= (3*a+b)/4 & (s < b | s > (3*a+b)/4) ) | ...     % condition 1b
           ( mFlag  & abs(s-b) >= abs(b-c)/2 ) | ...              % condition 2
@@ -420,37 +426,36 @@ while ( (norm(fs, inf) > eps) && (norm(b - a, inf) > eps)  )
           ( mFlag  & abs(b-c) < delt ) | ...                     % condition 4
           ( ~mFlag & abs(c-d) < delt ) | ...                     % condition 5
           ( abs(b-a) < delt );
-    s(idx) = s_bi(idx);
-    mFlag = idx;
+    s(idx) = s_bi(idx);   % Take the bisection step.
+    mFlag = idx;  % <-- Stores previous decision state.
     
-    % Calculate f(s):
+    % Calculate f(s) (including x shift):
     fs = feval(f, s) - x;
     
+    % Store as previousol values for next iteration"
     d = c;
     c = b;
     fc = fb;
     
-    % if f(a) f(s) < 0 then b := s else a := s end if
+    % if f(a) f(s) < 0 then b := s else a := s end if (vectorized)
     idx = fa.*fs <= 0;
-
     b(idx) = s(idx);
     fb(idx) = fs(idx);
-
     a(~idx) = s(~idx);
     fa(~idx) = fs(~idx);
 
-    % if |f(a)| < |f(b)| then swap (a,b) end if:
+    % if |f(a)| < |f(b)| then swap (a,b) end if: (vectorized)
     idx = abs(fa) < abs(fb);
-
     tmp = a(idx);
     a(idx) = b(idx);
     b(idx) = tmp;
-
     tmp = fa(idx);
     fa(idx) = fb(idx);
     fb(idx) = tmp;
+    
 end
 
+% Output y:
 y = s;
 
 end
