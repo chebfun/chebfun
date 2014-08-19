@@ -1,4 +1,4 @@
-function h = conv(f, g, flag)
+function h = conv(f, g, varargin)
 %CONV   Convolution of CHEBFUN objects.
 %   H = CONV(F, G) produces the convolution of CHEBFUN objects F and G:
 %                     - 
@@ -10,6 +10,12 @@ function h = conv(f, g, flag)
 %   over all t for which the integrand is defined: max(a, x - d) <= t <= min(b,
 %   x - c).  The breakpoints of H are all pairwise sums of the breakpoints of F
 %   and G.
+%
+%   H = CONV(F, G, 'truncate') will truncate the domain of H so that it is the
+%   same as F and G. (If the endpoints of the domains of F and G are different
+%   then an error is thrown.) This is useful when F and G represent rapidly
+%   decaying functions on large but finite intervals which are used to
+%   approximate infinity.
 %
 %   If F and G are simple, in the sense that their FUNS are CHEBTECH objects, a
 %   fast algorithm due to Hale and Townsend is used [1]. Otherwise, the integral
@@ -40,6 +46,20 @@ if ( isempty(f) || isempty(g) )
     return
 end
 
+% Parse inputs:
+oldMethod = false;
+truncate = false;
+for k = 1:numel(varargin)
+    vk = varargin{k};
+    if ( strcmp(vk, 'old') )
+        oldMethod = true;
+    elseif ( strncmp(vk, 'trunc', 5) )
+        truncate = true;
+    else
+        error('CHEBFUN:CHEBFUN:conv:badInput', 'Unknown input option %s.', vk);
+    end
+end
+
 % No support for quasimatrices:
 if ( numColumns(f) > 1 || numColumns(g) > 1 )
     error('CHEBFUN:CHEBFUN:conv:quasi', ...
@@ -65,6 +85,12 @@ end
 % Extract the domain:
 [a, b] = domain(f);
 [c, d] = domain(g);
+hs = max(abs([a,b,c,d]));
+
+if ( truncate && ( abs(a - c) > eps*hs || abs(b - d) > eps*hs ) )
+    error('CHEBFUN:CHEBFUN:conv:badTruncate', ['The ''truncate'' flag ', ...
+        'only supports chebfun objects on the same domain.']);
+end
 
 % No support for unbounded domains:
 if ( any(isinf([a b c d])) )
@@ -72,32 +98,40 @@ if ( any(isinf([a b c d])) )
         'CONV only supports CHEBFUN objects on bounded domains.');
 end
 
-if ( issing(f) || issing(g) || nargin == 3 )
+if ( oldMethod || issing(f) || issing(g) )
     % Call the old (and slow) version of CONV if we are not based on CHEBTECHS.
     h = oldConv(f, g);
-    return
-end
+    
+else
 
-% Ensure that g is the signal (i.e., on the larger domain) and f is the filter:
-if ( (b - a) > (d - c) )
-    h = conv(g, f);
-    return
-end
+    % Ensure g is the signal (i.e., on the larger domain) and f is the filter:
+    if ( (b - a) > (d - c) )
+        h = conv(g, f);
+        return
+    end
 
-% Initialize the output:
-h = chebfun(0, [a + c, b + d]);
-% Deal with piecewise CHEBFUN objects by looping over each of the interactions:
-for j = 1:numel(f.funs)
-    for k = 1:numel(g.funs)
-        % Compute the contribution of jth fun of f with kth fun of g:
-        hjk = conv(f.funs{j}, g.funs{k});  
-        % Add this contribution:
-        for i = 1:numel(hjk)
-            h = myplus(h, chebfun(hjk(i)));
+    % Initialize the output:
+    h = chebfun(0, [a + c, b + d]);
+    % Deal with piecewise CHEBFUN objects by looping over each interaction:
+    for j = 1:numel(f.funs)
+        for k = 1:numel(g.funs)
+            % Compute the contribution of jth fun of f with kth fun of g:
+            hjk = conv(f.funs{j}, g.funs{k});  
+            % Add this contribution:
+            for i = 1:numel(hjk)
+                h = myplus(h, chebfun(hjk(i)));
+            end
         end
     end
+    
 end
 
+% Truncate:
+if ( truncate )
+    h = restrict(h, [a, b]);
+end
+
+% Transpose:
 if ( transState )
     h = h.';
 end
