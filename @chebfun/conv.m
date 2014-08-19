@@ -11,11 +11,9 @@ function h = conv(f, g, varargin)
 %   x - c).  The breakpoints of H are all pairwise sums of the breakpoints of F
 %   and G.
 %
-%   H = CONV(F, G, 'truncate') will truncate the domain of H so that it is the
-%   same as F and G. (If the endpoints of the domains of F and G are different
-%   then an error is thrown.) This is useful when F and G represent rapidly
-%   decaying functions on large but finite intervals which are used to
-%   approximate infinity.
+%   H = CONV(F, G, 'same') will truncate the domain of H so that it is the same
+%   as F. This is useful when F and G represent rapidly decaying functions on
+%   large but finite intervals which are used to approximate infinity.
 %
 %   If F and G are simple, in the sense that their FUNS are CHEBTECH objects, a
 %   fast algorithm due to Hale and Townsend is used [1]. Otherwise, the integral
@@ -48,13 +46,18 @@ end
 
 % Parse inputs:
 oldMethod = false;
-truncate = false;
+same = false;
 for k = 1:numel(varargin)
     vk = varargin{k};
-    if ( strcmp(vk, 'old') )
+    if ( strcmpi(vk, 'old') )
         oldMethod = true;
-    elseif ( strncmp(vk, 'trunc', 5) )
-        truncate = true;
+    elseif ( strcmpi(vk, 'same') )
+        same = true;
+    elseif ( strcmpi(vk, 'full') )
+        % Do nothing.
+    elseif ( strcmpi(vk, 'valid') )
+        % TODO: Supoprt 'valid'. Presumably where domains of f and g overlap?
+        error('CHEBFUN:CHEBFUN:conv:validFlag', '''valid'' is not yet supprted.');
     else
         error('CHEBFUN:CHEBFUN:conv:badInput', 'Unknown input option %s.', vk);
     end
@@ -85,12 +88,6 @@ end
 % Extract the domain:
 [a, b] = domain(f);
 [c, d] = domain(g);
-hs = max(abs([a,b,c,d]));
-
-if ( truncate && ((abs(a - c) > eps*hs) || (abs(b - d) > eps*hs)) )
-    error('CHEBFUN:CHEBFUN:conv:badTruncate', ['The ''truncate'' flag ', ...
-        'only supports CHEBFUN objects on the same domain.']);
-end
 
 % No support for unbounded domains:
 if ( any(isinf([a b c d])) )
@@ -127,7 +124,7 @@ else
 end
 
 % Truncate:
-if ( truncate )
+if ( same )
     h = restrict(h, [a, b]);
 end
 

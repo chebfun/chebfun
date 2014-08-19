@@ -129,22 +129,14 @@ g5 = conv(fX2, fX3);
 g6 = conv(g5, fX1);
 pass(13) = normest( g2 - g6 ) < tol; 
 
-%% test 'truncate' option
+%% test 'same' option
 f = chebfun(@(x) exp(-x.^2), [-10 10]);
 g = chebfun(@(x) exp(-x.^2), [-20 20]);
-h = conv(f, f, 'trunc');
+h = conv(f, f, 'same');
 pass(14) = norm(h.domain([1, end]) - [-10 10], inf) < eps*10;
 
-try
-    conv(f, g, 'trunc')
-    pass(15) = false;
-catch ME
-    if ( strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:conv:badTruncate') )
-        pass(15) = true;
-    else
-        pass(15) = false;
-    end
-end
+h = conv(f, g, 'same');
+pass(15) = norm(h.domain([1, end]) - [-10 10], inf) < eps*10;
 
 end
 
