@@ -7,7 +7,7 @@ function out = chebcoeffs(f, varargin)
 %   If F is a smooth CHEBFUN (i.e., with no breakpoints), then CHEBCOEFFS(F) is
 %   equivalent to CHEBCOEFFS(F, LENGTH(F)).
 %
-%   If F is array-valued with M columns, then A is an MxN matrix.
+%   If F is array-valued with M columns, then A is an NxM matrix.
 %
 %   C = CHEBCOEFFS(F, N, 'kind', 2) returns the vector of coefficients for the
 %   Chebyshev expansion of F in 2nd-kind Chebyshev polynomials F = C_0 + C(1)
