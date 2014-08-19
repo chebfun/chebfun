@@ -73,12 +73,12 @@ if ( xor(f(1).isTransposed, g(1).isTransposed) )
 end
 transState = f(1).isTransposed;
 
-% Return a warning if F and G have too many pieces after attempting to merge 
-% (the computation is probably going to be very slow): 
+% Return a warning if F and G have too many pieces (the computation is probably
+% going to be very slow):
 if ( ( numel(f.funs) + numel(g.funs) ) > 50 ) 
     % Give a warning and proceed. 
    warning('CHEBFUN:CHEBFUN:conv:piecewise',...
-       ['Convolving chebfuns with many pieces can be very slow.\n', ...
+       ['Convolving CHEBFUNs with many pieces can be very slow.\n', ...
         'Try calling MERGE() on the inputs before calling CONV().']);
 end
 
@@ -87,9 +87,9 @@ end
 [c, d] = domain(g);
 hs = max(abs([a,b,c,d]));
 
-if ( truncate && ( abs(a - c) > eps*hs || abs(b - d) > eps*hs ) )
+if ( truncate && ((abs(a - c) > eps*hs) || (abs(b - d) > eps*hs)) )
     error('CHEBFUN:CHEBFUN:conv:badTruncate', ['The ''truncate'' flag ', ...
-        'only supports chebfun objects on the same domain.']);
+        'only supports CHEBFUN objects on the same domain.']);
 end
 
 % No support for unbounded domains:
