@@ -498,7 +498,7 @@ rhs = [op(dom(1)); fp; op(dom(2))];
 D = diffmat([M N], p, dom, 'chebkind2', 'chebkind1', 'dirichlet', {'dirichlet'});
 ff = D\rhs;
 err = norm(ff-f, inf);
-pass(43) = ( err < 1e1*tol );
+pass(43) = ( err < 2e1*tol );
 
 % 2nd-order problem: u" = exp(x); u'(2) = exp(2); u(2) = exp(2);
 op = @(x)exp(x);
