@@ -81,7 +81,7 @@ elseif ( opts.algorithm == 3 ) % Bisection based algorithm.
 elseif ( opts.algorithm == 4 ) % Regula Falsi based algorithm.
     g = chebfun(@(x) fInverseRegulaFalsi(f, x), gDomain, pref, 'noVectorCheck');
 elseif ( opts.algorithm == 5 ) % Illinois based algorithm.
-    g = chebfun(@(x) fInverseIllionois(f, x), gDomain, pref, 'noVectorCheck');
+    g = chebfun(@(x) fInverseIllinois(f, x), gDomain, pref, 'noVectorCheck');
 elseif ( opts.algorithm == 6 ) % Brent's method.
     g = chebfun(@(x) fInverseBrent(f, x), gDomain, pref, 'noVectorCheck');    
 else
@@ -275,8 +275,12 @@ a = f.domain(1);
 b = f.domain(end);
 c = (a + b)/2;
 
+% The loop below is written for functions which are monotone increasing.
+% Flip the signs if this is not the case.
+sgn = sign(diff(feval(f, [a b])));
+
 while ( norm(b - a, inf) >= eps )   
-    vals = feval(f, c) - x;
+    vals = sgn*(feval(f, c) - x);
     % Bisection:
     I1 = (vals <= -eps);
     I2 = (vals >=  eps);
@@ -318,8 +322,8 @@ y = c;
 
 end
 
-function y = fInverseIllionois(f, x)
-%FINVERSEILLIONOIS(F, X)   Compute F^{-1}(X) using Regula Falsi.
+function y = fInverseIllinois(f, x)
+%FINVERSEILLINOIS(F, X)   Compute F^{-1}(X) using the Illinois algorithm.
 a = f.domain(1);
 b = f.domain(end);
 fa = feval(f, a) - x;
@@ -376,8 +380,14 @@ b = b + z;
 
 % if |f(a)| < |f(b)| then swap (a,b) end if:
 idx = abs(fa) < abs(fb);
-tmp = a(idx); a(idx) = b(idx); b(idx) = tmp;
-tmp = fa(idx); fa(idx) = fb(idx); fb(idx) = tmp;
+
+tmp = a(idx);
+a(idx) = b(idx);
+b(idx) = tmp;
+
+tmp = fa(idx);
+fa(idx) = fb(idx);
+fb(idx) = tmp;
 
 % Set c = a;
 c = a;
@@ -387,20 +397,18 @@ fc = fa;
 mFlag = true(size(x));
 delt = eps;
 
-% Initialse these too:
+% Initialise these too:
 s = a;
 d = c;
 
-while ( norm(fs, inf) > eps && norm(b - a, inf) > eps  )   
-
-    
+while ( (norm(fs, inf) > eps) && (norm(b - a, inf) > eps)  )
     s_iq = a.*fb.*fc./((fa-fb).*(fa-fc)) + b.*fa.*fc./((fb-fa).*(fb-fc)) + ...
         c.*fa.*fb./((fc-fa).*(fc-fb));
     s_sc = b - fb.*(b-a)./(fb-fa);
     s_bi = (a + b)/2;
     
-    % if f(a) ≠ f(c) and f(b) ≠ f(c) then
-    idx = ( fa ~= fc ) & ( fb ~= fc );
+    % if f(a) ~= f(c) and f(b) ~= f(c) then
+    idx = (fa ~= fc) & (fb ~= fc);
     s(idx)  = s_iq(idx);
     s(~idx) = s_sc(~idx);
 
@@ -424,15 +432,25 @@ while ( norm(fs, inf) > eps && norm(b - a, inf) > eps  )
     
     % if f(a) f(s) < 0 then b := s else a := s end if
     idx = fa.*fs <= 0;
-    b(idx) = s(idx);   fb(idx) = fs(idx);
-    a(~idx) = s(~idx); fa(~idx) = fs(~idx);
-    
+
+    b(idx) = s(idx);
+    fb(idx) = fs(idx);
+
+    a(~idx) = s(~idx);
+    fa(~idx) = fs(~idx);
+
     % if |f(a)| < |f(b)| then swap (a,b) end if:
     idx = abs(fa) < abs(fb);
-    tmp = a(idx); a(idx) = b(idx); b(idx) = tmp;
-    tmp = fa(idx); fa(idx) = fb(idx); fb(idx) = tmp;
 
+    tmp = a(idx);
+    a(idx) = b(idx);
+    b(idx) = tmp;
+
+    tmp = fa(idx);
+    fa(idx) = fb(idx);
+    fb(idx) = tmp;
 end
+
 y = s;
 
 end
