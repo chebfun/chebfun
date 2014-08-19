@@ -59,6 +59,15 @@ if ( nargin == 1 || isempty(g) )
     % Do not use the yLim chosen by Matlab built-in plot:
     data.defaultXLim = 0;
     
+else
+    
+    % Get the data from the ONEFUN:
+    data = plotData(f.onefun, g.onefun);
+    
+    % Sort out the jumps:
+    data.xJumps = getJumps(f, data.xLine);
+    data.yJumps = getJumps(g, data.yLine);
+    
 end
 
 end
