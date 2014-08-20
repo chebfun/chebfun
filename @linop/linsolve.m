@@ -112,7 +112,7 @@ for dim = [dimVals inf]
         disc.projOrder = 0;
     end
     
-    % TODO: It's weird that the current value of dim is the _next_ disc size.
+    % [TODO]: It's weird that the current value of dim is the _next_ disc size.
     
     % Discretize the operator (incl. constraints/continuity), unless there is a
     % currently valid factorization at hand.
@@ -139,24 +139,25 @@ for dim = [dimVals inf]
         v = P*v;
     end
     
-    % TODO: We could test each variable at their input dimension, but then
+    % [TODO]: We could test each variable at their input dimension, but then
     % each would be different and we would nopt be able to use the trick of
     % taking a linear combination. Instead we project and test convergence
     % at the size of the output dimension.
     
     % Convert the different components into cells:
-    % [TODO]: is it the right way to do it?
-    if ( ~isa(disc, 'collocFour') )
-        u = partition(disc, v);
-    else
-        u = mat2cell(v, size(v, 1));
-    end
+    u = partition(disc, v);
+%     [TODO]: is it the right way to do it?
+%     if ( ~isa(disc, 'collocFour') )
+%         u = partition(disc, v);
+%     else
+%         u = mat2cell(v, size(v, 1));
+%     end
     
     % Need a vector of vscales.
     if ( numel(vscale)==1 ) 
         vscale = repmat(vscale, sum(isFun), 1);
     end
-    
+
     % Test the happiness of the function pieces:
     [isDone, epsLevel, vscale, cutoff] = ...
         testConvergence(disc, u(isFun), vscale(isFun), prefs);

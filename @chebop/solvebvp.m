@@ -76,7 +76,7 @@ dom = N.domain;
 
 % [TODO]: imrpove this.
 % This is needed because the variable RESIDUAL (output of
-% LINEARIZE (l.112 of this file) has to be discretized the 
+% LINEARIZE (l.112 of this file)) has to be discretized the 
 % same way as the variable RHS. We make the assumption that
 % the user gives a rhs discretized with the same grid as 
 % the operator.

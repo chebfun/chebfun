@@ -47,7 +47,7 @@ prefTech.eps = pref.errTol;
 % First, do we want to create a CHEBTECH2 even if usinf COLLOC1?
 % Second, is it the right way to implement this?
 % Test convergence on each piece.
-if ( ~isa(disc, 'collocFour' ) )
+if ( ~isa(disc, 'collocFour') )
     for i = 1:numInt
         c = cat(2, coeffs{i,:});
         f = chebtech2({[], c});
