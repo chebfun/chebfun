@@ -124,7 +124,7 @@ if ( isnumeric(rhs) )
         end
     end
     
-    % If we get here, we have something compatable, this is a simple way to
+    % If we get here, we have something compatible, this is a simple way to
     % convert RHS to a CHEBMATRIX:
     rhs = rhs + 0*residual;
     

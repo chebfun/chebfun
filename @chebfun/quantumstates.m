@@ -118,7 +118,7 @@ end
 W = horzcat(W{:});
 plot(W, LW, 1.5)
 
-% Plot V(x) again (so that black ends up on top0:
+% Plot V(x) again (so that black ends up on top):
 plot(V, 'k', LW, 2, 'jumpline', '-k')
 if ( ymax > Vxmin )
     plot(xmin*[1, 1], [ymax, Vxmin], 'k', LW, 2)

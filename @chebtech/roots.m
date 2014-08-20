@@ -33,7 +33,7 @@ function out = roots(f, varargin)
 %
 %   ZEROFUN:
 %        0  - Return empty if F is identically 0.
-%       [1] - Return a root at x = 0 if F is idnetically 0.
+%       [1] - Return a root at x = 0 if F is identically 0.
 %
 %   If F is an array-valued CHEBTECH then there is no reason to expect each
 %   column to have the same number of roots. In order to return a useful output,

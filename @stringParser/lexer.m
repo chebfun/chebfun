@@ -147,7 +147,7 @@ while ( ~strcmp(str, '$') )
     exprEnd = 1;
     switch ( type )
         case 'num'
-            % Obtain the numbers continously (with match), their start and end
+            % Obtain the numbers continuously (with match), their start and end
             % positions.
             regex = '[\+\-]?(([0-9]+(\.[0-9]*)?|\.[0-9]+)([eE][\+\-]?[0-9]+)?[ij]?)';
             [m, ignored, e] = regexp(str, regex, 'match', 'start', 'end');
@@ -329,7 +329,7 @@ while ( ~strcmp(str, '$') )
             % If not a function nor the variable we are interested in
             % differentiating with respect to, we treat this variable just
             % as number (this enables us e.g. to be able to differentiate w.r.t.
-            % x and y seperately)
+            % x and y separately)
             else
                 out = [out ; {nextString, 'INDVAR'}];
             end
