@@ -401,7 +401,8 @@ delt = eps;
 s = a;
 d = c;
 
-while ( (norm(fs, inf) > eps) && (norm(b - a, inf) > eps)  )
+while ( (norm(fs, inf) > eps) && ...
+        (norm(b - a, inf) > eps*norm([b(:) ; a(:)], inf))  )
     % Inverse quadratic:
     s_iq = a.*fb.*fc./((fa-fb).*(fa-fc)) + b.*fa.*fc./((fb-fa).*(fb-fc)) + ...
         c.*fa.*fb./((fc-fa).*(fc-fb));
@@ -452,7 +453,7 @@ while ( (norm(fs, inf) > eps) && (norm(b - a, inf) > eps)  )
     tmp = fa(idx);
     fa(idx) = fb(idx);
     fb(idx) = tmp;
-    
+
 end
 
 % Output y:
