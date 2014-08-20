@@ -15,7 +15,7 @@ function song = sing(str, bpm)
 %   kth note to have 1/k times the amplitude of the first.
 %
 %   Empty spaces correspond to pause of a sixteenth note (semiquaver), and
-%   commas seperate notes without a pause.
+%   commas separate notes without a pause.
 %
 %   If STR is in uppercase, it will last for a quarter note (crotchet), and
 %   lower case notes for a sixteenth note (semiquaver).

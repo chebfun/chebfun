@@ -127,7 +127,7 @@ if ( isnumeric(g) )
         error('CHEBFUN:CHEBFUN:rdivide:columnRdivide:divisionByZero', ...
             'Division by zero.')
     end
-    h = f.*(1./g);  
+    h = f.*(1./g);
     return
 end
 

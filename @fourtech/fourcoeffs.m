@@ -51,7 +51,7 @@ else
     constIndex = (numCoeffs+1)/2;
 end
 
-% Use symetry:
+% Use symmetry:
 if ( NisEven )
     id = (constIndex-(N/2-1)) : (constIndex+(N/2));
 else

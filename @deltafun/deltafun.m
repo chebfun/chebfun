@@ -165,7 +165,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         % Complex conjugate of a DELTAFUN.
         f = conj(f)
         
-        % DELTAFUN obects are not tCOLLOC2ransposable.
+        % DELTAFUN objects are not transposable.
         f = ctranspose(f)
         
         % Indefinite integral of a DELTAFUN.

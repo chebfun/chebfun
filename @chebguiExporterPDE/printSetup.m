@@ -64,7 +64,7 @@ else
 end
 
 if ( (numel(deInput) == 1) && ~ischar(deInput) )
-    % Get the strings of the dependant variable. Just use allVarNames.
+    % Get the strings of the dependent variable. Just use allVarNames.
     findx = strfind(initInput{1}, xName);
     initInput = vectorize(char(initInput));
     equalSign = find(initInput == '=', 1, 'last');
@@ -78,7 +78,7 @@ if ( (numel(deInput) == 1) && ~ischar(deInput) )
     end
     
 else
-    % To deal with 'u = ...' etc in intial guesses
+    % To deal with 'u = ...' etc in initial guesses
     order = [];
     guesses = [];
     inits = [];

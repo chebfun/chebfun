@@ -12,7 +12,7 @@ function X = mrdivide(B, A)
 
 if ( isscalar(A) )
     X = B*(1/A);
-    
+
 elseif ( size(A, 2) ~= size(B, 2) )
     error('CHEBFUN:CHEBFUN:mrdivide:dimensions', ...
         'Matrix dimensions must agree.')

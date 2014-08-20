@@ -85,7 +85,7 @@ nDiff2 = zeros(hMax, numOut);
 % Factor we decrease by:
 fact = 1/5;
 
-% Evalute F at u:
+% Evaluate F at u:
 [fu{1:numOut}] = f(u);
 for hCounter = 1:hMax
     % Compute a perturbation function:

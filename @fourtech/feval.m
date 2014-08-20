@@ -45,7 +45,7 @@ else
     if ( mod(N, 2) == 1 )
        % Compute using polyval (Horner's scheme):
        y = exp(-1i*pi*(N-1)/2*x).*polyval(fourierCoeff, exp(1i*pi*x));
-    else % The the degree (N/2 term) needs to be handled separately.   
+    else % The degree (N/2 term) needs to be handled separately.
        % Compute using polyval (Horner's scheme):
        y = cos(N/2*pi*x)*fourierCoeff(N) + ...
            exp(-1i*pi*(N/2-1)*x).*polyval(fourierCoeff(1:N-1), exp(1i*pi*x));
