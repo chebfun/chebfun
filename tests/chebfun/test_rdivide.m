@@ -164,4 +164,36 @@ hExact = oph(x);
 err = hVals - hExact;
 pass(17) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
 
+%% #1111:
+
+try
+    f = chebfun(@(x) exp(x));
+    g = 0;
+    f./g;
+    pass(18) = false;
+catch ME
+    pass(18) = strcmp(ME.identifier, ...
+        'CHEBFUN:CHEBFUN:rdivide:columnRdivide:divisionByZero');
+end
+
+try
+    f = chebfun(@(x) [exp(x) exp(-x)]);
+    g = [0 0];
+    f./g;
+    pass(19) = false;
+catch ME
+    pass(19) = strcmp(ME.identifier, ...
+        'CHEBFUN:CHEBFUN:rdivide:columnRdivide:divisionByZero');
+end
+
+try
+    f = chebfun(@(x) [exp(x) exp(-x) sin(x)]);
+    g = [1 0 1];
+    f./g;
+    pass(20) = false;
+catch ME
+    pass(20) = strcmp(ME.identifier, ...
+        'CHEBFUN:CHEBFUN:rdivide:columnRdivide:divisionByZero');
+end
+
 end
