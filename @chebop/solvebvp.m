@@ -74,21 +74,24 @@ end
 % Store the domain we're working with.
 dom = N.domain;
 
-% [TODO]: imrpove this.
-% This is needed because the variable RESIDUAL (output of
-% LINEARIZE (l.112 of this file)) has to be discretized the 
-% same way as the variable RHS. We make the assumption that
-% the user gives a rhs discretized with the same grid as 
-% the operator.
-if ( isequal(cheboppref().discretization, @colloc1) )
+% Get the discretization.
+if ( isequal(pref.discretization, @colloc1) )
     tech = 'chebtech1';
-elseif ( isequal(cheboppref().discretization, @colloc2) )
+elseif ( isequal(pref.discretization, @colloc2) )
     tech = 'chebtech2';
-elseif ( isequal(cheboppref().discretization, @collocFour) )
+elseif ( isequal(pref.discretization, @collocFour) )
     tech = 'fourtech';
 end
 
-% Create an initial guess if none is passed
+% Ensure that the RHS is of the correct discretization.
+if ( isa(rhs, 'chebfun') )
+    rhs = chebfun(rhs, rhs.domain, 'tech', tech);
+else
+    constr = @(f) chebfun(f, f.domain, 'tech', tech);
+    rhs.blocks = cellfun(constr, rhs.blocks,'uniformOutput', false);
+end
+
+% Create an initial guess if none is passed.
 if ( isempty(N.init) )
     % Initialise a zero CHEBFUN:
     zeroFun = chebfun(0, dom, 'tech', tech);
