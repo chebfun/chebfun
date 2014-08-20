@@ -2,7 +2,7 @@ classdef (InferiorClasses = {?double}) chebop
 %CHEBOP  CHEBOP class for representing operators on functions defined on [a,b].
 % N = CHEBOP(OP) creates a CHEBOP object N with operator defined by OP, which
 % should be a handle to a function (often created using an anonymous function)
-% that accepts a chebfun or a chebmatrix consisting of chebfuns and scalars as
+% that accepts a CHEBFUN or a CHEBMATRIX consisting of CHEBFUNs and scalars as
 % input and returns a CHEBFUN (or CHEBMATRIX). The first input argument to OP is
 % the independent variable X, while all others represent dependent functions of
 % X; if only one input argument is accepted by OP, it is the dependent variable.
@@ -17,7 +17,7 @@ classdef (InferiorClasses = {?double}) chebop
 %       @(u) diff(u,2) - exp(u);
 %   Three dependent variables:
 %       @(x, u, v, w) [ u.*diff(v) ; diff(u, 2) + w; diff(w) - v ];
-%   Three dependent variables, chebmatrix syntax:
+%   Three dependent variables, CHEBMATRIX syntax:
 %       @(x, u) [ u{1}.*diff(u{2}) ; diff(u{1}, 2) + u{3}; diff(u{3}) - u{2} ];
 %   Function handle to a function defined in an .m-file:
 %       @myOperator
@@ -146,7 +146,7 @@ classdef (InferiorClasses = {?double}) chebop
         rbc = [];       % Right boundary condition(s)
         bc = [];        % Other/internal/mixed boundary conditions
         init = [];      % Initial guess of a solution
-        numVars = [];   % Number of variables the the CHEBOP operates on.
+        numVars = [];   % Number of variables the CHEBOP operates on.
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -377,7 +377,7 @@ classdef (InferiorClasses = {?double}) chebop
         function N = set.init(N, val)
             %CHEBOP.SET.INIT   Set the initial guess for a nonlinear CHEBOP.
             %   CHEBOP.SET.INIT offers more control of setting the initial guess
-            %   for the Newton solves used for nonlinar ODES than simply
+            %   for the Newton solves used for nonlinear ODES than simply
             %   accessing the .init field, or using standard subsref. In
             %   particular, it checks that the guess is of an appropriate form
             %   (i.e., CHEBMATRIX rather than quasimatrix.). See CHEBOP

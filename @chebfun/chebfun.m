@@ -382,10 +382,10 @@ classdef chebfun
         % Plot a CHEBFUN object on a linear-log scale:
         h = semilogy(f, varargin);
         
-        % Signmum of a CHEBFUN.
+        % Signum of a CHEBFUN.
         f = sign(f, pref)
         
-        % Simplify the representation of a CHEBFUN obect.
+        % Simplify the representation of a CHEBFUN object.
         f = simplify(f, tol);
 
         % Size of a CHEBFUN object.
@@ -530,7 +530,7 @@ classdef chebfun
         % Cubic spline interpolant:
         f = spline(x, y, d);
         
-        % Update Chebun source files:
+        % Update Chebfun source files:
         update(varargin)
         
     end
@@ -583,9 +583,9 @@ end
 %                (Private) Methods implemented in this m-file.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function op = str2op(op)
-    % Convert string inuts to either numeric format or function_handles. This is
-    % placed in a subfunction so that there no other variables hanging around in
-    % the scope.
+    % Convert string inputs to either numeric format or function_handles. This
+    % is placed in a subfunction so that there no other variables hanging
+    % around in the scope.
     sop = str2num(op); %#ok<ST2NM> % STR2DOUBLE doesn't support str2double('pi')
     if ( ~isempty(sop) )
         op = sop;

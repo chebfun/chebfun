@@ -113,7 +113,8 @@ xrm = x;
 rmIndex = [2, n-1];
 xrm(rmIndex) = [];
 
-% Take arbitary linear combination of the columns for array-valued construction:
+% Take arbitrary linear combination of the columns for array-valued
+% construction:
 linComb = sin((1:size(vals, 2)).');
 fvals = vals*linComb;
 fvalsrm = fvals;

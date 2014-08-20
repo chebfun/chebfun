@@ -15,7 +15,7 @@ function [lineStyle, pointStyle, jumpStyle, deltaStyle, out] = parsePlotStyle(va
 lineOpts = {'LineStyle', 'LineWidth'};
 pointOpts = {'Marker', 'MarkerSize', 'MarkerFaceColor', 'MarkerEdgeColor'};
 
-% Supress MLINT warning for growing arrays.
+% Suppress MLINT warning for growing arrays.
 %#ok<*AGROW>
 
 % Initialise:

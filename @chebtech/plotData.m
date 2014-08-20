@@ -12,7 +12,7 @@ function data = plotData(f, g, h)
 %   passed to PLOT() with the '-' option). 
 %
 %   DATA.xPoints and DATA.yPoints contain the (x, F(x)) data at the Chebyshev
-%   grid used to represent F, and are used for plots with markes (e.g.
+%   grid used to represent F, and are used for plots with marks (e.g.
 %   PLOT(F,'-o').
 %
 %   DATA = PLOTDATA(F, G) is similar but for plot calls of the form PLOT(F, G),

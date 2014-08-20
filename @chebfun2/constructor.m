@@ -345,7 +345,7 @@ while ( ~isHappy && ~failure )
     end
     
     % For some reason, on some computers simplify is giving back a scalar zero.
-    % In which case the function is numerically zero. Artifically set the
+    % In which case the function is numerically zero. Artificially set the
     % columns and rows to zero.
     if ( (norm(colValues) == 0) || (norm(rowValues) == 0) )
         colValues = 0;

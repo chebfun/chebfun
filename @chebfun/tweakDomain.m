@@ -50,7 +50,7 @@ end
 
 if ( isnumeric(g) || isa(g, 'domain' ) )
     % Deal with single input case, where F is typically an quasimatrix. Here we
-    % want to ensure that all the columns of F have compatable breaks.
+    % want to ensure that all the columns of F have compatible breaks.
     dom = unique(g);
     if ( numel(f) == 1 && isempty(dom) )
         % Nothing to do in the scalar case if dom is empty.
