@@ -160,7 +160,6 @@ if ( m == M - 1 )
     return
 end
 
-%c = a((M-m):-1:1);
 c = a(m+2:M+1);
 if ( length(c) > 1024 )
     opts.disp = 0;
