@@ -1,4 +1,4 @@
-function [ishappy, epsLevel, cutoff] = plateauCheck(f, pref)
+function [ishappy, epsLevel, cutoff] = plateauCheck(f, values, pref)
 %PLATEAUCHECK   Attempt to trim trailing FOURIER coefficients in a FOURTECH.
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = PLATEAUCHECK(F, VALUES) returns an estimated
 %   location, the CUTOFF, at which the FOURTECH F could be truncated. One of two

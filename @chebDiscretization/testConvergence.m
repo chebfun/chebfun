@@ -37,32 +37,52 @@ isDone = false(numInt, 1);
 cutoff = zeros(numInt, numCol);
 epsLevel = 0;
 
+% Get the discretization.
+if ( isequal(pref.discretization, @colloc1) )
+    tech = chebtech1;
+elseif ( isequal(pref.discretization, @colloc2) )
+    tech = chebtech2;
+elseif ( isequal(pref.discretization, @collocFour) )
+    tech = fourtech;
+else
+    tech = chebtech2;
+end
+
 % If an external vscale was supplied, it can supplant the inherent scale of the
 % result.
 vscale = max(u.vscale, max(vscale));
-prefTech = chebtech.techPref();
+%prefTech = chebtech.techPref();
+prefTech = tech.techPref();
 prefTech.eps = pref.errTol;
 
 % [TODO]: imrpove this.
 % First, do we want to create a CHEBTECH2 even if using COLLOC1?
 % Second, is it the right way to implement this?
 % Test convergence on each piece.
-if ( ~isa(disc, 'collocFour') )
-    for i = 1:numInt
-        c = cat(2, coeffs{i,:});
-        f = chebtech2({[], c});
-        f.vscale = vscale;
-        [isDone(i), neweps, cutoff(i,:)] = plateauCheck(f, get(f,'values'), prefTech);
-        epsLevel = max(epsLevel, neweps);
-    end
-else
-    for i = 1:numInt
+% if ( ~isa(disc, 'collocFour') )
+%     for i = 1:numInt
+%         c = cat(2, coeffs{i,:});
+%         f = chebtech2({[], c});
+%         f.vscale = vscale;
+%         [isDone(i), neweps, cutoff(i,:)] = plateauCheck(f, get(f,'values'), prefTech);
+%         epsLevel = max(epsLevel, neweps);
+%     end
+% else
+%     for i = 1:numInt
+%     c = cat(2, coeffs{i,:});
+%     f = fourtech({[], c});
+%     f.vscale = vscale;
+%     [isDone(i), neweps, cutoff(i,:)] = plateauCheck(f, prefTech);
+%     epsLevel = max(epsLevel, neweps);
+%     end
+% end
+
+for i = 1:numInt
     c = cat(2, coeffs{i,:});
-    f = fourtech({[], c});
+    f = tech.make({[], c});
     f.vscale = vscale;
-    [isDone(i), neweps, cutoff(i,:)] = classicCheck(f, prefTech);
+    [isDone(i), neweps, cutoff(i,:)] = plateauCheck(f, get(f,'values'), prefTech);
     epsLevel = max(epsLevel, neweps);
-    end
 end
 
 isDone = all(isDone, 2);

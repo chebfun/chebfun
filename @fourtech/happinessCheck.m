@@ -28,7 +28,7 @@ if ( strcmpi(pref.happinessCheck, 'classic') )
     
 elseif ( strcmpi(pref.happinessCheck, 'plateau') )
     % Use the 'plateau' happiness check:
-    [ishappy, epslevel, cutoff] = plateauCheck(f, pref);
+    [ishappy, epslevel, cutoff] = plateauCheck(f, values, pref);
 
 elseif ( strcmpi(pref.happinessCheck, 'strict') )
     error('CHEBFUN:FOURTECH:happinessCheck:strictCheck','Strict check not implemented for FOURTECH.  Please use classic check.');
