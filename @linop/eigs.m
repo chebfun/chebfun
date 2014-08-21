@@ -1,4 +1,4 @@
-function varargout = eigs(L,varargin)
+function varargout = eigs(A, varargin)
 %EIGS    Eigenvalues and eigenfunctions of a linear operator.
 %   Important: While you can construct a LINOP and apply this method, the
 %   recommended procedure is to use CHEBOP.EIGS instead.
@@ -13,7 +13,7 @@ function varargout = eigs(L,varargin)
 %   chebmatrix V, where V{i}(:,j) is the jth eigenfunction in variable i of
 %   the system.
 %
-%   [...] = EIGS(A,B) solves the generalized eigenproblem A*V = B*V*D,
+%   [...] = EIGS(A, B) solves the generalized eigenproblem A*V = B*V*D,
 %   where B is another linop.
 %
 %   EIGS(A, K) and EIGS(A, B, K) find the K most easily resolved eigenvalues.
@@ -76,6 +76,12 @@ for j = 1:nargin-1
     end
 end
 
+% Check for unbounded domains:
+if ( ~all(isfinite(A.domain)) )
+    error('CHEBFUN:LINOP:eigs:infDom', ...
+        'Unbounded domains are not supported.');
+end
+
 %#ok<*ASGLU> % Prevent MLINT warnings for unused variables, which are used in 
              % many places in this code to avoid the [~, arg2] = ... syntax.
 
@@ -93,15 +99,25 @@ if ( isempty(k) || isnan(k) )
 end
 
 % Check for square operator. (This is not strict enough, technically.)
-m = size(L, 2);
-if ( m ~= size(L, 1) )
+m = size(A, 2);
+if ( m ~= size(A, 1) )
     error('CHEBFUN:LINOP:eigs:notSquare','Block size must be square.')
 end
 
-% Set up the discretization:
+
+% If there is a generalized eigenproblem, the domains must be merged before
+% deriving the continuity equations for A:
+if ( ~isempty(B) )
+    % Merge the domains of A and B:
+    dom = domain.merge(A.domain, B.domain);
+    A.domain = dom;
+    B.domain = dom;
+end
+
+% Set up the discretization of A:
 if ( isa(discType, 'function_handle') )
     % Create a discretization object
-    discA = discType(L);
+    discA = discType(A);
 
     % Set the allowed discretisation lengths:
     dimVals = discA.dimensionValues(prefs);
@@ -116,15 +132,10 @@ else
     dimVals = max(discA.dimension);
 end
 
-% If there is a generalized eigenproblem, the right-side operator needs to have
-% its domain merged in and its own discretization.
+% Construct a discretization for B:
 if ( ~isempty(B) )
-    
-    % Update the discretization domain for L:
-    discA.domain = chebfun.mergeDomains(discA.domain, B.domain);
-    
-    % Construct a discretization for B:
-    constructor = str2func( class(discA) );   % constructor handle
+
+    constructor = str2func( class(discA) );   % constructor handle.
     discB = constructor(B);
     
     % We can ignore constraints and continuity--enforced on the left side.
@@ -146,7 +157,7 @@ else
     discB = [];
 end
 
-if ( isempty(L.continuity) )
+if ( isempty(A.continuity) )
      % Apply continuity conditions:
      discA.source = deriveContinuity(discA.source);
 end
@@ -158,7 +169,7 @@ end
 
 % Information required for finding the eigenvalues and functions.
 numInts = discA.numIntervals;
-isFun = isFunVariable(L);
+isFun = isFunVariable(A);
 
 % Automatic mode: find the best sigma by going where the convergence appears to
 % be fastest.

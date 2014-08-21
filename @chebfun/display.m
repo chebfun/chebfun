@@ -14,12 +14,12 @@ function display(X)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isequal(get(0, 'FormatSpacing'), 'compact') )
-	disp([inputname(1), ' =']);
-	disp(X);
+    disp([inputname(1), ' =']);
+    disp(X);
 else
-	disp(' ');
-	disp([inputname(1), ' =']);
-	disp(' ');
+    fprintf('\n');
+    disp([inputname(1), ' =']);
+    fprintf('\n');
     disp(X);
 end
 

@@ -90,6 +90,9 @@ classdef (InferiorClasses = {?chebfun}) domain < double
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
         
+        % Merge two domains:
+        newDom = merge(varargin)
+        
         function varargin = toDouble(varargin)
             % Cast DOMAIN to DOUBLE:
             for k = 1:nargin
@@ -97,7 +100,6 @@ classdef (InferiorClasses = {?chebfun}) domain < double
                     varargin{k} = double(varargin{k});
                 end
             end
-            
         end
         
     end

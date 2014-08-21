@@ -47,7 +47,7 @@ function displayBVPinfoExactInitial(handles, pref)
 str = {'Initial guess appears to be a solution of the BVP.';
     'Returning initial guess as the solution.'};
 
-% Update the informtion on the GUI:
+% Update the information on the GUI:
 set(handles.iter_list, 'String',  str);
 set(handles.iter_list, 'Value', 1);
 
@@ -228,7 +228,7 @@ str = [str ; sprintf('Discretization method used: %s. \n',  discString)];
 str = [str ; sprintf('Length of solution: %i.\n', length(chebfun(u)))];
 str = [str ; sprintf('Norm of residual: %.2e.\n', nrmRes)];
 
-% Update the informtion on the GUI:
+% Update the information on the GUI:
 set(handles.iter_list, 'String',  str);
 set(handles.iter_list, 'Value', 1);
 

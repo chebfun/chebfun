@@ -49,7 +49,7 @@ if ( isa(discType, 'function_handle') )
     disc = discType(L);  
     
     % Merge domains of the operator and the initial condition.
-    disc.domain = chebfun.mergeDomains(disc.domain, u0.domain); 
+    disc.domain = domain.merge(disc.domain, u0.domain); 
     
     % Set the allowed discretisation lengths: 
     dimVals = disc.dimensionValues(prefs);
@@ -80,6 +80,12 @@ if ( isa(u0, 'chebfun') )
 elseif ( ~isa(u0, 'chebmatrix') )
     error('CHEBFUN:LINOP:expm:unknown', ...
         'No support for inputs of type %s.', class(u0));
+end
+
+% Check for unbounded domains:
+if ( ~all(isfinite(L.domain)) )
+    error('CHEBFUN:LINOP:expm:infDom', ...
+        'Unbounded domains are not supported.');
 end
 
 %% Loop over different times.

@@ -198,7 +198,7 @@ p = cell(s);                     % Initialise output.
 p0 = L*repmat(x0, 1, s(2));      % Compute non-autonomous component.
 
 % The main routine:
-for hh = 1:s(2)                 % Loop over each of the dependant variables.
+for hh = 1:s(2)                 % Loop over each of the dependent variables.
     x0l = repmat(x0,1,hh-1);    % Set dep vars to the left to zero.
     x0r = repmat(x0,1,s(2)-hh); % Set dep vars to the right to zero.
     p1 = L*[x0l 1+0*x x0r];     % Evaluate all equations for [0 ... 1 ... 0]

@@ -1,8 +1,8 @@
 function c_leg = cheb2leg(c_cheb, normalize, M)
 %LEG2CHEB   Convert Chebyshev coefficients to Legendre coefficients. 
 %   C_LEG = CHEB2LEG(C_CHEB) converts the vector C_CHEB of Chebyshev
-%   coefficients to a vector C_CHEB of Legendre coefficients such that
-%   C_CHEB(N)*T0 + ... + C_CHEB(1)*T{N-1} = C_LEG(N)*P0 + ... + C_LEG(1)*P{N-1},
+%   coefficients to a vector C_LEG of Legendre coefficients such that
+%   C_CHEB(1)*T0 + ... + C_CHEB(N)*T{N-1} = C_LEG(1)*P0 + ... + C_LEG(N)*P{N-1},
 %   where P{k} is the degree k Legendre polynomial normalized so that
 %   max(|P{k}|) = 1.
 % 
@@ -26,7 +26,6 @@ function c_leg = cheb2leg(c_cheb, normalize, M)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 [N, n] = size(c_cheb);     % Number of columns. 
-c_cheb = flipud(c_cheb);   % Lowest order coeffs first.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Initialise  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if ( nargin < 2 ), normalize = 0; end         % Normalize so max(|P{k}|) = 1.
@@ -110,7 +109,6 @@ c_leg = bsxfun(@times, c_leg + c_rec, scale);        % Legendre coefficients.
 if ( normalize )
     c_leg  = bsxfun(@times, c_leg, 1./sqrt((0:N)'+1/2) ); 
 end
-c_leg = flipud(c_leg);
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -135,7 +133,6 @@ for k = 1:N-1 % Recurrence relation:
 end
 scale = (2*(0:N).'+1)/2;            % Scaling in coefficients.
 c_leg = bsxfun(@times, L'*(bsxfun(@times, f ,w)), scale); % Legendre coeffs.
-c_leg = flipud(c_leg);
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

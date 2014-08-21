@@ -3,7 +3,7 @@ function g = min( f, g, dim )
 %   MIN(f) returns a chebfun representing the minimum of the CHEBFUN2 along the
 %   y direction, i.e, MIN(f) = @(x) max( f ( x, : ) )
 %
-%   MIN(f, [], dim) returns a CHEFBUN representing the minimum of f along the
+%   MIN(f, [], dim) returns a CHEBFUN representing the minimum of f along the
 %   DIM direction. If DIM = 1 is along the y-direction and DIM = 2 is along the
 %   x-direction.
 %

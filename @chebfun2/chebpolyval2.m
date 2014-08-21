@@ -35,8 +35,8 @@ end
 
 tech = chebfunpref().tech(); 
 
-C = tech.coeffs2vals(chebcoeffs( cols, n ).'); 
-R = tech.coeffs2vals(chebcoeffs( rows, m ).'); 
+C = tech.coeffs2vals(flipud(chebcoeffs( cols, n ))); 
+R = tech.coeffs2vals(flipud(chebcoeffs( rows, m ))); 
 
 % Evaluate: 
 if ( nargout <= 1 )

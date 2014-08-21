@@ -1,4 +1,4 @@
-function h = conv(f, g, flag)
+function h = conv(f, g, varargin)
 %CONV   Convolution of CHEBFUN objects.
 %   H = CONV(F, G) produces the convolution of CHEBFUN objects F and G:
 %                     - 
@@ -11,6 +11,10 @@ function h = conv(f, g, flag)
 %   x - c).  The breakpoints of H are all pairwise sums of the breakpoints of F
 %   and G.
 %
+%   H = CONV(F, G, 'same') will truncate the domain of H so that it is the same
+%   as F. This is useful when F and G represent rapidly decaying functions on
+%   large but finite intervals which are used to approximate infinity.
+%
 %   If F and G are simple, in the sense that their FUNS are CHEBTECH objects, a
 %   fast algorithm due to Hale and Townsend is used [1]. Otherwise, the integral
 %   is computed by brute force. CONV(F, G, 'old') forces the brute force
@@ -18,17 +22,19 @@ function h = conv(f, g, flag)
 %
 %   Note that CONV only supports piecewise-smooth functions on bounded domains.
 %
-%   Example:
+% Example:
 %     f = chebfun(1/2); g = f;
 %     subplot(2, 2, 1), plot(f)
 %     for j = 2:4, g = conv(f, g); subplot(2, 2, j), plot(g), end
 %     figure, for j = 1:4, subplot(2,2,j), plot(g), g = diff(g); end
+%
+% REFERENCES:
+%   [1] N. Hale and A. Townsend, "An algorithm for the convolution of Legendre
+%   series", SIAM Journal on Scientific Computing, Vol. 36, No. 3, pages
+%   A1207-A1220, 2014.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
-%
-% [1] N. Hale and A. Townsend, "An algorithm for the convolution of Legendre
-% series", (To appear in SISC)
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -36,6 +42,25 @@ function h = conv(f, g, flag)
 if ( isempty(f) || isempty(g) )
     h = chebfun();
     return
+end
+
+% Parse inputs:
+oldMethod = false;
+same = false;
+for k = 1:numel(varargin)
+    vk = varargin{k};
+    if ( strcmpi(vk, 'old') )
+        oldMethod = true;
+    elseif ( strcmpi(vk, 'same') )
+        same = true;
+    elseif ( strcmpi(vk, 'full') )
+        % Do nothing.
+    elseif ( strcmpi(vk, 'valid') )
+        % TODO: Supoprt 'valid'. Presumably where domains of f and g overlap?
+        error('CHEBFUN:CHEBFUN:conv:validFlag', '''valid'' is not yet supprted.');
+    else
+        error('CHEBFUN:CHEBFUN:conv:badInput', 'Unknown input option %s.', vk);
+    end
 end
 
 % No support for quasimatrices:
@@ -51,6 +76,15 @@ if ( xor(f(1).isTransposed, g(1).isTransposed) )
 end
 transState = f(1).isTransposed;
 
+% Return a warning if F and G have too many pieces (the computation is probably
+% going to be very slow):
+if ( ( numel(f.funs) + numel(g.funs) ) > 50 ) 
+    % Give a warning and proceed. 
+   warning('CHEBFUN:CHEBFUN:conv:piecewise',...
+       ['Convolving CHEBFUNs with many pieces can be very slow.\n', ...
+        'Try calling MERGE() on the inputs before calling CONV().']);
+end
+
 % Extract the domain:
 [a, b] = domain(f);
 [c, d] = domain(g);
@@ -61,32 +95,40 @@ if ( any(isinf([a b c d])) )
         'CONV only supports CHEBFUN objects on bounded domains.');
 end
 
-if ( issing(f) || issing(g) || nargin == 3 )
+if ( oldMethod || issing(f) || issing(g) )
     % Call the old (and slow) version of CONV if we are not based on CHEBTECHS.
     h = oldConv(f, g);
-    return
-end
+    
+else
 
-% Ensure that g is the signal (i.e., on the larger domain) and f is the filter:
-if ( (b - a) > (d - c) )
-    h = conv(g, f);
-    return
-end
+    % Ensure g is the signal (i.e., on the larger domain) and f is the filter:
+    if ( (b - a) > (d - c) )
+        h = conv(g, f);
+        return
+    end
 
-% Initialize the output:
-h = chebfun(0, [a + c, b + d]);
-% Deal with piecewise CHEBFUN objects by looping over each of the interactions:
-for j = 1:numel(f.funs)
-    for k = 1:numel(g.funs)
-        % Compute the contribution of jth fun of f with kth fun of g:
-        hjk = conv(f.funs{j}, g.funs{k});  
-        % Add this contribution:
-        for i = 1:numel(hjk)
-            h = myplus(h, chebfun(hjk(i)));
+    % Initialize the output:
+    h = chebfun(0, [a + c, b + d]);
+    % Deal with piecewise CHEBFUN objects by looping over each interaction:
+    for j = 1:numel(f.funs)
+        for k = 1:numel(g.funs)
+            % Compute the contribution of jth fun of f with kth fun of g:
+            hjk = conv(f.funs{j}, g.funs{k});  
+            % Add this contribution:
+            for i = 1:numel(hjk)
+                h = myplus(h, chebfun(hjk(i)));
+            end
         end
     end
+    
 end
 
+% Truncate:
+if ( same )
+    h = restrict(h, [a, b]);
+end
+
+% Transpose:
 if ( transState )
     h = h.';
 end
@@ -109,7 +151,8 @@ f = defineInterval(f, [c, d], fTmp + g); % f{c, d} = f{c, d} + g;
 % Make sure that point values are not added twice:
 dom = domain(f);
 intDom = dom(2:end-1);
-f.pointValues(2:end-1) = 1/2*(feval(f, intDom.', 'left') + feval(f, intDom.', 'right'));
+f.pointValues(2:end-1) = 1/2*(feval(f, intDom.', 'left') + ...
+    feval(f, intDom.', 'right'));
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -7,7 +7,7 @@ end
 tol = 100*pref.eps; 
 
 
-% Check defintion: 
+% Check definition:
 F = chebfun2v(@(x,y) cos(x), @(x,y) sin(y));
 Fx = diffx(F); 
 Fy = diffy(F); 

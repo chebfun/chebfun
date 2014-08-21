@@ -1,4 +1,4 @@
-function L = deriveContinuity(L, domain, makePeriodic)
+function L = deriveContinuity(L, dom, makePeriodic)
 %DERIVECONTINUITY Continuity conditions in a piecewise domain.
 %   L = DERIVECONTINUITY(L) examines the domain of L and the differential
 %   orders of the variables in the system, in order to deduce and encode
@@ -24,11 +24,11 @@ function L = deriveContinuity(L, domain, makePeriodic)
 if ( nargin < 3 )
     makePeriodic = false;
     if ( nargin < 2 )
-        domain = [];
+        dom = [];
     end
 end
 
-dom = chebfun.mergeDomains(domain,L.domain);
+dom = domain.merge(dom, L.domain);
 
 diffOrd = L.diffOrder;          % order of each block
 diffOrd = max(diffOrd, [], 1);  % max order per variable

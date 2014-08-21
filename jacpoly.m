@@ -9,7 +9,7 @@ function p = jacpoly(n, a, b, dom)
 %
 %   P is computed via the standard recurrence relation for Jacobi polynomials.
 %
-% See also LEGPOLY, CHEBPOLY.
+% See also LEGPOLY, CHEBPOLY, ULTRAPOLY.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -72,6 +72,7 @@ end
 cc = nMax1 + 1 - cc;                   % P is ordered low to high.
 C = chebtech2.vals2coeffs(P(:,cc));    % Convert to coefficients
 C = fliplr(C);                         % C is ordered low to high.
+C = flipud(C);                         % Lowest order coeff at the top.
 
 % Construct CHEBFUN from coeffs:
 p = chebfun(C, dom, pref, 'coeffs');   

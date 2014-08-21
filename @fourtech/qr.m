@@ -91,7 +91,7 @@ E(:,3:2:end) = E2;
 f.values = Q; 
 f.coeffs = f.vals2coeffs(Q); 
 
-% If any columns of f where not real, we cannot guarantee that the colummns
+% If any columns of f where not real, we cannot guarantee that the columns
 % of Q should remain real.
 f.isReal(:) = all(f.isReal);
 

@@ -10,7 +10,7 @@ function varargout = merge(varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Initialise:
-domain = [];
+dom = [];
 dimension = 0;
 dimAdjust = 0;
 projOrder = 0;
@@ -20,12 +20,12 @@ varargout = varargin;
 for k = 1:nargin
     disc = varargin{k};
 
-    domain = chebfun.mergeDomains(domain, disc.domain);
+    dom = domain.merge(dom, disc.domain);
     dimAdjust = mymax(dimAdjust, disc.dimAdjust);
     projOrder = mymax(projOrder, disc.projOrder);
 
     % Discretizations have to match with the number of subintervals.
-    numInt = length(domain) - 1;
+    numInt = length(dom) - 1;
     ld1 = length(dimension);
     dimension = [ dimension, repmat(dimension(end), 1, numInt - ld1) ]; %#ok<AGROW>
     ld2 = length(disc.dimension);
@@ -36,7 +36,7 @@ for k = 1:nargin
 end
 
 for k = 1:nargin
-    varargout{k}.domain = domain;
+    varargout{k}.domain = dom;
     varargout{k}.dimension = dimension;
     varargout{k}.dimAdjust = dimAdjust;
     varargout{k}.projOrder = projOrder;
