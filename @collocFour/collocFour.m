@@ -22,6 +22,8 @@ classdef collocFour < colloc
         
         function disc = collocFour(varargin)
             disc = disc@colloc(varargin{:});
+            disc.dimAdjust = 0;
+            disc.projOrder = 0;
         end
         
     end
@@ -30,6 +32,9 @@ classdef collocFour < colloc
     %% STATIC METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
+        
+        % Dimension reduction for operator matrix.
+        [PA, P, PS] = reduce(disc, A, S);
         
         function D = diffmat(N, m)
             %DIFFMAT   Fourier differentiation matrix.

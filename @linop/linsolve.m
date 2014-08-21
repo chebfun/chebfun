@@ -106,14 +106,7 @@ isFun = isFunVariable(L);
 
 for dim = [dimVals inf]
     
-    % [TODO]: is it the right way to do it?
-    if ( isa(disc, 'collocFour') )
-        disc.dimAdjust = 0;
-        disc.projOrder = 0;
-    end
-    
     % [TODO]: It's weird that the current value of dim is the _next_ disc size.
-    
     % Discretize the operator (incl. constraints/continuity), unless there is a
     % currently valid factorization at hand.
     if ( isFactored(disc) )
@@ -126,7 +119,7 @@ for dim = [dimVals inf]
                 'Matrix is not square!');
         end
     end
-
+    
     % Discretize the RHS (incl. constraints/continuity):
     b = rhs(disc, f);
     
@@ -134,10 +127,7 @@ for dim = [dimVals inf]
     [v, disc] = mldivide(disc, A, b);
     
     % Project the solution:
-    % [TODO]: is it the right way to do it?
-    if ( ~isa(disc, 'collocFour') )
-        v = P*v;
-    end
+    v = P*v;
     
     % [TODO]: We could test each variable at their input dimension, but then
     % each would be different and we would nopt be able to use the trick of
@@ -146,12 +136,6 @@ for dim = [dimVals inf]
     
     % Convert the different components into cells:
     u = partition(disc, v);
-%     [TODO]: is it the right way to do it?
-%     if ( ~isa(disc, 'collocFour') )
-%         u = partition(disc, v);
-%     else
-%         u = mat2cell(v, size(v, 1));
-%     end
     
     % Need a vector of vscales.
     if ( numel(vscale)==1 ) 

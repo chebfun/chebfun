@@ -1,6 +1,6 @@
-classdef colloc2 < colloc
+classdef colloc2 < collocCheb
 %COLLOC2    Collocation discretization on 2nd kind points.
-%   COLLOC2 is an implementation of COLLOC that implements spectral
+%   COLLOC2 is an implementation of COLLOCCHEB that implements spectral
 %   collocation on 2nd-kind Chebyshev points for differential and integral
 %   operators.
 %
@@ -8,7 +8,7 @@ classdef colloc2 < colloc
 %   automatically to resolve the solution. You can control the allowed values of
 %   N through CHEBOPPREF.
 %
-% See also COLLOC, CHEBDISCRETIZATION, CHEBOPPREF, CHEBOP.
+% See also COLLOCCHEB, COLLOC, CHEBDISCRETIZATION, CHEBOPPREF, CHEBOP.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -21,7 +21,7 @@ classdef colloc2 < colloc
     methods ( Access = public, Static = false )
         
         function disc = colloc2(varargin)
-            disc = disc@colloc(varargin{:});
+            disc = disc@collocCheb(varargin{:});
         end
         
     end
@@ -39,7 +39,7 @@ classdef colloc2 < colloc
             %
             %   D = DIFFMAT(N, K) is the same, but for the Kth derivative.
             %
-            % See also COLLOC/DIFFMAT.
+            % See also COLLOC/BARYDIFFMAT.
 
             if ( nargin < 2 )
                 k = 1;
@@ -47,9 +47,8 @@ classdef colloc2 < colloc
 
             x = chebtech2.chebpts(N);           % First kind points.
             w = chebtech2.barywts(N);           % Barycentric weights.
-%             t = (N-1:-1:0).'*pi/(N-1);          % acos(x).
             t = chebtech2.angles(N);            % acos(x).
-            D = colloc.baryDiffMat(x, w, k, t); % Construct matrix.
+            D = collocCheb.baryDiffMat(x, w, k, t); % Construct matrix.
             
         end
         
@@ -60,8 +59,8 @@ classdef colloc2 < colloc
             %   polynomial at those points, with the convention that the first
             %   value is zero.
             
-            % TODO: More efficient implementation?
-            % TODO: Implement this at the COLLOC level?
+            % [TODO]: More efficient implementation?
+            % [TODO]: Implement this at the COLLOC level?
             
             %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
             %  See http://www.chebfun.org/ for Chebfun information.

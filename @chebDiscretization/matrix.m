@@ -38,20 +38,16 @@ end
 % store in a cell array.
 [A, S] = instantiate(disc);
 
-if ( isa(disc, 'collocFour') )
-    P = [];
-end
-
 % We want output on different format depending on whether the source L is a
 % LINOP or something else (typically a standard CHEBMATRIX):
-if ( isa(disc.source, 'linop') && ~isa(disc, 'collocFour'))
+if ( isa(disc.source, 'linop') )   
     
     % Project rows down, and record the projection matrix as well.
-    [PA, P, PS] = disc.reduce(A, S);
-
+    [PA, P, PS] = disc.reduce(disc, A, S);
+    
     % Get constraints:
     B = getConstraints(disc);
-
+    
     % This should restore squareness to the final matrix.
     M = [ B ; PA ];
 

@@ -44,7 +44,7 @@ prefTech = chebtech.techPref();
 prefTech.eps = pref.errTol;
 
 % [TODO]: imrpove this.
-% First, do we want to create a CHEBTECH2 even if usinf COLLOC1?
+% First, do we want to create a CHEBTECH2 even if using COLLOC1?
 % Second, is it the right way to implement this?
 % Test convergence on each piece.
 if ( ~isa(disc, 'collocFour') )
@@ -56,11 +56,13 @@ if ( ~isa(disc, 'collocFour') )
         epsLevel = max(epsLevel, neweps);
     end
 else
-    c = cat(2, coeffs{:});
+    for i = 1:numInt
+    c = cat(2, coeffs{i,:});
     f = fourtech({[], c});
     f.vscale = vscale;
-    [isDone, neweps, cutoff(:)] = classicCheck(f, prefTech);
+    [isDone(i), neweps, cutoff(i,:)] = classicCheck(f, prefTech);
     epsLevel = max(epsLevel, neweps);
+    end
 end
 
 isDone = all(isDone, 2);

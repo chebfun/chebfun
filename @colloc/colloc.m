@@ -1,11 +1,11 @@
 classdef colloc < chebDiscretization
 %COLLOC   Abstract class for collocation discretization of operators.
 %   COLLOC is a partial implementation of CHEBDISCRETIZATION that creates
-%   scaffolding common to first-kind and second-kind points. COLLOC cannot be
-%   used directly as a discretization for linops. Both COLLOC1 and COLLOC2 are
-%   full implementations.
+%   scaffolding common to first-kind and second-kind Chebyshev points,
+%   and Fourier points. COLLOC cannot be used directly as a discretization 
+%   for linops. COLLOC1, COLLOC2, and COLLOCFOUR are full implementations.
 %
-% See also COLLOC1, COLLOC2, CHEBDISCRETIZATION.
+% See also COLLOCCHEB, COLLOCFOUR, COLLOC1, COLLOC2, CHEBDISCRETIZATION.
 
 %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org/ for Chebfun information.
@@ -49,7 +49,7 @@ classdef colloc < chebDiscretization
             
         end
         
-    end
+     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% ABSTRACT METHODS:
@@ -75,9 +75,6 @@ classdef colloc < chebDiscretization
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
         
-        % Barycentric differentiation matrix:
-        D = baryDiffMat(x, w, k, t);
-        
         % Discretization points: (used by both colloc1 and colloc2)
         [x, w, v, t] = points(varargin);
         
@@ -101,7 +98,7 @@ classdef colloc < chebDiscretization
             end
             
             if ( maxPow <= 9 )
-                % We're happy to go up in steps of 2 up until 512
+                % We're happy to go up in steps of 2 up until 512.
                 powVec = minPow:maxPow;
             elseif ( minPow >= 9 )
                 powVec = minPow:.5:maxPow;
