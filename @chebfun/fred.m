@@ -1,5 +1,5 @@
 function F = fred(k, v, onevar)
-%FRED   Fredholm integral operator.
+%FRED   Compute the Fredholm integral with a specific kernel.
 %
 %   F = FRED(K, V) computes the Fredholm integral with kernel K:
 %
@@ -17,7 +17,7 @@ function F = fred(k, v, onevar)
 %   defining the tensor product grid. This format allows a separable or sparse
 %   representation for increased efficiency in some cases.
 %
-% See also VOLT, CHEBOP.
+% See also CHEBFUN/VOLT, CHEBOP.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

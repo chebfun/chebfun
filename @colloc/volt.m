@@ -1,4 +1,4 @@
-function V = volt(disc, kernel, oneVar)
+function V = volt(kernel, disc, oneVar)
 %VOLT    Volterra integral operator.
 %   For the calling sequence to this method, see OPERATORBLOCK.VOLT.
 % 
