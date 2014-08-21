@@ -1,4 +1,4 @@
-function data = plotData(f, g)
+function data = plotData(f, g, h)
 %PLOTDATA    Useful data values for plotting an UNBNDFUN object.
 %   DATA = PLOTDATA(F) returns a cell array of data values that can be used for
 %   plotting F. In particular, DATA is a 4x1 cell array of the form {xLine,
@@ -58,6 +58,24 @@ if ( nargin == 1 || isempty(g) )
     
     % Do not use the yLim chosen by Matlab built-in plot:
     data.defaultXLim = 0;
+    
+elseif ( nargin == 2 || isempty(h) )
+    
+    % Get the data from the ONEFUN:
+    data = plotData(f.onefun, g.onefun);
+    
+    % Sort out the jumps:
+    data.xJumps = getJumps(f, data.xLine);
+    data.yJumps = getJumps(g, data.yLine);
+else
+    
+    % PLOT(F, G, H):
+    data = plotData(f.onefun, g.onefun, h.onefun);
+    
+    % Sort out the jumps:
+    data.xJumps = getJumps(f, data.xLine);
+    data.yJumps = getJumps(g, data.yLine);
+    data.zJumps = getJumps(h, data.zLine);
     
 end
 
