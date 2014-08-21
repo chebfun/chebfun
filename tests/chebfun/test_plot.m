@@ -112,6 +112,15 @@ pass(43) = doesNotCrash(@() plot(fsr1, 'linew', 15));
 pass(44) = doesNotCrash(@() plot(fsr1, 'lines', '--'));
 pass(45) = doesNotCrash(@() plot(fsr1, 'markers', 10));
 
+% #1120:
+f = chebfun(@(x) exp(-x.^2).*exp(2*pi*1i*x), [0 Inf]);
+pass(46) = doesNotCrash(@() plot(f));
+
+f = chebfun(@(x) exp(-x.^2).*sin(2*pi*x), [0 Inf]);
+g = chebfun(@(x) exp(-x.^2).*cos(2*pi*x), [0 Inf]);
+h = chebfun(@(x) exp(-x.^2).*x, [0 Inf]);
+pass(47) = doesNotCrash(@() plot3(f, g, h));
+
 close(hfig);
 
 end
