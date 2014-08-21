@@ -1,20 +1,20 @@
 function out = fourcoeffs(f, N)
 %FOURCOEFFS   Fourier coefficients of a FOURTECH.
-%   C = FOURCOEFFS(F) returns the Fourier coefficients of F using
-%   complex-exponential form. Specifically, for N = length(F)
-%    If N is odd
-%       F(x) = C(1)*z^(N-1)/2 + C(2)*z^((N-1)/2-1) + ... + C((N+1)/2) + ... 
-%                + C(N)*z^(-(N-1)/2)
-%    If N is even
-%       F(x) = C(1)*z^(N/2-1) + C(2)*z^(N/2-2) + ... + C(N/2) + ...
-%                + C(N-1)*z^(-N/2-1) + 1/2*C(N)*(z^(N/2) + z^(-N/2))
+%   C = FOURCOEFFS(F) returns a column vector with the Fourier
+%   coefficients of F using complex-exponential form. Specifically for
+%   N = length(F):
+%   If N is odd
+%       F(x) = C(1)*z^(-(N-1)/2) + C(2)*z^(-(N-1)/2+1) + ... + C((N+1)/2) + ... 
+%                + C(N-1)*z^((N-1)/2-1) + C(N)*z^((N-1)/2)
+%   If N is even
+%       F(x) = C(1)*z^(-N/2) + C(2)*z^(-N/2+1) + ... + C(N/2+1) + ...
+%                + C(N)*z^(N/2-1) + 
 %   where z = exp(1i*pi*x).
-%   This is equivalent to GET(F, 'COEFFS').
 %
 %   A = FOURCOEFFS(F, N) truncates or pads the vector C so that N coefficients
 %   of the FOURTECH F are returned.
 %
-%   If F is array-valued with M columns, then C is an MxN matrix.
+%   If F is array-valued with M columns, then C is an NxM matrix.
 %
 % See also CHEBCOEFFS, POLY.
 
@@ -51,15 +51,16 @@ else
     constIndex = (numCoeffs+1)/2;
 end
 
-% Use symetry:
+% Use symmetry:
 if ( NisEven )
-    id = (constIndex-(N/2-1)) : constIndex+(N/2);
+    id = (constIndex-(N/2-1)) : (constIndex+(N/2));
 else
     id = (constIndex-((N-1)/2)) : (constIndex+((N-1)/2));
 end
 c = c(id,:);
 
-% Extract out the entries
-out = c;
+% Extract out the entries and flip the result to match the ordering from 
+% negative powers to positive powers.
+out = flipud(c);
 
 end

@@ -474,7 +474,7 @@ jk(k) = ak + .125./ak.*(1 + ak82.*(p(7) + ak82.*(p(5) + ak82.*(p(3) + ...
 end
 
 function Jk2 = bessel12atj0k(m)
-%BESSEL12ATJ0k   Evalute besselj(1,x).^2 at roots of besselj(0,x).
+%BESSEL12ATJ0k   Evaluate besselj(1,x).^2 at roots of besselj(0,x).
 % BESSEL12ATJ0K(M) return besselj(1, bessel0Roots(m)).^2.
 
 % Initialise storage:
@@ -504,5 +504,4 @@ c = [-171497088497/15206400, 461797/1152, -172913/8064, 151/80, -7/24, 0, 2];
 % Jk2(k) = 1./(pi*ak).*polyval(c, ak2inv);
 Jk2(k) = 1./(pi*ak).*(c(7) + ak2inv.^2.*(c(5) + ak2inv.*(c(4) + ...
     ak2inv.*(c(3) + ak2inv.*(c(2)+ak2inv.*c(1))))));
-
 end

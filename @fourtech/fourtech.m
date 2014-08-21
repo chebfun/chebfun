@@ -236,7 +236,7 @@ classdef fourtech < smoothfun
         % Complex conjugate of a FOURTECH.
         f = conj(f)
         
-        % FOURTECH obects are not transposable.
+        % FOURTECH objects are not transposable.
         f = ctranspose(f)
 
         % Indefinite integral of a FOURTECH.

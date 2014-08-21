@@ -226,7 +226,7 @@ end
                 if ( firstKept <= 0 )
                     firstKept = 1;
                 end
-                uCurrent = chebfun(uPoly(firstKept:end,:), DOMAIN, 'coeffs');
+                uCurrent = chebfun(flipud(uPoly(firstKept:end,:)), DOMAIN, 'coeffs');
                 
                 ctr = ctr + 1;
                 uOut{ctr} = uCurrent;
@@ -830,7 +830,7 @@ elseif ( Nind == 2 )
     outFun = @(t, x, u) conv2cell(inFun, u, t, x);
 else
     error('CHEBFUN:CHEBFUN:pde15s:inputs_ind', ...
-        ['Incorrect number of independant variables in input function. ' ...
+        ['Incorrect number of independent variables in input function. ' ...
          '(Must be 0, 1, or 2).']);
 end
 

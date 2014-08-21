@@ -19,7 +19,7 @@ function [y, x] = minandmax(f, flag, dim)
 %
 %   MINANDMAX(F, [], DIM) computes the minimum and maximum of the CHEBFUN F in
 %   the dimension DIM. If DIM = 1 and F is a column CHEBFUN or DIM = 2 and F is
-%   a row CHEBFUN, this is equivalent to MINANDMAX(F). Othewise, MINANDMAX(F,
+%   a row CHEBFUN, this is equivalent to MINANDMAX(F). Otherwise, MINANDMAX(F,
 %   [], DIM) returns CHEBFUNs of the minimum and maximum across the discrete
 %   dimension of F.
 %

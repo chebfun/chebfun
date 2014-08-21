@@ -128,6 +128,8 @@ g = g/abs(g.pivotValues(1));
 % find region in which roots might have been missed
 F = chebcoeffs2(f); 
 G = chebcoeffs2(g);
+F = rot90(F, -2);
+G = rot90(G, -2);
 
 xpts = linspace(xmin,xmax,2*max(size(F,2),size(G,2)));
 ypts = linspace(ymin,ymax,2*max(size(F,1),size(G,1)));
@@ -873,6 +875,7 @@ vscl = max(1,max(abs(F(:))));  % don't go for more than absolute accuracy.
 
 % Compute bivariate Chebyshev T coefficients.
 C = chebfun2.vals2coeffs(F);
+C = rot90(C, -2);
 
 % Very simple truncation of the coefficients.
 %m = find(max(abs(C))>100*eps*vscl,1,'first'); n = find(max(abs(C.'))>100*eps*vscl,1,'first');

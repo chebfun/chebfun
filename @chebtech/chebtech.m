@@ -197,7 +197,7 @@ classdef chebtech < smoothfun % (Abstract)
         % Complex conjugate of a CHEBTECH.
         f = conj(f)
         
-        % CHEBTECH obects are not transposable.
+        % CHEBTECH objects are not transposable.
         f = ctranspose(f)
 
         % Indefinite integral of a CHEBTECH.

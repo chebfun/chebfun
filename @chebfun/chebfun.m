@@ -35,7 +35,7 @@ classdef chebfun
 % CHEBFUN(F, N, 'chebkind', 2) is equivalent to CHEBFUN(feval(F, chebpts(N)).
 %
 % CHEBFUN(C, 'coeffs'), where C is an Nx1 matrix, constructs a CHEBFUN object
-% representing the polynomial C(1) T_N(x) + ... + C(N) T_1(x) + C(N+1) T_0(x),
+% representing the polynomial C(1) T_0(x) + ... + C(N) T_(N-1)(x),
 % where T_K(x) denotes the K-th Chebyshev polynomial. This is equivalent to
 % CHEBFUN({{[], C}}). C may also be an NxM matrix, as described below.
 %
@@ -235,7 +235,7 @@ classdef chebfun
                 else
                     c = fourcoeffs(f, truncLength);
                 end
-                f = chebfun(c.', f.domain([1,end]), 'coeffs', pref);
+                f = chebfun(c, f.domain([1,end]), 'coeffs', pref);
             end
             
         end
@@ -382,10 +382,10 @@ classdef chebfun
         % Plot a CHEBFUN object on a linear-log scale:
         h = semilogy(f, varargin);
         
-        % Signmum of a CHEBFUN.
+        % Signum of a CHEBFUN.
         f = sign(f, pref)
         
-        % Simplify the representation of a CHEBFUN obect.
+        % Simplify the representation of a CHEBFUN object.
         f = simplify(f, tol);
 
         % Size of a CHEBFUN object.
@@ -530,7 +530,7 @@ classdef chebfun
         % Cubic spline interpolant:
         f = spline(x, y, d);
         
-        % Update Chebun source files:
+        % Update Chebfun source files:
         update(varargin)
         
     end
@@ -583,9 +583,9 @@ end
 %                (Private) Methods implemented in this m-file.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function op = str2op(op)
-    % Convert string inuts to either numeric format or function_handles. This is
-    % placed in a subfunction so that there no other variables hanging around in
-    % the scope.
+    % Convert string inputs to either numeric format or function_handles. This
+    % is placed in a subfunction so that there no other variables hanging
+    % around in the scope.
     sop = str2num(op); %#ok<ST2NM> % STR2DOUBLE doesn't support str2double('pi')
     if ( ~isempty(sop) )
         op = sop;
@@ -665,6 +665,7 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
     prefWasPassed = false;
     isPeriodic = false;
     vectorize = false;
+    doVectorCheck = true;
     while ( ~isempty(args) )
         if ( isstruct(args{1}) || isa(args{1}, 'chebfunpref') )
             % Preference object input.  (Struct inputs not tied to a keyword
@@ -686,8 +687,16 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
             % Vectorize flag for function_handles.
             vectorize = true;
             args(1) = [];
+        elseif ( strcmpi(args{1}, 'novectorcheck') )
+            % Vector check for function_handles.
+            doVectorCheck = false;
+            args(1) = [];            
         elseif ( strcmpi(args{1}, 'coeffs') && isnumeric(op) )
-            % Hack to support construction from coefficients.
+            % Flip the coefficients, since at the user level the coefficients
+            % start from the lowes to the highest while the lower layers operate
+            % opposite to this:
+            op = flipud(op);
+            % Hack to support construction from coefficients.            
             op = {{[], op}};
             args(1) = [];
         elseif ( strcmpi(args{1}, 'periodic') )
@@ -843,7 +852,7 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
         if ( ischar(op) )
             op = str2op(op);
         end
-        if ( isa(op, 'function_handle') )
+        if ( doVectorCheck && isa(op, 'function_handle') )
             op = vectorCheck(op, dom, vectorize);
         end
         if ( isa(op, 'chebfun') )

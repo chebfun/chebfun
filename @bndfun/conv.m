@@ -104,7 +104,7 @@ numPatches = floor((d - c) / (b - a));       % Number of patches required
 x = chebpts(N, [b+c, a+d], 1);               % Chebyshev grid for interior piece
 y = 0*x;                                     % Initialise values in interior
 map = @(x, a, b) (x-a)/(b-a) - (b-x)/(b-a);  % Map from [a, b] --> [-1, 1]
-f_leg = cheb2leg(get(f, 'coeffs')); % Legendre coefficients of f
+f_leg = cheb2leg(flipud(get(f, 'coeffs')));  % Legendre coefficients of f
 
 if ( numPatches > 100 )
     error('CHEBFUN:BNDFUN:conv:tooManyPatches', ...
@@ -129,15 +129,15 @@ for k = 1:numPatches
     dk_right = b + dk(2); %  dkl  dkm   dkr
     gk = g_restricted{k};                          % g on this subdomain
     gk = simplify(gk);                             % Simplify for efficiency
-    gk_leg = cheb2leg(get(gk, 'coeffs'));          % Legendre coefficients
+    gk_leg = cheb2leg(flipud(get(gk, 'coeffs')));  % Legendre coefficients
     [hLegL, hLegR] = easyConv(f_leg, gk_leg);      % Convolution on this domain
     
     % The left triangle for the kth patch:
     ind = (dk_left <= x) & (x < dk_mid); % Locate the grid values in [dkl, dkr]:
     if ( k == 1 ) % First piece:
-        hLegL = leg2cheb(flipud(hLegL));           % Cheb. coeffs of left tri.
+        hLegL = leg2cheb(hLegL);           % Cheb. coeffs of left tri.
         data.domain = [dk_left, dk_mid];
-        h_left = bndfun({[], hLegL}, data);        % Make BNDFUN from coeffs
+        h_left = bndfun({[], flipud(hLegL)}, data);        % Make BNDFUN from coeffs
     else          % Subsequent left pieces
         z = map(x(ind), dk_left, dk_mid);          % Map grid points to [-1, 1]
         tmp = clenshawLegendre(z, hLegL);          % Evaluate via recurrence
@@ -156,9 +156,9 @@ end
 
 if ( abs((b-a)-(d-c)) < 10*eps(norm([a b c d], inf)) )
     % If there's only one patch, then we already have all the information reqd.
-    hLegR = leg2cheb(flipud(hLegR));       % Cheb coeffs of right tri.
+    hLegR = leg2cheb(hLegR);       % Cheb coeffs of right tri.
     data.domain = d + [a b];
-    h_right = bndfun({[], hLegR}, data);   % Make BNDFUN from coeffs
+    h_right = bndfun({[], flipud(hLegR)}, data);   % Make BNDFUN from coeffs
     h_mid = bndfun();
     
 else  
@@ -173,11 +173,11 @@ else
     finishLocation = a + c + numPatches*(b - a);    % Where patches got to. (fl) 
     gk = restrict(g, d-[(b-a) 0]);                  % g on appropriate domain   
     gk = simplify(gk);                              % Simplify for efficiency
-    gk_leg = cheb2leg(get(gk, 'coeffs'));           % Legendre coeffs
+    gk_leg = cheb2leg(flipud(get(gk, 'coeffs')));           % Legendre coeffs
     [hLegL, hLegR] = easyConv(f_leg, gk_leg);       % Conv on A and B
-    hLegR = leg2cheb(flipud(hLegR));                % Cheb coeffs on A
+    hLegR = leg2cheb(hLegR);                % Cheb coeffs on A
     data.domain = [d+a, d+b];
-    h_right = bndfun({[], hLegR}, data);            % Make BNDFUN from coeffs
+    h_right = bndfun({[], flipud(hLegR)}, data);            % Make BNDFUN from coeffs
     
     % Remainder piece: (between fl and a+d)
     remainderWidth = d + a - finishLocation; % b+d-fl-(b-a)
@@ -195,13 +195,13 @@ else
         domfk(end) = min(domfk(end), f.domain(end));    %  valid subdomain
         fk = restrict(f, domfk);                        % Restrict f
         fk = simplify(fk);                              % Simplify f
-        fk_leg = cheb2leg(get(fk, 'coeffs'));           % Legendre coeffs
+        fk_leg = cheb2leg(flipud(get(fk, 'coeffs')));   % Legendre coeffs
         domgk = [finishLocation, d + a] - b;            % Domain of gk
         domgk(1) = max(domgk(1), g.domain(1));          % Ensure domgk is a
         domgk(end) = min(domgk(end), g.domain(end));    %  valid subdomain
         gk = restrict(g, domgk);                        % Restrict g
         gk = simplify(gk);                              % Simplify g
-        gk_leg = cheb2leg(get(gk, 'coeffs'));           % Legendre coeffs
+        gk_leg = cheb2leg(flipud(get(gk, 'coeffs')));   % Legendre coeffs
         [ignored, hLegR] = easyConv(fk_leg, gk_leg);    % Conv 
         z = map(x(ind), finishLocation, d + a);         % Map to [-1, 1]
         tmp = clenshawLegendre(z, hLegR);               % Eval via recurrence
@@ -237,10 +237,6 @@ if ( length(beta) > length(alpha) )
     alpha = beta;
     beta = tmp;
 end
-
-% Flip, as per convention:
-alpha = flipud(alpha);
-beta = flipud(beta);
 
 % Maximum degree of result:
 MN = length(alpha) + length(beta);
