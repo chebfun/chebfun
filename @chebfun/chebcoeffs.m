@@ -1,8 +1,8 @@
 function out = chebcoeffs(f, varargin)
 %CHEBCOEFFS   Chebyshev polynomial coefficients of a CHEBFUN.
-%   A = CHEBCOEFFS(F, N) returns the first N Chebyshev coefficients of F, i.e.,
-%   the column vector such that F = A_0 +  A_1 T_1(x) + ... + 
-%   A_(N-1) T_(N-1)(x), where T_M(x) denotes the M-th Chebyshev polynomial.
+%   A = CHEBCOEFFS(F, N) returns the first N Chebyshev coefficients of F ib
+%   the column vector A such that F = A(1) T_0(x) +  A(2) T_1(x) + ... + 
+%   A(N) T_(N-1)(x), where T_M(x) denotes the M-th Chebyshev polynomial.
 %
 %   If F is a smooth CHEBFUN (i.e., with no breakpoints), then CHEBCOEFFS(F) is
 %   equivalent to CHEBCOEFFS(F, LENGTH(F)).
