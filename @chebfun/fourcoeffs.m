@@ -33,8 +33,8 @@ function varargout = fourcoeffs(f, N)
 %   If F is a smooth CHEBFUN (i.e., with no breakpoints), then [A, B] =
 %   FOURCOEFFS(F) is equivalent to FOURCOEFFS(F, LENGTH(F)).
 %
-%   If F is array-valued with M columns, then A and B contain N rows with each
-%   row corresponding to the Fourier coefficients for chebfun.
+%   If F is array-valued with M columns, then A and B contain M columns with each
+%   column corresponding to the Fourier coefficients of each chebfun.
 %
 % See also CHEBCOEFFS, LEGCOEFFS.
 
