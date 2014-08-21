@@ -143,7 +143,7 @@ end
 X = cutTrailingCoefficients(X);
 
 % Form a CHEBFUN2 object to represent the solution:
-u = chebfun2(rot90(X, 2), 'coeffs', rect); 
+u = chebfun2(X, 'coeffs', rect); 
 
 end
 

@@ -226,7 +226,7 @@ end
                 if ( firstKept <= 0 )
                     firstKept = 1;
                 end
-                uCurrent = chebfun(uPoly(firstKept:end,:), DOMAIN, 'coeffs');
+                uCurrent = chebfun(flipud(uPoly(firstKept:end,:)), DOMAIN, 'coeffs');
                 
                 ctr = ctr + 1;
                 uOut{ctr} = uCurrent;

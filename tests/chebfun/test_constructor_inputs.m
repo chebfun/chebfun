@@ -51,7 +51,7 @@ pass(8) = numel(f.funs) == 1 && size(f.funs{1}, 1) > 10;
 
 % Test construction from coefficients.
 f = chebfun([1 ; 2 ; 3], 'coeffs');
-pass(9) = isequal(f.funs{1}.onefun.coeffs, [1 ; 2 ; 3]);
+pass(9) = isequal(f.funs{1}.onefun.coeffs, flipud([1 ; 2 ; 3]));
 
 % Test 'chebkind' and 'kind' flags.
 f1 = chebfun(@(x) x, 'chebkind', '1st');
