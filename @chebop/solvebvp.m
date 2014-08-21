@@ -86,7 +86,7 @@ end
 % Ensure that the RHS is of the correct discretization.
 if ( isa(rhs, 'chebfun') )
     rhs = chebfun(rhs, rhs.domain, 'tech', tech);
-else
+elseif ( isa(rhs, 'chebmatrix') )
     constr = @(f) chebfun(f, f.domain, 'tech', tech);
     rhs.blocks = cellfun(constr, rhs.blocks,'uniformOutput', false);
 end

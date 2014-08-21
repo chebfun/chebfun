@@ -87,6 +87,9 @@ classdef ultraS < chebDiscretization
         % Multiplication matrices for ultraspherical spectral method.
         D = multmat(n, f, lambda)
         
+        % Dimension reduction for operator matrix.
+        [PA, P, PS] = reduce(disc, A, S)
+        
         function dimVals = dimensionValues(pref)
             %DIMENSIONVALUES   Return a vector of desired discretization sizes.
             %  DIMVALS = DIMENSIONVALUES(PREF) returns a vector containing
