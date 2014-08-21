@@ -2,16 +2,17 @@ function out = chebcoeffs(f, varargin)
 %CHEBCOEFFS   Chebyshev polynomial coefficients of a CHEBFUN.
 %   A = CHEBCOEFFS(F, N) returns the first N Chebyshev coefficients of F ib
 %   the column vector A such that F = A(1) T_0(x) +  A(2) T_1(x) + ... + 
-%   A(N) T_(N-1)(x), where T_M(x) denotes the M-th Chebyshev polynomial.
+%   A(N) T_(N-1)(x), where T_M(x) denotes the M-th Chebyshev polynomial of the
+%   first kind.
 %
 %   If F is a smooth CHEBFUN (i.e., with no breakpoints), then CHEBCOEFFS(F) is
 %   equivalent to CHEBCOEFFS(F, LENGTH(F)).
 %
 %   If F is array-valued with M columns, then A is an NxM matrix.
 %
-%   C = CHEBCOEFFS(F, N, 'kind', 2) returns the vector of coefficients for the
-%   Chebyshev expansion of F in 2nd-kind Chebyshev polynomials F = C_0 + C(1)
-%   U_1(x) + ... + C_(N-1) U_(N-1)(x).
+%   C = CHEBCOEFFS(F, N, 'kind', 2) returns the vector of coefficients of F
+%   such that F = C(1) + C(2) U_1(x) + ... + C(N) U_(N-1)(x), where U_M(x)
+%   denotes the M-th Chebyshev polynomail of the second kind.
 %
 % See also LEGCOEFFS, FOURCOEFFS.
 
