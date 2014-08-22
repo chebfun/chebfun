@@ -1,6 +1,6 @@
 function f = toFunctionOut(varargin)
-%TOFUNCTIONOUT   Convert COLLOCFOUR discretization to a CHEBFUN. 
-%   F = TOFUNCTIONOUT(...) is equivalent to TOFUNCTIONIN(...) for COLLOCFOUR.
+%TOFUNCTIONOUT   Convert FOURCOLLOC discretization to a CHEBFUN. 
+%   F = TOFUNCTIONOUT(...) is equivalent to TOFUNCTIONIN(...) for FOURCOLLOC.
 %
 % See also TOVALUES, TOFUNCTIONIN.
 

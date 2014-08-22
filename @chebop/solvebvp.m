@@ -79,7 +79,7 @@ if ( isequal(pref.discretization, @colloc1) )
     tech = 'chebtech1';
 elseif ( isequal(pref.discretization, @colloc2) )
     tech = 'chebtech2';
-elseif ( isequal(pref.discretization, @collocFour) )
+elseif ( isequal(pref.discretization, @fourcolloc) )
     tech = 'fourtech';
 else
     tech = 'chebtech2';

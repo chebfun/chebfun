@@ -1,6 +1,6 @@
 function f = toFunctionIn(disc, values)
-%TOFUNCTIONIN   Convert COLLOCFOUR discretization to a CHEBFUN. 
-%   TOFUNCTIONIN(DISC, VALUES) converts the values of a COLLOCFOUR-discretized
+%TOFUNCTIONIN   Convert FOURCOLLOC discretization to a CHEBFUN. 
+%   TOFUNCTIONIN(DISC, VALUES) converts the values of a FOURCOLLOC-discretized
 %   function to a CHEBFUN. If DISC.DOMAIN has breakpoints, the input should have
 %   cell arrrays corresponding to smooth pieces.
 %

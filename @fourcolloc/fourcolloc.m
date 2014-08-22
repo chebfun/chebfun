@@ -1,6 +1,6 @@
-classdef collocFour < colloc
-%COLLOCFOUR    Collocation discretization on Fourier points.
-%   COLLOCFOUR is an implementation of COLLOC that implements spectral
+classdef fourcolloc < colloc
+%FOURCOLLOC   Collocation discretization on Fourier points.
+%   FOURCOLLOC is an implementation of COLLOC that implements spectral
 %   collocation on Fourier points for differential and integral
 %   operators.
 %
@@ -20,7 +20,7 @@ classdef collocFour < colloc
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
         
-        function disc = collocFour(varargin)
+        function disc = fourcolloc(varargin)
             disc = disc@colloc(varargin{:});
             disc.dimAdjust = 0;
             disc.projOrder = 0;

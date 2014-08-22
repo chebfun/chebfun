@@ -382,8 +382,8 @@ classdef cheboppref < chebpref
                 val = @colloc2;
             elseif ( strcmpi(val, 'colloc1') )
                 val = @colloc1;
-            elseif ( any(strcmpi(val, {'periodic', 'collocFour'})) )
-                val = @collocFour;       
+            elseif ( any(strcmpi(val, {'periodic', 'fourcolloc'})) )
+                val = @fourcolloc;       
             end
                 
         end

@@ -1,7 +1,7 @@
 function D = diff(disc, m)
-%DIFF    Differentiation operator for COLLOCFOUR discretization.
+%DIFF    Differentiation operator for FOURCOLLOC discretization.
 %   D = DIFF(DISC) gives the matrix such that if v=D*u, then v=u', where u
-%   is a COLLOCFOUR representation of a trigonometric polynomial.
+%   is a FOURCOLLOC representation of a trigonometric polynomial.
 %
 %   DIFF(DISC, M) for positive integer M returns D^M (through a better
 %   algorithm than multiplication).
@@ -24,7 +24,7 @@ else
     for k = 1:numIntervals
         len = d(k+1) - d(k);
         % Scaled DIFFMATs.
-        blocks{k} = collocFour.diffmat(n(k), m) * (2*pi/len)^m; 
+        blocks{k} = fourcolloc.diffmat(n(k), m) * (2*pi/len)^m; 
     end
     
     % Assemble.

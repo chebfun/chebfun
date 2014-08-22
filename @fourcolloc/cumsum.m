@@ -1,5 +1,5 @@
 function C = cumsum(disc, m)
-%CUMSUM   Indefinite integration operator for COLLOCFOUR discretization.
+%CUMSUM   Indefinite integration operator for FOURCOLLOC discretization.
 %   C = CUMSUM(DISC) gives the matrix such that if v=C*u, then u=v' and v=0
 %   at the left endpoint, as accurately as possible in trigonometric polynomial
 %   discretization.
@@ -24,7 +24,7 @@ else
     for k = 1:numIntervals
         len = d(k+1) - d(k);
         % Scaled CUMSUMMATs.
-        blocks{k} = collocFour.cumsummat(n(k)) * (len/(2*pi)); 
+        blocks{k} = fourcolloc.cumsummat(n(k)) * (len/(2*pi)); 
     end
     
     % Assemble.

@@ -3,9 +3,9 @@ classdef colloc < chebDiscretization
 %   COLLOC is a partial implementation of CHEBDISCRETIZATION that creates
 %   scaffolding common to first-kind and second-kind Chebyshev points,
 %   and Fourier points. COLLOC cannot be used directly as a discretization 
-%   for linops. COLLOC1, COLLOC2, and COLLOCFOUR are full implementations.
+%   for linops. COLLOC1, COLLOC2, and FOURCOLLOC are full implementations.
 %
-% See also COLLOCCHEB, COLLOCFOUR, COLLOC1, COLLOC2, CHEBDISCRETIZATION.
+% See also COLLOCCHEB, FOURCOLLOC, COLLOC1, COLLOC2, CHEBDISCRETIZATION.
 
 %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org/ for Chebfun information.
