@@ -1,6 +1,6 @@
-classdef collocCheb < colloc
-%COLLOCCHEB   Abstract class for collocation discretization of operators.
-%   COLLOCCHEB is a partial implementation of COLLOC using 1st or 2nd kind
+classdef chebcolloc < colloc
+%CHEBCOLLOC   Abstract class for collocation discretization of operators.
+%   CHEBCOLLOC is a partial implementation of COLLOC using 1st or 2nd kind
 %   Chebyshev points.
 %
 % See also COLLOC, COLLOC1, COLLOC2, CHEBDISCRETIZATION.
@@ -13,7 +13,7 @@ classdef collocCheb < colloc
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
         
-        function disc = collocCheb(varargin)
+        function disc = chebcolloc(varargin)
             disc = disc@colloc(varargin{:});
         end
         

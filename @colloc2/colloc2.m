@@ -1,6 +1,6 @@
-classdef colloc2 < collocCheb
+classdef colloc2 < chebcolloc
 %COLLOC2    Collocation discretization on 2nd kind points.
-%   COLLOC2 is an implementation of COLLOCCHEB that implements spectral
+%   COLLOC2 is an implementation of CHEBCOLLOC that implements spectral
 %   collocation on 2nd-kind Chebyshev points for differential and integral
 %   operators.
 %
@@ -8,7 +8,7 @@ classdef colloc2 < collocCheb
 %   automatically to resolve the solution. You can control the allowed values of
 %   N through CHEBOPPREF.
 %
-% See also COLLOCCHEB, COLLOC, CHEBDISCRETIZATION, CHEBOPPREF, CHEBOP.
+% See also CHEBCOLLOC, COLLOC, CHEBDISCRETIZATION, CHEBOPPREF, CHEBOP.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -21,7 +21,7 @@ classdef colloc2 < collocCheb
     methods ( Access = public, Static = false )
         
         function disc = colloc2(varargin)
-            disc = disc@collocCheb(varargin{:});
+            disc = disc@chebcolloc(varargin{:});
         end
         
     end
@@ -48,7 +48,7 @@ classdef colloc2 < collocCheb
             x = chebtech2.chebpts(N);           % First kind points.
             w = chebtech2.barywts(N);           % Barycentric weights.
             t = chebtech2.angles(N);            % acos(x).
-            D = collocCheb.baryDiffMat(x, w, k, t); % Construct matrix.
+            D = chebcolloc.baryDiffMat(x, w, k, t); % Construct matrix.
             
         end
         

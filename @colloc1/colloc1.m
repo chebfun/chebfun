@@ -1,6 +1,6 @@
-classdef colloc1 < collocCheb
+classdef colloc1 < chebcolloc
 %COLLOC1    Collocation discretization on 1st kind points.
-%   COLLOC1 is an implementation of COLLOCCHEB that implements spectral
+%   COLLOC1 is an implementation of CHEBCOLLOC that implements spectral
 %   collocation on 1st-kind Chebyshev points for differential and integral
 %   operators.
 %
@@ -8,7 +8,7 @@ classdef colloc1 < collocCheb
 %   automatically to resolve the solution. You can control the allowed values of
 %   N through CHEBOPPREF.
 %
-% See also COLLOCCHEB, COLLOC, CHEBDISCRETIZATION, CHEBOPPREF, CHEBOP.
+% See also CHEBCOLLOC, COLLOC, CHEBDISCRETIZATION, CHEBOPPREF, CHEBOP.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -21,7 +21,7 @@ classdef colloc1 < collocCheb
     methods ( Access = public, Static = false )
         
         function disc = colloc1(varargin)
-            disc = disc@collocCheb(varargin{:});
+            disc = disc@chebcolloc(varargin{:});
         end
         
     end
@@ -48,7 +48,7 @@ classdef colloc1 < collocCheb
             x = chebtech1.chebpts(N);           % First kind points.
             w = chebtech1.barywts(N);           % Barycentric weights.
             t = chebtech1.angles(N);            % acos(x).
-            D = collocCheb.baryDiffMat(x, w, k, t); % Construct matrix.
+            D = chebcolloc.baryDiffMat(x, w, k, t); % Construct matrix.
             
         end
         
