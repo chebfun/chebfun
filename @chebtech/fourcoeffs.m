@@ -1,13 +1,14 @@
 function out = fourcoeffs(f, N)
 %FOURCOEFFS   Fourier coefficients of a CHEBTECH.
-%   C = FOURCOEFFS(F) returns the Fourier coefficients of F using
-%   complex-exponential form.  Specifically, for N=length(F)
-%    If N is odd
-%       F(x) = C(1)*z^(N-1)/2 + C(2)*z^((N-1)/2-1) + ... + C((N+1)/2) + ... 
-%                + C(N)*z^(-(N-1)/2)
-%    If N is even
-%       F(x) = C(1)*z^(N/2-1) + C(2)*z^(N/2-2) + ... + C(N/2) + ...
-%                + C(N-1)*z^(-N/2-1) + 1/2*C(N)*(z^(N/2) + z^(-N/2))
+%   C = FOURCOEFFS(F) returns a column vector with the Fourier
+%   coefficients of F using complex-exponential form. Specifically for
+%   N = length(F):
+%   If N is odd
+%       F(x) = C(1)*z^(-(N-1)/2) + C(2)*z^(-(N-1)/2+1) + ... + C((N+1)/2) + ... 
+%                + C(N-1)*z^((N-1)/2-1) + C(N)*z^((N-1)/2)
+%   If N is even
+%       F(x) = C(1)*z^(-N/2) + C(2)*z^(-N/2+1) + ... + C(N/2+1) + ...
+%                + C(N)*z^(N/2-1) + 
 %   where z = exp(1i*pi*x).
 %
 %   A = FOURCOEFFS(F, N) truncates or pads the vector C so that N coefficients
@@ -38,9 +39,9 @@ out = zeros(N, numCols);
 
 % Handle the possible non-symmetry in the modes.
 if ( mod(N, 2) == 1 )
-    modes = (N-1)/2:-1:-(N-1)/2;
+    modes = -(N-1)/2:(N-1)/2;
 else
-    modes = N/2-1:-1:-N/2;
+    modes = -N/2:N/2-1;
 end
 
 % Compute the coefficients via inner products:
