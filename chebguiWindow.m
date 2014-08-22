@@ -154,7 +154,7 @@ set(handles.button_solve, 'BackgroundColor', [43 129 86]/256);
 % Ensure that we have a light-blue color in background
 set(handles.mainWindow, 'BackgroundColor', [.702 .78 1]);
 
-% Default discretization is colloc2
+% Default discretization is chebcolloc2
 handles.guifile.options.discretization = @chebcolloc2;
 
 % Update handles structure

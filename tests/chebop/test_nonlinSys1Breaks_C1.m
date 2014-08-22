@@ -14,7 +14,7 @@ d = [-pi 0 pi];
 x = chebfun('x',d);
 f = [ 0*x ; 0*x ];
 
-%% Piecewise (colloc1):
+%% Piecewise (chebcolloc1):
 pref.discretization = @chebcolloc1;
 
 A = chebop(@(x,u,v) [u - diff(v,2) + u.^2; diff(u) + sin(v)],d);

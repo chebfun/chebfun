@@ -6,8 +6,8 @@ end
 
 tol = 1e-10;
 
-c1 = colloc1();
-c2 = colloc2();
+c1 = chebcolloc1();
+c2 = chebcolloc2();
 
 
 N = 5;
@@ -35,7 +35,7 @@ err = norm(Da - Db);
 pass(4) = err < tol;
 
 N = 5;
-Da = cumsummat(N, [-.5 .5], 'colloc1');
+Da = cumsummat(N, [-.5 .5], 'chebcolloc1');
 Db = c1.cumsummat(N)/2;
 err = norm(Da - Db);
 pass(5) = err < tol;

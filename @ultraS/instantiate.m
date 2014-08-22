@@ -48,7 +48,7 @@ if ( isa(item, 'operatorBlock') )
         [M, S] = quasi2USdiffmat(disc);
     else
         error('CHEBFUN:ULTRAS:instantiate:fail', ...
-            'ultraS cannot represent this operator. Suggest you use colloc2.')
+            'ultraS cannot represent this operator. Suggest you use chebcolloc2.')
     end
     
 elseif ( isa(item, 'functionalBlock') )
@@ -64,8 +64,8 @@ elseif ( isa(item, 'functionalBlock') )
     dim = disc.dimension;
     dom = disc.domain;
     
-    % Create a colloc2 discretization:
-    collocDisc = colloc2(item, dim, dom);
+    % Create a chebcolloc2 discretization:
+    collocDisc = chebcolloc2(item, dim, dom);
     M = matrix(collocDisc);
     
     % Convert from colloc-space to coeff-space using COEFFS2VALS.

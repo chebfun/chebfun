@@ -41,7 +41,7 @@ err(2,2) = abs( u(-pi) );
 err(2,3) = abs( u(pi) );
 
 %%
-% colloc1
+% chebcolloc1
 % smooth
 
 prefs = cheboppref;
@@ -67,7 +67,7 @@ err(4,2) = abs( u(-pi) );
 err(4,3) = abs( u(pi) );
 
 %%
-% colloc1
+% chebcolloc1
 % smooth
 
 prefs = cheboppref;

@@ -42,7 +42,7 @@ u = solvebvp(L, f, pref);
 b = chebfun(bb, dom);
 L = chebop(@(v) diff(v) + b.*v, dom);
 L.bc = 'periodic';
-pref.discretization = 'colloc2';
+pref.discretization = 'chebcolloc2';
 v = solvebvp(L, f, pref);
 
 % Comparison.
@@ -94,7 +94,7 @@ b = chebfun(bb, dom);
 c = chebfun(cc, dom);
 L = chebop(@(v) a.*diff(v, 2) + b.*diff(v) + c.*v, dom);
 L.bc = 'periodic';
-pref.discretization = 'colloc2';
+pref.discretization = 'chebcolloc2';
 v = solvebvp(L, f, pref);
 
 % Comparison.
@@ -130,7 +130,7 @@ c = chebfun(cc, dom);
 d = chebfun(dd, dom);
 L = chebop(@(v) a.*diff(v, 3) + b.*diff(v, 2) + c.*diff(v) + d.*v, dom);
 L.bc = 'periodic';
-pref.discretization = 'colloc2';
+pref.discretization = 'chebcolloc2';
 v = solvebvp(L, f, pref);
 
 % Comparison.
@@ -171,7 +171,7 @@ e = chebfun(ee, dom);
 L = chebop(@(v) a.*diff(v, 4) + b.*diff(v, 3) + c.*diff(v, 2) + ...
     d.*diff(v) + e.*v, dom);
 L.bc = 'periodic';
-pref.discretization = 'colloc2';
+pref.discretization = 'chebcolloc2';
 v = solvebvp(L, f, pref);
 
 % Comparison.

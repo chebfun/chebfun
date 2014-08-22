@@ -6,8 +6,8 @@ end
 
 tol = 1e-10;
 
-c1 = colloc1();
-c2 = colloc2();
+c1 = chebcolloc1();
+c2 = chebcolloc2();
 
 N = 5;
 Da = diffmat(N);

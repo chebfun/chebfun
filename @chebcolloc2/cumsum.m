@@ -23,7 +23,7 @@ else
     blocks = cell(numIntervals);
     for k = 1:numIntervals
         len = d(k+1) - d(k);
-        blocks{k} = colloc2.cumsummat(n(k)) * (len/2);  % Scaled cumsummats.
+        blocks{k} = chebcolloc2.cumsummat(n(k)) * (len/2);  % Scaled cumsummats.
     end
     
     % Assemble!

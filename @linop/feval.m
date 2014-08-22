@@ -17,7 +17,7 @@ end
 if ( nargin < 3 )
     flag = 'bc';
 end
-% TODO: Should we always use a colloc2 representation here?
+% TODO: Should we always use a chebcolloc2 representation here?
 % if ( nargin < 4 )
 %     pref = cheboppref();
 %     discType = pref.discretization;

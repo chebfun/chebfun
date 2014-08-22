@@ -22,10 +22,10 @@ if ( (nargin == 2) )
         disc = dom;
         dom = cheboppref().domain;
     else
-        disc = colloc2();
+        disc = chebcolloc2();
     end
 elseif ( nargin == 1 )
-    disc = colloc2();
+    disc = chebcolloc2();
     dom = cheboppref().domain;
 end
 % Ensure DISC is a discretization:

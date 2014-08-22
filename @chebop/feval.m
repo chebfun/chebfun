@@ -70,7 +70,7 @@ if ( (nargin == 2) && isnumeric(varargin{1}) )
     % cases.
     n = varargin{1};
     L = linop(N);
-    if ( ~isa(cheboppref().discretization(), 'colloc2') )
+    if ( ~isa(cheboppref().discretization(), 'chebcolloc2') )
         % We only support CHEBCOLLOC2 discretizations!
         error('CHEBFUN:CHEBOP:feval:notColloc2', ...
             ['FEVAL(N, DIM) only supports CHEBCOLLOC2 discretizations.\n', ...

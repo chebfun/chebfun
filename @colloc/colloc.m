@@ -75,7 +75,7 @@ classdef colloc < chebDiscretization
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
         
-        % Discretization points: (used by both colloc1 and colloc2)
+        % Discretization points: (used by both chebcolloc1 and chebcolloc2)
         [x, w, v, t] = points(varargin);
         
         function dimVals = dimensionValues(pref)
