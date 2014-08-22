@@ -1,4 +1,4 @@
-function f = fred(A, kernel, oneVar)
+function f = fred(kernel, A, oneVar)
 % FRED  Fredholm integral operator.
 %
 % F = FRED(K,V) computes the Fredholm integral with kernel K:

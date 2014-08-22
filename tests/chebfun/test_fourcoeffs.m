@@ -17,7 +17,7 @@ f_test = @(x) 1 + 5*cos(5*pi*x) + 10*cos(10*pi*x) - 7*sin(7*pi*x) + 8*sin(8*pi*x
 f = chebfun(f_test,'periodic');
 [a,b] = fourcoeffs(f);
 a_exact = [1 0 0 0 0 5 0 0 0 0 10].';
-b_exact = [0 0 0 0 0 0 -7 8 0 0].'
+b_exact = [0 0 0 0 0 0 -7 8 0 0].';
 err = [(a-a_exact);(b-b_exact)];
 pass(2) = norm(err,inf) < vscale(f).*epslevel(f);
 

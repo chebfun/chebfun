@@ -32,7 +32,12 @@ fsing = chebfun(@(x) 1./x, [-1 0 1], 'exps', [0 -1 -1 0]);
 % Function with a discontinuity.
 fdc = chebfun({@sin, @exp}, [-1 0 1], pref);
 
-% Funnction with delta functions.
+% Functions on unbounded domains.
+fub1 = chebfun(@(x) exp(-x.^2).*sin(2*pi*x), [0 Inf]);
+fub2 = chebfun(@(x) exp(-x.^2).*cos(2*pi*x), [0 Inf]);
+fub3 = chebfun(@(x) exp(-x.^2).*x, [0 Inf]);
+
+% Function with delta functions.
 x = chebfun(@(x) x);
 fdel =  dirac(x) - dirac(x-.5) + dirac(x+.5);
 
@@ -82,35 +87,40 @@ pass(24) = doesNotCrash(@() plot(fqc));
 % Check plot of a singular function.
 pass(25) = doesNotCrash(@() plot(fsing));
 
+% Plots of functions on unbounded domains.
+pass(26) = doesNotCrash(@() plot(fub1));
+pass(27) = doesNotCrash(@() plot(fub1, fub2));
+pass(28) = doesNotCrash(@() plot3(fub1, fub2, fub3));
+
 % Check plot flags and other options.
-pass(26) = doesNotCrash(@() plot(fsr1, 'numpts', 100));
-pass(27) = doesNotCrash(@() plot(fsr2, 'interval', [-0.5 0.5]));
-pass(28) = doesNotCrash(@() plot(fsr2, [-0.5 0.5]));
-pass(29) = doesNotCrash(@() plot(fdc, 'jumpline', 'r-'));
-pass(30) = doesNotCrash(@() plot(fdc, 'jumpline', 'none'));
-pass(31) = doesNotCrash(@() plot3(fdc, fsr1, fsr2, 'jumpline', 'r-'));
-pass(32) = doesNotCrash(@() plot(fdel, 'deltaline', '--ro'));
-pass(33) = doesNotCrash(@() plot(x, fdel)); 
-pass(34) = doesNotCrash(@() plot(fqr1, 'linewidth', 2));
+pass(29) = doesNotCrash(@() plot(fsr1, 'numpts', 100));
+pass(30) = doesNotCrash(@() plot(fsr2, 'interval', [-0.5 0.5]));
+pass(31) = doesNotCrash(@() plot(fsr2, [-0.5 0.5]));
+pass(32) = doesNotCrash(@() plot(fdc, 'jumpline', 'r-'));
+pass(33) = doesNotCrash(@() plot(fdc, 'jumpline', 'none'));
+pass(34) = doesNotCrash(@() plot3(fdc, fsr1, fsr2, 'jumpline', 'r-'));
+pass(35) = doesNotCrash(@() plot(fdel, 'deltaline', '--ro'));
+pass(36) = doesNotCrash(@() plot(x, fdel)); 
+pass(37) = doesNotCrash(@() plot(fqr1, 'linewidth', 2));
 
 % Check plotting discrete data alongside CHEBFUN objects
 x = linspace(-1,1,10).';
-pass(35) = doesNotCrash(@() plot(far1, 'b', far2, 'r', x, far1(x), 'om', x, far3(x), '-ok'));
+pass(38) = doesNotCrash(@() plot(far1, 'b', far2, 'r', x, far1(x), 'om', x, far3(x), '-ok'));
 
 % Check SURF, SURFACE, SURFC, and MESH.
-pass(36) = doesNotCrash(@() surf(far1));
-pass(37) = doesNotCrash(@() surf(fqr1));
+pass(39) = doesNotCrash(@() surf(far1));
+pass(40) = doesNotCrash(@() surf(fqr1));
 % (SURFACE is a wrapper for SURF, so we don't need to be so thorough.)
-pass(38) = doesNotCrash(@() surface(fqr1));
-pass(39) = doesNotCrash(@() surfc(far1));
-pass(40) = doesNotCrash(@() surfc(fqr1));
-pass(41) = doesNotCrash(@() mesh(far1));
-pass(42) = doesNotCrash(@() mesh(fqr1));
+pass(41) = doesNotCrash(@() surface(fqr1));
+pass(42) = doesNotCrash(@() surfc(far1));
+pass(43) = doesNotCrash(@() surfc(fqr1));
+pass(44) = doesNotCrash(@() mesh(far1));
+pass(45) = doesNotCrash(@() mesh(fqr1));
 
 % Test abbreviated plot styles.
-pass(43) = doesNotCrash(@() plot(fsr1, 'linew', 15));
-pass(44) = doesNotCrash(@() plot(fsr1, 'lines', '--'));
-pass(45) = doesNotCrash(@() plot(fsr1, 'markers', 10));
+pass(46) = doesNotCrash(@() plot(fsr1, 'linew', 15));
+pass(47) = doesNotCrash(@() plot(fsr1, 'lines', '--'));
+pass(48) = doesNotCrash(@() plot(fsr1, 'markers', 10));
 
 close(hfig);
 
