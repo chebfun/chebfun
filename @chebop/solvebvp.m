@@ -81,6 +81,8 @@ elseif ( isequal(pref.discretization, @colloc2) )
     tech = 'chebtech2';
 elseif ( isequal(pref.discretization, @collocFour) )
     tech = 'fourtech';
+else
+    tech = 'chebtech2';
 end
 
 % Ensure that the RHS is of the correct discretization.
