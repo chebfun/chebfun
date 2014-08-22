@@ -126,8 +126,8 @@ classdef chebgui
         % miscellaneous options for when solving problems with CHEBGUI, namely:
         %   damping:        Whether the Newton iteration is to be damped or not.
         %   grid:           Show grids on plots in CHEBGUI.
-        %   discretization: Discretization for ODEs (@chebcolloc1, @chebcolloc2 or
-        %                   @ultraS)
+        %   discretization: Discretization for ODEs (@chebcolloc1, @chebcolloc2 
+        %                   or @ultraS)
         %   pdeholdplot:    Hold plot during solving PDEs.
         %   fixYaxisLower:  Fix lower y axis while solving PDEs.
         %   fixYaxisUpper:  Fix upper y axis while solving PDEs.

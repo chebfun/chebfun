@@ -1,7 +1,7 @@
 function varargout = equationPoints(disc)
 %EQUATIONPOINTS   Points at which collocation is enforced.
-%   In CHEBCOLLOC2, functions are discretized at 2nd kind points but equations are
-%   enforced at 1st kind points, to avoid duplication at boundaries.
+%   In CHEBCOLLOC2, functions are discretized at 2nd kind points but equations 
+%   are enforced at 1st kind points, to avoid duplication at boundaries.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

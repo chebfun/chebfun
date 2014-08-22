@@ -1,4 +1,4 @@
-classdef chebcolloc2 < chebcolloc
+classdef chebcolloc2 < chebcolloc                                               
 %CHEBCOLLOC2    Collocation discretization on 2nd kind points.
 %   CHEBCOLLOC2 is an implementation of CHEBCOLLOC that implements spectral
 %   collocation on 2nd-kind Chebyshev points for differential and integral
@@ -62,7 +62,8 @@ classdef chebcolloc2 < chebcolloc
             % [TODO]: More efficient implementation?
             % [TODO]: Implement this at the COLLOC level?
             
-            %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
+            %  Copyright 2014 by The University of Oxford and The Chebfun 
+            %  Developers.
             %  See http://www.chebfun.org/ for Chebfun information.
             
             N = N-1;
@@ -88,8 +89,8 @@ classdef chebcolloc2 < chebcolloc
             % Matrix mapping values -> coeffs.
             Tinv = chebtech2.vals2coeffs(eye(N+1));
             
-            % Matrix mapping coeffs -> integral coeffs. Note that the highest order
-            % term is truncated.
+            % Matrix mapping coeffs -> integral coeffs. Note that the highest 
+            % order term is truncated.
             k = 1:N;
             k2 = 2*(k-1);  k2(1) = 1;  % avoid divide by zero
             B = diag(1./(2*k),-1) - diag(1./k2,1);

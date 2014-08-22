@@ -48,7 +48,7 @@ if ( isa(item, 'operatorBlock') )
         [M, S] = quasi2USdiffmat(disc);
     else
         error('CHEBFUN:ULTRAS:instantiate:fail', ...
-            'ultraS cannot represent this operator. Suggest you use chebcolloc2.')
+          'ultraS cannot represent this operator. Suggest you use chebcolloc2.')
     end
     
 elseif ( isa(item, 'functionalBlock') )
