@@ -19,7 +19,7 @@ B = linop(1i*diffOp);
 % True eigenvalues:
 e_true = [-3 -2 -1 1 2 3].';
 
-% COLLOC1
+% CHEBCOLLOC1
 pref.discretization = @colloc1;
 [V, D] = eigs(A, B, 6, 0, pref);
 e = diag(D)/pi;
@@ -29,7 +29,7 @@ BV = B*V;
 err(1,1) = norm(er - e_true) + norm(imag(e));
 err(1,2) = norm(AV-BV*D);
 
-% COLLOC2
+% CHEBCOLLOC2
 pref.discretization = @colloc2;
 [V, D] = eigs(A, B, 6, 0, pref);
 e = diag(D)/pi;
@@ -62,7 +62,7 @@ B = addbc(B, ev(1));
 % True eigenvalues:
 e_true = (1:6).';
 
-% COLLOC1
+% CHEBCOLLOC1
 pref.discretization = @colloc1;
 [V, D] = eigs(B, A, 6, 1, pref);
 e = 1./diag(D)/pi;
@@ -72,7 +72,7 @@ BV = B*V;
 err(2,1) = norm(er - e_true) + norm(imag(e));
 err(2,2) = norm(BV-AV*D);
 
-% COLLOC2
+% CHEBCOLLOC2
 pref.discretization = @colloc2;
 [V, D] = eigs(B, A, 6, 1, pref);
 e = 1./diag(D)/pi;

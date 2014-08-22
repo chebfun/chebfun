@@ -1,5 +1,5 @@
 function C = cumsum(disc, m)
-%CUMSUM   Indefinite integration operator for COLLOC2 discretization.
+%CUMSUM   Indefinite integration operator for CHEBCOLLOC2 discretization.
 %   C = CUMSUM(DISC) gives the matrix such that if v=C*u, then u=v' and v=0
 %   at the left endpoint, as accurately as possible in Chebyshev polynomial
 %   discretization.

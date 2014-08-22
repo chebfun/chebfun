@@ -21,7 +21,7 @@ A = addbc(A, [z ev(1)]);
 B = linop(B);
 e_true = -1 + 1i*pi*[-1 1 -1 1 -2 2 -2 2 -3 3 -3 3].';
 
-% COLLOC1
+% CHEBCOLLOC1
 pref.discretization = @colloc1;
 [V, D] = eigs(A, B, 12, 0, pref);
 e = diag(D);
@@ -30,7 +30,7 @@ BV = B*V;
 err(1,1) = norm(e - e_true);
 err(1,2) = norm(AV - BV*D);
 
-% COLLOC2
+% CHEBCOLLOC2
 pref.discretization = @colloc2;
 [V, D] = eigs(A, B, 12, 0, pref);
 e = diag(D);

@@ -3,7 +3,7 @@ classdef chebcolloc < colloc
 %   CHEBCOLLOC is a partial implementation of COLLOC using 1st or 2nd kind
 %   Chebyshev points.
 %
-% See also COLLOC, COLLOC1, COLLOC2, CHEBDISCRETIZATION.
+% See also COLLOC, CHEBCOLLOC1, CHEBCOLLOC2, CHEBDISCRETIZATION.
 
 %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org/ for Chebfun information.

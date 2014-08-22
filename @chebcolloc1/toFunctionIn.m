@@ -1,6 +1,6 @@
 function f = toFunctionIn(disc, values)
-%TOFUNCTIONIN   Convert COLLOC1 discretization to a CHEBFUN. 
-%   TOFUNCTIONIN(DISC, VALUES) converts the values of a COLLOC1-discretized
+%TOFUNCTIONIN   Convert CHEBCOLLOC1 discretization to a CHEBFUN. 
+%   TOFUNCTIONIN(DISC, VALUES) converts the values of a CHEBCOLLOC1-discretized
 %   function to a CHEBFUN. If DISC.DOMAIN has breakpoints, the input should have
 %   cell arrrays corresponding to smooth pieces.
 %

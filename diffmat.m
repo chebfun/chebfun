@@ -90,7 +90,7 @@ function D = diffmat(N, varargin)
 %   condition sum(U) = I for a scalar I, where U is the solution to the 
 %   resulting system.
 %
-% See also DIFF, COLLOC2.DIFFMAT, CUMSUMMAT.
+% See also DIFF, CHEBCOLLOC2.DIFFMAT, CUMSUMMAT.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

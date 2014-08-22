@@ -71,9 +71,9 @@ if ( (nargin == 2) && isnumeric(varargin{1}) )
     n = varargin{1};
     L = linop(N);
     if ( ~isa(cheboppref().discretization(), 'colloc2') )
-        % We only support COLLOC2 discretizations!
+        % We only support CHEBCOLLOC2 discretizations!
         error('CHEBFUN:CHEBOP:feval:notColloc2', ...
-            ['FEVAL(N, DIM) only supports COLLOC2 discretizations.\n', ...
+            ['FEVAL(N, DIM) only supports CHEBCOLLOC2 discretizations.\n', ...
              'Use MATRIX(N, DIM) or change the discretization in CHEBOPPREF.']);
     end
     A = matrix(L, n); % has n rows but maybe more columns

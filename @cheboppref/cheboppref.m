@@ -378,10 +378,10 @@ classdef cheboppref < chebpref
             % handle:
             if ( any(strcmpi(val, {'ultraspherical', 'ultraS'})) )
                 val = @ultraS;
-            elseif ( any(strcmpi(val, {'collocation', 'colloc2'})) )
-                val = @colloc2;
-            elseif ( strcmpi(val, 'colloc1') )
-                val = @colloc1;
+            elseif ( any(strcmpi(val, {'collocation', 'chebcolloc2', 'colloc2'})) )
+                val = @chebcolloc2;
+            elseif ( any(strcmpi(val, {'chebcolloc1', 'colloc1'})) )
+                val = @chebcolloc1;
             elseif ( any(strcmpi(val, {'periodic', 'fourcolloc'})) )
                 val = @fourcolloc;       
             end

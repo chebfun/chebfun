@@ -9,7 +9,7 @@ if ( nargin == 0 )
 end
 tol = 10*pref.errTol;
 
-% Nonlinear parameter dependent problem (COLLOC2)
+% Nonlinear parameter dependent problem (CHEBCOLLOC2)
 pref.discretization = @colloc2;
 
 % Natural setup

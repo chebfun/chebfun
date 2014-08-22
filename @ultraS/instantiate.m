@@ -56,7 +56,7 @@ elseif ( isa(item, 'functionalBlock') )
     
     % Developer note: In general we can't represent functional
     % blocks via coeffs. To get around this we instantiate a
-    % COLLOC2 discretization and convert it to coefficient space
+    % CHEBCOLLOC2 discretization and convert it to coefficient space
     % using COEFFS2VALS(). (Note it's COEFFS2VALS() rather than
     % VALS2COEFFS() because it's a right-multiply (I think..).)
     
