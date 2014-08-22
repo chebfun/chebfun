@@ -40,7 +40,7 @@ err = norm(Da - Db);
 pass(5) = err < tol;
 
 p = cheboppref();
-cheboppref.setDefaults('discretization', @colloc1);
+cheboppref.setDefaults('discretization', @chebcolloc1);
 try
     N = 5;
     Da = diffmat(N, 3);

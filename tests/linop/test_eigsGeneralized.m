@@ -20,7 +20,7 @@ B = linop(1i*diffOp);
 e_true = [-3 -2 -1 1 2 3].';
 
 % CHEBCOLLOC1
-pref.discretization = @colloc1;
+pref.discretization = @chebcolloc1;
 [V, D] = eigs(A, B, 6, 0, pref);
 e = diag(D)/pi;
 er = sort(real(e));
@@ -30,7 +30,7 @@ err(1,1) = norm(er - e_true) + norm(imag(e));
 err(1,2) = norm(AV-BV*D);
 
 % CHEBCOLLOC2
-pref.discretization = @colloc2;
+pref.discretization = @chebcolloc2;
 [V, D] = eigs(A, B, 6, 0, pref);
 e = diag(D)/pi;
 er = sort(real(e));
@@ -63,7 +63,7 @@ B = addbc(B, ev(1));
 e_true = (1:6).';
 
 % CHEBCOLLOC1
-pref.discretization = @colloc1;
+pref.discretization = @chebcolloc1;
 [V, D] = eigs(B, A, 6, 1, pref);
 e = 1./diag(D)/pi;
 er = sort(real(e));
@@ -73,7 +73,7 @@ err(2,1) = norm(er - e_true) + norm(imag(e));
 err(2,2) = norm(BV-AV*D);
 
 % CHEBCOLLOC2
-pref.discretization = @colloc2;
+pref.discretization = @chebcolloc2;
 [V, D] = eigs(B, A, 6, 1, pref);
 e = 1./diag(D)/pi;
 er = sort(real(e));

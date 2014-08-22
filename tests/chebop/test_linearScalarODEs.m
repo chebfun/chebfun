@@ -20,7 +20,7 @@ rhs = sin(x);
 
 %% Try different discretizations
 % Start with colloc2
-pref.discretization = @colloc2;
+pref.discretization = @chebcolloc2;
 u1 = solvebvp(N, rhs, pref);
 
 %% Change to ultraS
@@ -28,7 +28,7 @@ pref.discretization = @ultraS;
 u2 = solvebvp(N, rhs, pref);
 
 %% Change to colloc1
-pref.discretization = @colloc1;
+pref.discretization = @chebcolloc1;
 u3 = solvebvp(N, rhs, pref);
 
 %% Did we pass? 
@@ -53,7 +53,7 @@ rhs = sin(x);
 
 %% Try different discretizations
 % Start with colloc2
-pref.discretization = @colloc2;
+pref.discretization = @chebcolloc2;
 u4 = solvebvp(N, rhs, pref);
 
 %% Change to ultraS
@@ -61,7 +61,7 @@ pref.discretization = @ultraS;
 u5 = solvebvp(N, rhs, pref);
 
 %% Change to colloc1
-pref.discretization = @colloc1;
+pref.discretization = @chebcolloc1;
 u6 = solvebvp(N, rhs, pref);
 
 %% Did we pass? 
@@ -87,7 +87,7 @@ rhs = sin(x);
 
 %% Try different discretizations
 % Start with collocation
-pref.discretization = @colloc2;
+pref.discretization = @chebcolloc2;
 u7 = solvebvp(N, rhs, pref);
 
 %% Change to ultraS
@@ -95,7 +95,7 @@ pref.discretization = @ultraS;
 u8 = solvebvp(N, rhs, pref);
 
 %% Change to colloc1
-pref.discretization = @colloc1;
+pref.discretization = @chebcolloc1;
 u9 = solvebvp(N, rhs, pref);
 
 

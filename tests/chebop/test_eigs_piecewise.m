@@ -12,10 +12,10 @@ F = (abs(x) < ep)/(2*ep);
 L = chebop(@(x,u) diff(u,2), [-1 1], 0, 0);
 M = chebop(@(x,u) F(x).*u);
 
-pref.discretization = @colloc2;
+pref.discretization = @chebcolloc2;
 ec2 = eigs(L, M, pref);
 
-pref.discretization = @colloc1;
+pref.discretization = @chebcolloc1;
 ec1 = eigs(L, M, pref);
 
 pref.discretization = @ultraS;

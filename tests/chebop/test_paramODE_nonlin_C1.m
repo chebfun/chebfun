@@ -10,7 +10,7 @@ end
 tol = 10*pref.errTol;
 
 % Nonlinear parameter dependent problem (CHEBCOLLOC1)
-pref.discretization = @colloc1;
+pref.discretization = @chebcolloc1;
 
 % Natural setup
 x = chebfun('x', [-1 1]);

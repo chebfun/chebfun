@@ -75,9 +75,9 @@ end
 dom = N.domain;
 
 % Get the discretization.
-if ( isequal(pref.discretization, @colloc1) )
+if ( isequal(pref.discretization, @chebcolloc1) )
     tech = 'chebtech1';
-elseif ( isequal(pref.discretization, @colloc2) )
+elseif ( isequal(pref.discretization, @chebcolloc2) )
     tech = 'chebtech2';
 elseif ( isequal(pref.discretization, @fourcolloc) )
     tech = 'fourtech';

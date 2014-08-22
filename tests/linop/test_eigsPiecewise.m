@@ -36,14 +36,14 @@ v4results = [0.055633547864;
 prefs = cheboppref;
 
 %% Solve with colloc1
-prefs.discretization = @colloc1;
+prefs.discretization = @chebcolloc1;
 [V, D] = eigs(L, 6, prefs);
 e = diag(D);
 err(1) = norm(e - v4results, inf);
 % Check that we actually computed eigenfunctions
 err(2) = norm(L*V-V*D);
 %% Solve with colloc2
-prefs.discretization = @colloc2;
+prefs.discretization = @chebcolloc2;
 [V, D] = eigs(L, 6, prefs);
 e = diag(D);
 err(3) = norm(e - v4results, inf);

@@ -18,7 +18,7 @@ x = chebfun('x',d);
 f = [ 0*x ; 0*x ];
 
 %% CHEBCOLLOC1
-pref.discretization = @colloc1;
+pref.discretization = @chebcolloc1;
 [u12, info] = solvebvp(A, f, pref);
 
 u1 = u12{1}; u2 = u12{2};

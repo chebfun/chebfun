@@ -15,7 +15,7 @@ classdef cheboppref < chebpref
 %     no domain argument is explicitly passed to the constructor.
 %
 %   discretization             - Discretization of linear problems
-%     [@colloc2]
+%     [@chebcolloc2]
 %     @ultraS
 %
 %     This options determines whether linear operators are discretized using
@@ -356,7 +356,7 @@ classdef cheboppref < chebpref
         %   preferences.
 
             factoryPrefs.domain = [-1 1];
-            factoryPrefs.discretization = @colloc2;
+            factoryPrefs.discretization = @chebcolloc2;
             factoryPrefs.scale = NaN;
             factoryPrefs.damping = 1;
             factoryPrefs.display = 'off';

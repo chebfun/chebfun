@@ -20,7 +20,7 @@ L = addbc(L,'periodic');
 
 %%
 
-type = {@colloc2, @colloc1, @ultraS, @colloc2, @colloc1, @ultraS};
+type = {@chebcolloc2, @chebcolloc1, @ultraS, @chebcolloc2, @chebcolloc1, @ultraS};
 prefs = cheboppref;
 prefs.errTol = 1e-14;
 

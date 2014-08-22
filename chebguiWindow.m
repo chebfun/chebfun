@@ -155,7 +155,7 @@ set(handles.button_solve, 'BackgroundColor', [43 129 86]/256);
 set(handles.mainWindow, 'BackgroundColor', [.702 .78 1]);
 
 % Default discretization is colloc2
-handles.guifile.options.discretization = @colloc2;
+handles.guifile.options.discretization = @chebcolloc2;
 
 % Update handles structure
 guidata(hObject, handles);
@@ -1421,7 +1421,7 @@ function button_export_Callback(hObject, eventdata, handles)
 
     % What discretization do we want to use?
     if ( get(handles.button_Collocation, 'Value') )
-        handles.guifile.options.discretization = @colloc2;
+        handles.guifile.options.discretization = @chebcolloc2;
     else
         handles.guifile.options.discretization = @ultraS;
     end
@@ -2059,7 +2059,7 @@ function panel_discretization_SelectionChangeFcn(hObject, eventdata, handles)
 newDisc = get(eventdata.NewValue, 'String');
 
 if ( strcmp(newDisc, get(handles.button_Collocation, 'String')) )
-    handles.guifile.options.discretization = @colloc2;
+    handles.guifile.options.discretization = @chebcolloc2;
 else
     handles.guifile.options.discretization = @ultraS;
 end

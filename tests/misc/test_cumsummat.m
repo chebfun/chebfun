@@ -29,7 +29,7 @@ err = norm(Da - Db);
 pass(3) = err < tol;
 
 N = 5;
-Da = cumsummat(N, @colloc1);
+Da = cumsummat(N, @chebcolloc1);
 Db = c1.cumsummat(N);
 err = norm(Da - Db);
 pass(4) = err < tol;
@@ -41,7 +41,7 @@ err = norm(Da - Db);
 pass(5) = err < tol;
 
 p = cheboppref();
-cheboppref.setDefaults('discretization', @colloc2);
+cheboppref.setDefaults('discretization', @chebcolloc2);
 try
     N = 5;
     Da = cumsummat(N);

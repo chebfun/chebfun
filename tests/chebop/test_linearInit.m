@@ -19,7 +19,7 @@ rhs = sin(x);
 
 %% Simple
 % Start with colloc2
-pref.discretization = @colloc2;
+pref.discretization = @chebcolloc2;
 N.init = sin(20*x);
 u1 = solvebvp(N, rhs, pref);
 err(1) = norm(N(u1) - rhs);

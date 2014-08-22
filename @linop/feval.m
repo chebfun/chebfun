@@ -26,7 +26,7 @@ end
 % elseif ( ischar(discType) )
 %     discType = str2func(discType);
 % end
-discType = @colloc2;
+discType = @chebcolloc2;
 
 if ( isa(n, 'chebfun') )
     M = L*n;   % application to a function

@@ -21,7 +21,7 @@ rhs = 0;
 
 %% Try different discretizations
 % Start with colloc2
-pref.discretization = @colloc2;
+pref.discretization = @chebcolloc2;
 [u1, info1] = solvebvp(N, rhs, pref);
 
 %% Change to ultraS
@@ -29,7 +29,7 @@ pref.discretization = @ultraS;
 [u2, info2] = solvebvp(N, rhs, pref);
 
 %% Change to colloc1
-pref.discretization = @colloc1;
+pref.discretization = @chebcolloc1;
 [u3, info3] = solvebvp(N, rhs, pref);
 
 %% Did we pass? 
