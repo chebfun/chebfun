@@ -79,8 +79,8 @@ dampingInfo.giveUp =        0;
 linpref = pref;
 linpref.errTol = pref.errTol/10;
 
-% Get the differetial order of the LINOP L (needed when evaluating periodic
-% boundary conditions). 
+% Get the differential order of the LINOP L (needed when evaluating the residual
+% of periodic boundary conditions):
 diffOrder = L.diffOrder;
 
 % Start the Newton iteration!
@@ -317,16 +317,18 @@ if ( ~isempty(N.bc) )
     % Periodic case. 
     if ( isa(N.bc, 'char') && strcmpi(N.bc, 'periodic') )
         bcU = 0;
-        % Need to evaluate the boundary condition for each independent variable 
-        % uBlocks{k} separately because each variable has its own number of 
-        % derivative max(diffOrder(:, k)).
-        for k = 1 : numel(uBlocks)
-            for l = 0 : max(diffOrder(:, k)) 
-            bcU = bcU + feval(diff(uBlocks{k}, l), N.domain(end)) - ...
-                feval(diff(uBlocks{k}, l), N.domain(1));
+        % Need to evaluate the residual of the boundary condition for each
+        % independent variable uBlocks{k} separately, since each variable can
+        % have a different maximum differential order associated with it in a
+        % problem.
+        for k = 1:numel(uBlocks)
+            for l = 0:max(diffOrder(:, k))
+                % Compute residual of appropriately many derivatives:
+                bcU = bcU + (feval(diff(uBlocks{k}, l), N.domain(end)) - ...
+                    feval(diff(uBlocks{k}, l), N.domain(1)))^2;
             end
         end
-        bcNorm = bcNorm + norm(bcU, 2).^2;
+        bcNorm = bcNorm + bcU;
         
     else
         % Evaluate. The output, BCU, will be a vector.
