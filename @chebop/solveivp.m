@@ -33,16 +33,23 @@ if ( ~isempty(N.lbc) )
     bcEvalFun = N.lbc(cheb0{:});
     evalPoint = N.domain(1);
     odeDom = N.domain;
+    % Store that we're solving an IVP.
+    isIVP = 1;
 else
     cheb0 = repmat({cheb0}, nargin(N.rbc), 1);
     disp('Final value problem detected.')
     bcEvalFun = N.rbc(cheb0{:});
     evalPoint = N.domain(end);
+    % Flip the time domain, so that the problem will be solved as a final-value
+    % problem.
     odeDom = fliplr(N.domain);
+    % Store that we're solving an FVP.
+    isIVP = 0;
 end
 
-% Should sort the results. This requires evaluating N.LBC/RBC with a treeVar,
-% looking at the IDs and the diffOrders.
+% Evaluating N.LBC or N.RBC above gives CHEBFUN results. Evaluate the CHEBFUNs
+% at the appropriate endpoint to obtain the scalar value for the initial/final
+% condition.
 if ( isa(bcEvalFun, 'chebfun') )
     initVals = -bcEvalFun(evalPoint);
 else
@@ -50,6 +57,19 @@ else
         repmat({evalPoint}, length(bcEvalFun.blocks), 1) );
 end
 
+% Need to sort the results of INITVALS above. This is because we can't guarantee
+% that the LBC or RBC were imposed in the order of ascending variables, and
+% ascending diffOrder. The SORTCONDITIONS() method of the TREEVAR class
+% evaluates the conditions with TREEVAR inputs, which gives it enough
+% information to be able to sort them in the correct order. 
+if ( isIVP )
+    idx = treeVar.sortConditions(N.lbc);
+else
+    idx = treeVar.sortConditions(N.rbc);
+end
+
+% Sort the results from above:
+initVals = initVals(idx);
 % Create an ODESET struct for specifying tolerance:
 opts = odeset('absTol',1e-12,'relTol',1e-12);
 

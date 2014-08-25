@@ -129,3 +129,18 @@ r = roots(y-1.2);
 plot(r, y(r), 'ro')
 e = roots(diff(y));
 plot(e, y(e), 'g*')
+
+%% van der Pol, flip order of conditions:
+mu = 1;
+dom = [0, 10];
+vdpFun = @(y) diff(y, 2) - mu.*(1-y.^2).*diff(y) + y;
+N = chebop(vdpFun, dom);
+N.lbc = @(u) [diff(u); u-2];
+tic
+y = N\0
+fprintf('Solution time with chebops: %4.4fs.\n', toc);
+figure
+plot(y)
+% Show where breakpoints got introduced
+hold on, plot(y.domain, y(y.domain),'k*')
+shg

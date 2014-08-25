@@ -96,14 +96,14 @@ title('A 3D Trajectory of the Lorenz Attractor - Chebfun solution', FS, 14)
 %% With CHEBOP -- Lotka-Volterra
 dom = [0 15];
 N = chebop(@(t,u,v) [diff(u) - u + u.*v; diff(v) + v - u.*v], dom);
-N.lbc = @(u,v) [u-1.2; v-1.2];
+N.lbc = @(u,v) [v-1.2; u-1.2];
 uv = N\[0;0]
 plot(uv)
 
 %% With CHEBOP -- Higher order Lotka-Volterra, useful for checking BC parsing
 dom = [0 3];
 N = chebop(@(t,u,v) [diff(u, 2) - u + u.*v; diff(v) + v - u.*v], dom);
-N.lbc = @(u,v) [u-1; v-1.2; v-1];
+N.lbc = @(u,v) [u-1; v-1.5; diff(u)-0.5];
 uv = N\[0;0]
 plot(uv)
 axis equal
@@ -112,10 +112,10 @@ dom = [0 15];
 N = chebop(@(t,u,v,w) [diff(u) - 10*(v - u);
     diff(v) - u.*(28 - w) + v;
     diff(w) - u.*v + (8/3)*w], dom);
-N.lbc = @(u,v,w) [u + 14; v + 15; w - 20];
+N.lbc = @(u,v,w) [w - 20 ; v + 15; u + 14];
 uvw = N\[0;0;0]
 plot(uvw)
-plot3(uvw{1},uvw{2}, uvw{3}, LW, 1.6), view(20,20)
+plot3(uvw{1},uvw{2}, uvw{3}, 'linewidth', 1.6), view(20,20)
 axis([-20 20 -40 40 5 45]), grid on
 xlabel 'x(t)', ylabel 'y(t)', zlabel 'z(t)'
 title('A 3D Trajectory of the Lorenz Attractor - Chebfun solution', FS, 14)
