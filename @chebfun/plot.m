@@ -50,7 +50,7 @@ function varargout = plot(varargin)
 %
 %   Besides the usual parameters that control the specifications of lines (see
 %   linespec), the parameter JumpLine and DeltaLine determines the linestyle for
-%   the discontinuities and the delta functions of the CHEBFUN F, respetively.
+%   the discontinuities and the delta functions of the CHEBFUN F, respectively.
 %   For example, PLOT(F, 'JumpLine', '-r') will plot discontinuities as solid
 %   red lines and PLOT(F, 'deltaline', '-r') will plot the delta functions as
 %   solid red lines. By default the plotting style for JumpLine is ':', and '-'

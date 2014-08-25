@@ -3,7 +3,7 @@ function displayInfoExactInitial(pref)
 %                           that solves the BVP.
 %
 % [displayInfoExactInitial(U0, PREF) prints out information before the Newton
-% iteration starts. This method is called if the inital guess passed to
+% iteration starts. This method is called if the initial guess passed to
 % CHEBOP/SOLVEBVP appears to be a solution to the problem. In particular if
 % PREF.display = 'iter', it prints the information that the initial guess
 % solved the BVP

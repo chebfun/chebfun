@@ -9,7 +9,7 @@ function cg = set(cg, propName, val)
 %   'rbc' - right boundary conditions
 %   'bc' - general boundary conditions
 %   'tol' - tolerance
-%   'init' - intial condition/guess for nonlinear BVPs/PDEs
+%   'init' - initial condition/guess for nonlinear BVPs/PDEs
 %   'sigma' - desired eigenvalues: 'LM','SM','LA','SA','LR','SR','LI','SI'
 %   'options' - a structure containing the below
 %       'numeigs' - number of desired eigenvalues

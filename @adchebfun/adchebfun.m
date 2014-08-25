@@ -686,7 +686,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             f.func = fred(K, f.func);
             
             % Update derivative part
-            f.jacobian = operatorBlock.fred(f.domain, K, varargin{:})*...
+            f.jacobian = operatorBlock.fred(K, f.domain, varargin{:})*...
                 f.jacobian;
             
             % FRED is a linear operation, so no need to update linearity info.
@@ -1455,7 +1455,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             f.func = volt(K, f.func);
             
             % Update derivative part
-            f.jacobian = operatorBlock.volt(f.domain, K, varargin{:})*f.jacobian;
+            f.jacobian = operatorBlock.volt(K, f.domain, varargin{:})*f.jacobian;
             
             % VOLT is a linear operation, so no need to update linearity info.
             % f.linearity = f.linearity;

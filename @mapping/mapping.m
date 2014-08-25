@@ -88,7 +88,7 @@ classdef mapping
         % TODO: Testing shows SUBSREF is expensive here. Since we don't need it,
         % (the default suffices for now) we comment it out.
 %         function out = subsref(map, index) 
-%             % TODO: Allow ".for", ect, in the place of ".For"?
+%             % TODO: Allow ".for", etc, in the place of ".For"?
 %             idx = index(1).subs;
 %             switch index(1).type
 %                 case '()'

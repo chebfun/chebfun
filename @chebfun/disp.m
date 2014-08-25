@@ -41,7 +41,7 @@ if ( numel(f) > 1 )
             fprintf('\n');
         end
     end
-    
+
 else
     % Transpose information:
     if ( f.isTransposed )
@@ -122,7 +122,7 @@ if ( numFuns > 1 )
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Dispaly for delta functions:
+% Display for delta functions:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 out = get(f, 'deltas');
 if ( ~isempty(out) )
@@ -132,7 +132,7 @@ if ( ~isempty(out) )
     m = size(deltaMag, 1);
     n = size(deltaMag, 2);
     for i = 1: m
-        for j = 1:n            
+        for j = 1:n
             s = [s, sprintf('%8.2g', deltaMag(i, j))];
         end
         s = [s, sprintf('\n')];

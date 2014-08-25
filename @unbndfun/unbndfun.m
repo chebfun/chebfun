@@ -170,7 +170,7 @@ classdef unbndfun < classicfun
         X = mrdivide(B, A)
         
         % Data for plotting an UNBNDFUN
-        data = plotData(f, g);
+        data = plotData(f, g, h);
                 
         % Polynomial coefficients of an UNBNDFUN.
         out = poly(f)

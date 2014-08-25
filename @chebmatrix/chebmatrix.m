@@ -506,6 +506,10 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             A = cellfun(@(A) diff(A, varargin{:}), A);
         end
         
+        function A = double(A)
+            A = cellfun(@double, A, 'UniformOutput', true);
+        end
+        
         function A = erf(A)
             A = cellfun(@erf, A);
         end

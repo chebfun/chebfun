@@ -2,7 +2,7 @@ function out = get(f, propName)
 %GET   GET method for the CHEBOP2 class.
 %   P = GET(N, PROP) returns the property P specified in the string PROP from
 %   the CHEBOP2 N. Valid entries for the string PROP are:
-%       'DOMAIN'         - The domain of defintion of N.
+%       'DOMAIN'         - The domain of definition of N.
 %       'OP'             - The partial differential operator of N.
 %       'LBC'            - The left boundary constraints of N.
 %       'RBC'            - The right boundary constraints of N.

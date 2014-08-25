@@ -183,7 +183,7 @@ elseif ( isa(f, 'chebfun') )
         end
         
         % Add breaks at the appropriate roots of f:
-        if ( isreal(f) )
+        if ( isreal(f) || round(b) == b )
             f = addBreaksAtRoots(f);
         else
             % Add breaks at the roots of the imaginary part of F to account for

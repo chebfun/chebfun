@@ -143,6 +143,9 @@ classdef chebtech < smoothfun % (Abstract)
         
         % Alias Chebyshev coefficients.
         coeffs = alias(coeffs, m)
+        
+        % Angles of Chebyshev points. (i.e., acos(chebpts(n))
+        t = angles(n)
 
         % Compute Chebyshev barycentric weights.
         w = barywts(n)
@@ -194,7 +197,7 @@ classdef chebtech < smoothfun % (Abstract)
         % Complex conjugate of a CHEBTECH.
         f = conj(f)
         
-        % CHEBTECH obects are not transposable.
+        % CHEBTECH objects are not transposable.
         f = ctranspose(f)
 
         % Indefinite integral of a CHEBTECH.

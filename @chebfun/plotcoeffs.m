@@ -14,8 +14,8 @@ function varargout = plotcoeffs(f, varargin)
 %   The final entry is that of the epslevel plot.
 %
 %   What 'coefficients' means in this context is dictated by the 'tech' that is
-%   being used to represent F. See the PLOTCOEFFS method at the relevent tech 
-%   levelfor more details. Note that you can find what tech is being used by 
+%   being used to represent F. See the PLOTCOEFFS method at the relevant tech
+%   level for more details. Note that you can find what tech is being used by
 %   calling GET(F, 'tech').
 %
 % See also CHEBFUN/PLOT.
@@ -29,6 +29,12 @@ if ( isempty(f) )
         varargout{1} = plot([]);
     end
     return
+end
+
+% We can only plot the coefficients of one CHEBFUN at a time:
+if ( any(cellfun(@(f) isa(f, 'chebfun'), varargin)) )
+    error('CHEBFUN:CHEBFUN:plotcoeffs:multipleChebfuns', ...
+        'Calls of the form PLOTCOEFFS(F, ''b'',  G, ''r'') are not supported.');
 end
 
 % Store the hold state of the current axis:
@@ -45,7 +51,7 @@ if ( nargin > 1 && ischar(varargin{1}) && numel(varargin{1}) < 4 )
             'Error in color/linetype argument.');
     elseif ( ~isempty(col) )
         col = col{:};
-        varargin(1) = [];
+%         varargin(1) = []; % Don't remove as we need marker information.
     end
 end
 if ( isempty(col) )

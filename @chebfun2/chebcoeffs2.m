@@ -21,8 +21,8 @@ end
 [cols, d, rows] = cdr(f);
 
 % Get the coeffs of the rows and the columns:
-cols_coeffs = chebcoeffs( cols ).';
-rows_coeffs = chebcoeffs( rows ).';
+cols_coeffs = chebcoeffs( cols );
+rows_coeffs = chebcoeffs( rows );
 
 if ( nargout <= 1 )
     % Return the matrix of coefficients

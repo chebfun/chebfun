@@ -144,6 +144,9 @@ classdef chebtech2 < chebtech
         % Aliasing:
         coeffs = alias(coeffs, m)
         
+        % Angles of Chebyshev points. (i.e., acos(chebpts(n))
+        t = angles(n)
+        
         % Evaluate a Chebyshev interpolant using the barycentric formula:
         out = bary(x, values)
         
@@ -152,7 +155,7 @@ classdef chebtech2 < chebtech
         
         % Compute Chebyshev points (x) and optionally quadrature (w)
         % and barycentric (v) weights:
-        [x, w, v] = chebpts(n);
+        [x, w, v, t] = chebpts(n);
         
         % Convert coefficients to values:
         values = coeffs2vals(coeffs);

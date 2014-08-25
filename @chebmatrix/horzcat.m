@@ -38,7 +38,7 @@ else
         'Incompatible row sizes.')
 end
 
-% Now we need to flatten out all the inner nested cell divisons, leaving
+% Now we need to flatten out all the inner nested cell divisions, leaving
 % just a cell of blocks. 
 cs = [0 cumsum(n)];
 for j = 1:nargin

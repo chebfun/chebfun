@@ -71,6 +71,7 @@ end
 cc = nMax1 + 1 - cc;                   % P is ordered low to high.
 C = chebtech2.vals2coeffs(P(:,cc));    % Convert to coefficients
 C = fliplr(C);                         % C is ordered low to high.
+C = flipud(C);                         % Lowest order coeff at the top.
 
 % Construct CHEBFUN from coeffs:
 p = chebfun(C, dom, pref, 'coeffs');   
