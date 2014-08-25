@@ -81,7 +81,7 @@ linpref.errTol = pref.errTol/10;
 
 % Get the differetial order of the LINOP L (needed when evaluating periodic
 % boundary conditions). 
-order = L.diffOrder;
+diffOrder = L.diffOrder;
 
 % Start the Newton iteration!
 while ( ~terminate )
@@ -216,7 +216,7 @@ while ( ~terminate )
 end
 
 % Evaluate how far off we are from satisfying the boundary conditions.
-errEstBC = normBCres(N, u, x, order);
+errEstBC = normBCres(N, u, x, diffOrder);
 
 % Print information depending on why we stopped the Newton iteration.
 if ( success )
@@ -242,9 +242,9 @@ end
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function bcNorm = normBCres(N, u, x, order)
+function bcNorm = normBCres(N, u, x, diffOrder)
 %NORMBCRES   Compute residual norm of the boundary conditions.
-%   NORMBCRES(N, U, X, ORDER) returns the combined Frobenius norm of N.lbc(U),
+%   NORMBCRES(N, U, X, DIFFORDER) returns the combined Frobenius norm of N.lbc(U),
 %   N.rbc(U), and N.bc(X, U).
 
 % [TODO]: This might be useful elsewehere (i.e. chebop/linearize), do we want to
@@ -314,11 +314,14 @@ end
 % Evaluate and linearise the remaining constraints:
 if ( ~isempty(N.bc) )
     
+    % Periodic case. 
     if ( isa(N.bc, 'char') && strcmpi(N.bc, 'periodic') )
         bcU = 0;
+        % Need to evaluate the boundary condition for each independent variable 
+        % uBlocks{k} separately because each variable has its own number of 
+        % derivative max(diffOrder(:, k)).
         for k = 1 : numel(uBlocks)
-            bcU = bcU + uBlocks{k}(N.domain(end)) - uBlocks{k}(N.domain(1));
-            for l = 1 : max(order(:, k)) 
+            for l = 0 : max(diffOrder(:, k)) 
             bcU = bcU + feval(diff(uBlocks{k}, l), N.domain(end)) - ...
                 feval(diff(uBlocks{k}, l), N.domain(1));
             end
