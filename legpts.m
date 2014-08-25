@@ -52,7 +52,7 @@ function [x, w, v, t] = legpts(n, int, meth)
 %   April 2009 - GLR [3] added for N >= 129.
 %     Feb 2011 - REC for N < 129, GLR for large N.
 %     Aug 2012 - HT [4] replaces GLR for N >= 129.
-%    July 2014 - Bogaert's algorithm [2] replaces HT for N > 129.
+%    July 2014 - Bogaert's algorithm [2] replaces HT for N >= 100.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Defaults
@@ -60,29 +60,6 @@ interval = [-1, 1];
 method = 'default';
 method_set = nargin == 3;
 
-% Deal with trivial cases:
-if ( n < 0 )
-    error('CHEBFUN:legpts:nNegative', ...
-        'First input should be a positive number.');
-elseif ( n == 0 )   % Return empty vectors if n == 0:
-    x = [];
-    w = [];
-    v = [];
-    t = [];
-    return
-elseif ( n == 1 )
-    x = 0;
-    w = 2;
-    v = 1;
-    t = 1;
-    return
-elseif ( n == 2 )
-    x = [-1 ; 1]/sqrt(3);
-    w = [1 1];
-    v = [1 ; -1];
-    t = acos(x);
-    return
-end
 
 % Check the inputs:
 if ( nargin > 1 )
@@ -116,6 +93,35 @@ if ( nargin > 1 )
 end
 if ( any(isinf(interval)) )
     error('CHEBFUN:legpts:interval', 'Unbounded intervals are not supported.');
+end
+
+% Deal with trivial cases:
+if ( n < 0 )
+    error('CHEBFUN:legpts:nNegative', ...
+        'First input should be a positive number.');
+elseif ( n == 0 )   % Return empty vectors if n == 0:
+    x = [];
+    w = [];
+    v = [];
+    t = [];
+    return
+elseif ( n == 1 )
+    % x = midpoint of interval
+    % w = length of interval 
+    % v = 1
+    % t = 1 
+    x = mean(interval);
+    w = diff(interval);
+    v = 1;
+    t = 1;
+    return
+elseif ( n == 2 )
+    x0 = [-1 ; 1]/sqrt(3);
+    x = diff(interval)/2 * (x0+1) + interval(1); % map from [-1,1] to interval. 
+    w = [1 1]*diff(interval)/2;
+    v = [1 ; -1];
+    t = acos(x0);
+    return
 end
 
 if ( n <= 20 )
@@ -313,7 +319,7 @@ else
     x = [-x(1:end-1) ; 0 ; x(end-1:-1:1)];
     w = [w(1:end) ; w(end-1:-1:1)].';
     v = [v(1:end) ; v(end-1:-1:1)];
-    t = [pi-t ; pi/2 ; t(end-1:-1:1)];
+    t = [pi-t ; t(end-1:-1:1)];
 end
 
     function [x, t] = legpts_nodes()
@@ -468,7 +474,7 @@ jk(k) = ak + .125./ak.*(1 + ak82.*(p(7) + ak82.*(p(5) + ak82.*(p(3) + ...
 end
 
 function Jk2 = bessel12atj0k(m)
-%BESSEL12ATJ0k   Evalute besselj(1,x).^2 at roots of besselj(0,x).
+%BESSEL12ATJ0k   Evaluate besselj(1,x).^2 at roots of besselj(0,x).
 % BESSEL12ATJ0K(M) return besselj(1, bessel0Roots(m)).^2.
 
 % Initialise storage:
@@ -498,5 +504,4 @@ c = [-171497088497/15206400, 461797/1152, -172913/8064, 151/80, -7/24, 0, 2];
 % Jk2(k) = 1./(pi*ak).*polyval(c, ak2inv);
 Jk2(k) = 1./(pi*ak).*(c(7) + ak2inv.^2.*(c(5) + ak2inv.*(c(4) + ...
     ak2inv.*(c(3) + ak2inv.*(c(2)+ak2inv.*c(1))))));
-
 end

@@ -190,7 +190,7 @@ Gx = Gx.'; % Now transpose so that X*B = g;
 
 E = zeros(m, n);
 [n2, n1] = length(f);
-F = rot90(chebcoeffs2(f), 2); % CHEBFUN's ordering is the other way around.
+F = chebcoeffs2(f);
 
 % Map the RHS to the right ultraspherical space.
 lmap = ultraS.convertmat(n1, 0, yorder-1);

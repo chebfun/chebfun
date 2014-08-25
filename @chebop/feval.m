@@ -4,7 +4,7 @@ function out = feval(N, varargin)
 %   i.e., it returns N(U). Here, N.OP should be of the form @(u) diff(u,2) + ...
 %   If N.op is of the form @(x, u) diff(u,2) + ... then an x variable is
 %   instantiated internally and included automatically, however, this is not
-%   the prefered syntax and may not be supported in future releases.
+%   the preferred syntax and may not be supported in future releases.
 %
 %   OUT = FEVAL(N, X, U) for the CHEBFUN X and CHEBFUN or CHEBMATRIX U applies
 %   the CHEBOP N to X and  U, i.e., it returns N(X, U) where N.OP has the form
@@ -19,7 +19,7 @@ function out = feval(N, varargin)
 %   OUT = FEVAL(N, X, U) where U is a CHEBMATRIX of M entries and N.OP has the
 %   form @(X, U1, U2, ..., UM) is equivalent FEVAL(N, X, U{1}, ..., U{M}).
 %   Again, OUT = FEVAL(N, U) will also work in this situation, but this is not
-%   the prefered syntax.
+%   the preferred syntax.
 %
 %   OUT = FEVAL(N, DIM) returns an DIM-point discretization of the linear
 %   operator N. If N is not linear an error is thrown. OUT = FEVAL(N, DIM,
@@ -27,8 +27,8 @@ function out = feval(N, varargin)
 %   rather than the rectangular projection approach of hale and Driscoll. Note
 %   that this syntax exists only the support ATAP and doesn't necessarily give a
 %   clear picture of the discretizations now being used in the Chebfun release.
-%   CHEBOP/MATRIX, which is the prefered syntax for this functionality, provides
-%   further details
+%   CHEBOP/MATRIX, which is the preferred syntax for this functionality,
+%   provides further details
 %
 % See also CHEBOP/SUBSREF, LINOP/MTIMES, CHEBOP/MATRIX.
 

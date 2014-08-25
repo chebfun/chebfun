@@ -90,7 +90,7 @@ classdef onefun % (Abstract)
         % Complex conjugate of a ONEFUN.
         f = conj(f)
         
-        % ONEFUN obects are not transposable.
+        % ONEFUN objects are not transposable.
         f = ctranspose(f)
 
         % Indefinite integral of a ONEFUN.

@@ -106,7 +106,7 @@ elseif ( numel(F.funs) > 1 )
 end
 
 % Get the Chebyshev coefficients and pad if necessary.
-c = fliplr(chebcoeffs(F, length(F))).';
+c = chebcoeffs(F, length(F));
 if ( length(F) < m + 2*n + 1 )
     %c = [c ; zeros(m + 2*n+1 - length(F), 1)];
 
@@ -156,8 +156,8 @@ qk = 2*qk/qk(1);
 qk(1) = 1;
 
 % Form the outputs.
-p = chebfun(flipud(pk), F.domain([1 end]), 'coeffs');
-q = chebfun(flipud(qk), F.domain([1 end]), 'coeffs');
+p = chebfun(pk, F.domain([1 end]), 'coeffs');
+q = chebfun(qk, F.domain([1 end]), 'coeffs');
 r_handle = @(x) feval(p, x)./feval(q, x);
 
 end
@@ -171,8 +171,7 @@ function [p, q, r_handle] = chebpadeMaehly(F, m, n)
 tol = 1e-10;
 
 % Get the Chebyshev coefficients and pad if necessary.
-a = chebcoeffs(F, length(F)).';
-a = a(end:-1:1);
+a = chebcoeffs(F, length(F));
 if ( length(F) < m + 2*n + 1 )
     %a = [a ; zeros(m + 2*n + 1 - length(F), 1)];
 
@@ -237,8 +236,8 @@ else
 end
 
 % Form the outputs.
-p = chebfun(flipud(pk), F.domain([1 end]), 'coeffs');
-q = chebfun(flipud(qk), F.domain([1 end]), 'coeffs');
+p = chebfun(pk, F.domain([1 end]), 'coeffs');
+q = chebfun(qk, F.domain([1 end]), 'coeffs');
 r_handle = @(x) feval(p, x)./feval(q, x);
 
 end

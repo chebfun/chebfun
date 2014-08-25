@@ -73,4 +73,3 @@ switch ( ref(1).type )
 end
 
 end
-

@@ -98,10 +98,10 @@ end
 
 function [f, R, E] = qr_builtin(f, outputFlag)
 
-persistent WP invWP
+persistent WP invWP type
 % Persistently store these matrices, which only depend on the length of the
-% input, not the data. This is very helpful for CHEBFUN2 which relies heavily on
-% QR.
+% input (and the type of chebtech!), not the data. This is very helpful for
+% CHEBFUN2 which relies heavily on QR.
 
 % We must enforce that f.coeffs has at least as many rows as columns:
 [n, m] = size(f);
@@ -112,7 +112,7 @@ end
 
 % Project the values onto a Legendre grid: (where integrals of polynomials
 % p_n*q_n will be computed exactly and on an n-point grid)
-if ( length(WP) ~= n )
+if ( length(WP) ~= n || (~isempty(type) && isa(f, type)) )
     xc = f.chebpts(n);
     vc = f.barywts(n);
     [xl, wl, vl] = legpts(n);
@@ -123,6 +123,7 @@ if ( length(WP) ~= n )
     % Persistent storage:
     WP = W*P;
     invWP = Pinv*Winv;
+    type = class(f);
 end
 
 % Compute the weighted QR factorisation:

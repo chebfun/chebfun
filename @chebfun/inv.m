@@ -7,7 +7,10 @@ function g = inv(f, varargin)
 %      'ROOTS'  - Compute the inverse using ROOTS().
 %      'NEWTON' - Compute the inverse using a Newton iteration.
 %      'BISECTION' - Compute the inverse using bisection as the rootfinder.
-%   The default algorithm is 'BISECTION'.
+%      'REGULAFALSI' - Compute the inverse using Regula Falsi as the rootfinder.
+%      'ILLINOIS' - Compute the inverse using Illinois as the rootfinder.
+%      'BRENT' - Compute the inverse using Brent's method as the rootfinder.
+%   The default algorithm is 'BRENT'.
 %
 %   FINV = INV(F, PREF) uses the preferences specified by the structure or
 %   CHEBFUNPREF object PREF when constructing the inverse.
@@ -29,12 +32,9 @@ function g = inv(f, varargin)
 %
 %   Example:
 %      x = chebfun('x');
-%      f = sign(x) + x;
-%      g = inv(f, 'splitting', 'on');
-%
-%   NB:  This function is experimental and slow!  Use of the 'BISECTION'
-%   (default) and 'ROOTS' algorithm may be the better choice for piecewise
-%   functions, whereas the 'NEWTON' algorithm is good for smooth functions.
+%      f = x + .5*abs(x) + .6*sign(x-.5);
+%      g = inv(f);
+%      plot(f, x, 'b', g, '--r') % <-- Note, plot(f, x) not plot(x, f).
 %
 % See also ROOTS.
 
@@ -59,14 +59,29 @@ else
     fp = [];
 end
 
+% Find the domain of the output:
+gEnds = minandmax(f).';
+fBreaks = f.domain(2:end-1);
+gBreaksL = feval(f, fBreaks, 'left');  % We must evaluate to the left and the 
+gBreaksR = feval(f, fBreaks, 'right'); % of breaks in f in case there are jumps.
+gBreaks = union(gBreaksL, gBreaksR);   % TODO: Include a tolerance?
+gDomain = union(gEnds, gBreaks);       % TODO: Include a tolerance?
+
 % Compute the inverse:
-gDomain = minandmax(f).';
 if ( opts.algorithm == 1 )     % Algorithm based on ROOTS.
-    g = chebfun(@(x) fInverseRoots(f, x, tol), gDomain, pref);
+    g = chebfun(@(x) fInverseRoots(f, x, tol), gDomain, pref, 'noVectorCheck');
 elseif ( opts.algorithm == 2 ) % Newton iteration algorithm.
-    g = chebfun(@(x) fInverseNewton(f, fp, x, tol), gDomain, pref);
+    g = chebfun(@(x) fInverseNewton(f, fp, x, tol), gDomain, pref, 'noVectorCheck');
 elseif ( opts.algorithm == 3 ) % Bisection based algorithm.
-    g = chebfun(@(x) fInverseBisection(f, x), gDomain, pref);
+    g = chebfun(@(x) fInverseBisection(f, x), gDomain, pref, 'noVectorCheck');
+elseif ( opts.algorithm == 4 ) % Regula Falsi based algorithm.
+    g = chebfun(@(x) fInverseRegulaFalsi(f, x), gDomain, pref, 'noVectorCheck');
+elseif ( opts.algorithm == 5 ) % Illinois based algorithm.
+    g = chebfun(@(x) fInverseIllinois(f, x), gDomain, pref, 'noVectorCheck');
+elseif ( opts.algorithm == 6 ) % Brent's method.
+    g = chebfun(@(x) fInverseBrent(f, x), gDomain, pref, 'noVectorCheck');    
+else
+    error('CHEBFUN:CHEBFUN:inv:algorithm', 'Invalid algorithm selected.');
 end
 
 % Scale so that the range of g is the domain of f:
@@ -85,7 +100,7 @@ function [tol, opts, pref] = parseInputs(f, varargin)
 tol = epslevel(f);
 opts.monoCheck = false;
 opts.rangeCheck = false;
-opts.algorithm = 3;
+opts.algorithm = 6; % Default  = brent's method.
 
 % Parse preference input:
 if ( (nargin > 1) && isa(varargin{1}, 'chebfunpref') )
@@ -93,11 +108,6 @@ if ( (nargin > 1) && isa(varargin{1}, 'chebfunpref') )
     varargin(1) = [];
 else
     pref = chebfunpref();
-end
-
-% Enable breakpoint detection if F is piecewise:
-if ( length(f.domain) > 2 )
-    p.splitting = true;
 end
 
 % Parse name/value pairs.
@@ -117,6 +127,12 @@ while ( numel(varargin) > 1 )
             opts.algorithm = 2;
         elseif ( strcmpi(varargin{2}, 'bisection') )
             opts.algorithm = 3;
+        elseif ( strcmpi(varargin{2}, 'regulafalsi') )
+            opts.algorithm = 4;            
+        elseif ( strcmpi(varargin{2}, 'illinois') )
+            opts.algorithm = 5;
+        elseif ( strcmpi(varargin{2}, 'brent') )
+            opts.algorithm = 6;            
         else
             error('CHEBFUN:CHEBFUN:inv:badAlgo', ...
                 'Unrecognized value for ''algorithm'' input.');
@@ -129,7 +145,9 @@ while ( numel(varargin) > 1 )
 end
 
 % Assign preferences:
-pref.techPrefs.resampling = 1;
+if ( opts.algorithm == 2 );
+    pref.techPrefs.resampling = 1;
+end
 pref.techPrefs.eps = tol;
 pref.techPrefs.minSamples = length(f);
 pref.techPrefs.sampleTest = 0;
@@ -249,21 +267,196 @@ end
 function y = fInverseBisection(f, x)
 %FINVERSEBISECTION(F, X)   Compute F^{-1}(X) using Bisection.
 
-a = f.domain(1)*ones(length(x), 1);
-b = f.domain(end)*ones(length(x), 1);
+a = f.domain(1);
+b = f.domain(end);
 c = (a + b)/2;
 
+% The loop below is written for functions which are monotone increasing.
+% Flip the signs if this is not the case.
+sgn = sign(diff(feval(f, [a b])));
+
 while ( norm(b - a, inf) >= eps )   
-    vals = feval(f, c);
+    vals = sgn*(feval(f, c) - x);
     % Bisection:
-    I1 = ((vals-x) <= -eps);
-    I2 = ((vals-x) >= eps);
+    I1 = (vals <= -eps);
+    I2 = (vals >=  eps);
     I3 = ~I1 & ~I2;
     a = I1.*c + I2.*a + I3.*c;
     b = I1.*b + I2.*c + I3.*c;
-    c = (a+b)/2;
+    c = (a + b)/2;
+end
+y = c;
+
 end
 
+function y = fInverseRegulaFalsi(f, x)
+%FINVERSEREGULAFALSI(F, X)   Compute F^{-1}(X) using Regula Falsi.
+a = f.domain(1);
+b = f.domain(end);
+fa = feval(f, a) - x;
+fb = feval(f, b) - x;
+c = b - fb.*(b - a)./(fb - fa);  % Regula Falsi
+cOld = inf;
+
+while ( norm(c - cOld, inf) >= eps )   
+    cOld = c;
+    fc = feval(f, c) - x;
+    
+    I1 = (fc < 0);
+    I2 = (fc > 0);
+    I3 = ~I1 & ~I2;
+    a = I1.*c + I2.*a + I3.*c;
+    b = I1.*b + I2.*c + I3.*c;
+    fa = I1.*fc + I2.*fa + I3.*fc;
+    fb = I1.*fb + I2.*fc + I3.*fc;
+    step = -fb.*(b - a)./(fb - fa);
+    step(isnan(step)) = 0;
+    c = b + step;
+    
+end
 y = c;
+
+end
+
+function y = fInverseIllinois(f, x)
+%FINVERSEILLINOIS(F, X)   Compute F^{-1}(X) using the Illinois algorithm.
+a = f.domain(1);
+b = f.domain(end);
+fa = feval(f, a) - x;
+fb = feval(f, b) - x;
+c = b - fb.*(b - a)./(fb - fa);  % Regula Falsi
+cOld = inf;
+
+side = zeros(size(x));
+
+while ( norm(c - cOld, inf) >= eps )   
+    cOld = c;
+    fc = feval(f, c) - x;
+    
+    I1 = (fc < 0);
+    I2 = (fc > 0);
+    I3 = ~I1 & ~I2;
+    a = I1.*c + I2.*a + I3.*c;
+    b = I1.*b + I2.*c + I3.*c;
+    fa = I1.*fc + I2.*fa + I3.*fc;
+    fb = I1.*fb + I2.*fc + I3.*fc;
+    
+    fb(side(I1) == -1) = fb(side(I1) == -1)/2;
+    side(I1) = -1;
+    fa(side(I1) == 1) = fa(side(I1) == 1)/2;
+    side(I2) = 1;
+    
+    step = -fb.*(b - a)./(fb - fa);
+    step(isnan(step)) = 0;
+    c = b + step;
+    
+end
+y = c;
+
+end
+
+function y = fInverseBrent(f, x)
+%FINVERSEBRENT(F, X)   Compute F^{-1}(X) using Brent's method.
+
+% References:
+% [1] en.wikipedia.org/w/index.php?title=Brent%27s_method&oldid=610174347
+% [2] Brent, R. P. (1973), "Chapter 4: An Algorithm with Guaranteed Convergence 
+%     for Finding a Zero of a Function", Algorithms for Minimization without 
+%     Derivatives, Englewood Cliffs, NJ: Prentice-Hall, (1973).
+
+% Set a and b:
+a = f.domain(1);
+b = f.domain(end);
+
+% Calculate f(a) and f(b) (including x shift):
+fa = feval(f, a) - x;
+fb = feval(f, b) - x;
+fs = inf;
+
+% Make a and b vectors:
+z = zeros(size(x));
+a = a + z;
+b = b + z;
+
+% if |f(a)| < |f(b)| then swap (a,b) end if:
+idx = abs(fa) < abs(fb);
+
+tmp = a(idx);
+a(idx) = b(idx);
+b(idx) = tmp;
+
+tmp = fa(idx);
+fa(idx) = fb(idx);
+fb(idx) = tmp;
+
+% Set c = a;
+c = a;
+fc = fa;
+
+% Set mFlag and delta:
+mFlag = true(size(x)); % <-- Stores previous decision state.
+delt = eps;
+
+% Initialise these too:
+s = a;
+d = c;
+
+while ( (norm(fs, inf) > eps) && ...
+        (norm(b - a, inf) > eps*norm([b(:) ; a(:)], inf))  )
+    % Inverse quadratic:
+    s_iq = a.*fb.*fc./((fa-fb).*(fa-fc)) + b.*fa.*fc./((fb-fa).*(fb-fc)) + ...
+        c.*fa.*fb./((fc-fa).*(fc-fb));
+    % Secant:
+    s_sc = b - fb.*(b-a)./(fb-fa);
+    % Bisection:
+    s_bi = (a + b)/2;
+    
+    % Decide which update to use. Essentially the same as described on the
+    % Wikipedia page given above (permalink).
+    
+    % if f(a) ~= f(c) and f(b) ~= f(c) then (vectorized)
+    idx = (fa ~= fc) & (fb ~= fc);
+    s(idx)  = s_iq(idx);  % Take the inverse quadratic step.
+    s(~idx) = s_sc(~idx); % Take the secant step.
+
+    % Conditions for bisection:
+    idx = ( (3*a+b)/4 < b  & (s < (3*a+b)/4 | s > b) ) | ...     % condition 1a
+          ( b <= (3*a+b)/4 & (s < b | s > (3*a+b)/4) ) | ...     % condition 1b
+          ( mFlag  & abs(s-b) >= abs(b-c)/2 ) | ...              % condition 2
+          ( ~mFlag & abs(s-b) >= abs(c-d)/2 ) | ...              % condition 3
+          ( mFlag  & abs(b-c) < delt ) | ...                     % condition 4
+          ( ~mFlag & abs(c-d) < delt ) | ...                     % condition 5
+          ( abs(b-a) < delt );
+    s(idx) = s_bi(idx);   % Take the bisection step.
+    mFlag = idx;  % <-- Stores previous decision state.
+    
+    % Calculate f(s) (including x shift):
+    fs = feval(f, s) - x;
+    
+    % Store as previousol values for next iteration"
+    d = c;
+    c = b;
+    fc = fb;
+    
+    % if f(a) f(s) < 0 then b := s else a := s end if (vectorized)
+    idx = fa.*fs <= 0;
+    b(idx) = s(idx);
+    fb(idx) = fs(idx);
+    a(~idx) = s(~idx);
+    fa(~idx) = fs(~idx);
+
+    % if |f(a)| < |f(b)| then swap (a,b) end if: (vectorized)
+    idx = abs(fa) < abs(fb);
+    tmp = a(idx);
+    a(idx) = b(idx);
+    b(idx) = tmp;
+    tmp = fa(idx);
+    fa(idx) = fb(idx);
+    fb(idx) = tmp;
+
+end
+
+% Output y:
+y = s;
 
 end

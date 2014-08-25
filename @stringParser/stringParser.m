@@ -72,7 +72,7 @@ classdef stringParser
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods( Access = public, Static = true, Hidden = true )
         
-        % Get rid of unecessary parenthesis in infix format strings
+        % Get rid of unnecessary parenthesis in infix format strings
         strOut = parSimp(strIn)
         
     end

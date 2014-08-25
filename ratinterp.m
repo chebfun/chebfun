@@ -520,11 +520,11 @@ md = 0.5 * sum(dom);
 ihd = 2.0 / diff(dom);
 
 % Build the numerator polynomial.
-p = chebfun(a(end:-1:1), dom, 'coeffs');
+p = chebfun(a, dom, 'coeffs');
 
 % Build the denominator polynomial and form the function handle.
 if ( nu > 0 )
-    q = chebfun(b(end:-1:1), dom, 'coeffs');
+    q = chebfun(b, dom, 'coeffs');
 
     px = idct2(a);
     qx = idct2(b);

@@ -63,10 +63,10 @@ classdef colloc < chebDiscretization
         D = diff(disc, m)
         
         % Points where function values are represented:
-        [x, w] = functionPoints(disc)
+        [x, w, v, t] = functionPoints(disc)
         
         % Points where equations are enforced:
-        [x, w] = equationPoints(disc)
+        [x, w, v, t] = equationPoints(disc)
         
     end
     
@@ -79,7 +79,7 @@ classdef colloc < chebDiscretization
         D = baryDiffMat(x, w, k, t);
         
         % Discretization points: (used by both colloc1 and colloc2)
-        [x, w, v] = points(varargin);
+        [x, w, v, t] = points(varargin);
         
         function dimVals = dimensionValues(pref)
             %DIMENSIONVALUES   Return a vector of desired discretization sizes.

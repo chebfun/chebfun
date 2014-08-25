@@ -28,7 +28,7 @@ if ( any(isnan(v)) )
     return
 end
 
-% Return empty CHEBUN if v is empty:
+% Return empty CHEBFUN if v is empty:
 if ( N == 0 )
     f = chebfun();
     return

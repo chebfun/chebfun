@@ -1,4 +1,4 @@
-function F = fred(disc, kernel, oneVar)
+function F = fred(kernel, disc, oneVar)
 %FRED    Fredholm integral operator using COLLOC.
 %   For the calling sequence to this method, see OPERATORBLOCK.FRED.
 %
