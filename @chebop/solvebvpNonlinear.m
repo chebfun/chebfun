@@ -315,13 +315,16 @@ end
 if ( ~isempty(N.bc) )
     
     if ( isa(N.bc, 'char') && strcmpi(N.bc, 'periodic') )
-        u = chebfun(u);
-        bcU = u(N.domain(end)) - u(N.domain(1));
-        for k = 1 : max(max(order)) - 1
-            bcU = bcU + feval(diff(u, k), N.domain(end)) - ...
-                feval(diff(u, k), N.domain(1));
+        bcU = 0;
+        for k = 1 : numel(uBlocks)
+            bcU = bcU + uBlocks{k}(N.domain(end)) - uBlocks{k}(N.domain(1));
+            for l = 1 : max(order(:, k)) 
+            bcU = bcU + feval(diff(uBlocks{k}, l), N.domain(end)) - ...
+                feval(diff(uBlocks{k}, l), N.domain(1));
+            end
         end
         bcNorm = bcNorm + norm(bcU, 2).^2;
+        
     else
         % Evaluate. The output, BCU, will be a vector.
         bcU = N.bc(x, uBlocks{:});
