@@ -12,7 +12,7 @@ function out = chebcoeffs(f, varargin)
 %
 %   C = CHEBCOEFFS(F, N, 'kind', 2) returns the vector of coefficients of F
 %   such that F = C(1) + C(2) U_1(x) + ... + C(N) U_(N-1)(x), where U_M(x)
-%   denotes the M-th Chebyshev polynomail of the second kind.
+%   denotes the M-th Chebyshev polynomial of the second kind.
 %
 % See also LEGCOEFFS, FOURCOEFFS.
 
@@ -68,6 +68,20 @@ if ( any(isinf(f.domain)) )
         'Infinite intervals are not supported here.');
 end
 
+% We compute 2nd-kind coefficients by computing the 1st-kind coefficients and
+% using a recurrence relation.  The recurrence for the coefficient of U_n
+% requires the coefficients of T_n and T_{n + 2}, so we need to compute two
+% extra 1st-kind coefficients if 2nd-kind coefficients have been requested.
+%
+% TODO:  This is OK for smooth functions but will be expensive for
+% piecewise-smooth ones, which require integrals.  If the function is only
+% piecewise smooth, we should compute the exactly N inner products for the
+% second-kind coefficients directly.
+if ( kind == 2 )
+    N = N + 2;
+end
+
+% Try to merge out breakpoints if possible, since integrals are expensive:
 if ( numFuns ~= 1 )
     f = merge(f);
     numFuns = numel(f.funs);
@@ -100,11 +114,12 @@ else
     
 end
 
-% Return 2nd-kind coefficients:
-if ( (kind == 2) && (numel(out) > 1) )
-    out(end,:) = 2*out(end,:);
-    % Recurrence relation / conversion matrix:
-    out = .5*[out(1:2,:); out(3:end,:) - out(1:end-2,:)];
+% Compute 2nd-kind coefficients from 1st-kind ones using the recurrence
+%   T_n(x) = (1/2)*(U_n(x) - U_{n - 2}(x)):
+if ( kind == 2 )
+    out(1,:) = 2*out(1,:);
+    out = 0.5*[out(1:end-2,:) - out(3:end,:) ; out(end-1:end,:)];
+    out = out(1:end-2,:);
 end
 
 end
