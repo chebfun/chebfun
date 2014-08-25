@@ -45,6 +45,14 @@ classdef cheboppref < chebpref
 %     considered to have converged if the error estimate it computes is less
 %     than the value of errTol.
 %
+%   ivpSolver                  - Solver for IVPs
+%     [@ode113]
+%     @ode15s
+%     @ode45
+%
+%     This options determines which of the MATLAB built-in IVP solvers is used
+%     for solving IVPs posed with the CHEBOP class.
+%
 %   lambdaMin                   - Minimum allowed step-size
 %     [1e-6]
 %
@@ -197,6 +205,8 @@ classdef cheboppref < chebpref
                 prefList.display);
             fprintf([padString('    errTol:') '%g\n'], ...
                 prefList.errTol);
+            fprintf([padString('    ivpSolver:') '%s\n'], ...
+                func2str(prefList.ivpSolver));
             fprintf([padString('    lambdaMin:') '%g\n'], ...
                 prefList.lambdaMin);
             fprintf([padString('    maxDimension:') '%d\n'], ...
@@ -221,6 +231,9 @@ classdef cheboppref < chebpref
             % Support user-friendlier syntax for specifying discretization
             % choice:
             val = cheboppref.parseDiscretization(val);
+            
+            % Support user-friendlier syntax for specifying IVP solver choice:
+            val = cheboppref.parseIVPsolver(val);
             
             % Call the superclass method.
             pref = subsasgn@chebpref(pref, ind, val);
@@ -336,6 +349,7 @@ classdef cheboppref < chebpref
                         % Support user-friendlier syntax for specifying
                         % discretization choice:
                         prefValue = cheboppref.parseDiscretization(prefValue);
+                        prefValue = cheboppref.parseIVPsolver(prefValue);
                         if ( isfield(defaultPrefs, prefName) )
                             defaultPrefs.(prefName) = prefValue;
                         else
@@ -361,6 +375,7 @@ classdef cheboppref < chebpref
             factoryPrefs.damping = 1;
             factoryPrefs.display = 'off';
             factoryPrefs.errTol = 1e-10;
+            factoryPrefs.ivpSolver = @chebfun.ode113;
             factoryPrefs.lambdaMin = 1e-6;
             factoryPrefs.maxDimension = 4096;
             factoryPrefs.maxIter = 25;
@@ -384,6 +399,15 @@ classdef cheboppref < chebpref
                 val = @colloc1;
             end
                 
+        end
+        
+        function val = parseIVPsolver(val)
+        %PARSEDISCRETIZATION    Allow different syntax for specifying
+        %                       discretization.
+
+            if ( any(strcmpi(val, {'ode113', 'ode15s', 'ode45'})) )
+                val = eval(['@chebfun.', val]);
+            end
         end
 
     end

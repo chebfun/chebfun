@@ -1,4 +1,13 @@
-function y = solveivp(N, varargin)
+function y = solveivp(N, rhs, pref, varargin)
+
+% Check inputs
+if ( nargin < 2 )
+    rhs = 0;
+end
+
+if ( nargin < 3 ) 
+    pref = cheboppref;
+end
 
 % Are we dealing with a system?
 isSystem = ( nargin(N.op) <= 2 );
@@ -44,7 +53,10 @@ end
 % Create an ODESET struct for specifying tolerance:
 opts = odeset('absTol',1e-12,'relTol',1e-12);
 
-[t, y]=chebfun.ode113(anonFun, odeDom, initVals, opts);
+% What solver do we want to use for the IVP?
+solver = pref.ivpSolver;
+
+[t, y]= solver(anonFun, odeDom, initVals, opts);
 % To fit in with CHEBOP backslash, just return the functions, not their
 % derivatives as well, as is normally done in the MATLAB ode solvers. Above, we
 % determined and stored in VARINDEX what columns of Y will correspond to the
