@@ -1,4 +1,17 @@
 function isIorF = isIVPorFVP(guifile, bcInput, allVarNames)
+%ISIVPORFVP    Detect whether a GUI ODE is an IVP or FVP
+%
+% ISIORF = ISIVPORFVP(GUIFILE, BCINPUT, ALLVARNAMES), where
+%   GUIFILE:     A CHEBGUI object
+%   BCINPUT:     A cell-string with the input from the BC field of the CHEBGUI 
+%                window
+%   ALLVARNAMES: A cell-string with the names of all variables that appear in
+%                the problem.
+% returns
+%   0: If the problem is detected to be a boundary-value problem.
+%   1: If the problem is detected to be an initial-value problem.
+%   2: If the problem is detected to be an a final value problem.
+
 % The domain of the problem
 dom = guifile.domain;
 % Find what the left end right endpoint of the interval is. We look to the left
@@ -6,6 +19,7 @@ dom = guifile.domain;
 spaceLoc = strfind(dom, ' ');
 firstSpace = min(spaceLoc);
 lastSpace = max(spaceLoc);
+
 % LEFTDOMSTR and RIGHTDOMSTR are strings that contain information about the
 % endpoint of the domain. E.g., if dom = '[0 10]', we'll have LEFTDOMSTR = '0'
 % and RIGHTDOMSTR = '10'.
@@ -88,6 +102,7 @@ end
 end
 
 function out = vec2cell(vec)
+% Convert potential vectors to cells.
 if ( ~iscell(vec) )
     out = {vec};
 else
