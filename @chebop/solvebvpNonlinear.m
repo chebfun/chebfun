@@ -315,27 +315,17 @@ end
 if ( ~isempty(N.bc) )
     
     if ( isa(N.bc, 'char') && strcmpi(N.bc, 'periodic') )
-        if ( order == 1 )
-            op = @(x, u) u(N.domain(end)) - u(N.domain(1));
-        elseif ( order == 2)
-            op = @(x, u) [ u(N.domain(end)) - u(N.domain(1)) ; ...
-             feval(diff(u),N.domain(end)) - feval(diff(u),N.domain(1)) ];
-        elseif ( order == 3)
-            op = @(x, u) [ u(N.domain(end)) - u(N.domain(1)) ; ...
-             feval(diff(u),N.domain(end)) - feval(diff(u),N.domain(1)) ; ...
-             feval(diff(u,2),N.domain(end)) - feval(diff(u,2),N.domain(1)) ];
-        elseif ( order == 4)
-            op = @(x, u) [ u(N.domain(end)) - u(N.domain(1)) ; ...
-             feval(diff(u),N.domain(end)) - feval(diff(u),N.domain(1)) ; ...
-             feval(diff(u,2),N.domain(end)) - feval(diff(u,2),N.domain(1)) ; ...
-             feval(diff(u,3),N.domain(end)) - feval(diff(u,3),N.domain(1)) ];
+        u = chebfun(u);
+        bcU = u(N.domain(end)) - u(N.domain(1));
+        for k = 1 : max(max(order)) - 1
+            bcU = bcU + feval(diff(u, k), N.domain(end)) - ...
+                feval(diff(u, k), N.domain(1));
         end
-            bcU = op(x, uBlocks{:});
-            bcNorm = bcNorm + norm(bcU, 2).^2;
+        bcNorm = bcNorm + norm(bcU, 2).^2;
     else
         % Evaluate. The output, BCU, will be a vector.
         bcU = N.bc(x, uBlocks{:});
-        bcNorm = bcNorm + norm(bcU, 2).^2
+        bcNorm = bcNorm + norm(bcU, 2).^2;
     end
     
 end
