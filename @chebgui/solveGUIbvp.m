@@ -249,6 +249,17 @@ if ( guiMode )
     else
         u = solveivp(N, 0, options);
         info = struct('isLinear', 1, 'error', 0);
+        if (isa(u,'chebfun'))
+            len = length(u);
+        else
+            len = max(cellfun(@length, u.blocks));
+        end
+        str = {'Initial value problem detected.';
+            sprintf('Number of pieces of the solution: %i.', ...
+            length(u.domain)-1);
+            sprintf('Total length of solution: %i.', len)};
+        set(handles.iter_list, 'String',  str)
+        set(handles.iter_list, 'Value', 1)
     end
 else
     if ( ~isIorF ) 
