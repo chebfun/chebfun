@@ -79,6 +79,10 @@ dampingInfo.giveUp =        0;
 linpref = pref;
 linpref.errTol = pref.errTol/10;
 
+% Get the differetial order of the LINOP L (needed when evaluating periodic
+% boundary conditions). 
+order = L.diffOrder;
+
 % Start the Newton iteration!
 while ( ~terminate )
     
@@ -212,7 +216,7 @@ while ( ~terminate )
 end
 
 % Evaluate how far off we are from satisfying the boundary conditions.
-errEstBC = normBCres(N, u, x);
+errEstBC = normBCres(N, u, x, order);
 
 % Print information depending on why we stopped the Newton iteration.
 if ( success )
@@ -238,12 +242,12 @@ end
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function bcNorm = normBCres(N, u, x)
+function bcNorm = normBCres(N, u, x, order)
 %NORMBCRES   Compute residual norm of the boundary conditions.
-%   NORMBCRES(N, U, X) returns the combined Frobenius norm of N.lbc(U),
+%   NORMBCRES(N, U, X, ORDER) returns the combined Frobenius norm of N.lbc(U),
 %   N.rbc(U), and N.bc(X, U).
 
-% TODO: This might be useful elsewehere (i.e. chebop/linearize), do we want to
+% [TODO]: This might be useful elsewehere (i.e. chebop/linearize), do we want to
 % move this into a separate file?
 
 % Initialize:
@@ -309,9 +313,31 @@ end
 
 % Evaluate and linearise the remaining constraints:
 if ( ~isempty(N.bc) )
-    % Evaluate. The output, BCU, will be a vector.
-    bcU = N.bc(x, uBlocks{:});
-    bcNorm = bcNorm + norm(bcU, 2).^2;
+    
+    if ( isa(N.bc, 'char') && strcmpi(N.bc, 'periodic') )
+        if ( order == 1 )
+            op = @(x, u) u(N.domain(end)) - u(N.domain(1));
+        elseif ( order == 2)
+            op = @(x, u) [ u(N.domain(end)) - u(N.domain(1)) ; ...
+             feval(diff(u),N.domain(end)) - feval(diff(u),N.domain(1)) ];
+        elseif ( order == 3)
+            op = @(x, u) [ u(N.domain(end)) - u(N.domain(1)) ; ...
+             feval(diff(u),N.domain(end)) - feval(diff(u),N.domain(1)) ; ...
+             feval(diff(u,2),N.domain(end)) - feval(diff(u,2),N.domain(1)) ];
+        elseif ( order == 4)
+            op = @(x, u) [ u(N.domain(end)) - u(N.domain(1)) ; ...
+             feval(diff(u),N.domain(end)) - feval(diff(u),N.domain(1)) ; ...
+             feval(diff(u,2),N.domain(end)) - feval(diff(u,2),N.domain(1)) ; ...
+             feval(diff(u,3),N.domain(end)) - feval(diff(u,3),N.domain(1)) ];
+        end
+            bcU = op(x, uBlocks{:});
+            bcNorm = bcNorm + norm(bcU, 2).^2;
+    else
+        % Evaluate. The output, BCU, will be a vector.
+        bcU = N.bc(x, uBlocks{:});
+        bcNorm = bcNorm + norm(bcU, 2).^2
+    end
+    
 end
 
 bcNorm = sqrt(bcNorm);
