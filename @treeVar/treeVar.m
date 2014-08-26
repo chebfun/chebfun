@@ -2,6 +2,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
     
     properties
         tree
+        domain
     end
     
     methods
@@ -9,8 +10,10 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         function obj = treeVar(varargin)
             if ( nargin > 0 )
                 IDvec = varargin{1};
+                obj.domain = varargin{2};
             else
                 IDvec = 1;
+                obj.domain = [-1 1];
             end
             obj.tree  = struct('method', 'constr', 'numArgs', 0, ...
                 'diffOrder', 0*IDvec, 'height', 0, 'multCoeff', 1, ...
@@ -38,11 +41,15 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             if ( length(u) == 1 )
                 disp('treeVar with tree:')
                 disp(u.tree);
+                disp('and the domain:')
+                disp(u.domain);
             else
                 disp('Array-valued treeVar, with trees:');
                 for ( treeCounter = 1:length(u) )
                     fprintf('tree %i\n', treeCounter)
                     disp(u(treeCounter).tree);
+                    disp('and the domain:')
+                    disp(u.domain);
                 end
             end
         end
@@ -60,11 +67,13 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             else
                 h.tree = treeVar.bivariate(f.tree, g.tree, 'minus', 2);
             end
+            h.domain = updateDomain(f, g);
         end
         
         function h = mtimes(f, g)
             if ( isnumeric(f) || isnumeric(g) )
                 h = times(f, g);
+                h.domain = updateDomain(f, g);
             else
                 error('Dimension mismatch');
             end
@@ -79,6 +88,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             else
                 h.tree = treeVar.bivariate(f.tree, g.tree, 'plus', 2);
             end
+            h.domain = updateDomain(f, g);
         end
         
         function h = power(f, g)
@@ -100,6 +110,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
                     'height', max(f.tree.height, g.tree.height) + 1, ...
                     'ID', f.tree.ID | g.tree.ID);
             end
+            h.domain = updateDomain(f, g);
         end
         
         function h = rdivide(f, g)
@@ -111,6 +122,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             else
                 h.tree = treeVar.bivariate(f.tree, g.tree, 'rdivide', 2);
             end
+            h.domain = updateDomain(f, g);
         end
         
         function f = sin(f)
@@ -126,9 +138,18 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             else
                 h.tree = treeVar.bivariate(f.tree, g.tree, 'times', 2);
             end
+            h.domain = updateDomain(f, g);
         end
         
-        
+        function dom = updateDomain(f, g)
+            if ( isnumeric(f) )
+                dom = g.domain;
+            elseif ( isnumeric(g) )
+                dom = f.domain;
+            else
+                dom = union(f.domain, g.domain);
+            end
+        end
     end
     
     methods ( Static = true )
@@ -166,9 +187,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
                     'left', leftTree, 'right', rightTree, ...
                     'diffOrder', leftTree.diffOrder, ...
                     'height', leftTree.height + 1, ...
-                    'ID', leftTree.ID);
-                
-                
+                    'ID', leftTree.ID);      
             end
         end
         
@@ -206,10 +225,10 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             end
         end
         
-        function funOut = toFirstOrder(funIn, domain)
+        function [funOut, varIndex, problemDom] = toFirstOrder(funIn, domain)
             % Independent variable on the domain
             t = chebfun(@(t) t, domain);
-            arg = treeVar(1);
+            arg = treeVar(1, domain);
             
             % If funIn only has one input argument, we just give it a treeVar()
             % argument. Otherwise, the first input will be the independent
@@ -219,6 +238,14 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             else
                 problemFun = funIn(t, arg);
             end
+            
+            % Return the potentially new breakpoints we obtained during the
+            % evaluation of problemFun:
+            problemDom = problemFun.domain;
+            
+            % In the scalar case, varIndex will always be 1, as only one
+            % variable is involved:
+            varIndex = 1;
             
             maxDifforder = problemFun.tree.diffOrder;
             
@@ -241,7 +268,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             funOut = treeVar.toRHS(infix, varArray, coeff, 1, maxDifforder);
         end
         
-        function [funOut, indexStart] = toFirstOrderSystem(funIn, domain)
+        function [funOut, indexStart, problemDom] = toFirstOrderSystem(funIn, domain)
             % Independent variable on the domain
             t = chebfun(@(t) t, domain);
             
@@ -254,7 +281,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             % Populate the args cell
             for argCount = 1:numArgs
                 argsVec(argCount) = 1;
-                args{argCount} = treeVar(argsVec);
+                args{argCount} = treeVar(argsVec, domain);
                 % Reset the index vector
                 argsVec = 0*argsVec;
             end
@@ -268,6 +295,14 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             systemInfix = cell(length(fevalResult),1);
             coeffs = systemInfix;
             varArrays = systemInfix;
+            
+            % We want to return all potential breakpoints caused by piecewise
+            % coefficients in the problem. So loop through fevalResult, and
+            % unionize the breakpoints:
+            problemDom = fevalResult(1).domain;
+            for resCounter = 2:length(fevalResult)
+                problemDom = union(problemDom, fevalResult(resCounter).domain);
+            end
             
             % First look at all diffOrders to ensure we start with the correct
             % indices. INDEXSTART denotes at which index we should start
@@ -379,7 +414,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
 
         end
         
-        function idx = sortConditions(funIn)
+        function idx = sortConditions(funIn, domain)
            %SORTBCS    Return a vector with indices on how to sort the results
            %            of evaluating N.LBC/RBC
            
@@ -390,7 +425,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             % Populate the args cell
             for argCount = 1:numArgs
                 argsVec(argCount) = 1;
-                args{argCount} = treeVar(argsVec);
+                args{argCount} = treeVar(argsVec, domain);
                 % Reset the index vector
                 argsVec = 0*argsVec;
             end

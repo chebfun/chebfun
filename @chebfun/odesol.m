@@ -1,4 +1,4 @@
-function varargout = odesol(sol, opt)
+function varargout = odesol(sol, dom, opt)
 %ODESOL   Convert an ODE solution to CHEBFUN.
 %   Y = ODESOL(SOL, OPT) converts the solution of an ODE initial-value or
 %   boundary-value problem by standard MATLAB methods into a CHEBFUN
@@ -15,12 +15,11 @@ function varargout = odesol(sol, opt)
 % See http://www.chebfun.org/ for Chebfun information.
 
 %% Extract data from sol:
-d = sol.x([1, end]);
 vscale = max(abs(sol.y), [], 2); % Vertical scale (needed for RelTol)
 numCols = size(sol.y, 1);
 
 % Options:
-if ( nargin < 2 ) 
+if ( nargin < 3 ) 
     opt = [];
 end
 if ( isempty(opt) && isfield(sol, 'extdata') && ...
@@ -56,7 +55,7 @@ p.splitting = true;            % use splitting, always, or there is no hope.
 p.splitPrefs.splitLength = 300;
 % Need to sort the domain D, since if we solve a final value problem, it will
 % have been flipped.
-y = chebfun(@(x) deval(sol, x).', sort(d), p);
+y = chebfun(@(x) deval(sol, x).', sort(dom), p);
 
 % Parse outputs:
 if ( nargout > 1 )

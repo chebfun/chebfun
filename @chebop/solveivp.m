@@ -14,35 +14,38 @@ isSystem = ( nargin(N.op) <= 2 );
 
 % Convert to first order format
 if ( isSystem )
-    anonFun = treeVar.toFirstOrder(N.op, N.domain);
-    varIndex = 1;
+    [anonFun, varIndex, problemDom] = treeVar.toFirstOrder(N.op, N.domain);
 else
-    [anonFun, varIndex] = treeVar.toFirstOrderSystem(N.op, N.domain);
+    [anonFun, varIndex, problemDom] = treeVar.toFirstOrderSystem(N.op, N.domain);
 end
+
+% Join all breakpoints
+dom = union(N.domain, problemDom);
+
 %% Obtain information about the initial conditions.
 % Begin by evaluating N.lbc with a zero chebfun to pick up the desired values:
 
 % Create a zero CHEBFUN for evaluating N.LBC or N.RBC. This gives us the correct
 % values we need for passing as initial/final conditions to the ODE solver.
-cheb0 = chebfun(@(x) 0*x, N.domain);
+cheb0 = chebfun(@(x) 0*x, dom);
 
 % Evaluate N.LBC or N.RBC:
 if ( ~isempty(N.lbc) )
     cheb0 = repmat({cheb0}, nargin(N.lbc), 1);
     disp('Initial value problem detected.')
     bcEvalFun = N.lbc(cheb0{:});
-    evalPoint = N.domain(1);
-    odeDom = N.domain;
+    evalPoint = dom(1);
+    odeDom = dom;
     % Store that we're solving an IVP.
     isIVP = 1;
 else
     cheb0 = repmat({cheb0}, nargin(N.rbc), 1);
     disp('Final value problem detected.')
     bcEvalFun = N.rbc(cheb0{:});
-    evalPoint = N.domain(end);
+    evalPoint = dom(end);
     % Flip the time domain, so that the problem will be solved as a final-value
     % problem.
-    odeDom = fliplr(N.domain);
+    odeDom = fliplr(dom);
     % Store that we're solving an FVP.
     isIVP = 0;
 end
@@ -63,9 +66,9 @@ end
 % evaluates the conditions with TREEVAR inputs, which gives it enough
 % information to be able to sort them in the correct order. 
 if ( isIVP )
-    idx = treeVar.sortConditions(N.lbc);
+    idx = treeVar.sortConditions(N.lbc, N.domain);
 else
-    idx = treeVar.sortConditions(N.rbc);
+    idx = treeVar.sortConditions(N.rbc, N.domain);
 end
 
 % Sort the results from above:
