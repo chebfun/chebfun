@@ -22,8 +22,9 @@ classdef fourcolloc < colloc
         
         function disc = fourcolloc(varargin)
             disc = disc@colloc(varargin{:});
-            disc.dimAdjust = 0;
-            disc.projOrder = 0;
+            % No dimension adjustment for FOURCOLLOC.
+            disc.dimAdjust = 0; 
+            disc.projOrder = 0; 
         end
         
     end

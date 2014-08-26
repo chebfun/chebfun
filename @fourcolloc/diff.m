@@ -3,8 +3,7 @@ function D = diff(disc, m)
 %   D = DIFF(DISC) gives the matrix such that if v=D*u, then v=u', where u
 %   is a FOURCOLLOC representation of a trigonometric polynomial.
 %
-%   DIFF(DISC, M) for positive integer M returns D^M (through a better
-%   algorithm than multiplication).
+%   DIFF(DISC, M) for positive integer M returns D^M.
 
 %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org/ for Chebfun information.
@@ -17,18 +16,7 @@ if ( m == 0 )
     % Trivial case.
     D = eye(sum(n));
 else
-    numIntervals = disc.numIntervals;
-    
-    % Find the diagonal blocks.
-    blocks = cell(numIntervals);
-    for k = 1:numIntervals
-        len = d(k+1) - d(k);
-        % Scaled DIFFMATs.
-        blocks{k} = fourcolloc.diffmat(n(k), m) * (2*pi/len)^m; 
-    end
-    
-    % Assemble.
-    D = blkdiag(blocks{:});
-end
-
+    len = d(2) - d(1);
+    % Rescale the differentiation matrix.
+    D = fourcolloc.diffmat(n, m) * (2*pi/len)^m;
 end
