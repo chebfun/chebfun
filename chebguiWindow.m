@@ -1744,6 +1744,14 @@ newString = removeTabs(newString); % Remove tabs
 set(hObject, 'String', newString);
 handles = chebguiController.callbackBCs(handles, newString, 'bc');
 handles.guifile.BC = newString;
+% Is the problem now an BVP, IVP or FVP?
+isIorF = isIVPorFVP(handles.guifile);
+if ( isIorF == 1 )
+    disp('Initial value problem input in BC field.');
+elseif ( isIorF == 2 )
+    disp('Final value problem input in BC field.');
+end
+
 guidata(hObject, handles);
 end
 

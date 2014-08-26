@@ -53,7 +53,7 @@ handles.indVarName = {indVarNameSpace};
 scalarProblem = length(allVarNames) == 1;
 
 % Are we dealing with an initial, final, or boundary value problem?
-isIorF = isIVPorFVP(guifile, expInfo.bcInput, expInfo.allVarNames);
+isIorF = isIVPorFVP(guifile, expInfo.allVarNames);
 
 % Obtain the boundary conditions to be imposed.
 if ( isempty(bcInput{1}) )

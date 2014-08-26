@@ -1,10 +1,8 @@
-function isIorF = isIVPorFVP(guifile, bcInput, allVarNames)
+function isIorF = isIVPorFVP(guifile, allVarNames)
 %ISIVPORFVP    Detect whether a GUI ODE is an IVP or FVP
 %
 % ISIORF = ISIVPORFVP(GUIFILE, BCINPUT, ALLVARNAMES), where
 %   GUIFILE:     A CHEBGUI object
-%   BCINPUT:     A cell-string with the input from the BC field of the CHEBGUI 
-%                window
 %   ALLVARNAMES: A cell-string with the names of all variables that appear in
 %                the problem.
 % returns
@@ -14,6 +12,21 @@ function isIorF = isIVPorFVP(guifile, bcInput, allVarNames)
 
 % The domain of the problem
 dom = guifile.domain;
+
+% The BC input
+bcInput = guifile.BC;
+% Ensure that the BC input is a cell-string:
+if (~iscell(bcInput))
+    bcInput = {bcInput};
+end
+
+% Find out what the variables that appear in the problem are if they didn't get
+% passed:
+if ( nargin < 2 ) 
+    allVarNames = getVarNames(guifile);
+end
+
+
 % Find what the left end right endpoint of the interval is. We look to the left
 % of the first whitespace, and to the right of the last whitespace.
 spaceLoc = strfind(dom, ' ');

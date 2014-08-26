@@ -229,6 +229,21 @@ classdef chebgui
         % Solve a GUI EIG problem
         varargout = solveGUIeig(guifile,handles)
         
+        function allVarNames = getVarNames(guifile)
+            % Look at the input for the differential equation:
+            deInput = guifile.DE;
+            
+            % Wrap the input strings in a cell (if it's not a cell already)
+            if ( isa(deInput, 'char') )
+                deInput = cellstr(deInput);
+            end
+            
+            % Obtain useful strings describing the differential equation part:
+            [dummy, dummy, dummy, dummy, dummy, dummy, allVarNames] = ...
+                setupFields(guifile, deInput, 'DE');
+        end
+        
+        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
