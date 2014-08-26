@@ -175,7 +175,6 @@ classdef blockFunction
         % Returns a BLOCKFUNCTION corresponding to a function that returns the
         % zero chebfun.
             Z = blockFunction( @(z) chebfun(0, A.domain) );
-            %Z = blockFunction( @(z) chebfun(0, A.domain, 'tech', 'fourtech') );
         end
         
     end

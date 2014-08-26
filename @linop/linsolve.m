@@ -111,7 +111,7 @@ for dim = [dimVals inf]
     % currently valid factorization at hand.
     if ( isFactored(disc) )
         A = [];
-        P = eye(disc.dimension);
+        P = eye(disc.dimension*size(L,2));
     else
         [A, P] = matrix(disc);
         if ( size(A, 1) ~= size(A, 2) )

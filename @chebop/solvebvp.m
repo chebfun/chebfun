@@ -175,7 +175,7 @@ end
 % Solve:
 if ( all(isLinear) )
     % Call solver method for linear problems.
-    [u, info] = N.solvebvpLinear(L, rhs - residual, N.init, pref, displayInfo);
+    [u, info] = N.solvebvpLinear(N, L, rhs - residual, pref, displayInfo);
 else
     % TODO: Switch between residual and error oriented Newton methods.
     
