@@ -16,8 +16,8 @@ L = chebop(@(u) diff(u) + u, dom);
 f = chebfun(@(x) cos(x), dom);
 
 % Solve with FOURIER technology.
-pref.discretization = 'periodic';
-u = solvebvp(L, f, pref);
+L.bc = 'periodic';
+u = L \ f;
 
 % Compare with exact solution.
 tol = pref.errTol;
@@ -35,8 +35,8 @@ f = chebfun(@(x) cos(2*x), dom);
 % Solve with FOURIER technology.
 b = chebfun(bb, dom, 'periodic');
 L = chebop(@(u) diff(u) + b.*u, dom);
-pref.discretization = 'periodic';
-u = solvebvp(L, f, pref);
+L.bc = 'periodic';
+u = L \ f;
 
 % Solve with CHEBYSHEV technology.
 b = chebfun(bb, dom);
@@ -59,11 +59,11 @@ dom = [-2*pi 2*pi];
 a = 10;
 b = 5;
 L = chebop(@(u) diff(u, 2) + a*diff(u) + b*u, dom); 
+L.bc = 'periodic';
 f = chebfun(@(x) cos(x), dom);
 
 % Solve with FOURIER technology.
-pref.discretization = 'periodic';
-u = solvebvp(L, f, pref);
+u = L \ f;
 
 % Compare with exact solution.
 tol = pref.errTol;
@@ -85,8 +85,8 @@ a = chebfun(aa, dom, 'periodic');
 b = chebfun(bb, dom, 'periodic');
 c = chebfun(cc, dom, 'periodic');
 L = chebop(@(u) a.*diff(u, 2) + b.*diff(u) + c.*u, dom);
-pref.discretization = 'periodic';
-u = solvebvp(L, f, pref);
+L.bc = 'periodic';
+u = L \ f;
 
 % Solve with CHEBYSHEV technology.
 a = chebfun(aa, dom);
@@ -120,8 +120,8 @@ b = chebfun(bb, dom, 'periodic');
 c = chebfun(cc, dom, 'periodic');
 d = chebfun(dd, dom, 'periodic');
 L = chebop(@(u) a.*diff(u, 3) + b.*diff(u, 2) + c.*diff(u) + d.*u, dom);
-pref.discretization = 'periodic';
-u = solvebvp(L, f, pref);
+L.bc = 'periodic';
+u = L \ f;
 
 % Solve with CHEBYSHEV technology.
 a = chebfun(aa, dom);
@@ -159,8 +159,8 @@ d = chebfun(dd, dom, 'periodic');
 e = chebfun(ee, dom, 'periodic');
 L = chebop(@(u) a.*diff(u, 4) + b.*diff(u, 3) + c.*diff(u, 2) + ...
     d.*diff(u) + e.*u, dom);
-pref.discretization = 'periodic';
-u = solvebvp(L, f, pref);
+L.bc = 'periodic';
+u = L \ f;
 
 % Solve with CHEBYSHEV technology.
 a = chebfun(aa, dom);

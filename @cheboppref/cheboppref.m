@@ -378,12 +378,24 @@ classdef cheboppref < chebpref
             % handle:
             if ( any(strcmpi(val, {'ultraspherical', 'ultraS'})) )
                 val = @ultraS;
+                
             elseif ( any(strcmpi(val, {'collocation', 'chebcolloc2', 'colloc2'})) )
+                if ( strcmpi(val, {'colloc2'}) )
+                    warning('CHEBOPPREF:PARSEDISCRETIZATION', ...
+                        'COLLOC2 is deprecated. Please use CHEBCOLLOC2.');
+                end
                 val = @chebcolloc2;
+                
             elseif ( any(strcmpi(val, {'chebcolloc1', 'colloc1'})) )
+                if ( strcmpi(val, {'colloc1'}) )
+                    warning('CHEBOPPREF:PARSEDISCRETIZATION', ...
+                        'COLLOC1 is deprecated. Please use CHEBCOLLOC1.');
+                end
                 val = @chebcolloc1;
-            elseif ( any(strcmpi(val, {'periodic', 'fourcolloc'})) )
+                
+            elseif ( any(strcmpi(val, {'fourcolloc'})) )
                 val = @fourcolloc;       
+                 
             end
                 
         end

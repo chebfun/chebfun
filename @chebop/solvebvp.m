@@ -61,7 +61,7 @@ function [u, info] = solvebvp(N, rhs, varargin)
 %   details.
 
 % Parse inputs:
-[pref, displayInfo] = parseInputs(varargin{:});
+[N, pref, displayInfo] = parseInputs(N, varargin{:});
 
 % Find out how many variables N operates on:
 nVars = numVars(N);
@@ -212,7 +212,7 @@ info.isLinear = isLinear;
 
 end
 
-function [pref, displayInfo] = parseInputs(varargin)
+function [N, pref, displayInfo] = parseInputs(N, varargin)
 %PARSEINPUTS   Parse the input arguments to SOLVEBVP.
 
 % Initialise the outputs:
@@ -240,6 +240,16 @@ end
 % No preferences passed; use the current chebopprefs:
 if ( isempty(pref) )
     pref = cheboppref();
+    
+    % If the boundary conditions are periodic, force to FOURCOLLOC.
+    % However, if the default discretization is ULTRAS, use ULTRAS.
+    if ( isa(N.bc, 'char') && strcmpi(N.bc, 'periodic') ...
+            && ~isequal(pref.discretization, @ultraS) )
+        pref.discretization = @fourcolloc;
+        N.bc = []; % FOURCOLLOC uses periodic functions, so no need to specify
+                   % any boundary condition.  
+    end
+
 end
 
 % If no DISPLAYINFO function handle passed, use the default CHEBOP one.

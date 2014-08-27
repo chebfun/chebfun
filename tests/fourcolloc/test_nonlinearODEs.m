@@ -18,17 +18,16 @@ v0 = u0;
 
 % Define the non-linear operator.
 N = chebop(@(u) diff(u) - sin(u), dom);
+N.bc = 'periodic';
 
 % Solve with FOURIER technology.
 u0 = chebfun(u0, dom, 'periodic');
 N.init = u0;
-pref.discretization = 'periodic';
-u = solvebvp(N, f, pref);
+u = N \ f;
 
 % Solve with CHEBYSHEV technology.
 v0 = chebfun(v0, dom);
 N.init = v0;
-N.bc = @(x, v) v(dom(1)) - v(dom(2));
 pref.discretization = 'chebcolloc2';
 v = solvebvp(N, f, pref);
 
@@ -48,17 +47,16 @@ v0 = u0;
 
 % Define the non-linear operator.
 N = chebop(@(u) diff(u) - u.*cos(u), dom);
+N.bc = 'periodic';
 
 % Solve with FOURIER technology.
 u0 = chebfun(u0, dom, 'periodic');
 N.init = u0;
-pref.discretization = 'periodic';
-u = solvebvp(N, f, pref);
+u = N \ f;
 
 % Solve with CHEBYSHEV technology.
 v0 = chebfun(v0, dom);
 N.init = v0;
-N.bc = @(x, v) v(dom(1)) - v(dom(2));
 pref.discretization = 'chebcolloc2';
 v = solvebvp(N, f, pref);
 
@@ -78,18 +76,16 @@ v0 = u0;
 
 % Define the non-linear operator.
 N = chebop(@(u) diff(u, 2) - sin(u), dom);
+N.bc = 'periodic';
 
 % Solve with FOURIER technology.
 u0 = chebfun(u0, dom, 'periodic');
 N.init = u0;
-pref.discretization = 'periodic';
-u = solvebvp(N, f, pref);
+u = N \ f;
 
 % Solve with CHEBYSHEV technology.
 v0 = chebfun(v0, dom);
 N.init = v0;
-N.bc = @(x, v) [ v(dom(1)) - v(dom(2)) ; ...
-             feval(diff(v), dom(1)) - feval(diff(v), dom(2)) ];
 pref.discretization = 'chebcolloc2';
 v = solvebvp(N, f, pref);
 
@@ -109,12 +105,12 @@ v0 = u0;
 
 % Define the non-linear operator.
 N = chebop(@(u) diff(u, 2) - u.^2.*cos(u), dom);
+N.bc = 'periodic';
 
 % Solve with FOURIER technology.
 u0 = chebfun(u0, dom, 'periodic');
 N.init = u0;
-pref.discretization = 'periodic';
-u = solvebvp(N, f, pref);
+u = N \ f;
 
 % Solve with CHEBYSHEV technology.
 v0 = chebfun(v0, dom);
