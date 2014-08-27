@@ -94,6 +94,9 @@ handles.output = hObject;
 % Initialise figures:
 chebguiController.initialiseFigures(handles)
 
+% Initialise the menus:
+handles = chebguiController.initialiseMenus(handles);
+
 % Variable that determines whether a solution is available
 handles.hasSolution = 0;
 
@@ -1116,15 +1119,6 @@ end
 function menu_demos_Callback(hObject, eventdata, handles)
 end
 
-function menu_bvps_Callback(hObject, eventdata, handles)
-end
-
-function menu_ivps_Callback(hObject, eventdata, handles)
-end
-
-function menu_systems_Callback(hObject, eventdata, handles)
-end
-
 function menu_help_Callback(hObject, eventdata, handles)
 end
 
@@ -1133,12 +1127,6 @@ doc('chebgui')
 end
 
 function Untitled_9_Callback(hObject, eventdata, handles)
-end
-
-function menu_pdesingle_Callback(hObject, eventdata, handles)
-end
-
-function menu_pdesystems_Callback(hObject, eventdata, handles)
 end
 
 function menu_export_Callback(hObject, eventdata, handles)
@@ -1412,9 +1400,6 @@ bgColorIsDefault = isequal(get(hObject, 'BackgroundColor'), ...
 if ( ispc && bgColorIsDefault )
     set(hObject, 'BackgroundColor', 'white');
 end
-end
-
-function menu_eigsscalar_Callback(hObject, eventdata, handles)
 end
 
 function button_export_Callback(hObject, eventdata, handles)

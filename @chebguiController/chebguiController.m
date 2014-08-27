@@ -61,8 +61,38 @@ classdef chebguiController
             chebguiController.initialiseFigureBottom(handles);
             chebguiController.initialiseFigureTop(handles);
         end
-
         
+        function handles = initialiseMenus(handles)
+            %INITALISEMENUS    Create menu items for CHEBGUI
+            
+            % For ODE problems
+            handles.menu_bvps = uimenu(handles.menu_demos, ...
+                'label', 'ODE - Scalar BVPs');
+            handles.menu_systems = uimenu(handles.menu_demos, ...
+                'label', 'ODE - Coupled BVPs');
+            handles.menu_ivps = uimenu(handles.menu_demos, ...
+                'label', 'ODE - Scalar IVPs', 'separator', 'on');
+            handles.menu_IVPsystems = uimenu(handles.menu_demos, ...
+                'label', 'ODE - Coupled IVPs');
+
+            % For EIG problems
+            handles.menu_eigsscalar = uimenu(handles.menu_demos, ...
+                'label', 'EIG - Scalar','separator','on');
+            handles.menu_eigssystem = uimenu(handles.menu_demos, ...
+                'label', 'EIG - Systems');
+            
+            % For PDE problems
+            handles.menu_pdesingle = uimenu(handles.menu_demos, ...
+                'label', 'PDE - Scalar','separator','on');
+            handles.menu_pdesystems = uimenu(handles.menu_demos, ...
+                'label', 'PDE - Systems');
+            
+%             uimenu('Parent', handles.menu_demos, ...
+%                 'Label', 'Test', ...
+%                 'Separator','off', ...
+%                 'HandleVisibility','callback');
+            
+        end
         
         % Initialize fonts of the CHEBGUI window
         handles = initalizeFields(handles)

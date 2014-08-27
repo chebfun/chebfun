@@ -18,6 +18,8 @@ if ( ( ~isempty(N.lbc) && isempty(N.rbc) && isempty(N.bc) ) || ...
     %   - N.RBC is nonempty, but both N.LBC and N.BC are empty. Here, we are
     %     dealing with a final value problem, where all conditions are imposed
     %     via N.RBC.
+    
+    % TODO: Allow global solvers
     [varargout{1:nargout}] = solveivp(N, varargin{:});
 else
     % We have conditions in other fields, call CHEBOP/SOLVEBVP:

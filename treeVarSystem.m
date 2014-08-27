@@ -118,6 +118,6 @@ plot(uvw)
 plot3(uvw{1},uvw{2}, uvw{3}, 'linewidth', 1.6), view(20,20)
 axis([-20 20 -40 40 5 45]), grid on
 xlabel 'x(t)', ylabel 'y(t)', zlabel 'z(t)'
-title('A 3D Trajectory of the Lorenz Attractor - Chebfun solution', FS, 14)
+title('A 3D Trajectory of the Lorenz Attractor - Chebfun solution', 'fontsize', 14)
 
 
