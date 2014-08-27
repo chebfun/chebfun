@@ -2079,8 +2079,9 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% FIN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
+% --- Executes during object creation, after setting all properties.
 function fig_logo_CreateFcn(hObject, eventdata, handles)
-% Hint: place code in OpeningFcn to populate
+% Hint: place code in OpeningFcn to populate fig_logo
 logoMat = imread(fullfile(chebfunroot(),'chebguiDemos','chebfunLogo.png'));
 image(logoMat)
 axis off
