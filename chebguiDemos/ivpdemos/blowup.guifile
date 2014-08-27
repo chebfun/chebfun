@@ -1,5 +1,5 @@
 'Blow-up initial value problem'
-'ivp'
+'scalar'
 domain = '[0 .99]';
 DE = 'u'' = u^2';
 BC = 'u(0) = 1';

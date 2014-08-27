@@ -1,5 +1,5 @@
 'Linear Sawtooth'
-'ivp'
+'scalar'
 domain = '[0 8]';
 DE = 'u'' = sign(sin(x^2)) - u/2';
 BC = 'u(0) = 0';

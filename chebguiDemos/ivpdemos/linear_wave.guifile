@@ -1,5 +1,5 @@
 'Linear wave equation'
-'ivp'
+'scalar'
 domain = '[0 10*pi]';
 DE = 'u" = -u';
 BC = {'u(0)  = 2', 'u''(0) = 0'};
