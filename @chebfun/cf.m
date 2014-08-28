@@ -181,7 +181,7 @@ b = c;
 for k = m:-1:-m
     b = [-(b(1:(M-m-1)).'*uu)/u1; b]; %#ok<AGROW>
 end
-bb = b(m+1:2*m+1) + [b(m:-1:1); 0];
+bb = b(m+1:2*m+1) + [0; b(m:-1:1)];
 pk = a(1:m+1)-bb;
 p = chebfun(pk, dom, 'coeffs');
 q = chebfun(1, dom);
