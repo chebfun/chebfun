@@ -2071,3 +2071,13 @@ logoMat = imread(fullfile(chebfunroot(),'chebguiDemos','chebfunLogo.png'));
 image(logoMat)
 axis off
 end
+
+
+% --- Executes on button press in button_ivp.
+function button_ivp_Callback(hObject, eventdata, handles)
+% hObject    handle to button_ivp (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of button_ivp
+end
