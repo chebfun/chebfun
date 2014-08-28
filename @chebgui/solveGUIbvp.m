@@ -40,6 +40,7 @@ allVarString = expInfo.allVarString;
 allVarNames = expInfo.allVarNames;
 indVarNameSpace = expInfo.indVarNameSpace;
 bcInput = expInfo.bcInput;
+periodic = expInfo.periodic;
 initInput = expInfo.initInput;
 % Create the independent variable on DOM.
 xt = chebfun('x', dom);
@@ -55,6 +56,9 @@ scalarProblem = length(allVarNames) == 1;
 % Obtain the boundary conditions to be imposed.
 if ( ~isempty(bcInput{1}) )
     bcString = setupFields(guifile, bcInput, 'BCnew', allVarString);
+elseif ( periodic )
+    bcString = '';
+    BC = 'periodic';
 else
     bcString = '';
     BC = [];
