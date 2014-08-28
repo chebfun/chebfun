@@ -24,6 +24,12 @@ if (~iscell(bcInput))
     bcInput = {bcInput};
 end
 
+% If we have periodic conditions, we are dealing with a BVP:
+if ( strcmp(bcInput, 'periodic') )
+    isIorF = 0;
+    return
+end
+
 % Find out what the variables that appear in the problem are if they didn't get
 % passed:
 if ( nargin < 2 ) 
