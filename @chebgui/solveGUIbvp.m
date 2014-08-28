@@ -257,7 +257,14 @@ if ( guiMode )
         else
             len = max(cellfun(@length, u.blocks));
         end
-        str = {'Initial value problem detected.';
+        
+        if ( isIorF == 1 )
+            detStr = 'Initial value problem detected';
+        else
+            detStr = 'Final value problem detected';
+        end
+        
+        str = {detStr, ; 
             sprintf('Number of pieces of the solution: %i.', ...
             length(u.domain)-1);
             sprintf('Total length of solution: %i.', len)};
