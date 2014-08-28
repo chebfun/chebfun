@@ -805,10 +805,16 @@ function chebguimainwindow_ResizeFcn(hObject, eventdata, handles)
 end
 
 function button_ode_Callback(hObject, eventdata, handles)
-% Switch to ODE mode.
 handles = chebguiController.switchMode(handles, 'bvp');
 guidata(hObject, handles);
 end
+
+function button_ivp_Callback(hObject, eventdata, handles)
+% Switch to IVP mode.
+handles = chebguiController.switchMode(handles, 'ivp');
+guidata(hObject, handles);
+end
+
 
 % --- Executes on button press in button_pde.
 function button_pde_Callback(hObject, eventdata, handles)
@@ -2070,14 +2076,4 @@ function fig_logo_CreateFcn(hObject, eventdata, handles)
 logoMat = imread(fullfile(chebfunroot(),'chebguiDemos','chebfunLogo.png'));
 image(logoMat)
 axis off
-end
-
-
-% --- Executes on button press in button_ivp.
-function button_ivp_Callback(hObject, eventdata, handles)
-% hObject    handle to button_ivp (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of button_ivp
 end

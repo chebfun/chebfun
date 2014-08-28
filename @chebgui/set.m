@@ -41,10 +41,6 @@ switch ( lower(propName) )
         if ( ~any(strcmpi(val, {'bvp', 'ivp', 'pde', 'eig'})) )
             error('CHEBFUN:CHEBGUI:set:type',...
                 [val,' is not a valid type of problem.'])
-        elseif ( strcmpi(val, 'ivp') )
-            warning('CHEBFUN:CHEBGUI:set:type',...
-                'Type of problem changed from IVP to BVP');
-            cg.type = 'bvp';
         else
             cg.type = val;
         end

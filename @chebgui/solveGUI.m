@@ -103,7 +103,7 @@ if ( strcmp(get(handles.button_solve, 'string'), 'Solve') )   % In solve mode
     
     % Call the private method solveGUIbvp, pde, or eig, which do the work.
     try
-        if ( strcmpi(handles.guifile.type, 'bvp') )
+        if ( any(strcmpi(handles.guifile.type, {'bvp','ivp'})) )
             handles = solveGUIbvp(guifile, handles);
         elseif ( strcmpi(handles.guifile.type, 'pde') )
             handles = solveGUIpde(guifile, handles);

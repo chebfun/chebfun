@@ -24,6 +24,7 @@ if ( strcmp(newMode, 'bvp') ) % Going into BVP mode
     handles.guifile.type = 'bvp';
     
     set(handles.button_ode, 'Value', 1)
+    set(handles.button_ivp, 'Value', 0)
     set(handles.button_pde, 'Value', 0)
     set(handles.button_eig, 'Value', 0)
     
@@ -44,21 +45,13 @@ if ( strcmp(newMode, 'bvp') ) % Going into BVP mode
         set(handles.toggle_useLatest, 'Enable', 'off')
     end
     
-    set(handles.iter_list, 'Visible', 'off')
-    set(handles.iter_list, 'String', '')
-    set(handles.iter_list, 'Value', 0)
-    set(handles.iter_text, 'Visible', 'off')
-    set(handles.iter_text, 'String', '')
+    % Hide the iter_list box:
+    handles = hideIterList(handles);
     
     set(handles.panel_eigopts, 'Visible', 'Off')
         
     % Switch from LBC and RBC fields to BC
-    set(handles.input_LBC, 'Visible', 'Off')
-    set(handles.text_LBCs, 'Visible', 'Off')
-    set(handles.input_RBC, 'Visible', 'Off')
-    set(handles.text_RBCs, 'Visible', 'Off')
-    set(handles.input_BC, 'Visible', 'On')
-    set(handles.text_BCs, 'Visible', 'On')
+    handles = toggleBCinput(handles, 'off', 'on');
     
     % Change the list of available options.
     % Enable ODE menu options
@@ -77,6 +70,9 @@ if ( strcmp(newMode, 'bvp') ) % Going into BVP mode
     % Always clear the bottom figure
     chebguiController.initialiseFigureBottom(handles)
     
+    % Change the IVP solver option panel to discretization panel:
+    handles = updateDiscPanel(handles, 0);
+    
     % Make the discretization panel visible
     set(handles.panel_discretization, 'Visible', 'on')
     
@@ -85,16 +81,28 @@ if ( strcmp(newMode, 'bvp') ) % Going into BVP mode
     % Enable all childrens of discretisation panel
     %     set(findall(handles.panel_discretization,  '-property',  'enable'),  ...
     %         'visible',  'on')
+elseif ( strcmp(newMode, 'ivp') ) % Going into IVP mode
+    % IVP mode is almost identical to BVP, so do the same adjustments, and then
+    % minor corrections at the end:
+    handles = chebguiController.switchMode(handles, 'bvp', callMode);
+    set(handles.button_ode, 'Value', 0)
+    set(handles.button_ivp, 'Value', 1)
+    
+    % Change the discretization panel to IVP solver option panel
+    handles = updateDiscPanel(handles, 1);
     
 elseif ( strcmp(newMode, 'pde') ) % Going into PDE mode
     handles.guifile.type = 'pde';
     
     set(handles.button_ode, 'Value', 0)
+    set(handles.button_ivp, 'Value', 0)
     set(handles.button_pde, 'Value', 1)
     set(handles.button_eig, 'Value', 0)
+    
+    % Hide the iter_list box:
+    handles = hideIterList(handles);
+    
     set(handles.toggle_useLatest, 'Visible', 'off')
-    set(handles.iter_list, 'Visible', 'off')
-    set(handles.iter_text, 'Visible', 'off')
     set(handles.text_initial, 'String', 'Initial condition')
     set(handles.text_DEs, 'String', 'Differential equation(s)')
     
@@ -112,13 +120,8 @@ elseif ( strcmp(newMode, 'pde') ) % Going into PDE mode
 
     set(handles.panel_eigopts, 'Visible', 'Off')
     
-    % Switch from BC to LBC and RBC fields
-    set(handles.input_LBC, 'Visible', 'On')
-    set(handles.text_LBCs, 'Visible', 'On')
-    set(handles.input_RBC, 'Visible', 'On')
-    set(handles.text_RBCs, 'Visible', 'On')
-    set(handles.input_BC, 'Visible', 'Off')
-    set(handles.text_BCs, 'Visible', 'Off')
+    % Switch from LBC and RBC fields to BC
+    handles = toggleBCinput(handles, 'on', 'off');
     
     % Change the list of available options
     % Disable ODE menu options
@@ -145,13 +148,12 @@ else % Going into EIG mode
     handles.guifile.type = 'eig';
     
     set(handles.button_ode, 'Value', 0)
+    set(handles.button_ivp, 'Value', 0)
     set(handles.button_pde, 'Value', 0)
     set(handles.button_eig, 'Value', 1)
     
     set(handles.toggle_useLatest, 'Visible', 'off')
     set(handles.text_DEs, 'String', 'Differential operator')
-    % set(handles.iter_list, 'Visible', 'on')
-    % set(handles.iter_text, 'Visible', 'on')
     set(handles.text_initial, 'String', 'Look for')
     set(handles.input_GUESS, 'visible', 'Off')
     set(handles.toggle_useLatest, 'Enable', 'off')
@@ -194,19 +196,11 @@ else % Going into EIG mode
         set(handles.edit_eigN, 'String', 6);
     end
     
-    set(handles.iter_list, 'Visible', 'off')
-    set(handles.iter_list, 'String', '')
-    set(handles.iter_list, 'Value', 0)
-    set(handles.iter_text, 'Visible', 'off')
-    set(handles.iter_text, 'String', '')
+    % Hide the iter_list box:
+    handles = hideIterList(handles);
     
     % Switch from LBC and RBC fields to BC
-    set(handles.input_LBC, 'Visible', 'Off')
-    set(handles.text_LBCs, 'Visible', 'Off')
-    set(handles.input_RBC, 'Visible', 'Off')
-    set(handles.text_RBCs, 'Visible', 'Off')
-    set(handles.input_BC, 'Visible', 'On')
-    set(handles.text_BCs, 'Visible', 'On')
+    handles = toggleBCinput(handles, 'off', 'on');
     
     % Change the list of available options.
 
@@ -219,7 +213,9 @@ else % Going into EIG mode
     set(handles.menu_pdeholdplot, 'Enable', 'Off')
     set(handles.menu_pdefix, 'Enable', 'Off')
     set(handles.menu_fixN, 'Enable', 'Off')
-    
+
+    % Change the IVP solver option panel to discretization panel:
+    handles = updateDiscPanel(handles, 0);
     
     % Make the discretization panel visible
     set(handles.panel_discretization, 'Visible', 'on')
@@ -235,3 +231,39 @@ else % Going into EIG mode
 end
 
 end
+
+function handles = toggleBCinput(handles, onOff1, onOff2)
+set(handles.input_LBC, 'Visible', onOff1)
+set(handles.text_LBCs, 'Visible', onOff1)
+set(handles.input_RBC, 'Visible', onOff1)
+set(handles.text_RBCs, 'Visible', onOff1)
+set(handles.input_BC,  'Visible', onOff2)
+set(handles.text_BCs,  'Visible', onOff2)
+end
+
+function handles = hideIterList(handles)
+set(handles.iter_list, 'Visible', 'off')
+set(handles.iter_list, 'String', '')
+set(handles.iter_list, 'Value', 0)
+set(handles.iter_text, 'Visible', 'off')
+set(handles.iter_text, 'String', '')
+end
+
+function handles = updateDiscPanel(handles, ivpMode)
+if ( ivpMode )
+    set(handles.button_Collocation, 'String', 'Time-stepping','value', 1)
+    set(handles.button_ultraS, 'String', ...
+        '<HTML><BODY>Global <br> methods</BODY> </HTML>') 
+    set(handles.panel_discretization, 'Title', 'IVP solver')
+else
+    
+    set(handles.button_Collocation, 'String', 'Collocation')
+    % Set a multiline string for the ultraspherical options
+    set(handles.button_ultraS, 'String', ...
+        '<HTML><BODY>Ultra- <br> spherical</BODY> </HTML>') 
+    
+    set(handles.panel_discretization, 'Title', 'Discretization')
+end
+end
+
+
