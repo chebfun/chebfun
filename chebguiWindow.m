@@ -160,6 +160,9 @@ set(handles.mainWindow, 'BackgroundColor', [.702 .78 1]);
 % Default discretization is colloc2
 handles.guifile.options.discretization = @colloc2;
 
+% Default IVP solver is ode113:
+handles.guifile.options.ivpSolver = 'ode113';
+
 % Update handles structure
 guidata(hObject, handles);
 
@@ -2065,9 +2068,31 @@ function panel_discretization_SelectionChangeFcn(hObject, eventdata, handles)
 newDisc = get(eventdata.NewValue, 'String');
 
 if ( strcmp(newDisc, get(handles.button_Collocation, 'String')) )
-    handles.guifile.options.discretization = @colloc2;
+    % Change to collocation if we're in BVP mode. Otherwise, show options dialog
+    % for IVP solvers.
+    if ( ~get(handles.button_ivp, 'value') )
+        handles.guifile.options.discretization = @colloc2;
+    else
+        ivpSolvers = {'ode113', 'ode15s', 'ode45'};
+        [selection,ok] = listdlg('ListString', ivpSolvers, ...
+            'SelectionMode','Single', 'Name', 'IVP solver', ...
+            'ListSize', [160 100]);
+        if ( ok )
+            handles.guifile.options.ivpSolver = ivpSolvers{selection};
+        end
+    end
 else
-    handles.guifile.options.discretization = @ultraS;
+    if ( ~get(handles.button_ivp, 'value') )
+        handles.guifile.options.discretization = @ultraS;
+    else
+        globalSolvers = {'Collocation', 'Ultraspherical'};
+        [selection,ok] = listdlg('ListString', globalSolvers, ...
+            'SelectionMode','Single', 'Name', 'IVP solver', ...
+            'ListSize', [160 100]);
+        if ( ok )
+            handles.guifile.options.ivpSolver = lower(globalSolvers{selection});
+        end
+    end
 end
 
 % Update the hObject

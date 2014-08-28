@@ -224,6 +224,9 @@ options.grid = guifile.options.grid;
 % What discretization do we want?
 options.discretization = expInfo.discretization;
 
+% What IVP solver do we want?
+options.ivpSolver = guifile.options.ivpSolver;
+
 % Various things we only need to think about when in the GUI, changes GUI compenents.
 if ( guiMode )
     set(handles.iter_list, 'String', '');
@@ -244,7 +247,7 @@ end
 if ( guiMode )
     displayFunction = ...
         @(mode, varargin) chebgui.displayBVPinfo(handles, mode, varargin{:});
-    if ( ~isIorF )
+    if ( ~isIorF || isempty(strfind(func2str(options.ivpSolver),'chebfun')) )
         [u, info] = solvebvp(N, 0, options, displayFunction);
     else
         u = solveivp(N, 0, options);

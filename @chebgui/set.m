@@ -85,6 +85,8 @@ switch ( lower(propName) )
         cg.options.numeigs = val;
     case 'discretization'
         cg.options.discretization = val;
+    case 'ivpsolver'
+        cg.options.ivpSolver = val;
     otherwise
         error('CHEBFUN:CHEBGUI:set:propName',...
             [propName,' is not a valid chebgui property.'])
