@@ -13,6 +13,10 @@ function isIorF = isIVPorFVP(guifile, allVarNames)
 % The domain of the problem
 dom = guifile.domain;
 
+% We could encounter commas instead of whitespace when specifying the domain of
+% the problem. So do a strrep:
+dom = strrep(dom,',', ' ');
+
 % The BC input
 bcInput = guifile.BC;
 % Ensure that the BC input is a cell-string:

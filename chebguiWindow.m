@@ -1735,12 +1735,19 @@ newString = removeTabs(newString); % Remove tabs
 set(hObject, 'String', newString);
 handles = chebguiController.callbackBCs(handles, newString, 'bc');
 handles.guifile.BC = newString;
-% Is the problem now an BVP, IVP or FVP?
-isIorF = isIVPorFVP(handles.guifile);
-if ( isIorF == 1 )
-    disp('Initial value problem input in BC field.');
-elseif ( isIorF == 2 )
-    disp('Final value problem input in BC field.');
+
+if (get(handles.button_ode,'value') )
+    % Is the problem now a BVP, IVP or FVP?
+    isIorF = isIVPorFVP(handles.guifile);
+    if ( isIorF )
+        handles = chebguiController.switchMode(handles, 'ivp');
+    end
+elseif ( get(handles.button_ivp,'value') )
+    % Is the problem now a BVP?
+    isIorF = isIVPorFVP(handles.guifile);
+    if ( ~isIorF )
+        handles = chebguiController.switchMode(handles, 'bvp');
+    end    
 end
 
 guidata(hObject, handles);
