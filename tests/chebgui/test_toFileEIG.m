@@ -4,6 +4,15 @@ function pass = test_toFileEIG(pref)
 % This test only checks whether nothing breaks, it does not try to solve the
 % problems.
 
+% This test won't work if we can't write to the current directory.
+[ignored, attr] = fileattrib(pwd);
+if ( ~attr.UserWrite )
+    warning('CHEBFUN:tests:chebgui:test_toFileEIG:perms', ...
+        'Cannot write to chebfunroot/tests/chebgui/.  Bypassing test.');
+    pass = true;
+    return;
+end
+
 % Find the folders which demos are stored in. The chebguiDemos folder lives in
 % the trunk folder, find the path of the Chebfun trunk.
 trunkPath = chebfunroot();
