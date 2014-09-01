@@ -2,6 +2,7 @@ function pass = test_interp1(pref)
 
 %% Linear interpolation:
 % Test a scalar function:
+seedRNG(6178);
 x = (0:10).';  
 y = sin(x);
 f = chebfun.interp1(x, y, 'linear');
@@ -78,4 +79,11 @@ pass(22) = norm(feval(f, x) - y) < tol;
 pass(23) = numel(f.funs) == 10;
 pass(24) = length(f) == 20;
 
+% Test a chebfun
+x = chebfun('x', [0, 1]);
+y = exp(x);
+x = rand(11, 1);
+f = chebfun.interp1(x, y, 'poly', [0, 1]);
+tol = 10*epslevel(f);
+pass(25) = norm(f(x)-y(x), inf) < tol;
 end
