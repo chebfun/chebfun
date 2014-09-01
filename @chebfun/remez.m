@@ -52,17 +52,17 @@ dom = f.domain([1, end]);
 normf = norm(f);
 
 if ( ~isreal(f) )
-    error ('CHEBFUN:remez:real', ...
+    error('CHEBFUN:CHEBFUN:remez:real', ...
         'REMEZ only supports real valued functions.');
 end
 
 if ( numColumns(f) > 1 )
-    error ('CHEBFUN:remez:quasi', ...
+    error('CHEBFUN:CHEBFUN:remez:quasi', ...
         'REMEZ does not currently support quasimatrices.');
 end
 
 if ( issing(f) )
-    error('CHEBFUN:remez:singularFunction', ...
+    error('CHEBFUN:CHEBFUN:remez:singularFunction', ...
         'REMEZ does not currently support functions with singularities.');
 end
 
