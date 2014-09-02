@@ -9,6 +9,13 @@ if ( nargin < 3 )
     pref = cheboppref;
 end
 
+% If pref.ivpSolver is set to a global method, we really should be calling
+% CHEBOP/SOLVEBVP():
+if ( isempty(strfind(func2str(pref.ivpSolver), 'chebfun.ode')) )
+    y = solvebvp(N, rhs, pref, varargin{:});
+    return
+end
+
 % Are we dealing with a system?
 isSystem = ( nargin(N.op) <= 2 );
 
