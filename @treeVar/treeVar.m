@@ -91,6 +91,10 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             h.domain = updateDomain(f, g);
         end
         
+        function plot(treeVar)
+            treeVar.plotTree(treeVar.tree);
+        end
+        
         function h = power(f, g)
             h = treeVar();
             if ( ~isa(f, 'treeVar') )
@@ -191,7 +195,6 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             end
         end
         
-        
         funOut = toRHS(infix, varArray, coeff, indexStart, totalDiffOrders);
         
         [newTree, derTree] = splitTree(tree, maxOrder)
@@ -253,6 +256,14 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             
             [newTree, derTree] = treeVar.splitTree(expTree, ...
                 problemFun.tree.diffOrder);
+            
+            % If newTree is empty, we only have a derivative part in the
+            % expression, e.g. diff(u) = 0. We must replace it with a 0, as
+            % otherwise, we can't evaluate the resulting odeFun in the ODE
+            % solvers.
+            if ( isempty(newTree) )
+                newTree = 0;
+            end
             
             [infixDer, dummy, varArrayDer] = treeVar.tree2infix(derTree, 1, 1);
             coeffFun = treeVar.toAnon(infixDer, varArrayDer);
@@ -357,6 +368,14 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
                 
                 % Split the tree into derivative part and non-derivative part.
                 [newTree, derTree] = treeVar.splitTree(expTree, diffOrders);
+                
+                % If newTree is empty, we only have a derivative part in the
+                % expression, e.g. diff(u) = 0. We must replace it with a 0, as
+                % otherwise, we can't evaluate the resulting odeFun in the ODE
+                % solvers.
+                if ( isempty(newTree) )
+                    newTree = 0;
+                end
                 
                 % Convert the derivative part to infix form.
                 [infixDer, dummy, varArrayDer] = ...
