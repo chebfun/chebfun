@@ -32,7 +32,6 @@ cheb0 = chebfun(@(x) 0*x, dom);
 % Evaluate N.LBC or N.RBC:
 if ( ~isempty(N.lbc) )
     cheb0 = repmat({cheb0}, nargin(N.lbc), 1);
-    disp('Initial value problem detected.')
     bcEvalFun = N.lbc(cheb0{:});
     evalPoint = dom(1);
     odeDom = dom;
@@ -40,7 +39,6 @@ if ( ~isempty(N.lbc) )
     isIVP = 1;
 else
     cheb0 = repmat({cheb0}, nargin(N.rbc), 1);
-    disp('Final value problem detected.')
     bcEvalFun = N.rbc(cheb0{:});
     evalPoint = dom(end);
     % Flip the time domain, so that the problem will be solved as a final-value
