@@ -1436,7 +1436,6 @@ function button_export_Callback(hObject, eventdata, handles)
 
     catch ME
         % TODO: Which error do we want to throw?
-%         rethrow(ME)
         error('CHEBFUN:chebguiWindow:export', ...
             ['Error in exporting to .m file. Please make ' ...
             'sure there are no syntax errors.']);

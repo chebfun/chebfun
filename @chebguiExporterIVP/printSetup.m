@@ -19,8 +19,8 @@ initInput = expInfo.initInput;
 allVarString = expInfo.allVarString;
 allVarNames = expInfo.allVarNames;
 indVarNameSpace = expInfo.indVarNameSpace;
-periodic = expInfo.periodic;
 useLatest = expInfo.useLatest;
+timeSteppingSolver = expInfo.timeSteppingSolver;
 
 % Print commands for problem set-up:
 fprintf(fid, '\n%%%% Problem set-up');
@@ -38,7 +38,7 @@ fprintf(fid, ['\n%% Set up the rhs of the differential equation so that ' ...
 if ( size(deInput, 1) > 1 )
     deRHSprint = '[';
     for counter = 1:size(deInput,1)
-        deRHSprint = [deRHSprint num2str(0) ';']; %#ok<AGROW>
+        deRHSprint = [deRHSprint num2str(0) ',']; %#ok<AGROW>
     end
     deRHSprint(end) = []; % Remove the last comma
     deRHSprint = [deRHSprint, ']'];
@@ -50,15 +50,21 @@ end
 fprintf(fid, 'rhs = %s;\n', deRHSprint);
 
 % Make assignments for BCs.
+
+% Are we dealing with an initial or final value problem?
+isIorF = isIVPorFVP(guifile, allVarNames);
+
+% Since we're solving an IVP or an FVP, we need to reformulate the BC input, so
+% that it can be assigned to the N.LBC or N.RBC fields:
+newBCinput = bcReform(guifile, expInfo.dom, bcInput, isIorF);
+bcString = setupFields(guifile, newBCinput, 'BC', allVarString);
+
+% Make assignments for BCs.
 fprintf(fid, '\n%% Assign boundary conditions to the chebop.\n');
-if ( ~isempty(bcInput{1}) )
-    bcString = setupFields(guifile, bcInput, 'BCnew', allVarString );
-    bcString = strrep(bcString, 'DUMMYSPACE', indVarNameSpace);
-    bcString = chebguiExporter.prettyPrintFevalString(bcString, allVarNames);
-    fprintf(fid, 'N.bc = %s;\n', bcString);
-end
-if ( periodic )
-    fprintf(fid, 'N.bc = ''periodic'';\n');
+if ( isIorF == 1 )
+    fprintf(fid, 'N.lbc = %s;\n', bcString);
+else
+    fprintf(fid, 'N.rbc = %s;\n', bcString);    
 end
 
 % Set up for the initial guess of the solution.
