@@ -86,12 +86,11 @@ classdef chebguiExporterIVP < chebguiExporter
             end
             
             % Extract the norm of the updates, the CHEBOP and all options.
-            normVec = handles.latest.norms;  %#ok<NASGU>
             N = handles.latest.chebop;  %#ok<NASGU>
             options = handles.latest.options;  %#ok<NASGU>
             
             % Show the user a figure for selecting where to save.
-            uisave([varnames', 'normVec', 'N', 'options'], 'bvp');
+            uisave([varnames', 'N', 'options'], 'ivp');
         end
         
         function toWorkspace(handles)
@@ -107,16 +106,14 @@ classdef chebguiExporterIVP < chebguiExporter
             varnames = handles.varnames;
             nv = numel(varnames);
             if ( nv == 1 )
-                prompt = {'Differential operator', 'Solution:',...
-                    'Vector with norm of updates', 'Options'};
+                prompt = {'Differential operator', 'Solution:', 'Options'};
             else
-                prompt = ['Differential operator', varnames.',...
-                    'Vector with norm of updates', 'Options'];
+                prompt = ['Differential operator', varnames.', 'Options'];
             end
             
             name = 'Export to workspace';
             
-            defaultAnswer = ['N', varnames', 'normVec', 'options'];
+            defaultAnswer = ['N', varnames', 'options'];
             
             % Show the user a dialog.
             answer = inputdlg(prompt, name, numlines, defaultAnswer, options);
@@ -130,8 +127,7 @@ classdef chebguiExporterIVP < chebguiExporter
                 for k = 1:nv
                     assignin('base', answer{k+1}, sol(:,k));
                 end
-                assignin('base', answer{nv+2}, handles.latest.norms);
-                assignin('base', answer{nv+3}, handles.latest.options);
+                assignin('base', answer{nv+2}, handles.latest.options);
             end
         end
         
