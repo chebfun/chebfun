@@ -19,11 +19,16 @@ end
 % Are we dealing with a system?
 isSystem = ( nargin(N.op) <= 2 );
 
+% Ensure RHS is a CHEBMATRIX
+if ( ~isa(rhs, 'chebmatrix') )
+    rhs = chebmatrix(rhs);
+end
+
 % Convert to first order format
 if ( isSystem )
-    [anonFun, varIndex, problemDom] = treeVar.toFirstOrder(N.op, N.domain);
+    [anonFun, varIndex, problemDom] = treeVar.toFirstOrder(N.op, rhs, N.domain);
 else
-    [anonFun, varIndex, problemDom] = treeVar.toFirstOrderSystem(N.op, N.domain);
+    [anonFun, varIndex, problemDom] = treeVar.toFirstOrderSystem(N.op, rhs, N.domain);
 end
 
 % Join all breakpoints

@@ -228,9 +228,9 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             end
         end
         
-        [funOut, varIndex, problemDom] = toFirstOrder(funIn, domain)
+        [funOut, varIndex, problemDom] = toFirstOrder(funIn, rhs, domain)
         
-        [funOut, indexStart, problemDom] = toFirstOrderSystem(funIn, domain)
+        [funOut, indexStart, problemDom] = toFirstOrderSystem(funIn, rhs, domain)
         
         function idx = sortConditions(funIn, domain)
             %SORTBCS    Return a vector with indices on how to sort the results

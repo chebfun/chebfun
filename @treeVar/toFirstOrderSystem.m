@@ -1,4 +1,4 @@
-function [funOut, indexStart, problemDom] = toFirstOrderSystem(funIn, domain)
+function [funOut, indexStart, problemDom] = toFirstOrderSystem(funIn, rhs, domain)
 % Independent variable on the domain
 t = chebfun(@(t) t, domain);
 
@@ -133,8 +133,8 @@ for wCounter = 1:length(fevalResult)
     % starts with a unary minus, we can simply remove it rather than
     % doing a double negation:
     % [TODO: Remove double UMINUS]
-    newTree = struct('method', 'uminus', ...
-        'numArgs', 1, 'center', newTree);
+    newTree = struct('method', 'minus', 'numArgs', 2, ...
+        'left', rhs{wCounter}, 'right', newTree);
     % Convert current expression to infix form:
     [infix, varCounter, varArray] = ...
         treeVar.tree2infix(newTree, wCounter, indexStart);

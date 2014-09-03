@@ -1,4 +1,4 @@
-function [funOut, varIndex, problemDom] = toFirstOrder(funIn, domain)
+function [funOut, varIndex, problemDom] = toFirstOrder(funIn, rhs, domain)
 % Independent variable on the domain
 t = chebfun(@(t) t, domain);
 arg = treeVar(1, domain);
@@ -42,7 +42,8 @@ coeffArg = [zeros(1, expTree.diffOrder), 1];
 
 coeff = {coeffFun(t, coeffArg)};
 
-newTree = struct('method', 'uminus', 'numArgs', 1, 'center', newTree);
+newTree = struct('method', 'minus', 'numArgs', 2, ...
+    'left', rhs{1}, 'right', newTree);
 [infix, varCounter, varArray] = treeVar.tree2infix(newTree, 1, 1);
 infix = {infix};
 varArray = {varArray};
