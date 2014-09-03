@@ -15,7 +15,10 @@ end
 function [out, varCounter, varArray] = toInfix(tree, eqno, indexStart, varCounter, varArray)
 
 % Check whether we're converting a syntax tree to infix form, or whether we're
-% working directly with a scalar or a CHEBFUN
+% working directly with a scalar or a CHEBFUN. If the TREE input variable is not
+% a struct, we've arrived at a leaf of the tree, which will either be a scalar
+% or a CHEBFUN variable. Indicate this by setting NUMARGS = -1, which allows us
+% to use the switch statement below.
 if ( isstruct(tree) )
     numArgs = tree.numArgs;
 else
@@ -24,7 +27,8 @@ end
 
 switch numArgs
     case -1
-        disp('Chebfun/scalar')
+        % We're looking a a leaf of the syntax tree that is either a scalar or a
+        % CHEBFUN.
         [out, varArray, varCounter] = ...
                 scalarChebfunInfix(eqno, varCounter, tree, varArray);
     case 0
