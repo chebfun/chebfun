@@ -23,7 +23,7 @@ end
     
 f = simplifyDeltas(f);
 % Deal with the case when there are delta functions:
-% NOTE: Higer order delta functions have no effect on maxima or minima of the
+% NOTE: Higher order delta functions have no effect on maxima or minima of the
 % function.
 if ( isa(f, 'deltafun') )
     deltaMag = f.deltaMag;       % All delta functions in f.

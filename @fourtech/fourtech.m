@@ -236,7 +236,7 @@ classdef fourtech < smoothfun
         % Complex conjugate of a FOURTECH.
         f = conj(f)
         
-        % FOURTECH obects are not transposable.
+        % FOURTECH objects are not transposable.
         f = ctranspose(f)
 
         % Indefinite integral of a FOURTECH.
@@ -244,7 +244,7 @@ classdef fourtech < smoothfun
 
         % Derivative of a FOURTECH.
         f = diff(f, k, dim)
-
+        
         % Extract information for DISPLAY.
         info = dispData(f)
         
@@ -407,6 +407,9 @@ classdef fourtech < smoothfun
         
         % Aliasing:
         coeffs = alias(coeffs, m)
+        
+        % Differentiation matrix in Fourier basis.
+        D = diffmat(n, p)
         
         % Compute Fourier points (x) and optionally quadrature (w)
         % and barycentric (v) weights:

@@ -39,6 +39,6 @@ Tx = feval(T, x);
 % Solve for coefficients (least squares)
 c = Tx\y;
 % Construct Chebfun:
-f = chebfun(flipud(c), d, 'coeffs');
+f = chebfun(c, d, 'coeffs');
 
 end

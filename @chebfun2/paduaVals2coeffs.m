@@ -78,9 +78,6 @@ C = triu(C(:,end:-1:1));
 C = C(:,end:-1:1);  
 
 if ( nargout < 2 )
-    % For consistency with CHEBFUN2:
-    C = rot90(C, 2);
-    
     % No need to go any further!
     return
 end
@@ -95,10 +92,6 @@ else
     % Use DCT:
     V = dct(dct(C.').');    
 end
-
-% For consistency with CHEBFUN2.
-C = rot90(C, 2);
-V = rot90(V, 2); 
 
 if ( nargout < 3 )
     % No need to go any further!

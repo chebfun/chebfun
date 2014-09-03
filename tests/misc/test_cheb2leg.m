@@ -19,11 +19,11 @@ err = norm(c_cheb - c_leg, inf);
 pass(1) = err < tol;
 
 % Test an arbitrary vector against a stored value:
-c_cheb = 1./(1:N)'.^2; 
+c_cheb = 1./(N:-1:1)'.^2; 
 c_cheb(2:2:end) = -c_cheb(2:2:end);
 c_leg = cheb2leg(c_cheb);
-c_leg19 = -0.011460983274163;
-err = abs(c_leg(19) - c_leg19)/abs(c_leg19);
+c_leg2 = 0.011460983274163;
+err = abs(c_leg(2) - c_leg2)/abs(c_leg2);
 pass(2) = err < tol;
 
 % Test conversion back to cheb coeffs:
@@ -40,11 +40,11 @@ err = norm(c_cheb-c_leg, inf);
 pass(4) = err < 10*tol;
 
 % Test an arbitrary vector against a stored value:
-c_cheb = 1./(1:N)'.^2; 
+c_cheb = 1./(N:-1:1)'.^2; 
 c_cheb(2:2:end) = -c_cheb(2:2:end);
 c_leg = cheb2leg(c_cheb);
-c_leg442 = 8.239505429144573e-04;
-err = abs(c_leg(442) - c_leg442)/abs(c_leg442);
+c_leg442 = -8.239505429144573e-04;
+err = abs(c_leg(559) - c_leg442)/abs(c_leg442);
 pass(5) = err < tol;
 
 % Test conversion back to cheb coeffs:
@@ -82,6 +82,6 @@ A = rand(1000, 2);
 B = cheb2leg( A ); 
 C = cheb2leg( A, 1); 
 D = cheb2leg( A, 'normalized'); 
-pass(11) = ( norm( diag(1./(sqrt((999:-1:0)' + 1/2)))*B - C ) < tol ); 
+pass(11) = ( norm( diag(1./(sqrt((0:999)' + 1/2)))*B - C ) < tol ); 
 pass(12) = ( norm( C - D ) < tol ); 
 end

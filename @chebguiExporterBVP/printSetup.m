@@ -83,7 +83,7 @@ elseif ( ~isempty(initInput{1}) )
         fprintf(fid, 'N.init = %s;\n', guessInput);
         
     else
-        % To deal with 'u = ...' etc in intial guesses
+        % To deal with 'u = ...' etc in initial guesses
         order = [];
         guesses = [];
         inits = [];

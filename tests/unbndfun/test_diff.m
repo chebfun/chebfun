@@ -54,8 +54,9 @@ g = diff(f);
 op_g = @(x) 2*x.^3.*exp(-x.^2) - 2*x.*(exp(-x.^2) - 1);
 gVals = feval(g, x);
 gExact = op_g(x);
-err = gVals - gExact;
-pass(4) = norm(err, inf) < 5e5*get(f,'epslevel')*get(f,'vscale');
+err = norm(gVals - gExact, inf);
+tol = 5e5*get(f,'epslevel')*get(f,'vscale');
+pass(4) = err < tol;
 
 %% Functions on [a inf]:
 

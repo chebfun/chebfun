@@ -152,7 +152,7 @@ if ( iscellstr(initInput) )
         end
     end
 else
-    % Only one line specifiying the initial condition (for a scalar problem):
+    % Only one line specifying the initial condition (for a scalar problem):
     initInput = vectorize(initInput);
     
     % Is the input of the form '3' or 'u=3'?

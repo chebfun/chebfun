@@ -13,17 +13,16 @@ function varargout = coeffs2vals( U, varargin )
 % See http://www.chebfun.org/ for Chebfun information.
 
 tech = chebfunpref().tech(); 
-
 if ( nargin == 1 )
-    U = tech.coeffs2vals( U ); 
-    U = tech.coeffs2vals( U.' ).'; 
+    U = tech.coeffs2vals( flipud(U) ); 
+    U = tech.coeffs2vals( (fliplr(U)).' ).'; 
     varargout = {U}; 
     
 elseif ( narargin == 3 )
     S = varargin{1}; 
     V = varargin{2}; 
-    U = tech.coeffs2vals( U ); 
-    V = tech.coeffs2vals( V.' ).'; 
+    U = tech.coeffs2vals( flipud(U) ); 
+    V = tech.coeffs2vals( (fliplr(V)).' ).'; 
     varargout = {U S V};
     
 else

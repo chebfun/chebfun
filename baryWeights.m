@@ -1,7 +1,7 @@
 function w = baryWeights(x)
 %BARYWEIGHTS   Barycentric weights.
 %   W = BARYWEIGHTS(X) returns scaled barycentric weights for the points in the
-%   columm vector X. The weights are scaled such that norm(W, inf) == 1.
+%   column vector X. The weights are scaled such that norm(W, inf) == 1.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.

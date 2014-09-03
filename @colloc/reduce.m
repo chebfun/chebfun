@@ -54,11 +54,12 @@ P = cell(1, numInt);
 for k = 1:numInt
     disc.domain = domain(k:(k+1));
     disc.dimension = n(k)-m;
-    xOut = equationPoints(disc);
+    [xOut, ignored, ignored, tOut] = equationPoints(disc);
     disc.dimension = n(k);
-    [xIn, ignored, baryWt] = functionPoints(disc);
+    [xIn, ignored, baryWt, tIn] = functionPoints(disc);
     % Store the kth projection matrix in the cell P
-    P{k} = barymat(xOut, xIn, baryWt);
+%     P{k} = barymat(xOut, xIn, baryWt);
+    P{k} = barymat(xOut, xIn, baryWt, tOut, tIn, 1);
 end
 % Convert the projection matrices P into a blockdiagonal matrix.
 P = blkdiag(P{:});

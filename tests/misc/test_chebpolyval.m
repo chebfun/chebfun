@@ -4,7 +4,7 @@ if ( nargin == 0 )
     pref = chebfunpref();
 end
 
-% NOTE: Since CHEBPOLYVAL() is basicaly a wrapper to CHEBTECH/FEVAL(), this is
+% NOTE: Since CHEBPOLYVAL() is basically a wrapper to CHEBTECH/FEVAL(), this is
 % just a simple test.
 
 % Init:
@@ -19,10 +19,17 @@ fx1 = chebpolyval(c, x);
 
 % Use CHEBPOLY():
 T = chebpoly(0:9);
-fx2 = feval(T*flipud(c), x);
+Tc = T*flipud(c);
+fx2 = feval(Tc, x);
 
 % Error:
 err = norm(fx1 - fx2, inf);
-pass = err < n*tol;
+pass(1) = err < n*tol;
+
+%%
+
+x = chebfun('x');
+f = chebpolyval(c, x);
+pass(2) = norm(f - Tc, inf) < n*tol;
 
 end

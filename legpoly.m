@@ -112,6 +112,7 @@ switch method
             L0 = tmp;
         end
         C = chebtech2.vals2coeffs(P(:,cc));       % Convert to coefficients
+        C = flipud(C);
     
     case 2 % QR
 
@@ -130,15 +131,16 @@ switch method
         end
         C = chebtech2.vals2coeffs(PP);            % Convert to coefficients
         C(1:nMax1,:) = [];                        % Trim coefficients > nMax+1
+        C = flipud(C);
         
     case 3 % LEG2CHEB
         
         c_leg = zeros(nMax+1, numel(n));
         c_leg(n+1,:) = eye(numel(n));             % Legendre coefficients          
         if ( normalize )
-            C = leg2cheb(flipud(c_leg), 'norm');  % Chebyshev coefficients
+            C = leg2cheb(c_leg, 'norm');  % Chebyshev coefficients
         else
-            C = leg2cheb(flipud(c_leg));          % Chebyshev coefficients
+            C = leg2cheb(c_leg);          % Chebyshev coefficients
         end
     
 end

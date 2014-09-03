@@ -47,7 +47,7 @@ if ( isempty(f) )
 end
 
 if ( nargin < 2 || isempty(m) )
-    % Order of intergration not passed in. Assume 1 by default:
+    % Order of integration not passed in. Assume 1 by default:
     m = 1; 
 elseif ( m == 0 )
     % Nothing to do here!

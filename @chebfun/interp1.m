@@ -59,12 +59,17 @@ end
 if ( size(x, 1) == 1 )
     x = x.';
 end
-x = sort(x);
-if ( isa(y, 'chebfun') )
-    y = feval(y, x);
-end
+
 if ( size(y, 1) == 1 )
     y = y.';
+end
+
+% Sort x and also y if y is not a chebfun:
+[x, idx] = sort(x);
+if ( isa(y, 'chebfun') )
+    y = feval(y, x);
+else
+    y = y(idx,:);
 end
 
 % Set default domain if none was supplied.

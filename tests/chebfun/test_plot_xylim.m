@@ -1,5 +1,5 @@
 % Tests for chebfun plotting functions.
-function pass = test_chebfun_xylim(pref)
+function pass = test_plot_xylim(pref)
 
 tol = 1e-4;
 % Create a figure, and make it invisible. Need to do this a number of time
@@ -40,8 +40,7 @@ pass1(length(pass1) + 1) = strcmp(get(gca,'ylimmode'), 'auto');
 hold off
 
 %% Unbounded functions
-hfig = figure;
-set(hfig,'visible','off')
+
 dom2 = [-inf 0];
 pass2 = [];
 f = chebfun(@(x) exp(x), dom2);
@@ -53,16 +52,12 @@ yl = get(gca,'ylim');
 pass2(length(pass2) + 1)  = ( norm(xl - [-10 0]) < tol );
 pass2(length(pass2) + 1) = ( norm(yl - [0 1]) < tol );
 
-hfig = figure;
-set(hfig,'visible','off')
 g = chebfun(@(x) -0.62*exp(x), dom2);
 plot(g)
 pass2(length(pass2) + 1) =  strcmp(get(gca,'ylimmode'), 'auto');
 yl = get(gca,'ylim');
 pass2(length(pass2) + 1)  = ( norm(yl(1) - 0.62) > 0.05 );
 
-hfig = figure;
-set(hfig,'visible','off')
 dom3 = [-20 20];
 h = chebfun(@(x) cos(x), dom3);
 hold on
@@ -71,8 +66,6 @@ xl = get(gca,'xlim');
 pass2(length(pass2) + 1) = ( norm(xl - dom3) < tol );
 hold off
 
-hfig = figure;
-set(hfig,'visible','off')
 plot(h,'g')
 hold on
 plot(g)
@@ -80,8 +73,6 @@ xl = get(gca,'xlim');
 pass2(length(pass2) + 1)  = ( norm(xl - dom3) < tol );
 hold off
 
-hfig = figure;
-set(hfig,'visible','off')
 dom4 = [-2 2];
 h = chebfun(@(x) cos(x), dom4);
 plot(g)
@@ -91,8 +82,6 @@ xl = get(gca,'xlim');
 pass2(length(pass2) + 1) = ( norm(xl - [-10 2]) < tol );
 hold off
 
-hfig = figure;
-set(hfig,'visible','off')
 plot(h,'g')
 hold on
 plot(g)
@@ -104,8 +93,6 @@ pass3 = [];
 f1 = 11.3*sin(x);
 f2 = 1./x;
 
-hfig = figure;
-set(hfig,'visible','off')
 plot(f2)
 pass3(length(pass3) + 1) =  strcmp(get(gca,'xlimmode'), 'manual');
 pass3(length(pass3) + 1) =  strcmp(get(gca,'ylimmode'), 'manual');
@@ -121,8 +108,6 @@ pass3(length(pass3) + 1)  = ( norm(yl(1)) < tol && ( yl(2) > 10 ) );
 hold off
 
 % Do the plotting in reverse order
-hfig = figure;
-set(hfig,'visible','off')
 plot(f1,'g')
 ylOld = get(gca, 'ylim');
 hold on
@@ -134,3 +119,5 @@ pass3(length(pass3) + 1)  = ( (norm(ylOld(1) - ylNew(1)) < tol) && ...
 hold off
 %%
 pass = [pass1, pass2, pass3];
+
+close(hfig);

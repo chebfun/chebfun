@@ -25,7 +25,7 @@ J = jacpoly(0:n, a, b, [-1 0 1]);
 c = rand(n+1,1);
 f = J*c;
 err = norm(c - jaccoeffs(f, n+1, a, b).', inf);
-tol = 10*epslevel(f);
+tol = 10*vscale(f)*epslevel(f);
 pass(2) = err < tol;
 
 end
