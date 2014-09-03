@@ -76,7 +76,7 @@ check = zeros(1,4);
 check(1) = all( fout.domain == gout.domain );
 check(2) = all( fout.domain == unique([f.domain, g.domain]) );
 check(3) = ( norm(vals_fout - vals_f, inf) < ...
-    5*epslevel(fout)*norm(vals_fout, inf) );
+    50*epslevel(fout)*norm(vals_fout, inf) );
 check(4) = ( norm(vals_gout - vals_g, inf) < ...
     5*epslevel(gout)*norm(vals_gout, inf) );
 
