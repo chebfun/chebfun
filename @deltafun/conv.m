@@ -121,4 +121,55 @@ for i = 1:m
     end
 end
 
+if ( isempty(h) )
+    return
+end
+
+%% Make sure that h is a cell array with non-overlapping funs.
+
+% First extract the breakpints from funs forming h:
+doms = cellfun(@(hk) hk.domain, h, 'uniformoutput', 0);
+breakPoints = [];
+for k = 1:length(doms)
+    domk = doms{k};
+    breakPoints = [breakPoints, domk(1), domk(2)]; %#ok<AGROW>
+end
+breakPoints = sort(unique(breakPoints));
+
+%%
+% Restrict each fun in h to lie within these new breakpoints:
+nFuns = length(h);
+H = {};
+for k = 1:nFuns
+    hk = h{k};
+    dom = hk.domain;
+    [~, idx] = intersect(breakPoints, dom);
+    hk = restrict(hk, breakPoints(idx(1):idx(2)));
+    if ( ~isa(hk, 'cell') )
+        hk = {hk};
+    end
+    H = [H, hk]; %#ok<AGROW>
+end
+
+% If H has the same number of funs, nothing further needs to be done:
+if ( length(H) == length(breakPoints) - 1 )
+    return
+end
+
+% H has more funs as a result of restrict. Re-initialize h with 0 BNDFUNS:
+nFuns = length(breakPoints) - 1;
+h = {};
+for k = 1:nFuns
+    data.domain = breakPoints(k:k+1);
+    h = [h, {bndfun(0, data)}]; %#ok<AGROW>
+end
+
+% Loop through H and add each fun to the relevant domain piece in h:
+for k = 1:length(H)
+    hk = H{k};
+    dom = hk.domain;
+    idx = find(breakPoints == dom(1));
+    h{idx} = h{idx} + hk; %#ok<AGROW>
+end
+
 end
