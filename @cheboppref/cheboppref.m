@@ -379,8 +379,8 @@ classdef cheboppref < chebpref
             factoryPrefs.damping = 1;
             factoryPrefs.display = 'off';
             factoryPrefs.errTol = 1e-10;
-            factoryPrefs.ivpAbsTol = 2.5e-14;
-            factoryPrefs.ivpRelTol = 2.5e-14;
+            factoryPrefs.ivpAbsTol = 100*eps;
+            factoryPrefs.ivpRelTol = 100*eps;
             factoryPrefs.ivpSolver = @chebfun.ode113;
             factoryPrefs.lambdaMin = 1e-6;
             factoryPrefs.maxDimension = 4096;
