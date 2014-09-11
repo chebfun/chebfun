@@ -78,6 +78,9 @@ Dw(ii) = 0;                                         % Subtract identity.
 D = Dw .* Dxi;
 D(ii) = 0; D(ii) = -sum(D, 2);                      % Negative sum trick.
 
+% Forcing symmetry for even N:
+D(ii(end:-1:N-floor(N/2)+1)) = -D(ii(1:floor(N/2)));
+
 if ( k == 1 )
     return
 end
