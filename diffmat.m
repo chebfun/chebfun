@@ -127,7 +127,7 @@ if ( strcmpi(mapFrom, mapTo) && ( m == n ) ) % Square case:
         % Flipping trick for symmetry:
         DRot = rot90(D, 2);
         idxTo = rot90(~triu(ones(N)));
-        D(idxTo) = -DRot(idxTo);
+        D(idxTo) = (-1)^p*DRot(idxTo);
     end
 elseif ( strcmpi(mapTo, 'chebkind1') )
     
