@@ -251,6 +251,7 @@ end
                 % Increase length and bail out:
                 currentLength = 2*currentLength-1;
                 status = true;
+                break
                 
             end        
             

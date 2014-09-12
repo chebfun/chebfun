@@ -15,10 +15,9 @@ function varargout = plotcoeffs2( f )
 % Compute the bivariate coefficients, truncate them when then fall below
 % tolerance for better visual, use stem3.
 X = abs( chebcoeffs2( f ) ); % Absolute value of coefficients. 
-X = rot90(X, 2);             % Rotate (MATLAB's convention)
  
 % Use a stem3 plot changing the axis to log scale. 
-[xx, yy] = meshgrid( 1:size(X,1), 1:size(X,2) );
+[xx, yy] = meshgrid( 1:size(X,2), 1:size(X,1) );
 h = stem3(xx, yy, X, 'fill', 'markerfacecolor', 'k', 'markeredgecolor', 'k');
 set(gca, 'ZScale', 'log', 'view', [40 20])
 box off
