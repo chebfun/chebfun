@@ -84,6 +84,6 @@ x = chebfun('x', [0, 1]);
 y = exp(x);
 x = rand(11, 1);
 f = chebfun.interp1(x, y, 'poly', [0, 1]);
-tol = 10*epslevel(f);
+tol = 50*epslevel(f);
 pass(25) = norm(f(x)-y(x), inf) < tol;
 end
