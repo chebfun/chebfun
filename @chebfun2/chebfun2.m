@@ -16,6 +16,15 @@ classdef chebfun2
 % CHEBFUN2(F, [A B C D]) specifies a rectangle [A B]x[C D] where the 
 % function is defined. A, B, C, D must all be finite.
 % 
+% CHEBFUN2(F, k) returns a rank k approximation to F.
+%
+% CHEBFUN2(F, [m n]) returns a representation of a bivariate polynomial 
+% degree m in x and n in y. The polynomial is compressed in low rank form 
+% and the rank k is still determined adaptively (satisfying k<=min(m,n)).
+%
+% CHEBFUN2(F, k, [A B C D]) or CHEBFUN2(F, [m,n], [A B C D]) is nonadaptive in
+% rank or degrees, as above, returning a chebfun2 on the domain [A B]x[C D]. 
+% 
 % CHEBFUN2(F, 'coeffs') where F is matrix uses the matrix as coefficients in 
 % a Chebyshev tensor expansion.
 %
