@@ -107,7 +107,7 @@ if ( isempty(optN) )
     optN = NaN;
 end
 
-if ( isfield(opt, 'AdjustBCs') && opt.AdjustBCs == false )
+if ( isfield(opt, 'AdjustBCs') && ~isempty(opt.AdjustBCs) && ~opt.AdjustBCs )
     throwBCwarning = false;
     adjustBCs = false;
 end
