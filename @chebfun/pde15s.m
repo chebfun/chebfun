@@ -85,7 +85,7 @@ tol = 1e-6;             % 'eps' in Chebfun terminology
 doPlot = 1;             % Plot after every time chunk?
 doHold = 0;             % Hold plot?
 plotOpts = {'-'};       % Plotting style
-adjustBCS = true;       % Adjust inconsistent BCs
+adjustBCs = true;       % Adjust inconsistent BCs
 throwBCwarning = true;  % Throw a warning for inconsistent BCs
 
 % Parse the variable inputs:
