@@ -1,7 +1,7 @@
 function pass = test_periodicbvp
 % TAD, 10 Jan 2014
 
-tol = 4e-9; 
+tol = 1e-8; 
 
 %% Building blocks
 dom = [-pi pi];
