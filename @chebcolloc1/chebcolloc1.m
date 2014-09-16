@@ -54,18 +54,14 @@ classdef chebcolloc1 < chebcolloc
         
         function Q = cumsummat(N)
             %CUMSUMMAT  Chebyshev integration matrix.
-            %   Q = CUMSUMMAT(N) is the matrix that maps function values at 
-            %   N Chebyshev points to values of the integral of the 
-            %   interpolating polynomial at those points, with the convention 
-            %   that the first value is zero.
+            %   Q = CUMSUMMAT(N) is the matrix that maps function values at N
+            %   Chebyshev points to values of the integral of the interpolating
+            %   polynomial at those points, with the convention that the first
+            %   value is zero.
             
             % [TODO]: More efficient implementation?
             % [TODO]: Implement this at the COLLOC level?
-            
-            % Copyright 2014 by The University of Oxford and The Chebfun 
-            % Developers.
-            % See http://www.chebfun.org/ for Chebfun information.
-            
+                        
             N = N-1;
             
             persistent CACHE  % Stores computed values for fast return

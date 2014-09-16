@@ -64,7 +64,7 @@ elseif ( isa(item, 'functionalBlock') )
     dim = disc.dimension;
     dom = disc.domain;
     
-    % Create a chebcolloc2 discretization:
+    % Create a CHEBCOLLOC2 discretization:
     collocDisc = chebcolloc2(item, dim, dom);
     M = matrix(collocDisc);
     

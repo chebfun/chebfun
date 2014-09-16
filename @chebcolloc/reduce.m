@@ -16,7 +16,6 @@ function [PA, P, PS] = reduce(disc, A, S)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Setup:
-
 r = disc.projOrder;
 dim = disc.dimension;
 dimAdjust = disc.dimAdjust(1,:);

@@ -369,8 +369,8 @@ classdef cheboppref < chebpref
         end
         
         function val = parseDiscretization(val)
-        %PARSEDISCRETIZATION   Allow different syntax for specifying
-        %discretization.
+        %PARSEDISCRETIZATION    Allow different syntax for specifying
+        %                       discretization.
             
             % We want to allow user-friendly syntax for specifying the
             % discretization (#433). So check whether we have some of the

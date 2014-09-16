@@ -49,7 +49,7 @@ classdef colloc < chebDiscretization
             
         end
         
-     end
+    end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% ABSTRACT METHODS:
