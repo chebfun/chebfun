@@ -9,14 +9,14 @@ function D = diff(disc, m)
 %  See http://www.chebfun.org/ for Chebfun information.
 
 % Store information about domain and dimensions.
-d = disc.domain;
+dom = disc.domain;
 n = disc.dimension;
 
 if ( m == 0 )
     % Trivial case.
     D = eye(sum(n));
 else
-    len = d(2) - d(1);
+    rescaleFactor = dom(2) - dom(1);
     % Rescale the differentiation matrix.
-    D = fourcolloc.diffmat(n, m) * (2*pi/len)^m;
+    D = fourcolloc.diffmat(n, m) * (2*pi/rescaleFactor)^m;
 end

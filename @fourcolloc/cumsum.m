@@ -1,7 +1,7 @@
 function C = cumsum(disc, m)
 %CUMSUM   Indefinite integration operator for FOURCOLLOC discretization.
-%   C = CUMSUM(DISC) gives the matrix such that if v=C*u, then u=v' and v=0
-%   at the left endpoint, as accurately as possible in trigonometric polynomial
+%   C = CUMSUM(DISC) gives the matrix such that if v=C*u, then u=v' and v=0 at
+%   the left endpoint, as accurately as possible in trigonometric polynomial
 %   discretization.
 %
 %   CUMSUM(DISC, M) for positive integer M returns C^M.
@@ -10,16 +10,16 @@ function C = cumsum(disc, m)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Store information about domain and dimensions.
-d = disc.domain;
+dom = disc.domain;
 n = disc.dimension;
 
 if ( m == 0 )
     % Trivial case
     C = eye(sum(n));
 else
-    len = d(2) - d(1);
+    rescaleFactor = dom(2) - dom(1);
     % Rescale.
-    C = fourcolloc.cumsummat(n) * (len/(2*pi)); 
+    C = fourcolloc.cumsummat(n) * (rescaleFactor/(2*pi)); 
     C = C^m;
 end
 

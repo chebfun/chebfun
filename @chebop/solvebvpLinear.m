@@ -55,7 +55,7 @@ else
 end
 
 % Norm of residual:
-normRes = norm(N*u - rhs, 'fro');
+normRes = norm(feval(N, u) - rhs, 'fro');
 
 if ( nargin > 3 )
     % Print information after linear problem has been solved:
