@@ -84,6 +84,7 @@ if ( norm( err ) < 1e-8 )
 else 
     bol = err; 
 end
+% debug plot: 
 % sp = 1; 
 % M = size(A, 1); 
 % N = size(A, 2); 

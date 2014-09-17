@@ -133,7 +133,7 @@ classdef chebop2
                     y = chebfun2(@(x,y) y, dom);
                     % Apply it to the operator.
                     v = fh(x, y, u);
-                    A = v.jacobian;  % Cell array of variable coefficients.
+                    A = v.jacobian;  % Cell array of variable coefficients. 
                 else
                     error('CHEBFUN:CHEBOP2:chebop2:badOp2',...
                         'Operator should be @(u) or @(x,y,u).')
@@ -184,6 +184,13 @@ classdef chebop2
             end
             N.xorder = xdifforder;
             N.yorder = ydifforder;
+            
+            % If we have a variable coefficient PDO, then compute the separable
+            % representation immediately. We need it now. 
+            [cellU, matS, cellV] = SeparableFormat( N ); 
+            N.U = cellU; 
+            N.S = matS; 
+            N.V = cellV;
             
             % Issue a warning to the user for the first CHEBOP2:
             warning('CHEBFUN:CHEBOP2:chebop2:experimental',...
