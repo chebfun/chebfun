@@ -49,7 +49,7 @@ elseif ( isnumeric( x ) && isnumeric( y ) )  % f(x, y)
     
     % If the evaluation points are derived from meshgrid, then there is a
     % fast way to evaluate a chebfun2. Check for this property. 
-    if ( min(size(x)) > 1 && all(size(x) == size(y)) )
+    if ( min(size(x)) > 1 && all(size(x) == size(y)) && numel(size(x)) == 2 )
         % Check to see if the input is a meshgrid:
         if ( max(max(abs(bsxfun(@minus, x, x(1,:))))) == 0  && ... 
                 max(max(abs(bsxfun(@minus, y, y(:,1)))) == 0 ))
