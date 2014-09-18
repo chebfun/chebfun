@@ -1,37 +1,37 @@
 classdef chebop2
-%CHEBOP2   CHEBOP2 class for representing partial differential operators.
-%
-% Class used to solve PDEs defined on rectangular domains that have
-% unique and globally smooth solutions.
-%
-% N = CHEBOP2(@(u) op(u)) constructs an operator N representing the
-% operator given in @(u)op(u) acting on functions of two variables on
-% [-1,1] by [-1,1].
-%
-% N = CHEBOP2(@(u) op(u), [a b c d]) constructs an operator N acting on
-% functions of two variables defined on [a,b] by [c,d].
-%
-% N = CHEBOP2(@(x,y,u) op(x,y,u),...) constructs a variable coefficient PDE
-% operator.
-%
-% Boundary conditions are imposed via the syntax N.lbc, N.rbc, N.ubc, and
-% N.dbc. For example to solve Poisson with Dirichlet conditions try:
-%
-% Example:
-%    N = chebop2(@(u) diff(u,2,1) + diff(u,2,2));
-%    N.lbc = 0; N.rbc = 0; N.ubc = 0; N.dbc = 0;
-%    u = N \ 1;
-%
-% For further details about the PDE solver, see: 
-% 
-% A. Townsend and S. Olver, The automatic solution of partial differential
-% equations using a global spectral method, in preparation, 2014.
-% 
-% Warning: This PDE solver is an experimental new feature. It has not been
-% publicly advertised.  
-        
-% Copyright 2014 by The University of Oxford and The Chebfun2 Developers.
-% See http://www.chebfun.org/ for Chebfun information.
+    %CHEBOP2   CHEBOP2 class for representing partial differential operators.
+    %
+    % Class used to solve PDEs defined on rectangular domains that have
+    % unique and globally smooth solutions.
+    %
+    % N = CHEBOP2(@(u) op(u)) constructs an operator N representing the
+    % operator given in @(u)op(u) acting on functions of two variables on
+    % [-1,1] by [-1,1].
+    %
+    % N = CHEBOP2(@(u) op(u), [a b c d]) constructs an operator N acting on
+    % functions of two variables defined on [a,b] by [c,d].
+    %
+    % N = CHEBOP2(@(x,y,u) op(x,y,u),...) constructs a variable coefficient PDE
+    % operator.
+    %
+    % Boundary conditions are imposed via the syntax N.lbc, N.rbc, N.ubc, and
+    % N.dbc. For example to solve Poisson with Dirichlet conditions try:
+    %
+    % Example:
+    %    N = chebop2(@(u) diff(u,2,1) + diff(u,2,2));
+    %    N.lbc = 0; N.rbc = 0; N.ubc = 0; N.dbc = 0;
+    %    u = N \ 1;
+    %
+    % For further details about the PDE solver, see:
+    %
+    % A. Townsend and S. Olver, The automatic solution of partial differential
+    % equations using a global spectral method, in preparation, 2014.
+    %
+    % Warning: This PDE solver is an experimental new feature. It has not been
+    % publicly advertised.
+    
+    % Copyright 2014 by The University of Oxford and The Chebfun2 Developers.
+    % See http://www.chebfun.org/ for Chebfun information.
     
     %% PROPERTIES.
     properties ( GetAccess = 'public', SetAccess = 'public' )
@@ -73,7 +73,7 @@ classdef chebop2
                 ends = varargin{2}; % Second argument should be a domain.
                 if ( length(ends) == 4 )
                     % Valid domain?
-                    if ( diff(ends(1:2)) > 0 && diff(ends(3:4)) > 0 )  
+                    if ( diff(ends(1:2)) > 0 && diff(ends(3:4)) > 0 )
                         dom = ends;
                     else
                         error('CHEBFUN:CHEBOP2:chebop2:emptyDomain', ...
@@ -91,31 +91,31 @@ classdef chebop2
                     dom = [rect1, rect2];
                 elseif ( isa( varargin{1}, 'double') )
                     % Set up identity operator on the domain.
-                    N = chebop2(@(u) u, varargin{1});  
+                    N = chebop2(@(u) u, varargin{1});
                     return
                 else
                     error('CHEBFUN:CHEBOP2:chebop2:badArg',...
                         'First argument is not an operator or domain.')
                 end
             end
-
-            % First argument in the constructor is the operator. If the 
-            % operator is univariate then it's a constant coefficient PDE, 
+            
+            % First argument in the constructor is the operator. If the
+            % operator is univariate then it's a constant coefficient PDE,
             % otherwise assume it is a variable coefficient.
             if ( isa(varargin{1},'function_handle') )
                 fh = varargin{1};
                 
                 if ( nargin(fh) == 1 )  % The PDE has constant coefficients.
-                                        % Trust that the user has formed the CHEBFUN2 objects 
+                    % Trust that the user has formed the CHEBFUN2 objects
                     % outside of CHEBOP2.
                     u = adchebfun2(chebfun2(@(x,y) x.*y, dom));
                     v = fh(u);
-                    % If the PDO has constant coefficients then convert to 
+                    % If the PDO has constant coefficients then convert to
                     % double:
                     try
                         A = cell2mat(v.jacobian).';
                     catch
-                        % PDO has variable coefficients, keep them in a 
+                        % PDO has variable coefficients, keep them in a
                         % cell array:
                         A = v.jacobian;
                     end
@@ -124,7 +124,7 @@ classdef chebop2
                     error('CHEBFUN:CHEBOP2:chebop2:badOp1', ...
                         'Did you intend to have @(x,y,u)?')
                 elseif ( nargin(fh) == 3 )
-                    % The coefficients of the PDE are now variable 
+                    % The coefficients of the PDE are now variable
                     % coefficient.
                     
                     % Setup a chebfun2 on the right domain
@@ -133,7 +133,15 @@ classdef chebop2
                     y = chebfun2(@(x,y) y, dom);
                     % Apply it to the operator.
                     v = fh(x, y, u);
-                    A = v.jacobian;  % Cell array of variable coefficients. 
+                    A = v.jacobian;  % Cell array of variable coefficients.
+                    
+                    % If we have a variable coefficient PDO, then compute the separable
+                    % representation immediately. We need it now.
+                    [cellU, matS, cellV] = chebop2.SeparableFormat( A,...
+                                                    size(A,2), size(A,1), dom );
+                    N.U = cellU;
+                    N.S = matS;
+                    N.V = cellV;
                 else
                     error('CHEBFUN:CHEBOP2:chebop2:badOp2',...
                         'Operator should be @(u) or @(x,y,u).')
@@ -159,7 +167,7 @@ classdef chebop2
                 A(abs(A) < 10*tol) = 0;
             end
             
-            % Construct CHEBOP2 object. The boundary conditions will be 
+            % Construct CHEBOP2 object. The boundary conditions will be
             % given later.
             N.domain = dom;
             N.op = fh;
@@ -185,13 +193,6 @@ classdef chebop2
             N.xorder = xdifforder;
             N.yorder = ydifforder;
             
-            % If we have a variable coefficient PDO, then compute the separable
-            % representation immediately. We need it now. 
-            [cellU, matS, cellV] = SeparableFormat( N ); 
-            N.U = cellU; 
-            N.S = matS; 
-            N.V = cellV;
-            
             % Issue a warning to the user for the first CHEBOP2:
             warning('CHEBFUN:CHEBOP2:chebop2:experimental',...
                 ['CHEBOP2 is a new experimental feature.\n'...
@@ -203,7 +204,7 @@ classdef chebop2
         end
         
     end
-     
+    
     %% STATIC HIDDEN METHODS.
     methods ( Static = true, Hidden = true )
         
@@ -228,6 +229,9 @@ classdef chebop2
         
         % Method for deciding how to solve the matrix equation:
         X = denseSolve(N, f, m, n);
+        
+        % Compute the separable representation of a PDO: 
+        [cellU, S, cellV] = SeparableFormat( A, xorder, yorder, dom);
         
         % Remove trailing coefficients.
         a = truncate(a, tol);

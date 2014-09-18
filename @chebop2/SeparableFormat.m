@@ -1,4 +1,4 @@
-function [cellU, S, cellV] = SeparableFormat( N )
+function [cellU, S, cellV] = SeparableFormat( A, xorder, yorder, domain )
 % SEPARATBLEFORMAT  compute separable expression for a linear PDO
 %
 % Calculate a separable representation of a partial differential 
@@ -13,11 +13,13 @@ function [cellU, S, cellV] = SeparableFormat( N )
 % 
 % Author: Alex Townsend September 2014.
 
-% Extract the information we need from the chebop2 object: 
-xorder = N.xorder; 
-yorder = N.yorder; 
-domain = N.domain; 
-A = N.coeffs; 
+if ( nargin == 1 )
+    N = A; 
+    A = N.coeffs; 
+    xorder = N.xorder; 
+    yorder = N.yorder; 
+    domain = N.domain; 
+end
 
 % Loop over coefficients of A. Find coefficient of highest degree. We will 
 % need this to recover the variable coefficients:  
