@@ -1,5 +1,5 @@
 function [u, info] = solvebvp(N, rhs, varargin)
-%SOLVEBVP  Solve a linear or nonlinear CHEBOP BVP system.
+%SOLVEBVP   Solve a linear or nonlinear CHEBOP BVP system.
 %
 %   U = SOLVEBVP(N, RHS), where N is a CHEBOP and RHS is a CHEBMATRIX, CHEBFUN
 %   or a vector of doubles attempts to solve the BVP
@@ -63,10 +63,10 @@ function [u, info] = solvebvp(N, rhs, varargin)
 % Parse inputs:
 [pref, displayInfo] = parseInputs(N, varargin{:});
 
+% Check boundary conditions if using FOURCOLLOC.
 if ( isequal(pref.discretization, @fourcolloc) )
     if ( isempty(N.bc) )
-    end
-    if ( isa(N.bc, 'char') && strcmpi(N.bc, 'periodic') )
+    elseif ( isa(N.bc, 'char') && strcmpi(N.bc, 'periodic') )
     N.bc = []; % FOURCOLLOC uses periodic functions, so no need to specify
                % any boundary condition.
     else
@@ -86,18 +86,11 @@ end
 % Store the domain we're working with.
 dom = N.domain;
 
-% Get the discretization.
-if ( isequal(pref.discretization, @chebcolloc1) )
-    tech = 'chebtech1';
-elseif ( isequal(pref.discretization, @chebcolloc2) )
-    tech = 'chebtech2';
-elseif ( isequal(pref.discretization, @fourcolloc) )
-    tech = 'fourtech';
-else
-    tech = 'chebtech2';
-end
+% Use the appropriate tech.
+disc = pref.discretization();
+tech = disc.returnTech;
 
-% Ensure that the RHS is of the correct discretization.
+% Ensure that the RHS is of the correct tech.
 if ( isa(rhs, 'chebfun') )
     rhs = chebfun(rhs, rhs.domain, 'tech', tech);
 elseif ( isa(rhs, 'chebmatrix') )

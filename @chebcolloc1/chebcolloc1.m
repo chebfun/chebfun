@@ -31,6 +31,9 @@ classdef chebcolloc1 < chebcolloc
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
         
+        % Return the tech to use for CHEBCOLLOC1.
+        tech = returnTech();
+        
         function D = diffmat(N, k)
             %DIFFMAT  Chebyshev differentiation matrix.
             %   D = DIFFMAT(N) is the matrix that maps function values at N

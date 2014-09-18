@@ -37,6 +37,9 @@ classdef fourcolloc < colloc
         % Dimension reduction for operator matrix.
         [PA, P, PS] = reduce(disc, A, S);
         
+        % Return the tech to use for FOURCOLLOC.
+        tech = returnTech();
+        
         function D = diffmat(N, m)
             %DIFFMAT   Fourier differentiation matrix.
             %   D = DIFFMAT(N) is the matrix that maps function values at N equally-spaced
