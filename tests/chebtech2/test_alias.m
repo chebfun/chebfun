@@ -7,7 +7,7 @@ tol = 100*eps;
 
 %%
 % Testing a vector of coefficients.
-c0 = (1:10)';
+c0 = (10:-1:1)';
 
 % Padding:
 c1 = chebtech2.alias(c0, 11);
@@ -15,9 +15,9 @@ pass(1) = norm([0 ; c0] - c1, inf) == 0;
 
 % Aliasing:
 c2 = chebtech2.alias(c0, 9);
-pass(2) = norm([2, 4, 4:10]' - c2, inf) == 0;
+pass(2) = norm([10:-1:4, 4, 2].' - c2, inf) == 0;
 c3 = chebtech2.alias(c0, 3);
-pass(3) = norm([12 25 18]' - c3, inf) == 0;
+pass(3) = norm([18 25 12].' - c3, inf) == 0;
 
 % Compare against result of evaluating on a smaller grid:
 pass(4) = norm(chebtech2.vals2coeffs( ...

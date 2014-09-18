@@ -32,9 +32,6 @@ if ( m > n )
     return
 end
 
-% It's more natural to work with the coefficients in the other order:
-coeffs = coeffs(end:-1:1,:);
-
 % Alias coefficients: (see eq. (4.4) of Trefethen, Approximation Theory and
 % Approximation Practice, SIAM, 2013):
 if ( m == 1 )
@@ -55,7 +52,7 @@ else
     end
 end
 
-% Flip the coefficients back again:
-coeffs = coeffs(m:-1:1,:);
+% Truncate:
+coeffs = coeffs(1:m,:);
 
 end
