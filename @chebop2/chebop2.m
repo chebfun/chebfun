@@ -45,6 +45,7 @@ classdef chebop2
         dim = [];     % Size of the system (number of eqns).
         scale = [];   % Relative solution scale.
         coeffs = [];  % Matrix storing constant coefficients.
+        rhs = [];     % Righthand side, if given by user. 
         xorder = 0;   % Diff order in the x-variable.
         yorder = 0;   % Diff order in the y-variable.
         U             %
@@ -108,6 +109,13 @@ classdef chebop2
                 if ( nargin(fh) == 1 )  % The PDE has constant coefficients.
                     % Trust that the user has formed the CHEBFUN2 objects
                     % outside of CHEBOP2.
+                    
+                    % Extract out rhs: 
+                    x = chebfun2(@(x,y) x, dom); 
+                    RHS = fh( 0*x );
+                    fh = @(u) fh(u) - RHS; 
+                    N.rhs = -RHS;             % store for later. 
+                    
                     u = adchebfun2(chebfun2(@(x,y) x.*y, dom));
                     v = fh(u);
                     % If the PDO has constant coefficients then convert to
@@ -131,6 +139,12 @@ classdef chebop2
                     u = adchebfun2(chebfun2(@(x,y) x.*y, dom));
                     x = chebfun2(@(x,y) x, dom);
                     y = chebfun2(@(x,y) y, dom);
+                    
+                    % Extract out rhs: 
+                    RHS = fh(x,y, 0*x); 
+                    fh = @(x,y,u) fh(x,y,u) - RHS; 
+                    N.rhs = -RHS;                  % store for later
+                    
                     % Apply it to the operator.
                     v = fh(x, y, u);
                     A = v.jacobian;  % Cell array of variable coefficients.
