@@ -134,7 +134,7 @@ pref.discretization = 'chebcolloc2';
 v = solvebvp(L, f, pref);
 
 % Comparison.
-tol = 100*pref.errTol;
+tol = 200*pref.errTol;
 xx = linspace(dom(1), dom(2), 100);
 pass(5) = norm(u(xx) - v(xx), inf) < tol;
 

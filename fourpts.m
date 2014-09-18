@@ -14,7 +14,7 @@ function [x, w] = fourpts(n, dom)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Special case (no points).
-if ( n <= 0 )     
+if ( nargin < 1 || n <= 0 )     
     x = []; 
     w = [];
     return
@@ -25,17 +25,19 @@ x = linspace(-pi, pi, n+1).';
 x = x./pi;
 x(end) = [];
 
-% Parse inputs:
-if ( nargin == 1 )
-    dom = [-1, 1];
+if ( nargout > 1 )
+    w = fourtech.quadwts(n);
 end
 
-% Map to the right domain:
-x = diff(dom(1:2))*x/2 + mean(dom(1:2));
-
-% Scaled quadrature weights:
-if ( nargout > 1 )
-    w = fourtech.quadwts(n) * diff(dom(1:2))/2;
+if ( nargin > 1 )
+    % Map to the right domain:
+    x = diff(dom(1:2))*x/2 + mean(dom(1:2));
+    
+    if ( nargout > 1 )
+        % Map to the right domain:
+        w = w * diff(dom(1:2))/2;
+    end
+    
 end
 
 end

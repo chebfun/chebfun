@@ -61,7 +61,19 @@ function [u, info] = solvebvp(N, rhs, varargin)
 %   details.
 
 % Parse inputs:
-[N, pref, displayInfo] = parseInputs(N, varargin{:});
+[pref, displayInfo] = parseInputs(N, varargin{:});
+
+if ( isequal(pref.discretization, @fourcolloc) )
+    if ( isempty(N.bc) )
+    end
+    if ( isa(N.bc, 'char') && strcmpi(N.bc, 'periodic') )
+    N.bc = []; % FOURCOLLOC uses periodic functions, so no need to specify
+               % any boundary condition.
+    else
+        error('CHEBFUN:CHEBOP:solvebvp:bc', ...
+            'FOURCOLLOC only works with periodic boundary conditions.');
+    end
+end
 
 % Find out how many variables N operates on:
 nVars = numVars(N);
@@ -212,7 +224,7 @@ info.isLinear = isLinear;
 
 end
 
-function [N, pref, displayInfo] = parseInputs(N, varargin)
+function [pref, displayInfo] = parseInputs(N, varargin)
 %PARSEINPUTS   Parse the input arguments to SOLVEBVP.
 
 % Initialise the outputs:
@@ -241,13 +253,11 @@ end
 if ( isempty(pref) )
     pref = cheboppref();
     
-    % If the boundary conditions are periodic, force to FOURCOLLOC.
+    % If the boundary conditions are periodic, use FOURCOLLOC by default.
     % However, if the default discretization is ULTRAS, use ULTRAS.
     if ( isa(N.bc, 'char') && strcmpi(N.bc, 'periodic') ...
             && ~isequal(pref.discretization, @ultraS) )
         pref.discretization = @fourcolloc;
-        N.bc = []; % FOURCOLLOC uses periodic functions, so no need to specify
-                   % any boundary condition.  
     end
 
 end
