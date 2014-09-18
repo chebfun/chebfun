@@ -205,6 +205,10 @@ classdef cheboppref < chebpref
                 prefList.display);
             fprintf([padString('    errTol:') '%g\n'], ...
                 prefList.errTol);
+            fprintf([padString('    ivpAbsTol:') '%g\n'], ...
+                prefList.ivpAbsTol);
+            fprintf([padString('    ivpRelTol:') '%g\n'], ...
+                prefList.ivpRelTol);
             fprintf([padString('    ivpSolver:') '%s\n'], ...
                 func2str(prefList.ivpSolver));
             fprintf([padString('    lambdaMin:') '%g\n'], ...
@@ -375,6 +379,8 @@ classdef cheboppref < chebpref
             factoryPrefs.damping = 1;
             factoryPrefs.display = 'off';
             factoryPrefs.errTol = 1e-10;
+            factoryPrefs.ivpAbsTol = 100*eps;
+            factoryPrefs.ivpRelTol = 100*eps;
             factoryPrefs.ivpSolver = @chebfun.ode113;
             factoryPrefs.lambdaMin = 1e-6;
             factoryPrefs.maxDimension = 4096;

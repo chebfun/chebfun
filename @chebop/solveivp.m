@@ -84,7 +84,7 @@ end
 % Sort the results from above:
 initVals = initVals(idx);
 % Create an ODESET struct for specifying tolerance:
-opts = odeset('absTol',1e-12,'relTol',1e-12);
+opts = odeset('absTol', pref.ivpAbsTol, 'relTol', pref.ivpRelTol);
 
 % What solver do we want to use for the IVP?
 solver = pref.ivpSolver;
