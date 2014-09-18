@@ -17,6 +17,11 @@ if ( isempty( f ) )
     return
 end
 
+if ( iszero( f ) ) 
+    varargout = { 0 } ; 
+    return
+end
+
 % Get the low rank representation for f:
 [cols, d, rows] = cdr(f);
 

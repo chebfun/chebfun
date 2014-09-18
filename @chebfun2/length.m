@@ -18,8 +18,8 @@ if ( isempty( F ) )
 end
 
 if ( iszero( F ) ) 
-    out1 = 0; 
-    out2 = 0;
+    out1 = 1; 
+    out2 = 1;
     return
 end
 
