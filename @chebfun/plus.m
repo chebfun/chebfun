@@ -89,6 +89,14 @@ else                          % CHEBFUN + CHEBFUN
     if ( numel(f) == 1 && numel(g) == 1 )
         % CHEBFUN case:
         
+        % If one of the two CHEBFUNs uses a PERIODICTECH reprensetation, 
+        % cast it to a NONPERIODICTECH.
+        if ( ~isperiodic(f.funs{1}.onefun) && isperiodic(g.funs{1}.onefun) )
+            g = chebfun(g, 'tech', get(f.funs{1}.onefun, 'tech'));
+        elseif ( isperiodic(f.funs{1}.onefun) && ~isperiodic(g.funs{1}.onefun) )
+            f = chebfun(f, 'tech', get(g.funs{1}.onefun, 'tech'));
+        end
+        
         % Overlap the CHEBFUN objects:
         [f, g] = overlap(f, g);
         
