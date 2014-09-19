@@ -16,6 +16,7 @@ pass(1) = (c == v);
 c = (1:5).';
 % Exact values
 vTrue = [ 15; 4 + sqrt(2) ; 3 ; 4 - sqrt(2) ; 3 ];
+vTrue = [ 3; 4-sqrt(2); 3; 4+sqrt(2); 15];
 %%
 % Test real branch
 v = chebtech2.coeffs2vals(c);

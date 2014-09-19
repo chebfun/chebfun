@@ -97,7 +97,7 @@ bk1 = 0*x;
 bk2 = bk1;
 x = 2*x;
 n = size(c,1)-1;
-for k = n+1:-2:3
+for k = (n+1):-2:3
     bk2 = c(k) + x.*bk1 - bk2;
     bk1 = c(k-1) + x.*bk2 - bk1;
 end
@@ -115,12 +115,12 @@ bk2 = bk1;
 e = ones(size(x, 1), 1);
 x = 2*x;
 n = size(c, 1)-1;
-for k = 1:2:(n-1)
+for k = (n+1):-2:3
     bk2 = e*c(k,:) + x.*bk1 - bk2;
-    bk1 = e*c(k+1,:) + x.*bk2 - bk1;
+    bk1 = e*c(k-1,:) + x.*bk2 - bk1;
 end
 if ( mod(n, 2) )
-    [bk1, bk2] = deal(e*c(n,:) + x.*bk1 - bk2, bk1);
+    [bk1, bk2] = deal(e*c(2,:) + x.*bk1 - bk2, bk1);
 end
-y = e*c(end,:) + .5*x.*bk1 - bk2;
+y = e*c(1,:) + .5*x.*bk1 - bk2;
 end
