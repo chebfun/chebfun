@@ -97,14 +97,14 @@ bk1 = 0*x;
 bk2 = bk1;
 x = 2*x;
 n = size(c,1)-1;
-for k = 1:2:(n-1)
+for k = n+1:-2:3
     bk2 = c(k) + x.*bk1 - bk2;
-    bk1 = c(k+1) + x.*bk2 - bk1;
+    bk1 = c(k-1) + x.*bk2 - bk1;
 end
 if ( mod(n, 2) )
-    [bk1, bk2] = deal(c(n) + x.*bk1 - bk2, bk1);
+    [bk1, bk2] = deal(c(2) + x.*bk1 - bk2, bk1);
 end
-y = c(end) + .5*x.*bk1 - bk2;
+y = c(1) + .5*x.*bk1 - bk2;
 end
 
 function y = clenshaw_vec(x, c)

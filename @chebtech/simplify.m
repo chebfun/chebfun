@@ -42,18 +42,18 @@ end
 
 % Check for trailing coefficients smaller than the tolerance relative
 % to F.VSCALE:
-smallcoeffs = (bsxfun(@minus, abs(f.coeffs), tol.*f.vscale) < 0);
-[ignored, firstNonZeroRow] = find(smallcoeffs.' == 0, 1);
+largeCoeffs = (bsxfun(@minus, abs(f.coeffs), tol.*f.vscale) > 0);
+[ignored, lastNonZeroRow] = find(largeCoeffs.' == 1, 1, 'last');
 
 % If the whole thing is now zero, leave just one coefficient:
-if ( isempty(firstNonZeroRow) )
-    firstNonZeroRow = size(f, 1);
+if ( isempty(lastNonZeroRow) )
+    lastNonZeroRow = size(f, 1);
     f.coeffs = 0*f.coeffs;
 end
 
 % Remove trailing zeros:
-if ( firstNonZeroRow > 0 )
-    f.coeffs = f.coeffs(firstNonZeroRow:end, :);
+if ( lastNonZeroRow > 0 )
+    f.coeffs = f.coeffs(1:lastNonZeroRow, :);
 end
 
 % Update epslevel:

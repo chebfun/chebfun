@@ -139,12 +139,12 @@ if ( all(max(ac(end-testLength+1:end, :)) < epslevel) ) % We have converged! Cho
     % Obtain an estimate for how much accuracy we'd gain compared to reducing
     % length ("bang for buck"):
     bang = log(1e3*bsxfun(@rdivide, epslevel, ac));
-    buck = (Tloc:n).';
+    buck = (n-Tloc+2:-1:2).';
     Tbpb = bsxfun(@rdivide, bang, buck);
 
     % Compute position at which to chop.  Keep greatest number of coefficients
     % demanded by any of the columns.
-    [ignored, perColTchop] = max(Tbpb(Tloc:end-3, :));
+    [ignored, perColTchop] = max(Tbpb(3:n-Tloc+1, :));
     Tchop = min(perColTchop);
 
     % We want to keep [c(0), c(1), ..., c(cutoff)]:
@@ -153,7 +153,7 @@ if ( all(max(ac(end-testLength+1:end, :)) < epslevel) ) % We have converged! Cho
 else
 
     % We're unhappy. :(
-    cutoff = n;
+    cutoff = 0;
     
     % Estimate the epslevel:
     epslevel = mean(ac(end-testLength+1:end, :));
