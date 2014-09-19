@@ -15,7 +15,7 @@ pass(1) = (v == c);
 % Simple data (even case)
 v = (1:6).';
 % Exact coefficients
-cTrue = [sqrt(6)/2-5*sqrt(2)/6; 0; sqrt(2)/6 ; 0 ; sqrt(6)/2+5*sqrt(2)/6 ; 7/2];
+cTrue = flipud([sqrt(6)/2-5*sqrt(2)/6; 0; sqrt(2)/6 ; 0 ; sqrt(6)/2+5*sqrt(2)/6 ; 7/2]);
 
 %%
 % Test real branch

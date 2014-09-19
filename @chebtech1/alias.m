@@ -28,12 +28,9 @@ n = size(coeffs, 1);
 
 % Pad with zeros:
 if ( m > n )
-    coeffs = [ zeros(m-n, size(coeffs, 2)) ; coeffs ];
+    coeffs = [ coeffs ; zeros(m-n, size(coeffs, 2)) ];
     return
 end
-
-% It's more natural to work with the coefficients in the other order:
-coeffs = coeffs(end:-1:1,:);
 
 % Alias coefficients:
 if ( m == 1 )
@@ -56,8 +53,5 @@ else
         coeffs(k,:) = coeffs(k,:) + sgn*coeffs(j,:);
     end
 end
-
-% Flip the coefficients back again:
-coeffs = coeffs(m:-1:1,:);
 
 end
