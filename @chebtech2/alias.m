@@ -28,7 +28,7 @@ n = size(coeffs, 1);
 
 % Pad with zeros:
 if ( m > n )
-    coeffs = [ zeros(m-n, size(coeffs, 2)) ; coeffs ];
+    coeffs = [ coeffs; zeros(m-n, size(coeffs, 2)) ];
     return
 end
 
