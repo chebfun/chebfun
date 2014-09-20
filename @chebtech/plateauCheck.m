@@ -69,7 +69,7 @@ end
 %%
 % We omit the last 10% because aliasing can pollute them significantly.
 n90 = ceil( 0.90*n );
-absCoeff = abs( coeff(end:-1:end+1-n90,:) );  % switch to low->high ordering
+absCoeff = abs( coeff(1:n90,:) );
 vscale = max(absCoeff,[],1);          % scaling in each column
 vscale = max( [vscale(:); f.vscale] );
 absCoeff = absCoeff / vscale;
