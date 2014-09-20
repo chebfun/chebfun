@@ -41,8 +41,8 @@ coeffs = ifft(tmp);
 % Truncate, flip the order, and multiply the weight vector:
 coeffs = w.*coeffs(1:n, :);
 
-% Scale the last coefficient, i.e. the coefficient for the constant term:
-coeffs(n,:) = coeffs(n,:)/2;
+% Scale the coefficient for the constant term:
+coeffs(1,:) = coeffs(1,:)/2;
 
 % Post-process:
 if ( isreal(values) )  
