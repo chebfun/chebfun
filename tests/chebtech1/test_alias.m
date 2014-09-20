@@ -32,13 +32,13 @@ cc = [c0 c0(end:-1:1)];
 
 % Padding:
 c1 = chebtech1.alias(cc, 11);
-pass(6) = norm([0 0 ; cc]  - c1, inf) == 0;
+pass(6) = norm([cc ; 0 0 ]  - c1, inf) == 0;
 
 % Aliasing:
 c2 = chebtech1.alias(cc, 9);
-pass(7) = norm([2:10 ; 9:-1:1]'  - c2, inf) == 0;
+pass(7) = norm([10:-1:2 ; 1:9]'  - c2, inf) == 0;
 c3 = chebtech1.alias(cc, 3);
-pass(8) = norm([0 1 6 ; -11 -12 -6]'  - c3, inf) == 0;
+pass(8) = norm([6 1 0 ; -6 -12 -11]'  - c3, inf) == 0;
 
 % Compare against result of evaluating on a smaller grid:
 pass(9) = norm(chebtech1.vals2coeffs( ...

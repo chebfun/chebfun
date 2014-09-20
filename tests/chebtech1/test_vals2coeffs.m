@@ -15,8 +15,7 @@ pass(1) = (v == c);
 % Simple data (even case)
 v = (1:6).';
 % Exact coefficients
-cTrue = flipud([sqrt(6)/2-5*sqrt(2)/6; 0; sqrt(2)/6 ; 0 ; sqrt(6)/2+5*sqrt(2)/6 ; 7/2]);
-
+cTrue = [ 7/2 ; sqrt(6)/2+5*sqrt(2)/6 ; 0 ; sqrt(2)/6 ; 0 ; sqrt(6)/2-5*sqrt(2)/6 ];
 %%
 % Test real branch
 c = chebtech1.vals2coeffs(v);
@@ -38,7 +37,7 @@ pass(6) = norm(c - (1+1i)*cTrue, inf) < tol;
 % Test for array input
 c = chebtech1.vals2coeffs([v, v(end:-1:1)]);
 tmp = ones(size(cTrue));
-tmp(end-1:-2:1) = -1;
+tmp(2:2:end) = -1;
 pass(7) = norm(c(:,1) - cTrue, inf) < tol && ...
           norm(c(:,2) - tmp.*cTrue, inf) < tol;
       
@@ -46,8 +45,7 @@ pass(7) = norm(c(:,1) - cTrue, inf) < tol && ...
 % Simple data (odd case)
 v = (1:5).';
 % Exact coefficients
-cTrue = [ 0 ; (2/5)*(2*sqrt((5-sqrt(5))/2)-sqrt((5+sqrt(5))/2)) ; 0; (2/5)*(sqrt((5-sqrt(5))/2)+2*sqrt((5+sqrt(5))/2)); 3];
-
+cTrue = [3 ; (2/5)*(sqrt((5-sqrt(5))/2)+2*sqrt((5+sqrt(5))/2)); 0 ; (2/5)*(2*sqrt((5-sqrt(5))/2)-sqrt((5+sqrt(5))/2)) ; 0 ;];
 %%
 % Test real branch
 c = chebtech1.vals2coeffs(v);
