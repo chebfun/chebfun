@@ -98,10 +98,6 @@ end
 
 function [coeffs, pos] = coeff_times_main(f, g)
 
-% Flip for convenience:
-f = flipud(f);
-g = flipud(g);
-
 % Get the size of each CHEBTECH:
 [fn, fm] = size(f);
 [gn, gm] = size(g);
@@ -141,9 +137,6 @@ else
     coeffs = coeff_times( f, g );
 end
 
-% Assign values and coefficients back to f: % TODO: Why is this needed here?
-coeffs = flipud(coeffs);
-
 end
 
 function hc = coeff_times(fc, gc)
@@ -160,7 +153,7 @@ function hc = coeff_times(fc, gc)
 mn = length(fc);
 t = [2*fc(1,:) ; fc(2:end,:)];                    % Toeplitz vector.
 x = [2*gc(1,:) ; gc(2:end,:)];                    % Embed in Circulant.
-xprime = fft([x ; x(end:-1:2,:)]);              % FFT for Circulant mult.
+xprime = fft([x ; x(end:-1:2,:)]);                % FFT for Circulant mult.
 aprime = fft([t ; t(end:-1:2,:)]);
 Tfg = ifft(aprime.*xprime);                   % Diag in function space.
 hc = .25*[Tfg(1,:); Tfg(2:end,:) + Tfg(end:-1:2,:)];% Extract out result.
