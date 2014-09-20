@@ -54,4 +54,7 @@ else
     end
 end
 
+% Truncate:
+coeffs = coeffs(1:m,:);
+
 end
