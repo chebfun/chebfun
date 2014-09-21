@@ -189,7 +189,7 @@ end
 % Compute the corresponding Chebyshev coefficients:
 f.coeffs = f.vals2coeffs(Q);
 % Trim the unneeded ones:
-f.coeffs(1:newN/2,:) = [];
+f.coeffs(newN/2+1:end,:) = [];
 
 % Update the vscale:
 f.vscale = getvscl(f);
