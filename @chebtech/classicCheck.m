@@ -127,7 +127,7 @@ if ( all(max(ac(end-testLength+1:end, :)) < epslevel) ) % We have converged! Cho
 
     % Compute the cumulative max of eps/4 and the tail entries:
     t = .25*eps*ones(1, size(ac, 2));
-    ac = ac(Tloc:end, :);           % Restrict to coefficients of interest.
+    ac = ac(end:-1:Tloc, :);           % Restrict to coefficients of interest.
     for k = 1:size(ac, 1)           % Cumulative maximum.
         ind = ac(k, :) < t;
         ac(k, ind) = t(ind);
@@ -139,7 +139,7 @@ if ( all(max(ac(end-testLength+1:end, :)) < epslevel) ) % We have converged! Cho
     % Obtain an estimate for how much accuracy we'd gain compared to reducing
     % length ("bang for buck"):
     bang = log(1e3*bsxfun(@rdivide, epslevel, ac));
-    buck = (n-Tloc+2:-1:2).';
+    buck = ((n-1):-1:(Tloc-1)).';
     Tbpb = bsxfun(@rdivide, bang, buck);
 
     % Compute position at which to chop.  Keep greatest number of coefficients
