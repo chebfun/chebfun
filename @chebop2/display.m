@@ -51,7 +51,7 @@ function printBoundaryConditions(BC, string)
             % Try to convert to a double: 
             n = length(BC); 
             if ( n == 1 )
-                val = BC.values{:};
+                val = BC.values;
                 printBoundaryConditions(val, string)
                 return
             end

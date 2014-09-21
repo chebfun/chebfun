@@ -161,4 +161,14 @@ f = chebfun('1i+cos(5*x).*exp(cos(x))',[-pi,pi],'periodic');
 r = roots(f);
 pass(16) = isempty(r);
 
+% Check that we don't miss roots for unresolved functions.  (See GitHub issue
+% #1146.)
+warnState = warning('off', 'CHEBFUN:CHEBFUN:constructor:funNotResolved');
+p = pref;
+p.splitting = true;
+p.splitPrefs.splitMaxLength = 300;
+f = chebfun(@(x) sin(exp(2*(tanh(sin(10*x))))), [0 10], p);
+pass(17) = length(roots(f)) == 32;
+warning(warnState);
+
 end
