@@ -111,9 +111,7 @@ switch method
             L1 = (2-1/k)*x.*L1 - (1-1/k)*L0;
             L0 = tmp;
         end
-        C = chebtech2.vals2coeffs(P(:,cc));       % Convert to coefficients
-        C = flipud(C);
-    
+        C = chebtech2.vals2coeffs(P(:,cc));       % Convert to coefficients          
     case 2 % QR
 
         pts = 2*nMax1;              % Expand on Chebyshev grid of twice the size
