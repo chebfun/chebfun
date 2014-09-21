@@ -130,8 +130,7 @@ switch method
             PP = P(:,n+1) * diag(1./P(end,n+1));
         end
         C = chebtech2.vals2coeffs(PP);            % Convert to coefficients
-        C(1:nMax1,:) = [];                        % Trim coefficients > nMax+1
-        C = flipud(C);
+        C(nMax1+1:end,:) = [];                    % Trim coefficients > nMax
         
     case 3 % LEG2CHEB
         
