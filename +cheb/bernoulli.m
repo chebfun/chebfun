@@ -1,7 +1,7 @@
 function B = bernoulli(N)
-%BERNOULLI  Bernoulli polynomials as chebfuns.
-%   B = BERNOULLI(N) returns a quasimatrix of the first N+1 Bernoulli 
-%   polynomials on [0,1]. 
+%BERNOULLI   Bernoulli polynomials as chebfuns.
+%   B = BERNOULLI(N) returns a quasimatrix of the first N+1 Bernoulli
+%   polynomials on [0,1].
 %
 %   Example (Bernolli numbers):
 %      B = cheb.bernoulli(4);
@@ -9,9 +9,6 @@ function B = bernoulli(N)
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
-
-
-
 
 x = chebfun('x',[0,1]);
 B = 0*x + 1;

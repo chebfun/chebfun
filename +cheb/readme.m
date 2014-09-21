@@ -3,6 +3,6 @@ function readme
 
 fn = mfilename('fullpath');
 [pn,fn] = fileparts(fn);
-type(fullfile(pn,'README.txt'))
+type(fullfile(pn, 'README.txt'))
 
 end

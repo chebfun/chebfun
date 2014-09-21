@@ -1,5 +1,5 @@
 function p = normal2d(mu,Sigma,domn)
-%NORMAL2D Bivariate normal distribution.
+%NORMAL2D   Bivariate normal distribution.
 %   NORMAL2D(MU,SIGMA,DOMAIN) returns the joint probability density for two
 %   variables whose means are in the vector MU and whose covariance is the
 %   2x2 positive definite matrix SIGMA. The result is a chebfun2 defined on
@@ -23,10 +23,10 @@ if nargin < 3
     sig = svd(Sigma);
     domn = [ mu(1)+4*[-sig(1) sig(1)], mu(2)+4*[-sig(1) sig(1)] ];
 end
-    
+
 x = chebfun2(@(x,y) x,domn);
 y = chebfun2(@(x,y) y,domn);
-invSig = inv(Sigma); 
+invSig = inv(Sigma);
 x = x - mu(1);
 y = y - mu(2);
 z = invSig(1,1)*x.^2 + (invSig(1,2)+invSig(2,1))*x.*y + invSig(2,2)*y.^2;
