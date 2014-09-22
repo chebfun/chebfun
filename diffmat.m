@@ -123,6 +123,11 @@ if ( strcmpi(mapFrom, mapTo) && ( m == n ) ) % Square case:
         P2 = barymat(z, y, w);
         D = chebcolloc2.diffmat(n, p);
         D = P2*D*P1;
+        
+        % Flipping trick for symmetry:
+        DRot = rot90(D, 2);
+        idxTo = rot90(~triu(ones(N)));
+        D(idxTo) = (-1)^p*DRot(idxTo);
     end
 elseif ( strcmpi(mapTo, 'chebkind1') )
     

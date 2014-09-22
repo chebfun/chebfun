@@ -57,13 +57,18 @@ end
 %% Construct Dx and Dw:
 ii = (1:N+1:N^2).';                                 % Indices of diagonal.
 if ( nargin == 4 ) 
-    % Trig identity and flipping trick as described in [4]:
+    % Trig identity as described in [4]:
     t = flipud(t);
-    Dx = 2*bsxfun( @(t, tp) sin(tp + t).*sin(tp - t), t/2, t.'/2 ); 
-    Dx = [ -Dx(1:floor(N/2),:) ; rot90(Dx(1:ceil(N/2),:), 2) ];  
+    Dx = 2*bsxfun( @(t, tp) sin(t + tp).*sin(t - tp), t/2, t.'/2 ); 
 else
     Dx = bsxfun(@minus, x, x.');                    % All pairwise differences.
 end
+
+% Flipping trick in [4]:
+DxRot = rot90(Dx, 2);
+idxTo = rot90(~triu(ones(N)));
+Dx(idxTo) = -DxRot(idxTo);
+
 Dx(ii) = 1;                                         % Add identity.
 Dxi = 1./Dx;                                        % Reciprocal.
 Dw = bsxfun(@rdivide, w.', w);                      % Pairwise divisions.
@@ -72,6 +77,9 @@ Dw(ii) = 0;                                         % Subtract identity.
 %% k = 1
 D = Dw .* Dxi;
 D(ii) = 0; D(ii) = -sum(D, 2);                      % Negative sum trick.
+
+% Forcing symmetry for even N:
+D(ii(end:-1:N-floor(N/2)+1)) = -D(ii(1:floor(N/2)));
 
 if ( k == 1 )
     return
