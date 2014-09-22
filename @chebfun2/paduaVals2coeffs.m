@@ -65,7 +65,7 @@ if ( n < useFFTwhenNisMoreThan )
 else
     % Use DCT:
     dct = @(c) chebtech2.coeffs2vals(c);    
-    C = dct(dct(G.'));
+    C = rot90(dct(dct(G.').'), 2);
 end
 % Modify a few entries:
 C(1,:) = .5*C(1,:);
