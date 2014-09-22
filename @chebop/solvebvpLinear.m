@@ -1,4 +1,4 @@
-function [u, info] = solvebvpLinear(N, L, rhs, pref, displayInfo)
+function [u, info] = solvebvpLinear(L, rhs, Ninit, pref, displayInfo)
 %SOLVEBVP  Solve a linear CHEBOP BVP system.
 %
 % [U, INFO] = SOLVEBVPLINEAR(N, L, RHS, PREF, DISPLAYINFO), where:
@@ -45,17 +45,17 @@ linpref.errTol = max( eps, pref.errTol/100 );
 % Solve the linear problem:
 del = linsolve(L, rhs, linpref);
 
-if ( ~isempty(N.init) )
-    % If N.init is not empty, N will have been linearized around N.init. In that
+if ( ~isempty(Ninit) )
+    % If Ninit is not empty, N will have been linearized around Ninit. In that
     % case, we need to regard the solution del obtained above as a Newton
-    % correction to N.init.
-    u = N.init + del;
+    % correction to Ninit.
+    u = Ninit + del;
 else
     u = del;
 end
 
 % Norm of residual:
-normRes = norm(feval(N, u) - rhs, 'fro');
+normRes = norm(L*u - rhs, 'fro');
 
 if ( nargin > 3 )
     % Print information after linear problem has been solved:

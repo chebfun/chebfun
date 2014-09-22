@@ -287,7 +287,7 @@ classdef (InferiorClasses = {?double}) chebop
         displayInfoLinear(u, normRes, pref)
 
         % Solve a linear problem posed with CHEBOP.
-        [u, info] = solvebvpLinear(N, L, rhs, displayInfo, pref)
+        [u, info] = solvebvpLinear(L, rhs, Ninit, displayInfo, pref)
         
     end
     

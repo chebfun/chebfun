@@ -90,18 +90,11 @@ dom = N.domain;
 disc = pref.discretization();
 tech = disc.returnTech;
 
-% Ensure that the RHS is of the correct tech.
-if ( isa(rhs, 'chebfun') )
-    rhs = chebfun(rhs, rhs.domain, 'tech', tech);
-elseif ( isa(rhs, 'chebmatrix') )
-    constr = @(f) chebfun(f, f.domain, 'tech', tech);
-    rhs.blocks = cellfun(constr, rhs.blocks,'uniformOutput', false);
-end
-
 % Create an initial guess if none is passed.
 if ( isempty(N.init) )
     % Initialise a zero CHEBFUN:
     zeroFun = chebfun(0, dom, 'tech', tech);
+    
     % Convert to a chebmatrix of correct dimensions:
     u0 = cell(nVars, 1);
     for k = 1:nVars
@@ -111,9 +104,13 @@ if ( isempty(N.init) )
     
 else
     u0 = N.init;
-    % Ensure that N.init is a CHEBMATRIX, not a CHEBFUN:
+    
+    % Ensure that u0 is of correct discretization.
     if ( isa(u0, 'chebfun') )
-        u0 = chebmatrix(u0);
+        u0 = chebfun(u0, u0.domain, 'tech', tech);
+    elseif ( isa(u0, 'chebmatrix') )
+        constr = @(f) chebfun(f, f.domain, 'tech', tech);
+        u0.blocks = cellfun(constr, u0.blocks, 'uniformOutput', false);
     end
     
 end
@@ -180,7 +177,7 @@ end
 % Solve:
 if ( all(isLinear) )
     % Call solver method for linear problems.
-    [u, info] = N.solvebvpLinear(N, L, rhs - residual, pref, displayInfo);
+    [u, info] = N.solvebvpLinear(L, rhs - residual, N.init, pref, displayInfo);
 else
     % TODO: Switch between residual and error oriented Newton methods.
     
@@ -194,6 +191,14 @@ else
         % passed, we might have to cast some components in the CHEBMATRIX U0
         % from a CHEBFUN to a scalar. Hence, call LINEARIZE() with four outputs.
         [L, residual, isLinear, u0] = linearize(N, u0, x);
+    end
+    
+    % Ensure that rhs is of correct discretization.
+    if ( isa(rhs, 'chebfun') )
+        rhs = chebfun(rhs, rhs.domain, 'tech', tech);
+    elseif ( isa(rhs, 'chebmatrix') )
+        constr = @(f) chebfun(f, f.domain, 'tech', tech);
+        rhs.blocks = cellfun(constr, rhs.blocks, 'uniformOutput', false);
     end
     
     % Call solver method for nonlinear problems.
