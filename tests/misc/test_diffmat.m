@@ -711,25 +711,23 @@ err = norm(ff-f, inf);
 pass(56) = ( err < 1e1*tol );
 
 %% Test on symmetry:
-tmpPass = 1;
 D = diffmat(3); 
 d = D + D(end:-1:1,end:-1:1);
-tmpPass = tmpPass & ~norm(d, inf);
+pass(57) = ~norm(d, inf);
 D = diffmat(3, 'chebkind1'); 
 d = D + D(end:-1:1,end:-1:1);
-tmpPass = tmpPass & ~norm(d, inf);
+pass(58) = ~norm(d, inf);
 D = diffmat(3, 'leg'); 
 d = D + D(end:-1:1,end:-1:1);
-tmpPass = tmpPass & ~norm(d, inf);
+pass(59) = ~norm(d, inf);
 D = diffmat(4); 
 d = D + D(end:-1:1,end:-1:1);
-tmpPass = tmpPass & ~norm(d, inf);
+pass(60) = ~norm(d, inf);
 D = diffmat(4, 'chebkind1'); 
 d = D + D(end:-1:1,end:-1:1);
-tmpPass = tmpPass & ~norm(d, inf);
+pass(61) = ~norm(d, inf);
 D = diffmat(4, 'leg'); 
 d = D + D(end:-1:1,end:-1:1);
-tmpPass = tmpPass & ~norm(d, inf);
-pass(57) = tmpPass;
+pass(62) = ~norm(d, inf);
 
 end
