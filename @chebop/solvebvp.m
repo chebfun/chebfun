@@ -107,9 +107,9 @@ else
     
     % Ensure that u0 is of correct discretization.
     if ( isa(u0, 'chebfun') )
-        u0 = chebfun(u0, u0.domain, 'tech', tech);
+        u0 = chebfun(u0, dom, 'tech', tech);
     elseif ( isa(u0, 'chebmatrix') )
-        constr = @(f) chebfun(f, f.domain, 'tech', tech);
+        constr = @(f) chebfun(f, dom, 'tech', tech);
         u0.blocks = cellfun(constr, u0.blocks, 'uniformOutput', false);
     end
     
@@ -195,9 +195,9 @@ else
     
     % Ensure that rhs is of correct discretization.
     if ( isa(rhs, 'chebfun') )
-        rhs = chebfun(rhs, rhs.domain, 'tech', tech);
+        rhs = chebfun(rhs, dom, 'tech', tech);
     elseif ( isa(rhs, 'chebmatrix') )
-        constr = @(f) chebfun(f, f.domain, 'tech', tech);
+        constr = @(f) chebfun(f, dom, 'tech', tech);
         rhs.blocks = cellfun(constr, rhs.blocks, 'uniformOutput', false);
     end
     
