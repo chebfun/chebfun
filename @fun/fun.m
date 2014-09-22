@@ -89,21 +89,5 @@ classdef fun % (Abstract)
         [edge, vscale] = detectEdge(op, domain, hscale, vscale, pref);
         
     end
-    
-
-%     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%     %% METHODS IMPLEMENTED IN THIS M-FILE:
-%     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%     methods ( Access = public, Static = false )
-%         
-%         function out = isPeriodicTech(f)
-%         %ISPERIODIC    Test if the objtect is is constructed with a basis of
-%         %periodic functions. 
-%         
-%               % Calls ISPERIODICTECH on
-%               out = isPeriodicTech(f{1});
-%         end
-%         
-%     end
         
 end
