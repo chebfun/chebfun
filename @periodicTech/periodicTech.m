@@ -27,7 +27,7 @@ classdef periodicTech < smoothfun % (Abstract)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
         
-        function out = isperiodic(f)
+        function out = isPeriodicTech(f)
         %ISPERIODIC    Test if the objtect is is constructed with a basis of
         %periodic functions. 
         %    Returns 1 for PERIODICTECH.

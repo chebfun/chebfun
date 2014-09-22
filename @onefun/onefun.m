@@ -129,6 +129,10 @@ classdef onefun % (Abstract)
         % Test if a ONEFUN has any NaN values.
         out = isnan(f)
 
+        % Test if the ONEFUN is constructed with a basis of periodic
+        % functions.
+        out = isPeriodicTech(f)
+        
         % True for real ONEFUN.
         out = isreal(f)
         
@@ -217,5 +221,5 @@ classdef onefun % (Abstract)
         f = uplus(f)
 
     end
-
+   
 end
