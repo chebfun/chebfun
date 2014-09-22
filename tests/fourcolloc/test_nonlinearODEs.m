@@ -13,21 +13,17 @@ end
 % Set up domain, rhs f, and intial guesses u0 and v0.
 dom = [-pi pi];
 f = chebfun(@(x) cos(x), dom);
-u0 = @(x) cos(x);
-v0 = u0;
+u0 = f;
 
 % Define the non-linear operator.
 N = chebop(@(u) diff(u) - sin(u), dom);
 N.bc = 'periodic';
+N.init = u0;
 
 % Solve with FOURIER technology.
-u0 = chebfun(u0, dom, 'periodic');
-N.init = u0;
 u = N \ f;
 
 % Solve with CHEBYSHEV technology.
-v0 = chebfun(v0, dom);
-N.init = v0;
 pref.discretization = 'chebcolloc2';
 v = solvebvp(N, f, pref);
 
@@ -42,21 +38,17 @@ pass(1) = norm(u(xx) - v(xx), inf) < tol;
 % Set up domain, rhs f, and intial guesses u0 and v0.
 dom = [-2*pi 2*pi];
 f = chebfun(@(x) cos(x), dom);
-u0 = @(x) cos(x);
-v0 = u0;
+u0 = f;
 
 % Define the non-linear operator.
 N = chebop(@(u) diff(u) - u.*cos(u), dom);
 N.bc = 'periodic';
+N.init = u0;
 
 % Solve with FOURIER technology.
-u0 = chebfun(u0, dom, 'periodic');
-N.init = u0;
 u = N \ f;
 
 % Solve with CHEBYSHEV technology.
-v0 = chebfun(v0, dom);
-N.init = v0;
 pref.discretization = 'chebcolloc2';
 v = solvebvp(N, f, pref);
 
@@ -71,21 +63,17 @@ pass(2) = norm(u(xx) - v(xx), inf) < tol;
 % Set up domain, rhs f, and intial guesses u0 and v0.
 dom = [-pi pi];
 f = chebfun(@(x) cos(2*x), dom);
-u0 = @(x) cos(2*x);
-v0 = u0;
+u0 = f;
 
 % Define the non-linear operator.
 N = chebop(@(u) diff(u, 2) - sin(u), dom);
 N.bc = 'periodic';
+N.init = u0;
 
 % Solve with FOURIER technology.
-u0 = chebfun(u0, dom, 'periodic');
-N.init = u0;
 u = N \ f;
 
 % Solve with CHEBYSHEV technology.
-v0 = chebfun(v0, dom);
-N.init = v0;
 pref.discretization = 'chebcolloc2';
 v = solvebvp(N, f, pref);
 
@@ -100,23 +88,17 @@ pass(3) = norm(u(xx) - v(xx), inf) < tol;
 % Set up domain, rhs f, and intial guesses u0 and v0.
 dom = [-pi pi];
 f = chebfun(@(x) cos(x), dom);
-u0 = @(x) cos(x);
-v0 = u0;
+u0 = f;
 
 % Define the non-linear operator.
 N = chebop(@(u) diff(u, 2) - u.^2.*cos(u), dom);
 N.bc = 'periodic';
+N.init = u0;
 
 % Solve with FOURIER technology.
-u0 = chebfun(u0, dom, 'periodic');
-N.init = u0;
 u = N \ f;
 
 % Solve with CHEBYSHEV technology.
-v0 = chebfun(v0, dom);
-N.init = v0;
-N.bc = @(x, v) [ v(dom(1)) - v(dom(2)) ; ...
-             feval(diff(v), dom(1)) - feval(diff(v), dom(2)) ];
 pref.discretization = 'chebcolloc2';
 v = solvebvp(N, f, pref);
 

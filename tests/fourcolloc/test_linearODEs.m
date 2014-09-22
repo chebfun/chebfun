@@ -27,21 +27,18 @@ pass(1) = norm(u - exact, inf) < tol;
 %% FIRST ORDER AND VARIABLES COEFFICIENTS: 
 %  u' + (1+cos(x))u = cos(2x), on [-2*pi 2*pi].
 
-% Set domain, variable coefficient bb, and rhs f.
+% Set domain, c, and rhs f.
 dom = [-2*pi 2*pi];
-bb = @(x) 1 + cos(x);
 f = chebfun(@(x) cos(2*x), dom);
 
-% Solve with FOURIER technology.
-b = chebfun(bb, dom, 'periodic');
-L = chebop(@(u) diff(u) + b.*u, dom);
+% Set chebop L. We construct the variable coefficient inside the chebop.
+L = chebop(@(x, u) diff(u) + (1 + cos(x)).*u, dom); 
 L.bc = 'periodic';
+
+% Solve with FOURIER technology.
 u = L \ f;
 
 % Solve with CHEBYSHEV technology.
-b = chebfun(bb, dom);
-L = chebop(@(v) diff(v) + b.*v, dom);
-L.bc = 'periodic';
 pref.discretization = 'chebcolloc2';
 v = solvebvp(L, f, pref);
 
@@ -73,27 +70,22 @@ pass(3) = norm(u - exact, inf) < tol;
 %% SECOND ORDER AND VARIABLE COEFFICIENTS: 
 %  (2+cos(4x))u'' + sin(cos(2x))u' + exp(cos(x))u = cos(x), on [-pi pi].
 
-% Set domain, variable coefficients aa, bb and cc, and rhs f.
+% Set domain, variable coefficients a, b and c, and rhs f.
 dom = [-pi pi];
-aa = @(x) 2 + cos(4*x);
-bb = @(x) sin(cos(2*x));
-cc = @(x) exp(cos(x));
+a = chebfun(@(x) 2 + cos(4*x), dom);
+b = chebfun(@(x) sin(cos(2*x)), dom, 'periodic');
+c = chebfun(@(x) exp(cos(x)), dom);
 f = chebfun(@(x) cos(x), dom);
 
-% Solve with FOURIER technology.
-a = chebfun(aa, dom, 'periodic');
-b = chebfun(bb, dom, 'periodic');
-c = chebfun(cc, dom, 'periodic');
+% Set chebop. The variale coefficients have been constructed outside the
+% chebop, some with 'periodic', some without it.
 L = chebop(@(u) a.*diff(u, 2) + b.*diff(u) + c.*u, dom);
 L.bc = 'periodic';
+
+% Solve with FOURIER technology.
 u = L \ f;
 
 % Solve with CHEBYSHEV technology.
-a = chebfun(aa, dom);
-b = chebfun(bb, dom);
-c = chebfun(cc, dom);
-L = chebop(@(v) a.*diff(v, 2) + b.*diff(v) + c.*v, dom);
-L.bc = 'periodic';
 pref.discretization = 'chebcolloc2';
 v = solvebvp(L, f, pref);
 
@@ -106,30 +98,22 @@ pass(4) = norm(u(xx) - v(xx), inf) < tol;
 %  (2+cos(x))u''' + sin(cos(2x))u'' + exp(cos(x))u' + sin(x)u = cos(x),
 %  on [-pi pi].
 
-% Set domain, variable coefficients aa, bb, cc and dd, and rhs f.
+% Set domain, variable coefficients a, b, c and d, and rhs f.
 dom = [-pi pi];
-aa = @(x) 2 + cos(x);
-bb = @(x) sin(cos(2*x));
-cc = @(x) exp(cos(x));
-dd = @(x) sin(x);
+a = chebfun(@(x) 2 + cos(x), dom);
+b = chebfun(@(x) sin(cos(2*x)), dom);
+c = chebfun(@(x) exp(cos(x)), dom);
+d = chebfun(@(x) sin(x), dom);
 f = chebfun(@(x) cos(x), dom);
 
-% Solve with FOURIER technology.
-a = chebfun(aa, dom, 'periodic');
-b = chebfun(bb, dom, 'periodic');
-c = chebfun(cc, dom, 'periodic');
-d = chebfun(dd, dom, 'periodic');
+% Set chebop.
 L = chebop(@(u) a.*diff(u, 3) + b.*diff(u, 2) + c.*diff(u) + d.*u, dom);
 L.bc = 'periodic';
+
+% Solve with FOURIER technology.
 u = L \ f;
 
 % Solve with CHEBYSHEV technology.
-a = chebfun(aa, dom);
-b = chebfun(bb, dom);
-c = chebfun(cc, dom);
-d = chebfun(dd, dom);
-L = chebop(@(v) a.*diff(v, 3) + b.*diff(v, 2) + c.*diff(v) + d.*v, dom);
-L.bc = 'periodic';
 pref.discretization = 'chebcolloc2';
 v = solvebvp(L, f, pref);
 
@@ -144,33 +128,22 @@ pass(5) = norm(u(xx) - v(xx), inf) < tol;
 
 % Set domain, variable coefficients aa, bb, cc, dd and ee, and rhs f.
 dom = [-pi pi];
-aa = @(x) 2 + cos(x);
-bb = @(x) sin(cos(2*x));
-cc = @(x) exp(cos(x));
-dd = @(x) sin(x);
-ee = @(x) sin(2*x);
+a = chebfun(@(x) 2 + cos(x), dom);
+b = chebfun(@(x) sin(cos(2*x)), dom);
+c = chebfun(@(x) exp(cos(x)), dom);
+d = chebfun(@(x) sin(x), dom);
+e = chebfun(@(x) sin(2*x), dom);
 f = chebfun(@(x) cos(10*x), dom);
 
-% Solve with FOURIER technology.
-a = chebfun(aa, dom, 'periodic');
-b = chebfun(bb, dom, 'periodic');
-c = chebfun(cc, dom, 'periodic');
-d = chebfun(dd, dom, 'periodic');
-e = chebfun(ee, dom, 'periodic');
+% Set chebop.
 L = chebop(@(u) a.*diff(u, 4) + b.*diff(u, 3) + c.*diff(u, 2) + ...
     d.*diff(u) + e.*u, dom);
 L.bc = 'periodic';
+
+% Solve with FOURIER technology.
 u = L \ f;
 
 % Solve with CHEBYSHEV technology.
-a = chebfun(aa, dom);
-b = chebfun(bb, dom);
-c = chebfun(cc, dom);
-d = chebfun(dd, dom);
-e = chebfun(ee, dom);
-L = chebop(@(v) a.*diff(v, 4) + b.*diff(v, 3) + c.*diff(v, 2) + ...
-    d.*diff(v) + e.*v, dom);
-L.bc = 'periodic';
 pref.discretization = 'chebcolloc2';
 v = solvebvp(L, f, pref);
 

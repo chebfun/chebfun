@@ -36,14 +36,13 @@ dom = [-pi, pi];
 N = chebop(@(x, u, v) [ u - diff(v) + v ; diff(u, 2) - cos(v) ], dom);
 N.bc = 'periodic';
 F = [ chebfun(0, dom) ; chebfun(@(x) cos(x), dom) ];
+N.init = F;
 
 % Solve with FOURIER technology.
-N.init = [ chebfun(0, dom, 'periodic') ; chebfun(@(x) cos(x), dom, 'periodic') ];
 U = N \ F;
 
 % Solve with CHEBYSHEV technology.
 pref.discretization = 'chebcolloc2';
-N.init = F;
 V = solvebvp(N, F, pref);
 
 % Comparison.
