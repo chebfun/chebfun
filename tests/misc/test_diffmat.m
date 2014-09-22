@@ -400,7 +400,7 @@ rhs = [fp; op(dom(2)); op(dom(2))];
 D = diffmat([M N], p, dom, 'chebkind1', {}, {'neumann' 'dirichlet'});
 ff = D\rhs;
 err = norm(ff-f, inf);
-pass(37) = ( err < 1e1*tol );
+pass(37) = ( err < 5e1*tol );
 
 % 2nd-order problem: u" = exp(x); u(-2) = exp(-2); u'(7) = exp(7);
 op = @(x)exp(x);
