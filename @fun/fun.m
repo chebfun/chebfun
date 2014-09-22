@@ -61,6 +61,10 @@ classdef fun % (Abstract)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Abstract = true, Static = false )
         
+        % Test if the FUN is constructed with a basis of periodic
+        % functions.
+        out = isPeriodicTech(f)
+        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -86,4 +90,20 @@ classdef fun % (Abstract)
         
     end
     
+
+%     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%     %% METHODS IMPLEMENTED IN THIS M-FILE:
+%     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%     methods ( Access = public, Static = false )
+%         
+%         function out = isPeriodicTech(f)
+%         %ISPERIODIC    Test if the objtect is is constructed with a basis of
+%         %periodic functions. 
+%         
+%               % Calls ISPERIODICTECH on
+%               out = isPeriodicTech(f{1});
+%         end
+%         
+%     end
+        
 end

@@ -265,7 +265,8 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         function out = isPeriodicTech(f)
         %ISPERIODIC    Test if the smooth part of f is is constructed with a 
         %basis of periodic functions. 
-        %    Calls ISPERIODICTECH on the SMOOTHFUN part.
+        
+            % Calls ISPERIODICTECH on the SMOOTHFUN part.
             out = isPeriodicTech(f.smoothPart);
         end
         

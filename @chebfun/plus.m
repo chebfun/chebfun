@@ -91,10 +91,10 @@ else                          % CHEBFUN + CHEBFUN
         
         % If one of the two CHEBFUNs uses a PERIODICTECH reprensetation, 
         % cast it to a NONPERIODICTECH.
-        if ( ~isPeriodicTech(f.funs{1}.onefun) && isPeriodicTech(g.funs{1}.onefun) )
-            g = chebfun(g, g.domain, 'tech', get(f.funs{1}.onefun, 'tech'));
-        elseif ( isPeriodicTech(f.funs{1}.onefun) && ~isPeriodicTech(g.funs{1}.onefun) )
-            f = chebfun(f, f.domain, 'tech', get(g.funs{1}.onefun, 'tech'));
+        if ( ~isPeriodicTech(f.funs{1}) && isPeriodicTech(g.funs{1}) )
+            g = chebfun(g, g.domain, 'tech', get(f.funs{1}, 'tech'));
+        elseif ( isPeriodicTech(f.funs{1}) && ~isPeriodicTech(g.funs{1}) )
+            f = chebfun(f, f.domain, 'tech', get(g.funs{1}, 'tech'));
         end
         
         % Overlap the CHEBFUN objects:
