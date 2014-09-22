@@ -17,14 +17,11 @@ tech = chebfunpref().tech();
 
 if ( nargin == 1 )
     U = tech.vals2coeffs( U ); 
-    U = tech.vals2coeffs( flipud(U).' ).'; 
-    U = fliplr(U);
+    U = tech.vals2coeffs( U.' ).'; 
     varargout = {U}; 
 elseif ( narargin == 3 )
     U = tech.vals2coeffs( U ); 
-    V = tech.vals2coeffs( V.' ).'; 
-    U = fliplr(U);
-    V = fliplr(V);
+    V = tech.vals2coeffs( V.' ).';     
     varargout = {U S V};
 else
     error('CHEBFUN:CHEBFUN2:vals2coeffs:inputs', ...
