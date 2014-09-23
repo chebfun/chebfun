@@ -2,7 +2,7 @@ function varargout = quantumstates(varargin)
 %QUANTUMSTATES    Compute and plot Schroedinger eigenstates.
 %   This program computes and plots eigenvalues lambda and eigenfunctions u
 %   for the equation Lu = lambda*u, where L is the Schroedinger operator
-%   defined by Lu(x) = -h^2*u"(u) + V(x)*u(x).  Here h is a small parameter
+%   defined by Lu(x) = -h^2*u"(x) + V(x)*u(x).  Here h is a small parameter
 %   and the potential function V is given as a Chebfun. The domain of the
 %   problem is the domain of V, with boundary conditions u=0 at both ends.
 %
