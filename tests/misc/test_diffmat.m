@@ -400,7 +400,7 @@ rhs = [fp; op(dom(2)); op(dom(2))];
 D = diffmat([M N], p, dom, 'chebkind1', {}, {'neumann' 'dirichlet'});
 ff = D\rhs;
 err = norm(ff-f, inf);
-pass(37) = ( err < 1e1*tol );
+pass(37) = ( err < 5e1*tol );
 
 % 2nd-order problem: u" = exp(x); u(-2) = exp(-2); u'(7) = exp(7);
 op = @(x)exp(x);
@@ -711,25 +711,23 @@ err = norm(ff-f, inf);
 pass(56) = ( err < 1e1*tol );
 
 %% Test on symmetry:
-tmpPass = 1;
 D = diffmat(3); 
 d = D + D(end:-1:1,end:-1:1);
-tmpPass = tmpPass & ~norm(d, inf);
+pass(57) = ~norm(d, inf);
 D = diffmat(3, 'chebkind1'); 
 d = D + D(end:-1:1,end:-1:1);
-tmpPass = tmpPass & ~norm(d, inf);
+pass(58) = ~norm(d, inf);
 D = diffmat(3, 'leg'); 
 d = D + D(end:-1:1,end:-1:1);
-tmpPass = tmpPass & ~norm(d, inf);
+pass(59) = ~norm(d, inf);
 D = diffmat(4); 
 d = D + D(end:-1:1,end:-1:1);
-tmpPass = tmpPass & ~norm(d, inf);
+pass(60) = ~norm(d, inf);
 D = diffmat(4, 'chebkind1'); 
 d = D + D(end:-1:1,end:-1:1);
-tmpPass = tmpPass & ~norm(d, inf);
+pass(61) = ~norm(d, inf);
 D = diffmat(4, 'leg'); 
 d = D + D(end:-1:1,end:-1:1);
-tmpPass = tmpPass & ~norm(d, inf);
-pass(57) = tmpPass;
+pass(62) = ~norm(d, inf);
 
 end
