@@ -77,50 +77,13 @@ h(zeroIndices) = [];
 
 % Contributions due to deltafunctions in F:
 % df * (g + dg/2):
-[m, n] = size(deltaMagF);
-% Loop through the delta function matrix:
-for i = 1:m
-    for j = 1:n
-        if ( abs(deltaMagF(i, j)) > deltaTol )
-            % Take appropriate derivative, scale and shift the function:
-            hij = deltaMagF(i, j) * changeMap(diff(g,i-1), deltaLocF(j) + [c d]);
-            % The half below is to make sure that delta-delta interaction
-            % is not counted twice:                
-            if ( isa(hij, 'deltafun') )
-                hij.deltaMag = hij.deltaMag/2;
-            end
-
-            % If the result is non-zero, append it:
-            if ( ~iszero(hij) )
-                h = [h, {hij}]; %#ok<AGROW>
-            end
-        end
-    end
-end
+h = convDeltas(deltaMagF, deltaLocF, g, c, d, deltaTol, h);
 
 % Contributions due to delta functions in G:
 % dg * (f + df/2);
-[m, n] = size(deltaMagG);
-% Loop through the delta function matrix:    
-for i = 1:m
-    for j = 1:n
-        if ( abs(deltaMagG(i, j)) > deltaTol )
-            % Take appropriate derivative, scale and shift the function
-            hij = deltaMagG(i, j) * changeMap(diff(f,i-1), deltaLocG(j) + [a b]);
-            % The half below is to make sure that delta-delta interaction
-            % is not counted twice:
-            if ( isa(hij, 'deltafun') )
-                hij.deltaMag = hij.deltaMag/2;
-            end
+h = convDeltas(deltaMagG, deltaLocG, f, a, b, deltaTol, h);
 
-            % If the result is non-zero, append it:
-            if ( ~iszero(hij) )
-                h = [h, {hij}]; %#ok<AGROW>
-            end                
-        end
-    end
-end
-
+% Check for emptiness:
 if ( isempty(h) )
     return
 end
@@ -129,12 +92,7 @@ end
 
 % First extract the breakpints from funs forming h:
 doms = cellfun(@(hk) hk.domain, h, 'uniformoutput', 0);
-breakPoints = [];
-for k = 1:length(doms)
-    domk = doms{k};
-    breakPoints = [breakPoints, domk(1), domk(2)]; %#ok<AGROW>
-end
-breakPoints = sort(unique(breakPoints));
+breakPoints = sort(unique(horzcat(doms{:})));
 
 %%
 % Restrict each fun in h to lie within these new breakpoints:
@@ -172,4 +130,35 @@ for k = 1:length(H)
     h{idx} = h{idx} + hk; %#ok<AGROW>
 end
 
+end
+
+function h = convDeltas(deltaMagF, deltaLocF, g, c, d, deltaTol, h)
+%   H = CONVDELTAS() convolves the function G with deltafunctions described by
+%   deltaMagF and deltaLocF. G originally lives on [c, d] and the output is
+%   returned in H. This function is called twice so deltafunctions in g are 
+%   scaled by half to get the correct delta-delta contributions.
+
+%%
+% Contributions due to deltafunctions in F:
+% df * (g + dg/2):
+[m, n] = size(deltaMagF);
+% Loop through the delta function matrix:
+for i = 1:m
+    for j = 1:n
+        if ( abs(deltaMagF(i, j)) > deltaTol )
+            % Take appropriate derivative, scale and shift the function:
+            hij = deltaMagF(i, j) * changeMap(diff(g,i-1), deltaLocF(j) + [c d]);
+            % The half below is to make sure that delta-delta interaction
+            % is not counted twice:
+            if ( isa(hij, 'deltafun') )
+                hij.deltaMag = hij.deltaMag/2;
+            end
+            
+            % If the result is non-zero, append it:
+            if ( ~iszero(hij) )
+                h = [h, {hij}]; %#ok<AGROW>
+            end
+        end
+    end
+end
 end
