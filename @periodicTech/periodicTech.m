@@ -1,7 +1,7 @@
 classdef periodicTech < smoothfun % (Abstract) 
 %PERIODICTECH   Approximate periodic smooth functions on [-1,1].
 %   Abstract (interface) class for approximating periodic functions on the 
-%   interval [-1,1], with a basis of periodic functions.
+%   interval [-1,1].
 %
 % See also SMOOTHFUN, FOURTECH.
 
@@ -11,10 +11,11 @@ classdef periodicTech < smoothfun % (Abstract)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % PERIODICTECH Class Description:
 %
-% The PERIODICTECH class is an abstract class for representations of periodic 
-% functions on the interval [-1,1], with a basis of periodic functions.
+% The PERIODICTECH class is an abstract class for the representation of 
+% periodic functions on the interval [-1,1], using a basis of periodic 
+% functions.
 %
-% The current instance of PERIODICTECH is FOURTECH.
+% The current instance of a PERIODICTECH object is a FOURTECH object.
 %
 % Class diagram: [<<SMOOTHFUN>>] <-- [<<PERIODICTECH>>] <-- [FOURTECH]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -28,9 +29,9 @@ classdef periodicTech < smoothfun % (Abstract)
     methods ( Access = public, Static = false )
         
         function out = isPeriodicTech(f)
-        %ISPERIODIC    Test if the objtect is is constructed with a basis of
+        %ISPERIODIC   Test if the objtect is is constructed with a basis of
         %periodic functions. 
-        %    Returns 1 for PERIODICTECH.
+        %   Returns 1 for PERIODICTECH.
             out = 1;
         end
         
