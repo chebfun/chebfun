@@ -1,4 +1,4 @@
-classdef chebtech < smoothfun % (Abstract)
+classdef chebtech < nonPeriodicTech % (Abstract)
 %CHEBTECH   Approximate smooth functions on [-1,1] with Chebyshev interpolants.
 %
 %   Abstract class for approximating smooth functions on the interval [-1,1]
@@ -84,8 +84,8 @@ classdef chebtech < smoothfun % (Abstract)
 % array-valued forms. Note that this representation is distinct from an array of
 % CHEBTECH objects, for which there is little to no support.
 %
-% Class diagram: [<<smoothfun>>] <-- [<<CHEBTECH>>] <-- [chebtech1]
-%                                                   <-- [chebtech2]
+% Class diagram: [<<NONPERIODICTECH>>] <-- [<<CHEBTECH>>] <-- [CHEBTECH1]
+%                                                         <-- [CHEBTECH2]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

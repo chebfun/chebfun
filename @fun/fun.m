@@ -61,6 +61,10 @@ classdef fun % (Abstract)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Abstract = true, Static = false )
         
+        % Test if the FUN is constructed with a basis of periodic
+        % functions.
+        out = isPeriodicTech(f)
+        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -85,5 +89,5 @@ classdef fun % (Abstract)
         [edge, vscale] = detectEdge(op, domain, hscale, vscale, pref);
         
     end
-    
+        
 end
