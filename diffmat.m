@@ -125,10 +125,17 @@ if ( strcmpi(mapFrom, mapTo) && ( m == n ) ) % Square case:
         D = P2*D*P1;
         
         % Flipping trick for symmetry:
+        d = diag(rot90(D));
+        d = sign(d).*(abs(d) + abs(flipud(d)))/2;
+        D(logical(flipud(eye(N)))) = d;
         DRot = rot90(D, 2);
         idxTo = rot90(~triu(ones(N)));
         D(idxTo) = (-1)^p*DRot(idxTo);
+        if ( mod(N, 2) == 1 )
+            D((N+1)/2,(N+1)/2) = 0;
+        end
     end
+    
 elseif ( strcmpi(mapTo, 'chebkind1') )
     
     if ( strcmpi(mapFrom, 'chebkind1') )
