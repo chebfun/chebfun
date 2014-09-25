@@ -31,8 +31,10 @@ classdef chebcolloc2 < chebcolloc
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
         
-        % Return the tech to use for CHEBCOLLOC1.
-        tech = returnTech();
+        function tech = returnTech()
+            %RETURNTECH    Return the appropriate tech to use for CHEBCOLLOC2
+            tech = @chebtech2;
+        end
         
         function D = diffmat(N, k)
             %DIFFMAT  Chebyshev differentiation matrix.

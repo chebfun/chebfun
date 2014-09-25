@@ -45,7 +45,7 @@ end
 
 % We want output on different format depending on whether the source L is a
 % LINOP or something else (typically a standard CHEBMATRIX):
-if ( isa(disc.source, 'linop') )   
+if ( isa(disc.source, 'linop') )
     
     % Project rows down, and record the projection matrix as well.
     [PA, P, PS] = reduce(disc, A, S);

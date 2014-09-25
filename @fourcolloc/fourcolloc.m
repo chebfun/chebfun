@@ -37,8 +37,10 @@ classdef fourcolloc < colloc
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
         
-        % Return the tech to use for FOURCOLLOC.
-        tech = returnTech();
+        function tech = returnTech()
+            %RETURNTECH    Return the appropriate tech to use for FOURCOLLOC.
+            tech = @fourtech;
+        end
         
         function D = diffmat(N, m)
             %DIFFMAT   Fourier differentiation matrix.

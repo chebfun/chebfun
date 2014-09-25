@@ -66,6 +66,9 @@ classdef chebDiscretization
         % Return a vector of desired discretization sizes.
         dimVals = dimensionValues(pref)
         
+        % Return the appropriate tech to be used with the discretization
+        tech = returnTech()
+        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

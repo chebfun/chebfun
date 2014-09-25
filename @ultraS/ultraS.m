@@ -81,8 +81,10 @@ classdef ultraS < chebDiscretization
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true)
         
-        % Return the tech to use for ULTRAS.
-        tech = returnTech();
+        function tech = returnTech()
+            %RETURNTECH    Return the appropriate tech to use for ULTRAS.
+            tech = @chebtech2;
+        end
         
         % Conversion matrix used in the ultraspherical spectral method.
         S = convertmat(n, K1, K2)
