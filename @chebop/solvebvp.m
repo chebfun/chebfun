@@ -66,9 +66,12 @@ function [u, info] = solvebvp(N, rhs, varargin)
 % Check boundary conditions if using FOURCOLLOC.
 if ( isequal(pref.discretization, @fourcolloc) )
     if ( isempty(N.bc) )
+        % No need to clear the BCs, do nothing!
     elseif ( isa(N.bc, 'char') && strcmpi(N.bc, 'periodic') )
-    N.bc = []; % FOURCOLLOC uses periodic functions, so no need to specify
-               % any boundary condition.
+        % FOURCOLLOC uses periodic functions, so there is no need to specify
+        % boundary conditions. We clear them out of the chebop object to avoid
+        % problems later in the code.
+        N.bc = [];
     else
         error('CHEBFUN:CHEBOP:solvebvp:bc', ...
             'FOURCOLLOC only works with periodic boundary conditions.');
