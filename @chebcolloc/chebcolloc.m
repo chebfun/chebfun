@@ -17,6 +17,9 @@ classdef chebcolloc < colloc
             disc = disc@colloc(varargin{:});
         end
         
+        % Dimension reduction for operator matrix.
+        [PA, P, PS] = reduce(disc, A, S)
+        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -26,9 +29,6 @@ classdef chebcolloc < colloc
         
         % Barycentric differentiation matrix:
         D = baryDiffMat(x, w, k, t);
-        
-        % Dimension reduction for operator matrix.
-        [PA, P, PS] = reduce(disc, A, S)
         
     end
     

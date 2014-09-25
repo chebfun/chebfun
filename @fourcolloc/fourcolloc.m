@@ -27,15 +27,15 @@ classdef fourcolloc < colloc
             disc.projOrder = 0; 
         end
         
+        % Dimension reduction for operator matrix.
+        [PA, P, PS] = reduce(disc, A, S);
+        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% STATIC METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
-        
-        % Dimension reduction for operator matrix.
-        [PA, P, PS] = reduce(disc, A, S);
         
         % Return the tech to use for FOURCOLLOC.
         tech = returnTech();
