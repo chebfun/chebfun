@@ -27,6 +27,9 @@ classdef fourcolloc < colloc
             disc.projOrder = 0; 
         end
         
+        % Dimension reduction for operator matrix.
+        [PA, P, PS] = reduce(disc, A, S);
+        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -34,11 +37,10 @@ classdef fourcolloc < colloc
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
         
-        % Dimension reduction for operator matrix.
-        [PA, P, PS] = reduce(disc, A, S);
-        
-        % Return the tech to use for FOURCOLLOC.
-        tech = returnTech();
+        function tech = returnTech()
+            %RETURNTECH    Return the appropriate tech to use for FOURCOLLOC.
+            tech = @fourtech;
+        end
         
         function D = diffmat(N, m)
             %DIFFMAT   Fourier differentiation matrix.

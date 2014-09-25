@@ -61,6 +61,9 @@ classdef ultraS < chebDiscretization
             
         end
         
+        % Dimension reduction for operator matrix.
+        [PA, P, PS] = reduce(disc, A, S)
+        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -78,8 +81,10 @@ classdef ultraS < chebDiscretization
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true)
         
-        % Return the tech to use for ULTRAS.
-        tech = returnTech();
+        function tech = returnTech()
+            %RETURNTECH    Return the appropriate tech to use for ULTRAS.
+            tech = @chebtech2;
+        end
         
         % Conversion matrix used in the ultraspherical spectral method.
         S = convertmat(n, K1, K2)
@@ -89,9 +94,6 @@ classdef ultraS < chebDiscretization
         
         % Multiplication matrices for ultraspherical spectral method.
         D = multmat(n, f, lambda)
-        
-        % Dimension reduction for operator matrix.
-        [PA, P, PS] = reduce(disc, A, S)
         
         function dimVals = dimensionValues(pref)
             %DIMENSIONVALUES   Return a vector of desired discretization sizes.

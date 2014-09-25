@@ -6,7 +6,7 @@ function [PA, P, PS] = reduce(disc, A, S)
 %   [PA, P, PS] = REDUCE(DISC, A, S) is required for consistency with other
 %   CHEBDISCRETIZATION reductions. Here S is ignored, P is the identity and
 %   PS = P.
-%
+
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
