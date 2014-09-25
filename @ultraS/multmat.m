@@ -24,7 +24,7 @@ end
 
 % Multiplying by a scalar is easy.
 if ( numel(a) == 1 )
-    M = a*speye(n);
+    M = a;
     return
 end
 

@@ -64,17 +64,21 @@ elseif ( isa(item, 'functionalBlock') )
     dim = disc.dimension;
     dom = disc.domain;
     
-    % Create a colloc2 discretization:
+    %tmp = cell(1, numel(dom)-1);
+    %tmp{1} = item * chebpoly(0:dim-1, dom); toc
+    
+    % Create a colloc2 discretization: 
     collocDisc = colloc2(item, dim, dom);
     M = matrix(collocDisc);
     
-    % Convert from colloc-space to coeff-space using COEFFS2VALS.
+    %Convert from colloc-space to coeff-space using COEFFS2VALS.
     cumsumDim = [0, cumsum(dim)];
     tmp = cell(1, numel(dom)-1);
     for l = 1:numel(tmp)
-        Ml = M(cumsumDim(l) + (1:dim(l)));
-        tmp{l} = flipud(chebtech2.coeffs2vals(Ml.')).';
+       Ml = M(cumsumDim(l) + (1:dim(l)));
+      tmp{l} = flipud(chebtech2.coeffs2vals(Ml.')).';
     end
+    
     M = cell2mat(tmp);
     S = zeros(size(M));
     

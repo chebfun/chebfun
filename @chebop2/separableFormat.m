@@ -1,4 +1,4 @@
-function [cellU, S, cellV] = SeparableFormat( A, xorder, yorder, domain )
+function [cellU, S, cellV] = separableFormat( A, xorder, yorder, domain )
 % SEPARATBLEFORMAT  compute separable expression for a linear PDO
 %
 % Calculate a separable representation of a partial differential 

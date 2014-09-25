@@ -151,7 +151,7 @@ classdef chebop2
                     
                     % If we have a variable coefficient PDO, then compute the separable
                     % representation immediately. We need it now.
-                    [cellU, matS, cellV] = chebop2.SeparableFormat( A,...
+                    [cellU, matS, cellV] = chebop2.separableFormat( A,...
                                                     size(A,2), size(A,1), dom );
                     N.U = cellU;
                     N.S = matS;
@@ -245,7 +245,7 @@ classdef chebop2
         X = denseSolve(N, f, m, n);
         
         % Compute the separable representation of a PDO: 
-        [cellU, S, cellV] = SeparableFormat( A, xorder, yorder, dom);
+        [cellU, S, cellV] = separableFormat( A, xorder, yorder, dom);
         
         % Remove trailing coefficients.
         a = truncate(a, tol);
