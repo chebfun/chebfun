@@ -8,7 +8,7 @@ classdef smoothfun < onefun % (Abstract)
 %   interval [-1,1] from the function handle OP using the data given in the
 %   DATA structure and the preferences in PREF.
 %
-% See also ONEFUN, PERIODICTECH, NONPERIODICTECH.
+% See also ONEFUN, CHEBTECH, FOURTECH.
 %
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -19,10 +19,10 @@ classdef smoothfun < onefun % (Abstract)
 % The SMOOTHFUN class is an abstract class for representations of smooth
 % functions on the interval [-1,1].
 %
-% SMOOTHFUNs can be either PERIODICTECH or NONPERIODICTECH.
+% SMOOTHFUNs can be either FOURTECH or CHEBTECH.
 %
-% Class diagram: [<<ONEFUN>>] <-- [<<SMOOTHFUN>>] <-- [<<PERIODICTECH>>]
-%                                                 <-- [<<NONPERIODICTECH>>]
+% Class diagram: [<<ONEFUN>>] <-- [<<SMOOTHFUN>>] <-- [FOURTECH]
+%                                                 <-- [<<CHEBTECH>>]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -76,6 +76,24 @@ classdef smoothfun < onefun % (Abstract)
         
         % barycentric weights of Floater-Horman interpolant.
         w = fhBaryWts(n, d)
+        
+    end
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% NON-STATIC METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false ) 
+        
+        function out = isPeriodicTech(f)
+        %ISPERIODICTECH    Test if the SMOOTHFUN f is constructed with a
+        %basis of periodic functions. 
+        % This function would be overwritten at the tech level if
+        % necessary.
+            
+            % Returns 0 by default.
+            out = 0;
+            
+        end
         
     end
     

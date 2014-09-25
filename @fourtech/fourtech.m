@@ -1,4 +1,4 @@
-classdef fourtech < periodicTech
+classdef fourtech < smoothfun % (Abstract)
 %FOURTECH   Approximate smooth periodic functions on [-1,1] with Fourier 
 %           interpolants.
 %
@@ -110,7 +110,7 @@ classdef fourtech < periodicTech
 % accept such array-valued forms. Note that this representation is distinct from
 % an array of FOURTECH objects, for which there is little to no support.
 %
-% Class diagram: [<<PERIODICTECH>>] <-- [FOURTECH]
+% Class diagram: [<<SMOOTHFUN>>] <-- [FOURTECH]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -290,6 +290,11 @@ classdef fourtech < periodicTech
         % Test if a FOURTECH has any NaN values.
         out = isnan(f)
 
+        function out = isPeriodicTech(f)
+        %ISPERIODICTECH    True for FOURTECH.
+            out = 1;
+        end
+        
         % True for real FOURTECH.
         out = isreal(f)
         
