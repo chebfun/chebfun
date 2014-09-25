@@ -37,16 +37,10 @@ isDone = false(numInt, 1);
 cutoff = zeros(numInt, numCol);
 epsLevel = 0;
 
-% Get the discretization.
-if ( isequal(pref.discretization, @chebcolloc1) )
-    tech = chebtech1;
-elseif ( isequal(pref.discretization, @chebcolloc2) )
-    tech = chebtech2;
-elseif ( isequal(pref.discretization, @fourcolloc) )
-    tech = fourtech;
-else
-    tech = chebtech2;
-end
+% Get the discretization, and the appropriate tech to use:
+discPreference = pref.discretization();
+tech = discPreference.returnTech();
+tech = tech();
 
 % If an external vscale was supplied, it can supplant the inherent scale of the
 % result.

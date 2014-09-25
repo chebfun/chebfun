@@ -87,8 +87,8 @@ end
 dom = N.domain;
 
 % Use the appropriate tech.
-disc = pref.discretization();
-tech = disc.returnTech;
+discPreference = pref.discretization();
+tech = discPreference.returnTech();
 
 % Create an initial guess if none is passed.
 if ( isempty(N.init) )
