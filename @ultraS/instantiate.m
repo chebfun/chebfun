@@ -64,9 +64,6 @@ elseif ( isa(item, 'functionalBlock') )
     dim = disc.dimension;
     dom = disc.domain;
     
-    %tmp = cell(1, numel(dom)-1);
-    %tmp{1} = item * chebpoly(0:dim-1, dom); toc
-    
     % Create a colloc2 discretization: 
     collocDisc = colloc2(item, dim, dom);
     M = matrix(collocDisc);
