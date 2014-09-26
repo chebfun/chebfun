@@ -107,14 +107,6 @@ if ( isempty(N.init) )
 else
     % Get the initial guess.
     u0 = N.init;
-    % Ensure that u0 is of correct discretization, and convert it to a 
-    % CHEBMATRIX if necessary.
-    if ( isa(u0, 'chebfun') )
-        u0 = chebmatrix(chebfun(u0, dom, 'tech', tech));
-    elseif ( isa(u0, 'chebmatrix') )
-        constr = @(f) chebfun(f, dom, 'tech', tech);
-        u0.blocks = cellfun(constr, u0.blocks, 'uniformOutput', false);
-    end
     
 end
 
@@ -148,8 +140,8 @@ if ( isnumeric(rhs) )
         end
     end
     
-    % Convert the rhs to a CHEBMATRIX of the right tech.
-    rhs = chebmatrix(chebfun(rhs, dom, 'tech', tech));
+    % Convert the rhs to a CHEBMATRIX.
+    rhs = rhs + 0*residual;
     
 elseif ( isa(rhs, 'chebfun') && size(rhs, 2) > 1 )
     rhs = chebmatrix(mat2cell(rhs).');
@@ -172,10 +164,19 @@ if ( isnumeric(u0) )
         end
     end
     
-    % Convert the initial guess to a CHEBMATRIX of the right tech.
-    u0 = chebmatrix(chebfun(u0, dom, 'tech', tech));
+    % Convert the initial guess to a CHEBMATRIX.
+    u0 = u0 + 0*residual;
 end
 
+% Ensure that u0 is of correct discretization, and convert it to a
+% CHEBMATRIX if necessary.
+if ( isa(u0, 'chebfun') )
+    u0 = chebmatrix(chebfun(u0, dom, 'tech', tech));
+elseif ( isa(u0, 'chebmatrix') )
+    constr = @(f) chebfun(f, dom, 'tech', tech);
+    u0.blocks = cellfun(constr, u0.blocks, 'uniformOutput', false);
+end
+    
 % Solve:
 if ( all(isLinear) )
     % Call solver method for linear problems.
