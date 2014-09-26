@@ -4,7 +4,7 @@ function pass = test_periodic(pref)
 if ( nargin == 0 )
     pref = cheboppref();
 end
-tol = 1e-10;
+tol = 1e-8;
 
 %% A simple ODE:
 
@@ -87,7 +87,6 @@ L.bc = 'periodic';
 u = L \ f;
 
 % Compare with exact solution.
-tol = pref.errTol;
 exact = chebfun(@(x) 1/2*cos(x) + 1/2*sin(x), dom, 'periodic');
 err(5) = norm(u - exact, inf);
 
@@ -105,14 +104,8 @@ L.bc = 'periodic';
 % Solve with FOURIER technology.
 u = L \ f;
 
-% Solve with CHEBYSHEV technology.
-pref.discretization = 'chebcolloc2';
-v = solvebvp(L, f, pref);
-
-% Comparison.
-tol = pref.errTol;
-xx = linspace(dom(1), dom(2), 100);
-err(6) = norm(u(xx) - v(xx), inf);
+err(6) = norm(L*u - f);
+err(7) = abs(u(dom(1)) - u(dom(2)));
 
 %% Test the FOURCOLLOC class. SECOND ORDER AND CONSTANT COEFFICIENTS: 
 %  u'' + 10u' + 5u = cos(x), on [-2*pi 2*pi].
@@ -130,9 +123,8 @@ f = chebfun(@(x) cos(x), dom);
 u = L \ f;
 
 % Compare with exact solution.
-tol = pref.errTol;
 exact = chebfun(@(x) 1/29*cos(x) + 5/58*sin(x), dom, 'periodic');
-err(7) = norm(u - exact, inf);
+err(8) = norm(u - exact, inf);
 
 %% Test the FOURCOLLOC class. SECOND ORDER AND VARIABLE COEFFICIENTS: 
 %  (2+cos(4x))u'' + sin(cos(2x))u' + exp(cos(x))u = cos(x), on [-pi pi].
@@ -152,14 +144,9 @@ L.bc = 'periodic';
 % Solve with FOURIER technology.
 u = L \ f;
 
-% Solve with CHEBYSHEV technology.
-pref.discretization = 'chebcolloc2';
-v = solvebvp(L, f, pref);
-
-% Comparison.
-tol = 10*pref.errTol;
-xx = linspace(dom(1), dom(2), 100);
-err(8) = norm(u(xx) - v(xx), inf);
+err(9) = norm(L*u - f);
+err(10) = abs(u(dom(1)) - u(dom(2)));
+err(11) = abs(feval(diff(u), dom(1)) - feval(diff(u), dom(2)));
 
 %% Test the FOURCOLLOC class. THIRD ORDER AND VARIABLE COEFFICIENTS: 
 %  (2+cos(x))u''' + sin(cos(2x))u'' + exp(cos(x))u' + sin(x)u = cos(x),
@@ -180,14 +167,10 @@ L.bc = 'periodic';
 % Solve with FOURIER technology.
 u = L \ f;
 
-% Solve with CHEBYSHEV technology.
-pref.discretization = 'chebcolloc2';
-v = solvebvp(L, f, pref);
-
-% Comparison.
-tol = 200*pref.errTol;
-xx = linspace(dom(1), dom(2), 100);
-err(9) = norm(u(xx) - v(xx), inf);
+err(12) = norm(L*u - f);
+err(13) = abs(u(dom(1)) - u(dom(2)));
+err(14) = abs(feval(diff(u), dom(1)) - feval(diff(u), dom(2)));
+err(15) = abs(feval(diff(u, 2), dom(1)) - feval(diff(u, 2), dom(2)));
 
 %% Test the FOURCOLLOC class. FOURTH ORDER AND VARIABLE COEFFICIENTS: 
 %  (2+cos(x))u'''' + sin(cos(2x))u''' + exp(cos(x))u'' + ... 
@@ -210,14 +193,11 @@ L.bc = 'periodic';
 % Solve with FOURIER technology.
 u = L \ f;
 
-% Solve with CHEBYSHEV technology.
-pref.discretization = 'chebcolloc2';
-v = solvebvp(L, f, pref);
-
-% Comparison.
-tol = 100*pref.errTol;
-xx = linspace(dom(1), dom(2), 100);
-err(10)  = norm(u(xx) - v(xx), inf);
+err(16) = norm(L*u - f);
+err(17) = abs(u(dom(1)) - u(dom(2)));
+err(18) = abs(feval(diff(u), dom(1)) - feval(diff(u), dom(2)));
+err(19) = abs(feval(diff(u, 2), dom(1)) - feval(diff(u, 2), dom(2)));
+err(20) = abs(feval(diff(u, 3), dom(1)) - feval(diff(u, 3), dom(2)));
 
 %%
 pass = err < tol;

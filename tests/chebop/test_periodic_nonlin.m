@@ -50,14 +50,8 @@ N.init = u0;
 % Solve with FOURIER technology.
 u = N \ f;
 
-% Solve with CHEBYSHEV technology.
-pref.discretization = 'chebcolloc2';
-v = solvebvp(N, f, pref);
-
-% Comparison.
-tol = pref.errTol;
-xx = linspace(dom(1), dom(2), 100);
-err(2) = norm(u(xx) - v(xx), inf);
+err(2) = norm(N*u - f);
+err(3) = abs(u(dom(1)) - u(dom(2)));
 
 %% Test the FOURCOLLOC class. SECOND ORDER: 
 %  u'' - u^2*cos(u) = cos(x), on [-pi pi].
@@ -75,14 +69,9 @@ N.init = u0;
 % Solve with FOURIER technology.
 u = N \ f;
 
-% Solve with CHEBYSHEV technology.
-pref.discretization = 'chebcolloc2';
-v = solvebvp(N, f, pref);
-
-% Comparison.
-tol = pref.errTol;
-xx = linspace(dom(1), dom(2), 100);
-err(3) = norm(u(xx) - v(xx), inf);
+err(4) = norm(N*u - f);
+err(5) = abs(u(dom(1)) - u(dom(2)));
+err(6) = abs(feval(diff(u), dom(1)) - feval(diff(u), dom(2)));
 
 %%
 pass = err < tol;

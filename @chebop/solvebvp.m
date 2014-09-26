@@ -96,9 +96,8 @@ tech = discPreference.returnTech();
 % Create an initial guess if none is passed.
 if ( isempty(N.init) )
     % Initialise a zero CHEBFUN:
-    zeroFun = chebfun(0, dom, 'tech', tech);
-    
-    % Convert to a chebmatrix of correct dimensions:
+    zeroFun = chebfun(0, dom, 'tech', tech); 
+    % Convert to a CHEBMATRIX of correct dimensions:
     u0 = cell(nVars, 1);
     for k = 1:nVars
         u0{k} = zeroFun;
@@ -106,11 +105,12 @@ if ( isempty(N.init) )
     u0 = chebmatrix(u0);
     
 else
+    % Get the initial guess.
     u0 = N.init;
-    
-    % Ensure that u0 is of correct discretization.
+    % Ensure that u0 is of correct discretization, and convert it to a 
+    % CHEBMATRIX if necessary.
     if ( isa(u0, 'chebfun') )
-        u0 = chebfun(u0, dom, 'tech', tech);
+        u0 = chebmatrix(chebfun(u0, dom, 'tech', tech));
     elseif ( isa(u0, 'chebmatrix') )
         constr = @(f) chebfun(f, dom, 'tech', tech);
         u0.blocks = cellfun(constr, u0.blocks, 'uniformOutput', false);
@@ -148,9 +148,8 @@ if ( isnumeric(rhs) )
         end
     end
     
-    % If we get here, we have something compatible, this is a simple way to
-    % convert RHS to a CHEBMATRIX:
-    rhs = rhs + 0*residual;
+    % Convert the rhs to a CHEBMATRIX of the right tech.
+    rhs = chebmatrix(chebfun(rhs, dom, 'tech', tech));
     
 elseif ( isa(rhs, 'chebfun') && size(rhs, 2) > 1 )
     rhs = chebmatrix(mat2cell(rhs).');
@@ -173,8 +172,8 @@ if ( isnumeric(u0) )
         end
     end
     
-    % Convert the initial guess to a CHEBMATRIX
-    u0 = u0 + 0*residual;
+    % Convert the initial guess to a CHEBMATRIX of the right tech.
+    u0 = chebmatrix(chebfun(u0, dom, 'tech', tech));
 end
 
 % Solve:
@@ -182,12 +181,17 @@ if ( all(isLinear) )
     % Call solver method for linear problems.
     [u, info] = N.solvebvpLinear(L, rhs - residual, N.init, pref, displayInfo);
 else
-    % TODO: Switch between residual and error oriented Newton methods.
+    % [TODO]: Switch between residual and error oriented Newton methods.
     
     % Create initial guess which satisfies the linearised boundary conditions:
     if ( isempty(N.init) )
-        % Find a new initial guess that satisfies the BCs of L
-        u0 = fitBCs(L, pref);
+        
+        if ( ~isequal(pref.discretization, @fourcolloc) )
+            % Find a new initial guess that satisfies the BCs of L.
+            % If we are using FOURCOLLOC, we don't need to do that because 
+            % the zero CHEBFUN is periodic.
+            u0 = fitBCs(L, pref);
+        end
         
         % Linearize about the new initial guess. If we are working with
         % parameter dependent problems, and did not get an initial condition
@@ -196,9 +200,10 @@ else
         [L, residual, isLinear, u0] = linearize(N, u0, x);
     end
     
-    % Ensure that rhs is of correct discretization.
+    % Ensure that rhs is of correct discretization, and convert it to a 
+    % CHEBMATRIX if necessary.
     if ( isa(rhs, 'chebfun') )
-        rhs = chebfun(rhs, dom, 'tech', tech);
+        rhs = chebmatrix(chebfun(rhs, dom, 'tech', tech));
     elseif ( isa(rhs, 'chebmatrix') )
         constr = @(f) chebfun(f, dom, 'tech', tech);
         rhs.blocks = cellfun(constr, rhs.blocks, 'uniformOutput', false);

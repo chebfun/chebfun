@@ -47,15 +47,14 @@ F = [ chebfun(0, dom) ; chebfun(@(x) cos(x), dom) ];
 % Solve with FOURIER technology.
 U = L \ F;
 
-% Solve with CHEBYSHEV technology.
-pref.discretization = 'chebcolloc2';
-V = solvebvp(L, F, pref);
-
-% Comparison.
-xx = linspace(dom(1), dom(2), 100);
-tol = pref.errTol;
-err(2) = norm(U{1}(xx) - V{1}(xx), inf);
-err(3) = norm(U{2}(xx) - V{2}(xx), inf);
+u = U{1}; 
+v = U{2}; 
+err(2) = norm(u - diff(v));
+err(3) = norm(diff(u, 2) + v - F{2});
+err(4) = abs(u(dom(1)) - u(dom(2)));
+err(5) = abs(feval(diff(u), dom(1)) - feval(diff(u), dom(2)));
+err(4) = abs(v(dom(1)) - v(dom(2)));
+err(5) = abs(feval(diff(v), dom(1)) - feval(diff(v), dom(2)));
 
 %% Test the FOURCOLLOC class. FIRST AND SECOND ORDER NONLINEAR ODEs.
 %  u - v' + v = 0, u'' - cos(v) = cos(x).
@@ -70,15 +69,14 @@ N.init = F;
 % Solve with FOURIER technology.
 U = N \ F;
 
-% Solve with CHEBYSHEV technology.
-pref.discretization = 'chebcolloc2';
-V = solvebvp(N, F, pref);
-
-% Comparison.
-xx = linspace(dom(1), dom(2), 100);
-tol = pref.errTol;
-err(4) = norm(U{1}(xx) - V{1}(xx), inf);
-err(5) = norm(U{2}(xx) - V{2}(xx), inf);
+u = U{1}; 
+v = U{2}; 
+err(6) = norm(u - diff(v) + v);
+err(7) = norm(diff(u, 2) - cos(v) - F{2});
+err(8) = abs(u(dom(1)) - u(dom(2)));
+err(9) = abs(feval(diff(u), dom(1)) - feval(diff(u), dom(2)));
+err(10) = abs(v(dom(1)) - v(dom(2)));
+err(11) = abs(feval(diff(v), dom(1)) - feval(diff(v), dom(2)));
 
 %%
 pass = err < tol;
