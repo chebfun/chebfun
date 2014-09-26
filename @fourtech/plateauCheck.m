@@ -29,7 +29,9 @@ function [ishappy, epsLevel, cutoff] = plateauCheck(f, values, pref)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% [TODO]: implement PLATEAUCHECK for FOURTECH.
+% [TODO]: implement PLATEAUCHECK for FOURTECH. For the moment, we just call
+% classicCheck. The reason why the plateauCheck() is needed for FOURTECH is that
+% it gets called from within LINOP convergence tests.
 [ishappy, epsLevel, cutoff] = classicCheck(f, pref);
 
 end
