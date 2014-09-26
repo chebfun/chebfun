@@ -1,9 +1,7 @@
 function varargout = chebcoeffs2(f)
 %CHEBCOEFFS2    Bivariate Chebyshev coefficients
 %   X = CHEBCOEFFS2(F) returns the matrix of bivariate coefficients such that
-%       F= sum_i ( sum_j Y(i,j) T_i(y) T_j(x) ), 
-%   where Y = rot90(X, 2). It is MATLAB convention to flip the coefficients in
-%   this silly way.
+%       F= sum_i ( sum_j X(i,j) T_i(y) T_j(x) ). 
 %
 %   [A, D, B] = CHEBCOEFFS2( f ) returns the same coefficients keeping them in
 %   low rank form, i.e., X = A * D * B'.
