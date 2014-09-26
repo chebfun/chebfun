@@ -6,12 +6,12 @@ function r = rank(N)
 
 A = N.coeffs; 
 if ( iscell(A) )
-    if ( ~isempty( N.S ) ) 
-        r = size(N.S,1); 
+    if ( ~isempty(N.S) ) 
+        r = size(N.S, 1); 
     else
         % attempt to compute it: 
-        [U, S, V] = chebop2.SeparableFormat( N ); 
-        r = size(S,1); 
+        [U, S, V] = chebop2.SeparableFormat(N); 
+        r = size(S, 1); 
     end
 else
     r = rank(A);
