@@ -40,7 +40,8 @@ switch index(1).type
         elseif strcmp(idx, 'V')
             varargout = {set(f, 'V', vin)};
         else
-            error('CHEBOP2:SUBSASGN', 'Unrecognized chebop2 property.')
+            error('CHEBFUN:CHEBOP2:subsasgn:UnexpectedType', ...
+                'Unrecognized chebop2 property.')
         end
         
 end

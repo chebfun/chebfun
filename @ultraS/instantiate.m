@@ -75,8 +75,8 @@ elseif ( isa(item, 'functionalBlock') )
     cumsumDim = [0, cumsum(dim)];
     tmp = cell(1, numel(dom)-1);
     for l = 1:numel(tmp)
-       Ml = M(cumsumDim(l) + (1:dim(l)));
-      tmp{l} = flipud(chebtech2.coeffs2vals(Ml.')).';
+        Ml = M(cumsumDim(l) + (1:dim(l)));
+        tmp{l} = flipud(chebtech2.coeffs2vals(Ml.')).';
     end
     
     M = cell2mat(tmp);
