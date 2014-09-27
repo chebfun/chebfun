@@ -10,7 +10,7 @@ if ( iscell(A) )
         r = size(N.S, 1); 
     else
         % attempt to compute it: 
-        [U, S, V] = chebop2.SeparableFormat(N); 
+        [U, S, V] = chebop2.separableFormat(N); 
         r = size(S, 1); 
     end
 else
