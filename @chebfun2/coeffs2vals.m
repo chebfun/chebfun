@@ -2,8 +2,9 @@ function varargout = coeffs2vals( U, varargin )
 % VAL2COEFFS    Convert matrix of Chebyshev coefficients to values.
 %
 % V = COEFFS2VALS( C ) converts a matrix C of bivariate Chebyshev coefficients
-% to a matrix of samples V corresponding to values of sum_i sum_j C(i,j)
-% T_{i-1}(y)T_{j-1}(x) at a tensor Chebyshev grid of size size(C).
+% to a matrix of samples V corresponding to values of 
+%   sum_i sum_j C(i,j) T_{i-1}(y)T_{j-1}(x) 
+% at a tensor Chebyshev grid of size size(C).
 % 
 % [U, S, V] = COEFFS2VALS( U, S, V ) the same as above but keeps everything in
 % low rank form.
