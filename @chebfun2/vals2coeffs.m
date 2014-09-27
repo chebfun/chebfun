@@ -1,12 +1,12 @@
 function varargout = vals2coeffs( U, S, V )
-%VALS2COEFFS   Convert matrix of values to Chebyshev coefficients. 
+%VALS2COEFFS    Convert matrix of values to Chebyshev coefficients. 
 % 
-% V = VALS2COEFFS( C ) converts a matrix C of values representing samples
-% of a function from a tensor Chebyshev grid and converts them to a matrix 
-% V of bivariate Chebyshev coefficients for the corresponding interpolant. 
+% V = VALS2COEFFS( C ) converts a matrix C of values representing samples of a
+% function from a tensor Chebyshev grid and converts them to a matrix V of
+% bivariate Chebyshev coefficients for the corresponding interpolant.
 % 
-% [U, S, V] = VALS2COEFFS( U, S, V ) the same as above but keeps everything in low
-% rank form. 
+% [U, S, V] = VALS2COEFFS( U, S, V ) the same as above but keeps everything in
+% low rank form.
 % 
 % See also COEFFS2VALS
 
