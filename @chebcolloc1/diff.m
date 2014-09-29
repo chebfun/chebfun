@@ -1,7 +1,7 @@
 function D = diff(disc, m)
-%DIFF    Differentiation operator for COLLOC1 discretization.
+%DIFF    Differentiation operator for CHEBCOLLOC1 discretization.
 %   D = DIFF(DISC) gives the matrix such that if v=D*u, then v=u', where u
-%   is a COLLOC1 representation of a Chebyshev polynomial.
+%   is a CHEBCOLLOC1 representation of a Chebyshev polynomial.
 %
 %   DIFF(DISC, M) for positive integer M returns D^M (through a better
 %   algorithm than multiplication).
@@ -23,7 +23,7 @@ else
     blocks = cell(numIntervals);
     for k = 1:numIntervals
         len = d(k+1) - d(k);
-        blocks{k} = colloc1.diffmat(n(k),m) * (2/len)^m; % Scaled diffmats
+        blocks{k} = chebcolloc1.diffmat(n(k),m) * (2/len)^m; % Scaled diffmats
     end
     
     % Assemble!

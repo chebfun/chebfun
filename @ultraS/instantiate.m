@@ -48,7 +48,7 @@ if ( isa(item, 'operatorBlock') )
         [M, S] = quasi2USdiffmat(disc);
     else
         error('CHEBFUN:ULTRAS:instantiate:fail', ...
-            'ultraS cannot represent this operator. Suggest you use colloc2.')
+          'ultraS cannot represent this operator. Suggest you use chebcolloc2.')
     end
     
 elseif ( isa(item, 'functionalBlock') )
@@ -56,7 +56,7 @@ elseif ( isa(item, 'functionalBlock') )
     
     % Developer note: In general we can't represent functional
     % blocks via coeffs. To get around this we instantiate a
-    % COLLOC2 discretization and convert it to coefficient space
+    % CHEBCOLLOC2 discretization and convert it to coefficient space
     % using COEFFS2VALS(). (Note it's COEFFS2VALS() rather than
     % VALS2COEFFS() because it's a right-multiply (I think..).)
     
@@ -64,8 +64,9 @@ elseif ( isa(item, 'functionalBlock') )
     dim = disc.dimension;
     dom = disc.domain;
     
-    % Create a colloc2 discretization: 
-    collocDisc = colloc2(item, dim, dom);
+    % Create a CHEBCOLLOC2 discretization:
+    collocDisc = chebcolloc2(item, dim, dom);
+
     M = matrix(collocDisc);
     
     %Convert from colloc-space to coeff-space using COEFFS2VALS.

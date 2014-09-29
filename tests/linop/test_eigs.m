@@ -16,7 +16,7 @@ e_true = flipud(-(1:6).'.^2);
 
 %%
 prefs = cheboppref;
-prefs.discretization = @colloc2;
+prefs.discretization = @chebcolloc2;
 [V, D] = eigs(L, 6, prefs);
 e = diag(D);
 err(1) = norm(e - e_true, inf);
@@ -29,7 +29,7 @@ e = diag(D);
 err(3) = norm(e - e_true, inf);
 err(4) = norm(L*V-V*D);
 %%
-prefs.discretization = @colloc1;
+prefs.discretization = @chebcolloc1;
 [V, D] = eigs(L, 6, prefs);
 e = diag(D);
 err(5) = norm(e - e_true, inf);

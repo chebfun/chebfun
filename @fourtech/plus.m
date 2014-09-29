@@ -101,7 +101,8 @@ elseif ( isa(f, 'fourtech') && isa(g, 'fourtech') )  % FOURTECH + FOURTECH.
     
 else    % Don't know how to do the addition of the objects.
     
-    error('CHEBFUN:FOURTECH:plus:typeMismatch','Incompatible operation between objects. Make sure functions are of the same type.');
+    error('CHEBFUN:FOURTECH:plus:typeMismatch',['Incompatible operation between objects.\n', ...
+    'Make sure functions are of the same type.']);
     
 end
 

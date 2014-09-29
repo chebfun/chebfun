@@ -1,5 +1,5 @@
 function E = feval(disc, location, direction)
-%FEVAL   Evaluation functional for COLLOC discretization.
+%FEVAL   Evaluation functional for CHEBCOLLOC.
 %   FEVAL(DISC, LOC, DIRN) returns a functional that evaluates the Chebyshev
 %   polynomial represented by a COLLOC discretization at the given point LOC as
 %   approached from the direction DIRN (either +1 or -1).
