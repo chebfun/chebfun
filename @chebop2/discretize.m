@@ -58,6 +58,14 @@ xorder = N.xorder;
 yorder = N.yorder;
 
 %%
+% Check if the PDO was given as a variable coefficient PDO with the notation
+% @(x,y,u), but is actually a constant coefficient PDO. 
+doesNotDependOnXorY = all(all(cellfun(@isnumeric, N.coeffs))); 
+if ( doesNotDependOnXorY ) 
+    A = cell2mat( A ).'; 
+end
+
+%%
 % Convert matrix of coefficients to a discretization for the PDE using the
 % singular value decomposition.  We find the rank of the PDE operator and
 % then use the optimal low rank expansion of the operator as a way to
