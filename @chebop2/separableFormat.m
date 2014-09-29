@@ -1,5 +1,5 @@
 function [cellU, S, cellV] = separableFormat(A, xorder, yorder, domain)
-% SEPARATBLEFORMAT  compute separable expression for a linear PDO
+%SEPARATBLEFORMAT  Compute separable expression for a linear PDO.
 %
 % Calculate a separable representation of a partial differential 
 % operator. These representations can then be using to derive a 2D spectral
@@ -68,7 +68,7 @@ H = H(xx, ss, yy, tt);
 % H(x,s,y,t): 
 A = reshape(H, n*(xorder+1), n*(yorder+1));
 [U, S, V] = svd(A); 
-rk = find( abs( diag(S)/S(1,1) ) > 1000*eps, 1, 'last' );  % splitting rank
+rk = find(abs(diag(S)/S(1,1)) > 1000*eps, 1, 'last' );  % splitting rank
 
 % Restrict to singular vectors of interest.  
 S = S(1:rk, 1:rk);
@@ -82,8 +82,8 @@ cellV = cell(xorder+1, rk);
 c1 = cell(xorder, 1); 
 c2 = cell(yorder, 1); 
 % Matrices to convert ChebT -> monomials: 
-converty = fliplr( poly( chebpoly(0:yorder) ) ); 
-convertx = fliplr( poly( chebpoly(0:xorder) ) );
+converty = fliplr(poly(chebpoly(0:yorder))); 
+convertx = fliplr(poly(chebpoly(0:xorder)));
 
 % Figure out the separable representation: 
 for jj = 1:rk 
