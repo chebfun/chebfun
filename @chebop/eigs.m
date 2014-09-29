@@ -59,6 +59,8 @@ if ( isempty(prefs) )
             && length(N.domain) < 3 )
         prefs.discretization = @fourcolloc;
     end
+    % Add the prefs to varargin.
+    varargin{nargin} = prefs;
 end
 
 % Check boundary conditions if using FOURCOLLOC.
@@ -99,7 +101,7 @@ if ( fail )
          'EIGS() supports only linear CHEBOP instances.']);
 end
 
-[varargout{1:nargout}] = eigs(L, varargin{1:nargin-2}, prefs);
+[varargout{1:nargout}] = eigs(L, varargin{:});
 
 % Return a CHEBFUN rather than a CHEBMATRIX for scalar problems:
 if ( nargout > 1 && isa(varargout{1}, 'chebmatrix') )
