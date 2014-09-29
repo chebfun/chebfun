@@ -17,7 +17,7 @@ classdef chebop2
 %
 % Example (solve Poisson with Dirichlet conditions):
 %    N = chebop2(@(u) diff(u,2,1) + diff(u,2,2));
-%    N.lbc = 0; N.rbc = 0; N.ubc = 0; N.dbc = 0;
+%    N.bc = 0;
 %    u = N \ 1;
 %
 % For further details about the PDE solver, see:
@@ -101,7 +101,7 @@ classdef chebop2
             % First argument in the constructor is the operator. If the
             % operator is univariate then it's a constant coefficient PDE,
             % otherwise assume it is a variable coefficient.
-            if ( isa(varargin{1},'function_handle') )
+            if ( isa(varargin{1}, 'function_handle') )
                 fh = varargin{1};
                 
                 if ( nargin(fh) == 1 )  % The PDE has constant coefficients.
@@ -110,7 +110,7 @@ classdef chebop2
                     
                     % Extract out rhs: 
                     x = chebfun2(@(x,y) x, dom); 
-                    RHS = fh( 0*x );
+                    RHS = fh(0*x);
                     fh = @(u) fh(u) - RHS; 
                     N.rhs = -RHS;             % store for later. 
                     
@@ -147,8 +147,8 @@ classdef chebop2
                     v = fh(x, y, u);
                     A = v.jacobian;  % Cell array of variable coefficients.
                     
-                    % If we have a variable coefficient PDO, then compute the separable
-                    % representation immediately. We need it now.
+                    % If we have a variable coefficient PDO, then compute the 
+                    % separable representation immediately. We need it now.
                     [cellU, matS, cellV] = chebop2.separableFormat( A,...
                                                     size(A,2), size(A,1), dom );
                     N.U = cellU;

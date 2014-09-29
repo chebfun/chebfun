@@ -11,7 +11,7 @@ function r = rank(f, tol)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 
-if ( isempty( f ) )
+if ( isempty(f) )
     r = [];
     return
 end
@@ -22,14 +22,14 @@ if ( nargin == 1 )
 end
 
 % Compute the singular values of f. 
-s = svd( f ); 
+s = svd(f); 
 
 % Check for zero function.
-if ( max( s ) == 0  )  
+if ( max(s) == 0  )  
     r = 0; 
 else
     % r = no. of s.v. above relative tol.
-    r = find( s/s(1) > tol, 1, 'last');  
+    r = find(s/s(1) > tol, 1, 'last');  
 end
 
 end
