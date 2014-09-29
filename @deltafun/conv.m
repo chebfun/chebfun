@@ -85,6 +85,7 @@ h = convDeltas(deltaMagG, deltaLocG, f, a, b, deltaTol, h);
 
 % Check for emptiness:
 if ( isempty(h) )
+    h = {fun.constructor(0, struct('domain', [a, b]))};
     return
 end
 
@@ -93,16 +94,19 @@ end
 % First extract the breakpints from funs forming h:
 doms = cellfun(@(hk) hk.domain, h, 'uniformoutput', 0);
 breakPoints = sort(unique(horzcat(doms{:})));
+[~, breakPoints] = deltafun.mergeColumns( ones(size(breakPoints)), breakPoints);
 
 %%
 % Restrict each fun in h to lie within these new breakpoints:
 nFuns = length(h);
 H = {};
+tol = pref.deltaPrefs.proximityTol;
 for k = 1:nFuns
     hk = h{k};
     dom = hk.domain;
-    [~, idx] = intersect(breakPoints, dom);
-    hk = restrict(hk, breakPoints(idx(1):idx(2)));
+    idx1 = find(abs(breakPoints - dom(1)) < tol);
+    idx2 = find(abs(breakPoints - dom(2)) < tol);
+    hk = restrict(hk, breakPoints(idx1:idx2));
     if ( ~isa(hk, 'cell') )
         hk = {hk};
     end
@@ -126,7 +130,7 @@ end
 for k = 1:length(H)
     hk = H{k};
     dom = hk.domain;
-    idx = find(breakPoints == dom(1));
+    idx = find(abs(breakPoints - dom(1)) < tol);
     h{idx} = h{idx} + hk; %#ok<AGROW>
 end
 
