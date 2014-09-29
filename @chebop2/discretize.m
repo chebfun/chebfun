@@ -188,6 +188,10 @@ Gx = Gx.'; % Now transpose so that X*B = g;
 %% 
 % Construct the RHS of the Sylvester matrix equation.
 
+% Complete the RHS (part of the RHS could have been in the operator): 
+if ( ~isempty(N.rhs) && ( isa(N.rhs, 'chebfun2') || isa(n.rhs, 'double') ) )
+    f = f + N.rhs; 
+end
 E = zeros(m, n);
 [n2, n1] = length(f);
 F = chebcoeffs2(f);
