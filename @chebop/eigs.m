@@ -39,6 +39,51 @@ function varargout = eigs(N, varargin)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
+prefs = [];
+% Get the preferences if given.
+for j = 1:nargin-1
+    item = varargin{j};
+    if ( isa(item,'cheboppref') )
+        prefs = item;
+    end
+end
+
+% Grab defaults if needed.
+if ( isempty(prefs) )
+    prefs = cheboppref;
+    % If the boundary conditions are periodic, use FOURCOLLOC by default.
+    % However, if the default discretization is ULTRAS use ULTRAS,
+    % or if there is a brakpoint use the default discretization.
+    if ( isa(N.bc, 'char') && strcmpi(N.bc, 'periodic') ...
+            && ~isequal(prefs.discretization, @ultraS) ...
+            && length(N.domain) < 3 )
+        prefs.discretization = @fourcolloc;
+    end
+end
+
+% Check boundary conditions if using FOURCOLLOC.
+if ( isequal(prefs.discretization, @fourcolloc) )
+    if ( isempty(N.bc) )
+        % No need to clear the BCs, do nothing!
+    elseif ( isa(N.bc, 'char') && strcmpi(N.bc, 'periodic') )
+        % FOURCOLLOC uses periodic functions, so there is no need to specify
+        % boundary conditions. We clear them out of the chebop object to avoid
+        % problems later in the code.
+        N.bc = [];
+    else
+        error('CHEBFUN:CHEBOP:solvebvp:bc', ...
+            'FOURCOLLOC only works with periodic boundary conditions.');
+    end
+end
+
+% Check domain if using FOURCOLLOC.
+if ( isequal(prefs.discretization, @fourcolloc) )
+    if ( length(N.domain) > 2)
+        error('CHEBFUN:CHEBOP:solvebvp:domain', ...
+        'FOURCOLLOC does not work with breakpoints. Use CHEBCOLLOC or ULTRAS.');
+    end
+end
+
 % Linearize and check whether the chebop is linear:
 [L, ignored, fail] = linop(N); %#ok<ASGLU>
 
@@ -54,7 +99,7 @@ if ( fail )
          'EIGS() supports only linear CHEBOP instances.']);
 end
 
-[varargout{1:nargout}] = eigs(L, varargin{:});
+[varargout{1:nargout}] = eigs(L, varargin{1:nargin-2}, prefs);
 
 % Return a CHEBFUN rather than a CHEBMATRIX for scalar problems:
 if ( nargout > 1 && isa(varargout{1}, 'chebmatrix') )

@@ -85,11 +85,6 @@ end
 %#ok<*ASGLU> % Prevent MLINT warnings for unused variables, which are used in 
              % many places in this code to avoid the [~, arg2] = ... syntax.
 
-% Grab defaults if needed.
-if ( isempty(prefs) )
-    prefs = cheboppref;
-end
-
 % Discretization type.
 discType = prefs.discretization;
 
