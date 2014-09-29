@@ -60,9 +60,11 @@ yorder = N.yorder;
 %%
 % Check if the PDO was given as a variable coefficient PDO with the notation
 % @(x,y,u), but is actually a constant coefficient PDO. 
-doesNotDependOnXorY = all(all(cellfun(@isnumeric, N.coeffs))); 
-if ( doesNotDependOnXorY ) 
-    A = cell2mat( A ).'; 
+if ( iscell( A ) ) 
+    doesNotDependOnXorY = all(all(cellfun(@isnumeric, N.coeffs))); 
+    if ( doesNotDependOnXorY ) 
+        A = cell2mat( A ).'; 
+    end
 end
 
 %%
