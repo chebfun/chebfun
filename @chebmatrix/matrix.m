@@ -14,7 +14,7 @@ function varargout = matrix(A, varargin)
 %   Example:
 %     d = [0 1];
 %     A = [ operatorBlock.eye(d), operatorBlock.diff(d) ];
-%     matrix(A, 5, @colloc2)
+%     matrix(A, 5, @chebcolloc2)
 %     matrix(A, 5, @ultraS)
 %
 % See also CHEBOPPREF, CHEBDISCRETIZATION, CHEBDISCRETIZATION/MATRIX. 

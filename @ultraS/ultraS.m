@@ -61,6 +61,9 @@ classdef ultraS < chebDiscretization
             
         end
         
+        % Dimension reduction for operator matrix.
+        [PA, P, PS] = reduce(disc, A, S)
+        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -77,6 +80,11 @@ classdef ultraS < chebDiscretization
     %% STATIC METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true)
+        
+        function tech = returnTech()
+            %RETURNTECH    Return the appropriate tech to use for ULTRAS.
+            tech = @chebtech2;
+        end
         
         % Conversion matrix used in the ultraspherical spectral method.
         S = convertmat(n, K1, K2)

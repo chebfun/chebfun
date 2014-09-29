@@ -22,7 +22,7 @@ B = chebop(@(x,u) diff(u, 2) - u, [-1 1]);
 A.lbc = @(u) [u ; diff(u)];
 A.rbc = @(u) [u ; diff(u)];
 
-discType = {@colloc2, @ultraS, @colloc1};
+discType = {@chebcolloc2, @ultraS, @chebcolloc1};
 
 tol = 5e-6;
 

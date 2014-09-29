@@ -1,6 +1,6 @@
 function pass = test_chebmatrix
 
-% TODO: Tests 1 and 2 assume a colloc2 discretization.
+% TODO: Tests 1 and 2 assume a chebcolloc2 discretization.
 
 %% Building blocks
 dom = [-2 -0.5 1 2];

@@ -1,4 +1,4 @@
-classdef fourtech < smoothfun
+classdef fourtech < periodicTech
 %FOURTECH   Approximate smooth periodic functions on [-1,1] with Fourier 
 %           interpolants.
 %
@@ -42,7 +42,7 @@ classdef fourtech < smoothfun
 %   % Array-valued construction:
 %   f = fourtech(@(x) tanh([sin(pi*x), cos(pi*x), cos(pi*sin(pi*x))]))
 %
-% See also FOURTECH, FOURTECH.TECHPREF, FOURPTS, HAPPINESSCHECK, REFINE.
+% See also FOURTECH.TECHPREF, FOURPTS, HAPPINESSCHECK, REFINE.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -110,7 +110,7 @@ classdef fourtech < smoothfun
 % accept such array-valued forms. Note that this representation is distinct from
 % an array of FOURTECH objects, for which there is little to no support.
 %
-% Class diagram: [<<smoothfun>>] <-- [fourtech]
+% Class diagram: [<<PERIODICTECH>>] <-- [FOURTECH]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -413,7 +413,7 @@ classdef fourtech < smoothfun
         
         % Compute Fourier points (x) and optionally quadrature (w)
         % and barycentric (v) weights:
-        [x, w, v] = fourpts(n);
+        [x, w] = fourpts(n);
         
         % Convert coefficients to values:
         values = coeffs2vals(coeffs);

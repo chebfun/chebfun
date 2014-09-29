@@ -41,11 +41,11 @@ err(2,2) = abs( u(-pi) );
 err(2,3) = abs( u(pi) );
 
 %%
-% colloc1
+% chebcolloc1
 % smooth
 
 prefs = cheboppref;
-prefs.discretization = @colloc1;
+prefs.discretization = @chebcolloc1;
 x = chebfun(@(x) x,d,'chebkind',1);
 u0 = sin(exp(x)).*(pi^2-x.^2);
 u = expm(A,0.02,u0,prefs);
@@ -57,7 +57,7 @@ err(3,3) = abs( u(pi) );
 
 %%
 % piecewise IC
-prefs.discretization = @colloc1;
+prefs.discretization = @chebcolloc1;
 u0 = chebfun(@(x) -abs(x)/pi+1, [-pi 0 pi], 'chebkind', 1);
 u = expm(A,0.01,u0,prefs);
 
@@ -67,7 +67,7 @@ err(4,2) = abs( u(-pi) );
 err(4,3) = abs( u(pi) );
 
 %%
-% colloc1
+% chebcolloc1
 % smooth
 
 prefs = cheboppref;

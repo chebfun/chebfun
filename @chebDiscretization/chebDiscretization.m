@@ -1,5 +1,5 @@
 classdef chebDiscretization 
-%CHEBDISCRETIZATION Convert a chebmatrix or linop to discrete form.
+%CHEBDISCRETIZATION    Convert a chebmatrix or linop to discrete form.
 %   This class is not called directly by the end user. 
 %
 % See also COLLOC, ULTRAS.
@@ -65,6 +65,9 @@ classdef chebDiscretization
         
         % Return a vector of desired discretization sizes.
         dimVals = dimensionValues(pref)
+        
+        % Return the appropriate tech to be used with the discretization
+        tech = returnTech()
         
     end
     

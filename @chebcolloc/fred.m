@@ -1,5 +1,5 @@
 function F = fred(kernel, disc, oneVar)
-%FRED    Fredholm integral operator using COLLOC.
+%FRED    Fredholm integral operator for CHEBCOLLOC.
 %   For the calling sequence to this method, see OPERATORBLOCK.FRED.
 %
 % See also OPERATORBLOCK.FRED.

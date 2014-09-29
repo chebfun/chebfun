@@ -1,5 +1,5 @@
 function fx = toValues(disc, f, varargin)
-%TOVALUES   Convert CHEBFUN to a COLLOC1 discretization.
+%TOVALUES   Convert CHEBFUN to a CHEBCOLLOC1 discretization.
 %   TOVALUES(DISC,F) converts a chebfun F to values at 1st kind points in the
 %   DISC.DOMAIN.
 %
