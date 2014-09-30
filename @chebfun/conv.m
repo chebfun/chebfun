@@ -114,7 +114,7 @@ else
         for k = 1:numel(g.funs)
             % Compute the contribution of jth fun of f with kth fun of g:
             hjk = conv(f.funs{j}, g.funs{k});  
-            % Add this contribution:
+            % Add this contribution:            
             h = myplus(h, chebfun(hjk));
         end
     end
