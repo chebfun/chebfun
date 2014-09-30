@@ -114,9 +114,8 @@ else
         for k = 1:numel(g.funs)
             % Compute the contribution of jth fun of f with kth fun of g:
             hjk = conv(f.funs{j}, g.funs{k});  
-            % Add this contribution:
-            temp = chebfun(hjk);
-            h = myplus(h, temp);
+            % Add this contribution:            
+            h = myplus(h, chebfun(hjk));
         end
     end
     
@@ -145,11 +144,6 @@ end
 function h = myplus(f, g)
 % Modified PLUS() which pads with zeros to fulfil domain requirements.
 %  Note f is always on the largest possible domain. g is on a subdomain of f
-
-if ( isempty(f) || isempty(g) )
-    h = chebfun;
-    return
-end
 
 % Tidy the domains:
 [f, g] = tweakDomain(f, g);

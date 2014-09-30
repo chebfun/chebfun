@@ -94,7 +94,7 @@ end
 % First extract the breakpints from funs forming h:
 doms = cellfun(@(hk) hk.domain, h, 'uniformoutput', 0);
 breakPoints = sort(unique(horzcat(doms{:})));
-[~, breakPoints] = deltafun.mergeColumns( ones(size(breakPoints)), breakPoints);
+[~, breakPoints] = deltafun.mergeColumns(ones(size(breakPoints)), breakPoints);
 
 %%
 % Restrict each fun in h to lie within these new breakpoints:
@@ -130,8 +130,49 @@ end
 for k = 1:length(H)
     hk = H{k};
     dom = hk.domain;
-    idx = find(abs(breakPoints - dom(1)) < tol);
-    h{idx} = h{idx} + hk; %#ok<AGROW>
+    if ( abs(dom(2)-dom(1)) > tol )
+        idx = find(abs(breakPoints - dom(1)) < tol);
+        h{idx} = h{idx} + hk; %#ok<AGROW>
+    end
+end
+
+% Make sure that the break points of the deltafuns are contiguous:
+for k = 1:(length(h)-1)
+    hk1 = h{k};
+    hk2 = h{k+1};
+    dom1 = hk1.domain;
+    dom2 = hk2.domain;
+    % If the last end-point of the domain of the kth fun is very close to the
+    % first end-point of the domain of hte (k+1)st fun, merge them:
+    if( abs(dom1(2) - dom2(1)) < tol )
+        dom1(2) = dom2(1);
+        if ( isa(hk1, 'deltafun') )
+            hk1.funPart.domain = dom1;            
+        else
+            hk1.domain = dom1;
+        end
+        h{k} = hk1;
+    end
+end
+
+% The merging of domains done earlier might cause the end-point deltafunctions
+% to lie outside of the domain. Make sure that theyare within the domain:
+for k = 1:length(h)
+    hk = h{k};
+    if ( isa(hk, 'deltafun') )
+        deltaLoc = hk.deltaLoc;
+        domk = hk.domain;
+        if( ~isempty(deltaLoc) )
+            if ( abs(deltaLoc(1) - domk(1) ) < tol )
+                deltaLoc(1) = domk(1);
+            end            
+            if ( abs(deltaLoc(end) - domk(2)) < tol )
+                deltaLoc(end) = domk(2);
+            end
+            hk.deltaLoc = deltaLoc;
+        end
+        h{k} = hk;
+    end
 end
 
 end
@@ -155,7 +196,7 @@ for i = 1:m
             % The half below is to make sure that delta-delta interaction
             % is not counted twice:
             if ( isa(hij, 'deltafun') )
-                hij.deltaMag = hij.deltaMag/2;
+                hij.deltaMag = hij.deltaMag/2;                
             end
             
             % If the result is non-zero, append it:
