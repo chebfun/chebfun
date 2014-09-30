@@ -89,14 +89,6 @@ end
 % Store the domain we're working with.
 dom = N.domain;
 
-% Check domain if using FOURCOLLOC.
-if ( isequal(pref.discretization, @fourcolloc) )
-    if ( length(dom) > 2)
-        error('CHEBFUN:CHEBOP:solvebvp:domain', ...
-        'FOURCOLLOC does not work with breakpoints. Use CHEBCOLLOC or ULTRAS.');
-    end
-end
-
 % Use the appropriate tech.
 discPreference = pref.discretization();
 tech = discPreference.returnTech();
@@ -123,6 +115,13 @@ x = chebfun(@(x) x, dom);
 
 % Linearize and attach preferences.
 [L, residual, isLinear] = linearize(N, u0, x);
+
+% Check domain if using FOURCOLLOC.
+if ( isequal(pref.discretization, @fourcolloc) && length(L.domain) > 2 )
+        error('CHEBFUN:CHEBOP:solvebvp:domain', ...
+         ['Periodic boundary conditions and breakpoints cannot be solved\n', ...
+          'with the FOURCOLLOC class. Use CHEBCOLLOC or ULTRAS.'])
+end
 
 warnState = warning();
 [ignored, lastwarnID] = lastwarn(); %#ok<ASGLU>
@@ -269,11 +268,9 @@ if ( isempty(pref) )
     pref = cheboppref();
     
     % If the boundary conditions are periodic, use FOURCOLLOC by default.
-    % However, if the default discretization is ULTRAS use ULTRAS, 
-    % or if there is a brakpoint use the default discretization.
+    % However, if the default discretization is ULTRAS use ULTRAS.
     if ( isa(N.bc, 'char') && strcmpi(N.bc, 'periodic') ...
-            && ~isequal(pref.discretization, @ultraS) ...
-            && length(N.domain) < 3 )
+            && ~isequal(pref.discretization, @ultraS) )
         pref.discretization = @fourcolloc;
     end
 
