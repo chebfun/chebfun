@@ -94,18 +94,50 @@ end
 % First extract the breakpints from funs forming h:
 doms = cellfun(@(hk) hk.domain, h, 'uniformoutput', 0);
 breakPoints = sort(unique(horzcat(doms{:})));
-[~, breakPoints] = deltafun.mergeColumns(ones(size(breakPoints)), breakPoints);
 
-%%
-% Restrict each fun in h to lie within these new breakpoints:
+% Coalesce breakpoints that are extremely close together.
+if ( any(isinf(breakPoints)) )
+    tol = 2*eps;  % hscale of functions on unbounded domains is 1.
+else
+    tol = 2*eps*norm(breakPoints, Inf);
+end
+
+% TODO:  Take the average of points which are close together instead of just
+% picking one more or less arbitrarily?
+closeBreaks = abs(diff(breakPoints)) < tol;
+breakPoints(closeBreaks) = [];
+
+% Restrict each FUN to lie within the new breakpoints.
 nFuns = length(h);
 H = {};
-tol = pref.deltaPrefs.proximityTol;
+deltaTol = pref.deltaPrefs.proximityTol;
 for k = 1:nFuns
     hk = h{k};
     dom = hk.domain;
+
+    % The domain endpoints of each computed FUN must lie _exactly_ within the
+    % set of breakpoints or RESTRICT will fail.
     idx1 = find(abs(breakPoints - dom(1)) < tol);
     idx2 = find(abs(breakPoints - dom(2)) < tol);
+    hk = changeMap(hk, breakPoints([idx1, idx2]));
+
+    % If we just changed the map of a DELTAFUN, the locations of deltas at the
+    % domain endpoints also need to be updated.
+    if ( isa(hk, 'deltafun') )
+        deltaLoc = hk.deltaLoc;
+        domk = hk.domain;
+        if( ~isempty(deltaLoc) )
+            if ( abs(deltaLoc(1) - domk(1) ) < deltaTol )
+                deltaLoc(1) = domk(1);
+            end
+            if ( abs(deltaLoc(end) - domk(2)) < deltaTol )
+                deltaLoc(end) = domk(2);
+            end
+            hk.deltaLoc = deltaLoc;
+        end
+    end
+
+    % Do the restriction.
     hk = restrict(hk, breakPoints(idx1:idx2));
     if ( ~isa(hk, 'cell') )
         hk = {hk};
@@ -130,48 +162,9 @@ end
 for k = 1:length(H)
     hk = H{k};
     dom = hk.domain;
-    if ( abs(dom(2)-dom(1)) > tol )
-        idx = find(abs(breakPoints - dom(1)) < tol);
+    if ( abs(dom(2) - dom(1)) > tol )
+        idx = find(breakPoints == dom(1));
         h{idx} = h{idx} + hk; %#ok<AGROW>
-    end
-end
-
-% Make sure that the break points of the deltafuns are contiguous:
-for k = 1:(length(h)-1)
-    hk1 = h{k};
-    hk2 = h{k+1};
-    dom1 = hk1.domain;
-    dom2 = hk2.domain;
-    % If the last end-point of the domain of the kth fun is very close to the
-    % first end-point of the domain of hte (k+1)st fun, merge them:
-    if( abs(dom1(2) - dom2(1)) < tol )
-        dom1(2) = dom2(1);
-        if ( isa(hk1, 'deltafun') )
-            hk1.funPart.domain = dom1;            
-        else
-            hk1.domain = dom1;
-        end
-        h{k} = hk1;
-    end
-end
-
-% The merging of domains done earlier might cause the end-point deltafunctions
-% to lie outside of the domain. Make sure that theyare within the domain:
-for k = 1:length(h)
-    hk = h{k};
-    if ( isa(hk, 'deltafun') )
-        deltaLoc = hk.deltaLoc;
-        domk = hk.domain;
-        if( ~isempty(deltaLoc) )
-            if ( abs(deltaLoc(1) - domk(1) ) < tol )
-                deltaLoc(1) = domk(1);
-            end            
-            if ( abs(deltaLoc(end) - domk(2)) < tol )
-                deltaLoc(end) = domk(2);
-            end
-            hk.deltaLoc = deltaLoc;
-        end
-        h{k} = hk;
     end
 end
 
