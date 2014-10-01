@@ -2,7 +2,7 @@ function spy(disc, varargin)
 %TODO: Either remove this method, or uncomment lines below and ensure this
 %method works. The following is broken:
 %   D = chebop(@(x,u) diff(u));
-%   spy(colloc2(linop(D)))
+%   spy(chebcolloc2(linop(D)))
 
 error('CHEBFUN:CHEBDISCRETIZATION:spy:noSupported', ...
     'Chebdiscretization currently does not support spy().');

@@ -55,7 +55,7 @@ cheboppref.setDefaults('discretization', 'ultraspherical');
 pref = cheboppref;
 pass(9) = strcmp(func2str(pref.discretization), 'ultraS');
 pref.discretization = 'collocation';
-pass(10) = strcmp(func2str(pref.discretization), 'colloc2');
+pass(10) = strcmp(func2str(pref.discretization), 'chebcolloc2');
 
 
 end

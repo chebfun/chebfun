@@ -20,7 +20,7 @@ pass(1) = (abs(norm(g + f) - norm(g)) < tol);
 v = abs(f(pi/6,pi/6)); 
 v = v+abs(length(f)); 
 v = v+abs(rank(f));
-pass(2) = (v==0); 
+pass(2) = (v==1); 
 
 v = abs(norm(sum(f)));
 v = v + abs(integral2(f));

@@ -196,6 +196,14 @@ classdef classicfun < fun % (Abstract)
         % Test if a CLASSICFUN has any NaN values.
         out = isnan(f)
 
+        function out = isPeriodicTech(f)
+        %ISPERIODIC    Test if the smooth part of f is is constructed with a
+        %basis of periodic functions.
+            
+            % Calls ISPERIODICTECH on the ONEFUN part.
+            out = isPeriodicTech(f.onefun);
+        end
+        
         % True for real CLASSICFUN.
         out = isreal(f)
         

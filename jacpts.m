@@ -806,8 +806,8 @@ f(idx) = A.*(1./ti.^2 - 1./(2*sin(ti/2)).^2);
 f = f - fcos;
 
 % Integrals for B1: (Note that N isn't large, so we don't need to be fancy).
-C = colloc2.cumsummat(N)*(.5*c);
-D = colloc2.diffmat(N)*(2/c);
+C = chebcolloc2.cumsummat(N)*(.5*c);
+D = chebcolloc2.diffmat(N)*(2/c);
 I = (C*A1p_t);
 J = (C*(f.*A1));
 

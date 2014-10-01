@@ -18,13 +18,14 @@ for k = 1:numel(f.blocks)
         f.blocks{k} = feval(f.blocks{k}, xOut);
     end
 end
-b = cell2mat(f.blocks);       
+b = cell2mat(f.blocks);  
 
 % Developer note:
 %   The continuity conditions go above the constraints. See getConstraints().
 
 % Prepend the values of the constraints and continuity conditions.
 L = disc.source;
+
 if ( ~isempty(L.constraint) )
     b = [ L.constraint.values ; b ];
 end

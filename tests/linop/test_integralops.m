@@ -6,7 +6,7 @@ function pass = test_integralops
 % Toby Driscoll 11 March 2014
 
 tol = 1e-10;
-method = {@colloc2, @colloc1};
+method = {@chebcolloc2, @chebcolloc1};
 kind = [2 1];
 
 %%

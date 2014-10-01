@@ -164,4 +164,30 @@ hExact = oph(x);
 err = hVals - hExact;
 pass(17) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
 
+%% Test division between a CHEBFUN and a FOURFUN.
+
+dom = [0 pi 2*pi];
+
+% 1. One column case.
+f = chebfun(@(x) x + x.^2, dom, pref);
+g = chebfun(@(x) 2+cos(x), [dom(1) dom(end)], 'periodic');
+h1 = f./g;
+% We want the result to use the same tech as the one used by f.
+pass(18) = strcmpi(func2str(get(h1.funs{1}.onefun, 'tech')), ...
+                   func2str(get(f.funs{1}.onefun, 'tech')));
+h2 = chebfun(@(x) (x + x.^2)./(2+cos(x)), dom, pref);
+pass(19) = norm(h1-h2, inf) < get(h2,'epslevel').*get(h2,'vscale');
+
+% 2. Quasimatrix case.
+f = chebfun(@(x) [cos(x), sin(x)], [dom(1) dom(end)], 'periodic');
+g = chebfun(@(x) [2+x, 2+x.^3], dom, pref);
+h1 = f./g;
+% We want the result to use the same tech as the one used by g.
+pass(20) = strcmpi(func2str(get(h1(:,1).funs{1}.onefun, 'tech')), ...
+                   func2str(get(g(:,1).funs{1}.onefun, 'tech')));
+pass(21) = strcmpi(func2str(get(h1(:,2).funs{1}.onefun, 'tech')), ...
+                   func2str(get(g(:,2).funs{1}.onefun, 'tech')));
+h2 = chebfun(@(x) [cos(x)./(2+x), sin(x)./(2+x.^3)], dom, pref);
+pass(22) = norm(h1-h2, inf) < get(h2,'epslevel').*get(h2,'vscale');
+
 end

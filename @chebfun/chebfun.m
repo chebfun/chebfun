@@ -181,8 +181,8 @@ classdef chebfun
                 f.funs = varargin{1};
                 % Collect the domains together:
                 dom = cellfun(@(fun) get(fun, 'domain'), f.funs, ...
-                    'uniformOutput', false);
-                f.domain = unique([dom{:}]);
+                    'uniformOutput', false);                
+                f.domain = unique([dom{:}]);                
                 % Update values at breakpoints (first row of f.pointValues):
                 f.pointValues = chebfun.getValuesAtBreakpoints(f.funs, f.domain);
                 return

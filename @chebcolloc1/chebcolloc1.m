@@ -1,6 +1,6 @@
-classdef colloc1 < colloc
-%COLLOC1    Collocation discretization on 1st kind points.
-%   COLLOC1 is an implementation of COLLOC that implements spectral
+classdef chebcolloc1 < chebcolloc
+%CHEBCOLLOC1    Collocation discretization on 1st kind points.
+%   CHEBCOLLOC1 is an implementation of CHEBCOLLOC that implements spectral
 %   collocation on 1st-kind Chebyshev points for differential and integral
 %   operators.
 %
@@ -8,7 +8,7 @@ classdef colloc1 < colloc
 %   automatically to resolve the solution. You can control the allowed values of
 %   N through CHEBOPPREF.
 %
-% See also COLLOC, CHEBDISCRETIZATION, CHEBOPPREF, CHEBOP.
+% See also CHEBCOLLOC, COLLOC, CHEBDISCRETIZATION, CHEBOPPREF, CHEBOP.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -20,8 +20,8 @@ classdef colloc1 < colloc
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
         
-        function disc = colloc1(varargin)
-            disc = disc@colloc(varargin{:});
+        function disc = chebcolloc1(varargin)
+            disc = disc@chebcolloc(varargin{:});
         end
         
     end
@@ -31,10 +31,15 @@ classdef colloc1 < colloc
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
         
-       function D = diffmat(N, k)
+        function tech = returnTech()
+            %RETURNTECH    Return the appropriate tech to use for CHEBCOLLOC1.
+            tech = @chebtech1;
+        end
+        
+        function D = diffmat(N, k)
             %DIFFMAT  Chebyshev differentiation matrix.
             %   D = DIFFMAT(N) is the matrix that maps function values at N
-            %   Chebyshev points of the 1st kind  to values of the derivative of
+            %   Chebyshev points of the 1st kind to values of the derivative of
             %   the interpolating polynomial at those points.
             %
             %   D = DIFFMAT(N, K) is the same, but for the Kth derivative.
@@ -47,24 +52,21 @@ classdef colloc1 < colloc
 
             x = chebtech1.chebpts(N);           % First kind points.
             w = chebtech1.barywts(N);           % Barycentric weights.
-%             t = (2*(N:-1:1).'-1)*pi/(2*N);      % acos(x).
             t = chebtech1.angles(N);            % acos(x).
-            D = colloc.baryDiffMat(x, w, k, t); % Construct matrix.
+            D = chebcolloc.baryDiffMat(x, w, k, t); % Construct matrix.
             
         end
         
         function Q = cumsummat(N)
             %CUMSUMMAT  Chebyshev integration matrix.
-            %   Q = CUMSUMMAT(N) is the matrix that maps function values at N Chebyshev
-            %   points to values of the integral of the interpolating polynomial at those
-            %   points, with the convention that the first value is zero.
+            %   Q = CUMSUMMAT(N) is the matrix that maps function values at N
+            %   Chebyshev points to values of the integral of the interpolating
+            %   polynomial at those points, with the convention that the first
+            %   value is zero.
             
-            % TODO: More efficient implementation?
-            % TODO: Implement this at the COLLOC level?
-            
-            % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-            % See http://www.chebfun.org/ for Chebfun information.
-            
+            % [TODO]: More efficient implementation?
+            % [TODO]: Implement this at the COLLOC level?
+                        
             N = N-1;
             
             persistent CACHE  % Stores computed values for fast return
@@ -83,8 +85,8 @@ classdef colloc1 < colloc
             % Matrix mapping values -> coeffs.
             Tinv = chebtech1.vals2coeffs(eye(N+1));
             
-            % Matrix mapping coeffs -> integral coeffs. Note that the highest order term is
-            % truncated.
+            % Matrix mapping coeffs -> integral coeffs. Note that the highest
+            % order term is truncated.
             k = 1:N;
             k2 = 2*(k-1);  k2(1) = 1;  % Avoid divide by zero
             B = diag(1./(2*k),-1) - diag(1./k2,1);

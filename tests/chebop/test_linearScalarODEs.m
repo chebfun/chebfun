@@ -1,7 +1,7 @@
 function pass = test_linearScalarODEs(pref)
 % A linear CHEBOP test. This test tests a scalar ODE, both with and without
 % breakpoints, as well as with discontinuous coefficients. It solves the
-% problems using colloc1, colloc2 and ultraS discretizations.
+% problems using chebcolloc1, chebcolloc2 and ultraS discretizations.
 
 %% Setup
 dom = [0 pi];
@@ -19,16 +19,16 @@ x = chebfun(@(x) x, dom);
 rhs = sin(x);
 
 %% Try different discretizations
-% Start with colloc2
-pref.discretization = @colloc2;
+% Start with chebcolloc2
+pref.discretization = @chebcolloc2;
 u1 = solvebvp(N, rhs, pref);
 
 %% Change to ultraS
 pref.discretization = @ultraS;
 u2 = solvebvp(N, rhs, pref);
 
-%% Change to colloc1
-pref.discretization = @colloc1;
+%% Change to chebcolloc1
+pref.discretization = @chebcolloc1;
 u3 = solvebvp(N, rhs, pref);
 
 %% Did we pass? 
@@ -52,16 +52,16 @@ x = chebfun(@(x) x, dom);
 rhs = sin(x);
 
 %% Try different discretizations
-% Start with colloc2
-pref.discretization = @colloc2;
+% Start with chebcolloc2
+pref.discretization = @chebcolloc2;
 u4 = solvebvp(N, rhs, pref);
 
 %% Change to ultraS
 pref.discretization = @ultraS;
 u5 = solvebvp(N, rhs, pref);
 
-%% Change to colloc1
-pref.discretization = @colloc1;
+%% Change to chebcolloc1
+pref.discretization = @chebcolloc1;
 u6 = solvebvp(N, rhs, pref);
 
 %% Did we pass? 
@@ -87,15 +87,15 @@ rhs = sin(x);
 
 %% Try different discretizations
 % Start with collocation
-pref.discretization = @colloc2;
+pref.discretization = @chebcolloc2;
 u7 = solvebvp(N, rhs, pref);
 
 %% Change to ultraS
 pref.discretization = @ultraS;
 u8 = solvebvp(N, rhs, pref);
 
-%% Change to colloc1
-pref.discretization = @colloc1;
+%% Change to chebcolloc1
+pref.discretization = @chebcolloc1;
 u9 = solvebvp(N, rhs, pref);
 
 

@@ -90,7 +90,7 @@ function D = diffmat(N, varargin)
 %   condition sum(U) = I for a scalar I, where U is the solution to the 
 %   resulting system.
 %
-% See also DIFF, COLLOC2.DIFFMAT, CUMSUMMAT.
+% See also DIFF, CHEBCOLLOC2.DIFFMAT, CUMSUMMAT.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -110,9 +110,9 @@ function D = diffmat(N, varargin)
 %% Different cases:
 if ( strcmpi(mapFrom, mapTo) && ( m == n ) ) % Square case:
     if ( strcmpi(mapFrom, 'chebkind1') )
-        D = colloc1.diffmat(n, p);
+        D = chebcolloc1.diffmat(n, p);
     elseif ( strcmpi(mapFrom, 'chebkind2') )
-        D = colloc2.diffmat(n, p);
+        D = chebcolloc2.diffmat(n, p);
     elseif ( strcmpi(mapFrom, 'periodic') )
         D = fourtech.diffmat(n, p);
     else
@@ -121,9 +121,21 @@ if ( strcmpi(mapFrom, mapTo) && ( m == n ) ) % Square case:
         z = legpts(n);
         P1 = barymat(y, x, v);
         P2 = barymat(z, y, w);
-        D = colloc2.diffmat(n, p);
+        D = chebcolloc2.diffmat(n, p);
         D = P2*D*P1;
+        
+        % Flipping trick for symmetry:
+        d = diag(rot90(D));
+        d = sign(d).*(abs(d) + abs(flipud(d)))/2;
+        D(logical(flipud(eye(N)))) = d;
+        DRot = rot90(D, 2);
+        idxTo = rot90(~triu(ones(N)));
+        D(idxTo) = (-1)^p*DRot(idxTo);
+        if ( mod(N, 2) == 1 )
+            D((N+1)/2,(N+1)/2) = 0;
+        end
     end
+    
 elseif ( strcmpi(mapTo, 'chebkind1') )
     
     if ( strcmpi(mapFrom, 'chebkind1') )
@@ -144,19 +156,19 @@ elseif ( strcmpi(mapTo, 'chebkind1') )
         z = chebpts(m, 1);
         P1 = barymat(y, x, v);
         P2 = barymat(z, y, w);
-        D = colloc2.diffmat(n, p);
+        D = chebcolloc2.diffmat(n, p);
         D = P2*D*P1;
     end
             
 elseif ( strcmpi(mapTo, 'chebkind2') )
     [z, ignored, ignored, s] = chebpts(m);  %#ok<ASGLU>
     if ( strcmpi(mapFrom, 'chebkind1') )
-        D = colloc1.diffmat(n, p);
+        D = chebcolloc1.diffmat(n, p);
         [x, ignored, v, r] = chebpts(n, 1);  %#ok<ASGLU>
         P = barymat(z, x, v, s, r, 1);
         D = P*D;
     elseif ( strcmpi(mapFrom, 'chebkind2') )
-        D = colloc2.diffmat(n, p);
+        D = chebcolloc2.diffmat(n, p);
         [x, ignored, v, r] = chebpts(n);  %#ok<ASGLU>
         P = barymat(z, x, v, s, r, 1);
         D = P*D;
@@ -165,19 +177,19 @@ elseif ( strcmpi(mapTo, 'chebkind2') )
         [y, ignored, w] = chebpts(n);  %#ok<ASGLU>
         P1 = barymat(y, x, v);
         P2 = barymat(z, y, w);
-        D = colloc2.diffmat(n, p);
+        D = chebcolloc2.diffmat(n, p);
         D = P2*D*P1;
     end
     
 elseif ( strcmpi(mapTo, 'leg') )
     z = legpts(m);
     if ( strcmpi(mapFrom, 'chebkind1') )
-        D = colloc1.diffmat(n, p);
+        D = chebcolloc1.diffmat(n, p);
         [x, ignored, v] = chebpts(n, 1);  %#ok<ASGLU>
         P = barymat(z, x, v);
         D = P*D;
     elseif ( strcmpi(mapFrom, 'chebkind2') )
-        D = colloc2.diffmat(n, p);
+        D = chebcolloc2.diffmat(n, p);
         [x, ignored, v] = chebpts(n);  %#ok<ASGLU>
         P = barymat(z, x, v);
         D = P*D;
@@ -186,7 +198,7 @@ elseif ( strcmpi(mapTo, 'leg') )
         [y, ignored, w] = chebpts(n);  %#ok<ASGLU>
         P1 = barymat(y, x, v);
         P2 = barymat(z, y, w);
-        D = colloc2.diffmat(n, p);
+        D = chebcolloc2.diffmat(n, p);
         D = P2*D*P1;
     end
     

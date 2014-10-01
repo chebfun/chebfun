@@ -1,6 +1,9 @@
-function x = fourpts(n)
+function [x, w] = fourpts(n)
 %FOURPTS   Fourier points in [-1, 1).
 %   FOURPTS(N) returns N equispaced points in [-1, 1).
+%
+%   [X, W] = FOURPTS(N) returns also a row vector of the weights for
+%   the trapezoidal rule.
 %
 % See also CHEBPTS, LEGPTS, JACPTS, LAGPTS, and HERMPTS.
 
@@ -10,10 +13,17 @@ function x = fourpts(n)
 % Special case (no points).
 if ( n <= 0 )     
     x = []; 
+    w = [];  
+    return
     
-else
-    x = linspace(-1, 1, n+1).';
-    x(end) = [];
 end
 
+x = linspace(-1, 1, n+1).';
+x(end) = [];
+
+% Quadrature weights:
+if ( nargout > 1 )
+    w = fourtech.quadwts(n);
+end
+    
 end

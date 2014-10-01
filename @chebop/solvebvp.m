@@ -1,5 +1,5 @@
 function [u, info] = solvebvp(N, rhs, varargin)
-%SOLVEBVP  Solve a linear or nonlinear CHEBOP BVP system.
+%SOLVEBVP   Solve a linear or nonlinear CHEBOP BVP system.
 %
 %   U = SOLVEBVP(N, RHS), where N is a CHEBOP and RHS is a CHEBMATRIX, CHEBFUN
 %   or a vector of doubles attempts to solve the BVP
@@ -61,7 +61,22 @@ function [u, info] = solvebvp(N, rhs, varargin)
 %   details.
 
 % Parse inputs:
-[pref, displayInfo] = parseInputs(varargin{:});
+[pref, displayInfo] = parseInputs(N, varargin{:});
+
+% Check boundary conditions if using FOURCOLLOC.
+if ( isequal(pref.discretization, @fourcolloc) )
+    if ( isempty(N.bc) )
+        % No need to clear the BCs, do nothing!
+    elseif ( isa(N.bc, 'char') && strcmpi(N.bc, 'periodic') )
+        % FOURCOLLOC uses periodic functions, so there is no need to specify
+        % boundary conditions. We clear them out of the chebop object to avoid
+        % problems later in the code.
+        N.bc = [];
+    else
+        error('CHEBFUN:CHEBOP:solvebvp:bc', ...
+            'FOURCOLLOC only works with periodic boundary conditions.');
+    end
+end
 
 % Find out how many variables N operates on:
 nVars = numVars(N);
@@ -74,11 +89,15 @@ end
 % Store the domain we're working with.
 dom = N.domain;
 
-% Create an initial guess if none is passed
+% Use the appropriate tech.
+discPreference = pref.discretization();
+tech = discPreference.returnTech();
+
+% Create an initial guess if none is passed.
 if ( isempty(N.init) )
     % Initialise a zero CHEBFUN:
-    zeroFun = chebfun(0, dom);
-    % Convert to a chebmatrix of correct dimensions:
+    zeroFun = chebfun(0, dom, 'tech', tech); 
+    % Convert to a CHEBMATRIX of correct dimensions:
     u0 = cell(nVars, 1);
     for k = 1:nVars
         u0{k} = zeroFun;
@@ -86,11 +105,8 @@ if ( isempty(N.init) )
     u0 = chebmatrix(u0);
     
 else
+    % Get the initial guess.
     u0 = N.init;
-    % Ensure that N.init is a CHEBMATRIX, not a CHEBFUN:
-    if ( isa(u0, 'chebfun') )
-        u0 = chebmatrix(u0);
-    end
     
 end
 
@@ -124,8 +140,7 @@ if ( isnumeric(rhs) )
         end
     end
     
-    % If we get here, we have something compatible, this is a simple way to
-    % convert RHS to a CHEBMATRIX:
+    % Convert the rhs to a CHEBMATRIX.
     rhs = rhs + 0*residual;
     
 elseif ( isa(rhs, 'chebfun') && size(rhs, 2) > 1 )
@@ -149,28 +164,50 @@ if ( isnumeric(u0) )
         end
     end
     
-    % Convert the initial guess to a CHEBMATRIX
+    % Convert the initial guess to a CHEBMATRIX.
     u0 = u0 + 0*residual;
 end
 
+% Ensure that u0 is of correct discretization, and convert it to a
+% CHEBMATRIX if necessary.
+if ( isa(u0, 'chebfun') )
+    u0 = chebmatrix(chebfun(u0, dom, 'tech', tech));
+elseif ( isa(u0, 'chebmatrix') )
+    constr = @(f) chebfun(f, dom, 'tech', tech);
+    u0.blocks = cellfun(constr, u0.blocks, 'uniformOutput', false);
+end
+    
 % Solve:
 if ( all(isLinear) )
     % Call solver method for linear problems.
     [u, info] = N.solvebvpLinear(L, rhs - residual, N.init, pref, displayInfo);
-    
 else
-    % TODO: Switch between residual and error oriented Newton methods.
+    % [TODO]: Switch between residual and error oriented Newton methods.
     
     % Create initial guess which satisfies the linearised boundary conditions:
     if ( isempty(N.init) )
-        % Find a new initial guess that satisfies the BCs of L
-        u0 = fitBCs(L, pref);
+        
+        if ( ~isequal(pref.discretization, @fourcolloc) )
+            % Find a new initial guess that satisfies the BCs of L.
+            % If we are using FOURCOLLOC, we don't need to do that because 
+            % the zero CHEBFUN is periodic.
+            u0 = fitBCs(L, pref);
+        end
         
         % Linearize about the new initial guess. If we are working with
         % parameter dependent problems, and did not get an initial condition
         % passed, we might have to cast some components in the CHEBMATRIX U0
         % from a CHEBFUN to a scalar. Hence, call LINEARIZE() with four outputs.
         [L, residual, isLinear, u0] = linearize(N, u0, x);
+    end
+    
+    % Ensure that rhs is of correct discretization, and convert it to a 
+    % CHEBMATRIX if necessary.
+    if ( isa(rhs, 'chebfun') )
+        rhs = chebmatrix(chebfun(rhs, dom, 'tech', tech));
+    elseif ( isa(rhs, 'chebmatrix') )
+        constr = @(f) chebfun(f, dom, 'tech', tech);
+        rhs.blocks = cellfun(constr, rhs.blocks, 'uniformOutput', false);
     end
     
     % Call solver method for nonlinear problems.
@@ -194,7 +231,7 @@ info.isLinear = isLinear;
 
 end
 
-function [pref, displayInfo] = parseInputs(varargin)
+function [pref, displayInfo] = parseInputs(N, varargin)
 %PARSEINPUTS   Parse the input arguments to SOLVEBVP.
 
 % Initialise the outputs:
@@ -222,6 +259,14 @@ end
 % No preferences passed; use the current chebopprefs:
 if ( isempty(pref) )
     pref = cheboppref();
+    
+    % If the boundary conditions are periodic, use FOURCOLLOC by default.
+    % However, if the default discretization is ULTRAS, use ULTRAS.
+    if ( isa(N.bc, 'char') && strcmpi(N.bc, 'periodic') ...
+            && ~isequal(pref.discretization, @ultraS) )
+        pref.discretization = @fourcolloc;
+    end
+
 end
 
 % If no DISPLAYINFO function handle passed, use the default CHEBOP one.
