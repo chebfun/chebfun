@@ -1,7 +1,7 @@
 function f = toFunctionOut(disc, values)
-%TOFUNCTIONOUT   Convert COLLOC2 discretization to a CHEBFUN. 
+%TOFUNCTIONOUT   Convert CHEBCOLLOC2 discretization to a CHEBFUN. 
 %   TOFUNCTIONOUT(DISC, VALUES) converts the _solution_ values of a
-%   COLLOC2-discretized function (i.e., those at DISC.EQUATIONPOINTS) to a
+%   CHEBCOLLOC2-discretized function (i.e., those at DISC.EQUATIONPOINTS) to a
 %   CHEBFUN. If DISC.DOMAIN has breakpoints, the input should be a vector having
 %   the smooth pieces stacked.
 %

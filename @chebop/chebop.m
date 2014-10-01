@@ -172,9 +172,14 @@ classdef (InferiorClasses = {?double}) chebop
                     dom = op;
                     op = [];
                 end
-            elseif ( nargin == 2 && isnumeric(op) )
-                dom = [op, dom];
-                op = [];
+            elseif ( nargin == 2 )
+                if ( isnumeric(op) )
+                    dom = [op, dom];
+                    op = [];
+                elseif ( length(dom) < 2 )
+                    error('CHEBFUN:CHEBOP:setDomain:length', ...
+                        'Domain input argument only contains one element.');
+                end
             end
             
             % Assign operator and domain:

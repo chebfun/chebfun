@@ -26,7 +26,7 @@ x = chebfun(@(x) x, dom);
 N.init =  2.*cos(2.*pi.*x./10);
 
 % Option for discretization (either 'collocation' or 'ultraspherical').
-pref.discretization = @colloc2;
+pref.discretization = @chebcolloc2;
 
 % Solve to obtain a solution:
 u = solvebvp(N, rhs, pref);
@@ -38,7 +38,7 @@ u = solvebvp(N, rhs, pref);
 err(2) = norm(N(u));
 
 % Solve again, using a different discretization
-pref.discretization = @colloc1;
+pref.discretization = @chebcolloc1;
 u = solvebvp(N, rhs, pref);
 err(3) = norm(N(u));
 

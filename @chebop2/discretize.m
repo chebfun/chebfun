@@ -58,6 +58,16 @@ xorder = N.xorder;
 yorder = N.yorder;
 
 %%
+% Check if the PDO was given as a variable coefficient PDO with the notation
+% @(x,y,u), but is actually a constant coefficient PDO. 
+if ( iscell( A ) ) 
+    doesNotDependOnXorY = all(all(cellfun(@isnumeric, N.coeffs))); 
+    if ( doesNotDependOnXorY ) 
+        A = cell2mat( A ).'; 
+    end
+end
+
+%%
 % Convert matrix of coefficients to a discretization for the PDE using the
 % singular value decomposition.  We find the rank of the PDE operator and
 % then use the optimal low rank expansion of the operator as a way to
@@ -188,6 +198,10 @@ Gx = Gx.'; % Now transpose so that X*B = g;
 %% 
 % Construct the RHS of the Sylvester matrix equation.
 
+% Complete the RHS (part of the RHS could have been in the operator): 
+if ( ~isempty(N.rhs) && ( isa(N.rhs, 'chebfun2') || isa(n.rhs, 'double') ) )
+    f = f + N.rhs; 
+end
 E = zeros(m, n);
 [n2, n1] = length(f);
 F = chebcoeffs2(f);

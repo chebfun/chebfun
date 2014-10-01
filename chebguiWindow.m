@@ -157,8 +157,8 @@ set(handles.button_solve, 'BackgroundColor', [43 129 86]/256);
 % Ensure that we have a light-blue color in background
 set(handles.mainWindow, 'BackgroundColor', [.702 .78 1]);
 
-% Default discretization is colloc2
-handles.guifile.options.discretization = @colloc2;
+% Default discretization is chebcolloc2
+handles.guifile.options.discretization = @chebcolloc2;
 
 % Default IVP solver is ode113:
 handles.guifile.options.ivpSolver = 'ode113';
@@ -1415,7 +1415,7 @@ function button_export_Callback(hObject, eventdata, handles)
 
     % What discretization do we want to use?
     if ( get(handles.button_Collocation, 'Value') )
-        handles.guifile.options.discretization = @colloc2;
+        handles.guifile.options.discretization = @chebcolloc2;
     else
         handles.guifile.options.discretization = @ultraS;
     end
@@ -2070,7 +2070,7 @@ if ( strcmp(newDisc, get(handles.button_Collocation, 'String')) )
     % Change to collocation if we're in BVP mode. Otherwise, show options dialog
     % for IVP solvers.
     if ( ~get(handles.button_ivp, 'value') )
-        handles.guifile.options.discretization = @colloc2;
+        handles.guifile.options.discretization = @chebcolloc2;
     else
         ivpSolvers = {'ode113', 'ode15s', 'ode45'};
         [selection,ok] = listdlg('ListString', ivpSolvers, ...

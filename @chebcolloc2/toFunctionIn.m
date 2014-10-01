@@ -1,7 +1,7 @@
 function f = toFunctionIn(disc, values)
-%TOFUNCTIONIN   Convert COLLOC2 discretization to a CHEBFUN. 
+%TOFUNCTIONIN   Convert CHEBCOLLOC2 discretization to a CHEBFUN. 
 %   TOFUNCTIONIN(DISC, VALUES) converts the _rhs_ values of a
-%   COLLOC2-discretized function (i.e., those at DISC.FUNCTIONONPOINTS) to a
+%   CHEBCOLLOC2-discretized function (i.e., those at DISC.FUNCTIONONPOINTS) to a
 %   CHEBFUN. If DISC.DOMAIN has breakpoints, the input should be a vector
 %   having the smooth pieces stacked.
 %

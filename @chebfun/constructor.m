@@ -200,7 +200,7 @@ while ( any(sad) )
     end
 
     % Look for an edge:
-    edge = fun.detectEdge(funs{k}, op, data.hscale, data.vscale, pref);
+    edge = fun.detectEdge(funs{k}, opk, data.hscale, data.vscale, pref);
 
     if ( singDetect )
         % Update singularity info:

@@ -33,7 +33,7 @@ switch type
         % (up to a diagonal scaling).
         Z = zeros(1, m); 
         y = fft( [ Z ; u ; Z ; -u(end:-1:1,:)] ); 
-        y = imag( y( 2*n+2:-1:n+3, : )/2 );
+        y = -1i*( y( 2*n+2:-1:n+3, : )/2 );
 
     case 2
         

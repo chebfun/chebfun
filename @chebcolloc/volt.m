@@ -1,5 +1,5 @@
 function V = volt(kernel, disc, oneVar)
-%VOLT    Volterra integral operator.
+%VOLT    Volterra integral operator for CHEBCOLLOC.
 %   For the calling sequence to this method, see OPERATORBLOCK.VOLT.
 % 
 % See also OPERATORBLOCK.VOLT.

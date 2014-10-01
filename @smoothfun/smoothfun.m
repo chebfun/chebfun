@@ -8,8 +8,8 @@ classdef smoothfun < onefun % (Abstract)
 %   interval [-1,1] from the function handle OP using the data given in the
 %   DATA structure and the preferences in PREF.
 %
-% See also CHEBTECH.
-
+% See also ONEFUN, PERIODICTECH, NONPERIODICTECH.
+%
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
@@ -19,10 +19,10 @@ classdef smoothfun < onefun % (Abstract)
 % The SMOOTHFUN class is an abstract class for representations of smooth
 % functions on the interval [-1,1].
 %
-% Currently the only types of SMOOTHFUNs are CHEBTECH objects, which represent
-% the smooth functions by Chebyshev interpolants.
+% SMOOTHFUNs can be either PERIODICTECH or NONPERIODICTECH.
 %
-% Class diagram: [<<onefun>>] <-- [<<SMOOTHFUN>>] <-- [<<chebtech>>]
+% Class diagram: [<<ONEFUN>>] <-- [<<SMOOTHFUN>>] <-- [<<PERIODICTECH>>]
+%                                                 <-- [<<NONPERIODICTECH>>]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -61,6 +61,7 @@ classdef smoothfun < onefun % (Abstract)
             
             % Call the TECH constructor.
             obj = feval(pref.tech, op, data, pref.techPrefs);
+
         end
         
     end

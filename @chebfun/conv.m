@@ -114,12 +114,16 @@ else
         for k = 1:numel(g.funs)
             % Compute the contribution of jth fun of f with kth fun of g:
             hjk = conv(f.funs{j}, g.funs{k});  
-            % Add this contribution:
-            for i = 1:numel(hjk)
-                h = myplus(h, chebfun(hjk(i)));
-            end
+            % Add this contribution:            
+            h = myplus(h, chebfun(hjk));
         end
     end
+    
+    % Make sure that point values are not added twice:
+    dom = domain(h);
+    intDom = dom(2:end-1);
+    h.pointValues(2:end-1) = 1/2*(feval(h, intDom.', 'left') + ...
+        feval(h, intDom.', 'right'));
     
 end
 
@@ -137,22 +141,18 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function f = myplus(f, g)
+function h = myplus(f, g)
 % Modified PLUS() which pads with zeros to fulfil domain requirements.
+%  Note f is always on the largest possible domain. g is on a subdomain of f
 
 % Tidy the domains:
 [f, g] = tweakDomain(f, g);
-
-% f is always on the largest possible domain. g is on a subdomain of f:
 [c, d] = domain(g);    
-fTmp = restrict(f, [c, d]); % f{c, d}
-f = defineInterval(f, [c, d], fTmp + g); % f{c, d} = f{c, d} + g;
 
-% Make sure that point values are not added twice:
-dom = domain(f);
-intDom = dom(2:end-1);
-f.pointValues(2:end-1) = 1/2*(feval(f, intDom.', 'left') + ...
-    feval(f, intDom.', 'right'));
+fTmp = restrict(f, [c, d]); % f{c, d}
+hTmp = fTmp + g;            % h{c, d} = f{c, d} + g;
+h = defineInterval(f, [c, d], hTmp); 
+
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

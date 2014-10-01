@@ -222,6 +222,33 @@ else
     h = {h_left*(b-a)/2, h_mid*(b-a)/2, h_right*(b-a)/2};
 end
 
+% Ensure endpoints of BNDFUNs for adjacent subintervals match exactly.
+%
+% NB:  This is a bit inefficient if consecutive endpoints get adjusted, as some
+% BNDFUNs may have their maps changed twice, but the map-change operation is
+% fast enough that this shouldn't matter.
+for (n = 2:1:numel(h))
+    end_left = h{n-1}.domain(end);
+    end_right = h{n}.domain(1);
+    if ( end_left ~= end_right )
+        hs_left = norm(h{n-1}.domain, Inf);  % hscale for left piece.
+        hs_right = norm(h{n}.domain, Inf);   % hscale for right piece.
+
+        % If there's a mismatch, it should be small because the BNDFUNs should
+        % come out in order corresponding to consecutive adjacent subintervals.
+        if ( abs(end_left - end_right) < 2*eps*max(hs_left, hs_right) )
+            new_end = (end_left + end_right)/2;
+            h{n-1} = changeMap(h{n-1}, [h{n-1}.domain(1) new_end]);
+            h{n} = changeMap(h{n}, [new_end h{n}.domain(end)]);
+        else
+            % We should only get here if a programmer error made elsewhere
+            % causes the BNDFUNs to get out of order.
+            error('CHEBFUN:BNDFUN:conv:nonConsecutive', ...
+                'Pieces do not belong to consecutive subintervals.');
+        end
+    end
+end
+
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

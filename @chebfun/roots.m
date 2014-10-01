@@ -81,7 +81,7 @@ function r = columnRoots(f, rootsPref)
 el = epslevel(f);
 hs = hscale(f);
 vs = vscale(f);
-htol = 10*el*hs;
+htol = 10*eps*hs;
 vtol = el*vs;
 dom = f.domain;
 
