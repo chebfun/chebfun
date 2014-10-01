@@ -1,9 +1,9 @@
 function y = clenshaw(x, c)
-%CLENSHAW   Clenshaw's algorithm for evaluating a Chebyshev polynomial.
+%CLENSHAW   Clenshaw's algorithm for evaluating a Chebyshev expansion.
 %   If C is a column vector, Y = CLENSHAW(X, C) evaluates the Chebyshev
 %   expansion
 %
-%     Y = P_N(X) = C(1)*T_N(X) + ... + C(N)*T_1(X) + C(N+1)*T_0(X)
+%     Y = P_N(X) = C(1)*T_0(X) + ... + C(N)*T_{N-1}(X) + C(N+1)*T_N(X)
 %
 %   using Clenshaw's algorithm.
 %
@@ -11,7 +11,7 @@ function y = clenshaw(x, c)
 %   of C as coefficients of a degree N polynomial and evaluates the M Chebyshev
 %   expansions
 %
-%     Y_m = P_N(X) = C(1,m)*T_N(X) + ... + C(N,m)*T_1(X) + C(N+1,m)*T_0(X)
+%     Y_m = P_N(X) = C(1,m)*T_0(X) + ... + C(N,m)*T_{N-1}(X) + C(N+1,m)*T_N(X)
 %
 %   for 1 <= m <= M, returning the results as columns of a matrix Y =
 %   [Y_1 ... Y_M].
