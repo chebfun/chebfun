@@ -25,7 +25,7 @@ f = restrict(f, dom);
 % in the cell-array C.
 c = cell(numInts, 1);
 for k = 1:numInts
-    c{k} = flipud(chebcoeffs(f.funs{k}, dim(k)));
+    c{k} = chebcoeffs(f.funs{k}, dim(k));
 end
 c = cell2mat(c); 
 
