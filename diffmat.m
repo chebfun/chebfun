@@ -436,7 +436,7 @@ for l = 2:p
     a = computeDerCoeffs(a);
     
     % Evaluating at tau by Clenshaw method:
-    Tt = chebtech.clenshaw(tau, a);
+    Tt = chebtech.clenshaw(tau, flipud(a));
     D = (Tt*sgn + l*D)./denom;
     
 end
