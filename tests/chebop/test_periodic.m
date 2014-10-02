@@ -199,6 +199,29 @@ err(18) = abs(feval(diff(u), dom(1)) - feval(diff(u), dom(2)));
 err(19) = abs(feval(diff(u, 2), dom(1)) - feval(diff(u, 2), dom(2)));
 err(20) = abs(feval(diff(u, 3), dom(1)) - feval(diff(u, 3), dom(2)));
 
+%% Test breakpoint introduced by the domain.
+%  u' + u = cos(x), on [0 pi 2*pi].
+
+dom = [0 pi 2*pi];
+L = chebop(@(u) diff(u) + u, dom);
+f = chebfun(@(x) cos(x), dom);
+L.bc = 'periodic';
+u = L \ f;
+
+err(21) = norm(L*u - f);
+err(22) = abs(u(dom(1)) - u(dom(end)));
+
+%% Test breakpoint introduced by a coefficient.
+%  u'' + abs(x)u = 1, on [-1 1].
+
+dom = [-1 1];
+L = chebop(@(x,u) diff(u,2) + abs(x).*u, dom);
+L.bc = 'periodic';
+u = L \ 1;
+
+err(23) = norm(L*u - 1);
+err(24) = abs(u(dom(1)) - u(dom(2)));
+
 %%
 pass = err < tol;
 
