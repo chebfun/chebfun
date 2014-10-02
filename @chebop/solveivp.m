@@ -9,6 +9,13 @@ if ( nargin < 3 )
     pref = cheboppref;
 end
 
+
+% Check for unbounded domains:
+if ( ~all(isfinite(N.domain)) )
+    error('CHEBFUN:CHEBOP:solveivp:infDom', ...
+        'Solving IVPs on unbounded intervals is not supported.');
+end
+
 % If pref.ivpSolver is set to a global method, we really should be calling
 % CHEBOP/SOLVEBVP():
 if ( isempty(strfind(func2str(pref.ivpSolver), 'chebfun.ode')) )
