@@ -57,7 +57,7 @@ init = bvpinit(x, f, params{:});
 
 % Call BVP solver and convert to CHEBFUN.
 sol = bvp5c(fun1, fun2, init, opts{:});
-varargout{1} = chebfun.odesol(sol, opts{:});
+varargout{1} = chebfun.odesol(sol, dom, opts{:});
 
 % Look for parameter output.
 if ( ~isempty(params) )
