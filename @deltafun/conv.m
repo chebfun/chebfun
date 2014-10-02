@@ -85,6 +85,7 @@ h = convDeltas(deltaMagG, deltaLocG, f, a, b, deltaTol, h);
 
 % Check for emptiness:
 if ( isempty(h) )
+    h = {fun.constructor(0, struct('domain', [a, b]))};
     return
 end
 
@@ -94,15 +95,50 @@ end
 doms = cellfun(@(hk) hk.domain, h, 'uniformoutput', 0);
 breakPoints = sort(unique(horzcat(doms{:})));
 
-%%
-% Restrict each fun in h to lie within these new breakpoints:
+% Coalesce breakpoints that are extremely close together.
+if ( any(isinf(breakPoints)) )
+    tol = 2*eps;  % hscale of functions on unbounded domains is 1.
+else
+    tol = 2*eps*norm(breakPoints, Inf);
+end
+
+% TODO:  Take the average of points which are close together instead of just
+% picking one more or less arbitrarily?
+closeBreaks = abs(diff(breakPoints)) < tol;
+breakPoints(closeBreaks) = [];
+
+% Restrict each FUN to lie within the new breakpoints.
 nFuns = length(h);
 H = {};
+deltaTol = pref.deltaPrefs.proximityTol;
 for k = 1:nFuns
     hk = h{k};
     dom = hk.domain;
-    [~, idx] = intersect(breakPoints, dom);
-    hk = restrict(hk, breakPoints(idx(1):idx(2)));
+
+    % The domain endpoints of each computed FUN must lie _exactly_ within the
+    % set of breakpoints or RESTRICT will fail.
+    idx1 = find(abs(breakPoints - dom(1)) < tol);
+    idx2 = find(abs(breakPoints - dom(2)) < tol);
+    hk = changeMap(hk, breakPoints([idx1, idx2]));
+
+    % If we just changed the map of a DELTAFUN, the locations of deltas at the
+    % domain endpoints also need to be updated.
+    if ( isa(hk, 'deltafun') )
+        deltaLoc = hk.deltaLoc;
+        domk = hk.domain;
+        if( ~isempty(deltaLoc) )
+            if ( abs(deltaLoc(1) - domk(1) ) < deltaTol )
+                deltaLoc(1) = domk(1);
+            end
+            if ( abs(deltaLoc(end) - domk(2)) < deltaTol )
+                deltaLoc(end) = domk(2);
+            end
+            hk.deltaLoc = deltaLoc;
+        end
+    end
+
+    % Do the restriction.
+    hk = restrict(hk, breakPoints(idx1:idx2));
     if ( ~isa(hk, 'cell') )
         hk = {hk};
     end
@@ -126,8 +162,10 @@ end
 for k = 1:length(H)
     hk = H{k};
     dom = hk.domain;
-    idx = find(breakPoints == dom(1));
-    h{idx} = h{idx} + hk; %#ok<AGROW>
+    if ( abs(dom(2) - dom(1)) > tol )
+        idx = find(breakPoints == dom(1));
+        h{idx} = h{idx} + hk; %#ok<AGROW>
+    end
 end
 
 end
@@ -151,7 +189,7 @@ for i = 1:m
             % The half below is to make sure that delta-delta interaction
             % is not counted twice:
             if ( isa(hij, 'deltafun') )
-                hij.deltaMag = hij.deltaMag/2;
+                hij.deltaMag = hij.deltaMag/2;                
             end
             
             % If the result is non-zero, append it:
