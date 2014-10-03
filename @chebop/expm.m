@@ -53,8 +53,11 @@ if ( fail )
          'EXPM() supports only linear CHEBOP instances.']);
 end
 
-% Adjust the preferences for periodic boundary conditions.
-[N, L, pref] = adjustPref(N, L, isPrefGiven, pref);
+% Determine the CHEBOPPREF for periodic boundary conditions.
+[N, L, pref] = determinePref(N, L, isPrefGiven, pref);
+
+% Clear periodic bounadry conditions.
+[N, L, pref] = clearPeriodicBC(N, L, pref);
 
 if ( nargin >= 3 )
     % Evaluate the matrix exponential for the given u0:
