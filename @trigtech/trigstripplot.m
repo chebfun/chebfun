@@ -1,5 +1,5 @@
 function varargout = trigstripplot(u, varargin)
-%FOURSTRIPPLOT   Plot the strip of analyticity.
+%TRIGSTRIPPLOT   Plot the strip of analyticity.
 %   TRIGSTRIPPLOT(U) plots estimated strip of analyticity in the complex plane
 %   for U. The width of the strip is 2*a(k)=1/N(k)/pi*log(4/EPS+1), where EPS is
 %   the EPSLEVEL of U and N(k) is the number of Fourier modes.

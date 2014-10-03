@@ -1,4 +1,4 @@
-% Test file for fourtech/qr.m
+% Test file for trigtech/qr.m
 
 function pass = test_qr(pref)
 
@@ -11,7 +11,7 @@ end
 seedRNG(6178);
 x = 2 * rand(100, 1) - 1;
 
-testclass = fourtech();
+testclass = trigtech();
 
 %%
 % Do a few spot-checks.

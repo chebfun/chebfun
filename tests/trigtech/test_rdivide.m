@@ -1,13 +1,13 @@
-% Test file for fourtech/rdivide.m
+% Test file for trigtech/rdivide.m
 
 function pass = test_rdivide(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fourtech.techPref();
+    pref = trigtech.techPref();
 end
 
-testclass = fourtech();
+testclass = trigtech();
 
 % Generate a few random points to use as test values.
 seedRNG(6178);
@@ -36,7 +36,7 @@ pass(4) = isnan(g);
 
 %%
 % Check division by a row matrix of scalars in the case of an array-valued
-% FOURTECH object.
+% TRIGTECH object.
 
 g = f ./ [alpha beta];
 g_exact = @(x) [sin(10*pi*x)./alpha sin(20*pi*x)./beta];
@@ -47,14 +47,14 @@ pass(6) = isnan(g) && ~any(isnan(g.coeffs(:, 1))) ...
     && all(isnan(g.coeffs(:, 2)));
 
 %%
-% Check division of a scalar by a FOURTECH object.
+% Check division of a scalar by a TRIGTECH object.
 
 f_op = @(x) exp(cos(pi*x));
 f = testclass.make(@(x) exp(cos(pi*x)), [], pref);
 pass(7) = test_div_scalar_by_function(alpha, f, f_op, x);
 
 %%
-% Check division of two FOURTECH objects.
+% Check division of two TRIGTECH objects.
 
 g_op = @(x) exp(cos(20*pi*x));
 g = testclass.make(g_op, [], pref);
@@ -76,7 +76,7 @@ try
     disp(f ./ [1 ; 2]);
     pass(10) = false;
 catch ME
-    pass(10) = strcmp(ME.identifier, 'CHEBFUN:FOURTECH:rdivide:size');
+    pass(10) = strcmp(ME.identifier, 'CHEBFUN:TRIGTECH:rdivide:size');
 end
 
 % Can't divide by a scalar row matrix if the column counts don't match.
@@ -85,7 +85,7 @@ try
     disp(f ./ [1 2 3]);
     pass(11) = false;
 catch ME
-    pass(11) = strcmp(ME.identifier, 'CHEBFUN:FOURTECH:rdivide:size');
+    pass(11) = strcmp(ME.identifier, 'CHEBFUN:TRIGTECH:rdivide:size');
 end
 
 %%
@@ -105,7 +105,7 @@ h2 = testclass.make(@(x) sin(10*pi*x) ./ exp(cos(pi*x)), [], pref);
 pass(13) = norm(feval(h1, xx) - feval(h2,xx), inf) < tol;
 end
 
-% Test the division of a FOURTECH F, specified by F_OP, by a scalar ALPHA using
+% Test the division of a TRIGTECH F, specified by F_OP, by a scalar ALPHA using
 % a grid of points X in [-1  1] for testing samples.
 function result = test_div_function_by_scalar(f, f_op, alpha, x)
     g = f ./ alpha;
@@ -113,7 +113,7 @@ function result = test_div_function_by_scalar(f, f_op, alpha, x)
     result = norm(feval(g, x) - g_exact(x), inf) < 10*max(g.vscale.*g.epslevel);
 end
 
-% Test the division of a scalar ALPHA by a FOURTECH, specified by F_OP, using
+% Test the division of a scalar ALPHA by a TRIGTECH, specified by F_OP, using
 % a grid of points X in [-1  1] for testing samples.
 function result = test_div_scalar_by_function(alpha, f, f_op, x)
     g = alpha ./ f;
@@ -122,7 +122,7 @@ function result = test_div_scalar_by_function(alpha, f, f_op, x)
     result = err < 100*max(g.vscale.*g.epslevel);
 end
 
-% Test the division of two FOURTECH objects F and G, specified by F_OP and
+% Test the division of two TRIGTECH objects F and G, specified by F_OP and
 % G_OP, using a grid of points X in [-1  1] for testing samples.
 function result = test_div_function_by_function(f, f_op, g, g_op, x)
     h = f ./ g;

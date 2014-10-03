@@ -1,5 +1,5 @@
 function epslevel = updateEpslevel(f, pref)
-%UPDATEEPSLEVEL   Determine a new epslevel for a FOURTECH.
+%UPDATEEPSLEVEL   Determine a new epslevel for a TRIGTECH.
 %   UPDATEPSLEVEL(F) calls HAPPINESSCHECK to obtain a new epslevel.
 %
 %   UPDATEEPSLEVEL(F, EPSBND) assumes that EPSBND is an upper bound for the

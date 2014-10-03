@@ -1,13 +1,13 @@
-% Test file for fourtech/real.m
+% Test file for trigtech/real.m
 
 function pass = test_real(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fourtech.techPref();
+    pref = trigtech.techPref();
 end
 
-testclass = fourtech();
+testclass = trigtech();
 
 % Test a scalar-valued function.
 f = testclass.make(@(x) exp(20i*pi*x) + 1i*sin(100*pi*x), [], pref);

@@ -1,5 +1,5 @@
 function f = uplus(f)
-%UPLUS   Unary plus of a FOURTECH.
+%UPLUS   Unary plus of a TRIGTECH.
 %   UPLUS(F) = F.
 %
 % See also UMINUS, PLUS.

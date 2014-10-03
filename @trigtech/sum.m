@@ -1,12 +1,12 @@
 function out = sum(f, dim)
-%SUM   Definite integral of a FOURTECH on the interval [-1,1].
+%SUM   Definite integral of a TRIGTECH on the interval [-1,1].
 %   SUM(F) is the integral of F from -1 to 1.
 %
-%   If F is an array-valued FOURTECH, then the result is a row vector
+%   If F is an array-valued TRIGTECH, then the result is a row vector
 %   containing the definite integrals of each column.
 %
 %   SUM(F, 2) sums over the second dimension of F, i.e., adds up its columns.
-%   If F is a scalar-valued FOURTECH, this simply returns F.
+%   If F is a scalar-valued TRIGTECH, this simply returns F.
 %
 % See also CUMSUM, DIFF.
 
@@ -17,7 +17,7 @@ function out = sum(f, dim)
 n = size(f.values, 1);
 
 %%
-% Sum across array-valued FOURTECH columns if dim = 2:
+% Sum across array-valued TRIGTECH columns if dim = 2:
 if ( nargin > 1 && dim == 2 )
     f.values = sum(f.values, dim);
     f.coeffs = sum(f.coeffs, dim);
@@ -34,7 +34,7 @@ end
 
 % Trivial cases:
 if ( isempty(f) )    
-    % Empty FOURTECH
+    % Empty TRIGTECH
     out = []; 
 else
     % Trapezium rule:

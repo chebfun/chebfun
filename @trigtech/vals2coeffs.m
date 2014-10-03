@@ -1,6 +1,6 @@
 function coeffs = vals2coeffs(values)
 %VALS2COEFFS   Convert values at N equally spaced points between [-1 1) 
-%to N Fourier coefficients.
+%   to N trigonometric coefficients.
 %   C = VALS2COEFFS(V) returns the vector of N coefficients such that: 
 %   If N is odd
 %       F(x) = C(1)*z^((N-1)/2) + C(2)*z^((N-1)/2-1) + ... + C(N)*z^(-(N-1)/2)
@@ -16,7 +16,7 @@ function coeffs = vals2coeffs(values)
 %   [V(1,j) ; ... ; V(N+1,j)] for j=1:M using the same formula as above for
 %   each column.
 %
-% See also COEFFS2VALS, FOURPTS.
+% See also COEFFS2VALS, TRIGPTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.

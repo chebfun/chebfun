@@ -29,7 +29,7 @@ classdef trigtech < smoothfun % (Abstract)
 %
 %   TRIGTECH(VALUES, ...) returns a TRIGTECH object which interpolates the
 %   values in the columns of VALUES at equally spaced points and
-%   TRIGTECH({VALUES, COEFFS}, ... ) uses the Fourier coefficients passed in
+%   TRIGTECH({VALUES, COEFFS}, ... ) uses the trig-coefficients passed in
 %   COEFFS rather than computing them. If COEFFS are passed, the resulting
 %   TRIGTECH is always deemed 'happy'.
 %
@@ -52,7 +52,7 @@ classdef trigtech < smoothfun % (Abstract)
 %
 % The TRIGTECH class is for representations of smooth periodic functions on the
 % interval [-1,1] via interpolated function values at equally spaced points
-% using Fourier series.
+% using trigonometric Fourier series.
 %
 % The vertical scale VSCALE is used to enforce scale invariance in TRIGTECH
 % construction and subsequent operations. For example, that
@@ -188,7 +188,7 @@ classdef trigtech < smoothfun % (Abstract)
 
             % Force nonadaptive construction if PREF.FIXEDLENGTH is numeric:
             if ( ~isempty(pref.fixedLength) && ~isnan(pref.fixedLength) )
-                % Evaluate op on the Fourier grid of given size:
+                % Evaluate op on the equi-spaced grid of given size:
                 vals = feval(op, trigtech.trigpts(pref.fixedLength));
                 vals(1,:) = 0.5*(vals(1,:) + feval(op, 1));
                 op = vals;
@@ -224,7 +224,7 @@ classdef trigtech < smoothfun % (Abstract)
         % Circular shift of a trigtech object by a: f -> g(x-a).
         g = circshift(f, a)
 
-        % Plot (semilogy) the Fourier coefficients of a TRIGTECH object.
+        % Plot (semilogy) the trigonometric coefficients of a TRIGTECH object.
         [h1, h2] = coeffsplot(f, varargin)
 
         % Check the happiness of a TRIGTECH. (Classic definition).
@@ -260,7 +260,7 @@ classdef trigtech < smoothfun % (Abstract)
         % Flip/reverse a TRIGTECH object.
         f = flipud(f)
 
-        % Plot (semilogy) the Fourier coefficients of a TRIGTECH object.
+        % Plot (semilogy) the trigonometric coefficients of a TRIGTECH object.
         varargout = plotcoeffs(f, varargin)
 
         % Get method:

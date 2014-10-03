@@ -35,9 +35,9 @@ function outPref = techPref(inPref)
 %
 %   TRIGTECH-SPECIFIC PREFERENCES
 %
-%     gridType     - Type of Fourier grid on which the function is sampled.
+%     gridType     - Type of equi-spaced grid used to sample the function.
 %         1        - Equally spaced grid starting at -1+h/2
-%        [2]        - Equally spaced grid starting at -1
+%        [2]       - Equally spaced grid starting at -1
 %
 %     minSamples    - Minimum number of points used by the constructor.  Should
 %      [17]          be of the form 2^n + 1.  If not, it is rounded as such.

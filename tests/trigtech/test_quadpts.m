@@ -1,17 +1,17 @@
-% Test file for fourtech/quadwts.m
+% Test file for trigtech/quadwts.m
 
 function pass = test_quadpts(pref)
 
 if ( nargin == 1 )
-    pref = fourtech.techPref();
+    pref = trigtech.techPref();
 end
 
-testTech = fourtech();
+testTech = trigtech();
 n = 10;
 w = testTech.quadwts(n);
 
 % Test against some low order trig functions:
-x = testTech.fourpts(n);
+x = testTech.trigpts(n);
 pass(1) = abs(sum(w) - 2) < 2*eps;
 pass(2) = abs(w*sin(pi*x)) < eps;
 pass(3) = abs(w*(sin(2*pi*x).*cos(2*pi*x))) < 2*eps;
