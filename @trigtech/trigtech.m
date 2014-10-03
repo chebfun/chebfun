@@ -1,5 +1,5 @@
 classdef trigtech < smoothfun % (Abstract)
-%FOURTECH   Approximate smooth periodic functions on [-1,1] with trigonometric 
+%TRIGTECH   Approximate smooth periodic functions on [-1,1] with trigonometric 
 %           interpolants.
 %
 %   Class for approximating smooth periodic functions on the interval [-1,1]
@@ -189,7 +189,7 @@ classdef trigtech < smoothfun % (Abstract)
             % Force nonadaptive construction if PREF.FIXEDLENGTH is numeric:
             if ( ~isempty(pref.fixedLength) && ~isnan(pref.fixedLength) )
                 % Evaluate op on the Fourier grid of given size:
-                vals = feval(op, trigtech.fourpts(pref.fixedLength));
+                vals = feval(op, trigtech.trigpts(pref.fixedLength));
                 vals(1,:) = 0.5*(vals(1,:) + feval(op, 1));
                 op = vals;
             end
@@ -416,9 +416,9 @@ classdef trigtech < smoothfun % (Abstract)
         % Differentiation matrix in Fourier basis.
         D = diffmat(n, p)
         
-        % Compute Fourier points (x) and optionally quadrature (w)
+        % Compute trigonometric points (x) and optionally quadrature (w)
         % and barycentric (v) weights:
-        [x, w] = fourpts(n);
+        [x, w] = trigpts(n);
         
         % Convert coefficients to values:
         values = coeffs2vals(coeffs);
@@ -426,7 +426,7 @@ classdef trigtech < smoothfun % (Abstract)
         % Make a TRIGTECH (constructor shortcut):
         f = make(varargin);
         
-        % Compute Fourier quadrature weights (trapezoidal rule):
+        % Compute trigonometric quadrature weights (trapezoidal rule):
         w = quadwts(n)
         
         % Refinement function for TRIGTECH construction (evaluates OP on grid):

@@ -1,5 +1,5 @@
 function h = assignColumns(f, colIdx, g)
-%ASSIGNCOLUMNS   Extract columns (or rows) of an array-valued FOURTECH.
+%ASSIGNCOLUMNS   Extract columns (or rows) of an array-valued TRIGTECH.
 %   G = ASSIGNCOLUMNS(F, COLIDX, G) assigns the columns specified by the row
 %   vector COLIDX from the FUN F so that F(:, COLIDX) = G. COLIDX need not be
 %   increasing in order or unique, but must contain only integers in the range

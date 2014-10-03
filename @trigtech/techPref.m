@@ -1,10 +1,10 @@
 function outPref = techPref(inPref)
-%TECHPREF   Preference settings for FOURTECH.
-%   P = FOURTECH.TECHPREF() returns a structure P with fields which contain the
-%   default FOURTECH preferences as field/value pairs.  This structure may be
-%   passed to the FOURTECH constructor.
+%TECHPREF   Preference settings for TRIGTECH.
+%   P = TRIGTECH.TECHPREF() returns a structure P with fields which contain the
+%   default TRIGTECH preferences as field/value pairs.  This structure may be
+%   passed to the TRIGTECH constructor.
 %
-%   P = FOURTECH.TECHPREF(Q) does the same but replaces the default FOURTECH
+%   P = TRIGTECH.TECHPREF(Q) does the same but replaces the default TRIGTECH
 %   preferences with the values specified by the field/value pairs in the input
 %   structure Q.
 %
@@ -14,7 +14,7 @@ function outPref = techPref(inPref)
 %   ABSTRACT PREFERENCES REQUIRED OF ALL TECHS
 %
 %     eps          - Relative tolerance used in construction and subsequent
-%      [2^-52]       operations.  See FOURTECH.HAPPINESSCHECK for more details.
+%      [2^-52]       operations.  See TRIGTECH.HAPPINESSCHECK for more details.
 %
 %     maxLength    - Maximum number of points used by the constructor.
 %      [2^16+1]
@@ -33,7 +33,7 @@ function outPref = techPref(inPref)
 %                    points.
 %       false      - Do not test.
 %
-%   FOURTECH-SPECIFIC PREFERENCES
+%   TRIGTECH-SPECIFIC PREFERENCES
 %
 %     gridType     - Type of Fourier grid on which the function is sampled.
 %         1        - Equally spaced grid starting at -1+h/2
@@ -54,7 +54,7 @@ function outPref = techPref(inPref)
 %       'loose'          - A looser tolerance for coefficients.
 %       function_handle  - A user defined happiness. See HAPPINESSCHECK.m
 %
-% See also FOURTECH, CHEBTECH, CHEBTECH1, CHEBTECH2
+% See also TRIGTECH, CHEBTECH, CHEBTECH1, CHEBTECH2
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

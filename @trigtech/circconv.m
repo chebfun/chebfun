@@ -1,6 +1,6 @@
 function f = circconv(f, g)
-%CONV   Circular convolution of FOURTECH objects.
-%   H = CIRCCONV(F, G) produces the convolution of FOURTECH objects F and G:
+%CONV   Circular convolution of TRIGTECH objects.
+%   H = CIRCCONV(F, G) produces the convolution of TRIGTECH objects F and G:
 %                     - 
 %                    /
 %           H(x) =   |    F(t) G(x-t) dt,  x in [-pi, pi]
@@ -9,8 +9,8 @@ function f = circconv(f, g)
 %   Note that CIRCCONV only supports smooth periodic functions on [-pi,pi].
 %
 %   Example:
-%     f = fourtech(@(x) exp(cos(40*pi*x))); 
-%     g = fourtech(@(x) exp(-(20*x).^2);
+%     f = trigtech(@(x) exp(cos(40*pi*x))); 
+%     g = trigtech(@(x) exp(-(20*x).^2);
 %     h = circconv(f,g);
 %     plot(h);
 
@@ -20,21 +20,21 @@ function f = circconv(f, g)
 
 % Return empty for an empty input:
 if ( isempty(f) || isempty(g) )
-    f = fourtech();
+    f = trigtech();
     return
 end
 
-% No support for array-valued fourtech objects:
+% No support for array-valued trigtech objects:
 if ( (size(f, 2) > 1) || (size(g, 2) > 1) )
-    error('CHEBFUN:FOURTECH:conv:array', ...
-        'No support for array-valued FOURTECH objects.');
+    error('CHEBFUN:TRIGTECH:conv:array', ...
+        'No support for array-valued TRIGTECH objects.');
 end
 
-% Get the sizes of the FOURTECH objects
+% Get the sizes of the TRIGTECH objects
 nf = size(f.coeffs, 1);
 ng = size(g.coeffs, 1);
 
-% Make the FOURTECH objects the same length.
+% Make the TRIGTECH objects the same length.
 if ( nf > ng )
     % Increase the length of g (via PROLONG):
     g = prolong(g, nf);

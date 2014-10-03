@@ -1,7 +1,7 @@
 function [ishappy, epslevel, cutoff] = classicCheck(f, pref)
-%CLASSICCHECK   Attempt to trim trailing Fourier coefficients in a FOURTECH.
+%CLASSICCHECK   Attempt to trim trailing Fourier coefficients in a TRIGTECH.
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F, VALUES) returns an estimated
-%   location, the CUTOFF, at which the FOURTECH F could be truncated to maintain
+%   location, the CUTOFF, at which the TRIGTECH F could be truncated to maintain
 %   an accuracy of EPSLEVEL relative to F.VSCALE and F.HSCALE. ISHAPPY is TRUE
 %   if CUTOFF < MIN(LENGTH(VALUES),2) or F.VSCALE = 0, and FALSE otherwise.
 %   If ISHAPPY is false, EPSLEVEL returns an estimate of the accuracy achieved.
@@ -16,9 +16,9 @@ function [ishappy, epslevel, cutoff] = classicCheck(f, pref)
 %   value returned in CUTOFF is essentially that from TESTLENGTH (although it
 %   can be reduced if there are further COEFFS which fall below EPSLEVEL).
 %
-%   HAPPINESSREQUIREMENTS defines what it means for a FOURTECH to be happy.
+%   HAPPINESSREQUIREMENTS defines what it means for a TRIGTECH to be happy.
 %   [TESTLENGTH, EPSLEVEL] = HAPPINESSREQUIREMENTS(VALUES, COEFFS, VSCALE, PREF)
-%   returns two scalars TESTLENGTH and EPSLEVEL. A FOURTECH is deemed to be
+%   returns two scalars TESTLENGTH and EPSLEVEL. A TRIGTECH is deemed to be
 %   'happy' if the coefficients COEFFS(1:TESTLENGTH) (recall that COEFFS are
 %   stored in descending order) are all below EPSLEVEL. The default choice of
 %   the test length is:
@@ -173,7 +173,7 @@ end
 
 function [testLength, epslevel] = ...
     happinessRequirements(values, coeffs, x, vscale, hscale, epslevel) %#ok<INUSL>
-%HAPPINESSREQUIREMENTS   Define what it means for a FOURTECH to be happy.
+%HAPPINESSREQUIREMENTS   Define what it means for a TRIGTECH to be happy.
 %   See documentation above.
 
 % Grab the size:

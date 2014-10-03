@@ -1,5 +1,5 @@
 function  [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, pref)
-%HAPPINESSCHECK   Happiness test for a FOURTECH
+%HAPPINESSCHECK   Happiness test for a TRIGTECH
 %
 % See also CLASSICCHECK, SAMPLETEST.
 
@@ -31,10 +31,10 @@ elseif ( strcmpi(pref.happinessCheck, 'plateau') )
     [ishappy, epslevel, cutoff] = plateauCheck(f, values, pref);
 
 elseif ( strcmpi(pref.happinessCheck, 'strict') )
-    error('CHEBFUN:FOURTECH:happinessCheck:strictCheck','Strict check not implemented for FOURTECH.  Please use classic check.');
+    error('CHEBFUN:TRIGTECH:happinessCheck:strictCheck','Strict check not implemented for TRIGTECH.  Please use classic check.');
     
 elseif ( strcmpi(pref.happinessCheck, 'loose') )
-    error('CHEBFUN:FOURTECH:happinessCheck:looseCheck','Loose check not implemented for FOURTECH.  Please use classic check.');
+    error('CHEBFUN:TRIGTECH:happinessCheck:looseCheck','Loose check not implemented for TRIGTECH.  Please use classic check.');
     
 else
     % Call a user-defined happiness check:

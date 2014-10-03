@@ -1,7 +1,7 @@
 function out = horzcat(varargin)
 %HORZCAT   Horizontal concatenation.
-%   [A B] horizontally concatenates the FOURTECH objects A and B to form an
-%   array-valued FOURTECH. [A,B] does the same. Any number of FOURTECH objects
+%   [A B] horizontally concatenates the TRIGTECH objects A and B to form an
+%   array-valued TRIGTECH. [A,B] does the same. Any number of TRIGTECH objects
 %   can be concatenated within one pair of brackets. Vertical concatenation is
 %   not supported.
 
@@ -17,17 +17,17 @@ else
     varargin(empties) = [];
 end
 
-% Check that all objects are indeed fourtechs.  If not then we should not
+% Check that all objects are indeed TRIGTECHs.  If not then we should not
 % concatenate.
-if ~all( cell2mat(cellfun(@(f) isa(f,'fourtech'), varargin, 'UniformOutput', false)) )
-    error('CHEBFUN:FOURTECH:horzcat:typeMismatch','Incompatible operation between objects. Make sure functions are of the same type.');
+if ~all( cell2mat(cellfun(@(f) isa(f,'trigtech'), varargin, 'UniformOutput', false)) )
+    error('CHEBFUN:TRIGTECH:horzcat:typeMismatch','Incompatible operation between objects. Make sure functions are of the same type.');
 end
 
-% Prolong each fourtech to the same length:
+% Prolong each TRIGTECH to the same length:
 n = max(cellfun(@length, varargin));
 F = cellfun(@(f) prolong(f, n), varargin, 'UniformOutput', false);
 
-% Extract the data and collate the an array-valued FOURTECH:
+% Extract the data and collate the an array-valued TRIGTECH:
 out = varargin{1};
 
 % Coeffs and Values:

@@ -1,13 +1,13 @@
-% Test file for fourtech/poly.m
+% Test file for trigtech/poly.m
 
 function pass = test_poly(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fourtech.techPref();
+    pref = trigtech.techPref();
 end
 
-testclass = fourtech();
+testclass = trigtech();
 
 %%
 % Check a few simple examples.

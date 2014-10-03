@@ -1,10 +1,10 @@
 function pass = test_abs(pref)
 
 if ( nargin == 0 ) 
-    pref = fourtech.techPref();
+    pref = trigtech.techPref();
 end
 
-testclass = fourtech();
+testclass = trigtech();
     
 % Test a positive function:
 F = @(x) sin(pi*x) + 2;

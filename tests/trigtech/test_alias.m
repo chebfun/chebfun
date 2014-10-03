@@ -1,4 +1,4 @@
-% Test file for fourtech/alias.m
+% Test file for trigtech/alias.m
 
 function pass = test_alias(varargin)
 
@@ -9,7 +9,7 @@ tol = 10*eps;
 % Test padding of a vector of coefficients.
 
 c0 = (1:9)';
-c1 = fourtech.alias(c0, 13);
+c1 = trigtech.alias(c0, 13);
 pass(1) = norm([0; 0; c0; 0; 0] - c1, inf) == 0;
 
 %% 
@@ -52,9 +52,9 @@ end
 
 function pass = test_alias_by_interpolating(op, n, tol)
 
-f = fourtech.make(op);
+f = trigtech.make(op);
 c = f.alias(f.coeffs, n);
-x = fourtech.fourpts(size(c, 1));
+x = trigtech.trigpts(size(c, 1));
 cexact = f.vals2coeffs(op(x));
 
 pass = norm(c - cexact, inf) < tol;

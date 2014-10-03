@@ -1,16 +1,16 @@
-% Test file for @fourtech/assignColumns.m.
+% Test file for @trigtech/assignColumns.m.
 
 function pass = test_assignColumns(pref)
 
 if ( nargin < 1 )
-    pref = fourtech.techPref();
+    pref = trigtech.techPref();
 end
 
 % Generate a few random points to use as test values.
 seedRNG(6178);
 x = 2 * rand(100, 1) - 1;
 
-testclass = fourtech();
+testclass = trigtech();
 
 f = testclass.make(@(x) [sin(pi*x) cos(pi*x) exp(1i*pi*x)], [], pref);
 

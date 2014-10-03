@@ -1,8 +1,8 @@
 function f = plus(f, g)
-%+   Addition of two FOURTECH objects.
-%   F + G adds F and G, where F and G may be FOURTECH objects or scalars.
+%+   Addition of two TRIGTECH objects.
+%   F + G adds F and G, where F and G may be TRIGTECH objects or scalars.
 %
-%   If F is an array-valued FOURTECH, then F + C is supported if C is a row
+%   If F is an array-valued TRIGTECH, then F + C is supported if C is a row
 %   vector of doubles with the same number of columns as F.
 %
 % See also MINUS, UPLUS.
@@ -10,14 +10,14 @@ function f = plus(f, g)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( isempty(f) || isempty(g) ) % FOURTECH + [] = [].
+if ( isempty(f) || isempty(g) ) % TRIGTECH + [] = [].
     
     f = [];
     
-elseif ( isa(g, 'double') ) % FOURTECH + double.
+elseif ( isa(g, 'double') ) % TRIGTECH + double.
     
     % Update values (use bsxfun() to handle the case in which g is a vector
-    % and f is an array-valued FOURTECH):
+    % and f is an array-valued TRIGTECH):
     f.values = bsxfun(@plus, f.values, g);
     
     % Update coeffs:
@@ -44,16 +44,16 @@ elseif ( isa(g, 'double') ) % FOURTECH + double.
     % Update scale:
     vscaleNew = max(abs(f.values), [], 1);
     
-    % See FOURTECH CLASSDEF file for documentation on this:
+    % See TRIGTECH CLASSDEF file for documentation on this:
     f.epslevel = updateEpslevel(f);
     f.vscale = vscaleNew;
     
-elseif ( isa(f, 'double') ) % double + FOURTECH.
+elseif ( isa(f, 'double') ) % double + TRIGTECH.
     
-    % Switch argument order and call FOURTECH/PLUS again:
+    % Switch argument order and call TRIGTECH/PLUS again:
     f = plus(g, f);
     
-elseif ( isa(f, 'fourtech') && isa(g, 'fourtech') )  % FOURTECH + FOURTECH.
+elseif ( isa(f, 'trigtech') && isa(g, 'trigtech') )  % TRIGTECH + TRIGTECH.
     
     % We will simply add the values together then compute the coefficients
     % of the result. This is probably not the most efficient means of
@@ -80,7 +80,7 @@ elseif ( isa(f, 'fourtech') && isa(g, 'fourtech') )  % FOURTECH + FOURTECH.
     
     % Look for a zero output:
     if ( ~any(f.values(:)) || ~any(f.coeffs(:)) )
-        % Create a zero FOURTECH:
+        % Create a zero TRIGTECH:
         epslevel = max(f.epslevel, g.epslevel);
         ishappy = f.ishappy && g.ishappy;
         z = zeros(1, size(f.values, 2));
@@ -92,7 +92,7 @@ elseif ( isa(f, 'fourtech') && isa(g, 'fourtech') )  % FOURTECH + FOURTECH.
     else
         % Update vscale, epslevel, and ishappy:
         vscaleNew = max(abs(f.values), [], 1);
-        % See FOURTECH CLASSDEF file for documentation on this:
+        % See TRIGTECH CLASSDEF file for documentation on this:
         epslevelBound = (f.epslevel.*f.vscale + g.epslevel.*g.vscale)./vscaleNew;
         f.epslevel = updateEpslevel(f, epslevelBound);
         f.vscale = vscaleNew;
@@ -101,7 +101,7 @@ elseif ( isa(f, 'fourtech') && isa(g, 'fourtech') )  % FOURTECH + FOURTECH.
     
 else    % Don't know how to do the addition of the objects.
     
-    error('CHEBFUN:FOURTECH:plus:typeMismatch',['Incompatible operation between objects.\n', ...
+    error('CHEBFUN:TRIGTECH:plus:typeMismatch',['Incompatible operation between objects.\n', ...
     'Make sure functions are of the same type.']);
     
 end

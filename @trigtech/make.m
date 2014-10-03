@@ -1,11 +1,11 @@
 function f = make(varargin)
-%MAKE   Constructor shortcut for FOURTECH objects.
-%   For FOURTECH methods implemented at the FOURTECH level, it is not possible
-%   to call the class constructor file corresponding to a FOURTECH object
+%MAKE   Constructor shortcut for TRIGTECH objects.
+%   For TRIGTECH methods implemented at the TRIGTECH level, it is not possible
+%   to call the class constructor file corresponding to a TRIGTECH object
 %   directly. F = MAKE(VARARGIN) allows us to get around this and construct a
-%   FOURTECH.
+%   TRIGTECH.
 %
-% See also FOURTECH.
+% See also TRIGTECH.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -17,6 +17,6 @@ function f = make(varargin)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-f = fourtech(varargin{:}); 
+f = trigtech(varargin{:}); 
 
 end

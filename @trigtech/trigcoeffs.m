@@ -1,5 +1,5 @@
 function out = trigcoeffs(f, N)
-%FOURCOEFFS   Fourier coefficients of a TRIGTECH.
+%TRIGCOEFFS   Fourier coefficients of a TRIGTECH.
 %   C = TRIGCOEFFS(F) returns a column vector with the Fourier
 %   coefficients of F using complex-exponential form. Specifically for
 %   N = length(F):

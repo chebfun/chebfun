@@ -20,7 +20,7 @@ if ( n == 1 )
     xeval = 0.61; % Pseudo-random test value.
 else
     % Test a point where the (finite difference) gradient of values is largest:
-    x = f.fourpts(n);
+    x = f.trigpts(n);
     [ignored, index] = max(bsxfun(@rdivide, abs(diff(f.values)), diff(x)));
     xeval = ( x(index + 1) + 1.41*x(index) ) / 2.41;
 end

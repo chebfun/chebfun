@@ -1,13 +1,13 @@
-% Test file for fourtech/circconv
+% Test file for trigtech/circconv
 
 function pass = test_circconv(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fourtech.techPref();
+    pref = trigtech.techPref();
 end
 
-testclass = fourtech();
+testclass = trigtech();
 
 % Generate a random point to use as test values.
 seedRNG(6178);

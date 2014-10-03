@@ -1,12 +1,12 @@
-% Test file for @fourtech/any.m.
+% Test file for trigtech/any.m.
 
 function pass = test_any(pref)
 
 if ( nargin < 1 )
-    pref = fourtech.techPref();
+    pref = trigtech.techPref();
 end
 
-testclass = fourtech();
+testclass = trigtech();
 
 % Check behavior for any() down columns.
 pass(1) = ~any(testclass());

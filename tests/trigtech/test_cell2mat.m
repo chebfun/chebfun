@@ -1,12 +1,12 @@
-% Test file for fourtech/cell2mat.m
+% Test file for trigtech/cell2mat.m
 
 function pass = test_cell2mat(pref)
 
 if ( nargin < 2 )
-    pref = fourtech.techPref();
+    pref = trigtech.techPref();
 end
 
-testclass = fourtech();
+testclass = trigtech();
 
 f = testclass.make(@(x) [sin(pi*x) cos(pi*x) exp(2*1i*pi*x)], [], pref);
 g = testclass.make(@(x) sin(pi*x), [], pref);
