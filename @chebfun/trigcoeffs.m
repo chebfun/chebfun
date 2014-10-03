@@ -1,7 +1,7 @@
-function varargout = fourcoeffs(f, N)
-%FOURCOEFFS   Fourier coefficients of a CHEBFUN.
-%   C = FOURCOEFFS(F, N) returns a column vector with the first N Fourier
-%   coefficients of F using complex-exponential form. Specifically:
+function varargout = trigcoeffs(f, N)
+%TRIGCOEFFS   Trigonometric Fourier coefficients of a CHEBFUN.
+%   C = TRIGCOEFFS(F, N) returns a column vector with the first N trigonometric
+%   Fourier coefficients of F using complex-exponential form. Specifically:
 %   If N is odd
 %       F(x) = C(1)*z^(-(N-1)/2) + C(2)*z^(-(N-1)/2+1) + ... + C((N+1)/2) + ... 
 %                + C(N-1)*z^((N-1)/2-1) + C(N)*z^((N-1)/2)
@@ -10,12 +10,12 @@ function varargout = fourcoeffs(f, N)
 %                + C(N-1)*z^(N/2-1)
 %   where z = exp(1i*omega*x) and omega = 2*pi/L, and L = diff(f.domain). 
 %
-%   If F is a smooth CHEBFUN (i.e., with no breakpoints), then FOURCOEFFS(F) is
-%   equivalent to FOURCOEFFS(F, LENGTH(F)).
+%   If F is a smooth CHEBFUN (i.e., with no breakpoints), then TRIGCOEFFS(F) is
+%   equivalent to TRIGCOEFFS(F, LENGTH(F)).
 %
 %   If F is array-valued with M columns, then C is an NxM matrix.
 %
-%   [A, B] = FOURCOEFFS(F, N) returns the first N Fourier coefficients of F
+%   [A, B] = TRIGCOEFFS(F, N) returns the first N Fourier coefficients of F
 %   using sin/cos form.  Specifically:
 %   If N is odd
 %      F(x) = A(1) + B(1)*sin(omega*x) + A(2)*cos(omega*x) +
@@ -31,7 +31,7 @@ function varargout = fourcoeffs(f, N)
 %   term.
 %
 %   If F is a smooth CHEBFUN (i.e., with no breakpoints), then [A, B] =
-%   FOURCOEFFS(F) is equivalent to FOURCOEFFS(F, LENGTH(F)).
+%   TRIGCOEFFS(F) is equivalent to TRIGCOEFFS(F, LENGTH(F)).
 %
 %   If F is array-valued with M columns, then A and B contain M columns with each
 %   column corresponding to the Fourier coefficients of each chebfun.
@@ -52,7 +52,7 @@ numFuns = numel(f.funs);
 
 % If N is not passed in and the numFuns > 1 then throw an error
 if ( (nargin == 1) && (numFuns > 1 ) )
-    error('CHEBFUN:fourcoeffs:inputN',...
+    error('CHEBFUN:trigcoeffs:inputN',...
         'Input N is required for piecewise CHEBFUN objects.');
 end
 
@@ -65,12 +65,12 @@ if ( N <= 0 )
     return
 end
 if ( ~isscalar(N) || isnan(N) )
-    error('CHEBFUN:fourcoeffs:inputN', 'Input N must be a scalar.');
+    error('CHEBFUN:trigcoeffs:inputN', 'Input N must be a scalar.');
 end
 
 if ( any(isinf(f.domain)) )
     % Fourier coefficients are not allowed for unbounded domains.
-    error('CHEBFUN:fourcoeffs:infint', ...
+    error('CHEBFUN:trigcoeffs:infint', ...
         'Infinite intervals are not supported here.');
 end
 
@@ -100,8 +100,8 @@ end
 
 if ( numFuns == 1 )
     
-    % FOURCOEFFS() of a smooth piece:
-    C = fourcoeffs(f.funs{1}, N);
+    % TRIGCOEFFS() of a smooth piece:
+    C = trigcoeffs(f.funs{1}, N);
 
 else
    
