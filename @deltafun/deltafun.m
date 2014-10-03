@@ -211,7 +211,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         out = isnan(f)
         
         function out = isPeriodicTech(f)
-        %ISPERIODIC    Test if the smooth part of f is is constructed with a 
+        %ISPERIODICTECH    Test if the smooth part of f is is constructed with a 
         %basis of periodic functions. 
         
             % Calls ISPERIODICTECH on the CLASSICFUN part.
