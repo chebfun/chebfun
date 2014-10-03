@@ -96,10 +96,10 @@ while ( ( ( nargin == 1 ) && any( min(endValues, [], 1) <= tol ) ) ...
     D(1) = 1; %#ok<SPRIX>
     
     % Compute the new coefficients:
-    c(2:end,ind) = sgn*flipud(D\c(end-1:-1:1,ind));
+    c(1:end-1,ind) = sgn*(D\c(2:end,ind));
     
     % Pad zero at the highest coefficients:
-    c(1,ind) = 0; 
+    c(end,ind) = 0; 
     
     % Update the coefficients.  Note that we don't need to update the values 
     % here, since only coefficients are used in this while loop.  (feval(), 

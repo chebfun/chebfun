@@ -91,7 +91,7 @@ end
 if ( numFuns == 1 )
     
     % CHEBCOEFFS() of a smooth piece:
-    out = flipud(chebcoeffs(f.funs{1}, N));    
+    out = chebcoeffs(f.funs{1}, N);    
     
 else
     % CHEBCOEFFS() of a piecewise smooth CHEBFUN:

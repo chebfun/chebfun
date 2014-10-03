@@ -297,8 +297,7 @@ for kk = 1:size(ODE, 1)
     
     if ( iscell(ODE(kk,jj)) && isa(ODE{kk,jj}, 'chebfun') )
         % Variable coefficient term: 
-        c = ODE{kk,jj}.coeffs; 
-        c = c(end:-1:1);
+        c = ODE{kk,jj}.coeffs;        
         M = ultraS.multmat(n, c, kk-1); 
         A = S * M * D;
         

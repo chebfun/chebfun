@@ -111,9 +111,8 @@ function g = singIntegral(f)
         xs = prolong(xs, N + 1);
     end
     
-    % We flip up and down to have the coefficients of xs ordered with ascending
-    % indices.
-    aa = flipud(xs.coeffs);
+    % Get the coefficients of xs:
+    aa = xs.coeffs;
     
     % The recurrence to solve for the coefficients for u', i.e., c_k. (*)
     c = zeros(N, 1);
@@ -152,8 +151,7 @@ function g = singIntegral(f)
         cc = cc(1:oldN+2);
     end
     
-    % Flip up and down and drop the leading zeros in the coefficients:
-    cc = flipud(cc);
+    % Drop the leading zeros in the coefficients:
     ind = find(cc ~= 0, 1, 'first');
     if ( isempty(ind) )
         cc = 0;
