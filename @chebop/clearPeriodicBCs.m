@@ -1,7 +1,10 @@
 function [N, L] = clearPeriodicBCs(N, L)
-%CLEARPERIODICBCS    Clear periodic bounadry conditions.
-%   [N, L] = CLEARPERIODICBCS(N, L, PREF) clears N.BC, L.CONSTRAINT,
-%   and L.CONTINUITY, if PREF.DISCRETIZATION is FOURCOLLOC.
+%CLEARPERIODICBCS    Clear periodic boundary conditions.
+%   [N, L] = CLEARPERIODICBCS(N, L, PREF) clears N.BC, L.CONSTRAINT, and
+%   L.CONTINUITY. This method only gets called if the current discretization in
+%   use is FOURCOLLOC, and is required since FOURCOLLOC by construction will
+%   only return periodic function as the solution, so there is no need to impose
+%   periodic conditions on the discretized linear systems that arise.
 %
 % See also CHEBOP/DETERMINEDISCRETIZATION, CHEBOP/SOLVEBVP, CHEBOP/EIGS.
 
@@ -9,11 +12,9 @@ function [N, L] = clearPeriodicBCs(N, L)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty(N.bc) )
-    % No need to clear the BCs, do nothing!
+    % N.BC is empty already, so do nothing!
 elseif ( isa(N.bc, 'char') && strcmpi(N.bc, 'periodic') )
-    % FOURCOLLOC uses periodic functions, so there is no need to specify
-    % boundary conditions. We clear them out of the chebop object to avoid
-    % problems later in the code.
+    % Clear the conditions:
     N.bc = [];
     L.constraint = [];
     L.continuity = [];

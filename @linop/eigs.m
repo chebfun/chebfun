@@ -87,7 +87,7 @@ end
 
 % Grab defaults if needed.
 if ( isempty(pref) )
-    pref = cheboppref;
+    pref = cheboppref();
 end
              
 % Discretization type.
