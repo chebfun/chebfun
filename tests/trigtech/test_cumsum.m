@@ -88,7 +88,7 @@ end
 
 %%
 % Check that an error is thrown when the mean just one of the means of 
-% an array-valued fourtech is not zero.
+% an array-valued trigtech is not zero.
 f = testclass.make(@(x) [sin(4*pi*cos(pi*x)) exp(cos(pi*x))], [], pref);
 try
     g = cumsum(f);

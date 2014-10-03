@@ -36,7 +36,7 @@ classdef fourcolloc < colloc
         
         function tech = returnTech()
             %RETURNTECH    Return the appropriate tech to use for FOURCOLLOC.
-            tech = @fourtech;
+            tech = @trigtech;
         end
         
         function D = diffmat(N, m)

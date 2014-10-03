@@ -4,7 +4,7 @@ function varargout = functionPoints(disc)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-pointsFun = @(n) fourtech.fourpts(n);
+pointsFun = @(n) trigtech.trigpts(n);
 [varargout{1:nargout}] = colloc.points(disc, pointsFun);
 
 end
