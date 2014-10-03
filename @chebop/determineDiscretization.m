@@ -1,9 +1,9 @@
-function [N, L, pref] = determinePref(N, L, isPrefGiven, pref)
-%DETERMINEPREF    Determine preferences for a CHEBOP object with periodic
-%boundary conditions.
-%   [N, L, PREF] = DETERMINEPREF(N, L, ISPREFGIVEN, PREF) choses the right
-%   discretization PREF.DISCRETIZATION to use to solve an ODE problem or an 
-%   eigenvalue problem with periodic boundary conditions, modeled by a
+function pref = determineDiscretization(N, L, isPrefGiven, pref)
+%DETERMINEDISCRETIZATION    Determine discretization for a CHEBOP object with 
+%periodic boundary conditions.
+%   PREF = DETERMINEDISCRETIZATION(N, L, ISPREFGIVEN, PREF) choses the 
+%   right discretization PREF.DISCRETIZATION to use to solve an ODE problem or 
+%   an eigenvalue problem with periodic boundary conditions, modeled by a
 %   CHEBOP N and a LINOP L.
 %
 % See also CHEBOP/CLEARPERIODICBC, CHEBOP/SOLVEBVP, CHEBOP/EIGS.
