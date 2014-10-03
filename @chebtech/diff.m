@@ -125,12 +125,12 @@ function cout = computeDerCoeffs(c)
 %   C is the matrix of Chebyshev coefficients of a (possibly array-valued)
 %   CHEBTECH object.  COUT is the matrix of coefficients for a CHEBTECH object
 %   whose columns are the derivatives of those of the original.
-    
+
     [n, m] = size(c);
-    cout = zeros(n-1, m);                     % Initialize vector {c_r}
-    w = repmat(2*(n-1:-1:1)', 1, m);
-    v = w.*c(1:end-1,:);                      % Temporal vector
-    cout(1:2:end,:) = cumsum(v(1:2:end,:));   % Compute c_{n-2}, c_{n-4},...
-    cout(2:2:end,:) = cumsum(v(2:2:end,:));   % Compute c_{n-3}, c_{n-5},...
-    cout(end,:) = .5*cout(end,:);             % Adjust the value for c_0
+    cout = zeros(n-1, m);                       % Initialize vector {c_r}
+    w = repmat(2*(1:n-1)', 1, m);
+    v = w.*c(2:end,:);                          % Temporal vector
+    cout(n-1:-2:1,:) = cumsum(v(n-1:-2:1,:));   % Compute c_{n-2}, c_{n-4},...
+    cout(n-2:-2:1,:) = cumsum(v(n-2:-2:1,:));   % Compute c_{n-3}, c_{n-5},...
+    cout(1,:) = .5*cout(1,:);                   % Adjust the value for c_0
 end

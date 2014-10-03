@@ -1,4 +1,4 @@
-function pass = test_jacpoly(pref)
+function pass = test_jaccoeffs(pref)
 
 if ( nargin == 0 )
     pref = chebfunpref();

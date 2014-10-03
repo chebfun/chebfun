@@ -1,6 +1,6 @@
-% Test file for @chebfun/legpoly.m.
+% Test file for @chebfun/legcoeffs.m.
 
-function pass = test_legpoly(pref)
+function pass = test_legcoeffs(pref)
 
 if ( nargin < 1 )
     pref = chebfunpref();

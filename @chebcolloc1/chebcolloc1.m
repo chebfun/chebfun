@@ -94,7 +94,7 @@ classdef chebcolloc1 < chebcolloc
             B(1,:) = sum( diag(v)*B(2:N+1,:), 1 );
             B(:,1) = 2*B(:,1);
             
-            Q = T*B(end:-1:1,end:-1:1)*Tinv;
+            Q = T*B*Tinv;
             
             % Store:
             CACHE{N} = Q;

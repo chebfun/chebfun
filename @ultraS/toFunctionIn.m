@@ -12,7 +12,7 @@ c = mat2cell(full(coeffs), disc.dimension); % Break into smooth pieces
 funs = cell(numel(c), 1);  % One FUN per piece
 for k = 1:numel(c)
     % Construct CHEBTECH2 objects from each piece:
-    ct = chebtech2({[], flipud(c{k})});
+    ct = chebtech2({[], c{k}});
     % Assign each piece to a subinterval with a BNDFUN:
     funs{k} = bndfun(ct, struct('domain', dom(k: k + 1)));
 end
