@@ -1,11 +1,12 @@
-function [N, L, pref] = adjustPref(N, L, isPrefGiven, pref)
-%ADJUSTPREF    Adjust preferences for a CHEBOP object.
-%   [N, L, PREF] = ADJUSTPREF(N, L, ISPREFGIVEN, PREF) choses the right
+function [N, L, pref] = determinePref(N, L, isPrefGiven, pref)
+%DETERMINEPREF    Determine preferences for a CHEBOP object with periodic
+%boundary conditions.
+%   [N, L, PREF] = DETERMINEPREF(N, L, ISPREFGIVEN, PREF) choses the right
 %   discretization PREF.DISCRETIZATION to use to solve an ODE problem or an 
 %   eigenvalue problem with periodic boundary conditions, modeled by a
 %   CHEBOP N and a LINOP L.
 %
-% See also CHEBOP/SOLBEBVP, CHEBOP/EIGS.
+% See also CHEBOP/CLEARPERIODICBC, CHEBOP/SOLVEBVP, CHEBOP/EIGS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -32,23 +33,6 @@ end
 if ( isa(N.bc, 'char') && strcmpi(N.bc, 'periodic') && ~isPrefGiven ...
         && ~isequal(pref.discretization, @ultraS) && length(L.domain) < 3 )
     pref.discretization = @fourcolloc;
-end
-
-% Check boundary conditions if using FOURCOLLOC.
-if ( isequal(pref.discretization, @fourcolloc) )
-    if ( isempty(N.bc) )
-        % No need to clear the BCs, do nothing!
-    elseif ( isa(N.bc, 'char') && strcmpi(N.bc, 'periodic') )
-        % FOURCOLLOC uses periodic functions, so there is no need to specify
-        % boundary conditions. We clear them out of the chebop object to avoid
-        % problems later in the code.
-        N.bc = [];
-        L.constraint = [];
-        L.continuity = [];
-    else
-        error('CHEBFUN:CHEBOP:solvebvp:bc', ...
-            'FOURCOLLOC only works with periodic boundary conditions.');
-    end
 end
 
 end

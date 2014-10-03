@@ -70,8 +70,13 @@ if ( fail )
          'EIGS() supports only linear CHEBOP instances.']);
 end
 
-% Adjust the preferences for periodic boundary conditions.
-[N, L, pref] = adjustPref(N, L, isPrefGiven, pref);
+% Determine the CHEBOPPREF for periodic boundary conditions.
+[N, L, pref] = determinePref(N, L, isPrefGiven, pref);
+
+% Clear periodic bounadry conditions.
+[N, L, pref] = clearPeriodicBC(N, L, pref);
+
+% Add the preferences in vargarin to pass them to LINOP/EIGS.
 if ( isPrefGiven )
     % If a pref has been given, it is at the last position of varargin, 
     % indexed nargin - 1. Overwrite it.
@@ -82,7 +87,7 @@ else
 end
 
 
-% Call LINOP/eigs.
+% Call LINOP/EIGS.
 [varargout{1:nargout}] = eigs(L, varargin{:});
 
 % Return a CHEBFUN rather than a CHEBMATRIX for scalar problems:
