@@ -124,7 +124,7 @@ function result = test_add_function_to_scalar(f, f_op, alpha, x)
     result(1) = isequal(g1, g2);
     g_exact = @(x) f_op(x) + alpha;
     result(2) = norm(feval(g1, x) - g_exact(x), inf) <= ...
-        50*max(g1.vscale.*g1.epslevel);
+        1000*max(g1.vscale.*g1.epslevel);
 end
 
 % Test the addition of two FOURTECH objects F and G, specified by F_OP and

@@ -23,11 +23,11 @@ elseif ( isa(g, 'double') ) % CHEBTECH + double
         % Perform singleton expansion of f:
         f.coeffs = repmat(f.coeffs, 1, size(g, 2));
     end
-    f.coeffs(end,:) = f.coeffs(end,:) + g;
+    f.coeffs(1,:) = f.coeffs(1,:) + g;
     % Update scale:
     vscaleNew = getvscl(f); 
     % See CHEBTECH CLASSDEF file for documentation on this:
-    f.epslevel = (f.epslevel.*f.vscale + eps(g))./vscaleNew;
+    f.epslevel = updateEpslevel(f);
     f.vscale = vscaleNew;
     
 elseif ( isa(f, 'double') ) % double + CHEBTECH

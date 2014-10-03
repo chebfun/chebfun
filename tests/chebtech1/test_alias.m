@@ -7,17 +7,17 @@ tol = 2e2*eps;
 
 %%
 % Testing a vector of coefficients.
-c0 = (1:10)';
+c0 = (10:-1:1)';
 
 % Padding:
 c1 = chebtech1.alias(c0, 11);
-pass(1) = norm([0 ; c0] - c1, inf) == 0;
+pass(1) = norm([ c0; 0 ] - c1, inf) == 0;
 
 % Aliasing:
 c2 = chebtech1.alias(c0, 9);
-pass(2) = norm((2:10)' - c2, inf) == 0;
+pass(2) = norm((10:-1:2)' - c2, inf) == 0;
 c3 = chebtech1.alias(c0, 3);
-pass(3) = norm([0 1 6]' - c3, inf) == 0;
+pass(3) = norm([6 1 0]' - c3, inf) == 0;
 
 % Compare against result of evaluating on a smaller grid:
 pass(4) = norm(chebtech1.vals2coeffs( ...
@@ -32,13 +32,13 @@ cc = [c0 c0(end:-1:1)];
 
 % Padding:
 c1 = chebtech1.alias(cc, 11);
-pass(6) = norm([0 0 ; cc]  - c1, inf) == 0;
+pass(6) = norm([cc ; 0 0 ]  - c1, inf) == 0;
 
 % Aliasing:
 c2 = chebtech1.alias(cc, 9);
-pass(7) = norm([2:10 ; 9:-1:1]'  - c2, inf) == 0;
+pass(7) = norm([10:-1:2 ; 1:9]'  - c2, inf) == 0;
 c3 = chebtech1.alias(cc, 3);
-pass(8) = norm([0 1 6 ; -11 -12 -6]'  - c3, inf) == 0;
+pass(8) = norm([6 1 0 ; -6 -12 -11]'  - c3, inf) == 0;
 
 % Compare against result of evaluating on a smaller grid:
 pass(9) = norm(chebtech1.vals2coeffs( ...
@@ -48,7 +48,7 @@ pass(10) = norm(chebtech1.vals2coeffs( ...
 
 %%
 % Test aliasing a large tail.
-c0 = 1./(1:1000).^5.';
+c0 = 1./(1000:-1:1).^5.';
 n = 17;
 c1 = chebtech1.alias(c0, n);
 % This should give the same result as evaluating via bary.

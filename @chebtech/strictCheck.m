@@ -88,9 +88,9 @@ end
 testLength = min(n, max(5, round((n-1)/8))); 
 ac = bsxfun(@rdivide, abs(f.coeffs), f.vscale);
 f.coeffs(bsxfun(@le, ac, epslevel)) = 0;
-tail = f.coeffs(1:testLength,:);
+tail = f.coeffs(end-testLength+1:end,:);
 if ( ~any(tail(:)) )
-    cutoff = n - find(max(f.coeffs, [], 2) > 0, 1, 'first') + 1;
+    cutoff = find(max(f.coeffs, [], 2) > 0, 1, 'last');
     ishappy = true;
 else
     cutoff = n;

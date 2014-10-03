@@ -51,7 +51,7 @@ pass(8) = numel(f.funs) == 1 && size(f.funs{1}, 1) > 10;
 
 % Test construction from coefficients.
 f = chebfun([1 ; 2 ; 3], 'coeffs');
-pass(9) = isequal(f.funs{1}.onefun.coeffs, flipud([1 ; 2 ; 3]));
+pass(9) = isequal(f.funs{1}.onefun.coeffs, [1 ; 2 ; 3]);
 
 % Test 'chebkind' and 'kind' flags.
 f1 = chebfun(@(x) x, 'chebkind', '1st');
@@ -66,7 +66,7 @@ pass(11) = all(feval(f, linspace(-1, 1, 10)) == 1);
 % Test 'trunc', flag.
 f = chebfun(@abs, 'trunc', 10, 'splitting', 'on');
 c = get(f, 'coeffs');
-pass(12) = abs(-4/63/pi - c(2)) < get(f, 'epslevel');
+pass(12) = abs(-4/63/pi - c(9)) < get(f, 'epslevel');
 
 % Test construction from cells of strings:
 f = chebfun({'x','x-1'}, [0 1 2]);

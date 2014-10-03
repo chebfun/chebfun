@@ -73,7 +73,8 @@ elseif ( isa(item, 'functionalBlock') )
     tmp = cell(1, numel(dom)-1);
     for l = 1:numel(tmp)
         Ml = M(cumsumDim(l) + (1:dim(l)));
-        tmp{l} = flipud(chebtech2.coeffs2vals(Ml.')).';
+        Ml = rot90(Ml);
+        tmp{l} = rot90(chebtech2.coeffs2vals(Ml), -1);
     end
     
     M = cell2mat(tmp);

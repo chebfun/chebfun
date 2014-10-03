@@ -28,7 +28,8 @@ if ( isempty(f) )
     return
 end
 
-coeffs = f.coeffs;
+% Flip the Chebyshev coefficients to match Matlab ordering:
+coeffs = flipud(f.coeffs);
 [n, m] = size(coeffs);
 
 % Coefficients on the unit interval:

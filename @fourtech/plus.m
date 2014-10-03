@@ -45,7 +45,7 @@ elseif ( isa(g, 'double') ) % FOURTECH + double.
     vscaleNew = max(abs(f.values), [], 1);
     
     % See FOURTECH CLASSDEF file for documentation on this:
-    f.epslevel = (f.epslevel.*f.vscale + abs(g)*eps)./vscaleNew;
+    f.epslevel = updateEpslevel(f);
     f.vscale = vscaleNew;
     
 elseif ( isa(f, 'double') ) % double + FOURTECH.
