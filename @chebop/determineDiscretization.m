@@ -12,8 +12,10 @@ function pref = determineDiscretization(N, L, isPrefGiven, pref)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% The user passed a CHEBOPPREF object PREF with PREF.DISCRETIZATION set to 
-% FOURCOLLOC, or FOURCOLLOC is the default discretization.
+% Check whether the user passed a CHEBOPPREF object PREF with
+% PREF.DISCRETIZATION set to FOURCOLLOC, or FOURCOLLOC is the default
+% discretization.
+%
 % Since FOURCOLLOC does not support breakpoints, we need to throw an error if
 % breakpoints are present. Note that here and below, we look at L.domain rather
 % than N.domain, as the domain of the LINOP L will also include any breakpoints
