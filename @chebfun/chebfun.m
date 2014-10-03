@@ -233,7 +233,7 @@ classdef chebfun
                 if ( isa( pref.tech(),'chebtech' ) ) 
                     c = chebcoeffs(f, truncLength);
                 else
-                    c = fourcoeffs(f, truncLength);
+                    c = trigcoeffs(f, truncLength);
                 end
                 f = chebfun(c, f.domain([1,end]), 'coeffs', pref);
             end
@@ -826,7 +826,7 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
     % Deal with the 'periodic' flag:
     if ( isPeriodic )
         % Translate "periodic".
-        pref.tech = @fourtech;
+        pref.tech = @trigtech;
         pref.splitting = false;
         if ( numel(dom) > 2 )
             error('CHEBFUN:parseInputs:periodic', ...
