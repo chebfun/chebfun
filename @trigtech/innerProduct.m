@@ -1,9 +1,9 @@
 function out = innerProduct(f, g)
-%INNERPRODUCT   Compute the inner product of two FOURTECH objects.
+%INNERPRODUCT   Compute the inner product of two TRIGTECH objects.
 %   INNERPRODUCT(F, G) returns the L2 inner product (on [-1,1]) of the two
-%   FOURTECH objects F and G (conjugate linear in F).
+%   TRIGTECH objects F and G (conjugate linear in F).
 %
-%   If F and/or G are array-valued FOURTECH objects, then the result is a matrix
+%   If F and/or G are array-valued TRIGTECH objects, then the result is a matrix
 %   whose i,j entry is the inner product of the ith column of F with the jth
 %   column of G.
 
@@ -16,9 +16,9 @@ if ( isempty(f) || isempty(g) )
     return
 end
 
-if ( ~isa(f, 'fourtech') || ~isa(g, 'fourtech') )
-    error('CHEBFUN:FOURTECH:innerProduct:input', ...
-        'innerProduct() only operates on two FOURTECH objects.');
+if ( ~isa(f, 'trigtech') || ~isa(g, 'trigtech') )
+    error('CHEBFUN:TRIGTECH:innerProduct:input', ...
+        'innerProduct() only operates on two TRIGTECH objects.');
 end
 
 % Prolong to sum of current lengths (so that quadrature is exact):

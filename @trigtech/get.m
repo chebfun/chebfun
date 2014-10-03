@@ -1,13 +1,13 @@
 function out = get(f, prop)
-%GET   GET method for the FOURTECH class
+%GET   GET method for the TRIGTECH class
 %   P = GET(F, PROP) returns the property P specified in the string PROP from
-%   the FOURTECH F.  The string PROP may be the name of a FOURTECH property (see
-%   the FOURTECH classdef files for lists) or any of the following strings:
+%   the TRIGTECH F.  The string PROP may be the name of a TRIGTECH property (see
+%   the TRIGTECH classdef files for lists) or any of the following strings:
 %       'POINTS'          - Equally spaced points where F is sampled.
-%       'VALUES'          - Values of F at Fourier points.
+%       'VALUES'          - Values of F at trig points.
 %       'LVAL'            - Value of F at -1.
 %       'RVAL'            - Value of F at +1.
-%       'TECH'            - Handle to the FOURTECH constructor. *
+%       'TECH'            - Handle to the TRIGTECH constructor. *
 %
 % See also CHEBTECH, CHEBTECH2.
 
@@ -25,7 +25,7 @@ switch prop
         % Allow access to any of the properties of F via GET:
         out = f.(prop);
     case 'points'
-        % Get the Fourier grid corresponding to the VALUES:
+        % Get the trigier grid corresponding to the VALUES:
         out = f.points();
     case 'lval'
         % The value at -1:
@@ -35,10 +35,10 @@ switch prop
         out = feval(f, 1);
     case 'tech'
         % TODO: Return function handle, or empty instance of the tech?
-        out = @fourtech;        
+        out = @trigtech;        
     otherwise
-        error('CHEBFUN:FOURTECH:GET:proname', ...
-            'Unknown property name ''%s'' for object of type fourtech.', prop);
+        error('CHEBFUN:TRIGTECH:GET:proname', ...
+            'Unknown property name ''%s'' for object of type trigtech.', prop);
 end
 
 end

@@ -1,5 +1,5 @@
 function out = isreal(f)
-%ISREAL   True for real FOURTECH.
+%ISREAL   True for real TRIGTECH.
 %   ISREAL(F) returns TRUE if F does not have an imaginary part and FALSE
 %   otherwise.
 %

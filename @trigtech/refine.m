@@ -58,7 +58,7 @@ function [values, giveUp] = refineResampling(op, values, pref)
     end
    
     % [TODO]: Allow "first-kind" fourier points.
-    x = fourpts(n);    
+    x = trigpts(n);    
 
     % Evaluate the operator:
     values = feval(op, x);
@@ -92,7 +92,7 @@ function [values, giveUp] = refineNested(op, values, pref)
         end
         
         % "2nd-kind" Fourier points:
-        x = fourpts(n);
+        x = trigpts(n);
         % Take every 2nd entry:
         x = x(2:2:n);
 

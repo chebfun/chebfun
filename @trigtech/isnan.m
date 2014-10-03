@@ -1,5 +1,5 @@
 function out = isnan(f)
-%ISNAN   Test if a FOURTECH has any NaN values.
+%ISNAN   Test if a TRIGTECH has any NaN values.
 %   ISNAN(F) returns TRUE if F has any NaN values and FALSE otherwise.
 %
 % See also ISFINITE, ISINF.

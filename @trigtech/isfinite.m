@@ -1,5 +1,5 @@
 function out = isfinite(f)
-%ISFINITE   Test if a FOURTECH is bounded.
+%ISFINITE   Test if a TRIGTECH is bounded.
 %   ISFINITE(F) returns FALSE if F has any infinite values and TRUE otherwise.
 %
 % See also ISINF, ISNAN.

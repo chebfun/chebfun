@@ -1,5 +1,5 @@
 function f = imag(f)
-%IMAG   Imaginary part of a FOURTECH.
+%IMAG   Imaginary part of a TRIGTECH.
 %   IMAG(F) is the imaginary part of F.
 %
 % See also REAL, ISREAL, CONJ.
@@ -8,7 +8,7 @@ function f = imag(f)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isreal(f) )
-    % Input was real, so output a zero FOURTECH:
+    % Input was real, so output a zero TRIGTECH:
     data.vscale = f.vscale;
     data.hscale = f.hscale;
     f = f.make(zeros(1, size(f.values, 2)), data);

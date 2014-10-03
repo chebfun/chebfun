@@ -1,13 +1,13 @@
-% Test file for fourtech/diffmat.m
+% Test file for trigtech/diffmat.m
 
 function pass = test_diffmat(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fourtech.techPref();
+    pref = trigtech.techPref();
 end
 
-testclass = fourtech();
+testclass = trigtech();
 
 %% 1st-order derivative:
 
@@ -17,10 +17,10 @@ f = testclass.make(op, [], pref);
 n = length(f);
 if ( ~rem(n,2) )
     n = n+1;
-    x = fourpts(n);
+    x = trigpts(n);
     v = op(x);
 else
-    x = fourpts(n);
+    x = trigpts(n);
     v = get(f, 'values');
 end
 D = testclass.diffmat(n, 1);
@@ -34,10 +34,10 @@ f = testclass.make(@(x) cos(a*pi*sin(b*pi*x)), [], pref);
 n = length(f);
 if ( ~rem(n,2) )
     n = n+1;
-    x = fourpts(n);
+    x = trigpts(n);
     v = op(x);
 else
-    x = fourpts(n);
+    x = trigpts(n);
     v = get(f, 'values');
 end
 D = testclass.diffmat(n, 1);
@@ -52,10 +52,10 @@ f = testclass.make(op, [], pref);
 n = length(f);
 if ( rem(n,2) )
     n = n+1;
-    x = fourpts(n);
+    x = trigpts(n);
     v = op(x);
 else
-    x = fourpts(n);
+    x = trigpts(n);
     v = get(f, 'values');
 end
 D = testclass.diffmat(n, 1);
@@ -70,10 +70,10 @@ f = testclass.make(op, [], pref);
 n = length(f);
 if ( rem(n,2) )
     n = n+1;
-    x = fourpts(n);
+    x = trigpts(n);
     v = op(x);
 else
-    x = fourpts(n);
+    x = trigpts(n);
     v = get(f, 'values');
 end
 D = testclass.diffmat(n, 1);
@@ -87,7 +87,7 @@ pass(4) = ( norm(err, inf) < 1e3*f.vscale.*f.epslevel );
 op = @(x) exp(cos(4*pi*x))-1;
 f = testclass.make(op, [], pref);
 n = length(f);
-x = fourpts(n);
+x = trigpts(n);
 v = get(f, 'values');
 D2 = testclass.diffmat(n, 2);
 df2 = D2*v;
@@ -96,7 +96,7 @@ err = df2_exact(x) - df2;
 pass(5) = ( norm(err, inf) < 2e4*f.vscale.*f.epslevel );
 
 n = n+1;
-x = fourpts(n);
+x = trigpts(n);
 v = op(x);
 D2 = testclass.diffmat(n, 2);
 df2 = D2*v;
@@ -109,7 +109,7 @@ pass(6) = ( norm(err, inf) < 2e4*f.vscale.*f.epslevel );
 op = @(x) sin(pi*x);
 f = testclass.make(op, [], pref);
 n = length(f);
-x = fourpts(n);
+x = trigpts(n);
 v = get(f, 'values');
 D5 = testclass.diffmat(n, 5);
 df5 = D5*v;
@@ -118,7 +118,7 @@ err = df5_exact(x) - df5;
 pass(7) = ( norm(err, inf) < 1e3*f.vscale.*f.epslevel );
 
 n = n+1;
-x = fourpts(n);
+x = trigpts(n);
 v = op(x);
 D5 = testclass.diffmat(n, 5);
 df5 = D5*v;
@@ -129,7 +129,7 @@ pass(8) = ( norm(err, inf) < 1e2*f.vscale.*f.epslevel );
 op = @(x) sin(pi*x);
 f = testclass.make(op, [], pref);
 n = length(f);
-x = fourpts(n);
+x = trigpts(n);
 v = get(f, 'values');
 D6 = testclass.diffmat(n, 6);
 df6 = D6*v;
@@ -138,7 +138,7 @@ err = df6_exact(x) - df6;
 pass(9) = ( norm(err, inf) < 1e3*f.vscale.*f.epslevel );
 
 n = n+1;
-x = fourpts(n);
+x = trigpts(n);
 v = op(x);
 D6 = testclass.diffmat(n, 6);
 df6 = D6*v;

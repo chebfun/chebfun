@@ -1,11 +1,11 @@
-function [x, w] = fourpts(n, dom)
-%FOURPTS    Fourier points.
-%   FOURPTS(N) returns N equispaced points in [-1, 1).
+function [x, w] = trigpts(n, dom)
+%TRIGPTS    Equally spaced points.
+%   TRIGPTS(N) returns N equispaced points in [-1, 1).
 %
-%   FOURPTS(N, D), where D is vector of length 2 and N is a scalar integer,
+%   TRIGPTS(N, D), where D is vector of length 2 and N is a scalar integer,
 %   returns N equispaced points in the interval [D(1),D(2)). 
 %
-%   [X, W] = FOURPTS(N) or [X, W] = FOURPTS(N, D) returns also a row vector 
+%   [X, W] = TRIGPTS(N) or [X, W] = TRIGPTS(N, D) returns also a row vector 
 %   of the weights for the trapezoidal rule.
 %
 % See also CHEBPTS, LEGPTS, JACPTS, LAGPTS, and HERMPTS.
@@ -26,7 +26,7 @@ x = x./pi;
 x(end) = [];
 
 if ( nargout > 1 )
-    w = fourtech.quadwts(n);
+    w = trigtech.quadwts(n);
 end
 
 if ( nargin > 1 )

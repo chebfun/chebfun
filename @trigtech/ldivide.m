@@ -1,5 +1,5 @@
 function f = ldivide(f, c, varargin)
-%.\   Left array divide for a FOURTECH.
+%.\   Left array divide for a TRIGTECH.
 %   C .\ F is equivalent to F ./ C.
 %
 % See also MLDIVIDE, RDIVIDE, TIMES.

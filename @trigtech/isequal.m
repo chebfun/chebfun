@@ -1,6 +1,6 @@
 function out = isequal(f, g)
-%ISEQUAL   Test if FOURTECH objects are equal.
-%   ISEQUAL(F, G) returns TRUE if the FOURTECH objects F and G have the same
+%ISEQUAL   Test if TRIGTECH objects are equal.
+%   ISEQUAL(F, G) returns TRUE if the TRIGTECH objects F and G have the same
 %   length, values, and coefficients. They may have different values of vscale
 %   and epslevel.
 
