@@ -1,19 +1,19 @@
 function f = compose(f, op, g, data, pref)
-%COMPOSE   Composition of FOURTECH objects.
-%   COMPOSE(F, OP) returns a FOURTECH representing OP(F) where F is also a
-%   FOURTECH object, and OP is a function handle.
+%COMPOSE   Composition of TRIGTECH objects.
+%   COMPOSE(F, OP) returns a TRIGTECH representing OP(F) where F is also a
+%   TRIGTECH object, and OP is a function handle.
 %
-%   COMPOSE(F, OP, G) returns a FOURTECH representing OP(F, G) where F and G
-%   are FOURTECH objects, and OP is a function handle.
+%   COMPOSE(F, OP, G) returns a TRIGTECH representing OP(F, G) where F and G
+%   are TRIGTECH objects, and OP is a function handle.
 %
-%   FOURTECH(F, G) returns a FOURTECH representing G(F), where both F and G are
-%   also FOURTECH objects. If the range of F is not in [-1, 1] then an error is
+%   TRIGTECH(F, G) returns a TRIGTECH representing G(F), where both F and G are
+%   also TRIGTECH objects. If the range of F is not in [-1, 1] then an error is
 %   thrown.
 %
 %   COMPOSE(F, OP, G, PREF) or COMPOSE(F, OP, [], PREF) uses the options passed
-%   by the preferences structure PREF to build the returned FOURTECH. In
+%   by the preferences structure PREF to build the returned TRIGTECH. In
 %   particular, one can set PREF.REFINEMENTFUNCTION to be a function which takes
-%   advantage of F and possibly OP or G being FOURTECH objects.
+%   advantage of F and possibly OP or G being TRIGTECH objects.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -43,7 +43,7 @@ pref.sampleTest = false;
 
 if ( nfuns == 2 )
     if ( size(f, 2) ~= size(g, 2) )
-        error('CHEBFUN:FOURTECH:compose:dim', ...
+        error('CHEBFUN:TRIGTECH:compose:dim', ...
               'Matrix dimensions must agree.')
     end
 
@@ -52,15 +52,15 @@ if ( nfuns == 2 )
     pref.minSamples = max(pref.minSamples, length(g));
     pref.eps = max(pref.eps, g.epslevel);
     
-elseif ( isa(op, 'fourtech') )
-    % If OP is a FOURTECH, we grab some of its data:
+elseif ( isa(op, 'trigtech') )
+    % If OP is a TRIGTECH, we grab some of its data:
     if ( (size(op, 2) > 1) && (size(f, 2) > 1) )
-        error('CHEBFUN:FOURTECH:compose:arrval', ...
-              'Cannot compose two array-valued FOURTECH objects.')
+        error('CHEBFUN:TRIGTECH:compose:arrval', ...
+              'Cannot compose two array-valued TRIGTECH objects.')
     end
 
     if ( norm(f.values(:), inf) > 1 + eps )
-        error('CHEBFUN:FOURTECH:compose:range', ...
+        error('CHEBFUN:TRIGTECH:compose:range', ...
               'The range of f is not contained in the domain of g.')
     end
 
@@ -79,7 +79,7 @@ if ( ischar(pref.refinementFunction) )
     end
 end
 
-% Make FOURTECH object:
+% Make TRIGTECH object:
 if ( ~isfield(data, 'vscale') || isempty(data.vscale) )
     data.vscale = vscale;
 end
@@ -93,7 +93,7 @@ f = simplify(f);
 
 % Throw a warning:
 if ( ~f.epslevel )
-    warning('FOURTECH:FOURTECH:compose:convfail', ...
+    warning('TRIGTECH:TRIGTECH:compose:convfail', ...
         [ 'Composition with ', func2str(op), ...
           ' failed to converge with ', int2str(length(f)), ' points.' ]);
 end

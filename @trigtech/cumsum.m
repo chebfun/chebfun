@@ -1,6 +1,6 @@
 function f = cumsum(f, m, dim)
-%CUMSUM   Indefinite integral of a FOURTECH.
-%   CUMSUM(F) is the indefinite integral of the FOURTECH F, whose mean
+%CUMSUM   Indefinite integral of a TRIGTECH.
+%   CUMSUM(F) is the indefinite integral of the TRIGTECH F, whose mean
 %   is zero, with the constant of integration chosen so that F(-1) = 0.
 %   If the mean of F is not zero then an error is thrown since the indefinite
 %   integral would no longer be periodic.
@@ -11,7 +11,7 @@ function f = cumsum(f, m, dim)
 %   Thus, CUMSUM(F, 2) is equivalent to CUMSUM(CUMSUM(F)).
 %
 %   CUMSUM(F, M, 2) will take the Mth cumulative sum over the columns F an
-%   array-valued FOURTECH.
+%   array-valued TRIGTECH.
 %
 % See also DIFF, SUM.
 
@@ -19,21 +19,21 @@ function f = cumsum(f, m, dim)
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% If the FOURTECH G of length n is represented as
+% If the TRIGTECH G of length n is represented as
 %       \sum_{k=-(n-1)/2}^{(n-1)/2} c_k exp(i*pi*kx)
-% its integral is represented with a FOURTECH of length n given by
+% its integral is represented with a TRIGTECH of length n given by
 %       \sum_{k=-(n-1)/2}^{(n-1)/2} b_k exp(i*pi*kx)
 % where b_0 is determined from the constant of integration as
 %       b_0 = \sum_{k=-(n-1)/2}^{(n-1)/2} (-1)^k/(i*pi*k) c_k;
 % with c_0 := 0. The other coefficients are given by
 %       b_k = c_k/(i*pi*k). 
 %
-% If the FOURTECH G of length n is represented as
+% If the TRIGTECH G of length n is represented as
 %       \sum_{k=-n/2+1}^{n/2-1} c_k exp(i*pi*kx) + c(n/2)cos(n*pi/2x)
 % then first set c(n) = 0.5*c(n) and define a = [0.5*c(n/2) c] so that we
 % have the equivalent expansion:
 %       \sum_{k=-n/2}^{n/2} a_k exp(i*pi*kx)
-% The integral of this is represented with a FOURTECH of length n+1 given by
+% The integral of this is represented with a TRIGTECH of length n+1 given by
 %       \sum_{k=-n/2}^{n/2} b_k exp(i*pi*kx)
 % where b_0 is determined from the constant of integration as
 %       b_0 = \sum_{k=-n/2}^{n/2} (-1)^k/(i*pi*k) a_k;
@@ -41,7 +41,7 @@ function f = cumsum(f, m, dim)
 %       b_k = a_k/(ik).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Trivial case of an empty FOURTECH:
+% Trivial case of an empty TRIGTECH:
 if ( isempty(f) )
     return
 end
@@ -78,10 +78,10 @@ function f = cumsumContinuousDim(f, m)
     
     fIsEven = mod(numCoeffs,2) == 0;
 
-    % Check that the mean of the fourtech is zero.  If it is not, then
+    % Check that the mean of the TRIGtech is zero.  If it is not, then
     % throw an error.
     if any(abs(c((numCoeffs+1-fIsEven)/2,:)) > f.vscale.*f.epslevel)
-        error('CHEBFUN:FOURTECH:cumsum:meanNotZero', 'Indefinite integrals are only possible for FOURTECH objects with zero mean.');
+        error('CHEBFUN:TRIGTECH:cumsum:meanNotZero', 'Indefinite integrals are only possible for TRIGTECH objects with zero mean.');
     end
     
     % Force the mean to be exactly zero.
@@ -113,7 +113,7 @@ function f = cumsumContinuousDim(f, m)
     % Fix the constant term.    
     c(highestDegree+1,:) = -sum(bsxfun(@times,c,(-1).^sumIndicies));
     
-    % If the original fourtech had an even number of coefficients then
+    % If the original TRIGTECH had an even number of coefficients then
     % shrink the coefficent vector corresponding to its indefinite integral
     % back to its original size since it was increased by one above to make
     % the integration code slicker.

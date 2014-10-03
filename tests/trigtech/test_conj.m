@@ -1,12 +1,12 @@
-% Test file for fourtech/conj.m
+% Test file for trigtech/conj.m
 
 function pass = test_conj(pref)
 
 if ( nargin < 1 )
-    pref = fourtech.techPref();
+    pref = trigtech.techPref();
 end
 
-testclass = fourtech();
+testclass = trigtech();
 
 % Test a scalar-valued function:
 f = testclass.make(@(x) cos(pi*x) + 1i*sin(pi*x), [], pref);
