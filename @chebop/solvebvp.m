@@ -99,7 +99,7 @@ x = chebfun(@(x) x, dom);
 [N, L, pref] = determinePref(N, L, isPrefGiven, pref);
 
 % Clear periodic bounadry conditions.
-[N, L, pref] = clearPeriodicBC(N, L, pref);
+[N, L, pref] = clearPeriodicBCs(N, L, pref);
 
 warnState = warning();
 [ignored, lastwarnID] = lastwarn(); %#ok<ASGLU>

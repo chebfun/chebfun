@@ -253,7 +253,7 @@ classdef (InferiorClasses = {?double}) chebop
         [N, L, pref] = determinePref(N, L, isPrefGiven, pref)
         
         % Clear periodic bounadry conditions.
-        [N, L, pref] = clearPeriodicBC(N, L, pref)
+        [N, L, pref] = clearPeriodicBCs(N, L, pref)
         
     end
     

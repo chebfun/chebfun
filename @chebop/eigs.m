@@ -74,7 +74,7 @@ end
 [N, L, pref] = determinePref(N, L, isPrefGiven, pref);
 
 % Clear periodic bounadry conditions.
-[N, L, pref] = clearPeriodicBC(N, L, pref);
+[N, L, pref] = clearPeriodicBCs(N, L, pref);
 
 % Add the preferences in vargarin to pass them to LINOP/EIGS.
 if ( isPrefGiven )

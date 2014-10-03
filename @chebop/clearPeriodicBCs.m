@@ -1,6 +1,6 @@
-function [N, L, pref] = clearPeriodicBC(N, L, pref)
-%CLEARPERIODICBC    Clear periodic bounadry conditions.
-%   [N, L, PREF] = CLEARPERIODICBC(N, L, PREF) clears N.BC, L.CONSTRAINT,
+function [N, L] = clearPeriodicBCs(N, L, pref)
+%CLEARPERIODICBCS    Clear periodic bounadry conditions.
+%   [N, L, PREF] = CLEARPERIODICBCS(N, L, PREF) clears N.BC, L.CONSTRAINT,
 %   and L.CONTINUITY, if PREF.DISCRETIZATION is FOURCOLLOC.
 %
 % See also CHEBOP/DETERMINEPREF, CHEBOP/SOLVEBVP, CHEBOP/EIGS.
@@ -20,7 +20,7 @@ if ( isequal(pref.discretization, @fourcolloc) )
         L.constraint = [];
         L.continuity = [];
     else
-        error('CHEBFUN:CHEBOP:solvebvp:bc', ...
+        error('CHEBFUN:CHEBOP:clearPeriodicBCs:nonperiodic', ...
             'FOURCOLLOC only works with periodic boundary conditions.');
     end
 end
