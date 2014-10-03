@@ -95,11 +95,13 @@ x = chebfun(@(x) x, dom);
 % Linearize and attach preferences.
 [L, residual, isLinear] = linearize(N, u0, x);
 
-% Determine the CHEBOPPREF for periodic boundary conditions.
-[N, L, pref] = determinePref(N, L, isPrefGiven, pref);
+% Determine the discretization.
+pref = determineDiscretization(N, L, isPrefGiven, pref);
 
-% Clear periodic bounadry conditions.
-[N, L, pref] = clearPeriodicBCs(N, L, pref);
+% Clear boundary conditions if using FOURCOLLOC.
+if ( isequal(pref.discretization, @fourcolloc) )
+    [N, L] = clearPeriodicBCs(N, L);
+end
 
 warnState = warning();
 [ignored, lastwarnID] = lastwarn(); %#ok<ASGLU>
