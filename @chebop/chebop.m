@@ -248,8 +248,12 @@ classdef (InferiorClasses = {?double}) chebop
         % Solve a nonlinear problem posed with CHEBOP
         [u, info] = solvebvpNonlinear(N, rhs, L, u0, res, pref, displayInfo)
         
-        % Adjust the preferences for periodic boundary conditions.
-        [N, L, pref] = adjustPref(N, L, isPrefGiven, pref)
+        % Determine preferences for a CHEBOP object with periodic boundary
+        % conditions.
+        [N, L, pref] = determinePref(N, L, isPrefGiven, pref)
+        
+        % Clear periodic bounadry conditions.
+        [N, L, pref] = clearPeriodicBC(N, L, pref)
         
     end
     
