@@ -1,13 +1,13 @@
-% Test file for fourtech/sum.m
+% Test file for trigtech/sum.m
 
 function pass = test_sum(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fourtech.techPref();
+    pref = trigtech.techPref();
 end
 
-testclass = fourtech();
+testclass = trigtech();
 
 %%
 % Spot-check integrals for a couple of functions.
@@ -60,7 +60,7 @@ pass(8) = (abs(sum(dg) - (feval(g, 1) - feval(g, -1))) < ...
     max(tol_dg, tol_g));
 
 %%
-% Check operation for array-valued FOURTECH objects.
+% Check operation for array-valued TRIGTECH objects.
 f = testclass.make(@(x) [sin(pi*x) 1-cos(1e2*pi*x) sin(cos(pi*x))], [], pref);
 I = sum(f);
 I_exact = [0 2 0];

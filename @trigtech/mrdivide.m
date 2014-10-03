@@ -1,9 +1,9 @@
 function X = mrdivide(A, B)
-%/   Right matrix divide for a FOURTECH.
-%   A/B divides the FOURTECH A by a scalar B. More generally, it gives the
+%/   Right matrix divide for a TRIGTECH.
+%   A/B divides the TRIGTECH A by a scalar B. More generally, it gives the
 %   least-squares solution (with respect to the continuous L^2 norm) to X*B = A
-%   when either A or B is a FOURTECH.  Note that in the latter case, formally
-%   it is X.' that is returned, as FOURTECH objects are always columns.
+%   when either A or B is a TRIGTECH.  Note that in the latter case, formally
+%   it is X.' that is returned, as TRIGTECH objects are always columns.
 %
 % See also QR, RDIVIDE, MLDIVIDE.
 
@@ -17,9 +17,9 @@ function X = mrdivide(A, B)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if ( (size(B, 2) ~= size(A, 2)) && ~(isa(B, 'double') && isscalar(B)) )
-    error('CHEBFUN:FOURTECH:mrdivide:size', 'Matrix dimensions must agree.');
+    error('CHEBFUN:TRIGTECH:mrdivide:size', 'Matrix dimensions must agree.');
     
-elseif ( isa(B, 'double') )  % FOURTECH / double.
+elseif ( isa(B, 'double') )  % TRIGTECH / double.
     if ( ~any(B(:)) )  
         X = A.make(NaN(1, size(A, 2)));
     elseif ( isscalar(B) )
@@ -35,18 +35,18 @@ elseif ( isa(B, 'double') )  % FOURTECH / double.
         X = Q*(R/B);
     end
     
-elseif ( isa(A, 'double') )  % double / FOURTECH.
-    % Here A is a double and B is a FOURTECH. Do least squares via QR:
+elseif ( isa(A, 'double') )  % double / TRIGTECH.
+    % Here A is a double and B is a TRIGTECH. Do least squares via QR:
     [Q, R] = qr(B, 0);
     
     % Return the transpose for the output.
     X = Q*(A/R).';
     
-elseif ( isa(B, 'fourtech') && isa(A, 'fourtech') )
-    error('CHEBFUN:FOURTECH:mrdivide:fourtechDivFourtech', ...
-        'Use ./ to divide by a FOURTECH.');
+elseif ( isa(B, 'trigtech') && isa(A, 'trigtech') )
+    error('CHEBFUN:TRIGTECH:mrdivide:trigtechDivTrigtech', ...
+        'Use ./ to divide by a TRIGTECH.');
 else
-    error('CHEBFUN:FOURTECH:mrdivide:badArg', '%s/%s is not well-defined.', ...
+    error('CHEBFUN:TRIGTECH:mrdivide:badArg', '%s/%s is not well-defined.', ...
         class(A), class(B));
 end
 

@@ -1,7 +1,7 @@
 function g = power(f, b)
-%.^   FOURTECH power.
-%   F.^G returns a FOURTECH F to the scalar power G, a scalar F to the FOURTECH
-%   power G, or a FOURTECH F to the FOURTECH power G. F and or G may be complex.
+%.^   TRIGTECH power.
+%   F.^G returns a TRIGTECH F to the scalar power G, a scalar F to the TRIGTECH
+%   power G, or a TRIGTECH F to the TRIGTECH power G. F and or G may be complex.
 %
 %   This function assumes that the curve traced out by F in the complex plane
 %   both (1) does not come too close to zero and (2) does not cross over the
@@ -20,14 +20,14 @@ function g = power(f, b)
 pref = f.techPref();
 
 % Simply call the compose function:
-if ( isa(f, 'fourtech') && isa(b, 'fourtech') )
-    % Both F and G are FOURTECHs:
+if ( isa(f, 'trigtech') && isa(b, 'trigtech') )
+    % Both F and G are TRIGTECHs:
 	g = compose(f, @power, b, pref);
-elseif ( isa(f, 'fourtech') )
-    % F is FOURTECH and G is constant: 
+elseif ( isa(f, 'trigtech') )
+    % F is TRIGTECH and G is constant: 
 	g = compose(f, @(f) power(f, b), [], pref);
 else
-    % F is constant and G is FOURTECH: 
+    % F is constant and G is TRIGTECH: 
 	g = compose(b, @(b) power(f, b), [], pref);
 end
 

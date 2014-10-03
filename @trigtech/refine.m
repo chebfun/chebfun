@@ -1,12 +1,12 @@
 function [values, giveUp] = refine(op, values, pref)
-%REFINE   Refinement method for FOURTECH construction.
+%REFINE   Refinement method for TRIGTECH construction.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Obtain some preferences:
 if ( nargin < 3 )
-    pref = fourtech.techPref();
+    pref = trigtech.techPref();
 end
 
 % No values were given:
@@ -26,7 +26,7 @@ elseif ( strcmpi(refFunc, 'resampling') )
     [values, giveUp] = refineResampling(op, values, pref);
 else
     % User defined refinement function:
-    error('CHEBFUN:FOURTECH:refine', ...
+    error('CHEBFUN:TRIGTECH:refine', ...
           'No user defined refinement options allowed')
 end
     
@@ -57,7 +57,7 @@ function [values, giveUp] = refineResampling(op, values, pref)
         giveUp = false;
     end
    
-    % [TODO]: Allow "first-kind" fourier points.
+    % [TODO]: Allow "first-kind" trigonometric points.
     x = trigpts(n);    
 
     % Evaluate the operator:
@@ -91,7 +91,7 @@ function [values, giveUp] = refineNested(op, values, pref)
             giveUp = false;
         end
         
-        % "2nd-kind" Fourier points:
+        % "2nd-kind" trigonometric points:
         x = trigpts(n);
         % Take every 2nd entry:
         x = x(2:2:n);

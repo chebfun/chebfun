@@ -1,17 +1,17 @@
-% Test file for fourtech/innerProduct.m
+% Test file for trigtech/innerProduct.m
 
 function pass = test_innerProduct(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fourtech.techPref();
+    pref = trigtech.techPref();
 end
 
 % Fixed arbitrary numbers to use as multiplicative constants.
 alpha = -0.194758928283640 + 0.075474485412665i;
 beta = -0.526634844879922 - 0.685484380523668i;
 
-testclass = fourtech();
+testclass = trigtech();
 
 %%
 % Spot-check a few known results.
@@ -75,7 +75,7 @@ n2vals = [nf2 ; ng2 ; nh2];
 pass(9) = isreal(n2vals) && all(n2vals >= 0);
 
 %% 
-% Check operation for array-valued fourtech objects.
+% Check operation for array-valued trigtech objects.
 
 f = testclass.make(@(x) [cos(pi*sin(2*pi*x)) exp(sin(2*pi*x)) sin(pi*sin(pi*x))]);
 g = testclass.make(@(x) [exp(cos(pi*x)) exp(-sin(2*pi*x)) cos(pi*x)]);
@@ -90,13 +90,13 @@ pass(10) = norm(ip(:) - exact(:), inf) < max(tol_f, tol_g);
 %%
 % Check error conditions.
 
-% Can't take the inner product of a fourtech and a non-chebtech.
+% Can't take the inner product of a trigtech and a non-chebtech.
 try
     ip = innerProduct(f, 2); %#ok<NASGU>
     pass(11) = false;
 catch ME
     pass(11) = strcmp(ME.identifier, ...
-        'CHEBFUN:FOURTECH:innerProduct:input');
+        'CHEBFUN:TRIGTECH:innerProduct:input');
 end
 
 end

@@ -1,13 +1,13 @@
-% Test file for fourtech/isfinite.m
+% Test file for trigtech/isfinite.m
 
 function pass = test_isfinite(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fourtech.techPref();
+    pref = trigtech.techPref();
 end
 
-testclass = fourtech();
+testclass = trigtech();
 
 %%
 % Test a scalar-valued function.

@@ -1,5 +1,5 @@
 function D = diffmat(n, p)
-%DIFFMAT  Fourier differentiation matrix.
+%DIFFMAT  Trigonometric differentiation matrix.
 %   D = DIFFMAT(N) is the matrix that maps function values at N equally-spaced 
 %   points in [0 2*pi) to values of the derivative of the Fourier interpolant 
 %   at those points.

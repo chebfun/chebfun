@@ -1,6 +1,6 @@
 function out = roots(f, varargin)
-%ROOTS   Roots of a FOURTECH in the interval [-1,1].
-%   ROOTS(F) returns the real roots of the FOURTECH F in the interval [-1,1].
+%ROOTS   Roots of a TRIGTECH in the interval [-1,1].
+%   ROOTS(F) returns the real roots of the TRIGTECH F in the interval [-1,1].
 %
 %   ROOTS(F, PROP1, VAL1, PROP2, VAL2, ...) modifies the default ROOTS
 %   properties. The PROPs (strings) and VALs may be any of the following:
@@ -13,7 +13,7 @@ function out = roots(f, varargin)
 %        0  - Compute roots without interval subdivision (slower).
 %       [1] - Subdivide until length(F) < 50. (causes additional complex roots).
 %
-%   If F is an array-valued FOURTECH then there is no reason to expect each
+%   If F is an array-valued TRIGTECH then there is no reason to expect each
 %   column to have the same number of roots. In order to return a useful output,
 %   the roots of each column are computed and then padded with NaNs so that a
 %   matrix may be returned. The columns of R = ROOTS(F) correspond to the
@@ -30,13 +30,13 @@ end
 
 % Here is the present strategy:
 % 
-% 1. The default option is to simply create a chebtech of the FOURTECH and
+% 1. The default option is to simply create a chebtech of the TRIGTECH and
 %    call roots on it. 
 %
 % 2. If the option is to find 'all' or 'complex' roots then we simply use
 %    matlab's built-in roots routine.
 %
-% [TODO]: Figure out a more elegant way to find roots of a FOURTECH.
+% [TODO]: Figure out a more elegant way to find roots of a TRIGTECH.
 
 useMatlabsRootsCommand = false;
 pruneRoots = false;
@@ -77,7 +77,7 @@ if ( useMatlabsRootsCommand )
        
         % Prune the roots if required.  
         if ( pruneRoots )
-            % For fourtech pruning means only keep the roots that fit in
+            % For trigtech pruning means only keep the roots that fit in
             % the strip of analyticity (estimated using 10*machine eps).
             % This is the analog to what chebtech does by pruning to the
             % Bernstein ellipse.  The distance from the real-axis of the

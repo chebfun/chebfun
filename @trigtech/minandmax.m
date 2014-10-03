@@ -1,8 +1,8 @@
 function [vals, pos] = minandmax(f)
 %MINANDMAX   Global minimum and maximum on [-1,1].
 %   VALS = MINANDMAX(F) returns a 2-vector VALS = [MIN(F); MAX(F)] with the
-%   global minimum and maximum of the FOURTECH F on [-1,1]. If F is a
-%   array-valued FOURTECH, VALS is a 2-by-N matrix, where N is the number of
+%   global minimum and maximum of the TRIGTECH F on [-1,1]. If F is a
+%   array-valued TRIGTECH, VALS is a 2-by-N matrix, where N is the number of
 %   columns of F. VALS(1, K) is the global minimum of the Kth column of F on
 %   [-1, 1], and VALS(2, K) is the global maximum of the same.
 %
@@ -20,7 +20,7 @@ function [vals, pos] = minandmax(f)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Simply create a CHEBTECH of the FOURTECH and call minandmax on it.
+% Simply create a CHEBTECH of the TRIGTECH and call minandmax on it.
 % We know f will be smooth since it is periodic, thus CHEBTECH should be
 % able to beautifully compute the roots.
 

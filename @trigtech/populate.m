@@ -1,6 +1,6 @@
 function f = populate(f, op, vscale, hscale, pref)
-%POPULATE   Populate a FOURTECH class with values.
-%   F = F.POPULATE(OP) returns a FOURTECH representation populated with values
+%POPULATE   Populate a TRIGTECH class with values.
+%   F = F.POPULATE(OP) returns a TRIGTECH representation populated with values
 %   F.VALUES of the function OP evaluated on an equally spaced grid. The fields
 %   F.ISHAPPY and F.EPSLEVEL indicate whether the representation is deemed
 %   'happy' and to what accuracy (see HAPPINESSCHECK.m). Essentially this means
@@ -20,14 +20,14 @@ function f = populate(f, op, vscale, hscale, pref)
 %   OP evaluated to.
 %
 %   F.POPULATE(OP, VSCALE, HSCALE, PREF) enforces any additional preferences
-%   specified in the preference structure PREF (see FOURTECH.TECHPREF).
+%   specified in the preference structure PREF (see TRIGTECH.TECHPREF).
 %
 %   F.POPULATE(VALUES, ...) (or F.POPULATE({VALUES, COEFFS}, ...)) populates F
 %   non-adaptively with the VALUES (and COEFFS) passed. These values are still
 %   tested for happiness in the same way as described above, but the length of
 %   the representation is not altered.
 %
-% See also FOURTECH, TECHPREF, HAPPINESSCHECK.
+% See also TRIGTECH, TECHPREF, HAPPINESSCHECK.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -41,7 +41,7 @@ else
     f.hscale = hscale;
 end
 if ( nargin < 5 )
-    pref = fourtech.techPref();
+    pref = trigtech.techPref();
 end
 
 
@@ -86,7 +86,7 @@ f.values = [];
 rndval = feval(op,(2*rand-1));
 
 if any(isnan(rndval)) || any(isinf(rndval))
-    error('CHEBFUN:FOURTECH:populate:isNan','Cannot handle functions that evaluate to Inf or NaN.');
+    error('CHEBFUN:TRIGTECH:populate:isNan','Cannot handle functions that evaluate to Inf or NaN.');
 end
 
 f.isReal = false(size(rndval));
@@ -110,7 +110,7 @@ while ( 1 )
     valuesTemp(~isfinite(f.values)) = 0;
     vscale = max(vscale, max(abs(valuesTemp)));
     
-    % Compute the Fourier coefficients:
+    % Compute the trigonometric coefficients:
     coeffs = f.vals2coeffs(f.values);
     
     % Check for happiness:
@@ -129,7 +129,7 @@ while ( 1 )
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Update the vscale. %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Compute the 'true' vscale (as defined in FOURTECH classdef):
+% Compute the 'true' vscale (as defined in TRIGTECH classdef):
 vscaleOut = max(abs(f.values), [], 1);
 % Update vertical scale one last time:
 vscaleGlobal = max(vscale, vscaleOut);
@@ -144,7 +144,7 @@ ind = vscaleGlobal < epslevel;
 vscaleGlobal(ind) = epslevel(ind);
 epslevel = epslevel.*vscaleGlobal./vscaleOut;
     
-%%%%%%%%%%%%%%%%%%%%%%%%%% Assign to FOURTECH object. %%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%% Assign to TRIGTECH object. %%%%%%%%%%%%%%%%%%%%%%%%%%
 f.coeffs = coeffs;
 f.vscale = vscale;
 f.ishappy = ishappy;

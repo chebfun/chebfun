@@ -1,9 +1,9 @@
 function f = rdivide(f, c, pref)
-%./   Right array divide for a FOURTECH.
-%   F ./ C divides a FOURTECH F by an array C. If F is an array-valued FOURTECH
+%./   Right array divide for a TRIGTECH.
+%   F ./ C divides a TRIGTECH F by an array C. If F is an array-valued TRIGTECH
 %   with M columns, then C must be either a scalar or a 1xM array.
 %
-%   Alternatively C can be a FOURTECH and F can either be a FOURTECH with the
+%   Alternatively C can be a TRIGTECH and F can either be a TRIGTECH with the
 %   same number of columns as C or a scalar.  In this case, C must have no
 %   roots in [-1, 1], or else F ./ C may return garbage with no warning.  The
 %   division is performed column-wise.
@@ -19,12 +19,12 @@ if ( isa(c, 'double') )
     % This can never work (as size(f, 1) == inf):
     if ( (size(c, 1) > 1) || ...
            ( (numel(c) > 1) && (size(f.values, 2) ~= size(c, 2)) ) )
-        error('CHEBFUN:FOURTECH:rdivide:size', ...
+        error('CHEBFUN:TRIGTECH:rdivide:size', ...
             'Matrix dimensions must agree.');
     end
     
     if ( ~any(c(:)) )  
-        % Division by zero produces a NaN FOURTECH:
+        % Division by zero produces a NaN TRIGTECH:
         f = f.make(NaN(1, size(f, 2)));
     elseif ( numel(c) == 1 )
         % Scalar.
@@ -32,7 +32,7 @@ if ( isa(c, 'double') )
         f.coeffs = f.coeffs/c;      % Divide coeffs.
         f.vscale = f.vscale/abs(c); % Divide vscale.       
     else
-        % Array-valued FOURTECH.
+        % Array-valued TRIGTECH.
         n = size(f.values, 1);   
         f.values = f.values./repmat(c, n, 1);   % Divide values.
         f.coeffs = f.coeffs./repmat(c, n, 1);   % Divide coeffs.
@@ -45,22 +45,22 @@ if ( isa(c, 'double') )
     f.isReal = f.isReal & isreal(c);
     
 else
-    % Dividing by another fourtech is harder. Call COMPOSE.
+    % Dividing by another TRIGTECH is harder. Call COMPOSE.
     
     % Obtain preferences:
     if ( nargin < 3 )
-        pref = fourtech.techPref(); % c is a FOURTECH.
+        pref = trigtech.techPref(); % c is a TRIGTECH.
     end
     
     % Call COMPOSE.
-    if ( isa(f, 'fourtech') )   % Possibly FOURTECH / FOURTECH.
-        if ( isa(c, 'fourtech') )
+    if ( isa(f, 'trigtech') )   % Possibly TRIGTECH / TRIGTECH.
+        if ( isa(c, 'trigtech') )
             f = compose(f, @rdivide, c, pref);
         else
-            error('CHEBFUN:FOURTECH:rdivide:fourtechRdivideUnknown',...
-                'rdivide does not know how to divide a FOURTECH and a %s.', class(c));
+            error('CHEBFUN:TRIGTECH:rdivide:trigtechRdivideUnknown',...
+                'rdivide does not know how to divide a TRIGTECH and a %s.', class(c));
         end
-    else                       % DOUBLE / FOURTECH.
+    else                       % DOUBLE / TRIGTECH.
         op = @(x) f./x;
         f = compose(c, op, [], pref);
     end

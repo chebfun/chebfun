@@ -1,7 +1,7 @@
 function [Q, R, E] = qr(f, outputFlag)
-%QR   QR factorisation of an array-valued FOURTECH.
+%QR   QR factorisation of an array-valued TRIGTECH.
 %   [Q, R] = QR(F) returns a QR factorisation of F such that F = Q*R, where the
-%   FOURTECH Q is orthogonal (with respect to the continuous L^2 norm on [-1,1])
+%   TRIGTECH Q is orthogonal (with respect to the continuous L^2 norm on [-1,1])
 %   and of the same size as F and R is an m x m upper-triangular matrix when F
 %   has m columns.
 %
@@ -71,8 +71,8 @@ tol = max(f.epslevel.*f.vscale);
 newN = 2*max(n, numCols);
 A = get(prolong(f, newN), 'values');
 
-% Create the Fourier nodes and quadrature weights:
-x = f.fourpts(newN);
+% Create the tirgonometric nodes and quadrature weights:
+x = f.trigpts(newN);
 w = f.quadwts(newN);
 
 % Define the inner product as an anonymous function:

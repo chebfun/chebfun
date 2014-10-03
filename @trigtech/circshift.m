@@ -1,11 +1,11 @@
 function f = circshift(f,a)
-%CIRCSHIFT   Circular (periodic) shift of a FOURTECH
+%CIRCSHIFT   Circular (periodic) shift of a TRIGTECH
 %   G = CIRCSHIFT(F,A) circularly (periodically) shift F by A, where A is 
-%   a real-valued number.  The result is a new FOURTECH G that is equal
-%   to G = F(X-A). If F is an array-valued FOURTECH then each column of F
+%   a real-valued number.  The result is a new TRIGTECH G that is equal
+%   to G = F(X-A). If F is an array-valued TRIGTECH then each column of F
 %   is shifted by A.
 %
-% See also FOURTECH.
+% See also TRIGTECH.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -13,7 +13,7 @@ function f = circshift(f,a)
 [n,m] = size(f);
 
 if numel(a) > 1
-    error('CHEBFUN:FOURTECH:circshift', ...
+    error('CHEBFUN:TRIGTECH:circshift', ...
           'Only scalar-valued shifts are allowed')
 end
 
@@ -22,7 +22,7 @@ if ( a == 0 )
     return
 end
 
-% The FOURTECH object is defined as 
+% The TRIGTECH object is defined as 
 %   If N is odd
 %       F(x) = C(1)*z^(N-1)/2 + C(2)*z^((N-1)/2-1) + ... + C(N)*z^(-(N-1)/2)
 %   If N is even

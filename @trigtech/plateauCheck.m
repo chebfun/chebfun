@@ -1,11 +1,11 @@
 function [ishappy, epsLevel, cutoff] = plateauCheck(f, values, pref)
-%PLATEAUCHECK   Attempt to trim trailing FOURIER coefficients in a FOURTECH.
+%PLATEAUCHECK   Attempt to trim trailing TRIGIER coefficients in a TRIGTECH.
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = PLATEAUCHECK(F, VALUES) returns an estimated
-%   location, the CUTOFF, at which the FOURTECH F could be truncated. One of two
+%   location, the CUTOFF, at which the TRIGTECH F could be truncated. One of two
 %   criteria must be met: Either:
 %
 %     (1) The coefficients are sufficiently small (as specified by the default
-%     EPS property of FOURTECH) relative to F.VSCALE (or using absolute size if
+%     EPS property of TRIGTECH) relative to F.VSCALE (or using absolute size if
 %     F.VSCALE=0); or
 %
 %     (2) The coefficients are somewhat small and apparently unlikely to
@@ -29,8 +29,8 @@ function [ishappy, epsLevel, cutoff] = plateauCheck(f, values, pref)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% [TODO]: implement PLATEAUCHECK for FOURTECH. For the moment, we just call
-% classicCheck. The reason why the plateauCheck() is needed for FOURTECH is that
+% [TODO]: implement PLATEAUCHECK for TRIGTECH. For the moment, we just call
+% classicCheck. The reason why the plateauCheck() is needed for TRIGTECH is that
 % it gets called from within LINOP convergence tests.
 [ishappy, epsLevel, cutoff] = classicCheck(f, pref);
 

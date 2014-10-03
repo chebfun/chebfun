@@ -1,13 +1,13 @@
-% Test file for fourtech/flipud.m
+% Test file for trigtech/flipud.m
 
 function pass = test_flipud(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fourtech.techPref();
+    pref = trigtech.techPref();
 end
     
-testclass = fourtech();
+testclass = trigtech();
 
 %%
 % Conduct a few very straightforward tests.

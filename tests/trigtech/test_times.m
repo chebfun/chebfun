@@ -1,13 +1,13 @@
-% Test file for fourtech/times.m
+% Test file for trigtech/times.m
 
 function pass = test_times(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fourtech.techPref();
+    pref = trigtech.techPref();
 end
 
-testclass = fourtech();
+testclass = trigtech();
 
 % Generate a few random points to use as test values.
 seedRNG(6178);
@@ -44,7 +44,7 @@ g_op = @(x) alpha*ones(size(x));
 g = testclass.make(g_op, [], pref);
 pass(6) = test_mult_function_by_function(f, f_op, g, g_op, x, false);
 
-% This should fail with a dimension mismatch error from fourtech.mtimes().
+% This should fail with a dimension mismatch error from trigtech.mtimes().
 f_op = @(x) [sin(pi*x) cos(pi*x)];
 f = testclass.make(f_op, [], pref);
 g_op = @(x) repmat([alpha, beta], size(x, 1), 1);
@@ -52,7 +52,7 @@ g = testclass.make(g_op, [], pref);
 pass(7) = test_mult_function_by_function(f, f_op, g, g_op, x, false);
 
 %%
-% Spot-check multiplication of two fourtech objects for a few test
+% Spot-check multiplication of two trigtech objects for a few test
 % functions.
 
 f_op = @(x) ones(size(x));
@@ -75,7 +75,7 @@ g = testclass.make(g_op, [], pref);
 pass(11) = test_mult_function_by_function(f, f_op, g, g_op, x, false);
 
 %%
-% Check operation for array-valued fourtech objects.
+% Check operation for array-valued trigtech objects.
 f_op = @(x) [sin(pi*x) cos(30*pi*x) 3./(4-cos(pi*x))];
 f = testclass.make(f_op, [], pref);
 g_op = @(x) tanh(sin(pi*x)+cos(pi*x));
@@ -100,7 +100,7 @@ try
     disp(f .* g);
     pass(15) = false;
 catch ME
-    pass(15) = strcmp(ME.identifier, 'CHEBFUN:FOURTECH:times:dim2');
+    pass(15) = strcmp(ME.identifier, 'CHEBFUN:TRIGTECH:times:dim2');
 end
 
 %%
@@ -131,7 +131,7 @@ h2 = prolong(h2, length(h1));
 pass(21) = norm(h1.coeffs - h2.coeffs, inf) < tol;
 
 %%
-% Check that multiplying a FOURTECH by an unhappy FOURTECH gives an unhappy
+% Check that multiplying a TRIGTECH by an unhappy TRIGTECH gives an unhappy
 % result.
 
 warning off; % Suppress expected warnings about unhappy operations.
@@ -144,7 +144,7 @@ pass(23) = (~g.ishappy) && (~h.ishappy);
 warning on; % Re-enable warnings.
 end
 
-% Test the multiplication of a FOURTECH F, specified by F_OP, by a scalar ALPHA
+% Test the multiplication of a TRIGTECH F, specified by F_OP, by a scalar ALPHA
 % using a grid of points X in [-1  1] for testing samples.
 function result = test_mult_function_by_scalar(f, f_op, alpha, x)
     g1 = f .* alpha;
@@ -155,7 +155,7 @@ function result = test_mult_function_by_scalar(f, f_op, alpha, x)
         200*max(g1.vscale.*g1.epslevel);
 end
 
-% Test the multiplication of two FOURTECH objects F and G, specified by F_OP and
+% Test the multiplication of two TRIGTECH objects F and G, specified by F_OP and
 % G_OP, using a grid of points X in [-1  1] for testing samples.  If CHECKPOS is
 % TRUE, an additional check is performed to ensure that the values of the result
 % are all nonnegative; otherwise, this check is skipped.

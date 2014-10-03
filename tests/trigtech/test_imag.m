@@ -1,13 +1,13 @@
-% Test file for fourtech/imag.m
+% Test file for trigtech/imag.m
 
 function pass = test_imag(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fourtech.techPref();
+    pref = trigtech.techPref();
 end
 
-testclass = fourtech();
+testclass = trigtech();
 
 %%
 % Test a scalar-valued function.

@@ -1,13 +1,13 @@
-% Test file for fourtech/max.m
+% Test file for trigtech/max.m
 
 function pass = test_max(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fourtech.techPref();
+    pref = trigtech.techPref();
 end
 
-testclass = fourtech();
+testclass = trigtech();
 
 %%
 % Spot-check the extrema for a few functions.
@@ -30,7 +30,7 @@ pass(6) = (all(abs(y - exact_max) < 10*f.epslevel) && ...
            all(abs(fx - exact_max) < 10*f.epslevel));
 
 %%
-% Test for complex-valued FOURTECH objects.
+% Test for complex-valued TRIGTECH objects.
 pass(7) = test_spotcheck_max(testclass, ...
     @(x) cos(pi*x) + exp(1i*pi*x), ...
     2, pref);

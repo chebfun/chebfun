@@ -1,20 +1,20 @@
-% Test file for fourtech/happinessCheck.m
+% Test file for trigtech/happinessCheck.m
 
 function pass = test_happinessCheck(pref)
 
 % Get preferences:
 if ( nargin < 1 )
-    pref = fourtech.techPref();
+    pref = trigtech.techPref();
 end
 
-testclass = fourtech();
+testclass = trigtech();
 
 % Set the tolerance:
 tol = 50*pref.eps;
     
 %%
 % Test on a scalar-valued function:
-x = testclass.fourpts(33);
+x = testclass.trigpts(33);
 omega = 8;
 f = @(x) sin(omega*pi*x);
 g = testclass.make(f(x));
@@ -34,7 +34,7 @@ pass(4) = ishappy && all(epslevel < tol);
 %%
 k = 4*8; % Multiple of four;
 m = k/4;
-x = testclass.fourpts(k+1);
+x = testclass.trigpts(k+1);
 f = @(x) sin((k+m+1)*pi*x);
 
 % This should be happy, as aliasing fools the happiness test:

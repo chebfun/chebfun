@@ -1,12 +1,12 @@
-% Test file for fourtech/prolong.m
+% Test file for trigtech/prolong.m
 
 function pass = test_prolong(pref)
 
 if ( nargin < 1 )
-    pref = fourtech.techPref();
+    pref = trigtech.techPref();
 end
 
-testclass = fourtech();
+testclass = trigtech();
 
 F = @(x) exp(sin(pi*x));
 f = testclass.make(F, [], pref);
@@ -14,37 +14,37 @@ f = testclass.make(F, [], pref);
 % Odd prolongation.
 k = 101;
 go = prolong(f, k);
-x = testclass.fourpts(k);
+x = testclass.trigpts(k);
 pass(1) = size(go,1) == k  && norm(go.values - F(x), inf) < 10*go.vscale.*go.epslevel;
 
 % Even prolongation.
 k = 100;
 ge = prolong(f, k);
-x = testclass.fourpts(k);
+x = testclass.trigpts(k);
 pass(2) = size(ge,1) == k  && norm(ge.values - F(x), inf) < 10*ge.vscale.*ge.epslevel;
 
 % Odd restriction from odd length f.
 k = 89;
 g = prolong(go, k);
-x = testclass.fourpts(k);
+x = testclass.trigpts(k);
 pass(3) = size(g,1) == k  && norm(g.values - F(x), inf) < 10*g.vscale.*g.epslevel;
 
 % Even restriction from odd length f.
 k = 88;
 g = prolong(go, k);
-x = testclass.fourpts(k);
+x = testclass.trigpts(k);
 pass(4) = size(g,1) == k  && norm(g.values - F(x), inf) < 10*g.vscale.*g.epslevel;
 
 % Odd restriction from even length f.
 k = 89;
 g = prolong(ge, k);
-x = testclass.fourpts(k);
+x = testclass.trigpts(k);
 pass(5) = size(g,1) == k  && norm(g.values - F(x), inf) < 10*g.vscale.*g.epslevel;
 
 % Even restriction from even length f.
 k = 88;
 g = prolong(ge, k);
-x = testclass.fourpts(k);
+x = testclass.trigpts(k);
 pass(6) = size(g,1) == k  && norm(g.values - F(x), inf) < 10*g.vscale.*g.epslevel;
 
 % Restriction to length 1.
@@ -56,7 +56,7 @@ F = @(x) exp(sin(pi*x));
 f = testclass.make(@(x) [F(x), -F(x)], [], pref);
 k = 101;
 g = prolong(f, k);
-x = testclass.fourpts(k);
+x = testclass.trigpts(k);
 values = g.coeffs2vals(g.coeffs);
 pass(8) = size(g,1) == k && norm(values - [F(x), -F(x)], inf) < ...
     10*max(g.vscale.*g.epslevel);

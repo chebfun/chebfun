@@ -1,13 +1,13 @@
-% Test file for fourtech/isinf.m
+% Test file for trigtech/isinf.m
 
 function pass = test_isinf(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fourtech.techPref();
+    pref = trigtech.techPref();
 end
 
-testclass = fourtech();
+testclass = trigtech();
 
 % Test a scalar-valued function.
 y = ones(11,1);

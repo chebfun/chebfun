@@ -1,7 +1,7 @@
 function f = prolong(f, nOut)
-%PROLONG   Manually adjust the number of points used in a FOURTECH.
-%   G = PROLONG(F, N) returns a FOURTECH G where LENGTH(G) = N and G represents
-%   the same function as F but using more interpolation points/Fourier
+%PROLONG   Manually adjust the number of points used in a TRIGTECH.
+%   G = PROLONG(F, N) returns a TRIGTECH G where LENGTH(G) = N and G represents
+%   the same function as F but using more interpolation points/trigonometric
 %   coefficients then were stored in F.
 %
 %   If N < LENGTH(F) than the representation is compressed (by aliasing the

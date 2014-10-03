@@ -1,4 +1,4 @@
-% Test file for chebtech/roots.m
+% Test file for trigtech/roots.m
 
 function pass = test_roots(pref)
 
@@ -6,7 +6,7 @@ if ( nargin < 1 )
     pref = chebtech.techPref();
 end
 
-testclass = fourtech();
+testclass = trigtech();
 
 %% Simple test:
 f = testclass.make(@(x) cos(5*pi*x), [], pref);

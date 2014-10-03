@@ -1,9 +1,9 @@
 function g = mat2cell(f, M, N)
-%MAT2CELL   Convert an array-valued FOURTECH into a cell array of FOURTECH
+%MAT2CELL   Convert an array-valued TRIGTECH into a cell array of TRIGTECH
 %objects.
 %
-%   G = MAT2CELL(F, C) breaks up the array-valued FOURTECH F into a single row
-%   cell array G of FOURTECH objects. C is the vector of column sizes, and if F
+%   G = MAT2CELL(F, C) breaks up the array-valued TRIGTECH F into a single row
+%   cell array G of TRIGTECH objects. C is the vector of column sizes, and if F
 %   has COL columns this must sum to COL. The elements of C determine the size
 %   of each cell in G, subject to the following formula for I = 1:LENGTH(C),
 %   SIZE(G{I},2) == C(I).
@@ -15,7 +15,7 @@ function g = mat2cell(f, M, N)
 %   role of C above, and M should be the scalar value 1.
 %
 % Example:
-%   f = fourtech(@(x) [sin(x), cos(x), exp(cos(x)), sin(sin(x)])
+%   f = trigtech(@(x) [sin(x), cos(x), exp(cos(x)), sin(sin(x)])
 %   g = mat2cell(f, 1, [1 2 1])
 %
 % See also CELL2MAT.
@@ -42,7 +42,7 @@ elseif ( nargin == 2)
 end
 
 if ( ~isscalar(M) || (M ~= 1) )
-    error('CHEBFUN:FOURTECH:mat2cell:size', ...
+    error('CHEBFUN:TRIGTECH:mat2cell:size', ...
         ['Input arguments M and N must sum to each dimension of the', ...
         ' input matrix size, [1,%d].'], size(f.values, 2));
 end
@@ -54,15 +54,15 @@ vscale = mat2cell(f.vscale, 1, N);
 epslevel = mat2cell(f.epslevel, 1, N);
 isReal = mat2cell(f.isReal, 1, N);
 
-% Create a cell for storing the FOURTECH objects
+% Create a cell for storing the TRIGTECH objects
 g = cell(1, numel(N));
 
 % Append the data to the new entries in the cell:
 for k = 1:numel(N)
-    % Create a FOURTECH:
+    % Create a TRIGTECH:
     gk = f.make();
     
-    % Assign values to the fields of the FOURTECH:
+    % Assign values to the fields of the TRIGTECH:
     gk.ishappy = f.ishappy;
     gk.values = values{k};
     gk.coeffs = coeffs{k};
@@ -70,7 +70,7 @@ for k = 1:numel(N)
     gk.epslevel = epslevel{k};
     gk.isReal = isReal{k};
     
-    % Store the FOURTECH in the cell-array returned.
+    % Store the TRIGTECH in the cell-array returned.
     g{k} = gk;
 end
 

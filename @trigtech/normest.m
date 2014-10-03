@@ -1,6 +1,6 @@
 function out = normest(f)
-%NORMEST   Estimate the norm of a FOURTECH.
-%   NORMEST(F) estimates the inf norm of a FOURTECH F simply by looking at the
+%NORMEST   Estimate the norm of a TRIGTECH.
+%   NORMEST(F) estimates the inf norm of a TRIGTECH F simply by looking at the
 %   max norm of its values. Use NORMEST when an approximate norm is acceptable.
 %
 % See also NORM.

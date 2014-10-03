@@ -1,4 +1,4 @@
-% Test file for chebtech/sign.m
+% Test file for trigtech/sign.m
 
 function pass = test_sign(pref)
 
@@ -6,7 +6,7 @@ if ( nargin < 1 )
     pref = chebtech.techPref();
 end
 
-testclass = fourtech();
+testclass = trigtech();
     
 % Test a positive function:
 F = @(x) sin(pi*x) + 2;

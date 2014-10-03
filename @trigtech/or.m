@@ -1,9 +1,9 @@
 function f = or(f, g)
-%|   FOURTECH logical OR.
-%   F | G performs a logical OR of the FOURTECH objects F and G and returns a
-%   FOURTECH containing elements set to either logical 1 (TRUE) or logical 0
-%   (FALSE).  An element of the output FOURTECH is set to 1 if either input
-%   FOURTECH contains a non-zero element at that point, otherwise it is set to
+%|   TRIGTECH logical OR.
+%   F | G performs a logical OR of the TRIGTECH objects F and G and returns a
+%   TRIGTECH containing elements set to either logical 1 (TRUE) or logical 0
+%   (FALSE).  An element of the output TRIGTECH is set to 1 if either input
+%   TRIGTECH contains a non-zero element at that point, otherwise it is set to
 %   0.  F and G must either be identically zero or have roots in their domains.
 %   If this is not the case, garbage is returned with no warning.
 

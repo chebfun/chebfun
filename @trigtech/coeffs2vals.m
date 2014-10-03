@@ -14,7 +14,7 @@ function values = coeffs2vals(coeffs)
 %   (N+1)xM matrix of values V such that V(i,j) is the ith value of the
 %   trignometric polynomial corresponding to the jth column.
 %
-% See also VALS2COEFFS, FOURPTS.
+% See also VALS2COEFFS, TRIGPTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.

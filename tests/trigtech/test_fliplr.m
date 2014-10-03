@@ -1,13 +1,13 @@
-% Test file for fourtech/fliplr.m
+% Test file for trigtech/fliplr.m
 
 function pass = test_fliplr(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fourtech.techPref();
+    pref = trigtech.techPref();
 end
 
-testclass = fourtech();
+testclass = trigtech();
 
 %%
 % Conduct a few very straightforward tests.

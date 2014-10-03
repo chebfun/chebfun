@@ -1,13 +1,13 @@
-% Test file for fourtech/iszero.m
+% Test file for trigtech/iszero.m
 
 function pass = test_iszero(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fourtech.techPref();
+    pref = trigtech.techPref();
 end
 
-testclass = fourtech();
+testclass = trigtech();
 
 f = testclass.make(0, pref);
 f.values = [0 1 0 ; 0 0 NaN];

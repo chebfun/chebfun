@@ -1,11 +1,11 @@
 function f = diff(f, k, dim)
-%DIFF   Derivative of a FOURTECH.
+%DIFF   Derivative of a TRIGTECH.
 %   DIFF(F) is the derivative of F and DIFF(F, K) is the Kth derivative.
 %
 %   DIFF(F, K, DIM), where DIM is one of 1 or 2, takes the Kth difference along
 %   dimension DIM. For DIM = 1, this is the same as above. For DIM = 2, this
-%   is a finite difference along the columns of an array-valued FOURTECH.
-%   If F has L columns, an empty FOURTECH will be returned for K >= L.
+%   is a finite difference along the columns of an array-valued TRIGTECH.
+%   If F has L columns, an empty TRIGTECH will be returned for K >= L.
 %
 % See also SUM, CUMSUM.
 
@@ -13,7 +13,7 @@ function f = diff(f, k, dim)
 % See http://www.chebfun.org/ for Chebfun information.
 
 
-% Trivial case of an empty FOURTECH:
+% Trivial case of an empty TRIGTECH:
 if ( isempty(f) )
     return
 end
@@ -45,7 +45,7 @@ function f = diffFiniteDim(f, k)
 % Take kth difference across 2nd dimension (i.e., across columns).
 
     if ( k >= size(f, 2) )
-        % The output will be an empty FOURTECH:
+        % The output will be an empty TRIGTECH:
         f = f.make();
     else 
         for j = 1:k
@@ -102,7 +102,7 @@ function f = diffContinuousDim(f, k)
     f.coeffs = c;
     f.values = v;
 
-    % Update epslevel and the vertical scale: (See FOURTECH CLASSDEF file
+    % Update epslevel and the vertical scale: (See TRIGTECH CLASSDEF file
     % for documentation.)
     newVScale = max(abs(v), [], 1); 
     epslevelBnd = (N*log(N)).^k*(f.epslevel.*f.vscale)./newVScale;

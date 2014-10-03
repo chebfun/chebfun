@@ -2,7 +2,7 @@ function varargout = plot3(f, g, h, varargin)
 %PLOT3   Plot for FUN objects in 3-D space. 
 %   PLOT3() is a three-dimensional analogue of PLOT().
 %   
-%   PLOT3(X, Y, Z), where Z, Y, and Z are three FOURTECH objects, plots a line
+%   PLOT3(X, Y, Z), where Z, Y, and Z are three TRIGTECH objects, plots a line
 %   in 3-space. X, Y, and Z may be array-valued, but must have the same number
 %   of columns.
 %   
@@ -11,7 +11,7 @@ function varargout = plot3(f, g, h, varargin)
 %   listed under the PLOT command.
 %
 %   H1 = PLOT3(X, Y, Z) returns a column vector of handles to lineseries
-%   objects, one handle per plotted line (in the case of vector-valued FOURTECH
+%   objects, one handle per plotted line (in the case of vector-valued TRIGTECH
 %   objects). [H1, H2] returns a second vector of column handles, this time for
 %   each of the marker plots.
 %

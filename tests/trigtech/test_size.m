@@ -1,13 +1,13 @@
-% Test file for fourtech/size.m
+% Test file for trigtech/size.m
 
 function pass = test_size(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fourtech.techPref();
+    pref = trigtech.techPref();
 end
 
-testclass = fourtech();
+testclass = trigtech();
 
 f = testclass.make(@(x) sin(10*pi*x), [], pref);
 pass(1) = all(size(f) == size(f.coeffs));

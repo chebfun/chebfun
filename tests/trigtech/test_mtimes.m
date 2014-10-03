@@ -1,13 +1,13 @@
-% Test file for fourtechh/mtimes.m
+% Test file for trigtechh/mtimes.m
 
 function pass = test_mtimes(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fourtech.techPref();
+    pref = trigtech.techPref();
 end
 
-testclass = fourtech();
+testclass = trigtech();
 
 % Generate a few random points to use as test values.
 seedRNG(6178);
@@ -24,7 +24,7 @@ g = testclass.make();
 pass(1) = isempty(f*[]) && isempty([]*f) && isempty(2*g) && isempty(g*2);
 
 %%
-% Check operation for scalar FOURTECH objects.
+% Check operation for scalar TRIGTECH objects.
 
 f = testclass.make(@(x) sin(10*pi*x), [], pref);
 g1 = alpha*f;
@@ -38,7 +38,7 @@ g = 0*f;
 pass(4) = all(g.coeffs == 0);
 
 %%
-% Check operation for array-valued FOURTECH objects.
+% Check operation for array-valued TRIGTECH objects.
 
 f = testclass.make(@(x) [sin(10*pi*x) cos(20*pi*x) cos(sin(pi*x))], [], pref);
 g1 = alpha*f;
@@ -73,42 +73,42 @@ pass(10) = max(err(:)) < 10*max(g.vscale.*g.epslevel);
 %%
 % Verify error handling and corner cases.
 
-% Multiply non-scalar double and FOURTECH.
+% Multiply non-scalar double and TRIGTECH.
 try
     f = testclass.make(@(x) exp(cos(pi*x)));
     disp([1 2 3]*f);
     pass(11) = false;
 catch ME
-    pass(11) = strcmp(ME.identifier, 'CHEBFUN:FOURTECH:mtimes:size') ...
+    pass(11) = strcmp(ME.identifier, 'CHEBFUN:TRIGTECH:mtimes:size') ...
         && strcmp(ME.message, 'Inner matrix dimensions must agree.');
 end
 
-% Multiply FOURTECH and non-scalar double with mismatching dimensions.
+% Multiply TRIGTECH and non-scalar double with mismatching dimensions.
 try
     f = testclass.make(@(x) [sin(10*pi*x) cos(20*pi*x)]);
     disp(f*[1 ; 2 ; 3]);
     pass(12) = false;
 catch ME
-    pass(12) = strcmp(ME.identifier, 'CHEBFUN:FOURTECH:mtimes:size2') ...
+    pass(12) = strcmp(ME.identifier, 'CHEBFUN:TRIGTECH:mtimes:size2') ...
         && strcmp(ME.message, 'Inner matrix dimensions must agree.');
 end
 
-% Using * for multiplication of two FOURTECH objects.
+% Using * for multiplication of two TRIGTECH objects.
 try
     g = testclass.make(@(x) cos(20*pi*x));
     disp(f*g);
     pass(13) = false;
 catch ME
-    pass(13) = strcmp(ME.message, 'Use .* to multiply FOURTECH objects.');
+    pass(13) = strcmp(ME.message, 'Use .* to multiply TRIGTECH objects.');
 end
 
-% Using * to multiply a FOURTECH and something else.
+% Using * to multiply a TRIGTECH and something else.
 try
     disp(f*uint8(128));
     pass(14) = false;
 catch ME
     pass(14) = strcmp(ME.message, ...
-        'mtimes does not know how to multiply a FOURTECH and a uint8.');
+        'mtimes does not know how to multiply a TRIGTECH and a uint8.');
 end
 
 end

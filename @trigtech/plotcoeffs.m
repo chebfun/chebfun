@@ -1,8 +1,8 @@
 function varargout = plotcoeffs(f, varargin)
-%PLOTCOEFFS   Display Fourier coefficients graphically.
-%   PLOTCOEFFS(F) plots the Fourier coefficients of a FOURTECH F on a
+%PLOTCOEFFS   Display Trigonometric coefficients graphically.
+%   PLOTCOEFFS(F) plots the Trigonometric coefficients of a TRIGTECH F on a
 %   semilogy scale. A horizontal line at the EPSLEVEL of F is also plotted. If F
-%   is an array-valued FOURTECH then a curve is plotted for each component
+%   is an array-valued TRIGTECH then a curve is plotted for each component
 %   (column) of F.
 %
 %   PLOTCOEFFS(F, S) allows further plotting options, such as linestyle,

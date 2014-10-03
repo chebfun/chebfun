@@ -1,5 +1,5 @@
 function f = real(f)
-%REAL   Real part of a FOURTECH.
+%REAL   Real part of a TRIGTECH.
 %   REAL(F) is the real part of F.
 %
 % See also ISREAL, IMAG, CONJ.
@@ -17,7 +17,7 @@ f.values = real(f.values);
 f.vscale = max(abs(f.values), [], 1);
 
 if ( ~any(f.values(:)) )
-    % Input was imaginary, so output a zero FOURTECH:
+    % Input was imaginary, so output a zero TRIGTECH:
     data.vscale = f.vscale;
     data.hscale = f.hscale;
     f = f.make(zeros(1, size(f.values, 2)), data);

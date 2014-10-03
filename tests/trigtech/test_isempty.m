@@ -1,8 +1,8 @@
-% Test file for fourtech/isempty.m
+% Test file for trigtech/isempty.m
 
 function pass = test_isempty(varargin)
 
-testclass = fourtech();
+testclass = trigtech();
 
 %%
 f = testclass.make();

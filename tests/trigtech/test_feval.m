@@ -1,17 +1,17 @@
-% Test file for fourtech/feval.m
+% Test file for trigtech/feval.m
 
 function pass = test_feval(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fourtech.techPref();
+    pref = trigtech.techPref();
 end
 
 % Generate a few random points to use as test values.
 seedRNG(7681);
 x = 2 * rand(1000, 1) - 1;
 
-testclass = fourtech();
+testclass = trigtech();
 
 %%
 % Spot-check values for a couple of functions.  We can only expect 
@@ -56,7 +56,7 @@ pass(7) = (all(size(err) == [10 10 10])) && (norm(err(:), inf) < ...
     10*f.vscale.*f.epslevel);
 
 %%
-% Check operation for array-valued fourtech objects.
+% Check operation for array-valued trigtech objects.
 
 f = testclass.make(@(x) [(2+sin(pi*x)).*exp(1i*pi*x), -(2+sin(pi*x)).*exp(1i*pi*x), 2+sin(pi*x)], [], pref);
 f_exact = @(x) [(2+sin(pi*x)).*exp(1i*pi*x), -(2+sin(pi*x)).*exp(1i*pi*x), 2+sin(pi*x)];
@@ -64,7 +64,7 @@ err = feval(f, x) - f_exact(x);
 pass(8) = all(max(abs(err)) < 10*max(f.vscale.*f.epslevel));
 
 %%
-% Test for evaluating array-valued fourtech objects at matrix arguments if
+% Test for evaluating array-valued trigtech objects at matrix arguments if
 % the operation makes sense.
 
 f = testclass.make(@(x) [sin(pi*x) cos(pi*x) exp(1i*pi*x)], [], pref);

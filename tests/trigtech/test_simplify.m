@@ -1,4 +1,4 @@
-% Test file for fourtech/simplify.m
+% Test file for trigtech/simplify.m
 
 function pass = test_simplify(pref)
 
@@ -11,7 +11,7 @@ end
 seedRNG(6178);
 x = 2 * rand(100, 1) - 1;
 
-testclass = fourtech();
+testclass = trigtech();
 
 % Tolerance for passing to simplify:
 simptol = 1e-6;
@@ -19,12 +19,12 @@ simptol = 1e-6;
 %%
 % Test pathological inputs.
 
-% Empty FOURTECH objects should be left alone.
+% Empty TRIGTECH objects should be left alone.
 f = testclass.make();
 g = simplify(f);
 pass(1) = isequal(f, g);
 
-% Unhappy FOURTECH objects should be left alone.
+% Unhappy TRIGTECH objects should be left alone.
 f = testclass.make(@(x) sin(x));
 g = simplify(f);
 pass(2) = ~f.ishappy && isequal(f, g);
@@ -60,7 +60,7 @@ pass(10) = all(norm(feval(f, x) - feval(g, x), inf) < ...
     10*max(g.epslevel.*g.vscale));
 
 %%
-% Try a contrived example which will leave a zero FOURTECH:
+% Try a contrived example which will leave a zero TRIGTECH:
 
 f = testclass.make(@(x) sin(100*pi*(x + 0.1)));
 g = simplify(f, 1e20);

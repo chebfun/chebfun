@@ -1,5 +1,5 @@
 function f = flipud(f)
-%FLIPUD   Flip/reverse a FOURTECH object.
+%FLIPUD   Flip/reverse a TRIGTECH object.
 %   G = FLIPUD(F) returns G such that G(x) = F(-x) for all x in [-PI,PI].
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 

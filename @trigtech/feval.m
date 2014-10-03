@@ -1,13 +1,13 @@
 function y = feval(f, x)
-%FEVAL   Evaluate a FOURTECH.
-%   Y = FEVAL(F, X) Evaluation of the FOURTECH F at points X via
+%FEVAL   Evaluate a TRIGTECH.
+%   Y = FEVAL(F, X) Evaluation of the TRIGTECH F at points X via
 %   Horner's scheme.
 %
 %   If size(F, 2) > 1 then FEVAL returns values in the form [F_1(X), F_2(X),
 %   ...], where size(F_k(X)) = size(X).
 %
 %   Example:
-%     f = fourtech(@(x) exp(cos(pi*x)) );
+%     f = trigtech(@(x) exp(cos(pi*x)) );
 %     x = linspace(-1, 1, 1000);
 %     fx = feval(f, x);
 %     plot(x,fx,'r-')

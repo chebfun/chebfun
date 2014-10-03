@@ -8,6 +8,6 @@ function out = points(f)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-out = trigtech.trigpts(length(f));
+out = f.trigpts(length(f));
 
 end

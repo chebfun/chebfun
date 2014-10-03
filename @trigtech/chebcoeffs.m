@@ -1,5 +1,5 @@
 function out = chebcoeffs(f, N)
-%CHEBCOEFFS   Chebyshev polynomial coefficients of a FOURTECH.
+%CHEBCOEFFS   Chebyshev polynomial coefficients of a TRIGTECH.
 %   A = CHEBCOEFFS(F) returns the row vector of coefficients such that F = A(1)
 %   T_{N-1}(x) + ... + A(N-1) T_1(x) + A(N) T_0(x), where T_k(x) denotes the
 %   k-th Chebyshev polynomial and LENGTH(F) = N. 
@@ -7,11 +7,11 @@ function out = chebcoeffs(f, N)
 %   If F is array-valued with P columns, then A is an PxN matrix.
 %
 %   A = CHEBCOEFFS(F, M) truncates or pads the vector A so that M coefficients of
-%   the FOURTECH F are returned.
+%   the TRIGTECH F are returned.
 %
 %   If F is array-valued with P columns, then A is an PxM matrix.
 %
-% See also LEGCOEFFS, FOURCOEFFS.
+% See also LEGCOEFFS, TRIGCOEFFS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -26,8 +26,8 @@ if ( isempty(N) || N <= 0)
     return
 end
 
-% [TODO]: Is there a fast transfrom from FOURTECH to CHEBTECH?
-% Since f is a FOURTECH it is assumed to be smooth and periodic on [-1,1].
+% [TODO]: Is there a fast transfrom from TRIGTECH to CHEBTECH?
+% Since f is a TRIGTECH it is assumed to be smooth and periodic on [-1,1].
 % Computing the chebyshev coefficients via innner products requires working with
 % non-periodic, but smooth functions on [-1,1]. The right representation for f
 % is then a Chebyshev expansion. We therefore convert f to a (happy) Chebyshev

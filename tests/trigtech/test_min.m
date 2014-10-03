@@ -1,13 +1,13 @@
-% Test file for fourtech/min.m
+% Test file for trigtech/min.m
 
 function pass = test_min(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fourtech.techPref();
+    pref = trigtech.techPref();
 end
 
-testclass = fourtech();
+testclass = trigtech();
 
 %%
 % Spot-check the extrema for a few functions.
@@ -31,7 +31,7 @@ pass(6) = (all(abs(y - exact_min) < 10*f.epslevel) && ...
            all(abs(fx - exact_min) < 10*f.epslevel));
 
 %%
-% Test for complex-valued fourtech objects.
+% Test for complex-valued trigtech objects.
 f = testclass.make(@(x) cos(pi*x) + exp(1i*pi*x), [], pref);
 [y, x] = min(f);
 exact_min = 1i; % Could be +/- 1i depending on machine.

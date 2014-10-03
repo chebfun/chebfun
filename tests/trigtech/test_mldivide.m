@@ -1,13 +1,13 @@
-% Test file for fourtech/mldivide.m
+% Test file for trigtech/mldivide.m
 
 function pass = test_mldivide(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fourtech.techPref();
+    pref = trigtech.techPref();
 end
 
-testclass = fourtech();
+testclass = trigtech();
 
 %%
 % Basic correctness checks.
@@ -40,14 +40,14 @@ pass(5) = max(abs(x - [0 ; 1 ; 0])) < max(tol_f, tol_g);
 %%
 % Check error conditions.
 
-% MLDIVIDE doesn't work between a FOURTECH and a non-FOURTECH.
+% MLDIVIDE doesn't work between a TRIGTECH and a non-TRIGTECH.
 try
     f = testclass.make(@(x) [sin(pi*x) cos(pi*x) exp(1i*pi*x)], [], pref);
     f \ 2; %#ok<VUNUS>
     pass(6) = 0;
 catch ME
     pass(6) = strcmp(ME.identifier, ...
-        'CHEBFUN:FOURTECH:mldivide:fourtechMldivideUnknown');
+        'CHEBFUN:TRIGTECH:mldivide:trigtechMldivideUnknown');
 end
 
 end

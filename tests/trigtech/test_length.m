@@ -1,12 +1,12 @@
-% Test file for fourtech/length.m
+% Test file for trigtech/length.m
 
 function pass = test_length(pref)
 
 if ( nargin < 1 )
-    pref = fourtech.techPref();
+    pref = trigtech.techPref();
 end
 
-testclass = fourtech();
+testclass = trigtech();
 
 f = testclass.make(@(x) tanh(sin(pi*x)), [], pref);
 pass(1) = length(f) == size(f.coeffs, 1);

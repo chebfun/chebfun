@@ -1,13 +1,13 @@
-% Test file for fourtech/isnan.m
+% Test file for trigtech/isnan.m
 
 function pass = test_isnan(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fourtech.techPref();
+    pref = trigtech.techPref();
 end
 
-testclass = fourtech();
+testclass = trigtech();
 
 % Test a scalar-valued function.
 f = testclass.make(@(x) cos(pi*x), [], pref);

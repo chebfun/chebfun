@@ -1,13 +1,13 @@
-% Test file for fourtech/isreal.m
+% Test file for trigtech/isreal.m
 
 function pass = test_isreal(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fourtech.techPref();
+    pref = trigtech.techPref();
 end
 
-testclass = fourtech();
+testclass = trigtech();
 
 % Test a scalar-valued function.
 f = testclass.make(@(x) sin(100*pi*x) + 1i*sin(cos(10*pi*x)), [], pref);

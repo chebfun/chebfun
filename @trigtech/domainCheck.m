@@ -1,5 +1,5 @@
 function pass = domainCheck(f, g)
-%DOMAINCHECK   True if the domains of two FOURTECH objects are the same.
+%DOMAINCHECK   True if the domains of two TRIGTECH objects are the same.
 %   DOMAINCHECK(F, G) returns TRUE if the endpoints of the domains of the two
 %   CHEBFUN objects F and G coincide up to a tolerance depending on their
 %   horizontal scales or if both F and G are empty CHEBFUN objects.
@@ -28,11 +28,11 @@ if ( fIsEmpty && gIsEmpty )        % f, g both empty.
 elseif ( xor(fIsEmpty, gIsEmpty) ) % Exactly one of f, g is empty.
     pass = false;
     
-elseif ( ~isa(g, 'fourtech') )      % f, g both not empty. f is a CHEBFUN.
+elseif ( ~isa(g, 'trigtech') )      % f, g both not empty. f is a CHEBFUN.
     hs = hscale(f);
     pass = norm(f(1).domain([1, end]) - g([1, end]), inf) < 1e-15*hs;
     
-elseif ( ~isa(f, 'fourtech') )      % f, g both not empty. g is a CHEBFUN.
+elseif ( ~isa(f, 'trigtech') )      % f, g both not empty. g is a CHEBFUN.
     hs = hscale(g);
     pass = norm(f([1, end]) - g(1).domain([1, end]), inf) < 1e-15*hs;
     

@@ -1,7 +1,6 @@
 function len = length(f)
-%LENGTH   Length of a FOURTECH.
-%   LENGTH(F) is the number of values at Fourier points (equally spaced)
-%   used to represent F.
+%LENGTH   Length of a TRIGTECH.
+%   LENGTH(F) is the number of values at equally spaced used to represent F.
 %
 % See also SIZE.
 

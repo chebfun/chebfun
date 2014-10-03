@@ -1,6 +1,6 @@
 function f = sign(f, pref)
-%SIGN   Signum of a FOURTECH object.
-%   SIGN(F) returns the sign of F, where F is a FOURTECH object with no 
+%SIGN   Signum of a TRIGTECH object.
+%   SIGN(F) returns the sign of F, where F is a TRIGTECH object with no 
 %   roots in its domain. If F has roots, then SIGN(F) will return garbage
 %   with no warning. 
 %

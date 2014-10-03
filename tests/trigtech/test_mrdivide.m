@@ -1,13 +1,13 @@
-% Test file for fourtech/mrdivide.m
+% Test file for trigtech/mrdivide.m
 
 function pass = test_mrdivide(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fourtech.techPref();
+    pref = trigtech.techPref();
 end
 
-testclass = fourtech();
+testclass = trigtech();
 
 % Generate a few random points to use as test values.
 seedRNG(6178);
@@ -18,7 +18,7 @@ alpha = -0.194758928283640 + 0.075474485412665i;
 
 
 %%
-% Check division of a FOURTECH object by a numeric array.
+% Check division of a TRIGTECH object by a numeric array.
 
 f_op = @(x) [exp(sin(pi*x)) 3./(4-cos(pi*x))];
 f = testclass.make(f_op, [], pref);
@@ -43,7 +43,7 @@ pass(4) = norm(feval(g, x) - g_exact(x), inf) < ...
     10*max(g.vscale.*g.epslevel);
 
 %%
-% Check division of a numeric array by a FOURTECH object.
+% Check division of a numeric array by a TRIGTECH object.
 
 f = testclass.make(@(x) cos(sin(pi*x)));
 g = alpha / f;
@@ -63,10 +63,10 @@ try
     g = f / [1 2 3];
     pass(7) = false;
 catch ME
-    pass(7) = strcmp(ME.identifier, 'CHEBFUN:FOURTECH:mrdivide:size');
+    pass(7) = strcmp(ME.identifier, 'CHEBFUN:TRIGTECH:mrdivide:size');
 end
 
-% Can't do f/g if both f and g are fourtech objects.
+% Can't do f/g if both f and g are trigtech objects.
 try
     f = testclass.make(@(x) sin(pi*x));
     g = testclass.make(@(x) cos(pi*x));
@@ -74,17 +74,17 @@ try
     pass(8) = false;
 catch ME
     pass(8) = strcmp(ME.identifier, ...
-        'CHEBFUN:FOURTECH:mrdivide:fourtechDivFourtech');
+        'CHEBFUN:TRIGTECH:mrdivide:trigtechDivTrigtech');
 end
 
-% Can't call mrdivide on a FOURTECH and a non-FOURTECH or non-double
+% Can't call mrdivide on a TRIGTECH and a non-TRIGTECH or non-double
 % object.
 try
     f = testclass.make(@(x) sin(x));
     g = f / true;
     pass(9) = false;
 catch ME
-    pass(9) = strcmp(ME.identifier, 'CHEBFUN:FOURTECH:mrdivide:badArg');
+    pass(9) = strcmp(ME.identifier, 'CHEBFUN:TRIGTECH:mrdivide:badArg');
 end
 
 end

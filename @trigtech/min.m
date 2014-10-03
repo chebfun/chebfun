@@ -1,7 +1,7 @@
 function [minVal, minPos] = min(f)
-%MIN   Global minimum of a FOURTECH on [-1,1].
-%   MINVAL = MIN(F) returns the global minimum of the FOURTECH F on [-1,1]. If
-%   F is an array-valued FOURTECH, MINVAL is a row vector whose Kth entry is the
+%MIN   Global minimum of a TRIGTECH on [-1,1].
+%   MINVAL = MIN(F) returns the global minimum of the TRIGTECH F on [-1,1]. If
+%   F is an array-valued TRIGTECH, MINVAL is a row vector whose Kth entry is the
 %   global minimum of the Kth column of F.
 %
 %   [MINVAL, MINPOS] = MIN(F) returns also a value such that MINVAL = F(MINPOS).

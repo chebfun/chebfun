@@ -1,4 +1,4 @@
-% Test file for fourtech/restrict.m
+% Test file for trigtech/restrict.m
 
 function pass = test_restrict(pref)
 
@@ -7,7 +7,7 @@ if (nargin < 1)
     pref = chebtech.techPref();
 end
 
-testclass = fourtech();
+testclass = trigtech();
 
 %%
 % Check behavior for empty inputs.
@@ -25,21 +25,21 @@ try
     g = restrict(f, [-1, 3]); %#ok<NASGU>
     pass(3) = 0;
 catch ME
-    pass(3) = strcmp(ME.identifier, 'FOURTECH:restrict:badinterval');
+    pass(3) = strcmp(ME.identifier, 'TRIGTECH:restrict:badinterval');
 end
 
 try
     g = restrict(f, [-2, 1]); %#ok<NASGU>
     pass(4) = 0;
 catch ME
-    pass(4) = strcmp(ME.identifier, 'FOURTECH:restrict:badinterval');
+    pass(4) = strcmp(ME.identifier, 'TRIGTECH:restrict:badinterval');
 end
 
 try
     g = restrict(f, [-1 -0.25 0.3 0.1 1]); %#ok<NASGU>
     pass(5) = 0;
 catch ME
-    pass(5) = strcmp(ME.identifier, 'FOURTECH:restrict:badinterval');
+    pass(5) = strcmp(ME.identifier, 'TRIGTECH:restrict:badinterval');
 end
 
 %%
@@ -58,7 +58,7 @@ try
     g = restrict(f, [-1 -0.5 0 0.5]);
     pass(9) = false;
 catch ME
-    if ( strcmp(ME.identifier, 'CHEBFUN:FOURTECH:restrict:multIntervals') )
+    if ( strcmp(ME.identifier, 'CHEBFUN:TRIGTECH:restrict:multIntervals') )
         pass(9) = true;
     else
         rethrow(ME)

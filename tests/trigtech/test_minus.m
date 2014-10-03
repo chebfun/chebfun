@@ -1,13 +1,13 @@
-% Test file for fourtech/minus.m
+% Test file for trigtech/minus.m
 
 function pass = test_minus(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fourtech.techPref();
+    pref = trigtech.techPref();
 end
 
-testclass = fourtech();
+testclass = trigtech();
 
 % Generate a few random points to use as test values.
 seedRNG(6178);
@@ -31,7 +31,7 @@ f = testclass.make(f_op, [], pref);
 pass(2:3) = test_sub_function_and_scalar(f, f_op, alpha, x);
 
 %%
-% Check subtraction of two FOURTECH objects.
+% Check subtraction of two TRIGTECH objects.
 
 f_op = @(x) zeros(size(x));
 f = testclass.make(f_op, [], pref);
@@ -49,7 +49,7 @@ g = testclass.make(g_op, [], pref);
 pass(8:9) = test_sub_function_and_function(f, f_op, g, g_op, x);
     
 %%
-% Check operation for array-valued FOURTECH objects.
+% Check operation for array-valued TRIGTECH objects.
 
 f_op = @(x) [zeros(size(x)) zeros(size(x)) zeros(size(x))];
 f = testclass.make(f_op, [], pref);
@@ -84,7 +84,7 @@ h2 = testclass.make(@(x) sin(pi*cos(3*pi*x)) - (cos(pi*sin(10*pi*x)) - 1), [], p
 pass(17) = norm(h1.coeffs - h2.coeffs, inf) < tol;
 
 %%
-% Check that subtracting a FOURTECH and an unhappy FOURTECH gives an
+% Check that subtracting a TRIGTECH and an unhappy TRIGTECH gives an
 % unhappy result.
 
 f = testclass.make(@(x) cos(pi*x));    % Happy
@@ -95,7 +95,7 @@ h = g - f;  % Subtract happy from unhappy.
 pass(19) = (~g.ishappy) && (~h.ishappy);
 
 %%
-% Test subtraction of array-valued scalar to array-valued FOURTECH.
+% Test subtraction of array-valued scalar to array-valued TRIGTECH.
 
 f = testclass.make(@(x) exp([sin(pi*x) cos(pi*x) -sin(pi*x).^2]));
 g = f - [1 2 3];
@@ -104,7 +104,7 @@ err = feval(g, x) - g_exact(x);
 pass(20) = norm(err(:), inf) < 10*max(g.vscale.*g.epslevel);
 
 %%
-% Test scalar expansion in FOURTECH argument.
+% Test scalar expansion in TRIGTECH argument.
 
 f = testclass.make(@(x) sin(pi*x));
 g = f - [1 2 3];
@@ -115,7 +115,7 @@ pass(21) = isequal(size(g.coeffs, 2), 3) && norm(err(:), inf) < ...
 
 end
 
-% Test the subtraction of a FOURTECH F, specified by F_OP, to and from a scalar
+% Test the subtraction of a TRIGTECH F, specified by F_OP, to and from a scalar
 % ALPHA using a grid of points X in [-1  1] for testing samples.
 function result = test_sub_function_and_scalar(f, f_op, alpha, x)
     g1 = f - alpha;
@@ -126,7 +126,7 @@ function result = test_sub_function_and_scalar(f, f_op, alpha, x)
         1000*max(g1.vscale.*g1.epslevel);
 end
 
-% Test the subraction of two FOURTECH objects F and G, specified by F_OP and
+% Test the subraction of two TRIGTECH objects F and G, specified by F_OP and
 % G_OP, using a grid of points X in [-1  1] for testing samples.
 function result = test_sub_function_and_function(f, f_op, g, g_op, x)
     h1 = f - g;

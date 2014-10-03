@@ -1,7 +1,7 @@
 function f = simplify(f, tol)
-%SIMPLIFY  Remove small trailing Fourier coefficients of a happy FOURTECH object.
+%SIMPLIFY  Remove small trailing Fourier coefficients of a happy TRIGTECH object.
 %  G = SIMPLIFY(F) attempts to compute a 'simplified' version G of the happy
-%  FOURTECH object F such that LENGTH(G) <= LENGTH(F) but ||G - F|| is small in
+%  TRIGTECH object F such that LENGTH(G) <= LENGTH(F) but ||G - F|| is small in
 %  a relative sense: ||G - F|| < G.EPSLEVEL*G.VSCALE. It does this by removing
 %  trailing coefficients of F that are relatively small; more precisely, those 
 %  that are smaller in magnitude than the product of F.VSCALE and F.EPSLEVEL. 
@@ -24,7 +24,7 @@ if ( isempty(f) )
     return
 end
 
-% Do nothing to an unhappy FOURTECH. ([TODO]: Is this the right thing to do?)
+% Do nothing to an unhappy TRIGTECH. ([TODO]: Is this the right thing to do?)
 if ( ~f.ishappy )
     return;
 end

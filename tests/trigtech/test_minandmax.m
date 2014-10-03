@@ -1,13 +1,13 @@
-% Test file for fourtech/minandmax.m
+% Test file for trigtech/minandmax.m
 
 function pass = test_minandmax(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fourtech.techPref();
+    pref = trigtech.techPref();
 end
 
-testclass = fourtech();
+testclass = trigtech();
 %%
 % Spot-check the extrema for a few functions.
 
@@ -43,7 +43,7 @@ for k = 1:1:size(f.coeffs, 2)
     end
 end
 
-% Test complex-array-valued FOURTECH objects.
+% Test complex-array-valued TRIGTECH objects.
 f = testclass.make(@(x) [exp(sin(2*pi*x)), 1i*cos(20*pi*x)]);
 [vals, pos] = minandmax(f);
 f1 = testclass.make(@(x) exp(sin(2*pi*x)));

@@ -1,13 +1,13 @@
-% Test file for fourtech/isequal.m
+% Test file for trigtech/isequal.m
 
 function pass = test_isequal(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fourtech.techPref();
+    pref = trigtech.techPref();
 end
 
-testclass = fourtech();
+testclass = trigtech();
 
 %%
 f = testclass.make(@(x) sin(200*pi*x), [], pref);
