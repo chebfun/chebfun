@@ -1,6 +1,6 @@
 function f = abs(f, varargin)
-%ABS   Absolute value of a FOURTECH object.
-%   ABS(F) returns the absolute value of F, where F is a FOURTECH object with no
+%ABS   Absolute value of a TRIGTECH object.
+%   ABS(F) returns the absolute value of F, where F is a TRIGTECH object with no
 %   roots in [-1 1]. If ~isempty(roots(F)), then ABS(F) will return garbage
 %   with no warning. F may be complex.
 

@@ -1,26 +1,26 @@
-function varargout = fourstripplot(u, varargin)
+function varargout = trigstripplot(u, varargin)
 %FOURSTRIPPLOT   Plot the strip of analyticity.
-%   FOURSTRIPPLOT(U) plots estimated strip of analyticity in the complex plane
+%   TRIGSTRIPPLOT(U) plots estimated strip of analyticity in the complex plane
 %   for U. The width of the strip is 2*a(k)=1/N(k)/pi*log(4/EPS+1), where EPS is
 %   the EPSLEVEL of U and N(k) is the number of Fourier modes.
 %
-%   FOURSTRIPPLOT(U, EPS) allows a user-specified EPS.
+%   TRIGSTRIPPLOT(U, EPS) allows a user-specified EPS.
 %
-%   FOURSTRIPPLOT(U, ..., S) allows plotting options to be passed. For
-%   example, for black lines one may write FOURSTRIPPLOT(U, 'k-').
+%   TRIGSTRIPPLOT(U, ..., S) allows plotting options to be passed. For
+%   example, for black lines one may write TRIGSTRIPPLOT(U, 'k-').
 %
-%   H = FOURSTRIPPLOT(U) returns a handle H to the figure.
+%   H = TRIGSTRIPPLOT(U) returns a handle H to the figure.
 %
 %   Example:
-%       u = fourtech(@(x) 1./(1 + sin(pi*x).^2));
-%       fourstripplot(u, 'r--');
+%       u = trigtech(@(x) 1./(1 + sin(pi*x).^2));
+%       trigstripplot(u, 'r--');
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( size(u, 2) > 1 )
-    error('CHEBFUN:FOURTECH:fourstripplot:quasi', ...
-        ['FOURSTRIPPLOT does not support array-valued FOURTECH objects.']);
+    error('CHEBFUN:TRIGTECH:trigstripplot:quasi', ...
+        ['TRIGSTRIPPLOT does not support array-valued TRIGTECH objects.']);
 end
 
 if ( isempty(u) )

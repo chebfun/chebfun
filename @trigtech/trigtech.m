@@ -1,70 +1,70 @@
-classdef fourtech < smoothfun % (Abstract)
-%FOURTECH   Approximate smooth periodic functions on [-1,1] with Fourier 
+classdef trigtech < smoothfun % (Abstract)
+%FOURTECH   Approximate smooth periodic functions on [-1,1] with trigonometric 
 %           interpolants.
 %
 %   Class for approximating smooth periodic functions on the interval [-1,1]
 %   using function values at equally spaced points on [-1,1).
 %
 % Constructor inputs:
-%   FOURTECH(OP) constructs a FOURTECH object from the function handle OP. OP
+%   TRIGTECH(OP) constructs a TRIGTECH object from the function handle OP. OP
 %   should be vectorized (i.e., accept a vector input) and ouput a vector of the
-%   same length. FOURTECH objects allow for array-valued construction (i.e., of
+%   same length. TRIGTECH objects allow for array-valued construction (i.e., of
 %   array-valued function), in which case OP should accept a vector of length N
 %   and return a matrix of size NxM, where M is number of columns of the multi
 %   -valued function.
 %
-%   FOURTECH(OP, DATA) constructs a FOURTECH using the additional data
+%   TRIGTECH(OP, DATA) constructs a TRIGTECH using the additional data
 %   supplied in the DATA structure.  Fields currently recognized are:
 %     DATA.VSCALE    (Default:  0)
 %     DATA.HSCALE    (Default:  1)
-%         The constructor builds a FOURTECH with 'happiness' (see
+%         The constructor builds a TRIGTECH with 'happiness' (see
 %         HAPPINESSCHECK.m) relative to the maximum of the given vertical scale
 %         DATA.VSCALE and the (column-wise) infinity norm of the sampled
 %         function values of OP, and the fixed horizontal scale DATA.HSCALE.
 %   If any fields in DATA are empty or not supplied, or if DATA itself is empty
 %   or not supplied, appropriate default values are set.
 %
-%   FOURTECH(OP, DATA, PREF) overrides the default behavior with that given by
+%   TRIGTECH(OP, DATA, PREF) overrides the default behavior with that given by
 %   the preference structure PREF.
 %
-%   FOURTECH(VALUES, ...) returns a FOURTECH object which interpolates the
+%   TRIGTECH(VALUES, ...) returns a TRIGTECH object which interpolates the
 %   values in the columns of VALUES at equally spaced points and
-%   FOURTECH({VALUES, COEFFS}, ... ) uses the Fourier coefficients passed in
+%   TRIGTECH({VALUES, COEFFS}, ... ) uses the Fourier coefficients passed in
 %   COEFFS rather than computing them. If COEFFS are passed, the resulting
-%   FOURTECH is always deemed 'happy'.
+%   TRIGTECH is always deemed 'happy'.
 %
-% Examples: % Basic construction: f = fourtech(@(x) exp(sin(pi*x)))
+% Examples: % Basic construction: f = trigtech(@(x) exp(sin(pi*x)))
 %
 %   % Construction with preferences:
-%   p.sampleTest = 0; % See FOURTECH.TECHPREF for details
-%   f = fourtech(@(x) sin(x), [], [], p)
+%   p.sampleTest = 0; % See TRIGTECH.TECHPREF for details
+%   f = trigtech(@(x) sin(x), [], [], p)
 %
 %   % Array-valued construction:
-%   f = fourtech(@(x) tanh([sin(pi*x), cos(pi*x), cos(pi*sin(pi*x))]))
+%   f = trigtech(@(x) tanh([sin(pi*x), cos(pi*x), cos(pi*sin(pi*x))]))
 %
-% See also FOURTECH.TECHPREF, FOURPTS, HAPPINESSCHECK, REFINE.
+% See also TRIGTECH.TECHPREF, TRIGPTS, HAPPINESSCHECK, REFINE.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% FOURTECH Class Description:
+% TRIGTECH Class Description:
 %
-% The FOURTECH class is for representations of smooth periodic functions on the
+% The TRIGTECH class is for representations of smooth periodic functions on the
 % interval [-1,1] via interpolated function values at equally spaced points
 % using Fourier series.
 %
-% The vertical scale VSCALE is used to enforce scale invariance in FOURTECH
+% The vertical scale VSCALE is used to enforce scale invariance in TRIGTECH
 % construction and subsequent operations. For example, that
-%   fourtech(@(x) 2^300*f(x)) = 2^300*fourtech(@(x) f(x)).
+%   trigtech(@(x) 2^300*f(x)) = 2^300*trigtech(@(x) f(x)).
 %
 % VSCALE may be optionally passed to the constructor (if not, it defaults to 0),
 % and during construction it is updated to be the maximum magnitude of the
 % sampled function values. Similarly the horizontal scale HSCALE is used to
 % enforce scale invariance when the input OP has been implicitly mapped from a
-% domain other than [-1 1] before being passed to the FOURTECH constructor.
+% domain other than [-1 1] before being passed to the TRIGTECH constructor.
 %
-% EPSLEVEL is the happiness level to which the FOURTECH was constructed (See
+% EPSLEVEL is the happiness level to which the TRIGTECH was constructed (See
 % HAPPINESSCHECK.m for full documentation) or a rough accuracy estimate of
 % subsequent operations, both relative to VSCALE. Therefore EPSLEVEL could be
 % regarded as the number of correct digits in the sampled value that created
@@ -98,19 +98,19 @@ classdef fourtech < smoothfun % (Abstract)
 %     h.vscale = max(abs(h.values), [], 1);
 %     h.epslevel = happinessCheck(h);
 %
-% If the input operator OP in a call to FOURTECH evaluates to NaN or Inf at
+% If the input operator OP in a call to TRIGTECH evaluates to NaN or Inf at
 % any of the sample points used by the constructor, then an error is thrown.
 %
-% The FOURTECH class supports the representation of array-valued functions (for
-% example, f = fourtech(@(x) [sin(pi*x), cos(pi*x)])). In such cases, the values
+% The TRIGTECH class supports the representation of array-valued functions (for
+% example, f = trigtech(@(x) [sin(pi*x), cos(pi*x)])). In such cases, the values
 % and coefficients are stored in a matrix (column-wise), and as such each
 % component of the array-valued function is truncated to the same length, even
 % if the demands of 'happiness' imply that one of the components could be
-% truncated to a shorter length than the others. All FOURTECH methods should
+% truncated to a shorter length than the others. All TRIGTECH methods should
 % accept such array-valued forms. Note that this representation is distinct from
-% an array of FOURTECH objects, for which there is little to no support.
+% an array of TRIGTECH objects, for which there is little to no support.
 %
-% Class diagram: [<<SMOOTHFUN>>] <-- [FOURTECH]
+% Class diagram: [<<SMOOTHFUN>>] <-- [TRIGTECH]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -118,24 +118,24 @@ classdef fourtech < smoothfun % (Abstract)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
 
-        % Values of FOURTECH at equally spaced points from [-1,1). For
-        % array-valued FOURTECH objects, each column represents the interpolated
+        % Values of TRIGTECH at equally spaced points from [-1,1). For
+        % array-valued TRIGTECH objects, each column represents the interpolated
         % values of a single function.
         values % (nxm double)
 
         % Coefficients are represented for the complex exponential form of the
         % interpolant. The coefficients are stored in descending order so that
         % c_{(N-1)/2} is the first entry and c_{-(N-1)/2} is the last. For
-        % array-valued FOURTECH objects, each column represents the coefficients
+        % array-valued TRIGTECH objects, each column represents the coefficients
         % of a single function.
         coeffs % (nxm double)
 
-        % Vertical scale of the FOURTECH. This is a row vector storing the
+        % Vertical scale of the TRIGTECH. This is a row vector storing the
         % magnitude of the largest entry in each column of VALUES. It is
         % convenient to store this as a property.
         vscale = 0 % (1xm double >= 0)
 
-        % Horizontal scale of the FOURTECH. Although FOURTECH objects have in
+        % Horizontal scale of the TRIGTECH. Although TRIGTECH objects have in
         % principle no notion of horizontal scale invariance (since they always
         % live on [-1,1)), the input OP may have been implicitly mapped. HSCALE
         % is then used to enforce horizontal scale invariance in construction
@@ -143,19 +143,19 @@ classdef fourtech < smoothfun % (Abstract)
         % is never updated.
         hscale = 1 % (scalar > 0)
 
-        % Boolean value designating whether the FOURTECH is 'happy' or not.
+        % Boolean value designating whether the TRIGTECH is 'happy' or not.
         % See HAPPINESSCHECK.m for full documentation.
         ishappy % (logical)
 
-        % Happiness level to which the FOURTECH was constructed (See
+        % Happiness level to which the TRIGTECH was constructed (See
         % HAPPINESSCHECK.m for full documentation) or a rough accuracy estimate
-        % of subsequent operations (See FOURTECH class documentation for
+        % of subsequent operations (See TRIGTECH class documentation for
         % details).
         epslevel % (double >= 0)
         
-        % Boolean value designating whether the FOURTECH represents a
+        % Boolean value designating whether the TRIGTECH represents a
         % real-valued function. This allows us to always return a real result
-        % for things like evaluating a FOURTECH.
+        % for things like evaluating a TRIGTECH.
         isReal % (logical)
         
     end
@@ -165,12 +165,12 @@ classdef fourtech < smoothfun % (Abstract)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods
         
-        function obj = fourtech(op, data, pref)
-            %Constructor for the FOURTECH class.
+        function obj = trigtech(op, data, pref)
+            %Constructor for the TRIGTECH class.
 
             % Parse inputs.
             if ( (nargin == 0) || isempty(op) )
-                % Return an empty FOURTECH on null input:
+                % Return an empty TRIGTECH on null input:
                 return
             end
 
@@ -179,9 +179,9 @@ classdef fourtech < smoothfun % (Abstract)
             end
 
             if ( (nargin < 3) || isempty(pref) )
-                pref = fourtech.techPref();
+                pref = trigtech.techPref();
             else
-                pref = fourtech.techPref(pref);
+                pref = trigtech.techPref(pref);
             end
 
             data = parseDataInputs(data, pref);
@@ -189,7 +189,7 @@ classdef fourtech < smoothfun % (Abstract)
             % Force nonadaptive construction if PREF.FIXEDLENGTH is numeric:
             if ( ~isempty(pref.fixedLength) && ~isnan(pref.fixedLength) )
                 % Evaluate op on the Fourier grid of given size:
-                vals = feval(op, fourtech.fourpts(pref.fixedLength));
+                vals = feval(op, trigtech.fourpts(pref.fixedLength));
                 vals(1,:) = 0.5*(vals(1,:) + feval(op, 1));
                 op = vals;
             end
@@ -206,201 +206,201 @@ classdef fourtech < smoothfun % (Abstract)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods
         
-        % Absolute value of a FOURTECH. (f should have no zeros in its domain)
+        % Absolute value of a TRIGTECH. (f should have no zeros in its domain)
         f = abs(f, pref)
 
-        % FOURTECH logical AND.
+        % TRIGTECH logical AND.
         h = and(f, g)
 
-        % True if any element of a FOURTECH is a nonzero number, ignoring NaN.
+        % True if any element of a TRIGTECH is a nonzero number, ignoring NaN.
         a = any(f, dim)
 
-        % Convert an array of FOURTECH objects into an array-valued FOURTECH.
+        % Convert an array of TRIGTECH objects into an array-valued TRIGTECH.
         f = cell2mat(f)
 
-        % Circular convolution of two fourtech objects.
+        % Circular convolution of two trigtech objects.
         f = circconv(f, g)
         
-        % Circular shift of a fourtech object by a: f -> g(x-a).
+        % Circular shift of a trigtech object by a: f -> g(x-a).
         g = circshift(f, a)
 
-        % Plot (semilogy) the Fourier coefficients of a FOURTECH object.
+        % Plot (semilogy) the Fourier coefficients of a TRIGTECH object.
         [h1, h2] = coeffsplot(f, varargin)
 
-        % Check the happiness of a FOURTECH. (Classic definition).
+        % Check the happiness of a TRIGTECH. (Classic definition).
         [ishappy, epslevel, cutoff] = classicCheck(f, values, pref)
 
-        % Compose two FOURTECH objects or a FOURTECH with a function handle:
+        % Compose two TRIGTECH objects or a TRIGTECH with a function handle:
         h = compose(f, op, g, data, pref)
 
-        % Complex conjugate of a FOURTECH.
+        % Complex conjugate of a TRIGTECH.
         f = conj(f)
         
-        % FOURTECH objects are not transposable.
+        % TRIGTECH objects are not transposable.
         f = ctranspose(f)
 
-        % Indefinite integral of a FOURTECH.
+        % Indefinite integral of a TRIGTECH.
         f = cumsum(f, dim)
 
-        % Derivative of a FOURTECH.
+        % Derivative of a TRIGTECH.
         f = diff(f, k, dim)
         
         % Extract information for DISPLAY.
         info = dispData(f)
         
-        % Extract columns of an array-valued FOURTECH object.
+        % Extract columns of an array-valued TRIGTECH object.
         f = extractColumns(f, columnIndex)
 
-        % Evaluate a FOURTECH.
+        % Evaluate a TRIGTECH.
         y = feval(f, x)
         
-        % Flip columns of an array-valued FOURTECH object.
+        % Flip columns of an array-valued TRIGTECH object.
         f = fliplr(f)
         
-        % Flip/reverse a FOURTECH object.
+        % Flip/reverse a TRIGTECH object.
         f = flipud(f)
 
-        % Plot (semilogy) the Fourier coefficients of a FOURTECH object.
+        % Plot (semilogy) the Fourier coefficients of a TRIGTECH object.
         varargout = plotcoeffs(f, varargin)
 
         % Get method:
         val = get(f, prop);
 
-        % Happiness test for a FOURTECH
+        % Happiness test for a TRIGTECH
         [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, pref)
 
-        % Imaginary part of a FOURTECH.
+        % Imaginary part of a TRIGTECH.
         f = imag(f)
 
-        % Compute the inner product of two FOURTECH objects.
+        % Compute the inner product of two TRIGTECH objects.
         out = innerProduct(f, g)
 
-        % True for an empty FOURTECH.
+        % True for an empty TRIGTECH.
         out = isempty(f)
 
-        % Test if FOURTECH objects are equal.
+        % Test if TRIGTECH objects are equal.
         out = isequal(f, g)
 
-        % Test if a FOURTECH is bounded.
+        % Test if a TRIGTECH is bounded.
         out = isfinite(f)
 
-        % Test if a FOURTECH is unbounded.
+        % Test if a TRIGTECH is unbounded.
         out = isinf(f)
 
-        % Test if a FOURTECH has any NaN values.
+        % Test if a TRIGTECH has any NaN values.
         out = isnan(f)
 
         function out = isPeriodicTech(f)
-        %ISPERIODICTECH    True for FOURTECH.
+        %ISPERIODICTECH    True for TRIGTECH.
             out = 1;
         end
         
-        % True for real FOURTECH.
+        % True for real TRIGTECH.
         out = isreal(f)
         
-        % True for zero FOURTECH objects
+        % True for zero TRIGTECH objects
         out = iszero(f)
         
-        % Cannot convert FOURTECH coefficients to legendre coefficients
+        % Cannot convert TRIGTECH coefficients to legendre coefficients
         c_leg = legcoeffs(f, n)
         
-        % Length of a FOURTECH.
+        % Length of a TRIGTECH.
         len = length(f)
 
-        % Convert an array-valued FOURTECH into an ARRAY of FOURTECH objects.
+        % Convert an array-valued TRIGTECH into an ARRAY of TRIGTECH objects.
         g = mat2cell(f, M, N)
 
-        % Global maximum of a FOURTECH on [-1,1].
+        % Global maximum of a TRIGTECH on [-1,1].
         [maxVal, maxPos] = max(f)
 
-        % Global minimum of a FOURTECH on [-1,1].
+        % Global minimum of a TRIGTECH on [-1,1].
         [minVal, minPos] = min(f)
 
         % Global minimum and maximum on [-1,1].
         [vals, pos] = minandmax(f)
 
-        % Subtraction of two FOURTECH objects.
+        % Subtraction of two TRIGTECH objects.
         f = minus(f, g)
 
-        % Left matrix divide for FOURTECH objects.
+        % Left matrix divide for TRIGTECH objects.
         X = mldivide(A, B)
 
-        % Right matrix divide for a FOURTECH.
+        % Right matrix divide for a TRIGTECH.
         X = mrdivide(B, A)
 
-        % Multiplication of FOURTECH objects.
+        % Multiplication of TRIGTECH objects.
         f = mtimes(f, c)
 
-        % FOURTECH logical OR.
+        % TRIGTECH logical OR.
         h = or(f, g)
 
-        % Basic linear plot for FOURTECH objects.
+        % Basic linear plot for TRIGTECH objects.
         varargout = plot(f, varargin)
         
-        % 3-D plot for FOURTECH objects.
+        % 3-D plot for TRIGTECH objects.
         varargout = plot3(f, g, h, varargin)
         
-        % Obtain data used for plotting a FOURTECH object:
+        % Obtain data used for plotting a TRIGTECH object:
         data = plotData(f, g, h)
 
-        % Addition of two FOURTECH objects.
+        % Addition of two TRIGTECH objects.
         f = plus(f, g)
 
-        % Return the points used by a FOURTECH.
+        % Return the points used by a TRIGTECH.
         out = points(f)
 
-        % Complex polynomial coefficients of a FOURTECH.
+        % Complex polynomial coefficients of a TRIGTECH.
         out = poly(f)
 
-        % Populate a FOURTECH class with values.
+        % Populate a TRIGTECH class with values.
         f = populate(f, op, vscale, hscale, pref)
         
-        % Power function of a FOURTECH.
+        % Power function of a TRIGTECH.
         f = power(f, b)
 
-        % Adjust the number of points used in a FOURTECH.
+        % Adjust the number of points used in a TRIGTECH.
         f = prolong(f, n)
 
-        % QR factorisation of an array-valued FOURTECH.
+        % QR factorisation of an array-valued TRIGTECH.
         [f, R, E] = qr(f, flag, methodFlag)
 
-        % Right array divide for a FOURTECH.
+        % Right array divide for a TRIGTECH.
         f = rdivide(f, c, pref)
 
-        % Real part of a FOURTECH.
+        % Real part of a TRIGTECH.
         f = real(f)
 
-        % Restrict a FOURTECH to a subinterval.
+        % Restrict a TRIGTECH to a subinterval.
         f = restrict(f, s)
 
-        % Roots of a FOURTECH in the interval [-1,1].
+        % Roots of a TRIGTECH in the interval [-1,1].
         out = roots(f, varargin)
         
-        % Test an evaluation of the input OP against a FOURTECH approx.
+        % Test an evaluation of the input OP against a TRIGTECH approx.
         pass = sampleTest(op, values, f)
         
-        % Signum of a FOURTECH. (f should have no zeros in its domain)
+        % Signum of a TRIGTECH. (f should have no zeros in its domain)
         f = sign(f, pref)
 
-        % Trim trailing Chebyshev coefficients of a FOURTECH object.
+        % Trim trailing Chebyshev coefficients of a TRIGTECH object.
         f = simplify(f, pref, force)
 
-        % Size of a FOURTECH.
+        % Size of a TRIGTECH.
         [siz1, siz2] = size(f, varargin)
 
-        % Definite integral of a FOURTECH on the interval [-1,1].
+        % Definite integral of a TRIGTECH on the interval [-1,1].
         out = sum(f, dim)
 
-        % FOURTECH multiplication.
+        % TRIGTECH multiplication.
         f = times(f, g, varargin)
         
-        % FOURTECH obects are not transposable.
+        % TRIGTECH obects are not transposable.
         f = transpose(f)
 
-        % Unary minus of a FOURTECH.
+        % Unary minus of a TRIGTECH.
         f = uminus(f)
 
-        % Unary plus of a FOURTECH.
+        % Unary plus of a TRIGTECH.
         f = uplus(f)   
         
     end
@@ -423,13 +423,13 @@ classdef fourtech < smoothfun % (Abstract)
         % Convert coefficients to values:
         values = coeffs2vals(coeffs);
         
-        % Make a FOURTECH (constructor shortcut):
+        % Make a TRIGTECH (constructor shortcut):
         f = make(varargin);
         
         % Compute Fourier quadrature weights (trapezoidal rule):
         w = quadwts(n)
         
-        % Refinement function for FOURTECH construction (evaluates OP on grid):
+        % Refinement function for TRIGTECH construction (evaluates OP on grid):
         [values, points, giveUp] = refine(op, values, pref)
         
         % Retrieve and modify preferences for this class.

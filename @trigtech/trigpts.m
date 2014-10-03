@@ -1,8 +1,8 @@
-function [x, w] = fourpts(n)
-%FOURPTS   Fourier points in [-1, 1).
-%   FOURPTS(N) returns N equispaced points in [-1, 1).
+function [x, w] = trigpts(n)
+%TRIGPTS   Equispaced points in [-1, 1).
+%   TRIGPTS(N) returns N equispaced points in [-1, 1).
 %
-%   [X, W] = FOURPTS(N) returns also a row vector of the weights for
+%   [X, W] = TRIGPTS(N) returns also a row vector of the weights for
 %   the trapezoidal rule.
 %
 % See also CHEBPTS, LEGPTS, JACPTS, LAGPTS, and HERMPTS.
@@ -23,7 +23,7 @@ x(end) = [];
 
 % Quadrature weights:
 if ( nargout > 1 )
-    w = fourtech.quadwts(n);
+    w = trigtech.quadwts(n);
 end
     
 end
