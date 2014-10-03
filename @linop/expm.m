@@ -110,7 +110,9 @@ for i = 1:length(t)
         do = max(getDiffOrder(disc.source), 0);
         do = max(do, [], 1);
         for k = 1:numel(u0.blocks)
-            discu.dimension = disc.dimension + do(k);
+            if ( ~isequal(prefs.discretization, @fourcolloc) )
+                discu.dimension = disc.dimension + do(k);
+            end
             f.blocks{k} = discu.toValues(u0.blocks{k},1);
         end
         v0 = cell2mat(f.blocks);  

@@ -38,8 +38,10 @@ function varargout = expm(N, t, u0, pref)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Grab a preference if not given one:
+isPrefGiven = 1;
 if ( nargin < 4 )
     pref = cheboppref();
+    isPrefGiven = 0;
 end
 
 % Linearize and check whether the CHEBOP is linear:
@@ -50,6 +52,9 @@ if ( fail )
         ['The operator appears to be nonlinear.\n', ...
          'EXPM() supports only linear CHEBOP instances.']);
 end
+
+% Adjust the preferences for periodic boundary conditions.
+[N, L, pref] = adjustPref(N, L, isPrefGiven, pref);
 
 if ( nargin >= 3 )
     % Evaluate the matrix exponential for the given u0:
