@@ -85,10 +85,9 @@ classdef smoothfun < onefun % (Abstract)
     methods ( Access = public, Static = false ) 
         
         function out = isPeriodicTech(f)
-        %ISPERIODICTECH    Test if the SMOOTHFUN f is constructed with a
+        %ISPERIODICTECH    Test if a SMOOTHFUN is constructed with a
         %basis of periodic functions. 
-        % This function would be overwritten at the tech level if
-        % necessary.
+        %   Individual techs override this function as necessary.
             
             % Returns 0 by default.
             out = 0;

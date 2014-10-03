@@ -84,8 +84,8 @@ classdef chebtech < smoothfun % (Abstract)
 % array-valued forms. Note that this representation is distinct from an array of
 % CHEBTECH objects, for which there is little to no support.
 %
-% Class diagram: [<<SMOOTFUN>>] <-- [<<CHEBTECH>>] <-- [CHEBTECH1]
-%                                                         <-- [CHEBTECH2]
+% Class diagram: [<<SMOOTHFUN>>] <-- [<<CHEBTECH>>] <-- [CHEBTECH1]
+%                                                   <-- [CHEBTECH2]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
