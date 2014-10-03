@@ -39,51 +39,20 @@ function varargout = eigs(N, varargin)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-prefs = [];
+pref = [];
 % Get the preferences if given.
 for j = 1:nargin-1
     item = varargin{j};
     if ( isa(item,'cheboppref') )
-        prefs = item;
+        pref = item;
+        isPrefGiven = 1;
     end
 end
 
 % Grab defaults if needed.
-if ( isempty(prefs) )
-    prefs = cheboppref;
-    % If the boundary conditions are periodic, use FOURCOLLOC by default.
-    % However, if the default discretization is ULTRAS use ULTRAS,
-    % or if there is a brakpoint use the default discretization.
-    if ( isa(N.bc, 'char') && strcmpi(N.bc, 'periodic') ...
-            && ~isequal(prefs.discretization, @ultraS) ...
-            && length(N.domain) < 3 )
-        prefs.discretization = @fourcolloc;
-    end
-    % Add the prefs to varargin.
-    varargin{nargin} = prefs;
-end
-
-% Check boundary conditions if using FOURCOLLOC.
-if ( isequal(prefs.discretization, @fourcolloc) )
-    if ( isempty(N.bc) )
-        % No need to clear the BCs, do nothing!
-    elseif ( isa(N.bc, 'char') && strcmpi(N.bc, 'periodic') )
-        % FOURCOLLOC uses periodic functions, so there is no need to specify
-        % boundary conditions. We clear them out of the chebop object to avoid
-        % problems later in the code.
-        N.bc = [];
-    else
-        error('CHEBFUN:CHEBOP:solvebvp:bc', ...
-            'FOURCOLLOC only works with periodic boundary conditions.');
-    end
-end
-
-% Check domain if using FOURCOLLOC.
-if ( isequal(prefs.discretization, @fourcolloc) )
-    if ( length(N.domain) > 2)
-        error('CHEBFUN:CHEBOP:solvebvp:domain', ...
-        'FOURCOLLOC does not work with breakpoints. Use CHEBCOLLOC or ULTRAS.');
-    end
+if ( isempty(pref) )
+    pref = cheboppref;
+    isPrefGiven = 0;
 end
 
 % Linearize and check whether the chebop is linear:
@@ -101,6 +70,19 @@ if ( fail )
          'EIGS() supports only linear CHEBOP instances.']);
 end
 
+% Adjust the preferences for periodic boundary conditions.
+[N, L, pref] = adjustPref(N, L, isPrefGiven, pref);
+if ( isPrefGiven )
+    % If a pref has been given, it is at the last position of varargin, 
+    % indexed nargin - 1. Overwrite it.
+    varargin{nargin-1} = pref;
+else
+    % Otherwise, add one.
+    varargin{nargin} = pref;
+end
+
+
+% Call LINOP/eigs.
 [varargout{1:nargout}] = eigs(L, varargin{:});
 
 % Return a CHEBFUN rather than a CHEBMATRIX for scalar problems:

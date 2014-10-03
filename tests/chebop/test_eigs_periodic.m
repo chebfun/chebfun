@@ -33,7 +33,8 @@ D = diag(D);
 
 % Exact solution.
 Dexact = [0 1 1 4 4 9 9]';
-err(1) = norm(D - Dexact, inf);
+pass(1) = norm(D - Dexact, inf) < tol;
+pass(2) = isequal(get(V{1}.funs{1}, 'tech'), @fourtech);
 
 %% Problem description.
 % Solving
@@ -55,7 +56,8 @@ L.bc = 'periodic';
 k = 7;
 
 % Solve the eigenvalue problem with FOURIER.
-D = eigs(L, k);
+[V, D] = eigs(L, k);
+D = diag(D); 
 
 % Solutions from WolframAlpha.
 Dwolfram = [ -1.513956885056520;
@@ -65,9 +67,7 @@ Dwolfram = [ -1.513956885056520;
               5.172665133358294;
               9.140627737766440;
               9.370322483621104 ];
-err(2) = norm(D - Dwolfram, inf);
-
-%%
-pass = err < tol;
+pass(3) = norm(D - Dwolfram, inf) < tol;
+pass(4) = isequal(get(V{1}.funs{1}, 'tech'), @fourtech);
 
 end

@@ -248,6 +248,9 @@ classdef (InferiorClasses = {?double}) chebop
         % Solve a nonlinear problem posed with CHEBOP
         [u, info] = solvebvpNonlinear(N, rhs, L, u0, res, pref, displayInfo)
         
+        % Adjust the preferences for periodic boundary conditions.
+        [N, L, pref] = adjustPref(N, L, isPrefGiven, pref)
+        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
