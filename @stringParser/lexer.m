@@ -338,12 +338,13 @@ while ( ~strcmp(str, '$') )
         
         case 'semicolon'
             error('CHEBFUN:STRINGPARSER:lexer:semicolon', ...
-                ['A semicolon (;) detected in input. Chebgui does not ' ...
-                'require (nor support) ; in its input fields.']);
+                ['A semicolon detected in input.\nChebgui does not ' ...
+                'require (or support) '';'' in its input fields.']);
             
         case 'error'
             error('CHEBFUN:STRINGPARSER:lexer:unknownType', ...
-                'Unrecognized type of lexer input.');
+                ['Invalid token ''%s'' in input.\nChebgui does not support ' ...
+                '''%s'' in its input fields.'], char1, char1);
     end
     
     prevType = type;
