@@ -88,6 +88,8 @@ classdef chebfun
 % as discussed above may be combined with the 'periodic' flag, with exception to
 % the 'chebkind' and 'splitting' flags.
 %
+% CHEBFUN(F, 'trig') is the same as CHEBFUN(F, 'periodic').
+%
 % CHEBFUN --UPDATE can be used to update to the latest stable release of CHEBFUN
 % (obviously an internet connection is required!). CHEBFUN --UPDATE-DEVEL will
 % update to the latest development release, but we recommend instead that you
@@ -695,7 +697,7 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
             % Hack to support construction from coefficients.            
             op = {{[], op}};
             args(1) = [];
-        elseif ( strcmpi(args{1}, 'periodic') )
+        elseif ( any(strcmpi(args{1}, {'periodic', 'trig'})) )
             isPeriodic = true;
             args(1) = [];
         elseif ( strcmpi(args{1}, 'coeffs') && iscell(op) )
@@ -823,14 +825,14 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
     end
     numIntervals = numel(dom) - 1;
 
-    % Deal with the 'periodic' flag:
+    % Deal with the 'periodic' or 'trig' flag:
     if ( isPeriodic )
-        % Translate "periodic".
+        % Translate 'periodic' or 'trig'.
         pref.tech = @trigtech;
         pref.splitting = false;
         if ( numel(dom) > 2 )
             error('CHEBFUN:parseInputs:periodic', ...
-                '''periodic'' option is only supported for smooth domains.');
+                '''periodic'' or ''trig'' option is only supported for smooth domains.');
         end
     end
 
