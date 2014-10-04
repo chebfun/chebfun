@@ -1,7 +1,7 @@
 function D = diff(disc, m)
-%DIFF    Differentiation operator for FOURCOLLOC discretization.
+%DIFF    Differentiation operator for TRIGCOLLOC discretization.
 %   D = DIFF(DISC) gives the matrix such that if v=D*u, then v=u', where u
-%   is a FOURCOLLOC representation of a trigonometric polynomial.
+%   is a TRIGCOLLOC representation of a trigonometric polynomial.
 %
 %   DIFF(DISC, M) for positive integer M returns D^M.
 
@@ -18,5 +18,5 @@ if ( m == 0 )
 else
     rescaleFactor = dom(2) - dom(1);
     % Rescale the differentiation matrix.
-    D = fourcolloc.diffmat(n, m) * (2*pi/rescaleFactor)^m;
+    D = trigcolloc.diffmat(n, m) * (2*pi/rescaleFactor)^m;
 end

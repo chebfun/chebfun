@@ -1,6 +1,6 @@
 function f = toFunctionIn(disc, values)
-%TOFUNCTIONIN   Convert FOURCOLLOC discretization to a CHEBFUN. 
-%   TOFUNCTIONIN(DISC, VALUES) converts the values of a FOURCOLLOC-discretized
+%TOFUNCTIONIN   Convert TRIGCOLLOC discretization to a CHEBFUN. 
+%   TOFUNCTIONIN(DISC, VALUES) converts the values of a TRIGCOLLOC-discretized
 %   function to a CHEBFUN. 
 %
 %   If VALUES is matrix valued, the output is an array-valued CHEBFUN, where

@@ -1,7 +1,7 @@
 function fx = toValues(disc, f, varargin)
-%TOVALUES   Convert CHEBFUN to a FOURCOLLOC discretization.
-%   TOVALUES(DISC, F) converts a chebfun F to values at Fourier points in the
-%   DISC.DOMAIN.
+%TOVALUES   Convert CHEBFUN to a TRIGCOLLOC discretization.
+%   TOVALUES(DISC, F) converts a chebfun F to values at equi-spaced points 
+%   in the DISC.DOMAIN.
 %
 % See also TOFUNCTION.
 
