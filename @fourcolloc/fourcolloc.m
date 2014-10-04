@@ -1,7 +1,7 @@
-classdef fourcolloc < colloc
-%FOURCOLLOC   Collocation discretization on Fourier points.
-%   FOURCOLLOC is an implementation of COLLOC that implements spectral
-%   collocation on Fourier points for differential and integral operators.
+classdef trigcolloc < colloc
+%TRIGCOLLOC   Collocation discretization on equally spaced points.
+%   TRIGCOLLOC is an implementation of COLLOC that implements spectral
+%   collocation on equi-spaced points for differential and integral operators.
 %
 %   Linear algebra operations generally take O(N^3) flops, where N is determined
 %   automatically to resolve the solution. You can control the allowed values of
@@ -17,9 +17,9 @@ classdef fourcolloc < colloc
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
         
-        function disc = fourcolloc(varargin)
+        function disc = trigcolloc(varargin)
             disc = disc@colloc(varargin{:});
-            % No dimension adjustment are required for FOURCOLLOC.
+            % No dimension adjustment are required for TRIGCOLLOC.
             disc.dimAdjust = 0; 
             disc.projOrder = 0; 
         end
@@ -35,12 +35,12 @@ classdef fourcolloc < colloc
     methods ( Access = public, Static = true )
         
         function tech = returnTech()
-            %RETURNTECH    Return the appropriate tech to use for FOURCOLLOC.
+            %RETURNTECH    Return the appropriate tech to use for TRIGCOLLOC.
             tech = @trigtech;
         end
         
         function D = diffmat(N, m)
-            %DIFFMAT   Fourier differentiation matrix.
+            %DIFFMAT   Trigonometric Fourier differentiation matrix.
             %   D = DIFFMAT(N) is the matrix that maps function values at N
             %   equally-spaced points in [-pi pi) to values of the derivative of
             %   the interpolating trigonometric polynomial at those points.
@@ -78,7 +78,7 @@ classdef fourcolloc < colloc
                 D = eye(N);
                 return
             
-            % First-order Fourier differentiation matrix.
+            % First-order trigonometric Fourier differentiation matrix.
             elseif ( m == 1 )
 
                 if ( mod(N, 2) ) % N is odd.
@@ -90,7 +90,7 @@ classdef fourcolloc < colloc
                 row = column([1 N:-1:2]);
                 D = toeplitz(column, row);
 
-            % Second-order Fourier differentiation matrix.
+            % Second-order trigonometric Fourier differentiation matrix.
             elseif ( m == 2 )
 
                 if ( mod(N, 2) ) % N is odd.
@@ -102,7 +102,7 @@ classdef fourcolloc < colloc
                 column(1:2:end) = -column(1:2:end);
                 D = toeplitz(column);
 
-            % Third-order Fourier differentiation matrix.
+            % Third-order trigonometric Fourier differentiation matrix.
             elseif ( m == 3 )
 
                 if ( mod(N, 2) ) % N is odd.
@@ -117,7 +117,7 @@ classdef fourcolloc < colloc
                 row = column([1 N:-1:2]);
                 D = toeplitz(column, row);
             
-            % Fourth-order Fourier differentiation matrix.
+            % Fourth-order trigonometric Fourier differentiation matrix.
             elseif ( m == 4 )
                 
                 cscc = csc((1:N-1)*h/2);
@@ -134,7 +134,7 @@ classdef fourcolloc < colloc
                 column(1:2:end) = -column(1:2:end);
                 D = toeplitz(column);  
                 
-            % Higher-orders Fourier differentiation matrices.
+            % Higher-orders trigonometric Fourier differentiation matrices.
             else
 
                 % [TODO]: Improve efficiency of this code for higher derivatives.
@@ -150,15 +150,15 @@ classdef fourcolloc < colloc
             end
         
         function Q = cumsummat(N)
-            %CUMSUMMAT   Fourier integration matrix.
+            %CUMSUMMAT   Trigonometric Fourier integration matrix.
             %   Q = CUMSUMMAT(N) is the matrix that maps function values at
-            %   N Fourier points to values of the integral of the interpolating  
-            %   trigonometric polynomial at those points.
+            %   N equi-spaced points to values of the integral of the 
+            %   interpolating trigonometric polynomial at those points.
             
             % [TODO]: Add support.
-            error('CHEBFUN:FOURCOLLOC:cumsummat:notSupported', ...
+            error('CHEBFUN:TRIGCOLLOC:cumsummat:notSupported', ...
                 ['Indefinite integration is currently not supported for ' ...
-                'FOURCOLLOC discretization.\nPlease consider using ' ....
+                'TRIGCOLLOC discretization.\nPlease consider using ' ....
                 'CHEBCOLLOC2 or ULTRAS discretization.']);            
         end
     
