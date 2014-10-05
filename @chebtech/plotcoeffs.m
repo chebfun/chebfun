@@ -84,7 +84,7 @@ end
 % Get the size:
 [n, m] = size(absCoeffs);
 
-xx = n-1:-1:0;
+xx = 0:1:n-1;
 yy = absCoeffs;
 if ( any(doBar) )
     [xx, yy] = padData(xx,yy);

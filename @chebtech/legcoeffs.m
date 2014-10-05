@@ -15,7 +15,7 @@ function b = legcoeffs(f, n)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-b = cheb2leg(flipud(f.coeffs));
+b = cheb2leg(f.coeffs);
 
 if ( nargin > 1 )
     s = size(b);

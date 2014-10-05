@@ -111,9 +111,14 @@ classdef chebop2
                     % Extract out rhs: 
                     x = chebfun2(@(x,y) x, dom); 
                     RHS = fh(0*x);
-                    fh = @(u) fh(u) - RHS; 
-                    N.rhs = -RHS;             % store for later. 
-                    
+                    % In this case, the RHS must be a constant chebfun2.
+                    if ( norm( RHS ) > 0 ) 
+                        fh = @(u) fh(u) - RHS; 
+                        N.rhs = -RHS;             % store for later.
+                    else
+                        N.rhs = 0; 
+                    end
+
                     u = adchebfun2(chebfun2(@(x,y) x.*y, dom));
                     v = fh(u);
                     % If the PDO has constant coefficients then convert to
@@ -140,8 +145,16 @@ classdef chebop2
                     
                     % Extract out rhs: 
                     RHS = fh(x, y, 0*x); 
-                    fh = @(x,y,u) fh(x, y, u) - RHS; 
-                    N.rhs = -RHS;                  % store for later
+                    % The RHS is a chebfun2. Check if it is the zero. Do
+                    % not change function handle unless we have to because 
+                    % we want the user to be able to see the PDO 
+                    % untouched if possible. 
+                    if ( norm( RHS ) > 0 ) 
+                        fh = @(x, y, u) fh(x, y, u) - RHS; 
+                        N.rhs = -RHS;             % store for later.
+                    else
+                        N.rhs = 0; 
+                    end
                     
                     % Apply it to the operator.
                     v = fh(x, y, u);

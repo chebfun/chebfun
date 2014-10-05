@@ -692,10 +692,6 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
             doVectorCheck = false;
             args(1) = [];            
         elseif ( strcmpi(args{1}, 'coeffs') && isnumeric(op) )
-            % Flip the coefficients, since at the user level the coefficients
-            % start from the lowes to the highest while the lower layers operate
-            % opposite to this:
-            op = flipud(op);
             % Hack to support construction from coefficients.            
             op = {{[], op}};
             args(1) = [];

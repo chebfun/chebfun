@@ -61,22 +61,7 @@ function [u, info] = solvebvp(N, rhs, varargin)
 %   details.
 
 % Parse inputs:
-[pref, displayInfo] = parseInputs(N, varargin{:});
-
-% Check boundary conditions if using FOURCOLLOC.
-if ( isequal(pref.discretization, @fourcolloc) )
-    if ( isempty(N.bc) )
-        % No need to clear the BCs, do nothing!
-    elseif ( isa(N.bc, 'char') && strcmpi(N.bc, 'periodic') )
-        % FOURCOLLOC uses periodic functions, so there is no need to specify
-        % boundary conditions. We clear them out of the chebop object to avoid
-        % problems later in the code.
-        N.bc = [];
-    else
-        error('CHEBFUN:CHEBOP:solvebvp:bc', ...
-            'FOURCOLLOC only works with periodic boundary conditions.');
-    end
-end
+[pref, isPrefGiven, displayInfo] = parseInputs(N, varargin{:});
 
 % Find out how many variables N operates on:
 nVars = numVars(N);
@@ -89,25 +74,19 @@ end
 % Store the domain we're working with.
 dom = N.domain;
 
-% Use the appropriate tech.
-discPreference = pref.discretization();
-tech = discPreference.returnTech();
-
 % Create an initial guess if none is passed.
 if ( isempty(N.init) )
     % Initialise a zero CHEBFUN:
-    zeroFun = chebfun(0, dom, 'tech', tech); 
+    zeroFun = chebfun(0, dom); 
     % Convert to a CHEBMATRIX of correct dimensions:
     u0 = cell(nVars, 1);
     for k = 1:nVars
         u0{k} = zeroFun;
     end
     u0 = chebmatrix(u0);
-    
 else
     % Get the initial guess.
-    u0 = N.init;
-    
+    u0 = N.init; 
 end
 
 % Initialise the independent variable:
@@ -115,6 +94,14 @@ x = chebfun(@(x) x, dom);
 
 % Linearize and attach preferences.
 [L, residual, isLinear] = linearize(N, u0, x);
+
+% Determine the discretization.
+pref = determineDiscretization(N, L, isPrefGiven, pref);
+
+% Clear boundary conditions if using FOURCOLLOC.
+if ( isequal(pref.discretization, @fourcolloc) )
+    [N, L] = clearPeriodicBCs(N, L);
+end
 
 warnState = warning();
 [ignored, lastwarnID] = lastwarn(); %#ok<ASGLU>
@@ -170,6 +157,8 @@ end
 
 % Ensure that u0 is of correct discretization, and convert it to a
 % CHEBMATRIX if necessary.
+discPreference = pref.discretization();
+tech = discPreference.returnTech();
 if ( isa(u0, 'chebfun') )
     u0 = chebmatrix(chebfun(u0, dom, 'tech', tech));
 elseif ( isa(u0, 'chebmatrix') )
@@ -231,7 +220,7 @@ info.isLinear = isLinear;
 
 end
 
-function [pref, displayInfo] = parseInputs(N, varargin)
+function [pref, isPrefGiven, displayInfo] = parseInputs(N, varargin)
 %PARSEINPUTS   Parse the input arguments to SOLVEBVP.
 
 % Initialise the outputs:
@@ -247,6 +236,7 @@ while ( ~isempty(varargin) )
     elseif ( isa(varargin{1}, 'cheboppref') )
         pref = varargin{1};
         varargin(1) = [];
+        isPrefGiven = 1;
     elseif ( isa(varargin{1}, 'function_handle') )
         displayInfo = varargin{1};
         varargin(1) = [];
@@ -259,14 +249,7 @@ end
 % No preferences passed; use the current chebopprefs:
 if ( isempty(pref) )
     pref = cheboppref();
-    
-    % If the boundary conditions are periodic, use FOURCOLLOC by default.
-    % However, if the default discretization is ULTRAS, use ULTRAS.
-    if ( isa(N.bc, 'char') && strcmpi(N.bc, 'periodic') ...
-            && ~isequal(pref.discretization, @ultraS) )
-        pref.discretization = @fourcolloc;
-    end
-
+    isPrefGiven = 0;
 end
 
 % If no DISPLAYINFO function handle passed, use the default CHEBOP one.

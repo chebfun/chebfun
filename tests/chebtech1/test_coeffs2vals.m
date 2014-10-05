@@ -13,7 +13,7 @@ pass(1) = (c == v);
 
 %%
 % Simple data (even case)
-c = (1:6).';
+c = (6:-1:1).';
 % Exact values
 vTrue = [ -3*sqrt(6)/2-5/sqrt(2)+2*sqrt(3)+7 ; 4 - sqrt(2)/2 ; -3*sqrt(6)/2+5/sqrt(2)-2*sqrt(3)+7 ; 3*sqrt(6)/2-5/sqrt(2)-2*sqrt(3)+7 ; 4 + sqrt(2)/2 ; 3*sqrt(6)/2+5/sqrt(2)+2*sqrt(3)+7];
 
@@ -42,7 +42,7 @@ pass(7) = norm(v(:,1) - vTrue, inf) < tol && ...
       
 %%
 % Simple data (odd case)
-c = (1:5).';
+c = (5:-1:1).';
 % Exact values
 vTrue = [ 11/2+sqrt(5)-2*sqrt((5+sqrt(5))/2)-sqrt((5-sqrt(5))/2) ; 11/2-sqrt(5)-2*sqrt((5-sqrt(5))/2)+sqrt((5+sqrt(5))/2) ; 3 ; 11/2-sqrt(5)+2*sqrt((5-sqrt(5))/2)-sqrt((5+sqrt(5))/2) ; 11/2+sqrt(5)+2*sqrt((5+sqrt(5))/2)+sqrt((5-sqrt(5))/2) ];
 
