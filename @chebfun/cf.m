@@ -56,9 +56,9 @@ if ( nargin < 3 )
     n = 0;
 end
 
-% Use full series expansion of F by default.
+% If M is not provided, set it to empty:
 if ( nargin < 4 )
-    M = length(f) - 1;
+    M = [];
 end
 
 numCols = numColumns(f);
@@ -94,6 +94,9 @@ end
 
 function [p, q, r, s] = cfOneColumn(f, m, n, M)
 
+% Check for periodicity
+isPeriodic = isa(f.funs{1}.onefun, 'trigtech');
+
 % Check the inputs.
 if ( any(isinf(domain(f))) )
     error('CHEBFUN:CHEBFUN:cf:unboundedDomain', ...
@@ -115,31 +118,55 @@ if ( numel(f.funs) > 1 )
     f = chebfun(@(x) feval(f, x), f.domain([1, end]), M + 1);
 end
 
-% Trivial case: approximation length exceeds that of the expansion length.
+if ( ~isPeriodic )
+    % Use the full expansion of f if M is not provided of if M is larger than the
+    % degree of f:
+    if ( isempty(M) || M > length(f) - 1 )
+        % The degree in this case is one less than the length:
+        M = length(f) - 1;
+    end
+end
+
+if ( isPeriodic )
+    % Use the full expansion of f if M is not provided:
+    if ( isempty(M) || 2*M + 1 > length(f) )
+        M = (length(f)-1)/2;
+        if ( rem(M, 1) ~= 0 )
+            error( 'M is not an integer, even length trigfun!' )
+        end
+    end
+end
+
+% Trivial case: approximation degree exceeds that of the expansion degree.
 if ( m >= M )
     p = f;
-    q = chebfun(1, domain(f));
+    if ( isPeriodic )
+        q = chebfun(1, domain(f), 'trig');
+    else
+        q = chebfun(1, domain(f));
+    end
     r = @(x) feval(p, x);
+    % There is no error in this case:
     s = 0;
     return
 end
 
-% Extract the Chebyshev coefficients to be used in computing the approximation.
-a = chebcoeffs(f, length(f));
-a = a(1:M+1);
-
 % Deal with complex-valued functions.
-if ( any(imag(a) ~= 0) )
+if ( ~isreal(f) )
     warning('CHEBFUN:CHEBFUN:cf:complex', ...
         'CF does not work for complex valued functions. Taking real part.');
-    a = real(a);
+    f = real(f);
 end
 
 % Compute the CF approximation.
 if ( isempty(n) || (n == 0) )
-    [p, q, r, s] = polynomialCF(f, a, m, M);
+    if ( isPeriodic )
+        [p, q, r, s] = trigPolyCF(f, m, M);
+    else
+        [p, q, r, s] = polynomialCF(f, m, M);
+    end
 else
-    [p, q, r, s] = rationalCF(f, a(end:-1:1).', m, n, M);
+    [p, q, r, s] = rationalCF(f, m, n, M);
 end
 
 end
@@ -147,18 +174,15 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Polynomial CF approximation.
 
-function [p, q, r, s] = polynomialCF(f, a, m, M)
+function [p, q, r, s] = polynomialCF(f, m, M)
+% Use a degree M expansion of f to find a degree m polynomial 
+% CF approximation.
+
+% Extract the Chebyshev coefficients to be used in computing the approximation.
+a = chebcoeffs(f, length(f));
+a = a(1:M+1);
 
 dom = domain(f);
-
-% Trivial case:  approximation length is the length of the CHEBFUN.
-if ( m == M - 1 )
-    p = chebfun(a(1:M), dom, 'coeffs');
-    q = chebfun(1, dom);
-    r = @(x) feval(p, x);
-    s = abs(a(M+1));
-    return
-end
 
 c = a(m+2:M+1);
 if ( length(c) > 1024 )
@@ -189,11 +213,91 @@ r = @(x) feval(p,x);
 
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function [p, q, r, s] = trigPolyCF(f, m, M)
+
+    
+% Extract the Fourier coefficients to be used in computing the approximation.
+N = (length(f)-1)/2;
+if ( rem(N, 1) ~= 0 )
+    error( 'N is not an integer, even length trigfun!' )
+end
+a = trigcoeffs(f, length(f));
+a = a(N+1:2*M+1);
+
+dom = domain(f);
+
+ck = real(a(m+2:M+1));
+dk = imag(a(m+2:M+1));
+
+% Initialize arrays:
+b1 = zeros(2*m+1, 1);
+b2 = zeros(2*m+1, 1);
+s1 = [];
+s2 = [];
+
+% Solve the eigenvalue problem twice:
+if ( norm(ck, inf) > 100*eps )
+    [b1, s1] = getCoeffs(ck, M, m);
+end
+    
+if ( norm(dk, inf) > 100*eps )
+    [b2, s2] = getCoeffs(dk, M, m);
+end
+
+% How to estimate s here? 1-norm is an upperbound?
+s = norm([s1, s2], 1);
+
+% Construct the CF approximation now:
+a = [conj(a(m+1:-1:2)); a(1:m+1)] - b1 - flipud(b1) - 1i*b2 + 1i*flipud(b2);
+if ( norm(a(m+2:2*m+1) - conj(a(m:-1:1)), inf) > 100*eps || imag(a(m+1)) > 100*eps )
+    error( 'why are the coeffs are not that of a real function?')
+else
+    a(m:-1:1) = conj(a(m+2:2*m+1));
+    a(m+1) = real(a(m+1));
+end    
+p = chebfun(flipud(a), dom, 'coeffs', 'trig');
+q = chebfun(1, dom, 'trig');
+r = @(x) p(x);
+end
+
+
+function [b, s] = getCoeffs(c, N, n)
+
+% Solve the eigenvalue problem:
+[V, D] = eig(hankel(c));
+d = diag(D);
+[s, i] = max(abs(d));
+u = V(:,i);
+% Compute the coefficients b recursively:
+u1 = u(1);
+while ( abs(u(1)) < eps )
+    d(i) = [];
+    V(:, i) = [];
+    [s, i] = max(abs(d));
+    u = V(:, i);
+    u1 = u(1);
+end
+uu = u(2:(N-n));
+b = c.';
+for k = n:-1:-n
+    b = [-(b(1:(N-n-1))*uu)/u1, b]; %#ok<AGROW>
+end
+b = b(1:2*n+1).';
+end
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Rational CF approximation.
 
-function [p, q, r, s] = rationalCF(f, a, m, n, M)
+function [p, q, r, s] = rationalCF(f, m, n, M)
 
+% Use the full expansion of f if M is not provided:
+if ( isempty(M) )
+    M = length(f) - 1;
+end
+    
+a = chebcoeffs(f);
+a = a(end:-1:1).';
 dom = domain(f);
 
 tolfft = 1e-14;   % Relative tolerance.
