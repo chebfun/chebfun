@@ -7,7 +7,7 @@ function pref = determineDiscretization(N, L, isPrefGiven, pref)
 %   problems with periodic boundary conditions (BVP/EIGS/EXPM), modeled by a
 %   CHEBOP N and a LINOP L.
 %
-% See also CHEBOP/CLEARPERIODICBC, CHEBOP/SOLVEBVP, CHEBOP/EIGS, CHEBOP/EIGS.
+% See also CHEBOP/CLEARPERIODICBC, CHEBOP/SOLVEBVP, CHEBOP/EIGS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
