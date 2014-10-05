@@ -51,23 +51,6 @@ else
     isPrefGiven = 0;
 end
 
-% [TODO]: Delete of HM is happy with the pref checking above
-% pref = [];
-% % Loop through the inputs and check whether we were passed a cheboppref:
-% for j = 1:nargin-1
-%     item = varargin{j};
-%     if ( isa(item, 'cheboppref') )
-%         pref = item;
-%         isPrefGiven = 1;
-%     end
-% end
-% 
-% % Grab default CHEBOPPREF if needed.
-% if ( isempty(pref) )
-%     pref = cheboppref();
-%     isPrefGiven = 0;
-% end
-
 % Linearize and check whether the chebop is linear:
 [L, ignored, fail] = linop(N); %#ok<ASGLU>
 
