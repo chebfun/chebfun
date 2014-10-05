@@ -107,7 +107,7 @@ classdef (InferiorClasses = {?double}) chebop
 %   plot(N\1)
 %
 % %% PARAMETER DEPENDENT PROBLEMS: %%
-%CHEBGUIexporterEIG
+%
 % CHEBOP supports solving systems of equations containing unknown parameters
 % without the need to introduce extra equations into the system. Simply add the
 % unknown parameters as the final variables.
