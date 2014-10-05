@@ -6,8 +6,8 @@ function isIorF = isIVPorFVP(guifile, allVarNames)
 %   ALLVARNAMES: A cell-string with the names of all variables that appear in
 %                the problem.
 % returns
-%   0: If the problem is detected to be a boundary-value problem.
-%   1: If the problem is detected to be an initial-value problem.
+%   0: If the problem is detected to be a boundary-value problem,
+%   1: If the problem is detected to be an initial-value problem,
 %   2: If the problem is detected to be an a final value problem.
 
 % The domain of the problem
@@ -19,6 +19,7 @@ dom = strrep(dom,',', ' ');
 
 % The BC input
 bcInput = guifile.BC;
+
 % Ensure that the BC input is a cell-string:
 if (~iscell(bcInput))
     bcInput = {bcInput};
@@ -36,7 +37,6 @@ if ( nargin < 2 )
     allVarNames = getVarNames(guifile);
 end
 
-
 % Find what the left end right endpoint of the interval is. We look to the left
 % of the first whitespace, and to the right of the last whitespace.
 spaceLoc = strfind(dom, ' ');
@@ -52,7 +52,8 @@ rightDomStr = dom(lastSpace+1:end-1);
 % NUMSTR is a regular expression for representing general numbers.
 numStr = '[+-]?[0-9]*\.?[0-9]*(e[0-9]+)*';
 
-% Initialize cells for storing evaluation information.
+% Initialize cells for storing information about at what points we wish to
+% evaluate the solution. 
 % For storing information about left boundary conditions.
 leftConditionLocs = cell(size(bcInput));
 % For storing information about right boundary conditions.
@@ -64,7 +65,7 @@ pointEvalConditionLocs = leftConditionLocs;
 % 'sum(u) = 1':
 globalConditionLocs = leftConditionLocs;
 
-% Anonymous function for combinging information about where conditions are
+% Anonymous function for combining information about where conditions are
 % evaluated for different variable names.
 unionFun = @(c1, c2) cellfun(@union, c1, c2, 'uniformOutput', false);
 
@@ -100,9 +101,12 @@ globalConditionLocs = vec2cell(globalConditionLocs);
 leftRigthConditionLocs = ...
     cellfun(@union, leftConditionLocs, rightConditionLocs, ...
     'uniformOutput', false);
+% Find locations in the inputs where interior point conditions are imposed:
 interiorConditionLocs = ...
     cellfun(@setdiff, pointEvalConditionLocs, leftRigthConditionLocs, ...
     'uniformOutput', false);
+
+% What kind of conditions were imposed?
 leftConditionsImposed = any(cellfun(@any, leftConditionLocs));
 rightConditionsImposed = any(cellfun(@any, rightConditionLocs));
 interiorConditionsImposed = ~all(cellfun(@isempty,interiorConditionLocs));
@@ -125,7 +129,7 @@ end
 end
 
 function out = vec2cell(vec)
-% Convert potential vectors to cells.
+% Convert variables that potentially are vectors to cells.
 if ( ~iscell(vec) )
     out = {vec};
 else

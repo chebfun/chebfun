@@ -56,7 +56,7 @@ isIorF = isIVPorFVP(guifile, allVarNames);
 
 % Since we're solving an IVP or an FVP, we need to reformulate the BC input, so
 % that it can be assigned to the N.LBC or N.RBC fields:
-newBCinput = bcReform(guifile, expInfo.dom, bcInput, isIorF);
+newBCinput = chebgui.bcReform(expInfo.dom, bcInput, isIorF);
 bcString = setupFields(guifile, newBCinput, 'BC', allVarString);
 
 % Make assignments for BCs.

@@ -19,6 +19,8 @@ function varargout = solveGUIbvp(guifile, handles)
 % object (e.g. [U, INFO] = SOLVEGUIBVP(GUIFILE) from the command line),
 %   VARARGOUT{1}:   The solution to the problem specified by GUIFILE.
 %   VARARGOUT{2}:   The INFO struct returned by the chebop/solvebvp() method.
+%
+% See also: chebgui/solveGUI, chebgui/solveGUIivp.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -43,7 +45,7 @@ bcInput = expInfo.bcInput;
 periodic = expInfo.periodic;
 initInput = expInfo.initInput;
 % Create the independent variable on DOM.
-xt = chebfun('x', dom);
+xt = chebfun(@(x) x, dom);
 
 % Assign the variables names to HANDLES.
 handles.varnames = allVarNames;

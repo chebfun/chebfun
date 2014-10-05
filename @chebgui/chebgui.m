@@ -231,6 +231,12 @@ classdef chebgui
         varargout = solveGUIeig(guifile,handles)
         
         function allVarNames = getVarNames(guifile)
+            %GETVARNAMES    Return a cell-array with all variables names
+            %
+            % ALLVARNAMES = GETVARNAMES(GUIFILE) returns a cell-array, whose
+            % entries correspond to the names of all variables that appear in
+            % a problem specified by the CHEBGUI object GUIFILE.
+            
             % Look at the input for the differential equation:
             deInput = guifile.DE;
             
@@ -252,8 +258,11 @@ classdef chebgui
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
         
+        % Convert initial conditions to a useful format
+        bcOut = bcReform(dom, bcInput, isIorF)
+        
         % Information shown during BVP solving.
-        [dummy, displayTimer] = displayBVPinfo(handles, mode, varargin);
+        [dummy, displayTimer] = displayBVPinfo(handles, mode, varargin)
         
         % Return a random BVP CHEBGUI demo.
         cg = demo()
