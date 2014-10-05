@@ -87,7 +87,7 @@ end
 
 % Grab defaults if needed.
 if ( isempty(pref) )
-    pref = cheboppref;
+    pref = cheboppref();
 end
              
 % Discretization type.
@@ -442,12 +442,17 @@ while ( ~isempty(queue) )
     vcoeffsq = 0;
     for i = 1:numel(vcoeff)
         for q = 1:numel(vcoeff{i})
+            % TODO: The flipud below is required to make sure that the 
+            % algorithm, designed for the old ordering of cheb-coeffs, continues
+            % to work. One can remove the following flipud but then carefull 
+            % changes will be needed in this function.
+            vcoeff{i}{q} = flipud(vcoeff{i}{q});
             newcoeff2 = vcoeff{i}{q}.*conj(vcoeff{i}{q});
             lnc2 = length(newcoeff2);
             lvcs = length(vcoeffsq);
             if ( lnc2 > lvcs )
                 % Pad with leading zeros
-                vcoeffsq = [ zeros(lnc2 - lvcs,1) ; vcoeffsq ]; %#ok<AGROW>
+                vcoeffsq = [ zeros(lnc2 - lvcs,1) ; vcoeffsq ; ]; %#ok<AGROW>
                 lvcs = length(vcoeffsq);
             end
             % Only the most significant rows affected
@@ -455,7 +460,7 @@ while ( ~isempty(queue) )
             vcoeffsq(rows) = vcoeffsq(rows) + newcoeff2; %#ok<AGROW>
         end
     end
-    vcoeff = sqrt( flipud( sum(vcoeffsq, 2) ) );
+    vcoeff = sqrt( flipud(sum(vcoeffsq, 2)) );
 
     % Recipe: More than half of the energy in the last 90% of the Chebyshev
     % modes is in the highest 10% modes, and the energy of the last 90% is

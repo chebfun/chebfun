@@ -252,7 +252,7 @@ classdef (InferiorClasses = {?double}) chebop
         % boundary conditions.
         pref = determineDiscretization(N, L, isPrefGiven, pref)
         
-        % Clear periodic bounadry conditions.
+        % Clear periodic boundary conditions.
         [N, L] = clearPeriodicBCs(N, L)
         
     end

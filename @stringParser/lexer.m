@@ -1,4 +1,3 @@
-
 function [out, varNames, pdeVarNames, eigVarNames, indVarNames] = ...
     lexer(str, problemType)
 %LEXER   Lexer for string expression in CHEBFUN
@@ -336,10 +335,16 @@ while ( ~strcmp(str, '$') )
             
         case 'comma'
             out = [out ; {char1,'COMMA'}];
+        
+        case 'semicolon'
+            error('CHEBFUN:STRINGPARSER:lexer:semicolon', ...
+                ['A semicolon detected in input.\nChebgui does not ' ...
+                'require (or support) '';'' in its input fields.']);
             
         case 'error'
             error('CHEBFUN:STRINGPARSER:lexer:unknownType', ...
-                'Unrecognized type of lexer input.');
+                ['Invalid token ''%s'' in input.\nChebgui does not support ' ...
+                '''%s'' in its input fields.'], char1, char1);
     end
     
     prevType = type;
@@ -406,7 +411,11 @@ elseif ( regexp(str, '''') )
     type = 'deriv';
 elseif ( strcmp(str, ',') )
     type = 'comma';
+elseif ( strcmp(str, ';') )
+    type = 'semicolon';
 else
+    % We end up here if we have encountered an unexpected type. This causes an
+    % error to be thrown in the switch statement above.
     type = 'error';
 end
 

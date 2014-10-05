@@ -741,8 +741,8 @@ end
 D = A;
 for jj = 1:n  % for each column of A
     B = A(:,jj:n:n*k);
-    C = chebtech2.vals2coeffs(B.').';   % convert first column of each coefficient to values.
-    D(:,jj:n:n*k) = C;    % assign to output.
+    C = chebtech2.vals2coeffs(B.');   % convert first column of each coefficient to values.
+    D(:,jj:n:n*k) = rot90(C, -1);     % assign to output.
 end
 
 end

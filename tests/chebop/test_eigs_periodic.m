@@ -1,6 +1,5 @@
-% Test file for periodic egeinvalue problems.
-
-function pass = test_eigs_basic(pref)
+% Test file for periodic eigenvalue problems.
+function pass = test_eigs_periodic(pref)
 
 % Get the preferences.
 if ( nargin < 1 )
@@ -16,7 +15,7 @@ tol = 1e-10;
 % periodic boundary conditions.
 
 % Define the domain we're working on.
-dom = [0 2*pi];
+dom = [0, 2*pi];
 
 % Assign the equation to a chebop N such that N(u) = lambda*u.
 L = chebop(@(u) -diff(u, 2), dom);
@@ -43,7 +42,7 @@ pass(2) = isequal(get(V{1}.funs{1}, 'tech'), @fourtech);
 % periodic boundary conditions.
 
 % Define the domain we're working on.
-dom = [0 2*pi];
+dom = [0, 2*pi];
 
 % Assign the equation to a chebop N such that N(u) = lambda*u.
 q = 2;

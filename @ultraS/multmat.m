@@ -12,10 +12,10 @@ function M = multmat(n, f, lambda)
 
 if ( isa(f, 'chebfun') ) 
     % Get Chebyshev T coefficients
-    a = flipud(get(f, 'coeffs'));
+    a = get(f, 'coeffs');
 elseif ( isa(f, 'bndfun') ) 
     % Get Chebyshev T coefficients
-    a = flipud(get(f, 'coeffs'));
+    a = get(f, 'coeffs');
 elseif ( isa( f, 'double') )
     a = f; 
 else

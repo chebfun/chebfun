@@ -1,9 +1,10 @@
 function pref = determineDiscretization(N, L, isPrefGiven, pref)
 %DETERMINEDISCRETIZATION    Determine discretization for a CHEBOP object with 
-%periodic boundary conditions.
-%   PREF = DETERMINEDISCRETIZATION(N, L, ISPREFGIVEN, PREF) choses the 
-%   right discretization PREF.DISCRETIZATION to use to solve an ODE problem or 
-%   an eigenvalue problem with periodic boundary conditions, modeled by a
+%                           periodic boundary conditions.
+%
+%   PREFOUT = DETERMINEDISCRETIZATION(N, L, ISPREFGIVEN, PREFIN) choses the
+%   correct discretization PREFOUT.DISCRETIZATION to be used when solving
+%   problems with periodic boundary conditions (BVP/EIGS/EXPM), modeled by a
 %   CHEBOP N and a LINOP L.
 %
 % See also CHEBOP/CLEARPERIODICBC, CHEBOP/SOLVEBVP, CHEBOP/EIGS.
@@ -11,8 +12,10 @@ function pref = determineDiscretization(N, L, isPrefGiven, pref)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% The user passed a CHEBOPPREF object PREF with PREF.DISCRETIZATION set to 
-% FOURCOLLOC, or FOURCOLLOC is the default discretization.
+% Check whether the user passed a CHEBOPPREF object PREF with
+% PREF.DISCRETIZATION set to FOURCOLLOC, or FOURCOLLOC is the default
+% discretization.
+%
 % Since FOURCOLLOC does not support breakpoints, we need to throw an error if
 % breakpoints are present. Note that here and below, we look at L.domain rather
 % than N.domain, as the domain of the LINOP L will also include any breakpoints

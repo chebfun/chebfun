@@ -199,7 +199,7 @@ Gx = Gx.'; % Now transpose so that X*B = g;
 % Construct the RHS of the Sylvester matrix equation.
 
 % Complete the RHS (part of the RHS could have been in the operator): 
-if ( ~isempty(N.rhs) && ( isa(N.rhs, 'chebfun2') || isa(n.rhs, 'double') ) )
+if ( ~isempty(N.rhs) && ( isa(N.rhs, 'chebfun2') || isa(N.rhs, 'double') ) )
     f = f + N.rhs; 
 end
 E = zeros(m, n);
@@ -297,8 +297,7 @@ for kk = 1:size(ODE, 1)
     
     if ( iscell(ODE(kk,jj)) && isa(ODE{kk,jj}, 'chebfun') )
         % Variable coefficient term: 
-        c = ODE{kk,jj}.coeffs; 
-        c = c(end:-1:1);
+        c = ODE{kk,jj}.coeffs;        
         M = ultraS.multmat(n, c, kk-1); 
         A = S * M * D;
         
