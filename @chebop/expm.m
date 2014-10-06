@@ -58,7 +58,7 @@ pref = determineDiscretization(N, L, isPrefGiven, pref);
 
 % Clear boundary conditions if using FOURCOLLOC.
 if ( isequal(pref.discretization, @fourcolloc) )
-    [N, L] = clearPeriodicBCs(N, L);
+    [dummy, L] = clearPeriodicBCs(N, L);
 end
 
 if ( nargin >= 3 )
