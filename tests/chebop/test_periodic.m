@@ -23,7 +23,7 @@ N.bc = 'periodic';
 v = mldivide(N, rhs, pref);
 
 % Compare results:
-err(1) = norm(u - v);
+pass(1) = norm(u - v) < tol;
 
 %% A periodic piecewise system:
 
@@ -36,7 +36,7 @@ A.bc = 'periodic';
 uv = mldivide(A, f, pref);
 
 trueSoln = [cos(x+3*pi/4)/sqrt(2) ; cos(x+pi/4)/sqrt(2)];
-err(2) = norm(uv - trueSoln);
+pass(2) = norm(uv - trueSoln) < tol;
 
 %% Eigenvalue problem:
 
@@ -69,9 +69,9 @@ e35 = e35(idx);
 
 e = [e12; e35];
 
-err(3) = norm(real(e) - [0 0 1 1 1].', inf) + ...
-    norm(imag(e) - [-1 1 -1 0 1].', inf);
-err(4) = norm(V{1}(pi) - V{1}(pi), inf) + norm(V{2}(pi) - V{2}(pi), inf);
+pass(3) = norm(real(e) - [0 0 1 1 1].', inf) + ...
+    norm(imag(e) - [-1 1 -1 0 1].', inf) < tol;
+pass(4) = norm(V{1}(pi) - V{1}(pi), inf) + norm(V{2}(pi) - V{2}(pi), inf) < tol;
 
 
 %% Test the TRIGCOLLOC class. FIRST ORDER AND CONSTANT COEFFICIENTS: 
@@ -88,7 +88,8 @@ u = L \ f;
 
 % Compare with exact solution.
 exact = chebfun(@(x) 1/2*cos(x) + 1/2*sin(x), dom, 'periodic');
-err(5) = norm(u - exact, inf);
+pass(5) = norm(u - exact, inf) < tol;
+pass(6) = isequal(get(u.funs{1}, 'tech'), @fourtech);
 
 %% Test the TRIGCOLLOC class. FIRST ORDER AND VARIABLES COEFFICIENTS: 
 %  u' + (1+cos(x))u = cos(2x), on [-2*pi 2*pi].
@@ -104,8 +105,9 @@ L.bc = 'periodic';
 % Solve with TRIGTECH technology.
 u = L \ f;
 
-err(6) = norm(L*u - f);
-err(7) = abs(u(dom(1)) - u(dom(2)));
+pass(7) = norm(L*u - f) < tol;
+pass(8) = abs(u(dom(1)) - u(dom(2))) < tol;
+pass(9) = isequal(get(u.funs{1}, 'tech'), @fourtech);
 
 %% Test the TRIGCOLLOC class. SECOND ORDER AND CONSTANT COEFFICIENTS: 
 %  u'' + 10u' + 5u = cos(x), on [-2*pi 2*pi].
@@ -124,7 +126,8 @@ u = L \ f;
 
 % Compare with exact solution.
 exact = chebfun(@(x) 1/29*cos(x) + 5/58*sin(x), dom, 'periodic');
-err(8) = norm(u - exact, inf);
+pass(10) = norm(u - exact, inf) < tol;
+pass(11) = isequal(get(u.funs{1}, 'tech'), @fourtech);
 
 %% Test the TRIGCOLLOC class. SECOND ORDER AND VARIABLE COEFFICIENTS: 
 %  (2+cos(4x))u'' + sin(cos(2x))u' + exp(cos(x))u = cos(x), on [-pi pi].
@@ -144,9 +147,10 @@ L.bc = 'periodic';
 % Solve with TRIGTECH technology.
 u = L \ f;
 
-err(9) = norm(L*u - f);
-err(10) = abs(u(dom(1)) - u(dom(2)));
-err(11) = abs(feval(diff(u), dom(1)) - feval(diff(u), dom(2)));
+pass(12) = norm(L*u - f) < tol;
+pass(13) = abs(u(dom(1)) - u(dom(2))) < tol;
+pass(14) = abs(feval(diff(u), dom(1)) - feval(diff(u), dom(2))) < tol;
+pass(15) = isequal(get(u.funs{1}, 'tech'), @fourtech);
 
 %% Test the TRIGCOLLOC class. THIRD ORDER AND VARIABLE COEFFICIENTS: 
 %  (2+cos(x))u''' + sin(cos(2x))u'' + exp(cos(x))u' + sin(x)u = cos(x),
@@ -167,10 +171,11 @@ L.bc = 'periodic';
 % Solve with TRIGTECH technology.
 u = L \ f;
 
-err(12) = norm(L*u - f);
-err(13) = abs(u(dom(1)) - u(dom(2)));
-err(14) = abs(feval(diff(u), dom(1)) - feval(diff(u), dom(2)));
-err(15) = abs(feval(diff(u, 2), dom(1)) - feval(diff(u, 2), dom(2)));
+pass(16) = norm(L*u - f) < tol;
+pass(17) = abs(u(dom(1)) - u(dom(2))) < tol;
+pass(18) = abs(feval(diff(u), dom(1)) - feval(diff(u), dom(2))) < tol;
+pass(19) = abs(feval(diff(u, 2), dom(1)) - feval(diff(u, 2), dom(2))) < tol;
+pass(20) = isequal(get(u.funs{1}, 'tech'), @fourtech);
 
 %% Test the TRIGCOLLOC class. FOURTH ORDER AND VARIABLE COEFFICIENTS: 
 %  (2+cos(x))u'''' + sin(cos(2x))u''' + exp(cos(x))u'' + ... 
@@ -193,11 +198,12 @@ L.bc = 'periodic';
 % Solve with TRIGTECH technology.
 u = L \ f;
 
-err(16) = norm(L*u - f);
-err(17) = abs(u(dom(1)) - u(dom(2)));
-err(18) = abs(feval(diff(u), dom(1)) - feval(diff(u), dom(2)));
-err(19) = abs(feval(diff(u, 2), dom(1)) - feval(diff(u, 2), dom(2)));
-err(20) = abs(feval(diff(u, 3), dom(1)) - feval(diff(u, 3), dom(2)));
+pass(21) = norm(L*u - f) < tol;
+pass(22) = abs(u(dom(1)) - u(dom(2))) < tol;
+pass(23) = abs(feval(diff(u), dom(1)) - feval(diff(u), dom(2))) < tol;
+pass(24) = abs(feval(diff(u, 2), dom(1)) - feval(diff(u, 2), dom(2))) < tol;
+pass(25) = abs(feval(diff(u, 3), dom(1)) - feval(diff(u, 3), dom(2))) < tol;
+pass(26) = isequal(get(u.funs{1}, 'tech'), @fourtech);
 
 %% Test breakpoint introduced by the domain.
 %  u' + u = cos(x), on [0 pi 2*pi].
@@ -208,8 +214,11 @@ f = chebfun(@(x) cos(x), dom);
 L.bc = 'periodic';
 u = L \ f;
 
-err(21) = norm(L*u - f);
-err(22) = abs(u(dom(1)) - u(dom(end)));
+pass(27) = norm(L*u - f) < tol;
+pass(28) = abs(u(dom(1)) - u(dom(end))) < tol;
+discPreference = cheboppref().discretization();
+tech = discPreference.returnTech();
+pass(29) = isequal(get(u.funs{1}, 'tech'), tech);
 
 %% Test breakpoint introduced by a coefficient.
 %  u'' + abs(x)u = 1, on [-1 1].
@@ -219,10 +228,10 @@ L = chebop(@(x,u) diff(u,2) + abs(x).*u, dom);
 L.bc = 'periodic';
 u = L \ 1;
 
-err(23) = norm(L*u - 1);
-err(24) = abs(u(dom(1)) - u(dom(2)));
-
-%%
-pass = err < tol;
+pass(30) = norm(L*u - 1) < tol;
+pass(31) = abs(u(dom(1)) - u(dom(2))) < tol;
+discPreference = cheboppref().discretization();
+tech = discPreference.returnTech();
+pass(32) = isequal(get(u.funs{1}, 'tech'), tech);
 
 end

@@ -56,7 +56,7 @@ function varargout = eigs(A, varargin)
 B = [];       % no generalized operator
 k = [];       % will be made default value below
 sigma = [];   % default 'auto' mode
-prefs = [];
+pref = [];
 gotk = false; % until we detect a value of k in inputs
 for j = 1:nargin-1
     item = varargin{j};
@@ -64,7 +64,7 @@ for j = 1:nargin-1
         % Generalized operator term
         B = item;
     elseif ( isa(item,'cheboppref') )
-        prefs = item;
+        pref = item;
     elseif ( ~gotk && isnumeric(item) && (item > 0) && (item == round(item) ) )
         % k should be given before sigma (which might also be integer)
         k = item;
@@ -86,12 +86,12 @@ end
              % many places in this code to avoid the [~, arg2] = ... syntax.
 
 % Grab defaults if needed.
-if ( isempty(prefs) )
-    prefs = cheboppref;
+if ( isempty(pref) )
+    pref = cheboppref();
 end
-
+             
 % Discretization type.
-discType = prefs.discretization;
+discType = pref.discretization;
 
 % Assign default to k if needed.
 if ( isempty(k) || isnan(k) )
@@ -120,7 +120,7 @@ if ( isa(discType, 'function_handle') )
     discA = discType(A);
 
     % Set the allowed discretisation lengths:
-    dimVals = discA.dimensionValues(prefs);
+    dimVals = discA.dimensionValues(pref);
 
     % Update the discretiztion dimension on unhappy pieces:
     discA.dimension = repmat(dimVals(1), 1, numel(discA.domain)-1);
@@ -243,7 +243,7 @@ for dim = dimVals
 
     % Test the happiness of the function pieces:
     vscale = zeros(sum(isFun),1);   % intrinsic scaling only
-    [isDone, epsLevel] = testConvergence(discA, u(isFun), vscale, prefs);
+    [isDone, epsLevel] = testConvergence(discA, u(isFun), vscale, pref);
 
     if ( all(isDone) )
         break
