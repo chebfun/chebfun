@@ -2,7 +2,7 @@ function [N, L] = clearPeriodicBCs(N, L)
 %CLEARPERIODICBCS    Clear periodic boundary conditions.
 %   [N, L] = CLEARPERIODICBCS(N, L, PREF) clears N.BC, L.CONSTRAINT, and
 %   L.CONTINUITY. This method only gets called if the current discretization in
-%   use is FOURCOLLOC, and is required since FOURCOLLOC by construction will
+%   use is TRIGCOLLOC, and is required since TRIGCOLLOC by construction will
 %   only return periodic function as the solution, so there is no need to impose
 %   periodic conditions on the discretized linear systems that arise.
 %
@@ -20,7 +20,7 @@ elseif ( isa(N.bc, 'char') && strcmpi(N.bc, 'periodic') )
     L.continuity = [];
 else
     error('CHEBFUN:CHEBOP:clearPeriodicBCs:nonperiodic', ...
-        'FOURCOLLOC only works with periodic boundary conditions.');
+        'TRIGCOLLOC only works with periodic boundary conditions.');
 end
 
 end
