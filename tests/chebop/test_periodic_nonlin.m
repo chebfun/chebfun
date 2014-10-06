@@ -52,7 +52,7 @@ u = N \ f;
 
 pass(2) = norm(N*u - f) < tol;
 pass(3) = abs(u(dom(1)) - u(dom(2))) < tol;
-pass(4) = isequal(get(u.funs{1}, 'tech'), @fourtech);
+pass(4) = isequal(get(u.funs{1}, 'tech'), @trigtech);
 
 %% Test the TRIGCOLLOC class. SECOND ORDER: 
 %  u'' - u^2*cos(u) = cos(x), on [-pi pi].
@@ -73,6 +73,6 @@ u = N \ f;
 pass(5) = norm(N*u - f) < tol;
 pass(6) = abs(u(dom(1)) - u(dom(2))) < tol;
 pass(7) = abs(feval(diff(u), dom(1)) - feval(diff(u), dom(2))) < tol;
-pass(8) = isequal(get(u.funs{1}, 'tech'), @fourtech);
+pass(8) = isequal(get(u.funs{1}, 'tech'), @trigtech);
 
 end

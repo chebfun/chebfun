@@ -89,7 +89,7 @@ u = L \ f;
 % Compare with exact solution.
 exact = chebfun(@(x) 1/2*cos(x) + 1/2*sin(x), dom, 'periodic');
 pass(5) = norm(u - exact, inf) < tol;
-pass(6) = isequal(get(u.funs{1}, 'tech'), @fourtech);
+pass(6) = isequal(get(u.funs{1}, 'tech'), @trigtech);
 
 %% Test the TRIGCOLLOC class. FIRST ORDER AND VARIABLES COEFFICIENTS: 
 %  u' + (1+cos(x))u = cos(2x), on [-2*pi 2*pi].
@@ -107,7 +107,7 @@ u = L \ f;
 
 pass(7) = norm(L*u - f) < tol;
 pass(8) = abs(u(dom(1)) - u(dom(2))) < tol;
-pass(9) = isequal(get(u.funs{1}, 'tech'), @fourtech);
+pass(9) = isequal(get(u.funs{1}, 'tech'), @trigtech);
 
 %% Test the TRIGCOLLOC class. SECOND ORDER AND CONSTANT COEFFICIENTS: 
 %  u'' + 10u' + 5u = cos(x), on [-2*pi 2*pi].
@@ -127,7 +127,7 @@ u = L \ f;
 % Compare with exact solution.
 exact = chebfun(@(x) 1/29*cos(x) + 5/58*sin(x), dom, 'periodic');
 pass(10) = norm(u - exact, inf) < tol;
-pass(11) = isequal(get(u.funs{1}, 'tech'), @fourtech);
+pass(11) = isequal(get(u.funs{1}, 'tech'), @trigtech);
 
 %% Test the TRIGCOLLOC class. SECOND ORDER AND VARIABLE COEFFICIENTS: 
 %  (2+cos(4x))u'' + sin(cos(2x))u' + exp(cos(x))u = cos(x), on [-pi pi].
@@ -150,7 +150,7 @@ u = L \ f;
 pass(12) = norm(L*u - f) < tol;
 pass(13) = abs(u(dom(1)) - u(dom(2))) < tol;
 pass(14) = abs(feval(diff(u), dom(1)) - feval(diff(u), dom(2))) < tol;
-pass(15) = isequal(get(u.funs{1}, 'tech'), @fourtech);
+pass(15) = isequal(get(u.funs{1}, 'tech'), @trigtech);
 
 %% Test the TRIGCOLLOC class. THIRD ORDER AND VARIABLE COEFFICIENTS: 
 %  (2+cos(x))u''' + sin(cos(2x))u'' + exp(cos(x))u' + sin(x)u = cos(x),
@@ -175,7 +175,7 @@ pass(16) = norm(L*u - f) < tol;
 pass(17) = abs(u(dom(1)) - u(dom(2))) < tol;
 pass(18) = abs(feval(diff(u), dom(1)) - feval(diff(u), dom(2))) < tol;
 pass(19) = abs(feval(diff(u, 2), dom(1)) - feval(diff(u, 2), dom(2))) < tol;
-pass(20) = isequal(get(u.funs{1}, 'tech'), @fourtech);
+pass(20) = isequal(get(u.funs{1}, 'tech'), @trigtech);
 
 %% Test the TRIGCOLLOC class. FOURTH ORDER AND VARIABLE COEFFICIENTS: 
 %  (2+cos(x))u'''' + sin(cos(2x))u''' + exp(cos(x))u'' + ... 
@@ -203,7 +203,7 @@ pass(22) = abs(u(dom(1)) - u(dom(2))) < tol;
 pass(23) = abs(feval(diff(u), dom(1)) - feval(diff(u), dom(2))) < tol;
 pass(24) = abs(feval(diff(u, 2), dom(1)) - feval(diff(u, 2), dom(2))) < tol;
 pass(25) = abs(feval(diff(u, 3), dom(1)) - feval(diff(u, 3), dom(2))) < tol;
-pass(26) = isequal(get(u.funs{1}, 'tech'), @fourtech);
+pass(26) = isequal(get(u.funs{1}, 'tech'), @trigtech);
 
 %% Test breakpoint introduced by the domain.
 %  u' + u = cos(x), on [0 pi 2*pi].

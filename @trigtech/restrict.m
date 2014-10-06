@@ -74,7 +74,7 @@ end
 
 end
 
-%RESTRICT   Restrict a FOURTECH to a subinterval.
+%RESTRICT   Restrict a TRIGTECH to a subinterval.
 %   Since restrictions of F will, in general, not be perioidic, RESTRICT(F, S)
 %   throws an error unless S = F.domain or ISEMPTY(F). 
 %
