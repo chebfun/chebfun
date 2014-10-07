@@ -21,7 +21,7 @@ function bcOut = bcReform(dom, bcInput, isIorF)
 % On the other hand, for IVPs/FVPs, the format
 %   u = 1
 % is more useful, since that can then be imposed via
-%   N.lbc = (u) u;
+%   N.lbc = @(u) u;
 
 % Find where whitespace and commas appear in the domain string, so that we can
 % determine what the endpoints of the domain are:
