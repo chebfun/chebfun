@@ -430,7 +430,7 @@ middleNonlinBCLocs = [];
 rightNonlinBCLocs = [];
 BCRHS = {};
 
-if ( ischar(bc) && strcmpi(bc, 'periodic') )
+if ( ischar(bc) && any(strcmpi(bc, {'periodic', 'trig'})) )
     %% %%%%%%%%%%%%%%%%%%%%%%%%%%% PERIODIC BCS  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     r = cell(sum(DIFFORDER), 1);
     count = 1;

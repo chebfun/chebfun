@@ -34,7 +34,7 @@ v = N \ f;
 % Compare.
 pass(1) = norm(u - v, inf) < tol;
 
-%% Test the FOURCOLLOC class. FIRST ORDER: 
+%% Test the TRIGCOLLOC class. FIRST ORDER: 
 %  u' - u*cos(u) = cos(x), on [-2*pi 2*pi].
 
 % Set up domain, rhs f, and intial guesses u0 and v0.
@@ -47,14 +47,14 @@ N = chebop(@(u) diff(u) - u.*cos(u), dom);
 N.bc = 'periodic';
 N.init = u0;
 
-% Solve with FOURIER technology.
+% Solve with TRIGTECH technology.
 u = N \ f;
 
 pass(2) = norm(N*u - f) < tol;
 pass(3) = abs(u(dom(1)) - u(dom(2))) < tol;
-pass(4) = isequal(get(u.funs{1}, 'tech'), @fourtech);
+pass(4) = isequal(get(u.funs{1}, 'tech'), @trigtech);
 
-%% Test the FOURCOLLOC class. SECOND ORDER: 
+%% Test the TRIGCOLLOC class. SECOND ORDER: 
 %  u'' - u^2*cos(u) = cos(x), on [-pi pi].
 
 % Set up domain, rhs f, and intial guesses u0 and v0.
@@ -67,12 +67,12 @@ N = chebop(@(u) diff(u, 2) - u.^2.*cos(u), dom);
 N.bc = 'periodic';
 N.init = u0;
 
-% Solve with FOURIER technology.
+% Solve with TRIGTECH technology.
 u = N \ f;
 
 pass(5) = norm(N*u - f) < tol;
 pass(6) = abs(u(dom(1)) - u(dom(2))) < tol;
 pass(7) = abs(feval(diff(u), dom(1)) - feval(diff(u), dom(2))) < tol;
-pass(8) = isequal(get(u.funs{1}, 'tech'), @fourtech);
+pass(8) = isequal(get(u.funs{1}, 'tech'), @trigtech);
 
 end
