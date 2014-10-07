@@ -51,10 +51,6 @@ xt = chebfun(@(x) x, dom);
 handles.varnames = allVarNames;
 handles.indVarName = {indVarNameSpace};
 
-% If we only have one variable appearing in allVarNames, the problem is a
-% scalar problem.
-scalarProblem = length(allVarNames) == 1;
-
 % Obtain the boundary conditions to be imposed.
 if ( periodic )
     bcString = '';
@@ -92,61 +88,9 @@ if ( ~isempty(bcString) )
     BC = eval(bcString);
 end
 
-% Convert the initial condition passed to a CHEBFUN.
+% If we got an initial guess passed, convert it to a CHEBFUN:
 if ( ~isempty(initInput{1}) && isempty(guess) )
-    if ( iscellstr(initInput) )
-        order = [];
-        guesses = [];
-
-        % Match LHS of = with variables in allVarNames
-        for initCounter = 1:length(initInput)
-            currStr = initInput{initCounter};
-            equalSign = find(currStr == '=');
-            currVar = strtrim(currStr(1:equalSign-1));
-            match = find(ismember(allVarNames, currVar) == 1);
-            order = [order ; match];
-            currGuess = strtrim(currStr(equalSign+1:end));
-            guesses = [guesses ; {currGuess}];
-        end
-        
-        % If order is still empty, that means that initial guess were
-        % passed on the form '2*x', rather than 'u = 2*x'. Allow that for
-        % scalar problems, throw an error otherwise.
-        if ( isempty(order) && scalarProblem )
-            guess = eval(vectorize(initInput{1}));
-            % If we have a scalar guess, convert to a chebfun
-            if ( isnumeric(guess) )
-                guess = 0*xt + guess;
-            end
-        elseif ( length(order) == length(guesses) )
-            % We have a guess to match every dependent variable in the
-            % problem.
-            guess = cell(length(order),1);
-            for guessCounter = 1:length(guesses)
-                guessLoc = find(order == guessCounter);
-                tempGuess = eval(vectorize(guesses{guessLoc}));
-                if ( isnumeric(tempGuess) )
-                    tempGuess = 0*xt + tempGuess;
-                end
-                guess{guessCounter} = tempGuess;
-            end
-            
-            guess = chebmatrix(guess);
-        else % throw an error
-            error('CHEBFUN:CHEBGUI:solveGUIbvp:initialGuess', ...
-                ['Error constructing initial guess.  Please make sure ' ...
-                 'guesses are of the form u = 2*x, v = sin(x), ...']);
-        end
-    else
-        % initInput is not a cell string, must have only received one line.
-        guessInput = vectorize(initInput);
-        equalSign = find(guessInput == '=');
-        if ( isempty(equalSign) )
-            equalSign = 0;
-        end
-        guessInput = guessInput(equalSign+1:end);
-        guess =  chebfun(guessInput, [a b]);
-    end
+    guess = chebgui.constructInit(initInput, allVarNames, indVarNameSpace, xt);
 end
 
 % Before continuing, clear any previous information about the norm of the Newton

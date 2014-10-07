@@ -50,10 +50,6 @@ xt = chebfun(@(x) x, dom);
 handles.varnames = allVarNames;
 handles.indVarName = {indVarNameSpace};
 
-% If we only have one variable appearing in allVarNames, the problem is a
-% scalar problem.
-scalarProblem = length(allVarNames) == 1;
-
 % Are we dealing with an initial, final, or boundary value problem?
 isIorF = isIVPorFVP(guifile, expInfo.allVarNames);
 
@@ -94,61 +90,9 @@ if ( ~isempty(bcString) )
     BC = eval(bcString);
 end
 
-% Convert the initial condition passed to a CHEBFUN.
+% If we got an initial guess passed, convert it to a CHEBFUN:
 if ( ~isempty(initInput{1}) && isempty(guess) )
-    if ( iscellstr(initInput) )
-        order = [];
-        guesses = [];
-
-        % Match LHS of = with variables in allVarNames
-        for initCounter = 1:length(initInput)
-            currStr = initInput{initCounter};
-            equalSign = find(currStr == '=');
-            currVar = strtrim(currStr(1:equalSign-1));
-            match = find(ismember(allVarNames, currVar) == 1);
-            order = [order ; match];
-            currGuess = strtrim(currStr(equalSign+1:end));
-            guesses = [guesses ; {currGuess}];
-        end
-        
-        % If order is still empty, that means that initial guess were
-        % passed on the form '2*x', rather than 'u = 2*x'. Allow that for
-        % scalar problems, throw an error otherwise.
-        if ( isempty(order) && scalarProblem )
-            guess = eval(vectorize(initInput{1}));
-            % If we have a scalar guess, convert to a chebfun
-            if ( isnumeric(guess) )
-                guess = 0*xt + guess;
-            end
-        elseif ( length(order) == length(guesses) )
-            % We have a guess to match every dependent variable in the
-            % problem.
-            guess = cell(length(order),1);
-            for guessCounter = 1:length(guesses)
-                guessLoc = find(order == guessCounter);
-                tempGuess = eval(vectorize(guesses{guessLoc}));
-                if ( isnumeric(tempGuess) )
-                    tempGuess = 0*xt + tempGuess;
-                end
-                guess{guessCounter} = tempGuess;
-            end
-            
-            guess = chebmatrix(guess);
-        else % throw an error
-            error('CHEBFUN:CHEBGUI:solveGUIivp:initialGuess', ...
-                ['Error constructing initial guess.  Please make sure ' ...
-                 'guesses are of the form u = 2*x, v = sin(x), ...']);
-        end
-    else
-        % initInput is not a cell string, must have only received one line.
-        guessInput = vectorize(initInput);
-        equalSign = find(guessInput == '=');
-        if ( isempty(equalSign) )
-            equalSign = 0;
-        end
-        guessInput = guessInput(equalSign+1:end);
-        guess =  chebfun(guessInput, [a b]);
-    end
+    guess = chebgui.constructInit(initInput, allVarNames, indVarNameSpace, xt);
 end
 
 % Before continuing, clear any previous information about the norm of the Newton
@@ -176,6 +120,7 @@ options = setupODEoptions(handles.guifile, expInfo);
 
 % Are we solving the problem globally, or with one of the MATLAB solvers?
 solvingGlobally = isempty(strfind(func2str(options.ivpSolver),'chebfun'));
+
 % Various things we only need to think about when in the GUI, changes GUI
 % compenents.
 if ( guiMode )
@@ -192,43 +137,33 @@ if ( guiMode )
     set(handles.popupmenu_bottomFig, 'Value', 1);
 end
 
-% Call solveivp with different arguments depending on whether we're in GUI
-% or not. If we're not in GUI mode, we can finish here.
+% Call the solvers with different arguments depending on whether we're in GUI or
+% not. If we're not in GUI mode, we can finish once we've solved the problem.
 if ( guiMode )
     if ( solvingGlobally )        
-        % We use the BVP displayInfo method, as the only time it will be used is
-        % if we're solving the problem globally, in which case, it's the
+        % We use the BVP displayInfo() method, as the only time it will be used
+        % is if we're solving the problem globally, in which case, it's the
         % appropriate display method.
         displayFunction = ...
             @(mode, varargin) chebgui.displayBVPinfo(handles, mode, varargin{:});
         
+        % Solve!
         [u, info] = solvebvp(N, 0, options, displayFunction);
     else
-        % Solving using one of the MATLAB solvers.
-        u = solveivp(N, 0, options);
+        % Solving using one of the MATLAB ODE solvers.
+   
+        % In this case, we want the IVP specific displayInfo() method.
+        displayFunction = ...
+            @(varargin) chebgui.displayIVPinfo(handles, varargin{:});
+
+        % Solve!
+        u = solveivp(N, 0, options, displayFunction);
+        % Need a dummy struct so that the code below can both work for the
+        % global solver and ODE solver cases.
         info = struct('isLinear', 1, 'error', 0);
-        if (isa(u,'chebfun'))
-            len = length(u);
-        else
-            len = max(cellfun(@length, u.blocks));
-        end
-        
-        if ( isIorF == 1 )
-            detStr = 'Initial value problem detected';
-        else
-            detStr = 'Final value problem detected';
-        end
-        
-        str = {detStr, ; 
-            sprintf('Number of pieces of the solution: %i.', ...
-            length(u.domain)-1);
-            sprintf('Total length of solution: %i.', len)};
-        set(handles.iter_list, 'String',  str)
-        set(handles.iter_list, 'Value', 1)
     end
 else
     % Not in GUI mode.
-    
     [u, info] = mldivide(N, 0, options);
     varargout{1} = u;
     varargout{2} = info;
@@ -258,15 +193,6 @@ if ( guiMode )
     % Notify the GUI we have a solution available
     handles.hasSolution = 1;
     
-    % Plot
-    axes(handles.fig_sol)
-    plot(u, 'Linewidth',2)
-    % Do different things depending on whether the solution is real or not
-    if ( isreal(u) )
-        xlim(xLimit)
-    else
-        axis equal
-    end
 
     % Only show legend if we were solving a coupled system:
     if ( length(allVarNames) > 1 )
