@@ -54,7 +54,7 @@ t = [0 0.001 0.01 0.1 0.5 1];
 
 % Solve with FOURIER technology.
 u = expm(A, t, u0);
-pass(3) = isequal(get(u{1}.funs{1}, 'tech'), @fourtech);
+pass(3) = isequal(get(u{1}.funs{1}, 'tech'), @trigtech);
 
 % Solve with CHEBYSHEV technology.
 v = expm(A, t, u0, pref);

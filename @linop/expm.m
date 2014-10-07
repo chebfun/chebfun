@@ -110,7 +110,7 @@ for i = 1:length(t)
         do = max(getDiffOrder(disc.source), 0);
         do = max(do, [], 1);
         for k = 1:numel(u0.blocks)
-            if ( ~isequal(prefs.discretization, @fourcolloc) )
+            if ( ~isequal(prefs.discretization, @trigcolloc) )
                 discu.dimension = disc.dimension + do(k);
             end
             f.blocks{k} = discu.toValues(u0.blocks{k},1);

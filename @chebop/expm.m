@@ -57,7 +57,7 @@ end
 pref = determineDiscretization(N, L, isPrefGiven, pref);
 
 % Clear boundary conditions if using FOURCOLLOC.
-if ( isequal(pref.discretization, @fourcolloc) )
+if ( isequal(pref.discretization, @trigcolloc) )
     [dummy, L] = clearPeriodicBCs(N, L);
 end
 
