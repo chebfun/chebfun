@@ -1,9 +1,9 @@
 function varargout = solveGUIivp(guifile, handles)
-%SOLVEGUIBVP   Solve a BVP, specified by a CHEBGUI object.
+%SOLVEGUIIVP     Solve an IVP, specified by a CHEBGUI object.
 %
 % Calling sequence:
 %
-%   VARARGOUT = SOLVEGUIBVP(GUIFILE, HANDLES)
+%   VARARGOUT = SOLVEGUIIVP(GUIFILE, HANDLES)
 %
 % where
 %   
@@ -16,9 +16,9 @@ function varargout = solveGUIivp(guifile, handles)
 %                   results for the problem solved.
 %
 % If the method is called by calling the command explicitly with a CHEBGUI
-% object (e.g. [U, INFO] = SOLVEGUIBVP(GUIFILE) from the command line),
+% object (e.g. [U, INFO] = SOLVEGUIVP(GUIFILE) from the command line),
 %   VARARGOUT{1}:   The solution to the problem specified by GUIFILE.
-%   VARARGOUT{2}:   The INFO struct returned by the chebop/solvebvp() method.
+%   VARARGOUT{2}:   The INFO struct returned by the chebop/solveivp() method.
 %
 % See also: chebgui/solveGUI, chebgui/solveGUIbvp.
 
@@ -32,9 +32,9 @@ else
     guiMode = 1;
 end
 
-% Call the exportInfo method of the chebguiExporterBVP class, which takes care
+% Call the exportInfo method of the chebguiExporterIVP class, which takes care
 % of extracting most information we need from GUIFILE.
-expInfo = chebguiExporterBVP.exportInfo(guifile);
+expInfo = chebguiExporterIVP.exportInfo(guifile);
 
 dom = str2num(expInfo.dom);
 deString = expInfo.deString;
@@ -42,7 +42,6 @@ allVarString = expInfo.allVarString;
 allVarNames = expInfo.allVarNames;
 indVarNameSpace = expInfo.indVarNameSpace;
 bcInput = expInfo.bcInput;
-periodic = expInfo.periodic;
 initInput = expInfo.initInput;
 % Create the independent variable on DOM.
 xt = chebfun(@(x) x, dom);
@@ -58,21 +57,18 @@ scalarProblem = length(allVarNames) == 1;
 % Are we dealing with an initial, final, or boundary value problem?
 isIorF = isIVPorFVP(guifile, expInfo.allVarNames);
 
-% Obtain the boundary conditions to be imposed.
-if ( periodic )
-    bcString = '';
-    BC = 'periodic';
-elseif ( isempty(bcInput{1}) )
-    bcString = '';
-    BC = [];
-elseif ( isIorF == 0 )
-    bcString = setupFields(guifile, bcInput, 'BCnew', allVarString);
-else
-    newBCinput = chebgui.bcReform(expInfo.dom, bcInput, isIorF);
-    bcString = setupFields(guifile, newBCinput, 'BC', allVarString);
-end
+% Assert that we're actually solving an IVP!
+assert(logical(isIorF), 'CHEBFUN:CHEBGUI:solveGUIivp:problemType', ...
+    ['Problem detected to be a boundary-value problem, but attempted to ' ...
+    'solve as an initial value problem. Please check problem specification']);
+    
+% Reformulate the boundary condition so that we can assign it to the .LBC or
+% .RBC field below.
+newBCinput = chebgui.bcReform(expInfo.dom, bcInput, isIorF);
+bcString = setupFields(guifile, newBCinput, 'BC', allVarString);
 
-% Set up the initial guesses.
+% Set up the initial guesses (which might be useful if for some reason, we are
+% asking to solve the IVP globally with Newton's method).
 guess = [];
 
 % Find whether the user wants to use the latest solution as a guess. This is
@@ -139,7 +135,7 @@ if ( ~isempty(initInput{1}) && isempty(guess) )
             
             guess = chebmatrix(guess);
         else % throw an error
-            error('CHEBFUN:CHEBGUI:solveGUIbvp:initialGuess', ...
+            error('CHEBFUN:CHEBGUI:solveGUIivp:initialGuess', ...
                 ['Error constructing initial guess.  Please make sure ' ...
                  'guesses are of the form u = 2*x, v = sin(x), ...']);
         end
@@ -163,10 +159,8 @@ handles.normDelta = [];
 N = chebop(DE, dom);
 
 % Assign boundary conditions, depending on whether we're solving an initial
-% value problem, final value problem, or boundary value problem
-if ( isIorF == 0 )
-    N.bc = BC;
-elseif ( isIorF == 1 )
+% value problem or a final value problem:
+if ( isIorF == 1 )
     N.lbc = BC;
 else
     N.rbc = BC;
@@ -233,7 +227,10 @@ options.discretization = expInfo.discretization;
 % What IVP solver do we want?
 options.ivpSolver = guifile.options.ivpSolver;
 
-% Various things we only need to think about when in the GUI, changes GUI compenents.
+% Are we solving the problem globally, or with one of the MATLAB solvers?
+solvingGlobally = isempty(strfind(func2str(options.ivpSolver),'chebfun'));
+% Various things we only need to think about when in the GUI, changes GUI
+% compenents.
 if ( guiMode )
     set(handles.iter_list, 'String', '');
     set(handles.iter_text, 'Visible', 'On');
@@ -248,14 +245,19 @@ if ( guiMode )
     set(handles.popupmenu_bottomFig, 'Value', 1);
 end
 
-% Call solvebvp with different arguments depending on whether we're in GUI
+% Call solveivp with different arguments depending on whether we're in GUI
 % or not. If we're not in GUI mode, we can finish here.
 if ( guiMode )
-    displayFunction = ...
-        @(mode, varargin) chebgui.displayBVPinfo(handles, mode, varargin{:});
-    if ( ~isIorF || isempty(strfind(func2str(options.ivpSolver),'chebfun')) )
+    if ( solvingGlobally )        
+        % We use the BVP displayInfo method, as the only time it will be used is
+        % if we're solving the problem globally, in which case, it's the
+        % appropriate display method.
+        displayFunction = ...
+            @(mode, varargin) chebgui.displayBVPinfo(handles, mode, varargin{:});
+        
         [u, info] = solvebvp(N, 0, options, displayFunction);
     else
+        % Solving using one of the MATLAB solvers.
         u = solveivp(N, 0, options);
         info = struct('isLinear', 1, 'error', 0);
         if (isa(u,'chebfun'))
@@ -278,13 +280,11 @@ if ( guiMode )
         set(handles.iter_list, 'Value', 1)
     end
 else
-    if ( ~isIorF ) 
-        [u, info] = solvebvp(N, 0, options);
-    else
-        u = solveivp(N, 0, options);
-    end
+    % Not in GUI mode.
+    
+    [u, info] = mldivide(N, 0, options);
     varargout{1} = u;
-    varargout{2} = vec;
+    varargout{2} = info;
 end
 
 % ISLINEAR is returned as a vector in the INFO structure (with elements
@@ -302,7 +302,7 @@ if ( guiMode )
     
     % Store in handles latest chebop, solution, vector of norm of updates etc.
     % (enables exporting later on)
-    handles.latest.type = 'bvp';
+    handles.latest.type = 'ivp';
     handles.latest.solution = u;
     handles.latest.norms = info.error;
     handles.latest.chebop = N;
@@ -332,7 +332,7 @@ if ( guiMode )
     end
 
     % Different titles of top plot if we had a linear problem:
-    if ( ~isLinear )
+    if ( solvingGlobally && ~isLinear )
         title('Solution at end of iteration');
     else
         title('Solution');
@@ -341,7 +341,7 @@ if ( guiMode )
     % If we were solving a nonlinear problem, we show a plot of the norm of the
     % Newton updates after solution has been found. For a linear problem, we
     % show a PLOTCOEFFS plot.
-    if ( ~isLinear )
+    if ( solvingGlobally && ~isLinear )
         % Store the norm of the Newton updates
         handles.normDelta = info.normDelta;
 
@@ -360,6 +360,8 @@ if ( guiMode )
             set(gca,'XTick', 1)
         end
     else
+        % If we're solving a linear problem, or using the MATLAB solvers, plot
+        % the Chebyshev coefficients instead.
         axes(handles.fig_norm)
         plotcoeffs(u, 'linewidth', 2)
         title('Chebyshev coefficients of the solution')
