@@ -223,7 +223,7 @@ classdef (InferiorClasses = {?double}) chebop
         [L, res, isLinear, u] = linearize(N, u, x, flag);  
         
         %\   Chebop backslash.
-        varargout = mldivide(N, rhs, pref)
+        varargout = mldivide(N, rhs, pref, varargin)
         
         % The number of input arguments to a CHEBOP .OP field.
         nIn = nargin(N)
