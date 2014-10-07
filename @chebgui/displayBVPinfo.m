@@ -14,7 +14,7 @@ function varargout = displayBVPinfo(handles, mode, varargin)
 %                       'Stop' button on the GUI. 
 %   HANDLES:            The MATLAB handle to the CHEBGUI figure.
 %   VARARGIN:           Useful input arguments for showing information, further
-%                       described in 'help chebop/displayInfo)
+%                       described in 'help chebop/displayInfo'.
 %
 % See also: chebop/displayInfo
 

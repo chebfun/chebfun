@@ -264,12 +264,17 @@ classdef chebgui
         % Information shown during BVP solving.
         [dummy, displayTimer] = displayBVPinfo(handles, mode, varargin)
         
+        % Information shown after IVP solving.
+        [dummy, displayTimer] = displayIVPinfo(handles, u, isIVP, varargin)
+        
         % Return a random BVP CHEBGUI demo.
         cg = demo()
 
         % Load a demo stored in a .guifile to a CHEBGUI object
         cg = demo2chebgui(demoPath)
-                
+        
+        % Construct initial guesses/conditions prescribed by CHEBGUI objects
+        init = constructInit(initInput, allVarNames, indVarNameSpace, xt);
     end
          
 end

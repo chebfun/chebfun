@@ -275,6 +275,9 @@ classdef (InferiorClasses = {?double}) chebop
         % Controls information displayed for Newton iterations
         [displayFig, displayTimer] = displayInfo(mode, varargin);
         
+        % Controls information displayed for solving IVPs
+        displayIVPinfo(u, isIVP, varargin);
+        
         % Display at the finish of Newton iteration.
         displayInfoFinal(u, delta, iterNo, errEstDE, errEstBC, displayFig, ...
             displayTimer, pref)

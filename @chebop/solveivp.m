@@ -9,6 +9,11 @@ if ( nargin < 3 )
     pref = cheboppref;
 end
 
+if ( nargin < 4 )
+    displayInfo = @chebop.displayIVPinfo;
+else
+    displayInfo = varargin{1};
+end
 
 % Check for unbounded domains:
 if ( ~all(isfinite(N.domain)) )
@@ -109,6 +114,11 @@ if (numColY > 1)
     y = chebmatrix(y);
     % Transpose that doesn't convert row chebfuns to column ones:
     y.blocks = reshape(y.blocks, numColY, 1); 
+end
+
+if ( ~strcmpi(pref.display, 'off') )
+    % Do we want to display information about the solution process?
+    displayInfo(y, isIVP)
 end
 
 end
