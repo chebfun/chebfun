@@ -4,10 +4,10 @@ function values = coeffs2vals(coeffs)
 %   V = COEFFS2VALS(C) returns the values of the trignometric polynomial 
 %   as follows:
 %   If N is odd
-%       F(x) = C(1)*z^(N-1)/2 + C(2)*z^((N-1)/2-1) + ... + C(N)*z^(-(N-1)/2)
+%       F(x) = C(1)*z^(-(N-1)/2) + C(2)*z^(-(N-1)/2-1) + ... + C(N)*z^((N-1)/2)
 %   If N is even
-%       F(x) = C(1)*z^(N/2-1) + C(2)*z^(N/2-2) + ... + C(N-1)*z^(-N/2-1) +
-%                  1/2*C(N)*(z^(N/2) + z^(-N/2))
+%       F(x) = 1/2*C(1)*(z^(N/2) + z^(-N/2)) + C(2)*z^(-N/2+1) + C(3)*z^(-N/2+2)
+%               + ... + C(N-1)*z^(N/2-2) + C(N)*z^(N/2-1)
 %   where z = exp(1i*pi*x) and -1 <= x <= 1. 
 %
 %   If the input C is an (N+1)xM matrix then V = COEFFS2VALS(C) returns the
