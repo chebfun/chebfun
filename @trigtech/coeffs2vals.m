@@ -33,13 +33,13 @@ end
 % assign c_k = (-1)^k c_k, with k=-(N-1)/2:(N-1)/2 for N odd, and 
 % k = -N/2:N/2-1 for N even.
 if ( mod(n, 2) ) 
-    even_odd_fix = (-1).^((n-1)/2:-1:-(n-1)/2);
+    even_odd_fix = (-1).^(-(n-1)/2:(n-1)/2).';
 else
-    even_odd_fix = (-1).^((n/2-1):-1:(-n/2));
+    even_odd_fix = (-1).^((-n/2):(n/2-1)).';
 end
-coeffs = bsxfun(@times, coeffs, even_odd_fix.');
+coeffs = bsxfun(@times, coeffs, even_odd_fix);
 
 % Shift the coefficients properly.
-values = ifft(ifftshift(flipud(n*coeffs), 1), [], 1);
+values = ifft(ifftshift(n*coeffs, 1), [], 1);
 
 end
