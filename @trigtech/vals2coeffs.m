@@ -3,10 +3,10 @@ function coeffs = vals2coeffs(values)
 %   to N trigonometric coefficients.
 %   C = VALS2COEFFS(V) returns the vector of N coefficients such that: 
 %   If N is odd
-%       F(x) = C(1)*z^((N-1)/2) + C(2)*z^((N-1)/2-1) + ... + C(N)*z^(-(N-1)/2)
+%       F(x) = C(1)*z^(-(N-1)/2) + C(2)*z^(-(N-1)/2-1) + ... + C(N)*z^((N-1)/2)
 %   If N is even
-%       F(x) = C(1)*z^(N/2-1) + C(2)*z^(N/2-2) + ... + C(N-1)*z^(-N/2-1) +
-%                  1/2*C(N)*(z^(N/2) + z^(-N/2))
+%       F(x) = 1/2*C(1)*(z^(N/2) + z^(-N/2)) + C(2)*z^(-N/2+1) + C(3)*z^(-N/2+2)
+%               + ... + C(N-1)*z^(N/2-2) + C(N)*z^(N/2-1)           
 %   where z = exp(1i*pi*x) and -1 <= x <= 1. 
 %   F(x) interpolates the data [V(1) ; ... ; V(N)] at the N equally 
 %   spaced points x_k = -1 + 2*k/N, k=0:N-1. 
@@ -30,18 +30,18 @@ if ( n <= 1 )
     return
 end
 
-coeffs = (1/n)*flipud(fftshift(fft(values, [], 1), 1));
+coeffs = (1/n)*fftshift(fft(values, [], 1), 1);
 
 % These coefficients are for interpolation defined on [0,2*pi), but we want
 % to work on [-pi,pi). To fix the coefficients for this we just need to
 % assign c_k = (-1)^k c_k, for k=-(N-1)/2:(N-1)/2 for N odd and 
 % k = -N/2:N/2-1 for N even.
 if ( mod(n, 2) ) 
-    even_odd_fix = (-1).^((n-1)/2:-1:-(n-1)/2);
+    even_odd_fix = (-1).^(-(n-1)/2:(n-1)/2).';
 else
-    even_odd_fix = (-1).^((n/2-1):-1:(-n/2));
+    even_odd_fix = (-1).^((-n/2):(n/2-1)).';
 end
 
-coeffs = bsxfun(@times, coeffs, even_odd_fix.');
+coeffs = bsxfun(@times, coeffs, even_odd_fix);
 
 end

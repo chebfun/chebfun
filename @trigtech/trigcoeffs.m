@@ -57,10 +57,8 @@ if ( NisEven )
 else
     id = (constIndex-((N-1)/2)) : (constIndex+((N-1)/2));
 end
-c = c(id,:);
 
-% Extract out the entries and flip the result to match the ordering from 
-% negative powers to positive powers.
-out = flipud(c);
+% Extract out the entries:
+out = c(id,:);
 
 end

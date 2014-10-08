@@ -95,48 +95,14 @@ x = chebfun(@(x) x, dom);
 % Linearize and attach preferences.
 [L, residual, isLinear] = linearize(N, u0, x);
 
-% The user passed a CHEBOPPREF object PREF with PREF.DISCRETIZATION set to 
-% TRIGCOLLOC, or TRIGCOLLOC is the default discretization.
-%
-% Since TRIGCOLLOC does not support breakpoints, we need to throw an error if
-% breakpoints are present. Note that here and below, we look at L.domain rather
-% than N.domain, as the domain of the LINOP L will also include any breakpoints
-% arising from discontinuous coefficients of N (which we only become aware of
-% when we do the linearization above).
-if ( isequal(pref.discretization, @trigcolloc) && length(L.domain) > 2 )
-    error('CHEBFUN:CHEBOP:solvebvp:breakpointsInDomain', ...
-        ['Problems with periodic boundary conditions where breakpoints \n', ...
-        'are present cannot be solved using the TRIGCOLLOC class.\n' ...
-        'Please change the discretization to CHEBCOLLOC1/2 or ULTRAS.'])
-end
+% Determine the discretization.
+pref = determineDiscretization(N, L, isPrefGiven, pref);
 
-% If the boundary conditions are periodic, change the discretization to 
-% TRIGCOLLOC, unless one (or more) of the following applies:
-% - The user passed a PREF object.
-% - The default discretization is ULTRAS.
-% - Breakpoint(s) are present.
-if ( isa(N.bc, 'char') && strcmpi(N.bc, 'periodic') && ~isPrefGiven ...
-        && ~isequal(pref.discretization, @ultraS) && length(L.domain) < 3 )
-    pref.discretization = @trigcolloc;
-end
-
-% Check boundary conditions if using TRIGCOLLOC.
+% Clear boundary conditions if using TRIGCOLLOC.
 if ( isequal(pref.discretization, @trigcolloc) )
-    if ( isempty(N.bc) )
-        % No need to clear the BCs, do nothing!
-    elseif ( isa(N.bc, 'char') && strcmpi(N.bc, 'periodic') )
-        % TRIGCOLLOC uses periodic functions, so there is no need to specify
-        % boundary conditions. We clear them out of the chebop object to avoid
-        % problems later in the code.
-        N.bc = [];
-        L.constraint = [];
-        L.continuity = [];
-    else
-        error('CHEBFUN:CHEBOP:solvebvp:bc', ...
-            'TRIGCOLLOC only works with periodic boundary conditions.');
-    end
+    [N, L] = clearPeriodicBCs(N, L);
 end
-    
+
 warnState = warning();
 [ignored, lastwarnID] = lastwarn(); %#ok<ASGLU>
 if ( strcmp(lastwarnID, 'CHEBFUN:CHEBOP:linearize:bcConcat') )

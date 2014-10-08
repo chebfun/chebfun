@@ -32,7 +32,7 @@ N.init = u0;
 v = N \ f;
 
 % Compare.
-err(1) = norm(u - v, inf);
+pass(1) = norm(u - v, inf) < tol;
 
 %% Test the TRIGCOLLOC class. FIRST ORDER: 
 %  u' - u*cos(u) = cos(x), on [-2*pi 2*pi].
@@ -50,8 +50,9 @@ N.init = u0;
 % Solve with TRIGTECH technology.
 u = N \ f;
 
-err(2) = norm(N*u - f);
-err(3) = abs(u(dom(1)) - u(dom(2)));
+pass(2) = norm(N*u - f) < tol;
+pass(3) = abs(u(dom(1)) - u(dom(2))) < tol;
+pass(4) = isequal(get(u.funs{1}, 'tech'), @trigtech);
 
 %% Test the TRIGCOLLOC class. SECOND ORDER: 
 %  u'' - u^2*cos(u) = cos(x), on [-pi pi].
@@ -69,11 +70,9 @@ N.init = u0;
 % Solve with TRIGTECH technology.
 u = N \ f;
 
-err(4) = norm(N*u - f);
-err(5) = abs(u(dom(1)) - u(dom(2)));
-err(6) = abs(feval(diff(u), dom(1)) - feval(diff(u), dom(2)));
-
-%%
-pass = err < tol;
+pass(5) = norm(N*u - f) < tol;
+pass(6) = abs(u(dom(1)) - u(dom(2))) < tol;
+pass(7) = abs(feval(diff(u), dom(1)) - feval(diff(u), dom(2))) < tol;
+pass(8) = isequal(get(u.funs{1}, 'tech'), @trigtech);
 
 end
