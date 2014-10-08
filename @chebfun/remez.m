@@ -235,17 +235,17 @@ end
 
 % Compute the Chebyshev coefficients.
 c = chebcoeffs(f, length(f));
-c(end) = 2*c(end);
+c(1) = 2*c(1);
 
 % Check for symmetries and reduce degrees accordingly.
-if ( max(abs(c(end-1:-2:1)))/vscale(f) < eps )   % f is even.
+if ( max(abs(c(2:2:end)))/vscale(f) < eps )   % f is even.
     if ( mod(m, 2) == 1 )
         m = m - 1;
     end
     if ( mod(n, 2) == 1 )
         n = n - 1;
     end
-elseif ( max(abs(c(end:-2:1)))/vscale(f) < eps ) % f is odd.
+elseif ( max(abs(c(1:2:end)))/vscale(f) < eps ) % f is odd.
     if ( mod(m, 2) == 0 )
         m = m - 1;
     end
