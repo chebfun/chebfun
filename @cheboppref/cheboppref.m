@@ -394,7 +394,10 @@ classdef cheboppref < chebpref
                 val = @chebcolloc1;
                 
             elseif ( any(strcmpi(val, {'fourcolloc'})) )
-                val = @fourcolloc;       
+                val = @fourcolloc;     
+                
+            elseif ( any(strcmpi(val, {'trigspec'})) )
+                val = @trigspec;
                  
             end
                 

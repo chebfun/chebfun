@@ -21,14 +21,13 @@ b = cell2mat(instantiate(fDisc));
 
 % Developer note:
 %   The continuity conditions go above the constraints. See getConstraints().
-
-% Prepend the values of the constraints and continuity conditions.
-L = disc.source;
-if ( ~isempty(L.constraint) )
-    b = [ L.constraint.values ; b ];
-end
-if ( ~isempty(L.continuity) )
-    b = [ L.continuity.values ; b ];
-end
+% % Prepend the values of the constraints and continuity conditions.
+% L = disc.source;
+% if ( ~isempty(L.constraint) )
+%     b = [ L.constraint.values ; b ];
+% end
+% if ( ~isempty(L.continuity) )
+%     b = [ L.continuity.values ; b ];
+% end
 
 end

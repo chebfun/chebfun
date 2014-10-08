@@ -1,6 +1,6 @@
-function M = mult(disc, f, lambda)
+function M = mult(disc, f)
 %MULT   Multiplication operator for the TRIGSPEC class.
-%   M = MULT(A, F, lambda) returns the multiplication operator that represents 
+%   M = MULT(A, F) returns the multiplication operator that represents 
 %   u(x) -> F(x)u(x), in the Fourier basis. 
 % 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
@@ -15,7 +15,7 @@ numIntervals = length(d) - 1;
 % Find the diagonal blocks:
 blocks = cell(numIntervals);
 for k = 1:numIntervals
-    blocks{k} = trigspec.multmat(n(k), f.funs{k}, lambda);
+    blocks{k} = trigspec.multmat(n(k), f.funs{k});
 end
 
 % Assemble:

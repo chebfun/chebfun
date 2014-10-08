@@ -7,7 +7,7 @@ function D = diff(disc, m)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Useful information:
-d = disc.domain;
+dom = disc.domain;
 N = disc.dimension;
 
 if ( m == 0 )          

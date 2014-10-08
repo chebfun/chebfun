@@ -33,12 +33,12 @@ classdef trigspec < chebDiscretization
             disc.domain = source.domain;
             
             % Obtain the coeffs and output space required for this source:
-            disc.coeffs = ultraS.getCoeffs(source);
+            disc.coeffs = trigspec.getCoeffs(source);
             
             % Determine the dimension adjustments and outputSpace:
-            disc.dimAdjust = ultraS.getDimAdjust(source);
-            disc.projOrder = ultraS.getProjOrder(source);
-            disc.outputSpace = ultraS.getOutputSpace(source);
+            disc.dimAdjust = 0;
+            disc.projOrder = 0;
+            disc.outputSpace = trigspec.getOutputSpace(source);
             
             % Assign DIMENSIONS and DOMAIN if they were passed.
             if ( nargin > 1 )
@@ -66,10 +66,10 @@ classdef trigspec < chebDiscretization
         end
         
         % Differentiation matrices for TRIGSPEC.
-        D = diffmat(n, m)
+        D = diffmat(N, m)
         
         % Multiplication matrices for TRIGSPEC.
-        D = multmat(n, f, lambda)
+        D = multmat(N, f, lambda)
         
         function dimVals = dimensionValues(pref)
             %DIMENSIONVALUES   Return a vector of desired discretization sizes.

@@ -99,7 +99,8 @@ x = chebfun(@(x) x, dom);
 pref = determineDiscretization(N, L, isPrefGiven, pref);
 
 % Clear boundary conditions if using FOURCOLLOC.
-if ( isequal(pref.discretization, @fourcolloc) )
+if ( isequal(pref.discretization, @fourcolloc) || ...
+        isequal(pref.discretization, @trigspec) )
     [N, L] = clearPeriodicBCs(N, L);
 end
 
