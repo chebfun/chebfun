@@ -48,7 +48,7 @@ x_pts = trigtech.trigpts(6);
 f_exact = @(x) 1 + sin(2*pi*x) + cos(3*pi*x);
 vals = f_exact(x_pts);
 % Exact coefficients
-cTrue = [-0.5i 0 1 0 0.5i 1].';
+cTrue = [1 0.5i 0 1 0 -0.5i].';
 
 %%
 % Test real branch
