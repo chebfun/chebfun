@@ -256,7 +256,7 @@ else
     a(m:-1:1) = conj(a(m+2:2*m+1));
     a(m+1) = real(a(m+1));
 end    
-p = chebfun(flipud(a), dom, 'coeffs', 'trig');
+p = chebfun(a, dom, 'coeffs', 'trig');
 q = chebfun(1, dom, 'trig');
 r = @(x) p(x);
 end
