@@ -391,13 +391,13 @@ classdef cheboppref < chebpref
                     warning('CHEBOPPREF:PARSEDISCRETIZATION', ...
                         'COLLOC1 is deprecated. Please use CHEBCOLLOC1.');
                 end
-                val = @chebcolloc1;
-                
-            elseif ( any(strcmpi(val, {'fourcolloc'})) )
-                val = @fourcolloc;     
+                val = @chebcolloc1; 
                 
             elseif ( any(strcmpi(val, {'trigspec'})) )
                 val = @trigspec;
+                
+            elseif ( any(strcmpi(val, {'trigcolloc'})) )
+                val = @trigcolloc;       
                  
             end
                 

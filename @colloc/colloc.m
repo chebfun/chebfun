@@ -1,11 +1,11 @@
 classdef colloc < chebDiscretization
 %COLLOC   Abstract class for collocation discretization of operators.
 %   COLLOC is a partial implementation of CHEBDISCRETIZATION using
-%   first-kind Chebyshev points, second-kind Chebyshev points, or Fourier 
-%   points. COLLOC cannot be used directly as a discretization for LINOPs.
-%   CHEBCOLLOC1, CHEBCOLLOC2, and FOURCOLLOC are full implementations.
+%   first-kind Chebyshev points, second-kind Chebyshev points, or equally
+%   spaced points. COLLOC cannot be used directly as a discretization for 
+%   LINOPs. CHEBCOLLOC1, CHEBCOLLOC2, and TRIGCOLLOC are full implementations.
 %
-% See also CHEBCOLLOC, FOURCOLLOC, CHEBCOLLOC1, CHEBCOLLOC2, CHEBDISCRETIZATION.
+% See also CHEBCOLLOC, TRIGCOLLOC, CHEBCOLLOC1, CHEBCOLLOC2, CHEBDISCRETIZATION.
 
 %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org/ for Chebfun information.
@@ -76,7 +76,7 @@ classdef colloc < chebDiscretization
     methods ( Access = public, Static = true )
         
         % Discretization points: used by CHEBCOLLOC1, CHEBCOLLOC2, and 
-        % FOURCOLLOC.
+        % TRIGCOLLOC.
         [x, w, v, t] = points(varargin);
         
         function dimVals = dimensionValues(pref)

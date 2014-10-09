@@ -68,16 +68,16 @@ maxSample = tpref.maxLength;
 pseudoLevel = tpref.eps;
 
 if ( any(strcmpi(dom, 'periodic')) )
-        % If periodic flag, then map chebfun2 with fourtechs. 
-        pref.tech = @fourtech;
+        % If periodic flag, then map chebfun2 with TRIGTECHs. 
+        pref.tech = @trigtech;
         tpref = chebfunpref.mergeTechPrefs(pref, tech.techPref);
         minSample = tpref.minSamples;
         maxSample = tpref.maxLength;
         pseudoLevel = tpref.eps;
         dom = [-1 1 -1 1];
 elseif ( (nargin > 3) && (any(strcmpi(varargin{1}, 'periodic'))) )
-        % If periodic flag, then map chebfun2 with fourtechs. 
-        pref.tech = @fourtech; 
+        % If periodic flag, then map chebfun2 with TRIGTECHs
+        pref.tech = @trigtech; 
         tpref = chebfunpref.mergeTechPrefs(pref, tech.techPref);
         minSample = tpref.minSamples;
         maxSample = tpref.maxLength;
@@ -547,9 +547,9 @@ elseif ( isa(tech, 'chebtech1') )
     x = chebpts( m, dom(1:2), 1 );   % x grid.
     y = chebpts( n, dom(3:4), 1 ); 
     [xx, yy] = meshgrid( x, y ); 
-elseif ( isa(tech, 'fourtech') )
-    x = fourpts( m, dom(1:2) );   % x grid.
-    y = fourpts( n, dom(3:4) );
+elseif ( isa(tech, 'trigtech') )
+    x = trigpts( m, dom(1:2) );   % x grid.
+    y = trigpts( n, dom(3:4) );
     [xx, yy] = meshgrid( x, y );
 else
     error('CHEBFUN:CHEBFUN2:constructor:points2D:tecType', ...
@@ -570,7 +570,7 @@ if ( isa(tech, 'chebtech2') )
     x = chebpts( n, dom, 2 );   % x grid.
 elseif ( isa(tech, 'chebtech1') )
     x = chebpts( n, dom, 1 );   % x grid.
-elseif ( isa(tech, 'fourtech') )
+elseif ( isa(tech, 'trigtech') )
     x = fourpts( n, dom );   % x grid.
 else
     error('CHEBFUN:CHEBFUN2:constructor:mypoints:techType', ...
@@ -590,7 +590,7 @@ if ( isa(tech, 'chebtech2') )
     % Double sampling on tensor grid:
     grid = 2^( floor( log2( grid ) ) + 1) + 1;
     nesting = 1:2:grid; 
-elseif ( isa(tech, 'fourtech') )
+elseif ( isa(tech, 'trigtech') )
     % Double sampling on tensor grid:
     grid = 2^( floor( log2( grid ) + 1 ));
     nesting = 1:2:grid;
