@@ -1,9 +1,10 @@
-function [uquasi, lamvec, mvec] = followPath(H, A, g, BCstruct, u0, lam0, measure, varargin)
+function [uquasi, lamvec, mvec] = followPath(H, A, g, BCstruct, u0, lam0, measure, direction, varargin)
 % H  -- chebop
 % bcFun -- anonymous function
 % u0 -- initial solution on path
 % lam0 -- initial value of lambda
 % measure -- anonymous function which value we plot
+% direction -- Go to the left or the right?
 % varargin -- options
 
 % Set default values
@@ -11,6 +12,10 @@ plotOn = 0; % Option for plotting
 sl0 = .1; % Initial steplength
 slmax = 4; slmin = 0.0001; % Maximum/min steplength
 maxCounter = 7;
+
+if ( nargin < 8 )
+    direction = 1;
+end
 
 % Parse varargin
 while ~isempty(varargin)  % Recurse
@@ -80,7 +85,7 @@ while counter <= maxCounter
         [t, tau] = tangentBVP(H,A,g,BCstruct,uold, lamold, told,tauold);
         % Move in the direction of the tangent
         uinit = uold+sl*t;
-        laminit = lamold+sl*tau;
+        laminit = lamold+direction*sl*tau;
     end
 
     % Find a Newton correction
@@ -91,8 +96,8 @@ while counter <= maxCounter
         % Move in the direction of the current tangent, but only with
         % quarter of the steplength
         sl = sl/4;
-        uinit = uold+sl*t;
-        laminit = lamold+sl*tau;       
+        uinit = uold+direction*sl*t;
+        laminit = lamold+direction*sl*tau;       
         if sl < slmin
             disp('FAILED: sl < slmin')
             return
