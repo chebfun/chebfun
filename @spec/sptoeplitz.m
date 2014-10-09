@@ -15,7 +15,7 @@ function T = sptoeplitz(col, row)
 % Based on SPTOEPLITZ.M on the Mathworks File Exchange, 
 % Copyright (c) 2006 by Tobin Driscoll (tobin.driscoll@gmail.com).
 
-% Developer note: This is needed by Ultraspherical multiplication operators.
+% Developer note: This is needed by multiplication operators.
 
 % This part is borrowed from built-in Toeplitz.
 if ( nargin < 2 ) % Symmetric case

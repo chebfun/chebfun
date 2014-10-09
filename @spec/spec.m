@@ -72,6 +72,9 @@ classdef spec < chebDiscretization
         % Get coefficient representation of the source.
         c = getCoeffs(source)
         
+        % Sparse Toeplitz matrix.
+        T = sptoeplitz(col, row)
+        
     end
 
 end

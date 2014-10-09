@@ -1,6 +1,6 @@
 function f = toFunctionOut(varargin)
 %TOFUNCTIONOUT  Convert discrete values of TRIGSPEC discretization to a CHEBFUN.
-%   F = TOFUNCTIONOUT(...) is equivalent to TOFUNCTIONIN(...) for ULTRAS.
+%   F = TOFUNCTIONOUT(...) is equivalent to TOFUNCTIONIN(...) for TRIGSPEC.
 %
 % See also TOVALUES, TOFUNCTIONIN.
 

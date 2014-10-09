@@ -87,9 +87,6 @@ classdef ultraS < spec
         % Construct a sparse Hankel operator.
         H = sphankel(r)
         
-        % Sparse Toeplitz matrix.
-        T = sptoeplitz(col, row)
-        
     end
     
 end

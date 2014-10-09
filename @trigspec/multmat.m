@@ -24,7 +24,7 @@ end
 
 % Multiplying by a scalar is easy.
 if ( numel(a) == 1 )
-    M = a*eye(N);
+    M = a*speye(N);
     return
 end
 
@@ -40,6 +40,6 @@ else
     row = a(1+Na:-1:Na-N+2).';
     column = a(1+Na:1:end-Na+N-1);
 end
-M = toeplitz(row, column);
+M = trigspec.sptoeplitz(row, column);
 
 end

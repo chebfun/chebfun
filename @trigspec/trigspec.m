@@ -54,17 +54,4 @@ classdef trigspec < spec
         
     end
     
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% PRIVATE STATIC METHODS:
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    methods ( Access = private, Static = true )
-        
-        % Construct a sparse Hankel operator.
-        H = sphankel(r)
-        
-        % Sparse Toeplitz matrix.
-        T = sptoeplitz(col, row)
-        
-    end
-    
 end

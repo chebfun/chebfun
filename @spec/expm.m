@@ -1,5 +1,5 @@
 function [E, P] = expm(disc, t)
-%EXPM   Operator exponential for ULTRAS discretization.
+%EXPM    Operator exponential for coeffs-based discretization.
 %   This EXPM is called by LINOP.EXPM to perform propagation of a discrete
 %   initial condition via matrix exponential. The returned matrix is the
 %   propagator for a discretization of the problem.
@@ -12,13 +12,13 @@ function [E, P] = expm(disc, t)
 if ( t == 0 )
     
     % Trivial case at t = 0
-    [ignored, P, ignored] = matrix( disc );
+    [ignored, P, ignored] = matrix(disc);
     E = eye(size(P, 2));
     
 else
     
     % We need a copy of the matrix discretized without any side conditions.
-    [PA, P, B] = matrix( disc );
+    [PA, P, B] = matrix(disc);
     
     % Reduced and original degrees of freedom.
     [mRed, mOrig] = size(P);  
