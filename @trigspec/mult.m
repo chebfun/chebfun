@@ -1,5 +1,5 @@
 function M = mult(disc, f)
-%MULT   Multiplication operator for the TRIGSPEC class.
+%MULT    Multiplication operator for the TRIGSPEC class.
 %   M = MULT(A, F) returns the multiplication operator that represents 
 %   u(x) -> F(x)u(x), in the Fourier basis. 
 % 
@@ -9,16 +9,10 @@ function M = mult(disc, f)
 % Obtaining some useful information:
 n = disc.dimension;
 d = disc.domain;
-f = restrict(f, d);
-numIntervals = length(d) - 1;
 
-% Find the diagonal blocks:
-blocks = cell(numIntervals);
-for k = 1:numIntervals
-    blocks{k} = trigspec.multmat(n(k), f.funs{k});
-end
+% Convert to a TRIGTECH-based CHEBFUN.
+f = chebfun(f, d, 'periodic');
 
-% Assemble:
-M = blkdiag(blocks{:});
+M = trigspec.multmat(n, f.funs{1});
 
 end

@@ -1,4 +1,4 @@
-classdef trigspec < chebDiscretization
+classdef trigspec < spec
 %TRIGSPEC    Fourier spectral method in coefficient space.
 %   TRIGSPEC is an implementation of CHEBDISCRETIZATION that implements a
 %   Fourier spectral method in coefficient space.
@@ -21,33 +21,11 @@ classdef trigspec < chebDiscretization
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
         
-        function disc = trigspec(source, dimension, dom)
-            
-            if ( (nargin == 0) || isempty(source) )
-                % Construct an empty TRIGSPEC object.
-                return
-            end
-            
-            % Attach SOURCE and the DOMAIN information to the object:
-            disc.source = source;
-            disc.domain = source.domain;
-            
-            % Obtain the coeffs and output space required for this source:
-            disc.coeffs = trigspec.getCoeffs(source);
-            
-            % Determine the dimension adjustments and outputSpace:
+        function disc = trigspec(varargin)
+            disc = disc@spec(varargin{:});
+            % No dimension adjustment are required for TRIGSPEC.
             disc.dimAdjust = 0;
             disc.projOrder = 0;
-            disc.outputSpace = trigspec.getOutputSpace(source);
-            
-            % Assign DIMENSIONS and DOMAIN if they were passed.
-            if ( nargin > 1 )
-                disc.dimension = dimension;
-            end
-            if ( nargin > 2 )
-                disc.domain = domain.merge(dom, disc.domain);
-            end
-            
         end
         
         % Dimension reduction for operator matrix.
@@ -69,39 +47,14 @@ classdef trigspec < chebDiscretization
         D = diffmat(N, m)
         
         % Multiplication matrices for TRIGSPEC.
-        D = multmat(N, f, lambda)
-        
-        function dimVals = dimensionValues(pref)
-            %DIMENSIONVALUES   Return a vector of desired discretization sizes.
-            %  DIMVALS = DIMENSIONVALUES(PREF) returns a vector containing
-            %  elements that prescribe what values should be used as dimension
-            %  values for discretizating linear operators. DIMVALS is affected
-            %  by the minimum and maximum discretizations specified in the
-            %  CHEBOPPREF object PREF.
-            
-            % We simply go up in powers of 2.
-            
-            minPow = log2(pref.minDimension);
-            maxPow = log2(pref.maxDimension);
-            
-            if ( minPow > maxPow )
-                error('CHEBFUN:ULTRAS:ultraS:dimensionValues', ...
-                    ['Minimum discretiation specified is greater than ' ...
-                    'maximum discretization specified']);
-            end
-            
-            % Go up in powers of 2:
-            powVec = minPow:maxPow;
-            dimVals = round(2.^powVec);
-            
-        end
+        D = multmat(N, f)
         
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% PRIVATE STATIC METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    methods ( Access = private, Static = true )
+    methods ( Access = public, Static = true )
         
         % Get coefficient representation of the source.
         c = getCoeffs(source)

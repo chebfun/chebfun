@@ -1,12 +1,11 @@
 function [M, S] = instantiate(disc)
-%INSTANTIATE   Convert a ULTRAS discretization to discrete form.
+%INSTANTIATE   Convert a TRIGSPEC discretization to discrete form.
 %   M = INSTANTIATE(DISC) converts each item DISC.SOURCE to discrete form
 %   using the information in discretization DISC. The result M is return a cell
 %   array if DISC.SOURCE has more than one component.
 %
-%   [M, S] = INSTANTIATE(DISC) retusn a second output, S, which is a cell array
-%   containing the dscrete form of the ultraS conversion operator for each block
-%   of DISC.SOURCE.
+%   [M, S] = INSTANTIATE(DISC) retusn a second output, S, which is an empty
+%   cell-array.
 %
 %   DISC.SOURCE may be one or a cell array of:
 %      linBlock (becomes a matrix)
@@ -56,7 +55,7 @@ elseif ( isa(item, 'functionalBlock') )
     
     % Developer note: In general we can't represent functional
     % blocks via coeffs. To get around this we instantiate a
-    % CHEBCOLLOC2 discretization and convert it to coefficient space
+    % TRIGCOLLOC discretization and convert it to coefficient space
     % using COEFFS2VALS(). (Note it's COEFFS2VALS() rather than
     % VALS2COEFFS() because it's a right-multiply (I think..).)
     
@@ -68,7 +67,7 @@ elseif ( isa(item, 'functionalBlock') )
     collocDisc = trigcolloc(item, dim, dom);
     M = matrix(collocDisc);
     
-    %Convert from colloc-space to coeff-space using COEFFS2VALS.
+    % Convert from colloc-space to coeff-space using COEFFS2VALS.
     cumsumDim = [0, cumsum(dim)];
     tmp = cell(1, numel(dom)-1);
     for l = 1:numel(tmp)
@@ -97,7 +96,7 @@ elseif ( isnumeric(item) )
     
 else
     
-    error('CHEBFUN:ULTRAS:instantiate:inputType', ...
+    error('CHEBFUN:TRIGSPEC:instantiate:inputType', ...
         'Unrecognized item type.')
     
 end

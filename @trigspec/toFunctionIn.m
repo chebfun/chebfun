@@ -6,8 +6,10 @@ function f = toFunctionIn(disc, coeffs)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% [TODO]: Remove the FILPUD once Moshin's branch has been merged.
+
 dom = disc.domain; % Domain.
-c = mat2cell(coeffs, disc.dimension); 
+c = mat2cell(flipud(coeffs), disc.dimension); 
 funs = cell(numel(c), 1);  
 for k = 1:numel(c)
     % Construct FOURTECH object from each piece.
