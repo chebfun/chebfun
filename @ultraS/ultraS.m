@@ -71,18 +71,15 @@ classdef ultraS < spec
         % Multiplication matrices for ultraspherical spectral method.
         D = multmat(n, f, lambda)
       
+        % Obtain the range of the ultrapspherical spectral operator.
+        outputSpace = getOutputSpace(source)
+        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% PRIVATE STATIC METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = private, Static = true)
-        
-        % Get coefficient representation of the source.
-        c = getCoeffs(source)
-        
-        % Obtain the range of the ultrapspherical spectral operator.
-        outputSpace = getOutputSpace(source)
         
         % Compute sparse representation for conversion operators.
         T = spconvert(n, lam)

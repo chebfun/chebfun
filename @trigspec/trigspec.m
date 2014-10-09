@@ -49,19 +49,16 @@ classdef trigspec < spec
         % Multiplication matrices for TRIGSPEC.
         D = multmat(N, f)
         
+        % Output 1 for TRIGSPEC.
+        outputSpace = getOutputSpace(source)
+        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% PRIVATE STATIC METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    methods ( Access = public, Static = true )
+    methods ( Access = private, Static = true )
         
-        % Get coefficient representation of the source.
-        c = getCoeffs(source)
-        
-        % Obtain the range of the operator.
-        outputSpace = getOutputSpace(source)
-     
         % Construct a sparse Hankel operator.
         H = sphankel(r)
         

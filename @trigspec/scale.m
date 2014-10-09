@@ -20,4 +20,5 @@ end
 
 % SCL is the maximum vertical scale:
 scl = max(scl);
+
 end

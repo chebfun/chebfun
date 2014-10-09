@@ -1,6 +1,6 @@
 function c = getCoeffs(source)
 %GETCOEFFS    Get coefficients. Static, private method. 
-%   C = GETCOEFFS(SOURCE) returns the Fourier coefficients.
+%   C = GETCOEFFS(SOURCE) returns the Fourier/Chebyshev coefficients.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

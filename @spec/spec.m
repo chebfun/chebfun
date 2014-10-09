@@ -45,7 +45,7 @@ classdef spec < chebDiscretization
     methods ( Access = public, Static = true)
         
         function dimVals = dimensionValues(pref)
-            %DIMENSIONVALUES   Return a vector of desired discretization sizes.
+            %DIMENSIONVALUES    Return a vector of desired discretization sizes.
             %  DIMVALS = DIMENSIONVALUES(PREF) returns a vector containing
             %  elements that prescribe what values should be used as dimension
             %  values for discretizating linear operators. DIMVALS is affected
@@ -68,6 +68,9 @@ classdef spec < chebDiscretization
             dimVals = round(2.^powVec);
             
         end
+        
+        % Get coefficient representation of the source.
+        c = getCoeffs(source)
         
     end
 
