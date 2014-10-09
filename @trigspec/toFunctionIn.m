@@ -13,7 +13,7 @@ c = mat2cell(flipud(coeffs), disc.dimension);
 funs = cell(numel(c), 1);  
 for k = 1:numel(c)
     % Construct TRIGTECH object from each piece.
-    ct = trigech({[], c{k}});
+    ct = trigtech({[], c{k}});
     % Assign each piece to a subinterval with a BNDFUN.
     funs{k} = bndfun(ct, struct('domain', dom(k: k + 1)));
 end
