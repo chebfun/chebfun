@@ -73,7 +73,7 @@ elseif ( isa(item, 'functionalBlock') )
     for l = 1:numel(tmp)
         Ml = M(cumsumDim(l) + (1:dim(l)));
         Ml = rot90(Ml);
-        tmp{l} = rot90(fourtech.coeffs2vals(Ml), -1);
+        tmp{l} = rot90(trigtech.coeffs2vals(Ml), -1);
     end
     
     M = cell2mat(tmp);

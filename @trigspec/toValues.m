@@ -15,7 +15,7 @@ if ( isnumeric(f) )
 end
 
 dim = disc.dimension;
-c = fourcoeffs(f.funs{1}, dim);
+c = trigcoeffs(f.funs{1}, dim);
 
 if ( nargin < 3 || ~flag )
     S = eye(disc.dimension);

@@ -12,8 +12,8 @@ dom = disc.domain; % Domain.
 c = mat2cell(flipud(coeffs), disc.dimension); 
 funs = cell(numel(c), 1);  
 for k = 1:numel(c)
-    % Construct FOURTECH object from each piece.
-    ct = fourtech({[], c{k}});
+    % Construct TRIGTECH object from each piece.
+    ct = trigech({[], c{k}});
     % Assign each piece to a subinterval with a BNDFUN.
     funs{k} = bndfun(ct, struct('domain', dom(k: k + 1)));
 end

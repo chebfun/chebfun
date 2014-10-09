@@ -40,7 +40,7 @@ classdef trigspec < spec
         
         function tech = returnTech()
             %RETURNTECH    Return the appropriate tech to use for TRIGSPEC.
-            tech = @fourtech;
+            tech = @trigtech;
         end
         
         % Differentiation matrices for TRIGSPEC.
