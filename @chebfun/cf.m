@@ -151,6 +151,26 @@ if ( m >= M )
     return
 end
 
+% If the degree of cf approximation is just one less than the expansion, we do
+% not solve the eigenvalue problem:
+if ( m == M-1 )
+    if ( isPeriodic )
+        a = trigcoeffs(f, 2*M+1);
+        p = chebfun(a(2:end-1), domain(f), 'coeffs', 'trig'); 
+        q = chebfun(1, domain(f), 'trig');
+        r = @(x) feval(p,x); 
+        s = norm([a(1), a(end)], 1);        
+    else     
+        a = chebcoeffs(f, M+1);
+        p = chebfun(a(1:M), domain(f), 'coeffs'); 
+        q = chebfun(1, domain(f));
+        r = @(x) feval(p,x); 
+        s = abs(a(M+1));        
+    end
+    return
+end
+    
+
 % Deal with complex-valued functions.
 if ( ~isreal(f) )
     warning('CHEBFUN:CHEBFUN:cf:complex', ...
