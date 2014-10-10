@@ -49,4 +49,15 @@ pass(8) = (numel(p) == 3) && (numel(q) == 3) && (numel(r) == 3) && ...
     (numel(s) == 3) && p(1,:).isTransposed && q(1,:).isTransposed && ...
     iscolumn(r) && iscolumn(s);
 
+%%
+% Test trigonometric polynomail cases
+f = chebfun(@(x) exp(cos(pi*x) + sin(2*pi*x)), 'trig');
+M = ceil((length(f)-1)/2);
+pass(9) = norm(cf(f,M) - f, inf) < 100*eps*f.vscale;
+pass(10) = norm(cf(f, M+10) - f, inf) < 100*eps*f.vscale;
+
+f = chebfun(@(x) cos(4*pi*x), 'trig');
+[p, ~, ~, s] = cf(f, 3);
+pass(11) = norm(p, inf) < 100*eps*f.vscale;
+pass(12) = abs(s - 1) < 100*eps*f.vscale;
 end
