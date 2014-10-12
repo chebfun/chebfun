@@ -22,9 +22,13 @@ sizex = size(x);
 ndimsx = ndims(x);
 
 if ( (m > 1) && (ndimsx > 2) )
-    error('CHEBFUN:trigbary:evalArrayAtNDArray', ...
+    error('CHEBFUN:trigBary:evalArrayAtNDArray', ...
         ['TRIGBARY does not support evaluation of vectors of polynomials at ' ...
          'inputs with more than two dimensions.']);
+end
+
+if ( min(size(xk)) > 1 )
+    error('CHEBFUN:trigBary:xVector', 'xk must be a vector.');
 end
 
 if ( nargin < 4 )
@@ -43,8 +47,17 @@ b = dom(2);
 xk = pi/(b-a)*(2*xk-a-b);
 x  = pi/(b-a)*(2*x-a-b);
 
-if ( any((xk > pi) | (xk < -pi)) )
+xkMax = max(xk);
+xkMin = min(xk);
+if ( (xkMax > pi + 10*eps) || (xkMin < -pi - 10*eps) )
      error('CHEBFUN:trigbary:invalidNodes', 'nodes XK must lie within the domain');
+end
+
+% Remove a periodic end-point and interpolate the average:
+if ( norm([xk(1), xk(end)] - [-pi, pi]) < 2*pi*eps )
+    xk(end) = [];
+    fvals(1, :) = (fvals(1, :) + fvals(end, :))/2;
+    fvals(end, :) = [];
 end
 
 % Evaluate the weights:
