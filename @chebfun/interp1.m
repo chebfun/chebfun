@@ -25,6 +25,7 @@ function p = interp1(x, y, method, dom)
 %       'pchip'    - shape-preserving piecewise cubic interpolation
 %       'cubic'    - same as 'pchip'
 %       'poly'     - polynomial interpolation, as described above
+%       'trig'     - polynomial trigonometric interpolation.
 %
 %   P = CHEBFUN.INTERP1(X, Y, METHOD, DOM) restricts the result P to the domain
 %   DOM.
@@ -60,6 +61,14 @@ if ( size(x, 1) == 1 )
     x = x.';
 end
 
+[x, idx] = sort(x);
+
+if ( isa(y, 'chebfun') )
+    y = feval(y, x);
+else
+    y = y(idx);
+end
+
 if ( size(y, 1) == 1 )
     y = y.';
 end
@@ -80,6 +89,8 @@ end
 switch method
     case 'poly'
         p = interp1Poly(x, y, dom);
+    case {'trig', 'periodic'}
+        p = interp1Trig(x, y, dom);
     case 'spline'
         p = chebfun.spline(x, y, dom);
     case {'pchip', 'cubic'}
@@ -103,6 +114,17 @@ f = @(z) bary(z, y, x, w);
 % Construct a CHEBFUN:
 p = chebfun(f, dom, length(x));
 
+end
+
+function p = interp1Trig(x, y, dom)
+% Trigonometric interpolation
+n = length(x);
+% Evaluate the interpolant on n equally spaced points using 
+% the trigonometric barycentric formula:
+xx = trigpts(n, dom);
+fx = trigBary(xx, y, x, dom);
+% Construct a CHEBFUN:
+p = chebfun(fx, dom, 'trig');
 end
 
 function p = interp1Linear(x, y, dom)
