@@ -47,7 +47,7 @@ N = chebop(@(u) diff(u) - u.*cos(u), dom);
 N.bc = 'periodic';
 N.init = u0;
 
-% Solve with TRIGTECH technology.
+% Solve with TRIGCOLLOC.
 u = N \ f;
 
 pass(2) = norm(N*u - f) < tol;
@@ -67,12 +67,35 @@ N = chebop(@(u) diff(u, 2) - u.^2.*cos(u), dom);
 N.bc = 'periodic';
 N.init = u0;
 
-% Solve with TRIGTECH technology.
+% Solve with TRIGCOLLOC.
 u = N \ f;
 
 pass(5) = norm(N*u - f) < tol;
 pass(6) = abs(u(dom(1)) - u(dom(2))) < tol;
 pass(7) = abs(feval(diff(u), dom(1)) - feval(diff(u), dom(2))) < tol;
 pass(8) = isequal(get(u.funs{1}, 'tech'), @trigtech);
+
+%% Test the TRIGSPEC class. SECOND ORDER: 
+%  u'' - u^2*cos(u) = cos(x), on [-pi pi].
+
+% Set up domain, rhs f, and intial guesses u0 and v0.
+dom = [-pi pi];
+f = chebfun(@(x) cos(x), dom);
+u0 = f;
+
+% Define the non-linear operator.
+N = chebop(@(u) diff(u, 2) - u.^2.*cos(u), dom);
+N.bc = 'periodic';
+N.init = u0;
+
+% Solve with TRIGSPEC.
+pref.discretization = @trigspec;
+u = solvebvp(N, f, pref);
+
+pass(9) = norm(N*u - f) < tol;
+pass(10) = abs(u(dom(1)) - u(dom(2))) < tol;
+pass(11) = abs(feval(diff(u), dom(1)) - feval(diff(u), dom(2))) < tol;
+pass(12) = isequal(get(u.funs{1}, 'tech'), @trigtech);
+
 
 end

@@ -19,8 +19,7 @@ for j = 1:size(c, 2)
 end
 
 if ( nargout > 1 )
-    % Create conversion matrix:
-    S = eye(disc.dimension);
+    S = [];
 end
 
 end

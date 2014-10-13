@@ -49,7 +49,7 @@ classdef trigspec < spec
         % Multiplication matrices for TRIGSPEC.
         D = multmat(N, f)
         
-        % Output 1 for TRIGSPEC.
+        % Obtain the range of the spectral operator.
         outputSpace = getOutputSpace(source)
         
     end

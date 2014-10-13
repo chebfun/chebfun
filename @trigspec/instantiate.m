@@ -77,7 +77,7 @@ elseif ( isa(item, 'functionalBlock') )
     end
     
     M = cell2mat(tmp);
-    S = zeros(size(M));
+    S = [];
     
 elseif ( isa(item, 'chebfun') )
     % Block is a CHEBFUN. Convert to value space.
@@ -86,13 +86,13 @@ elseif ( isa(item, 'chebfun') )
     if ( item.isTransposed )
         M = M.';
     end
-    S = zeros(size(M));
+    S = [];
     
 elseif ( isnumeric(item) )
     % Block is numeric, don't need to do much.
     
     M = item;
-    S = 1;
+    S = [];
     
 else
     

@@ -15,6 +15,6 @@ if ( isnumeric(f) )
 end
 
 dim = disc.dimension;
-fx = trigcoeffs(f, dim);
+fx = trigcoeffs(f.funs{1}, dim);
 
 end
