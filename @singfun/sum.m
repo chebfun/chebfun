@@ -199,7 +199,7 @@ if ( isa(f.smoothPart, 'chebtech') )
     coeffs = get(f, 'coeffs');
     
     % multiplication of weights and values
-    out = M*flipud(coeffs);
+    out = M*coeffs;
 
     
 else

@@ -22,8 +22,8 @@ if ( ~isvector(p) )
     error('CHEBFUN:chebpolyvalm:vector', 'P must be a vector.'); 
 end
 
-% Flip the coefficients. 
-p = p(end:-1:1); 
+% The input vector p is in Matlab style ordering, flip it:
+p = flipud(p(:));
 
 % Initialise:
 p(1) = 2*p(1);

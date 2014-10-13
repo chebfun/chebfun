@@ -1,6 +1,5 @@
-% Test file for periodic egeinvalue problems.
-
-function pass = test_eigs_basic(pref)
+% Test file for periodic eigenvalue problems.
+function pass = test_eigs_periodic(pref)
 
 % Get the preferences.
 if ( nargin < 1 )
@@ -16,7 +15,7 @@ tol = 1e-10;
 % periodic boundary conditions.
 
 % Define the domain we're working on.
-dom = [0 2*pi];
+dom = [0, 2*pi];
 
 % Assign the equation to a chebop N such that N(u) = lambda*u.
 L = chebop(@(u) -diff(u, 2), dom);
@@ -34,7 +33,7 @@ D = diag(D);
 % Exact solution.
 Dexact = [0 1 1 4 4 9 9]';
 pass(1) = norm(D - Dexact, inf) < tol;
-pass(2) = isequal(get(V{1}.funs{1}, 'tech'), @fourtech);
+pass(2) = isequal(get(V{1}.funs{1}, 'tech'), @trigtech);
 
 %% Problem description.
 % Solving
@@ -43,7 +42,7 @@ pass(2) = isequal(get(V{1}.funs{1}, 'tech'), @fourtech);
 % periodic boundary conditions.
 
 % Define the domain we're working on.
-dom = [0 2*pi];
+dom = [0, 2*pi];
 
 % Assign the equation to a chebop N such that N(u) = lambda*u.
 q = 2;
@@ -68,6 +67,6 @@ Dwolfram = [ -1.513956885056520;
               9.140627737766440;
               9.370322483621104 ];
 pass(3) = norm(D - Dwolfram, inf) < tol;
-pass(4) = isequal(get(V{1}.funs{1}, 'tech'), @fourtech);
+pass(4) = isequal(get(V{1}.funs{1}, 'tech'), @trigtech);
 
 end

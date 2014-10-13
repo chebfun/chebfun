@@ -95,8 +95,13 @@ x = chebfun(@(x) x, dom);
 % Linearize and attach preferences.
 [L, residual, isLinear] = linearize(N, u0, x);
 
-% Adjust the CHEBOPPREF for periodic boundary conditions.
-[N, L, pref] = adjustPref(N, L, isPrefGiven, pref);
+% Determine the discretization.
+pref = determineDiscretization(N, L, isPrefGiven, pref);
+
+% Clear boundary conditions if using TRIGCOLLOC.
+if ( isequal(pref.discretization, @trigcolloc) )
+    [N, L] = clearPeriodicBCs(N, L);
+end
 
 warnState = warning();
 [ignored, lastwarnID] = lastwarn(); %#ok<ASGLU>
@@ -171,9 +176,9 @@ else
     % Create initial guess which satisfies the linearised boundary conditions:
     if ( isempty(N.init) )
         
-        if ( ~isequal(pref.discretization, @fourcolloc) )
+        if ( ~isequal(pref.discretization, @trigcolloc) )
             % Find a new initial guess that satisfies the BCs of L.
-            % If we are using FOURCOLLOC, we don't need to do that because 
+            % If we are using TRIGCOLLOC, we don't need to do that because 
             % the zero CHEBFUN is periodic.
             u0 = fitBCs(L, pref);
         end

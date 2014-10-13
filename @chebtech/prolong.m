@@ -27,7 +27,7 @@ end
 % Constant case:
 if ( nIn == 1 )
     m = size(f.coeffs, 2);
-    f.coeffs = [zeros(nDiff, m) ; f.coeffs(1,:)];
+    f.coeffs = [ f.coeffs(1,:) ; zeros(nDiff, m) ];
     return
 end
 

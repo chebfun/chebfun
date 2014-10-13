@@ -63,7 +63,7 @@ for k = 1:6
 
 end
 
-%% Test for FOURCOLLOC.
+%% Test for TRIGCOLLOC.
 
 % Domain.
 dom = [0 2*pi];
@@ -84,8 +84,8 @@ L = linop(D2 + A1*D + A0);
 % Rhs.
 f = chebfun(@(x) cos(x), dom);
 
-% Solve it with FOURCOLLOC.
-prefs.discretization = @fourcolloc;
+% Solve it with TRIGCOLLOC.
+prefs.discretization = @trigcolloc;
 u = linsolve(L, f, prefs);
 u = u{1};
 

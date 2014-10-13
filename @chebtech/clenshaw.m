@@ -1,9 +1,9 @@
 function y = clenshaw(x, c)
-%CLENSHAW   Clenshaw's algorithm for evaluating a Chebyshev polynomial.
+%CLENSHAW   Clenshaw's algorithm for evaluating a Chebyshev expansion.
 %   If C is a column vector, Y = CLENSHAW(X, C) evaluates the Chebyshev
 %   expansion
 %
-%     Y = P_N(X) = C(1)*T_N(X) + ... + C(N)*T_1(X) + C(N+1)*T_0(X)
+%     Y = P_N(X) = C(1)*T_0(X) + ... + C(N)*T_{N-1}(X) + C(N+1)*T_N(X)
 %
 %   using Clenshaw's algorithm.
 %
@@ -11,7 +11,7 @@ function y = clenshaw(x, c)
 %   of C as coefficients of a degree N polynomial and evaluates the M Chebyshev
 %   expansions
 %
-%     Y_m = P_N(X) = C(1,m)*T_N(X) + ... + C(N,m)*T_1(X) + C(N+1,m)*T_0(X)
+%     Y_m = P_N(X) = C(1,m)*T_0(X) + ... + C(N,m)*T_{N-1}(X) + C(N+1,m)*T_N(X)
 %
 %   for 1 <= m <= M, returning the results as columns of a matrix Y =
 %   [Y_1 ... Y_M].
@@ -97,14 +97,14 @@ bk1 = 0*x;
 bk2 = bk1;
 x = 2*x;
 n = size(c,1)-1;
-for k = 1:2:(n-1)
+for k = (n+1):-2:3
     bk2 = c(k) + x.*bk1 - bk2;
-    bk1 = c(k+1) + x.*bk2 - bk1;
+    bk1 = c(k-1) + x.*bk2 - bk1;
 end
 if ( mod(n, 2) )
-    [bk1, bk2] = deal(c(n) + x.*bk1 - bk2, bk1);
+    [bk1, bk2] = deal(c(2) + x.*bk1 - bk2, bk1);
 end
-y = c(end) + .5*x.*bk1 - bk2;
+y = c(1) + .5*x.*bk1 - bk2;
 end
 
 function y = clenshaw_vec(x, c)
@@ -115,12 +115,12 @@ bk2 = bk1;
 e = ones(size(x, 1), 1);
 x = 2*x;
 n = size(c, 1)-1;
-for k = 1:2:(n-1)
+for k = (n+1):-2:3
     bk2 = e*c(k,:) + x.*bk1 - bk2;
-    bk1 = e*c(k+1,:) + x.*bk2 - bk1;
+    bk1 = e*c(k-1,:) + x.*bk2 - bk1;
 end
 if ( mod(n, 2) )
-    [bk1, bk2] = deal(e*c(n,:) + x.*bk1 - bk2, bk1);
+    [bk1, bk2] = deal(e*c(2,:) + x.*bk1 - bk2, bk1);
 end
-y = e*c(end,:) + .5*x.*bk1 - bk2;
+y = e*c(1,:) + .5*x.*bk1 - bk2;
 end

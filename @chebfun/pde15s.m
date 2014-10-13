@@ -85,6 +85,7 @@ tol = 1e-6;             % 'eps' in Chebfun terminology
 doPlot = 1;             % Plot after every time chunk?
 doHold = 0;             % Hold plot?
 plotOpts = {'-'};       % Plotting style
+adjustBCs = true;       % Adjust inconsistent BCs
 throwBCwarning = true;  % Throw a warning for inconsistent BCs
 
 % Parse the variable inputs:
@@ -104,6 +105,11 @@ end
 optN = opt.N;
 if ( isempty(optN) )
     optN = NaN;
+end
+
+if ( isfield(opt, 'AdjustBCs') && ~isempty(opt.AdjustBCs) && ~opt.AdjustBCs )
+    throwBCwarning = false;
+    adjustBCs = false;
 end
 
 % PDE solver options:
@@ -226,7 +232,7 @@ end
                 if ( firstKept <= 0 )
                     firstKept = 1;
                 end
-                uCurrent = chebfun(flipud(uPoly(firstKept:end,:)), DOMAIN, 'coeffs');
+                uCurrent = chebfun(uPoly(firstKept:end,:), DOMAIN, 'coeffs');
                 
                 ctr = ctr + 1;
                 uOut{ctr} = uCurrent;
@@ -424,7 +430,7 @@ middleNonlinBCLocs = [];
 rightNonlinBCLocs = [];
 BCRHS = {};
 
-if ( ischar(bc) && strcmpi(bc, 'periodic') )
+if ( ischar(bc) && any(strcmpi(bc, {'periodic', 'trig'})) )
     %% %%%%%%%%%%%%%%%%%%%%%%%%%%% PERIODIC BCS  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     r = cell(sum(DIFFORDER), 1);
     count = 1;
@@ -715,7 +721,11 @@ clear global SYSSIZE
                 'Initial state may not satisfy the boundary conditions.')
             throwBCwarning = false;
         end
-        BCVALOFFSET = F(rows) - q;
+        if ( adjustBCs )
+            BCVALOFFSET = F(rows) - q;
+        else
+            BCVALOFFSET = 0;
+        end
         
         % Solve ODE over time chunk with ode15s:
         try

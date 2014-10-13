@@ -15,7 +15,7 @@ x = chebfun('x', [0 pi], pref);
 f = polyval(c, x);
 err = norm(c(1)*x.^2 + c(2)*x + c(3) - f, inf);
 tol = vscale(f).*epslevel(f);
-pass(1) = err < tol;
+pass(1) = err < 10*tol;
 
 %% Test quasimatrix:
 

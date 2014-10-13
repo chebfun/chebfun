@@ -114,7 +114,7 @@ if ( strcmpi(mapFrom, mapTo) && ( m == n ) ) % Square case:
     elseif ( strcmpi(mapFrom, 'chebkind2') )
         D = chebcolloc2.diffmat(n, p);
     elseif ( strcmpi(mapFrom, 'periodic') )
-        D = fourtech.diffmat(n, p);
+        D = trigtech.diffmat(n, p);
     else
         [x, ignored, v] = legpts(n); %#ok<ASGLU>
         [y, ignored, w] = chebpts(n); %#ok<ASGLU>
@@ -395,7 +395,7 @@ if ( kind == 1 )
     D = rectdiff1(m, n);
     
     % Preparation for higher order (p>1):
-    a = [1; zeros(n,1)];
+    a = [zeros(n,1); 1];
     
     % Signs:
     sgn = (-1)^(n-1)*sgn.*sin(T)/n;
@@ -408,7 +408,7 @@ else
     D = rectdiff2(m, n);
     
     % Preparation for higher order (p>1):
-    a = [1; 0; -1; zeros(n-2,1)];
+    a = [zeros(n-2,1); -1; 0; 1];
     
     % Signs:
     sgn = (-1)^(n-1)*sgn/(2*(n-1));
@@ -454,12 +454,12 @@ function cout = computeDerCoeffs(c)
 %   whose columns are the derivatives of those of the original.
     
     [n, m] = size(c);
-    cout = zeros(n-1, m);                     % Initialize vector {c_r}
-    w = repmat(2*(n-1:-1:1)', 1, m);
-    v = w.*c(1:end-1,:);                      % Temporal vector
-    cout(1:2:end,:) = cumsum(v(1:2:end,:));   % Compute c_{n-2}, c_{n-4},...
-    cout(2:2:end,:) = cumsum(v(2:2:end,:));   % Compute c_{n-3}, c_{n-5},...
-    cout(end,:) = .5*cout(end,:);             % Adjust the value for c_0
+    cout = zeros(n-1, m);                       % Initialize vector {c_r}
+    w = repmat(2*(1:n-1)', 1, m);
+    v = w.*c(2:end,:);                          % Temporal vector
+    cout(n-1:-2:1,:) = cumsum(v(n-1:-2:1,:));   % Compute c_{n-2}, c_{n-4},...
+    cout(n-2:-2:1,:) = cumsum(v(n-2:-2:1,:));   % Compute c_{n-3}, c_{n-5},...
+    cout(1,:) = .5*cout(1,:);                   % Adjust the value for c_0
 end
 
 function [m, n, p, dom, bc, nlbc, nrbc, mapFrom, mapTo] = parseInputs(N, varargin)

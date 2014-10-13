@@ -88,6 +88,8 @@ classdef chebfun
 % as discussed above may be combined with the 'periodic' flag, with exception to
 % the 'chebkind' and 'splitting' flags.
 %
+% CHEBFUN(F, 'trig') is the same as CHEBFUN(F, 'periodic').
+%
 % CHEBFUN --UPDATE can be used to update to the latest stable release of CHEBFUN
 % (obviously an internet connection is required!). CHEBFUN --UPDATE-DEVEL will
 % update to the latest development release, but we recommend instead that you
@@ -233,7 +235,7 @@ classdef chebfun
                 if ( isa( pref.tech(),'chebtech' ) ) 
                     c = chebcoeffs(f, truncLength);
                 else
-                    c = fourcoeffs(f, truncLength);
+                    c = trigcoeffs(f, truncLength);
                 end
                 f = chebfun(c, f.domain([1,end]), 'coeffs', pref);
             end
@@ -692,14 +694,10 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
             doVectorCheck = false;
             args(1) = [];            
         elseif ( strcmpi(args{1}, 'coeffs') && isnumeric(op) )
-            % Flip the coefficients, since at the user level the coefficients
-            % start from the lowes to the highest while the lower layers operate
-            % opposite to this:
-            op = flipud(op);
             % Hack to support construction from coefficients.            
             op = {{[], op}};
             args(1) = [];
-        elseif ( strcmpi(args{1}, 'periodic') )
+        elseif ( any(strcmpi(args{1}, {'periodic', 'trig'})) )
             isPeriodic = true;
             args(1) = [];
         elseif ( strcmpi(args{1}, 'coeffs') && iscell(op) )
@@ -827,14 +825,14 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
     end
     numIntervals = numel(dom) - 1;
 
-    % Deal with the 'periodic' flag:
+    % Deal with the 'periodic' or 'trig' flag:
     if ( isPeriodic )
-        % Translate "periodic".
-        pref.tech = @fourtech;
+        % Translate 'periodic' or 'trig'.
+        pref.tech = @trigtech;
         pref.splitting = false;
         if ( numel(dom) > 2 )
             error('CHEBFUN:parseInputs:periodic', ...
-                '''periodic'' option is only supported for smooth domains.');
+                '''periodic'' or ''trig'' option is only supported for smooth domains.');
         end
     end
 

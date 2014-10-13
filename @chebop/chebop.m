@@ -107,7 +107,7 @@ classdef (InferiorClasses = {?double}) chebop
 %   plot(N\1)
 %
 % %% PARAMETER DEPENDENT PROBLEMS: %%
-%CHEBGUIexporterEIG
+%
 % CHEBOP supports solving systems of equations containing unknown parameters
 % without the need to introduce extra equations into the system. Simply add the
 % unknown parameters as the final variables.
@@ -248,8 +248,12 @@ classdef (InferiorClasses = {?double}) chebop
         % Solve a nonlinear problem posed with CHEBOP
         [u, info] = solvebvpNonlinear(N, rhs, L, u0, res, pref, displayInfo)
         
-        % Adjust the preferences for periodic boundary conditions.
-        [N, L, pref] = adjustPref(N, L, isPrefGiven, pref)
+        % Determine discretization for a CHEBOP object with periodic
+        % boundary conditions.
+        pref = determineDiscretization(N, L, isPrefGiven, pref)
+        
+        % Clear periodic boundary conditions.
+        [N, L] = clearPeriodicBCs(N, L)
         
     end
     

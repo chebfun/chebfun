@@ -29,6 +29,9 @@ if ( ~isnumeric(p) )
         'First input argument must be a vector or a matrix.');
 end
 
+% The input vector p is in Matlab style ordering, flip it:
+p = flipud(p);
+
 if ( isnumeric(x) )
     % Construct a CHEBTECH2 with the given coefficients:
     f = chebtech2({[], p});
