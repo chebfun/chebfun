@@ -8,14 +8,14 @@ function isIorF = isIVPorFVP(guifile, allVarNames)
 % returns
 %   0: If the problem is detected to be a boundary-value problem,
 %   1: If the problem is detected to be an initial-value problem,
-%   2: If the problem is detected to be an a final value problem.
+%   2: If the problem is detected to be a final-value problem.
 
 % The domain of the problem
 dom = guifile.domain;
 
 % We could encounter commas instead of whitespace when specifying the domain of
 % the problem. So do a strrep:
-dom = strrep(dom,',', ' ');
+dom = strrep(dom, ',', ' ');
 
 % The BC input
 bcInput = guifile.BC;
@@ -73,7 +73,7 @@ unionFun = @(c1, c2) cellfun(@union, c1, c2, 'uniformOutput', false);
 % left or right ends of the interval. In case of systems, ALLVARNAMES will be a
 % cell-array that contains the variable names that appear in the problem. So
 % need to loop through the ALLVARNAMES cell.
-for varCounter = 1:size(allVarNames,1)
+for varCounter = 1:size(allVarNames, 1)
     % The current dependent variable name we're looking at.
     varName = allVarNames{varCounter};
     tempLeft = regexp(bcInput,[varName, '''*\(', leftDomStr, '\)']);
