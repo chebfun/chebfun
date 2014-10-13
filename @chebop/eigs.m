@@ -69,9 +69,11 @@ end
 % Determine the discretization.
 pref = determineDiscretization(N, L, isPrefGiven, pref);
 
-% Clear boundary conditions if using TRIGCOLLOC.
-if ( isequal(pref.discretization, @trigcolloc) )
-    [dummy, L] = clearPeriodicBCs(N, L);
+% Clear boundary conditions if the dicretization uses periodic functions.
+discPreference = pref.discretization();
+tech = discPreference.returnTech();
+if ( isPeriodicTech(tech()) )
+    [N, L] = clearPeriodicBCs(N, L);
 end
 
 % Add the preferences in vargarin to pass them to LINOP/EIGS.

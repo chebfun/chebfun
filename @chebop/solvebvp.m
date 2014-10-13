@@ -98,8 +98,10 @@ x = chebfun(@(x) x, dom);
 % Determine the discretization.
 pref = determineDiscretization(N, L, isPrefGiven, pref);
 
-% Clear boundary conditions if using TRIGCOLLOC.
-if ( isequal(pref.discretization, @trigcolloc) )
+% Clear boundary conditions if the dicretization uses periodic functions.
+discPreference = pref.discretization();
+tech = discPreference.returnTech();
+if ( isPeriodicTech(tech()) )
     [N, L] = clearPeriodicBCs(N, L);
 end
 
@@ -157,8 +159,6 @@ end
 
 % Ensure that u0 is of correct discretization, and convert it to a
 % CHEBMATRIX if necessary.
-discPreference = pref.discretization();
-tech = discPreference.returnTech();
 if ( isa(u0, 'chebfun') )
     u0 = chebmatrix(chebfun(u0, dom, 'tech', tech));
 elseif ( isa(u0, 'chebmatrix') )
