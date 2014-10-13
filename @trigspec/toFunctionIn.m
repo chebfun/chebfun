@@ -19,6 +19,6 @@ for k = 1:numel(c)
 end
 % Conver the FUNS cell-array to a CHEBFUN.
 f = chebfun(funs);
-f = real(f);
+%f = real(f);
 
 end

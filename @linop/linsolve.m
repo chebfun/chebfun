@@ -142,7 +142,7 @@ for dim = [dimVals inf]
     if ( numel(vscale)==1 ) 
         vscale = repmat(vscale, sum(isFun), 1);
     end
-
+    
     % Test the happiness of the function pieces:
     [isDone, epsLevel, vscale, cutoff] = ...
         testConvergence(disc, u(isFun), vscale(isFun), prefs);
@@ -170,10 +170,9 @@ for k = 1:size(values, 2)
     v = disc.toFunctionOut(values(:,k));
     uOut{k} = v;
 end
-
 u(isFun) = uOut;
 
 % Convert to chebmatrix
 u = chebmatrix(u);
-    
+
 end

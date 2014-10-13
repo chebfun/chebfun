@@ -168,8 +168,18 @@ end
     
 % Solve:
 if ( all(isLinear) )
+    % Ensure that rhs-residual is of correct discretization, and convert it to a 
+    % CHEBMATRIX if necessary.
+    rhs = rhs - residual;
+    if ( isa(rhs, 'chebfun') )
+        rhs = chebmatrix(chebfun(rhs, dom, 'tech', tech));
+    elseif ( isa(rhs, 'chebmatrix') )
+        constr = @(f) chebfun(f, dom, 'tech', tech);
+        rhs.blocks = cellfun(constr, rhs.blocks, 'uniformOutput', false);
+    end
+    
     % Call solver method for linear problems.
-    [u, info] = N.solvebvpLinear(L, rhs - residual, N.init, pref, displayInfo);
+    [u, info] = N.solvebvpLinear(L, rhs, N.init, pref, displayInfo);
 else
     % [TODO]: Switch between residual and error oriented Newton methods.
     
