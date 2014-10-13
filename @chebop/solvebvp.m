@@ -179,7 +179,7 @@ if ( all(isLinear) )
     end
     
     % Call solver method for linear problems.
-    [u, info] = N.solvebvpLinear(L, rhs, N.init, pref, displayInfo);
+    [u, info] = N.solvebvpLinear(L, rhs-residual, N.init, pref, displayInfo);
     
 else
     % [TODO]: Switch between residual and error oriented Newton methods.
@@ -187,7 +187,7 @@ else
     % Create initial guess which satisfies the linearised boundary conditions:
     if ( isempty(N.init) )
         
-        if ( isPeriodicTech(tech()) )
+        if ( ~isPeriodicTech(tech()) )
             % Find a new initial guess that satisfies the BCs of L.
             % If we are using a periodic discretization,
             % we don't need to do that because the zero CHEBFUN is periodic.
