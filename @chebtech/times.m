@@ -35,11 +35,11 @@ elseif ( isa(g, 'double') )     % CHEBTECH .* double
         f.coeffs = 0*f.coeffs(1,:);
     end
     
-    % Update epslevel:
-    f.epslevel = f.epslevel + eps(g);
-    
+    % Update epslevel and vscale:
+    epslevelBound = f.epslevel + abs(eps(g)./g);
+    epslevelBound(g == 0) = eps;
+    f.epslevel = updateEpslevel(f, epslevelBound);
     f.vscale = abs(g).*f.vscale;
-    
     return
 
 elseif ( ~isa(f, 'chebtech') || ~isa(g, 'chebtech') ) 
@@ -50,17 +50,19 @@ elseif ( ~isa(f, 'chebtech') || ~isa(g, 'chebtech') )
          'Make sure functions are of the same type.']);
     
 elseif ( size(f.coeffs, 1) == 1 )
-    % If we have (constant CHEBTECH).*CHEBTECH, reverse the order and call TIMES
-    % again:
+    % If we have (constant CHEBTECH).*CHEBTECH, convert the (constant CHEBTECH)
+    % to a scalar and call TIMES again:
     f = times(g, f.coeffs);
-    f.epslevel = max(f.epslevel, g.epslevel);
+    epslevelBound = max(f.epslevel, g.epslevel);
+    f.epslevel = updateEpslevel(f, epslevelBound);
     return
     
 elseif ( size(g.coeffs, 1) == 1)
     % If we have CHEBTECH.*(constant CHEBTECH), convert the (constant CHEBTECH)
     % to a scalar and call TIMES again:
     f = times(f, g.coeffs);
-    f.epslevel = max(f.epslevel, g.epslevel);
+    epslevelBound = max(f.epslevel, g.epslevel);
+    f.epslevel = updateEpslevel(f, epslevelBound);
     return
     
 end
