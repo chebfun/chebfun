@@ -1,5 +1,6 @@
 classdef (InferiorClasses = {?double}) chebop
 %CHEBOP  CHEBOP class for representing operators on functions defined on [a,b].
+%
 % N = CHEBOP(OP) creates a CHEBOP object N with operator defined by OP, which
 % should be a handle to a function (often created using an anonymous function)
 % that accepts a CHEBFUN or a CHEBMATRIX consisting of CHEBFUNs and scalars as
@@ -52,6 +53,9 @@ classdef (InferiorClasses = {?double}) chebop
 %                 of the result are evaluated at the endpoint, and for the
 %                 solution of the BVP, they are made to equal zero.
 %
+% See note below for how to specify initial value problems so that they will be
+% solved via time-marching methods, rather than global spectral methods.
+% 
 % A boundary condition function may be nonlinear; it must not accept the
 % independent variable X as an input. Again, in case of systems, the function
 % describing the boundary conditions must return vertically concatenated
@@ -106,7 +110,33 @@ classdef (InferiorClasses = {?double}) chebop
 %   N.bc = 'dirichlet';
 %   plot(N\1)
 %
-% %% PARAMETER DEPENDENT PROBLEMS: %%
+%
+% %% INITIAL VALUE PROBLEMS %%
+%
+% When solving boundary-value problems, where conditions on the operator are
+% imposed at both endpoints of the domain, CHEBOP will apply global spectral
+% methods for solving the linear systems arising. In case of initial or final
+% value problems (IVPs/FVPs), where all the conditions are imposed on the left
+% endpoint of the domain, this often proves to be an inefficient way of solving
+% the problems. If conditions are only imposed on one of the fields N.LBC or
+% N.RBC, and not on N.BC, CHEBOP will automatically reformulate the problem so
+% that it can be solved using one of MATLAB's build-in solvers ODE113, ODE15s or
+% ODE45. See the help text in CHEBOPPREF for instructions on how to select the
+% ODE solver used, or how to enforce a global method to be used. 
+% 
+% Example (solving an IVP by automatically converting it to first order form):
+%
+% % Solve the van der Pol equation y'' - 25*(1-y^2)y' + y = 0, y(0)=2, y'(0)=0
+% vdpFun = @(y) diff(y, 2) - 25*(1-y.^2).*diff(y) + y;
+% dom = [0 20];
+% N = chebop(vdpFun, dom);
+% N.lbc = @(u) [u - 2; diff(u)];
+% cheboppref.setDefaults('display','iter')
+% cheboppref.setDefaults('plotting','on')
+% [t, y] = N\0
+% plot(t,y(:,1));
+%
+% %% PARAMETER DEPENDENT PROBLEMS %%
 %CHEBGUIexporterEIG
 % CHEBOP supports solving systems of equations containing unknown parameters
 % without the need to introduce extra equations into the system. Simply add the

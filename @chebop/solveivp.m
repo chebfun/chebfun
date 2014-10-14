@@ -1,4 +1,4 @@
-function y = solveivp(N, rhs, pref, varargin)
+function [y, info] = solveivp(N, rhs, pref, varargin)
 
 % Check inputs
 if ( nargin < 2 )
