@@ -26,14 +26,14 @@ if ( m > n )
         % This will account for the cos(N/2) coefficient, which is stored
         % in the coeffs(n,:) entry, using properties of the complex
         % exponential.
-        coeffs = [ coeffs(n,:)/2; coeffs(1:n-1,:); coeffs(n,:)/2 ];
-        coeffs = [ z(1:end-1,:); coeffs; z ];
+        coeffs = [ coeffs(1,:)/2; coeffs(2:n,:); coeffs(1,:)/2 ];
+        coeffs = [ z; coeffs; z(1:end-1,:) ];
         
         % Next, check if m is odd. If it is, then coeffs is too long and we
-        % need to remove the last row (the lowest degree
+        % need to remove the first row (the lowest degree
         % coefficients).
         if ( mod(m, 2) ) % m odd.
-            coeffs = coeffs(1:end-1,:);
+            coeffs = coeffs(2:end,:);
         end
         
     else % n odd.
@@ -42,10 +42,10 @@ if ( m > n )
         coeffs = [ z; coeffs; z ];
         
         % Only need to check if m is even, in which case coeffs is too 
-        % long and we need to remove the first row (the highest degree
+        % long and we need to remove the last row (the highest degree
         % coefficients).
         if ( ~mod(m, 2) ) % m even.
-            coeffs = coeffs(2:end,:);
+            coeffs = coeffs(1:end-1,:);
         end
     end
     
@@ -57,8 +57,8 @@ end
 % are odd by exploiting the symmetry property.  This makes the code below a
 % little cleaner since fewer cases need to be handled.
 if ( ~mod(n, 2) ) % n even.
-    coeffs(n,:) = 0.5*coeffs(n,:);
-    coeffs = [ coeffs(n,:); coeffs ];
+    coeffs(1,:) = 0.5*coeffs(1,:);
+    coeffs = [ coeffs; coeffs(1,:) ];
     n = n + 1;
 end
 
@@ -79,9 +79,7 @@ if ( mod(m, 2) ) % m is odd.
         
         m2 = (m-1)/2;
         n2 = (n-1)/2;
-        % Extract coefficients and flip them to start from lower modes
-        % to higher modes since this is more natrual.
-        coeffs = coeffs(end:-1:1,:);
+        % Extract coefficients:
         aliasedCoeffs = coeffs(n2-m2+1:n2+m2+1,:);
         
         % The code below aliases the coefficients from the higher modes
@@ -102,7 +100,7 @@ if ( mod(m, 2) ) % m is odd.
             coeffIndexJ = -j + n2 + 1;
             aliasedCoeffs(coeffIndexK,:) = aliasedCoeffs(coeffIndexK,:) + sgn*coeffs(coeffIndexJ,:);
         end
-        coeffs = flipud(aliasedCoeffs);
+        coeffs = aliasedCoeffs;
 
     end
     
@@ -110,9 +108,7 @@ else % m is even.
     
     m2 = m/2;
     n2 = (n-1)/2;
-    % Extract coefficients and flip them to start from lower modes (in
-    % absolute value) to higher modes since this is more natrual.
-    coeffs = coeffs(end:-1:1,:);
+    
     % Put the coefficient for the cos(m/2*pi*x) in the first entry of the
     % coefficient vector.  This corresopnds to the exp(-1i*pi*m/2*x).  
     aliasedCoeffs = coeffs(n2+1-m2:n2+m2,:);
@@ -141,7 +137,7 @@ else % m is even.
     aliasedCoeffs(1,:) = aliasedCoeffs(1,:) + aliasedCoeffs(end,:);
     aliasedCoeffs(end,:) = [];
 
-    coeffs = flipud(aliasedCoeffs);
+    coeffs = aliasedCoeffs;
 
 end
 

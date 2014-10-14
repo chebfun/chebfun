@@ -13,7 +13,7 @@ pass(1) = (c == v);
 
 %%
 % Simple data (even case)
-c = [0.5 0 1 0 0.5].';
+c = [0 0.5 0 1 0 0.5].';
 % Exact values
 f_exact = @(x) 1 + cos(2*pi*x);
 x_pts = trigtech.trigpts(numel(c));
@@ -44,7 +44,7 @@ pass(7) = norm(v(:,1) - vTrue, inf) < tol && ...
       
 %%
 % Simple data (odd case)
-c = [-0.5i 0 1 0 0.5i 1].';
+c = [.5 0.5i 0 1 0 -0.5i .5].';
 % Exact values
 f_exact = @(x) 1 + sin(2*pi*x) + cos(3*pi*x);
 x_pts = trigtech.trigpts(numel(c));

@@ -98,7 +98,9 @@ end
 
 % Do the test on the vector formed by the sum of the absolute value of the
 % positive and negative mode coefficients.
-absCoeffs = abs(f.coeffs);
+% [TODO] This reversal of coeffs can be removed but then classicCheck will need
+% to be written carefully:
+absCoeffs = abs(f.coeffs(end:-1:1,:));
 
 % Need to handle odd/even cases separately.
 isEven = ~mod(n,2);
