@@ -40,44 +40,15 @@ function [M, S] = instantiateOne(disc, item)
 % Instantiate one block of data.
 
 if ( isa(item, 'operatorBlock') )
-    % Convert a square block
+    % Convert a square block.
     
     if ( ~isempty(disc.coeffs) )
         % Coefficients of the block are available, convert to a diffmat.
         [M, S] = quasi2diffmat(disc);
     else
-        error('CHEBFUN:ULTRAS:instantiate:fail', ...
-          'ultraS cannot represent this operator. Suggest you use chebcolloc2.')
+        error('CHEBFUN:TRIGSPEC:instantiate:fail', ...
+         'TRIGSPEC cannot represent this operator. Suggest you use TRIGCOLLOC.')
     end
-    
-elseif ( isa(item, 'functionalBlock') )
-    % Convert a row block.
-    
-    % Developer note: In general we can't represent functional
-    % blocks via coeffs. To get around this we instantiate a
-    % TRIGCOLLOC discretization and convert it to coefficient space
-    % using COEFFS2VALS(). (Note it's COEFFS2VALS() rather than
-    % VALS2COEFFS() because it's a right-multiply (I think..).)
-    
-    % For convenience:
-    dim = disc.dimension;
-    dom = disc.domain;
-    
-    % Create a TRIGCOLLOC discretization:
-    collocDisc = trigcolloc(item, dim, dom);
-    M = matrix(collocDisc);
-    
-    % Convert from colloc-space to coeff-space using COEFFS2VALS.
-    cumsumDim = [0, cumsum(dim)];
-    tmp = cell(1, numel(dom)-1);
-    for l = 1:numel(tmp)
-        Ml = M(cumsumDim(l) + (1:dim(l)));
-        Ml = rot90(Ml);
-        tmp{l} = rot90(trigtech.coeffs2vals(Ml), -1);
-    end
-    
-    M = cell2mat(tmp);
-    S = [];
     
 elseif ( isa(item, 'chebfun') )
     % Block is a CHEBFUN. Convert to value space.

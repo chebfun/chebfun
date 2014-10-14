@@ -28,17 +28,17 @@ if ( numel(a) == 1 )
     return
 end
 
-% Coefficient of index k=0.
-Na = floor(numel(a)/2);
+% Position of constant term.
+Na = floor(numel(a)/2) + 1;
 
 % Pad with zeros.
 if ( Na < N )
-    row = [a(Na+1:-1:1).', zeros(1, N-Na-1)];
-    column = [a(Na+1:1:end); zeros(N-Na-1, 1)];
+    row = [a(Na:1:end).', zeros(1, N-Na)];
+    column = [a(Na:-1:1); zeros(N-Na, 1)];
 % Truncate.
 else
-    row = a(1+Na:-1:Na-N+2).';
-    column = a(1+Na:1:end-Na+N-1);
+    row = a(Na:1:end-Na+N).';
+    column = a(Na:-1:Na-N+1);
 end
 M = trigspec.sptoeplitz(row, column);
 
