@@ -1,9 +1,10 @@
 function varargout = mldivide(N, rhs, pref, varargin)
 %\    MLDIVIDE   Solve CHEBOP BVP or IVP system.
-%   MLDIVIDE is a convenient wrapper for CHEBOP/SOLVEBVP and CHEBOP/SOLVEIVP. It
-%   calls the appropriate method, depending on whether the problem being solved
-%   is a boundary-value problem, or an initial/final-value problem. See the
-%   documentation of the corresponding methods for further details.
+%
+% MLDIVIDE is a convenient wrapper for CHEBOP/SOLVEBVP and CHEBOP/SOLVEIVP. It
+% calls the appropriate method, depending on whether the problem being solved is
+% a boundary-value problem, or an initial/final-value problem. See the
+% documentation of the corresponding methods for further details.
 %
 % See also CHEBOP/SOLVEBVP, CHEBOP/SOLVEIVP.
 
@@ -18,7 +19,7 @@ end
 
 % Are we dealing with an initial or a final value problem. In that case, either
 % we have  
-%   - N.LBC is nonempty, but both N.RBC and N.BC are empty. Here,we are dealing
+%   - N.LBC is nonempty, but both N.RBC and N.BC are empty. Here, we are dealing
 %     with an initial value problem, where all conditions are imposed via N.LBC.
 %   - N.RBC is nonempty, but both N.LBC and N.BC are empty. Here, we are dealing
 %     with a final value problem, where all conditions are imposed via N.RBC.

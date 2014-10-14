@@ -1,5 +1,5 @@
 function varargout = solveGUIivp(guifile, handles)
-%SOLVEGUIIVP     Solve an IVP, specified by a CHEBGUI object.
+%SOLVEGUIIVP   Solve an IVP, specified by a CHEBGUI object.
 %
 % Calling sequence:
 %
@@ -174,9 +174,9 @@ end
 % problem is linear, 0 otherwise
 isLinear = all(info.isLinear);
 
-% Now do some post solving processing, specific to running in GUI mode.
+% Now do some post-solving processing, specific to running in GUI mode.
 if ( guiMode )
-    % Convert u from a CHEBMATRIX to an array valued CHEBFUN to make plotting
+    % Convert u from a CHEBMATRIX to an array-valued CHEBFUN to make plotting
     % easier.
     if ( isa(u, 'chebmatrix') )
         u = chebfun(u);

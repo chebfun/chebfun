@@ -1,5 +1,5 @@
 function options = setupODEoptions(guifile, expInfo)
-%SETUPODEOPTIONS    Return a CHEBOPPREF specified by CHEBGUI
+%SETUPODEOPTIONS   Return a CHEBOPPREF specified by CHEBGUI
 
 % Start by constructing a CHEBOPPREF object
 options = cheboppref();

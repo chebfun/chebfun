@@ -14,7 +14,7 @@ function printSolver(fid, expInfo)
 fprintf(fid,'\n%%%% Solve the problem!');
 fprintf(fid, ['\n%% Here, we call the solveivp() method ' ...
     '(which offers the same functionality \n%% as nonlinear '...
-    'backslash, but with more customizability).\n']);
+    'backslash but allows options to be passed).\n']);
 fprintf(fid, 'u = solveivp(N, rhs, options);\n');
 
 end
