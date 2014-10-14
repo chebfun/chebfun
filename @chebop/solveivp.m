@@ -121,4 +121,7 @@ if ( ~strcmpi(pref.display, 'off') )
     displayInfo(y, isIVP)
 end
 
+% Return useful information about the solution:
+info.solver = solver;
+
 end

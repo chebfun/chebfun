@@ -126,18 +126,16 @@ classdef (InferiorClasses = {?double}) chebop
 % 
 % Example (solving an IVP by automatically converting it to first order form):
 %
-% % Solve the van der Pol equation y'' - 25*(1-y^2)y' + y = 0, y(0)=2, y'(0)=0
-% vdpFun = @(y) diff(y, 2) - 25*(1-y.^2).*diff(y) + y;
-% dom = [0 20];
+% % Solve the van der Pol equation u'' - 25*(1-u^2)u' + u = 0, u(0)=2, u'(0)=0
+% vdpFun = @(u) diff(u, 2) - 20*(1-u.^2).*diff(u) + u;
+% dom = [0 100];
 % N = chebop(vdpFun, dom);
 % N.lbc = @(u) [u - 2; diff(u)];
-% cheboppref.setDefaults('display','iter')
-% cheboppref.setDefaults('plotting','on')
-% [t, y] = N\0
-% plot(t,y(:,1));
+% u = N\0
+% plot(u)
 %
 % %% PARAMETER DEPENDENT PROBLEMS %%
-%CHEBGUIexporterEIG
+%
 % CHEBOP supports solving systems of equations containing unknown parameters
 % without the need to introduce extra equations into the system. Simply add the
 % unknown parameters as the final variables.
