@@ -98,10 +98,13 @@ x = chebfun(@(x) x, dom);
 % Determine the discretization.
 pref = determineDiscretization(N, L, isPrefGiven, pref);
 
-% Clear boundary conditions if the dicretization uses periodic functions.
+% Clear boundary conditions if the dicretization uses periodic functions (since
+% if we're using periodic basis functions, the boundary conditions will be
+% satisfied by construction).
 discPreference = pref.discretization();
 tech = discPreference.returnTech();
-if ( isPeriodicTech(tech()) )
+techUsed = tech();
+if ( isPeriodicTech(techUsed) )
     [N, L] = clearPeriodicBCs(N, L);
 end
 
@@ -176,7 +179,7 @@ else
     % Create initial guess which satisfies the linearised boundary conditions:
     if ( isempty(N.init) )
         
-        if ( ~isequal(pref.discretization, @trigcolloc) )
+        if ( ~isPeriodicTech(techUsed) )
             % Find a new initial guess that satisfies the BCs of L.
             % If we are using TRIGCOLLOC, we don't need to do that because 
             % the zero CHEBFUN is periodic.
