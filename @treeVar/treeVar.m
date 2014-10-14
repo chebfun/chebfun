@@ -191,7 +191,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             h.domain = updateDomain(f, g);
         end
         
-        function plot(treeVar
+        function plot(treeVar)
             % When we plot a TREEVAR, we plot its syntax tree.
             treeVar.plotTree(treeVar.tree);
         end
