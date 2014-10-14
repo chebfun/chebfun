@@ -5,9 +5,9 @@ function coeffs = vals2coeffs(values)
 %   If N is odd
 %       F(x) = C(1)*z^(-(N-1)/2) + C(2)*z^(-(N-1)/2-1) + ... + C(N)*z^((N-1)/2)
 %   If N is even
-%       F(x) = 1/2*C(1)*(z^(N/2) + z^(-N/2)) + C(2)*z^(-N/2+1) + C(3)*z^(-N/2+2)
-%               + ... + C(N-1)*z^(N/2-2) + C(N)*z^(N/2-1)           
+%       F(x) = C(1)*z^(-N/2) + C(2)*z^(-N/2+1) + ... + C(N)*z^(N/2-1)           
 %   where z = exp(1i*pi*x) and -1 <= x <= 1. 
+%
 %   F(x) interpolates the data [V(1) ; ... ; V(N)] at the N equally 
 %   spaced points x_k = -1 + 2*k/N, k=0:N-1. 
 %
