@@ -70,7 +70,7 @@ classdef chebDiscretization
         tech = returnTech()
         
         % Get dimension adjustment for EXPM.
-        ExpmDimAdjust = getExpmDimAdjust(L)
+        expmDimAdjust = getExpmDimAdjust(L)
         
     end
     

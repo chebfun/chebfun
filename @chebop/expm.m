@@ -56,10 +56,15 @@ end
 % Determine the discretization.
 pref = determineDiscretization(N, L, isPrefGiven, pref);
 
-% Clear boundary conditions if using FOURCOLLOC.
-if ( isequal(pref.discretization, @trigcolloc) )
-    [dummy, L] = clearPeriodicBCs(N, L);
+% Clear boundary conditions if the dicretization uses periodic functions (since
+% if we're using periodic basis functions, the boundary conditions will be
+% satisfied by construction).
+discPreference = pref.discretization();
+tech = discPreference.returnTech();
+if ( isPeriodicTech(tech()) )
+    [N, L] = clearPeriodicBCs(N, L);
 end
+
 
 if ( nargin >= 3 )
     % Evaluate the matrix exponential for the given u0:
