@@ -73,6 +73,11 @@ if ( length(n) == 1 ) % Single grid.
     end
     if ( nargout > 2 )
         v = f.barywts(n);
+        
+        % Rescale so that norm(v, inf) = 1:
+        if ( type == 1 )
+            v = v/max(v);
+        end
     end
     if ( nargout > 3 )
         t = f.angles(n);
