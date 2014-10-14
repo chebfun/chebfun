@@ -147,6 +147,10 @@ if ( guiMode )
         displayFunction = ...
             @(mode, varargin) chebgui.displayBVPinfo(handles, mode, varargin{:});
         
+        % Ensure that the discretization used for SOLVEBVP() matches the option
+        % for the ivpSolver:
+        options.discretization = options.ivpSolver;
+        
         % Solve!
         [u, info] = solvebvp(N, 0, options, displayFunction);
     else
