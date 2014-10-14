@@ -153,6 +153,10 @@ if ( guiMode )
         
         % Solve!
         [u, info] = solvebvp(N, 0, options, displayFunction);
+        
+        % Make the popup-menu for the choice of plots visible:
+        set(handles.popupmenu_bottomFig, 'Visible', 'on')
+  
     else
         % Solving using one of the MATLAB ODE solvers.
    
@@ -165,6 +169,11 @@ if ( guiMode )
         % Need a dummy struct so that the code below can both work for the
         % global solver and ODE solver cases.
         info = struct('isLinear', 1, 'error', 0);
+        
+        % Hide the popup-menu for the choice of plots, as in this case, we'll
+        % only want to offer showing a plot of the Chebyshev coefficients, not
+        % the convergence of the Newton iteration.
+        set(handles.popupmenu_bottomFig,'Visible', 'off')
     end
 else
     % Not in GUI mode.
