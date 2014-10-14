@@ -24,7 +24,7 @@ end
 
 % Reshape x to be a column vector for passing to polyval:
 [~, m] = size(f);
-fourierCoeff = f.coeffs;
+fourierCoeff = f.coeffs(end:-1:1, :);
 N = size(fourierCoeff, 1);
 sizex = size(x);
 ndimsx = ndims(x);

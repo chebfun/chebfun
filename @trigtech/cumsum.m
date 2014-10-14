@@ -86,10 +86,11 @@ function f = cumsumContinuousDim(f, m)
     
     % Force the mean to be exactly zero.
     if fIsEven
-        c(numCoeffs/2,:) = 0;
+        % Set coeff corresponding to the constant mode to zero:
+        c(numCoeffs/2+1,:) = 0;
         % Expand the coefficients to be symmetric (see above discussion).
-        c(numCoeffs,:) = 0.5*c(numCoeffs,:);
-        c = [c(numCoeffs,:);c];
+        c(1,:) = 0.5*c(1,:);
+        c = [c; c(1,:)];
         highestDegree = numCoeffs/2;
     else
         c((numCoeffs+1)/2,:) = 0;
@@ -97,7 +98,7 @@ function f = cumsumContinuousDim(f, m)
     end
     
     % Loop for integration factor for each coefficient:
-    sumIndicies = (highestDegree:-1:-highestDegree).';
+    sumIndicies = (-highestDegree:highestDegree).';
     integrationFactor = (-1i./sumIndicies/pi).^m;
     % Zero out the one corresponding to the constant term.
     integrationFactor(highestDegree+1) = 0;
@@ -118,7 +119,7 @@ function f = cumsumContinuousDim(f, m)
     % back to its original size since it was increased by one above to make
     % the integration code slicker.
     if fIsEven 
-        c = c(2:end,:);
+        c = c(1:end-1,:);
     end
             
     % Recover values and attach to output:
@@ -138,7 +139,7 @@ function f = cumsumContinuousDim(f, m)
     
     % Ensure f(-1) = 0:
     lval = get(f, 'lval');
-    f.coeffs(end,:) = f.coeffs(end,:) - lval;
+    f.coeffs(1,:) = f.coeffs(1,:) - lval;
     f.values = bsxfun(@minus, f.values, lval);
     
 end
