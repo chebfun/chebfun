@@ -34,7 +34,9 @@ if ( nargin < 2 )
     tol = f.epslevel/2;
 end
 
-c = f.coeffs;  % Obtain Fourier coefficients {c_k}
+% [TODO] The reversal of coeffs below should be removed but then 
+% the whole algoirthm needs to be redone.
+c = f.coeffs(end:-1:1,:);  % Obtain Fourier coefficients {c_k}
 numCoeffs = size(c, 1);
 fIsEven = ( mod(numCoeffs, 2) == 0 );
 
@@ -88,6 +90,9 @@ end
 
 % Now put the coefficients vector back together.
 f.coeffs = [cp(1:end,:); cn(end-1:-1:1,:)];
+
+% [TODO]: This should be reomved, see the TODO above.
+f.coeffs = f.coeffs(end:-1:1,:);
 
 % Update values and epslevel:
 f.values = f.coeffs2vals(f.coeffs);

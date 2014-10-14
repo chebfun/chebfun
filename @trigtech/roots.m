@@ -70,7 +70,8 @@ if ( useMatlabsRootsCommand )
         % Simplify the current column to get the minimal number of
         % roots.
         fj = simplify(extractColumns(f,j));
-        rTemp = roots(fj.coeffs);
+        % Flip coeffs to match Matlab roots:
+        rTemp = roots(fj.coeffs(end:-1:1,:));
         % Roots here finds the roots in the transformed variable z=exp(i*pi*x)
         % so we need to take the log (and scale it) to get back the roots in x.
         rTemp = -1i/pi*log(rTemp);
