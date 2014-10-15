@@ -256,6 +256,14 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             h.domain = updateDomain(f, g);
         end
         
+        function f = uminus(f)
+            f.tree = f.univariate(f.tree, 'uminus');
+        end
+
+        function f = uplus(f)
+            f.tree = f.univariate(f.tree, 'uplus');
+        end
+
         function dom = updateDomain(f, g)
             % UPDATEDOMAIN    Update domain in case we encounter new breakpoints
             if ( isnumeric(f) )
