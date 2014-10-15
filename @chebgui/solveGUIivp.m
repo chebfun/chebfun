@@ -206,7 +206,6 @@ if ( guiMode )
     % Notify the GUI we have a solution available
     handles.hasSolution = 1;
     
-
     % Only show legend if we were solving a coupled system:
     if ( length(allVarNames) > 1 )
         legend(allVarNames)

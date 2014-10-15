@@ -232,4 +232,16 @@ str = [str ; sprintf('Norm of residual: %.2e.\n', nrmRes)];
 set(handles.iter_list, 'String',  str);
 set(handles.iter_list, 'Value', 1);
 
+% Plot
+axes(handles.fig_sol)
+plot(u, 'Linewidth',2)
+% Do different things depending on whether the solution is real or not
+if ( isreal(u{1}) )
+    axis tight
+else
+    axis equal
+end
+
+title('Solution');
+
 end
