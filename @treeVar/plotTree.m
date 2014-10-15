@@ -130,7 +130,7 @@ switch tree.numArgs
     case 1
         plot(tree.center.x,tree.center.y,'bo');
         plot([tree.x tree.center.x],[tree.y tree.center.y],'-','color',col{2},varargin{:})
-        plotTreePlot(tree.center,h,varargin{:})
+        plotTreePlot(tree.center, h, maxDiffOrder, varargin{:})
     case 2
         % Set up colors. The part of the tree that corresponds to the derivative
         % of the highest order gets plotted in red.
