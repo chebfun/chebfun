@@ -8,7 +8,7 @@ classdef smoothfun < onefun % (Abstract)
 %   interval [-1,1] from the function handle OP using the data given in the
 %   DATA structure and the preferences in PREF.
 %
-% See also ONEFUN, CHEBTECH, FOURTECH.
+% See also ONEFUN, CHEBTECH, TRIGTECH.
 %
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -19,9 +19,9 @@ classdef smoothfun < onefun % (Abstract)
 % The SMOOTHFUN class is an abstract class for representations of smooth
 % functions on the interval [-1,1].
 %
-% SMOOTHFUNs can be either FOURTECH or CHEBTECH.
+% SMOOTHFUNs can be either TRIGTECH or CHEBTECH.
 %
-% Class diagram: [<<ONEFUN>>] <-- [<<SMOOTHFUN>>] <-- [FOURTECH]
+% Class diagram: [<<ONEFUN>>] <-- [<<SMOOTHFUN>>] <-- [TRIGTECH]
 %                                                 <-- [<<CHEBTECH>>]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     

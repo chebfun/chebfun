@@ -33,7 +33,7 @@ D = diag(D);
 % Exact solution.
 Dexact = [0 1 1 4 4 9 9]';
 pass(1) = norm(D - Dexact, inf) < tol;
-pass(2) = isequal(get(V{1}.funs{1}, 'tech'), @fourtech);
+pass(2) = isequal(get(V{1}.funs{1}, 'tech'), @trigtech);
 
 %% Problem description.
 % Solving
@@ -67,6 +67,6 @@ Dwolfram = [ -1.513956885056520;
               9.140627737766440;
               9.370322483621104 ];
 pass(3) = norm(D - Dwolfram, inf) < tol;
-pass(4) = isequal(get(V{1}.funs{1}, 'tech'), @fourtech);
+pass(4) = isequal(get(V{1}.funs{1}, 'tech'), @trigtech);
 
 end

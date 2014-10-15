@@ -35,7 +35,7 @@ v = N \ f;
 % Compare.
 err(1) = norm(u - v, inf);
 
-%% Test the FOURCOLLOC class. FIRST AND SECOND ORDER LINEAR ODEs.
+%% Test the TRIGCOLLOC class. FIRST AND SECOND ORDER LINEAR ODEs.
 % u - v' = 0, u'' + v = cos(x), on [-pi pi].
 
 % Set domain, operator L, and rhs f.
@@ -44,7 +44,7 @@ L = chebop(@(x, u, v) [ u - diff(v) ; diff(u, 2) + v ], dom);
 L.bc = 'periodic';
 F = [ chebfun(0, dom) ; chebfun(@(x) cos(x), dom) ];
 
-% Solve with FOURIER technology.
+% Solve with TRIGTECH technology.
 U = L \ F;
 
 u = U{1}; 
@@ -56,7 +56,7 @@ err(5) = abs(feval(diff(u), dom(1)) - feval(diff(u), dom(2)));
 err(4) = abs(v(dom(1)) - v(dom(2)));
 err(5) = abs(feval(diff(v), dom(1)) - feval(diff(v), dom(2)));
 
-%% Test the FOURCOLLOC class. FIRST AND SECOND ORDER NONLINEAR ODEs.
+%% Test the TRIGCOLLOC class. FIRST AND SECOND ORDER NONLINEAR ODEs.
 %  u - v' + v = 0, u'' - cos(v) = cos(x).
 
 % Set domain, operator L, and rhs f.
@@ -66,7 +66,7 @@ N.bc = 'periodic';
 F = [ chebfun(0, dom) ; chebfun(@(x) cos(x), dom) ];
 N.init = F;
 
-% Solve with FOURIER technology.
+% Solve with TRIGTECH technology.
 U = N \ F;
 
 u = U{1}; 

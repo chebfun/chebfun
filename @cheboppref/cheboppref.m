@@ -138,7 +138,7 @@ classdef cheboppref < chebpref
                          'Please use cheboppref().prop.']);
                 else
                     error('CHEBFUN:CHEBOPPREF:cheboppref:deprecated', ...
-                        ['chebfoppref() no longer assignment ', ...
+                        ['cheboppref() no longer supports assignment ', ...
                          'via cheboppref(''prop'', val).\n', ...
                          'Please use cheboppref.setDefaults(''prop'', val).']);
                 end
@@ -414,8 +414,8 @@ classdef cheboppref < chebpref
                 end
                 val = @chebcolloc1;
                 
-            elseif ( any(strcmpi(val, {'fourcolloc'})) )
-                val = @fourcolloc;       
+            elseif ( any(strcmpi(val, {'trigcolloc'})) )
+                val = @trigcolloc;       
                  
             end
                 
