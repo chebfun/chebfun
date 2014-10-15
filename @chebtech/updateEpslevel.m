@@ -30,10 +30,21 @@ else
     epslevelBnd = pref.eps;  % TODO:  This really should be Inf?
 end
 
+% Temporarily replace NaNs to prevent HAPPINESSCHECK() from crashing.
+nanLocs = isnan(f.coeffs);
+nanCols = any(nanLocs);
+f.coeffs(nanLocs) = 0;
+
 % Call HAPPINESSCHECK()
 [ignored, newEpslevel] = happinessCheck(f, [], [], pref);
 
+% Restore NaNs.
+f.coeffs(nanLocs) = NaN;
+
 % Respect the bound:
 epslevel = min(newEpslevel, epslevelBnd);
+
+% Don't change the epslevel of NaN columns.
+epslevel(nanCols) = f.epslevel(nanCols);
 
 end
