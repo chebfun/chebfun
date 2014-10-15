@@ -21,13 +21,13 @@ function epslevel = updateEpslevel(f, pref)
 % Obtain a preference / epslevel bound:
 if ( nargin == 1 )
     pref = f.techPref();
-    epslevelBnd = pref.eps;
+    epslevelBnd = pref.eps;  % TODO:  This really should be Inf?
 elseif ( isnumeric(pref) )
     epslevelBnd = pref;
     pref = f.techPref();
     pref.eps = max(epslevelBnd/100, pref.eps);
 else
-    epslevelBnd = pref.eps;
+    epslevelBnd = pref.eps;  % TODO:  This really should be Inf?
 end
 
 % Call HAPPINESSCHECK()
@@ -37,5 +37,3 @@ end
 epslevel = min(newEpslevel, epslevelBnd);
 
 end
-    
-
