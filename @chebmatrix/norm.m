@@ -43,6 +43,10 @@ switch n
         normA = cellfun(@(v) norm(v, inf), A.blocks);
         normA = max(normA(:));
         
+    case {-inf, '-inf'}
+        normA = cellfun(@(v) norm(v, -inf), A.blocks);
+        normA = min(normA(:));
+        
     otherwise
         if ( ~ischar(n) )
             n = num2str(n);
