@@ -83,10 +83,10 @@ end
 % Are we dealing with a system?
 isSystem = ( nargin(N.op) <= 2 );
 
-% Ensure RHS is a CHEBMATRIX
-if ( ~isa(rhs, 'chebmatrix') )
-    rhs = chebmatrix(rhs);
-end
+% % Ensure RHS is a CHEBMATRIX
+% if ( ~isa(rhs, 'chebmatrix') )
+%     rhs = chebmatrix(rhs);
+% end
 
 %% Convert to a first-order system
 

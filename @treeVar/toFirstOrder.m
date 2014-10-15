@@ -43,7 +43,7 @@ coeffArg = [zeros(1, expTree.diffOrder), 1];
 coeff = {coeffFun(t, coeffArg)};
 
 newTree = struct('method', 'minus', 'numArgs', 2, ...
-    'left', rhs{1}, 'right', newTree);
+    'left', rhs, 'right', newTree);
 [infix, varCounter, varArray] = treeVar.tree2infix(newTree, 1, 1);
 infix = {infix};
 varArray = {varArray};

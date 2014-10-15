@@ -43,7 +43,7 @@ set(handles.iter_list, 'Value', 1)
 axes(handles.fig_sol)
 plot(u, 'Linewidth', 2)
 % Do different things depending on whether the solution is real or not
-if ( isreal(u) )
+if ( isreal(u{1}) )
     xlim(handles.xLim)
 else
     axis equal

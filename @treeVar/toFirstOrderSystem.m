@@ -19,6 +19,19 @@ end
 % Evaluate FUNIN with the TREEVAR arguments:
 fevalResult = funIn(t, args{:});
 
+% If we got passed the problem as N\0, i.e. a RHS that did not match the
+% dimensions, we need to repmat it so that the RHS variable has the correct
+% dimensions below:
+if ( isnumeric(rhs) && length(rhs) == 1 )
+    rhs = repmat(rhs, size(fevalResult));
+end
+
+% Ensure RHS is a CHEBMATRIX
+if ( ~isa(rhs, 'chebmatrix') )
+    rhs = chebmatrix(rhs);
+end
+
+
 % Initialize cells to store the infix forms of the expressions, the
 % coefficients multiplying the highest order derivatives and any
 % variables that appear in the anonymous functions:
