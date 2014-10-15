@@ -51,7 +51,16 @@ if ( ~isempty(opt) )
     end   
 end
 % Turn AbsTol into RelTol using scale:
+idx = vscale == 0;
+relTol(idx) = [];
+absTol(idx) = [];
+vscale(idx) = [];
 relTol = max(relTol(:), absTol(:)./vscale(:));
+if isempty(relTol)
+    % We computed the zero solution, so relTol would be empty unless we give it
+    % a value!
+    relTol = eps;
+end
 
 %% Create a CHEBFUN object.
 p = chebfunpref();
