@@ -1,7 +1,7 @@
 function [F,FA] = gallery(nn)
 %GALLERY   Gallery of 1-dimensional functions.
 %   GALLERY(N) returns interesting 1D functions as a CHEBFUN quasimatrix.
-%   N must be a vector with integer entries taking values from 1 to 11.
+%   N must be a vector with integer entries taking values from 1 to 12.
 %   All gallery functions have domain [-1, 1].
 %
 %   [F,FA] = GALLERY(N) also returns the anonymous functions used to define
@@ -11,10 +11,31 @@ function [F,FA] = gallery(nn)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% The current number of gallery functions:
+totalFuns = 12;
+
 % These cell arrays collect the functions, domains, and prefs.
-funcs = {};
-domains = {};
-prefs = {};
+funcs = cell(1, totalFuns);
+prefs = cell(1, totalFuns);
+
+% Parse the input:
+indx_goodvalues = ismember(nn, 1:totalFuns);
+if ( any(indx_goodvalues == 0) )
+    % The user passed bad values (e.g. non-integers or too big a number),
+    % so remove them.
+    nn = nn(indx_goodvalues);
+
+    % If the user passed at least one valid integer, just issue a warning
+    % and move on. If the user did not issue any valid integers, give an
+    % error.
+    if ( length(nn) )
+        warning('CHEBFUN:CHEB:gallery:input', 'Ignoring bad input values.')
+    else
+        error(['CHEBFUN:CHEB:gallery:input', 'Input value(s) are not valid ' ...
+        'integers.'])
+    end
+end
+
 
 %%
 % Here are the functions for the gallery.
@@ -66,30 +87,16 @@ funcs{11} = @(x) cos(3*x+3).*sin(exp(3*x+3));
 prefs{11} = {};
 
 % Create the function needed by funcs{12}:
-g = chebfun(@(t) sign(sin(100*t./(2-t))), 'splitting', 'on');
-f = cumsum(g);
-funcs{12} = @(x) f(x);
-prefs{12} = {10000+1};
-
-% NOTE: If you add a new function here, be sure to change the help text
-% above to reflect the largest acceptable N!
-
-indx_goodvalues = ismember(nn, 1:length(funcs));
-if ( any(indx_goodvalues == 0) )
-    % The user passed bad values (e.g. non-integers or too big a number),
-    % so remove them.
-    nn = nn(indx_goodvalues);
-
-    % If the user passed at least one valid integer, just issue a warning
-    % and move on. If the user did not issue any valid integers, give an
-    % error.
-    if ( length(nn) )
-        warning('CHEBFUN:CHEB:gallery:input', 'Ignoring bad input values.')
-    else
-        error(['CHEBFUN:CHEB:gallery:input', 'Input value(s) are not valid ' ...
-        'integers.'])
-    end
+if ( any(nn == 12) )
+    g = chebfun(@(t) sign(sin(100*t./(2-t))), 'splitting', 'on');
+    f = cumsum(g);
+    funcs{12} = @(x) f(x);
+    prefs{12} = {10000+1};
 end
+
+% NOTE: If you add a new function here, be sure to change the help text and the
+% variable totalFuns above to reflect the largest acceptable N!
+
 
 F = [];     % A quasimatrix of the chebfuns
 FA = {};    % A cell array of the anonymous functions
