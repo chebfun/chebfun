@@ -86,7 +86,7 @@ prefs{10} = {};
 funcs{11} = @(x) cos(3*x+3).*sin(exp(3*x+3));
 prefs{11} = {};
 
-% Create the function needed by funcs{12}:
+% Sawtooth polynomial, from ATAP, Appendix.
 if ( any(nn == 12) )
     g = chebfun(@(t) sign(sin(100*t./(2-t))), 'splitting', 'on');
     f = cumsum(g);
