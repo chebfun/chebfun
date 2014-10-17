@@ -33,13 +33,13 @@ Na = floor(numel(a)/2) + 1;
 
 % Pad with zeros.
 if ( Na < N )
-    row = [a(Na:1:end).', zeros(1, N-Na)];
-    column = [a(Na:-1:1); zeros(N-Na, 1)];
+    col = [a(Na:1:end); zeros(N-Na, 1)];
+    row = [a(Na:-1:1); zeros(N-Na, 1)];
 % Truncate.
 else
-    row = a(Na:1:end-Na+N).';
-    column = a(Na:-1:Na-N+1);
+    col = a(Na:1:end-Na+N);
+    row = a(Na:-1:Na-N+1);
 end
-M = trigspec.sptoeplitz(row, column);
+M = trigspec.sptoeplitz(col, row);
 
 end
