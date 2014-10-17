@@ -38,7 +38,7 @@ prefs{4} = {};
 % From ATAP, Chapter 9 (but made periodic since we can do that now)
 funcs{5} = @(x) cos(2*pi*x) - cos(6*pi*x)/3 + cos(10*pi*x)/5 ...
               - cos(14*pi*x)/7 + cos(18*pi*x)/9;
-prefs{5} = {'periodic'};
+prefs{5} = {'trig'};
 
 % From ATAP, Chapter 13 (Runge function)
 funcs{6} = @(x) 1./(1+25*x.^2);
@@ -64,6 +64,12 @@ prefs{10} = {};
 % A complicated function from [opt/ExtremeExtrema]
 funcs{11} = @(x) cos(3*x+3).*sin(exp(3*x+3));
 prefs{11} = {};
+
+% Create the function needed by funcs{12}:
+g = chebfun(@(t) sign(sin(100*t./(2-t))), 'splitting', 'on');
+f = cumsum(g);
+funcs{12} = @(x) f(x);
+prefs{12} = {10000+1};
 
 % NOTE: If you add a new function here, be sure to change the help text
 % above to reflect the largest acceptable N!
