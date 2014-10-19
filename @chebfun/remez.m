@@ -69,17 +69,16 @@ end
 % Parse the inputs.
 [m, n, N, rationalMode, opts] = parseInputs(f, varargin{:});
 
+isPeriodic = 0;
 % Check for periodicity:
-if ( isa(f.funs{1}, 'trigtech') )
+if ( isa(f.funs{1}.onefun, 'trigtech') )
     isPeriodic = 1;
-else
-    isPeriodic = 0;
 end
 
 % With zero denominator degree, the denominator polynomial is trivial.
 if ( n == 0 )
     if ( isPeriodic )
-        q = chebfun(1, dom, 'trig' );
+        q = chebfun(1, dom, 'trig');
     else
         q = chebfun(1, dom);
     end
@@ -104,11 +103,15 @@ end
 % Run the main algorithm.
 while ( (delta/normf > opts.tol) && (iter < opts.maxIter) && (diffx > 0) )
     fk = feval(f, xk);     % Evaluate on the exchange set.
-    w = baryWeights(xk);   % Barycentric weights for exchange set.
+    if ( isPeriodic )       
+        w = trigBaryWeights(xk);
+    else        
+        w = baryWeights(xk);   % Barycentric weights for exchange set.
+    end
 
     % Compute trial function and levelled reference error.
     if ( n == 0 )
-        [p, h] = computeTrialFunctionPolynomial(fk, xk, w, m, N, dom);
+        [p, h] = computeTrialFunctionPolynomial(fk, xk, w, m, N, dom, isPeriodic);
     else
         [p, q, h] = computeTrialFunctionRational(fk, xk, w, m, n, N, dom);
     end
@@ -211,7 +214,7 @@ end
 
 % Parse name-value option pairs.
 opts.tol = 1e-16*(N^2 + 10); % Relative tolerance for deciding convergence.
-opts.maxIter = 20;           % Maximum number of allowable iterations.
+opts.maxIter = 40;           % Maximum number of allowable iterations.
 opts.displayIter = false;    % Print output after each iteration.
 opts.plotIter = false;       % Plot approximation at each iteration.
 
@@ -294,14 +297,16 @@ end
 % In the polynomial case or if the above procedure failed to produce a reference
 % with enough equioscillation points, just use the Chebyshev points.
 if ( flag == 0 )
-    xk = chebpts(N + 2, f.domain([1, end]));
+    if ( isa(f.funs{1}.onefun, 'trigtech') )
+        xk = trigpts(N + 2,f.domain([1, end]));
+    else
+        xk = chebpts(N + 2, f.domain([1, end]));
+    end
 end
 
-xo = xk;
-
 end
 
-function [p, h] = computeTrialFunctionPolynomial(fk, xk, w, m, N, dom)
+function [p, h] = computeTrialFunctionPolynomial(fk, xk, w, m, N, dom, isPeriodic)
 
 % Vector of alternating signs.
 sigma = ones(N + 2, 1);
@@ -311,7 +316,12 @@ h = (w'*fk) / (w'*sigma);                          % Levelled reference error.
 pk = (fk - h*sigma);                               % Vals. of r*q in reference.
 
 % Trial polynomial.
-p = chebfun(@(x) bary(x, pk, xk, w), dom, m + 1);
+if ( isPeriodic )
+    p = chebfun(@(x) trigBary(x, pk, xk, dom), dom, 2*m + 1, 'trig');
+else
+    p = chebfun(@(x) bary(x, pk, xk, w), dom, m + 1);
+end
+
 
 end
 
