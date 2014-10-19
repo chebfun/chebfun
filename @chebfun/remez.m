@@ -69,10 +69,20 @@ end
 % Parse the inputs.
 [m, n, N, rationalMode, opts] = parseInputs(f, varargin{:});
 
+% Check for periodicity:
+if ( isa(f.funs{1}, 'trigtech') )
+    isPeriodic = 1;
+else
+    isPeriodic = 0;
+end
+
 % With zero denominator degree, the denominator polynomial is trivial.
 if ( n == 0 )
-    qk = 1;
-    q = chebfun(1, dom);
+    if ( isPeriodic )
+        q = chebfun(1, dom, 'trig' );
+    else
+        q = chebfun(1, dom);
+    end
     qmin = q;
 end
 
@@ -190,8 +200,14 @@ else                   % Odd number of inputs --> rational case.
     rationalMode = true;
     varargin = varargin(3:end);
 end
-
-N = m + n;
+if ( isa(f.funs{1}.onefun, 'trigtech') )
+    % Use Remez for periodic functions:
+    N = 2*m;
+    % No support for rational trigonometric yet.
+    n = 0;
+else
+    N = m + n;
+end
 
 % Parse name-value option pairs.
 opts.tol = 1e-16*(N^2 + 10); % Relative tolerance for deciding convergence.
