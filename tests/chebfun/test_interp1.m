@@ -86,4 +86,36 @@ x = rand(11, 1);
 f = chebfun.interp1(x, y, 'poly', [0, 1]);
 tol = 100*epslevel(f);
 pass(25) = norm(f(x)-y(x), inf) < tol;
+
+
+%% Test trigonometric interpolation:
+x = (0:10)';  
+y = cos(pi*x);
+f = chebfun.interp1(x, y, 'trig');
+tol = 100*epslevel(f);
+pass(26) = norm(feval(f, x(2:end-1)) - y(2:end-1)) < tol && ...
+    norm(feval(f, x(1))-(y(1)+y(end))/2) < tol ;
+pass(27) = numel(f.funs) == 1;
+pass(28) = length(f) == length(x)-1;
+
+%%
+% Test an array-valued function:
+x = (0:10)';  
+y = [exp(sin(x)), cos(pi*x)];
+f = chebfun.interp1(x, y, 'trig', [0, 11]);
+tol = 100*epslevel(f);
+pass(29) = norm(feval(f, x) - y) < tol;
+pass(30) = numel(f.funs) == 1;
+pass(31) = length(f) == length(x);
+%%
+% Test a different domain:
+dom = [-.01, 10.01];
+f = chebfun.interp1(x, y, dom);
+tol = 100*epslevel(f);
+pass(32) = norm(feval(f, x) - y) < tol;
+pass(33) = numel(f.funs) == 1;
+pass(34) = length(f) == length(x);
+pass(35) = all(f.domain == dom);
+
+
 end
