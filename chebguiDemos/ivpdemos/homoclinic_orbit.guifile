@@ -1,0 +1,7 @@
+'Homoclinic orbit'
+'system'
+domain = '[0 40]';
+DE = {'u'' = u^3 - 2*u*v^2','v'' = 2*u^2*v - v^3'};
+BC = {'u(0) = 0.16','v(0) = 0.01'};
+init = ''; tol = '1e-10';
+type = 'ivp';
