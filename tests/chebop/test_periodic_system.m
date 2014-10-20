@@ -4,7 +4,7 @@ function pass = test_periodic_system(pref)
 if ( nargin == 0 )
     pref = cheboppref();
 end
-tol = 1e-10;
+tol = 2e-10;
 
 %% System of nonlinear ODEs.
 %  u - v' + v = 0, u'' - cos(v) = cos(x).
