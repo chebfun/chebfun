@@ -63,19 +63,21 @@ end
 % example above, we'd have
 %   v = u(1), v' = u(2), v'' = u(3), w = u(4), w' = u(5), w'' = u(6)
 % Here, INDEXSTARTDER = [1 4].
-indexStart = zeros(1, numArgs);
-indexStartDer = indexStart;
-totalDiffOrders = indexStart;
+
+% First, we need to find out the maximum diffOrder of each variable appearing in
+% the problem. We loop through the each component of the evaluation tree:
+totalDiffOrders = zeros(1, numArgs);
 for wCounter = 1:length(fevalResult)
-    % We use cumsum() to look at how many derivatives have appeared
-    % already in the problem.
-    newIndex =  [1 (cumsum(fevalResult(wCounter).tree.diffOrder(1:end-1)) + (1:(numArgs-1)))];
-    newIndexDer =  ...
-        [1 (cumsum(fevalResult(wCounter).tree.diffOrder(1:end-1) + 1) + (1:(numArgs-1)))];
-    indexStart = max(indexStart, newIndex);
-    indexStartDer = max(indexStartDer, newIndexDer);
     totalDiffOrders = max(totalDiffOrders, fevalResult(wCounter).tree.diffOrder);
 end
+
+% We always start indexing the first variable and its derivative(s) at 1. The
+% index of the other variables depend on the cumulative diffOrders of the
+% variables with lower indices.
+indexStart = [1, cumsum(totalDiffOrders(1:end-1))+1];
+% To get the indices of the derivatives as well, we shift all the previous
+% indices right by 1, in cumulative fashion:
+indexStartDer = indexStart + (0:numArgs-1);
 
 % COEFFARG will be used to evaluate the functions that gives us
 % information about the coefficients multiplying the highest order
