@@ -1,0 +1,7 @@
+'Rossler attractor'
+'system'
+domain = '[0 100]';
+DE = {'u'' = -v - w','v'' = u + 0.2*v','w'' = 0.2 + w*(u - 5.7)'};
+BC = {'u(0) = -4','v(0) = 0','w(0) = 0'};
+init = ''; tol = '1e-10';
+type = 'ivp';
