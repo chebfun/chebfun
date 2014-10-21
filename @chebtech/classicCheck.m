@@ -17,11 +17,11 @@ function [ishappy, epslevel, cutoff] = classicCheck(f, values, pref)
 %   can be reduced if there are further COEFFS which fall below EPSLEVEL).
 %
 %   HAPPINESSREQUIREMENTS defines what it means for a CHEBTECH to be happy.
-%   [TESTLENGTH, EPSLEVEL] = HAPPINESSREQUIREMENTS(VALUES, COEFFS, VSCALE, PREF)
-%   returns two scalars TESTLENGTH and EPSLEVEL. A CHEBTECH is deemed to be
-%   'happy' if the coefficients COEFFS(1:TESTLENGTH) (recall that COEFFS are
-%   stored in descending order) are all below EPSLEVEL. The default choice of
-%   the test length is:
+%   [TESTLENGTH, EPSLEVEL] = HAPPINESSREQUIREMENTS(VALUES, COEFFS, VSCALE,
+%   PREF) returns two scalars TESTLENGTH and EPSLEVEL. A CHEBTECH is deemed to
+%   be 'happy' if the coefficients COEFFS(END-TESTLENGTH+1:END) (recall that
+%   COEFFS are stored in ascending order) are all below EPSLEVEL. The default
+%   choice of the test length is:
 %       TESTLENGTH = n,             for n = 1:4
 %       TESTLENGTH = 5,             for n = 5:44
 %       TESTLENGTH = round((n-1)/8) for n > 44
