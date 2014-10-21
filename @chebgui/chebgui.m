@@ -11,9 +11,9 @@ classdef chebgui
 % [a,b] with boundary conditions at both boundaries.
 %
 % ODE IVP (initial-value problem): an ODE or system of ODEs on an interval [a,b]
-% with boundary conditions at just one boundary. (However, for complicated IVPs
-% like the Lorenz equations, other methods such as chebfun/ode45 will be much
-% more effective.)
+% with boundary conditions at just one boundary. By default, IVPs are
+% automatically reformulated to coupled first order systems, which are then
+% solved using MATLAB's built in solver ODE113.
 %
 % ODE EIGENVALUE PROBLEM: a differential or integral operator or system of
 % operators on an interval [a,b] with homogeneous boundary conditions, where we
@@ -24,8 +24,8 @@ classdef chebgui
 % linear or nonlinear differential operator.
 %
 % For ODEs, Chebgui assumes that the independent variable, which varies over the
-% interval [a,b], is either x or t, and that the dependent variable(s) have
-% name(s) different from x and t.
+% interval [a,b], is either r, t or x, and that the dependent variable(s) have
+% name(s) different from r, t and x.
 %
 % For eigenvalue problems, Chebgui assumes that the eigenvalue is called l, lam
 % or lambda.
