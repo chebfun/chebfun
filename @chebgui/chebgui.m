@@ -166,6 +166,16 @@ classdef chebgui
             
             % No input --> load random example to the GUI window
             if ( isempty(varargin) )
+                % Check the version of MATLAB, currently, we have issues
+                % with 2014b:
+                matlabVer = ver('Matlab');
+                matlabVer = str2double(matlabVer.Version);
+                if ( matlabVer >= 8.4 )
+                    warning(['Currently, CHEBGUI does not support '...
+                        'version 2014b of MATLAB. Unexpected behaviour' ...
+                        ' might occur.']);
+                end
+                
                 c = chebgui.demo();
                 show(c);    % Open the GUI
                 return      % No further action needed
