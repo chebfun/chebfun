@@ -45,15 +45,32 @@ classdef cheboppref < chebpref
 %     considered to have converged if the error estimate it computes is less
 %     than the value of errTol.
 %
+%   ivpAbsTol                    - Absolute tolerance for the ivpSolver
+%     [100*eps]
+%
+%     This options specifies the option for the absolute tolerance passed as an
+%     option to the built-in MATLAB ODE solver when solving IVPs.
+%
+%   ivpRelTol                    - Relavtive tolerance for the ivpSolver
+%     [100*eps]
+%
+%     This options specifies the option for the relative tolerance passed as an
+%     option to the built-in MATLAB ODE solver when solving IVPs.
+%
 %   ivpSolver                  - Solver for IVPs
 %     [@ode113]
 %     @ode15s
 %     @ode45
+%     collocation
+%     ultraS
 %
 %     This options determines which of the MATLAB built-in IVP solvers is used
-%     for solving IVPs posed with the CHEBOP class.
+%     for solving IVPs posed with the CHEBOP class. Any option of
+%     CHEBOPPREF.discretization (see above) is allowed, which causes IVPs to be
+%     solved globally via spectral methods, rather than reformulating them as
+%     first-order problems and then solved via time-stepping method.
 %
-%   lambdaMin                   - Minimum allowed step-size
+%   lambdaMin                   - Minimum allowed step-size for Newton's method
 %     [1e-6]
 %
 %     The value of lambdaMin determines the minimum allowed step-size that the
