@@ -571,7 +571,7 @@ if ( isa(tech, 'chebtech2') )
 elseif ( isa(tech, 'chebtech1') )
     x = chebpts( n, dom, 1 );   % x grid.
 elseif ( isa(tech, 'trigtech') )
-    x = fourpts( n, dom );   % x grid.
+    x = trigpts( n, dom );   % x grid.
 else
     error('CHEBFUN:CHEBFUN2:constructor:mypoints:techType', ...
         'Unrecognized technology');
