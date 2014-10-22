@@ -1,53 +1,53 @@
 classdef  (InferiorClasses = {?chebfun}) treeVar
-%TREEVAR    A class for analysing syntax trees of ODEs in Chebfun.
-%
-%   The TREEVAR class allows Chebfun to analyse the syntax trees of ODEs in
-%   CHEBFUN. It's current use is to enable Chebfun to automatically convert
-%   (systems of) higher order ODEs to coupled first order systems. This is
-%   particularly useful for initial-value problems (IVPs), as that allows
-%   Chebfun to call one of the built-in MATLAB solvers for solving IVPs via
-%   time-stepping, rather than globally via spectral methods and Newton's
-%   method in function space.
-% 
-%   This class is not intended to be called directly by the end user.
-%
-%   T = TREEVAR(ID, DOMAIN), where ID is a Boolean vector corresponding to the
-%   order of variables in the problem, and DOMAIN is interval that the problem
-%   is specified on, returns the TREEVAR object V, which stores the ID and the
-%   DOMAIN. See example below for how the ID vector is specified.
-%
-%   T = TREEVAR() is the same as above, but with the default ID = 1, and 
-%   DOMAIN = [-1, 1]. This is useful for quick testing purposes.
-%
-%   Example 1: Construct TREEVAR object for the scalar IVP 
-%       u'' + sin(u) = 0 
-%   on the interval [0, 10]:
-%       u = treeVar(1, [0 10]);
-%
-%   Example 2: Construct TREEVAR objects for the coupled IVP
-%       u'' + v = 1, u + v' = x
-%   on the interval [0, 5]:
-%       u = treeVar([1 0], [0 5]);
-%       v = treeVar([0 1], [0 5]);
-%
-% See also CHEBOP, CHEBOP/SOLVEIVP.
-
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org/ for Chebfun information.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% TREEVAR class description:
-%
-% The TREEVAR class is used by the CHEBOP class to convert higher order ODEs to
-% coupled systems of first order ODEs, which can then be solved using one of the
-% built-in MATLAB solvers, such as ODE113. This is done by evaluating the
-% (anonymous) functions in the .OP field of the CHEBOP with TREEVAR arguments,
-% which will construct a syntax tree of the mathematical expression describing
-% the operator. By then analysing the syntax tree and restructuring it
-% appropriately, conversion to a first-order system is made possible.
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+    %TREEVAR    A class for analysing syntax trees of ODEs in Chebfun.
+    %
+    %   The TREEVAR class allows Chebfun to analyse the syntax trees of ODEs in
+    %   CHEBFUN. It's current use is to enable Chebfun to automatically convert
+    %   (systems of) higher order ODEs to coupled first order systems. This is
+    %   particularly useful for initial-value problems (IVPs), as that allows
+    %   Chebfun to call one of the built-in MATLAB solvers for solving IVPs via
+    %   time-stepping, rather than globally via spectral methods and Newton's
+    %   method in function space.
+    %
+    %   This class is not intended to be called directly by the end user.
+    %
+    %   T = TREEVAR(ID, DOMAIN), where ID is a Boolean vector corresponding to the
+    %   order of variables in the problem, and DOMAIN is interval that the problem
+    %   is specified on, returns the TREEVAR object V, which stores the ID and the
+    %   DOMAIN. See example below for how the ID vector is specified.
+    %
+    %   T = TREEVAR() is the same as above, but with the default ID = 1, and
+    %   DOMAIN = [-1, 1]. This is useful for quick testing purposes.
+    %
+    %   Example 1: Construct TREEVAR object for the scalar IVP
+    %       u'' + sin(u) = 0
+    %   on the interval [0, 10]:
+    %       u = treeVar(1, [0 10]);
+    %
+    %   Example 2: Construct TREEVAR objects for the coupled IVP
+    %       u'' + v = 1, u + v' = x
+    %   on the interval [0, 5]:
+    %       u = treeVar([1 0], [0 5]);
+    %       v = treeVar([0 1], [0 5]);
+    %
+    % See also CHEBOP, CHEBOP/SOLVEIVP.
+    
+    % Copyright 2014 by The University of Oxford and The Chebfun Developers.
+    % See http://www.chebfun.org/ for Chebfun information.
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % TREEVAR class description:
+    %
+    % The TREEVAR class is used by the CHEBOP class to convert higher order ODEs to
+    % coupled systems of first order ODEs, which can then be solved using one of the
+    % built-in MATLAB solvers, such as ODE113. This is done by evaluating the
+    % (anonymous) functions in the .OP field of the CHEBOP with TREEVAR arguments,
+    % which will construct a syntax tree of the mathematical expression describing
+    % the operator. By then analysing the syntax tree and restructuring it
+    % appropriately, conversion to a first-order system is made possible.
+    %
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% CLASS PROPERTIES:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -67,16 +67,16 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         %           v = treeVar([0 1 0], [0 1]);
         %           w = treeVar([0 0 1], [0 1]);
         %           f = diff(u) + diff(w, 2);
-        %       will lead to f.DIFFORDER == [1 0 2]. 
+        %       will lead to f.DIFFORDER == [1 0 2].
         %   HEIGHT: The height of the syntax tree, i.e., the number of
         %       operations between the base variables(s) and the current
         %       variable.
         %   MULTCOEFF: The multiplication in front of the variable, which can
         %       either be a CHEBFUN or a scalar. For example, the sequence
         %           u = treeVar();
-        %           v = sin(x)*u'l 
+        %           v = sin(x)*u'l
         %       will have v.multcoeff == sin(x).
-        %   ID: A Boolean vector, whose ith element is equal to 1 if the TREEVAR 
+        %   ID: A Boolean vector, whose ith element is equal to 1 if the TREEVAR
         %       variable was constructed from the ith base variable, 0
         %       otherwise. For example, the sequence
         %           u = treeVar([1 0 0], [0 1]);
@@ -107,8 +107,100 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
                 'ID', logical(IDvec));
         end
         
+        function f = abs(f)
+            f.tree = f.univariate(f.tree, 'abs');
+        end
+        
+        function f = acos(f)
+            f.tree = f.univariate(f.tree, 'acos');
+        end
+        
+        function f = acosd(f)
+            f.tree = f.univariate(f.tree, 'acosd');
+        end
+        
+        function f = acot(f)
+            f.tree = f.univariate(f.tree, 'acot');
+        end
+        
+        function f = acoth(f)
+            f.tree = f.univariate(f.tree, 'acoth');
+        end
+        
+        function f = acsc(f)
+            f.tree = f.univariate(f.tree, 'acsc');
+        end
+        
+        function f = acscd(f)
+            f.tree = f.univariate(f.tree, 'acscd');
+        end
+        
+        function f = acsch(f)
+            f.tree = f.univariate(f.tree, 'acsch');
+        end
+        
+        function f = airy(f)
+            f.tree = f.univariate(f.tree, 'airy');
+        end
+        
+        function f = asec(f)
+            f.tree = f.univariate(f.tree, 'asec');
+        end
+        
+        function f = asecd(f)
+            f.tree = f.univariate(f.tree, 'asecd');
+        end
+        
+        function f = asech(f)
+            f.tree = f.univariate(f.tree, 'asech');
+        end
+        
+        function f = asin(f)
+            f.tree = f.univariate(f.tree, 'asin');
+        end
+        
+        function f = asind(f)
+            f.tree = f.univariate(f.tree, 'asind');
+        end
+        
+        function f = asinh(f)
+            f.tree = f.univariate(f.tree, 'asinh');
+        end
+        
+        function f = atan(f)
+            f.tree = f.univariate(f.tree, 'atan');
+        end
+        
+        function f = atand(f)
+            f.tree = f.univariate(f.tree, 'atand');
+        end
+        
+        function f = atanh(f)
+            f.tree = f.univariate(f.tree, 'atanh');
+        end
+        
         function f = cos(f)
             f.tree = f.univariate(f.tree, 'cos');
+        end
+        
+        function f = cosd(f)
+            f.tree = f.univariate(f.tree, 'cosd');
+        end
+        
+        function f = cosh(f)
+            f.tree = f.univariate(f.tree, 'cosh');
+        end
+        
+        function f = cot(f)
+            f.tree = f.univariate(f.tree, 'cot');
+        end
+        
+        function f = cotd(f)
+            f.tree = f.univariate(f.tree, 'cotd');
+        end
+        
+        function f = coth(f)
+            f.tree = f.univariate(f.tree, 'coth');
         end
         
         function f = diff(f, k)
@@ -128,7 +220,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         end
         
         function display(u)
-            % Display a TREEVAR. 
+            % Display a TREEVAR.
             
             if ( length(u) == 1 )
                 % Scalar case.
@@ -259,11 +351,11 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         function f = uminus(f)
             f.tree = f.univariate(f.tree, 'uminus');
         end
-
+        
         function f = uplus(f)
             f.tree = f.univariate(f.tree, 'uplus');
         end
-
+        
         function dom = updateDomain(f, g)
             % UPDATEDOMAIN    Update domain in case we encounter new breakpoints
             if ( isnumeric(f) )
