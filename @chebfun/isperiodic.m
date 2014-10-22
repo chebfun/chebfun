@@ -29,7 +29,7 @@ end
 
 function out = columnIsPeriodic(f)
 
-% Periodic chebfuns should have just a sing fun.
+% Periodic chebfuns should have just a single fun.
 % Check the number of FUNs and the periodicity:
 if ( isperiodic(f.funs{1}) && numel(f.funs) < 2 )
     out = true;
