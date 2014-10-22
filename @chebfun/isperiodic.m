@@ -29,8 +29,9 @@ end
 
 function out = columnIsPeriodic(f)
 
-% Check the number of FUNs:
-if ( isa(f.funs{1}.onefun, 'trigtech') )
+% Periodic chebfuns should have just a sing fun.
+% Check the number of FUNs and the periodicity:
+if ( isperiodic(f.funs{1}) && numel(f.funs) < 2 )
     out = true;
 else
     out = false;
