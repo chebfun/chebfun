@@ -77,7 +77,7 @@ if ( length(n) == 1 ) % Single grid.
         % Rescale the barycentric weights for 1st-kind points so that 
         % norm(v, inf) = 1:
         if ( type == 1 )
-            v = v/max(v);
+            v = v/norm(v, inf);
         end
     end
     if ( nargout > 3 )
