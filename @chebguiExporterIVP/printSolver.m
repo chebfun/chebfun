@@ -12,9 +12,9 @@ function printSolver(fid, expInfo)
 
 % Print commands for solving the problem:
 fprintf(fid,'\n%%%% Solve the problem!');
-fprintf(fid, ['\n%% Here, we call the solveivp() method ' ...
+fprintf(fid, ['\n%% Here, we call the solveIVP() method ' ...
     '(which offers the same functionality \n%% as nonlinear '...
     'backslash but allows options to be passed).\n']);
-fprintf(fid, 'u = solveivp(N, rhs, options);\n');
+fprintf(fid, 'u = solveIVP(N, rhs, options);\n');
 
 end

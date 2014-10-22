@@ -18,7 +18,7 @@ function varargout = solveGUIivp(guifile, handles)
 % If the method is called by calling the command explicitly with a CHEBGUI
 % object (e.g. [U, INFO] = SOLVEGUIVP(GUIFILE) from the command line),
 %   VARARGOUT{1}:   The solution to the problem specified by GUIFILE.
-%   VARARGOUT{2}:   The INFO struct returned by the chebop/solveivp() method.
+%   VARARGOUT{2}:   The INFO struct returned by the chebop/solveIVP() method.
 %
 % See also: chebgui/solveGUI, chebgui/solveGUIbvp.
 
@@ -165,7 +165,7 @@ if ( guiMode )
             @(varargin) chebgui.displayIVPinfo(handles, varargin{:});
 
         % Solve!
-        u = solveivp(N, 0, options, displayFunction);
+        u = solveIVP(N, 0, options, displayFunction);
         % Need a dummy struct so that the code below can both work for the
         % global solver and ODE solver cases.
         info = struct('isLinear', 1, 'error', 0);

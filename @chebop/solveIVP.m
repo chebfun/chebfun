@@ -1,4 +1,4 @@
-function [y, info] = solveivp(N, rhs, pref, varargin)
+function [y, info] = solveIVP(N, rhs, pref, varargin)
 %SOLVEIVP    Solve an IVP by reforming it to a first order system.
 %
 %   U = SOLVEIVP(N, RHS), where N is a CHEBOP and RHS is a CHEBMATRIX, CHEBFUN
@@ -68,7 +68,7 @@ end
 
 % Check for unbounded domains, which we (currently) don't support:
 if ( ~all(isfinite(N.domain)) )
-    error('CHEBFUN:CHEBOP:solveivp:infDom', ...
+    error('CHEBFUN:CHEBOP:solveIVP:infDom', ...
         'Solving IVPs on unbounded intervals is not supported.');
 end
 

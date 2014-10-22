@@ -33,7 +33,7 @@ ivpSolver = func2str(pref.ivpSolver);
 % (ode113, ode15s, ode45) as our choice, call the solveIVP method. Otherwise,
 % solve problems globally:
 if ( isIVP && ~isempty(strfind(ivpSolver, 'chebfun.ode')) )
-    [varargout{1:nargout}] = solveivp(N, rhs, pref, varargin{:});
+    [varargout{1:nargout}] = solveIVP(N, rhs, pref, varargin{:});
 else
     % We have conditions in other fields, or we want to solve IVPs globablly,
     % call CHEBOP/SOLVEBVP:
