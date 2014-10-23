@@ -1,4 +1,4 @@
-function varargout = deal(varargin)
+function varargout = deal(X)
 %DEAL   Deal for chebmatrices.
 %   [A,B,C,...] = DEAL(X) assigns to the variables A,B,C... the entries in the
 %   chebmatrix X by row-major ordering so that A=X(1,1), B=X(1,2), C=X(1,3),
@@ -16,21 +16,13 @@ function varargout = deal(varargin)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if (nargin == 1)
-    X = varargin{1};
-    if ( nargout > prod(size(X)) )
-        error('CHEBFUN:CHEBMATRIX:deal:tooManyOutputs', ...
-            ['Number of outputs should be less than or equal ' ...
-            'to the number of entries in input.'])
-    end
 
-    X = X.';
-    blocks = X.blocks(:);
-    varargout = blocks(1:nargout);
-else
-    if (nargout ~= nargin)
-        error('CHEBFUN:CHEBMATRIX:deal:inputOutputMismatch', ...
-            'Number of inputs must either be 1 or equal number of outputs.')
-    end
-    varargout = varargin;
+if ( nargout > prod(size(X)) )
+    error('CHEBFUN:CHEBMATRIX:deal:tooManyOutputs', ...
+        ['Number of outputs should be less than or equal ' ...
+         'to the number of elements in input chebmatrix.'])
 end
+
+X = X.';
+blocks = X.blocks(:);
+varargout = blocks(1:nargout);
