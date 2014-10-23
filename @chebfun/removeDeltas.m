@@ -9,4 +9,6 @@ for k = 1:length(F.funs)
     F.funs{k} = removeDeltas(F.funs{k});
 end
 
+F.pointValues = chebfun.getValuesAtBreakpoints(F.funs);
+
 end
