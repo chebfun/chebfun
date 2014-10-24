@@ -8,11 +8,15 @@ function M = mult(disc, f)
 
 % Obtaining some useful information:
 n = disc.dimension;
-d = disc.domain;
+dom = disc.domain;
 
-% Convert to a TRIGTECH-based CHEBFUN.
-f = chebfun(f, d, 'periodic');
+% Convert to a TRIGTECH-based CHEBFUN. Use a non-adaptive construction: 
+% we know that the TRIGTECH-based CHEBFUN will have a length smaller 
+% than the CHEBTECH-based CHEBFUN.
+f = chebfun(f, dom, 'periodic', length(f));
+f = simplify(f);
 
-M = trigspec.multmat(n, f.funs{1});
+% Call TRIGSPEC/MULTMAT.
+M = trigspec.multmat(n, f);
 
 end

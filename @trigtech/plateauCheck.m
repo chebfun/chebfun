@@ -32,15 +32,15 @@ function [ishappy, epsLevel, cutoff] = plateauCheck(f, values, pref)
 % [TODO]: implement PLATEAUCHECK for TRIGTECH. For the moment, we just call
 % classicCheck. The reason why the plateauCheck() is needed for TRIGTECH is that
 % it gets called from within LINOP convergence tests.
-%[ishappy, epsLevel, cutoff] = classicCheck(f, pref);
+[ishappy, epsLevel, cutoff] = classicCheck(f, pref);
 
 % [TODO]: implement PLATEAUCHECK for TRIGTECH. For the moment, we just call
 % plateauCheck for CHEBTECH. The reason why the plateauCheck() is needed for 
 % TRIGTECH is that it gets called from within LINOP convergence tests.
-pref.eps = eps;
-f = chebtech2.make({[], chebcoeffs(f)});
-%f = chebtech2.make(feval(f, chebpts(length(f))));
-[ishappy, epsLevel, cutoff] = ...
-    plateauCheck(f, feval(f, chebpts(length(f))), pref);
-end
+% pref.eps = eps;
+% f = chebtech2.make({[], chebcoeffs(f)});
+% %f = chebtech2.make(feval(f, chebpts(length(f))));
+% [ishappy, epsLevel, cutoff] = ...
+%     plateauCheck(f, feval(f, chebpts(length(f))), pref);
 
+end

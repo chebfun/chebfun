@@ -92,10 +92,10 @@ N.init = u0;
 pref.discretization = @trigspec;
 u = solvebvp(N, f, pref);
 
-pass(9) = norm(N*u - f) < tol;
+pass(9) = norm(N*u - f) < 1e3*tol;
 pass(10) = abs(u(dom(1)) - u(dom(2))) < tol;
 pass(11) = abs(feval(diff(u), dom(1)) - feval(diff(u), dom(2))) < tol;
 pass(12) = isequal(get(u.funs{1}, 'tech'), @trigtech);
-
+pass(13) = isreal(u);
 
 end

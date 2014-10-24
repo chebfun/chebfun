@@ -252,6 +252,7 @@ u = solvebvp(L, f, pref);
 pass(33) = norm(L*u - f) < tol;
 pass(34) = abs(u(dom(1)) - u(dom(2))) < tol;
 pass(35) = isequal(get(u.funs{1}, 'tech'), @trigtech);
+pass(36) = isreal(u);
 
 %% Test the TRIGSPEC class. SECOND ORDER AND VARIABLE COEFFICIENTS: 
 %  (2+cos(4x))u'' + sin(cos(2x))u' + exp(cos(x))u = cos(x), on [-pi pi].
@@ -272,9 +273,10 @@ L.bc = 'periodic';
 pref.discretization = @trigspec;
 u = solvebvp(L, f, pref);
 
-pass(36) = norm(L*u - f) < tol;
-pass(37) = abs(u(dom(1)) - u(dom(2))) < tol;
-pass(38) = abs(feval(diff(u), dom(1)) - feval(diff(u), dom(2))) < tol;
-pass(39) = isequal(get(u.funs{1}, 'tech'), @trigtech);
+pass(37) = norm(L*u - f) < tol;
+pass(38) = abs(u(dom(1)) - u(dom(2))) < tol;
+pass(39) = abs(feval(diff(u), dom(1)) - feval(diff(u), dom(2))) < tol;
+pass(40) = isequal(get(u.funs{1}, 'tech'), @trigtech);
+pass(41) = isreal(u);
 
 end
