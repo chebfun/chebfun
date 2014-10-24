@@ -203,6 +203,18 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             f.tree = f.univariate(f.tree, 'coth');
         end
         
+        function f = csc(f)
+            f.tree = f.univariate(f.tree, 'csc');
+        end
+        
+        function f = cscd(f)
+            f.tree = f.univariate(f.tree, 'cscd');
+        end
+        
+        function f = csch(f)
+            f.tree = f.univariate(f.tree, 'csch');
+        end
+        
         function f = diff(f, k)
             % Derivative of a TREEVAR.
             
@@ -244,6 +256,26 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             f.tree = f.univariate(f.tree, 'exp');
         end
         
+        function f = expm1(f)
+            f.tree = f.univariate(f.tree, 'expn1');
+        end
+        
+        function f = log(f)
+            f.tree = f.univariate(f.tree, 'log');
+        end
+        
+        function f = log10(f)
+            f.tree = f.univariate(f.tree, 'log10');
+        end
+        
+        function f = log2(f)
+            f.tree = f.univariate(f.tree, 'log2');
+        end
+        
+        function f = log1p(f)
+            f.tree = f.univariate(f.tree, 'log1p');
+        end
+        
         function h = minus(f, g)
             h = treeVar();
             if ( ~isa(f, 'treeVar') )
@@ -268,24 +300,8 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             end
         end
         
-        function h = plus(f, g)
-            h = treeVar();
-            if ( ~isa(f, 'treeVar') )
-                % (CHEBFUN/SCALAR)+TREEVAR
-                h.tree = treeVar.bivariate(f, g.tree, 'plus', 1);
-            elseif ( ~isa(g, 'treeVar') )
-                % TREEVAR + (CHEBFUN/SCALAR)
-                h.tree = treeVar.bivariate(f.tree, g, 'plus', 0);
-            else
-                % TREEVAR + TREEVAR
-                h.tree = treeVar.bivariate(f.tree, g.tree, 'plus', 2);
-            end
-            h.domain = updateDomain(f, g);
-        end
-        
-        function plot(treeVar)
-            % When we plot a TREEVAR, we plot its syntax tree.
-            treeVar.plotTree(treeVar.tree);
+        function f = pow2(f)
+            f.tree = f.univariate(f.tree, 'pow2');
         end
         
         function h = power(f, g)
@@ -314,6 +330,28 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             h.domain = updateDomain(f, g);
         end
         
+        
+        
+        function plot(treeVar)
+            % When we plot a TREEVAR, we plot its syntax tree.
+            treeVar.plotTree(treeVar.tree);
+        end
+        
+        function h = plus(f, g)
+            h = treeVar();
+            if ( ~isa(f, 'treeVar') )
+                % (CHEBFUN/SCALAR)+TREEVAR
+                h.tree = treeVar.bivariate(f, g.tree, 'plus', 1);
+            elseif ( ~isa(g, 'treeVar') )
+                % TREEVAR + (CHEBFUN/SCALAR)
+                h.tree = treeVar.bivariate(f.tree, g, 'plus', 0);
+            else
+                % TREEVAR + TREEVAR
+                h.tree = treeVar.bivariate(f.tree, g.tree, 'plus', 2);
+            end
+            h.domain = updateDomain(f, g);
+        end
+        
         function h = rdivide(f, g)
             h = treeVar();
             if ( ~isa(f, 'treeVar') )
@@ -329,8 +367,40 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             h.domain = updateDomain(f, g);
         end
         
+        function f = sec(f)
+            f.tree = f.univariate(f.tree, 'sec');
+        end
+        
+        function f = secd(f)
+            f.tree = f.univariate(f.tree, 'secd');
+        end
+        
+        function f = sech(f)
+            f.tree = f.univariate(f.tree, 'sech');
+        end
+
         function f = sin(f)
             f.tree = f.univariate(f.tree, 'sin');
+        end
+        
+        function f = sind(f)
+            f.tree = f.univariate(f.tree, 'sind');
+        end
+        
+        function f = sinh(f)
+            f.tree = f.univariate(f.tree, 'sinh');
+        end
+
+        function f = tan(f)
+            f.tree = f.univariate(f.tree, 'tan');
+        end
+        
+        function f = tand(f)
+            f.tree = f.univariate(f.tree, 'tand');
+        end
+        
+        function f = tanh(f)
+            f.tree = f.univariate(f.tree, 'tanh');
         end
         
         function h = times(f, g)
