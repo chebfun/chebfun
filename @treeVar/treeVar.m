@@ -362,7 +362,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         end
         
         function h = rdivide(f, g)
-            %/
+            %./    Division of TREEVAR objects
             h = treeVar();
             if ( ~isa(f, 'treeVar') )
                 % (CHEBFUN/SCALAR)./TREEVAR
@@ -453,8 +453,10 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
     
     methods ( Static = true, Access = private )
         
+        % Construct syntax trees for univariate methods
         treeOut = univariate(treeIn, method)
         
+        % Construct syntax trees for bivariate methods
         treeOut = bivariate(leftTree, rightTree, method, type)
         
     end
