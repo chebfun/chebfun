@@ -5,8 +5,11 @@ function normA = norm(A, n)
 %
 %   NORM(A, 2) or NORM(A, 'fro') is the same as above.
 %
-%   NORM(A, INF) computes the infinity norm of the CHEBMATRIX A, defined as the
+%   NORM(A, INF) return the infinity norm of the CHEBMATRIX A, defined as the
 %   maximum infinity norm of each of the blocks.
+%
+%   NORM(A, -INF) returns the negative infinity norm of the CHEBMATRIX A,
+%   defined as the minimum of the negative infinity norm of each of the blocks.
 %
 % See also CHEBMATRIX, CHEBFUN/NORM.
 
@@ -42,6 +45,10 @@ switch n
     case {inf, 'inf'}
         normA = cellfun(@(v) norm(v, inf), A.blocks);
         normA = max(normA(:));
+        
+    case {-inf, '-inf'}
+        normA = cellfun(@(v) norm(v, -inf), A.blocks);
+        normA = min(normA(:));
         
     otherwise
         if ( ~ischar(n) )

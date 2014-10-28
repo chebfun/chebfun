@@ -20,7 +20,7 @@ function [ishappy, epslevel, cutoff] = classicCheck(f, pref)
 %   [TESTLENGTH, EPSLEVEL] = HAPPINESSREQUIREMENTS(VALUES, COEFFS, VSCALE, PREF)
 %   returns two scalars TESTLENGTH and EPSLEVEL. A TRIGTECH is deemed to be
 %   'happy' if the coefficients COEFFS(1:TESTLENGTH) (recall that COEFFS are
-%   stored in descending order) are all below EPSLEVEL. The default choice of
+%   stored in ascending order) are all below EPSLEVEL. The default choice of
 %   the test length is:
 %       TESTLENGTH = n,             for n = 1:2
 %       TESTLENGTH = 3,             for n = 3:44
