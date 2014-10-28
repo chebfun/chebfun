@@ -257,7 +257,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         end
         
         function f = expm1(f)
-            f.tree = f.univariate(f.tree, 'expn1');
+            f.tree = f.univariate(f.tree, 'expm1');
         end
         
         function f = log(f)
