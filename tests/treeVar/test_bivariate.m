@@ -1,4 +1,4 @@
-function pass = test_univariate(~)
+function pass = test_bivariate(~)
 % TEST_UNIVARIATE    Test various univariate treeVar methods
 %
 % This methods generates a number of anonymous functions that we convert to
@@ -17,11 +17,7 @@ tArg = 1;
 uArg = [.4 .2];
 
 % List of methods that we want to test:
-testMethods = {@abs, @acos, @acosd, @acot, @acoth, @acsc, @acscd, @acsch, ...
-    @airy, @asec, @asecd, @asech, @asin, @asind, @asinh, @atan, @atand, ...
-    @atanh, @cos, @cosd, @cosh, @cot, @cotd, @coth, @csc, @cscd, @csch, ...
-    @exp, @expm1, @log, @log10, @log1p, @log2, @pow2, @sec, @secd, @sech, ...
-    @sin, @sind, @sinh, @tan, @tand, @tanh, @uminus, @uplus};
+testMethods = {@minus, @plus, @power, @rdivide, @times};
 
 % Store comparison errors:
 errors = zeros(length(testMethods), 1);
@@ -30,13 +26,13 @@ for mCounter = 1:length(testMethods)
     method = testMethods{mCounter};
     
     % Construct an anonymous function that calls the current method of interest:
-    myFun = @(u) diff(u, 2) + diff(u) +  alp*method(u);
+    myFun = @(u) diff(u, 2) + diff(u) +  alp*method(u, diff(u));
     
     % Convert MYFUN to first order system:
     anonFun = treeVar.toFirstOrder(myFun, rhs, dom);
     
     % The correct first order reformulation of MYFUN:
-    correctFun = @(t,u) [u(2); rhs - u(2) - alp*method(u(1))];
+    correctFun = @(t,u) [u(2); rhs - u(2) - alp*method(u(1), u(2))];
     
     % Compare the result of evaluating the automatically converted ANONFUN and
     % the manually constructed CORRECTFUN. The difference in the outputs should
