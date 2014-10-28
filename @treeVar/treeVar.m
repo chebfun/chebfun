@@ -248,12 +248,12 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             else
                 % Systems case.
                 disp('Array-valued treeVar, with trees:');
-                for ( treeCounter = 1:length(u) )
+                for treeCounter = 1:length(u)
                     fprintf('tree %i\n', treeCounter)
                     disp(u(treeCounter).tree);
-                    disp('and the domain:')
-                    disp(u.domain);
                 end
+                disp('and the domain:')
+                disp(u(1).domain);
             end
         end
         
@@ -472,7 +472,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         
         coeff = getCoeffs(infix, varArray)
         
-        printTree(tree, ind, indStr)
+        s = printTree(tree, ind, indStr)
         
         newTree = expandTree(tree, maxOrder)
         
