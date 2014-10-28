@@ -7,7 +7,6 @@ function pass = test_univariate(pref)
 %% Setup
 % Initialize a TREEVAR variable.
 dom = [0 2];
-t = treeVar(1, dom);
 
 % Used for setting up anonymous functions we convert to first order form.
 rhs = 3.2;
