@@ -448,7 +448,7 @@ rhs = [op(dom(1)); fp; op(dom(2))-op(dom(1))];
 D = diffmat([M N], p, dom, 'chebkind1', {'neumann'}, {'sum'});
 ff = D\rhs;
 err = norm(ff-f, inf);
-pass(40) = ( err < 1e1*tol );
+pass(40) = ( err < 5e1*tol );
 
 %% 2nd-kind grid -> 1st-kind grid:
 
