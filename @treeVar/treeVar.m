@@ -93,6 +93,9 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
     methods
         
         function obj = treeVar(IDvec, domain)
+            % The TREEVAR constructor. See documentation above for calling
+            % sequences to the constructor.
+            
             if ( nargin > 0 )
                 % Store the domain.
                 obj.domain = domain;
@@ -101,7 +104,8 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
                 IDvec = 1;
                 obj.domain = [-1 1];
             end
-            % Initialise a syntax tree for a base variable.
+            
+            % Initialise a syntax tree for a base variable:
             obj.tree  = struct('method', 'constr', 'numArgs', 0, ...
                 'diffOrder', 0*IDvec, 'height', 0, 'multCoeff', 1, ...
                 'ID', logical(IDvec));
@@ -222,6 +226,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             if ( nargin < 2 )
                 k = 1;
             end
+            
             % The derivative syntax tree.
             f.tree = struct('method', 'diff', 'numArgs', 2, ...
                 'left', f.tree, 'right', k, ...
@@ -277,9 +282,10 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         end
         
         function h = minus(f, g)
+            %-    Subtraction of TREEVAR objects.
             h = treeVar();
             if ( ~isa(f, 'treeVar') )
-                % (CHEBFUN/SCALAR)-TREEVAR
+                % (CHEBFUN/SCALAR) - TREEVAR
                 h.tree = treeVar.bivariate(f, g.tree, 'minus', 1);
             elseif ( ~isa(g, 'treeVar') )
                 % TREEVAR - (CHEBFUN/SCALAR)
@@ -292,6 +298,10 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         end
         
         function h = mtimes(f, g)
+            %*  Matrix multiplication of TREEVAR objects
+            %
+            % This method only supports SCALAR/TREEVAR*SCALAR/TREEVAR, i.e. not
+            % TREEVAR/CHEBFUN*TREEVAR/CHEBFUN.
             if ( isnumeric(f) || isnumeric(g) )
                 h = times(f, g);
                 h.domain = updateDomain(f, g);
@@ -305,7 +315,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         end
         
         function h = power(f, g)
-            % POWER of a TREEVAR
+            %.^ POWER of a TREEVAR
             h = treeVar();
             if ( ~isa(f, 'treeVar') )
                 % (CHEBFUN/SCALAR).^TREEVAR
@@ -330,14 +340,13 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             h.domain = updateDomain(f, g);
         end
         
-        
-        
         function plot(treeVar)
             % When we plot a TREEVAR, we plot its syntax tree.
             treeVar.plotTree(treeVar.tree);
         end
         
         function h = plus(f, g)
+            %+    Addition of TREEVAR objects.
             h = treeVar();
             if ( ~isa(f, 'treeVar') )
                 % (CHEBFUN/SCALAR)+TREEVAR
@@ -353,6 +362,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         end
         
         function h = rdivide(f, g)
+            %/
             h = treeVar();
             if ( ~isa(f, 'treeVar') )
                 % (CHEBFUN/SCALAR)./TREEVAR
@@ -404,6 +414,9 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         end
         
         function h = times(f, g)
+            %.*    Multiplication of treeVar objects.
+            
+            % Initialize an empty TREEVAR
             h = treeVar();
             if ( ~isa(f, 'treeVar') )
                 % (CHEBFUN/SCALAR).^*TREEVAR
@@ -422,10 +435,6 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             f.tree = f.univariate(f.tree, 'uminus');
         end
         
-        function f = uplus(f)
-            f.tree = f.univariate(f.tree, 'uplus');
-        end
-        
         function dom = updateDomain(f, g)
             % UPDATEDOMAIN    Update domain in case we encounter new breakpoints
             if ( isnumeric(f) )
@@ -436,46 +445,22 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
                 dom = union(f.domain, g.domain);
             end
         end
+        
+        function f = uplus(f)
+            f.tree = f.univariate(f.tree, 'uplus');
+        end
     end
     
+    methods ( Static = true, Access = private )
+        
+        treeOut = univariate(treeIn, method)
+        
+        treeOut = bivariate(leftTree, rightTree, method, type)
+        
+    end
+    
+    
     methods ( Static = true )
-        
-        
-        function treeOut = univariate(treeIn, method)
-            % Construct a syntax tree for univariate functions.
-            treeOut = struct('method', method, ...
-                'numArgs', 1, 'center', treeIn, ...
-                'diffOrder', treeIn.diffOrder, ...
-                'height', treeIn.height + 1, ...
-                'multCoeff', 1, ...
-                'ID', treeIn.ID);
-        end
-        
-        function treeOut = bivariate(leftTree, rightTree, method, type)
-            % type
-            %   2: Both treeVars
-            %   1: Only right treeVar
-            %   0: Only left treeVar
-            if ( type == 2 )
-                treeOut = struct('method', method, 'numArgs', 2, ...
-                    'left', leftTree, 'right', rightTree, ...
-                    'diffOrder', max(leftTree.diffOrder, rightTree.diffOrder), ...
-                    'ID', leftTree.ID | rightTree.ID, ...
-                    'height', max(leftTree.height, rightTree.height) + 1);
-            elseif ( type == 1 )
-                treeOut = struct('method', method, 'numArgs', 2, ...
-                    'left', leftTree, 'right', rightTree, ...
-                    'diffOrder', rightTree.diffOrder, ...
-                    'height', rightTree.height + 1, ...
-                    'ID', rightTree.ID);
-            else
-                treeOut = struct('method', method, 'numArgs', 2, ...
-                    'left', leftTree, 'right', rightTree, ...
-                    'diffOrder', leftTree.diffOrder, ...
-                    'height', leftTree.height + 1, ...
-                    'ID', leftTree.ID);
-            end
-        end
         
         funOut = toRHS(infix, varArray, coeff, indexStart, totalDiffOrders);
         
@@ -514,67 +499,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         
         [funOut, indexStart, problemDom] = toFirstOrderSystem(funIn, rhs, domain)
         
-        function idx = sortConditions(funIn, domain)
-            %SORTBCS    Return a vector with indices on how to sort the results
-            %            of evaluating N.LBC/RBC
-            
-            numArgs = nargin(funIn);
-            args = cell(numArgs, 1);
-            argsVec = zeros(1, numArgs);
-            
-            % Populate the args cell
-            for argCount = 1:numArgs
-                argsVec(argCount) = 1;
-                args{argCount} = treeVar(argsVec, domain);
-                % Reset the index vector
-                argsVec = 0*argsVec;
-            end
-            
-            % Evaluate FUNIN with the TREEVAR arguments:
-            bcResults = funIn(args{:});
-            
-            % Look at the results of evaluating the boundary conditions, find
-            % what constraint operated on what variable, and what it's diffOrder
-            % was:
-            varList = cell(numArgs, 1);
-            diffOrderList = varList;
-            for tCounter = 1:length(bcResults)
-                % Current tree we're looking at:
-                tempTree = bcResults(tCounter).tree;
-                
-                % Check whether more than one variable appear in the condition
-                if ( sum(tempTree.ID) > 1 )
-                    error('CHEBFUN:TREEVAR:sortConditions:nonSeparated', ...
-                        ['For initial value problems, only separated ', ...
-                        'conditions are supported.']);
-                end
-                
-                % What's the active variable in the current tree (i.e. what
-                % variable did the constraint apply to)?
-                activeVar = find(tempTree.ID == 1);
-                % What's the diffOrder of the current constraint?
-                activeDiffOrder = tempTree.diffOrder;
-                activeDiffOrder = activeDiffOrder(activeVar);
-                
-                % Store in a list what variable the current constraint applies
-                % to, and what the current diffOrder is:
-                varList{activeVar} = [varList{activeVar}, tCounter];
-                diffOrderList{activeVar} = [diffOrderList{activeVar}, ...
-                    activeDiffOrder];
-            end
-            
-            % Initalise an index vector to be returned
-            idx = [];
-            
-            % Go through the list of what variables appeared in what
-            % constraints, and sort them based on diffOrders:
-            for varCounter = 1:numArgs
-                [dummy, diffOrderIndex] = sort(diffOrderList{varCounter});
-                tempIndex = varList{varCounter}(diffOrderIndex);
-                idx = [idx, tempIndex];
-            end
-            
-        end
+        idx = sortConditions(funIn, domain)
         
     end
     
