@@ -67,7 +67,7 @@ minSample = tpref.minSamples;
 maxSample = tpref.maxLength;
 pseudoLevel = tpref.eps;
 
-% deal with periodic functions: 
+% Deal with periodic functions: 
 if ( any(strcmpi(dom, 'periodic')) )
         % If periodic flag, then map chebfun2 with TRIGTECHs. 
         pref.tech = @trigtech;
@@ -85,7 +85,7 @@ elseif ( (nargin > 3) && (any(strcmpi(varargin{1}, 'periodic'))) )
         pseudoLevel = tpref.eps;
 end
 
-% deal wi'equi'th equally spaced data functions:
+% Deal with constructions from equally spaced data:
 if ( any(strcmpi(dom, 'equi')) || ((nargin > 3) && (any(strcmpi(varargin{1}, 'equi')))) )
         % Equally spaced data: 
         if ( any(strcmpi(dom, 'equi')) ) 
@@ -100,7 +100,7 @@ if ( any(strcmpi(dom, 'equi')) || ((nargin > 3) && (any(strcmpi(varargin{1}, 'eq
         tol = grid.^(2/3) * max( max( abs(dom(:))), 1) * vscale * pseudoLevel;
         [pivotValue, ignored, rowValues, colValues] = CompleteACA(op, tol, 0); % Do ACA on matrices
         
-        % make chebfun2: 
+        % Make a chebfun2: 
         g.pivotValues = pivotValue;
         g.cols = chebfun(colValues, dom(3:4), 'equi' );
         g.rows = chebfun(rowValues.', dom(1:2), 'equi'  );
