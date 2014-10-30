@@ -485,9 +485,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         [infix, varCounter, varArray] = tree2infix(tree, diffOrders, varCounter, varArray)
         
         anonFun = toAnon(infix, varArray)
-        
-        coeff = getCoeffs(infix, varArray)
-        
+                
         s = printTree(tree, ind, indStr)
         
         newTree = expandTree(tree, maxOrder)
