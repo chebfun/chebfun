@@ -1,22 +1,48 @@
 function newTree = expandTree(tree, maxOrder)
-% EXPANDTREE. Convert expressions like 5*(diff(u) + u) to 5*diff(u) + 5*u.
+%EXPANDTREE    Convert expressions like 5*(diff(u) + u) to 5*diff(u) + 5*u.
+%
+% The role of the EXPANDTREE method is to split up syntax trees, so that
+% expressions involving the highest derivative appearing in the equation stand
+% alone, that is, not inside parenthesis. For example, EXPANDTREE will convert
+% expressions like 5*(diff(u) + u) to 5*diff(u) + 5*u. This is necessary in
+% order to be able to put the correct expression on the right-hand side when
+% calling MATLAB's built in solvers.
+%
+% Calling sequence:
+%   NEWTREE = EXPANDTREE(TREE, MAXORDER)
+% where the inputs are:
+%   TREE:       The syntax tree we want to split.
+%   MAXORDER:   A vector containing the maximum differential order of each
+%               variable that appear in the problem under consideration.
+% and the output is:
+%   NEWTREE:    A syntax tree where the highest order deriative has been taken
+%               out of any parenthesis where other variables with lower
+%               differential order appear.
+
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 if ( ~isstruct(tree) || tree.height <= 1 || all(tree.diffOrder < maxOrder) )
     % If the input is not a tree, it is a very short tree, or its diffOrder is
     % less than the maxOrder we consider, don't need to do anything.
     newTree = tree;
+    
 elseif ( tree.numArgs == 1 )
     % If we have a unary operator, we expand the center node recursively.
     newTree = expandTree(tree.center, maxOrder);
+    
 else
+    % We are dealing with a binary operator.
     if ( ( strcmp(tree.method, 'diff') && tree.height <= 1 ) )
         % We've hit diff(u, k) -- no need to expand the tree further.
         newTree = tree;
-    elseif ( any(strcmp(tree.method, {'plus','minus'})) )
-        % We're at a + or a - => expand the tree recursively:
+        
+    elseif ( any(strcmp(tree.method, {'plus', 'minus'})) )
+        % We're at a + or a -, so expand the syntax tree recursively:
         tree.left = treeVar.expandTree(tree.left, maxOrder);
         tree.right = treeVar.expandTree(tree.right, maxOrder);
         newTree = tree;
+        
     elseif ( strcmp(tree.method, 'times') )
         if ( ~isstruct(tree.left) && tree.right.height <= 1 )
             % We're at 5*u or x.*u.
@@ -120,9 +146,7 @@ else
 %             leftRight = treeVar.expandTree(tree.left.right, maxOrder);
 %             leftTwoArgs = 1;
 %         end
-%         
-
-        
+%                 
         newTree = struct('method', 'plus', 'numArgs', 2, ...
             'left', newLeft, 'right', newRight, ...
             'diffOrder', max(newLeft.diffOrder, newRight.diffOrder), ...

@@ -297,6 +297,20 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             h.domain = updateDomain(f, g);
         end
         
+        function h = mrdivide(f, g)
+            %/  Matrix division of TREEVAR objects
+            %
+            % This method only supports (SCALAR/TREEVAR)/(SCALAR/TREEVAR), i.e.
+            % not (TREEVAR/CHEBFUN)/(TREEVAR/CHEBFUN).
+            if ( isnumeric(f) || isnumeric(g) )
+                h = rdivide(f, g);
+                h.domain = updateDomain(f, g);
+            else
+                error('Dimension mismatch');
+            end
+        end
+        
+        
         function h = mtimes(f, g)
             %*  Matrix multiplication of TREEVAR objects
             %

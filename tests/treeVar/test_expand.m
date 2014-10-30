@@ -1,7 +1,7 @@
 function pass = test_expand
 %% Expanding factored expressions
 u = treeVar();
-s3 = 5*(diff(u, 2) + 3*u);
+s3 = 5*(diff(u, 2) + 3*u)/2;
 fprintf('\n\nExpression tree for s3:\n\n')
 treeVar.printTree(s3.tree);
 figure
