@@ -356,6 +356,8 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         
         function plot(treeVar)
             % When we plot a TREEVAR, we plot its syntax tree.
+            %
+            % See also: treeVar.plotTree.
             treeVar.plotTree(treeVar.tree);
         end
         
@@ -373,6 +375,13 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
                 h.tree = treeVar.bivariate(f.tree, g.tree, 'plus', 2);
             end
             h.domain = updateDomain(f, g);
+        end
+        
+        function s = print(treeVar)
+            % When we print a TREEVAR, we print its syntax tree.
+            %
+            % See also: treeVar.printTree.
+            s = treeVar.printTree(treeVar.tree);
         end
         
         function h = rdivide(f, g)

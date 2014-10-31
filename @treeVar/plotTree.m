@@ -6,6 +6,20 @@ function plotTree(tree)
 % where the input is:
 %   TREE:   A MATLAB struct, describing the syntax tree of a mathematical
 %           expression.
+%
+%  Usually, this method is called from within the TREEVAR plot() method.
+%
+% Example:
+%   % First, define a TREEVAR and carry out some operations:
+%   u = treeVar();
+%   v = cos(u);
+%   w = sin(diff(u));
+%   t = v + w;
+%   % The following are equivalent:
+%   plot(t)
+%   treeVar.plotTree(t.tree)
+%
+% See also: treeVar.plot.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
@@ -20,7 +34,6 @@ deltax = .25;
 tree = layoutNodes(tree, startx, deltax, tree.height + 1, tree.height + 1); 
 
 % Create a figure, and plot the first node
-fig = gcf;
 plot(tree.x, tree.y, 'bo');
 hold on
 

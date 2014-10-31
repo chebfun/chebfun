@@ -1,49 +1,108 @@
-function s = printTree(tree, ind, indStr)
+function s = printTree(tree, indentStr)
+%PRINTTREE    Print a syntax tree
+%
+% Calling sequence:
+%   S = TREEVAR.PRINTTREE(TREE, IND, INDSTR)
+% where the inputs are:
+%   TREE:   A MATLAB struct, specifying a syntax tree (usually stored in a
+%           TREEVAR)
+%   INDSTR: A MATLAB string, that governs the indentation when printing the
+%           current node in the syntax tree.
+% and the output is:
+%   S:      A MATLAB string, which describes the syntax tree.
+%
+%  Usually, this method is called from within the TREEVAR print() method.
+%
+% Example:
+%   % First, define a TREEVAR and carry out some operations:
+%   u = treeVar();
+%   v = cos(u);
+%   w = sin(diff(u));
+%   t = v + w;
+%   % The following are equivalent:
+%   print(t)
+%   treeVar.printTree(t.tree)
+%
+% See also: treeVar.print.
+
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 if ( isempty(tree) )
+    % Printing an empty tree is pretty trivial:
     s = sprintf('(empty tree)\n');
     return
 end
 
+% Initalize a string to be returned:
 s = '';
 
 if ( nargin < 2 )
-    ind = 0;
-    indStr = '';
-end
-
-if ( ind == 0)
-    s = [s, sprintf('%s%s\tdiffOrder: %i\n', indStr, tree.method, ...
+    % We're at the start of the recursion (otherwise, we'd have passed in an
+    % INDENTSTR as well).
+    
+    % At first, we don't do any indentation:
+    indentStr = '';
+    
+    % Print the first method:
+    s = [s, sprintf('%s%s\tdiffOrder: %i\n', indentStr, tree.method, ...
         tree.diffOrder)];
 else
-    if ( indStr(end) ~= '|')
-        indStrTemp = indStr;
+    % We're inside the recursion.
+    
+    if ( indentStr(end) ~= '|')
+        % If the current indentation string doesn't end with |, we replace the
+        % last whitespace with | when printing the current method. This will be
+        % required when we're still setting up the spacing, as we don't want to
+        % print a | every time we indent.
+        
+        % Temporary indentation string for the current method:
+        indStrTemp = indentStr;
         indStrTemp(end) = '|';
     else
-        indStrTemp = indStr;
+        indStrTemp = indentStr;
     end
+    
+    % Print the current method:
     s = [s, sprintf('%s--%s\tdiffOrder: %i\n', indStrTemp, tree.method, ...
         tree.diffOrder)];
 end
-indStr = [indStr, '  '];
+
+% Add whitespace to the indentation string, to be used further in the recusion:
+indentStr = [indentStr, '  '];
+
+% Print the remaining syntax tree recursively:
 switch tree.numArgs
     case 1
-        s = [s, treeVar.printTree(tree.center, ind + 1, [indStr, '|'])];
+        % Printing univariate methods.
+        s = [s, treeVar.printTree(tree.center, [indentStr, '|'])];
+    
     case 2
+        % Printing bivariate methods.
         
         if ( isstruct(tree.left) )
-            s = [s, treeVar.printTree(tree.left, ind+1, [indStr, '|'])];
+            % If the left child is a tree, print it recursively:
+            s = [s, treeVar.printTree(tree.left, [indentStr, '|'])];
         elseif ( isnumeric(tree.left) )
-            s = [s, sprintf('%s|--numerical \tValue: %4.2f\n', indStr, tree.left)];
+            % Left node was a scalar:
+            s = [s, sprintf('%s|--numerical \tValue: %4.2f\n', ...
+                indentStr, tree.left)];
         else
-            s = [s, fprintf('%s|--chebfun\n', indStr)];
+            % Left node was a CHEBFUN:
+            s = [s, fprintf('%s|--chebfun\n', indentStr)];
         end
         
         if ( isstruct(tree.right) )
-            s = [s, treeVar.printTree(tree.right, ind+1, [indStr, ' '])];
+            % If the right child is a tree, print it recursively:
+            s = [s, treeVar.printTree(tree.right, [indentStr, ' '])];
         elseif ( isnumeric(tree.right) )
-            s = [s, sprintf('%s|--numerical \tValue: %4.2f\n', indStr, tree.right)];
+            % Right node is a scalar:
+            s = [s, sprintf('%s|--numerical \tValue: %4.2f\n', ...
+                indentStr, tree.right)];
         else
-            s = [s, fprintf('%s|--chebfun\n', indStr)];
+            % Right node is a CHEBFUN:
+            s = [s, fprintf('%s|--chebfun\n', indentStr)];
         end       
 end
+
 end
