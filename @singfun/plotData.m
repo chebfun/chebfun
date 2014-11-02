@@ -80,6 +80,15 @@ if ( any(f.exponents < 0) )
     data.defaultYLim = 0;
 end
 
+% Set the x-limits accordingly:
+idxl1 = find(data.yLine >= data.yLim(1), 1, 'first');
+idxl2 = find(data.yLine <= data.yLim(2), 1, 'first');
+
+idxr1 = find(data.yLine >= data.yLim(1), 1, 'last');
+idxr2 = find(data.yLine <= data.yLim(2), 1, 'last');
+
+data.xLim = [data.xLine(max([idxl1 idxl2])) data.xLine(min([idxr1 idxr2]))];
+
 end
 
 function yLim = getYLimits(vals, exps)

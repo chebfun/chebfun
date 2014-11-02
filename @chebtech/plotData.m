@@ -55,6 +55,9 @@ if ( isempty(g) )
     
     % yLim:
     data.yLim = [min(data.yLine(:)) max(data.yLine(:))];
+    
+    % xLim:
+    data.xLim = [-1 1];
 
 elseif ( isa(g, 'chebtech') )   
     % PLOT(F, G)

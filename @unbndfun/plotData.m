@@ -18,36 +18,54 @@ if ( nargin == 1 || isempty(g) )
     % Map the 'x' data using f.mapping.For:
     data.xLine = f.mapping.For(data.xLine);
     data.xPoints = f.mapping.For(data.xPoints);
+    data.xLim = f.mapping.For(data.xLim);
     
     %% Figure out the xlim:
-    data.xLim = get(f, 'domain');
+    xLim = get(f, 'domain');
     
     % Size of the window:
-    window = 10;
+    window = 20;
     
     % [TODO]: We need to find a better way to determine the center and the
     % width of the window.
     
     % Center the window at the origin.
-    if ( all(isinf(data.xLim)) )
+    if ( all(isinf(xLim)) )
         center = 0;
         
         % If the left endpoint is -Inf:
-        if ( isinf(data.xLim(1)) )
-            data.xLim(1) = center - window;
+        if ( isinf(xLim(1)) )
+            xLim(1) = center - window;
         end
         
         % If the right endpoint is Inf:
-        if ( isinf(data.xLim(2)) )
-            data.xLim(2) = center + window;
+        if ( isinf(xLim(2)) )
+            xLim(2) = center + window;
         end
         
-    elseif ( isinf(data.xLim(1)) )
-        data.xLim(1) = data.xLim(2) - window;
+    elseif ( isinf(xLim(1)) )
+        xLim(1) = xLim(2) - window;
     else
-        data.xLim(2) = data.xLim(1) + window;
+        xLim(2) = xLim(1) + window;
     end
     
+    % Update the xLim:
+    if ( isfinite(data.xLim(1)) );
+        % If the left endpoint is finite:
+        data.xLim(1) = (data.xLim(1) + xLim(1))/2;
+    else
+        % If the left endpoint is -Inf:
+        data.xLim(1) = max([data.xLim(1) xLim(1)]);
+    end
+    
+    if ( isfinite(data.xLim(2)) );
+        % If the right endpoint is finite:
+        data.xLim(2) = (data.xLim(2) + xLim(2))/2;
+    else
+        % If the right endpoint is Inf:
+        data.xLim(2) = min([data.xLim(2) xLim(2)]);
+    end
+
     % Get a better yLim:
     mask = data.xLine > data.xLim(1) & data.xLine < data.xLim(2);
     data.yLim = [min(data.yLine(mask)) max(data.yLine(mask))];
