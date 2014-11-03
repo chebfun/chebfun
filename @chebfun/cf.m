@@ -125,9 +125,8 @@ if ( ~isPeriodic )
         % The degree in this case is one less than the length:
         M = length(f) - 1;
     end
-end
-
-if ( isPeriodic )
+else
+    % Periodic case:
     % Use the full expansion of f if M is not provided:
     if ( isempty(M) || 2*M + 1 > length(f) )
         M = (length(f)-1)/2;
@@ -243,7 +242,7 @@ if ( rem(N, 1) ~= 0 )
     error( 'N is not an integer, even length trigfun!' )
 end
 a = trigcoeffs(f, length(f));
-a = a(N+1:2*M+1);
+a = a(N+1:(N+1+M));
 
 dom = domain(f);
 
