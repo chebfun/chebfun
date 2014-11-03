@@ -29,7 +29,7 @@ for mCounter = 1:length(testMethods)-2
     myFun = @(u) diff(u, 2) + diff(u) +  alp*method(u, diff(u));
     
     % Convert MYFUN to first order system:
-    anonFun = treeVar.toFirstOrder(myFun, rhs, dom);
+    anonFun = treeVar.toFirstOrderSystem(myFun, rhs, dom);
     
     % The correct first order reformulation of MYFUN:
     correctFun = @(t,u) [u(2); rhs - u(2) - alp*method(u(1), u(2))];
@@ -48,7 +48,7 @@ for mCounter = length(testMethods)-1:length(testMethods)
     myFun = @(u) diff(u, 2) + diff(u) +  alp*method(u, sArg);
     
     % Convert MYFUN to first order system:
-    anonFun = treeVar.toFirstOrder(myFun, rhs, dom);
+    anonFun = treeVar.toFirstOrderSystem(myFun, rhs, dom);
     
     % The correct first order reformulation of MYFUN:
     correctFun = @(t,u) [u(2); rhs - u(2) - alp*method(u(1), sArg)];

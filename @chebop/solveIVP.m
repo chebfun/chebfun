@@ -92,13 +92,8 @@ isSystem = ( nargin(N.op) <= 2 );
 
 % We call the conversion methods of the TREEVAR class, the call depends on
 % whether we're dealing with a system or not.
-if ( isSystem )
-    [anonFun, varIndex, problemDom] = ...
-        treeVar.toFirstOrder(N.op, rhs, N.domain);
-else
-    [anonFun, varIndex, problemDom] = ...
-        treeVar.toFirstOrderSystem(N.op, rhs, N.domain);
-end
+[anonFun, varIndex, problemDom] = ...
+    treeVar.toFirstOrderSystem(N.op, rhs, N.domain);
 
 % Join all breakpoints, which can either be specified by the CHEBOP, or arise
 % from discontinuous coefficients in the problem.
