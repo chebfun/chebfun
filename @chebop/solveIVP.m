@@ -80,20 +80,11 @@ if ( isempty(strfind(func2str(pref.ivpSolver), 'chebfun.ode')) )
     return
 end
 
-% Are we dealing with a system?
-isSystem = ( nargin(N.op) <= 2 );
-
-% % Ensure RHS is a CHEBMATRIX
-% if ( ~isa(rhs, 'chebmatrix') )
-%     rhs = chebmatrix(rhs);
-% end
-
 %% Convert to a first-order system
 
 % We call the conversion methods of the TREEVAR class, the call depends on
 % whether we're dealing with a system or not.
-[anonFun, varIndex, problemDom] = ...
-    treeVar.toFirstOrderSystem(N.op, rhs, N.domain);
+[anonFun, varIndex, problemDom] = treeVar.toFirstOrder(N.op, rhs, N.domain);
 
 % Join all breakpoints, which can either be specified by the CHEBOP, or arise
 % from discontinuous coefficients in the problem.

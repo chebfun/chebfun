@@ -518,7 +518,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             end
         end
         
-        [funOut, indexStart, problemDom] = toFirstOrderSystem(funIn, rhs, domain)
+        [funOut, indexStart, problemDom] = toFirstOrder(funIn, rhs, domain)
         
         idx = sortConditions(funIn, domain)
         

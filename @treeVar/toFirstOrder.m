@@ -1,4 +1,4 @@
-function [funOut, indexStart, problemDom] = toFirstOrderSystem(funIn, rhs, domain)
+function [funOut, indexStart, problemDom] = toFirstOrder(funIn, rhs, domain)
 % Independent variable on the domain
 t = chebfun(@(t) t, domain);
 
