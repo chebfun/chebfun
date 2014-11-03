@@ -25,12 +25,6 @@ if ( nargin(funIn) == 1 )
 else
     fevalResult = funIn(t, args{:});
 end
-% fevalResult = funIn(t, args{:});
-
-% % Ensure that FEVALRESULT is a CHEBMATRIX:
-% if ( ~isa(fevalResult, 'chebmatrix') )
-%     fevalResult = chebmatrix(fevalResult);
-% end
 
 % If we got passed the problem as N\0, i.e. a RHS that did not match the
 % dimensions, we need to repmat it so that the RHS variable has the correct
