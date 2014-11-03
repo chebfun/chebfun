@@ -1,4 +1,7 @@
 function [out, varCounter, varArray] = tree2infix(tree, eqno, indexStart)
+%TREE2INFIX    Convert a syntax tree to infix form
+%
+%
 varCounter = 1;
 varArray = [];
 
@@ -73,8 +76,8 @@ if ( isnumeric(tree) )
     % The left tree is a scalar.
     infixOut = varName;
 else
-    % The left tree must be a chebfun -- need to be able to evaluate
-    % it on gridpoints
+    % The left tree must be a chebfun -- need to be able to evaluate it on
+    % gridpoints
     infixOut = [varName, '(t)'];
 end
 varArray = [varArray; {varName, tree}];

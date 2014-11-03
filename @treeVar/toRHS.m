@@ -1,4 +1,6 @@
 function anonFun = toRHS(systemInfix, varArrays, coeffs,  indexStart, totalDiffOrders)
+%TORHS
+
 % FEVAL Evaluates an anon with an input argument, similar to f(u) where f
 % is an anonymous function and u is the argument.
 
@@ -36,12 +38,13 @@ anonFun = eval(infixForm);
 end
 
 function loadVariables(varArrays)
+%LOADVARIABLES Load variables into the memory scope of the caller function
 
 for arrCounter = 1:length(varArrays)
     varArray = varArrays{arrCounter};
     
     for i=1:size(varArray, 1)
-        assignin('caller',varArray{i, 1}, varArray{i, 2})
+        assignin('caller', varArray{i, 1}, varArray{i, 2})
     end
 end
 end

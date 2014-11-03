@@ -151,8 +151,10 @@ end
 if ( strcmp(tree.method, 'constr') )
     % If we're at a constructor leave, change the text slightly:
     if ( length(tree.ID) == 1)
+        % Scalar case.
         varString = 'u';    
     else
+        % Systems case, print u and the variable number:
         varString = sprintf('u%i', find(tree.ID == 1));
     end
     text(tree.x + 0.02, tree.y - 0.01, varString, 'Interpreter', 'none')
