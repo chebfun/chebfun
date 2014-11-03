@@ -1,4 +1,4 @@
-'SIR model'
+'SIR model of infectious disease'
 'system'
 domain = '[0 30]';
 DE = {'u'' = -0.003*v*u','v'' = 0.003*v*u - 0.3*v','w'' = 0.3*v'};
