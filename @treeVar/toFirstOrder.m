@@ -1,4 +1,6 @@
 function [funOut, indexStart, problemDom] = toFirstOrder(funIn, rhs, domain)
+%TOFIRSTORDER    Convert higher order anonymous functions to first order systems
+
 % Independent variable on the domain
 t = chebfun(@(t) t, domain);
 
@@ -96,8 +98,17 @@ for wCounter = 1:length(fevalResult)
     
     % The current result we're looking at.
     res = fevalResult(wCounter);
+    
     % Current diffOrders
     diffOrders = res.tree.diffOrder;
+    
+    % Ensure that we never have the highest derivatives of more than one
+    % variable appearing in a single equation:
+    if ( sum(totalDiffOrders == diffOrders) > 1 )
+        error('CHEBFUN:TREEVAR:diffOrders', ['The highest order derivative ' ...
+            'of more than one variable appears to be present in the same ' ...
+            'equation. Unable to convert to first order format.'])
+    end
     
     % Expand the tree, so that PLUS rather than TIMES is sitting at the top of
     % it.
@@ -120,6 +131,7 @@ for wCounter = 1:length(fevalResult)
     % Find what argument corresponds to the highest derivative one in the
     % current expression we're looking at:
     maxDerLoc = find(expTree.diffOrder == max(diffOrders));
+    
     % Convert the infix form of the expression that gives us the coefficient
     % multiplying the highest order derivative appearing in the expression to an
     % anonymous function we can evaluate:
