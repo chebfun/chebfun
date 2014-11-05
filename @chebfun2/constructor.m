@@ -109,7 +109,7 @@ if ( any(strcmpi(dom, 'equi')) || ((nargin > 3) && (any(strcmpi(varargin{1}, 'eq
 end
 
 if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
-    if ( numel( op ) == 1 )
+    if ( numel( op ) == 1 && ~any(strcmpi(dom, 'coeffs')) )
         % LNT wants this:
         g = constructor(g, @(x,y) op + 0*x, dom);
         
