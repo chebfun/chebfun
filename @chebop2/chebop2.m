@@ -11,7 +11,8 @@ classdef chebop2
 % functions of two variables defined on [a,b] by [c,d].
 %
 % N = CHEBOP2(@(x,y,u) op(x,y,u),...) constructs a variable coefficient PDE
-% operator.
+% operator. If a partial differential operator is constant coefficient, we
+% recommend the @(u) notation rather than @(x,y,u) as it is more efficient. 
 %
 % Boundary conditions are imposed via the syntax N.lbc, N.rbc, N.ubc, and N.dbc.
 %
