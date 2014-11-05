@@ -208,6 +208,12 @@ elseif ( numel(dom) ~= 4 )
         'Domain not fully determined.');
 end
 
+% Check for infinite domains: 
+if ( any( isinf( dom ) ) ) 
+    error('CHEBFUN2:DOMAIN:INFINITE', ...
+        'Chebfun2 cannot approximation functions on infinite domains.');
+end
+
 % If the vectorize flag is off, do we need to give user a warning?
 if ( vectorize == 0 ) % another check
     % Check for cases: @(x,y) x*y, and @(x,y) x*y'
