@@ -1,7 +1,7 @@
 classdef chebop2
-%CHEBOP2   CHEBOP2 class for representing partial differential operators.
+%CHEBOP2   CHEBOP2 class for representing linear partial differential operators.
 %
-% Class used to solve PDEs defined on rectangular domains that have unique and
+% Class used to solve linear PDEs defined on rectangular domains that have unique and
 % globally smooth solutions.
 %
 % N = CHEBOP2(@(u) op(u)) constructs an operator N representing the operator
@@ -26,7 +26,8 @@ classdef chebop2
 % equations using a global spectral method, in preparation, 2014.
 %
 % Warning: This PDE solver is an experimental new feature. It has not been
-% publicly advertised.
+% publicly advertised.  Chebop2 cannot do nonlinear problems as more 
+% algorithmic advances are needed. 
 
 % Copyright 2014 by The University of Oxford and The Chebfun2 Developers.
 % See http://www.chebfun.org/ for Chebfun information.
