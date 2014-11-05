@@ -311,7 +311,7 @@ while ( ~isHappy && ~failure )
     %%% PHASE 2: %%%
     % Now resolve along the column and row slices:
     n = grid;  m = grid;
-    while ( ~isHappy )
+    while ( ~isHappy && ~failure  )
         if ( ~resolvedCols )
             % Double sampling along columns
             [n, nesting] = gridRefine( n , pref );
