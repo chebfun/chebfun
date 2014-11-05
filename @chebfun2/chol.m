@@ -46,6 +46,14 @@ k = length( f );
 % All the pivots should be on the y = x line. 
 PivLoc = f.pivotLocations; 
 
+if ( isempty( PivLoc ) ) 
+    % For some reason (probably because f was made with sampling data, rather
+    % than a handle) f didn't have any pivot information. Make it now: 
+    f = chebfun2( @(x, y) feval(f,x,y), f.domain);
+    varargout = {chol( f )}; 
+    return
+end
+
 % Find the first pivot location is off-diagonal: 
 Diagk = find( PivLoc(:,1) ~= PivLoc(:,2), 1, 'first'); 
 k = min( k, Diagk ); 
