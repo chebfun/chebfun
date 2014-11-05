@@ -518,11 +518,15 @@ function op = str2op( op )
 % handle than can be evaluated.
 
 depvar = symvar( op );
-if ( numel(depvar) > 2 )
+if ( numel(depvar) > 2)
     error('CHEBFUN:CHEBFUN2:constructor:str2op:depvars', ...
         'Too many dependent variables in string input.');
+elseif ( numel(depvar) == 1 )
+    % Treat as a complex variable: 
+    op = eval(['@(' real(depvar{1}) + 1i*imag(depvar{1}) ')' op]);
+else
+    op = eval(['@(' depvar{1} ',' depvar{2} ')' op]);
 end
-op = eval(['@(' depvar{1} ',' depvar{2} ')' op]);
 
 end
 
