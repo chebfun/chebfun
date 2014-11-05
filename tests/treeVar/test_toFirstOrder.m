@@ -41,4 +41,26 @@ anonFun = treeVar.toFirstOrder(myfun, rhs, dom);
 % Expect this to be [u(2); -u(1))/(x(-.5)+1)] = [1; -4]
 res =  anonFun(-.5, [2 2]);
 pass(5) = all( res == [2;-4]);
+
+%% Coupled systems -- Unsupported format, highest order derivatives in same eqn
+myfun = @(x,u,v) [diff(u,2) + diff(v,2); diff(u) + sin(v)];
+rhs = [1;2];
+try
+    treeVar.toFirstOrder(myfun, rhs, dom);
+catch ME
+    % The highest order derivatives of u and v appear in the same line -- this
+    % should give us an error.
+    pass(6) = strcmp(ME.identifier, 'CHEBFUN:TREEVAR:toFirstOrder:diffOrders');
+end
+
+%% Coupled systems -- Nonlinearity in highest order derivative
+myfun = @(x,u,v) [diff(u,2).*diff(v); diff(v,2) + sin(u)];
+rhs = [1;2];
+try
+    treeVar.toFirstOrder(myfun, rhs, dom);
+catch ME
+    % We're multiplying the highest order derivative by a variable, this should
+    % give an error.
+    pass(7) = strcmp(ME.identifier, 'CHEBFUN:TREEVAR:expandTree:nonlinearity');
+end
 end

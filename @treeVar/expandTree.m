@@ -44,109 +44,172 @@ else
         newTree = tree;
         
     elseif ( strcmp(tree.method, 'times') )
+        
         if ( ~isstruct(tree.left) && tree.right.height <= 1 )
-            % We're at 5*u or x.*u.
+            % We're at 5*u or x.*u. We know that we won't need to split such
+            % simple trees, so we simply return the input.
             newTree = tree;
             return;
         elseif ( ~isstruct(tree.right) && tree.left.height <= 1 )
-            % We're at u*5 or u.*x.
+            % We're at u*5 or u.*x. We know that we won't need to split such
+            % simple trees, so we simply return the input.
             newTree = tree;
             return;
         end
         
+        % If both left and right arguments to the operator are syntax trees, and
+        % the highest order derivative appear in any, we know that we must have
+        % nonlinearities in the highest order derivative, e.g. in the case of a
+        % first order IVP, u.*diff(u). This is not supported, so throw an error:
+        if ( isstruct(tree.left) && isstruct(tree.right) && ...
+                ( any(tree.diffOrder == maxOrder) ) )
+            error('CHEBFUN:TREEVAR:expandTree:nonlinearity', ...
+                ['Nonlinearity in highest order derivative detected.\n' ...
+                'Unable to convert to first order format.']);
+        end
+        
+        % Find out what kind of argument we're dealing with for the left
+        % argument of the operator
         if ( ~isstruct(tree.left) )
+            % Left argument is not a syntax tree, must be either a CHEBFUN or a
+            % scalar. In either case, the left tree has zero children.
             leftNumArgs = 0;
         else
+            % Left tree is indeed a syntax tree, store its number of childs.
             leftNumArgs = tree.left.numArgs;
         end
         
+        % Find out what kind of argument we're dealing with for the right
+        % argument of the operator:
         if ( ~isstruct(tree.right) )
+            % Right argument is not a syntax tree, must be either a CHEBFUN or a
+            % scalar. In either case, the right tree has zero children.
             rightDiffOrder = 0;
             rightNumArgs = 0;
         else
+            % Left tree is indeed a syntax tree, store its number of childs.
             rightNumArgs = tree.right.numArgs;
         end
         
+        % Split up the left tree depending on how many childs it has. In case we
+        % don't need to split at the current level, we store the differential
+        % order and the height of the left tree in the variables LEFTDIFFORDER
+        % and LEFTHEIGHT. Finally, we introduce the Boolean variables SPLITLEFT
+        % which indicates whether the left tree had to be splitted:
         if ( leftNumArgs == 0 || ...
                 (strcmp(tree.left.method,'diff') && tree.left.height <= 1 )  )
+            % We're either dealing with a CHEBFUN/scalar left tree, or it's
+            % differentiating one of the basis variables directly (as that's the
+            % only case that tree.left.height <= 1). In this case, no splitting
+            % is needed.
             leftTree = tree.left;
             leftDiffOrder = 0;
             leftHeight = 0;
             splitLeft = false;
         elseif ( leftNumArgs == 1 )
+            % He're we're dealing with the unary operator case. In this case, we
+            % don't need to split at the current level, however, we recursively
+            % split up the child tree.
             leftTree = treeVar.expandTree(tree.left, maxOrder);
             leftDiffOrder = leftTree.diffOrder;
             leftHeight = leftTree.height;
             splitLeft = false;
         else
+            % He're we're dealing with the binary operator case. In this case,
+            % we do need to split at the current level, as well as recursively
+            % splitting up both the child trees. LEFTLEFT and LEFTRIGHT will be
+            % the syntax trees stored in the left child of the current level,
+            % once we've split up the child trees of the current level.
             leftLeft = treeVar.expandTree(tree.left.left, maxOrder);
             leftRight = treeVar.expandTree(tree.left.right, maxOrder);
             splitLeft = true;
         end
         
+        % Split up the right tree depending on how many childs it has. In case
+        % we don't need to split at the current level, we store the differential
+        % order and the height of the right tree in the variables RIGHTDIFFORDER
+        % and RIGHTHEIGHT. Finally, we introduce the Boolean variables
+        % SPLITRIGHT which indicates whether the right tree had to be splitted:
         if ( rightNumArgs == 0 || ...
                 (strcmp(tree.right.method,'diff') && tree.right.height <= 1 )  )
+            % We're either dealing with a CHEBFUN/scalar right tree, or it's
+            % differentiating one of the basis variables directly (as that's the
+            % only case that tree.right.height <= 1). In this case, no splitting
+            % is needed.
             rightTree = tree.right;
             rightDiffOrder = 0;
             rightHeight = 0;
             splitRight = false;
         elseif ( rightNumArgs == 1 )
+            % He're we're dealing with the unary operator case. In this case, we
+            % don't need to split at the current level, however, we recursively
+            % split up the child tree.
             rightTree = treeVar.expandTree(tree.right, maxOrder);
             rightDiffOrder = rightTree.diffOrder;
             rightHeight = 0;
             splitRight = false;
         else
+            % He're we're dealing with the binary operator case. In this case,
+            % we do need to split at the current level, as well as recursively
+            % splitting up both the child trees. RIGHTLEFT and RIGHTRIGHT will
+            % be the syntax trees stored in the right child of the current
+            % level, once we've split up the child trees of the current level.
             rightLeft  = treeVar.expandTree(tree.right.left, maxOrder);
             rightRight = treeVar.expandTree(tree.right.right, maxOrder);
             splitRight = true;
         end
         
-        if ( splitLeft && ~splitRight )
+        % If we had to split either the left tree or the right tree, construct
+        % new syntax trees which we'll then glue together below. Note that we
+        % should never expect to split both the left and right trees, as that
+        % indicates nonlinearities in the highest order derivative.
+        if ( ~splitLeft && ~splitRight )
+            % The simple case, no splitting required, so the new left and right
+            % syntax trees will be the current ones:
+            newLeft = leftTree;
+            newRight = rightTree;
+            
+        elseif ( splitLeft && ~splitRight )
+            % Had to split on the left, not the right.
+            
+            % Multiply together the new left factor of the left tree, and the
+            % current right tree:
             newLeft = struct('method','times', 'numArgs', 2, ...
                 'left', leftLeft, ...
                 'right', rightTree,...
                 'diffOrder', max(leftLeft.diffOrder, rightDiffOrder), ...
                 'height', max(leftLeft.height, rightHeight) + 1);
+            
+            % Multiply together the new right factor of the left tree, and the
+            % current right tree:
             newRight = struct('method','times', 'numArgs', 2, ...
                 'left', leftRight, ...
                 'right', rightTree, ...
                 'diffOrder', max(leftRight.diffOrder, rightDiffOrder) + 1, ...
                 'height', max(leftRight.height, rightHeight) + 1);
+            
         elseif ( ~splitLeft && splitRight )
+            % Had to split on the left, not the right.
+
+            % Multiply together the current left tree, and the new left factor
+            % of the right tree:
             newLeft = struct('method','times', 'numArgs', 2, ...
                 'left', leftTree, ...
                 'right', rightLeft,...
                 'diffOrder', max(leftDiffOrder, rightLeft.diffOrder), ...
                 'height', max(leftHeight, rightLeft.height) + 1);
+            
+            % Multiply together the current left tree, and the new right factor
+            % of the right tree:
             newRight = struct('method','times', 'numArgs', 2, ...
                 'left', leftTree, ...
                 'right', rightRight,...
                 'diffOrder', max(leftDiffOrder, rightRight.diffOrder), ...
                 'height', max(leftHeight, rightRight.height) + 1);
-        elseif ( splitLeft && splitRight )
-            disp('Split both?')
-        elseif ( ~splitLeft && ~splitRight )
-            newLeft = leftTree;
-            newRight = rightTree;
-        elseif ( leftNumArgs < 2 && rightNumArgs == 2 )
-            newLeft = struct('method','times', 'numArgs', 2, ...
-                'left', leftTree, ...
-                'right', rightLeft,...
-                'diffOrder', max(leftDiffOrder, rightLeft.diffOrder), ...
-                'height', max(leftHeight, rightLeft.height) + 1);
-            newRight = struct('method','times', 'numArgs', 2, ...
-                'left', leftTree, ...
-                'right', rightRight, ...
-                'diffOrder', max(leftDiffOrder, rightRight.diffOrder), ...
-                'height', max(leftHeight, rightRight.height) + 1);
+            
         end
-         
-%         if ( ( isstruct(tree.rightleft) ) && ( tree.left.numArgs == 2 ) )
-%             leftLeft = treeVar.expandTree(tree.left.left, maxOrder);
-%             leftRight = treeVar.expandTree(tree.left.right, maxOrder);
-%             leftTwoArgs = 1;
-%         end
-%                 
+              
+        % Add together the new left and right trees, splitting complete! 
         newTree = struct('method', 'plus', 'numArgs', 2, ...
             'left', newLeft, 'right', newRight, ...
             'diffOrder', max(newLeft.diffOrder, newRight.diffOrder), ...
