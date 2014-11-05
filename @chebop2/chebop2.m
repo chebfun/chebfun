@@ -15,11 +15,22 @@ classdef chebop2
 %
 % Boundary conditions are imposed via the syntax N.lbc, N.rbc, N.ubc, and N.dbc.
 %
-% Example (solve Poisson with Dirichlet conditions):
+% Example 1: (Poisson with Dirichlet conditions):
 %    N = chebop2(@(u) diff(u,2,1) + diff(u,2,2));
 %    N.bc = 0;
 %    u = N \ 1;
+% 
+% Example 2: (Helmholtz equation with gravity)
+%    N = chebop2(@(x,y,u) laplacian(u) - 10*y.^2.*u, [-1 1 -3 0]); 
+%    N.bc = 1; 
+%    u = N \ 0; 
 %
+% Example 3: (Klein-Gordon equation) 
+%    N = chebop2(@(u) diff(u,2,1) - diff(u,2,2) + 5*u,[-1 1 0 3]); 
+%    N.lbc = 0; N.rbc = 0; 
+%    N.dbc = @(u) [u - exp(-30*x.^2) ; diff(u)];
+%    u = N \ 0; 
+% 
 % For further details about the PDE solver, see:
 %
 % A. Townsend and S. Olver, The automatic solution of partial differential
