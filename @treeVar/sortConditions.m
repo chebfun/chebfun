@@ -1,5 +1,7 @@
 function idx = sortConditions(funIn, domain)
-%SORTBCS    Return a vector with indices on how to sort the results of
+%SORTCONDITIONS    Returns how the results of evaluating BCs should be sorted
+%
+% Return a vector with indices on how to sort the results of
 %           evaluating N.LBC/RBC.
 
 numArgs = nargin(funIn);

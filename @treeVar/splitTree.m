@@ -1,4 +1,9 @@
 function [newTree, derTree] = splitTree(tree, maxOrder)
+%SPLITTREE     Split syntax trees into derivative part and non-derivative part
+
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+
 % Isolate where the highest order derivative appears.
 
 % If the highest order derivative is lower than the maximum order of

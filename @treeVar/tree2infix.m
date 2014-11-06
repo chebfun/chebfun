@@ -2,6 +2,10 @@ function [out, varCounter, varArray] = tree2infix(tree, eqno, indexStart)
 %TREE2INFIX    Convert a syntax tree to infix form
 %
 %
+
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+
 varCounter = 1;
 varArray = [];
 

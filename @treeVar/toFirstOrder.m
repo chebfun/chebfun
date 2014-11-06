@@ -1,6 +1,9 @@
 function [funOut, indexStart, problemDom] = toFirstOrder(funIn, rhs, domain)
 %TOFIRSTORDER    Convert higher order anonymous functions to first order systems
 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+
 % Independent variable on the domain
 t = chebfun(@(t) t, domain);
 
@@ -105,9 +108,10 @@ for wCounter = 1:length(fevalResult)
     % Ensure that we never have the highest derivatives of more than one
     % variable appearing in a single equation:
     if ( sum(totalDiffOrders == diffOrders) > 1 )
-        error('CHEBFUN:TREEVAR:diffOrders', ['The highest order derivative ' ...
-            'of more than one variable appears to be present in the same ' ...
-            'equation. Unable to convert to first order format.'])
+        error('CHEBFUN:TREEVAR:toFirstOrder:diffOrders', ...
+            ['The highest order derivative of more than one variable ' ...
+            'appears to be\npresent in the same equation. ' ...
+            'Unable to convert to first order format.'])
     end
     
     % Expand the tree, so that PLUS rather than TIMES is sitting at the top of

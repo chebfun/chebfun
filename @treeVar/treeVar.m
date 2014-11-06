@@ -487,40 +487,32 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
     
     methods ( Static = true )
         
-        funOut = toRHS(infix, varArray, coeff, indexStart, totalDiffOrders);
-        
-        [newTree, derTree] = splitTree(tree, maxOrder)
-        
-        [infix, varCounter, varArray] = tree2infix(tree, diffOrders, varCounter, varArray)
-        
-        anonFun = toAnon(infix, varArray)
-                
-        s = printTree(tree, ind, indStr)
-        
+        % Convert expressions like 5*(diff(u) + u) to 5*diff(u) + 5*u
         newTree = expandTree(tree, maxOrder)
         
+        % Plot a syntax tree
         plotTree(tree, varargin)
         
-        function out = tree2prefix(tree)
-            
-            switch tree.numArgs
-                case 0
-                    out = 'u';
-                    
-                case 1
-                    out = [{tree.method}; ...
-                        treeVar.tree2prefix(tree.center)];
-                    
-                case 2
-                    out = [{tree.method}; ...
-                        treeVar.tree2prefix(tree.left); ...
-                        treeVar.tree2prefix(tree.right)];
-            end
-        end
+        % Print a syntax tree
+        s = printTree(tree, ind, indStr)
         
+        % Returns how the results of evaluating BCs should be sorted
+        idx = sortConditions(funIn, domain)
+        
+        % Split syntax trees into derivative part and non-derivative part.
+        [newTree, derTree] = splitTree(tree, maxOrder)
+        
+        % Convert the infix form of an expression to an anonymous function
+        anonFun = toAnon(infix, varArray)
+        
+        % Convert higher order anonymous functions to first order systems
         [funOut, indexStart, problemDom] = toFirstOrder(funIn, rhs, domain)
         
-        idx = sortConditions(funIn, domain)
+        % Convert infix expressions to anonymous function suited for ODE solvers
+        funOut = toRHS(infix, varArray, coeff, indexStart, totalDiffOrders);
+        
+        % Convert a syntax tree to infix form
+        [infix, varCounter, varArray] = tree2infix(tree, diffOrders, varCounter, varArray)
         
     end
     
