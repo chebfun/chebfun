@@ -86,13 +86,14 @@ classdef chebguiController
                 'label', 'PDE - Scalar','separator','on');
             handles.menu_pdesystems = uimenu(handles.menu_demos, ...
                 'label', 'PDE - Systems');
-            
-%             uimenu('Parent', handles.menu_demos, ...
-%                 'Label', 'Test', ...
-%                 'Separator','off', ...
-%                 'HandleVisibility','callback');
-            
+                        
         end
+        
+        % Decrease font in CHEBGUI
+        handles = decreaseFont(handles)
+        
+        % Increase font in CHEBGUI
+        handles = increaseFont(handles)
         
         % Initialize fonts of the CHEBGUI window
         handles = initalizeFields(handles)
