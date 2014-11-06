@@ -34,6 +34,9 @@ classdef chebguiController
         % Deal with what happens when BCs get changed.
         handles = callbackBCs(handles, inputString, type)
         
+        % Change font size in CHEBGUI
+        handles = changeFontsize(handles, change)
+        
         % Clear everything in the CHEBGUI window
         handles = clear(handles)
 
@@ -88,13 +91,7 @@ classdef chebguiController
                 'label', 'PDE - Systems');
                         
         end
-        
-        % Decrease font in CHEBGUI
-        handles = decreaseFont(handles)
-        
-        % Increase font in CHEBGUI
-        handles = increaseFont(handles)
-        
+                
         % Initialize fonts of the CHEBGUI window
         handles = initalizeFields(handles)
         

@@ -113,6 +113,9 @@ else
     handles.guifile = chebgui.demo(); % Load a random demo
 end
 
+% Store the deviation from the default fontsize.
+handles.fontsizeChanges = 0;
+
 % Create a new structure which contains information about the latest
 % solution obtained
 handles.latest = struct;
@@ -1771,12 +1774,12 @@ exporter.toWorkspaceSolutionOnly(handles);
 end
 
 function button_fontinc_Callback(hObject, eventdata, handles)
-handles = chebguiController.increaseFont(handles);
+handles = chebguiController.changeFontsize(handles, 1);
 guidata(hObject, handles);
 end
 
 function button_fontdec_Callback(hObject, eventdata, handles)
-handles = chebguiController.decreaseFont(handles);
+handles = chebguiController.changeFontsize(handles, -1);
 guidata(hObject, handles);
 end
 
