@@ -33,5 +33,10 @@ r2 = roots([f;g],'resultant');
 pass(j) = ( norm(sort(r1(:,1))-sort(r2(:,1))) < tol ); j = j + 1; 
 pass(j) = ( norm(sort(r1(:,2))-sort(r2(:,2))) < tol ); j = j + 1;
 
+%%
+p = chebfun2(@(x,y) x - y + .5);
+q = chebfun2(@(x,y) x + y );
+r = roots([p; q]); 
+pass(j) = norm( r - [-.25 .25] ) < tol; j = j + 1; 
 end
 
