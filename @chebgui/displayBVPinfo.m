@@ -62,7 +62,7 @@ function [displayFig, displayTimer] = displayBVPinfoInit(handles, u, pref)
 % Update the iteration information header on the GUI
 initString = [' Iter.       || du ||        Contraction      stepsize     ',...
     '   len(du)          len(u)'];
-set(handles.iter_text,'String', initString);
+set(handles.iter_text, 'String', initString);
 
 % Clear the update plot
 axes(handles.fig_norm)
@@ -75,7 +75,7 @@ axes(handles.fig_sol)
 
 % Plot initial guess
 plot(chebfun(u), '.-')
-title('Initial guess of solution')
+title('Initial guess of solution', 'fontsize', 10 + handles.fontsizeChanges)
 
 % Do different things for the axes depending on if the solution is real.
 if ( isreal(chebfun(u)) )
@@ -121,7 +121,8 @@ axes(handles.fig_sol)
 
 % Plot initial guess
 plot(chebfun(u), '.-')
-title('Current solution')
+title('Current solution', 'fontsize', 10 + handles.fontsizeChanges)
+
 
 % Do different things for the axes depending on if the solution is real.
 if ( isreal(chebfun(u)) )
@@ -137,7 +138,7 @@ axes(handles.fig_norm)
 
 % Plot initial guess.
 plot(chebfun(delta), '.-')
-title('Current correction step')
+title('Current correction step', 'fontsize', 10 + handles.fontsizeChanges)
 
 % Do different things for the axes depending on if the solution is real.
 if ( isreal(chebfun(u)) )
@@ -242,6 +243,6 @@ else
     axis equal
 end
 
-title('Solution');
+title('Solution', 'fontsize', 10 + handles.fontsizeChanges)
 
 end

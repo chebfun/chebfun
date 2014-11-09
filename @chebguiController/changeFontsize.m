@@ -42,6 +42,14 @@ end
 set(handles.fig_sol,  'fontsize', get(handles.fig_sol,  'fontsize') + change)
 set(handles.fig_norm, 'fontsize', get(handles.fig_norm, 'fontsize') + change)
 
+% In older versions of MATLAB, need to change the title font-size manually:
+if verLessThan('matlab', '8.4')
+    solTitle = get(handles.fig_sol, 'title');
+    normTitle = get(handles.fig_norm, 'title');
+    set(solTitle, 'fontsize', get(solTitle, 'fontsize') + change)
+    set(normTitle, 'fontsize', get(normTitle, 'fontsize') + change)
+end
+
 % Store the new font size:
 handles.fontsizeChanges = newChange;
 
