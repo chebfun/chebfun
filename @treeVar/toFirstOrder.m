@@ -1,4 +1,4 @@
-function [funOut, indexStart, problemDom] = toFirstOrder(funIn, rhs, domain)
+function [funOut, indexStart, problemDom, coeffs] = toFirstOrder(funIn, rhs, domain)
 %TOFIRSTORDER    Convert higher order anonymous functions to first order systems
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.

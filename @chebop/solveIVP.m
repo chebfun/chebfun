@@ -84,7 +84,7 @@ end
 
 % We call the conversion methods of the TREEVAR class, the call depends on
 % whether we're dealing with a system or not.
-[anonFun, varIndex, problemDom] = treeVar.toFirstOrder(N.op, rhs, N.domain);
+[anonFun, varIndex, problemDom, coeffs] = treeVar.toFirstOrder(N.op, rhs, N.domain);
 
 % Join all breakpoints, which can either be specified by the CHEBOP, or arise
 % from discontinuous coefficients in the problem.
@@ -124,6 +124,24 @@ else
     odeDom = fliplr(dom);
     % Store that we're solving an FVP.
     isIVP = 0;
+end
+
+% Check that the coefficients multiplying the highest order terms are
+% non-vanishing at the end point of the domain, as the MATLAB ODE methods can't
+% deal with such problems:
+vanishingCoeffs = false;
+for coeffCounter = 1:length(coeffs)
+    coeff = coeffs{coeffCounter};
+    if ( isa(coeff, 'chebfun') )
+        vanishingCoeffs = vanishingCoeffs || ( coeff(evalPoint) == 0 );
+    else
+        vanishingCoeffs = vanishingCoeffs || ( coeff == 0 );
+    end
+end
+if ( vanishingCoeffs )
+    error('CHEBFUN:CHEBOP:solveIVP:zeroCoeffs', ...
+        ['Time stepping methods do not support vanishing coefficients at ' ...
+        'the endpoint of the domain. Please use global methods instead.']);
 end
 
 % Evaluating N.LBC or N.RBC above gives CHEBFUN results. Evaluate the CHEBFUNs
