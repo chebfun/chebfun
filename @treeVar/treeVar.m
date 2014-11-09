@@ -236,7 +236,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
                 'multCoeff', f.tree.multCoeff);
         end
         
-        function display(u)
+        function disp(u)
             % Display a TREEVAR.
             
             if ( length(u) == 1 )
@@ -458,6 +458,13 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             f.tree = f.univariate(f.tree, 'uminus');
         end
         
+        function f = uplus(f)
+            f.tree = f.univariate(f.tree, 'uplus');
+        end
+    end
+    
+    methods ( Access = private )
+        
         function dom = updateDomain(f, g)
             % UPDATEDOMAIN    Update domain in case we encounter new breakpoints
             if ( isnumeric(f) )
@@ -469,18 +476,15 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             end
         end
         
-        function f = uplus(f)
-            f.tree = f.univariate(f.tree, 'uplus');
-        end
     end
     
     methods ( Static = true, Access = private )
         
-        % Construct syntax trees for univariate methods
-        treeOut = univariate(treeIn, method)
-        
         % Construct syntax trees for bivariate methods
         treeOut = bivariate(leftTree, rightTree, method, type)
+        
+        % Construct syntax trees for univariate methods
+        treeOut = univariate(treeIn, method)
         
     end
     
