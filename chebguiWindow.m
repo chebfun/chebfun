@@ -131,7 +131,7 @@ set(handles.menu_pdefixon, 'UserData', {''});
 
 % Populate the Demos menu, but only once (i.e. if user calls chebgui again, 
 % don't reload the examples).
-if ( isempty(get(handles.menu_demos, 'UserData')) )
+if ( ~isfield(handles,'demosLoaded') )
     chebguiController.loadDemoMenu(handles);
     handles.demosLoaded = 1;
 end

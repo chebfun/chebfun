@@ -5,7 +5,7 @@ function loadDemoMenu(handles)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Begin by checking whether we have already loaded the demos
-if ( ~isempty(get(handles.menu_demos, 'UserData')) )
+if ( isfield(handles,'demosLoaded') )
     return
 end
 

@@ -68,6 +68,13 @@ classdef chebguiController
         function handles = initialiseMenus(handles)
             %INITALISEMENUS    Create menu items for CHEBGUI
             
+            % Don't want to create the menus if they have already been created
+            % (e.g. if we call CHEBGUI again from the command line when it's
+            % already open):
+            if ( isfield(handles,'demosLoaded') )
+                return
+            end
+            
             % For ODE problems
             handles.menu_bvps = uimenu(handles.menu_demos, ...
                 'label', 'ODE - Scalar BVPs');
