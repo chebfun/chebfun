@@ -1734,12 +1734,14 @@ if (get(handles.button_ode,'value') )
     isIorF = isIVPorFVP(handles.guifile);
     if ( isIorF )
         handles = chebguiController.switchMode(handles, 'ivp');
+        handles.guifile.type = 'ivp';
     end
 elseif ( get(handles.button_ivp,'value') )
     % Is the problem now a BVP?
     isIorF = isIVPorFVP(handles.guifile);
     if ( ~isIorF )
         handles = chebguiController.switchMode(handles, 'bvp');
+        handles.guifile.type = 'bvp';
     end    
 end
 
