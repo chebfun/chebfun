@@ -97,6 +97,9 @@ chebguiController.initialiseFigures(handles)
 % Initialise the menus:
 handles = chebguiController.initialiseMenus(handles);
 
+% Draw the Chebfun logo on the GUI:
+handles = chebguiController.drawLogo(handles);
+
 % Variable that determines whether a solution is available
 handles.hasSolution = 0;
 
@@ -1995,12 +1998,3 @@ guidata(hObject, handles);
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% FIN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-% --- Executes during object creation, after setting all properties.
-function fig_logo_CreateFcn(hObject, eventdata, handles)
-% Hint: place code in OpeningFcn to populate fig_logo
-logoMat = imread(fullfile(chebfunroot(),'chebguiDemos','chebfunLogo.png'));
-image(logoMat)
-axis off
-end
