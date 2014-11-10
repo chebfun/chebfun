@@ -114,6 +114,9 @@ classdef chebguiController
         % Load the menu in CHEBGUI of demos.
         loadDemoMenu(handles)
         
+        % Set-up the panels on CHEBGUI
+        handles = setupPanels(handles);
+        
         % Switch between different modes in CHEBGUI (BVP, EIG or PDE).
         handles = switchMode(handles, newMode, callMode)
         

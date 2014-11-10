@@ -97,6 +97,9 @@ chebguiController.initialiseFigures(handles)
 % Initialise the menus:
 handles = chebguiController.initialiseMenus(handles);
 
+% Set up the panels:
+handles = chebguiController.setupPanels(handles);
+
 % Draw the Chebfun logo on the GUI:
 handles = chebguiController.drawLogo(handles);
 
@@ -785,24 +788,6 @@ else
     end
     
 end
-
-end
-
-function toggle_useLatest_Callback(hObject, eventdata, handles)
-% Called when user toggles between using the latest solution as an initial
-% guess.
-
-newVal = get(hObject, 'Value');
-
-if ( newVal ) % User wants to use latest solution
-    set(handles.input_GUESS, 'String', 'Using latest solution');
-else
-    set(handles.input_GUESS, 'String', '');
-    set(handles.input_GUESS, 'Enable', 'On');
-    handles.guifile.init = '';
-end
-
-guidata(hObject, handles);
 
 end
 
