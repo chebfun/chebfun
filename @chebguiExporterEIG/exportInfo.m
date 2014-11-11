@@ -174,18 +174,24 @@ else
     generalized = 0;
 end
 
-% Find the eigenvalue name
-mask = strcmp(deInput{1}, {'lambda', 'lam', 'l'});
+% Find the eigenvalue parameter name:
+mask = cellfun(@strfind, repmat(deInput(1), 1, 3), {'lambda', 'lam', 'l'}, ...
+    'UniformOutput', false);
 
-if ( mask(1) )
+if ( ~isempty(mask{1}) )
     lname = 'lambda'; 
-elseif ( mask(2) )
+elseif ( ~isempty(mask{2}) )
     lname = 'lam'; 
-elseif ( mask(3) )
+elseif ( ~isempty(mask{3}) )
     lname = 'l'; 
 else
-    lname = 'lambda';
+    lname = '';
 end
+
+% Ensure that l, lam or lambda appears in the problem!
+assert(~isempty(lname), 'CHEBFUN:CHEBGUIEXPORTEREIG:exportInfo', ...
+    ['Variable representing eigenvalue parameter not found in Chebgui input. ' ...
+    'Please ensure ''lambda'', ''lam'' or ''l'' appears in input.'])
 
 %% Fill up the expInfo struct
 expInfo.dom = dom;
