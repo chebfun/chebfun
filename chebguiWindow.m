@@ -142,13 +142,11 @@ if ( ~isfield(handles,'demosLoaded') )
     handles.demosLoaded = 1;
 end
 
-% Load the input fields
-chebguiController.populate(handles, handles.guifile);
+% Make sure the GUI starts in the correct mode:
+chebguiController.switchMode(handles, handles.guifile.type);
 
-% Make sure the GUI starts in the correct mode. We call SWITCHMODE() with the
-% third argument equal to 'demo' so that we will plot the initial guess of the
-% solution if it exists.
-chebguiController.switchMode(handles, handles.guifile.type, 'demo');
+% Load the input fields:
+chebguiController.populate(hObject, handles, handles.guifile);
 
 % Get the system font size and store in handles
 s = char(com.mathworks.services.FontPrefs.getCodeFont);
@@ -1077,7 +1075,7 @@ if ( ~filterindex )
 end
 
 cgTemp = chebgui(fullfile(pathname, filename));
-chebguiController.populate(handles, cgTemp)
+chebguiController.populate(hObject, handles, cgTemp)
 handles.guifile = cgTemp;
 if ( ~isempty(cgTemp.type) )
     handles = chebguiController.switchMode(handles, cgTemp.type);
@@ -1865,7 +1863,7 @@ for k = 1:numel(folders)
 
         file = fullfile(subdir, subdirnames{j});
         cgTemp = chebgui(file);
-        chebguiController.populate(handles, cgTemp)
+        chebguiController.populate(hObject, handles, cgTemp)
         handles.guifile = cgTemp;
         if ( ~isempty(cgTemp.type) )
             handles = chebguiController.switchMode(handles, cgTemp.type);

@@ -173,19 +173,11 @@ function hOpenMenuitemCallback(hObject, eventdata, handles, demoPath)
 % Callback function run when the Open menu item is selected
 handles.guifile = chebgui.demo2chebgui(demoPath);
 
-% Populate the CHEBGUI figure.
-initSuccess = chebguiController.populate(handles, handles.guifile);
-
-% We switch modes differently depending on whether we were successful in
-% populating the figure window.
-if ( initSuccess )
-    switchModeCM = 'demo';
-else
-    switchModeCM = 'notdemo';
-end
-
 % Switch the mode of the GUI according to the type of the problem.
-chebguiController.switchMode(handles, handles.guifile.type, switchModeCM);
+chebguiController.switchMode(handles, handles.guifile.type);
+
+% Populate the CHEBGUI figure.
+chebguiController.populate(hObject, handles, handles.guifile);
 
 % We no longer have a solution.
 handles.hasSolution = 0;

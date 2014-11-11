@@ -1,7 +1,7 @@
-function handles = switchMode(handles, newMode, callMode)
+function handles = switchMode(handles, newMode)
 %SWITCHMODE   Go from one mode of CHEBGUI to another.
 % Calling sequence:
-%   HANDLES = SWITCHMODE(HANDLES, NEWMODE, CALLMODE)
+%   HANDLES = SWITCHMODE(HANDLES, NEWMODE)
 % where
 %   HANDLES:    A MATLAB handle object for the CHEBGUI figure.
 %   NEWMODE:    Mode we want to switch to.
@@ -66,9 +66,8 @@ if ( strcmp(newMode, 'bvp') ) % Going into BVP mode
     set(handles.menu_fixN, 'Enable', 'Off')
     
     % Clear the top figure
-    if ( ~strcmp(callMode, 'demo') )
-        chebguiController.initialiseFigureTop(handles)
-    end
+    chebguiController.initialiseFigureTop(handles)
+
     % Always clear the bottom figure
     chebguiController.initialiseFigureBottom(handles)
     
@@ -86,7 +85,8 @@ if ( strcmp(newMode, 'bvp') ) % Going into BVP mode
 elseif ( strcmp(newMode, 'ivp') ) % Going into IVP mode
     % IVP mode is almost identical to BVP, so do the same adjustments, and then
     % minor corrections at the end:
-    handles = chebguiController.switchMode(handles, 'bvp', callMode);
+    handles = chebguiController.switchMode(handles, 'bvp');
+    
     set(handles.button_ode, 'Value', 0)
     set(handles.button_ivp, 'Value', 1)
     % Enable IVP solver option
@@ -139,9 +139,8 @@ elseif ( strcmp(newMode, 'pde') ) % Going into PDE mode
     set(handles.menu_fixN, 'Enable', 'On')
     
     % Clear the top figure
-    if ( ~strcmp(callMode, 'demo') )
-        chebguiController.initialiseFigureTop(handles)
-    end
+    chebguiController.initialiseFigureTop(handles)
+
     % Always clear the bottom figure
     chebguiController.initialiseFigureBottom(handles)
     
@@ -229,9 +228,8 @@ else % Going into EIG mode
     set(handles.panel_discretization, 'Visible', 'on')
     
     % Clear the top figure
-    if ( ~strcmp(callMode, 'demo') )
-        chebguiController.initialiseFigureTop(handles)
-    end
+    chebguiController.initialiseFigureTop(handles)
+    
     % Always clear the bottom figure
     chebguiController.initialiseFigureBottom(handles)
     

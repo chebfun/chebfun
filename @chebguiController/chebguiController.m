@@ -109,7 +109,7 @@ classdef chebguiController
         plotEigenmodes(handles, selection, h1, h2)
         
         % Populate the fields of the CHEBGUI figure.
-        initSuccess = populate(handles, guifile)
+        populate(hObject, handles, guifile)
         
         % Load the menu in CHEBGUI of demos.
         loadDemoMenu(handles)
@@ -118,7 +118,7 @@ classdef chebguiController
         handles = setupPanels(handles);
         
         % Switch between different modes in CHEBGUI (BVP, EIG or PDE).
-        handles = switchMode(handles, newMode, callMode)
+        handles = switchMode(handles, newMode)
         
     end
     
