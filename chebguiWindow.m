@@ -999,6 +999,72 @@ end
 % ----------------------- Callbacks for menu items  ----------------------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
+
+function menu_ivpSolver_Callback(hObject, eventdata, handles)
+end
+
+function menu_ivpGlobal_Callback(hObject, eventdata, handles)
+end
+
+function menu_ivpTimestepping_Callback(hObject, eventdata, handles)
+end
+
+function menu_ivpODE113_Callback(hObject, eventdata, handles)
+set(handles.menu_ivpODE113, 'checked', 'on');
+set(handles.menu_ivpODE15s, 'checked', 'off');
+set(handles.menu_ivpODE45, 'checked', 'off');
+set(handles.menu_ivpCollocation, 'checked', 'off');
+set(handles.menu_ivpUltraspherical, 'checked', 'off');
+handles.guifile.options.ivpSolver = 'ode113';
+set(handles.panel_discretization,'SelectedObject', handles.button_Collocation)
+guidata(hObject, handles);
+end
+
+function menu_ivpODE15s_Callback(hObject, eventdata, handles)
+set(handles.menu_ivpODE113, 'checked', 'off');
+set(handles.menu_ivpODE15s, 'checked', 'on');
+set(handles.menu_ivpODE45, 'checked', 'off');
+set(handles.menu_ivpCollocation, 'checked', 'off');
+set(handles.menu_ivpUltraspherical, 'checked', 'off');
+handles.guifile.options.ivpSolver = 'ode15s';
+set(handles.panel_discretization,'SelectedObject', handles.button_Collocation)
+guidata(hObject, handles);
+end
+
+function menu_ivpODE45_Callback(hObject, eventdata, handles)
+set(handles.menu_ivpODE113, 'checked', 'off');
+set(handles.menu_ivpODE15s, 'checked', 'off');
+set(handles.menu_ivpODE45, 'checked', 'on');
+set(handles.menu_ivpCollocation, 'checked', 'off');
+set(handles.menu_ivpUltraspherical, 'checked', 'off');
+handles.guifile.options.ivpSolver = 'ode45';
+set(handles.panel_discretization,'SelectedObject', handles.button_Collocation)
+guidata(hObject, handles);
+end
+
+function menu_ivpCollocation_Callback(hObject, eventdata, handles)
+set(handles.menu_ivpODE113, 'checked', 'off');
+set(handles.menu_ivpODE15s, 'checked', 'off');
+set(handles.menu_ivpODE45, 'checked', 'off');
+set(handles.menu_ivpCollocation, 'checked', 'on');
+set(handles.menu_ivpUltraspherical, 'checked', 'off');
+handles.guifile.options.ivpSolver = 'collocation';
+set(handles.panel_discretization,'SelectedObject', handles.button_ultraS)
+guidata(hObject, handles);
+end
+
+function menu_ivpUltraspherical_Callback(hObject, eventdata, handles)
+set(handles.menu_ivpODE113, 'checked', 'off');
+set(handles.menu_ivpODE15s, 'checked', 'off');
+set(handles.menu_ivpODE45, 'checked', 'off');
+set(handles.menu_ivpCollocation, 'checked', 'off');
+set(handles.menu_ivpUltraspherical, 'checked', 'on');
+handles.guifile.options.ivpSolver = 'ultraspherical';
+set(handles.panel_discretization,'SelectedObject', handles.button_ultraS)
+guidata(hObject, handles);
+end
+
 function menu_file_Callback(hObject, eventdata, handles)
 end
 
@@ -1958,25 +2024,16 @@ if ( strcmp(newDisc, get(handles.button_Collocation, 'String')) )
     if ( ~get(handles.button_ivp, 'value') )
         handles.guifile.options.discretization = @chebcolloc2;
     else
-        ivpSolvers = {'ode113', 'ode15s', 'ode45'};
-        [selection,ok] = listdlg('ListString', ivpSolvers, ...
-            'SelectionMode','Single', 'Name', 'IVP solver', ...
-            'ListSize', [160 100]);
-        if ( ok )
-            handles.guifile.options.ivpSolver = ivpSolvers{selection};
-        end
+        % Default time stepping method is ODE113:
+        handles.guifile.options.ivpSolver = 'ode113';
     end
 else
     if ( ~get(handles.button_ivp, 'value') )
         handles.guifile.options.discretization = @ultraS;
     else
-        globalSolvers = {'Collocation', 'Ultraspherical'};
-        [selection,ok] = listdlg('ListString', globalSolvers, ...
-            'SelectionMode','Single', 'Name', 'IVP solver', ...
-            'ListSize', [160 100]);
-        if ( ok )
-            handles.guifile.options.ivpSolver = lower(globalSolvers{selection});
-        end
+        % Default global method is collocation:
+        handles.guifile.options.ivpSolver = 'collocation';
+
     end
 end
 

@@ -57,6 +57,8 @@ if ( strcmp(newMode, 'bvp') ) % Going into BVP mode
     % Enable ODE menu options
     set(handles.menu_odedampednewton, 'Enable', 'On')
     set(handles.menu_odeplotting, 'Enable', 'On')
+    % Disable IVP solver option
+    set(handles.menu_ivpSolver, 'Enable', 'off');
     % Disable PDE menu options
     set(handles.menu_pdeplotting, 'Enable', 'Off')
     set(handles.menu_pdeholdplot, 'Enable', 'Off')
@@ -87,7 +89,8 @@ elseif ( strcmp(newMode, 'ivp') ) % Going into IVP mode
     handles = chebguiController.switchMode(handles, 'bvp', callMode);
     set(handles.button_ode, 'Value', 0)
     set(handles.button_ivp, 'Value', 1)
-    
+    % Enable IVP solver option
+    set(handles.menu_ivpSolver, 'Enable', 'on');
     % Change the discretization panel to IVP solver option panel
     handles = updateDiscPanel(handles, 1);
     
@@ -126,7 +129,9 @@ elseif ( strcmp(newMode, 'pde') ) % Going into PDE mode
     % Change the list of available options
     % Disable ODE menu options
     set(handles.menu_odedampednewton, 'Enable', 'Off')
-    set(handles.menu_odeplotting, 'Enable', 'Off')
+    set(handles.menu_odeplotting, 'Enable', 'Off')    
+    % Disable IVP solver option
+    set(handles.menu_ivpSolver, 'Enable', 'off');    
     % Enable PDE menuoptions
     set(handles.menu_pdeplotting, 'Enable', 'On')
     set(handles.menu_pdeholdplot, 'Enable', 'On')
@@ -207,6 +212,9 @@ else % Going into EIG mode
     % Disable ODE options
     set(handles.menu_odedampednewton, 'Enable', 'Off')
     set(handles.menu_odeplotting, 'Enable', 'Off')
+    
+    % Disable IVP solver option
+    set(handles.menu_ivpSolver, 'Enable', 'off');
 
     % Disable PDE options
     set(handles.menu_pdeplotting, 'Enable', 'Off')
