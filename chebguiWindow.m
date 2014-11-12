@@ -99,6 +99,7 @@ handles = chebguiController.initialiseMenus(handles);
 
 % Set up the panels:
 handles = chebguiController.setupPanels(handles);
+handles = chebguiController.setupPanelType(handles);
 
 % Draw the Chebfun logo on the GUI:
 handles = chebguiController.drawLogo(handles);
@@ -647,7 +648,7 @@ end
 function button_figsol_Callback(hObject, eventdata, handles)
 % Executed when the user wants to show figures in new window.
 
-if ( get(handles.button_ode, 'Value') )
+if ( get(handles.button_bvp, 'Value') )
     % We're in ODE mode.
     
     % Plot the latest solution obtained:
@@ -795,18 +796,6 @@ function chebguimainwindow_ResizeFcn(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 end
-
-function button_ode_Callback(hObject, eventdata, handles)
-handles = chebguiController.switchMode(handles, 'bvp');
-guidata(hObject, handles);
-end
-
-function button_ivp_Callback(hObject, eventdata, handles)
-% Switch to IVP mode.
-handles = chebguiController.switchMode(handles, 'ivp');
-guidata(hObject, handles);
-end
-
 
 % --- Executes on button press in button_pde.
 function button_pde_Callback(hObject, eventdata, handles)
@@ -1098,7 +1087,7 @@ end
 % name = input('What would you like to name this GUI file? ');
 name = '';
 
-if ( get(handles.button_ode, 'value') )
+if ( get(handles.button_bvp, 'value') )
     demotype = 'bvp';
 elseif ( get(handles.button_pde, 'value') )
     demotype = 'pde';
@@ -1793,7 +1782,7 @@ set(hObject, 'String', newString);
 handles = chebguiController.callbackBCs(handles, newString, 'bc');
 handles.guifile.BC = newString;
 
-if (get(handles.button_ode,'value') )
+if (get(handles.button_bvp,'value') )
     % Is the problem now a BVP, IVP or FVP?
     isIorF = isIVPorFVP(handles.guifile);
     if ( isIorF )

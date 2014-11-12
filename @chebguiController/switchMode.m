@@ -23,7 +23,7 @@ end
 if ( strcmp(newMode, 'bvp') ) % Going into BVP mode
     handles.guifile.type = 'bvp';
     
-    set(handles.button_ode, 'Value', 1)
+    set(handles.button_bvp, 'Value', 1)
     set(handles.button_ivp, 'Value', 0)
     set(handles.button_pde, 'Value', 0)
     set(handles.button_eig, 'Value', 0)
@@ -87,7 +87,7 @@ elseif ( strcmp(newMode, 'ivp') ) % Going into IVP mode
     % minor corrections at the end:
     handles = chebguiController.switchMode(handles, 'bvp');
     
-    set(handles.button_ode, 'Value', 0)
+    set(handles.button_bvp, 'Value', 0)
     set(handles.button_ivp, 'Value', 1)
     % Enable IVP solver option
     set(handles.menu_ivpSolver, 'Enable', 'on');
@@ -97,7 +97,7 @@ elseif ( strcmp(newMode, 'ivp') ) % Going into IVP mode
 elseif ( strcmp(newMode, 'pde') ) % Going into PDE mode
     handles.guifile.type = 'pde';
     
-    set(handles.button_ode, 'Value', 0)
+    set(handles.button_bvp, 'Value', 0)
     set(handles.button_ivp, 'Value', 0)
     set(handles.button_pde, 'Value', 1)
     set(handles.button_eig, 'Value', 0)
@@ -151,7 +151,7 @@ elseif ( strcmp(newMode, 'pde') ) % Going into PDE mode
 else % Going into EIG mode
     handles.guifile.type = 'eig';
     
-    set(handles.button_ode, 'Value', 0)
+    set(handles.button_bvp, 'Value', 0)
     set(handles.button_ivp, 'Value', 0)
     set(handles.button_pde, 'Value', 0)
     set(handles.button_eig, 'Value', 1)
