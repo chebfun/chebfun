@@ -45,6 +45,9 @@ if ( strcmp(newMode, 'bvp') ) % Going into BVP mode
         set(handles.toggle_useLatest, 'Enable', 'off')
     end
     
+    % Change heading for BC/IC input field:
+    set(handles.text_BCs, 'String', 'Boundary condition(s)')
+    
     % Hide the iter_list box:
     handles = hideIterList(handles);
     
@@ -86,6 +89,9 @@ elseif ( strcmp(newMode, 'ivp') ) % Going into IVP mode
     % IVP mode is almost identical to BVP, so do the same adjustments, and then
     % minor corrections at the end:
     handles = chebguiController.switchMode(handles, 'bvp');
+    
+    % Change heading for BC/IC input field:
+    set(handles.text_BCs, 'String', 'Initial/final condition(s)')
     
     set(handles.button_ode, 'Value', 0)
     set(handles.button_ivp, 'Value', 1)
@@ -200,6 +206,9 @@ else % Going into EIG mode
         set(handles.edit_eigN, 'String', 6);
     end
     
+    % Change heading for BC/IC input field:
+    set(handles.text_BCs, 'String', 'Boundary condition(s)')
+
     % Hide the iter_list box:
     handles = hideIterList(handles);
     

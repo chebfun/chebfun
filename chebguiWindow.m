@@ -647,14 +647,19 @@ end
 function button_figsol_Callback(hObject, eventdata, handles)
 % Executed when the user wants to show figures in new window.
 
-if ( get(handles.button_ode, 'Value') )
-    % We're in ODE mode.
+if ( isempty(fieldnames(handles.latest)) )
+    % We don't have any solution available, so bail out
+    return
+end
+
+if ( get(handles.button_ode, 'Value') || get(handles.button_ivp, 'Value') )
+    % We're in BVP or IVP mode.
     
     % Plot the latest solution obtained:
     figure
     latestSolution = handles.latest.solution;
     plot(latestSolution, 'Linewidth', 2)
-    title('Solution at end of iteration')
+    title('Solution')
     xlabel(handles.indVarName);
 
     varnames = handles.varnames;
