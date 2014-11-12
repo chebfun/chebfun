@@ -5,25 +5,16 @@ function handles = switchMode(handles, newMode)
 % where
 %   HANDLES:    A MATLAB handle object for the CHEBGUI figure.
 %   NEWMODE:    Mode we want to switch to.
-%   CALLMODE:   Indicates whether we are switching from a demo or not (in which
-%               case, we migth want to show a plot of the initial guess of the
-%               solution/initial condition).
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
-
-% Only use callMode when calling from loadDemoMenu() - for demos with an initial
-% guess / condition, we don't want to clear the figures.
-if ( nargin == 2 )
-    callMode = 'notDemo';
-end
 
 % Do a lot of disabling/enabling and hiding/showing objects on the CHEBGUI
 % figure.
 if ( strcmp(newMode, 'bvp') ) % Going into BVP mode
     handles.guifile.type = 'bvp';
     
-    set(handles.button_ode, 'Value', 1)
+    set(handles.button_bvp, 'Value', 1)
     set(handles.button_ivp, 'Value', 0)
     set(handles.button_pde, 'Value', 0)
     set(handles.button_eig, 'Value', 0)
@@ -93,7 +84,7 @@ elseif ( strcmp(newMode, 'ivp') ) % Going into IVP mode
     % Change heading for BC/IC input field:
     set(handles.text_BCs, 'String', 'Initial/final condition(s)')
     
-    set(handles.button_ode, 'Value', 0)
+    set(handles.button_bvp, 'Value', 0)
     set(handles.button_ivp, 'Value', 1)
     % Enable IVP solver option
     set(handles.menu_ivpSolver, 'Enable', 'on');
@@ -103,7 +94,7 @@ elseif ( strcmp(newMode, 'ivp') ) % Going into IVP mode
 elseif ( strcmp(newMode, 'pde') ) % Going into PDE mode
     handles.guifile.type = 'pde';
     
-    set(handles.button_ode, 'Value', 0)
+    set(handles.button_bvp, 'Value', 0)
     set(handles.button_ivp, 'Value', 0)
     set(handles.button_pde, 'Value', 1)
     set(handles.button_eig, 'Value', 0)
@@ -157,7 +148,7 @@ elseif ( strcmp(newMode, 'pde') ) % Going into PDE mode
 else % Going into EIG mode
     handles.guifile.type = 'eig';
     
-    set(handles.button_ode, 'Value', 0)
+    set(handles.button_bvp, 'Value', 0)
     set(handles.button_ivp, 'Value', 0)
     set(handles.button_pde, 'Value', 0)
     set(handles.button_eig, 'Value', 1)
