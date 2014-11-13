@@ -424,6 +424,10 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             f.tree = f.univariate(f.tree, 'sinh');
         end
 
+        function f = sqrt(f)
+            f.tree = f.univariate(f.tree, 'sqrt');
+        end
+        
         function f = tan(f)
             f.tree = f.univariate(f.tree, 'tan');
         end
