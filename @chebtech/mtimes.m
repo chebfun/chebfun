@@ -35,18 +35,18 @@ elseif ( isa(c, 'double') )         % CHEBTECH * double
     f.coeffs = f.coeffs*c;
     if ( numel(c) == 1 )
         % See CHEBTECH CLASSDEF file for documentation on this.
+        epslevelBound = f.epslevel + abs(eps(c)./c);
+        epslevelBound(c == 0) = eps;
+        f.epslevel = updateEpslevel(f, epslevelBound);
         f.vscale = f.vscale*abs(c);
-        f.epslevel = f.epslevel + eps;
     else
         % See CHEBTECH CLASSDEF file for documentation on this.
         vscaleNew = getvscl(f);
-        f.epslevel = ((f.epslevel.*f.vscale)*abs(c))./vscaleNew;
+        tmpVscaleNew = vscaleNew;
+        tmpVscaleNew(tmpVscaleNew == 0) = 1;  % Avoid NaNs.
+        epslevelBound = ((f.epslevel.*f.vscale)*abs(c))./tmpVscaleNew;
         f.vscale = vscaleNew;
-
-        % Assume condition number 1.
-%         glob_acc = max(f.epslevel.*f.vscale);
-%         f.vscale = getvscl(f);
-%         f.epslevel = glob_acc./f.vscale;
+        f.epslevel = updateEpslevel(f, epslevelBound);
     end
     
     % If the vertical scale is zero, set the CHEBTECH to zero:

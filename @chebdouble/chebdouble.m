@@ -71,7 +71,7 @@ classdef chebdouble
             
             % Construct D if we don't match a previous discretization.
             if ( isempty(D) || numel(D) < k || size(D{k}, 1) ~= N )
-                D{k} = colloc2.diffmat(N, k); % Diffmat
+                D{k} = chebcolloc2.diffmat(N, k); % Diffmat
             end
             
             % Interval scaling
@@ -171,7 +171,7 @@ classdef chebdouble
             
             % Compute cumsum matrix:
             if ( numel(C) ~= N )
-                C = colloc2.cumsummat(N);
+                C = chebcolloc2.cumsummat(N);
             end
             
             % Compute the indefinite integral:
@@ -580,6 +580,10 @@ classdef chebdouble
         
         function u = sinh(u)
             u.values = sinh(u.values);
+        end
+        
+        function u = sqrt(u)
+            u.values = sqrt(u.values);
         end
         
         function u = subsref(u, s)

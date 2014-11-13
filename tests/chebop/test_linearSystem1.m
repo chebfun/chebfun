@@ -1,7 +1,7 @@
 function pass = test_linearSystem1(pref)
 % A linear CHEBOP test. This test tests a system of coupled ODEs, both with and
 % without breakpoints in the domain of the CHEBOP. Problems are solved using
-% colloc1, colloc2 and ultraS discretizations.
+% chebcolloc1, chebcolloc2 and ultraS discretizations.
 
 % Test 2x2 system (sin/cos)
 % Toby Driscoll (extended by AB)
@@ -14,14 +14,14 @@ end
 
 tol = 1e-10;
 
-%% Smooth domain, colloc1:
+%% Smooth domain, chebcolloc1:
 d = [-pi pi];
 A = chebop(@(x,u,v) [u - diff(v) ; diff(u) + v],d);
 A.lbc = @(u,v) u + 1;
 A.rbc = @(u,v) v;
 x = chebfun('x',d);
 
-pref.discretization = @colloc1;
+pref.discretization = @chebcolloc1;
 u = mldivide(A, 0, pref);
 u1 = u{1}; u2 = u{2};
 
@@ -33,8 +33,8 @@ pass(1) = norm( u1 - cos(x),inf) < 100*tol;
 pass(2) = norm( u2 - sin(x),inf) < 100*tol;
 pass(3) = norm(bcFunLeft(d(1))) < tol && norm(bcFunRight(d(end))) < tol;
 
-%% Smooth domain, colloc2
-pref.discretization = @colloc2;
+%% Smooth domain, chebcolloc2
+pref.discretization = @chebcolloc2;
 u = mldivide(A, 0, pref);
 u1 = u{1}; u2 = u{2};
 
@@ -58,9 +58,9 @@ bcFunRight = A.rbc(u1,u2);
 pass(7) = norm( u1 - cos(x),inf) < 100*tol;
 pass(8) = norm( u2 - sin(x),inf) < 100*tol;
 pass(9) = norm(bcFunLeft(d(1))) < tol && norm(bcFunRight(d(end))) < tol;
-%% Piecewise, colloc1:
+%% Piecewise, chebcolloc1:
 A.domain = [-pi 0 pi];
-pref.discretization = @colloc1;
+pref.discretization = @chebcolloc1;
 u = mldivide(A, 0, pref);
 u1 = u{1}; u2 = u{2};
 
@@ -79,8 +79,8 @@ pass(11) = norm( u2 - sin(x),inf) < 2000*tol;
 pass(12) = norm(bcValLeft) < tol && norm(bcValRight) < tol;
 pass(13) = norm(u1jump) < tol && norm(u2jump) < tol;
 
-%% Piecewise, colloc2:
-pref.discretization = @colloc2;
+%% Piecewise, chebcolloc2:
+pref.discretization = @chebcolloc2;
 u = mldivide(A, 0, pref);
 u1 = u{1}; u2 = u{2};
 

@@ -216,7 +216,7 @@ while ( ~terminate )
 end
 
 % Evaluate how far off we are from satisfying the boundary conditions.
-errEstBC = normBCres(N, u, x, diffOrder);
+errEstBC = normBCres(N, u, x, diffOrder, pref);
 
 % Print information depending on why we stopped the Newton iteration.
 if ( success )
@@ -242,9 +242,9 @@ end
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function bcNorm = normBCres(N, u, x, diffOrder)
+function bcNorm = normBCres(N, u, x, diffOrder, pref)
 %NORMBCRES   Compute residual norm of the boundary conditions.
-%   NORMBCRES(N, U, X, DIFFORDER) returns the combined Frobenius norm of N.lbc(U),
+%   NORMBCRES(N, U, X, DIFFORDER, PREF) returns the combined Frobenius norm of N.lbc(U),
 %   N.rbc(U), and N.bc(X, U).
 
 % [TODO]: This might be useful elsewehere (i.e. chebop/linearize), do we want to
@@ -312,10 +312,11 @@ if ( ~isempty(N.rbc) )
 end
 
 % Evaluate and linearise the remaining constraints:
-if ( ~isempty(N.bc) )
+if ( ~isempty(N.bc) || isequal(pref.discretization, @trigcolloc) )
     
     % Periodic case. 
-    if ( isa(N.bc, 'char') && strcmpi(N.bc, 'periodic') )
+    if ( (isa(N.bc, 'char') && strcmpi(N.bc, 'periodic')) || ...
+            isequal(pref.discretization, @trigcolloc) )
         bcU = 0;
         % Need to evaluate the residual of the boundary condition for each
         % independent variable uBlocks{k} separately, since each variable can

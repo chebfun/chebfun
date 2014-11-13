@@ -6,9 +6,13 @@ function r = rank(N)
 
 A = N.coeffs; 
 if ( iscell(A) )
-    error('CHEBFUN:CHEBOP2:rank:variableCoeffs', ...
-        ['The operator has non-scalar variable coefficients. We do not ' ...
-         'support this.'])
+    if ( ~isempty(N.S) ) 
+        r = size(N.S, 1); 
+    else
+        % attempt to compute it: 
+        [U, S, V] = chebop2.separableFormat(N); 
+        r = size(S, 1); 
+    end
 else
     r = rank(A);
 end

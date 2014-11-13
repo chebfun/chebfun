@@ -97,12 +97,13 @@ while ( d ~= 0 ) % until quit
     t = 1;                              % convex factor for nodes
     go = chebsnakePlotChebfun(.7*scribble('ready?'), 'r', LW, lw);
     shg; 
-    pause(0.3); 
-    delete(go(~isnan(go)));
+    pause(0.3);
+    delete(go)
+    
     go = chebsnakePlotChebfun(.4*scribble('go!'), 'r', LW, lw);
     shg; 
     pause(0.3); 
-    delete(go(~isnan(go)));
+    delete(go)
     
     tic
     while ( d ~= 0 )                    % until game over or quit
@@ -131,9 +132,7 @@ while ( d ~= 0 ) % until quit
             c = polyfit(yy, y, length(y) - 1, dom);
         end
         for k = 1:numel(hs1)
-            if ( ~isnan(hs1(k)) )
-                delete(hs1(k));
-            end
+            delete(hs1(k));
         end
 
         hs1 = chebsnakePlotChebfun(c, 'b-', LW, lw);
@@ -175,7 +174,7 @@ while ( d ~= 0 ) % until quit
                 up = chebsnakePlotChebfun(.8*scribble('1 up!'), 'r', LW, lw);
                 shg
                 pause(1)
-                delete(up(~isnan(up)));
+                delete(up)
             end
             
             title(['Points : ' num2str(pts) '       Level : ' num2str(lvl) ...
@@ -196,9 +195,7 @@ while ( d ~= 0 ) % until quit
     end
     
     for k = 1:numel(ht)
-        if ( ~isnan(ht(k)) )
-            delete(ht(k));
-        end
+        delete(ht(k));
     end
     
 end

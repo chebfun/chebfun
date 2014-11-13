@@ -17,7 +17,7 @@ end
 if ( nargin < 3 )
     flag = 'bc';
 end
-% TODO: Should we always use a colloc2 representation here?
+% TODO: Should we always use a chebcolloc2 representation here?
 % if ( nargin < 4 )
 %     pref = cheboppref();
 %     discType = pref.discretization;
@@ -26,7 +26,7 @@ end
 % elseif ( ischar(discType) )
 %     discType = str2func(discType);
 % end
-discType = @colloc2;
+discType = @chebcolloc2;
 
 if ( isa(n, 'chebfun') )
     M = L*n;   % application to a function

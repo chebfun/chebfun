@@ -21,6 +21,16 @@ dom = domain(f);
 a = dom(1); 
 b = dom(2);
 
+% If the first or the last break points is very close to the original domain,
+% merge it:
+pref = chebfunpref();
+tol = pref.deltaPrefs.proximityTol;
+if ( abs(s(1) - a) < tol )
+    s(1) = a;
+end
+if ( abs(s(end) - b) < tol )
+    s(end) = b;
+end
 % Check if s is actually a subinterval:
 if ( (s(1) < a) || (s(end) > b) || (any(diff(s) <= 0)) )
     error('CHEBFUN:DELTAFUN:restrict:badInterval', 'Not a valid subinterval.')
