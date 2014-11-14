@@ -1,5 +1,5 @@
 function pass = test_sortConditions
 
 % Tests are needed.
-pass = 0;ed
+pass = 0;
 end

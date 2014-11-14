@@ -155,7 +155,7 @@ for wCounter = 1:length(fevalResult)
     end
     
     % Convert the derivative part to infix form.
-    [infixDer, dummy, varArrayDer] = ...
+    [infixDer, varArrayDer] = ...
         treeVar.tree2infix(derTree, wCounter, indexStartDer);
     
     % Find what argument corresponds to the highest derivative one in the
@@ -193,7 +193,7 @@ for wCounter = 1:length(fevalResult)
     newTree = struct('method', 'minus', 'numArgs', 2, ...
         'left', rhs{wCounter}, 'right', newTree);
     % Convert current expression to infix form:
-    [infix, varCounter, varArray] = ...
+    [infix, varArray] = ...
         treeVar.tree2infix(newTree, wCounter, indexStart);
     % Store the infix form and the variables that appeared in the anonymous
     % function.

@@ -521,7 +521,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         funOut = toRHS(infix, varArray, coeff, indexStart, totalDiffOrders);
         
         % Convert a syntax tree to infix form
-        [infix, varCounter, varArray] = tree2infix(tree, diffOrders, varCounter, varArray)
+        [infix, varArray] = tree2infix(tree, diffOrders, varCounter, varArray)
         
     end
     

@@ -5,7 +5,7 @@ diffOrder = s3.tree.diffOrder;
 expTree = treeVar.expandTree(s3.tree, diffOrder);
 
 [newTree, derTree] = treeVar.splitTree(expTree, diffOrder);
-[infixDer, dummy, varArrayDer] = treeVar.tree2infix(derTree, 1, 1);
+[infixDer, varArrayDer] = treeVar.tree2infix(derTree, 1, 1);
 coeffFun = treeVar.toAnon(infixDer, varArrayDer);
 coeffArg = [zeros(1, expTree.diffOrder), 1];
 t = chebfun(@(t) t);
