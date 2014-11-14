@@ -52,24 +52,30 @@ for sysCounter = 1:length(systemInfix)
     
     % The differential equations can have coefficients not equal to 1 on the
     % left-hand side, e.g. for 5*diff(u) = sin(u). These are stored in the
-    % COEFFS For the MATLAB solvers, we need to get the coefficient on the
-    % right-hand side,
-    %Is the COEFF operating the LHS of the current differential equation a
-    % scalar?
+    % COEFFS cell array, in this example, COEFFS{1} = 5. Since the MATLAB
+    % solvers require the ODEs to be specified on the format y' = f(t,y), we
+    % need to divide through by the COEFFS.
     
-    % Fo
     if ( isnumeric(coeffs{sysCounter}) )
+        % If the COEFF operating the LHS of the current differential equation is
+        % a scalar, we create a string that picks it out of the COEFFS cell.
         coeffStr = sprintf('coeffs{%i}', sysCounter);
 
     else
         % If COEFF is not numeric, it must be a CHEBFUN. But that requires us to
-        % evaluate it at every point T when we evaluate the ODE fun.
+        % evaluate it at every point T when we evaluate the ODE fun, so we add
+        % the '(t)' part as well, so that it'll be evaluated at the correct
+        % coordinate throughout the ODE solver.
         coeffStr = sprintf('coeffs{%i}(t)', sysCounter);
 
     end
+    
+    % Add the current equation INFIXFORM, which contains all the equations so
+    % far.
     infixForm = [infixForm, varString , systemInfix{sysCounter}, ...
         './' coeffStr, '; '];
 end
+
 % Get rid of the last ; that got added to the infix form:
 infixForm(end-1:end) = [];
 

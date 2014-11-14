@@ -1,5 +1,31 @@
-function [funOut, indexStart, problemDom, coeffs] = toFirstOrder(funIn, rhs, domain)
+function [funOut, indexStart, problemDom, coeffs, totalDiffOrders] = ...
+    toFirstOrder(funIn, rhs, domain)
 %TOFIRSTORDER    Convert higher order anonymous functions to first order systems
+%
+% Calling sequence:
+%   [FUNOUT, INDEXSTART, PROBLEMDOM, COEFFS, TOTALDIFFORDERS] = ...
+%       TOFIRSTORDER(FUNIN, RHS, DOMAIN)
+% where the inputs are:
+%   FUNIN:  An anonymous function which describes an ODE, usually including
+%           higher order derivatives, e.g. @(x,u) diff(u, 2) + sin(u). Usually,
+%           the anonymous function comes from the OP field of a CHEBOP.
+%   RHS:    The right hand side of the differential equation being solved with a
+%           CHEBOP, that is, the right argument of a CHEBOP backslash.
+%   DOMAIN: The domain of the problem we're trying to solve.
+% and the outputs are:
+%   FUNOUT:     An anonymous function that is the first order reformulation of
+%               FUNIN, which can be passed to the MATLAB solvers.
+%   INDEXSTART: A vector that denotes at which index we should start indexing
+%               each variable from so that they're in the correct order for the
+%               MATLAB ODE solvers.
+%   PROBLEMDOM: The domain on which the problem can be specified, which may
+%               include breakpoints originally not included in DOMAIN.
+%   COEFFS:     A cell array of the coefficients the multiply the highest order
+%               derivatives in problem. For example, for the problem 
+%               @(x,u) 5*diff(u, 2) + u, we will have COEFFS{1} = 5.
+%   TOTALDIFFORDERS:
+%               A vector that contains the maximum diffOrder applying to each
+%               variable in the problem.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.

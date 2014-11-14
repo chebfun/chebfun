@@ -84,7 +84,8 @@ end
 
 % We call the conversion methods of the TREEVAR class, the call depends on
 % whether we're dealing with a system or not.
-[anonFun, varIndex, problemDom, coeffs] = treeVar.toFirstOrder(N.op, rhs, N.domain);
+[anonFun, varIndex, problemDom, coeffs, diffOrders] = ...
+    treeVar.toFirstOrder(N.op, rhs, N.domain);
 
 % Join all breakpoints, which can either be specified by the CHEBOP, or arise
 % from discontinuous coefficients in the problem.
@@ -156,6 +157,13 @@ else
     initVals = -cellfun(@feval, bcEvalFun.blocks, ...
         repmat({evalPoint}, length(bcEvalFun.blocks), 1) );
 end
+
+% The number of initial conditions passed should match the total diffOrders that
+% appear in the problem:
+assert(sum(diffOrders) == length(initVals), ...
+    'CHEBFUN:CHEBOP:solveIVP:numConditions', ['The number of initial/final ' ...
+    'conditions does not match the\ndifferential order(s) appearing in the ' ...
+    'problem.'])
 
 % Need to sort the results of INITVALS above. This is because we can't guarantee
 % that the LBC or RBC were imposed in the order of ascending variables, and

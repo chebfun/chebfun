@@ -514,7 +514,8 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         anonFun = toAnon(infix, varArray)
         
         % Convert higher order anonymous functions to first order systems
-        [funOut, indexStart, problemDom, coeffs] = toFirstOrder(funIn, rhs, domain)
+        [funOut, indexStart, problemDom, coeffs, totalDiffOrders] = ...
+            toFirstOrder(funIn, rhs, domain)
         
         % Convert infix expressions to anonymous function suited for ODE solvers
         funOut = toRHS(infix, varArray, coeff, indexStart, totalDiffOrders);
