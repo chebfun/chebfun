@@ -312,11 +312,14 @@ if ( ~isempty(N.rbc) )
 end
 
 % Evaluate and linearise the remaining constraints:
-if ( ~isempty(N.bc) || isequal(pref.discretization, @trigcolloc) )
+disc = pref.discretization();
+tech = disc.returnTech();
+techUsed = tech();
+if ( ~isempty(N.bc) || isPeriodicTech(techUsed) )
     
     % Periodic case. 
     if ( (isa(N.bc, 'char') && strcmpi(N.bc, 'periodic')) || ...
-            isequal(pref.discretization, @trigcolloc) )
+            isPeriodicTech(techUsed) )
         bcU = 0;
         % Need to evaluate the residual of the boundary condition for each
         % independent variable uBlocks{k} separately, since each variable can

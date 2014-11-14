@@ -111,11 +111,11 @@ for dim = [dimVals inf]
     % currently valid factorization at hand.
     if ( isFactored(disc) )
         A = [];
-        P = eye(disc.dimension*size(L,2));
+        P = speye(disc.dimension*size(L,2));
     else
         [A, P] = matrix(disc);
         if ( size(A, 1) ~= size(A, 2) )
-            % TODO: Improve this warning.
+            % [TODO]: Improve this warning.
             warning('CHEBFUN:LINOP:linsolve:notSquare', ...
                 'Matrix is not square!');
         end
@@ -128,7 +128,7 @@ for dim = [dimVals inf]
     [v, disc] = mldivide(disc, A, b);
     
     % Project the solution:
-    v = P*v;
+    v = P*v; 
     
     % [TODO]: We could test each variable at their input dimension, but then
     % each would be different and we would nopt be able to use the trick of

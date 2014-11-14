@@ -101,8 +101,8 @@ pref = determineDiscretization(N, L, isPrefGiven, pref);
 % Clear boundary conditions if the dicretization uses periodic functions (since
 % if we're using periodic basis functions, the boundary conditions will be
 % satisfied by construction).
-discPreference = pref.discretization();
-tech = discPreference.returnTech();
+disc = pref.discretization();
+tech = disc.returnTech();
 techUsed = tech();
 if ( isPeriodicTech(techUsed) )
     [N, L] = clearPeriodicBCs(N, L);
@@ -163,10 +163,9 @@ end
 % Ensure that u0 is of correct discretization, and convert it to a
 % CHEBMATRIX if necessary.
 if ( isa(u0, 'chebfun') )
-    u0 = chebmatrix(chebfun(u0, dom, 'tech', tech));
+    u0 = chebmatrix(chebfun.convertToCorrectTech(u0, dom, tech));
 elseif ( isa(u0, 'chebmatrix') )
-    constr = @(f) chebfun(f, dom, 'tech', tech);
-    u0.blocks = cellfun(constr, u0.blocks, 'uniformOutput', false);
+    u0 = chebmatrix.convertToCorrectTech(u0, dom, tech);
 end
     
 % Solve:
@@ -196,10 +195,9 @@ else
     % Ensure that rhs is of correct discretization, and convert it to a 
     % CHEBMATRIX if necessary.
     if ( isa(rhs, 'chebfun') )
-        rhs = chebmatrix(chebfun(rhs, dom, 'tech', tech));
+        rhs = chebmatrix(chebfun.convertToCorrectTech(rhs, dom, tech));
     elseif ( isa(rhs, 'chebmatrix') )
-        constr = @(f) chebfun(f, dom, 'tech', tech);
-        rhs.blocks = cellfun(constr, rhs.blocks, 'uniformOutput', false);
+        rhs = chebmatrix.convertToCorrectTech(rhs, dom, tech);
     end
     
     % Call solver method for nonlinear problems.
