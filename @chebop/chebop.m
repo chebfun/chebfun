@@ -184,7 +184,7 @@ classdef (InferiorClasses = {?double}) chebop
             
             % Assign operator and domain:
             N.op = op;
-            N.domain = dom;
+            N.domain = dom(:)';
             
             % Assign BCs and INIT if they were passed:
             if ( nargin == 3 )
@@ -302,6 +302,14 @@ classdef (InferiorClasses = {?double}) chebop
     %% METHODS IMPLEMENTED IN THIS FILE:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
     methods
+        
+        function N = set.domain(N, val)
+            %CHEBOP.SET.DOMAIN   Set domain of a CHEBOP.
+            %   CHEBOP.SET.DOMAIN ensures that N.DOMAIN is a row vector as
+            %   required by the CHEBOP and CHEBFUN classes.
+            
+            N.domain = val(:)';            
+        end
         
         function N = set.lbc(N, val)
             %CHEBOP.SET.LBC   Set left boundary condition of a CHEBOP.
