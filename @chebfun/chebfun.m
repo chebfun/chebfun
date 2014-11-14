@@ -191,7 +191,7 @@ classdef chebfun
             end
                        
             % Parse inputs:
-            [op, dom, data, pref] = parseInputs(varargin{:});
+            [op, dom, data, pref, flags] = parseInputs(varargin{:});
                         
             if ( strcmp(op, 'done') )
                 % An update was performed. Exit gracefully:
@@ -220,6 +220,13 @@ classdef chebfun
                 % Call the main constructor:
                 [f.funs, f.domain] = chebfun.constructor(op, dom, data, pref);
                 
+                if ( flags.doubleLength )
+                    % Getting the length of f.funs{1} is okay because the
+                    % 'doubleLength' flag is mutually exclusive with 'splitting on'.
+                    pref.techPrefs.fixedLength = 2*length(f.funs{1});
+                    [f.funs, f.domain] = chebfun.constructor(op, dom, data, pref);
+                end
+
                 % Update values at breakpoints (first row of f.pointValues):
                 f.pointValues = chebfun.getValuesAtBreakpoints(f.funs, ...
                     f.domain, op);
@@ -239,7 +246,7 @@ classdef chebfun
                 end
                 f = chebfun(c, f.domain([1,end]), 'coeffs', pref);
             end
-            
+
         end
         
     end
@@ -591,7 +598,7 @@ function op = str2op(op)
     end
 end
 
-function [op, dom, data, pref] = parseInputs(op, varargin)
+function [op, dom, data, pref, flags] = parseInputs(op, varargin)
     
     % TODO: Should we 'data' structure to be passed to the constructor?
     % Currently, like in CHEBFUN/COMPOSE(), we don't have a use for this, but it
@@ -653,6 +660,10 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
     % A struct to hold any preferences supplied by keyword (name-value pair).
     keywordPrefs = struct();
 
+    % Non-preferences that need to live beyond parseInputs.
+    flags = struct();
+    flags.doubleLength = false;
+
     % Parse the remaining arguments.
     prefWasPassed = false;
     isPeriodic = false;
@@ -682,7 +693,11 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
         elseif ( strcmpi(args{1}, 'novectorcheck') )
             % Vector check for function_handles.
             doVectorCheck = false;
-            args(1) = [];            
+            args(1) = [];
+        elseif ( strcmpi(args{1}, 'doublelength') )
+            % Construct Chebfun twice as long as usually would be constructed.
+            flags.doubleLength = true;
+            args(1) = [];
         elseif ( strcmpi(args{1}, 'coeffs') && isnumeric(op) )
             % Hack to support construction from coefficients.            
             op = {{[], op}};
@@ -807,6 +822,13 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
         pref = chebfunpref(pref, keywordPrefs);
     else
         pref = chebfunpref(keywordPrefs);
+    end
+
+    % Error if 'doubleLength' and 'splitting on' are both passed:
+    % These options are not compatible.
+    if ( pref.splitting && flags.doubleLength )
+        error('CHEBFUN:CHEBFUN:parseInputs:doubleLengthSplitting', ...
+            'Splitting and doubleLength options are not compatible.')
     end
 
     % Use the default domain if none was supplied.
