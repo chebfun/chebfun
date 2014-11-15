@@ -493,21 +493,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         
     end
     
-    methods ( Static = true, Access = private )
-        
-        % Construct syntax trees for bivariate methods
-        treeOut = bivariate(leftTree, rightTree, method, type)
-        
-        % Construct syntax trees for univariate methods
-        treeOut = univariate(treeIn, method)
-        
-    end
-    
-    
     methods ( Static = true )
-        
-        % Convert expressions like 5*(diff(u) + u) to 5*diff(u) + 5*u
-        newTree = expandTree(tree, maxOrder)
         
         % Plot a syntax tree
         plotTree(tree, varargin)
@@ -518,21 +504,34 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         % Returns how the results of evaluating BCs should be sorted
         idx = sortConditions(funIn, domain)
         
+        % Convert higher order anonymous functions to first order systems
+        [funOut, indexStart, problemDom, coeffs, totalDiffOrders] = ...
+            toFirstOrder(funIn, rhs, domain)
+        
+    end
+    
+    methods ( Static = true, Access = private )
+        
+        % Construct syntax trees for bivariate methods
+        treeOut = bivariate(leftTree, rightTree, method, type)
+        
+        % Convert expressions like 5*(diff(u) + u) to 5*diff(u) + 5*u
+        newTree = expandTree(tree, maxOrder)
+        
         % Split syntax trees into derivative part and non-derivative part.
         [newTree, derTree] = splitTree(tree, maxOrder)
         
         % Convert the infix form of an expression to an anonymous function
         anonFun = toAnon(infix, varArray)
         
-        % Convert higher order anonymous functions to first order systems
-        [funOut, indexStart, problemDom, coeffs, totalDiffOrders] = ...
-            toFirstOrder(funIn, rhs, domain)
-        
         % Convert infix expressions to anonymous function suited for ODE solvers
         funOut = toRHS(infix, varArray, coeff, indexStart, totalDiffOrders);
         
         % Convert a syntax tree to infix form
         [infix, varArray] = tree2infix(tree, diffOrders, varCounter, varArray)
+           
+        % Construct syntax trees for univariate methods
+        treeOut = univariate(treeIn, method)
         
     end
     
