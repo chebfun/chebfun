@@ -219,6 +219,17 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             f.tree = f.univariate(f.tree, 'csch');
         end
         
+        function f = cumsum(f)
+            % We don't support integral equations with our first order
+            % reformulation. However, we could accidentally end up here in case
+            % of first order integral equation, where the conditions are
+            % specified via N.LBC/RBC. Throw a meaningful error message in this
+            % case.
+            error('CHEBFUN:TREEVAR:cumsum:notSupported', ['First order ' ...
+                'reformulation does not support integral equations.\nPlease ' ...
+                'specify conditions via N.BC rather than N.LBC/RBC.'])
+        end
+        
         function f = diff(f, k)
             % Derivative of a TREEVAR.
             
