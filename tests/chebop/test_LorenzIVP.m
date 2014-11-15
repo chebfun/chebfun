@@ -15,7 +15,7 @@ u = uvw{1}; v = uvw{2}; w = uvw{3};
 odeFun = @(t,y) [10*(y(2) - y(1));
     y(1).*(28-y(3)) - y(2);
     y(1).*y(2) - (8/3)*y(3)];
-opts = odeset('abstol', 100*eps, 'reltol', 100*eps);
+opts = odeset('abstol', 1e5*eps, 'reltol', 100*eps);
 sol = ode113(odeFun, dom, [-14, -15, 20], opts);
 solEnd = deval(sol, dom(end));
 

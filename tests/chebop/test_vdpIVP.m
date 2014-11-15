@@ -1,15 +1,11 @@
-function pass = test_vdpIVP(pref)
+function pass = test_vdpIVP(~)
 
 %% Setup
-if ( nargin == 0 )
-    pref = cheboppref();
-end
-
 vdpFun = @(mu) @(u) diff(u, 2) - mu.*(1-u.^2).*diff(u) + u;
 dom = [0 10];
 bcFun =  @(u) [u-2; diff(u)];
-opts = odeset('abstol', 100*eps, 'reltol', 100*eps);
-tol = 1e-13;
+opts = odeset('abstol', 1e5*eps, 'reltol', 100*eps);
+tol = 1e-10;
 %% Solve with CHEBOPs, compare with standard MATLAB, mu = 1
 N = chebop(vdpFun(1), dom);
 N.lbc = bcFun;

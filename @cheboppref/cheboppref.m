@@ -46,7 +46,7 @@ classdef cheboppref < chebpref
 %     than the value of errTol.
 %
 %   ivpAbsTol                    - Absolute tolerance for the ivpSolver
-%     [100*eps]
+%     [1e5*eps]
 %
 %     This options specifies the option for the absolute tolerance passed as an
 %     option to the built-in MATLAB ODE solver when solving IVPs.
@@ -396,7 +396,7 @@ classdef cheboppref < chebpref
             factoryPrefs.damping = 1;
             factoryPrefs.display = 'off';
             factoryPrefs.errTol = 1e-10;
-            factoryPrefs.ivpAbsTol = 100*eps;
+            factoryPrefs.ivpAbsTol = 1e5*eps;
             factoryPrefs.ivpRelTol = 100*eps;
             factoryPrefs.ivpSolver = @chebfun.ode113;
             factoryPrefs.lambdaMin = 1e-6;
