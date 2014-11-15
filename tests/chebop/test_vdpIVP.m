@@ -1,59 +1,31 @@
-tic
-mu = 1;
-vdpFun = @(y) diff(y, 2) - mu.*(1-y.^2).*diff(y) + y;
-x = chebfun(@(x) x);
-u = vdpFun(treeChebfun(x));
-[newTree, derTree] = treeChebfun.splitTree(u.tree, u.tree.diffOrder);
-newTree = struct('method', 'uminus', 'numArgs', 1, 'center', newTree);
-[infix, varCounter, varArray] = treeChebfun.tree2infix(newTree);
-anonFun = treeChebfun.toAnon(infix,varArray);
-[t,y]=ode113(anonFun,[0 20],[2 0]);
-toc
-plot(t,y(:,1));
+function pass = test_vdpIVP(pref)
 
+%% Setup
+if ( nargin == 0 )
+    pref = cheboppref();
+end
 
-tic
-[t,y]=ode113(@vdp1,[0 20],[2 0]);
-toc
+vdpFun = @(mu) @(u) diff(u, 2) - mu.*(1-u.^2).*diff(u) + u;
+dom = [0 10];
+bcFun =  @(u) [u-2; diff(u)];
+opts = odeset('abstol', 100*eps, 'reltol', 100*eps);
+tol = 1e-13;
+%% Solve with CHEBOPs, compare with standard MATLAB, mu = 1
+N = chebop(vdpFun(1), dom);
+N.lbc = bcFun;
+u = N\0;
+uend = u(dom(end));
+sol =ode45(@vdp1, dom, [2 0], opts);  
+yend = deval(sol, dom(end)); yend = yend(1);
+err(1) = abs(uend - yend);
 
-%% With treeVars
-tic
-mu = 25;
-vdpFun = @(y) diff(y, 2) - mu.*(1-y.^2).*diff(y) + y;
-u = vdpFun(treeVar());
-[newTree, derTree] = treeVar.splitTree(u.tree, u.tree.diffOrder);
-newTree = struct('method', 'uminus', 'numArgs', 1, 'center', newTree);
-[infix, varCounter, varArray] = treeVar.tree2infix(newTree);
-anonFun = treeVar.toAnon(infix,varArray);
-[t,y]=ode113(anonFun,[0 40],[2 0]);
-toc
-plot(t,y(:,1));
-
-
-tic
-[t,y]=ode113(@vdp1,[0 20],[2 0]);
-toc
-figure, plot(t,y(:,1));
-%% With chebfun.ode113
-tic
-mu = 1;
-vdpFun = @(y) diff(y, 2) - mu.*(1-y.^2).*diff(y) + y;
-u = vdpFun(treeVar());
-[newTree, derTree] = treeVar.splitTree(u.tree, u.tree.diffOrder);
-newTree = struct('method', 'uminus', 'numArgs', 1, 'center', newTree);
-[infix, varCounter, varArray] = treeVar.tree2infix(newTree);
-anonFun = treeVar.toAnon(infix,varArray);
-y = chebfun.ode113(anonFun,[0 20],[2; 0])
-toc
-plot(y(:,1));
-
-%% Chebop style
-mu = 25;
-vdpFun = @(y) diff(y, 2) - mu.*(1-y.^2).*diff(y) + y;
-dom = [0 20];
-N = chebop(vdpFun, dom);
-N.lbc = @(u) [u - 2; diff(u)];
-cheboppref.setDefaults('display','iter')
-cheboppref.setDefaults('plotting','on')
-[t, y] = N\0
-plot(t,y(:,1));
+%% Solve with CHEBOPs, compare with standard MATLAB, mu = 1000
+N = chebop(vdpFun(1000), dom);
+N.lbc = bcFun;
+u = N\0;
+uend = u(dom(end));
+sol =ode45(@vdp1000, dom, [2 0], opts);  
+yend = deval(sol, dom(end)); yend = yend(1);
+err(2) = abs(uend - yend);
+%% Happy?
+pass = err < tol;
