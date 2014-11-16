@@ -177,16 +177,16 @@ else
             newLeft = struct('method','times', 'numArgs', 2, ...
                 'left', leftLeft, ...
                 'right', rightTree,...
-                'diffOrder', max(leftLeft.diffOrder, rightDiffOrder), ...
-                'height', max(leftLeft.height, rightHeight) + 1);
+                'diffOrder', max(getDifforder(leftLeft), rightDiffOrder), ...
+                'height', max(getHeight(leftLeft), rightHeight) + 1);
             
             % Multiply together the new right factor of the left tree, and the
             % current right tree:
             newRight = struct('method','times', 'numArgs', 2, ...
                 'left', leftRight, ...
                 'right', rightTree, ...
-                'diffOrder', max(leftRight.diffOrder, rightDiffOrder) + 1, ...
-                'height', max(leftRight.height, rightHeight) + 1);
+                'diffOrder', max(getDifforder(leftRight), rightDiffOrder) + 1, ...
+                'height', max(getHeight(leftRight), rightHeight) + 1);
             
         elseif ( ~splitLeft && splitRight )
             % Had to split on the left, not the right.
@@ -196,16 +196,16 @@ else
             newLeft = struct('method','times', 'numArgs', 2, ...
                 'left', leftTree, ...
                 'right', rightLeft,...
-                'diffOrder', max(leftDiffOrder, rightLeft.diffOrder), ...
-                'height', max(leftHeight, rightLeft.height) + 1);
+                'diffOrder', max(leftDiffOrder, getDifforder(rightLeft)), ...
+                'height', max(leftHeight, getHeight(rightLeft)) + 1);
             
             % Multiply together the current left tree, and the new right factor
             % of the right tree:
             newRight = struct('method','times', 'numArgs', 2, ...
                 'left', leftTree, ...
                 'right', rightRight,...
-                'diffOrder', max(leftDiffOrder, rightRight.diffOrder), ...
-                'height', max(leftHeight, rightRight.height) + 1);
+                'diffOrder', max(leftDiffOrder, getDifforder(rightRight)), ...
+                'height', max(leftHeight, getHeight(rightRight) + 1));
             
         end
               
@@ -216,4 +216,32 @@ else
             'height',max(newLeft.height, newRight.height) + 1);
     end
 end
+end
+
+function out = getDifforder(treeIn)
+%GETDIFFORDER
+%
+% We often encounter child nodes that may or may not be a syntax tree, as
+% opposed to chebfuns or scalars. We are usually interested in the heights and
+% diffOrders of the syntax trees, however, if the tree is actually a
+% CHEBFUN/scalar, they won't have the necessary fields. This method takes care
+% of checking the class of the argument, and return the correct information.
+if ( isstruct(treeIn) )
+    out = treeIn.diffOrder;
+else
+    out = 0;
+end
+
+end
+
+function out = getHeight(treeIn)
+%GETHEIGHT
+%
+% Same as GETDIFFORDER() method above, but for the height of the syntax tree.
+if ( isstruct(treeIn) )
+    out = treeIn.height;
+else
+    out = 0;
+end
+
 end
