@@ -161,34 +161,63 @@ pass(3, problemNo) = norm(domOut - (-1:4)) < tol;
 pass(4, problemNo) = norm(coeffs{1} - 5) + norm(coeffs{2} - cos(x)) < tol;
 pass(5, problemNo) = all( diffOrders == 2);
 
+%% CHEBFUN inside the anonymous function, rather than on the RHS:
+% We have the equations 
+%   5*(diff(u,2) + coth(x+5)) = -5
+% so expect the first order system to be:
+%   u'(1) = u(2)
+%   u'(2) = -5/5 - coth(x+5)
+problemNo = 11;
+myfun = @(u) 5*(diff(u, 2) + coth(x+5));
+rhs = -5;
+[anonFun, idx, domOut, coeffs, diffOrders] = treeVar.toFirstOrder(myfun, rhs, dom);
+correctFun = @(x,u) [u(2); -1 - coth(x+5)];
+evalPt = [2.4 2.3];
+pass(1, problemNo) = norm(anonFun(1, evalPt) - correctFun(1, evalPt)) < tol;
+pass(2, problemNo) = (idx == 1 );
+pass(3, problemNo) = all(domOut == dom);
+pass(4, problemNo) = norm(coeffs{1} - 5) < tol;
+pass(5, problemNo) = all( diffOrders == 2);
+
 %% Four variables, mixed derivatives, mixed order
 % We have the equations
 %   diff(y,3) + w + diff(u) = exp(x)
-%   5*diff(w) + diff(v) = x.^2 
-%   5*(diff(u,2) + 3*v) = tanh(x)
-%   cos(x)*diff(v,2) + diff(u) + diff(y,2) = 2
+%   7*diff(w) + diff(v) = x.^2 
+%   5*(diff(u,2) + 3*v + coth(x)) = tanh(x)
+%   cos(x)*diff(v,2) + diff(u) - diff(y,2) = 2
 %
 % so expect the first order system to include the variables:
-%   u(1) = u, u(2) = u', u(3) = v, u(4) = v'; 
+%   u(1) = u, u(2) = u', u(3) = v, u(4) = v'; u(5) = w, u(6) = y, u(7) = y',
+%   u(8) = y''
 % and the first order reformulation to be
 %   u'(1) = u(2)
-%   u'(2) = tanh(x)/5 - 3*u(3)
-%   u'(3)
-%   u'(2) = tanh(x)/5 - 3*u(3)
+%   u'(2) = tanh(x)/5 - 3*u(3) - coth(x+5)
 %   u'(3) = u(4)
-%   u'(4) = (2 - sin(x)*u(1))/cos(x)
-problemNo = 10;
-myfun = @(x,u,v) [5*(diff(u,2) + 3*v); 
-    cos(x).*diff(v,2) + abs(sin(pi*x)).*u];
-rhs = [tanh(x); 2];
+%   u'(4) = (2 - u(2) + u(8))/cos(x)
+%   u'(5) = (x.^2-u(4))/7
+%   u'(6) = u(7)
+%   u'(7) = u(8)
+%   u'(8) = exp(x) - u(5) - u(2)
+problemNo = 12;
+myfun = @(x,u,v,w,y) [...
+    diff(y, 3 ) + w + diff(u);
+    7*diff(w) + diff(v);
+    5*(diff(u,2) + 3*v + coth(x+5));
+    cos(x).*diff(v,2) + diff(u) - diff(y,2)];
+rhs = [exp(x); x.^2; tanh(x); 2];
 [anonFun, idx, domOut, coeffs, diffOrders] = treeVar.toFirstOrder(myfun, rhs, dom);
-correctFun = @(x,u) [u(2); tanh(x)/5 - 3*u(3); u(4); (2-abs(sin(pi*x)).*u(1))/cos(x)];
-evalPt = [2 1 2.4 2.3];
+correctFun = @(x,u) [...
+    u(2); tanh(x)/5 - 3*u(3) - coth(x+5); 
+    u(4); (2-u(2) + u(8))/cos(x);
+    (x.^2 - u(4))/7;
+    u(7); u(8); exp(x) - u(5) - u(2)];
+evalPt = [2 1 2.4 2.3 1.2 3.2 5.1 4.6];
 pass(1, problemNo) = norm(anonFun(1, evalPt) - correctFun(1, evalPt)) < tol;
-pass(2, problemNo) = all(idx == [1 3]);
-pass(3, problemNo) = norm(domOut - (-1:4)) < tol;
-pass(4, problemNo) = norm(coeffs{1} - 5) + norm(coeffs{2} - cos(x)) < tol;
-pass(5, problemNo) = all( diffOrders == 2);
+pass(2, problemNo) = all(idx == [1 3 5 6]);
+pass(3, problemNo) = norm(domOut - dom) < tol;
+pass(4, problemNo) = norm(coeffs{1} - 5) + norm(coeffs{2} - cos(x)) + ...
+    norm(coeffs{3} - 7) + norm(coeffs{4} - 1) < tol;
+pass(5, problemNo) = all( diffOrders == [2 2 1 3]);
 
 
 %% Coupled systems -- Unsupported format, highest order derivatives in same eqn
