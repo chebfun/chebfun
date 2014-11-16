@@ -67,7 +67,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         %           v = treeVar([0 1 0], [0 1]);
         %           w = treeVar([0 0 1], [0 1]);
         %           f = diff(u) + diff(w, 2);
-        %       will lead to f.DIFFORDER == [1 0 2].
+        %       will lead to f.tree.DIFFORDER == [1 0 2].
         %   HEIGHT: The height of the syntax tree, i.e., the number of
         %       operations between the base variables(s) and the current
         %       variable.
@@ -83,7 +83,14 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         %           v = treeVar([0 1 0], [0 1]);
         %           w = treeVar([0 0 1], [0 1]);
         %           f = u + 2*w;
-        %       will lead to f.ID == [1 0 1].
+        %       will lead to f.tree.ID == [1 0 1].
+        %   HASTERMS: Indiciates whether a TREEVAR is constructed from a
+        %       sequence of computations that include multiple terms. For
+        %       example, the sequence
+        %           u = treeVar(1, [0 1]);
+        %           v = cos(x).*u;
+        %           w = cos(u) + u;
+        %       leads to v.tree.hasTerms = 0, w.tree.hasTerms = 1.
         tree
         % The domain of the problem we're solving when constructing the TREEVAR
         % objects.
