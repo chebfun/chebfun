@@ -61,7 +61,7 @@ elseif ( ~isempty(indVarNameInit{1}) && isempty(indVarNameDE{1}) )
 elseif ( isempty(indVarNameInit{1}) && ~isempty(indVarNameDE{1}) )
     indVarNameSpace = indVarNameDE{1};
 else
-    indVarNameSpace = 'x'; % Default value
+    indVarNameSpace = 't'; % Default value for IVPs
 end
 
 % Replace the 'DUMMYSPACE' variable in the DE field
