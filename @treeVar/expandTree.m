@@ -22,9 +22,11 @@ function newTree = expandTree(tree, maxOrder)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
-if ( ~isstruct(tree) || tree.height <= 1 || all(tree.diffOrder < maxOrder) )
-    % If the input is not a tree, it is a very short tree, or its diffOrder is
-    % less than the maxOrder we consider, don't need to do anything.
+if ( ~isstruct(tree) || tree.height <= 1 || all(tree.diffOrder < maxOrder) || ...
+    ~tree.hasTerms )
+    % If the input is not a tree, it is a very short tree, its diffOrder is less
+    % than the maxOrder we consider, or it doesn't contain any operators that
+    % split it up in terms (that is, + or -) don't need to do anything.
     newTree = tree;
     
 elseif ( tree.numArgs == 1 )
@@ -43,7 +45,7 @@ else
         tree.right = treeVar.expandTree(tree.right, maxOrder);
         newTree = tree;
         
-    elseif ( strcmp(tree.method, 'times') )
+    elseif ( any(strcmp(tree.method, {'times', 'rdivide'})) )
         
         if ( ~isstruct(tree.left) && tree.right.height <= 1 )
             % We're at 5*u or x.*u. We know that we won't need to split such
@@ -156,6 +158,8 @@ else
             % level, once we've split up the child trees of the current level.
             rightLeft  = treeVar.expandTree(tree.right.left, maxOrder);
             rightRight = treeVar.expandTree(tree.right.right, maxOrder);
+            % Only need to worry about splitting if both left and right trees
+            % are syntax trees, not if we have CHEBFUN/scalars
             splitRight = true;
         end
         
@@ -178,7 +182,8 @@ else
                 'left', leftLeft, ...
                 'right', rightTree,...
                 'diffOrder', max(getDifforder(leftLeft), rightDiffOrder), ...
-                'height', max(getHeight(leftLeft), rightHeight) + 1);
+                'height', max(getHeight(leftLeft), rightHeight) + 1, ...
+                'hasTerms', getHasTerms(leftLeft) || getHasTerms(rightTree) );
             
             % Multiply together the new right factor of the left tree, and the
             % current right tree:
@@ -186,7 +191,8 @@ else
                 'left', leftRight, ...
                 'right', rightTree, ...
                 'diffOrder', max(getDifforder(leftRight), rightDiffOrder) + 1, ...
-                'height', max(getHeight(leftRight), rightHeight) + 1);
+                'height', max(getHeight(leftRight), rightHeight) + 1, ...
+                'hasTerms', getHasTerms(leftRight) || getHasTerms(rightTree) );
             
         elseif ( ~splitLeft && splitRight )
             % Had to split on the left, not the right.
@@ -197,7 +203,8 @@ else
                 'left', leftTree, ...
                 'right', rightLeft,...
                 'diffOrder', max(leftDiffOrder, getDifforder(rightLeft)), ...
-                'height', max(leftHeight, getHeight(rightLeft)) + 1);
+                'height', max(leftHeight, getHeight(rightLeft)) + 1, ...
+                'hasTerms', getHasTerms(leftTree) || getHasTerms(rightLeft) );
             
             % Multiply together the current left tree, and the new right factor
             % of the right tree:
@@ -205,7 +212,8 @@ else
                 'left', leftTree, ...
                 'right', rightRight,...
                 'diffOrder', max(leftDiffOrder, getDifforder(rightRight)), ...
-                'height', max(leftHeight, getHeight(rightRight) + 1));
+                'height', max(leftHeight, getHeight(rightRight) + 1), ...
+                'hasTerms', getHasTerms(leftTree) || getHasTerms(rightRight) );
             
         end
               
@@ -213,7 +221,8 @@ else
         newTree = struct('method', 'plus', 'numArgs', 2, ...
             'left', newLeft, 'right', newRight, ...
             'diffOrder', max(newLeft.diffOrder, newRight.diffOrder), ...
-            'height',max(newLeft.height, newRight.height) + 1);
+            'height',max(newLeft.height, newRight.height) + 1, ...
+            'hasTerms', newLeft.hasTerms || newRight.hasTerms);
     end
 end
 end
@@ -238,6 +247,19 @@ function out = getHeight(treeIn)
 %GETHEIGHT
 %
 % Same as GETDIFFORDER() method above, but for the height of the syntax tree.
+if ( isstruct(treeIn) )
+    out = treeIn.height;
+else
+    out = 0;
+end
+
+end
+
+function out = getHasTerms(treeIn)
+%GETHEIGHT
+%
+% Same as GETDIFFORDER() method above, but for whether the syntax tree consists
+% of multiple terms.
 if ( isstruct(treeIn) )
     out = treeIn.height;
 else
