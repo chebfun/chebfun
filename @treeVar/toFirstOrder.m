@@ -145,7 +145,7 @@ for wCounter = 1:length(fevalResult)
     expTree = treeVar.expandTree(res.tree, totalDiffOrders);
     
     % Split the tree into derivative part and non-derivative part.
-    [newTree, derTree] = treeVar.splitTree(expTree, diffOrders);
+    [newTree, derTree] = treeVar.splitTree(expTree, totalDiffOrders);
     
     % If newTree is empty, we only have a derivative part in the expression,
     % e.g. diff(u) = 0. We must replace it with a 0, as otherwise, we can't
@@ -154,13 +154,16 @@ for wCounter = 1:length(fevalResult)
         newTree = 0;
     end
     
+    % Find what argument corresponds to the highest derivative one in the
+    % current expression we're looking at. This will also be the order in which
+    % we store the outputs from converting individual expressions to first order
+    % form -- if the input is of the form @(x,u,v) [diff(v) - u; diff(u) - v],
+    % the equations have to be sorted so that they'll be correctly converted.
+    maxDerLoc = find(expTree.diffOrder == totalDiffOrders);
+    
     % Convert the derivative part to infix form.
     [infixDer, varArrayDer] = ...
-        treeVar.tree2infix(derTree, wCounter, indexStartDer);
-    
-    % Find what argument corresponds to the highest derivative one in the
-    % current expression we're looking at:
-    maxDerLoc = find(expTree.diffOrder == max(diffOrders));
+        treeVar.tree2infix(derTree, maxDerLoc, indexStartDer);
     
     % Convert the infix form of the expression that gives us the coefficient
     % multiplying the highest order derivative appearing in the expression to an
@@ -183,7 +186,7 @@ for wCounter = 1:length(fevalResult)
     end
     
     % Evaluate the COEFFFUN to the coefficient!
-    coeffs{wCounter} = coeffFun(t, coeffArg);
+    coeffs{maxDerLoc} = coeffFun(t, coeffArg);
     
     % Now work with the remaining syntax tree of the current expression of
     % interest. We need to negate the syntax tree as we're moving it to the
@@ -194,11 +197,11 @@ for wCounter = 1:length(fevalResult)
         'left', rhs{wCounter}, 'right', newTree);
     % Convert current expression to infix form:
     [infix, varArray] = ...
-        treeVar.tree2infix(newTree, wCounter, indexStart);
+        treeVar.tree2infix(newTree, maxDerLoc, indexStart);
     % Store the infix form and the variables that appeared in the anonymous
     % function.
-    systemInfix{wCounter} = infix;
-    varArrays{wCounter} = varArray;
+    systemInfix{maxDerLoc} = infix;
+    varArrays{maxDerLoc} = varArray;
 end
 
 % Convert all the infix expressions, coefficients and variables stored to an

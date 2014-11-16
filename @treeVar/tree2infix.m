@@ -5,8 +5,8 @@ function [infixOut, varArray] = tree2infix(tree, eqno, indexStart)
 %   [OUT, VARCOUNTER, VARARRAY] = TREE2INFIX(TREE, EQNO, INDEXSTART)
 % where the inputs are
 %   TREE:       A syntax tree.
-%   EQNO:       An integer, denoting the number of the equation in a coupled system
-%               we're currently converting.
+%   EQNO:       An integer, denoting the number of the equation in a coupled
+%               system we're currently converting.
 %   INDEXSTART: A vector that denotes at which index we should start indexing
 %               each variable from so that they're in the correct order for the
 %               MATLAB ODE solvers.
