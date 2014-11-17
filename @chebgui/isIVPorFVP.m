@@ -107,8 +107,8 @@ interiorConditionLocs = ...
     'uniformOutput', false);
 
 % What kind of conditions were imposed?
-leftConditionsImposed = any(cellfun(@any, leftConditionLocs));
-rightConditionsImposed = any(cellfun(@any, rightConditionLocs));
+leftConditionsImposed = ~all(cellfun(@isempty, leftConditionLocs));
+rightConditionsImposed = ~all(cellfun(@isempty, rightConditionLocs));
 interiorConditionsImposed = ~all(cellfun(@isempty,interiorConditionLocs));
 globalConditionsImposed = ~all(cellfun(@isempty, globalConditionLocs));
 
