@@ -120,6 +120,9 @@ classdef chebguiController
         % Set-up the input panel on CHEBGUI
         handles = setupPanelInput(handles);
         
+        % Set-up the IVP solver option panel on CHEBGUI
+        handles = setupPanelIVPsolver(handles);
+        
         % Set-up the panels on CHEBGUI
         handles = setupPanelType(handles);
         
