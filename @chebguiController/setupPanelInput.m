@@ -1,4 +1,4 @@
-function handles = setupPanels(handles)
+function handles = setupPanelInput(handles)
 %SETUPPANELS    Populate the panels on CHEBGUI
 
 % Background colour for text fields:

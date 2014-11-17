@@ -98,7 +98,7 @@ chebguiController.initialiseFigures(handles)
 handles = chebguiController.initialiseMenus(handles);
 
 % Set up the panels:
-handles = chebguiController.setupPanels(handles);
+handles = chebguiController.setupPanelInput(handles);
 handles = chebguiController.setupPanelType(handles);
 
 % Draw the Chebfun logo on the GUI:
