@@ -2,14 +2,17 @@ function handles = setupPanelType(handles)
 %SETUPPANELS    Populate the panels on CHEBGUI
 
 % Background colour for text fields:
-textBackgroundColour = get(handles.panel_type, 'BackgroundColor');
+textBackgroundColour = get(handles.panel_buttons, 'BackgroundColor');
 textFontsize = 12;
 leftMargin = 0.05;
 textHeight = 0.25;
 vertLoc = linspace(.75,.025, 4);
 
-% Ensure that the font size of the panel matches the text:
-set(handles.panel_type, 'FontSize', textFontsize);
+% Create a panel for the problem type option:
+handles.panel_type = uipanel('Parent', handles.panel_buttons, ...
+    'Title', 'Problem type', 'BackgroundColor', textBackgroundColour, ...
+    'Position', [0.045 .63 .92 .22], 'FontSize', textFontsize, ...
+    'BorderType', 'etchedin');
 
 % Create strings above input boxes:
 handles.button_bvp = uicontrol('Parent', handles.panel_type, ...
