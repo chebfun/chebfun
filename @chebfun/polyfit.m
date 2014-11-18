@@ -34,17 +34,23 @@ if ( n > length(y) && numel(y.funs) == 1 && isa(y.funs{1}.onefun, 'chebtech') )
     return
 end
 
-% Compute first n+1 Legendre coeffs:
-cleg = legcoeffs(y, n + 1);
+if ( isperiodic(y) )
+    % If it's a TRIGFUN do the truncation of Fourier coefficients:
+    f = chebfun(y, y.domain,'trig','trunc', 2*n+1);    
+else
+    % Chebyshev case, first convert to Legendre basis:
+    % Compute first n+1 Legendre coeffs:
+    cleg = legcoeffs(y, n + 1);
 
-% Convert to Chebyshev coeffs:
-c = zeros(size(cleg));
-for k = 1:size(c, 2)
-    c(:,k) = leg2cheb(cleg(:,k));   
+    % Convert to Chebyshev coeffs:
+    c = zeros(size(cleg));
+    for k = 1:size(c, 2)
+        c(:,k) = leg2cheb(cleg(:,k));   
+    end
+
+    % Make a CHEBFUN:
+    f = chebfun(c, domain(y, 'ends'), 'coeffs');    
 end
-
-% Make a CHEBFUN:
-f = chebfun(c, domain(y, 'ends'), 'coeffs');    
 
 % Deal with row CHEBFUNs.
 if ( y.isTransposed )    
