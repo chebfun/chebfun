@@ -32,7 +32,7 @@ function [x, w, v] = jacpts(n, a, b, int, meth)
 % 
 %   When MAX(ALPHA, BETA) > 5 the results may not be accurate. 
 %
-% See also CHEBPTS, LEGPTS, LOBPTS, RADAUPTS, HERMPTS, LAGPTS, and FOURPTS.
+% See also CHEBPTS, LEGPTS, LOBPTS, RADAUPTS, HERMPTS, LAGPTS, and TRIGPTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.

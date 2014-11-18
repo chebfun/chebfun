@@ -152,11 +152,11 @@ function g = singIntegral(f)
     end
     
     % Drop the leading zeros in the coefficients:
-    ind = find(cc ~= 0, 1, 'first');
+    ind = find(cc ~= 0, 1, 'last');
     if ( isempty(ind) )
         cc = 0;
     else
-        cc = cc(ind:end);
+        cc = cc(1:ind);
     end
     
     % Construct u as a smoothfun object:

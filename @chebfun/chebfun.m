@@ -557,37 +557,27 @@ classdef chebfun
     %% PRIVATE STATIC METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = private, Static = true )
-        
+
         % Main constructor.
         [funs, ends] = constructor(op, domain, data, pref);
-        
+
         % Convert ODE solutions into CHEBFUN objects:
         [y, t] = odesol(sol, opt);
-        
-        % Parse the inputs to the CHEBFUN constructor.
-        [op, domain, pref] = parseInputs(op, domain, varargin);
 
         % Parse inputs to PLOT. Extract 'lineWidth', etc.
         [lineStyle, pointStyle, jumpStyle, deltaStyle, out] = ...
             parsePlotStyle(varargin)
-        
-        % Convert a string input to a function_handle.
-        op = str2op(op);
-        
-        % Vectorise a function handle input.
-        op = vec(op);
-        
+
     end
-    
+
 end
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                (Private) Methods implemented in this m-file.
+%% Class-related functions: private utilities for this m-file.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function op = str2op(op)
-    % Convert string inputs to either numeric format or function_handles. This
-    % is placed in a subfunction so that there no other variables hanging
-    % around in the scope.
+    % Convert string inputs to either numeric format or function_handles.
     sop = str2num(op); %#ok<ST2NM> % STR2DOUBLE doesn't support str2double('pi')
     if ( ~isempty(sop) )
         op = sop;

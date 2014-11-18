@@ -416,7 +416,7 @@ rhs = [op(dom(1)); fp; op(dom(2))];
 D = diffmat([M N], p, dom, 'chebkind1', {'dirichlet'}, {'neumann'});
 ff = D\rhs;
 err = norm(ff-f, inf);
-pass(38) = ( err < 1e1*tol );
+pass(38) = ( err < 2e1*tol );
 
 % 2nd-order problem: u" = exp(x); u'(-2) = exp(-2); u(7) = exp(7);
 op = @(x)exp(x);
@@ -448,7 +448,7 @@ rhs = [op(dom(1)); fp; op(dom(2))-op(dom(1))];
 D = diffmat([M N], p, dom, 'chebkind1', {'neumann'}, {'sum'});
 ff = D\rhs;
 err = norm(ff-f, inf);
-pass(40) = ( err < 1e1*tol );
+pass(40) = ( err < 5e1*tol );
 
 %% 2nd-kind grid -> 1st-kind grid:
 

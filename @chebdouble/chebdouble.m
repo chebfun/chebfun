@@ -582,6 +582,10 @@ classdef chebdouble
             u.values = sinh(u.values);
         end
         
+        function u = sqrt(u)
+            u.values = sqrt(u.values);
+        end
+        
         function u = subsref(u, s)
             if ( isnumeric(s.subs{1}) )
                 u = feval(u, s.subs{1});

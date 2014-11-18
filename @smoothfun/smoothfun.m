@@ -67,19 +67,6 @@ classdef smoothfun < onefun % (Abstract)
     end
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% STATIC METHODS:
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    methods ( Access = public, Static = true ) 
-        
-        % Construct a rational interpolant to equispaced data.
-        f = funqui(vals)
-        
-        % barycentric weights of Floater-Horman interpolant.
-        w = fhBaryWts(n, d)
-        
-    end
-    
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% NON-STATIC METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false ) 
@@ -99,7 +86,7 @@ classdef smoothfun < onefun % (Abstract)
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% PRIVATE METHODS IMPLEMENTED IN THIS FILE:
+%% Class-related functions: private utilities for this m-file.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function f = funqui(vals)
