@@ -648,14 +648,14 @@ end
 function button_figsol_Callback(hObject, eventdata, handles)
 % Executed when the user wants to show figures in new window.
 
-if ( get(handles.button_bvp, 'Value') )
+if ( get(handles.button_bvp, 'Value') || get(handles.button_ivp, 'Value') )
     % We're in ODE mode.
     
     % Plot the latest solution obtained:
     figure
     latestSolution = handles.latest.solution;
     plot(latestSolution, 'Linewidth', 2)
-    title('Solution at end of iteration')
+    title('Solution')
     xlabel(handles.indVarName);
 
     varnames = handles.varnames;
@@ -672,8 +672,6 @@ if ( get(handles.button_bvp, 'Value') )
         legend(handles.varnames)
     end
     
-    latestNorms = handles.latest.norms;
-
     % Also open the bottom figure in now window. This is either going to be the
     % PLOTCOEFFS, or a plot showing the norm of the updates during the Newton
     % iteration:
@@ -681,7 +679,8 @@ if ( get(handles.button_bvp, 'Value') )
     
     plotType = get(handles.popupmenu_bottomFig, 'Value');
     
-    if ( plotType == 1) % Show the norm plot
+    if ( plotType == 1 ) % Show the norm plot
+        latestNorms = handles.latest.normDelta;
         semilogy(latestNorms, '-*', 'Linewidth', 2)
         title('Norm of updates')
         xlabel('Number of iteration')

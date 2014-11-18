@@ -199,7 +199,6 @@ if ( guiMode )
     % (enables exporting later on)
     handles.latest.type = 'ivp';
     handles.latest.solution = u;
-    handles.latest.norms = info.error;
     handles.latest.chebop = N;
     handles.latest.options = options;
     
@@ -228,7 +227,7 @@ if ( guiMode )
     % show a PLOTCOEFFS plot.
     if ( solvingGlobally && ~isLinear )
         % Store the norm of the Newton updates
-        handles.normDelta = info.normDelta;
+        handles.latest.normDelta = info.normDelta;
 
         axes(handles.fig_norm)
         normDelta = info.normDelta;
