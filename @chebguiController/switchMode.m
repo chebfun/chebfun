@@ -19,9 +19,7 @@ if ( strcmp(newMode, 'bvp') ) % Going into BVP mode
     set(handles.button_pde, 'Value', 0)
     set(handles.button_eig, 'Value', 0)
     
-    set(handles.text_DEs, 'String', 'Differential equation(s)')
-    set(handles.input_GUESS, 'visible', 'On')
-    set(handles.text_initial, 'String', 'Initial guess')
+    set(handles.panel_DEs, 'Title', 'Differential equation(s)')
     set(handles.toggle_useLatest, 'Visible', 'on')
     
     set(handles.text_timedomain, 'Visible', 'off')
@@ -37,10 +35,13 @@ if ( strcmp(newMode, 'bvp') ) % Going into BVP mode
     end
     
     % Change heading for BC/IC input field:
-    set(handles.text_BCs, 'String', 'Boundary condition(s)')
+    set(handles.panel_BCs, 'Title', 'Boundary condition(s)')
     
     % Hide the iter_list box:
     handles = hideIterList(handles);
+    
+    % Show the initial guess panel, and ensure it has the correct title:
+    set(handles.panel_initialGuess,'Visible','on','Title','Initial guess');
     
     set(handles.panel_eigopts, 'Visible', 'Off')
         
@@ -82,12 +83,17 @@ elseif ( strcmp(newMode, 'ivp') ) % Going into IVP mode
     handles = chebguiController.switchMode(handles, 'bvp');
     
     % Change heading for BC/IC input field:
-    set(handles.text_BCs, 'String', 'Initial/final condition(s)')
+    set(handles.panel_BCs, 'Title', 'Initial/final condition(s)')
     
     set(handles.button_bvp, 'Value', 0)
     set(handles.button_ivp, 'Value', 1)
     % Enable IVP solver option
     set(handles.menu_ivpSolver, 'Enable', 'on');
+    
+    % If we're solving in time-stepping mode, hide the initial guess box:
+    if ( ~isempty(strfind(handles.guifile.options.ivpSolver, 'ode')) )
+        set(handles.panel_initialGuess,'Visible','off');
+    end
     % Change the discretization panel to IVP solver option panel
     handles = updateDiscPanel(handles, 1);
     
@@ -102,11 +108,12 @@ elseif ( strcmp(newMode, 'pde') ) % Going into PDE mode
     % Hide the iter_list box:
     handles = hideIterList(handles);
     
-    set(handles.toggle_useLatest, 'Visible', 'off')
-    set(handles.text_initial, 'String', 'Initial condition')
-    set(handles.text_DEs, 'String', 'Differential equation(s)')
+    % Show the initial guess panel, and ensure it has the correct title:
+    set(handles.panel_initialGuess,'Visible','on','Title','Initial condition');
     
-    set(handles.input_GUESS, 'Visible', 'On')
+    set(handles.toggle_useLatest, 'Visible', 'off')
+    set(handles.panel_DEs, 'Title', 'Differential equation(s)')
+    
     set(handles.input_GUESS, 'Enable', 'On')
     set(handles.toggle_useLatest, 'Value', 0)
     set(handles.toggle_useLatest, 'Enable', 'off')
@@ -154,9 +161,8 @@ else % Going into EIG mode
     set(handles.button_eig, 'Value', 1)
     
     set(handles.toggle_useLatest, 'Visible', 'off')
-    set(handles.text_DEs, 'String', 'Differential operator')
+    set(handles.panel_DEs, 'Title', 'Differential operator')
     set(handles.text_initial, 'String', 'Look for')
-    set(handles.input_GUESS, 'visible', 'Off')
     set(handles.toggle_useLatest, 'Enable', 'off')
     
     set(handles.text_timedomain, 'Visible', 'off')
@@ -197,8 +203,11 @@ else % Going into EIG mode
         set(handles.edit_eigN, 'String', 6);
     end
     
+    % Hide the initial guess panel, and ensure it has the correct title:
+    set(handles.panel_initialGuess,'Visible','off');
+    
     % Change heading for BC/IC input field:
-    set(handles.text_BCs, 'String', 'Boundary condition(s)')
+    set(handles.panel_BCs, 'Title', 'Boundary condition(s)')
 
     % Hide the iter_list box:
     handles = hideIterList(handles);
@@ -244,7 +253,7 @@ set(handles.text_LBCs, 'Visible', onOff1)
 set(handles.input_RBC, 'Visible', onOff1)
 set(handles.text_RBCs, 'Visible', onOff1)
 set(handles.input_BC,  'Visible', onOff2)
-set(handles.text_BCs,  'Visible', onOff2)
+set(handles.panel_BCs,  'Visible', onOff2)
 end
 
 function handles = hideIterList(handles)

@@ -298,46 +298,6 @@ guidata(hObject, handles);
 
 end
 
-function input_domain_Callback(hObject, eventdata, handles)
-
-in = get(hObject, 'String');
-input = str2num(in);
-
-% Checks to see if input is not numeric or empty. If so, default left end
-% of the domain is taken to be -1.
-if ( input(1) >= input(end) )
-    warndlg('Empty domain. Default value [-1, 1] used.')
-    in = '[-1, 1]';
-    set(hObject, 'String', in);
-elseif ( isempty(input) || any(isnan(input)) || (length(input) < 2) )
-    warndlg('Domain unrecognized. Default value [-1, 1] used.')
-    in = '[-1, 1]';
-    set(hObject, 'String', in);
-elseif ( ~any(strfind(in, '[')) )
-    in = ['[' in ']'];
-    set(hObject, 'String', in);
-end
-
-set(handles.input_GUESS, 'Enable', 'on');
-set(handles.toggle_useLatest, 'Value', 0);
-set(handles.toggle_useLatest, 'Enable', 'off');
-
-handles.guifile.domain = in;
-guidata(hObject, handles);
-
-end
-
-% --- Executes during object creation, after setting all properties.
-function input_domain_CreateFcn(hObject, eventdata, handles)
-
-bgColorIsDefault = isequal(get(hObject, 'BackgroundColor'), ...
-    get(0, 'defaultUicontrolBackgroundColor'));
-if ( ispc && bgColorIsDefault )
-    set(hObject, 'BackgroundColor', 'white');
-end
-
-end
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % -------- Functions which do their work in a couple of lines of code ----------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
