@@ -15,7 +15,7 @@ x = linspace(-1,1,10);
 v = f(x); 
 g = chebfun( v, 'equi' );
 pass(1) = isequal(size(g), [Inf 10]) && ...
-    isequal(g(xx,:), repmat(v, 100, 1));
+    norm(g(xx,:) - repmat(v, 100, 1)) < pref.eps;
 
 % Equi should work with short columns:
 g = chebfun( v(1:3)', 'equi' );
@@ -35,18 +35,18 @@ pass(5) = isequal(size(g), [Inf,11]);
 
 % Equi should make lines:
 g = chebfun( [-1 0 1]', 'equi' );
-pass(6) = norm(g - chebfun('x')) == 0;
+pass(6) = norm(g - chebfun('x')) < pref.eps;
 
 % Equi should make lines:
 g = chebfun([-3 -1 1 3]','equi');
-pass(7) = norm(g - chebfun('3*x')) == 0;
+pass(7) = norm(g - chebfun('3*x')) < pref.eps;
 
 % Equi should make lines:
 g = chebfun( [-1e5 1e5]', 'equi' );
-pass(8) = norm(g - chebfun('1e5*x')) == 0;
+pass(8) = norm(g - chebfun('1e5*x')) < pref.eps;
 
 % Equi should make parabolas:
 g = chebfun( [0 1 0]', 'equi' );
-pass(9) = norm(g - chebfun('1 - x.^2')) == 0;
+pass(9) = norm(g - chebfun('1 - x.^2')) < pref.eps;
 
 end
