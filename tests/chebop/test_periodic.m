@@ -159,7 +159,7 @@ pass(15) = isequal(get(u.funs{1}, 'tech'), @trigtech);
 % Set domain, variable coefficients a, b, c and d, and rhs f.
 dom = [-pi pi];
 a = chebfun(@(x) 2 + cos(x), dom);
-b = chebfun(@(x) sin(cos(2*x)), dom);
+b = chebfun(@(x) sin(cos(x)), dom);
 c = chebfun(@(x) exp(cos(x)), dom);
 d = chebfun(@(x) sin(x), dom);
 f = chebfun(@(x) cos(x), dom);
