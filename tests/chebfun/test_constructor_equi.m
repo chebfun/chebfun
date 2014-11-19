@@ -13,19 +13,17 @@ xx = 2 * rand(100, 1) - 1;
 f = @(x) cos(x); 
 x = linspace(-1,1,10); 
 v = f(x); 
-% g = chebfun( v, 'equi' );
-% pass(1) = isequal(size(g), [Inf 10]) && ...
-%     isequal(g(xx,:), repmat(v, 100));
-pass(1) = NaN;
+g = chebfun( v, 'equi' );
+pass(1) = isequal(size(g), [Inf 10]) && ...
+    isequal(g(xx,:), repmat(v, 100, 1));
 
 % Equi should work with short columns:
 g = chebfun( v(1:3)', 'equi' );
 pass(2) = isequal(size(g), [Inf,1]);
 
 % Equi should work with shorter columns:
-% g = chebfun( v(1:2)', 'equi' );
-% pass(3) = isequal(size(g), [Inf,1]);
-pass(3) = NaN;
+g = chebfun( v(1:2)', 'equi' );
+pass(3) = isequal(size(g), [Inf,1]);
 
 % Equi should work with matrices:
 g = chebfun( repmat(v',1,10), 'equi' );
@@ -40,7 +38,15 @@ g = chebfun( [-1 0 1]', 'equi' );
 pass(6) = norm(g - chebfun('x')) == 0;
 
 % Equi should make lines:
-g = chebfun([-1 -1/3 1/3 1]','equi');
-pass(7) = norm(g - chebfun('x')) == 0;
+g = chebfun([-3 -1 1 3]','equi');
+pass(7) = norm(g - chebfun('3*x')) == 0;
+
+% Equi should make lines:
+g = chebfun( [-1e5 1e5]', 'equi' );
+pass(8) = norm(g - chebfun('1e5*x')) == 0;
+
+% Equi should make parabolas:
+g = chebfun( [0 1 0]', 'equi' );
+pass(9) = norm(g - chebfun('1 - x.^2')) == 0;
 
 end

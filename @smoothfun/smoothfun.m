@@ -128,7 +128,11 @@ end
 errs = zeros(1, min(n, maxd) - 1);
 x = linspace(-1, 1, n+1)';
 xrm = x;
-rmIndex = [2, n-1];
+if ( n > 2 )
+    rmIndex = [2, n-1];
+else
+    rmIndex = [];
+end
 xrm(rmIndex) = [];
 
 % Take arbitrary linear combination of the columns for array-valued
