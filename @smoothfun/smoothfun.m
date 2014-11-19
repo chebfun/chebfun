@@ -109,7 +109,7 @@ function f = funqui(vals)
 %   interpolation [Numer. Math. 107, 315-331 (2007)] with an adaptive choice 
 %   of their blending degree d.
 
-n = length(vals) - 1;
+n = size(vals,1) - 1;
 
 % Limit the maximal d to try depending on n:
 if ( n < 60 )  
