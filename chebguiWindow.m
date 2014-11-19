@@ -342,101 +342,6 @@ end
 % -------- Functions which do their work in a couple of lines of code ----------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function input_GUESS_Callback(hObject, eventdata, handles)
-% Plot the initial guess/condition when it is entered in the appropriate field.
-
-% Find the string.
-newString = cellstr(get(hObject, 'String'));
-
-% Remove tabs
-newString = removeTabs(newString);
-set(hObject, 'String', newString);
-
-handles.guifile.init = newString;
-if ( isempty(newString) || (iscell(newString) && (numel(newString) == 1) && ...
-        isempty(newString{1})) )
-    handles.init = '';
-    axes(handles.fig_sol);
-    cla(handles.fig_sol, 'reset');
-    guidata(hObject, handles);
-    return
-end
-
-loadVariables(handles.importedVar)
-
-guidata(hObject, handles);
-
-% Create the independent space variable:
-xtTemp = chebfun(@(x) x, str2num(handles.guifile.domain));
-
-% Assign it to the correct variable, either r, x or t.
-if ( ~exist('r', 'var') )
-    r = xtTemp;
-end
-
-if ( ~exist('x', 'var') )
-    x = xtTemp;
-end
-
-if ( ~exist('t', 'var') )
-    t = xtTemp;
-end
-
-% Do something more clever with multiline input
-str = cellstr(get(hObject, 'String'));
-init = [];
-for k = 1:numel(str)
-    strk = str{k};
-    equalSigns = find(strk == '=');
-    if ( numel(equalSigns) > 1 )
-        error('CHEBFUN:chebguiWindow:initInput', ...
-            'Too many equals signs in input.');
-    elseif ( numel(equalSigns) == 1 )
-        strk = strk(equalSigns+1:end);
-    elseif ( numel(str) > 1 )
-        error('CHEBFUN:chebguiWindow:initInput', ...
-            ['Error constructing initial guess. Input must include the ' ...
-             'names of the dependent variables, i.e. be on the form ' ...
-             '"u = %s", ...'], strk)
-    end
-
-    strk = deblank(vectorize(strk));
-    try
-        if ( ~isempty(strk) )
-            init = [init eval(strk)]; %#ok<AGROW>
-        end
-    catch ME
-        error('CHEBFUN:chebguiWindow:initInput', ME.message)
-    end
-end
-
-% Plot the initial guess/solution:
-handles.init = init;
-axes(handles.fig_sol);
-plot(handles.init, 'linewidth', 2)
-if ( ~isempty(handles.guifile.options.fixYaxisLower) )
-    ylim([str2num(handles.guifile.options.fixYaxisLower) ...
-        str2num(handles.guifile.options.fixYaxisUpper)]);
-end
-
-% Show grid?
-if ( handles.guifile.options.grid )
-    grid on
-end
-
-% Update the figure and the handles.
-guidata(hObject, handles);
-
-end
-
-function loadVariables(importedVar)
-% Load variables from the workspace to the workspace of the GUI
-fNames = fieldnames(importedVar);
-for i = 1:length(fNames)
-    assignin('caller', fNames{i}, importedVar.(fNames{i}))
-end
-end
-
 function input_DE_Callback(hObject, eventdata, handles)
 % Called when the differential equation is entered.
 
@@ -530,17 +435,6 @@ if ( strcmp(eventdata.Key, 'tab') )
         uicontrol(handles.input_LBC); 
     else
         uicontrol(handles.input_GUESS); 
-    end
-end
-end
-
-function input_GUESS_KeyPressFcn(hObject, eventdata, handles)
-if ( strcmp(eventdata.Key, 'tab') )
-    if ( strcmp(eventdata.Modifier, 'shift') )
-        uicontrol(handles.input_BC); 
-    else
-        uicontrol(handles.button_solve);
-        set(handles.button_solve, 'selected', 'on');
     end
 end
 end
@@ -872,14 +766,6 @@ if ( ispc && bgColorIsDefault )
 end
 end
 
-function input_GUESS_CreateFcn(hObject, eventdata, handles)
-bgColorIsDefault = isequal(get(hObject, 'BackgroundColor'),  ...
-    get(0, 'defaultUicontrolBackgroundColor'));
-if ( ispc && bgColorIsDefault )
-    set(hObject, 'BackgroundColor', 'white');
-end
-end
-
 function input_LBC_CreateFcn(hObject, eventdata, handles)
 bgColorIsDefault = isequal(get(hObject, 'BackgroundColor'),  ...
     get(0, 'defaultUicontrolBackgroundColor'));
@@ -960,13 +846,6 @@ function input_BC_ButtonDownFcn(hObject, eventdata, handles)
 
 chebguiEdit('chebguiWindow', handles.chebguimainwindow, 'input_BC');
 input_BC_Callback(hObject, eventdata, handles);
-
-end
-
-function input_GUESS_ButtonDownFcn(hObject, eventdata, handles)
-
-chebguiEdit('chebguiWindow', handles.chebguimainwindow, 'input_GUESS');
-input_GUESS_Callback(hObject, eventdata, handles);
 
 end
 
