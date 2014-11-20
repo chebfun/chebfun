@@ -46,9 +46,8 @@ set(handles.popupmenu_bottomFig,'String', ...
     {'Convergence of Newton iteration', ...
     'Chebyshev coefficients'});
 
-% Set a multiline string for the ultraspherical options
-set(handles.button_ultraS, 'String', ...
-    '<HTML><BODY>Ultra- <br> spherical</BODY> </HTML>')
+% Set string for the ultraspherical options
+set(handles.button_ultraS, 'String', 'Ultrasph.')
 
 end
 

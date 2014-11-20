@@ -19,7 +19,7 @@ if ( strcmp(newMode, 'bvp') ) % Going into BVP mode
     set(handles.button_pde, 'Value', 0)
     set(handles.button_eig, 'Value', 0)
     
-    set(handles.panel_DEs, 'Title', 'Differential equation(s)')
+    set(handles.panel_DEs, 'Title', 'Differential equations')
     set(handles.toggle_useLatest, 'Visible', 'on')
     
     set(handles.text_timedomain, 'Visible', 'off')
@@ -35,7 +35,7 @@ if ( strcmp(newMode, 'bvp') ) % Going into BVP mode
     end
     
     % Change heading for BC/IC input field:
-    set(handles.panel_BCs, 'Title', 'Boundary condition(s)')
+    set(handles.panel_BCs, 'Title', 'Boundary conditions')
     
     % Hide the iter_list box:
     handles = hideIterList(handles);
@@ -83,7 +83,7 @@ elseif ( strcmp(newMode, 'ivp') ) % Going into IVP mode
     handles = chebguiController.switchMode(handles, 'bvp');
     
     % Change heading for BC/IC input field:
-    set(handles.panel_BCs, 'Title', 'Initial/final condition(s)')
+    set(handles.panel_BCs, 'Title', 'Initial/final conditions')
     
     set(handles.button_bvp, 'Value', 0)
     set(handles.button_ivp, 'Value', 1)
@@ -112,7 +112,7 @@ elseif ( strcmp(newMode, 'pde') ) % Going into PDE mode
     set(handles.panel_initialGuess,'Visible','on','Title','Initial condition');
     
     set(handles.toggle_useLatest, 'Visible', 'off')
-    set(handles.panel_DEs, 'Title', 'Differential equation(s)')
+    set(handles.panel_DEs, 'Title', 'Differential equations')
     
     set(handles.input_GUESS, 'Enable', 'On')
     set(handles.toggle_useLatest, 'Value', 0)
@@ -207,7 +207,7 @@ else % Going into EIG mode
     set(handles.panel_initialGuess,'Visible','off');
     
     % Change heading for BC/IC input field:
-    set(handles.panel_BCs, 'Title', 'Boundary condition(s)')
+    set(handles.panel_BCs, 'Title', 'Boundary conditions')
 
     % Hide the iter_list box:
     handles = hideIterList(handles);
@@ -267,15 +267,12 @@ end
 function handles = updateDiscPanel(handles, ivpMode)
 if ( ivpMode )
     set(handles.button_Collocation, 'String', 'Time-stepping','value', 1)
-    set(handles.button_ultraS, 'String', ...
-        '<HTML><BODY>Global <br> methods</BODY> </HTML>') 
+    set(handles.button_ultraS, 'String', 'Global') 
     set(handles.panel_discretization, 'Title', 'IVP solver')
 else
     
     set(handles.button_Collocation, 'String', 'Collocation')
-    % Set a multiline string for the ultraspherical options
-    set(handles.button_ultraS, 'String', ...
-        '<HTML><BODY>Ultra- <br> spherical</BODY> </HTML>') 
+    set(handles.button_ultraS, 'String', 'Ultrasph.') 
     
     set(handles.panel_discretization, 'Title', 'Discretization')
 end
