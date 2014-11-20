@@ -72,26 +72,38 @@ end
 % [TODO]: Before this line, convert a vector of even number of coeffs to
 % one of odd numver of coeffs.
 
+% % Need to handle odd/even cases separately.
+% if ( mod(N, 2) == 0 ) % N even
+%     % In this case the negative cofficients have an additional term
+%     % corresponding to the cos(N/2*x) coefficient.
+%     %f.coeffs = [absCoeffs(n,:);absCoeffs(n-1:-1:n/2+1,:)+absCoeffs(1:n/2-1,:);absCoeffs(n/2,:)];
+%     f.coeffs = [ f.coeffs(1,:)/2 ; f.coeffs(2:N,:) ; f.coeffs(1,:)/2 ];
+% else % N odd
+%     %f.coeffs = [absCoeffs(n:-1:(n+1)/2+1,:)+absCoeffs(1:(n+1)/2-1,:);absCoeffs((n+1)/2,:)];
+% end
+% N = length(f.coeffs); % now N is odd anyway
+
+absCoeffs = abs(f.coeffs(end:-1:1,:));
 % Need to handle odd/even cases separately.
-if ( mod(N, 2) == 0 ) % N even
+if ( mod(N, 2) == 0 )
     % In this case the negative cofficients have an additional term
     % corresponding to the cos(N/2*x) coefficient.
-    %f.coeffs = [absCoeffs(n,:);absCoeffs(n-1:-1:n/2+1,:)+absCoeffs(1:n/2-1,:);absCoeffs(n/2,:)];
-    f.coeffs = [ f.coeffs(1,:)/2 ; f.coeffs(2:N,:) ; f.coeffs(1,:)/2 ];
-else % N odd
-    %f.coeffs = [absCoeffs(n:-1:(n+1)/2+1,:)+absCoeffs(1:(n+1)/2-1,:);absCoeffs((n+1)/2,:)];
+    f.coeffs = [ absCoeffs(N,:); absCoeffs(N-1:-1:N/2+1,:)+absCoeffs(1:N/2-1,:); absCoeffs(N/2,:) ];
+else
+    f.coeffs = [ absCoeffs(N:-1:(N+1)/2+1,:)+absCoeffs(1:(N+1)/2-1,:); absCoeffs((N+1)/2,:) ];
 end
-N = length(f.coeffs); % now N is odd anyway
+N = size(f.coeffs, 1);
 
 % We omit the last 10% because aliasing can pollute them significantly.
 N90 = ceil(0.90*(N-1)/2);
-
 absCoeffs = abs(coeffs((N-1)/2-N90+1:2*N90+1,:));
+%N90 = ceil(0.90*N)
+%absCoeffs = abs(coeffs(N-N90+1:2*N90+1,:));
 vscale = max(absCoeffs, [], 1);       
 vscale = max([ vscale(:) ; f.vscale ]);
 absCoeffs = absCoeffs/vscale;
 
-numCol = size(coeffs, 2);
+numCol = size(f.coeffs, 2);
 ishappy = false(1, numCol);
 epslevels = zeros(1, numCol);
 cutoff = zeros(1, numCol);
@@ -122,7 +134,7 @@ N = length(absCoeffs);
 
 % Find the last place where the coeffs exceed the allowable level.
 % Then go out a bit further to be safe.
-cutoff = 4 + find(absCoeffs >= epslevel/50, 1, 'last');
+cutoff = 4 + find(absCoeffs >= epslevel/100, 1, 'last');
 
 if ( cutoff < 0.95*N )
     % Achieved the strict test.
@@ -152,7 +164,7 @@ else
     winSize = 6;
     winMax = logAbs;
     for k = 1:winSize
-        winMax = max( winMax(1:end-1), logAbs(k+1:end) );
+        winMax = max(winMax(1:end-1), logAbs(k+1:end));
     end
     N = length(winMax);
     
@@ -163,8 +175,8 @@ else
     
     % Start with a low pass smoothing filter that introduces a lag.
     lag = 6;
-    LPA = [1, zeros(1,lag-1), -2, zeros(1, lag-1), 1] / (lag^2);
-    LPB = [1, -2, 1];
+    LPA = [ 1, zeros(1,lag-1), -2, zeros(1, lag-1), 1 ]/(lag^2);
+    LPB = [ 1, -2, 1 ];
     smoothLAC = filter(LPA, LPB, winMax);  % smoothed logabs coeffs
     
     % If too little accuracy has been achieved, do nothing.
@@ -186,11 +198,11 @@ else
     slopeMin = min(slopes);
     
     % Don't look at anything until all substantial decrease has ended.
-    tstart = find( slopes < 0.3*slopeMin, 1, 'last' );
+    tstart = find(slopes < 0.3*slopeMin, 1, 'last');
     
     % Find where the decrease has slowed to 1% of the fastest.
     isSlow = slopes(tstart:end) > 0.01*slopeMin;
-    slow = tstart - 1 + find( isSlow );
+    slow = tstart - 1 + find(isSlow);
     
     % Find the first run of consecutive slow hits.
     numHits = 6;
@@ -209,9 +221,9 @@ else
 end
 
 % Deduce an epslevel. 
-if ( ishappy )
-    winEnd = min( N, cutoff + 6 );
-    epslevel = max( absCoeffs(cutoff:winEnd) );
+if ( ishappy == 1 )
+    winEnd = min(N, cutoff + 6);
+    epslevel = max(absCoeffs(cutoff:winEnd));
 else
     epslevel = absCoeffs(N);
 end
