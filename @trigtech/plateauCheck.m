@@ -70,20 +70,21 @@ end
 % We add the (absolute value) of the coefficients correponsding to the same 
 % degree together to use the same algorithm as the one used for CHEBTECH.
 % Need to handle odd/even cases separately.
-if ( mod(N, 2) == 0 )
+if ( mod(N, 2) == 0 ) % N even
     % [ -N/2 term; "positive" + "negative"; constant term ]
     absCoeffs = [ abs(coeffs(1,:)); ...
-                  abs(coeffs(2:N/2,:)) + abs(coeffs(end:-1:N/2+2,:)); ...
+                  .5*abs(coeffs(2:N/2,:)) + .5*abs(coeffs(end:-1:N/2+2,:)); ...
                   abs(coeffs(N/2+1,:)) ];
-else
+else % N odd
     % [ "positive" + "negative"; constant term ]
-    absCoeffs = [ abs(coeffs(1:(N-1)/2,:)) + abs(coeffs(end:-1:(N+3)/2,:)); ...
-                  abs(coeffs((N+1)/2,:)) ];
+    absCoeffs = ...
+        [ .5*abs(coeffs(1:(N-1)/2,:)) + .5*abs(coeffs(end:-1:(N+3)/2,:)); ...
+          abs(coeffs((N+1)/2,:)) ];
 end
 % Now N is odd in both cases.
 N = size(absCoeffs, 1);
 
-% We want a vector of coefficients with decreasing magnitude -- again, to use
+% We want a vector of coefficients with decreasing magnitude; again, to use
 % the same algorithm as the one used for CHEBTECH.
 absCoeffs = absCoeffs(end:-1:1,:);
 
