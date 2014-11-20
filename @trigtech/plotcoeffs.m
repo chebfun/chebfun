@@ -128,6 +128,14 @@ if ( n == 1 )
     set(h2, 'marker', 'o');
 end
 
+% Add title and labels
+title(gca, 'Fourier coefficients')
+xlabel(gca, 'Wave number')
+ylabel(gca, 'Magnitude of coefficient')
+
+% By default, set grid on
+grid(gca, 'on')
+
 % Return hold state to what it was before:
 if ( ~holdState )
     hold off
