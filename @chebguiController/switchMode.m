@@ -22,8 +22,7 @@ if ( strcmp(newMode, 'bvp') ) % Going into BVP mode
     set(handles.panel_DEs, 'Title', 'Differential equations')
     set(handles.toggle_useLatest, 'Visible', 'on')
     
-    set(handles.text_timedomain, 'Visible', 'off')
-    set(handles.input_timedomain, 'Visible', 'off')
+    set(handles.panel_timedomain, 'Visible', 'off')
     
     set(handles.button_realplot, 'Visible', 'off')
     set(handles.button_imagplot, 'Visible', 'off')
@@ -118,8 +117,7 @@ elseif ( strcmp(newMode, 'pde') ) % Going into PDE mode
     set(handles.toggle_useLatest, 'Value', 0)
     set(handles.toggle_useLatest, 'Enable', 'off')
     
-    set(handles.text_timedomain, 'Visible', 'on')
-    set(handles.input_timedomain, 'Visible', 'on')
+    set(handles.panel_timedomain, 'Visible', 'on')
     
     set(handles.button_realplot, 'Visible', 'off')
     set(handles.button_imagplot, 'Visible', 'off')
@@ -165,8 +163,7 @@ else % Going into EIG mode
     set(handles.text_initial, 'String', 'Look for')
     set(handles.toggle_useLatest, 'Enable', 'off')
     
-    set(handles.text_timedomain, 'Visible', 'off')
-    set(handles.input_timedomain, 'Visible', 'off')
+    set(handles.panel_timedomain, 'Visible', 'off')
 
     set(handles.button_realplot, 'Visible', 'on')
     set(handles.button_realplot, 'Value', 1)
@@ -249,9 +246,9 @@ end
 
 function handles = toggleBCinput(handles, onOff1, onOff2)
 set(handles.input_LBC, 'Visible', onOff1)
-set(handles.text_LBCs, 'Visible', onOff1)
+set(handles.panel_leftBCs, 'Visible', onOff1)
 set(handles.input_RBC, 'Visible', onOff1)
-set(handles.text_RBCs, 'Visible', onOff1)
+set(handles.panel_rightBCs, 'Visible', onOff1)
 set(handles.input_BC,  'Visible', onOff2)
 set(handles.panel_BCs,  'Visible', onOff2)
 end

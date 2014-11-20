@@ -234,25 +234,6 @@ handles = solveGUI(handles.guifile, handles);
 guidata(hObject, handles);
 end
 
-function input_LBC_Callback(hObject, eventdata, handles)
-newString = cellstr(get(hObject, 'String'));
-newString = removeTabs(newString); % Remove tabs
-set(hObject, 'String', newString);
-handles = chebguiController.callbackBCs(handles, newString, 'lbc');
-handles.guifile.LBC = newString;
-guidata(hObject, handles);
-end
-
-
-function input_RBC_Callback(hObject, eventdata, handles)
-newString = cellstr(get(hObject, 'String'));
-newString = removeTabs(newString); % Remove tabs
-set(hObject, 'String', newString);
-handles = chebguiController.callbackBCs(handles, newString, 'rbc');
-handles.guifile.RBC = newString;
-guidata(hObject, handles);
-end
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ----------- Functions which do their work without chebgui methods ------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -322,26 +303,6 @@ end
 % These methods go from one input box to another when the user presses the 'tab'
 % button.
 
-function input_LBC_KeyPressFcn(hObject, eventdata, handles)
-if ( strcmp(eventdata.Key, 'tab') )
-    if ( strcmp(eventdata.Modifier, 'shift') )
-        uicontrol(handles.input_DE); 
-    else
-        uicontrol(handles.input_RBC); 
-    end
-end
-end
-
-function input_RBC_KeyPressFcn(hObject, eventdata, handles)
-if ( strcmp(eventdata.Key, 'tab') )
-    if ( strcmp(eventdata.Modifier, 'shift') )
-        uicontrol(handles.input_LBC); 
-    else
-        uicontrol(handles.input_GUESS); 
-    end
-end
-end
-
 function popupmenu_sigma_KeyPressFcn(hObject, eventdata, handles)
 if ( strcmp(eventdata.Key, 'tab') )
     if ( strcmp(eventdata.Modifier, 'shift') )
@@ -397,49 +358,6 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ------------------------- Unsorted functions  --------------------------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function input_timedomain_Callback(hObject, eventdata, handles)
-% Passing time range for PDEs.
-str = get(hObject, 'String');
-if ( iscell(str) )
-    str = str{:};
-end
-num = str2num(str);
-
-options.WindowStyle = 'modal';
-
-% Indicates we had timedomain with negative spacing (0:-.1:1)
-while ( isempty(num) )
-    str = inputdlg(['Time domain should be a vector of length > 2, with ' ...
-        'positive spacing, at which times solution is returned'], ['Set ' ...
-        'time domain'],  1, {'0:.1:1'}, options);
-    if ( isempty(str) )
-        str = '';
-        break
-    end
-    str = str{:};
-    num = str2num(str);
-end
-
-while ( ~isempty(str) && (numel(num) < 3) )
-    h = (num(2) - num(1))/20;
-    def = sprintf('%s:%s:%s', num2str(num(1), '%0.0f'), num2str(h, '%0.2g'), ...
-        num2str(num(2), '%0.0f'));
-    str = inputdlg(['Time domain should be a vector of length > 2 at which ' ...
-        'times solution is returned'], 'Set time domain',  1, {def}, options);
-    if ( isempty(str) )
-        str = '';
-        break
-    end
-    str = str{:};
-    num = str2num(str);
-end
-
-set(handles.input_timedomain, 'String', str);
-handles.guifile.timedomain = str;
-guidata(hObject, handles);
-
-end
 
 function button_figsol_Callback(hObject, eventdata, handles)
 % Executed when the user wants to show figures in new window.
@@ -653,22 +571,6 @@ if ( ispc && bgColorIsDefault )
 end
 end
 
-function input_RBC_CreateFcn(hObject, eventdata, handles)
-bgColorIsDefault = isequal(get(hObject, 'BackgroundColor'),  ...
-    get(0, 'defaultUicontrolBackgroundColor'));
-if ( ispc && bgColorIsDefault )
-    set(hObject, 'BackgroundColor', 'white');
-end
-end
-
-function input_LBC_CreateFcn(hObject, eventdata, handles)
-bgColorIsDefault = isequal(get(hObject, 'BackgroundColor'),  ...
-    get(0, 'defaultUicontrolBackgroundColor'));
-if ( ispc && bgColorIsDefault )
-    set(hObject, 'BackgroundColor', 'white');
-end
-end
-
 function iter_list_CreateFcn(hObject, eventdata, handles)
 bgColorIsDefault = isequal(get(hObject, 'BackgroundColor'),  ...
     get(0, 'defaultUicontrolBackgroundColor'));
@@ -683,14 +585,6 @@ end
 
 function fig_norm_CreateFcn(hObject, eventdata, handles)
 % Hint: place code in OpeningFcn to populate fig_norm
-end
-
-function input_timedomain_CreateFcn(hObject, eventdata, handles)
-bgColorIsDefault = isequal(get(hObject, 'BackgroundColor'),  ...
-    get(0, 'defaultUicontrolBackgroundColor'));
-if ( ispc && bgColorIsDefault )
-    set(hObject, 'BackgroundColor', 'white');
-end
 end
 
 function tempedit_CreateFcn(hObject, eventdata, handles)
@@ -716,19 +610,6 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % DEVELOPER NOTE: These methods will open the CHEBGUIEDIT sub-GUI
 
-function input_LBC_ButtonDownFcn(hObject, eventdata, handles)
-
-chebguiEdit('chebguiWindow', handles.chebguimainwindow, 'input_LBC');
-input_LBC_Callback(hObject, eventdata, handles);
-
-end
-
-function input_RBC_ButtonDownFcn(hObject, eventdata, handles)
-
-chebguiEdit('chebguiWindow', handles.chebguimainwindow, 'input_RBC');
-input_RBC_Callback(hObject, eventdata, handles);
-
-end
 
 function editfontsize_CreateFcn(hObject, eventdata, handles)
 
