@@ -1235,26 +1235,6 @@ end
 % PressedKeyNo = double(get(gcbo, 'CurrentCharacter'))
 end
 
-function edit_eigN_Callback(hObject, eventdata, handles)
-in = get(handles.edit_eigN, 'String');
-if ( ~isempty(in) && isempty(str2num(in)) )
-    errordlg('Invalid input. Number of eigenvalues must be an integer.', ...
-        'Chebgui error', 'modal');
-    set(handles.edit_eigN, 'String', handles.guifile.options.numeigs);
-else
-    handles.guifile.options.numeigs = in;
-end
-guidata(hObject, handles);
-end
-
-function edit_eigN_CreateFcn(hObject, eventdata, handles)
-bgColorIsDefault = isequal(get(hObject, 'BackgroundColor'),  ...
-    get(0, 'defaultUicontrolBackgroundColor'));
-if ( ispc && bgColorIsDefault )
-    set(hObject, 'BackgroundColor', 'white');
-end
-end
-
 function edit37_CreateFcn(hObject, eventdata, handles)
 bgColorIsDefault = isequal(get(hObject, 'BackgroundColor'),  ...
     get(0, 'defaultUicontrolBackgroundColor'));
@@ -1271,40 +1251,6 @@ else
     handles.guifile.options.numeigs = in;
 end
 guidata(hObject, handles);
-end
-
-function popupmenu_sigma_Callback(hObject, eventdata, handles)
-selected = get(hObject, 'Value');
-switch ( selected )
-    case 1
-        handles.guifile.sigma = '';
-    case 2
-        handles.guifile.sigma = 'lm';
-    case 3
-        handles.guifile.sigma = 'sm';
-    case 4
-        handles.guifile.sigma = 'lr';
-    case 5
-        handles.guifile.sigma = 'sr';
-    case 6
-        handles.guifile.sigma = 'li';
-    case 7
-        handles.guifile.sigma = 'si';
-end
-guidata(hObject, handles);
-end
-
-function popupmenu_sigma_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to popupmenu_sigma (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-% Hint: popupmenu controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-bgColorIsDefault = isequal(get(hObject, 'BackgroundColor'),  ...
-    get(0, 'defaultUicontrolBackgroundColor'));
-if ( ispc && bgColorIsDefault )
-    set(hObject, 'BackgroundColor', 'white');
-end
 end
 
 function menu_annotateon_Callback(hObject, eventdata, handles)
