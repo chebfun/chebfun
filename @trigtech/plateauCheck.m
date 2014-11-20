@@ -31,18 +31,17 @@ function [ishappy, epslevel, cutoff] = plateauCheck(f, values, pref)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Grab some preferences:
+% Grab some preferences.
 if ( nargin == 1 )
     pref = f.techPref();
     epslevel = pref.eps;
 elseif ( isnumeric(pref) )
     epslevel = pref;
-    pref = f.techPref();
 else
     epslevel = pref.eps;
 end
 
-% Grab the coefficients:
+% Grab the coefficients.
 coeffs = f.coeffs;
 N = length(coeffs);
 
@@ -55,7 +54,7 @@ end
 % Set the function scaling for each vector of values.
 maxvals = max(abs(values), [], 1);
 
-% Check the vertical scale:
+% Check the vertical scale.
 if ( max(maxvals) == 0 )
     % This is the zero function, so we must be happy!
     ishappy = true;
@@ -68,42 +67,34 @@ elseif ( any(isinf(maxvals)) )
     return
 end
 
-% Suppose for the moment that there is a odd number of coeffs.
-% [TODO]: Before this line, convert a vector of even number of coeffs to
-% one of odd numver of coeffs.
-
-% % Need to handle odd/even cases separately.
-% if ( mod(N, 2) == 0 ) % N even
-%     % In this case the negative cofficients have an additional term
-%     % corresponding to the cos(N/2*x) coefficient.
-%     %f.coeffs = [absCoeffs(n,:);absCoeffs(n-1:-1:n/2+1,:)+absCoeffs(1:n/2-1,:);absCoeffs(n/2,:)];
-%     f.coeffs = [ f.coeffs(1,:)/2 ; f.coeffs(2:N,:) ; f.coeffs(1,:)/2 ];
-% else % N odd
-%     %f.coeffs = [absCoeffs(n:-1:(n+1)/2+1,:)+absCoeffs(1:(n+1)/2-1,:);absCoeffs((n+1)/2,:)];
-% end
-% N = length(f.coeffs); % now N is odd anyway
-
-absCoeffs = abs(f.coeffs(end:-1:1,:));
+% We add the (absolute value) of the coefficients correponsding to the same 
+% degree together to use the same algorithm as the one used for CHEBTECH.
 % Need to handle odd/even cases separately.
 if ( mod(N, 2) == 0 )
-    % In this case the negative cofficients have an additional term
-    % corresponding to the cos(N/2*x) coefficient.
-    f.coeffs = [ absCoeffs(N,:); absCoeffs(N-1:-1:N/2+1,:)+absCoeffs(1:N/2-1,:); absCoeffs(N/2,:) ];
+    % [ -N/2 term; "positive" + "negative"; constant term ]
+    absCoeffs = [ abs(coeffs(1,:)); ...
+                  abs(coeffs(2:N/2,:)) + abs(coeffs(end:-1:N/2+2,:)); ...
+                  abs(coeffs(N/2+1,:)) ];
 else
-    f.coeffs = [ absCoeffs(N:-1:(N+1)/2+1,:)+absCoeffs(1:(N+1)/2-1,:); absCoeffs((N+1)/2,:) ];
+    % [ "positive" + "negative"; constant term ]
+    absCoeffs = [ abs(coeffs(1:(N-1)/2,:)) + abs(coeffs(end:-1:(N+3)/2,:)); ...
+                  abs(coeffs((N+1)/2,:)) ];
 end
-N = size(f.coeffs, 1);
+% Now N is odd in both cases.
+N = size(absCoeffs, 1);
+
+% We want a vector of coefficients with decreasing magnitude -- again, to use
+% the same algorithm as the one used for CHEBTECH.
+absCoeffs = absCoeffs(end:-1:1,:);
 
 % We omit the last 10% because aliasing can pollute them significantly.
-N90 = ceil(0.90*(N-1)/2);
-absCoeffs = abs(coeffs((N-1)/2-N90+1:2*N90+1,:));
-%N90 = ceil(0.90*N)
-%absCoeffs = abs(coeffs(N-N90+1:2*N90+1,:));
+N90 = ceil(0.90*N);
+absCoeffs = absCoeffs(1:N90,:);
 vscale = max(absCoeffs, [], 1);       
-vscale = max([ vscale(:) ; f.vscale ]);
+vscale = max([ vscale(:); f.vscale ]);
 absCoeffs = absCoeffs/vscale;
 
-numCol = size(f.coeffs, 2);
+numCol = size(absCoeffs, 2);
 ishappy = false(1, numCol);
 epslevels = zeros(1, numCol);
 cutoff = zeros(1, numCol);
@@ -134,44 +125,29 @@ N = length(absCoeffs);
 
 % Find the last place where the coeffs exceed the allowable level.
 % Then go out a bit further to be safe.
-cutoff = 4 + find(absCoeffs >= epslevel/100, 1, 'last');
+cutoff = find(absCoeffs >= epslevel/50, 1, 'last');
 
 if ( cutoff < 0.95*N )
     % Achieved the strict test.
     ishappy = true;
-       
+    
 %% 2. Plateau test.
 else
     
-    % Demand at least this much accuracy.
+    % Demand at leastk=0 this much accuracy.
     thresh = max((2/3)*log(epslevel), log(1e-7));
     
     % Convergence is usually not far from linear in the log scale.
-    logAbs = log(absCoeffs);
+    logAbsCoeffs = log(absCoeffs);
     
     % Even though some methods can compute really small coefficients
     % relative to the norm, they ultimately contribute nothing. 
     % Also the occasional "zero" coefficient causes troublesome infinities.
-    logAbs = max(logAbs, log(eps/1000));
+    winMax = max(logAbsCoeffs, log(eps/1000));
     
     % Look for a sustained leveling off in the decrease.
     
     % [TODO]: Use the van Herk filter to do this more efficiently.
-    
-    % Symmetries can cause one or more consecutive coefficients to be zero, 
-    % and we only care about the nonzero ones. Use a windowed max to remove
-    % the small values.
-    winSize = 6;
-    winMax = logAbs;
-    for k = 1:winSize
-        winMax = max(winMax(1:end-1), logAbs(k+1:end));
-    end
-    N = length(winMax);
-    
-    % Alternative windowed max: This avoids the for loop but might hog 
-    % memory.
-    % index = bsxfun(@plus, (1:n)', 0:winsize-1);
-    % logabs = max(logabs(index),[],2);
     
     % Start with a low pass smoothing filter that introduces a lag.
     lag = 6;

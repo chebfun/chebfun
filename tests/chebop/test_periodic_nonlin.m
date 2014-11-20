@@ -35,10 +35,10 @@ v = N \ f;
 pass(1) = norm(u - v, inf) < tol;
 
 %% Test the TRIGCOLLOC class. FIRST ORDER: 
-%  u' - u*cos(u) = cos(x), on [-2*pi 2*pi].
+%  u' - u*cos(u) = cos(x), on [0 2*pi].
 
 % Set up domain, rhs f, and intial guesses u0 and v0.
-dom = [-2*pi 2*pi];
+dom = [0 2*pi];
 f = chebfun(@(x) cos(x), dom);
 u0 = f;
 
