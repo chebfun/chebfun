@@ -130,7 +130,7 @@ end
 
 % Add title and labels
 title(gca, 'Fourier coefficients')
-xlabel(gca, 'Frequency of complex exponential')
+xlabel(gca, 'Wave number')
 ylabel(gca, 'Magnitude of coefficient')
 
 % By default, set grid on
