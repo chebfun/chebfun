@@ -48,6 +48,19 @@ handles.panel_DEs = uipanel('Parent', handles.panel_input, ...
     'FontSize', textFontsize, ...
     'BorderType', 'etchedin');
 
+handles.input_DE = uicontrol('Parent', handles.panel_DEs, ...
+    'Style', 'edit', 'Max', 2, 'Min',0, ...
+    'HorizontalAlignment', 'left', ...
+    'FontSize', 10, 'BackgroundColor', [1 1 1], 'FontName', 'Monospaced', ...
+    'Callback', @(hObject, eventdata) ...
+        input_DE_Callback(hObject, guidata(hObject)), ...
+    'KeyPressFcn',  @(hObject, eventdata) ...
+        input_DE_KeyPressFcn(hObject, eventdata, guidata(hObject)), ...
+    'ButtonDownFcn', @(hObject, eventdata) ...
+        input_DE_ButtonDownFcn(hObject, eventdata, guidata(hObject)), ...
+    'Units', 'normalized', 'Position', [inputBoxLeftMargin 0.1 inputBoxWidth .85]);
+
+
 %% Panel for boundary conditions
 handles.panel_BCs = uipanel('Parent', handles.panel_input, ...
     'Title', 'Boundary conditions', 'Titleposition', 'centertop',...
@@ -55,6 +68,19 @@ handles.panel_BCs = uipanel('Parent', handles.panel_input, ...
     'Position', [panelLeftMargin panelHeight + bottomPanelMargin panelWidth panelHeight],...
     'FontSize', textFontsize, ...
     'BorderType', 'etchedin');
+
+handles.input_BC = uicontrol('Parent', handles.panel_BCs, ...
+    'Style', 'edit', 'Max', 2, 'Min',0, ...
+    'HorizontalAlignment', 'left', ...
+    'FontSize', 10, 'BackgroundColor', [1 1 1], 'FontName', 'Monospaced', ...
+    'Callback', @(hObject, eventdata) ...
+        input_BC_Callback(hObject, guidata(hObject)), ...
+    'KeyPressFcn',  @(hObject, eventdata) ...
+        input_BC_KeyPressFcn(hObject, eventdata, guidata(hObject)), ...
+    'ButtonDownFcn', @(hObject, eventdata) ...
+        input_BC_ButtonDownFcn(hObject, eventdata, guidata(hObject)), ...
+    'Units', 'normalized', 'Position', [inputBoxLeftMargin 0.1 inputBoxWidth .85]);
+
 
 %% Setup panel for initial guess
 handles.panel_initialGuess = uipanel('Parent', handles.panel_input, ...
@@ -77,7 +103,7 @@ handles.input_GUESS = uicontrol('Parent', handles.panel_initialGuess, ...
     'Callback', @(hObject, eventdata) ...
         input_GUESS_Callback(hObject, guidata(hObject)), ...
     'KeyPressFcn',  @(hObject, eventdata) ...
-        input_GUESS_KeyPressFcn(hObject, eventdata, handles), ...
+        input_GUESS_KeyPressFcn(hObject, eventdata, guidata(hObject)), ...
     'ButtonDownFcn', @(hObject, eventdata) ...
         ButtonDownFcn(hObject, eventdata, handles), ...
     'Units', 'normalized', 'Position', [inputBoxLeftMargin 0.35 inputBoxWidth .6]);
@@ -253,4 +279,102 @@ set(handles.toggle_useLatest, 'Enable', 'off');
 handles.guifile.domain = in;
 guidata(hObject, handles);
 
+end
+
+function input_DE_Callback(hObject, handles)
+% Called when the differential equation is entered.
+
+% Obtain the input:
+str = cellstr(get(hObject, 'String'));
+
+% Remove tabs:
+str = chebguiController.removeTabs(str);
+
+% Update the DE input and store in guifile:
+set(handles.input_DE, 'String', str);
+handles.guifile.DE = str;
+
+% Auto PDE and EIG detection
+for k = 1:numel(str)
+    strk = str{k};
+    if ( any(strfind(strk, '_')) )
+        if ( ~get(handles.button_pde, 'value') )
+            handles = chebguiController.switchMode(handles, 'pde');
+        end
+        break
+    elseif ( any(strfind(strk, 'lam') | strfind(strk, 'lambda')) )
+        if ( ~get(handles.button_eig, 'value') )
+            handles = chebguiController.switchMode(handles, 'eig');
+        end
+        break
+    end
+end
+guidata(hObject, handles);
+
+end
+
+function input_DE_KeyPressFcn(hObject, eventdata, handles)
+if ( strcmp(eventdata.Key, 'tab') )
+    if ( strcmp(eventdata.Modifier, 'shift') )
+        if ( get(handles.button_pde, 'value') )
+            uicontrol(handles.input_timedomain); 
+        else
+            uicontrol(handles.input_domain); 
+        end
+    elseif ( get(handles.button_pde, 'value') )
+        uicontrol(handles.input_LBC); 
+    else
+        uicontrol(handles.input_BC); 
+    end
+end
+end
+
+function input_DE_ButtonDownFcn(hObject, eventdata, handles)
+
+chebguiEdit('chebguiWindow', handles.chebguimainwindow, 'input_DE');
+input_DE_Callback(hObject, eventdata, handles);
+
+end
+
+function input_BC_ButtonDownFcn(hObject, eventdata, handles)
+
+chebguiEdit('chebguiWindow', handles.chebguimainwindow, 'input_BC');
+input_BC_Callback(hObject, eventdata, handles);
+
+end
+
+function input_BC_Callback(hObject, handles)
+newString = cellstr(get(hObject, 'String'));
+newString = chebguiController.removeTabs(newString); % Remove tabs
+set(hObject, 'String', newString);
+handles = chebguiController.callbackBCs(handles, newString, 'bc');
+handles.guifile.BC = newString;
+
+if (get(handles.button_bvp,'value') )
+    % Is the problem now a BVP, IVP or FVP?
+    isIorF = isIVPorFVP(handles.guifile);
+    if ( isIorF )
+        handles = chebguiController.switchMode(handles, 'ivp');
+        handles.guifile.type = 'ivp';
+    end
+elseif ( get(handles.button_ivp,'value') )
+    % Is the problem now a BVP?
+    isIorF = isIVPorFVP(handles.guifile);
+    if ( ~isIorF )
+        handles = chebguiController.switchMode(handles, 'bvp');
+        handles.guifile.type = 'bvp';
+    end    
+end
+
+guidata(hObject, handles);
+end
+
+function input_BC_KeyPressFcn(hObject, eventdata, handles)
+if ( strcmp(eventdata.Key, 'tab') )
+    if ( strcmp(eventdata.Modifier, 'shift') )
+        uicontrol(handles.input_DE); 
+    else
+        uicontrol(handles.input_GUESS); 
+    end
+end
 end

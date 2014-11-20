@@ -302,37 +302,6 @@ end
 % -------- Functions which do their work in a couple of lines of code ----------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function input_DE_Callback(hObject, eventdata, handles)
-% Called when the differential equation is entered.
-
-% Obtain the input:
-str = cellstr(get(hObject, 'String'));
-
-% Remove tabs:
-str = removeTabs(str);
-
-% Update the DE input and store in guifile:
-set(handles.input_DE, 'String', str);
-handles.guifile.DE = str;
-
-% Auto PDE and EIG detection
-for k = 1:numel(str)
-    strk = str{k};
-    if ( any(strfind(strk, '_')) )
-        if ( ~get(handles.button_pde, 'value') )
-            handles = chebguiController.switchMode(handles, 'pde');
-        end
-        break
-    elseif ( any(strfind(strk, 'lam') | strfind(strk, 'lambda')) )
-        if ( ~get(handles.button_eig, 'value') )
-            handles = chebguiController.switchMode(handles, 'eig');
-        end
-        break
-    end
-end
-guidata(hObject, handles);
-
-end
 
 function str = removeTabs(str)
 % Remove tabs from inputs
@@ -352,32 +321,6 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % These methods go from one input box to another when the user presses the 'tab'
 % button.
-
-function input_DE_KeyPressFcn(hObject, eventdata, handles)
-if ( strcmp(eventdata.Key, 'tab') )
-    if ( strcmp(eventdata.Modifier, 'shift') )
-        if ( get(handles.button_pde, 'value') )
-            uicontrol(handles.input_timedomain); 
-        else
-            uicontrol(handles.input_domain); 
-        end
-    elseif ( get(handles.button_pde, 'value') )
-        uicontrol(handles.input_LBC); 
-    else
-        uicontrol(handles.input_BC); 
-    end
-end
-end
-
-function input_BC_KeyPressFcn(hObject, eventdata, handles)
-if ( strcmp(eventdata.Key, 'tab') )
-    if ( strcmp(eventdata.Modifier, 'shift') )
-        uicontrol(handles.input_DE); 
-    else
-        uicontrol(handles.input_GUESS); 
-    end
-end
-end
 
 function input_LBC_KeyPressFcn(hObject, eventdata, handles)
 if ( strcmp(eventdata.Key, 'tab') )
@@ -710,14 +653,6 @@ if ( ispc && bgColorIsDefault )
 end
 end
 
-function input_DE_CreateFcn(hObject, eventdata, handles)
-bgColorIsDefault = isequal(get(hObject, 'BackgroundColor'),  ...
-    get(0, 'defaultUicontrolBackgroundColor'));
-if ( ispc && bgColorIsDefault )
-    set(hObject, 'BackgroundColor', 'white');
-end
-end
-
 function input_RBC_CreateFcn(hObject, eventdata, handles)
 bgColorIsDefault = isequal(get(hObject, 'BackgroundColor'),  ...
     get(0, 'defaultUicontrolBackgroundColor'));
@@ -781,13 +716,6 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % DEVELOPER NOTE: These methods will open the CHEBGUIEDIT sub-GUI
 
-function input_DE_ButtonDownFcn(hObject, eventdata, handles)
-
-chebguiEdit('chebguiWindow', handles.chebguimainwindow, 'input_DE');
-input_DE_Callback(hObject, eventdata, handles);
-
-end
-
 function input_LBC_ButtonDownFcn(hObject, eventdata, handles)
 
 chebguiEdit('chebguiWindow', handles.chebguimainwindow, 'input_LBC');
@@ -799,13 +727,6 @@ function input_RBC_ButtonDownFcn(hObject, eventdata, handles)
 
 chebguiEdit('chebguiWindow', handles.chebguimainwindow, 'input_RBC');
 input_RBC_Callback(hObject, eventdata, handles);
-
-end
-
-function input_BC_ButtonDownFcn(hObject, eventdata, handles)
-
-chebguiEdit('chebguiWindow', handles.chebguimainwindow, 'input_BC');
-input_BC_Callback(hObject, eventdata, handles);
 
 end
 
@@ -1609,40 +1530,6 @@ if ( errUsingLoc )
     idx = find(msg == char(10), 1);
     % Take only what's after the 2nd
     msg = msg(idx+1:end);
-end
-end
-
-function input_BC_Callback(hObject, eventdata, handles)
-newString = cellstr(get(hObject, 'String'));
-newString = removeTabs(newString); % Remove tabs
-set(hObject, 'String', newString);
-handles = chebguiController.callbackBCs(handles, newString, 'bc');
-handles.guifile.BC = newString;
-
-if (get(handles.button_bvp,'value') )
-    % Is the problem now a BVP, IVP or FVP?
-    isIorF = isIVPorFVP(handles.guifile);
-    if ( isIorF )
-        handles = chebguiController.switchMode(handles, 'ivp');
-        handles.guifile.type = 'ivp';
-    end
-elseif ( get(handles.button_ivp,'value') )
-    % Is the problem now a BVP?
-    isIorF = isIVPorFVP(handles.guifile);
-    if ( ~isIorF )
-        handles = chebguiController.switchMode(handles, 'bvp');
-        handles.guifile.type = 'bvp';
-    end    
-end
-
-guidata(hObject, handles);
-end
-
-function input_BC_CreateFcn(hObject, eventdata, handles)
-bgColorIsDefault = isequal(get(hObject, 'BackgroundColor'),  ...
-    get(0, 'defaultUicontrolBackgroundColor'));
-if ( ispc && bgColorIsDefault )
-    set(hObject, 'BackgroundColor', 'white');
 end
 end
 
