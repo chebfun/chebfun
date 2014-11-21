@@ -80,8 +80,8 @@ function f = diffContinuousDim(f, k)
     
     % If N is even make it odd
     if ( mod(N,2) == 0 )
-        % half the first coefficient and add its complex conjugate to the end
-        c = [c(1,:)/2;c(2:end,:);conj(c(1,:)/2)];
+        % half the first coefficient and add it to the end
+        c = [c(1,:)/2;c(2:end,:);c(1,:)/2];
         
         % increment N
         N = N+1;

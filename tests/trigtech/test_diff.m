@@ -126,4 +126,10 @@ f = testclass.make(@(x) sin(pi*x));
 dim2df = diff(f, 1, 2);
 pass(16) = (isempty(dim2df.coeffs));
 
+% even example with complex coefficients
+f = testclass.make({[],[1+1i;1-1i]});
+df = diff(f);
+df_coeffs_exact = [-.5*pi*1i*(1+1i);0;.5*pi*1i*(1+1i)];
+pass(17) = (norm(df.coeffs-df_coeffs_exact, inf) < eps*norm(df_coeffs_exact,inf));
+
 end
