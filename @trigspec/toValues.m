@@ -15,11 +15,9 @@ if ( isnumeric(f) )
 end
 
 dim = disc.dimension;
-
-% Get the TRIGTECH.
-f = f.funs{1}.onefun;
-
-% Get the coefficients.
-fx = trigtech.alias(f.coeffs, dim);
+tech = disc.returnTech();
+tech = tech();
+xx = trigpts(dim, f.domain);
+fx = tech.vals2coeffs(f(xx));
 
 end
