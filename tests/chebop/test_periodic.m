@@ -238,7 +238,7 @@ pass(32) = isequal(get(u.funs{1}, 'tech'), tech);
 %  u' + (1+cos(x))u = cos(2x), on [-2*pi 2*pi].
 
 % Set domain, c, and rhs f.
-dom = [-2*pi 2*pi];
+dom = [0 2*pi];
 f = chebfun(@(x) cos(2*x), dom);
 
 % Set chebop L. We construct the variable coefficient inside the chebop.
