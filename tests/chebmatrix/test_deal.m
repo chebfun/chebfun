@@ -1,43 +1,46 @@
 function pass = test_deal(pref)
 
+%% Setup
 if ( nargin == 0 )
     pref = chebfunpref();
 end
 
+% Create some CHEBFUNs and OPERATORBLOCKs.
 x = chebfun(@(x) x);
 f = x;
 g = sin(x);
 D = operatorBlock.diff;
+LD = linop(D);
+%% Deal a square CHEBMATRIX
 A = [D, f; g', 2];
 
 a = deal(A);
+La = linop(a);
+% Check to make sure single output works. Do so by instantiating the converting
+% the OPERATORBLOCK to a LINOP, then instantiating it on a grid.
+pass(1) = norm(matrix(LD, 6) - matrix(La, 6)) == 0;
 
-% Check to make sure single output works. This only checks to make sure it got
-% the operator; it doesn't check that the operator has not changed. (Cannot do
-% that since there is no `==` for operatorBlocks.)
-sizea = size(a);
-exact = size(D);
-pass(1) = all(sizea == exact);
-
-% Check to make sure multiple outputs work (there is a row-major ordering).
+%% Check to make sure multiple outputs work (there is a row-major ordering).
 [a,b,c,d] = deal(A);
-sizea = size(a);  exacta = size(D);
-sizeb = size(b);  exactb = size(f);
-sizec = size(c);  exactc = size(g');
-sized = size(d);  exactd = size(2);
-compare = [ sizea == exacta;
-            sizeb == exactb;
-            sizec == exactc;
-            sized == exactd ];
-pass(2) = all(compare(:));
 
-% Make sure the error works.
-pass(3) = 0;
+La = linop(a);
+err = norm(matrix(LD, 6) - matrix(La, 6)) + norm(f-b) + norm(g'-c) + norm(d-2);
+pass(2) = err == 0;
+
+%% Deal a tall CHEBMATRIX
+B = [f; 2*f; 3*f; 4*f];
+[a, b, c, d] = deal(B);
+abcd = [a;b;c;d];
+pass(3) = norm(B-abcd) == 0;
+
+
+%% Make sure the error works.
+pass(4) = 0;
 try
     [a,b,c,d,e] = deal(A);
 catch ME
     if (ME.identifier == 'CHEBFUN:CHEBMATRIX:deal:tooManyOutputs')
-        pass(3) = 1;
+        pass(4) = 1;
     end
 end
 
