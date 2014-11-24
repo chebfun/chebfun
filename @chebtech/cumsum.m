@@ -64,6 +64,9 @@ v = ones(1, n);
 v(2:2:end) = -1;
 b(1,:) = v*b(2:end,:);             % Compute b_0 (satisfies f(-1) = 0)
 
+% Store the old vscale.
+tmpVscale = f.vscale;
+
 % Recover coeffs:
 f.coeffs = b;
 
@@ -71,7 +74,8 @@ f.coeffs = b;
 f.vscale = getvscl(f);
 
 % Update epslevel:
-f.epslevel = updateEpslevel(f);
+epslevelBound = 2*f.epslevel.*tmpVscale./f.vscale;
+f.epslevel = updateEpslevel(f, epslevelBound);
 
 % Simplify (as suggested in Chebfun ticket #128)
 f = simplify(f);

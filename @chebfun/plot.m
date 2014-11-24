@@ -309,6 +309,11 @@ set(h1, 'Marker', 'none', lineStyle{:})
 % Ensure the plot is held:
 hold on
 
+% Reset color cycle prior to point plot if running R2014b.
+if ( ~verLessThan('matlab', '8.4') )
+    set(gca, 'ColorOrderIndex', 1);
+end
+
 % Plot the points:
 h2 = plot(pointData{:});
 % Change the style accordingly:
@@ -316,6 +321,11 @@ set(h2, 'LineStyle', 'none', pointStyle{:})
 if ( intervalIsSet )
     % Markers are meaningless if the 'interval' flag is used.
     set(h2, 'Marker', 'none', pointStyle{:})
+end
+
+% Reset color cycle prior to jump plot if running R2014b.
+if ( ~verLessThan('matlab', '8.4') )
+    set(gca, 'ColorOrderIndex', 1);
 end
 
 % Plot the jumps:
@@ -336,6 +346,11 @@ if ( ~jumpLineIsSet )
     set(h3, 'Marker', 'none') 
 end
 
+% Reset color cycle prior to delta function plot if running R2014b.
+if ( ~verLessThan('matlab', '8.4') )
+    set(gca, 'ColorOrderIndex', 1);
+end
+
 % Plot the Delta functions:
 if ( isempty(deltaData) || ~isnumeric(deltaData{1}) )
     h4 = stem([]);
@@ -345,6 +360,11 @@ end
 if ( ~isempty(deltaStyle) )
     set(h4, deltaStyle{:});
 end    
+
+% Reset colors prior to legend data plot if running R2014b.
+if ( ~verLessThan('matlab', '8.4') )
+    set(gca, 'ColorOrderIndex', 1);
+end
 
 % Plot the dummy data, which includes both line and point style:
 hDummy = plot(lineData{:});

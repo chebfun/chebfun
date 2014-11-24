@@ -22,7 +22,7 @@ function [x, w, v, t] = chebpts(n, dom, type)
 %   points, weights, and angles of the 1st-kind if KIND = 1 and 2nd-kind if KIND
 %   = 2 (default).
 %
-% See also FOURPTS, LEGPTS, JACPTS, LAGPTS, HERMPTS, LOBPTS, and RADAUPTS.
+% See also TRIGPTS, LEGPTS, JACPTS, LAGPTS, HERMPTS, LOBPTS, and RADAUPTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -73,6 +73,12 @@ if ( length(n) == 1 ) % Single grid.
     end
     if ( nargout > 2 )
         v = f.barywts(n);
+        
+        % Rescale the barycentric weights for 1st-kind points so that 
+        % norm(v, inf) = 1:
+        if ( type == 1 )
+            v = v/norm(v, inf);
+        end
     end
     if ( nargout > 3 )
         t = f.angles(n);

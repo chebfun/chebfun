@@ -28,10 +28,10 @@ pass(11) = all(size(x) == [n, 1]);
 [x, w, v] = hermpts(n);
 pass(7) = all(size(x) == [n, 1]) && all(size(w) == [1, n]) && ...
     all(size(v) == [n, 1]);
-pass(8) = abs(w*x) < tol && abs(w*x.^2 - sqrt(pi)/2) < 2*tol;
-pass(9) = abs(x(37) - -13.292221459334638) < 2*tol;
-pass(10) = abs(w(123) - 0.117419270715955) < tol;
-pass(11) = abs(v(123) - 0.915560323259764) < tol;
+pass(8) = abs(w*x) < tol && abs(w*x.^2 - sqrt(pi)/2) < 300*tol;
+pass(9) = abs(x(37) - -13.292221459334638) < 4*tol;
+pass(10) = abs(w(123) - 0.117419270715955) < 10*tol;
+pass(11) = abs(v(123) - 0.915560323259764) < 100*tol;
 
 % Test on 'prob':
 [x2, w2, v2] = hermpts(n, 'prob');

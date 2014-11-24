@@ -37,7 +37,7 @@ f = bndfun(@(x) cos(1e4*x), struct('domain', dom), pref);
 F = cumsum(f);
 F_ex = @(x) sin(1e4*x)/1e4;
 err = feval(F, x) - F_ex(x);
-pass(3) = (norm(diff(err), inf) < 100*get(f, 'vscale')*get(f, 'epslevel')) ...
+pass(3) = (norm(diff(err), inf) < 200*get(f, 'vscale')*get(f, 'epslevel')) ...
     && (abs(feval(F, a)) <= get(f, 'vscale')*get(f, 'epslevel'));
 
 z = exp(2*pi*1i/6);
