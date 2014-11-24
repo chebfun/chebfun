@@ -13,7 +13,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
     %
     %   T = TREEVAR(ID, DOMAIN), where ID is a Boolean vector corresponding to the
     %   order of variables in the problem, and DOMAIN is interval that the problem
-    %   is specified on, returns the TREEVAR object V, which stores the ID and the
+    %   is specified on, returns the TREEVAR object T, which stores the ID and the
     %   DOMAIN. See example below for how the ID vector is specified.
     %
     %   T = TREEVAR() is the same as above, but with the default ID = 1, and
