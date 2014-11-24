@@ -121,6 +121,14 @@ end
 xLim = get(gca, 'xlim');
 set(gca, 'xLim', [min(xLim(1), 0), max(xLim(2), n)])
 
+% Add title and labels
+title(gca, 'Chebyshev coefficients')
+xlabel(gca, 'Degree of Chebyshev polynomial')
+ylabel(gca, 'Magnitude of coefficient')
+
+% By default, set grid on
+grid(gca, 'on')
+
 % Give an output if one was requested:
 if ( nargout > 0 )
     varargout{1} = h;
