@@ -184,7 +184,15 @@ classdef (InferiorClasses = {?double}) chebop
             
             % Assign operator and domain:
             N.op = op;
-            N.domain = dom(:)';
+            
+            % Ensure that the domain is a row vector, not a column vector:
+            assert( (size(dom, 1) == 1) && ( size(dom, 2) > 1 ), ...
+                'CHEBOP:CHEBOP:domain', ...
+                ['The vector specifying the domain of a CHEBOP\n' ...
+                'should be a row vector of length greater than 1.'])
+            
+            % Assign the domain:
+            N.domain = dom;
             
             % Assign BCs and INIT if they were passed:
             if ( nargin == 3 )
@@ -308,6 +316,13 @@ classdef (InferiorClasses = {?double}) chebop
             %   CHEBOP.SET.DOMAIN ensures that N.DOMAIN is a row vector as
             %   required by the CHEBOP and CHEBFUN classes.
             
+            % Ensure that the domain is a row vector, not a column vector:
+            assert( (size(val, 1) == 1) && ( size(val, 2) > 1 ), ...
+                'CHEBOP:SET:domain', ...
+                ['The vector specifying the domain of a CHEBOP\n' ...
+                'should be a row vector of length greater than 1.'])
+            
+            % Assign the domain:
             N.domain = val(:)';            
         end
         

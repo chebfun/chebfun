@@ -1,36 +1,36 @@
-function pass = test_domain(pref)
+function pass = test_domain(~)
 %TEST_DOMAIN    Ensure that we can both pass row and column vectors to CHEBOP
 
 %% Setup
-if ( nargin == 0)
-    pref = cheboppref();
-end
-
 dom = [0,2];
 
-%% Row vector passed to constructor
+%% Column vector passed to constructor -- should give an error
+try
+    chebop(@(u) diff(u, 2) + u, dom');
+catch ME
+   pass(1) = strcmp(ME.identifier, 'CHEBOP:CHEBOP:domain');
+end
+
+%% Column vector set after construction -- should give an error
+N = chebop(@(u) diff(u, 2) + u);
+try
+    N.domain = dom';
+catch ME
+   pass(2) = strcmp(ME.identifier, 'CHEBOP:SET:domain');
+end
+
+%% Row vector passed to constructor -- should be OK
 N = chebop(@(u) diff(u, 2) + u, dom);
 N.bc = 0;
 u1 = N\1;
 
-%% Column vector passed to constructor
-N = chebop(@(u) diff(u, 2) + u, dom');
-N.bc = 0;
-u2 = N\1;
-
-%% Row vector set after construction
+%% Row vector set after construction -- should be OK
 N = chebop(@(u) diff(u, 2) + u);
 N.domain = dom;
 N.bc = 0;
-u3 = N\1;
+u2 = N\1;
 
-%% Column vector set after construction
-N = chebop(@(u) diff(u, 2) + u);
-N.domain = dom';
-N.bc = 0;
-u4 = N\1;
-
-%% Check that all solutions are the same
-pass = ( norm(u1 - u2) + norm(u3 - u4) + norm(u1 - u4) ) == 0;
+%% Check that both allowed approaches give the same solution
+pass(3) = norm(u1 - u2) == 0;
 
 end
