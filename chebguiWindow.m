@@ -52,7 +52,7 @@ else
     catch ME
         warning(warnstate)
         MEID = ME.identifier;
-        if ( ~isempty(strfind(MEID, 'Chebgui:')) )
+        if ( ~isempty(strfind(lower(MEID), 'chebgui:')) )
             % These are expected GUI errors. We only show the dialog
             errordlg(cleanErrorMsg(ME.message), 'Chebgui error', 'modal');
             uiwait
@@ -68,7 +68,10 @@ else
             errordlg(cleanErrorMsg(ME.message), 'Chebgui error', 'modal');
             uiwait
             resetComponents(varargin{4});
-            rethrow(ME)
+            % If in debug mode, we throw the error to the command window as well
+            if ( get(varargin{4}.menu_debug, 'UserData') )
+                rethrow(ME)
+            end
         end
     end
 end
