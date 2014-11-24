@@ -120,7 +120,7 @@ classdef chebgui
         timedomain = '';    % Time domain (should include breakpoints)
         sigma = '';         % Third input to an EIGS call
         init = '';          % Initial guess/condition for nonlin BVPs/PDEs
-        tol = 1e-10;        % Solution tolerance
+        tol = '1e-10';      % Solution tolerance
 
         % This initalises the OPTIONS struct for CHEBGUI. It containts a list of
         % miscellaneous options for when solving problems with CHEBGUI, namely:

@@ -215,9 +215,6 @@ if ( all(size(u) == [1 1]) )
     u = u{1};
 end
 
-% Simplify the result:
-u = simplify(u);
-
 % Return the linearity information as well:
 info.isLinear = isLinear;
 
