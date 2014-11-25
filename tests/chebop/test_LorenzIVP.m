@@ -1,9 +1,10 @@
 function pass = test_LorenzIVP(~)
-%TEST_LORENZIVP    Solve the Lorenz IVP using both CHEBOPs and standard MATLAB
+%TEST_LORENZIVP   Solve the Lorenz IVP using both CHEBOPs and standard MATLAB
 
 %% Setup
 dom = [0 5];
 tol = 1e-14;
+
 %% With CHEBOP
 N = chebop(@(t,u,v,w) [diff(u) - 10*(v - u);
     diff(v) - u.*(28 - w) + v;
@@ -11,6 +12,7 @@ N = chebop(@(t,u,v,w) [diff(u) - 10*(v - u);
 N.lbc = @(u,v,w) [w - 20 ; v + 15; u + 14];
 uvw = N\[0;0;0];
 u = uvw{1}; v = uvw{2}; w = uvw{3};
+
 %% Using standard MATLAB
 odeFun = @(t,y) [10*(y(2) - y(1));
     y(1).*(28-y(3)) - y(2);

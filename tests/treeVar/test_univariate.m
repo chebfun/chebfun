@@ -1,9 +1,9 @@
 function pass = test_univariate(~)
-% TEST_UNIVARIATE    Test various univariate treeVar methods
-%
-% This methods generates a number of anonymous functions that we convert to
-% first order format. We then evaluate them, and check that they match the
-% expected results.
+%TEST_UNIVARIATE   Test various univariate TREEVAR methods.
+%   This methods generates a number of anonymous functions that we convert to
+%   first order format. We then evaluate them, and check that they match the
+%   expected results.
+
 %% Setup
 % Initialize a TREEVAR variable.
 dom = [0 2];
@@ -43,4 +43,5 @@ for mCounter = 1:length(testMethods)
     % be very small (if any):
     errors(mCounter) = norm(anonFun(tArg, uArg) - correctFun(tArg, uArg));
 end
+
 pass = errors < 10*eps;

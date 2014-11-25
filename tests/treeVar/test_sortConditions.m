@@ -1,5 +1,5 @@
 function pass = test_sortConditions(~)
-%TEST_SORTCONDITIONS    Test that we sort IC/FCs correctly
+%TEST_SORTCONDITIONS   Test that we sort IC/FCs correctly.
 
 %% Setup
 dom = [.4 2];
