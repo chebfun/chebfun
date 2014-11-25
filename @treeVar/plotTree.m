@@ -68,7 +68,7 @@ if ( ~isstruct(tree) )
     tree = [];
     tree.numArgs = 0;
     if ( isnumeric(treeVal) )
-        tree.method = sprintf('%2.2f', treeVal);
+        tree.method = num2str(treeVal,2);
     else
         tree.method = 'chebfun';
     end
