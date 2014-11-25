@@ -1,25 +1,24 @@
 function plotTree(tree)
-%PLOTTREE    Plot a syntax tree (usually stored in a TREEVAR object)
+%PLOTTREE   Plot a syntax tree (as stored in a TREEVAR object).
+%   Calling sequence:
+%      TREEVAR.PLOTTREE(TREE)
+%   where the input is:
+%      TREE:   A MATLAB struct, describing the syntax tree of a mathematical
+%              expression.
 %
-% Calling sequence:
-%   TREEVAR.PLOTTREE(TREE)
-% where the input is:
-%   TREE:   A MATLAB struct, describing the syntax tree of a mathematical
-%           expression.
+%   Usually, this method is called from within the TREEVAR plot() method.
 %
-%  Usually, this method is called from within the TREEVAR plot() method.
+%   Example:
+%      % First, define a TREEVAR and carry out some operations:
+%      u = treeVar();
+%      v = cos(u);
+%      w = sin(diff(u));
+%      t = v + w;
+%      % The following are equivalent:
+%      plot(t)
+%      treeVar.plotTree(t.tree)
 %
-% Example:
-%   % First, define a TREEVAR and carry out some operations:
-%   u = treeVar();
-%   v = cos(u);
-%   w = sin(diff(u));
-%   t = v + w;
-%   % The following are equivalent:
-%   plot(t)
-%   treeVar.plotTree(t.tree)
-%
-% See also: treeVar.plot.
+% See also TREEVAR.PLOT.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -44,17 +43,17 @@ maxDiffOrder = tree.diffOrder;
 plotTreePlot(tree, maxDiffOrder);
 
 % Some final massaging of the figure:
-xlim([0 1])
-ylim([0 1])
+xlim([0, 1])
+ylim([0, 1])
 hold off
-set(gca,'xtick',[])
-set(gca,'ytick',[])
+set(gca, 'xtick', [])
+set(gca, 'ytick', [])
 title('Function evaluation tree')
 end
 
 
 function tree = layoutNodes(tree, treex, deltax, currHeight, maxHeight)
-%LAYOUTNODES    Return coordinates for where to plot nodes of syntax trees
+%LAYOUTNODES   Return coordinates for where to plot nodes of syntax trees.
 
 if ( ~isstruct(tree) )
     % In case of scalars or CHEBFUNS appearing in the expression, the
@@ -75,7 +74,7 @@ if ( ~isstruct(tree) )
     end
     
     % Store coordinates where the node should be plotted:
-    tree.y = (currHeight/(maxHeight+1));
+    tree.y = currHeight/(maxHeight+1);
     tree.x = treex;
     
     % Scalars and CHEBFUNS have zero diffOrders.
@@ -84,7 +83,7 @@ if ( ~isstruct(tree) )
 end
 
 % Store coordinates where the current node should be plotted:
-tree.y = (currHeight/(maxHeight+1));
+tree.y = currHeight/(maxHeight+1);
 tree.x = treex;
     
 % Lay out nodes recursively
@@ -106,7 +105,7 @@ end
 end
 
 function plotTreePlot(tree, maxDiffOrder)
-%PLOTREEPLOT    The actual plotting of the syntax tree
+%PLOTREEPLOT   The actual plotting of the syntax tree.
 
 % Specify 20 different colours, so that each variable appearing in the tree can
 % be plotted with its own colour:
@@ -117,27 +116,27 @@ colours = [160, 255, 0; 27, 244, 125; 0, 185, 140; 49, 105, 255; ...
 % Store the number of colours we use (so that we can take mod() later on):
 numCols = size(colours, 1);
 
-% Plot, depending on the number of arguments that the method has!
+% Plot, depending on the number of arguments that the method has.
 switch tree.numArgs
     case 0
         % Plot the constructor leaves in different colours.
         if ( strcmp(tree.method, 'constr') )
             varID = find(tree.ID == 1);
             colID = colours(mod(varID, numCols) + 1, :);
-            plot(tree.x,tree.y,'o', 'color', colID);
-            plot(tree.x,tree.y,'.', 'markersize', 20, 'color', colID);
+            plot(tree.x, tree.y, 'o', 'color', colID);
+            plot(tree.x, tree.y, '.', 'markersize', 20, 'color', colID);
         end
         
     case 1
         % Plot syntax tree for univariate methods:
-        plot(tree.center.x,tree.center.y,'bo');
-        plot([tree.x tree.center.x],[tree.y tree.center.y],'-')
+        plot(tree.center.x, tree.center.y, 'bo');
+        plot([tree.x tree.center.x], [tree.y tree.center.y], '-')
         plotTreePlot(tree.center, maxDiffOrder)
     
     case 2
         % Plot syntax tree for bivariate methods:        
         % Plot left sub-tree.
-        plot(tree.left.x,tree.left.y,'o');
+        plot(tree.left.x, tree.left.y, 'o');
         plot([tree.x tree.left.x], [tree.y tree.left.y], '-')
         plotTreePlot(tree.left, maxDiffOrder)
         
@@ -149,7 +148,7 @@ end
 
 % Add the method name to the plot:
 if ( strcmp(tree.method, 'constr') )
-    % If we're at a constructor leave, change the text slightly:
+    % If we're at a constructor leaf, change the text slightly:
     if ( length(tree.ID) == 1)
         % Scalar case.
         varString = 'u';    
