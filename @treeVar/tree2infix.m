@@ -17,7 +17,7 @@ function [infixOut, varArray] = tree2infix(tree, eqno, indexStart)
 %               the equation we're currently converting to infix form.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % If the TREE is empty, there's not much we need to do...
 if isempty(tree)

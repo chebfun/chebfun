@@ -22,7 +22,7 @@ function anonFun = toRHS(systemInfix, varArrays, coeffs,  indexStart, totalDiffO
 %   ANONFUN:    An anonymous function on a form suitable to be passed to the
 %               MATLAB ODE solvers for describing the first order ODE system.
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Load the variables from VARARRAYS into the current workspace.
 loadVariables(varArrays)

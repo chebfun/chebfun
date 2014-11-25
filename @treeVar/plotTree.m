@@ -22,7 +22,7 @@ function plotTree(tree)
 % See also: treeVar.plot.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 
 % Starting values for plotting

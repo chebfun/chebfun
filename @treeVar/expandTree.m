@@ -19,7 +19,7 @@ function newTree = expandTree(tree, maxOrder)
 %                  differential order appear.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( ~isstruct(tree) || tree.height <= 1 || all(tree.diffOrder < maxOrder) || ...
     ~tree.hasTerms )
