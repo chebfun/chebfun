@@ -96,8 +96,8 @@ switch tree.numArgs
             s = [s, treeVar.printTree(tree.left, [indentStr, '|'])];
         elseif ( isnumeric(tree.left) )
             % Left node was a scalar:
-            s = [s, sprintf('%s|--numerical \tValue: %4.2f\n', ...
-                indentStr, tree.left)];
+            s = [s, sprintf('%s|--numerical \tValue: %s\n', ...
+                indentStr, num2str(tree.left, '%2.2f'))];
         else
             % Left node was a CHEBFUN:
             s = [s, fprintf('%s|--chebfun\n', indentStr)];
@@ -109,7 +109,7 @@ switch tree.numArgs
         elseif ( isnumeric(tree.right) )
             % Right node is a scalar:
             s = [s, sprintf('%s|--numerical \tValue: %s\n', ...
-                indentStr, num2str(tree.right))];
+                indentStr, num2str(tree.right, '%2.2f'))];
         else
             % Right node is a CHEBFUN:
             s = [s, fprintf('%s|--chebfun\n', indentStr)];

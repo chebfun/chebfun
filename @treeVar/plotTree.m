@@ -68,7 +68,7 @@ if ( ~isstruct(tree) )
     tree = [];
     tree.numArgs = 0;
     if ( isnumeric(treeVal) )
-        tree.method = num2str(treeVal,2);
+        tree.method = num2str(treeVal, '%2.2f');
     else
         tree.method = 'chebfun';
     end
