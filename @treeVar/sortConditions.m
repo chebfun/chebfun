@@ -1,36 +1,35 @@
 function idx = sortConditions(funIn, domain)
-%SORTCONDITIONS    Returns how the results of evaluating BCs should be sorted.
+%SORTCONDITIONS   Returns how the results of evaluating BCs should be sorted.
+%   Calling sequence:
+%      IDX = SORTCONDITIONS(FUNIN, DOMAIN)
+%   where the inputs are:
+%      FUNIN:  An anonymous function, that usually specifies N.LBC or N.RBC of a
+%              CHEBOP.
+%      DOMAIN: The domain of the problem.
+%   and the output is
+%      IDX:    A vector with indices on how to sort the results of evaluating
+%              N.LBC/RBC, so that they match the order required by the MATLAB ODE
+%              solvers.
 %
-% Calling sequence:
-%   IDX = SORTCONDITIONS(FUNIN, DOMAIN)5
-% where the inputs are:
-%   FUNIN:  An anonymous function, that usually specifies N.LBC or N.RBC of a
-%           CHEBOP.
-%   DOMAIN: The domain of the problem.
-% and the output is
-%   IDX:    A vector with indices on how to sort the results of evaluating
-%           N.LBC/RBC, so that they match the order required by the MATLAB ODE
-%           solvers.
-%
-% Example:
-%   Assume that for a coupled system, we want to specify the ICs
-%       u(0) = 1, u'(0) = 2, v(0) = 0, v'(0) = 3.
-%   One anonymous function we could create to specify those conditions and
-%   append to a CHEBOP is
-%       fun = @(u,v) [u-1; diff(v)-3; v; diff(u)-2]; 
-%   However, when we evaluate this function to pick out the initial conditions, 
-%   we get the vector
-%       [1; 3; 0; 2]
-%   which is in the incorrect order to be passed to the MATLAB solvers, which
-%   require the conditions to be of the order u, u', v, v'. Calling
-%   sortConditions(),
-%       idx = treeVar.sortConditions(fun, dom) 
-%       idx =
-%           1     4     3     2
-%   gives the correct order in which the above vector has to be sorted so that
-%   the values are in the correct order for MATLAB.
+%   Example:
+%      Assume that for a coupled system, we want to specify the ICs
+%         u(0) = 1, u'(0) = 2, v(0) = 0, v'(0) = 3.
+%      One anonymous function we could create to specify those conditions and
+%      append to a CHEBOP is
+%         fun = @(u,v) [u-1; diff(v)-3; v; diff(u)-2]; 
+%      However, when we evaluate this function to pick out the initial conditions, 
+%      we get the vector
+%         [1; 3; 0; 2]
+%      which is in the incorrect order to be passed to the MATLAB solvers, which
+%      require the conditions to be of the order u, u', v, v'. Calling
+%      sortConditions(),
+%         idx = treeVar.sortConditions(fun, dom) 
+%         idx =
+%             1     4     3     2
+%      gives the correct order in which the above vector has to be sorted so that
+%      the values are in the correct order for MATLAB.
 
-% Check how many unknown appear in FUNIN
+% Check how many unknowns appear in FUNIN.
 numArgs = nargin(funIn);
 args = cell(numArgs, 1);
 
@@ -39,7 +38,7 @@ argsVec = zeros(1, numArgs);
 
 % Populate the args cell with TREEVAR objects.
 for argCount = 1:numArgs
-    % Set the ID of the current variable to 1.
+    % Set the ID of the current variable to 1:
     argsVec(argCount) = 1;
     % Construct the TREEVAR:
     args{argCount} = treeVar(argsVec, domain);
