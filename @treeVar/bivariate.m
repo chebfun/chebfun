@@ -1,5 +1,5 @@
 function treeOut = bivariate(leftTree, rightTree, method, type)
-%BIVARIATE     Construct a syntax tree for bivariate functions.
+%BIVARIATE   Construct a syntax tree for bivariate functions.
 %
 % The BIVARIATE() method is called by most bivariate methods of the TREEVAR
 % class, such as minus, plus and rtimes. It constructs the corresponding syntax
@@ -14,7 +14,7 @@ function treeOut = bivariate(leftTree, rightTree, method, type)
 %               mathematical expressions that is the left argument that METHOD
 %               operates on.
 %   RIGHTTREE:  A MATLAB struct for representing the syntax tree of the 
-%               mathematical expressions that is the left argument that METHOD
+%               mathematical expressions that is the right argument that METHOD
 %               operates on.
 %   METHOD:     The name of the method that invokes the call to BIVARIATE().
 %   TYPE:       An integer that indicated which of the arguments to METHOD were

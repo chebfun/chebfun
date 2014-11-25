@@ -1,23 +1,22 @@
 function newTree = expandTree(tree, maxOrder)
-%EXPANDTREE    Convert expressions like 5*(diff(u) + u) to 5*diff(u) + 5*u.
+%EXPANDTREE   Convert expressions like 5*(diff(u) + u) to 5*diff(u) + 5*u.
+%   The role of the EXPANDTREE method is to split up syntax trees, so that
+%   expressions involving the highest derivative appearing in the equation stand
+%   alone, that is, not inside parenthesis. For example, EXPANDTREE will convert
+%   expressions like 5*(diff(u) + u) to 5*diff(u) + 5*u. This is necessary in
+%   order to be able to put the correct expression on the right-hand side when
+%   calling MATLAB's built-in solvers.
 %
-% The role of the EXPANDTREE method is to split up syntax trees, so that
-% expressions involving the highest derivative appearing in the equation stand
-% alone, that is, not inside parenthesis. For example, EXPANDTREE will convert
-% expressions like 5*(diff(u) + u) to 5*diff(u) + 5*u. This is necessary in
-% order to be able to put the correct expression on the right-hand side when
-% calling MATLAB's built in solvers.
-%
-% Calling sequence:
-%   NEWTREE = EXPANDTREE(TREE, MAXORDER)
-% where the inputs are:
-%   TREE:       The syntax tree we want to split.
-%   MAXORDER:   A vector containing the maximum differential order of each
-%               variable that appear in the problem under consideration.
-% and the output is:
-%   NEWTREE:    A syntax tree where the highest order deriative has been taken
-%               out of any parenthesis where other variables with lower
-%               differential order appear.
+%   Calling sequence:
+%      NEWTREE = EXPANDTREE(TREE, MAXORDER)
+%   where the inputs are:
+%      TREE:       The syntax tree we want to split.
+%      MAXORDER:   A vector containing the maximum differential order of each
+%                  variable that appear in the problem under consideration.
+%   and the output is:
+%      NEWTREE:    A syntax tree where the highest order deriative has been taken
+%                  out of any parenthesis where other variables with lower
+%                  differential order appear.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
