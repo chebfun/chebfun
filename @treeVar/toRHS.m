@@ -1,28 +1,31 @@
 function anonFun = toRHS(systemInfix, varArrays, coeffs,  indexStart, totalDiffOrders)
-%TORHS    Convert infix expressions to anonymous function suited for ODE solvers
-%
-% Calling sequence:
-%   ANONFUN = TORHS(SYSTEMINFIX, VARARRAYS, COEFFS,  INDEXSTART, TOTALDIFFORDERS)
-% where the inputs are
-%   SYSTEMFINFIX:    A cell-array of strings of infix expressions, each of which
-%                    describes the right-hand side of a differential equation
-%                    suitable for MATLAB's ODE solvers.
-%   VARARRAYS:       A cell array of cell arrays, so that the ith element of
-%                    VARARRAYS contains the values of the variables (scalars and
-%                    CHEBFUNS) that appear in the ith equation of SYSTEMINFIX.
-%   COEFFS:          A cell array of the coefficients that multiply the left
-%                    hand side of SYSTEMINFIX. For example, for the expression
-%                    5*diff(u) + u, COEFFS{1} = 5, while for sin(x)*diff(u) + u,
-%                    COEFFS{1} will be the CHEBFUN sin(x).
-%   INDEXSTART:      A vector that denotes at which index we should start
-%                    indexing each variable from. 
-%   TOTALDIFFORDERS: A vector which contains the maximum diffOrder of each
-%                    variable that appears in the problem.
-% and the output is
-%   ANONFUN:    An anonymous function on a form suitable to be passed to the
-%               MATLAB ODE solvers for describing the first order ODE system.
+%TORHS   Convert infix expressions to anonymous function suited for ODE solvers.
+%   Calling sequence:
+%      ANONFUN = TORHS(SYSTEMINFIX, VARARRAYS, COEFFS, INDEXSTART, TOTALDIFFORDERS)
+%   where the inputs are
+%      SYSTEMFINFIX:    A cell array of strings of infix expressions, each of
+%                       which describes the right-hand side of a differential
+%                       equation suitable for MATLAB's ODE solvers.
+%      VARARRAYS:       A cell array of cell arrays, so that the ith element
+%                       of VARARRAYS contains the values of the variables
+%                       (scalars and CHEBFUNS) that appear in the ith equation
+%                       of SYSTEMINFIX.
+%      COEFFS:          A cell array of the coefficients that multiply the
+%                       left hand side of SYSTEMINFIX. For example, for the
+%                       expression 5*diff(u) + u, COEFFS{1} = 5, while for
+%                       sin(x)*diff(u) + u, COEFFS{1} will be the CHEBFUN
+%                       sin(x).
+%      INDEXSTART:      A vector that denotes at which index we should start
+%                       indexing each variable from.
+%      TOTALDIFFORDERS: A vector which contains the maximum diffOrder of each
+%                       variable that appears in the problem.
+%   and the output is
+%      ANONFUN:    An anonymous function on a form suitable to be passed to
+%                  the MATLAB ODE solvers for describing the first order ODE
+%                  system.
+
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Load the variables from VARARRAYS into the current workspace.
 loadVariables(varArrays)
@@ -41,7 +44,7 @@ for sysCounter = 1:length(systemInfix)
     %   u'_3 = -sin(u_1)
     % we generate the corresponding strings for the RHS of the coupled system,
     % in this case
-    %   'u(2); u(3);
+    %   'u(2); u(3);'
     
     % Initialise an empty string for the first order reformulation:
     varString = '';
@@ -76,9 +79,6 @@ for sysCounter = 1:length(systemInfix)
         './' coeffStr, '; '];
 end
 
-% Get rid of the last ; that got added to the infix form:
-infixForm(end-1:end) = [];
-
 % Add the @(t,u) to the front of the infix expression, and surround it by [].
 infixForm = ['@(t,u)[', infixForm , ']'];
 
@@ -88,14 +88,14 @@ anonFun = eval(infixForm);
 end
 
 function loadVariables(varArrays)
-%LOADVARIABLES Load variables into the memory scope of the caller function
+%LOADVARIABLES   Load variables into the memory scope of the caller function.
 
 for arrCounter = 1:length(varArrays)
     varArray = varArrays{arrCounter};
     
-    % Loop through the array of variables, and assign into memory of the caller
-    % scope:
-    for i=1:size(varArray, 1)
+    % Loop through the array of variables, and assign into memory of the
+    % caller scope:
+    for i = 1:size(varArray, 1)
         assignin('caller', varArray{i, 1}, varArray{i, 2})
     end
 end

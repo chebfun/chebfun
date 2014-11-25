@@ -1,13 +1,14 @@
 function pass = test_toFirstOrder()
-%TEST_TOFIRSTORDER    Check that we get the correct output when changing to
-%                     firt order format.
+%TEST_TOFIRSTORDER   Test conversion to first-order format.
+
 %% Setup
 dom = [-1, 4];
 x = chebfun(@(x) x, dom);
 tol = 1e-14;
+
 %% Simple test
-% We have the expression 5*(diff(u, 2) + 3*u), so expect the first order system
-% to be:
+% We have the expression 5*(diff(u, 2) + 3*u), so expect the first order
+% system to be:
 %   u'(1) = u(2)
 %   u'(2) = -3*u(1)
 problemNo = 1;
@@ -19,11 +20,13 @@ pass(2, problemNo) = (idx == 1);
 pass(3, problemNo) = all(domOut == dom);
 pass(4, problemNo) = norm(coeffs{1} - 5) < tol;
 pass(5, problemNo) = all( diffOrders == 2);
+
 %% Try with variables in the anonymous function:
 problemNo = 2;
 alpha = 4;
 myfun = @(u) 3.5*(diff(u, 2) + alpha*u);
 rhs = 5;
+
 % Expect the first order system to be:
 %   u'(1) = u(2)
 %   u'(2) = rhs/3.5 - alpha*u(1)
@@ -39,6 +42,7 @@ problemNo = 3;
 myfun = @(u) 5*((x+1).*diff(u, 2) + u);
 rhs = -5;
 [anonFun, idx, domOut, coeffs, diffOrders] = treeVar.toFirstOrder(myfun, rhs, dom);
+
 % Expect this to be [u(2); (-5-5*u(1))/(5*(x(-.5)+1))] = [1; -4]
 pass(1, problemNo) = norm( anonFun(-.5,[2 1]) - [1;-6] ) < tol;
 pass(2, problemNo) = (idx == 1 );
@@ -51,6 +55,7 @@ problemNo = 4;
 myfun = @(u) diff(u, 2) + 2*sin(x).*u;
 rhs = cos(x);
 [anonFun, idx, domOut, coeffs, diffOrders] = treeVar.toFirstOrder(myfun, rhs, dom);
+
 % Expect this to be [u(2); cos(x(.5)) - 2*sin(x(.5))]
 pass(1, problemNo) = norm( anonFun(.5,[2 1]) - [1; cos(x(.5))-2*(sin(x(.5))*2)]) < tol;
 pass(2, problemNo) = (idx == 1);
@@ -63,6 +68,7 @@ problemNo = 5;
 myfun = @(u) 3*(x+2).*((x+1).*diff(u, 2) + u);
 rhs = 0;
 [anonFun, idx, domOut, coeffs, diffOrders] = treeVar.toFirstOrder(myfun, rhs, dom);
+
 % Expect this to be [u(2); -u(1))/(x(-.5)+1)] = [1; -4]
 pass(1, problemNo) = norm( anonFun(-.5,[2 2]) - [2; -4]) < tol;
 pass(2, problemNo) = (idx == 1);
@@ -71,7 +77,6 @@ pass(4, problemNo) = ( norm(coeffs{1} - 3*(x+2).*(x+1)) < tol);
 pass(5, problemNo) = all( diffOrders == 2);
 res =  anonFun(-.5, [2 2]);
 pass(5) = all( res == [2;-4]);
-
 
 %% Introduce breakpoints
 problemNo = 6;
@@ -116,7 +121,6 @@ pass(2, problemNo) = all(idx == [1 2]);
 pass(3, problemNo) = all(domOut == dom);
 pass(4, problemNo) = norm(coeffs{1} - 5) + norm(coeffs{2} - cos(x)) < tol;
 pass(5, problemNo) = all( diffOrders == [1 1]);
-
 
 %% Simple coupled system, second order
 % We have the equations 
@@ -185,7 +189,6 @@ pass(5, problemNo) = all( diffOrders == 2);
 %   7*diff(w) + diff(v) = x.^2 
 %   5*(diff(u,2) + 3*v + coth(x)) = tanh(x)
 %   cos(x)*diff(v,2) + diff(u) - diff(y,2) = 2
-%
 % so expect the first order system to include the variables:
 %   u(1) = u, u(2) = u', u(3) = v, u(4) = v'; u(5) = w, u(6) = y, u(7) = y',
 %   u(8) = y''

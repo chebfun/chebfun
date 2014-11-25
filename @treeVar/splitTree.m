@@ -1,23 +1,22 @@
 function [newTree, derTree] = splitTree(tree, maxOrder)
-%SPLITTREE     Split syntax trees into derivative part and non-derivative part
-%
-% Calling sequence:
-%   [NEWTREE, DERTREE] = SPLITTREE(TREE, MAXORDER)
-% where the inputs are:
-%   TREE:       The syntax tree to be split.
-%   MAXORDER:   A vector that contains the the maximum differential order of
-%               each variable that appears in the problem.
-% and the outputs are
-%   NEWTREE:    A syntax tree which describes the factor in which the highest
-%               order derivative appears. E.g. if we split the expression
-%               5*diff(u) + sin(u), NEWTREE is the syntax tree corresponding
-%               to 5*diff(u).
-%   DERTREE:    A syntax tree which describes the remaining factors not included
-%               in NEWTREE. In the example above, DERTREE is the syntax tree
-%               corresponding to sin(u).
+%SPLITTREE   Split syntax trees into derivative part and non-derivative part
+%   Calling sequence:
+%      [NEWTREE, DERTREE] = SPLITTREE(TREE, MAXORDER)
+%   where the inputs are:
+%      TREE:       The syntax tree to be split.
+%      MAXORDER:   A vector that contains the the maximum differential order of
+%                  each variable that appears in the problem.
+%   and the outputs are
+%      NEWTREE:    A syntax tree which describes the factor in which the highest
+%                  order derivative appears. E.g. if we split the expression
+%                  5*diff(u) + sin(u), NEWTREE is the syntax tree corresponding
+%                  to 5*diff(u).
+%      DERTREE:    A syntax tree which describes the remaining factors not included
+%                  in NEWTREE. In the example above, DERTREE is the syntax tree
+%                  corresponding to sin(u).
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Find what variables we have actually computed derivatives of.
 diffVar = maxOrder > 0;
@@ -33,7 +32,7 @@ end
 % Find the diffOrders in the input tree.
 treeDiffOrder = tree.diffOrder;
 
-% If our tree don't have any derivatives of highest order that appear in the
+% If our tree doesn't have any derivatives of highest order that appear in the
 % problem, we can return the subtree. But only need to check for those variables
 % that we actually differentiate with respect to, e.g. if maxOrder = 0, we can
 % return the subtree as well.
@@ -110,7 +109,7 @@ switch tree.numArgs
                 end
                 
                 % Construct a new syntax tree from the new left and right child
-                % trees (the non derivative parts).
+                % trees (the non-derivative parts).
                 newTree = struct('method', tree.method, ...
                     'numArgs', tree.numArgs, ...
                     'left', newTreeLeft, 'right', newTreeRight, ...
@@ -127,7 +126,7 @@ switch tree.numArgs
                 % Right child tree only consisted of non-derivative part.
                 derTree = derTreeLeft;
             else
-                % Combine the left and right derivative sub-trees.
+                % Combine the left and right derivative subtrees.
                 derTree = struct('method', tree.method, ...
                     'numArgs', tree.numArgs, ...
                     'left', derTreeLeft, 'right', derTreeRight, ...
@@ -141,12 +140,11 @@ end
 end
 
 function ot = oneTreeFromRight(tree, operator)
-%ONETREEFROMRIGHT    
-%
-% Add a UMINUS in front of a syntax tree in the case where the left child tree
-% of MINUS() only consisted of the derivative part. Simply put, we're converting
-% a binary minus between an empty tree on left and a non-empty tree on the right
-% to a UMINUS on the non-empty tree.
+%ONETREEFROMRIGHT   Convert binary minus to uminus when left tree is empty.
+%   Add a UMINUS in front of a syntax tree in the case where the left child tree
+%   of MINUS() only consisted of the derivative part. Simply put, we're converting
+%   a binary minus between an empty tree on left and a non-empty tree on the right
+%   to a UMINUS on the non-empty tree.
 if ( strcmp(operator, 'minus') )
     % Only need to worry if the original operator was a -.
     if ( isstruct(tree) )

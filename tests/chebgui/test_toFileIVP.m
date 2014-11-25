@@ -1,5 +1,5 @@
 function pass = test_toFileIVP(pref)
-%TEST_TOFILEIVP     Test exporting all IVP demos to an .m-file.
+%TEST_TOFILEIVP   Test exporting all IVP demos to an m-file.
 %
 % This test only checks whether nothing breaks, it does not try to solve the
 % problems.

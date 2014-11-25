@@ -1,51 +1,58 @@
 function pass = test_initialConditions(pref)
-% Create CHEBOP IVP/FVP problems, check that we match conditions.
+%TEST_INITIALCONDITIONS   Checks conditions for IVP/FVP problems.
 
 %% Setup
 if ( nargin == 0 )
     pref = cheboppref();
 end
-
 dom = [0, 1];
 tol = 1e-12;
+
 %% First order IVP
 N = chebop(@(x,u) diff(u) + sin(u), dom);
 N.lbc = @(u) u - .5;
 u = N\0;
 pass(1) = abs(u(dom(1)) - .5) < tol;
+
 %% First order FVP
 N = chebop(@(x,u) diff(u) + sin(u), dom);
 N.rbc = @(u) u - .5;
 u = N\0;
 pass(2) = abs(u(dom(end)) - .5) < tol;
+
 %% Second order IVP
 N = chebop(@(x,u) diff(u, 2) + sin(u), dom);
 N.lbc = @(u) [u - .5; diff(u) - 1.3];
 u = N\0;
 up = diff(u);
 pass(3) = abs(u(dom(1)) - .5) + abs(up(dom(1)) - 1.3) < tol;
+
 %% Second order FVP
 N = chebop(@(x,u) diff(u, 2) + sin(u), dom);
 N.rbc = @(u) [u - .5; diff(u) - 1.3];
 u = N\0;
 up = diff(u);
 pass(4) = abs(u(dom(end)) - .5) + abs(up(dom(end)) - 1.3) < tol;
+
 %% First order IVP, no x
 N = chebop(@(u) diff(u) + sin(u), dom);
 N.lbc = @(u) u - .5;
 u = N\0;
 pass(5) = abs(u(dom(1)) - .5) < tol;
+
 %% First order FVP, no x
 N = chebop(@(u) diff(u) + sin(u), dom);
 N.rbc = @(u) u - .5;
 u = N\0;
 pass(6) = abs(u(dom(end)) - .5) < tol;
+
 %% Second order IVP, no x
 N = chebop(@(u) diff(u, 2) + sin(u), dom);
 N.lbc = @(u) [u - .5; diff(u) - 1.3];
 u = N\0;
 up = diff(u);
 pass(7) = abs(u(dom(1)) - .5) + abs(up(dom(1)) - 1.3) < tol;
+
 %% Second order FVP, no x
 N = chebop(@(u) diff(u, 2) + sin(u), dom);
 N.rbc = @(u) [u - .5; diff(u) - 1.3];

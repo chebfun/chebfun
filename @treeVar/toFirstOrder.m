@@ -1,34 +1,35 @@
 function [funOut, indexStart, problemDom, coeffs, totalDiffOrders] = ...
     toFirstOrder(funIn, rhs, domain)
-%TOFIRSTORDER    Convert higher order anonymous functions to first order systems
-%
-% Calling sequence:
-%   [FUNOUT, INDEXSTART, PROBLEMDOM, COEFFS, TOTALDIFFORDERS] = ...
-%       TOFIRSTORDER(FUNIN, RHS, DOMAIN)
-% where the inputs are:
-%   FUNIN:  An anonymous function which describes an ODE, usually including
-%           higher order derivatives, e.g. @(x,u) diff(u, 2) + sin(u). Usually,
-%           the anonymous function comes from the OP field of a CHEBOP.
-%   RHS:    The right hand side of the differential equation being solved with a
-%           CHEBOP, that is, the right argument of a CHEBOP backslash.
-%   DOMAIN: The domain of the problem we're trying to solve.
-% and the outputs are:
-%   FUNOUT:     An anonymous function that is the first order reformulation of
-%               FUNIN, which can be passed to the MATLAB solvers.
-%   INDEXSTART: A vector that denotes at which index we should start indexing
-%               each variable from so that they're in the correct order for the
-%               MATLAB ODE solvers.
-%   PROBLEMDOM: The domain on which the problem can be specified, which may
-%               include breakpoints originally not included in DOMAIN.
-%   COEFFS:     A cell array of the coefficients the multiply the highest order
-%               derivatives in problem. For example, for the problem 
-%               @(x,u) 5*diff(u, 2) + u, we will have COEFFS{1} = 5.
-%   TOTALDIFFORDERS:
-%               A vector that contains the maximum diffOrder applying to each
-%               variable in the problem.
+%TOFIRSTORDER   Convert higher order anonymous functions to first order systems.
+%   Calling sequence:
+%      [FUNOUT, INDEXSTART, PROBLEMDOM, COEFFS, TOTALDIFFORDERS] = ...
+%          TOFIRSTORDER(FUNIN, RHS, DOMAIN)
+%   where the inputs are:
+%      FUNIN:  An anonymous function which describes an ODE, usually including
+%              higher order derivatives, e.g. @(x,u) diff(u, 2) + sin(u).
+%              Usually, the anonymous function comes from the OP field of a
+%              CHEBOP.
+%      RHS:    The right hand side of the differential equation being solved
+%              with a CHEBOP, that is, the right argument of a CHEBOP
+%              backslash.
+%      DOMAIN: The domain of the problem we're trying to solve.
+%   and the outputs are:
+%      FUNOUT:     An anonymous function that is the first order reformulation
+%                  of FUNIN, which can be passed to the MATLAB solvers.
+%      INDEXSTART: A vector that denotes at which index we should start
+%                  indexing each variable from so that they're in the correct
+%                  order for the MATLAB ODE solvers.
+%      PROBLEMDOM: The domain on which the problem can be specified, which may
+%                  include breakpoints originally not included in DOMAIN.
+%      COEFFS:     A cell array of the coefficients the multiply the highest
+%                  order derivatives in problem. For example, for the problem
+%                  @(x,u) 5*diff(u, 2) + u, we will have COEFFS{1} = 5.
+%      TOTALDIFFORDERS:
+%                  A vector that contains the maximum diffOrder applying to
+%                  each variable in the problem.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Independent variable on the domain
 t = chebfun(@(t) t, domain);
@@ -49,7 +50,7 @@ for argCount = 1:numArgs
 end
 
 % Evaluate FUNIN with the TREEVAR arguments. If FUNIN only has one input
-% argument, we just give it a treeVar() argument. Otherwise, the first input
+% argument, we just give it a TREEVAR argument. Otherwise, the first input
 % will be the independent variable on the domain:
 if ( nargin(funIn) == 1 )
     fevalResult = funIn(args{:});
@@ -73,12 +74,13 @@ end
 % Initialize cells to store the infix forms of the expressions, the coefficients
 % multiplying the highest order derivatives and any variables that appear in the
 % anonymous functions:
-systemInfix = cell(length(fevalResult),1);
+systemInfix = cell(length(fevalResult), 1);
 coeffs = systemInfix;
 varArrays = systemInfix;
 
 % We want to return all potential breakpoints caused by piecewise coefficients
-% in the problem. So loop through fevalResult, and unionize the breakpoints:
+% in the problem. So loop through fevalResult, and take the union of the
+% breakpoints:
 problemDom = fevalResult(1).domain;
 for resCounter = 2:length(fevalResult)
     problemDom = union(problemDom, fevalResult(resCounter).domain);
@@ -181,7 +183,7 @@ for wCounter = 1:length(fevalResult)
     else
         % The variable with index maxDerLoc+1 is the next variable we need to
         % start numbering at. So subtract 1 for the index of the highest
-        % derivate we're currently interested in.
+        % derivative we're currently interested in.
         coeffArg(indexStartDer(maxDerLoc+1) - 1) = 1;
     end
     
