@@ -1,25 +1,24 @@
 function [infixOut, varArray] = tree2infix(tree, eqno, indexStart)
-%TREE2INFIX    Convert a syntax tree to infix form
-%
-% Calling sequence:
-%   [OUT, VARCOUNTER, VARARRAY] = TREE2INFIX(TREE, EQNO, INDEXSTART)
-% where the inputs are
-%   TREE:       A syntax tree.
-%   EQNO:       An integer, denoting the number of the equation in a coupled
-%               system we're currently converting.
-%   INDEXSTART: A vector that denotes at which index we should start indexing
-%               each variable from so that they're in the correct order for the
-%               MATLAB ODE solvers.
-% and the outputs are
-%   INFIXOUT:   A string, which describes TREE on infix form.
-%   VARARRAY:   A cell, whose first column consist of strings of unique 
-%               identifiers of variables (CHEBFUNs or scalars) that appear in
-%               the equation we're currently converting to infix form.
+%TREE2INFIX   Convert a syntax tree to infix form.
+%   Calling sequence:
+%      [OUT, VARCOUNTER, VARARRAY] = TREE2INFIX(TREE, EQNO, INDEXSTART)
+%   where the inputs are
+%      TREE:       A syntax tree.
+%      EQNO:       An integer, denoting the number of the equation in a coupled
+%                  system we're currently converting.
+%      INDEXSTART: A vector that denotes at which index we should start indexing
+%                  each variable from so that they're in the correct order for the
+%                  MATLAB ODE solvers.
+%   and the outputs are
+%      INFIXOUT:   A string, which describes TREE on infix form.
+%      VARARRAY:   A cell, whose first column consist of strings of unique 
+%                  identifiers of variables (CHEBFUNs or scalars) that appear in
+%                  the equation we're currently converting to infix form.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% If the TREE is empty, there's not much we need to do...
+% If the TREE is empty, do nothing.
 if isempty(tree)
     infixOut = '';
     return
@@ -36,13 +35,12 @@ varArray = [];
 % Start the recursive call for converting a syntax tree to infix form.
 [infixOut, varCounter, varArray] = ...
     toInfix(tree, eqno, indexStart, varCounter, varArray);
-
 end
+
 
 function [out, varCounter, varArray] = ...
     toInfix(tree, eqno, indexStart, varCounter, varArray)
-%TOINFIX    Recursively convert syntax tree of infix form.
-
+%TOINFIX   Recursively convert syntax tree of infix form.
 
 % Check whether we're converting a syntax tree to infix form, or whether we're
 % working directly with a scalar or a CHEBFUN. If the TREE input variable is not
@@ -68,7 +66,7 @@ switch numArgs
                 scalarChebfunInfix(eqno, varCounter, tree, varArray);
     case 0
         % We've hit the TREEVAR constructor level. Return a string containing
-        % the name of the dependent variable -- u -- and it's index.
+        % the name of the dependent variable -- u -- and its index.
         out = sprintf('u(%i)', indexStart(tree.ID));
     case 1
         % Unary operator tree, convert it recursively to a infix form string.
@@ -119,13 +117,14 @@ end
 
 end
 
-function [infixOut, varArray, varCounter] = scalarChebfunInfix(eqno, varCounter, tree, varArray)
-% Convert a scalar/CHEBFUN expression (i.e. a syntax tree that only contains a
-% scalar/CHEBFUN) to infix form:
+function [infixOut, varArray, varCounter] = ...
+    scalarChebfunInfix(eqno, varCounter, tree, varArray)
+%SCALARCHEBFUNINFIX   Convert a scalar/CHEBFUN expression to infix form.
+%   A scalar/CHEBFUN expression is one that only contains a scalar or CHEBFUN.
 
 % The variable name contains which equation we're converting (so that we can
-% load the correct variables in the workspace later on), as well as the index of
-% variable in the current equation.
+% load the correct variables in the workspace later on), as well as the index
+% of variable in the current equation.
 varName = sprintf('eq%i_var%i', eqno, varCounter);
 if ( isnumeric(tree) )
     % The left tree is a scalar.

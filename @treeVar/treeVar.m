@@ -1,8 +1,7 @@
 classdef  (InferiorClasses = {?chebfun}) treeVar
-    %TREEVAR    A class for analysing syntax trees of ODEs in Chebfun.
-    %
+    %TREEVAR   A class for analysing syntax trees of ODEs in Chebfun.
     %   The TREEVAR class allows Chebfun to analyse the syntax trees of ODEs in
-    %   CHEBFUN. It's current use is to enable Chebfun to automatically convert
+    %   CHEBFUN. Its current use is to enable Chebfun to automatically convert
     %   (systems of) higher order ODEs to coupled first order systems. This is
     %   particularly useful for initial-value problems (IVPs), as that allows
     %   Chebfun to call one of the built-in MATLAB solvers for solving IVPs via
@@ -35,65 +34,66 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
     % Copyright 2014 by The University of Oxford and The Chebfun Developers.
     % See http://www.chebfun.org/ for Chebfun information.
     
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % TREEVAR class description:
     %
-    % The TREEVAR class is used by the CHEBOP class to convert higher order ODEs to
-    % coupled systems of first order ODEs, which can then be solved using one of the
-    % built-in MATLAB solvers, such as ODE113. This is done by evaluating the
-    % (anonymous) functions in the .OP field of the CHEBOP with TREEVAR arguments,
-    % which will construct a syntax tree of the mathematical expression describing
-    % the operator. By then analysing the syntax tree and restructuring it
-    % appropriately, conversion to a first-order system is made possible.
-    %
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % The TREEVAR class is used by the CHEBOP class to convert higher order
+    % ODEs to coupled systems of first order ODEs, which can then be solved
+    % using one of the built-in MATLAB solvers, such as ODE113. This is done
+    % by evaluating the (anonymous) functions in the .OP field of the CHEBOP
+    % with TREEVAR arguments, which will construct a syntax tree of the
+    % mathematical expression describing the operator. By then analysing the
+    % syntax tree and restructuring it appropriately, conversion to a first-
+    % order system is made possible.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% CLASS PROPERTIES:
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     properties
         % The syntax tree of a TREEVAR variable, starting from an initial
         % variable. Each syntax tree is a MATLAB struct, which contains the
         % following fields:
-        %   METHOD:    The method leading to the construction of the variable.
-        %   NUMARGS:   Number of arguments to the method that constructed the
-        %       variable.
-        %   DIFFORDER: The differential order of the TREEVAR, which represents
-        %       how many times the base variable(s) have been differentiated
-        %       when before we arrive at the current TREEVAR. Note that
-        %       DIFFORDER is vector valued; for example, the sequence
-        %           u = treeVar([1 0 0], [0 1]);
-        %           v = treeVar([0 1 0], [0 1]);
-        %           w = treeVar([0 0 1], [0 1]);
-        %           f = diff(u) + diff(w, 2);
-        %       will lead to f.tree.DIFFORDER == [1 0 2].
-        %   HEIGHT: The height of the syntax tree, i.e., the number of
-        %       operations between the base variables(s) and the current
-        %       variable.
-        %   MULTCOEFF: The multiplication in front of the variable, which can
-        %       either be a CHEBFUN or a scalar. For example, the sequence
-        %           u = treeVar();
-        %           v = sin(x)*u'l
-        %       will have v.multcoeff == sin(x).
-        %   ID: A Boolean vector, whose ith element is equal to 1 if the TREEVAR
-        %       variable was constructed from the ith base variable, 0
-        %       otherwise. For example, the sequence
-        %           u = treeVar([1 0 0], [0 1]);
-        %           v = treeVar([0 1 0], [0 1]);
-        %           w = treeVar([0 0 1], [0 1]);
-        %           f = u + 2*w;
-        %       will lead to f.tree.ID == [1 0 1].
-        %   HASTERMS: Indiciates whether a TREEVAR is constructed from a
-        %       sequence of computations that include multiple terms. For
-        %       example, the sequence
-        %           u = treeVar(1, [0 1]);
-        %           v = cos(x).*u;
-        %           w = cos(u) + u;
-        %       leads to v.tree.hasTerms = 0, w.tree.hasTerms = 1.
+        %    METHOD:    The method leading to the construction of the variable.
+        %    NUMARGS:   Number of arguments to the method that constructed the
+        %        variable.
+        %    DIFFORDER: The differential order of the TREEVAR, which
+        %        represents how many times the base variable(s) have been
+        %        differentiated when before we arrive at the current TREEVAR.
+        %        Note that DIFFORDER is vector valued; for example, the
+        %        sequence
+        %            u = treeVar([1 0 0], [0 1]);
+        %            v = treeVar([0 1 0], [0 1]);
+        %            w = treeVar([0 0 1], [0 1]);
+        %            f = diff(u) + diff(w, 2);
+        %        will lead to f.tree.DIFFORDER == [1 0 2].
+        %    HEIGHT: The height of the syntax tree, i.e., the number of
+        %        operations between the base variables(s) and the current
+        %        variable.
+        %    MULTCOEFF: The multiplication in front of the variable, which can
+        %        either be a CHEBFUN or a scalar. For example, the sequence
+        %            u = treeVar();
+        %            v = sin(x)*u'l
+        %        will have v.multcoeff == sin(x).
+        %    ID: A Boolean vector, whose ith element is equal to 1 if the
+        %        TREEVAR variable was constructed from the ith base variable,
+        %        0 otherwise. For example, the sequence
+        %            u = treeVar([1 0 0], [0 1]);
+        %            v = treeVar([0 1 0], [0 1]);
+        %            w = treeVar([0 0 1], [0 1]);
+        %            f = u + 2*w;
+        %        will lead to f.tree.ID == [1 0 1].
+        %    HASTERMS: Indiciates whether a TREEVAR is constructed from a
+        %        sequence of computations that include multiple terms. For
+        %        example, the sequence
+        %            u = treeVar(1, [0 1]);
+        %            v = cos(x).*u;
+        %            w = cos(u) + u;
+        %        leads to v.tree.hasTerms = 0, w.tree.hasTerms = 1.
         tree
-        % The domain of the problem we're solving when constructing the TREEVAR
-        % objects.
+        % The domain of the problem we're solving when constructing the
+        % TREEVAR objects.
         domain
     end
     
@@ -227,6 +227,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         end
         
         function f = cumsum(f)
+            %CUMSUM   Not supported.
             % We don't support integral equations with our first order
             % reformulation. However, we could accidentally end up here in case
             % of first order integral equation, where the conditions are
@@ -238,7 +239,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         end
         
         function f = diff(f, k)
-            % Derivative of a TREEVAR.
+            %DIFF   Derivative of a TREEVAR.
             
             % By default, compute first derivative:
             if ( nargin < 2 )
@@ -256,7 +257,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         end
         
         function disp(u)
-            % Display a TREEVAR.
+            %DISP   Display a TREEVAR.
             
             if ( length(u) == 1 )
                 % Scalar case.
@@ -301,7 +302,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         end
         
         function h = minus(f, g)
-            %-    Subtraction of TREEVAR objects.
+            %-   Subtraction of TREEVAR objects.
             h = treeVar();
             if ( ~isa(f, 'treeVar') )
                 % (CHEBFUN/SCALAR) - TREEVAR
@@ -317,7 +318,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         end
         
         function h = mrdivide(f, g)
-            %/  Matrix division of TREEVAR objects
+            %/   Matrix division of TREEVAR objects
             %
             % This method only supports (SCALAR/TREEVAR)/(SCALAR/TREEVAR), i.e.
             % not (TREEVAR/CHEBFUN)/(TREEVAR/CHEBFUN).
@@ -331,10 +332,10 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         
         
         function h = mtimes(f, g)
-            %*  Matrix multiplication of TREEVAR objects
-            %
+            %*   Matrix multiplication of TREEVAR objects.
+
             % This method only supports SCALAR/TREEVAR*SCALAR/TREEVAR, i.e. not
-            % TREEVAR/CHEBFUN*TREEVAR/CHEBFUN.
+            % CHEBFUN/TREEVAR*CHEBFUN/TREEVAR.
             if ( isnumeric(f) || isnumeric(g) )
                 h = times(f, g);
                 h.domain = updateDomain(f, g);
@@ -348,7 +349,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         end
         
         function h = power(f, g)
-            %.^ POWER of a TREEVAR
+            %.^   Power of a TREEVAR.
             h = treeVar();
             if ( ~isa(f, 'treeVar') )
                 % (CHEBFUN/SCALAR).^TREEVAR
@@ -364,14 +365,14 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         end
         
         function plot(treeVar)
-            % When we plot a TREEVAR, we plot its syntax tree.
+            %PLOT   Plot of a TREEVAR syntax tree.
             %
-            % See also: treeVar.plotTree.
+            % See also TREEVAR.PLOTTREE.
             treeVar.plotTree(treeVar.tree);
         end
         
         function h = plus(f, g)
-            %+    Addition of TREEVAR objects.
+            %+   Addition of TREEVAR objects.
             h = treeVar();
             if ( ~isa(f, 'treeVar') )
                 % (CHEBFUN/SCALAR)+TREEVAR
@@ -387,14 +388,14 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         end
         
         function s = print(treeVar)
-            % When we print a TREEVAR, we print its syntax tree.
+            %PRINT   Text rendering of a TREEVAR syntax tree.
             %
-            % See also: treeVar.printTree.
+            % See also TREEVAR.PRINTTREE.
             s = treeVar.printTree(treeVar.tree);
         end
         
         function h = rdivide(f, g)
-            %./    Division of TREEVAR objects
+            %./   Division of TREEVAR objects.
             h = treeVar();
             if ( ~isa(f, 'treeVar') )
                 % (CHEBFUN/SCALAR)./TREEVAR
@@ -450,7 +451,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         end
         
         function h = times(f, g)
-            %.*    Multiplication of treeVar objects.
+            %.*   Multiplication of treeVar objects.
             
             % Initialize an empty TREEVAR
             h = treeVar();
@@ -479,7 +480,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
     methods ( Access = private )
         
         function dom = updateDomain(f, g)
-            % UPDATEDOMAIN    Update domain in case we encounter new breakpoints
+            %UPDATEDOMAIN   Update domain in case we encounter new breakpoints.
             if ( isnumeric(f) )
                 dom = g.domain;
             elseif ( isnumeric(g) )
@@ -516,7 +517,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         % Convert expressions like 5*(diff(u) + u) to 5*diff(u) + 5*u
         newTree = expandTree(tree, maxOrder)
         
-        % Split syntax trees into derivative part and non-derivative part.
+        % Split syntax trees into derivative part and non-derivative part
         [newTree, derTree] = splitTree(tree, maxOrder)
         
         % Convert the infix form of an expression to an anonymous function
@@ -532,5 +533,5 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         treeOut = univariate(treeIn, method)
         
     end
-    
+
 end
