@@ -1,6 +1,10 @@
-function x
+function out = x
+%X   A chebfun of the identity on [-1, 1].
+%   CHEB.X is shorthand for the expression CHEBFUN(@(X) X).
 
-var = chebfun(@(x) x);
-assignin('caller', 'x', var)
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+out = chebfun(@(x) x);
 
 end

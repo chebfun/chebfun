@@ -18,7 +18,6 @@ function [SA,V,zC,I] = revolution(f)
 %               centroidZ: 0.2500
 %         momentOfInertia: 5.0265
 
-
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
