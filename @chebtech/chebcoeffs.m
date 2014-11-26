@@ -25,9 +25,9 @@ out = f.coeffs;
 if ( (nargin > 1) && ~isempty(N) )
     [s1, s2] = size(out);
     % Pad:
-    out = [zeros(N - s1, s2) ; out];
+    out = [ out ; zeros(N - s1, s2)];
     % or truncate:
-    out(1:(end-N),:) = [];
+    out = out(1:N,:);
 end
 
 end

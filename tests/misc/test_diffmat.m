@@ -6,8 +6,8 @@ end
 
 tol = 1e-10;
 
-c1 = colloc1();
-c2 = colloc2();
+c1 = chebcolloc1();
+c2 = chebcolloc2();
 
 N = 5;
 Da = diffmat(N);
@@ -40,7 +40,7 @@ err = norm(Da - Db);
 pass(5) = err < tol;
 
 p = cheboppref();
-cheboppref.setDefaults('discretization', @colloc1);
+cheboppref.setDefaults('discretization', @chebcolloc1);
 try
     N = 5;
     Da = diffmat(N, 3);
@@ -71,7 +71,7 @@ N = 6;
 dom = [0 2*pi];
 op = @(x)sin(x);
 opp = @(x)-cos(x);
-x = fourtech.fourpts(N);
+x = trigtech.trigpts(N);
 x = diff(dom)/2*(x-dom(1));
 f = op(x);
 fp_exact = opp(x);
@@ -400,7 +400,7 @@ rhs = [fp; op(dom(2)); op(dom(2))];
 D = diffmat([M N], p, dom, 'chebkind1', {}, {'neumann' 'dirichlet'});
 ff = D\rhs;
 err = norm(ff-f, inf);
-pass(37) = ( err < 1e1*tol );
+pass(37) = ( err < 5e1*tol );
 
 % 2nd-order problem: u" = exp(x); u(-2) = exp(-2); u'(7) = exp(7);
 op = @(x)exp(x);
@@ -416,7 +416,7 @@ rhs = [op(dom(1)); fp; op(dom(2))];
 D = diffmat([M N], p, dom, 'chebkind1', {'dirichlet'}, {'neumann'});
 ff = D\rhs;
 err = norm(ff-f, inf);
-pass(38) = ( err < 1e1*tol );
+pass(38) = ( err < 2e1*tol );
 
 % 2nd-order problem: u" = exp(x); u'(-2) = exp(-2); u(7) = exp(7);
 op = @(x)exp(x);
@@ -448,7 +448,7 @@ rhs = [op(dom(1)); fp; op(dom(2))-op(dom(1))];
 D = diffmat([M N], p, dom, 'chebkind1', {'neumann'}, {'sum'});
 ff = D\rhs;
 err = norm(ff-f, inf);
-pass(40) = ( err < 1e1*tol );
+pass(40) = ( err < 5e1*tol );
 
 %% 2nd-kind grid -> 1st-kind grid:
 
@@ -709,5 +709,25 @@ D = diffmat([M N], p, dom, 'leg', [], {'sum' 'dirichlet'});
 ff = D\rhs;
 err = norm(ff-f, inf);
 pass(56) = ( err < 1e1*tol );
+
+%% Test on symmetry:
+D = diffmat(3); 
+d = D + D(end:-1:1,end:-1:1);
+pass(57) = ~norm(d, inf);
+D = diffmat(3, 'chebkind1'); 
+d = D + D(end:-1:1,end:-1:1);
+pass(58) = ~norm(d, inf);
+D = diffmat(3, 'leg'); 
+d = D + D(end:-1:1,end:-1:1);
+pass(59) = ~norm(d, inf);
+D = diffmat(4); 
+d = D + D(end:-1:1,end:-1:1);
+pass(60) = ~norm(d, inf);
+D = diffmat(4, 'chebkind1'); 
+d = D + D(end:-1:1,end:-1:1);
+pass(61) = ~norm(d, inf);
+D = diffmat(4, 'leg'); 
+d = D + D(end:-1:1,end:-1:1);
+pass(62) = ~norm(d, inf);
 
 end

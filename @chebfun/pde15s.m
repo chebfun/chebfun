@@ -85,6 +85,7 @@ tol = 1e-6;             % 'eps' in Chebfun terminology
 doPlot = 1;             % Plot after every time chunk?
 doHold = 0;             % Hold plot?
 plotOpts = {'-'};       % Plotting style
+adjustBCs = true;       % Adjust inconsistent BCs
 throwBCwarning = true;  % Throw a warning for inconsistent BCs
 
 % Parse the variable inputs:
@@ -104,6 +105,11 @@ end
 optN = opt.N;
 if ( isempty(optN) )
     optN = NaN;
+end
+
+if ( isfield(opt, 'AdjustBCs') && ~isempty(opt.AdjustBCs) && ~opt.AdjustBCs )
+    throwBCwarning = false;
+    adjustBCs = false;
 end
 
 % PDE solver options:
@@ -226,7 +232,7 @@ end
                 if ( firstKept <= 0 )
                     firstKept = 1;
                 end
-                uCurrent = chebfun(flipud(uPoly(firstKept:end,:)), DOMAIN, 'coeffs');
+                uCurrent = chebfun(uPoly(firstKept:end,:), DOMAIN, 'coeffs');
                 
                 ctr = ctr + 1;
                 uOut{ctr} = uCurrent;
@@ -251,6 +257,7 @@ end
                 % Increase length and bail out:
                 currentLength = 2*currentLength-1;
                 status = true;
+                break
                 
             end        
             
@@ -423,14 +430,14 @@ middleNonlinBCLocs = [];
 rightNonlinBCLocs = [];
 BCRHS = {};
 
-if ( ischar(bc) && strcmpi(bc, 'periodic') )
+if ( ischar(bc) && any(strcmpi(bc, {'periodic', 'trig'})) )
     %% %%%%%%%%%%%%%%%%%%%%%%%%%%% PERIODIC BCS  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     r = cell(sum(DIFFORDER), 1);
     count = 1;
     for j = 1:SYSSIZE
         for k = 0:DIFFORDER(j)-1
             c = (diff(DOMAIN)/2)^k;
-            A = @(n) [1 zeros(1, n-2) -1]*colloc2.diffmat(n, k)*c;
+            A = @(n) [1 zeros(1, n-2) -1]*chebcolloc2.diffmat(n, k)*c;
             r{count} = @(n) [zeros(1, (j-1)*n) A(n) zeros(1,(SYSSIZE-j)*n)];
             count = count + 1;
         end
@@ -472,7 +479,7 @@ else
             A = @(n) [1 zeros(1, n - 1)];
         elseif ( strcmpi(bc.left, 'neumann') )
             % TODO: Make left diff operator explicitly.
-            A = @(n) [1 zeros(1, n-1)]*colloc2.diffmat(n)*diff(DOMAIN)/2;
+            A = @(n) [1 zeros(1, n-1)]*chebcolloc2.diffmat(n)*diff(DOMAIN)/2;
         else
             error('CHEBFUN:CHEBFUN:pde15s:bcSyntax1', 'Unknown BC syntax');
         end
@@ -528,7 +535,7 @@ else
             A = @(n) [zeros(1, n-1), 1];
         elseif ( strcmpi(bc.right, 'neumann') )
             % TODO: Make right diff operator explicitly.
-            A = @(n) [zeros(1, n-1) 1]*colloc2.diffmat(n)*diff(DOMAIN)/2;
+            A = @(n) [zeros(1, n-1) 1]*chebcolloc2.diffmat(n)*diff(DOMAIN)/2;
         else
             error('CHEBFUN:CHEBFUN:pde15s:bcSyntax3', 'Unknown BC syntax');
         end
@@ -714,7 +721,11 @@ clear global SYSSIZE
                 'Initial state may not satisfy the boundary conditions.')
             throwBCwarning = false;
         end
-        BCVALOFFSET = F(rows) - q;
+        if ( adjustBCs )
+            BCVALOFFSET = F(rows) - q;
+        else
+            BCVALOFFSET = 0;
+        end
         
         % Solve ODE over time chunk with ode15s:
         try

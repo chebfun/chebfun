@@ -37,10 +37,8 @@ switch type
         % (up to a diagonal scaling). Implemented using the connection to 
         % a real-even DFT, see CHEBTECH2.COEFFS2VALS().
         
-        u([1,end], :) = .5 * u([1,end], :);
-        u = flipud( u );
-        y = chebtech2.coeffs2vals( u );
-        y = flipud( y ); 
+        y = fft( [ u ; u(end-1:-1:2 ,: ) ]/2 ); 
+        y = y( 1:n, : );
         
     case 2
         
@@ -49,8 +47,7 @@ switch type
         % (up to a diagonal scaling) and this is how it is implemented.  
         
         u = flipud( u );
-        y = ( n / 2 ) * chebtech1.vals2coeffs( u );
-        y = flipud( y );
+        y = ( n / 2 ) * chebtech1.vals2coeffs( u );        
         y(1,:) = 2 * y(1, :); 
         
     case 3
@@ -59,8 +56,7 @@ switch type
         % (up to a diagonal scaling). Implemented using the connection to a 
         % real-even DFT of half-shifted output, see CHEBTECH2.COEFFS2VALS().  
         
-        u(1,:) = .5*u(1, :);
-        u = flipud( u );
+        u(1,:) = .5*u(1, :); 
         y = chebtech1.coeffs2vals( u );    
         y = flipud( y ); 
         

@@ -176,15 +176,8 @@ cd(currDir);
 
 % Write the log if requested to.
 if ( writeLog )
-    logDir = fullfile(installDir, 'logs');
-    if ( ~exist(logDir, 'dir') )
-        [success, msg] = mkdir(installDir, 'logs');
-        if ( ~success )
-            warning('CHEBFUN:chebtest:writePermission', msg);
-        end
-    end
     filename = ['chebtest-' datestr(now, 'yyyymmddHHMMSS') '.log'];
-    writeToLog(fullfile(logDir, filename), allResults);
+    writeToLog(filename, allResults);
 end
 
 % Return.

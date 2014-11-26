@@ -7,7 +7,7 @@ if ( nargin == 0 )
     pref = chebfunpref();
 end
 
-testclass = fourtech();
+testclass = trigtech();
 
 % Generate a random point to use as test values.
 seedRNG(6178);

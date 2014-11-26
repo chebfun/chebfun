@@ -2,7 +2,7 @@ function [pass, u1, u2, info1, info2] = test_scalarODE_sign(pref)
 % A nonlinear CHEBOP test. This test tests a scalar ODE, where there is a
 % breakpoint in the domain of the CHEBOP. Furthermore, the operator has a
 % discontinuous coefficient, which will induce a further breakpoint in the
-% solution. The problem is solved using colloc1, colloc2 and ultraS
+% solution. The problem is solved using chebcolloc1, chebcolloc2 and ultraS
 % discretizations. The problem solved does not require damping for the Newton
 % iteration to converge.
 %
@@ -20,16 +20,16 @@ N.rbc = @(u) u - 2;
 rhs = 0;
 
 %% Try different discretizations
-% Start with colloc2
-pref.discretization = @colloc2;
+% Start with chebcolloc2
+pref.discretization = @chebcolloc2;
 [u1, info1] = solvebvp(N, rhs, pref);
 
 %% Change to ultraS
 pref.discretization = @ultraS;
 [u2, info2] = solvebvp(N, rhs, pref);
 
-%% Change to colloc1
-pref.discretization = @colloc1;
+%% Change to chebcolloc1
+pref.discretization = @chebcolloc1;
 [u3, info3] = solvebvp(N, rhs, pref);
 
 %% Did we pass? 

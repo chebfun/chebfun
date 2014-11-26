@@ -53,6 +53,16 @@ x = chebfun('x', [-1 1], pref);
 h = heaviside(x);
 pass(6) = norm(f - h) < f.epslevel;
 
+% Test use of breakpoint detection in conjunction with construction from a cell
+% array of function handles. (See issue #1151 on GitHub.)
+f = chebfun({@(x) abs(x - 0.25), 0}, [0 0.5 1], 'splitting', 'on');
+xx1 = linspace(0 + eps, 0.5 - eps, 20).';
+err1 = norm(feval(f, xx1) - abs(xx1 - 0.25), inf);
+xx2 = linspace(0.5 + eps, 1 - eps, 20).';
+err2 = norm(feval(f, xx2), inf);
+tol = 10*vscale(f)*epslevel(f);
+pass(7) = max(err1, err2) < tol;
+
 %% Test for function defined on unbounded domain:
 
 % Function defined on [0 Inf]:
@@ -69,7 +79,7 @@ f = chebfun(op, dom, 'splitting', 'on');
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
-pass(7) = norm(err, inf) < 1e1*epslevel(f)*vscale(f);
+pass(8) = norm(err, inf) < 1e1*epslevel(f)*vscale(f);
 
 %% Test SPLITTING ON with BLOWUP == 1:
 op = @(x)tan(x);
@@ -88,7 +98,7 @@ err2 = op(x2)-f(x2);
 err3 = op(x3)-f(x3);
 
 err = [err1; err2; err3];
-pass(7) = ( norm(err, inf) < 1e4*epslevel(f)*vscale(f) );
+pass(9) = ( norm(err, inf) < 1e4*epslevel(f)*vscale(f) );
 
 %% Test for splitting on + unbndfun:
 
@@ -99,7 +109,7 @@ x = diff(dom_test) * rand(100, 1) + dom_test(1);
 f = chebfun (op, dom, 'exps', [2 2], 'splitting', 'on');
 vals = f(x);
 exact = op(x);
-pass(8) = ( norm(vals-exact, inf) < 1e1*epslevel(f)*vscale(f) );
+pass(10) = ( norm(vals-exact, inf) < 1e1*epslevel(f)*vscale(f) );
 
 % % Test X*LOG(X) on [0 1]:
 % F4 = @(x) x.*log(x);

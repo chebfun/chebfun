@@ -12,7 +12,7 @@ dom = [-1 1];
 
 %%
 
-pref.discretization = @colloc2;
+pref.discretization = @chebcolloc2;
 N = chebop(@(x,u) 0.01.*diff(u,2)+2.*(1-x.^2).*u+u.^2-1, dom);
 rhs = 0;
 N.bc = @(x,u) [u(-1); u(1)];

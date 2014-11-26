@@ -61,4 +61,11 @@ pass(11) = norm( y - chebfun.idst(x, 3) ) < tol;
 y = DST4 \ x; 
 pass(12) = norm( y - chebfun.idst(x, 4) ) < tol; 
 
+% Check complex inputs 
+c = rand(10,1) + 1i*rand(10,1); 
+for j = 1:4
+    v1 = chebfun.dst(c, j);
+    v2 = chebfun.dst(real(c),j) + 1i*chebfun.dst(imag(c),j);
+    pass(12+j) = norm(v1 - v2) < tol; 
+end
 end

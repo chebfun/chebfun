@@ -53,7 +53,7 @@ N = chebop2(@(u) diffy(u,1) + .1*diffx(u,1), d);
 N.dbc = @(x) exp(x);
 N.lbc = @(t) exp(-pi).*exp(-t/10);
 u = N \ 0;
-pass(5) = ( norm(u - exact) < 50*tol);
+pass(5) = ( norm(u - exact) < 100*tol);
 
 
 % %% Here's another one. 

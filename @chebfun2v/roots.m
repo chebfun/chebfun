@@ -384,7 +384,7 @@ else
     % cutoff negligible B
     nrmB = norm(B(:,:,end),'fro');
     for ii=1:size(B,3)
-        if norm(B(:,:,ii),'fro')/nrmB > 10*eps,    break;    end
+        if norm(B(:,:,ii),'fro')/nrmB > eps,    break;    end
     end
     B = B(:,:,ii:end);
     ns = size(B);
@@ -741,8 +741,8 @@ end
 D = A;
 for jj = 1:n  % for each column of A
     B = A(:,jj:n:n*k);
-    C = chebtech2.vals2coeffs(B.').';   % convert first column of each coefficient to values.
-    D(:,jj:n:n*k) = C;    % assign to output.
+    C = chebtech2.vals2coeffs(B.');   % convert first column of each coefficient to values.
+    D(:,jj:n:n*k) = rot90(C, -1);     % assign to output.
 end
 
 end
@@ -1352,8 +1352,8 @@ if ( isa(tech, 'chebtech2') )
     x = chebpts( n, dom, 2 );   % x grid.
 elseif ( isa(tech, 'chebtech1') )
     x = chebpts( n, dom, 1 );   % x grid.
-elseif ( isa(tech, 'fourtech') )
-    x = fourpts( n, dom );   % x grid.
+elseif ( isa(tech, 'trigtech') )
+    x = trigpts( n, dom );   % x grid.
 else
     error('CHEBFUN:CHEBFUN2V:roots:techType', 'Unrecognized technology');
 end

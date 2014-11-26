@@ -15,7 +15,7 @@ classdef cheboppref < chebpref
 %     no domain argument is explicitly passed to the constructor.
 %
 %   discretization             - Discretization of linear problems
-%     [@colloc2]
+%     [@chebcolloc2]
 %     @ultraS
 %
 %     This options determines whether linear operators are discretized using
@@ -130,7 +130,7 @@ classdef cheboppref < chebpref
                          'Please use cheboppref().prop.']);
                 else
                     error('CHEBFUN:CHEBOPPREF:cheboppref:deprecated', ...
-                        ['chebfoppref() no longer assignment ', ...
+                        ['cheboppref() no longer supports assignment ', ...
                          'via cheboppref(''prop'', val).\n', ...
                          'Please use cheboppref.setDefaults(''prop'', val).']);
                 end
@@ -356,7 +356,7 @@ classdef cheboppref < chebpref
         %   preferences.
 
             factoryPrefs.domain = [-1 1];
-            factoryPrefs.discretization = @colloc2;
+            factoryPrefs.discretization = @chebcolloc2;
             factoryPrefs.scale = NaN;
             factoryPrefs.damping = 1;
             factoryPrefs.display = 'off';
@@ -378,14 +378,28 @@ classdef cheboppref < chebpref
             % handle:
             if ( any(strcmpi(val, {'ultraspherical', 'ultraS'})) )
                 val = @ultraS;
-            elseif ( any(strcmpi(val, {'collocation', 'colloc2'})) )
-                val = @colloc2;
-            elseif ( strcmpi(val, 'colloc1') )
-                val = @colloc1;
+                
+            elseif ( any(strcmpi(val, {'collocation', 'chebcolloc2', 'colloc2'})) )
+                if ( strcmpi(val, {'colloc2'}) )
+                    warning('CHEBOPPREF:PARSEDISCRETIZATION', ...
+                        'COLLOC2 is deprecated. Please use CHEBCOLLOC2.');
+                end
+                val = @chebcolloc2;
+                
+            elseif ( any(strcmpi(val, {'chebcolloc1', 'colloc1'})) )
+                if ( strcmpi(val, {'colloc1'}) )
+                    warning('CHEBOPPREF:PARSEDISCRETIZATION', ...
+                        'COLLOC1 is deprecated. Please use CHEBCOLLOC1.');
+                end
+                val = @chebcolloc1;
+                
+            elseif ( any(strcmpi(val, {'trigcolloc'})) )
+                val = @trigcolloc;       
+                 
             end
                 
         end
 
     end
-
+    
 end
