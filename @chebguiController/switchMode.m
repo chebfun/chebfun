@@ -269,7 +269,7 @@ if ( ivpMode )
 else
     
     set(handles.button_Collocation, 'String', 'Collocation')
-    set(handles.button_ultraS, 'String', 'Ultrasph.') 
+    set(handles.button_ultraS, 'String', 'Ultraspherical') 
     
     set(handles.panel_discretization, 'Title', 'Discretization')
 end

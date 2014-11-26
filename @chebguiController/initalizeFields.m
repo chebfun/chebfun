@@ -47,7 +47,7 @@ set(handles.popupmenu_bottomFig,'String', ...
     'Chebyshev coefficients'});
 
 % Set string for the ultraspherical options
-set(handles.button_ultraS, 'String', 'Ultrasph.')
+set(handles.button_ultraS, 'String', 'Ultraspherical')
 
 end
 
