@@ -51,13 +51,6 @@ xt = chebfun(@(x) x, dom);
 handles.varnames = allVarNames;
 handles.indVarName = {indVarNameSpace};
 
-% Double check that we're not dealing with an IVP, could accidentally be stuck
-% in BVP mode if we click SOLVE directly after changing to initial conditions.
-if ( isIVPorFVP(guifile, allVarNames) )
-    varargout{1} = solveGUIivp(guifile, handles);
-    return
-end
-
 % Obtain the boundary conditions to be imposed.
 if ( periodic )
     bcString = '';
