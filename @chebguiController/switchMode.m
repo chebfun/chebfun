@@ -81,6 +81,9 @@ elseif ( strcmp(newMode, 'ivp') ) % Going into IVP mode
     % minor corrections at the end:
     handles = chebguiController.switchMode(handles, 'bvp');
     
+    % Set the type of the problem
+    handles.guifile.type = 'ivp';
+    
     % Change heading for BC/IC input field:
     set(handles.panel_BCs, 'Title', 'Initial/final conditions')
     
