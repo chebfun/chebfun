@@ -51,6 +51,13 @@ function [y, info] = solveIVP(N, rhs, pref, varargin)
 if ( nargin < 2 )
     % Default right-hand side.
     rhs = 0;
+elseif (isa(rhs, 'chebfun') || isa(rhs, 'chebmatrix') )
+    % Ensure that the RHS lives on the same domain as the CHEBOP N.
+    assert( (rhs.domain(1) == N.domain(1)) && ...
+            (rhs.domain(end) == N.domain(end)), ...
+            'CHEBFUN:CHEBOP:solveIVP:domainMismatch', ...
+            ['The domains of the CHEBOP and the right-hand side of the ' ...'
+            'equation do not match.']);
 end
 
 if ( nargin < 3 )
