@@ -2,7 +2,7 @@ function [F,FA] = gallerytrig(nn)
 %GALLERY   Gallery of periodic 1-dimensional functions.
 %   GALLERY(N) returns interesting periodic 1D functions as a CHEBFUN
 %   quasimatrix. N must be a vector with integer entries taking values from
-%   1 to 11. All gallery functions have domain [-1, 1].
+%   1 to 4. All gallery functions have domain [-1, 1].
 %
 %   [F,FA] = GALLERY(N) also returns the anonymous functions used to define
 %   the CHEBFUN. If N is an integer, FA is a function handle; if N is a
@@ -22,6 +22,30 @@ prefs = cell(1);
 funcs{1} = @(x) cos(2*pi*x) - cos(6*pi*x)/3 + cos(10*pi*x)/5 ...
               - cos(14*pi*x)/7 + cos(18*pi*x)/9;
 prefs{1} = {}; % 'trig' is included in the construction below
+
+% From Hadrien's thesis (p. 18)
+funcs{2} = @(x) cos(8*sin(pi*x+1/7));
+prefs{2} = {};
+
+% From Hadrien's thesis (p. 19)
+funcs{3} = @(x) sin(6*pi*(x+1)) + sin(20*exp(sin(pi*(x+1))));
+prefs{3} = {};
+
+% From Hadrien's thesis (p. 27)
+if ( any(nn == 4) )
+    L = chebop(@(x,u) diff(u) + (1+sin(cos(10*pi*(x+1)))).*u, [-1 1], 'periodic');
+    f = L \ chebfun(@(x) exp(sin(pi*(x+1))));
+    funcs{4} = @(x) f(x);
+    prefs{4} = {};
+end
+
+% % From Hadrien's thesis (p. 18)
+% funcs{} = @(x) cos(8*sin(2*pi*x+1/7));
+% prefs{} = {};
+
+% % From Hadrien's thesis (p. 18)
+% funcs{} = @(x) cos(8*sin(2*pi*x+1/7));
+% prefs{} = {};
 
 % DEVELOPER NOTE: If you add a new function here, be sure to change the help
 % text to reflect the total number of functions available!
