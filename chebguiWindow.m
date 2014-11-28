@@ -52,7 +52,7 @@ else
     catch ME
         warning(warnstate)
         MEID = ME.identifier;
-        if ( ~isempty(strfind(MEID, 'Chebgui:')) )
+        if ( ~isempty(strfind(lower(MEID), 'chebgui:')) )
             % These are expected GUI errors. We only show the dialog
             errordlg(cleanErrorMsg(ME.message), 'Chebgui error', 'modal');
             uiwait
@@ -68,7 +68,10 @@ else
             errordlg(cleanErrorMsg(ME.message), 'Chebgui error', 'modal');
             uiwait
             resetComponents(varargin{4});
-            rethrow(ME)
+            % If in debug mode, we throw the error to the command window as well
+            if ( get(varargin{4}.menu_debug, 'UserData') )
+                rethrow(ME)
+            end
         end
     end
 end
@@ -94,6 +97,16 @@ handles.output = hObject;
 % Initialise figures:
 chebguiController.initialiseFigures(handles)
 
+% Initialise the menus:
+handles = chebguiController.initialiseMenus(handles);
+
+% Set up the panels:
+handles = chebguiController.setupPanels(handles);
+handles = chebguiController.setupPanelType(handles);
+
+% Draw the Chebfun logo on the GUI:
+handles = chebguiController.drawLogo(handles);
+
 % Variable that determines whether a solution is available
 handles.hasSolution = 0;
 
@@ -110,6 +123,9 @@ else
     handles.guifile = chebgui.demo(); % Load a random demo
 end
 
+% Store the deviation from the default fontsize.
+handles.fontsizeChanges = 0;
+
 % Create a new structure which contains information about the latest
 % solution obtained
 handles.latest = struct;
@@ -125,18 +141,16 @@ set(handles.menu_pdefixon, 'UserData', {''});
 
 % Populate the Demos menu, but only once (i.e. if user calls chebgui again, 
 % don't reload the examples).
-if ( isempty(get(handles.menu_demos, 'UserData')) )
+if ( ~isfield(handles,'demosLoaded') )
     chebguiController.loadDemoMenu(handles);
     handles.demosLoaded = 1;
 end
 
-% Load the input fields
-chebguiController.populate(handles, handles.guifile);
+% Make sure the GUI starts in the correct mode:
+chebguiController.switchMode(handles, handles.guifile.type);
 
-% Make sure the GUI starts in the correct mode. We call SWITCHMODE() with the
-% third argument equal to 'demo' so that we will plot the initial guess of the
-% solution if it exists.
-chebguiController.switchMode(handles, handles.guifile.type, 'demo');
+% Load the input fields:
+chebguiController.populate(hObject, handles, handles.guifile);
 
 % Get the system font size and store in handles
 s = char(com.mathworks.services.FontPrefs.getCodeFont);
@@ -156,6 +170,9 @@ set(handles.mainWindow, 'BackgroundColor', [.702 .78 1]);
 
 % Default discretization is chebcolloc2
 handles.guifile.options.discretization = @chebcolloc2;
+
+% Default IVP solver is ode113:
+handles.guifile.options.ivpSolver = 'ode113';
 
 % Update handles structure
 guidata(hObject, handles);
@@ -634,14 +651,14 @@ end
 function button_figsol_Callback(hObject, eventdata, handles)
 % Executed when the user wants to show figures in new window.
 
-if ( get(handles.button_ode, 'Value') )
+if ( get(handles.button_bvp, 'Value') || get(handles.button_ivp, 'Value') )
     % We're in ODE mode.
     
     % Plot the latest solution obtained:
     figure
     latestSolution = handles.latest.solution;
     plot(latestSolution, 'Linewidth', 2)
-    title('Solution at end of iteration')
+    title('Solution')
     xlabel(handles.indVarName);
 
     varnames = handles.varnames;
@@ -658,8 +675,6 @@ if ( get(handles.button_ode, 'Value') )
         legend(handles.varnames)
     end
     
-    latestNorms = handles.latest.norms;
-
     % Also open the bottom figure in now window. This is either going to be the
     % PLOTCOEFFS, or a plot showing the norm of the updates during the Newton
     % iteration:
@@ -667,7 +682,8 @@ if ( get(handles.button_ode, 'Value') )
     
     plotType = get(handles.popupmenu_bottomFig, 'Value');
     
-    if ( plotType == 1) % Show the norm plot
+    if ( plotType == 1 ) % Show the norm plot
+        latestNorms = handles.latest.normDelta;
         semilogy(latestNorms, '-*', 'Linewidth', 2)
         title('Norm of updates')
         xlabel('Number of iteration')
@@ -776,35 +792,11 @@ end
 
 end
 
-function toggle_useLatest_Callback(hObject, eventdata, handles)
-% Called when user toggles between using the latest solution as an initial
-% guess.
-
-newVal = get(hObject, 'Value');
-
-if ( newVal ) % User wants to use latest solution
-    set(handles.input_GUESS, 'String', 'Using latest solution');
-else
-    set(handles.input_GUESS, 'String', '');
-    set(handles.input_GUESS, 'Enable', 'On');
-    handles.guifile.init = '';
-end
-
-guidata(hObject, handles);
-
-end
-
 % --- Executes when chebguimainwindow is resized.
 function chebguimainwindow_ResizeFcn(hObject, eventdata, handles)
 % hObject    handle to chebguimainwindow (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-end
-
-function button_ode_Callback(hObject, eventdata, handles)
-% Switch to ODE mode.
-handles = chebguiController.switchMode(handles, 'bvp');
-guidata(hObject, handles);
 end
 
 % --- Executes on button press in button_pde.
@@ -996,6 +988,72 @@ end
 % ----------------------- Callbacks for menu items  ----------------------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
+
+function menu_ivpSolver_Callback(hObject, eventdata, handles)
+end
+
+function menu_ivpGlobal_Callback(hObject, eventdata, handles)
+end
+
+function menu_ivpTimestepping_Callback(hObject, eventdata, handles)
+end
+
+function menu_ivpODE113_Callback(hObject, eventdata, handles)
+set(handles.menu_ivpODE113, 'checked', 'on');
+set(handles.menu_ivpODE15s, 'checked', 'off');
+set(handles.menu_ivpODE45, 'checked', 'off');
+set(handles.menu_ivpCollocation, 'checked', 'off');
+set(handles.menu_ivpUltraspherical, 'checked', 'off');
+handles.guifile.options.ivpSolver = 'ode113';
+set(handles.panel_discretization,'SelectedObject', handles.button_Collocation)
+guidata(hObject, handles);
+end
+
+function menu_ivpODE15s_Callback(hObject, eventdata, handles)
+set(handles.menu_ivpODE113, 'checked', 'off');
+set(handles.menu_ivpODE15s, 'checked', 'on');
+set(handles.menu_ivpODE45, 'checked', 'off');
+set(handles.menu_ivpCollocation, 'checked', 'off');
+set(handles.menu_ivpUltraspherical, 'checked', 'off');
+handles.guifile.options.ivpSolver = 'ode15s';
+set(handles.panel_discretization,'SelectedObject', handles.button_Collocation)
+guidata(hObject, handles);
+end
+
+function menu_ivpODE45_Callback(hObject, eventdata, handles)
+set(handles.menu_ivpODE113, 'checked', 'off');
+set(handles.menu_ivpODE15s, 'checked', 'off');
+set(handles.menu_ivpODE45, 'checked', 'on');
+set(handles.menu_ivpCollocation, 'checked', 'off');
+set(handles.menu_ivpUltraspherical, 'checked', 'off');
+handles.guifile.options.ivpSolver = 'ode45';
+set(handles.panel_discretization,'SelectedObject', handles.button_Collocation)
+guidata(hObject, handles);
+end
+
+function menu_ivpCollocation_Callback(hObject, eventdata, handles)
+set(handles.menu_ivpODE113, 'checked', 'off');
+set(handles.menu_ivpODE15s, 'checked', 'off');
+set(handles.menu_ivpODE45, 'checked', 'off');
+set(handles.menu_ivpCollocation, 'checked', 'on');
+set(handles.menu_ivpUltraspherical, 'checked', 'off');
+handles.guifile.options.ivpSolver = 'collocation';
+set(handles.panel_discretization,'SelectedObject', handles.button_ultraS)
+guidata(hObject, handles);
+end
+
+function menu_ivpUltraspherical_Callback(hObject, eventdata, handles)
+set(handles.menu_ivpODE113, 'checked', 'off');
+set(handles.menu_ivpODE15s, 'checked', 'off');
+set(handles.menu_ivpODE45, 'checked', 'off');
+set(handles.menu_ivpCollocation, 'checked', 'off');
+set(handles.menu_ivpUltraspherical, 'checked', 'on');
+handles.guifile.options.ivpSolver = 'ultraspherical';
+set(handles.panel_discretization,'SelectedObject', handles.button_ultraS)
+guidata(hObject, handles);
+end
+
 function menu_file_Callback(hObject, eventdata, handles)
 end
 
@@ -1008,7 +1066,7 @@ if ( ~filterindex )
 end
 
 cgTemp = chebgui(fullfile(pathname, filename));
-chebguiController.populate(handles, cgTemp)
+chebguiController.populate(hObject, handles, cgTemp)
 handles.guifile = cgTemp;
 if ( ~isempty(cgTemp.type) )
     handles = chebguiController.switchMode(handles, cgTemp.type);
@@ -1031,7 +1089,7 @@ end
 % name = input('What would you like to name this GUI file? ');
 name = '';
 
-if ( get(handles.button_ode, 'value') )
+if ( get(handles.button_bvp, 'value') )
     demotype = 'bvp';
 elseif ( get(handles.button_pde, 'value') )
     demotype = 'pde';
@@ -1116,15 +1174,6 @@ end
 function menu_demos_Callback(hObject, eventdata, handles)
 end
 
-function menu_bvps_Callback(hObject, eventdata, handles)
-end
-
-function menu_ivps_Callback(hObject, eventdata, handles)
-end
-
-function menu_systems_Callback(hObject, eventdata, handles)
-end
-
 function menu_help_Callback(hObject, eventdata, handles)
 end
 
@@ -1133,12 +1182,6 @@ doc('chebgui')
 end
 
 function Untitled_9_Callback(hObject, eventdata, handles)
-end
-
-function menu_pdesingle_Callback(hObject, eventdata, handles)
-end
-
-function menu_pdesystems_Callback(hObject, eventdata, handles)
 end
 
 function menu_export_Callback(hObject, eventdata, handles)
@@ -1414,9 +1457,6 @@ if ( ispc && bgColorIsDefault )
 end
 end
 
-function menu_eigsscalar_Callback(hObject, eventdata, handles)
-end
-
 function button_export_Callback(hObject, eventdata, handles)
 
     % What discretization do we want to use?
@@ -1442,7 +1482,6 @@ function button_export_Callback(hObject, eventdata, handles)
 
     catch ME
         % TODO: Which error do we want to throw?
-%         rethrow(ME)
         error('CHEBFUN:chebguiWindow:export', ...
             ['Error in exporting to .m file. Please make ' ...
             'sure there are no syntax errors.']);
@@ -1744,6 +1783,23 @@ newString = removeTabs(newString); % Remove tabs
 set(hObject, 'String', newString);
 handles = chebguiController.callbackBCs(handles, newString, 'bc');
 handles.guifile.BC = newString;
+
+if (get(handles.button_bvp,'value') )
+    % Is the problem now a BVP, IVP or FVP?
+    isIorF = isIVPorFVP(handles.guifile);
+    if ( isIorF )
+        handles = chebguiController.switchMode(handles, 'ivp');
+        handles.guifile.type = 'ivp';
+    end
+elseif ( get(handles.button_ivp,'value') )
+    % Is the problem now a BVP?
+    isIorF = isIVPorFVP(handles.guifile);
+    if ( ~isIorF )
+        handles = chebguiController.switchMode(handles, 'bvp');
+        handles.guifile.type = 'bvp';
+    end    
+end
+
 guidata(hObject, handles);
 end
 
@@ -1763,120 +1819,13 @@ exporter.toWorkspaceSolutionOnly(handles);
 end
 
 function button_fontinc_Callback(hObject, eventdata, handles)
-% hObject    handle to button_fontinc (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Get a list of all the names in the handles
-names = fieldnames(handles);
-textLocs = strfind(names, 'text_');
-inputLocs = strfind(names, 'input_');
-buttonLocs = strfind(names, 'button_');
-panelLocs = strfind(names, 'panel_');
-toggleLocs = strfind(names, 'toggle_');
-
-% Deal with variable maximum for input and noninput-type handles
-fontsizediff = [];
-flag = 0;
-tmp = strfind(names, 'fontsizediff');
-
-if ( any([tmp{:}]) )
-    fontsizediff = handles.fontsizediff;
-end
-
-if ( isempty(fontsizediff) )
-    fontsizediff = 0;
-end
-
-% Combine all the locations of elements whose font we wish to change
-allLocs = strcat(textLocs, inputLocs, buttonLocs, panelLocs, toggleLocs);
-
-for fieldCounter = 1:length(textLocs)
-    if ( ~isempty(allLocs{fieldCounter}) )
-        % Access the field values dynamically using the .( ) call. We
-        % access the font size of each element separately as they can have
-        % different relative font sizes.
-        currFontSize = get(handles.(names{fieldCounter}), 'FontSize');
-        if ( currFontSize >= 30 )
-            % Do nothing (global max)
-        elseif ( isempty(inputLocs{fieldCounter}) && (currFontSize >= 16) )
-            % Size of non input-type handles is further limited
-            if ( ~flag )
-                % Record this, so a difference doesn't develop
-                fontsizediff = min(fontsizediff + 1, 13); % 13 = 30-16-1
-                flag = true; % but only do this once!
-            end
-        else
-            newFontSize = currFontSize + 1;        
-            % Update the fontsize, again using the dynamic access
-            set(handles.(names{fieldCounter}), 'FontSize', newFontSize)
-        end
-    end
-end
-
-handles.fontsizediff = fontsizediff;  
+handles = chebguiController.changeFontsize(handles, 1);
 guidata(hObject, handles);
-
 end
 
 function button_fontdec_Callback(hObject, eventdata, handles)
-% hObject    handle to button_fontdec (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% Get a list of all the names in the handles
-names = fieldnames(handles);
-textLocs = strfind(names, 'text_');
-inputLocs = strfind(names, 'input_');
-buttonLocs = strfind(names, 'button_');
-panelLocs = strfind(names, 'panel_');
-toggleLocs = strfind(names, 'toggle_');
-
-% Combine all the locations of elements whose font we wish to change
-allLocs = strcat(textLocs, inputLocs, buttonLocs, panelLocs, toggleLocs);
-
-% Deal with variable maximum for input and noninput-type handles
-fontsizediff = [];
-flag = 0;
-tmp = strfind(names, 'fontsizediff');
-
-if ( any([tmp{:}]) )
-    fontsizediff = handles.fontsizediff;
-end
-
-if ( isempty(fontsizediff) )
-    fontsizediff = 0;
-end
-
-for fieldCounter = 1:length(textLocs)
-    if ( ~isempty(allLocs{fieldCounter}) )
-        % Access the field values dynamically using the .( ) call
-        currFontSize = get(handles.(names{fieldCounter}), 'FontSize');
-        newFontSize = currFontSize;
-        if ( isempty(inputLocs{fieldCounter}) )
-            % Deal with non input-type handles
-            if ( flag )
-                % We only want update the diff once, so continue 
-                continue
-            elseif ( fontsizediff > 0 )
-                % Update the diff and set flag
-                fontsizediff = fontsizediff - 1;
-                flag = 1;
-                continue
-            elseif ( currFontSize > 5 )
-                newFontSize = currFontSize - 1; 
-            end
-        elseif ( currFontSize > 5 )
-            % Input-type handles are easier
-            newFontSize = currFontSize - 1;   
-        end
-        % Update the fontsize, again using the dynamic access
-        set(handles.(names{fieldCounter}), 'FontSize', newFontSize)
-    end
-end
-
-handles.fontsizediff = fontsizediff;
+handles = chebguiController.changeFontsize(handles, -1);
 guidata(hObject, handles);
-
 end
 
 function keypress(hObject, eventdata, handles)
@@ -1905,7 +1854,7 @@ for k = 1:numel(folders)
 
         file = fullfile(subdir, subdirnames{j});
         cgTemp = chebgui(file);
-        chebguiController.populate(handles, cgTemp)
+        chebguiController.populate(hObject, handles, cgTemp)
         handles.guifile = cgTemp;
         if ( ~isempty(cgTemp.type) )
             handles = chebguiController.switchMode(handles, cgTemp.type);
@@ -2059,9 +2008,22 @@ function panel_discretization_SelectionChangeFcn(hObject, eventdata, handles)
 newDisc = get(eventdata.NewValue, 'String');
 
 if ( strcmp(newDisc, get(handles.button_Collocation, 'String')) )
-    handles.guifile.options.discretization = @chebcolloc2;
+    % Change to collocation if we're in BVP mode. Otherwise, show options dialog
+    % for IVP solvers.
+    if ( ~get(handles.button_ivp, 'value') )
+        handles.guifile.options.discretization = @chebcolloc2;
+    else
+        % Default time stepping method is ODE113:
+        handles.guifile.options.ivpSolver = 'ode113';
+    end
 else
-    handles.guifile.options.discretization = @ultraS;
+    if ( ~get(handles.button_ivp, 'value') )
+        handles.guifile.options.discretization = @ultraS;
+    else
+        % Default global method is collocation:
+        handles.guifile.options.ivpSolver = 'collocation';
+
+    end
 end
 
 % Update the hObject
@@ -2069,11 +2031,3 @@ guidata(hObject, handles);
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% FIN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-function fig_logo_CreateFcn(hObject, eventdata, handles)
-% Hint: place code in OpeningFcn to populate
-logoMat = imread(fullfile(chebfunroot(),'chebguiDemos','chebfunLogo.png'));
-image(logoMat)
-axis off
-end

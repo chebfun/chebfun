@@ -562,8 +562,8 @@ classdef chebfun
         [funs, ends] = constructor(op, domain, data, pref);
 
         % Convert ODE solutions into CHEBFUN objects:
-        [y, t] = odesol(sol, opt);
-
+        [y, t] = odesol(sol, dom, opt);
+        
         % Parse inputs to PLOT. Extract 'lineWidth', etc.
         [lineStyle, pointStyle, jumpStyle, deltaStyle, out] = ...
             parsePlotStyle(varargin)

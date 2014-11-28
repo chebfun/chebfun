@@ -16,7 +16,7 @@ function [out, varNames, pdeVarNames, eigVarNames, indVarNames] = ...
 %    EIGVARNAMES: The variable used to denote the eigenvalue parameter, i.e., l,
 %                 lam, or lambda.
 %    INDVARNAME:  A string with the name of the variable that represents the
-%                 independent variable in the problem (i.e., x or t).
+%                 independent variable in the problem (i.e., r, t or x).
 %
 %   The output of this method is then passed to the LL(1) parser. For more 
 %   details of compiler theory, see e.g.,
@@ -335,11 +335,6 @@ while ( ~strcmp(str, '$') )
             
         case 'comma'
             out = [out ; {char1,'COMMA'}];
-        
-        case 'semicolon'
-            error('CHEBFUN:STRINGPARSER:lexer:semicolon', ...
-                ['A semicolon detected in input.\nChebgui does not ' ...
-                'require (or support) '';'' in its input fields.']);
             
         case 'error'
             error('CHEBFUN:STRINGPARSER:lexer:unknownType', ...
@@ -411,8 +406,6 @@ elseif ( regexp(str, '''') )
     type = 'deriv';
 elseif ( strcmp(str, ',') )
     type = 'comma';
-elseif ( strcmp(str, ';') )
-    type = 'semicolon';
 else
     % We end up here if we have encountered an unexpected type. This causes an
     % error to be thrown in the switch statement above.

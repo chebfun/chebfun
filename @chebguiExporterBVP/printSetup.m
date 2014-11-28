@@ -38,7 +38,7 @@ fprintf(fid, ['\n%% Set up the rhs of the differential equation so that ' ...
 if ( size(deInput, 1) > 1 )
     deRHSprint = '[';
     for counter = 1:size(deInput,1)
-        deRHSprint = [deRHSprint num2str(0) ',']; %#ok<AGROW>
+        deRHSprint = [deRHSprint num2str(0) ';']; %#ok<AGROW>
     end
     deRHSprint(end) = []; % Remove the last comma
     deRHSprint = [deRHSprint, ']'];

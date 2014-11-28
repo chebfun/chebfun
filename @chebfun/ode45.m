@@ -24,7 +24,7 @@ function varargout = ode45(varargin)
 sol = ode45(varargin{:});
 
 % Convert solution to a CHEBFUN:
-[t, y] = chebfun.odesol(sol); 
+[t, y] = chebfun.odesol(sol, varargin{2}); 
 
 % Output in a consistent way with the built in routine:
 if ( nargout == 1 )

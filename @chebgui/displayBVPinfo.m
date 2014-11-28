@@ -14,7 +14,7 @@ function varargout = displayBVPinfo(handles, mode, varargin)
 %                       'Stop' button on the GUI. 
 %   HANDLES:            The MATLAB handle to the CHEBGUI figure.
 %   VARARGIN:           Useful input arguments for showing information, further
-%                       described in 'help chebop/displayInfo)
+%                       described in 'help chebop/displayInfo'.
 %
 % See also: chebop/displayInfo
 
@@ -62,7 +62,7 @@ function [displayFig, displayTimer] = displayBVPinfoInit(handles, u, pref)
 % Update the iteration information header on the GUI
 initString = [' Iter.       || du ||        Contraction      stepsize     ',...
     '   len(du)          len(u)'];
-set(handles.iter_text,'String', initString);
+set(handles.iter_text, 'String', initString);
 
 % Clear the update plot
 axes(handles.fig_norm)
@@ -75,7 +75,7 @@ axes(handles.fig_sol)
 
 % Plot initial guess
 plot(chebfun(u), '.-')
-title('Initial guess of solution')
+title('Initial guess of solution', 'fontsize', 10 + handles.fontsizeChanges)
 
 % Do different things for the axes depending on if the solution is real.
 if ( isreal(chebfun(u)) )
@@ -121,7 +121,8 @@ axes(handles.fig_sol)
 
 % Plot initial guess
 plot(chebfun(u), '.-')
-title('Current solution')
+title('Current solution', 'fontsize', 10 + handles.fontsizeChanges)
+
 
 % Do different things for the axes depending on if the solution is real.
 if ( isreal(chebfun(u)) )
@@ -137,7 +138,7 @@ axes(handles.fig_norm)
 
 % Plot initial guess.
 plot(chebfun(delta), '.-')
-title('Current correction step')
+title('Current correction step', 'fontsize', 10 + handles.fontsizeChanges)
 
 % Do different things for the axes depending on if the solution is real.
 if ( isreal(chebfun(u)) )
@@ -181,7 +182,7 @@ function displayBVPInfoFinal(handles, u, delta, iterNo, errEstDE, errEstBC, ...
 if ( iterNo == 1 )
     finalStr = {'Newton''s method converged in 1 iteration\n'};
 else
-    finalStr = {sprintf('Newton''s method converged in %i iterations.\n',....
+    finalStr = {sprintf('Newton''s method converged in %i iterations.',....
         iterNo)};
 end
 
@@ -191,12 +192,12 @@ if ( strcmpi(func2str(pref.discretization), 'ultraS') )
 else
     discString = 'Collocation';
 end
-finalStr = [finalStr; sprintf('Discretization method used: %s. \n', ...
+finalStr = [finalStr; sprintf('Discretization method used: %s.', ...
     discString)];
     
 % Print info about the final error estimates...
 finalStr = [finalStr; ...
-    sprintf('Final error estimate: %.2e (differential equation) \n', errEstDE)];
+    sprintf('Final error estimate: %.2e (differential equation) ', errEstDE)];
 % ...and the error in the boundary conditions.
 finalStr = [finalStr; ...
     sprintf('%30.2e (boundary conditions).', errEstBC)];
@@ -231,5 +232,17 @@ str = [str ; sprintf('Norm of residual: %.2e.\n', nrmRes)];
 % Update the information on the GUI:
 set(handles.iter_list, 'String',  str);
 set(handles.iter_list, 'Value', 1);
+
+% Plot
+axes(handles.fig_sol)
+plot(u, 'Linewidth',2)
+% Do different things depending on whether the solution is real or not
+if ( isreal(u{1}) )
+    axis tight
+else
+    axis equal
+end
+
+title('Solution', 'fontsize', 10 + handles.fontsizeChanges)
 
 end

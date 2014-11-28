@@ -48,7 +48,7 @@ function [u, info] = solvebvp(N, rhs, varargin)
 %       uv = solvebvp(N, [0; 0]);
 %
 % See also: CHEBOP, CHEBOP/MLDIVIDE, CHEBOPPREF, CHEBOP/SOLVEBVPLINEAR,
-%   CHEBOP/SOLVEBVPNONLINEAR, LINOP/MLDIVIDE.
+%   CHEBOP/SOLVEBVPNONLINEAR, CHEBOP/SOLVEIVP, LINOP/MLDIVIDE.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -214,9 +214,6 @@ warning(warnState);
 if ( all(size(u) == [1 1]) )
     u = u{1};
 end
-
-% Simplify the result:
-u = simplify(u);
 
 % Return the linearity information as well:
 info.isLinear = isLinear;
