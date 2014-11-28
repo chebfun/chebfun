@@ -20,6 +20,6 @@ image(logoMat)
 % Make sure that the logo is displayed:
 set(handles.fig_logo, 'Visible', 'on');
 axis off
-daspect('manual')
+daspect([1 1 1])
 
 end
