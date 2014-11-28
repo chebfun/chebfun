@@ -3,9 +3,9 @@ function handles = changeFontsize(handles, change)
 currentChange = handles.fontsizeChanges;
 newChange = currentChange + change;
 
-% Allow max 5 increases or 5 decreases
-maxChange = 5;
-minChange = -5;
+% Allow max 10 increases or 10 decreases
+maxChange = 10;
+minChange = -10;
 
 if ( (newChange > maxChange) || (newChange < minChange) )
     % Maximum or minimum fontsize reached -- do nothing.
