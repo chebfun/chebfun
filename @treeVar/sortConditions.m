@@ -8,8 +8,8 @@ function idx = sortConditions(funIn, domain)
 %      DOMAIN: The domain of the problem.
 %   and the output is
 %      IDX:    A vector with indices on how to sort the results of evaluating
-%              N.LBC/RBC, so that they match the order required by the MATLAB ODE
-%              solvers.
+%              N.LBC/RBC, so that they match the order required by the MATLAB 
+%              ODE solvers.
 %
 %   Example:
 %      Assume that for a coupled system, we want to specify the ICs
@@ -17,8 +17,8 @@ function idx = sortConditions(funIn, domain)
 %      One anonymous function we could create to specify those conditions and
 %      append to a CHEBOP is
 %         fun = @(u,v) [u-1; diff(v)-3; v; diff(u)-2]; 
-%      However, when we evaluate this function to pick out the initial conditions, 
-%      we get the vector
+%      However, when we evaluate this function to pick out the initial 
+%      conditions, we get the vector
 %         [1; 3; 0; 2]
 %      which is in the incorrect order to be passed to the MATLAB solvers, which
 %      require the conditions to be of the order u, u', v, v'. Calling
@@ -26,8 +26,8 @@ function idx = sortConditions(funIn, domain)
 %         idx = treeVar.sortConditions(fun, dom) 
 %         idx =
 %             1     4     3     2
-%      gives the correct order in which the above vector has to be sorted so that
-%      the values are in the correct order for MATLAB.
+%      gives the correct order in which the above vector has to be sorted so 
+%      that the values are in the correct order for MATLAB.
 
 % Check how many unknowns appear in FUNIN.
 numArgs = nargin(funIn);
@@ -77,7 +77,7 @@ for tCounter = 1:length(bcResults)
     
     % Store in a list what variable the current constraint applies
     % to, and what the current diffOrder is:
-    varList{activeVar} = [varList{activeVar}, tCounter];
+    varList{activeVar} = [ varList{activeVar}, tCounter ];
     diffOrderList{activeVar} = [diffOrderList{activeVar}, ...
         activeDiffOrder];
 end
@@ -90,7 +90,7 @@ idx = [];
 for varCounter = 1:numArgs
     [dummy, diffOrderIndex] = sort(diffOrderList{varCounter});
     tempIndex = varList{varCounter}(diffOrderIndex);
-    idx = [idx, tempIndex];
+    idx = [ idx, tempIndex ];
 end
 
 end

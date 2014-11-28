@@ -8,9 +8,9 @@ function anonFun = toAnon(infix, varArray)
 %      VARARRAY:   A MATLAB cell, which contains the name and values of all
 %                  variables that appear in INFIX.
 %   and the output is:
-%      ANONFUN:    An anonymous function, corresponding to the function represented
-%                  in INFIX, with the variables in VARARRAY loaded in its
-%                  workspace.
+%      ANONFUN:    An anonymous function, corresponding to the function 
+%                  represented in INFIX, with the variables in VARARRAY loaded 
+%                  in its workspace.
 %
 %   This method is used when converting expressions to first order format to
 %   obtain an anonymous function that when evaluated, returns the coefficient

@@ -1,7 +1,8 @@
 function anonFun = toRHS(systemInfix, varArrays, coeffs,  indexStart, totalDiffOrders)
 %TORHS   Convert infix expressions to anonymous function suited for ODE solvers.
 %   Calling sequence:
-%      ANONFUN = TORHS(SYSTEMINFIX, VARARRAYS, COEFFS, INDEXSTART, TOTALDIFFORDERS)
+%      ANONFUN = TORHS(SYSTEMINFIX, VARARRAYS, COEFFS, INDEXSTART, ...
+%       TOTALDIFFORDERS)
 %   where the inputs are
 %      SYSTEMFINFIX:    A cell array of strings of infix expressions, each of
 %                       which describes the right-hand side of a differential
@@ -75,12 +76,12 @@ for sysCounter = 1:length(systemInfix)
     
     % Add the current equation INFIXFORM, which contains all the equations so
     % far.
-    infixForm = [infixForm, varString , systemInfix{sysCounter}, ...
-        './' coeffStr, '; '];
+    infixForm = [ infixForm, varString , systemInfix{sysCounter}, ...
+        './' coeffStr, '; ' ];
 end
 
 % Add the @(t,u) to the front of the infix expression, and surround it by [].
-infixForm = ['@(t,u)[', infixForm , ']'];
+infixForm = [ '@(t,u)[', infixForm , ']' ];
 
 % Eval the INFIXFORM string to get the anonymous function.
 anonFun = eval(infixForm);

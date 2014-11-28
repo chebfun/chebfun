@@ -7,8 +7,8 @@ function [infixOut, varArray] = tree2infix(tree, eqno, indexStart)
 %      EQNO:       An integer, denoting the number of the equation in a coupled
 %                  system we're currently converting.
 %      INDEXSTART: A vector that denotes at which index we should start indexing
-%                  each variable from so that they're in the correct order for the
-%                  MATLAB ODE solvers.
+%                  each variable from so that they're in the correct order for
+%                  the MATLAB ODE solvers.
 %   and the outputs are
 %      INFIXOUT:   A string, which describes TREE on infix form.
 %      VARARRAY:   A cell, whose first column consist of strings of unique 

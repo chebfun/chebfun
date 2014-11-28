@@ -11,9 +11,9 @@ function [newTree, derTree] = splitTree(tree, maxOrder)
 %                  order derivative appears. E.g. if we split the expression
 %                  5*diff(u) + sin(u), NEWTREE is the syntax tree corresponding
 %                  to 5*diff(u).
-%      DERTREE:    A syntax tree which describes the remaining factors not included
-%                  in NEWTREE. In the example above, DERTREE is the syntax tree
-%                  corresponding to sin(u).
+%      DERTREE:    A syntax tree which describes the remaining factors not 
+%                  included in NEWTREE. In the example above, DERTREE is the 
+%                  syntax tree corresponding to sin(u).
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -136,9 +136,9 @@ end
 function ot = oneTreeFromRight(tree, operator)
 %ONETREEFROMRIGHT   Convert binary minus to uminus when left tree is empty.
 %   Add a UMINUS in front of a syntax tree in the case where the left child tree
-%   of MINUS() only consisted of the derivative part. Simply put, we're converting
-%   a binary minus between an empty tree on left and a non-empty tree on the right
-%   to a UMINUS on the non-empty tree.
+%   of MINUS() only consisted of the derivative part. Simply put, we're 
+%   converting a binary minus between an empty tree on left and a non-empty tree 
+%   on the right to a UMINUS on the non-empty tree.
 if ( strcmp(operator, 'minus') )
     % Only need to worry if the original operator was a -.
     if ( isstruct(tree) )
