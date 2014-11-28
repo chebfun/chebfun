@@ -65,6 +65,9 @@ end
 % Change quotes (") to two apostrophes ('')
 str = strrep(str, '"', '''''');
 
+% Change backticks (`) to two apostrophes ('')
+str = strrep(str, '`', '''');
+
 % Change two minuses to one +, etc
 k = 1;
 while ( k < numel(str) - 1 )

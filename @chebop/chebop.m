@@ -182,6 +182,12 @@ classdef (InferiorClasses = {?double}) chebop
                 end
             end
             
+            % String parsing of op
+            if ischar(op)
+                anF = stringParser.str2anon(op, 'bvp', 'de');
+                op = eval(anF);
+            end
+            
             % Assign operator and domain:
             N.op = op;
             N.domain = dom;

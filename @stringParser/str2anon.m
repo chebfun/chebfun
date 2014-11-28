@@ -7,9 +7,9 @@ function varargout = str2anon(str, problemType, fieldType)
 %   where
 %    STR:            String on 'natural syntax form'.
 %    PROBLEMTYPE:    The type of problem we are solving in CHEBGUI, i.e., BVP,
-%                   EIG or PDE.
+%                    EIG or PDE.
 %    FIELDTYPE:      What type of field of the CHEBGUI we are converting, i.e. a
-%                   field for the initial guess/condition, or other fields.
+%                    field for the initial guess/condition, or other fields.
 %
 %   If the method is called with one output argument, the output will be an
 %   anonymous function on a form that is useful for Chebfun. The output will
@@ -147,7 +147,16 @@ for k = numel(varNames):-1:1
         varNames(k) = [];
     end
 end 
- 
+
+% String for independent variable names (if they appear).
+if ( isempty(indVarNames{1}) )
+    indVarString = '';
+elseif ( isempty(indVarNames{2}) )
+    indVarString = sprintf('%s,', indVarNames{1});
+else
+    indVarString = sprintf('%s,%s,', indVarNames{1}, indVarNames{2});
+end
+
 % Convert the cell array varNames into one string. Not required when we're
 % working with the initial guess of scalar problems. If varNames is empty
 % for other kind of problems, an error would already have been thrown.
@@ -158,9 +167,9 @@ if ( ~isempty(varNames) && ~strcmp(fieldType, 'INITSCALAR') )
     end
 
     if ( length(varNames) == 1 )
-        anFunComplete = ['@(' varString ') ' anFun];
+        anFunComplete = ['@(' indVarString varString ') ' anFun];
     else
-        anFunComplete = ['@(' varString ') [' anFun ']'];
+        anFunComplete = ['@(' indVarString varString ') [' anFun ']'];
     end
 end
 
