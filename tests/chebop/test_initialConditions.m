@@ -6,7 +6,9 @@ if ( nargin == 0 )
     pref = cheboppref();
 end
 dom = [0, 1];
-tol = 1e-12;
+% [TODO]: This used to be 1e-12 until we had to loosen the absTol of the ODE
+% solvers. Once/if that gets resolved, can we tighten the tolerance again?
+tol = 5e-9;
 
 %% First order IVP
 N = chebop(@(x,u) diff(u) + sin(u), dom);
