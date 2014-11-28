@@ -164,8 +164,8 @@ set(handles.tempedit, 'FontSize', fs);
 set(handles.button_solve, 'String', 'Solve');
 set(handles.button_solve, 'BackgroundColor', [43 129 86]/256);
 
-% Ensure that we have a light-blue color in background
-set(handles.mainWindow, 'BackgroundColor', [.702 .78 1]);
+% Ensure that we have a medium-grey colour in background
+set(handles.mainWindow, 'BackgroundColor', .8*ones(1,3));
 
 % Default discretization is chebcolloc2
 handles.guifile.options.discretization = @chebcolloc2;
