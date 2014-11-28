@@ -1,4 +1,4 @@
-function [F,FA] = gallery(nn)
+function [f,fa] = gallery(name)
 %GALLERY   Gallery of 1-dimensional functions.
 %   GALLERY(N) returns interesting 1D functions as a CHEBFUN quasimatrix.
 %   N must be a vector with integer entries taking values from 1 to 11.
@@ -11,99 +11,97 @@ function [F,FA] = gallery(nn)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% These cell arrays collect the functions, domains, and prefs.
-funcs = cell(1);
-prefs = cell(1);
+switch name
 
-%%
-% Here are the functions for the gallery.
+    % the Airy function on [-40 40]
+    case 'airy'
+        fa = @airy;
+        f = chebfun(fa, [-40 40]);
 
-% From ATAP, Chapter 2
-funcs{1} = @(x) sin(6*x) + sign(sin(x+exp(2*x)));
-prefs{1} = {'splitting', 'on'};
+    % the airy function on [-40 40]
+    case {'bessel', 'besselj'}
+        fa = @(x) besselj(0, x);
+        f = chebfun(fa, [-100 100]);
 
-% From ATAP, Chapter 3
-funcs{2} = @(x) sin(6*x) + sin(60*exp(x));
-prefs{2} = {};
+    % sine with exponentially increasing frequency
+    case 'chirp'
+        fa = @(x) sin(x.*exp(x));
+        f = chebfun(fa, [0 5]);
 
-% From ATAP, Chapter 3
-funcs{3} = @(x) 1./(1+1000*(x+.5).^2) + 1./sqrt(1+1000*(x-.5).^2);
-prefs{3} = {};
+    % the error function
+    case 'erf'
+        fa = @erf;
+        f = chebfun(fa, [-10 10]);
 
-% From ATAP, Chapter 5
-funcs{4} = @(x) tanh(20*sin(12*x)) + .02*exp(3*x).*sin(300*x);
-prefs{4} = {};
+    % wild oscillations from Extreme Extrema example
+    case 'fishfilet'
+        fa = @(x) cos(x).*sin(exp(x));
+        f = chebfun(fa, [0 6]);
 
-% From ATAP, Chapter 13 (Runge function)
-funcs{5} = @(x) 1./(1+25*x.^2);
-prefs{5} = {};
+    % the gamma function on [-4, 4]
+    case 'gamma'
+        fa = @gamma;
+        f = chebfun(fa, [-4 4], 'blowup', 'on', 'splitting', 'on');
 
-% From ATAP, Chapter 18
-funcs{6} = @(x) exp(x).*sech(4*sin(40*x)).^exp(x);
-prefs{6} = {};
+    % a piecewise constant function
+    case 'jitter'
+        fa = @(x) round(exp(x)*2.*sin(8*x));
+        f = chebfun(fa, 'splitting', 'on');
 
-% From ATAP, Chapter 22
-funcs{7} = @(x) cos(17*x)./(1+sin(100*x).^2);
-prefs{7} = {};
+    % challenging integrand with four spikes
+    case 'kahaner'
+        fa = @(x) sech(10*(x-0.2)).^2 + sech(100*(x-0.4)).^4 + ...
+         sech(1000*(x-0.6)).^6 + sech(1000*(x-0.8)).^8;
+        f = chebfun(fa, [0 1]);
 
-% Spike function from Example [quad/SpikeIntegral]
-funcs{8} = @(x) sech(5*(x+0.6)).^2 + sech(50*(x+0.2)).^4 + ...
-           sech(500*(x-0.2)).^6 + sech(500*(x-0.6)).^8;
-prefs{8} = {};
+    % (scribbled) Chebfun motto by Gilbert Strang
+    case 'motto'
+        f = exp(3i*scribble('there is no fun like chebfun'));
+        fa = @(x) f(x);
 
-% Needle on a corrugated surface [opt/Needle]
-funcs{9} = @(x) 0.1*(x*4).^2 + 0.1*sin(6*(x*4)) + 0.03*sin(12*(x*4));
-prefs{9} = {};
+    % The Runge function
+    case 'runge'
+        fa = @(x) 1./(1 + x.^2);
+        f = chebfun(fa, [-5 5]);
 
-% A complicated function from [opt/ExtremeExtrema]
-funcs{10} = @(x) cos(3*x+3).*sin(exp(3*x+3));
-prefs{10} = {};
+    % as smooth as it looks
+    case 'sinefun1'
+        fa = @(x) (2 + sin(50*x));
+        f = chebfun(fa);
 
-% Sawtooth polynomial, from ATAP, Appendix.
-if ( any(nn == 11) )
-    g = chebfun(@(t) sign(sin(100*t./(2-t))), 10000);
-    f = cumsum(g);
-    funcs{11} = @(x) f(x);
-    prefs{11} = {10000+1};
-end
+    % not as smooth as it looks
+    case 'sinefun2'
+        fa = @(x) (2 + sin(50*x)).^1.0001;
+        f = chebfun(fa);
 
-% DEVELOPER NOTE: If you add a new function here, be sure to change the help
-% text to reflect the total number of functions available!
+    % degree 10000 polynomial that looks piecewise linear
+    case 'si'
+        f = cumsum(chebfun(@(x) sin(50*x)./(50*x)));
+        fa = @(x) f(x);
 
+    % 25 peaks, each sharper than the last
+    % from ATAP, Chapter 18
+    case 'spikycomb'
+        fa = @(x) exp(x).*sech(4*sin(40*x)).^exp(x);
+        f = chebfun(fa);
 
-% Parse the input:
-indx_goodvalues = ismember(nn, 1:length(funcs));
-if ( any(indx_goodvalues == 0) )
-    % The user passed bad values (e.g. non-integers or too big a number),
-    % so remove them.
-    nn = nn(indx_goodvalues);
+    % tanh plus growing oscillation
+    % from ATAP, Chapter 5
+    case 'wiggles'
+        fa = @(x) tanh(20*sin(12*x)) + .02*exp(3*x).*sin(300*x);
+        f = chebfun(fa);
 
-    % If the user passed at least one valid integer, just issue a warning
-    % and move on. If the user did not issue any valid integers, give an
-    % error.
-    if ( length(nn) )
-        warning('CHEBFUN:CHEB:gallery:input', 'Ignoring bad input values.')
-    else
-        error('CHEBFUN:CHEB:gallery:input', ...
-            'Input value(s) are not valid integers.')
-    end
-end
+    % one of the Chebfun team's favorites
+    case 'wiggly'
+        fa = @(x) sin(x) + sin(x.^2);
+        f = chebfun(fa, [0 10]);
 
-% Assemble the output:
-F  = [];    % A quasimatrix of the chebfuns.
-FA = {};    % A cell array of the function handles.
+    % degree 10000 polynomial that looks piecewise linear
+    % from ATAP appendix
+    case 'zigzag'
+        f = cumsum(chebfun(@(t) sign(sin(100*t./(2-t))), 10000));
+        fa = @(x) f(x);
 
-% Construct only the chebfuns that the user wants.
-for n = nn(:)'
-    f = chebfun(funcs{n}, [-1 1], prefs{n}{:});
-    F = [F, f];
-    FA = {FA{:}, funcs{n}};
-end
-
-% If the user only wants one function, don't output
-% the anonymous function as a cell array.
-if ( length(nn) == 1 )
-    FA = FA{1};
 end
 
 end
