@@ -105,13 +105,14 @@ end
 % the problem. We loop through the each component of the evaluation tree:
 totalDiffOrders = zeros(1, numArgs);
 for wCounter = 1:length(fevalResult)
-    totalDiffOrders = max(totalDiffOrders, fevalResult(wCounter).tree.diffOrder);
+    totalDiffOrders = max(totalDiffOrders, ...
+        fevalResult(wCounter).tree.diffOrder);
 end
 
 % We always start indexing the first variable and its derivative(s) at 1. The
 % index of the other variables depend on the cumulative diffOrders of the
 % variables with lower indices.
-indexStart = [1, cumsum(totalDiffOrders(1:end-1))+1];
+indexStart = [ 1, cumsum(totalDiffOrders(1:end-1)) + 1 ];
 % To get the indices of the derivatives as well, we shift all the previous
 % indices right by 1, in cumulative fashion:
 indexStartDer = indexStart + (0:numArgs-1);

@@ -56,8 +56,8 @@ if ( nargin < 2 )
     indentStr = '';
     
     % Print the first method:
-    s = [s, sprintf('%s%s\tdiffOrder: [%s]\n', indentStr, varString, ...
-        num2str(tree.diffOrder))];
+    s = [ s, sprintf('%s%s\tdiffOrder: [%s]\n', indentStr, varString, ...
+        num2str(tree.diffOrder)) ];
 else
     % We're inside the recursion.
     
@@ -75,44 +75,44 @@ else
     end
     
     % Print the current method:
-    s = [s, sprintf('%s--%s\tdiffOrder: [%s]\n', indStrTemp, varString, ...
-        num2str(tree.diffOrder))];
+    s = [ s, sprintf('%s--%s\tdiffOrder: [%s]\n', indStrTemp, varString, ...
+        num2str(tree.diffOrder)) ];
 end
 
 % Add whitespace to the indentation string, to be used further in the recusion:
-indentStr = [indentStr, '  '];
+indentStr = [ indentStr, '  ' ];
 
 % Print the remaining syntax tree recursively:
 switch tree.numArgs
     case 1
         % Printing univariate methods.
-        s = [s, treeVar.printTree(tree.center, [indentStr, ' '])];
+        s = [ s, treeVar.printTree(tree.center, [indentStr, ' ']) ];
     
     case 2
         % Printing bivariate methods.
         
         if ( isstruct(tree.left) )
             % If the left child is a tree, print it recursively:
-            s = [s, treeVar.printTree(tree.left, [indentStr, '|'])];
+            s = [ s, treeVar.printTree(tree.left, [indentStr, '|']) ];
         elseif ( isnumeric(tree.left) )
             % Left node was a scalar:
-            s = [s, sprintf('%s|--numerical \tValue: %s\n', ...
-                indentStr, num2str(tree.left, '%2.2f'))];
+            s = [ s, sprintf('%s|--numerical \tValue: %s\n', ...
+                indentStr, num2str(tree.left, '%2.2f')) ];
         else
             % Left node was a CHEBFUN:
-            s = [s, fprintf('%s|--chebfun\n', indentStr)];
+            s = [ s, fprintf('%s|--chebfun\n', indentStr) ];
         end
         
         if ( isstruct(tree.right) )
             % If the right child is a tree, print it recursively:
-            s = [s, treeVar.printTree(tree.right, [indentStr, ' '])];
+            s = [ s, treeVar.printTree(tree.right, [indentStr, ' ']) ];
         elseif ( isnumeric(tree.right) )
             % Right node is a scalar:
-            s = [s, sprintf('%s|--numerical \tValue: %s\n', ...
-                indentStr, num2str(tree.right, '%2.2f'))];
+            s = [ s, sprintf('%s|--numerical \tValue: %s\n', ...
+                indentStr, num2str(tree.right, '%2.2f')) ];
         else
             % Right node is a CHEBFUN:
-            s = [s, fprintf('%s|--chebfun\n', indentStr)];
+            s = [ s, fprintf('%s|--chebfun\n', indentStr) ];
         end       
 end
 

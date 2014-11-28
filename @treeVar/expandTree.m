@@ -14,14 +14,14 @@ function newTree = expandTree(tree, maxOrder)
 %      MAXORDER:   A vector containing the maximum differential order of each
 %                  variable that appear in the problem under consideration.
 %   and the output is:
-%      NEWTREE:    A syntax tree where the highest order deriative has been taken
-%                  out of any parenthesis where other variables with lower
+%      NEWTREE:    A syntax tree where the highest order deriative has been 
+%                  taken out of any parenthesis where other variables with lower
 %                  differential order appear.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( ~isstruct(tree) || tree.height <= 1 || all(tree.diffOrder < maxOrder) || ...
+if ( ~isstruct(tree) || tree.height <= 1 || all(tree.diffOrder < maxOrder) ||...
     ~tree.hasTerms )
     % If the input is not a tree, or if it is a very short tree, or if its
     % diffOrder is less than the maxOrder we consider, or if it doesn't
