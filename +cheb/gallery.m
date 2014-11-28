@@ -1,25 +1,52 @@
 function [f,fa] = gallery(name)
-%GALLERY   Gallery of 1-dimensional functions.
-%   GALLERY(N) returns interesting 1D functions as a CHEBFUN quasimatrix.
-%   N must be a vector with integer entries taking values from 1 to 11.
-%   All gallery functions have domain [-1, 1].
+%GALLERY   Chebfun test functions.
+%   GALLERY(NAME) returns a chebfun corresponding to NAME. See the listing
+%   below for available function names.
 %
-%   [F,FA] = GALLERY(N) also returns the anonymous functions used to define
-%   the CHEBFUN. If N is an integer, FA is a function handle; if N is a
-%   vector, FA is a cell array of function handles.
+%   [F,FA] = GALLERY(NAME, PARAM1, PARAM2, ...) also returns the anonymous
+%   function used to define the test function.
+%
+%   airy         Airy Ai function on [-40, 40]
+%   bessel       Bessel function with parameter 0 on [-100, 100]
+%   chirp        Sine with exponentially increasing frequency
+%   erf          The error function on [-10, 10]
+%   fishfilet    Wild oscillations from Extreme Extrema example
+%   gamma        The gamma function on [-4, 4]
+%   jitter       A piecewise constant function
+%   kahaner      Challenging integrand with four spikes
+%   motto        (scribbled) Chebfun motto by Gilbert Strang
+%   runge        The Runge function
+%   sinefun1     As smooth as it looks
+%   sinefun2     Not as smooth as it looks
+%   si           Sine integral on [-50, 50]
+%   spikycomb    25 peaks, each sharper than the last
+%   seismograph  Tanh plus growing oscillation
+%   wiggly       One of the Chebfun team's favorites
+%   zigzag       Degree 10000 polynomial that looks piecewise linear
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+
+% If the user did not supply an input, return a random function
+% from the gallery.
+if ( nargin == 0 )
+    names = {'airy', 'bessel', 'chirp', 'erf', 'fishfilet', 'gamma', ...
+            'jitter', 'kahaner', 'motto', 'runge', 'sinefun1', 'sinefun2', ...
+            'si', 'spikycomb', 'seismograph', 'wiggly', 'zigzag'};
+    name = names{randi(length(names))};
+end
+
+% The main switch statement.
 switch name
 
-    % the Airy function on [-40 40]
+    % the Airy function on [-40, 40]
     case 'airy'
         fa = @airy;
         f = chebfun(fa, [-40 40]);
 
-    % the airy function on [-40 40]
-    case {'bessel', 'besselj'}
+    % Bessel function with parameter 0 on [-100, 100]
+    case 'bessel'
         fa = @(x) besselj(0, x);
         f = chebfun(fa, [-100 100]);
 
@@ -28,7 +55,7 @@ switch name
         fa = @(x) sin(x.*exp(x));
         f = chebfun(fa, [0 5]);
 
-    % the error function
+    % the error function on [-10, 10]
     case 'erf'
         fa = @erf;
         f = chebfun(fa, [-10 10]);
@@ -59,7 +86,7 @@ switch name
         f = exp(3i*scribble('there is no fun like chebfun'));
         fa = @(x) f(x);
 
-    % The Runge function
+    % the Runge function
     case 'runge'
         fa = @(x) 1./(1 + x.^2);
         f = chebfun(fa, [-5 5]);
@@ -74,9 +101,9 @@ switch name
         fa = @(x) (2 + sin(50*x)).^1.0001;
         f = chebfun(fa);
 
-    % degree 10000 polynomial that looks piecewise linear
+    % sine integral
     case 'si'
-        f = cumsum(chebfun(@(x) sin(50*x)./(50*x)));
+        f = cumsum(chebfun(@(x) sin(x)./(x)), [-50, 50]);
         fa = @(x) f(x);
 
     % 25 peaks, each sharper than the last
@@ -87,7 +114,7 @@ switch name
 
     % tanh plus growing oscillation
     % from ATAP, Chapter 5
-    case 'wiggles'
+    case 'seismograph'
         fa = @(x) tanh(20*sin(12*x)) + .02*exp(3*x).*sin(300*x);
         f = chebfun(fa);
 
@@ -101,6 +128,11 @@ switch name
     case 'zigzag'
         f = cumsum(chebfun(@(t) sign(sin(100*t./(2-t))), 10000));
         fa = @(x) f(x);
+
+    % unknown function
+    otherwise
+        error('CHEB:GALLERY:unknown:unknownFunction', ...
+            'Unknown function.')
 
 end
 
