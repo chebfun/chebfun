@@ -19,12 +19,18 @@ ivpSolver = expInfo.ivpSolver;
 plotting = expInfo.plotting;
 
 % Set up preferences
-fprintf(fid, '\n%%%% Setup preferences for solving the problem.');
-fprintf(fid, '\n%% Create a CHEBOPPREF object for passing preferences: \n');
-fprintf(fid, 'options = cheboppref();\n');
+fprintf(fid, '\n%%%% Setup preferences for solving the problem.\n');
+fprintf(fid, '%% Create a CHEBOPPREF object for passing preferences.\n');
+fprintf(fid, '%% (See ''help cheboppref'' for more possible options.)\n');
+   
+fprintf(fid, 'options = cheboppref();\n\n');
 
 % Specify which IVP solver we want to use:
-fprintf(fid, '\n%% Specify IVP solver we want to use:\n');
+fprintf(fid, '%% Specify the IVP solver to use. Possible options are:\n');
+fprintf(fid, '%%   Time-stepping solvers:\n');
+fprintf(fid, '%%     ''ode113'' (default), ''ode15s'' or ''ode45''.\n');
+fprintf(fid, '%%   Global methods:\n');
+fprintf(fid, '%%     ''collocation'' or ''ultraspherical''.\n');
 fprintf(fid, 'options.ivpSolver = ''%s'';\n', ivpSolver);
 
 % We'll need different preferences depending on whether we're applying a global
