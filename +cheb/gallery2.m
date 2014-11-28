@@ -1,7 +1,7 @@
 function [F,FA] = gallery2(nn)
 %GALLERY2   Gallery of 2-dimensional functions.
 %   GALLERY2(N) returns interesting 2D functions as a CHEBFUN2 cell array.
-%   N must be a vector with integer entries taking values from 1 to 6.
+%   N must be a vector with integer entries taking values from 1 to 7.
 %   All gallery functions have domain [-1, 1] x [-1, 1].
 %
 %   [F,FA] = GALLERY2(N) also returns the anonymous functions used to define
@@ -18,26 +18,31 @@ prefs = cell(1);
 %%
 % Here are the functions for the gallery.
 
-funcs{1} = @(x,y) 1./(1+100*(x.^2-y.^2).^2);
-prefs{1} = {};
-
-funcs{2} = @(x,y) 1./(1+1e3*((x.^2-.25).^2.*(y.^2-.25).^2));
-prefs{2} = {};
-
-funcs{3} = @(x,y) cos(10*(x.^2+y)).*sin(10*(x+y.^2));
-prefs{3} = {};
-
-funcs{4} = @(x,y) real(airy(5*(x+y.^2)).*airy(-5*(x.^2+y.^2)));
-prefs{4} = {};
-
-funcs{5} = @(x,y) tanh(10*x).*tanh(10*y)./tanh(10).^2+cos(5*x);
-prefs{5} = {};
-
 % PEAKS function
-funcs{6} = @(x,y) 3*(1-3*x).^2.*exp(-(9*x.^2) - (3*y+1).^2) ...
+funcs{1} = @(x,y) 3*(1-3*x).^2.*exp(-(9*x.^2) - (3*y+1).^2) ...
          - 10*(3*x/5 - 27*x.^3 - (3*y).^5).*exp(-9*(x.^2+y.^2)) ...
          - 1/3*exp(-(3*x+1).^2 - (3*y).^2);
+prefs{1} = {};
+
+% Complicated function from the 100-digit challenge
+funcs{2} = @(x,y) exp(sin(50*x)) + sin(60*exp(y)) + sin(70*sin(x)) +...
+         sin(sin(80*y)) - sin(10*(x+y)) + (x.^2+y.^2)./4;
+prefs{2} = {};
+
+funcs{3} = @(x,y) 1./(1+100*(x.^2-y.^2).^2);
+prefs{3} = {};
+
+funcs{4} = @(x,y) 1./(1+1e3*((x.^2-.25).^2.*(y.^2-.25).^2));
+prefs{4} = {};
+
+funcs{5} = @(x,y) cos(10*(x.^2+y)).*sin(10*(x+y.^2));
+prefs{5} = {};
+
+funcs{6} = @(x,y) real(airy(5*(x+y.^2)).*airy(-5*(x.^2+y.^2)));
 prefs{6} = {};
+
+funcs{7} = @(x,y) tanh(10*x).*tanh(10*y)./tanh(10).^2+cos(5*x);
+prefs{7} = {};
 
 % DEVELOPER NOTE: If you add a new function here, be sure to change the help
 % text to reflect the total number of functions available!
