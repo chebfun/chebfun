@@ -20,7 +20,8 @@ function [f,fa] = gallery2(name)
 % If the user did not supply an input, return a random function
 % from the gallery.
 if ( nargin == 0 )
-    names = {'airy'};
+    names = {'challenge', 'bump', 'peaks', 'rosenbrock', 'smokering', ...
+            'waffle'};
     name = names{randi(length(names))};
 end
 
@@ -45,6 +46,7 @@ switch name
             - 1/3*exp(-(x+1).^2 - y.^2);
         f = chebfun2(fa, [-3 3 -3 3]);
 
+    % A challenging test function in optimization
     case 'rosenbrock'
         fa = @(x,y) (1-x).^2 + 100*(y-x.^2).^2;
         f = chebfun2(fa, [-2 2 -1 3]);
@@ -64,82 +66,6 @@ switch name
         error('CHEB:GALLERY:unknown:unknownFunction', ...
             'Unknown function.')
 
-end
-
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function asdfjasdfkjadsfkladsfasdfadsflkadsjfalksdf
-
-funcs{3} = @(x,y) 1./(1+100*(x.^2-y.^2).^2);
-prefs{3} = {};
-
-funcs{4} = @(x,y) 1./(1+1e3*((x.^2-.25).^2.*(y.^2-.25).^2));
-prefs{4} = {};
-
-funcs{5} = @(x,y) cos(10*(x.^2+y)).*sin(10*(x+y.^2));
-prefs{5} = {};
-
-funcs{6} = @(x,y) real(airy(5*(x+y.^2)).*airy(-5*(x.^2+y.^2)));
-prefs{6} = {};
-
-funcs{7} = @(x,y) tanh(10*x).*tanh(10*y)./tanh(10).^2+cos(5*x);
-prefs{7} = {};
-
-% DEVELOPER NOTE: If you add a new function here, be sure to change the help
-% text to reflect the total number of functions available!
-
-
-% Parse the input:
-indx_goodvalues = ismember(nn, 1:length(funcs));
-if ( any(indx_goodvalues == 0) )
-    % The user passed bad values (e.g. non-integers or too big a number),
-    % so remove them.
-    nn = nn(indx_goodvalues);
-
-    % If the user passed at least one valid integer, just issue a warning
-    % and move on. If the user did not issue any valid integers, give an
-    % error.
-    if ( length(nn) )
-        warning('CHEBFUN:CHEB:gallery:input', 'Ignoring bad input values.')
-    else
-        error('CHEBFUN:CHEB:gallery:input', ...
-            'Input value(s) are not valid integers.')
-    end
-end
-
-% Assemble the output:
-F  = {};    % A cell array of the chebfun2 objects.
-FA = {};    % A cell array of the function handles.
-
-% Construct only the chebfuns that the user wants.
-for n = nn(:)'
-    f = chebfun2(funcs{n}, [-1 1 -1 1], prefs{n}{:});
-    F = {F{:}, f};
-    FA = {FA{:}, funcs{n}};
-end
-
-% If the user only wants one function, don't output cell arrays.
-if ( length(nn) == 1 )
-    F = F{1};
-    FA = FA{1};
 end
 
 end
