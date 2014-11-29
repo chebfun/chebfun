@@ -1,33 +1,92 @@
-function [F,FA] = gallery2(nn)
-%GALLERY2   Gallery of 2-dimensional functions.
-%   GALLERY2(N) returns interesting 2D functions as a CHEBFUN2 cell array.
-%   N must be a vector with integer entries taking values from 1 to 7.
-%   All gallery functions have domain [-1, 1] x [-1, 1].
+function [f,fa] = gallery2(name)
+%GALLERY2   Chebfun2 test functions.
+%   GALLERY2(NAME) returns a chebfun2 corresponding to NAME. See the listing
+%   below for available function names.
 %
-%   [F,FA] = GALLERY2(N) also returns the anonymous functions used to define
-%   the CHEBFUN2 objects. If N is an integer, FA is a function handle; if N is
-%   a vector, FA is a cell array of function handles.
+%   [F,FA] = GALLERY2(NAME) also returns the anonymous function used to define
+%   the test function.
+%
+%   bump         A two-dimensional bump function
+%   challenge    Function from SIAM 100-digit challenge
+%   smokering    A halo, hoop, or hole.
+%   peaks        The classic MATLAB peaks function
+%   rosenbrock   A challenging test function in optimization
+%   waffle       A function with horizontal and vertical ridges
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% These cell arrays collect the functions, domains, and prefs.
-funcs = cell(1);
-prefs = cell(1);
 
-%%
-% Here are the functions for the gallery.
+% If the user did not supply an input, return a random function
+% from the gallery.
+if ( nargin == 0 )
+    names = {'airy'};
+    name = names{randi(length(names))};
+end
 
-% PEAKS function
-funcs{1} = @(x,y) 3*(1-3*x).^2.*exp(-(9*x.^2) - (3*y+1).^2) ...
-         - 10*(3*x/5 - 27*x.^3 - (3*y).^5).*exp(-9*(x.^2+y.^2)) ...
-         - 1/3*exp(-(3*x+1).^2 - (3*y).^2);
-prefs{1} = {};
+% The main switch statement.
+switch name
 
-% Complicated function from the 100-digit challenge
-funcs{2} = @(x,y) exp(sin(50*x)) + sin(60*exp(y)) + sin(70*sin(x)) +...
-         sin(sin(80*y)) - sin(10*(x+y)) + (x.^2+y.^2)./4;
-prefs{2} = {};
+    % Function from SIAM 100-digit challenge
+    case 'challenge'
+        fa = @(x,y) exp(sin(50*x)) + sin(60*exp(y)) + sin(70*sin(x)) + ...
+            sin(sin(80*y)) - sin(10*(x+y)) + (x.^2+y.^2)./4;
+        f = chebfun2(fa);
+
+    % A two-dimensional bump function
+    case 'bump'
+        fa = @(x,y) (x.^2 + y.^2 < 1).*exp(-(x.^2 + y.^2 < 1)./(1 - x.^2 - y.^2));
+        f = chebfun2(fa, [-1 1 -1 1]*2);
+
+    % The classic MATLAB peaks function
+    case 'peaks'
+        fa = @(x,y) 3*(1-x).^2.*exp(-x.^2 - (y+1).^2) ...
+            - 10*(x/5 - x.^3 - y.^5).*exp(-x.^2 - y.^2) ...
+            - 1/3*exp(-(x+1).^2 - y.^2);
+        f = chebfun2(fa, [-3 3 -3 3]);
+
+    case 'rosenbrock'
+        fa = @(x,y) (1-x).^2 + 100*(y-x.^2).^2;
+        f = chebfun2(fa, [-2 2 -1 3]);
+
+    % A halo, hoop, or hole.
+    case 'smokering'
+        fa = @(x,y) exp(-100*(x.^2-x.*y+2*y.^2 - 1/2).^2);
+        f = chebfun2(fa);
+
+    % A function with horizontal and vertical ridges
+    case 'waffle'
+        fa = @(x,y) 1./(1+1e3*((x.^2-.25).^2.*(y.^2-.25).^2));
+        f = chebfun2(fa);
+
+    % Error if the input is unknown.
+    otherwise
+        error('CHEB:GALLERY:unknown:unknownFunction', ...
+            'Unknown function.')
+
+end
+
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function asdfjasdfkjadsfkladsfasdfadsflkadsjfalksdf
 
 funcs{3} = @(x,y) 1./(1+100*(x.^2-y.^2).^2);
 prefs{3} = {};
