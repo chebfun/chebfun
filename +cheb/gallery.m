@@ -4,7 +4,7 @@ function [f,fa] = gallery(name)
 %   below for available function names.
 %
 %   [F,FA] = GALLERY(NAME) also returns the anonymous function used to define
-%   the test function.
+%   the function.
 %
 %   airy         Airy Ai function on [-40, 40]
 %   bessel       Bessel function with parameter 0 on [-100, 100]

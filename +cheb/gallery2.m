@@ -4,7 +4,7 @@ function [f,fa] = gallery2(name)
 %   below for available function names.
 %
 %   [F,FA] = GALLERY2(NAME) also returns the anonymous function used to define
-%   the test function.
+%   the function.
 %
 %   bump         A two-dimensional bump function
 %   challenge    Function from SIAM 100-digit challenge

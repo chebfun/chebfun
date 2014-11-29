@@ -1,89 +1,56 @@
-function [F,FA] = gallerytrig(nn)
-%GALLERY   Gallery of periodic 1-dimensional functions.
-%   GALLERY(N) returns interesting periodic 1D functions as a CHEBFUN
-%   quasimatrix. N must be a vector with integer entries taking values from
-%   1 to 4. All gallery functions have domain [-1, 1].
+function [f,fa] = gallerytrig(name)
+%GALLERYTRIG   Chebfun periodic test functions.
+%   GALLERYTRIG(NAME) returns a periodic chebfun corresponding to NAME. See
+%   the listing below for available function names.
 %
-%   [F,FA] = GALLERY(N) also returns the anonymous functions used to define
-%   the CHEBFUN. If N is an integer, FA is a function handle; if N is a
-%   vector, FA is a cell array of function handles.
+%   [F,FA] = GALLERYTRIG(NAME) also returns the anonymous function used to
+%   define the function.
+%
+%   gibbs        Gibbs-Wilbraham approximation of a square wave
+%   gibbsinterp  Interpolant of a square wave
+%   weierstrass  The first eight terms of the pathological function
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% These cell arrays collect the functions, domains, and prefs.
-funcs = cell(1);
-prefs = cell(1);
 
-%%
-% Here are the functions for the gallery.
-
-% From ATAP, Chapter 9 (made periodic)
-funcs{1} = @(x) cos(2*pi*x) - cos(6*pi*x)/3 + cos(10*pi*x)/5 ...
-              - cos(14*pi*x)/7 + cos(18*pi*x)/9;
-prefs{1} = {}; % 'trig' is included in the construction below
-
-% From Hadrien's thesis (p. 18)
-funcs{2} = @(x) cos(8*sin(pi*x+1/7));
-prefs{2} = {};
-
-% From Hadrien's thesis (p. 19)
-funcs{3} = @(x) sin(6*pi*(x+1)) + sin(20*exp(sin(pi*(x+1))));
-prefs{3} = {};
-
-% From Hadrien's thesis (p. 27)
-if ( any(nn == 4) )
-    L = chebop(@(x,u) diff(u) + (1+sin(cos(10*pi*(x+1)))).*u, [-1 1], 'periodic');
-    f = L \ chebfun(@(x) exp(sin(pi*(x+1))));
-    funcs{4} = @(x) f(x);
-    prefs{4} = {};
+% If the user did not supply an input, return a random function
+% from the gallery.
+if ( nargin == 0 )
+    names = {'gibbs', 'gibbsinterp', 'weierstrass'};
+    name = names{randi(length(names))};
 end
 
-% % From Hadrien's thesis (p. 18)
-% funcs{} = @(x) cos(8*sin(2*pi*x+1/7));
-% prefs{} = {};
+% The main switch statement.
+switch name
 
-% % From Hadrien's thesis (p. 18)
-% funcs{} = @(x) cos(8*sin(2*pi*x+1/7));
-% prefs{} = {};
+    % Function from SIAM 100-digit challenge
+    case 'gibbs'
+        n = 31;
+        N = (1:2:n)';
+        fa = @(x) sum(4/pi * sin(bsxfun(@times,N,x(:)')) ...
+                            ./ (N*ones(1,length(x))) )';
+        f = chebfun(fa, [-pi pi], 'trig');
 
-% DEVELOPER NOTE: If you add a new function here, be sure to change the help
-% text to reflect the total number of functions available!
+    % Interpolant of a square wave
+    case 'gibbsinterp'
+        n = 31;
+        fa = @(x) 2*(x > 0) - 1;
+        f = chebfun(fa, [-pi pi], 'trig', 2*n+1);
 
+    % The first eight terms of the pathological function
+    case 'weierstrass'
+        k = 8;
+        K = (1:k)';
+        fa = @(x) sum( 2.^-(K*ones(1,length(x))) ...
+                    .* cos(bsxfun(@times, 4.^K, x(:)')) )';
+        f = chebfun(fa, [-pi/4 pi/4], 'trig');
 
-% Parse the input:
-indx_goodvalues = ismember(nn, 1:length(funcs));
-if ( any(indx_goodvalues == 0) )
-    % The user passed bad values (e.g. non-integers or too big a number),
-    % so remove them.
-    nn = nn(indx_goodvalues);
+    % Error if the input is unknown.
+    otherwise
+        error('CHEB:GALLERY:unknown:unknownFunction', ...
+            'Unknown function.')
 
-    % If the user passed at least one valid integer, just issue a warning
-    % and move on. If the user did not issue any valid integers, give an
-    % error.
-    if ( length(nn) )
-        warning('CHEBFUN:CHEB:gallery:input', 'Ignoring bad input values.')
-    else
-        error('CHEBFUN:CHEB:gallery:input', ...
-            'Input value(s) are not valid integers.')
-    end
-end
-
-% Assemble the output:
-F  = [];    % A quasimatrix of the chebfuns.
-FA = {};    % A cell array of the function handles.
-
-% Construct only the chebfuns that the user wants.
-for n = nn(:)'
-    f = chebfun(funcs{n}, [-1 1], 'trig', prefs{n}{:});
-    F = [F, f];
-    FA = {FA{:}, funcs{n}};
-end
-
-% If the user only wants one function, don't output
-% the anonymous function as a cell array.
-if ( length(nn) == 1 )
-    FA = FA{1};
 end
 
 end
