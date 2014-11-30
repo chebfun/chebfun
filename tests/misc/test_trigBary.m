@@ -52,4 +52,8 @@ difference = q(xk) - trigBary(xk, q(xk), xk, [-2, 2]);
 err = norm(difference(:), Inf);
 pass(6) = err < tol;
 
+% Test trigBaryWeights():
+n = 2500;
+w = trigBaryWeights(rand(n,1));
+pass(7) = abs(norm(w, inf) - 1) < eps && length(w) == n;
 end
