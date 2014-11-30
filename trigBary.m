@@ -11,10 +11,28 @@ function fx = trigBary(x, fvals, xk, dom)
 %   If size(FVALS, 2) > 1 then TRIGBARY(X, FVALS) returns values in the form
 %   [F_1(X), F_2(X), ...], where size(F_k(X)) = size(X) for each k.
 %
-% See also BARY
+% REFERENCES:
+%   [1] Berrut, Jean-Paul. "Baryzentrische Formeln zur trigonometrischen 
+%   Interpolation (I)." Zeitschrift für angewandte Mathematik und Physik 
+%   ZAMP 35.1 (1984): 91-105.
+% 
+%   [2] Henrici, Peter. "Barycentric formulas for interpolating trigonometric 
+%   polynomials and their conjugates." Numerische Mathematik 33.2 
+%   (1979): 225-234.
+%
+% See also BARY(), TRIGBARYWEIGHTS()
+
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
+
+
+
+% For references, see
+
+% 
+
+
 
 % Parse inputs:
 [n, m] = size(fvals);
