@@ -34,9 +34,15 @@ classdef chebguiController
         % Deal with what happens when BCs get changed.
         handles = callbackBCs(handles, inputString, type)
         
+        % Change font size in CHEBGUI
+        handles = changeFontsize(handles, change)
+        
         % Clear everything in the CHEBGUI window
         handles = clear(handles)
-
+        
+        % Draw the Chebfun logo on the GUI:
+        handles = drawLogo(handles)
+        
         function initialiseFigureBottom(handles)
             %INITIALISEFIGUREBOTTOM    Reset bottom figure of CHEBGUI.
 
@@ -61,9 +67,41 @@ classdef chebguiController
             chebguiController.initialiseFigureBottom(handles);
             chebguiController.initialiseFigureTop(handles);
         end
+        
+        function handles = initialiseMenus(handles)
+            %INITALISEMENUS    Create menu items for CHEBGUI
+            
+            % Don't want to create the menus if they have already been created
+            % (e.g. if we call CHEBGUI again from the command line when it's
+            % already open):
+            if ( isfield(handles,'demosLoaded') )
+                return
+            end
+            
+            % For ODE problems
+            handles.menu_bvps = uimenu(handles.menu_demos, ...
+                'label', 'ODE - Scalar BVPs');
+            handles.menu_systems = uimenu(handles.menu_demos, ...
+                'label', 'ODE - Coupled BVPs');
+            handles.menu_ivps = uimenu(handles.menu_demos, ...
+                'label', 'ODE - Scalar IVPs', 'separator', 'on');
+            handles.menu_IVPsystems = uimenu(handles.menu_demos, ...
+                'label', 'ODE - Coupled IVPs');
 
-        
-        
+            % For EIG problems
+            handles.menu_eigsscalar = uimenu(handles.menu_demos, ...
+                'label', 'EIG - Scalar','separator','on');
+            handles.menu_eigssystem = uimenu(handles.menu_demos, ...
+                'label', 'EIG - Systems');
+            
+            % For PDE problems
+            handles.menu_pdesingle = uimenu(handles.menu_demos, ...
+                'label', 'PDE - Scalar','separator','on');
+            handles.menu_pdesystems = uimenu(handles.menu_demos, ...
+                'label', 'PDE - Systems');
+                        
+        end
+                
         % Initialize fonts of the CHEBGUI window
         handles = initalizeFields(handles)
         
@@ -71,13 +109,19 @@ classdef chebguiController
         plotEigenmodes(handles, selection, h1, h2)
         
         % Populate the fields of the CHEBGUI figure.
-        initSuccess = populate(handles, guifile)
+        populate(hObject, handles, guifile)
         
         % Load the menu in CHEBGUI of demos.
         loadDemoMenu(handles)
         
+        % Set-up the panels on CHEBGUI
+        handles = setupPanels(handles);
+        
+        % Set-up the panels on CHEBGUI
+        handles = setupPanelType(handles);
+        
         % Switch between different modes in CHEBGUI (BVP, EIG or PDE).
-        handles = switchMode(handles, newMode, callMode)
+        handles = switchMode(handles, newMode)
         
     end
     

@@ -140,6 +140,9 @@ classdef chebguiExporter
                 case 'eig'
                     obj = chebguiExporterEIG;
 
+                case 'ivp'
+                    obj = chebguiExporterIVP;
+                    
                 case 'pde'
                     obj = chebguiExporterPDE;
                     

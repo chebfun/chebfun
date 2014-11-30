@@ -48,7 +48,7 @@ function [u, info] = solvebvp(N, rhs, varargin)
 %       uv = solvebvp(N, [0; 0]);
 %
 % See also: CHEBOP, CHEBOP/MLDIVIDE, CHEBOPPREF, CHEBOP/SOLVEBVPLINEAR,
-%   CHEBOP/SOLVEBVPNONLINEAR, LINOP/MLDIVIDE.
+%   CHEBOP/SOLVEBVPNONLINEAR, CHEBOP/SOLVEIVP, LINOP/MLDIVIDE.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -98,8 +98,13 @@ x = chebfun(@(x) x, dom);
 % Determine the discretization.
 pref = determineDiscretization(N, L, isPrefGiven, pref);
 
-% Clear boundary conditions if using TRIGCOLLOC.
-if ( isequal(pref.discretization, @trigcolloc) )
+% Clear boundary conditions if the dicretization uses periodic functions (since
+% if we're using periodic basis functions, the boundary conditions will be
+% satisfied by construction).
+discPreference = pref.discretization();
+tech = discPreference.returnTech();
+techUsed = tech();
+if ( isPeriodicTech(techUsed) )
     [N, L] = clearPeriodicBCs(N, L);
 end
 
@@ -157,8 +162,6 @@ end
 
 % Ensure that u0 is of correct discretization, and convert it to a
 % CHEBMATRIX if necessary.
-discPreference = pref.discretization();
-tech = discPreference.returnTech();
 if ( isa(u0, 'chebfun') )
     u0 = chebmatrix(chebfun(u0, dom, 'tech', tech));
 elseif ( isa(u0, 'chebmatrix') )
@@ -176,7 +179,7 @@ else
     % Create initial guess which satisfies the linearised boundary conditions:
     if ( isempty(N.init) )
         
-        if ( ~isequal(pref.discretization, @trigcolloc) )
+        if ( ~isPeriodicTech(techUsed) )
             % Find a new initial guess that satisfies the BCs of L.
             % If we are using TRIGCOLLOC, we don't need to do that because 
             % the zero CHEBFUN is periodic.
@@ -211,9 +214,6 @@ warning(warnState);
 if ( all(size(u) == [1 1]) )
     u = u{1};
 end
-
-% Simplify the result:
-u = simplify(u);
 
 % Return the linearity information as well:
 info.isLinear = isLinear;

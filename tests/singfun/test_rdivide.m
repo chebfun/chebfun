@@ -130,7 +130,7 @@ function result = test_division_by_scalar(f, fh, c, x)
     g = f./c;
     g_exact = @(x) fh(x)./c;
     result = norm(feval(g, x) - g_exact(x), inf) <= ...
-        2e2*get(g, 'vscale')*get(g, 'epslevel');
+        2e3*get(g, 'vscale')*get(g, 'epslevel');
 end
 
 % Test the division of two SINGFUN objects F and G, specified by FH and

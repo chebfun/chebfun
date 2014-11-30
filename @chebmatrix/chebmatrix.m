@@ -199,6 +199,16 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             A.blocks = transpose(A.blocks);
         end
         
+        function l = length(A)
+            %LENGTH    Length of a CHEBMATRIX
+            %
+            % LENGTH(A) returns the length of the CHEBMATRIX A. It is equivalent
+            % to MAX(SIZE(A)) for non-empty CHEBMATRIX objects and 0 for empty 
+            % ones.
+            l = max(size(A));
+        end
+   
+        
         function varargout = loglog(A, varargin)
         %LOGLOG   Log-log plot of a CHEBMATRIX.
         %   Note that no warning is thrown for negative data.

@@ -67,19 +67,6 @@ classdef smoothfun < onefun % (Abstract)
     end
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% STATIC METHODS:
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    methods ( Access = public, Static = true ) 
-        
-        % Construct a rational interpolant to equispaced data.
-        f = funqui(vals)
-        
-        % barycentric weights of Floater-Horman interpolant.
-        w = fhBaryWts(n, d)
-        
-    end
-    
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% NON-STATIC METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false ) 
@@ -99,7 +86,7 @@ classdef smoothfun < onefun % (Abstract)
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% PRIVATE METHODS IMPLEMENTED IN THIS FILE:
+%% Class-related functions: private utilities for this m-file.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function f = funqui(vals)
@@ -109,7 +96,7 @@ function f = funqui(vals)
 %   interpolation [Numer. Math. 107, 315-331 (2007)] with an adaptive choice 
 %   of their blending degree d.
 
-n = length(vals) - 1;
+n = size(vals,1) - 1;
 
 % Limit the maximal d to try depending on n:
 if ( n < 60 )  
@@ -128,7 +115,11 @@ end
 errs = zeros(1, min(n, maxd) - 1);
 x = linspace(-1, 1, n+1)';
 xrm = x;
-rmIndex = [2, n-1];
+if ( n > 2 )
+    rmIndex = [2, n-1];
+else
+    rmIndex = [];
+end
 xrm(rmIndex) = [];
 
 % Take arbitrary linear combination of the columns for array-valued

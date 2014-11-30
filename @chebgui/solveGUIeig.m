@@ -42,7 +42,6 @@ eigVarName = expInfo.lname;
 sigma = expInfo.sigma;
 K = str2double(expInfo.K);
 rhsString = expInfo.rhsString;
-discretization = expInfo.discretization;
 
 % Are we working with a generalized eigenvalue problem?
 generalized = expInfo.generalized;

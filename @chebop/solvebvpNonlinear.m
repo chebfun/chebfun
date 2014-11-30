@@ -215,6 +215,9 @@ while ( ~terminate )
     
 end
 
+% Simplify the result before returning it and printing solver info:
+u = simplify(u);
+
 % Evaluate how far off we are from satisfying the boundary conditions.
 errEstBC = normBCres(N, u, x, diffOrder, pref);
 
@@ -313,7 +316,6 @@ end
 
 % Evaluate and linearise the remaining constraints:
 if ( ~isempty(N.bc) || isequal(pref.discretization, @trigcolloc) )
-    
     % Periodic case. 
     if ( (isa(N.bc, 'char') && strcmpi(N.bc, 'periodic')) || ...
             isequal(pref.discretization, @trigcolloc) )
@@ -336,7 +338,6 @@ if ( ~isempty(N.bc) || isequal(pref.discretization, @trigcolloc) )
         bcU = N.bc(x, uBlocks{:});
         bcNorm = bcNorm + norm(bcU, 2).^2;
     end
-    
 end
 
 bcNorm = sqrt(bcNorm);
