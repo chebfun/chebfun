@@ -1,25 +1,33 @@
 function handles = setupPanelInput(handles)
-%SETUPPANELS    Populate the panels on CHEBGUI
+%SETUPPANELS    Populate the input panel on CHEBGUI
 
-% Background colour for text fields:
+% Background colour for text fields. Ensure that we're using the same one as
+% found on the button panel.
 textBackgroundColour = get(handles.panel_buttons, 'BackgroundColor');
+% Specify the font size of inputs with monospaced font.
 monospacedFontsize = 12;
+% Specify the font size of panels and text with non-monospaced font.
 textFontsize = 12;
-textHeight = 0.05;
+% Specify the left margin of the sub-panels.
 panelLeftMargin = 0.01;
+% Specify the widht of the sub-panels (such as inputs for differential equation
+% and boundary conditions).
 panelWidth = .975;
+% Specify the height of the sub-panels.
 panelHeight = 0.29;
+% The margin where we start the bottom most panel.
 bottomPanelMargin = 0.005;
+% The left margin for the input boxes inside the subpanels.
 inputBoxLeftMargin = 0.025;
+% The width of the input boxes within the subpanels.
 inputBoxWidth = .95;
-
 %% Setup the input panel
 handles.panel_input = uipanel('Parent', handles.mainWindow, ...
     'BackgroundColor', textBackgroundColour, ...
     'Position', [.46305931321540095 .244 .36 .75275], ...
     'BorderType', 'etchedin');
 
-%% Panel for domain
+%% Panel for space domain
 handles.panel_domain = uipanel('Parent', handles.panel_input, ...
     'Title', 'Domain', 'Titleposition', 'centertop',...
     'BackgroundColor', textBackgroundColour, ...
@@ -28,8 +36,7 @@ handles.panel_domain = uipanel('Parent', handles.panel_input, ...
     'BorderType', 'etchedin');
 
 handles.input_domain = uicontrol('Parent', handles.panel_domain, ...
-    'Style', 'edit', ...
-    'String','', ...
+    'Style', 'edit', 'String','', ...
     'FontSize', monospacedFontsize, 'BackgroundColor', [1 1 1], ...
     'FontName', 'Monospaced', ...
     'Callback', @(hObject, eventdata) ...
@@ -45,14 +52,11 @@ handles.panel_timedomain = uipanel('Parent', handles.panel_input, ...
     'BorderType', 'etchedin','visible','off');
 
 handles.input_timedomain = uicontrol('Parent', handles.panel_timedomain, ...
-    'Style', 'edit', ...
-    'String','', ...
+    'Style', 'edit', 'String','', 'FontName', 'Monospaced', ...
     'FontSize', monospacedFontsize, 'BackgroundColor', [1 1 1], ...
-    'FontName', 'Monospaced', ...
     'Callback', @(hObject, eventdata) ...
         input_timedomain_Callback(hObject, guidata(hObject)), ...
     'Units', 'normalized', 'Position', [.15 0.15 0.7 .8]);
-
 
 %% Panel for differential equations
 handles.panel_DEs = uipanel('Parent', handles.panel_input, ...
@@ -85,7 +89,7 @@ handles.panel_BCs = uipanel('Parent', handles.panel_input, ...
     'BorderType', 'etchedin');
 
 handles.input_BC = uicontrol('Parent', handles.panel_BCs, ...
-    'Style', 'edit', 'Max', 2, 'Min',0, ...
+    'Style', 'edit', 'Max', 2, 'Min', 0, ...
     'HorizontalAlignment', 'left', ...
     'FontSize', monospacedFontsize, 'BackgroundColor', [1 1 1], ...
     'FontName', 'Monospaced', ...
@@ -106,7 +110,7 @@ handles.panel_leftBCs = uipanel('Parent', handles.panel_input, ...
     'FontSize', textFontsize, ...
     'BorderType', 'etchedin', 'visible','off');
 handles.input_LBC = uicontrol('Parent', handles.panel_leftBCs, ...
-    'Style', 'edit', 'Max', 2, 'Min',0, ...
+    'Style', 'edit', 'Max', 2, 'Min', 0, ...
     'HorizontalAlignment', 'left', ...
     'FontSize', monospacedFontsize, 'BackgroundColor', [1 1 1], ...
     'FontName', 'Monospaced', ...
@@ -128,7 +132,7 @@ handles.panel_rightBCs = uipanel('Parent', handles.panel_input, ...
     'FontSize', textFontsize, ...
     'BorderType', 'etchedin', 'visible','off');
 handles.input_RBC = uicontrol('Parent', handles.panel_rightBCs, ...
-    'Style', 'edit', 'Max', 2, 'Min',0, ...
+    'Style', 'edit', 'Max', 2, 'Min', 0, ...
     'HorizontalAlignment', 'left', ...
     'FontSize', monospacedFontsize, 'BackgroundColor', [1 1 1], ...
     'FontName', 'Monospaced', ...
@@ -156,7 +160,7 @@ handles.text_initial = uicontrol('Parent', handles.panel_initialGuess, ...
 
 % Input box for initial guess
 handles.input_GUESS = uicontrol('Parent', handles.panel_initialGuess, ...
-    'Style', 'edit', 'Max', 2, 'Min',0, ...
+    'Style', 'edit', 'Max', 2, 'Min', 0, ...
     'HorizontalAlignment', 'left', ...
     'FontSize', monospacedFontsize, 'BackgroundColor', [1 1 1], ...
     'FontName', 'Monospaced', ...
@@ -209,7 +213,7 @@ handles.popupmenu_sigma = uicontrol('Parent', handles.panel_eigopts, ...
     'String',{'Smoothest eigenmodes', 'Largest magnitude', ...
     'Smallest magnitude', 'Largest real part', 'Smallest real part', ...
     'Largest imag. part', 'Smallest imag. part'}, ...
-    'FontSize', 10, 'BackgroundColor', [1 1 1], 'FontName', 'Monospaced', ...
+    'FontSize', 12, 'BackgroundColor', [1 1 1], ...
     'Callback', @(hObject, eventdata) ...
         popupmenu_sigma_Callback(hObject, guidata(hObject)), ...
     'Units', 'normalized', 'Position', [.15 0.15 0.7 .2]);
@@ -244,6 +248,7 @@ else
     handles.guifile.init = '';
 end
 
+% Update HOBJECT with the new information.
 guidata(hObject, handles);
 
 end
@@ -344,6 +349,8 @@ end
 end
 
 function input_GUESS_KeyPressFcn(hObject, eventdata, handles)
+% This method deals switching focus to the next element when TAB is pressed
+% within a CHEBGUI input window.
 if ( strcmp(eventdata.Key, 'tab') )
     if ( strcmp(eventdata.Modifier, 'shift') )
         uicontrol(handles.input_BC); 
@@ -355,14 +362,17 @@ end
 end
 
 function input_GUESS_ButtonDownFcn(hObject, eventdata, handles)
-
+% This method deals with opening a special input window if the input box is
+% right-clicked.
 chebguiEdit('chebguiWindow', handles.chebguimainwindow, 'input_GUESS');
 input_GUESS_Callback(hObject, eventdata, handles);
 
 end
 
 function input_domain_Callback(hObject, handles)
+% Called when the spacial domain input has been changed.
 
+% Get the input, and checks it validity.
 in = get(hObject, 'String');
 input = str2num(in);
 
@@ -381,11 +391,16 @@ elseif ( ~any(strfind(in, '[')) )
     set(hObject, 'String', in);
 end
 
+% When the domain has been changed, we can't expect to be able to use the
+% previously found solution as the initial guess.
 set(handles.input_GUESS, 'Enable', 'on');
 set(handles.toggle_useLatest, 'Value', 0);
 set(handles.toggle_useLatest, 'Enable', 'off');
 
+% Update the domain stored in the guifile.
 handles.guifile.domain = in;
+
+% Update HOBJECT with the new information.
 guidata(hObject, handles);
 
 end
@@ -418,11 +433,15 @@ for k = 1:numel(str)
         break
     end
 end
+
+% Update HOBJECT with the new information.
 guidata(hObject, handles);
 
 end
 
 function input_DE_KeyPressFcn(hObject, eventdata, handles)
+% This method deals switching focus to the next element when TAB is pressed
+% within a CHEBGUI input window.
 if ( strcmp(eventdata.Key, 'tab') )
     if ( strcmp(eventdata.Modifier, 'shift') )
         if ( get(handles.button_pde, 'value') )
@@ -439,26 +458,30 @@ end
 end
 
 function input_DE_ButtonDownFcn(hObject, eventdata, handles)
-
+% Open an edit box if the input is right-clicked.
 chebguiEdit('chebguiWindow', handles.chebguimainwindow, 'input_DE');
 input_DE_Callback(hObject, eventdata, handles);
 
 end
 
 function input_BC_ButtonDownFcn(hObject, eventdata, handles)
-
+% Open an edit box if the input is right-clicked.
 chebguiEdit('chebguiWindow', handles.chebguimainwindow, 'input_BC');
 input_BC_Callback(hObject, eventdata, handles);
 
 end
 
 function input_BC_Callback(hObject, handles)
+% Called after the boundary conditions have been entered.
 newString = cellstr(get(hObject, 'String'));
 newString = chebguiController.removeTabs(newString); % Remove tabs
 set(hObject, 'String', newString);
 handles = chebguiController.callbackBCs(handles, newString, 'bc');
 handles.guifile.BC = newString;
 
+% Check whether we need to switch from BVP mode to IVP mode or vice versa. This
+% can happen if we go from specifying conditions at both ends to only one end
+% (or vice versa).
 if (get(handles.button_bvp,'value') )
     % Is the problem now a BVP, IVP or FVP?
     isIorF = isIVPorFVP(handles.guifile);
@@ -474,10 +497,14 @@ elseif ( get(handles.button_ivp,'value') )
         handles.guifile.type = 'bvp';
     end    
 end
+
+% Update HOBJECT with the new information.
 guidata(hObject, handles);
 end
 
 function input_BC_KeyPressFcn(hObject, eventdata, handles)
+% This method deals switching focus to the next element when TAB is pressed
+% within a CHEBGUI input window.
 if ( strcmp(eventdata.Key, 'tab') )
     if ( strcmp(eventdata.Modifier, 'shift') )
         uicontrol(handles.input_DE); 
@@ -488,6 +515,7 @@ end
 end
 
 function input_LBC_Callback(hObject, handles)
+% Called after the left boundary condition has been entered (in PDE mode).
 newString = cellstr(get(hObject, 'String'));
 newString = chebguiController.removeTabs(newString); % Remove tabs
 set(hObject, 'String', newString);
@@ -498,6 +526,7 @@ end
 
 
 function input_RBC_Callback(hObject, handles)
+% Called after the right boundary condition has been entered (in PDE mode).
 newString = cellstr(get(hObject, 'String'));
 newString = chebguiController.removeTabs(newString); % Remove tabs
 set(hObject, 'String', newString);
@@ -507,6 +536,8 @@ guidata(hObject, handles);
 end
 
 function input_LBC_KeyPressFcn(hObject, eventdata, handles)
+% This method deals switching focus to the next element when TAB is pressed
+% within a CHEBGUI input window.
 if ( strcmp(eventdata.Key, 'tab') )
     if ( strcmp(eventdata.Modifier, 'shift') )
         uicontrol(handles.input_DE); 
@@ -517,6 +548,8 @@ end
 end
 
 function input_RBC_KeyPressFcn(hObject, eventdata, handles)
+% This method deals switching focus to the next element when TAB is pressed
+% within a CHEBGUI input window.
 if ( strcmp(eventdata.Key, 'tab') )
     if ( strcmp(eventdata.Modifier, 'shift') )
         uicontrol(handles.input_LBC); 
@@ -526,23 +559,23 @@ if ( strcmp(eventdata.Key, 'tab') )
 end
 end
 
-% DEVELOPER NOTE: These methods will open the CHEBGUIEDIT sub-GUI
-
 function input_LBC_ButtonDownFcn(hObject, eventdata, handles)
-
+% Open an edit box if the input is right-clicked.
 chebguiEdit('chebguiWindow', handles.chebguimainwindow, 'input_LBC');
 input_LBC_Callback(hObject, eventdata, handles);
 
 end
 
 function input_RBC_ButtonDownFcn(hObject, eventdata, handles)
-
+% Open an edit box if the input is right-clicked.
 chebguiEdit('chebguiWindow', handles.chebguimainwindow, 'input_RBC');
 input_RBC_Callback(hObject, eventdata, handles);
 
 end
 
 function input_timedomain_Callback(hObject, handles)
+% Called after the timedomain has been modified.
+
 % Passing time range for PDEs.
 str = get(hObject, 'String');
 if ( iscell(str) )
@@ -550,6 +583,8 @@ if ( iscell(str) )
 end
 num = str2num(str);
 
+% We'll input dialogs if we're not happy about the input. The following option
+% ensures those will be modal.
 options.WindowStyle = 'modal';
 
 % Indicates we had timedomain with negative spacing (0:-.1:1)
@@ -565,6 +600,7 @@ while ( isempty(num) )
     num = str2num(str);
 end
 
+% The time interval only consisted of two entries.
 while ( ~isempty(str) && (numel(num) < 3) )
     h = (num(2) - num(1))/20;
     def = sprintf('%s:%s:%s', num2str(num(1), '%0.0f'), num2str(h, '%0.2g'), ...
@@ -579,14 +615,20 @@ while ( ~isempty(str) && (numel(num) < 3) )
     num = str2num(str);
 end
 
+% Update the GUI with the new accepted input.
 set(handles.input_timedomain, 'String', str);
 handles.guifile.timedomain = str;
+
+% Update the HOBJECT.
 guidata(hObject, handles);
 
 end
 
 function edit_eigN_Callback(hObject, handles)
+% Called when the number of eigenvalues we look for changes.
 in = get(handles.edit_eigN, 'String');
+
+% Ensure that we got an integer input!
 if ( ~isempty(in) && isempty(str2num(in)) )
     errordlg('Invalid input. Number of eigenvalues must be an integer.', ...
         'Chebgui error', 'modal');
@@ -594,10 +636,15 @@ if ( ~isempty(in) && isempty(str2num(in)) )
 else
     handles.guifile.options.numeigs = in;
 end
+
+% Update HOBJECT with the new info.
 guidata(hObject, handles);
 end
 
 function popupmenu_sigma_Callback(hObject, handles)
+% Called when the type of eigenmodes we seek gets changes. This goes from a
+% human-friendly description, such as 'smallest magnitude', to an option
+% accepted by EIGS, such as 'sm'.
 selected = get(hObject, 'Value');
 switch ( selected )
     case 1

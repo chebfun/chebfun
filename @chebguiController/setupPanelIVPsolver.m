@@ -1,5 +1,5 @@
 function handles = setupPanelIVPsolver(handles)
-%SETUPPANELS    Populate the panels on CHEBGUI
+%SETUPPANELIVPSOLVER   Setup panel for the IVP solver option.
 
 % Background colour for text fields:
 textBackgroundColour = get(handles.panel_buttons, 'BackgroundColor');
@@ -7,6 +7,8 @@ textFontsize = 12;
 leftMargin = 0.025;
 textHeight = 0.45;
 vertLoc = linspace(.6,.05, 2);
+
+% When we start CHEBGUI, we don't want this panel to be visible.
 
 set(handles.panel_type,'Visible', 'off');
 % Create a panel for the problem type option:

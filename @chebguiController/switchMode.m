@@ -40,7 +40,7 @@ if ( strcmp(newMode, 'bvp') ) % Going into BVP mode
     handles = hideIterList(handles);
     
     % Show the initial guess panel, and ensure it has the correct title:
-    set(handles.panel_initialGuess,'Visible','on','Title','Initial guess');
+    set(handles.panel_initialGuess, 'Visible', 'on', 'Title', 'Initial guess');
     
     set(handles.panel_eigopts, 'Visible', 'Off')
         

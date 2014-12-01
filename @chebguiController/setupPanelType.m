@@ -1,5 +1,5 @@
 function handles = setupPanelType(handles)
-%SETUPPANELS    Populate the panels on CHEBGUI
+%SETUPPANELTYPE    Populate the problem type panel on CHEBGUI
 
 % Background colour for text fields:
 textBackgroundColour = get(handles.panel_buttons, 'BackgroundColor');

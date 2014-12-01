@@ -20,6 +20,8 @@ image(logoMat)
 % Make sure that the logo is displayed:
 set(handles.fig_logo, 'Visible', 'on');
 axis off
+% The following fixes the aspect ratio of the Chebfun logo, even as the CHEBGUI
+% window gets rescaled.
 daspect([1 1 1])
 
 end
