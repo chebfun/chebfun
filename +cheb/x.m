@@ -1,5 +1,5 @@
 function out = x
-%X   A chebfun of the identity on [-1, 1].
+%X   A chebfun of the identity on [-1,1].
 %   CHEB.X is shorthand for the expression CHEBFUN(@(X) X).
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
