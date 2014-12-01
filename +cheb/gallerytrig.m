@@ -21,6 +21,7 @@ function [f,fa] = gallerytrig(name)
 %   gibbs        Gibbs-Wilbraham approximation of a square wave
 %   gibbsinterp  Interpolant of a square wave
 %   tsunami      Solution to periodic ODE
+%   wavepacket   Cosine modulated by Gaussian
 %   weierstrass  First 8 terms of Weierstrass fractal
 %
 %   Gallery functions are subject to change in future releases of Chebfun.
@@ -35,7 +36,7 @@ function [f,fa] = gallerytrig(name)
 % from the gallery.
 if ( nargin == 0 )
     names = {'amsignal', 'fmsignal', 'gibbs', 'gibbsinterp', ...
-        'tsunami', 'weierstrass'};
+        'tsunami', 'wavepacket', 'weierstrass'};
     name = names{randi(length(names))};
 end
 
@@ -72,6 +73,11 @@ switch lower(name)
         L = chebop(op, [-pi,pi], 'periodic');
         f = L\1;
         fa = @(x) f(x);
+
+    % Cosine modulated by Gaussian
+    case 'wavepacket'
+        fa = @(x) exp(-5*x.^2).*cos(50*x);
+        f = chebfun(fa, [-pi pi], 'trig');
 
     % The first eight terms of the pathological function
     case 'weierstrass'

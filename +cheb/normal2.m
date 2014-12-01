@@ -15,8 +15,9 @@ function p = normal2(mu,Sigma,dom)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if any(eig(Sigma) < 0)
-    error('Covariance matrix must be positive definite.')
+if ( any(eig(Sigma) < 0) || norm(Sigma - Sigma') > 0 )
+    error('CHEB:NORMAL2:covariance:nonSymPosDef', ...
+        'Covariance matrix must be symmetric positive definite.')
 end
 
 if nargin < 3

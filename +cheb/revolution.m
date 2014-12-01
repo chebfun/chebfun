@@ -22,7 +22,7 @@ function [SA,V,zC,I] = revolution(f)
 % See http://www.chebfun.org/ for Chebfun information.
 
 
-if min(f) < 0
+if min(f) < -1e-15
     error('Radius of the revolved surface must be nonnegative.')
 end
 
@@ -32,7 +32,7 @@ V = pi*sum(f.^2);
 zC = pi/V*sum(z.*f.^2);
 I = pi/2*sum(f.^4);
 
-if nargout<=1
+if nargout <= 1
     result.surfaceArea = SA;
     result.volume = V;
     result.centroidZ = zC;
