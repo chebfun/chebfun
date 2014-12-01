@@ -1,8 +1,8 @@
 The purpose of this package is to provide extra capabilities not found in the
-core Chebfun classes and functions. To be added to this folder, functions must
-have the following properties:
+core Chebfun classes and functions. To be added to this folder, a function
+must have the following properties:
 
-1. No other functions can depend on it.
+1. No other functions depend on it.
 
 2. It depends only on built-in MATLAB and core Chebfun.
 
