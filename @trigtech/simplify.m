@@ -43,14 +43,14 @@ if ( fIsEven )
     % In this case the negative coefficients have an additional term
     % corresponding to the cos(N/2*x) coefficient. We account for this by
     % making the positive coefficients symmetric.
-    numPorNCoeffs = numCoeffs/2+1;
-    cn = c(numPorNCoeffs:-1:1,:);
-    cn(numPorNCoeffs,:) = 0.5*cn(numPorNCoeffs,:);
-    cp = [c(numPorNCoeffs:numCoeffs,:); cn(numPorNCoeffs,:)];
+    numModes = numCoeffs/2+1;
+    cn = c(numModes:-1:1,:);
+    cn(numModes,:) = 0.5*cn(numModes,:);
+    cp = [c(numModes:numCoeffs,:); cn(numModes,:)];
 else
-    numPorNCoeffs = (numCoeffs+1)/2;
-    cp = c(numPorNCoeffs:numCoeffs,:);
-    cn = c(numPorNCoeffs:-1:1,:);
+    numModes = (numCoeffs+1)/2;
+    cp = c(numModes:numCoeffs,:);
+    cn = c(numModes:-1:1,:);
 end
 
 % Need to check both the positive and negative coefficients in the Fourier
