@@ -83,10 +83,24 @@ end
 %% Convert to a first-order system
 
 % We call the conversion methods of the TREEVAR class, the call depends on
-% whether we're dealing with a system or not.
-[anonFun, varIndex, problemDom, coeffs, diffOrders] = ...
-    treeVar.toFirstOrder(N.op, rhs, N.domain);
-
+% whether we're dealing with a system or not. We don't support integral
+% equations, so listen out for warnings that the TREEVAR class throws if it
+% encounters unsupported methods.
+try
+    [anonFun, varIndex, problemDom, coeffs, diffOrders] = ...
+        treeVar.toFirstOrder(N.op, rhs, N.domain);
+catch ME
+    % Did we encounter an unsupported method? If so, try to solve it globally:
+    if ( ~isempty(regexp(ME.identifier, 'CHEBFUN:TREEVAR:.+:notSupported', ...
+            'once')) )
+        [y, info] = solvebvp(N, rhs, pref, varargin{:});
+        return
+    else
+        % Otherwise, an unexpected error occured, rethrow it.
+        rethrow(ME);
+    end
+end
+    
 % Join all breakpoints, which can either be specified by the CHEBOP, or arise
 % from discontinuous coefficients in the problem.
 dom = union(N.domain, problemDom);
