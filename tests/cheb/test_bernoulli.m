@@ -1,5 +1,5 @@
-function pass = test_bernoulli(pref)
-
+function pass = test_bernoulli(~)
+%TEST_BERNOULLI   Test that the Bernoulli method doesn't crash.
 pass = doesNotCrash(@() cheb.bernoulli(4));
 
 end

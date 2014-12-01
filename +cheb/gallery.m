@@ -48,6 +48,13 @@ function [f,fa] = gallery(name)
 % If the user did not supply an input, return a random function from the
 % gallery.
 if ( nargin == 0 )
+    % NOTE [AB, 2014/12/01]: This is not a particularly scalable way of
+    % implementing cheb.gallery. A better approach would be that each gallery
+    % function lived in a separate m-file, and could return it's name,
+    % description, and the required outputs, F and FA. That way, we would get
+    % rid of the switch statement below. Furthermore, this would make the
+    % testing of gallery easier, as we wouldn't have to update the list of
+    % input options there.
     names = {'airy', 'bessel', 'blasius', 'bump', 'chirp', 'erf', ...
         'fishfillet', 'gamma', 'gaussian', 'jitter', 'kahaner', 'motto', ...
         'rose', 'runge', 'seismograph', 'si', 'sinefun1', 'sinefun2', ...

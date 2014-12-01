@@ -1,4 +1,4 @@
-function pass = test_gallery2(pref)
+function pass = test_gallery2(~)
 
 names = {'airyreal', 'airycomplex', 'challenge', 'bump', 'peaks', ...
     'rosenbrock', 'smokering', 'waffle'};
@@ -18,7 +18,7 @@ end
 % Test error for unknown function.
 pass(N+2) = false;
 try
-    [f,fa] = cheb.gallery2('asdfasdfasdfasdf');
+    [f, fa] = cheb.gallery2('asdfasdfasdfasdf');
 catch ME
     if strcmpi(ME.identifier, 'CHEB:GALLERY2:unknown:unknownFunction')
         pass(N+2) = true;

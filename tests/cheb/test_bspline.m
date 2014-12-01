@@ -1,4 +1,5 @@
-function pass = test_bspline(pref)
+function pass = test_bspline(~)
+%TEST_BERNOULLI   Test that the cheb.bpsline method doesn't crash.
 
 pass = doesNotCrash(@() cheb.bspline(4));
 

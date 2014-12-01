@@ -18,7 +18,7 @@ end
 % Test error for unknown function.
 pass(N+2) = false;
 try
-    [f,fa] = cheb.gallerytrig('asdfasdfasdfasdf');
+    [f, fa] = cheb.gallerytrig('asdfasdfasdfasdf');
 catch ME
     if strcmpi(ME.identifier, 'CHEB:GALLERYTRIG:unknown:unknownFunction')
         pass(N+2) = true;
