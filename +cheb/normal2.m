@@ -1,15 +1,15 @@
-function p = normal2(mu,Sigma,dom)
+function p = normal2(mu, Sigma, dom)
 %NORMAL2   Bivariate normal distribution.
-%   NORMAL2(MU,SIGMA,DOMAIN) returns the joint probability density for two
-%   variables whose means are in the vector MU and whose covariance is the
-%   2x2 positive definite matrix SIGMA. The result is a chebfun2 defined on
-%   the (finite) domain DOMAIN.
+%   NORMAL2(MU, SIGMA, DOMAIN) returns the joint probability density for two
+%   variables whose means are in the vector MU and whose covariance is the 2x2
+%   positive definite matrix SIGMA. The result is a chebfun2 defined on the
+%   (finite) domain DOMAIN.
 %
-%   If DOMAIN is not supplied, the domain is taken to be large enough to
-%   make the density essentially zero at the boundary.
+%   If DOMAIN is not supplied, the domain is taken to be large enough to make
+%   the density essentially zero at the boundary.
 %
 %   Example:
-%      p = cheb.normal2([1,0],[1 1;1 5]);
+%      p = cheb.normal2([1,0], [1 1;1 5]);
 %      surf(p)
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.

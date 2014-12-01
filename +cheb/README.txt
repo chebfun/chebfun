@@ -1,6 +1,6 @@
 The purpose of this package is to provide extra capabilities not found in the
-core Chebfun classes and functions. To be added to this folder, a function
-must have the following properties:
+core Chebfun classes and functions. To be added to this folder, a function must
+have the following properties:
 
 1. No other functions depend on it.
 

@@ -27,6 +27,7 @@ if min(f) < -1e-15
 end
 
 z = chebfun(@(z) z,domain(f));
+% Compute the quantities of interest using well known formulas from calculus.
 SA = 2*pi*sum(f.*sqrt(1 + abs(diff(f)).^2));
 V = pi*sum(f.^2);
 zC = pi/V*sum(z.*f.^2);
