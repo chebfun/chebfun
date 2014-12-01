@@ -16,7 +16,7 @@ function B = bspline(m)
 % See http://www.chebfun.org/ for Chebfun information.
 
 s = chebfun(1, [-.5 .5]);
-B =  chebmatrix(s);
+B = chebmatrix(s);
 for k = 1:m-1
     B(k+1) = conv(B{k}, s);
 end

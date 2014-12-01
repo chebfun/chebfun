@@ -83,7 +83,7 @@ switch lower(name)
 
     % Error if the input is unknown.
     otherwise
-        error('CHEB:GALLERY:unknown:unknownFunction', ...
+        error('CHEB:GALLERYTRIG:unknown:unknownFunction', ...
             'Unknown function.')
 
 end
