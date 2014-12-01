@@ -10,7 +10,7 @@ monospacedFontsize = 12;
 textFontsize = 12;
 % Specify the left margin of the sub-panels.
 panelLeftMargin = 0.01;
-% Specify the widht of the sub-panels (such as inputs for differential equation
+% Specify the width of the sub-panels (such as inputs for differential equation
 % and boundary conditions).
 panelWidth = .975;
 % Specify the height of the sub-panels.
