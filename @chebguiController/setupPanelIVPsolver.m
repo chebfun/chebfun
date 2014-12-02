@@ -6,7 +6,7 @@ textBackgroundColour = get(handles.panel_buttons, 'BackgroundColor');
 textFontsize = 12;
 leftMargin = 0.025;
 textHeight = 0.45;
-vertLoc = linspace(.6,.05, 2);
+vertLoc = linspace(.6, .05, 2);
 
 % When we start CHEBGUI, we don't want this panel to be visible.
 
