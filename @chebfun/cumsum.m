@@ -44,6 +44,10 @@ if ( round(m) ~= m )
     return
 end
 
+if ( isdelta(f) )
+    f = pruneDeltas(f);
+end
+
 if ( ( dim == 1 && ~f(1).isTransposed ) || ( dim == 2 && f(1).isTransposed ) )
     % Continuous dimension:
     for k = 1:numel(f)
@@ -68,18 +72,17 @@ transState = f(1).isTransposed;
 for l = 1:m
 
     funs = {};
-    rVal = 0;
-    
+    rVal = 0;   
     % Main loop for looping over each piece and do the integration:
     for j = 1:numFuns
 
         % Call FUN/CUMSUM():        
-        [newFuns, rValNew] = cumsum(f.funs{j});
-        
+        newFuns = cumsum(f.funs{j});
+               
         if ( ~iscell( newFuns ) )
             newFuns = {newFuns};
         end
-        
+                        
         % Add the constant term that came from the left:
         for k = 1:numel(newFuns)
             newFuns{k} = newFuns{k} + rVal;
@@ -88,8 +91,9 @@ for l = 1:m
         % Store FUNs:
         funs = [funs, newFuns]; %#ok<AGROW>
         
+                    
         % Update the rval:
-        rVal = get(funs{end}, 'lval') + rValNew;
+        rVal = get(funs{end}, 'rval');
         
     end
     
@@ -118,6 +122,21 @@ else
             f(k) = f(k) + f(k-1);
         end
     end
+end
+
+end
+
+function f = pruneDeltas(f)
+%PRUNEDELTAS   Transfers deltas at the right endoint of funs to the next fun.
+for j = 1:numel(f)
+    fj = f(j);
+    nFuns = numel(fj.funs);
+    for k = 1:(nFuns-1);
+        if ( isdelta(fj.funs{k}) )
+            [fj.funs{k}, fj.funs{k+1}] = transferDeltas(fj.funs{k}, fj.funs{k+1});        
+        end
+        f(j) = fj;
+    end    
 end
 
 end
