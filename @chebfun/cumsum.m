@@ -135,8 +135,8 @@ for j = 1:numel(f)
         if ( isdelta(fj.funs{k}) )
             [fj.funs{k}, fj.funs{k+1}] = transferDeltas(fj.funs{k}, fj.funs{k+1});        
         end
-        f(j) = fj;
     end    
+    f(j) = fj;
 end
 
 end
