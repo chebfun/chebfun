@@ -414,8 +414,6 @@ if ( get(handles.button_bvp, 'Value') || get(handles.button_ivp, 'Value') )
         
     else % Show PLOTCOEFFS
         plotcoeffs(latestSolution, 'linewidth', 2)
-        title('Chebyshev coefficients of the solution')
-        grid on
         set(handles.popupmenu_bottomFig, 'Value', 2);
     end
     
@@ -1525,8 +1523,6 @@ switch ( newVal )
     case 2
         % User wants to see a PLOTCOEFFS plot..
         plotcoeffs(handles.latest.solution, 'linewidth', 2);
-        grid on
-        title('Chebyshev coefficients of the solution')
 end
 
 end

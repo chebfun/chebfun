@@ -171,8 +171,8 @@ if ( guiMode )
         info = struct('isLinear', 1, 'error', 0);
         
         % Hide the popup-menu for the choice of plots, as in this case, we'll
-        % only want to offer showing a plot of the Chebyshev coefficients, not
-        % the convergence of the Newton iteration.
+        % only want to offer showing a plot of the coefficients of the solution,
+        % not the convergence of the Newton iteration.
         set(handles.popupmenu_bottomFig,'Visible', 'off')
     end
 else
@@ -245,10 +245,9 @@ if ( guiMode )
         end
     else
         % If we're solving a linear problem, or using the MATLAB solvers, plot
-        % the Chebyshev coefficients instead.
+        % the coefficients of the solution instead.
         axes(handles.fig_norm)
         plotcoeffs(u, 'linewidth', 2)
-        title('Chebyshev coefficients of the solution')
         set(handles.popupmenu_bottomFig, 'Value', 2);
         grid on
     end
