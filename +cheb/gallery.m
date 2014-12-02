@@ -20,7 +20,7 @@ function [f,fa] = gallery(name)
 %   bump         C-infinity function with compact support
 %   blasius      Blasius function on [0,10]
 %   chirp        Sine with exponentially increasing frequency
-%   daubechies   Approx to Daubechies phi_2 wavelet scaling function
+%   daubechies   Approximation to Daubechies phi_2 wavelet scaling function
 %   erf          Error function on [-10,10]
 %   fishfillet   Wild oscillations from Extreme Extrema example
 %   gamma        Gamma function on [-4,4]
@@ -200,28 +200,30 @@ end
 
 
 function f = daubechies(n)
-% nth order polynomial approx to Daubechies scaling function phi_2
-[x,phi] = daub(n);
-f = chebfun([phi'; 0],[0 3],'equi');
+% nth order polynomial approximation to Daubechies scaling function phi_2
+[x, phi] = daub(n);
+f = chebfun([phi'; 0], [0 3], 'equi');
 
-    function [x,phi] = daub(n)
-    s = sqrt(3);
-    if n==0
-       x = 0:2;
-       phi = [0 (1+s)/2 (1-s)/2];
-    else
-       c = [1+s 3+s 3-s 1-s]/4;
-       [x2,phi2] = daub(n-1);
-       pp = [phi2 0*phi2];
-       N = 2^(n-1);
-       ii = 1:6*N;
-       phi = c(1)*pp(ii);
-       for k = 2:4
-          ii = ii([5*N+1:6*N 1:5*N]);
-          phi = phi + c(k)*pp(ii);
-       end
-       x = [x2 x2+3]/2;
-    end
+    function [x, phi] = daub(n)
+        s = sqrt(3);
+        if ( n == 0 )
+            % Base case of recursion.
+            x = 0:2;
+            phi = [0, (1+s)/2, (1-s)/2];
+        else
+            c = [1+s, 3+s, 3-s, 1-s]/4;
+            % Recursively call the daub() method.
+            [x2, phi2] = daub(n-1);
+            pp = [phi2, 0*phi2];
+            N = 2^(n-1);
+            ii = 1:6*N;
+            phi = c(1)*pp(ii);
+            for k = 2:4
+                ii = ii([(5*N + 1):6*N, 1:5*N]);
+                phi = phi + c(k)*pp(ii);
+            end
+            x = [x2, x2+3]/2;
+        end
     end
 
 end
