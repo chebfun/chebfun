@@ -22,17 +22,8 @@ function fx = trigBary(x, fvals, xk, dom)
 %
 % See also BARY(), TRIGBARYWEIGHTS()
 
-
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
-
-
-
-% For references, see
-
-% 
-
-
 
 % Parse inputs:
 [n, m] = size(fvals);
