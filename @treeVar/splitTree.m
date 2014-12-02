@@ -81,8 +81,14 @@ switch tree.numArgs
                 % We only had a derivative part on the right, so the
                 % non-derivative part only consists of the left part.
                 newTree = newTreeLeft;
+            elseif ( ~isstruct(newTreeLeft) && ~isstruct(newTreeRight) )
+                % Both left and right trees were actually a CHEBFUN or scalar,
+                % combine them in a single CHEBFUN/scalar and return as the
+                % NEWTREE.
+                newTree = eval([tree.method, '(newTreeLeft, newTreeRight)']);
             else
-                % Had non-derivative parts on both left and right, need to
+                % Had non derivative parts on both left and right, potentially a
+                % combination of CHEBFUN/scalars and syntax trees. Need to
                 % combine them.
                 if ( ~isstruct(newTreeLeft) )
                     % Left tree was actually a CHEBFUN or scalar, so the new

@@ -104,7 +104,7 @@ if ( strcmp(get(handles.button_solve, 'string'), 'Solve') )   % In solve mode
         guifile.options.discretization = @ultraS;
     end
     
-    % Call the private method solveGUIbvp, pde, or eig, which do the work.
+    % Call the private method solveGUIbvp, ivp, pde, or eig, which do the work.
     try
         if ( strcmpi(handles.guifile.type, 'bvp') )
             handles = solveGUIbvp(guifile, handles);

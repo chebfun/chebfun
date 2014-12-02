@@ -225,9 +225,9 @@ else
 end
 
 % Concatenate strings:
-str = [str ; sprintf('Discretization method used: %s. \n',  discString)];
-str = [str ; sprintf('Length of solution: %i.\n', length(chebfun(u)))];
-str = [str ; sprintf('Norm of residual: %.2e.\n', nrmRes)];
+str = [str ; sprintf('Discretization method used: %s.',  discString)];
+str = [str ; sprintf('Length of solution: %i.', length(chebfun(u)))];
+str = [str ; sprintf('Norm of residual: %.2e.', nrmRes)];
 
 % Update the information on the GUI:
 set(handles.iter_list, 'String',  str);

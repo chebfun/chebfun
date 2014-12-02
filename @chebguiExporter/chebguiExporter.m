@@ -70,7 +70,7 @@ classdef chebguiExporter
     methods ( Access = public, Static = false )
         
         function toFile(exporter, guifile, fileName, pathName)
-        %TOFILE   Export a CHEBGUI to an .m-file
+        %TOFILE   Export a CHEBGUI to an m-file
         %   TOFILE(EXPORTER, GUIFILE, FILENAME, PATHNAME) exports the CHEBGUI
         %   object GUIFILE to the file 'PATHNAME/FILENAME' using the
         %   CHEBGUIEXPORTER object EXPORTER (of BVP, EIG, or PDE kind).
@@ -223,7 +223,7 @@ classdef chebguiExporter
             end
             
             % Print first few lines of the .m-file:
-            fprintf(fid, ['%%%% %s -- an executable .m-file for solving ', ...
+            fprintf(fid, ['%%%% %s -- an executable m-file for solving ', ...
                 '%s.\n'], filename, e.description);
             fprintf(fid, ['%% Automatically created in CHEBGUI ', ...
                 'by user %s.\n'], userName);

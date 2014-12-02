@@ -114,8 +114,17 @@ classdef chebguiController
         % Load the menu in CHEBGUI of demos.
         loadDemoMenu(handles)
         
+        % Remove tabs from input
+        str = removeTabs(str)
+        
         % Set-up the panels on CHEBGUI
         handles = setupPanels(handles);
+        
+        % Set-up the input panel on CHEBGUI
+        handles = setupPanelInput(handles);
+        
+        % Set-up the IVP solver option panel on CHEBGUI
+        handles = setupPanelIVPsolver(handles);
         
         % Set-up the panels on CHEBGUI
         handles = setupPanelType(handles);

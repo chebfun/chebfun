@@ -56,7 +56,7 @@ isIorF = isIVPorFVP(guifile, expInfo.allVarNames);
 % Assert that we're actually solving an IVP!
 assert(logical(isIorF), 'CHEBFUN:CHEBGUI:solveGUIivp:problemType', ...
     ['Problem detected to be a boundary-value problem, but attempted to ' ...
-    'solve as an initial value problem. Please check problem specification']);
+    'solve as an initial value problem. Please check problem specification.']);
     
 % Reformulate the boundary condition so that we can assign it to the .LBC or
 % .RBC field below.

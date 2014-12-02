@@ -40,6 +40,18 @@ end
 % Do some error checking before we do further printing. Check that independent
 % variable name match.
 
+% Ensure that no EIG specific variables appear:
+eigNames = {'lambda'; 'lam'; 'l'};
+eigMatch = zeros(size(allVarNames));
+
+for eigNameCounter = 1:length(eigNames);
+    eigMatch = eigMatch + strcmp(allVarNames, eigNames{eigNameCounter});
+end
+
+assert(~any(eigMatch), 'CHEBFUN:CHEBGUIEXPORTER:exportInfo:eig', ...
+    ['Problem appears to be an eigenvalue problem. \n Please make sure ' ...
+    '''l'', ''lam'' or ''lambda'' do not appear in appear in input.']);
+
 % Obtain the independent variable name appearing in the initial condition:
 useLatest = strcmpi(initInput{1}, 'Using latest solution');
 if ( ~isempty(initInput{1}) && ~useLatest )
@@ -61,7 +73,7 @@ elseif ( ~isempty(indVarNameInit{1}) && isempty(indVarNameDE{1}) )
 elseif ( isempty(indVarNameInit{1}) && ~isempty(indVarNameDE{1}) )
     indVarNameSpace = indVarNameDE{1};
 else
-    indVarNameSpace = 'x'; % Default value
+    indVarNameSpace = 't'; % Default value for IVPs
 end
 
 % Replace the 'DUMMYSPACE' variable in the DE field

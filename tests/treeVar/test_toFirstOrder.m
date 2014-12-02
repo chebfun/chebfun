@@ -222,6 +222,80 @@ pass(4, problemNo) = norm(coeffs{1} - 5) + norm(coeffs{2} - cos(x)) + ...
     norm(coeffs{3} - 7) + norm(coeffs{4} - 1) < tol;
 pass(5, problemNo) = all( diffOrders == [2 2 1 3]);
 
+%% Scalar problem, multiple CHEBFUNs and scalars in operator, ver1
+% We have the equations 
+%   diff(u) + x + 3*x = tanh(x)
+% so expect the first order system to be:
+%   u'(1) = tanh(x) - 4*x
+problemNo = 13;
+myfun = @(x,u) diff(u) + x + 3*x;
+rhs = tanh(x);
+[anonFun, idx, domOut, coeffs, diffOrders] = treeVar.toFirstOrder(myfun, rhs, dom);
+correctFun = @(x,u) tanh(x) - 4*x;
+evalPt = [2.4 2.3];
+pass(1, problemNo) = norm(anonFun(1, evalPt) - correctFun(1, evalPt)) < tol;
+pass(2, problemNo) = all(idx == 1);
+pass(3, problemNo) = all(domOut == dom);
+pass(4, problemNo) = norm(coeffs{1} - 1) < tol;
+pass(5, problemNo) = all( diffOrders == 1);
+
+%% Scalar problem, multiple CHEBFUNs and scalars in operator, ver2
+% We have the equations 
+%   cos(x)*(2 - sin(x) + diff(u)) + x + 3*x = tanh(x)
+% so expect the first order system to be:
+%   u'(1) = (tanh(x) - 4*x)/cos(x) + sin(x) - 2
+problemNo = 14;
+myfun = @(x,u) cos(x).*(2 - sin(x) + diff(u)) + x + 3*x;
+rhs = tanh(x);
+[anonFun, idx, domOut, coeffs, diffOrders] = treeVar.toFirstOrder(myfun, rhs, dom);
+correctFun = @(x,u) (tanh(x) - 4*x)/cos(x) + sin(x) - 2;
+evalPt = [2.4 2.3];
+pass(1, problemNo) = norm(anonFun(1, evalPt) - correctFun(1, evalPt)) < tol;
+pass(2, problemNo) = all(idx == 1);
+pass(3, problemNo) = all(domOut == dom);
+pass(4, problemNo) = norm(coeffs{1} - cos(x)) < tol;
+pass(5, problemNo) = all( diffOrders == 1);
+
+%% Scalar problem, multiple CHEBFUNs and scalars in operator, ver3
+% We have the equations 
+%   2 - sin(x) + diff(u) + x + 3*x = tanh(x)
+% so expect the first order system to be:
+%   u'(1) = tanh(x) - 4*x + sin(x) - 2
+problemNo = 15;
+myfun = @(x,u) 2 - sin(x) + diff(u) + x + 3*x;
+rhs = tanh(x);
+[anonFun, idx, domOut, coeffs, diffOrders] = treeVar.toFirstOrder(myfun, rhs, dom);
+correctFun = @(x,u) tanh(x) - 4*x + sin(x) - 2;
+evalPt = [2.4 2.3];
+pass(1, problemNo) = norm(anonFun(1, evalPt) - correctFun(1, evalPt)) < tol;
+pass(2, problemNo) = all(idx == 1);
+pass(3, problemNo) = all(domOut == dom);
+pass(4, problemNo) = norm(coeffs{1} - 1) < tol;
+pass(5, problemNo) = all( diffOrders == 1);
+
+%% Simple coupled system, multiple CHEBFUNs and scalars in operator
+% We have the equations 
+%   4*(2 + diff(u)) + x + 3*x + 3*v = tanh(x)
+%   cos(x)*diff(v) + sin(x).*u + x + x = 2
+% so expect the first order system to be:
+%   u'(1) = (tanh(x) - 4*x - 3*u(2))/4 - 2
+%   u'(2) = (2 - 2*x -sin(x)*u(1))/cos(x)
+problemNo = 16;
+myfun = @(x,u,v) [...
+    4*(2 + diff(u)) + x + 3*x + 3*v; 
+    cos(x).*diff(v) + sin(x).*u + x + x];
+rhs = [tanh(x); 2];
+[anonFun, idx, domOut, coeffs, diffOrders] = treeVar.toFirstOrder(myfun, rhs, dom);
+correctFun = @(x,u) [...
+    (tanh(x) - 4*x - 3*u(2))/4 - 2;
+    (2 - 2*x - sin(x)*u(1))/cos(x)];
+evalPt = [2.4 2.3];
+pass(1, problemNo) = norm(anonFun(1, evalPt) - correctFun(1, evalPt)) < tol;
+pass(2, problemNo) = all(idx == [1 2]);
+pass(3, problemNo) = all(domOut == dom);
+pass(4, problemNo) = norm(coeffs{1} - 4) + norm(coeffs{2} - cos(x)) < tol;
+pass(5, problemNo) = all( diffOrders == [1 1]);
+
 %% Coupled systems -- Unsupported format, highest order derivatives in same eqn
 myfun = @(x,u,v) [diff(u,2) + diff(v,2); diff(u) + sin(v)];
 rhs = [1;2];

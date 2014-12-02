@@ -1,7 +1,7 @@
 function isIorF = isIVPorFVP(guifile, allVarNames)
 %ISIVPORFVP    Detect whether a GUI ODE is an IVP or FVP
 %
-% ISIORF = ISIVPORFVP(GUIFILE, BCINPUT, ALLVARNAMES), where
+% ISIORF = ISIVPORFVP(GUIFILE, ALLVARNAMES), where
 %   GUIFILE:     A CHEBGUI object
 %   ALLVARNAMES: A cell-string with the names of all variables that appear in
 %                the problem.

@@ -37,8 +37,21 @@ end
 [deString, allVarString, indVarNameDE, dummy, dummy, dummy, allVarNames] = ...
     setupFields(guifile, deInput, 'DE');
 
-% Do some error checking before we do further printing. Check that independent
-% variable name match.
+% Do some error checking before we do further printing. 
+
+% Ensure that no EIG specific variables appear:
+eigNames = {'lambda'; 'lam'; 'l'};
+eigMatch = zeros(size(allVarNames));
+
+for eigNameCounter = 1:length(eigNames);
+    eigMatch = eigMatch + strcmp(allVarNames, eigNames{eigNameCounter});
+end
+
+assert(~any(eigMatch), 'CHEBFUN:CHEBGUIEXPORTER:exportInfo:eig', ...
+    ['Problem appears to be an eigenvalue problem. \n Please make sure ' ...
+    '''l'', ''lam'' or ''lambda'' do not appear in appear in input.']);
+
+%Check that independent variable name match.
 
 % Obtain the independent variable name appearing in the initial condition:
 useLatest = strcmpi(initInput{1}, 'Using latest solution');
