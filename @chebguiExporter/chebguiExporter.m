@@ -228,7 +228,7 @@ classdef chebguiExporter
             fprintf(fid, ['%% Automatically created in CHEBGUI ', ...
                 'by user %s.\n'], userName);
             fprintf(fid, '%% Created %s at %s.\n\n', ...
-                datestr(floor(now)), datestr(rem(now, 1), 13));
+                datestr(floor(now), 'dd mmm yyyy'), datestr(rem(now, 1), 13));
             
             fprintf(fid, '%%%% Problem description.\n');
             
