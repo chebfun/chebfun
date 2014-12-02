@@ -6,7 +6,7 @@ textBackgroundColour = get(handles.panel_buttons, 'BackgroundColor');
 textFontsize = 12;
 leftMargin = 0.05;
 textHeight = 0.25;
-vertLoc = linspace(.75,.025, 4);
+vertLoc = linspace(.75, .025, 4);
 
 % Create a panel for the problem type option:
 handles.panel_type = uipanel('Parent', handles.panel_buttons, ...

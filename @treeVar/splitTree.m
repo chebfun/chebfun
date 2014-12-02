@@ -85,7 +85,7 @@ switch tree.numArgs
                 % Both left and right trees were actually a CHEBFUN or scalar,
                 % combine them in a single CHEBFUN/scalar and return as the
                 % NEWTREE.
-                newTree = eval([tree.method,'(newTreeLeft, newTreeRight)']);
+                newTree = eval([tree.method, '(newTreeLeft, newTreeRight)']);
             else
                 % Had non derivative parts on both left and right, potentially a
                 % combination of CHEBFUN/scalars and syntax trees. Need to

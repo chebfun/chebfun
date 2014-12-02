@@ -1,10 +1,8 @@
 function str = removeTabs(str)
 %REMOVETABS   Remove tabs from CHEBGUI input
-%
-% STROUT = REMOVETABS(STRIN) returns a string formed by removing all tabs from
-% STRIN.
+%   REMOVETABS(STRIN) returns a string formed by removing all tabs from STRIN.
 
-% Loop over the STR input (might be a cell-arrray):
+% Loop over the STR input (might be a cell-array):
 for k = 1:numel(str)
     % Initalise the index:
     idx = 1;
@@ -12,7 +10,7 @@ for k = 1:numel(str)
     strk = str{k};
     % Keep looping while we have tabs in STRK
     while ( ~isempty(idx) )
-        % Look for tabs ( char(9) is the tab character):
+        % Look for tabs (char(9) is the tab character):
         idx = strfind(strk, double(9));
         % Throw the tab away:
         strk(idx) = [];
