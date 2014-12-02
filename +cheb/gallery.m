@@ -20,6 +20,7 @@ function [f,fa] = gallery(name)
 %   bump         C-infinity function with compact support
 %   blasius      Blasius function on [0,10]
 %   chirp        Sine with exponentially increasing frequency
+%   daubechies   Approximation to Daubechies phi_2 wavelet scaling function
 %   erf          Error function on [-10,10]
 %   fishfillet   Wild oscillations from Extreme Extrema example
 %   gamma        Gamma function on [-4,4]
@@ -55,10 +56,10 @@ if ( nargin == 0 )
     % rid of the switch statement below. Furthermore, this would make the
     % testing of gallery easier, as we wouldn't have to update the list of
     % input options there.
-    names = {'airy', 'bessel', 'blasius', 'bump', 'chirp', 'erf', ...
-        'fishfillet', 'gamma', 'gaussian', 'jitter', 'kahaner', 'motto', ...
-        'rose', 'runge', 'seismograph', 'si', 'sinefun1', 'sinefun2', ...
-        'spikycomb', 'stegosaurus', 'wiggly', 'zigzag'};
+    names = {'airy', 'bessel', 'blasius', 'bump', 'chirp', 'daubechies', ...
+        'erf', 'fishfillet', 'gamma', 'gaussian', 'jitter', 'kahaner', ...
+        'motto', 'rose', 'runge', 'seismograph', 'si', 'sinefun1', ...
+        'sinefun2', 'spikycomb', 'stegosaurus', 'wiggly', 'zigzag'};
     name = names{randi(length(names))};
 end
 
@@ -94,6 +95,11 @@ switch lower(name)
     case 'chirp'
         fa = @(x) sin(x.*exp(x));
         f = chebfun(fa, [0 5]);
+
+    % Approx to Daubechies phi_2 wavelet scaling function
+    case 'daubechies'
+        f = daubechies(10);
+        fa = @(x) f(x);
 
     % Error function on [-10,10]:
     case 'erf'
@@ -189,5 +195,35 @@ switch lower(name)
             'Unknown function.')
 
 end
+
+end
+
+
+function f = daubechies(n)
+% nth order polynomial approximation to Daubechies scaling function phi_2
+[x, phi] = daub(n);
+f = chebfun([phi'; 0], [0 3], 'equi');
+
+    function [x, phi] = daub(n)
+        s = sqrt(3);
+        if ( n == 0 )
+            % Base case of recursion.
+            x = 0:2;
+            phi = [0, (1+s)/2, (1-s)/2];
+        else
+            c = [1+s, 3+s, 3-s, 1-s]/4;
+            % Recursively call the daub() method.
+            [x2, phi2] = daub(n-1);
+            pp = [phi2, 0*phi2];
+            N = 2^(n-1);
+            ii = 1:6*N;
+            phi = c(1)*pp(ii);
+            for k = 2:4
+                ii = ii([(5*N + 1):6*N, 1:5*N]);
+                phi = phi + c(k)*pp(ii);
+            end
+            x = [x2, x2+3]/2;
+        end
+    end
 
 end
