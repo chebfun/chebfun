@@ -16,7 +16,8 @@ indVarName = expInfo.indVarName;
 allVarString = expInfo.allVarString;
 
 % Plotting commands for eigenvalues:
-fprintf(fid, '\n%%%% Plot the eigenvalues.\n');
+fprintf(fid, '\n%%%% Plot the results.\n');
+fprintf(fid, '%% Plot the eigenvalues.\n');
 fprintf(fid, 'D = diag(D);\n');
 fprintf(fid, 'figure\n');
 fprintf(fid, 'plot(real(D), imag(D), ''.'', ''markersize'', 25)\n');

@@ -29,7 +29,7 @@ periodic = expInfo.periodic;
 fprintf(fid, '%%%% Problem set-up\n');
 fprintf(fid, '%% Create an interval of the space domain...\n');
 fprintf(fid, 'dom = %s;\n',dom);
-fprintf(fid, '%%...and a discretisation of the time domain:\n');
+fprintf(fid, '%%...and specify a sampling of the time domain:\n');
 fprintf(fid, '%s = %s;\n',tName,tt);
 
 fprintf(fid, '\n%% Make the right-hand side of the PDE.\n');
