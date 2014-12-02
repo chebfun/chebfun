@@ -125,6 +125,13 @@ options.grid = guifile.options.grid;
 % What discretization do we want?
 options.discretization = expInfo.discretization;
 
+% If we have specified the 'periodic' option, we need to throw away the boundary
+% conditions from the LINOP A before continuing (as they're imposed by
+% construction):
+if ( strcmp(expInfo.discretization, 'periodic') )
+    A.constraint = []; 
+end
+
 % Change various GUI components (only need to bother with in GUI mode).
 if ( guiMode )
     set(handles.fig_sol, 'Visible', 'On');

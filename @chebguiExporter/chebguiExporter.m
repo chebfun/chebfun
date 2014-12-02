@@ -199,6 +199,17 @@ classdef chebguiExporter
             
         end
         
+        function disc = discOption(isPeriodic, opt)
+            % Do we want to use TRIGCOLLOC for the discretization? This will be
+            % the case if we're solving a periodic problem, and have
+            % 'collocation' specified as the discretization option:
+            if ( isPeriodic && strcmp(opt, 'collocation') )
+                disc = 'periodic';
+            else
+                disc = opt;
+            end
+        end
+        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -233,6 +244,7 @@ classdef chebguiExporter
             fprintf(fid, '%%%% Problem description.\n');
             
         end
+        
     end
     
 end
