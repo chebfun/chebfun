@@ -122,6 +122,9 @@ classdef chebguiController
         
         % Set-up the input panel on CHEBGUI
         handles = setupPanelInput(handles);
+
+        % Set-up the discretization option panel on CHEBGUI
+        handles = setupPanelDiscretization(handles);
         
         % Set-up the IVP solver option panel on CHEBGUI
         handles = setupPanelIVPsolver(handles);

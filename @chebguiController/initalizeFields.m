@@ -46,8 +46,5 @@ set(handles.popupmenu_bottomFig,'String', ...
     {'Convergence of Newton iteration', ...
     'Coefficients of the solution'});
 
-% Set string for the ultraspherical options
-set(handles.button_ultraS, 'String', 'Ultraspherical')
-
 end
 

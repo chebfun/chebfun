@@ -644,7 +644,7 @@ set(handles.menu_ivpODE45, 'checked', 'off');
 set(handles.menu_ivpCollocation, 'checked', 'off');
 set(handles.menu_ivpUltraspherical, 'checked', 'off');
 handles.guifile.options.ivpSolver = 'ode113';
-set(handles.panel_discretization,'SelectedObject', handles.button_Collocation)
+set(handles.panel_IVPsolver,'SelectedObject', handles.button_timestepping)
 guidata(hObject, handles);
 end
 
@@ -655,7 +655,7 @@ set(handles.menu_ivpODE45, 'checked', 'off');
 set(handles.menu_ivpCollocation, 'checked', 'off');
 set(handles.menu_ivpUltraspherical, 'checked', 'off');
 handles.guifile.options.ivpSolver = 'ode15s';
-set(handles.panel_discretization,'SelectedObject', handles.button_Collocation)
+set(handles.panel_IVPsolver,'SelectedObject', handles.button_timestepping)
 guidata(hObject, handles);
 end
 
@@ -666,7 +666,7 @@ set(handles.menu_ivpODE45, 'checked', 'on');
 set(handles.menu_ivpCollocation, 'checked', 'off');
 set(handles.menu_ivpUltraspherical, 'checked', 'off');
 handles.guifile.options.ivpSolver = 'ode45';
-set(handles.panel_discretization,'SelectedObject', handles.button_Collocation)
+set(handles.panel_IVPsolver,'SelectedObject', handles.button_timestepping)
 guidata(hObject, handles);
 end
 
@@ -677,7 +677,7 @@ set(handles.menu_ivpODE45, 'checked', 'off');
 set(handles.menu_ivpCollocation, 'checked', 'on');
 set(handles.menu_ivpUltraspherical, 'checked', 'off');
 handles.guifile.options.ivpSolver = 'collocation';
-set(handles.panel_discretization,'SelectedObject', handles.button_ultraS)
+set(handles.panel_IVPsolver,'SelectedObject', handles.button_global)
 guidata(hObject, handles);
 end
 
@@ -688,7 +688,7 @@ set(handles.menu_ivpODE45, 'checked', 'off');
 set(handles.menu_ivpCollocation, 'checked', 'off');
 set(handles.menu_ivpUltraspherical, 'checked', 'on');
 handles.guifile.options.ivpSolver = 'ultraspherical';
-set(handles.panel_discretization,'SelectedObject', handles.button_ultraS)
+set(handles.panel_IVPsolver,'SelectedObject', handles.button_global)
 guidata(hObject, handles);
 end
 
@@ -1098,7 +1098,7 @@ end
 function button_export_Callback(hObject, eventdata, handles)
 
     % What discretization do we want to use?
-    if ( get(handles.button_Collocation, 'Value') )
+    if ( get(handles.button_collocation, 'Value') )
         handles.guifile.options.discretization = 'collocation';
     else
         handles.guifile.options.discretization = 'ultraspherical';
@@ -1540,42 +1540,6 @@ if ( ispc && bgColorIsDefault )
     set(hObject, 'BackgroundColor', 'white');
 end
 
-end
-
-function panel_discretization_SelectionChangeFcn(hObject, eventdata, handles)
-% hObject    handle to the selected object in panel_discretization 
-% eventdata  structure with the following fields (see UIBUTTONGROUP)
-%	EventName: string 'SelectionChanged' (read only)
-%	OldValue: handle of the previously selected object or empty if none was 
-%             selected
-%	NewValue: handle of the currently selected object
-% handles    structure with handles and user data (see GUIDATA)
-
-% Change the discretization stored in handles.guifile.options based on the new
-% selection
-newDisc = get(eventdata.NewValue, 'String');
-
-if ( strcmp(newDisc, get(handles.button_Collocation, 'String')) )
-    % Change to collocation if we're in BVP mode. Otherwise, show options dialog
-    % for IVP solvers.
-    if ( ~get(handles.button_ivp, 'value') )
-        handles.guifile.options.discretization = 'collocation';
-    else
-        % Default time stepping method is ODE113:
-        handles.guifile.options.ivpSolver = 'ode113';
-    end
-else
-    if ( ~get(handles.button_ivp, 'value') )
-        handles.guifile.options.discretization = 'ultraspherical';
-    else
-        % Default global method is collocation:
-        handles.guifile.options.ivpSolver = 'collocation';
-
-    end
-end
-
-% Update the hObject
-guidata(hObject, handles);
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% FIN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
