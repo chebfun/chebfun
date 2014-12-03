@@ -195,6 +195,9 @@ classdef classicfun < fun % (Abstract)
 
         % Test if a CLASSICFUN has any NaN values.
         out = isnan(f)
+        
+        % Test if a CLASSICFUN is a TRIGTECH.
+        out = isperiodic(f)
 
         function out = isPeriodicTech(f)
         %ISPERIODICTECH    Test if the smooth part of f is is constructed with a

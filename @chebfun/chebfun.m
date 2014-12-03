@@ -322,10 +322,13 @@ classdef chebfun
         out = isnan(f)
         
         % True for real CHEBFUN.
-        out = isreal(f);
+        out = isreal(f)
         
         % Test if a CHEBFUN object is built upon DELTAFUN.
-        out = isdelta(f);
+        out = isdelta(f)
+        
+        % Test if a CHEBFUN object is built upon TRIGFUN.
+        out = isperiodic(f)
         
         % Test if a CHEBFUN object is built upon SINGFUN.
         out = issing(f)
