@@ -25,7 +25,7 @@ end
 
 function g = columnAbs(f, pref)
 
-if ( istrigtech(f) )
+if ( isTrigTech(f) )
     f = chebfun(f);
 end
 
