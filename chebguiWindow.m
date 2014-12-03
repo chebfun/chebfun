@@ -168,7 +168,7 @@ set(handles.button_solve, 'BackgroundColor', [43 129 86]/256);
 set(handles.mainWindow, 'BackgroundColor', .8*ones(1,3));
 
 % Default discretization is chebcolloc2
-handles.guifile.options.discretization = @chebcolloc2;
+handles.guifile.options.discretization = 'collocation';
 
 % Default IVP solver is ode113:
 handles.guifile.options.ivpSolver = 'ode113';
@@ -414,8 +414,6 @@ if ( get(handles.button_bvp, 'Value') || get(handles.button_ivp, 'Value') )
         
     else % Show PLOTCOEFFS
         plotcoeffs(latestSolution, 'linewidth', 2)
-        title('Chebyshev coefficients of the solution')
-        grid on
         set(handles.popupmenu_bottomFig, 'Value', 2);
     end
     
@@ -1101,9 +1099,9 @@ function button_export_Callback(hObject, eventdata, handles)
 
     % What discretization do we want to use?
     if ( get(handles.button_Collocation, 'Value') )
-        handles.guifile.options.discretization = @chebcolloc2;
+        handles.guifile.options.discretization = 'collocation';
     else
-        handles.guifile.options.discretization = @ultraS;
+        handles.guifile.options.discretization = 'ultraspherical';
     end
 
     % Create a CHEBGUIEXPORTER object of the correct type:
@@ -1525,8 +1523,6 @@ switch ( newVal )
     case 2
         % User wants to see a PLOTCOEFFS plot..
         plotcoeffs(handles.latest.solution, 'linewidth', 2);
-        grid on
-        title('Chebyshev coefficients of the solution')
 end
 
 end
@@ -1563,14 +1559,14 @@ if ( strcmp(newDisc, get(handles.button_Collocation, 'String')) )
     % Change to collocation if we're in BVP mode. Otherwise, show options dialog
     % for IVP solvers.
     if ( ~get(handles.button_ivp, 'value') )
-        handles.guifile.options.discretization = @chebcolloc2;
+        handles.guifile.options.discretization = 'collocation';
     else
         % Default time stepping method is ODE113:
         handles.guifile.options.ivpSolver = 'ode113';
     end
 else
     if ( ~get(handles.button_ivp, 'value') )
-        handles.guifile.options.discretization = @ultraS;
+        handles.guifile.options.discretization = 'ultraspherical';
     else
         % Default global method is collocation:
         handles.guifile.options.ivpSolver = 'collocation';
