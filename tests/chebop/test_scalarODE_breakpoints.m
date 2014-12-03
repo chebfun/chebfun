@@ -22,15 +22,15 @@ rhs = 0;
 %% Try different discretizations
 % Start with chebcolloc2
 pref.discretization = @chebcolloc2;
-[u1, info1] = solvebvp(N, rhs, pref);
+[u1, info1] = solveBVP(N, rhs, pref);
 
 %% Change to ultraS
 pref.discretization = @ultraS;
-[u2, info2] = solvebvp(N, rhs, pref);
+[u2, info2] = solveBVP(N, rhs, pref);
 
 %% Change to chebcolloc1
 pref.discretization = @chebcolloc1;
-[u3, info3] = solvebvp(N, rhs, pref);
+[u3, info3] = solveBVP(N, rhs, pref);
 
 %% Did we pass? 
 % To pass, both residuals have to be small, but we should not expect u1 and u2

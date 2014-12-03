@@ -152,7 +152,7 @@ if ( guiMode )
         options.discretization = options.ivpSolver;
         
         % Solve!
-        [u, info] = solvebvp(N, 0, options, displayFunction);
+        [u, info] = solveBVP(N, 0, options, displayFunction);
         
         % Make the popup-menu for the choice of plots visible:
         set(handles.popupmenu_bottomFig, 'Visible', 'on')

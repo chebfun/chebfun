@@ -21,13 +21,13 @@ rhs = sin(x);
 % Start with chebcolloc2
 pref.discretization = @chebcolloc2;
 N.init = sin(20*x);
-u1 = solvebvp(N, rhs, pref);
+u1 = solveBVP(N, rhs, pref);
 err(1) = norm(N(u1) - rhs);
 err(2) = abs(feval(N.lbc(u1), dom(1))) + abs(feval(N.rbc(u1), dom(end)));
 %% Add a breakpoint, change discretization
 pref.discretization = @ultraS;
 N.domain = [0 1 pi];
-u2 = solvebvp(N, rhs, pref);
+u2 = solveBVP(N, rhs, pref);
 err(3) = norm(N(u2) - rhs);
 err(4) = abs(feval(N.lbc(u1), dom(1))) + abs(feval(N.rbc(u1), dom(end)));
 %% System:

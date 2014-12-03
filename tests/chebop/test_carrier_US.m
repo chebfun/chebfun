@@ -19,7 +19,7 @@ N.bc = @(x,u) [u(-1); u(1)];
 x = chebfun(@(x) x, dom);
 N.init =  2.*(x.^2-1).*(1-2./(1+20.*x.^2));
 
-u = solvebvp(N, rhs, pref);
+u = solveBVP(N, rhs, pref);
 
 xx = (-1:.25:1)';
 hiquality_ans = [
