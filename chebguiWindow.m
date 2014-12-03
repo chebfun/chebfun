@@ -645,6 +645,7 @@ set(handles.menu_ivpCollocation, 'checked', 'off');
 set(handles.menu_ivpUltraspherical, 'checked', 'off');
 handles.guifile.options.ivpSolver = 'ode113';
 set(handles.panel_IVPsolver,'SelectedObject', handles.button_timestepping)
+set(handles.panel_initialGuess, 'Visible', 'off')
 guidata(hObject, handles);
 end
 
@@ -656,6 +657,7 @@ set(handles.menu_ivpCollocation, 'checked', 'off');
 set(handles.menu_ivpUltraspherical, 'checked', 'off');
 handles.guifile.options.ivpSolver = 'ode15s';
 set(handles.panel_IVPsolver,'SelectedObject', handles.button_timestepping)
+set(handles.panel_initialGuess, 'Visible', 'off')
 guidata(hObject, handles);
 end
 
@@ -667,6 +669,7 @@ set(handles.menu_ivpCollocation, 'checked', 'off');
 set(handles.menu_ivpUltraspherical, 'checked', 'off');
 handles.guifile.options.ivpSolver = 'ode45';
 set(handles.panel_IVPsolver,'SelectedObject', handles.button_timestepping)
+set(handles.panel_initialGuess, 'Visible', 'off')
 guidata(hObject, handles);
 end
 
@@ -678,6 +681,7 @@ set(handles.menu_ivpCollocation, 'checked', 'on');
 set(handles.menu_ivpUltraspherical, 'checked', 'off');
 handles.guifile.options.ivpSolver = 'collocation';
 set(handles.panel_IVPsolver,'SelectedObject', handles.button_global)
+set(handles.panel_initialGuess, 'Visible', 'on')
 guidata(hObject, handles);
 end
 
@@ -689,6 +693,7 @@ set(handles.menu_ivpCollocation, 'checked', 'off');
 set(handles.menu_ivpUltraspherical, 'checked', 'on');
 handles.guifile.options.ivpSolver = 'ultraspherical';
 set(handles.panel_IVPsolver,'SelectedObject', handles.button_global)
+set(handles.panel_initialGuess, 'Visible', 'on')
 guidata(hObject, handles);
 end
 

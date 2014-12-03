@@ -48,9 +48,13 @@ newIVPsolver = get(eventdata.NewValue, 'String');
 if ( strcmp(newIVPsolver, get(handles.button_timestepping, 'String')) )
     % User selected time-stepping. Default time stepping method is ODE113:
     handles.guifile.options.ivpSolver = 'ode113';
+    % Hide the initial guess panel:
+    set(handles.panel_initialGuess, 'Visible', 'off')
 else
     % User selected global solver. Default global method is collocation:
     handles.guifile.options.ivpSolver = 'collocation';
+    % Make the initial guess panel visible:
+    set(handles.panel_initialGuess, 'Visible', 'on')
 end
 
 % Update HOBJECT.
