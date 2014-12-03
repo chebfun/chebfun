@@ -64,6 +64,14 @@ numFuns = numel(f.funs);
 
 transState = f(1).isTransposed;
 
+% If f is periodic, i.e. based on a periodic TECH check its mean:
+if ( isTrigTech(f) )
+    if ( abs(sum(f)) > f.vscale * 100 * eps )
+    % Mean is not zero, convert it to a CHEBTECH based chebfun:
+    f = chebfun(f);
+    end
+end
+
 % Loop m times:
 for l = 1:m
 
