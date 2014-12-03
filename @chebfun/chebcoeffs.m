@@ -31,6 +31,11 @@ if ( numel(f) > 1 )
         'CHEBCOEFFS does not support quasimatrices.');
 end
 
+%% Make sure F is a Chebyshev expansion:
+if ( isTrigTech(f) )
+    f = chebfun(f);
+end
+
 %% Initialise:
 argin = {}; 
 N = [];
@@ -68,6 +73,7 @@ if ( any(isinf(f.domain)) )
         'Infinite intervals are not supported here.');
 end
 
+%%
 % We compute 2nd-kind coefficients by computing the 1st-kind coefficients and
 % using a recurrence relation.  The recurrence for the coefficient of U_n
 % requires the coefficients of T_n and T_{n + 2}, so we need to compute two
