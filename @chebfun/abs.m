@@ -25,6 +25,10 @@ end
 
 function g = columnAbs(f, pref)
 
+if ( istrigtech(f) )
+    f = chebfun(f);
+end
+
 % Add breaks at the appropriate roots of f:
 g = addBreaksAtRoots(f, pref);
 

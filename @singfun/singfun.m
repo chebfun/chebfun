@@ -262,12 +262,12 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         % Test if a SINGFUN has any NaN values.
         out = isnan(f)
         
-        function out = isPeriodicTech(f)
-        %ISPERIODICTECH    Test if the smooth part of f is is constructed with a 
+        function out = isTrigTech(f)
+        %ISTRIGTECH   Test if the smooth part of f is is constructed with a 
         %basis of periodic functions. 
         
-            % Calls ISPERIODICTECH on the SMOOTHFUN part.
-            out = isPeriodicTech(f.smoothPart);
+            % Calls ISTRIGTECH on the SMOOTHFUN part.
+            out = isTrigTech(f.smoothPart);
         end
         
         % True for real SINGFUN.

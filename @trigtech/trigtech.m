@@ -290,8 +290,8 @@ classdef trigtech < smoothfun % (Abstract)
         % Test if a TRIGTECH has any NaN values.
         out = isnan(f)
 
-        function out = isPeriodicTech(f)
-        %ISPERIODICTECH    True for TRIGTECH.
+        function out = isTrigTech(f)
+        %ISTRIGTECH    True for TRIGTECH.
             out = 1;
         end
         

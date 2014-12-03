@@ -71,8 +71,8 @@ classdef smoothfun < onefun % (Abstract)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false ) 
         
-        function out = isPeriodicTech(f)
-        %ISPERIODICTECH    Test if a SMOOTHFUN is constructed with a
+        function out = isTrigTech(f)
+        %ISTRIGTECH   Test if a SMOOTHFUN is constructed with a
         %basis of periodic functions. 
         %   Individual techs override this function as necessary.
             

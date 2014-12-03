@@ -210,12 +210,12 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         % Test if a DELTAFUN has any NaN values.
         out = isnan(f)
         
-        function out = isPeriodicTech(f)
-        %ISPERIODICTECH    Test if the smooth part of f is is constructed with a 
+        function out = isTrigTech(f)
+        %ISTRIGTECH    Test if the smooth part of f is is constructed with a 
         %basis of periodic functions. 
         
-            % Calls ISPERIODICTECH on the CLASSICFUN part.
-            out = isPeriodicTech(f.funPart);
+            % Calls ISTRIGTECH on the CLASSICFUN part.
+            out = isTrigTech(f.funPart);
         end
         
         % True for real DELTAFUN.
