@@ -1,4 +1,3 @@
-
 classdef chebfun
 %CHEBFUN   CHEBFUN class for representing functions on [a,b].
 %
@@ -813,7 +812,7 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
     % Use the default domain if none was supplied.
     if ( ~domainWasPassed || isempty(dom) )
         if ( isa(op, 'chebfun') )
-            dom = op.domain;
+            dom = [op.domain(1) op.domain(end)];
         else
             dom = pref.domain;
         end
