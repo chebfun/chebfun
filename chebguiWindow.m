@@ -66,7 +66,6 @@ else
             % Show an error dialog, but also throw the error to the command
             % window
             errordlg(cleanErrorMsg(ME.message), 'Chebgui error', 'modal');
-            rethrow(ME)
             uiwait
             resetComponents(varargin{4});
             % If in debug mode, we throw the error to the command window as well

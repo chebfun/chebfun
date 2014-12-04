@@ -67,6 +67,14 @@ for tCounter = 1:length(bcResults)
             'conditions are supported.']);
     end
     
+    % Ensure that only initial/final conditions on the form we support appear:
+    assert(acceptedCondition(tempTree), ...
+        'CHEBFUN:TREEVAR:sortConditions:unsupporterCondtion', [ ...
+        'Initial/final condition not supported. Please ensure that the\n' ...
+        'unknown function(s) appear only once in each condition,\n' ...
+        'e.g. not as u + u'' - 1, and that the coefficient of the unknown\n'...
+        'function is 1, e.g. not 5*u-1.']);
+    
     % What's the active variable in the current tree (i.e. what variable did the
     % constraint apply to)?
     activeVar = find(tempTree.ID == 1);
@@ -91,6 +99,56 @@ for varCounter = 1:numArgs
     [dummy, diffOrderIndex] = sort(diffOrderList{varCounter});
     tempIndex = varList{varCounter}(diffOrderIndex);
     idx = [ idx, tempIndex ];
+end
+
+end
+
+function accepted = acceptedCondition(tree)
+%ACCEPTEDCONDITION   Check whether we have encountered an unsupported IC
+%   
+% ACCEPTEDCONDITION(TREE) returns FALSE if we are working with functions such as
+%   @(u) 5*u - 1
+%   @(u) u + diff(u),
+% which are not supported by the automatic first order reformulation. Otherwise,
+% it returns TRUE.
+
+% If TREE is not a struct, or it has height 0, it can't cause any harm:
+if ( ~isstruct(tree) || ( tree.height == 0 ) )
+    accepted = true;
+
+% Deal with the case where the operator is + or -
+elseif ( any(strcmp(tree.method, {'plus', 'minus'})) )
+
+    % If TREE is of height 1, and it's operator is + or -, we're OK
+    if ( tree.height == 1 )
+        accepted = true;
+        return
+    end
+    
+    % Otherwise, we have to be more careful. If either argument is not a struct,
+    % we only need to check the other. If both arguments are trees, we need
+    % ensure that both don't have any IDs, and in the case that happens, check
+    % the validity of each subtree.
+    if ( ~isstruct(tree.left) )
+        accepted = acceptedCondition(tree.right);
+    elseif ( ~isstruct(tree.right) )
+        accepted = acceptedCondition(tree.left);
+    elseif ( any(tree.left.ID) && any(tree.right.ID) )
+        accepted = false;
+    else
+        accepted = acceptedCondition(tree.right) && ...
+            acceptedCondition(tree.right);
+    end
+    
+    
+% We're happy to support a tree with the diff method if it's height is 1:
+elseif ( strcmp(tree.method, 'diff') && ( tree.height == 1 ) )
+    accepted = true;
+    
+% Encountering any other operator implies that we had a condition on the form
+% @(u) 5*u-1, which are not supported.
+else
+    accepted = false;
 end
 
 end
