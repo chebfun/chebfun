@@ -32,12 +32,12 @@ end
 ivpSolver = func2str(pref.ivpSolver);
 
 % If we are solving an IVP, and we've specified one of the MATLAB solvers
-% (ode113, ode15s, ode45) as our choice, call the solveIVP method. Otherwise,
+% (ode113, ode15s, ode45) as our choice, call the solveivp method. Otherwise,
 % solve problems globally:
 if ( isIVP && ~isempty(strfind(ivpSolver, 'chebfun.ode')) )
     % Pass PREF here, as we'd have to start by constructing a CHEBOPPREF anyway
-    % that start of solveIVP otherwise.
-    [varargout{1:nargout}] = solveIVP(N, rhs, pref, varargin{:});
+    % that start of solveivp otherwise.
+    [varargout{1:nargout}] = solveivp(N, rhs, pref, varargin{:});
 else
     % We have conditions in other fields, or we want to solve IVPs globablly,
     % call CHEBOP/SOLVEBVP. However, here, we don't want to pass PREF if it
