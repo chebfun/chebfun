@@ -48,8 +48,14 @@ if ( nargin == 1 || isempty(g) )
     else
         xLim(2) = xLim(1) + window;
     end
-    
-    % Update the xLim:
+
+    % Get a better yLim:
+    mask = data.xLine > data.xLim(1) & data.xLine < data.xLim(2);
+    data.yLim = [min(data.yLine(mask)) max(data.yLine(mask))];
+   
+    % Update the xLim: If the onefun is bounded, xLim is not changed. If the 
+    % onefun is unbounded (i.e. singfun with poles), then xLim is tweaked to pad
+    % extra space at the end where function blows up:
     if ( isfinite(data.xLim(1)) );
         % If the left endpoint is finite:
         data.xLim(1) = (data.xLim(1) + xLim(1))/2;
@@ -65,10 +71,6 @@ if ( nargin == 1 || isempty(g) )
         % If the right endpoint is Inf:
         data.xLim(2) = min([data.xLim(2) xLim(2)]);
     end
-
-    % Get a better yLim:
-    mask = data.xLine > data.xLim(1) & data.xLine < data.xLim(2);
-    data.yLim = [min(data.yLine(mask)) max(data.yLine(mask))];
     
     % Sort out the jumps:
     data.xJumps = [f.domain(1) ; NaN ; f.domain(2)];
