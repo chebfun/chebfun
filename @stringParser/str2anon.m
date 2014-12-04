@@ -80,7 +80,7 @@ syntaxTree = stringParser.parser(lexOut);
 % Convert a potential = at the top of the tree to a -. The type of the problem
 % determines what complications we need to take into account, hence three
 % different methods.
-if ( strcmp(problemType, 'bvp') )
+if ( any(strcmpi(problemType, {'bvp','ivp'})) )
     syntaxTree = stringParser.splitTree(syntaxTree);
     
     % Obtain the prefix form.

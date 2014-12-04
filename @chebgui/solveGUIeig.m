@@ -42,7 +42,6 @@ eigVarName = expInfo.lname;
 sigma = expInfo.sigma;
 K = str2double(expInfo.K);
 rhsString = expInfo.rhsString;
-discretization = expInfo.discretization;
 
 % Are we working with a generalized eigenvalue problem?
 generalized = expInfo.generalized;
@@ -125,6 +124,13 @@ options.grid = guifile.options.grid;
 
 % What discretization do we want?
 options.discretization = expInfo.discretization;
+
+% If we have specified the 'periodic' option, we need to throw away the boundary
+% conditions from the LINOP A before continuing (as they're imposed by
+% construction):
+if ( strcmp(expInfo.discretization, 'periodic') )
+    A.constraint = []; 
+end
 
 % Change various GUI components (only need to bother with in GUI mode).
 if ( guiMode )

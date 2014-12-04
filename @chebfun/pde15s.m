@@ -350,8 +350,7 @@ end
         end
         
         if ( nargin > 1 )
-            title(sprintf('%s = %.3f,  len = [%i, %i]', tlabel, t, ...
-                length(U), currentLength))
+            title(sprintf('%s = %.3f', tlabel, t))
         end
         drawnow
         

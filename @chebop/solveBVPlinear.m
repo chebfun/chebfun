@@ -1,4 +1,4 @@
-function [u, info] = solvebvpLinear(L, rhs, Ninit, pref, displayInfo)
+function [u, info] = solveBVPlinear(L, rhs, Ninit, pref, displayInfo)
 %SOLVEBVP  Solve a linear CHEBOP BVP system.
 %
 % [U, INFO] = SOLVEBVPLINEAR(N, L, RHS, PREF, DISPLAYINFO), where:
@@ -19,7 +19,7 @@ function [u, info] = solvebvpLinear(L, rhs, Ninit, pref, displayInfo)
 % Observe that when this method is called, any affine parts of the original
 % CHEBOP have been absorbed into RHS.
 %
-% See also: chebop/solvebvp
+% See also: chebop/solveBVP
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -53,6 +53,9 @@ if ( ~isempty(Ninit) )
 else
     u = del;
 end
+
+% Simplify the result before returning it and printing solver info:
+u = simplify(u);
 
 % Norm of residual:
 normRes = norm(L*u - rhs, 'fro');

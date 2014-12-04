@@ -18,7 +18,7 @@ deInput = expInfo.deInput;
 s = expInfo.s;
 
 % Print commands for solving the problem:
-fprintf(fid, '\n%%%% Solve the problem using pde15s.\n');
+fprintf(fid, '\n%%%% Call pde15s to solve the problem.\n');
 fprintf(fid, '[%s, %s] = pde15s(pdefun, %s, %s, bc, opts);\n', indVarName{2}, ...
     sol, indVarName{2}, sol0);
 

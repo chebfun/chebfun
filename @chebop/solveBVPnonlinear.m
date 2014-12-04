@@ -1,4 +1,4 @@
-function [u, info] = solvebvpNonlinear(N, rhs, L, u0, res, pref, displayInfo)
+function [u, info] = solveBVPnonlinear(N, rhs, L, u0, res, pref, displayInfo)
 %SOLVEBVPNONLINEAR      Solve a nonlinear BVP, using damped Newton iteration.
 % The inputs to the method are:
 %   N:      Nonlinear CHEBOP
@@ -215,6 +215,9 @@ while ( ~terminate )
     
 end
 
+% Simplify the result before returning it and printing solver info:
+u = simplify(u);
+
 % Evaluate how far off we are from satisfying the boundary conditions.
 errEstBC = normBCres(N, u, x, diffOrder, pref);
 
@@ -224,11 +227,11 @@ if ( success )
     displayInfo('final', u, delta, newtonCounter, errEst, errEstBC, ...
         displayFig, displayTimer, pref)
 elseif ( maxIterExceeded )
-    warning('CHEBFUN:CHEBOP:solvebvpNonlinear:maxIter',...
+    warning('CHEBFUN:CHEBOP:solveBVPnonlinear:maxIter',...
         ['Newton iteration failed. Maximum number of iterations exceeded.\n',...
         'See help cheboppref for how to increase the number of steps allowed.'])
 elseif ( giveUp )
-    warning('CHEBFUN:CHEBOP:solvebvpNonlinear:notConvergent',...
+    warning('CHEBFUN:CHEBOP:solveBVPnonlinear:notConvergent',...
         ['Newton iteration failed.\n', ...
         'Please try supplying a better initial guess via the .init field \n' ...
         'of the chebop.'])
@@ -313,7 +316,6 @@ end
 
 % Evaluate and linearise the remaining constraints:
 if ( ~isempty(N.bc) || isequal(pref.discretization, @trigcolloc) )
-    
     % Periodic case. 
     if ( (isa(N.bc, 'char') && strcmpi(N.bc, 'periodic')) || ...
             isequal(pref.discretization, @trigcolloc) )
@@ -336,7 +338,6 @@ if ( ~isempty(N.bc) || isequal(pref.discretization, @trigcolloc) )
         bcU = N.bc(x, uBlocks{:});
         bcNorm = bcNorm + norm(bcU, 2).^2;
     end
-    
 end
 
 bcNorm = sqrt(bcNorm);
