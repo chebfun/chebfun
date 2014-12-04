@@ -1,7 +1,7 @@
 function [f, fa] = gallery2(name)
 %GALLERY2   Chebfun2 example functions.
 %   GALLERY2(NAME) returns a chebfun2 corresponding to NAME. See the listing
-%   below for available function names.
+%   below for available names.
 %
 %   For example,  plot(cheb.gallery2('peaks'))  plots the classic MATLAB peaks
 %   function represented as a chebfun2. For details of how each function is

@@ -1,7 +1,8 @@
 function pass = test_gallerytrig(pref)
 
 names = {'amsignal', 'fmsignal', 'gibbs', 'gibbsinterp', ...
-    'tsunami', 'wavepacket', 'weierstrass'};
+    'noisyfun', 'random', 'starburst', 'tsunami', 'wavepacket', ...
+    'weierstrass'};
 
 N = length(names);
 

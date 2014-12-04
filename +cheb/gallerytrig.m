@@ -1,7 +1,7 @@
 function [f,fa] = gallerytrig(name)
 %GALLERYTRIG   Chebfun periodic example functions.
-%   GALLERYTRIG(NAME) returns a periodic chebfun corresponding to NAME. See the
-%   listing below for available function names.
+%   GALLERYTRIG(NAME) returns a periodic chebfun or quasimatrix corresponding
+%   to NAME. See the listing below for available names.
 %
 %   For example,  plot(cheb.gallerytrig('gibbs'))  plots the first 20 terms of
 %   the Gibbs-Wilbraham approximation of a square wave. For details of how each
@@ -20,6 +20,9 @@ function [f,fa] = gallerytrig(name)
 %   FMsignal     Signal with modulated frequency
 %   gibbs        Gibbs-Wilbraham approximation of a square wave
 %   gibbsinterp  Interpolant of a square wave
+%   noisyfun     Smooth function plus high-frequency noise
+%   random       Trigonometric interpolant through random data
+%   starburst    Complex function from Approx Theory & Approx Practice
 %   tsunami      Solution to periodic ODE
 %   wavepacket   Cosine modulated by Gaussian
 %   weierstrass  First 8 terms of Weierstrass fractal
@@ -36,7 +39,8 @@ function [f,fa] = gallerytrig(name)
 % from the gallery.
 if ( nargin == 0 )
     names = {'amsignal', 'fmsignal', 'gibbs', 'gibbsinterp', ...
-        'tsunami', 'wavepacket', 'weierstrass'};
+        'noisyfun', 'random', 'starburst', 'tsunami', 'wavepacket', ...
+        'weierstrass'};
     name = names{randi(length(names))};
 end
 
@@ -66,6 +70,24 @@ switch lower(name)
         n = 20;
         fa = @(x) 2*(x > 0) - 1;
         f = chebfun(fa, [-pi pi], 'trig', 2*n+1);
+
+    % Smooth function plus high-frequency noise
+    case 'noisyfun'
+        n = 200;
+        xx = trigpts(n, [-pi pi]);
+        ff = exp(sin(xx)) + 0.05*randn(n,1);
+        f = chebfun(ff, [-pi pi], 'trig');
+        fa = @(x) f(x);
+
+    % Trigonometric interpolant through random data
+    case 'random'
+        f = chebfun(rand(100,1), [-pi,pi], 'trig');
+        fa = @(x) f(x);
+
+    % Complex function from Approx Theory & Approx Practice
+    case 'starburst'
+        fa = @(t) (3 + sin(10*t) + sin(61*exp(.8*sin(t)+.7))).*exp(1i*t);
+        f = chebfun(fa, [-pi,pi], 'trig');
 
     % Solution to periodic ODE:
     case 'tsunami'
