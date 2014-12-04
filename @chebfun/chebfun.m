@@ -1,3 +1,4 @@
+
 classdef chebfun
 %CHEBFUN   CHEBFUN class for representing functions on [a,b].
 %
@@ -649,7 +650,7 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
             domainWasPassed = true;
         end
     end
-
+    
     % A struct to hold any preferences supplied by keyword (name-value pair).
     keywordPrefs = struct();
 
@@ -811,7 +812,11 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
 
     % Use the default domain if none was supplied.
     if ( ~domainWasPassed || isempty(dom) )
-        dom = pref.domain;
+        if ( isa(op, 'chebfun') )
+            dom = op.domain;
+        else
+            dom = pref.domain;
+        end
     end
     numIntervals = numel(dom) - 1;
 
