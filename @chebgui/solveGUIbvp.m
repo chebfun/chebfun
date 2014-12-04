@@ -181,9 +181,11 @@ if ( guiMode )
 
     % Different titles of top plot if we had a linear problem:
     if ( ~isLinear )
-        title('Solution at end of iteration');
+        title('Solution at end of iteration', ...
+            'fontsize', handles.fontsizePanels, 'fontweight', 'norm');
     else
-        title('Solution');
+        title('Solution', ...
+            'fontsize', handles.fontsizePanels, 'fontweight', 'norm');
     end
 
     % If we were solving a nonlinear problem, we show a plot of the norm of the
@@ -196,8 +198,10 @@ if ( guiMode )
         axes(handles.fig_norm)
         normDelta = info.normDelta;
         semilogy(normDelta, '-*', 'Linewidth', 2)
-        title('Norm of updates')
+        title('Norm of updates', ...
+            'fontsize', handles.fontsizePanels, 'fontweight', 'norm')
         xlabel('Iteration number')
+        set(handles.fig_norm, 'fontsize', handles.fontsizePanels);
 
         if ( length(normDelta) > 1 )
             XTickVec = 1:max(floor(length(normDelta)/5), 1):length(normDelta);
@@ -210,6 +214,13 @@ if ( guiMode )
     else
         axes(handles.fig_norm)
         plotcoeffs(u, 'linewidth', 2)
+        set(handles.fig_norm, 'fontsize', handles.fontsizePanels);
+        % In older versions of MATLAB, need to change the title font-size manually:
+        if verLessThan('matlab', '8.4')
+            set(get(handles.fig_norm, 'title'), 'fontsize', handles.fontsizePanels)
+        else
+            set(get(handles.fig_norm, 'title'), 'fontweight', 'normal')
+        end
         set(handles.popupmenu_bottomFig, 'Value', 2);
         grid on
     end

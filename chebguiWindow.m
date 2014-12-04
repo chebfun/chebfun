@@ -66,6 +66,7 @@ else
             % Show an error dialog, but also throw the error to the command
             % window
             errordlg(cleanErrorMsg(ME.message), 'Chebgui error', 'modal');
+            rethrow(ME)
             uiwait
             resetComponents(varargin{4});
             % If in debug mode, we throw the error to the command window as well
@@ -87,6 +88,9 @@ function chebguiWindow_OpeningFcn(hObject, eventdata, handles, varargin)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to chebguiWindow (see VARARGIN)
+
+% The default fontsize of the panels.
+handles.fontsizePanels = 12;
 
 % Initalize fonts in the CHEBGUI window:
 chebguiController.initalizeFields(handles);
@@ -121,9 +125,6 @@ if ( ~isempty(varargin) )
 else
     handles.guifile = chebgui.demo(); % Load a random demo
 end
-
-% Store the deviation from the default fontsize.
-handles.fontsizeChanges = 0;
 
 % Create a new structure which contains information about the latest
 % solution obtained
