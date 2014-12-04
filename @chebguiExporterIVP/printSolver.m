@@ -11,10 +11,9 @@ function printSolver(fid, expInfo)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Print commands for solving the problem:
-fprintf(fid,'\n%%%% Solve the problem!');
-fprintf(fid, ['\n%% Here, we call the solveIVP() method ' ...
-    '(which offers the same functionality \n%% as nonlinear '...
-    'backslash but allows options to be passed).\n']);
-fprintf(fid, 'u = solveIVP(N, rhs, options);\n');
+fprintf(fid,'\n%%%% Solve!\n');
+fprintf(fid, ['%% Call solveivp() to solve the problem.\n' ...
+    '%% (With the default options, this is equivalent to u = N\\rhs.)\n']);
+fprintf(fid, 'u = solveivp(N, rhs, options);\n');
 
 end

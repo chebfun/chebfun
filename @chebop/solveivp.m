@@ -1,4 +1,4 @@
-function [y, info] = solveIVP(N, rhs, pref, varargin)
+function [y, info] = solveivp(N, rhs, pref, varargin)
 %SOLVEIVP    Solve an IVP by reforming it to a first order system.
 %
 %   U = SOLVEIVP(N, RHS), where N is a CHEBOP and RHS is a CHEBMATRIX, CHEBFUN
@@ -55,7 +55,7 @@ elseif (isa(rhs, 'chebfun') || isa(rhs, 'chebmatrix') )
     % Ensure that the RHS lives on the same domain as the CHEBOP N.
     assert( (rhs.domain(1) == N.domain(1)) && ...
             (rhs.domain(end) == N.domain(end)), ...
-            'CHEBFUN:CHEBOP:solveIVP:domainMismatch', ...
+            'CHEBFUN:CHEBOP:solveivp:domainMismatch', ...
             ['The domains of the CHEBOP and the right-hand side of the ' ...
             'equation do not match.']);
 end
@@ -75,7 +75,7 @@ end
 
 % Check for unbounded domains, which we (currently) don't support:
 if ( ~all(isfinite(N.domain)) )
-    error('CHEBFUN:CHEBOP:solveIVP:infDom', ...
+    error('CHEBFUN:CHEBOP:solveivp:infDom', ...
         'Solving IVPs on unbounded intervals is not supported.');
 end
 
@@ -90,10 +90,24 @@ end
 %% Convert to a first-order system
 
 % We call the conversion methods of the TREEVAR class, the call depends on
-% whether we're dealing with a system or not.
-[anonFun, varIndex, problemDom, coeffs, diffOrders] = ...
-    treeVar.toFirstOrder(N.op, rhs, N.domain);
-
+% whether we're dealing with a system or not. We don't support integral
+% equations, so listen out for warnings that the TREEVAR class throws if it
+% encounters unsupported methods.
+try
+    [anonFun, varIndex, problemDom, coeffs, diffOrders] = ...
+        treeVar.toFirstOrder(N.op, rhs, N.domain);
+catch ME
+    % Did we encounter an unsupported method? If so, try to solve it globally:
+    if ( ~isempty(regexp(ME.identifier, 'CHEBFUN:TREEVAR:.+:notSupported', ...
+            'once')) )
+        [y, info] = solvebvp(N, rhs, pref, varargin{:});
+        return
+    else
+        % Otherwise, an unexpected error occured, rethrow it.
+        rethrow(ME);
+    end
+end
+    
 % Join all breakpoints, which can either be specified by the CHEBOP, or arise
 % from discontinuous coefficients in the problem.
 dom = union(N.domain, problemDom);
@@ -147,7 +161,7 @@ for coeffCounter = 1:length(coeffs)
     end
 end
 if ( vanishingCoeffs )
-    error('CHEBFUN:CHEBOP:solveIVP:zeroCoeffs', ...
+    error('CHEBFUN:CHEBOP:solveivp:zeroCoeffs', ...
         ['Time stepping methods do not support vanishing coefficients at ' ...
         'the endpoint of the domain. Please use global methods instead.']);
 end
@@ -168,7 +182,7 @@ end
 % The number of initial conditions passed should match the total diffOrders that
 % appear in the problem:
 assert(sum(diffOrders) == length(initVals), ...
-    'CHEBFUN:CHEBOP:solveIVP:numConditions', ['The number of initial/final ' ...
+    'CHEBFUN:CHEBOP:solveivp:numConditions', ['The number of initial/final ' ...
     'conditions does not match the\ndifferential order(s) appearing in the ' ...
     'problem.'])
 
