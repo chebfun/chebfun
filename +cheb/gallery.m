@@ -21,7 +21,6 @@ function varargout = gallery(name)
 %   bessel       Bessel function J_0 on [-100,100]
 %   bump         C-infinity function with compact support
 %   blasius      Blasius function on [0,10]
-%   chebdermonde Chebyshev-Vandermonde quasimatrix
 %   chirp        Sine with exponentially increasing frequency
 %   daubechies   Approximation to Daubechies phi_2 wavelet scaling function
 %   erf          Error function on [-10,10]
@@ -40,6 +39,7 @@ function varargout = gallery(name)
 %   sinefun2     Not as smooth as it looks
 %   spikycomb    25 peaks, each sharper than the last
 %   stegosaurus  max(wiggly, x/10)
+%   vandercheb   Chebyshev-Vandermonde quasimatrix
 %   vandermonde  Vandermonde quasimatrix
 %   wiggly       One of the Chebfun team's favorites
 %   zigzag       Degree 10000 polynomial that looks piecewise linear
