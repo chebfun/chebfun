@@ -1,16 +1,13 @@
-function [g, rVal] = cumsum(f, k, dim)
+function g = cumsum(f, k, dim)
 %CUMSUM   Indefinite integral of a DELTAFUN.
-%   [G, RVALS] = CUMSUM(F) is the indefinite integral of the DELTAFUN F. If F 
-%   has no delta functions, then G is just the CUMSUM of the funPart of F
-%   RVAL is the value of the G at the right end point. Any derivatives of 
-%   delta functions are integrated by shifting the rows of the DELTAMAG 
-%   matrix once upward. 
+%   G = CUMSUM(F) is the indefinite integral of the DELTAFUN F. If F 
+%   has no delta functions, then G is just the CUMSUM of the funPart of F.
+%   Any derivatives of delta functions are integrated by shifting the rows 
+%   of the DELTAMAG matrix once upward. 
 %
 %   In case there are delta functions in F, a cell array of FUNS is returned. 
 %   If F has a delta function at the right end point, it's magnitude is added
-%   to the right end point value of the funPart of the last deltafun. The 
-%   value in RVAL can be used by higher classes to CUMSUM concatenated
-%   DELTAFUNS.
+%   to the right end point value of the funPart of the last deltafun.
 %
 % See also SUM
 
@@ -36,7 +33,6 @@ deltaTol = pref.deltaPrefs.deltaTol;
 
 if ( ~anyDelta(f) )
     g = cumsum(f.funPart);
-    rVal = get(g, 'rval');
 else
     % Clean up delta functions:
     f = simplifyDeltas(f);
@@ -65,7 +61,6 @@ else
             g = deltafun(cumsum(f.funPart), struct('deltaMag', deltaMag, 'deltaLoc', deltaLoc));
         end
         
-        rVal = get(f, 'rval');
         return
     else
         % There are delta functions, which will introduce jumps. First take care
@@ -105,8 +100,7 @@ else
             else
                 g = deltafun(s, deltaMag, deltaLoc);
             end
-            
-            rVal = get(g, 'rval') + jumpVals(end);
+                        
             return
         end
         
@@ -152,8 +146,6 @@ else
                 g{k} = fk;
             end
         end
-        % Record the jump at the right end
-        rVal = get(g{end}, 'rval') + jumpVals(end);        
         
     end
 end
