@@ -1,4 +1,4 @@
-function [f,fa] = gallerytrig(name)
+function varargout = gallerytrig(name)
 %GALLERYTRIG   Chebfun periodic example functions.
 %   GALLERYTRIG(NAME) returns a periodic chebfun or quasimatrix corresponding
 %   to NAME. See the listing below for available names.
@@ -13,8 +13,11 @@ function [f,fa] = gallerytrig(name)
 %   beyond the usual Chebfun constructor (e.g. by solving ODEs), so FA in those
 %   cases simply evaluates the chebfun.
 %
-%   GALLERYTRIG() with no input argument returns a random function from the
+%   GALLERYTRIG with no input argument returns a random function from the
 %   gallery.
+%
+%   GALLERYTRIG with no output argument creates a plot of the selected
+%   function.
 %
 %   AMsignal     Signal with modulated amplitude
 %   FMsignal     Signal with modulated frequency
@@ -44,6 +47,11 @@ if ( nargin == 0 )
     name = names{randi(length(names))};
 end
 
+% If nargout == 0, then the function is plotted. Each function in the gallery
+% has its own plotting preferences.
+ylims = [];
+axispref = {};
+
 % The main switch statement.
 switch lower(name)
 
@@ -51,11 +59,13 @@ switch lower(name)
     case 'amsignal'
         fa = @(x) cos(50*x).*(1+.2*cos(5*x));
         f = chebfun(fa, [-pi pi], 'trig');
+        ylims = [-2 2];
 
     % Signal with modulated frequency:
     case 'fmsignal'
         fa = @(x) cos(50*x+4*sin(5*x));
         f = chebfun(fa, [-pi pi], 'trig');
+        ylims = [-2 2];
 
     % Function from SIAM 100-digit challenge:
     case 'gibbs'
@@ -88,6 +98,7 @@ switch lower(name)
     case 'starburst'
         fa = @(t) (3 + sin(10*t) + sin(61*exp(.8*sin(t)+.7))).*exp(1i*t);
         f = chebfun(fa, [-pi,pi], 'trig');
+        axispref = {'equal', [-5.5 5.5 -5 5.5]};
 
     % Solution to periodic ODE:
     case 'tsunami'
@@ -95,11 +106,13 @@ switch lower(name)
         L = chebop(op, [-pi,pi], 'periodic');
         f = L\1;
         fa = @(x) f(x);
+        ylims = [-.15 .23];
 
     % Cosine modulated by Gaussian:
     case 'wavepacket'
         fa = @(x) exp(-5*x.^2).*cos(50*x);
         f = chebfun(fa, [-pi pi], 'trig');
+        ylims = [-1.2 1.2];
 
     % The first eight terms of the pathological function:
     case 'weierstrass'
@@ -108,12 +121,27 @@ switch lower(name)
         fa = @(x) sum( 2.^-(K*ones(1,length(x))) ...
                     .* cos(bsxfun(@times, 4.^K, x(:)')) )';
         f = chebfun(fa, [-pi/4 pi/4], 'trig');
+        ylims = [-1 1.2];
 
     % Raise an error if the input is unknown.
     otherwise
         error('CHEB:GALLERYTRIG:unknown:unknownFunction', ...
             'Unknown function.')
+end
 
+% Only return something if there is an output argument.
+if ( nargout > 0 )
+    varargout = {f, fa};
+else
+    % Otherwise, plot the function.
+    plot(f)
+    title(name)
+    if ( ~isempty(ylims) )
+        ylim(ylims)
+    end
+    if ( ~isempty(axispref) )
+        axis(axispref{:})
+    end
 end
 
 end
