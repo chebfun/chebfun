@@ -44,13 +44,13 @@ if ( round(m) ~= m )
     return
 end
 
-if ( isdelta(f) )
-    f = pruneDeltas(f);
-end
-
 if ( ( dim == 1 && ~f(1).isTransposed ) || ( dim == 2 && f(1).isTransposed ) )
     % Continuous dimension:
     for k = 1:numel(f)
+        % Handle delta functions:
+        if ( isdelta(f(k)) )
+            f(k) = pruneDeltas(f(k));
+        end
         f(k) = cumsumContinousDim(f(k), m);
     end
 else
@@ -128,18 +128,13 @@ end
 
 function f = pruneDeltas(f)
 %PRUNEDELTAS   Transfers deltas at the right endpoint of funs to the next fun.
+%   F is assumed to be ba chebfun with a single column.
 
-% Go through each column:
-for j = 1:numel(f)
-    fj = f(j);
-    % Go through each fun in pairs:
-    nFuns = numel(fj.funs);
-    for k = 1:(nFuns-1);
-        if ( isdelta(fj.funs{k}) )
-            [fj.funs{k}, fj.funs{k+1}] = transferDeltas(fj.funs{k}, fj.funs{k+1});        
-        end
-    end    
-    f(j) = fj;
+% Go through each fun in pairs:
+nFuns = numel(f.funs);
+for k = 1:(nFuns-1);
+    if ( isdelta(f.funs{k}) )
+        [f.funs{k}, f.funs{k+1}] = transferDeltas(f.funs{k}, f.funs{k+1});
+    end
 end
-
 end
