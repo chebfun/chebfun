@@ -101,7 +101,7 @@ if ( nargout > 0 )
 else
     % Otherwise, plot the function.
     plot(f)
-    title(name)
+    title([name ', rank = ' num2str(length(f))])
 end
 
 end

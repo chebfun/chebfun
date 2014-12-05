@@ -25,6 +25,8 @@ function varargout = gallerytrig(name)
 %   gibbsinterp  Interpolant of a square wave
 %   noisyfun     Smooth function plus high-frequency noise
 %   random       Trigonometric interpolant through random data
+%   sinefun1     As smooth as it looks
+%   sinefun2     Not as smooth as it looks
 %   starburst    Complex function from Approx Theory & Approx Practice
 %   tsunami      Solution to periodic ODE
 %   wavepacket   Cosine modulated by Gaussian
@@ -42,8 +44,8 @@ function varargout = gallerytrig(name)
 % from the gallery.
 if ( nargin == 0 )
     names = {'amsignal', 'fmsignal', 'gibbs', 'gibbsinterp', ...
-        'noisyfun', 'random', 'starburst', 'tsunami', 'wavepacket', ...
-        'weierstrass'};
+        'noisyfun', 'random', 'sinefun1', 'sinefun2', 'starburst', ...
+        'tsunami', 'wavepacket', 'weierstrass'};
     name = names{randi(length(names))};
 end
 
@@ -81,7 +83,7 @@ switch lower(name)
         fa = @(x) 2*(x > 0) - 1;
         f = chebfun(fa, [-pi pi], 'trig', 2*n+1);
 
-    % Smooth function plus high-frequency noise
+    % Smooth function plus high-frequency noise:
     case 'noisyfun'
         n = 200;
         xx = trigpts(n, [-pi pi]);
@@ -89,12 +91,22 @@ switch lower(name)
         f = chebfun(ff, [-pi pi], 'trig');
         fa = @(x) f(x);
 
-    % Trigonometric interpolant through random data
+    % Trigonometric interpolant through random data:
     case 'random'
         f = chebfun(rand(100,1), [-pi,pi], 'trig');
         fa = @(x) f(x);
 
-    % Complex function from Approx Theory & Approx Practice
+    % As smooth as it looks:
+    case 'sinefun1'
+        fa = @(x) (1.75 + sin(16*pi*x));
+        f = chebfun(fa, 'trig');
+
+    % Not as smooth as it looks:
+    case 'sinefun2'
+        fa = @(x) (1.75 + sin(16*pi*x)).^1.0001;
+        f = chebfun(fa, 'trig');
+
+    % Complex function from Approx Theory & Approx Practice:
     case 'starburst'
         fa = @(t) (3 + sin(10*t) + sin(61*exp(.8*sin(t)+.7))).*exp(1i*t);
         f = chebfun(fa, [-pi,pi], 'trig');
@@ -135,7 +147,7 @@ if ( nargout > 0 )
 else
     % Otherwise, plot the function.
     plot(f)
-    title(name)
+    title([name ', length = ' num2str(length(f))])
     if ( ~isempty(ylims) )
         ylim(ylims)
     end

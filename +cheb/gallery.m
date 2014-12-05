@@ -111,7 +111,7 @@ switch lower(name)
         f = chebfun(fa, [0 5]);
         ylims = [-2 2];
 
-    % Approx to Daubechies phi_2 wavelet scaling function
+    % Approx to Daubechies phi_2 wavelet scaling function:
     case 'daubechies'
         f = daubechies(10);
         fa = @(x) f(x);
@@ -158,7 +158,7 @@ switch lower(name)
         fa = @(x) f(x);
         axispref = {'equal', [-1 1 -1 1]*1.2, 'off'};
 
-    % Polynomial interpolant through random data in Chebyshev points
+    % Polynomial interpolant through random data in Chebyshev points:
     case 'random'
         f = chebfun(rand(100,1));
         fa = @(x) f(x);
@@ -208,14 +208,14 @@ switch lower(name)
         f = chebfun(fa, [0 10], 'splitting', 'on');
         ylims = [-.2 2.2];
 
-    % Chebyshev-Vandermonde quasimatrix
+    % Chebyshev-Vandermonde quasimatrix:
     case 'vandercheb'
         f = chebpoly(0:5);
         f = simplify(cheb2quasi(f));
         fa = @(x) f(x);
         ylims = [-1.2 1.2];
 
-    % Vandermonde quasimatrix
+    % Vandermonde quasimatrix:
     case 'vandermonde'
         fa = @(x) x.^(0:5);
         f = chebfun(fa, 'vectorize');
@@ -245,7 +245,7 @@ if ( nargout > 0 )
 else
     % Otherwise, plot the function.
     plot(f)
-    title(name)
+    title([name ', length = ' num2str(length(f))])
     if ( ~isempty(ylims) )
         ylim(ylims)
     end
