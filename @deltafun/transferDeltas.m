@@ -1,6 +1,6 @@
 function [f, g] = transferDeltas(f, g)
-%TRANSFERDELTAS   Transfers deltafunctions in F that are at the right end of
-%   the domain to G.
+%TRANSFERDELTAS   Transfers delta functions in F that are at the right end
+%   F to G.
 %
 % See also DELTAFUN/MERGEDELTAS
 

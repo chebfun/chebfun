@@ -291,7 +291,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         f = times(f, g)
         
         % Transfer delta function at the right end point to the next:
-        [f, g] = tranferDeltas(f, g);
+        [f, g] = transferDeltas(f, g);
         
         % DELTAFUN objects are not transposable.
         f = transpose(f)

@@ -127,9 +127,12 @@ end
 end
 
 function f = pruneDeltas(f)
-%PRUNEDELTAS   Transfers deltas at the right endoint of funs to the next fun.
+%PRUNEDELTAS   Transfers deltas at the right endpoint of funs to the next fun.
+
+% Go through each column:
 for j = 1:numel(f)
     fj = f(j);
+    % Go through each fun in pairs:
     nFuns = numel(fj.funs);
     for k = 1:(nFuns-1);
         if ( isdelta(fj.funs{k}) )

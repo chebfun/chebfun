@@ -26,6 +26,6 @@ f = fun.constructor(@(x) sin(pi*x));
 d = deltafun(f, struct('deltaMag', [-1, 1], 'deltaLoc', [-1, 1]));
 [F, rVal] = cumsum(d);
 pass(3) = ~isa(F, 'deltafun') && abs(feval(F, -1) - -1) < tol ...
-    && rVal == 0 && abs(feval(F, 1) - -1) < tol; 
+    && abs(rVal) < 100*eps && abs(feval(F, 1) - -1) < tol; 
 
 end
