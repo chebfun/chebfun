@@ -240,6 +240,14 @@ f = sign(x)-x;
 f2 = cumsum(diff(f));
 pass(17) = norm(f-f2) < 100*eps;
 
+% Check quasi matrix with delta functions:
+f = heaviside(x);
+g = heaviside(x-.5);
+s = [diff(f), diff(g)];
+S = cumsum(s);
+pass(18) = norm(S(:,1) - f) < 100*eps;
+pass(19) = norm(S(:,2) - g) < 100*eps;
+
 
 % [TODO]:  Check fractional antiderivatives once implemented.
 
