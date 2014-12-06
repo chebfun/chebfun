@@ -1,3 +1,4 @@
+
 function pass = test_initialConditions(pref)
 %TEST_INITIALCONDITIONS   Checks conditions for IVP/FVP problems.
 
@@ -110,7 +111,7 @@ N.lbc = @(u) u;
 try
     mldivide(N, 0);
 catch ME
-    pass(13) = strcmp(ME.identifier, 'CHEBFUN:CHEBOP:solveIVP:numConditions');
+    pass(13) = strcmp(ME.identifier, 'CHEBFUN:CHEBOP:solveivp:numConditions');
 end
 
 % Too many conditions
@@ -119,7 +120,7 @@ N.lbc = @(u) [u; diff(u)];
 try
     mldivide(N, 0);
 catch ME
-    pass(14) = strcmp(ME.identifier, 'CHEBFUN:CHEBOP:solveIVP:numConditions');
+    pass(14) = strcmp(ME.identifier, 'CHEBFUN:CHEBOP:solveivp:numConditions');
 end
 
 end
