@@ -1,14 +1,10 @@
-function [f, rVal] = cumsum(f, dim)
+function f = cumsum(f, dim)
 %CUMSUM   Indefinite integral of an UNBNDFUN.
 %   CUMSUM(F) is the indefinite integral of the UNBNDFUN F on an interval [a,b],
 %   with the constant of integration chosen so that F(a) = 0.
 %
 %   CUMSUM(F, 2) will take the cumulative sum over the columns F an array-valued 
 %   UNBNDFUN.
-%
-%   [F, RVAL] = CUMSUM(F) and [F, RVAL] = CUMSUM(F, 2) will do the same thing as 
-%   above, but also return the value of the integral at the right endpoint, 
-%   which will be used at CHEBFUN level for concatenating neighboring pieces.
 %
 % See also DIFF, SUM.
 
@@ -48,13 +44,6 @@ elseif ( dim == 2 )
 else
     error('CHEBFUN:UNBNDFUN:cumsum:input', ...
         'The third argument is unrecognizable.');
-end
-
-% Value of F at the right endpoint:
-if ( iscell(f) )
-    rVal = cellfun(@(f) get(f, 'rval'), f);
-else
-    rVal = get(f, 'rval');
 end
 
 end

@@ -1,7 +1,7 @@
 'Davies complex harmonic oscillator'
 'scalar'
 domain = '[-8 8]';
-DE = '-u'''' + 1i*x^2*u  = lambda*u';
+DE = '-u'''' + 1i*x^2*u = lambda*u';
 BC = {'u(-8) = 0','u(8)  = 0'};
 tol = '1e-10';
 type = 'eig';
