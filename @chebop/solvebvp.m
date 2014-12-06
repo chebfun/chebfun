@@ -104,7 +104,7 @@ pref = determineDiscretization(N, L, isPrefGiven, pref);
 discPreference = pref.discretization();
 tech = discPreference.returnTech();
 techUsed = tech();
-if ( isTrigTech(techUsed) )
+if ( isPeriodicTech(techUsed) )
     [N, L] = clearPeriodicBCs(N, L);
 end
 
@@ -179,7 +179,7 @@ else
     % Create initial guess which satisfies the linearised boundary conditions:
     if ( isempty(N.init) )
         
-        if ( ~isTrigTech(techUsed) )
+        if ( ~isPeriodicTech(techUsed) )
             % Find a new initial guess that satisfies the BCs of L.
             % If we are using TRIGCOLLOC, we don't need to do that because 
             % the zero CHEBFUN is periodic.

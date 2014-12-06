@@ -61,7 +61,7 @@ pref = determineDiscretization(N, L, isPrefGiven, pref);
 % satisfied by construction).
 discPreference = pref.discretization();
 tech = discPreference.returnTech();
-if ( isTrigTech(tech()) )
+if ( isPeriodicTech(tech()) )
     [N, L] = clearPeriodicBCs(N, L);
 end
 

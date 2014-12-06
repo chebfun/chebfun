@@ -131,7 +131,7 @@ classdef onefun % (Abstract)
 
         % Test if the ONEFUN is constructed with a basis of periodic
         % functions.
-        out = isTrigTech(f)
+        out = isPeriodicTech(f)
         
         % True for real ONEFUN.
         out = isreal(f)

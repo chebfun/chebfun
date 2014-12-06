@@ -91,9 +91,9 @@ else                          % CHEBFUN + CHEBFUN
         
         % If one of the two CHEBFUNs uses a PERIODICTECH reprensetation, 
         % cast it to a NONPERIODICTECH.
-        if ( ~isTrigTech(f.funs{1}) && isTrigTech(g.funs{1}) )
+        if ( ~isPeriodicTech(f.funs{1}) && isPeriodicTech(g.funs{1}) )
             g = chebfun(g, g.domain, 'tech', get(f.funs{1}, 'tech'));
-        elseif ( isTrigTech(f.funs{1}) && ~isTrigTech(g.funs{1}) )
+        elseif ( isPeriodicTech(f.funs{1}) && ~isPeriodicTech(g.funs{1}) )
             f = chebfun(f, f.domain, 'tech', get(g.funs{1}, 'tech'));
         end
         

@@ -32,7 +32,7 @@ if ( numel(f) > 1 )
 end
 
 %% Make sure F is a Chebyshev expansion:
-if ( isTrigTech(f) )
+if ( isPeriodicTech(f) )
     f = chebfun(f);
 end
 

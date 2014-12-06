@@ -136,7 +136,7 @@ function g = columnPower(f, b, pref)
 if ( isa(f, 'chebfun') && isa(b, 'chebfun') ) 
     
     % Handle the periodic case:
-    if ( isTrigTech(f) && ~isTrigTech(b) )
+    if ( isPeriodicTech(f) && ~isPeriodicTech(b) )
         f = chebfun(f);
     end
     

@@ -63,7 +63,7 @@ classdef fun % (Abstract)
 
         % Test if the FUN is constructed with a basis of periodic
         % functions.
-        out = isTrigTech(f);
+        out = isPeriodicTech(f);
 
         % Return a version of the fun with all deltas removed.
         f = removeDeltas(f);

@@ -331,7 +331,7 @@ classdef chebfun
         out = issing(f)
         
         % Test if a CHEBFUN object is built upon TRIGTECH.
-        out = isTrigTech(f)
+        out = isPeriodicTech(f)
         
         % True for zero CHEBFUN objects
         out = iszero(f)

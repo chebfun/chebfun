@@ -37,7 +37,7 @@ if ( n > length(y) && numel(y.funs) == 1 && isa(y.funs{1}.onefun, 'chebtech') )
     return
 end
 
-if ( isTrigTech(y) )
+if ( isPeriodicTech(y) )
     % If it's a TRIGFUN do the truncation of Fourier coefficients:
     c = trigcoeffs(y, 2*n+1);
     f = chebfun(c, y.domain, 'coeffs', 'trig');

@@ -49,7 +49,7 @@ if ( ~isempty(breaks) )
     dom = unique([f.domain, breaks.']);
     
     % Handle periodic functions:
-    if ( isTrigTech(f) )
+    if ( isPeriodicTech(f) )
         f = chebfun(f);
     end
 

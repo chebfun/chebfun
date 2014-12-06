@@ -64,7 +64,7 @@ pass(8) = err < 10*epslevel(p)*vscale(p);
 n = 4;
 f = chebfun(@(x) sin(2*n*pi*x), [0, 1], 'trig');
 p = polyfit(f, n);
-pass(9) = isTrigTech(p) && norm(p-f) < 1e2*epslevel(f)*vscale(f);
+pass(9) = isPeriodicTech(p) && norm(p-f) < 1e2*epslevel(f)*vscale(f);
 pass(10) = length(p) == 2*n+1;
 p = polyfit(f, n-1);
 pass(11) = norm(p) < 1e2*epslevel(f)*vscale(f);
