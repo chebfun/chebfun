@@ -1,4 +1,4 @@
-function f = convertToCorrectTech(f, domain, newtech)
+function f = convertToCorrectTech(f, newtech)
 %CONVERTTOCORRECTTECH   Convert a CHEBFUN to another TECH.
 %   CONVERTTOCORRECTTECH(F, NEWTECH) converts the CHEBFUN F to the TECH
 %   NEWTECH.
@@ -9,7 +9,7 @@ function f = convertToCorrectTech(f, domain, newtech)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty case.
-if ( isempty(f) )
+if ( isempty(f) || isnumeric(f) )
     return
 end
 
@@ -18,15 +18,9 @@ if ( nargin == 1 )
     return
 end
 
-% Numeric.
-if ( isnumeric(f) )
-   f = chebfun(f, domain, 'tech', newtech);
-   return
-end
-
 % Convert if necessary.
 if ( ~isequal(get(f.funs{1}, 'tech'), newtech) )
-    f = chebfun(f, domain, 'tech', newtech);
+    f = chebfun(f, f.domain, 'tech', newtech);
 else
     return
 end

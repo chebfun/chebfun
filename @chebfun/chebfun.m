@@ -546,7 +546,7 @@ classdef chebfun
         G = cell2quasi(F)
         
         % Convert a CHEBFUN to another TECH.
-        f = convertToCorrectTech(f, domain, newtech);
+        f = convertToCorrectTech(f, newtech);
         
         % Determine values of CHEBFUN at breakpoints.
         vals = getValuesAtBreakpoints(funs, ends, op);

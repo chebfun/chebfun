@@ -95,19 +95,6 @@ x = chebfun(@(x) x, dom);
 % Linearize and attach preferences.
 [L, residual, isLinear] = linearize(N, u0, x);
 
-% Determine the discretization.
-pref = determineDiscretization(N, L, isPrefGiven, pref);
-
-% Clear boundary conditions if the dicretization uses periodic functions (since
-% if we're using periodic basis functions, the boundary conditions will be
-% satisfied by construction).
-disc = pref.discretization();
-tech = disc.returnTech();
-techUsed = tech();
-if ( isPeriodicTech(techUsed) )
-    [N, L] = clearPeriodicBCs(N, L);
-end
-
 warnState = warning();
 [ignored, lastwarnID] = lastwarn(); %#ok<ASGLU>
 if ( strcmp(lastwarnID, 'CHEBFUN:CHEBOP:linearize:bcConcat') )
@@ -160,14 +147,29 @@ if ( isnumeric(u0) )
     u0 = u0 + 0*residual;
 end
 
-% Ensure that u0 is of correct discretization, and convert it to a
-% CHEBMATRIX if necessary.
-if ( isa(u0, 'chebfun') )
-    u0 = chebmatrix(chebfun.convertToCorrectTech(u0, dom, tech));
-elseif ( isa(u0, 'chebmatrix') )
-    u0 = chebmatrix.convertToCorrectTech(u0, dom, tech);
+% Determine the discretization.
+pref = determineDiscretization(N, L, isPrefGiven, pref);
+disc = pref.discretization();
+
+% Determine the TECH used by the discretization.
+tech = disc.returnTech();
+techUsed = tech();
+
+% If the dicretization uses periodic functions, then clear the boundary 
+% conditions (if we're using periodic basis functions, the boundary
+% conditions will be satisfied by construction). Also, ensure that u0 is 
+% of correct discretization, and convert it to a CHEBMATRIX if necessary.
+if ( isPeriodicTech(techUsed) )
+    % Clear the boundary conditions.
+    [N, L] = clearPeriodicBCs(N, L);
+    % Do the conversion.
+    if ( isa(u0, 'chebfun') )
+        u0 = chebmatrix(chebfun.convertToCorrectTech(u0, dom, tech));
+    elseif ( isa(u0, 'chebmatrix') )
+        u0 = chebmatrix.convertToCorrectTech(u0, dom, tech);
+    end
 end
-    
+
 % Solve:
 if ( all(isLinear) )
     % Call solver method for linear problems.
@@ -192,14 +194,16 @@ else
         [L, residual, isLinear, u0] = linearize(N, u0, x);
     end
     
-    % Ensure that rhs is of correct discretization, and convert it to a 
-    % CHEBMATRIX if necessary.
-    if ( isa(rhs, 'chebfun') )
-        rhs = chebmatrix(chebfun.convertToCorrectTech(rhs, dom, tech));
-    elseif ( isa(rhs, 'chebmatrix') )
-        rhs = chebmatrix.convertToCorrectTech(rhs, dom, tech);
+    % If using a periodic TECH, ensure that rhs is of correct 
+    % discretization, and convert it to a CHEBMATRIX if necessary.
+    if ( ~isPeriodicTech(techUsed) )
+        if ( isa(rhs, 'chebfun') )
+            rhs = chebmatrix(chebfun.convertToCorrectTech(rhs, dom, tech));
+        elseif ( isa(rhs, 'chebmatrix') )
+          rhs = chebmatrix.convertToCorrectTech(rhs, dom, tech);
+        end
     end
-    
+
     % Call solver method for nonlinear problems.
     [u, info] = solvebvpNonlinear(N, rhs, L, u0, residual, pref, displayInfo);
     

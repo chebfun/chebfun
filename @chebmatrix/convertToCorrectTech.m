@@ -1,4 +1,4 @@
-function A = convertToCorrectTech(A, domain, newtech)
+function A = convertToCorrectTech(A, newtech)
 %CONVERTTOCORRECTTECH   Convert the entries of a CHEBMATRIX to another 
 %TECH.
 %   CONVERTTOCORRECTTECH(A, NEWTECH) converts the entries of a CHEBMATRIX A
@@ -29,7 +29,7 @@ if ( nargin == 1 )
 end
 
 % Convert if necessary, using CHEBFUN/CONVERTTOCORRECTTECH.
-A.blocks = cellfun(@(v) chebfun.convertToCorrectTech(v, domain, ...
-    newtech), A.blocks, 'uniformOutput', false);
+A.blocks = cellfun(@(v) chebfun.convertToCorrectTech(v, newtech), ...
+	A.blocks, 'uniformOutput', false);
 
 end
