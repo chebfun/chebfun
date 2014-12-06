@@ -1,6 +1,6 @@
 function varargout = gallery(name)
 %GALLERY   Chebfun example functions.
-%   GALLERY(NAME) returns a chebfun or quasimatrix corresponding to NAME.
+%   F = GALLERY(NAME) returns a chebfun or a quasimatrix corresponding to NAME.
 %   See the listing below for available names.
 %
 %   For example,  plot(cheb.gallery('zigzag'))  plots a degree 10000 polynomial
