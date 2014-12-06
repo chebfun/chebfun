@@ -210,7 +210,6 @@ if ( guiMode )
     else
         axes(handles.fig_norm)
         plotcoeffs(u, 'linewidth', 2)
-        title('Chebyshev coefficients of the solution')
         set(handles.popupmenu_bottomFig, 'Value', 2);
         grid on
     end

@@ -192,6 +192,10 @@ else
     generalized = 0;
 end
 
+% What discretization option do we want?
+discretization = chebguiExporter.discOption(periodic, ...
+    guifile.options.discretization);
+
 %% Fill up the expInfo struct
 expInfo.dom = dom;
 expInfo.deInput = deInput;
@@ -215,6 +219,6 @@ expInfo.periodic = periodic;
 expInfo.bcString = bcString;
 
 % Information related to options set-up
-expInfo.discretization = guifile.options.discretization;
+expInfo.discretization = discretization;
 
 end
