@@ -196,7 +196,7 @@ else
     
     % If using a periodic TECH, ensure that rhs is of correct 
     % discretization, and convert it to a CHEBMATRIX if necessary.
-    if ( ~isPeriodicTech(techUsed) )
+    if ( isPeriodicTech(techUsed) )
         if ( isa(rhs, 'chebfun') )
             rhs = chebmatrix(chebfun.convertToCorrectTech(rhs, tech));
         elseif ( isa(rhs, 'chebmatrix') )
