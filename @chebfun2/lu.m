@@ -48,7 +48,7 @@ k = length( f );
 % Make C unit lower triangular 
 Scl = diag( C( PivLoc(:, 2), : ) );
 C = C * spdiags( 1./Scl, 0, k, k );
-R = ( spdiags( Scl, 0, k, k ) * D ) * R; 
+R = R * ( spdiags( Scl, 0, k, k ) * D );
 
 L = C; 
 U = R; 

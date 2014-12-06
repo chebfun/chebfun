@@ -212,6 +212,14 @@ classdef (InferiorClasses = {?double}) chebop
             
             % Assign operator and domain:
             N.op = op;
+            
+            % Ensure that the domain is a row vector, not a column vector:
+            assert( (size(dom, 1) == 1) && ( size(dom, 2) > 1 ), ...
+                'CHEBOP:CHEBOP:domain', ...
+                ['The vector specifying the domain of a CHEBOP\n' ...
+                'should be a row vector of length greater than 1.'])
+            
+            % Assign the domain:
             N.domain = dom;
             
             % Assign BCs and INIT if they were passed:
@@ -333,6 +341,21 @@ classdef (InferiorClasses = {?double}) chebop
     %% METHODS IMPLEMENTED IN THIS FILE:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
     methods
+        
+        function N = set.domain(N, val)
+            %CHEBOP.SET.DOMAIN   Set domain of a CHEBOP.
+            %   CHEBOP.SET.DOMAIN ensures that N.DOMAIN is a row vector as
+            %   required by the CHEBOP and CHEBFUN classes.
+            
+            % Ensure that the domain is a row vector, not a column vector:
+            assert( (size(val, 1) == 1) && ( size(val, 2) > 1 ), ...
+                'CHEBOP:SET:domain', ...
+                ['The vector specifying the domain of a CHEBOP\n' ...
+                'should be a row vector of length greater than 1.'])
+            
+            % Assign the domain:
+            N.domain = val(:)';            
+        end
         
         function N = set.lbc(N, val)
             %CHEBOP.SET.LBC   Set left boundary condition of a CHEBOP.

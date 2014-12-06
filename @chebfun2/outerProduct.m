@@ -31,8 +31,8 @@ if ( ~isa(f, 'chebfun') || ~isa(g, 'chebfun') )
 end
 
 % Extract out domains:
-fdom = f.domain; 
-gdom = g.domain; 
+fdom = domain(f);
+gdom = domain(g);
 dom = [gdom, fdom]; 
 
 h = chebfun2(0, dom); 
