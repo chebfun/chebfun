@@ -15,11 +15,28 @@ classdef cheboppref < chebpref
 %     no domain argument is explicitly passed to the constructor.
 %
 %   discretization             - Discretization of linear problems
+%     @chebcolloc1
 %     [@chebcolloc2]
+%     'collocation'
+%     'periodic'
+%     @trigcolloc
 %     @ultraS
+%     'ultraspherical'
 %
 %     This options determines whether linear operators are discretized using
-%     rectangular collocation methods or the ultraspherical method.
+%     rectangular collocation methods or the ultraspherical method. Please
+%     observe that
+%         * 'collocation', 'periodic' and 'ultraspherical' are convenient ways
+%           of specifying the @chebcolloc2, @trigcolloc and @ultraS options
+%           respectively.
+%         * The 'periodic'/@trigcolloc option is only supported for problems
+%           that are specified to have periodic boundary conditions.
+%         * Specifying the @chebcolloc1 option causes the CHEBFUN solution
+%           returned to be based on the @chebtech1 tech. The @chebtech2/@ultraS
+%           option causes the CHEBFUN solution returned to be based on the
+%           @chebtech2 tech. The @trigcolloc option causes the CHEBFUN solution
+%           to be periodic, based on the @trigtech tech.
+%        
 %  
 %   damping                     - Should Newton's method be damped?
 %     [true]
@@ -431,7 +448,7 @@ classdef cheboppref < chebpref
                 end
                 val = @chebcolloc1;
                 
-            elseif ( any(strcmpi(val, {'trigcolloc'})) )
+            elseif ( any(strcmpi(val, {'trigcolloc', 'periodic'})) )
                 val = @trigcolloc;       
                  
             end
