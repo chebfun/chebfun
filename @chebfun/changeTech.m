@@ -1,15 +1,15 @@
-function f = convertToCorrectTech(f, newtech)
-%CONVERTTOCORRECTTECH   Convert a CHEBFUN to another TECH.
-%   CONVERTTOCORRECTTECH(F, NEWTECH) converts the CHEBFUN F to the TECH
+function f = changeTech(f, newtech)
+%CHANGETECH   Convert a CHEBFUN to another TECH.
+%   CHANGETECH(F, NEWTECH) converts the CHEBFUN F to the TECH
 %   NEWTECH.
 %
-% See also CHEBMATRIX/CONVERTTOCORRECTTECH.
+% See also CHEBMATRIX/CHANGETECH.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Empty or numeric case. 
-if ( isempty(f) || isnumeric(f) )
+% Empty case. 
+if ( isempty(f) )
     return
 end
 

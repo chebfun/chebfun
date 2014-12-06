@@ -130,7 +130,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
     methods ( Hidden = true, Static = true )
         
         % Convert the entries of a CHEBMATRIX to another TECH.
-        A = convertToCorrectTech(A, newtech);
+        A = changeTech(A, newtech);
         
     end
     
