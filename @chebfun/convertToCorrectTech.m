@@ -8,7 +8,7 @@ function f = convertToCorrectTech(f, newtech)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Empty case.
+% Empty or numeric case. 
 if ( isempty(f) || isnumeric(f) )
     return
 end
