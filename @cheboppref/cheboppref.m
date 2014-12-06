@@ -58,9 +58,9 @@ classdef cheboppref < chebpref
 %     option to the built-in MATLAB ODE solver when solving IVPs.
 %
 %   ivpSolver                  - Solver for IVPs
-%     [@ode113]
-%     @ode15s
-%     @ode45
+%     ['ode113']
+%     'ode15s'
+%     'ode45'
 %     collocation
 %     ultraS
 %
@@ -439,10 +439,17 @@ classdef cheboppref < chebpref
         end
         
         function val = parseIVPsolver(val)
-        %PARSEDISCRETIZATION    Allow different syntax for specifying
-        %                       discretization.
-
-            if ( any(strcmpi(val, {'ode113', 'ode15s', 'ode45'})) )
+        %PARSEIVPSOLVER   Allow different syntax for specifying the IVPsolver.
+            
+            % Check whether we got pref.ivpSolver = @ode113/@ode45/@ode15s, that
+            % is, a function handle, but not the CHEBFUN overload of it.
+            if ( isa(val, 'function_handle') && ...
+                    any(strcmpi(func2str(val), {'ode113', 'ode15s', 'ode45'})) )
+                val = eval(['@chebfun.', func2str(val)]);
+                
+            % Check whether we got a string argument, e.g. 
+            % pref.ivpSolver = 'ode113'.
+            elseif ( any(strcmpi(val, {'ode113', 'ode15s', 'ode45'})) )
                 val = eval(['@chebfun.', val]);
             end
         end
