@@ -21,7 +21,7 @@ function displayIVPinfo(u, isIVP, varargin)
 %
 % At the moment, we only display information at the end of solving IVPs, rather
 % than during the Newton iteration which is the case for BVPs. Thus, this method
-% only gets called at the end of the solveIVP method, which is why we don't need
+% only gets called at the end of the solveivp method, which is why we don't need
 % the 'mode' argument like we do in the BVP case.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
