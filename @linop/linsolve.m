@@ -128,7 +128,7 @@ for dim = [dimVals inf]
     [v, disc] = mldivide(disc, A, b);
     
     % Project the solution:
-    v = P*v; 
+    v = P*v;
     
     % [TODO]: We could test each variable at their input dimension, but then
     % each would be different and we would nopt be able to use the trick of
