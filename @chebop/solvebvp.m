@@ -164,9 +164,9 @@ if ( isPeriodicTech(techUsed) )
     [N, L] = clearPeriodicBCs(N, L);
     % Do the conversion.
     if ( isa(u0, 'chebfun') )
-        u0 = chebmatrix(chebfun.convertToCorrectTech(u0, dom, tech));
+        u0 = chebmatrix(chebfun.convertToCorrectTech(u0, tech));
     elseif ( isa(u0, 'chebmatrix') )
-        u0 = chebmatrix.convertToCorrectTech(u0, dom, tech);
+        u0 = chebmatrix.convertToCorrectTech(u0, tech);
     end
 end
 
@@ -198,9 +198,9 @@ else
     % discretization, and convert it to a CHEBMATRIX if necessary.
     if ( ~isPeriodicTech(techUsed) )
         if ( isa(rhs, 'chebfun') )
-            rhs = chebmatrix(chebfun.convertToCorrectTech(rhs, dom, tech));
+            rhs = chebmatrix(chebfun.convertToCorrectTech(rhs, tech));
         elseif ( isa(rhs, 'chebmatrix') )
-          rhs = chebmatrix.convertToCorrectTech(rhs, dom, tech);
+          rhs = chebmatrix.convertToCorrectTech(rhs, tech);
         end
     end
 
