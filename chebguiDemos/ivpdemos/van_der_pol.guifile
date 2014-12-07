@@ -1,0 +1,8 @@
+'Van der Pol equation'
+'scalar'
+domain = '[0 20]';
+DE = 'u" - 5*(1-u^2)*u'' + u = 0';
+BC = {'u(0)  = 2';'u''(0) = 0'};
+init = ''; tol = '1e-10';
+damping = '1'; plotting = '0.1';
+type = 'ivp';

@@ -42,8 +42,26 @@ if ( isempty(K) )
     K = '6';
 end
 
+% Find the eigenvalue parameter name:
+mask = cellfun(@strfind, repmat(deInput(1), 1, 3), {'lambda', 'lam', 'l'}, ...
+    'UniformOutput', false);
+if ( ~isempty(mask{1}) )
+    lname = 'lambda'; 
+elseif ( ~isempty(mask{2}) )
+    lname = 'lam'; 
+elseif ( ~isempty(mask{3}) )
+    lname = 'l'; 
+else
+    lname = '';
+end
+
+% Ensure that l, lam or lambda appears in the problem!
+assert(~isempty(lname), 'CHEBFUN:CHEBGUIEXPORTEREIG:exportInfo:lname', ...
+    ['Variable representing eigenvalue parameter not found in Chebgui input. ' ...
+    'Please ensure ''lambda'', ''lam'' or ''l'' appears in input.'])
+
 % Obtain strings for setting up the problem:
-[allStrings, allVarString, indVarName, dummy, dummy, dummy, allVarNames] ...
+[allStrings, allVarString, indVarName, dummy1, pdeflag, dummy3, allVarNames] ...
     = setupFields(guifile, deInput, 'DE');
 
 % If indVarName is empty, use the default value
@@ -174,18 +192,9 @@ else
     generalized = 0;
 end
 
-% Find the eigenvalue name
-mask = strcmp(deInput{1}, {'lambda', 'lam', 'l'});
-
-if ( mask(1) )
-    lname = 'lambda'; 
-elseif ( mask(2) )
-    lname = 'lam'; 
-elseif ( mask(3) )
-    lname = 'l'; 
-else
-    lname = 'lambda';
-end
+% What discretization option do we want?
+discretization = chebguiExporter.discOption(periodic, ...
+    guifile.options.discretization);
 
 %% Fill up the expInfo struct
 expInfo.dom = dom;
@@ -210,6 +219,6 @@ expInfo.periodic = periodic;
 expInfo.bcString = bcString;
 
 % Information related to options set-up
-expInfo.discretization = guifile.options.discretization;
+expInfo.discretization = discretization;
 
 end

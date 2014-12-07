@@ -61,7 +61,7 @@ function v = applyVolt(u, dom, kernel)
     breaks = dom(2:end-1);
     
     v = chebfun(@integral, [dom(1) breaks dom(end)], ...
-        'vectorize', 'sampletest', 0, 'chebkind', 1 );
+        'vectorize', 'sampleTest', 0, 'chebkind', 1 );
     
     function h = integral(x)
         if ( abs(x-dom(1)) < eps )

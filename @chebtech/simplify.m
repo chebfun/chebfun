@@ -47,7 +47,7 @@ largeCoeffs = (bsxfun(@minus, abs(f.coeffs), tol.*f.vscale) > 0);
 
 % If the whole thing is now zero, leave just one coefficient:
 if ( isempty(lastNonZeroRow) )
-    lastNonZeroRow = size(f, 1);
+    lastNonZeroRow = 1;
     f.coeffs = 0*f.coeffs;
 end
 

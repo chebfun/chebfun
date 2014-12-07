@@ -192,13 +192,29 @@ if ( numel(dom) == 2 )
         ends = varargin{1};
         if ( numel( ends ) == 2 )
             dom = [dom(:) ; ends(:)].';
-        else
+        elseif ( numel(ends) == 4 ) 
+            % Interpret this as the user wants a degree (dom(1),dom(2)) 
+            % chebfun2 on the domain [ends]. 
+            [xx, yy] = chebfun2.chebpts2(dom(1), dom(2), ends);
+            g = chebfun2( op(xx, yy), varargin{:} ); 
+            return
+        else 
             error('CHEBFUN:CHEBFUN2:constructor:domain1', ...
-                'Domain not fully determined.');
+                'Domain not valid or fully determined.');
         end
     else
-        error('CHEBFUN:CHEBFUN2:constructor:domain2', ...
-            'Domain not fully determined.');
+        % The domain is not given, but perhaps the user 
+        % wants a degree (dom(1),dom(2)) representation.
+        if ( dom(2) - dom(1) > 0 && dom(1)>0 &&...   % A valid bivariate degree? 
+                abs(round(dom(1)) - dom(1))< eps &&...
+                abs(round(dom(2)) - dom(2))< eps) 
+            [xx, yy] = chebfun2.chebpts2(dom(1), dom(2));
+            g = chebfun2( op(xx, yy), varargin ); 
+            return
+        else
+            error('CHEBFUN:CHEBFUN2:constructor:domain2', ...
+                'Domain not valid or fully determined.');
+        end
     end
 elseif ( numel(dom) == 1 )
     fixedRank = dom;
