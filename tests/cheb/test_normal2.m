@@ -26,6 +26,6 @@ end
 Sigma = [4 -1.2; -1.2 4];
 p = cheb.normal2([2 6], Sigma);
 I = sum2(p);
-pass(3) = abs(I-1) < 1e-14;
+pass(3) = abs(I-1) < 2e-14;
 
 end
