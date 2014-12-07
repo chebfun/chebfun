@@ -832,7 +832,7 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
     % These options are not compatible.
     if ( pref.splitting && flags.doubleLength )
         error('CHEBFUN:CHEBFUN:parseInputs:doubleLengthSplitting', ...
-            'Splitting and doubleLength options are not compatible.')
+            'Using splitting with doubleLength is not supported.')
     end
 
     % Use the domain of the chebfun that was passed if none was supplied.
