@@ -1,7 +1,6 @@
 function f = changeTech(f, newtech)
 %CHANGETECH   Convert a CHEBFUN to another TECH.
-%   CHANGETECH(F, NEWTECH) converts the CHEBFUN F to the TECH
-%   NEWTECH.
+%   CHANGETECH(F, NEWTECH) converts the CHEBFUN F to the TECH NEWTECH.
 %
 % See also CHEBMATRIX/CHANGETECH.
 
