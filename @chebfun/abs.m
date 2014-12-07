@@ -25,6 +25,7 @@ end
 
 function g = columnAbs(f, pref)
 
+% Handle periodic functions:
 if ( isPeriodicTech(f) )
     f = chebfun(f);
 end
