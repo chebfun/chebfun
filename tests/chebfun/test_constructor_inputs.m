@@ -72,10 +72,18 @@ pass(12) = abs(-4/63/pi - c(9)) < get(f, 'epslevel');
 f = chebfun({'x','x-1'}, [0 1 2]);
 pass(13) = norm(feval(f, [.5, 1.5]) - .5) < get(f, 'epslevel');
 
+% Test construction from a chebfun:
+x = chebfun('x', [0, 5]);
+f = chebfun(x);
+pass(13) = all(domain(f) == [0 5] );
+
+f = chebfun(x, [0 2]);
+pass(14) = all(domain(f) == [0 2] );
+
 % Test construction from a piecewise chebfun:
 f = chebfun(chebfun({'x','x'}, [-1 0 1]));
 x = [-.5, .5];
-pass(14) = numel(f.funs) == 1  && norm(feval(f, x) - x) < get(f, 'epslevel');
+pass(15) = numel(f.funs) == 1  && norm(feval(f, x) - x) < get(f, 'epslevel');
 
 % Test 'minSamples' flag.
 f_op = @(x) -x - x.^2 + exp(-(30*(x - .5)).^4);
@@ -83,41 +91,41 @@ f1 = chebfun(f_op, 'minSamples', 9);
 err1 = norm(feval(f1, xx) - f_op(xx), inf);
 f2 = chebfun(f_op, 'minSamples', 17);
 err2 = norm(feval(f2, xx) - f_op(xx), inf);
-pass(15) = (err1 > 1e-3) && (err2 < 10*vscale(f2)*epslevel(f2));
+pass(16) = (err1 > 1e-3) && (err2 < 10*vscale(f2)*epslevel(f2));
 
 % Test support for "legacy" preferences.
 f_op = @(x) sin(200*x);
 
 f = chebfun(f_op, 'resampling', 'on');
-pass(16) = ishappy(f);
+pass(17) = ishappy(f);
 
 warnstate = warning('off','CHEBFUN:CHEBFUN:constructor:notResolved');
 f = chebfun(f_op, 'maxdegree', 129, 'tech', @chebtech2);
-pass(17) = ~ishappy(f) && (length(f) == 129);
+pass(18) = ~ishappy(f) && (length(f) == 129);
 warning(warnstate);
 
 f = chebfun(f_op, 'splitting', 'on', 'splitdegree', 65);
-pass(18) = ishappy(f) && all(cellfun(@(fk) length(fk) <= 65, f.funs));
+pass(19) = ishappy(f) && all(cellfun(@(fk) length(fk) <= 65, f.funs));
 
 warnstate = warning('off','CHEBFUN:CHEBFUN:constructor:funNotResolved');
 f = chebfun(f_op, 'splitting', 'on', 'splitLength', 65, 'splitMaxLength', 200);
-pass(19) = ~ishappy(f) && (length(f) <= 65*4);
+pass(20) = ~ishappy(f) && (length(f) <= 65*4);
 warning(warnstate);
 
 % Test construction with a mixture of preference object and keyword inputs.
 p = pref;
 p.tech = @chebtech1;
 f = chebfun(@(x) 1./x, [0 1], 'exps', [-1 0], p);
-pass(20) = get(f, 'ishappy') && isa(f.funs{1}.onefun.smoothPart, 'chebtech1');
-f = chebfun(@(x) 1./x, [0 1], p, 'exps', [-1 0]);
 pass(21) = get(f, 'ishappy') && isa(f.funs{1}.onefun.smoothPart, 'chebtech1');
+f = chebfun(@(x) 1./x, [0 1], p, 'exps', [-1 0]);
+pass(22) = get(f, 'ishappy') && isa(f.funs{1}.onefun.smoothPart, 'chebtech1');
 
 p = struct();
 p.tech = @chebtech1;
 f = chebfun(@(x) 1./x, [0 1], 'exps', [-1 0], p);
-pass(22) = get(f, 'ishappy') && isa(f.funs{1}.onefun.smoothPart, 'chebtech1');
-f = chebfun(@(x) 1./x, [0 1], p, 'exps', [-1 0]);
 pass(23) = get(f, 'ishappy') && isa(f.funs{1}.onefun.smoothPart, 'chebtech1');
+f = chebfun(@(x) 1./x, [0 1], p, 'exps', [-1 0]);
+pass(24) = get(f, 'ishappy') && isa(f.funs{1}.onefun.smoothPart, 'chebtech1');
 
 
 
@@ -125,9 +133,9 @@ pass(23) = get(f, 'ishappy') && isa(f.funs{1}.onefun.smoothPart, 'chebtech1');
 % Test the vectorise flag on an array-valued function:
 try
     f = chebfun(@(x) [x^2 sin(x)*cos(x)], pref, 'vectorize'); %#ok<NASGU>
-    pass(20) = true;
+    pass(25) = true;
 catch
-    pass(20) = false;
+    pass(25) = false;
 end
 
 end
