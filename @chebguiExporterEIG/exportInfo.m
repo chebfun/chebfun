@@ -157,9 +157,9 @@ if ( ~isempty(rhsString) )
     
     % Check whether we are working with generalized
     % problems or not by comparing B with the identity operator on the domain.
-    I = operatorBlock.eye(str2num(dom));
+    I = operatorBlock.eye(d);
     % Set a discretization size for comparing operators
-    discDim = 10;    
+    discDim = repmat(10, 1, length(d) - 1);    
     % Obtain a discretisation of the operator B
     Bdisc = matrix(B, discDim);
     % Obtain a discretization of the identity operator on the domain
