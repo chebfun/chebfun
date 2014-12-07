@@ -146,7 +146,7 @@ elseif ( strcmp(tree.method, 'diff') && ( tree.height == 1 ) )
     accepted = true;
     
 % Encountering any other operator implies that we had a condition on the form
-% @(u) 5*u-1, which are not supported.
+% @(u) 5*u-1, which is not supported.
 else
     accepted = false;
 end

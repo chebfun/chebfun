@@ -32,13 +32,13 @@ handles.button_ultraspherical = uicontrol('Parent', handles.panel_discretization
 end
 
 function discretizationSelection(hObject, eventdata, handles)
-% hObject    handle to the selected object in panel_IVPsolver
-% eventdata  structure with the following fields (see UIBUTTONGROUP)
-%	EventName: string 'SelectionChanged' (read only)
-%	OldValue: handle of the previously selected object or empty if none was 
-%             selected
-%	NewValue: handle of the currently selected object
-% handles    structure with handles and user data (see GUIDATA)
+% hObject      Handle to the selected object in panel_IVPsolver
+% eventdata    Structure with the following fields (see UIBUTTONGROUP)
+%	EventName: String 'SelectionChanged' (read only)
+%	OldValue:  Handle of the previously selected object or empty if none was 
+%              selected
+%	NewValue:  Handle of the currently selected object
+% handles      Structure with handles and user data (see GUIDATA)
 
 % What's the new IVP solver selected?
 newIVPsolver = get(eventdata.NewValue, 'String');

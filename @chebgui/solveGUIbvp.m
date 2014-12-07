@@ -18,7 +18,7 @@ function varargout = solveGUIbvp(guifile, handles)
 % If the method is called by calling the command explicitly with a CHEBGUI
 % object (e.g. [U, INFO] = SOLVEGUIBVP(GUIFILE) from the command line),
 %   VARARGOUT{1}:   The solution to the problem specified by GUIFILE.
-%   VARARGOUT{2}:   The INFO struct returned by the chebop/solveBVP() method.
+%   VARARGOUT{2}:   The INFO struct returned by the chebop/solveBVP method.
 %
 % See also: chebgui/solveGUI, chebgui/solveGUIivp.
 
