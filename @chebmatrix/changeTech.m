@@ -23,7 +23,16 @@ if ( ~all(isfinite(s(:))) )
 end
 
 % Convert if necessary, using CHEBFUN/CHANGETECH.
-A.blocks = cellfun(@(v) chebfun.changeTech(v, newtech), ...
+A.blocks = cellfun(@(v) changeFunction(v, newtech), ...
 	A.blocks, 'uniformOutput', false);
+
+end
+
+function f = changeFunction(f, newTech)
+% CHANGEFUNCTION   Calls chebfun/changeTech if input argument is a CHEBFUN, does
+%                  nothing if input is a scalar.
+if ( isa(f, 'chebfun') )
+    f = chebfun.changeTech(f, newTech);
+end
 
 end
