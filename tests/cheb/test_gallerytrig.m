@@ -1,6 +1,6 @@
 function pass = test_gallerytrig(pref)
 
-names = {'amsignal', 'fmsignal', 'gibbs', 'gibbsinterp', ...
+names = {'AMsignal', 'FMsignal', 'gibbs', 'gibbsinterp', ...
     'noisyfun', 'random', 'sinefun1', 'sinefun2', 'starburst', ...
     'tsunami', 'wavepacket', 'weierstrass'};
 
@@ -30,7 +30,8 @@ end
 
 function pass = doesNotCrash(fn)
 try
-    fn();
+    fn();           % Test plotting behavior
+    [f,fa] = fn();  % Test returning the function
     pass = true;
 catch ME %#ok<NASGU>
     pass = false;

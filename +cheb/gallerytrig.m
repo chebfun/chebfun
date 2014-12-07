@@ -1,7 +1,7 @@
 function varargout = gallerytrig(name)
 %GALLERYTRIG   Chebfun periodic example functions.
-%   GALLERYTRIG(NAME) returns a periodic chebfun or quasimatrix corresponding
-%   to NAME. See the listing below for available names.
+%   F = GALLERYTRIG(NAME) returns a periodic chebfun or a quasimatrix
+%   corresponding to NAME. See the listing below for available names.
 %
 %   For example,  plot(cheb.gallerytrig('gibbs'))  plots the first 20 terms of
 %   the Gibbs-Wilbraham approximation of a square wave. For details of how each

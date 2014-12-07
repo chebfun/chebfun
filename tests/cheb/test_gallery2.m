@@ -29,7 +29,8 @@ end
 
 function pass = doesNotCrash(fn)
 try
-    fn();
+    fn();           % Test plotting behavior
+    [f,fa] = fn();  % Test returning the function
     pass = true;
 catch ME %#ok<NASGU>
     pass = false;

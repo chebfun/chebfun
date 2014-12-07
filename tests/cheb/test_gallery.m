@@ -3,7 +3,7 @@ function pass = test_gallery(~)
 names = {'airy', 'bessel', 'blasius', 'bump', ...
     'chirp', 'daubechies', 'erf', 'fishfillet', 'gamma', 'gaussian', ...
     'jitter', 'kahaner', 'motto', 'random', 'rose', 'runge', ...
-    'seismograph', 'si', 'sinefun1', 'sinefun2', 'spikycomb', ...
+    'seismograph', 'Si', 'sinefun1', 'sinefun2', 'spikycomb', ...
     'stegosaurus', 'vandercheb', 'vandermonde', 'wiggly', 'zigzag'};
 
 N = length(names);
@@ -32,7 +32,8 @@ end
 
 function pass = doesNotCrash(fn)
 try
-    fn();
+    fn();           % Test plotting behavior
+    [f,fa] = fn();  % Test returning the function
     pass = true;
 catch ME %#ok<NASGU>
     pass = false;
