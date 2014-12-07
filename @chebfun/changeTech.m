@@ -12,11 +12,6 @@ if ( isempty(f) )
     return
 end
 
-% If no TECH specified, do nothing.
-if ( nargin == 1 )
-    return
-end
-
 % Convert if necessary.
 if ( ~isequal(get(f.funs{1}, 'tech'), newtech) )
     f = chebfun(f, f.domain, 'tech', newtech);

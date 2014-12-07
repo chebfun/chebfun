@@ -22,11 +22,6 @@ if ( ~all(isfinite(s(:))) )
         ' is not supported.']);
 end
 
-% If no TECH specified, do nothing.
-if ( nargin == 1 )
-    return
-end
-
 % Convert if necessary, using CHEBFUN/CHANGETECH.
 A.blocks = cellfun(@(v) chebfun.changeTech(v, newtech), ...
 	A.blocks, 'uniformOutput', false);
