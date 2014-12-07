@@ -6,6 +6,11 @@ names = {'AMsignal', 'FMsignal', 'gibbs', 'gibbsinterp', ...
 
 N = length(names);
 
+% Below, we want to test the plotting behaviour, however, we don't want the
+% plots to be visible when running the test, so create an invisible figure to
+% plot to:
+hfig = figure('Visible', 'off');
+
 % Test construction of each gallery function.
 for k = 1:N
     pass(k) = doesNotCrash(@() cheb.gallerytrig(names{k}));
@@ -25,6 +30,10 @@ catch ME
         pass(N+2) = true;
     end
 end
+
+% Close the figure used for testing the plots:
+close(hfig)
+
 end
 
 
