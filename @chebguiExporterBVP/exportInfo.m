@@ -89,6 +89,10 @@ else
     periodic = false;
 end
 
+% What discretization option do we want?
+discretization = chebguiExporter.discOption(periodic, ...
+    guifile.options.discretization);
+
 %% Fill up the expInfo struct
 expInfo.dom = dom;
 expInfo.deInput = deInput;
@@ -104,7 +108,7 @@ expInfo.useLatest = useLatest;
 % Information related to options set-up
 expInfo.tol = guifile.tol;
 expInfo.dampingOn = guifile.options.damping;
-expInfo.discretization = guifile.options.discretization;
+expInfo.discretization = discretization;
 expInfo.plotting = guifile.options.plotting;
 
 end

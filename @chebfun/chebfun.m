@@ -649,7 +649,7 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
             domainWasPassed = true;
         end
     end
-
+    
     % A struct to hold any preferences supplied by keyword (name-value pair).
     keywordPrefs = struct();
 
@@ -809,9 +809,13 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
         pref = chebfunpref(keywordPrefs);
     end
 
-    % Use the default domain if none was supplied.
+    % Use the domain of the chebfun that was passed if none was supplied.
     if ( ~domainWasPassed || isempty(dom) )
-        dom = pref.domain;
+        if ( isa(op, 'chebfun') )
+            dom = [ op.domain(1) op.domain(end) ];
+        else
+            dom = pref.domain;
+        end
     end
     numIntervals = numel(dom) - 1;
 
