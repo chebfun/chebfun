@@ -193,7 +193,7 @@ else
 end
 
 % What discretization option do we want?
-discretization = chebguiExporter.discOption(periodic, ...
+discretization = chebguiExporter.discOption(periodic, dom, ...
     guifile.options.discretization);
 
 %% Fill up the expInfo struct
