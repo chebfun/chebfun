@@ -66,4 +66,63 @@ icFun = @(u, v, w, y) [diff(u, 3); diff(w,3); w; diff(u,2); ...
 correct = [15 9 4 1 12 11 6 5 3 7 16 2 8 13 10 14];
 idx = treeVar.sortConditions(icFun, dom);
 pass(10) = all( idx == correct );
+
+%% Unsupported format, multiplying unknown function
+icFun = @(x,u) 5*u -1;
+try
+    treeVar.sortConditions(icFun, dom);
+catch ME
+    % The highest order derivatives of u and v appear in the same line -- this
+    % should give us an error.
+    errorPass(1) = strcmp(ME.identifier, ...
+        'CHEBFUN:TREEVAR:sortConditions:unsupportedCondition');
+end
+
+%% Unsupported format, multiplying derivative of unknown function
+icFun = @(x,u) 5*diff(u) -1;
+try
+    treeVar.sortConditions(icFun, dom);
+catch ME
+    % The highest order derivatives of u and v appear in the same line -- this
+    % should give us an error.
+    errorPass(2) = strcmp(ME.identifier, ...
+        'CHEBFUN:TREEVAR:sortConditions:unsupportedCondition');
+end
+
+%% Unsupported format, unknown function appears twice
+icFun = @(x,u) u + diff(u);
+try
+    treeVar.sortConditions(icFun, dom);
+catch ME
+    % The highest order derivatives of u and v appear in the same line -- this
+    % should give us an error.
+    errorPass(3) = strcmp(ME.identifier, ...
+        'CHEBFUN:TREEVAR:sortConditions:unsupportedCondition');
+end
+
+%% Unsupported format, unknown function appears twice, system
+icFun = @(x,u,v) u + diff(u);
+try
+    treeVar.sortConditions(icFun, dom);
+catch ME
+    % The highest order derivatives of u and v appear in the same line -- this
+    % should give us an error.
+    errorPass(4) = strcmp(ME.identifier, ...
+        'CHEBFUN:TREEVAR:sortConditions:unsupportedCondition');
+end
+
+
+%% Unsupported format, coupled conditions
+icFun = @(x,u,v) u + diff(v);
+try
+    treeVar.sortConditions(icFun, dom);
+catch ME
+    % The highest order derivatives of u and v appear in the same line -- this
+    % should give us an error.
+    errorPass(5) = strcmp(ME.identifier, ...
+        'CHEBFUN:TREEVAR:sortConditions:nonSeparated');
+end
+
+%% Combine the information
+pass = [pass, errorPass];
 end

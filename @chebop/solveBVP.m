@@ -1,4 +1,4 @@
-function [u, info] = solvebvp(N, rhs, varargin)
+function [u, info] = solveBVP(N, rhs, varargin)
 %SOLVEBVP   Solve a linear or nonlinear CHEBOP BVP system.
 %
 %   U = SOLVEBVP(N, RHS), where N is a CHEBOP and RHS is a CHEBMATRIX, CHEBFUN
@@ -43,9 +43,9 @@ function [u, info] = solvebvp(N, rhs, varargin)
 %   e.g., one can both call
 %       N = chebop(@(x, u, v) [diff(u) + v ; u + diff(v)]);
 %       N.bc = @(x, u, v) [u(-1) ; v(1)];
-%       uv = solvebvp(N, 0);
+%       uv = solveBVP(N, 0);
 %   and
-%       uv = solvebvp(N, [0; 0]);
+%       uv = solveBVP(N, [0; 0]);
 %
 % See also: CHEBOP, CHEBOP/MLDIVIDE, CHEBOPPREF, CHEBOP/SOLVEBVPLINEAR,
 %   CHEBOP/SOLVEBVPNONLINEAR, CHEBOP/SOLVEIVP, LINOP/MLDIVIDE.
@@ -123,11 +123,11 @@ if ( isnumeric(rhs) )
     % Check whether dimensions match:
     if ( ~(all(size(rhs) == [numRow, numCol])) &&  (max(size(rhs)) > 1) )
         if ( all(size(rhs) == [numCol, numRow]) )
-            warning('CHEBFUN:CHEBOP:solvebvp:vertcat1', ...
+            warning('CHEBFUN:CHEBOP:solveBVP:vertcat1', ...
                 'Please concatenate the right-hand side of the BVP vertically. Transposing.')
             rhs = rhs.';
         else
-            error('CHEBFUN:CHEBOP:solvebvp:rhs', ...
+            error('CHEBFUN:CHEBOP:solveBVP:rhs', ...
                 'The right-hand side does not match the output dimensions of the operator.');
         end
     end
@@ -137,7 +137,7 @@ if ( isnumeric(rhs) )
     
 elseif ( isa(rhs, 'chebfun') && size(rhs, 2) > 1 )
     rhs = chebmatrix(mat2cell(rhs).');
-    warning('CHEBFUN:CHEBOP:solvebvp:vertcat2', ...
+    warning('CHEBFUN:CHEBOP:solveBVP:vertcat2', ...
         'Please use vertical concatenation for the right-side data.')
 end
 
@@ -146,12 +146,12 @@ if ( isnumeric(u0) )
     % Check whether dimensions match:
     if ( ~all(size(u0) == [numRow, numCol]) )
         if ( all(size(u0) == [numCol, numRow]) )
-            warning('CHEBFUN:CHEBOP:solvebvp:vertcat3', ...
+            warning('CHEBFUN:CHEBOP:solveBVP:vertcat3', ...
                 ['Please concatenate the initial guess of the solution for '...
                 'the BVP vertically. Transposing.']);
             u0 = u0.';
         else
-            error('CHEBFUN:CHEBOP:solvebvp:init', ...
+            error('CHEBFUN:CHEBOP:solveBVP:init', ...
                 'Initial guess does not match output dimensions of operator.');
         end
     end
@@ -172,7 +172,7 @@ end
 % Solve:
 if ( all(isLinear) )
     % Call solver method for linear problems.
-    [u, info] = N.solvebvpLinear(L, rhs - residual, N.init, pref, displayInfo);
+    [u, info] = N.solveBVPlinear(L, rhs - residual, N.init, pref, displayInfo);
 else
     % [TODO]: Switch between residual and error oriented Newton methods.
     
@@ -203,7 +203,7 @@ else
     end
     
     % Call solver method for nonlinear problems.
-    [u, info] = solvebvpNonlinear(N, rhs, L, u0, residual, pref, displayInfo);
+    [u, info] = solveBVPnonlinear(N, rhs, L, u0, residual, pref, displayInfo);
     
 end
 
@@ -230,7 +230,7 @@ displayInfo = [];
 % Loop over varargin:
 while ( ~isempty(varargin) )
     if ( ischar(varargin{1}) )
-        warning('CHEBFUN:CHEBOP:solvebvp:stringInput', ...
+        warning('CHEBFUN:CHEBOP:solveBVP:stringInput', ...
             'String inputs to SOLVEBVP are deprecated.');
         varargin(1) = [];
     elseif ( isa(varargin{1}, 'cheboppref') )
@@ -241,7 +241,7 @@ while ( ~isempty(varargin) )
         displayInfo = varargin{1};
         varargin(1) = [];
     else
-        error('CHEBFUN:CHEBOP:solvebvp', ...
+        error('CHEBFUN:CHEBOP:solveBVP', ...
             'Unknown input of type %s to SOLVEBVP.', class(varargin{1}));
     end
 end

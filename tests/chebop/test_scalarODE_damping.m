@@ -24,18 +24,18 @@ pref.errTol = 1e-10;
 %% Start with chebcolloc2
 pref.discretization = @chebcolloc2;
 pref.errTol = 1e-13;
-[u1, info1] = solvebvp(N, rhs, pref);
+[u1, info1] = solveBVP(N, rhs, pref);
 err(1) = norm(N(u1));
 
 %% Change to chebcolloc1
 pref.discretization = @chebcolloc1;
-[u2, info2] = solvebvp(N, rhs, pref);
+[u2, info2] = solveBVP(N, rhs, pref);
 err(2) = norm(N(u2));
 
 %% Change to ultraS
 pref.discretization = @ultraS;
 pref.errTol = 1e-12;
-[u3, info3] = solvebvp(N, rhs, pref);
+[u3, info3] = solveBVP(N, rhs, pref);
 err(3) = norm(N(u3));
 
 %% Did we pass? 

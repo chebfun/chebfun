@@ -49,6 +49,7 @@ classdef chebguiController
             cla(handles.fig_norm, 'reset');
             axes(handles.fig_norm)
             box on
+            set(handles.fig_norm, 'fontsize', handles.fontsizePanels);
         end
         
         function initialiseFigureTop(handles)
@@ -56,7 +57,9 @@ classdef chebguiController
 
             cla(handles.fig_sol, 'reset');
             axes(handles.fig_sol)
-            title('Solution')
+            title('Solution', 'FontWeight', 'normal', ...
+                'fontsize', handles.fontsizePanels);
+            set(handles.fig_sol, 'fontsize', handles.fontsizePanels);
             box on
 
         end
@@ -122,6 +125,9 @@ classdef chebguiController
         
         % Set-up the input panel on CHEBGUI
         handles = setupPanelInput(handles);
+
+        % Set-up the discretization option panel on CHEBGUI
+        handles = setupPanelDiscretization(handles);
         
         % Set-up the IVP solver option panel on CHEBGUI
         handles = setupPanelIVPsolver(handles);

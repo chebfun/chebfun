@@ -75,7 +75,8 @@ axes(handles.fig_sol)
 
 % Plot initial guess
 plot(chebfun(u), '.-')
-title('Initial guess of solution', 'fontsize', 10 + handles.fontsizeChanges)
+title('Initial guess of solution', 'fontsize', handles.fontsizePanels, ...
+    'fontweight', 'normal')
 
 % Do different things for the axes depending on if the solution is real.
 if ( isreal(chebfun(u)) )
@@ -121,7 +122,8 @@ axes(handles.fig_sol)
 
 % Plot initial guess
 plot(chebfun(u), '.-')
-title('Current solution', 'fontsize', 10 + handles.fontsizeChanges)
+title('Current solution', 'fontsize', handles.fontsizePanels, ...
+    'fontweight', 'normal')
 
 
 % Do different things for the axes depending on if the solution is real.
@@ -138,7 +140,8 @@ axes(handles.fig_norm)
 
 % Plot initial guess.
 plot(chebfun(delta), '.-')
-title('Current correction step', 'fontsize', 10 + handles.fontsizeChanges)
+title('Current correction step', 'fontsize', handles.fontsizePanels, ...
+    'fontweight', 'normal')
 
 % Do different things for the axes depending on if the solution is real.
 if ( isreal(chebfun(u)) )
@@ -243,6 +246,6 @@ else
     axis equal
 end
 
-title('Solution', 'fontsize', 10 + handles.fontsizeChanges)
+title('Solution', 'fontsize', handles.fontsizePanels, 'fontweight', 'normal')
 
 end

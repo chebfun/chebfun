@@ -29,9 +29,9 @@ function [y, info] = solveivp(N, rhs, pref, varargin)
 %   e.g., one can both call
 %       N = chebop(@(x, u, v) [diff(u) + v ; u + diff(v)], [0 10]);
 %       N.bc = @(x, u, v) [u(0) ; v(0)];
-%       uv = solvebvp(N, 0);
+%       uv = solveBVP(N, 0);
 %   and
-%       uv = solvebvp(N, [0; 0]);
+%       uv = solveBVP(N, [0; 0]);
 %
 % See also: CHEBOP, CHEBOP/MLDIVIDE, CHEBOPPREF, CHEBOP/SOLVEBVP,
 % CHEBFUN/ODE113, CHEBFUN/ODE15S, CHEBFUN/ODE45, CHEBFUN/ODESOL, TREEVAR. 
@@ -82,7 +82,7 @@ end
 % If pref.ivpSolver is set to a global method, we really should be calling
 % CHEBOP/SOLVEBVP():
 if ( isempty(strfind(func2str(pref.ivpSolver), 'chebfun.ode')) )
-    [y, info] = solvebvp(N, rhs, pref, varargin{:});
+    [y, info] = solveBVP(N, rhs, pref, varargin{:});
     info.solver = 'Global method';
     return
 end
@@ -100,7 +100,7 @@ catch ME
     % Did we encounter an unsupported method? If so, try to solve it globally:
     if ( ~isempty(regexp(ME.identifier, 'CHEBFUN:TREEVAR:.+:notSupported', ...
             'once')) )
-        [y, info] = solvebvp(N, rhs, pref, varargin{:});
+        [y, info] = solveBVP(N, rhs, pref, varargin{:});
         return
     else
         % Otherwise, an unexpected error occured, rethrow it.

@@ -98,7 +98,7 @@ if ( strcmp(get(handles.button_solve, 'string'), 'Solve') )   % In solve mode
     set(handles.menu_demos, 'Enable','off');
 
     % What discretization do we want to use?
-    if ( get(handles.button_Collocation, 'Value') )
+    if ( get(handles.button_collocation, 'Value') )
         guifile.options.discretization = 'collocation';
     else
         guifile.options.discretization = 'ultraspherical';
