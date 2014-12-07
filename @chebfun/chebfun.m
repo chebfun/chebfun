@@ -828,13 +828,6 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
         pref = chebfunpref(keywordPrefs);
     end
 
-    % Error if 'doubleLength' and 'splitting on' are both passed:
-    % These options are not compatible.
-    if ( pref.splitting && flags.doubleLength )
-        error('CHEBFUN:CHEBFUN:parseInputs:doubleLengthSplitting', ...
-            'Using splitting with doubleLength is not supported.')
-    end
-
     % Use the domain of the chebfun that was passed if none was supplied.
     if ( ~domainWasPassed || isempty(dom) )
         if ( isa(op, 'chebfun') )
@@ -844,6 +837,20 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
         end
     end
     numIntervals = numel(dom) - 1;
+
+    % Error if 'doubleLength' and 'splitting on' are both passed:
+    % This combination is not supported.
+    if ( pref.splitting && flags.doubleLength )
+        error('CHEBFUN:CHEBFUN:parseInputs:doubleLengthSplitting', ...
+            'doubleLength not supported with splitting on.')
+    end
+
+    % Error if 'doubleLength' is used on a domain with breakpoints:
+    % This combination is not supported.
+    if ( (length(dom) > 2) && flags.doubleLength )
+        error('CHEBFUN:CHEBFUN:parseInputs:doubleLengthBreakpoints', ...
+            'doubleLength not supported on domains with breakpoints.')
+    end
 
     % Deal with the 'periodic' or 'trig' flag:
     if ( isPeriodic )

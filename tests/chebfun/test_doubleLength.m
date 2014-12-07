@@ -26,4 +26,15 @@ catch ME
     end
 end
 
+% Test that there is an error when doubleLength is used with breakpoints.
+pass(4) = false;
+try
+    f = chebfun(@exp, [0 .2 1], 'doubleLength');
+catch ME
+    if ( strcmpi(ME.identifier, ...
+            'CHEBFUN:CHEBFUN:parseInputs:doubleLengthBreakpoints') )
+        pass(4) = true;
+    end
+end
+
 end
