@@ -5,18 +5,18 @@ if ( nargin < 1 )
     pref = chebfunpref();
 end
 
-% Testing of various casting between TRIGFUNS and CHEBFUNS:
-% NOTE: The basic operations such as +, *, restrict and horzcat
-% are tested in their corresponding tests
+% Testing of various casting between TRIGFUNS and CHEBFUNS.
+% NOTE: The basic operations such as CHEBFUN/PLUS, CHEBFUN/TIMES, 
+% CHEBFUN/RESTRICT and CHEBFUN/HORZCAT are also tested in their corresponding 
+% tests.
 
-% We are testing here:
-% abs, cumsum, power, round, ceil, floor, 
-% quasimatrics, horzcat, array-valued,
+% We are testing here: abs, cumsum, power, round, ceil, floor, quasimatrices, 
+% array-valued.
 f = chebfun(@(x) cos(pi*x).^2, [1, 3], 'trig' );
 pass(1) = abs(sum(f{2,3}) - 1/2) < vscale(f)*epslevel(f)*100;
 pass(2) = abs(f(20)-1) < vscale(f)*epslevel(f)*100;
 
-%% Test Quasi matrices
+%% Test abs and quasimatrices
 f = chebfun(@(x) sin(10*x), [0, 2*pi], 'trig' );
 g = chebfun(@(x) x, [0, 2*pi]);
 H = [f, g];
@@ -30,13 +30,13 @@ pass(6) = isequal(get(AH(:, 2).funs{1}, 'tech'), tech );
 pass(7) = norm(AH(:,1) - abs(f), inf) < 100*epslevel(f)*vscale(f);
 pass(8) = norm(AH(:,2) - abs(g), inf) < 100*epslevel(f)*vscale(f);
 
-%% Test array-valued
+%% Test conversion to array-valued
 G = quasi2cheb(H);
 pass(9)  = isequal(get(G(:, 1).funs{1}, 'tech'), tech);
 pass(10) = isequal(get(G(:, 2).funs{1}, 'tech'), tech);
 pass(11) = length(G(:,1)) == length(G(:,2));
 
-%%
+%% Test for times
 f = chebfun(@(x) exp(-x.^2), [-10, 10], 'trig' );
 g = chebfun(@(x) exp(-x.^2), [-10, 10]);
 x = chebfun(@(x) x, [-10, 10] );
@@ -46,6 +46,7 @@ gx = g.*x;
 pass(12) = norm(fx(xx)-gx(xx), inf) < 100*epslevel(fx)*vscale(fx);
 pass(13) = isequal(get(fx.funs{1}, 'tech'), tech);
 
+%% Test for round, floor, ceil
 f = chebfun(@(x) exp(sin(x)), [0 2*pi], 'trig');
 g = chebfun(@(x) exp(sin(x)), [0 2*pi]);
 pass(14) = norm(round(f) - round(g), inf) < 100*epslevel(f)*vscale(f);
@@ -58,6 +59,7 @@ g = cumsum(f);
 h = cumsum(f+1e-5);
 pass(17) = isequal(get(g.funs{1}, 'tech'), @trigtech);
 pass(18) = isequal(get(h.funs{1}, 'tech'), tech);
+
 %% Test diff of a quasimatrix
 f = chebfun(@(x) sin(2*pi*x), 'trig');
 g = chebfun(@(x) sin(2*pi*x));
