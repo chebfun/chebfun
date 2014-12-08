@@ -431,6 +431,9 @@ classdef chebfun
         
         % Assign columns (or rows) of an array-valued CHEBFUN.
         f = assignColumns(f, colIdx, g)
+        
+        % Convert a CHEBFUN to another TECH.
+        f = changeTech(f, newtech);
 
         % Deprecated function.
         f = define(f,s,v);
@@ -544,9 +547,6 @@ classdef chebfun
 
         % Convert a cell array of CHEBFUN objects to a quasimatrix.
         G = cell2quasi(F)
-        
-        % Convert a CHEBFUN to another TECH.
-        f = changeTech(f, newtech);
         
         % Determine values of CHEBFUN at breakpoints.
         vals = getValuesAtBreakpoints(funs, ends, op);

@@ -1,8 +1,7 @@
 function A = changeTech(A, newtech)
 %CHANGETTECH   Convert the entries of a CHEBMATRIX to another TECH.
-%
-% CHANGETECH(A, NEWTECH) converts the entries of a CHEBMATRIX A to another TECH
-% NEWTECH.
+%   A = CHANGETECH(A, NEWTECH) converts the entries of a CHEBMATRIX A to another 
+%   TECH NEWTECH.
 %
 % See also CHEBFUN/CHANGETECH.
 
@@ -29,10 +28,10 @@ A.blocks = cellfun(@(v) changeFunction(v, newtech), ...
 end
 
 function f = changeFunction(f, newTech)
-% CHANGEFUNCTION   Calls chebfun/changeTech if input argument is a CHEBFUN, does
-%                  nothing if input is a scalar.
+%CHANGEFUNCTION   Calls CHEBFUN/CHANGETECH if input argument is a CHEBFUN, does
+%nothing if input is a scalar.
 if ( isa(f, 'chebfun') )
-    f = chebfun.changeTech(f, newTech);
+    f = changeTech(f, newTech);
 end
 
 end
