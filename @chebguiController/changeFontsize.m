@@ -1,13 +1,13 @@
 function handles = changeFontsize(handles, change)
 
-currentChange = handles.fontsizeChanges;
-newChange = currentChange + change;
+currentFontsize = handles.fontsizePanels;
+newFontsize = currentFontsize + change;
 
-% Allow max 10 increases or 10 decreases
-maxChange = 10;
-minChange = -10;
+% Allow max fontsize 22 and min fontsize 6:
+maxFontsize = 22;
+minFontsize = 6;
 
-if ( (newChange > maxChange) || (newChange < minChange) )
+if ( (newFontsize > maxFontsize) || (newFontsize < minFontsize) )
     % Maximum or minimum fontsize reached -- do nothing.
     return
 end
@@ -32,25 +32,22 @@ allLocs = strcat(textLocs, inputLocs, buttonLocs, panelLocs, toggleLocs, ...
 for fieldCounter = 1:length(textLocs)
     if ( ~isempty(allLocs{fieldCounter}) )
         % Access the field values dynamically using the .( ) call
-        currFontSize = get(handles.(names{fieldCounter}), 'FontSize');
-        newFontSize = currFontSize + change;
-        set(handles.(names{fieldCounter}), 'FontSize', newFontSize)
+        currFS = get(handles.(names{fieldCounter}), 'FontSize');
+        newFS = currFS + change;
+        set(handles.(names{fieldCounter}), 'FontSize', newFS)
     end
 end
 
 % Change font sizes of the plots:
-set(handles.fig_sol,  'fontsize', get(handles.fig_sol,  'fontsize') + change)
-set(handles.fig_norm, 'fontsize', get(handles.fig_norm, 'fontsize') + change)
+set(handles.fig_sol,  'fontsize', newFontsize)
+set(handles.fig_norm, 'fontsize', newFontsize)
 
-% In older versions of MATLAB, need to change the title font-size manually:
-if verLessThan('matlab', '8.4')
-    solTitle = get(handles.fig_sol, 'title');
-    normTitle = get(handles.fig_norm, 'title');
-    set(solTitle, 'fontsize', get(solTitle, 'fontsize') + change)
-    set(normTitle, 'fontsize', get(normTitle, 'fontsize') + change)
-end
+solTitle = get(handles.fig_sol, 'title');
+normTitle = get(handles.fig_norm, 'title');
+set(solTitle, 'fontsize', newFontsize)
+set(normTitle, 'fontsize', newFontsize)
 
 % Store the new font size:
-handles.fontsizeChanges = newChange;
+handles.fontsizePanels = newFontsize;
 
 end

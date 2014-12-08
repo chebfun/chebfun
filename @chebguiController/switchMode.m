@@ -58,16 +58,19 @@ if ( strcmp(newMode, 'bvp') ) % Going into BVP mode
     set(handles.menu_pdeholdplot, 'Enable', 'Off')
     set(handles.menu_pdefix, 'Enable', 'Off')
     set(handles.menu_fixN, 'Enable', 'Off')
+
+    % Make the discretization visible
+    set(handles.panel_discretization, 'Visible', 'on');
+    
+    % Hide the IVP solver panel visible
+    set(handles.panel_IVPsolver, 'Visible', 'off')
     
     % Clear the top figure
     chebguiController.initialiseFigureTop(handles)
 
     % Always clear the bottom figure
     chebguiController.initialiseFigureBottom(handles)
-    
-    % Change the IVP solver option panel to discretization panel:
-    handles = updateDiscPanel(handles, 0);
-    
+        
     % Make the discretization panel visible
     set(handles.panel_discretization, 'Visible', 'on')
     
@@ -87,6 +90,12 @@ elseif ( strcmp(newMode, 'ivp') ) % Going into IVP mode
     % Change heading for BC/IC input field:
     set(handles.panel_BCs, 'Title', 'Initial/final conditions')
     
+    % Hide the discretization panel
+    set(handles.panel_discretization, 'Visible', 'off');
+    
+    % Make the IVP solver panel visible
+    set(handles.panel_IVPsolver, 'Visible', 'on')
+    
     set(handles.button_bvp, 'Value', 0)
     set(handles.button_ivp, 'Value', 1)
     % Enable IVP solver option
@@ -96,8 +105,6 @@ elseif ( strcmp(newMode, 'ivp') ) % Going into IVP mode
     if ( ~isempty(strfind(handles.guifile.options.ivpSolver, 'ode')) )
         set(handles.panel_initialGuess,'Visible','off');
     end
-    % Change the discretization panel to IVP solver option panel
-    handles = updateDiscPanel(handles, 1);
     
 elseif ( strcmp(newMode, 'pde') ) % Going into PDE mode
     handles.guifile.type = 'pde';
@@ -149,9 +156,9 @@ elseif ( strcmp(newMode, 'pde') ) % Going into PDE mode
     % Always clear the bottom figure
     chebguiController.initialiseFigureBottom(handles)
     
-    % Hide the discretization panel
+    % Hide the discretization and IVP solver panels
     set(handles.panel_discretization, 'Visible', 'off')
-    
+    set(handles.panel_IVPsolver, 'Visible', 'off')
     
 else % Going into EIG mode
     handles.guifile.type = 'eig';
@@ -229,12 +236,12 @@ else % Going into EIG mode
     set(handles.menu_pdeholdplot, 'Enable', 'Off')
     set(handles.menu_pdefix, 'Enable', 'Off')
     set(handles.menu_fixN, 'Enable', 'Off')
-
-    % Change the IVP solver option panel to discretization panel:
-    handles = updateDiscPanel(handles, 0);
     
     % Make the discretization panel visible
     set(handles.panel_discretization, 'Visible', 'on')
+    
+    % Hide the IVP solver panel
+    set(handles.panel_IVPsolver, 'Visible', 'off')
     
     % Clear the top figure
     chebguiController.initialiseFigureTop(handles)
@@ -263,19 +270,4 @@ set(handles.iter_list, 'Value', 0)
 set(handles.iter_text, 'Visible', 'off')
 set(handles.iter_text, 'String', '')
 end
-
-function handles = updateDiscPanel(handles, ivpMode)
-if ( ivpMode )
-    set(handles.button_Collocation, 'String', 'Time-stepping','value', 1)
-    set(handles.button_ultraS, 'String', 'Global') 
-    set(handles.panel_discretization, 'Title', 'IVP solver')
-else
-    
-    set(handles.button_Collocation, 'String', 'Collocation')
-    set(handles.button_ultraS, 'String', 'Ultraspherical') 
-    
-    set(handles.panel_discretization, 'Title', 'Discretization')
-end
-end
-
 

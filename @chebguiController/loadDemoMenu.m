@@ -161,7 +161,7 @@ function [demoName, demoFun, demoType] = parseDemoFile(demoPath, handles)
     % name of the demo is clicked, demoFun() of the corresponding demo gets
     % called.
     demoFun = @(hObject, eventdata) ...
-        hOpenMenuitemCallback(hObject, eventdata, handles, demoPath);
+        hOpenMenuitemCallback(hObject, eventdata, guidata(hObject), demoPath);
 end
 
 function hOpenMenuitemCallback(hObject, eventdata, handles, demoPath)

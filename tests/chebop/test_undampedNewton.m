@@ -16,7 +16,7 @@ dom = [0, 10];
 x = chebfun(@(x) x, dom);
 f = sin(x);
 N = chebop(@(u) diff(u,2) + u - u.^3, dom, 1, -1);
-u = solvebvp(N, f, pref);
+u = solveBVP(N, f, pref);
 
 % Happy?
 err = norm(N(u) - f);

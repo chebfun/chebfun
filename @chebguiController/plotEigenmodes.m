@@ -76,9 +76,12 @@ if ( ~isempty(h1) )
         grid on
     end
 
-    title('Eigenvalues');
+    title('Eigenvalues','fontsize', handles.fontsizePanels, ...
+        'fontweight', 'normal');
     xlabel('real');
     ylabel('imag');
+    
+    set(h1, 'Fontsize', handles.fontsizePanels);
 
     if ( any(selection) && (nargin < 4) )
         xlim(h1, xlim_sol);
@@ -179,6 +182,6 @@ set(h2, 'NextPlot', 'replace')
 
 % Set x-label and title of the plot.
 xlabel(handles.indVarName);
-title(s);
-
+title(s,'fontsize', handles.fontsizePanels, 'fontweight', 'normal');
+set(h2, 'Fontsize', handles.fontsizePanels);
 end

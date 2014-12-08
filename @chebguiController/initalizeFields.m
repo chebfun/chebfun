@@ -44,10 +44,8 @@ end
 % Set the string for popup-menu for the choice of plots:
 set(handles.popupmenu_bottomFig,'String', ...
     {'Convergence of Newton iteration', ...
-    'Coefficients of the solution'});
-
-% Set string for the ultraspherical options
-set(handles.button_ultraS, 'String', 'Ultraspherical')
+    'Coefficients of the solution'}, ...
+    'fontsize', handles.fontsizePanels);
 
 end
 

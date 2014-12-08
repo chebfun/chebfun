@@ -23,7 +23,7 @@ N = chebop(@(x, u, v) [ u - diff(v) + v ; diff(u, 2) - cos(v) ], dom);
 N.bc = 'periodic';
 N.init = u0;
 pref.discretization = 'chebcolloc2';
-u = solvebvp(N, f, pref);
+u = solveBVP(N, f, pref);
 
 % Solve imposing directly the periodic boundary condition.
 N.bc = @(x, u, v) [ u(dom(1)) - u(dom(2)); ...
