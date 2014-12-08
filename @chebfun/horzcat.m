@@ -97,7 +97,7 @@ isPeriodic = any(cellfun(@isPeriodicTech, varargin));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%% FORM A QUASIMATRIX %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-if ( differentBreakpoints || isSingular || isDelta || isPeriodic)  % (form a quasimatrix)
+if ( differentBreakpoints || isSingular || isDelta || isPeriodic )  % (form a quasimatrix)
     isArrayCheb = cellfun(@(f) isa(f, 'chebfun') && size(f, 2) > 1, varargin);
     if ( any(isArrayCheb) )
         % Break up array-valued CHEBFUNs into single columns:
