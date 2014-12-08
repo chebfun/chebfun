@@ -42,6 +42,12 @@ elseif ( isempty(newDomain) || numel(newDomain) == 1 )
     return
 end
 
+% Cast a periodic chebfun to a regualr chebfun:
+if ( isPeriodicTech(f) )
+    f = chebfun(f);
+end
+
+
 % Grab domain from f:
 oldDomain = f.domain;
 
@@ -56,11 +62,6 @@ if ( (newDomain(1) < oldDomain(1)) || (newDomain(end) > oldDomain(end)) || ...
         any(diff(newDomain) < 0) )
     % newDom is not a valid subinterval of oldDom!
     error('CHEBFUN:CHEBFUN:restrict:subdom', 'Not a valid subdomain.');
-end
-
-% Cast a periodic chebfun to a regualr chebfun:
-if ( isPeriodicTech(f) )
-    f = chebfun(f);
 end
 
 % Obtain FUN cell and pointValues from f:
