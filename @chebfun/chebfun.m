@@ -432,6 +432,9 @@ classdef chebfun
         % Assign columns (or rows) of an array-valued CHEBFUN.
         f = assignColumns(f, colIdx, g)
         
+        % Convert a CHEBFUN to another TECH.
+        f = changeTech(f, newtech);
+
         % Deprecated function.
         f = define(f,s,v);
         
@@ -542,7 +545,7 @@ classdef chebfun
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Hidden = true, Static = true )
 
-        %Convert a cell array of CHEBFUN objects to a quasimatrix.
+        % Convert a cell array of CHEBFUN objects to a quasimatrix.
         G = cell2quasi(F)
         
         % Determine values of CHEBFUN at breakpoints.
@@ -560,7 +563,7 @@ classdef chebfun
 
         % Main constructor.
         [funs, ends] = constructor(op, domain, data, pref);
-
+        
         % Convert ODE solutions into CHEBFUN objects:
         [y, t] = odesol(sol, dom, opt);
         

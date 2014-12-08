@@ -195,6 +195,7 @@ if ( ~isempty(chebg.init) )
         
         axes(handles.fig_sol);
         plot(initChebfun, 'LineWidth', 2)
+        set(handles.fig_sol, 'fontsize', handles.fontsizePanels);
         
         if ( ~isempty(chebg.options.fixYaxisLower) ) % Fix y-axis
             ylim([str2num(chebg.options.fixYaxisLower), ...
@@ -207,9 +208,11 @@ if ( ~isempty(chebg.init) )
         end
         
         if ( strcmpi(chebg.type, 'bvp') )
-            title('Initial guess of solution')
+            title('Initial guess of solution', ...
+                'fontweight', 'normal')
         else
-            title('Initial condition')
+            title('Initial condition', ...
+                'fontweight', 'normal')
         end
         
     catch

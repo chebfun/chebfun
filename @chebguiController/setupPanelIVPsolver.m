@@ -6,36 +6,58 @@ textBackgroundColour = get(handles.panel_buttons, 'BackgroundColor');
 textFontsize = 12;
 leftMargin = 0.025;
 textHeight = 0.45;
-vertLoc = linspace(.6, .05, 2);
+vertLoc = linspace(.55, .05, 2);
 
-% When we start CHEBGUI, we don't want this panel to be visible.
-
-set(handles.panel_type,'Visible', 'off');
-% Create a panel for the problem type option:
-handles.panel_IVPsolver = uipanel('Parent', handles.panel_buttons, ...
+%% Create a panel for the IVP solver option:
+handles.panel_IVPsolver = uibuttongroup('parent', handles.panel_buttons, ...
     'Title', 'IVP solver', 'BackgroundColor', textBackgroundColour, ...
-    'Position', [0.045 .63 .92 .135], 'FontSize', textFontsize, ...
-    'BorderType', 'etchedin');
+    'Position', [0.045 .465 .92 .14], 'FontSize', textFontsize, ...
+    'BorderType', 'etchedin', 'Visible', 'off', ...
+    'SelectionChangeFcn', @(hObject, eventdata) ...
+    ivpSolverSelection(hObject, eventdata, guidata(hObject)));
 
-% Create strings above input boxes:
+%% Populate the IVP solver option panel with two buttons.
 handles.button_timestepping = uicontrol('Parent', handles.panel_IVPsolver, ...
     'Style', 'radiobutton', 'BackgroundColor', textBackgroundColour, ...
-    'String','Stepping', 'FontSize', textFontsize, ...
-    'Callback', @(hObject, eventdata) ...
-        switchModeButtonCallback(hObject, guidata(hObject), 'bvp'), ...
+    'String','Time-stepping', 'FontSize', textFontsize, ...
     'Units', 'normalized', ...
     'Position', [leftMargin vertLoc(1) 1-leftMargin textHeight]);
+
 handles.button_global = uicontrol('Parent', handles.panel_IVPsolver, ...
     'Style', 'radiobutton', 'BackgroundColor', textBackgroundColour, ...
     'String','Global', 'FontSize', textFontsize, ...
-    'Callback', @(hObject, eventdata) ...
-        switchModeButtonCallback(hObject, guidata(hObject), 'ivp'), ...
     'Units', 'normalized', ...
     'Position', [leftMargin vertLoc(2) 1-leftMargin textHeight]);
+
 end
 
-function switchModeButtonCallback(hObject, handles, newMode)
-% Called when user presses one of the mode changing buttons.
-handles = chebguiController.switchMode(handles, newMode);
+function ivpSolverSelection(hObject, eventdata, handles)
+% hObject    handle to the selected object in panel_IVPsolver
+% eventdata  structure with the following fields (see UIBUTTONGROUP)
+%	EventName: string 'SelectionChanged' (read only)
+%	OldValue: handle of the previously selected object or empty if none was 
+%             selected
+%	NewValue: handle of the currently selected object
+% handles    structure with handles and user data (see GUIDATA)
+
+% What's the new IVP solver selected?
+newIVPsolver = get(eventdata.NewValue, 'String');
+
+% Change the ivpSolver option stored in handles.guifile.options based on the new
+% selection.
+if ( strcmp(newIVPsolver, get(handles.button_timestepping, 'String')) )
+    % User selected time-stepping. Default time stepping method is ODE113:
+    handles.guifile.options.ivpSolver = 'ode113';
+    % Hide the initial guess panel:
+    set(handles.panel_initialGuess, 'Visible', 'off')
+else
+    % User selected global solver. Default global method is collocation:
+    handles.guifile.options.ivpSolver = 'collocation';
+    % Make the initial guess panel visible:
+    set(handles.panel_initialGuess, 'Visible', 'on')
+end
+
+% Update HOBJECT.
 guidata(hObject, handles);
+
 end
