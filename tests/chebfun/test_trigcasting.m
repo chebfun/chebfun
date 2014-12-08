@@ -70,4 +70,9 @@ h = chebfun(@(x) 2+sin(pi*x));
 g = chebfun(@(x) exp(x));
 pass(20) = norm(f.^g - h.^g, inf) < 100*vscale(f)*epslevel(f); 
 
+%% Test for breakpoints
+f = chebfun(@(x) sin(2*pi*x), 'trig');
+g = chebfun(f, [-1, 0, 1]);
+pass(21) = norm(domain(g) - [-1 0 1], inf) < 10*eps;
+
 end
