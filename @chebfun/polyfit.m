@@ -44,6 +44,7 @@ if ( isPeriodicTech(y) )
     % Construct the fit:
     f = chebfun(c, y.domain, 'coeffs', 'periodic');
     return;
+    
 end
 
 % Compute first n+1 Legendre coeffs:
