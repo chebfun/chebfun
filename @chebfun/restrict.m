@@ -58,6 +58,11 @@ if ( (newDomain(1) < oldDomain(1)) || (newDomain(end) > oldDomain(end)) || ...
     error('CHEBFUN:CHEBFUN:restrict:subdom', 'Not a valid subdomain.');
 end
 
+% Cast a periodic chebfun to a regualr chebfun:
+if ( isPeriodicTech(f) )
+    f = chebfun(f);
+end
+
 % Obtain FUN cell and pointValues from f:
 funs = f.funs;
 pointValues = f.pointValues;
