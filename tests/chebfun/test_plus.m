@@ -141,7 +141,7 @@ hExact = oph(x);
 err = hVals - hExact;
 pass(29) = norm(err, inf) < get(h,'epslevel').*get(h,'vscale');
 
-%% Test addition between a CHEBFUN and a FOURFUN.
+%% Test addition between a CHEBFUN and a TRIGFUN.
 
 dom = [0 pi 2*pi];
 

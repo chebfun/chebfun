@@ -330,10 +330,11 @@ classdef chebfun
         % Test if a CHEBFUN object is built upon SINGFUN.
         out = issing(f)
         
-        % Test if a CHEBFUN object is built upon TRIGTECH.
+        % Test if a CHEBFUN object is built upon a basis of periodic 
+        % functions, i.e., a periodic TECH.
         out = isPeriodicTech(f)
         
-        % True for zero CHEBFUN objects
+        % True for zero CHEBFUN objects.
         out = iszero(f)
         
         % Kronecker product of two CHEBFUN object.
