@@ -25,11 +25,6 @@ end
 
 function g = columnAbs(f, pref)
 
-% Handle periodic functions:
-if ( isPeriodicTech(f) )
-    f = chebfun(f);
-end
-
 % Add breaks at the appropriate roots of f:
 g = addBreaksAtRoots(f, pref);
 
