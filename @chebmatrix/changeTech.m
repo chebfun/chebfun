@@ -1,7 +1,8 @@
 function A = changeTech(A, newtech)
 %CHANGETTECH   Convert the entries of a CHEBMATRIX to another TECH.
 %   A = CHANGETECH(A, NEWTECH) converts the entries of a CHEBMATRIX A to another 
-%   TECH NEWTECH.
+%   TECH NEWTECH. The argument NEWTECH should be a function handle to the
+%   desired TECH class.
 %
 % See also CHEBFUN/CHANGETECH.
 

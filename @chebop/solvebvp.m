@@ -155,10 +155,10 @@ disc = pref.discretization();
 tech = disc.returnTech();
 techUsed = tech();
 
-% If the dicretization uses periodic functions, then clear the boundary 
-% conditions (if we're using periodic basis functions, the boundary
-% conditions will be satisfied by construction). Also, ensure that u0 is 
-% of correct discretization, and convert it to a CHEBMATRIX if necessary.
+% If the dicretization uses periodic functions, then clear the boundary
+% conditions (if we're using periodic basis functions, the boundary conditions
+% will be satisfied by construction). Also, ensure that u0 is of correct
+% discretization, and convert it to a CHEBMATRIX if necessary.
 if ( isPeriodicTech(techUsed) )
     % Clear the boundary conditions.
     [N, L] = clearPeriodicBCs(N, L);
