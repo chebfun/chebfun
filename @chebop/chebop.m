@@ -282,7 +282,7 @@ classdef (InferiorClasses = {?double}) chebop
         result = parseBC(N, BC, type)
         
         % Solve a nonlinear problem posed with CHEBOP
-        [u, info] = solveBVPnonlinear(N, rhs, L, u0, res, pref, displayInfo)
+        [u, info] = solvebvpNonlinear(N, rhs, L, u0, res, pref, displayInfo)
         
         % Determine discretization for a CHEBOP object with periodic
         % boundary conditions.
@@ -333,7 +333,7 @@ classdef (InferiorClasses = {?double}) chebop
         displayInfoLinear(u, normRes, pref)
 
         % Solve a linear problem posed with CHEBOP.
-        [u, info] = solveBVPlinear(L, rhs, Ninit, displayInfo, pref)
+        [u, info] = solvebvpLinear(L, rhs, Ninit, displayInfo, pref)
         
     end
     

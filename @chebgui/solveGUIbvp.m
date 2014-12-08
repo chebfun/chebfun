@@ -18,7 +18,7 @@ function varargout = solveGUIbvp(guifile, handles)
 % If the method is called by calling the command explicitly with a CHEBGUI
 % object (e.g. [U, INFO] = SOLVEGUIBVP(GUIFILE) from the command line),
 %   VARARGOUT{1}:   The solution to the problem specified by GUIFILE.
-%   VARARGOUT{2}:   The INFO struct returned by the chebop/solveBVP method.
+%   VARARGOUT{2}:   The INFO struct returned by the chebop/solvebvp method.
 %
 % See also: chebgui/solveGUI, chebgui/solveGUIivp.
 
@@ -124,7 +124,7 @@ if ( guiMode )
     set(handles.popupmenu_bottomFig, 'Value', 1);
 end
 
-% Call solveBVP with different arguments depending on whether we're in GUI
+% Call solvebvp with different arguments depending on whether we're in GUI
 % or not. If we're not in GUI mode, we can finish here.
 if ( guiMode )
     displayFunction = ...

@@ -21,15 +21,15 @@ rhs = sin(x);
 %% Try different discretizations
 % Start with chebcolloc2
 pref.discretization = @chebcolloc2;
-u1 = solveBVP(N, rhs, pref);
+u1 = solvebvp(N, rhs, pref);
 
 %% Change to ultraS
 pref.discretization = @ultraS;
-u2 = solveBVP(N, rhs, pref);
+u2 = solvebvp(N, rhs, pref);
 
 %% Change to chebcolloc1
 pref.discretization = @chebcolloc1;
-u3 = solveBVP(N, rhs, pref);
+u3 = solvebvp(N, rhs, pref);
 
 %% Did we pass? 
 % To pass, both residuals have to be small, but we should not expect u1 and u2
@@ -54,15 +54,15 @@ rhs = sin(x);
 %% Try different discretizations
 % Start with chebcolloc2
 pref.discretization = @chebcolloc2;
-u4 = solveBVP(N, rhs, pref);
+u4 = solvebvp(N, rhs, pref);
 
 %% Change to ultraS
 pref.discretization = @ultraS;
-u5 = solveBVP(N, rhs, pref);
+u5 = solvebvp(N, rhs, pref);
 
 %% Change to chebcolloc1
 pref.discretization = @chebcolloc1;
-u6 = solveBVP(N, rhs, pref);
+u6 = solvebvp(N, rhs, pref);
 
 %% Did we pass? 
 % To pass, both residuals have to be small, but we should not expect u3 and u4
@@ -88,15 +88,15 @@ rhs = sin(x);
 %% Try different discretizations
 % Start with collocation
 pref.discretization = @chebcolloc2;
-u7 = solveBVP(N, rhs, pref);
+u7 = solvebvp(N, rhs, pref);
 
 %% Change to ultraS
 pref.discretization = @ultraS;
-u8 = solveBVP(N, rhs, pref);
+u8 = solvebvp(N, rhs, pref);
 
 %% Change to chebcolloc1
 pref.discretization = @chebcolloc1;
-u9 = solveBVP(N, rhs, pref);
+u9 = solvebvp(N, rhs, pref);
 
 
 %% Did we pass? 

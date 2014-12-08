@@ -12,8 +12,8 @@ function printSolver(fid, expInfo)
 
 % Print commands for solving the problem:
 fprintf(fid,'\n%%%% Solve!\n');
-fprintf(fid, ['%% Call solveBVP to solve the problem.\n' ...
+fprintf(fid, ['%% Call solvebvp to solve the problem.\n' ...
     '%% (With the default options, this is equivalent to u = N\\rhs.)\n']);
-fprintf(fid, 'u = solveBVP(N, rhs, options);\n');
+fprintf(fid, 'u = solvebvp(N, rhs, options);\n');
 
 end

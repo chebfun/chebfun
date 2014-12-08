@@ -96,7 +96,7 @@ classdef chebgui
 %                    'de','u" = sin(u)','lbc','u = 1','rbc','u = 0')
 %    show(chebg)
 %
-% See also chebop/solveBVP, chebop/eigs, chebfun/pde15s, chebfun/ode45,
+% See also chebop/solvebvp, chebop/eigs, chebfun/pde15s, chebfun/ode45,
 % chebfun/ode113, chebfun/ode15s, chebfun/bvp4c, chebfun/bvp5c.
 %
 % References:

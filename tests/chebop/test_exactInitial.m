@@ -29,22 +29,22 @@ N.init =  2.*cos(2.*pi.*x./10);
 pref.discretization = @chebcolloc2;
 
 % Solve to obtain a solution:
-u = solveBVP(N, rhs, pref);
+u = solvebvp(N, rhs, pref);
 err(1) = norm(N(u));
 
 % Solve again, using the above solution as the initial guess
 N.init = u;
-u = solveBVP(N, rhs, pref);
+u = solvebvp(N, rhs, pref);
 err(2) = norm(N(u));
 
 % Solve again, using a different discretization
 pref.discretization = @chebcolloc1;
-u = solveBVP(N, rhs, pref);
+u = solvebvp(N, rhs, pref);
 err(3) = norm(N(u));
 
 % Solve again, using a different discretization
 pref.discretization = @ultraS;
-u = solveBVP(N, rhs, pref);
+u = solvebvp(N, rhs, pref);
 err(4) = norm(N(u));
 
 % Happy?

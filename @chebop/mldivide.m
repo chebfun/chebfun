@@ -44,7 +44,7 @@ else
     % wasn't included in VARARGIN, as that'd mean we couldn't to an automatic
     % switch to Fourier methods in the periodic case (i.e. change the
     % discretization to TRIGTECH).
-    [varargout{1:nargout}] = solveBVP(N, rhs, varargin{:});
+    [varargout{1:nargout}] = solvebvp(N, rhs, varargin{:});
 end
 
 end

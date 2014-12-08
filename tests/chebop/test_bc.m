@@ -15,7 +15,7 @@ A = chebop(@(x, u) diff(u,2) + 4*diff(u) + u, d);
 A.lbc = -1;
 A.rbc = 'neumann';
 f = chebfun( 'exp(sin(x))', d );
-u = solveBVP(A, f, pref);
+u = solvebvp(A, f, pref);
 
 err(1) = norm(diff(u,2) + 4*diff(u) + u - f);
 err(2) = abs(u(d(1)) + 1);
@@ -27,7 +27,7 @@ A = chebop(@(x,u) diff(u,2) + 4*diff(u) + 200*u, d);
 A.lbc = @(u) [diff(u)+2*u-1];
 A.rbc = @(u) diff(u);
 f = chebfun( 'x.*sin(3*x).^2',d );
-u = solveBVP(A, f, pref);
+u = solvebvp(A, f, pref);
 du = diff(u);
 
 err(4) = norm(diff(u,2) + 4*diff(u) + 200*u - f);
@@ -40,7 +40,7 @@ N = chebop(@(x,u) diff(u,2) + u, dom);
 N.bc = @(x,u) [feval(diff(u),0) ; sum(u)];
 x = chebfun(@(x) x, dom);
 rhs = sin(x);
-u = solveBVP(N, rhs, pref);
+u = solvebvp(N, rhs, pref);
 
 err(7) = norm( N(x,u) - rhs );
 err(8) = norm(N.bc(x,u));
@@ -52,7 +52,7 @@ N = chebop(@(x,u) diff(u,2) + sin(u), dom);
 N.bc = @(x,u) [feval(diff(u),0) ; sum(u)];
 x = chebfun(@(x) x, dom);
 rhs = sin(x);
-u = solveBVP(N, rhs, pref);
+u = solvebvp(N, rhs, pref);
 
 err(9) = norm( N(x,u) - rhs );
 err(10) = norm(N.bc(x, u));
