@@ -37,29 +37,12 @@ if ( n > length(y) && numel(y.funs) == 1 && isa(y.funs{1}.onefun, 'chebtech') )
     return
 end
 
-if ( isPeriodicTech(y) )
-    % If it's a TRIGFUN do the truncation of Fourier coefficients:
-    
-    % Nothing to do here:
-    if ( length(y) <= 2*n + 1)
-        f = y;
-        return
-    end    
-    
-    % Get the coefficients:
-    c = get(y, 'coeffs');
-    
-    % Discard the onese not needed:
-    N = length(c);
-    if ( rem(N,2) == 1)
-        k = (N+1)/2;
-    else
-        k = N/2+1;
-    end
-    c = [c(k-n:k-1); c(k:k+n)];
+if ( isPeriodicTech(y) )    
+    % Get the coefficients of the least square approximation:
+    c = truncCoeffs(y.funs{1}, n);
     
     % Construct the fit:
-    f = chebfun(c, y.domain, 'coeffs', 'trig');
+    f = chebfun(c, y.domain, 'coeffs', 'periodic');
     return;
 end
 
