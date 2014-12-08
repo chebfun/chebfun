@@ -44,7 +44,8 @@ if ( numel(A) > 1 )
     for k = 1:numel(A)
         %isSimple = isSimple && all(cellfun(@(f) isa(f.onefun, 'chebtech'), A(k).funs));
         isSimple = isSimple && ~isdelta(A(k)) ...
-            && all(cellfun(@(f) isa(f.onefun, 'chebtech'), A(k).funs));
+            && ( all(cellfun(@(f) isa(f.onefun, 'chebtech'), A(k).funs))...
+            ||   all(cellfun(@(f) isa(f.onefun, 'trigtech'), A(k).funs)) );
     end
 
     if ( isSimple )
