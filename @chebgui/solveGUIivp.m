@@ -217,9 +217,9 @@ if ( guiMode )
 
     % Different titles of top plot if we had a linear problem:
     if ( solvingGlobally && ~isLinear )
-        title('Solution at end of iteration');
+        set(handles.panel_figSol, 'title', 'Solution at end of iteration')
     else
-        title('Solution');
+        set(handles.panel_figSol, 'title', 'Solution')
     end
 
     % If we were solving a nonlinear problem, we show a plot of the norm of the
@@ -232,7 +232,7 @@ if ( guiMode )
         axes(handles.fig_norm)
         normDelta = info.normDelta;
         semilogy(normDelta, '-*', 'Linewidth', 2)
-        title('Norm of updates')
+        set(handles.panel_figNorm, 'title', 'Norm of updates')
         xlabel('Iteration number')
 
         if ( length(normDelta) > 1 )
@@ -247,7 +247,14 @@ if ( guiMode )
         % If we're solving a linear problem, or using the MATLAB solvers, plot
         % the coefficients of the solution instead.
         axes(handles.fig_norm)
+        % Show the plotcoeffs plot. Grab its title, set as the title of the
+        % panel, then hide the title of the plot and the ylabel (too avoid
+        % issues at large fontsizes):
         plotcoeffs(u, 'linewidth', 2)
+        plotCoeffsTitle = get(get(handles.fig_norm, 'title'), 'String');
+        set(handles.panel_figNorm, 'title', plotCoeffsTitle);
+        title('');
+        ylabel('');
         set(handles.popupmenu_bottomFig, 'Value', 2);
         grid on
     end

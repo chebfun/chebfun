@@ -181,11 +181,9 @@ if ( guiMode )
 
     % Different titles of top plot if we had a linear problem:
     if ( ~isLinear )
-        title('Solution at end of iteration', ...
-            'fontsize', handles.fontsizePanels, 'fontweight', 'norm');
+        set(handles.panel_figSol, 'title', 'Solution at end of iteration')
     else
-        title('Solution', ...
-            'fontsize', handles.fontsizePanels, 'fontweight', 'norm');
+        set(handles.panel_figSol, 'title', 'Solution')
     end
 
     % If we were solving a nonlinear problem, we show a plot of the norm of the
@@ -198,8 +196,7 @@ if ( guiMode )
         axes(handles.fig_norm)
         normDelta = info.normDelta;
         semilogy(normDelta, '-*', 'Linewidth', 2)
-        title('Norm of updates', ...
-            'fontsize', handles.fontsizePanels, 'fontweight', 'norm')
+        set(handles.panel_figNorm, 'title', 'Norm of updates')
         xlabel('Iteration number')
         set(handles.fig_norm, 'fontsize', handles.fontsizePanels);
 
@@ -213,8 +210,19 @@ if ( guiMode )
         end
     else
         axes(handles.fig_norm)
+        % Show the plotcoeffs plot. Grab its title, set as the title of the
+        % panel, then hide the title of the plot and the ylabel (too avoid
+        % issues at large fontsizes):
         plotcoeffs(u, 'linewidth', 2)
+        plotCoeffsTitle = get(get(handles.fig_norm, 'title'), 'String');
+        set(handles.panel_figNorm, 'title', plotCoeffsTitle);
+        title('');
+        ylabel('');
+        
         set(handles.fig_norm, 'fontsize', handles.fontsizePanels);
+        % Store an empty vector for the norm of the updates (since problem was
+        % linear)
+        handles.latest.normDelta = [];
         % In older versions of MATLAB, need to change the title font-size manually:
         if verLessThan('matlab', '8.4')
             set(get(handles.fig_norm, 'title'), 'fontsize', handles.fontsizePanels)

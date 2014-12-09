@@ -75,8 +75,10 @@ axes(handles.fig_sol)
 
 % Plot initial guess
 plot(chebfun(u), '.-')
-title('Initial guess of solution', 'fontsize', handles.fontsizePanels, ...
-    'fontweight', 'normal')
+set(handles.panel_figSol, 'title', 'Initial guess of solution')
+
+% Remove title from bottom plot panel
+set(handles.panel_figNorm, 'title', '')
 
 % Do different things for the axes depending on if the solution is real.
 if ( isreal(chebfun(u)) )
@@ -122,9 +124,7 @@ axes(handles.fig_sol)
 
 % Plot initial guess
 plot(chebfun(u), '.-')
-title('Current solution', 'fontsize', handles.fontsizePanels, ...
-    'fontweight', 'normal')
-
+set(handles.panel_figSol, 'title', 'Current solution')
 
 % Do different things for the axes depending on if the solution is real.
 if ( isreal(chebfun(u)) )
@@ -140,8 +140,7 @@ axes(handles.fig_norm)
 
 % Plot initial guess.
 plot(chebfun(delta), '.-')
-title('Current correction step', 'fontsize', handles.fontsizePanels, ...
-    'fontweight', 'normal')
+set(handles.panel_figNorm, 'title', 'Current correction step')
 
 % Do different things for the axes depending on if the solution is real.
 if ( isreal(chebfun(u)) )
@@ -246,6 +245,6 @@ else
     axis equal
 end
 
-title('Solution', 'fontsize', handles.fontsizePanels, 'fontweight', 'normal')
+set(handles.panel_figSol, 'title', 'Solution')
 
 end
