@@ -10,9 +10,9 @@ function varargout = chol( f, varargin )
 % If F is not nonnegative definite then an error is thrown. 
 % 
 % [R, p] = CHOL( F ), with two outputs never throwns an error message. If F is
-% nonnegative definite then p is 0 and R is the same as above. If F is not
-% nonnegative definite then p is a positive integer such that R has p columns 
-% and R'*R is a rank p nonnegative definite chebfun2 that approximates F. 
+% nonnegative definite then p is 0 and R is the same as above. If F is 
+% symmetric but negative definite or semidefinite then p is a positive 
+% integer such that R has p columns and R'*R is a rank p nonnegative definite chebfun2 that approximates F. 
 % This is particular useful when F is nonnegative definite, but rounding errors
 % have perturbed it to be semidefinite. 
 %
@@ -74,6 +74,16 @@ end
 
 % Get the CDR decomposition (already computed by constructor):
 [C, D, R] = cdr( f );
+
+% Return an error if the function is not symmetric: 
+dom = f.domain; 
+r = diff(dom(1:2))*rand - dom(1); 
+s = diff(dom(3:4))*rand - dom(3); 
+symTest = ( abs(f(r,s) - f(s,r)) < max(epslevel(f.cols),epslevel(f.rows)) );
+if ( symTest )
+    error('CHEBFUN:CHEBFUN2:chol:symmetric', ...
+        'The chebun2 must be a symmetric function.');
+end
 
 % How many terms are posdef: 
 p = k; 
