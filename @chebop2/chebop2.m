@@ -29,7 +29,7 @@ classdef chebop2
 % Example 3: (Klein-Gordon equation) 
 %    N = chebop2(@(u) diff(u,2,1) - diff(u,2,2) + 5*u,[-1 1 0 3]); 
 %    N.lbc = 0; N.rbc = 0; 
-%    N.dbc = @(u) [u - exp(-30*x.^2) ; diff(u)];
+%    N.dbc = @(x,u) [u - exp(-30*x.^2) ; diff(u)];
 %    u = N \ 0; 
 % 
 % For further details about the PDE solver, see:
