@@ -291,7 +291,7 @@ classdef trigtech < smoothfun % (Abstract)
         out = isnan(f)
 
         function out = isPeriodicTech(f)
-        %ISPERIODICTECH    True for TRIGTECH.
+        %ISPERIODICTECH   True for TRIGTECH.
             out = 1;
         end
         
@@ -396,6 +396,9 @@ classdef trigtech < smoothfun % (Abstract)
         
         % TRIGTECH obects are not transposable.
         f = transpose(f)
+        
+        % Coefficients for degree N least square approximation of F:
+        c = truncCoeffs(f, n)
 
         % Unary minus of a TRIGTECH.
         f = uminus(f)
