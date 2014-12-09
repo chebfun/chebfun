@@ -42,11 +42,6 @@ end
 set(handles.fig_sol,  'fontsize', newFontsize)
 set(handles.fig_norm, 'fontsize', newFontsize)
 
-solTitle = get(handles.fig_sol, 'title');
-normTitle = get(handles.fig_norm, 'title');
-set(solTitle, 'fontsize', newFontsize)
-set(normTitle, 'fontsize', newFontsize)
-
 % Store the new font size:
 handles.fontsizePanels = newFontsize;
 
