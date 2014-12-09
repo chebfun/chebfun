@@ -43,6 +43,9 @@ classdef chebguiController
         % Draw the Chebfun logo on the GUI:
         handles = drawLogo(handles)
         
+        % Fix position of titles and lables on the gui plots
+        handles = fixTitleAndLabelsPosition(handles)
+                
         function initialiseFigureBottom(handles)
             %INITIALISEFIGUREBOTTOM    Reset bottom figure of CHEBGUI.
 
@@ -122,6 +125,9 @@ classdef chebguiController
         
         % Set-up the panels on CHEBGUI
         handles = setupPanels(handles);
+
+        % Set-up the figures panel on CHEBGUI
+        handles = setupPanelFigures(handles);
         
         % Set-up the input panel on CHEBGUI
         handles = setupPanelInput(handles);

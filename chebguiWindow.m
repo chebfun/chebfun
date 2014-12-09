@@ -66,7 +66,8 @@ else
             % Show an error dialog, but also throw the error to the command
             % window
             errordlg(cleanErrorMsg(ME.message), 'Chebgui error', 'modal');
-            uiwait
+            rethrow(ME)
+%             uiwait
             resetComponents(varargin{4});
             % If in debug mode, we throw the error to the command window as well
             if ( get(varargin{4}.menu_debug, 'UserData') )
@@ -97,14 +98,14 @@ chebguiController.initalizeFields(handles);
 % Choose default command line output for chebguiWindow
 handles.output = hObject;
 
-% Initialise figures:
-chebguiController.initialiseFigures(handles)
-
 % Initialise the menus:
 handles = chebguiController.initialiseMenus(handles);
 
 % Set up the panels:
 handles = chebguiController.setupPanels(handles);
+
+% Initialise figures:
+chebguiController.initialiseFigures(handles)
 
 % Draw the Chebfun logo on the GUI:
 handles = chebguiController.drawLogo(handles);
