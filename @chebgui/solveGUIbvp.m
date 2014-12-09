@@ -197,7 +197,6 @@ if ( guiMode )
         normDelta = info.normDelta;
         semilogy(normDelta, '-*', 'Linewidth', 2)
         set(handles.panel_figNorm, 'title', 'Norm of updates')
-        xlabel('Iteration number')
         set(handles.fig_norm, 'fontsize', handles.fontsizePanels);
 
         if ( length(normDelta) > 1 )
@@ -211,12 +210,13 @@ if ( guiMode )
     else
         axes(handles.fig_norm)
         % Show the plotcoeffs plot. Grab its title, set as the title of the
-        % panel, then hide the title of the plot and the ylabel (too avoid
+        % panel, then hide the title of the plot and the x/ylabels (to avoid
         % issues at large fontsizes):
         plotcoeffs(u, 'linewidth', 2)
         plotCoeffsTitle = get(get(handles.fig_norm, 'title'), 'String');
         set(handles.panel_figNorm, 'title', plotCoeffsTitle);
         title('');
+        xlabel('');
         ylabel('');
         
         set(handles.fig_norm, 'fontsize', handles.fontsizePanels);

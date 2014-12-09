@@ -208,11 +208,9 @@ if ( ~isempty(chebg.init) )
         end
         
         if ( strcmpi(chebg.type, 'bvp') )
-            title('Initial guess of solution', ...
-                'fontweight', 'normal')
+            set(handles.panel_figSol, 'title', 'Initial guess of solution')
         else
-            title('Initial condition', ...
-                'fontweight', 'normal')
+            set(handles.panel_figSol, 'title', 'Initial condition')
         end
         
     catch
