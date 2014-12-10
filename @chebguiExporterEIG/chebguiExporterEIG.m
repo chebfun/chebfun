@@ -15,7 +15,7 @@ classdef chebguiExporterEIG < chebguiExporter
     properties ( Access = public )
         
         % The default file name when exporting to an .m-file:
-        defaultFileName = 'bvpeig.m';
+        defaultFileName = 'chebeig.m';
         
         % Description for printing to .m files:
         description = 'an eigenvalue problem';
