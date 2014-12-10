@@ -1506,7 +1506,6 @@ switch ( newVal )
 
         semilogy(normDelta, '-*', 'Linewidth', 2)
         set(handles.panel_figNorm, 'title', 'Norm of updates');
-        xlabel('Iteration number')
 
         if ( length(normDelta) > 1 )
             step = max(floor(length(normDelta)/5), 1);
@@ -1526,6 +1525,7 @@ switch ( newVal )
         title('');
         % Hide the automatic y-label as it causes issues when fontsize is too big
         ylabel('');
+        xlabel('');
 end
 
 end

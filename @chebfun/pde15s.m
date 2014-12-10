@@ -152,6 +152,8 @@ if ( isfield(opt, 'handles') )
         gridOn = opt.handles.guifile.options.grid;
         solveButton = opt.handles.button_solve;
         clearButton = opt.handles.button_clear;
+        panelSol = opt.handles.panel_figSol;
+        panelNorm = opt.handles.panel_figNorm;
     end
     varNames = opt.handles.varnames;
     xLabel = opt.handles.indVarName{1};
@@ -349,9 +351,12 @@ end
             grid on
         end
         
-        if ( nargin > 1 )
+        if ( guiFlag )
+            set(panelSol, 'Title', sprintf('%s = %.3f', tlabel, t))
+        elseif ( nargin > 1 )
             title(sprintf('%s = %.3f', tlabel, t))
         end
+        
         drawnow
         
         if ( nargout > 0 )
