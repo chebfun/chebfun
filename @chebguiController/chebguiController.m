@@ -42,7 +42,7 @@ classdef chebguiController
         
         % Draw the Chebfun logo on the GUI:
         handles = drawLogo(handles)
-                        
+
         function initialiseFigureBottom(handles)
             %INITIALISEFIGUREBOTTOM    Reset bottom figure of CHEBGUI.
 
@@ -50,17 +50,17 @@ classdef chebguiController
             axes(handles.fig_norm)
             box on
             set(handles.fig_norm, 'fontsize', handles.fontsizePanels);
+            set(handles.panel_figNorm, 'title', ' ');
         end
         
         function initialiseFigureTop(handles)
             %INITIALISEFIGURETOP    Reset top figure of CHEBGUI.
-
+            
             cla(handles.fig_sol, 'reset');
             axes(handles.fig_sol)
             box on
-            cla(handles.fig_norm, 'reset');
-            axes(handles.fig_norm)
-            box on
+            set(handles.fig_sol, 'fontsize', handles.fontsizePanels);
+            set(handles.panel_figNorm, 'title', 'Solution');
 
         end
 

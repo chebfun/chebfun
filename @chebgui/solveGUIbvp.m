@@ -232,7 +232,11 @@ if ( guiMode )
         set(handles.popupmenu_bottomFig, 'Value', 2);
         grid on
     end
-    
+
+    % Update the fontsize of plots
+    set(handles.fig_sol, 'fontsize', handles.fontsizePanels);
+    set(handles.fig_norm, 'fontsize', handles.fontsizePanels);
+
     % Return the handles as varargout.
     varargout{1} = handles;
 end

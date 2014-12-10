@@ -233,7 +233,6 @@ if ( guiMode )
         normDelta = info.normDelta;
         semilogy(normDelta, '-*', 'Linewidth', 2)
         set(handles.panel_figNorm, 'title', 'Norm of updates')
-        xlabel('Iteration number')
 
         if ( length(normDelta) > 1 )
             XTickVec = 1:max(floor(length(normDelta)/5), 1):length(normDelta);
@@ -255,9 +254,15 @@ if ( guiMode )
         set(handles.panel_figNorm, 'title', plotCoeffsTitle);
         title('');
         ylabel('');
+        xlabel('');
         set(handles.popupmenu_bottomFig, 'Value', 2);
         grid on
     end
+    
+    % Update the fontsize of plots
+    set(handles.fig_sol, 'fontsize', handles.fontsizePanels);
+    set(handles.fig_norm, 'fontsize', handles.fontsizePanels);
+
     
     % Return the handles as varargout.
     varargout{1} = handles;

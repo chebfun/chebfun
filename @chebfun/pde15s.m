@@ -158,6 +158,7 @@ if ( isfield(opt, 'handles') )
     varNames = opt.handles.varnames;
     xLabel = opt.handles.indVarName{1};
     tlabel = opt.handles.indVarName{2};
+    fontsiz = opt.handles.fontsizePanels;
 else
     varNames = 'u';
     xLabel = 'x';
@@ -308,6 +309,8 @@ end
             waitfor(clearButton, 'String');
             % Call again to see if 'STOP' was pressed.
             status = guiEvent(status);
+            
+            set(axesNorm, 'fontsize', fontsiz);
         end
     end
 
@@ -338,12 +341,18 @@ end
             ylim(YLim);
         end
 
-        % Axis labels and legends:
-        xlabel(xLabel);
-        if ( numel(varNames) > 1 )
+        % Axis labels and legends. Some, we only want to show if we're not in
+        % GUI mode, as otherwise, we run into issues at big fontsizes
+        if ( guiFlag )
             legend(varNames);
+            set(axesSol, 'fontsize', fontsiz);
         else
-            ylabel(varNames);
+            xlabel(xLabel);
+            if ( numel(varNames) > 1 )
+                legend(varNames);
+            else
+                ylabel(varNames);
+            end
         end
 
         % Grid?

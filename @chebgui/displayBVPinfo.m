@@ -78,7 +78,11 @@ plot(chebfun(u), '.-')
 set(handles.panel_figSol, 'title', 'Initial guess of solution')
 
 % Remove title from bottom plot panel
-set(handles.panel_figNorm, 'title', '')
+set(handles.panel_figNorm, 'title', 'Current correction step')
+
+% Update the fontsize of plots
+set(handles.fig_sol, 'fontsize', handles.fontsizePanels);
+set(handles.fig_norm, 'fontsize', handles.fontsizePanels);
 
 % Do different things for the axes depending on if the solution is real.
 if ( isreal(chebfun(u)) )
@@ -138,9 +142,13 @@ end
 % Switch focus to the fig_norm plot on the GUI.
 axes(handles.fig_norm)
 
-% Plot initial guess.
+% Plot Newton update
 plot(chebfun(delta), '.-')
 set(handles.panel_figNorm, 'title', 'Current correction step')
+
+% Update the fontsize of plots
+set(handles.fig_sol, 'fontsize', handles.fontsizePanels);
+set(handles.fig_norm, 'fontsize', handles.fontsizePanels);
 
 % Do different things for the axes depending on if the solution is real.
 if ( isreal(chebfun(u)) )

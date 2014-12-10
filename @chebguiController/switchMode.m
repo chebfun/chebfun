@@ -74,6 +74,9 @@ if ( strcmp(newMode, 'bvp') ) % Going into BVP mode
     % Make the discretization panel visible
     set(handles.panel_discretization, 'Visible', 'on')
     
+    % Set correct header to top figure
+    set(handles.panel_figSol, 'Title', 'Solution')
+    
     % Note: The line below is a nice way to disable to objects, rather than hide
     % them.
     % Enable all childrens of discretisation panel
@@ -160,6 +163,9 @@ elseif ( strcmp(newMode, 'pde') ) % Going into PDE mode
     set(handles.panel_discretization, 'Visible', 'off')
     set(handles.panel_IVPsolver, 'Visible', 'off')
     
+    % Set correct header to top figure
+    set(handles.panel_figSol, 'Title', 'Initial condition')
+    
 else % Going into EIG mode
     handles.guifile.type = 'eig';
     
@@ -242,6 +248,9 @@ else % Going into EIG mode
     
     % Hide the IVP solver panel
     set(handles.panel_IVPsolver, 'Visible', 'off')
+    
+    % Set correct header to top figure
+    set(handles.panel_figSol, 'Title', 'Eigenvalues (imag vs real)')
     
     % Clear the top figure
     chebguiController.initialiseFigureTop(handles)
