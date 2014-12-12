@@ -63,8 +63,7 @@ else
                 rethrow(ME)
             end
         else
-            % Show an error dialog, but also throw the error to the command
-            % window
+            % Show an error dialog:
             errordlg(cleanErrorMsg(ME.message), 'Chebgui error', 'modal');
             uiwait
             resetComponents(varargin{4});
@@ -97,14 +96,14 @@ chebguiController.initalizeFields(handles);
 % Choose default command line output for chebguiWindow
 handles.output = hObject;
 
-% Initialise figures:
-chebguiController.initialiseFigures(handles)
-
 % Initialise the menus:
 handles = chebguiController.initialiseMenus(handles);
 
 % Set up the panels:
 handles = chebguiController.setupPanels(handles);
+
+% Initialise figures:
+chebguiController.initialiseFigures(handles)
 
 % Draw the Chebfun logo on the GUI:
 handles = chebguiController.drawLogo(handles);
@@ -578,14 +577,6 @@ bgColorIsDefault = isequal(get(hObject, 'BackgroundColor'),  ...
 if ( ispc && bgColorIsDefault )
     set(hObject, 'BackgroundColor', 'white');
 end
-end
-
-function fig_sol_CreateFcn(hObject, eventdata, handles)
-% Hint: place code in OpeningFcn to populate fig_sol
-end
-
-function fig_norm_CreateFcn(hObject, eventdata, handles)
-% Hint: place code in OpeningFcn to populate fig_norm
 end
 
 function tempedit_CreateFcn(hObject, eventdata, handles)
@@ -1500,7 +1491,7 @@ switch ( newVal )
     case 1
         % User wants to see a plot showing the convergence of the Newton
         % iteration.
-        normDelta = handles.normDelta;
+        normDelta = handles.latest.normDelta;
 
         % If normDelta is empty, we actually had a linear problem! So don't
         % do anything.
@@ -1512,8 +1503,7 @@ switch ( newVal )
         end
 
         semilogy(normDelta, '-*', 'Linewidth', 2)
-        title('Norm of updates')
-        xlabel('Iteration number')
+        set(handles.panel_figNorm, 'title', 'Norm of updates');
 
         if ( length(normDelta) > 1 )
             step = max(floor(length(normDelta)/5), 1);
@@ -1528,6 +1518,12 @@ switch ( newVal )
     case 2
         % User wants to see a PLOTCOEFFS plot..
         plotcoeffs(handles.latest.solution, 'linewidth', 2);
+        plotCoeffsTitle = get(get(handles.fig_norm, 'title'), 'String');
+        set(handles.panel_figNorm, 'title', plotCoeffsTitle);
+        title('');
+        % Hide the automatic y-label as it causes issues when fontsize is too big
+        ylabel('');
+        xlabel('');
 end
 
 end

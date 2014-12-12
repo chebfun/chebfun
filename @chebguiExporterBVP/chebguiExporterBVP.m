@@ -15,7 +15,7 @@ classdef chebguiExporterBVP < chebguiExporter
     properties
         
         % The default file name when exporting to an .m-file:
-        defaultFileName = 'bvp.m';
+        defaultFileName = 'chebbvp.m';
         
         % Description for printing to .m files:
         description = 'a boundary-value problem';

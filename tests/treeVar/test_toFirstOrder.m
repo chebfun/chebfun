@@ -4,7 +4,7 @@ function pass = test_toFirstOrder()
 %% Setup
 dom = [-1, 4];
 x = chebfun(@(x) x, dom);
-tol = 1e-14;
+tol = 2e-14;
 
 %% Simple test
 % We have the expression 5*(diff(u, 2) + 3*u), so expect the first order
@@ -319,5 +319,5 @@ catch ME
 end
 
 %% Combine the information
-pass = [all(pass) errorPass];
+pass = [pass(:)' errorPass];
 end

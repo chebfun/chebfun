@@ -15,7 +15,7 @@ classdef chebguiExporterIVP < chebguiExporter
     properties
         
         % The default file name when exporting to an .m-file:
-        defaultFileName = 'ivp.m';
+        defaultFileName = 'chebivp.m';
         
         % Description for printing to .m files:
         description = 'an initial-value problem';
