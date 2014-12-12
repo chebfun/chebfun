@@ -158,7 +158,7 @@ if ( isfield(opt, 'handles') )
     varNames = opt.handles.varnames;
     xLabel = opt.handles.indVarName{1};
     tlabel = opt.handles.indVarName{2};
-    fontsiz = opt.handles.fontsizePanels;
+    fontsize = opt.handles.fontsizePanels;
 else
     varNames = 'u';
     xLabel = 'x';
@@ -310,7 +310,7 @@ end
             % Call again to see if 'STOP' was pressed.
             status = guiEvent(status);
             
-            set(axesNorm, 'fontsize', fontsiz);
+            set(axesNorm, 'fontsize', fontsize);
         end
     end
 
@@ -345,7 +345,7 @@ end
         % GUI mode, as otherwise, we run into issues at big fontsizes
         if ( guiFlag )
             legend(varNames);
-            set(axesSol, 'fontsize', fontsiz);
+            set(axesSol, 'fontsize', fontsize);
         else
             xlabel(xLabel);
             if ( numel(varNames) > 1 )
