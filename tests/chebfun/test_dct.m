@@ -43,20 +43,40 @@ DCT4 = cos(pi/N*((0:N-1)+1/2)'*((0:N-1)+1/2));
 y = DCT4 * x; 
 pass(8) = norm( y - chebfun.dct(x, 4) ) < 10*tol; 
 
+% DCT-V 
+DCTV = cos(pi*(0:N-1)'*(0:N-1)/(N-1/2));
+y = DCTV * x; 
+pass(9) = norm( y - chebfun.dct(x, 5) ) < 10*tol; 
+
+% DCT-VI 
+DCTVI = cos(pi*(0:N-1)'*((0:N-1)+1/2)/(N-1/2));
+y = DCTVI * x; 
+pass(10) = norm( y - chebfun.dct(x, 6) ) < 10*tol;
+
+% DCT-VII 
+DCTVII = cos(pi*((0:N-1)+1/2)'*(0:N-1)/(N-1/2));
+y = DCTVII * x; 
+pass(11) = norm( y - chebfun.dct(x, 7) ) < 10*tol; 
+
+% DCT-VIII
+DCTVIII = cos(pi*((0:N-1)+1/2)'*((0:N-1)+1/2)/(N+1/2));
+y = DCTVIII * x; 
+pass(12) = norm( y - chebfun.dct(x, 8) ) < 10*tol; 
+
 % IDCT-I 
 y = DCT1 \ x;
-pass(9) = norm( y - chebfun.idct(x, 1) ) < tol; 
+pass(13) = norm( y - chebfun.idct(x, 1) ) < tol; 
 
 % IDCT-II
 y = DCT2 \ x; 
-pass(10) = norm( y - chebfun.idct(x, 2) ) < tol; 
+pass(14) = norm( y - chebfun.idct(x, 2) ) < tol; 
 
 % IDCT-III
 y = DCT3 \ x; 
-pass(11) = norm( y - chebfun.idct(x, 3) ) < tol; 
+pass(15) = norm( y - chebfun.idct(x, 3) ) < tol; 
 
 % IDCT-IV
 y = DCT4 \ x; 
-pass(12) = norm( y - chebfun.idct(x, 4) ) < tol; 
+pass(16) = norm( y - chebfun.idct(x, 4) ) < tol; 
 
 end
