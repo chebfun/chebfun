@@ -81,14 +81,14 @@ classdef chebfun
 % computing the first N Chebyshev coefficients from their integral form, rather
 % than by interpolation at Chebyshev points.
 %
-% CHEBFUN(F, 'periodic') constructs a CHEBFUN object representing a smooth and
+% CHEBFUN(F, 'trig') constructs a CHEBFUN object representing a smooth and
 % periodic function F on the interval [-1,1]. The resulting CHEBFUN is
-% represented using a Fourier series. All operation done of F should preserve
+% represented using a Fourier series. All operations done of F should preserve
 % smoothness and periodicity or the results may be inaccurate. Similar options
-% as discussed above may be combined with the 'periodic' flag, with exception to
+% as discussed above may be combined with the 'trig' flag, with exception to
 % the 'chebkind' and 'splitting' flags.
 %
-% CHEBFUN(F, 'trig') is the same as CHEBFUN(F, 'periodic').
+% CHEBFUN(F, 'periodic') is the same as CHEBFUN(F, 'trig').
 %
 % CHEBFUN --UPDATE can be used to update to the latest stable release of CHEBFUN
 % (obviously an internet connection is required!). CHEBFUN --UPDATE-DEVEL will
