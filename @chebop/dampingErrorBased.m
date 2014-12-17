@@ -155,7 +155,7 @@ while ( ~accept )
     
     if ( lambdaPrime == 1 && normDeltaBar < errTol )
         % We have converged within the damped phase! 
-        % solvebvpNonlinear will find out about our success.
+        % solvebvpNonlinear() will find out about our success.
         u = uTrial + deltaBar; %#ok<NASGU>
         success = 1;
         giveUp = 0; 

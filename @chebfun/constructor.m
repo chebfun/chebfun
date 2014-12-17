@@ -111,9 +111,15 @@ for k = 1:numIntervals
 
     % Warn if unhappy (as we're unable to split the domain to improve):
     if ( ~ishappy && ~warningThrown )
+        if ( strcmpi(func2str(pref.tech), 'trigtech') )
+            str = 'a non-trig representation';
+        else
+            str = '''splitting on''';
+        end
+            
         warning('CHEBFUN:CHEBFUN:constructor:notResolved', ...
             ['Function not resolved using %d pts.', ...
-            ' Have you tried ''splitting on''?'], pref.techPrefs.maxLength);
+            ' Have you tried ' str, '?'], pref.techPrefs.maxLength);
         warningThrown = true;
     end
 end

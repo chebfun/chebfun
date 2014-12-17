@@ -1,5 +1,5 @@
 function pass = test_toFileEIG(pref)
-%TEST_TOFILEEIG     Test exporting all EIG demos to an .m-file.
+%TEST_TOFILEEIG  Test exporting all EIG demos to an m-file.
 %
 % This test only checks whether nothing breaks, it does not try to solve the
 % problems.

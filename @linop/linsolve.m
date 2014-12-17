@@ -111,11 +111,11 @@ for dim = [dimVals inf]
     % currently valid factorization at hand.
     if ( isFactored(disc) )
         A = [];
-        P = eye(disc.dimension*size(L,2));
+        P = speye(disc.dimension*size(L,2));
     else
         [A, P] = matrix(disc);
         if ( size(A, 1) ~= size(A, 2) )
-            % TODO: Improve this warning.
+            % [TODO]: Improve this warning.
             warning('CHEBFUN:LINOP:linsolve:notSquare', ...
                 'Matrix is not square!');
         end

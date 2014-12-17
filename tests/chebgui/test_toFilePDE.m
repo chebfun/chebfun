@@ -1,5 +1,5 @@
 function pass = test_toFilePDE(pref)
-%TEST_TOFILEPDE     Test exporting all PDE demos to an .m-file.
+%TEST_TOFILEPDE   Test exporting all PDE demos to an m-file.
 %
 % This test only checks whether nothing breaks, it does not try to solve the
 % problems.

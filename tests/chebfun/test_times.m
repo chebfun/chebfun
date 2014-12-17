@@ -141,7 +141,7 @@ hExact = oph(x);
 err = hVals - hExact;
 pass(26) = norm(err, inf) < 2*get(f,'epslevel')*get(f,'vscale');
 
-%% Test multiplication between a CHEBFUN and a FOURFUN.
+%% Test multiplication between a CHEBFUN and a TRIGFUN.
 
 dom = [0 pi 2*pi];
 

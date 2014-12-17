@@ -42,6 +42,12 @@ elseif ( isempty(newDomain) || numel(newDomain) == 1 )
     return
 end
 
+% Cast a periodic chebfun to a regualr chebfun:
+if ( isPeriodicTech(f) )
+    f = chebfun(f);
+end
+
+
 % Grab domain from f:
 oldDomain = f.domain;
 

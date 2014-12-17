@@ -46,6 +46,6 @@ nrmu = norm(u);
 % TODO: Determine best options for robust behavior.
 % opt = {'resampling',false,'splitting',true,'scale',nrmu};
 int = @(x) sum( chebfun(@(y) feval(u,y).*kernel(x,y),d)); %, opt{:} );
-Fu = chebfun( int, d, 'sampletest', false, 'resampling', false, ...
+Fu = chebfun( int, d, 'sampleTest', false, 'resampling', false, ...
     'vectorize', 'vscale', nrmu);
 end

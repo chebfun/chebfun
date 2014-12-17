@@ -2,6 +2,17 @@ function w = trigBaryWeights(x)
 %TRIGBARYWEIGHTS   Barycentric weights for trigonometric interpolation.
 %   W = TRIGBARYWTS(X) returns scaled barycentric weights for the points 
 %   in the columm vector X. The weights are scaled such that norm(W, inf) == 1.
+% 
+% REFERENCES:
+%   [1] Berrut, Jean-Paul. "Baryzentrische Formeln zur trigonometrischen 
+%   Interpolation (I)." Zeitschrift für angewandte Mathematik und Physik 
+%   ZAMP 35.1 (1984): 91-105.
+% 
+%   [2] Henrici, Peter. "Barycentric formulas for interpolating trigonometric 
+%   polynomials and their conjugates." Numerische Mathematik 33.2 
+%   (1979): 225-234.
+%
+% See also TRIGBARY()
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -38,7 +49,7 @@ if ( (n < 2001) )              % For small n using matrices is faster.
 else                           % For large n use a loop.
    w = ones(n,1);
    for j = 1:n
-       v = C*sin(1/2*(x(j) - x)); v(j) = 1;
+       v = sin(1/2*(x(j) - x)); v(j) = 1;
        vv = exp(sum(log(abs(v))));
        w(j) = 1./(prod(sign(v))*vv);
    end

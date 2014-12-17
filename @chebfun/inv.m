@@ -146,7 +146,10 @@ end
 
 % Assign preferences:
 if ( opts.algorithm == 2 );
-    pref.techPrefs.resampling = 1;
+    % TODO:  CHEBFUN is not supposed to set the refinementFunction preference
+    % because it doesn't belong to the list of "abstract" preferences required
+    % of all techs.  Do we really need to alter it here?
+    pref.techPrefs.refinementFunction = 'resampling';
 end
 pref.techPrefs.eps = tol;
 pref.techPrefs.minSamples = length(f);

@@ -66,4 +66,10 @@ f = testclass.make(@(x) sin(100*pi*(x + 0.1)));
 g = simplify(f, 1e20);
 pass(11) = iszero(g);
 
+%%
+% Check that a long identically-zero TRIGTECH simplifies correctly:
+f = testclass.make(@(x) 0*x, [], struct('fixedLength', 8));
+g = simplify(f);
+pass(12) = iszero(g) && (length(g) == 1);
+
 end

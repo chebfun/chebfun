@@ -1,10 +1,11 @@
 function [ishappy, epslevel, cutoff] = classicCheck(f, values, pref)
 %CLASSICCHECK   Attempt to trim trailing Chebyshev coefficients in a CHEBTECH.
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F, VALUES) returns an estimated
-%   location, the CUTOFF, at which the CHEBTECH F could be truncated to maintain
-%   an accuracy of EPSLEVEL relative to F.VSCALE and F.HSCALE. ISHAPPY is TRUE
-%   if CUTOFF < MIN(LENGTH(VALUES),2) or F.VSCALE = 0, and FALSE otherwise.
-%   If ISHAPPY is false, EPSLEVEL returns an estimate of the accuracy achieved.
+%   location, the CUTOFF, at which the CHEBTECH F could be truncated to
+%   maintain an accuracy of EPSLEVEL relative to F.VSCALE and F.HSCALE. ISHAPPY
+%   is TRUE if the representation is "happy" in the sense described further
+%   below and FALSE otherwise.  If ISHAPPY is FALSE, EPSLEVEL returns an
+%   estimate of the accuracy achieved.
 %
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F, PREF) allows additional
 %   preferences to be passed. In particular, one can adjust the target accuracy
@@ -17,11 +18,11 @@ function [ishappy, epslevel, cutoff] = classicCheck(f, values, pref)
 %   can be reduced if there are further COEFFS which fall below EPSLEVEL).
 %
 %   HAPPINESSREQUIREMENTS defines what it means for a CHEBTECH to be happy.
-%   [TESTLENGTH, EPSLEVEL] = HAPPINESSREQUIREMENTS(VALUES, COEFFS, VSCALE, PREF)
-%   returns two scalars TESTLENGTH and EPSLEVEL. A CHEBTECH is deemed to be
-%   'happy' if the coefficients COEFFS(1:TESTLENGTH) (recall that COEFFS are
-%   stored in descending order) are all below EPSLEVEL. The default choice of
-%   the test length is:
+%   [TESTLENGTH, EPSLEVEL] = HAPPINESSREQUIREMENTS(VALUES, COEFFS, VSCALE,
+%   PREF) returns two scalars TESTLENGTH and EPSLEVEL. A CHEBTECH is deemed to
+%   be 'happy' if the coefficients COEFFS(END-TESTLENGTH+1:END) (recall that
+%   COEFFS are stored in ascending order) are all below EPSLEVEL. The default
+%   choice of the test length is:
 %       TESTLENGTH = n,             for n = 1:4
 %       TESTLENGTH = 5,             for n = 5:44
 %       TESTLENGTH = round((n-1)/8) for n > 44
