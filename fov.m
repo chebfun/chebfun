@@ -91,7 +91,7 @@ discont = abs(lVal - rVal) > tol;
 % represents a line in the complex plane connecting the points lVal(j) and
 % rVal(j) to each other, along with the corresponding theta value in [0,2*pi].
 theta = ends(discont);
-lineSegs = chebfun([lVal(discont) ; rVal(discont)], [-1 1]);
+lineSegs = chebfun([lVal(discont) ; rVal(discont)], [-1 1], 'tech', @chebtech2);
 
 end
 

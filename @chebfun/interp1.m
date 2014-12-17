@@ -25,7 +25,13 @@ function p = interp1(x, y, method, dom)
 %       'pchip'    - shape-preserving piecewise cubic interpolation
 %       'cubic'    - same as 'pchip'
 %       'poly'     - polynomial interpolation, as described above
-%
+%       'trig'     - triginometric polynomial interpolation, as above.
+%       'periodic' - same as the 'trig' option.
+%   
+%   For the trigonometric case, if the end points of the domain coincide
+%   with the first and the last interpolation points, the average of the 
+%   corresponding fucntion values are interpolated.
+% 
 %   P = CHEBFUN.INTERP1(X, Y, METHOD, DOM) restricts the result P to the domain
 %   DOM.
 %
@@ -59,12 +65,17 @@ end
 if ( size(x, 1) == 1 )
     x = x.';
 end
-x = sort(x);
-if ( isa(y, 'chebfun') )
-    y = feval(y, x);
-end
+
 if ( size(y, 1) == 1 )
     y = y.';
+end
+
+% Sort x and also y if y is not a chebfun:
+[x, idx] = sort(x);
+if ( isa(y, 'chebfun') )
+    y = feval(y, x);
+else
+    y = y(idx,:);
 end
 
 % Set default domain if none was supplied.
@@ -75,6 +86,8 @@ end
 switch method
     case 'poly'
         p = interp1Poly(x, y, dom);
+    case {'trig', 'periodic'}
+        p = interp1Trig(x, y, dom);
     case 'spline'
         p = chebfun.spline(x, y, dom);
     case {'pchip', 'cubic'}
@@ -99,6 +112,26 @@ f = @(z) bary(z, y, x, w);
 p = chebfun(f, dom, length(x));
 
 end
+
+function p = interp1Trig(x, y, dom)
+% Trigonometric interpolation
+
+% Remove a periodic end-point and interpolate the average:
+if ( norm([x(1), x(end)] - dom)/diff(dom) < 100*eps )
+    x(end) = [];
+    y(1, :) = (y(1, :) + y(end, :))/2;
+    y(end, :) = [];
+end
+
+n = length(x);
+% Evaluate the interpolant on n equally spaced points using 
+% the trigonometric barycentric formula:
+xx = trigpts(n, dom);
+fx = trigBary(xx, y, x, dom);
+% Construct a CHEBFUN:
+p = chebfun(fx, dom, 'trig');
+end
+
 
 function p = interp1Linear(x, y, dom)
 % Linear interpolation

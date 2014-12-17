@@ -17,7 +17,7 @@ breadth and power of Chebfun, a great place to start is by looking at our
 Installation and requirements
 =============================
 
-Chebfun Version 5.0 is compatible with MATLAB 7.8 (R2009a) and later.
+Chebfun is compatible with MATLAB 7.8 (R2009a) and later.
 
 To install, you can either clone the directory with Git or download a .zip
 file. Note that a call to `clear classes` is required if you had a previous

@@ -37,7 +37,7 @@ w(n+1,:) = 0;
 w(n+2:end,:) = -w(n+2:end, :);
 
 % Mirror the values for FFT:
-tmp = [coeffs(end:-1:1,:) ; ones(1, m) ; coeffs(1:end-1,:)];
+tmp = [coeffs(1:end,:) ; ones(1, m) ; coeffs(end:-1:2,:)];
 
 % Apply the weight vector:
 tmp = tmp.*w;

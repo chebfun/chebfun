@@ -114,12 +114,16 @@ else
         for k = 1:numel(g.funs)
             % Compute the contribution of jth fun of f with kth fun of g:
             hjk = conv(f.funs{j}, g.funs{k});  
-            % Add this contribution:
-            for i = 1:numel(hjk)
-                h = myplus(h, chebfun(hjk(i)));
-            end
+            % Add this contribution:            
+            h = myplus(h, chebfun(hjk));
         end
     end
+    
+    % Make sure that point values are not added twice:
+    dom = domain(h);
+    intDom = dom(2:end-1);
+    h.pointValues(2:end-1) = 1/2*(feval(h, intDom.', 'left') + ...
+        feval(h, intDom.', 'right'));
     
 end
 
@@ -137,22 +141,18 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function f = myplus(f, g)
+function h = myplus(f, g)
 % Modified PLUS() which pads with zeros to fulfil domain requirements.
+%  Note f is always on the largest possible domain. g is on a subdomain of f
 
 % Tidy the domains:
 [f, g] = tweakDomain(f, g);
-
-% f is always on the largest possible domain. g is on a subdomain of f:
 [c, d] = domain(g);    
-fTmp = restrict(f, [c, d]); % f{c, d}
-f = defineInterval(f, [c, d], fTmp + g); % f{c, d} = f{c, d} + g;
 
-% Make sure that point values are not added twice:
-dom = domain(f);
-intDom = dom(2:end-1);
-f.pointValues(2:end-1) = 1/2*(feval(f, intDom.', 'left') + ...
-    feval(f, intDom.', 'right'));
+fTmp = restrict(f, [c, d]); % f{c, d}
+hTmp = fTmp + g;            % h{c, d} = f{c, d} + g;
+h = defineInterval(f, [c, d], hTmp); 
+
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -173,13 +173,17 @@ dom(isnan(dom)) = [];
 hs = max(hscale(f), hscale(g));
 vs = 2*max([vscale(f), vscale(g)]);
 
-% Avoid resampling for speed up:
+% Set preferences:
+%
+% TODO:  CHEBFUN is not supposed to set the refinementFunction preference
+% because it doesn't belong to the list of "abstract" preferences required of
+% all techs.  Do we really need to alter it here?
 p = chebfunpref();
 p.splitting = false;
 p.blowup = false;
 p.techPrefs.extrapolate = true;
-p.techPrefs.resampling = false;
-p.techPrefs.sampletest = false;
+p.techPrefs.refinementFunction = 'nested';
+p.techPrefs.sampleTest = false;
 
 % Construct FUNS:
 funs = cell(1, length(dom)-1);

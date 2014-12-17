@@ -16,7 +16,7 @@ x = chebfun('x',d);
 f = [ 0*x ; 0*x ];
 
 %% Colloc1
-pref.discretization = @colloc1;
+pref.discretization = @chebcolloc1;
 
 A = chebop(@(x,u,v) [u - diff(v,2) + u.^2; diff(u) + sin(v)],d);
 A.lbc = @(u,v) u-1;

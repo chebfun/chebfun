@@ -20,9 +20,9 @@ f = chebfun2(F, [-1, 1, -1, 1], pref);
 pass(2) = norm(feval(f,0,0) - F(0,0)) < tol;
 
 %%
-% pref.tech = @fourtech;
-% F = @(x,y) cos(pi*y).*sin(pi*x);
-% f = chebfun2(F, [-1, 1, -1, 1], pref); 
-% pass(3) = norm(feval(f,0,0) - F(0,0)) < tol;
+pref.tech = @trigtech;
+F = @(x,y) cos(pi*y).*sin(pi*x);
+f = chebfun2(F, [-1, 1, -1, 1], pref); 
+pass(3) = norm(feval(f,0,0) - F(0,0)) < 100*tol;
 
 end

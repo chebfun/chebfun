@@ -1,4 +1,4 @@
-'Airy operator'
+'Complex Airy operator'
 'scalar'
 domain = '[-1 1]';
 DE = '0.002*u" + 1i*x*u = lambda*u';

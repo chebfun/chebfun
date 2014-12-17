@@ -5,11 +5,9 @@ function loadDemoMenu(handles)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Begin by checking whether we have already loaded the demos
-if ( ~isempty(get(handles.menu_demos, 'UserData')) )
+if ( isfield(handles,'demosLoaded') )
     return
 end
-
-% Set up ODEs, PDEs and EIGs demos separately
 
 % Find the folders which demos are stored in. The chebguiDemos folder lives in
 % the trunk folder, find the path of the Chebfun trunk.
@@ -17,10 +15,11 @@ trunkPath = chebfunroot();
 
 % Append directory information
 bvppath = fullfile(trunkPath, 'chebguiDemos', 'bvpdemos');
+ivppath = fullfile(trunkPath, 'chebguiDemos', 'ivpdemos');
 pdepath = fullfile(trunkPath, 'chebguiDemos', 'pdedemos');
 eigpath = fullfile(trunkPath, 'chebguiDemos', 'eigdemos');
 
-% Setup ODEs
+% Setup BVPs
 D = dir(bvppath);
 for demoCounter = 1:length(D)
     demoPath = fullfile(bvppath, D(demoCounter, :).name);
@@ -28,6 +27,121 @@ for demoCounter = 1:length(D)
         % Only want to load files ending in .guifile
         continue
     end
+
+    % Parse the .GUIFILE that stores the demo:
+    [demoName, demoFun, demoType] = parseDemoFile(demoPath, handles);
+    
+    switch demoType
+        % Have three categories of ODE demos. The call to UIMENU() below
+        % populuates the menus.
+        case 'bvp'
+            uimenu('Parent', handles.menu_bvps, ...
+                'Label', demoName, ...
+                'Separator', 'off', ...
+                'HandleVisibility', 'callback',  ...
+                'Callback', demoFun);
+        case 'system'
+            uimenu('Parent', handles.menu_systems, ...
+                'Label', demoName, ...
+                'Separator', 'off', ...
+                'HandleVisibility','callback', ...
+                'Callback', demoFun);
+    end
+end
+
+% Setup IVPs
+D = dir(ivppath);
+for demoCounter = 1:length(D)
+    demoPath = fullfile(ivppath, D(demoCounter, :).name);
+    if ( isempty(strfind(demoPath, '.guifile')) )
+        % Only want to load files ending in .guifile
+        continue
+    end
+
+    % Parse the .GUIFILE that stores the demo:
+    [demoName, demoFun, demoType] = parseDemoFile(demoPath, handles);
+    
+    switch demoType
+        % Have three categories of ODE demos. The call to UIMENU() below
+        % populuates the menus.
+        case 'scalar'
+            uimenu('Parent', handles.menu_ivps, ...
+                'Label', demoName, ...
+                'Separator', 'off', ...
+                'HandleVisibility', 'callback',  ...
+                'Callback', demoFun);
+        case 'system'
+            uimenu('Parent', handles.menu_IVPsystems, ...
+                'Label', demoName, ...
+                'Separator', 'off', ...
+                'HandleVisibility','callback', ...
+                'Callback', demoFun);
+    end
+end
+
+% Setup PDEs
+D = dir(pdepath);
+for demoCounter = 1:length(D) % First two entries are . and ..
+    demoPath = fullfile(pdepath, D(demoCounter,:).name);
+
+    % Only want to load files ending in .guifile
+    if ( isempty(strfind(demoPath, '.guifile')) )
+        continue
+    end
+
+    % Parse the .GUIFILE that stores the demo:
+    [demoName, demoFun, demoType] = parseDemoFile(demoPath, handles);
+    
+    switch demoType
+        case 'scalar'
+            uimenu('Parent', handles.menu_pdesingle, ...
+                'Label', demoName, ...
+                'Separator', 'off', ...
+                'HandleVisibility', 'callback', ...
+                'Callback', demoFun);
+        case 'system'
+            uimenu('Parent', handles.menu_pdesystems, ...
+                'Label', demoName, ...
+                'Separator', 'off', ...
+                'HandleVisibility', 'callback', ...
+                'Callback', demoFun);
+    end
+end
+
+% Setup EIGs
+D = dir(eigpath);
+for demoCounter = 1:length(D) % First two entries are . and ..
+    demoPath = fullfile(eigpath,D(demoCounter,:).name);
+    if isempty(strfind(demoPath,'.guifile')) 
+        continue % Only want to load files ending in .guifile
+    end
+
+    % Parse the .GUIFILE that stores the demo:
+    [demoName, demoFun, demoType] = parseDemoFile(demoPath, handles);
+    
+    switch demoType
+        case 'scalar'
+            uimenu('Parent', handles.menu_eigsscalar, ...
+                'Label', demoName, ...
+                'Separator', 'off', ...
+                'HandleVisibility', 'callback', ...
+                'Callback', demoFun);
+        case 'system'
+            uimenu('Parent', handles.menu_eigssystem, ...
+                'Label', demoName, ...
+                'Separator', 'off', ...
+                'HandleVisibility', 'callback', ...
+                'Callback', demoFun);
+    end
+end
+
+% Notify that we have loaded demos to prevent reloading
+set(handles.menu_demos, 'UserData', 1);
+
+end
+
+function [demoName, demoFun, demoType] = parseDemoFile(demoPath, handles)
+%PARSEDEMOFILE    Obtain information from the .guifile currently considered.
 
     % Need to obtain the name and type of the demo as well
     fid = fopen(demoPath);
@@ -46,111 +160,8 @@ for demoCounter = 1:length(D)
     % that gets assigned as the callback method of the items -- i.e., when the
     % name of the demo is clicked, demoFun() of the corresponding demo gets
     % called.
-    
     demoFun = @(hObject, eventdata) ...
-        hOpenMenuitemCallback(hObject, eventdata, handles, demoPath);
-    switch demoType
-        % Have three categories of ODE demos. The call to UIMENU() below
-        % populuates the menus.
-        case 'bvp'
-            hDemoitem  =  uimenu('Parent', handles.menu_bvps, ...
-                'Label', demoName, ...
-                'Separator', 'off', ...
-                'HandleVisibility', 'callback',  ...
-                'Callback', demoFun);
-        case 'ivp'
-            hDemoitem  =  uimenu('Parent', handles.menu_ivps, ...
-                'Label', demoName, ...
-                'Separator','off', ...
-                'HandleVisibility','callback', ...
-                'Callback', demoFun);
-        case 'system'
-            hDemoitem  =  uimenu('Parent', handles.menu_systems, ...
-                'Label', demoName, ...
-                'Separator', 'off', ...
-                'HandleVisibility','callback', ...
-                'Callback', demoFun);
-    end
-end
-
-% Setup PDEs
-D = dir(pdepath);
-for demoCounter = 1:length(D) % First two entries are . and ..
-    demoPath = fullfile(pdepath, D(demoCounter,:).name);
-
-    % Only want to load files ending in .guifile
-    if ( isempty(strfind(demoPath, '.guifile')) )
-        continue
-    end
-
-    % Need to obtain the name and type of the demo as well
-    fid = fopen(demoPath);
-
-    % Throw away ' at the ends of the string
-    demoName = fgetl(fid);
-    demoName = demoName(2:end-1);
-    demoType = fgetl(fid);
-    demoType = demoType(2:end-1);
-
-    fclose(fid);
-
-    demoFun = @(hObject, eventdata) ...
-        hOpenMenuitemCallback(hObject, eventdata, handles, demoPath);
-    switch demoType
-        case 'scalar'
-            hDemoitem  =  uimenu('Parent', handles.menu_pdesingle, ...
-                'Label', demoName, ...
-                'Separator', 'off', ...
-                'HandleVisibility', 'callback', ...
-                'Callback', demoFun);
-        case 'system'
-            hDemoitem  =  uimenu('Parent', handles.menu_pdesystems, ...
-                'Label', demoName, ...
-                'Separator', 'off', ...
-                'HandleVisibility', 'callback', ...
-                'Callback', demoFun);
-    end
-end
-
-% Setup EIGs
-D = dir(eigpath);
-for demoCounter = 1:length(D) % First two entries are . and ..
-    demoPath = fullfile(eigpath,D(demoCounter,:).name);
-    if isempty(strfind(demoPath,'.guifile')) 
-        continue % Only want to load files ending in .guifile
-    end
-    % Need to obtain the name and type of the demo as well
-    fid = fopen(demoPath);
-
-    % Throw away ' at the ends of the string
-    demoName = fgetl(fid);
-    demoName = demoName(2:end-1);
-    demoType = fgetl(fid);
-    demoType = demoType(2:end-1);
-
-    fclose(fid);
-
-    demoFun = @(hObject, eventdata) ...
-        hOpenMenuitemCallback(hObject, eventdata, handles, demoPath);
-    switch demoType
-        case 'scalar'
-            hDemoitem  =  uimenu('Parent', handles.menu_eigsscalar, ...
-                'Label', demoName, ...
-                'Separator', 'off', ...
-                'HandleVisibility', 'callback', ...
-                'Callback', demoFun);
-        case 'system'
-            hDemoitem  =  uimenu('Parent', handles.menu_eigssystem, ...
-                'Label', demoName, ...
-                'Separator', 'off', ...
-                'HandleVisibility', 'callback', ...
-                'Callback', demoFun);
-    end
-end
-
-% Notify that we have loaded demos to prevent reloading
-set(handles.menu_demos, 'UserData', 1);
-
+        hOpenMenuitemCallback(hObject, eventdata, guidata(hObject), demoPath);
 end
 
 function hOpenMenuitemCallback(hObject, eventdata, handles, demoPath)
@@ -162,19 +173,11 @@ function hOpenMenuitemCallback(hObject, eventdata, handles, demoPath)
 % Callback function run when the Open menu item is selected
 handles.guifile = chebgui.demo2chebgui(demoPath);
 
-% Populate the CHEBGUI figure.
-initSuccess = chebguiController.populate(handles, handles.guifile);
-
-% We switch modes differently depending on whether we were successful in
-% populating the figure window.
-if ( initSuccess )
-    switchModeCM = 'demo';
-else
-    switchModeCM = 'notdemo';
-end
-
 % Switch the mode of the GUI according to the type of the problem.
-chebguiController.switchMode(handles, handles.guifile.type, switchModeCM);
+chebguiController.switchMode(handles, handles.guifile.type);
+
+% Populate the CHEBGUI figure.
+chebguiController.populate(hObject, handles, handles.guifile);
 
 % We no longer have a solution.
 handles.hasSolution = 0;

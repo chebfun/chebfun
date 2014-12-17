@@ -32,17 +32,17 @@ if ( n <= 1 )
 end
 
 % Pre-compute the weight vector:
-w = repmat(2*exp(1i*(n-1:-1:0)*pi/(2*n)).',1,m);
+w = repmat(2*exp(1i*(0:n-1)*pi/(2*n)).',1,m);
 
 % Mirror the values for FFT:
 tmp = [values(n:-1:1, :) ; values];
 coeffs = ifft(tmp);
 
 % Truncate, flip the order, and multiply the weight vector:
-coeffs = w.*coeffs(n:-1:1, :);
+coeffs = w.*coeffs(1:n, :);
 
-% Scale the last coefficient, i.e. the coefficient for the constant term:
-coeffs(n,:) = coeffs(n,:)/2;
+% Scale the coefficient for the constant term:
+coeffs(1,:) = coeffs(1,:)/2;
 
 % Post-process:
 if ( isreal(values) )  
