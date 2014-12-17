@@ -83,8 +83,9 @@ classdef chebfun
 %
 % CHEBFUN(F, 'trig') constructs a CHEBFUN object representing a smooth and
 % periodic function F on the interval [-1,1]. The resulting CHEBFUN is
-% represented using a Fourier series. All operations done of F should preserve
-% smoothness and periodicity or the results may be inaccurate. Similar options
+% represented using a Fourier series. All operations done on F should preserve
+% smoothness and periodicity, otherwise results are casted into chebfuns 
+% represented by Chebyshev rather than Fourier series. Similar options
 % as discussed above may be combined with the 'trig' flag, with exception to
 % the 'chebkind' and 'splitting' flags.
 %
