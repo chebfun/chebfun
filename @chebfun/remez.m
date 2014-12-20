@@ -71,7 +71,7 @@ end
 
 isPeriodic = 0;
 % Check for periodicity:
-if ( isa(f.funs{1}.onefun, 'trigtech') )
+if ( isPeriodicTech(f) )
     isPeriodic = 1;
 end
 
@@ -203,7 +203,7 @@ else                   % Odd number of inputs --> rational case.
     rationalMode = true;
     varargin = varargin(3:end);
 end
-if ( isa(f.funs{1}.onefun, 'trigtech') )
+if ( isPeriodicTech(f) )
     % Use Remez for periodic functions:
     N = 2*m;
     % No support for rational trigonometric yet.
@@ -214,7 +214,7 @@ end
 
 % Parse name-value option pairs.
 opts.tol = 1e-16*(N^2 + 10); % Relative tolerance for deciding convergence.
-opts.maxIter = 40;           % Maximum number of allowable iterations.
+opts.maxIter = 60;           % Maximum number of allowable iterations.
 opts.displayIter = false;    % Print output after each iteration.
 opts.plotIter = false;       % Plot approximation at each iteration.
 
@@ -297,7 +297,7 @@ end
 % In the polynomial case or if the above procedure failed to produce a reference
 % with enough equioscillation points, just use the Chebyshev points.
 if ( flag == 0 )
-    if ( isa(f.funs{1}.onefun, 'trigtech') )
+    if ( isPeriodicTech(f) )
         xk = trigpts(N + 2,f.domain([1, end]));
     else
         xk = chebpts(N + 2, f.domain([1, end]));
