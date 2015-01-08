@@ -22,11 +22,15 @@ function newTree = expandTree(tree, maxOrder)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( ~isstruct(tree) || tree.height <= 1 || all(tree.diffOrder < maxOrder) ||...
-    ~tree.hasTerms )
-    % If the input is not a tree, or if it is a very short tree, or if its
-    % diffOrder is less than the maxOrder we consider, or if it doesn't
-    % contain any operators that split it up in terms (that is, + or -), then
-    % don't need to do anything.
+    ( ~tree.hasTerms && sum(tree.ID) <= 1) )
+    % We don't need to worry about expanding the tree any of the following
+    % conditions apply: 
+    %   * The input is not a tree
+    %   * It is a very short tree
+    %   * Its diffOrder is less than the maxOrder we consider
+    %   * It doesn't any operators that split it up in terms (that is, + or -),
+    %     and it doesn't include more than one variable (which would imply
+    %     nonlinearity, such as u.*w).
     newTree = tree;
     
 elseif ( tree.numArgs == 1 )
