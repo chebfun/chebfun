@@ -1,4 +1,4 @@
-function [u,lam,iter, retract] = newtonbvp(H,A,g,BCstruct,uinit, laminit, udot,lamdot)
+function [u,lam,iter, retract] = newtonBVP(H,A,g,BCstruct,uinit, laminit, udot,lamdot)
 
 % Find a tangent to the curve H(u,lambda)=0 at the given point, by solving
 % a boundary-value problem.
@@ -76,9 +76,9 @@ while ~accept
     
 %     fprintf('Iter: %d, res. %6.4e .\n',iter, norm(du,2))
     iter = iter + 1;
-    if norm(du,2) < 1e-3
+    if norm(du,2) < 1e-5
         accept = 1;
-    elseif iter >=5 % Too many iterations
+    elseif iter >=10 % Too many iterations
         retract = 1; return
     end
 

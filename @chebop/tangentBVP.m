@@ -1,4 +1,4 @@
-function [t,tau] = tangentbvp(H,A,g,BCstruct,u,lambda,told,tauold)
+function [t,tau] = tangentBVP(H,A,g,BCstruct,u,lambda,told,tauold)
 
 % Find a tangent to the curve H(u,lambda)=0 at the given point, by solving
 % a boundary-value problem.

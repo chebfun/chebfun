@@ -9,7 +9,7 @@ function [uquasi, lamvec, mvec] = followPath(H, A, g, BCstruct, u0, lam0, measur
 
 % Set default values
 plotOn = 0; % Option for plotting
-sl0 = .1; % Initial steplength
+sl0 = 1; % Initial steplength
 slmax = 4; slmin = 0.0001; % Maximum/min steplength
 maxCounter = 7;
 
@@ -83,9 +83,13 @@ while counter <= maxCounter
     % retract
     if ~retract
         [t, tau] = tangentBVP(H,A,g,BCstruct,uold, lamold, told,tauold);
+        if counter == 1
+            t = direction*t;
+            tau = direction*tau;
+        end
         % Move in the direction of the tangent
         uinit = uold+sl*t;
-        laminit = lamold+direction*sl*tau;
+        laminit = lamold+sl*tau;
     end
 
     % Find a Newton correction
@@ -96,8 +100,8 @@ while counter <= maxCounter
         % Move in the direction of the current tangent, but only with
         % quarter of the steplength
         sl = sl/4;
-        uinit = uold+direction*sl*t;
-        laminit = lamold+direction*sl*tau;       
+        uinit = uold+sl*t;
+        laminit = lamold+sl*tau;       
         if sl < slmin
             disp('FAILED: sl < slmin')
             return
