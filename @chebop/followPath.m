@@ -76,8 +76,9 @@ end
 told = chebfun(0,domain(u0)); tauold = 1;
 
 retract = 0; % retract == 1 if Newton told us to go back along the tangent.
-fprintf('No. path iter    Newton iter   Steplength\n')
-fprintf('-------------------------------------------\n')
+fprintf('No. path iter    Newton iter   Steplength    Measure    Num. sol.\n')
+fprintf('----------------------------------------------------------------\n')
+numSols = 1;
 while counter <= maxCounter
     % Find a tangent direction, but only if we were told by Newton not to
     % retract
@@ -108,10 +109,14 @@ while counter <= maxCounter
         end
         continue
     end
-    fprintf('%7i \t   %2i \t\t %6.4f \n',counter,iter,sl)    
-    
     % Store values for plotting
     mvec = [mvec; measure(u)]; lamvec = [lamvec;lam];
+    
+    fprintf('%7i \t   %2i \t\t %6.4f       %6.4f \t   %i \n',counter,iter,sl, measure(u), numSols)    
+    if (mvec(end)*mvec(end-1) < 0 )
+        numSols = numSols + 1;
+    end
+
 
     if plotOn
         subplot(1,2,1);

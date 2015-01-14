@@ -76,9 +76,9 @@ while ~accept
     
 %     fprintf('Iter: %d, res. %6.4e .\n',iter, norm(du,2))
     iter = iter + 1;
-    if norm(du,2) < 1e-5
+    if norm(du,2) < 1e-3
         accept = 1;
-    elseif iter >=10 % Too many iterations
+    elseif iter >=5 % Too many iterations
         retract = 1; return
     end
 
