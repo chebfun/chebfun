@@ -216,6 +216,41 @@ if ( ~isempty(N.bc) )
        BC = append(BC, contConds.functional, contConds.values);
        isLinear(4) = true;
     else
+        % Before we evaluate the function, we need to ensure to contract the
+        % derivative of any scalar ADchebfun. To see why, consider the boundary
+        % condition for a problem on [0,1]:
+        %   N.bc = @(x,v,p) v(0) - p;
+        % where V is a CHEBFUN, but P is a scalar parameter. 
+        %
+        % When we reach this point of the code, the cell array U will contain 2
+        % ADCHEBFUN objects. U{1} will be an ADCHEBFUN where U{1}.FUNC is a
+        % CHEBFUN, and U{1}.JACOBIAN is a CHEBMATRIX that has the block types
+        % [operatorBlock, chebfun]. U{2} will be an ADCHEBFUN where U{2}.FUNC is
+        % a double, and U{2}.jacobian will be a CHEBMATRIX with the same block
+        % types as U{1}.JACOBIAN.
+        %
+        % When we then evaluate the condition above, we first call FEVAL on V to
+        % get the value V0 = V(0). This causes the dimensions of the jacobian of
+        % V0 to collapse, so that V0.jacobian will be a CHEBMATRIX with the
+        % block types [functionalBlock, double]. When we then do the subtraction
+        % v(0) - p, the jacobian of P will be of incorrect dimensions,
+        % reflecting that we haven't taken into account that we really are
+        % evaluating a functional.
+        %
+        % To fix this, we hit the JACOBIAN field of any ADCHEBFUN currently in U
+        % with an evaluation operator, which will cause the derivatives to
+        % collapse to the correct dimensions, as required.
+        if ( ~all(isFun) )
+            % Create an evaluation operator for the left endpoint of the domain.
+            % The evaluation point doesn't really matter, as all the derivatives
+            % we're collapsing are either zeros or identity, so identical over
+            % the whole domain
+            E = functionalBlock.feval(dom(1), dom);
+            for paramCounter=find(~isFun)
+                u{paramCounter}.jacobian = E*u{paramCounter}.jacobian;
+            end
+        end
+        
         % Evaluate. The output, BCU, will be an ADCHEBFUN.
         if ( nargin(N.bc) == 1 )
             bcU = N.bc(u{:});
@@ -230,6 +265,7 @@ if ( ~isempty(N.bc) )
 
         % Gather all residuals of evaluating N.BC in one column vector.
         vals = cat(1, get(bcU, 'func'));
+        
         % Loop through the conditions and append to the BC object.
         for k = 1:numel(bcU)
             J = get(bcU,'jacobian',k);
@@ -237,6 +273,7 @@ if ( ~isempty(N.bc) )
             jumps = get(bcU, 'jumpLocations', k);
             L = addGivenJumpAt(L,jumps);
         end
+        
         % Update linearity information.
         isLinear(4) = all(all(get(bcU, 'linearity')));
         

@@ -1161,7 +1161,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
 
                 % Convert the cell-array to a CHEBMATRIX and assign to the
                 % derivative field of U:
-                u.jacobian = linop( blocks );
+                u.jacobian = chebmatrix( blocks );
                 
                 % Initalise linearity information. The output is linear in all
                 % variables.
