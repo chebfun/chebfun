@@ -9,7 +9,6 @@ function [uquasi, lamvec, mvec] = followPath(H, A, g, BCstruct, u0, lam0, measur
 
 % Set default values
 plotOn = 0; % Option for plotting
-sl0 = 1; % Initial steplength
 slmax = 4; slmin = 0.0001; % Maximum/min steplength
 maxCounter = 7;
 
@@ -38,6 +37,7 @@ while ~isempty(varargin)  % Recurse
     varargin(1:2) = [];
 end
 
+sl0 = slmax; % Initial steplength
 
 % Store all the solutions to be returned
 uquasi = u0;
@@ -108,6 +108,10 @@ while counter <= maxCounter
             return
         end
         continue
+    end
+    
+    if (measure(u) < -150)
+        return
     end
     % Store values for plotting
     mvec = [mvec; measure(u)]; lamvec = [lamvec;lam];
