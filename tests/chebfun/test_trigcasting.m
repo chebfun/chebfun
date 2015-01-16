@@ -49,32 +49,35 @@ pass(13) = isequal(get(fx.funs{1}, 'tech'), tech);
 %% Test for round, floor, ceil
 f = chebfun(@(x) exp(sin(x)), [0 2*pi], 'trig');
 g = chebfun(@(x) exp(sin(x)), [0 2*pi]);
-pass(14) = norm(round(f) - round(g), inf) < 100*epslevel(f)*vscale(f);
-pass(15) = norm(floor(f) - floor(g), inf) < 100*epslevel(f)*vscale(f);
-pass(16) = norm(ceil(f) - ceil(g), inf) < 100*epslevel(f)*vscale(f);
+fr = round(f);
+gr = round(g);
+pass(14) = norm(domain(fr) - domain(gr), inf) < 100*epslevel(f)*hscale(f);
+pass(15) = abs(norm(fr,1)-norm(gr,1)) < 100*epslevel(f)*vscale(f);
+pass(16) = norm(floor(f) - floor(g), inf) < 100*epslevel(f)*vscale(f);
+pass(17) = norm(ceil(f) - ceil(g), inf) < 100*epslevel(f)*vscale(f);
 
 %% Test for cumsum
 f = chebfun(@(x) sin(2*pi*x), 'trig');
 g = cumsum(f);
 h = cumsum(f+1e-5);
-pass(17) = isequal(get(g.funs{1}, 'tech'), @trigtech);
-pass(18) = isequal(get(h.funs{1}, 'tech'), tech);
+pass(18) = isequal(get(g.funs{1}, 'tech'), @trigtech);
+pass(19) = isequal(get(h.funs{1}, 'tech'), tech);
 
 %% Test diff of a quasimatrix
 f = chebfun(@(x) sin(2*pi*x), 'trig');
 g = chebfun(@(x) sin(2*pi*x));
 H = [f, g];
-pass(19) = norm(diff(H, 1, 2)) < 100*vscale(f)*epslevel(f);
+pass(20) = norm(diff(H, 1, 2)) < 100*vscale(f)*epslevel(f);
 
 %% Test for power
 f = chebfun(@(x) 2+sin(pi*x), 'trig');
 h = chebfun(@(x) 2+sin(pi*x));
 g = chebfun(@(x) exp(x));
-pass(20) = norm(f.^g - h.^g, inf) < 100*vscale(f)*epslevel(f); 
+pass(21) = norm(f.^g - h.^g, inf) < 100*vscale(f)*epslevel(f); 
 
 %% Test for breakpoints
 f = chebfun(@(x) sin(2*pi*x), 'trig');
 g = chebfun(f, [-1, 0, 1]);
-pass(21) = norm(domain(g) - [-1 0 1], inf) < 10*eps;
+pass(22) = norm(domain(g) - [-1 0 1], inf) < 10*eps;
 
 end
