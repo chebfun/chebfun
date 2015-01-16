@@ -24,4 +24,9 @@ g = testclass.make(@(x) x, [], pref);
 h = assignColumns(f, 1, g);
 pass(2) = ~h.ishappy;
 
+f = testclass.make(@(x) sin(pi*x));
+g = testclass.make(@(x) cos(pi*x));
+h = assignColumns(f, 1, g);
+pass(3) = isequal(h, g)
+
 end
