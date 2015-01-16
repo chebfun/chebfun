@@ -163,26 +163,16 @@ L.domain = domain.merge(L.domain, dom);
 
 % For problems with parameters, the system in L may not be square. This is OK if
 % u0 contains doubles for the parameter entries. If not, we correct for this
-% below by assuming the final few variables represent parameters.
+% below by assuming that any variable that does not have a diffOrder greater
+% than 0 associated with it is a parameter, rather than a function.
+isParam = ~any(L.diffOrder,1);
 
-[s1, s2] = size(L.blocks);
-numParams = s2 - s1;
-if ( all(isFun) && numParams > 0 )
-    % We've found a parameterised problem, but weren't informed by u0. 
-    
-    % TODO: Do we really want to throw a warning?
-%     % Throw a warning: 
-%     if ( numParams == 1 )
-%         warnStr = 'Assuming final variable is a parameter.';
-%     else
-%         warnStr = ['Assuming final ' int2str(numParams) ' variables are parameters.'];
-%     end
-%     warning('CHEBFUN:chebop:linearize:params', warnStr);
-    
-    % Reseed the final numParam variables as constants and linearize again:
+if ( all(isFun) && any(isParam) )
+    % We've found a parameterised problem, but weren't informed by u0.  Reseed
+    % the final numParam variables as constants and linearize again:
     u = cellfun(@(b) b.func, u, 'UniformOutput', false);
-    for k = 0:numParams-1
-        u{end-k} = feval(u{end-k}, L.domain(1)); % Convert to a scalar.
+    for k = find(isParam)
+        u{k} = feval(u{k}, L.domain(1)); % Convert to a scalar.
     end
     [L, res, isLinear, u] = linearize(N, u, x, flag);
 
