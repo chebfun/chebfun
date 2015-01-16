@@ -52,7 +52,7 @@ g = chebfun(@(x) exp(sin(x)), [0 2*pi]);
 fr = round(f);
 gr = round(g);
 pass(14) = norm(domain(fr) - domain(gr), inf) < 100*epslevel(f)*hscale(f);
-pass(15) = abs(norm(fr,1)-norm(gr,1)) < 100*epslevel(f)*vscale(f);
+pass(15) = abs(sum(fr)-sum(gr)) < 100*epslevel(f)*vscale(f);
 pass(16) = norm(floor(f) - floor(g), inf) < 100*epslevel(f)*vscale(f);
 pass(17) = norm(ceil(f) - ceil(g), inf) < 100*epslevel(f)*vscale(f);
 
