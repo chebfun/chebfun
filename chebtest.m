@@ -4,7 +4,8 @@ function varargout = chebtest(varargin)
 %   directory $chebfunroot/tests/. These m-files should return a scalar,
 %   vector, or matrix of logical values. A test is deemed to pass if all the
 %   returned values are logical true.  There is no functional output from
-%   CHEBTEST, but the data is piped to the command window with fprintf.
+%   CHEBTEST, but the data is piped to the command window with fprintf. Note
+%   that CHEBTEST will automatically close any open figure windows.
 %
 %   CHEBTEST('DIR1', 'DIR2', ...) will run only those tests given as inputs,
 %   i.e., those in <chebfunroot>/tests/DIR1, $chebfunroot/tests/DIR2, and so
@@ -175,15 +176,8 @@ cd(currDir);
 
 % Write the log if requested to.
 if ( writeLog )
-    logDir = fullfile(installDir, 'logs');
-    if ( ~exist(logDir, 'dir') )
-        [success, msg] = mkdir(installDir, 'logs');
-        if ( ~success )
-            warning('CHEBFUN:chebtest:writePermission', msg);
-        end
-    end
     filename = ['chebtest-' datestr(now, 'yyyymmddHHMMSS') '.log'];
-    writeToLog(fullfile(logDir, filename), allResults);
+    writeToLog(filename, allResults);
 end
 
 % Return.
@@ -369,6 +363,8 @@ function duration = runTest(testFile)
 % Store current default preference states:
 prefState1 = chebfunpref();
 prefState2 = cheboppref();
+% Close any open windows:
+close all
 
 % Attempt to run the test:
 try
@@ -390,6 +386,8 @@ catch ME %#ok<NASGU>
     %rethrow(ME)
 end
 
+% Close any windows the test may have left open:
+close all
 % Ensure global preferences aren't modified by tests.
 chebfunpref.setDefaults(prefState1);
 cheboppref.setDefaults(prefState2);

@@ -30,7 +30,7 @@ if ( isa(bcArg, 'chebfun') )
         % Dirichlet conditions at x = bcpos (or y = bcpos):
         bcrow = cos((0:bcn-1) * acos(bcpos));
     end
-    bcvalue = resize(flipud(bcArg.coeffs(:)), een);
+    bcvalue = resize(bcArg.coeffs(:), een);
     
 elseif ( isa( bcArg, 'function_handle' ) )
     % More general conditions are sorted out here: 
@@ -86,7 +86,7 @@ elseif ( isa( bcArg, 'function_handle' ) )
         for jj = 1:nf
             g = f{jj};
             % bcvalue = -f as it's going in the RHS: 
-            bcvalue(:,jj) = -resize(cc(jj)*flipud(g.coeffs(:)), een);
+            bcvalue(:,jj) = -resize(cc(jj)*g.coeffs(:), een);
         end
         
         % Now go find the constants in the boundary conditions: 
@@ -198,7 +198,7 @@ p = cell(s);                     % Initialise output.
 p0 = L*repmat(x0, 1, s(2));      % Compute non-autonomous component.
 
 % The main routine:
-for hh = 1:s(2)                 % Loop over each of the dependant variables.
+for hh = 1:s(2)                 % Loop over each of the dependent variables.
     x0l = repmat(x0,1,hh-1);    % Set dep vars to the left to zero.
     x0r = repmat(x0,1,s(2)-hh); % Set dep vars to the right to zero.
     p1 = L*[x0l 1+0*x x0r];     % Evaluate all equations for [0 ... 1 ... 0]

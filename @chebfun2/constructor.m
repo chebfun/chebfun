@@ -67,21 +67,45 @@ minSample = tpref.minSamples;
 maxSample = tpref.maxLength;
 pseudoLevel = tpref.eps;
 
+% Deal with periodic functions: 
 if ( any(strcmpi(dom, 'periodic')) )
-        % If periodic flag, then map chebfun2 with fourtechs. 
-        pref.tech = @fourtech;
+        % If periodic flag, then map chebfun2 with TRIGTECHs. 
+        pref.tech = @trigtech;
         tpref = chebfunpref.mergeTechPrefs(pref, tech.techPref);
         minSample = tpref.minSamples;
         maxSample = tpref.maxLength;
         pseudoLevel = tpref.eps;
         dom = [-1 1 -1 1];
 elseif ( (nargin > 3) && (any(strcmpi(varargin{1}, 'periodic'))) )
-        % If periodic flag, then map chebfun2 with fourtechs. 
-        pref.tech = @fourtech; 
+        % If periodic flag, then map chebfun2 with TRIGTECHs
+        pref.tech = @trigtech; 
         tpref = chebfunpref.mergeTechPrefs(pref, tech.techPref);
         minSample = tpref.minSamples;
         maxSample = tpref.maxLength;
         pseudoLevel = tpref.eps;
+end
+
+% Deal with constructions from equally spaced data:
+if ( any(strcmpi(dom, 'equi')) || ((nargin > 3) && (any(strcmpi(varargin{1}, 'equi')))) )
+        % Equally spaced data: 
+        if ( any(strcmpi(dom, 'equi')) ) 
+            dom = [-1 1 -1 1];
+        end
+        % Calculate a tolerance and find numerical rank to this tolerance: 
+        % The tolerance assumes the samples are from a function. It depends
+        % on the size of the sample matrix, hscale of domain, vscale of
+        % the samples, and the accuracy target in chebfun2 preferences. 
+        grid = max( size( op ) ); 
+        vscale = max( abs(op(:)) ); 
+        tol = grid.^(2/3) * max( max( abs(dom(:))), 1) * vscale * pseudoLevel;
+        [pivotValue, ignored, rowValues, colValues] = CompleteACA(op, tol, 0); % Do ACA on matrices
+        
+        % Make a chebfun2: 
+        g.pivotValues = pivotValue;
+        g.cols = chebfun(colValues, dom(3:4), 'equi' );
+        g.rows = chebfun(rowValues.', dom(1:2), 'equi'  );
+        g.domain = dom;
+        return
 end
 
 if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
@@ -168,13 +192,29 @@ if ( numel(dom) == 2 )
         ends = varargin{1};
         if ( numel( ends ) == 2 )
             dom = [dom(:) ; ends(:)].';
-        else
+        elseif ( numel(ends) == 4 ) 
+            % Interpret this as the user wants a degree (dom(1),dom(2)) 
+            % chebfun2 on the domain [ends]. 
+            [xx, yy] = chebfun2.chebpts2(dom(1), dom(2), ends);
+            g = chebfun2( op(xx, yy), varargin{:} ); 
+            return
+        else 
             error('CHEBFUN:CHEBFUN2:constructor:domain1', ...
-                'Domain not fully determined.');
+                'Domain not valid or fully determined.');
         end
     else
-        error('CHEBFUN:CHEBFUN2:constructor:domain2', ...
-            'Domain not fully determined.');
+        % The domain is not given, but perhaps the user 
+        % wants a degree (dom(1),dom(2)) representation.
+        if ( dom(2) - dom(1) > 0 && dom(1)>0 &&...   % A valid bivariate degree? 
+                abs(round(dom(1)) - dom(1))< eps &&...
+                abs(round(dom(2)) - dom(2))< eps) 
+            [xx, yy] = chebfun2.chebpts2(dom(1), dom(2));
+            g = chebfun2( op(xx, yy), varargin ); 
+            return
+        else
+            error('CHEBFUN:CHEBFUN2:constructor:domain2', ...
+                'Domain not valid or fully determined.');
+        end
     end
 elseif ( numel(dom) == 1 )
     fixedRank = dom;
@@ -345,7 +385,7 @@ while ( ~isHappy && ~failure )
     end
     
     % For some reason, on some computers simplify is giving back a scalar zero.
-    % In which case the function is numerically zero. Artifically set the
+    % In which case the function is numerically zero. Artificially set the
     % columns and rows to zero.
     if ( (norm(colValues) == 0) || (norm(rowValues) == 0) )
         colValues = 0;
@@ -547,9 +587,9 @@ elseif ( isa(tech, 'chebtech1') )
     x = chebpts( m, dom(1:2), 1 );   % x grid.
     y = chebpts( n, dom(3:4), 1 ); 
     [xx, yy] = meshgrid( x, y ); 
-elseif ( isa(tech, 'fourtech') )
-    x = fourpts( m, dom(1:2) );   % x grid.
-    y = fourpts( n, dom(3:4) );
+elseif ( isa(tech, 'trigtech') )
+    x = trigpts( m, dom(1:2) );   % x grid.
+    y = trigpts( n, dom(3:4) );
     [xx, yy] = meshgrid( x, y );
 else
     error('CHEBFUN:CHEBFUN2:constructor:points2D:tecType', ...
@@ -570,8 +610,8 @@ if ( isa(tech, 'chebtech2') )
     x = chebpts( n, dom, 2 );   % x grid.
 elseif ( isa(tech, 'chebtech1') )
     x = chebpts( n, dom, 1 );   % x grid.
-elseif ( isa(tech, 'fourtech') )
-    x = fourpts( n, dom );   % x grid.
+elseif ( isa(tech, 'trigtech') )
+    x = trigpts( n, dom );   % x grid.
 else
     error('CHEBFUN:CHEBFUN2:constructor:mypoints:techType', ...
         'Unrecognized technology');
@@ -590,7 +630,7 @@ if ( isa(tech, 'chebtech2') )
     % Double sampling on tensor grid:
     grid = 2^( floor( log2( grid ) ) + 1) + 1;
     nesting = 1:2:grid; 
-elseif ( isa(tech, 'fourtech') )
+elseif ( isa(tech, 'trigtech') )
     % Double sampling on tensor grid:
     grid = 2^( floor( log2( grid ) + 1 ));
     nesting = 1:2:grid;

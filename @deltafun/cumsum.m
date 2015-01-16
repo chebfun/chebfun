@@ -1,16 +1,13 @@
-function [g, rJump] = cumsum(f, k, dim)
+function g = cumsum(f, k, dim)
 %CUMSUM   Indefinite integral of a DELTAFUN.
-%   [G, RJUMP] = CUMSUM(F) is the indefinite integral of the DELTAFUN F. If F 
-%   has no delta functions, then G is just the CUMSUM of the funPart of F
-%   RJUMP is the value of the delta function a the at the right end point of f.
+%   G = CUMSUM(F) is the indefinite integral of the DELTAFUN F. If F 
+%   has no delta functions, then G is just the CUMSUM of the funPart of F.
 %   Any derivatives of delta functions are integrated by shifting the rows 
 %   of the DELTAMAG matrix once upward. 
 %
 %   In case there are delta functions in F, a cell array of FUNS is returned. 
 %   If F has a delta function at the right end point, it's magnitude is added
-%   to the right end point value of the funPart of the last deltafun. The 
-%   value in RVAL can be used by higher classes to CUMSUM concatenated
-%   DELTAFUNS.
+%   to the right end point value of the funPart of the last deltafun.
 %
 % See also SUM
 
@@ -36,8 +33,6 @@ deltaTol = pref.deltaPrefs.deltaTol;
 
 if ( ~anyDelta(f) )
     g = cumsum(f.funPart);
-    % The jump at the right end is zero in this case:
-    rJump = 0;
 else
     % Clean up delta functions:
     f = simplifyDeltas(f);
@@ -63,10 +58,9 @@ else
         if ( isempty(deltaMag) || isempty(deltaLoc) )
             g = cumsum(f.funPart);
         else
-            g = deltafun(cumsum(f.funPart), deltaMag, deltaLoc);
+            g = deltafun(cumsum(f.funPart), struct('deltaMag', deltaMag, 'deltaLoc', deltaLoc));
         end
-        % There are no delta functions, so the jump is zero:
-        rJump = 0;
+        
         return
     else
         % There are delta functions, which will introduce jumps. First take care
@@ -100,12 +94,13 @@ else
         p3 = nJumps == 2 && deltaLeft && deltaRight;
         if ( p1 || p2 || p3)
             s = cumsum(f.funPart) + jumpVals(1);
-            rJump = jumpVals(end);
+                        
             if ( isempty(deltaLoc) || isempty(deltaMag) )
                 g = s;                
             else
                 g = deltafun(s, deltaMag, deltaLoc);
-            end            
+            end
+                        
             return
         end
         
@@ -151,8 +146,7 @@ else
                 g{k} = fk;
             end
         end
-        % Record the jump at the right end:
-        rJump = jumpVals(end);
+        
     end
 end
 

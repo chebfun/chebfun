@@ -37,7 +37,7 @@ fprintf(fid, '%% for %s in %s', indVarName{1}, dom);
 % Print the boundary conditions:
 if ( ~isempty(bcInput{1}) )
     % Non-periodic conditions:
-    fprintf(fid,',  subject to\n%%');
+    fprintf(fid,', subject to\n%%');
     for k = 1:numel(bcInput)
         fprintf(fid, '   %s', bcInput{k});
         if ( (k ~= numel(bcInput)) && (numel(bcInput) > 1) )

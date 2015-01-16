@@ -1,4 +1,3 @@
-
 function [out, varNames, pdeVarNames, eigVarNames, indVarNames] = ...
     lexer(str, problemType)
 %LEXER   Lexer for string expression in CHEBFUN
@@ -17,7 +16,7 @@ function [out, varNames, pdeVarNames, eigVarNames, indVarNames] = ...
 %    EIGVARNAMES: The variable used to denote the eigenvalue parameter, i.e., l,
 %                 lam, or lambda.
 %    INDVARNAME:  A string with the name of the variable that represents the
-%                 independent variable in the problem (i.e., x or t).
+%                 independent variable in the problem (i.e., r, t or x).
 %
 %   The output of this method is then passed to the LL(1) parser. For more 
 %   details of compiler theory, see e.g.,
@@ -147,7 +146,7 @@ while ( ~strcmp(str, '$') )
     exprEnd = 1;
     switch ( type )
         case 'num'
-            % Obtain the numbers continously (with match), their start and end
+            % Obtain the numbers continuously (with match), their start and end
             % positions.
             regex = '[\+\-]?(([0-9]+(\.[0-9]*)?|\.[0-9]+)([eE][\+\-]?[0-9]+)?[ij]?)';
             [m, ignored, e] = regexp(str, regex, 'match', 'start', 'end');
@@ -329,7 +328,7 @@ while ( ~strcmp(str, '$') )
             % If not a function nor the variable we are interested in
             % differentiating with respect to, we treat this variable just
             % as number (this enables us e.g. to be able to differentiate w.r.t.
-            % x and y seperately)
+            % x and y separately)
             else
                 out = [out ; {nextString, 'INDVAR'}];
             end
@@ -339,7 +338,8 @@ while ( ~strcmp(str, '$') )
             
         case 'error'
             error('CHEBFUN:STRINGPARSER:lexer:unknownType', ...
-                'Unrecognized type of lexer input.');
+                ['Invalid token ''%s'' in input.\nChebgui does not support ' ...
+                '''%s'' in its input fields.'], char1, char1);
     end
     
     prevType = type;
@@ -407,6 +407,8 @@ elseif ( regexp(str, '''') )
 elseif ( strcmp(str, ',') )
     type = 'comma';
 else
+    % We end up here if we have encountered an unexpected type. This causes an
+    % error to be thrown in the switch statement above.
     type = 'error';
 end
 

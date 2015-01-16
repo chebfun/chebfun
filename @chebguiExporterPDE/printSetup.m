@@ -29,7 +29,7 @@ periodic = expInfo.periodic;
 fprintf(fid, '%%%% Problem set-up\n');
 fprintf(fid, '%% Create an interval of the space domain...\n');
 fprintf(fid, 'dom = %s;\n',dom);
-fprintf(fid, '%%...and a discretisation of the time domain:\n');
+fprintf(fid, '%%...and specify a sampling of the time domain:\n');
 fprintf(fid, '%s = %s;\n',tName,tt);
 
 fprintf(fid, '\n%% Make the right-hand side of the PDE.\n');
@@ -64,7 +64,7 @@ else
 end
 
 if ( (numel(deInput) == 1) && ~ischar(deInput) )
-    % Get the strings of the dependant variable. Just use allVarNames.
+    % Get the strings of the dependent variable. Just use allVarNames.
     findx = strfind(initInput{1}, xName);
     initInput = vectorize(char(initInput));
     equalSign = find(initInput == '=', 1, 'last');
@@ -78,7 +78,7 @@ if ( (numel(deInput) == 1) && ~ischar(deInput) )
     end
     
 else
-    % To deal with 'u = ...' etc in intial guesses
+    % To deal with 'u = ...' etc in initial guesses
     order = [];
     guesses = [];
     inits = [];

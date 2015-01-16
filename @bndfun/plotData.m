@@ -46,10 +46,6 @@ else
     data.yJumps = getJumps(g, data.yLine);
     data.zJumps = getJumps(h, data.zLine);
     
-    % Sort out the xLim:
-    values = get(f, 'values');
-    data.xLim = [min(values(:)), max(values(:))];
-    
 end
 
 end

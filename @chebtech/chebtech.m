@@ -66,7 +66,8 @@ classdef chebtech < smoothfun % (Abstract)
 %
 %   h = cumsum(f):
 %     h.vscale = getvscl(h);
-%     h.epslevel = happinessCheck(h);
+%     % [TODO]: Figure this out rigourously.
+%     h.epslevel = 2*f.epslevel*f.vscale/h.vscale
 %
 % If the input operator OP in a call to a concrete CHEBTECH constructor, say,
 % CHEBTECH1(OP), evaluates to NaN or Inf at any of the sample points used by the
@@ -84,8 +85,8 @@ classdef chebtech < smoothfun % (Abstract)
 % array-valued forms. Note that this representation is distinct from an array of
 % CHEBTECH objects, for which there is little to no support.
 %
-% Class diagram: [<<smoothfun>>] <-- [<<CHEBTECH>>] <-- [chebtech1]
-%                                                   <-- [chebtech2]
+% Class diagram: [<<SMOOTHFUN>>] <-- [<<CHEBTECH>>] <-- [CHEBTECH1]
+%                                                   <-- [CHEBTECH2]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -197,7 +198,7 @@ classdef chebtech < smoothfun % (Abstract)
         % Complex conjugate of a CHEBTECH.
         f = conj(f)
         
-        % CHEBTECH obects are not transposable.
+        % CHEBTECH objects are not transposable.
         f = ctranspose(f)
 
         % Indefinite integral of a CHEBTECH.

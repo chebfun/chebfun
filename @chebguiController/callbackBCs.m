@@ -68,26 +68,6 @@ elseif ( strcmp(type, 'rbc') )
     end
     
 elseif ( strcmp(type, 'bc') )
-    % Deal with the BC input.
-    if ( periodicFlag )
-        set(handles.input_LBC, 'String', 'periodic');
-        handles.guifile.LBC = 'periodic';
-        set(handles.input_LBC, 'Enable', 'off');
-        set(handles.input_RBC, 'String', 'periodic');
-        handles.guifile.RBC = 'periodic';
-        set(handles.input_RBC, 'Enable', 'off');
-    else
-        if ( strcmp(get(handles.input_LBC, 'String'), 'periodic') )
-            handles.guifile.LBC = '';
-            set(handles.input_LBC, 'String', '');
-        end
-        set(handles.input_LBC, 'Enable', 'on');
-        if ( strcmp(get(handles.input_RBC, 'String'), 'periodic') )
-            handles.guifile.RBC = '';
-            set(handles.input_RBC, 'String', '');
-        end
-        set(handles.input_RBC, 'Enable', 'on');
-    end
     
 else
     error('CHEBFUN:CHEBGUICONTROLLER:callbackBCs:unknown', ...

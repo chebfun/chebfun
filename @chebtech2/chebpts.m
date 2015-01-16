@@ -11,7 +11,7 @@ function [x, w, v, t] = chebpts(n)
 %
 %   [X, W, V, T] = CHEBPTS(N) returns also the angles of X.
 %
-% See also BARY, QUADWTS, BARYWTS, FOURPTS, LEGPTS, JACPTS, LAGPTS, and HERMPTS.
+% See also BARY, QUADWTS, BARYWTS, TRIGPTS, LEGPTS, JACPTS, LAGPTS, and HERMPTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.

@@ -165,7 +165,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         % Complex conjugate of a DELTAFUN.
         f = conj(f)
         
-        % DELTAFUN obects are not tCOLLOC2ransposable.
+        % DELTAFUN objects are not transposable.
         f = ctranspose(f)
         
         % Indefinite integral of a DELTAFUN.
@@ -209,6 +209,14 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         
         % Test if a DELTAFUN has any NaN values.
         out = isnan(f)
+        
+        function out = isPeriodicTech(f)
+        %ISPERIODICTECH    Test if the smooth part of f is is constructed with a 
+        %basis of periodic functions. 
+        
+            % Calls ISPERIODICTECH on the CLASSICFUN part.
+            out = isPeriodicTech(f.funPart);
+        end
         
         % True for real DELTAFUN.
         out = isreal(f)
@@ -281,6 +289,9 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         
         % DELTAFUN multiplication.
         f = times(f, g)
+        
+        % Transfer delta function at the right end point to the next:
+        [f, g] = transferDeltas(f, g);
         
         % DELTAFUN objects are not transposable.
         f = transpose(f)

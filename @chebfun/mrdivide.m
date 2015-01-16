@@ -17,7 +17,7 @@ if ( isscalar(A) )
             'Division by zero.')
     end
     X = B*(1/A);
-    
+
 elseif ( size(A, 2) ~= size(B, 2) )
     error('CHEBFUN:CHEBFUN:mrdivide:dimensions', ...
         'Matrix dimensions must agree.')

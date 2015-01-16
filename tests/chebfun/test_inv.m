@@ -8,9 +8,9 @@ if ( nargin == 0 )
     pref = chebfunpref();
 end
 
-algoList = {'roots', 'newton', 'bisection'};
+algoList = {'roots', 'newton', 'bisection', 'regulafalsi', 'illinois', 'brent'};
 
-for k = 1:3
+for k = 1:6
     x = chebfun('x');
     f = sin(x);
     g = chebfun(@(x) asin(x), [sin(-1), sin(1)]);
@@ -36,8 +36,7 @@ for k = 1:3
     xx = linspace(f_inv.domain(1), f_inv.domain(end), 20);
     pass(k,4) = norm(f(f_inv(xx)) - xx, inf) < tol;
     pass(k,5) = all(abs(f_inv.domain([1, end]) - exp([-1 1])) < 10*eps);
-end
-    
+end    
 
 % Check that 'monocheck' fails for a non-monotonic function.
 try
@@ -52,6 +51,20 @@ catch ME
         pass(:,6) = false;
     end
 end
+
+% Test the example from the help text:
+x = chebfun('x');
+f = x + .5*abs(x) + .6*sign(x-.5);
+g = inv(f);
+xx = linspace(f.domain(1), f.domain(end), 10);
+pass(:,7) = norm(g(f(xx)) - xx, inf) < 10*vscale(g)*epslevel(g);
+
+% Test the inverse of a decreasing function (see #1098).
+x = chebfun('x');
+f = -sin(x);
+g = inv(f);
+xx = linspace(f.domain(1), f.domain(end), 10);
+pass(:,8) = norm(g(f(xx)) - xx, inf) < 10*vscale(g)*epslevel(g);
 
 end
 

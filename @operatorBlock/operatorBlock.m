@@ -297,7 +297,7 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
             I.diffOrder = 0;
         end
         
-        function F = fred(domain, kernel, varargin)
+        function F = fred(kernel, domain, varargin)
         %FRED   Fredholm integral operator.
         %   F = FRED(K, D) constructs the Fredholm integral operator with kernel
         %   K for functions in domain D=[a,b]:
@@ -346,7 +346,7 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
         % See also OPERATORBLOCK.VOLT.
 
             F = operatorBlock(domain);
-            F.stack = @(z) fred(z, kernel, varargin{:});
+            F.stack = @(z) fred(kernel, z, varargin{:});
             F.diffOrder = 0;
         end        
 
@@ -370,7 +370,7 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
             M.diffOrder = 0;
         end
 
-        function V = volt(domain, kernel, varargin)
+        function V = volt(kernel, domain, varargin)
         %VOLT   Volterra integral operator.
         %   V = VOLT(K, D) constructs the Volterra integral operator with kernel
         %   K for functions in domain D=[a, b]:
@@ -379,7 +379,7 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
         %
         %   The kernel function K(x,y) should be smooth for best results.
         %
-        %   K must be definedz as a function of two inputs X and Y. These may be
+        %   K must be defined as a function of two inputs X and Y. These may be
         %   scalar and vector, or they may be matrices defined by NDGRID to
         %   represent a tensor product of points in DxD.
         %
@@ -388,7 +388,7 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
         %     x = chebfun('x',d);
         %     X = operatorBlock.mult(x);
         %     I = operatorBlock.eye(d);
-        %     V = operatorBlock.volt(d,@(x,y) exp(x-y));
+        %     V = operatorBlock.volt(@(x,y) exp(x-y), d);
         %     A = linop( I - X*V );
         %     u = A \ sin(exp(2*x));
         %     plot(u{1})
@@ -396,7 +396,7 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
         % See also OPERATORBLOCK.FRED.
 
             V = operatorBlock(domain);
-            V.stack = @(z) volt(z, kernel, varargin{:});
+            V.stack = @(z) volt(kernel, z, varargin{:});
             V.diffOrder = 0;
             
         end

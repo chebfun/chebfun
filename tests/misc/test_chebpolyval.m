@@ -4,7 +4,7 @@ if ( nargin == 0 )
     pref = chebfunpref();
 end
 
-% NOTE: Since CHEBPOLYVAL() is basicaly a wrapper to CHEBTECH/FEVAL(), this is
+% NOTE: Since CHEBPOLYVAL() is basically a wrapper to CHEBTECH/FEVAL(), this is
 % just a simple test.
 
 % Init:

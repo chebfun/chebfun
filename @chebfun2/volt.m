@@ -36,7 +36,7 @@ if ( ~domainCheck(cols, v) )
         'Domain of CHEBFUN and CHEBFUN2 kernel do not match.');
 end
 
-RR = D * rows;
+RR = rows * D;
 
 % Cumsum with cols and v:  (This can be sped up.)
 f = chebfun( 0, dom(1:2) );

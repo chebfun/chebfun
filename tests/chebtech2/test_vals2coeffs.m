@@ -15,8 +15,7 @@ pass(1) = (v == c);
 % Some simple data 
 v = (1:5).';
 % Exact coefficients
-cTrue = [0 ; 1 - 1/sqrt(2) ; 0 ; 1 + 1/sqrt(2) ; 3];
-
+cTrue = [ 3; 1 + 1/sqrt(2); 0; 1 - 1/sqrt(2); 0 ];
 %%
 % Test real branch
 c = chebtech2.vals2coeffs(v);

@@ -64,6 +64,12 @@ if ( numOfRows == 1 )
     if ( ~isempty(pdeVarNames) ) % Not a PDE (or we can't do this type yet!)
         pdeflag = true;
         
+        % Are we actually working in PDE mode?
+        assert(strcmpi(guifile.type, 'PDE'), ...
+            'CHEBFUN:CHEBGUI:setupField:incorrectPDEmode', ...
+            ['Problem specified appears to be a PDE. Please ensure you''re' ...
+            'working in the correct mode in Chebgui.'])
+        
         % Check whether we have a match of variable names, i.e. we want u
         % and u_t, not u and v_t:
         if ( (length(allVarNames) > 1) || (length(pdeVarNames) > 1) )
@@ -202,6 +208,12 @@ else % Have a system, go through each row
         allPdeVarNames(strcmp(allPdeVarNames, '|')) = []; % Delete the junk
         pdeVarNames = allPdeVarNames;
     end
+    
+    % Did we have PDE variables but are not actually working in PDE mode?
+    assert( ~( any(pdeflag) && ~strcmpi(guifile.type, 'PDE')), ...
+        'CHEBFUN:CHEBGUI:setupField:incorrectPDEmode', ...
+        ['Problem specified appears to be a PDE. Please ensure that you''re' ...
+        ' working in the correct mode in Chebgui.'])
     
     % If we are solving a BVP or EIG, we now need x as the first argument as
     % well. However, we don't want that variable in allVarString as we use that

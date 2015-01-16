@@ -4,7 +4,7 @@ function [L, S] = quasi2USdiffmat(disc)
 %   differential operator L*u = (C{1}*D^[m] + ... C{m+1}*I)*u.
 %
 %   [L, S] = QUASI2USDIFFMAT(DISC) returns also a matrix representation of the
-%   relevent conversion operator, S.
+%   relevant conversion operator, S.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

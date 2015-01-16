@@ -64,8 +64,8 @@ if ( n < useFFTwhenNisMoreThan )
     C = Tn2*G*Tn1;
 else
     % Use DCT:
-    dct = @(c) flipud(chebtech2.coeffs2vals(flipud(c)));    
-    C = dct(dct(G.').');
+    dct = @(c) chebtech2.coeffs2vals(c);    
+    C = rot90(dct(dct(G.').'), 2);
 end
 % Modify a few entries:
 C(1,:) = .5*C(1,:);
@@ -78,9 +78,6 @@ C = triu(C(:,end:-1:1));
 C = C(:,end:-1:1);  
 
 if ( nargout < 2 )
-    % For consistency with CHEBFUN2:
-    C = rot90(C, 2);
-    
     % No need to go any further!
     return
 end
@@ -96,10 +93,6 @@ else
     V = dct(dct(C.').');    
 end
 
-% For consistency with CHEBFUN2.
-C = rot90(C, 2);
-V = rot90(V, 2); 
-
 if ( nargout < 3 )
     % No need to go any further!
     return
@@ -114,8 +107,3 @@ ynp1 = chebpts(n+1, dom(3:4));
 [X, Y] = meshgrid(xnp1, ynp1);
 
 end
-
-
-
-
-

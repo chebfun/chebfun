@@ -34,6 +34,11 @@ if ( nargout > 1 && ~isa(disc.source, 'linop') )
         'MATRIX() of a %s can only return one output.', class(disc.source))
 end
 
+if ( any(isinf(disc.domain)) )
+    error('CHEBFUN:CHEBDISCRETIZATION:matrix:isinf', ...
+        'Discretization on unbounded domains is not supported.');
+end
+
 % Construct a square representation of each block individually and
 % store in a cell array.
 [A, S] = instantiate(disc);
@@ -43,11 +48,11 @@ end
 if ( isa(disc.source, 'linop') )
     
     % Project rows down, and record the projection matrix as well.
-    [PA, P, PS] = disc.reduce(A, S);
-
+    [PA, P, PS] = reduce(disc, A, S);
+    
     % Get constraints:
     B = getConstraints(disc);
-
+    
     % This should restore squareness to the final matrix.
     M = [ B ; PA ];
 
@@ -61,6 +66,5 @@ else
     end
 
 end
-
 
 end

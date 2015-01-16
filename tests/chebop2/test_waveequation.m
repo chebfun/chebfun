@@ -29,7 +29,7 @@ N.lbc = 0;
 N.rbc = 0;
 N.dbc = @(x,u) [u - 2*sin(x) ; diff(u)];
 u = N \ 0;
-pass(2) = ( norm(u - exact) < tol); 
+pass(2) = ( norm(u - exact) < 2*tol); 
 
 %% An example with a different wave speed. 
 
@@ -40,7 +40,7 @@ N.lbc = 0;
 N.rbc = 0;
 N.dbc = @(x,u) [u - 2*sin(x) ; diff(u)];
 u = N \ 0;
-pass(3) = ( norm(u - exact) < 4*tol); 
+pass(3) = ( norm(u - exact) < 5*tol); 
 
 %% Higher wave speed. 
 

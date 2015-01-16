@@ -25,7 +25,6 @@ function c_cheb = leg2cheb(c_leg, normalize, M)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 [N, n] = size(c_leg);                           % Number of columns.
-c_leg = flipud(c_leg);                          % Lowest order coeffs first.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Initialise  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if ( nargin < 2 ), normalize = 0; end           % Normalize so max(|P{k}|) = 1.
@@ -42,7 +41,10 @@ aM = min(1/log(N/nM0), .5);                     % Block reduction factor (alpha)
 K = ceil(log(N/nM0)/log(1/aM));                 % Number of block partitionss.
 
 % Use direct approach if N is small:
-if ( M == 0 || N < 513 || K == 0 ), c_cheb = leg2cheb_direct(c_leg); return, end
+if ( M == 0 || N < 513 || K == 0 )
+    c_cheb = leg2cheb_direct(c_leg); 
+    return
+end
 
 t = pi*(0:N)'/N;                                % Theta variable.   
 nM = ceil(aM.^(K-1:-1:0)*N);                    % n_M for each block.
@@ -96,7 +98,6 @@ dst1([], 1);                                      % Clear persistent storage.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% Combine for result %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 v_cheb = v_cheb + v_rec;                          % Values on Chebyshev grid.
 c_cheb = idct1(v_cheb);                           % Chebyshev coeffs.
-c_cheb = flipud(c_cheb);
 
 end
 
@@ -120,7 +121,6 @@ for n = 1:N-1                               % Recurrence relation:
 end
 v_cheb = L*c_leg;                           % Values on Chebyshev grid.
 c_cheb = idct1(v_cheb);                     % Chebyshev coefficients.
-c_cheb = flipud(c_cheb);
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

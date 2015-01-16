@@ -9,7 +9,7 @@ function cg = set(cg, propName, val)
 %   'rbc' - right boundary conditions
 %   'bc' - general boundary conditions
 %   'tol' - tolerance
-%   'init' - intial condition/guess for nonlinear BVPs/PDEs
+%   'init' - initial condition/guess for nonlinear BVPs/PDEs
 %   'sigma' - desired eigenvalues: 'LM','SM','LA','SA','LR','SR','LI','SI'
 %   'options' - a structure containing the below
 %       'numeigs' - number of desired eigenvalues
@@ -41,10 +41,6 @@ switch ( lower(propName) )
         if ( ~any(strcmpi(val, {'bvp', 'ivp', 'pde', 'eig'})) )
             error('CHEBFUN:CHEBGUI:set:type',...
                 [val,' is not a valid type of problem.'])
-        elseif ( strcmpi(val, 'ivp') )
-            warning('CHEBFUN:CHEBGUI:set:type',...
-                'Type of problem changed from IVP to BVP');
-            cg.type = 'bvp';
         else
             cg.type = val;
         end
@@ -89,6 +85,8 @@ switch ( lower(propName) )
         cg.options.numeigs = val;
     case 'discretization'
         cg.options.discretization = val;
+    case 'ivpsolver'
+        cg.options.ivpSolver = val;
     otherwise
         error('CHEBFUN:CHEBGUI:set:propName',...
             [propName,' is not a valid chebgui property.'])

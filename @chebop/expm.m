@@ -38,8 +38,10 @@ function varargout = expm(N, t, u0, pref)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Grab a preference if not given one:
+isPrefGiven = 1;
 if ( nargin < 4 )
     pref = cheboppref();
+    isPrefGiven = 0;
 end
 
 % Linearize and check whether the CHEBOP is linear:
@@ -50,6 +52,19 @@ if ( fail )
         ['The operator appears to be nonlinear.\n', ...
          'EXPM() supports only linear CHEBOP instances.']);
 end
+
+% Determine the discretization.
+pref = determineDiscretization(N, L, isPrefGiven, pref);
+
+% Clear boundary conditions if the dicretization uses periodic functions (since
+% if we're using periodic basis functions, the boundary conditions will be
+% satisfied by construction).
+disc = pref.discretization();
+tech = disc.returnTech();
+if ( isPeriodicTech(tech()) )
+    [N, L] = clearPeriodicBCs(N, L);
+end
+
 
 if ( nargin >= 3 )
     % Evaluate the matrix exponential for the given u0:

@@ -84,7 +84,7 @@ end
 % Get the size:
 [n, m] = size(absCoeffs);
 
-xx = n-1:-1:0;
+xx = 0:1:n-1;
 yy = absCoeffs;
 if ( any(doBar) )
     [xx, yy] = padData(xx,yy);
@@ -120,6 +120,14 @@ end
 % Adjust xLim:
 xLim = get(gca, 'xlim');
 set(gca, 'xLim', [min(xLim(1), 0), max(xLim(2), n)])
+
+% Add title and labels
+title(gca, 'Chebyshev coefficients')
+xlabel(gca, 'Degree of Chebyshev polynomial')
+ylabel(gca, 'Magnitude of coefficient')
+
+% By default, set grid on
+grid(gca, 'on')
 
 % Give an output if one was requested:
 if ( nargout > 0 )

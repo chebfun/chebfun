@@ -11,23 +11,23 @@ function [out1, out2] = length(F)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 
-if ( isempty( F ) ) 
+if ( isempty(F) ) 
     out1 = []; 
     out2 = []; 
     return
 end
 
-if ( iszero( F ) ) 
-    out1 = 0; 
-    out2 = 0;
+if ( iszero(F) ) 
+    out1 = 1; 
+    out2 = 1;
     return
 end
 
 if ( nargout <= 1 )
-    out1 = length( F.pivotValues );
+    out1 = length(F.pivotValues);
 else
-    out1 = length( F.rows );
-    out2 = length( F.cols );
+    out1 = length(F.rows);
+    out2 = length(F.cols);
 end
 
 end

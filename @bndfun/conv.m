@@ -104,7 +104,7 @@ numPatches = floor((d - c) / (b - a));       % Number of patches required
 x = chebpts(N, [b+c, a+d], 1);               % Chebyshev grid for interior piece
 y = 0*x;                                     % Initialise values in interior
 map = @(x, a, b) (x-a)/(b-a) - (b-x)/(b-a);  % Map from [a, b] --> [-1, 1]
-f_leg = cheb2leg(get(f, 'coeffs')); % Legendre coefficients of f
+f_leg = cheb2leg(get(f, 'coeffs'));  % Legendre coefficients of f
 
 if ( numPatches > 100 )
     error('CHEBFUN:BNDFUN:conv:tooManyPatches', ...
@@ -129,13 +129,13 @@ for k = 1:numPatches
     dk_right = b + dk(2); %  dkl  dkm   dkr
     gk = g_restricted{k};                          % g on this subdomain
     gk = simplify(gk);                             % Simplify for efficiency
-    gk_leg = cheb2leg(get(gk, 'coeffs'));          % Legendre coefficients
+    gk_leg = cheb2leg(get(gk, 'coeffs'));  % Legendre coefficients
     [hLegL, hLegR] = easyConv(f_leg, gk_leg);      % Convolution on this domain
     
     % The left triangle for the kth patch:
     ind = (dk_left <= x) & (x < dk_mid); % Locate the grid values in [dkl, dkr]:
     if ( k == 1 ) % First piece:
-        hLegL = leg2cheb(flipud(hLegL));           % Cheb. coeffs of left tri.
+        hLegL = leg2cheb(hLegL);           % Cheb. coeffs of left tri.
         data.domain = [dk_left, dk_mid];
         h_left = bndfun({[], hLegL}, data);        % Make BNDFUN from coeffs
     else          % Subsequent left pieces
@@ -156,7 +156,7 @@ end
 
 if ( abs((b-a)-(d-c)) < 10*eps(norm([a b c d], inf)) )
     % If there's only one patch, then we already have all the information reqd.
-    hLegR = leg2cheb(flipud(hLegR));       % Cheb coeffs of right tri.
+    hLegR = leg2cheb(hLegR);       % Cheb coeffs of right tri.
     data.domain = d + [a b];
     h_right = bndfun({[], hLegR}, data);   % Make BNDFUN from coeffs
     h_mid = bndfun();
@@ -175,7 +175,7 @@ else
     gk = simplify(gk);                              % Simplify for efficiency
     gk_leg = cheb2leg(get(gk, 'coeffs'));           % Legendre coeffs
     [hLegL, hLegR] = easyConv(f_leg, gk_leg);       % Conv on A and B
-    hLegR = leg2cheb(flipud(hLegR));                % Cheb coeffs on A
+    hLegR = leg2cheb(hLegR);                % Cheb coeffs on A
     data.domain = [d+a, d+b];
     h_right = bndfun({[], hLegR}, data);            % Make BNDFUN from coeffs
     
@@ -190,18 +190,23 @@ else
         y(ind) = tmp;                        % Store
         
         % C: 
-        fk = restrict(f, b + [-remainderWidth, 0]);     % Restrict f
+        domfk = b + [-remainderWidth, 0];               % Domain of fk
+        domfk(1) = max(domfk(1), f.domain(1));          % Ensure domfk is a
+        domfk(end) = min(domfk(end), f.domain(end));    %  valid subdomain
+        fk = restrict(f, domfk);                        % Restrict f
         fk = simplify(fk);                              % Simplify f
-        fk_leg = cheb2leg(get(fk, 'coeffs'));           % Legendre coeffs
-        gk = restrict(g, [finishLocation, d + a] - b);  % Restrict g
+        fk_leg = cheb2leg(get(fk, 'coeffs'));   % Legendre coeffs
+        domgk = [finishLocation, d + a] - b;            % Domain of gk
+        domgk(1) = max(domgk(1), g.domain(1));          % Ensure domgk is a
+        domgk(end) = min(domgk(end), g.domain(end));    %  valid subdomain
+        gk = restrict(g, domgk);                        % Restrict g
         gk = simplify(gk);                              % Simplify g
-        gk_leg = cheb2leg(get(gk, 'coeffs'));           % Legendre coeffs
+        gk_leg = cheb2leg(get(gk, 'coeffs'));   % Legendre coeffs
         [ignored, hLegR] = easyConv(fk_leg, gk_leg);    % Conv 
         z = map(x(ind), finishLocation, d + a);         % Map to [-1, 1]
         tmp = clenshawLegendre(z, hLegR);               % Eval via recurrence
         y(ind) = y(ind) + tmp*remainderWidth/(b - a);   % Scale and append
     end
-    
     % Convert values to coeffs (we don't want to construct a chebtech1)
     y = chebtech1.vals2coeffs(y);
     % Construct BNDFUN of the interior (rectangle) using coefficients:
@@ -215,6 +220,33 @@ if ( isempty(h_mid) )
     h = {h_left*(b-a)/2, h_right*(b-a)/2};
 else    
     h = {h_left*(b-a)/2, h_mid*(b-a)/2, h_right*(b-a)/2};
+end
+
+% Ensure endpoints of BNDFUNs for adjacent subintervals match exactly.
+%
+% NB:  This is a bit inefficient if consecutive endpoints get adjusted, as some
+% BNDFUNs may have their maps changed twice, but the map-change operation is
+% fast enough that this shouldn't matter.
+for (n = 2:1:numel(h))
+    end_left = h{n-1}.domain(end);
+    end_right = h{n}.domain(1);
+    if ( end_left ~= end_right )
+        hs_left = norm(h{n-1}.domain, Inf);  % hscale for left piece.
+        hs_right = norm(h{n}.domain, Inf);   % hscale for right piece.
+
+        % If there's a mismatch, it should be small because the BNDFUNs should
+        % come out in order corresponding to consecutive adjacent subintervals.
+        if ( abs(end_left - end_right) < 2*eps*max(hs_left, hs_right) )
+            new_end = (end_left + end_right)/2;
+            h{n-1} = changeMap(h{n-1}, [h{n-1}.domain(1) new_end]);
+            h{n} = changeMap(h{n}, [new_end h{n}.domain(end)]);
+        else
+            % We should only get here if a programmer error made elsewhere
+            % causes the BNDFUNs to get out of order.
+            error('CHEBFUN:BNDFUN:conv:nonConsecutive', ...
+                'Pieces do not belong to consecutive subintervals.');
+        end
+    end
 end
 
 end
@@ -232,10 +264,6 @@ if ( length(beta) > length(alpha) )
     alpha = beta;
     beta = tmp;
 end
-
-% Flip, as per convention:
-alpha = flipud(alpha);
-beta = flipud(beta);
 
 % Maximum degree of result:
 MN = length(alpha) + length(beta);

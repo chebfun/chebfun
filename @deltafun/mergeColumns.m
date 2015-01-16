@@ -30,9 +30,16 @@ for k = 2:m
     
     % If two entries are equal to zero:
     p = ( v(j) == 0 && v(j-1) == 0 );
+    % Or if one of them is zero and the other close to zero or if both are close
+    % to zero:
+    if ( all(abs(v(j-1:j)) < 10*eps ) )
+        p = p | true;
+    end
+        
     % Or if they are very close:
     vcMax = max(abs([v(j), v(j-1)]));
     p = p | ( abs((v(j)-v(j-1)))/vcMax < tol );
+    
     
     % If there is a duplicate:
     if ( p )

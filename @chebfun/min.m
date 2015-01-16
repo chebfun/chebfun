@@ -20,7 +20,7 @@ function [y, x] = min(f, flag, dim)
 %
 %   MAX(F, [], DIM) computes the maximum of the CHEBFUN F in the dimension DIM.
 %   If DIM = 1 and F is a column CHEBFUN or DIM = 2 and F is a row CHEBFUN, this
-%   is equivalent to MAX(F). Othewise, MAX(F, [], DIM) returns a CHEBFUN which
+%   is equivalent to MAX(F). Otherwise, MAX(F, [], DIM) returns a CHEBFUN which
 %   is the maximum across the discrete dimension of F. For example, if F is a
 %   quasimatrix with two columns, MAX(F, [], 2) = MAX(F(:,1), F(:,2)).
 %

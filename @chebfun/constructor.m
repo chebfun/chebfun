@@ -111,9 +111,15 @@ for k = 1:numIntervals
 
     % Warn if unhappy (as we're unable to split the domain to improve):
     if ( ~ishappy && ~warningThrown )
+        if ( strcmpi(func2str(pref.tech), 'trigtech') )
+            str = 'a non-trig representation';
+        else
+            str = '''splitting on''';
+        end
+            
         warning('CHEBFUN:CHEBFUN:constructor:notResolved', ...
             ['Function not resolved using %d pts.', ...
-            ' Have you tried ''splitting on''?'], pref.techPrefs.maxLength);
+            ' Have you tried ' str, '?'], pref.techPrefs.maxLength);
         warningThrown = true;
     end
 end
@@ -200,7 +206,7 @@ while ( any(sad) )
     end
 
     % Look for an edge:
-    edge = fun.detectEdge(funs{k}, op, data.hscale, data.vscale, pref);
+    edge = fun.detectEdge(funs{k}, opk, data.hscale, data.vscale, pref);
 
     if ( singDetect )
         % Update singularity info:

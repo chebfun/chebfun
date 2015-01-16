@@ -111,8 +111,7 @@ switch method
             L1 = (2-1/k)*x.*L1 - (1-1/k)*L0;
             L0 = tmp;
         end
-        C = chebtech2.vals2coeffs(P(:,cc));       % Convert to coefficients
-    
+        C = chebtech2.vals2coeffs(P(:,cc));       % Convert to coefficients          
     case 2 % QR
 
         pts = 2*nMax1;              % Expand on Chebyshev grid of twice the size
@@ -129,16 +128,16 @@ switch method
             PP = P(:,n+1) * diag(1./P(end,n+1));
         end
         C = chebtech2.vals2coeffs(PP);            % Convert to coefficients
-        C(1:nMax1,:) = [];                        % Trim coefficients > nMax+1
+        C(nMax1+1:end,:) = [];                    % Trim coefficients > nMax
         
     case 3 % LEG2CHEB
         
         c_leg = zeros(nMax+1, numel(n));
         c_leg(n+1,:) = eye(numel(n));             % Legendre coefficients          
         if ( normalize )
-            C = leg2cheb(flipud(c_leg), 'norm');  % Chebyshev coefficients
+            C = leg2cheb(c_leg, 'norm');  % Chebyshev coefficients
         else
-            C = leg2cheb(flipud(c_leg));          % Chebyshev coefficients
+            C = leg2cheb(c_leg);          % Chebyshev coefficients
         end
     
 end

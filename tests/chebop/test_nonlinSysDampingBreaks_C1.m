@@ -14,8 +14,8 @@ d = [-pi 0 pi];
 x = chebfun('x',d);
 f = [ 0*x ; 0*x ];
 
-%% COLLOC1
-pref.discretization = @colloc1;
+%% CHEBCOLLOC1
+pref.discretization = @chebcolloc1;
 
 A = chebop(@(x,u,v) [u - diff(v,2); diff(u,2) + cos(v)], d);
 A.lbc = @(u,v) [u-1/2; v+1/4];

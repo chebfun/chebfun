@@ -33,7 +33,7 @@ else
         case 'sup'
             ignoreBreaks = 0;   % Don't ignore break point values.
         otherwise
-            error( 'CHEBFUN:CHEBUN:vscale:unknownFlag', 'unknown flag passed.' )
+            error( 'CHEBFUN:CHEBFUN:vscale:unknownFlag', 'unknown flag passed.' )
     end
 end
             

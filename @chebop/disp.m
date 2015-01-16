@@ -69,7 +69,8 @@ else
         elseif ( isnumeric(A.rbc) )
             fprintf('      %s\n', num2str(A.rbc));
         else
-            fprintf('      %s = 0\n', func2str(A.rbc));
+            str = stripHandle(func2str(A.rbc));
+            fprintf('      %s = 0\n', str);
         end
         if ( loose )
             fprintf('\n')

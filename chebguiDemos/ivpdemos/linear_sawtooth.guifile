@@ -1,0 +1,8 @@
+'Linear Sawtooth'
+'scalar'
+domain = '[0 8]';
+DE = 'u'' = sign(sin(x^2)) - u/2';
+BC = 'u(0) = 0';
+init = ''; tol = '1e-10';
+damping = '1'; plotting = '0.1';
+type = 'ivp';

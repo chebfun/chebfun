@@ -163,6 +163,53 @@ gExact = op(x);
 err = gVals - gExact;
 pass(23) = norm(err, inf) < 1e1*max(get(g,'epslevel').*get(g,'vscale'));
 
+% Some tests which make sure MTIMES behaves correctly regarding the dimensions
+% of its inputs.
+f = chebfun(@sin);
+A = chebfun(@(x) [sin(x) cos(x) exp(x)]);
+Q = cheb2quasi(A);
+
+pass(24) = isequal(size(f'*f), [1 1]);
+pass(25) = isequal(size(f*f'), [Inf Inf]);
+pass(26) = isequal(size(f*[1 2]), [Inf 2]);
+pass(27) = isequal(size([1 ; 2]*f'), [2 Inf]);
+pass(28) = isequal(size(A'*A), [3 3]);
+pass(29) = isequal(size(A*A'), [Inf Inf]);
+pass(30) = isequal(size(f'*A), [1 3]);
+pass(31) = isequal(size(A'*f), [3 1]);
+pass(32) = isequal(size(A*ones(3, 2)), [Inf 2]);
+pass(33) = isequal(size(A*ones(3, 3)), [Inf 3]);
+pass(34) = isequal(size(A*ones(3, 4)), [Inf 4]);
+pass(35) = isequal(size(ones(2, 3)*A'), [2 Inf]);
+pass(36) = isequal(size(ones(3, 3)*A'), [3 Inf]);
+pass(37) = isequal(size(ones(4, 3)*A'), [4 Inf]);
+pass(38) = isequal(size(Q'*Q), [3 3]);
+pass(39) = isequal(size(Q*Q'), [Inf Inf]);
+pass(40) = isequal(size(f'*Q), [1 3]);
+pass(41) = isequal(size(Q'*f), [3 1]);
+pass(42) = isequal(size(Q*ones(3, 2)), [Inf 2]);
+pass(43) = isequal(size(Q*ones(3, 3)), [Inf 3]);
+pass(44) = isequal(size(Q*ones(3, 4)), [Inf 4]);
+pass(45) = isequal(size(ones(2, 3)*Q'), [2 Inf]);
+pass(46) = isequal(size(ones(3, 3)*Q'), [3 Inf]);
+pass(47) = isequal(size(ones(4, 3)*Q'), [4 Inf]);
+pass(48) = causesDimensionError(@() ones(3, 2)*A);
+pass(49) = causesDimensionError(@() ones(3, 3)*A);
+pass(50) = causesDimensionError(@() ones(3, 4)*A);
+pass(51) = causesDimensionError(@() A'*ones(2, 3));
+pass(52) = causesDimensionError(@() A'*ones(3, 3));
+pass(53) = causesDimensionError(@() A'*ones(4, 3));
+pass(54) = causesDimensionError(@() ones(3, 2)*Q);
+pass(55) = causesDimensionError(@() ones(3, 3)*Q);
+pass(56) = causesDimensionError(@() ones(3, 4)*Q);
+pass(57) = causesDimensionError(@() Q'*ones(2, 3));
+pass(58) = causesDimensionError(@() Q'*ones(3, 3));
+pass(59) = causesDimensionError(@() Q'*ones(4, 3));
+pass(60) = causesDimensionError(@() A*A);
+pass(61) = causesDimensionError(@() A'*A');
+pass(62) = causesDimensionError(@() Q*Q);
+pass(63) = causesDimensionError(@() Q'*Q');
+
 end
 
 % Test the multiplication of a chebfun F, specified by F_OP, by a scalar ALPHA
@@ -174,4 +221,13 @@ function result = test_mult_function_by_scalar(f, f_op, alpha, x)
     g_exact = @(x) f_op(x) * alpha;
     err = feval(g1, x) - g_exact(x);
     result(2) = norm(err(:), inf) < 10*max(vscale(g1).*epslevel(g1));
+end
+
+function result = causesDimensionError(op)
+    try
+        op();
+        result = false;
+    catch ME
+        result = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:mtimes:dims');
+    end
 end

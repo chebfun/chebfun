@@ -124,6 +124,15 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         end
         
     end
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% HIDDEN METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Hidden = true, Static = false )
+        
+        % Convert the entries of a CHEBMATRIX to another TECH.
+        A = changeTech(A, newtech);
+        
+    end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% METHODS IMPLEMENTED IN THIS FILE:
@@ -198,6 +207,16 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             end
             A.blocks = transpose(A.blocks);
         end
+        
+        function l = length(A)
+            %LENGTH    Length of a CHEBMATRIX
+            %
+            % LENGTH(A) returns the length of the CHEBMATRIX A. It is equivalent
+            % to MAX(SIZE(A)) for non-empty CHEBMATRIX objects and 0 for empty 
+            % ones.
+            l = max(size(A));
+        end
+   
         
         function varargout = loglog(A, varargin)
         %LOGLOG   Log-log plot of a CHEBMATRIX.

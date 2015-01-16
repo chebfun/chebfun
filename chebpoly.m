@@ -55,7 +55,7 @@ end
 N = max(n)+1;
 c = zeros(N, numel(n));
 for k = 1:numel(n)
-    c(N-n(k), k) = 1;
+    c(n(k)+1, k) = 1;
 end
 
 % Construct a CHEBFUN from the coefficients:

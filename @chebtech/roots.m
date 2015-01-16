@@ -33,7 +33,7 @@ function out = roots(f, varargin)
 %
 %   ZEROFUN:
 %        0  - Return empty if F is identically 0.
-%       [1] - Return a root at x = 0 if F is idnetically 0.
+%       [1] - Return a root at x = 0 if F is identically 0.
 %
 %   If F is an array-valued CHEBTECH then there is no reason to expect each
 %   column to have the same number of roots. In order to return a useful output,
@@ -173,7 +173,7 @@ if ( length(f) == 1 )
 end
 
 % Get scaled coefficients for the recursive call:
-c = flipud(f.coeffs)/f.vscale;
+c = f.coeffs/f.vscale;
 
 % Call the recursive rootsunit function:
 r = rootsunit_coeffs(c, 100*eps*max(f.hscale, 1));
@@ -349,15 +349,13 @@ end
             
             % Evaluate the polynomial on both intervals:
             v = chebtech.clenshaw([ chebptsAB(n, [ -1, splitPoint ]) ; ...
-                chebptsAB(n, [ splitPoint, 1 ]) ], c(end:-1:1));
+                chebptsAB(n, [ splitPoint, 1 ]) ], c);
 
             % Get the coefficients on the left:
-            cleft = chebtech2.vals2coeffs(v(1:n));
-            cleft = cleft(end:-1:1);
+            cleft = chebtech2.vals2coeffs(v(1:n));            
 
             % Get the coefficients on the right:
-            cright = chebtech2.vals2coeffs(v(n+1:end));
-            cright = cright(end:-1:1);
+            cright = chebtech2.vals2coeffs(v(n+1:end));           
 
             % Recurse:
             r = [ (splitPoint - 1)/2 + (splitPoint + 1)/2*rootsunit_coeffs(cleft, 2*htol) ;

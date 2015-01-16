@@ -23,7 +23,7 @@ periodic = expInfo.periodic;
 useLatest = expInfo.useLatest;
 
 % Print commands for problem set-up:
-fprintf(fid, '\n%%%% Problem set-up');
+fprintf(fid, '\n%%%% Problem set-up.');
 fprintf(fid, '\n%% Define the domain.\n');
 fprintf(fid, 'dom = %s;\n', dom);
 fprintf(fid, ['\n%% Assign the differential equation to a chebop on that ' ...
@@ -38,7 +38,7 @@ fprintf(fid, ['\n%% Set up the rhs of the differential equation so that ' ...
 if ( size(deInput, 1) > 1 )
     deRHSprint = '[';
     for counter = 1:size(deInput,1)
-        deRHSprint = [deRHSprint num2str(0) ',']; %#ok<AGROW>
+        deRHSprint = [deRHSprint num2str(0) ';']; %#ok<AGROW>
     end
     deRHSprint(end) = []; % Remove the last comma
     deRHSprint = [deRHSprint, ']'];
@@ -83,7 +83,7 @@ elseif ( ~isempty(initInput{1}) )
         fprintf(fid, 'N.init = %s;\n', guessInput);
         
     else
-        % To deal with 'u = ...' etc in intial guesses
+        % To deal with 'u = ...' etc in initial guesses
         order = [];
         guesses = [];
         inits = [];

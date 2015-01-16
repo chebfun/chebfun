@@ -14,8 +14,8 @@ function varargout = plotcoeffs(f, varargin)
 %   The final entry is that of the epslevel plot.
 %
 %   What 'coefficients' means in this context is dictated by the 'tech' that is
-%   being used to represent F. See the PLOTCOEFFS method at the relevent tech 
-%   levelfor more details. Note that you can find what tech is being used by 
+%   being used to represent F. See the PLOTCOEFFS method at the relevant tech
+%   level for more details. Note that you can find what tech is being used by
 %   calling GET(F, 'tech').
 %
 % See also CHEBFUN/PLOT.

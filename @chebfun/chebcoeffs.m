@@ -1,17 +1,18 @@
 function out = chebcoeffs(f, varargin)
 %CHEBCOEFFS   Chebyshev polynomial coefficients of a CHEBFUN.
-%   A = CHEBCOEFFS(F, N) returns the first N Chebyshev coefficients of F, i.e.,
-%   the row vector such that F = ... + A(1) T_N(x) + ... + A(N) T_1(x) +
-%   A(N+1) T_0(x), where T_M(x) denotes the M-th Chebyshev polynomial.
+%   A = CHEBCOEFFS(F, N) returns the first N Chebyshev coefficients of F ib
+%   the column vector A such that F = A(1) T_0(x) +  A(2) T_1(x) + ... + 
+%   A(N) T_(N-1)(x), where T_M(x) denotes the M-th Chebyshev polynomial of the
+%   first kind.
 %
 %   If F is a smooth CHEBFUN (i.e., with no breakpoints), then CHEBCOEFFS(F) is
 %   equivalent to CHEBCOEFFS(F, LENGTH(F)).
 %
-%   If F is array-valued with M columns, then A is an MxN matrix.
+%   If F is array-valued with M columns, then A is an NxM matrix.
 %
-%   C = CHEBCOEFFS(F, N, 'kind', 2) returns the vector of coefficients for the
-%   Chebyshev expansion of F in 2nd-kind Chebyshev polynomials F = ... + C(1)
-%   U_N(x) + ... + C(N) U_1(x) + C(N+1) U_0(x).
+%   C = CHEBCOEFFS(F, N, 'kind', 2) returns the vector of coefficients of F
+%   such that F = C(1) + C(2) U_1(x) + ... + C(N) U_(N-1)(x), where U_M(x)
+%   denotes the M-th Chebyshev polynomial of the second kind.
 %
 % See also LEGCOEFFS, FOURCOEFFS.
 
@@ -28,6 +29,11 @@ if ( numel(f) > 1 )
     % TODO: Why not?
     error('CHEBFUN:CHEBFUN:chebcoeffs:quasia', ...
         'CHEBCOEFFS does not support quasimatrices.');
+end
+
+%% Make sure F is a Chebyshev expansion:
+if ( isPeriodicTech(f) )
+    f = chebfun(f);
 end
 
 %% Initialise:
@@ -67,6 +73,21 @@ if ( any(isinf(f.domain)) )
         'Infinite intervals are not supported here.');
 end
 
+%%
+% We compute 2nd-kind coefficients by computing the 1st-kind coefficients and
+% using a recurrence relation.  The recurrence for the coefficient of U_n
+% requires the coefficients of T_n and T_{n + 2}, so we need to compute two
+% extra 1st-kind coefficients if 2nd-kind coefficients have been requested.
+%
+% TODO:  This is OK for smooth functions but will be expensive for
+% piecewise-smooth ones, which require integrals.  If the function is only
+% piecewise smooth, we should compute the exactly N inner products for the
+% second-kind coefficients directly.
+if ( kind == 2 )
+    N = N + 2;
+end
+
+% Try to merge out breakpoints if possible, since integrals are expensive:
 if ( numFuns ~= 1 )
     f = merge(f);
     numFuns = numel(f.funs);
@@ -76,7 +97,7 @@ end
 if ( numFuns == 1 )
     
     % CHEBCOEFFS() of a smooth piece:
-    out = chebcoeffs(f.funs{1}, N).';    
+    out = chebcoeffs(f.funs{1}, N);    
     
 else
     % CHEBCOEFFS() of a piecewise smooth CHEBFUN:
@@ -86,24 +107,25 @@ else
     x = chebfun('x', d);
     w = 1./sqrt((x - d(1)).*(d(2) - x));
     numCols = numColumns(f);
-    out = zeros(numCols, N);
+    out = zeros(N, numCols);
     f = mat2cell(f);
     for j = 1:numCols
         for k = 1:N
             T = chebpoly(k-1, d);
             I = (f{j}.*T).*w;
-            out(j, N-k+1) = 2*sum(I)/pi;
+            out(k,j) = 2*sum(I)/pi;
         end
     end
-    out(:,N) = out(:,N)/2;
+    out(1,:) = out(1,:)/2;
     
 end
 
-% Return 2nd-kind coefficients:
-if ( (kind == 2) && (numel(out) > 1) )
-    out(:,end) = 2*out(:,end);
-    % Recurrence relation / conversion matrix:
-    out = .5*[out(:,1:2), out(:,3:end) - out(:,1:end-2)];
+% Compute 2nd-kind coefficients from 1st-kind ones using the recurrence
+%   T_n(x) = (1/2)*(U_n(x) - U_{n - 2}(x)):
+if ( kind == 2 )
+    out(1,:) = 2*out(1,:);
+    out = 0.5*[out(1:end-2,:) - out(3:end,:) ; out(end-1:end,:)];
+    out = out(1:end-2,:);
 end
 
 end

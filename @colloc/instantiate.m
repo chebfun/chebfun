@@ -43,7 +43,7 @@ function A = instantiateOne(disc, item)
 
 if ( isa(item, 'linBlock') )
     disc.source = item;
-    A = disc.source.stack( disc );
+    A = disc.source.stack(disc);
 elseif ( isa(item, 'chebfun') )
     A = disc.toValues(item);
 elseif ( isnumeric(item) )
