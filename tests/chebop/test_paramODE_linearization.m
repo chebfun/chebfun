@@ -1,59 +1,91 @@
+function pass = test_paramODE_linearization
+% TEST_PARAMODE_LINEARIZATION    Test that we can correctly linearize and solve
+% problems where unknown parameters appear in the boundary conditions.
+tol = 1e-10;
 %% Simplest problem
-A = chebop(@(x,u,c) u, [-1 1], @(x,u,c) u(0)-c);
+dom = [-1 1];
+x = chebfun(@(x) x, dom);
+A = chebop(@(x,u,c) diff(u), dom);
+A.bc = @(x,u,c) [u(-1); u(0)- c];
 f = chebfun(@exp);
-u = A \ [f; 0];
+[u, c] = deal(A \ f);
+err = norm(A(u,c) - f) + norm(A.bc(x,u,c));
+pass(1,1) = err < tol;
+pass(2,1) = isa(u, 'chebfun') && isnumeric(c);
 
-%% Slightly more complicated
-op = @(x,u,p) diff(u,2) + u;
+%% Same as above, but impose LBC as well
+A = chebop(@(x,u,c) diff(u), dom);
+A.bc = @(x,u,c) u(0)- c;
+A.lbc = @(u,c) u;
+[u, c] = deal(A \ f);
+err = norm(A(u,c) - f) + norm(A.bc(x,u,c)) + norm(feval(A.lbc(u,c),-1));
+pass(1,2) = err < tol;
+pass(2,2) = isa(u, 'chebfun') && isnumeric(c);
+%% Second order problem
+dom = [0 1];
+x = chebfun(@(x) x, dom);
+op = @(x,u,p) diff(u,2) + u + p;
 bc = @(x,u,p) [ u(0)
                 u(1) - 2
-                feval(diff(u), 0) - p ];
-A = chebop(op, [0 1], bc);
-sol = A\0
+                feval(diff(u),0) - p ];
+A = chebop(op, dom, bc);
+[u,p] = deal(A\0);
+err = norm(A(u,p)) + norm(A.bc(x,u,p));
+pass(1,3) = err < tol;
+pass(2,3) = isa(u, 'chebfun') && isnumeric(p);
+
+
+%% Original, with LBC and RBC
+op = @(x,u,p) diff(u,2) + u + p;
+lbc = @(u,p) [u; diff(u) - p];
+rbc = @(u,p) u-2;
+A = chebop(op, [0 1]);
+A.lbc = lbc;
+A.rbc = rbc;
+[u, p] = deal(A \ 0);
+err = norm(A(u,p)) + norm(feval(A.lbc(u,p), 0)) + norm(feval(A.rbc(u,p), 1));
+pass(1,4) = err < tol;
+pass(2,4) = isa(u, 'chebfun') && isnumeric(p);
 
 %% Pass an initial guess to the problem above
 op = @(x,u,p) diff(u,2) + u;
 bc = @(x,u,p) [ u(0)
                 u(1) - 2
-                feval(diff(lam),0) - p ];
+                feval(diff(u),0) - p ];
 
-x = chebfun('x', [0 1])
+x = chebfun(@(x) x, [0 1]);
 init = [0*x; 0];
 
 A = chebop(op, [0 1], bc, init);
-sol = A\0
+[u,p] = deal(A\0);
+err = norm(A(u,p)) + norm(A.bc(x,u,p));
+pass(1,5) = err < tol;
+pass(2,5) = isa(u, 'chebfun') && isnumeric(p);
 
-%% Example 1 (fine)
-L = chebop(@(t,x,p) diff(x)-1,[-1 1]);
-L.lbc = @(x,p) x;
-L.rbc = @(x,p) x-p;
-X = L\0;
-[x, p] = deal(X);
-plot(x)
-p
-% Clearly, the solution is p=2 and x(t) is a straight line from (-1,0) to (1,2).
-% So far, Chebfun works fine. But now we try the same problem but using .bc
-% syntax:
-%% Example 2 (not working)
-L = chebop(@(t,x,p) diff(x)-1,[-1 1]);
-L.bc = @(t,x,p) [x(-1);x(1)-p];
-X = L\0;
-[x, p] = deal(X);
-plot(x)
-p
-% Chebfun fails with a complicated error message, which I do not understand.
-% However, if I slightly %change the problem so that the parameter p appears in
-% the operator (replace -1 by -p in the first line) and in turn removing the p
-% from the bc (replace -p by -2 in the second line), then Chebfun again works
-% fine and gives the same x(t) and p=1 as expected:
-%% Example 3 (fine)
-L = chebop(@(t,x,p) diff(x)-p,[-1 1]);
-L.bc = @(t,x,p) [x(-1);x(1)-2];
-X = L\0;
-[x, p] = deal(X);
-plot(x)
-p
 
-%% If we get all the way here without errors, we're happy
-% (Will do more proper pass checking once code's closer to working)
-pass = 1 
+%% Example 1 from Github issue
+L = chebop(@(x,u,p) diff(u)-1, [-1 1]);
+L.lbc = @(u,p) u;
+L.rbc = @(u,p) u-p;
+[u, p] = deal(L\0);
+err = norm(L(u,p)) + norm(feval(L.lbc(u,p), -1)) + norm(feval(L.rbc(u,p), 1));
+pass(1,6) = err < tol;
+pass(2,6) = isa(u, 'chebfun') && isnumeric(p);
+
+%% Example 2 from Github issue
+L = chebop(@(x,u,p) diff(u)-1,[-1 1]);
+L.bc = @(x,u,p) [u(-1);u(1)-p];
+[u, p] = deal(L\0);
+x = chebfun(@(x) x);
+err = norm(L(u,p)) + norm(L.bc(x,u,p));
+pass(1,7) = err < tol;
+pass(2,7) = isa(u, 'chebfun') && isnumeric(p);
+%% Example 3 from Github issue
+L = chebop(@(x,u,p) diff(u)-p,[-1 1]);
+L.bc = @(x,u,p) [u(-1);u(1)-2];
+[u, p] = deal(L\0);
+err = norm(L(u,p)) + norm(L.bc(x,u,p));
+pass(1,8) = err < tol;
+pass(2,8) = isa(u, 'chebfun') && isnumeric(p);
+
+end
