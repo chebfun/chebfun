@@ -67,17 +67,11 @@ if ( issing(f) )
 end
 
 % Parse the inputs.
-[m, n, N, rationalMode, opts] = parseInputs(f, varargin{:});
-
-isPeriodic = 0;
-% Check for periodicity:
-if ( isPeriodicTech(f) )
-    isPeriodic = 1;
-end
+[m, n, N, rationalMode, trigMode, opts] = parseInputs(f, varargin{:});
 
 % With zero denominator degree, the denominator polynomial is trivial.
 if ( n == 0 )
-    if ( isPeriodic )
+    if ( trigMode )
         q = chebfun(1, dom, 'trig');
     else
         q = chebfun(1, dom);
@@ -92,7 +86,7 @@ deltamin = inf; % Minimum error encountered.
 diffx = 1;      % Maximum correction to trial reference.
 
 % Compute an initial reference set to start the algorithm.
-xk = getInitialReference(f, m, n, N);
+xk = getInitialReference(f, m, n, N, trigMode);
 xo = xk;
 
 % Print header for text output display if requested.
@@ -103,7 +97,7 @@ end
 % Run the main algorithm.
 while ( (delta/normf > opts.tol) && (iter < opts.maxIter) && (diffx > 0) )
     fk = feval(f, xk);     % Evaluate on the exchange set.
-    if ( isPeriodic )       
+    if ( trigMode )       
         w = trigBaryWeights(xk);
     else        
         w = baryWeights(xk);   % Barycentric weights for exchange set.
@@ -111,7 +105,7 @@ while ( (delta/normf > opts.tol) && (iter < opts.maxIter) && (diffx > 0) )
 
     % Compute trial function and levelled reference error.
     if ( n == 0 )
-        [p, h] = computeTrialFunctionPolynomial(fk, xk, w, m, N, dom, isPeriodic);
+        [p, h] = computeTrialFunctionPolynomial(fk, xk, w, m, N, dom, trigMode);
     else
         [p, q, h] = computeTrialFunctionRational(fk, xk, w, m, n, N, dom);
     end
@@ -190,27 +184,27 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Input parsing.
 
-function [m, n, N, rationalMode, opts] = parseInputs(f, varargin)
+function [m, n, N, rationalMode, trigMode, opts] = parseInputs(f, varargin)
 
 % Detect polynomial / rational approximation type and parse degrees.
-if ( ~mod(nargin, 2) ) % Even number of inputs --> polynomial case.
-    m = varargin{1};
-    n = 0;
-    rationalMode = false;
-    varargin = varargin(2:end);
-else                   % Odd number of inputs --> rational case.
-    [m, n] = adjustDegreesForSymmetries(f, varargin{1}, varargin{2});
-    rationalMode = true;
-    varargin = varargin(3:end);
-end
-if ( isPeriodicTech(f) )
-    % Use Remez for periodic functions:
-    N = 2*m;
-    % No support for rational trigonometric yet.
-    n = 0;
+m = varargin{1};
+varargin(1) = [];
+
+if ( ~isempty(varargin) && isnumeric(varargin{1}) )
+    n = varargin{1};
+    varargin(1) = [];
 else
-    N = m + n;
+    n = 0;
 end
+    
+if ( n == 0 )
+    rationalMode = false;
+else
+    rationalMode = true;
+    [m, n] = adjustDegreesForSymmetries(f, m, n);
+end
+
+N = m + n;
 
 % Parse name-value option pairs.
 opts.tol = 1e-16*(N^2 + 10); % Relative tolerance for deciding convergence.
@@ -218,8 +212,13 @@ opts.maxIter = 60;           % Maximum number of allowable iterations.
 opts.displayIter = false;    % Print output after each iteration.
 opts.plotIter = false;       % Plot approximation at each iteration.
 
+trigFlag = 0;
+chebFlag = 0;
+tolFlag = 0;
+
 for k = 1:2:length(varargin)
     if ( strcmpi('tol', varargin{k}) )
+        tolFlag = 1;
         opts.tol = varargin{k+1};
     elseif ( strcmpi('maxiter', varargin{k}) )
         opts.maxIter = varargin{k+1};
@@ -227,10 +226,38 @@ for k = 1:2:length(varargin)
         opts.displayIter = true;
     elseif ( strcmpi('plotfcns', varargin{k}) )
         opts.plotIter = true;
+    elseif ( strcmpi('mode', varargin{k}) )
+        mode = varargin{k+1};
+        if ( strcmpi(mode, 'trig') || strcmpi( mode, 'periodic') )
+            trigFlag = 1;
+        elseif ( strcmpi('cheb', mode) || strcmpi('notrig', mode) )
+            chebFlag = 1;
+        end        
     else
         error('CHEBFUN:CHEBFUN:remez:badInput', ...
             'Unrecognized sequence of input parameters.')
     end
+end
+
+trigMode = 0;
+if ( trigFlag || (~chebFlag && isPeriodicTech(f)) )
+    trigMode = 1;
+end
+
+if ( trigMode )
+    % Use Remez for periodic functions:
+    N = 2*m;
+    
+    if ( ~tolFlag )
+        % Update relative tol if external tol not passed.
+        opts.tol = 1e-14*(N^2 + 10); 
+    end
+    
+    if ( n > 0 )        
+        error('CHEBFUN:CHEBFUN:remez:rational', ...
+            'Rational remez for periodic is not implemented.')
+    end
+    
 end
 
 end
@@ -278,7 +305,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Functions implementing the core part of the algorithm.
 
-function xk = getInitialReference(f, m, n, N)
+function xk = getInitialReference(f, m, n, N, trigMode)
 
 % If doing rational Remez, get initial reference from trial function generated
 % by CF or Chebyshev-Pade.
@@ -297,7 +324,7 @@ end
 % In the polynomial case or if the above procedure failed to produce a reference
 % with enough equioscillation points, just use the Chebyshev points.
 if ( flag == 0 )
-    if ( isPeriodicTech(f) )
+    if ( trigMode )
         xk = trigpts(N + 2,f.domain([1, end]));
     else
         xk = chebpts(N + 2, f.domain([1, end]));
@@ -306,7 +333,7 @@ end
 
 end
 
-function [p, h] = computeTrialFunctionPolynomial(fk, xk, w, m, N, dom, isPeriodic)
+function [p, h] = computeTrialFunctionPolynomial(fk, xk, w, m, N, dom, trigMode)
 
 % Vector of alternating signs.
 sigma = ones(N + 2, 1);
@@ -316,7 +343,7 @@ h = (w'*fk) / (w'*sigma);                          % Levelled reference error.
 pk = (fk - h*sigma);                               % Vals. of r*q in reference.
 
 % Trial polynomial.
-if ( isPeriodic )
+if ( trigMode )
     p = chebfun(@(x) trigBary(x, pk, xk, dom), dom, 2*m + 1, 'trig');
 else
     p = chebfun(@(x) bary(x, pk, xk, w), dom, m + 1);
