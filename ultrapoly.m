@@ -1,13 +1,22 @@
 function p = ultrapoly(n, lam, dom)
 %ULTRAPOLY   Ultraspherical polynomials.
 %   P = ULTRAPOLY(N, LAM) computes a CHEBFUN of the ultraspherical polynomial of
-%   degree N with parameters LAM, where the weight function is
-%   defined by w(x) = (1-x^2)^(LAM-.5). N may be a vector of integers.
+%   degree N with parameters LAM, where the weight function is defined by w(x) =
+%   (1-x^2)^(LAM-.5). N may be a vector of integers.
+%
+%   Normalization is chosen to be consistent with the formulas in [1, $18]. In
+%   particular, feval(P, 1) = (2*LAM)_n/n! and feval(P, 0) = (-1)^n(LAM)_n/n!,
+%   where ()_n is the Pochhammer notation for the rising factorial [1, (5.2.5)].
 %
 %   P = ULTRAPOLY(N, LAM, DOM) computes the ultraspherical polynomials as above,
 %   but on the interval given by the domain DOM, which must be bounded.
 %
-%   P is computed via the standard recurrence relation for ultraspherical polynomials.
+%   P is computed via the standard recurrence relation for ultraspherical
+%   polynomials.
+%
+%   References:
+%    [1] F.W.J. Olver et al., editors. NIST Handbook of Mathematical Functions.
+%    Cambridge University Press, New York, NY, 2010.
 %
 % See also LEGPOLY, CHEBPOLY, JACPOLY. 
 
@@ -28,13 +37,11 @@ if ( any(isinf(dom)) )
 end
 
 if ( lam == .5 ) 
-   % default to LEGPOLY: 
+   % Equivalent togit status LEGPOLY: 
    p = legpoly(n, dom);
    return
-end
-
-if ( lam == 1 ) 
-    % default to CHEBPOLY of 2nd kind: 
+elseif ( lam == 1 ) 
+   % Equivalent to CHEBPOLY of 2nd kind:
    p = chebpoly(n, dom, 2);
    return
 end
@@ -57,7 +64,6 @@ dom = dom([1, end]);
 x = chebpts(nMax1, 2);
 
 %% Recurrence relation:
-
 P = zeros(nMax1);
 P(:,1) = 1;    
 P(:,2) = 2*lam*x;   
