@@ -81,13 +81,13 @@ while ( (normres(j) > tol) && (j < maxiter) )      % outer iterations
         if ( ~isempty(M1inv) )
             v = M1inv(v);
         end
+        
         % Modified Gram-Schmidt iteration.
         for k = 1:n
             H(k,n) = Q(:,k)' * v ;                   %#ok<AGROW>
             v = v - H(k,n)*Q(:,k);
         end
         H(n+1,n) = norm(v);                          %#ok<AGROW>
-        Q(:,n+1) = v / H(n+1,n);                     % new basis vector
         
         % Use QR factorization to find the residual norm.
         % TODO: This could be made more efficient (worthwhile?).
@@ -116,6 +116,9 @@ while ( (normres(j) > tol) && (j < maxiter) )      % outer iterations
             showtrace = false;
             break
         end
+        
+        % New basis vector:
+        Q(:,n+1) = v / H(n+1,n);                    
         
         % Reorthogonalize (for research only--not an official option).
         if ( rem(n, Inf) == 0 )
