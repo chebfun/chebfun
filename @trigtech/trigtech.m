@@ -259,6 +259,9 @@ classdef trigtech < smoothfun % (Abstract)
         
         % Flip/reverse a TRIGTECH object.
         f = flipud(f)
+        
+        % Fractional integral of a TRIGTECH object.
+        f = fracInt(f, mu)
 
         % Plot (semilogy) the trigonometric coefficients of a TRIGTECH object.
         varargout = plotcoeffs(f, varargin)

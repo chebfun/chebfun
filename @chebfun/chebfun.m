@@ -297,6 +297,12 @@ classdef chebfun
         
         % Round a CHEBFUN towards minus infinity.
         g = floor(f);
+        
+        % Fractional derivative of a CHEBFUN object:
+        f = fracDiff(f, mu, type)
+        
+        % Fractional integral of a CHEBFUN object:
+        f = fracInt(f, mu)
 
         % Get properties of a CHEBFUN object.
         out = get(f, prop, simpLevel);
