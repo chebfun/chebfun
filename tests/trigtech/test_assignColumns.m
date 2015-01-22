@@ -33,6 +33,6 @@ pass(3) = all(size(h.vscale) == [1 2]) && ...
 f = testclass.make(@(x) sin(pi*x));
 g = testclass.make(@(x) cos(pi*x));
 h = assignColumns(f, 1, g);
-pass(4) = isequal(h, g)
+pass(4) = isequal(h, g);
 
 end
