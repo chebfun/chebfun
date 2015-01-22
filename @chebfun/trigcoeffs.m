@@ -43,25 +43,29 @@ function varargout = trigcoeffs(f, N)
 
 % Trivial empty case:
 if ( isempty(f) )
-    varargout = [];
+    varargout = {};
     return
 end
 
 %% Initialize and error checking
 numFuns = numel(f.funs);
 
-% If N is not passed in and the numFuns > 1 then throw an error
-if ( (nargin == 1) && (numFuns > 1 ) )
-    error('CHEBFUN:trigcoeffs:inputN',...
-        'Input N is required for piecewise CHEBFUN objects.');
-end
-
-if ( nargin == 1 )
-    N = length(f);
+% If N is not passed...
+if ( (nargin == 1) )
+    % If numFuns > 1 then throw an error
+    if ( (numFuns > 1 ) )
+        error('CHEBFUN:trigcoeffs:inputN',...
+            'Input N is required for piecewise CHEBFUN objects.');
+    elseif ~isPeriodicTech(f)
+        error('CHEBFUN:trigcoeffs:chebfun',...   
+            'trigcoeffs(<chebfun>,N) is allowed but not trigcoeffs(<chebfun>).');
+    else
+        N = length(f);
+    end
 end
 
 if ( N <= 0 )
-    varargout = [];
+    varargout = {};
     return
 end
 if ( ~isscalar(N) || isnan(N) )
