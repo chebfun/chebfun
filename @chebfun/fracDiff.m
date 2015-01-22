@@ -35,13 +35,13 @@ end
 
 if ( strcmpi(type, 'Caputo') )
     % Caputo:
-    f = fracInt(f, 1-mu_frac);
+    f = fracInt(f, 1 - mu_frac);
     f = diff(f, mu_int + 1);
     
 else
     % Riemann-Liouville:
     f = diff(f, mu_int + 1);
-    f = fracInt(f, 1-mu_frac);    
+    f = fracInt(f, 1 - mu_frac); 
     
 end
 
