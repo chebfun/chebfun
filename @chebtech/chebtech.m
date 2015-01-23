@@ -235,7 +235,7 @@ classdef chebtech < smoothfun % (Abstract)
         f = flipud(f)
         
         % Fractional integral of a CHEBTECH object.
-        f = fracInt(f, mu)
+        f = fracInt(f, mu, b)
 
         % Happiness test for a CHEBTECH
         [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, pref)

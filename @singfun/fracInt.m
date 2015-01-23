@@ -2,20 +2,31 @@ function g = fracInt(f, mu)
 %FRACINT  Fractional integral of a SINGFUN. 
 %   FRACINT(F, MU) gives the order MU fractional integral of a SINGFUN object F.
 %
-%   Currently this only supports the situation where F is smooth (i.e., it has
-%   trivial exponents).
+%   Currently this only supports the situation where F is  is smooth at the
+%   right boundary (i.e., F.exponents(2) = 0).
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( any( f.exponents ) )
+% Attempt to simplify the exponents as we must have zero at the right.
+f = simplifyExponents(f);
+exps = f.exponents;
+
+if ( exps(2) ~= 0 )
     error('CHEBFUN:SINGFUN:fracInt:exponents', ...
-        ['FRACINT currently this only supports the situation where g is smooth',
-         ' (i.e., it has trivial exponents)']);
+        ['FRACINT currently only supports the situation where g is smooth ',
+         'at the right boundary.']);
 end
 
 g = f;
-g.smoothPart = fracInt(f.smoothPart, mu);
-g.exponents = [mu, 0];
+% Compute the smooth part:
+g.smoothPart = fracInt(f.smoothPart, mu, exps(1));
+% Update the exponents:
+g.exponents = f.exponents + [mu, 0];
+
+if ( exps(1) ~= 0 )
+    % Simplify the exponents again.
+    g = simplifyExponents(g);
+end
 
 end
