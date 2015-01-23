@@ -50,13 +50,12 @@ end
 %% Initialize and error checking
 numFuns = numel(f.funs);
 
-% If N is not passed...
-if ( (nargin == 1) )
-    % If numFuns > 1 then throw an error
-    if ( (numFuns > 1 ) )
+% If N is not given:
+if ( nargin == 1 )
+    if ( numFuns > 1 )
         error('CHEBFUN:trigcoeffs:inputN',...
             'Input N is required for piecewise CHEBFUN objects.');
-    elseif ~isPeriodicTech(f)
+    elseif ( ~isPeriodicTech(f) )
         error('CHEBFUN:trigcoeffs:chebfun',...   
             'trigcoeffs(<chebfun>,N) is allowed but not trigcoeffs(<chebfun>).');
     else
@@ -87,7 +86,6 @@ if ( numFuns ~= 1 )
     f = merge(f);
     numFuns = numel(f.funs);
 end
-
 
 %% Compute the coefficients.
 
