@@ -26,10 +26,6 @@ if ( m > 1 )
     error('CHEFBFUN:CHEBTECH:fracInt:arrayvalued', ....
         'Array-valued CHEBTECH objects are not supported.');
 end
-if ( ~isa(f, 'chebtech') )
-    error('CHEFBFUN:CHEBTECH:halfInt:chebtech', ....
-        'FRACINT() only supports CHEBTECH objects.');
-end
 if ( nargin < 3 )
     % Default to b = 0:
     b = 0;
