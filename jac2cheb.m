@@ -1,26 +1,29 @@
 function c_cheb = jac2cheb(c_jac, alph, bet)
-%LEG2CHEB convert Legendre coefficients to Chebyshev coefficients. 
-%   C_CHEB = LEG2CHEB(C_LEG) converts the vector C_LEG of Legendre coefficients
-%   to a vector C_CHEB of Chebyshev coefficients such that C_CHEB(N)*T0 + ... +
-%   C_CHEB(1)*T{N-1} = C_LEG(N)*P0 + ... + C_LEG(1)*P{N-1}, where P{k} is the
-%   degree k Legendre polynomial normalized so that max(|P{k}| = 1.
-% 
-%   C_CHEB = LEG2CHEB(C_LEG, 'norm') is as above, but with the Legendre
-%   polynomials normalized to be orthonormal.
+%JAC2CHEB convert Legendre coefficients to Chebyshev coefficients. 
+%   C_CHEB = JAC2CHEB(C_JAC, A, B) converts the vector C_JAC of Jacobi
+%   coefficients to a vector C_CHEB of Chebyshev coefficients such that
+%       C_CHEB(1)*T_0(x) + ... + C_CHEB(N)*T{N-1}(x) = ...
+%           C_JAC(1)*P_0^{(A,B)}(x) + ... + C_JAC(N)*P_{N-1}^{(A,B)},
+%   where P_k^{(A,B)} is the degree k Jacobi polynomial corresponding to the
+%   weight function w(x) = (1-X)^A * (1+X)^B.
 %
 %   If C_LEG is a matrix then the LEG2CHEB operation is applied to each column.
 %
-% See also CHEB2LEG. 
+% See also CHEB2JAC. 
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
-
-% TODO: Update documentation.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % DEVELOPER NOTE:
 %  This simply uses the recurrence relation to for the Jacobi-Vandermode matrix.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+if ( alph == 0 && bet == 0 )
+    % Special case:
+    c_cheb = leg2cheb(c_jac); 
+    return
+end
 
 c_cheb = jac2cheb_direct(c_jac, alph, bet); 
 
