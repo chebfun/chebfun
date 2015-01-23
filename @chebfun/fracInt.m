@@ -28,4 +28,6 @@ end
 % Call BNDFUN/FRACINT():
 f.funs{1} = fracInt(f.funs{1}, mu_frac);
 
+f.pointValues = chebfun.getValuesAtBreakpoints(f.funs);
+
 end
