@@ -123,13 +123,17 @@ else
     for k = 1:N
         Tkw = T{k}.*w;
         for j = 1:numCols
-            out(k,j) = (2/pi)*innerProduct(f{j}, Tkw);
+            out(k,j) = innerProduct(f{j}, Tkw);
         end
     end
-    
+     
     if ( kind == 1 )
+        % Scale the T_0 term:
         out(1,:) = out(1,:)/2;
     end
+    
+    % Scale by 2/pi:
+    out = (2/pi)*out;
     
 end
 
