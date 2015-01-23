@@ -32,7 +32,7 @@ if ( isa(f.smoothPart, 'chebtech') )
     % Multiplication matrix for coefficients of f: (fast, using FFTs)
     out = flipud(fastToeplitzMult(b, w) + fastHankelMult(b, w) - w(1)*b);
     % Trim to required length and scale T_0 term:
-    out = [out(end-N+1:end-1) ; out(end)/2].';
+    out = [out(end-N+1:end-1) ; out(end)/2];
     
 else
     % Compute the required inner products by calling SUM().
@@ -45,10 +45,10 @@ else
         % Include the Chebyshev weight:
         g.exponents = g.exponents - [.5, .5];
         % Integrate using SUM():
-        out(N-k) = sum(g);
+        out(N-k,1) = sum(g);
     end
     % Scale the final coefficient:
-    out(end) = out(end)/2;
+    out(end,1) = out(end,1)/2;
     
 end
 
