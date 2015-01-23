@@ -11,7 +11,13 @@ function out = sum(g)
 % Get the domain.
 dom = g.domain.';
 
-% Cancel vanishing boundary values with negative exponents:
+% Cancel vanishing boundary values with negative exponents but save them
+% for later restoration:
+if isa(g.onefun, 'singfun')
+    exponents = g.onefun.exponents;
+else
+    exponents = [];
+end
 g.onefun = cancelExponents(g.onefun);
 
 % Get the function values at the end of the domain. Note that the end point of
@@ -64,23 +70,30 @@ end
 
 % If we reach here, the function decays sufficiently fast. Construct a ONEFUN
 % for the integrand and integrate it.
-
-tech = get(g.onefun, 'tech');
-if ( isa(tech(), 'chebtech') )
-    techPrefs.fixedLength = length(g);
-    % TODO: Using an exact-length construction here is a hack. It only works if
-    % g.onefun is a CHEBTECH, and, even then, the idea that it "works" is merely
-    % heuristic; there's no a priori reason that it should. We really would like
-    % to do an adaptive construction, but the fact that the nonlinear map
-    % compresses very wide intervals near +/-Inf into very small ones near +/-1,
-    % means that the filtered function produced by unbndfunIntegrand() will
-    % appear to exhibit sharp transitions to zero when sampled on a Chebyshev
-    % grid of the usual sizes, causing the constructor to fail. Until we can
-    % solve this problem there doesn't seem to be much else we can do here.
+if isempty(exponents)
+    tech = get(g.onefun, 'tech');
+    data = [];
+    if ( isa(tech(), 'chebtech') )
+        techPrefs.fixedLength = length(g);
+        % TODO: Using an exact-length construction here is a hack. It only works if
+        % g.onefun is a CHEBTECH, and, even then, the idea that it "works" is merely
+        % heuristic; there's no a priori reason that it should. We really would like
+        % to do an adaptive construction, but the fact that the nonlinear map
+        % compresses very wide intervals near +/-Inf into very small ones near +/-1,
+        % means that the filtered function produced by unbndfunIntegrand() will
+        % appear to exhibit sharp transitions to zero when sampled on a Chebyshev
+        % grid of the usual sizes, causing the constructor to fail. Until we can
+        % solve this problem there doesn't seem to be much else we can do here.
+    else
+        techPrefs = [];
+    end
 else
+    tech = @singfun;
+    data.exponents = exponents;
     techPrefs = [];
 end
-integrand = tech(@(x) unbndfunIntegrand(x, g), [], techPrefs);
+
+integrand = tech(@(x) unbndfunIntegrand(x, g), data, techPrefs);
 out = sum(integrand);
 
 % Mark Inf in the stored result: 
