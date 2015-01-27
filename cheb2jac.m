@@ -25,7 +25,7 @@ if ( alph == 0 && bet == 0 )
     return
 end
 
-c_jac = cheb2jac_direct(c_cheb, alph, bet); 
+c_jac = cheb2jac_direct(c_cheb, alph, bet);
 
 end
 
@@ -37,6 +37,11 @@ function c_jac = cheb2jac_direct(c_cheb, a, b)
 %CHEB2LEG_DIRECT   Convert Cheb to Leg coeffs using the 3-term recurrence.
 [N, m] = size(c_cheb);              % Number of columns.
 N = N - 1;                          % Degree of polynomial.
+% Don't let N be too big:
+if ( N > 2^11 )
+    error('CHEBFUN:cheb2jac:arraySize', ...
+        'Maximum transform size (2048) is exceeded.');
+end
 if ( N <= 0 ), c_jac = c_cheb; return, end % Trivial case.
 f = dct1([c_cheb ; zeros(N, m)]);   % Values on 2*N+1 Chebyshev grid.
 % 2*N+1 Chebyshev grid (reversed order) and Clenshaw-Curtis-Jacobi weights:
@@ -60,7 +65,7 @@ end
 % NN = (0:N)';
 % scale = 2^(a+b+1)*gamma(NN+a+1).*gamma(NN+b+1) ./ ...
 %     ((2*NN+a+b+1).*gamma(NN+a+b+1).*factorial(NN))
-scale = zeros(N, 1);
+scale = zeros(N+1, 1);
 scale(1) = beta(a+1, b+1);
 for n = 0:N-1
     scale(n+2) = (2*n+a+b+1)*(n+a+1)*(n+b+1) / ...

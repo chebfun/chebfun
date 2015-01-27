@@ -36,6 +36,11 @@ end
 function c_cheb = jac2cheb_direct(c_jac, a, b)
 %JAC2CHEB_DIRECT   Convert Leg to Cheb coeffs using the 3-term recurrence.
 N = size(c_jac,1) - 1;                      % Degree of polynomial.
+% Don't let N be too big:
+if ( N > 2^11 )
+    error('CHEBFUN:jac2cheb:arraySize', ...
+        'Maximum transform size (2048) is exceeded.');
+end
 if ( N <= 0 ), c_cheb = c_jac; return, end  % Trivial case.
 x = cos(pi*(0:N)'/N);                       % Chebyshev grid (reversed order).
 % Make the Jacobi-Chebyshev Vandemonde matrix:
