@@ -19,7 +19,22 @@ if ( nargin < 2 )
     u = [];
 end
 
-% Call LINEARIZE():
-[ignored1, ignored2, out] = linearize(N, u, [], 0);
+% Call LINEARIZE(). It might occur that something non-differentiable appears in
+% the .op field of the chebop, e.g. @(u) diff(u,2) + abs(u). This will cause
+% an error down the stack, since abs is not Frechet differentiable, and the
+% corresponding ADCHEBFUN method throws an error. Thus, we wrap the call to
+% linearize in a try-catch statement, and listen out for the 'nonDifferentiable'
+% error identifier.
+try 
+    [ignored1, ignored2, out] = linearize(N, u, [], 0);
+catch ME
+    if ( ~isempty(strfind(ME.identifier, 'notDifferentiable')) )
+        % Something non-differentiable appeared in the operator, so it can't be
+        % linear!
+        out = false;
+    else
+        rethrow(ME);
+    end
+end
 
 end
