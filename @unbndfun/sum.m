@@ -13,7 +13,7 @@ dom = g.domain.';
 
 % Cancel vanishing boundary values with negative exponents but save them
 % for later restoration:
-if isa(g.onefun, 'singfun')
+if ( isa(g.onefun, 'singfun') )
     exponents = g.onefun.exponents;
 else
     exponents = [];
@@ -70,7 +70,7 @@ end
 
 % If we reach here, the function decays sufficiently fast. Construct a ONEFUN
 % for the integrand and integrate it.
-if isempty(exponents)
+if ( isempty(exponents) )
     tech = get(g.onefun, 'tech');
     data = [];
     if ( isa(tech(), 'chebtech') )
