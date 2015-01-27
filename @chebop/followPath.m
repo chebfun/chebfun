@@ -1,4 +1,11 @@
 function [uquasi, lamvec, mvec] = followPath(H, A, g, BCstruct, u0, lam0, measure, direction, varargin)
+%FOLLOWPATH    A pseudo-arclength continuation algorithm for ODEs in Chebfun
+%
+% Calling sequence:
+%   [UQUASI, LAMVEC, MVEC] = ...
+%       FOLLOWPATH(H, A, G, BCSTRUCT, U0, LAM0, MEASURE, DIRECTION, VARARGIN)
+% Here, the inputs are:
+%   
 % H  -- chebop
 % bcFun -- anonymous function
 % u0 -- initial solution on path
