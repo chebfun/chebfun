@@ -89,7 +89,13 @@ if ( isempty(exponents) )
     end
 else
     tech = @singfun;
-    data.exponents = exponents;
+    % The derivative of the map will contribute -2 to the exponents of the
+    % integrand when the domain is infinite, however we mod(., 1) so as not to
+    % introduce a pole. 
+    % TODO: This is a bit of a hack also, since we are assuming properties of 
+    % the unbounded map.
+    newExponents = mod(exponents - 2*isinf(g.domain), 1);
+    data.exponents = newExponents;
     techPrefs = [];
 end
 
