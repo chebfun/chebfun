@@ -37,7 +37,7 @@ if ( any(isinf(dom)) )
 end
 
 if ( lam == .5 ) 
-   % Equivalent togit status LEGPOLY: 
+   % Equivalent to LEGPOLY: 
    p = legpoly(n, dom);
    return
 elseif ( lam == 1 ) 
