@@ -24,6 +24,7 @@ if ( nargin == 1 )
     g = [];
     h = [];
     data = plotData(f.smoothPart);
+    singMask = ( f.exponents < 0 );
     
 elseif (nargin == 2)
     
@@ -31,6 +32,7 @@ elseif (nargin == 2)
     f = singfun(f);
     g = singfun(g);
     data = plotData(f.smoothPart, g.smoothPart);
+    singMask = ( g.exponents < 0 );
     
 elseif (nargin == 3)
     
@@ -38,6 +40,7 @@ elseif (nargin == 3)
     g = singfun(g);
     h = singfun(h);
     data = plotData(f.smoothPart, g.smoothPart, h.smoothPart);
+    singMask = ( h.exponents < 0 );
     
 end
 
@@ -76,8 +79,31 @@ end
 data.yLim = getYLimits(data.yLine, f.exponents);
 
 % If F is blowing up, do not use the yLim chosen by Matlab built-in plot:
-if ( any(f.exponents < 0) )
+if ( any(singMask) )
     data.defaultYLim = 0;
+end
+
+% Set the x-limits accordingly: Note that these x-limits provide the information
+% for upper level to see where the major part of the plot is and they will be
+% tweaked by adding extra spaces in plotData@bndfun or plotData@unbndfun.
+if ( singMask(1) )
+    if ( data.yLine(2) > 0 )
+        idxl = find(data.yLine <= data.yLim(2), 1, 'first');
+    else
+        idxl = find(data.yLine >= data.yLim(1), 1, 'first');
+    end
+    idxl = floor((3/5)*idxl);
+    data.xLim(1) = data.xLine(idxl);
+end
+
+if ( singMask(2) )
+    if ( data.yLine(end-1) > 0 )
+        idxr = find(data.yLine <= data.yLim(2), 1, 'last');
+    else
+        idxr = find(data.yLine >= data.yLim(1), 1, 'last');
+    end
+    idxr = idxr + floor((2/5)*(length(data.yLine)-idxr)) + 1;
+    data.xLim(2) = data.xLine(idxr);
 end
 
 end
@@ -101,7 +127,7 @@ end
 if ( exps(2) < 0 )
     scl = min(-.2*exps(2), .5);
     numChuck = max(ceil(scl*len), 5);
-    mask(end-numChuck:end) = false;
+    mask(end-numChuck+1:end) = false;
 end
 
 % Adjust the y-limits:

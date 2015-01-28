@@ -122,6 +122,9 @@ pass(46) = doesNotCrash(@() plot(fsr1, 'linew', 15));
 pass(47) = doesNotCrash(@() plot(fsr1, 'lines', '--'));
 pass(48) = doesNotCrash(@() plot(fsr1, 'markers', 10));
 
+% Test plot of a complex constant:
+pass(49) = doesNotCrash(@() plot(chebfun(1i)));
+
 close(hfig);
 
 end
