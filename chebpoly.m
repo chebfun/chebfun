@@ -14,7 +14,9 @@ function f = chebpoly(n, d, kind)
 % See also LEGPOLY, FOURPOLY, and CHEBPTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.chebfun.org/ for Chebfun information. 
+% See http://www.chebfun.org/ for Chebfun information.
+
+% TODO: Add support for 3rd and 4th kind polynomials?
 
 % Defaults:
 defaultKind = 1;
@@ -36,6 +38,11 @@ elseif ( nargin == 2 )
         d = chebfunpref().domain;
     end
 end    
+
+if ( kind ~= 1 || kind ~= 2 )
+    error('CHEBFUN:chebpoly:kind', ...
+        'CHEBPOLY(N, KIND) only supports KIND = 1 or KIND = 2.');
+end
 
 % Cannot handle unbounded domains:
 if ( any(isinf(d)) )
