@@ -39,7 +39,7 @@ elseif ( nargin == 2 )
     end
 end    
 
-if ( kind ~= 1 || kind ~= 2 )
+if ( ~( kind == 1 || kind == 2 ) )
     error('CHEBFUN:chebpoly:kind', ...
         'CHEBPOLY(N, KIND) only supports KIND = 1 or KIND = 2.');
 end
