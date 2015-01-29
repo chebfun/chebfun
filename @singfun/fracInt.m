@@ -14,8 +14,8 @@ exps = f.exponents;
 
 if ( exps(2) ~= 0 )
     error('CHEBFUN:SINGFUN:fracInt:exponents', ...
-        ['FRACINT currently only supports the situation where g is smooth ',
-         'at the right boundary.']);
+        ['FRACINT(F, MU) currently only supports the situation when F is ', ...
+         'smooth at the right boundary.']);
 end
 
 g = f;
