@@ -18,39 +18,57 @@ if ( nargin == 1 || isempty(g) )
     % Map the 'x' data using f.mapping.For:
     data.xLine = f.mapping.For(data.xLine);
     data.xPoints = f.mapping.For(data.xPoints);
+    data.xLim = f.mapping.For(data.xLim);
     
-    %% Figure out the xlim:
-    data.xLim = get(f, 'domain');
-    
-    % Size of the window:
-    window = 10;
+    %% Figure out the location of the window:
+    xLimWindow = get(f, 'domain');
+    windowSize = 10;
     
     % [TODO]: We need to find a better way to determine the center and the
     % width of the window.
     
     % Center the window at the origin.
-    if ( all(isinf(data.xLim)) )
+    if ( all(isinf(xLimWindow)) )
         center = 0;
         
         % If the left endpoint is -Inf:
-        if ( isinf(data.xLim(1)) )
-            data.xLim(1) = center - window;
+        if ( isinf(xLimWindow(1)) )
+            xLimWindow(1) = center - windowSize;
         end
         
         % If the right endpoint is Inf:
-        if ( isinf(data.xLim(2)) )
-            data.xLim(2) = center + window;
+        if ( isinf(xLimWindow(2)) )
+            xLimWindow(2) = center + windowSize;
         end
         
-    elseif ( isinf(data.xLim(1)) )
-        data.xLim(1) = data.xLim(2) - window;
+    elseif ( isinf(xLimWindow(1)) )
+        xLimWindow(1) = xLimWindow(2) - windowSize;
     else
-        data.xLim(2) = data.xLim(1) + window;
+        xLimWindow(2) = xLimWindow(1) + windowSize;
     end
-    
+
     % Get a better yLim:
     mask = data.xLine > data.xLim(1) & data.xLine < data.xLim(2);
     data.yLim = [min(data.yLine(mask)) max(data.yLine(mask))];
+   
+    % Update the xLim: If the onefun is bounded, xLim is not changed. If the 
+    % onefun is unbounded (i.e. singfun with poles), then xLim is tweaked to pad
+    % extra space at the end where function blows up:
+    if ( isfinite(data.xLim(1)) );
+        % If the left endpoint is finite:
+        data.xLim(1) = (data.xLim(1) + xLimWindow(1))/2;
+    else
+        % If the left endpoint is -Inf:
+        data.xLim(1) = max([data.xLim(1) xLimWindow(1)]);
+    end
+    
+    if ( isfinite(data.xLim(2)) );
+        % If the right endpoint is finite:
+        data.xLim(2) = (data.xLim(2) + xLimWindow(2))/2;
+    else
+        % If the right endpoint is Inf:
+        data.xLim(2) = min([data.xLim(2) xLimWindow(2)]);
+    end
     
     % Sort out the jumps:
     data.xJumps = [f.domain(1) ; NaN ; f.domain(2)];

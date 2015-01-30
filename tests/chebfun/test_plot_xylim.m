@@ -114,9 +114,17 @@ hold on
 plot(f2)
 % Check that we obtain reasonable ylimits
 ylNew = get(gca, 'ylim');
-pass3(length(pass3) + 1)  = ( (norm(ylOld(1) - ylNew(1)) < tol) && ...
+pass3(length(pass3) + 1) = ( (norm(ylOld(1) - ylNew(1)) < tol) && ...
     (ylNew(2) > 10) );
 hold off
+
+% Check x-lim and y-lim symmetry of x:
+f = chebfun(@(x) x, [-inf inf]);
+plot(f)
+xl = get(gca, 'xlim');
+yl = get(gca, 'ylim');
+pass3(length(pass3) + 1) = (abs(sum(xl)) < 1e-10) && (abs(sum(yl)) < 1e-10);
+
 %%
 pass = [pass1, pass2, pass3];
 

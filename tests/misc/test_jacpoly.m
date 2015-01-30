@@ -29,4 +29,13 @@ err(2) = norm(Jx - v4, inf);
 
 pass = err < tol;
 
+J = jacpoly([0 2 3], -0.25, -0.25);
+C = chebcoeffs(J);
+tru = [1 0.109375 0
+       0 0        0.150390625
+       0 0.546875 0
+       0 0        0.451171875];
+pass(3) = ( all(size(C) == size(tru)) ) && ( norm(C(:) - tru(:)) < tol );
+
+
 end

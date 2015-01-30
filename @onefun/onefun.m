@@ -107,6 +107,9 @@ classdef onefun % (Abstract)
         
         % Flip/reverse a ONEFUN object.
         f = flipud(f)
+        
+        % Fractional integral of a ONEFUN object.
+        f = fracInt(f, mu)
 
         % Imaginary part of a ONEFUN.
         f = imag(f)

@@ -4,10 +4,18 @@ function p = jacpoly(n, a, b, dom)
 %   degree N with parameters ALPHA and BETA, where the Jacobi weight function is
 %   defined by w(x) = (1-x)^ALPHA*(1+x)^BETA. N may be a vector of integers.
 %
+%   Normalization is chosen to be consistent with the formulas in [1, $18]. In
+%   particular, feval(P, 1) = (ALPHA+1)_n/n!, where ()_n is the Pochhammer
+%   notation for the rising factorial [1, (5.2.5)].
+%
 %   P = JACPOLY(N, ALPHA, BETA, DOM) computes the Jacobi polynomials as above,
 %   but on the interval given by the domain DOM, which must be bounded.
 %
 %   P is computed via the standard recurrence relation for Jacobi polynomials.
+%
+%   References:
+%    [1] F.W.J. Olver et al., editors. NIST Handbook of Mathematical Functions.
+%    Cambridge University Press, New York, NY, 2010.
 %
 % See also LEGPOLY, CHEBPOLY, ULTRAPOLY.
 
@@ -67,11 +75,8 @@ for k = 2:nMax
 end
 
 %% Assemble output:
-
-[ignored1, ignored2, cc] = unique(n);  % Extract required column indices.
-cc = nMax1 + 1 - cc;                   % P is ordered low to high.
-C = chebtech2.vals2coeffs(P(:,cc));    % Convert to coefficients
-C = fliplr(C);                         % C is ordered low to high.
+P = P(:,n+1);                    % Extract required columns
+C = chebtech2.vals2coeffs(P);    % Convert to coefficients
 
 % Construct CHEBFUN from coeffs:
 p = chebfun(C, dom, pref, 'coeffs');   
