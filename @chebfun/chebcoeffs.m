@@ -6,8 +6,9 @@ function out = chebcoeffs(f, varargin)
 %   first kind.
 %
 %   If F has a 'finite' Chebyshev expansion (i.e., it is a smooth CHEBFUN with
-%   no breakpoints or endpoint singularities), then CHEBCOEFFS(F) is equivalent
-%   to CHEBCOEFFS(F, LENGTH(F)). Here 'finite' means relative to epslevel(F).
+%   no breakpoints or endpoint singularities and is based on a CHEBTECH), then
+%   CHEBCOEFFS(F) is equivalent to CHEBCOEFFS(F, LENGTH(F)). This syntax should
+%   be used with caution, and passing N is preferred.
 %
 %   If F is array-valued with M columns, then A is an NxM matrix.
 %
@@ -31,11 +32,6 @@ if ( numel(f) > 1 )
     error('CHEBFUN:CHEBFUN:chebcoeffs:quasia', ...
         'CHEBCOEFFS does not support quasimatrices.');
 end
-
-% %% Make sure F is a Chebyshev expansion:
-% if ( isPeriodicTech(f) )
-%     f = chebfun(f);
-% end
 
 %% Initialise:
 argin = {}; 
