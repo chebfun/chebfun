@@ -98,9 +98,9 @@ pass(19) = norm(h1.coeffs - h2.coeffs, inf) < tol;
 f = testclass.make(@(x) cos(pi*x));    % Happy
 g = testclass.make(@(x) cos(x));   % Unhappy
 h = f + g;  % Add unhappy to happy.
-pass(18) = (~g.ishappy) && (~h.ishappy);
-h = g + f;  % Add happy to unhappy.
 pass(20) = (~g.ishappy) && (~h.ishappy);
+h = g + f;  % Add happy to unhappy.
+pass(21) = (~g.ishappy) && (~h.ishappy);
 
 %%
 % Test addition of array-valued scalar to array-valued TRIGTECH.
@@ -109,7 +109,7 @@ f = testclass.make(@(x) exp([sin(pi*x) cos(pi*x) -sin(pi*x).^2]));
 g = f + [1 2 3];
 g_exact = @(x) [exp(sin(pi*x))+1 exp(cos(pi*x))+2 exp(-sin(pi*x).^2)+3];
 err = feval(g, x) - g_exact(x);
-pass(21) = norm(err(:), inf) < 10*max(g.vscale.*g.epslevel);
+pass(22) = norm(err(:), inf) < 10*max(g.vscale.*g.epslevel);
 
 %%
 % Test scalar expansion in TRIGTECH argument.
@@ -118,7 +118,7 @@ f = testclass.make(@(x) sin(pi*x));
 g = f + [1 2 3];
 g_exact = @(x) [(1 + sin(pi*x)) (2 + sin(pi*x)) (3 + sin(pi*x))];
 err = feval(g, x) - g_exact(x);
-pass(22) = isequal(size(g.coeffs, 2), 3) && norm(err(:), inf) < ...
+pass(23) = isequal(size(g.coeffs, 2), 3) && norm(err(:), inf) < ...
     10*max(g.vscale.*g.epslevel);
 
 end
