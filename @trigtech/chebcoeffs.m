@@ -1,29 +1,25 @@
 function out = chebcoeffs(f, N)
 %CHEBCOEFFS   Chebyshev polynomial coefficients of a TRIGTECH.
-%   A = CHEBCOEFFS(F) returns the row vector of coefficients such that F = A(1)
-%   T_{N-1}(x) + ... + A(N-1) T_1(x) + A(N) T_0(x), where T_k(x) denotes the
-%   k-th Chebyshev polynomial and LENGTH(F) = N. 
+%   A = CHEBCOEFFS(F, N) returns the column vector of coefficients such that F
+%   = A(1) T_0(x) + ... + A(N-1) T_{N-2}(x) + A(N) T_{N-1}(x), where T_k(x)
+%   denotes the k-th Chebyshev polynomial.
 %
-%   If F is array-valued with P columns, then A is an PxN matrix.
-%
-%   A = CHEBCOEFFS(F, M) truncates or pads the vector A so that M coefficients of
-%   the TRIGTECH F are returned.
-%
-%   If F is array-valued with P columns, then A is an PxM matrix.
+%   If F is array-valued with P columns, then A is an NxP matrix.
 %
 % See also LEGCOEFFS, TRIGCOEFFS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( nargin == 1 )
-    N = length(f);
-end
-
 % Trivial empty case:
-if ( isempty(N) || N <= 0)
+if ( N <= 0 )
     out = [];
     return
+end
+
+if ( (nargin == 1) || isempty(N) )
+    error('CHEBFUN:TRIGTECH:chebcoeffs:input', ...
+        'F does not have a finite Chebyshev series. Please input N.');
 end
 
 % [TODO]: Is there a fast transfrom from TRIGTECH to CHEBTECH?
