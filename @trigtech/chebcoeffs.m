@@ -1,10 +1,10 @@
 function out = chebcoeffs(f, N)
 %CHEBCOEFFS   Chebyshev polynomial coefficients of a TRIGTECH.
-%   A = CHEBCOEFFS(F, N) returns the row vector of coefficients such that F =
-%   A(1) T_{N-1}(x) + ... + A(N-1) T_1(x) + A(N) T_0(x), where T_k(x) denotes
-%   the k-th Chebyshev polynomial.
+%   A = CHEBCOEFFS(F, N) returns the column vector of coefficients such that F
+%   = A(1) T_0(x) + ... + A(N-1) T_{N-2}(x) + A(N) T_{N-1}(x), where T_k(x)
+%   denotes the k-th Chebyshev polynomial.
 %
-%   If F is array-valued with P columns, then A is an PxN matrix.
+%   If F is array-valued with P columns, then A is an NxP matrix.
 %
 % See also LEGCOEFFS, TRIGCOEFFS.
 
