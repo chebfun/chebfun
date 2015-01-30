@@ -6,8 +6,6 @@ function out = chebcoeffs(f, N)
 %
 %   If F is array-valued with P columns, then A is an PxN matrix.
 %
-%   A = CHEBCOEFFS(F) is equivalent to CHEBCOEFFS(F, length(chebtech1(F))).
-%
 % See also LEGCOEFFS, TRIGCOEFFS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
@@ -19,6 +17,11 @@ if ( N <= 0 )
     return
 end
 
+if ( (nargin == 1) || isempty(N) )
+    error('CHEBFUN:TRIGTECH:chebcoeffs:input', ...
+        'F does not have a finite Chebyshev series. Please input N.');
+end
+
 % [TODO]: Is there a fast transfrom from TRIGTECH to CHEBTECH?
 % Since f is a TRIGTECH it is assumed to be smooth and periodic on [-1,1].
 % Computing the chebyshev coefficients via innner products requires working with
@@ -27,11 +30,6 @@ end
 % interpolant and return the coefficients. As an arbitrary choice we will
 % convert f to a chebtech1 and then compute the resulting coefficients.
 f = chebtech1(@(x) f.feval(x));
-
-if ( nargin == 1 || isempty(N) )
-    N = length(f);
-end
-
 out = chebcoeffs(f, N);
     
 end
