@@ -192,25 +192,14 @@ classdef chebfun
             end
                        
             % Parse inputs:
-            [op, dom, data, pref] = parseInputs(varargin{:});
-                        
-            if ( strcmp(op, 'done') )
+            [op, dom, data, pref, trunc, isDone] = parseInputs(varargin{:});
+            
+            if ( isDone )
                 % An update was performed. Exit gracefully:
                 throwAsCaller(MException('', ''))
             end
             
-            % Deal with 'trunc' option:
-            doTrunc = false;
-            truncLength = NaN;
-            for k = 1:length(varargin)
-                if ( strcmpi(varargin{k}, 'trunc') )
-                    doTrunc = true;
-                    truncLength = varargin{k+1};
-                    break
-                end                
-            end
-            
-            if ( isa(op, 'chebfun') && doTrunc )
+            if ( isa(op, 'chebfun') && trunc )
                 % Deal with the particular case when we're asked to truncate a
                 % CHEBFUN:
                 f = op;
@@ -231,14 +220,9 @@ classdef chebfun
                 
             end
 
-            if ( doTrunc )
+            if ( trunc )
                 % Truncate the CHEBFUN to the required length:
-                if ( isa( pref.tech(),'chebtech' ) ) 
-                    c = chebcoeffs(f, truncLength);
-                else
-                    c = trigcoeffs(f, truncLength);
-                end
-                f = chebfun(c, f.domain([1,end]), 'coeffs', pref);
+                f = truncate(f, trunc);
             end
             
         end
@@ -599,11 +583,15 @@ function op = str2op(op)
     end
 end
 
-function [op, dom, data, pref] = parseInputs(op, varargin)
+function [op, dom, data, pref, trunc, isDone] = parseInputs(op, varargin)
     
     % TODO: Should we 'data' structure to be passed to the constructor?
     % Currently, like in CHEBFUN/COMPOSE(), we don't have a use for this, but it
     % might be useful in the future.
+    
+    % Local prefrences for CHEBFUN constructor:
+    isDone = false;
+    trunc = false;
 
     % Deal with string input options.
     if ( strncmp(op, '--', 2) )
@@ -623,7 +611,6 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
             error('CHEBFUN:parseInputs:unknown', ...
                 'Unknow command %s.', op);
         end
-        op = 'done';
         dom = [];
         data = struct();
         pref = [];
@@ -702,9 +689,11 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
             error('CHEBFUN:CHEBFUN:parseInputs:coeffcell', ...
                 'Cannot construct CHEBFUN from a cell array of coefficients.');
         elseif ( strcmpi(args{1}, 'trunc') )
-            % Pull out this preference, which is checked for later.
+            % Set the local truncation option.
+            trunc = args{2};
+            args(1:2) = [];   
+            % We split when truncation is selected. TODO: Why?
             keywordPrefs.splitting = true;
-            args(1:2) = [];
         elseif ( isnumeric(args{1}) && isscalar(args{1}) )
             % g = chebfun(@(x) f(x), N)
             keywordPrefs.techPrefs.fixedLength = args{1};
