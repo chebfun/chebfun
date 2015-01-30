@@ -187,7 +187,7 @@ classdef trigtech < smoothfun % (Abstract)
             data = parseDataInputs(data, pref);
 
             % Force nonadaptive construction if PREF.FIXEDLENGTH is numeric:
-            if ( ~isnumeric(op) && ...
+            if ( ~(isnumeric(op) || iscell(op)) && ...
                     ~isempty(pref.fixedLength) && ~isnan(pref.fixedLength) )
                 % Evaluate op on the equi-spaced grid of given size:
                 vals = feval(op, trigtech.trigpts(pref.fixedLength));
@@ -199,7 +199,7 @@ classdef trigtech < smoothfun % (Abstract)
             obj = populate(obj, op, data.vscale, data.hscale, pref);
             
             % Set length of obj to PREF.FIXEDLENGTH (if it is non-trivial).
-            if ( isnumeric(op) && ...
+            if ( (isnumeric(op) || iscell(op)) && ...
                     ~isempty(pref.fixedLength) && ~isnan(pref.fixedLength) )
                 obj = prolong(obj, pref.fixedLength);
             end

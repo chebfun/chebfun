@@ -15,25 +15,38 @@ f = chebfun(@(x) [sin(x) tanh(x)], pref);
 g = chebfun(@(x) [sin(x) tanh(x)], 'doubleLength', pref);
 pass(2) = ( 2*length(f) + 1 == length(g) );
 
+% Test construction from values.
+f = chebfun([3; 2; 1], 'doublelength');
+pass(3) = (length(f) == 7);
+
+% Test construction from coefficients.
+f = chebfun([3; 2; 1], 'coeffs', 'doublelength');
+pass(4) = (length(f) == 7);
+
+% Test trig.
+f = chebfun(@(x) exp(sin(pi*x)));
+g = chebfun(@(x) exp(sin(pi*x)), 'doublelength');
+pass(5) = (length(g) == 2*length(f) + 1);
+
 % Test that there is an error when splitting is combined with doubleLength.
-pass(3) = false;
+pass(6) = false;
 try
     f = chebfun(@sign, 'doubleLength', 'splitting', 'on');
 catch ME
     if ( strcmpi(ME.identifier, ...
             'CHEBFUN:CHEBFUN:parseInputs:doubleLengthSplitting') )
-        pass(3) = true;
+        pass(6) = true;
     end
 end
 
 % Test that there is an error when doubleLength is used with breakpoints.
-pass(4) = false;
+pass(7) = false;
 try
     f = chebfun(@exp, [0 .2 1], 'doubleLength');
 catch ME
     if ( strcmpi(ME.identifier, ...
             'CHEBFUN:CHEBFUN:parseInputs:doubleLengthBreakpoints') )
-        pass(4) = true;
+        pass(7) = true;
     end
 end
 

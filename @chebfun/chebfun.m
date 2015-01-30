@@ -702,12 +702,12 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
             % Hack to support construction from coefficients.            
             op = {{[], op}};
             args(1) = [];
-        elseif ( any(strcmpi(args{1}, {'periodic', 'trig'})) )
-            isPeriodic = true;
-            args(1) = [];
         elseif ( strcmpi(args{1}, 'coeffs') && iscell(op) )
             error('CHEBFUN:CHEBFUN:parseInputs:coeffcell', ...
                 'Cannot construct CHEBFUN from a cell array of coefficients.');
+        elseif ( any(strcmpi(args{1}, {'periodic', 'trig'})) )
+            isPeriodic = true;
+            args(1) = [];
         elseif ( strcmpi(args{1}, 'trunc') )
             % Pull out this preference, which is checked for later.
             keywordPrefs.splitting = true;
