@@ -88,13 +88,20 @@ classdef chebtech1 < chebtech
             data = parseDataInputs(data, pref);
 
             % Force nonadaptive construction if PREF.FIXEDLENGTH is numeric:
-            if ( ~isempty(pref.fixedLength) && ~isnan(pref.fixedLength) )
+            if ( ~(isnumeric(op) || iscell(op)) && ...
+                    ~isempty(pref.fixedLength) && ~isnan(pref.fixedLength) )
                 % Evaluate op on the Chebyshev grid of given size:
                 op = feval(op, chebtech1.chebpts(pref.fixedLength));
             end
 
             % Actual construction takes place here:
             obj = populate(obj, op, data.vscale, data.hscale, pref);
+            
+            % Set length of obj to PREF.FIXEDLENGTH (if it is non-trivial).
+            if ( (isnumeric(op) || iscell(op)) && ...
+                    ~isempty(pref.fixedLength) && ~isnan(pref.fixedLength) )
+                obj = prolong(obj, pref.fixedLength);
+            end
 
             if ( obj.ishappy || isnumeric(op) || iscell(op) )
                 % No need to error check if we are happy:
