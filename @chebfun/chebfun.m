@@ -221,8 +221,9 @@ classdef chebfun
                 [f.funs, f.domain] = chebfun.constructor(op, dom, data, pref);
                 
                 if ( flags.doubleLength )
-                    % Getting the length of f.funs{1} is okay because the
-                    % 'doubleLength' flag is mutually exclusive with 'splitting on'.
+                    % Using the length of f.funs{1} is okay because the
+                    % 'doubleLength' flag is mutually exclusive with 'splitting
+                    % on'.
                     pref.techPrefs.fixedLength = 2*length(f.funs{1}) + 1;
                     [f.funs, f.domain] = chebfun.constructor(op, dom, data, pref);
                 end
@@ -549,7 +550,7 @@ classdef chebfun
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Hidden = true, Static = true )
 
-        %Convert a cell array of CHEBFUN objects to a quasimatrix.
+        % Convert a cell array of CHEBFUN objects to a quasimatrix.
         G = cell2quasi(F)
         
         % Determine values of CHEBFUN at breakpoints.
