@@ -34,7 +34,7 @@ elseif ( isa(g, 'double') ) % TRIGTECH + double.
     if mod(N,2) == 1
         const_index = (N+1)/2;
     else
-        const_index = N/2;
+        const_index = N/2+1;
     end
     f.coeffs(const_index,:) = f.coeffs(const_index,:) + g;
     

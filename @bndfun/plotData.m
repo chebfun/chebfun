@@ -26,7 +26,7 @@ if ( (nargin == 1) || isempty(g) )
     data.xJumps = [f.domain(1) ; NaN ; f.domain(2)];
     data.yJumps = getJumps(f, data.yLine);
     
-    % Sort out the xLim:
+    % Overwrite the current xLim if it is provided by plotData@singfun:
     data.xLim = f.domain;
     
 elseif ( nargin == 2 )
