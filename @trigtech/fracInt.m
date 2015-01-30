@@ -1,4 +1,4 @@
-function f = fracInt(f, mu)
+function varargout = fracInt(varargin)
 %FRACINT  Fractional integral of an TRIGTECH. 
 %   Fractional integrals of TRIGTECH objects are not yet supported.
 

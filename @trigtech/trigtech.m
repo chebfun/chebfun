@@ -261,7 +261,7 @@ classdef trigtech < smoothfun % (Abstract)
         f = flipud(f)
         
         % Fractional integral of a TRIGTECH object.
-        f = fracInt(f, mu)
+        varargout = fracInt(varargin)
 
         % Plot (semilogy) the trigonometric coefficients of a TRIGTECH object.
         varargout = plotcoeffs(f, varargin)
