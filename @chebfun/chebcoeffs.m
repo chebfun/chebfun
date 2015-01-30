@@ -1,12 +1,13 @@
 function out = chebcoeffs(f, varargin)
 %CHEBCOEFFS   Chebyshev polynomial coefficients of a CHEBFUN.
-%   A = CHEBCOEFFS(F, N) returns the first N Chebyshev coefficients of F ib
+%   A = CHEBCOEFFS(F, N) returns the first N Chebyshev coefficients of F is
 %   the column vector A such that F = A(1) T_0(x) +  A(2) T_1(x) + ... + 
 %   A(N) T_(N-1)(x), where T_M(x) denotes the M-th Chebyshev polynomial of the
 %   first kind.
 %
-%   If F is a smooth CHEBFUN (i.e., with no breakpoints), then CHEBCOEFFS(F) is
-%   equivalent to CHEBCOEFFS(F, LENGTH(F)).
+%   If F has a 'finite' Chebyshev expansion (i.e., it is a smooth CHEBFUN with
+%   no breakpoints or endpoint singularities), then CHEBCOEFFS(F) is equivalent
+%   to CHEBCOEFFS(F, LENGTH(F)). Here 'finite' means relative to epslevel(F).
 %
 %   If F is array-valued with M columns, then A is an NxM matrix.
 %
@@ -31,10 +32,10 @@ if ( numel(f) > 1 )
         'CHEBCOEFFS does not support quasimatrices.');
 end
 
-%% Make sure F is a Chebyshev expansion:
-if ( isPeriodicTech(f) )
-    f = chebfun(f);
-end
+% %% Make sure F is a Chebyshev expansion:
+% if ( isPeriodicTech(f) )
+%     f = chebfun(f);
+% end
 
 %% Initialise:
 argin = {}; 
@@ -56,29 +57,26 @@ if ( numel(argin) > 0 )
     N = argin{1};
 end
 
-%% Error checking:
-if ( isempty(N) && numFuns == 1 )
-    N = length(f);
+
+%% Merge:
+% Try to merge out breakpoints if possible, since integrals are expensive:
+if ( numFuns ~= 1 )
+    f = merge(f);
+    numFuns = numel(f.funs);
 end
-if ( isempty(N) )
+
+%% Error checking:
+if ( isempty(N) && numFuns > 1 )
     error('CHEBFUN:CHEBFUN:chebcoeffs:inputN', ...
         'Input N is required for piecewise CHEBFUN objects.');
 end
-if ( ~isscalar(N) || isnan(N) )
+if ( ~isempty(N) && (~isscalar(N) || isnan(N)) )
     error('CHEBFUN:CHEBFUN:chebcoeffs:inputN', 'Input N must be a scalar.');
 end
 if ( any(isinf(f.domain)) )
 % Chebyshev coefficients are not defined on an unbounded domain.
     error('CHEBFUN:CHEBFUN:chebcoeffs:infint', ...
         'Infinite intervals are not supported here.');
-end
-
-%% Merge:
-
-% Try to merge out breakpoints if possible, since integrals are expensive:
-if ( numFuns ~= 1 )
-    f = merge(f);
-    numFuns = numel(f.funs);
 end
 
 %% Compute the coefficients:
