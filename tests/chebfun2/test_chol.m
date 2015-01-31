@@ -37,11 +37,4 @@ pass(j) = norm( fevalm(f, x, x) - fevalm(g, x, x) ) < tol; j = j + 1;
 pass(j) = norm( R( 1, pivPos( 1, 2 ) ) - sqrt(feval(f, pivPos(1,1), pivPos(1,2))) ) < tol; j = j + 1; 
 pass(j) = norm( tril( R( :, pivPos( :, 2 ) ) , -1) ) < tol; j = j + 1; 
 
-
-% KX's bug for chebfun2 objects that are constructed from data: 
-x = ones(1,2); 
-f = chebfun2(x,'coeffs'); 
-g = chol(f);
-% g should be linear and a row: 
-pass(j) = norm( g - chebfun([0;g(1)]).' ) < tol; j = j + 1; 
 end
