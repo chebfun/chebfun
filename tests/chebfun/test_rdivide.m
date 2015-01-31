@@ -164,7 +164,17 @@ hExact = oph(x);
 err = hVals - hExact;
 pass(17) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
 
-%% Test division between a CHEBFUN and a FOURFUN.
+%%
+% Test that rdivide works correctly when the two triguns involved have 
+% widely different vscales.
+k = 10;
+z = chebfun('4*exp(1i*s)',[0 2*pi],'trig');
+f = z./((exp(z)-1));
+B10 = factorial(k)*sum((f./z.^(k+1)).*diff(z))/(2i*pi);  % 10 Bernoulli num
+exact = 5/66;
+pass(18) = abs(exact-B10) < get(f,'epslevel')*get(f,'vscale');
+
+%% Test division between a CHEBFUN and a TRIGFUN.
 
 dom = [0 pi 2*pi];
 
@@ -173,21 +183,53 @@ f = chebfun(@(x) x + x.^2, dom, pref);
 g = chebfun(@(x) 2+cos(x), [dom(1) dom(end)], 'periodic');
 h1 = f./g;
 % We want the result to use the same tech as the one used by f.
-pass(18) = strcmpi(func2str(get(h1.funs{1}.onefun, 'tech')), ...
+pass(19) = strcmpi(func2str(get(h1.funs{1}.onefun, 'tech')), ...
                    func2str(get(f.funs{1}.onefun, 'tech')));
 h2 = chebfun(@(x) (x + x.^2)./(2+cos(x)), dom, pref);
-pass(19) = norm(h1-h2, inf) < get(h2,'epslevel').*get(h2,'vscale');
+pass(20) = norm(h1-h2, inf) < get(h2,'epslevel').*get(h2,'vscale');
 
 % 2. Quasimatrix case.
 f = chebfun(@(x) [cos(x), sin(x)], [dom(1) dom(end)], 'periodic');
 g = chebfun(@(x) [2+x, 2+x.^3], dom, pref);
 h1 = f./g;
 % We want the result to use the same tech as the one used by g.
-pass(20) = strcmpi(func2str(get(h1(:,1).funs{1}.onefun, 'tech')), ...
+pass(21) = strcmpi(func2str(get(h1(:,1).funs{1}.onefun, 'tech')), ...
                    func2str(get(g(:,1).funs{1}.onefun, 'tech')));
-pass(21) = strcmpi(func2str(get(h1(:,2).funs{1}.onefun, 'tech')), ...
+pass(22) = strcmpi(func2str(get(h1(:,2).funs{1}.onefun, 'tech')), ...
                    func2str(get(g(:,2).funs{1}.onefun, 'tech')));
 h2 = chebfun(@(x) [cos(x)./(2+x), sin(x)./(2+x.^3)], dom, pref);
-pass(22) = norm(h1-h2, inf) < get(h2,'epslevel').*get(h2,'vscale');
+pass(23) = norm(h1-h2, inf) < get(h2,'epslevel').*get(h2,'vscale');
+
+%%
+% #1111
+try
+    f = chebfun(@(x) exp(x));
+    g = 0;
+    f./g;
+    pass(24) = false;
+catch ME
+    pass(24) = strcmp(ME.identifier, ...
+        'CHEBFUN:CHEBFUN:rdivide:columnRdivide:divisionByZero');
+end
+
+try
+    f = chebfun(@(x) [exp(x) exp(-x)]);
+    g = [0 0];
+    f./g;
+    pass(25) = false;
+catch ME
+    pass(25) = strcmp(ME.identifier, ...
+        'CHEBFUN:CHEBFUN:rdivide:columnRdivide:divisionByZero');
+end
+
+try
+    f = chebfun(@(x) [exp(x) exp(-x) sin(x)]);
+    g = [1 0 1];
+    f./g;
+    pass(26) = false;
+catch ME
+    pass(26) = strcmp(ME.identifier, ...
+        'CHEBFUN:CHEBFUN:rdivide:columnRdivide:divisionByZero');
+end
 
 end

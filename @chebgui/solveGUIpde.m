@@ -171,6 +171,8 @@ if ( guiMode )
     set(handles.fig_norm, 'Visible', 'On');
     cla(handles.fig_sol, 'reset')
     cla(handles.fig_norm, 'reset')
+    set(handles.fig_sol, 'fontsize', handles.fontsizePanels);
+    set(handles.fig_norm, 'fontsize', handles.fontsizePanels);
     handles.gui = 1;
 else
     handles.gui = 0;
@@ -239,6 +241,7 @@ end
 
 if ( ~isa(u, 'chebmatrix') )
     waterfall(u, t, 'simple', 'linewidth', defaultLineWidth)
+
 else
     cols = get(0, 'DefaultAxesColorOrder');
     
@@ -254,6 +257,8 @@ else
     waterfall(u, t, 'linewidth', defaultLineWidth, 'edgecolors', cols)
 end
 
+% Update the fontsize of the bottom plot 
+set(handles.fig_norm, 'fontsize', handles.fontsizePanels);
 % Axis labels:
 xlabel(indVarName{1})
 ylabel(indVarName{2})

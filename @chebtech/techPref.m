@@ -65,6 +65,15 @@ outPref.refinementFunction = 'nested';
 outPref.happinessCheck     = 'classic';
 
 if ( nargin == 1 )
+    validPrefs = fieldnames(outPref);
+    for ( givenPref = fieldnames(inPref).');
+        givenPref = givenPref{1};
+        if ( ~any(strcmp(givenPref, validPrefs)) )
+            warning('CHEBFUN:CHEBTECH:techPref:unknownPref', ...
+                ['Unrecognized input preference ''' givenPref '''.']);
+        end
+    end
+
     outPref = chebfunpref.mergeTechPrefs(outPref, inPref);
 end
 

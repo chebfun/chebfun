@@ -147,6 +147,15 @@ g = f;
 f(1) = f(1); % restrict@unbndfun is called.
 pass(27) = ( norm(f-g, inf) < epslevel(f) );
 
+%% Test trigfuns:
+f = chebfun(@(x) sin(2*pi*x), [1 2], 'trig');
+g = restrict(f, domain(f));
+pass(28) = ~isPeriodicTech(g);
+g = restrict(f, [1.5, 1.6]);
+h = chebfun(@(x) sin(2*pi*x), [1.5, 1.6]);
+pass(29) = norm(g-h, inf) < 1e-12;
+
+
 end
 
 % Check restriction of a single function.

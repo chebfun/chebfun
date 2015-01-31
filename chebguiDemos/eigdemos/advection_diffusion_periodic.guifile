@@ -1,0 +1,8 @@
+'Advection-diffusion with periodic BCs'
+'scalar'
+domain = '[0 2*pi]';
+DE = 'u" + u'' = lambda*u';
+BC = {'periodic'};
+tol = '1e-10';
+type = 'eig';
+numeigs = '15';

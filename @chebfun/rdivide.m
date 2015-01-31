@@ -132,7 +132,8 @@ function h = columnRdivide(f, g, pref)
 
 % If g is numeric then call TIMES():
 if ( isnumeric(g) )
-    if ( g == 0 )
+    if ( any(g == 0) )
+        % note g could be a vector, with some zero components
         % TODO:  Return identically Inf/NaN CHEBFUN instead?
         error('CHEBFUN:CHEBFUN:rdivide:columnRdivide:divisionByZero', ...
             'Division by zero.')

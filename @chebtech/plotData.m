@@ -40,7 +40,7 @@ npts = min(max(501, round(4*pi*len)), chebtech.techPref().maxLength);
 
 % Initialise the output structure:
 data = struct('xLine', [], 'yLine', [], 'xPoints', [], 'yPoints', [], ...
-    'yLim', [], 'defaultXLim', 1, 'defaultYLim', 1);
+    'xLim', [], 'yLim', [], 'defaultXLim', 1, 'defaultYLim', 1);
 
 if ( isempty(g) )       
     % PLOT(F):
@@ -55,6 +55,9 @@ if ( isempty(g) )
     
     % yLim:
     data.yLim = [min(data.yLine(:)) max(data.yLine(:))];
+    
+    % xLim:
+    data.xLim = [-1 1];
 
 elseif ( isa(g, 'chebtech') )   
     % PLOT(F, G)

@@ -15,11 +15,28 @@ classdef cheboppref < chebpref
 %     no domain argument is explicitly passed to the constructor.
 %
 %   discretization             - Discretization of linear problems
+%     @chebcolloc1
 %     [@chebcolloc2]
+%     'collocation'
+%     'periodic'
+%     @trigcolloc
 %     @ultraS
+%     'ultraspherical'
 %
 %     This options determines whether linear operators are discretized using
-%     rectangular collocation methods or the ultraspherical method.
+%     rectangular collocation methods or the ultraspherical method. Please
+%     observe that
+%         * 'collocation', 'periodic' and 'ultraspherical' are convenient ways
+%           of specifying the @chebcolloc2, @trigcolloc and @ultraS options
+%           respectively.
+%         * The 'periodic'/@trigcolloc option is only supported for problems
+%           that are specified to have periodic boundary conditions.
+%         * Specifying the @chebcolloc1 option causes the CHEBFUN solution
+%           returned to be based on the @chebtech1 tech. The @chebtech2/@ultraS
+%           option causes the CHEBFUN solution returned to be based on the
+%           @chebtech2 tech. The @trigcolloc option causes the CHEBFUN solution
+%           to be periodic, based on the @trigtech tech.
+%        
 %  
 %   damping                     - Should Newton's method be damped?
 %     [true]
@@ -45,7 +62,32 @@ classdef cheboppref < chebpref
 %     considered to have converged if the error estimate it computes is less
 %     than the value of errTol.
 %
-%   lambdaMin                   - Minimum allowed step-size
+%   ivpAbsTol                    - Absolute tolerance for the ivpSolver
+%     [1e5*eps]
+%
+%     This options specifies the option for the absolute tolerance passed as an
+%     option to the built-in MATLAB ODE solver when solving IVPs.
+%
+%   ivpRelTol                    - Relavtive tolerance for the ivpSolver
+%     [100*eps]
+%
+%     This options specifies the option for the relative tolerance passed as an
+%     option to the built-in MATLAB ODE solver when solving IVPs.
+%
+%   ivpSolver                  - Solver for IVPs
+%     ['ode113']
+%     'ode15s'
+%     'ode45'
+%     collocation
+%     ultraS
+%
+%     This options determines which of the MATLAB built-in IVP solvers is used
+%     for solving IVPs posed with the CHEBOP class. Any option of
+%     CHEBOPPREF.discretization (see above) is allowed, which causes IVPs to be
+%     solved globally via spectral methods, rather than reformulating them as
+%     first-order problems and then solved via time-stepping method.
+%
+%   lambdaMin                   - Minimum allowed step-size for Newton's method
 %     [1e-6]
 %
 %     The value of lambdaMin determines the minimum allowed step-size that the
@@ -197,6 +239,12 @@ classdef cheboppref < chebpref
                 prefList.display);
             fprintf([padString('    errTol:') '%g\n'], ...
                 prefList.errTol);
+            fprintf([padString('    ivpAbsTol:') '%g\n'], ...
+                prefList.ivpAbsTol);
+            fprintf([padString('    ivpRelTol:') '%g\n'], ...
+                prefList.ivpRelTol);
+            fprintf([padString('    ivpSolver:') '%s\n'], ...
+                func2str(prefList.ivpSolver));
             fprintf([padString('    lambdaMin:') '%g\n'], ...
                 prefList.lambdaMin);
             fprintf([padString('    maxDimension:') '%d\n'], ...
@@ -221,6 +269,9 @@ classdef cheboppref < chebpref
             % Support user-friendlier syntax for specifying discretization
             % choice:
             val = cheboppref.parseDiscretization(val);
+            
+            % Support user-friendlier syntax for specifying IVP solver choice:
+            val = cheboppref.parseIVPsolver(val);
             
             % Call the superclass method.
             pref = subsasgn@chebpref(pref, ind, val);
@@ -336,6 +387,7 @@ classdef cheboppref < chebpref
                         % Support user-friendlier syntax for specifying
                         % discretization choice:
                         prefValue = cheboppref.parseDiscretization(prefValue);
+                        prefValue = cheboppref.parseIVPsolver(prefValue);
                         if ( isfield(defaultPrefs, prefName) )
                             defaultPrefs.(prefName) = prefValue;
                         else
@@ -361,6 +413,9 @@ classdef cheboppref < chebpref
             factoryPrefs.damping = 1;
             factoryPrefs.display = 'off';
             factoryPrefs.errTol = 1e-10;
+            factoryPrefs.ivpAbsTol = 1e5*eps;
+            factoryPrefs.ivpRelTol = 100*eps;
+            factoryPrefs.ivpSolver = @chebfun.ode113;
             factoryPrefs.lambdaMin = 1e-6;
             factoryPrefs.maxDimension = 4096;
             factoryPrefs.maxIter = 25;
@@ -393,11 +448,27 @@ classdef cheboppref < chebpref
                 end
                 val = @chebcolloc1;
                 
-            elseif ( any(strcmpi(val, {'trigcolloc'})) )
+            elseif ( any(strcmpi(val, {'trigcolloc', 'periodic'})) )
                 val = @trigcolloc;       
                  
             end
                 
+        end
+        
+        function val = parseIVPsolver(val)
+        %PARSEIVPSOLVER   Allow different syntax for specifying the IVPsolver.
+            
+            % Check whether we got pref.ivpSolver = @ode113/@ode45/@ode15s, that
+            % is, a function handle, but not the CHEBFUN overload of it.
+            if ( isa(val, 'function_handle') && ...
+                    any(strcmpi(func2str(val), {'ode113', 'ode15s', 'ode45'})) )
+                val = eval(['@chebfun.', func2str(val)]);
+                
+            % Check whether we got a string argument, e.g. 
+            % pref.ivpSolver = 'ode113'.
+            elseif ( any(strcmpi(val, {'ode113', 'ode15s', 'ode45'})) )
+                val = eval(['@chebfun.', val]);
+            end
         end
 
     end
