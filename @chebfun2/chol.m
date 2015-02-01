@@ -81,7 +81,7 @@ r = 0.0192475;   % arbitrary point in [-1,1]
 s = -.34756987;  % arbitrary point in [-1,1]
 r = diff(dom(1:2))*r - dom(1); 
 s = diff(dom(3:4))*s - dom(3); 
-symTest = ( abs(feval(f,r,s) - feval(f,s,r)) < max(epslevel(f.cols),epslevel(f.rows)) );
+symTest = ( abs(feval(f,r,s) - feval(f,s,r)) < 10*max(epslevel(f.cols),epslevel(f.rows)) );
 if ( ~symTest )
     error('CHEBFUN:CHEBFUN2:chol:symmetric', ...
         'The chebun2 must be a symmetric function.');
