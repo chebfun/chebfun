@@ -19,8 +19,6 @@ function y = dct(u, type)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% TODO: What is the default scaling for DCT5-8? 
-
 % Default to kind 2.
 if ( nargin < 2 )
     type = 2;

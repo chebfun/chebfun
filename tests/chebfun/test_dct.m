@@ -44,23 +44,23 @@ y = DCT4 * x;
 pass(8) = norm( y - chebfun.dct(x, 4) ) < 10*tol; 
 
 % DCT-V 
-DCTV = cos(pi*(0:N-1)'*(0:N-1)/(N-1/2));
-y = DCTV * x; 
+DCT5 = cos(pi*(0:N-1)'*(0:N-1)/(N-1/2));
+y = DCT5 * x; 
 pass(9) = norm( y - chebfun.dct(x, 5) ) < 10*tol; 
 
 % DCT-VI 
-DCTVI = cos(pi*(0:N-1)'*((0:N-1)+1/2)/(N-1/2));
-y = DCTVI * x; 
+DCT6 = cos(pi*(0:N-1)'*((0:N-1)+1/2)/(N-1/2));
+y = DCT6 * x; 
 pass(10) = norm( y - chebfun.dct(x, 6) ) < 10*tol;
 
 % DCT-VII 
-DCTVII = cos(pi*((0:N-1)+1/2)'*(0:N-1)/(N-1/2));
-y = DCTVII * x; 
+DCT7 = cos(pi*((0:N-1)+1/2)'*(0:N-1)/(N-1/2));
+y = DCT7 * x; 
 pass(11) = norm( y - chebfun.dct(x, 7) ) < 10*tol; 
 
 % DCT-VIII
-DCTVIII = cos(pi*((0:N-1)+1/2)'*((0:N-1)+1/2)/(N+1/2));
-y = DCTVIII * x; 
+DCT8 = cos(pi*((0:N-1)+1/2)'*((0:N-1)+1/2)/(N+1/2));
+y = DCT8 * x; 
 pass(12) = norm( y - chebfun.dct(x, 8) ) < 10*tol; 
 
 % IDCT-I 
@@ -78,5 +78,30 @@ pass(15) = norm( y - chebfun.idct(x, 3) ) < tol;
 % IDCT-IV
 y = DCT4 \ x; 
 pass(16) = norm( y - chebfun.idct(x, 4) ) < tol; 
+
+% IDCT-V
+y = DCT5 \ x;
+pass(13) = norm( y - chebfun.idct(x, 5) ) < tol; 
+
+% IDCT-VI
+y = DCT6 \ x; 
+pass(14) = norm( y - chebfun.idct(x, 6) ) < tol; 
+
+% IDCT-VII
+y = DCT7 \ x; 
+pass(15) = norm( y - chebfun.idct(x, 7) ) < tol; 
+
+% IDCT-VIII
+y = DCT8 \ x; 
+pass(16) = norm( y - chebfun.idct(x, 8) ) < tol; 
+
+
+% Check complex inputs 
+c = rand(10,1) + 1i*rand(10,1); 
+for j = 1:4
+    v1 = chebfun.dct(c, j);
+    v2 = chebfun.dct(real(c),j) + 1i*chebfun.dct(imag(c),j);
+    pass(16+j) = norm(v1 - v2) < tol; 
+end
 
 end
