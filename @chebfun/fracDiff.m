@@ -19,11 +19,10 @@ if ( nargin < 3  )
 end
 
 % Extract the fractional part:
-mu_int = floor(mu);
-mu_frac = mu - mu_int;
+n = ceil(mu);
 
-if ( mu_frac == 0 )
-    f = diff(f, mu_int);
+if ( n == mu )
+    f = diff(f, n);
     return
 end
 
@@ -35,13 +34,13 @@ end
 
 if ( strcmpi(type, 'Caputo') )
     % Caputo:
-    f = fracInt(f, 1 - mu_frac);
-    f = diff(f, mu_int + 1);
+    f = diff(f, n);
+    f = fracInt(f, n - mu); 
     
 else
     % Riemann-Liouville:
-    f = diff(f, mu_int + 1);
-    f = fracInt(f, 1 - mu_frac); 
+    f = fracInt(f, n - mu);
+    f = diff(f, n);
     
 end
 
