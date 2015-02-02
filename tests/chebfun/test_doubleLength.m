@@ -8,24 +8,24 @@ end
 % Test that the length doubles.
 f = chebfun(@sin, pref);
 g = chebfun(@sin, 'doubleLength', pref);
-pass(1) = ( 2*length(f) + 1 == length(g) );
+pass(1) = ( 2*length(f) == length(g) );
 
 % Test on array-valued chebfuns.
 f = chebfun(@(x) [sin(x) tanh(x)], pref);
 g = chebfun(@(x) [sin(x) tanh(x)], 'doubleLength', pref);
-pass(2) = ( 2*length(f) + 1 == length(g) );
+pass(2) = ( 2*length(f) == length(g) );
 
 % Test construction from values.
 f = chebfun([3; 2; 1], 'doublelength');
-pass(3) = (length(f) == 7);
+pass(3) = (length(f) == 6);
 
 % Test construction from coefficients.
 f = chebfun([3; 2; 1], 'coeffs', 'doublelength');
-pass(4) = (length(f) == 7);
+pass(4) = (length(f) == 6);
 
 % Test trig.
-f = chebfun(@(x) exp(sin(pi*x)));
-g = chebfun(@(x) exp(sin(pi*x)), 'doublelength');
+f = chebfun(@(x) exp(sin(pi*x)), 'trig');
+g = chebfun(@(x) exp(sin(pi*x)), 'trig', 'doublelength');
 pass(5) = (length(g) == 2*length(f) + 1);
 
 % Test that there is an error when splitting is combined with doubleLength.
