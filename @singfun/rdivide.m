@@ -84,7 +84,8 @@ else
 end
 
 %% Simplify and replace the boundary roots:
-s = extractBoundaryRoots(s);
+numRoots = max(ceil(-s.exponents), 0);
+s = extractBoundaryRoots(s, numRoots.');
 s = simplify(s);
 
 %% 
