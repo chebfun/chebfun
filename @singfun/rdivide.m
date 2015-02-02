@@ -84,6 +84,7 @@ else
 end
 
 %% Simplify and replace the boundary roots:
+s = extractBoundaryRoots(s);
 s = simplify(s);
 
 %% 
