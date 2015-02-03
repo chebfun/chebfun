@@ -233,6 +233,9 @@ classdef chebtech < smoothfun % (Abstract)
         
         % Flip/reverse a CHEBTECH object.
         f = flipud(f)
+        
+        % Fractional integral of a CHEBTECH object.
+        f = fracInt(f, mu, b)
 
         % Happiness test for a CHEBTECH
         [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, pref)

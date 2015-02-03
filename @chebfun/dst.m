@@ -2,7 +2,7 @@ function y = dst(u, type)
 %CHEBFUN.DST   Discrete sine transform.
 %   CHEBFUN.DST(U, TYPE) returns in the discrete sine transform (DST) of type
 %   KIND on the column vector U. If TYPE is not given it defaults to 1 (which is
-%   consistent with Matlab's PDE toolbox). So far, only types 1-4 are supported.
+%   consistent with MATLAB's PDE toolbox).
 %
 %   If U is a matrix, the DST is applied to each column.
 %
@@ -15,8 +15,6 @@ function y = dst(u, type)
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
-
-% TODO: Implement DST5-8. 
 
 % Default to kind 1:
 if ( nargin < 2 )
@@ -64,9 +62,31 @@ switch type
         y = chebfun.dct( u(end:-1:1,:) , 4);
         y = bsxfun(@times, y, (-1).^(0:n-1)' );
         
+    case 5
+        % Relate DSTV of length N to a DSTI of length 2N: 
+        y = chebfun.dst( [ u ; zeros(n, m)], 1);
+        y = y(2:2:end,:); 
+        
+    case 6
+        % Relate DSTVI of length N to a DSTII of length 2N-1: 
+        v = zeros(2*n, m); 
+        v(1:2:end, :) = u; 
+        y = chebfun.dst( v, 1);
+        y = y(1:n,:); 
+        
+    case 7
+        % Relate DSTVIII of length N to a DSTIII of length 2N-1: 
+        y = chebfun.dst( [ u ; zeros(n, m)], 1);
+        y = y(1:2:end,:); 
+        
+    case 8
+        % Relate DSTVIII of length N to a DSTIV of length 2N-1: 
+        y = chebfun.dst( [ u ; zeros(n+1, m)], 3);
+        y = y(1:2:2*n,:); 
+        
     otherwise
     
-        error('CHEBEFUN:CHEBFUN:dct:type', 'Unknown/unimplemented DST type.');
+        error('CHEBEFUN:CHEBFUN:dct:type', 'Unknown DST type.');
         
 end
 

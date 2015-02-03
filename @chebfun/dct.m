@@ -1,8 +1,7 @@
 function y = dct(u, type)
 %CHEBFUN.DCT   Discrete cosine transform.
 %   CHEBFUN.DCT(U, TYPE) returns in the discrete cosine transform (DCT) of type
-%   KIND on the column vector U. If TYPE is not given it defaults to 2. So far,
-%   types 1-4 are supported.
+%   KIND on the column vector U. If TYPE is not given it defaults to 2.
 %
 %   If U is a matrix, the DCT is applied to each column.
 %
@@ -19,8 +18,6 @@ function y = dct(u, type)
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
-
-% TODO: Implement DCT5-8. 
 
 % Default to kind 2.
 if ( nargin < 2 )
@@ -71,10 +68,36 @@ switch type
         for k = 2 : n
             y(k, :) = y(k, :) - y(k-1, :); 
         end
-
+        
+    case 5 
+        
+        % Relate DCTV of length N to a DCTI of length 2N: 
+        y = chebfun.dct( [2*u(1, :) ; u(2:end, :) ; zeros(n, m)], 1 ); 
+        y = y(1:2:end, :);
+        
+    case 6 
+        
+        % Relate DCTVI of length N to a DCTII of length 2N-1: 
+        y = chebfun.dct( [u ; zeros(n-1, m)], 2 ); 
+        y = y(1:2:end, :);
+        
+    case 7 
+        
+        % Relate DCTVII of length N to a DCTIII of length 2N-1: 
+        v = zeros(2*n-1, m); 
+        v(1:2:end, :) = [2*u(1,:) ; u(2:end,:)]; 
+        y = chebfun.dct( v, 3 );
+        y = y(1:n, :);
+        
+    case 8 
+            
+        % Relate DCTVIII of length N to a DCTII of length 2N+1:
+        y = chebfun.dct( [u ; zeros(n+1,m)], 2 );
+        y = y(2:2:end,:);
+        
     otherwise
     
-        error('CHEBEFUN:CHEBFUN:dct:type', 'Unknown/unimplemented DCT type.');
+        error('CHEBEFUN:CHEBFUN:dct:type', 'Unknown DCT type.');
         
 end
 

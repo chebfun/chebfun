@@ -1,8 +1,9 @@
 function c_leg = cheb2leg(c_cheb, normalize, M)
-%LEG2CHEB   Convert Chebyshev coefficients to Legendre coefficients. 
+%CHEB2LEG   Convert Chebyshev coefficients to Legendre coefficients. 
 %   C_LEG = CHEB2LEG(C_CHEB) converts the vector C_CHEB of Chebyshev
 %   coefficients to a vector C_LEG of Legendre coefficients such that
-%   C_CHEB(1)*T0 + ... + C_CHEB(N)*T{N-1} = C_LEG(1)*P0 + ... + C_LEG(N)*P{N-1},
+%       C_CHEB(1)*T0 + ... + C_CHEB(N)*T{N-1} = ...
+%           C_LEG(1)*P0 + ... + C_LEG(N)*P{N-1},
 %   where P{k} is the degree k Legendre polynomial normalized so that
 %   max(|P{k}|) = 1.
 % 
@@ -117,11 +118,11 @@ end
 
 function c_leg = cheb2leg_direct(c_cheb)
 %CHEB2LEG_DIRECT   Convert Cheb to Leg coeffs using the 3-term recurrence.
-[N, n] = size(c_cheb);              % Number of columns.
+[N, m] = size(c_cheb);              % Number of columns.
 N = N - 1;                          % Degree of polynomial.
 if ( N <= 0 ), c_leg = c_cheb; return, end % Trivial case.
-x = cos(.5*pi*(0:2*N)'/N);          % 2*N+1 Chebyshev grid (reversed order).
-f = dct1([c_cheb ; zeros(N,n)]);    % Values on 2*N+1 Chebyshev grid.
+x = cos(.5*pi*(0:2*N).'/N);         % 2*N+1 Chebyshev grid (reversed order).
+f = dct1([c_cheb ; zeros(N, m)]);   % Values on 2*N+1 Chebyshev grid.
 w = chebtech2.quadwts(2*N+1).';     % Clenshaw-Curtis quadrature weights.
 Pm2 = 1; Pm1 = x;                   % Initialise.
 L = zeros(2*N+1, N+1);              % Vandermonde matrix.
@@ -131,8 +132,8 @@ for k = 1:N-1 % Recurrence relation:
     Pm2 = Pm1; Pm1 = P; 
     L(:,2+k) = P;
 end
-scale = (2*(0:N).'+1)/2;            % Scaling in coefficients.
-c_leg = bsxfun(@times, L'*(bsxfun(@times, f ,w)), scale); % Legendre coeffs.
+scale = (2*(0:N).'+1)/2;            % Scaling in coefficients [NIST, (18.3.1)].
+c_leg = bsxfun(@times, L.'*(bsxfun(@times, f ,w)), scale); % Legendre coeffs.
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
