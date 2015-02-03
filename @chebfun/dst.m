@@ -86,7 +86,7 @@ switch type
         
     otherwise
     
-        error('CHEBEFUN:CHEBFUN:dct:type', 'Unknown/unimplemented DST type.');
+        error('CHEBEFUN:CHEBFUN:dct:type', 'Unknown DST type.');
         
 end
 

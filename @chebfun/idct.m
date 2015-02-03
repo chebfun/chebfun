@@ -25,7 +25,7 @@ if ( nargin < 2 )
     type = 2;
 end
 
-[n, m] = size(u);
+[n, m] = size(u); %#ok<ASGLU>
 
 switch type
     

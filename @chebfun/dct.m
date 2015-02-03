@@ -97,7 +97,7 @@ switch type
         
     otherwise
     
-        error('CHEBEFUN:CHEBFUN:dct:type', 'Unknown/unimplemented DCT type.');
+        error('CHEBEFUN:CHEBFUN:dct:type', 'Unknown DCT type.');
         
 end
 
