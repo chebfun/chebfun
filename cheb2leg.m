@@ -142,21 +142,21 @@ end
 
 function v = dct1(c)
 %DCT1   Compute a (scaled) DCT of type 1 using the FFT. 
-% DCT1(C) returns T_N(X_N)*C, where X_N = cos(pi*(0:N))/N and T_N(X) = [T_0,
-% T_1, ..., T_N](X) where T_k is the kth 1st-kind Chebyshev polynomial.
-N = size(c, 1);                     % Number of terms.
-ii = N-1:-1:2;                      % Indicies of interior coefficients.
-c(ii,:) = 0.5*c(ii,:);              % Scale interior coefficients.
-v = ifft([c ; c(ii,:)]);            % Mirror coefficients and call FFT.
-v = (N-1)*[ 2*v(N,:) ; v(ii,:) + v(2*N-ii,:) ; 2*v(1,:) ]; % Re-order.
-v = flipud(v);                      % Flip the order.
+% DCT1(C) returns T(X)*C, where X = cos(pi*(0:N)/N) and T(X) = [T_0, T_1, ...,
+% T_N](X) (where T_k is the kth 1st-kind Chebyshev polynomial), and N =
+% length(C) - 1;
+
+c([1,end],:) = 2*c([1,end],:);              % Scale.
+v = chebfun.dct(c, 1);                      % DCT-I.
+
 end
 
 function c = dst1Transpose(v, flag) %#ok<INUSD>
 %DST1TRANSPOSE   Compute a transposed and scaled DST of type 1. 
-% DST1TRANSPOSE(C) returns U_N(X)'*diag(sin(T_N))*C where T_N(k,1) = pi*(k-1)/N,
-% k = 1:N+1, X_N = cos(T_N) and U_N(X) = [U_0, U_1, ..., U_N](X) where U_k is
-% the kth 2nd-kind Chebyshev polynomial.
+% DST1TRANSPOSE(C) returns U(cos(T))'*diag(sin(T))*V where T(k,1) = pi*(k-1)/N,
+% k = 1:N+1, Xand U_N(X) = [U_0, U_1, ..., U_N](X) (where U_k is the kth
+% 2nd-kind Chebyshev polynomial), and N = legnth(V) - 1.
+
 persistent SMat sinT                % The same for each partition.    
 if ( nargin == 2 ), SMat = []; return, end % Clear persistent variables.
 N = size(v,1) - 1;                  % Degree of polynomial.
@@ -167,6 +167,7 @@ if ( isempty(SMat) )                % Construct conversion matrix:
     sinT = sin(pi*(0:N)'/N);        % Sin(theta).
 end
 c = (dct1(bsxfun(@times, v, sinT))'/SMat)'; % Scaled DCT.
+
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
