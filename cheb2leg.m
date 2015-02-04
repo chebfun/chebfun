@@ -81,7 +81,6 @@ end
 
 %%%%%%%%%%%%%%%%%%%% Asymptotics / interior region %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 c_leg = zeros(N+1, n);                                 % Initialise output.
-%dst1Transpose([], 1);                                  % Clear storage.
 for k = 1:K-1 % Loop over the block partitions.
     c_k = zeros(N+1, n);                               % Initialise local LHS.
     hm = ones(N+1,n); hm([1:nM(k)-1,nM(k+1):end],:) = 0; % Initialise h_m.
@@ -102,7 +101,6 @@ for k = 1:K-1 % Loop over the block partitions.
     end
     c_leg = c_leg + bsxfun(@times, c_k, C);            % Append to global LHS.
 end
-%dst1Transpose([], 1);                                % Clear storage.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% Combine for result %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 scale = (2*(0:N).'+1)/2;                             % Scaling in coeffs.
@@ -157,19 +155,10 @@ function c = dst1Transpose(v, flag) %#ok<INUSD>
 % k = 1:N+1, Xand U_N(X) = [U_0, U_1, ..., U_N](X) (where U_k is the kth
 % 2nd-kind Chebyshev polynomial), and N = legnth(V) - 1.
 
-% persistent SMat sinT                % The same for each partition.    
-% if ( nargin == 2 ), SMat = []; return, end % Clear persistent variables.
-% N = size(v,1) - 1;                  % Degree of polynomial.
-% if ( isempty(SMat) )                % Construct conversion matrix:
-%     dg = .5*ones(N-1, 1);           % Conversion matrix:
-%     SMat = spdiags([1 ; .5 ; dg], 0, N+1, N+1) + ...
-%         spdiags([0 ; 0 ; -dg], 2, N+1, N+1);
-%     sinT = sin(pi*(0:N)'/N);        % Sin(theta).
-% end
-% c = (dct1(bsxfun(@times, v, sinT))'/SMat)'; % Scaled DCT.
 m = size( v, 2 ); 
 c = [ chebfun.dst( v(2:end-1, :), 1 ) ; zeros(2, m) ]; 
 c(end, :) = -c(end-2, :);
+
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
