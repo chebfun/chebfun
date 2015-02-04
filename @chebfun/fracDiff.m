@@ -28,8 +28,8 @@ end
 
 % No piecewise support yet:
 if ( numel(f.funs) > 1 )
-    error('CHEBFUN:CHEBFUN:fracInt:breakpoints', ...
-        'FRACINT() does not currently support piecewise functions.');
+    error('CHEBFUN:CHEBFUN:fracDiff:breakpoints', ...
+        'FRACDIFF does not currently support piecewise functions.');
 end
 
 if ( strcmpi(type, 'Caputo') )
