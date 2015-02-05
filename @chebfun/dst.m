@@ -67,7 +67,7 @@ switch type
         % (up to a diagonal scaling).
 
         y = chebfun.dct( u(end:-1:1,:) , 4);
-        y = bsxfun(@times, y, (-1).^(0:n-1)' );
+        y(2:2:end,:) = -y(2:2:end,:);
         
     case 5
         % Relate DSTV of length N to a DSTI of length 2N: 
