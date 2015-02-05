@@ -32,6 +32,13 @@ switch type
         Z = zeros(1, m); 
         y = fft( [ Z ; u ; Z ; -u(end:-1:1,:)] ); 
         y = -1i*( y( 2*n+2:-1:n+3, : )/2 );
+        
+        % Ensure real/imaginary output for real/imaginary input:
+        if ( isreal(u) )
+            y = real(y);
+        elseif ( isreal(1i*u) )
+            y = imag(y);
+        end
 
     case 2
         

@@ -32,10 +32,11 @@ switch type
         
         % Equivalent to evaluating a ChebT expansion at 2nd kind points 
         % (up to a diagonal scaling). Implemented using the connection to 
-        % a real-even DFT, see CHEBTECH2.COEFFS2VALS().
-        
-        y = fft( [ u ; u(end-1:-1:2 ,: ) ]/2 ); 
-        y = y( 1:n, : );
+        % CHEBTECH2.COEFFS2VALS().
+
+        u([1, end],:) = .5*u([1, end],:);
+        y = chebtech2.coeffs2vals(u);
+        y = y(end:-1:1,:);
         
     case 2
         
@@ -43,15 +44,14 @@ switch type
         % (up to a diagonal scaling). Also the inverse of DCT-III 
         % (up to a diagonal scaling) and this is how it is implemented.  
         
-        u = flipud( u );
-        y = ( n / 2 ) * chebtech1.vals2coeffs( u );        
+        y = ( n / 2 ) * chebtech1.vals2coeffs( u(end:-1:1,:) );        
         y(1,:) = 2 * y(1, :); 
         
     case 3
         
         % Equivalent to evaluating a ChebT expansion at 1st kind points 
         % (up to a diagonal scaling). Implemented using the connection to a 
-        % real-even DFT of half-shifted output, see CHEBTECH2.COEFFS2VALS().  
+        % real-even DFT of half-shifted output, see CHEBTECH1.COEFFS2VALS().  
         
         u(1,:) = .5*u(1, :); 
         y = chebtech1.coeffs2vals( u );    
