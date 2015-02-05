@@ -70,21 +70,15 @@ elseif ( nargin == 3 )
         'CHEBFUN:CHEBFUN:kron:domain',...
         'Domains must be identical for Kronecker products returning operators.')
     
-    for i = 1:size(numColumns(f))
+    for i = 1:size(numel(f))
         fi = f(:, i);
         gi = g(:, i);
-        op = @(u) fi * (gi*u);  % operational form
-        h = operatorBlock.outer(fi, gi, fDom);
-%         % Matrix form available only for unsplit functions.
-%         if fi.nfuns==1 && gi.nfuns==1
-%             x = @(n) d(1) + (1+sin(pi*(2*(1:n)'-n-1)/(2*n-2)))/2*length(d);
-%             C = cumsum(d);
-%             w = C(end,:);  % Clenshaw-Curtis weights, any n
-%             mat = @(n) matfun(n,w,x,fi,gi);
-%         else
-%             mat = [];
-%         end
-%         h = h + linop(mat,op,d);
+        
+        assert( numColumns(fi) == numColumns(gi), ...
+            'CHEBFUN:CHEBFUN:kron:nomColumns', ...
+            'The number of columns in input CHEBFUNs must agree');
+        
+        h = h + operatorBlock.outer(fi, gi, fDom);
     end
 else
     error('CHEBFUN:CHEBFUN:kron:nargin','Too many input arguments.');
