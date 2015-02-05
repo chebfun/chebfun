@@ -67,7 +67,8 @@ switch type
         
     case 8
         
-        error('CHEBFUN:CHEBFUN:IDST:EIGHT','Not implemented')
+%         error('CHEBFUN:CHEBFUN:IDST:EIGHT', 'Not implemented')
+        y = NaN;
         
     otherwise
     

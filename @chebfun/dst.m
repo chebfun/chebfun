@@ -43,24 +43,51 @@ switch type
     case 2
         
         % Equivalent to evaluating a ChebW expansion at 2nd kind points 
-        % (up to a diagonal scaling). Also the inverse of DST-III.  
-        y = u;
-        for k = n - 1 : -1 : 1
-            y(k, :) = y(k, :) - y(k+1, :); 
-        end
-        y = chebfun.dst(y, 4);
-        y = bsxfun( @times, y, 2*cos(pi/2/n*((0:n-1)'+1/2)) );
+        % (up to a diagonal scaling). Also the inverse of DST-III.
+
+        
+%         e = ones(n,1);
+%         S = spdiags([e, e], 0:1, n, n);
+%         y = S\u;
+%         y = chebfun.dst(y, 4);
+%         w = 2*cos(pi/2/n*((0:n-1)'+1/2));
+%         y = bsxfun( @times, y, w );
+
+        % Weights:  
+%         persistent w1 w2 %#ok<TLEV>
+%         if ( size(w1,1) ~= n )
+            w1 = sin( .5*pi*(0:n).'/n );
+            w2 = cos( .5*pi*(1:n-1).'/n );
+%         end
+        W1 = repmat(w1, 1, m);
+        W2 = repmat(w2, 1, m);
+        z = zeros(1, m);
+        
+        v1 = chebfun.dct( W1.*[z ; u(1:end-1,:) ; 2*u(end,:)], 1); 
+        v2 = chebfun.dst( W2.*u(1:end-1,:), 1);
+        y =  [v2 ; z] - v1(2:end,:);
         
     case 3
         
         % Equivalent to evaluating a ChebU expansion at 1st kind points 
-        % (up to a diagonal scaling).  
-        u(n, :) = .5 * u(n, :);
-        y = bsxfun(@times, u, 2*cos(pi/2/n*((0:n-1)'+1/2)) );
-        y = chebfun.dst( y, 4 );
-        for k = 2 : n
-            y(k, :) = y(k, :) - y(k-1, :); 
-        end
+        % (up to a diagonal scaling). 
+        
+%         u(n, :) = .5 * u(n, :);
+%         y = bsxfun(@times, u, 2*cos(pi/2/n*((0:n-1)'+1/2)) );
+%         y = chebfun.dst( y, 4 );
+%         for k = 2 : n
+%             y(k, :) = y(k, :) - y(k-1, :); 
+%         end
+        
+        w1 = sin( .5*pi*(0:n)'/n );
+        w2 = cos( .5*pi*(1:n)'/n );
+        W1 = repmat(w1, 1, m);
+        W2 = repmat(w2, 1, m);
+        z = zeros(1, m);
+
+        v1 = W1.*chebfun.dct( [ z ; u ], 1); 
+        v2 = W2.*[ chebfun.dst( u(1:end-1,:), 1) ; z ];
+        y = v2 - v1(2:end,:);
         
     case 4 
         % Equivalent to evaluating a ChebW expansion at 1st kind points 
@@ -68,7 +95,7 @@ switch type
 
         y = chebfun.dct( u(end:-1:1,:) , 4);
         y(2:2:end,:) = -y(2:2:end,:);
-        
+                
     case 5
         % Relate DSTV of length N to a DSTI of length 2N: 
         y = chebfun.dst( [ u ; zeros(n, m)], 1);
@@ -76,9 +103,9 @@ switch type
         
     case 6
         % Relate DSTVI of length N to a DSTII of length 2N-1: 
-        v = zeros(2*n, m); 
-        v(1:2:end, :) = u; 
-        y = chebfun.dst( v, 1);
+        y = zeros(2*n, m); 
+        y(1:2:end, :) = u; 
+        y = chebfun.dst( y, 1);
         y = y(1:n,:); 
         
     case 7
