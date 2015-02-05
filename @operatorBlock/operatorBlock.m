@@ -369,6 +369,37 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
             M.stack = @(z) mult(z, u);
             M.diffOrder = 0;
         end
+        
+        function M = outer(f, g, dom)
+        %OPERATORBLOCK.OUTER   Outer product operator.
+        %   M = OPERATORBLOCK.MULT(F, G) returns the outer product operator from
+        %   the column CHEBFUN f and the row CHEBFUN g, i.e. the operator that
+        %   maps a CHEBFUN h(x) to f(x) * (g(x)*h(x)). Note that the second
+        %   multiplication corresponds to taking the inner product between g and
+        %   h.
+        %
+        %   M = OPERATORBLOCK.MULT(F, G, DOM) allows passing a domain on which
+        %   the multiplication operator is to be constructed.
+
+            % Check whether domain information was passed
+            if ( nargin < 3 )
+                % Ensure that F and G have the same domains, without any
+                % breakpoints
+                fDom = f.domain;
+                gDom = g.domain;
+                assert( (length(fDom) <= 2) && (length(gDom) <=2) && ...
+                    all(fDom == gDom), ...
+                    'CHEBFUN:OPERATORBLOCK:outer:domain', ...
+                    ['The domains of the inputs must be the same, and not ' ...
+                     'contain any breakpoints.']);
+                dom = f.domain(1:2);
+            end
+
+            % Create the OPERATORBLOCK with information now available.
+            M = operatorBlock(dom);
+            M.stack = @(z) outer(z, f, g);
+            M.diffOrder = 0;
+        end
 
         function V = volt(kernel, domain, varargin)
         %VOLT   Volterra integral operator.
