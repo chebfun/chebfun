@@ -16,6 +16,8 @@ function y = dst(u, type)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+persistent w1 w2 %#ok<TLEV>
+
 % Default to kind 1:
 if ( nargin < 2 )
     type = 1;
@@ -45,22 +47,13 @@ switch type
         % Equivalent to evaluating a ChebW expansion at 2nd kind points 
         % (up to a diagonal scaling). Also the inverse of DST-III.
 
-        
-%         e = ones(n,1);
-%         S = spdiags([e, e], 0:1, n, n);
-%         y = S\u;
-%         y = chebfun.dst(y, 4);
-%         w = 2*cos(pi/2/n*((0:n-1)'+1/2));
-%         y = bsxfun( @times, y, w );
-
         % Weights:  
-%         persistent w1 w2 %#ok<TLEV>
-%         if ( size(w1,1) ~= n )
+        if ( size(w1, 1) ~= n+1 )
             w1 = sin( .5*pi*(0:n).'/n );
-            w2 = cos( .5*pi*(1:n-1).'/n );
-%         end
+            w2 = cos( .5*pi*(1:n).'/n );
+        end
         W1 = repmat(w1, 1, m);
-        W2 = repmat(w2, 1, m);
+        W2 = repmat(w2(1:end-1), 1, m);
         z = zeros(1, m);
         
         v1 = chebfun.dct( W1.*[z ; u(1:end-1,:) ; 2*u(end,:)], 1); 
@@ -71,16 +64,11 @@ switch type
         
         % Equivalent to evaluating a ChebU expansion at 1st kind points 
         % (up to a diagonal scaling). 
-        
-%         u(n, :) = .5 * u(n, :);
-%         y = bsxfun(@times, u, 2*cos(pi/2/n*((0:n-1)'+1/2)) );
-%         y = chebfun.dst( y, 4 );
-%         for k = 2 : n
-%             y(k, :) = y(k, :) - y(k-1, :); 
-%         end
-        
-        w1 = sin( .5*pi*(0:n)'/n );
-        w2 = cos( .5*pi*(1:n)'/n );
+
+        if ( size(w1, 1) ~= n+1 )
+            w1 = sin( .5*pi*(0:n)'/n );
+            w2 = cos( .5*pi*(1:n)'/n );
+        end
         W1 = repmat(w1, 1, m);
         W2 = repmat(w2, 1, m);
         z = zeros(1, m);

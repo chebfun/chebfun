@@ -2,7 +2,7 @@ function p = ultrapoly(n, lam, dom)
 %ULTRAPOLY   Ultraspherical polynomials.
 %   P = ULTRAPOLY(N, LAM) computes a CHEBFUN of the ultraspherical polynomial of
 %   degree N with parameters LAM, where the weight function is defined by w(x) =
-%   (1-x^2)^(LAM-.5). N may be a vector of integers.
+%   (1-x^2)^(LAM-.5). N may be a vector of integers. LAM must be positive.
 %
 %   Normalization is chosen to be consistent with the formulas in [1, $18]. In
 %   particular, feval(P, 1) = (2*LAM)_n/n! and feval(P, 0) = (-1)^n(LAM)_n/n!,
@@ -35,6 +35,12 @@ if ( any(isinf(dom)) )
     error('CHEBFUN:ultrapoly:infdomain', ...
         'Ultraspherical polynomials are not defined over an unbounded domain.');
 end
+if ( lam <= 0 )
+    error('CHEBFUN:ultrapoly:infdomain', ...
+        'Ultraspherical polynomials are not defined for LAMBA <= 0.');
+end
+
+
 
 if ( lam == .5 ) 
    % Equivalent to LEGPOLY: 
