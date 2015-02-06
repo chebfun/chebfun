@@ -35,7 +35,7 @@ end
 % the coefficients and not the coefficients themselves and (b) that we often
 % perform repeated transforms of the same length, we store w persistently.
 persistent w
-if ( size(w,1) ~= 2*n )
+if ( size(w, 1) ~= 2*n )
     % Pre-compute the weight vector:
     w = (exp(-1i*(0:2*n-1)*pi/(2*n))/2).';
     w([1, n+1]) = [2*w(1); 0];
