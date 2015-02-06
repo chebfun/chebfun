@@ -40,8 +40,6 @@ if ( lam <= 0 )
         'Ultraspherical polynomials are not defined for LAMBA <= 0.');
 end
 
-
-
 if ( lam == .5 ) 
    % Equivalent to LEGPOLY: 
    p = legpoly(n, dom);
