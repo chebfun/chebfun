@@ -252,6 +252,10 @@ classdef (InferiorClasses = {?double}) chebop
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
         
+        % Deflation
+        % TODO: Fill in and uncomment
+        % varargout = deflate(N, r);
+        
         % Find selected eigenvalues and eigenfunctions of a linear CHEBOP.
         varargout = eigs(N, varargin)
         

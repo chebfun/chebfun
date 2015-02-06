@@ -504,6 +504,19 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % f.linearity = f.linearity;
         end
         
+        function Nu = deflationFun(Nu, u, r)
+            % Norm function
+            u = u.func;
+            ffunc = Nu.func;
+            normFun = norm(u-r, 'fro');
+            
+            Nu.jacobian = kron(ffunc,(-1/normFun^3)*(u-r)','op') + ...
+                1/normFun*Nu.jacobian;
+            
+            % Deflator operator
+            Nu.func = ffunc/normFun;
+        end
+        
         function f = diff(f, k)
             % F = DIFF(F, K)   DIFF of an ADCHEBFUN
             
