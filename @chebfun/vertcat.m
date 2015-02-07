@@ -46,7 +46,7 @@ end
 % Horizontal concatenation of row CHEBFUN objects produces a CHEBMATRIX:
 if ( chebfun1(1).isTransposed )
     args = cellfun(@transpose, varargin, 'UniformOutput', false);
-    out = horzcat(args{:}).';
+    out = horzcat(args{:})';
 else
     out = chebmatrix(varargin.');
 end
