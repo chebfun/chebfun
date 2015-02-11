@@ -1,5 +1,6 @@
 'Troesch equation'
 'bvp'
+type = 'bvp';
 domain = '[0 1]';
 DE = 'u" = 8*sinh(8*u)';
 BC = {'u(0) = 0'; 'u(1) = 1'};

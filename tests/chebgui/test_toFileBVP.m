@@ -1,5 +1,5 @@
 function pass = test_toFileBVP(pref)
-%TEST_TOFILEBVP     Test exporting all BVP demos to an .m-file.
+%TEST_TOFILEBVP   Test exporting all BVP demos to an m-file.
 %
 % This test only checks whether nothing breaks, it does not try to solve the
 % problems.

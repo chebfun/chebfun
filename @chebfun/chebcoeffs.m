@@ -1,12 +1,14 @@
 function out = chebcoeffs(f, varargin)
 %CHEBCOEFFS   Chebyshev polynomial coefficients of a CHEBFUN.
-%   A = CHEBCOEFFS(F, N) returns the first N Chebyshev coefficients of F ib
+%   A = CHEBCOEFFS(F, N) returns the first N Chebyshev coefficients of F is
 %   the column vector A such that F = A(1) T_0(x) +  A(2) T_1(x) + ... + 
 %   A(N) T_(N-1)(x), where T_M(x) denotes the M-th Chebyshev polynomial of the
 %   first kind.
 %
-%   If F is a smooth CHEBFUN (i.e., with no breakpoints), then CHEBCOEFFS(F) is
-%   equivalent to CHEBCOEFFS(F, LENGTH(F)).
+%   If F has a 'finite' Chebyshev expansion (i.e., it is a smooth CHEBFUN with
+%   no breakpoints or endpoint singularities and is based on a CHEBTECH), then
+%   CHEBCOEFFS(F) is equivalent to CHEBCOEFFS(F, LENGTH(F)). This syntax should
+%   be used with caution, and passing N is preferred.
 %
 %   If F is array-valued with M columns, then A is an NxM matrix.
 %
@@ -51,15 +53,20 @@ if ( numel(argin) > 0 )
     N = argin{1};
 end
 
-%% Error checking:
-if ( isempty(N) && numFuns == 1 )
-    N = length(f);
+
+%% Merge:
+% Try to merge out breakpoints if possible, since integrals are expensive:
+if ( numFuns ~= 1 )
+    f = merge(f);
+    numFuns = numel(f.funs);
 end
-if ( isempty(N) )
+
+%% Error checking:
+if ( isempty(N) && numFuns > 1 )
     error('CHEBFUN:CHEBFUN:chebcoeffs:inputN', ...
         'Input N is required for piecewise CHEBFUN objects.');
 end
-if ( ~isscalar(N) || isnan(N) )
+if ( ~isempty(N) && (~isscalar(N) || isnan(N)) )
     error('CHEBFUN:CHEBFUN:chebcoeffs:inputN', 'Input N must be a scalar.');
 end
 if ( any(isinf(f.domain)) )
@@ -68,30 +75,27 @@ if ( any(isinf(f.domain)) )
         'Infinite intervals are not supported here.');
 end
 
-% We compute 2nd-kind coefficients by computing the 1st-kind coefficients and
-% using a recurrence relation.  The recurrence for the coefficient of U_n
-% requires the coefficients of T_n and T_{n + 2}, so we need to compute two
-% extra 1st-kind coefficients if 2nd-kind coefficients have been requested.
-%
-% TODO:  This is OK for smooth functions but will be expensive for
-% piecewise-smooth ones, which require integrals.  If the function is only
-% piecewise smooth, we should compute the exactly N inner products for the
-% second-kind coefficients directly.
-if ( kind == 2 )
-    N = N + 2;
-end
-
-% Try to merge out breakpoints if possible, since integrals are expensive:
-if ( numFuns ~= 1 )
-    f = merge(f);
-    numFuns = numel(f.funs);
-end
-
 %% Compute the coefficients:
 if ( numFuns == 1 )
     
+    % We compute 2nd-kind coefficients by computing the 1st-kind coefficients and
+    % using a recurrence relation.  The recurrence for the coefficient of U_n
+    % requires the coefficients of T_n and T_{n + 2}, so we need to compute two
+    % extra 1st-kind coefficients if 2nd-kind coefficients have been requested.
+    if ( kind == 2 )
+        N = N + 2;
+    end
+    
     % CHEBCOEFFS() of a smooth piece:
-    out = chebcoeffs(f.funs{1}, N);    
+    out = chebcoeffs(f.funs{1}, N);   
+    
+    % Compute 2nd-kind coefficients from 1st-kind ones using the recurrence
+    %   T_n(x) = (1/2)*(U_n(x) - U_{n-2}(x)):
+    if ( kind == 2 )
+        out(1,:) = 2*out(1,:);
+        out = 0.5*[out(1:end-2,:) - out(3:end,:) ; out(end-1:end,:)];
+        out = out(1:end-2,:);
+    end
     
 else
     % CHEBCOEFFS() of a piecewise smooth CHEBFUN:
@@ -99,27 +103,32 @@ else
     % Compute coefficients via inner products.
     d = f.domain([1, end]);
     x = chebfun('x', d);
-    w = 1./sqrt((x - d(1)).*(d(2) - x));
+    if ( kind == 1 )
+        w = 1./sqrt((x - d(1)).*(d(2) - x));
+    elseif ( kind == 2 )
+        w = sqrt((x - d(1)).*(d(2) - x));
+    end
+    
     numCols = numColumns(f);
     out = zeros(N, numCols);
     f = mat2cell(f);
-    for j = 1:numCols
-        for k = 1:N
-            T = chebpoly(k-1, d);
-            I = (f{j}.*T).*w;
-            out(k,j) = 2*sum(I)/pi;
+    T = chebpoly(0:(N-1), d, kind);
+    T = mat2cell(T);
+    for k = 1:N
+        Tkw = T{k}.*w;
+        for j = 1:numCols
+            out(k,j) = innerProduct(f{j}, Tkw);
         end
     end
-    out(1,:) = out(1,:)/2;
+     
+    if ( kind == 1 )
+        % Scale the T_0 term:
+        out(1,:) = out(1,:)/2;
+    end
     
-end
-
-% Compute 2nd-kind coefficients from 1st-kind ones using the recurrence
-%   T_n(x) = (1/2)*(U_n(x) - U_{n - 2}(x)):
-if ( kind == 2 )
-    out(1,:) = 2*out(1,:);
-    out = 0.5*[out(1:end-2,:) - out(3:end,:) ; out(end-1:end,:)];
-    out = out(1:end-2,:);
+    % Scale by 2/pi:
+    out = (2/pi)*out;
+    
 end
 
 end

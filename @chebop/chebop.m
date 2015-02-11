@@ -1,5 +1,6 @@
 classdef (InferiorClasses = {?double}) chebop
 %CHEBOP  CHEBOP class for representing operators on functions defined on [a,b].
+%
 % N = CHEBOP(OP) creates a CHEBOP object N with operator defined by OP, which
 % should be a handle to a function (often created using an anonymous function)
 % that accepts a CHEBFUN or a CHEBMATRIX consisting of CHEBFUNs and scalars as
@@ -52,6 +53,9 @@ classdef (InferiorClasses = {?double}) chebop
 %                 of the result are evaluated at the endpoint, and for the
 %                 solution of the BVP, they are made to equal zero.
 %
+% See note below for how to specify initial value problems so that they will be
+% solved via time-marching methods, rather than global spectral methods.
+% 
 % A boundary condition function may be nonlinear; it must not accept the
 % independent variable X as an input. Again, in case of systems, the function
 % describing the boundary conditions must return vertically concatenated
@@ -106,7 +110,31 @@ classdef (InferiorClasses = {?double}) chebop
 %   N.bc = 'dirichlet';
 %   plot(N\1)
 %
-% %% PARAMETER DEPENDENT PROBLEMS: %%
+%
+% %% INITIAL VALUE PROBLEMS %%
+%
+% When solving boundary-value problems, where conditions on the operator are
+% imposed at both endpoints of the domain, CHEBOP will apply global spectral
+% methods for solving the linear systems arising. In case of initial or final
+% value problems (IVPs/FVPs), where all the conditions are imposed on the left
+% endpoint of the domain, this often proves to be an inefficient way of solving
+% the problems. If conditions are only imposed on one of the fields N.LBC or
+% N.RBC, and not on N.BC, CHEBOP will automatically reformulate the problem so
+% that it can be solved using one of MATLAB's build-in solvers ODE113, ODE15s or
+% ODE45. See the help text in CHEBOPPREF for instructions on how to select the
+% ODE solver used, or how to enforce a global method to be used. 
+% 
+% Example (solving an IVP by automatically converting it to first order form):
+%
+% % Solve the van der Pol equation u'' - 25*(1-u^2)u' + u = 0, u(0)=2, u'(0)=0
+% vdpFun = @(u) diff(u, 2) - 20*(1-u.^2).*diff(u) + u;
+% dom = [0 100];
+% N = chebop(vdpFun, dom);
+% N.lbc = @(u) [u - 2; diff(u)];
+% u = N\0
+% plot(u)
+%
+% %% PARAMETER DEPENDENT PROBLEMS %%
 %
 % CHEBOP supports solving systems of equations containing unknown parameters
 % without the need to introduce extra equations into the system. Simply add the
@@ -184,6 +212,14 @@ classdef (InferiorClasses = {?double}) chebop
             
             % Assign operator and domain:
             N.op = op;
+            
+            % Ensure that the domain is a row vector, not a column vector:
+            assert( (size(dom, 1) == 1) && ( size(dom, 2) > 1 ), ...
+                'CHEBOP:CHEBOP:domain', ...
+                ['The vector specifying the domain of a CHEBOP\n' ...
+                'should be a row vector of length greater than 1.'])
+            
+            % Assign the domain:
             N.domain = dom;
             
             % Assign BCs and INIT if they were passed:
@@ -223,7 +259,7 @@ classdef (InferiorClasses = {?double}) chebop
         [L, res, isLinear, u] = linearize(N, u, x, flag);  
         
         %\   Chebop backslash.
-        varargout = mldivide(N, rhs, pref)
+        varargout = mldivide(N, rhs, pref, varargin)
         
         % The number of input arguments to a CHEBOP .OP field.
         nIn = nargin(N)
@@ -275,6 +311,9 @@ classdef (InferiorClasses = {?double}) chebop
         % Controls information displayed for Newton iterations
         [displayFig, displayTimer] = displayInfo(mode, varargin);
         
+        % Controls information displayed for solving IVPs
+        displayIVPinfo(u, isIVP, varargin);
+        
         % Display at the finish of Newton iteration.
         displayInfoFinal(u, delta, iterNo, errEstDE, errEstBC, displayFig, ...
             displayTimer, pref)
@@ -302,6 +341,21 @@ classdef (InferiorClasses = {?double}) chebop
     %% METHODS IMPLEMENTED IN THIS FILE:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
     methods
+        
+        function N = set.domain(N, val)
+            %CHEBOP.SET.DOMAIN   Set domain of a CHEBOP.
+            %   CHEBOP.SET.DOMAIN ensures that N.DOMAIN is a row vector as
+            %   required by the CHEBOP and CHEBFUN classes.
+            
+            % Ensure that the domain is a row vector, not a column vector:
+            assert( (size(val, 1) == 1) && ( size(val, 2) > 1 ), ...
+                'CHEBOP:SET:domain', ...
+                ['The vector specifying the domain of a CHEBOP\n' ...
+                'should be a row vector of length greater than 1.'])
+            
+            % Assign the domain:
+            N.domain = val(:)';            
+        end
         
         function N = set.lbc(N, val)
             %CHEBOP.SET.LBC   Set left boundary condition of a CHEBOP.

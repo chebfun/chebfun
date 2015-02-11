@@ -165,11 +165,18 @@ for pIndex = 1:numOfPars
         if ( (minOpInside == 1) && ~isempty(nextOpLeft) && ...
                 strcmp(str(pLeft - 1), '-') )
             % Deal with the case of minus (switch interior pluses and minuses
-%             continue % uncomment if we don't want to simplify -(a+b) = -a-b
+%            continue % uncomment if we don't want to simplify -(a+b) = -a-b
             interiorPM = interiorOpVec == 1;
             interiorPM(pLeft+1) = 0;
             m = (str == '-') & interiorPM;
             p = (str == '+') & interiorPM;
+            % But we have to be careful that we don't change 1e-2 to 1e+2!
+            mPos = find(m);
+            pPos = find(p);
+            mThrow = str(mPos-1) == 'e';
+            pThrow = str(pPos-1) == 'e';
+            m(mPos(mThrow)) = 0;
+            p(pPos(pThrow)) = 0;
             str(m) = '+';
             str(p) = '-';
         end

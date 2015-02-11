@@ -42,7 +42,10 @@ classdef chebfunpref < chebpref
 %
 %         This is the maximum total length of the CHEBFUN (i.e., the sum of the
 %         lengths of all the FUNs) allowed by the constructor when breakpoint
-%         detection is enabled.
+%         detection is enabled.  The constructor will give up as soon as the
+%         combined length of all the FUNs for the subintervals it has
+%         successfully resolved thus far is greater than or equal to this
+%         number.
 %
 %   blowup                     - Enable/disable singularity detection.
 %     true

@@ -227,6 +227,28 @@ err1 = g1Vals - g1Exact;
 err2 = g2Vals - g2Exact;
 pass(15) = norm([err1 ; err2], inf) < 5e4*get(g,'epslevel').*get(g,'vscale');
 
+% Check delta functions:
+x = chebfun('x');
+f = heaviside(x+.5)+heaviside(x) + heaviside(x-.5);
+fp = diff(f);
+fpp = diff(fp);
+fp = cumsum(fpp);
+pass(16) = norm(f - cumsum(fp)) < 100*eps;
+
+% Bug reported by LNT #1289:
+f = sign(x)-x;
+f2 = cumsum(diff(f));
+pass(17) = norm(f-f2) < 100*eps;
+
+% Check quasi matrix with delta functions:
+f = heaviside(x);
+g = heaviside(x-.5);
+s = [diff(f), diff(g)];
+S = cumsum(s);
+pass(18) = norm(S(:,1) - f) < 100*eps;
+pass(19) = norm(S(:,2) - g) < 100*eps;
+
+
 % [TODO]:  Check fractional antiderivatives once implemented.
 
 end

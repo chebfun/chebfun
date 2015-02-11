@@ -1,9 +1,11 @@
 function c_cheb = leg2cheb(c_leg, normalize, M)
 %LEG2CHEB convert Legendre coefficients to Chebyshev coefficients. 
 %   C_CHEB = LEG2CHEB(C_LEG) converts the vector C_LEG of Legendre coefficients
-%   to a vector C_CHEB of Chebyshev coefficients such that C_CHEB(N)*T0 + ... +
-%   C_CHEB(1)*T{N-1} = C_LEG(N)*P0 + ... + C_LEG(1)*P{N-1}, where P{k} is the
-%   degree k Legendre polynomial normalized so that max(|P{k}| = 1.
+%   to a vector C_CHEB of Chebyshev coefficients such that 
+%       C_CHEB(1)*T0 + ... + C_CHEB(N)*T{N-1} = ...
+%           C_LEG(N)*P0 + ... + C_LEG(1)*P{N-1}, 
+%   where P{k} is the degree k Legendre polynomial normalized so that max(|P{k}|
+%   = 1.
 % 
 %   C_CHEB = LEG2CHEB(C_LEG, 'norm') is as above, but with the Legendre
 %   polynomials normalized to be orthonormal.
@@ -75,7 +77,6 @@ end
 C = constantOutTheFront(N);
 c_leg = bsxfun(@times,c_leg,C);                   % Scaling factor, eqn (3.3).
 v_cheb = zeros(N+1, n);                           % Initialise output vector.
-dst1([], 1);                                      % Clear persistent storage.
 for k = 1:K-1 % Loop over the block partitions:
     v_k = zeros(N+1, n);                          % Initialise local LHS.
     hm = ones(N+1,n); hm([1:nM(k)+1, nM(k+1)+2:end],:) = 0; % Initialise h_m.
@@ -88,12 +89,13 @@ for k = 1:K-1 % Loop over the block partitions:
         v = cos((m+.5)*(.5*pi-t_k))./denom;
         hmc = bsxfun(@times, c_leg,hm);           % h_M*c_leg.
         % Update using DCT1 and DST1:
-        v_k = v_k + bsxfun(@times,dst1(hmc),u) + bsxfun(@times,dct1(hmc),v); 
+        U = bsxfun(@times, dst1(hmc(2:end,:)), u);
+        V = bsxfun(@times, dct1(hmc), v);
+        v_k = v_k + U + V; 
         hm = bsxfun(@times, hm, ((m+0.5)^2./((m+1)*(NN+m+1.5)))); % Update h_m.
     end
     v_cheb(j_k,:) = v_cheb(j_k,:) + v_k(j_k,:);   % Add terms to output vector.
 end
-dst1([], 1);                                      % Clear persistent storage.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% Combine for result %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 v_cheb = v_cheb + v_rec;                          % Values on Chebyshev grid.
@@ -126,44 +128,38 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%% DCT METHODS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 function v = dct1(c)
 %DCT1   Compute a (scaled) DCT of type 1 using the FFT. 
-% DCT1(C) returns T_N(X_N)*C, where X_N = cos(pi*(0:N))/N and T_N(X) = [T_0,
-% T_1, ..., T_N](X) where T_k is the kth 1st-kind Chebyshev polynomial.
-N = size(c, 1);                     % Number of terms.
-ii = N-1:-1:2;                      % Indicies of interior coefficients.
-c(ii,:) = 0.5*c(ii,:);              % Scale interior coefficients.
-v = ifft([c ; c(ii,:)]);            % Mirror coefficients and call FFT.
-v = (N-1)*[ 2*v(N,:) ; v(ii,:) + v(2*N-ii,:) ; 2*v(1,:) ]; % Re-order.
-v = flipud(v);                      % Flip the order.
+% DCT1(C) returns T(X)*C, where X = cos(pi*(0:N)/N) and T(X) = [T_0, T_1, ...,
+% T_N](X) (where T_k is the kth 1st-kind Chebyshev polynomial), and N =
+% length(C) - 1;
+
+c([1,end],:) = 2*c([1,end],:);              % Scale.
+v = chebfun.dct(c, 1);                      % DCT-I.
+
 end
 
-function v = dst1(c, flag) %#ok<INUSD>
+function v = dst1(c)
 %DST1   Discrete sine transform of type 1.
-% DST1(C) returns diag(sin(T_N))*U_N(X)*C where T_N(k,1) = pi*(k-1)/N, k =
-% 1:N+1, X_N = cos(T_N) and U_N(X) = [U_0, U_1, ..., U_N](X) where U_k is the
-% kth 2nd-kind Chebyshev polynomial.
-persistent SMat sinT                        % The same for each partition.
-if ( nargin == 2 ), SMat = []; return, end  % Clear persistent variables.    
-N = size(c,1) - 1;                          % Degree of polynomial.
-if ( isempty(SMat) )                        % Construct conversion matrix:
-    dg = .5*ones(N-2, 1);                   % Conversion matrix:
-    SMat = spdiags([1 ; .5 ; dg], 0, N, N) + spdiags([0 ; 0 ; -dg], 2, N, N);
-    sinT = sin(pi*(0:N).'/N);               % Sin(theta).
-end
-v = dct1([SMat\c(2:end,:) ; zeros(1, size(c, 2))]); % Scaled DCT.
-v = bsxfun(@times, sinT, v);
+% DST1(C) returns diag(sin(T))*U(cos(T))*C where T(k) = pi*k/(N+1), k = 0:N+1,
+% and U(x) = [U_0, U_1, ..., U_N}](x) (where U_k is the kth 2nd-kind Chebyshev
+% polynomial), and N = length(C) - 1.
+
+z = zeros(1, size(c, 2));                   % Padding;
+v = [z ; chebfun.dst(c(1:end-1,:), 1) ; z]; % DST-I.
+
 end
 
 function c = idct1(v)
 %IDCT1   Convert values on a Cheb grid to Cheb coefficients (inverse DCT1).
-% IDCT1(V) returns T_N(X_N)\V, where X_N = cos(pi*(0:N))/N and T_N(X) = [T_0,
-% T_1, ..., T_N](X) where T_k is the kth 1st-kind Chebyshev polynomial.
-N = size(v, 1);                             % Number of terms.
-c = fft([v ; v(N-1:-1:2,:)])/(2*N-2);       % Laurent fold and call FFT.
-c = c(1:N,:);                               % Extract the first N terms.
-if (N > 2), c(2:N-1,:) = 2*c(2:N-1,:); end  % Scale interior coefficients.
-if ( isreal(v) ), c = real(c); end          % Ensure a real output.
+% IDCT1(V) returns T(X)\V, where X = cos(pi*(0:N)/N), T(X) = [T_0, T_1, ...,
+% T_N](X) (where T_k is the kth 1st-kind Chebyshev polynomial), and N =
+% length(V) - 1.
+
+c = chebfun.idct(v, 1);                     % IDCT-I
+c([1,end],:) = .5*c([1,end],:);             % Scale.
+
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
