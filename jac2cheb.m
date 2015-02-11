@@ -35,14 +35,15 @@ end
 
 function c_cheb = jac2cheb_direct(c_jac, a, b)
 %JAC2CHEB_DIRECT   Convert Leg to Cheb coeffs using the 3-term recurrence.
-N = size(c_jac,1) - 1;                      % Degree of polynomial.
+N = size(c_jac,1) - 1;                 % Degree of polynomial.
 % Don't let N be too big:
 if ( N > 2^11 )
     error('CHEBFUN:jac2cheb:arraySize', ...
         'Maximum transform size (2048) is exceeded.');
 end
 if ( N <= 0 ), c_cheb = c_jac; return, end  % Trivial case.
-x = cos(pi*(0:N)'/N);                       % Chebyshev grid (reversed order).
+tech = chebtech1;                      % Alternatively use chebtech2.
+x = tech.chebpts(N+1);                 % Chebyshev grid (reversed order).
 % Make the Jacobi-Chebyshev Vandemonde matrix:
 apb = a + b; aa  = a * a; bb  = b * b;
 P = zeros(N+1); P(:,1) = 1;    
@@ -56,21 +57,6 @@ for k = 2:N
     q4 =  2*(k + a - 1)*(k + b - 1)*k2apb;
     P(:,k+1) = ((q2 + q3*x).*P(:,k) - q4*P(:,k-1)) / q1;
 end
-v_cheb = P*c_jac;                           % Values on Chebyshev grid.
-c_cheb = idct1(v_cheb);                     % Chebyshev coefficients.
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%% DCT METHODS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function c = idct1(v)
-%IDCT1   Convert values on a Cheb grid to Cheb coefficients (inverse DCT1).
-% IDCT1(V) returns T_N(X_N)\V, where X_N = cos(pi*(0:N))/N and T_N(X) = [T_0,
-% T_1, ..., T_N](X) where T_k is the kth 1st-kind Chebyshev polynomial.
-N = size(v, 1);                             % Number of terms.
-c = fft([v ; v(N-1:-1:2,:)])/(2*N-2);       % Laurent fold and call FFT.
-c = c(1:N,:);                               % Extract the first N terms.
-if (N > 2), c(2:N-1,:) = 2*c(2:N-1,:); end  % Scale interior coefficients.
-if ( isreal(v) ), c = real(c); end          % Ensure a real output.
+v_cheb = P*c_jac;                      % Values on Chebyshev grid.
+c_cheb = tech.vals2coeffs(v_cheb);     % Chebyshev coefficients.
 end

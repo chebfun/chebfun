@@ -26,7 +26,7 @@ function c_leg = cheb2leg(c_cheb, normalize, M)
 %   transform using an asymptotic formula, SISC, 36 (2014), pp. A148-A167.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-[N, n] = size(c_cheb);     % Number of columns. 
+[N, n] = size(c_cheb);                        % Number of columns. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Initialise  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if ( nargin < 2 ), normalize = 0; end         % Normalize so max(|P{k}|) = 1.
@@ -54,7 +54,7 @@ wf = bsxfun(@times, f, w.');                  % Scale f by C-C weights.
 t = pi*(0:2*N)'/(2*N);                        % 2*N+1 theta grid.
 nM = ceil(aM.^(K-1:-1:0)*N);                  % n_M for each block.
 jK = zeros(K, 2);                             % Block locations in theta.
-for k = 1:K % Find where curve intersects a^k*N:
+for k = 1:K    % Find where curve intersects a^k*N:
     tmp = find(t >= asin(nM0./nM(k)), 1) - 4; % Where curve intersects aM^k*N.    
     jK(k,:) = [tmp+1, 2*N+1-tmp];             % Collect indicies.
 end
@@ -64,7 +64,7 @@ nM(end) = N+2; % For convenience (avoids treating final block differently).
 %%%%%%%%%%%%%%%%%%%%%% Recurrence / boundary region %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 c_rec = zeros(N+1, n);
 jK2 = [jK(1,2)+1, 2*N+1 ; jK(1:K-1,:) ; 1, 2*N+1];
-for k = 1:K % Loop over the block partitions:
+for k = 1:K    % Loop over the block partitions:
     j_bdy = [jK2(k+1,1):jK2(k,1)-1, jK2(k,2)+1:jK2(k+1,2)];% Boundary indicies.
     x_bdy = cos(t(j_bdy));                             % Boundary x values.
     wf_bdy = wf(j_bdy,:);                              % w.*f at boundary.
@@ -81,7 +81,6 @@ end
 
 %%%%%%%%%%%%%%%%%%%% Asymptotics / interior region %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 c_leg = zeros(N+1, n);                                 % Initialise output.
-dst1Transpose([], 1);                                  % Clear storage.
 for k = 1:K-1 % Loop over the block partitions.
     c_k = zeros(N+1, n);                               % Initialise local LHS.
     hm = ones(N+1,n); hm([1:nM(k)-1,nM(k+1):end],:) = 0; % Initialise h_m.
@@ -102,7 +101,6 @@ for k = 1:K-1 % Loop over the block partitions.
     end
     c_leg = c_leg + bsxfun(@times, c_k, C);            % Append to global LHS.
 end
-dst1Transpose([], 1);                                % Clear storage.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% Combine for result %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 scale = (2*(0:N).'+1)/2;                             % Scaling in coeffs.
@@ -142,31 +140,25 @@ end
 
 function v = dct1(c)
 %DCT1   Compute a (scaled) DCT of type 1 using the FFT. 
-% DCT1(C) returns T_N(X_N)*C, where X_N = cos(pi*(0:N))/N and T_N(X) = [T_0,
-% T_1, ..., T_N](X) where T_k is the kth 1st-kind Chebyshev polynomial.
-N = size(c, 1);                     % Number of terms.
-ii = N-1:-1:2;                      % Indicies of interior coefficients.
-c(ii,:) = 0.5*c(ii,:);              % Scale interior coefficients.
-v = ifft([c ; c(ii,:)]);            % Mirror coefficients and call FFT.
-v = (N-1)*[ 2*v(N,:) ; v(ii,:) + v(2*N-ii,:) ; 2*v(1,:) ]; % Re-order.
-v = flipud(v);                      % Flip the order.
+% DCT1(C) returns T(X)*C, where X = cos(pi*(0:N)/N) and T(X) = [T_0, T_1, ...,
+% T_N](X) (where T_k is the kth 1st-kind Chebyshev polynomial), and N =
+% length(C) - 1;
+
+c([1,end],:) = 2*c([1,end],:);              % Scale.
+v = chebfun.dct(c, 1);                      % DCT-I.
+
 end
 
-function c = dst1Transpose(v, flag) %#ok<INUSD>
+function c = dst1Transpose(v)
 %DST1TRANSPOSE   Compute a transposed and scaled DST of type 1. 
-% DST1TRANSPOSE(C) returns U_N(X)'*diag(sin(T_N))*C where T_N(k,1) = pi*(k-1)/N,
-% k = 1:N+1, X_N = cos(T_N) and U_N(X) = [U_0, U_1, ..., U_N](X) where U_k is
-% the kth 2nd-kind Chebyshev polynomial.
-persistent SMat sinT                % The same for each partition.    
-if ( nargin == 2 ), SMat = []; return, end % Clear persistent variables.
-N = size(v,1) - 1;                  % Degree of polynomial.
-if ( isempty(SMat) )                % Construct conversion matrix:
-    dg = .5*ones(N-1, 1);           % Conversion matrix:
-    SMat = spdiags([1 ; .5 ; dg], 0, N+1, N+1) + ...
-        spdiags([0 ; 0 ; -dg], 2, N+1, N+1);
-    sinT = sin(pi*(0:N)'/N);        % Sin(theta).
-end
-c = (dct1(bsxfun(@times, v, sinT))'/SMat)'; % Scaled DCT.
+% DST1TRANSPOSE(C) returns U(cos(T))'*diag(sin(T))*V where T(k,1) = pi*(k-1)/N,
+% k = 1:N+1, Xand U_N(X) = [U_0, U_1, ..., U_N](X) (where U_k is the kth
+% 2nd-kind Chebyshev polynomial), and N = legnth(V) - 1.
+
+m = size( v, 2 ); 
+c = [ chebfun.dst( v(2:end-1, :), 1 ) ; zeros(2, m) ]; 
+c(end,:) = -c(end-2,:);
+
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
