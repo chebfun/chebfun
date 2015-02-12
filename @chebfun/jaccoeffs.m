@@ -37,8 +37,5 @@ Enorm = jacpoly(0:n-1, a, b, f.domain);
 % Compute the projection (with correct scaling):
 out = Enorm \ f;
 
-% Convention is that the output is a row vector:
-out = out.';
-
 end
                 

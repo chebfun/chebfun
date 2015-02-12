@@ -36,4 +36,9 @@ techCol = get(f1.rows.funs{1}, 'tech');
 pass(7) = ( isa(techRow(), 'trigtech') ); 
 pass(8) = ( isa(techCol(), 'trigtech') ); 
 
+% Test making a chebfun2 from a scalar coefficient: 
+f = chebfun2(1,'coeffs'); 
+pass(9) = ( norm( f - 1 ) < tol );
+f = chebfun2('x'); z = .5 + sqrt(3)/3*1i;
+pass(10) = ( norm( f(real(z),imag(z)) - z ) < tol ) ; 
 end

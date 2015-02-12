@@ -9,9 +9,15 @@ function out = sum(g)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Get the domain.
-dom = g.domain.';
+dom = g.domain;
 
-% Cancel vanishing boundary values with negative exponents:
+% Cancel vanishing boundary values with negative exponents but save them
+% for later restoration:
+if ( isa(g.onefun, 'singfun') )
+    exponents = g.onefun.exponents;
+else
+    exponents = [];
+end
 g.onefun = cancelExponents(g.onefun);
 
 % Get the function values at the end of the domain. Note that the end point of
@@ -42,7 +48,7 @@ end
 if ( any(unbounded(:)) )
     out = sum(unbounded);
 else
-    out= [];
+    out = [];
 end
 
 % If none of the functions is integrable, bail out:
@@ -56,7 +62,7 @@ tmp_out = out;
 
 % Check 2: Check the speed of decay at infinity/ties. The integrand is
 % integrable only when it decays faster than 1/x towards infinity/ties.
-if ( any(~isdecay(g.onefun) & isinf(repmat(dom, 1, size(g, 2))) & ~unbounded) )
+if ( any(~isdecay(g.onefun) & isinf(repmat(dom.', 1, size(g, 2))) & ~unbounded) )
     warning('CHEBFUN:UNBNDFUN:sum:slowDecay', ...
         ['Result may not be accurate ' ...
          'as the function decays slowly at infinity.'])
@@ -64,23 +70,37 @@ end
 
 % If we reach here, the function decays sufficiently fast. Construct a ONEFUN
 % for the integrand and integrate it.
-
-tech = get(g.onefun, 'tech');
-if ( isa(tech(), 'chebtech') )
-    techPrefs.fixedLength = length(g);
-    % TODO: Using an exact-length construction here is a hack. It only works if
-    % g.onefun is a CHEBTECH, and, even then, the idea that it "works" is merely
-    % heuristic; there's no a priori reason that it should. We really would like
-    % to do an adaptive construction, but the fact that the nonlinear map
-    % compresses very wide intervals near +/-Inf into very small ones near +/-1,
-    % means that the filtered function produced by unbndfunIntegrand() will
-    % appear to exhibit sharp transitions to zero when sampled on a Chebyshev
-    % grid of the usual sizes, causing the constructor to fail. Until we can
-    % solve this problem there doesn't seem to be much else we can do here.
+if ( isempty(exponents) )
+    tech = get(g.onefun, 'tech');
+    data = [];
+    if ( isa(tech(), 'chebtech') )
+        techPrefs.fixedLength = length(g);
+        % TODO: Using an exact-length construction here is a hack. It only works
+        % if g.onefun is a CHEBTECH, and, even then, the idea that it "works" is
+        % merely heuristic; there's no a priori reason that it should. We really
+        % would like to do an adaptive construction, but the fact that the
+        % nonlinear map compresses very wide intervals near +/-Inf into very
+        % small ones near +/-1, means that the filtered function produced by
+        % unbndfunIntegrand() will appear to exhibit sharp transitions to zero
+        % when sampled on a Chebyshev grid of the usual sizes, causing the
+        % constructor to fail. Until we can solve this problem there doesn't
+        % seem to be much else we can do here.
+    else
+        techPrefs = [];
+    end
 else
+    tech = @singfun;
+    % The derivative of the map will contribute -2 to the exponents of the
+    % integrand when the domain is infinite, however we mod(., 1) so as not to
+    % introduce a pole. 
+    % TODO: This is a bit of a hack also, since we are assuming properties of 
+    % the unbounded map.
+    newExponents = mod(exponents - 2*isinf(dom), 1);
+    data.exponents = newExponents;
     techPrefs = [];
 end
-integrand = tech(@(x) unbndfunIntegrand(x, g), [], techPrefs);
+
+integrand = tech(@(x) unbndfunIntegrand(x, g), data, techPrefs);
 out = sum(integrand);
 
 % Mark Inf in the stored result: 
