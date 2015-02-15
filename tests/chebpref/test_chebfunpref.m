@@ -2,6 +2,15 @@
 
 function pass = test_chebfunpref()
 
+% Disable some warnings issued by chebtech/trigtech involving invalid
+% preference names:  these are expected in this context, since we're going to
+% have some bogus preference names floating about to test things.
+%
+% TODO:  Is there a way to reorganize chebfunpref so that it can't excite these
+% warnings in the first place?
+warnStateC = warning('off', 'CHEBFUN:CHEBTECH:techPref:unknownPref');
+warnStateT = warning('off', 'CHEBFUN:TRIGTECH:techPref:unknownPref');
+
 % Test construction from a chebfunpref.
 p = chebfunpref();
 pass(1) = isequalNaN(p, chebfunpref(p));
@@ -145,6 +154,10 @@ end
 
 % Reset the preferences:
 chebfunpref.setDefaults(savedPrefs);
+
+% Re-enable the warnings we disabled above.
+warning(warnStateC);
+warning(warnStateT);
 
 end
 

@@ -242,7 +242,7 @@ for dim = dimVals
     
 
     % Test the happiness of the function pieces:
-    vscale = zeros(sum(isFun),1);   % intrinsic scaling only
+    vscale = zeros(1, sum(isFun));   % intrinsic scaling only
     [isDone, epsLevel] = testConvergence(discA, u(isFun), vscale, pref);
 
     if ( all(isDone) )

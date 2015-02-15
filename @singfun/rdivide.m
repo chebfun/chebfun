@@ -84,6 +84,7 @@ else
 end
 
 %% Simplify and replace the boundary roots:
+s = cancelExponents(s);
 s = simplify(s);
 
 %% 
