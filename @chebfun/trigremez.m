@@ -36,12 +36,11 @@ function varargout = trigremez(f, varargin)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-dom = f.domain([1, end]);
 normf = norm(f);
 
 if ( ~isreal(f) )
     error('CHEBFUN:CHEBFUN:trigremez:real', ...
-        'TRIGREMEZ only supports real valued functions.');
+        'TRIGREMEZ only supports real-valued functions.');
 end
 
 if ( numColumns(f) > 1 )
@@ -63,8 +62,14 @@ delta = normf;  % Value for stopping criterion.
 deltamin = inf; % Minimum error encountered.
 diffx = 1;      % Maximum correction to trial reference.
 
-% Compute an initial reference set to start the algorithm.
-xk = getInitialReference(f, m, N);
+% Map everything to [-pi, pi]:
+dom = f.domain([1, end]);
+a = dom(1);
+b = dom(end);
+f = newDomain(f, [-pi, pi]);
+
+% Compute an initial reference set to start the algorithm:
+xk = trigpts(N, [-pi, pi]);
 xo = xk;
 
 % Print header for text output display if requested.
@@ -78,7 +83,7 @@ while ( (delta/normf > opts.tol) && (iter < opts.maxIter) && (diffx > 0) )
     w = trigBaryWeights(xk);
     
     % Compute trial function and levelled reference error.
-    [p, h] = computeTrialFunctionPolynomial(fk, xk, w, m, N, dom);
+    [p, h] = computeTrialFunctionPolynomial(fk, xk, w, m, N, [-pi, pi]);
     
     % Perturb exactly-zero values of the levelled error.
     if ( h == 0 )
@@ -86,11 +91,11 @@ while ( (delta/normf > opts.tol) && (iter < opts.maxIter) && (diffx > 0) )
     end
 
     % Update the exchange set using the Remez algorithm with full exchange.
-    [xk, err, err_handle] = exchange(xk, h, 2, f, p, N + 2);
+    [xk, err, err_handle] = exchange(xk, h, 2, f, p, N);
 
     % If overshoot, recompute with one-point exchange.
     if ( err/normf > 1e5 )
-        [xk, err, err_handle] = exchange(xo, h, 1, f, p, N + 2);
+        [xk, err, err_handle] = exchange(xo, h, 1, f, p, N);
     end
 
     % Update max. correction to trial reference and stopping criterion.
@@ -121,7 +126,11 @@ end
 % Take best results of all the iterations we ran.
 p = pmin;
 err = errmin;
-xk = xkmin;
+
+% Map the points back on the original domain:
+forwardMap = @(y) b*(y + pi)/(2*pi) + a*(pi - y)/(2*pi); 
+xk = forwardMap(xkmin);
+
 delta = deltamin;
 
 % Warn the user if we failed to converge.
@@ -137,7 +146,10 @@ status.iter = iter;
 status.diffx = diffx;
 status.xk = xk;
 
-%p = simplify(p);
+% Map the approximation back to the original domain:
+p = newDomain(p, [a, b]);
+
+% return:
 varargout = {p, err, status};
 
 end
@@ -149,14 +161,15 @@ function [m, N, opts] = parseInputs(f, varargin)
 m = varargin{1};
 varargin = varargin(2:end);
 
-% Assuming n = 0, i.e. polynomial case only at the moment.
-N = 2*m;
+% Number of points for equioscillation:
+N = 2*m+2;
 
 % Parse name-value option pairs.
-opts.tol = 1e-14*(N^2 + 10); % Relative tolerance for deciding convergence.
-opts.maxIter = 100;           % Maximum number of allowable iterations.
-opts.displayIter = false;    % Print output after each iteration.
-opts.plotIter = false;       % Plot approximation at each iteration.
+baseTol = 1e-12;
+opts.tol = baseTol*(N^2 + 10); % Relative tolerance for deciding convergence.
+opts.maxIter = 100;            % Maximum number of allowable iterations.
+opts.displayIter = false;      % Print output after each iteration.
+opts.plotIter = false;         % Plot approximation at each iteration.
 
 for k = 1:2:length(varargin)
     if ( strcmpi('tol', varargin{k}) )
@@ -178,24 +191,17 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Functions implementing the core part of the algorithm.
 
-function xk = getInitialReference(f, m, N)
-
-% In the polynomial case use trig-points.
-xk = trigpts(N + 2,f.domain([1, end]));
-
-end
-
 function [p, h] = computeTrialFunctionPolynomial(fk, xk, w, m, N, dom)
 
 % Vector of alternating signs.
-sigma = ones(N + 2, 1);
+sigma = ones(N, 1);
 sigma(2:2:end) = -1;
 
 h = (w'*fk) / (w'*sigma);                          % Levelled reference error.
 pk = (fk - h*sigma);                               % Vals. of r*q in reference.
 
 % Trial polynomial by interpolation:
-p = chebfun(@(x) trigBary(x, pk, xk, dom), dom, N+1, 'trig');
+p = chebfun(@(x) trigBary(x, pk, xk, dom), dom, 2*m+1, 'trig');
 
 end
 
@@ -213,10 +219,10 @@ function [xk, norme, err_handle, flag] = exchange(xk, h, method, f, p, Npts)
 %   XK, the supremum norm of the error NORME (included as an output argument,
 %   since it is readily computed in EXCHANGE and is used later in TRIGREMEZ), a
 %   function handle E_HANDLE for the error, and a FLAG indicating whether there
-%   were at least N+2 alternating extrema of the error to form the next
+%   were at least Npts alternating extrema of the error to form the next
 %   reference (FLAG = 1) or not (FLAG = 0).
 %
-%   [XK, ...] = EXCHANGE([], 0, METHOD, F, P, Q, N + 2) returns a grid of N + 2
+%   [XK, ...] = EXCHANGE([], 0, METHOD, F, P, Q, N) returns a grid of N
 %   points XK where the error F - P alternates in sign (but not necessarily
 %   equioscillates). This feature of EXCHANGE is useful to start TRIGREMEZ from an
 %   initial trial function rather than an initial trial reference.
@@ -267,7 +273,7 @@ for i = 2:length(r)
     end
 end
 
-% Of the points we kept, choose n + 2 consecutive ones that include the maximum
+% Of the points we kept, choose Npts consecutive ones that include the maximum
 % of the error.
 [norme, index] = max(abs(es));
 d = max(index - Npts + 1, 1);
