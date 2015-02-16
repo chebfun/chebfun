@@ -55,7 +55,7 @@ if ( issing(f) )
 end
 
 % Parse the inputs.
-[m, n, N, opts] = parseInputs(f, varargin{:});
+[m, N, opts] = parseInputs(f, varargin{:});
 
 % Initial values for some parameters.
 iter = 0;       % Iteration count.
@@ -64,7 +64,7 @@ deltamin = inf; % Minimum error encountered.
 diffx = 1;      % Maximum correction to trial reference.
 
 % Compute an initial reference set to start the algorithm.
-xk = getInitialReference(f, m, n, N);
+xk = getInitialReference(f, m, N);
 xo = xk;
 
 % Print header for text output display if requested.
@@ -86,11 +86,11 @@ while ( (delta/normf > opts.tol) && (iter < opts.maxIter) && (diffx > 0) )
     end
 
     % Update the exchange set using the Remez algorithm with full exchange.
-    [xk, err, err_handle] = exchange(xk, h, 2, f, p, q, N + 2);
+    [xk, err, err_handle] = exchange(xk, h, 2, f, p, N + 2);
 
     % If overshoot, recompute with one-point exchange.
     if ( err/normf > 1e5 )
-        [xk, err, err_handle] = exchange(xo, h, 1, f, p, q, N + 2);
+        [xk, err, err_handle] = exchange(xo, h, 1, f, p, N + 2);
     end
 
     % Update max. correction to trial reference and stopping criterion.
@@ -100,10 +100,6 @@ while ( (delta/normf > opts.tol) && (iter < opts.maxIter) && (diffx > 0) )
     % Store approximation with minimum norm.
     if ( delta < deltamin )
         pmin = p;
-        if ( n > 0 )
-            qmin = q;
-        end
-
         errmin = err;
         xkmin = xk;
         deltamin = delta;
@@ -148,7 +144,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Input parsing.
 
-function [m, n, N, opts] = parseInputs(f, varargin)
+function [m, N, opts] = parseInputs(f, varargin)
 
 m = varargin{1};
 varargin = varargin(2:end);
@@ -182,7 +178,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Functions implementing the core part of the algorithm.
 
-function xk = getInitialReference(f, m, n, N)
+function xk = getInitialReference(f, m, N)
 
 % In the polynomial case use trig-points.
 xk = trigpts(N + 2,f.domain([1, end]));
