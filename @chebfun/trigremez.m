@@ -2,7 +2,8 @@ function varargout = trigremez(f, varargin)
 %TRIGREMEZ   Best trigonometric polynomial approximation for real-valued chebfuns.
 %   P = TRIGREMEZ(F, M) computes the best trigonometric polynomial approximation 
 %   of degree M to the real CHEBFUN F in the infinity norm using the Remez 
-%   algorithm.
+%   algorithm. F may be an ordinary chebfun based on Chebyshev
+%   interpolants.
 %
 %   [...] = TRIGREMEZ(..., 'tol', TOL) uses the value TOL as the termination
 %   tolerance on the increase of the levelled error.
@@ -35,6 +36,11 @@ function varargout = trigremez(f, varargin)
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
+
+if ( isempty(f) )
+    varargout = {f};
+    return;
+end
 
 normf = norm(f);
 
@@ -159,6 +165,12 @@ end
 function [m, N, opts] = parseInputs(f, varargin)
 
 m = varargin{1};
+
+if ( m < 0 || m ~= round(m) )
+    error('CHEBFUN:CHEBFUN:trigremez:parseInputs', ...
+        'degree of approximation must be a non-negative integer.');
+end
+
 varargin = varargin(2:end);
 
 % Number of points for equioscillation:
@@ -197,8 +209,8 @@ function [p, h] = computeTrialFunctionPolynomial(fk, xk, w, m, N, dom)
 sigma = ones(N, 1);
 sigma(2:2:end) = -1;
 
-h = (w'*fk) / (w'*sigma);                          % Levelled reference error.
-pk = (fk - h*sigma);                               % Vals. of r*q in reference.
+h = (w'*fk) / (w'*sigma);             % Levelled reference error.
+pk = (fk - h*sigma);                  % Vals. of r*q in reference.
 
 % Trial polynomial by interpolation:
 p = chebfun(@(x) trigBary(x, pk, xk, dom), dom, 2*m+1, 'trig');
@@ -238,7 +250,7 @@ rr = [f.domain(1) ; rts];
 err_handle = @(x) feval(f, x) - feval(p, x);
 
 % Select exchange method.
-if ( method == 1 )                           % One-point exchange.
+if ( method == 1 )                             % One-point exchange.
     [ignored, pos] = max(abs(feval(err_handle, rr)));
     pos = pos(1);
 else                                           % Full exchange.
