@@ -347,7 +347,7 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
 
             F = operatorBlock(domain);
             F.stack = @(z) fred(kernel, z, varargin{:});
-            F.diffOrder = 0;
+            F.diffOrder = -1;
         end        
 
         function M = mult(u, dom)
@@ -397,7 +397,7 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
 
             V = operatorBlock(domain);
             V.stack = @(z) volt(kernel, z, varargin{:});
-            V.diffOrder = 0;
+            V.diffOrder = -1;
             
         end
         
