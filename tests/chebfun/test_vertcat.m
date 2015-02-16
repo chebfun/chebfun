@@ -44,7 +44,7 @@ catch
 end
 
 % #1234
-f = [x ; [0 ; 0]]
+f = [x ; [0 ; 0]];
 pass(7) = isa(f, 'chebmatrix') && all(size(f.blocks)==[3,1]);
 
 end
