@@ -29,8 +29,8 @@ function varargout = trigremez(f, varargin)
 %
 % References:
 %
-%   [1] Javed, M. and Trefethen, L. N.  "Polynomial Remez and CF approximations
-%   of Perioidic Functions". In preparation.
+%   [1] Javed, M. and Trefethen, L. N.  "Remez and CF approximations of 
+%    Perioidic Functions". In preparation.
 %
 % See also CF.
 
