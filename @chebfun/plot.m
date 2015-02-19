@@ -198,7 +198,8 @@ while ( ~isempty(varargin) )
             newData.xJumps = NaN;
             newData.yJumps = NaN;  
             newData.xDeltas = NaN;
-            newData.yDeltas = NaN;
+            newData.yDeltas1 = NaN;
+            newData.yDeltas2 = NaN;
             % Do nothing
         elseif ( numel(f) == 1 && numel(g) == 1 )
             % Array-valued CHEBFUN case:
@@ -282,7 +283,8 @@ while ( ~isempty(varargin) )
         pointData = [pointData, newData(k).xPoints, newData(k).yPoints, ...
             styleData];
         jumpData = [jumpData, newData(k).xJumps, newData(k).yJumps, styleData];
-        deltaData = [deltaData, newData(k).xDeltas, newData(k).yDeltas, styleData];
+        deltaData = [deltaData, newData(k).xDeltas, newData(k).yDeltas, ...
+                                         newData(k).yDeltaBase, styleData];
         
         defaultXLim = defaultXLim & newData(k).defaultXLim;
         defaultYLim = defaultYLim & newData(k).defaultYLim;
@@ -353,7 +355,7 @@ end
 
 % Plot the Delta functions:
 if ( isempty(deltaData) || ~isnumeric(deltaData{1}) )
-    h4 = stem([]);
+    h4 = plot([]);
 else
     h4 = mystem(deltaData{:});
 end
@@ -425,10 +427,11 @@ function h = mystem(varargin)
 h = [];
 j = 1;
 % Separate out each individual plot by looking for two consecutive doubles.
-isDouble = cellfun(@isnumeric, varargin);
-startLoc = [1 find([0 diff(isDouble)] == 1 & [diff(isDouble) 0] == 0) nargin+1];
-for k = 1:numel(startLoc)-1
-    data = varargin(startLoc(k):startLoc(k+1)-1);
+n = length(varargin);
+for k = 1:3:n
+    data{1} = varargin{k+0};
+    data{2} = varargin{k+1};
+    data{3} = varargin{k+2};
     % Ignore complete NaN data:
     if ( all(isnan(data{1})) )
         continue
@@ -438,17 +441,39 @@ for k = 1:numel(startLoc)-1
         % Remove mixed NaN data:
         xData = data{1};
         yData = data{2};
+        yBase = data{3};
+        
         nanIdx = isnan(xData);
         xData(nanIdx) = [];
         yData(nanIdx) = [];
+        yBase(nanIdx) = [];
         
         % merge duplicate delta functions.
-        [yData, xData] = deltafun.mergeColumns(yData.', xData.');
-        data{1} = xData.';
-        data{2} = yData.';
+        [yData, ~] = deltafun.mergeColumns(yData.', xData.');
+        
+        % merge function base values and divide by 2:
+        [yBase, xData] = deltafun.mergeColumns(yBase.', xData.');
+        %yBase = yBase/2;
+        
+        xData = xData.';
+        yData = yData.';
+        yBase = yBase.';
+        
+        xFullData = zeros(3*size(xData,1), size(xData,2));
+        xFullData(1:3:end, :) = xData;
+        xFullData(2:3:end, :) = xData;
+        xFullData(3:3:end, :) = NaN;
+        
+        yFullData = zeros(3*size(xData,1), size(xData,2));
+        yFullData(1:3:end, :) = yBase;
+        yFullData(2:3:end, :) = yBase + yData;
+        yFullData(3:3:end, :) = NaN;
+        
+        fullData{1} = xFullData;
+        fullData{2} = yFullData;
+     
     end
-    h(j) = stem(data{:}, 'fill');
-    set(h(j), 'ShowBaseLine', 'off')
+    h(j) = plot(fullData{:});
     j = j + 1;
 end
 
