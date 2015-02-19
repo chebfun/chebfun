@@ -18,7 +18,7 @@ q = sqrt(2)/2;
 k = 1;
 for n = [1, 4]
     
-    U = diff(x.^n, q, 'Caputo');
+    U = diff(x.^n, q);
     tru = gamma(n+1)./gamma(n+1-q)*chebfun(@(x) x.^(n-q), dom, 'exps', [n-q, 0]); 
     
     err(k) = norm(tru(xx) - U(xx), inf);
@@ -33,12 +33,12 @@ trueC = chebfun('erf(sqrt(x)).*exp(x) + 1./sqrt(pi*x)', dom, 'exps', [-.5 0]);
 trueRL = chebfun('erf(sqrt(x)).*exp(x)', dom, 'exps', [.5, 0]);
 
 % RL
-U = diff(u, .5, 'RL');
+U = diff(u, .5, 'Caputo');
 err(3) = norm(trueRL(xx) - U(xx), inf);
 tol(3) = 10*epslevel(U)*vscale(U)*hscale(U);
 
 % Caputo
-U = diff(u, .5, 'Caputo');
+U = diff(u, .5, 'RL');
 err(4) = norm(trueC(xx) - U(xx), inf);
 tol(4) = 10*epslevel(U)*vscale(U)*hscale(U);
 

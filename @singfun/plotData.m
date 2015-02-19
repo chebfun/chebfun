@@ -92,7 +92,7 @@ if ( singMask(1) )
     else
         idxl = find(data.yLine >= data.yLim(1), 1, 'first');
     end
-    idxl = floor((3/5)*idxl);
+    idxl = max(floor((3/5)*idxl), 1);
     data.xLim(1) = data.xLine(idxl);
 end
 

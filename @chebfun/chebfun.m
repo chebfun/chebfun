@@ -337,7 +337,7 @@ classdef chebfun
         out = iszero(f)
         
         % Kronecker product of two CHEBFUN object.
-        out = kron(f, g)
+        out = kron(f, g, varargin)
         
         % Length of a CHEBFUN.
         [out, out2] = length(f);
