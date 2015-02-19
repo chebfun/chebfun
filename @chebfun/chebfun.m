@@ -712,7 +712,7 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
         elseif ( any(strcmpi(args{1}, {'periodic', 'trig'})) )
             isPeriodic = true;
             args(1) = [];
-        elseif ( strcmpi(args{1}, 'trunc') )
+        elseif ( strncmpi(args{1}, 'truncate', 5) )
             % Set the local truncation option.
             flags.trunc = args{2};
             args(1:2) = [];   
