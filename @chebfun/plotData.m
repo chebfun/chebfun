@@ -106,6 +106,7 @@ elseif ( nargin == 2 )
         if ( ~any(ismember(fields(dataNew), 'xDeltas' )) )
             dataNew.xDeltas = [];
             dataNew.yDeltas = [];
+            dataNew.yDeltaBase = [];
         end
 
         data.xLim = [min(dataNew.xLim(1), data.xLim(1)), ...
