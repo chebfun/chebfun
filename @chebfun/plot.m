@@ -357,7 +357,7 @@ end
 if ( isempty(deltaData) || ~isnumeric(deltaData{1}) )
     h4 = plot([]);
 else
-    h4 = mystem(deltaData{:});
+    h4 = myDeltaPlot(deltaData{:});
 end
 if ( ~isempty(deltaStyle) )
     set(h4, deltaStyle{:});
@@ -419,61 +419,81 @@ end
 
 end
 
-function h = mystem(varargin)
+function h = myDeltaPlot(varargin)
 %MYSTEM   Plot multiple STEM plots in one call.
 % We need this because stem doesn't supoprt multiple inputs in the same way
 % PLOT does. An alternative option would be to write our own version of STEM.
 
 h = [];
 j = 1;
-% Separate out each individual plot by looking for two consecutive doubles.
-n = length(varargin);
-for k = 1:3:n
-    data{1} = varargin{k+0};
-    data{2} = varargin{k+1};
-    data{3} = varargin{k+2};
+
+while ( ~isempty(varargin) )
+    xData = varargin{1};
+    yData = varargin{2};
+    yBase = varargin{3};
+    
+    varargin(1:3) = [];
+    style = '';
+    % Check if there are other arguments for delta style:
+    if ( ~isempty(varargin) )
+        if ( ~isnumeric(varargin{1}) )
+            style = varargin{1};
+            varargin(1) = [];
+        end
+    end
+    
     % Ignore complete NaN data:
-    if ( all(isnan(data{1})) )
+    if ( all(isnan(xData)) )
         continue
     end
     
-    if ( isnumeric(data{1}) )
+    if ( isnumeric(xData) )
         % Remove mixed NaN data:
-        xData = data{1};
-        yData = data{2};
-        yBase = data{3};
-        
         nanIdx = isnan(xData);
         xData(nanIdx) = [];
         yData(nanIdx) = [];
         yBase(nanIdx) = [];
-        
+
         % merge duplicate delta functions.
-        [yData, ~] = deltafun.mergeColumns(yData.', xData.');
-        
-        % merge function base values and divide by 2:
-        [yBase, xData] = deltafun.mergeColumns(yBase.', xData.');
-        %yBase = yBase/2;
-        
+        [yData, xData, dupIdx] = deltafun.mergeColumns(yData.', xData.');
         xData = xData.';
         yData = yData.';
-        yBase = yBase.';
         
-        xFullData = zeros(3*size(xData,1), size(xData,2));
-        xFullData(1:3:end, :) = xData;
-        xFullData(2:3:end, :) = xData;
-        xFullData(3:3:end, :) = NaN;
+        % For delta functions at discontinuities, set the base value to the
+        % average of the function values:
+        yBase(dupIdx-1) = 1/2*(yBase(dupIdx-1)+yBase(dupIdx));
+        yBase(dupIdx) = [];
+        yFinish = yBase + yData;
+                        
+        xFullData = zeros(3*size(xData,1), 1);
+        xFullData(1:3:end) = xData;
+        xFullData(2:3:end) = xData;
+        xFullData(3:3:end) = NaN;
         
-        yFullData = zeros(3*size(xData,1), size(xData,2));
-        yFullData(1:3:end, :) = yBase;
-        yFullData(2:3:end, :) = yBase + yData;
-        yFullData(3:3:end, :) = NaN;
+        yFullData = zeros(3*size(xData,1), 1);
+        yFullData(1:3:end) = yBase;
+        yFullData(2:3:end) = yFinish;
+        yFullData(3:3:end) = NaN;
         
         fullData{1} = xFullData;
-        fullData{2} = yFullData;
-     
+        fullData{2} = yFullData;        
+        fullData{3} = style;
     end
     h(j) = plot(fullData{:});
+    for jj = 1:length(xData)
+        if ( yData(jj) >= 0 )
+            marker = '^';
+        end
+        
+        if ( yData(jj) < 0 )
+            marker = 'v';
+        end        
+        hjj = plot(xData(jj), yFinish(jj), marker, ...
+            'markersize', 6, 'linestyle', 'none', 'handlevis', 'off');
+        set(hjj, 'color', get(h(j), 'color'));
+        set(hjj, 'markerfacecolor', get(h(j), 'color'))
+    end
+        
     j = j + 1;
 end
 
