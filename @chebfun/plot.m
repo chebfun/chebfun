@@ -357,7 +357,7 @@ end
 if ( isempty(deltaData) || ~isnumeric(deltaData{1}) )
     h4 = plot([]);
 else
-    h4 = myDeltaPlot(deltaData{:});
+    h4 = plotDeltas(deltaData{:});
 end
 if ( ~isempty(deltaStyle) )
     set(h4, deltaStyle{:});
@@ -419,19 +419,18 @@ end
 
 end
 
-function h = myDeltaPlot(varargin)
-%MYSTEM   Plot multiple STEM plots in one call.
-% We need this because stem doesn't supoprt multiple inputs in the same way
-% PLOT does. An alternative option would be to write our own version of STEM.
+function h = plotDeltas(varargin)
+%PLOTDELTAS   Plots delta functions.
 
 h = [];
 j = 1;
-
 while ( ~isempty(varargin) )
-    xData = varargin{1};
-    yData = varargin{2};
-    yBase = varargin{3};
+    % Extract data which is in triplets:
+    xData = varargin{1};  % locations of delta functions
+    yData = varargin{2};  % magnitude of delta functions
+    yBase = varargin{3};  % starting height for delta functions
     
+    % Delete these arguments, since they have been copied:
     varargin(1:3) = [];
     style = '';
     % Check if there are other arguments for delta style:
@@ -465,11 +464,15 @@ while ( ~isempty(varargin) )
         yBase(dupIdx) = [];
         yFinish = yBase + yData;
                         
+        % Add NaNs in order to plot isolated vertical lines:
+
+        % NaNs for xData:
         xFullData = zeros(3*size(xData,1), 1);
         xFullData(1:3:end) = xData;
         xFullData(2:3:end) = xData;
         xFullData(3:3:end) = NaN;
         
+        % NaNs for yData
         yFullData = zeros(3*size(xData,1), 1);
         yFullData(1:3:end) = yBase;
         yFullData(2:3:end) = yFinish;
@@ -479,15 +482,22 @@ while ( ~isempty(varargin) )
         fullData{2} = yFullData;        
         fullData{3} = style;
     end
+
+    % Plot the vertical lines:
     h(j) = plot(fullData{:});
+    
+    % Plot the markers for delta functions:
     for jj = 1:length(xData)
+        % For positive delta functions, we plot an arrow:
         if ( yData(jj) >= 0 )
             marker = '^';
         end
-        
+        % For negative delta functions, we plot a v: 
         if ( yData(jj) < 0 )
             marker = 'v';
         end        
+
+        % Plot the markers and match the color with the delta lines:
         hjj = plot(xData(jj), yFinish(jj), marker, ...
             'markersize', 6, 'linestyle', 'none', 'handlevis', 'off');
         set(hjj, 'color', get(h(j), 'color'));
