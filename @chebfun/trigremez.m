@@ -218,6 +218,10 @@ p = chebfun(@(x) trigBary(x, pk, xk, dom), dom, 2*m+1, 'trig');
 end
 
 
+% TODO: There is a lot of overlap between the present case of trigonometric
+% remez and the usual polynomial remez. The common parts of the code should
+% factored out in future.
+
 function [xk, norme, err_handle, flag] = exchange(xk, h, method, f, p, Npts)
 %EXCHANGE   Modify an equioscillation reference using the Remez algorithm.
 %   EXCHANGE(XK, H, METHOD, F, P) performs one step of the Remez algorithm
