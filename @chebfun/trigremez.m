@@ -2,8 +2,9 @@ function varargout = trigremez(f, varargin)
 %TRIGREMEZ   Best trigonometric polynomial approximation for real-valued chebfuns.
 %   P = TRIGREMEZ(F, M) computes the best trigonometric polynomial approximation 
 %   of degree M to the real CHEBFUN F in the infinity norm using the Remez 
-%   algorithm. F may be an ordinary chebfun based on Chebyshev
-%   interpolants.
+%   algorithm. F may be Chebyshev interpolant to an underlying continuous function 
+%   or a trigonometric interpolant to an underlying continous function on the 
+%   unit circle.
 %
 %   [...] = TRIGREMEZ(..., 'tol', TOL) uses the value TOL as the termination
 %   tolerance on the increase of the levelled error.
@@ -16,11 +17,10 @@ function varargout = trigremez(f, varargin)
 %   [...] = TRIGREMEZ(..., 'plotfcns', 'error') plots the error after each iteration
 %   while the algorithm executes.
 %
-%   [P, ERR] = TRIGREMEZ(...) and [P, Q, R_HANDLE, ERR] = TRIGREMEZ(...) also returns
-%   the maximum error ERR.
+%   [P, ERR] = TRIGREMEZ(...) returns the maximum error ERR.
 %
-%   [P, ERR, STATUS] = TRIGREMEZ(...) and [P, Q, R_HANDLE, ERR, STATUS] = TRIGREMEZ(...)
-%   also return a structure array STATUS with the following fields:
+%   [P, ERR, STATUS] = TRIGREMEZ(...)  also return a structure array STATUS 
+%   with the following fields:
 %      STATUS.DELTA  - Obtained tolerance.
 %      STATUS.ITER   - Number of iterations performed.
 %      STATUS.DIFFX  - Maximum correction in last trial reference.
@@ -30,9 +30,9 @@ function varargout = trigremez(f, varargin)
 % References:
 %
 %   [1] Javed, M. and Trefethen, L. N.  "Remez and CF approximations of 
-%    Perioidic Functions". In preparation.
+%    Periodic Functions". In preparation.
 %
-% See also CF.
+% See also REMEZ, CF.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -57,6 +57,16 @@ end
 if ( issing(f) )
     error('CHEBFUN:CHEBFUN:trigremez:singularFunction', ...
         'TRIGREMEZ does not currently support functions with singularities.');
+end
+
+if ( any(isinf(abs(domain(f)))) )
+    error('CHEBFUN:CHEBFUN:trigremez:unboundedDomain', ...
+        'Function must be defined on a bounded domain.');
+end
+
+if ( isdelta(f) )
+    error('CHEBFUN:CHEBFUN:trigremez:deltaFunctions', ...
+        'Function must not have any delta functions.');
 end
 
 % Parse the inputs.
@@ -168,7 +178,7 @@ m = varargin{1};
 
 if ( m < 0 || m ~= round(m) )
     error('CHEBFUN:CHEBFUN:trigremez:parseInputs', ...
-        'degree of approximation must be a non-negative integer.');
+        'Degree of approximation must be a nonnegative integer.');
 end
 
 varargin = varargin(2:end);
