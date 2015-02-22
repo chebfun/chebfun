@@ -5,7 +5,7 @@ if ( nargin < 1 )
     pref = chebfunpref();
 end
 
-% Set an err tolerance.
+% Set an error tolerance.
 tol = 1.0e-12;
 
 %% check for emptiness:
