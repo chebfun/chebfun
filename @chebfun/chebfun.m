@@ -91,6 +91,10 @@ classdef chebfun
 %
 % CHEBFUN(F, 'periodic') is the same as CHEBFUN(F, 'trig').
 %
+% CHEBFUN(F, ..., 'doubleLength') constructs a chebfun with twice the
+% polynomial degree of that chosen by the Chebfun constructor algorithm.
+% If LENGTH(F) == N, then LENGTH(CHEBFUN(F,'doubleLength')) == 2*N-1.
+%
 % CHEBFUN --UPDATE can be used to update to the latest stable release of CHEBFUN
 % (obviously an internet connection is required!). CHEBFUN --UPDATE-DEVEL will
 % update to the latest development release, but we recommend instead that you
