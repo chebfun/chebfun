@@ -225,7 +225,7 @@ classdef chebfun
                     % Using the length of f.funs{1} is okay because the
                     % 'doubleLength' flag is mutually exclusive with 'splitting
                     % on'.
-                    pref.techPrefs.fixedLength = 2*length(f.funs{1}) + 1;
+                    pref.techPrefs.fixedLength = 2*length(f.funs{1}) - 1;
                     [f.funs, f.domain] = chebfun.constructor(op, dom, data, pref);
                 end
 
