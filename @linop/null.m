@@ -21,8 +21,6 @@ function v = null(A, pref)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% TODO: Add support for systems of equations.
-
 % Grab defaults if needed.
 if ( nargin == 1 || isempty(pref) )
     pref = cheboppref;
@@ -106,7 +104,7 @@ if ( m == 1 )
     v{1} = qr(v{1});
     v{1} = simplify(v{1}, epsLevel);
 else % system of eqns
-    [Q R] = qr(join(v{:}));
+    [Q, R] = qr(join(v{:}));
     for j = 1:numel(v)
         v{j} = v{j}/R;
         v{j} = simplify(v{j}, epsLevel);
