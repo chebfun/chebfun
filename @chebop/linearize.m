@@ -165,8 +165,8 @@ L.domain = domain.merge(L.domain, dom);
 % u0 contains doubles for the parameter entries. If not, we correct for this
 % below by assuming that any variable that does not have a diffOrder greater
 % than 0 associated with it is a parameter, rather than a function.
-isParam = ~any(L.diffOrder, 1);
-
+isParam = all(L.isMult, 1);
+% L.isMult
 if ( all(isFun) && any(isParam) )
     % We've found a parameterised problem, but weren't informed by u0.  Reseed
     % the final numParam variables as constants and linearize again:
