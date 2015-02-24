@@ -51,7 +51,7 @@ for k = 1:3
     V = null(L, pref);
     err(k,  10) = norm(L*V, 2); % Check residual.
     pass(k, 10) = err(k,8) < tol;
-    err(k,  11) = norm(V'*V - eye(2), inf);  % Check orthonormality.
+    err(k,  11) = norm(V'*V - eye(6), inf);  % Check orthonormality.
     pass(k, 11) = err(k,9) < tol;
     
 end
