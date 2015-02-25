@@ -1,7 +1,5 @@
 function movie(f, varargin)
-%MOVIE play a CHEBFUN2 in movie frames.
-%
-% MOVIE plays how the CHEBFUN2 was constructed.
+%MOVIE play a a movie about the CHEBFUN2 constructor
 %
 % This function is not a direct analogue of the movie function in MATLAB.
 %
@@ -14,12 +12,12 @@ function movie(f, varargin)
 % Example 3:
 % f = chebfun2(@(x,y) cos(x.*y)); movie(f)
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
-
-% movie about the chebfun2 constructor.
+% Tidy up before we start the movie
 home, close all
+
 % Select the mode to play your chebfun2 in.
 if nargin > 1
     if strcmpi(varargin{1}, 'speed') && nargin > 2
@@ -32,43 +30,56 @@ else
     mode = 'vslow';
 end
 
-if strcmpi(mode,'slow')
-    ppan = 0.1; pmove=0.05; pfade =0.05; pbreak=.2; pwait=.5;psectionbreak=2;
-elseif strcmpi(mode,'control')
-    ppan = 0.1; pmove=0.05; pfade =0.05; pbreak=.2; pwait=.5;psectionbreak=inf;
-elseif strcmpi(mode,'vslow')
-    ppan = 0.2; pmove=0.1; pfade =0.1; pbreak=.4; pwait=1;psectionbreak=2;
-elseif strcmpi(mode,'speed')
+if strcmpi(mode, 'slow')
+    ppan = 0.1; pmove=0.05; pfade = 0.05; pbreak=.2; pwait = .5;psectionbreak=2;
+elseif strcmpi(mode, 'control')
+    ppan = 0.1; pmove=0.05; pfade = 0.05; pbreak=.2;
+    pwait = .5; psectionbreak=inf;
+elseif strcmpi(mode, 'vslow')
+    ppan = 0.2; pmove=0.1; pfade = 0.1; pbreak=.4; pwait = 1;psectionbreak = 2;
+elseif strcmpi(mode, 'speed')
     c = 1/speed;
-    ppan = 0.1*c; pmove=0.05*c; pfade =0.05*c; pbreak=.2*c; pwait=.5*c;psectionbreak=2*c;
+    ppan = 0.1*c; pmove=0.05*c; pfade = 0.05*c; pbreak = .2*c;
+    pwait=.5*c;psectionbreak=2*c;
 else
-    ppan = 0; pmove=0; pfade =0; pbreak=0; pwait=0;psectionbreak=0;
+    ppan = 0; pmove=0; pfade = 0; pbreak = 0; pwait = 0;psectionbreak=0;
 end
 
 co = [0 0 1;0 1 0;1 0 0;0 1 1;1 0 1;1 1 0]; % color array.
+
+% Find what the current number of minSamples are:
 pref = chebfunpref();
-minsample = pref.minSamples; nextsample = 2^(ceil(log(minsample))+1)+1;
+minsample = pref.minSamples;
+nextsample = 2^(ceil(log(minsample)) + 1) + 1;
 
 % Starting text
 fprintf('This movie explains how a simplified version of the chebfun2\n')
 fprintf('constructor works on your function.\n\n')
 fprintf('Here it goes...\n\n')
-txt = scribble('Your chebfun2 movie'); plot(txt), axis([-1 1 -1 1]), axis off
+% Scribble to the plot
+txt = scribble('Your chebfun2 movie');
+plot(txt)
+axis([-1 1 -1 1]), axis off
 mypause(psectionbreak)
 fprintf('This is your chebfun2:\n\n'), clf
 
 % Surface plot
-set(0,'DefaultAxesFontSize',14,'DefaultLineLineWidth',3)
-sf=plot(f); axis equal, axis off,
+set(0,'DefaultAxesFontSize', 14, 'DefaultLineLineWidth', 3)
+sf = plot(f);
+axis equal, axis off
 
 % Full pan around function.
-sf=fullpan(sf,ppan); sf = tilt(sf,pmove,1); campos([0 0 10]), hold on
+sf=fullpan(sf,ppan);
+sf = tilt(sf,pmove,1);
+campos([0 0 10])
+hold on
 % slowing lower opaque
-fade(1,.5,sf,pfade);mypause(psectionbreak)
+fade(1,.5,sf,pfade);
+mypause(psectionbreak)
 
 
 %% Start explaining the constructor
-fprintf(sprintf('We first sample on a %u x %u Chebyshev grid obtaining a matrix A.\n\n',minsample,minsample))
+fprintf('We first sample on a %u x %u Chebyshev grid obtaining a matrix A.\n\n',minsample,minsample)
 mypause(psectionbreak)
 
 [xx, yy] = meshgrid(chebpts(200));
@@ -83,14 +94,14 @@ pts = plot3(xx(:), yy(:), zz, 'Marker', '.', 'MarkerSize', 20, ...
 % Take maximum on array, calculate residual and then take next maximum.
 xpts = chebpts(minsample);
 % Do first two steps of ACA.
-P=zeros(2,2);
-for j = 1:min(2,length(f))
-    [ infnorm , ind ]=max( abs ( reshape(A,numel(A),1) ) );
+P=zeros(2, 2);
+for j = 1:min(2, length(f))
+    [infnorm , ind]=max( abs ( reshape(A,numel(A),1) ) );
     [ row , col ]=ind2sub( size(A) , ind);
     P(j,:) = [xpts(col) xpts(row)];
     A = A - A( : , col )*A( row , : )./A(row,col);
-    [ infnorm , ind ]=max( abs ( reshape(B,numel(B),1) ) );
-    [ row , col ]=ind2sub( size(B) , ind);
+    [infnorm , ind]=max( abs ( reshape(B,numel(B),1) ) );
+    [row , col]=ind2sub( size(B) , ind);
     B = B - B( : , col )*B( row , : )./B(row,col);
     ff{j}=B;
     e(j) = norm(A);
@@ -144,11 +155,11 @@ for jj= 1:min(2,length(f))
         end
     end
     delete(sf); rect = f.domain;
-    sf = plot(chebfun2(ff{jj}, rect)); alpha(sf,.5); colormap(jet)
+    sf = plot(chebfun2(ff{jj}, rect)); alpha(sf,.5);
     axis([rect,min(min(ff{jj})) - .1, scl + .1]);
     mypause(psectionbreak),
 end
-% delete(comets{:}), 
+delete(comets{1}), delete(comets{2})
 delete(markers), delete(pts);
 
 
@@ -210,11 +221,11 @@ if ( length(f) > 2 )
         markers = [mark markers];
         delete(sf);
         rect = f.domain;
-        sf = plot(chebfun2(ff{jj}, rect)); alpha(sf,.5); colormap(jet)
+        sf = plot(chebfun2(ff{jj}, rect)); alpha(sf,.5);
         axis([rect,min(min(ff{jj})) - .2, scl + .1]);
         mypause(psectionbreak),
     end
-%         delete(comets{:}),
+    for comCounter=1:length(comets), delete(comets{comCounter}), end
     delete(pts)
     delete(sf)  % Remove everything so we can pan around.
     sf=plot(f);
@@ -266,9 +277,7 @@ delete(water), clf
 fprintf('We use Chebfun to approximate it!\n\n'),mypause(psectionbreak);
 fprintf('To check the columns and rows of your chebfun2 are resolved we can look\nat their Chebyshev coefficients.\n\n');
 
-%     if length(f) > 2, delete(markers), end
 % Now draw chebpolyplot on the slices. Here are the columns.
-cffs=newplot;
 %     C = f.fun2.C; Ccfs = zeros(length(C),size(C,2)); col=[];
 %     for jj = 1:min(6,length(f))
 %         if pref2.mode
@@ -281,6 +290,10 @@ cffs=newplot;
 %     end
 %     Ccfs = abs(flipud(Ccfs)); %Ccfs = Ccfs(min(Ccfs.').'>0,:);
 Ccfs = get(f.rows, 'coeffs');
+% Only want the first six columns
+if length(f) > 6
+    Ccfs(:, 7:length(f)) = [];
+end
 Ccfs = log10(abs(flipud(Ccfs))); Ccfs(Ccfs==-inf)=NaN;
 PivPos=f.pivotLocations;
 cols=[];
@@ -305,6 +318,9 @@ end
 %     Rcfs = abs(flipud(Rcfs)); %Rcfs = Rcfs(min(Rcfs.').'>0,:);
 Rcfs = get(f.cols, 'coeffs');
 Rcfs = log10(abs(Rcfs));Rcfs(Rcfs==-inf)=NaN;
+if length(f) > 6
+    Rcfs(:, 7:length(f)) = [];
+end
 %     PivPos=f.fun2.PivPos;
 rows=[];
 for jj = 1:min(6,length(f))
@@ -314,7 +330,7 @@ for jj = 1:min(6,length(f))
     rows=[row rows];
 end
 zlim([-18 0]), axis square;   % Fix axis zlimit before panning.
-
+shg
 % tilt and then do some camorbits to get in the right position to see the
 % coefficient decay.
 sf=tilt(sf,pmove,-1); mypause(pbreak);
@@ -457,36 +473,53 @@ x(1:2:end)=xeven;
 x(2:2:end)=xodd;
 y = pivot(2)*ones(length(t), 1);
 
-% if verLessThan('matlab', '8.4')
-body = line('parent',h,'color',color,'linestyle','-','LineWidth',3,'erase','none', ...
-    'xdata',[],'ydata',[]);
-% else
+if verLessThan('matlab', '8.4')
+    body = line('parent',h,'color',color,'linestyle','-','LineWidth',3,'erase','none', ...
+        'xdata',[],'ydata',[]);
+    for jj = 1
+        set(body,'xdata',x(jj),'ydata',y(jj)), drawnow, hold on
+    end
+    for jj = 2:length(x)
+        j = jj-1:jj;
+        set(body,'xdata',x(j),'ydata',y(j)), drawnow
+        mypause(p)
+    end
+    
+    body2 = line('parent',h,'color',color,'linestyle','-','LineWidth',2,'erase','none', ...
+        'xdata',[],'ydata',[]);
+    x = pivot(1)*ones(length(t),1);
+    yeven = pivot(2) + t(1:2:end)*(1-pivot(2));
+    yodd = pivot(2) + t(2:2:end)*(-1-pivot(2));
+    y(1:2:end)=yeven; y(2:2:end)=yodd;
+    for jj = 1
+        set(body2,'xdata',x(jj),'ydata',y(jj)), drawnow
+    end
+    for jj = 2:length(x)
+        j = jj-1:jj;
+        set(body2,'xdata',x(j),'ydata',y(j)), drawnow
+        mypause(p)
+    end
+else
 %     body = animatedline('parent',h,'color',color,'linestyle','-','LineWidth',3,'erase','none', ...
 %         'xdata',[],'ydata',[]);
-% end
-for jj = 1
-    set(body,'xdata',x(jj),'ydata',y(jj)), drawnow, hold on
-end
-for jj = 2:length(x)
-    j = jj-1:jj;
-    set(body,'xdata',x(j),'ydata',y(j)), drawnow
-    mypause(p)
+    body = animatedline;
+    body2 = animatedline;
+    for k = 1:length(x);
+        addpoints(body, x(k), y(k))
+        drawnow update
+    end
+    
+    x = pivot(1)*ones(length(t),1);
+    yeven = pivot(2) + t(1:2:end)*(1-pivot(2));
+    yodd = pivot(2) + t(2:2:end)*(-1-pivot(2));
+    y(1:2:end)=yeven; y(2:2:end)=yodd;
+    for k = 1:length(x);
+        addpoints(body2, x(k), y(k))
+        drawnow update
+    end
+    
 end
 
-body2 = line('parent',h,'color',color,'linestyle','-','LineWidth',2,'erase','none', ...
-    'xdata',[],'ydata',[]);
-x = pivot(1)*ones(length(t),1);
-yeven = pivot(2) + t(1:2:end)*(1-pivot(2));
-yodd = pivot(2) + t(2:2:end)*(-1-pivot(2));
-y(1:2:end)=yeven; y(2:2:end)=yodd;
-for jj = 1
-    set(body2,'xdata',x(jj),'ydata',y(jj)), drawnow
-end
-for jj = 2:length(x)
-    j = jj-1:jj;
-    set(body2,'xdata',x(j),'ydata',y(j)), drawnow
-    mypause(p)
-end
 
 h={[body body2]};
 
