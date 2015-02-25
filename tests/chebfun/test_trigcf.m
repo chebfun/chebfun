@@ -20,6 +20,22 @@ f = chebfun(fh, [0, 2], 'trig');
 pass(2) = norm(p-f, inf) < tol && abs(s) < tol;
 
 %%
+fh = @(x) exp(sin(pi*x));
+f = chebfun(fh, [-1, 1], 'trig');
+n = 12;
+pcf = trigcf(f, n);
+[prm, err, status] = trigremez(f, n);
+%%
+errCF = chebfun(pcf-f);
+errRM = chebfun(prm-f);
+semilogy(abs(errCF))
+hold on
+semilogy(abs(errRM), 'r')
+hold off
+
+%%
+
+%%
 err = f - p;
 pass(1) = isPeriodicTech(p) & (length(p) == 2*n+1);
 pass(2) = norm(abs(err(status.xk)) - errMax, inf) < 100*tol;

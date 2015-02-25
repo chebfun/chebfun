@@ -10,14 +10,14 @@ function [p, s] = trigcf(f, n, M)
 %   [P, S] = CF(F, N, K) does the same but uses only the K-th
 %   partial sum in the Fourier expansion of F.
 %
-%   CF = Caratheodory-Fejer approximation is a near-best approximation that 
-%   is often indistinguishable from the true best approximation (which for
-%   polynomials can be computed using TRIGREMEZ(F, N), but often much 
-%   faster to compute.
+%   TRIGCF = Caratheodory-Fejer approximation is a near-best approximation
+%   that is often indistinguishable from the true best approximation (which
+%   for tirgonometric polynomials can be computed using TRIGREMEZ(F, N),
+%   but often much faster to compute.
 %
 %   Examples:
 %
-%   Compute a quadratic trigonometric polynomial CF approximant to 
+%   Compute a degree 2 trigonometric polynomial CF approximant to 
 %   exp(sin(pi*x)) on [-1, 1]:
 %     f = chebfun(@(x) exp(sin(pi*x)), 'trig');
 %     [p, s] = trigcf(f, 2);
