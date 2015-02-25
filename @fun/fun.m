@@ -1,6 +1,6 @@
-classdef fun % (Abstract) 
+classdef fun % (Abstract)
 %FUN   Approximate functions on arbitrary domains.
-%   Abstract (interface) class for approximating functions on the arbitrary 
+%   Abstract (interface) class for approximating functions on the arbitrary
 %   intervals.
 %
 % Constructor inputs:
@@ -22,11 +22,11 @@ classdef fun % (Abstract)
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% CLASS CONSTRUCTOR:
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
-        
+
         function obj = constructor(op, data, pref)
-            
+
             % Parse inputs.
             if ( nargin < 1 )
                 % We can't return an empty FUN, so pass an empty OP down.
@@ -50,44 +50,46 @@ classdef fun % (Abstract)
             else
                 obj = classicfun.constructor(op, data, pref);
             end
-            
+
         end
-        
+
     end
-    
-        
+
+
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% ABSTRACT METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Abstract = true, Static = false )
-        
-        % Test if the FUN is constructed with a basis of periodic
-        % functions.
-        out = isPeriodicTech(f)
-        
+
+        % Test if the FUN is constructed with a basis of periodic functions.
+        out = isPeriodicTech(f);
+
+        % Return a version of the fun with all deltas removed.
+        f = removeDeltas(f);
+
     end
-    
+
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% ABSTRACT STATIC METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Abstract = true, Static = true )
 
         % Map from [-1, 1] to the domain of the FUN.
-        m = createMap(domain);  
-        
+        m = createMap(domain);
+
         % Make a FUN. (Constructor shortcut)
         f = make(varargin);
-        
+
     end
-    
+
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% STATIC METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Static = true )
-        
+
         % Edge detector.
         [edge, vscale] = detectEdge(op, domain, hscale, vscale, pref);
-        
+
     end
-        
+
 end

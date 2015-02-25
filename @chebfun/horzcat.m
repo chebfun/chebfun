@@ -46,7 +46,8 @@ end
 
 % Horizontal concatenation of row CHEBFUN objects produces a CHEBMATRIX:
 if ( chebfun1(1).isTransposed )
-    out = chebmatrix(varargin);
+    args = cellfun(@transpose, varargin, 'UniformOutput', false);
+    out = vertcat(args{:})';
     return
 end
 
@@ -90,13 +91,15 @@ else
     end
 end
 
-% TODO: Also check to see if an input is a SINGFUN.
+% TODO: Also check to see if an input is a SINGFUN or DELTAFUN or TRIGFUN:
 isSingular = any(cellfun(@issing, varargin));
 isDelta = any(cellfun(@isdelta, varargin));
+isAllPeriodic = all(cellfun(@isPeriodicTech, varargin));
+isQuasiPeriodic = any(cellfun(@isPeriodicTech, varargin)) && ~isAllPeriodic;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%% FORM A QUASIMATRIX %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-if ( differentBreakpoints || isSingular || isDelta )  % (form a quasimatrix)
+if ( differentBreakpoints || isSingular || isDelta || isQuasiPeriodic )  % (form a quasimatrix)
     isArrayCheb = cellfun(@(f) isa(f, 'chebfun') && size(f, 2) > 1, varargin);
     if ( any(isArrayCheb) )
         % Break up array-valued CHEBFUNs into single columns:

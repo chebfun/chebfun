@@ -238,6 +238,9 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         % SINGFUN does not support FLOOR.
         g = floor(f)
         
+        % Fractional integral of a SINGFUN object.
+        f = fracInt(f, mu)
+        
         % Get method:
         val = get(f, prop)
         
@@ -263,7 +266,7 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         out = isnan(f)
         
         function out = isPeriodicTech(f)
-        %ISPERIODICTECH    Test if the smooth part of f is is constructed with a 
+        %ISPERIODICTECH   Test if the smooth part of f is is constructed with a 
         %basis of periodic functions. 
         
             % Calls ISPERIODICTECH on the SMOOTHFUN part.

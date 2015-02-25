@@ -81,4 +81,10 @@ N = chebop2(@(u) -laplacian(u) );
 N.lbc = 0; N.rbc = 0; N.dbc = 0; N.ubc = 0; 
 exact = N \ 1;
 pass(6) = ( norm( u - exact ) < tol);
+
+% check lap(u) exists: 
+N = chebop2(@(u) -lap(u) );
+N.lbc = 0; N.rbc = 0; N.dbc = 0; N.ubc = 0; 
+exact = N \ 1;
+pass(7) = ( norm( u - exact ) < tol);
 end

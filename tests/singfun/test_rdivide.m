@@ -122,6 +122,12 @@ pass(13) = ( norm(f, Inf) < get(r, 'vscale')*get(r, 'epslevel') );
 pass(14) = ( norm(g, Inf) < get(r, 'vscale')*get(r, 'epslevel') );
 pass(15) = ( norm(h, Inf) < get(r, 'vscale')*get(r, 'epslevel') );
 
+%% Check simplification of (1+x) / sqrt(1+x) has positive exponents.
+f = singfun(@(x) 1+x);
+g = singfun(@(x) sqrt(1+x), struct('exponents', [.5 0]));
+h = f./g;
+pass(16) = all(h.exponents == [.5 0]);
+
 end
 
 % Test the division of a SINGFUN F, specified by Fh, by a scalar C using
@@ -130,7 +136,7 @@ function result = test_division_by_scalar(f, fh, c, x)
     g = f./c;
     g_exact = @(x) fh(x)./c;
     result = norm(feval(g, x) - g_exact(x), inf) <= ...
-        2e2*get(g, 'vscale')*get(g, 'epslevel');
+        2e3*get(g, 'vscale')*get(g, 'epslevel');
 end
 
 % Test the division of two SINGFUN objects F and G, specified by FH and

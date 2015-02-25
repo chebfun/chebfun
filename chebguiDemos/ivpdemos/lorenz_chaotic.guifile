@@ -1,0 +1,10 @@
+'Lorenz equations (chaotic behaviour)'
+'system'
+type = 'ivp';
+domain = '[0 15]';
+DE = {'u'' = 10*(v - u)' ; 'v'' = u*(28 - w) - v' ; 'w'' = u*v - (8/3)*w'};
+BC = {'u(0) = -14' ; 'v(0) = -15' ; 'w(0) = 20'};
+init = '';
+tol = '';
+damping = '1';
+plotting = '.1';

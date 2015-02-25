@@ -44,7 +44,7 @@ tech = tech();
 
 % If an external vscale was supplied, it can supplant the inherent scale of the
 % result.
-vscale = max(u.vscale, max(vscale));
+vscale = max(u.vscale, vscale);
 prefTech = tech.techPref();
 prefTech.eps = pref.errTol;
 
@@ -52,7 +52,8 @@ for i = 1:numInt
     c = cat(2, coeffs{i,:});
     f = tech.make({[], c});
     f.vscale = vscale;
-    [isDone(i), neweps, cutoff(i,:)] = plateauCheck(f, get(f,'values'), prefTech);
+    [isDone(i), neweps, cutoff(i,:)] = plateauCheck(f, get(f, 'values'), ...
+        prefTech);
     epsLevel = max(epsLevel, neweps);
 end
 

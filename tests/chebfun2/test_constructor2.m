@@ -27,10 +27,18 @@ f1 = chebfun2(@(x,y) cos(pi*x).*sin(pi*y),'periodic');
 f2 = chebfun2(@(x,y) cos(pi*x).*sin(pi*y),[-1 1 -1 1],'periodic');
 pass(5) = ( norm( f1 - f2 ) < tol );
 
+f1 = chebfun2(@(x,y) cos(pi*cos(pi*x) + pi*sin(pi*y)),'periodic');
+f2 = chebfun2(@(x,y) cos(pi*cos(pi*x) + pi*sin(pi*y)), [-1 1 -1 1], 'periodic');
+pass(6) = ( norm(f1 -f2) < 10*tol );
 % Check underlying tech is a TRIGTECH: 
 techRow = get(f1.cols.funs{1}, 'tech');
 techCol = get(f1.rows.funs{1}, 'tech');
-pass(6) = ( isa(techRow(), 'trigtech') ); 
-pass(7) = ( isa(techCol(), 'trigtech') ); 
+pass(7) = ( isa(techRow(), 'trigtech') ); 
+pass(8) = ( isa(techCol(), 'trigtech') ); 
 
+% Test making a chebfun2 from a scalar coefficient: 
+f = chebfun2(1,'coeffs'); 
+pass(9) = ( norm( f - 1 ) < tol );
+f = chebfun2('x'); z = .5 + sqrt(3)/3*1i;
+pass(10) = ( norm( f(real(z),imag(z)) - z ) < tol ) ; 
 end

@@ -47,6 +47,11 @@ end
 if ( ~isempty(breaks) )
     % Get the domain with the new breakpoints: (union is not required, by above)
     dom = unique([f.domain, breaks.']);
+    
+    % Handle periodic functions:
+    if ( isPeriodicTech(f) )
+        f = chebfun(f);
+    end
 
     % Introduce these breakpoints into f:
     f = restrict(f, dom);

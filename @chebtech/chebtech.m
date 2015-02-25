@@ -66,7 +66,8 @@ classdef chebtech < smoothfun % (Abstract)
 %
 %   h = cumsum(f):
 %     h.vscale = getvscl(h);
-%     h.epslevel = happinessCheck(h);
+%     % [TODO]: Figure this out rigourously.
+%     h.epslevel = 2*f.epslevel*f.vscale/h.vscale
 %
 % If the input operator OP in a call to a concrete CHEBTECH constructor, say,
 % CHEBTECH1(OP), evaluates to NaN or Inf at any of the sample points used by the
@@ -232,6 +233,9 @@ classdef chebtech < smoothfun % (Abstract)
         
         % Flip/reverse a CHEBTECH object.
         f = flipud(f)
+        
+        % Fractional integral of a CHEBTECH object.
+        f = fracInt(f, mu, b)
 
         % Happiness test for a CHEBTECH
         [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, pref)

@@ -22,7 +22,7 @@ if ( ~domainCheck(f, g) || f(1).isTransposed ~= g(1).isTransposed || ...
 end
 
 if ( numel(f) == 1 && numel(g) == 1 )
-    % Array-valued CHEBFUIN case:
+    % Array-valued CHEBFUN case:
     out = columnIsequal(f, g);
 else
     % QUASIMATRIX case:

@@ -197,7 +197,7 @@ classdef classicfun < fun % (Abstract)
         out = isnan(f)
 
         function out = isPeriodicTech(f)
-        %ISPERIODICTECH    Test if the smooth part of f is is constructed with a
+        %ISPERIODICTECH   Test if the smooth part of f is is constructed with a
         %basis of periodic functions.
             
             % Calls ISPERIODICTECH on the ONEFUN part.

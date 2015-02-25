@@ -35,8 +35,8 @@ u = N \ 0;
 
 pass(5) = ( norm( u(:,d(3)) - N.dbc.' ) < tol);  
 pass(6) = ( norm( u(:,d(4)) - N.ubc.' ) < 2*tol); 
-pass(7) = ( norm( u(d(1),:) - N.lbc ) < tol); 
-pass(8) = ( norm( u(d(2),:) - N.rbc ) < tol);
+pass(7) = ( norm( u(d(1),:) - N.lbc ) < 10*tol); 
+pass(8) = ( norm( u(d(2),:) - N.rbc ) < 10*tol);
 
 
 % Harmonic solution to the Laplace equation

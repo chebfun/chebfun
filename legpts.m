@@ -26,7 +26,7 @@ function [x, w, v, t] = legpts(n, int, meth)
 %   In some situations (in particular with 'ASY') these can be computed to a
 %   much better relative precision than X.
 %
-% See also CHEBPTS, JACPTS, LOBPTS, RADAUPTS, HERMPTS, LAGPTS, and FOURPTS.
+% See also CHEBPTS, JACPTS, LOBPTS, RADAUPTS, HERMPTS, LAGPTS, and TRIGPTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

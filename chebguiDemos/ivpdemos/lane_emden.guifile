@@ -1,0 +1,9 @@
+'Lane-Emden equation'
+'scalar'
+domain = '[0 10]';
+DE = 'x*u" + 2*u''+ x*u^2 = 0';
+BC = {'u(0)  = 1','u''(0) = 0'};
+init = ''; tol = '1e-8';
+damping = '1'; plotting = '0.1';
+ivpSolver = 'collocation';
+type = 'ivp'; 

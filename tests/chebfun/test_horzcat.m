@@ -42,4 +42,17 @@ Q_exact = @(x) [sin(x) sin(x) sin(x)];
 err = feval(Q, xr) - Q_exact(xr);
 pass(5) = numel(Q) == 1 && norm(err(:), inf) < 10*vscale(Q)*epslevel(Q);
 
+% Test trigfuns and chebfun horzcat:
+f = chebfun(@(x) cos(pi*x), 'trig');
+g = chebfun('x');
+h = [f, g];
+pass(6) = numel(h) == 2 && numel([h, h]) == 4;
+pass(7) =  isPeriodicTech(h(:, 1));
+pass(8) = ~isPeriodicTech(h(:, 2));
+
+% #1234
+x = chebfun('x', pref);
+f = [x.' , [0 , 0]];
+pass(9) = isa(f, 'chebmatrix') && all(size(f.blocks)==[1,3]);
+
 end

@@ -14,7 +14,7 @@ function [PA, P, PS] = reduce(disc, A, S)
 PA = cell2mat(A);
 
 % No projection: the matrix P is the identity.
-P = eye(length(PA));
+P = speye(length(PA));
 PS = P;
 
 end

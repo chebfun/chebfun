@@ -67,6 +67,7 @@ minSample = tpref.minSamples;
 maxSample = tpref.maxLength;
 pseudoLevel = tpref.eps;
 
+% Deal with periodic functions: 
 if ( any(strcmpi(dom, 'periodic')) )
         % If periodic flag, then map chebfun2 with TRIGTECHs. 
         pref.tech = @trigtech;
@@ -84,8 +85,31 @@ elseif ( (nargin > 3) && (any(strcmpi(varargin{1}, 'periodic'))) )
         pseudoLevel = tpref.eps;
 end
 
+% Deal with constructions from equally spaced data:
+if ( any(strcmpi(dom, 'equi')) || ((nargin > 3) && (any(strcmpi(varargin{1}, 'equi')))) )
+        % Equally spaced data: 
+        if ( any(strcmpi(dom, 'equi')) ) 
+            dom = [-1 1 -1 1];
+        end
+        % Calculate a tolerance and find numerical rank to this tolerance: 
+        % The tolerance assumes the samples are from a function. It depends
+        % on the size of the sample matrix, hscale of domain, vscale of
+        % the samples, and the accuracy target in chebfun2 preferences. 
+        grid = max( size( op ) ); 
+        vscale = max( abs(op(:)) ); 
+        tol = grid.^(2/3) * max( max( abs(dom(:))), 1) * vscale * pseudoLevel;
+        [pivotValue, ignored, rowValues, colValues] = CompleteACA(op, tol, 0); % Do ACA on matrices
+        
+        % Make a chebfun2: 
+        g.pivotValues = pivotValue;
+        g.cols = chebfun(colValues, dom(3:4), 'equi' );
+        g.rows = chebfun(rowValues.', dom(1:2), 'equi'  );
+        g.domain = dom;
+        return
+end
+
 if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
-    if ( numel( op ) == 1 )
+    if ( numel( op ) == 1 && ~any(strcmpi(dom, 'coeffs')) )
         % LNT wants this:
         g = constructor(g, @(x,y) op + 0*x, dom);
         
@@ -168,13 +192,29 @@ if ( numel(dom) == 2 )
         ends = varargin{1};
         if ( numel( ends ) == 2 )
             dom = [dom(:) ; ends(:)].';
-        else
+        elseif ( numel(ends) == 4 ) 
+            % Interpret this as the user wants a degree (dom(1),dom(2)) 
+            % chebfun2 on the domain [ends]. 
+            [xx, yy] = chebfun2.chebpts2(dom(1), dom(2), ends);
+            g = chebfun2( op(xx, yy), varargin{:} ); 
+            return
+        else 
             error('CHEBFUN:CHEBFUN2:constructor:domain1', ...
-                'Domain not fully determined.');
+                'Domain not valid or fully determined.');
         end
     else
-        error('CHEBFUN:CHEBFUN2:constructor:domain2', ...
-            'Domain not fully determined.');
+        % The domain is not given, but perhaps the user 
+        % wants a degree (dom(1),dom(2)) representation.
+        if ( dom(2) - dom(1) > 0 && dom(1)>0 &&...   % A valid bivariate degree? 
+                abs(round(dom(1)) - dom(1))< eps &&...
+                abs(round(dom(2)) - dom(2))< eps) 
+            [xx, yy] = chebfun2.chebpts2(dom(1), dom(2));
+            g = chebfun2( op(xx, yy), varargin ); 
+            return
+        else
+            error('CHEBFUN:CHEBFUN2:constructor:domain2', ...
+                'Domain not valid or fully determined.');
+        end
     end
 elseif ( numel(dom) == 1 )
     fixedRank = dom;
@@ -182,6 +222,12 @@ elseif ( numel(dom) == 1 )
 elseif ( numel(dom) ~= 4 )
     error('CHEBFUN:CHEBFUN2:constructor:DOMAIN', ...
         'Domain not fully determined.');
+end
+
+% Check for infinite domains: 
+if ( any( isinf( dom ) ) ) 
+    error('CHEBFUN2:DOMAIN:INFINITE', ...
+        'Chebfun2 cannot approximation functions on infinite domains.');
 end
 
 % If the vectorize flag is off, do we need to give user a warning?
@@ -287,7 +333,7 @@ while ( ~isHappy && ~failure )
     %%% PHASE 2: %%%
     % Now resolve along the column and row slices:
     n = grid;  m = grid;
-    while ( ~isHappy )
+    while ( ~isHappy && ~failure  )
         if ( ~resolvedCols )
             % Double sampling along columns
             [n, nesting] = gridRefine( n , pref );
@@ -494,11 +540,15 @@ function op = str2op( op )
 % handle than can be evaluated.
 
 depvar = symvar( op );
-if ( numel(depvar) > 2 )
+if ( numel(depvar) > 2)
     error('CHEBFUN:CHEBFUN2:constructor:str2op:depvars', ...
         'Too many dependent variables in string input.');
+elseif ( numel(depvar) == 1 )
+    % Treat as a complex variable: 
+    op = eval(['@(' real(depvar{1}) + 1i*imag(depvar{1}) ')' op]);
+else
+    op = eval(['@(' depvar{1} ',' depvar{2} ')' op]);
 end
-op = eval(['@(' depvar{1} ',' depvar{2} ')' op]);
 
 end
 
@@ -571,7 +621,7 @@ if ( isa(tech, 'chebtech2') )
 elseif ( isa(tech, 'chebtech1') )
     x = chebpts( n, dom, 1 );   % x grid.
 elseif ( isa(tech, 'trigtech') )
-    x = fourpts( n, dom );   % x grid.
+    x = trigpts( n, dom );   % x grid.
 else
     error('CHEBFUN:CHEBFUN2:constructor:mypoints:techType', ...
         'Unrecognized technology');

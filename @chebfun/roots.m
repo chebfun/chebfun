@@ -81,7 +81,7 @@ function r = columnRoots(f, rootsPref)
 el = epslevel(f);
 hs = hscale(f);
 vs = vscale(f);
-htol = 10*eps*hs;
+htol = 100*eps*hs;
 vtol = el*vs;
 dom = f.domain;
 
@@ -129,9 +129,6 @@ for k = 1:numFuns
     r = [ r ; rk ]; %#ok<AGROW>    
 
 end
-
-% Set any ridiculously small roots to zero:
-r(abs(r) < eps*vs*hs/10) = 0;
 
 % Remove unnecessary NaNs:
 r = sort(r, 1);             % Sort will place NaNs in the final rows.
