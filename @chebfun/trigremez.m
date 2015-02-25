@@ -32,7 +32,7 @@ function varargout = trigremez(f, varargin)
 %   [1] Javed, M. and Trefethen, L. N.  "Remez and CF approximations of 
 %    Periodic Functions". In preparation.
 %
-% See also REMEZ, CF.
+% See also REMEZ, TRIGCF, CF.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
