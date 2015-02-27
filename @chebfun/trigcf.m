@@ -76,7 +76,7 @@ function [p, s] = trigcfOneColumn(f, n, M)
 
 % Check the inputs.
 if ( any(isinf(domain(f))) )
-    error('CHEBFUN:CHEBFUN:cf:unboundedDomain', ...
+    error('CHEBFUN:CHEBFUN:trigcf:unboundedDomain', ...
         'CF does not work for CHEBFUNs with unbounded domains.');
 end
 
@@ -96,7 +96,8 @@ end
 if ( isempty(M) || 2*M + 1 > length(f) )
     M = (length(f)-1)/2;
     if ( rem(M, 1) ~= 0 )
-        error( 'M is not an integer, even length trigfun!' )
+        error( 'CHEBFUN:CHEBFUN:trigcf:even', ...
+          'M is not an integer, even length trigfun encountered.' )
     end
 end
 
@@ -127,7 +128,8 @@ else
     % Extract the Fourier coefficients to be used in computing the approximation.
     N = (length(f)-1)/2;
     if ( rem(N, 1) ~= 0 )
-        error( 'N is not an integer, even length trigfun!' )
+        error( 'CHEBFUN:CHEBFUN:trigcf:real', ...
+          'N is not an integer, even length trigfun encountered.' )
     end
     a = trigcoeffs(f, length(f));
     a = a(N+1:(N+1+M));
@@ -153,7 +155,8 @@ else
     % Construct the CF approximation now:
     a = [conj(a(n+1:-1:2)); a(1:n+1)] - b1 - flipud(b1) - 1i*b2 + 1i*flipud(b2);
     if ( norm(a(n+2:2*n+1) - conj(a(n:-1:1)), inf) > 100*eps || imag(a(n+1)) > 100*eps )
-        error( 'why are the coeffs not that of a real function?')
+        error( 'CHEBFUN:CHEBFUN:trigcf:coeffs', ...
+          'The coefficients at this stage must be real.' )
     else
         a(n:-1:1) = conj(a(n+2:2*n+1));
         a(n+1) = real(a(n+1));
@@ -179,7 +182,7 @@ function [b, s] = getCoeffs(c, N, n)
 d = diag(D);
 [s, i] = max(abs(d));
 u = V(:,i);
-% Compute the coefficients b recursively:
+% Compute the coefficients b recursively, see reference [1] for details:
 u1 = u(1);
 while ( abs(u(1)) < eps )
     d(i) = [];
