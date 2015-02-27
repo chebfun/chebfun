@@ -67,15 +67,23 @@ if ( isdelta(f) )
         'Function must not have any delta functions.');
 end
 
+
+% Check continuity on the circle:
+dom = f.domain([1, end]);
+a = dom(1);
+b = dom(end);
+normf = norm(f);
+if ( abs(feval(f, b)-feval(f, a)) > normf*100*eps )
+    warning('CHEBFUN:CHEBFUN:trigremez:discontinuity', ...
+        'Function is not continuous on the circle');
+end
+
 % Parse the inputs.
 [m, N, opts] = parseInputs(f, varargin{:});
 
 normf = norm(f);
 
 % Map everything to [-pi, pi]:
-dom = f.domain([1, end]);
-a = dom(1);
-b = dom(end);
 f = newDomain(f, [-pi, pi]);
 
 % normalize f:
