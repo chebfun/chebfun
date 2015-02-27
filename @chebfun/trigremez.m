@@ -42,8 +42,6 @@ if ( isempty(f) )
     return;
 end
 
-normf = norm(f);
-
 if ( ~isreal(f) )
     error('CHEBFUN:CHEBFUN:trigremez:real', ...
         'TRIGREMEZ only supports real-valued functions.');
@@ -72,17 +70,23 @@ end
 % Parse the inputs.
 [m, N, opts] = parseInputs(f, varargin{:});
 
-% Initial values for some parameters.
-iter = 0;       % Iteration count.
-delta = normf;  % Value for stopping criterion.
-deltamin = inf; % Minimum error encountered.
-diffx = 1;      % Maximum correction to trial reference.
+normf = norm(f);
 
 % Map everything to [-pi, pi]:
 dom = f.domain([1, end]);
 a = dom(1);
 b = dom(end);
 f = newDomain(f, [-pi, pi]);
+
+% normalize f:
+f = f/normf;           
+
+% Initial values for some parameters.
+iter = 0;       % Iteration count.
+delta = 1;      % Value for stopping criterion.
+deltamin = inf; % Minimum error encountered.
+diffx = 1;      % Maximum correction to trial reference.
+
 
 % Compute an initial reference set to start the algorithm:
 xk = trigpts(N, [-pi, pi]);
@@ -94,7 +98,7 @@ if ( opts.displayIter )
 end
 
 % Run the main algorithm.
-while ( (delta/normf > opts.tol) && (iter < opts.maxIter) && (diffx > 0) )
+while ( (delta > opts.tol) && (iter < opts.maxIter) && (diffx > 0) )
     fk = feval(f, xk);     % Evaluate on the exchange set.
     w = trigBaryWeights(xk);
     
@@ -157,13 +161,16 @@ if ( delta/normf > opts.tol )
 end
 
 % Form the outputs.
-status.delta = delta/normf;
+status.delta = delta;
 status.iter = iter;
 status.diffx = diffx;
 status.xk = xk;
 
 % Map the approximation back to the original domain:
 p = newDomain(p, [a, b]);
+% re-normalize p:
+p = normf*p;
+err = normf*err;
 
 % return:
 varargout = {p, err, status};

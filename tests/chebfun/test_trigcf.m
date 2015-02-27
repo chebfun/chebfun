@@ -21,7 +21,7 @@ pass(2) = norm(p-f, inf) < tol && abs(s) < tol;
 
 %%
 fh = @(x) exp(sin(pi*x));
-f = chebfun(fh, [-1, 1], 'trig');
+f = chebfun(fh, [0, 2], 'trig');
 n = 12;
 pcf = trigcf(f, n);
 [prm, err, status] = trigremez(f, n);

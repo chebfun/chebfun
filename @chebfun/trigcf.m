@@ -1,5 +1,5 @@
 function [p, s] = trigcf(f, n, M)
-%CF   Caratheodory-Fejer approximation
+%CF   Trigonometric Caratheodory-Fejer approximation
 %   P = CF(F, N) computes a degree N trigonometric CF approximant to 
 %   CHEBFUN F defined on [a, b], which must consist of just a
 %   single FUN.
@@ -31,8 +31,14 @@ function [p, s] = trigcf(f, n, M)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+if ( isempty(f) || nargin < 2 )
+    p = f;
+    s = 0;
+    return;
+end
+
 % If M is not provided, set it to empty:
-if ( nargin < 4 )
+if ( nargin < 3 )
     M = [];
 end
 
@@ -57,15 +63,16 @@ if ( numCols > 1 )
         end
     end
 else
-    [p, s] = trigcfOneColumn(f, n, n, M);
+    [p, s] = trigcfOneColumn(f, n, M);
 end
 
 end
 
-function [p, s] = trigcfOneColumn(f, m, n, M)
 
-% Check for periodicity
-isPeriodic = isPeriodicTech(f);
+
+%% 
+% Main code for Trigonometric CF approximation:
+function [p, s] = trigcfOneColumn(f, n, M)
 
 % Check the inputs.
 if ( any(isinf(domain(f))) )
@@ -101,66 +108,68 @@ if ( n >= M )
     return
 end
 
+
+% Map the problem to [-1, 1] and rescale:
+dom = f.domain([1, end]);
+normf = norm(f);
+f = f/normf;
+f = newDomain(f, [-1, 1]);
+
 % If the degree of cf approximation is just one less than the expansion, we do
 % not solve the eigenvalue problem:
-if ( m == M-1 )    
+if ( n == M-1 )
     a = trigcoeffs(f, 2*M+1);
-    p = chebfun(a(2:end-1), domain(f), 'coeffs', 'trig');
-    s = norm([a(1), a(end)], 1);
-    return
-end
-
-
-%% Main Algorithm for TRIGCF:
-% Extract the Fourier coefficients to be used in computing the approximation.
-N = (length(f)-1)/2;
-if ( rem(N, 1) ~= 0 )
-    error( 'N is not an integer, even length trigfun!' )
-end
-a = trigcoeffs(f, length(f));
-a = a(N+1:(N+1+M));
-
-dom = domain(f);
-
-ck = real(a(n+2:M+1));
-dk = imag(a(n+2:M+1));
-
-% Initialize arrays:
-b1 = zeros(2*n+1, 1);
-b2 = zeros(2*n+1, 1);
-s1 = [];
-s2 = [];
-
-f1 = 0;
-f2 = 0;
-% Solve the eigenvalue problem twice:
-if ( norm(ck, inf) > 100*eps )
-    f1 = 1;
-    [b1, s1] = getCoeffs(ck, M, n);
-end
+    p = chebfun(a(2:end-1), 'coeffs', 'trig');
+    s1 = a(1);
+    s2 = a(1);
+else
+    %% Main Algorithm for TRIGCF:
+    % Extract the Fourier coefficients to be used in computing the approximation.
+    N = (length(f)-1)/2;
+    if ( rem(N, 1) ~= 0 )
+        error( 'N is not an integer, even length trigfun!' )
+    end
+    a = trigcoeffs(f, length(f));
+    a = a(N+1:(N+1+M));
     
-if ( norm(dk, inf) > 100*eps )
-    f2 = 1;
-    [b2, s2] = getCoeffs(dk, M, n);
+    ck = real(a(n+2:M+1));
+    dk = imag(a(n+2:M+1));
+    
+    % Initialize arrays:
+    b1 = zeros(2*n+1, 1);
+    b2 = zeros(2*n+1, 1);
+    s1 = 0;
+    s2 = 0;
+    
+    % Solve the eigenvalue problem twice:
+    if ( norm(ck, inf) > 100*eps )
+        [b1, s1] = getCoeffs(ck, M, n);
+    end
+    
+    if ( norm(dk, inf) > 100*eps )
+        [b2, s2] = getCoeffs(dk, M, n);
+    end
+            
+    % Construct the CF approximation now:
+    a = [conj(a(n+1:-1:2)); a(1:n+1)] - b1 - flipud(b1) - 1i*b2 + 1i*flipud(b2);
+    if ( norm(a(n+2:2*n+1) - conj(a(n:-1:1)), inf) > 100*eps || imag(a(n+1)) > 100*eps )
+        error( 'why are the coeffs not that of a real function?')
+    else
+        a(n:-1:1) = conj(a(n+2:2*n+1));
+        a(n+1) = real(a(n+1));
+    end
+    p = chebfun(a, 'coeffs', 'trig');
 end
-f2*f1
 
+% Re-map p back to original domain:
+p = newDomain(p, dom);
+
+% re-normalize p:
+p = p*normf;
 % How to estimate s here? 1-norm is an upperbound?
 % s = norm([s1, s2], 1);
-s = 2*max(abs([s2, s1]));
-
-
-% Construct the CF approximation now:
-a = [conj(a(n+1:-1:2)); a(1:n+1)] - b1 - flipud(b1) - 1i*b2 + 1i*flipud(b2);
-if ( norm(a(n+2:2*n+1) - conj(a(n:-1:1)), inf) > 100*eps || imag(a(n+1)) > 100*eps )
-    error( 'why are the coeffs not that of a real function?')
-else
-    a(n:-1:1) = conj(a(n+2:2*n+1));
-    a(n+1) = real(a(n+1));
-end    
-p = chebfun(a, dom, 'coeffs', 'trig');
+s = normf*2*max(abs([s2, s1]));
 end
-
 
 %%
 function [b, s] = getCoeffs(c, N, n)
