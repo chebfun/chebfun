@@ -5,7 +5,7 @@ function D = baryDiffMat(x, w, k, t)
 %   points.
 %
 %   D = BARYDIFFMAT(X, W) is the same, but here the derivative is of the
-%   barycentrix interpolant defined by the points X and the weights W.
+%   barycentric interpolant defined by the points X and the weights W.
 %
 %   D = BARYDIFFMAT(X, W, K) is the same, but for the Kth derivative.
 %
