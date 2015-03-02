@@ -52,7 +52,7 @@ else
 end
 
 % Tell CHEBOP/LINEARIZE() to stop if it detects nonlinearity:
-linCheck = 1; 
+linCheck = true; 
 
 % Linearize, thereby obtaining linearity information, a LINOP, and an input of
 % the correct dimensions to pass to N:
@@ -65,9 +65,13 @@ assert(all(isLinear), 'CHEBFUN:CHEBOP:eigs:nonlinear', ...
 
 % Support for generalised problems:
 if ( nargin > 1 && isa(varargin{1}, 'chebop') )
+    % Tell CHEBOP/LINEARIZE() that we don't want it to try to reshape inputs
+    % that it believes are parameters to doubles, rather than CHEBFUNs.
+    paramReshape = false;
+    
     % Linearise the second CHEBOP:
     [varargin{1}, ignored, isLinear] = ...
-        linearize(varargin{1}, u0, [], linCheck);
+        linearize(varargin{1}, u0, [], linCheck, paramReshape);
 
     % We need the entire operator (including BCs) to be linear:
     assert(all(isLinear), 'CHEBFUN:CHEBOP:eigs:nonlinear', ...

@@ -1,4 +1,4 @@
-function [L, res, isLinear, u] = linearize(N, u, x, flag)
+function [L, res, isLinear, u] = linearize(N, u, x, linCheckFlag, paramReshapeFlag)
 %LINEARIZE   Linearize a CHEBOP.
 %   L = LINEARIZE(N) returns a LINOP that corresponds to linearising the CHEBOP
 %   N around the zero function on N.DOMAIN. The linop L will both include the
@@ -12,10 +12,20 @@ function [L, res, isLinear, u] = linearize(N, u, x, flag)
 %   L = LINEARIZE(N, U, X) passes the independent variable, X, on N.DOMAIN.
 %   If X = [] then LINEARIZE constructs the variable itself internally.
 %
-%   L = LINEARIZE(N, U, X, FLAG) is useful when we call LINOP(CHEBOP), i.e.,
-%   converting a linear CHEBOP to a LINOP. If FLAG = 1, the method will stop
-%   execution and return as soon as it encounters a nonlinear field in N. In
-%   this case L is returned as an empty LINOP.
+%   L = LINEARIZE(N, U, X, LINCHECKFLAG) is useful when we call LINOP(CHEBOP),
+%   i.e., converting a linear CHEBOP to a LINOP. If LINCHECKFLAG = 1, the method
+%   will stop execution and return as soon as it encounters a nonlinear field in
+%   N. In this case L is returned as an empty LINOP. By default, LINCHECKFLAG =
+%   0.
+%
+%   L = LINEARIZE(N, U, X, LINCHECKFLAG, PARAMRESHAPEFLAG) is useful when
+%   determining whether parameters (as opposed to functions) appear in the
+%   problem. If PARAMRESHAPEFLAG = 1, the code will try to cast any unknown
+%   inputs which correspond to parameters to scalars, rather than CHEBFUNs, as
+%   it linearizes. The Frechet derivatives corresponding to parameters will be
+%   Inf x 1 CHEBFUNs, rather than Inf x Inf OPERATORBLOCKs. By default,
+%   PARAMRESHAPEFLAG = 1. For generalized eigenvalue problems, it is useful to
+%   pass PARAMRESHAPEFLAG = 0.
 %
 %   [L, RES] = LINEARIZE(N, ...) also returns RES; to the residual of the
 %   differential equation part of N at the function it was linearized. In other
@@ -59,8 +69,6 @@ if ( nargin < 2 || isempty(u) )
     nVars = numVars(N);
     % Wrap in a cell and call repmat() to get correct dimensions
     u = repmat({zeroFun}, nVars, 1);
-    % Store that we did not get a function to linearize around passed in.
-    initPassed = false;
 else
     if ( isa(u, 'chebmatrix') )
         nVars = size(u, 1);
@@ -69,8 +77,6 @@ else
     else
         nVars = numel(u);
     end
-     % Store that we did get a function to linearize around passed in.
-     initPassed = true;
 end
 
 % Construct the independent variable X if needed.
@@ -78,9 +84,14 @@ if ( nargin < 3 || isempty(x) )
     x = chebfun(@(x) x, dom);
 end
 
-% By default, set FLAG to 0.
-if ( nargin < 4 || isempty(flag) )
-    flag = 0;
+% By default, set LINCHECKFLAG to 0.
+if ( nargin < 4 || isempty(linCheckFlag) )
+    linCheckFlag = 0;
+end
+
+% By default, set PARAMRESHAPEFLAG to 1.
+if ( nargin < 5 || isempty(linCheckFlag) )
+    paramReshapeFlag = 1;
 end
 
 % Convert the linearization variable to cell-array form:
@@ -153,7 +164,7 @@ res = vertcat(get(Nu, 'func'));
 isLinear(1) = all(all(vertcat(get(Nu, 'linearity'))));
 
 % If N is nonlinear, and we were looking to only test linearity, return.
-if ( flag && ~all(isLinear) )
+if ( linCheckFlag && ~all(isLinear) )
     L = linop();
     return
 end
@@ -173,14 +184,14 @@ isParam = all(L.isMult, 1);
 % If we have any parameters involved that are still thought to be functions, and
 % we did not get a U passed in to linearize around, we reseed the corresponding
 % variables.
-if ( all(isFun) && any(isParam) && ~initPassed )
+if ( all(isFun) && any(isParam) && paramReshapeFlag )
     % We've found a parameterised problem, but weren't informed by u0.  Reseed
     % the final numParam variables as constants and linearize again:
     u = cellfun(@(b) b.func, u, 'UniformOutput', false);
     for k = find(isParam)
         u{k} = feval(u{k}, L.domain(1)); % Convert to a scalar.
     end
-    [L, res, isLinear, u] = linearize(N, u, x, flag);
+    [L, res, isLinear, u] = linearize(N, u, x, linCheckFlag);
 
     return
 end
@@ -242,7 +253,7 @@ if ( ~isempty(N.bc) )
             % we're collapsing are either zeros or identity, so identical over
             % the whole domain
             E = functionalBlock.feval(dom(1), dom);
-            for paramCounter=find(~isFun)
+            for paramCounter = find(~isFun)
                 u{paramCounter}.jacobian = E*u{paramCounter}.jacobian;
             end
         end
@@ -264,7 +275,7 @@ if ( ~isempty(N.bc) )
         
         % Loop through the conditions and append to the BC object.
         for k = 1:numel(bcU)
-            J = get(bcU,'jacobian',k);
+            J = get(bcU, 'jacobian', k);
             BC = append(BC, J , vals(k));
             jumps = get(bcU, 'jumpLocations', k);
             L = addGivenJumpAt(L,jumps);
@@ -280,7 +291,7 @@ if ( ~isempty(N.bc) )
 end
 
 % If N is nonlinear, and we were looking to only test linearity, return.
-if ( flag && ~all(isLinear) )
+if ( linCheckFlag && ~all(isLinear) )
     L = linop();
     return
 end
