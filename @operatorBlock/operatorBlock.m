@@ -176,8 +176,9 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
                 % operator
                 C.iszero = A.iszero || B.iszero;
 
-                % Output is a multiplication operator if both operators were.
-                C.isMult = A.isMult && B.isMult;
+                % Output is a multiplication operator if both operators were, or
+                % if it's actually a zero operator.
+                C.isMult = ( A.isMult && B.isMult ) || C.iszero;
 
                 % Difforder of returned OPERATORBLOCK.
                 if ( C.iszero )
