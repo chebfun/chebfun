@@ -1,22 +1,33 @@
 function movie(f, varargin)
 %MOVIE play a a movie about the CHEBFUN2 constructor
 %
-% This function is not a direct analogue of the movie function in MATLAB.
+% MOVIE(F), where F is a CHEBFUN2, plays a movie about how the CHEBFUN2
+% constructor constructed F.
 %
-% Example 1:
-% f = chebfun2(@(x,y) franke(x,y)); movie(f)
+% MOVIE(F, MODE) speeds up or slow the movie, depending on the value of MODE.
+% The options for the value of MODE are as follows:
 %
-% Example 2:
-% f = chebfun2(@(x,y) exp(-(x.^2+y.^2)/2)); movie(f)
+%   MODE = S, where S is a numerical value, plays the movie S times faster than
+%   the regular speed.
+%   
+%   MODE = 'SLOW': TODO: Describe
 %
-% Example 3:
-% f = chebfun2(@(x,y) cos(x.*y)); movie(f)
+%   MODE = 'VSLOW': TODO: Describe
+%
+% Examples:
+%   f = chebfun2(@(x,y) franke(x,y)); movie(f)
+%   f = chebfun2(@(x,y) exp(-(x.^2+y.^2)/2)); movie(f, 2)
+%   f = chebfun2(@(x,y) cos(x.*y)); movie(f, 'slow')
+%
+% Note: This function is not a direct analogue of the movie function in MATLAB.
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
-% Tidy up before we start the movie
-home, close all
+% Tidy up before we start the movie:
+% home, close all
+
+%% Setup the options for playing the movie, in particular, the speed of it.
 
 % Select the mode to play your chebfun2 in.
 if nargin > 1
@@ -30,29 +41,57 @@ else
     mode = 'vslow';
 end
 
+% Setup some parameters for the screening of the movie. The parameters govern
+% the following attributes:
+%   PPAN:
+%   PMOVE:
+%   PFADE: Pause between steps while fading
+%   PBREAK:
+%   PSECTIONBREAK:
 if strcmpi(mode, 'slow')
-    ppan = 0.1; pmove=0.05; pfade = 0.05; pbreak=.2; pwait = .5;psectionbreak=2;
+    ppan   = 0.1;
+    pmove  = 0.05;
+    pfade  = 0.05;
+    pbreak = 0.2;
+    psectionbreak = 2;
 elseif strcmpi(mode, 'control')
-    ppan = 0.1; pmove=0.05; pfade = 0.05; pbreak=.2;
-    pwait = .5; psectionbreak=inf;
+    ppan   = 0.1;
+    pmove  = 0.05;
+    pfade  = 0.05;
+    pbreak = 0.2;
+    psectionbreak = inf;
 elseif strcmpi(mode, 'vslow')
-    ppan = 0.2; pmove=0.1; pfade = 0.1; pbreak=.4; pwait = 1;psectionbreak = 2;
+    ppan   = 0.2;
+    pmove  = 0.1;
+    pfade  = 0.1;
+    pbreak = 0.4;
+    psectionbreak = 2;
 elseif strcmpi(mode, 'speed')
     c = 1/speed;
-    ppan = 0.1*c; pmove=0.05*c; pfade = 0.05*c; pbreak = .2*c;
-    pwait=.5*c;psectionbreak=2*c;
+    ppan   = 0.1*c;
+    pmove  = 0.05*c;
+    pfade  = 0.05*c;
+    pbreak = 0.2*c;
+    psectionbreak = 2*c;
 else
-    ppan = 0; pmove=0; pfade = 0; pbreak = 0; pwait = 0;psectionbreak=0;
+    ppan   = 0;
+    pmove  = 0;
+    pfade  = 0;
+    pbreak = 0;
+    psectionbreak = 0;
 end
 
-co = [0 0 1;0 1 0;1 0 0;0 1 1;1 0 1;1 1 0]; % color array.
+% Colors used for plotting lines on the plot. This is useful for old versions of
+% Matlab compatability.
+co = [0 0.4470 0.7410; 0.8500 0.3250 0.0980; 0.9290 0.6940 0.1250;
+    0.4940 0.1840 0.5560; 0.4660 0.6740 0.1880; 0.3010 0.7450 0.9330];
 
 % Find what the current number of minSamples are:
 pref = chebfunpref();
 minsample = pref.minSamples;
-nextsample = 2^(ceil(log(minsample)) + 1) + 1;
+nextsample = 2^(ceil(log(minsample)) + 2) + 1;
 
-% Starting text
+%% Print starting text
 fprintf('This movie explains how a simplified version of the chebfun2\n')
 fprintf('constructor works on your function.\n\n')
 fprintf('Here it goes...\n\n')
@@ -63,25 +102,27 @@ axis([-1 1 -1 1]), axis off
 mypause(psectionbreak)
 fprintf('This is your chebfun2:\n\n'), clf
 
-% Surface plot
-set(0,'DefaultAxesFontSize', 14, 'DefaultLineLineWidth', 3)
+%% Surface plot of the input CHEBFUN2, followed by panning around the function
+set(0, 'DefaultAxesFontSize', 14, 'DefaultLineLineWidth', 3)
 sf = plot(f);
 axis equal, axis off
 
 % Full pan around function.
-sf=fullpan(sf,ppan);
-sf = tilt(sf,pmove,1);
-campos([0 0 10])
+sf=fullpan(sf, ppan);
+% Tilt to to a from the top view
+sf = tilt(sf, pmove, 1);
 hold on
-% slowing lower opaque
-fade(1,.5,sf,pfade);
+% Slowly go from 100% to 50% opaque
+fade(1, .5, sf, pfade);
+% Pause before next step
 mypause(psectionbreak)
-
 
 %% Start explaining the constructor
-fprintf('We first sample on a %u x %u Chebyshev grid obtaining a matrix A.\n\n',minsample,minsample)
+fprintf(['We first sample on a %u x %u Chebyshev grid obtaining ' ...
+    'a matrix A.\n\n'], minsample, minsample)
 mypause(psectionbreak)
 
+% Sample the function on a finer Chebyshev grid
 [xx, yy] = meshgrid(chebpts(200));
 B = feval(f, xx, yy);
 % We first sample on a 17x17 grid.
@@ -94,15 +135,15 @@ pts = plot3(xx(:), yy(:), zz, 'Marker', '.', 'MarkerSize', 20, ...
 % Take maximum on array, calculate residual and then take next maximum.
 xpts = chebpts(minsample);
 % Do first two steps of ACA.
-P=zeros(2, 2);
+P = zeros(2, 2);
 for j = 1:min(2, length(f))
-    [infnorm , ind]=max( abs ( reshape(A,numel(A),1) ) );
-    [ row , col ]=ind2sub( size(A) , ind);
-    P(j,:) = [xpts(col) xpts(row)];
-    A = A - A( : , col )*A( row , : )./A(row,col);
-    [infnorm , ind]=max( abs ( reshape(B,numel(B),1) ) );
-    [row , col]=ind2sub( size(B) , ind);
-    B = B - B( : , col )*B( row , : )./B(row,col);
+    [infnorm , ind] = max(abs(reshape(A, numel(A), 1)));
+    [ row , col ] = ind2sub(size(A) , ind);
+    P(j,:) = [xpts(col), xpts(row)];
+    A = A - A(:, col)*A(row, :)./A(row, col);
+    [infnorm, ind]=max(abs(reshape(B, numel(B), 1)));
+    [row, col]=ind2sub(size(B), ind);
+    B = B - B(:, col )*B(row, : )./B(row,col);
     ff{j}=B;
     e(j) = norm(A);
 end
@@ -112,15 +153,15 @@ mypause(psectionbreak)
 
 markers=[];
 comet=newplot; t = 0:.01:1;  comets=[];
-for jj= 1:min(2,length(f))
-    val = feval(f, P(jj,1), P(jj,2)); %if (val > max(max(A))-1e-1), val = max(max(A))-1e-2; end % hack!
+for jj= 1:min(2, length(f))
+    val = feval(f, P(jj,1), P(jj,2));
     mark = plot3(P(jj,1), P(jj,2), val, 'Marker', '.', ...
         'Color', co(jj,:), 'MarkerSize', 40);
     if ( jj == 1 )
         fprintf('That''s the big blue dot and the first pivot.\n\n')
         mypause(psectionbreak)
     else
-        fprintf('That''s the green dot.\n\n')
+        fprintf('That''s the red dot.\n\n')
     end
     mypause(psectionbreak)
     if ( jj==1 )
@@ -147,7 +188,7 @@ for jj= 1:min(2,length(f))
     elseif ( length(f) == 2 && jj == 2 )
         fprintf('The first step is complete.\n\n')
         mypause(psectionbreak),
-    elseif ( length(f)>2 || (length(f) == 2 && jj ==1 ) )
+    elseif ( length(f) > 2 || (length(f) == 2 && jj ==1 ) )
         if ( jj == 1 )
             fprintf('We repeat for one more step on the residual matrix.\n')
             fprintf('As before taking the largest absolute value.\n\n')
@@ -155,11 +196,16 @@ for jj= 1:min(2,length(f))
         end
     end
     delete(sf); rect = f.domain;
-    sf = plot(chebfun2(ff{jj}, rect)); alpha(sf,.5);
+    sf = plot(chebfun2(ff{jj}, rect));
+    alpha(sf,.5);
     axis([rect,min(min(ff{jj})) - .1, scl + .1]);
     mypause(psectionbreak),
 end
-delete(comets{1}), delete(comets{2})
+% TODO: Fails for rank1 chebfun2
+delete(comets{1})
+if length(f) > 1
+    delete(comets{2})
+end
 delete(markers), delete(pts);
 
 
@@ -173,7 +219,8 @@ end
 if ( length(f) > 2 )
     fprintf('Your function requires more sampling points to resolve.\n')
     mypause(psectionbreak)
-    fprintf(sprintf('So we next sample it on a %u x %u Chebyshev grid.\n\n',nextsample,nextsample))
+    fprintf(sprintf('So we next sample it on a %u x %u Chebyshev grid.\n\n', ...
+        nextsample, nextsample))
     mypause(psectionbreak)
  
     [xx, yy] = meshgrid(chebpts(nextsample));
@@ -187,7 +234,7 @@ if ( length(f) > 2 )
  
     delete(sf), sf=plot(f); alpha(sf,.5); axis equal, axis off,
  
-    if minsample ==9
+    if minsample == 9
         fprintf('The grids are nested for a little more efficiency.\nThe previous grid is shown in red.\n\n');
     end
     
@@ -225,7 +272,9 @@ if ( length(f) > 2 )
         axis([rect,min(min(ff{jj})) - .2, scl + .1]);
         mypause(psectionbreak),
     end
-    for comCounter=1:length(comets), delete(comets{comCounter}), end
+    for comCounter=1:length(comets)
+        delete(comets{comCounter})
+    end
     delete(pts)
     delete(sf)  % Remove everything so we can pan around.
     sf=plot(f);
@@ -242,7 +291,7 @@ mypause(psectionbreak);
 % If the function is very bad... need to tell people we take the first six
 % slices only...
 if ( length(f) > 6 )
-    fprintf( sprintf('This process continues and your function was eventually sampled on a %u x %u Chebyshev grid. TODO:FIXME\n\n',-20))%length(f.fun2.C)));
+    fprintf('This process continues and your function was eventually sampled on a %u x %u Chebyshev grid.\n\n', length(f.rows(:,1)));
 elseif ( length(f) > 1 )
     fprintf('The first stage is done.\n\n')
 end
@@ -263,11 +312,11 @@ mypause(psectionbreak)
 
 % Skeleton version of ACA.
 markers=[]; trun = min(6,length(f)); P = P(1:trun,:);
-for j = 1:min(6,length(f))
-    [xx yy]=meshgrid(P(:,1),chebpts(33));
+for j = 1:min(6, length(f))
+    [xx, yy] = meshgrid(P(:,1), chebpts(33));
     mark1 = plot3(xx,yy,scl+0*xx,'.k','MarkerSize',20);
-    [xx yy]=meshgrid(chebpts(33),P(:,2));
-    mark2 = plot3(xx,yy,scl+0*xx,'.k','MarkerSize',20);
+    [xx, yy] = meshgrid(chebpts(33), P(:,2));
+    mark2 = plot3(xx, yy, scl+0*xx, '.k', 'MarkerSize', 20);
     mypause(psectionbreak)
 end
 %     delete(mark1), delete(mark2),
@@ -289,18 +338,21 @@ fprintf('To check the columns and rows of your chebfun2 are resolved we can look
 %         Ccfs(:,jj) = cc;
 %     end
 %     Ccfs = abs(flipud(Ccfs)); %Ccfs = Ccfs(min(Ccfs.').'>0,:);
-Ccfs = get(f.rows, 'coeffs');
+Ccfs = get(f.cols, 'coeffs');
 % Only want the first six columns
 if length(f) > 6
     Ccfs(:, 7:length(f)) = [];
 end
-Ccfs = log10(abs(flipud(Ccfs))); Ccfs(Ccfs==-inf)=NaN;
-PivPos=f.pivotLocations;
-cols=[];
+Ccfs = log10(abs(flipud(Ccfs))); Ccfs(Ccfs==-inf)=-17;
+PivPos = f.pivotLocations;
+cols = [];
 for jj = 1:min(6,length(f))
-    xx= PivPos(jj,1)*ones(length(Ccfs),1);
-    yy = linspace(-1,1,length(Ccfs));
-    col=plot3(xx,yy,Ccfs(:,jj),'Color',co(jj,:)); hold on,campos([0 0 10]),axis equal, axis off
+    xx = PivPos(jj,1)*ones(length(Ccfs), 1);
+    yy = linspace(-1, 1, length(Ccfs));
+    col=plot3(xx, yy, Ccfs(:,jj), 'Color', co(jj,:));
+    hold on
+    campos([0 0 10])
+    axis equal, axis off
     cols=[col cols];
 end
 
@@ -316,8 +368,8 @@ end
 %         Rcfs(:,jj) = rr;
 %     end
 %     Rcfs = abs(flipud(Rcfs)); %Rcfs = Rcfs(min(Rcfs.').'>0,:);
-Rcfs = get(f.cols, 'coeffs');
-Rcfs = log10(abs(Rcfs));Rcfs(Rcfs==-inf)=NaN;
+Rcfs = get(f.rows, 'coeffs');
+Rcfs = log10(abs(Rcfs));Rcfs(Rcfs==-inf)=-17;
 if length(f) > 6
     Rcfs(:, 7:length(f)) = [];
 end
@@ -333,28 +385,36 @@ zlim([-18 0]), axis square;   % Fix axis zlimit before panning.
 shg
 % tilt and then do some camorbits to get in the right position to see the
 % coefficient decay.
-sf=tilt(sf,pmove,-1); mypause(pbreak);
+sf = tilt(sf, pmove, -1);
+mypause(pbreak);
 
-k=36;
-for i=1:k
-    camorbit(1,0,'data',[0 0 1]), camorbit(0,1,'data',[0 1 0]),mypause(pmove)
+k = 36;
+for i = 1:k
+    camorbit(1, 0, 'data', [0 0 1])
+    camorbit(0, 1 ,'data', [0 1 0])
+    mypause(pmove)
     drawnow
 end
 fprintf('This shows that the rows are resolved.\n\n')
 mypause(psectionbreak)
-for i=1:k
-    camorbit(-1,0,'data',[0 0 1]), camorbit(0,-1,'data',[0 1 0]),mypause(pmove)
+for i = 1:k
+    camorbit(-1, 0, 'data', [0 0 1])
+    camorbit(0, -1, 'data', [0 1 0])
+    mypause(pmove)
     drawnow
 end
 mypause(pbreak)
-for i=1:k
-    camorbit(-1.5,0,'data',[0 0 1]), camorbit(0,1,'data',[0 1 0]),mypause(pmove)
+for i = 1:k
+    camorbit(-1.5, 0, 'data', [0 0 1])
+    camorbit(0, 1, 'data', [0 1 0]), mypause(pmove)
     drawnow
 end
 fprintf('This shows that the columns are resolved.\n\n')
 mypause(psectionbreak)
-for i=1:k
-    camorbit(1.5,0,'data',[0 0 1]), camorbit(0,-1,'data',[0 1 0]),mypause(pmove)
+for i = 1:k
+    camorbit(1.5, 0, 'data', [0 0 1])
+    camorbit(0, -1, 'data', [0 1 0])
+    mypause(pmove)
     drawnow
 end
 mypause(pbreak), sf=tilt(sf,pmove,1);
@@ -439,8 +499,13 @@ end
 
 
 function h = fullpan(h, p)
+% Set the camera view angle to manual mode, so that the size of the plot
+% doesn't keep changing as we rotate
+set(gca, 'cameraviewanglemode', 'manual')
 k = 36;
 for i = 1:k
+    % Spin the camera around the z-axis (the third and fourth arguments to
+    % camorbit specify what axis we want to spin around)
     camorbit(10, 0, 'data', [0 0 1])
     mypause(p)
     drawnow
@@ -448,6 +513,7 @@ end
 end
 
 function h = tilt(h, p, whichway)
+set(gca,'cameraviewanglemode','auto')
 k = 36;
 s = whichway;
 for i = 1:k
@@ -459,8 +525,9 @@ end
 end
 
 function fade(alpha1, alpha2, h, p)
+%FADE
 for a = alpha1:-.1:alpha2
-    alpha(h,a);
+    alpha(h, a);
     mypause(p);
 end
 end
