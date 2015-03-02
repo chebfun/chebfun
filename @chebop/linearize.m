@@ -59,6 +59,8 @@ if ( nargin < 2 || isempty(u) )
     nVars = numVars(N);
     % Wrap in a cell and call repmat() to get correct dimensions
     u = repmat({zeroFun}, nVars, 1);
+    % Store that we did not get a function to linearize around passed in.
+    initPassed = false;
 else
     if ( isa(u, 'chebmatrix') )
         nVars = size(u, 1);
@@ -67,6 +69,8 @@ else
     else
         nVars = numel(u);
     end
+     % Store that we did get a function to linearize around passed in.
+     initPassed = true;
 end
 
 % Construct the independent variable X if needed.
@@ -166,8 +170,10 @@ L.domain = domain.merge(L.domain, dom);
 % below by assuming that any variable that does not have a diffOrder greater
 % than 0 associated with it is a parameter, rather than a function.
 isParam = all(L.isMult, 1);
-% L.isMult
-if ( all(isFun) && any(isParam) )
+% If we have any parameters involved that are still thought to be functions, and
+% we did not get a U passed in to linearize around, we reseed the corresponding
+% variables.
+if ( all(isFun) && any(isParam) && ~initPassed )
     % We've found a parameterised problem, but weren't informed by u0.  Reseed
     % the final numParam variables as constants and linearize again:
     u = cellfun(@(b) b.func, u, 'UniformOutput', false);
