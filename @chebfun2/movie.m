@@ -14,8 +14,11 @@ function movie(f, varargin)
 %
 %   MODE = 'VSLOW': TODO: Describe
 %
+%   MODE = 'CONTROL: TODO: Describe
+%
 % Examples:
-%   f = chebfun2(@(x,y) franke(x,y)); movie(f)
+%   f = cheb.gallery2('smokering'); movie(f)
+%   f = chebfun2(@(x,y) franke(x,y)); movie(f, 'control')
 %   f = chebfun2(@(x,y) exp(-(x.^2+y.^2)/2)); movie(f, 2)
 %   f = chebfun2(@(x,y) cos(x.*y)); movie(f, 'slow')
 %
@@ -24,12 +27,13 @@ function movie(f, varargin)
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
-% Tidy up before we start the movie:
-% home, close all
+%% Tidy up before we start the movie:
+home
+close all
 
 %% Setup the options for playing the movie, in particular, the speed of it.
 
-% Select the mode to play your chebfun2 in.
+% Select the mode to play the chebfun2 explanation movie in.
 if nargin > 1
     if strcmpi(varargin{1}, 'speed') && nargin > 2
         mode = 'speed';
@@ -43,11 +47,11 @@ end
 
 % Setup some parameters for the screening of the movie. The parameters govern
 % the following attributes:
-%   PPAN:
-%   PMOVE:
+%   PPAN: The speed at which we pan around the function
+%   PMOVE: Controls the speed of tilting and drawing of animated lines
 %   PFADE: Pause between steps while fading
 %   PBREAK:
-%   PSECTIONBREAK:
+%   PSECTIONBREAK: The pause between sections of the movie
 if strcmpi(mode, 'slow')
     ppan   = 0.1;
     pmove  = 0.05;
@@ -89,9 +93,8 @@ co = [0 0.4470 0.7410; 0.8500 0.3250 0.0980; 0.9290 0.6940 0.1250;
 % For the movie, we only want to look at 9 and 17 point grids (although the
 % current preference of MINSAMPLES might be different), as otherwise, it becomes
 % too cluttered.
-pref = chebfunpref();
-minsample = 9;pref.minSamples;
-nextsample = 17;2^(ceil(log(minsample)) + 2) + 1;
+minsample = 9;
+nextsample = 17;
 
 %% Print starting text
 fprintf('This movie explains how a simplified version of the chebfun2\n')
@@ -105,6 +108,7 @@ mypause(psectionbreak)
 
 %% Surface plot of the input CHEBFUN2, followed by panning around the function
 fprintf('This is your chebfun2:\n\n'), clf
+% TODO: This is setting a global preference! Not wise.
 set(0, 'DefaultAxesFontSize', 14, 'DefaultLineLineWidth', 3)
 sf = plot(f);
 axis equal, axis off
@@ -115,7 +119,7 @@ sf = fullpan(sf, ppan);
 sf = tilt(sf, pmove, 1);
 % Slowly go from 100% to 50% opaque:
 fade(1, .5, sf, pfade);
-% Pause before next step:
+% Pause before next section:
 mypause(psectionbreak)
 
 %% Start explaining the constructor
@@ -144,7 +148,7 @@ for j = 1:min(2, length(f))
     % Find where the maximum occurs on the current grid:
     [infnorm , ind] = max(abs(reshape(A, numel(A), 1)));
     % Indices of the maximum location
-    [ row , col ] = ind2sub(size(A) , ind);
+    [row , col] = ind2sub(size(A), ind);
     % Store the pivot location
     P(j,:) = [xpts(col), xpts(row)];
     % Update the function on the grid that we're approximating:
@@ -152,7 +156,7 @@ for j = 1:min(2, length(f))
     % Update the function on the finer grid as well (for plotting):
     [infnorm, ind]=max(abs(reshape(B, numel(B), 1)));
     [row, col]=ind2sub(size(B), ind);
-    B = B - B(:, col )*B(row, : )./B(row,col);
+    B = B - B(:, col)*B(row, :)./B(row, col);
     % Store the residual at the finer grid at each step:
     ff{j}=B;
     % Store the error after the current iteration:
@@ -179,18 +183,19 @@ for jj= 1:min(2, length(f))
         fprintf('We take the entry''s value a, column u and row v...\n\n')
         mypause(psectionbreak)
     end
-    myline = mycomet(t, P(jj,:), comet,co(jj,:), pmove/5);
+    myline = mycomet(t, P(jj,:), comet, co(jj,:), pmove/5);
     mypause(psectionbreak)
     comets = [myline comets];
     markers = [mark markers];
     
     if ( jj==1 )
-        fprintf('and calculate the residual matrix A = A - uv^T/a.\n\n'), mypause(psectionbreak),
+        fprintf('and calculate the residual matrix A = A - uv^T/a.\n\n')
+        mypause(psectionbreak)
     end
     if ( jj==1 )
-        fprintf(sprintf('The norm of the residual is %1.3e.\n\n',e(jj)));
+        fprintf('The norm of the residual is %1.3e.\n\n',e(jj));
     elseif ( jj==2 )
-        fprintf(sprintf('After the second step the norm of the residual is %1.3e.\n\n',e(jj)))
+        fprintf('After the second step the norm of the residual is %1.3e.\n\n', e(jj))
     end
     
     if ( length(f) == 1 )
@@ -212,16 +217,14 @@ for jj= 1:min(2, length(f))
     axis([rect,min(min(ff{jj})) - .1, scl + .1]);
     mypause(psectionbreak),
 end
-% TODO: Fails for rank1 chebfun2
 delete(comets{1})
 if length(f) > 1
     delete(comets{2})
 end
 delete(markers), delete(pts);
 
-
+% The input function was actually of rank 1, make a comment about it:
 if ( length(f) == 1 )
-    % this was good enough, say so.
     fprintf('Your function is of numerical rank one.\n\n')
 end
 
@@ -268,7 +271,7 @@ if ( length(f) > 2 )
         mark = plot3(P(jj,1), P(jj,2), val, 'Marker', '.', ...
             'Color', co(jj,:), 'MarkerSize', 40);
         hold on
-        mypause(pbreak)
+        pause(pbreak)
         myline = mycomet(t, P(jj,:), comet, co(jj,:), pmove/7);
         comets = [myline comets];
         markers = [mark markers];
@@ -276,7 +279,7 @@ if ( length(f) > 2 )
         rect = f.domain;
         sf = plot(chebfun2(ff{jj}, rect)); alpha(sf,.5);
         axis([rect,min(min(ff{jj})) - .2, scl + .1]);
-        mypause(psectionbreak),
+        mypause(psectionbreak)
     end
     for comCounter=1:length(comets)
         delete(comets{comCounter})
@@ -292,7 +295,7 @@ else
     axis([rect, -scl - .1, scl + .1]);
     axis equal, axis off
 end
-mypause(psectionbreak);
+mypause(psectionbreak)
 
 % If the function is very bad... need to tell people we take the first six
 % slices only...
@@ -306,13 +309,14 @@ end
 water = waterfall(f, '-', 'nslices', min(length(f), 6));
 
 % tilt, pan, tilt
-sf = tilt(sf, pmove, -1); sf = fullpan(sf, ppan); mypause(pbreak)
+sf = tilt(sf, pmove, -1); sf = fullpan(sf, ppan); pause(pbreak)
 sf = tilt(sf, pmove, 1); campos([0 0 10]), hold on
 
-fprintf('To resolve your function we just need to resolve the selected columns and rows.\n\n')
-mypause(2*pbreak);
+fprintf('To resolve your function we just need to resolve the\n')
+fprintf('selected columns and rows.\n\n')
+pause(2*pbreak)
 fprintf('Each column and row is a function of one variable.\n\n')
-mypause(psectionbreak);
+mypause(psectionbreak)
 
 delete(sf);
 mypause(psectionbreak)
@@ -374,13 +378,13 @@ end
 zlim([min(min(min(Ccfs)), min(min(Rcfs))) 0]), axis square;
 shg
 sf = tilt(sf, pmove, -1);
-mypause(pbreak);
+pause(pbreak);
 
 k = 36;
 for i = 1:k
     camorbit(1, 0, 'data', [0 0 1])
     camorbit(0, 1 ,'data', [0 1 0])
-    mypause(pmove)
+    pause(pmove)
     drawnow
 end
 fprintf('This shows that the rows are resolved.\n\n')
@@ -388,13 +392,13 @@ mypause(psectionbreak)
 for i = 1:k
     camorbit(-1, 0, 'data', [0 0 1])
     camorbit(0, -1, 'data', [0 1 0])
-    mypause(pmove)
+    pause(pmove)
     drawnow
 end
-mypause(pbreak)
+pause(pbreak)
 for i = 1:k
     camorbit(-1.5, 0, 'data', [0 0 1])
-    camorbit(0, 1, 'data', [0 1 0]), mypause(pmove)
+    camorbit(0, 1, 'data', [0 1 0]), pause(pmove)
     drawnow
 end
 fprintf('This shows that the columns are resolved.\n\n')
@@ -402,10 +406,11 @@ mypause(psectionbreak)
 for i = 1:k
     camorbit(1.5, 0, 'data', [0 0 1])
     camorbit(0, -1, 'data', [0 1 0])
-    mypause(pmove)
+    pause(pmove)
     drawnow
 end
-mypause(pbreak), sf=tilt(sf,pmove,1);
+pause(pbreak)
+sf=tilt(sf,pmove,1);
 
 
 % Put back the pivot locations.
@@ -417,11 +422,11 @@ for jj= 1:min(6,length(f))
 end
 campos([0 0 10]);
 
-mypause(pbreak),
+pause(pbreak)
 clf
 
 %% Show how the chebfun2 is stored
-fprintf('We store it away so you can play...\n\n'), mypause(pbreak)
+fprintf('We store it away so you can play...\n\n'), pause(pbreak)
 % % % How are chebfun2 stored? % % %
 txt = scribble('How is it stored?');
 plot(txt); axis([-1 1 -1 1]), axis off
@@ -449,7 +454,7 @@ else
     cc = -1; rr = 1; dd=-.6;
 end
 fprintf('It''s stored as two chebfun quasi-matrices just like this:\n\n')
-mypause(pbreak)
+pause(pbreak)
 for t = 0:.1:1
     delete(cols),delete(rows), delete(markers)
     cols=[];
@@ -474,7 +479,7 @@ for t = 0:.1:1
             'MarkerSize', 40, 'Color', co(jj,:));
         markers = [mark markers];
     end
-    mypause(pbreak);
+    pause(pbreak);
 end
 % Create textbox
 annotation(gcf,'textbox',...
@@ -497,7 +502,7 @@ for i = 1:k
     % Spin the camera around the z-axis (the third and fourth arguments to
     % camorbit specify what axis we want to spin around)
     camorbit(10, 0, 'data', [0 0 1])
-    mypause(p)
+    pause(p)
     drawnow
 end
 end
@@ -509,7 +514,7 @@ s = whichway;
 for i = 1:k
     camorbit(0, s*1.665, 'data', [0 1 1])
     camorbit(s*1.04, 0, 'data', [0 0 1])
-    mypause(p)
+    pause(p)
     drawnow
 end
 end
@@ -518,7 +523,7 @@ function fade(alpha1, alpha2, h, p)
 %FADE
 for a = alpha1:-.1:alpha2
     alpha(h, a);
-    mypause(p);
+    pause(p);
 end
 end
 
@@ -539,7 +544,7 @@ if verLessThan('matlab', '8.4')
     for jj = 2:length(x)
         j = jj-1:jj;
         set(body,'xdata',x(j),'ydata',y(j)), drawnow
-        mypause(p)
+        pause(p)
     end
     
     body2 = line('parent',h,'color',color,'linestyle','-','LineWidth',2,'erase','none', ...
@@ -554,7 +559,7 @@ if verLessThan('matlab', '8.4')
     for jj = 2:length(x)
         j = jj-1:jj;
         set(body2,'xdata',x(j),'ydata',y(j)), drawnow
-        mypause(p)
+        pause(p)
     end
 else
 %     body = animatedline('parent',h,'color',color,'linestyle','-','LineWidth',3,'erase','none', ...
