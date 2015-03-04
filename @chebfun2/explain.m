@@ -1,10 +1,10 @@
-function movie(f, varargin)
-%MOVIE play a a movie about the CHEBFUN2 constructor
+function explain(f, varargin)
+%EXPLAIN    Play a movie explaining the CHEBFUN2 constructor
 %
-% MOVIE(F), where F is a CHEBFUN2, plays a movie about how the CHEBFUN2
+% EXPLAIN(F), where F is a CHEBFUN2, plays a movie about how the CHEBFUN2
 % constructor constructed F.
 %
-% MOVIE(F, MODE) speeds up or slow the movie, depending on the value of MODE.
+% EXPLAIN(F, MODE) speeds up or slow the movie, depending on the value of MODE.
 % The options for the value of MODE are as follows:
 %
 %   MODE = S, where S is a numerical value, plays the movie S times faster than
@@ -17,10 +17,10 @@ function movie(f, varargin)
 %   MODE = 'CONTROL: TODO: Describe
 %
 % Examples:
-%   f = cheb.gallery2('smokering'); movie(f)
-%   f = chebfun2(@(x,y) franke(x,y)); movie(f, 'control')
-%   f = chebfun2(@(x,y) exp(-(x.^2+y.^2)/2)); movie(f, 2)
-%   f = chebfun2(@(x,y) cos(x.*y)); movie(f, 'slow')
+%   f = cheb.gallery2('smokering'); explain(f)
+%   f = chebfun2(@(x,y) franke(x,y)); explain(f, 'control')
+%   f = chebfun2(@(x,y) exp(-(x.^2+y.^2)/2)); explain(f, 2)
+%   f = chebfun2(@(x,y) cos(x.*y)); explain(f, 'slow')
 %
 % Note: This function is not a direct analogue of the movie function in MATLAB.
 
