@@ -92,10 +92,10 @@ pass(5) = norm(u - exact, inf) < tol;
 pass(6) = isequal(get(u.funs{1}, 'tech'), @trigtech);
 
 %% Test the TRIGCOLLOC class. FIRST ORDER AND VARIABLES COEFFICIENTS: 
-%  u' + (1+cos(x))u = cos(2x), on [-2*pi 2*pi].
+%  u' + (1+cos(x))u = cos(2x), on [0 2*pi].
 
 % Set domain, c, and rhs f.
-dom = [-2*pi 2*pi];
+dom = [0 2*pi];
 f = chebfun(@(x) cos(2*x), dom);
 
 % Set chebop L. We construct the variable coefficient inside the chebop.
@@ -159,7 +159,7 @@ pass(15) = isequal(get(u.funs{1}, 'tech'), @trigtech);
 % Set domain, variable coefficients a, b, c and d, and rhs f.
 dom = [-pi pi];
 a = chebfun(@(x) 2 + cos(x), dom);
-b = chebfun(@(x) sin(cos(2*x)), dom);
+b = chebfun(@(x) sin(cos(x)), dom);
 c = chebfun(@(x) exp(cos(x)), dom);
 d = chebfun(@(x) sin(x), dom);
 f = chebfun(@(x) cos(x), dom);
