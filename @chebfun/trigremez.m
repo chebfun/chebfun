@@ -32,7 +32,7 @@ function varargout = trigremez(f, varargin)
 %   [1] Javed, M. and Trefethen, L. N.  "Remez and CF approximations of 
 %    Periodic Functions". In preparation.
 %
-% See also REMEZ, CF.
+% See also REMEZ, TRIGCF, CF.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -41,8 +41,6 @@ if ( isempty(f) )
     varargout = {f};
     return;
 end
-
-normf = norm(f);
 
 if ( ~isreal(f) )
     error('CHEBFUN:CHEBFUN:trigremez:real', ...
@@ -69,20 +67,34 @@ if ( isdelta(f) )
         'Function must not have any delta functions.');
 end
 
-% Parse the inputs.
-[m, N, opts] = parseInputs(f, varargin{:});
 
-% Initial values for some parameters.
-iter = 0;       % Iteration count.
-delta = normf;  % Value for stopping criterion.
-deltamin = inf; % Minimum error encountered.
-diffx = 1;      % Maximum correction to trial reference.
-
-% Map everything to [-pi, pi]:
+% Check continuity on the circle:
 dom = f.domain([1, end]);
 a = dom(1);
 b = dom(end);
+normf = norm(f);
+if ( abs(feval(f, b)-feval(f, a)) > normf*100*eps )
+    warning('CHEBFUN:CHEBFUN:trigremez:discontinuity', ...
+        'Function is not continuous on the circle');
+end
+
+% Parse the inputs.
+[m, N, opts] = parseInputs(f, varargin{:});
+
+normf = norm(f);
+
+% Map everything to [-pi, pi]:
 f = newDomain(f, [-pi, pi]);
+
+% normalize f:
+f = f/normf;           
+
+% Initial values for some parameters.
+iter = 0;       % Iteration count.
+delta = 1;      % Value for stopping criterion.
+deltamin = inf; % Minimum error encountered.
+diffx = 1;      % Maximum correction to trial reference.
+
 
 % Compute an initial reference set to start the algorithm:
 xk = trigpts(N, [-pi, pi]);
@@ -94,7 +106,7 @@ if ( opts.displayIter )
 end
 
 % Run the main algorithm.
-while ( (delta/normf > opts.tol) && (iter < opts.maxIter) && (diffx > 0) )
+while ( (delta > opts.tol) && (iter < opts.maxIter) && (diffx > 0) )
     fk = feval(f, xk);     % Evaluate on the exchange set.
     w = trigBaryWeights(xk);
     
@@ -157,13 +169,16 @@ if ( delta/normf > opts.tol )
 end
 
 % Form the outputs.
-status.delta = delta/normf;
+status.delta = delta;
 status.iter = iter;
 status.diffx = diffx;
 status.xk = xk;
 
 % Map the approximation back to the original domain:
 p = newDomain(p, [a, b]);
+% re-normalize p:
+p = normf*p;
+err = normf*err;
 
 % return:
 varargout = {p, err, status};
@@ -187,8 +202,8 @@ varargin = varargin(2:end);
 N = 2*m+2;
 
 % Parse name-value option pairs.
-baseTol = 1e-12;
-opts.tol = baseTol*(N^2 + 10); % Relative tolerance for deciding convergence.
+baseTol = 1e-14;
+opts.tol = baseTol*(m^2 + 10); % Relative tolerance for deciding convergence.
 opts.maxIter = 100;            % Maximum number of allowable iterations.
 opts.displayIter = false;      % Print output after each iteration.
 opts.plotIter = false;         % Plot approximation at each iteration.

@@ -1,7 +1,7 @@
 % Test file for @chebfun/remez.m.
 % Based on the Chebfun v4 test written by LNT, March. 27, 2009.
 
-function pass = remeztest(pref)
+function pass = test_remez(pref)
 
 % Generate a few random points to use as test values.
 seedRNG(6178);
