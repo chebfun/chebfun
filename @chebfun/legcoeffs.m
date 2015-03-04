@@ -8,9 +8,6 @@ function out = legcoeffs(f, varargin)
 %   If F is smooth (i.e., numel(f.funs) == 1), then A = LEGCOEFFS(F) will assume
 %   that N = length(F) - 1;
 %
-%   There is also a LEGCOEFFS command in the Chebfun trunk directory which
-%   computes the CHEBFUN corresponding to the Legendre polynomial P_n(x).
-%
 %   LEGCOEFFS does not support quasimatrices.
 %
 % See also CHEBCOEFFS, JACCOEFFS, FOURCOEFFS.

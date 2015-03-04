@@ -9,10 +9,6 @@ function out = jaccoeffs(f, n, a, b)
 %   If F is smooth (i.e., numel(f.funs) == 1), then A = JACCOEFFS(F, ALPHA,
 %   BETA) will assume that N = length(F) - 1;
 %
-%   There is also a JACCOEFFS command in the Chebfun root directory which
-%   computes the CHEBFUN corresponding to the Jacobi polynomial J_n(x, ALPHA,
-%   BETA). Both versions of JACCOEFFS use the same normalization.
-%
 %   JACCOEFFS does not support quasimatrices.
 %
 % See also CHEBCOEFFS, LEGCOEFFS.
@@ -30,12 +26,35 @@ if ( (numel(f.funs) == 1) && (nargin < 4) )
     a = n;
     n = length(f);
 end
-    
-% Jacobi-Vandermonde matrix:
-Enorm = jacpoly(0:n-1, a, b, f.domain);
 
-% Compute the projection (with correct scaling):
-out = Enorm \ f;
+%%
+% Special cases:
+if ( a == 0 && b == 0 )
+    out = legcoeffs(f, n);
+    return
+elseif ( a == -.5 && b == -.5 )
+    out = chebcoeffs(f, n, 'kind', 1);
+    return
+elseif ( a == .5 && b == .5 )
+    out = chebcoeffs(f, n, 'kind', 2);
+    return
+end
+    
+%% 
+if ( numel(f.funs) == 1 )
+    
+    % Compute Jacobi coefficients of the single fun.
+    out = jaccoeffs(f.funs{1}, n, a, b);
+   
+else
+
+    % Jacobi-Vandermonde matrix:
+    Enorm = jacpoly(0:n-1, a, b, f.domain);
+
+    % Compute the projection (with correct scaling):
+    out = Enorm \ f;
+    
+end
 
 end
                 
