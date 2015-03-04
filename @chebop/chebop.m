@@ -160,7 +160,7 @@ classdef (InferiorClasses = {?double}) chebop
 %
 % It is possible to explicitly pass parameters as parts of the initial guess for
 % a nonlinear problem by assigning it to the appropriate entry of a CHEBMATRIX
-% input to N.init.
+% input to N.init.c
 %
 % Example:
 %
@@ -267,7 +267,8 @@ classdef (InferiorClasses = {?double}) chebop
         varargout = eigs(N, varargin)
         
         % Linearize a CHEBOP around a CHEBFUN u.
-        [L, res, isLinear, u] = linearize(N, u, x, flag);  
+        [L, res, isLinear, u] = ...
+            linearize(N, u, x, linCheckFlag, paramReshapeFlag);  
         
         %\   Chebop backslash.
         varargout = mldivide(N, rhs, pref, varargin)
