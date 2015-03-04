@@ -86,10 +86,12 @@ end
 co = [0 0.4470 0.7410; 0.8500 0.3250 0.0980; 0.9290 0.6940 0.1250;
     0.4940 0.1840 0.5560; 0.4660 0.6740 0.1880; 0.3010 0.7450 0.9330];
 
-% Find what the current number of minSamples are:
+% For the movie, we only want to look at 9 and 17 point grids (although the
+% current preference of MINSAMPLES might be different), as otherwise, it becomes
+% too cluttered.
 pref = chebfunpref();
-minsample = pref.minSamples;
-nextsample = 2^(ceil(log(minsample)) + 2) + 1;
+minsample = 9;pref.minSamples;
+nextsample = 17;2^(ceil(log(minsample)) + 2) + 1;
 
 %% Print starting text
 fprintf('This movie explains how a simplified version of the chebfun2\n')
@@ -100,21 +102,20 @@ txt = scribble('Your chebfun2 movie');
 plot(txt)
 axis([-1 1 -1 1]), axis off
 mypause(psectionbreak)
-fprintf('This is your chebfun2:\n\n'), clf
 
 %% Surface plot of the input CHEBFUN2, followed by panning around the function
+fprintf('This is your chebfun2:\n\n'), clf
 set(0, 'DefaultAxesFontSize', 14, 'DefaultLineLineWidth', 3)
 sf = plot(f);
 axis equal, axis off
 
-% Full pan around function.
-sf=fullpan(sf, ppan);
-% Tilt to to a from the top view
+% Full pan around function:
+sf = fullpan(sf, ppan);
+% Tilt to a view from above:
 sf = tilt(sf, pmove, 1);
-hold on
-% Slowly go from 100% to 50% opaque
+% Slowly go from 100% to 50% opaque:
 fade(1, .5, sf, pfade);
-% Pause before next step
+% Pause before next step:
 mypause(psectionbreak)
 
 %% Start explaining the constructor
@@ -122,29 +123,39 @@ fprintf(['We first sample on a %u x %u Chebyshev grid obtaining ' ...
     'a matrix A.\n\n'], minsample, minsample)
 mypause(psectionbreak)
 
-% Sample the function on a finer Chebyshev grid
+% Sample the function on a finer Chebyshev grid so that we can compute (and
+% plot) the residual after taking one step.
 [xx, yy] = meshgrid(chebpts(200));
 B = feval(f, xx, yy);
+
 % We first sample on a 17x17 grid.
 [xx, yy] = meshgrid(chebpts(minsample));
 A = feval(f, xx, yy); scl = max(max(A));
 zz = (max(max(A)) - 1e-1)*ones(minsample^2, 1);
+hold on
 pts = plot3(xx(:), yy(:), zz, 'Marker', '.', 'MarkerSize', 20, ...
     'Color', 'k', 'LineStyle', 'none');
 
 % Take maximum on array, calculate residual and then take next maximum.
 xpts = chebpts(minsample);
-% Do first two steps of ACA.
+% Store the pivot locations
 P = zeros(2, 2);
 for j = 1:min(2, length(f))
+    % Find where the maximum occurs on the current grid:
     [infnorm , ind] = max(abs(reshape(A, numel(A), 1)));
+    % Indices of the maximum location
     [ row , col ] = ind2sub(size(A) , ind);
+    % Store the pivot location
     P(j,:) = [xpts(col), xpts(row)];
+    % Update the function on the grid that we're approximating:
     A = A - A(:, col)*A(row, :)./A(row, col);
+    % Update the function on the finer grid as well (for plotting):
     [infnorm, ind]=max(abs(reshape(B, numel(B), 1)));
     [row, col]=ind2sub(size(B), ind);
     B = B - B(:, col )*B(row, : )./B(row,col);
+    % Store the residual at the finer grid at each step:
     ff{j}=B;
+    % Store the error after the current iteration:
     e(j) = norm(A);
 end
 
@@ -214,8 +225,7 @@ if ( length(f) == 1 )
     fprintf('Your function is of numerical rank one.\n\n')
 end
 
-% Cannot take any more points so sample some more. Notice that the points
-% interlace.
+%% We did not resolve the function with two pivot points, so take more.
 if ( length(f) > 2 )
     fprintf('Your function requires more sampling points to resolve.\n')
     mypause(psectionbreak)
@@ -232,14 +242,10 @@ if ( length(f) > 2 )
     [xx, yy]=meshgrid(chebpts(200));
     B = feval(f, xx, yy);
  
-    delete(sf), sf=plot(f); alpha(sf,.5); axis equal, axis off,
- 
-    if minsample == 9
-        fprintf('The grids are nested for a little more efficiency.\nThe previous grid is shown in red.\n\n');
-    end
+    delete(sf), sf=plot(f); alpha(sf,.5); axis equal, axis off
     
     mypause(psectionbreak)
-    fprintf('We repeat the same process just on a larger matrix...\n\n');
+    fprintf('We repeat the same process as before, just on a larger matrix...\n\n');
     % Same process again and now on a denser grid.
     xpts = chebpts(nextsample);
     [xx, yy] = meshgrid(xpts);
@@ -295,7 +301,8 @@ if ( length(f) > 6 )
 elseif ( length(f) > 1 )
     fprintf('The first stage is done.\n\n')
 end
-% Waterfall plot is what we have drawn.
+
+%% Waterfall plot is what we have drawn.
 water = waterfall(f, '-', 'nslices', min(length(f), 6));
 
 % tilt, pan, tilt
@@ -310,7 +317,7 @@ mypause(psectionbreak);
 delete(sf);
 mypause(psectionbreak)
 
-% Skeleton version of ACA.
+%% Skeleton version of ACA.
 markers=[]; trun = min(6,length(f)); P = P(1:trun,:);
 for j = 1:min(6, length(f))
     [xx, yy] = meshgrid(P(:,1), chebpts(33));
@@ -326,24 +333,14 @@ delete(water), clf
 fprintf('We use Chebfun to approximate it!\n\n'),mypause(psectionbreak);
 fprintf('To check the columns and rows of your chebfun2 are resolved we can look\nat their Chebyshev coefficients.\n\n');
 
-% Now draw chebpolyplot on the slices. Here are the columns.
-%     C = f.fun2.C; Ccfs = zeros(length(C),size(C,2)); col=[];
-%     for jj = 1:min(6,length(f))
-%         if pref2.mode
-%             cc = chebpoly(C(:,jj));
-%         else
-%             cc = chebfft(C(:,jj));
-%         end
-%         cc(abs(cc)<eps)=eps;
-%         Ccfs(:,jj) = cc;
-%     end
-%     Ccfs = abs(flipud(Ccfs)); %Ccfs = Ccfs(min(Ccfs.').'>0,:);
+% Draw chebpolyplot on the slices. Here are the columns.
 Ccfs = get(f.cols, 'coeffs');
 % Only want the first six columns
 if length(f) > 6
     Ccfs(:, 7:length(f)) = [];
 end
-Ccfs = log10(abs(flipud(Ccfs))); Ccfs(Ccfs==-inf)=-17;
+
+Ccfs = log10(abs(flipud(Ccfs))); Ccfs(Ccfs==-inf)=log10(eps);
 PivPos = f.pivotLocations;
 cols = [];
 for jj = 1:min(6,length(f))
@@ -357,23 +354,13 @@ for jj = 1:min(6,length(f))
 end
 
 % Now we do the rows.
-%     R = f.fun2.R.'; Rcfs = zeros(length(R),size(R,2));
-%     for jj = 1 : min(6,length(f))
-%         if pref2.mode
-%             rr = chebpoly(R(:,jj));
-%         else
-%             rr = chebfft(R(:,jj));
-%         end
-%         rr(abs(rr)<eps)=eps;
-%         Rcfs(:,jj) = rr;
-%     end
-%     Rcfs = abs(flipud(Rcfs)); %Rcfs = Rcfs(min(Rcfs.').'>0,:);
 Rcfs = get(f.rows, 'coeffs');
-Rcfs = log10(abs(Rcfs));Rcfs(Rcfs==-inf)=-17;
+% Only want the first six rows:
 if length(f) > 6
     Rcfs(:, 7:length(f)) = [];
 end
-%     PivPos=f.fun2.PivPos;
+Rcfs = log10(abs(Rcfs));Rcfs(Rcfs==-inf)=log10(eps);
+
 rows=[];
 for jj = 1:min(6,length(f))
     xx=linspace(-1,1,length(Rcfs));
@@ -381,10 +368,11 @@ for jj = 1:min(6,length(f))
     row = plot3(xx,yy,Rcfs(:,jj),'Color',co(jj,:));
     rows=[row rows];
 end
-zlim([-18 0]), axis square;   % Fix axis zlimit before panning.
+
+%% Tilt and camorbit to show the coefficients decaying
+% Fix axis zlimit before panning.
+zlim([min(min(min(Ccfs)), min(min(Rcfs))) 0]), axis square;
 shg
-% tilt and then do some camorbits to get in the right position to see the
-% coefficient decay.
 sf = tilt(sf, pmove, -1);
 mypause(pbreak);
 
@@ -435,7 +423,8 @@ clf
 %% Show how the chebfun2 is stored
 fprintf('We store it away so you can play...\n\n'), mypause(pbreak)
 % % % How are chebfun2 stored? % % %
-txt = scribble('How is it stored?'); tt=plot(txt); axis([-1 1 -1 1]), axis off
+txt = scribble('How is it stored?');
+plot(txt); axis([-1 1 -1 1]), axis off
 mypause(psectionbreak), clf
 
 % Make a plot that looks a bit like plot(f, '.-')
@@ -502,6 +491,7 @@ function h = fullpan(h, p)
 % Set the camera view angle to manual mode, so that the size of the plot
 % doesn't keep changing as we rotate
 set(gca, 'cameraviewanglemode', 'manual')
+axis vis3d
 k = 36;
 for i = 1:k
     % Spin the camera around the z-axis (the third and fourth arguments to
