@@ -23,7 +23,6 @@ if ( nargin == 3 )
 end
 
 % Convert from Chebyshev to Jacobi coefficients.
-alp
 c = cheb2jac(f.coeffs, alp, bet);
 
 % Truncate / pad to length n:
