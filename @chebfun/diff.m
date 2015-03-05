@@ -165,7 +165,8 @@ f.pointValues = pointValues;
             data.domain = f.domain;
             data.deltaMag = deltaMag.'/2;
             data.deltaLoc = f.domain;
-            f = deltafun(f, data, pref);
+            % Add new delta functions to the existing fun:
+            f = deltafun(0, data, pref) + f;
         end
     end
 

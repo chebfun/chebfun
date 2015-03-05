@@ -239,7 +239,6 @@ for dim = dimVals
 
     % Convert the different components into cells
     u = partition(discA, P*v);
-    
 
     % Test the happiness of the function pieces:
     vscale = zeros(1, sum(isFun));   % intrinsic scaling only

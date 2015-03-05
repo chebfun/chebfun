@@ -229,10 +229,10 @@ g = chebfun(@(y) sin(y), d(3:4), pref);
 h1 = chebfun2(@(x,y) x.^2.*sin(y), d);
 h2 = chebfun2(@(x,y) y.^2.*sin(x), [d(3:4) d(1:2)]); 
 
-pass(68) = ( norm(h1 - kron(f', g)) < tol); 
-pass(69) = (norm(h2 - kron(f, g')) < tol);
-pass(70) = ( norm(h1 - g*f') < tol);
-pass(71) = (norm(h2 - f*g') < tol); 
+pass(68) = ( norm(h1 - kron(f', g)) < 10*tol); 
+pass(69) = (norm(h2 - kron(f, g')) < 10*tol);
+pass(70) = ( norm(h1 - g*f') < 10*tol);
+pass(71) = (norm(h2 - f*g') < 10*tol); 
 
 % Quasimatrices and rank 4 chebfun2
 x = chebfun('x', [-1 1], pref);

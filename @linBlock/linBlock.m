@@ -21,7 +21,7 @@ classdef (InferiorClasses = {?chebfun}) linBlock
 % rather than to manipulate the blocks themselves.
 %
 % The stack is used three different ways within the system:
-%       (1) Replace the  building blocks with appropriate matrices, and then
+%       (1) Replace the building blocks with appropriate matrices, and then
 %           apply the algebra. (I.e., collocation.) 
 %       (2) Derive the coefficients of each power of the derivative. 
 %           (See the method toCoeff.) 
