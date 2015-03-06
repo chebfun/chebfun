@@ -6,7 +6,7 @@ function explain(f, varargin)
 %
 % EXPLAIN(F, MODE) speeds up or slow the movie, depending on the value of MODE.
 % The options for the value of MODE are as follows:
-%
+% 
 %   MODE = S, where S is a numerical value, plays the movie S times faster than
 %   the regular speed.
 %   
@@ -27,9 +27,19 @@ function explain(f, varargin)
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
-%% Tidy up before we start the movie:
+%% Tidy up before we start the movie and create a new figure to plot on:
 home
 close all
+% Create a new figure, and add space to the bottom for a text box
+fig = figure;
+figPos = get(fig, 'position');
+figPos(4) = figPos(4) + 200;
+set(fig, 'position', figPos)
+axPos = get(gca, 'position');
+axPos(2) = axPos(2) + .2;
+axPos(4) = axPos(4) - .2;
+set(gca,'position', axPos);
+shg
 
 %% Setup the options for playing the movie, in particular, the speed of it.
 
@@ -97,9 +107,9 @@ minsample = 9;
 nextsample = 17;
 
 %% Print starting text
-fprintf('This movie explains how a simplified version of the chebfun2\n')
-fprintf('constructor works on your function.\n\n')
-fprintf('Here it goes...\n\n')
+str = {'This movie explains how a simplified version of the'; 
+    'chebfun2 constructor works on your function.'};
+textBox = myTextbox(str);
 % Scribble to the plot
 txt = scribble('Your chebfun2 movie');
 plot(txt)
@@ -107,11 +117,13 @@ axis([-1 1 -1 1]), axis off
 mypause(psectionbreak)
 
 %% Surface plot of the input CHEBFUN2, followed by panning around the function
-fprintf('This is your chebfun2:\n\n'), clf
+textBox = myTextbox('This is your chebfun2', textBox);
 % TODO: This is setting a global preference! Not wise.
 set(0, 'DefaultAxesFontSize', 14, 'DefaultLineLineWidth', 3)
 sf = plot(f);
 axis equal, axis off
+set(gca,'position', axPos);
+
 
 % Full pan around function:
 sf = fullpan(sf, ppan);
@@ -123,8 +135,9 @@ fade(1, .5, sf, pfade);
 mypause(psectionbreak)
 
 %% Start explaining the constructor
-fprintf(['We first sample on a %u x %u Chebyshev grid obtaining ' ...
-    'a matrix A.\n\n'], minsample, minsample)
+str = sprintf(['We first sample on a %u x %u Chebyshev grid obtaining ' ...
+    'a matrix A.'], minsample, minsample);
+textBox = myTextbox(str, textBox);
 mypause(psectionbreak)
 
 % Sample the function on a finer Chebyshev grid so that we can compute (and
@@ -163,7 +176,8 @@ for j = 1:min(2, length(f))
     e(j) = norm(A);
 end
 
-fprintf('We then take entry with the largest absolute value.\n\n'),
+str = {str; 'We then take entry with the largest absolute value.'};
+textBox = myTextbox(str, textBox);
 mypause(psectionbreak)
 
 markers=[];
@@ -173,14 +187,21 @@ for jj= 1:min(2, length(f))
     mark = plot3(P(jj,1), P(jj,2), val, 'Marker', '.', ...
         'Color', co(jj,:), 'MarkerSize', 40);
     if ( jj == 1 )
-        fprintf('That''s the big blue dot and the first pivot.\n\n')
+        str = 'That''s the big blue dot and the first pivot.';
+        textBox = myTextbox(str, textBox);
+        mypause(psectionbreak)
+        str = {str; 'We take the entry''s value a, column u and row v...'};
+        textBox = myTextbox(str, textBox);
+        mypause(psectionbreak)
+        str = [str; 'and calculate the residual matrix A = A - uv^T/a.'];
+        textBox = myTextbox(str, textBox);
         mypause(psectionbreak)
     else
-        fprintf('That''s the red dot.\n\n')
+        str = [str; 'That''s the red dot.'];
+        textBox = myTextbox(str, textBox);
     end
     mypause(psectionbreak)
     if ( jj==1 )
-        fprintf('We take the entry''s value a, column u and row v...\n\n')
         mypause(psectionbreak)
     end
     myline = mycomet(t, P(jj,:), comet, co(jj,:), pmove/5);
@@ -189,25 +210,25 @@ for jj= 1:min(2, length(f))
     markers = [mark markers];
     
     if ( jj==1 )
-        fprintf('and calculate the residual matrix A = A - uv^T/a.\n\n')
-        mypause(psectionbreak)
-    end
-    if ( jj==1 )
-        fprintf('The norm of the residual is %1.3e.\n\n',e(jj));
+        str = sprintf('The norm of the residual is %1.3e.', e(jj));
+        textBox = myTextbox(str, textBox);
     elseif ( jj==2 )
-        fprintf('After the second step the norm of the residual is %1.3e.\n\n', e(jj))
+        str = [str; sprintf('After the second step the norm of the residual is %1.3e.\n\n', e(jj))];
+        textBox = myTextbox(str, textBox);
     end
     
     if ( length(f) == 1 )
-        fprintf('The first step is complete.\n\n')
+        str = {str; 'The first step is complete.\n\n'};
+        textBox = myTextbox(str, textBox);
         mypause(psectionbreak),
     elseif ( length(f) == 2 && jj == 2 )
         fprintf('The first step is complete.\n\n')
         mypause(psectionbreak),
     elseif ( length(f) > 2 || (length(f) == 2 && jj ==1 ) )
         if ( jj == 1 )
-            fprintf('We repeat for one more step on the residual matrix.\n')
-            fprintf('As before taking the largest absolute value.\n\n')
+            str = {'We repeat for one more step on the residual matrix.';
+                'As before taking the largest absolute value.'};
+            textBox = myTextbox(str, textBox);
             mypause(psectionbreak)
         end
     end
@@ -225,15 +246,18 @@ delete(markers), delete(pts);
 
 % The input function was actually of rank 1, make a comment about it:
 if ( length(f) == 1 )
-    fprintf('Your function is of numerical rank one.\n\n')
+    str = 'Your function is of numerical rank one.';
+    textBox = myTextbox(str, textBox);
 end
 
 %% We did not resolve the function with two pivot points, so take more.
 if ( length(f) > 2 )
-    fprintf('Your function requires more sampling points to resolve.\n')
+    str = 'Your function requires more sampling points to resolve.';
+    textBox = myTextbox(str, textBox);
     mypause(psectionbreak)
-    fprintf(sprintf('So we next sample it on a %u x %u Chebyshev grid.\n\n', ...
-        nextsample, nextsample))
+    str = {str; sprintf('So we next sample it on a %u x %u Chebyshev grid.\n\n', ...
+        nextsample, nextsample)};
+    textBox = myTextbox(str, textBox);
     mypause(psectionbreak)
  
     [xx, yy] = meshgrid(chebpts(nextsample));
@@ -248,7 +272,8 @@ if ( length(f) > 2 )
     delete(sf), sf=plot(f); alpha(sf,.5); axis equal, axis off
     
     mypause(psectionbreak)
-    fprintf('We repeat the same process as before, just on a larger matrix...\n\n');
+    str = 'We repeat the same process as before, just on a larger matrix...';
+    textBox = myTextbox(str, textBox);
     % Same process again and now on a denser grid.
     xpts = chebpts(nextsample);
     [xx, yy] = meshgrid(xpts);
@@ -300,11 +325,13 @@ mypause(psectionbreak)
 % If the function is very bad... need to tell people we take the first six
 % slices only...
 if ( length(f) > 6 )
-    fprintf('This process continues and your function was eventually sampled on a %u x %u Chebyshev grid.\n\n', length(f.rows(:,1)));
+    str = {str; sprintf(['This process continues and your function was ' ...
+        'eventually sampled on a %u x %u Chebyshev grid.'], ...
+        length(f.rows(:,1)), length(f.rows(:,1)))};
 elseif ( length(f) > 1 )
-    fprintf('The first stage is done.\n\n')
+    str = {str; 'The first stage is done.'};
 end
-
+textBox = myTextbox(str, textBox);
 %% Waterfall plot is what we have drawn.
 water = waterfall(f, '-', 'nslices', min(length(f), 6));
 
@@ -312,10 +339,10 @@ water = waterfall(f, '-', 'nslices', min(length(f), 6));
 sf = tilt(sf, pmove, -1); sf = fullpan(sf, ppan); pause(pbreak)
 sf = tilt(sf, pmove, 1); campos([0 0 10]), hold on
 
-fprintf('To resolve your function we just need to resolve the\n')
-fprintf('selected columns and rows.\n\n')
-pause(2*pbreak)
-fprintf('Each column and row is a function of one variable.\n\n')
+str = {'To resolve your function we just need to resolve the';
+    'selected columns and rows.';
+    'Each column and row is a function of one variable.'};
+textBox = myTextbox(str, textBox);
 mypause(psectionbreak)
 
 delete(sf);
@@ -334,9 +361,13 @@ end
 delete(water), clf
 
 %% Do chebpolyplots of all the columns and rows
-fprintf('We use Chebfun to approximate it!\n\n'),mypause(psectionbreak);
-fprintf('To check the columns and rows of your chebfun2 are resolved we can look\nat their Chebyshev coefficients.\n\n');
-
+str = 'We use Chebfun to approximate it!';
+textBox = myTextbox(str, textBox);
+mypause(psectionbreak);
+str = {str; ['To check the columns and rows of your chebfun2 are resolved ' ...
+    'we can look at their Chebyshev coefficients.']};
+textBox = myTextbox(str, textBox);
+set(gca,'position', axPos);
 % Draw chebpolyplot on the slices. Here are the columns.
 Ccfs = get(f.cols, 'coeffs');
 % Only want the first six columns
@@ -387,7 +418,8 @@ for i = 1:k
     pause(pmove)
     drawnow
 end
-fprintf('This shows that the rows are resolved.\n\n')
+str = 'This shows that the rows are resolved.';
+textBox = myTextbox(str, textBox);
 mypause(psectionbreak)
 for i = 1:k
     camorbit(-1, 0, 'data', [0 0 1])
@@ -401,7 +433,8 @@ for i = 1:k
     camorbit(0, 1, 'data', [0 1 0]), pause(pmove)
     drawnow
 end
-fprintf('This shows that the columns are resolved.\n\n')
+str = 'This shows that the columns are resolved.';
+textBox = myTextbox(str, textBox);
 mypause(psectionbreak)
 for i = 1:k
     camorbit(1.5, 0, 'data', [0 0 1])
@@ -426,7 +459,6 @@ pause(pbreak)
 clf
 
 %% Show how the chebfun2 is stored
-fprintf('We store it away so you can play...\n\n'), pause(pbreak)
 % % % How are chebfun2 stored? % % %
 txt = scribble('How is it stored?');
 plot(txt); axis([-1 1 -1 1]), axis off
@@ -453,7 +485,8 @@ if length(f) > 1
 else
     cc = -1; rr = 1; dd=-.6;
 end
-fprintf('It''s stored as two chebfun quasi-matrices just like this:\n\n')
+str = 'It''s stored as two chebfun quasi-matrices just like this:';
+textBox = myTextbox(str, textBox);
 pause(pbreak)
 for t = 0:.1:1
     delete(cols),delete(rows), delete(markers)
@@ -482,6 +515,7 @@ for t = 0:.1:1
     pause(pbreak);
 end
 % Create textbox
+delete(textBox);
 annotation(gcf,'textbox',...
     [0.143441860465116 0.201923076923077 0.764988372093023 0.0913461538461542],...
     'String',{'f(x,y) = C(y)         U          R(x)'},...
@@ -594,4 +628,12 @@ if ( n == inf )
 else
     pause(n)
 end
+end
+
+function textBox = myTextbox(str, oldBox)
+if (nargin > 1 )
+    delete(oldBox)
+end
+textBox = annotation('textbox', [0.13, 0.05, 0.775, 0.15],...
+           'String', str, 'fontsize', 18, 'linewidth', 1);
 end
