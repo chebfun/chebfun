@@ -9,18 +9,15 @@ function explain(f, varargin)
 % 
 %   MODE = S, where S is a numerical value, plays the movie S times faster than
 %   the regular speed.
-%   
-%   MODE = 'SLOW': TODO: Describe
 %
-%   MODE = 'VSLOW': TODO: Describe
-%
-%   MODE = 'CONTROL: TODO: Describe
+%   MODE = 'CONTROL' pauses the movie between its sections, waiting for the
+%   user to press a key to continue.
 %
 % Examples:
 %   f = cheb.gallery2('smokering'); explain(f)
 %   f = chebfun2(@(x,y) franke(x,y)); explain(f, 'control')
 %   f = chebfun2(@(x,y) exp(-(x.^2+y.^2)/2)); explain(f, 2)
-%   f = chebfun2(@(x,y) cos(x.*y)); explain(f, 'slow')
+%   f = chebfun2(@(x,y) cos(x.*y)); explain(f, .5)
 %
 % Note: This function is not a direct analogue of the movie function in MATLAB.
 
@@ -33,8 +30,9 @@ close all
 % Create a new figure, and add space to the bottom for a text box
 fig = figure;
 figPos = get(fig, 'position');
-figPos(4) = figPos(4) + 200;
+figPos(4) = figPos(4) + 100;
 set(fig, 'position', figPos)
+% Put the plotting axes back to normal size (i.e. don't stretch them)
 axPos = get(gca, 'position');
 axPos(2) = axPos(2) + .2;
 axPos(4) = axPos(4) - .2;
@@ -45,14 +43,15 @@ shg
 
 % Select the mode to play the chebfun2 explanation movie in.
 if nargin > 1
-    if strcmpi(varargin{1}, 'speed') && nargin > 2
+    if ( isnumeric(varargin{1}) )
         mode = 'speed';
-        speed=varargin{2};
+        speed = varargin{1};
     else
         mode = varargin{1};
     end
 else
-    mode = 'vslow';
+    mode = 'speed';
+    speed = 1;
 end
 
 % Setup some parameters for the screening of the movie. The parameters govern
@@ -62,24 +61,12 @@ end
 %   PFADE: Pause between steps while fading
 %   PBREAK:
 %   PSECTIONBREAK: The pause between sections of the movie
-if strcmpi(mode, 'slow')
-    ppan   = 0.1;
-    pmove  = 0.05;
-    pfade  = 0.05;
-    pbreak = 0.2;
-    psectionbreak = 2;
-elseif strcmpi(mode, 'control')
+if strcmpi(mode, 'control')
     ppan   = 0.1;
     pmove  = 0.05;
     pfade  = 0.05;
     pbreak = 0.2;
     psectionbreak = inf;
-elseif strcmpi(mode, 'vslow')
-    ppan   = 0.2;
-    pmove  = 0.1;
-    pfade  = 0.1;
-    pbreak = 0.4;
-    psectionbreak = 2;
 elseif strcmpi(mode, 'speed')
     c = 1/speed;
     ppan   = 0.1*c;
@@ -87,12 +74,6 @@ elseif strcmpi(mode, 'speed')
     pfade  = 0.05*c;
     pbreak = 0.2*c;
     psectionbreak = 2*c;
-else
-    ppan   = 0;
-    pmove  = 0;
-    pfade  = 0;
-    pbreak = 0;
-    psectionbreak = 0;
 end
 
 % Colors used for plotting lines on the plot. This is useful for old versions of
@@ -119,11 +100,11 @@ mypause(psectionbreak)
 %% Surface plot of the input CHEBFUN2, followed by panning around the function
 textBox = myTextbox('This is your chebfun2', textBox);
 % TODO: This is setting a global preference! Not wise.
-set(0, 'DefaultAxesFontSize', 14, 'DefaultLineLineWidth', 3)
+set(0, 'DefaultLineLineWidth', 3)
 sf = plot(f);
 axis equal, axis off
-set(gca,'position', axPos);
-
+% Set the correct size of the current axes
+set(gca, 'position', axPos);
 
 % Full pan around function:
 sf = fullpan(sf, ppan);
@@ -153,9 +134,9 @@ hold on
 pts = plot3(xx(:), yy(:), zz, 'Marker', '.', 'MarkerSize', 20, ...
     'Color', 'k', 'LineStyle', 'none');
 
-% Take maximum on array, calculate residual and then take next maximum.
+% Find maximum on the grid, calculate the residual and then take next maximum.
 xpts = chebpts(minsample);
-% Store the pivot locations
+% Store the first two pivot locations
 P = zeros(2, 2);
 for j = 1:min(2, length(f))
     % Find where the maximum occurs on the current grid:
@@ -167,8 +148,8 @@ for j = 1:min(2, length(f))
     % Update the function on the grid that we're approximating:
     A = A - A(:, col)*A(row, :)./A(row, col);
     % Update the function on the finer grid as well (for plotting):
-    [infnorm, ind]=max(abs(reshape(B, numel(B), 1)));
-    [row, col]=ind2sub(size(B), ind);
+    [infnorm, ind] = max(abs(reshape(B, numel(B), 1)));
+    [row, col] = ind2sub(size(B), ind);
     B = B - B(:, col)*B(row, :)./B(row, col);
     % Store the residual at the finer grid at each step:
     ff{j}=B;
@@ -180,12 +161,16 @@ str = {str; 'We then take entry with the largest absolute value.'};
 textBox = myTextbox(str, textBox);
 mypause(psectionbreak)
 
-markers=[];
-comet=newplot; t = 0:.01:1;  comets=[];
-for jj= 1:min(2, length(f))
+markers = [];
+comet = newplot;
+t = 0:.01:1;
+comets = [];
+for jj = 1:min(2, length(f))
+    % Plot the current pivot
     val = feval(f, P(jj,1), P(jj,2));
     mark = plot3(P(jj,1), P(jj,2), val, 'Marker', '.', ...
         'Color', co(jj,:), 'MarkerSize', 40);
+    
     if ( jj == 1 )
         str = 'That''s the big blue dot and the first pivot.';
         textBox = myTextbox(str, textBox);
@@ -209,22 +194,22 @@ for jj= 1:min(2, length(f))
     comets = [myline comets];
     markers = [mark markers];
     
-    if ( jj==1 )
+    if ( jj == 1 )
         str = sprintf('The norm of the residual is %1.3e.', e(jj));
         textBox = myTextbox(str, textBox);
-    elseif ( jj==2 )
-        str = [str; sprintf('After the second step the norm of the residual is %1.3e.\n\n', e(jj))];
+    elseif ( jj == 2 )
+        str = [str; sprintf('After the second step the norm of the residual is %1.3e.', e(jj))];
         textBox = myTextbox(str, textBox);
     end
     
     if ( length(f) == 1 )
-        str = {str; 'The first step is complete.\n\n'};
+        str = {str; 'The first step is complete.'};
         textBox = myTextbox(str, textBox);
         mypause(psectionbreak),
     elseif ( length(f) == 2 && jj == 2 )
-        fprintf('The first step is complete.\n\n')
+        fprintf('The first step is complete.')
         mypause(psectionbreak),
-    elseif ( length(f) > 2 || (length(f) == 2 && jj ==1 ) )
+    elseif ( length(f) > 2 || (length(f) == 2 && jj == 1 ) )
         if ( jj == 1 )
             str = {'We repeat for one more step on the residual matrix.';
                 'As before taking the largest absolute value.'};
@@ -234,9 +219,9 @@ for jj= 1:min(2, length(f))
     end
     delete(sf); rect = f.domain;
     sf = plot(chebfun2(ff{jj}, rect));
-    alpha(sf,.5);
-    axis([rect,min(min(ff{jj})) - .1, scl + .1]);
-    mypause(psectionbreak),
+    alpha(sf, .5);
+    axis([rect, min(min(ff{jj})) - .1, scl + .1]);
+    mypause(psectionbreak)
 end
 delete(comets{1})
 if length(f) > 1
@@ -255,7 +240,7 @@ if ( length(f) > 2 )
     str = 'Your function requires more sampling points to resolve.';
     textBox = myTextbox(str, textBox);
     mypause(psectionbreak)
-    str = {str; sprintf('So we next sample it on a %u x %u Chebyshev grid.\n\n', ...
+    str = {str; sprintf('So we next sample it on a %u x %u Chebyshev grid.', ...
         nextsample, nextsample)};
     textBox = myTextbox(str, textBox);
     mypause(psectionbreak)
@@ -542,6 +527,7 @@ end
 end
 
 function h = tilt(h, p, whichway)
+%TILT
 set(gca,'cameraviewanglemode','auto')
 k = 36;
 s = whichway;
@@ -596,12 +582,11 @@ if verLessThan('matlab', '8.4')
         pause(p)
     end
 else
-%     body = animatedline('parent',h,'color',color,'linestyle','-','LineWidth',3,'erase','none', ...
-%         'xdata',[],'ydata',[]);
-    body = animatedline;
-    body2 = animatedline;
+    body = animatedline('parent',h,'color',color,'linestyle','-','LineWidth',3);
+    body2 = animatedline('parent',h,'color',color,'linestyle','-','LineWidth',3);
     for k = 1:length(x);
         addpoints(body, x(k), y(k))
+        pause(p)
         drawnow update
     end
     
@@ -611,6 +596,7 @@ else
     y(1:2:end)=yeven; y(2:2:end)=yodd;
     for k = 1:length(x);
         addpoints(body2, x(k), y(k))
+        pause(p)
         drawnow update
     end
     
@@ -623,6 +609,13 @@ end
 
 
 function mypause(n)
+%MYPAUSE    Pause the chebfun2 explanation movie
+%
+% Input:
+%   n: If n < Inf, the movie gets paused for n seconds. If n == Inf, the movie
+%   gets paused until the user presses a key.
+
+% Pause depending on the input.
 if ( n == inf ) 
     pause
 else
@@ -631,9 +624,19 @@ end
 end
 
 function textBox = myTextbox(str, oldBox)
+%MYTEXTBOX    Draw a textbox to the figure.
+%
+% Inputs:
+%   STR: String to be displayed within the textbox.
+%   OLDBOX: A MATLAB graphics object of the currently displayed textbox.
+% Output:
+%   TEXTBOX: A MATLAB graphics object, the next textbox.
+
+% If OLDBOX got passed in, delete it.
 if (nargin > 1 )
     delete(oldBox)
 end
-textBox = annotation('textbox', [0.13, 0.05, 0.775, 0.15],...
+% Draw a new textbox.
+textBox = annotation('textbox', [0.13, 0.025, 0.775, 0.175],...
            'String', str, 'fontsize', 18, 'linewidth', 1);
 end
