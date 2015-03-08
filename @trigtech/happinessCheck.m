@@ -53,4 +53,10 @@ if ( ishappy && ~isempty(op) && ~isnumeric(op) && pref.sampleTest )
     end
 end
 
+% set epslevel
+global myeps
+if myeps > 0
+  epslevel = myeps;
+end
+
 end
