@@ -56,7 +56,7 @@ end
 % set epslevel
 global myeps
 if myeps > 0
-  epslevel = myeps;
+  epslevel = myeps*ones(size(epslevel));
 end
 
 end
