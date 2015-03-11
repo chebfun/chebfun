@@ -29,6 +29,8 @@ home
 close all
 % Create a new figure, and add space to the bottom for a text box
 fig = figure;
+% Want thick lines by default
+set(fig, 'DefaultLineLineWidth', 3)
 figPos = get(fig, 'position');
 figPos(4) = figPos(4) + 100;
 set(fig, 'position', figPos)
@@ -99,8 +101,6 @@ mypause(psectionbreak)
 
 %% Surface plot of the input CHEBFUN2, followed by panning around the function
 textBox = myTextbox('This is your chebfun2', textBox);
-% TODO: This is setting a global preference! Not wise.
-set(0, 'DefaultLineLineWidth', 3)
 sf = plot(f);
 axis equal, axis off
 % Set the correct size of the current axes
