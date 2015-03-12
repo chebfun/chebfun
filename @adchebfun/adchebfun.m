@@ -1036,7 +1036,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         function f = rdivide(f, g)
             % ./    ADCHEBFUN division
             %
-            % F./G divides F and G, where F and G may be ADHCEBFUN or CHEBFUN
+            % F./G divides F and G, where F and G may be ADCHEBFUN or CHEBFUN
             % objects or scalars.
             
             % ADCHEBFUN./SCALAR or ADCHEBFUN./CHEBFUN
@@ -1393,7 +1393,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         function f = times(f, g)
             % .*    ADCHEBFUN multiplication
             %
-            % F.*G multiplies F and G, where F and G may be ADHCEBFUN or CHEBFUN
+            % F.*G multiplies F and G, where F and G may be ADCHEBFUN or CHEBFUN
             % objects or scalars.
                         
             if ( isnumeric(g) )                 % ADCHEBFUN.*SCALAR
