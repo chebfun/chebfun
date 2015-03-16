@@ -86,9 +86,11 @@ co = [0 0.4470 0.7410; 0.8500 0.3250 0.0980; 0.9290 0.6940 0.1250;
 % For the movie, we only want to look at 9 and 17 point grids (although the
 % current preference of MINSAMPLES might be different), as otherwise, it becomes
 % too cluttered.
-minsample = 9;
-nextsample = 17;
+firstSample = 9;
+secondSample = 17;
 
+% Store on what rectangle F lives on
+rect = f.domain;
 %% Print starting text
 str = {'This movie explains how a simplified version of the'; 
     'chebfun2 constructor works on your function.'};
@@ -115,174 +117,146 @@ fade(1, .5, sf, pfade);
 % Pause before next section:
 mypause(psectionbreak)
 
-%% Start explaining the constructor
+%% Start explaining the constructor -- Sample on a coarse grid
 str = sprintf(['We first sample on a %u x %u Chebyshev grid obtaining ' ...
-    'a matrix A.'], minsample, minsample);
+    'a matrix A.'], firstSample, firstSample);
 textBox = myTextbox(str, textBox);
 mypause(psectionbreak)
 
-% Sample the function on a finer Chebyshev grid so that we can compute (and
-% plot) the residual after taking one step.
-[xx, yy] = meshgrid(chebpts(200));
-B = feval(f, xx, yy);
+% How many pivots do we want on the coarse grid?
+numCoarsePivots = min(2, length(f));
 
-% We first sample on a 17x17 grid.
-[xx, yy] = meshgrid(chebpts(minsample));
-A = feval(f, xx, yy); scl = max(max(A));
-zz = (max(max(A)) - 1e-1)*ones(minsample^2, 1);
-hold on
-pts = plot3(xx(:), yy(:), zz, 'Marker', '.', 'MarkerSize', 20, ...
-    'Color', 'k', 'LineStyle', 'none');
+% Do the first ACA
+[P, ff, e, scl, sclinf, pts] = myACA(f, firstSample, numCoarsePivots);
 
-% Find maximum on the grid, calculate the residual and then take next maximum.
-xpts = chebpts(minsample);
-% Store the first two pivot locations
-P = zeros(2, 2);
-for j = 1:min(2, length(f))
-    % Find where the maximum occurs on the current grid:
-    [infnorm , ind] = max(abs(reshape(A, numel(A), 1)));
-    % Indices of the maximum location
-    [row , col] = ind2sub(size(A), ind);
-    % Store the pivot location
-    P(j,:) = [xpts(col), xpts(row)];
-    % Update the function on the grid that we're approximating:
-    A = A - A(:, col)*A(row, :)./A(row, col);
-    % Update the function on the finer grid as well (for plotting):
-    [infnorm, ind] = max(abs(reshape(B, numel(B), 1)));
-    [row, col] = ind2sub(size(B), ind);
-    B = B - B(:, col)*B(row, :)./B(row, col);
-    % Store the residual at the finer grid at each step:
-    ff{j}=B;
-    % Store the error after the current iteration:
-    e(j) = norm(A);
-end
+%% Plot the first pivot and row/columns on the coarse grid
 
+% Update the textbox
 str = {str; 'We then take entry with the largest absolute value.'};
 textBox = myTextbox(str, textBox);
 mypause(psectionbreak)
 
-markers = [];
+% Prepare the figure for plotting
 comet = newplot;
-t = 0:.01:1;
-comets = [];
-for jj = 1:min(2, length(f))
-    % Plot the current pivot
-    val = feval(f, P(jj,1), P(jj,2));
-    mark = plot3(P(jj,1), P(jj,2), val, 'Marker', '.', ...
-        'Color', co(jj,:), 'MarkerSize', 40);
-    
-    if ( jj == 1 )
-        str = 'That''s the big blue dot and the first pivot.';
-        textBox = myTextbox(str, textBox);
-        mypause(psectionbreak)
-        str = {str; 'We take the entry''s value a, column u and row v...'};
-        textBox = myTextbox(str, textBox);
-        mypause(psectionbreak)
-        str = [str; 'and calculate the residual matrix A = A - uv^T/a.'];
-        textBox = myTextbox(str, textBox);
-        mypause(psectionbreak)
-    else
-        str = [str; 'That''s the red dot.'];
-        textBox = myTextbox(str, textBox);
-    end
-    mypause(psectionbreak)
-    if ( jj==1 )
-        mypause(psectionbreak)
-    end
-    myline = mycomet(t, P(jj,:), comet, co(jj,:), pmove/5);
-    mypause(psectionbreak)
-    comets = [myline comets];
-    markers = [mark markers];
-    
-    if ( jj == 1 )
-        str = sprintf('The norm of the residual is %1.3e.', e(jj));
-        textBox = myTextbox(str, textBox);
-    elseif ( jj == 2 )
-        str = [str; sprintf('After the second step the norm of the residual is %1.3e.', e(jj))];
-        textBox = myTextbox(str, textBox);
-    end
-    
-    if ( length(f) == 1 )
-        str = {str; 'The first step is complete.'};
-        textBox = myTextbox(str, textBox);
-        mypause(psectionbreak),
-    elseif ( length(f) == 2 && jj == 2 )
-        fprintf('The first step is complete.')
-        mypause(psectionbreak),
-    elseif ( length(f) > 2 || (length(f) == 2 && jj == 1 ) )
-        if ( jj == 1 )
-            str = {'We repeat for one more step on the residual matrix.';
-                'As before taking the largest absolute value.'};
-            textBox = myTextbox(str, textBox);
-            mypause(psectionbreak)
-        end
-    end
-    delete(sf); rect = f.domain;
-    sf = plot(chebfun2(ff{jj}, rect));
-    alpha(sf, .5);
-    axis([rect, min(min(ff{jj})) - .1, scl + .1]);
+% Plot the first pivot and the row/column on top of the grid
+val = feval(f, P(1,1), P(1,2));
+% Store the pivot location plots
+markers = plot3(P(1,1), P(1,2), val, 'Marker', '.', ...
+    'Color', co(1,:), 'MarkerSize', 40);
+
+% Update the text box (with pauses in between)
+str = 'That''s the big blue dot and the first pivot.';
+textBox = myTextbox(str, textBox);
+mypause(psectionbreak)
+str = {str; 'We take the entry''s value a, column u and row v...'};
+textBox = myTextbox(str, textBox);
+mypause(psectionbreak)
+str = [str; 'and calculate the residual matrix A = A - uv^T/a.'];
+textBox = myTextbox(str, textBox);
+mypause(2*psectionbreak)
+
+% Draw the first column/row and store the lines
+comets = mycomet(P(1,:), comet, co(1,:), pmove/5);
+mypause(psectionbreak)
+str = sprintf('The norm of the residual is %1.3e.', e(1));
+textBox = myTextbox(str, textBox);
+
+% Make an observation if we got passed a function of numerical rank one
+if ( length(f) == 1 )
+    str = {str; 'Your function is of numerical rank one.';
+        'The first step is complete.'};
+    textBox = myTextbox(str, textBox);
     mypause(psectionbreak)
 end
+
+% Update the plot to show the first residual, rather than original function
+delete(sf);
+sf = plot(chebfun2(ff{1}, rect));
+alpha(sf, .5);
+axis([rect, min(min(ff{1})) - .1, scl + .1]);
+
+%% Plot the second pivot on the coarse grid
+if ( numCoarsePivots == 2 )
+    str = {'We repeat for one more step on the residual matrix.';
+        'As before taking the largest absolute value.'};
+    textBox = myTextbox(str, textBox);
+    
+    % Plot the second pivot, update the textbox and pause
+    val = feval(f, P(2,1), P(2,2));
+    markers = [markers, plot3(P(2,1), P(2,2), val, 'Marker', '.', ...
+        'Color', co(2,:), 'MarkerSize', 40)];
+    str = [str; 'That''s the red dot.'];
+    textBox = myTextbox(str, textBox);
+    mypause(psectionbreak)
+    
+    % Draw the second column/row
+    comets = [comets, mycomet(P(2,:), comet, co(2,:), pmove/5)];
+    mypause(psectionbreak)
+    
+    % Update residual information
+    str = [str; ...
+        sprintf('After the second step the norm of the residual is %1.3e.', ...
+        e(2))];
+    textBox = myTextbox(str, textBox);
+    
+    % Make an observation if the function was of numerical rank 2
+    if ( length(f) == 2)
+        fprintf('The first step is complete.')
+        mypause(psectionbreak),
+    end
+    
+    % Update the plot to show the next residual
+    delete(sf);
+    sf = plot(chebfun2(ff{2}, rect));
+    alpha(sf, .5);
+    axis([rect, min(min(ff{2})) - .1, scl + .1]);
+    mypause(psectionbreak)
+end
+
+%% Tidy up after plotting the sampling on coarse grid
 delete(comets{1})
-if length(f) > 1
+if numCoarsePivots > 1
     delete(comets{2})
 end
 delete(markers), delete(pts);
-
-% The input function was actually of rank 1, make a comment about it:
-if ( length(f) == 1 )
-    str = 'Your function is of numerical rank one.';
-    textBox = myTextbox(str, textBox);
-end
-
 %% We did not resolve the function with two pivot points, so take more.
 if ( length(f) > 2 )
+    % Update the text box (with pauses in between)
     str = 'Your function requires more sampling points to resolve.';
     textBox = myTextbox(str, textBox);
     mypause(psectionbreak)
     str = {str; sprintf('So we next sample it on a %u x %u Chebyshev grid.', ...
-        nextsample, nextsample)};
+        secondSample, secondSample)};
     textBox = myTextbox(str, textBox);
     mypause(psectionbreak)
- 
-    [xx, yy] = meshgrid(chebpts(nextsample));
-    A = feval(f, xx, yy);  scl = max(max(A)); sclinf = min(min(A));
-    zz = (max(max(A)) - 1e-1)*ones(nextsample^2, 1);
-    pts = plot3(xx(:), yy(:), zz, 'Marker', '.', 'MarkerSize', 20,...
-       'Color','k','LineStyle','none');
- 
-    [xx, yy]=meshgrid(chebpts(200));
-    B = feval(f, xx, yy);
- 
-    delete(sf), sf=plot(f); alpha(sf,.5); axis equal, axis off
-    
+      
+    % Update the plot to show the original input chebfun2
+    delete(sf)
+    sf=plot(f);
+    alpha(sf,.5);
+    axis equal, axis off
     mypause(psectionbreak)
+    
+    
     str = 'We repeat the same process as before, just on a larger matrix...';
     textBox = myTextbox(str, textBox);
-    % Same process again and now on a denser grid.
-    xpts = chebpts(nextsample);
-    [xx, yy] = meshgrid(xpts);
-    P = zeros(6, 2);
-    for j = 1:min(6, length(f))
-        [infnorm , ind] = max( abs ( reshape(A, numel(A), 1) ) );
-        [ row , col ] = ind2sub( size(A) , ind);
-        P(j,:) = [xpts(col) xpts(row)];
-        A = A - A( : , col )*A( row , : )./A(row,col);
-        [infnorm , ind] = max( abs ( reshape(B,numel(B),1) ) );
-        [row , col] = ind2sub(size(B), ind);
-        B = B - B( : , col )*B( row , : )./B(row,col);
-        ff{j}=B;
-    end
+    
+    % How many pivots do we want on the finer grid?
+    numFinePivots = min(6, length(f));
+    
+    % Do the second ACA
+    [P, ff, e, scl, sclinf, pts] = myACA(f, secondSample, numFinePivots);
     
     markers=[];
-    comet=newplot; t = 0:.01:1;  comets=[];
+    comet = newplot;
+    comets = [];
     for jj= 1:min(6, length(f))
         val = feval(f,P(jj,1),P(jj,2)) + eps;
         mark = plot3(P(jj,1), P(jj,2), val, 'Marker', '.', ...
             'Color', co(jj,:), 'MarkerSize', 40);
         hold on
         pause(pbreak)
-        myline = mycomet(t, P(jj,:), comet, co(jj,:), pmove/7);
+        myline = mycomet(P(jj,:), comet, co(jj,:), pmove/7);
         comets = [myline comets];
         markers = [mark markers];
         delete(sf);
@@ -318,6 +292,7 @@ elseif ( length(f) > 1 )
 end
 textBox = myTextbox(str, textBox);
 %% Waterfall plot is what we have drawn.
+% TODO: Delete the markers from above. Make waterfall plot points as well.
 water = waterfall(f, '-', 'nslices', min(length(f), 6));
 
 % tilt, pan, tilt
@@ -326,7 +301,7 @@ sf = tilt(sf, pmove, 1); campos([0 0 10]), hold on
 
 str = {'To resolve your function we just need to resolve the';
     'selected columns and rows.';
-    'Each column and row is a function of one variable.'};
+    'Each column and row is a function of just one variable.'};
 textBox = myTextbox(str, textBox);
 mypause(psectionbreak)
 
@@ -334,6 +309,9 @@ delete(sf);
 mypause(psectionbreak)
 
 %% Skeleton version of ACA.
+% TODO: Ensure that we're plotting the lines we actually want. They can be
+% different from the coarse grid (17x17) above, than actually on a finer grid
+% needed by the chebfun2 constructer. Hence, the lines might not be matching up.
 markers=[]; trun = min(6,length(f)); P = P(1:trun,:);
 for j = 1:min(6, length(f))
     [xx, yy] = meshgrid(P(:,1), chebpts(33));
@@ -444,19 +422,21 @@ pause(pbreak)
 clf
 
 %% Show how the chebfun2 is stored
-% % % How are chebfun2 stored? % % %
 txt = scribble('How is it stored?');
 plot(txt); axis([-1 1 -1 1]), axis off
 mypause(psectionbreak), clf
 
 % Make a plot that looks a bit like plot(f, '.-')
 crosses = PivPos;
-cols = line([crosses(:,1) crosses(:,1)].',[-1 1]); hold on,
+cols = line([crosses(:,1) crosses(:,1)].', [-1 1]);
+hold on
 rows = line([-1 1],[crosses(:,2),crosses(:,2)].');
-mx = 2.3; axis(mx*[-1 1 -1 1]), axis square, axis off
+axis(2.3*[-1 1 -1 1]), axis square, axis off
 
 % Again plot pivot positions.
-P = PivPos; U = f.pivotValues; markers=[];
+P = PivPos;
+U = f.pivotValues;
+markers=[];
 for jj= 1:min(6,length(f))
     mark = plot(P(jj,1),P(jj,2),'Marker','.','MarkerSize',40,'Color',co(jj,:));
     markers = [mark markers];
@@ -476,23 +456,24 @@ pause(pbreak)
 for t = 0:.1:1
     delete(cols),delete(rows), delete(markers)
     cols=[];
-    for jj= 1:min(6,length(f))
-        st = t*(cc(jj)-crosses(jj,1));
-        col = line([crosses(jj,1)+st crosses(jj,1)+st].', [-1 1], ...
-            'Color',co(jj,:));
+    for jj= 1:min(6, length(f))
+        st = t*(cc(jj) - crosses(jj, 1));
+        col = line([crosses(jj,1) + st, crosses(jj,1) + st].', [-1 1], ...
+            'Color', co(jj,:));
         hold on
-        cols = [col cols];
+        cols = [col, cols];
     end
-    rows=[];
-    for jj= 1:min(6,length(f))
-        st = t*(rr(jj)-crosses(jj,2));
-        row = line([-1+1.5*t 1+1.5*t],[crosses(jj,2)+st crosses(jj,2)+st].', ...
-            'Color',co(jj,:));
-        rows = [row rows];
+    rows = [];
+    for jj= 1:min(6, length(f))
+        st = t*(rr(jj) - crosses(jj,2));
+        row = line([-1 + 1.5*t, 1 + 1.5*t], ...
+            [crosses(jj,2) + st, crosses(jj, 2) + st].', ...
+            'Color', co(jj,:));
+        rows = [row, rows];
     end
-    markers=[];
-    for jj= 1:min(6,length(f))
-        stx = t*(dd(jj)-P(jj,1)); sty = t*(rr(jj)-P(jj,2));
+    markers = [];
+    for jj= 1:min(6, length(f))
+        stx = t*(dd(jj) - P(jj,1)); sty = t*(rr(jj) - P(jj,2));
         mark = plot(P(jj,1) + stx, P(jj,2) + sty, 'Marker', '.', ...
             'MarkerSize', 40, 'Color', co(jj,:));
         markers = [mark markers];
@@ -547,7 +528,8 @@ for a = alpha1:-.1:alpha2
 end
 end
 
-function h = mycomet(t, pivot, h, color, p)
+function h = mycomet(pivot, h, color, p)
+t = 0:.01:1;
 x=zeros(1, length(t));
 xeven = pivot(1) + t(1:2:end)*(1 - pivot(1));
 xodd = pivot(1) + t(2:2:end)*(-1 - pivot(1));
@@ -637,6 +619,52 @@ if (nargin > 1 )
     delete(oldBox)
 end
 % Draw a new textbox.
-textBox = annotation('textbox', [0.13, 0.025, 0.775, 0.175],...
+textBox = annotation('textbox', [0.05, 0.025, 0.9, 0.175],...
            'String', str, 'fontsize', 18, 'linewidth', 1);
+end
+
+function [P, ff, e, scl, sclinf, pts] = myACA(f, nGridPoints, nIter)
+% Sample the function on a finer Chebyshev grid so that we can compute (and
+% plot) the residual after taking one step.
+nPlotGrid = 200;
+[xx, yy] = meshgrid(chebpts(nPlotGrid));
+B = feval(f, xx, yy);
+
+% We first sample on a 9x9 grid.
+[xx, yy] = meshgrid(chebpts(nGridPoints));
+A = feval(f, xx, yy);
+scl = max(max(A));
+sclinf = min(min(A));
+
+% Find out what z location we need to plot the grid
+zz = (max(max(A)) - 1e-1)*ones(nGridPoints^2, 1);
+hold on
+pts = plot3(xx(:), yy(:), zz, 'Marker', '.', 'MarkerSize', 20, ...
+    'Color', 'k', 'LineStyle', 'none');
+
+% Find maximum on the grid, calculate the residual and then take next maximum.
+xpts = chebpts(nGridPoints);
+
+% Store the first one or two pivot locations, residual and error after each step:
+P = zeros(nIter, 2);
+ff = cell(nIter, 1);
+e = zeros(nIter, 1);
+for j = 1:nIter
+    % Find where the maximum occurs on the current grid:
+    [~ , ind] = max(abs(reshape(A, numel(A), 1)));
+    % Indices of the maximum location
+    [row , col] = ind2sub(size(A), ind);
+    % Store the pivot location
+    P(j,:) = [xpts(col), xpts(row)];
+    % Update the function on the grid that we're approximating:
+    A = A - A(:, col)*A(row, :)./A(row, col);
+    % Update the function on the finer grid as well (for plotting):
+    [~, ind] = max(abs(reshape(B, numel(B), 1)));
+    [row, col] = ind2sub(size(B), ind);
+    B = B - B(:, col)*B(row, :)./B(row, col);
+    % Store the residual at the finer grid at each step:
+    ff{j} = B;
+    % Store the error after the current iteration:
+    e(j) = norm(A);
+end
 end
