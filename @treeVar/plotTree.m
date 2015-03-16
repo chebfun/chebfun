@@ -48,7 +48,7 @@ ylim([0, 1])
 hold off
 set(gca, 'xtick', [])
 set(gca, 'ytick', [])
-title('Function evaluation tree')
+% title('Function evaluation tree')
 end
 
 
@@ -130,19 +130,19 @@ switch tree.numArgs
     case 1
         % Plot syntax tree for univariate methods:
         plot(tree.center.x, tree.center.y, 'bo');
-        plot([tree.x tree.center.x], [tree.y tree.center.y], '-')
+        plot([tree.x tree.center.x], [tree.y tree.center.y], 'b-')
         plotTreePlot(tree.center, maxDiffOrder)
     
     case 2
         % Plot syntax tree for bivariate methods:        
         % Plot left sub-tree.
-        plot(tree.left.x, tree.left.y, 'o');
-        plot([tree.x tree.left.x], [tree.y tree.left.y], '-')
+        plot(tree.left.x, tree.left.y, 'bo');
+        plot([tree.x tree.left.x], [tree.y tree.left.y], 'b-')
         plotTreePlot(tree.left, maxDiffOrder)
         
         % Plot right sub-tree.
-        plot(tree.right.x, tree.right.y, 'o');
-        plot([tree.x tree.right.x], [tree.y tree.right.y], '-')
+        plot(tree.right.x, tree.right.y, 'bo');
+        plot([tree.x tree.right.x], [tree.y tree.right.y], 'b-')
         plotTreePlot(tree.right, maxDiffOrder)
 end
 
@@ -156,9 +156,9 @@ if ( strcmp(tree.method, 'constr') )
         % Systems case, print u and the variable number:
         varString = sprintf('u%i', find(tree.ID == 1));
     end
-    text(tree.x + 0.02, tree.y - 0.01, varString, 'Interpreter', 'none')
+    text(tree.x + 0.02, tree.y - 0.01, varString, 'Interpreter', 'none','fontsize',14)
 else
-    text(tree.x + 0.02, tree.y - 0.01, tree.method, 'Interpreter', 'none')
+    text(tree.x + 0.02, tree.y - 0.01, tree.method, 'Interpreter', 'none','fontsize',14)
 end
 
 end
