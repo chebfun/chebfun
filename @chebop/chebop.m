@@ -426,6 +426,11 @@ classdef (InferiorClasses = {?double}) chebop
             
             % We're happy with function handles
             if ( isa(val, 'function_handle') || isempty(val) )
+                % If the function is not identical to its vectorized form, we
+                % vectorize it
+                if ( ~strcmp(func2str(val), vectorize(val)) )
+                    val = myVectorize(val);
+                end
                 N.op = val;
             elseif ( iscell(val) )
                 error('CHEBFUN:CHEBOP:setOp:type', ...
