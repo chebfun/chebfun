@@ -252,6 +252,9 @@ classdef (InferiorClasses = {?double}) chebop
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
         
+        % Alternate & syntax for BC's.
+        N = and(N,BC)
+        
         % Find selected eigenvalues and eigenfunctions of a linear CHEBOP.
         varargout = eigs(N, varargin)
         
@@ -263,9 +266,6 @@ classdef (InferiorClasses = {?double}) chebop
         
         % The number of input arguments to a CHEBOP .OP field.
         nIn = nargin(N)
-        
-        % Alternate & syntax for BC's.
-        N = and(N,BC)
         
     end
     
@@ -300,11 +300,20 @@ classdef (InferiorClasses = {?double}) chebop
         
         % Find selected eigenvalues and eigenfunctions of a linear CHEBOP.
         varargout = eig(varargin);
-        
+       
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% STATIC HIDDEN METHODS:       
+    %% HIDDEN STATIC METHODS IMPLEMENTED IN OTHER FILES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = true, Hidden = true )
+        
+        % Vectorize operators
+        funOut = vectorizeOp(funIn)
+    end
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% STATIC PRIVATE METHODS:       
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = private, Static = true )
         
@@ -424,14 +433,21 @@ classdef (InferiorClasses = {?double}) chebop
             %   boundary conditions than simply accessing the .op field, or
             %   using standard subsref.
             
-            % We're happy with function handles
-            if ( isa(val, 'function_handle') || isempty(val) )
-                % If the function is not identical to its vectorized form, we
-                % vectorize it
-                if ( ~strcmp(func2str(val), vectorize(val)) )
-                    val = myVectorize(val);
-                end
+            % We can always assign an empty operator
+            if ( isempty(val) )
                 N.op = val;
+                
+            % We're happy with function handles
+            elseif ( isa(val, 'function_handle') )
+                % If the function is not identical to its vectorized form, we
+                % vectorize it:
+                if ( ~strcmp(func2str(val), vectorize(val)) )
+                    val = N.vectorizeOp(val);
+                end
+                
+                % Assign the operator
+                N.op = val;
+                
             elseif ( iscell(val) )
                 error('CHEBFUN:CHEBOP:setOp:type', ...
                     ['Specifying differential equation as a cell of ', ...
