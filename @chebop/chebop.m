@@ -228,7 +228,7 @@ classdef (InferiorClasses = {?double}) chebop
                 N.bc = lbcIn;
             elseif ( nargin == 4 )
                 if ( isa(rbcIn, 'function_handle') || ischar(rbcIn) || ...
-                        isnumeric(rbcIn))
+                        isnumeric(rbcIn) )
                     % CHEBOP(OP, DOM, LBC, RBC):
                     N.lbc = lbcIn;
                     N.rbc = rbcIn;
