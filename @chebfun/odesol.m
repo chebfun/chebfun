@@ -65,13 +65,11 @@ end
 %% Create a CHEBFUN object.
 p = chebfunpref();
 p.techPrefs.eps = max(relTol); % Use the same tolerance for each column.
-p.splitting = false;
-% p.splitting = true;            % use splitting, always, or there is no hope.
-% p.splitPrefs.splitLength = 300;
-% p.splitPrefs.splitMaxLength = p.techPrefs.maxLength;
+
 % Need to sort the domain D, since if we solve a final value problem, it will
 % have been flipped.
 dom = sort(dom);
+
 % Construct a CHEBFUN by sampling the SOL input.
 y = chebfun(@(x) deval(sol, x).', dom, p);
 
