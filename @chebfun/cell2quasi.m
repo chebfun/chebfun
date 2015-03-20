@@ -39,8 +39,14 @@ for k = chebIdx
     end
 end
 
+% A zero chebfun of the correct 'type' on the correct domain.
+zFun = 0*F{chebIdx(1)};
+
 % Assign entries of F to columns of G:
 for k = numel(F):-1:1
+    if ( isnumeric(F{k}) )
+        F{k} = zFun + F{k}; % Cast double to a chebfun.
+    end
     G(k) = F{k};
 end
 
