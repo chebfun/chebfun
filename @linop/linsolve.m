@@ -115,9 +115,10 @@ for dim = [dimVals inf]
     else
         [A, P] = matrix(disc);
         if ( size(A, 1) ~= size(A, 2) )
-            % [TODO]: Improve this warning.
             warning('CHEBFUN:LINOP:linsolve:notSquare', ...
-                'Matrix is not square!');
+                ['Operator may not have the correct number of boundary ' ...
+                'conditions.\n' ...
+                'Matrix is not square. Problem may be ill-posed.']);
         end
     end
     
