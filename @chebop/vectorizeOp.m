@@ -29,6 +29,12 @@ fVec = vectorize(funIn);
 
 % Begin by obtaining information about potential parameters in funIn
 fFunc = functions(funIn);
+% We only want to convert proper anonymous functions, not function handles
+if ( ~strcmp(fFunc.type, 'anonymous') )
+    funOut = funIn;
+    return
+end
+
 fWork = fFunc.workspace;
 
 % Load the variables in the input function to the current workspace

@@ -159,6 +159,10 @@ classdef (InferiorClasses = {?double}) chebop
 %   N.init = [1 ; chebfun(1)];
 %   plot(N\0)
 %
+% %% AUTOMATIC VECTORIZATION %%
+%
+% TODO: Write
+%
 % See also CHEBOP/MTIMES, CHEBOP/MLDIVIDE, CHEBOPPREF.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. See
@@ -170,11 +174,12 @@ classdef (InferiorClasses = {?double}) chebop
     properties ( Access = public )
         domain = [];    % Domain of the operator
         op = [];        % The operator
-        lbc = [];       % Left boCHEBGUIexporterEIGundary condition(s)
+        lbc = [];       % Left boundary condition(s)
         rbc = [];       % Right boundary condition(s)
         bc = [];        % Other/internal/mixed boundary conditions
         init = [];      % Initial guess of a solution
         numVars = [];   % Number of variables the CHEBOP operates on.
+        vectorize = []; % Automatic vectorization?
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -185,6 +190,12 @@ classdef (InferiorClasses = {?double}) chebop
         function N = chebop(op, dom, lbcIn, rbcIn, init)
             % CHEBOP constructor
             
+            % Get current CHEBOPPREF settings
+            p = cheboppref();
+            
+            % Should anonymous functions automatically be vectorized?
+            N.vectorize = p.vectorize;
+            
             if ( nargin == 0 )
                 return
             end
@@ -192,8 +203,7 @@ classdef (InferiorClasses = {?double}) chebop
             % No domain passed:
             if ( nargin < 2 )
                 if ( ~isnumeric(op) )
-                    % Get default domain from CHEBPREF():
-                    p = cheboppref();
+                    % Get default domain from CHEBOPPREF():
                     dom = p.domain;
                 else
                     % DOM was passed, but no OP.
@@ -253,7 +263,7 @@ classdef (InferiorClasses = {?double}) chebop
     methods ( Access = public, Static = false )
         
         % Alternate & syntax for BC's.
-        N = and(N,BC)
+        N = and(N, BC)
         
         % Find selected eigenvalues and eigenfunctions of a linear CHEBOP.
         varargout = eigs(N, varargin)
@@ -440,8 +450,8 @@ classdef (InferiorClasses = {?double}) chebop
             % We're happy with function handles
             elseif ( isa(val, 'function_handle') )
                 % If the function is not identical to its vectorized form, we
-                % vectorize it:
-                if ( ~strcmp(func2str(val), vectorize(val)) )
+                % vectorize it (assuming that property is turned on):
+                if ( N.vectorize && ~strcmp(func2str(val), vectorize(val)) )
                     val = N.vectorizeOp(val);
                 end
                 
@@ -485,17 +495,12 @@ classdef (InferiorClasses = {?double}) chebop
         end   
         
         function out = isempty(N)
-            %ISEMPTY   Check if the CHEBOP N is empty.            
-            out = true;
-            % Loop through all the fields of N:
-            for prop = fieldnames(N).'
-                p = char(prop);
-                if ( ~isempty(N.(p)) )
-                    % If any field is non-empty, return false:
-                    out = false;
-                    break
-                end
-            end
+            %ISEMPTY   Test for empty CHEBOP.
+            %   ISEMPTY(N) returns logical true if N is an empty CHEBOP, which
+            %   is defined as a CHEBOP where the DOMAIN, OP, LBC, RBC, BC and
+            %   INIT fields are empty.
+            out = isempty(N.domain) && isempty(N.op) && isempty(N.lbc) && ...
+                isempty(N.rbc) && isempty(N.bc) && isempty(N.init);
         end
                 
         

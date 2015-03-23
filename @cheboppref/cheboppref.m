@@ -130,6 +130,15 @@ classdef cheboppref < chebpref
 %   paused and the plots are shown until the user presses a button. If plotting
 %   = 'off', no plots are shown during the Newton iteration.
 %
+%   vectorize                   - Automatic vectorization of anon. functions
+%     [true]
+%     false
+%
+%   Determines whether the CHEBOP class should try to automatically try to
+%   vectorize anonymous functions used for describing the differential equation
+%   and boundary condition(s).
+%
+%
 % The default values for any of these preferences may be globally overridden
 % using CHEBOPPREF.SETDEFAULTS(); see the documentation for that function for
 % further details.
@@ -255,6 +264,8 @@ classdef cheboppref < chebpref
                 prefList.minDimension);
             fprintf([padString('    plotting:') '%s\n'], ...
                 prefList.plotting);
+            fprintf([padString('    vectorize:') '%i\n'], ...
+                prefList.vectorize);
        end
 
         function pref = subsasgn(pref, ind, val)
@@ -421,6 +432,7 @@ classdef cheboppref < chebpref
             factoryPrefs.maxIter = 25;
             factoryPrefs.minDimension = 32;
             factoryPrefs.plotting = 'off';
+            factoryPrefs.vectorize = true;
         end
         
         function val = parseDiscretization(val)
