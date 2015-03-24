@@ -100,7 +100,7 @@ maxDiffOrder = max(max(L.diffOrder));
 if maxDiffOrder > 0 && isempty(N.lbc) && isempty(N.rbc) && isempty(N.bc)
     % Differential equations need BCs (but integral eqns. are OK):
     error('CHEBFUN:CHEBOP:solvebvp:bcEmpty', ...
-        'All boundary conditions are empty.');
+        'Boundary conditions must be provided.');
 end
 
 warnState = warning();
