@@ -126,13 +126,13 @@ classdef (InferiorClasses = {?double}) chebop
 % 
 % Example (solving an IVP by automatically converting it to first order form):
 %
-% % Solve the van der Pol equation u'' - 20*(1-u^2)u' + u = 0, u(0)=2, u'(0)=0
-% vdpFun = @(u) diff(u, 2) - 20*(1-u.^2).*diff(u) + u;
-% dom = [0 100];
-% N = chebop(vdpFun, dom);
-% N.lbc = @(u) [u - 2; diff(u)];
-% u = N\0
-% plot(u)
+%   % Solve the van der Pol equation u'' - 20*(1-u^2)u' + u = 0, u(0)=2, u'(0)=0
+%   vdpFun = @(u) diff(u, 2) - 20*(1-u.^2).*diff(u) + u;
+%   dom = [0 100];
+%   N = chebop(vdpFun, dom);
+%   N.lbc = @(u) [u - 2; diff(u)];
+%   u = N\0
+%   plot(u)
 %
 % %% PARAMETER DEPENDENT PROBLEMS %%
 %
@@ -162,17 +162,14 @@ classdef (InferiorClasses = {?double}) chebop
 % %% AUTOMATIC VECTORIZATION %%
 %
 % By default, CHEBOP will automatically try to vectorize anonymous function that
-% get passed as OP, BC, LBC and RBC. For example, the IVP example above could
-% equally have been written as
+% get passed as OP, BC, LBC and RBC. For example, the function VDPFUN from the
+% IVP example above,
 %
-%   % Solve the van der Pol equation u'' - 20*(1-u^2)u' + u = 0, u(0)=2, u'(0)=0
-%   mu = 20;
-%   vdpFun = @(u) diff(u, 2) - mu*(1-u^2)*diff(u) + u;
-%   dom = [0 100];
-%   N = chebop(vdpFun, dom);
-%   N.lbc = @(u) [u - 2; diff(u)];
-%   u = N\0
-%   plot(u)
+%   vdpFun = @(u) diff(u, 2) - 20*(1-u.^2).*diff(u) + u;
+%
+% could have equally been written as
+%
+%   vdpFun = @(u) diff(u, 2) - 20*(1-u^2)*diff(u) + u;
 %
 % To turn off the automatic vectorization, set N.vectorize = false, or change
 % the default CHEBOPPREF via cheboppref.setDefaults('vectorize', false).
