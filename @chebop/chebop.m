@@ -145,7 +145,7 @@ classdef (InferiorClasses = {?double}) chebop
 % Example (unknown parameter in differential equation):
 %
 %   % y'' + x.*y + p = 0, y(-1) = 1, y'(-1) = 1, y(1) = 1 can be solved via
-%   N = chebop(@(x, y, p) diff(y,2) + x.*y + p)
+%   N = chebop(@(x, y, p) diff(y,2) + x.*y + p);
 %   N.lbc = @(y, p) [y - 1 ; diff(y)];
 %   N.rbc = @(y, p) y - 1;
 %   plot(N\0)
@@ -160,11 +160,11 @@ classdef (InferiorClasses = {?double}) chebop
 %
 % It is possible to explicitly pass parameters as parts of the initial guess for
 % a nonlinear problem by assigning it to the appropriate entry of a CHEBMATRIX
-% input to N.init.c
+% input to N.init.
 %
 % Example:
 %
-%   N = chebop(@(x, p, y) diff(y,2) + x.*y.^2 + p)
+%   N = chebop(@(x, p, y) diff(y,2) + x.*y.^2 + p);
 %   N.lbc = @(p, y) [y - 1 ; diff(y)];
 %   N.rbc = @(p, y) y - 1;
 %   N.init = [1 ; chebfun(1)];
