@@ -1029,8 +1029,13 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = PROD(F)       PROD of an ADCHEBFUN
             % 
             % See also chebfun/prod.
-            
-            f = exp(sum(log(f)));
+                        
+            % Temporary step to get dimensions correct
+            f = sum(log(f));
+            % Update FUNC part
+            f.func = exp(f.func);
+            % Update JACOBIAN part
+            f.jacobian = f.func*f.jacobian;
         end     
         
         function f = rdivide(f, g)
