@@ -138,22 +138,33 @@ classdef (InferiorClasses = {?double}) chebop
 %
 % CHEBOP supports solving systems of equations containing unknown parameters
 % without the need to introduce extra equations into the system. Simply add the
-% unknown parameters as the final variables.
+% unknown parameters in the list of arguments to the operator. By default, any
+% variable that is not acted on by differentiation or integration is treated as
+% a parameter, rather than a function.
 %
-% Example:
+% Example (unknown parameter in differential equation):
 %
 %   % y'' + x.*y + p = 0, y(-1) = 1, y'(-1) = 1, y(1) = 1 can be solved via
-%   N = chebop(@(x, y, p) diff(y,2) + x.*y + p)
+%   N = chebop(@(x, y, p) diff(y,2) + x.*y + p);
 %   N.lbc = @(y, p) [y - 1 ; diff(y)];
 %   N.rbc = @(y, p) y - 1;
 %   plot(N\0)
 %
-% Parameters can be positioned at different locations if a double is passed in
-% the CHEBMATRIX input to N.init.
+% Example (unknown parameter in boundary condition):
+%
+%   % u'' + u = 0, u(0) = 0, u(1) = 2, u'(0) = p
+%   N = chebop(@(x, u, p) diff(u,2) + u, [0 1]);
+%   N.bc = @(x, u, p) [u(0); u(1) - 2; feval(diff(u), 0) - p];
+%   up = N\0;
+%   plot(up), [u, p] = deal(up)
+%
+% It is possible to explicitly pass parameters as parts of the initial guess for
+% a nonlinear problem by assigning it to the appropriate entry of a CHEBMATRIX
+% input to N.init.
 %
 % Example:
 %
-%   N = chebop(@(x, p, y) diff(y,2) + x.*y + p)
+%   N = chebop(@(x, p, y) diff(y,2) + x.*y.^2 + p);
 %   N.lbc = @(p, y) [y - 1 ; diff(y)];
 %   N.rbc = @(p, y) y - 1;
 %   N.init = [1 ; chebfun(1)];
@@ -281,7 +292,8 @@ classdef (InferiorClasses = {?double}) chebop
         varargout = eigs(N, varargin)
         
         % Linearize a CHEBOP around a CHEBFUN u.
-        [L, res, isLinear, u] = linearize(N, u, x, flag);  
+        [L, res, isLinear, u] = ...
+            linearize(N, u, x, linCheckFlag, paramReshapeFlag);  
         
         %\   Chebop backslash.
         varargout = mldivide(N, rhs, pref, varargin)
@@ -514,9 +526,6 @@ classdef (InferiorClasses = {?double}) chebop
             out = isempty(N.domain) && isempty(N.op) && isempty(N.lbc) && ...
                 isempty(N.rbc) && isempty(N.bc) && isempty(N.init);
         end
-                
         
-    end   
-    
+    end    
 end
-

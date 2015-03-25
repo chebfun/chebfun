@@ -141,7 +141,7 @@ for dim = [dimVals inf]
     
     % Need a vector of vscales.
     if ( numel(vscale) == 1 ) 
-        vscale = repmat(vscale, 1, sum(isFun));
+        vscale = repmat(vscale, 1, length(isFun));
     end
 
     % Test the happiness of the function pieces:
