@@ -45,8 +45,13 @@ classdef (InferiorClasses = {?chebfun}) linBlock
         diffOrder = 0;
         
         % Is the operator the zero operator or the zero functional? Usually not,
-        % so default value is set to 0: 
+        % so default value is set to FALSE: 
         iszero = false;
+        
+        % Is the operator a pure evaluation or multiplication operator, i.e. one
+        % that does not involve differentiation or integration? In oldschool
+        % collocation mode, this would amount to a diagonal operator.
+        isMult = false;
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
