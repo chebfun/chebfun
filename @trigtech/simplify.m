@@ -19,6 +19,12 @@ function f = simplify(f, tol)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% turn off simplification
+global mysimp
+if strcmp(mysimp,'off')
+   return
+end
+
 % Deal with empty case:
 if ( isempty(f) )
     return
