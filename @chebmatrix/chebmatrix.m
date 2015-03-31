@@ -78,6 +78,8 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
     properties ( Dependent = true )
         % DIFFORDER is a dependent property.
         diffOrder
+        % ISMULT is a dependent property.
+        isMult
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -159,6 +161,24 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             for j = 1:numel(A.blocks);
                 if ( isa(A.blocks{j}, 'operatorBlock') )
                     d(j) = A.blocks{j}.diffOrder;
+                end
+            end
+        end
+
+        function d = get.isMult(L)
+        %GET.ISMULT    Are the CHEBMATRIX blocks multiplication operators?
+        %   Also accessible via property: get(A, 'isMult');
+            d = getIsMult(L);
+        end
+
+        function d = getIsMult(A)
+        %GETISMULT    Are the CHEBMATRIX block multiplication operators.
+        %   Also accessible via property: A.isMult;
+            d = zeros(size(A));
+            % Loop through all elements.
+            for j = 1:numel(A.blocks);
+                if ( isa(A.blocks{j}, 'operatorBlock') )
+                    d(j) = A.blocks{j}.isMult;
                 end
             end
         end

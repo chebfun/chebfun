@@ -15,6 +15,18 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
 % CHEBFUN objects.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS PROPERTIES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    properties ( Access = public )
+
+        % Is the operator a pure multiplication operator? In oldschool
+        % collocation mode, this would amount to a diagonal operator.
+        isMult = false;
+
+    end
+
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% CLASS CONSTRUCTOR:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -74,6 +86,10 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
             
             % Were we repeatedly applying the zero operator?
             B.iszero = A.iszero;
+
+            % Were we repeatedly applying a multiplication operator?
+            B.isMult = A.isMult;
+
         end
 
                 
@@ -129,9 +145,12 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
                 % Update the stack.
                 C.stack = @(z) A * B.stack(z);
                 
-                % Output is a zero operator if eithar A or B were zero.
+                % Output is a zero operator if either A or B were zero.
                 C.iszero = isz || B.iszero;
                 
+                % Output is a multiplication operator if B was.
+                C.isMult = B.isMult;
+
                 % Difforder of the returned OPERATORBLOCK.
                 if ( C.iszero )
                     C.diffOrder = 0;
@@ -156,6 +175,10 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
                 % Output is a zero operator if either operator was a zero
                 % operator
                 C.iszero = A.iszero || B.iszero;
+
+                % Output is a multiplication operator if both operators were, or
+                % if it's actually a zero operator.
+                C.isMult = ( A.isMult && B.isMult ) || C.iszero;
 
                 % Difforder of returned OPERATORBLOCK.
                 if ( C.iszero )
@@ -189,6 +212,7 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
             C.stack = @(z) A.stack(z) + B.stack(z);
             C.diffOrder = max(A.diffOrder, B.diffOrder);
             C.iszero = A.iszero && B.iszero;
+            C.isMult = A.isMult && B.isMult;
         end
         
         function varargout = size(A, dim) %#ok<INUSL>
@@ -295,6 +319,7 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
             I = operatorBlock(domain);
             I.stack = @(z) eye(z);
             I.diffOrder = 0;
+            I.isMult = true;
         end
         
         function F = fred(kernel, domain, varargin)
@@ -347,7 +372,7 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
 
             F = operatorBlock(domain);
             F.stack = @(z) fred(kernel, z, varargin{:});
-            F.diffOrder = -1;
+            F.diffOrder = -100;
         end        
 
         function M = mult(u, dom)
@@ -368,6 +393,7 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
             M = operatorBlock(dom);
             M.stack = @(z) mult(z, u);
             M.diffOrder = 0;
+            M.isMult = true;
         end
         
         function M = outer(f, g, dom)
@@ -399,6 +425,7 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
             M = operatorBlock(dom);
             M.stack = @(z) outer(z, f, g);
             M.diffOrder = 0;
+            M.isMult = true;
         end
 
         function V = volt(kernel, domain, varargin)
@@ -450,6 +477,9 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
             
             % This is actually a zero operator
             Z.iszero = true;
+
+            % It's also a multiplication operator
+            Z.isMult = true;
             
         end
         

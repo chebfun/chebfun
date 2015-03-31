@@ -25,13 +25,30 @@ function [y, info] = solveivp(N, rhs, pref, varargin)
 %       SOLVER: The MATLAB solver used when solving the problem.
 %
 %
-%   Note that CHEBOP allows the RHS of coupled system of ODEs to be a scalar,
+%   Note 1: CHEBOP allows the RHS of coupled system of ODEs to be a scalar,
 %   e.g., one can both call
-%       N = chebop(@(x, u, v) [diff(u) + v ; u + diff(v)], [0 10]);
-%       N.bc = @(x, u, v) [u(0) ; v(0)];
-%       uv = solvebvp(N, 0);
+%       N = chebop(@(x, u, v) [diff(u) - v.^2 ; u - diff(v)], [0 3]);
+%       N.lbc = @(u, v) [u - 1 ; v + 1];
+%       uv = solveivp(N, 0);
 %   and
-%       uv = solvebvp(N, [0; 0]);
+%       uv = solveivp(N, [0; 0]);
+%
+%
+%   Note 2: The solver tries to construct global CHEBFUNs to represent the
+%   solutions of ODEs if possible (however, breakpoints in the domain and
+%   coefficients do get respected). Turn on the global CHEBFUN splitting option
+%   if you wish to obtain solutions with further breakpoints, e.g.
+%       % Solve van der Pol equation without and with splitting
+%       N = chebop(@(t,u) diff(u,2)-5.*(1-u.^2).*diff(u)+u, [0 20]);
+%       N.lbc = @(u) [u-2; diff(u)];
+%       uNoSplit = N\0
+%       % Turn on splitting with max length of each piece equal to 300
+%       chebfunpref.setDefaults('splitting', true)
+%       chebfunpref.setDefaults({'splitPrefs','splitLength'}, 300)
+%       uSplit = N\0
+%       % Turn splitting back off
+%       chebfunpref.setDefaults('splitting', false)
+%       
 %
 % See also: CHEBOP, CHEBOP/MLDIVIDE, CHEBOPPREF, CHEBOP/SOLVEBVP,
 % CHEBFUN/ODE113, CHEBFUN/ODE15S, CHEBFUN/ODE45, CHEBFUN/ODESOL, TREEVAR. 

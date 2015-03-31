@@ -6,7 +6,7 @@ end
 
 % TODO: include more extensive tests.
 
-n = 5;
+n = 15;
 seedRNG(42)
 R = rand(n);
 
@@ -26,12 +26,12 @@ y = DST1 * x;
 pass(9) = norm( y - chebfun.dst(x, 1) ) < tol; 
 
 % DST-II
-DST2 = sin(pi/N*((0:N-1)+1/2)' * ((0:N-1)+1));
+DST2 = sin(pi/N*((0:N-1)+1)'*((0:N-1)+1/2));
 y = DST2 * x; 
 pass(10) = norm( y - chebfun.dst(x, 2) ) < tol; 
 
 % DST-III
-DST3 = sin(pi/N*((0:N-1)+1)'*((0:N-1)+1/2));
+DST3 = sin(pi/N*((0:N-1)+1/2)' * ((0:N-1)+1));
 DST3(:, end) = .5*DST3(:, end); 
 y = DST3 * x; 
 pass(11) = norm( y - chebfun.dst(x, 3) ) < tol; 
