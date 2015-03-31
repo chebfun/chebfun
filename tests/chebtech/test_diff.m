@@ -90,7 +90,7 @@ for n = 1:2
     df2 = diff(f, 2);
     df2_exact = @(x) 1./(1 + x.^2);
     err = df2_exact(x) - feval(df2, x);
-   %pass(n, 9) = (norm(err, inf) < 300*df2.vscale.*df2.epslevel);
+%    pass(n, 9) = (norm(err, inf) < 300*df2.vscale.*df2.epslevel);
     pass(n, 9) = 1; % disabled epslevel-dependent test
     
     f = testclass.make(@(x) sin(x), [], pref);
@@ -98,7 +98,7 @@ for n = 1:2
     df4_exact = @(x) sin(x);
     err = norm(df4_exact(x) - feval(df4, x), inf);
     tol = 900*df4.vscale.*df4.epslevel;
-   %pass(n, 10) = err < tol;
+%    pass(n, 10) = err < tol;
     pass(n, 10) = 1; % disabled epslevel-dependent test
 
     f = testclass.make(@(x) x.^5 + 3*x.^3 - 2*x.^2 + 4, [], pref);
