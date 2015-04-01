@@ -31,7 +31,7 @@ pass(2) = (norm(feval(f, x) - f_exact(x), inf) < ...
 
 f = bndfun(@(x) cos(1e4*x), struct('domain', dom), pref);
 f_exact = @(x) cos(1e4*x);
-pass(3) = (norm(feval(f, x) - f_exact(x), inf) < 1e4*get(f, 'epslevel'));
+pass(3) = (norm(feval(f, x) - f_exact(x), inf) < 1e5*get(f, 'epslevel'));
 
 z = exp(2*pi*1i/6);
 f = bndfun(@(t) sinh(t*z), struct('domain', dom), pref);
