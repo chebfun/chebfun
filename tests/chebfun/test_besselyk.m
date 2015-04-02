@@ -50,8 +50,9 @@ for (n = 1:2)
 
     h = testfn(nu, f, 1);
     err = feval(h, xr) - testfn(nu, f_op(xr), 1);
-    pass(n, 6) = norm(err(:), inf) < 10*epslevel(h)*vscale(h);
-
+    pass(n, 6) = norm(err(:), inf) < 1e2*epslevel(h)*vscale(h);
+    % tolerance loosened for epslevel-dependent test
+ 
     % Test for complex values.
     pref.splitting = 1;
     f_op = @complex_test_fn;
@@ -59,7 +60,8 @@ for (n = 1:2)
 
     h = testfn(nu, f, 0, pref);
     pass(n, 7) = norm(feval(h, xr) - testfn(nu, f_op(xr), 0), inf) < ...
-        10*epslevel(h)*vscale(h);
+        1e2*epslevel(h)*vscale(h);
+    % tolerance loosened for epslevel-dependent test
 
     % Check for error on roots.
     try
