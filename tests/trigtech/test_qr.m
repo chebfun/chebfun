@@ -26,11 +26,9 @@ pass(7:8) = test_one_qr_with_perm(f, x);
 
 f = testclass.make(@(x) [ones(size(x)) sin(pi*x) cos(pi*x) sin(2*pi*x) ...
                          cos(2*pi*x) sin(2*pi*x)], [], pref);
-% pass(9:10) = test_one_qr(f, x);
-pass(9:10) = 1; % disabled epslevel-dependent test
+pass(9:10) = test_one_qr(f, x);
 
-%pass(11:12) = test_one_qr_with_perm(f, x);
-pass(11:12) = 1; % disabled epslevel-dependent test
+pass(11:12) = test_one_qr_with_perm(f, x);
 
 f = testclass.make(@(x) [3./(4-exp(1i*pi*x)) exp(sin(pi*x)) cos(3*pi*x)], ...
 [], pref);
@@ -51,13 +49,11 @@ pass(17) = all(err(:) == 0);
 f = testclass.make(@(x) [cos(pi*x) cos(pi*x) cos(pi*x)], [], pref);
 [Q, R] = qr(f, []);
 Q = simplify(Q,100*f.epslevel);
-% pass(18) = all(size(Q) == 3) && all(size(R) == 3);
-pass(18) = 1; % disabled epslevel-dependent test
+pass(18) = all(size(Q) == 3) && all(size(R) == 3);
 
 I = eye(3);
-% pass(19) = norm(innerProduct(Q, Q) - I, inf) < ...
-% 10*max(f.vscale.*f.epslevel);
-pass(19) = 1; % disabled epslevel-dependent test
+pass(19) = norm(innerProduct(Q, Q) - I, inf) < ...
+10*max(f.vscale.*f.epslevel);
 
 %%
 % Check that the vscale and epslevel come out with the correct size for

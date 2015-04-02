@@ -70,9 +70,9 @@ g = testclass.make(@(x) -sin(pi*x), [], pref);
 x = linspace(-1, 1, 100).';
 err1 = norm(feval(g - h1, x), inf);
 err2 = norm(feval(g - h2, x), inf);
-% pass(9) = err1 + err2 < f.epslevel;
-pass(9) = 1; % disabled epslevel-dependent test
-
+pass(9) = err1 + err2 < 10*f.epslevel;
+    % tolerance loosened in epslevel-dependent test
+    
 % %%
 % % Check operation for array-valued functions.
 % pass(10) = test_spotcheck_restrict(testclass, ...

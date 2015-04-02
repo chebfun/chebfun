@@ -49,8 +49,7 @@ f = testclass.make(f_op, [], pref);
 
 g_op = @(x) sin(100*pi*x);
 g = testclass.make(g_op, [], pref);
-% pass(8:9) = test_add_function_to_function(f, f_op, g, g_op, x);
-pass(8:9) = 1; % disabled epslevel-dependent test
+pass(8:9) = test_add_function_to_function(f, f_op, g, g_op, x);
 
 
 g_op = @(x) sin(cos(10*pi*x));
@@ -70,8 +69,7 @@ pass(14:15) = test_add_function_to_scalar(f, f_op, alpha, x);
 
 g_op = @(x) [sin(pi*x) exp(1i*pi*x).*exp(1i*pi*x) cos(pi*x)];
 g = testclass.make(g_op, [], pref);
-% pass(16:17) = test_add_function_to_function(f, f_op, g, g_op, x);
-pass(16:17) = 1; % disabled epslevel-dependent test
+pass(16:17) = test_add_function_to_function(f, f_op, g, g_op, x);
 
 % This should fail with a dimension mismatch error.
 g_op = @(x) sin(10*x);
@@ -146,5 +144,6 @@ function result = test_add_function_to_function(f, f_op, g, g_op, x)
     h_exact = @(x) f_op(x) + g_op(x);
     norm(feval(h1, x) - h_exact(x), inf);
     result(2) = norm(feval(h1, x) - h_exact(x), inf) <= ...
-        50*max(h1.vscale.*h1.epslevel);
+        1e3*max(h1.vscale.*h1.epslevel);
+    % tolerance loosened in epslevel-dependent test    
 end
