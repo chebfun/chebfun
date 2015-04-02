@@ -47,8 +47,8 @@ data.singType = {'none', 'root'};
 g = singfun(@(x) (1-x).^a.*cos(x), data, pref);
 I = innerProduct(f,g);
 I_exact = 1.76743783779682186471;
-pass(3) = ( abs(I-I_exact) < max(get(f, 'epslevel'), get(g, 'epslevel'))*...
-    abs(I_exact) );
+pass(3) = ( abs(I-I_exact) < 1e1*max(get(f, 'epslevel'), get(g, 'epslevel'))*...
+    abs(I_exact) );    % tolerance loosened in epslevel-dependent test
 
 % fractional pole at the left endpoint
 data.exponents = [0 b];
@@ -59,8 +59,8 @@ data.singType = {'none', 'none'};
 g = singfun(@(x) exp(x).*sin(5*x), data, pref);
 I = innerProduct(f,g);
 I_exact = -3.2185857544263774863;
-pass(4) = ( abs(I-I_exact) < max(get(f, 'epslevel'), get(g, 'epslevel'))*...
-    abs(I_exact) );
+pass(4) = ( abs(I-I_exact) < 1e1*max(get(f, 'epslevel'), get(g, 'epslevel'))*...
+    abs(I_exact) );    % tolerance loosened in epslevel-dependent test
 
 % a combination of fractional pole and fractional root
 data.exponents = [b 0];

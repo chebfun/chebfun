@@ -108,8 +108,9 @@ vals_h = feval(h, x);
 h_exact = @(x) (1+x).^b.*sin(x).*sin(2*x).*(1-x).^c;
 vals_exact = feval(h_exact, x);
 err = vals_h - vals_exact;
-pass(8) = all( abs(err) < 1e3*max(get(f, 'epslevel'), get(g, 'epslevel')) );
-
+pass(8) = all( abs(err) < 1e4*max(get(f, 'epslevel'), get(g, 'epslevel')) );
+    % tolerance loosened in epslevel-dependent test
+    
 % poles at different endpoints
 data.exponents = [b b];
 data.singType = {'sing', 'sing'};

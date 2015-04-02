@@ -22,8 +22,8 @@ g = compose(f, @sin);
 gVals = feval(g, x);
 gExact = opg(x);
 err = gVals - gExact;
-pass(1) = norm(err, inf) < get(g,'epslevel')*get(g,'vscale');
-
+pass(1) = norm(err, inf) < 1e1*get(g,'epslevel')*get(g,'vscale');
+    % tolerance loosened in epslevel-dependent test
 %%%%%%%%%%%%%%%%%%% Compose two UNBNDFUNs (F + G) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 opf = @(x) exp(-x);
@@ -35,8 +35,8 @@ h = compose(f, @plus, g);
 hVals = feval(h, x);
 hExact = oph(x);
 err = hVals - hExact;
-pass(2) = norm(err, inf) < get(h,'epslevel')*get(h,'vscale');
-
+pass(2) = norm(err, inf) < 1e1*get(h,'epslevel')*get(h,'vscale');
+    % tolerance loosened in epslevel-dependent test
 %%%%%%%%%%%%%%%%%%% Compose an UNBNDFUN with a BNDFUN (G(F)) %%%%%%%%%%%%%%%%%%%
 
 opf = @(x) exp(-x);
@@ -48,6 +48,6 @@ h = compose(f, g);
 hVals = feval(h, x);
 hExact = oph(x);
 err = hVals - hExact;
-pass(3) = norm(err, inf) < get(h,'epslevel')*get(h,'vscale');
-
+pass(3) = norm(err, inf) < 1e1*get(h,'epslevel')*get(h,'vscale');
+    % tolerance loosened in epslevel-dependent test
 end
