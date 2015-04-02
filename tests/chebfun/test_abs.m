@@ -191,7 +191,8 @@ gVals = feval(g, x);
 opAbs = @(x) abs(-x.^2.*(1+exp(-x.^2)));
 gExact = opAbs(x);
 err = gVals - gExact;
-pass(10,:) = norm(err, inf) < 1e4*epslevel(g)*vscale(g);
+pass(10,:) = norm(err, inf) < 1e5*epslevel(g)*vscale(g);
+% tolerance loosened for epslevel-dependent test
 
 % Functions on [a inf]:
 dom = [0 Inf];
