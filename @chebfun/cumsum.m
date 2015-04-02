@@ -67,9 +67,9 @@ transState = f(1).isTransposed;
 
 % If f is periodic, i.e. based on a periodic TECH check its mean:
 if ( isPeriodicTech(f) )
-    if ( abs(sum(f)) > 100*vscale(f)*epslevel(f) )
-    % Mean is not zero, convert it to a CHEBTECH based chebfun:
-    f = chebfun(f);
+    if ( abs(sum(f)) > vscale(f)*epslevel(f) )
+        % Mean is not zero, convert it to a CHEBTECH based chebfun:
+        f = chebfun(f);
     end
 end
 
