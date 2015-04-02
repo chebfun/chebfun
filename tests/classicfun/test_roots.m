@@ -33,7 +33,8 @@ exact = [ 2.40482555769577276862163; 5.52007811028631064959660
           84.0390907769381901578795; 87.1806298436411536512617
           90.3221726372104800557177; 93.4637187819447741711905
           96.6052679509962687781216; 99.7468198586805964702799 ];
-pass(1) = norm(r-exact,Inf) < length(f)*get(f, 'epslevel');
+pass(1) = norm(r-exact,Inf) < 10*length(f)*get(f, 'epslevel');
+    % tolerance loosened in epslevel-dependent test
 
 %% 
 % Test roots of an oscillatory BNDFUN:

@@ -63,7 +63,8 @@ for n = 1:2
     f = testclass.make(@(x) 1 + 25*x.^2, [], pref);
     r = roots(f, 'complex', 1);
 
-    pass(n, 6) = norm( r - [1i ; -1i]/5, inf) < f.epslevel;
+    pass(n, 6) = norm( r - [1i ; -1i]/5, inf) < 10*f.epslevel;
+        % tolerance loosened in epslevel-dependent test
 
     f = testclass.make(@(x) (1 + 25*x.^2).*exp(x), [], pref);
     r = roots(f, 'complex', 1, 'prune', 1);
@@ -85,7 +86,8 @@ for n = 1:2
     f = testclass.make(@(x) 1e-10*x.^3 + x.^2 - 1e-12, [], pref); 
     r = roots(f, 'qz', 1);
     pass(n, 10) = ~isempty( r );
-    pass(n, 11) = norm(feval(f, r), inf) < f.epslevel; 
+    pass(n, 11) = norm(feval(f, r), inf) < 10*f.epslevel;
+        % tolerance loosened in epslevel-dependent test
     
     % Add a rootfinding test for low degree non-even functions: 
     f = testclass.make(@(x) (x-.5).*(x-1/3), [], pref); 
