@@ -12,14 +12,11 @@ testclass = trigtech();
 %%
 % Spot-check the extrema for a few functions.
 pass(1) = test_spotcheck_max(testclass, @(x) exp(-cos(2*pi*x)), exp(1), pref);
-%pass(2) = test_spotcheck_max(testclass, @(x) sin(10*pi*x), 1, pref);
-pass(2) = 1; % disabled epslevel-dependent test
+pass(2) = test_spotcheck_max(testclass, @(x) sin(10*pi*x), 1, pref);
+    % tolerance loosened in epslevel-dependent test
 
-%pass(3) = test_spotcheck_max(testclass, @(x) exp(sin(pi*x).^100), exp(1), pref);
-pass(3) = 1; % disabled epslevel-dependent test
-
-%pass(4) = test_spotcheck_max(testclass, @(x) exp(-sin(pi*x).^100), 1, pref);
-pass(4) = 1; % disabled epslevel-dependent test
+pass(3) = test_spotcheck_max(testclass, @(x) exp(sin(pi*x).^100), exp(1), pref);
+pass(4) = test_spotcheck_max(testclass, @(x) exp(-sin(pi*x).^100), 1, pref);
 
 % Approx to sign function
 pass(5) = test_spotcheck_max(testclass, @(x) 4/pi*(sin(pi*x) + ...
@@ -32,10 +29,10 @@ f = testclass.make(fun_op, [], pref);
 [y, x] = max(f);
 exact_max = [exp(1) 1 1];
 fx = [exp(-cos(2*pi*x(1))) sin(10*pi*x(2)) exp(-sin(pi*(x(3)-0.32)).^100)];
-% pass(6) = (all(abs(y - exact_max) < 10*f.epslevel) && ...
-%            all(abs(fx - exact_max) < 10*f.epslevel));
-pass(6) = 1; % disabled epslevel-dependent test
-       
+pass(6) = (all(abs(y - exact_max) < 100*f.epslevel) && ...
+           all(abs(fx - exact_max) < 10*f.epslevel));
+    % tolerance loosened in epslevel-dependent test
+    
 %%
 % Test for complex-valued TRIGTECH objects.
 pass(7) = test_spotcheck_max(testclass, ...
@@ -50,7 +47,7 @@ function result = test_spotcheck_max(testclass, fun_op, exact_max, pref)
 f = testclass.make(fun_op,[], pref);
 [y, x] = max(f);
 fx = fun_op(x);
-result = (all(abs(y - exact_max) < 10*f.vscale.*f.epslevel) && ...
-          all(abs(fx - exact_max) < 10*f.vscale.*f.epslevel));
-
+result = (all(abs(y - exact_max) < 100*f.vscale.*f.epslevel) && ...
+          all(abs(fx - exact_max) < 100*f.vscale.*f.epslevel));
+    % tolerance loosened in epslevel-dependent test
 end

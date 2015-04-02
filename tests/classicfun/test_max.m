@@ -26,8 +26,9 @@ f = bndfun(fun_op, data, pref);
 exact_max = [1 0.535656656015700 0.7^3*cosh(0.7)];
 fx = [sin(10*x(1)) airy(x(2)) (x(3)/10).^3.*cosh(x(3)/10)];
 tol = 10*get(f, 'vscale').*get(f, 'epslevel');
-pass(5) = (all(abs(y - exact_max) < tol) && ...
+pass(5) = (all(abs(y - exact_max) < 10*tol) && ...
     all(abs(fx - exact_max) < tol));
+    % tolerance loosened in epslevel-dependent test
 
 %%
 % Test for complex-valued BNDFUN.
@@ -42,8 +43,9 @@ exact_max = [-6.789310982858273-2.543178400749744i 15.919763683943538+5.96331487
 fx = [((x(1)-2).^2/4+1).*exp(1i*(x(1)/2)) ... 
     -((x(2)+1).^2/4+1).*exp(1i*(x(2)/2))];
 tol = get(f, 'vscale').*get(f, 'epslevel');
-pass(7) = (all(abs(y - exact_max) < tol) && ...
+pass(7) = (all(abs(y - exact_max) < 10*tol) && ...
     all(abs(fx - exact_max) < tol));
+    % tolerance loosened in epslevel-dependent test
       
 %% Test for UNBNDFUN:
 
@@ -70,7 +72,8 @@ function result = test_spotcheck_max(fun_op, data, exact_max, pref)
 f = bndfun(fun_op, data, pref);
 [y, x] = max(f);
 fx = fun_op(x);
-tol = 10*get(f, 'vscale').*get(f, 'epslevel');
+tol = 100*get(f, 'vscale').*get(f, 'epslevel');
+    % tolerance loosened in epslevel-dependent test
 result = (all(abs(y - exact_max) < tol) && ...
           all(abs(fx - exact_max) < tol));
 

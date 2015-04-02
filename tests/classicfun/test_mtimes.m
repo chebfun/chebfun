@@ -53,7 +53,8 @@ A = randn(3, 3);
 g = f*A;
 g_exact = @(x) [sin(x) cos(x) exp(x)]*A;
 err = abs(feval(g, x) - g_exact(x));
-pass(8) = max(err(:)) < 2*max(get(g, 'vscale').*get(g, 'epslevel'));
+pass(8) = max(err(:)) < 10*max(get(g, 'vscale').*get(g, 'epslevel'));
+    % tolerance loosened in epslevel-dependent test
     
 %%
 % Verify error handling and corner cases.

@@ -61,8 +61,7 @@ pass(12:13) = test_sub_function_and_scalar(f, f_op, alpha, x);
 
 g_op = @(x) [sin(pi*x) exp(1i*pi*x).*exp(1i*pi*x) cos(pi*x)];
 g = testclass.make(g_op, [], pref);
-%pass(14:15) = test_sub_function_and_function(f, f_op, g, g_op, x);
-pass(14:15) = 1; % disabled epslevel-dependent test
+pass(14:15) = test_sub_function_and_function(f, f_op, g, g_op, x);
 
 % This should fail with a dimension mismatch error.
 g_op = @(x) sin(10*pi*x);
@@ -136,5 +135,6 @@ function result = test_sub_function_and_function(f, f_op, g, g_op, x)
     h_exact = @(x) f_op(x) - g_op(x);
     norm(feval(h1, x) - h_exact(x), inf);
     result(2) = norm(feval(h1, x) - h_exact(x), inf) <= ...
-        100*max(h1.vscale.*h1.epslevel);
+        1e3*max(h1.vscale.*h1.epslevel);
+    % tolerance loosened in epslevel-dependent test    
 end
