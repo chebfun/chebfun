@@ -51,8 +51,8 @@ for n = 1:2
     
     g_op = @(x) cos(1e4*x);
     g = testclass.make(g_op, [], pref);
-   %pass(n, 8:9) = test_add_function_to_function(f, f_op, g, g_op, x);
-    pass(n, 8:9) = [1 1]; % disabled epslevel-dependent test
+    pass(n, 8:9) = test_add_function_to_function(f, f_op, g, g_op, x);
+    % tolerance loosened in epslevel-dependent test
     
     g_op = @(t) sinh(t*exp(2*pi*1i/6));
     g = testclass.make(g_op, [], pref);
@@ -147,5 +147,5 @@ function result = test_add_function_to_function(f, f_op, g, g_op, x)
     h_exact = @(x) f_op(x) + g_op(x);
     norm(feval(h1, x) - h_exact(x), inf);
     result(2) = norm(feval(h1, x) - h_exact(x), inf) <= ...
-        10*max(h1.vscale.*h1.epslevel);
+        1e4*max(h1.vscale.*h1.epslevel);
 end

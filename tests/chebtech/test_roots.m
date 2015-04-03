@@ -33,8 +33,8 @@ for n = 1:2
                 84.0390907769381901578795; 87.1806298436411536512617
                 90.3221726372104800557177; 93.4637187819447741711905
                 96.6052679509962687781216; 99.7468198586805964702799 ];
-%    pass(n, 1) = norm(r-exact,Inf) < length(f)*f.epslevel;
-    pass(n,1) = 1; %disabled epslevel-dependent test 
+    pass(n, 1) = norm(r-exact,Inf) < 1e1*length(f)*f.epslevel;
+    %tolerance loosened in epslevel-dependent test 
 
     %% Test roots of an oscillatory function:
     k = 500;
@@ -46,9 +46,9 @@ for n = 1:2
     f = testclass.make( @(x) (x-.1).*(x+.9).*x.*(x-.9) + 1e-14*x.^5, ...
         [], pref);
     r = roots(f);
-%     pass(n, 3) = length(r) == 4 && norm(feval(f, r), inf) < ...
-%         10*length(f)*f.epslevel;
-    pass(n, 3) = 1; % disabled epslevel-dependent test
+    pass(n, 3) = length(r) == 4 && norm(feval(f, r), inf) < ...
+        1e2*length(f)*f.epslevel;
+    % tolerance loosened in epslevel-dependent test
     
     %% Test a some simple polynomials:
     f = testclass.make([-1 ; 1], [], pref);

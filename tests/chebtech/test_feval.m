@@ -35,9 +35,9 @@ for n = 1:2
     
     f = testclass.make(@(x) cos(1e4*x), [], pref);
     f_exact = @(x) cos(1e4*x);
-%     pass(n, 3) = (norm(feval(f, x) - f_exact(x), inf) < ...
-%         10*f.vscale.*f.epslevel);
-    pass(n, 3) = 1; % disabled epslevel-dependent test
+    pass(n, 3) = (norm(feval(f, x) - f_exact(x), inf) < ...
+        1e4*f.vscale.*f.epslevel);
+        % tolerance loosened in epslevel-dependent test
     
     z = exp(2*pi*1i/6);
     f = testclass.make(@(t) sinh(t*z), [], pref);

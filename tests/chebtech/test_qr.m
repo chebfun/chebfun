@@ -43,11 +43,6 @@ for n = 1:4
     pass(n, 9:10) = test_one_qr(f, x, method);
     pass(n, 11:12) = test_one_qr_with_perm(f, x, method);
     
-    if ( ( n == 3 ) || ( n == 4 ) )
-        pass(n, 9) = 1; % disabled epslevel-dependent test
-        pass(n, 11) = 1; % disabled epslevel-dependent test
-    end
-    
     f = testclass.make(@(x) [1./(1+1i*x.^2) sinh((1-1i)*x) (exp(x) - x.^3)], ...
         [], pref);
     pass(n, 13:14) = test_one_qr(f, x, method);
@@ -69,10 +64,8 @@ for n = 1:4
     pass(n, 18) = all(size(Q) == 3) && all(size(R) == 3);
     I = eye(3);
     pass(n, 19) = norm(innerProduct(Q, Q) - I, inf) < ...
-        10*max(f.vscale.*f.epslevel);
-    if ( n == 1 )
-        pass(n, 19) = 1; % disabled epslevel-dependent test
-    end
+        1e2*max(f.vscale.*f.epslevel);
+    % tolerance loosened in epslevel-dependent test
 
     %%
     % Check that the vscale and epslevel come out with the correct size for
@@ -93,7 +86,8 @@ function result = test_one_qr(f, x, method)
 
     % Check orthogonality.
     ip = innerProduct(Q, Q);
-    result(1) = max(max(abs(ip - eye(N)))) < 10*max(f.vscale.*f.epslevel);
+    result(1) = max(max(abs(ip - eye(N)))) < 1e2*max(f.vscale.*f.epslevel);
+    % tolerance loosened in epslevel-dependent test
 
     % Check that the factorization is accurate.
     err = Q*R - f;
@@ -108,7 +102,8 @@ function result = test_one_qr_with_perm(f, x, method)
 
     % Check orthogonality.
     ip = innerProduct(Q, Q);
-    result(1) = max(max(abs(ip - eye(N)))) < 10*max(f.vscale.*f.epslevel);
+    result(1) = max(max(abs(ip - eye(N)))) < 1e2*max(f.vscale.*f.epslevel);
+    % tolerance loosened in epslevel-dependent test
 
     % Check that the factorization is accurate.
     err = Q*R - f*E;
