@@ -208,7 +208,8 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = norm(vals_g - vals_exact, inf);
-tol = 1e3*epslevel(f).*norm(vals_exact, inf);
+tol = 1e4*epslevel(f).*norm(vals_exact, inf);
+    % tolerance loosened in epslevel-dependent test
 pass(28) = ( err < tol );
 
 %% General power - A smooth function - a complex function and positive power:

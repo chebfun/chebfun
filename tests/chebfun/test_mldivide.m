@@ -81,7 +81,8 @@ f = chebfun(@(x)(sin(100*x).^2+1)./((x+1).^0.25), 'exps', [-0.25 0], 'splitting'
 f = f.';
 g = f\3;
 err = f*g - 3;
-pass(8) = abs(err) < vscale(g)*epslevel(g);
+pass(8) = abs(err) < 10*vscale(g)*epslevel(g);
+    % tolerance loosened in epslevel-dependent test
 
 % [INF x 1] * SCALAR = [INF x 1] => column SINGFUN\column SINGFUN:
 

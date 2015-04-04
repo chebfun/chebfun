@@ -91,7 +91,8 @@ opExact = @(x) [exp(x)/3 x.*exp(x)/3 (1-exp(x))./(3*x)];
 XVals = feval(X, x);
 XExact = opExact(x);
 err = XVals - XExact;
-pass(9) = norm(err, inf) < 2*max(get(X,'epslevel').*get(X,'vscale'));
+pass(9) = norm(err, inf) < 1e2*max(get(X,'epslevel').*get(X,'vscale'));
+    % tolerance loosened in epslevel-dependent test
 
 %% #1111
 
