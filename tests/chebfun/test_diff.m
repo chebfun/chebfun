@@ -104,7 +104,8 @@ op_g = @(x) 2*exp(-x.^2) + (exp(-x.^2) - 1)./x.^2;
 gVals = feval(g, x);
 gExact = op_g(x);
 err = gVals - gExact;
-pass(11) = norm(err, inf) < 10*get(g,'epslevel')*get(g,'vscale');
+pass(11) = norm(err, inf) < 1e2*get(g,'epslevel')*get(g,'vscale');
+    % tolerance loosened in epslevel-dependent test
 
 % [TODO]:  Check fractional derivatives once implemented.
 

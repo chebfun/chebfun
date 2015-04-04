@@ -146,7 +146,8 @@ pass(26) = abs(f(1)-g(1)) < epslevel(f)*vscale(f);
 f = chebfun(@(t) t.^0.5./exp(t), [0,inf], 'exps', [0.5 0]);
 g = f;
 f(1) = f(1); % restrict@unbndfun is called.
-pass(27) = ( norm(f-g, inf) < epslevel(f) );
+pass(27) = ( norm(f-g, inf) < 10*epslevel(f) );
+    % tolerance loosened in epslevel-dependent test
 
 %% Test trigfuns:
 f = chebfun(@(x) sin(2*pi*x), [1 2], 'trig');

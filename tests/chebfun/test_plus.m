@@ -190,5 +190,6 @@ function result = test_add_function_to_function(f, f_op, g, g_op, x)
     result(1) = isequal(h1, h2);
     h_exact = @(x) f_op(x) + g_op(x);
     norm(feval(h1, x) - h_exact(x), inf);
-    result(2) = norm(feval(h1, x) - h_exact(x), inf) < 10*vscale(h1)*epslevel(h1);
+    result(2) = norm(feval(h1, x) - h_exact(x), inf) < 1e2*vscale(h1)*epslevel(h1);
+        % tolerance loosened in epslevel-dependent test
 end

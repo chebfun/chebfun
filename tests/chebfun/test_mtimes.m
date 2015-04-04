@@ -275,7 +275,8 @@ function result = test_mult_function_by_scalar(f, f_op, alpha, x)
     result(1) = isequal(g1, g2);
     g_exact = @(x) f_op(x) * alpha;
     err = feval(g1, x) - g_exact(x);
-    result(2) = norm(err(:), inf) < 10*max(vscale(g1).*epslevel(g1));
+    result(2) = norm(err(:), inf) < 1e2*max(vscale(g1).*epslevel(g1));
+        % tolerance loosened in epslevel-dependent test
 end
 
 function result = causesDimensionError(op)

@@ -65,7 +65,8 @@ vals_g = feval(g, x);
 vals_check = feval(op, x);
 err = vals_g - vals_check;
 pass(4) = ( norm(err, inf) < 1e2*epslevel(f)*vscale(f) ) && ...
-    ( norm( rExact - g.domain(2:end-1).', inf) < 2*epslevel(f)*vscale(f) );
+    ( norm( rExact - g.domain(2:end-1).', inf) < 1e2*epslevel(f)*vscale(f) );
+    % tolerance loosened in epslevel-dependent test
 
 % Blow-up function:
 op = @(x) x.^2.*(1-exp(-x.^2))-2;

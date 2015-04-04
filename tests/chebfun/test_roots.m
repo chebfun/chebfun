@@ -17,7 +17,8 @@ pass(1) = length(r) == M+1 && norm(exact-r, inf) < 1e2*epslevel(f);
 % Test a polynomial:
 p = chebfun( '(x-.1).*(x+.9).*x.*(x-.9) + 1e-14*x.^5' );
 exact = roots(p);
-pass(2) = length(exact) == 4 && norm(feval(p,exact),inf) < 100*epslevel(p);
+pass(2) = length(exact) == 4 && norm(feval(p,exact),inf) < 1e3*epslevel(p);
+    % tolerance loosened in epslevel-dependent test
 
 % No roots should be returned:
 Fs = chebfun({-1, 2}, [-2, 0, 1]);

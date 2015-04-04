@@ -21,7 +21,8 @@ f = chebfun(@(x) exp(1i*x).*abs(x - 0.1), [-1 1], pref);
 ref = real(f);
 ref_exact = @(x) cos(x).*abs(x - 0.1);
 err = feval(ref, xr) - ref_exact(xr);
-pass(2) = isreal(ref) && (norm(err(:), inf) < 10*ref.vscale.*ref.epslevel);
+pass(2) = isreal(ref) && (norm(err(:), inf) < 1e2*ref.vscale.*ref.epslevel);
+    % tolerance loosened in epslevel-dependent test
 
 f = chebfun(@(x) [exp(1i*x).*abs(x - 0.1) 1i*exp(-1i*x).*cos(x)], [-1 1], pref);
 ref = real(f);
