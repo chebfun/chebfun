@@ -56,7 +56,8 @@ f = chebfun(@sin, [-sqrt(2)*pi, pi]);
 F = diff(f);
 G = fracDiff(fracDiff(f, .3), .7);
 err(6) = norm(feval(F, xx) - feval(G, xx), inf);
-tol(6) = 10*epslevel(G)*vscale(G)*hscale(G);
+tol(6) = 1e2*epslevel(G)*vscale(G)*hscale(G);
+% tolerance loosened in epslevel-dependent test
 
 %%
 pass = err < tol;
