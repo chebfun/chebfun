@@ -76,7 +76,8 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = norm(vals_g - vals_exact, inf);
-tol = 1e2*get(f,'epslevel')*norm(vals_exact, inf);
+tol = 1e3*get(f,'epslevel')*norm(vals_exact, inf);
+% tolerance loosened in epslevel-dependent test
 pass(5) = err < tol;
 
 %% A positive piece-wise example with singularities:

@@ -35,7 +35,8 @@ if ( any(maskLeft) )
     g = extractBoundaryRoots(f, rootsLeft);
     
     % Check decaying speed:
-    mask = abs(get(g, 'lval')) < 1e3*tol;
+    mask = abs(get(g, 'lval')) < 1e4*tol; 
+    % tolerance loosened in epslevel-dependent code
     if ( any(mask) )
         out(1, mask) = 1;
     end
@@ -51,7 +52,8 @@ if ( any(maskRight) )
     g = extractBoundaryRoots(f, rootsRight);
     
     % Check decaying speed:
-    mask = abs(get(g, 'rval')) < 1e3*tol;
+    mask = abs(get(g, 'rval')) < 1e4*tol;
+    % tolerance loosened in epslevel-dependent code
     if ( any(mask) )
         out(2, mask) = 1;
     end
