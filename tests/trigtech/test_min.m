@@ -39,8 +39,9 @@ pass(6) = (all(abs(y - exact_min) < 100*f.epslevel) && ...
 f = testclass.make(@(x) cos(pi*x) + exp(1i*pi*x), [], pref);
 [y, x] = min(f);
 exact_min = 1i; % Could be +/- 1i depending on machine.
-pass(7) = ( (abs(y - exact_min) < 10*f.vscale.*f.epslevel) || ...
-            (abs(y + exact_min) < 10*f.vscale.*f.epslevel) );
+pass(7) = ( (abs(y - exact_min) < 1e2*f.vscale.*f.epslevel) || ...
+            (abs(y + exact_min) < 1e2*f.vscale.*f.epslevel) );
+            % tolerance loosened in epslevel-dependent test
                 
 end
 

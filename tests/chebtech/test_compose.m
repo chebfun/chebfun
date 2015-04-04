@@ -48,7 +48,8 @@ for n = 1:4
     x = g.points();
     values = g.coeffs2vals(g.coeffs);
     pass(n, 4) = norm(sin([x x x.^2]) - values, inf) < ...
-        10*max(h.vscale.*h.epslevel);
+        1e2*max(h.vscale.*h.epslevel);
+    % tolerance loosened in epslevel-dependent test
     
     % Compose 2 CHEBTECH objects with a binary function:
     f1 = testclass.make(@(x) sin(x));
