@@ -116,8 +116,9 @@ h = f.*g;
 h_exact = chebfun(op_exact, dom, 'exps', [0 pow1+pow2], 'splitting', 'on');
 
 err = norm(feval(h, x) - feval(h_exact, x), inf);
-pass(25) = ( err < 1e1*max(get(f, 'epslevel'), get(g, 'epslevel'))*...
+pass(25) = ( err < 1e3*max(get(f, 'epslevel'), get(g, 'epslevel'))*...
     norm(feval(h_exact, x), inf) );
+% tolerance loosened in epslevel-dependent test
 
 %% Tests for function defined on unbounded domain:
 
