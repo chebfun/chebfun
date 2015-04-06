@@ -123,6 +123,15 @@ catch ME
         'CHEBFUN:TREEVAR:sortConditions:nonSeparated');
 end
 
+%% Unsupported format, two conditions on same variable
+% L.lbc = @(y) [y-1; y-2]; plot(L\0)
+errorPass(6) = false;
+%% Unsupported format, too high difforder
+L = chebop(0,50);
+L.op = @(t,y) diff(y,2) + y;
+L.lbc = @(y) [y-1; diff(y,2)];
+errorPass(7) = false;
+%% More unsupported formats needed, particularly coupled cases.
 %% Combine the information
 pass = [pass, errorPass];
 end
