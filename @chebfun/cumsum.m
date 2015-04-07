@@ -68,7 +68,7 @@ transState = f(1).isTransposed;
 % If f is periodic, i.e. based on a periodic TECH check its mean:
 if ( isPeriodicTech(f) )
     % Obtain Fourier coefficients {c_k}
-    c = f.coeffs; 
+    c = trigcoeffs(f); 
     numCoeffs = size(c, 1);
     fIsEven = mod(numCoeffs,2) == 0;
     if any(abs(c((numCoeffs+1-fIsEven)/2,:)) > f.vscale.*f.epslevel)
