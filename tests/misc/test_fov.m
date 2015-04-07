@@ -10,7 +10,8 @@ end
 A = [1 2 ; 3 2i];
 F = fov(A);
 err = abs(max(real(F)) - 3.049509756796393);
-tol = 10*vscale(F)*epslevel(F);
+tol = 1e2*vscale(F)*epslevel(F);
+ % loosened tolerance in epslevel-dependent test 
 pass(1) = err < tol;
 
 B = 7;

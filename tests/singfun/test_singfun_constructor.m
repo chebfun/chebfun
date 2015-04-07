@@ -87,8 +87,9 @@ fh = @(x) exp(sin(x.^2))./((1+x).^a_int.*(1-x).^b_int);
 f = singfun(fh);
 pass(17) = norm(f.exponents + [a_int, b_int], inf) < pref.blowupPrefs.exponentTol;
 xx = x(20:80);
-pass(18) = norm(feval(fh,xx) - feval(f,xx), inf) < 5e1*get(f, 'epslevel');
-
+pass(18) = norm(feval(fh,xx) - feval(f,xx), inf) < 5e2*get(f, 'epslevel');
+ % loosened tolerance in epslevel-dependent test 
+ 
 %%
 % Construction with smoothfuns:
 f = smoothfun.constructor( @(x) sin(x));

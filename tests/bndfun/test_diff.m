@@ -84,7 +84,7 @@ f = bndfun(@(x) x.*atan(x) - x - 0.5*log(1 + x.^2), struct('domain', dom), ...
 df2 = diff(f, 2);
 df2_exact = @(x) 1./(1 + x.^2);
 err = df2_exact(x) - feval(df2, x);
-pass(9) = (norm(err, inf) < 1e6*get(df2, 'vscale')^2*get(df2, 'epslevel'));
+pass(9) = (norm(err, inf) < 1e7*get(df2, 'vscale')^2*get(df2, 'epslevel'));
     % tolerance loosened in epslevel-dependent test
 
 f = bndfun(@(x) sin(x), struct('domain', dom), pref);

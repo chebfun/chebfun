@@ -33,6 +33,7 @@ exact.momentOfInertia = pi/8;
 pass(5) = abs(result.surfaceArea - exact.surfaceArea) < 1e-12;
 pass(6) = abs(result.volume - exact.volume) < 1e-12;
 pass(7) = abs(result.centroidZ - exact.centroidZ) < 1e-7;
+result.centroidZ
 pass(8) = abs(result.momentOfInertia - exact.momentOfInertia) < 1e-12;
 
 end
