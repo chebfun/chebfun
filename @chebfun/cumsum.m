@@ -67,9 +67,13 @@ transState = f(1).isTransposed;
 
 % If f is periodic, i.e. based on a periodic TECH check its mean:
 if ( isPeriodicTech(f) )
-    if ( abs(sum(f)) > 100*vscale(f)*epslevel(f) )
-    % Mean is not zero, convert it to a CHEBTECH based chebfun:
-    f = chebfun(f);
+    % Obtain Fourier coefficients {c_k}
+    c = trigcoeffs(f); 
+    numCoeffs = size(c, 1);
+    fIsEven = mod(numCoeffs,2) == 0;
+    if any(abs(c((numCoeffs+1-fIsEven)/2,:)) > f.vscale.*f.epslevel)
+        % Mean is not zero, convert it to a CHEBTECH based chebfun:
+        f = chebfun(f);
     end
 end
 
