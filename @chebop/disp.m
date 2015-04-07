@@ -26,8 +26,8 @@ else
     end
     if ( ~isempty(A.op) )
         fprintf(':\n')
-        str = stripHandle(func2str(A.op));
-        fprintf('      %s = 0\n', str);
+        str = formatOperator(A.op);
+        fprintf('      %s\n', str);
         if ( loose )
             fprintf('\n')
         end
@@ -101,6 +101,50 @@ end  % End of function DISP().
 function str = stripHandle(op)
 idx = strfind(op, ')');
 str = op(idx(1)+1:end);
+
+end
+
+function str = formatOperator(op)
+% What type of a function did we get passed?
+opFunc = functions(op);
+
+% Convert the function to a string:
+op = func2str(op);
+
+if ( strcmp(opFunc.type, 'simple') )
+    % If the function passed was of the simple type, we simply return the
+    % results of func2str above
+    str = op;
+    
+else
+    % We got passed an anonymous function. Return a string to print on a nice
+    % form.
+    idx = strfind(op, ')');
+    args = op(3:idx(1)-1);
+    % If we have any commas in args, the independent variable (e.g. x) must be
+    % included. For nicer output, don't print it
+    idxCommas = strfind(args, ',');
+    if ( ~isempty(idxCommas) )
+        args = args(idxCommas(1)+1:end);
+    end
+    
+    % Isolate the actual operator part from the string
+    op = op(idx(1)+1:end);
+    
+    % If we're dealing with a system, throw away the end [ and ]. Also, split up
+    % components into lines.
+    if ( op(1) == '[' && op(end) == ']' )
+        op = op(2:end-1);
+        
+        % Replace ; with the ASCII character for new line. Add indentation to
+        % make it look nice
+        wSpace = repmat(' ', 1, length(args) + 11);
+        op = strrep(op, ';', [char(13), wSpace]);
+    end
+
+    % Output string
+    str = [args, ' |-> ', op];
+end
 
 end
 
