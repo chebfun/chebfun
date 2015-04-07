@@ -144,7 +144,7 @@ for dim = [dimVals inf]
     end
 
     % Test the happiness of the function pieces:
-    [isDone, epsLevel, vscale, cutoff] = ...
+    [isDone, epslevel, vscale, cutoff] = ...
         testConvergence(disc, u(isFun), vscale(isFun), prefs);
     
     if ( all(isDone) || isinf(dim) )
