@@ -52,8 +52,8 @@ f1 = testclass.make(@(x) exp(sin(2*pi*x)));
 f2 = testclass.make(@(x) 1i*cos(20*pi*x));
 [vals2, pos2] = minandmax(f2);
 pass(7) = norm(abs(vals) - abs([vals1 vals2]), inf) < ...
-    10*max(f.vscale.*f.epslevel);
-
+    1e2*max(f.vscale.*f.epslevel);
+    % tolerance loosened in epslevel-dependent test
 end
 
 % Spot-check the results for a given function.

@@ -92,7 +92,7 @@ vExact = [-0.6381726863389515 ; 0.6381726863389515];
 pExact = [-1.120906422778534 ; 1.120906422778534];
 errV = vals - vExact;
 errP = pos - pExact;
-pass(10) = ( norm(errV, inf) < get(f,'epslevel')*get(f,'vscale') ) && ...
+pass(10) = ( norm(errV, inf) < 1e1*get(f,'epslevel')*get(f,'vscale') ) && ...
     ( norm(errP, inf) < 1e2*get(f,'epslevel')*get(f,'vscale') );
     % tolerance loosened in epslevel-dependent test
     
