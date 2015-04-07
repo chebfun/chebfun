@@ -85,7 +85,8 @@ pass(8) = numel(r2) >= numel(r1);
 f = bndfun(@(x) [sin(pi*x), cos(pi*x), x.^2+1], data, pref);
 r = roots(f);
 r2 = [-2:7 -1.5:6.5 NaN(1,11)].';
-pass(9) = all( r(:) - r2 < max(get(f, 'epslevel').*get(f, 'vscale')) | isnan(r2) );
+pass(9) = all( r(:) - r2 < 1e1*max(get(f, 'epslevel').*get(f, 'vscale')) | isnan(r2) );
+% tolerance loosened in epslevel-dependent test
     
 %% 
 % Test on singular BNDFUN.
