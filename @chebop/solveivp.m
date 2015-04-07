@@ -209,9 +209,9 @@ assert(sum(diffOrders) == length(initVals), ...
 % evaluates the conditions with TREEVAR inputs, which gives it enough
 % information to be able to sort them in the correct order.
 if ( isIVP )
-    idx = treeVar.sortConditions(N.lbc, N.domain);
+    idx = treeVar.sortConditions(N.lbc, N.domain, diffOrders);
 else
-    idx = treeVar.sortConditions(N.rbc, N.domain);
+    idx = treeVar.sortConditions(N.rbc, N.domain, diffOrders);
 end
 
 % Sort the results from above:
