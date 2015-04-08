@@ -15,6 +15,9 @@ if ( isempty(A) )
     end
     
 else
+    % Store the name of the variable(s) to the operator
+    args = [];
+    
     % Check whether the chebop is linear in order to be able to display
     % linearity information. 
     if ( isempty(A.op) )
@@ -26,7 +29,7 @@ else
     end
     if ( ~isempty(A.op) )
         fprintf(':\n')
-        str = formatOperator(A.op);
+        [str, args] = formatOperator(A.op);
         fprintf('      %s\n', str);
         if ( loose )
             fprintf('\n')
@@ -48,33 +51,13 @@ else
     end
     
     if ( ~isempty(A.lbc) )
-        fprintf('    left boundary conditions:\n');
-        if ( ischar(A.lbc) )
-            fprintf('      %s\n', A.lbc);
-        elseif ( isnumeric(A.lbc) )
-            fprintf('      %s\n', num2str(A.lbc));
-        else
-            str = stripHandle(func2str(A.lbc));
-            fprintf('      %s = 0\n', str);
-        end
-        if ( loose )
-            fprintf('\n')
-        end
+        fprintf('    left boundary condition(s):\n');
+        printLRbc(A.lbc, A.lbcShow, args, loose);
     end
     
     if ( ~isempty(A.rbc) )
-        fprintf('    right boundary conditions:\n');
-        if ( ischar(A.rbc) )
-            fprintf('      %s\n', A.rbc);
-        elseif ( isnumeric(A.rbc) )
-            fprintf('      %s\n', num2str(A.rbc));
-        else
-            str = stripHandle(func2str(A.rbc));
-            fprintf('      %s = 0\n', str);
-        end
-        if ( loose )
-            fprintf('\n')
-        end
+        fprintf('    right boundary condition(s):\n');
+        printLRbc(A.rbc, A.rbcShow, args, loose);
     end
     
     if ( ~isempty(A.bc) )
@@ -104,7 +87,28 @@ str = op(idx(1)+1:end);
 
 end
 
-function str = formatOperator(op)
+function printLRbc(bc, bcShow, args, loose)
+% Print left or right boundary condition(s)
+if ( ischar(bcShow) )
+    % We had an assignment such as N.lbc = 'neumann';
+    fprintf('      %s\n', bcShow);
+elseif ( isnumeric(bcShow) )
+    % We had an assignment such as N.lbc = 2;
+    if ( ~isempty(args) )
+        fprintf('      %s = %s\n', args, num2str(bcShow));
+    else
+        fprintf('      %s\n', num2str(bcShow));
+    end
+else
+    str = stripHandle(func2str(bc));
+    fprintf('      %s = 0\n', str);
+end
+if ( loose )
+    fprintf('\n')
+end
+end
+
+function [str, args] = formatOperator(op)
 % What type of a function did we get passed?
 opFunc = functions(op);
 
@@ -144,27 +148,6 @@ else
 
     % Output string
     str = [args, ' |-> ', op];
-end
-
-end
-
-
-function s = bc2char(b)
-
-% Make sure b is a cell:
-if ( ~iscell(b) )
-    b = {b}; 
-end
-
-s = repmat({'     '},1,length(b));
-for k = 1:length(b)
-    if isnumeric(b{k})  % number
-        s{k} = [s{k}, num2str(b{k})];
-    elseif ischar(b{k})  % string
-        s{k} = [s{k}, b{k}];
-    else  % function
-        s{k} = [s{k}, char(b{k}), ' = 0'];
-    end
 end
 
 end
