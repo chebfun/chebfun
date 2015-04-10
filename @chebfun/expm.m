@@ -1,2 +1,2 @@
-% EXPM generetor for the exponential semigroup of a linear operator.
-% See also chebop/expm.
+% EXPM computes the exponential of a linear operator.
+% See chebop/expm.
