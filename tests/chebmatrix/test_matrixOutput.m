@@ -22,4 +22,13 @@ Af = A*f;
 pass(3) = isa(Af, 'chebmatrix') && ...
     all(cellfun(@isa, Af.blocks, {'chebfun'; 'chebfun'})) && ...
     all( size(Af) == [2 1]);
+
+% Functionals involved, output should be numeric
+[Z, E, S, D] = linop.primitiveFunctionals(dom);
+J = [Z-E(1), S];
+Jf = J*f;
+pass(4) = isnumeric(Jf) && all(size(Jf) == [1 1]);
+K = [J' J'];
+Kf = K*f;
+pass(5) = isnumeric(Kf) && all(size(Kf) == [2 1]);
 end
