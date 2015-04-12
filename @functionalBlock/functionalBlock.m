@@ -94,7 +94,8 @@ classdef functionalBlock < linBlock
                 C.stack = @(z) A.stack(z) * B.stack(z);
                 C.diffOrder = A.diffOrder + B.diffOrder;
                 C.iszero  = ( A.iszero || B.iszero);
-                C.isNotDiffOrInt = A.isNotDiffOrInt && B.isNotDiffOrInt;
+                C.isNotDiffOrInt = ( A.isNotDiffOrInt && B.isNotDiffOrInt ) ...
+                    || C.iszero;
             else
                 error('CHEBFUN:FUNCTIONALBLOCK:mtimes:badType', ...
                     'Unrecognized operand types.')
