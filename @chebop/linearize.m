@@ -180,7 +180,7 @@ L.domain = domain.merge(L.domain, dom);
 % u0 contains doubles for the parameter entries. If not, we correct for this
 % below by assuming that any variable that does not have a diffOrder greater
 % than 0 associated with it is a parameter, rather than a function.
-isParam = all(L.isMult, 1);
+isParam = all(L.isNotDiffOrInt, 1);
 % If we have any parameters involved that are still thought to be functions, and
 % we did not get a U passed in to linearize around, we reseed the corresponding
 % variables.

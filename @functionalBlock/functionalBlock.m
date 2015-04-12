@@ -87,14 +87,14 @@ classdef functionalBlock < linBlock
                 C.stack = @(z) A*B.stack(z);
                 C.diffOrder = B.diffOrder;
                 C.iszero = ( (A == 0) || B.iszero );
-                C.isMult = B.isMult;
+                C.isNotDiffOrInt = B.isNotDiffOrInt;
             elseif ( isa(B, 'operatorBlock') )
                 % Compose functional with operator.
                 C = functionalBlock(A.domain);
                 C.stack = @(z) A.stack(z) * B.stack(z);
                 C.diffOrder = A.diffOrder + B.diffOrder;
                 C.iszero  = ( A.iszero || B.iszero);
-                C.isMult = A.isMult && B.isMult;
+                C.isNotDiffOrInt = A.isNotDiffOrInt && B.isNotDiffOrInt;
             else
                 error('CHEBFUN:FUNCTIONALBLOCK:mtimes:badType', ...
                     'Unrecognized operand types.')
@@ -110,7 +110,7 @@ classdef functionalBlock < linBlock
             C.stack = @(z) A.stack(z) + B.stack(z);
             C.diffOrder = max(A.diffOrder, B.diffOrder);
             C.iszero = A.iszero && B.iszero;
-            C.isMult = A.isMult && B.isMult;
+            C.isNotDiffOrInt = A.isNotDiffOrInt && B.isNotDiffOrInt;
         end        
         
         function out = iszero(A)
@@ -155,7 +155,7 @@ classdef functionalBlock < linBlock
             Er = functionalBlock.feval(location, dom, 1);
             El = functionalBlock.feval(location, dom, -1);
             J = (Er - El)*operatorBlock.diff(dom, order);
-            J.isMult = ( order == 0 );
+            J.isNotDiffOrInt = ( order == 0 );
         end
 
         function J = jumpAt(domain)
@@ -213,7 +213,7 @@ classdef functionalBlock < linBlock
             % Create the FUNCTIONALBLOCK with information now available.
             E = functionalBlock(domain);
             E.stack = @(z) feval(z, location, direction);
-            E.isMult = true;
+            E.isNotDiffOrInt = true;
         end
 
         function F = inner(f, domain)
@@ -232,7 +232,7 @@ classdef functionalBlock < linBlock
             end
             F.stack = @(z) inner(z, f);
             F.diffOrder = 0;
-            F.isMult = true;
+            F.isNotDiffOrInt = true;
         end
 
         function S = sum(domain)
@@ -271,7 +271,7 @@ classdef functionalBlock < linBlock
             % This is the zero functional:
             Z.iszero = true;
             % It doesn't involve any integration/differentiation
-            Z.isMult = true;
+            Z.isNotDiffOrInt = true;
         end
         
     end
