@@ -37,7 +37,16 @@ else
         fprintf('  ');
     end
     fprintf(' operating on chebfun objects defined on:\n')
-    dom = strtrim(sprintf('%g ', A.domain));
+    Adom = A.domain;
+    dom = strtrim(sprintf('%g ', Adom));
+    % Replace ' ' with commas in the domain for printing. If the numbers are not
+    % all integers, we also want to keep whitespace between the numbers.
+    if ( all(floor(Adom) == ceil(Adom)) )
+        dom = strrep(dom, ' ', ',');
+    else
+        dom = strrep(dom, ' ', ', ');
+    end
+    % Print the domain
     fprintf('      [%s]\n', dom);
     if ( loose )
         fprintf('\n')
