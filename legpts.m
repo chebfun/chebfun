@@ -113,7 +113,7 @@ elseif ( n == 1 )
     x = mean(interval);
     w = diff(interval);
     v = 1;
-    t = 1;
+    t = pi/2;
     return
 elseif ( n == 2 )
     x0 = [-1 ; 1]/sqrt(3);
