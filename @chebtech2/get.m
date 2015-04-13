@@ -27,9 +27,9 @@ switch prop
     case 'points'
         out = f.points();
     case 'lval'
-        out = feval(f, -1);
+        out = lval(f);
     case 'rval'
-        out = feval(f, 1);
+        out = rval(f);
     case 'values'
         out = f.coeffs2vals(f.coeffs);
     case 'tech'
