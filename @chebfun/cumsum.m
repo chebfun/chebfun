@@ -7,7 +7,7 @@ function f = cumsum(f, m, dim)
 %   integral is chosen to make the representation of G as simple as possible.
 %
 %   CUMSUM(F, N) returns the Nth integral of F. If N is not an integer then
-%   CUMSUM(F, N) returns the fractional integral of order N as defined by the
+%   CUMSUM(F, MU) returns the fractional integral of order MU as defined by the
 %   Riemann-Liouville integral.
 %
 %   CUMSUM(F, N, 2) will take the Nth cumulative sum over the columns F an
@@ -37,10 +37,7 @@ end
 
 if ( round(m) ~= m )
     % Fractional integral:
-    % [TODO]: Implement this!
-    error('CHEBFUN:CHEBFUN:cumsum:notImplemented', ...
-        'Fractional antiderivatives not yet implemented.');
-    f = fracCalc(f, m);
+    f = fracInt(f, m);
     return
 end
 
@@ -70,9 +67,13 @@ transState = f(1).isTransposed;
 
 % If f is periodic, i.e. based on a periodic TECH check its mean:
 if ( isPeriodicTech(f) )
-    if ( abs(sum(f)) > 100*vscale(f)*epslevel(f) )
-    % Mean is not zero, convert it to a CHEBTECH based chebfun:
-    f = chebfun(f);
+    % Obtain Fourier coefficients {c_k}
+    c = trigcoeffs(f); 
+    numCoeffs = size(c, 1);
+    fIsEven = mod(numCoeffs,2) == 0;
+    if any(abs(c((numCoeffs+1-fIsEven)/2,:)) > f.vscale.*f.epslevel)
+        % Mean is not zero, convert it to a CHEBTECH based chebfun:
+        f = chebfun(f);
     end
 end
 

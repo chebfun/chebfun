@@ -109,7 +109,7 @@ if ( any(strcmpi(dom, 'equi')) || ((nargin > 3) && (any(strcmpi(varargin{1}, 'eq
 end
 
 if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
-    if ( numel( op ) == 1 )
+    if ( numel( op ) == 1 && ~any(strcmpi(dom, 'coeffs')) )
         % LNT wants this:
         g = constructor(g, @(x,y) op + 0*x, dom);
         
@@ -224,6 +224,12 @@ elseif ( numel(dom) ~= 4 )
         'Domain not fully determined.');
 end
 
+% Check for infinite domains: 
+if ( any( isinf( dom ) ) ) 
+    error('CHEBFUN2:DOMAIN:INFINITE', ...
+        'Chebfun2 cannot approximation functions on infinite domains.');
+end
+
 % If the vectorize flag is off, do we need to give user a warning?
 if ( vectorize == 0 ) % another check
     % Check for cases: @(x,y) x*y, and @(x,y) x*y'
@@ -327,7 +333,7 @@ while ( ~isHappy && ~failure )
     %%% PHASE 2: %%%
     % Now resolve along the column and row slices:
     n = grid;  m = grid;
-    while ( ~isHappy )
+    while ( ~isHappy && ~failure  )
         if ( ~resolvedCols )
             % Double sampling along columns
             [n, nesting] = gridRefine( n , pref );
@@ -534,11 +540,15 @@ function op = str2op( op )
 % handle than can be evaluated.
 
 depvar = symvar( op );
-if ( numel(depvar) > 2 )
+if ( numel(depvar) > 2)
     error('CHEBFUN:CHEBFUN2:constructor:str2op:depvars', ...
         'Too many dependent variables in string input.');
+elseif ( numel(depvar) == 1 )
+    % Treat as a complex variable: 
+    op = eval(['@(' real(depvar{1}) + 1i*imag(depvar{1}) ')' op]);
+else
+    op = eval(['@(' depvar{1} ',' depvar{2} ')' op]);
 end
-op = eval(['@(' depvar{1} ',' depvar{2} ')' op]);
 
 end
 

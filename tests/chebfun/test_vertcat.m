@@ -31,16 +31,20 @@ pass(4) = isa(f, 'chebmatrix') && all(size(f.blocks)==[2,2]) && ...
     isa(f.blocks{2,1}, 'chebfun') && isa(f.blocks{1,2}, 'chebfun');
 
 % Row CHEBFUNs:
-x = x';
-f = [x ; x];
+xt = x';
+f = [xt ; xt];
 pass(5) = isa(f, 'chebfun') && numColumns(f) == 2;
 
 % Incorrect transpose state:
 try 
-    f = [x ; x.'];
+    f = [x ; xt];
     pass(6) = false;
 catch
     pass(6) = true;
 end
+
+% #1234
+f = [x ; [0 ; 0]];
+pass(7) = isa(f, 'chebmatrix') && all(size(f.blocks)==[3,1]);
 
 end

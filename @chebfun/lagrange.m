@@ -24,7 +24,7 @@ end
 
 % Check for uniqueness:
 if ( length(unique(x)) ~= n )
-    error('CHEBFUN:CHEBFUN:lagrange:nonunique', ..
+    error('CHEBFUN:CHEBFUN:lagrange:nonunique', ...
         'Interpolation points must be unique.')
 end
 

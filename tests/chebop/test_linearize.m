@@ -23,8 +23,9 @@ N = chebop(@(u) diff(u, 2) + diff(u) + sin(x).*u, dom);
 L = linearize(N);
 err(2) = norm(L*u - (diff(u, 2) + diff(u) + sin(x).*u));
 
+% Pass a flag that we don't want to detect parameters:
 N = chebop(@(u) u.^2, dom);
-L = linearize(N, u);
+L = linearize(N, u, [], false, false);
 err(3) = norm(L*v - 2*u.*v);
 
 N = chebop(@(u) diff(u,2) + u.^2, dom);
@@ -44,13 +45,24 @@ err(6) = ~isa(L.blocks{2}, 'chebfun');
 L = linearize(N);       % Without init
 err(7) = ~isa(L.blocks{2}, 'chebfun');
 
+%% Coupled system with four unknown variables
+
+% Define the chebop
 N = chebop(@(x,u,v,a,b) [x.*v + .001*diff(u,2) + a + 2*b ; diff(a.*v)-u], [-1 1]);
+% First, we explicitly pass a chebmatrix to linearize around that contains two
+% chebfuns and two doubles. The code should respect those dimensions, even
+% though we encounter diff(a.*v) (which otherwise indicate that a should be
+% treated as a function):
 u0 = [chebfun(@sin) ; chebfun(@cos) ; 1 ; 0];
 L = linearize(N, u0);   % With init
 tmp = cellfun(@(b) isa(b, 'chebfun'), L.blocks) ~= [0 0 1 1 ; 0 0 1 1];
 err(8) = any(tmp(:));
+
+% If we don't pass a chebmatrix to linearize around, the code should assume that
+% a is to be treated as a function (as it appears in diff(a.*v)). Hence, the
+% dimensions of the output derivative will be different from before.
 L = linearize(N);       % Without init
-tmp = cellfun(@(b) isa(b, 'chebfun'), L.blocks) ~= [0 0 1 1 ; 0 0 1 1];
+tmp = cellfun(@(b) isa(b, 'chebfun'), L.blocks) ~= [0 0 0 1 ; 0 0 0 1];
 err(9) = any(tmp(:));
 
 %%
