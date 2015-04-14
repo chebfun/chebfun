@@ -9,8 +9,11 @@ function [uquasi, lamvec, mvec] = followPath(H, A, g, BCstruct, u0, lam0, measur
 
 % Set default values
 plotOn = 0; % Option for plotting
+printing = 1;
+
 slmax = 4; slmin = 0.0001; % Maximum/min steplength
 maxCounter = 7;
+stopCriteria = @(u) 0;
 
 if ( nargin < 8 )
     direction = 1;
@@ -31,17 +34,24 @@ while ~isempty(varargin)  % Recurse
             maxCounter = val;
         case 'slmax'
             slmax = val;
+        case 'printing'
+            printing = val;
+        case 'stopCriteria'
+            stopCriteria = val;
     end
     
     % Throw away arguments and move on
     varargin(1:2) = [];
 end
 
-sl0 = slmax; % Initial steplength
+% sl0 = slmax; % Initial steplength
 
 % Store all the solutions to be returned
 uquasi = u0;
 
+if ( ~exist('sl0')) 
+    sl0 = slmax;
+end
 
 % Constraint for tangent
 J = @(u,lam) sum(u).^2+lam.^2;
@@ -76,8 +86,10 @@ end
 told = chebfun(0,domain(u0)); tauold = 1;
 
 retract = 0; % retract == 1 if Newton told us to go back along the tangent.
-fprintf('No. path iter    Newton iter   Steplength    Measure    Num. sol.\n')
-fprintf('----------------------------------------------------------------\n')
+if printing
+    fprintf('No. path iter    Newton iter   Steplength    Measure    Num. sol.\n')
+    fprintf('----------------------------------------------------------------\n')
+end
 numSols = 1;
 while counter <= maxCounter
     % Find a tangent direction, but only if we were told by Newton not to
@@ -97,7 +109,9 @@ while counter <= maxCounter
     [u, lam, iter, retract] = newtonBVP(H,A,g,BCstruct,uinit,laminit,t,tau);
     
     if retract % Newton told us we were trying to take too long tangent steps
-        disp('retracted')
+        if printing 
+            fprintf('retracted\n')
+        end
         % Move in the direction of the current tangent, but only with
         % quarter of the steplength
         sl = sl/4;
@@ -110,13 +124,16 @@ while counter <= maxCounter
         continue
     end
     
-    if (measure(u) < -150)
+    if ( stopCriteria(u) )
         return
     end
     % Store values for plotting
     mvec = [mvec; measure(u)]; lamvec = [lamvec;lam];
     
-    fprintf('%7i \t   %2i \t\t %6.4f       %6.4f \t   %i \n',counter,iter,sl, measure(u), numSols)    
+    if printing
+        fprintf('%7i \t   %2i \t\t %6.4f       %6.4f \t   %i \n',counter,iter,sl, measure(u), numSols)
+    end
+    
     if (mvec(end)*mvec(end-1) < 0 )
         numSols = numSols + 1;
     end
