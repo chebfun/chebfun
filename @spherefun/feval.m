@@ -1,8 +1,15 @@
 function y = feval( f, theta, lambda ) 
-% Evaluate a spherefun. 
+% FEVAL    Evaluate a spherefun. 
+% 
+%  Y = FEVAL( F, THETA, LAMBDA )  evaluates a spherefun F at (THETA,
+%  LAMBDA). 
 
-lambda = lambda/pi - .5;   % painful... 
+% Shift the evaluation points, annoying: 
+hn = pi/length(f.Cols);  % Have to adjust for the shift in y points. Ugly!
+lambda = (lambda-hn)/pi-.5; 
 theta = theta/pi;
-y = feval( f.Cols, lambda ) * f.BlockDiag * feval(f.Rows, theta).'; 
+
+% Do the evaluation. 
+y = feval(f.Cols, lambda) * f.BlockDiag * feval(f.Rows, theta)';
 
 end 

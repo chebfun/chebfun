@@ -49,18 +49,10 @@ f = redefine_function_handle( f );
 g = spherefun( f );
 pass(9) = ( SampleError( f, g ) < tol ); 
 
+% feval: 
+lambda = rand; theta = rand; 
+pass(10) = abs( feval(g, theta, lambda) - f(theta, lambda) ) < tol; 
 
-% %% Pointwise evaluation: 
-% 
-% lam = rand; th = rand; 
-% 
-% x = cos(lam).*cos(th);
-% y = sin(lam).*cos(th);
-% z = sin(th);
-% 
-% f = @(x,y,z) sin(x+ y.*z) + 1;
-% g = spherefun( f );
-% feval(g, lam, th) - f(x,y,z)
 
 end
 
