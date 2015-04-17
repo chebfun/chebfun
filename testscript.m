@@ -53,7 +53,6 @@ pass(9) = ( SampleError( f, g ) < tol );
 lambda = rand; theta = rand; 
 pass(10) = abs( feval(g, theta, lambda) - f(theta, lambda) ) < tol; 
 
-
 end
 
 function sample_error = SampleError( h, g ) 
