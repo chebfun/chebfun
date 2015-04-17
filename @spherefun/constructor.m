@@ -35,8 +35,8 @@ m = 6; n = m;
 [x, y] = getPoints( m, n ); 
 [L2, T2] = meshgrid(x, y);
 F = h(L2, T2);
-h = pi/length(g.Cols);  % Have to adjust for the shift in y points. Ugly!
-norm( F - feval(g.Cols,(y-h)/pi-.5) * g.BlockDiag * feval(g.Rows,x/pi)', inf )
+hn = pi/length(g.Cols);  % Have to adjust for the shift in y points. Ugly!
+norm( F - feval(g.Cols,(y-hn)/pi-.5) * g.BlockDiag * feval(g.Rows,x/pi)', inf )
 
 end
 
@@ -91,7 +91,7 @@ while ( norm( F( : ), inf ) > tol*vscl )
 end
 
 % If the rank of the matrix is less than 1/4 its size. We are happy:
-if ( size(PivotLocations,1) <= min(size(F))/4 )
+if ( size(PivotLocations,1) <= min(size(F))/16 )
     happy = 1;
 else
     happy = 0;
