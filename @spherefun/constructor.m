@@ -1,14 +1,33 @@
-function g = constructor( g, f, varargin )
-% CONSTRUCTOR     Main spherefun constructor 
-% 
-% G = CONSTRUCTOR( G, F, ... ) 
+function g = constructor( g, op, varargin )
+%CONSTRUCTOR   The main SPHEREFUN constructor.
+%
+% The algorithm for constructing a SPHEREFUN comes in two phases:
+%
+% PHASE 1: The first phase attempts to determine the numerical rank of the
+% function by performing Gaussian elimination with special 2x2 pivoting matrices 
+% on a tensor grid of sample values. GE is perform until the sample matrix
+% is approximated.  At the end of this stage we have candidate pivot locations
+% and pivot elements.
+%
+% PHASE 2: The second phase attempts to resolve the corresponding column and row
+% slices by sampling along the slices and performing GE (pivoting at 2x2 matrices) 
+% on the skeleton.   Sampling along each slice is increased until the Fourier 
+% coefficients of the slice fall below machine precision.
+
+if ( nargin == 0 )          % SPHEREFUN( )
+    return
+end
+
+if ( isa(op, 'spherefun') )  % SPHEREFUN( SPHEREFUN )
+    g = op;
+    return
+end
 
 tol = 50*eps;       % Tolerance
-
 max_rank = 4000; 
 
 % If f is defined in terms of x,y,z; then convert: 
-h = redefine_function_handle( f );
+h = redefine_function_handle( op );
 
 % PHASE ONE  
 % Sample at square grids, determine the numerical rank of the

@@ -1,7 +1,7 @@
 function f = diff( f, varargin )
-% DIFF     Derivatives of a spherefun
+% DIFF    Derivative of a spherefun
 %
-%  F = DIFF( F )    computes the first derivative of F in the latitude
+%  F = DIFF( F ) computes the first derivative of F in the latitude
 %  variable.
 %
 %  F = DIFF( F, DIM )  computes the first derivative of F. If DIM = 1, the

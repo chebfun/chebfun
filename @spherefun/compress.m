@@ -44,6 +44,12 @@ D = D( idx, idx );
 C = C(:, idx);
 R = R(:, idx);
 
+% order the columns and rows:
+[ignored, perm] = sort( diag( D ), 1, 'descend'); 
+D = D(perm, perm); 
+C = C(:, perm);
+R = R(:, perm); 
+
 % Now make a new spherefun:
 f.Cols = trigtech( C );
 f.Rows = trigtech( R );
