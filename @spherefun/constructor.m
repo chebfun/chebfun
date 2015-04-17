@@ -40,7 +40,7 @@ end
 function [PivotLocations, PivotMatrices, happy] = PhaseOne( F, tol )
 
 % Phase 1: Go find rank, plus pivot locations, ignore cols and rows.
-alpha = 100; 
+alpha = 50; 
 [m, n] = size( F );
 PivotLocations = []; PivotMatrices = [];
 vscl = norm( F( : ), inf);
@@ -91,7 +91,7 @@ end
 
 function [Cols, BlockDiag, Rows] = PhaseTwo( h, PivotLocations, PivotMatrices, n, tol)
 
-alpha = 100; 
+alpha = 50; 
 happy_columns = 0;   % Not happy, until proven otherwise.
 happy_rows = 0;
 m = n;

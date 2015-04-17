@@ -7,7 +7,10 @@ function f = compress( f, flag )
 %  the pivot matrix.  It does not look for linearly independent in the
 %  columns or rows. 
 
-
+if ( flag ) 
+    
+    B = f.BlockDiag; 
+end
 
 
 end
