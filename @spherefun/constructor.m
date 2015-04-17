@@ -1,51 +1,50 @@
 function g = constructor( g, f, varargin )
+% CONSTRUCTOR     Main spherefun constructor 
+% 
+% G = CONSTRUCTOR( G, F, ... ) 
 
-tol = 50*eps;
-happy_rank = 0;
+tol = 50*eps;       % Tolerance
 
-% Define f in terms of x,y,z to make things easier.
-% f = @(x,y,z) exp(-cos(pi*(x+y)));
-%f = @(x,y,z) exp(-cos(pi*(x+y+z)));
-%f = @(x,y,z) exp(x + y + z);
+max_rank = 4000; 
 
+% If f is defined in terms of x,y,z; then convert: 
 h = redefine_function_handle( f );
 
-% Phase one. Keep square matrices, determine the numerical rank of the
+% PHASE ONE  
+% Sample at square grids, determine the numerical rank of the
 % function.
 n = 4;
+happy_rank = 0;     % Happy with phase one? 
 while ( ~happy_rank )
     n = 2*n;
     F = sample(h, n, n);
     [ PivotLocations, PivotMatrices, happy_rank ] = PhaseOne( F, tol );
-    if ( n >= 4000 )
-        error
+    if ( n >= max_rank  )
+        warning('SPHEREFUN:CONSTRUCTOR:MAXRANK', ... 
+                                'Unresolved with maximum rank.')
     end
 end
 
+% PHASE TWO 
+% Find the appropriate discretizations in the columns and rows. 
 [Cols, BlockDiag, Rows] = PhaseTwo(h, PivotLocations, PivotMatrices, n, tol );
 
-%% Make a spherefun
+% Make a spherefun, we are done. 
 g.Cols = trigtech( Cols );
 g.Rows = trigtech( Rows.' );
 g.BlockDiag = BlockDiag;
 g.PivotLocations = PivotLocations;
-
-%% TEST
-m = 6; n = m;  
-[x, y] = getPoints( m, n ); 
-[L2, T2] = meshgrid(x, y);
-F = h(L2, T2);
-hn = pi/length(g.Cols);  % Have to adjust for the shift in y points. Ugly!
-norm( F - feval(g.Cols,(y-hn)/pi-.5) * g.BlockDiag * feval(g.Rows,x/pi)', inf )
 
 end
 
 function [PivotLocations, PivotMatrices, happy] = PhaseOne( F, tol )
 
 % Phase 1: Go find rank, plus pivot locations, ignore cols and rows.
+alpha = 100; 
 [m, n] = size( F );
 PivotLocations = []; PivotMatrices = [];
 vscl = norm( F( : ), inf);
+rank_count = 0;    % keep track of the rank of the approximation. 
 
 while ( norm( F( : ), inf ) > tol*vscl )
     % Find pivot:
@@ -56,29 +55,17 @@ while ( norm( F( : ), inf ) > tol*vscl )
     [ignored, idx] = max( S1(:) );
     [j, k] = ind2sub( size( S1 ), idx );
     
-    %     [mx, idx] = max( s(:) );
-    %     DET = F.^2 - flipud(F.^2);
-    %     DET = DET(1:m, 1:n);
-    %     [mx, idx] = max( abs( DET(:) ) );
-    %     [j, k] = ind2sub( size( DET ), idx );
-    
-    %     if ( abs(mx) < 1e8*tol )
-    %         % Redo if all dets are zero:
-    %         Fsub = F(1:m, 1:n);
-    %         [ignored, idx] = max( abs( Fsub(:) ) );
-    %         [j, k] = ind2sub( size( Fsub ), idx);
-    %     end
-    
     % Max determinant submatrix is:
     M = [ F(j,k) F(j,k+n/2) ; F(j,k+n/2) F(j,k)];
-    s = svd( M );
+    s = sort( abs([ diff(M(1,:)) ; sum(M(1,:)) ]), 1, 'descend' );  % equivalent to svd( M )
+    
     PivotLocations = [ PivotLocations ; j k m-j+1 k+n/2];
     PivotMatrices = [PivotMatrices ; M ];
     
-    
-    if ( s(1) <= 2*s(2) )  % Theoretically, should be s1 <= 2s2.
+    if ( s(1) <= alpha*s(2) )  % Theoretically, should be s1 <= 2s2.
         % Calculate inverse of pivot matrix:
         F = F - F(:, [k k+n/2] ) * ( M \ F( [j m-j+1],: ) );
+        rank_count = rank_count + 2; 
     else
         % Calculate pseudoinverse of pivot matrix, there is
         % no full rank pivot matrix:
@@ -86,12 +73,13 @@ while ( norm( F( : ), inf ) > tol*vscl )
         S(1,1) = 1./S(1,1); S(2,2) = 0;
         invM = U * S * V';
         F = F - F(:, [k k+n/2] ) * ( invM *  F( [j m-j+1],: ) );
+        rank_count = rank_count + 1; 
     end
     
 end
 
 % If the rank of the matrix is less than 1/4 its size. We are happy:
-if ( size(PivotLocations,1) <= min(size(F))/16 )
+if ( rank_count < min(size(F))/8 )
     happy = 1;
 else
     happy = 0;
@@ -103,7 +91,7 @@ end
 
 function [Cols, BlockDiag, Rows] = PhaseTwo( h, PivotLocations, PivotMatrices, n, tol)
 
-
+alpha = 100; 
 happy_columns = 0;   % Not happy, until proven otherwise.
 happy_rows = 0;
 m = n;
@@ -129,11 +117,11 @@ while ( ~happy_columns || ~happy_rows )
     for ii = 1:rk
         
         M = PivotMatrices( 2*ii-1:2*ii, :);
-        s = svd( M );
+        s = sort( abs([ diff(M(1,:)) ; sum(M(1,:)) ]), 1, 'descend' );  % equivalent to svd( M )
         
         Cols(:,2*ii-1:2*ii) = Cols_new(:,2*ii-1:2*ii); %F(:, [k k+n] );
         Rows(2*ii-1:2*ii,:) = Rows_new(2*ii-1:2*ii,:); %F([j 2*m-j+1],: );
-        if ( s(1) <= 2*s(2) )
+        if ( s(1) <= alpha*s(2) )
             % Calculate inverse of pivot matrix:
             row_correction = Cols_new(id_rows,2*ii-1:2*ii) * ( M \ Rows_new(2*ii-1:2*ii,:) );
             Cols_new = Cols_new - Cols_new(:,2*ii-1:2*ii) * ( M \ Rows_new(2*ii-1:2*ii,id_cols) );
