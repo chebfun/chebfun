@@ -24,6 +24,7 @@ for j = 1 : size(D, 1)/2
     %                  =  UC ( U S V' ) UR' 
     %                  =  ( UC U ) S ( UR V )'
     
+    % TODO: By Grady's memo, we can do these SVDs explicitly:
     [UC, SC, VC] = svd( C(:,ii), 0 );   % We could also use QR here, if it preserves the structure. 
     [UR, SR, VR] = svd( R(:,ii), 0 );
     

@@ -53,6 +53,22 @@ pass(9) = ( SampleError( f, g ) < tol );
 lambda = rand; theta = rand; 
 pass(10) = abs( feval(g, theta, lambda) - f(theta, lambda) ) < tol; 
 
+% feval at vectors: 
+lambda = rand(10,1); theta = rand(10,1); 
+pass(11) = norm( feval(g, theta, lambda) - f(theta, lambda) ) < tol; 
+
+% feval at vectors: 
+lambda = rand(1,10); theta = rand(1,10); 
+pass(12) = norm( feval(g, theta, lambda) - f(theta, lambda) ) < tol; 
+
+% feval at vectors: 
+lambda = rand(2,10); theta = rand(2,10); 
+pass(13) = norm( feval(g, theta, lambda) - f(theta, lambda) ) < tol; 
+
+% feval at meshgrid: 
+[lambda, theta] = meshgrid( rand(3,1) ); 
+pass(14) = norm( feval_meshgrid(g, theta, lambda) - f(theta, lambda) ) < tol; 
+
 end
 
 function sample_error = SampleError( h, g ) 
