@@ -151,12 +151,12 @@ else
         
         % Replace ; with the ASCII character for new line. Add indentation to
         % make it look nice
-        wSpace = repmat(' ', 1, length(args) + 11);
+        wSpace = repmat(' ', 1, length(args) + 12);
         op = strrep(op, ';', [char(13), wSpace]);
     end
 
     % Output string
-    str = [args, ' |-> ', op];
+    str = [args, ' |--> ', op];
 end
 
 end
