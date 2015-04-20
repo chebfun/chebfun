@@ -102,7 +102,7 @@ err = norm(L'*c - leg2cheb(c, 'trans'), inf);
 pass(13) = err < 10*tol;
 
 %% Test transpose large:
-N = 501;
+N = 514;
 seedRNG(0);
 c = rand(N,1);
 L = leg2cheb(eye(N));

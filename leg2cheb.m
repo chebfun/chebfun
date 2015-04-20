@@ -61,9 +61,8 @@ N = N - 1; NN = (0:N)';                         % Degree of polynomial.
 nM0 = min(floor(.5*(.25*eps*pi^1.5*gamma(M+1)/gamma(M+.5)^2)^(-1/(M+.5))), N);
 aM = min(1/log(N/nM0), .5);                     % Block reduction factor (alpha)
 K = ceil(log(N/nM0)/log(1/aM));                 % Number of block partitions.
-
-if ( M == 0 || K == 0 || N == 0)     
-% if ( M == 0 || N < 513 || K == 0 )
+ 
+if ( M == 0 || N < 513 || K == 0 )
 
     %%%%%%%%%%%%%%%%%%%% Use direct approach if N is small %%%%%%%%%%%%%%%%%%%%%
     L = legchebvandermonde(N);
@@ -74,7 +73,7 @@ if ( M == 0 || K == 0 || N == 0)
     end
     
 else
-    
+
     %%%%%%%%%%%%%%%%%%%% Use asymptotics for large N %%%%%%%%%%%%%%%%%%%%%%%%%%%
     t = pi*NN/N;                                    % Theta variable.   
     nM = ceil(aM.^(K-1:-1:0)*N);                    % n_M for each block.
