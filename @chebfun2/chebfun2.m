@@ -1,4 +1,4 @@
-classdef chebfun2
+classdef chebfun2 < lowrankapprox
 %CHEBFUN2   CHEBFUN2 class for representing functions on [a,b]x[c,d].
 % 
 %   Class for approximating functions defined on finite rectangles. The 
@@ -39,23 +39,7 @@ classdef chebfun2
 % See http://www.chebfun.org/ for Chebfun2 information.
 
 % TODO: Improve documentation of input options.
-
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% CLASS PROPERTIES:
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    properties ( Access = public )
-        % COLS: column slices used in low rank representation.
-        cols 
-        % ROWS: row slices used in low rank representation.
-        rows
-        % PIVOTVALUES: pivot values used in low rank representation.
-        pivotValues
-        % PIVOTLOCATIONS: pivot locations used in GE.
-        pivotLocations
-        % DOMAIN: rectangle of CHEBFUN2, default is [-1,1] x [-1,1].
-        domain = [-1 1 -1 1];
-    end
-    
+   
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% CLASS CONSTRUCTOR:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
