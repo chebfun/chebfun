@@ -70,12 +70,12 @@ pass(13) = norm( feval(g, theta, lambda) - f(theta, lambda) ) < tol;
 pass(14) = norm( feval_meshgrid(g, theta, lambda) - f(theta, lambda) ) < tol; 
 
 % Compression tests
-f = @(x,y,z) x;  % Rank 1 function
+f = @(x,y,z) x + z;  % Rank 2 function
 f = redefine_function_handle( f );
 g = spherefun( f );
 h = compress( g );
 pass(15) = ( SampleError( f, h ) < tol ); 
-pass(16) = size(h.BlockDiag,1) == 1;
+pass(16) = size(h.BlockDiag,1) == 2;
 
 f = @(x,y,z) exp(x);
 f = redefine_function_handle( f );
