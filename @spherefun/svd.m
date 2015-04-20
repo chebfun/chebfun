@@ -8,6 +8,7 @@ function varargout = svd( f )
 % TODO: Check if this is good enough, structure is probably not preserved.
 % :( 
 
+f = compress(f);
 
 C = f.Cols; 
 R = f.Rows; 

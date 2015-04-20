@@ -3,14 +3,19 @@ function f = compress( f )
 %
 %  F = COMPRESS( F ), use the SVD to compress the rank of a spherefun.
 
-
-
-% DISCLAIMER: This is a first effort and does need checking 
-
 tol = 50*eps;
+
+D = f.BlockDiag;
+
+% Check to see if f has already been compressed.  If D is strictly
+% diagonal then it has been compressed.
+[ii,jj] = find(D);
+if norm(ii-jj,inf) == 0
+    return
+end
+
 C = f.Cols.values;
 R = f.Rows.values;
-D = f.BlockDiag;
 
 for j = 1 : size(D, 1)/2
     

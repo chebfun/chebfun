@@ -74,7 +74,7 @@ while ( norm( F( : ), inf ) > tol*vscl )
     [ignored, idx] = max( S1(:) );
     [j, k] = ind2sub( size( S1 ), idx );
     
-    % Max determinant submatrix is:
+    % Max singular value submatrix is:
     M = [ F(j,k) F(j,k+n/2) ; F(j,k+n/2) F(j,k)];
     s = sort( abs([ diff(M(1,:)) ; sum(M(1,:)) ]), 1, 'descend' );  % equivalent to svd( M )
     
@@ -83,15 +83,14 @@ while ( norm( F( : ), inf ) > tol*vscl )
     
     if ( s(1) <= alpha*s(2) )  % Theoretically, should be s1 <= 2s2.
         % Calculate inverse of pivot matrix:
-        F = F - F(:, [k k+n/2] ) * ( M \ F( [j m-j+1],: ) );
+        invM = [M(1,1) -M(1,2);-M(1,2) M(1,1)]./(M(1,1)^2 - M(1,2)^2);
+        F = F - F(:, [k k+n/2] ) * ( invM * F( [j m-j+1],: ) );
         rank_count = rank_count + 2; 
     else
         % Calculate pseudoinverse of pivot matrix, there is
         % no full rank pivot matrix:
-        [U, S, V] = svd( M );
-        S(1,1) = 1./S(1,1); S(2,2) = 0;
-        invM = U * S * V';
-        F = F - F(:, [k k+n/2] ) * ( invM *  F( [j m-j+1],: ) );
+        pinvM = getPseudoInv( M );
+        F = F - F(:, [k k+n/2] ) * ( pinvM *  F( [j m-j+1],: ) );
         rank_count = rank_count + 1; 
     end
     
@@ -142,25 +141,22 @@ while ( ~happy_columns || ~happy_rows )
         Rows(2*ii-1:2*ii,:) = Rows_new(2*ii-1:2*ii,:); %F([j 2*m-j+1],: );
         if ( s(1) <= alpha*s(2) )
             % Calculate inverse of pivot matrix:
-            row_correction = Cols_new(id_rows,2*ii-1:2*ii) * ( M \ Rows_new(2*ii-1:2*ii,:) );
-            Cols_new = Cols_new - Cols_new(:,2*ii-1:2*ii) * ( M \ Rows_new(2*ii-1:2*ii,id_cols) );
-            Rows_new = Rows_new - row_correction;
-            BlockDiag(2*ii-1:2*ii, 2*ii-1:2*ii) = inv( M );
-        else
-            % Calculate pseudoinverse of pivot matrix, there is
-            % no full rank pivot matrix:
-            [U, S, V] = svd( M );
-            S(1,1) = 1./S(1,1); S(2,2) = 0;
-%             invM = U * S * V';
-            invM = V * S * U';
+            invM = [M(1,1) -M(1,2);-M(1,2) M(1,1)]./(M(1,1)^2 - M(1,2)^2);
             row_correction = Cols_new(id_rows,2*ii-1:2*ii) * ( invM * Rows_new(2*ii-1:2*ii,:) );
             Cols_new = Cols_new - Cols_new(:,2*ii-1:2*ii) * ( invM * Rows_new(2*ii-1:2*ii,id_cols) );
             Rows_new = Rows_new - row_correction;
             BlockDiag(2*ii-1:2*ii, 2*ii-1:2*ii) = invM;
+        else
+            % Calculate pseudoinverse of the pivot matrix, there is
+            % no full rank pivot matrix:
+            pinvM = getPseudoInv( M );
+            row_correction = Cols_new(id_rows,2*ii-1:2*ii) * ( pinvM * Rows_new(2*ii-1:2*ii,:) );
+            Cols_new = Cols_new - Cols_new(:,2*ii-1:2*ii) * ( pinvM * Rows_new(2*ii-1:2*ii,id_cols) );
+            Rows_new = Rows_new - row_correction;
+            BlockDiag(2*ii-1:2*ii, 2*ii-1:2*ii) = pinvM;
         end
         
     end
-    
     
     % Happiness check for columns:
     col_coeffs = trigtech.vals2coeffs( Cols ); 
@@ -221,6 +217,15 @@ function F = sample( h, m, n )
 F = h(L2, T2);
 end
 
+function pinvM = getPseudoInv( M )
+lam1 = M(1,1)+M(1,2);  % Eigenvalues of M (which is symmetric)
+lam2 = M(1,1)-M(1,2);
+if abs(lam1) > abs(lam2)
+    pinvM = ones(2)/(2*lam1);
+else
+    pinvM = [[1 -1];[-1 1]]/(2*lam2);
+end
+end
 
 function f = redefine_function_handle( f )
 % nargin( f ) = 2, then we are already on the sphere, if nargin( f ) = 3,
