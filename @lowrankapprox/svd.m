@@ -1,7 +1,7 @@
 function varargout = svd( f )
-%SVD    Singular value decomposition of a CHEBFUN2.
+%SVD    Singular value decomposition of a LOWRANKAPPROX.
 %   SVD(F) returns the singular values of F. The number of singular values
-%   returned is equal to the rank of the CHEBFUN2.
+%   returned is equal to the rank of the LOWRANKAPPROX.
 %
 %   S = SVD(F) returns the singular values of F. S is a vector of singular
 %   values in decreasing order.
@@ -10,8 +10,8 @@ function varargout = svd( f )
 %   orthogonal CHEBFUN objects and S is a diagonal matrix with the singular
 %   values on the diagonal.
 %
-%   The length and rank of a CHEBFUN2 are slightly different quantities.
-%   LENGTH(F) is the number of pivots used by the CHEBFUN2 constructor, and
+%   The length and rank of a LOWRANKAPPROX are slightly different quantities.
+%   LENGTH(F) is the number of pivots used by the constructor, and
 %   RANK(F) is the number of significant singular values of F. The relation
 %   RANK(F) <= LENGTH(F) should always hold.
 
