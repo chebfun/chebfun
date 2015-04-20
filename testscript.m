@@ -83,6 +83,11 @@ g = spherefun( f );
 h = compress( g );
 pass(17) = ( SampleError( f, h ) < tol ); 
 
+% Sum2 tests: 
+f = @(x,y,z) x.^2 + y.^2 + z.^2; 
+g = spherefun( f ); 
+sum2( g ) 
+
 end
 
 function sample_error = SampleError( h, g ) 

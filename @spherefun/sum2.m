@@ -1,7 +1,8 @@
 function v = sum2( f ) 
 % Definite integration of a spherefun. 
 
-cs = cumsum( f.Cols );
-v = feval(cs, 0)  * f.BlockDiag * sum(f.Rows).';
+meanCols = sum( f.Cols )/2;  % mean(f.Cols) 
+cs = pi*cumsum( f.Cols );
+v = (feval(cs, 0)+2*pi*meanCols) * f.BlockDiag * sum(f.Rows).';
 
 end
