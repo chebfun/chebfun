@@ -1,5 +1,5 @@
 function f = sum( f, dim )
-%SUM   Definite Integration of a CHEBFUN2.
+%SUM   Definite Integration of a LOWRANKAPPROX.
 %   G = sum(F,DIM) where DIM is 1 or 2 integrates only over Y or X respectively,
 %   and returns as its output a chebfun in the remaining variable.
 %
@@ -43,7 +43,7 @@ elseif ( dim == 2 )
         f = chebfun( f, dom(3:4) ); 
     end
 else 
-    error('CHEBFUN:CHEBFUN2:sum:unknown', ...
+    error('LOWRANKAPPROX:sum:unknown', ...
           'Undefined function ''sum'' for that dimension');
 end
 

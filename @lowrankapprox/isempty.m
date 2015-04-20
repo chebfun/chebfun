@@ -1,6 +1,6 @@
 function out = isempty( f ) 
-%ISEMPTY   True for empty CHEBFUN2.
-%   ISEMPTY(F) returns 1 if F is an empty CHEBFUN2 object and 0 otherwise. 
+%ISEMPTY   True for empty LOWRANKAPPROX.
+%   ISEMPTY(F) returns 1 if F is an empty LOWRANKAPPROX object and 0 otherwise. 
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
