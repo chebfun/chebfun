@@ -28,6 +28,8 @@ classdef lowrankapprox
     % CONCRETE METHODS (IMPLEMENTED BY THIS ABSTRACT CLASS.)
     methods ( Access = public, Static = false )
         
+        % Extract out the low rank approximation 
+        varargout = cdr( f )
         
     end
     
