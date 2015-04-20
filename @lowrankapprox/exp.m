@@ -1,6 +1,6 @@
 function f = exp(f) 
-%EXP  Exponential of a CHEBFUN2
-%   EXP(F) returns the exponential of a CHEBFUN2. 
+%EXP  Exponential of a LOWRANKAPPROX
+%   EXP(F) returns the exponential of a LOWRANKAPPROX. 
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -10,7 +10,6 @@ if ( isempty( f ) )
     return 
 end 
 
-op = @(x,y) exp( feval(f, x, y ) ); % Resample.
-f = chebfun2( op, f.domain );       % Call constructor.
+f = chebfun2( f, @exp ); 
 
 end

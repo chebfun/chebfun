@@ -1,7 +1,7 @@
 function out = domainCheck(f, g)
-%DOMAINCHECK   True if the domains of two CHEBFUN2 objects are the same.
+%DOMAINCHECK   True if the domains of two LOWRANKAPPROX objects are the same.
 %   DOMAINCHECK(F, G) returns TRUE if the domains of the two
-%   CHEBFUN2 objects F and G coincide up to a tolerance depending on their
+%   LOWRANKAPPROX objects F and G coincide up to a tolerance depending on their
 %   horizontal scales or if both F and G are empty CHEBFUN objects.
 %
 % See also CHEBFUN/DOMAINCHECK.
@@ -10,9 +10,9 @@ function out = domainCheck(f, g)
 % See http://www.chebfun.org/ for Chebfun information. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% The CHEBFUN2 class uses this function internally to compare the domains of
-% CHEBFUN2 objects before attempting to perform operations on multiple CHEBFUN
-% objects that require the CHEBFUN2 objects to reside on the same interval.
+% The LOWRANKAPPROX class uses this function internally to compare the domains of
+% LOWRANKAPPROX objects before attempting to perform operations on multiple CHEBFUN
+% objects that require the LOWRANKAPPROX objects to reside on the same interval.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Empty check: 

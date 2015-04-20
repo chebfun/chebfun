@@ -1,5 +1,5 @@
 function H = discriminant(f, x, y, varargin)
-%DISCRIMINANT the determinant of Hessian of a CHEBFUN2 at (x,y) 
+%DISCRIMINANT the determinant of Hessian of a LOWRANKAPPROX at (x,y) 
 %   H = DISCRIMINANT(F,x,y) returns the determinant of the Hessian of F at
 %   (x,y). The gradient of F should be zero at (x,y).
 % 
@@ -7,7 +7,7 @@ function H = discriminant(f, x, y, varargin)
 %   of F at (x,y).
 %
 %   Note that we cannot represent the Hessian matrix because we do not allow
-%   horizontal concatenation of CHEBFUN2 objects.
+%   horizontal concatenation of LOWRANKAPPROX objects.
 %
 % See also JACOBIAN. 
 
@@ -53,7 +53,7 @@ elseif ( nargin == 4 )  % Bordered Hessian
     H = -gx.*(gx.*fyy - gy.*fxy) + gy.*(gx.*fxy - gy.*fxx);
     
 else
-    error('CHEBFUN:CHEBFUN2:discriminant:badInput', 'Invalid input arguments.');
+    error('CHEBFUN:LOWRANKAPPROX:discriminant:badInput', 'Invalid input arguments.');
 end
 
 end

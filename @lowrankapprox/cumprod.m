@@ -1,8 +1,8 @@
 function g = cumprod( f, dim )
-%CUMPROD  Indefinite product integral of a CHEBFUN2. 
-%   G = CUMPROD(F) returns the CHEBFUN2 G = exp( cumsum(log(F)) )
+%CUMPROD  Indefinite product integral of a LOWRANKAPPROX. 
+%   G = CUMPROD(F) returns the LOWRANKAPPROX G = exp( cumsum(log(F)) )
 % 
-%   G = CUMPROD(F, DIM) returns the CHEBFUN2 G = exp( cumsum(log(F), DIM) )
+%   G = CUMPROD(F, DIM) returns the LOWRANKAPPROX G = exp( cumsum(log(F), DIM) )
 %
 % See also CUMSUM, SUM, PROD.
 

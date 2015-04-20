@@ -1,6 +1,6 @@
 function f = flipud( f ) 
-%FLIPUD   Flip/reverse a CHEBFUN2 in the y-direction.
-%   G = FLIPUD(F) returns a CHEBFUN2 G with the same domain as F but reversed;
+%FLIPUD   Flip/reverse a LOWRANKAPPROX in the y-direction.
+%   G = FLIPUD(F) returns a LOWRANKAPPROX G with the same domain as F but reversed;
 %   that is, G(x,y) = F(x, c+d-y), where the domain is [a, b, c, d].
 %
 % See also FLIPLR, FLIPDIM. 

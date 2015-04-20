@@ -1,9 +1,9 @@
 function C = complex( A, B )
-%COMPLEX Construct complex CHEBFUN2 from real and imaginary parts.
-%   C = COMPLEX(A, B) returns the complex CHEBFUN2 A + Bi, where A and B are
-%   real valued CHEBFUN2 objects with the same domain.
+%COMPLEX Construct complex LOWRANKAPPROX from real and imaginary parts.
+%   C = COMPLEX(A, B) returns the complex LOWRANKAPPROX A + Bi, where A and B are
+%   real valued LOWRANKAPPROX objects with the same domain.
 %
-%   C = COMPLEX(A) for real CHEBFUN2 A returns the complex result C with real
+%   C = COMPLEX(A) for real LOWRANKAPPROX A returns the complex result C with real
 %   part A and all zero imaginary part. isreal(C) returns false.
 %
 % See also IMAG, CONJ, ABS, REAL.
@@ -12,17 +12,17 @@ function C = complex( A, B )
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin == 2 )
-    if ( ~isa(B, 'chebfun2') )
-        error('CHEBFUN:CHEBFUN2:complex:inputs', ...
+    if ( ~isa(B, 'lowrankapprox') )
+        error('CHEBFUN:LOWRANKAPPROX:complex:inputs', ...
             'Second input must be a CHEBFUN2.');
     elseif ( ~isreal( A ) || ~isreal( B ) )
-        error('CHEBFUN:CHEBFUN2:complex:notReal1', ...
+        error('CHEBFUN:LOWRANKAPPROX:complex:notReal1', ...
             'Inputs must be real valued.');
     end
     C = A + 1i*B;
 else
     if ( ~isreal( A ) )
-        error('CHEBFUN:CHEBFUN2:complex:notReal2', ...
+        error('CHEBFUN:LOWRANKAPPROX:complex:notReal2', ...
             'Input must be real valued.');
     end
     % Make complex.

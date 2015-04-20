@@ -1,5 +1,5 @@
 function f = ctranspose( f )
-%'	 Complex conjugate transpose of a CHEBFUN2.
+%'	 Complex conjugate transpose of a LOWRANKAPPROX.
 %   F' is the complex conjugate transpose of F.
 %   G = CTRANSPOSE(F) is called for the syntax F'.  
 %

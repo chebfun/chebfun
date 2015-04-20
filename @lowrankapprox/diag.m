@@ -1,5 +1,5 @@
 function f = diag( f, varargin )
-%DIAG(F)   Diagonal of a CHEBFUN2.
+%DIAG(F)   Diagonal of a LOWRANKAPPROX.
 %   G = DIAG(F) returns the CHEBFUN representing g(x) = f(x, x).
 %
 %   G = diag(F,C) returns the CHEBFUN representing g(x) = f(x, x+c).
@@ -21,7 +21,7 @@ if ( nargin == 1 )
 else 
     c = varargin{1};
     if ( ~isa(c, 'double') )
-        error('CHEBFUN:CHEBFUN2:diag:diag', ...
+        error('CHEBFUN:LOWRANKAPPROX:diag:diag', ...
             'Second argument to diag should be a double.');
     end
 end

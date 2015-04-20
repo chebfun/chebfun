@@ -1,5 +1,5 @@
 function F = diff(F, k, dim)
-%DIFF   Derivative of a CHEBFUN2s.
+%DIFF   Derivative of a LOWRANKAPPROX object.
 %   DIFF(F) is the derivative of F along the y direction.
 %
 %   DIFF(F, N) is the Nth derivative of F in the y direction.
@@ -31,7 +31,7 @@ end
 if ( nargin < 3 )
     dim = 1;
 elseif ( numel(dim) ~= 1 )
-    error('CHEBFUN:CHEBFUN2:diff:dim1', 'Dim should be either 1 or 2.');
+    error('CHEBFUN:LOWRANKAPPROX:diff:dim1', 'Dim should be either 1 or 2.');
 end
 
 % Diff the individual column and row slices:
@@ -43,7 +43,7 @@ elseif ( dim == 1 )
 elseif ( dim == 2 )
     F.rows = diff(F.rows, k);
 else 
-    error('CHEBFUN:CHEBFUN2:diff:dim2', ...
+    error('CHEBFUN:LOWRANKAPPROX:diff:dim2', ...
         'Can compute derivative in x or y only.');
 end
 

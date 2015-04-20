@@ -1,6 +1,6 @@
 function I = dblquad(f, a, b, c, d, varargin)
-%DBLQUAD   Complete definite integral of CHEBFUN2. 
-%   I = DBLQUAD(F, a, b, c, d), returns the definite integral of a CHEBFUN2 over
+%DBLQUAD   Complete definite integral of LOWRANKAPPROX. 
+%   I = DBLQUAD(F, a, b, c, d), returns the definite integral of a LOWRANKAPPROX over
 %   the region [a, b, c, d].
 % 
 %   This function is a wrapper for quad2d.

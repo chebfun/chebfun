@@ -1,5 +1,5 @@
 function f = cosh( f )
-%COSH   Hyperbolic cosine of a CHEBFUN2.
+%COSH   Hyperbolic cosine of a LOWRANKAPPROX.
 %   COSH(F) returns the hyperbolic cosine of F.
 % 
 % See also SINH, COS.
@@ -12,7 +12,6 @@ if ( isempty( f ) )
     return 
 end 
 
-op = @(x,y) cosh( feval(f, x, y ) ) ;  % Resample. 
-f = chebfun2( op, f.domain );          % Call constructor. 
+f = compose( f, @cosh ); 
 
 end

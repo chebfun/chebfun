@@ -1,5 +1,5 @@
 function f = cos( f ) 
-%COS   Cosine of a CHEBFUN2.
+%COS   Cosine of a LOWRANKAPPROX.
 %   COS(F) returns the cosine of F.
 %
 % See also COSH.
@@ -12,7 +12,6 @@ if ( isempty( f ) )
     return
 end 
 
-op = @(x,y) cos( feval( f, x, y ) );  % Resample. 
-f = chebfun2(op, f.domain);           % Call constructor. 
+f = compose( f, @cos ); 
 
 end
