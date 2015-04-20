@@ -16,7 +16,7 @@ if ( isempty(f) )
     return
 end
 
-% Get the degree of the CHEBFUN2:
+% Get the degree of the LOWRANKAPPROX:
 [m, n] = length(f); 
 
 % If F is of low degree, then oversample: 
