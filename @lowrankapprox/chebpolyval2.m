@@ -1,13 +1,13 @@
 function varargout = chebpolyval2( f, varargin )
-%CHEBPOLYVAL2   Values on a tensor Chebyshev grid.
-%   X = CHEBPOLYVAL2(F) returns the matrix of values of F on a Chebyshev tensor
-%   grid.
+%CHEBPOLYVAL2   Values on a tensor product grid.
+%   X = CHEBPOLYVAL2(F) returns the matrix of values of F on a tensor
+%   product grid.
 %
 %   [U, D, V] = CHEBPOLYVAL2(F) returns the low rank representation of the
-%   values of F on a tensor Chebyshev grid. X = U * D * V'.
+%   values of F on a tensor product grid. X = U * D * V'.
 %
 %   [U, D, V] = CHEBPOLYVAL2(F,M,N) returns the values of F on a M-by-N
-%   Chebyshev tensor grid.
+%   tensor product grid.
 %
 % See also CHEBCOEFFS2, PLOTCOEFFS2. 
 
@@ -33,10 +33,8 @@ end
 % Get the low rank representation for f. 
 [cols, d, rows] = cdr(f);
 
-tech = chebfunpref().tech(); 
-
-C = tech.coeffs2vals(chebcoeffs( cols, n )); 
-R = tech.coeffs2vals(chebcoeffs( rows, m )); 
+C = coeffs2vals(chebcoeffs( cols, n )); 
+R = coeffs2vals(chebcoeffs( rows, m )); 
 
 % Evaluate: 
 if ( nargout <= 1 )

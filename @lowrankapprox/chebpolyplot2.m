@@ -7,9 +7,9 @@ function varargout = chebpolyplot2(f)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-warning('CHEBFUN:CHEBFUN2:chebpolyplot2:deprecated', ...
+warning('CHEBFUN:LOWRANKAPPROX:chebpolyplot2:deprecated', ...
     'CHEBPOLYPLOT2 is deprecated. Please use PLOTCOEFFS2 instead.');
-warning('off', 'CHEBFUN:CHEBFUN2:chebpolyplot2:deprecated');
+warning('off', 'CHEBFUN:LOWRANKAPPROX:chebpolyplot2:deprecated');
 
 % TODO: Use this once plotcoeffs2 is working:
 % [varargout{1:nargout}] = plotcoeffs2(varargin{:});

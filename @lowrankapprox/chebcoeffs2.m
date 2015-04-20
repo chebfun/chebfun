@@ -1,5 +1,5 @@
 function varargout = chebcoeffs2(f)
-%CHEBCOEFFS2    Bivariate Chebyshev coefficients
+%CHEBCOEFFS2    Bivariate expansion coefficients
 %   X = CHEBCOEFFS2(F) returns the matrix of bivariate coefficients such that
 %       F= sum_i ( sum_j X(i,j) T_i(y) T_j(x) ). 
 %
@@ -35,7 +35,7 @@ elseif ( nargout <= 3 )
     varargout = { cols_coeffs, d, rows_coeffs };
 else
     % Two output variables are not allowed.
-    error('CHEBFUN:CHEBFUN2:chebcoeffs2:outputs', ...
+    error('CHEBFUN:LOWRANKAPPROX:chebcoeffs2:outputs', ...
         'Incorrect number of outputs.');
 end
 
