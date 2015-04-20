@@ -1,17 +1,19 @@
 classdef lowrankapprox
     
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS PROPERTIES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
-       
+        % COLS: column slices used in low rank representation.
         cols 
-        
-        rows 
-        
+        % ROWS: row slices used in low rank representation.
+        rows
+        % PIVOTVALUES: pivot values used in low rank representation.
         pivotValues
-        
-        pivotLocations 
-        
-        domain = [-1, 1, -1, 1];
-        
+        % PIVOTLOCATIONS: pivot locations used in GE.
+        pivotLocations
+        % DOMAIN: default is [-1,1] x [-1,1].
+        domain = [-1 1 -1 1];
     end
     
     

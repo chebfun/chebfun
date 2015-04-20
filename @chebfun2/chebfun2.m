@@ -39,7 +39,7 @@ classdef chebfun2 < lowrankapprox
 % See http://www.chebfun.org/ for Chebfun2 information.
 
 % TODO: Improve documentation of input options.
-   
+    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% CLASS CONSTRUCTOR:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
