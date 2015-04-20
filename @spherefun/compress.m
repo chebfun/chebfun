@@ -17,42 +17,37 @@ for j = 1 : size(D, 1)/2
     % Look at 2x2 blocks at one time. 2x2 blocks separate. 
     ii = 2*j-1:2*j;
     
-    % Grady's memo tells us this preserves the BMC structure:  Does it?
-    % (Yes(?), because C(:,ii)D(ii,ii)R(:,ii)' is a BMC matrix.)
-    % IDEA:     C D R  = ( UC SC VC' ) * D * ( UR SR VR' )'
-    %                  =  UC  ( SC VC' D VR SR )  UR' 
-    %                  =  UC ( U S V' ) UR' 
-    %                  =  ( UC U ) S ( UR V )'
+    % Follows equation (4) of Grady's memo.  Basic idea is to compute
+    % eigenvalue decomposition of each 2-by-2 matrix on the block diagonal
+    % M = U*S*U' 
+    %   = 1/sqrt(2)[1 1;1 -1]*[M(1,1)+M(1,2) 0;0 M(1,1)-M(1,2)]*1/sqrt(2)*[1 1;1 -1]
+    % Then Compute C*U and U'*R.  This will preserve the BMC structure
     
-    % TODO: By Grady's memo, we can do these SVDs explicitly:
-    [UC, SC, VC] = svd( C(:,ii), 0 );   % We could also use QR here, if it preserves the structure. 
-    [UR, SR, VR] = svd( R(:,ii), 0 );
+    % TODO: Perhaps we shoudl switch to the SVD of M so all pivots are
+    % positive?
     
-    % Now do the middle part: 
-    [U, S, V] = svd( SC * VC' * D(ii,ii) * VR * SR ,0 );
-    
-    % Push back into CDR structure:
-    D(ii,ii) = S;
-    C(:,ii) = UC * U;
-    R(:,ii) = UR * V;
-    
+    C(:,ii) = [C(:,ii(1))+C(:,ii(2)) C(:,ii(1))-C(:,ii(2))]/sqrt(2);
+    R(:,ii) = [R(:,ii(1))+R(:,ii(2)) R(:,ii(1))-R(:,ii(2))]/sqrt(2);    
+    D(ii,ii) = spdiags([D(ii(1),ii(1))+D(ii(1),ii(2));D(ii(1),ii(1))-D(ii(1),ii(2))],0,2,2);
+        
 end
 
 % COMPRESS: Remove zeros on diag of B
-idx = find( diag( D ) > tol );
-D = D( idx, idx );
+D = diag( D );
+idx = find( abs( D ) > tol );
+D = D( idx );
 C = C(:, idx);
 R = R(:, idx);
 
 % order the columns and rows:
-[ignored, perm] = sort( diag( D ), 1, 'descend'); 
-D = D(perm, perm); 
+[ignored, perm] = sort( abs( D ), 1, 'descend'); 
+D = D(perm); 
 C = C(:, perm);
 R = R(:, perm); 
 
 % Now make a new spherefun:
 f.Cols = trigtech( C );
 f.Rows = trigtech( R );
-f.BlockDiag = D;
+f.BlockDiag = spdiags(D,0,size(D,1),size(D,1));
 
 end

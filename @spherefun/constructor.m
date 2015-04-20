@@ -151,7 +151,8 @@ while ( ~happy_columns || ~happy_rows )
             % no full rank pivot matrix:
             [U, S, V] = svd( M );
             S(1,1) = 1./S(1,1); S(2,2) = 0;
-            invM = U * S * V';
+%             invM = U * S * V';
+            invM = V * S * U';
             row_correction = Cols_new(id_rows,2*ii-1:2*ii) * ( invM * Rows_new(2*ii-1:2*ii,:) );
             Cols_new = Cols_new - Cols_new(:,2*ii-1:2*ii) * ( invM * Rows_new(2*ii-1:2*ii,id_cols) );
             Rows_new = Rows_new - row_correction;

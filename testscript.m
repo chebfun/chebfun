@@ -69,6 +69,20 @@ pass(13) = norm( feval(g, theta, lambda) - f(theta, lambda) ) < tol;
 [lambda, theta] = meshgrid( rand(3,1) ); 
 pass(14) = norm( feval_meshgrid(g, theta, lambda) - f(theta, lambda) ) < tol; 
 
+% Compression tests
+f = @(x,y,z) x;  % Rank 1 function
+f = redefine_function_handle( f );
+g = spherefun( f );
+h = compress( g );
+pass(15) = ( SampleError( f, h ) < tol ); 
+pass(16) = size(h.BlockDiag,1) == 1;
+
+f = @(x,y,z) exp(x);
+f = redefine_function_handle( f );
+g = spherefun( f );
+h = compress( g );
+pass(17) = ( SampleError( f, h ) < tol ); 
+
 end
 
 function sample_error = SampleError( h, g ) 
