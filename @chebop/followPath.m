@@ -13,7 +13,7 @@ printing = 1;
 
 slmax = 4; slmin = 0.0001; % Maximum/min steplength
 maxCounter = 7;
-stopCriteria = @(u) 0;
+stopCriteria = @(u, lambda) 0;
 
 if ( nargin < 8 )
     direction = 1;
@@ -124,7 +124,7 @@ while counter <= maxCounter
         continue
     end
     
-    if ( stopCriteria(u) )
+    if ( stopCriteria(u, lam) )
         return
     end
     % Store values for plotting
