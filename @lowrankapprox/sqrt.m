@@ -7,7 +7,6 @@ function f = sqrt( f )
 
 % Empty check:
 if ( isempty( f ) )
-    f = chebfun2();
     return
 end
 
@@ -15,12 +14,10 @@ end
 [bol, wzero] = singleSignTest( f );
 
 if ( ( bol == 0 ) || ( wzero == 1 ) )
-    error('CHEBFUN:CHEBFUN2:sqrt:notSmooth', ...
+    error('CHEBFUN:LOWRANKAPPROX:sqrt:notSmooth', ...
         'A change of sign/zero has been detected, unable to represent the result.');
 end
 
-% Call the constructor:
-op = @(x,y) sqrt( feval( f, x, y ) ); % Resample.
-f = chebfun2( op, f.domain );         % Call constructor.
+f = compose( f, @sqrt ); 
 
 end

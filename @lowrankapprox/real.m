@@ -1,5 +1,5 @@
 function f = real( f )
-%REAL  Real part of a CHEBFUN2.
+%REAL      Real part of a LOWRANKAPPROX.
 %
 % See also IMAG.
 
@@ -7,12 +7,11 @@ function f = real( f )
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 
+% Empty check: 
 if ( isempty( f ) ) 
-    f = chebfun2;
     return
 end
 
-op = @(x,y) real( feval( f, x, y ) );   % Resample.
-f = chebfun2( op, f.domain );           % Call constructor.
+f = compose( f, @real ); 
 
 end

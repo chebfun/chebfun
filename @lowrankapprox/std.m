@@ -1,5 +1,5 @@
 function g = std( f, varargin )
-%STD   Standard deviation of a CHEBFUN2 along one variable.
+%STD   Standard deviation of a LOWRANKAPPROX along one variable.
 %   G = STD(F) returns the standard deviation of F in the y-variable (default).
 %   That is, if F is defined on the rectangle [a,b] x [c,d] then
 %
@@ -13,7 +13,7 @@ function g = std( f, varargin )
 %   DIM = 1 and along the x-variable if DIM = 2. The FLAG is ignored and kept in
 %   this function so the syntax agrees with the Matlab STD command.
 %
-% See also CHEBFUN/STD, CHEBFUN2/MEAN.
+% See also CHEBFUN/STD, LOWRANKAPPROX/MEAN.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -30,7 +30,7 @@ if ( nargin < 3 )
 elseif ( nargin == 3 )
     dim = varargin{ 2 }; 
 else 
-    error( 'CHEBFUN:CHEBFUN2:std:nargin', 'Too many input arguments.' ); 
+    error( 'CHEBFUN:LOWRANKAPPROX:std:nargin', 'Too many input arguments.' ); 
 end
 
 if ( dim == 1 )          % y-variable.
@@ -40,7 +40,7 @@ elseif ( dim == 2 )      %  x-variable.
     my = chebfun2( @(x,y) feval( mean(f, 1), y), dom );
     g = sqrt( 1/( diff( rect(1:2) ) ) * sum( ( f - my ).^2, 2 ) );
 else
-    error('CHEBFUN:CHEBFUN2:std:dim', ...
+    error('CHEBFUN:LOWRANKAPPROX:std:dim', ...
         'Third argument should have value 1 or 2.');
 end
 

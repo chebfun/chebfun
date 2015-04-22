@@ -1,5 +1,5 @@
 function r = rank(f, tol)
-%RANK  Rank of a CHEBFUN2.
+%RANK      Rank of a LOWRANKAPPROX.
 %   RANK(F) produces an estimate of the rank of the approximant F.
 %
 %   RANK(F, TOL) is the number of singular values of F greater than TOL/N, where
@@ -22,7 +22,7 @@ if ( nargin == 1 )
 end
 
 % Compute the singular values of f. 
-s = svd(f); 
+s = svd( f ); 
 
 % Check for zero function.
 if ( max(s) == 0  )  

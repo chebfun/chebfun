@@ -1,5 +1,5 @@
 function t = trace( f )
-% TRACE integral of a CHEBFUN2 along its diagonal 
+% TRACE integral of a LOWRANKAPPROX along its diagonal 
 %
 % TRACE(f) is the integral of function f(x,x).
 % 

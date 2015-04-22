@@ -1,5 +1,5 @@
 function f = simplify( f ) 
-% Simplify a CHEBFUN2
+% Simplify a LOWRANKAPPROX
 % 
 % F = SIMPLIFY( F ) compressed the representation of F to one that is
 % numerically the same, but requires fewer parameters to store. Currently this

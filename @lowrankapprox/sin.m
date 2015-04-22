@@ -11,5 +11,5 @@ end
 
 op = @(x,y) sin( feval(f, x, y) );     % Resample. 
 f = chebfun2( op, f.domain );          % Call constructor.
-
+f = compose( f, @sin ); 
 end

@@ -1,7 +1,7 @@
 function f = restrict(f, dom)
-% RESTRICT  Restrict the domain of a CHEBFUN2.
+% RESTRICT  Restrict the domain of a LOWRANKAPPROX.
 %
-% F = RESTRICT(F, DOM) returns a CHEBFUN2 on the domain DOM that approximates F
+% F = RESTRICT(F, DOM) returns a LOWRANKAPPROX on the domain DOM that approximates F
 % F on that domain.  DOM should be a vector of length 4 giving the coordinates
 % of the corners. 
 
@@ -35,7 +35,7 @@ if ( isa( dom, 'double' ) )
             f.domain = dom;
         end
     else
-        error('CHEBFUN:CHEBFUN2:restrict:domain', 'Domain not determined.');
+        error('CHEBFUN:LOWRANKAPPROX:restrict:domain', 'Domain not determined.');
     end
     
 elseif (isa( dom, 'chebfun' ))

@@ -1,7 +1,7 @@
 function varargout = subsref(f, index)
-%SUBSREF   CHEBFUN2 subsref.
+%SUBSREF       LOWRANKAPPROX subsref.
 % ( )
-%   F(X, Y) returns the values of the CHEBFUN2 F evaluated at (X,Y). See
+%   F(X, Y) returns the values of the LOWRANKAPPROX F evaluated at (X,Y). See
 %   CHEBFUN/FEVAL for further details. F(:, Y) returns a chebfun representing
 %   the function F along that column slice, and F(X, :) returns a chebfun
 %   representing F along that row slice. F(:, :) returns F.
@@ -34,7 +34,7 @@ switch index(1).type
             y = idx{2};
         elseif ( isa(x, 'chebfun2v') ) 
             % f(F), where f is a chebfun2 and F is a chebfun2v. 
- 
+            error
             out = feval(f, x); 
             varargout = { out }; 
             return
@@ -49,7 +49,7 @@ switch index(1).type
             varargout = { out }; 
             return
         else
-            error('CHEBFUN:CHEBFUN2:subsref:inputs', ...
+            error('CHEBFUN:LOWRANKAPPROX:subsref:inputs', ...
                 'Can only evaluate at functions (X,Y)')
         end
         
@@ -64,12 +64,12 @@ switch index(1).type
             out = feval(f, x, y) ;
         elseif ( isa(x,'chebfun') && isa(y,'chebfun') )
             if ( ~isreal(x) || ~isreal(y) ) 
-                error('CHEBFUN:CHEBFUN2:subsref:real', ...
+                error('CHEBFUN:LOWRANKAPPROX:subsref:real', ...
                     'Both chebfuns must be real-valued.')
             end
             out = feval(f, x, y) ;
         else
-            error('CHEBFUN:CHEBFUN2:subsref:nonnumeric',...
+            error('CHEBFUN:LOWRANKAPPROX:subsref:nonnumeric',...
               'Cannot evaluate chebfun2 for these inputs type.');
         end
     
@@ -90,13 +90,13 @@ switch index(1).type
         if ( length(idx) == 4 ) 
             out = restrict( f, [ idx{ : } ] );
         else
-            error('CHEBFUN:CHEBFUN2:subsref:dimensions', ...
+            error('CHEBFUN:LOWRANKAPPROX:subsref:dimensions', ...
                 'Index exceeds chebfun dimensions.')          
         end
         
     otherwise
         
-        error('CHEBFUN:CHEBFUN2:subsref:unexpectedType',...
+        error('CHEBFUN:LOWRANKAPPROX:subsref:unexpectedType',...
             ['??? Unexpected index.type of ', index(1).type]);
 end
 
