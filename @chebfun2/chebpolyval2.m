@@ -33,8 +33,10 @@ end
 % Get the low rank representation for f. 
 [cols, d, rows] = cdr(f);
 
-C = chebfun2.coeffs2vals(chebcoeffs( cols, n )); 
-R = chebfun2.coeffs2vals(chebcoeffs( rows, m )); 
+tech = chebfunpref().tech(); 
+
+C = tech.coeffs2vals(chebcoeffs( cols, n )); 
+R = tech.coeffs2vals(chebcoeffs( rows, m )); 
 
 % Evaluate: 
 if ( nargout <= 1 )

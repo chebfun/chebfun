@@ -10,6 +10,6 @@ if ( isempty( f ) )
     return 
 end 
 
-f = chebfun2( f, @exp ); 
+f = compose( f, @exp ); 
 
 end
