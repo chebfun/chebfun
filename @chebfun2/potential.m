@@ -16,7 +16,7 @@ function G = potential( f )
 
 % Empty check: 
 if ( isempty( f ) )
-    G = chebfun2v; 
+    G = chebfun2v( ); 
     return
 end
 

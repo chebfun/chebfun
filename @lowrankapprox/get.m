@@ -1,7 +1,7 @@
 function val = get( f, propName )
-%GET   GET method for CHEBFUN2 class.
+%GET       GET method for LOWRANKAPPROX class.
 %   P = GET(F, PROP) returns the property P specified in the string PROP from
-%   the CHEBFUN F. Valid entries for the string PROP are:
+%   the LOWRANKAPPROX object F. Valid entries for the string PROP are:
 %    'DOMAIN'
 %    'COLS'
 %    'ROWS' 
@@ -11,7 +11,7 @@ function val = get( f, propName )
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Loop through an array of CHEBFUN2 objects.
+% Loop through an array of LOWRANKAPPROX objects.
 if ( numel(f) > 1 )
     val = cell(numel(f));
     for k = 1:numel(f)
@@ -33,6 +33,6 @@ switch ( propName )
     case 'pivotLocations'
         val = f.pivotLocations;
     otherwise
-        error('CHEBFUN:CHEBFUN2:get:propName', ...
-            [propName,' is not a valid CHEBFUN2 property.'])
+        error('CHEBFUN:LOWRANKAPPROX:get:propName', ...
+            [propName,' is not a valid LOWRANKAPPROX property.'])
 end

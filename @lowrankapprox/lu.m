@@ -1,5 +1,6 @@
 function varargout = lu( f, thresh )
-%LU   LU factorization of a chebfun2.
+%LU   LU factorization of a LOWRANKAPPROX.
+%
 % [L, U] = LU( F ) returns two quasimatrices L and U of size inf by k and 
 % k by inf, respectively, where k is the rank of the chebfun2 F. 
 % The quasimatrices L and U are "psychologically" lower and upper triangular.

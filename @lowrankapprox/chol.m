@@ -1,18 +1,19 @@
 function varargout = chol( f, varargin )
-%CHOL    Cholesky factorization of a chebfun2. 
+%CHOL    Cholesky factorization of a LOWRANKAPPROX. 
 %
-% R = CHOL( F ), if F is a nonnegative definite chebfun2 then this 
+% R = CHOL( F ), if F is a nonnegative definite LOWRANKAPPROX then this 
 % returns an upper triangular quasimatrix so that R'*R is a
 % decomposition of F. If F is not nonnegative definite then an error is thrown.
 %
-% L = CHOL(F, 'lower'), if F is a nonnegative definite chebfun2 then this
+% L = CHOL(F, 'lower'), if F is a nonnegative definite LOWRANKAPPROX then this
 % produces a lower triangular quasimatrix so that L*L' is a decomposition of F.
 % If F is not nonnegative definite then an error is thrown. 
 % 
 % [R, p] = CHOL( F ), with two outputs never throwns an error message. If F is
 % nonnegative definite then p is 0 and R is the same as above. If F is 
 % symmetric but negative definite or semidefinite then p is a positive 
-% integer such that R has p columns and R'*R is a rank p nonnegative definite chebfun2 that approximates F. 
+% integer such that R has p columns and R'*R is a rank p nonnegative definite 
+% LOWRANKAPPROX that approximates F. 
 % This is particular useful when F is nonnegative definite, but rounding errors
 % have perturbed it to be semidefinite. 
 %
@@ -21,7 +22,7 @@ function varargout = chol( f, varargin )
 %
 % For more information about the factorization: 
 % A. Townsend and L. N. Trefethen, Continuous analogues of matrix
-% factorizations, submitted, 2014. 
+% factorizations, Proc. Royal Soc. A., 2015. 
 %
 % See also LU, and QR. 
 
@@ -36,8 +37,8 @@ end
 
 % Is the chebfun2 on a square domain?: 
 if ( ~domainCheck(f.cols, f.rows) )
-    error('CHEBFUN:CHEBFUN2:chol:domain', ...
-        'Chebfun2 is not on a square domain.');
+    error('CHEBFUN:LOWRANKAPPROX:chol:domain', ...
+        'LOWRANKAPPROX is not on a square domain.');
 end
 
 % Get rank of f: 
@@ -49,7 +50,7 @@ PivLoc = f.pivotLocations;
 if ( isempty( PivLoc ) ) 
     % For some reason (probably because f was made with sampling data, rather
     % than a handle) f didn't have any pivot information. Make it now: 
-    f = chebfun2( @(x, y) feval(f,x,y), f.domain);
+    f = compose(f, @plus, 0 ); 
     varargout = {chol( f )}; 
     return
 end
@@ -68,8 +69,8 @@ posdef = ( k == length( f ) );
 
 % Return an error if the function is not nonnegative definite: 
 if ( nargout < 2 && ~isempty( posdef ) && ~posdef )
-    error('CHEBFUN:CHEBFUN2:chol:definite', ...
-        'Chebfun2 is not nonnegative definite.');
+    error('CHEBFUN:LOWRANKAPPROX:chol:definite', ...
+        'LOWRANKAPPROX is not nonnegative definite.');
 end
 
 % Get the CDR decomposition (already computed by constructor):
@@ -83,8 +84,8 @@ r = diff(dom(1:2))*r - dom(1);
 s = diff(dom(3:4))*s - dom(3); 
 symTest = ( abs(feval(f,r,s) - feval(f,s,r)) < 10*max(epslevel(f.cols),epslevel(f.rows)) );
 if ( ~symTest )
-    error('CHEBFUN:CHEBFUN2:chol:symmetric', ...
-        'The chebun2 must be a symmetric function.');
+    error('CHEBFUN:LOWRANKAPPROX:chol:symmetric', ...
+        'The LOWRANKAPPROX must be a symmetric function.');
 end
 
 % How many terms are posdef: 
