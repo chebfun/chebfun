@@ -1,12 +1,12 @@
 function F = vertcat(varargin)
-%VERTCAT   Vertical concatenation of CHEBFUN2 objects.
+%VERTCAT   Vertical concatenation of LOWRANKAPPROX objects.
 %
-% VERTCAT(F, G) is the vertical concatenation of CHEBFUN2 objects F and G. 
+% VERTCAT(F, G) is the vertical concatenation of LOWRANKAPPROX objects F and G. 
 % This function returns a CHEBFUN2V object. 
 % 
 % [F; G] is equivalent to VERTCAT(F, G).
 %
-% VERTCAT(F) returns the CHEBFUN2 F. 
+% VERTCAT(F) returns the LOWRANKAPPROX F. 
 % 
 % See also CHEBFUN2V.
 
@@ -21,7 +21,7 @@ elseif ( nargin > 1 )
         f = varargin{1}; 
         F = varargin{2}; 
         if ( F.nComponents > 2 ) 
-            error('CHEBFUN:CHEBFUN2:vertcat:tooManyComponents', ...
+            error('CHEBFUN:LOWRANKAPPROX:vertcat:tooManyComponents', ...
                 'Only CHEBFUN2V objects with 2 or 3 components are valid.');
         else
             Fc = F.components; 
@@ -29,13 +29,13 @@ elseif ( nargin > 1 )
             h = Fc{2};
             F = chebfun2v({f, g, h});
         end
-    elseif ( isa(varargin{ 2 }, 'chebfun2' ) )
+    elseif ( isa(varargin{ 2 }, 'LOWRANKAPPROX' ) )
         % call the CHEBFUN2V constructor.
         F = chebfun2v( varargin{:} );
     end
 else
-    error('CHEBFUN:CHEBFUN2:vertcat:tooManyInputs', ...
-        'Cannot vertically concatenate more than three CHEBFUN2 objects.');
+    error('CHEBFUN:LOWRANKAPPROX:vertcat:tooManyInputs', ...
+        'Cannot vertically concatenate more than three LOWRANKAPPROX objects.');
 end
     
 end
