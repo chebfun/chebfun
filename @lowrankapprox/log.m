@@ -1,5 +1,5 @@
 function f = log( f )
-%LOG   Natural logarithm of a CHEBFUN2.
+%LOG   Natural logarithm of a LOWRANKAPPROX.
 %   LOG(F) is the natural logarithm of F. This function does not work if the
 %   function passes through or becomes numerically close to zero.
 
@@ -19,7 +19,6 @@ if ( bol == 0 ) || ( wzero == 1 )
     'A change of sign/zero has been detected, unable to represent the result.'); 
 end
 
-op = @(x,y) log( feval(f, x, y) );  % Resample.
-f = chebfun2( op, f.domain );       % Call constructor. 
+f = compose( f, @log ); 
 
 end

@@ -1,10 +1,10 @@
 function g = median( f, dim )
-%MEDIAN   Median value of a CHEBFUN2
-%   G = MEDIAN(F) returns a chebfun G representing the median of the CHEBFUN2
+%MEDIAN       Median value of a LOWRANKAPPROX.
+%   G = MEDIAN(F) returns a chebfun G representing the median of the LOWRANKAPPROX
 %   along the y direction, i.e., G = @(x) median( F ( x, : ) ).
 %
 %   G = MEDIAN(F, DIM) returns a CHEBFUN G representing the median of F along
-%   the direction given by DIM, i.e., y-direction if DIM=1 and x-direction if
+%   the direction given by DIM, i.e., y-direction if DIM = 1 and x-direction if
 %   DIM = 2.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.

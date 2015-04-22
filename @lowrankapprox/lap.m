@@ -1,8 +1,8 @@
 function L = lap( f )
-%LAP   Laplacian of a CHEBFUN2.
-%   L = LAP(F) returns a CHEBFUN2V representing the Laplacian of F. 
+%LAP   Laplacian of a LOWRANKAPPROX.
+%   L = LAP(F) returns a LOWRANKAPPROX representing the Laplacian of F. 
 %
-%   This is shorthand for LAPLACIAN(F)
+%   This is shorthand for LAPLACIAN( F )
 %
 % See also LAPLACIAN.
 

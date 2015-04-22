@@ -1,5 +1,5 @@
 function J = jacobian( f, g )
-%JACOBIAN   Jacobian determinant of two CHEBFUN2.
+%JACOBIAN   Jacobian determinant of two LOWRANKAPPROX.
 %   J = JACOBIAN(F,G) returns the Jacobian determinant of the Jacobian matrix.
 %
 %   Note we return the determinant of the Jacobian matrix and not the Jacobian
@@ -17,6 +17,6 @@ if ( isempty( f ) || isempty( g ) )
 end
 
 % Call CHEBFUN2V/JACOBIAN():
-J = jacobian( chebfun2v( { f, g } ) );
+%J = jacobian( chebfun2v( { f, g } ) );
 
 end

@@ -1,6 +1,6 @@
 function h = max( f, g, dim )
 %MAX   Maximum value of a CHEBFUN in one direction.
-%   MAX(f) returns a chebfun representing the maximum of the CHEBFUN2 along the
+%   MAX(f) returns a chebfun representing the maximum of the LOWRANKAPPROX along the
 %   y direction, i.e, MAX(f) = @(x) max( f ( x, : ) )
 %
 %   MAX(f, [], dim) returns a CHEBFUN representing the maximum of f along the
@@ -17,8 +17,8 @@ function h = max( f, g, dim )
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 
-if ( isempty(f) ) 
-    error('CHEBFUN:CHEBFUN2:max:input', 'CHEBFUN2 is empty');
+if ( isempty( f ) ) 
+    error('CHEBFUN:LOWRANKAPPROX:max:input', 'LOWRANKAPPROX is empty');
 end
 
 % Default to max of one chebfun2:
@@ -32,9 +32,9 @@ if ( nargin < 3 )
 end
 
 % Do not allow max(F, G): 
-if ( nargin > 1 && ~isempty(g) )
-    error('CHEBFUN:CHEBFUN2:max:twoChebfun2Inputs', ...
-        'Unable to maximise two CHEBFUN2 objects.');
+if ( nargin > 1 && ~isempty( g ) )
+    error('CHEBFUN:LOWRANKAPPROX:max:twoChebfun2Inputs', ...
+        'Unable to maximise two LOWRANKAPPROX objects.');
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -54,10 +54,10 @@ elseif ( dim == 2 )
     h = chebfun( max( vals, [], 2 ), dom(3:4), 'splitting', 'on' );
     h = simplify( h );
 elseif ( dim == 0 ) 
-    error('CHEBFUN:CHEBFUN2:max:dim', ...
+    error('CHEBFUN:LOWRANKAPPROX:max:dim', ...
         'Dimension argument must be a positive integer scalar within indexing range.')
 else
-   % return the chebfun2. This is analogous to that MAX() command in
+   % return the LOWRANKAPPROX. This is analogous to that MAX() command in
    % MATLAB.
    h = f;  
 end

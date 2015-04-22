@@ -1,6 +1,6 @@
 function [Y, X] = minandmax2( f )
-%MINANDMAX2   Find global minimum and maximum of a CHEBFUN2.
-%   Y = minandmax2(F) returns the minimum and maximum value of a CHEBFUN2 over
+%MINANDMAX2   Find global minimum and maximum of a LOWRANKAPPROX.
+%   Y = minandmax2(F) returns the minimum and maximum value of a LOWRANKAPPROX over
 %   its domain. Y is a vector of length 2 such that Y(1) = min(f(x,y)) and Y(2)
 %   = max(f(x,y)).
 %
@@ -14,7 +14,7 @@ function [Y, X] = minandmax2( f )
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% check for empty CHEBFUN2.
+% check for empty LOWRANKAPPROX.
 if ( isempty( f ) )
     Y = []; 
     X = [];
@@ -25,12 +25,10 @@ end
 maxsize = 4e3; 
 
 % Is the function the zero function?
-if ( norm( f.cols ) < 10*eps )
-    dom = f.domain;
+if ( iszero( f )  ) 
     X = [ (dom(2) + dom(1))/2 (dom(4) + dom(3))/2 ];
     X = [ X ; X ];
     Y = [0 ; 0];
-    return
 end
 
 % Extract low rank representation:

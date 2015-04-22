@@ -1,11 +1,11 @@
 function h = ldivide( f, g )
-%.\   Pointwise CHEBFUN2 left array divide.
-%   F.\G if G is a CHEBFUN2 and F is a double this returns (1/F)*G
+%.\   Pointwise LOWRANKAPPROX left array divide.
+%   F.\G if G is a LOWRANKAPPROX and F is a double this returns (1/F)*G
 %
-%   F.\G if G is a double and F is a CHEBFUN2 this returns G\F, but this does
+%   F.\G if G is a double and F is a LOWRANKAPPROX this returns G\F, but this does
 %   not work if F becomes numerically close to zero.
 %
-%   F.\G we do not allow F and G to both be CHEBFUN2 objects.
+%   F.\G we do not allow F and G to both be LOWRANKAPPROX objects.
 % 
 %   F.\G is the same as the command ldivide(F,G)
 

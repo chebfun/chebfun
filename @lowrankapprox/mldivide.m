@@ -1,18 +1,18 @@
 function h = mldivide(f, g)
-%\   CHEBFUN2 left divide.
+%\      Left divide for LOWRANKAPPROX objects.
 %
-% Left divide for a CHEBFUN2. Only allowed to divide by scalars.
+% Left divide for a LOWRANKAPPROX. Only allowed to divide by scalars.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( isempty(f) || isempty(g) )
-    h = chebfun2;
-    return
+if ( isempty( f ) || isempty( g ) )
+    h = lowrankapprox();
+    return 
 end
 
 if ( ~isa(f, 'double') )
-    error('CHEBFUN:CHEBFUN2:mldivide:nonScalar', ...
+    error('CHEBFUN:LOWRANKAPPROX:mldivide:nonScalar', ...
         'Division must be by a scalar.');
 end
 

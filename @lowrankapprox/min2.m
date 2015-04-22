@@ -1,5 +1,5 @@
 function [Y, X] = min2( f )
-%MIN2   Global minimum of a CHEBFUN2.
+%MIN2   Global minimum of a LOWRANKAPPROX.
 %   Y = MIN2(F) returns the global minimum of F over its domain. 
 %   
 %   [Y, X] = MIN2(F) returns the global minimum in Y and its location in X.  

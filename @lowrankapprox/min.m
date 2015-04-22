@@ -1,6 +1,6 @@
 function g = min( f, g, dim )
 %MIN   Minimum value of a CHEBFUN in one direction.
-%   MIN(f) returns a chebfun representing the minimum of the CHEBFUN2 along the
+%   MIN(f) returns a chebfun representing the minimum of the LOWRANKAPPROX along the
 %   y direction, i.e, MIN(f) = @(x) max( f ( x, : ) )
 %
 %   MIN(f, [], dim) returns a CHEBFUN representing the minimum of f along the
@@ -18,7 +18,7 @@ function g = min( f, g, dim )
 
 % Empty check: 
 if ( isempty( f ) ) 
-    error('CHEBFUN:CHEBFUN2:min:input','CHEBFUN2 is empty');
+    error('CHEBFUN:LOWRANKAPPROX:min:input', 'LOWRANKAPPROX is empty');
 end
 
 % Default to max of one chebfun2:
@@ -33,8 +33,8 @@ end
 
 % Do not allow min(F, G).
 if ( nargin > 1 && ~isempty(g) )   
-    error('CHEBFUN:CHEBFUN2:min:twoChebfun2Inputs', ...
-        'Unable to minimise two CHEBFUN2 objects.');
+    error('CHEBFUN:LOWRANKAPPROX:min:twoChebfun2Inputs', ...
+        'Unable to minimise two LOWRANKAPPROX objects.');
 end
 
 % min(f) = - max ( -f )  

@@ -1,5 +1,5 @@
 function s = mean(f, dim)
-%MEAN   Average or mean value of a CHEBFUN2. 
+%MEAN   Average or mean value of a LOWRANKAPPROX. 
 %   MEAN(F) takes the mean in the y-direction (default), i.e., 
 %          MEAN(F) = 1/(ymax-ymin) sum(F).
 %
@@ -29,7 +29,7 @@ if ( dim == 1 )
 elseif ( dim == 2 )
     s = s / diff( dom(1:2) ); % Mean in the x direction
 else
-    error('CHEBFUN:CHEBFUN2:mean:dim', 'Mean not in x or y direction.')
+    error('CHEBFUN:LOWRANKAPPROX:mean:dim', 'Mean not in x or y direction.')
 end
 
 end

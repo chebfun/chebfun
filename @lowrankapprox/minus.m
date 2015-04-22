@@ -1,6 +1,7 @@
 function f = minus(f, g)
-%-   Subtraction of two CHEBFUN2 objects.
-%   F - G subtracts G from F, where F and G are CHEBFUN2 objects or scalars.
+%-   Subtraction of two LOWRANKAPPROX objects.
+% 
+%   F - G subtracts G from F, where F and G are LOWRANKAPPROX objects or scalars.
 %
 % See also PLUS, UMINUS.
 

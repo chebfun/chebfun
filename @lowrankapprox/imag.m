@@ -1,6 +1,6 @@
 function f = imag( f )
-%IMAG   Imaginary part of a CHEBFUN2.
-%   IMAG(F) returns the imaginary part of a CHEBFUN2.
+%IMAG   Imaginary part of a LOWRANKAPPROX.
+%   IMAG(F) returns the imaginary part of a LOWRANKAPPROX.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -10,7 +10,6 @@ if ( isempty( f ) )
     return
 end
 
-op = @(x,y) imag( feval(f, x, y ) );    % Resample.
-f = chebfun2( op, f.domain );           % Call constructor. 
+f = compose( f, @imag ); 
 
 end

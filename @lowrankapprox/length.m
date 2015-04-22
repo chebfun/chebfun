@@ -1,6 +1,6 @@
 function [out1, out2] = length(F)
-%LENGTH  The rank of a CHEBFUN2.
-%   K = LENGTH(F) returns the rank of the CHEBFUN2.
+%LENGTH  The rank of a LOWRANKAPPROX.
+%   K = LENGTH(F) returns the rank of the LOWRANKAPPROX.
 %
 %   [M, N] = LENGTH(F) returns the polynomial degree of the column and row
 %   slices.
@@ -11,13 +11,13 @@ function [out1, out2] = length(F)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 
-if ( isempty(F) ) 
+if ( isempty( F ) ) 
     out1 = []; 
     out2 = []; 
     return
 end
 
-if ( iszero(F) ) 
+if ( iszero( F ) ) 
     out1 = 1; 
     out2 = 1;
     return

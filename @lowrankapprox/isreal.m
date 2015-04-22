@@ -1,9 +1,9 @@
 function out = isreal( f )
-%ISREAL   Real-valued CHEBFUN2 test.
+%ISREAL   Real-valued LOWRANKAPPROX test.
 %   ISREAL(F) returns logical true if F does not have an imaginary part and
 %   false otherwise.
 %  
-%   ~ISREAL(F) detects CHEBFUN2 object that have an imaginary part even if it is
+%   ~ISREAL(F) detects LOWRANKAPPROX object that have an imaginary part even if it is
 %   all zero.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
