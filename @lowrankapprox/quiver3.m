@@ -1,23 +1,22 @@
 function varargout = quiver3( Z, F, varargin )
-%QUIVER3  3-D quiver plot of a CHEBFUN2V at data mapped by a CHEBFUN2.
+%QUIVER3  3-D quiver plot of a CHEBFUN2V at data mapped by a LOWRANKAPPROX.
 %
 % QUIVER3(Z, F) plots velocity vectors at the equally spaced surface points
-% specified by the CHEBFUN2 Z. We use Z to map a uniform grid. F should be
+% specified by the LOWRANKAPPROX Z. We use Z to map a uniform grid. F should be
 % a CHEBFUN2V.
 %
 % QUIVER3(X, Y, Z, F) plots velocity vectors at (x,y,z), where X, Y, Z are
-% CHEBFUN2 objects which we use to to map a uniform grid. F should be a
+% LOWRANKAPPROX objects which we use to to map a uniform grid. F should be a
 % CHEBFUN2V.
 %
 % Alternative syntax for this command is:
 % QUIVER3(X,Y,Z,[f;g;h]) or QUIVER3(X,Y,Z,f,g,h), where f, g, and h are
-% CHEBFUN2 objects.
+% LOWRANKAPPROX objects.
 %
 % QUIVER(...,'numpts',N) plots arrows on a N x N uniform grid.
 %
-%
 % This command is a wrapper to CHEBFUN2V/QUIVER3, and is required because
-% CHEBFUN2 methods take priority over CHEBFUN2V methods.
+% LOWRANKAPPROX methods take priority over CHEBFUN2V methods.
 %
 % See also CHEBFUN2V/QUIVER3.
 
@@ -26,9 +25,9 @@ function varargout = quiver3( Z, F, varargin )
 
 numpts = 20; 
 
-if ( ~isa(Z, 'chebfun2') )
-    error('CHEBFUN:CHEBFUN2:quiver3:inputs1', ...
-        'First argument to this command should be CHEBFUN2.');
+if ( ~isa(Z, 'lowrankapprox') )
+    error('CHEBFUN:LOWRANKAPPROX:quiver3:inputs1', ...
+        'First argument to this command should be LOWRANKAPPROX.');
 end
 
 if ( isempty(varargin) )
@@ -60,26 +59,26 @@ elseif ( nargin > 3 )
         yy = new_data_locations(F, numpts);
         zz = new_data_locations(varargin{1}, numpts);
         h = quiver3( xx, yy, zz, varargin{2}, varargin{3:end} );
-    elseif ( isa(Z, 'chebfun2') && isa(F, 'chebfun2') &&...
-            isa(varargin{1}, 'chebfun2') &&...
-            isa(varargin{2}, 'chebfun2') &&...
-            ( nargin ==4 || ~isa(varargin{3}, 'chebfun2')) )
+    elseif ( isa(Z, 'lowrankapprox') && isa(F, 'lowrankapprox') &&...
+            isa(varargin{1}, 'lowrankapprox') &&...
+            isa(varargin{2}, 'lowrankapprox') &&...
+            ( nargin ==4 || ~isa(varargin{3}, 'lowrankapprox')) )
         FF = vertcat( vertcat(F, varargin{1}), varargin{2}) ;
         h = quiver3( Z, FF );     % call quiver3(Z,F,...)
-    elseif ( ( nargin > 5 ) && isa(Z,'chebfun2') && isa(F,'chebfun2') &&...
-            isa(varargin{1}, 'chebfun2') &&...
-            isa(varargin{2}, 'chebfun2') &&...
-            isa(varargin{3}, 'chebfun2') &&...
-            isa(varargin{4}, 'chebfun2') &&...
-            ( nargin == 6 || ~isa(varargin{5}, 'chebfun2')) )
+    elseif ( ( nargin > 5 ) && isa(Z,'lowrankapprox') && isa(F,'lowrankapprox') &&...
+            isa(varargin{1}, 'lowrankapprox') &&...
+            isa(varargin{2}, 'lowrankapprox') &&...
+            isa(varargin{3}, 'lowrankapprox') &&...
+            isa(varargin{4}, 'lowrankapprox') &&...
+            ( nargin == 6 || ~isa(varargin{5}, 'lowrankapprox')) )
         FF = vertcat( vertcat(varargin{2}, varargin{3}), varargin{4} );
         h = quiver3(Z, F, varargin{1}, FF, varargin{5:end} );  % call quiver3(X,Y,Z,F,...)
     else
-        error('CHEBFUN:CHEBFUN2:quiver3:inputs2', ...
+        error('CHEBFUN:LOWRANKAPPROX:quiver3:inputs2', ...
             'Unrecognised input arguments.');
     end
 else
-    error('CHEBFUN:CHEBFUN2:quiver3:inputs3', 'Unrecognised input arguments.');
+    error('CHEBFUN:LOWRANKAPPROX:quiver3:inputs3', 'Unrecognised input arguments.');
 end
 
 if ( nargout > 0 )
@@ -90,7 +89,7 @@ end
 
 
 function newloc = new_data_locations(f1, numpts)
-% Generate new arrow location if first two inputs are CHEBFUN2 objects.
+% Generate new arrow location if first two inputs are LOWRANKAPPROX objects.
 
 dom = f1.domain;
 
@@ -99,6 +98,6 @@ x = linspace(dom(1), dom(2), numpts);
 y = linspace(dom(3), dom(4), numpts);
 
 [xx, yy] = meshgrid(x, y);
-newloc = feval(f1, xx, yy);      % use CHEBFUN2 to generate data locations.
+newloc = feval(f1, xx, yy);      % use LOWRANKAPPROX to generate data locations.
 
 end

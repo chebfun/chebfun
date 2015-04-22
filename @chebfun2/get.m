@@ -1,5 +1,5 @@
 function val = get( f, propName )
-%GET       GET method for LOWRANKAPPROX class.
+%GET       GET method for CHEBFUN2 class.
 %   P = GET(F, PROP) returns the property P specified in the string PROP from
 %   the LOWRANKAPPROX object F. Valid entries for the string PROP are:
 %    'DOMAIN'
@@ -33,6 +33,6 @@ switch ( propName )
     case 'pivotLocations'
         val = f.pivotLocations;
     otherwise
-        error('CHEBFUN:LOWRANKAPPROX:get:propName', ...
-            [propName,' is not a valid LOWRANKAPPROX property.'])
+        error('CHEBFUN:CHEBFUN2:get:propName', ...
+            [propName,' is not a valid CHEBFUN2 property.'])
 end

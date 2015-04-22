@@ -1,5 +1,5 @@
 function varargout = contourf( f, varargin )
-%CONTOURF   Filled contour plot of a CHEBFUN2.
+%CONTOURF   Filled contour plot of a LOWRANKAPPROX.
 %   CONTOURF(...) is the same as CONTOUR(...) except that the areas between
 %   contours are filled with colors according to the Z-value for each level.
 %   Contour regions with data values at or above a given level are filled with
@@ -44,7 +44,7 @@ while ( ~isempty( varargin ) )
     elseif ( strcmpi(varargin{1}, 'pivots') ) % If given numpts then use them.
         doPivotPlot = 1;
         if ( length( varargin ) < 2 ) 
-            error('CHEBFUN:CHEBFUN2:contourf:pivotStyle', ...
+            error('CHEBFUN:LOWRANKAPPROX:contourf:pivotStyle', ...
                 'Pivot style undefined.')
         end
         argin{j} = varargin{2};
@@ -80,14 +80,14 @@ if ( isa(f, 'double') )
         vals = feval(f, xx, yy);
         
     else
-        error('CHEBFUN:CHEBFUN2:contourf:inputs1', ...
+        error('CHEBFUN:LOWRANKAPPROX:contourf:inputs1', ...
             'Unrecognised input arguments.');
     end
     
 elseif ( isa(f, 'chebfun2') ) 
     
     dom = f.domain;
-    if ( (nargin == 3) || (nargin > 3) && ~isa(argin{1},'chebfun2') ) 
+    if ( (nargin == 3) || (nargin > 3) && ~isa(argin{1},'lowrankapprox') ) 
         % CONTOUR(xx, yy, f)
         
         % Evaluate f at equally spaced points.
@@ -96,7 +96,7 @@ elseif ( isa(f, 'chebfun2') )
         [xx, yy] = meshgrid(x, y);
         vals = feval( f, xx, yy );
 
-    elseif ( (nargin >= 3) && isa(argin{1},'chebfun2') && isa(argin{2},'chebfun2') )
+    elseif ( (nargin >= 3) && isa(argin{1},'lowrankapprox') && isa(argin{2},'lowrankapprox') )
         % CONTOUR plot on a surface.
         
         % Extract inputs:
@@ -107,8 +107,8 @@ elseif ( isa(f, 'chebfun2') )
         
         % Check CONTOUR objects are on the same domain.
         if ( ~domainCheck(xx, yy) || ~domainCheck(yy, f) )
-            error('CHEBFUN:CHEBFUN2:contourf:domainMismatch', ...
-                'Domains of chebfun2 objects are not consistent.');
+            error('CHEBFUN:LOWRANKAPPROX:contourf:domainMismatch', ...
+                'Domains of LOWRANKAPPROX objects are not consistent.');
         end
         
         % Evaluate f on equally spaced grid:
@@ -129,13 +129,13 @@ elseif ( isa(f, 'chebfun2') )
         vals = feval(f, xx, yy );
         
     else
-        error('CHEBFUN:CHEBFUN2:contourf:inputs2', ...
+        error('CHEBFUN:LOWRANKAPPROX:contourf:inputs2', ...
             'Unrecognised input arguments.');
     end
     
 else
     
-    error('CHEBFUN:CHEBFUN2:contourf:inputs3', ...
+    error('CHEBFUN:LOWRANKAPPROX:contourf:inputs3', ...
         'Unrecognised input arguments.');
     
 end

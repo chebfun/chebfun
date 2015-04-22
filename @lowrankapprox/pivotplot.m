@@ -1,7 +1,7 @@
 function varargout = pivotplot( f, varargin )
 %PIVOTPLOT   Semilogy plot of pivot values.
-%   PIVOTPLOT( F ) semilogy plot of the Gaussian elimination pivots taken during
-%   the construction of the CHEBFUN2 F.
+%   PIVOTPLOT( F ) semilogy plot related to the pivots values taken during
+%   the construction of the LOWRANKAPPROX F.
 %
 %   H = PIVOTPLOT( F ) returns a handle H to the figure.
 %
@@ -14,8 +14,8 @@ function varargout = pivotplot( f, varargin )
 
 % Empty check:
 if ( isempty( f ) ) 
-    error('CHEBFUN:CHEBFUN2:pivotplot:empty', ...
-        'Empty chebfun2 has no pivots to plot');
+    error('CHEBFUN:LOWRANKAPPROX:pivotplot:empty', ...
+        'Empty LOWRANKAPPROX has no pivots to plot');
 end 
 
 % Parse input arguments:
