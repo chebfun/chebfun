@@ -20,7 +20,8 @@ elseif ( isempty(f) ) % [] + LOWRANKAPPROX
     
 elseif ( isa( g, 'double' ) )           % LOWRANKAPPROX + DOUBLE
     
-    h = compose( f, @plus, g ); 
+    g = compose( 0*f,@plus, g);   % promote double to object class.  
+    h = plus(f, g); 
     
 elseif ( ~isa(g, 'lowrankapprox') )          % LOWRANKAPPROX + ???
     
@@ -43,7 +44,7 @@ else                                     % LOWRANKAPPROX + LOWRANKAPPROX
     else
         % Add together two nonzero LOWRANKAPPROX objects:
         h = compression_plus(f, g);
-        %h = chebfun2(@(x, y) feval(f, x, y) + feval(g, x, y), f.domain); 
+
     end 
     
 end

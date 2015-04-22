@@ -51,13 +51,13 @@ if ( isa(f, 'lowrankapprox') )           % CHEBFUN2 * ???
         h.pivotValues = 1 ./ diag( S );
         
     elseif ( isa(g, 'chebfun2v') )  % CHEBFUN * CHEBFUN2V
-%         nG = g.nComponents; 
-%         h = g; 
-%         gc = g.components; 
-%         for jj = 1:nG 
-%            h.components{jj} = times(f, gc{jj}); 
-%         end
-%         
+        nG = g.nComponents; 
+        h = g; 
+        gc = g.components; 
+        for jj = 1:nG 
+           h.components{jj} = times(f, gc{jj}); 
+        end
+        
     else
         error('CHEBFUN:LOWRANKAPPROX:mtimes:unknown', ...
             ['Undefined function ''mtimes'' for input arguments of type %s ' ...
