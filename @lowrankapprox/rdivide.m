@@ -24,7 +24,8 @@ if ( isa(f, 'lowrankapprox') && isa(g, 'lowrankapprox') )    % LOWRANKAPPROX ./ 
     if ( ~domainCheck(f, g))
        error('CHEBFUN:LOWRANKAPPROX:rdivide:domains', 'Domains inconsistent.') 
     end
-    %h = chebfun2( @(x,y) feval(f,x,y)./feval(g,x,y) , f.domain ); 
+    
+    h = compose( f, @rdivide, g );
     
 elseif ( isa(f, 'lowrankapprox') && isa(g, 'double') )  % LOWRANKAPPROX ./ double 
     if ( g == 0 )
@@ -36,8 +37,7 @@ elseif ( isa(f, 'lowrankapprox') && isa(g, 'double') )  % LOWRANKAPPROX ./ doubl
 elseif ( isa(f, 'double') && isa(g, 'lowrankapprox') )   
        [bol, wzero] = singleSignTest( g );  
        if ( ( bol == 1 ) && ( wzero == 0 ) )
-           %h = chebfun2( @(x,y) f ./ feval(g, x, y) , g.domain );
-           
+           h = compose( f, @rdivide, g );
        else
           error('CHEBFUN:LOWRANKAPPROX:rdivide:zero', ...
               'Attempting to invert a LOWRANKAPPROX with a root.'); 

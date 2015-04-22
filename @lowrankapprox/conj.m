@@ -14,7 +14,7 @@ if ( isempty( f ) )
 end
 
 % TODO: Write down the formulas for conj, instead of calling the 
-% edconstructor.
+% constructor.
 
 f = compose( f, @conj ); 
 
