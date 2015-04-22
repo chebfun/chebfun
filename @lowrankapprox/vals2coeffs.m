@@ -24,7 +24,7 @@ elseif ( narargin == 3 )
     V = tech.vals2coeffs( V.' ).';     
     varargout = {U S V};
 else
-    error('CHEBFUN:CHEBFUN2:vals2coeffs:inputs', ...
+    error('CHEBFUN:LOWRANKAPPROX:vals2coeffs:inputs', ...
         'The number of input arguments should be one or two.');
 end
 
