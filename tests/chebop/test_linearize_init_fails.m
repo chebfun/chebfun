@@ -30,6 +30,7 @@ catch ME
     pass(3) = strcmp(ME.identifier, ...
         'CHEBFUN:CHEBOP:linearize:invalidInitialGuess');
 end
+
 %% Second order problem
 N = chebop(0, 1);
 N.op = @(u) diff(u,2) - sqrt(u);
