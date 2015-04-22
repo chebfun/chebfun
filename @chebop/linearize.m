@@ -137,15 +137,31 @@ end
 
 % Evaluate N.op. The output will be the ADCHEBFUN NU. In case of systems, NU
 % will be an array-valued ADCHEBFUN. We need different calling sequences
-% depending on whether N has a cell-argument or not.
-if ( cellArg )
-    % No need to expand the cell U.
-    Nu = feval(N, x, u);
-else
-    % Need to expand the cell U.
-    Nu = feval(N, x, u{:});
+% depending on whether N has a cell-argument or not. We wrap the evaluation in a
+% try-catch statement, since if we had an initial guess that leads to
+% singularlity issues (such as N.init = 0 for N.op = @(u) diff(u,2) + sqrt(u)),
+% we'd only throw meaningless error messages otherwise
+try
+    if ( cellArg )
+        % No need to expand the cell U.
+        Nu = feval(N, x, u);
+    else
+        % Need to expand the cell U.
+        Nu = feval(N, x, u{:});
+    end
+catch ME
+    if strcmp(ME.identifier, 'CHEBFUN:CHEBTECH:extrapolate:nansInfs') || ...
+        strcmp(ME.identifier, ...
+            'CHEBFUN:CHEBFUN:rdivide:columnRdivide:divisionByZeroChebfun')
+        error('CHEBFUN:CHEBOP:linearize:invalidInitialGuess', ...
+            ['Failed to evaluate operator on the initial guess passed (or the ' ...
+            'one constructed \nby CHEBOP). A potential cause might be ' ...
+            'division by a zero CHEBFUN. Please supply\na valid initial ' ...
+            'guess via the ''init'' field of the CHEBOP.'])
+    else
+        rethrow(ME)
+    end
 end
-
 % Did the user specify the problem using old-school concatenation?
 if ( size(Nu, 1) < size(Nu, 2) )
     warning('CHEBFUN:CHEBOP:linearize:vertcatOp', ...
