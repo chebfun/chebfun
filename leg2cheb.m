@@ -146,12 +146,6 @@ function v = dst1(c)
 % and U(x) = [U_0, U_1, ..., U_N}](x) (where U_k is the kth 2nd-kind Chebyshev
 % polynomial), and N = length(C) - 1.
 
-% N = length(c) - 1;
-% k = 0:(N+1);
-% T = pi*k'/(N+1);
-% U = feval(chebpoly(0:N, 2), cos(T));
-% v = bsxfun(@times, sin(T), U*c);
-
 z = zeros(1, size(c, 2));                   % Padding;
 v = [z ; chebfun.dst(c(1:end-1,:), 1) ; z]; % DST-I.
 

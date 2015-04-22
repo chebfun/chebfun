@@ -32,7 +32,7 @@ numEls = cellfun(@numel, varargin);
 if ( any(numCols > 1) )
     args = cellfun(@cheb2cell, varargin, 'UniformOut', false);
     try
-        args = reshape([args{:}], nargin, max(size(args{1})));
+        args = reshape([args{:}], max(size(args{1})), nargin);
     catch
         error('CHEBFUN:CHEBFUN:join:dim', 'Matrix dimensions must agree.');
     end

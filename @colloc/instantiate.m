@@ -4,7 +4,7 @@ function [M, S] = instantiate(disc)
 %   using the information in discretization DISC. The result M is return a cell
 %   array if DISC.SOURCE has more than one component.
 %
-%   [M, S] = INSTANTIATE(DISC) retusn a second output, S, which is simply an
+%   [M, S] = INSTANTIATE(DISC) returns a second output, S, which is simply an
 %   empty cell array.
 %
 %   DISC.SOURCE may be one or a cell array of:
@@ -12,7 +12,7 @@ function [M, S] = instantiate(disc)
 %      chebfun (becomes a vector)
 %      numeric (not changed)
 %
-% See also: MATRIX
+% See also MATRIX.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

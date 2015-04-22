@@ -11,7 +11,7 @@ function f = fracInt(f, mu)
 % No piecewise support yet:
 if ( numel(domain(f)) > 2 )
     error('CHEBFUN:CHEBFUN:fracInt:breakpoints', ...
-        'FRACINT() does not currently support piecewise functions.');
+        'FRACINT does not currently support piecewise functions.');
 end
 
 % Extract the fractional part of mu:

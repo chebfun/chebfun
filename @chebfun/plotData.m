@@ -23,8 +23,9 @@ function data = plotData(f, g, h)
 
 % Initialise the output structure:
 data = struct('xLine', [], 'yLine', [], 'xPoints', [], 'yPoints', [], ...
-    'xJumps', [], 'yJumps', [], 'xDeltas', [], 'yDeltas', [], 'xLim', ...
-    [Inf -Inf], 'yLim', [Inf -Inf], 'defaultXLim', 1, 'defaultYLim', 1);
+    'xJumps', [], 'yJumps', [], 'xDeltas', [], 'yDeltas', [], ...
+    'yDeltaBase', [], 'xLim', [Inf -Inf], 'yLim', [Inf -Inf], ...
+    'defaultXLim', 1, 'defaultYLim', 1);
 
 if ( nargin == 1 )
     % PLOT(F)
@@ -39,6 +40,7 @@ if ( nargin == 1 )
         if ( ~any(ismember(fields(dataNew), 'xDeltas' )) )
             dataNew.xDeltas = NaN;
             dataNew.yDeltas = NaN;
+            dataNew.yDeltaBase = NaN;
         end
 
         data.xLim = [min(dataNew.xLim(1), data.xLim(1)), ...
@@ -82,6 +84,7 @@ if ( nargin == 1 )
 
         data.xDeltas = [data.xDeltas ; dataNew.xDeltas];
         data.yDeltas = [data.yDeltas ; dataNew.yDeltas];
+        data.yDeltaBase = [data.yDeltaBase ; dataNew.yDeltaBase];
         
         data.defaultXLim = data.defaultXLim & dataNew.defaultXLim;
         data.defaultYLim = data.defaultYLim & dataNew.defaultYLim;
@@ -103,6 +106,7 @@ elseif ( nargin == 2 )
         if ( ~any(ismember(fields(dataNew), 'xDeltas' )) )
             dataNew.xDeltas = [];
             dataNew.yDeltas = [];
+            dataNew.yDeltaBase = [];
         end
 
         data.xLim = [min(dataNew.xLim(1), data.xLim(1)), ...
@@ -134,6 +138,7 @@ elseif ( nargin == 2 )
         data.yJumps = [data.yJumps ; dataNew.yJumps];
         data.xDeltas = [data.xDeltas; dataNew.xDeltas];
         data.yDeltas = [data.yDeltas; dataNew.yDeltas];
+        data.yDeltaBase = [data.yDeltaBase; dataNew.yDeltaBase];
         
         data.defaultXLim = data.defaultXLim & dataNew.defaultXLim;
         data.defaultYLim = data.defaultYLim & dataNew.defaultYLim;

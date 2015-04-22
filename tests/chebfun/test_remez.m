@@ -24,7 +24,7 @@ pass(2) = norm(pcf - pbest) < 0.0003;
 
 % Test rational mode.
 f = ((x + 3).*(x - 0.5))./(x.^2 - 4);
-[pbest, qbest, rbest] = remez(f, 2, 2);
+[pbest, qbest, rbest] = remez(f, 2, 2, 'tol', 1e-12, 'maxIter', 20);
 pass(3) =  norm(f(xx) - rbest(xx), inf) < 1e-10;
 
 % Test an example with a breakpoint.
