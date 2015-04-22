@@ -18,7 +18,12 @@ function [out, wzero] = singleSignTest( F )
 
 out = false;                  % Assume false
 
-X = chebpolyval2(F);          % Evaluate on a grid use FFTs. 
+% Evaluate on a grid: 
+[cols, d, rows] = cdr( F );
+C = cols.values;
+R = rows.values;
+X = C * d * R.'; 
+
 X = X(:);
 
 if ( all( X >=0 ))            % If all values are nonnegative 

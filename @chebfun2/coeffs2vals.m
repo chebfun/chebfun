@@ -19,7 +19,7 @@ if ( nargin == 1 )
     U = chebtech2.coeffs2vals( U.' ).'; 
     varargout = {U}; 
     
-elseif ( narargin == 3 )
+elseif ( nargin == 3 )
     S = varargin{1}; 
     V = varargin{2}; 
     U = chebtech2.coeffs2vals( flipud(U) ); 

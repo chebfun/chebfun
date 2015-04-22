@@ -1,5 +1,5 @@
 function varargout = chebpolyval2( f, varargin )
-%CHEBPOLYVAL2   Values on a tensor product grid.
+%CHEBPOLYVAL2      Values on a tensor product grid.
 %   X = CHEBPOLYVAL2(F) returns the matrix of values of F on a tensor
 %   product grid.
 %
@@ -33,8 +33,8 @@ end
 % Get the low rank representation for f. 
 [cols, d, rows] = cdr(f);
 
-C = coeffs2vals(chebcoeffs( cols, n )); 
-R = coeffs2vals(chebcoeffs( rows, m )); 
+C = chebfun2.coeffs2vals(chebcoeffs( cols, n )); 
+R = chebfun2.coeffs2vals(chebcoeffs( rows, m )); 
 
 % Evaluate: 
 if ( nargout <= 1 )

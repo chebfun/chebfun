@@ -14,8 +14,7 @@ if ( isa(f, 'lowrankapprox') )    % LOWRANKAPPROX .* ???
     elseif ( isa( g, 'lowrankapprox') )
         bol = domainCheck(f, g);
         if ( bol )
-            error
-            h = chebfun2(@(x, y) feval(f, x, y).*feval(g, x, y), f.domain);
+            h = compose( f, @times, g); 
         else
             error('CHEBFUN:LOWRANKAPPROX:times:domain', 'Inconsistent domains');
         end

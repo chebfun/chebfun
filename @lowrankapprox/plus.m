@@ -10,16 +10,17 @@ if ( ~isa(f, 'lowrankapprox') ) % ??? + LOWRANKAPPROX
     
     h = plus(g, f);
     
-elseif ( isempty(g) || isempty(f) ) % LOWRANKAPPROX + []
+elseif ( isempty(g) ) % LOWRANKAPPROX + []
     
-    % Return empty CHEBFUN2.
-    h = chebfun2();
+    h = g; 
+    
+elseif ( isempty(f) ) % [] + LOWRANKAPPROX
+    
+    h = f; 
     
 elseif ( isa( g, 'double' ) )           % LOWRANKAPPROX + DOUBLE
     
-    % Convert g to a LOWRANKAPPROX.
-%     g = chebfun2( g, f.domain );
-%     h = plus( f, g );
+    h = compose( f, @plus, g ); 
     
 elseif ( ~isa(g, 'lowrankapprox') )          % LOWRANKAPPROX + ???
     
@@ -34,13 +35,13 @@ else                                     % LOWRANKAPPROX + LOWRANKAPPROX
         error('CHEBFUN:LOWRANKAPPROX:plus:domain', 'Inconsistent domains.');
     end
     
-    % Check for zero CHEBFUN2 objects:
+    % Check for zero LOWRANKAPPROX objects:
     if ( iszero(f) )
         h = g;
     elseif ( iszero(g) )
         h = f;
     else
-        % Add together two nonzero CHEBFUN2 objects:
+        % Add together two nonzero LOWRANKAPPROX objects:
         h = compression_plus(f, g);
         %h = chebfun2(@(x, y) feval(f, x, y) + feval(g, x, y), f.domain); 
     end 

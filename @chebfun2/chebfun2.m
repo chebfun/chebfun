@@ -72,23 +72,23 @@ classdef chebfun2 < lowrankapprox
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false, Hidden = true )
         
-        % Check to see if domains are equal.
-        out = domainCheck(f, g)
-        
-        % Scale rows and cols of a CHEBFUN2 so that all pivots are 1
-        F = normalizePivots(F)
-        
-        % Normalize the rows and columns of a CHEBFUN2.
-        F = normalizeRowsAndCols(F, p)
-        
-        % Sample Test in constructor. 
-        pass = sampleTest(f, op, tol, flag)
-        
-        % Is a chebfun2 all positive or negative? 
-        [bol, wzero] = singleSignTest(f) 
-        
-        % Get the vertical scale of a Chebfun2.
-        vscl = vscale(f) 
+%         % Check to see if domains are equal.
+%         out = domainCheck(f, g)
+%         
+%         % Scale rows and cols of a CHEBFUN2 so that all pivots are 1
+%         F = normalizePivots(F)
+%         
+%         % Normalize the rows and columns of a CHEBFUN2.
+%         F = normalizeRowsAndCols(F, p)
+%         
+%         % Sample Test in constructor. 
+%         pass = sampleTest(f, op, tol, flag)
+%         
+%         % Is a chebfun2 all positive or negative? 
+%         [bol, wzero] = singleSignTest(f) 
+%         
+%         % Get the vertical scale of a Chebfun2.
+%         vscl = vscale(f) 
     end
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

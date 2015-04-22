@@ -22,14 +22,17 @@ classdef lowrankapprox
 
         % Get method.
         val = get(f, prop);
-
+        
     end
     
     % CONCRETE METHODS (IMPLEMENTED BY THIS ABSTRACT CLASS.)
     methods ( Access = public, Static = false )
         
-        % Extract out the low rank approximation 
+        % Extract out the low rank approximation:
         varargout = cdr( f )
+        
+        % Check if objects have the same domain: 
+        out = domainCheck(f, g) 
         
     end
     
