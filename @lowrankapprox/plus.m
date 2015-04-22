@@ -1,37 +1,37 @@
 function h = plus(f, g)
-%+   Plus for CHEBFUN2 objects.
+%+   Plus for LOWRANKAPPROX objects.
 %
-% F + G adds F and G. F and G can be scalars or CHEBFUN2 objects.
+% F + G adds F and G. F and G can be scalars or LOWRANKAPPROX objects.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( ~isa(f, 'chebfun2') ) % ??? + CHEBFUN2
+if ( ~isa(f, 'lowrankapprox') ) % ??? + LOWRANKAPPROX
     
     h = plus(g, f);
     
-elseif ( isempty(g) || isempty(f) ) % CHEBFUN2 + []
+elseif ( isempty(g) || isempty(f) ) % LOWRANKAPPROX + []
     
     % Return empty CHEBFUN2.
     h = chebfun2();
     
-elseif ( isa( g, 'double' ) )           % CHEBFUN2 + DOUBLE
+elseif ( isa( g, 'double' ) )           % LOWRANKAPPROX + DOUBLE
     
-    % Convert g to a CHEBFUN2.
-    g = chebfun2( g, f.domain );
-    h = plus( f, g );
+    % Convert g to a LOWRANKAPPROX.
+%     g = chebfun2( g, f.domain );
+%     h = plus( f, g );
     
-elseif ( ~isa(g, 'chebfun2') )          % CHEBFUN2 + ???
+elseif ( ~isa(g, 'lowrankapprox') )          % LOWRANKAPPROX + ???
     
-    error( 'CHEBFUN:CHEBFUN2:plus:unknown', ...
+    error( 'CHEBFUN:LOWRANKAPPROX:plus:unknown', ...
         ['Undefined function ''plus'' for input arguments of type %s ' ...
         'and %s.'], class(f), class(g));
     
-else                                     % CHEBFUN2 + CHEBFUN2
+else                                     % LOWRANKAPPROX + LOWRANKAPPROX
     
     % Domain Check:
     if ( ~domainCheck(f, g) )
-        error('CHEBFUN:CHEBFUN2:plus:domain', 'Inconsistent domains.');
+        error('CHEBFUN:LOWRANKAPPROX:plus:domain', 'Inconsistent domains.');
     end
     
     % Check for zero CHEBFUN2 objects:
