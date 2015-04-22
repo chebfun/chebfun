@@ -524,12 +524,15 @@ classdef chebfun
         % Discrete cosine transform:
         y = dct(u, kind);
         
-        % Inverse discrete cosine transform:
-        u = idct(y, kind);
+        % Discrete Legendre transform:
+        y = dlt(u);
         
         % Discrete sine transform:
         y = dst(u, kind);
         
+        % Inverse discrete cosine transform:
+        u = idct(y, kind);
+                
         % Inverse discrete sine transform:
         u = idst(y, kind);
         
