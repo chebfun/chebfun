@@ -30,7 +30,7 @@ else
     % Stage 1: Convert from Legendre to Chebyshev.
     c_cheb = leg2cheb(c);
     % Stage 2: Compute non-uniform DCT.
-    v = ndct(c_cheb);
+    v = chebfun.ndct(c_cheb);
     
 end
 
