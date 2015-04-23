@@ -501,7 +501,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         s = printTree(tree, ind, indStr)
         
         % Returns how the results of evaluating BCs should be sorted
-        idx = sortConditions(funIn, domain)
+        idx = sortConditions(funIn, domain, maxDiffOrders)
         
         % Convert higher order anonymous functions to first order systems
         [funOut, indexStart, problemDom, coeffs, totalDiffOrders] = ...
