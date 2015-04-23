@@ -6,8 +6,13 @@ function [u, info] = solvebvp(N, rhs, varargin)
 %
 %       N(U) = RHS + boundary conditions specified by N
 %
-%   Observe that U = SOLVEBVP(N, RHS) has the same effect as U = N\RHS, but this
-%   method allows greater flexibility than CHEBOP backslash, as described below.
+%   Observe that U = SOLVEBVP(N, RHS), where N specifies a boundary-value
+%   problem (BVP), has the same effect as U = N\RHS, but this method allows
+%   greater flexibility than CHEBOP backslash, as described below. Problems are
+%   determined to be a BVP as follows:
+%       * Both N.LBC and N.RBC is non-empty, or N.BC is non-empty.
+%   Otherwise, problems are considered to be initial/final-value problems, and
+%   U=N\RHS will in general have the same effect as U = SOLVEIVP(N, RHS).
 %
 %   If successful, the solution returned, U, is a CHEBFUN if N specifies a
 %   scalar problem, and a CHEBMATRIX if N specifies a coupled systems of

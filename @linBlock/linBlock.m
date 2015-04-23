@@ -45,8 +45,17 @@ classdef (InferiorClasses = {?chebfun}) linBlock
         diffOrder = 0;
         
         % Is the operator the zero operator or the zero functional? Usually not,
-        % so default value is set to 0: 
+        % so default value is set to FALSE: 
         iszero = false;
+        
+        % Is the operator a pure evaluation or multiplication operator, i.e. one
+        % that does not involve differentiation or integration? For 
+        % operatorBlocks, in oldschool collocation mode (before rectangular
+        % projection became the standard approach), this would amount to a
+        % diagonal operator. For functionalBlocks, these kind of functionals
+        % usually correspond to evaluation at a point, or inner products with
+        % chebfuns.
+        isNotDiffOrInt = false;
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
