@@ -15,6 +15,9 @@ if ( isempty(A) )
     end
     
 else
+    % Store the name of the variable(s) to the operator
+    args = [];
+    
     % Check whether the chebop is linear in order to be able to display
     % linearity information. 
     if ( isempty(A.op) )
@@ -26,15 +29,24 @@ else
     end
     if ( ~isempty(A.op) )
         fprintf(':\n')
-        str = stripHandle(func2str(A.op));
-        fprintf('      %s = 0\n', str);
+        [str, args] = formatOperator(A.op);
+        fprintf('      %s\n', str);
         if ( loose )
             fprintf('\n')
         end
         fprintf('  ');
     end
     fprintf(' operating on chebfun objects defined on:\n')
-    dom = strtrim(sprintf('%g ', A.domain));
+    Adom = A.domain;
+    dom = strtrim(sprintf('%g ', Adom));
+    % Replace ' ' with commas in the domain for printing. If the numbers are not
+    % all integers, we also want to keep whitespace between the numbers.
+    if ( all(floor(Adom) == ceil(Adom)) )
+        dom = strrep(dom, ' ', ',');
+    else
+        dom = strrep(dom, ' ', ', ');
+    end
+    % Print the domain
     fprintf('      [%s]\n', dom);
     if ( loose )
         fprintf('\n')
@@ -48,33 +60,13 @@ else
     end
     
     if ( ~isempty(A.lbc) )
-        fprintf('    left boundary conditions:\n');
-        if ( ischar(A.lbc) )
-            fprintf('      %s\n', A.lbc);
-        elseif ( isnumeric(A.lbc) )
-            fprintf('      %s\n', num2str(A.lbc));
-        else
-            str = stripHandle(func2str(A.lbc));
-            fprintf('      %s = 0\n', str);
-        end
-        if ( loose )
-            fprintf('\n')
-        end
+        fprintf('    left boundary condition(s):\n');
+        printLRbc(A.lbc, A.lbcShow, args, loose);
     end
     
     if ( ~isempty(A.rbc) )
-        fprintf('    right boundary conditions:\n');
-        if ( ischar(A.rbc) )
-            fprintf('      %s\n', A.rbc);
-        elseif ( isnumeric(A.rbc) )
-            fprintf('      %s\n', num2str(A.rbc));
-        else
-            str = stripHandle(func2str(A.rbc));
-            fprintf('      %s = 0\n', str);
-        end
-        if ( loose )
-            fprintf('\n')
-        end
+        fprintf('    right boundary condition(s):\n');
+        printLRbc(A.rbc, A.rbcShow, args, loose);
     end
     
     if ( ~isempty(A.bc) )
@@ -104,23 +96,67 @@ str = op(idx(1)+1:end);
 
 end
 
-
-function s = bc2char(b)
-
-% Make sure b is a cell:
-if ( ~iscell(b) )
-    b = {b}; 
+function printLRbc(bc, bcShow, args, loose)
+% Print left or right boundary condition(s)
+if ( ischar(bcShow) )
+    % We had an assignment such as N.lbc = 'neumann';
+    fprintf('      %s\n', bcShow);
+elseif ( isnumeric(bcShow) )
+    % We had an assignment such as N.lbc = 2;
+    if ( ~isempty(args) )
+        fprintf('      %s = %s\n', args, num2str(bcShow));
+    else
+        fprintf('      %s\n', num2str(bcShow));
+    end
+else
+    str = stripHandle(func2str(bc));
+    fprintf('      %s = 0\n', str);
+end
+if ( loose )
+    fprintf('\n')
+end
 end
 
-s = repmat({'     '},1,length(b));
-for k = 1:length(b)
-    if isnumeric(b{k})  % number
-        s{k} = [s{k}, num2str(b{k})];
-    elseif ischar(b{k})  % string
-        s{k} = [s{k}, b{k}];
-    else  % function
-        s{k} = [s{k}, char(b{k}), ' = 0'];
+function [str, args] = formatOperator(op)
+% What type of a function did we get passed?
+opFunc = functions(op);
+
+% Convert the function to a string:
+op = func2str(op);
+
+if ( strcmp(opFunc.type, 'simple') )
+    % If the function passed was of the simple type, we simply return the
+    % results of func2str above
+    str = op;
+    
+else
+    % We got passed an anonymous function. Return a string to print on a nice
+    % form.
+    idx = strfind(op, ')');
+    args = op(3:idx(1)-1);
+    % If we have any commas in args, the independent variable (e.g. x) must be
+    % included. For nicer output, don't print it
+    idxCommas = strfind(args, ',');
+    if ( ~isempty(idxCommas) )
+        args = args(idxCommas(1)+1:end);
     end
+    
+    % Isolate the actual operator part from the string
+    op = op(idx(1)+1:end);
+    
+    % If we're dealing with a system, throw away the end [ and ]. Also, split up
+    % components into lines.
+    if ( op(1) == '[' && op(end) == ']' )
+        op = op(2:end-1);
+        
+        % Replace ; with the ASCII character for new line. Add indentation to
+        % make it look nice
+        wSpace = repmat(' ', 1, length(args) + 12);
+        op = strrep(op, ';', [char(13), wSpace]);
+    end
+
+    % Output string
+    str = [args, ' |--> ', op];
 end
 
 end
