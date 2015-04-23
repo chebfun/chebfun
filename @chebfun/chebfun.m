@@ -535,6 +535,9 @@ classdef chebfun
 
         % Compute Lagrange basis functions for a given set of points.
         f = lagrange(x, varargin);
+        
+        % Non-uniform discrete cosine transform:
+        y = ndct(u);
 
         % ODE113 with CHEBFUN output.
         [t, y] = ode113(varargin);
