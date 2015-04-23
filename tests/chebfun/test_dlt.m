@@ -3,41 +3,39 @@ function pass = test_dlt(pref)
 if ( nargin == 0 )
     pref = chebfunpref();
 end
+seedRNG(42)
 
 n = 10;
+x = legpts(n);
+r = rand(n,1)./(1:n)';
+rr = [r, r];
+tol = 100*n*eps;
+P = legpoly(0:n-1);
+
 N = 5001;
-
-tol = 10*n*eps;
-Tol = 10*N*eps;
-
-seedRNG(42)
-r = rand(n,1);
-R = rand(N,1);
+R = rand(N,1)./(1:N)';
+RR = [R, R];
+Tol = 100*N*eps;
 
 %% Basic test (small)
-P = legpoly(0:n-1);
-x = legpts(n);
 err = norm(P(x)*r - chebfun.dlt(r), inf);
 pass(1) = err < tol;
 
 %% Vector test (small)
-P = legpoly(0:n-1);
-x = legpts(n);
-rr = [r, r];
 err = norm(P(x)*rr - chebfun.dlt(rr), inf);
 pass(2) = err < tol;
 
-%% Basic test (large)
-x = legpts(N);
-err = norm(dlt_direct(R) - chebfun.dlt(R), inf)
+%% Test direct
+err = norm(P(x)*r - dlt_direct(r), inf);
 pass(3) = err < tol;
 
-%% Vector test (small)
-x = legpts(N);
-RR = [R, R];
-err = norm(dlt_direct(RR) - chebfun.dlt(RR), inf)
-pass(4) = err < tol;
+%% Basic test (large)
+err = norm(dlt_direct(R) - chebfun.dlt(R), inf);
+pass(4) = err < Tol;
 
+%% Vector test (large)
+err = norm(dlt_direct(RR) - chebfun.dlt(RR), inf);
+pass(5) = err < Tol;
 
 end
 

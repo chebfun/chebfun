@@ -8,20 +8,20 @@ seedRNG(42)
 n = 10;
 x = legpts(n);
 r = rand(n,1)./(1:n)';
+rr = [r, r];
 tol = 100*n*eps;
+P = legpoly(0:n-1);
 
 N = 5001;
-X = legpts(N);
 R = rand(N,1)./(1:N)';
+RR = [R, R];
 Tol = 100*N*eps;
 
 %% Basic test (small)
-P = legpoly(0:n-1);
 err = norm(P(x)\r - chebfun.idlt(r), inf);
 pass(1) = err < tol;
 
 %% Vector test (small)
-rr = [r, r];
 err = norm(P(x)\rr - chebfun.idlt(rr), inf);
 pass(2) = err < tol;
 
@@ -30,13 +30,18 @@ err = norm(P(x)\r - idlt_direct(r), inf);
 pass(3) = err < tol;
 
 %% Basic test (large)
-err = norm(idlt_direct(R) - chebfun.idlt(R), inf)
+err = norm(idlt_direct(R) - chebfun.idlt(R), inf);
 pass(4) = err < Tol;
 
 %% Vector test (large)
-RR = [R, R];
-err = norm(idlt_direct(RR) - chebfun.idlt(RR), inf)
+err = norm(idlt_direct(RR) - chebfun.idlt(RR), inf);
 pass(5) = err < Tol;
+
+%% Test dlt(idlt(c)) and idlt(dlt(c))
+err = norm(chebfun.dlt(chebfun.idlt(r)) - r, inf);
+pass(6) = err < tol;
+err = norm(chebfun.dlt(chebfun.idlt(R)) - R, inf);
+pass(7) = err < Tol;
 
 end
 

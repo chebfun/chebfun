@@ -14,15 +14,25 @@ function v = dlt(c)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 N = size(c, 1);
-% if ( N < 5000 ) % <-- Determined expoerimentally.
-    % Compute using direct (recurrence relation-baed) method:
+
+if ( N == 0 )
+    
+    % Trivial empty case.
+    v = c;
+    
+elseif ( N < 5000 ) % <-- Determined expoerimentally.
+    
+    % Compute using direct (recurrence relation-based) method:
     v = dlt_direct(c);
-% else
+    
+else
+    
     % Stage 1: Convert from Legendre to Chebyshev.
     c_cheb = leg2cheb(c);
     % Stage 2: Compute non-uniform DCT.
-    v = ndct(c_cheb)
-% end
+    v = ndct(c_cheb);
+    
+end
 
 end
 
@@ -35,7 +45,7 @@ function v = dlt_direct(c)
 
 N = size(c, 1);
 % Trivial case:
-if ( N == 0 ), v = 1 + 0*c; return, end
+if ( N == 1 ), v = 1 + 0*c; return, end
 
 % Compute the Legendre nodes:
 x = legpts(N);
@@ -88,6 +98,9 @@ for l = 1:(L-1)                               % Remaining terms in sum
 end
 v = v(end:-1:1,:);                            % Return to left-right ordering
 
+% Ensure real/imag output for real/imag input:
+if ( isreal(c) ), v = real(v); elseif ( isreal(1i*c) ), v = imag(v); end
+
 end
 
 function v = dct3_scaled(c)
@@ -99,6 +112,5 @@ end
 function v = dst3_shifted(c)
 % Shifted DST-III.
 c = [c(2:end,:) ; zeros(1, size(c, 2))];      % Shift first coefficient
-% v = dst3(c);                                  % Compute DST-II.
-v = chebfun.dst(c, 2);                        % Compute DST-II
+v = chebfun.dst(c, 3);                        % Compute DST-III.
 end

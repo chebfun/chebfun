@@ -5,7 +5,7 @@ function c = idlt(f)
 %   where P_j(x) is the degree j Legendre polynomial and x is the vector of
 %   Gauss-Legendre nodes (as returned by x = legpts(size(C,1))).
 %
-% See also CHEBFUN.IDLT, CHEBFUN.DCT.
+% See also CHEBFUN.DLT, CHEBFUN.DCT.
 
 % Nick Hale & Alex Townsend, Feb 2015.
 
@@ -13,27 +13,35 @@ function c = idlt(f)
 % DEVELOPER NOTE: See N Hale & A Townsend - "A fast FFT-based DLT" for details.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
 N = size(f, 1);
-% if ( N < 5000 ) % <-- Determined expoerimentally.
-%     % Compute using direct (recurrence relation-baed) method:
-%     c = idlt_direct(f);
-% else
+
+if ( N == 0 )
+    
+    % Trivial empty case.
+    c = f;
+    
+elseif ( N < 5000 ) % <-- Determined expoerimentally.
+    % Compute using direct (recurrence relation-based) method:
+    c = idlt_direct(f);
+    
+else
+    
     % Stage I:
     n = size(f, 1);
     [~, w] = legpts(n);                           % Legendre weights
-    wv = bsxfun(@times, w.', f);                  % Scale by weights
-    c = ndct_tranpose(wv);                        % NDCT transpose
-
+    wf = bsxfun(@times, w.', f);                  % Scale by weights
+    c = ndct_tranpose(wf);                        % NDCT transpose
+    
     % Stage II:
     c = leg2cheb(c, 'transpose');                 % LEG2CHEB transpose
     c = bsxfun(@times, (0:n-1).' + .5, c);        % Scaling
-% end
+    
+end
 
 end
 
 function v = idlt_direct(c)
-%DLT_DIRECT  Evaluate Legendre-Vandermonde matrix times a vector.
+%IDLT_DIRECT  Evaluate Legendre-Vandermonde matrix inverse times a vector.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % DEVELOPER NOTE: Uses recurrence relation but does not form the matrix.
@@ -41,13 +49,13 @@ function v = idlt_direct(c)
 
 N = size(c, 1);
 % Trivial case:
-if ( N == 0 ), v = 1 + 0*c; return, end
+if ( N == 1 ), v = 1 + 0*c; return, end
 
 % Compute the Legendre nodes:
 [x, w] = legpts(N);
 c = bsxfun(@times, w.', c);                   % Scale by weights
 Pm1 = 1+0*x; P = x;                           % P_0 and P_1.
-v = 0*c;
+v = zeros(size(c));
 v(1,:) = sum(c,1);
 v(2,:) = x.'*c;
 for n = 1:(N-2)                               % Recurrence relation:
@@ -60,8 +68,16 @@ v = bsxfun(@times, (0:N-1).' + .5, v);        % Scaling
 end
 
 function c = ndct_tranpose(f)
+%NDCT_TRANSPOSE  Evalute transpose of the NDCT operator.
+%   See NDCT in DLT.M.
 
-L = 18;                                       % Number of terms in series
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% DEVELOPER NOTE: Uses the 'cheb_1' version of the algorithm.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+tol = eps;                                    % Tolerance
+L = 18;                                       % Max number of terms in series
+
 [n, m] = size(f); nn = (0:n-1).';             % Transform size
 [~, ~, ~, t_leg] = legpts(n);                 % Legendre grid (in theta)
 t_leg = t_leg(end:-1:1); f = f(end:-1:1,:);   % Get right-left ordering
@@ -74,14 +90,17 @@ c = chebfun.dct( f, 2 );                      % ell = 0 term
 for l = 1:(L-1)                               % Remaining terms in sum
     f = dt.*f; NN = nn.*NN; scl = scl*l;      % Update terms
     if ( mod(l, 2) )
-        c = c + (sgn/scl)*NN.*dst3_shifted_transpose(f); % Sine terms
+        dc = (sgn/scl)*NN.*dst3_shifted_transpose(f); % Sine terms
     else
-        c = c + (sgn/scl)*NN.*chebfun.dct( f, 2 );       % Cosine terms
+        dc = (sgn/scl)*NN.*chebfun.dct( f, 2 );       % Cosine terms
     end
     if ( l/2 == round(l/2) ),
         sgn = -sgn;                           % +--++--.
     end
+    c = c + dc; 
+    if ( norm(dc, inf) < tol ), break, end
 end
+
 % Ensure real/imag output for real/imag input:
 if ( isreal(f) ), c = real(c); elseif ( isreal(1i*f) ), c = imag(c); end
 
