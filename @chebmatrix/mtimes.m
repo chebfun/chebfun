@@ -49,9 +49,15 @@ else
             C{i, j} = u;
         end
     end
-    % Convert the resulting cell C to a chebmatrix to be returned.
-    C = chebmatrix(C);
     
+    % Is the output only going to consist of doubles? In that case, return a
+    % standard matrix, rather than a chebmatrix
+    if (all(all(cellfun(@isnumeric, C))))
+        C = cell2mat(C);
+    else
+        % Convert the resulting cell C to a chebmatrix to be returned.
+        C = chebmatrix(C);
+    end
 end
     
 end
