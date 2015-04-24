@@ -6,7 +6,7 @@ function v = ndct( c )
 %   where T_j(x) is the degree j Chebyshev polynomial and x is the vector of
 %   Gauss-Legendre nodes (as returned by x = legpts(size(C,1))).
 %
-% See also CHEBFUN.DLT, CHEBFUN.DLT.
+% See also CHEBFUN.DLT, CHEBFUN.IDLT.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % DEVELOPER NOTE: Uses the 'cheb_1' version of the algorithm.
