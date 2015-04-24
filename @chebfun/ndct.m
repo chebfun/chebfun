@@ -1,9 +1,12 @@
 function v = ndct( c )
-%NDCT  Evalute a Chebyshev series at Gauss-Legendre nodes.
+%NDCT  Evaluate a Chebyshev series at Gauss-Legendre nodes.
+%
 %   V = NDCT(C) returns a column vector V such that
 %       V(k) = C(1)*T_0(x(k)) + C(2)*T_1(x(k)) + ... C(N)*T_{N-1}(x(k)), 
 %   where T_j(x) is the degree j Chebyshev polynomial and x is the vector of
 %   Gauss-Legendre nodes (as returned by x = legpts(size(C,1))).
+%
+% See also CHEBFUN.DLT, CHEBFUN.DLT.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % DEVELOPER NOTE: Uses the 'cheb_1' version of the algorithm.
