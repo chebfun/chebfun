@@ -515,12 +515,18 @@ classdef chebfun
         % Discrete cosine transform:
         y = dct(u, kind);
         
-        % Inverse discrete cosine transform:
-        u = idct(y, kind);
+        % Discrete Legendre transform:
+        y = dlt(u);
         
         % Discrete sine transform:
         y = dst(u, kind);
         
+        % Inverse discrete cosine transform:
+        u = idct(y, kind);
+        
+        % Inverse discrete Legendre transform:
+        u = idlt(y, kind);
+                
         % Inverse discrete sine transform:
         u = idst(y, kind);
         
@@ -529,6 +535,9 @@ classdef chebfun
 
         % Compute Lagrange basis functions for a given set of points.
         f = lagrange(x, varargin);
+        
+        % Non-uniform discrete cosine transform:
+        y = ndct(u);
 
         % ODE113 with CHEBFUN output.
         [t, y] = ode113(varargin);
