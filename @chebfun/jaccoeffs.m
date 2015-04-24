@@ -1,5 +1,5 @@
 function out = jaccoeffs(f, n, a, b)
-%LEGPOLY   Jacobi polynomial coefficients of a CHEBFUN.
+%JACCOEFFS   Jacobi polynomial coefficients of a CHEBFUN.
 %   A = JACCOEFFS(F, N, ALPHA, BETA) returns the first N+1 coefficients in the
 %   Jacobi series expansion of the CHEBFUN F, so that such that F approximately
 %   equals A(1) J_N(x) + ... + A(N) J_1(x) + A(N+1) J_0(x) where J_N(x) denotes
