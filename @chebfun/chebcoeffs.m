@@ -53,7 +53,6 @@ if ( numel(argin) > 0 )
     N = argin{1};
 end
 
-
 %% Merge:
 % Try to merge out breakpoints if possible, since integrals are expensive:
 if ( numFuns ~= 1 )
