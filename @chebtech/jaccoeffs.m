@@ -7,7 +7,7 @@ function c = jaccoeffs(f, n, alp, bet)
 %   vector. If length(F) < N then the additional entries of A are padded with
 %   zeros.
 %
-%   A = JACCOEFFS(F, ALPHA, BETA) will assume that N = length(F) - 1;
+%   A = JACCOEFFS(F, ALPHA, BETA) will assume that N = length(F).
 %   
 %   If F is an array-valued CHEBTECH, then a matrix of coefficients is returned
 %   so that F(:,k) = A(1,k)*J_N + ... + A(N,k)*J_0.

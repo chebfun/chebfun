@@ -7,7 +7,7 @@ function out = jaccoeffs(f, n, a, b)
 %   vector.
 %
 %   If F is smooth (i.e., numel(f.funs) == 1), then A = JACCOEFFS(F, ALPHA,
-%   BETA) will assume that N = length(F) - 1;
+%   BETA) will assume that N = length(F).
 %
 %   JACCOEFFS does not support quasimatrices.
 %
