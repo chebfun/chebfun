@@ -93,13 +93,13 @@ classdef lowrankapprox
         R = chol(f)
         
         % Create LOWRANKAPPROX from real and imaginary parts.
-        f = complex(f) 
+        f = complex(f, g) 
         
         % Complex conjugate of a LOWRANKAPPROX.
         f = conj(f)
         
         % Basic contour plot of LOWRANKAPPROX
-        contour(f)
+        contour(f, varargin)
         
         % Cosine of a LOWRANKAPPROX
         f = cos(f)
@@ -114,7 +114,7 @@ classdef lowrankapprox
         f = diff(f, k, dim)
  
         % Evaluate a LOWRANKAPPROX.
-        y = feval(f, x)
+        y = feval(f, x, y)
 
         % Flip change of row variables for a LOWRANKAPPROX object.
         f = fliplr(f)
@@ -138,16 +138,16 @@ classdef lowrankapprox
         out = iszero(f)
         
         % Approximation rank of a LOWRANKAPPROX.
-        len = length(f)
+        [m, n] = length(f)
 
         % Maximum slice of a LOWRANKAPPROX.
-        [maxVal, maxPos] = max(f)
+        [maxVal, maxPos] = max(f, varargin)
 
         % Minimum slice of a LOWRANKAPPROX.
-        [minVal, minPos] = min(f)
+        [minVal, minPos] = min(f, varargin)
 
         % Minimum and maximum slice of a LOWRANKAPPROX.
-        [vals, pos] = minandmax(f)
+        [vals, pos] = minandmax(f, varargin)
 
         % Subtraction of two LOWRANKAPPROX objects.
         f = minus(f, g)
@@ -171,10 +171,10 @@ classdef lowrankapprox
         f = power(f, b)
 
         % QR factorisation of a LOWRANKAPPROX.
-        [Q, R] = qr(f)
+        [Q, R, E] = qr(f, varargin)
 
         % Right array divide for a LOWRANKAPPROX.
-        f = rdivide(f, c, pref)
+        f = rdivide(f, c)
 
         % Real part of a LOWRANKAPPROX.
         f = real(f)
