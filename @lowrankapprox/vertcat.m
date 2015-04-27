@@ -29,7 +29,7 @@ elseif ( nargin > 1 )
             h = Fc{2};
             F = chebfun2v({f, g, h});
         end
-    elseif ( isa(varargin{ 2 }, 'LOWRANKAPPROX' ) )
+    elseif ( isa(varargin{ 2 }, 'lowrankapprox' ) )
         % call the CHEBFUN2V constructor.
         F = chebfun2v( varargin{:} );
     end
