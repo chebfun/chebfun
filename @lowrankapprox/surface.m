@@ -1,5 +1,5 @@
 function varargout = surface( f, varargin )
-%SURFACE  Plot surface of a CHEBFUN2.
+%SURFACE  Plot surface of a LOWRANKAPPROX.
 %   SURFACE(X, Y, Z, C) adds the surface in X,Y,Z,C to the current axes.
 %
 %   SURFACE(X, Y, Z) uses C = Z, so color is proportional to surface height. 
@@ -22,7 +22,9 @@ numpts = 200;
 dom = f.domain; 
 
 % Data points: 
-[xx, yy] = chebfun2.chebpts2( numpts, numpts, dom );
+x = linspace(dom(1), dom(2), numpts);
+y = linspace(dom(3), dom(4), numpts); 
+[xx, yy] = meshgrid( x, y ); 
 val = feval(f, xx, yy);
 
 % Options: 

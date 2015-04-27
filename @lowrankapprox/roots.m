@@ -1,5 +1,5 @@
 function r = roots( f, g, varargin )
-%ROOTS   Zero contours of a CHEBFUN2.
+%ROOTS   Zero contours of a LOWRANKAPPROX.
 %   R = ROOTS(F), returns the zero contours of F as a quasimatrix of chebfuns.
 %   Each column of R is one zero contour. This command only finds contours when
 %   there is a change of sign and it can also group intersecting contours in a
@@ -31,7 +31,7 @@ dom = f.domain;
 if ( nargin == 1 )
     
     if ( length( f ) == 1 )  
-        % The CHEBFUN2 is rank 1:
+        % The LOWRANKAPPROX is rank 1:
         
         cols = f.cols;
         rows = f.rows;
@@ -77,7 +77,7 @@ if ( nargin == 1 )
         end
     end
     
-elseif ( isa(g, 'chebfun2') )
+elseif ( isa(g, 'lowrankapprox') )
     
     r = roots( chebfun2v( f, g ), varargin{:} );
     
