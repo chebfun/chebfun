@@ -1,8 +1,8 @@
 function pass = sampleTest(f, sampleOP, tol, flag)
-%SAMPLETEST   Test an evaluation of input OP against a CHEBFUN2 approximation.
+%SAMPLETEST   Test an evaluation of input OP against a LOWRANKAPPROX.
 %
 %   SAMPLETEST(F, SAMPLEOP, TOL) evaluates both the function OP and its
-%   CHEBFUN2 representation F at several points in it's domain. The difference of
+%   LOWRANKAPPROX representation F at several points in it's domain. The difference of
 %   these values is computed, and if this is sufficiently small the test 
 %   passes and returns TRUE. If the difference is large, it returns FALSE.
 % 
@@ -42,11 +42,11 @@ else
     end
 end
 
-% Evaluate the CHEBFUN2:
+% Evaluate the LOWRANKAPPROX:
 vFun = feval(f, xeval, yeval);
 
 
-% If the CHEBTECH evaluation differs from the op evaluation, SAMPLETEST failed:
+% If the TECHS evaluation differs from the op evaluation, SAMPLETEST failed:
 if ( any(max(abs(vOp - vFun)) > 100*tol) )
     pass = false; % :(
 else

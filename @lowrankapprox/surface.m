@@ -13,7 +13,7 @@ function varargout = surface( f, varargin )
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty( f ) )
-     surface([]); 
+     surface( [ ] ); 
      return
 end
 
