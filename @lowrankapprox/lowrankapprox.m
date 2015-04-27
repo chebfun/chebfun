@@ -45,7 +45,7 @@ classdef lowrankapprox
         h = compose(f, op, g);
         
         % Constructor.
-        g = constructor(f, OP, varargin);
+        g = constructor(f, op, varargin);
         
         % Get method.
         val = get(f, prop);
@@ -82,126 +82,6 @@ classdef lowrankapprox
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
         
-        % Absolute value of a LOWRANKAPPROX. (f should have one sign in 
-        % its domain)
-        f = abs( f )
-        
-        % Extract out the low rank approximation:
-        varargout = cdr( f )
-        
-        % Cholesky factorization of a LOWRANKAPPROX
-        R = chol(f)
-        
-        % Create LOWRANKAPPROX from real and imaginary parts.
-        f = complex(f) 
-        
-        % Complex conjugate of a LOWRANKAPPROX.
-        f = conj(f)
-        
-        % Basic contour plot of LOWRANKAPPROX
-        contour(f)
-        
-        % Cosine of a LOWRANKAPPROX
-        f = cos(f)
-        
-        % Conjugate transpose of a LOWRANKAPPROX.
-        f = ctranspose(f)
-
-        % One-dimensional indefinite integral of a LOWRANKAPPROX.
-        f = cumsum(f, dim)
-
-        % Partial derivative of a LOWRANKAPPROX.
-        f = diff(f, k, dim)
- 
-        % Evaluate a LOWRANKAPPROX.
-        y = feval(f, x)
-
-        % Flip change of row variables for a LOWRANKAPPROX object.
-        f = fliplr(f)
-        
-        % Flip change of column variables for a LOWRANKAPPROX object.        
-        f = flipud(f)
-        
-        % Imaginary part of a LOWRANKAPPROX.
-        f = imag(f)
-
-        % True for an empty LOWRANKAPPROX.
-        out = isempty(f)
-
-        % Test if LOWRANKAPPROX objects are equal.
-        out = isequal(f, g)
-
-        % True for real LOWRANKAPPROX.
-        out = isreal(f)
-        
-        % True for zero LOWRANKAPPROX objects
-        out = iszero(f)
-        
-        % Approximation rank of a LOWRANKAPPROX.
-        len = length(f)
-
-        % Maximum slice of a LOWRANKAPPROX.
-        [maxVal, maxPos] = max(f)
-
-        % Minimum slice of a LOWRANKAPPROX.
-        [minVal, minPos] = min(f)
-
-        % Minimum and maximum slice of a LOWRANKAPPROX.
-        [vals, pos] = minandmax(f)
-
-        % Subtraction of two LOWRANKAPPROX objects.
-        f = minus(f, g)
-
-        % Left matrix divide for LOWRANKAPPROX objects.
-        X = mldivide(A, B)
-
-        % Right matrix divide for a LOWRANKAPPROX.
-        X = mrdivide(B, A)
-
-        % Multiplication of LOWRANKAPPROX objects.
-        f = mtimes(f, c)
-
-        % Basic surface plot for LOWRANKAPPROX objects.
-        varargout = plot(f, varargin)
-
-        % Addition of two LOWRANKAPPROX objects.
-        f = plus(f, g)
-        
-        % Power function of a LOWRANKAPPROX.
-        f = power(f, b)
-
-        % QR factorisation of a LOWRANKAPPROX.
-        [Q, R] = qr(f)
-
-        % Right array divide for a LOWRANKAPPROX.
-        f = rdivide(f, c, pref)
-
-        % Real part of a LOWRANKAPPROX.
-        f = real(f)
-
-        % Restrict a LOWRANKAPPROX to a subinterval.
-        f = restrict(f, s)
-
-        % Zero curves of a LOWRANKAPPROX in its domain.
-        out = roots(f, varargin)
-
-        % Size of a LOWRANKAPPROX.
-        [siz1, siz2] = size(f, varargin)
-
-        % One dimensional definite integral of a LOWRANKAPPROX.
-        out = sum(f, dim)
-
-        % LOWRANKAPPROX multiplication.
-        f = times(f, g, varargin)
-         
-        % Transpose for LOWRANKAPPROX objects.
-        f = transpose(f)
-
-        % Unary minus of a LOWRANKAPPROX.
-        f = uminus(f)
-
-        % Unary plus of a LOWRANKAPPROX.
-        f = uplus(f)
 
     end
     
