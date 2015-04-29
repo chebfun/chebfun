@@ -36,11 +36,8 @@ end
 % Respect the bound:
 epslevel = min(newEpslevel, epslevelBnd);
 
-% set epslevel
-global myeps
-if myeps > 0
-  epslevel = myeps*ones(size(epslevel));
-end
+% set epslevel = eps
+epslevel = eps + 0*epslevel;
 
 end
     

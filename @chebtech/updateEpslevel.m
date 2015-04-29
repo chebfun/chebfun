@@ -47,10 +47,7 @@ epslevel = min(newEpslevel, epslevelBnd);
 % Don't change the epslevel of NaN columns.
 epslevel(nanCols) = f.epslevel(nanCols);
 
-% set epslevel
-global myeps
-if myeps > 0
-  epslevel = myeps*ones(size(epslevel));
-end
+% set epslevel = eps
+epslevel = eps + 0*epslevel;
 
 end

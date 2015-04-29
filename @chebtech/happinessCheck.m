@@ -92,10 +92,7 @@ if ( ishappy && ~isempty(op) && ~isnumeric(op) && pref.sampleTest )
     end
 end
 
-% set epslevel
-global myeps
-if myeps > 0
-  epslevel = myeps*ones(size(epslevel));
-end
+% set epslevel = eps
+epslevel = eps + 0*epslevel;
 
 end
