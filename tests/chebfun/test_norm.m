@@ -123,8 +123,8 @@ f = chebfun(@(x) sin(100*x).*((x+1).^0.6), 'exps', [0.6 0], 'splitting', 'on');
 p2 = norm(f, 2);
 p2_exact = 1.02434346249849423; % This is obtained using Mathematica.
 err = p2-p2_exact;
-pass(23) = norm(err, inf) < 10*vscale(f).*epslevel(f);
-% loosened tolerance in epslevel-dependent test 
+pass(23) = norm(err, inf) < 1e1*vscale(f).*epslevel(f);
+% tolerance loosened in epslevel-dependent test
 
 % 1-norm:
 p1 = norm(f, 1);

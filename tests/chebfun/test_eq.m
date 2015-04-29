@@ -45,8 +45,8 @@ g = chebfun(@(x) (exp(0.5) - exp(-0.5))*(x + 0.5) + exp(-0.5), pref);
 h = f == g;
 
 ind = find(h.pointValues == 1);
-%pass(6) = norm(h.domain(ind) - [-0.5 0.5], inf) < 10*epslevel(h);
-pass(6) = 1;
+pass(6) = norm(h.domain(ind) - [-0.5 0.5], inf) < 10*epslevel(h);
+%pass(6) = 1;
 
 % Check error conditions.
 f = chebfun(@(x) [sin(x) cos(x) exp(x)], [-1 -0.5 0 0.5 1], pref);

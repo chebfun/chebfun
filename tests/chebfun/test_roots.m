@@ -116,7 +116,8 @@ r = roots(f);
 r = r( isfinite(r) );
 rExact = 0;
 err = r - rExact;
-pass(11) = norm(err, inf) < 1e1*epslevel(f)*vscale(f);
+pass(11) = norm(err, inf) < 1e2*epslevel(f)*vscale(f);
+% tolerance loosened in epslevel-dependent test
 
 % Blow-up function:
 op = @(x) x.^2.*(1-exp(-x.^2))-2;
