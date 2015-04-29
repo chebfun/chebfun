@@ -27,6 +27,8 @@ pass(j) = norm( triu(U) - U ) < tol; j = j + 1;
 pass(j) = norm( A - L * U ) < 1e3*tol; j = j + 1; 
 % tolerance loosened in epslevel-dependent test
 pass(j) = norm( diag( L(p,:) ) - ones(size(L,2),1) ) < 10*tol; j = j + 1; 
+% loosened tolerance in epslevel-dependent test 
+
 pass(j) = norm( tril(L(p,:)) - L(p,:)) < 20*tol; j = j + 1; 
 
 end
