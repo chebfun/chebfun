@@ -113,11 +113,7 @@ for j = 1:numFuns
 end
 
 % Display epslevel:
-global myeps
-if ( myeps == 0 )
-    s = [s, sprintf('Epslevel = %i.', epslevel(f))];
-end
-s = [s, sprintf('  Vscale = %i.', vscale(f, 'sup'))];
+s = [s, sprintf('Vscale = %i.', vscale(f, 'sup'))];
 
 % Display total length for piecewise chebfuns:
 if ( numFuns > 1 )

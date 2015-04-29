@@ -40,10 +40,6 @@ pass(4) = (numel(h.funs) == 1) && all(feval(h, x) == 0);
 h = -f < f;
 pass(5) = (numel(h.funs) == 1) && all(feval(h, x) == 1);
 
-%%
-% In branch feature-prescribed-eps this test fails due to an
-% epslevel related issue. Until this issue is resolved this 
-% test is being bypassed.
 %% Check an example where le() does not need to introduce any new breakpoints.
 f = chebfun(@(x) exp(x), [-1 -0.5 0 0.5 1], pref);
 h = f < g;
@@ -53,7 +49,6 @@ ind2 = find(abs(h.domain + 0.5) < 10*vscale(h)*epslevel(h));
 pass(6) = ~isempty(ind1) && (h.pointValues(ind1) == 0) && ...
     ~isempty(ind2) && (h.pointValues(ind2) == 0) && ...
     all(feval(h, x) - hvsde(g_op(x) - exp(x)) == 0);
-%pass(6) = 1;
 
 % Check error conditions.
 f = chebfun(@(x) [sin(x) cos(x) exp(x)], [-1 -0.5 0 0.5 1], pref);

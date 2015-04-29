@@ -35,10 +35,6 @@ pass(4) = (numel(h.funs) == 1) && all(feval(h, x) == 1);
 h = f == -f;
 pass(5) = (numel(h.funs) == 1) && all(feval(h, x) == 0);
 
-%%
-% In branch feature-prescribed-eps this test fails due to an
-% epslevel related issue. Until this issue is resolved this 
-% test is being bypassed.
 %% Check an example where eq() does not need to introduce any new breakpoints.
 f = chebfun(@(x) exp(x), [-1 -0.5 0 0.5 1], pref);
 g = chebfun(@(x) (exp(0.5) - exp(-0.5))*(x + 0.5) + exp(-0.5), pref);
@@ -46,7 +42,6 @@ h = f == g;
 
 ind = find(h.pointValues == 1);
 pass(6) = norm(h.domain(ind) - [-0.5 0.5], inf) < 10*epslevel(h);
-%pass(6) = 1;
 
 % Check error conditions.
 f = chebfun(@(x) [sin(x) cos(x) exp(x)], [-1 -0.5 0 0.5 1], pref);
