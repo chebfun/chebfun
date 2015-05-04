@@ -128,6 +128,17 @@ end
 
 userMassSet = false;
 
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%  PARSE INPUTS TO PDEFUN  %%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Determine the size of the system, i.e., number of dependent variables.
+SYSSIZE = min(size(u0));
+[pdeFun, varNamesParsed] = parseFun(pdeFun);
+if ( isfield(opt, 'difforder') )
+    DIFFORDER = opt.difforder;
+else
+    getDIFFORDER(pdeFun);
+end
+
 %% %%%%%%%%%%%%%%%%%%%%%%%%%  EVENT & PLOTTING  SETUP  %%%%%%%%%%%%%%%%%%%%%%%%%
 
 done = false;
@@ -163,10 +174,16 @@ if ( isfield(opt, 'handles') )
     fontsize = opt.handles.fontsizePanels;
     set(axesSol, 'fontsize', fontsize);
 else
-    % TODO: Get correct varnames for non-gui mode?
-    varNames = 'u';
-    xLabel = 'x';
-    tlabel = 't';
+    % Obtain the correct variable names from the parsing of the operator
+    if ( length(varNamesParsed) == numColumns(u0) )
+        % Space and time variables did not get passed explicitly to operator
+        tlabel = 't';
+        xLabel = 'x';
+    else
+        tlabel = varNamesParsed{1};
+        xLabel = varNamesParsed{2};
+    end
+    varNames = varNamesParsed(end-numColumns(u0)+1:end);
     if ( doPlot )    % Set up ploting in non-gui mode
         axesSol = gca;
         cla(axesSol)
@@ -434,17 +451,6 @@ end
 
 % Get the domain:
 DOMAIN = domain(u0, 'ends');
-
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%  PARSE INPUTS TO PDEFUN  %%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Determine the size of the system, i.e., number of dependent variables.
-SYSSIZE = min(size(u0));
-pdeFun = parseFun(pdeFun);
-if ( isfield(opt, 'difforder') )
-    DIFFORDER = opt.difforder;
-else
-    getDIFFORDER(pdeFun);
-end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% %%%%%%%%%%%%%%%%%%%%%%%%% PARSE BOUNDARY CONDITIONS %%%%%%%%%%%%%%%%%%%%%%%%%
@@ -843,7 +849,7 @@ end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%  MISC  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function outFun = parseFun(inFun, bcFlag)
+function [outFun, varNamesParsed] = parseFun(inFun, bcFlag)
 % Rewrites the input function handle to call the right DIFF, SUM, methods, etc,
 % and convert the input @(t, x, u, v, w, ...) to @(t, x, U).
 %
@@ -855,7 +861,7 @@ function outFun = parseFun(inFun, bcFlag)
 global SYSSIZE
 
 % Ensure backwards compatibility by processing the input function.
-inFun = backCompat(inFun);
+[inFun, varNamesParsed] = backCompat(inFun);
 
 % V4: We don't accept only time or space as input args (i.e., both or nothing).
 % V5: Actually, we now accept @(u, x) diff(u, 2) + sin(x).*u (for CHEBOPs).
@@ -940,7 +946,7 @@ else
 end
 end
 
-function outFun = backCompat(inFun)
+function [outFun, varNamesOut] = backCompat(inFun)
 % In V4 PDE15S required the user to pass in dummy function handles for the
 % differential operators. For example, u'' + u' + sum(u) would have needed
 %  pdefun = @(u, t, x, diff, sum) diff(u, 2) + diff(u) + sum(u).
@@ -973,6 +979,7 @@ idx = find(diffLoc);
 if ( isempty(idx) )
     % None present - new syntax!
     outFun = inFun;
+    varNamesOut = varNames;
     return
 end
 
@@ -1003,4 +1010,6 @@ newStr = [newStr, ')'];
 % Make the new function handle:
 outFun = eval(newStr);
 
+% Return the obtained variable names
+varNamesOut = varNamesNewOrder;
 end

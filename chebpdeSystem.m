@@ -18,7 +18,8 @@ dom = [-1 1];
 t = 0:.1:2;
 
 % Make the right-hand side of the PDE.
-pdefun = @(t,x,u,v) [diff(u,2)-v; -diff(v,2)+u];
+% pdefun = @(u,v,t,x, diff) [diff(u,2)-v; -diff(v,2)+u];
+pdefun = @(t,x, u,v) [diff(u,2)-v; -diff(v,2)+u];
 pdeflag = [1  0]; % Zero when a variable is indep of time.
 
 % Assign boundary conditions.
