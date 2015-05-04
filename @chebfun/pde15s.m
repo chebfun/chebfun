@@ -120,7 +120,7 @@ if ( ~isempty(opt.Plot) )
     doPlot = strcmpi(opt.Plot, 'on');
 end
 if ( ~isempty(opt.HoldPlot) )
-    doHold = strcmpi(opt.HoldPlot, 'on');
+    doHold = strcmpi(opt.HoldPlot, 'on') || strcmp(opt.HoldPlot, '1');
 end
 if ( ~isempty(opt.PlotStyle) )
     plotOpts = opt.PlotStyle;
@@ -139,7 +139,8 @@ else
 end
 
 % Predefine a grid for plotting that allows us to speed up that part
-plotGrid = chebpts(300, u0.domain);
+nPlot = 300;
+plotGrid = chebpts(nPlot, u0.domain);
 
 % Determine which figure to plot to (for CHEBGUI) and set default display values
 % for variables.
@@ -160,15 +161,56 @@ if ( isfield(opt, 'handles') )
     xLabel = opt.handles.indVarName{1};
     tlabel = opt.handles.indVarName{2};
     fontsize = opt.handles.fontsizePanels;
+    set(axesSol, 'fontsize', fontsize);
 else
     % TODO: Get correct varnames for non-gui mode?
     varNames = 'u';
     xLabel = 'x';
     tlabel = 't';
-    axesSol = gca;
+    if ( doPlot )    % Set up ploting in non-gui mode
+        axesSol = gca;
+        cla(axesSol)
+        xlabel(axesSol, xLabel);
+        % Bring attention to the figure
+        shg
+    end
 end
-set(axesSol, 'xLim', u0.domain);
- 
+
+% Set plot options
+if ( doPlot )
+    set(axesSol, 'NextPlot','replacechildren');
+    
+    % Fix x limits
+    set(axesSol, 'xLim', u0.domain);
+    
+    % Fix y limits if they were specified
+    if ( ~isempty(YLim) )
+        set(axesSol, 'ylim', YLim);
+    end
+    
+    % Initialize lines for plotting
+    hLines = plot(axesSol, plotGrid, NaN(nPlot, numColumns(u0)), plotOpts{:});
+    
+    % Grid on?
+    if ( gridOn )
+        grid(axesSol, 'on')
+    else
+        grid(axesSol, 'off')
+    end
+    
+    % Hold on?
+    if ( doHold )
+        hold(axesSol, 'on')
+    else
+        hold(axesSol, 'off')
+    end
+    
+    % For plotting, it's useful to know whether we're running in old or new
+    % Matlab graphics mode
+    if ( ~verLessThan('matlab', '8.4') )
+        newMatlabVersion = true;
+    end
+end
     function status = nonAdaptiveEvent(t, U, flag)
         % This event is called at the end of each chunk in non-adaptive mode.
         status = false;
@@ -193,7 +235,9 @@ set(axesSol, 'xLim', u0.domain);
             uOut{ctr} = uCurrent;
 
             % Plot current solution:
-            plotFun(uCurrent, t(kk));
+            if ( doPlot )
+                plotFun(uCurrent, t(kk));
+            end
         end
         
         if ( guiFlag )
@@ -244,9 +288,10 @@ set(axesSol, 'xLim', u0.domain);
                 ctr = ctr + 1;
                 uOut{ctr} = uCurrent;
 
-                % Plot current solution:
-                plotFun(uCurrent, tCurrent);
-
+                % Plot current solution (if plotting is on)
+                if ( doPlot )
+                    plotFun(uCurrent, tCurrent);
+                end
                 % TODO: Re-insert this.
 %                 % If we have 2.5 times as many coefficients as we need, shorten
 %                 % the representation and cause the integrator to stop. 
@@ -318,71 +363,34 @@ set(axesSol, 'xLim', u0.domain);
         end
     end
 
-    function varargout = plotFun(U, t)
+    function plotFun(U, t)
         %PLOTFUN    Plot current solution U at a time t.
+
+        % Evaluate the current solution at the plotting grid
+        Udata = feval(U, plotGrid);
         
-        % Do we actually want to plot?
-        % TODO: Remove this functionality, check in calling code
-        if ( ~doPlot )
-            return
-        end
-        
-        % If we're not in GUI mode, ensure that figure receives focus.
-        % TODO: Is this still needed, with passing of axes below?
-        if ( ~guiFlag )
-            cla(axesSol), shg
-        end
-        % TODO: What does this do?
-        set(gcf, 'doublebuf', 'on');
-
-        % Plot:
-        % Nota newplot herna?
-        % TODO: Still needed?
-        axesSol = newplot(axesSol);
-        h = plot(axesSol, plotGrid, feval(U, plotGrid), plotOpts{:});
-
-        % Hold?
-        ish = ishold();
-        if ( doHold )
-            hold on
-        end
-
-        % Fix Y limits?
-        if ( ~isempty(YLim) )
-            ylim(YLim);
-        end
-
-        % Axis labels and legends. Some, we only want to show if we're not in
-        % GUI mode, as otherwise, we run into issues at big fontsizes
-        % TODO: Use same options for gui and non gui?
-        if ( guiFlag )
-%             legend(varNames);
-            set(axesSol, 'fontsize', fontsize);
-        else
-            xlabel(xLabel);
-            if ( numel(varNames) > 1 )
-                legend(varNames);
-            else
-                ylabel(varNames);
+        % Update the YData of the lines plotted
+        if ( ~doHold )
+            for hCounter = 1:length(hLines)
+                set(hLines(hCounter), 'YData', Udata(:, hCounter)');
             end
-        end
-
-        % Grid?
-        if ( gridOn )
-            grid on
+        else
+            % Reset color cycle prior to point plot if running R2014b.
+            if ( newMatlabVersion )
+                set(axesSol, 'ColorOrderIndex', 1);
+            end
+            hLines = plot(axesSol, plotGrid, Udata, plotOpts{:});
         end
         
+        % Update the title, either of the GUI panel or the figure
         if ( guiFlag )
             set(panelSol, 'Title', sprintf('%s = %.3f', tlabel, t))
         elseif ( nargin > 1 )
             title(sprintf('%s = %.3f', tlabel, t))
         end
         
+        % Update the plot
         drawnow
-        
-        if ( nargout > 0 )
-            varargout{1} = h;
-        end
 
     end
 
@@ -625,11 +633,12 @@ pref.eps = tol;
 
 % Plot initial condition:
 currentLength = length(u0);
-set(axesSol, 'NextPlot','replacechildren');
-plotFun(u0, tt(1));
-leg = legend(varNames);
-set(leg, 'HandleVisibility', 'off')
-drawnow
+if ( doPlot )
+    plotFun(u0, tt(1));
+    leg = legend(varNames);
+    set(leg, 'HandleVisibility', 'off')
+    drawnow
+end
 done = false;
 if ( ~isnan(optN) )
     % Non-adaptive in space:
@@ -651,7 +660,7 @@ else
 
 end
 
-if ( doPlot && ~ish )
+if ( doPlot && ~doHold )
     hold off
 end
 

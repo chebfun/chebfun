@@ -72,7 +72,8 @@ switch ( lower(propName) )
         end
         cg.options.plotting = val;
     case 'grid'
-        cg.options.grid = val;
+        % This really should be stored as a double, not a string...
+        cg.options.grid = str2double(val);
     case 'pdeholdplot'
         cg.options.pdeholdplot = val;
     case 'fixn'

@@ -33,7 +33,7 @@ v0 = 1 - .5.*cos(.5.*pi.*x);
 sol0 = [u0, v0];
 
 %% Setup preferences for solving the problem.
-opts = pdeset('Eps', 1e-6, 'PDEflag', pdeflag, 'Ylim', [0.5,1]);
+opts = pdeset('Eps', 1e-6, 'PDEflag', pdeflag, 'Ylim', [0.5,1], 'holdplot','on');
 
 %% Call pde15s to solve the problem.
 tic
