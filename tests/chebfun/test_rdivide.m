@@ -164,7 +164,6 @@ hExact = oph(x);
 err = hVals - hExact;
 pass(17) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
 
-
 %%
 % Test that rdivide works correctly when the two triguns involved have 
 % widely different vscales.
@@ -200,5 +199,37 @@ pass(22) = strcmpi(func2str(get(h1(:,2).funs{1}.onefun, 'tech')), ...
                    func2str(get(g(:,2).funs{1}.onefun, 'tech')));
 h2 = chebfun(@(x) [cos(x)./(2+x), sin(x)./(2+x.^3)], dom, pref);
 pass(23) = norm(h1-h2, inf) < get(h2,'epslevel').*get(h2,'vscale');
+
+%%
+% #1111
+try
+    f = chebfun(@(x) exp(x));
+    g = 0;
+    f./g;
+    pass(24) = false;
+catch ME
+    pass(24) = strcmp(ME.identifier, ...
+        'CHEBFUN:CHEBFUN:rdivide:columnRdivide:divisionByZero');
+end
+
+try
+    f = chebfun(@(x) [exp(x) exp(-x)]);
+    g = [0 0];
+    f./g;
+    pass(25) = false;
+catch ME
+    pass(25) = strcmp(ME.identifier, ...
+        'CHEBFUN:CHEBFUN:rdivide:columnRdivide:divisionByZero');
+end
+
+try
+    f = chebfun(@(x) [exp(x) exp(-x) sin(x)]);
+    g = [1 0 1];
+    f./g;
+    pass(26) = false;
+catch ME
+    pass(26) = strcmp(ME.identifier, ...
+        'CHEBFUN:CHEBFUN:rdivide:columnRdivide:divisionByZero');
+end
 
 end

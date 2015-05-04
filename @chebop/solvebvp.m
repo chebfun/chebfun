@@ -95,6 +95,14 @@ x = chebfun(@(x) x, dom);
 % Linearize and attach preferences.
 [L, residual, isLinear] = linearize(N, u0, x);
 
+% Before attempting to solve, check whether we actually have any BCs imposed:
+maxDiffOrder = max(max(L.diffOrder));
+if maxDiffOrder > 0 && isempty(N.lbc) && isempty(N.rbc) && isempty(N.bc)
+    % Differential equations need BCs (but integral eqns. are OK):
+    error('CHEBFUN:CHEBOP:solvebvp:bcEmpty', ...
+        'Boundary conditions must be provided.');
+end
+
 warnState = warning();
 [ignored, lastwarnID] = lastwarn(); %#ok<ASGLU>
 if ( strcmp(lastwarnID, 'CHEBFUN:CHEBOP:linearize:bcConcat') )

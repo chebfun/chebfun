@@ -92,6 +92,19 @@ XExact = opExact(x);
 err = XVals - XExact;
 pass(9) = norm(err, inf) < 2*max(get(X,'epslevel').*get(X,'vscale'));
 
+%% #1111
+
+try
+    f = chebfun(@(x) exp(x));
+    g = 0;
+    f/g;
+    pass(10) = false;
+catch ME
+    pass(10) = strcmp(ME.identifier, ...
+        'CHEBFUN:CHEBFUN:mrdivide:divisionByZero');
+end
+
+
 %% [TODO]: Revive the following test:
 
 % Case 2: X*B = A, where B is a numerical matrix and A is an array-valued 

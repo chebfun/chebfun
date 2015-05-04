@@ -11,6 +11,11 @@ function X = mrdivide(B, A)
 % TODO: Give an example for each of the cases below.
 
 if ( isscalar(A) )
+    if ( A == 0 )
+        % TODO:  Return identically Inf/NaN CHEBFUN instead?
+        error('CHEBFUN:CHEBFUN:mrdivide:divisionByZero', ...
+            'Division by zero.')
+    end
     X = B*(1/A);
 
 elseif ( size(A, 2) ~= size(B, 2) )

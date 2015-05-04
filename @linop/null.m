@@ -21,8 +21,6 @@ function v = null(A, pref)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% TODO: Add support for systems of equations.
-
 % Grab defaults if needed.
 if ( nargin == 1 || isempty(pref) )
     pref = cheboppref;
@@ -35,10 +33,6 @@ discType = pref.discretization;
 m = size(A, 2);
 if ( m ~= size(A, 1) )
     error('CHEBFUN:LINOP:eigs:notSquare','Block size must be square.')
-end
-if ( m > 1 )
-    warning('CHEBFUN:LINOP:null:systems', ...
-        'Use of NULL on systems of equations has not yet been tested.')
 end
 
 % Set up the discretization:
@@ -84,7 +78,7 @@ for dim = dimVals
     v = partition(discA, P*v);
     
     % Test the happiness of the function pieces:
-    vscale = zeros(sum(isFun), 1);  % intrinsic scaling only.
+    vscale = zeros(1, sum(isFun));  % intrinsic scaling only.
     [isDone, epsLevel] = testConvergence(discA, v(isFun), vscale, pref);
     
     if ( all(isDone) )
@@ -106,12 +100,15 @@ v = mat2fun(discA, P*V);
 
 % Simplify and orthogonalize:
 epsLevel = min(epsLevel, eps(1));
-for j = 1:numel(v)
-    if ( ~isFun(j) )
-        continue
+if ( m == 1 )
+    v{1} = qr(v{1});
+    v{1} = simplify(v{1}, epsLevel);
+else % system of eqns
+    [Q, R] = qr(join(v{:}));
+    for j = 1:numel(v)
+        v{j} = v{j}/R;
+        v{j} = simplify(v{j}, epsLevel);
     end
-    v{j} = simplify(v{j}, epsLevel);
-    v{j} = qr(v{j});
 end
 
 % TODO: Can we move this to the CHEBMATRIX constructor? NOTE: The following is

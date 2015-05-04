@@ -10,8 +10,8 @@ end
 seedRNG(6178);
 x = 2 * rand(100, 1) - 1;
 
-for (n = 1:2)
-    if (n == 1)
+for n = 1:2
+    if ( n == 1 )
         testclass = chebtech1();
     else
         testclass = chebtech2();
@@ -25,9 +25,15 @@ for (n = 1:2)
     err = feval(h, x) - h_exact(x);
     pass(1) = h.ishappy && (norm(err(:), inf) < 10*max(h.vscale.*h.epslevel));
 
+    %
     g = testclass.make(@(x) sqrt(x), [], pref);
     h = assignColumns(f, 1, g);
     pass(2) = ~h.ishappy;
+    
+    %
+    h = assignColumns(f, 1, []);
+    pass(3) = all(size(h.vscale) == [1, 2]);
+    
 end
 
 end

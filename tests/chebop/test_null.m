@@ -35,9 +35,25 @@ for k = 1:3
     pass(k,6) = err(k,6) < tol;
     err(k,7) = norm(feval(V, 1), inf);    % Check BC is satisfied.
     pass(k,7) = err(k,7) < tol;
-
+    
+    % Test system:
+    L = chebop(@(x,u,v) [diff(u) + v; diff(v) + u]);
+    V = null(L, pref);
+    err(k,8) = norm(L*V, 2); % Check residual.
+    pass(k,8) = err(k,8) < tol;
+    err(k,9) = norm(V'*V - eye(2), inf);  % Check orthonormality.
+    pass(k,9) = err(k,9) < tol;
+    
+    % Test a more complicated system:
+    L = chebop(@(x,u,v,w) [diff(u, 2) + diff(v) + w; ...
+        2*diff(v, 2) + diff(w); ...
+        sin(x).*u + diff(w, 2)]);
+    V = null(L, pref);
+    err(k,  10) = norm(L*V, 2); % Check residual.
+    pass(k, 10) = err(k,8) < tol;
+    err(k,  11) = norm(V'*V - eye(6), inf);  % Check orthonormality.
+    pass(k, 11) = err(k,9) < tol;
+    
 end
 
 end
-
-

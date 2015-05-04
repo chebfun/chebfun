@@ -28,16 +28,17 @@ if ( isa(f.smoothPart, 'chebtech') )
     % Compute the Chebyshev moments:
     w = computeWeights(f.exponents - [.5 .5], n + N - 1).';
     % The Chebyshev coefficients of f:
-    b = .5*flipud([zeros(N-1, 1) ; get(f, 'coeffs')]);
+    b = .5*[get(f, 'coeffs') ; zeros(N-1, 1)];
     % Multiplication matrix for coefficients of f: (fast, using FFTs)
-    out = flipud(fastToeplitzMult(b, w) + fastHankelMult(b, w) - w(1)*b);
-    % Trim to required length and scale T_0 term:
-    out = [out(end-N+1:end-1) ; out(end)/2].';
+    out = fastToeplitzMult(b, w) + fastHankelMult(b, w) - w(1)*b;
+    % Trim to required length:
+    out = out(1:N);
     
 else
     % Compute the required inner products by calling SUM().
-   
-    for k = N-1:-1:0
+    
+    out = zeros(N, 1);
+    for k = 0:(N-1)
         % Make the kth Chebyshev polynomial:
         Tk = f.smoothPart.make(@(x) cos(k*acos(x)));
         % Compute the product of f with T_k:
@@ -45,12 +46,15 @@ else
         % Include the Chebyshev weight:
         g.exponents = g.exponents - [.5, .5];
         % Integrate using SUM():
-        out(N-k) = sum(g);
+        out(k+1) = sum(g);
     end
-    % Scale the final coefficient:
-    out(end) = out(end)/2;
-    
+   
 end
+
+% Scale the T_0 term:
+out(1) = out(1)/2;
+% Scale all coefficients by (2/pi):
+out = (2/pi)*out;
 
 end
 

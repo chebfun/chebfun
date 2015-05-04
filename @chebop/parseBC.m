@@ -36,7 +36,13 @@ elseif ( isa(BC, 'function_handle') )
             ( strcmp(type,'lrbc') && (nargin(BC) == (numIn - 1)) ) || ...
             ( strcmp(type,'bc') && (nargin(BC) == numIn) ) || ...
             ( strcmp(type,'bc') && (nargin(BC) == numIn + 1) ) )
-        result = BC;
+        % We've got an anonymous function we're happy with. Do we need to
+        % vectorize it?
+        if ( N.vectorize && ~strcmp(func2str(BC), vectorize(BC)) )
+            result = N.vectorizeOp(BC);
+        else
+            result = BC;
+        end
     else
         error('CHEBFUN:CHEBOP:parseBC:inputs', ...
             'Number of inputs to BCs do not match operator.');

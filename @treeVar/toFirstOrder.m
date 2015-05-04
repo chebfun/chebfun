@@ -67,7 +67,7 @@ end
 
 % Ensure RHS is a CHEBMATRIX
 if ( ~isa(rhs, 'chebmatrix') )
-    rhs = chebmatrix(rhs);
+    rhs = chebmatrix(rhs, domain);
 end
 
 
@@ -85,6 +85,9 @@ problemDom = fevalResult(1).domain;
 for resCounter = 2:length(fevalResult)
     problemDom = union(problemDom, fevalResult(resCounter).domain);
 end
+
+% Ensure we also include potential breakpoints from the RHS:
+problemDom = union(problemDom, rhs.domain);
 
 % First look at all diffOrders to ensure we start with the correct indices.
 % INDEXSTART denotes at which index we should start indexing each variable from.
