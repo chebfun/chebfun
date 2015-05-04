@@ -24,7 +24,7 @@ fprintf(fid, '[%s, %s] = pde15s(pdefun, %s, %s, bc, opts);\n', indVarName{2}, ..
 
 % Conver sol to variable names
 if ( numel(deInput) > 1 )
-    fprintf(fid, '\n%% Recover variable names.\n');
+    fprintf(fid, '\n%% Recover components of the solution:\n');
     for k = 1:numel(s)
         fprintf(fid, '%s = %s(%d,:);\n', s{k}, sol, k);
     end
