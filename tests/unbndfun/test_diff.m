@@ -56,7 +56,7 @@ op_g = @(x) 2*x.^3.*exp(-x.^2) - 2*x.*(exp(-x.^2) - 1);
 gVals = feval(g, x);
 gExact = op_g(x);
 err = norm(gVals - gExact, inf);
-tol = 5e6*get(f,'epslevel')*get(f,'vscale');
+tol = 1e7*get(f,'epslevel')*get(f,'vscale');
     % tolerance loosened in epslevel-dependent test
 pass(4) = err < tol;
 

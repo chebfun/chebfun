@@ -3,8 +3,17 @@ function varargout = mldivide(N, rhs, varargin)
 %
 % MLDIVIDE is a convenient wrapper for CHEBOP/SOLVEBVP and CHEBOP/SOLVEIVP. It
 % calls the appropriate method, depending on whether the problem being solved is
-% a boundary-value problem, or an initial/final-value problem. See the
-% documentation of the corresponding methods for further details.
+% a boundary-value problem, or an initial/final-value problem. Problems,
+% specified by a CHEBOP N are determined to be a boundary-value or
+% initial/final-value problems as follows:
+%   * If N.LBC is non-empty, but both N.RBC and N.BC are empty, it's considered
+%     to be an initial-value problem. In this case, CHEBOP/SOLVEIVP is called.
+%   * If N.RBC is non-empty, but both N.LBC and N.BC are empty, it's considered
+%     to be a final-value problem. In this case, CHEBOP/SOLVEIVP is called.
+%   * Otherwise, the problem is considered to be a boundary-value problem. In
+%     this case, CHEBOP/SOLVEBVP is called.
+%
+% See the documentation of the corresponding methods for further details.
 %
 % See also CHEBOP/SOLVEBVP, CHEBOP/SOLVEIVP.
 

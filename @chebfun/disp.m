@@ -76,7 +76,7 @@ end
 [extraItem, extraData] = dispData(f);
 
 % Loop through each of the funs to display the following information:
-s = [s, sprintf('\n       interval       length   endpoint values %s\n', extraItem)];
+s = [s, sprintf('\n       interval       length     endpoint values %s\n', extraItem)];
 len = zeros(numFuns, 1);
 for j = 1:numFuns
     len(j) = length(f.funs{j});
@@ -117,7 +117,7 @@ s = [s, sprintf('Vscale = %i.', vscale(f, 'sup'))];
 
 % Display total length for piecewise chebfuns:
 if ( numFuns > 1 )
-    s = [s, sprintf('  Total length = %i.', sum(len))];
+    s = [s, sprintf('   Total length = %i', sum(len))];
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -281,6 +281,9 @@ classdef chebtech < smoothfun % (Abstract)
 
         % A 'loose' (i.e., not too strict) check for happiness.
         [ishappy, epslevel, cutoff] = looseCheck(f, values, pref)
+        
+        % Evaluate a CHEBTECH at -1.
+        out = lval(f)
 
         % Convert an array-valued CHEBTECH into an ARRAY of CHEBTECH objects.
         g = mat2cell(f, M, N)
@@ -356,6 +359,9 @@ classdef chebtech < smoothfun % (Abstract)
         
         % Round a CHEBTECH towards nearest integer.
         g = round(f)
+        
+        % Evaluate a CHEBTECH at +1.
+        out = rval(f)
 
         % Test an evaluation of the input OP against a CHEBTECH approx.
         pass = sampleTest(op, values, f)

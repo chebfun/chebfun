@@ -102,4 +102,17 @@ s = singfun(f, data, pref);
 pass(20) = iszero(f - s.smoothPart);
 pass(21) = norm(s.exponents - [-1.5, -1], inf) < pref.blowupPrefs.exponentTol;
 
+%%
+% Construction from double:
+f = singfun(42);
+pass(22) = iszero(f - 42);
+data = struct();
+data.exponents = [1.5, 1];
+data.singType = {'sing', 'sing'};
+f = singfun(42, data, pref);
+g = singfun(@(x) 42+0*x);
+g.exponents = [1.5, 1];
+pass(23) = iszero(f - g);
+pass(24) = norm(s.exponents - [-1.5, -1], inf) < pref.blowupPrefs.exponentTol;
+
 end
