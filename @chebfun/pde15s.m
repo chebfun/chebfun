@@ -138,6 +138,9 @@ else
     opt.OutputFcn = @adaptiveEvent;
 end
 
+% Predefine a grid for plotting that allows us to speed up that part
+plotGrid = chebpts(300, u0.domain);
+
 % Determine which figure to plot to (for CHEBGUI) and set default display values
 % for variables.
 YLim = opt.YLim;
@@ -148,23 +151,24 @@ if ( isfield(opt, 'handles') )
         guiFlag = true;
         axesSol = opt.handles.fig_sol;
         axesNorm = opt.handles.fig_norm;
-        axes(axesSol);
         gridOn = opt.handles.guifile.options.grid;
         solveButton = opt.handles.button_solve;
         clearButton = opt.handles.button_clear;
         panelSol = opt.handles.panel_figSol;
-        panelNorm = opt.handles.panel_figNorm;
     end
     varNames = opt.handles.varnames;
     xLabel = opt.handles.indVarName{1};
     tlabel = opt.handles.indVarName{2};
     fontsize = opt.handles.fontsizePanels;
 else
+    % TODO: Get correct varnames for non-gui mode?
     varNames = 'u';
     xLabel = 'x';
     tlabel = 't';
+    axesSol = gca;
 end
-
+set(axesSol, 'xLim', u0.domain);
+ 
     function status = nonAdaptiveEvent(t, U, flag)
         % This event is called at the end of each chunk in non-adaptive mode.
         status = false;
@@ -318,17 +322,24 @@ end
         %PLOTFUN    Plot current solution U at a time t.
         
         % Do we actually want to plot?
+        % TODO: Remove this functionality, check in calling code
         if ( ~doPlot )
             return
         end
+        
         % If we're not in GUI mode, ensure that figure receives focus.
+        % TODO: Is this still needed, with passing of axes below?
         if ( ~guiFlag )
-            cla, shg
+            cla(axesSol), shg
         end
+        % TODO: What does this do?
         set(gcf, 'doublebuf', 'on');
 
         % Plot:
-        h = plot(U, plotOpts{:});
+        % Nota newplot herna?
+        % TODO: Still needed?
+        axesSol = newplot(axesSol);
+        h = plot(axesSol, plotGrid, feval(U, plotGrid), plotOpts{:});
 
         % Hold?
         ish = ishold();
@@ -343,8 +354,9 @@ end
 
         % Axis labels and legends. Some, we only want to show if we're not in
         % GUI mode, as otherwise, we run into issues at big fontsizes
+        % TODO: Use same options for gui and non gui?
         if ( guiFlag )
-            legend(varNames);
+%             legend(varNames);
             set(axesSol, 'fontsize', fontsize);
         else
             xlabel(xLabel);
@@ -613,8 +625,11 @@ pref.eps = tol;
 
 % Plot initial condition:
 currentLength = length(u0);
+set(axesSol, 'NextPlot','replacechildren');
 plotFun(u0, tt(1));
-
+leg = legend(varNames);
+set(leg, 'HandleVisibility', 'off')
+drawnow
 done = false;
 if ( ~isnan(optN) )
     % Non-adaptive in space:

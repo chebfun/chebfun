@@ -208,8 +208,10 @@ end
 
 % Try solving the PDE!
 try
+    tic
     [t, u] = pde15s(DE, tt, u0, bc, opts);
-catch
+    toc
+catch ME
     errordlg('Error in solution process.', 'chebopbvp error', 'modal');
     varargout{1} = handles;
     return
