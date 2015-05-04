@@ -209,6 +209,8 @@ if ( doPlot )
     % Matlab graphics mode
     if ( ~verLessThan('matlab', '8.4') )
         newMatlabVersion = true;
+    else
+        newMatlabVersion = false;
     end
 end
     function status = nonAdaptiveEvent(t, U, flag)
