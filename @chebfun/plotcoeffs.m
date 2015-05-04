@@ -72,11 +72,7 @@ doLogLog = cellfun(@(s) strcmpi(s, 'loglog'), varargin);
 doLogLog = any(doLogLog);
 noEpsLevel = cellfun(@(s) strcmpi(s, 'noEpsLevel'), varargin);
 varargin(noEpsLevel) = []; % Strip this out, as we don't want to pass it down.
-doEpsLevel = ~any(noEpsLevel);
-global myeps
-if ( myeps ~= 0 )
-    doEpsLevel = 0;
-end
+doEpsLevel = 0;
 
 % Convert to a cell array for easy handling:
 f = mat2cell(f);
