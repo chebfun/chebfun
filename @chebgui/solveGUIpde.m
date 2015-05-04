@@ -242,7 +242,7 @@ else
 end
 
 if ( ~isa(u, 'chebmatrix') )
-    waterfall(u, t, 'simple', 'linewidth', defaultLineWidth)
+    waterfall(u, t, 'linewidth', defaultLineWidth)
 
 else
     cols = get(0, 'DefaultAxesColorOrder');

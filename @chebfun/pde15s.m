@@ -643,7 +643,7 @@ pref.eps = tol;
 currentLength = length(u0);
 if ( doPlot )
     plotFun(u0, tt(1));
-    leg = legend(varNames);
+    leg = legend(axesSol, varNames);
     set(leg, 'HandleVisibility', 'off')
     drawnow
 end
