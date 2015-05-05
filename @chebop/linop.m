@@ -1,4 +1,4 @@
-function [L, f, FAIL] = linop(N)
+function [L, f, FAIL] = linop(N, paramReshapeFlag)
 %LINOP   Convert a CHEBOP to a LINOP.
 %   L = LINOP(N) converts a CHEBOP N to a linop L if N is a linear operator. If
 %   N is not linear, an error message is returned.
@@ -10,6 +10,14 @@ function [L, f, FAIL] = linop(N)
 %   linear, but instead return FAIL = TRUE and L = []. If N is linear, FAIL =
 %   FALSE.
 %
+%   L = LINOP(N, PARAMRESHAPEFLAG) is useful when determining whether parameters
+%   (as opposed to functions) appear in the problem. If PARAMRESHAPEFLAG = 1,
+%   the code will try to cast any unknown inputs which correspond to parameters
+%   to scalars, rather than CHEBFUNs, as it linearizes. The Frechet derivatives
+%   corresponding to parameters will be Inf x 1 CHEBFUNs, rather than Inf x Inf
+%   OPERATORBLOCKs. By default, PARAMRESHAPEFLAG = 1. For generalized eigenvalue
+%   problems, it is useful to pass PARAMRESHAPEFLAG = 0.
+%
 % See also LINOP, CHEBOP/LINEARIZE, CHEBOP/ISLINEAR.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
@@ -18,8 +26,13 @@ function [L, f, FAIL] = linop(N)
 % Tell CHEBOP/LINEARIZE() to stop if it detects nonlinearity:
 linCheck = 1; 
 
+% By default, we want PARAMRESHAPEFLAG = 1:
+if ( nargin < 2 )
+    paramReshapeFlag = 1;
+end
+
 % Linearize, thereby obtaining linearity information and a LINOP:
-[L, f, isLinear] = linearize(N, N.init, [], linCheck);
+[L, f, isLinear] = linearize(N, N.init, [], linCheck, paramReshapeFlag);
 
 % We need the entire operator (including BCs) to be linear:
 FAIL = ~all(isLinear);
