@@ -137,13 +137,12 @@ catch ME
 end
 
 % Check for a generalised problem.
-% TODO: This should be a joint method with solveGUIeig
 if ( ~isempty(rhsString) )
     RHS  = eval(rhsString);
     N_RHS = chebop(RHS, d);
 
     try
-        B = linop(N_RHS);
+        B = linop(N_RHS, 0);
     catch ME
         MEID = ME.identifier;
         if ( guiMode  && ~isempty(strfind(MEID, 'linop:nonlinear')) )
