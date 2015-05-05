@@ -107,6 +107,9 @@ if ( isempty(optN) )
     optN = NaN;
 end
 
+% Get the domain:
+DOMAIN = domain(u0, 'ends');
+
 if ( isfield(opt, 'AdjustBCs') && ~isempty(opt.AdjustBCs) && ~opt.AdjustBCs )
     throwBCwarning = false;
     adjustBCs = false;
@@ -148,10 +151,6 @@ if ( ~isnan(optN) )
 else
     opt.OutputFcn = @adaptiveEvent;
 end
-
-% Predefine a grid for plotting that allows us to speed up that part
-nPlot = 300;
-plotGrid = chebpts(nPlot, u0.domain);
 
 % Determine which figure to plot to (for CHEBGUI) and set default display values
 % for variables.
@@ -206,7 +205,8 @@ if ( doPlot )
     end
     
     % Initialize lines for plotting
-    hLines = plot(axesSol, plotGrid, NaN(nPlot, numColumns(u0)), plotOpts{:});
+    hLines = plot(axesSol, DOMAIN, NaN(length(DOMAIN), numColumns(u0)), ...
+        plotOpts{:});
     
     % Grid on?
     if ( gridOn )
@@ -385,20 +385,23 @@ end
     function plotFun(U, t)
         %PLOTFUN    Plot current solution U at a time t.
 
-        % Evaluate the current solution at the plotting grid
-        Udata = feval(U, plotGrid);
+        % Obtain plotting data for the solution
+        Udata = plotData(U);
+        UdataX = Udata.xLine;
+        UdataY = Udata.yLine;
         
         % Update the YData of the lines plotted
         if ( ~doHold )
             for hCounter = 1:length(hLines)
-                set(hLines(hCounter), 'YData', Udata(:, hCounter)');
+                set(hLines(hCounter), 'XData', UdataX);
+                set(hLines(hCounter), 'YData', UdataY(:, hCounter)');
             end
         else
             % Reset color cycle prior to point plot if running R2014b.
             if ( newMatlabVersion )
                 set(axesSol, 'ColorOrderIndex', 1);
             end
-            hLines = plot(axesSol, plotGrid, Udata, plotOpts{:});
+            hLines = plot(axesSol, UdataX, UdataY, plotOpts{:});
         end
         
         % Update the title, either of the GUI panel or the figure
@@ -448,9 +451,6 @@ else
         u0(k).funs{1}.onefun = prolong(u0(k).funs{1}.onefun, optN);
     end
 end
-
-% Get the domain:
-DOMAIN = domain(u0, 'ends');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% %%%%%%%%%%%%%%%%%%%%%%%%% PARSE BOUNDARY CONDITIONS %%%%%%%%%%%%%%%%%%%%%%%%%
