@@ -137,7 +137,6 @@ catch ME
 end
 
 % Check for a generalised problem.
-% TODO: This should be a joint method with solveGUIeig
 if ( ~isempty(rhsString) )
     RHS  = eval(rhsString);
     N_RHS = chebop(RHS, d);
@@ -155,15 +154,19 @@ if ( ~isempty(rhsString) )
         return
     end
     
-    % Check whether we are working with generalized
-    % problems or not by comparing B with the identity operator on the domain.
+    % Check whether we are working with generalized problems or not. If we are,
+    % the discretization of B will be a vector of elements with all 1 entries
+    % (as B would be of the form B = chebop(@(u) u)).
     I = operatorBlock.eye(d);
     % Set a discretization size for comparing operators
     discDim = repmat(10, 1, length(d) - 1);    
     % Obtain a discretisation of the operator B
     Bdisc = matrix(B, discDim);
-    % Obtain a discretization of the identity operator on the domain
-    Idisc = matrix(linop(I), discDim);
+    % Obtain a discretization of the chebop specified via chebop(@(u) u). Notice
+    % that this is not identical to the discretization of identity operator on
+    % the domain, due to the fact that chebop/linearize now tries to
+    % automatically detect parameters appearing in the problem!
+    Idisc = ones(10*(length(d) - 1), 1);
     % In case of systems, B will have a block structure. Need to get the
     % corresponding block identity operator by tiling the identity operator.
     % Start by wrapping in a cell and call repmat
@@ -172,18 +175,22 @@ if ( ~isempty(rhsString) )
     Idisc = blkdiag(Idisc{:});
     
     % Compare the discretizations to see whether they are the same. If Bdisc is
-    % not square, B is certainly not the identity operator!
-    if ( size(Bdisc, 1) ~= size(Bdisc, 2) )
+    % not tall and skinny, it can't have been the identity operator! In other
+    % words, if Bdisc has more columns than number of variables that appear in
+    % the problem, it will not have been the identity operator.
+    if ( size(Bdisc, 2) ~= size(B, 2) )
         generalized = 1;
     else
-
+        
         opDifference = Bdisc - Idisc;
         opSum = Bdisc + Idisc;
-        if ( isempty(nonzeros(opDifference)) )
+        tol = 10*(length(d) - 1)*size(B, 2);
+        % Check whether B matches identity (allow for numerical roundoff errors)
+        if ( norm(opDifference) < tol )
             generalized = 0;
         end
 
-        if ( isempty(nonzeros(opSum)) )
+        if ( norm(opSum) < tol )
             generalized = 0;
             flipSigns = 1;
         end
