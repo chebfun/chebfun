@@ -112,7 +112,7 @@ end
 
 % Project the values onto a Legendre grid: (where integrals of polynomials
 % p_n*q_n will be computed exactly and on an n-point grid)
-if ( length(WP) ~= n || (~isempty(type) && isa(f, type)) )
+if ( (length(WP) ~= n && n <= 5000) || ((~isempty(type) && isa(f, type)) && n <= 5000)  )
     xc = f.chebpts(n);
     vc = f.barywts(n);
     [xl, wl, vl] = legpts(n);
@@ -126,31 +126,75 @@ if ( length(WP) ~= n || (~isempty(type) && isa(f, type)) )
     type = class(f);
 end
 
-% Compute the weighted QR factorisation:
-values = f.coeffs2vals(f.coeffs);
-if ( nargout == 3 )
-    [Q, R, E] = qr(WP * values, 0);
-    % For consistency with the MATLAB QR behavior:
-    if ( (nargin == 1) || ...
-        ~(strcmpi(outputFlag, 'vector') || isequal(outputFlag, 0)) )
-        % Return E in matrix form:
-        I = eye(m);
-        E = I(:,E);
+if ( n <= 5000 )
+    % Compute the weighted QR factorisation:
+    values = f.coeffs2vals(f.coeffs);
+    if ( nargout == 3 )
+        [Q, R, E] = qr(WP * values, 0);
+        % For consistency with the MATLAB QR behavior:
+        if ( (nargin == 1) || ...
+                ~(strcmpi(outputFlag, 'vector') || isequal(outputFlag, 0)) )
+            % Return E in matrix form:
+            I = eye(m);
+            E = I(:,E);
+        end
+    else
+        %converted = chebfun.ndct( f.coeffs );
+        converted = WP * values;
+        [Q, R] = qr(converted, 0);
     end
+    
+    % Revert to the Chebyshev grid (and remove the weight and enforce diag(R) >= 0).
+    s = sign(diag(R));
+    s(~s) = 1;
+    S = spdiags(s, 0, m, m);
+    Q = invWP*Q*S;                 % Fix Q.
+    R = S*R;                       % Fix R.
+    
+    % Apply data to chebtech:
+    f.coeffs = f.vals2coeffs(Q);   % Compute new coefficients.
+    f.vscale = max(abs(Q), [], 1); % Update vscale
+        
 else
-    [Q, R] = qr(WP * values, 0);
+    % Got to use fast transforms now because we cannot store nxn matrices,
+    % where n>>5000. (Same algorithm as when n < 5000, except we never form
+    % a large dense matrix.)
+    
+    % Compute the weighted QR factorisation:
+    [ignored, wl, ignored] = legpts(n);
+    W = spdiags(sqrt(wl.'), 0, n, n);
+    if ( nargout == 3 )
+        converted = W*chebfun.ndct( f.coeffs ); % does WP * values
+        [Q, R, E] = qr( converted , 0);
+        % For consistency with the MATLAB QR behavior:
+        if ( (nargin == 1) || ...
+                ~(strcmpi(outputFlag, 'vector') || isequal(outputFlag, 0)) )
+            % Return E in matrix form:
+            I = eye(m);
+            E = I(:,E);
+        end
+    else
+        converted = W*chebfun.ndct( f.coeffs ); % does WP * values
+        [Q, R] = qr(converted, 0);
+    end
+    
+    % Revert to the Chebyshev grid (and remove the weight and enforce diag(R) >= 0).
+    s = sign(diag(R));
+    s(~s) = 1;
+    S = spdiags(s, 0, m, m);
+    Winv = spdiags(1./sqrt(wl.'), 0, n, n);
+    Q = Winv*Q*S;                 % Fix Q.
+    Q_coeffs = leg2cheb( chebfun.dlt( Q ) );
+    Q = f.coeffs2vals( Q_coeffs ); 
+    R = S*R;                       % Fix R.
+    
+    % Apply data to chebtech:
+    f.coeffs = Q_coeffs;           % Compute new coefficients.
+    f.vscale = max(abs(Q), [], 1); % Update vscale     
+    
 end
 
-% Revert to the Chebyshev grid (and remove the weight and enforce diag(R) >= 0).
-s = sign(diag(R));
-s(~s) = 1;
-S = spdiags(s, 0, m, m);
-Q = invWP*Q*S;                 % Fix Q.
-R = S*R;                       % Fix R.
 
-% Apply data to chebtech:
-f.coeffs = f.vals2coeffs(Q);   % Compute new coefficients.
-f.vscale = max(abs(Q), [], 1); % Update vscale
 
 end
 
