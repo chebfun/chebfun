@@ -112,7 +112,7 @@ end
 
 % Project the values onto a Legendre grid: (where integrals of polynomials
 % p_n*q_n will be computed exactly and on an n-point grid)
-if ( (length(WP) ~= n && n <= 5000) || ((~isempty(type) && isa(f, type)) && n <= 5000)  )
+if ( (length(WP) ~= n && n <= 4000) || ((~isempty(type) && isa(f, type)) && n <= 4000)  )
     xc = f.chebpts(n);
     vc = f.barywts(n);
     [xl, wl, vl] = legpts(n);
@@ -126,7 +126,7 @@ if ( (length(WP) ~= n && n <= 5000) || ((~isempty(type) && isa(f, type)) && n <=
     type = class(f);
 end
 
-if ( n <= 5000 )
+if ( n <= 4000 )
     % Compute the weighted QR factorisation:
     values = f.coeffs2vals(f.coeffs);
     if ( nargout == 3 )
@@ -157,7 +157,7 @@ if ( n <= 5000 )
         
 else
     % Got to use fast transforms now because we cannot store nxn matrices,
-    % where n>>5000. (Same algorithm as when n < 5000, except we never form
+    % where n>>4000. (Same algorithm as when n <= 4000, except we never form
     % a large dense matrix.)
     
     % Compute the weighted QR factorisation:
