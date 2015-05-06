@@ -1,5 +1,5 @@
 function f = cosh( f )
-%COSH   Hyperbolic cosine of a LOWRANKAPPROX.
+%COSH   Hyperbolic cosine of a SEPARABLEAPPROX.
 %   COSH(F) returns the hyperbolic cosine of F.
 % 
 % See also SINH, COS.

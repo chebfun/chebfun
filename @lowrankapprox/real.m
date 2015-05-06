@@ -1,5 +1,5 @@
 function f = real( f )
-%REAL      Real part of a LOWRANKAPPROX.
+%REAL      Real part of a SEPARABLEAPPROX.
 %
 % See also IMAG.
 

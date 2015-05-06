@@ -1,5 +1,5 @@
 function varargout = contour( f, varargin )
-%CONTOUR  contour plot of a LOWRANKAPPROX.
+%CONTOUR  contour plot of a SEPARABLEAPPROX.
 %   CONTOUR(F) is a contour plot of F treating the values of F as heights above
 %   a plane. A contour plot are the level curves of F for some values V. The
 %   values V are chosen automatically.
@@ -47,7 +47,7 @@ while ( ~isempty( varargin ) )
     elseif ( strcmpi(varargin{1}, 'pivots') ) % If given numpts then use them.
         doPivotPlot = 1;
         if ( length( varargin ) < 2 ) 
-            error('CHEBFUN:LOWRANKAPPROX:contour:pivotStyle', ...
+            error('CHEBFUN:SEPARABLEAPPROX:contour:pivotStyle', ...
                 'Pivot style undefined.')
         end
         argin{j} = varargin{2};
@@ -83,14 +83,14 @@ if ( isa(f, 'double') )
         vals = feval(f, xx, yy);
         
     else
-        error('CHEBFUN:LOWRANKAPPROX:contour:badInputs', ...
+        error('CHEBFUN:SEPARABLEAPPROX:contour:badInputs', ...
             'Unrecognised input arguments.');
     end
     
-elseif ( isa(f, 'lowrankapprox') ) 
+elseif ( isa(f, 'separableApprox') ) 
     
     dom = f.domain;
-    if ( (nargin == 3) || (nargin > 3) && ~isa(argin{1},'lowrankapprox') ) 
+    if ( (nargin == 3) || (nargin > 3) && ~isa(argin{1},'separableApprox') ) 
         % CONTOUR(xx, yy, f)
         
         % Evaluate f at equally spaced points.
@@ -99,7 +99,7 @@ elseif ( isa(f, 'lowrankapprox') )
         [xx, yy] = meshgrid(x, y);
         vals = feval( f, xx, yy );
 
-    elseif ( (nargin >= 3) && isa(argin{1},'lowrankapprox') && isa(argin{2},'lowrankapprox') )
+    elseif ( (nargin >= 3) && isa(argin{1},'separableApprox') && isa(argin{2},'lowrankapprox') )
         % CONTOUR plot on a surface.
         
         % Extract inputs:
@@ -110,8 +110,8 @@ elseif ( isa(f, 'lowrankapprox') )
         
         % Check CONTOUR objects are on the same domain.
         if ( ~domainCheck(xx, yy) || ~domainCheck(yy, f) )
-            error('CHEBFUN:LOWRANKAPPROX:contour:domains', ...
-                'Domains of LOWRANKAPPROX objects are not consistent.');
+            error('CHEBFUN:SEPARABLEAPPROX:contour:domains', ...
+                'Domains of SEPARABLEAPPROX objects are not consistent.');
         end
         
         % Evaluate f on equally spaced grid:
@@ -132,13 +132,13 @@ elseif ( isa(f, 'lowrankapprox') )
         vals = feval(f, xx, yy );
         
     else
-        error('CHEBFUN:LOWRANKAPPROX:contour:inputs1', ...
+        error('CHEBFUN:SEPARABLEAPPROX:contour:inputs1', ...
             'Unrecognised input arguments.');
     end
     
 else
     
-    error('CHEBFUN:LOWRANKAPPROX:contour:inputs2', ...
+    error('CHEBFUN:SEPARABLEAPPROX:contour:inputs2', ...
         'Unrecognised input arguments.');
     
 end

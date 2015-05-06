@@ -1,8 +1,8 @@
 function varargout = grad( f )
-%GRAD   Numerical gradient of a LOWRANKAPPROX.
-%   [FX FY] = GRAD(F) returns the numerical gradient of the LOWRANKAPPROX F, where FX
+%GRAD   Numerical gradient of a SEPARABLEAPPROX.
+%   [FX FY] = GRAD(F) returns the numerical gradient of the SEPARABLEAPPROX F, where FX
 %   is the derivative of F in the x direction and FY is the derivative of F in
-%   the y direction. Both derivatives are returned as LOWRANKAPPROX objects.
+%   the y direction. Both derivatives are returned as SEPARABLEAPPROX objects.
 %
 %   G = GRAD(F) returns a CHEBFUN2V which represents
 %

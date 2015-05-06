@@ -1,6 +1,6 @@
 function [Y, X] = minandmax2( f )
-%MINANDMAX2   Find global minimum and maximum of a LOWRANKAPPROX.
-%   Y = minandmax2(F) returns the minimum and maximum value of a LOWRANKAPPROX over
+%MINANDMAX2   Find global minimum and maximum of a SEPARABLEAPPROX.
+%   Y = minandmax2(F) returns the minimum and maximum value of a SEPARABLEAPPROX over
 %   its domain. Y is a vector of length 2 such that Y(1) = min(f(x,y)) and Y(2)
 %   = max(f(x,y)).
 %
@@ -14,7 +14,7 @@ function [Y, X] = minandmax2( f )
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% check for empty LOWRANKAPPROX.
+% check for empty SEPARABLEAPPROX.
 if ( isempty( f ) )
     Y = []; 
     X = [];

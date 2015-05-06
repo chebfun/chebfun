@@ -1,22 +1,22 @@
 function varargout = quiver3( Z, F, varargin )
-%QUIVER3  3-D quiver plot of a CHEBFUN2V at data mapped by a LOWRANKAPPROX.
+%QUIVER3  3-D quiver plot of a CHEBFUN2V at data mapped by a SEPARABLEAPPROX.
 %
 % QUIVER3(Z, F) plots velocity vectors at the equally spaced surface points
-% specified by the LOWRANKAPPROX Z. We use Z to map a uniform grid. F should be
+% specified by the SEPARABLEAPPROX Z. We use Z to map a uniform grid. F should be
 % a CHEBFUN2V.
 %
 % QUIVER3(X, Y, Z, F) plots velocity vectors at (x,y,z), where X, Y, Z are
-% LOWRANKAPPROX objects which we use to to map a uniform grid. F should be a
+% SEPARABLEAPPROX objects which we use to to map a uniform grid. F should be a
 % CHEBFUN2V.
 %
 % Alternative syntax for this command is:
 % QUIVER3(X,Y,Z,[f;g;h]) or QUIVER3(X,Y,Z,f,g,h), where f, g, and h are
-% LOWRANKAPPROX objects.
+% SEPARABLEAPPROX objects.
 %
 % QUIVER(...,'numpts',N) plots arrows on a N x N uniform grid.
 %
 % This command is a wrapper to CHEBFUN2V/QUIVER3, and is required because
-% LOWRANKAPPROX methods take priority over CHEBFUN2V methods.
+% SEPARABLEAPPROX methods take priority over CHEBFUN2V methods.
 %
 % See also CHEBFUN2V/QUIVER3.
 
@@ -25,9 +25,9 @@ function varargout = quiver3( Z, F, varargin )
 
 numpts = 20; 
 
-if ( ~isa(Z, 'lowrankapprox') )
-    error('CHEBFUN:LOWRANKAPPROX:quiver3:inputs1', ...
-        'First argument to this command should be LOWRANKAPPROX.');
+if ( ~isa(Z, 'separableApprox') )
+    error('CHEBFUN:SEPARABLEAPPROX:quiver3:inputs1', ...
+        'First argument to this command should be SEPARABLEAPPROX.');
 end
 
 if ( isempty(varargin) )
@@ -59,26 +59,26 @@ elseif ( nargin > 3 )
         yy = new_data_locations(F, numpts);
         zz = new_data_locations(varargin{1}, numpts);
         h = quiver3( xx, yy, zz, varargin{2}, varargin{3:end} );
-    elseif ( isa(Z, 'lowrankapprox') && isa(F, 'lowrankapprox') &&...
-            isa(varargin{1}, 'lowrankapprox') &&...
-            isa(varargin{2}, 'lowrankapprox') &&...
-            ( nargin ==4 || ~isa(varargin{3}, 'lowrankapprox')) )
+    elseif ( isa(Z, 'separableApprox') && isa(F, 'lowrankapprox') &&...
+            isa(varargin{1}, 'separableApprox') &&...
+            isa(varargin{2}, 'separableApprox') &&...
+            ( nargin ==4 || ~isa(varargin{3}, 'separableApprox')) )
         FF = vertcat( vertcat(F, varargin{1}), varargin{2}) ;
         h = quiver3( Z, FF );     % call quiver3(Z,F,...)
-    elseif ( ( nargin > 5 ) && isa(Z,'lowrankapprox') && isa(F,'lowrankapprox') &&...
-            isa(varargin{1}, 'lowrankapprox') &&...
-            isa(varargin{2}, 'lowrankapprox') &&...
-            isa(varargin{3}, 'lowrankapprox') &&...
-            isa(varargin{4}, 'lowrankapprox') &&...
-            ( nargin == 6 || ~isa(varargin{5}, 'lowrankapprox')) )
+    elseif ( ( nargin > 5 ) && isa(Z,'separableApprox') && isa(F,'lowrankapprox') &&...
+            isa(varargin{1}, 'separableApprox') &&...
+            isa(varargin{2}, 'separableApprox') &&...
+            isa(varargin{3}, 'separableApprox') &&...
+            isa(varargin{4}, 'separableApprox') &&...
+            ( nargin == 6 || ~isa(varargin{5}, 'separableApprox')) )
         FF = vertcat( vertcat(varargin{2}, varargin{3}), varargin{4} );
         h = quiver3(Z, F, varargin{1}, FF, varargin{5:end} );  % call quiver3(X,Y,Z,F,...)
     else
-        error('CHEBFUN:LOWRANKAPPROX:quiver3:inputs2', ...
+        error('CHEBFUN:SEPARABLEAPPROX:quiver3:inputs2', ...
             'Unrecognised input arguments.');
     end
 else
-    error('CHEBFUN:LOWRANKAPPROX:quiver3:inputs3', 'Unrecognised input arguments.');
+    error('CHEBFUN:SEPARABLEAPPROX:quiver3:inputs3', 'Unrecognised input arguments.');
 end
 
 if ( nargout > 0 )
@@ -89,7 +89,7 @@ end
 
 
 function newloc = new_data_locations(f1, numpts)
-% Generate new arrow location if first two inputs are LOWRANKAPPROX objects.
+% Generate new arrow location if first two inputs are SEPARABLEAPPROX objects.
 
 dom = f1.domain;
 
@@ -98,6 +98,6 @@ x = linspace(dom(1), dom(2), numpts);
 y = linspace(dom(3), dom(4), numpts);
 
 [xx, yy] = meshgrid(x, y);
-newloc = feval(f1, xx, yy);      % use LOWRANKAPPROX to generate data locations.
+newloc = feval(f1, xx, yy);      % use SEPARABLEAPPROX to generate data locations.
 
 end

@@ -1,5 +1,5 @@
 function f = cos( f ) 
-%COS   Cosine of a LOWRANKAPPROX.
+%COS   Cosine of a SEPARABLEAPPROX.
 %   COS(F) returns the cosine of F.
 %
 % See also COSH.

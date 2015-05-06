@@ -1,6 +1,6 @@
 function f = cumsum(f, dim)
-%CUMSUM   Indefinite integral of a LOWRANKAPPROX.
-%   F = CUMSUM(F) returns the indefinite integral of a LOWRANKAPPROX with respect to
+%CUMSUM   Indefinite integral of a SEPARABLEAPPROX.
+%   F = CUMSUM(F) returns the indefinite integral of a SEPARABLEAPPROX with respect to
 %   one variable and hence, returns a chebfun. The integration is done by
 %   default in the y-direction.
 %
@@ -30,7 +30,7 @@ elseif ( dim == 2 )
     % CUMSUM along the rows.
     f.rows = cumsum( f.rows );
 else
-    error('CHEBFUN:LOWRANKAPPROX:cumsum:dim', ...
+    error('CHEBFUN:SEPARABLEAPPROX:cumsum:dim', ...
         'Integration direction must be x or y.');
 end
 

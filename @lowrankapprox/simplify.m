@@ -1,5 +1,5 @@
 function f = simplify( f ) 
-% Simplify a LOWRANKAPPROX
+% Simplify a SEPARABLEAPPROX
 % 
 % F = SIMPLIFY( F ) compressed the representation of F to one that is
 % numerically the same, but requires fewer parameters to store. Currently this

@@ -1,7 +1,7 @@
 function f = minus(f, g)
-%-   Subtraction of two LOWRANKAPPROX objects.
+%-   Subtraction of two SEPARABLEAPPROX objects.
 % 
-%   F - G subtracts G from F, where F and G are LOWRANKAPPROX objects or scalars.
+%   F - G subtracts G from F, where F and G are SEPARABLEAPPROX objects or scalars.
 %
 % See also PLUS, UMINUS.
 

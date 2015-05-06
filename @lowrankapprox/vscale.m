@@ -1,7 +1,7 @@
 function vscl = vscale(f) 
-%VSCALE   Vertical scale of a LOWRANKAPPROX.
+%VSCALE   Vertical scale of a SEPARABLEAPPROX.
 % 
-% VSCL = VSCALE(F) returns the vertial scale of a LOWRANKAPPROX as determined
+% VSCL = VSCALE(F) returns the vertial scale of a SEPARABLEAPPROX as determined
 % by evaluating on a coarse Chebyshev tensor-product grid. 
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
@@ -10,13 +10,13 @@ function vscl = vscale(f)
 % TODO: Should this also be taking the maximum along the edges when we are
 % evaluating at 1st kind grids. 
 
-% If f is an empty LOWRANKAPPROX, VSCL = 0: 
+% If f is an empty SEPARABLEAPPROX, VSCL = 0: 
 if ( isempty( f ) ) 
     vscl = 0; 
     return
 end
 
-% Get the degree of the LOWRANKAPPROX:
+% Get the degree of the SEPARABLEAPPROX:
 [m, n] = length(f); 
 
 % If F is of low degree, then oversample: 

@@ -1,7 +1,7 @@
 function varargout = pivotplot( f, varargin )
 %PIVOTPLOT   Semilogy plot of pivot values.
 %   PIVOTPLOT( F ) semilogy plot related to the pivots values taken during
-%   the construction of the LOWRANKAPPROX F.
+%   the construction of the SEPARABLEAPPROX F.
 %
 %   H = PIVOTPLOT( F ) returns a handle H to the figure.
 %
@@ -14,8 +14,8 @@ function varargout = pivotplot( f, varargin )
 
 % Empty check:
 if ( isempty( f ) ) 
-    error('CHEBFUN:LOWRANKAPPROX:pivotplot:empty', ...
-        'Empty LOWRANKAPPROX has no pivots to plot');
+    error('CHEBFUN:SEPARABLEAPPROX:pivotplot:empty', ...
+        'Empty SEPARABLEAPPROX has no pivots to plot');
 end 
 
 % Parse input arguments:

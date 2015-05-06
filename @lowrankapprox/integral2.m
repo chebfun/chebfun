@@ -1,7 +1,7 @@
 function I = integral2( f, c )
-%INTEGRAL2  Double integral of a LOWRANKAPPROX over its domain.
+%INTEGRAL2  Double integral of a SEPARABLEAPPROX over its domain.
 %   I = INTEGRAL2(F) returns a value representing the double integral of a
-%   LOWRANKAPPROX.
+%   SEPARABLEAPPROX.
 %
 %   I = INTEGRAL2(F, [a b c d]) integrate F over the rectangle region [a b] x [c
 %   d] provide this rectangle is in the domain of F.
@@ -89,18 +89,18 @@ elseif ( nargin == 2 )
         if ( length( restriction ) == 4 )   
             % Calculate integral over restriction rectangle.
             g = restrict(f, restriction);
-            if ( isa(g, 'lowrankapprox') )
+            if ( isa(g, 'separableApprox') )
                 I = integral2( restrict( f, restriction ) );
             elseif ( isa(g, 'chebfun') )
                 I = sum( restrict ( f,restriction ) );
             end
         else
-            error('CHEBFUN:LOWRANKAPPROX:integral2:baddomain', ...
+            error('CHEBFUN:SEPARABLEAPPROX:integral2:baddomain', ...
             'Domain should have four corners.');
         end
         
     else
-        error('CHEBFUN:LOWRANKAPPROX:integral2:nargin', 'Too many input arguments.');
+        error('CHEBFUN:SEPARABLEAPPROX:integral2:nargin', 'Too many input arguments.');
     end
     
 end

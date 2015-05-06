@@ -1,5 +1,5 @@
 function J = jacobian( f, g )
-%JACOBIAN   Jacobian determinant of two LOWRANKAPPROX.
+%JACOBIAN   Jacobian determinant of two SEPARABLEAPPROX.
 %   J = JACOBIAN(F,G) returns the Jacobian determinant of the Jacobian matrix.
 %
 %   Note we return the determinant of the Jacobian matrix and not the Jacobian

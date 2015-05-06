@@ -1,5 +1,5 @@
 function v = prod(f, varargin)
-%PROD     Product integral of a LOWRANKAPPROX. 
+%PROD     Product integral of a SEPARABLEAPPROX. 
 %   PROD(F) returns exp( sum(log(F)) )
 % 
 %   PROD(F, DIM) returns the chebfun exp( sum(log(F), DIM) )
@@ -16,7 +16,7 @@ else
 end
 
 if ( numel( dim ) ~= 1 )
-    error('CHEBFUN:LOWRANKAPPROX:prod:dim', 'DIM should be either 1 or 2.');
+    error('CHEBFUN:SEPARABLEAPPROX:prod:dim', 'DIM should be either 1 or 2.');
 end
 
 v = exp( sum( log(f), dim ) );

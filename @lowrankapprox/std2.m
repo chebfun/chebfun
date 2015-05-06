@@ -1,6 +1,6 @@
 function v = std2(f)
-%STD2   Standard deviation of a LOWRANKAPPROX.
-%   V = STD2(F) computes the standard deviation of a LOWRANKAPPROX, i.e., 
+%STD2   Standard deviation of a SEPARABLEAPPROX.
+%   V = STD2(F) computes the standard deviation of a SEPARABLEAPPROX, i.e., 
 %                                 d  b
 %                                 /  /
 %     STD2(F)^2 = 1/(b-a)/(d-c)  |  |  |f(x,y) - m|^2 dx dy

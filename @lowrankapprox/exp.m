@@ -1,6 +1,6 @@
 function f = exp(f) 
-%EXP  Exponential of a LOWRANKAPPROX
-%   EXP(F) returns the exponential of a LOWRANKAPPROX. 
+%EXP  Exponential of a SEPARABLEAPPROX
+%   EXP(F) returns the exponential of a SEPARABLEAPPROX. 
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

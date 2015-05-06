@@ -1,7 +1,7 @@
 function varargout = subsref(f, index)
-%SUBSREF       LOWRANKAPPROX subsref.
+%SUBSREF       SEPARABLEAPPROX subsref.
 % ( )
-%   F(X, Y) returns the values of the LOWRANKAPPROX F evaluated at (X,Y). See
+%   F(X, Y) returns the values of the SEPARABLEAPPROX F evaluated at (X,Y). See
 %   CHEBFUN/FEVAL for further details. F(:, Y) returns a chebfun representing
 %   the function F along that column slice, and F(X, :) returns a chebfun
 %   representing F along that row slice. F(:, :) returns F.
@@ -48,7 +48,7 @@ switch index(1).type
             varargout = { out }; 
             return
         else
-            error('CHEBFUN:LOWRANKAPPROX:subsref:inputs', ...
+            error('CHEBFUN:SEPARABLEAPPROX:subsref:inputs', ...
                 'Can only evaluate at functions (X,Y)')
         end
         
@@ -63,12 +63,12 @@ switch index(1).type
             out = feval(f, x, y) ;
         elseif ( isa(x,'chebfun') && isa(y,'chebfun') )
             if ( ~isreal(x) || ~isreal(y) ) 
-                error('CHEBFUN:LOWRANKAPPROX:subsref:real', ...
+                error('CHEBFUN:SEPARABLEAPPROX:subsref:real', ...
                     'Both chebfuns must be real-valued.')
             end
             out = feval(f, x, y) ;
         else
-            error('CHEBFUN:LOWRANKAPPROX:subsref:nonnumeric',...
+            error('CHEBFUN:SEPARABLEAPPROX:subsref:nonnumeric',...
               'Cannot evaluate chebfun2 for these inputs type.');
         end
     
@@ -89,13 +89,13 @@ switch index(1).type
         if ( length(idx) == 4 ) 
             out = restrict( f, [ idx{ : } ] );
         else
-            error('CHEBFUN:LOWRANKAPPROX:subsref:dimensions', ...
+            error('CHEBFUN:SEPARABLEAPPROX:subsref:dimensions', ...
                 'Index exceeds chebfun dimensions.')          
         end
         
     otherwise
         
-        error('CHEBFUN:LOWRANKAPPROX:subsref:unexpectedType',...
+        error('CHEBFUN:SEPARABLEAPPROX:subsref:unexpectedType',...
             ['??? Unexpected index.type of ', index(1).type]);
 end
 

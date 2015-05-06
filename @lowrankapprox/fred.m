@@ -1,11 +1,11 @@
 function f = fred( K, v )
-%FRED Fredholm integral operator with a LOWRANKAPPROX kernel.
+%FRED Fredholm integral operator with a SEPARABLEAPPROX kernel.
 % F = FRED(K, V) computes the Fredholm integral with kernel K:
 %
 % (F*v)(x) = int( K(x,y)*v(y), y=c..d ), x=a..b
 %
 % where [c d] = domain(V) and [a b c d] = domain(K). The kernel function
-% K(x,y) should be smooth for best results. K is a LOWRANKAPPROX and V is a
+% K(x,y) should be smooth for best results. K is a SEPARABLEAPPROX and V is a
 % CHEBFUN. The result is a row CHEBFUN object.
 %
 % See also VOLT.
@@ -31,8 +31,8 @@ else
     
     % Check that the domain of CHEBFUN2 and chebfun are correct.
     if ( ~domainCheck( v, cols ) )
-        error('CHEBFUN:LOWRANKAPPROX:fred:domainMismatch', ...
-            'Domain of CHEBFUN and LOWRANKAPPROX kernel do not match');
+        error('CHEBFUN:SEPARABLEAPPROX:fred:domainMismatch', ...
+            'Domain of CHEBFUN and SEPARABLEAPPROX kernel do not match');
     end
     
 end

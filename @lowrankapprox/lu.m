@@ -1,5 +1,5 @@
 function varargout = lu( f, thresh )
-%LU   LU factorization of a LOWRANKAPPROX.
+%LU   LU factorization of a SEPARABLEAPPROX.
 %
 % [L, U] = LU( F ) returns two quasimatrices L and U of size inf by k and 
 % k by inf, respectively, where k is the rank of the chebfun2 F. 

@@ -1,5 +1,5 @@
 function f = transpose( f ) 
-% .'   LOWRANKAPPROX transpose. 
+% .'   SEPARABLEAPPROX transpose. 
 %    F.' is the non-conjugate transpose of a F. 
 % 
 % See also CTRANSPOSE. 

@@ -1,13 +1,13 @@
 function g = squeeze(f)
-%SQUEEZE   Squeeze a LOWRANKAPPROX to one variable, if possible.
-%   G = squeeze(F) returns a LOWRANKAPPROX if F depends on x and y. If F depends only
+%SQUEEZE   Squeeze a SEPARABLEAPPROX to one variable, if possible.
+%   G = squeeze(F) returns a SEPARABLEAPPROX if F depends on x and y. If F depends only
 %   on the x-variable a row CHEBFUN is returned and if it depends on just the
 %   y-variable a column CHEBFUN is returned.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( isempty( f ) )  % Check for an empty LOWRANKAPPROX.
+if ( isempty( f ) )  % Check for an empty SEPARABLEAPPROX.
     g = chebfun();    % Return an empty CHEBFUN because we are squeezing.
     return
 end

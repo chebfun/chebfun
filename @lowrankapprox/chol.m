@@ -1,11 +1,11 @@
 function varargout = chol( f, varargin )
-%CHOL    Cholesky factorization of a LOWRANKAPPROX. 
+%CHOL    Cholesky factorization of a SEPARABLEAPPROX. 
 %
-% R = CHOL( F ), if F is a nonnegative definite LOWRANKAPPROX then this 
+% R = CHOL( F ), if F is a nonnegative definite SEPARABLEAPPROX then this 
 % returns an upper triangular quasimatrix so that R'*R is a
 % decomposition of F. If F is not nonnegative definite then an error is thrown.
 %
-% L = CHOL(F, 'lower'), if F is a nonnegative definite LOWRANKAPPROX then this
+% L = CHOL(F, 'lower'), if F is a nonnegative definite SEPARABLEAPPROX then this
 % produces a lower triangular quasimatrix so that L*L' is a decomposition of F.
 % If F is not nonnegative definite then an error is thrown. 
 % 
@@ -13,7 +13,7 @@ function varargout = chol( f, varargin )
 % nonnegative definite then p is 0 and R is the same as above. If F is 
 % symmetric but negative definite or semidefinite then p is a positive 
 % integer such that R has p columns and R'*R is a rank p nonnegative definite 
-% LOWRANKAPPROX that approximates F. 
+% SEPARABLEAPPROX that approximates F. 
 % This is particular useful when F is nonnegative definite, but rounding errors
 % have perturbed it to be semidefinite. 
 %
@@ -37,8 +37,8 @@ end
 
 % Is the chebfun2 on a square domain?: 
 if ( ~domainCheck(f.cols, f.rows) )
-    error('CHEBFUN:LOWRANKAPPROX:chol:domain', ...
-        'LOWRANKAPPROX is not on a square domain.');
+    error('CHEBFUN:SEPARABLEAPPROX:chol:domain', ...
+        'SEPARABLEAPPROX is not on a square domain.');
 end
 
 % Get rank of f: 
@@ -69,8 +69,8 @@ posdef = ( k == length( f ) );
 
 % Return an error if the function is not nonnegative definite: 
 if ( nargout < 2 && ~isempty( posdef ) && ~posdef )
-    error('CHEBFUN:LOWRANKAPPROX:chol:definite', ...
-        'LOWRANKAPPROX is not nonnegative definite.');
+    error('CHEBFUN:SEPARABLEAPPROX:chol:definite', ...
+        'SEPARABLEAPPROX is not nonnegative definite.');
 end
 
 % Get the CDR decomposition (already computed by constructor):
@@ -84,8 +84,8 @@ r = diff(dom(1:2))*r - dom(1);
 s = diff(dom(3:4))*s - dom(3); 
 symTest = ( abs(feval(f,r,s) - feval(f,s,r)) < 10*max(epslevel(f.cols),epslevel(f.rows)) );
 if ( ~symTest )
-    error('CHEBFUN:LOWRANKAPPROX:chol:symmetric', ...
-        'The LOWRANKAPPROX must be a symmetric function.');
+    error('CHEBFUN:SEPARABLEAPPROX:chol:symmetric', ...
+        'The SEPARABLEAPPROX must be a symmetric function.');
 end
 
 % How many terms are posdef: 

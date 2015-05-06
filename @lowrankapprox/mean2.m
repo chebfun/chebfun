@@ -1,5 +1,5 @@
 function v = mean2( f )
-%MEAN2   Mean of a LOWRANKAPPROX.
+%MEAN2   Mean of a SEPARABLEAPPROX.
 %   V = MEAN2(F) returns the mean of a CHEBFUN: 
 % 
 %                        d  b

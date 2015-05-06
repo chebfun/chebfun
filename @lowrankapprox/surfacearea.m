@@ -1,7 +1,7 @@
 function I = surfacearea(f , varargin )
-%SURFACEAREA    Surface area of a LOWRANKAPPROX.
+%SURFACEAREA    Surface area of a SEPARABLEAPPROX.
 %
-%   SURFACEAREA(F) computes the surface area of the LOWRANKAPPROX in the domain of F.
+%   SURFACEAREA(F) computes the surface area of the SEPARABLEAPPROX in the domain of F.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -13,7 +13,7 @@ if ( nargin > 1 )
             dom = varargin{1}; 
             f = restrict( f, dom );
         else
-            error('CHEBFUN:LOWRANKAPPROX:surfacearea:domain', 'Bad domain.');
+            error('CHEBFUN:SEPARABLEAPPROX:surfacearea:domain', 'Bad domain.');
         end
     elseif ( isa(varargin{1}, 'chebfun') )
         f = restrict( f, varargin{1} );
@@ -21,7 +21,7 @@ if ( nargin > 1 )
         I = sum( sqrt( 1 + diff( f ).^2 ) ); 
         return
     else
-        error('CHEBFUN:LOWRANKAPPROX:surfacearea:domain','Bad restricting domain.');
+        error('CHEBFUN:SEPARABLEAPPROX:surfacearea:domain','Bad restricting domain.');
     end
 end
 

@@ -1,4 +1,4 @@
-classdef chebfun2 < lowrankapprox
+classdef chebfun2 < separableApprox
 %CHEBFUN2   CHEBFUN2 class for representing functions on [a,b]x[c,d].
 % 
 %   Class for approximating functions defined on finite rectangles. The 

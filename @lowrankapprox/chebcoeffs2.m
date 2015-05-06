@@ -35,7 +35,7 @@ elseif ( nargout <= 3 )
     varargout = { cols_coeffs, d, rows_coeffs };
 else
     % Two output variables are not allowed.
-    error('CHEBFUN:LOWRANKAPPROX:chebcoeffs2:outputs', ...
+    error('CHEBFUN:SEPARABLEAPPROX:chebcoeffs2:outputs', ...
         'Incorrect number of outputs.');
 end
 

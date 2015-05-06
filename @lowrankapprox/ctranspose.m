@@ -1,5 +1,5 @@
 function f = ctranspose( f )
-%'	 Complex conjugate transpose of a LOWRANKAPPROX.
+%'	 Complex conjugate transpose of a SEPARABLEAPPROX.
 %   F' is the complex conjugate transpose of F.
 %   G = CTRANSPOSE(F) is called for the syntax F'.  
 %

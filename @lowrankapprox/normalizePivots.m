@@ -1,5 +1,5 @@
 function F = normalizePivots(F)
-%NORMALIZEPIVOTS   Scale rows and cols of a LOWRANKAPPROX so that all pivots are 1.
+%NORMALIZEPIVOTS   Scale rows and cols of a SEPARABLEAPPROX so that all pivots are 1.
 %
 % Additionally, the norm of the kth row and column will be the same.
 

@@ -1,6 +1,6 @@
 function [out1, out2] = length(F)
-%LENGTH  The rank of a LOWRANKAPPROX.
-%   K = LENGTH(F) returns the rank of the LOWRANKAPPROX.
+%LENGTH  The rank of a SEPARABLEAPPROX.
+%   K = LENGTH(F) returns the rank of the SEPARABLEAPPROX.
 %
 %   [M, N] = LENGTH(F) returns the polynomial degree of the column and row
 %   slices.

@@ -1,9 +1,9 @@
 function I = quad2d(f, a, b, c, d, varargin)
-%QUAD2D  Complete definite integral of LOWRANKAPPROX. 
-%   I = QUAD2D( F ), returns the definite integral of a LOWRANKAPPROX integrated
+%QUAD2D  Complete definite integral of SEPARABLEAPPROX. 
+%   I = QUAD2D( F ), returns the definite integral of a SEPARABLEAPPROX integrated
 %   over its domain of definition.
 % 
-%   I = QUAD2D(F, a, b, c, d), returns the definite integral of a LOWRANKAPPROX.
+%   I = QUAD2D(F, a, b, c, d), returns the definite integral of a SEPARABLEAPPROX.
 %   Integrated over the domangle [a b] x [c d].
 % 
 % See also INTEGRAL2, SUM2, INTEGRAL.
@@ -14,8 +14,8 @@ function I = quad2d(f, a, b, c, d, varargin)
 % Is [a b c d]  subset of the domain of f ? 
 dom = f.domain;  
 if ( ( a < dom(1) ) || ( b > dom(2) ) || ( c < dom(3) ) || ( d > dom(4) ) )
-    error('CHEBFUN:LOWRANKAPPROX:quad2d:domain', ...
-        'Can only integrate within the LOWRANKAPPROX''s domain');
+    error('CHEBFUN:SEPARABLEAPPROX:quad2d:domain', ...
+        'Can only integrate within the SEPARABLEAPPROX''s domain');
 end
 
 % Form a new CHEBFUN2 and integrate. (This can be faster.)

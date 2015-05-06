@@ -1,6 +1,6 @@
 function g = median( f, dim )
-%MEDIAN       Median value of a LOWRANKAPPROX.
-%   G = MEDIAN(F) returns a chebfun G representing the median of the LOWRANKAPPROX
+%MEDIAN       Median value of a SEPARABLEAPPROX.
+%   G = MEDIAN(F) returns a chebfun G representing the median of the SEPARABLEAPPROX
 %   along the y direction, i.e., G = @(x) median( F ( x, : ) ).
 %
 %   G = MEDIAN(F, DIM) returns a CHEBFUN G representing the median of F along

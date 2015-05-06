@@ -1,5 +1,5 @@
 function p = pivots(f, str)
-%PIVOTS   Pivot values of a LOWRANKAPPROX.
+%PIVOTS   Pivot values of a SEPARABLEAPPROX.
 % 
 %   PIVOTS(F) returns the pivot values taken during in the constructor by the GE
 %   algorithm.
@@ -21,7 +21,7 @@ if ( nargin > 1 )
         % Normalized pivots:
         p = p.*cscl.*rscl;  
     else
-        error('CHEBFUN:LOWRANKAPPROX:pivots:badInputs', ...
+        error('CHEBFUN:SEPARABLEAPPROX:pivots:badInputs', ...
             'Unrecognised second argument.');
     end
     

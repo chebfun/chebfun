@@ -1,5 +1,5 @@
 function f = conj(f)
-%CONJ   Complex conjugate of a LOWRANKAPPROX.
+%CONJ   Complex conjugate of a SEPARABLEAPPROX.
 %   CONJ(F) returns the complex conjugate of F.  For a complex F, CONJ(F) =
 %   REAL(F) - i*IMAG(F).
 %
@@ -8,7 +8,7 @@ function f = conj(f)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Check for empty LOWRANKAPPROX. 
+% Check for empty SEPARABLEAPPROX. 
 if ( isempty( f ) )  
    return
 end

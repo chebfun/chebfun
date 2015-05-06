@@ -1,5 +1,5 @@
 function varargout = waterfall( f, varargin )
-%WATERFALL   Waterfall plot of a LOWRANKAPPROX.
+%WATERFALL   Waterfall plot of a SEPARABLEAPPROX.
 %   WATERFALL(F) displays the waterfall plot of F.
 %
 %   WATERFALL(F, S) displays the column and row chebfuns of F that are used for

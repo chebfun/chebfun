@@ -1,12 +1,12 @@
 function f = abs( f )
-%ABS Absolute value of a LOWRANKAPPROX.
-%   ABS(F) returns the absolute value of a LOWRANKAPPROX. This function does not work
+%ABS Absolute value of a SEPARABLEAPPROX.
+%   ABS(F) returns the absolute value of a SEPARABLEAPPROX. This function does not work
 %   if the function passes through or becomes numerically close to zero.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( isempty( f ) ) % check for empty LOWRANKAPPROX.
+if ( isempty( f ) ) % check for empty SEPARABLEAPPROX.
     return 
 end 
 
@@ -14,7 +14,7 @@ end
 bol = singleSignTest( f );  % Returns TRUE if there is no sign change.
 
 if ( ~bol )
-   error('CHEBFUN:LOWRANKAPPROX:abs:notSmooth', ...
+   error('CHEBFUN:SEPARABLEAPPROX:abs:notSmooth', ...
        'Sign change detected. Unable to represent the result.'); 
 end
 

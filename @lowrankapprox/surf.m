@@ -1,11 +1,11 @@
 function varargout = surf( f, varargin )
-%SURF  Surface plot of a LOWRANKAPPROX.
+%SURF  Surface plot of a SEPARABLEAPPROX.
 %   SURF(F, C) plots the colored parametric surface defined by F and the matrix
 %   C. The matrix C, defines the colouring of the surface.
 %
 %   SURF(F) uses colors proportional to surface height.
 %
-%   SURF(X, Y, F, ...) is the same as SURF(F, ...) when X and Y are LOWRANKAPPROX
+%   SURF(X, Y, F, ...) is the same as SURF(F, ...) when X and Y are SEPARABLEAPPROX
 %   objects except X and Y supplies the plotting locations are  mapped by X and
 %   Y.
 %
@@ -50,7 +50,7 @@ if ( isempty(argin) )
     argin = {};
 end
 
-if ( isa(f,'lowrankapprox') )
+if ( isa(f,'separableApprox') )
     
     if ( (nargin == 1) || ...
             ( (nargin > 1) && ~isempty(argin) && ~isa(argin{1}, 'chebfun2') ) || ...
@@ -77,13 +77,13 @@ if ( isa(f,'lowrankapprox') )
         
         x = f;
         y = argin{1};
-        if ( isa(y, 'lowrankapprox') )
+        if ( isa(y, 'separableApprox') )
             % Check domains of x and y are the same.
             dom = x.domain;
             rectcheck = y.domain;
             if ( any(dom - rectcheck) )
-                error('CHEBFUN:LOWRANKAPPROX:surf:domainMismatch', ...
-                    'Domains of LOWRANKAPPROX objects do not match.');
+                error('CHEBFUN:SEPARABLEAPPROX:surf:domainMismatch', ...
+                    'Domains of SEPARABLEAPPROX objects do not match.');
             end
         end
         xdata = linspace(dom(1), dom(2), minPlotNum);
@@ -91,14 +91,14 @@ if ( isa(f,'lowrankapprox') )
         [xx, yy] = meshgrid(xdata, ydata);
         x = feval(x, xx, yy);
         y = feval(y, xx, yy);
-        if ( isa(argin{2}, 'lowrankapprox') )         % surf(x,y,f,...)
+        if ( isa(argin{2}, 'separableApprox') )         % surf(x,y,f,...)
             vals = feval(argin{2}, xx, yy);
             if ( nargin < 4 )                    % surf(x,y,f)
                 C = vals;
             elseif ( isa(argin{3}, 'double') )   % surf(x,y,f,C,...)
                 C = argin{3};
                 argin(3) = [];
-            elseif ( isa(argin{3}, 'lowrankapprox'))  % Colour matrix is a LOWRANKAPPROX.
+            elseif ( isa(argin{3}, 'separableApprox'))  % Colour matrix is a SEPARABLEAPPROX.
                 C = feval(argin{3},xx,yy);
                 argin(3) = [];
             else
@@ -125,9 +125,9 @@ if ( isa(f,'lowrankapprox') )
                 zlim([v-.5*absv v+.5*absv])
             end
         else
-            error('CHEBFUN:LOWRANKAPPROX:surf:inputs1', ...
-                ['The third argument should be a LOWRANKAPPROX', ...
-                'if you want to supply LOWRANKAPPROX data.'])
+            error('CHEBFUN:SEPARABLEAPPROX:surf:inputs1', ...
+                ['The third argument should be a SEPARABLEAPPROX', ...
+                'if you want to supply SEPARABLEAPPROX data.'])
         end
         
     else  %surf(f,C)
@@ -140,8 +140,8 @@ if ( isa(f,'lowrankapprox') )
     end
     
 else     % surf(X,Y,f,...)
-    error('CHEBFUN:LOWRANKAPPROX:surf:inputs2', ...
-        ['Data should be given as LOWRANKAPPROX objects \n ', ...
+    error('CHEBFUN:SEPARABLEAPPROX:surf:inputs2', ...
+        ['Data should be given as SEPARABLEAPPROX objects \n ', ...
         'For example: \n x = chebfun2(@(x,y)x); ', ...
         'y = chebfun2(@(x,y)y);\n surf(x,y,f)']);
     

@@ -1,7 +1,7 @@
 function f = mrdivide( f, g )
-% /   Right scalar divide for LOWRANKAPPROX objects.
+% /   Right scalar divide for SEPARABLEAPPROX objects.
 %
-%   F/C divides the LOWRANKAPPROX F by a scalar C.
+%   F/C divides the SEPARABLEAPPROX F by a scalar C.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -9,7 +9,7 @@ function f = mrdivide( f, g )
 if ( isa(g, 'double') )
     f.pivotValues = f.pivotValues * g;
 else
-    error('CHEBFUN:LOWRANKAPPROX:mrdivide:mrdivide', ...
+    error('CHEBFUN:SEPARABLEAPPROX:mrdivide:mrdivide', ...
         'Not supported. Did you mean ./ ?');
 end
 

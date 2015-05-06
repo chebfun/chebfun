@@ -1,5 +1,5 @@
 function r = roots( f, g, varargin )
-%ROOTS   Zero contours of a LOWRANKAPPROX.
+%ROOTS   Zero contours of a SEPARABLEAPPROX.
 %   R = ROOTS(F), returns the zero contours of F as a quasimatrix of chebfuns.
 %   Each column of R is one zero contour. This command only finds contours when
 %   there is a change of sign and it can also group intersecting contours in a
@@ -31,7 +31,7 @@ dom = f.domain;
 if ( nargin == 1 )
     
     if ( length( f ) == 1 )  
-        % The LOWRANKAPPROX is rank 1:
+        % The SEPARABLEAPPROX is rank 1:
         
         cols = f.cols;
         rows = f.rows;
@@ -77,7 +77,7 @@ if ( nargin == 1 )
         end
     end
     
-elseif ( isa(g, 'lowrankapprox') )
+elseif ( isa(g, 'separableApprox') )
     
     r = roots( chebfun2v( f, g ), varargin{:} );
     

@@ -1,5 +1,5 @@
 function f = tand( f )
-%TAND  Tangent of a LOWRANKAPPROX (in degrees)
+%TAND  Tangent of a SEPARABLEAPPROX (in degrees)
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

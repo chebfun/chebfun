@@ -1,10 +1,10 @@
 function I = integral( f, varargin )
-%INTEGRAL   Complete definite integral of LOWRANKAPPROX. 
+%INTEGRAL   Complete definite integral of SEPARABLEAPPROX. 
 %
-%   I = INTEGRAL(F), returns the definite integral of a LOWRANKAPPROX. Integrated
+%   I = INTEGRAL(F), returns the definite integral of a SEPARABLEAPPROX. Integrated
 %   over its domain of definition.
 % 
-%   I = INTEGRAL(F, g), returns the integral of a LOWRANKAPPROX along the curve
+%   I = INTEGRAL(F, g), returns the integral of a SEPARABLEAPPROX along the curve
 %   defined by the complex-valued CHEBFUN g.
 % 
 % See also INTEGRAL2, SUM2, QUAD2D.

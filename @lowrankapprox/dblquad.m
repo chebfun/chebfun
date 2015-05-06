@@ -1,6 +1,6 @@
 function I = dblquad(f, a, b, c, d, varargin)
-%DBLQUAD   Complete definite integral of LOWRANKAPPROX. 
-%   I = DBLQUAD(F, a, b, c, d), returns the definite integral of a LOWRANKAPPROX over
+%DBLQUAD   Complete definite integral of SEPARABLEAPPROX. 
+%   I = DBLQUAD(F, a, b, c, d), returns the definite integral of a SEPARABLEAPPROX over
 %   the region [a, b, c, d].
 % 
 %   This function is a wrapper for quad2d.

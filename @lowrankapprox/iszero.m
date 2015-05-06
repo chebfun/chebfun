@@ -1,6 +1,6 @@
 function out = iszero( f )
-%ISZERO   Check if a LOWRANKAPPROX is identically zero on its domain.
-%   OUT = ISZERO( F ) return 1 if the LOWRANKAPPROX is exactly the zero function, and
+%ISZERO   Check if a SEPARABLEAPPROX is identically zero on its domain.
+%   OUT = ISZERO( F ) return 1 if the SEPARABLEAPPROX is exactly the zero function, and
 %   0 otherwise. 
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
@@ -11,7 +11,7 @@ pivots = f.pivotValues;
 cols = f.cols;
 rows = f.rows;
 
-% Trivial check: If all the pivots are zero, then the LOWRANKAPPROX is zero: 
+% Trivial check: If all the pivots are zero, then the SEPARABLEAPPROX is zero: 
 if ( norm(pivots, inf) == 0 ) 
     out = 1; 
     return 

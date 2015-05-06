@@ -1,5 +1,5 @@
-classdef lowrankapprox
-%LOWRANKAPPROX   Approximate functions on rectangular domains with low rank approximants.
+classdef separableApprox
+%SEPARABLEAPPROX   Approximate functions on rectangular domains with low rank approximants.
 %
 %   Abstract class for approximating smooth 2D functions on rectangular
 %   domains using low rank approximations. That is, functions are
@@ -14,7 +14,7 @@ classdef lowrankapprox
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
         
-        % LOWRANKAPPROX must be objects in CDR form. The columns, C, should
+        % SEPARABLEAPPROX must be objects in CDR form. The columns, C, should
         % be chebfuns or techs, the rows, R, should be chebfuns or techs,
         % and D is a diagonal matrix. 
         

@@ -1,6 +1,6 @@
 function L = lap( f )
-%LAP   Laplacian of a LOWRANKAPPROX.
-%   L = LAP(F) returns a LOWRANKAPPROX representing the Laplacian of F. 
+%LAP   Laplacian of a SEPARABLEAPPROX.
+%   L = LAP(F) returns a SEPARABLEAPPROX representing the Laplacian of F. 
 %
 %   This is shorthand for LAPLACIAN( F )
 %

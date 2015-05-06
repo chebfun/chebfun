@@ -1,5 +1,5 @@
 function varargout = size( f , dim) %#ok<INUSL>
-% SIZE       Size of a LOWRANKAPPROX
+% SIZE       Size of a SEPARABLEAPPROX
 %   D = SIZE(F) returns the two-element row vector D = [inf,inf].
 %
 %   [M, N] = SIZE(F) returns M = inf and N = inf.
@@ -10,7 +10,7 @@ function varargout = size( f , dim) %#ok<INUSL>
 % Copyright 2014 by The University of Oxford and The Chebfun2 Developers.
 % See http://www.chebfun.org/ for Chebfun2 information.
 
-% NOTE: The size of a LOWRANKAPPROX object does not depend on f!
+% NOTE: The size of a SEPARABLEAPPROX object does not depend on f!
 
 if ( ( nargin == 1 ) && ( nargout <= 1 ) )
     varargout = { [Inf, Inf] };
@@ -19,7 +19,7 @@ elseif ( ( nargout == 2 ) && ( nargout <=1 ) )
 elseif ( ( nargin == 2 ) && ( ( dim == 1 ) || ( dim == 2 ) ) )
     varargout = { Inf };
 else
-    error('CHEBFUN:LOWRANKAPPROX:size:outputs', 'Too many output arguments.');
+    error('CHEBFUN:SEPARABLEAPPROX:size:outputs', 'Too many output arguments.');
 end
 
 end

@@ -1,5 +1,5 @@
 function varargout = quiver( f1, f2, varargin )
-%QUIVER   Quiver plot of a LOWRANKAPPROX.
+%QUIVER   Quiver plot of a SEPARABLEAPPROX.
 %   QUIVER(F, G) plots the vector velocity field of (F,G). QUIVER automatically
 %   attempts to scale the arrows to fit within the grid. The arrows start on a
 %   uniform grid. This returns the same plot as QUIVER([F ; G]).
@@ -9,7 +9,7 @@ function varargout = quiver( f1, f2, varargin )
 %   scaling. The arrows are on a uniform grid.
 %
 %   QUIVER(X, Y, F, G, ...) is the same as QUIVER(F, G, ...) except the arrows
-%   are on the grid given in X and Y. If X and Y are LOWRANKAPPROX objects the arrows
+%   are on the grid given in X and Y. If X and Y are SEPARABLEAPPROX objects the arrows
 %   are on the image of the uniform grid of X and Y.
 %
 %   QUIVER(...,'numpts',N) plots arrows on a N by N uniform grid.
@@ -47,7 +47,7 @@ varargin = argin;
 
 % There are many different cases to check for:
 
-if ( isa(f1, 'lowrankapprox') && isa(f2, 'lowrankapprox') )  % quiver(f,g)
+if ( isa(f1, 'separableApprox') && isa(f2, 'lowrankapprox') )  % quiver(f,g)
     
     if ( nargin == 2 )
         % Calls QUIVER([x ; y]) in CHEBFUN2V
@@ -61,11 +61,11 @@ if ( isa(f1, 'lowrankapprox') && isa(f2, 'lowrankapprox') )  % quiver(f,g)
             [xx, yy] = new_data_locations(f1, f2, numpts);
             % Call CHEBFUN2V/QUIVER().
             h = quiver( xx, yy, varargin{:} );   
-        elseif ( ~isa(varargin{1}, 'lowrankapprox') )   % quiver(x,y,S) or quiver(x,y,'linespec')
+        elseif ( ~isa(varargin{1}, 'separableApprox') )   % quiver(x,y,S) or quiver(x,y,'linespec')
             h = quiver( [f1;f2], varargin{:} );
         else
-            error('CHEBFUN:LOWRANKAPPROX:quiver:input', ...
-                'Stretching parameter should not be a LOWRANKAPPROX object.');
+            error('CHEBFUN:SEPARABLEAPPROX:quiver:input', ...
+                'Stretching parameter should not be a SEPARABLEAPPROX object.');
         end
         
     elseif ( nargin > 3 )
@@ -75,10 +75,10 @@ if ( isa(f1, 'lowrankapprox') && isa(f2, 'lowrankapprox') )  % quiver(f,g)
         
         f3 = varargin{1}; 
         f4 = varargin{2};
-        if (isa(f3, 'lowrankapprox') && isa(f4, 'lowrankapprox') ) % quiver(x,y,f,g,...)
+        if (isa(f3, 'separableApprox') && isa(f4, 'lowrankapprox') ) % quiver(x,y,f,g,...)
             if ( any( f1.corners - f3.corners ) )
-                error('CHEBFUN:LOWRANKAPPROX:quiver:domainCheck', ...
-                    'LOWRANKAPPROX objects are not on the same domain.');
+                error('CHEBFUN:SEPARABLEAPPROX:quiver:domainCheck', ...
+                    'SEPARABLEAPPROX objects are not on the same domain.');
             end
             h = quiver( xx, yy, [f3;f4], varargin{3:end} );
         else
@@ -89,18 +89,18 @@ if ( isa(f1, 'lowrankapprox') && isa(f2, 'lowrankapprox') )  % quiver(f,g)
 elseif ( isa(f1,'double') && isa(f2,'double') )
     
     if ( nargin < 4 )
-        error('CHEBFUN:LOWRANKAPPROX:quiver:nargin', 'Not enough input arguments.');
+        error('CHEBFUN:SEPARABLEAPPROX:quiver:nargin', 'Not enough input arguments.');
     end
     f3 = varargin{1}; f4 = varargin{2};
-    if ( (isa(f3, 'lowrankapprox') && isa(f4, 'lowrankapprox') ) ) % quiver(x,y,f,g,...)
+    if ( (isa(f3, 'separableApprox') && isa(f4, 'lowrankapprox') ) ) % quiver(x,y,f,g,...)
         h = quiver( f1, f2, [f3;f4], varargin{3:end} );
     else
-        error('CHEBFUN:LOWRANKAPPROX:quiver:oneLOWRANKAPPROX', ...
-            'Two LOWRANKAPPROX object were not passed to quiver.');
+        error('CHEBFUN:SEPARABLEAPPROX:quiver:oneLOWRANKAPPROX', ...
+            'Two SEPARABLEAPPROX object were not passed to quiver.');
     end
     
 else
-    error('CHEBFUN:LOWRANKAPPROX:quiver:inputs', 'Data locations not prescribed.');
+    error('CHEBFUN:SEPARABLEAPPROX:quiver:inputs', 'Data locations not prescribed.');
 end
 
 if ( nargout == 1 )
@@ -114,8 +114,8 @@ function [xx, yy] = new_data_locations( f1, f2, numpts )
 
 % Domain Check: 
 if ( ~domainCheck(f1, f2) )
-    error('CHEBFUN:LOWRANKAPPROX:quiver:new_data_locations:differentDomains', ...
-        'LOWRANKAPPROX objects are not on the same domain.');
+    error('CHEBFUN:SEPARABLEAPPROX:quiver:new_data_locations:differentDomains', ...
+        'SEPARABLEAPPROX objects are not on the same domain.');
 end
 % mesh 'em up for the quiver arrows.
 dom = f1.domain; 

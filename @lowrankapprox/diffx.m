@@ -1,10 +1,10 @@
 function g = diffx(f, n)
-%DIFFX   Differentiate a LOWRANKAPPROX with respect to its first argument.
+%DIFFX   Differentiate a SEPARABLEAPPROX with respect to its first argument.
 %
-%   G = DIFFX(F) returns a LOWRANKAPPROX representing the derivative of F in its
+%   G = DIFFX(F) returns a SEPARABLEAPPROX representing the derivative of F in its
 %   first argument. This is the same as DIFF(F,1,2).
 %
-%   G = DIFFX(F,N) returns a LOWRANKAPPROX representing the Nth derivative of F in
+%   G = DIFFX(F,N) returns a SEPARABLEAPPROX representing the Nth derivative of F in
 %   its first argument. This is the same as DIFF(F,N,2).
 %
 %   This command is for convenience as the syntax for DIFF, inherited from the

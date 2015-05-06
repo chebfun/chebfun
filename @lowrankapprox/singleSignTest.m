@@ -9,7 +9,7 @@ function [out, wzero] = singleSignTest( F )
 %
 %   The algorithm works by sampling F on a tensor-grid and checking if
 %   those values are of the same sign. This command is mainly for internal use
-%   in LOWRANKAPPROX commands.
+%   in SEPARABLEAPPROX commands.
 %
 % See also ABS, SQRT, LOG. 
 

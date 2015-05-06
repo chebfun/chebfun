@@ -1,5 +1,5 @@
 function varargout = qr(f, ignored)
-%QR Orthogonal-triangular decomposition of a LOWRANKAPPROX. 
+%QR Orthogonal-triangular decomposition of a SEPARABLEAPPROX. 
 % 
 % [Q, R] = QR( F ), where F is a chebfun2, produces an unitary column
 % quasimatrix Q and a upper-triangular row quasimatrix R so that F = Q * R. This

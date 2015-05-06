@@ -1,5 +1,5 @@
 function [normF, normloc] = norm( f, p )
-%NORM       Norm of a LOWRANKAPPROX object.
+%NORM       Norm of a SEPARABLEAPPROX object.
 % For CHEBFUN2 objects:
 %    NORM(F) = sqrt(integral of abs(F)^2).
 %    NORM(F, 2) = largest singular value of F.
@@ -27,7 +27,7 @@ if ( isempty( f ) )
 else
     switch ( p )  % Different cases on different norms.
         case 1
-            error('CHEBFUN:LOWRANKAPPROX:norm:norm', ...
+            error('CHEBFUN:SEPARABLEAPPROX:norm:norm', ...
                 'CHEBFUN2 does not support L1-norm, yet');
             
         case {2, 'fro'}  % Definite integral of f.^2
@@ -40,8 +40,8 @@ else
             normloc = X( idx, : );
             
         case {-inf, '-inf', 'min'}
-            error('CHEBFUN:LOWRANKAPPROX:norm:norm', ...
-                'LOWRANKAPPROX does not support this norm.');
+            error('CHEBFUN:SEPARABLEAPPROX:norm:norm', ...
+                'SEPARABLEAPPROX does not support this norm.');
             
         case {'op', 'operator'}
             [C, D, R] = cdr( f ); 
@@ -56,15 +56,15 @@ else
                     if ( ~mod(p,2) )
                         normF = ( sum2( f ) ).^( 1/p );
                     else
-                        error('CHEBFUN:LOWRANKAPPROX:norm:norm', ...
+                        error('CHEBFUN:SEPARABLEAPPROX:norm:norm', ...
                             'p-norm must have p even for now.');
                     end
                 else
-                    error('CHEBFUN:LOWRANKAPPROX:norm:norm', ...
-                        'LOWRANKAPPROX does not support this norm.');
+                    error('CHEBFUN:SEPARABLEAPPROX:norm:norm', ...
+                        'SEPARABLEAPPROX does not support this norm.');
                 end
             else
-                error('CHEBFUN:LOWRANKAPPROX:norm:unknown', 'Unknown norm.');
+                error('CHEBFUN:SEPARABLEAPPROX:norm:unknown', 'Unknown norm.');
             end
             
     end

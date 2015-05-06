@@ -1,7 +1,7 @@
 function h = mtimes(f, g)
-%*	   Pointwise multiplication for LOWRANKAPPROX objects.
+%*	   Pointwise multiplication for SEPARABLEAPPROX objects.
 %
-%   c*F or F*c multiplies a LOWRANKAPPROX F by a scalar c.
+%   c*F or F*c multiplies a SEPARABLEAPPROX F by a scalar c.
 %
 %   F*G computes the integral of F(s,y)G(x,s) over s, and this is the continuous
 %   analogue of matrix-matrix multiplication.
@@ -11,24 +11,24 @@ function h = mtimes(f, g)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( isa(f, 'lowrankapprox') )           % CHEBFUN2 * ???
+if ( isa(f, 'separableApprox') )           % CHEBFUN2 * ???
     
     if ( isa(g, 'double') )         % CHEBFUN2 * DOUBLE
         if ( numel(g) == 1 )
             h = f;
             h.pivotValues = h.pivotValues ./ g;
         else
-            error('CHEBFUN:LOWRANKAPPROX:mtimes:size', 'Sizes are inconsistent.');
+            error('CHEBFUN:SEPARABLEAPPROX:mtimes:size', 'Sizes are inconsistent.');
         end
         
-    elseif ( isa(g, 'chebfun') )    % LOWRANKAPPROX * CHEBFUN
+    elseif ( isa(g, 'chebfun') )    % SEPARABLEAPPROX * CHEBFUN
         cols = f.cols;
         rows = f.rows;
         fScl = diag( 1./f.pivotValues );
         X = innerProduct( rows, g );
         h = cols * fScl * X;
         
-    elseif ( isa(g, 'lowrankapprox') )   % LOWRANKAPPROX * LOWRANKAPPROX compute
+    elseif ( isa(g, 'separableApprox') )   % SEPARABLEAPPROX * LOWRANKAPPROX compute
         
         % Get the columns and rows of f
         fCols = f.cols;
@@ -59,7 +59,7 @@ if ( isa(f, 'lowrankapprox') )           % CHEBFUN2 * ???
         end
         
     else
-        error('CHEBFUN:LOWRANKAPPROX:mtimes:unknown', ...
+        error('CHEBFUN:SEPARABLEAPPROX:mtimes:unknown', ...
             ['Undefined function ''mtimes'' for input arguments of type %s ' ...
             'and %s.'], class(f), class(g));
         

@@ -1,5 +1,5 @@
 function f = log( f )
-%LOG   Natural logarithm of a LOWRANKAPPROX.
+%LOG   Natural logarithm of a SEPARABLEAPPROX.
 %   LOG(F) is the natural logarithm of F. This function does not work if the
 %   function passes through or becomes numerically close to zero.
 

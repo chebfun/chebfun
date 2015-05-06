@@ -1,48 +1,48 @@
 function h = plus(f, g)
-%+   Plus for LOWRANKAPPROX objects.
+%+   Plus for SEPARABLEAPPROX objects.
 %
-% F + G adds F and G. F and G can be scalars or LOWRANKAPPROX objects.
+% F + G adds F and G. F and G can be scalars or SEPARABLEAPPROX objects.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( ~isa(f, 'lowrankapprox') ) % ??? + LOWRANKAPPROX
+if ( ~isa(f, 'separableApprox') ) % ??? + SEPARABLEAPPROX
     
     h = plus(g, f);
     
-elseif ( isempty(g) ) % LOWRANKAPPROX + []
+elseif ( isempty(g) ) % SEPARABLEAPPROX + []
     
     h = g; 
     
-elseif ( isempty(f) ) % [] + LOWRANKAPPROX
+elseif ( isempty(f) ) % [] + SEPARABLEAPPROX
     
     h = f; 
     
-elseif ( isa( g, 'double' ) )           % LOWRANKAPPROX + DOUBLE
+elseif ( isa( g, 'double' ) )           % SEPARABLEAPPROX + DOUBLE
     
     g = compose( 0*f,@plus, g);   % promote double to object class.  
     h = plus(f, g); 
     
-elseif ( ~isa(g, 'lowrankapprox') )          % LOWRANKAPPROX + ???
+elseif ( ~isa(g, 'separableApprox') )          % SEPARABLEAPPROX + ???
     
-    error( 'CHEBFUN:LOWRANKAPPROX:plus:unknown', ...
+    error( 'CHEBFUN:SEPARABLEAPPROX:plus:unknown', ...
         ['Undefined function ''plus'' for input arguments of type %s ' ...
         'and %s.'], class(f), class(g));
     
-else                                     % LOWRANKAPPROX + LOWRANKAPPROX
+else                                     % SEPARABLEAPPROX + LOWRANKAPPROX
     
     % Domain Check:
     if ( ~domainCheck(f, g) )
-        error('CHEBFUN:LOWRANKAPPROX:plus:domain', 'Inconsistent domains.');
+        error('CHEBFUN:SEPARABLEAPPROX:plus:domain', 'Inconsistent domains.');
     end
     
-    % Check for zero LOWRANKAPPROX objects:
+    % Check for zero SEPARABLEAPPROX objects:
     if ( iszero(f) )
         h = g;
     elseif ( iszero(g) )
         h = f;
     else
-        % Add together two nonzero LOWRANKAPPROX objects:
+        % Add together two nonzero SEPARABLEAPPROX objects:
         h = compression_plus(f, g);
 
     end 

@@ -1,8 +1,8 @@
 function pass = sampleTest(f, sampleOP, tol, flag)
-%SAMPLETEST   Test an evaluation of input OP against a LOWRANKAPPROX.
+%SAMPLETEST   Test an evaluation of input OP against a SEPARABLEAPPROX.
 %
 %   SAMPLETEST(F, SAMPLEOP, TOL) evaluates both the function OP and its
-%   LOWRANKAPPROX representation F at several points in it's domain. The difference of
+%   SEPARABLEAPPROX representation F at several points in it's domain. The difference of
 %   these values is computed, and if this is sufficiently small the test 
 %   passes and returns TRUE. If the difference is large, it returns FALSE.
 % 
@@ -42,7 +42,7 @@ else
     end
 end
 
-% Evaluate the LOWRANKAPPROX:
+% Evaluate the SEPARABLEAPPROX:
 vFun = feval(f, xeval, yeval);
 
 
