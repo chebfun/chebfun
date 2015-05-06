@@ -73,6 +73,19 @@ for n = 1:4
     pass(n, 20) = isequal(size(Q.vscale), [1 3]) && ...
         isequal(size(Q.epslevel), [1 3]);
 end
+
+n = 4999; 
+L = legpoly( n:n+1 ); 
+[Q, R] = qr( L ) ;
+pass(:, 21) = ones(4,1) * (  norm(Q*diag(sqrt(1./((n:n+1)+.5))) - L) < ...
+                                         1e4*max(f.vscale.*f.epslevel)  );  
+
+n = 10000; 
+L = legpoly( n:n+5 ); 
+[Q, R] = qr( L ) ;
+pass(:, 22) = ones(4,1) * (  norm(Q*diag(sqrt(1./((n:n+5)+.5))) - L) < ...
+                                         1e4*max(f.vscale.*f.epslevel)  );  
+
 end
 
 % Tests the QR decomposition for a CHEBTECH object F using a grid of points X

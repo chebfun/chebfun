@@ -184,7 +184,7 @@ else
     S = spdiags(s, 0, m, m);
     Winv = spdiags(1./sqrt(wl.'), 0, n, n);
     Q = Winv*Q*S;                 % Fix Q.
-    Q_coeffs = leg2cheb( chebfun.dlt( Q ) );
+    Q_coeffs = leg2cheb( chebfun.idlt( Q ) );
     Q = f.coeffs2vals( Q_coeffs ); 
     R = S*R;                       % Fix R.
     
