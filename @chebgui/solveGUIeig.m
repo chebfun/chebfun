@@ -56,46 +56,13 @@ else
     BC = eval(expInfo.bcString);
 end
 
-% Create the LHS chebop, and try to linearize it (if that gives an error, the
-% operator is probably linear).
+% Create the LHS chebop.
 N_LHS = chebop(LHS, dom, BC);
-try
-    A = linop(N_LHS);
-catch ME
-    MEID = ME.identifier;
-    if ( guiMode && ~isempty(strfind(MEID, 'linop:nonlinear')) )
-        errordlg('Operator is not linear.', 'Chebgui error', 'modal');
-    else
-        rethrow(ME)
-    end
-    varargout{1} = handles;
-    return
-end
 
-% Create the RHS chebop if the RHSSTRING is not empty, and try to linearize it
-% (if that gives an error, the operator is probably linear).
+% Create the RHS chebop if the RHSSTRING is not empty.
 if ( ~isempty(rhsString) )
     RHS = eval(rhsString);
     N_RHS = chebop(RHS, dom);
-    [VV, DD] = eigs(N_LHS, N_RHS);
-    try
-        B = linop(N_RHS);
-    catch ME
-        MEID = ME.identifier;
-        if ( guiMode  && ~isempty(strfind(MEID, 'linop:nonlinear'))  )
-            errordlg('Operator is not linear.', 'Chebgui error', 'modal');
-        else
-            rethrow(ME)
-        end
-        varargout{1} = handles;
-        return
-    end
-    
-    % Did we determine that we had to negate the LHS operator?
-    if ( expInfo.flipSigns )
-        A = -A;
-    end
-    
 end
 
 % Obtain a CHEBOPPREF object
@@ -125,13 +92,6 @@ options.grid = guifile.options.grid;
 % What discretization do we want?
 options.discretization = expInfo.discretization;
 
-% If we have specified the 'periodic' option, we need to throw away the boundary
-% conditions from the LINOP A before continuing (as they're imposed by
-% construction):
-if ( strcmp(expInfo.discretization, 'periodic') )
-    A.constraint = []; 
-end
-
 % Change various GUI components (only need to bother with in GUI mode).
 if ( guiMode )
     set(handles.fig_sol, 'Visible', 'On');
@@ -141,20 +101,17 @@ end
 % Compute the eigenvalues!
 if ( generalized )
     if ( isempty(sigma) )
-        [V, D] = eigs(A, B, K, options);
+        [V, D] = eigs(N_LHS, N_RHS, K, options);
     else
-        [V, D] = eigs(A, B, K, sigma, options);
+        [V, D] = eigs(N_LHS, N_RHS, K, sigma, options);
     end
 else
     if ( isempty(sigma) )
-        [V, D] = eigs(A, K, options);
+        [V, D] = eigs(N_LHS, K, options);
     else
-        [V, D] = eigs(A, K, sigma, options);
+        [V, D] = eigs(N_LHS, K, sigma, options);
     end
 end
-
-% norm(chebfun(A*V-B*V*D))
-
 
 % Sort the eigenvalues.
 [D, idx] = sort(diag(D));
@@ -180,7 +137,7 @@ else
     handles.latest.type = 'eig';
     handles.latest.solution = D;
     handles.latest.solutionT = V;
-    handles.latest.chebop = A;
+    handles.latest.chebop = N_LHS;
     handles.latest.options = options;
     
     % Notify the GUI we have a solution available

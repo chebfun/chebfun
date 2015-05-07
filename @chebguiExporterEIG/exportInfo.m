@@ -112,52 +112,18 @@ end
 % Variable which determines whether it's a generalized problem. If
 % rhsString is empty, we can be sure it's not a generalized problem.
 generalized = 1;
-% For some generalized problems, we sometimes want to negate the LHS operator.
-% This is indicated by the FLIPSIGNS variable.
-flipSigns = 0;
-% Create the chebops, and try to linearise them.
-% We will always have a string for the LHS, if the one for RHS is empty, we
-% know we have a non-generalised problem.
-N_LHS = chebop(LHS, d, BC);
-
-% Check whether we actually have a linear problem.
-% TODO: Do we care when exporting? This would cause an error when a user tries
-% to run the .m file later anyway...
-try
-    A = linop(N_LHS);
-catch ME
-    MEID = ME.identifier;
-    if ( guiMode && ~isempty(strfind(MEID, 'linop:nonlinear')) )
-        errordlg('Operator is not linear.', 'Chebgui error', 'modal');
-    else
-        rethrow(ME)
-    end
-    expInfo = [];
-    return
-end
 
 % Check for a generalised problem.
 if ( ~isempty(rhsString) )
     RHS  = eval(rhsString);
     N_RHS = chebop(RHS, d);
 
-    try
-        B = linop(N_RHS);
-    catch ME
-        MEID = ME.identifier;
-        if ( guiMode  && ~isempty(strfind(MEID, 'linop:nonlinear')) )
-            errordlg('Operator is not linear.', 'Chebgui error', 'modal');
-        else
-            rethrow(ME)
-        end
-        expInfo = [];
-        return
-    end
+    % Linearize the RHS operator, so that it can be compared with the identity
+    % operator.
+    linCheck = false;
+    paramReshape = false;
+    B = linearize(N_RHS, [], [], linCheck, paramReshape);
     
-    % Check whether we are working with generalized problems or not. If we are,
-    % the discretization of B will be a vector of elements with all 1 entries
-    % (as B would be of the form B = chebop(@(u) u)).
-    I = operatorBlock.eye(d);
     % Set a discretization size for comparing operators
     discDim = repmat(10, 1, length(d) - 1);    
     % Obtain a discretisation of the operator B
@@ -192,7 +158,6 @@ if ( ~isempty(rhsString) )
 
         if ( norm(opSum) < tol )
             generalized = 0;
-            flipSigns = 1;
         end
     end
 else
@@ -212,7 +177,6 @@ expInfo.bcInput = bcInput;
 expInfo.K = K;
 expInfo.sigma = sigma;
 expInfo.generalized = generalized;
-expInfo.flipSigns = flipSigns;
 expInfo.lname = lname;
 
 % And then some...
