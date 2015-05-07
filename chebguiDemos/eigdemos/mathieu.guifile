@@ -1,5 +1,5 @@
 # dom = [-pi pi];
-# N = chebop(@(x, u) diff(u, 2) + 5*cos(2*x)*u, dom);
+# N = chebop(@(x, u) -diff(u, 2) + 5*cos(2*x)*u, dom);
 # N.bc = 'periodic';
 # [V, D] = eigs(N, 6);
 'Mathieu equation'
