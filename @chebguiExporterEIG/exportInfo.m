@@ -184,7 +184,7 @@ if ( ~isempty(rhsString) )
         
         opDifference = Bdisc - Idisc;
         opSum = Bdisc + Idisc;
-        tol = 10*(length(d) - 1)*size(B, 2);
+        tol = 10*(length(d) - 1)*size(B, 2)*eps;
         % Check whether B matches identity (allow for numerical roundoff errors)
         if ( norm(opDifference) < tol )
             generalized = 0;
