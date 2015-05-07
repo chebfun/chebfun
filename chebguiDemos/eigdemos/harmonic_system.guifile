@@ -1,3 +1,9 @@
+# dom = [0, pi];
+# N = chebop(@(x,u,v) [diff(u); diff(v)], dom);
+# B = chebop(@(x,u,v) [v; -u], dom);
+# N.lbc = @(u,v) u;
+# N.rbc = @(u,v) u;
+# [V, D] = eigs(N, B, 6);
 'Harmonic oscillator as 1st-order system'
 'system'
 domain = '[0 pi]';

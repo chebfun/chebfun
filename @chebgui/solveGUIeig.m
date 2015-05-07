@@ -35,7 +35,7 @@ end
 expInfo = chebguiExporterEIG.exportInfo(guifile);
 
 % Extract the needed fields from the EXPINFO struct.
-dom = str2num(expInfo.dom);
+dom = str2num(expInfo.dom); %#ok<ST2NM>
 allVarNames = expInfo.allVarNames;
 indVarName = expInfo.indVarName;
 eigVarName = expInfo.lname;
@@ -77,7 +77,7 @@ end
 if ( ~isempty(rhsString) )
     RHS = eval(rhsString);
     N_RHS = chebop(RHS, dom);
-
+    [VV, DD] = eigs(N_LHS, N_RHS);
     try
         B = linop(N_RHS);
     catch ME
@@ -153,6 +153,9 @@ else
     end
 end
 
+% norm(chebfun(A*V-B*V*D))
+
+
 % Sort the eigenvalues.
 [D, idx] = sort(diag(D));
 
@@ -163,10 +166,10 @@ V = V(:,idx);
 if ( ~guiMode )
     % If we're not in GUI mode, we can finish here.
     if ( nargout == 1 )
-        varargout = diag(D);
+        varargout = D;
     else
-        varargout{1} = D;
-        varargout{2} = V;
+        varargout{1} = V;
+        varargout{2} = diag(D);
     end
     
 else
