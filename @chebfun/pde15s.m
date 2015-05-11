@@ -71,7 +71,7 @@ function varargout = pde15s(pdeFun, tt, u0, bc, varargin)
 %       waterfall(uu);
 %   with the input format being the same as PDEFUN described above.
 %
-% See also PDESET, ODE15S.
+% See also PDESET, ODE15S, PDE23T.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.
@@ -127,6 +127,11 @@ if ( ~isempty(opt.HoldPlot) )
 end
 if ( ~isempty(opt.PlotStyle) )
     plotOpts = opt.PlotStyle;
+end
+if ( ~isempty(opt.ODESolver) )
+    odeSolver = opt.ODESolver;
+else
+    odeSolver = @ode15s;
 end
 
 userMassSet = false;
@@ -774,7 +779,7 @@ clear global SYSSIZE
         
         % Solve ODE over time chunk with ode15s:
         try
-            [ignored1, ignored2] = ode15s(@odeFun, tSpan, U0, opt);
+            [ignored1, ignored2] = odeSolver(@odeFun, tSpan, U0, opt);
         catch ME
             if ( strcmp(ME.identifier, 'MATLAB:odearguments:SizeIC') )
                 error('CHEBFUN:CHEBFUN:pde15s:dims', ...
