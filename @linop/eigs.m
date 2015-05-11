@@ -253,7 +253,8 @@ end
 
 if ( ~isDone )
     warning('LINOP:EIGS:convergence', ...
-        'Maximimum dimension reached. Solution may not have converged.');
+        ['Maximimum dimension reached. Solution may not have converged.\n' ...
+        'Please see help cheboppref.maxDimension for more details.']);
 end
 
 % Detect finite rank operators.
