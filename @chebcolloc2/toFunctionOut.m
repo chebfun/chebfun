@@ -8,7 +8,7 @@ function f = toFunctionOut(disc, values)
 %   If VALUES is matrix valued, the output is an array-valued CHEBFUN, where
 %   each column of the CHEBFUN corresponds to a column of the input.
 %
-% See also TOVALUES.
+% See also TOVALUES.z
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

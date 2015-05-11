@@ -229,9 +229,7 @@ end
 % combination is the same as the worst constituent function. The nontrivial
 % coefficents are to make accidental cancellations extremely unlikely.
 coeff = 1./(2*(1:k)');
-
-for dim = dimVals
-
+for dim = [dimVals NaN]
     [V, D, P] = getEigenvalues(discA, discB, k, sigma);
 
     % Combine the eigenfunctions into a composite.
@@ -246,11 +244,16 @@ for dim = dimVals
 
     if ( all(isDone) )
         break
-    else
+    elseif ( ~isnan(dim) )
         % Update the discretiztion dimension on unhappy pieces:
         discA.dimension(~isDone) = dim;
     end
 
+end
+
+if ( ~isDone )
+    warning('LINOP:EIGS:convergence', ...
+        'Maximimum dimension reached. Solution may not have converged.');
 end
 
 % Detect finite rank operators.
