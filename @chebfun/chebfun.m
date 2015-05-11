@@ -364,6 +364,15 @@ classdef chebfun
         % Overlap the domain of two CHEBFUN objects.
         [f, g] = overlap(f, g)
         
+        % Solve a PDE with CHEBFUN and ODE15S.
+        varargout = pde15s(varargin);
+        
+        % Solve a PDE with CHEBFUN and ODE23T.
+        varargout = pde23t(varargin);
+        
+        % Solve a PDE with CHEBFUN.
+        varargout = pdeSolve(varargin);
+        
         % Plot a CHEBFUN object:
         varargout = plot(f, varargin);
         

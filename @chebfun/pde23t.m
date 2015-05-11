@@ -5,7 +5,7 @@ function varargout = pde23t(varargin)
 %   than PDE15S() for non-diffusive problems. See the PDE15() help text for
 %   further information.
 %
-% See also PDESET, PDE15S, ODE23T.
+% See also PDESET, PDE15S, ODE23T, PDESOLVER.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.
@@ -27,7 +27,7 @@ if ( ~optsPassed )
     varargin{end+1} = opts;
 end
 
-% Call PDE15S() with option to use ODE23T():
-[varargout{1:nargout}] = pde15s(varargin{:});
+% Call PDESOLVE() with option to use ODE23T():
+[varargout{1:nargout}] = pdeSolve(varargin{:});
 
 end
