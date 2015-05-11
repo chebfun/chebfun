@@ -24,8 +24,13 @@ end
 doms(cellfun(@isempty, doms)) = [];
 
 % If we're left with one domain, return it!
-if ( length(doms) == 1)
+if ( length(doms) == 1 )
     d = doms{1};
+    return
+    
+% If we're left with an empty domain, return it as well.
+elseif ( isempty(doms) )
+    d = [];
     return
 end
 
