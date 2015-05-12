@@ -1,3 +1,7 @@
+# dom = [-pi pi];
+# N = chebop(@(u) -diff(u), dom);
+# N.bc = 'periodic';
+# [V, D] = eigs(N, 16);
 'Derivative operator on periodic domain'
 'scalar'
 domain = '[-pi pi]';
