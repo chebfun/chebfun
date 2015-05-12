@@ -68,6 +68,7 @@ else
 end
 
 userMassSet = false;
+isPeriodic = false;
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%  PARSE INPUTS TO PDEFUN  %%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -185,7 +186,7 @@ end
                 
             % Reshape solution:
             Uk = reshape(U(:,kk), n, SYSSIZE);
-            uCurrent = chebfun(Uk, DOMAIN);
+            uCurrent = chebfun(Uk, DOMAIN, 'tech', tech);
             tCurrent = t(kk);
             % Store for output:
             ctr = ctr + 1;
@@ -218,8 +219,12 @@ end
             % Happiness check:
             c = (1+sin(1:SYSSIZE)).'; % Arbitrarily linear combination.
             Uk2 = (Uk*c/sum(c));
-            uk2 = chebtech2(Uk2, pref);
-            [ishappy, epslevel, cutoff] = classicCheck(uk2, Uk2, pref);
+            uk2 = tech.make(Uk2, pref);
+            if ( isPeriodic )
+                [ishappy, epslevel, cutoff] = classicCheck(uk2, pref);
+            else
+                [ishappy, epslevel, cutoff] = classicCheck(uk2, Uk2, pref);
+            end
 
             if ( ishappy )  
                 
@@ -230,17 +235,17 @@ end
 
                 % Store these values:
                 tCurrent = t(kk);
-                uCurrent = chebfun(Uk, DOMAIN, 'tech', @chebtech2);
+                uCurrent = chebfun(Uk, DOMAIN, 'tech', techHandle);
+                uCurrent = simplify(uCurrent, epslevel);
                 
-                % Shorten the representation. The happiness cutoff seems to
-                % be safer than the epslevel simplification.
-%                 uCurrent = simplify(uCurrent, epslevel);
-                uPoly = get(uCurrent, 'coeffs');
-                firstKept = size(uPoly, 2) - (cutoff-1);
-                if ( firstKept <= 0 )
-                    firstKept = 1;
-                end
-                uCurrent = chebfun(uPoly(firstKept:end,:), DOMAIN, 'coeffs');
+%                 % Shorten the representation. The happiness cutoff seems to
+%                 % be safer than the epslevel simplification.
+%                 uPoly = get(uCurrent, 'coeffs');
+%                 firstKept = size(uPoly, 2) - (cutoff-1);
+%                 if ( firstKept <= 0 )
+%                     firstKept = 1;
+%                 end
+%                 uCurrent = chebfun(uPoly(firstKept:end,:), DOMAIN, 'coeffs');
                 
                 ctr = ctr + 1;
                 uOut{ctr} = uCurrent;
@@ -410,21 +415,28 @@ rightNonlinBCLocs = [];
 BCRHS = {};
 
 if ( ischar(bc) && any(strcmpi(bc, {'periodic', 'trig'})) )
+        
     %% %%%%%%%%%%%%%%%%%%%%%%%%%%% PERIODIC BCS  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    r = cell(sum(DIFFORDER), 1);
-    count = 1;
-    for j = 1:SYSSIZE
-        for k = 0:DIFFORDER(j)-1
-            c = (diff(DOMAIN)/2)^k;
-            A = @(n) [1 zeros(1, n-2) -1]*chebcolloc2.diffmat(n, k)*c;
-            r{count} = @(n) [zeros(1, (j-1)*n) A(n) zeros(1,(SYSSIZE-j)*n)];
-            count = count + 1;
-        end
-    end
-    bc = struct( 'left', [], 'right', []);
-    bc.left.op = r(1:2:end);
-    bc.right.op = r(2:2:end);
-    BCRHS = num2cell(zeros(1, numel(r)));
+    
+    isPeriodic = true;
+    
+    % One can still use a Chebyshev basis and enforce periodic conditions by
+    % enforcing suitable constraints on the derivative. However, using a
+    % periodic basis (for now, trigtech) is much more efficient.
+%     r = cell(sum(DIFFORDER), 1);
+%     count = 1;
+%     for j = 1:SYSSIZE
+%         for k = 0:DIFFORDER(j)-1
+%             c = (diff(DOMAIN)/2)^k;
+%             A = @(n) [1 zeros(1, n-2) -1]*chebcolloc2.diffmat(n, k)*c;
+%             r{count} = @(n) [zeros(1, (j-1)*n) A(n) zeros(1,(SYSSIZE-j)*n)];
+%             count = count + 1;
+%         end
+%     end
+%     bc = struct( 'left', [], 'right', []);
+%     bc.left.op = r(1:2:end);
+%     bc.right.op = r(2:2:end);
+%     BCRHS = num2cell(zeros(1, numel(r)));
     
 else
     %% %%%%%%%%%%%%%%%%%%%%%%%%% NONPERIODIC BCS  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -540,10 +552,9 @@ else
     
 end
 
-if ( ~isfield(bc, 'middle') )
+if ( ~isPeriodic && ~isfield(bc, 'middle') )
     bc.middle.op = [];
 end
-
 
 %% %%%%%%%%%%%%%%%%%%%%%%% SUPPORT FOR COUPLED BVP-PDES! %%%%%%%%%%%%%%%%%%%%%%%
 % Experimental feature for coupled ode/pde systems: (An entry equal to 1 denotes
@@ -557,6 +568,18 @@ if ( numel(pdeFlag) == 1 )
     pdeFlag = repmat(pdeFlag, 1, SYSSIZE);
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PERIODIC %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+if ( ~isPeriodic )
+    techHandle = @chebtech2;
+    points = @chebpts;
+    mydouble = @chebdouble;
+else
+    techHandle = @trigtech;
+    points = @trigpts;
+    mydouble = @trigdouble;  
+end
+tech = techHandle();
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% MISC %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -570,7 +593,7 @@ uOut{1} = uCurrent;
 B = []; q = []; rows = []; M = []; P = []; n = [];
 
 % Set the preferences:
-pref = chebtech.techPref();
+pref = tech.techPref();
 pref.eps = tol;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -589,7 +612,7 @@ DONE = false;
 if ( ~isnan(optN) )
     % Non-adaptive in space:
     tSpan = tt;
-    x = chebpts(optN, DOMAIN);
+    x = points(optN, DOMAIN);
     solvePDE(tSpan); % Do all chunks at once!
 else
     % Adaptive in space
@@ -600,7 +623,7 @@ else
     tSpan = tt;
     while ( tCurrent < tt(end) && ~DONE )
         tSpan(tSpan < tCurrent) = [];
-        x = chebpts(currentLength, DOMAIN);
+        x = points(currentLength, DOMAIN);
         solvePDE(tSpan);
     end
 
@@ -653,9 +676,14 @@ clear global SYSSIZE
 
         % Evaluate the chebfun at discrete points:
         U0 = feval(uCurrent, x);
-        
-        % This depends only on the size of n. If this is the same, reuse!
-        if ( isempty(n) || (n ~= length(x)) )
+
+        if ( isPeriodic )
+            
+            % The discretisation length
+            n = length(x);
+            
+        elseif ( isempty(n) || (n ~= length(x)) )
+            % This depends only on the size of n. If this is the same, reuse!
             
             % The new discretisation length
             n = length(x);
@@ -688,26 +716,28 @@ clear global SYSSIZE
             
         end
         
-        % We have to ensure the starting condition satisfies the boundary
-        % conditions, or else we will get a singularity in time. We do this by
-        % tweaking the BC values to match the reality. Changing the IC itself is
-        % much trickier. Find out what the BC deviance from nominal really is:
-        BCVALOFFSET = 0;            % recover nominal value in next call
-        F = odeFun(tSpan(1),U0(:)); % also assigns to "rows" and "q"
-        
-        % If this is for the initial chunk, check whether the initial
-        % condition nearly satisfies the BCs.
-        % We're quite lax about this, because discretization at low N can
-        % cause derivatives to look fairly bad. 
-        if ( throwBCwarning && (length(uOut) > 1) && (norm(F(rows)) > 0.05*norm(F)) )
-            warning('CHEBFUN:CHEBFUN:pde15s:BadIC',...
-                'Initial state may not satisfy the boundary conditions.')
-            throwBCwarning = false;
-        end
-        if ( adjustBCs )
-            BCVALOFFSET = F(rows) - q;
-        else
-            BCVALOFFSET = 0;
+        if ( ~isPeriodic )
+            % We have to ensure the starting condition satisfies the boundary
+            % conditions, or else we will get a singularity in time. We do this by
+            % tweaking the BC values to match the reality. Changing the IC itself is
+            % much trickier. Find out what the BC deviance from nominal really is:
+            BCVALOFFSET = 0;            % recover nominal value in next call
+            F = odeFun(tSpan(1),U0(:)); % also assigns to "rows" and "q"
+
+            % If this is for the initial chunk, check whether the initial
+            % condition nearly satisfies the BCs.
+            % We're quite lax about this, because discretization at low N can
+            % cause derivatives to look fairly bad. 
+            if ( throwBCwarning && (length(uOut) > 1) && (norm(F(rows)) > 0.05*norm(F)) )
+                warning('CHEBFUN:CHEBFUN:pde15s:BadIC',...
+                    'Initial state may not satisfy the boundary conditions.')
+                throwBCwarning = false;
+            end
+            if ( adjustBCs )
+                BCVALOFFSET = F(rows) - q;
+            else
+                BCVALOFFSET = 0;
+            end
         end
         
         % Solve ODE over time chunk with ode15s:
@@ -732,10 +762,18 @@ clear global SYSSIZE
             U = reshape(U, n, SYSSIZE);
             
             % Evaluate the PDEFUN:
-            Utmp = chebdouble(U, DOMAIN);
+            Utmp = mydouble(U, DOMAIN);
             F = pdeFun(t, x, Utmp);
             F = double(F);
-            F = P*F(:);
+            F = F(:);
+            
+            if ( isPeriodic )
+                return
+            end
+            
+            F = P*F;
+            
+            % Enforce boundary constraints:
             
             % Get the algebraic right-hand sides: (may be time-dependent)
             for l = 1:numel(BCRHS)
