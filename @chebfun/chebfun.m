@@ -370,9 +370,6 @@ classdef chebfun
         % Solve a PDE with CHEBFUN and ODE23T.
         varargout = pde23t(varargin);
         
-        % Solve a PDE with CHEBFUN.
-        varargout = pdeSolve(varargin);
-        
         % Plot a CHEBFUN object:
         varargout = plot(f, varargin);
         
@@ -489,6 +486,9 @@ classdef chebfun
         
         % Number of columns (or rows) of a CHEBFUN quasimatrix.
         out = numColumns(f)
+        
+        % Solve a PDE with CHEBFUN.
+        varargout = pdeSolve(varargin);
         
         % Obtain data used for plotting a CHEBFUN object:
         data = plotData(f, g, h)
