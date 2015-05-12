@@ -19,7 +19,7 @@ deInput = expInfo.deInput;
 s = expInfo.s;
 
 % Print commands for solving the problem:
-fprintf(fid, '\n%%%% Call pde15s to solve the problem.\n');
+fprintf(fid, '\n%%%% Call %s to solve the problem.\n', pdeSolver);
 fprintf(fid, '[%s, %s] = %s(pdefun, %s, %s, bc, opts);\n', indVarName{2}, ...
     sol, pdeSolver, indVarName{2}, sol0);
 
