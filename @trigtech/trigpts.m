@@ -1,9 +1,10 @@
-function [x, w] = trigpts(n)
+function [x, w, v] = trigpts(n)
 %TRIGPTS   Equispaced points in [-1, 1).
 %   TRIGPTS(N) returns N equispaced points in [-1, 1).
 %
 %   [X, W] = TRIGPTS(N) returns also a row vector of the weights for
-%   the trapezoidal rule.
+%   the trapezoidal rule and [X, W, V] = TRIGPTS(N) returns a column vector of
+%   the barycentric weights for trigonometric-polynomial interpolation.
 %
 % See also CHEBPTS, LEGPTS, JACPTS, LAGPTS, and HERMPTS.
 
@@ -24,6 +25,11 @@ x(end) = [];
 % Quadrature weights:
 if ( nargout > 1 )
     w = trigtech.quadwts(n);
+end
+
+% BArycentric weights:
+if ( nargout > 2 )
+    v = trigtech.barywts(n);
 end
     
 end
