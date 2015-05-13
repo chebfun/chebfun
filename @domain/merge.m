@@ -22,11 +22,7 @@ doms = varargin;
 doms = cellfun(@(dom) double(dom), doms, 'UniformOutput', false);
 
 % Ignore empties:
-for k = numel(doms):-1:1
-    if ( isempty(doms{k}) )
-        doms(k) = []; % Discard if this domain is now empty.
-    end
-end
+doms(cellfun(@isempty, doms)) = [];
 
 % Initialise newDom:
 newDom = [];
