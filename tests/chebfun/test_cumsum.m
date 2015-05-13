@@ -248,6 +248,50 @@ S = cumsum(s);
 pass(18) = norm(S(:,1) - f) < 100*eps;
 pass(19) = norm(S(:,2) - g) < 100*eps;
 
+%% Check on trigfuns
+xr = pi*xr;
+% trigfun with zero mean
+f = chebfun(@(x) cos(x+sqrt(3)) + sin(x-sqrt(2.1)), [-pi,pi], 'trig', pref);
+If = cumsum(f);
+If_exact = @(x) sin(x+sqrt(3)) - cos(x-sqrt(2.1)) - (sin(-pi+sqrt(3)) - cos(-pi-sqrt(2.1)));
+pass(20) = max(max(abs(feval(If, xr) - If_exact(xr)))) < ...
+    10*vscale(If)*epslevel(If);
+pass(21) = isPeriodicTech(If);
+
+% trigfun without zero mean - should be converted to chebfun
+f = chebfun(@(x) 1 + cos(x+sqrt(3)) + sin(x-sqrt(2.1)), [-pi,pi], 'trig', pref);
+If = cumsum(f);
+If_exact = @(x) x + sin(x+sqrt(3)) - cos(x-sqrt(2.1)) - ...
+    (-pi + sin(-pi+sqrt(3)) - cos(-pi-sqrt(2.1)));
+pass(22) = max(max(abs(feval(If, xr) - If_exact(xr)))) < ...
+    10*vscale(If)*epslevel(If);
+pass(23) = ~isPeriodicTech(If);
+
+% Array-valued trigfuns with zero-mean
+f3 = chebfun(@(x) [cos(x) -sin(x) cos(x+sqrt(3))], [-pi,pi], 'trig', pref);
+If3 = cumsum(f3);
+If3_exact = @(x) [sin(x) cos(x) sin(x+sqrt(3))] - ...
+    repmat([sin(-pi) cos(-pi) sin(-pi+sqrt(3))], size(x, 1), 1);
+pass(24) = max(max(abs(feval(If3, xr) - If3_exact(xr)))) < ...
+    10*vscale(If3)*epslevel(If3);
+pass(25) = isPeriodicTech(f3);
+
+% Even length with non-zero mean
+f = chebfun( ones(32,1), [-pi,pi], 'trig'  );
+If = cumsum(f);
+If_exact = @(x) x + pi;
+pass(26) = max(max(abs(feval(If, xr) - If_exact(xr)))) < ...
+    10*vscale(If)*epslevel(If);
+pass(27) = ~isPeriodicTech(If);
+
+% Even length with zero mean
+f = chebfun( sin(trigpts(33,[-pi,pi])), [-pi,pi], 'trig'  );
+If = cumsum(f);
+If_exact = @(x) -cos(x)-1;
+pass(28) = max(max(abs(feval(If, xr) - If_exact(xr)))) < ...
+    10*vscale(If)*epslevel(If);
+pass(29) = isPeriodicTech(If);
+
 
 % [TODO]:  Check fractional antiderivatives once implemented.
 
