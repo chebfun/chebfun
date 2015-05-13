@@ -63,8 +63,24 @@ classdef trigdouble < chebdouble
         function I = sum(u, a, b)
             %SUM  Compute the integral of u.
             
-            % TODO: Add support.
-            error('CHEBFUN:FOURDOUBLE:sum:noImplemented', 'Not implemented yet.')
+            persistent W
+            
+            if ( nargin > 1 )
+                % TODO: Add support.
+                error('CHEBFUN:FOURDOUBLE:sum:notImplemented', ...
+                    'Not implemented yet.')
+            end
+            
+            % Retrieve or compute weights::
+            if ( N > 5 && numel(W) >= N && ~isempty(W{N}) )
+                % Weights are already in storage!
+            else
+                c = diff(u.domain)/2; % Interval scaling.
+                W{N} = c*trigtech.quadwts(N);
+            end
+            
+            % Find the sum by muliplying by the weights vector:
+            I = W{N}*u;
             
         end
         
@@ -79,7 +95,8 @@ classdef trigdouble < chebdouble
             %         interpolant to u.
             
             % TODO: Add support.
-            error('CHEBFUN:FOURDOUBLE:cumsum:noImplemented', 'Not implemented yet.')
+            error('CHEBFUN:FOURDOUBLE:cumsum:notImplemented', ...
+                'Not implemented yet.')
             
         end
         
@@ -91,7 +108,8 @@ classdef trigdouble < chebdouble
             %   vector U.
             
             % TODO: Add support.
-            error('CHEBFUN:FOURDOUBLE:fred:noImplemented', 'Not implemented yet.')
+            error('CHEBFUN:FOURDOUBLE:fred:notImplemented', ...
+                'Not implemented yet.')
             
         end
         
@@ -103,7 +121,8 @@ classdef trigdouble < chebdouble
             %   vector U.
             
             % TODO: Add support.
-            error('CHEBFUN:FOURDOUBLE:volt:noImplemented', 'Not implemented yet.')
+            error('CHEBFUN:FOURDOUBLE:volt:notImplemented', ...
+                'Not implemented yet.')
             
         end
 
@@ -114,7 +133,8 @@ classdef trigdouble < chebdouble
             % point y using barycentric interpolation.
             
             % TODO: Add support.
-            error('CHEBFUN:FOURDOUBLE:feval:noImplemented', 'Not implemented yet.')
+            error('CHEBFUN:FOURDOUBLE:feval:notImplemented', ...
+                'Not implemented yet.')
 
         end
                 
