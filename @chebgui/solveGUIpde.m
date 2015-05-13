@@ -45,6 +45,7 @@ pdeflag = expInfo.pdeflag;
 periodic = expInfo.periodic;
 lbcString = expInfo.lbcString;
 rbcString = expInfo.rbcString;
+pdeSolver = eval(['@', expInfo.pdeSolver]);
 
 % Check that we don't have any breakpoints.
 if ( length(dom) > 2 )
@@ -208,7 +209,7 @@ end
 
 % Try solving the PDE!
 try
-    [t, u] = pde15s(DE, tt, u0, bc, opts);
+    [t, u] = pdeSolver(DE, tt, u0, bc, opts);
 catch ME
     errordlg('Error in solution process.', 'chebopbvp error', 'modal');
     varargout{1} = handles;

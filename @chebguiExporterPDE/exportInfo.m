@@ -213,5 +213,6 @@ expInfo.dohold = guifile.options.pdeholdplot;
 expInfo.ylim1 = guifile.options.fixYaxisLower;
 expInfo.ylim2 = guifile.options.fixYaxisUpper;
 expInfo.fixN = guifile.options.fixN;
+expInfo.pdeSolver = guifile.options.pdeSolver;
 
 end

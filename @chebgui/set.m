@@ -12,11 +12,13 @@ function cg = set(cg, propName, val)
 %   'init' - initial condition/guess for nonlinear BVPs/PDEs
 %   'sigma' - desired eigenvalues: 'LM','SM','LA','SA','LR','SR','LI','SI'
 %   'options' - a structure containing the below
+%       'ivpsolver' - solver used for solving IVPs
 %       'numeigs' - number of desired eigenvalues
 %       'damping' - damping in newton iteration [true/false]
 %       'plotting' - plotting in nonlinear solves/PDEs [true/false]
 %       'grid' - display a grid on these plots [true/false]
-%       'pdeholdplot' - 
+%       'pdesolver' - solver used for solving PDEs
+%       'pdeholdplot' - keep plots for each PDE timestep (i.e. hold on)
 %       'fixn' - fixed spatial discretisation for PDEs (experimental)
 %       'fixyaxislower' - fix y axis on plots (lower)
 %       'fixyaxisupper' - fix y axis on plots (upper)
@@ -88,6 +90,8 @@ switch ( lower(propName) )
         cg.options.discretization = val;
     case 'ivpsolver'
         cg.options.ivpSolver = val;
+    case 'pdesolver'
+        cg.options.pdeSolver = val;
     otherwise
         error('CHEBFUN:CHEBGUI:set:propName',...
             [propName,' is not a valid chebgui property.'])

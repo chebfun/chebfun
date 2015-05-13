@@ -11,6 +11,7 @@ function printSolver(fid, expInfo)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Extract information from the EXPINFO struct:
+pdeSolver = expInfo.pdeSolver;
 indVarName = expInfo.indVarName;
 sol = expInfo.sol;
 sol0 = expInfo.sol0;
@@ -18,9 +19,9 @@ deInput = expInfo.deInput;
 s = expInfo.s;
 
 % Print commands for solving the problem:
-fprintf(fid, '\n%%%% Call pde15s to solve the problem.\n');
-fprintf(fid, '[%s, %s] = pde15s(pdefun, %s, %s, bc, opts);\n', indVarName{2}, ...
-    sol, indVarName{2}, sol0);
+fprintf(fid, '\n%%%% Call %s to solve the problem.\n', pdeSolver);
+fprintf(fid, '[%s, %s] = %s(pdefun, %s, %s, bc, opts);\n', indVarName{2}, ...
+    sol, pdeSolver, indVarName{2}, sol0);
 
 % Conver sol to variable names
 if ( numel(deInput) > 1 )
