@@ -220,14 +220,7 @@ end
             c = (1+sin(1:SYSSIZE)).'; % Arbitrarily linear combination.
             Uk2 = (Uk*c/sum(c));
             uk2 = tech.make(Uk2, pref);
-            
-            % TODO: This is required as trigtech.classicCheck has a different
-            % template to chebtech.classicCheck. We shuold fix this.
-            if ( isPeriodic )
-                [ishappy, epslevel, cutoff] = classicCheck(uk2, pref);
-            else
-                [ishappy, epslevel, cutoff] = classicCheck(uk2, Uk2, pref);
-            end
+            [ishappy, epslevel, cutoff] = classicCheck(uk2, Uk2, pref);
 
             if ( ishappy )  
                 
