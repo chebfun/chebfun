@@ -45,14 +45,14 @@ u6 = E*u0;
 pass(2) = norm(V4 - feval(u6, chebpts(15))) < tol;
 
 %%
-% Test periodic boundary conditions.
+% Test periodic boundary conditions with TRIGCOLLOC.
 dom = [0 2*pi];
 A = chebop(@(u) diff(u, 2), dom);
 A.bc = 'periodic';
 u0 = chebfun(@(x) sin(x), dom); 
 t = [0 0.001 0.01 0.1 0.5 1];
 
-% Solve with FOURIER technology.
+% Solve with FOURIER technology in value space.
 u = expm(A, t, u0);
 pass(3) = isequal(get(u{1}.funs{1}, 'tech'), @trigtech);
 

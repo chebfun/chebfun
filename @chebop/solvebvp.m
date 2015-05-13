@@ -231,6 +231,15 @@ else
     % Call solver method for nonlinear problems.
     [u, info] = solvebvpNonlinear(N, rhs, L, u0, residual, pref, displayInfo);
     
+    % Enforce the function to be real if the imaginary part is small if using a 
+    % periodic TECH:
+    if ( isPeriodicTech(techUsed) )
+        normImag = @(f) norm(imag(f),inf);
+        if ( max(cellfun(normImag, u.blocks)) < max(pref.errTol*vscale(u)) )
+           u = real(u);
+        end
+    end
+
 end
 
 % Revert warning state:
