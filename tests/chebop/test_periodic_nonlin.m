@@ -4,7 +4,7 @@ function pass = test_periodic_nonlin(pref)
 if ( nargin == 0 )
     pref = cheboppref();
 end
-tol = 1e-10;
+tol = 1e-8;
 
 %% Nonlinear ODE.
 % u'' - sin(u) = cos(2x).
@@ -35,10 +35,10 @@ v = N \ f;
 pass(1) = norm(u - v, inf) < tol;
 
 %% Test the TRIGCOLLOC class. FIRST ORDER: 
-%  u' - u*cos(u) = cos(x), on [-2*pi 2*pi].
+%  u' - u*cos(u) = cos(x), on [-pi pi].
 
 % Set up domain, rhs f, and intial guesses u0 and v0.
-dom = [-2*pi 2*pi];
+dom = [-pi pi];
 f = chebfun(@(x) cos(x), dom);
 u0 = f;
 
