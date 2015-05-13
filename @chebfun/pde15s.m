@@ -93,7 +93,7 @@ if ( ~optsPassed )
     varargin{end+1} = opts;
 end
 
-% Call PDESOLVER() with option to use ODE15S():
+% Call PDESOLVE() with option to use ODE15S():
 [varargout{1:nargout}] = pdeSolve(varargin{:});
 
 end
