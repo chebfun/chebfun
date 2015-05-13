@@ -134,8 +134,7 @@ classdef trigdouble < chebdouble
             n = length(u.values);
             dom = u.domain;
             x = trigpts(n, dom);
-            v = trigpts.barywts(n);
-            out = trigtech.bary(y, u.values, x, v);
+            out = trigBary(y, u.values, x, dom);
 
         end
                 
