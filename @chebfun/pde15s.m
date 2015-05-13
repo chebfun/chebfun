@@ -71,7 +71,7 @@ function varargout = pde15s(varargin)
 %       waterfall(uu);
 %   with the input format being the same as PDEFUN described above.
 %
-% See also PDESET, ODE15S, PDE23T, PDESOLVER.
+% See also PDESET, ODE15S, PDE23T, PDESOLVE.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.
