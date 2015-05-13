@@ -426,12 +426,18 @@ classdef trigtech < smoothfun % (Abstract)
         % Aliasing:
         coeffs = alias(coeffs, m)
         
+        % Trigonometric-polynomial barycentric interpolation
+        [fx, x]= bary(x, fvals, xk, wk)
+        
+        % Compute barycentric weights for trigonometric-polynomial interpolation.
+        v = barywts(n)
+        
         % Differentiation matrix in Fourier basis.
         D = diffmat(n, p)
         
         % Compute trigonometric points (x) and optionally quadrature (w)
         % and barycentric (v) weights:
-        [x, w] = trigpts(n);
+        [x, w, v] = trigpts(n);
         
         % Convert coefficients to values:
         values = coeffs2vals(coeffs);

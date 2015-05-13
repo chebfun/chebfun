@@ -1,7 +1,7 @@
 function y = feval(f, x)
 %FEVAL   Evaluate a TRIGTECH.
-%   Y = FEVAL(F, X) Evaluation of the TRIGTECH F at points X via
-%   Horner's scheme.
+%   Y = FEVAL(F, X) Evaluation of the TRIGTECH F at points X via Horner's
+%   scheme.
 %
 %   If size(F, 2) > 1 then FEVAL returns values in the form [F_1(X), F_2(X),
 %   ...], where size(F_k(X)) = size(X).
@@ -62,15 +62,15 @@ elseif ( (m > 1) && ( (ndimsx == 2) || (sizex(2) > 1) ) )
     y = reshape(y, sizex(1), m*numel(x)/sizex(1));
 end
 
-% Vectorized version of Horner's scheme for evaluating multiple
-% polynomials of the same degree at the same locations.
+end
+
 function q = polyvalv(c, x)
+% Vectorized version of Horner's scheme for evaluating multiple polynomials of
+% the same degree at the same locations.
 nValsX = size(x, 1);
 degreePoly = size(c, 1);
 q = ones(nValsX, 1)*c(1,:);
 for j = 2:degreePoly
     q = bsxfun(@plus, bsxfun(@times, x, q), c(j,:));
 end
-end
-
 end

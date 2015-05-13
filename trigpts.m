@@ -1,4 +1,4 @@
-function [x, w] = trigpts(n, dom)
+function [x, w, v] = trigpts(n, dom)
 %TRIGPTS    Equally spaced points.
 %   TRIGPTS(N) returns N equispaced points in [-1, 1).
 %
@@ -7,6 +7,9 @@ function [x, w] = trigpts(n, dom)
 %
 %   [X, W] = TRIGPTS(N) or [X, W] = TRIGPTS(N, D) returns also a row vector 
 %   of the weights for the trapezoidal rule.
+%
+%   [X, W, V] = TRIGPTS(N) returns the barycentric weights for trigonometric-
+%   polynomial interpolation on an equispaced grid.
 %
 % See also CHEBPTS, LEGPTS, JACPTS, LAGPTS, and HERMPTS.
 
@@ -27,6 +30,10 @@ x(end) = [];
 
 if ( nargout > 1 )
     w = trigtech.quadwts(n);
+end
+
+if ( nargout > 2 )
+    v = trigtech.barywts(n);
 end
 
 if ( nargin > 1 )
