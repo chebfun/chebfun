@@ -229,9 +229,7 @@ end
 % combination is the same as the worst constituent function. The nontrivial
 % coefficents are to make accidental cancellations extremely unlikely.
 coeff = 1./(2*(1:k)');
-
-for dim = dimVals
-
+for dim = [dimVals NaN]
     [V, D, P] = getEigenvalues(discA, discB, k, sigma);
 
     % Combine the eigenfunctions into a composite.
@@ -239,19 +237,24 @@ for dim = dimVals
 
     % Convert the different components into cells
     u = partition(discA, P*v);
-    
 
     % Test the happiness of the function pieces:
-    vscale = zeros(sum(isFun),1);   % intrinsic scaling only
+    vscale = zeros(1, sum(isFun));   % intrinsic scaling only
     [isDone, epsLevel] = testConvergence(discA, u(isFun), vscale, pref);
 
     if ( all(isDone) )
         break
-    else
+    elseif ( ~isnan(dim) )
         % Update the discretiztion dimension on unhappy pieces:
         discA.dimension(~isDone) = dim;
     end
 
+end
+
+if ( ~isDone )
+    warning('LINOP:EIGS:convergence', ...
+        ['Maximimum dimension reached. Solution may not have converged.\n' ...
+        'Please see help cheboppref.maxDimension for more details.']);
 end
 
 % Detect finite rank operators.

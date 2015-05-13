@@ -74,6 +74,11 @@ for n = 1:2
     g = simplify(f, 1e20);
     pass(n, 14) = iszero(g);
 
+    % Check that a long identically-zero CHEBTECH simplifies correctly:
+    f = testclass.make(@(x) 0*x, [], struct('fixedLength', 8));
+    g = simplify(f);
+    pass(n, 15) = iszero(g) && (length(g) == 1);
+
 end
 
 end

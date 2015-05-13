@@ -215,6 +215,9 @@ while ( ~terminate )
     
 end
 
+% Simplify the result before returning it and printing solver info:
+u = simplify(u);
+
 % Evaluate how far off we are from satisfying the boundary conditions.
 errEstBC = normBCres(N, u, x, diffOrder, pref);
 
@@ -315,8 +318,8 @@ end
 disc = pref.discretization();
 tech = disc.returnTech();
 techUsed = tech();
-if ( ~isempty(N.bc) || isPeriodicTech(techUsed) )
-    
+
+if ( ~isempty(N.bc) || isequal(pref.discretization, @trigcolloc) )
     % Periodic case. 
     if ( (isa(N.bc, 'char') && strcmpi(N.bc, 'periodic')) || ...
             isPeriodicTech(techUsed) )
@@ -339,7 +342,6 @@ if ( ~isempty(N.bc) || isPeriodicTech(techUsed) )
         bcU = N.bc(x, uBlocks{:});
         bcNorm = bcNorm + norm(bcU, 2).^2;
     end
-    
 end
 
 bcNorm = sqrt(bcNorm);

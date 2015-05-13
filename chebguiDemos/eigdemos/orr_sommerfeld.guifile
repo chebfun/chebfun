@@ -1,3 +1,9 @@
+# dom = [-1 1];
+# N = chebop(@(x,u) (diff(u,4)-2*diff(u,2)+u)/5772-2i*u-1i*(1-x^2)*(diff(u,2)-u), dom);
+# B = chebop(@(u) diff(u, 2) - u, dom);
+# N.lbc = @(u) [u; diff(u)];
+# N.rbc = @(u) [u; diff(u)];
+# [V, D] = eigs(N, B, 50);
 'Orr-Sommerfeld operator'
 'scalar'
 domain = '[-1 1]';

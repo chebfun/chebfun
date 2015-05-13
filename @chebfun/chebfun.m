@@ -81,14 +81,19 @@ classdef chebfun
 % computing the first N Chebyshev coefficients from their integral form, rather
 % than by interpolation at Chebyshev points.
 %
-% CHEBFUN(F, 'periodic') constructs a CHEBFUN object representing a smooth and
+% CHEBFUN(F, 'trig') constructs a CHEBFUN object representing a smooth and
 % periodic function F on the interval [-1,1]. The resulting CHEBFUN is
-% represented using a Fourier series. All operation done of F should preserve
-% smoothness and periodicity or the results may be inaccurate. Similar options
-% as discussed above may be combined with the 'periodic' flag, with exception to
+% represented using a Fourier series. All operations done on F should preserve
+% smoothness and periodicity, otherwise results are casted into chebfuns 
+% represented by Chebyshev rather than Fourier series. Similar options
+% as discussed above may be combined with the 'trig' flag, with exception to
 % the 'chebkind' and 'splitting' flags.
 %
-% CHEBFUN(F, 'trig') is the same as CHEBFUN(F, 'periodic').
+% CHEBFUN(F, 'periodic') is the same as CHEBFUN(F, 'trig').
+%
+% CHEBFUN(F, ..., 'doubleLength') constructs a chebfun with twice the
+% polynomial degree of that chosen by the Chebfun constructor algorithm.
+% If LENGTH(F) == N, then LENGTH(CHEBFUN(F,'doubleLength')) == 2*N-1.
 %
 % CHEBFUN --UPDATE can be used to update to the latest stable release of CHEBFUN
 % (obviously an internet connection is required!). CHEBFUN --UPDATE-DEVEL will
@@ -191,25 +196,14 @@ classdef chebfun
             end
                        
             % Parse inputs:
-            [op, dom, data, pref] = parseInputs(varargin{:});
+            [op, dom, data, pref, flags] = parseInputs(varargin{:});
                         
-            if ( strcmp(op, 'done') )
+            if ( flags.done )
                 % An update was performed. Exit gracefully:
                 throwAsCaller(MException('', ''))
             end
             
-            % Deal with 'trunc' option:
-            doTrunc = false;
-            truncLength = NaN;
-            for k = 1:length(varargin)
-                if ( strcmpi(varargin{k}, 'trunc') )
-                    doTrunc = true;
-                    truncLength = varargin{k+1};
-                    break
-                end                
-            end
-            
-            if ( isa(op, 'chebfun') && doTrunc )
+            if ( isa(op, 'chebfun') && flags.trunc )
                 % Deal with the particular case when we're asked to truncate a
                 % CHEBFUN:
                 f = op;
@@ -220,6 +214,14 @@ classdef chebfun
                 % Call the main constructor:
                 [f.funs, f.domain] = chebfun.constructor(op, dom, data, pref);
                 
+                if ( flags.doubleLength )
+                    % Using the length of f.funs{1} is okay because the
+                    % 'doubleLength' flag is mutually exclusive with 'splitting
+                    % on'.
+                    pref.techPrefs.fixedLength = 2*length(f.funs{1}) - 1;
+                    [f.funs, f.domain] = chebfun.constructor(op, dom, data, pref);
+                end
+
                 % Update values at breakpoints (first row of f.pointValues):
                 f.pointValues = chebfun.getValuesAtBreakpoints(f.funs, ...
                     f.domain, op);
@@ -230,16 +232,11 @@ classdef chebfun
                 
             end
 
-            if ( doTrunc )
+            if ( flags.trunc )
                 % Truncate the CHEBFUN to the required length:
-                if ( isa( pref.tech(),'chebtech' ) ) 
-                    c = chebcoeffs(f, truncLength);
-                else
-                    c = trigcoeffs(f, truncLength);
-                end
-                f = chebfun(c, f.domain([1,end]), 'coeffs', pref);
+                f = truncate(f, flags.trunc);
             end
-            
+
         end
         
     end
@@ -296,6 +293,12 @@ classdef chebfun
         
         % Round a CHEBFUN towards minus infinity.
         g = floor(f);
+        
+        % Fractional derivative of a CHEBFUN object:
+        f = fracDiff(f, mu, type)
+        
+        % Fractional integral of a CHEBFUN object:
+        f = fracInt(f, mu)
 
         % Get properties of a CHEBFUN object.
         out = get(f, prop, simpLevel);
@@ -330,11 +333,15 @@ classdef chebfun
         % Test if a CHEBFUN object is built upon SINGFUN.
         out = issing(f)
         
-        % True for zero CHEBFUN objects
+        % Test if a CHEBFUN object is built upon a basis of periodic 
+        % functions, i.e., a periodic TECH.
+        out = isPeriodicTech(f)
+        
+        % True for zero CHEBFUN objects.
         out = iszero(f)
         
         % Kronecker product of two CHEBFUN object.
-        out = kron(f, g)
+        out = kron(f, g, varargin)
         
         % Length of a CHEBFUN.
         [out, out2] = length(f);
@@ -356,6 +363,12 @@ classdef chebfun
         
         % Overlap the domain of two CHEBFUN objects.
         [f, g] = overlap(f, g)
+        
+        % Solve a PDE with CHEBFUN and ODE15S.
+        varargout = pde15s(varargin);
+        
+        % Solve a PDE with CHEBFUN and ODE23T.
+        varargout = pde23t(varargin);
         
         % Plot a CHEBFUN object:
         varargout = plot(f, varargin);
@@ -408,6 +421,9 @@ classdef chebfun
         % Transpose a CHEBFUN.
         f = transpose(f)
         
+        % Truncate a CHEBFUN object.
+        f = truncate(f, n);
+        
         % Unary minus of a CHEBFUN.
         f = uminus(f)
 
@@ -431,6 +447,9 @@ classdef chebfun
         
         % Assign columns (or rows) of an array-valued CHEBFUN.
         f = assignColumns(f, colIdx, g)
+        
+        % Convert a CHEBFUN to another TECH.
+        f = changeTech(f, newtech);
 
         % Deprecated function.
         f = define(f,s,v);
@@ -468,6 +487,9 @@ classdef chebfun
         % Number of columns (or rows) of a CHEBFUN quasimatrix.
         out = numColumns(f)
         
+        % Solve a PDE with CHEBFUN.
+        varargout = pdeSolve(varargin);
+        
         % Obtain data used for plotting a CHEBFUN object:
         data = plotData(f, g, h)
         
@@ -502,12 +524,18 @@ classdef chebfun
         % Discrete cosine transform:
         y = dct(u, kind);
         
-        % Inverse discrete cosine transform:
-        u = idct(y, kind);
+        % Discrete Legendre transform:
+        y = dlt(u);
         
         % Discrete sine transform:
         y = dst(u, kind);
         
+        % Inverse discrete cosine transform:
+        u = idct(y, kind);
+        
+        % Inverse discrete Legendre transform:
+        u = idlt(y, kind);
+                
         % Inverse discrete sine transform:
         u = idst(y, kind);
         
@@ -516,6 +544,9 @@ classdef chebfun
 
         % Compute Lagrange basis functions for a given set of points.
         f = lagrange(x, varargin);
+        
+        % Non-uniform discrete cosine transform:
+        y = ndct(u);
 
         % ODE113 with CHEBFUN output.
         [t, y] = ode113(varargin);
@@ -545,9 +576,6 @@ classdef chebfun
         % Convert a cell array of CHEBFUN objects to a quasimatrix.
         G = cell2quasi(F)
         
-        % Convert a CHEBFUN to another TECH.
-        f = convertToCorrectTech(f, domain, newtech);
-        
         % Determine values of CHEBFUN at breakpoints.
         vals = getValuesAtBreakpoints(funs, ends, op);
         
@@ -565,8 +593,8 @@ classdef chebfun
         [funs, ends] = constructor(op, domain, data, pref);
         
         % Convert ODE solutions into CHEBFUN objects:
-        [y, t] = odesol(sol, opt);
-
+        [y, t] = odesol(sol, dom, opt);
+        
         % Parse inputs to PLOT. Extract 'lineWidth', etc.
         [lineStyle, pointStyle, jumpStyle, deltaStyle, out] = ...
             parsePlotStyle(varargin)
@@ -594,11 +622,17 @@ function op = str2op(op)
     end
 end
 
-function [op, dom, data, pref] = parseInputs(op, varargin)
+function [op, dom, data, pref, flags] = parseInputs(op, varargin)
     
     % TODO: Should we 'data' structure to be passed to the constructor?
     % Currently, like in CHEBFUN/COMPOSE(), we don't have a use for this, but it
     % might be useful in the future.
+    
+    % Non-preferences that need to live beyond parseInputs.
+    flags = struct();
+    flags.done = false;         % No construction needs to take place.
+    flags.doubleLength = false; % We will construct to double the length.
+    flags.trunc = false;        % We will truncate the result.
 
     % Deal with string input options.
     if ( strncmp(op, '--', 2) )
@@ -618,10 +652,10 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
             error('CHEBFUN:parseInputs:unknown', ...
                 'Unknow command %s.', op);
         end
-        op = 'done';
         dom = [];
         data = struct();
         pref = [];
+        flags.done = true;
         return
     end
 
@@ -652,7 +686,7 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
             domainWasPassed = true;
         end
     end
-
+    
     % A struct to hold any preferences supplied by keyword (name-value pair).
     keywordPrefs = struct();
 
@@ -685,21 +719,27 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
         elseif ( strcmpi(args{1}, 'novectorcheck') )
             % Vector check for function_handles.
             doVectorCheck = false;
-            args(1) = [];            
+            args(1) = [];
+        elseif ( strcmpi(args{1}, 'doublelength') )
+            % Construct Chebfun twice as long as usually would be constructed.
+            flags.doubleLength = true;
+            args(1) = [];
         elseif ( strcmpi(args{1}, 'coeffs') && isnumeric(op) )
             % Hack to support construction from coefficients.            
             op = {{[], op}};
             args(1) = [];
-        elseif ( any(strcmpi(args{1}, {'periodic', 'trig'})) )
-            isPeriodic = true;
-            args(1) = [];
         elseif ( strcmpi(args{1}, 'coeffs') && iscell(op) )
             error('CHEBFUN:CHEBFUN:parseInputs:coeffcell', ...
                 'Cannot construct CHEBFUN from a cell array of coefficients.');
-        elseif ( strcmpi(args{1}, 'trunc') )
-            % Pull out this preference, which is checked for later.
+        elseif ( any(strcmpi(args{1}, {'periodic', 'trig'})) )
+            isPeriodic = true;
+            args(1) = [];
+        elseif ( strncmpi(args{1}, 'truncate', 5) )
+            % Set the local truncation option.
+            flags.trunc = args{2};
+            args(1:2) = [];   
+            % We split when truncation is selected. TODO: Why?
             keywordPrefs.splitting = true;
-            args(1:2) = [];
         elseif ( isnumeric(args{1}) && isscalar(args{1}) )
             % g = chebfun(@(x) f(x), N)
             keywordPrefs.techPrefs.fixedLength = args{1};
@@ -789,6 +829,10 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
             args(1:2) = [];
         elseif ( ischar(args{1}) )
             % Update these preferences:
+            if ( length(args) < 2 )
+                error('CHEBFUN:CHEBFUN:parseInputs:noPrefValue', ...
+                    ['Value for ''' args{1} ''' preference was not supplied.']);
+            end
             keywordPrefs.(args{1}) = args{2};
             args(1:2) = [];
         else
@@ -812,11 +856,29 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
         pref = chebfunpref(keywordPrefs);
     end
 
-    % Use the default domain if none was supplied.
+    % Use the domain of the chebfun that was passed if none was supplied.
     if ( ~domainWasPassed || isempty(dom) )
-        dom = pref.domain;
+        if ( isa(op, 'chebfun') )
+            dom = [ op.domain(1) op.domain(end) ];
+        else
+            dom = pref.domain;
+        end
     end
     numIntervals = numel(dom) - 1;
+
+    % Error if 'doubleLength' and 'splitting on' are both passed:
+    % This combination is not supported.
+    if ( pref.splitting && flags.doubleLength )
+        error('CHEBFUN:CHEBFUN:parseInputs:doubleLengthSplitting', ...
+            'doubleLength not supported with splitting on.')
+    end
+
+    % Error if 'doubleLength' is used on a domain with breakpoints:
+    % This combination is not supported.
+    if ( (length(dom) > 2) && flags.doubleLength )
+        error('CHEBFUN:CHEBFUN:parseInputs:doubleLengthBreakpoints', ...
+            'doubleLength not supported on domains with breakpoints.')
+    end
 
     % Deal with the 'periodic' or 'trig' flag:
     if ( isPeriodic )

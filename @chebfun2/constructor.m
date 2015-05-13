@@ -109,7 +109,7 @@ if ( any(strcmpi(dom, 'equi')) || ((nargin > 3) && (any(strcmpi(varargin{1}, 'eq
 end
 
 if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
-    if ( numel( op ) == 1 )
+    if ( numel( op ) == 1 && ~any(strcmpi(dom, 'coeffs')) )
         % LNT wants this:
         g = constructor(g, @(x,y) op + 0*x, dom);
         
@@ -192,13 +192,29 @@ if ( numel(dom) == 2 )
         ends = varargin{1};
         if ( numel( ends ) == 2 )
             dom = [dom(:) ; ends(:)].';
-        else
+        elseif ( numel(ends) == 4 ) 
+            % Interpret this as the user wants a degree (dom(1),dom(2)) 
+            % chebfun2 on the domain [ends]. 
+            [xx, yy] = chebfun2.chebpts2(dom(1), dom(2), ends);
+            g = chebfun2( op(xx, yy), varargin{:} ); 
+            return
+        else 
             error('CHEBFUN:CHEBFUN2:constructor:domain1', ...
-                'Domain not fully determined.');
+                'Domain not valid or fully determined.');
         end
     else
-        error('CHEBFUN:CHEBFUN2:constructor:domain2', ...
-            'Domain not fully determined.');
+        % The domain is not given, but perhaps the user 
+        % wants a degree (dom(1),dom(2)) representation.
+        if ( dom(2) - dom(1) > 0 && dom(1)>0 &&...   % A valid bivariate degree? 
+                abs(round(dom(1)) - dom(1))< eps &&...
+                abs(round(dom(2)) - dom(2))< eps) 
+            [xx, yy] = chebfun2.chebpts2(dom(1), dom(2));
+            g = chebfun2( op(xx, yy), varargin ); 
+            return
+        else
+            error('CHEBFUN:CHEBFUN2:constructor:domain2', ...
+                'Domain not valid or fully determined.');
+        end
     end
 elseif ( numel(dom) == 1 )
     fixedRank = dom;
@@ -206,6 +222,12 @@ elseif ( numel(dom) == 1 )
 elseif ( numel(dom) ~= 4 )
     error('CHEBFUN:CHEBFUN2:constructor:DOMAIN', ...
         'Domain not fully determined.');
+end
+
+% Check for infinite domains: 
+if ( any( isinf( dom ) ) ) 
+    error('CHEBFUN2:DOMAIN:INFINITE', ...
+        'Chebfun2 cannot approximation functions on infinite domains.');
 end
 
 % If the vectorize flag is off, do we need to give user a warning?
@@ -311,7 +333,7 @@ while ( ~isHappy && ~failure )
     %%% PHASE 2: %%%
     % Now resolve along the column and row slices:
     n = grid;  m = grid;
-    while ( ~isHappy )
+    while ( ~isHappy && ~failure  )
         if ( ~resolvedCols )
             % Double sampling along columns
             [n, nesting] = gridRefine( n , pref );
@@ -518,11 +540,15 @@ function op = str2op( op )
 % handle than can be evaluated.
 
 depvar = symvar( op );
-if ( numel(depvar) > 2 )
+if ( numel(depvar) > 2)
     error('CHEBFUN:CHEBFUN2:constructor:str2op:depvars', ...
         'Too many dependent variables in string input.');
+elseif ( numel(depvar) == 1 )
+    % Treat as a complex variable: 
+    op = eval(['@(' real(depvar{1}) + 1i*imag(depvar{1}) ')' op]);
+else
+    op = eval(['@(' depvar{1} ',' depvar{2} ')' op]);
 end
-op = eval(['@(' depvar{1} ',' depvar{2} ')' op]);
 
 end
 

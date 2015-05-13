@@ -187,7 +187,8 @@ classdef trigtech < smoothfun % (Abstract)
             data = parseDataInputs(data, pref);
 
             % Force nonadaptive construction if PREF.FIXEDLENGTH is numeric:
-            if ( ~isempty(pref.fixedLength) && ~isnan(pref.fixedLength) )
+            if ( ~(isnumeric(op) || iscell(op)) && ...
+                    ~isempty(pref.fixedLength) && ~isnan(pref.fixedLength) )
                 % Evaluate op on the equi-spaced grid of given size:
                 vals = feval(op, trigtech.trigpts(pref.fixedLength));
                 vals(1,:) = 0.5*(vals(1,:) + feval(op, 1));
@@ -196,6 +197,12 @@ classdef trigtech < smoothfun % (Abstract)
 
             % Actual construction takes place here:
             obj = populate(obj, op, data.vscale, data.hscale, pref);
+            
+            % Set length of obj to PREF.FIXEDLENGTH (if it is non-trivial).
+            if ( (isnumeric(op) || iscell(op)) && ...
+                    ~isempty(pref.fixedLength) && ~isnan(pref.fixedLength) )
+                obj = prolong(obj, pref.fixedLength);
+            end
             
         end
         
@@ -259,6 +266,9 @@ classdef trigtech < smoothfun % (Abstract)
         
         % Flip/reverse a TRIGTECH object.
         f = flipud(f)
+        
+        % Fractional integral of a TRIGTECH object.
+        varargout = fracInt(varargin)
 
         % Plot (semilogy) the trigonometric coefficients of a TRIGTECH object.
         varargout = plotcoeffs(f, varargin)
@@ -291,7 +301,7 @@ classdef trigtech < smoothfun % (Abstract)
         out = isnan(f)
 
         function out = isPeriodicTech(f)
-        %ISPERIODICTECH    True for TRIGTECH.
+        %ISPERIODICTECH   True for TRIGTECH.
             out = 1;
         end
         
@@ -396,6 +406,9 @@ classdef trigtech < smoothfun % (Abstract)
         
         % TRIGTECH obects are not transposable.
         f = transpose(f)
+        
+        % Coefficients for degree N least square approximation of F:
+        c = truncCoeffs(f, n)
 
         % Unary minus of a TRIGTECH.
         f = uminus(f)

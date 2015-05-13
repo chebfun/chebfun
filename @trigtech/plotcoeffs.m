@@ -63,7 +63,7 @@ absCoeffs = abs(f.coeffs);
 % Need to handle odd/even cases separately
 isEven = ~mod(n, 2);
 if ( isEven )
-    coeffIndex = -n/2+1:n/2;
+    coeffIndex = -n/2:n/2-1;
 else
     coeffIndex = -(n-1)/2:(n-1)/2;
 end
@@ -83,28 +83,33 @@ if ( ~loglogPlot )
         % Plot the coeffs AND the epslevel:
         h = semilogy(coeffIndex, absCoeffs, args{:});
         hold on
-        h2 = semilogy([-coeffIndex(1) coeffIndex(1)], repmat(f.vscale.*f.epslevel, 2, 1), args{:});
+        h2 = semilogy([coeffIndex(1) -coeffIndex(1)], repmat(f.vscale.*f.epslevel, 2, 1), args{:});
+        xlim([coeffIndex(1) -coeffIndex(1)]);
         for k = 1:m
             c = get(h(k), 'color');
             set(h2(k), 'linestyle', ':', 'linewidth', 1, 'marker', 'none', 'color', c);
-        end
+        end        
     else
         % Plot just the coefficients:
         h = semilogy(coeffIndex, absCoeffs, args{:});
+        xlim([coeffIndex(1) -coeffIndex(1)]);
         h2 = plot([]);
     end
+    % Set the string for the x-axis label.
+    xlabelStr = 'Wave number';
 else
     if ( isEven )
-        % In this case the positive cofficients have an additional term
-        % corresponding to the cos(N/2*x) coefficient. 
-        cPos = absCoeffs(n/2:n,:);
-        cNeg = absCoeffs(n/2-1:-1:1,:);
+        % In this case the negative cofficients have an additional term
+        % corresponding to the cos(N/2*x) coefficient. We will store
+        % the constant mode coefficient in both vectors.
+        cPos = absCoeffs(n/2+1:n,:);
+        cNeg = absCoeffs(n/2+1:-1:1,:);
     else
         cPos = absCoeffs((n+1)/2:n,:);
-        cNeg = absCoeffs((n+1)/2-1:-1:1,:);
+        cNeg = absCoeffs((n+1)/2:-1:1,:);
     end
     coeffIndexPos = 1:size(cPos,1);
-    coeffIndexNeg = 2:size(cNeg,1)+1;
+    coeffIndexNeg = 1:size(cNeg,1);
     % Plot the coefficients for the positive and negative fourier modes
     % separately.
     if ( plotEpsLevel )
@@ -120,6 +125,10 @@ else
         h = loglog([coeffIndexPos;nan(1,m);coeffIndexNeg], [cPos;nan(1,m);cNeg], args{:});
         h2 = plot([]);
     end
+    % Set the string for the x-axis label.  In this case we will be
+    % plotting the absolute value of the wave number + 1 (since we can't
+    % represent a wave number <= 0 on a logarithmic scale.
+    xlabelStr = '|Wave number|+1';
 end
 
 % For constant functions, plot a dot:
@@ -130,7 +139,7 @@ end
 
 % Add title and labels
 title(gca, 'Fourier coefficients')
-xlabel(gca, 'Wave number')
+xlabel(gca, xlabelStr)
 ylabel(gca, 'Magnitude of coefficient')
 
 % By default, set grid on

@@ -110,47 +110,89 @@ if ( n < m )
     n = m;
 end
 
-% Project the values onto a Legendre grid: (where integrals of polynomials
-% p_n*q_n will be computed exactly and on an n-point grid)
-if ( length(WP) ~= n || (~isempty(type) && isa(f, type)) )
-    xc = f.chebpts(n);
-    vc = f.barywts(n);
-    [xl, wl, vl] = legpts(n);
-    P = barymat(xl, xc, vc);     % Map from Chebyshev values to Legendre values.
+if ( n <= 4000 )
+    
+    % Project the values onto a Legendre grid: (where integrals of polynomials
+    % p_n*q_n will be computed exactly and on an n-point grid)
+    if ( (length(WP) ~= n) || (~isempty(type) && isa(f, type)) )
+        % The matrices WP and inv(WP) depends only on the length of the
+        % discretization and the cheb-type of f (i.e., not the function values
+        % themselves.) We therefore store these persistently which save a lot of
+        % times in situations where we performa number of QR factorizations of
+        % the same length (for example, in Chebfun2).
+        xc = f.chebpts(n);
+        vc = f.barywts(n);
+        [xl, wl, vl] = legpts(n);
+        P = barymat(xl, xc, vc);     % Map from Chebyshev values to Legendre values.
+        W = spdiags(sqrt(wl.'), 0, n, n); % Weighted QR with Gauss-Legendre weights.
+        Winv = spdiags(1./sqrt(wl.'), 0, n, n);    % Undo the weighting used for QR.
+        Pinv = barymat(xc, xl, vl); % Revert to Chebyshev grid (from Legendre grid).
+        % Persistent storage:
+        WP = W*P;
+        invWP = Pinv*Winv;
+        type = class(f);
+    end
+    
+    % Compute the weighted QR factorisation:
+    values = f.coeffs2vals(f.coeffs);
+    if ( nargout == 3 )
+        [Q, R, E] = qr(WP * values, 0);
+        % For consistency with the MATLAB QR behavior:
+        if ( (nargin == 1) || ~(strcmpi(outputFlag, 'vector') || isequal(outputFlag, 0)) )
+            % Return E in matrix form:
+            I = eye(m);
+            E = I(:,E);
+        end
+    else
+        converted = WP * values;
+        [Q, R] = qr(converted, 0);
+    end
+    
+    % Remove the weighting and revert to the Chebyshev grid.
+    s = sign(diag(R));             % }
+    s(~s) = 1;                     %  } Enforce diag(R) >= 0
+    S = spdiags(s, 0, m, m);       % }
+    Q = invWP*Q*S;                 % Fix Q.
+    Q_coeffs = f.vals2coeffs(Q);   % Compute new coefficients.
+    R = S*R;                       % Fix R.
+                
+else
+    % Where n >> 4000 we must use fast transforms as we cannot store the n x n
+    % matrices. Below is the same algorithm as the n <= 4000 above, except that
+    % we never form a large dense matrix.
+    
+    % Compute the weighted QR factorisation:
+    [ignored, wl, ignored] = legpts(n);
     W = spdiags(sqrt(wl.'), 0, n, n); % Weighted QR with Gauss-Legendre weights.
     Winv = spdiags(1./sqrt(wl.'), 0, n, n);    % Undo the weighting used for QR.
-    Pinv = barymat(xc, xl, vl); % Revert to Chebyshev grid (from Legendre grid).
-    % Persistent storage:
-    WP = W*P;
-    invWP = Pinv*Winv;
-    type = class(f);
-end
-
-% Compute the weighted QR factorisation:
-values = f.coeffs2vals(f.coeffs);
-if ( nargout == 3 )
-    [Q, R, E] = qr(WP * values, 0);
-    % For consistency with the MATLAB QR behavior:
-    if ( (nargin == 1) || ...
-        ~(strcmpi(outputFlag, 'vector') || isequal(outputFlag, 0)) )
-        % Return E in matrix form:
-        I = eye(m);
-        E = I(:,E);
+    if ( nargout == 3 )
+        converted = W*chebfun.ndct( f.coeffs ); % WP * values.
+        [Q, R, E] = qr( converted , 0);
+        % For consistency with the MATLAB QR behavior:
+        if ( (nargin == 1) || ~(strcmpi(outputFlag, 'vector') || isequal(outputFlag, 0)) )
+            % Return E in matrix form:
+            I = eye(m);
+            E = I(:,E);
+        end
+    else
+        converted = W*chebfun.ndct( f.coeffs ); % WP * values.
+        [Q, R] = qr(converted, 0);
     end
-else
-    [Q, R] = qr(WP * values, 0);
+    
+    % Remove the weighting and revert to the Chebyshev grid.
+    s = sign(diag(R));             % }
+    s(~s) = 1;                     %  } Enforce diag(R) >= 0
+    S = spdiags(s, 0, m, m);       % }
+    Q = Winv*Q*S;                  % Fix Q. (Note, Q is still on Legendre grid.)
+    Q_coeffs = leg2cheb( chebfun.idlt( Q ) ); % Chebyshev coefficients.
+    Q = f.coeffs2vals( Q_coeffs ); % Values on Chebyshev grid.
+    R = S*R;                       % Fix R.
+    
 end
 
-% Revert to the Chebyshev grid (and remove the weight and enforce diag(R) >= 0).
-s = sign(diag(R));
-s(~s) = 1;
-S = spdiags(s, 0, m, m);
-Q = invWP*Q*S;                 % Fix Q.
-R = S*R;                       % Fix R.
-
-% Apply data to chebtech:
-f.coeffs = f.vals2coeffs(Q);   % Compute new coefficients.
-f.vscale = max(abs(Q), [], 1); % Update vscale
+% Apply data to CHEBTECH:
+f.coeffs = Q_coeffs;           % Store coefficients. 
+f.vscale = max(abs(Q), [], 1); % Update vscale. 
 
 end
 

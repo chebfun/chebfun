@@ -9,6 +9,9 @@ function handles = solveGUI(guifile, handles)
 %   
 %   HANDLES:    A MATLAB handle object to the CHEBGUIWINDOW figure.
 %   GUIFILE:    A CHEBGUI object.
+%
+% See also: chebgui/solveGUIbvp, chebgui/solveGUIeig, chebgui/solveGUIivp,
+%           chebgui/solveGUIpde.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -95,16 +98,18 @@ if ( strcmp(get(handles.button_solve, 'string'), 'Solve') )   % In solve mode
     set(handles.menu_demos, 'Enable','off');
 
     % What discretization do we want to use?
-    if ( get(handles.button_Collocation, 'Value') )
-        guifile.options.discretization = @chebcolloc2;
+    if ( get(handles.button_collocation, 'Value') )
+        guifile.options.discretization = 'collocation';
     else
-        guifile.options.discretization = @ultraS;
+        guifile.options.discretization = 'ultraspherical';
     end
     
-    % Call the private method solveGUIbvp, pde, or eig, which do the work.
+    % Call the private method solveGUIbvp, ivp, pde, or eig, which do the work.
     try
         if ( strcmpi(handles.guifile.type, 'bvp') )
             handles = solveGUIbvp(guifile, handles);
+        elseif ( strcmpi(handles.guifile.type, 'ivp') )
+            handles = solveGUIivp(guifile, handles);
         elseif ( strcmpi(handles.guifile.type, 'pde') )
             handles = solveGUIpde(guifile, handles);
         else

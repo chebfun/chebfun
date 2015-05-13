@@ -11,9 +11,9 @@ classdef chebgui
 % [a,b] with boundary conditions at both boundaries.
 %
 % ODE IVP (initial-value problem): an ODE or system of ODEs on an interval [a,b]
-% with boundary conditions at just one boundary. (However, for complicated IVPs
-% like the Lorenz equations, other methods such as chebfun/ode45 will be much
-% more effective.)
+% with boundary conditions at just one boundary. By default, IVPs are
+% automatically reformulated to coupled first order systems, which are then
+% solved using MATLAB's built in solver ODE113.
 %
 % ODE EIGENVALUE PROBLEM: a differential or integral operator or system of
 % operators on an interval [a,b] with homogeneous boundary conditions, where we
@@ -24,8 +24,8 @@ classdef chebgui
 % linear or nonlinear differential operator.
 %
 % For ODEs, Chebgui assumes that the independent variable, which varies over the
-% interval [a,b], is either x or t, and that the dependent variable(s) have
-% name(s) different from x and t.
+% interval [a,b], is either r, t or x, and that the dependent variable(s) have
+% name(s) different from r, t and x.
 %
 % For eigenvalue problems, Chebgui assumes that the eigenvalue is called l, lam
 % or lambda.
@@ -120,14 +120,14 @@ classdef chebgui
         timedomain = '';    % Time domain (should include breakpoints)
         sigma = '';         % Third input to an EIGS call
         init = '';          % Initial guess/condition for nonlin BVPs/PDEs
-        tol = 1e-10;        % Solution tolerance
+        tol = '1e-10';      % Solution tolerance
 
         % This initalises the OPTIONS struct for CHEBGUI. It containts a list of
         % miscellaneous options for when solving problems with CHEBGUI, namely:
         %   damping:        Whether the Newton iteration is to be damped or not.
         %   grid:           Show grids on plots in CHEBGUI.
-        %   discretization: Discretization for ODEs (@chebcolloc1, @chebcolloc2 
-        %                   or @ultraS)
+        %   discretization: Discretization for ODEs ('collocation' or 
+        %                   'ultraspherical').
         %   pdeholdplot:    Hold plot during solving PDEs.
         %   fixYaxisLower:  Fix lower y axis while solving PDEs.
         %   fixYaxisUpper:  Fix upper y axis while solving PDEs.
@@ -137,7 +137,9 @@ classdef chebgui
         options = struct('damping', '1', ...
             'plotting', '0.5', ...
             'grid', 1, ...
-            'discretization', @chebcolloc2, ...
+            'discretization', 'collocation', ...
+            'ivpSolver', 'ode113', ...
+            'pdeSolver', 'pde15s', ...
             'pdeholdplot', 0, ...
             'fixYaxisLower', '',  ...
             'fixYaxisUpper', '', ...
@@ -229,6 +231,27 @@ classdef chebgui
         % Solve a GUI EIG problem
         varargout = solveGUIeig(guifile,handles)
         
+        function allVarNames = getVarNames(guifile)
+            %GETVARNAMES    Return a cell-array with all variables names
+            %
+            % ALLVARNAMES = GETVARNAMES(GUIFILE) returns a cell-array, whose
+            % entries correspond to the names of all variables that appear in
+            % a problem specified by the CHEBGUI object GUIFILE.
+            
+            % Look at the input for the differential equation:
+            deInput = guifile.DE;
+            
+            % Wrap the input strings in a cell (if it's not a cell already)
+            if ( isa(deInput, 'char') )
+                deInput = cellstr(deInput);
+            end
+            
+            % Obtain useful strings describing the differential equation part:
+            [dummy, dummy, dummy, dummy, dummy, dummy, allVarNames] = ...
+                setupFields(guifile, deInput, 'DE');
+        end
+        
+        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -236,15 +259,23 @@ classdef chebgui
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
         
+        % Convert initial conditions to a useful format
+        bcOut = bcReform(dom, bcInput, isIorF)
+        
         % Information shown during BVP solving.
-        [dummy, displayTimer] = displayBVPinfo(handles, mode, varargin);
+        [dummy, displayTimer] = displayBVPinfo(handles, mode, varargin)
+        
+        % Information shown after IVP solving.
+        [dummy, displayTimer] = displayIVPinfo(handles, u, isIVP, varargin)
         
         % Return a random BVP CHEBGUI demo.
         cg = demo()
 
         % Load a demo stored in a .guifile to a CHEBGUI object
         cg = demo2chebgui(demoPath)
-                
+        
+        % Construct initial guesses/conditions prescribed by CHEBGUI objects
+        init = constructInit(initInput, allVarNames, indVarNameSpace, xt);
     end
          
 end

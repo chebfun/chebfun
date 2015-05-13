@@ -1,5 +1,6 @@
 classdef (InferiorClasses = {?double}) chebop
 %CHEBOP  CHEBOP class for representing operators on functions defined on [a,b].
+%
 % N = CHEBOP(OP) creates a CHEBOP object N with operator defined by OP, which
 % should be a handle to a function (often created using an anonymous function)
 % that accepts a CHEBFUN or a CHEBMATRIX consisting of CHEBFUNs and scalars as
@@ -52,6 +53,9 @@ classdef (InferiorClasses = {?double}) chebop
 %                 of the result are evaluated at the endpoint, and for the
 %                 solution of the BVP, they are made to equal zero.
 %
+% See note below for how to specify initial value problems so that they will be
+% solved via time-marching methods, rather than global spectral methods.
+% 
 % A boundary condition function may be nonlinear; it must not accept the
 % independent variable X as an input. Again, in case of systems, the function
 % describing the boundary conditions must return vertically concatenated
@@ -106,30 +110,81 @@ classdef (InferiorClasses = {?double}) chebop
 %   N.bc = 'dirichlet';
 %   plot(N\1)
 %
-% %% PARAMETER DEPENDENT PROBLEMS: %%
+%
+% %% INITIAL VALUE PROBLEMS %%
+%
+% When solving boundary-value problems, where conditions on the operator are
+% imposed at both endpoints of the domain, CHEBOP will apply global spectral
+% methods for solving the linear systems arising. In case of initial or final
+% value problems (IVPs/FVPs), where all the conditions are imposed on the left
+% endpoint of the domain, this often proves to be an inefficient way of solving
+% the problems. If conditions are only imposed on one of the fields N.LBC or
+% N.RBC, and not on N.BC, CHEBOP will automatically reformulate the problem so
+% that it can be solved using one of MATLAB's build-in solvers ODE113, ODE15s or
+% ODE45. See the help text in CHEBOPPREF for instructions on how to select the
+% ODE solver used, or how to enforce a global method to be used. 
+% 
+% Example (solving an IVP by automatically converting it to first order form):
+%
+%   % Solve the van der Pol equation u'' - 20*(1-u^2)u' + u = 0, u(0)=2, u'(0)=0
+%   vdpFun = @(u) diff(u, 2) - 20*(1-u.^2).*diff(u) + u;
+%   dom = [0 100];
+%   N = chebop(vdpFun, dom);
+%   N.lbc = @(u) [u - 2; diff(u)];
+%   u = N\0
+%   plot(u)
+%
+% %% PARAMETER DEPENDENT PROBLEMS %%
 %
 % CHEBOP supports solving systems of equations containing unknown parameters
 % without the need to introduce extra equations into the system. Simply add the
-% unknown parameters as the final variables.
+% unknown parameters in the list of arguments to the operator. By default, any
+% variable that is not acted on by differentiation or integration is treated as
+% a parameter, rather than a function.
 %
-% Example:
+% Example (unknown parameter in differential equation):
 %
 %   % y'' + x.*y + p = 0, y(-1) = 1, y'(-1) = 1, y(1) = 1 can be solved via
-%   N = chebop(@(x, y, p) diff(y,2) + x.*y + p)
+%   N = chebop(@(x, y, p) diff(y,2) + x.*y + p);
 %   N.lbc = @(y, p) [y - 1 ; diff(y)];
 %   N.rbc = @(y, p) y - 1;
 %   plot(N\0)
 %
-% Parameters can be positioned at different locations if a double is passed in
-% the CHEBMATRIX input to N.init.
+% Example (unknown parameter in boundary condition):
+%
+%   % u'' + u = 0, u(0) = 0, u(1) = 2, u'(0) = p
+%   N = chebop(@(x, u, p) diff(u,2) + u, [0 1]);
+%   N.bc = @(x, u, p) [u(0); u(1) - 2; feval(diff(u), 0) - p];
+%   up = N\0;
+%   plot(up), [u, p] = deal(up)
+%
+% It is possible to explicitly pass parameters as parts of the initial guess for
+% a nonlinear problem by assigning it to the appropriate entry of a CHEBMATRIX
+% input to N.init.
 %
 % Example:
 %
-%   N = chebop(@(x, p, y) diff(y,2) + x.*y + p)
+%   N = chebop(@(x, p, y) diff(y,2) + x.*y.^2 + p);
 %   N.lbc = @(p, y) [y - 1 ; diff(y)];
 %   N.rbc = @(p, y) y - 1;
 %   N.init = [1 ; chebfun(1)];
 %   plot(N\0)
+%
+% %% AUTOMATIC VECTORIZATION %%
+%
+% By default, CHEBOP will automatically try to vectorize anonymous function that
+% get passed as OP, BC, LBC and RBC. For example, the function VDPFUN from the
+% IVP example above,
+%
+%   vdpFun = @(u) diff(u, 2) - 20*(1-u.^2).*diff(u) + u;
+%
+% could have equally been written as
+%
+%   vdpFun = @(u) diff(u, 2) - 20*(1-u^2)*diff(u) + u;
+%
+% To turn off the automatic vectorization, set N.vectorize = false, or change
+% the default CHEBOPPREF via cheboppref.setDefaults('vectorize', false).
+%
 %
 % See also CHEBOP/MTIMES, CHEBOP/MLDIVIDE, CHEBOPPREF.
 
@@ -142,11 +197,15 @@ classdef (InferiorClasses = {?double}) chebop
     properties ( Access = public )
         domain = [];    % Domain of the operator
         op = [];        % The operator
-        lbc = [];       % Left boCHEBGUIexporterEIGundary condition(s)
+        lbc = [];       % Left boundary condition(s)
+        lbcShow = [];   % Pretty print left boundary condition(s)
         rbc = [];       % Right boundary condition(s)
+        rbcShow = [];   % Pretty print right boundary condition(s)
         bc = [];        % Other/internal/mixed boundary conditions
+        bcShow = [];   % Pretty print other boundary condition(s)
         init = [];      % Initial guess of a solution
         numVars = [];   % Number of variables the CHEBOP operates on.
+        vectorize = []; % Automatic vectorization?
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -157,6 +216,12 @@ classdef (InferiorClasses = {?double}) chebop
         function N = chebop(op, dom, lbcIn, rbcIn, init)
             % CHEBOP constructor
             
+            % Get current CHEBOPPREF settings
+            p = cheboppref();
+            
+            % Should anonymous functions automatically be vectorized?
+            N.vectorize = p.vectorize;
+            
             if ( nargin == 0 )
                 return
             end
@@ -164,8 +229,7 @@ classdef (InferiorClasses = {?double}) chebop
             % No domain passed:
             if ( nargin < 2 )
                 if ( ~isnumeric(op) )
-                    % Get default domain from CHEBPREF():
-                    p = cheboppref();
+                    % Get default domain from CHEBOPPREF():
                     dom = p.domain;
                 else
                     % DOM was passed, but no OP.
@@ -184,6 +248,14 @@ classdef (InferiorClasses = {?double}) chebop
             
             % Assign operator and domain:
             N.op = op;
+            
+            % Ensure that the domain is a row vector, not a column vector:
+            assert( (size(dom, 1) == 1) && ( size(dom, 2) > 1 ), ...
+                'CHEBOP:CHEBOP:domain', ...
+                ['The vector specifying the domain of a CHEBOP\n' ...
+                'should be a row vector of length greater than 1.'])
+            
+            % Assign the domain:
             N.domain = dom;
             
             % Assign BCs and INIT if they were passed:
@@ -192,7 +264,7 @@ classdef (InferiorClasses = {?double}) chebop
                 N.bc = lbcIn;
             elseif ( nargin == 4 )
                 if ( isa(rbcIn, 'function_handle') || ischar(rbcIn) || ...
-                        isnumeric(rbcIn))
+                        isnumeric(rbcIn) )
                     % CHEBOP(OP, DOM, LBC, RBC):
                     N.lbc = lbcIn;
                     N.rbc = rbcIn;
@@ -216,20 +288,21 @@ classdef (InferiorClasses = {?double}) chebop
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
         
+        % Alternate & syntax for BC's.
+        N = and(N, BC)
+        
         % Find selected eigenvalues and eigenfunctions of a linear CHEBOP.
         varargout = eigs(N, varargin)
         
         % Linearize a CHEBOP around a CHEBFUN u.
-        [L, res, isLinear, u] = linearize(N, u, x, flag);  
+        [L, res, isLinear, u] = ...
+            linearize(N, u, x, linCheckFlag, paramReshapeFlag);  
         
         %\   Chebop backslash.
-        varargout = mldivide(N, rhs, pref)
+        varargout = mldivide(N, rhs, pref, varargin)
         
         % The number of input arguments to a CHEBOP .OP field.
         nIn = nargin(N)
-        
-        % Alternate & syntax for BC's.
-        N = and(N,BC)
         
     end
     
@@ -264,16 +337,28 @@ classdef (InferiorClasses = {?double}) chebop
         
         % Find selected eigenvalues and eigenfunctions of a linear CHEBOP.
         varargout = eig(varargin);
-        
+       
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% STATIC HIDDEN METHODS:       
+    %% HIDDEN STATIC METHODS IMPLEMENTED IN OTHER FILES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = true, Hidden = true )
+        
+        % Vectorize operators
+        funOut = vectorizeOp(funIn)
+    end
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% STATIC PRIVATE METHODS:       
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = private, Static = true )
         
         % Controls information displayed for Newton iterations
         [displayFig, displayTimer] = displayInfo(mode, varargin);
+        
+        % Controls information displayed for solving IVPs
+        displayIVPinfo(u, isIVP, varargin);
         
         % Display at the finish of Newton iteration.
         displayInfoFinal(u, delta, iterNo, errEstDE, errEstBC, displayFig, ...
@@ -303,13 +388,33 @@ classdef (InferiorClasses = {?double}) chebop
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
     methods
         
+        function N = set.domain(N, val)
+            %CHEBOP.SET.DOMAIN   Set domain of a CHEBOP.
+            %   CHEBOP.SET.DOMAIN ensures that N.DOMAIN is a row vector as
+            %   required by the CHEBOP and CHEBFUN classes.
+            
+            % Ensure that the domain is a row vector, not a column vector:
+            assert( (size(val, 1) == 1) && ( size(val, 2) > 1 ), ...
+                'CHEBOP:SET:domain', ...
+                ['The vector specifying the domain of a CHEBOP\n' ...
+                'should be a row vector of length greater than 1.'])
+            
+            % Assign the domain:
+            N.domain = val(:)';            
+        end
+        
         function N = set.lbc(N, val)
             %CHEBOP.SET.LBC   Set left boundary condition of a CHEBOP.
             %   CHEBOP.SET.LBC offers more control of setting left boundary
             %   conditions than simply accessing the .lbc field, or using standard
             %   subsref.
             
-            N.lbc = parseBC(N, val, 'lrbc');            
+            N.lbc = parseBC(N, val, 'lrbc'); 
+            N.lbcShow = val;
+            % Clear periodic boundary conditions if they were present
+            if ( strcmp(N.bc, 'periodic') )
+                N.bc = [];
+            end
         end
         
         function N = set.rbc(N, val)
@@ -319,6 +424,12 @@ classdef (InferiorClasses = {?double}) chebop
             %   subsref.
             
             N.rbc = parseBC(N, val, 'lrbc');
+            N.rbcShow = val;
+            
+            % Clear periodic boundary conditions if they were present
+            if ( strcmp(N.bc, 'periodic') )
+                N.bc = [];
+            end
         end
         
         function N = set.bc(N, val)
@@ -340,26 +451,32 @@ classdef (InferiorClasses = {?double}) chebop
                 end
                 if ( isfield(val, 'other') )
                     N.bc = parseBC(N, val.other, 'bc');
+                    N.bcShow = val;
                 end
                 
             elseif ( strcmpi(val, 'periodic') )
                 N.lbc = [];
                 N.rbc = [];
                 N.bc = 'periodic';
+                N.bcShow = val;
                 
                 
             elseif ( ischar(val) || isstruct(val) || isnumeric(val) )
                 % V4 style keywords and numeric settings are understood to
                 % apply to both ends.
                 N.bc = [];
-                result = parseBC(N, val, 'bc');
-                N.lbc = result; %#ok<MCSUP>
-                N.rbc = result; %#ok<MCSUP>
-                
+                N.bcShow = [];
+                if ( ~isempty(val) )
+                    result = parseBC(N, val, 'bc');
+                    N.lbc = result; %#ok<MCSUP>
+                    N.lbcShow = val;
+                    N.rbc = result; %#ok<MCSUP>
+                    N.rbcShow = val;
+                end
             else
                 % A proper function was supplied.
                 N.bc = parseBC(N, val, 'bc');
-                
+                N.bcShow = val;
             end
             
         end
@@ -370,9 +487,21 @@ classdef (InferiorClasses = {?double}) chebop
             %   boundary conditions than simply accessing the .op field, or
             %   using standard subsref.
             
-            % We're happy with function handles
-            if ( isa(val, 'function_handle') || isempty(val) )
+            % We can always assign an empty operator
+            if ( isempty(val) )
                 N.op = val;
+                
+            % We're happy with function handles
+            elseif ( isa(val, 'function_handle') )
+                % If the function is not identical to its vectorized form, we
+                % vectorize it (assuming that property is turned on):
+                if ( N.vectorize && ~strcmp(func2str(val), vectorize(val)) )
+                    val = N.vectorizeOp(val);
+                end
+                
+                % Assign the operator
+                N.op = val;
+                
             elseif ( iscell(val) )
                 error('CHEBFUN:CHEBOP:setOp:type', ...
                     ['Specifying differential equation as a cell of ', ...
@@ -410,21 +539,13 @@ classdef (InferiorClasses = {?double}) chebop
         end   
         
         function out = isempty(N)
-            %ISEMPTY   Check if the CHEBOP N is empty.            
-            out = true;
-            % Loop through all the fields of N:
-            for prop = fieldnames(N).'
-                p = char(prop);
-                if ( ~isempty(N.(p)) )
-                    % If any field is non-empty, return false:
-                    out = false;
-                    break
-                end
-            end
+            %ISEMPTY   Test for empty CHEBOP.
+            %   ISEMPTY(N) returns logical true if N is an empty CHEBOP, which
+            %   is defined as a CHEBOP where the DOMAIN, OP, LBC, RBC, BC and
+            %   INIT fields are empty.
+            out = isempty(N.domain) && isempty(N.op) && isempty(N.lbc) && ...
+                isempty(N.rbc) && isempty(N.bc) && isempty(N.init);
         end
-                
         
-    end   
-    
+    end    
 end
-

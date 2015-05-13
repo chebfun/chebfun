@@ -5,6 +5,6 @@ function F = diff(d, varargin)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-F = linop( operatorBlock.diff(d, varargin{:}) );
+F = linop( operatorBlock.diff(double(d), varargin{:}) );
 
 end

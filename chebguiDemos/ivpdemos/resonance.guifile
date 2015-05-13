@@ -1,0 +1,8 @@
+'Resonance'
+'scalar'
+domain = '[0 20]';
+DE = 'u" + 25*u = 10*cos(5*t)';
+BC = {'u(0)  = 1';'u''(0) = 0'};
+init = ''; tol = '1e-10';
+damping = '1'; plotting = '0.03';
+type = 'ivp';

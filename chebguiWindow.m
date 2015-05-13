@@ -52,7 +52,7 @@ else
     catch ME
         warning(warnstate)
         MEID = ME.identifier;
-        if ( ~isempty(strfind(MEID, 'Chebgui:')) )
+        if ( ~isempty(strfind(lower(MEID), 'chebgui:')) )
             % These are expected GUI errors. We only show the dialog
             errordlg(cleanErrorMsg(ME.message), 'Chebgui error', 'modal');
             uiwait
@@ -63,12 +63,14 @@ else
                 rethrow(ME)
             end
         else
-            % Show an error dialog, but also throw the error to the command
-            % window
+            % Show an error dialog:
             errordlg(cleanErrorMsg(ME.message), 'Chebgui error', 'modal');
             uiwait
             resetComponents(varargin{4});
-            rethrow(ME)
+            % If in debug mode, we throw the error to the command window as well
+            if ( get(varargin{4}.menu_debug, 'UserData') )
+                rethrow(ME)
+            end
         end
     end
 end
@@ -85,14 +87,26 @@ function chebguiWindow_OpeningFcn(hObject, eventdata, handles, varargin)
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to chebguiWindow (see VARARGIN)
 
+% The default fontsize of the panels.
+handles.fontsizePanels = 12;
+
 % Initalize fonts in the CHEBGUI window:
 chebguiController.initalizeFields(handles);
 
 % Choose default command line output for chebguiWindow
 handles.output = hObject;
 
+% Initialise the menus:
+handles = chebguiController.initialiseMenus(handles);
+
+% Set up the panels:
+handles = chebguiController.setupPanels(handles);
+
 % Initialise figures:
 chebguiController.initialiseFigures(handles)
+
+% Draw the Chebfun logo on the GUI:
+handles = chebguiController.drawLogo(handles);
 
 % Variable that determines whether a solution is available
 handles.hasSolution = 0;
@@ -125,18 +139,16 @@ set(handles.menu_pdefixon, 'UserData', {''});
 
 % Populate the Demos menu, but only once (i.e. if user calls chebgui again, 
 % don't reload the examples).
-if ( isempty(get(handles.menu_demos, 'UserData')) )
+if ( ~isfield(handles,'demosLoaded') )
     chebguiController.loadDemoMenu(handles);
     handles.demosLoaded = 1;
 end
 
-% Load the input fields
-chebguiController.populate(handles, handles.guifile);
+% Make sure the GUI starts in the correct mode:
+chebguiController.switchMode(handles, handles.guifile.type);
 
-% Make sure the GUI starts in the correct mode. We call SWITCHMODE() with the
-% third argument equal to 'demo' so that we will plot the initial guess of the
-% solution if it exists.
-chebguiController.switchMode(handles, handles.guifile.type, 'demo');
+% Load the input fields:
+chebguiController.populate(hObject, handles, handles.guifile);
 
 % Get the system font size and store in handles
 s = char(com.mathworks.services.FontPrefs.getCodeFont);
@@ -151,11 +163,14 @@ set(handles.tempedit, 'FontSize', fs);
 set(handles.button_solve, 'String', 'Solve');
 set(handles.button_solve, 'BackgroundColor', [43 129 86]/256);
 
-% Ensure that we have a light-blue color in background
-set(handles.mainWindow, 'BackgroundColor', [.702 .78 1]);
+% Ensure that we have a medium-grey colour in background
+set(handles.mainWindow, 'BackgroundColor', .8*ones(1,3));
 
 % Default discretization is chebcolloc2
-handles.guifile.options.discretization = @chebcolloc2;
+handles.guifile.options.discretization = 'collocation';
+
+% Default IVP solver is ode113:
+handles.guifile.options.ivpSolver = 'ode113';
 
 % Update handles structure
 guidata(hObject, handles);
@@ -221,25 +236,6 @@ handles = solveGUI(handles.guifile, handles);
 guidata(hObject, handles);
 end
 
-function input_LBC_Callback(hObject, eventdata, handles)
-newString = cellstr(get(hObject, 'String'));
-newString = removeTabs(newString); % Remove tabs
-set(hObject, 'String', newString);
-handles = chebguiController.callbackBCs(handles, newString, 'lbc');
-handles.guifile.LBC = newString;
-guidata(hObject, handles);
-end
-
-
-function input_RBC_Callback(hObject, eventdata, handles)
-newString = cellstr(get(hObject, 'String'));
-newString = removeTabs(newString); % Remove tabs
-set(hObject, 'String', newString);
-handles = chebguiController.callbackBCs(handles, newString, 'rbc');
-handles.guifile.RBC = newString;
-guidata(hObject, handles);
-end
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ----------- Functions which do their work without chebgui methods ------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -285,176 +281,10 @@ guidata(hObject, handles);
 
 end
 
-function input_domain_Callback(hObject, eventdata, handles)
-
-in = get(hObject, 'String');
-input = str2num(in);
-
-% Checks to see if input is not numeric or empty. If so, default left end
-% of the domain is taken to be -1.
-if ( input(1) >= input(end) )
-    warndlg('Empty domain. Default value [-1, 1] used.')
-    in = '[-1, 1]';
-    set(hObject, 'String', in);
-elseif ( isempty(input) || any(isnan(input)) || (length(input) < 2) )
-    warndlg('Domain unrecognized. Default value [-1, 1] used.')
-    in = '[-1, 1]';
-    set(hObject, 'String', in);
-elseif ( ~any(strfind(in, '[')) )
-    in = ['[' in ']'];
-    set(hObject, 'String', in);
-end
-
-set(handles.input_GUESS, 'Enable', 'on');
-set(handles.toggle_useLatest, 'Value', 0);
-set(handles.toggle_useLatest, 'Enable', 'off');
-
-handles.guifile.domain = in;
-guidata(hObject, handles);
-
-end
-
-% --- Executes during object creation, after setting all properties.
-function input_domain_CreateFcn(hObject, eventdata, handles)
-
-bgColorIsDefault = isequal(get(hObject, 'BackgroundColor'), ...
-    get(0, 'defaultUicontrolBackgroundColor'));
-if ( ispc && bgColorIsDefault )
-    set(hObject, 'BackgroundColor', 'white');
-end
-
-end
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % -------- Functions which do their work in a couple of lines of code ----------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function input_GUESS_Callback(hObject, eventdata, handles)
-% Plot the initial guess/condition when it is entered in the appropriate field.
-
-% Find the string.
-newString = cellstr(get(hObject, 'String'));
-
-% Remove tabs
-newString = removeTabs(newString);
-set(hObject, 'String', newString);
-
-handles.guifile.init = newString;
-if ( isempty(newString) || (iscell(newString) && (numel(newString) == 1) && ...
-        isempty(newString{1})) )
-    handles.init = '';
-    axes(handles.fig_sol);
-    cla(handles.fig_sol, 'reset');
-    guidata(hObject, handles);
-    return
-end
-
-loadVariables(handles.importedVar)
-
-guidata(hObject, handles);
-
-% Create the independent space variable:
-xtTemp = chebfun(@(x) x, str2num(handles.guifile.domain));
-
-% Assign it to the correct variable, either r, x or t.
-if ( ~exist('r', 'var') )
-    r = xtTemp;
-end
-
-if ( ~exist('x', 'var') )
-    x = xtTemp;
-end
-
-if ( ~exist('t', 'var') )
-    t = xtTemp;
-end
-
-% Do something more clever with multiline input
-str = cellstr(get(hObject, 'String'));
-init = [];
-for k = 1:numel(str)
-    strk = str{k};
-    equalSigns = find(strk == '=');
-    if ( numel(equalSigns) > 1 )
-        error('CHEBFUN:chebguiWindow:initInput', ...
-            'Too many equals signs in input.');
-    elseif ( numel(equalSigns) == 1 )
-        strk = strk(equalSigns+1:end);
-    elseif ( numel(str) > 1 )
-        error('CHEBFUN:chebguiWindow:initInput', ...
-            ['Error constructing initial guess. Input must include the ' ...
-             'names of the dependent variables, i.e. be on the form ' ...
-             '"u = %s", ...'], strk)
-    end
-
-    strk = deblank(vectorize(strk));
-    try
-        if ( ~isempty(strk) )
-            init = [init eval(strk)]; %#ok<AGROW>
-        end
-    catch ME
-        error('CHEBFUN:chebguiWindow:initInput', ME.message)
-    end
-end
-
-% Plot the initial guess/solution:
-handles.init = init;
-axes(handles.fig_sol);
-plot(handles.init, 'linewidth', 2)
-if ( ~isempty(handles.guifile.options.fixYaxisLower) )
-    ylim([str2num(handles.guifile.options.fixYaxisLower) ...
-        str2num(handles.guifile.options.fixYaxisUpper)]);
-end
-
-% Show grid?
-if ( handles.guifile.options.grid )
-    grid on
-end
-
-% Update the figure and the handles.
-guidata(hObject, handles);
-
-end
-
-function loadVariables(importedVar)
-% Load variables from the workspace to the workspace of the GUI
-fNames = fieldnames(importedVar);
-for i = 1:length(fNames)
-    assignin('caller', fNames{i}, importedVar.(fNames{i}))
-end
-end
-
-function input_DE_Callback(hObject, eventdata, handles)
-% Called when the differential equation is entered.
-
-% Obtain the input:
-str = cellstr(get(hObject, 'String'));
-
-% Remove tabs:
-str = removeTabs(str);
-
-% Update the DE input and store in guifile:
-set(handles.input_DE, 'String', str);
-handles.guifile.DE = str;
-
-% Auto PDE and EIG detection
-for k = 1:numel(str)
-    strk = str{k};
-    if ( any(strfind(strk, '_')) )
-        if ( ~get(handles.button_pde, 'value') )
-            handles = chebguiController.switchMode(handles, 'pde');
-        end
-        break
-    elseif ( any(strfind(strk, 'lam') | strfind(strk, 'lambda')) )
-        if ( ~get(handles.button_eig, 'value') )
-            handles = chebguiController.switchMode(handles, 'eig');
-        end
-        break
-    end
-end
-guidata(hObject, handles);
-
-end
 
 function str = removeTabs(str)
 % Remove tabs from inputs
@@ -474,63 +304,6 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % These methods go from one input box to another when the user presses the 'tab'
 % button.
-
-function input_DE_KeyPressFcn(hObject, eventdata, handles)
-if ( strcmp(eventdata.Key, 'tab') )
-    if ( strcmp(eventdata.Modifier, 'shift') )
-        if ( get(handles.button_pde, 'value') )
-            uicontrol(handles.input_timedomain); 
-        else
-            uicontrol(handles.input_domain); 
-        end
-    elseif ( get(handles.button_pde, 'value') )
-        uicontrol(handles.input_LBC); 
-    else
-        uicontrol(handles.input_BC); 
-    end
-end
-end
-
-function input_BC_KeyPressFcn(hObject, eventdata, handles)
-if ( strcmp(eventdata.Key, 'tab') )
-    if ( strcmp(eventdata.Modifier, 'shift') )
-        uicontrol(handles.input_DE); 
-    else
-        uicontrol(handles.input_GUESS); 
-    end
-end
-end
-
-function input_LBC_KeyPressFcn(hObject, eventdata, handles)
-if ( strcmp(eventdata.Key, 'tab') )
-    if ( strcmp(eventdata.Modifier, 'shift') )
-        uicontrol(handles.input_DE); 
-    else
-        uicontrol(handles.input_RBC); 
-    end
-end
-end
-
-function input_RBC_KeyPressFcn(hObject, eventdata, handles)
-if ( strcmp(eventdata.Key, 'tab') )
-    if ( strcmp(eventdata.Modifier, 'shift') )
-        uicontrol(handles.input_LBC); 
-    else
-        uicontrol(handles.input_GUESS); 
-    end
-end
-end
-
-function input_GUESS_KeyPressFcn(hObject, eventdata, handles)
-if ( strcmp(eventdata.Key, 'tab') )
-    if ( strcmp(eventdata.Modifier, 'shift') )
-        uicontrol(handles.input_BC); 
-    else
-        uicontrol(handles.button_solve);
-        set(handles.button_solve, 'selected', 'on');
-    end
-end
-end
 
 function popupmenu_sigma_KeyPressFcn(hObject, eventdata, handles)
 if ( strcmp(eventdata.Key, 'tab') )
@@ -588,60 +361,17 @@ end
 % ------------------------- Unsorted functions  --------------------------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function input_timedomain_Callback(hObject, eventdata, handles)
-% Passing time range for PDEs.
-str = get(hObject, 'String');
-if ( iscell(str) )
-    str = str{:};
-end
-num = str2num(str);
-
-options.WindowStyle = 'modal';
-
-% Indicates we had timedomain with negative spacing (0:-.1:1)
-while ( isempty(num) )
-    str = inputdlg(['Time domain should be a vector of length > 2, with ' ...
-        'positive spacing, at which times solution is returned'], ['Set ' ...
-        'time domain'],  1, {'0:.1:1'}, options);
-    if ( isempty(str) )
-        str = '';
-        break
-    end
-    str = str{:};
-    num = str2num(str);
-end
-
-while ( ~isempty(str) && (numel(num) < 3) )
-    h = (num(2) - num(1))/20;
-    def = sprintf('%s:%s:%s', num2str(num(1), '%0.0f'), num2str(h, '%0.2g'), ...
-        num2str(num(2), '%0.0f'));
-    str = inputdlg(['Time domain should be a vector of length > 2 at which ' ...
-        'times solution is returned'], 'Set time domain',  1, {def}, options);
-    if ( isempty(str) )
-        str = '';
-        break
-    end
-    str = str{:};
-    num = str2num(str);
-end
-
-set(handles.input_timedomain, 'String', str);
-handles.guifile.timedomain = str;
-guidata(hObject, handles);
-
-end
-
 function button_figsol_Callback(hObject, eventdata, handles)
 % Executed when the user wants to show figures in new window.
 
-if ( get(handles.button_ode, 'Value') )
+if ( get(handles.button_bvp, 'Value') || get(handles.button_ivp, 'Value') )
     % We're in ODE mode.
     
     % Plot the latest solution obtained:
     figure
     latestSolution = handles.latest.solution;
     plot(latestSolution, 'Linewidth', 2)
-    title('Solution at end of iteration')
+    title('Solution')
     xlabel(handles.indVarName);
 
     varnames = handles.varnames;
@@ -658,8 +388,6 @@ if ( get(handles.button_ode, 'Value') )
         legend(handles.varnames)
     end
     
-    latestNorms = handles.latest.norms;
-
     % Also open the bottom figure in now window. This is either going to be the
     % PLOTCOEFFS, or a plot showing the norm of the updates during the Newton
     % iteration:
@@ -667,7 +395,8 @@ if ( get(handles.button_ode, 'Value') )
     
     plotType = get(handles.popupmenu_bottomFig, 'Value');
     
-    if ( plotType == 1) % Show the norm plot
+    if ( plotType == 1 ) % Show the norm plot
+        latestNorms = handles.latest.normDelta;
         semilogy(latestNorms, '-*', 'Linewidth', 2)
         title('Norm of updates')
         xlabel('Number of iteration')
@@ -684,8 +413,6 @@ if ( get(handles.button_ode, 'Value') )
         
     else % Show PLOTCOEFFS
         plotcoeffs(latestSolution, 'linewidth', 2)
-        title('Chebyshev coefficients of the solution')
-        grid on
         set(handles.popupmenu_bottomFig, 'Value', 2);
     end
     
@@ -776,35 +503,11 @@ end
 
 end
 
-function toggle_useLatest_Callback(hObject, eventdata, handles)
-% Called when user toggles between using the latest solution as an initial
-% guess.
-
-newVal = get(hObject, 'Value');
-
-if ( newVal ) % User wants to use latest solution
-    set(handles.input_GUESS, 'String', 'Using latest solution');
-else
-    set(handles.input_GUESS, 'String', '');
-    set(handles.input_GUESS, 'Enable', 'On');
-    handles.guifile.init = '';
-end
-
-guidata(hObject, handles);
-
-end
-
 % --- Executes when chebguimainwindow is resized.
 function chebguimainwindow_ResizeFcn(hObject, eventdata, handles)
 % hObject    handle to chebguimainwindow (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-end
-
-function button_ode_Callback(hObject, eventdata, handles)
-% Switch to ODE mode.
-handles = chebguiController.switchMode(handles, 'bvp');
-guidata(hObject, handles);
 end
 
 % --- Executes on button press in button_pde.
@@ -868,55 +571,7 @@ if ( ispc && bgColorIsDefault )
 end
 end
 
-function input_DE_CreateFcn(hObject, eventdata, handles)
-bgColorIsDefault = isequal(get(hObject, 'BackgroundColor'),  ...
-    get(0, 'defaultUicontrolBackgroundColor'));
-if ( ispc && bgColorIsDefault )
-    set(hObject, 'BackgroundColor', 'white');
-end
-end
-
-function input_RBC_CreateFcn(hObject, eventdata, handles)
-bgColorIsDefault = isequal(get(hObject, 'BackgroundColor'),  ...
-    get(0, 'defaultUicontrolBackgroundColor'));
-if ( ispc && bgColorIsDefault )
-    set(hObject, 'BackgroundColor', 'white');
-end
-end
-
-function input_GUESS_CreateFcn(hObject, eventdata, handles)
-bgColorIsDefault = isequal(get(hObject, 'BackgroundColor'),  ...
-    get(0, 'defaultUicontrolBackgroundColor'));
-if ( ispc && bgColorIsDefault )
-    set(hObject, 'BackgroundColor', 'white');
-end
-end
-
-function input_LBC_CreateFcn(hObject, eventdata, handles)
-bgColorIsDefault = isequal(get(hObject, 'BackgroundColor'),  ...
-    get(0, 'defaultUicontrolBackgroundColor'));
-if ( ispc && bgColorIsDefault )
-    set(hObject, 'BackgroundColor', 'white');
-end
-end
-
 function iter_list_CreateFcn(hObject, eventdata, handles)
-bgColorIsDefault = isequal(get(hObject, 'BackgroundColor'),  ...
-    get(0, 'defaultUicontrolBackgroundColor'));
-if ( ispc && bgColorIsDefault )
-    set(hObject, 'BackgroundColor', 'white');
-end
-end
-
-function fig_sol_CreateFcn(hObject, eventdata, handles)
-% Hint: place code in OpeningFcn to populate fig_sol
-end
-
-function fig_norm_CreateFcn(hObject, eventdata, handles)
-% Hint: place code in OpeningFcn to populate fig_norm
-end
-
-function input_timedomain_CreateFcn(hObject, eventdata, handles)
 bgColorIsDefault = isequal(get(hObject, 'BackgroundColor'),  ...
     get(0, 'defaultUicontrolBackgroundColor'));
 if ( ispc && bgColorIsDefault )
@@ -947,40 +602,6 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % DEVELOPER NOTE: These methods will open the CHEBGUIEDIT sub-GUI
 
-function input_DE_ButtonDownFcn(hObject, eventdata, handles)
-
-chebguiEdit('chebguiWindow', handles.chebguimainwindow, 'input_DE');
-input_DE_Callback(hObject, eventdata, handles);
-
-end
-
-function input_LBC_ButtonDownFcn(hObject, eventdata, handles)
-
-chebguiEdit('chebguiWindow', handles.chebguimainwindow, 'input_LBC');
-input_LBC_Callback(hObject, eventdata, handles);
-
-end
-
-function input_RBC_ButtonDownFcn(hObject, eventdata, handles)
-
-chebguiEdit('chebguiWindow', handles.chebguimainwindow, 'input_RBC');
-input_RBC_Callback(hObject, eventdata, handles);
-
-end
-
-function input_BC_ButtonDownFcn(hObject, eventdata, handles)
-
-chebguiEdit('chebguiWindow', handles.chebguimainwindow, 'input_BC');
-input_BC_Callback(hObject, eventdata, handles);
-
-end
-
-function input_GUESS_ButtonDownFcn(hObject, eventdata, handles)
-
-chebguiEdit('chebguiWindow', handles.chebguimainwindow, 'input_GUESS');
-input_GUESS_Callback(hObject, eventdata, handles);
-
-end
 
 function editfontsize_CreateFcn(hObject, eventdata, handles)
 
@@ -996,6 +617,77 @@ end
 % ----------------------- Callbacks for menu items  ----------------------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
+
+function menu_ivpSolver_Callback(hObject, eventdata, handles)
+end
+
+function menu_ivpGlobal_Callback(hObject, eventdata, handles)
+end
+
+function menu_ivpTimestepping_Callback(hObject, eventdata, handles)
+end
+
+function menu_ivpODE113_Callback(hObject, eventdata, handles)
+set(handles.menu_ivpODE113, 'checked', 'on');
+set(handles.menu_ivpODE15s, 'checked', 'off');
+set(handles.menu_ivpODE45, 'checked', 'off');
+set(handles.menu_ivpCollocation, 'checked', 'off');
+set(handles.menu_ivpUltraspherical, 'checked', 'off');
+handles.guifile.options.ivpSolver = 'ode113';
+set(handles.panel_IVPsolver,'SelectedObject', handles.button_timestepping)
+set(handles.panel_initialGuess, 'Visible', 'off')
+guidata(hObject, handles);
+end
+
+function menu_ivpODE15s_Callback(hObject, eventdata, handles)
+set(handles.menu_ivpODE113, 'checked', 'off');
+set(handles.menu_ivpODE15s, 'checked', 'on');
+set(handles.menu_ivpODE45, 'checked', 'off');
+set(handles.menu_ivpCollocation, 'checked', 'off');
+set(handles.menu_ivpUltraspherical, 'checked', 'off');
+handles.guifile.options.ivpSolver = 'ode15s';
+set(handles.panel_IVPsolver,'SelectedObject', handles.button_timestepping)
+set(handles.panel_initialGuess, 'Visible', 'off')
+guidata(hObject, handles);
+end
+
+function menu_ivpODE45_Callback(hObject, eventdata, handles)
+set(handles.menu_ivpODE113, 'checked', 'off');
+set(handles.menu_ivpODE15s, 'checked', 'off');
+set(handles.menu_ivpODE45, 'checked', 'on');
+set(handles.menu_ivpCollocation, 'checked', 'off');
+set(handles.menu_ivpUltraspherical, 'checked', 'off');
+handles.guifile.options.ivpSolver = 'ode45';
+set(handles.panel_IVPsolver,'SelectedObject', handles.button_timestepping)
+set(handles.panel_initialGuess, 'Visible', 'off')
+guidata(hObject, handles);
+end
+
+function menu_ivpCollocation_Callback(hObject, eventdata, handles)
+set(handles.menu_ivpODE113, 'checked', 'off');
+set(handles.menu_ivpODE15s, 'checked', 'off');
+set(handles.menu_ivpODE45, 'checked', 'off');
+set(handles.menu_ivpCollocation, 'checked', 'on');
+set(handles.menu_ivpUltraspherical, 'checked', 'off');
+handles.guifile.options.ivpSolver = 'collocation';
+set(handles.panel_IVPsolver,'SelectedObject', handles.button_global)
+set(handles.panel_initialGuess, 'Visible', 'on')
+guidata(hObject, handles);
+end
+
+function menu_ivpUltraspherical_Callback(hObject, eventdata, handles)
+set(handles.menu_ivpODE113, 'checked', 'off');
+set(handles.menu_ivpODE15s, 'checked', 'off');
+set(handles.menu_ivpODE45, 'checked', 'off');
+set(handles.menu_ivpCollocation, 'checked', 'off');
+set(handles.menu_ivpUltraspherical, 'checked', 'on');
+handles.guifile.options.ivpSolver = 'ultraspherical';
+set(handles.panel_IVPsolver,'SelectedObject', handles.button_global)
+set(handles.panel_initialGuess, 'Visible', 'on')
+guidata(hObject, handles);
+end
+
 function menu_file_Callback(hObject, eventdata, handles)
 end
 
@@ -1008,7 +700,7 @@ if ( ~filterindex )
 end
 
 cgTemp = chebgui(fullfile(pathname, filename));
-chebguiController.populate(handles, cgTemp)
+chebguiController.populate(hObject, handles, cgTemp)
 handles.guifile = cgTemp;
 if ( ~isempty(cgTemp.type) )
     handles = chebguiController.switchMode(handles, cgTemp.type);
@@ -1031,7 +723,7 @@ end
 % name = input('What would you like to name this GUI file? ');
 name = '';
 
-if ( get(handles.button_ode, 'value') )
+if ( get(handles.button_bvp, 'value') )
     demotype = 'bvp';
 elseif ( get(handles.button_pde, 'value') )
     demotype = 'pde';
@@ -1116,15 +808,6 @@ end
 function menu_demos_Callback(hObject, eventdata, handles)
 end
 
-function menu_bvps_Callback(hObject, eventdata, handles)
-end
-
-function menu_ivps_Callback(hObject, eventdata, handles)
-end
-
-function menu_systems_Callback(hObject, eventdata, handles)
-end
-
 function menu_help_Callback(hObject, eventdata, handles)
 end
 
@@ -1133,12 +816,6 @@ doc('chebgui')
 end
 
 function Untitled_9_Callback(hObject, eventdata, handles)
-end
-
-function menu_pdesingle_Callback(hObject, eventdata, handles)
-end
-
-function menu_pdesystems_Callback(hObject, eventdata, handles)
 end
 
 function menu_export_Callback(hObject, eventdata, handles)
@@ -1211,6 +888,23 @@ guidata(hObject, handles);
 end
 
 function menu_odeplotting_Callback(hObject, eventdata, handles)
+end
+
+function menu_pdeSolver_Callback(hObject, eventdata, handles)
+end
+
+function menu_pdeSolver_pde15s_Callback(hObject, eventdata, handles)
+handles.guifile.options.pdeSolver = 'pde15s';
+set(handles.menu_pdeSolver_pde15s, 'checked', 'on');
+set(handles.menu_pdeSolver_pde23t, 'checked', 'off');
+guidata(hObject, handles);
+end
+
+function menu_pdeSolver_pde23t_Callback(hObject, eventdata, handles)
+handles.guifile.options.pdeSolver = 'pde23t';
+set(handles.menu_pdeSolver_pde15s, 'checked', 'off');
+set(handles.menu_pdeSolver_pde23t, 'checked', 'on');
+guidata(hObject, handles);
 end
 
 function menu_pdeplotting_Callback(hObject, eventdata, handles)
@@ -1414,16 +1108,13 @@ if ( ispc && bgColorIsDefault )
 end
 end
 
-function menu_eigsscalar_Callback(hObject, eventdata, handles)
-end
-
 function button_export_Callback(hObject, eventdata, handles)
 
     % What discretization do we want to use?
-    if ( get(handles.button_Collocation, 'Value') )
-        handles.guifile.options.discretization = @chebcolloc2;
+    if ( get(handles.button_collocation, 'Value') )
+        handles.guifile.options.discretization = 'collocation';
     else
-        handles.guifile.options.discretization = @ultraS;
+        handles.guifile.options.discretization = 'ultraspherical';
     end
 
     % Create a CHEBGUIEXPORTER object of the correct type:
@@ -1442,7 +1133,6 @@ function button_export_Callback(hObject, eventdata, handles)
 
     catch ME
         % TODO: Which error do we want to throw?
-%         rethrow(ME)
         error('CHEBFUN:chebguiWindow:export', ...
             ['Error in exporting to .m file. Please make ' ...
             'sure there are no syntax errors.']);
@@ -1559,26 +1249,6 @@ end
 % PressedKeyNo = double(get(gcbo, 'CurrentCharacter'))
 end
 
-function edit_eigN_Callback(hObject, eventdata, handles)
-in = get(handles.edit_eigN, 'String');
-if ( ~isempty(in) && isempty(str2num(in)) )
-    errordlg('Invalid input. Number of eigenvalues must be an integer.', ...
-        'Chebgui error', 'modal');
-    set(handles.edit_eigN, 'String', handles.guifile.options.numeigs);
-else
-    handles.guifile.options.numeigs = in;
-end
-guidata(hObject, handles);
-end
-
-function edit_eigN_CreateFcn(hObject, eventdata, handles)
-bgColorIsDefault = isequal(get(hObject, 'BackgroundColor'),  ...
-    get(0, 'defaultUicontrolBackgroundColor'));
-if ( ispc && bgColorIsDefault )
-    set(hObject, 'BackgroundColor', 'white');
-end
-end
-
 function edit37_CreateFcn(hObject, eventdata, handles)
 bgColorIsDefault = isequal(get(hObject, 'BackgroundColor'),  ...
     get(0, 'defaultUicontrolBackgroundColor'));
@@ -1595,40 +1265,6 @@ else
     handles.guifile.options.numeigs = in;
 end
 guidata(hObject, handles);
-end
-
-function popupmenu_sigma_Callback(hObject, eventdata, handles)
-selected = get(hObject, 'Value');
-switch ( selected )
-    case 1
-        handles.guifile.sigma = '';
-    case 2
-        handles.guifile.sigma = 'lm';
-    case 3
-        handles.guifile.sigma = 'sm';
-    case 4
-        handles.guifile.sigma = 'lr';
-    case 5
-        handles.guifile.sigma = 'sr';
-    case 6
-        handles.guifile.sigma = 'li';
-    case 7
-        handles.guifile.sigma = 'si';
-end
-guidata(hObject, handles);
-end
-
-function popupmenu_sigma_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to popupmenu_sigma (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-% Hint: popupmenu controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-bgColorIsDefault = isequal(get(hObject, 'BackgroundColor'),  ...
-    get(0, 'defaultUicontrolBackgroundColor'));
-if ( ispc && bgColorIsDefault )
-    set(hObject, 'BackgroundColor', 'white');
-end
 end
 
 function menu_annotateon_Callback(hObject, eventdata, handles)
@@ -1738,23 +1374,6 @@ if ( errUsingLoc )
 end
 end
 
-function input_BC_Callback(hObject, eventdata, handles)
-newString = cellstr(get(hObject, 'String'));
-newString = removeTabs(newString); % Remove tabs
-set(hObject, 'String', newString);
-handles = chebguiController.callbackBCs(handles, newString, 'bc');
-handles.guifile.BC = newString;
-guidata(hObject, handles);
-end
-
-function input_BC_CreateFcn(hObject, eventdata, handles)
-bgColorIsDefault = isequal(get(hObject, 'BackgroundColor'),  ...
-    get(0, 'defaultUicontrolBackgroundColor'));
-if ( ispc && bgColorIsDefault )
-    set(hObject, 'BackgroundColor', 'white');
-end
-end
-
 function button_exportsoln_Callback(hObject, eventdata, handles)
 % Create a CHEBGUIEXPORTER object of the correct type:
 exporter = chebguiExporter.constructor(handles.guifile.type);
@@ -1763,120 +1382,13 @@ exporter.toWorkspaceSolutionOnly(handles);
 end
 
 function button_fontinc_Callback(hObject, eventdata, handles)
-% hObject    handle to button_fontinc (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Get a list of all the names in the handles
-names = fieldnames(handles);
-textLocs = strfind(names, 'text_');
-inputLocs = strfind(names, 'input_');
-buttonLocs = strfind(names, 'button_');
-panelLocs = strfind(names, 'panel_');
-toggleLocs = strfind(names, 'toggle_');
-
-% Deal with variable maximum for input and noninput-type handles
-fontsizediff = [];
-flag = 0;
-tmp = strfind(names, 'fontsizediff');
-
-if ( any([tmp{:}]) )
-    fontsizediff = handles.fontsizediff;
-end
-
-if ( isempty(fontsizediff) )
-    fontsizediff = 0;
-end
-
-% Combine all the locations of elements whose font we wish to change
-allLocs = strcat(textLocs, inputLocs, buttonLocs, panelLocs, toggleLocs);
-
-for fieldCounter = 1:length(textLocs)
-    if ( ~isempty(allLocs{fieldCounter}) )
-        % Access the field values dynamically using the .( ) call. We
-        % access the font size of each element separately as they can have
-        % different relative font sizes.
-        currFontSize = get(handles.(names{fieldCounter}), 'FontSize');
-        if ( currFontSize >= 30 )
-            % Do nothing (global max)
-        elseif ( isempty(inputLocs{fieldCounter}) && (currFontSize >= 16) )
-            % Size of non input-type handles is further limited
-            if ( ~flag )
-                % Record this, so a difference doesn't develop
-                fontsizediff = min(fontsizediff + 1, 13); % 13 = 30-16-1
-                flag = true; % but only do this once!
-            end
-        else
-            newFontSize = currFontSize + 1;        
-            % Update the fontsize, again using the dynamic access
-            set(handles.(names{fieldCounter}), 'FontSize', newFontSize)
-        end
-    end
-end
-
-handles.fontsizediff = fontsizediff;  
+handles = chebguiController.changeFontsize(handles, 1);
 guidata(hObject, handles);
-
 end
 
 function button_fontdec_Callback(hObject, eventdata, handles)
-% hObject    handle to button_fontdec (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% Get a list of all the names in the handles
-names = fieldnames(handles);
-textLocs = strfind(names, 'text_');
-inputLocs = strfind(names, 'input_');
-buttonLocs = strfind(names, 'button_');
-panelLocs = strfind(names, 'panel_');
-toggleLocs = strfind(names, 'toggle_');
-
-% Combine all the locations of elements whose font we wish to change
-allLocs = strcat(textLocs, inputLocs, buttonLocs, panelLocs, toggleLocs);
-
-% Deal with variable maximum for input and noninput-type handles
-fontsizediff = [];
-flag = 0;
-tmp = strfind(names, 'fontsizediff');
-
-if ( any([tmp{:}]) )
-    fontsizediff = handles.fontsizediff;
-end
-
-if ( isempty(fontsizediff) )
-    fontsizediff = 0;
-end
-
-for fieldCounter = 1:length(textLocs)
-    if ( ~isempty(allLocs{fieldCounter}) )
-        % Access the field values dynamically using the .( ) call
-        currFontSize = get(handles.(names{fieldCounter}), 'FontSize');
-        newFontSize = currFontSize;
-        if ( isempty(inputLocs{fieldCounter}) )
-            % Deal with non input-type handles
-            if ( flag )
-                % We only want update the diff once, so continue 
-                continue
-            elseif ( fontsizediff > 0 )
-                % Update the diff and set flag
-                fontsizediff = fontsizediff - 1;
-                flag = 1;
-                continue
-            elseif ( currFontSize > 5 )
-                newFontSize = currFontSize - 1; 
-            end
-        elseif ( currFontSize > 5 )
-            % Input-type handles are easier
-            newFontSize = currFontSize - 1;   
-        end
-        % Update the fontsize, again using the dynamic access
-        set(handles.(names{fieldCounter}), 'FontSize', newFontSize)
-    end
-end
-
-handles.fontsizediff = fontsizediff;
+handles = chebguiController.changeFontsize(handles, -1);
 guidata(hObject, handles);
-
 end
 
 function keypress(hObject, eventdata, handles)
@@ -1905,7 +1417,7 @@ for k = 1:numel(folders)
 
         file = fullfile(subdir, subdirnames{j});
         cgTemp = chebgui(file);
-        chebguiController.populate(handles, cgTemp)
+        chebguiController.populate(hObject, handles, cgTemp)
         handles.guifile = cgTemp;
         if ( ~isempty(cgTemp.type) )
             handles = chebguiController.switchMode(handles, cgTemp.type);
@@ -1996,7 +1508,7 @@ switch ( newVal )
     case 1
         % User wants to see a plot showing the convergence of the Newton
         % iteration.
-        normDelta = handles.normDelta;
+        normDelta = handles.latest.normDelta;
 
         % If normDelta is empty, we actually had a linear problem! So don't
         % do anything.
@@ -2008,8 +1520,7 @@ switch ( newVal )
         end
 
         semilogy(normDelta, '-*', 'Linewidth', 2)
-        title('Norm of updates')
-        xlabel('Iteration number')
+        set(handles.panel_figNorm, 'title', 'Norm of updates');
 
         if ( length(normDelta) > 1 )
             step = max(floor(length(normDelta)/5), 1);
@@ -2024,8 +1535,12 @@ switch ( newVal )
     case 2
         % User wants to see a PLOTCOEFFS plot..
         plotcoeffs(handles.latest.solution, 'linewidth', 2);
-        grid on
-        title('Chebyshev coefficients of the solution')
+        plotCoeffsTitle = get(get(handles.fig_norm, 'title'), 'String');
+        set(handles.panel_figNorm, 'title', plotCoeffsTitle);
+        title('');
+        % Hide the automatic y-label as it causes issues when fontsize is too big
+        ylabel('');
+        xlabel('');
 end
 
 end
@@ -2045,35 +1560,4 @@ end
 
 end
 
-function panel_discretization_SelectionChangeFcn(hObject, eventdata, handles)
-% hObject    handle to the selected object in panel_discretization 
-% eventdata  structure with the following fields (see UIBUTTONGROUP)
-%	EventName: string 'SelectionChanged' (read only)
-%	OldValue: handle of the previously selected object or empty if none was 
-%             selected
-%	NewValue: handle of the currently selected object
-% handles    structure with handles and user data (see GUIDATA)
-
-% Change the discretization stored in handles.guifile.options based on the new
-% selection
-newDisc = get(eventdata.NewValue, 'String');
-
-if ( strcmp(newDisc, get(handles.button_Collocation, 'String')) )
-    handles.guifile.options.discretization = @chebcolloc2;
-else
-    handles.guifile.options.discretization = @ultraS;
-end
-
-% Update the hObject
-guidata(hObject, handles);
-end
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% FIN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-function fig_logo_CreateFcn(hObject, eventdata, handles)
-% Hint: place code in OpeningFcn to populate
-logoMat = imread(fullfile(chebfunroot(),'chebguiDemos','chebfunLogo.png'));
-image(logoMat)
-axis off
-end

@@ -36,7 +36,6 @@ else
 end
 
 % Set some preferences:
-vscale = f.vscale;
 pref.minSamples = max(pref.minSamples, length(f));
 pref.eps = max(pref.eps, f.epslevel);
 pref.sampleTest = false;
@@ -47,8 +46,7 @@ if ( nfuns == 2 )
               'Matrix dimensions must agree.')
     end
 
-    % Grab some data from G2:
-    vscale = max(vscale, g.vscale);
+    % Grab some data from G:
     pref.minSamples = max(pref.minSamples, length(g));
     pref.eps = max(pref.eps, g.epslevel);
     
@@ -64,7 +62,6 @@ elseif ( isa(op, 'trigtech') )
               'The range of f is not contained in the domain of g.')
     end
 
-    vscale = max(vscale, op.vscale);
     pref.minSamples = max(pref.minSamples, length(op));
     pref.eps = max(pref.eps, op.epslevel);
     
@@ -79,17 +76,10 @@ if ( ischar(pref.refinementFunction) )
     end
 end
 
-% Make TRIGTECH object:
-if ( ~isfield(data, 'vscale') || isempty(data.vscale) )
-    data.vscale = vscale;
-end
-
 if ( ~isfield(data, 'hscale') || isempty(data.hscale) )
     data.hscale = f.hscale;
 end
-
 f = f.make(op, data, pref);
-f = simplify(f);
 
 % Throw a warning:
 if ( ~f.epslevel )
