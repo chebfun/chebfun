@@ -4,14 +4,18 @@ function fx = bary(x, fvals, xk, wk)
 %   formula with weights VK to evaluate an interpolant of the data {XK,
 %   FVALS(:,k)} at the points X. Note that XK must be equally-spaced.
 %   Furthermore, XK and VK should be column vectors, and FVALS, XK, and VK
-%   should have the same length.
+%   should have the same length. See [1] for details.
 %
 %   BARY(X, FVALS) assumes XK are equispaced in [-1, 1) (i.e., as return by
 %   TRIGTECH.TRIGPTS()) and that VK are the corresponding barycentric weights
 %   for trigonomentric-polynomial interpolation (i.e, as returned by
 %   TRIGTECH.BARYWTS().).
-
+%
 % See also TRIG.TRIGPTS and TRIG.BARYWTS.
+
+% Reference:
+%  [1] P. Henrici, Barycentric formulas for interpolating trigonometric
+%  polynomials and their conjugates, Numer. Math., 33 (1979), pp. 225–234.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
