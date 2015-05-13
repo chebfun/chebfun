@@ -222,7 +222,7 @@ h = f .* g;
 h_exact = @(x) f_op(x) .* g_op(x);
 tol = 10*max(get(h, 'vscale').*get(h, 'epslevel'));
 result(1) = all(max(abs(feval(h, x) - h_exact(x))) < 1e4*tol);
-    % tolerance loosened in epslevel-dependent test
+    
 if ( checkpos )
     result(2) = all(feval(h, x) >= 0);
 end

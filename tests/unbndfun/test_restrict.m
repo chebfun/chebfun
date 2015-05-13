@@ -62,7 +62,7 @@ tol1 = 1e3*get(g{1},'epslevel')*get(g{1},'vscale');
 tol2 = 10*get(g{2},'epslevel')*get(g{2},'vscale');
 tol3 = 1e3*get(g{3},'epslevel')*get(g{3},'vscale');
 pass(2) = ( err1 < tol1 && err2 < tol2 && err3 < tol3);
-    % tolerance loosened in epslevel-dependent test
+    
     
 %% Functions on [a inf]:
 
@@ -95,7 +95,7 @@ err3 = g3Vals - fExact3;
 pass(3) = ( norm(err1, inf) < 1e1*get(g{1},'epslevel')*get(g{1},'vscale') ...
     && norm(err2, inf) < 1e1*get(g{2},'epslevel')*get(g{2},'vscale') ...
     && norm(err3, inf) < 2e1*get(g{3},'epslevel')*get(g{3},'vscale') );
-    % tolerance loosened in epslevel-dependent test
+    
     
 % Blow-up function:
 op = @(x) x.*(5+exp(-x.^3));
@@ -114,7 +114,7 @@ err3 = g3Vals - fExact3;
 pass(4) = ( norm(err1, inf) < 1e1*get(g{1},'epslevel')*get(g{1},'vscale') ...
     && norm(err2, inf) < 1e1*get(g{2},'epslevel')*get(g{2},'vscale') ...
     && norm(err3, inf) < 1e2*get(g{3},'epslevel')*get(g{3},'vscale') );
-    % tolerance loosened in epslevel-dependent test
+    
     
 %% Functions on [-inf b]:
 
@@ -166,7 +166,7 @@ err3 = g3Vals - fExact3;
 pass(6) = ( norm(err1, inf) < 1e1*get(g{1},'epslevel')*get(g{1},'vscale') ...
     && norm(err2, inf) < 1e1*get(g{2},'epslevel')*get(g{2},'vscale') ...
     && norm(err3, inf) < 1e3*get(g{3},'epslevel')*get(g{3},'vscale') );
-    % tolerance loosened in epslevel-dependent test
+    
     
 % Array-valued function:
 op = @(x) [exp(x) x.*exp(x) (1-exp(x))./x];

@@ -118,7 +118,7 @@ op = @(x)  (x - dom(2)).^pow.*(sin(100*x)+cos(300*x));
 h_exact = op(x);
 pass(28) = ( norm(vals_h-h_exact, inf) < 1e3*max(get(f, 'epslevel'), get(g, 'epslevel'))*...
     norm(h_exact, inf) );
-% tolerance loosened in epslevel-dependent test
+
 
 %% Test for function defined on unbounded domain:
 
@@ -169,7 +169,7 @@ pass(33) = strcmpi(func2str(get(h1(:,2).funs{1}.onefun, 'tech')), ...
                    func2str(get(g(:,2).funs{1}.onefun, 'tech')));
 h2 = chebfun(@(x) [x + cos(x), x.^3 + sin(x)], dom, pref);
 pass(34) = norm(h1-h2, inf) < 1e2*get(h2,'epslevel').*get(h2,'vscale');
-% tolerance loosened in epslevel-dependent test
+
 
 end
 
@@ -192,5 +192,5 @@ function result = test_add_function_to_function(f, f_op, g, g_op, x)
     h_exact = @(x) f_op(x) + g_op(x);
     norm(feval(h1, x) - h_exact(x), inf);
     result(2) = norm(feval(h1, x) - h_exact(x), inf) < 1e2*vscale(h1)*epslevel(h1);
-        % tolerance loosened in epslevel-dependent test
+        
 end

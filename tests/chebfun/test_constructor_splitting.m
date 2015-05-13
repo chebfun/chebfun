@@ -9,7 +9,7 @@ end
 
 seedRNG(6178);
 tol = 1e8;
-% tolerance loosened in epslevel-dependent test
+
 
 % Test SQRT(X) on [0 1]:
 F1 = @sqrt;
@@ -53,7 +53,7 @@ f = chebfun(@(x) x > 0, [-1 1], 'splitting', 'on', pref);
 x = chebfun('x', [-1 1], pref);
 h = heaviside(x);
 pass(6) = norm(f - h) < 10*f.epslevel;
-    % tolerance loosened in epslevel-dependent test
+    
 
 % Test use of breakpoint detection in conjunction with construction from a cell
 % array of function handles. (See issue #1151 on GitHub.)
@@ -82,7 +82,7 @@ fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
 pass(8) = norm(err, inf) < 1e2*epslevel(f)*vscale(f);
-% tolerance loosened in epslevel-dependent test
+
 
 %% Test SPLITTING ON with BLOWUP == 1:
 op = @(x)tan(x);
@@ -113,7 +113,7 @@ f = chebfun (op, dom, 'exps', [2 2], 'splitting', 'on');
 vals = f(x);
 exact = op(x);
 pass(10) = ( norm(vals-exact, inf) < 1e3*epslevel(f)*vscale(f) );
-% tolerance loosened in epslevel-dependent test
+
 
 % % Test X*LOG(X) on [0 1]:
 % F4 = @(x) x.*log(x);

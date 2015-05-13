@@ -41,7 +41,7 @@ pass(4) = isnan(g);
 g = f ./ [alpha beta];
 g_exact = @(x) [sin(10*pi*x)./alpha sin(20*pi*x)./beta];
 pass(5) = norm(feval(g, x) - g_exact(x), inf) < 1e3*max(g.epslevel);
-    % tolerance loosened in epslevel-dependent test
+    
     
 g = f ./ [alpha 0];
 pass(6) = isnan(g) && ~any(isnan(g.coeffs(:, 1))) ...
@@ -112,7 +112,7 @@ function result = test_div_function_by_scalar(f, f_op, alpha, x)
     g = f ./ alpha;
     g_exact = @(x) f_op(x) ./ alpha;
     result = norm(feval(g, x) - g_exact(x), inf) < 100*max(g.vscale.*g.epslevel);
-        % tolerance loosened in epslevel-dependent test
+        
 end
 
 % Test the division of a scalar ALPHA by a TRIGTECH, specified by F_OP, using
@@ -131,5 +131,5 @@ function result = test_div_function_by_function(f, f_op, g, g_op, x)
     h_exact = @(x) f_op(x) ./ g_op(x);
     err = norm(feval(h, x) - h_exact(x), inf);
     result = err < 1e3*max(h.vscale.*h.epslevel);
-        % tolerance loosened in epslevel-dependent test
+        
 end

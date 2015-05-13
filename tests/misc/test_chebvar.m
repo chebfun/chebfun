@@ -13,7 +13,7 @@ chebvar x [0 10]
 f = sin(x.^2) + sin(x).^2;
 g = chebfun(@(x) sin(x.^2) + sin(x).^2, [0 10], pref);
 pass(2) = norm(f - g, inf) < 1e4*epslevel(f);
-    % tolerance loosened in epslevel-dependent test
+    
 
 chebvar x y z [0 1]
 f = sin(x);

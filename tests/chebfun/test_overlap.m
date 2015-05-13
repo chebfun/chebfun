@@ -81,7 +81,7 @@ check(4) = ( norm(vals_gout - vals_g, inf) < ...
     1e3*epslevel(gout)*norm(vals_gout, inf) );
 
 pass(6) = all( check );
-% tolerance loosened in epslevel-dependent test
+
 
 %% Test for function defined on unbounded domain:
 
@@ -116,7 +116,7 @@ check(3) = ( norm(vals_fout - vals_f, inf) < ...
     1e3*epslevel(fout)*norm(vals_fout, inf) );
 check(4) = ( norm(vals_gout - vals_g, inf) < ...
     1e3*epslevel(gout)*norm(vals_gout, inf) );
-% tolerance loosened in epslevel-dependent test
+
 
 pass(7) = all( check );
 

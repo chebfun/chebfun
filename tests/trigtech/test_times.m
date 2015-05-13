@@ -86,7 +86,7 @@ pass(12) = (norm(h1.coeffs-h2.coeffs) < 10*max(h1.epslevel));
 h_exact = @(x) bsxfun(@times,g_op(x),f_op(x));
 err = feval(h1, x) - h_exact(x);
 pass(13) = max(abs(err(:))) < 100*max(h1.epslevel);
-    % tolerance loosened in epslevel-dependent test
+    
     
 g_op = @(x) [tanh(sin(pi*x)+cos(pi*x)) sin(pi*x) exp(sin(pi*x))];
 g = testclass.make(g_op, [], pref);
@@ -94,7 +94,7 @@ h = f .* g;
 h_exact = @(x) g_op(x).*f_op(x);
 err = feval(h, x) - h_exact(x);
 pass(14) = max(abs(err(:))) < 100*max(h.epslevel);
-    % tolerance loosened in epslevel-dependent test
+    
 
 % This should fail with a dimension mismatch error.
 try
@@ -166,7 +166,7 @@ function result = test_mult_function_by_function(f, f_op, g, g_op, x, checkpos)
     h_exact = @(x) f_op(x) .* g_op(x);
     result(1) = norm(feval(h, x) - h_exact(x), inf) < ...
         1e4*max(h.vscale.*h.epslevel);
-        % tolerance loosened in epslevel-dependent test
+        
     if ( checkpos )
         values = h.coeffs2vals(h.coeffs); 
         result(2) = all(values >= 0);

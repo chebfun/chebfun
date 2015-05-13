@@ -90,7 +90,7 @@ g_exact = @(x) (x-dom(1)).^(pow+1)./(pow+1);
 vals_exact = feval(g_exact, x);
 err = vals_g - vals_exact;
 pass(10) = ( norm(err, inf) < 1e4*get(f,'epslevel')*norm(vals_exact, inf) );
-% tolerance loosened in epslevel-dependent test
+
 
 %% piecewise smooth chebfun: smoothfun + singfun & splitting off:
 
@@ -159,7 +159,7 @@ err = gval - vals_check;
 err = norm(err-mean(err), inf);
 tol = 5e5*get(f,'epslevel')*norm(vals_check, inf);
 pass(12) = err < 1e2*tol;
-% tolerance loosened in epslevel-dependent test
+
 
 %% Tests for functions defined on unbounded domain:
 

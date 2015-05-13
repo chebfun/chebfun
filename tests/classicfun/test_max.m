@@ -28,7 +28,7 @@ fx = [sin(10*x(1)) airy(x(2)) (x(3)/10).^3.*cosh(x(3)/10)];
 tol = 10*get(f, 'vscale').*get(f, 'epslevel');
 pass(5) = (all(abs(y - exact_max) < 10*tol) && ...
     all(abs(fx - exact_max) < tol));
-    % tolerance loosened in epslevel-dependent test
+    
 
 %%
 % Test for complex-valued BNDFUN.
@@ -45,7 +45,7 @@ fx = [((x(1)-2).^2/4+1).*exp(1i*(x(1)/2)) ...
 tol = get(f, 'vscale').*get(f, 'epslevel');
 pass(7) = (all(abs(y - exact_max) < 10*tol) && ...
     all(abs(fx - exact_max) < tol));
-    % tolerance loosened in epslevel-dependent test
+    
       
 %% Test for UNBNDFUN:
 
@@ -62,7 +62,7 @@ xExact = 1;
 errY = y - yExact;
 errX = x - xExact;
 pass(8) = norm([errY errX], inf) < 1e3*get(f,'epslevel').*get(f,'vscale');
-    % tolerance loosened in epslevel-dependent test
+    
 
 end
 
@@ -74,7 +74,7 @@ f = bndfun(fun_op, data, pref);
 [y, x] = max(f);
 fx = fun_op(x);
 tol = 100*get(f, 'vscale').*get(f, 'epslevel');
-    % tolerance loosened in epslevel-dependent test
+    
 result = (all(abs(y - exact_max) < tol) && ...
           all(abs(fx - exact_max) < tol));
 

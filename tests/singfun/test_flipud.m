@@ -31,7 +31,7 @@ flip_exact = @(x) (1-x).^a.*exp(-x);
 vals_exact = feval(flip_exact, x);
 err = vals_df - vals_exact;
 pass(1) = (norm(err, inf) < 1e1*get(f, 'epslevel')*norm(vals_exact, inf));
-    % tolerance loosened in epslevel-dependent test
+    
     
 % fractional pole at the left endpoint
 data.exponents = [d 0];
@@ -54,7 +54,7 @@ flip_exact = @(x) (1+x).^c.*cos(x);
 vals_exact = feval(flip_exact, x);
 err = vals_df - vals_exact;
 pass(3) = (norm(err, inf) < 1e1*get(f, 'epslevel')*norm(vals_exact, inf));
-    % tolerance loosened in epslevel-dependent test
+    
     
 % fractional pole at the right endpoint
 data.exponents = [0 b];
@@ -77,7 +77,7 @@ flip_exact = @(x) -(1-x).^b.*sin(x).*(1+x).^c;
 vals_exact = feval(flip_exact, x);
 err = vals_df - vals_exact;
 pass(5) = (norm(err, inf) < 1e1*get(f, 'epslevel')*norm(vals_exact, inf));
-    % tolerance loosened in epslevel-dependent test
+    
     
 %%
 % Verify that calling flipud() gives the reasonably accurate answer as direct 

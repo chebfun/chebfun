@@ -35,7 +35,7 @@ for (n = 1:2)
     h = testfn(nu, f, 1);
     pass(n, 3) = norm(feval(h, xr) - testfn(nu, exp(xr), 1), inf) < ...
         1e2*epslevel(h)*vscale(h);
-        % tolerance loosened in epslevel-dependent test
+        
 
     % Test for array-valued chebfun.
     f_op = @(x) [exp(-x) 1./(1 + 25*(x - 0.1).^2)];
@@ -44,7 +44,7 @@ for (n = 1:2)
     h = testfn(nu, f);
     err = feval(h, xr) - testfn(nu, f_op(xr));
     pass(n, 4) = norm(err(:), inf) < 1e3*epslevel(h)*vscale(h);
-        % tolerance loosened in epslevel-dependent test
+        
 
     h2 = testfn(nu, f, 0);
     pass(n, 5) = normest(h - h2) < ...
@@ -53,7 +53,7 @@ for (n = 1:2)
     h = testfn(nu, f, 1);
     err = feval(h, xr) - testfn(nu, f_op(xr), 1);
     pass(n, 6) = norm(err(:), inf) < 1e2*epslevel(h)*vscale(h);
-    % tolerance loosened for epslevel-dependent test
+    
  
     % Test for complex values.
     pref.splitting = 1;
@@ -63,7 +63,7 @@ for (n = 1:2)
     h = testfn(nu, f, 0, pref);
     pass(n, 7) = norm(feval(h, xr) - testfn(nu, f_op(xr), 0), inf) < ...
         1e2*epslevel(h)*vscale(h);
-    % tolerance loosened for epslevel-dependent test
+    
 
     % Check for error on roots.
     try

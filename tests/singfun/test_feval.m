@@ -24,7 +24,7 @@ data.exponents = [0, 0];
 data.singType = {'none', 'none'};
 f = singfun(fh, data, pref);
 pass(2) = norm(feval(f,x) - feval(fh,x), inf) < 1e1*get(f, 'epslevel');
-    % tolerance loosened in epslevel-dependent test
+    
 %%
 % Check feval on a SINGFUN with negative exponents
 a = 1 + rand();
@@ -46,5 +46,5 @@ data.exponents = [a, b];
 data.singType = {'root', 'root'};
 f = singfun(fh, data, pref);
 pass(4) = norm(feval(f,x) - feval(fh,x), inf) < 1e1*get(f, 'epslevel');
-    % tolerance loosened in epslevel-dependent test
+    
 end

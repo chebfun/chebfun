@@ -33,7 +33,7 @@ pass(2) = isequal(g1, g2);
 g_exact = @(x) alpha*sin(10*pi*x);
 pass(3) = norm(feval(g1, x) - g_exact(x), inf) < ...
     100*g1.vscale.*g1.epslevel;
-    % tolerance loosened in epslevel-dependent test
+    
 
 g = 0*f;
 pass(4) = all(g.coeffs == 0);
@@ -48,7 +48,7 @@ pass(5) = isequal(g1, g2);
 g_exact = @(x) alpha*[sin(10*pi*x) cos(20*pi*x) cos(sin(pi*x))];
 err = abs(feval(g1, x) - g_exact(x));
 pass(6) = max(err(:)) < 100*max(g1.vscale.*g1.epslevel);
-    % tolerance loosened in epslevel-dependent test
+    
 
 g = 0*f;
 pass(7) =  all(g.coeffs == 0);
@@ -58,14 +58,14 @@ g = f*A;
 g_exact = @(x) [sin(10*pi*x) cos(20*pi*x) cos(sin(pi*x))]*A;
 err = abs(feval(g, x) - g_exact(x));
 pass(8) = max(err(:)) < 100*max(g.vscale.*g.epslevel);
-    % tolerance loosened in epslevel-dependent test
+    
 
 f = testclass.make(@(x) [exp(1i*11*pi*x) cos(20*pi*x) cos(sin(pi*x))], [], pref);
 g = f*A;
 g_exact = @(x) [exp(1i*11*pi*x) cos(20*pi*x) cos(sin(pi*x))]*A;
 err = abs(feval(g, x) - g_exact(x));
 pass(9) = max(err(:)) < 100*max(g.vscale.*g.epslevel);
-    % tolerance loosened in epslevel-dependent test
+    
 
 f = testclass.make(@(x) [exp(1i*11*pi*x) cos(20*pi*x) cos(sin(pi*x))], [], pref);
 A = randn(3, 3) + 1i*randn(3, 3);
@@ -73,7 +73,7 @@ g = f*A;
 g_exact = @(x) [exp(1i*11*pi*x) cos(20*pi*x) cos(sin(pi*x))]*A;
 err = abs(feval(g, x) - g_exact(x));
 pass(10) = max(err(:)) < 100*max(g.vscale.*g.epslevel);
-    % tolerance loosened in epslevel-dependent test
+    
 %%
 % Verify error handling and corner cases.
 

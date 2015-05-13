@@ -19,7 +19,7 @@ ff = feval(f, xx);
 gg = feval(g, xx);
 hh = atan2(ff, gg);
 pass(1) = norm(feval(h, xx) - hh, inf) < 1e2*tol;
-% tolerance loosened in epslevel dependent test
+
 
 ends = h.domain([1 end]);
 fi = feval(f, ends);
@@ -33,7 +33,7 @@ tol = 1e3*epslevel(h).*vscale(h);
 hh = atan2(gg, ff);
 err = norm(feval(h, xx) - hh, inf);
 pass(3) = err < tol;
-% tolerance loosened in epslevel dependent test
+
 
 ends = h.domain([1 end]);
 hi = atan2(feval(g, ends), feval(f, ends)).';

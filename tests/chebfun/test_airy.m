@@ -36,7 +36,7 @@ for im = [0 1]
 
             f = F(x);
             pass(im+1,k) = norm(feval(f,xx) - F(xx), inf) < 1e2*max(f.epslevel.*f.vscale);
-            % tolerance loosened in epslevel-dependent test
+            
             k = k + 1;
 
         end

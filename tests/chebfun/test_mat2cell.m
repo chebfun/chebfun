@@ -140,7 +140,7 @@ for k = 1:2
     
     pass(k,18) = norm([err1; err2(:)], inf) < ...
         1e2*max(get(f,'epslevel').*get(f,'vscale'));
-    % tolerance loosened in epslevel-dependent test
+    
 end
 
 end

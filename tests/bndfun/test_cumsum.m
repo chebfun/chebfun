@@ -32,7 +32,7 @@ F_ex = @(x) atan(x);
 err = feval(F, x) - F_ex(x);
 pass(2) = (norm(diff(err), inf) < 1e3*get(f, 'vscale')*get(f, 'epslevel')) ...
     && (abs(feval(F, a)) <= 1e1*get(f, 'vscale')*get(f, 'epslevel'));
-    % tolerance loosened in epslevel-dependent test
+    
 
 f = bndfun(@(x) cos(1e4*x), struct('domain', dom), pref);
 F = cumsum(f);
@@ -40,7 +40,7 @@ F_ex = @(x) sin(1e4*x)/1e4;
 err = feval(F, x) - F_ex(x);
 pass(3) = (norm(diff(err), inf) < 1e3*get(f, 'vscale')*get(f, 'epslevel')) ...
     && (abs(feval(F, a)) <= 1e1*get(f, 'vscale')*get(f, 'epslevel'));
-    % tolerance loosened in epslevel-dependent test
+    
 
 z = exp(2*pi*1i/6);
 f = bndfun(@(t) sinh(t*z), struct('domain', dom), pref);
@@ -60,7 +60,7 @@ G = cumsum(f);
 err = feval(G - F, x);
 pass(5) = (norm(diff(err), inf) < 1e2*get(f, 'vscale')*get(f, 'epslevel')) && ...
     (abs(feval(G, a)) < 1e2*get(f, 'vscale')*get(f, 'epslevel'));
-    % tolerance loosened in epslevel-dependent test
+    
 
 %%
 % Check that diff(cumsum(f)) == f and that cumsum(diff(f)) == f up to a
@@ -106,7 +106,7 @@ g_exact = @(x) (x-a).^(pow+1)./(pow+1);
 vals_exact = feval(g_exact, x);
 err = vals_g - vals_exact;
 pass(9) = ( norm(err, inf) < 1e2*get(f,'epslevel')*norm(vals_exact, inf) );
-    % tolerance loosened in epslevel-dependent test
+    
 
 % Singularities at both endpoints:
 mid = mean(dom);

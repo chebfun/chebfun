@@ -92,6 +92,6 @@ err2 = F2Vals - F2Exact;
 
 pass(7) = norm([err1; err2(:)], inf) < ...
     1e2*max(get(f,'epslevel').*get(f,'vscale'));
-% tolerance loosened in epslevel-dependent test
+
 
 end

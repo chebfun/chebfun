@@ -88,14 +88,14 @@ f_exact = @(x) abs(x)./(1 + x.^2);
 f = chebfun(f_exact, [-2 7], pref);
 x = 4.5*xr + 2.5;
 pass(11) = (norm(feval(f, x) - f_exact(x), inf) < 1e2*f.epslevel*f.vscale);
-% tolerance loosened in epslevel-dependent test
+
 
 pref.splitting = 0;
 f_exact = @(x) cos(1e4*x);
 f = chebfun(f_exact, [1 5], pref);
 x = 2*xr + 3;
 pass(12) = (norm(feval(f, x) - f_exact(x), inf) < 1e5*f.epslevel*f.vscale);
-% tolerance loosened in epslevel-dependent test
+
 
 pref.splitting = 0;
 z = exp(2*pi*1i/6);
@@ -210,7 +210,7 @@ fval = feval(f, x);
 vals_exact = feval(op, x);
 err = fval - vals_exact;
 pass(31) = ( norm(err, inf) < 1e4*get(f,'epslevel')*norm(vals_exact, inf) );
-% tolerance loosened in epslevel-dependent test
+
 
 %% Test for function defined on unbounded domain:
 
@@ -240,7 +240,7 @@ fExact = op(x);
 err = fVals - fExact;
 pass(33) = ( norm(err, inf) < 1e5*epslevel(f)*vscale(f) ) && ...
     ( feval(f, Inf) == Inf ) && ( feval(f, -Inf) == Inf );
-% tolerance loosened in epslevel-dependent test
+
 
 %% Functions on [a inf]:
 
@@ -258,7 +258,7 @@ fExact = op(x);
 err = fVals - fExact;
 pass(34) = ( norm(err, inf) < 1e1*epslevel(f)*vscale(f) ) && ...
      ( feval(f, Inf) < 1e2*epslevel(f)*vscale(f) );
-% tolerance loosened in epslevel-dependent test
+
 
 %% Functions on [-inf b]:
 
@@ -277,6 +277,6 @@ fExact = op(x);
 err = fVals - fExact;
 pass(35) = ( norm(err, inf) < 1e2*max(epslevel(f).*vscale(f)) ) && ...
     all( feval(f, -Inf) < 1e2*epslevel(f).*vscale(f) );
-% tolerance loosened in epslevel-dependent test
+
 
 end

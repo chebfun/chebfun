@@ -26,7 +26,7 @@ pass(3) = all(size(g.funs) == [1,2]);
 xx = linspace(-1, 2, 100);
 err = norm(feval(f, xx) - feval(g, xx), 'inf');
 tol = 1e2*epslevel(f);
-% tolerance loosened in epslevel-dependent test
+
 pass(4) = err < tol;
 pass(5) = all(mergedPts == [2 4:6]);
 
@@ -73,7 +73,7 @@ vals_h = feval(h, x);
 vals_exact = feval(op, x);
 err = vals_h - vals_exact;
 pass(12) = (norm(err, inf) < 1e3*get(h, 'vscale')*get(h, 'epslevel'));
-% tolerance loosened in epslevel-dependent test
+
 
 %% Test for function defined on unbounded domain:
 

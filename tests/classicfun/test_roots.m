@@ -34,7 +34,7 @@ exact = [ 2.40482555769577276862163; 5.52007811028631064959660
           90.3221726372104800557177; 93.4637187819447741711905
           96.6052679509962687781216; 99.7468198586805964702799 ];
 pass(1) = norm(r-exact,Inf) < 10*length(f)*get(f, 'epslevel');
-    % tolerance loosened in epslevel-dependent test
+    
 
 %% 
 % Test roots of an oscillatory BNDFUN:
@@ -42,14 +42,14 @@ k = 100;
 f = bndfun(@(x) sin(pi*k*x), data, pref);
 r = roots(f);
 pass(2) = norm(r-(-2*k:7*k)'/k, inf) < 10*get(f, 'epslevel').*get(f, 'vscale');
-    % tolerance loosened in epslevel-dependent test
+    
     
 %%
 % Test a perturbed polynomial BNDFUN:
 f = bndfun( @(x) (x-.1).*(x+.9).*x.*(x-.9) + 1e-14*x.^5, data, pref);
 r = roots(f);
 pass(3) = length(r) == 4 && norm(feval(f, r), inf) < 100*get(f, 'epslevel').*get(f, 'vscale');
-    % tolerance loosened in epslevel-dependent test
+    
     
 %%
 %  Test a some simple polynomials BNDFUN:
@@ -73,7 +73,7 @@ pass(6) = norm( r - [1i ; -1i], inf) < get(f, 'epslevel').*get(f, 'vscale');
 f = bndfun(@(x) (1 + 25*x.^2).*exp(x), struct('domain', [-1 1]), pref);
 r = roots(f, 'complex', 1, 'prune', 1);
 pass(7) = norm( r - [1i ; -1i]/5, inf) < 10*get(f, 'epslevel').*get(f, 'vscale');
-    % tolerance loosened in epslevel-dependent test
+    
     
 f = bndfun(@(x) sin(10*pi*x), data, pref);
 r1 = roots(f, 'complex', 1, 'recurse', 0);
@@ -86,7 +86,7 @@ f = bndfun(@(x) [sin(pi*x), cos(pi*x), x.^2+1], data, pref);
 r = roots(f);
 r2 = [-2:7 -1.5:6.5 NaN(1,11)].';
 pass(9) = all( r(:) - r2 < 1e1*max(get(f, 'epslevel').*get(f, 'vscale')) | isnan(r2) );
-% tolerance loosened in epslevel-dependent test
+
     
 %% 
 % Test on singular BNDFUN.

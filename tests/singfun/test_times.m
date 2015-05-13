@@ -109,7 +109,7 @@ h_exact = @(x) (1+x).^b.*sin(x).*sin(2*x).*(1-x).^c;
 vals_exact = feval(h_exact, x);
 err = vals_h - vals_exact;
 pass(8) = all( abs(err) < 1e4*max(get(f, 'epslevel'), get(g, 'epslevel')) );
-    % tolerance loosened in epslevel-dependent test
+    
     
 % poles at different endpoints
 data.exponents = [b b];
@@ -124,7 +124,7 @@ h_exact = @(x) sin(x).*(1-x).^b.*cos(x).^3.*(1+x).^(b+p);
 vals_exact = feval(h_exact, x);
 err = norm((vals_h - vals_exact)./(vals_exact), inf);
 tol = 1e2*max(get(f, 'epslevel'), get(g, 'epslevel'));
-% tolerance loosened in epslevel-dependent test
+
 pass(9) = all( err < tol );
 
 % Check the trivial case with both vanishing alpha and beta.

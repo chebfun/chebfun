@@ -90,7 +90,7 @@ vals_h = feval(h, x);
 vals_exact = feval(op, x);
 err = vals_h - vals_exact;
 pass(11) = ( norm(err, inf) < 1e2*epslevel(h)*norm(vals_exact, inf) );
-% tolerance loosened for epslevel-dependent test
+
 
 %% Test on function defined on unbounded domain:
 

@@ -16,7 +16,7 @@ f = J*c;
 err = norm(c - jaccoeffs(f, n+1, a, b), inf);
 tol = 1e2*epslevel(f);
 pass(1) = err < tol;
-% tolerance loosened in epslevel-dependent test
+
 
 % Piecewise domain:
 n = 11;

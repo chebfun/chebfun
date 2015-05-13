@@ -114,7 +114,7 @@ pass(14) = err < tol;
 p = legpoly(1:100, [0 155 3333 10000]);
 err = norm(p'*p - diag(diag(p'*p)));
 pass(15) = err < 1e6*epslevel(p)*vscale(p);
-    % tolerance loosened in epslevel-dependent test
+    
 
 % Test 16 confirms othonormality:
 p = legpoly(1:100, [0 3333 10000], 'normalize');
@@ -131,7 +131,7 @@ P = legendre(1500, xx);
 err = norm(feval(p, xx) - P(1, :), inf);
 tol = 1e6*epslevel(p)*vscale(p);
 pass(17) = err < tol;
-    % tolerance loosened in epslevel-dependent test
+    
 
 % Test 18 confirms normaliztion:
 p = legpoly(1500, [-1 0 1], 'normalize');

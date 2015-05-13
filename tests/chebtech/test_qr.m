@@ -91,7 +91,7 @@ function result = test_one_qr(f, x, method)
     % Check orthogonality.
     ip = innerProduct(Q, Q);
     result(1) = max(max(abs(ip - eye(N)))) < 1e3*max(f.vscale.*f.epslevel);
-    % tolerance loosened in epslevel-dependent test
+    
 
     % Check that the factorization is accurate.
     err = Q*R - f;
@@ -107,7 +107,7 @@ function result = test_one_qr_with_perm(f, x, method)
     % Check orthogonality.
     ip = innerProduct(Q, Q);
     result(1) = max(max(abs(ip - eye(N)))) < 1e3*max(f.vscale.*f.epslevel);
-    % tolerance loosened in epslevel-dependent test
+    
 
     % Check that the factorization is accurate.
     err = Q*R - f*E;

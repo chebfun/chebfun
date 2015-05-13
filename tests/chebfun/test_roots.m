@@ -12,13 +12,13 @@ f = chebfun(@(x) sin(M*pi*x), [0 1], pref);
 exact = linspace(0, 1, M+1).';
 r = roots(f);
 pass(1) = length(r) == M+1 && norm(exact-r, inf) < 1e2*epslevel(f);
-% tolerance loosened in epslevel-dependent test
+
 
 % Test a polynomial:
 p = chebfun( '(x-.1).*(x+.9).*x.*(x-.9) + 1e-14*x.^5' );
 exact = roots(p);
 pass(2) = length(exact) == 4 && norm(feval(p,exact),inf) < 1e3*epslevel(p);
-    % tolerance loosened in epslevel-dependent test
+    
 
 % No roots should be returned:
 Fs = chebfun({-1, 2}, [-2, 0, 1]);
@@ -73,7 +73,7 @@ exact = [ 2.40482555769577276862163; 5.52007811028631064959660
 96.6052679509962687781216; 99.7468198586805964702799
 ];
 pass(7) = length(r) == 32 && norm(exact - r, inf) < 1e2*hscale(f)*epslevel(f);
-% tolerance loosened in epslevel-dependent test
+
 
 %%
 
@@ -101,7 +101,7 @@ r = roots(f);
 r_exact = (((-19:66)+1/2)*pi/30).';
 err = r - r_exact;
 pass(10) = (norm(err, inf) < 1e2*get(f, 'vscale')*get(f, 'epslevel'));
-% tolerance loosened in epslevel-dependent test
+
 
 %% Tests for functions defined on unbounded domain:
 
@@ -117,7 +117,7 @@ r = r( isfinite(r) );
 rExact = 0;
 err = r - rExact;
 pass(11) = norm(err, inf) < 1e2*epslevel(f)*vscale(f);
-% tolerance loosened in epslevel-dependent test
+
 
 % Blow-up function:
 op = @(x) x.^2.*(1-exp(-x.^2))-2;
@@ -141,7 +141,7 @@ rExact = [0.33529141416564289113;
           1.7760894757659030239];
 err = r - rExact;
 pass(13) = norm(err, inf) < 1e2*epslevel(f)*vscale(f);
-% tolerance loosened in epslevel-dependent test
+
 
 %% Test sale invariance (#911)
 
@@ -151,11 +151,11 @@ pass(14) = abs(r - eps) < 10*epslevel(f);
 f = chebfun('exp(1e-50*x)',[-1e50 1e50]);
 r = roots(f-1);
 pass(15) = abs(r - 1e50*eps) < 1e51*epslevel(f);
-% tolerance loosened in epslevel-dependent test
+
 f = chebfun('exp(1e50*x)',[-1e-50 1e-50]); 
 r = roots(f-1);
 pass(16) = abs(r - 1e-50*eps) < 1e-49*epslevel(f);
-% tolerance loosened in epslevel-dependent test
+
 
 %% Test roots with periodic option
 
@@ -164,7 +164,7 @@ r = roots(f);
 rExact = (-9:2:9)'*pi/10;
 err = r - rExact;
 pass(17) = norm(err, inf) < 1e2*epslevel(f)*vscale(f);
-% tolerance loosened in epslevel-dependent test
+
 
 f = chebfun('1i+cos(5*x).*exp(cos(x))',[-pi,pi],'periodic');
 r = roots(f);

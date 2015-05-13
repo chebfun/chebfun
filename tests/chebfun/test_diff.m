@@ -84,7 +84,7 @@ df_exact = @(x) (x - dom(1)).^(pow-1).*(pow*sin(200*x)+200*(x - dom(1)).*cos(200
 vals_exact = feval(df_exact, x);
 err = vals_df - vals_exact;
 pass(10) = ( norm(err, inf) < 1e4*get(f,'epslevel')*norm(vals_exact, inf) );
-% tolerance loosened in epslevel-dependent test
+
 
 %% Test on function defined on unbounded domain:
 
@@ -105,7 +105,7 @@ gVals = feval(g, x);
 gExact = op_g(x);
 err = gVals - gExact;
 pass(11) = norm(err, inf) < 1e2*get(g,'epslevel')*get(g,'vscale');
-    % tolerance loosened in epslevel-dependent test
+    
 
 % [TODO]:  Check fractional derivatives once implemented.
 

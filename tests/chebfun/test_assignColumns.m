@@ -114,7 +114,7 @@ for k = 1:2
     h = assignColumns(f, 2, g);
     err = feval(h, x) - oph(x);    
     pass(k,13) = norm(err, inf) < 1e2*vscale(h)*epslevel(h);
-    % tolerance loosened in epslevel-dependent test   
+       
  
     %% Test removing columns (#889)
     

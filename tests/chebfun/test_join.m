@@ -100,7 +100,7 @@ h_exact = [h_exactf; h_exactg];
 err = h_exact - h_vals;
 pass(9) = isequal(h.domain, [-Inf -3 Inf]) && ...
     norm(err, inf) < 1e1*vscale(h)*epslevel(h);
-% tolerance loosened in epslevel-dependent test
+
 
 end
 

@@ -118,7 +118,7 @@ y_exact = [0 ; Inf];
 fx = op(x);
 pass(12) = ((max(abs(y - y_exact)) < 1e3*get(f, 'epslevel')) && ... 
           (max(abs(fx - y_exact)) < 1e3*get(f, 'epslevel')));
-% tolerance loosened in epslevel-dependent test
+
 
 %% Tests on function defined on unbounded domain:
 
@@ -137,12 +137,12 @@ errV = vals - vExact;
 errP = pos - pExact;
 pass(13) = ( norm(errV, inf) < 1e2*epslevel(f)*vscale(f) ) && ...
     ( norm(errP, inf) < 1e2*epslevel(f)*vscale(f) );
-% tolerance loosened in epslevel-dependent test
+
 
 %% from #824
 gam = chebfun('gamma(x)',[-4 4],'blowup','on','splitting','on');
 mm = minandmax(1./gam);
 pass(14) = norm(mm - [-1.125953228398760;4.079508980001102]) < 1e3*epslevel(gam);
-% tolerance loosened in epslevel-dependent test
+
 
 end

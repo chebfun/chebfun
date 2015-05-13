@@ -156,7 +156,7 @@ IMathematica = 0.88622692545274;
 err = abs(I - IMathematica);
 pass(17) = err(1) < 5e1*get(f1,'epslevel')*get(f1,'vscale');
 pass(18) = err(2) < 1e3*get(f2,'epslevel')*get(f2,'vscale');
-    % tolerance loosened in epslevel-dependent test
+    
 pass(19) = err(3) < 5e1*get(f3,'epslevel')*get(f3,'vscale');
 
 end

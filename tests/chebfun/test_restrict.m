@@ -126,7 +126,7 @@ g2Exact = op2(x2);
 err1 = g1Vals - g1Exact;
 err2 = g2Vals - g2Exact;
 pass(24) = norm([err1 ; err2], inf) < 1e2*get(g,'epslevel').*get(g,'vscale');
-% tolerance loosened in epslevel-dependent test
+
 
 %% Test a bug from issue #528
 f = chebfun(@(x) abs(x + 0.04), [-1 0.04 1], 'splitting', 'on');
@@ -147,7 +147,7 @@ f = chebfun(@(t) t.^0.5./exp(t), [0,inf], 'exps', [0.5 0]);
 g = f;
 f(1) = f(1); % restrict@unbndfun is called.
 pass(27) = ( norm(f-g, inf) < 10*epslevel(f) );
-    % tolerance loosened in epslevel-dependent test
+    
 
 %% Test trigfuns:
 f = chebfun(@(x) sin(2*pi*x), [1 2], 'trig');
@@ -171,5 +171,5 @@ function pass = test_restrict_one_function(f, f_exact, dom, map, xr)
 %     pass = err2 < tol && all(err(:) < tol); % TODO: remove?
     pass = all(ismember(dom, fr.domain)) && ...
         all(err(:) < 1e5*fr.vscale*fr.epslevel); 
-    % tolerance loosened in epslevel-dependent test
+    
 end

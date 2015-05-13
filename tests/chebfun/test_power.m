@@ -110,7 +110,7 @@ vals_g = feval(g, x);
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
 pass(22) = ( norm(err, inf) < 1e2*epslevel(f).*norm(vals_exact, inf) );
-% tolerance loosened in epslevel-dependent test
+
 
 %% SINGFUN .^ constant integer:
 
@@ -126,7 +126,7 @@ vals_g = feval(g, x);
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
 pass(23) = ( norm(err, inf) < 1e2*epslevel(f).*norm(vals_exact, inf) );
-% tolerance loosened in epslevel-dependent test
+
 
 %% Square root via POWER - A positive piece-wise example with singularities:
 
@@ -161,7 +161,7 @@ vals_g = feval(g, x);
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
 pass(25) = ( norm(err, inf) < 1e1*epslevel(f).*norm(vals_exact, inf) );
-% tolerance loosened in epslevel-dependent test
+
 
 %% General power - A smooth function - the Runge function and negative power:
 
@@ -176,7 +176,7 @@ vals_g = feval(g, x);
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
 pass(26) = ( norm(err, inf) < 1e3*epslevel(f).*norm(vals_exact, inf) );
-% tolerance loosened in epslevel-dependent test
+
 
 %% General power - A smooth function - a real function with varying sign and 
 % positive power:
@@ -193,7 +193,7 @@ vals_exact = feval(opExact, x);
 err = norm(vals_g - vals_exact, inf);
 tol = 1e3*epslevel(f).*norm(vals_exact, inf);
 pass(27) = ( err < tol );
-% tolerance loosened in epslevel-dependent test
+
 
 %% General power - A smooth function - a real function with varying sign and 
 % negative power:
@@ -209,7 +209,7 @@ vals_g = feval(g, x);
 vals_exact = feval(opExact, x);
 err = norm(vals_g - vals_exact, inf);
 tol = 1e4*epslevel(f).*norm(vals_exact, inf);
-    % tolerance loosened in epslevel-dependent test
+    
 pass(28) = ( err < tol );
 
 %% General power - A smooth function - a complex function and positive power:
@@ -225,7 +225,7 @@ vals_g = feval(g, x);
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
 pass(29) = ( norm(err, inf) < 1e2*epslevel(f).*norm(vals_exact, inf) );
-% tolerance loosened in epslevel-dependent test
+
 
 %% General power - A smooth function - a complex function and negative power:
 
@@ -240,7 +240,7 @@ vals_g = feval(g, x);
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
 pass(30) = ( norm(err, inf) < 1e2*epslevel(f).*norm(vals_exact, inf) );
-% tolerance loosened in epslevel-dependent test
+
 
 %% General power - A singular function - a positive function and positive power:
 dom = [-2 7];
@@ -275,7 +275,7 @@ vals_g = feval(g, x);
 vals_exact = feval(opExact, x);
 err = norm(vals_g - vals_exact, inf);
 tol = 1e3*epslevel(f).*norm(vals_exact, inf);
-% tolerance loosened in epslevel-dependent test
+
 pass(32) = ( err < tol );
 
 
@@ -293,7 +293,7 @@ vals_g = feval(g, x);
 vals_exact = feval(opExact, x);
 err = norm(vals_g - vals_exact, inf);
 tol = 1e3*epslevel(f).*norm(vals_exact, inf);
-% tolerance loosened in epslevel-dependent test
+
 pass(33) = ( err < tol );
 
 %%%%%%%%%%%%%%%%%%%%%%% function on unbounded domain: %%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -317,7 +317,7 @@ gVals = feval(g, x);
 gExact = opg(x);
 err = gVals - gExact;
 pass(34) = norm(err, inf) < 1e2*epslevel(g)*vscale(g);
-% tolerance loosened in epslevel-dependent test
+
 
 % Blow-up function and general power:
 op = @(x) x.^2.*(1-exp(-x.^2))+2;
@@ -360,7 +360,7 @@ gVals = feval(g, x);
 gExact = opg(x);
 err = gVals - gExact;
 pass(37) = norm(err, inf) < 1e2*epslevel(g)*vscale(g);
-% tolerance loosened in epslevel-dependent test
+
 
 % Blow-up function and negative integer power:
 op = @(x) x.*(5+exp(-x.^3));
@@ -372,7 +372,7 @@ gVals = feval(g, x);
 gExact = opg(x);
 err = gVals - gExact;
 pass(38) = norm(err, inf) < 1e2*epslevel(g)*vscale(g);
-% tolerance loosened in epslevel-dependent test
+
 
 %% Test an array-valued CHEBFUN --> quasimatrix.
 
@@ -384,7 +384,7 @@ f = [x, x+.5];
 g = power(f, pow);
 err = norm(feval(g, xx) - opExact(xx), inf);
 tol = 1e4*max(epslevel(g).*vscale(g));
-% tolerance loosened in epslevel-dependent test
+
 pass(39) = err < tol;
 
 end

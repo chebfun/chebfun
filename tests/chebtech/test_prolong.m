@@ -79,7 +79,7 @@ for n = 1:2
     values = g.coeffs2vals(g.coeffs);
     pass(n, 10) = norm(values - [F(x), -F(x)], inf) < ...
         1e3*max(g.vscale.*g.epslevel);
-    % tolerance loosened in epslevel-dependent test
+    
     
     k = 100;
     g = prolong(f, k);
@@ -87,7 +87,7 @@ for n = 1:2
     values = g.coeffs2vals(g.coeffs);
     pass(n, 11) = norm(values - [F(x), -F(x)], inf) < ...
         1e4*max(g.vscale.*g.epslevel);
-    % tolerance loosened in epslevel-dependent test
+    
 
     g = prolong(f, 1);
     pass(n, 12) = size(g, 1) == 1 && norm(g.coeffs, inf) < ...
@@ -99,7 +99,7 @@ for n = 1:2
     values = g.coeffs2vals(g.coeffs);
     pass(n, 13) = size(g, 1) == 2 && ...
         norm(values - exact_values, inf) < 1e3*max(g.vscale.*g.epslevel);
-    % tolerance loosened in epslevel-dependent test
+    
 
     F = @(x) cos(1000*x);
     f = testclass.make(@(x) [F(x), -F(x)], [], pref);
@@ -115,7 +115,7 @@ for n = 1:2
     values = g.coeffs2vals(g.coeffs);
     pass(n, 15) = length(g) == 2 && ...
         norm(values - exact_values, inf) < 1e3*max(g.vscale.*g.epslevel);
-    % tolerance loosened in epslevel-dependent test
+    
 
     v = [1 2 3];
     f = testclass.make(v, [], pref);

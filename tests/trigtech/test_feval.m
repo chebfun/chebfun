@@ -32,7 +32,7 @@ f = testclass.make(@(x) cos(100*sin(pi*x)), [], pref);
 f_exact = @(x) cos(100*sin(pi*x));
 pass(3) = (norm(feval(f, x) - f_exact(x), inf) < ...
     1e3*f.vscale.*f.epslevel);
-    % tolerance loosened in epslevel-dependent test
+    
 
 
 f = testclass.make(@(x) exp(1i*pi*x), [], pref);

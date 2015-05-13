@@ -84,7 +84,7 @@ hVals = feval(h, x);
 hExact = oph(x);
 err = hVals - hExact;
 pass(11) = norm(err, inf) < 1e1*get(h,'epslevel')*get(h,'vscale');
-% tolerance loosened for epslevel-dependent test
+
 
 %% Test compose with a discontinuous breakpoint. See #1074.
 ep = 0.25;

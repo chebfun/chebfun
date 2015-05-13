@@ -70,7 +70,7 @@ fh = @(x) sin(1e2*x);
 f = singfun(fh, [], pref);
 % Remove points really close to the end points.
 pass(8) = test_divide_function_by_function(f, fh, g, gh, x(5:end-4));
-    % tolerance loosened in epslevel-dependent test
+    
 %%
 % Check that direct construction and RDIVIDE give comparable results.
 
@@ -113,7 +113,7 @@ r = chebfun(@(x) x, dom);
 f = 1./r;
 err = diff(f) + f./r;
 pass(12) = ( norm(err, Inf) < 1e3*get(r, 'vscale')*get(r, 'epslevel') );
-    % tolerance loosened in epslevel-dependent test
+    
 
 %% Check division as negative powers
 f = 1./r - r.^-1;               % rdivide == power
@@ -122,7 +122,7 @@ h = 1./(r.^2) - (1./r).^2;      % associativity
 pass(13) = ( norm(f, Inf) < get(r, 'vscale')*get(r, 'epslevel') );
 pass(14) = ( norm(g, Inf) < get(r, 'vscale')*get(r, 'epslevel') );
 pass(15) = ( norm(h, Inf) < 1e1*get(r, 'vscale')*get(r, 'epslevel') );
-    % tolerance loosened in epslevel-dependent test
+    
     
 %% Check simplification of (1+x) / sqrt(1+x) has positive exponents.
 f = singfun(@(x) 1+x);

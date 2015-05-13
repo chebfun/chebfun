@@ -32,7 +32,7 @@ hVals = feval(h, x);
 hExact = op(x);
 err = hVals - hExact;
 pass(2) = norm(err, inf) < 1e1*get(h, 'epslevel')*get(h, 'vscale');
-    % tolerance loosened in epslevel-dependent test
+    
     
 % Composition of a SMOOTHFUN and a SINGFUN - G(F)
 data.exponents = [0.5 0];
@@ -44,5 +44,5 @@ hVals = feval(h, x);
 hExact = op(x);
 err = hVals - hExact;
 pass(3) = norm(err, inf) < 1e4*get(h, 'epslevel')*get(h, 'vscale');
-    % tolerance loosened in epslevel-dependent test
+    
 end

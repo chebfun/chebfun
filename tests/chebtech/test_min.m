@@ -51,7 +51,7 @@ for n = 1:2
     tol = 1e2*max(f.vscale.*f.epslevel);
     pass(n, 8) = (all(abs(y - exact_max) < tol) && ...
                   all(abs(fx - exact_max) < tol));
-    % tolerance loosened in epslevel-dependent test
+    
 end
 
 end

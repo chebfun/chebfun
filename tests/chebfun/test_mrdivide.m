@@ -52,7 +52,7 @@ g_vals = feval(g, xr);
 g_exact = op(xr);
 err = g_vals - g_exact;
 pass(6) = norm(err, inf) < 1e5*vscale(g)*epslevel(g);
-% tolerance loosened in epslevel-dependent test
+
 
 % [1 x INF] * [INF x 1] = scalar => scalar/column SINGFUN:
 f = chebfun(@(x)(sin(100*x).^2+1)./(1-x).^0.4, 'exps', [0 -0.4], 'splitting', 'on');
@@ -92,7 +92,7 @@ XVals = feval(X, x);
 XExact = opExact(x);
 err = XVals - XExact;
 pass(9) = norm(err, inf) < 1e2*max(get(X,'epslevel').*get(X,'vscale'));
-    % tolerance loosened in epslevel-dependent test
+    
 
 %% #1111
 

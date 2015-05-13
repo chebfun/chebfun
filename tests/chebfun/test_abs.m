@@ -192,7 +192,7 @@ opAbs = @(x) abs(-x.^2.*(1+exp(-x.^2)));
 gExact = opAbs(x);
 err = gVals - gExact;
 pass(10,:) = norm(err, inf) < 1e5*epslevel(g)*vscale(g);
-% tolerance loosened for epslevel-dependent test
+
 
 % Functions on [a inf]:
 dom = [0 Inf];
@@ -217,6 +217,6 @@ g = abs(f);
 tech = pref.tech;
 pass(12, :) = isequal(get(g.funs{1}, 'tech'), tech);
 pass(13, :) = norm(g - abs(h), inf ) < 1e4*vscale(h)*epslevel(h);
-    % tolerance loosened in epslevel-dependent test
+    
 
 end

@@ -31,7 +31,7 @@ g_exact = @(x) (1+x).^(b+1)./(b+1);
 vals_exact = feval(g_exact, x);
 err = vals_g - vals_exact;
 pass(1) = (norm(err, inf) < 1e1*get(f,'epslevel')*norm(vals_exact, inf));
-    % tolerance loosened in epslevel-dependent test
+    
 
 % fractional pole with order < -1 at the right endpoint:
 data.exponents = [0 d];
@@ -65,7 +65,7 @@ g_exact = @(x)(1-x).^(-3)/3 - 2^(-3)/3;
 vals_exact = feval(g_exact, x);
 err = vals_g - vals_exact;
 pass(4) = (norm(err, inf) < 1e2*get(f,'epslevel')*norm(vals_exact, inf));
-% tolerance loosened in epslevel-dependent test
+
 
 %% Tests without closed form solution:
 

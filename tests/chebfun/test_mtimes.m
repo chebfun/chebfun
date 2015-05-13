@@ -126,7 +126,7 @@ h_vals = feval(h, x);
 h_exact = h_op(x);
 err = h_vals - h_exact;
 pass(21) = norm(err, inf) < 1e4*vscale(h)*epslevel(h);
-% tolerance loosened in epslevel-dependent test
+
 
 %% Test on SINGFUN - multiplication of a column CHEBFUN and a row CHEBFUN:CHEBFUN:
 
@@ -137,7 +137,7 @@ h = f*g;
 h_exact = 0.13033807496531659;
 err = h - h_exact;
 pass(22) = abs(err) < 1e2*h_exact*max(epslevel(f), epslevel(g));
-% tolerance loosened in epslevel-dependent test
+
 
 %% Tests for function defined on unbounded domain:
 
@@ -161,7 +161,7 @@ op = @(x) [exp(x) x.*exp(x) (1-exp(x))./x]*A;
 gExact = op(x);
 err = gVals - gExact;
 pass(23) = norm(err, inf) < 1e2*max(get(g,'epslevel').*get(g,'vscale'));
-% tolerance loosened in epslevel-dependent test
+
 
 % Some tests which make sure MTIMES behaves correctly regarding the dimensions
 % of its inputs.
@@ -263,7 +263,7 @@ pass(76) = (norm(h1 - kron(F', G)) < 1e1*tol);
 pass(77) = (norm(h2 - kron(F, G')) < 1e1*tol); 
 pass(78) = (norm(h1 - G*F') < 1e1*tol);
 pass(79) = (norm(h2 - F*G') < 1e1*tol);
-% tolerance loosened in epslevel-dependent test
+
 
 end
 
@@ -276,7 +276,7 @@ function result = test_mult_function_by_scalar(f, f_op, alpha, x)
     g_exact = @(x) f_op(x) * alpha;
     err = feval(g1, x) - g_exact(x);
     result(2) = norm(err(:), inf) < 1e2*max(vscale(g1).*epslevel(g1));
-        % tolerance loosened in epslevel-dependent test
+        
 end
 
 function result = causesDimensionError(op)

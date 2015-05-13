@@ -74,7 +74,7 @@ g_vals = feval(g, xr);
 g_exact = op(xr).';
 err = g_vals - g_exact;
 pass(7) = norm(err, inf) < 1e5*vscale(g)*epslevel(g);
-% tolerance loosened in epslevel-dependent test
+
 
 % [1 x INF] * [INF x 1] = scalar => row SINGFUN\scalar:
 f = chebfun(@(x)(sin(100*x).^2+1)./((x+1).^0.25), 'exps', [-0.25 0], 'splitting', 'on');
@@ -82,7 +82,7 @@ f = f.';
 g = f\3;
 err = f*g - 3;
 pass(8) = abs(err) < 10*vscale(g)*epslevel(g);
-    % tolerance loosened in epslevel-dependent test
+    
 
 % [INF x 1] * SCALAR = [INF x 1] => column SINGFUN\column SINGFUN:
 

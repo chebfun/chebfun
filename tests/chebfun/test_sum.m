@@ -143,7 +143,7 @@ f = chebfun(op, dom, 'exps', [pow 0], 'splitting', 'on');
 I = sum(f);
 I_exact = 0.17330750941063138;
 pass(26) = ( abs(I-I_exact) < 1e3*get(f, 'epslevel')*abs(I_exact) );
-% tolerance loosened in epslevel-dependent test
+
 
 %% Test for functions defined on unbounded domain:
 

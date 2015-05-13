@@ -7,7 +7,7 @@ dom = [0 pi];
 if ( nargin == 0 )
     pref = cheboppref;
 end
-pref.errTol = 1e-10; % tolerance loosened in epslevel-dependent test
+pref.errTol = 1e-10; 
  
 %% Simple scalar problem
 N = chebop(@(x,u) diff(u,2) + x.*u, dom);

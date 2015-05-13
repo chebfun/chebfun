@@ -27,7 +27,7 @@ for (k = 1:1:numel(logFunctions))
     g = log_op(f, pref);
     err = feval(g, xr) - g_exact(xr);
     pass(k) = norm(err, inf) < 1e2*g.vscale.*g.epslevel;
-    % tolerance loosened in epslevel-dependent test
+    
 end
 
 end

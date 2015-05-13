@@ -24,7 +24,7 @@ lPartExact = 38.339961332457015;
 err = abs(lPart - lPartExact);
 tol = 1e7*lPartExact*vscale(f).*epslevel(f);
 pass(2) = ( err < tol );
-% tolerance loosened in epslevel-dependent test
+
 
 % A piecewise smooth CHEBFUN:
 f = chebfun({@(x)sin(x) @(x)cos(2*x)}, [-1 1 2]);
@@ -56,6 +56,6 @@ l = arcLength(f);
 lExact = 3.452674964506957;
 err = abs(l - lExact);
 pass(6) = ( err < 1e3*lExact*vscale(f).*epslevel(f) );
-% tolerance loosened in epslevel-dependent test
+
 
 end

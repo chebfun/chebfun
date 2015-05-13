@@ -136,5 +136,5 @@ function result = test_sub_function_and_function(f, f_op, g, g_op, x)
     norm(feval(h1, x) - h_exact(x), inf);
     result(2) = norm(feval(h1, x) - h_exact(x), inf) <= ...
         1e3*max(h1.vscale.*h1.epslevel);
-    % tolerance loosened in epslevel-dependent test    
+        
 end

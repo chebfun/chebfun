@@ -17,7 +17,7 @@ g = chebfun(@(x) [sin(x), sin(x), exp(x), cos(x)], pref);
 h = extractColumns(f, [1 1 3 2]);
 pass(3) = size(h, 2) == 4 && normest(g - h) < 1e1*epslevel(f) && ...
     norm(g.pointValues - h.pointValues, inf) < 1e1*epslevel(f);
-% tolerance loosened in epslevel-dependent test
+
 
 %% Test on function defined on unbounded domain:
 
@@ -41,6 +41,6 @@ gExact = opg(x);
 err = gVals - gExact;
 
 pass(4) = norm(err, inf) < 1e2*epslevel(f).*vscale(f);
-% tolerance loosened in epslevel-dependent test
+
 
 end

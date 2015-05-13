@@ -76,7 +76,7 @@ f = chebfun(op, dom, 'splitting', 'on');
 out = f(end);
 pass(12) = ( isnumeric(out) ) && all(size(out) == ones(1, 2) ) && ...
     ( abs(out - 0.75) < 1e2*epslevel(f) );
-% tolerance loosened in epslevel-dependent test
+
 
 end
 

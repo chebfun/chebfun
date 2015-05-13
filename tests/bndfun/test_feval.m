@@ -23,18 +23,18 @@ f = bndfun(@(x) exp(x) - 1, struct('domain', dom), pref);
 f_exact = @(x) exp(x) - 1;
 pass(1) = (norm(feval(f, x) - f_exact(x), inf) < ...
     1e2*get(f, 'vscale')*get(f, 'epslevel'));
-    %tolerance loosened in epslevel-dependent test
+    
 
 f = bndfun(@(x) 1./(1 + x.^2), struct('domain', dom), pref);
 f_exact = @(x) 1./(1 + x.^2);
 pass(2) = (norm(feval(f, x) - f_exact(x), inf) < ...
     1e2*get(f, 'vscale')*get(f, 'epslevel'));
-    %tolerance loosened in epslevel-dependent test
+    
 
 f = bndfun(@(x) cos(1e4*x), struct('domain', dom), pref);
 f_exact = @(x) cos(1e4*x);
 pass(3) = (norm(feval(f, x) - f_exact(x), inf) < 1e5*get(f, 'epslevel'));
-    % tolerance loosened in epslevel-dependent test
+    
     
 z = exp(2*pi*1i/6);
 f = bndfun(@(t) sinh(t*z), struct('domain', dom), pref);
@@ -78,7 +78,7 @@ f_exact = [0 0 0 -1 1 -1
     [1 sqrt(2) 1 1 0 -1]/sqrt(2)];
 pass(9) = all(all(abs(fx - f_exact) < ...
     1e2*max(get(f, 'vscale').*get(f, 'epslevel'))));
-    %tolerance loosened in epslevel-dependent test
+    
 
 %% Test on singular function:
 
@@ -92,6 +92,6 @@ fval = feval(f, x);
 vals_exact = feval(op, x);
 err = fval - vals_exact;
 pass(10) = ( norm(err, inf) < 1e2*get(f,'epslevel')*norm(vals_exact, inf) );
-    %tolerance loosened in epslevel-dependent test
+    
 
 end

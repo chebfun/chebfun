@@ -25,7 +25,7 @@ for n = 1:2
     f = testclass.make(@(x) cos(1e4*x), [], pref);
     exact = -6.112287777765043e-05;
     pass(n, 3) = (abs(sum(f) - exact)/abs(exact) < 1e6*f.vscale.*f.epslevel);
-    % tolerance loosened in epslevel-dependent test
+    
     
     z = exp(2*pi*1i/6);
     f = testclass.make(@(t) sinh(t*z), [], pref);

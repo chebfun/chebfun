@@ -85,7 +85,7 @@ df2 = diff(f, 2);
 df2_exact = @(x) 1./(1 + x.^2);
 err = df2_exact(x) - feval(df2, x);
 pass(9) = (norm(err, inf) < 1e7*get(df2, 'vscale')^2*get(df2, 'epslevel'));
-    % tolerance loosened in epslevel-dependent test
+    
 
 f = bndfun(@(x) sin(x), struct('domain', dom), pref);
 df4 = diff(f, 4);
@@ -93,7 +93,7 @@ df4_exact = @(x) sin(x);
 err = norm(df4_exact(x) - feval(df4, x), inf);
 tol = 10*get(df4, 'vscale')*get(df4, 'epslevel');
 pass(10) = err < 1e6*tol;
-    % tolerance loosened in epslevel-dependent test
+    
 
 
 f = bndfun(@(x) x.^5 + 3*x.^3 - 2*x.^2 + 4, struct('domain', dom), pref);
@@ -109,7 +109,7 @@ f = bndfun(@(x) [sin(x) x.^2 exp(1i*x)], struct('domain', dom), pref);
 df_exact = @(x) [cos(x) 2*x 1i*exp(1i*x)];
 err = feval(diff(f), x) - df_exact(x);
 pass(12) = (norm(err(:), inf) < 1e3*max(get(f, 'vscale').*get(f, 'epslevel')));
-    % tolerance loosened in epslevel-dependent test
+    
 
 % DIM option.
 dim2df = diff(f, 1, 2);
@@ -141,6 +141,6 @@ df_exact = @(x) (x - dom(1)).^(pow-1).*(pow*sin(x)+(x - dom(1)).*cos(x));
 vals_exact = feval(df_exact, x);
 err = vals_df - vals_exact;
 pass(16) = ( norm(err, inf) < 1e5*get(f,'epslevel')*norm(vals_exact, inf) );
-    % tolerance loosened in epslevel-dependent test
+    
 
 end

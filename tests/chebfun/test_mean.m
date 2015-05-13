@@ -38,7 +38,7 @@ f = chebfun(op, dom, 'exps', [-0.5 -0.5], 'splitting', 'on');
 m = mean(f);
 m_exact = -0.01273522016443600i;
 pass(9) = abs(m - m_exact) < 1e3*get(f,'epslevel')*abs(m_exact);
-% tolerance loosened in epslevel-dependent test
+
 
 %% singular function: an infinite case
 
@@ -82,7 +82,7 @@ op = @(x) 0.75+sin(10*x)./exp(x);
 f = chebfun(op, dom, 'splitting', 'on');
 M = mean(f);
 pass(13) = abs(M - 0.75) < 1e2*epslevel(f).*vscale(f);
-% tolerance loosened in epslevel-dependent test
+
 
 end
 

@@ -25,5 +25,5 @@ res = A*X - B;
 err = feval(res, x);
 pass(1) = norm(err(:), inf) < 1e1*max([get(A,'epslevel').*get(A,'vscale') ...
     get(B,'epslevel').*get(B,'vscale')]);
-    % tolerance loosened in epslevel-dependent test
+    
 end

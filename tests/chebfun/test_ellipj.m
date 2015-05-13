@@ -36,7 +36,7 @@ dn_err = feval(dn, xr) - dn_ex;
 pass(7) = norm(sn_err(:), inf) < 1e2*vscale(sn)*epslevel(sn) && ...
           norm(cn_err(:), inf) < 1e2*vscale(cn)*epslevel(cn) && ...
           norm(dn_err(:), inf) < 1e2*vscale(dn)*epslevel(dn);
-% tolerance loosened in epslevel-dependent test
+
 end
 
 % Run one test of chebfun.ellipj().  u_op and m_op are function handles or
@@ -88,5 +88,5 @@ function pass = do_test_ellipj(u_op, m_op, xr, pref)
     pass = norm(sn_err(:), inf) < 1e2*vscale(sn)*epslevel(sn) && ...
            norm(cn_err(:), inf) < 1e2*vscale(cn)*epslevel(cn) && ...
            norm(dn_err(:), inf) < 1e2*vscale(dn)*epslevel(dn);
-    % tolerance loosened in epslevel-dependent test
+    
 end

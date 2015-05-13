@@ -39,7 +39,7 @@ for j = 1:numel(FF);
     pass(j, k+1) = err < 1e4*epslevel(f)*vscale(f);
     pass(j, k+2) = err < 1e2*hscale(f)*pref.eps;
     k = k + 2;
-    % tolerance loosened in epslevel-dependent test
+    
 
     % Test on piecewise domain:
     f = chebfun(F, [-1, 0, .5, sqrt(pi/4), 1], pref);

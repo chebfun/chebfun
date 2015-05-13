@@ -14,7 +14,7 @@ testclass = trigtech();
 
 pass(1) = test_spotcheck_min(testclass, @(x) -exp(-cos(2*pi*x)), -exp(1), pref);
 pass(2) = test_spotcheck_min(testclass, @(x) -sin(10*pi*x), -1, pref);
-    % tolerance loosened in epslevel-dependent test
+    
 
 pass(3) = test_spotcheck_min(testclass, @(x) -exp(sin(pi*x).^100), -exp(1), pref);
 pass(4) = test_spotcheck_min(testclass, @(x) -exp(-sin(pi*x).^100), -1, pref);
@@ -33,7 +33,7 @@ exact_min = -[exp(1) 1 1];
 fx = -[exp(-cos(2*pi*x(1))) sin(10*pi*x(2)) exp(-sin(pi*(x(3)-0.32)).^100)];
 pass(6) = (all(abs(y - exact_min) < 100*f.epslevel) && ...
            all(abs(fx - exact_min) < 10*f.epslevel));
-    % tolerance loosened in epslevel-dependent test       
+           
 %%
 % Test for complex-valued trigtech objects.
 f = testclass.make(@(x) cos(pi*x) + exp(1i*pi*x), [], pref);
@@ -41,7 +41,7 @@ f = testclass.make(@(x) cos(pi*x) + exp(1i*pi*x), [], pref);
 exact_min = 1i; % Could be +/- 1i depending on machine.
 pass(7) = ( (abs(y - exact_min) < 1e2*f.vscale.*f.epslevel) || ...
             (abs(y + exact_min) < 1e2*f.vscale.*f.epslevel) );
-            % tolerance loosened in epslevel-dependent test
+            
                 
 end
 
@@ -53,6 +53,6 @@ f = testclass.make(fun_op, [], pref);
 fx = fun_op(x);
 result = ((abs(y - exact_min) < 100*f.vscale.*f.epslevel) && ... 
           (abs(fx - exact_min) < 10*f.vscale.*f.epslevel));
-    % tolerance loosened in epslevel-dependent test
+    
     
 end

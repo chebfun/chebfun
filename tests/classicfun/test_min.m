@@ -33,7 +33,7 @@ fx = -[sin(10*x(1)) airy(x(2)) (x(3)/10).^3.*cosh(x(3)/10)];
 tol = 10*get(f, 'vscale').*get(f, 'epslevel');
 pass(5) = (all(abs(y - exact_max) < 10*tol) && ...
     all(abs(fx - exact_max) < tol));
-    % tolerance loosened in epslevel-dependent test    
+        
 
 %%
 % Test for complex-valued BNDFUN.

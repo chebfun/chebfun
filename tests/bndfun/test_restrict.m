@@ -67,7 +67,7 @@ x = linspace(-1, 1, 100).';
 err1 = norm(feval(g{1} - h1, x), inf);
 err2 = norm(feval(g{2} - h2, x+4), inf);
 tol = 1e3*get(f, 'epslevel');
-    % tolerance loosened in epslevel-dependent test
+    
 pass(11) = err1 < tol && err2 < tol;
 
 %%
@@ -117,5 +117,5 @@ y_approx = feval(g, x);
 
 result = norm(y_exact - y_approx, Inf) < ...
     1e4*max(get(f, 'vscale').*get(f, 'epslevel'));
-    % tolerance loosened in epslevel-dependent test
+    
 end

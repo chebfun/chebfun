@@ -113,7 +113,7 @@ op = @(x)  (x - data.domain(2)).^pow.*(sin(x)+cos(3*x));
 h_exact = op(x);
 pass(22) = ( norm(vals_h-h_exact, inf) < 1e2*max(get(f, 'epslevel'), ...
     get(g, 'epslevel'))*norm(h_exact, inf) );
-    % tolerance loosened in epslevel-dependent test
+    
     
 %% Test for UNBNDFUN:
 
@@ -161,5 +161,5 @@ function result = test_add_function_to_function(f, f_op, g, g_op, x)
     h_exact = @(x) f_op(x) + g_op(x);
     result(2) = norm(feval(h1, x) - h_exact(x), inf) <= ...
         100*max(get(h1, 'vscale').*get(h1, 'epslevel'));
-        % tolerance loosened in epslevel-dependent test
+        
 end

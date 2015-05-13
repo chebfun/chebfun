@@ -43,7 +43,7 @@ r_exact = (((-25:88)+1/2)*pi/40).';
 pass(3) = ( norm(err, inf) < 1e4*epslevel(f)*norm(vals_check, inf) ) && ...
     ( norm( [dom(1); r_exact; dom(2)] - g.domain.', inf) < ...
     1e4*epslevel(f)*norm(r_exact, inf) );
-% tolerance loosened for epslevel-dependent test
+
 
 %% Tests for functions defined on unbounded domain:
 
@@ -66,7 +66,7 @@ vals_check = feval(op, x);
 err = vals_g - vals_check;
 pass(4) = ( norm(err, inf) < 1e2*epslevel(f)*vscale(f) ) && ...
     ( norm( rExact - g.domain(2:end-1).', inf) < 1e2*epslevel(f)*vscale(f) );
-    % tolerance loosened in epslevel-dependent test
+    
 
 % Blow-up function:
 op = @(x) x.^2.*(1-exp(-x.^2))-2;
@@ -79,7 +79,7 @@ vals_check = feval(op, x);
 err = vals_g - vals_check;
 pass(5) = ( norm(err, inf) < 1e5*epslevel(f)*vscale(f) ) && ...
     ( norm( rExact - g.domain(2:end-1).', inf) < 1e5*epslevel(f)*vscale(f) );
-% tolerance loosened for epslevel-dependent test
+
 
 % Functions on [a inf]:
 dom = [0 Inf];
@@ -105,7 +105,7 @@ tol1 = 1e2*epslevel(f)*vscale(f);
 err2 = norm( rExact - g.domain(2:end-1).', inf);
 tol2 = 1e2*epslevel(f)*vscale(f);
 pass(6) = ( err1 < tol1 ) && ( err2 < tol2 );
-% tolerance loosened for epslevel-dependent test
+
 
 % TODO: Add more tests.
 

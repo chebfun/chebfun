@@ -32,7 +32,7 @@ y_exact = [exp(-1) -1 exp(-1);
            exp(1)   1 1];
 
 pass(6) = all(abs(y(:) - y_exact(:)) < 100*max(f.vscale.*f.epslevel));
-    % tolerance loosened in epslevel-dependent test
+    
 
 % Check that the points x are indeed extreme points of the function 
 % operator.
@@ -53,7 +53,7 @@ f2 = testclass.make(@(x) 1i*cos(20*pi*x));
 [vals2, pos2] = minandmax(f2);
 pass(7) = norm(abs(vals) - abs([vals1 vals2]), inf) < ...
     1e2*max(f.vscale.*f.epslevel);
-    % tolerance loosened in epslevel-dependent test
+    
 end
 
 % Spot-check the results for a given function.
@@ -66,5 +66,5 @@ y_exact = [exact_min ; exact_max];
 fx = fun_op(x);
 result = ((max(abs(y - y_exact)) < 100*f.vscale.*f.epslevel) && ... 
           (max(abs(fx - y_exact)) < 10*f.vscale.*f.epslevel));
-    % tolerance loosened in epslevel-dependent test
+    
 end

@@ -43,7 +43,7 @@ fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
 pass(4) = norm(err, inf) < 1e5*epslevel(f)*vscale(f);
-% tolerance loosened in epslevel-dependent test
+
 
 %% Functions on [a inf]:
 
@@ -89,7 +89,7 @@ fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
 pass(9) = norm(err, inf) < 1e2*epslevel(f)*vscale(f);
-% tolerance loosened in epslevel-dependent test
+
 
 %% Functions on [-inf b]:
 
@@ -143,6 +143,6 @@ fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
 pass(15) = norm(err, inf) < 1e2*max(epslevel(f).*vscale(f));
-% tolerance loosened in epslevel-dependent test
+
 
 end

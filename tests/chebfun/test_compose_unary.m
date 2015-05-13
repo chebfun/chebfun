@@ -84,7 +84,7 @@ gVals = feval(g, x);
 gExact = opg(x);
 err = gVals - gExact;
 pass(11) = norm(err, inf) < 1e1*get(g,'epslevel')*get(g,'vscale');
-% tolerance loosened for epslevel-dependent test
+
 
 %% Test related to #686
 
@@ -131,7 +131,7 @@ function pass = test_one_compose_unary(f_exact, dom, op, pref)
     err = norm(feval(g, x) - g_exact(x), inf);
     pass = (err < 1e2*vscale(g)*epslevel(g)) && ...
         isequal(g_exact(domain(f)), feval(g, domain(f)));
-    % tolerance loosened for epslevel-dependent test
+    
 end
 
 % Test composition of a function with a unary operator.

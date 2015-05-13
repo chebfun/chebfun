@@ -85,7 +85,7 @@ hVals = feval(h, x);
 hExact = oph(x);
 err = hVals - hExact;
 pass(17) = norm(err, inf) < 1e1*get(h,'epslevel').*get(h,'vscale');
-% tolerance loosened in epslevel-dependent test
+
 
 end
 

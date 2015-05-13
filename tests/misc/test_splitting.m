@@ -24,7 +24,7 @@ try
     x = linspace(-1, 1, 20);
     err = norm(f(x) - F(x), inf);
     pass(4) = numel(f.domain > 1) && err < 1e-5;
-    % tolerance loosened in epslevel-dependent test
+    
     
     pass(5) = strcmp(splitting('off'), 'on');
     

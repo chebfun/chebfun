@@ -51,7 +51,7 @@ err = vals_f - vals_check;
 
 pass(j+1,:) = ( norm(err-mean(err), inf) < ...
     1e3*get(f,'epslevel')*norm(vals_check, inf) );
-% tolerance loosened in epslevel-dependent test
+
 
 %% Tests for function defined on unbounded domain:
 
@@ -70,6 +70,6 @@ gVals = feval(g, x);
 gExact = opAbs(x);
 err = gVals - gExact;
 pass(j+2,:) = norm(err, inf) < 1e3*epslevel(g)*vscale(g);
-% tolerance loosened in epslevel-dependent test
+
 
 end

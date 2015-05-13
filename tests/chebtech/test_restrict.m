@@ -111,5 +111,5 @@ function result = test_spotcheck_restrict(testclass, fun_op, subint, pref)
     y_approx = feval(g, map(x));
 
     result = norm(y_exact - y_approx, Inf) < 1e3*max(g.vscale.*g.epslevel);
-    % tolerance loosened in epslevel-dependent test
+    
 end

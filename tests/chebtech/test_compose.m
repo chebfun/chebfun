@@ -49,7 +49,7 @@ for n = 1:4
     values = g.coeffs2vals(g.coeffs);
     pass(n, 4) = norm(sin([x x x.^2]) - values, inf) < ...
         1e2*max(h.vscale.*h.epslevel);
-    % tolerance loosened in epslevel-dependent test
+    
     
     % Compose 2 CHEBTECH objects with a binary function:
     f1 = testclass.make(@(x) sin(x));
@@ -70,7 +70,7 @@ for n = 1:4
     gvalues = g.coeffs2vals(g.coeffs);
     pass(n, 6) = norm(hvalues - gvalues, inf) < ...
         10*max(10*h.vscale.*h.epslevel); 
-        % tolerance loosened in epslevel-dependent test
+        
     
     % Compose g(f), when f and g are CHEBTECH objects:
     f = testclass.make(@(x) x.^2);

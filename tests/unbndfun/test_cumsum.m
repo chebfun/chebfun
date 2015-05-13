@@ -117,5 +117,5 @@ oph = @(x) [exp(x) exp(x).*(x+1)];
 hExact = oph(x);
 err = hVals - hExact;
 pass(7) = norm(err, inf) < 1e1*max(get(h,'epslevel').*get(h,'vscale'));
-    % tolerance loosened in epslevel-dependent test
+    
 end

@@ -57,7 +57,7 @@ hExact = oph(x);
 err = hVals - hExact;
 pass(10) = ( norm(err, inf) < 1e6*vscale(h)*epslevel(h) ) && ...
     ( isequal(oph(dom(2)), feval(h, dom(2))) );
-% tolerance loosened for epslevel-dependent test
+
 
 
 %% Compose two functions defined on an unbounded domain, i.e. F + G:
@@ -79,7 +79,7 @@ hVals = feval(h, x);
 hExact = oph(x);
 err = hVals - hExact;
 pass(11) = norm(err, inf) < 1e1*get(h,'epslevel')*get(h,'vscale');
-% tolerance loosened for epslevel-dependent test
+
 
 end
 

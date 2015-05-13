@@ -34,7 +34,7 @@ fVals = feval(f, x);
 gVals = feval(g, xNew);
 err = fVals - gVals;
 pass(1) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
-    % tolerance loosened in epslevel-dependent test
+    
     
 % Blow-up function:
 op = @(x) x.*(5+exp(-x.^3));
@@ -44,7 +44,7 @@ fVals = feval(f, x);
 gVals = feval(g, xNew);
 err = fVals - gVals;
 pass(2) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
-    % tolerance loosened in epslevel-dependent test
+    
     
 %% Functions on [-inf b]:
 

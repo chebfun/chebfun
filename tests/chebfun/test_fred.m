@@ -11,7 +11,7 @@ F = fred(K, f);                 % Call fred().
 % Test against some V4 results:
 pass(1) = abs(F(.5) - 0.293968048825243) < 1e1*vscale(F)*epslevel(F);
 pass(2) = abs(norm(F) - 0.392002900508830) < 1e1*vscale(F)*epslevel(F);
-% tolerance loosened in epslevel-dependent test
+
 
 % Test 3rd input argument. (Simply make sure we don't crash!)
 try 
