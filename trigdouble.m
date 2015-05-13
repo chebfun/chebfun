@@ -127,14 +127,15 @@ classdef trigdouble < chebdouble
         end
 
         %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  FEVAL  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        
         function out = feval(u, y)
             %FEVAL  Evaluate polynomial interpolant of data {X_four, U} at a
             % point y using barycentric interpolation.
             
-            % TODO: Add support.
-            error('CHEBFUN:FOURDOUBLE:feval:notImplemented', ...
-                'Not implemented yet.')
+            n = length(u.values);
+            dom = u.domain;
+            x = trigpts(n, dom);
+            v = trigpts.barywts(n);
+            out = trigtech.bary(y, u.values, x, v);
 
         end
                 
