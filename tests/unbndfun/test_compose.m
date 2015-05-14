@@ -23,7 +23,7 @@ gVals = feval(g, x);
 gExact = opg(x);
 err = gVals - gExact;
 pass(1) = norm(err, inf) < 1e1*get(g,'epslevel')*get(g,'vscale');
-    
+
 %%%%%%%%%%%%%%%%%%% Compose two UNBNDFUNs (F + G) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 opf = @(x) exp(-x);
@@ -36,7 +36,7 @@ hVals = feval(h, x);
 hExact = oph(x);
 err = hVals - hExact;
 pass(2) = norm(err, inf) < 1e1*get(h,'epslevel')*get(h,'vscale');
-    
+
 %%%%%%%%%%%%%%%%%%% Compose an UNBNDFUN with a BNDFUN (G(F)) %%%%%%%%%%%%%%%%%%%
 
 opf = @(x) exp(-x);
@@ -49,5 +49,5 @@ hVals = feval(h, x);
 hExact = oph(x);
 err = hVals - hExact;
 pass(3) = norm(err, inf) < 1e1*get(h,'epslevel')*get(h,'vscale');
-    
+
 end

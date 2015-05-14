@@ -33,7 +33,7 @@ for n = 1:2
     df_exact = @(x) 1./(1 + x.^2);
     err = norm(df_exact(x) - feval(df, x), inf);
     tol = 500*df.vscale.*df.epslevel;
-    pass(n, 2) = err < 10*tol; 
+    pass(n, 2) = err < 10*tol;
     
     f = testclass.make(@(x) sin(x), [], pref);
     df = diff(f);
@@ -97,7 +97,7 @@ for n = 1:2
     df4_exact = @(x) sin(x);
     err = norm(df4_exact(x) - feval(df4, x), inf);
     tol = 1e7*df4.vscale.*df4.epslevel;
-    pass(n, 10) = err < tol; 
+    pass(n, 10) = err < tol;
 
     f = testclass.make(@(x) x.^5 + 3*x.^3 - 2*x.^2 + 4, [], pref);
     df6 = diff(f, 6);
@@ -114,7 +114,6 @@ for n = 1:2
     df_exact = @(x) [cos(x) 2*x 1i*exp(1i*x)];
     err = feval(df, x) - df_exact(x);
     pass(n, 12) = (norm(err(:), inf) < 1e2*max(df.vscale.*df.epslevel));
-    
     
     % DIM option.
     dim2df = diff(f, 1, 2);

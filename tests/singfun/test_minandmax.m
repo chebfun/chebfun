@@ -81,6 +81,5 @@ err_y = y(2) - y_exact(2);
 err_x = x - x_exact; 
 pass(5) = (norm(err_x, inf) < 10*get(f, 'epslevel')*f.smoothPart.vscale &&...
     abs(err_y) < 10*get(f, 'epslevel')*f.smoothPart.vscale) && (y(1) == -Inf);
-    
 
 end
