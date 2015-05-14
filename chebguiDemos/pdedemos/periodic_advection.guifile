@@ -1,0 +1,11 @@
+'Periodic advection'
+'scalar'
+domain = '[-pi pi]';
+t = '0:.05:5';
+DE = 'u_t = u''';
+LBC = 'periodic'; RBC = 'periodic';
+init = 'u = exp(sin(3*x))';
+tol = '1e-6'; plotting = 'on';
+fixYaxisLower = '0'; fixYaxisUpper = '3';
+pdeSolver = 'pde23t';
+type = 'pde';
