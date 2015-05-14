@@ -3,7 +3,7 @@ classdef trigdouble < chebdouble
 %
 %   See the CHEBDOUBLE class for details.
 %
-%   This class in intended solely as a worker-class for PDE15s.
+%   This class in intended solely as a worker-class for PDESOLVE.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -68,8 +68,10 @@ classdef trigdouble < chebdouble
             if ( nargin > 1 )
                 % TODO: Add support.
                 error('CHEBFUN:FOURDOUBLE:sum:notImplemented', ...
-                    'Not implemented yet.')
+                    'Partial integrals not implemented yet.')
             end
+            
+            N = length(u.values);
             
             % Retrieve or compute weights:
             if ( N > 5 && numel(W) >= N && ~isempty(W{N}) )
@@ -96,7 +98,7 @@ classdef trigdouble < chebdouble
             
             % TODO: Add support.
             error('CHEBFUN:FOURDOUBLE:cumsum:notImplemented', ...
-                'Not implemented yet.')
+                'CUMSUM not implemented yet.')
             
         end
         
@@ -109,7 +111,7 @@ classdef trigdouble < chebdouble
             
             % TODO: Add support.
             error('CHEBFUN:FOURDOUBLE:fred:notImplemented', ...
-                'Not implemented yet.')
+                'FRED not implemented yet.')
             
         end
         
@@ -122,7 +124,7 @@ classdef trigdouble < chebdouble
             
             % TODO: Add support.
             error('CHEBFUN:FOURDOUBLE:volt:notImplemented', ...
-                'Not implemented yet.')
+                'VOLT not implemented yet.')
             
         end
 

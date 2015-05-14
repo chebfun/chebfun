@@ -11,7 +11,7 @@ classdef chebdouble
 %   FEVAL, in which the stored values are presumbed to be values on a Chebyshev
 %   grid, and the appropriate action is taken.
 %
-%   This class in intended solely as a worker-class for PDE15s.
+%   This class in intended solely as a worker-class for PDESOLVE.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -25,11 +25,12 @@ classdef chebdouble
         values = [];
         
         % DOMAIN: Domain of the interpolant.
-        domain = [-1,1];
+        domain = [-1, 1];
         
         % DIFFORDER: Used to determine the highest order spatial derivative in a
         % PDE or system of PDEs.
         diffOrder = 0;
+        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
