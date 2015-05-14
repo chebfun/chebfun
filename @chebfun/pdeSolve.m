@@ -1,4 +1,4 @@
-function varargout = pdeSolve(pdeFun, tt, u0, bc, varargin)
+function varargout = pdeSolve(pdeFun, tIn, u0, bc, varargin)
 %PDESOLVE   Solve PDEs using Chebfun.
 %
 %   PDESOLVE() solves solves an initial-boundary value problem via a method of
@@ -20,6 +20,7 @@ doHold = 0;             % Hold plot?
 plotOpts = {'-'};       % Plotting style
 adjustBCs = true;       % Adjust inconsistent BCs
 throwBCwarning = true;  % Throw a warning for inconsistent BCs
+timeChunks = 51;        % Default number of time slices if not specified
 
 % Parse the variable inputs:
 if ( numel(varargin) == 2 )
@@ -67,6 +68,13 @@ else
     ODESOLVER = @ode15s;
 end
 
+% Set time chunks:
+if ( length(tIn) == 2 )
+    tt = linspace(tIn(1), tIn(2), timeChunks);
+else
+    tt = tIn;
+end
+
 userMassSet = false;
 ISPERIODIC = false;
 DONE = false;
@@ -85,7 +93,8 @@ else
     getDIFFORDER(pdeFun);
 end
 
-if ( (DIFFORDER == 1) & isequal(ODESOLVER, @ode15s) )
+if ( (max(DIFFORDER) < 2) && isequal(ODESOLVER, @ode15s) )
+    isequal(ODESOLVER, @ode15s)
     warning('CHEBFUN:PdeSolver', ...
         'PDE23T() is recommended for non-diffusive problems.');
 end
@@ -138,11 +147,12 @@ end
 
     function status = adaptiveEvent(t, U, flag)
         % This event is called at the end of each chunk in adaptive mode.
+
         status = false;
         if ( ~isempty(flag) )
             return
         end
-        
+
         % Sometimes we get given more than one time slice.
         for kk = 1:numel(t)
             % Reshape solution:
@@ -155,7 +165,7 @@ end
             [ishappy, epslevel, cutoff] = classicCheck(uk2, Uk2, pref);
 
             if ( ishappy )  
-                
+
                 if ( ~any(abs(tSpan - t(kk)) < 1e-6) )
                     % This is not a designated time slice!
                     continue
@@ -177,6 +187,7 @@ end
                 
                 COUNTER = COUNTER + 1;
                 uOut{COUNTER} = uCurrent;
+                tOut(COUNTER) = tCurrent;
 
                 % Plot current solution (if plotting is on)
                 if ( doPlot )
@@ -601,6 +612,7 @@ uCurrent = u0;
 % Storage:
 uOut = cell(1, numel(tt));
 uOut{1} = uCurrent;
+tOut(1) = tt(1);
 
 % Initialise variables for ONESTEP():
 B = []; q = []; rows = []; M = []; P = []; n = [];
@@ -651,12 +663,15 @@ uOut = prepare4output(uOut);
 switch nargout
     case 0
     case 1
+        if ( length(tIn) == 2 )     % Only T_start and T_end were given.
+            uOut = uOut(:,[1,end]); % Strip intermediate steps.
+        end
         varargout{1} = uOut;
     case 2
-        varargout{1} = tt;
+        varargout{1} = tOut;
         varargout{2} = uOut;
     otherwise
-        varargout{1} = tt;
+        varargout{1} = tOut;
         varargout{2} = uOut;
         varargout{3:nargout} = [];
         warning('CHEBFUN:CHEBFUN:pde15s:output', ...
@@ -784,9 +799,9 @@ clear global SYSSIZE
                 return
             end
             
-            F = P*F;
-            
             % Enforce boundary constraints:
+            
+            F = P*F; % Project.
             
             % Get the algebraic right-hand sides: (may be time-dependent)
             for l = 1:numel(BCRHS)
