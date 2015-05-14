@@ -85,6 +85,11 @@ else
     getDIFFORDER(pdeFun);
 end
 
+if ( (DIFFORDER == 1) & isequal(ODESOLVER, @ode15s) )
+    warning('CHEBFUN:PdeSolver', ...
+        'PDE23T() is recommended for non-diffusive problems.');
+end
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  EVENT SETUP  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
