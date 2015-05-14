@@ -81,7 +81,8 @@ function f = cumsumContinuousDim(f, m)
     % Check that the mean of the TRIGtech is zero.  If it is not, then
     % throw an error.
     if any(abs(c((numCoeffs+1-fIsEven)/2,:)) > f.vscale.*f.epslevel)
-        error('CHEBFUN:TRIGTECH:cumsum:meanNotZero', 'Indefinite integrals are only possible for TRIGTECH objects with zero mean.');
+        error('CHEBFUN:TRIGTECH:cumsum:meanNotZero', ...
+            'Indefinite integrals are only possible for TRIGTECH objects with zero mean.');
     end
     
     % Force the mean to be exactly zero.

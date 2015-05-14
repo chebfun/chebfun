@@ -62,15 +62,19 @@ if ( ~isempty(opt.PlotStyle) )
     plotOpts = opt.PlotStyle;
 end
 if ( ~isempty(opt.ODESolver) )
-    odeSolver = opt.ODESolver;
+    ODESOLVER = opt.ODESolver;
 else
-    odeSolver = @ode15s;
+    ODESOLVER = @ode15s;
 end
 
 userMassSet = false;
-isPeriodic = false;
+ISPERIODIC = false;
+DONE = false;
+COUNTER = 1;
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%  PARSE INPUTS TO PDEFUN  %%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Determine the size of the system, i.e., number of dependent variables.
 SYSSIZE = min(size(u0));
@@ -81,15 +85,130 @@ else
     getDIFFORDER(pdeFun);
 end
 
-%% %%%%%%%%%%%%%%%%%%%%%%%%%  EVENT & PLOTTING  SETUP  %%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  EVENT SETUP  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-DONE = false;
-ctr = 1;
+
 if ( ~isnan(optN) )
     opt.OutputFcn = @nonAdaptiveEvent;
 else
     opt.OutputFcn = @adaptiveEvent;
 end
+
+    function status = nonAdaptiveEvent(t, U, flag)
+        % This event is called at the end of each chunk in non-adaptive mode.
+        status = false;
+        if ( ~isempty(flag) )
+            return
+        end
+        
+        % Sometimes we get given more than one time slice.
+        for kk = 1:numel(t)
+            
+            if ( ~any(abs(tSpan - t(kk)) < 1e-6) )
+                % This is not a designated time slice!
+                continue
+            end
+                
+            % Reshape solution:
+            Uk = reshape(U(:,kk), n, SYSSIZE);
+            uCurrent = chebfun(Uk, DOMAIN, 'tech', tech);
+            tCurrent = t(kk);
+            % Store for output:
+            COUNTER = COUNTER + 1;
+            uOut{COUNTER} = uCurrent;
+
+            % Plot current solution:
+            if ( doPlot )
+                plotFun(uCurrent, t(kk));
+            end
+        end
+        
+        if ( guiFlag )
+            status = guiEvent(status);
+        end
+
+    end
+
+    function status = adaptiveEvent(t, U, flag)
+        % This event is called at the end of each chunk in adaptive mode.
+        status = false;
+        if ( ~isempty(flag) )
+            return
+        end
+        
+        % Sometimes we get given more than one time slice.
+        for kk = 1:numel(t)
+            % Reshape solution:
+            Uk = reshape(U(:,kk), currentLength, SYSSIZE);
+
+            % Happiness check:
+            c = (1+sin(1:SYSSIZE)).'; % Arbitrarily linear combination.
+            Uk2 = (Uk*c/sum(c));
+            uk2 = tech.make(Uk2, pref);
+            [ishappy, epslevel, cutoff] = classicCheck(uk2, Uk2, pref);
+
+            if ( ishappy )  
+                
+                if ( ~any(abs(tSpan - t(kk)) < 1e-6) )
+                    % This is not a designated time slice!
+                    continue
+                end
+
+                % Store these values:
+                tCurrent = t(kk);
+                uCurrent = chebfun(Uk, DOMAIN, 'tech', techHandle);
+                uCurrent = simplify(uCurrent, epslevel);
+                
+%                 % Shorten the representation. The happiness cutoff seems to
+%                 % be safer than the epslevel simplification.
+%                 uPoly = get(uCurrent, 'coeffs');
+%                 firstKept = size(uPoly, 2) - (cutoff-1);
+%                 if ( firstKept <= 0 )
+%                     firstKept = 1;
+%                 end
+%                 uCurrent = chebfun(uPoly(firstKept:end,:), DOMAIN, 'coeffs');
+                
+                COUNTER = COUNTER + 1;
+                uOut{COUNTER} = uCurrent;
+
+                % Plot current solution (if plotting is on)
+                if ( doPlot )
+                    plotFun(uCurrent, tCurrent);
+                end
+                % TODO: Re-insert this?
+%                 % If we have 2.5 times as many coefficients as we need, shorten
+%                 % the representation and cause the integrator to stop. 
+%                 if ( cutoff < 0.4*n && n > 17)
+%                     currentLength = round(1.25*cutoff)';
+%                     %currentLength = floor( currentLength / 1.5  );
+%                     currentLength = currentLength + 1 - rem(currentLength,2);
+%                     currentLength = max(currentLength, 17);
+%                     status = true;
+%                     return
+%                 end
+                
+            else 
+
+                % Increase length and bail out:
+                currentLength = 2*currentLength-1;
+                status = true;
+                break
+                
+            end        
+            
+            if ( guiFlag )
+                status = guiEvent(status);
+            end
+            
+        end
+
+    end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%  PLOTTING SETUP  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Determine which figure to plot to (for CHEBGUI) and set default display values
 % for variables.
@@ -169,115 +288,7 @@ if ( doPlot )
         newMatlabVersion = false;
     end
 end
-    function status = nonAdaptiveEvent(t, U, flag)
-        % This event is called at the end of each chunk in non-adaptive mode.
-        status = false;
-        if ( ~isempty(flag) )
-            return
-        end
-        
-        % Sometimes we get given more than one time slice.
-        for kk = 1:numel(t)
-            
-            if ( ~any(abs(tSpan - t(kk)) < 1e-6) )
-                % This is not a designated time slice!
-                continue
-            end
-                
-            % Reshape solution:
-            Uk = reshape(U(:,kk), n, SYSSIZE);
-            uCurrent = chebfun(Uk, DOMAIN, 'tech', tech);
-            tCurrent = t(kk);
-            % Store for output:
-            ctr = ctr + 1;
-            uOut{ctr} = uCurrent;
 
-            % Plot current solution:
-            if ( doPlot )
-                plotFun(uCurrent, t(kk));
-            end
-        end
-        
-        if ( guiFlag )
-            status = guiEvent(status);
-        end
-
-    end
-
-    function status = adaptiveEvent(t, U, flag)
-        % This event is called at the end of each chunk in adaptive mode.
-        status = false;
-        if ( ~isempty(flag) )
-            return
-        end
-        
-        % Sometimes we get given more than one time slice.
-        for kk = 1:numel(t)
-            % Reshape solution:
-            Uk = reshape(U(:,kk), currentLength, SYSSIZE);
-
-            % Happiness check:
-            c = (1+sin(1:SYSSIZE)).'; % Arbitrarily linear combination.
-            Uk2 = (Uk*c/sum(c));
-            uk2 = tech.make(Uk2, pref);
-            [ishappy, epslevel, cutoff] = classicCheck(uk2, Uk2, pref);
-
-            if ( ishappy )  
-                
-                if ( ~any(abs(tSpan - t(kk)) < 1e-6) )
-                    % This is not a designated time slice!
-                    continue
-                end
-
-                % Store these values:
-                tCurrent = t(kk);
-                uCurrent = chebfun(Uk, DOMAIN, 'tech', techHandle);
-                uCurrent = simplify(uCurrent, epslevel);
-                
-%                 % Shorten the representation. The happiness cutoff seems to
-%                 % be safer than the epslevel simplification.
-%                 uPoly = get(uCurrent, 'coeffs');
-%                 firstKept = size(uPoly, 2) - (cutoff-1);
-%                 if ( firstKept <= 0 )
-%                     firstKept = 1;
-%                 end
-%                 uCurrent = chebfun(uPoly(firstKept:end,:), DOMAIN, 'coeffs');
-                
-                ctr = ctr + 1;
-                uOut{ctr} = uCurrent;
-
-                % Plot current solution (if plotting is on)
-                if ( doPlot )
-                    plotFun(uCurrent, tCurrent);
-                end
-                % TODO: Re-insert this?
-%                 % If we have 2.5 times as many coefficients as we need, shorten
-%                 % the representation and cause the integrator to stop. 
-%                 if ( cutoff < 0.4*n && n > 17)
-%                     currentLength = round(1.25*cutoff)';
-%                     %currentLength = floor( currentLength / 1.5  );
-%                     currentLength = currentLength + 1 - rem(currentLength,2);
-%                     currentLength = max(currentLength, 17);
-%                     status = true;
-%                     return
-%                 end
-                
-            else 
-
-                % Increase length and bail out:
-                currentLength = 2*currentLength-1;
-                status = true;
-                break
-                
-            end        
-            
-            if ( guiFlag )
-                status = guiEvent(status);
-            end
-            
-        end
-
-    end
 
     function status = guiEvent(status)
         %GUIEVENT   Deal with GUI events ('stop', 'pause', etc). 
@@ -289,7 +300,7 @@ end
         if ( strcmp(get(solveButton, 'String'), 'Solve') )
             % Stop.
             tt = tt( tt <= tCurrent );
-            uOut(ctr+1:end) = [];
+            uOut(COUNTER+1:end) = [];
             status = true;
             DONE = true;
         elseif ( strcmp(get(clearButton, 'String'), 'Continue') )
@@ -297,7 +308,7 @@ end
             
             % Plot a waterfall plot to the bottom figure window:
             axes(axesNorm)
-            uuTmp = prepare4output(uOut(1:ctr));
+            uuTmp = prepare4output(uOut(1:COUNTER));
             if ( SYSSIZE == 1 )
                 waterfall(uuTmp, tt(tt<=tCurrent), 'linewidth', 2);
             else
@@ -355,7 +366,9 @@ end
 
     end
 
-%%%%%%%%%%%%%%%%%%%%% SETUP TOLERANCES AND INITIAL CONDITION %%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% %%%%%%%%%%%%%%%%%%% SETUP TOLERANCES AND INITIAL CONDITION %%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % ODE tolerances:
 aTol = odeget(opt, 'AbsTol', tol);
@@ -411,10 +424,9 @@ rightNonlinBCLocs = [];
 BCRHS = {};
 
 if ( ischar(bc) && any(strcmpi(bc, {'periodic', 'trig'})) )
-        
     %% %%%%%%%%%%%%%%%%%%%%%%%%%%% PERIODIC BCS  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    isPeriodic = true;
+    ISPERIODIC = true;
     
     % One can still use a Chebyshev basis and enforce periodic conditions by
     % enforcing suitable constraints on the derivative. However, using a
@@ -548,7 +560,7 @@ else
     
 end
 
-if ( ~isPeriodic && ~isfield(bc, 'middle') )
+if ( ~ISPERIODIC && ~isfield(bc, 'middle') )
     bc.middle.op = [];
 end
 
@@ -566,7 +578,7 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PERIODIC %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-if ( ~isPeriodic )
+if ( ~ISPERIODIC )
     techHandle = @chebtech2;
     points = @chebpts;
     mydouble = @chebdouble;
@@ -673,7 +685,7 @@ clear global SYSSIZE
         % Evaluate the chebfun at discrete points:
         U0 = feval(uCurrent, x);
 
-        if ( isPeriodic )
+        if ( ISPERIODIC )
             
             % The discretisation length
             n = length(x);
@@ -712,7 +724,7 @@ clear global SYSSIZE
             
         end
         
-        if ( ~isPeriodic )
+        if ( ~ISPERIODIC )
             % We have to ensure the starting condition satisfies the boundary
             % conditions, or else we will get a singularity in time. We do this by
             % tweaking the BC values to match the reality. Changing the IC itself is
@@ -738,7 +750,7 @@ clear global SYSSIZE
         
         % Solve ODE over time chunk with ode15s:
         try
-            [ignored1, ignored2] = odeSolver(@odeFun, tSpan, U0, opt);
+            [ignored1, ignored2] = ODESOLVER(@odeFun, tSpan, U0, opt);
         catch ME
             if ( strcmp(ME.identifier, 'MATLAB:odearguments:SizeIC') )
                 error('CHEBFUN:CHEBFUN:pde15s:dims', ...
@@ -763,7 +775,7 @@ clear global SYSSIZE
             F = double(F);
             F = F(:);
             
-            if ( isPeriodic )
+            if ( ISPERIODIC )
                 return
             end
             

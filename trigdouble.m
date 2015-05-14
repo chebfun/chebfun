@@ -35,22 +35,22 @@ classdef trigdouble < chebdouble
             % scaled separately below.
             persistent D
             
-            % Assume first-order derivative
+            % Assume first-order derivative:
             if ( nargin == 1 )
                 k = 1;
             end
             
             N = length(u.values);
             
-            % Construct D if we don't match a previous discretization.
+            % Construct D if we don't match a previous discretization:
             if ( isempty(D) || numel(D) < k || size(D{k}, 1) ~= N )
                 D{k} = trigtech.diffmat(N, k); % Diffmat
             end
             
-            % Interval scaling
+            % Interval scaling. (Note: trigtech.diffmat is defined on [0, 2*pi))
             c = 2*pi/diff(u.domain);     
             
-            % Muliplying by the kth-order differentiation matrix
+            % Muliplying by the kth-order differentiation matrix:
             u.values = c^k*(D{k}*u.values);
             
             % Update the difforder:
@@ -71,7 +71,7 @@ classdef trigdouble < chebdouble
                     'Not implemented yet.')
             end
             
-            % Retrieve or compute weights::
+            % Retrieve or compute weights:
             if ( N > 5 && numel(W) >= N && ~isempty(W{N}) )
                 % Weights are already in storage!
             else
@@ -80,7 +80,7 @@ classdef trigdouble < chebdouble
             end
             
             % Find the sum by muliplying by the weights vector:
-            I = W{N}*u;
+            I = W{N}*u.values;
             
         end
         
