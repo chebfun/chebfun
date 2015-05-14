@@ -71,7 +71,6 @@ function result = test_one_qr(f, x)
     err = Q*R - f;
     result(2) = norm(feval(err, x), inf) < ...
         1e2*max(get(f, 'vscale').*get(f, 'epslevel'));
-    %   tolerance loosed in epslevel-dependent test
 end
 
 % Same as the previous function but this time uses the QR factorization with
