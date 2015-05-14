@@ -120,7 +120,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             end
 
             if ( nargin > 1 )
-                A.domain = A.mergeDomains(A, dom);
+                A.domain = A.mergeDomains(A.domain, dom);
             end
             
         end
