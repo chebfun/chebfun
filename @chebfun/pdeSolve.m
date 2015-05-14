@@ -411,15 +411,6 @@ for k = 1:numel(u0)
     end
 end
 
-% Simplify initial condition to tolerance or fixed size in optN:
-if ( isnan(optN) )
-    u0 = simplify(u0);
-else
-    for k = 1:numel(u0)
-        u0(k).funs{1}.onefun = prolong(u0(k).funs{1}.onefun, optN);
-    end
-end
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% %%%%%%%%%%%%%%%%%%%%%%%%% PARSE BOUNDARY CONDITIONS %%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -602,10 +593,21 @@ else
     techHandle = @trigtech;
     points = @trigpts;
     mydouble = @trigdouble;  
+    u0 = chebfun(u0, 'trig');
 end
 tech = techHandle();
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% MISC %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Simplify initial condition to tolerance or fixed size in optN:
+if ( isnan(optN) )
+    u0 = simplify(u0);
+else
+    for k = 1:numel(u0)
+        u0(k).funs{1}.onefun = prolong(u0(k).funs{1}.onefun, optN);
+    end
+end
 
 % Initial condition:
 uCurrent = u0;

@@ -142,13 +142,11 @@ if ( iscellstr(initInput) )
     
     if ( isempty(order) && scalarProblem )
         u0 = chebfun(vectorize(initInput{1}), dom);
-        u0 = simplify(u0, tol);
     else
         for k = 1:length(inits)
             initLoc = find(order == k);
             init_k = vectorize(inits{initLoc});
             u0k = chebfun(init_k, dom);
-            u0k = simplify(u0k, tol);
             u0 = [u0, u0k];
         end
     end
