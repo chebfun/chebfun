@@ -5,6 +5,6 @@ function Z = zeros(d)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-Z = linop( operatorBlock.zeros(d) );
+Z = linop( operatorBlock.zeros(double(d)) );
 
 end

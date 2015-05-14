@@ -5,6 +5,6 @@ function S = sum(d)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-S = linop( functionalBlock.sum(d) );
+S = linop( functionalBlock.sum(double(d)) );
 
 end
