@@ -38,7 +38,7 @@ fh = @(x) 1./((1+x).*(1-x));
 data.exponents = [-1, -1];
 f = singfun(fh, data, pref);
 pass(4:5) = test_add_function_to_scalar(f, fh, alpha, x);
-     for test 5.
+
 %%
 % Check addition of two singfun objects.
 
