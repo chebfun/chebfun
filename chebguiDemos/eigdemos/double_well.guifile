@@ -1,3 +1,7 @@
+# dom = [-5 5];
+# N = chebop(@(x,u) -.1*diff(u, 2) + 4*(sign(x+1)-sign(x-.9))*u, dom);
+# N.bc = 0;
+# [V, D] = eigs(N, 4);
 'Double well Schrodinger'
 'scalar'
 domain = '[-5 5]';

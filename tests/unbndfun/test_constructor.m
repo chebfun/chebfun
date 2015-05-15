@@ -49,7 +49,7 @@ fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
 pass(4) = norm(err, inf) < 1e5*get(f,'epslevel')*get(f,'vscale');
-    
+
 %% Functions on [a inf]:
 
 % Set the domain:
@@ -94,7 +94,7 @@ fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
 pass(9) = norm(err, inf) < 1e2*get(f,'epslevel')*get(f,'vscale');
-    
+
 %% Functions on [-inf b]:
 
 % Set the domain:
@@ -147,7 +147,6 @@ fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
 pass(15) = norm(err, inf) < 1e2*max(get(f,'epslevel').*get(f,'vscale'));
-
 
 %% MISC:
 

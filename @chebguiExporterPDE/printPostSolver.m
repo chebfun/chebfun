@@ -20,18 +20,20 @@ s = expInfo.s;
 if ( numel(deInput) == 1 )
     % Scalar problems.
     fprintf(fid, '\n%%%% Plot the solution.\n');
-    fprintf(fid, 'waterfall(%s, %s, ''simple'', ''LineWidth'', 2)', sol, ...
+    fprintf(fid, 'waterfall(%s, %s, ''LineWidth'', 2)\n', sol, ...
         indVarName{2});
+    fprintf(fid, 'xlabel(''%s''), ylabel(''%s'')', ...
+        indVarName{1},indVarName{2});
     
 else
     % Coupled systems.
     fprintf(fid, '\n%%%% Plot the solution.\n');
     fprintf(fid, 'figure\n');
     fprintf(fid, 'waterfall(sol, %s, ''LineWidth'', 2)\n', indVarName{2});
-    fprintf(fid, 'xlabel(''%s''), ylabel(''%s''), title(''Solution'')\n', ...
+    fprintf(fid, 'xlabel(''%s''), ylabel(''%s''), title(''Solution components'')', ...
         indVarName{1},indVarName{2});
     for k = 1:numel(deInput)
-        fprintf(fid, 'figure\n');
+        fprintf(fid, '\nfigure\n');
         fprintf(fid, 'waterfall(%s, %s, ''LineWidth'', 2)\n', s{k}, indVarName{2});
         fprintf(fid, 'xlabel(''%s''), ylabel(''%s''), title(''%s'')', ...
             indVarName{1},indVarName{2},s{k});

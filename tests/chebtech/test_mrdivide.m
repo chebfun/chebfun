@@ -58,7 +58,6 @@ for n = 1:2
     g_exact = @(x) (sin(2*pi*x) + cos(2*pi*x));
     pass(n, 6) = norm(feval(g, x) - g_exact(x), inf) < ...
         1e2*max(g.vscale.*g.epslevel);
-     % loosened tolerance in epslevel-dependent test 
     
     %%
     % Check error conditions.

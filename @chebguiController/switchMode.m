@@ -54,6 +54,7 @@ if ( strcmp(newMode, 'bvp') ) % Going into BVP mode
     % Disable IVP solver option
     set(handles.menu_ivpSolver, 'Enable', 'off');
     % Disable PDE menu options
+    set(handles.menu_pdeSolver, 'Enable', 'Off')
     set(handles.menu_pdeplotting, 'Enable', 'Off')
     set(handles.menu_pdeholdplot, 'Enable', 'Off')
     set(handles.menu_pdefix, 'Enable', 'Off')
@@ -148,6 +149,7 @@ elseif ( strcmp(newMode, 'pde') ) % Going into PDE mode
     % Disable IVP solver option
     set(handles.menu_ivpSolver, 'Enable', 'off');    
     % Enable PDE menuoptions
+    set(handles.menu_pdeSolver, 'Enable', 'On')
     set(handles.menu_pdeplotting, 'Enable', 'On')
     set(handles.menu_pdeholdplot, 'Enable', 'On')
     set(handles.menu_pdefix, 'Enable', 'On')
@@ -238,6 +240,7 @@ else % Going into EIG mode
     set(handles.menu_ivpSolver, 'Enable', 'off');
 
     % Disable PDE options
+    set(handles.menu_pdeSolver, 'Enable', 'Off')
     set(handles.menu_pdeplotting, 'Enable', 'Off')
     set(handles.menu_pdeholdplot, 'Enable', 'Off')
     set(handles.menu_pdefix, 'Enable', 'Off')

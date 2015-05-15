@@ -33,7 +33,6 @@ tol = get(g, 'epslevel').*get(g, 'vscale');
 unbounded = zeros(2, size(g, 2));
 maskLeft = ( abs(vends(1, :)) > 1e5*tol );
 maskRight = ( abs(vends(2, :)) > 1e5*tol );
-% tolerance loosened in epslevel-dependent code
 
 % Mark the endpoints where function is not decaying fast enough:
 if ( isinf(dom(1)) && any( maskLeft ) )

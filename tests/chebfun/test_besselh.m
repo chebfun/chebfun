@@ -36,7 +36,6 @@ pass(4) = norm(feval(h, xr) - besselh(nu, 2, exp(xr)), inf) < ...
 h = besselh(nu, 1, f, 1);
 pass(5) = norm(feval(h, xr) - besselh(nu, 1, exp(xr), 1), inf) < ...
     1e2*epslevel(h)*vscale(h);
-% loosened tolerance in epslevel-dependent test
 
 % Test for array-valued chebfun.
 f_op = @(x) [exp(-x) 1./(1 + 25*(x - 0.1).^2)];
@@ -72,7 +71,6 @@ f = chebfun(f_op, [-1 0 0.5 1], pref);
 h = besselh(nu, 1, f, 0, pref);
 pass(11) = norm(feval(h, xr) - besselh(nu, 1, f_op(xr), 0), inf) < ...
     1e2*epslevel(h)*vscale(h);
-% loosened tolerance in epslevel-dependent test
 
 % Check for error on roots.
 try
