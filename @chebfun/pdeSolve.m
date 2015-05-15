@@ -593,7 +593,7 @@ else
     techHandle = @trigtech;
     points = @trigpts;
     mydouble = @trigdouble;  
-    u0 = chebfun(u0, 'trig');
+    u0 = chebfun(u0, 'trig', 'eps', tol);
 end
 tech = techHandle();
 
@@ -602,7 +602,7 @@ tech = techHandle();
 
 % Simplify initial condition to tolerance or fixed size in optN:
 if ( isnan(optN) )
-    u0 = simplify(u0);
+    u0 = simplify(u0, tol);
 else
     for k = 1:numel(u0)
         u0(k).funs{1}.onefun = prolong(u0(k).funs{1}.onefun, optN);

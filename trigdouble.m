@@ -44,11 +44,11 @@ classdef trigdouble < chebdouble
             
             % Construct D if we don't match a previous discretization:
             if ( isempty(D) || numel(D) < k || size(D{k}, 1) ~= N )
-                D{k} = trigtech.diffmat(N, k); % Diffmat
+                D{k} = trigcolloc.diffmat(N, k); % Diffmat
             end
             
             % Interval scaling. (Note: trigtech.diffmat is defined on [0, 2*pi))
-            c = 2*pi/diff(u.domain);     
+            c = 2*pi/diff(u.domain);
             
             % Muliplying by the kth-order differentiation matrix:
             u.values = c^k*(D{k}*u.values);
