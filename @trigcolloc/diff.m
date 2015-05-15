@@ -18,5 +18,7 @@ if ( m == 0 )
 else
     rescaleFactor = dom(2) - dom(1);
     % Rescale the differentiation matrix.
-    D = trigcolloc.diffmat(n, m) * (2*pi/rescaleFactor)^m;
+    D = trigcolloc.diffmat(n, m) * (2/rescaleFactor)^m;
+end
+
 end
