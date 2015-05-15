@@ -24,44 +24,29 @@ testclass = trigtech();
 % test at the end that verifies an error message is given when cumsum is
 % applied to a function without zero mean.
  
-%%
-% In branch feature-prescribed-eps this test fails due to an
-% epslevel related issue. Until this issue is resolved this 
-% test is being bypassed.
 k = 2; a = 0;
 f = testclass.make(@(x) sin(k*pi*(x-a)).*cos((k+1)*pi*(x-a)), [],  pref);
-%F = cumsum(f);
+F = cumsum(f);
 F_ex = @(x) ((2*k+1)*cos(pi*(x-a))-cos((2*k+1)*pi*(x-a)))/(2*(pi+2*k*pi));
-%err = feval(F, x) - F_ex(x);
-%tol = 10*F.vscale.*F.epslevel;
-%pass(1) = (std(err) < tol) && (abs(feval(F, -1)) < tol);
-pass(1) = 1;
+err = feval(F, x) - F_ex(x);
+tol = 10*F.vscale.*F.epslevel;
+pass(1) = (std(err) < tol) && (abs(feval(F, -1)) < tol);
 
-%%
-% In branch feature-prescribed-eps this test fails due to an
-% epslevel related issue. Until this issue is resolved this 
-% test is being bypassed.
 k = 200; a = 0.17;
 f = testclass.make(@(x) sin(k*pi*(x-a)).*cos((k+1)*pi*(x-a)), [],  pref);
-%F = cumsum(f);
+F = cumsum(f);
 F_ex = @(x) ((2*k+1)*cos(pi*(x-a))-cos((2*k+1)*pi*(x-a)))/(2*(pi+2*k*pi));
-%err = feval(F, x) - F_ex(x);
-%tol = 100*F.vscale.*F.epslevel;
-%pass(2) = (std(err) < tol) && (abs(feval(F, -1)) < tol);
-pass(2) = 1;
+err = feval(F, x) - F_ex(x);
+tol = 100*F.vscale.*F.epslevel;
+pass(2) = (std(err) < tol) && (abs(feval(F, -1)) < tol);
 
-%%
-% In branch feature-prescribed-eps this test fails due to an
-% epslevel related issue. Until this issue is resolved this 
-% test is being bypassed.
 k1 = 5; a1 = -0.33; k2 = 40; a2 = 0.17;
 f = testclass.make(@(x) sin(k1*pi*(x-a1)).*cos((k1+1)*pi*(x-a1)) + 1i*sin(k2*pi*(x-a2)).*cos((k2+1)*pi*(x-a2)), [],  pref);
-%F = cumsum(f);
+F = cumsum(f);
 F_ex = @(x) ((2*k1+1)*cos(pi*(x-a1))-cos((2*k1+1)*pi*(x-a1)))/(2*(pi+2*k1*pi)) + 1i*((2*k2+1)*cos(pi*(x-a2))-cos((2*k2+1)*pi*(x-a2)))/(2*(pi+2*k2*pi));
-%err = feval(F, x) - F_ex(x);
-%tol = 100*F.vscale.*F.epslevel;
-%pass(3) = (std(err) < tol) && (abs(feval(F, -1)) < tol);
-pass(3) = 1;
+err = feval(F, x) - F_ex(x);
+tol = 100*F.vscale.*F.epslevel;
+pass(3) = (std(err) < tol) && (abs(feval(F, -1)) < tol);
 
 %%
 % Check that diff(cumsum(f)) == f and that cumsum(diff(f)) == f up to a 

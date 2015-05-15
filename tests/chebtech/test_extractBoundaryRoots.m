@@ -92,9 +92,9 @@ for n = 1:2
     [g, l, r] = extractBoundaryRoots(f, [ml+1; mr+2]);
     gexact = testclass.make(@(x) exp(x), [], pref);
     err = feval(g, x) - feval(gexact, x);
-%     pass(n, 9) = ( (norm(err, Inf) < (1e1^(ml + mr))*f.epslevel) && ...
-%         ( l == ml ) && ( r == mr ) );    
-    pass(n, 9) = 1; 
+    pass(n, 9) = ( (norm(err, Inf) < 1e1*(1e1^(ml + mr))*f.epslevel) && ...
+         ( l == ml ) && ( r == mr ) );    
+
 end
 
 end

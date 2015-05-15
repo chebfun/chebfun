@@ -71,7 +71,7 @@ if ( isPeriodicTech(f) )
     c = trigcoeffs(f); 
     numCoeffs = size(c, 1);
     fIsEven = mod(numCoeffs,2) == 0;
-    if any(abs(c((numCoeffs+1-fIsEven)/2,:)) > f.vscale.*f.epslevel)
+    if any(abs(c((numCoeffs+1-fIsEven)/2,:)) > 1e1*f.vscale.*f.epslevel)
         % Mean is not zero, convert it to a CHEBTECH based chebfun:
         f = chebfun(f);
     end
