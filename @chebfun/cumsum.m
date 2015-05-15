@@ -71,10 +71,10 @@ if ( isPeriodicTech(f) )
     c = trigcoeffs(f); 
     numCoeffs = size(c, 1);
     % index of constant coefficient
-    if mod(numCoeffs,2) == 0
-       ind = numCoeffs/2 +1;
+    if mod(numCoeffs, 2) == 0
+       ind = numCoeffs/2 + 1;
     else
-       ind = (numCoeffs+1)/2;
+       ind = (numCoeffs + 1)/2;
     end
     if any(abs(c(ind,:)) > 1e1*f.vscale.*f.epslevel)
         % Mean is not zero, convert it to a CHEBTECH based chebfun:

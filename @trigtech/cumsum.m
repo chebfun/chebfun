@@ -76,13 +76,13 @@ function f = cumsumContinuousDim(f, m)
     c = f.coeffs; % Obtain Fourier coefficients {c_k}
     numCoeffs = size(c,1);
     
-    fIsEven = mod(numCoeffs,2) == 0;
+    fIsEven = mod(numCoeffs, 2) == 0;
 
     % index of constant coefficient
     if fIsEven
-       ind = numCoeffs/2 +1;
+       ind = numCoeffs/2 + 1;
     else
-       ind = (numCoeffs+1)/2;
+       ind = (numCoeffs + 1)/2;
     end
 
     % Check that the mean of the TRIGtech is zero.  If it is not, then
