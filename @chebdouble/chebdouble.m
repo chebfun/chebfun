@@ -242,7 +242,16 @@ classdef chebdouble
         function out = feval(u, y)
             %FEVAL   Evaluate polynomial interpolant of data {X_cheb, U} at a
             % point y using barycentric interpolation.
-            [x, w, v] = chebpts(length(u.values), u.domain);
+            
+            persistent dom x v
+            
+            N = length(u.values);
+                        
+            if ( length(x) ~= N || isempty(dom) || ~all(dom == u.domain) )
+                [x, w, v] = chebpts(N, u.domain);
+                dom = u.domain;
+            end
+            
             out = bary(y, u.values, x, v);
         end
         
