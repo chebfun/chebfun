@@ -97,7 +97,9 @@ if ( any(strcmpi(dom, 'equi')) || ((nargin > 3) && (any(strcmpi(varargin{1}, 'eq
         % the samples, and the accuracy target in chebfun2 preferences. 
         grid = max( size( op ) ); 
         vscale = max( abs(op(:)) ); 
-        tol = grid.^(2/3) * max( max( abs(dom(:))), 1) * vscale * pseudoLevel;
+        %tol = grid.^(2/3) * max( max( abs(dom(:))), 1) * vscale * pseudoLevel;
+        [xx, yy] = meshgrid(linspace(dom(1), dom(2), size(op,1)), linspace(dom(3), dom(4), size(op,2)));
+        tol = newTol(xx, yy, op, grid, dom, pseudoLevel);
         [pivotValue, ignored, rowValues, colValues] = CompleteACA(op, tol, 0); % Do ACA on matrices
         
         % Make a chebfun2: 
@@ -149,6 +151,7 @@ if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
         grid = max( size( op ) ); 
         vscale = max( abs(op(:)) ); 
         tol = grid.^(2/3) * max( max( abs(dom(:))), 1) * vscale * pseudoLevel;
+        %tol = newTol(xx, yy, vals, grid, dom, pseudoLevel);
         
         % Perform GE with complete pivoting:
         [pivotValue, ignored, rowValues, colValues] = CompleteACA(op, tol, 0);
@@ -280,7 +283,8 @@ while ( ~isHappy && ~failure )
     end
     
     % Two-dimensional version of CHEBFUN's tolerance:
-    tol = grid.^(2/3) * max( max( abs(dom(:))), 1) * vscale * pseudoLevel;
+    %tol = grid.^(2/3) * max( max( abs(dom(:))), 1) * vscale * pseudoLevel;
+    tol = newTol(xx, yy, vals, grid, dom, pseudoLevel);
     
     %%% PHASE 1: %%%
     % Do GE with complete pivoting:
@@ -295,7 +299,8 @@ while ( ~isHappy && ~failure )
         vals = evaluate(op, xx, yy, vectorize); % resample
         vscale = max(abs(vals(:)));
         % New tolerance:
-        tol = grid.^(2/3) * max( max( abs(dom(:))), 1) * vscale * pseudoLevel;
+        %tol = grid.^(2/3) * max( max( abs(dom(:))), 1) * vscale * pseudoLevel;
+        tol = newTol(xx, yy, vals, grid, dom, pseudoLevel);
         % New GE:
         [pivotValue, pivotPosition, rowValues, colValues, iFail] = CompleteACA(vals, tol, factor);
         % If the function is 0+noise then stop after three strikes.
@@ -652,4 +657,15 @@ else
         'Technology is unrecognized.');
 end
 
+end
+
+function tol = newTol(xx, yy, vals, grid, dom, pseudoLevel)
+df_dx = diff(vals,1,2) ./ diff(xx,1,2); % xx changes column-wise.
+df_dy = diff(vals,1,1) ./ diff(yy,1,1); % yy changes row-wise.
+df_dx = df_dx (1:size(df_dx,2),:); % Throw out last row of df_dx, where we don't have df_dy.
+df_dy = df_dy (:, 1:size(df_dy,1),:); % Throw out last column of df_dy, where we don't have df_dx.
+J = max(abs(df_dx),abs(df_dy));
+Jac_norm = max(J(:)); % An approximation for the norm of the Jacobian over the whole domain.
+vscale = max( abs (vals(:) ) );
+tol = grid.^(2/3) * max( abs(dom(:) ) ) * max( Jac_norm, vscale) * pseudoLevel;
 end
