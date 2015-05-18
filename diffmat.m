@@ -114,7 +114,6 @@ if ( strcmpi(mapFrom, mapTo) && ( m == n ) ) % Square case:
     elseif ( strcmpi(mapFrom, 'chebkind2') )
         D = chebcolloc2.diffmat(n, p);
     elseif ( strcmpi(mapFrom, 'periodic') )
-        scl = pi^p;
         D = scl*trigcolloc.diffmat(n, p);
     else
         [x, ignored, v] = legpts(n); %#ok<ASGLU>
