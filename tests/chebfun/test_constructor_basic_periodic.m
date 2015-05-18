@@ -40,9 +40,10 @@ for j = 1:numel(FF);
     g = chebfun(F, [-100, 100], pref, 'trig');
     xx = linspace(-100, 100);
     err = norm(feval(f, xx) - F(xx), inf);
-    pass(j, k+1) = err < 100*epslevel(f)*vscale(f);
+    pass(j, k+1) = err < 1e3*epslevel(f)*vscale(f);
     pass(j, k+2) = (err < 100*hscale(f)*pref.eps) && (norm(f-g) < 100*pref.eps);
     k = k + 2;
+    
 end
 
 

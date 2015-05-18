@@ -113,8 +113,9 @@ for k = 1:2
     g = myfun(opg, dom);
     h = assignColumns(f, 2, g);
     err = feval(h, x) - oph(x);    
-    pass(k,13) = norm(err, inf) < 2*vscale(h)*epslevel(h);
-    
+    pass(k,13) = norm(err, inf) < 1e2*vscale(h)*epslevel(h);
+       
+ 
     %% Test removing columns (#889)
     
     x = chebfun('x');

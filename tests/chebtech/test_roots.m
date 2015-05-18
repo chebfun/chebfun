@@ -33,7 +33,8 @@ for n = 1:2
                 84.0390907769381901578795; 87.1806298436411536512617
                 90.3221726372104800557177; 93.4637187819447741711905
                 96.6052679509962687781216; 99.7468198586805964702799 ];
-    pass(n, 1) = norm(r-exact,Inf) < length(f)*f.epslevel;
+    pass(n, 1) = norm(r-exact,Inf) < 1e1*length(f)*f.epslevel;
+     
 
     %% Test roots of an oscillatory function:
     k = 500;
@@ -46,8 +47,9 @@ for n = 1:2
         [], pref);
     r = roots(f);
     pass(n, 3) = length(r) == 4 && norm(feval(f, r), inf) < ...
-        10*length(f)*f.epslevel;
-
+        1e2*length(f)*f.epslevel;
+    
+    
     %% Test a some simple polynomials:
     f = testclass.make([-1 ; 1], [], pref);
     r = roots(f);
@@ -61,7 +63,8 @@ for n = 1:2
     f = testclass.make(@(x) 1 + 25*x.^2, [], pref);
     r = roots(f, 'complex', 1);
 
-    pass(n, 6) = norm( r - [1i ; -1i]/5, inf) < f.epslevel;
+    pass(n, 6) = norm( r - [1i ; -1i]/5, inf) < 10*f.epslevel;
+        
 
     f = testclass.make(@(x) (1 + 25*x.^2).*exp(x), [], pref);
     r = roots(f, 'complex', 1, 'prune', 1);
@@ -83,7 +86,8 @@ for n = 1:2
     f = testclass.make(@(x) 1e-10*x.^3 + x.^2 - 1e-12, [], pref); 
     r = roots(f, 'qz', 1);
     pass(n, 10) = ~isempty( r );
-    pass(n, 11) = norm(feval(f, r), inf) < f.epslevel; 
+    pass(n, 11) = norm(feval(f, r), inf) < 10*f.epslevel;
+        
     
     % Add a rootfinding test for low degree non-even functions: 
     f = testclass.make(@(x) (x-.5).*(x-1/3), [], pref); 

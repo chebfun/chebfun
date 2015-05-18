@@ -23,7 +23,7 @@ B = unbndfun(opB, struct('domain', dom));
 X = A\B;
 res = A*X - B;
 err = feval(res, x);
-pass(1) = norm(err(:), inf) < max([get(A,'epslevel').*get(A,'vscale') ...
+pass(1) = norm(err(:), inf) < 1e1*max([get(A,'epslevel').*get(A,'vscale') ...
     get(B,'epslevel').*get(B,'vscale')]);
 
 end

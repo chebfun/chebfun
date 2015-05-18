@@ -10,7 +10,7 @@ function f = thresholdBreakpointValues(f)
 for k = 1:numel(f)    
     breakVals = f(k).pointValues;
     % TODO: Is this wise? See #840 and #885.
-    breakVals(abs(breakVals) < vscale(f(k))*epslevel(f(k))) = 0;
+    breakVals(abs(breakVals) < 10*vscale(f(k))*epslevel(f(k))) = 0;
     f(k).pointValues = breakVals;
 end
 

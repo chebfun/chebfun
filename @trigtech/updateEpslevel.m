@@ -36,6 +36,9 @@ end
 % Respect the bound:
 epslevel = min(newEpslevel, epslevelBnd);
 
+% set epslevel = eps
+epslevel = eps + 0*epslevel;
+
 end
     
 

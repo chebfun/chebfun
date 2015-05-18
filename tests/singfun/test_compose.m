@@ -31,8 +31,9 @@ op = @(x) sin(sqrt(x+1));
 hVals = feval(h, x);
 hExact = op(x);
 err = hVals - hExact;
-pass(2) = norm(err, inf) < get(h, 'epslevel')*get(h, 'vscale');
-
+pass(2) = norm(err, inf) < 1e1*get(h, 'epslevel')*get(h, 'vscale');
+    
+    
 % Composition of a SMOOTHFUN and a SINGFUN - G(F)
 data.exponents = [0.5 0];
 f = singfun(@(x) sqrt(x + 1), data, pref);
@@ -42,6 +43,6 @@ op = @(x) cos(sqrt(x + 1));
 hVals = feval(h, x);
 hExact = op(x);
 err = hVals - hExact;
-pass(3) = norm(err, inf) < 2e3*get(h, 'epslevel')*get(h, 'vscale');
-
+pass(3) = norm(err, inf) < 1e4*get(h, 'epslevel')*get(h, 'vscale');
+    
 end
