@@ -36,9 +36,10 @@ for j = 1:numel(FF);
     f = chebfun(F, [0, 10000], pref);
     xx = linspace(0, 10000);
     err = norm(feval(f, xx) - F(xx), inf);
-    pass(j, k+1) = err < 100*epslevel(f)*vscale(f);
-    pass(j, k+2) = err < 100*hscale(f)*pref.eps;
+    pass(j, k+1) = err < 1e4*epslevel(f)*vscale(f);
+    pass(j, k+2) = err < 1e2*hscale(f)*pref.eps;
     k = k + 2;
+    
 
     % Test on piecewise domain:
     f = chebfun(F, [-1, 0, .5, sqrt(pi/4), 1], pref);

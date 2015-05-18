@@ -310,7 +310,7 @@ end
         %GUIEVENT   Deal with GUI events ('stop', 'pause', etc). 
         % OUTPUTS:
         %   status = true exits the current time chunk.
-        %   DONE = true exits ODE solver. (Note DONE is a GLOBAL variable).
+        %   DONE = true exits PDE solver. (Note DONE is a GLOBAL variable).
 
         % Interrupt computation if stop or pause button is pressed in the GUI.
         if ( strcmp(get(solveButton, 'String'), 'Solve') )
@@ -770,7 +770,7 @@ clear global SYSSIZE
             end
         end
         
-        % Solve ODE over time chunk with ode15s:
+        % Solve ODE over time chunk with the selected solver:
         try
             [ignored1, ignored2] = ODESOLVER(@odeFun, tSpan, U0, opt);
         catch ME
@@ -786,7 +786,7 @@ clear global SYSSIZE
         %% %%%%%%%%%%%%%%%%%%%%%%%%%%%  ODEFUN  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         function F = odeFun(t, U)
-            % This is what ODE15S() calls.
+            % This is what the ODESOLVER() calls.
             
             % Reshape to n by SYSSIZE:
             U = reshape(U, n, SYSSIZE);

@@ -25,7 +25,7 @@ opExact = @(x) [exp(x)/3 x.*exp(x)/3 (1-exp(x))./(3*x)];
 XVals = feval(X, x);
 XExact = opExact(x);
 err = XVals - XExact;
-pass(1) = norm(err, inf) < 2*max(get(X,'epslevel').*get(X,'vscale'));
+pass(1) = norm(err, inf) < 1e1*max(get(X,'epslevel').*get(X,'vscale'));
 
 %% Case 2: X*B = A, where B is a numerical matrix and A is an array-valued 
 %         UNBNDFUN ==> X = A/B, i.e. UNBNDFUN / numerical matrix

@@ -75,7 +75,8 @@ op = @(x) 0.75+sin(10*x)./exp(x);
 f = chebfun(op, dom, 'splitting', 'on');
 out = f(end);
 pass(12) = ( isnumeric(out) ) && all(size(out) == ones(1, 2) ) && ...
-    ( abs(out - 0.75) < 1e1*epslevel(f) );
+    ( abs(out - 0.75) < 1e2*epslevel(f) );
+
 
 end
 

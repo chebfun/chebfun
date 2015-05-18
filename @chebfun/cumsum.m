@@ -70,8 +70,13 @@ if ( isPeriodicTech(f) )
     % Obtain Fourier coefficients {c_k}
     c = trigcoeffs(f); 
     numCoeffs = size(c, 1);
-    fIsEven = mod(numCoeffs,2) == 0;
-    if any(abs(c((numCoeffs+1-fIsEven)/2,:)) > f.vscale.*f.epslevel)
+    % index of constant coefficient
+    if mod(numCoeffs, 2) == 0
+       ind = numCoeffs/2 + 1;
+    else
+       ind = (numCoeffs + 1)/2;
+    end
+    if any(abs(c(ind,:)) > 1e1*f.vscale.*f.epslevel)
         % Mean is not zero, convert it to a CHEBTECH based chebfun:
         f = chebfun(f);
     end

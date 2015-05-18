@@ -50,7 +50,8 @@ vals_check = feval(op, x);
 err = vals_f - vals_check;
 
 pass(j+1,:) = ( norm(err-mean(err), inf) < ...
-    1e1*get(f,'epslevel')*norm(vals_check, inf) );
+    1e3*get(f,'epslevel')*norm(vals_check, inf) );
+
 
 %% Tests for function defined on unbounded domain:
 
@@ -68,6 +69,7 @@ g = abs(f);
 gVals = feval(g, x);
 gExact = opAbs(x);
 err = gVals - gExact;
-pass(j+2,:) = norm(err, inf) < 1e1*epslevel(g)*vscale(g);
+pass(j+2,:) = norm(err, inf) < 1e3*epslevel(g)*vscale(g);
+
 
 end

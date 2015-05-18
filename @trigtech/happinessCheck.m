@@ -53,4 +53,7 @@ if ( ishappy && ~isempty(op) && ~isnumeric(op) && pref.sampleTest )
     end
 end
 
+% set epslevel = eps
+epslevel = eps + 0*epslevel;
+
 end

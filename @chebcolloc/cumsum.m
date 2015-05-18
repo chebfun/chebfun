@@ -1,5 +1,5 @@
 function C = cumsum(disc, m)
-%CUMSUM   Indefinite integration operator for CHEBCOLLOC2 discretization.
+%CUMSUM   Indefinite integration operator for CHEBCOLLOC discretization.
 %   C = CUMSUM(DISC) gives the matrix such that if v=C*u, then u=v' and v=0
 %   at the left endpoint, as accurately as possible in Chebyshev polynomial
 %   discretization.
@@ -23,7 +23,7 @@ else
     blocks = cell(numIntervals);
     for k = 1:numIntervals
         len = d(k+1) - d(k);
-        blocks{k} = chebcolloc2.cumsummat(n(k)) * (len/2);  % Scaled cumsummats.
+        blocks{k} = disc.cumsummat(n(k)) * (len/2);  % Scaled cumsummats.
     end
     
     % Assemble!
