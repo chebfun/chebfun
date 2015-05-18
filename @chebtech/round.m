@@ -20,7 +20,6 @@ fx = feval(f, [-1 ; arbitraryPoint ; 1]);
 meanfx = mean(fx, 1);
 % Compute the round:
 f.coeffs = round(meanfx);
-f.vscale = abs(f.coeffs);
-f.epslevel = 0*f.vscale + eps;
+f.epslevel = 0*f.coeffs + eps;
 
 end

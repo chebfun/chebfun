@@ -31,7 +31,7 @@ else
 end
 
 % Call HAPPINESSCHECK()
-[ignored, newEpslevel] = happinessCheck(f, [], [], pref);
+[ignored, newEpslevel] = happinessCheck(f, [], [], [], pref);
 
 % Respect the bound:
 epslevel = min(newEpslevel, epslevelBnd);

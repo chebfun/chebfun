@@ -19,8 +19,7 @@ if ( isreal(f) )
     meanfx = mean(fx, 1);
     % Compute the floor:
     f.coeffs = sign(meanfx);
-    f.vscale = abs(f.coeffs);
-    f.epslevel = 0*f.vscale + eps;
+    f.epslevel = eps;
     
 else
     if ( nargin == 1 )

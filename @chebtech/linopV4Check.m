@@ -9,8 +9,8 @@ function [ishappy, epslevel, cutoff] = linopV4Check(f, values, pref)
 %   criteria must be met. Either:
 %
 %     (1) The coefficients are sufficiently small (as specified by the default
-%     EPS property of CHEBTECH) relative to F.VSCALE (or using absolute size if
-%     F.VSCALE=0); or
+%     EPS property of CHEBTECH) relative to VSCALE(F) (or using absolute size if
+%     VSCALE(F)=0); or
 %
 %     (2) The coefficients are somewhat small and apparently unlikely to
 %     continue decreasing in a meaningful amount (i.e., have reached a "plateau"
@@ -73,19 +73,19 @@ end
 % We omit the last 10% because aliasing can pollute them significantly.
 n90 = ceil( 0.90*n );
 absCoeff = abs( coeff(end:-1:end+1-n90,:) );  % switch to low->high ordering
-vscale = max(absCoeff,[],1);          % scaling in each column
-vscale = max( [vscale(:); f.vscale] );
-absCoeff = absCoeff / vscale;
+vscl = max(absCoeff, [], 1);                  % scaling in each column
+vscl = max( [vscl(:); getvscl(f)] );
+absCoeff = absCoeff / vscl;
 
 
 %% Deal with array-valued functions.
 
 numCol = size(coeff, 2);
-ishappy = false(1,numCol);
-epslevel = zeros(1,numCol);
-cutoff = zeros(1,numCol);
+ishappy = false(1, numCol);
+epslevel = zeros(1, numCol);
+cutoff = zeros(1, numCol);
 for m = 1:numCol
-    [ishappy(m), epslevel(m), cutoff(m)] = checkColumn(absCoeff(:,m),pref.eps);
+    [ishappy(m), epslevel(m), cutoff(m)] = checkColumn(absCoeff(:,m), pref.eps);
     if ( ~ishappy(m) )
         % No need to continue if it fails on any column.
         break

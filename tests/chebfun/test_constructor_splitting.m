@@ -8,8 +8,7 @@ if ( nargin == 0 )
 end
 
 seedRNG(6178);
-tol = 1e8;
-
+tol = 1e9;
 
 % Test SQRT(X) on [0 1]:
 F1 = @sqrt;
@@ -54,7 +53,6 @@ x = chebfun('x', [-1 1], pref);
 h = heaviside(x);
 pass(6) = norm(f - h) < 10*f.epslevel;
     
-
 % Test use of breakpoint detection in conjunction with construction from a cell
 % array of function handles. (See issue #1151 on GitHub.)
 f = chebfun({@(x) abs(x - 0.25), 0}, [0 0.5 1], 'splitting', 'on');

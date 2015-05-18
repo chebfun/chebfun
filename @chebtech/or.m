@@ -12,7 +12,6 @@ function f = or(f, g)
 
 arbitraryPoint = 0.1273881594;
 f.coeffs = feval(f, arbitraryPoint) | feval(g, arbitraryPoint);
-f.vscale = abs(f.coeffs);
-f.epslevel = 0*f.vscale + eps;
+f.epslevel = 0*f.coeffs + eps;
 
 end

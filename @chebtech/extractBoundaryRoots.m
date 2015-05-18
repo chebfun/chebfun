@@ -32,7 +32,7 @@ rootsRight = zeros(1, m);
 
 % Tolerance for a root (we will loosen this with each run of the loop below if
 % there are multiple roots):
-tol = 1e3*f.vscale.*f.epslevel;
+tol = 1e3*getvscl(f).*f.epslevel;
 
 % Values at ends:
 endValues = abs([feval(f, -1); feval(f, 1)]);

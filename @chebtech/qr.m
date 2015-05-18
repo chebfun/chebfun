@@ -87,9 +87,9 @@ end
 % condition number one. Therefore we assume Q has the same global accuracy as f,
 % and simply factor out the new vscale. TODO: It may be sensible to include some
 % knowledge of R here?
-col_acc = f.epslevel.*f.vscale;  % Accuracy of each column in f.
-glob_acc = max(col_acc);         % The best of these.
-epslevelApprox = glob_acc./Q.vscale; % Scale out vscale of Q.
+col_acc = f.epslevel.*getvscl(f);      % Accuracy of each column in f.
+glob_acc = max(col_acc);               % The best of these.
+epslevelApprox = glob_acc./getvscl(Q); % Scale out vscale of Q.
 Q.epslevel = updateEpslevel(Q, epslevelApprox);
 
 end
@@ -191,8 +191,7 @@ else
 end
 
 % Apply data to CHEBTECH:
-f.coeffs = Q_coeffs;           % Store coefficients. 
-f.vscale = max(abs(Q), [], 1); % Update vscale. 
+f.coeffs = Q_coeffs;               % Store coefficients. 
 
 end
 
@@ -202,7 +201,7 @@ function [f, R, Eperm] = qr_householder(f, flag)
 
 % Get some useful values
 [n, numCols] = size(f);
-tol = max(f.epslevel.*f.vscale);
+tol = max(f.epslevel.*getvscl(f));
 
 % Make the discrete analog of f:
 newN = 2*max(n, numCols);
@@ -232,9 +231,6 @@ end
 f.coeffs = f.vals2coeffs(Q);
 % Trim the unneeded ones:
 f.coeffs(newN/2+1:end,:) = [];
-
-% Update the vscale:
-f.vscale = getvscl(f);
 
 % Additional output argument:
 if ( nargout == 3 )

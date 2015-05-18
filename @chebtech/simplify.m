@@ -2,9 +2,9 @@ function f = simplify(f, tol)
 %SIMPLIFY  Remove small trailing Chebyshev coeffs of a happy CHEBTECH object.
 %  G = SIMPLIFY(F) attempts to compute a 'simplified' version G of the happy
 %  CHEBTECH object F such that LENGTH(G) <= LENGTH(F) but ||G - F|| is small in
-%  a relative sense: ||G - F|| < G.EPSLEVEL*G.VSCALE. It does this by removing
+%  a relative sense: ||G - F|| < G.EPSLEVEL*VSCALE(G). It does this by removing
 %  trailing coefficients of F that are relatively small; more precisely, those
-%  that are smaller in magnitude than the product of F.VSCALE and F.EPSLEVEL.
+%  that are smaller in magnitude than the product of VSCALE(F) and F.EPSLEVEL.
 %  G.EPSLEVEL is set to F.EPSLEVEL.
 %
 %  If F is not happy, F is returned unchanged.
@@ -36,13 +36,13 @@ end
 
 % Until July 2014 we used to zero interior coefficients as well
 % as trailing ones with the following code:
-% f.coeffs(bsxfun(@minus, abs(f.coeffs), tol.*f.vscale) < 0) = 0;
+% f.coeffs(bsxfun(@minus, abs(f.coeffs), tol.*vscale(f)) < 0) = 0;
 % Check for trailing zero coefficients:
 % [ignored, firstNonZeroRow] = find(f.coeffs.' ~= 0, 1);
 
-% Check for trailing coefficients smaller than the tolerance relative
-% to F.VSCALE:
-largeCoeffs = (bsxfun(@minus, abs(f.coeffs), tol.*f.vscale) > 0);
+% Check for trailing coefficients smaller than the tolerance relative to
+% VSCALE(F):
+largeCoeffs = (bsxfun(@minus, abs(f.coeffs), tol.*getvscl(f)) > 0);
 [ignored, lastNonZeroRow] = find(largeCoeffs.' == 1, 1, 'last');
 
 % If the whole thing is now zero, leave just one coefficient:
