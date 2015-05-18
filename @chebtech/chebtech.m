@@ -100,10 +100,10 @@ classdef chebtech < smoothfun % (Abstract)
         % objects, each column represents the coefficients of a single function.
         coeffs % (nxm double)
 
-%         % Vertical scale of the CHEBTECH. This is a row vector storing the
-%         % magnitude of the largest entry in each column of VALUES. It is
-%         % convenient to store this as a property.
-%         vscale = 0 % (1xm double >= 0)
+        % Vertical scale of the CHEBTECH. This is a row vector storing the
+        % magnitude of the largest entry in each column of VALUES. It is
+        % convenient to store this as a property.
+        vscale = 0 % (1xm double >= 0)
 
         % Horizontal scale of the CHEBTECH. Although CHEBTECH objects have in
         % principle no notion of horizontal scale invariance (since they always
@@ -392,9 +392,6 @@ classdef chebtech < smoothfun % (Abstract)
 
         % Unary plus of a CHEBTECH.
         f = uplus(f)
-        
-        % Estimate vertical scale.
-        v = vscale(f)
 
     end
     
