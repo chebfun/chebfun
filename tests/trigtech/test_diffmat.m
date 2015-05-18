@@ -99,7 +99,7 @@ D2 = collocclass.diffmat(n, 2);
 df2 = D2*v;
 df2_exact = @(x) -16*pi^2*exp(cos(4*pi*x)).*(cos(4*pi*x) + cos(4*pi*x).^2 - 1);
 err = df2_exact(x) - df2;
-pass(5) = ( norm(err, inf) < 1e5*f.vscale.*f.epslevel );
+pass(5) = ( norm(err, inf) < 5e5*f.vscale.*f.epslevel );
     
 
 n = n+1;
@@ -108,7 +108,7 @@ v = op(x);
 D2 = collocclass.diffmat(n, 2);
 df2 = D2*v;
 err = df2_exact(x) - df2;
-pass(6) = ( norm(err, inf) < 1e5*f.vscale.*f.epslevel );
+pass(6) = ( norm(err, inf) < 5e5*f.vscale.*f.epslevel );
     
 
 %% Check higher-order derivatives:
