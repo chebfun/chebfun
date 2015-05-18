@@ -1,4 +1,4 @@
-function [ishappy, epsLevel, cutoff] = plateauCheck(f, values, pref)
+function [ishappy, epslevel, cutoff] = plateauCheck(f, values, pref)
 %PLATEAUCHECK   Attempt to trim trailing TRIGIER coefficients in a TRIGTECH.
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = PLATEAUCHECK(F, VALUES) returns an estimated
 %   location, the CUTOFF, at which the TRIGTECH F could be truncated. One of two
@@ -32,6 +32,7 @@ function [ishappy, epsLevel, cutoff] = plateauCheck(f, values, pref)
 % [TODO]: implement PLATEAUCHECK for TRIGTECH. For the moment, we just call
 % classicCheck. The reason why the plateauCheck() is needed for TRIGTECH is 
 % that it gets called in CHEBDISCRETIZATION/TESTCONVERGENCE.
-[ishappy, epsLevel, cutoff] = classicCheck(f, values, pref);
+
+[ishappy, epslevel, cutoff] = classicCheck(f, values, pref);
 
 end

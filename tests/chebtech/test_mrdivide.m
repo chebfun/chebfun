@@ -57,7 +57,7 @@ for n = 1:2
     g = [1 1]/f;
     g_exact = @(x) (sin(2*pi*x) + cos(2*pi*x));
     pass(n, 6) = norm(feval(g, x) - g_exact(x), inf) < ...
-        10*max(g.vscale.*g.epslevel);
+        1e2*max(g.vscale.*g.epslevel);
     
     %%
     % Check error conditions.

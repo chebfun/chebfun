@@ -25,27 +25,31 @@ f = testclass.make(@(x) exp(cos(pi*x)), [], pref);
 df = diff(f);
 df_exact = @(x) -pi*sin(pi*x).*exp(cos(pi*x));
 err = df_exact(x) - feval(df, x);
-pass(2) = (norm(err, inf) < 100*df.vscale.*df.epslevel);
+pass(2) = (norm(err, inf) < 1e3*df.vscale.*df.epslevel);
+    
 
 a = 10; b = 20;
 f = testclass.make(@(x) cos(a*pi*sin(b*pi*x)), [], pref);
 df = diff(f);
 df_exact = @(x) -pi^2*a*b*cos(b*pi*x).*sin(a*pi*sin(b*pi*x));
 err = df_exact(x) - feval(df, x);
-pass(3) = (norm(err, inf) < 10*df.vscale.*df.epslevel);
+pass(3) = (norm(err, inf) < 1e4*df.vscale.*df.epslevel);
+    
 
 f = testclass.make(@(x) exp(-50*x.^2), [], pref);
 df = diff(f);
 df_exact = @(x) -100*x.*exp(-50*x.^2);
 err = df_exact(x) - feval(df, x);
-pass(4) = (norm(err, inf) < 10*df.vscale.*df.epslevel);
+pass(4) = (norm(err, inf) < 100*df.vscale.*df.epslevel);
+    
 
 a1 = 4; b1 = 3; a2 = 6; b2 = 4;
 f = testclass.make(@(x) cos(a1*pi*sin(b1*pi*x)) + 1i*cos(a2*pi*sin(b2*pi*x)), [], pref);
 df = diff(f);
 df_exact = @(x) -pi^2*a1*b1*cos(b1*pi*x).*sin(a1*pi*sin(b1*pi*x)) - 1i*pi^2*a2*b2*cos(b2*pi*x).*sin(a2*pi*sin(b2*pi*x));
 err = df_exact(x) - feval(df, x);
-pass(5) = (norm(err, inf) < 10*df.vscale.*df.epslevel);
+pass(5) = (norm(err, inf) < 1e3*df.vscale.*df.epslevel);
+    
 
 %%
 % Verify that calling diff() gives the same answer as direct construction.
@@ -67,8 +71,9 @@ tol_g = 10*dg.vscale.*dg.epslevel;
 
 errfn = diff(f + g) - (df + dg);
 err = feval(errfn, x);
-pass(7) = (norm(err, inf) < max(tol_f, tol_g));
-
+pass(7) = (norm(err, inf) < 10*max(tol_f, tol_g));
+    
+    
 errfn = diff(f.*g) - (f.*dg + g.*df);
 err = feval(errfn, x);
 pass(8) = (norm(err, inf) < length(f)*max(tol_f, tol_g));
@@ -86,7 +91,8 @@ f = testclass.make(@(x) exp(cos(4*pi*x))-1, [], pref);
 df2 = diff(f, 2);
 df2_exact = @(x) -16*pi^2*exp(cos(4*pi*x)).*(cos(4*pi*x) + cos(4*pi*x).^2 - 1);
 err = df2_exact(x) - feval(df2, x);
-pass(10) = (norm(err, inf) < 10*df2.vscale.*df2.epslevel);
+pass(10) = (norm(err, inf) < 1e3*df2.vscale.*df2.epslevel);
+    
 
 f = testclass.make(@(x) sin(pi*x), [], pref);
 df6 = diff(f, 6);
@@ -97,8 +103,8 @@ pass(11) = (norm(err, inf) < 100*df6.vscale.*df6.epslevel);
 f = testclass.make(@(x) (1/10/pi)*cos(10*pi*sin(pi*x)), [], pref);
 df5 = diff(f, 5);
 err = feval(df5,[-1;1]);  % Odd derivatives of this function vanish at +-1
-pass(12) = (norm(err, inf) < 10*df5.vscale.*df5.epslevel);
-
+pass(12) = (norm(err, inf) < 100*df5.vscale.*df5.epslevel);
+    
 
 %%
 % Check operation for array-valued chebtech objects.
@@ -106,20 +112,24 @@ f = testclass.make(@(x) [exp(-50*x.^2) sin(4*pi*(x-0.2)) 1i*exp(cos(pi*x))], [],
 df = diff(f);
 df_exact = @(x) [-100*x.*exp(-50*x.^2) 4*pi*cos(4*pi*(x-0.2)) -pi*1i*sin(pi*x).*exp(cos(pi*x))];
 err = feval(df, x) - df_exact(x);
-pass(13) = (norm(err(:), inf) < 10*max(df.vscale.*df.epslevel));
+pass(13) = (norm(err(:), inf) < 100*max(df.vscale.*df.epslevel));
+    
 
 % DIM option.
 dim2df = diff(f, 1, 2);
 g = @(x) [(sin(4*pi*(x-0.2))-exp(-50*x.^2))  (1i*exp(cos(pi*x))-sin(4*pi*(x-0.2)))];
 err = feval(dim2df, x) - g(x);
 pass(14) = isequal(size(dim2df.vscale), [1 2]) && ...
-    (norm(err(:), inf) < 10*max(dim2df.vscale.*dim2df.epslevel));
+    (norm(err(:), inf) < 100*max(dim2df.vscale.*dim2df.epslevel));
+    
+
 
 dim2df2 = diff(f, 2, 2);
 g = @(x) exp(-50*x.^2) - 2*sin(4*pi*(x-0.2)) + 1i*exp(cos(pi*x));
 err = feval(dim2df2, x) - g(x);
 pass(15) = isequal(size(dim2df2.vscale), [1 1]) && ...
-    (norm(err(:), inf) < 100*max(dim2df2.vscale.*dim2df2.epslevel));
+    (norm(err(:), inf) < 1e3*max(dim2df2.vscale.*dim2df2.epslevel));
+    
 
 % DIM option should return an empty trigtech for non-array-valued input.
 f = testclass.make(@(x) sin(pi*x));

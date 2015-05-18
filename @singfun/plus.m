@@ -60,7 +60,7 @@ end
 fExps = f.exponents;
 gExps = g.exponents;
 tolExps = chebfunpref().blowupPrefs.exponentTol;
-tolSmth = 1e2*eps;
+tolSmth = 1e3*eps;
 
 %%
 if ( all(abs(fExps - gExps) < tolExps) )

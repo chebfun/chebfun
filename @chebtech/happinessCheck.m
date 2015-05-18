@@ -54,6 +54,8 @@ if ( nargin < 3 )
 %     values = f.coeffs2vals(f.coeffs);
 end
 
+
+
 % What does happiness mean to you?
 if ( strcmpi(pref.happinessCheck, 'classic') )
     % Use the default happiness check procedure from Chebfun V4.
@@ -89,5 +91,8 @@ if ( ishappy && ~isempty(op) && ~isnumeric(op) && pref.sampleTest )
         cutoff = size(values, 1);
     end
 end
+
+% set epslevel = eps
+epslevel = eps + 0*epslevel;
 
 end

@@ -14,8 +14,9 @@ J = jacpoly(0:n, a, b);
 c = rand(n+1,1);
 f = J*c;
 err = norm(c - jaccoeffs(f, n+1, a, b), inf);
-tol = 10*epslevel(f);
+tol = 1e2*epslevel(f);
 pass(1) = err < tol;
+
 
 % Piecewise domain:
 n = 11;

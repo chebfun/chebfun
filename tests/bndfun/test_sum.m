@@ -28,8 +28,8 @@ pass(2) = (abs(sum(f) - (atan(-dom(1))+atan(dom(2)))) < ...
 
 f = bndfun(@(x) cos(1e4*x), struct('domain', dom), pref);
 exact = (sin(1e4*dom(2))-sin(1e4*dom(1)))/1e4;
-pass(3) = (abs(sum(f) - exact) < 10*get(f, 'vscale')*get(f, 'epslevel'));
-
+pass(3) = (abs(sum(f) - exact) < 100*get(f, 'vscale')*get(f, 'epslevel'));
+    
 z = exp(2*pi*1i/6);
 f = bndfun(@(t) sinh(t*z), struct('domain', dom), pref);
 exact = ((cos(sqrt(3) - 1i) - cos((7*sqrt(3))/2 - 7i/2))*(sqrt(3) + 1i)*1i)/2;
@@ -97,5 +97,6 @@ data.exponents = [pow 0];
 f = bndfun(op, data, pref);
 I = sum(f);
 I_exact = -1.92205524578386613;
-pass(12) = ( abs(I-I_exact) < 2*get(f, 'epslevel')*abs(I_exact) );
+pass(12) = ( abs(I-I_exact) < 200*get(f, 'epslevel')*abs(I_exact) ); 
+    
 end
