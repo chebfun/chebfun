@@ -94,7 +94,6 @@ else
 end
 
 if ( (max(DIFFORDER) < 2) && isequal(ODESOLVER, @ode15s) )
-    isequal(ODESOLVER, @ode15s)
     warning('CHEBFUN:PdeSolver', ...
         'PDE23T() is recommended for non-diffusive problems.');
 end
