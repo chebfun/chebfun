@@ -425,10 +425,7 @@ classdef trigtech < smoothfun % (Abstract)
         
         % Aliasing:
         coeffs = alias(coeffs, m)
-        
-        % Indefinite integration matrix in Fourier basis.
-        C = cumsummat(n)
-        
+
         % Differentiation matrix in Fourier basis.
         D = diffmat(n, p)
         
