@@ -93,7 +93,7 @@ if ( isnumeric(op) || iscell(op) )
     f.ishappy = true;
     
     % Scale the epslevel relative to the largest column:
-    vscl = getvscl(f);
+    vscl = f.vscale;
     f.epslevel = 10*eps(max(vscl));
     vscl(vscl <= f.epslevel) = 1;
     f.epslevel = f.epslevel./vscl;

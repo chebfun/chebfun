@@ -3,9 +3,9 @@ function pass = sampleTest(op, values, f, vscl)
 %   SAMPLETEST(OP, VALUES, F) evaluates both the function OP and its CHEBTECH
 %   representation F at one or more points within [-1,1]. The difference of
 %   these values is computed, and if this is sufficiently small (relative to
-%   VSCALE(F), F.HSCALE, and F.EPSLEVEL) the test passes and returns TRUE. If
+%   F.VSCALE, F.HSCALE, and F.EPSLEVEL) the test passes and returns TRUE. If
 %   the difference is large, it returns FALSE. SAMPLETEST(OP, VALUES, F, VSCL)
-%   will test relative the the values given in VSCL, rather than VSCALE(F).
+%   will test relative the the values given in VSCL, rather than F.VSCALE.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

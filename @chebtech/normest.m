@@ -8,7 +8,7 @@ function out = normest(f)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Since vscale(f) = max(abs(f.values)) calling max(vscale(f)) is sufficient:
-out = max(getvscl(f));
+% Since vscale(f) = max(abs(f.values)) calling max(f.vscale) is sufficient:
+out = max(f.vscale);
             
 end

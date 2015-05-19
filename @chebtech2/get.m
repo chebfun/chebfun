@@ -34,7 +34,7 @@ switch prop
     case 'values'
         out = f.coeffs2vals(f.coeffs);
     case 'vscale'
-        out = getvscl(f);
+        out = vscale(f);
     case 'tech'
         % TODO: Return function handle, or empty instance of the tech?
         out = @chebtech2;

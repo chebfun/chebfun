@@ -66,7 +66,7 @@ holdState = ishold;
 
 % The coefficients and vertical scale:
 absCoeffs = abs(f.coeffs);
-vscl = getvscl(f);
+vscl = f.vscale;
 
 % Add a tiny amount to zeros to make plots look nicer:
 if ( vscl > 0 )

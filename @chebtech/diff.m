@@ -66,7 +66,7 @@ function f = diffFiniteDim(f, k)
     else 
         for j = 1:k
             % Update epslevel as in PLUS():
-            ev = f.epslevel.*getvscl(f);
+            ev = f.epslevel.*f.vscale;
             for l = 1:(size(f, 2)-1)
                 f.epslevel(l) = ev(l) + ev(l+1);
             end
@@ -77,7 +77,7 @@ function f = diffFiniteDim(f, k)
             f.coeffs = diff(f.coeffs, 1, 2);
             
             % New epslevel:
-            f.epslevel = f.epslevel./getvscl(f);
+            f.epslevel = f.epslevel./f.vscale;
         end
     end
 end
@@ -108,15 +108,13 @@ function f = diffContinuousDim(f, k)
     end
     
     % Store the old vscale:
-    oldVscl = getvscl(f);
+    oldVscl = f.vscale;
     
     % Store new coefficients:
     f.coeffs = c;
     
-    % Update epslevel and the vertical scale: (See CHEBTECH CLASSDEF file
-    % for documentation)
-    newVscl = getvscl(f);
-    epslevelBnd = (n*log(n)).^k*(f.epslevel.*oldVscl)./newVscl;
+    % Update epslevel: (See CHEBTECH CLASSDEF file for documentation)
+    epslevelBnd = (n*log(n)).^k*(f.epslevel.*oldVscl)./f.vscale;
     f.epslevel = updateEpslevel(f, epslevelBnd);
     
 end

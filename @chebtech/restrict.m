@@ -54,7 +54,7 @@ vscl = max(abs(values), [], 1);
 % Update epslevel:
 % (The product of the epslevels and vscales of the 'child' pieces should be the
 % same as the product of the epslevel and vscale of their 'parent'.)
-epsBound = repmat(f.epslevel.*getvscl(f), 1, numInts)./vscl;
+epsBound = repmat(f.epslevel.*f.vscale, 1, numInts)./vscl;
 
 % Append data to CHEBTECH:
 f.coeffs = coeffs;

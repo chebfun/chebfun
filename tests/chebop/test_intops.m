@@ -36,7 +36,6 @@ A = chebop(@(x,u) u - volt(K,u), d);
 f = x.^2.*cos(x) + (1-x).*sin(x);
 u = mldivide(A, f, pref);
 err(3) = norm( u - sin(x) );
-keyboard
 err(4) = norm( A*u - f );
 
 pass = err < tol;

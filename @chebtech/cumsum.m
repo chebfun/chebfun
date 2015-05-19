@@ -65,16 +65,13 @@ v(2:2:end) = -1;
 b(1,:) = v*b(2:end,:);             % Compute b_0 (satisfies f(-1) = 0)
 
 % Store the old vscale.
-tmpVscl = getvscl(f);
+oldVscl = f.vscale;
 
 % Recover coeffs:
 f.coeffs = b;
 
-% Update vscale: 
-vscl = getvscl(f);
-
 % Update epslevel:
-epslevelBound = 2*f.epslevel.*tmpVscl./vscl;
+epslevelBound = 2*f.epslevel.*oldVscl./f.vscale;
 f.epslevel = updateEpslevel(f, epslevelBound);
 
 % Simplify (as suggested in Chebfun ticket #128)
@@ -90,8 +87,8 @@ function f = cumsumFiniteDim(f)
 % CUMSUM over the finite dimension.
 
 f.coeffs = cumsum(f.coeffs, 2);
-newVscl = getvscl(f);
-epslevelApprox = sum(f.epslevel.*getvscl(f), 2)/sum(newVscl, 2); % TODO: Is this right?
+newVscl = f.vscale;
+epslevelApprox = sum(f.epslevel.*newVscl, 2)/sum(newVscl, 2); % TODO: Is this right?
 f.epslevel = updateEpslevel(f, epslevelApprox);
 
 end

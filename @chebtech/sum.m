@@ -19,10 +19,9 @@ n = size(f.coeffs, 1);
 %%
 % Sum across array-valued CHEBTECH columns if dim = 2:
 if ( nargin > 1 && dim == 2 )
-    vsclOld = getvscl(f);
+    oldVscl = f.vscale;
     f.coeffs = sum(f.coeffs, dim);
-    vsclNew = getvscl(f);
-    f.epslevel = sum(f.epslevel.*vsclOld, 2)./vsclNew;
+    f.epslevel = sum(f.epslevel.*oldVscl, 2)./f.vscale;
     out = f;
     return
 end

@@ -132,7 +132,6 @@ if ( all(max(ac(end-testLength+1:end, :)) < epslevel) ) % We have converged! Cho
     for k = 1:size(ac, 1)           % Cumulative maximum.
         ind = ac(k, :) < t;
         ac(k, ind) = t(ind);
-
         ind = ac(k, :) >= t;
         t(ind) = ac(k, ind);
     end

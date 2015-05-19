@@ -43,26 +43,25 @@ classdef chebtech < smoothfun % (Abstract)
 % Here is a rough guide to how scale and accuracy information is propagated in
 % subsequent operations after construction:
 %   h = f + c:
-%     h.epslevel = (f.epslevel*vscale(f) + eps(c)) / vscale(h);
+%     h.epslevel = (f.epslevel*f.vscale + eps(c)) / vscale(h);
 %
 %   h = f * c:
 %     h.epslevel = f.epslevel + eps(c)/c;
 %
 %   h = f + g:
-%     h.epslevel = (f.epslevel*vscale(f) + g.epslevel*vscale(g)) / vscale(h)
+%     h.epslevel = (f.epslevel*f.vscale + g.epslevel*g.vscale) / h.vscale
 %
 %   h = f .* g:
-%     hvscale = getvscl(h);
-%     h.epslevel = (f.epslevel + g.epslevel) * (vscale(f)*vscale(g))/vscale(h)
+%     h.epslevel = (f.epslevel + g.epslevel) * (f.vscale*g.vscale)/h.vscale
 %
 %   h = diff(f):
 %     % [TODO]: Figure this out rigourously.
-%     h.epslevel = n*log(n)*f.epslevel*vscale(f); % *(vscale(h)/vscale(h))
+%     h.epslevel = n*log(n)*f.epslevel*f.vscale; % *(h.vscale/h.vscale)
 %     % Note we don't divide by vscale(h) here as we must also multiply by it.
 %
 %   h = cumsum(f):
 %     % [TODO]: Figure this out rigourously.
-%     h.epslevel = 2*f.epslevel*vscale(f)/vscale(h)
+%     h.epslevel = 2*f.epslevel*f.vscale/h.vscale
 %
 % If the input operator OP in a call to a concrete CHEBTECH constructor, say,
 % CHEBTECH1(OP), evaluates to NaN or Inf at any of the sample points used by the

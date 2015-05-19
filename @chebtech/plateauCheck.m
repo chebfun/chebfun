@@ -6,7 +6,7 @@ function [ishappy, epslevel, cutOff] = plateauCheck(f, values, vscl, pref)
 %
 %     (1) The coefficients are sufficiently small (as specified by the default
 %     EPS property of CHEBTECH) relative to VSCL (or using absolute size if
-%     VSCALE(F)=0); or
+%     F.VSCALE=0); or
 %
 %     (2) The coefficients are somewhat small and apparently unlikely to
 %     continue decreasing in a meaningful amount (i.e., have reached a "plateau"
@@ -71,7 +71,7 @@ end
 n90 = ceil( 0.90*n );
 absCoeff = abs( coeff(1:n90,:) );
 vscl = max(absCoeff,[],1);          % scaling in each column
-vscl = max( [vscl ; getvscl(f)] );
+vscl = max( [vscl ; f.vscale] );
 absCoeff = absCoeff * diag(1./vscl);
 
 %% Deal with array-valued functions.

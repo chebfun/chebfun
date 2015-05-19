@@ -67,21 +67,18 @@ elseif ( size(g.coeffs, 1) == 1)
 end
 
 % Store vscales:
-vsclOldF = getvscl(f);
-vsclOldG = getvscl(g);
+oldVsclF = f.vscale;
+oldVsclG = g.vscale;
 
 % Do muliplication in coefficient space:
 [f.coeffs, pos] = coeff_times_main(f.coeffs, g.coeffs); 
 
 % Update vscale, epslevel, and ishappy:
-vscl = getvscl(f);
-
-% Avoid NaNs:
-tmpVscl = vscl;
-tmpVscl(vscl == 0) = 1;
+vscl = f.vscale;
+vscl(vscl == 0) = 1; % Avoid NaNs:
 
 % See CHEBTECH CLASSDEF file for documentation on this:
-epslevelBound = (f.epslevel + g.epslevel) .* (vsclOldF.*vsclOldG./tmpVscl);
+epslevelBound = (f.epslevel + g.epslevel) .* (oldVsclF.*oldVsclG./vscl);
 f.epslevel = updateEpslevel(f, epslevelBound);
 f.ishappy = f.ishappy && g.ishappy;
 

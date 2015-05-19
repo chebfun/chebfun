@@ -17,7 +17,7 @@ if ( isempty(f) || isempty(g) ) % CHEBTECH + [] = []
 elseif ( isa(g, 'double') ) % CHEBTECH + double
     
     % Store the vscale:
-    vsclOld = getvscl(f); 
+    oldVscl = f.vscale; 
     % Update values (use bsxfun() to handle the case in which g is a vector
     % and f is an array-valued CHEBTECH):
     % Update coeffs:
@@ -27,11 +27,10 @@ elseif ( isa(g, 'double') ) % CHEBTECH + double
     end
     f.coeffs(1,:) = f.coeffs(1,:) + g;
     % Update scale:
-    vsclNew = getvscl(f); 
+    newVscl = vscale(f); 
+    newVscl(newVscl == 0) = 1;  % Avoid NaNs.
     % See CHEBTECH CLASSDEF file for documentation on this:
-    tmpVsclNew = vsclNew;
-    tmpVsclNew(tmpVsclNew == 0) = 1;  % Avoid NaNs.
-    epslevelBound = (f.epslevel.*vsclOld + eps(g))./tmpVsclNew;
+    epslevelBound = (f.epslevel.*oldVscl + eps(g))./newVscl;
     f.epslevel = updateEpslevel(f, epslevelBound);
     
 elseif ( isa(f, 'double') ) % double + CHEBTECH
@@ -53,14 +52,14 @@ elseif ( isa(f, 'chebtech') && isa(g, 'chebtech') )  % CHEBTECH + CHEBTECH
     end
     
     % Store the vscale:
-    vsclOldF = getvscl(f); 
-    vsclOldG = getvscl(g); 
+    oldVsclF = f.vscale; 
+    oldVsclG = g.vscale; 
     
     % Update values and coefficients:
     f.coeffs = f.coeffs + g.coeffs;
     
     % Look for a zero output:
-    tol = max(f.epslevel.*vsclOldF, g.epslevel.*vsclOldG);
+    tol = max(f.epslevel.*oldVsclF, g.epslevel.*oldVsclG);
     absCoeffs = abs(f.coeffs);
     isz = bsxfun(@lt, absCoeffs, .2*tol); % Are coeffs below .2*el*vs?
     
@@ -77,11 +76,10 @@ elseif ( isa(f, 'chebtech') && isa(g, 'chebtech') )  % CHEBTECH + CHEBTECH
         f.ishappy = ishappy;
     else
         % Update vscale, epslevel, and ishappy:
-        vsclNew = getvscl(f); 
+        newVscl = f.vscale; 
+        newVscl(newVscl == 0) = 1;  % Avoid NaNs.
         % See CHEBTECH CLASSDEF file for documentation on this:
-        tmpVsclNew = vsclNew;
-        tmpVsclNew(tmpVsclNew == 0) = 1;  % Avoid NaNs.
-        epslevelBound = (f.epslevel.*vsclOldF + g.epslevel.*vsclOldG)./tmpVsclNew;
+        epslevelBound = (f.epslevel.*oldVsclF + g.epslevel.*oldVsclG)./newVscl;
         f.epslevel = updateEpslevel(f, epslevelBound);
         f.ishappy = f.ishappy && g.ishappy;
     end
