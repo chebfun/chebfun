@@ -133,9 +133,15 @@ classdef trigdouble < chebdouble
             %FEVAL  Evaluate polynomial interpolant of data {X_four, U} at a
             % point y using barycentric interpolation.
             
+            persistent x
+            
             n = length(u.values);
             dom = u.domain;
-            x = trigpts(n, dom);
+            
+            if ( length(x) ~= n )
+                x = trigpts(n, dom);
+            end
+            
             out = trigBary(y, u.values, x, dom);
 
         end

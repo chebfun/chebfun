@@ -24,7 +24,7 @@ timeChunks = 51;        % Default number of time slices if not specified
 
 % Parse the variable inputs:
 if ( numel(varargin) == 2 )
-    opt = varargin{1};
+    O = varargin{1};
     opt.N = varargin{2};
 elseif ( numel(varargin) == 1 )
     if ( isstruct(varargin{1}) )
@@ -102,7 +102,6 @@ end
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  EVENT SETUP  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
 if ( ~isnan(optN) )
     opt.OutputFcn = @nonAdaptiveEvent;
 else
@@ -175,15 +174,6 @@ end
                 uCurrent = chebfun(Uk, DOMAIN, 'tech', techHandle);
                 uCurrent = simplify(uCurrent, epslevel);
                 
-%                 % Shorten the representation. The happiness cutoff seems to
-%                 % be safer than the epslevel simplification.
-%                 uPoly = get(uCurrent, 'coeffs');
-%                 firstKept = size(uPoly, 2) - (cutoff-1);
-%                 if ( firstKept <= 0 )
-%                     firstKept = 1;
-%                 end
-%                 uCurrent = chebfun(uPoly(firstKept:end,:), DOMAIN, 'coeffs');
-                
                 COUNTER = COUNTER + 1;
                 uOut{COUNTER} = uCurrent;
                 tOut(COUNTER) = tCurrent;
@@ -193,8 +183,8 @@ end
                     plotFun(uCurrent, tCurrent);
                 end
                 % TODO: Re-insert this?
-%                 % If we have 2.5 times as many coefficients as we need, shorten
-%                 % the representation and cause the integrator to stop. 
+%                 % If we have 2.5 times as many coefficients as we need then 
+%                 % shorten the representation and cause the integrator to stop. 
 %                 if ( cutoff < 0.4*n && n > 17)
 %                     currentLength = round(1.25*cutoff)';
 %                     %currentLength = floor( currentLength / 1.5  );
@@ -382,35 +372,6 @@ end
     end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% %%%%%%%%%%%%%%%%%%% SETUP TOLERANCES AND INITIAL CONDITION %%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% ODE tolerances:
-aTol = odeget(opt, 'AbsTol', tol);
-rTol = odeget(opt, 'RelTol', tol);
-if ( isnan(optN) )
-    aTol = min(aTol, tol);
-    rTol = min(rTol, tol);
-end
-opt.AbsTol = aTol;
-opt.RelTol = rTol;
-
-% Check for (and try to remove) piecewise initial conditions:
-u0Trans = u0(1).isTransposed;
-if ( u0Trans )
-    u0 = transpose(u0);
-end
-for k = 1:numel(u0)
-    if ( numel(u0(k).funs) > 1 )
-        u0(k) = merge(u0(k), 'all', 1025, tol);
-        if ( u0(k).nfuns > 1 )
-            error('CHEBFUN:CHEBFUN:pde15s:piecewise', ...
-                'Piecewise initial conditions are not supported.');
-        end
-    end
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% %%%%%%%%%%%%%%%%%%%%%%%%% PARSE BOUNDARY CONDITIONS %%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -534,8 +495,6 @@ else
             error('CHEBFUN:CHEBFUN:pde15s:nonNumericVal1', ...
                 'For BCs of the form {char, val} val must be numeric.')
         end
-        
-            
         if ( strcmpi(bc.right, 'dirichlet') )
             A = @(n) [zeros(1, n-1), 1];
         elseif ( strcmpi(bc.right, 'neumann') )
@@ -566,7 +525,7 @@ else
     
 end
 
-if ( ~ISPERIODIC && ~isfield(bc, 'middle') )
+if ( isstruct(bc) && ~isfield(bc, 'middle') )
     bc.middle.op = [];
 end
 
@@ -582,7 +541,9 @@ if ( numel(pdeFlag) == 1 )
     pdeFlag = repmat(pdeFlag, 1, SYSSIZE);
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PERIODIC %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if ( ~ISPERIODIC )
     techHandle = @chebtech2;
@@ -593,15 +554,43 @@ else
     points = @trigpts;
     mydouble = @trigdouble;  
     u0 = chebfun(u0, 'trig', 'eps', tol);
+    u0 = simplify(u0, tol);
 end
 tech = techHandle();
 
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% MISC %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% %%%%%%%%%%%%%%%%%%% SETUP TOLERANCES AND INITIAL CONDITION %%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% ODE tolerances:
+aTol = odeget(opt, 'AbsTol', tol);
+rTol = odeget(opt, 'RelTol', tol);
+if ( isnan(optN) )
+    aTol = min(aTol, tol);
+    rTol = min(rTol, tol);
+end
+opt.AbsTol = aTol;
+opt.RelTol = rTol;
+
+% Check for (and try to remove) piecewise initial conditions:
+u0Trans = u0(1).isTransposed;
+if ( u0Trans )
+    u0 = transpose(u0);
+end
+for k = 1:numel(u0)
+    if ( numel(u0(k).funs) > 1 )
+        u0(k) = merge(u0(k), 'all', 1025, tol);
+        if ( u0(k).nfuns > 1 )
+            error('CHEBFUN:CHEBFUN:pde15s:piecewise', ...
+                'Piecewise initial conditions are not supported.');
+        end
+    end
+end
 
 % Simplify initial condition to tolerance or fixed size in optN:
 if ( isnan(optN) )
-    u0 = simplify(u0, tol);
+    u0 = simplify(u0);
 else
     for k = 1:numel(u0)
         u0(k).funs{1}.onefun = prolong(u0(k).funs{1}.onefun, optN);
