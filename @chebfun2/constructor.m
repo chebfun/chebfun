@@ -97,7 +97,7 @@ if ( any(strcmpi(dom, 'equi')) || ((nargin > 3) && (any(strcmpi(varargin{1}, 'eq
         % the samples, condition number of the function, and the accuracy 
         % target in chebfun2 preferences.  
         [xx, yy] = meshgrid(linspace(dom(1), dom(2), size(op,2)), linspace(dom(3), dom(4), size(op,1)));
-        tol = Tol(xx, yy, op, dom, pseudoLevel);
+        tol = GetTol(xx, yy, op, dom, pseudoLevel);
         [pivotValue, ignored, rowValues, colValues] = CompleteACA(op, tol, 0); % Do ACA on matrices
         
         % Make a chebfun2: 
@@ -148,7 +148,7 @@ if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
         % the samples, condition number of the function, and the accuracy 
         % target in chebfun2 preferences. 
         [xx, yy] = points2D(size(op,2), size(op,1), dom, pref);
-        tol = Tol(xx, yy, op, dom, pseudoLevel);
+        tol = GetTol(xx, yy, op, dom, pseudoLevel);
         
         % Perform GE with complete pivoting:
         [pivotValue, ignored, rowValues, colValues] = CompleteACA(op, tol, 0);
@@ -280,7 +280,7 @@ while ( ~isHappy && ~failure )
     end
     
     % Two-dimensional version of CHEBFUN's tolerance:
-    tol = Tol(xx, yy, vals, dom, pseudoLevel);
+    tol = GetTol(xx, yy, vals, dom, pseudoLevel);
     
     %%% PHASE 1: %%%
     % Do GE with complete pivoting:
@@ -295,7 +295,7 @@ while ( ~isHappy && ~failure )
         vals = evaluate(op, xx, yy, vectorize); % resample
         vscale = max(abs(vals(:)));
         % New tolerance:
-        tol = Tol(xx, yy, vals, dom, pseudoLevel);
+        tol = GetTol(xx, yy, vals, dom, pseudoLevel);
         % New GE:
         [pivotValue, pivotPosition, rowValues, colValues, iFail] = CompleteACA(vals, tol, factor);
         % If the function is 0+noise then stop after three strikes.
@@ -654,7 +654,7 @@ end
 
 end
 
-function tol = Tol(xx, yy, vals, dom, pseudoLevel)
+function tol = GetTol(xx, yy, vals, dom, pseudoLevel)
 grid = max( size( vals ) ); 
 df_dx = diff(vals,1,2) ./ diff(xx,1,2); % xx changes column-wise.
 df_dy = diff(vals,1,1) ./ diff(yy,1,1); % yy changes row-wise.
