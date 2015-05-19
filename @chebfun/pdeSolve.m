@@ -566,7 +566,7 @@ else
     
 end
 
-if ( ~ISPERIODIC && ~isfield(bc, 'middle') )
+if ( isstruct(bc) && ~isfield(bc, 'middle') )
     bc.middle.op = [];
 end
 
@@ -592,16 +592,16 @@ else
     techHandle = @trigtech;
     points = @trigpts;
     mydouble = @trigdouble;  
-    u0 = chebfun(u0, 'trig', 'eps', tol);
+    u0 = chebfun(u0, 'trig', 'eps', tol)
+    u0 = simplify(u0, tol)
 end
 tech = techHandle();
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% MISC %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
 % Simplify initial condition to tolerance or fixed size in optN:
 if ( isnan(optN) )
-    u0 = simplify(u0, tol);
+    u0 = simplify(u0);
 else
     for k = 1:numel(u0)
         u0(k).funs{1}.onefun = prolong(u0(k).funs{1}.onefun, optN);
