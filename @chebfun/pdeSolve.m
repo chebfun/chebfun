@@ -24,7 +24,7 @@ timeChunks = 51;        % Default number of time slices if not specified
 
 % Parse the variable inputs:
 if ( numel(varargin) == 2 )
-    O = varargin{1};
+    opt = varargin{1};
     opt.N = varargin{2};
 elseif ( numel(varargin) == 1 )
     if ( isstruct(varargin{1}) )
