@@ -294,7 +294,7 @@ end
 textBox = myTextbox(str, textBox);
 %% Waterfall plot is what we have drawn.
 % TODO: Delete the markers from above. Make waterfall plot points as well.
-water = waterfall(f, '-', 'nslices', min(length(f), 6));
+water = waterfall(f, '-', 'nslices', min(length(f), 6), 'markersize', 35);
 
 % tilt, pan, tilt
 sf = tilt(sf, pmove, -1); sf = fullpan(sf, ppan); pause(pbreak)
@@ -310,9 +310,8 @@ delete(sf);
 mypause(psectionbreak)
 
 %% Skeleton version of ACA.
-% TODO: Ensure that we're plotting the lines we actually want. They can be
-% different from the coarse grid (17x17) above, than actually on a finer grid
-% needed by the chebfun2 constructer. Hence, the lines might not be matching up.
+% Get the pivot locations of the actually resolved CHEBFUN2
+P = f.pivotLocations;
 markers=[]; trun = min(6,length(f)); P = P(1:trun,:);
 for j = 1:min(6, length(f))
     [xx, yy] = meshgrid(P(:,1), chebpts(33));
@@ -428,7 +427,7 @@ plot(txt); axis([-1 1 -1 1]), axis off
 mypause(psectionbreak), clf
 
 % Make a plot that looks a bit like plot(f, '.-')
-crosses = PivPos;
+crosses = PivPos(1:min(6,length(f)),:);
 cols = line([crosses(:,1) crosses(:,1)].', [-1 1]);
 hold on
 rows = line([-1 1],[crosses(:,2),crosses(:,2)].');
