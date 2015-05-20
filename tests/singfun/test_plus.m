@@ -83,7 +83,7 @@ function result = test_add_function_to_scalar(f, fh, c, x)
     g2 = c + f;
     result(1) = isequal(g1, g2);
     g_exact = @(x) fh(x) + c;
-    result(2) = norm(feval(g1, x) - g_exact(x), inf) < 2e2*get(f, 'epslevel');
+    result(2) = norm(feval(g1, x) - g_exact(x), inf) < 1e3*get(f, 'epslevel');
 end
 
 % Test the addition of two SINGFUN objects F and G, specified by FH and

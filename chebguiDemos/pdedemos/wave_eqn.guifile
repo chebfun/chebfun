@@ -1,0 +1,12 @@
+'Wave equation'
+'system'
+domain = '[-2 2]';
+t = '0:.1:8';
+DE = {'u_t = v''','v_t = u'''};
+LBC = 'u = 0';
+RBC = 'u = 0';
+init = {'u = .25*(4-x^2)*exp(-4*x^2)','v = 0'};
+tol = '1e-5'; plotting = 'on';
+fixYaxisLower = '-1.2'; fixYaxisUpper = '1.2';
+type  = 'pde';
+pdeSolver = 'pde23t';

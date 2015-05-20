@@ -52,6 +52,14 @@ set(handles.menu_tolerance, 'UserData', chebg.tol);
 if ( strcmpi(chebg.type, 'pde') )
     
     set(handles.input_timedomain, 'String', chebg.timedomain);
+
+    if ( strcmp(chebg.options.pdeSolver, 'pde15s') )
+        set(handles.menu_pdeSolver_pde15s, 'Checked', 'On');
+        set(handles.menu_pdeSolver_pde23t, 'Checked', 'Off');
+    else
+        set(handles.menu_pdeSolver_pde15s, 'Checked', 'Off');
+        set(handles.menu_pdeSolver_pde23t, 'Checked', 'On');
+    end
     
     if ( ~strcmp(chebg.options.plotting, 'off') )
         set(handles.menu_pdeplottingon, 'Checked', 'On');

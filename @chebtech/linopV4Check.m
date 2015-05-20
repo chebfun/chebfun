@@ -1,4 +1,4 @@
-function [ishappy, epsLevel, cutoff] = linopV4Check(f, values, pref)
+function [ishappy, epslevel, cutoff] = linopV4Check(f, values, pref)
 %LINOPV4CHECK   Attempt to trim trailing Chebyshev coefficients in a CHEBTECH.
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = LINOPV4CHECK(F, VALUES) returns an estimated
 %   location, the CUTOFF, at which the CHEBTECH F could be truncated. It's
@@ -36,12 +36,12 @@ function [ishappy, epsLevel, cutoff] = linopV4Check(f, values, pref)
 % Grab some preferences:
 if ( nargin == 1 )
     pref = f.techPref();
-    epsLevel = pref.eps;
+    epslevel = pref.eps;
 elseif ( isnumeric(pref) )
-    epsLevel = pref;
+    epslevel = pref;
     pref = f.techPref();
 else
-    epsLevel = pref.eps;
+    epslevel = pref.eps;
 end
 
 % Grab the coefficients:
@@ -82,17 +82,17 @@ absCoeff = absCoeff / vscale;
 
 numCol = size(coeff, 2);
 ishappy = false(1,numCol);
-epsLevel = zeros(1,numCol);
+epslevel = zeros(1,numCol);
 cutoff = zeros(1,numCol);
 for m = 1:numCol
-    [ishappy(m), epsLevel(m), cutoff(m)] = checkColumn(absCoeff(:,m),pref.eps);
+    [ishappy(m), epslevel(m), cutoff(m)] = checkColumn(absCoeff(:,m),pref.eps);
     if ( ~ishappy(m) )
         % No need to continue if it fails on any column.
         break
     end
 end
 
-epsLevel = max(epsLevel);
+epslevel = max(epslevel);
 ishappy = all(ishappy); 
 
 end

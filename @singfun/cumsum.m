@@ -65,7 +65,7 @@ end
 % SINGFUN representation for the indefinite integral of a SINGFUN. It now can
 % only handle integrand with singularity at one end of the domain, but not at
 % both. The algorithm was due to Nick Hale and Sheehan Olver. Some minor
-% modification are made during Chebfun v5 refactorization. See the working note
+% modifications are made during Chebfun v5 refactoring. See the working note
 % by Nick Hale and Sheehan Olver for the detail about the algorithm.
 
 function g = singIntegral(f)

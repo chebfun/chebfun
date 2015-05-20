@@ -12,12 +12,16 @@ testclass = trigtech();
 f = testclass.make(@(x) pi*cos(pi*(x-0.1)));
 g = compose(f, @sin, [], [], pref);
 h = testclass.make(@(x) sin(pi*cos(pi*(x-0.1))));
+n = max(length(g),length(h));
+g = prolong(g,n); h = prolong(h,n);
 pass(1) = norm(h.coeffs - g.coeffs, inf) < 10*h.vscale.*h.epslevel;
 
 % Compose an array-valued TRIGTECH object with sin(x):
 f = testclass.make(@(x) [pi*cos(pi*x) pi*cos(2*pi*x)]);
 g = compose(f, @sin, [], [], pref);
 h = testclass.make(@(x) [sin(pi*cos(pi*x)) sin(pi*cos(2*pi*x))]);
+n = max(length(g),length(h));
+g = prolong(g,n); h = prolong(h,n);
 pass(2) = norm(h.coeffs - g.coeffs, inf) < ...
     10*max(h.vscale.*h.epslevel);
 
@@ -27,7 +31,8 @@ g = compose(f, @sin, [], [], pref);
 x = g.points();
 values = g.values;
 pass(3) = norm(sin([pi*cos(pi*x) pi*cos(2*pi*x)]) - values, inf) < ...
-    10*max(h.vscale.*h.epslevel);
+    100*max(h.vscale.*h.epslevel);
+
 
 % Compose an array-valued TRIGTECH object with sin(x):
 f = testclass.make(@(x) [pi*cos(pi*x) pi*cos(2*pi*x) pi*cos(3*pi*x)]);
@@ -35,7 +40,8 @@ g = compose(f, @sin, [], [], pref);
 x = g.points();
 values = g.values;
 pass(4) = norm(sin([pi*cos(pi*x) pi*cos(2*pi*x) pi*cos(3*pi*x)]) - values, inf) < ...
-    10*max(h.vscale.*h.epslevel);
+    100*max(h.vscale.*h.epslevel);
+
 
 % Compose 2 TRIGTECH objects with a binary function:
 f1 = testclass.make(@(x) exp(sin(pi*x)));
@@ -73,7 +79,8 @@ h = compose(f, g);
 x = testclass.trigpts(length(h));
 hvalues = h.coeffs2vals(h.coeffs);
 pass(8) = norm(hvalues - [sin(pi*(cos(pi*sin(pi*x))-0.1)) cos(pi*(cos(pi*sin(pi*x))+0.5))], inf) < ...
-    10*max(h.vscale.*h.epslevel);
+    100*max(h.vscale.*h.epslevel);
+
 
 % Compose g(f), when f and g are TRIGTECH objects and f is array-valued:
 f = testclass.make(@(x) [sin(pi*(x-0.1)) cos(pi*(x+0.5))]);
@@ -82,7 +89,8 @@ h = compose(f, g);
 x = testclass.trigpts(length(h));
 hvalues = h.coeffs2vals(h.coeffs);
 pass(9) = norm(hvalues - cos(pi*sin(pi*[sin(pi*(x-0.1)) cos(pi*(x+0.5))])), inf) < ...
-    10*max(h.vscale.*h.epslevel);
+    100*max(h.vscale.*h.epslevel);
+
 
 % We cannot expect to compose two array-valued TRIGTECH objects f(g):
 try 

@@ -1,15 +1,12 @@
 function out = legcoeffs(f, varargin)
 %LEGCOEFFS    Legendre polynomial coefficients of a CHEBFUN.
-%   A = LEGCOEFFS(F, N) returns the first N coefficients in the Legendre
-%   series expansion of the CHEBFUN F, so that such that F approximately equals
-%   A(1) P_0(x) + ... + A(N) P_(N-1)(x), where P_N(x) denotes the
-%   N-th Legendre polynomial. A is a column vector.
+%   A = LEGCOEFFS(F, N) returns the first N coefficients in the Legendre series
+%   expansion of the CHEBFUN F, so that such that F approximately equals 
+%   A(1) P_0(x) + ... + A(N) P_(N-1)(x), where P_N(x) denotes the N-th Legendre
+%   polynomial. A is a column vector.
 %
 %   If F is smooth (i.e., numel(f.funs) == 1), then A = LEGCOEFFS(F) will assume
 %   that N = length(F) - 1;
-%
-%   There is also a LEGCOEFFS command in the Chebfun trunk directory which
-%   computes the CHEBFUN corresponding to the Legendre polynomial P_n(x).
 %
 %   LEGCOEFFS does not support quasimatrices.
 %

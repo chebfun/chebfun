@@ -425,7 +425,7 @@ classdef trigtech < smoothfun % (Abstract)
         
         % Aliasing:
         coeffs = alias(coeffs, m)
-        
+
         % Differentiation matrix in Fourier basis.
         D = diffmat(n, p)
         

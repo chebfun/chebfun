@@ -28,7 +28,7 @@ op_g = @(x) 4*x.^2.*exp(-x.^2) - 2*exp(-x.^2);
 gVals = feval(g, x);
 gExact = op_g(x);
 err = gVals - gExact;
-pass(1) = norm(err, inf) < 5e1*get(g,'epslevel')*get(g,'vscale');
+pass(1) = norm(err, inf) < 1e3*get(g,'epslevel')*get(g,'vscale');
 
 op = @(x) x.^2.*exp(-x.^2);
 f = unbndfun(op, struct('domain', dom));
@@ -46,7 +46,7 @@ op_g = @(x) 2*exp(-x.^2) + (exp(-x.^2) - 1)./x.^2;
 gVals = feval(g, x);
 gExact = op_g(x);
 err = norm(gVals - gExact,inf);
-pass(3) = err < 1e1*get(g,'epslevel')*get(g,'vscale');
+pass(3) = err < 1e2*get(g,'epslevel')*get(g,'vscale');
 
 op = @(x) x.^2.*(1-exp(-x.^2));
 f = unbndfun(op, struct('domain', dom, 'exponents', [2 2]), singPref);
@@ -55,7 +55,7 @@ op_g = @(x) 2*x.^3.*exp(-x.^2) - 2*x.*(exp(-x.^2) - 1);
 gVals = feval(g, x);
 gExact = op_g(x);
 err = norm(gVals - gExact, inf);
-tol = 5e5*get(f,'epslevel')*get(f,'vscale');
+tol = 1e7*get(f,'epslevel')*get(f,'vscale');
 pass(4) = err < tol;
 
 %% Functions on [a inf]:
@@ -72,35 +72,35 @@ f = unbndfun(op, struct('domain', dom));
 gVals = feval(f, x);
 gExact = op(x);
 err = gVals - gExact;
-pass(5) = norm(err, inf) < get(f,'epslevel')*get(f,'vscale');
-
+pass(5) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
+    
 op = @(x) x.*exp(-x);
 f = unbndfun(op, struct('domain', dom));
 gVals = feval(f, x);
 gExact = op(x);
 err = gVals - gExact;
-pass(6) = norm(err, inf) < get(f,'epslevel')*get(f,'vscale');
+pass(6) = norm(err, inf) < 10*get(f,'epslevel')*get(f,'vscale');
 
 op = @(x) (1-exp(-x))./x;
 f = unbndfun(op, struct('domain', dom));
 gVals = feval(f, x);
 gExact = op(x);
 err = gVals - gExact;
-pass(7) = norm(err, inf) < get(f,'epslevel')*get(f,'vscale');
+pass(7) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
 
 op = @(x) 1./x;
 f = unbndfun(op, struct('domain', dom));
 gVals = feval(f, x);
 gExact = op(x);
 err = gVals - gExact;
-pass(8) = norm(err, inf) < get(f,'epslevel')*get(f,'vscale');
+pass(8) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
 
 op = @(x) x.*(5+exp(-x.^3));
 f = unbndfun(op, struct('domain', dom, 'exponents', [0 1]), pref);
 gVals = feval(f, x);
 gExact = op(x);
 err = norm(gVals - gExact, inf);
-tol = 10*get(f,'epslevel')*get(f,'vscale');
+tol = 1e2*get(f,'epslevel')*get(f,'vscale');
 pass(9) = err < tol;
 
 %% Functions on [-inf b]:

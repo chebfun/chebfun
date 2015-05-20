@@ -78,6 +78,8 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
     properties ( Dependent = true )
         % DIFFORDER is a dependent property.
         diffOrder
+        % ISNOTDIFFORINT is a dependent property.
+        isNotDiffOrInt
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -118,7 +120,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             end
 
             if ( nargin > 1 )
-                A.domain = A.mergeDomains(A, dom);
+                A.domain = A.mergeDomains(A.domain, dom);
             end
             
         end
@@ -139,12 +141,6 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods
                    
-        function A = set.domain(A, d)
-        %SET.DOMAIN   Insert breakpoints in the domain of the CHEBMATRIX.
-        %   We don't allow removing breakpoints, or changing endpoints.
-            A.domain = A.mergeDomains(d, A.domain);
-        end
-        
         function d = get.diffOrder(L)
         %GET.DIFFORDER    Differential order of each CHEBMATRIX block. 
         %   Also accessible via property: get(A, 'diffOrder');
@@ -159,6 +155,24 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             for j = 1:numel(A.blocks);
                 if ( isa(A.blocks{j}, 'operatorBlock') )
                     d(j) = A.blocks{j}.diffOrder;
+                end
+            end
+        end
+
+        function d = get.isNotDiffOrInt(L)
+        %GET.ISNOTDIFFORINT    Are the CHEBMATRIX blocks multiplication operators?
+        %   Also accessible via property: get(A, 'isNotDiffOrInt');
+            d = getIsNotDiffOrInt(L);
+        end
+
+        function d = getIsNotDiffOrInt(A)
+        %GETISNOTDIFFORINT    Are the CHEBMATRIX block multiplication operators.
+        %   Also accessible via property: A.isNotDiffOrInt;
+            d = zeros(size(A));
+            % Loop through all elements.
+            for j = 1:numel(A.blocks);
+                if ( isa(A.blocks{j}, 'operatorBlock') )
+                    d(j) = A.blocks{j}.isNotDiffOrInt;
                 end
             end
         end

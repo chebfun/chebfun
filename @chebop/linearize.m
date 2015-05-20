@@ -1,4 +1,4 @@
-function [L, res, isLinear, u] = linearize(N, u, x, flag)
+function [L, res, isLinear, u] = linearize(N, u, x, linCheckFlag, paramReshapeFlag)
 %LINEARIZE   Linearize a CHEBOP.
 %   L = LINEARIZE(N) returns a LINOP that corresponds to linearising the CHEBOP
 %   N around the zero function on N.DOMAIN. The linop L will both include the
@@ -12,10 +12,20 @@ function [L, res, isLinear, u] = linearize(N, u, x, flag)
 %   L = LINEARIZE(N, U, X) passes the independent variable, X, on N.DOMAIN.
 %   If X = [] then LINEARIZE constructs the variable itself internally.
 %
-%   L = LINEARIZE(N, U, X, FLAG) is useful when we call LINOP(CHEBOP), i.e.,
-%   converting a linear CHEBOP to a LINOP. If FLAG = 1, the method will stop
-%   execution and return as soon as it encounters a nonlinear field in N. In
-%   this case L is returned as an empty LINOP.
+%   L = LINEARIZE(N, U, X, LINCHECKFLAG) is useful when we call LINOP(CHEBOP),
+%   i.e., converting a linear CHEBOP to a LINOP. If LINCHECKFLAG = 1, the method
+%   will stop execution and return as soon as it encounters a nonlinear field in
+%   N. In this case L is returned as an empty LINOP. By default, LINCHECKFLAG =
+%   0.
+%
+%   L = LINEARIZE(N, U, X, LINCHECKFLAG, PARAMRESHAPEFLAG) is useful when
+%   determining whether parameters (as opposed to functions) appear in the
+%   problem. If PARAMRESHAPEFLAG = 1, the code will try to cast any unknown
+%   inputs which correspond to parameters to scalars, rather than CHEBFUNs, as
+%   it linearizes. The Frechet derivatives corresponding to parameters will be
+%   Inf x 1 CHEBFUNs, rather than Inf x Inf OPERATORBLOCKs. By default,
+%   PARAMRESHAPEFLAG = 1. For generalized eigenvalue problems, it is useful to
+%   pass PARAMRESHAPEFLAG = 0.
 %
 %   [L, RES] = LINEARIZE(N, ...) also returns RES; to the residual of the
 %   differential equation part of N at the function it was linearized. In other
@@ -74,9 +84,14 @@ if ( nargin < 3 || isempty(x) )
     x = chebfun(@(x) x, dom);
 end
 
-% By default, set FLAG to 0.
-if ( nargin < 4 || isempty(flag) )
-    flag = 0;
+% By default, set LINCHECKFLAG to 0.
+if ( nargin < 4 || isempty(linCheckFlag) )
+    linCheckFlag = 0;
+end
+
+% By default, set PARAMRESHAPEFLAG to 1.
+if ( nargin < 5 || isempty(linCheckFlag) )
+    paramReshapeFlag = 1;
 end
 
 % Convert the linearization variable to cell-array form:
@@ -122,15 +137,31 @@ end
 
 % Evaluate N.op. The output will be the ADCHEBFUN NU. In case of systems, NU
 % will be an array-valued ADCHEBFUN. We need different calling sequences
-% depending on whether N has a cell-argument or not.
-if ( cellArg )
-    % No need to expand the cell U.
-    Nu = feval(N, x, u);
-else
-    % Need to expand the cell U.
-    Nu = feval(N, x, u{:});
+% depending on whether N has a cell-argument or not. We wrap the evaluation in a
+% try-catch statement, since if we had an initial guess that leads to
+% singularlity issues (such as N.init = 0 for N.op = @(u) diff(u,2) + sqrt(u)),
+% we'd only throw meaningless error messages otherwise
+try
+    if ( cellArg )
+        % No need to expand the cell U.
+        Nu = feval(N, x, u);
+    else
+        % Need to expand the cell U.
+        Nu = feval(N, x, u{:});
+    end
+catch ME
+    if ( strcmp(ME.identifier, 'CHEBFUN:CHEBTECH:extrapolate:nansInfs') || ...
+         strcmp(ME.identifier, ...
+            'CHEBFUN:CHEBFUN:rdivide:columnRdivide:divisionByZeroChebfun') )
+        error('CHEBFUN:CHEBOP:linearize:invalidInitialGuess', ...
+            ['Failed to evaluate operator on the initial guess passed (or the ' ...
+            'one constructed \nby CHEBOP). A potential cause might be ' ...
+            'division by a zero CHEBFUN. Please supply\na valid initial ' ...
+            'guess via the ''init'' field of the CHEBOP.'])
+    else
+        rethrow(ME)
+    end
 end
-
 % Did the user specify the problem using old-school concatenation?
 if ( size(Nu, 1) < size(Nu, 2) )
     warning('CHEBFUN:CHEBOP:linearize:vertcatOp', ...
@@ -149,7 +180,7 @@ res = vertcat(get(Nu, 'func'));
 isLinear(1) = all(all(vertcat(get(Nu, 'linearity'))));
 
 % If N is nonlinear, and we were looking to only test linearity, return.
-if ( flag && ~all(isLinear) )
+if ( linCheckFlag && ~all(isLinear) )
     L = linop();
     return
 end
@@ -163,28 +194,20 @@ L.domain = domain.merge(L.domain, dom);
 
 % For problems with parameters, the system in L may not be square. This is OK if
 % u0 contains doubles for the parameter entries. If not, we correct for this
-% below by assuming the final few variables represent parameters.
-
-[s1, s2] = size(L.blocks);
-numParams = s2 - s1;
-if ( all(isFun) && numParams > 0 )
-    % We've found a parameterised problem, but weren't informed by u0. 
-    
-    % TODO: Do we really want to throw a warning?
-%     % Throw a warning: 
-%     if ( numParams == 1 )
-%         warnStr = 'Assuming final variable is a parameter.';
-%     else
-%         warnStr = ['Assuming final ' int2str(numParams) ' variables are parameters.'];
-%     end
-%     warning('CHEBFUN:chebop:linearize:params', warnStr);
-    
-    % Reseed the final numParam variables as constants and linearize again:
+% below by assuming that any variable that does not have a diffOrder greater
+% than 0 associated with it is a parameter, rather than a function.
+isParam = all(L.isNotDiffOrInt, 1);
+% If we have any parameters involved that are still thought to be functions, and
+% we did not get a U passed in to linearize around, we reseed the corresponding
+% variables.
+if ( all(isFun) && any(isParam) && paramReshapeFlag )
+    % We've found a parameterised problem, but weren't informed by u0.  Reseed
+    % the final numParam variables as constants and linearize again:
     u = cellfun(@(b) b.func, u, 'UniformOutput', false);
-    for k = 0:numParams-1
-        u{end-k} = feval(u{end-k}, L.domain(1)); % Convert to a scalar.
+    for k = find(isParam)
+        u{k} = feval(u{k}, L.domain(1)); % Convert to a scalar.
     end
-    [L, res, isLinear, u] = linearize(N, u, x, flag);
+    [L, res, isLinear, u] = linearize(N, u, x, linCheckFlag);
 
     return
 end
@@ -216,6 +239,41 @@ if ( ~isempty(N.bc) )
        BC = append(BC, contConds.functional, contConds.values);
        isLinear(4) = true;
     else
+        % Before we evaluate the function, we need to ensure to contract the
+        % derivative of any scalar ADchebfun. To see why, consider the boundary
+        % condition for a problem on [0,1]:
+        %   N.bc = @(x,v,p) v(0) - p;
+        % where V is a CHEBFUN, but P is a scalar parameter. 
+        %
+        % When we reach this point of the code, the cell array U will contain 2
+        % ADCHEBFUN objects. U{1} will be an ADCHEBFUN where U{1}.FUNC is a
+        % CHEBFUN, and U{1}.JACOBIAN is a CHEBMATRIX that has the block types
+        % [operatorBlock, chebfun]. U{2} will be an ADCHEBFUN where U{2}.FUNC is
+        % a double, and U{2}.jacobian will be a CHEBMATRIX with the same block
+        % types as U{1}.JACOBIAN.
+        %
+        % When we then evaluate the condition above, we first call FEVAL on V to
+        % get the value V0 = V(0). This causes the dimensions of the jacobian of
+        % V0 to collapse, so that V0.jacobian will be a CHEBMATRIX with the
+        % block types [functionalBlock, double]. When we then do the subtraction
+        % v(0) - p, the jacobian of P will be of incorrect dimensions,
+        % reflecting that we haven't taken into account that we really are
+        % evaluating a functional.
+        %
+        % To fix this, we hit the JACOBIAN field of any ADCHEBFUN currently in U
+        % with an evaluation operator, which will cause the derivatives to
+        % collapse to the correct dimensions, as required.
+        if ( ~all(isFun) )
+            % Create an evaluation operator for the left endpoint of the domain.
+            % The evaluation point doesn't really matter, as all the derivatives
+            % we're collapsing are either zeros or identity, so identical over
+            % the whole domain
+            E = functionalBlock.feval(dom(1), dom);
+            for paramCounter = find(~isFun)
+                u{paramCounter}.jacobian = E*u{paramCounter}.jacobian;
+            end
+        end
+        
         % Evaluate. The output, BCU, will be an ADCHEBFUN.
         if ( nargin(N.bc) == 1 )
             bcU = N.bc(u{:});
@@ -230,13 +288,15 @@ if ( ~isempty(N.bc) )
 
         % Gather all residuals of evaluating N.BC in one column vector.
         vals = cat(1, get(bcU, 'func'));
+        
         % Loop through the conditions and append to the BC object.
         for k = 1:numel(bcU)
-            J = get(bcU,'jacobian',k);
+            J = get(bcU, 'jacobian', k);
             BC = append(BC, J , vals(k));
             jumps = get(bcU, 'jumpLocations', k);
             L = addGivenJumpAt(L,jumps);
         end
+        
         % Update linearity information.
         isLinear(4) = all(all(get(bcU, 'linearity')));
         
@@ -247,7 +307,7 @@ if ( ~isempty(N.bc) )
 end
 
 % If N is nonlinear, and we were looking to only test linearity, return.
-if ( flag && ~all(isLinear) )
+if ( linCheckFlag && ~all(isLinear) )
     L = linop();
     return
 end

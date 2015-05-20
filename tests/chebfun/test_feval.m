@@ -87,13 +87,15 @@ pref.splitting = 1;
 f_exact = @(x) abs(x)./(1 + x.^2);
 f = chebfun(f_exact, [-2 7], pref);
 x = 4.5*xr + 2.5;
-pass(11) = (norm(feval(f, x) - f_exact(x), inf) < 10*f.epslevel*f.vscale);
+pass(11) = (norm(feval(f, x) - f_exact(x), inf) < 1e2*f.epslevel*f.vscale);
+
 
 pref.splitting = 0;
 f_exact = @(x) cos(1e4*x);
 f = chebfun(f_exact, [1 5], pref);
 x = 2*xr + 3;
-pass(12) = (norm(feval(f, x) - f_exact(x), inf) < 10*f.epslevel*f.vscale);
+pass(12) = (norm(feval(f, x) - f_exact(x), inf) < 1e5*f.epslevel*f.vscale);
+
 
 pref.splitting = 0;
 z = exp(2*pi*1i/6);
@@ -207,7 +209,8 @@ f = chebfun(op, dom, 'exps', [pow 0], 'splitting', 'on');
 fval = feval(f, x);
 vals_exact = feval(op, x);
 err = fval - vals_exact;
-pass(31) = ( norm(err, inf) < 1e1*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(31) = ( norm(err, inf) < 1e4*get(f,'epslevel')*norm(vals_exact, inf) );
+
 
 %% Test for function defined on unbounded domain:
 
@@ -235,8 +238,9 @@ f = chebfun(op, dom, 'exps', [2 2]);
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
-pass(33) = ( norm(err, inf) < 1e4*epslevel(f)*vscale(f) ) && ...
+pass(33) = ( norm(err, inf) < 1e5*epslevel(f)*vscale(f) ) && ...
     ( feval(f, Inf) == Inf ) && ( feval(f, -Inf) == Inf );
+
 
 %% Functions on [a inf]:
 
@@ -252,8 +256,9 @@ f = chebfun(op, dom);
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
-pass(34) = ( norm(err, inf) < epslevel(f)*vscale(f) ) && ...
-     ( feval(f, Inf) < 1e1*epslevel(f)*vscale(f) );
+pass(34) = ( norm(err, inf) < 1e1*epslevel(f)*vscale(f) ) && ...
+     ( feval(f, Inf) < 1e2*epslevel(f)*vscale(f) );
+
 
 %% Functions on [-inf b]:
 
@@ -270,7 +275,8 @@ f = chebfun(op, dom);
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
-pass(35) = ( norm(err, inf) < 2*max(epslevel(f).*vscale(f)) ) && ...
-    all( feval(f, -Inf) < epslevel(f).*vscale(f) );
+pass(35) = ( norm(err, inf) < 1e2*max(epslevel(f).*vscale(f)) ) && ...
+    all( feval(f, -Inf) < 1e2*epslevel(f).*vscale(f) );
+
 
 end

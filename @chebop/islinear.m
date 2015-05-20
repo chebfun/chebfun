@@ -28,9 +28,11 @@ end
 try 
     [ignored1, ignored2, out] = linearize(N, u, [], 0);
 catch ME
-    if ( ~isempty(strfind(ME.identifier, 'notDifferentiable')) )
+    if ( ~isempty(strfind(ME.identifier, 'notDifferentiable')) || ...
+        strcmp(ME.identifier, 'CHEBFUN:CHEBOP:linearize:invalidInitialGuess') )
         % Something non-differentiable appeared in the operator, so it can't be
-        % linear!
+        % linear! Alternatively, the operator fails to evaluate on the initial
+        % guess passed, so it can't in that case be linear either!
         out = false;
     else
         rethrow(ME);
