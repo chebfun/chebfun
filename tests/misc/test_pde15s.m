@@ -228,7 +228,7 @@ u = exp(-20*x.^2) .* sin(14*x);  u = [u ; -u];
 f = @(u, v) [diff(v) ; diff(u)];
 bc.left = @(u, v) u; bc.right = @(u, v) v;        % New way
 opt = pdeset('eps', 1e-6, 'Ylim', pi/2*[-1 1], 'AbsTol', 1e-6, 'RelTol', 1e-6);
-uu = pde15s(f, 0:.05:.5, u, bc, opt, 64);
+uu = pde23t(f, 0:.05:.5, u, bc, opt);
 
 %% 
 %chebop-style synatx
@@ -236,7 +236,7 @@ uu = pde15s(f, 0:.05:.5, u, bc, opt, 64);
 close all
 x = chebfun('x');
 u = 1 + 0.5*exp(-40*x.^2);
-bcc = @(x, u) [u(-1)-1 ; feval(diff(u),-1) ; u(1)-1 ; feval(diff(u),1)];
+bcc = @(x,t, u) [u(-1)-1 ; feval(diff(u),-1) ; u(1)-1 ; feval(diff(u),1)];
 f = @(u) u.*diff(u) - diff(u, 2) - 0.006*diff(u, 4);
 opts = pdeset('Ylim', [-30 30], 'PlotStyle', {'LineWidth', 2});
 uu = pde15s(f, 0:.025:.5, u, bcc, opts);
