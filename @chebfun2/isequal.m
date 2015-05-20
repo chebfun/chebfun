@@ -23,9 +23,9 @@ frows = f.rows;
 fpiv = f.pivotValues;
 
 % Get the low rank representation for g. 
-gcols = f.cols; 
-grows = f.rows; 
-gpiv = f.pivotValues;
+gcols = g.cols; 
+grows = g.rows; 
+gpiv = g.pivotValues;
 
 % Test every part: 
 out = ( isequal(fcols, gcols) & isequal(frows, grows) & isequal(fpiv, gpiv) );
