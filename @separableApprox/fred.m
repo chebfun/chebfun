@@ -29,7 +29,7 @@ if ( isa( v, 'function_handle' ) )
     v = chebfun( v, dom(3:4) );
 else
     
-    % Check that the domain of CHEBFUN2 and chebfun are correct.
+    % Check that the domain of SEPARABLEAPPROX and chebfun are correct.
     if ( ~domainCheck( v, cols ) )
         error('CHEBFUN:SEPARABLEAPPROX:fred:domainMismatch', ...
             'Domain of CHEBFUN and SEPARABLEAPPROX kernel do not match');

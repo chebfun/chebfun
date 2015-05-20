@@ -1,6 +1,6 @@
 function f = sqrt( f )
 %SQRT   Square root.
-%   SQRT(F) returns the square root of a positive CHEBFUN2 F.
+%   SQRT(F) returns the square root of a positive SEPARABLEAPPROX F.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

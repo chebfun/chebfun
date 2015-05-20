@@ -18,7 +18,7 @@ function g = min( f, g, dim )
 
 % Empty check: 
 if ( isempty( f ) ) 
-    error('CHEBFUN:SEPARABLEAPPROX:min:input', 'LOWRANKAPPROX is empty');
+    error('CHEBFUN:SEPARABLEAPPROX:min:input', 'SEPARABLEAPPROX is empty');
 end
 
 % Default to max of one chebfun2:

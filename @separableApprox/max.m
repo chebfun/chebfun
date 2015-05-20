@@ -18,7 +18,7 @@ function h = max( f, g, dim )
 
 % Empty check: 
 if ( isempty( f ) ) 
-    error('CHEBFUN:SEPARABLEAPPROX:max:input', 'LOWRANKAPPROX is empty');
+    error('CHEBFUN:SEPARABLEAPPROX:max:input', 'SEPARABLEAPPROX is empty');
 end
 
 % Default to max of one separableApprox:

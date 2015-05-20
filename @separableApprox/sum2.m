@@ -1,6 +1,6 @@
 function I = sum2( f, varargin )
 %SUM2   Double integral of a SEPARABLEAPPROX over its domain. 
-%   I = SUM2(F) returns the double integral of a CHEBFUN2. 
+%   I = SUM2(F) returns the double integral of a SEPARABLEAPPROX. 
 % 
 % See also INTEGRAL2, INTEGRAL, QUAD2D. 
 
