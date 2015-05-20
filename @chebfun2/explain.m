@@ -268,6 +268,7 @@ if ( length(f) > 2 )
     for comCounter=1:length(comets)
         delete(comets{comCounter})
     end
+    delete(markers)
     delete(pts)
     delete(sf)  % Remove everything so we can pan around.
     sf=plot(f);
@@ -489,6 +490,10 @@ annotation(gcf,'textbox',...
     'FitBoxToText','off',...
     'LineStyle','none',...
     'LineWidth',3);
+
+str = 'The end. Thanks for watching!';
+pause(pbreak)
+textBox = myTextbox(str, textBox);
 end
 
 

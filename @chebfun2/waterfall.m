@@ -99,8 +99,8 @@ else
         % Evaluate on a grid.
         P = f.pivotLocations;
         
-        defaultopts = {'MarkerSize', 7};
-        extraopts = {'Marker', mm{:}, 'Color', cc{:}};
+        defaultopts = {'MarkerSize', 20};
+        extraopts = {'Marker', mm{:}};
         lineopts = {'linewidth', 2, 'linestyle', ll{:}};
         if ( ~plotline )
             % Just plot the pivots at height f(x,y)
@@ -140,7 +140,7 @@ else
                 zz = [zz chebfun( vals(jj,:).', dom(3:4) )];
             end
             h3 = plot3( xx, yy, zz, lineopts{:} );
-            axis equal
+%             axis equal
             
             h = [h1(:) ; h2(:) ; h3(:)];
             if ( ~holdState )
