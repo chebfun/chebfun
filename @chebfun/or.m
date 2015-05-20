@@ -5,7 +5,7 @@ function h = or(f, g)
 %   A value of the output CHEBFUN is set to 1 if either input CHEBFUN has a
 %   non-zero value at that point, otherwise it is set to 0.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with the empty case:

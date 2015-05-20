@@ -33,7 +33,7 @@ function [x, w, v] = hermpts(n, varargin)
 %
 % See also CHEBPTS, LEGPTS, LAGPTS, and JACPTS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 %
 % 'GW' by Nick Trefethen, March 2009 - algorithm adapted from [1].

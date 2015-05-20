@@ -21,7 +21,7 @@ classdef (InferiorClasses = {?chebfun2}) adchebfun2
     %
     % See also ADCHEBFUN.
     
-    % Copyright 2014 by The University of Oxford and The Chebfun Developers.
+    % Copyright 2015 by The University of Oxford and The Chebfun Developers.
     % See http://www.chebfun.org/ for Chebfun information.
     
     properties

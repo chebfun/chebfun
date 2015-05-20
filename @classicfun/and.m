@@ -7,7 +7,7 @@ function f = and(f, g)
 %   either be identically zero or have roots in their domains.  If this is not
 %   the case, garbage is returned with no warning.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 f.onefun = f.onefun & g.onefun;

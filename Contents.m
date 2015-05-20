@@ -16,5 +16,5 @@
 % To get started with Chebfun, see the user guide and Examples gallery at
 % http://www.chebfun.org/.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

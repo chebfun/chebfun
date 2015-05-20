@@ -4,7 +4,7 @@ function f = not(f)
 %   and zero otherwise.  F cannot have any roots in its domain.  If F does have
 %   roots, then NOT(F) will return garbage with no warning. F may be complex.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % TODO:  Should we use a tolerance here instead of any()?

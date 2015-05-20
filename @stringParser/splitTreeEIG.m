@@ -8,7 +8,7 @@ function [newTree, lambdaTree, lambdaSign] = splitTreeEIG(treeIn)
 %
 % See also: STRONGPARSER/SPLITTREE.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Begin by finding the subtree which contains the eigenvalue parameter LAMBDA.

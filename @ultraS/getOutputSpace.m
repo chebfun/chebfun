@@ -6,7 +6,7 @@ function outputSpace = getOutputSpace(source)
 %   Roughly, if the leading term is of diffOrder K, then the range should be
 %   represented in the C^{(K)} polynomial basis.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isa(source, 'chebmatrix') )

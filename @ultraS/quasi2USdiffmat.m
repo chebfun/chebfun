@@ -6,7 +6,7 @@ function [L, S] = quasi2USdiffmat(disc)
 %   [L, S] = QUASI2USDIFFMAT(DISC) returns also a matrix representation of the
 %   relevant conversion operator, S.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Get info from DISC:

@@ -27,7 +27,7 @@ function varargout = quantumstates(varargin)
 %       V = abs(x);               % absolute value, or
 %       V = (x.^2-1).^4;          % double well
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 % Nick Trefethen, January 2012
 

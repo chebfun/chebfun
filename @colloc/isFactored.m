@@ -4,7 +4,7 @@ function t = isFactored(disc)
 %   factors whose dimensions are compatible with the current discretization
 %   size.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Assume false:

@@ -3,7 +3,7 @@ function varargout = mesh(u, varargin)
 %   MESH(U) or MESH(U, T) where LENGTH(T) = MIN(SIZE(U)) plots a surface mesh
 %   plot of the CHEBFUN object U.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 transState = u(1).isTransposed;

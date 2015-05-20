@@ -28,7 +28,7 @@ function [normF, normLoc] = norm(f, n)
 %
 % If F is a row CHEBFUN, NORM(F, TYPE) is equal to NORM(F.', TYPE).
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty CHEBFUN has norm 0:

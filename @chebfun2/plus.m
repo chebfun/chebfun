@@ -3,7 +3,7 @@ function h = plus(f, g)
 %
 % F + G adds F and G. F and G can be scalars or CHEBFUN2 objects.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( ~isa(f, 'chebfun2') ) % ??? + CHEBFUN2

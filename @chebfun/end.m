@@ -9,7 +9,7 @@ function e = end(f, k, n)
 %   If F is a row CHEBFUN and K is 1, this function returns the index of F's
 %   last row. If K is 2, it returns the last point in F's domain.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( n > 2 )

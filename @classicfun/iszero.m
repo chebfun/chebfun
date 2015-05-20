@@ -3,7 +3,7 @@ function out = iszero(f)
 %   ISZERO(F) returns logical TRUE is F.onefun is identically zero or empty and
 %   logical FALSE otherwise.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Call ISZERO() of the ONEFUN:

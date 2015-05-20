@@ -48,7 +48,7 @@ function [p, q, r, s] = cf(f, m, n, M)
 %
 % See also REMEZ.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Do polynomial approximation if no denominator degree supplied.

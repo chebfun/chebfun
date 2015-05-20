@@ -7,7 +7,7 @@ function g = median( f, dim )
 %   the direction given by DIM, i.e., y-direction if DIM=1 and x-direction if
 %   DIM = 2.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 

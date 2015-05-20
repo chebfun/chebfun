@@ -8,7 +8,7 @@ function result = parseBC(N, BC, type)
 %   CHEBOP. The result is either empty or a function handle that represents the
 %   given condition as needed internally.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 numIn = nargin(N);

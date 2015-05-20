@@ -6,7 +6,7 @@ function f = define(f, s ,v) %#ok<INUSD>
 %
 % See also DEFINEPOINT, DEFINEINTERVAL, CHEBFUN/SUBSREF.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 error('CHEBFUN:CHEBFUN:define:deprecated', ...

@@ -10,7 +10,7 @@ function v = integral( F, c )
 %
 %   where the curve C is parameterised by the complex curve r(t).  
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information. 
 
 if ( F.nComponents == 3 )

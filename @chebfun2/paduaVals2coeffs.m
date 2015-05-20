@@ -17,7 +17,7 @@ function [C, V, X, Y] = paduaVals2coeffs(f, dom)
 %
 % See also PADUAPTS, COEFFS2VALS, VALS2COEFFS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % References:

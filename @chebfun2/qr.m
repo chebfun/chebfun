@@ -16,7 +16,7 @@ function varargout = qr(f, ignored)
 %
 % See also LU, and CHOL. 
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 

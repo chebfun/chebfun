@@ -26,7 +26,7 @@ function [ishappy, epslevel, cutoff] = plateauCheck(f, values, pref)
 %
 % See also LINOPV4CHECK, STRICTCHECK, CLASSICCHECK.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % [TODO]: implement PLATEAUCHECK for TRIGTECH. For the moment, we just call

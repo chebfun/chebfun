@@ -4,7 +4,7 @@ function f = cheb2cell(f)
 %   into a 1xM cell array C by placing each column of F into a separate cell in
 %   C. If F is an MxINF row CHEBFUN, then C is Mx1.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

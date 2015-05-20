@@ -9,7 +9,7 @@ function y = polyfit(y, n)
 %   If y is a global polynomial of degree n then this code has an O(n (log n)^2)
 %   complexity. If y is piecewise polynomial then it has an O(n^2) complexity.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Simply POLYFIT() the /ONEFUN:
