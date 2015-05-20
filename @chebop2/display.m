@@ -3,7 +3,7 @@ function display(N)
 % DISPLAY is called automatically when a statement that results in a
 % CHEBOP2 output is not terminated with a semicolon.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 loose = ~isequal(get(0, 'FormatSpacing'), 'compact');

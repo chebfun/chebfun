@@ -49,7 +49,7 @@ function [L, res, isLinear, u] = linearize(N, u, x, linCheckFlag, paramReshapeFl
 %
 % See also LINOP.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. See
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.
 
 % Start by assuming that N is linear.

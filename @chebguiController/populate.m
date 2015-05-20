@@ -8,7 +8,7 @@ function populate(hObject, handles, chebg)
 %   CHEBG:      A CHEBGUI object, containing the information we want to fill
 %               the figure with.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Fill the String fields of the handles

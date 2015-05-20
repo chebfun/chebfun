@@ -6,7 +6,7 @@ function spy(A, varargin)
 %   SPY(F, 'LineSpec') uses the color and marker from the line specification
 %   string 'LineSpec' (See PLOT for possibilities).
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 hold off

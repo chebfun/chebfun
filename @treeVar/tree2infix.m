@@ -15,7 +15,7 @@ function [infixOut, varArray] = tree2infix(tree, eqno, indexStart)
 %                  identifiers of variables (CHEBFUNs or scalars) that appear in
 %                  the equation we're currently converting to infix form.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % If the TREE is empty, do nothing.

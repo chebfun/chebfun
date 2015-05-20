@@ -17,7 +17,7 @@ function g = fracInt(f, mu, b)
 %    [1] F.W.J. Olver et al., editors. NIST Handbook of Mathematical Functions.
 %    Cambridge University Press, New York, NY, 2010.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Parse inputs:

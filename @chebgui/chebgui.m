@@ -104,7 +104,7 @@ classdef chebgui
 %   the Numerical Solution of Boundary-Value Problems,” ACM Transactions on
 %   Mathematical Software, vol. 38, no. 4, Article 26, Aug. 2012.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

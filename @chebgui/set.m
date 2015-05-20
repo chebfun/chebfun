@@ -25,7 +25,7 @@ function cg = set(cg, propName, val)
 %       'discretization' -  whether we want ultraS or colloc discretization for
 %                           ODEs
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Avoid storing {''} in fields, rather store ''

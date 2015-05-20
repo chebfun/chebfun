@@ -24,7 +24,7 @@ function F = diff(F, n, dim)
 %   can switch to the Caputo definition with a call of the form DIFF(F, ALPHA,
 %   'Caputo'). [Requires SINGFUN].
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Trivial case:

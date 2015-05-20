@@ -1,7 +1,7 @@
 function F = outer(disc, f, g)
 %OUTER   Outer product operator in COLLOC.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Obtain the collocation points and associated weights.

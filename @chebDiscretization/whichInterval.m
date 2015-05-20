@@ -4,7 +4,7 @@ function intNum = whichInterval(disc, location, direction)
 %   DISC.domain a given point LOC is located in. The DIRN is +1 or -1 and
 %   indicates approach from the right or left (zero means don't care).
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % [TODO]: How does this differ from chebfun.whichInterval?

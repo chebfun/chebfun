@@ -23,7 +23,7 @@ function [r, a, b, mu, nu, poles, residues] = padeapprox(f, m, n, tol)
 %
 % See also CHEBPADE.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Default to relative tolerance of 1e-14.

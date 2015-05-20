@@ -7,7 +7,7 @@ function B = bernoulli(N)
 %      B = cheb.bernoulli(4);
 %      format rat, B(0,:)
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 x = chebfun('x', [0,1]);

@@ -55,7 +55,7 @@ function [u, info] = solvebvp(N, rhs, varargin)
 % See also: CHEBOP, CHEBOP/MLDIVIDE, CHEBOPPREF, CHEBOP/SOLVEBVPLINEAR,
 %   CHEBOP/SOLVEBVPNONLINEAR, CHEBOP/SOLVEIVP, LINOP/MLDIVIDE.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Developer note:

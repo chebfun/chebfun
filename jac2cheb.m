@@ -11,7 +11,7 @@ function c_cheb = jac2cheb(c_jac, alph, bet)
 %
 % See also CHEB2JAC. 
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

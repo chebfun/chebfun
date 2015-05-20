@@ -4,7 +4,7 @@ function varargout = mesh( varargin ) %#ok<STOUT>
 %
 % See also SURF.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 error('CHEBFUN:CHEBFUN2:mesh:noSupport', 'MESH is not supported by Chebfun2.'); 

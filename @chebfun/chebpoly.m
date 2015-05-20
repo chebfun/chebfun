@@ -4,7 +4,7 @@ function out = chebpoly(varargin)
 %
 % See also PLOTCOEFFS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 warning('CHEBFUN:CHEBFUN:chebpoly:deprecated', ...

@@ -6,7 +6,7 @@ function [minVal, minPos] = min(f)
 %
 % See also MAX, MINANDMAX.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % To avoid code duplication, we simply call MINANDMAX():

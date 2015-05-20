@@ -5,7 +5,7 @@ function vscale = getvscl( f )
 %   store its interpolation data. If F is an array-valued CHEBTECH with K
 %   columns, then VSCALE is a row vector of length K.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Check isempty: 

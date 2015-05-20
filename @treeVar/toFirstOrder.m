@@ -28,7 +28,7 @@ function [funOut, indexStart, problemDom, coeffs, totalDiffOrders] = ...
 %                  A vector that contains the maximum diffOrder applying to
 %                  each variable in the problem.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Independent variable on the domain
