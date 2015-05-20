@@ -18,7 +18,7 @@ if ( ( a < dom(1) ) || ( b > dom(2) ) || ( c < dom(3) ) || ( d > dom(4) ) )
         'Can only integrate within the SEPARABLEAPPROX''s domain');
 end
 
-% Form a new CHEBFUN2 and integrate. (This can be faster.)
+% Form a new SEPARABLEAPPROX and integrate. (This can be faster.)
 I = integral2( restrict( f, [a, b, c, d] ) ); % Any extra arguments are ignored. 
 
 end

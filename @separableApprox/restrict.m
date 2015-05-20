@@ -41,6 +41,8 @@ if ( isa( dom, 'double' ) )
 elseif (isa( dom, 'chebfun' ))
     f = feval(f, dom);
     
+else
+    error('CHEBFUN:SEPARABLEAPPROX:restrict:domain', 'Unrecognizable domain.');
 end
 
 end

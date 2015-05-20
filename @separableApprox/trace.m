@@ -5,8 +5,8 @@ function t = trace( f )
 % 
 % See also DIAG.
 
-% Copyright 2014 by The University of Oxford and The Chebfun2 Developers. 
-% See http://www.chebfun.org/ for Chebfun2 information. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 t = sum( diag( f ) ); 
 

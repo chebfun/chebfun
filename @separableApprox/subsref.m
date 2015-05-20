@@ -14,7 +14,7 @@ function varargout = subsref(f, index)
 %
 % {}
 %   F{S1, S2, S3, S4} restricts F to the domain [S1, S2, S3, S4]. See
-%   CHEBFUN2/RESTRICT for further details. Note that F{[S1,S2, S3, S4]} is not
+%   SEPARABLEAPPROX/RESTRICT for further details. Note that F{[S1,S2, S3, S4]} is not
 %   supported due to the behaviour of the MATLAB subsref() command.
 %
 % See also FEVAL, GET, RESTRICT, SUBSREF.

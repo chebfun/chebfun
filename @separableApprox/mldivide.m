@@ -6,8 +6,12 @@ function h = mldivide(f, g)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( isempty( f ) || isempty( g ) )
-    h = separableApprox();
+% If either f or g are empty then return an empty SEPARABLEAPPROX object.
+if ( isempty( f ) )
+    h = f;
+    return;
+elseif ( isempty( g ) )
+    h = g;
     return 
 end
 

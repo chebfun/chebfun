@@ -15,7 +15,7 @@ end
 [bol, wzero] = singleSignTest( f ); 
 
 if ( bol == 0 ) || ( wzero == 1 )
-    error('CHEBFUN:CHEBFUN2:log:notSmooth', ...
+    error('CHEBFUN:SEPARABLEAPPROX:log:notSmooth', ...
     'A change of sign/zero has been detected, unable to represent the result.'); 
 end
 

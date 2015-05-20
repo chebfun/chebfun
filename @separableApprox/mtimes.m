@@ -11,9 +11,9 @@ function h = mtimes(f, g)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( isa(f, 'separableApprox') )           % CHEBFUN2 * ???
+if ( isa(f, 'separableApprox') )           % SEPARABLEAPPROX * ???
     
-    if ( isa(g, 'double') )         % CHEBFUN2 * DOUBLE
+    if ( isa(g, 'double') )         % SEPARABLEAPPROX * DOUBLE
         if ( numel(g) == 1 )
             h = f;
             h.pivotValues = h.pivotValues ./ g;
@@ -28,7 +28,7 @@ if ( isa(f, 'separableApprox') )           % CHEBFUN2 * ???
         X = innerProduct( rows, g );
         h = cols * fScl * X;
         
-    elseif ( isa(g, 'separableApprox') )   % SEPARABLEAPPROX * LOWRANKAPPROX compute
+    elseif ( isa(g, 'separableApprox') )   % SEPARABLEAPPROX * SEPARABLEAPPROX compute
         
         % Get the columns and rows of f
         fCols = f.cols;
@@ -50,7 +50,7 @@ if ( isa(f, 'separableApprox') )           % CHEBFUN2 * ???
         h.rows = gRows * V;
         h.pivotValues = 1 ./ diag( S );
         
-    elseif ( isa(g, 'chebfun2v') )  % CHEBFUN * CHEBFUN2V
+    elseif ( isa(g, 'chebfun2v') )  % SEPARABLEAPPROX * CHEBFUN2V
         nG = g.nComponents; 
         h = g; 
         gc = g.components; 

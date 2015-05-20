@@ -12,7 +12,7 @@ function varargout = plotcoeffs2( f )
 
 % TODO: Needs to be adapted for different kinds of techs.
 
-% Compute the bivariate coefficients, truncate them when then fall below
+% Compute the bivariate coefficients, truncate them when they fall below
 % tolerance for better visual, use stem3.
 X = abs( chebcoeffs2( f ) ); % Absolute value of coefficients. 
  

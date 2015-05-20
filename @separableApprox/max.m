@@ -1,5 +1,5 @@
 function h = max( f, g, dim )
-%MAX   Maximum value of a CHEBFUN in one direction.
+%MAX   Maximum value of a SEPARABLEAPPROX in one direction.
 %   MAX(f) returns a chebfun representing the maximum of the SEPARABLEAPPROX along the
 %   y direction, i.e, MAX(f) = @(x) max( f ( x, : ) )
 %
@@ -21,7 +21,7 @@ if ( isempty( f ) )
     error('CHEBFUN:SEPARABLEAPPROX:max:input', 'LOWRANKAPPROX is empty');
 end
 
-% Default to max of one chebfun2:
+% Default to max of one separableApprox:
 if ( nargin < 2 )
     g = []; 
 end
@@ -33,8 +33,8 @@ end
 
 % Do not allow max(F, G): 
 if ( nargin > 1 && ~isempty( g ) )
-    error('CHEBFUN:SEPARABLEAPPROX:max:twoChebfun2Inputs', ...
-        'Unable to maximise two SEPARABLEAPPROX objects.');
+    error('CHEBFUN:SEPARABLEAPPROX:max:twoSeparableApproxInputs', ...
+        'Unable to maximize two SEPARABLEAPPROX objects.');
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

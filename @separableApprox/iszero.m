@@ -18,7 +18,7 @@ if ( norm(pivots, inf) == 0 )
 end
 
 % Quick check: Evaluate on a meshgrid. If the matrix is nonzero then the
-% CHEBFUN2 is nonzero.
+% SEPARABLEAPPROX is nonzero.
 dom = f.domain; 
 x = linspace(dom(1), dom(2), 10); 
 y = linspace(dom(3), dom(4), 10);

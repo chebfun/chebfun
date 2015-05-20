@@ -2,7 +2,7 @@ function varargout = lu( f, thresh )
 %LU   LU factorization of a SEPARABLEAPPROX.
 %
 % [L, U] = LU( F ) returns two quasimatrices L and U of size inf by k and 
-% k by inf, respectively, where k is the rank of the chebfun2 F. 
+% k by inf, respectively, where k is the rank of the separableApprox F. 
 % The quasimatrices L and U are "psychologically" lower and upper triangular.
 % L is also unit lower triangular. This is computed by a continuous analogue of
 % Gaussian elimination with complete pivoting. 

@@ -2,7 +2,7 @@ function f = power( f, n )
 %.^	     Pointwise power of a SEPARABLEAPPROX. 
 %
 % F.^G returns a SEPARABLEAPPROX F to the scalar power G, a scalar F to the
-% CHEBFUN2 power G, or a SEPARABLEAPPROX F to the LOWRANKAPPROX power G.
+% SEPARABLEAPPROX power G, or a SEPARABLEAPPROX F to the SEPARABLEAPPROX power G.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -29,7 +29,7 @@ elseif ( isa( n, 'double' ) )          % SEPARABLEAPPROX.^double
     op = @(x,y) feval( f, x, y ) .^ n;
     f = chebfun2( op, f.domain );
     
-else                                   % SEPARABLEAPPROX.^LOWRANKAPPROX
+else                                   % SEPARABLEAPPROX.^SEPARABLEAPPROX
     
     if ( ~domainCheck(f, n) ) % check they're on the same domain.
         error('CHEBFUN:SEPARABLEAPPROX:power:domain','Domains must be the same');

@@ -35,7 +35,7 @@ if ( isempty( f ) )
     return
 end
 
-% Is the chebfun2 on a square domain?: 
+% Is the separableApprox on a square domain?: 
 if ( ~domainCheck(f.cols, f.rows) )
     error('CHEBFUN:SEPARABLEAPPROX:chol:domain', ...
         'SEPARABLEAPPROX is not on a square domain.');

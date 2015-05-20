@@ -1,6 +1,6 @@
 function [normF, normloc] = norm( f, p )
 %NORM       Norm of a SEPARABLEAPPROX object.
-% For CHEBFUN2 objects:
+% For SEPARABLEAPPROX objects:
 %    NORM(F) = sqrt(integral of abs(F)^2).
 %    NORM(F, 2) = largest singular value of F.
 %    NORM(F,'fro') is the same as NORM(F).
@@ -9,7 +9,7 @@ function [normF, normloc] = norm( f, p )
 %    NORM(F, max) = global maximum in absolute value.
 %    NORM(F, min) = NOT IMPLEMENTED
 %
-% Furthermore, the inf norm for CHEBFUN2 objects also returns a second output,
+% Furthermore, the inf norm for SEPARABLEAPPROX objects also returns a second output,
 % giving a position where the max occurs.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
@@ -28,7 +28,7 @@ else
     switch ( p )  % Different cases on different norms.
         case 1
             error('CHEBFUN:SEPARABLEAPPROX:norm:norm', ...
-                'CHEBFUN2 does not support L1-norm, yet');
+                'SEPARABLEAPPROX does not support L1-norm, yet');
             
         case {2, 'fro'}  % Definite integral of f.^2
             % L^2-norm is sum of squares of sv.

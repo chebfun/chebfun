@@ -1,7 +1,7 @@
 classdef separableApprox
-%SEPARABLEAPPROX   Approximate functions on rectangular domains with low rank approximants.
+%SEPARABLEAPPROX   Approximate functions on logically rectangular domains with low rank approximants.
 %
-%   Abstract class for approximating smooth 2D functions on rectangular
+%   Abstract class for approximating smooth 2D functions on logically rectangular
 %   domains using low rank approximations. That is, functions are
 %   represented in the form:
 %
@@ -60,19 +60,19 @@ classdef separableApprox
         % Check to see if domains are equal.
         out = domainCheck(f, g)
         
-        % Scale rows and cols of a CHEBFUN2 so that all pivots are 1
+        % Scale rows and cols of a SEPARABLEAPPROX so that all pivots are 1
         F = normalizePivots(F)
         
-        % Normalize the rows and columns of a CHEBFUN2.
+        % Normalize the rows and columns of a SEPARABLEAPPROX.
         F = normalizeRowsAndCols(F, p)
         
         % Sample Test in constructor. 
         pass = sampleTest(f, op, tol, flag)
       
-        % Is a chebfun2 all positive or negative? 
+        % Is a SEPARABLEAPPROX all positive or negative? 
         [bol, wzero] = singleSignTest(f) 
 
-        % Get the vertical scale of a Chebfun2.
+        % Get the vertical scale of a SEPARABLEAPPROX.
         vscl = vscale(f) 
         
     end

@@ -1,5 +1,5 @@
 function g = min( f, g, dim )
-%MIN   Minimum value of a CHEBFUN in one direction.
+%MIN   Minimum value of a SEPARABLEAPPROX in one direction.
 %   MIN(f) returns a chebfun representing the minimum of the SEPARABLEAPPROX along the
 %   y direction, i.e, MIN(f) = @(x) max( f ( x, : ) )
 %
@@ -33,7 +33,7 @@ end
 
 % Do not allow min(F, G).
 if ( nargin > 1 && ~isempty(g) )   
-    error('CHEBFUN:SEPARABLEAPPROX:min:twoChebfun2Inputs', ...
+    error('CHEBFUN:SEPARABLEAPPROX:min:twoSeparableApproxInputs', ...
         'Unable to minimise two SEPARABLEAPPROX objects.');
 end
 

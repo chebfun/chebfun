@@ -80,7 +80,7 @@ if ( length(f) == 1 ) % Rank-1 is easy:
     
 elseif ( length(f) <= maxsize )
     
-    % We seek a fast initial guess. So we first truncate the CHEBFUN2.
+    % We seek a fast initial guess. So we first truncate the SEPARABLEAPPROX.
     ypts = chebpts(length(fcols), fcols.domain); 
     xpts = chebpts(length(frows), frows.domain);
     cvals = feval(fcols, ypts); 
@@ -158,7 +158,7 @@ elseif ( length(f) <= maxsize )
     
 elseif ( length(f) >= maxsize )
     
-    error('CHEBFUN:CHEBFUN2:minandmax2:length', 'Rank is too large.');
+    error('CHEBFUN:SEPARABLEAPPROX:minandmax2:length', 'Rank is too large.');
     
 end
 

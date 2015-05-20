@@ -70,13 +70,13 @@ end
 if ( isa(f, 'double') )                
     % CONTOUR(xx, yy, F,...)
     
-    if ( (nargin >= 3) && isa(argin{1}, 'double') && isa(argin{2}, 'chebfun2') )
+    if ( (nargin >= 3) && isa(argin{1}, 'double') && isa(argin{2}, 'separableApprox') )
         % Extract inputs:
         xx = f; 
         yy = argin{1}; 
         f = argin{2};
         argin(1:2) = [];
-        % Evaluate CHEBFUN2: 
+        % Evaluate separableApprox: 
         vals = feval(f, xx, yy);
         
     else
@@ -84,7 +84,7 @@ if ( isa(f, 'double') )
             'Unrecognised input arguments.');
     end
     
-elseif ( isa(f, 'chebfun2') ) 
+elseif ( isa(f, 'separableApprox') ) 
     
     dom = f.domain;
     if ( (nargin == 3) || (nargin > 3) && ~isa(argin{1},'separableApprox') ) 
@@ -96,7 +96,7 @@ elseif ( isa(f, 'chebfun2') )
         [xx, yy] = meshgrid(x, y);
         vals = feval( f, xx, yy );
 
-    elseif ( (nargin >= 3) && isa(argin{1},'separableApprox') && isa(argin{2},'lowrankapprox') )
+    elseif ( (nargin >= 3) && isa(argin{1},'separableApprox') && isa(argin{2},'separableApprox') )
         % CONTOUR plot on a surface.
         
         % Extract inputs:

@@ -14,13 +14,16 @@ function h = rdivide(f,g)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Empty check: 
-if ( isempty( f ) || isempty( g ) ) 
-    h = chebfun2();
-    return
+% If either f or g are empty then return an empty SEPARABLEAPPROX object.
+if ( isempty( f ) )
+    h = f;
+    return;
+elseif ( isempty( g ) )
+    h = g;
+    return 
 end
 
-if ( isa(f, 'separableApprox') && isa(g, 'lowrankapprox') )    % SEPARABLEAPPROX ./ LOWRANKAPPROX
+if ( isa(f, 'separableApprox') && isa(g, 'separableApprox') )    % SEPARABLEAPPROX ./ SEPARABLEAPPROX
     if ( ~domainCheck(f, g))
        error('CHEBFUN:SEPARABLEAPPROX:rdivide:domains', 'Domains inconsistent.') 
     end
@@ -43,9 +46,6 @@ elseif ( isa(f, 'double') && isa(g, 'separableApprox') )
               'Attempting to invert a SEPARABLEAPPROX with a root.'); 
        end
        
-elseif ( isa(f,'separableApprox') && isa(g,'lowrankapproxv') )
-    % TODO: RDIVIDE on the components: 
-    
 else
     error('CHEBFUN:CHEBFUN2:rdivide:badInputs', 'Unrecognised operation.');
     

@@ -1,8 +1,8 @@
 function varargout = gradient( f ) 
-%GRADIENT  Numerical gradient of a CHEBFUN2. 
-%   [FX FY] = GRADIENT(F) returns the numerical gradient of the CHEBFUN2 F,
+%GRADIENT  Numerical gradient of a SEPARABLEAPPROX. 
+%   [FX FY] = GRADIENT(F) returns the numerical gradient of the SEPARABLEAPPROX F,
 %   where FX is the derivative of F in the x direction and FY is the derivative
-%   of F in the y direction. Both derivatives are returned as CHEBFUN2 objects.
+%   of F in the y direction. Both derivatives are returned as SEPARABLEAPPROX objects.
 %
 %   G = GRADIENT(F) returns a CHEBFUN2V which represents
 % 

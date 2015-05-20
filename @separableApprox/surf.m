@@ -53,7 +53,7 @@ end
 if ( isa(f,'separableApprox') )
     
     if ( (nargin == 1) || ...
-            ( (nargin > 1) && ~isempty(argin) && ~isa(argin{1}, 'chebfun2') ) || ...
+            ( (nargin > 1) && ~isempty(argin) && ~isa(argin{1}, 'separableApprox') ) || ...
             ( (nargin == 3) && isempty(argin)) )
         % surf(f,...)
         
@@ -73,7 +73,7 @@ if ( isa(f,'separableApprox') )
         xlim(dom(1:2)), ylim(dom(3:4))
         
     elseif ( nargin > 2)
-        % surf(x,y,f,...), with x, y, f CHEBFUN2 objects
+        % surf(x,y,f,...), with x, y, f SEPARABLEAPPROX object
         
         x = f;
         y = argin{1};

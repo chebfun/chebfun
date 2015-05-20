@@ -47,7 +47,7 @@ varargin = argin;
 
 % There are many different cases to check for:
 
-if ( isa(f1, 'separableApprox') && isa(f2, 'lowrankapprox') )  % quiver(f,g)
+if ( isa(f1, 'separableApprox') && isa(f2, 'separableApprox') )  % quiver(f,g)
     
     if ( nargin == 2 )
         % Calls QUIVER([x ; y]) in CHEBFUN2V
@@ -75,7 +75,7 @@ if ( isa(f1, 'separableApprox') && isa(f2, 'lowrankapprox') )  % quiver(f,g)
         
         f3 = varargin{1}; 
         f4 = varargin{2};
-        if (isa(f3, 'separableApprox') && isa(f4, 'lowrankapprox') ) % quiver(x,y,f,g,...)
+        if (isa(f3, 'separableApprox') && isa(f4, 'separableApprox') ) % quiver(x,y,f,g,...)
             if ( any( f1.corners - f3.corners ) )
                 error('CHEBFUN:SEPARABLEAPPROX:quiver:domainCheck', ...
                     'SEPARABLEAPPROX objects are not on the same domain.');
@@ -92,10 +92,10 @@ elseif ( isa(f1,'double') && isa(f2,'double') )
         error('CHEBFUN:SEPARABLEAPPROX:quiver:nargin', 'Not enough input arguments.');
     end
     f3 = varargin{1}; f4 = varargin{2};
-    if ( (isa(f3, 'separableApprox') && isa(f4, 'lowrankapprox') ) ) % quiver(x,y,f,g,...)
+    if ( (isa(f3, 'separableApprox') && isa(f4, 'separableApprox') ) ) % quiver(x,y,f,g,...)
         h = quiver( f1, f2, [f3;f4], varargin{3:end} );
     else
-        error('CHEBFUN:SEPARABLEAPPROX:quiver:oneLOWRANKAPPROX', ...
+        error('CHEBFUN:SEPARABLEAPPROX:quiver:oneSeparableApprox', ...
             'Two SEPARABLEAPPROX object were not passed to quiver.');
     end
     

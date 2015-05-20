@@ -29,7 +29,7 @@ elseif ( ~isa(g, 'separableApprox') )          % SEPARABLEAPPROX + ???
         ['Undefined function ''plus'' for input arguments of type %s ' ...
         'and %s.'], class(f), class(g));
     
-else                                     % SEPARABLEAPPROX + LOWRANKAPPROX
+else                                     % SEPARABLEAPPROX + SEPARABLEAPPROX
     
     % Domain Check:
     if ( ~domainCheck(f, g) )
@@ -52,7 +52,7 @@ end
 end
 
 function h = compression_plus(f, g)
-% Add CHEBFUN2 objects together by a compression algorithm.
+% Add SEPARABLEAPPROX objects together by a compression algorithm.
 
 % The algorithm is as follows:
 % If A = XY^T and B = WZ^T, then A + B = [X W]*[Y Z]^T,
