@@ -620,7 +620,9 @@ function textBox = myTextbox(str, oldBox)
 
 % If OLDBOX got passed in, delete it.
 if (nargin > 1 )
-    delete(oldBox)
+    try
+        delete(oldBox)
+    end
 end
 % Draw a new textbox.
 textBox = annotation('textbox', [0.05, 0.025, 0.9, 0.175],...
