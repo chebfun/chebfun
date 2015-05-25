@@ -384,7 +384,7 @@ else
     % cutoff negligible B
     nrmB = norm(B(:,:,end),'fro');
     for ii=1:size(B,3)
-        if norm(B(:,:,ii),'fro')/nrmB > eps/2,    break;    end
+        if norm(B(:,:,ii),'fro')/nrmB > 10*eps,    break;    end
     end
     B = B(:,:,ii:end);
     ns = size(B);
@@ -636,7 +636,7 @@ function [r,A,B] = chebT1rtsmatgep(c)
 k=length(c(1,1,:)); n=length(c(:,:,1));
 
 if size(c,3) ==2,  % linear case
-    r = eig(c(:,:,1),-c(:,:,2));
+    r = eig(c(:,:,2),-c(:,:,1));
     return
 end
 
