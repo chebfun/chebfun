@@ -657,10 +657,10 @@ end
 function tol = GetTol(xx, yy, vals, dom, pseudoLevel)
 % GETTOL     Calculate a tolerance for the Chebfun2 constructor.
 %
-%  This is 2D analogue of the tolerance employed in the chebtech
+%  This is the 2D analogue of the tolerance employed in the chebtech
 %  constructors. It is based on a finite difference approximation to the
 %  gradient, the size of the approximation domain, the internal working
-%  tolerance and an arbitrary (2/3) exponent.
+%  tolerance, and an arbitrary (2/3) exponent. 
 
 [m, n] = size( vals ); 
 grid = max( m, n );
