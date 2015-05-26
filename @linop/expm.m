@@ -107,8 +107,7 @@ for i = 1:length(t)
         
         % Discretize the initial condition.
         discu = disc;
-        do = max(getDiffOrder(disc.source), 0);
-        do = max(do, [], 1);
+        do = getExpmDimAdjust(disc);
         for k = 1:numel(u0.blocks)
             discu.dimension = disc.dimension + do(k);
             f.blocks{k} = discu.toValues(u0.blocks{k},1);
@@ -121,10 +120,10 @@ for i = 1:length(t)
         % Convert the different components into cells
         u = partition(disc, v);
         uFun = u(isFun);
-        vscale = discu.scale( uFun );
+        vscale = discu.scale(uFun);
         
         % Test the happieness of the function pieces:
-        [isDone, epsLevel] = testConvergence(disc, uFun, vscale, prefs);
+        [isDone, epslevel] = testConvergence(disc, uFun, vscale, prefs);
         
         if ( all(isDone) )
             break
@@ -144,7 +143,7 @@ for i = 1:length(t)
         doMerge = @(f) merge(f);
         ucell = cellfun(doMerge, ucell, 'uniform', false);
     end
-    doSimplify = @(f) simplify(f, max(eps, epsLevel));
+    doSimplify = @(f) simplify(f, max(eps, epslevel));
     ucell = cellfun(doSimplify, ucell, 'uniform', false);
     allU = [ allU, chebmatrix(ucell) ]; %#ok<AGROW>
 end

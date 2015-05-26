@@ -8,7 +8,7 @@ function p = legpoly(n, dom, normalize, method)
 %   interval given by the domain D, which must be bounded.
 %
 %   P = LEGPOLY(N, D, 'norm') or P = LEGPOLY(N, 'norm') normalises so that
-%   integrate(P(:,j).*P(:,k)) = delta_{j,k}.
+%   integral(P(:,j).*P(:,k)) = delta_{j,k}.
 %
 %   For N <= 1000 LEGPOLY uses a weighted QR factorisation of a 2*(N+1) x
 %   2*(N+1) Chebyshev Vandermonde matrix. For scalar N > 1000 (or a short
@@ -111,9 +111,7 @@ switch method
             L1 = (2-1/k)*x.*L1 - (1-1/k)*L0;
             L0 = tmp;
         end
-        C = chebtech2.vals2coeffs(P(:,cc));       % Convert to coefficients
-        C = flipud(C);
-    
+        C = chebtech2.vals2coeffs(P(:,cc));       % Convert to coefficients          
     case 2 % QR
 
         pts = 2*nMax1;              % Expand on Chebyshev grid of twice the size
@@ -130,8 +128,7 @@ switch method
             PP = P(:,n+1) * diag(1./P(end,n+1));
         end
         C = chebtech2.vals2coeffs(PP);            % Convert to coefficients
-        C(1:nMax1,:) = [];                        % Trim coefficients > nMax+1
-        C = flipud(C);
+        C(nMax1+1:end,:) = [];                    % Trim coefficients > nMax
         
     case 3 % LEG2CHEB
         

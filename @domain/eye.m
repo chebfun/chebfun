@@ -5,6 +5,6 @@ function I = eye(d)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-I = linop( operatorBlock.eye(d) );
+I = linop( operatorBlock.eye(double(d)) );
 
 end

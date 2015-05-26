@@ -1,6 +1,6 @@
 function [pass, u1, u2, info1, info2] = test_scalarODE(pref)
 % The basic nonlinear CHEBOP test. This test tests a simple scalar ODE, where no
-% breakpoints occur. It solves the problem using colloc1, colloc2 and ultraS
+% breakpoints occur. It solves the problem using chebcolloc1, chebcolloc2 and ultraS
 % discretizations. The problem solved is simple enough that no damping is
 % required.
 %
@@ -18,16 +18,16 @@ N.rbc = @(u) u - 3;
 rhs = 0;
 
 %% Try different discretizations
-% Start with colloc2
-pref.discretization = @colloc2;
+% Start with chebcolloc2
+pref.discretization = @chebcolloc2;
 [u1, info1] = solvebvp(N, rhs, pref);
 
 %% Change to ultraS
 pref.discretization = @ultraS;
 [u2, info2] = solvebvp(N, rhs, pref);
 
-%% Change to colloc1
-pref.discretization = @colloc1;
+%% Change to chebcolloc1
+pref.discretization = @chebcolloc1;
 [u3, info3] = solvebvp(N, rhs, pref);
 
 %% Did we pass? 

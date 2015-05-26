@@ -35,6 +35,16 @@ if ( isa(f,'chebfun') && isa(g, 'chebfun') )
     end
     
     if ( numel(f) == 1 && numel(g) == 1 )
+        % CHEBFUN case :
+        
+        % If one of the two CHEBFUNs uses a PERIODICTECH reprensetation, 
+        % cast it to a NONPERIODICTECH.
+        if ( ~isPeriodicTech(f.funs{1}) && isPeriodicTech(g.funs{1}) )
+            g = chebfun(g, g.domain, 'tech', get(f.funs{1}, 'tech'));
+        elseif ( isPeriodicTech(f.funs{1}) && ~isPeriodicTech(g.funs{1}) )
+            f = chebfun(f, f.domain, 'tech', get(g.funs{1}, 'tech'));
+        end
+        
         % Array-valued CHEBFUN case:
         h = columnRdivide(f, g, pref);
     else
@@ -122,7 +132,8 @@ function h = columnRdivide(f, g, pref)
 
 % If g is numeric then call TIMES():
 if ( isnumeric(g) )
-    if ( g == 0 )
+    if ( any(g == 0) )
+        % note g could be a vector, with some zero components
         % TODO:  Return identically Inf/NaN CHEBFUN instead?
         error('CHEBFUN:CHEBFUN:rdivide:columnRdivide:divisionByZero', ...
             'Division by zero.')

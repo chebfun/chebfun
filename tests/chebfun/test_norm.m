@@ -113,7 +113,8 @@ f = chebfun(@(x) sin(50*x), 'splitting', 'on');
 p = norm(f, 3);
 p_exact = 0.9484869030456855; % This is obtained using Mathematica.
 err = p-p_exact;
-pass(22) = norm(err, inf) < vscale(f).*epslevel(f);
+pass(22) = norm(err, inf) < 1e1*vscale(f).*epslevel(f);
+
 
 % Test on finite SINGFUN:
 
@@ -122,20 +123,23 @@ f = chebfun(@(x) sin(100*x).*((x+1).^0.6), 'exps', [0.6 0], 'splitting', 'on');
 p2 = norm(f, 2);
 p2_exact = 1.02434346249849423; % This is obtained using Mathematica.
 err = p2-p2_exact;
-pass(23) = norm(err, inf) < vscale(f).*epslevel(f);
+pass(23) = norm(err, inf) < 1e1*vscale(f).*epslevel(f);
+
 
 % 1-norm:
 p1 = norm(f, 1);
 p1_exact = 1.20927413792339491; % This is obtained using Mathematica.
 err = p1-p1_exact;
-pass(24) = norm(err, inf) < 1e5*vscale(f).*epslevel(f);
+pass(24) = norm(err, inf) < 1e7*vscale(f).*epslevel(f);
+
 
 % Inf-norm:
 f = chebfun(@(x) sin(x).*((1-x).^0.6), 'exps', [0 0.6], 'splitting', 'on');
 [normF, normLoc] = norm(f, Inf);
 p_exact = [1.275431511911148 -1]; % This is obtained using Mathematica.
 err = [normF, normLoc] - p_exact;
-pass(25) = norm(err, inf) < vscale(f).*epslevel(f);
+pass(25) = norm(err, inf) < 1e1*vscale(f).*epslevel(f);
+
 
 % -Inf-norm:
 f = chebfun(@(x) (sin(x+1.1)).*((x+1).^0.8), 'exps', [0.8 0], 'splitting', 'on');

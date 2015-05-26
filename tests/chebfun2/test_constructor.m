@@ -43,9 +43,14 @@ pass(8) = norm(f - g) < tol;
 
 % Test that the 2nd argument can be a preference:
 p = pref;
-p.tech = @fourtech;
+p.tech = @trigtech;
 f = chebfun2(@(x,y) sin(pi*x).*cos(pi*y), p);
 g = chebfun2(@(x,y) sin(pi*x).*cos(pi*y), [-1 1 -1 1], p);
 pass(9) = norm(f - g) < tol;
+
+% Test the length of chebfun2s in different directions:
+p.tech = @chebtech2;
+f = chebfun2(@(x,y) sin(80*x+y), p);
+pass(10) = length(f.cols(:,1)) < 50;
 
 end

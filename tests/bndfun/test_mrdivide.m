@@ -55,7 +55,8 @@ f = bndfun(@(x) [sin(2*pi*x) cos(2*pi*x)], struct('domain', dom), pref);
 g = [1 1]/f;
 g_exact = @(x) (2/9)*(sin(2*pi*x) + cos(2*pi*x));
 pass(6) = norm(feval(g, x) - g_exact(x), inf) < ...
-    10*max(get(g, 'vscale').*get(g, 'epslevel'));
+    1e2*max(get(g, 'vscale').*get(g, 'epslevel'));
+    
 
 %%
 % Check error conditions.

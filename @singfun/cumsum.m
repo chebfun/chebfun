@@ -65,7 +65,7 @@ end
 % SINGFUN representation for the indefinite integral of a SINGFUN. It now can
 % only handle integrand with singularity at one end of the domain, but not at
 % both. The algorithm was due to Nick Hale and Sheehan Olver. Some minor
-% modification are made during Chebfun v5 refactorization. See the working note
+% modifications are made during Chebfun v5 refactoring. See the working note
 % by Nick Hale and Sheehan Olver for the detail about the algorithm.
 
 function g = singIntegral(f)
@@ -111,9 +111,8 @@ function g = singIntegral(f)
         xs = prolong(xs, N + 1);
     end
     
-    % We flip up and down to have the coefficients of xs ordered with ascending
-    % indices.
-    aa = flipud(xs.coeffs);
+    % Get the coefficients of xs:
+    aa = xs.coeffs;
     
     % The recurrence to solve for the coefficients for u', i.e., c_k. (*)
     c = zeros(N, 1);
@@ -152,13 +151,12 @@ function g = singIntegral(f)
         cc = cc(1:oldN+2);
     end
     
-    % Flip up and down and drop the leading zeros in the coefficients:
-    cc = flipud(cc);
-    ind = find(cc ~= 0, 1, 'first');
+    % Drop the leading zeros in the coefficients:
+    ind = find(cc ~= 0, 1, 'last');
     if ( isempty(ind) )
         cc = 0;
     else
-        cc = cc(ind:end);
+        cc = cc(1:ind);
     end
     
     % Construct u as a smoothfun object:

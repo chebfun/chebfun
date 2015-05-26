@@ -76,9 +76,9 @@ if ( ~isempty(h1) )
         grid on
     end
 
-    title('Eigenvalues');
-    xlabel('real');
-    ylabel('imag');
+    set(handles.panel_figSol, 'title', 'Eigenvalues (imag vs real parts)')
+    
+    set(h1, 'Fontsize', handles.fontsizePanels);
 
     if ( any(selection) && (nargin < 4) )
         xlim(h1, xlim_sol);
@@ -137,10 +137,7 @@ if ( ~isSystem )
     if ( handles.guifile.options.grid )
         grid on
     end
-    
-    % ylabel:
-    ylabel(handles.varnames);
-    
+        
 else
     % Linestyles for the eigenmodes.
     LS = repmat({'-', '--', ':', '-.'}, 1, ceil(numVar/4));
@@ -177,8 +174,7 @@ else
 end
 set(h2, 'NextPlot', 'replace')
 
-% Set x-label and title of the plot.
-xlabel(handles.indVarName);
-title(s);
-
+% Set title of the panel
+set(handles.panel_figNorm, 'title', s)
+set(h2, 'Fontsize', handles.fontsizePanels);
 end

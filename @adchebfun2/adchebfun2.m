@@ -170,6 +170,12 @@ classdef (InferiorClasses = {?chebfun2}) adchebfun2
             
         end
         
+        function L = lap(f) 
+            % LAP   Shorthand for LAPLACIAN
+            
+            L = laplacian( f ); 
+        end
+        
         function L = laplacian(f)
             %LAPLACIAN   Laplacian of an ADCHEBFUN2.
             

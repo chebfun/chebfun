@@ -35,14 +35,13 @@ end
 expInfo = chebguiExporterEIG.exportInfo(guifile);
 
 % Extract the needed fields from the EXPINFO struct.
-dom = str2num(expInfo.dom);
+dom = str2num(expInfo.dom); %#ok<ST2NM>
 allVarNames = expInfo.allVarNames;
 indVarName = expInfo.indVarName;
 eigVarName = expInfo.lname;
 sigma = expInfo.sigma;
 K = str2double(expInfo.K);
 rhsString = expInfo.rhsString;
-discretization = expInfo.discretization;
 
 % Are we working with a generalized eigenvalue problem?
 generalized = expInfo.generalized;
@@ -57,46 +56,13 @@ else
     BC = eval(expInfo.bcString);
 end
 
-% Create the LHS chebop, and try to linearize it (if that gives an error, the
-% operator is probably linear).
+% Create the LHS chebop.
 N_LHS = chebop(LHS, dom, BC);
-try
-    A = linop(N_LHS);
-catch ME
-    MEID = ME.identifier;
-    if ( guiMode && ~isempty(strfind(MEID, 'linop:nonlinear')) )
-        errordlg('Operator is not linear.', 'Chebgui error', 'modal');
-    else
-        rethrow(ME)
-    end
-    varargout{1} = handles;
-    return
-end
 
-% Create the RHS chebop if the RHSSTRING is not empty, and try to linearize it
-% (if that gives an error, the operator is probably linear).
+% Create the RHS chebop if the RHSSTRING is not empty.
 if ( ~isempty(rhsString) )
     RHS = eval(rhsString);
     N_RHS = chebop(RHS, dom);
-
-    try
-        B = linop(N_RHS);
-    catch ME
-        MEID = ME.identifier;
-        if ( guiMode  && ~isempty(strfind(MEID, 'linop:nonlinear'))  )
-            errordlg('Operator is not linear.', 'Chebgui error', 'modal');
-        else
-            rethrow(ME)
-        end
-        varargout{1} = handles;
-        return
-    end
-    
-    % Did we determine that we had to negate the LHS operator?
-    if ( expInfo.flipSigns )
-        A = -A;
-    end
-    
 end
 
 % Obtain a CHEBOPPREF object
@@ -135,15 +101,15 @@ end
 % Compute the eigenvalues!
 if ( generalized )
     if ( isempty(sigma) )
-        [V, D] = eigs(A, B, K, options);
+        [V, D] = eigs(N_LHS, N_RHS, K, options);
     else
-        [V, D] = eigs(A, B, K, sigma, options);
+        [V, D] = eigs(N_LHS, N_RHS, K, sigma, options);
     end
 else
     if ( isempty(sigma) )
-        [V, D] = eigs(A, K, options);
+        [V, D] = eigs(N_LHS, K, options);
     else
-        [V, D] = eigs(A, K, sigma, options);
+        [V, D] = eigs(N_LHS, K, sigma, options);
     end
 end
 
@@ -157,10 +123,10 @@ V = V(:,idx);
 if ( ~guiMode )
     % If we're not in GUI mode, we can finish here.
     if ( nargout == 1 )
-        varargout = diag(D);
+        varargout = D;
     else
-        varargout{1} = D;
-        varargout{2} = V;
+        varargout{1} = V;
+        varargout{2} = diag(D);
     end
     
 else
@@ -171,7 +137,7 @@ else
     handles.latest.type = 'eig';
     handles.latest.solution = D;
     handles.latest.solutionT = V;
-    handles.latest.chebop = A;
+    handles.latest.chebop = N_LHS;
     handles.latest.options = options;
     
     % Notify the GUI we have a solution available

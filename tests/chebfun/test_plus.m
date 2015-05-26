@@ -116,8 +116,9 @@ h = f + g;
 vals_h = feval(h, x);
 op = @(x)  (x - dom(2)).^pow.*(sin(100*x)+cos(300*x));
 h_exact = op(x);
-pass(28) = ( norm(vals_h-h_exact, inf) < max(get(f, 'epslevel'), get(g, 'epslevel'))*...
+pass(28) = ( norm(vals_h-h_exact, inf) < 1e3*max(get(f, 'epslevel'), get(g, 'epslevel'))*...
     norm(h_exact, inf) );
+
 
 %% Test for function defined on unbounded domain:
 
@@ -141,6 +142,35 @@ hExact = oph(x);
 err = hVals - hExact;
 pass(29) = norm(err, inf) < get(h,'epslevel').*get(h,'vscale');
 
+%% Test addition between a CHEBFUN and a TRIGFUN.
+
+dom = [0 pi 2*pi];
+
+% 1. One column case.
+f = chebfun(@(x) x + x.^2, dom, pref);
+g = chebfun(@(x) cos(x), [dom(1) dom(end)], 'periodic');
+h1 = f + g;
+% We want the result to use the same tech as the one used by f.
+pass(30) = strcmpi(func2str(get(h1.funs{1}.onefun, 'tech')), ...
+                   func2str(get(f.funs{1}.onefun, 'tech')));
+h2 = chebfun(@(x) x + x.^2 + cos(x), dom, pref);
+err = norm(h1 - h2, inf);
+tol = 10*get(h2,'epslevel').*get(h2,'vscale');
+pass(31) = err < tol;
+
+% 2. Quasimatrix case.
+f = chebfun(@(x) [cos(x), sin(x)], [dom(1) dom(end)], 'periodic');
+g = chebfun(@(x) [x, x.^3], dom, pref);
+h1 = f + g;
+% We want the result to use the same tech as the one used by g.
+pass(32) = strcmpi(func2str(get(h1(:,1).funs{1}.onefun, 'tech')), ...
+                   func2str(get(g(:,1).funs{1}.onefun, 'tech')));
+pass(33) = strcmpi(func2str(get(h1(:,2).funs{1}.onefun, 'tech')), ...
+                   func2str(get(g(:,2).funs{1}.onefun, 'tech')));
+h2 = chebfun(@(x) [x + cos(x), x.^3 + sin(x)], dom, pref);
+pass(34) = norm(h1-h2, inf) < 1e2*get(h2,'epslevel').*get(h2,'vscale');
+
+
 end
 
 % Test the addition of a chebfun F, specified by F_OP, to a scalar ALPHA using
@@ -161,5 +191,6 @@ function result = test_add_function_to_function(f, f_op, g, g_op, x)
     result(1) = isequal(h1, h2);
     h_exact = @(x) f_op(x) + g_op(x);
     norm(feval(h1, x) - h_exact(x), inf);
-    result(2) = norm(feval(h1, x) - h_exact(x), inf) < 10*vscale(h1)*epslevel(h1);
+    result(2) = norm(feval(h1, x) - h_exact(x), inf) < 1e2*vscale(h1)*epslevel(h1);
+        
 end

@@ -54,10 +54,13 @@ for n = 1:2
     % Spot-check a few functions
     pass(n, 6) = test_spotcheck_restrict(testclass, ...
         @(x) exp(x) - 1, [-0.2 0.1], pref);
+    
     pass(n, 7) = test_spotcheck_restrict(testclass, ...
         @(x) 1./(1 + x.^2), [-0.7 0.9], pref);
+    
     pass(n, 8) = test_spotcheck_restrict(testclass, ...
         @(x) cos(1e3*x), [0.1 0.5], pref);
+
     pass(n, 9) = test_spotcheck_restrict(testclass, ...
         @(t) sinh(t*exp(2*pi*1i/6)), [-0.4 1], pref);
 
@@ -107,5 +110,6 @@ function result = test_spotcheck_restrict(testclass, fun_op, subint, pref)
     y_exact = fun_op(x);
     y_approx = feval(g, map(x));
 
-    result = norm(y_exact - y_approx, Inf) < 10*max(g.vscale.*g.epslevel);
+    result = norm(y_exact - y_approx, Inf) < 1e3*max(g.vscale.*g.epslevel);
+    
 end

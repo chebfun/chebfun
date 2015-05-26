@@ -45,6 +45,7 @@ pdeflag = expInfo.pdeflag;
 periodic = expInfo.periodic;
 lbcString = expInfo.lbcString;
 rbcString = expInfo.rbcString;
+pdeSolver = eval(['@', expInfo.pdeSolver]);
 
 % Check that we don't have any breakpoints.
 if ( length(dom) > 2 )
@@ -171,6 +172,8 @@ if ( guiMode )
     set(handles.fig_norm, 'Visible', 'On');
     cla(handles.fig_sol, 'reset')
     cla(handles.fig_norm, 'reset')
+    set(handles.fig_sol, 'fontsize', handles.fontsizePanels);
+    set(handles.fig_norm, 'fontsize', handles.fontsizePanels);
     handles.gui = 1;
 else
     handles.gui = 0;
@@ -206,8 +209,8 @@ end
 
 % Try solving the PDE!
 try
-    [t, u] = pde15s(DE, tt, u0, bc, opts);
-catch
+    [t, u] = pdeSolver(DE, tt, u0, bc, opts);
+catch ME
     errordlg('Error in solution process.', 'chebopbvp error', 'modal');
     varargout{1} = handles;
     return
@@ -238,7 +241,8 @@ else
 end
 
 if ( ~isa(u, 'chebmatrix') )
-    waterfall(u, t, 'simple', 'linewidth', defaultLineWidth)
+    waterfall(u, t, 'linewidth', defaultLineWidth)
+
 else
     cols = get(0, 'DefaultAxesColorOrder');
     
@@ -254,6 +258,8 @@ else
     waterfall(u, t, 'linewidth', defaultLineWidth, 'edgecolors', cols)
 end
 
+% Update the fontsize of the bottom plot 
+set(handles.fig_norm, 'fontsize', handles.fontsizePanels);
 % Axis labels:
 xlabel(indVarName{1})
 ylabel(indVarName{2})

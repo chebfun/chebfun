@@ -20,7 +20,7 @@ L = addbc(L,'periodic');
 
 %%
 
-type = {@colloc2, @colloc1, @ultraS, @colloc2, @colloc1, @ultraS};
+type = {@chebcolloc2, @chebcolloc1, @ultraS, @chebcolloc2, @chebcolloc1, @ultraS};
 prefs = cheboppref;
 prefs.errTol = 1e-14;
 
@@ -63,6 +63,37 @@ for k = 1:6
 
 end
 
+%% Test for TRIGCOLLOC.
+
+% Domain.
+dom = [0 2*pi];
+
+% Differentiation operators.    
+D = operatorBlock.diff(dom);
+D2 = operatorBlock.diff(dom, 2);
+
+% Multiplication operators.
+a1 = chebfun(@(x) 1 + sin(2*x), dom);
+A1 = operatorBlock.mult(a1);   
+a0 = chebfun(@(x) 1 + cos(x), dom);
+A0 = operatorBlock.mult(a0);  
+
+% Linop.
+L = linop(D2 + A1*D + A0);
+
+% Rhs.
+f = chebfun(@(x) cos(x), dom);
+
+% Solve it with TRIGCOLLOC.
+prefs.discretization = @trigcolloc;
+u = linsolve(L, f, prefs);
+u = u{1};
+
+err(1, 13) = norm(diff(u,2) + a1.*diff(u) + a0.*u - f);
+err(2, 13) = abs(u(2*pi) - u(0));
+err(3, 13) = abs(feval(diff(u), 2*pi) - feval(diff(u), 0));
+
+%%
 pass = err < tol;
 
 end

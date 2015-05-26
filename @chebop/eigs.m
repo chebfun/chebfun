@@ -22,6 +22,9 @@ function varargout = eigs(N, varargin)
 %   SIGMA must be chosen appropriately for the given operator; for example, 'LM'
 %   for an unbounded operator will fail to converge!
 %
+%   EIGS(..., PREFS) accepts a CHEBOPPREF to control the behavior of the
+%   algorithm. If empty, defaults are used.
+%
 %   Despite the syntax, this version of EIGS does not use iterative methods
 %   as in the built-in EIGS for sparse matrices. Instead, it uses the
 %   built-in EIG on dense matrices of increasing size, stopping when the 
@@ -39,21 +42,70 @@ function varargout = eigs(N, varargin)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Linearize and check whether the chebop is linear:
-[L, ignored, fail] = linop(N); %#ok<ASGLU>
+% Did we get preferences passed?
+if ( (nargin > 1) && isa(varargin{end}, 'cheboppref') )
+    pref = varargin{end};
+    isPrefGiven = 1;
+else
+    pref = cheboppref();
+    isPrefGiven = 0;
+end
+
+% Tell CHEBOP/LINEARIZE() to stop if it detects nonlinearity:
+linCheck = true; 
+
+% Linearize, thereby obtaining linearity information, a LINOP, and an input of
+% the correct dimensions to pass to N:
+[L, ignored, isLinear, u0] = linearize(N, N.init, [], linCheck);
+
+% We need the entire operator (including BCs) to be linear:
+assert(all(isLinear), 'CHEBFUN:CHEBOP:eigs:nonlinear', ...
+    ['The input operator appears to be nonlinear.\n', ...
+    'EIGS() supports only linear CHEBOP instances.']);
 
 % Support for generalised problems:
-if ( ~fail && nargin > 1 && isa(varargin{1}, 'chebop') )
+if ( nargin > 1 && isa(varargin{1}, 'chebop') )
+    % Tell CHEBOP/LINEARIZE() that we don't want it to try to reshape inputs
+    % that it believes are parameters to doubles, rather than CHEBFUNs.
+    paramReshape = false;
+    
     % Linearise the second CHEBOP:
-    [varargin{1}, ignored, fail] = linop(varargin{1}); %#ok<ASGLU>
+    [varargin{1}, ignored, isLinear] = ...
+        linearize(varargin{1}, u0, [], linCheck, paramReshape);
+
+    % We need the entire operator (including BCs) to be linear:
+    assert(all(isLinear), 'CHEBFUN:CHEBOP:eigs:nonlinear', ...
+        ['The second input operator appears to be nonlinear.\n', ...
+        'EIGS() supports only linear CHEBOP instances.']);
+    
 end
 
-if ( fail )
-    error('CHEBFUN:CHEBOP:eigs:nonlinear', ...
-        ['The operator appears to be nonlinear.\n', ...
-         'EIGS() supports only linear CHEBOP instances.']);
+% Determine the discretization.
+pref = determineDiscretization(N, L, isPrefGiven, pref);
+
+% Clear boundary conditions if the dicretization uses periodic functions (since
+% if we're using periodic basis functions, the boundary conditions will be
+% satisfied by construction).
+disc = pref.discretization();
+tech = disc.returnTech();
+if ( isPeriodicTech(tech()) )
+    [N, L] = clearPeriodicBCs(N, L);
 end
 
+% Add the preferences in vargarin to pass them to LINOP/EIGS.
+if ( isPrefGiven )
+    % If a CHEBOPPREF was passed to the method, it will have been at the last
+    % position of varargin, indexed at nargin - 1. Overwrite it with the current
+    % PREF, as the discretization might have changed in the periodic case:
+    varargin{nargin-1} = pref;
+else
+    % Otherwise, add the PREF to VARARGIN, so that it can be passed to the call
+    % to LINOP/EIGS below.
+    varargin{nargin} = pref;
+end
+
+
+% Call LINOP/EIGS.
 [varargout{1:nargout}] = eigs(L, varargin{:});
 
 % Return a CHEBFUN rather than a CHEBMATRIX for scalar problems:

@@ -20,8 +20,8 @@ end
 [m, n] = length(f); 
 
 % If F is of low degree, then oversample: 
-m = max(m, 9); 
-n = max(n, 9); 
+m = min(max(m, 9),2000); 
+n = min(max(n, 9),2000); % cannot afford to go over 2000x2000. 
 
 % Calculate values on a tensor grid: 
 vals = chebpolyval2(f, m, n); 

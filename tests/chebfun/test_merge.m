@@ -25,7 +25,8 @@ f = chebfun(@(x) sin(10*pi*x), [-1:.5:2], pref2);
 pass(3) = all(size(g.funs) == [1,2]);
 xx = linspace(-1, 2, 100);
 err = norm(feval(f, xx) - feval(g, xx), 'inf');
-tol = 10*epslevel(f);
+tol = 1e2*epslevel(f);
+
 pass(4) = err < tol;
 pass(5) = all(mergedPts == [2 4:6]);
 
@@ -71,7 +72,8 @@ x = diff(domCheck) * rand(100, 1) + domCheck(1);
 vals_h = feval(h, x);
 vals_exact = feval(op, x);
 err = vals_h - vals_exact;
-pass(12) = (norm(err, inf) < 5e1*get(h, 'vscale')*get(h, 'epslevel'));
+pass(12) = (norm(err, inf) < 1e3*get(h, 'vscale')*get(h, 'epslevel'));
+
 
 %% Test for function defined on unbounded domain:
 

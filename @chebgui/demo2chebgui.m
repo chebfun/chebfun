@@ -20,8 +20,9 @@ inputEnded = 0;
 while ( ~inputEnded )
     tline = fgetl(fid);
 
-    % Don't eval names and demotypes
-    if ( isempty(strfind(tline, '=')) )
+    % Don't eval names and demotypes. Also, don't eval lines that start at #, as
+    % those are problem description lines needed for testing.
+    if ( isempty(tline) || isempty(strfind(tline, '=')) || tline(1) == '#' )
         continue
     end
 

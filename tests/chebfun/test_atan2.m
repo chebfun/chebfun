@@ -18,7 +18,8 @@ xx = linspace(.99*a, .99*b, 100);
 ff = feval(f, xx);
 gg = feval(g, xx);
 hh = atan2(ff, gg);
-pass(1) = norm(feval(h, xx) - hh, inf) < 3*tol;
+pass(1) = norm(feval(h, xx) - hh, inf) < 1e2*tol;
+
 
 ends = h.domain([1 end]);
 fi = feval(f, ends);
@@ -28,10 +29,11 @@ pass(2) = norm(hi - h.pointValues([1 end])) < 2*tol;
 
 %% Scalar-valued, tan(g, f):
 h = atan2(g, f);
-tol = 10*epslevel(h).*vscale(h);
+tol = 1e3*epslevel(h).*vscale(h);
 hh = atan2(gg, ff);
 err = norm(feval(h, xx) - hh, inf);
 pass(3) = err < tol;
+
 
 ends = h.domain([1 end]);
 hi = atan2(feval(g, ends), feval(f, ends)).';

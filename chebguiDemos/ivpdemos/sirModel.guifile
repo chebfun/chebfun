@@ -1,0 +1,7 @@
+'SIR model of infectious disease'
+'system'
+domain = '[0 30]';
+DE = {'u'' = -0.003*v*u','v'' = 0.003*v*u - 0.3*v','w'' = 0.3*v'};
+BC = {'u(0) = 500','v(0) = 1','w(0) = 0'};
+init = ''; tol = '1e-10';
+type = 'ivp';

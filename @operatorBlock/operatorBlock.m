@@ -15,6 +15,7 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
 % CHEBFUN objects.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
+
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% CLASS CONSTRUCTOR:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -74,6 +75,10 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
             
             % Were we repeatedly applying the zero operator?
             B.iszero = A.iszero;
+
+            % Were we repeatedly applying a multiplication operator?
+            B.isNotDiffOrInt = A.isNotDiffOrInt;
+
         end
 
                 
@@ -129,9 +134,12 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
                 % Update the stack.
                 C.stack = @(z) A * B.stack(z);
                 
-                % Output is a zero operator if eithar A or B were zero.
+                % Output is a zero operator if either A or B were zero.
                 C.iszero = isz || B.iszero;
                 
+                % Output is a multiplication operator if B was.
+                C.isNotDiffOrInt = B.isNotDiffOrInt;
+
                 % Difforder of the returned OPERATORBLOCK.
                 if ( C.iszero )
                     C.diffOrder = 0;
@@ -156,6 +164,11 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
                 % Output is a zero operator if either operator was a zero
                 % operator
                 C.iszero = A.iszero || B.iszero;
+
+                % Output is a multiplication operator if both operators were, or
+                % if it's actually a zero operator.
+                C.isNotDiffOrInt = ( A.isNotDiffOrInt && B.isNotDiffOrInt ) ...
+                    || C.iszero;
 
                 % Difforder of returned OPERATORBLOCK.
                 if ( C.iszero )
@@ -189,6 +202,7 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
             C.stack = @(z) A.stack(z) + B.stack(z);
             C.diffOrder = max(A.diffOrder, B.diffOrder);
             C.iszero = A.iszero && B.iszero;
+            C.isNotDiffOrInt = A.isNotDiffOrInt && B.isNotDiffOrInt;
         end
         
         function varargout = size(A, dim) %#ok<INUSL>
@@ -256,12 +270,12 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
 
         function D = diff(varargin)
         %OPERATORBLOCK.DIFF   Differentiation operator.
-        %   D = OPERATORBLOCK.DIFF returns the first-order differentation operator
-        %   D for functions defined on [-1, 1].
+        %   D = OPERATORBLOCK.DIFF returns the first-order differentation
+        %   operator D for functions defined on [-1, 1].
         %
-        %   D = OPERATORBLOCK.DIFF(DOMAIN) returns the first-order differentation
-        %   operator D which applies to functions defined on DOMAIN, which may
-        %   include breakpoints.
+        %   D = OPERATORBLOCK.DIFF(DOMAIN) returns the first-order
+        %   differentation operator D which applies to functions defined on
+        %   DOMAIN, which may include breakpoints.
         %
         %   D = OPERATORBLOCK.DIFF(DOMAIN, M) is the mth order derivative.
 
@@ -295,6 +309,7 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
             I = operatorBlock(domain);
             I.stack = @(z) eye(z);
             I.diffOrder = 0;
+            I.isNotDiffOrInt = true;
         end
         
         function F = fred(kernel, domain, varargin)
@@ -347,17 +362,18 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
 
             F = operatorBlock(domain);
             F.stack = @(z) fred(kernel, z, varargin{:});
-            F.diffOrder = 0;
+            F.diffOrder = -100;
         end        
 
         function M = mult(u, dom)
         %OPERATORBLOCK.MULT   Multiplication operator.
-        %   M = OPERATORBLOCK.MULT(U) returns the multiplication operator from the
-        %   CHEBFUN U, i.e. the operator that maps a CHEBFUN f(x) to u(x)f(x).
+        %   M = OPERATORBLOCK.MULT(U) returns the multiplication operator from
+        %   the CHEBFUN U, i.e. the operator that maps a CHEBFUN f(x) to
+        %   u(x)f(x).
         %
         %   M = OPERATORBLOCK.MULT(U, DOM) allows passing a domain on which the
-        %   multiplication operator is to be constructed (useful for the ADCHEBFUN
-        %   class)
+        %   multiplication operator is to be constructed (useful for the
+        %   ADCHEBFUN class)
 
             % Check whether domain information was passed
             if ( nargin < 2 )
@@ -368,6 +384,39 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
             M = operatorBlock(dom);
             M.stack = @(z) mult(z, u);
             M.diffOrder = 0;
+            M.isNotDiffOrInt = true;
+        end
+        
+        function M = outer(f, g, dom)
+        %OPERATORBLOCK.OUTER   Outer product operator.
+        %   M = OPERATORBLOCK.MULT(F, G) returns the outer product operator from
+        %   the column CHEBFUN f and the row CHEBFUN g, i.e. the operator that
+        %   maps a CHEBFUN h(x) to f(x) * (g(x)*h(x)). Note that the second
+        %   multiplication corresponds to taking the inner product between g and
+        %   h.
+        %
+        %   M = OPERATORBLOCK.MULT(F, G, DOM) allows passing a domain on which
+        %   the multiplication operator is to be constructed.
+
+            % Check whether domain information was passed
+            if ( nargin < 3 )
+                % Ensure that F and G have the same domains, without any
+                % breakpoints
+                fDom = f.domain;
+                gDom = g.domain;
+                assert( (length(fDom) <= 2) && (length(gDom) <=2) && ...
+                    all(fDom == gDom), ...
+                    'CHEBFUN:OPERATORBLOCK:outer:domain', ...
+                    ['The domains of the inputs must be the same, and not ' ...
+                     'contain any breakpoints.']);
+                dom = f.domain(1:2);
+            end
+
+            % Create the OPERATORBLOCK with information now available.
+            M = operatorBlock(dom);
+            M.stack = @(z) outer(z, f, g);
+            M.diffOrder = 0;
+            M.isNotDiffOrInt = true;
         end
 
         function V = volt(kernel, domain, varargin)
@@ -397,7 +446,7 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
 
             V = operatorBlock(domain);
             V.stack = @(z) volt(kernel, z, varargin{:});
-            V.diffOrder = 0;
+            V.diffOrder = -1;
             
         end
         
@@ -419,6 +468,9 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
             
             % This is actually a zero operator
             Z.iszero = true;
+
+            % It's also a multiplication operator
+            Z.isNotDiffOrInt = true;
             
         end
         

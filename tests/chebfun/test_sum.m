@@ -142,7 +142,8 @@ op = @(x) (x - dom(1)).^pow.*sin(100*x);
 f = chebfun(op, dom, 'exps', [pow 0], 'splitting', 'on');
 I = sum(f);
 I_exact = 0.17330750941063138;
-pass(26) = ( abs(I-I_exact) < 20*get(f, 'epslevel')*abs(I_exact) );
+pass(26) = ( abs(I-I_exact) < 1e3*get(f, 'epslevel')*abs(I_exact) );
+
 
 %% Test for functions defined on unbounded domain:
 

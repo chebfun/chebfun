@@ -49,6 +49,7 @@ f = chebfun(op, dom);
 vals = chebfun.getValuesAtBreakpoints(f.funs);
 vals_exact = [op1(dom(1)); mean([op1(dom(2)) op2(dom(2))]); 0.75];
 
-pass(6) = ( norm(vals - vals_exact, inf) < 1e1*epslevel(f)*vscale(f) );
+pass(6) = ( norm(vals - vals_exact, inf) < 1e3*epslevel(f)*vscale(f) );
+
 
 end

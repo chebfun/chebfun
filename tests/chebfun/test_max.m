@@ -187,6 +187,7 @@ yExact = exp(-1);
 xExact = 1;
 errY = y - yExact;
 errX = x - xExact;
-pass(22) = norm([errY errX], inf) < 100*epslevel(f).*vscale(f);
+pass(22) = norm([errY errX], inf) < 1e3*epslevel(f).*vscale(f);
+
 
 end

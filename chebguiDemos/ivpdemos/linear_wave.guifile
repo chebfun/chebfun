@@ -1,0 +1,8 @@
+'Linear wave equation'
+'scalar'
+domain = '[0 10*pi]';
+DE = 'u" = -u';
+BC = {'u(0)  = 2', 'u''(0) = 0'};
+init = ''; tol = '1e-10';
+damping = '1'; plotting = '0.1';
+type = 'ivp';

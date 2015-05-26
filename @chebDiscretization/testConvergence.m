@@ -1,4 +1,4 @@
-function [isDone, epsLevel, vscale, cutoff] = testConvergence(disc, values, vscale, pref)
+function [isDone, epslevel, vscale, cutoff] = testConvergence(disc, values, vscale, pref)
 %TESTCONVERGENCE   Happiness check.
 %   Given: 
 %      DISC: chebDiscretization, 
@@ -25,33 +25,38 @@ if ( nargin < 4 )
 end
 
 % Convert to a piecewise array-valued CHEBFUN.
-u = toFunctionOut( disc, cat(2,values{:}) );
-numCol = size(u,2);
+u = toFunctionOut(disc, cat(2, values{:}));
+numCol = size(u, 2);
 
 % This is a cell array of coefficients (one for each piece).
 coeffs = get(u, 'coeffs', 1);
 
 d = disc.domain;
 numInt = numel(d) - 1;
-isDone = false(numInt,1);
-cutoff = zeros(numInt,numCol);
-epsLevel = 0;
+isDone = false(numInt, 1);
+cutoff = zeros(numInt, numCol);
+epslevel = 0;
+
+% Get the discretization, and the appropriate tech to use:
+discPreference = pref.discretization();
+tech = discPreference.returnTech();
+tech = tech();
 
 % If an external vscale was supplied, it can supplant the inherent scale of the
 % result.
-vscale = max(u.vscale, max(vscale));
-prefTech = chebtech.techPref();
+vscale = max(u.vscale, vscale);
+prefTech = tech.techPref();
 prefTech.eps = pref.errTol;
 
-% Test convergence on each piece.
 for i = 1:numInt
-    c = cat(2,coeffs{i,:});
-    f = chebtech2( {[],c} );
+    c = cat(2, coeffs{i,:});
+    f = tech.make({[], c});
     f.vscale = vscale;
-    [isDone(i), neweps, cutoff(i,:)] = plateauCheck(f, get(f,'values'), prefTech);
-    epsLevel = max(epsLevel, neweps);
+    [isDone(i), neweps, cutoff(i,:)] = plateauCheck(f, get(f, 'values'), ...
+        prefTech);
+    epslevel = max(epslevel, neweps);
 end
 
-isDone = all(isDone,2);
+isDone = all(isDone, 2);
 
 end

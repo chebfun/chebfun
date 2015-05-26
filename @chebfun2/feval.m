@@ -59,7 +59,6 @@ elseif ( isnumeric( x ) && isnumeric( y ) )  % f(x, y)
             
             x = x(1,:);
             y = y(:,1);
-            takeDiag = 0;
             
         elseif ( max(max(abs(bsxfun(@minus, y, y(1,:))))) == 0 && ... 
                 max(max(abs(bsxfun(@minus, x, x(:,1)))) == 0 ) )
@@ -70,7 +69,6 @@ elseif ( isnumeric( x ) && isnumeric( y ) )  % f(x, y)
             x = x(:,1); 
             y = y(1,:);
             takeTranspose = 1;
-            takeDiag = 0;
         else
             % Evaluate at matrices, but they're not from meshgrid: 
             out = zeros( size( x ) ); 
@@ -81,21 +79,20 @@ elseif ( isnumeric( x ) && isnumeric( y ) )  % f(x, y)
             end
             return
         end
-    else 
-        takeDiag = 1; 
+    else
     end
     
-    % Evaluate:
+% Evaluate:
+if ( isvector(x) && ~isscalar(x) && all(size(x) == size(y)) )
+    % Determine whether inputs are pure vectors.
+    out = feval(cols, y(:)) .* feval(rows, x(:)) * diag(D); 
+else
     out = feval(cols, y(:)) * D * feval(rows, x(:)).';
-    
+end
+
     % Take transpose: 
     if ( takeTranspose ) 
         out = transpose( out ); 
-    end 
-    
-    % Take diagonal:
-    if ( takeDiag ) 
-        out = diag( out ); 
     end 
     
 elseif ( isa(x, 'chebfun') )

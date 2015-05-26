@@ -16,7 +16,7 @@ function varargout = pdeset(varargin)
 %           procedure is used.
 %
 %       Plot - Plot the solution at the end of every time chunk. [ {on} | off ]
-%           Turning this off can improve speed considerably.
+%              Turning this off can improve speed considerably.
 %
 %       HoldPlot - Hold the plots after each chunk. [ on | {off} ]
 %
@@ -27,6 +27,16 @@ function varargout = pdeset(varargin)
 %
 %       PDEflag - Specify which entries correspond to time derivatives. 
 %           [ vector of logicals {true} ].
+%
+%       AdjustBCs - Adjust boundary conditions to be satisfied by initial
+%                   conditions.
+%           [ logical {true} ].
+%
+%       ODESolver - Function handle determining the ODE solver to use for time
+%       stepping the method of lines solution. @ode15s is used by default, but
+%       this struggles for non-diffusive problems. In this case, @ode23t is
+%       recommended instead.
+%           [ {@ode15s} | @ode23t ].
 %
 % See also ODESET.
 
@@ -40,7 +50,9 @@ names = ['Eps      '
          'HoldPlot '
          'YLim     '
          'PlotStyle'
-         'PDEflag  ']; 
+         'PDEflag  '
+         'AdjustBCs'
+         'ODESolver']; 
      
 m = size(names, 1);
 shortNames = cell(m, 1);
@@ -62,6 +74,8 @@ if ( nargin == 0 )
         fprintf('            YLim: [ 2x1 vector | {NaN} ]\n')
         fprintf('       PlotStyle: [ string | ''-'']\n')
         fprintf('         PDEflag: [ vector of logicals {true} ]\n')
+        fprintf('       AdjustBCs: [ logical {true} ]\n')
+        fprintf('       ODESolver: [ {@ode15s} | @ode23t ]\n')
     else
         % Get the ODE opts:
         opts = odeset();

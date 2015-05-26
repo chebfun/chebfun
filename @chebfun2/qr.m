@@ -28,9 +28,10 @@ end
 % As always start with the CDR decomposition: 
 [C, D, R] = cdr( f ); 
 
-% Balance out the scaling: 
-C = C * sqrt( D ); 
-R = R * sqrt( D ); 
+% Balance out the scaling, becareful about signs: 
+sgns = sign( diag( D ) ); 
+C = C * diag(sgns) * sqrt( abs(D) );   % Put the signs into Q
+R = R * sqrt( abs(D) ); 
 
 % QR of the column 
 [Q, RC] = qr( C ); 

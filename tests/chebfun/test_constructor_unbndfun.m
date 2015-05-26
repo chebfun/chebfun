@@ -42,7 +42,8 @@ f = chebfun(op, dom, 'exps', [2 2]);
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
-pass(4) = norm(err, inf) < 1e4*epslevel(f)*vscale(f);
+pass(4) = norm(err, inf) < 1e5*epslevel(f)*vscale(f);
+
 
 %% Functions on [a inf]:
 
@@ -87,7 +88,8 @@ f = chebfun(op, dom, 'exps', [0 1]);
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
-pass(9) = norm(err, inf) < 1e1*epslevel(f)*vscale(f);
+pass(9) = norm(err, inf) < 1e2*epslevel(f)*vscale(f);
+
 
 %% Functions on [-inf b]:
 
@@ -140,6 +142,7 @@ f = chebfun(op, dom);
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
-pass(15) = norm(err, inf) < 1e1*max(epslevel(f).*vscale(f));
+pass(15) = norm(err, inf) < 1e2*max(epslevel(f).*vscale(f));
+
 
 end

@@ -7,7 +7,7 @@ end
 tol = 1e-10;
 
 % Loop over discretization types:
-type = {@colloc1, @colloc2, @ultraS};
+type = {@chebcolloc1, @chebcolloc2, @ultraS};
 err = Inf + zeros(length(type), 4);
 for k = 1:3
     

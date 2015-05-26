@@ -33,7 +33,8 @@ f = chebfun(f_op, [-1 -0.5 0 0.5 1], pref);
 
 h = besselj(nu, f);
 err = feval(h, xr) - besselj(nu, f_op(xr));
-pass(4) = norm(err(:), inf) < 10*epslevel(h)*vscale(h);
+pass(4) = norm(err(:), inf) < 1e2*epslevel(h)*vscale(h);
+    
 
 h2 = besselj(nu, f, 0);
 pass(5) = normest(h - h2) < ...
@@ -41,7 +42,8 @@ pass(5) = normest(h - h2) < ...
 
 h = besselj(nu, f, 1);
 err = feval(h, xr) - besselj(nu, f_op(xr), 1);
-pass(6) = norm(err(:), inf) < 10*epslevel(h)*vscale(h);
+pass(6) = norm(err(:), inf) < 1e2*epslevel(h)*vscale(h);
+    
 
 %% Test for complex values.
 pref.splitting = 1;

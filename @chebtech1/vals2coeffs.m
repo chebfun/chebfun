@@ -23,7 +23,7 @@ function coeffs = vals2coeffs(values)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Get the length of the input:
-[n, m] = size(values);
+n = size(values, 1);
 
 % Trivial case (constant):
 if ( n <= 1 )
@@ -31,18 +31,25 @@ if ( n <= 1 )
     return
 end
 
-% Pre-compute the weight vector:
-w = repmat(2*exp(1i*(n-1:-1:0)*pi/(2*n)).',1,m);
+% Computing the weight vector often accounts for at least half the cost of this
+% transformation. Given that (a) the weight vector depends only on the length of
+% the coefficients and not the coefficients themselves and (b) that we often
+% perform repeated transforms of the same length, we store w persistently.
+persistent w
+if ( size(w, 1) ~= n )
+    % Pre-compute the weight vector:
+    w = 2*exp(1i*(0:n-1)*pi/(2*n)).';
+end
 
 % Mirror the values for FFT:
 tmp = [values(n:-1:1, :) ; values];
 coeffs = ifft(tmp);
 
 % Truncate, flip the order, and multiply the weight vector:
-coeffs = w.*coeffs(n:-1:1, :);
+coeffs = bsxfun(@times, w, coeffs(1:n, :));
 
-% Scale the last coefficient, i.e. the coefficient for the constant term:
-coeffs(n,:) = coeffs(n,:)/2;
+% Scale the coefficient for the constant term:
+coeffs(1,:) = coeffs(1,:)/2;
 
 % Post-process:
 if ( isreal(values) )  

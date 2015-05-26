@@ -23,11 +23,14 @@ elseif ( isa(g, 'double') ) % CHEBTECH + double
         % Perform singleton expansion of f:
         f.coeffs = repmat(f.coeffs, 1, size(g, 2));
     end
-    f.coeffs(end,:) = f.coeffs(end,:) + g;
+    f.coeffs(1,:) = f.coeffs(1,:) + g;
     % Update scale:
     vscaleNew = getvscl(f); 
     % See CHEBTECH CLASSDEF file for documentation on this:
-    f.epslevel = (f.epslevel.*f.vscale + eps(g))./vscaleNew;
+    tmpVscaleNew = vscaleNew;
+    tmpVscaleNew(tmpVscaleNew == 0) = 1;  % Avoid NaNs.
+    epslevelBound = (f.epslevel.*f.vscale + eps(g))./tmpVscaleNew;
+    f.epslevel = updateEpslevel(f, epslevelBound);
     f.vscale = vscaleNew;
     
 elseif ( isa(f, 'double') ) % double + CHEBTECH
@@ -71,7 +74,9 @@ elseif ( isa(f, 'chebtech') && isa(g, 'chebtech') )  % CHEBTECH + CHEBTECH
         % Update vscale, epslevel, and ishappy:
         vscaleNew = getvscl(f); 
         % See CHEBTECH CLASSDEF file for documentation on this:
-        epslevelBound = (f.epslevel.*f.vscale + g.epslevel.*g.vscale)./vscaleNew;
+        tmpVscaleNew = vscaleNew;
+        tmpVscaleNew(tmpVscaleNew == 0) = 1;  % Avoid NaNs.
+        epslevelBound = (f.epslevel.*f.vscale + g.epslevel.*g.vscale)./tmpVscaleNew;
         f.epslevel = updateEpslevel(f, epslevelBound);
         f.vscale = vscaleNew;
         f.ishappy = f.ishappy && g.ishappy;

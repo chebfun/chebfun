@@ -1,13 +1,18 @@
 function [u, info] = solvebvp(N, rhs, varargin)
-%SOLVEBVP  Solve a linear or nonlinear CHEBOP BVP system.
+%SOLVEBVP   Solve a linear or nonlinear CHEBOP BVP system.
 %
 %   U = SOLVEBVP(N, RHS), where N is a CHEBOP and RHS is a CHEBMATRIX, CHEBFUN
 %   or a vector of doubles attempts to solve the BVP
 %
 %       N(U) = RHS + boundary conditions specified by N
 %
-%   Observe that U = SOLVEBVP(N, RHS) has the same effect as U = N\RHS, but this
-%   method allows greater flexibility than CHEBOP backslash, as described below.
+%   Observe that U = SOLVEBVP(N, RHS), where N specifies a boundary-value
+%   problem (BVP), has the same effect as U = N\RHS, but this method allows
+%   greater flexibility than CHEBOP backslash, as described below. Problems are
+%   determined to be a BVP as follows:
+%       * Both N.LBC and N.RBC is non-empty, or N.BC is non-empty.
+%   Otherwise, problems are considered to be initial/final-value problems, and
+%   U=N\RHS will in general have the same effect as U = SOLVEIVP(N, RHS).
 %
 %   If successful, the solution returned, U, is a CHEBFUN if N specifies a
 %   scalar problem, and a CHEBMATRIX if N specifies a coupled systems of
@@ -48,7 +53,7 @@ function [u, info] = solvebvp(N, rhs, varargin)
 %       uv = solvebvp(N, [0; 0]);
 %
 % See also: CHEBOP, CHEBOP/MLDIVIDE, CHEBOPPREF, CHEBOP/SOLVEBVPLINEAR,
-%   CHEBOP/SOLVEBVPNONLINEAR, LINOP/MLDIVIDE.
+%   CHEBOP/SOLVEBVPNONLINEAR, CHEBOP/SOLVEIVP, LINOP/MLDIVIDE.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -61,7 +66,7 @@ function [u, info] = solvebvp(N, rhs, varargin)
 %   details.
 
 % Parse inputs:
-[pref, displayInfo] = parseInputs(varargin{:});
+[pref, isPrefGiven, displayInfo] = parseInputs(N, varargin{:});
 
 % Find out how many variables N operates on:
 nVars = numVars(N);
@@ -74,24 +79,19 @@ end
 % Store the domain we're working with.
 dom = N.domain;
 
-% Create an initial guess if none is passed
+% Create an initial guess if none is passed.
 if ( isempty(N.init) )
     % Initialise a zero CHEBFUN:
-    zeroFun = chebfun(0, dom);
-    % Convert to a chebmatrix of correct dimensions:
+    zeroFun = chebfun(0, dom); 
+    % Convert to a CHEBMATRIX of correct dimensions:
     u0 = cell(nVars, 1);
     for k = 1:nVars
         u0{k} = zeroFun;
     end
     u0 = chebmatrix(u0);
-    
 else
-    u0 = N.init;
-    % Ensure that N.init is a CHEBMATRIX, not a CHEBFUN:
-    if ( isa(u0, 'chebfun') )
-        u0 = chebmatrix(u0);
-    end
-    
+    % Get the initial guess.
+    u0 = N.init; 
 end
 
 % Initialise the independent variable:
@@ -99,6 +99,14 @@ x = chebfun(@(x) x, dom);
 
 % Linearize and attach preferences.
 [L, residual, isLinear] = linearize(N, u0, x);
+
+% Before attempting to solve, check whether we actually have any BCs imposed:
+maxDiffOrder = max(max(L.diffOrder));
+if maxDiffOrder > 0 && isempty(N.lbc) && isempty(N.rbc) && isempty(N.bc)
+    % Differential equations need BCs (but integral eqns. are OK):
+    error('CHEBFUN:CHEBOP:solvebvp:bcEmpty', ...
+        'Boundary conditions must be provided.');
+end
 
 warnState = warning();
 [ignored, lastwarnID] = lastwarn(); %#ok<ASGLU>
@@ -124,8 +132,7 @@ if ( isnumeric(rhs) )
         end
     end
     
-    % If we get here, we have something compatible, this is a simple way to
-    % convert RHS to a CHEBMATRIX:
+    % Convert the rhs to a CHEBMATRIX.
     rhs = rhs + 0*residual;
     
 elseif ( isa(rhs, 'chebfun') && size(rhs, 2) > 1 )
@@ -149,22 +156,49 @@ if ( isnumeric(u0) )
         end
     end
     
-    % Convert the initial guess to a CHEBMATRIX
+    % Convert the initial guess to a CHEBMATRIX.
     u0 = u0 + 0*residual;
+end
+
+% Determine the discretization.
+pref = determineDiscretization(N, L, isPrefGiven, pref);
+disc = pref.discretization();
+
+% Determine the TECH used by the discretization.
+tech = disc.returnTech();
+techUsed = tech();
+
+% If the dicretization uses periodic functions, then clear the boundary
+% conditions (if we're using periodic basis functions, the boundary conditions
+% will be satisfied by construction). Also, ensure that u0 is of correct
+% discretization, and convert it to a CHEBMATRIX if necessary.
+if ( isPeriodicTech(techUsed) )
+    % Clear the boundary conditions.
+    [N, L] = clearPeriodicBCs(N, L);
+    % Do the conversion.
+    if ( isa(u0, 'chebfun') )
+        u0 = chebmatrix(changeTech(u0, tech));
+    elseif ( isa(u0, 'chebmatrix') )
+        u0 = changeTech(u0, tech);
+    end
 end
 
 % Solve:
 if ( all(isLinear) )
     % Call solver method for linear problems.
     [u, info] = N.solvebvpLinear(L, rhs - residual, N.init, pref, displayInfo);
-    
 else
-    % TODO: Switch between residual and error oriented Newton methods.
+    % [TODO]: Switch between residual and error oriented Newton methods.
     
     % Create initial guess which satisfies the linearised boundary conditions:
     if ( isempty(N.init) )
-        % Find a new initial guess that satisfies the BCs of L
-        u0 = fitBCs(L, pref);
+        
+        if ( ~isPeriodicTech(techUsed) )
+            % Find a new initial guess that satisfies the BCs of L.
+            % If we are using TRIGCOLLOC, we don't need to do that because 
+            % the zero CHEBFUN is periodic.
+            u0 = fitBCs(L, pref);
+        end
         
         % Linearize about the new initial guess. If we are working with
         % parameter dependent problems, and did not get an initial condition
@@ -173,6 +207,16 @@ else
         [L, residual, isLinear, u0] = linearize(N, u0, x);
     end
     
+    % If using a periodic TECH, ensure that rhs is of correct 
+    % discretization, and convert it to a CHEBMATRIX if necessary.
+    if ( isPeriodicTech(techUsed) )
+        if ( isa(rhs, 'chebfun') )
+            rhs = chebmatrix(changeTech(rhs, tech));
+        elseif ( isa(rhs, 'chebmatrix') )
+          rhs = changeTech(rhs, tech);
+        end
+    end
+
     % Call solver method for nonlinear problems.
     [u, info] = solvebvpNonlinear(N, rhs, L, u0, residual, pref, displayInfo);
     
@@ -186,15 +230,12 @@ if ( all(size(u) == [1 1]) )
     u = u{1};
 end
 
-% Simplify the result:
-u = simplify(u);
-
 % Return the linearity information as well:
 info.isLinear = isLinear;
 
 end
 
-function [pref, displayInfo] = parseInputs(varargin)
+function [pref, isPrefGiven, displayInfo] = parseInputs(N, varargin)
 %PARSEINPUTS   Parse the input arguments to SOLVEBVP.
 
 % Initialise the outputs:
@@ -210,6 +251,7 @@ while ( ~isempty(varargin) )
     elseif ( isa(varargin{1}, 'cheboppref') )
         pref = varargin{1};
         varargin(1) = [];
+        isPrefGiven = 1;
     elseif ( isa(varargin{1}, 'function_handle') )
         displayInfo = varargin{1};
         varargin(1) = [];
@@ -222,6 +264,7 @@ end
 % No preferences passed; use the current chebopprefs:
 if ( isempty(pref) )
     pref = cheboppref();
+    isPrefGiven = 0;
 end
 
 % If no DISPLAYINFO function handle passed, use the default CHEBOP one.

@@ -7,7 +7,7 @@ function f = cumsum(f, m, dim)
 %   integral is chosen to make the representation of G as simple as possible.
 %
 %   CUMSUM(F, N) returns the Nth integral of F. If N is not an integer then
-%   CUMSUM(F, N) returns the fractional integral of order N as defined by the
+%   CUMSUM(F, MU) returns the fractional integral of order MU as defined by the
 %   Riemann-Liouville integral.
 %
 %   CUMSUM(F, N, 2) will take the Nth cumulative sum over the columns F an
@@ -37,16 +37,17 @@ end
 
 if ( round(m) ~= m )
     % Fractional integral:
-    % [TODO]: Implement this!
-    error('CHEBFUN:CHEBFUN:cumsum:notImplemented', ...
-        'Fractional antiderivatives not yet implemented.');
-    f = fracCalc(f, m);
+    f = fracInt(f, m);
     return
 end
 
 if ( ( dim == 1 && ~f(1).isTransposed ) || ( dim == 2 && f(1).isTransposed ) )
     % Continuous dimension:
     for k = 1:numel(f)
+        % Handle delta functions:
+        if ( isdelta(f(k)) )
+            f(k) = pruneDeltas(f(k));
+        end
         f(k) = cumsumContinousDim(f(k), m);
     end
 else
@@ -64,22 +65,38 @@ numFuns = numel(f.funs);
 
 transState = f(1).isTransposed;
 
+% If f is periodic, i.e. based on a periodic TECH check its mean:
+if ( isPeriodicTech(f) )
+    % Obtain Fourier coefficients {c_k}
+    c = trigcoeffs(f); 
+    numCoeffs = size(c, 1);
+    % index of constant coefficient
+    if mod(numCoeffs, 2) == 0
+       ind = numCoeffs/2 + 1;
+    else
+       ind = (numCoeffs + 1)/2;
+    end
+    if any(abs(c(ind,:)) > 1e1*f.vscale.*f.epslevel)
+        % Mean is not zero, convert it to a CHEBTECH based chebfun:
+        f = chebfun(f);
+    end
+end
+
 % Loop m times:
 for l = 1:m
 
     funs = {};
-    rVal = 0;
-    
+    rVal = 0;   
     % Main loop for looping over each piece and do the integration:
     for j = 1:numFuns
 
         % Call FUN/CUMSUM():        
-        [newFuns, rValNew] = cumsum(f.funs{j});
-        
+        newFuns = cumsum(f.funs{j});
+               
         if ( ~iscell( newFuns ) )
             newFuns = {newFuns};
         end
-        
+                        
         % Add the constant term that came from the left:
         for k = 1:numel(newFuns)
             newFuns{k} = newFuns{k} + rVal;
@@ -88,8 +105,9 @@ for l = 1:m
         % Store FUNs:
         funs = [funs, newFuns]; %#ok<AGROW>
         
+                    
         % Update the rval:
-        rVal = get(funs{end}, 'lval') + rValNew;
+        rVal = get(funs{end}, 'rval');
         
     end
     
@@ -120,4 +138,17 @@ else
     end
 end
 
+end
+
+function f = pruneDeltas(f)
+%PRUNEDELTAS   Transfers deltas at the right endpoint of funs to the next fun.
+%   F is assumed to be ba chebfun with a single column.
+
+% Go through each fun in pairs:
+nFuns = numel(f.funs);
+for k = 1:(nFuns-1);
+    if ( isdelta(f.funs{k}) )
+        [f.funs{k}, f.funs{k+1}] = transferDeltas(f.funs{k}, f.funs{k+1});
+    end
+end
 end

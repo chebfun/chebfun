@@ -146,7 +146,19 @@ switch prop
         out = getArbitraryLocalProp(f, 'deltas', 0);
         for k = 1:numColumns(f)
             colDeltaData = out{k}.';
+
+            % Before applying horzcat, make sure each cell has
+            % the same number of row:
+            maxRows = max(cellfun(@(A) size(A, 1), colDeltaData));
+            for j = 1:length(colDeltaData)            
+                nRows = size(colDeltaData{j}, 1);
+                nCols = size(colDeltaData{j}, 2);                
+                if ( nRows < maxRows )
+                    colDeltaData{j} = [colDeltaData{j}; zeros(maxRows-nRows, nCols)];
+                end
+            end
             colDeltaData = horzcat(colDeltaData{:});
+            
             if ( ~isempty(colDeltaData) )
                 [mag, loc] = deltafun.mergeColumns(colDeltaData(2:end, :), ...
                     colDeltaData(1, :));
