@@ -93,5 +93,5 @@ function result = test_add_function_to_function(f, fh, g, gh, x)
     h2 = g + f;
     result(1) = isequal(h1, h2);
     h_exact = @(x) fh(x) + gh(x);
-    result(2) = norm(feval(h1, x) - h_exact(x), inf) <= 1e3*get(f, 'epslevel');
+    result(2) = norm(feval(h1, x) - h_exact(x), inf) <= 5e3*get(f, 'epslevel');
 end
