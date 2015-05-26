@@ -662,13 +662,14 @@ function tol = GetTol(xx, yy, vals, dom, pseudoLevel)
 %  gradient, the size of the approximation domain, the internal working
 %  tolerance and an arbitrary (2/3) exponent.
 
-grid = max( size( vals ) );
-df_dx = diff(vals,1,2) ./ diff(xx,1,2); % xx changes column-wise.
-df_dy = diff(vals,1,1) ./ diff(yy,1,1); % yy changes row-wise.
-df_dx = df_dx(1:min(size(df_dx,1), size(df_dy,1)), 1:min(size(df_dx,2), size(df_dy,2))); % Throw out df_dx anywhere we don't have the corresponding values from df_dy.
-df_dy = df_dy(1:min(size(df_dx,1), size(df_dy,1)), 1:min(size(df_dx,2), size(df_dy,2))); % Throw out df_dy anywhere we don't have the corresponding values from df_dx.
-J = max( abs(df_dx), abs(df_dy) );
-Jac_norm = max( J(:) ); % An approximation for the norm of the Jacobian over the whole domain.
+[m, n] = size( vals ); 
+grid = max( m, n );
+% Remove some edge values so that df_dx and df_dy have the same size. 
+dfdx = diff(vals(1:m-1,:),1,2) ./ diff(xx(1:m-1,:),1,2); % xx diffs column-wise.
+dfdy = diff(vals(:,1:n-1),1,1) ./ diff(yy(:,1:n-1),1,1); % yy diffs row-wise.
+% An approximation for the norm of the gradient over the whole domain.
+Jac_norm = max( max( abs(dfdx(:)), abs(dfdy(:)) ) );
 vscale = max( abs( vals(:) ) );
 tol = grid.^(2/3) * max( abs(dom(:) ) ) * max( Jac_norm, vscale) * pseudoLevel;
+
 end
