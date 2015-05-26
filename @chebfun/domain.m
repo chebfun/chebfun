@@ -6,7 +6,7 @@ function [A, B] = domain(f, flag)
 %   [A, B] = DOMAIN(F) returns the endpoints of the domain as scalars and I =
 %   DOMAIN(F, 'ENDS') returns a vector of the end points.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargout == 2 )

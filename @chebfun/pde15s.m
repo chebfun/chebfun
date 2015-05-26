@@ -1,11 +1,11 @@
 function varargout = pde15s(varargin)
 %PDE15S   Solve PDEs using Chebfun.
 %
-%   UU = PDE15s(PDEFUN, TT, U0, BC) where PDEFUN is a handle to a function with
-%   arguments u, t, x, and D, TT is a vector, U0 is a CHEBFUN or a CHEBMATRIX,
+%   UU = PDE15s(PDEFUN, T, U0, BC) where PDEFUN is a handle to a function with
+%   arguments u, t, x, and D, T is a vector, U0 is a CHEBFUN or a CHEBMATRIX,
 %   and BC is a CHEBOP boundary condition structure will solve the PDE dUdt =
 %   PDEFUN(UU, t, x) with the initial condition U0 and boundary conditions BC
-%   over the time interval TT.
+%   over the time interval T.
 %
 %   PDEFUN should take the form @(T, X, U1, U2, ..., UN), where U1, ..., UN are
 %   the unknown dependent variables to be solved for, T is time, and X is space.
@@ -17,7 +17,7 @@ function varargout = pde15s(varargin)
 %   operator (i.e., 'cumsum') is also supported.
 %
 %   For equations of one variable, UU is output as an array-valued CHEBFUN,
-%   where UU(:, k) is the solution at TT(k). For systems, the solution UU is
+%   where UU(:, k) is the solution at T(k). For systems, the solution UU is
 %   returned as a CHEBMATRIX with the different variables along the rows, and
 %   time slices along the columns.
 %
@@ -26,7 +26,7 @@ function varargout = pde15s(varargin)
 %     u = exp(3*sin(pi*x));
 %     f = @(t, x, u) -(1 + 0.6*sin(pi*x)).*diff(u) + 5e-5*diff(u, 2);
 %     opts = pdeset('Ylim', [0 20], 'PlotStyle', {'LineWidth', 2});
-%     uu = pde15s(f, 0:.05:3, u, 'periodic', opts);
+%     uu = pde23t(f, 0:.05:3, u, 'periodic', opts);
 %     surf(uu, 0:.05:3)
 %
 % Example 2: Kuramoto-Sivashinsky
@@ -51,13 +51,14 @@ function varargout = pde15s(varargin)
 %
 % See chebfun/test/test_pde15s.m for more examples.
 %
-%   UU = PDE15s(PDEFUN, TT, U0, BC, OPTS) will use nondefault options as defined
+%   UU = PDE15s(PDEFUN, T, U0, BC, OPTS) will use nondefault options as defined
 %   by the structure returned from OPTS = PDESET.
 %
-%   UU = PDE15s(PDEFUN, TT, U0, BC, OPTS, N) will not adapt the grid size in
+%   UU = PDE15s(PDEFUN, T, U0, BC, OPTS, N) will not adapt the grid size in
 %   space. Alternatively OPTS.N can be set to the desired size.
 %
-%   [TT, UU] = PDE15s(...) returns also the time chunks TT.
+%   [TT, UU] = PDE15s(PDEFUN, T, U0, BC, OPTS, N) returns also the time chunks
+%   TT. If T is a two-vector these will be given by linspace(T(1), T(2), 51).
 %
 %   There is some support for nonlinear and time-dependent boundary conditions,
 %   such as
@@ -73,7 +74,7 @@ function varargout = pde15s(varargin)
 %
 % See also PDESET, ODE15S, PDE23T, PDESOLVE.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. See
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.
 
 % Loop over the inputs and look for a PDESET struct:

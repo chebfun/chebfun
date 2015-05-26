@@ -5,7 +5,7 @@ function out = horzcat(varargin)
 %   can be concatenated within one pair of brackets. Vertical concatenation is
 %   not supported.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Remove empties:

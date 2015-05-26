@@ -8,7 +8,7 @@ function f = plus(f, g)
 %   The dimensions of F and G must be compatible. Note that scalar expansion is
 %   _not_ supported if both F and G are CHEBFUN objects.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( ~isa(f, 'chebfun') )   % ??? + CHEBFUN

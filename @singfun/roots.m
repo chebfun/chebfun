@@ -20,7 +20,7 @@ function out = roots(f, varargin)
 % Note that the roots of the smoothPart is computed by calling ROOTS in
 % SMOOTHFUN. See ROOTS in SMOOTHFUN and levels below for more documentations.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Set up a tolerance:

@@ -3,7 +3,7 @@ function h = times(f, g)
 %   F.*G multiplies CHEBFUN2 objects F and G. Alternatively F or G could be a
 %   double.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isa(f, 'chebfun2') )    % CHEBFUN2 .* ???

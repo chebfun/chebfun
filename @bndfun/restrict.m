@@ -7,7 +7,7 @@ function g = restrict(f, s)
 %   a cell-array of BNDFUN objects, where the cells contain F restricted to each
 %   of the subintervals defined by S.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with empty case:

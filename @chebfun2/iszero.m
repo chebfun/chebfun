@@ -3,7 +3,7 @@ function out = iszero( f )
 %   OUT = ISZERO( F ) return 1 if the CHEBFUN2 is exactly the zero function, and
 %   0 otherwise. 
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Get data:

@@ -7,7 +7,7 @@ function varargout = plotcoeffs2( f )
 %
 % See also PLOTCOEFFS, CHEBCOEFFS2.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % TODO: Needs to be adapted for different kinds of techs.

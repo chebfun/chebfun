@@ -8,7 +8,7 @@ function varargout = subsref(N, ref)
 %   N(F) return the forward application of N to the CHEBFUN2 F. This is
 %   equivalent to N * F. 
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 indx = ref(1).subs;

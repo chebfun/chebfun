@@ -8,7 +8,7 @@ function out = isdecay(f)
 %   Note that ISDECAY is designed for and expected to be called only by UNBNDFUN
 %   class for handling functions defined on unbounded domains.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 out = isdecay(f.smoothPart);

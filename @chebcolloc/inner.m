@@ -7,7 +7,7 @@ function F = inner(disc, f)
 %   NOTE: The domain of F should match that of DISC. They are NOT checked, for
 %   performance reasons.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Get nodes and Clenshaw-Curtis quadrature weights:

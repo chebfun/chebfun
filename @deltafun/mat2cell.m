@@ -3,7 +3,7 @@ function f = mat2cell(f, varargin)
 %   DELTAFUN objects are not array-valued, so G = MAT2CELL(F) simply wraps F 
 %   in a cell array and is equivalent to G = {F}.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( any(cellfun(@(v) v ~= 1, varargin)) )

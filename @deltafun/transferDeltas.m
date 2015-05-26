@@ -4,7 +4,7 @@ function [f, g] = transferDeltas(f, g)
 %
 % See also DELTAFUN/MERGEDELTAS
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % If F doesn't have delta functions, return:

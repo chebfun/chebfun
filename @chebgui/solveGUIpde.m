@@ -20,7 +20,7 @@ function varargout = solveGUIpde(guifile, handles)
 %   VARARGOUT{1}:   The time range of the problem specified by GUIFILE.
 %   VARARGOUT{2}:   The a CHEBMATRIX containing the solution returned by pde15s.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Handles will be an empty variable if we are solving without using the GUI
@@ -142,13 +142,11 @@ if ( iscellstr(initInput) )
     
     if ( isempty(order) && scalarProblem )
         u0 = chebfun(vectorize(initInput{1}), dom);
-        u0 = simplify(u0, tol);
     else
         for k = 1:length(inits)
             initLoc = find(order == k);
             init_k = vectorize(inits{initLoc});
             u0k = chebfun(init_k, dom);
-            u0k = simplify(u0k, tol);
             u0 = [u0, u0k];
         end
     end

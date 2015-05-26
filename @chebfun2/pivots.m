@@ -6,7 +6,7 @@ function p = pivots(f, str)
 %   PIVOTS(F, 'normalize'), returns the normalised pivot values. These numbers
 %   are scaled so that the columns and rows have unit 2-norm.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Get the pivot values:

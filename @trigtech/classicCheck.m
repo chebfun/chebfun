@@ -1,4 +1,4 @@
-function [ishappy, epslevel, cutoff] = classicCheck(f, pref)
+function [ishappy, epslevel, cutoff] = classicCheck(f, values, pref)
 %CLASSICCHECK   Attempt to trim trailing Fourier coefficients in a TRIGTECH.
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F, VALUES) returns an estimated
 %   location, the CUTOFF, at which the TRIGTECH F could be truncated to maintain
@@ -6,9 +6,9 @@ function [ishappy, epslevel, cutoff] = classicCheck(f, pref)
 %   if CUTOFF < MIN(LENGTH(VALUES),2) or F.VSCALE = 0, and FALSE otherwise.
 %   If ISHAPPY is false, EPSLEVEL returns an estimate of the accuracy achieved.
 %
-%   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F, PREF) allows additional
-%   preferences to be passed. In particular, one can adjust the target accuracy
-%   with PREF.EPS.
+%   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F, VALUES, PREF) allows
+%   additional preferences to be passed. In particular, one can adjust the
+%   target accuracy with PREF.EPS.
 %
 %   CLASSICCHECK first queries HAPPINESSREQUIREMENTS to obtain TESTLENGTH and
 %   EPSLEVEL (see documentation below). If |F.COEFFS(1:TESTLENGTH)|/VSCALE <
@@ -39,7 +39,7 @@ function [ishappy, epslevel, cutoff] = classicCheck(f, pref)
 %
 % See also STRICTCHECK, LOOSECHECK.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with special cases ------------------------------------------------------
@@ -121,7 +121,7 @@ ac = bsxfun(@rdivide, abs(f.coeffs), f.vscale);
 
 % Happiness requirements:
 [testLength, epslevel] = ...
-    happinessRequirements(f.values, f.coeffs, f.points(), f.vscale, f.hscale, epslevel);
+    happinessRequirements(values, f.coeffs, f.points(), f.vscale, f.hscale, epslevel);
 
 if ( all(max(ac(1:testLength, :)) < epslevel) ) % We have converged! Chop tail:
     % We must be happy.

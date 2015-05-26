@@ -24,7 +24,7 @@ function [values, giveUp] = refine(op, values, pref)
 %   CHEBTECH preferences. It should return either a new set of VALUES
 %   (typically on a finer grid) or set the GIVEUP flag to TRUE.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Obtain some preferences:

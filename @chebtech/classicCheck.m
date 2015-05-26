@@ -7,9 +7,9 @@ function [ishappy, epslevel, cutoff] = classicCheck(f, values, pref)
 %   below and FALSE otherwise.  If ISHAPPY is FALSE, EPSLEVEL returns an
 %   estimate of the accuracy achieved.
 %
-%   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F, PREF) allows additional
-%   preferences to be passed. In particular, one can adjust the target accuracy
-%   with PREF.EPS.
+%   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F, VALUES, PREF) allows
+%   additional preferences to be passed. In particular, one can adjust the
+%   target accuracy with PREF.EPS.
 %
 %   CLASSICCHECK first queries HAPPINESSREQUIREMENTS to obtain TESTLENGTH and
 %   EPSLEVEL (see documentation below). If |F.COEFFS(1:TESTLENGTH)|/VSCALE <
@@ -40,7 +40,7 @@ function [ishappy, epslevel, cutoff] = classicCheck(f, values, pref)
 %
 % See also STRICTCHECK, LOOSECHECK.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with special cases ------------------------------------------------------

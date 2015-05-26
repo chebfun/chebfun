@@ -14,7 +14,7 @@ function [x, w, v, t] = points(varargin)
 %   [X, W, V, T] = COLLOC.POINTS(DISC, POINTSFUN) returns also the angles T so
 %   that T = COS(X). This can often be computed more accurately than X itself.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin == 2 )

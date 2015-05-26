@@ -16,7 +16,7 @@ function varargout = odesol(sol, dom, opt)
 %   domain of Y. Note that the order of outputs is the reverse of that from
 %   standard MATLAB calls to BVP4C(), ODE45(), etc.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 %% Extract data from sol:

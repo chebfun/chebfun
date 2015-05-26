@@ -3,7 +3,7 @@ function  [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, pref)
 %
 % See also CLASSICCHECK, SAMPLETEST.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Grab preferences:
@@ -24,11 +24,11 @@ if ( strcmpi(pref.happinessCheck, 'classic') )
     % Use the default happiness check procedure from Chebfun V4.
     
     % Check the coefficients are happy:
-    [ishappy, epslevel, cutoff] = classicCheck(f, pref);
+    [ishappy, epslevel, cutoff] = classicCheck(f, f.values, pref);
     
 elseif ( strcmpi(pref.happinessCheck, 'plateau') )
     % Use the 'plateau' happiness check:
-    [ishappy, epslevel, cutoff] = plateauCheck(f, values, pref);
+    [ishappy, epslevel, cutoff] = plateauCheck(f, f.values, pref);
 
 elseif ( strcmpi(pref.happinessCheck, 'strict') )
     error('CHEBFUN:TRIGTECH:happinessCheck:strictCheck','Strict check not implemented for TRIGTECH.  Please use classic check.');
