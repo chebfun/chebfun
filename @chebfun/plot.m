@@ -283,8 +283,8 @@ while ( ~isempty(varargin) )
         pointData = [pointData, newData(k).xPoints, newData(k).yPoints, ...
             styleData];
         jumpData = [jumpData, newData(k).xJumps, newData(k).yJumps, styleData];
-        deltaData = [deltaData, newData(k).xDeltas, newData(k).yDeltas, ...
-                                         newData(k).yDeltaBase, styleData];
+        deltaData{k} = {newData(k).xDeltas, newData(k).yDeltas, ...
+            newData(k).yDeltaBase, styleData};
         
         defaultXLim = defaultXLim & newData(k).defaultXLim;
         defaultYLim = defaultYLim & newData(k).defaultYLim;
@@ -348,16 +348,11 @@ if ( ~jumpLineIsSet )
     set(h3, 'Marker', 'none') 
 end
 
-% Reset color cycle prior to delta function plot if running R2014b.
-if ( ~verLessThan('matlab', '8.4') )
-    set(gca, 'ColorOrderIndex', 1);
-end
-
 % Plot the Delta functions:
-if ( isempty(deltaData) || ~isnumeric(deltaData{1}) )
+if ( isempty(deltaData) || ~isnumeric(deltaData{1}{1}) )
     h4 = plot([]);
 else
-    h4 = plotDeltas(deltaData{:});
+    h4 = plotDeltas(deltaData);
 end
 if ( ~isempty(deltaStyle) )
     set(h4, deltaStyle{:});
@@ -419,8 +414,21 @@ end
 
 end
 
-function h = plotDeltas(varargin)
+function h = plotDeltas(deltaData)
 %PLOTDELTAS   Plots delta functions.
+    h = [];
+    for (k = 1:1:numel(deltaData))
+        % Set color for the next delta function plot if running R2014b.
+        if ( ~verLessThan('matlab', '8.4') )
+            set(gca, 'ColorOrderIndex', k);
+        end
+        h = [h, plotDeltasForOneFunction(deltaData{k}{:})]
+    end
+
+end
+
+function h = plotDeltasForOneFunction(varargin)
+%PLOTDELTASFORONEFUNCTION   Plots delta functions for one function.
 
 h = [];
 j = 1;
@@ -432,14 +440,13 @@ while ( ~isempty(varargin) )
     
     % Delete these arguments, since they have been copied:
     varargin(1:3) = [];
+
+    % Handle the delta style argument:
     style = '';
-    % Check if there are other arguments for delta style:
-    if ( ~isempty(varargin) )
-        if ( ~isnumeric(varargin{1}) )
-            style = varargin{1};
-            varargin(1) = [];
-        end
+    if ( ~isempty(varargin{1}) && ~isnumeric(varargin{1}) )
+        style = varargin{1};
     end
+    varargin(1) = [];
     
     % Ignore complete NaN data:
     if ( all(isnan(xData)) )
