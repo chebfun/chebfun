@@ -269,7 +269,7 @@ elseif ( nargout == 1 )
     varargout{1} = y;
 elseif ( nargout == size(y, 1) )
     [varargout{1:nargout}] = deal(y);
-elseif ( nargout == size(u, 1) + 1 )
+elseif ( nargout == size(y, 1) + 1 )
     [varargout{1:nargout - 1}] = deal(y);
     varargout{nargout} = info;
 else
