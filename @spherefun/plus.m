@@ -28,11 +28,11 @@ elseif ( ~isa(g, 'spherefun') )          % SPHEREFUN + ???
 else                                     % SPHEREFUN + SPHEREFUN
       % Amalgamate the columns and rows of f and g
        h = f; 
-       h.Cols = [f.Cols g.Cols]; 
-       h.Rows = [f.Rows g.Rows];
-       Bf = f.BlockDiag; 
-       Bg = g.BlockDiag; 
-       h.BlockDiag = [Bf                    zeros(size(Bf,1),size(Bg,2)); 
+       h.cols = [f.cols g.cols]; 
+       h.rows = [f.rows g.rows];
+       Bf = f.blockDiag; 
+       Bg = g.blockDiag; 
+       h.blockDiag = [Bf                    zeros(size(Bf,1),size(Bg,2)); 
                 zeros(size(Bg,1), size(Bf,2))               Bg       ];
        % Now compress: 
        h = compress( h ); 

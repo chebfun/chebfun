@@ -14,8 +14,8 @@ if norm(ii-jj,inf) == 0
     return
 end
 
-C = f.Cols.values;
-R = f.Rows.values;
+C = f.cols.values;
+R = f.rows.values;
 
 for j = 1 : size(D, 1)/2
     
@@ -51,8 +51,8 @@ C = C(:, perm);
 R = R(:, perm); 
 
 % Now make a new spherefun:
-f.Cols = trigtech( C );
-f.Rows = trigtech( R );
-f.BlockDiag = spdiags(D,0,size(D,1),size(D,1));
+f.cols = trigtech( C );
+f.rows = trigtech( R );
+f.blockDiag = spdiags(D,0,size(D,1),size(D,1));
 
 end

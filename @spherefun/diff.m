@@ -35,7 +35,7 @@ K = round( K );
 
 if ( dim == 1 )
     % latitude derivative
-    f.Cols = diff(f.Cols, K);
+    f.cols = diff(f.cols, K);
 elseif ( dim == 2)
-    f.Rows = diff(f.Rows, K);
+    f.rows = diff(f.rows, K);
 end

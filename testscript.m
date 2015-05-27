@@ -14,7 +14,7 @@ f = redefine_function_handle( f );
 g = spherefun( f );
 pass(2) = ( SampleError( f, g ) < tol ); 
 
-f = @(x,y,z) exp(x);
+f = @(x,y,z) 1-exp(x);
 g = spherefun( f );
 f = redefine_function_handle( f );
 pass(3) = ( SampleError( f, g ) < tol ); 
@@ -67,7 +67,7 @@ pass(13) = norm( feval(g, theta, lambda) - f(theta, lambda) ) < tol;
 
 % feval at meshgrid: 
 [lambda, theta] = meshgrid( rand(3,1) ); 
-pass(14) = norm( feval_meshgrid(g, theta, lambda) - f(theta, lambda) ) < tol; 
+pass(14) = norm( fevalm(g, theta, lambda) - f(theta, lambda) ) < tol; 
 
 % Compression tests
 f = @(x,y,z) x + z;  % Rank 2 function
@@ -95,8 +95,12 @@ m = 6; n = m;
 [x, y] = getPoints( m, n ); 
 [L2, T2] = meshgrid(x, y);
 F = h(L2, T2);
-hn = pi/length(g.Cols);  % Have to adjust for the shift in y points. Ugly!
-approx = feval(g.Cols,(y-hn)/pi-.5) * g.BlockDiag * feval(g.Rows,x/pi)';
+% hn = pi/length(g.cols);  % Have to adjust for the shift in y points. Ugly!
+% approx = feval(g.cols,(y-hn)/pi-.5) * g.blockDiag * feval(g.rows,x/pi)';
+% sample_error = norm( F - approx , inf );
+% [C,D,R] = cdr(g);
+% approx = feval(g.cols,y/pi) * g.blockDiag * feval(g.rows,x/pi)';
+approx = fevalm(g,x,y);
 sample_error = norm( F - approx , inf );
 end
 
@@ -112,7 +116,7 @@ x = trigpts(2*n,[-pi pi]);
 % GBW: I believe we have to sample at equally spaced points shifted by h/2
 % to not sample the poles and keep an even total number of points.
 y = trigpts(2*m,[-pi/2 3*pi/2]);
-y = y+0.5*pi/m; % Shift y by h/2 to avoid the poles
+% y = y+0.5*pi/m; % Shift y by h/2 to avoid the poles
 end
 
 function f = redefine_function_handle( f )

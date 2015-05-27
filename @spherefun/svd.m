@@ -10,9 +10,9 @@ function varargout = svd( f )
 
 f = compress(f);
 
-C = f.Cols; 
-R = f.Rows; 
-D = f.BlockDiag; 
+C = f.cols; 
+R = f.rows; 
+D = f.blockDiag; 
 
 % QR the outside quasimatrices: 
 [QC, RC] = qr( C, 0 ); 

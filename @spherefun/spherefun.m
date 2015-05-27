@@ -1,20 +1,102 @@
-classdef spherefun
+classdef spherefun < separableApprox
     
-    properties ( GetAccess = 'public' , SetAccess = 'public' )
-        Cols            % Cols calculated during GE 
-        Rows            % Rows calculated during GE
-        BlockDiag       % Pivot matrices used during GE
-        PivotLocations  % Locations used during GE
-    end
+    % TODO: Improve documentation of input options.
     
-    methods 
-        function g = spherefun( varargin )
-            if( nargin == 0 )
-                
-            else
-                g = constructor(g , varargin{:} );  % pass to constructor. 
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS CONSTRUCTOR:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
+        
+        function f = spherefun(varargin)
+            % The main spherefun constructor!
+            
+            % Return an empty CHEBFUN:
+            if ( (nargin == 0) || isempty(varargin{1}) )
+                return
             end
+            
+            % Call the constructor, all the work is done here:
+            f = constructor(f, varargin{:});
+            
         end
+        
     end
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods
+        %f = conj(f);
+    end
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% HIDDEN METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false, Hidden = true )
+        
+    end
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% PUBLIC METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = false )
+        
+        % The main bulk of the SPHEREFUN constructor:
+        g = constructor(g, op, dom, varargin);
+        
+    end
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% STATIC METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = public, Static = true )
+        
+        %         % Convert Chebyshev coefficients to values:
+        %         X = coeffs2vals(U);
+        
+        %         % Convert values to Chebyshev coefficients:
+        %         X = vals2coeffs(U);
+        
+        %         % Tensor product of Chebyshev points:
+        %         [xx, yy] = chebpts2(nx, ny, domain, kind);
+        
+        %         % Outer-product of two chebfuns:
+        %         F = outerProduct(f, g);
+        
+    end
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% Private Static methods implemented by SPHEREFUN class.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Access = private, Static = true )
+        
+    end
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS PROPERTIES
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    properties ( Access = public )
+        blockDiag       % Pivot matrices used during GE
+        idxPlus
+        idxMinus
+    end
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% Private constant properties
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    properties ( Constant )
+        alpha = 50;  % Growth factor control.
+    end
+    
+    %
+    %     methods
+    %         function g = spherefun( varargin )
+    %             if( nargin == 0 )
+    %
+    %             else
+    %                 g = constructor(g , varargin{:} );  % pass to constructor.
+    %             end
+    %         end
+    %     end
     
 end

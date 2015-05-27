@@ -8,7 +8,7 @@
 function fdf = sphf2cartf(f,lam,th,coord)
 
 if nargin == 3
-    coord = 0;  % Default is to not use co-latitude.
+    coord = 0;  % Default is to not use latitude.
 end
 
 if coord == 1

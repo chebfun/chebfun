@@ -8,9 +8,9 @@ if ( isempty( f ) )
 end
 
 % Swap columns and rows. 
-temp = f.Cols; 
-f.Cols = f.Rows; 
-f.Rows = temp; 
+temp = f.cols; 
+f.cols = f.rows; 
+f.rows = temp; 
 % No need to transpose f.blockDiag because it is symmetric.
 
 end
