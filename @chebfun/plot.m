@@ -417,14 +417,31 @@ end
 function h = plotDeltas(deltaData)
 %PLOTDELTAS   Plots delta functions.
     h = [];
+
+    % Get and save the current ColorOrder if running on R2014a or earlier.
+    if ( verLessThan('matlab', '8.4') )
+        originalColorOrder = get(gca, 'ColorOrder');
+        colorOrder = circshift(originalColorOrder, 1);
+    end
+
     for (k = 1:1:numel(deltaData))
-        % Set color for the next delta function plot if running R2014b.
-        if ( ~verLessThan('matlab', '8.4') )
+        % Set color for the next delta function plot.
+        if ( verLessThan('matlab', '8.4') )
+            % Manually manipulate the ColorOrder for R2014a or earlier.
+            colorOrder = circshift(colorOrder, -1);
+            set(gca, 'ColorOrder', colorOrder);
+        else
+            % Use ColorOrderIndex for R2014b and later.
             set(gca, 'ColorOrderIndex', k);
         end
+
         h = [h, plotDeltasForOneFunction(deltaData{k}{:})]
     end
 
+    % Restore the ColorOrder if running on R2014a or earlier.
+    if ( verLessThan('matlab', '8.4') )
+        set(gca, 'ColorOrder', originalColorOrder);
+    end
 end
 
 function h = plotDeltasForOneFunction(varargin)
