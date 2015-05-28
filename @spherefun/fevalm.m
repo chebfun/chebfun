@@ -22,10 +22,9 @@ function y = feval_meshgrid( f, lambda, theta )
 % y = feval(f.Cols, lambda(:)) * f.BlockDiag * feval(f.Rows, theta(:))';
 % y = transpose( reshape( y, size(theta,1), size(lambda,2)  ) ); 
 
-lambda = lambda/pi;
-theta = theta/pi - 0.5;
+% lambda = lambda/pi;
+% theta = theta/pi - 0.5;
 
 y = fevalm@separableApprox( f, lambda, theta );
-
 
 end 

@@ -16,8 +16,7 @@ classdef spherefun < separableApprox
             end
             
             % Call the constructor, all the work is done here:
-            f = constructor(f, varargin{:});
-            
+            f = constructor(f, varargin{:});            
         end
         
     end
@@ -62,7 +61,7 @@ classdef spherefun < separableApprox
         
         %         % Outer-product of two chebfuns:
         %         F = outerProduct(f, g);
-        
+        fdf = sphf2cartf(f, lam, th, coord);
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -76,6 +75,10 @@ classdef spherefun < separableApprox
     %% CLASS PROPERTIES
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
+        % DOMAIN: default for the is [-pi,pi] x [0,pi].
+        % which corresponds to using colatitude for the elevation angle
+        % (second input argument).  Doubled-up sphere will have a domain of
+        % [-pi,pi] x [-pi,pi].        
         blockDiag       % Pivot matrices used during GE
         idxPlus
         idxMinus

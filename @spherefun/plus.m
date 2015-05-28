@@ -3,6 +3,7 @@ function h = plus( f, g )
 % 
 % F + G adds F and G. F and G can be scalars or SPHEREFUN objects.
 
+% Not implemented YET.  Need to do compress_plus.
 
 if ( ~isa(f, 'spherefun') ) % ??? + SPHEREFUN
     
@@ -34,8 +35,8 @@ else                                     % SPHEREFUN + SPHEREFUN
        Bg = g.blockDiag; 
        h.blockDiag = [Bf                    zeros(size(Bf,1),size(Bg,2)); 
                 zeros(size(Bg,1), size(Bf,2))               Bg       ];
-       % Now compress: 
-       h = compress( h ); 
+%        % Now compress: 
+%        h = compress( h ); 
 end
 
 end

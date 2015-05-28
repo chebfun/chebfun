@@ -1,4 +1,4 @@
-function g = constructor( g, op, varargin )
+function g = constructor( g, op, dom, varargin )
 %CONSTRUCTOR   The main SPHEREFUN constructor.
 %
 % The algorithm for constructing a SPHEREFUN comes in three phases:
@@ -20,6 +20,22 @@ function g = constructor( g, op, varargin )
 if ( nargin == 0 )          % SPHEREFUN( )
     return
 end
+
+if ( nargin == 0 )          % SPHEREFUN( )
+    return
+end
+
+if ( isa(op, 'spherefun') )  % SPHEREFUN( SPHEREFUN )
+    g = op;
+    return
+end
+
+% If domain is empty take it to be co-latitude (doubled up).
+if ( nargin < 3 || isempty(dom) )
+    dom = [-pi pi -pi pi];
+end
+
+% TODO: Should we allow any other domains that latitude and co-latitude?
 
 if ( isa(op, 'spherefun') )  % SPHEREFUN( SPHEREFUN )
     g = op;
@@ -48,7 +64,11 @@ happy_rank = 0;     % Happy with phase one?
 failure = false;
 while ( ~happy_rank && ~failure )
     n = 2*n;
-    F = sample(h, n, n);
+    
+    % Sample function on a tensor product grid.
+    % TODO: Add a more sophisticated evaluate function that does
+    % vectorization like chebfun2.
+    F = evaluate(h, n, n, dom);
     [ pivotLocations, pivotMatrices, happy_rank, removePoles ] = PhaseOne( F, tol );
     if ( n >= maxRank  )
         warning('SPHEREFUN:CONSTRUCTOR:MAXRANK', ... 
@@ -59,20 +79,23 @@ end
 
 % PHASE TWO 
 % Find the appropriate discretizations in the columns and rows. 
-[cols, blockDiag, rows] = PhaseTwo( h, pivotLocations, pivotMatrices, n, tol, maxSample, removePoles );
+[cols, blockDiag, rows] = PhaseTwo( h, pivotLocations, pivotMatrices, n, dom, tol, maxSample, removePoles );
 
 % PHASE THREE
 % Put in CDR form
 [cols, rows, pivots, idxPlus, idxMinus] = PhaseThree( cols, blockDiag, rows.' );
 
 % Make a spherefun, we are done. 
-g.cols = trigtech( cols );
-g.rows = trigtech( rows );
+% g.cols = trigtech( cols );
+% g.rows = trigtech( rows );
+g.cols = chebfun( cols, dom(3:4), 'trig');
+g.rows = chebfun( rows, dom(1:2), 'trig');
 g.blockDiag = blockDiag;
 g.pivotValues = pivots;
 g.pivotLocations = pivotLocations;
 g.idxPlus = idxPlus;
 g.idxMinus = idxMinus;
+g.domain = dom;
 
 end
 
@@ -167,34 +190,50 @@ end
 
 end
 
-
-
-function [cols, blockDiag, rows] = PhaseTwo( h, pivotLocations, pivotMatrices, n, tol, maxSample, removePoles)
+function [cols, blockDiag, rows] = PhaseTwo( h, pivotLocations, pivotMatrices, n, dom, tol, maxSample, removePoles)
 
 alpha = spherefun.alpha; % get growth rate factor.
 happy_columns = 0;   % Not happy, until proven otherwise.
 happy_rows = 0;
 m = n;
-[x, y] = getPoints( m, n );
+
+[x, y] = getPoints( m, n, dom );
 
 rk = size( pivotLocations, 1);
-blockDiag = spalloc( 2*rk, 2*rk, 6*rk-2 );
+% blockDiag = spalloc( 2*rk, 2*rk, 6*rk-2 );
+blockDiag = zeros(2*rk,2);
 id = pivotLocations'; id = id(:);
 id_cols = id(2:2:end); id_rows = id(1:2:end);
 col_pivots = x(id_cols);
 row_pivots = y(id_rows);
+numPivots = 2*rk;
+bmcColPerm = (1:numPivots) - (-1).^(1:numPivots);
 
 % Phase 2: Calculate decomposition on sphere.
 failure = false;
-while ( ~(happy_columns || happy_rows) && ~failure)
+while ( ~(happy_columns && happy_rows) && ~failure)
     
-    [x, y] = getPoints( m, n );
+    [x, y] = getPoints( m, n, dom );
     [xx, yy] = meshgrid( col_pivots, y);
-    Cols_new = h( xx ,yy );
-    [xx, yy] = meshgrid( x, row_pivots);
-    Rows_new = h( xx, yy );
-    cols = zeros( 2*m, 2*rk );
-    rows = zeros( 2*rk, 2*n );
+    % Save time by evaluating on the non-doubled grid.
+    Cols_new = zeros( 2*m, numPivots );
+    Cols_new(1:m+1,:) = h( xx(1:m+1,:), yy(1:m+1,:) );
+    % Double-up, enforcing exact BMC structure.  This might be more
+    % important than saving time.
+    Cols_new(m+2:2*m,:) = flipud(Cols_new(2:m,bmcColPerm));
+    %  Cols_new = h( xx ,yy );
+    
+    % Save time by evaluating on the non-doubled grid.  
+    [xx, yy] = meshgrid( x, row_pivots(1:2:end) );
+    % [xx, yy] = meshgrid( x, row_pivots );
+    Rows_new = zeros( numPivots, 2*n );
+    Rows_new( 1:2:numPivots, : ) = h( xx, yy );
+    % Double-up, enforcing exact BMC structure.  This might be more
+    % important than savings in time.
+    Rows_new( 2:2:numPivots, : ) = Rows_new( 1:2:numPivots, [(n+1):2*n 1:n] );
+    
+    cols = zeros( 2*m, numPivots );
+    rows = zeros( numPivots, 2*n );
     
     % Need to remove pole, which means we use the column with the largest
     % max norm (repeated) with rows of all ones in the elimination
@@ -224,8 +263,9 @@ while ( ~(happy_columns || happy_rows) && ~failure)
             invM = [M(1,1) -M(1,2);-M(1,2) M(1,1)]./(M(1,1)^2 - M(1,2)^2);
             row_correction = Cols_new(id_rows,2*ii-1:2*ii) * ( invM * Rows_new(2*ii-1:2*ii,:) );
             Cols_new = Cols_new - Cols_new(:,2*ii-1:2*ii) * ( invM * Rows_new(2*ii-1:2*ii,id_cols) );
-            Rows_new = Rows_new - row_correction;
-            blockDiag(2*ii-1:2*ii, 2*ii-1:2*ii) = invM;
+            Rows_new = Rows_new - row_correction;            
+%             blockDiag(2*ii-1:2*ii, 2*ii-1:2*ii) = invM;
+            blockDiag(2*ii-1:2*ii,:) = invM;
         else
             % Calculate pseudoinverse of the pivot matrix, there is
             % no full rank pivot matrix:
@@ -233,20 +273,32 @@ while ( ~(happy_columns || happy_rows) && ~failure)
             row_correction = Cols_new(id_rows,2*ii-1:2*ii) * ( pinvM * Rows_new(2*ii-1:2*ii,:) );
             Cols_new = Cols_new - Cols_new(:,2*ii-1:2*ii) * ( pinvM * Rows_new(2*ii-1:2*ii,id_cols) );
             Rows_new = Rows_new - row_correction;
-            blockDiag(2*ii-1:2*ii, 2*ii-1:2*ii) = pinvM;
+%             blockDiag(2*ii-1:2*ii, 2*ii-1:2*ii) = pinvM;
+            blockDiag(2*ii-1:2*ii,:) = pinvM;
         end
-        
-    end
-    
+        % TODO: IMPROVE THIS
+        % Explicitly enforce BMC structure.
+        Cols_new( m+2:2*m, : ) = flipud( Cols_new( 2:m , bmcColPerm ) );
+        Rows_new( 2:2:numPivots, : ) = Rows_new( 1:2:numPivots, [(n+1):2*n 1:n] );        
+    end    
     % Happiness check for columns:
+    % TODO: Make this more similar to hapiness check in trigtech.
     col_coeffs = trigtech.vals2coeffs( cols ); 
-    if ( all( abs( col_coeffs(end:-1:end-8,:) ) <= 1e2*tol*norm(cols,inf) ) )
+    % Length of tail to test.
+    testLength = min(m, max(3, round((m-1)/8)));
+    tail = col_coeffs(1:testLength,:);
+
+    if ( all( abs( tail ) <= 1e2*tol*norm(cols,inf) ) )
         happy_columns = 1;
     end
     
     % Happiness check for rows:
+    % TODO: Make this more similar to hapiness check in trigtech.
     row_coeffs = trigtech.vals2coeffs( rows.' ); 
-    if ( all(abs( row_coeffs(end:-1:end-8,:) ) <= 1e2*tol*norm(rows,inf)) )
+    % Length of tail to test.
+    testLength = min(n, max(3, round((n-1)/8)));
+    tail = row_coeffs(1:testLength,:);
+    if ( all(abs( tail ) <= 1e2*tol*norm(rows,inf)) )
         happy_rows = 1; 
     end
     
@@ -270,12 +322,25 @@ while ( ~(happy_columns || happy_rows) && ~failure)
 
 end
 
+% Make blockDiag a sparse diagnonal block matrix.
+% Linear indices in array blockDiag to extract block diagonal entries.
+linInd = [1:2:numPivots; (numPivots+2):2:2*numPivots];
+linInd = linInd(:);
+linInd = [linInd.' (2:2:numPivots) ((numPivots+1):2:2*numPivots)];
+% Indicies into the sparse matrix for the block diagonal entries.
+indI = [1:numPivots 2:2:numPivots 1:2:numPivots];
+indJ = [1:numPivots 1:2:numPivots 2:2:numPivots];
+blockDiag = sparse(indI,indJ,blockDiag(linInd),numPivots,numPivots);
+
 end
 
 % Switch from BMC to CDR format
 function [cols, rows, pivots, idxPlus, idxMinus ] = PhaseThree( cols, blockDiag, rows )
 
 tol = 50*eps;
+
+m = size(cols,1);
+n = size(rows,1);
 
 C = cols;
 R = rows;
@@ -301,13 +366,30 @@ for j = 1 : size(blockDiag, 1)/2
 end
 
 % Extract the plus/minus terms from the columns and rows
-Cplus = C(:,1:2:end);  
-Cminus = C(:,2:2:end);
-Rplus = R(:,1:2:end);
-Rminus = R(:,2:2:end);
+Cplus = C(:,1:2:end);   % Even
+Cminus = C(:,2:2:end);  % Odd
+Rplus = R(:,1:2:end);   % pi-periodic
+Rminus = R(:,2:2:end);  % pi-antiperiodic
 % Split the pivots as well.
 dplus = d(1:2:end);
 dminus = d(2:2:end);
+
+% if (size(Cplus,2) > 1 )
+%     surf(Cplus(2:m/2+1,:)-flipud(Cplus(m/2+1:end,:)))
+%     surf(Cminus(2:m/2+1,:)+flipud(Cminus(m/2+1:end,:)))
+%     surf(Rplus(1:n/2,:)-Rplus(n/2+1:end,:))
+%     surf(Rminus(1:n/2,:)+Rminus(n/2+1:end,:))
+% end
+
+% % Enfore the columns and row have exact BMC symmetry.
+% Cplus(m/2+1:m,:) = flipud(Cplus(2:m/2+1,:));     % Even
+% Cminus(m/2+1:m,:) = -flipud(Cminus(2:m/2+1,:));  % Odd 
+% Rplus(n/2+1:n,:) = Rplus(1:n/2,:);
+% Rminus(n/2+1:n,:) = -Rminus(1:n/2,:);
+Cplus(1,2:end) = mean(Cplus(1,2:end));
+Cplus(m/2+1,2:end) = mean(Cplus(m/2+1,2:end));
+Cminus(1,:) = mean(Cminus(1,:),2);
+Cminus(m/2+1,:) = mean(Cminus(m/2+1,:),2);
 
 % Compress the results by removing the terms corresponding to a zero
 % diagonal.
@@ -354,33 +436,70 @@ idxMinus = find( ~plusFlag );
 
 end
 
+function F = evaluate( h, m, n, dom )
+% Evaluate h on a m-by-n tensor product grid.
 
-function [x, y] = getPoints( m, n )
+[x, y] = getPoints( m, n, dom );
 
-% x = linspace(-pi, pi, 2*n+1)';  x( end ) = [ ];
-% GBW: You can't just remove the pole and keep everything else equally
-% spaced between -pi/2 and 3*pi/2.  The issue is that you can't keep
-% both point -pi/ and 3*pi/2.
-% y = linspace(-pi/2, 3*pi/2, 2*m+1)'; y( m+1 ) = [ ];
+% Tensor product grid
+[xx,yy] = meshgrid(x, y);
 
-% x = trigpts(2*n,[-pi pi]);
-% % GBW: I believe we have to sample at equally spaced points shifted by h/2
-% % to not sample the poles and keep an even total number of points.
-% y = trigpts(2*m,[-pi/2 3*pi/2]);
-% y = y+0.5*pi/m; % Shift y by h/2 to avoid the poles
+% Evaluate h on the non-doubled up grid
+F = h( xx(1:m+1,:), yy(1:m+1,:) );
 
-x = trigpts(2*n,[-pi pi]);
+% Double F up, enforcing it have exact BMC structure.
+F = [ F; flipud( F( 2:m, n+1:2*n) ) flipud( F( 2:m, 1:n ))];
+
+end
+
+
+function [x, y] = getPoints( m, n, dom )
+
+colat = [-pi pi -pi pi]; % Colatitude (doubled up)
+lat = [-pi pi -3*pi/2 pi/2]; % Latitude (doubled up)
+
 % Sample at an even number of points so that the poles are included.
-% TODO: Change domain.
-y = trigpts(2*m,[-pi/2 3*pi/2]);
+if all( (dom-colat) == 0 )
+    x = trigpts( 2*n, [-pi,pi] );   % azimuthal angle, lambda
+    y = trigpts( 2*m, [-pi,pi] );
+    % y = linspace( -pi, 0, m+1 ).';  % elevation angle, theta
+elseif all( (dom-lat) == 0 )
+    x = trigpts( 2*n, [-pi,pi] );           % azimuthal angle, lambda
+    y = trigpts( 2*m, [-3*pi/2, pi/2] );
+    % y = linspace( -3*pi/2, -pi/2, m+1 ).';  % elevation angle, theta
+else
+    error('SPHEREFUN:constructor:points2D:unkownDomain', ...
+        'Unrecognized domain.');
+end
 
 end
 
-function F = sample( h, m, n )
-[x, y] = getPoints( m, n );
-[L2, T2] = meshgrid(x, y);
-F = h(L2, T2);
-end
+% function [LL, TT] = points2D(m, n, dom)
+% % Get the sample points that correspond to the domain.
+% 
+% colat = [-pi pi -pi pi]; % Colatitude doubled up.
+% lat = [-pi pi -pi/2 3*pi/2]; % Latitude doubled up.
+% 
+% % Sample at an even number of points so that the poles are included.
+% if all( (dom-colat) == 0 )
+%     lam = trigpts( 2*n, [-pi,pi] );
+%     th = trigpts( 2*m, [-pi,pi] );
+% elseif all( (dom-lat) == 0 )
+%     lam = trigpts( 2*n, [-pi,pi] );
+%     th = trigpts( 2*m, [-pi/2,3*pi/2] );
+% else
+%     error('SPHEREFUN:constructor:points2D:unkownDomain', ...
+%         'Unrecognized domain.');
+% end
+% [LL, TT] = meshgrid( lam, th ); 
+% 
+% end
+
+% function F = sample( h, m, n )
+% [x, y] = getPoints( m, n );
+% [L2, T2] = meshgrid(x, y);
+% F = h(L2, T2);
+% end
 
 function pinvM = getPseudoInv( M )
 lam1 = M(1,1)+M(1,2);  % Eigenvalues of M (which is symmetric)
@@ -410,40 +529,40 @@ function f = redefine_function_handle( f )
 
 if ( nargin( f ) == 3 )
     % Wrap f so it can be evaluated in spherical coordinates
-    f = @(lam, th) sphf2cartf(f,lam,th);
-    % Double g up.
-    f = @(lam, th) sph2torus(f,lam,th);
+    f = @(lam, th) spherefun.sphf2cartf(f,lam,th,0);
+%     % Double g up.
+%     f = @(lam, th) sph2torus(f,lam,th);
 end
 
 end
 
-function f = redefine_function_handle_pole( f, poleColPivot )
-% Set f to f - f(poleColPivot,theta) where poleColPivot is the value of
-% lambda (the column) used to zero out the poles of f.
+% function f = redefine_function_handle_pole( f, poleColPivot )
+% % Set f to f - f(poleColPivot,theta) where poleColPivot is the value of
+% % lambda (the column) used to zero out the poles of f.
+% 
+% f = @(lam, th) f(lam,th) - f(poleColPivot,th);
+% 
+% end
 
-f = @(lam, th) f(lam,th) - f(poleColPivot,th);
 
-end
+% function fdf = sph2torus(f,lam,th)
+% 
+% fdf = real(f(lam,th));
+% 
+% id = th-pi/2 > 100*eps;
+% 
+% if ~isempty(id) && any(id(:))
+%     fdf(id) = f(lam(id)-pi,pi-th(id));
+% end
+% 
+% end
 
-
-function fdf = sph2torus(f,lam,th)
-
-fdf = real(f(lam,th));
-
-id = th-pi/2 > 100*eps;
-
-if ~isempty(id) && any(id(:))
-    fdf(id) = f(lam(id)-pi,pi-th(id));
-end
-
-end
-
-function fdf = sphf2cartf(f,lam,th)
-
-x = cos(lam).*cos(th);
-y = sin(lam).*cos(th);
-z = sin(th);
-
-fdf = f(x,y,z);
-
-end
+% function fdf = sphf2cartf(f,lam,th)
+% 
+% x = cos(lam).*cos(th);
+% y = sin(lam).*cos(th);
+% z = sin(th);
+% 
+% fdf = f(x,y,z);
+% 
+% end

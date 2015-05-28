@@ -8,10 +8,9 @@ function y = feval( f, lambda, theta )
 % hn = pi/length(f.Cols);  % Have to adjust for the shift in y points. Ugly!
 % lambda = (lambda-hn)/pi-.5; 
 
-lambda = lambda/pi;
-theta = theta/pi - 0.5;
+% lambda = lambda/pi;
+% theta = theta/pi - 0.5;
 
-% y = separableApprox.feval( f, lambda, theta );
 y = feval@separableApprox( f, lambda, theta );
 
 % % Check that sizes are correct:
