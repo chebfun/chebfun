@@ -25,6 +25,11 @@ classdef chebfun
 %   CHEBFUN(@(x) abs(x), [-1, 0, 1]).
 % If a domain is passed to the constructor, it should always be the 2nd input.
 %
+% CHEBFUN(F, N) constructs a CHEBFUN object obtained by interpolating F on an N
+% point Chebyshev grid. Note that this is different from the 
+%   CHEBFUN(F, 'trunc', N)
+% construction described below.
+% 
 % CHEBFUN(A) or CHEBFUN(A, 'chebkind', 2), where A is an Nx1 matrix, constructs
 % a CHEBFUN object which interpolates the data in A on an N-point Chebyshev grid
 % of the second kind (see >> help chebpts). CHEBFUN(A, 'chebkind', 1) and
