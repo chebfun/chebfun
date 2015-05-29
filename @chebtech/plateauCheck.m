@@ -1,4 +1,4 @@
-function [ishappy, epsLevel, cutOff] = plateauCheck(f, values, pref)
+function [ishappy, epslevel, cutOff] = plateauCheck(f, values, pref)
 %PLATEAUCHECK   Attempt to trim trailing Chebyshev coefficients in a CHEBTECH.
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = PLATEAUCHECK(F, VALUES) returns an estimated
 %   location, the CUTOFF, at which the CHEBTECH F could be truncated. One of two
@@ -26,18 +26,18 @@ function [ishappy, epsLevel, cutOff] = plateauCheck(f, values, pref)
 %
 % See also LINOPV4CHECK, STRICTCHECK, CLASSICCHECK.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Grab some preferences:
 if ( nargin == 1 )
     pref = f.techPref();
-    epsLevel = pref.eps;
+    epslevel = pref.eps;
 elseif ( isnumeric(pref) )
-    epsLevel = pref;
+    epslevel = pref;
     pref = f.techPref();
 else
-    epsLevel = pref.eps;
+    epslevel = pref.eps;
 end
 
 % Grab the coefficients:
@@ -78,18 +78,18 @@ absCoeff = absCoeff * diag(1./vscale);
 
 numCol = size(coeff, 2);
 ishappy = false(1,numCol);
-epsLevels = zeros(1,numCol);
+epslevels = zeros(1,numCol);
 cutOff = zeros(1,numCol);
 for m = 1:numCol
-    [ishappy(m), epsLevels(m), cutOff(m)] = checkColumn(absCoeff(:,m), epsLevel);
+    [ishappy(m), epslevels(m), cutOff(m)] = checkColumn(absCoeff(:,m), epslevel);
     if ( ~ishappy(m) )
         % No need to continue if it fails on any column.
         break
     end
 end
 
-epsLevel = epsLevels;
-% epsLevel = max(epsLevel)
+epslevel = epslevels;
+% epslevel = max(epslevel)
 ishappy = all(ishappy); 
 cutOff = max(cutOff);
 

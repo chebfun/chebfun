@@ -13,7 +13,7 @@ function h = conv(f, g)
 %
 %   Note that CONV only supports piecewise-smooth functions on bounded domains.
 %
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 %
 % Nick Hale and Alex Townsend, 2014

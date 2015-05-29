@@ -24,7 +24,7 @@ function [u, disc] = linsolve(L, f, varargin)
 %
 % See also CHEBOPPREF, CHEBOP.MLDIVIDE.
 
-%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
+%  Copyright 2015 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -145,7 +145,7 @@ for dim = [dimVals inf]
     end
 
     % Test the happiness of the function pieces:
-    [isDone, epsLevel, vscale, cutoff] = ...
+    [isDone, epslevel, vscale, cutoff] = ...
         testConvergence(disc, u(isFun), vscale(isFun), prefs);
     
     if ( all(isDone) || isinf(dim) )

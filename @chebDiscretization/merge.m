@@ -6,7 +6,7 @@ function varargout = merge(varargin)
 %   [A1, A2, ...] = MERGE(A1, A2, ...) is the same as above, but for multiple
 %   discretizations.
 %
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Initialise:

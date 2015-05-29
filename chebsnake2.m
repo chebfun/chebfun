@@ -24,7 +24,7 @@ function chebsnake2( f, nodes, alfa )
 %
 % See also CHEBSNAKE, CHEBTUNE.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % TODO: This code needs to be cleaned up. A lot.

@@ -7,7 +7,7 @@ function H = cross( F, G )
 %   components then it returns the CHEBFUN2V representing the 3D cross 
 %   product.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information. 
 
 % Empty check: 

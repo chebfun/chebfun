@@ -296,7 +296,8 @@ x = diff(dom) * rand(100, 1) + dom(1);
 fval = feval(f, x);
 vals_exact = feval(op, x);
 err = fval - vals_exact;
-pass(13) = all( norm(err, inf) < 1e1*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(13) = all( norm(err, inf) < 1e4*get(f,'epslevel')*norm(vals_exact, inf) );
+
 
 %% Multipole subdomains with blowup flag set 1:
 
@@ -320,8 +321,9 @@ fval2 = feval(f, x2);
 vals_exact2 = feval(op2, x2);
 err2 = fval2 - vals_exact2;
 
-pass(14) = norm([err1; err2], inf) < 2e1*epslevel(f)* ...
+pass(14) = norm([err1; err2], inf) < 1e2*epslevel(f)* ...
     norm([vals_exact1; vals_exact2], inf);
+
 
 % Exponents is set to NaN:
 op = @(x) exp(x).*sqrt(1+x)./(1-x).^2;

@@ -4,7 +4,7 @@ function g = newDomain(g, newDom)
 %  done with a linear map. DOM may be a vector of length G.ends, or a two-vector
 %  (in which case all breakpoints are scaled by the same amount).
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % [TODO]: Unbounded domains.

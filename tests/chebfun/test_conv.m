@@ -124,10 +124,12 @@ g2 = conv(g1, fX2);
 
 g3 = conv(fX1, fX2);
 g4 = conv(g3, fX3);
-pass(12) = normest( g2 - g4 ) < tol; 
+pass(12) = normest( g2 - g4 ) < 1e1*tol; 
+
 g5 = conv(fX2, fX3);
 g6 = conv(g5, fX1);
-pass(13) = normest( g2 - g6 ) < tol; 
+pass(13) = normest( g2 - g6 ) < 1e1*tol; 
+
 
 %% test 'same' option
 f = chebfun(@(x) exp(-x.^2), [-10 10]);

@@ -4,7 +4,7 @@ function h = hscale(f)
 %   bounded, and the value 1 if it is not. The horizontal scales of the
 %   piecewise components of F are returned by GET(F, 'hscale-local');
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Compute INF norm of the domain:

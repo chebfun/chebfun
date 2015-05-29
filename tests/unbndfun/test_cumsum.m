@@ -116,6 +116,6 @@ hVals = feval(h, x);
 oph = @(x) [exp(x) exp(x).*(x+1)];
 hExact = oph(x);
 err = hVals - hExact;
-pass(7) = norm(err, inf) < max(get(h,'epslevel').*get(h,'vscale'));
+pass(7) = norm(err, inf) < 1e1*max(get(h,'epslevel').*get(h,'vscale'));
 
 end

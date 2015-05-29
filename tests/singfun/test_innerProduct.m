@@ -25,9 +25,9 @@ g = singfun(@(x) (1+x).^q, data, pref);
 I = innerProduct(f,g);
 I_exact = 2*sqrt(2);
 
-pass(1) = ( abs(I-I_exact) < max(get(f, 'epslevel'), get(g, 'epslevel'))*...
+pass(1) = ( abs(I-I_exact) < 10*max(get(f, 'epslevel'), get(g, 'epslevel'))*...
     abs(I_exact) );
-
+    
 % fractional pole at the left endpoint
 data.exponents = [d 0];
 data.singType = {'sing', 'none'};
@@ -47,7 +47,7 @@ data.singType = {'none', 'root'};
 g = singfun(@(x) (1-x).^a.*cos(x), data, pref);
 I = innerProduct(f,g);
 I_exact = 1.76743783779682186471;
-pass(3) = ( abs(I-I_exact) < max(get(f, 'epslevel'), get(g, 'epslevel'))*...
+pass(3) = ( abs(I-I_exact) < 1e1*max(get(f, 'epslevel'), get(g, 'epslevel'))*...
     abs(I_exact) );
 
 % fractional pole at the left endpoint
@@ -59,7 +59,7 @@ data.singType = {'none', 'none'};
 g = singfun(@(x) exp(x).*sin(5*x), data, pref);
 I = innerProduct(f,g);
 I_exact = -3.2185857544263774863;
-pass(4) = ( abs(I-I_exact) < max(get(f, 'epslevel'), get(g, 'epslevel'))*...
+pass(4) = ( abs(I-I_exact) < 1e1*max(get(f, 'epslevel'), get(g, 'epslevel'))*...
     abs(I_exact) );
 
 % a combination of fractional pole and fractional root
@@ -71,7 +71,7 @@ data.singType = {'none', 'root'};
 g = singfun(@(x) sin(2*x).*(1-x).^c, data, pref);
 I = innerProduct(f,g);
 I_exact = 3.703689983503164674;
-pass(5) = ( abs(I-I_exact) < max(get(f, 'epslevel'), get(g, 'epslevel'))*...
+pass(5) = ( abs(I-I_exact) < 1e1*max(get(f, 'epslevel'), get(g, 'epslevel'))*...
     abs(I_exact) );
 
 % poles at different endpoints

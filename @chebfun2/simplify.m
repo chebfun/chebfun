@@ -5,7 +5,7 @@ function f = simplify( f )
 % numerically the same, but requires fewer parameters to store. Currently this
 % simplifies the polynomial degree of F, but not the rank. 
 
-% Copyright 2014 by The University of Oxford and The Chebfun2 Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun2 Developers.
 % See http://www.chebfun.org/ for Chebfun2 information.
 
 % Simplify the column and row slices. 

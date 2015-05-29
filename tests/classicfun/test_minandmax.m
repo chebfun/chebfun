@@ -30,8 +30,9 @@ f = bndfun(fun_op, data, pref);
 [y, x] = minandmax(f);
 y_exact = [-1 7.492128863997157e-07  (-.2)^3*cosh(-.2);
     1 0.535656656015700 0.7^3*cosh(0.7)];
-pass(5) = all(abs(y(:) - y_exact(:)) < 10*max(get(f, 'epslevel')));
-
+pass(5) = all(abs(y(:) - y_exact(:)) < 100*max(get(f, 'epslevel')));
+    
+    
 % Check that the points x are indeed extreme points of the function 
 % operator.
 pass(6) = 1;
@@ -53,7 +54,8 @@ f1 = bndfun(@(x) exp(sin(2*x)), data);
 f2 = bndfun(@(x) 1i*cos(20*x), data);
 [vals2, pos2] = minandmax(f2);
 pass(7) = norm(abs(vals) - abs([vals1 vals2]), inf) < ...
-    10*max(get(f, 'vscale').*get(f, 'epslevel'));
+    100*max(get(f, 'vscale').*get(f, 'epslevel'));
+    
     
 %% 
 % Test on singular BNDFUN.
@@ -72,7 +74,8 @@ f1 = bndfun(@(x) exp(sin(2*x)), data);
 f2 = bndfun(@(x) 1i*cos(20*x), data);
 [vals2, pos2] = minandmax(f2);
 pass(9) = norm(abs(vals) - abs([vals1 vals2]), inf) < ...
-    10*max(get(f, 'vscale').*get(f, 'epslevel'));
+    100*max(get(f, 'vscale').*get(f, 'epslevel'));
+    
     
 %% Tests for UNBNDFUN:
 
@@ -89,9 +92,10 @@ vExact = [-0.6381726863389515 ; 0.6381726863389515];
 pExact = [-1.120906422778534 ; 1.120906422778534];
 errV = vals - vExact;
 errP = pos - pExact;
-pass(10) = ( norm(errV, inf) < get(f,'epslevel')*get(f,'vscale') ) && ...
-    ( norm(errP, inf) < 1e1*get(f,'epslevel')*get(f,'vscale') );
-
+pass(10) = ( norm(errV, inf) < 1e1*get(f,'epslevel')*get(f,'vscale') ) && ...
+    ( norm(errP, inf) < 1e2*get(f,'epslevel')*get(f,'vscale') );
+    
+    
 end
 
 %% 
@@ -103,6 +107,7 @@ function result = test_spotcheck_minmax(fun_op, data, exact_min, ...
     [y, x] = minandmax(f);
     y_exact = [exact_min ; exact_max];
     fx = fun_op(x);
-    result = ((max(abs(y - y_exact)) < 10*get(f, 'epslevel')) && ... 
+    result = ((max(abs(y - y_exact)) < 100*get(f, 'epslevel')) && ... 
         (max(abs(fx - y_exact)) < 10*get(f, 'epslevel')));
+        
 end

@@ -17,7 +17,7 @@ function F = restrict(f, s)
 %   Warning: If F is not also smooth and periodic on S, then the resulting
 %   TRIGTECH will not be happy.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with empty case:

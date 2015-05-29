@@ -17,7 +17,7 @@ function f = scribble(s, dom)
 %   f = scribble('The quick brown fox jumps over the lazy dog. 0123456789');
 %   plot(f), axis equal
 
-%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
+%  Copyright 2015 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org/ for Chebfun information.
 
 lengthS = length(s);

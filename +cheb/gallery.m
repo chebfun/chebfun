@@ -48,7 +48,7 @@ function varargout = gallery(name)
 %
 % See also CHEB.GALLERYTRIG, CHEB.GALLERY2.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % If the user did not supply an input, return a random function from the

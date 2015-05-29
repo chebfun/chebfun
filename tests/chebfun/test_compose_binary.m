@@ -55,8 +55,9 @@ hVals = feval(h, x);
 oph = @(x) (sin(20*x)+x.^2)./(x-dom(1));
 hExact = oph(x);
 err = hVals - hExact;
-pass(10) = ( norm(err, inf) < 1e5*vscale(h)*epslevel(h) ) && ...
+pass(10) = ( norm(err, inf) < 1e6*vscale(h)*epslevel(h) ) && ...
     ( isequal(oph(dom(2)), feval(h, dom(2))) );
+
 
 
 %% Compose two functions defined on an unbounded domain, i.e. F + G:
@@ -77,7 +78,8 @@ h = compose(f, @plus, g);
 hVals = feval(h, x);
 hExact = oph(x);
 err = hVals - hExact;
-pass(11) = norm(err, inf) < get(h,'epslevel')*get(h,'vscale');
+pass(11) = norm(err, inf) < 1e1*get(h,'epslevel')*get(h,'vscale');
+
 
 end
 

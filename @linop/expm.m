@@ -33,7 +33,7 @@ function u = expm(L, t, u0, prefs)
 %
 % See also LINOP/ADDBC.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin < 4 )
@@ -123,7 +123,7 @@ for i = 1:length(t)
         vscale = discu.scale(uFun);
         
         % Test the happieness of the function pieces:
-        [isDone, epsLevel] = testConvergence(disc, uFun, vscale, prefs);
+        [isDone, epslevel] = testConvergence(disc, uFun, vscale, prefs);
         
         if ( all(isDone) )
             break
@@ -143,7 +143,7 @@ for i = 1:length(t)
         doMerge = @(f) merge(f);
         ucell = cellfun(doMerge, ucell, 'uniform', false);
     end
-    doSimplify = @(f) simplify(f, max(eps, epsLevel));
+    doSimplify = @(f) simplify(f, max(eps, epslevel));
     ucell = cellfun(doSimplify, ucell, 'uniform', false);
     allU = [ allU, chebmatrix(ucell) ]; %#ok<AGROW>
 end

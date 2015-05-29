@@ -1,7 +1,7 @@
 function out = rval(f)
 %CHEBTECH.RVAL  Evaluate a CHEBTECH at x = 1.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % We simply sum the coefficients:

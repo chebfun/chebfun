@@ -11,7 +11,7 @@ function X = denseSolve(N, f, m, n)
 % Warning: This PDE solver is an experimental new feature. It has not been
 % publicly advertised. 
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Construct discretisation for PDE:

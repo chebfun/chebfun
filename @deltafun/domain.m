@@ -4,7 +4,7 @@ function d = domain(f)
 %
 % See also MERGECOLUMNS, MERGEDELTAS, CLEANROWS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 d = get(f.funPart, 'domain');

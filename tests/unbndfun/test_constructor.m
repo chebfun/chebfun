@@ -48,7 +48,7 @@ f = unbndfun(op, struct('domain', dom, 'exponents', [2 2]), singPref);
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
-pass(4) = norm(err, inf) < 1e4*get(f,'epslevel')*get(f,'vscale');
+pass(4) = norm(err, inf) < 1e5*get(f,'epslevel')*get(f,'vscale');
 
 %% Functions on [a inf]:
 
@@ -93,7 +93,7 @@ f = unbndfun(op, struct('domain', dom, 'exponents', [0 1]), singPref);
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
-pass(9) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
+pass(9) = norm(err, inf) < 1e2*get(f,'epslevel')*get(f,'vscale');
 
 %% Functions on [-inf b]:
 
@@ -146,7 +146,7 @@ f = unbndfun(op, struct('domain', dom));
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
-pass(15) = norm(err, inf) < 1e1*max(get(f,'epslevel').*get(f,'vscale'));
+pass(15) = norm(err, inf) < 1e2*max(get(f,'epslevel').*get(f,'vscale'));
 
 %% MISC:
 

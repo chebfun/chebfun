@@ -9,7 +9,7 @@ function I = integral( f, varargin )
 % 
 % See also INTEGRAL2, SUM2, QUAD2D.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin == 1 )                         % Another way to do sum2(f) 

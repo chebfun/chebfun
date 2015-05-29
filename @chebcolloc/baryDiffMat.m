@@ -25,7 +25,7 @@ function D = baryDiffMat(x, w, k, t)
 %  [4] R. Baltensperger and M.R. Trummer, "Spectral Differencing with a Twist",
 %   SIAM J. Sci. Comp., Vol. 24, No. 5, pp. 1465–1487, 2003.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 N = length(x);

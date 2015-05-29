@@ -25,6 +25,10 @@ classdef chebfun
 %   CHEBFUN(@(x) abs(x), [-1, 0, 1]).
 % If a domain is passed to the constructor, it should always be the 2nd input.
 %
+% CHEBFUN(F, N) constructs a CHEBFUN object obtained by interpolating F on an N
+% point Chebyshev grid of the second kind in [-1,1]. Note that this is
+% different from CHEBFUN(F, 'trunc', N), which is described below.
+% 
 % CHEBFUN(A) or CHEBFUN(A, 'chebkind', 2), where A is an Nx1 matrix, constructs
 % a CHEBFUN object which interpolates the data in A on an N-point Chebyshev grid
 % of the second kind (see >> help chebpts). CHEBFUN(A, 'chebkind', 1) and
@@ -103,7 +107,7 @@ classdef chebfun
 %
 % See also CHEBFUNPREF, CHEBPTS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -364,6 +368,12 @@ classdef chebfun
         % Overlap the domain of two CHEBFUN objects.
         [f, g] = overlap(f, g)
         
+        % Solve a PDE with CHEBFUN and ODE15S.
+        varargout = pde15s(varargin);
+        
+        % Solve a PDE with CHEBFUN and ODE23T.
+        varargout = pde23t(varargin);
+        
         % Plot a CHEBFUN object:
         varargout = plot(f, varargin);
         
@@ -480,6 +490,9 @@ classdef chebfun
         
         % Number of columns (or rows) of a CHEBFUN quasimatrix.
         out = numColumns(f)
+        
+        % Solve a PDE with CHEBFUN.
+        varargout = pdeSolve(varargin);
         
         % Obtain data used for plotting a CHEBFUN object:
         data = plotData(f, g, h)
