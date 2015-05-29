@@ -101,7 +101,7 @@ err2 = op(x2)-f(x2);
 err3 = op(x3)-f(x3);
 
 err = [err1; err2; err3];
-pass(9) = ( norm(err, inf) < 1e4*epslevel(f)*vscale(f) );
+pass(9) = ( norm(err, inf) < 1e5*epslevel(f)*vscale(f) );
 
 %% Test for splitting on + unbndfun:
 
