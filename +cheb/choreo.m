@@ -13,7 +13,7 @@ function choreo
 
 close all
 LW = 'linewidth'; MS = 'markersize'; FS = 'fontsize';
-lw = 2; ms = 35; fs = 18;
+lw = 2; ms = 30; fs = 18;
 format long, format compact
 n = input('How many bodies? (e.g. 5) '); 
 w = input('Angular velocity? (non-integer, e.g. 1.2) ');
@@ -26,7 +26,7 @@ while 1
 % Hand-drawn initial guess:
   xmax = 2.5; ymax = 2.5;
   clf, hold off, axis equal, axis([-xmax xmax -ymax ymax]), box on
-  set(gca,'FontSize',fs), title('Draw a curve!')
+  set(gca,FS,fs), title('Draw a curve!')
   h = imfreehand;
   z = getPosition(h);
   delete(h)
@@ -43,12 +43,11 @@ while 1
   c0 = [real(c0);imag(c0)];
   A0 = actiongradeval(c0,n,w);
   fprintf('\nInitial acion: %.6f\n',A0)
-  options = optimoptions('fminunc');
-  options.Algorithm = 'quasi-newton';
-  options.HessUpdate = 'bfgs'; 
-  options.GradObj = 'on';
+  options = struct();
+  options.Method = 'lbfgs';
   options.Display = 'off';
-  [c,A,~, ~,G] = fminunc(@(x)actiongradeval(x,n,w),c0,options);
+  c = minFunc(@(x)actiongradeval(x,n),c0,options);
+  [A,G] = actiongradeval(c,n,w);
   fprintf('Action after optimization: %.6f\n',A)
   fprintf('Norm of the gradient: %.3e\n',norm(G))
 
@@ -130,9 +129,10 @@ end
 function plotonplane(q,n,w)
 %PLOTONPLANE   Plot a planar choreography.
 
-xmax = 2.5; ymax = 2.5;
+vscale = max(max(real(q)),max(imag(q)));
+xmax = 1.2*vscale; ymax = xmax;
 LW = 'linewidth'; MS = 'markersize'; FS = 'fontsize';
-lw = 2; ms = 35; fs = 18;
+lw = 2; ms = 30; fs = 18;
 dom = [0 2*pi]; T = 2*pi; dt = .1;
 xStars = 2*xmax*rand(250,1)-xmax;
 yStars = 2*ymax*rand(250,1)-ymax;

@@ -13,7 +13,7 @@ function choreosphere
 
 close all
 LW = 'linewidth'; MS = 'markersize'; FS = 'fontsize';
-lw = 2; ms = 35; fs = 18;
+lw = 2; ms = 30; fs = 18;
 format long, format compact
 n = input('How many bodies? (e.g. 5) '); 
 R = input('Radius? (e.g. 2) ');
@@ -27,7 +27,7 @@ while 1
 % Hand-drawn initial guess:
   xmax = 2; ymax = xmax;
   clf, hold off, axis equal, axis([-xmax xmax -ymax ymax]), box on
-  set(gca,'FontSize',fs), title('Draw a curve!')
+  set(gca,FS,fs), title('Draw a curve!')
   h = imfreehand;
   z = getPosition(h);
   delete(h)
@@ -44,16 +44,15 @@ while 1
   c0 = [real(c0);imag(c0)];
   A0 = actiongradevalsphere(c0,n,w,R);
   fprintf('\nInitial acion: %.6f\n',A0)
-  options = optimoptions('fminunc');
-  options.Algorithm = 'quasi-newton';
-  options.HessUpdate = 'bfgs'; 
-  options.GradObj = 'on';
+  options = struct();
+  options.Method = 'lbfgs';
   options.Display = 'off';
-  tic, [c,A,~, ~,G] = fminunc(@(x)actiongradevalsphere(x,n,w,R),c0,options); toc
-
-% Plot the result:
+  c = minFunc(@(x)actiongradevalsphere(x,n,w,R),c0,options);
+  [A,G] = actiongradeval(c,n,w);
   fprintf('Action after optimization: %.6f\n',A)
   fprintf('Norm of the gradient: %.3e\n',norm(G))
+  
+% Plot the result:
   c = c(1:N) + 1i*c(N+1:2*N);
   q = chebfun(c,dom,'coeffs','trig');
   hold on, plot(q,'r',LW,lw)
@@ -198,7 +197,7 @@ if nargin < 3
     R = 1;
 end
 LW = 'linewidth'; MS = 'markersize'; FS = 'fontsize';
-lw = 2; ms = 35; fs = 18;
+lw = 2; ms = 30; fs = 18;
 XTick = [-R,0,R]; YTick = XTick; ZTick = XTick;
 N = 200;
 Ns = 100;
