@@ -32,7 +32,7 @@ end
 
 % If domain is empty take it to be co-latitude (doubled up).
 if ( nargin < 3 || isempty(dom) )
-    dom = [-pi pi -pi pi];
+    dom = [-pi pi 0 pi];
 end
 
 % TODO: Should we allow any other domains that latitude and co-latitude?
@@ -69,7 +69,7 @@ while ( ~happy_rank && ~failure )
     % TODO: Add a more sophisticated evaluate function that does
     % vectorization like chebfun2.
     F = evaluate(h, n, n, dom);
-    [ pivotLocations, pivotMatrices, happy_rank, removePoles ] = PhaseOne( F, tol );
+    [ pivotIndices, pivotMatrices, happy_rank, removePoles ] = PhaseOne( F, tol );
     if ( n >= maxRank  )
         warning('SPHEREFUN:CONSTRUCTOR:MAXRANK', ... 
                                 'Unresolved with maximum rank.');
@@ -79,7 +79,7 @@ end
 
 % PHASE TWO 
 % Find the appropriate discretizations in the columns and rows. 
-[cols, blockDiag, rows] = PhaseTwo( h, pivotLocations, pivotMatrices, n, dom, tol, maxSample, removePoles );
+[cols, blockDiag, rows, pivotLocations] = PhaseTwo( h, pivotIndices, pivotMatrices, n, dom, tol, maxSample, removePoles );
 
 % PHASE THREE
 % Put in CDR form
@@ -88,10 +88,11 @@ end
 % Make a spherefun, we are done. 
 % g.cols = trigtech( cols );
 % g.rows = trigtech( rows );
-g.cols = chebfun( cols, dom(3:4), 'trig');
+g.cols = chebfun( cols, dom(3:4)-[pi 0], 'trig');
 g.rows = chebfun( rows, dom(1:2), 'trig');
 g.blockDiag = blockDiag;
 g.pivotValues = pivots;
+g.pivotIndices = pivotIndices;
 g.pivotLocations = pivotLocations;
 g.idxPlus = idxPlus;
 g.idxMinus = idxMinus;
@@ -99,12 +100,12 @@ g.domain = dom;
 
 end
 
-function [pivotLocations, pivotMatrices, happy, removePole] = PhaseOne( F, tol )
+function [pivotIndices, pivotMatrices, happy, removePole] = PhaseOne( F, tol )
 
 % Phase 1: Go find rank, plus pivot locations, ignore cols and rows.
 alpha = spherefun.alpha; % get growth rate factor.
 [m, n] = size( F );
-pivotLocations = []; pivotMatrices = [];
+pivotIndices = []; pivotMatrices = [];
 vscl = norm( F( : ), inf);
 rank_count = 0;    % keep track of the rank of the approximation.
 
@@ -138,8 +139,11 @@ while ( norm( F( : ), inf ) > tol*vscl )
     % Find pivot:
     % Calculate the maximum 1st singular value of all the special 2x2
     % submatrices.
-    S1 = max(  abs(F - flipud(F)), abs(F + flipud(F)) );
-    S1 = S1(1:m/2, 1:n/2);
+    % S1 = max(  abs(F - flipud(F)), abs(F + flipud(F)) );
+    % S1 = S1(1:m/2, 1:n/2);
+    F11 = F(1:m/2,1:n/2);  %% (1,1) Block of F.
+    F12 = F(1:m/2,n/2+1:n);  % (1,2) block of F.
+    S1 = max( abs(F11 - F12), abs(F11 + F12) );
     [ignored, idx] = max( S1(:) );
     [j, k] = myind2sub( size( S1 ), idx );
     
@@ -147,7 +151,7 @@ while ( norm( F( : ), inf ) > tol*vscl )
     M = [ F(j,k) F(j,k+n/2) ; F(j,k+n/2) F(j,k)];
     s = sort( abs([ diff(M(1,:)) ; sum(M(1,:)) ]), 1, 'descend' );  % equivalent to svd( M )
     
-    pivotLocations = [ pivotLocations ; j k m-j+1 k+n/2];
+    pivotIndices = [ pivotIndices ; j k m-j+1 k+n/2];
     pivotMatrices = [pivotMatrices ; M ];
     
     if ( s(1) <= alpha*s(2) )  % Theoretically, should be s1 <= 2s2.
@@ -167,15 +171,15 @@ end
 
 % Adjust the pivot locations so that they now correspond to F having
 % the poles.
-if ~isempty( pivotLocations )
-    pivotLocations(:,1) = pivotLocations(:,1) + 1;
-    pivotLocations(:,3) = pivotLocations(:,3) + 2;
+if ~isempty( pivotIndices )
+    pivotIndices(:,1) = pivotIndices(:,1) + 1;
+    pivotIndices(:,3) = pivotIndices(:,3) + 2;
 end
 
 % Put the poles at the begining the pivot locations array and also include
 % the pivot matrix.
 if removePole
-    pivotLocations = [ 1 poleCol m/2+1 poleCol+n/2 ; pivotLocations ];
+    pivotIndices = [ 1 poleCol m/2+1 poleCol+n/2 ; pivotIndices ];
 %     M = diag([1/pole1 1/pole2]);
     M = ones(2);
     pivotMatrices = [M ; pivotMatrices];
@@ -190,7 +194,7 @@ end
 
 end
 
-function [cols, blockDiag, rows] = PhaseTwo( h, pivotLocations, pivotMatrices, n, dom, tol, maxSample, removePoles)
+function [cols, blockDiag, rows, pivotLocations] = PhaseTwo( h, pivotIndices, pivotMatrices, n, dom, tol, maxSample, removePoles)
 
 alpha = spherefun.alpha; % get growth rate factor.
 happy_columns = 0;   % Not happy, until proven otherwise.
@@ -199,10 +203,10 @@ m = n;
 
 [x, y] = getPoints( m, n, dom );
 
-rk = size( pivotLocations, 1);
+rk = size( pivotIndices, 1);
 % blockDiag = spalloc( 2*rk, 2*rk, 6*rk-2 );
 blockDiag = zeros(2*rk,2);
-id = pivotLocations'; id = id(:);
+id = pivotIndices'; id = id(:);
 id_cols = id(2:2:end); id_rows = id(1:2:end);
 col_pivots = x(id_cols);
 row_pivots = y(id_rows);
@@ -240,7 +244,7 @@ while ( ~(happy_columns && happy_rows) && ~failure)
     % algorithm.
     if removePoles
         Rows_new(1:2,:) = 1 + 0*Rows_new(1:2,:);
-%         poleCol = PivotLocations( 1, 2 );
+%         poleCol = pivotIndices( 1, 2 );
 %         poleColPivot = x(poleCol);
 %         h = redefine_function_handle_pole(h,poleColPivot);
 %         M = PivotMatrices(1:2,:);
@@ -327,10 +331,12 @@ end
 linInd = [1:2:numPivots; (numPivots+2):2:2*numPivots];
 linInd = linInd(:);
 linInd = [linInd.' (2:2:numPivots) ((numPivots+1):2:2*numPivots)];
-% Indicies into the sparse matrix for the block diagonal entries.
+% Indices into the sparse matrix for the block diagonal entries.
 indI = [1:numPivots 2:2:numPivots 1:2:numPivots];
 indJ = [1:numPivots 1:2:numPivots 2:2:numPivots];
 blockDiag = sparse(indI,indJ,blockDiag(linInd),numPivots,numPivots);
+
+pivotLocations = [col_pivots row_pivots];
 
 end
 
@@ -455,8 +461,8 @@ end
 
 function [x, y] = getPoints( m, n, dom )
 
-colat = [-pi pi -pi pi]; % Colatitude (doubled up)
-lat = [-pi pi -3*pi/2 pi/2]; % Latitude (doubled up)
+colat = [-pi pi 0 pi]; % Colatitude (doubled up)
+lat = [-pi pi -pi/2 pi/2]; % Latitude (doubled up)
 
 % Sample at an even number of points so that the poles are included.
 if all( (dom-colat) == 0 )

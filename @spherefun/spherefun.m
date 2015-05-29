@@ -61,7 +61,13 @@ classdef spherefun < separableApprox
         
         %         % Outer-product of two chebfuns:
         %         F = outerProduct(f, g);
+        
+        % Converts a function in spherical coordinates to one in Cartesian
+        % coordinates on the sphere.
         fdf = sphf2cartf(f, lam, th, coord);
+        
+        % Degree l Order m spherical harmonic.
+        Y = sphharm(l,m,coord)          
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -82,6 +88,7 @@ classdef spherefun < separableApprox
         blockDiag       % Pivot matrices used during GE
         idxPlus
         idxMinus
+        pivotIndices
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

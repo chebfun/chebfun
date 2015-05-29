@@ -1,6 +1,6 @@
 function pass = testscript( )
 
-tol = 1e4*eps;
+tol = 1e3*eps;
 % Construction: 
 % A few tests for construction: 
 
@@ -72,9 +72,10 @@ pass(13) = norm( feval(g, theta, lambda) - f(theta, lambda) ) < tol;
 pass(14) = norm( feval(g, theta, lambda) - f(theta, lambda) ) < tol; 
 
 % Sum2 tests: 
-f = @(x,y,z) x.^2 + y.^2 + z.^2; 
+f = @(x,y,z) 1 + x + y + z; 
 g = spherefun( f ); 
-sum2( g );
+exact_int = 4*pi;
+pass(15) = abs( sum2( g ) - exact_int ) < tol;
 
 end
 
