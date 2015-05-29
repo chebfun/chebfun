@@ -435,7 +435,7 @@ function h = plotDeltas(deltaData)
             set(gca, 'ColorOrderIndex', k);
         end
 
-        h = [h, plotDeltasForOneFunction(deltaData{k}{:})]
+        h = [h, plotDeltasForOneFunction(deltaData{k}{:})];
     end
 
     % Restore the ColorOrder if running on R2014a or earlier.
@@ -460,8 +460,8 @@ while ( ~isempty(varargin) )
 
     % Handle the delta style argument:
     style = '';
-    if ( ~isempty(varargin{1}) && ~isnumeric(varargin{1}) )
-        style = varargin{1};
+    if ( ~isempty(varargin{1}) && iscell(varargin{1}) )
+        style = varargin{1}{1};
     end
     varargin(1) = [];
     
