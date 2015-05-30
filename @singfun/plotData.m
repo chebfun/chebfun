@@ -102,7 +102,7 @@ if ( singMask(2) )
     else
         idxr = find(data.yLine >= data.yLim(1), 1, 'last');
     end
-    idxr = idxr + floor((2/5)*(length(data.yLine)-idxr)) + 1;
+    idxr = idxr + floor((2/5)*(length(data.yLine)-idxr));
     data.xLim(2) = data.xLine(idxr);
 end
 
