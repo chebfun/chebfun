@@ -1,29 +1,34 @@
-function varargout = chebellipseplot(u, varargin)
-%CHEBELLIPSEPLOT   Plot the Bernstein (aka Chebyshev) ellipses.
-%   CHEBELLIPSEPLOT(U) plots Bernstein ellipses in the complex plane for each
-%   piecewise part of U, with foci at points in U.domain and semi-minor and
-%   major axes summing to rho(k) = C*exp(abs(log(EPS))/N(k)), where C is the
-%   appropriate scaling for the interval [U.ends(k) U.ends(k+1)] and EPS is the
-%   EPSLEVEL of U.
+function varargout = plotregion(u, varargin)
+%PLOTREGION   Plot the estimated regions of analyticity.
+%   PLOTREGION(U) plots estimated region of analyticity in the complex 
+%   plane for each piecewise part of U. If U is a Chebyshev-based chebfun, this 
+%   estimated region of analyticity is an ellipse with foci at the end points of
+%   U.domain and semi-minor and major axes summing to rho(k) = 
+%   C*exp(abs(log(EPS))/N(k)), where C is the appropriate scaling for the 
+%   interval [U.ends(k) U.ends(k+1)] and EPS is the machine precision. If U
+%   is a trigonometric-based periodic chebfun, the estimated region of
+%   analyticity is a strip symmetric about the real axis with half width being 
+%   log(1/EPS)/(pi*N).
 %
-%   CHEBELLIPSEPLOT(U, EPS) allows a user-specified EPS.
+%   PLOTREGION(U, EPS) allows a user-specified EPS.
 %
-%   CHEBELLIPSEPLOT(U, K) and CHEBELLIPSEPLOT(U, EPS, K) plot ellipses for
-%   the funs of U indexed by the vector K.
+%   PLOTREGION(U, K) and PLOTREGION(U, EPS, K) plot the estimated regions of 
+%   analyticity for the funs of U indexed by the vector K.
 %
-%   CHEBELLIPSEPLOT(U, ..., S) allows plotting options to be passed. For
-%   example, for black lines one may write CHEBELLIPSEPLOT(U, 'k-').
+%   PLOTREGION(U, ..., S) allows plotting options to be passed. For example, for
+%   black lines one may write PLOTREGION(U, 'k-').
 %
-%   CHEBELLIPSEPLOT(U, ..., 'legends', 0) prevents the legends being
-%   displayed on the plot.
+%   PLOTREGION(U, ..., 'legends', 0) prevents the legends being displayed on the
+%   plot.
 %
-%   CHEBELLIPSEPLOT(U, ..., 'numpts', N) plots each ellipse using N points.
+%   PLOTREGION(U, ..., 'numpts', N) plots each ellipse using N points without 
+%   affecting the strips if any.
 %
-%   H = CHEBELLIPSEPLOT(U) returns a handle H to the figure.
+%   H = PLOTREGION(U) returns a handle H to the figure.
 %
 %   Example:
 %       u = chebfun({@sin, @cos, @tan, @cot}, [-2, -1, 0, 1, 2]);
-%       chebellipseplot(u, sqrt(eps), '--');
+%       plotregion(u, sqrt(eps), '--');
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -31,7 +36,7 @@ function varargout = chebellipseplot(u, varargin)
 %%
 
 if ( numColumns(u) > 1 )
-    error('CHEBFUN:CHEBFUN:chebellipseplot:quasi', ...
+    error('CHEBFUN:CHEBFUN:plotregion:quasi', ...
         ['CHEBELLPISEPLOT does not support array-valued CHEBFUN objects ' ...
          'or quasimatries.']);
 end
@@ -68,28 +73,47 @@ end
 
 % Error if index exceeds dimensions.
 if ( any(k > length(u.funs)) )
-    error( 'CHEBFUN:CHEBFUN:chebellipseplot:outOfBounds', ...
+    error( 'CHEBFUN:CHEBFUN:plotregion:outOfBounds', ...
         'Input chebfun has only %d pieces', length(u.funs) );
 end
 
-% The unit circle.
-c = exp(2*pi*1i*linspace(0, 1, numpts));
-
 % A cell array of ellipse coordinates to be plotted.
 UK = {};
+AUX = {};
+xl = [];
+yl = [];
 for j = k
     uk = u.funs{j};
     endsk = uk.domain;
-    rhok = exp(abs(log(ee)) / length(uk));
-    ek = .5*sum(endsk) + .25*diff(endsk)*(rhok*c + 1./(rhok*c));
+    if ( any(isinf(endsk)) )
+        error( 'CHEBFUN:CHEBFUN:plotregion:unboundedDomain', ...
+            ['Plot of analyticity region is not supported for function on' ...
+            'unbounded domain.']);
+    end
+    data = plotregionData(uk, ee, numpts);
+    ek = .5*sum(endsk) + .5*diff(endsk)*data.boundary;
     UK = [UK, {real(ek), imag(ek)}, args{:}]; % Add the variable args.
+    au = .5*sum(endsk) + .5*diff(endsk)*data.auxiliary;
+    AUX = [AUX, {real(au), imag(au)}];
+    xl = [xl .5*sum(endsk) + .5*diff(endsk)*data.xlim];
+    yl = [yl .5*diff(endsk)*data.ylim];
 end
+
+xl = [min(xl) max(xl)];
+yl = [min(yl) max(yl)];
 
 holdState = ishold();
 
 % Plot the ellipses.
-h = plot(UK{:}, lineStyle{:}); 
+h = plot(UK{:}, lineStyle{:});
+cl = get(h, 'Color');
 hold on
+
+% Plot the auxiliary lines:
+for j = 1:numel(cl)
+    hh = plot(AUX{2*(j-1)+1}, AUX{2*(j-1)+2}, ':');
+    set(hh, 'Color', cl{j})
+end
 
 % Add the legend.
 if ( legends ) && ( j > 1 )
@@ -101,6 +125,9 @@ dom = u.domain;
 h2 = plot(dom, 0*dom, args{:}, lineStyle{:}, pointStyle{:});
 set(h2, 'color', [0 0 0], 'marker', '+', 'LineStyle', '-');
 h = [h ; h2];
+
+xlim(xl)
+ylim(yl)
 
 if ( ~holdState )
     hold off
@@ -119,8 +146,7 @@ function [k, ee, numpts, legends, args] = parseInputs(varargin)
 k = 0;                  % plot all funs by default
 ee = NaN;               % Default EPS
 numpts = 101;           % Number of points in plots
-legends = 1;            % Display legends?
-args = {};              % Additional plotting args.
+legends = 1;            % Display legends?             
 
 isPosInt = @(v) abs(round(v)) == v;
 
@@ -158,6 +184,6 @@ if ( nargin >= 1 )
     end
 end
 
-args = varargin;
+args = varargin; % Additional plotting args.
 
 end

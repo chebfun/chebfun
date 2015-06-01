@@ -1,9 +1,10 @@
 function varargout = plotcoeffs(f, varargin)
 %PLOTCOEFFS   Display coefficients graphically.
-%   PLOTCOEFFS(F) plots the coefficients underlying the representation of a
-%   CHEBFUN F on a semilogy scale. A horizontal line at the epslevel of F is
-%   also plotted. If F is an array-valued CHEBFUN or has breakpoints, then a
-%   curve is plotted for each FUN of each component (column) of F.
+%   PLOTCOEFFS(F) plots the absolute values of coefficients underlying the 
+%   representation of a CHEBFUN F on a semilogy scale. A horizontal line at the 
+%   epslevel of F is also plotted. If F is an array-valued CHEBFUN or has 
+%   breakpoints, then a curve is plotted for each FUN of each component (column)
+%   of F.
 %
 %   PLOTCOEFFS(F, S) allows further plotting options, such as linestyle,
 %   linecolor, etc, as in the standard MATLAB manner. If S contains a string
@@ -13,10 +14,9 @@ function varargout = plotcoeffs(f, varargin)
 %   H = PLOTCOEFFS(F) returns a column vector of handles to lineseries objects.
 %   The final entry is that of the epslevel plot.
 %
-%   What 'coefficients' means in this context is dictated by the 'tech' that is
-%   being used to represent F. See the PLOTCOEFFS method at the relevant tech
-%   level for more details. Note that you can find what tech is being used by
-%   calling GET(F, 'tech').
+%   As of Chebfun version 5, the coefficients plotted by 'plotcoeffs' are either
+%   Chebyshev coefficients for Chebyshev-based chebfuns or Fourier coefficients
+%   for periodic chebfuns ('trigfuns'). 
 %
 % See also CHEBFUN/PLOT.
 
@@ -136,4 +136,3 @@ for j = 1:numFuns
 end
 
 end
-
