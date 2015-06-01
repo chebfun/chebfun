@@ -226,6 +226,7 @@ errorMessages = {'FAILED', 'CRASHED'};
 % We don't want these warning to be displayed in CHEBTEST:
 warnState = warning('off', 'CHEBFUN:CHEBFUN:vertcat:join');
 warning('off', 'CHEBFUN:CHEBOP2:chebop2:experimental')
+warning('off', 'CHEBFUN:CHEBFUN:get:epslevel')
 
 % Attempt to run all of the tests:
 try % Note, we try-catch as we've CD'd and really don't want to end up elsewhere
