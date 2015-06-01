@@ -22,7 +22,7 @@ function [order1, order2, nDiff2] = taylorTestingBinary(func, hMax, plotting)
 %
 % See also: TAYLORTESTING, VALUETESTING, VALUETESTINGBINARY.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %% Parse inputs and initialise
@@ -121,8 +121,11 @@ for hCounter = 1:hMax
     % operators, and machine error for linear operators.
     
     % Need to store temporarily to be able to access the CHEBFUN block of the
-    % resulting CHEBMATRIX.
-    v1v2JacPert = v1v2Jac*[pert1; pert2];
+    % resulting CHEBMATRIX. Note that if we were working with a binary
+    % functional (e.g. innerProduct), the output will actually be scalar, so we
+    % cast everything to a CHEBMATRIX to ensure that the call to the first
+    % element below works.
+    v1v2JacPert = chebmatrix(v1v2Jac*[pert1; pert2]);
     nDiff2(hCounter,1) = norm(v1v2Pert - v1v2 - v1v2JacPert{1});
     nDiff2(hCounter,2) = norm(u1w2Pert - u1w2 - u1w2Jac*(pert1));
     nDiff2(hCounter,3) = norm(w1u2Pert - w1u2 - w1u2Jac*(pert2));

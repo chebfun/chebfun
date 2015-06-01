@@ -33,7 +33,7 @@ function  [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, pref)
 %
 % See also CLASSICCHECK, LOOSECHECK, STRICTCHECK, SAMPLETEST.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Grab preferences:
@@ -53,6 +53,8 @@ if ( nargin < 3 )
     values = [];
 %     values = f.coeffs2vals(f.coeffs);
 end
+
+
 
 % What does happiness mean to you?
 if ( strcmpi(pref.happinessCheck, 'classic') )
@@ -89,5 +91,8 @@ if ( ishappy && ~isempty(op) && ~isnumeric(op) && pref.sampleTest )
         cutoff = size(values, 1);
     end
 end
+
+% set epslevel = eps
+epslevel = eps + 0*epslevel;
 
 end

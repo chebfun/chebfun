@@ -44,7 +44,7 @@ classdef chebtech1 < chebtech
 %
 % See also CHEBTECH, CHEBTECH.TECHPREF, CHEBPTS, HAPPINESSCHECK, REFINE.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -88,13 +88,20 @@ classdef chebtech1 < chebtech
             data = parseDataInputs(data, pref);
 
             % Force nonadaptive construction if PREF.FIXEDLENGTH is numeric:
-            if ( ~isempty(pref.fixedLength) && ~isnan(pref.fixedLength) )
+            if ( ~(isnumeric(op) || iscell(op)) && ...
+                    ~isempty(pref.fixedLength) && ~isnan(pref.fixedLength) )
                 % Evaluate op on the Chebyshev grid of given size:
                 op = feval(op, chebtech1.chebpts(pref.fixedLength));
             end
 
             % Actual construction takes place here:
             obj = populate(obj, op, data.vscale, data.hscale, pref);
+            
+            % Set length of obj to PREF.FIXEDLENGTH (if it is non-trivial).
+            if ( (isnumeric(op) || iscell(op)) && ...
+                    ~isempty(pref.fixedLength) && ~isnan(pref.fixedLength) )
+                obj = prolong(obj, pref.fixedLength);
+            end
 
             if ( obj.ishappy || isnumeric(op) || iscell(op) )
                 % No need to error check if we are happy:

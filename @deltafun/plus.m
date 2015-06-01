@@ -2,7 +2,7 @@ function s = plus(f, g)
 %+   Addition of DELTAFUN objects.
 %   F + G adds F and G, where F and G may be DELTAFUN objects or scalars.
 %
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%

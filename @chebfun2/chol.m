@@ -10,9 +10,9 @@ function varargout = chol( f, varargin )
 % If F is not nonnegative definite then an error is thrown. 
 % 
 % [R, p] = CHOL( F ), with two outputs never throwns an error message. If F is
-% nonnegative definite then p is 0 and R is the same as above. If F is not
-% nonnegative definite then p is a positive integer such that R has p columns 
-% and R'*R is a rank p nonnegative definite chebfun2 that approximates F. 
+% nonnegative definite then p is 0 and R is the same as above. If F is 
+% symmetric but negative definite or semidefinite then p is a positive 
+% integer such that R has p columns and R'*R is a rank p nonnegative definite chebfun2 that approximates F. 
 % This is particular useful when F is nonnegative definite, but rounding errors
 % have perturbed it to be semidefinite. 
 %
@@ -25,7 +25,7 @@ function varargout = chol( f, varargin )
 %
 % See also LU, and QR. 
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 
@@ -45,6 +45,14 @@ k = length( f );
 
 % All the pivots should be on the y = x line. 
 PivLoc = f.pivotLocations; 
+
+if ( isempty( PivLoc ) ) 
+    % For some reason (probably because f was made with sampling data, rather
+    % than a handle) f didn't have any pivot information. Make it now: 
+    f = chebfun2( @(x, y) feval(f,x,y), f.domain);
+    varargout = {chol( f )}; 
+    return
+end
 
 % Find the first pivot location is off-diagonal: 
 Diagk = find( PivLoc(:,1) ~= PivLoc(:,2), 1, 'first'); 
@@ -66,6 +74,18 @@ end
 
 % Get the CDR decomposition (already computed by constructor):
 [C, D, R] = cdr( f );
+
+% Return an error if the function is not symmetric: 
+dom = f.domain; 
+r = 0.0192475;   % arbitrary point in [-1,1] 
+s = -.34756987;  % arbitrary point in [-1,1]
+r = diff(dom(1:2))*r - dom(1); 
+s = diff(dom(3:4))*s - dom(3); 
+symTest = ( abs(feval(f,r,s) - feval(f,s,r)) < 10*max(epslevel(f.cols),epslevel(f.rows)) );
+if ( ~symTest )
+    error('CHEBFUN:CHEBFUN2:chol:symmetric', ...
+        'The chebun2 must be a symmetric function.');
+end
 
 % How many terms are posdef: 
 p = k; 

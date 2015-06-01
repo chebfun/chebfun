@@ -9,7 +9,7 @@ function f = lagrange(x, varargin)
 %
 % See also INTERP1, VANDER.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Check inputs:
@@ -24,7 +24,7 @@ end
 
 % Check for uniqueness:
 if ( length(unique(x)) ~= n )
-    error('CHEBFUN:CHEBFUN:lagrange:nonunique', ..
+    error('CHEBFUN:CHEBFUN:lagrange:nonunique', ...
         'Interpolation points must be unique.')
 end
 

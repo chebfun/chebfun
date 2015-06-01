@@ -39,7 +39,8 @@ vals_df = feval(df, x);
 df_exact = @(x) (1+x).^(a-1).*(a+1+x).*exp(x);
 vals_exact = feval(df_exact, x);
 err = vals_df - vals_exact;
-pass(3) = (norm(err, inf) < 1e1*get(f,'epslevel')*norm(vals_exact, inf));
+pass(3) = (norm(err, inf) < 1e2*get(f,'epslevel')*norm(vals_exact, inf));
+    
 
 % fractional pole at the left endpoint
 data.exponents = [d 0];
@@ -50,7 +51,7 @@ vals_df = feval(df, x);
 df_exact = @(x) (1+x).^(d-1).*(d*sin(x)+(1+x).*cos(x));
 vals_exact = feval(df_exact, x);
 err = vals_df - vals_exact;
-pass(4) = (norm(err, inf) < 1e1*get(f,'epslevel')*norm(vals_exact, inf));
+pass(4) = (norm(err, inf) < 1e2*get(f,'epslevel')*norm(vals_exact, inf));
 
 % fractional root at the right endpoint
 data.exponents = [0 c];
@@ -85,7 +86,7 @@ df_exact = @(x) cos(x).*(1 - x).^c.*(x + 1).^b +...
     - c*sin(x).*(1 - x).^(c - 1).*(x + 1).^b;
 vals_exact = feval(df_exact, x);
 err = vals_df - vals_exact;
-pass(7) = (norm(err, inf) < 1e1*get(f,'epslevel')*norm(vals_exact, inf));
+pass(7) = (norm(err, inf) < 1e2*get(f,'epslevel')*norm(vals_exact, inf));
 
 %%
 % Verify that calling diff() gives the reasonably accurate answer as direct 
@@ -119,6 +120,6 @@ df2_exact = @(x) 2*a*cos(x).*(1-x).^b.*(x+1).^(a-1)-...
     b*sin(x).*(b-1).*(1-x).^(b-2).*(x+1).^a;
 vals_exact = feval(df2_exact, x);
 err = vals_df2 - vals_exact;
-pass(9) = (norm(err, inf) < 1e1*get(f,'epslevel')*norm(vals_exact, inf));
+pass(9) = (norm(err, inf) < 1e2*get(f,'epslevel')*norm(vals_exact, inf));
 
 end

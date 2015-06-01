@@ -18,7 +18,7 @@ function [f, R, E] = qr(f, outputFlag, methodFlag)
 %
 % See also innerProduct.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Simply call innerProduct:

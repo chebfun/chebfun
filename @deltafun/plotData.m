@@ -9,7 +9,7 @@ function data = plotData(f, g, h)
 %
 % See also FUN/PLOTDATA.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 
@@ -17,10 +17,11 @@ function data = plotData(f, g, h)
 % Initialize arrays:
 xDelta = [];
 yDelta = [];
+yBase  = [];
 
 if ( nargin == 1 )
     data = plotData(f.funPart);
-    [xDelta, yDelta] = getDeltaData(f); 
+    [xDelta, yDelta, yBase] = getDeltaData(f); 
     
 elseif ( nargin == 2 )
     % PLOT(F, G)
@@ -36,7 +37,7 @@ elseif ( nargin == 2 )
     
     if ( isa(g, 'deltafun') )
         data = plotData(f, g.funPart);
-        [xDelta, yDelta] = getDeltaData(g);    
+        [xDelta, yDelta, yBase] = getDeltaData(g);    
         xDelta = feval(f, xDelta);
     else
         data = plotData(f, g);        
@@ -63,15 +64,17 @@ end
 % Update data struct with delta functions:
 data.xDeltas = xDelta;
 data.yDeltas = yDelta;
+data.yDeltaBase = yBase;
 
 end
 
-function [xData, yData] = getDeltaData(f)
+function [xData, yData, yBase] = getDeltaData(f)
 %GETDELTADATA   Extract data for delta function plotting.
 
 % Initialize empty data:
 xData = [];
 yData = [];
+yBase = [];
 
 % Handle delta functions (Derivatives of Delta-functions are not plotted):
 if ( ~isempty(f.deltaLoc) )
@@ -86,6 +89,8 @@ if ( ~isempty(f.deltaLoc) )
         xData = f.deltaLoc.';
         % f.deltaMag is necessarily a row vector by now.
         yData = f.deltaMag.';
+        % The starting base for a delta function:
+        yBase = feval(f.funPart, f.deltaLoc).';
     end
 end
     

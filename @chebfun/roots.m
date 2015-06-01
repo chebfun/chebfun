@@ -31,7 +31,7 @@ function r = roots(F, varargin)
 %   used to activate and deactivate the recursion procedure respectively, to
 %   compute the roots as explained in the 'all' and 'complex' modes.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % [TODO]: Scales and tolerances are quite arbitrary here..

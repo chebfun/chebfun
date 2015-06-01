@@ -39,7 +39,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) linop 
 %
 % See also CHEBOPPREF, CHEBOP, CHEBMATRIX, LINOP.ADDBC.
     
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -95,7 +95,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) linop 
         %   Note that the 'linop' is just a convenient name. The outputs are
         %   *not* linops.
         %
-        % See also OPERATORBLOCK.
+        % See also OPERATORBLOCK, PRIMITIVEFUNCTIONALS.
             
             if ( nargin == 0 )
                 domain = [-1 1];
@@ -121,7 +121,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) linop 
         %   Note that the 'linop' is just a convenient name. The outputs are *not*
         %   linops.
         %
-        % See also FUNCTIONALBLOCK.
+        % See also FUNCTIONALBLOCK, PRIMITIVEOPERATORS.
         
             if ( nargin == 0 )
                 domain = [-1 1];

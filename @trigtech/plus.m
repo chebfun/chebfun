@@ -7,7 +7,7 @@ function f = plus(f, g)
 %
 % See also MINUS, UPLUS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty(f) || isempty(g) ) % TRIGTECH + [] = [].
@@ -34,7 +34,7 @@ elseif ( isa(g, 'double') ) % TRIGTECH + double.
     if mod(N,2) == 1
         const_index = (N+1)/2;
     else
-        const_index = N/2;
+        const_index = N/2+1;
     end
     f.coeffs(const_index,:) = f.coeffs(const_index,:) + g;
     

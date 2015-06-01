@@ -2,7 +2,7 @@ function f = flipud(f)
 %FLIPUD   Flip/reverse a SINGFUN object.
 %   G = FLIPUD(F) returns G such that G(x) = F(-x) for all x in [-1,1].
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Flip the smooth part:

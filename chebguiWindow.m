@@ -22,7 +22,7 @@ function varargout = chebguiWindow(varargin)
 %  files live in the @chebguiExporter folder, and its subclasses.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Suppress irritating MLINT warnings: 
@@ -888,6 +888,23 @@ guidata(hObject, handles);
 end
 
 function menu_odeplotting_Callback(hObject, eventdata, handles)
+end
+
+function menu_pdeSolver_Callback(hObject, eventdata, handles)
+end
+
+function menu_pdeSolver_pde15s_Callback(hObject, eventdata, handles)
+handles.guifile.options.pdeSolver = 'pde15s';
+set(handles.menu_pdeSolver_pde15s, 'checked', 'on');
+set(handles.menu_pdeSolver_pde23t, 'checked', 'off');
+guidata(hObject, handles);
+end
+
+function menu_pdeSolver_pde23t_Callback(hObject, eventdata, handles)
+handles.guifile.options.pdeSolver = 'pde23t';
+set(handles.menu_pdeSolver_pde15s, 'checked', 'off');
+set(handles.menu_pdeSolver_pde23t, 'checked', 'on');
+guidata(hObject, handles);
 end
 
 function menu_pdeplotting_Callback(hObject, eventdata, handles)

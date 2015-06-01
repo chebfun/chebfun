@@ -8,7 +8,7 @@ function p = legpoly(n, dom, normalize, method)
 %   interval given by the domain D, which must be bounded.
 %
 %   P = LEGPOLY(N, D, 'norm') or P = LEGPOLY(N, 'norm') normalises so that
-%   integrate(P(:,j).*P(:,k)) = delta_{j,k}.
+%   integral(P(:,j).*P(:,k)) = delta_{j,k}.
 %
 %   For N <= 1000 LEGPOLY uses a weighted QR factorisation of a 2*(N+1) x
 %   2*(N+1) Chebyshev Vandermonde matrix. For scalar N > 1000 (or a short
@@ -19,7 +19,7 @@ function p = legpoly(n, dom, normalize, method)
 %
 % See also CHEBPOLY, LEGPTS, and LEG2CHEB.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Parse input:

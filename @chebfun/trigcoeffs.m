@@ -38,39 +38,42 @@ function varargout = trigcoeffs(f, N)
 %
 % See also CHEBCOEFFS, LEGCOEFFS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Trivial empty case:
 if ( isempty(f) )
-    varargout = [];
+    varargout = {};
     return
 end
 
 %% Initialize and error checking
 numFuns = numel(f.funs);
 
-% If N is not passed in and the numFuns > 1 then throw an error
-if ( (nargin == 1) && (numFuns > 1 ) )
-    error('CHEBFUN:trigcoeffs:inputN',...
-        'Input N is required for piecewise CHEBFUN objects.');
-end
-
+% If N is not given:
 if ( nargin == 1 )
-    N = length(f);
+    if ( numFuns > 1 )
+        error('CHEBFUN:CHEBFUN:trigcoeffs:inputN',...
+            'Input N is required for piecewise CHEBFUN objects.');
+    elseif ( ~isPeriodicTech(f) )
+        error('CHEBFUN:CHEBFUN:trigcoeffs:chebfun',...   
+            'trigcoeffs(<chebfun>,N) is allowed but not trigcoeffs(<chebfun>).');
+    else
+        N = length(f);
+    end
 end
 
 if ( N <= 0 )
-    varargout = [];
+    varargout = {};
     return
 end
 if ( ~isscalar(N) || isnan(N) )
-    error('CHEBFUN:trigcoeffs:inputN', 'Input N must be a scalar.');
+    error('CHEBFUN:CHEBFUN:trigcoeffs:inputN', 'Input N must be a scalar.');
 end
 
 if ( any(isinf(f.domain)) )
     % Fourier coefficients are not allowed for unbounded domains.
-    error('CHEBFUN:trigcoeffs:infint', ...
+    error('CHEBFUN:CHEBFUN:trigcoeffs:infint', ...
         'Infinite intervals are not supported here.');
 end
 
@@ -83,7 +86,6 @@ if ( numFuns ~= 1 )
     f = merge(f);
     numFuns = numel(f.funs);
 end
-
 
 %% Compute the coefficients.
 

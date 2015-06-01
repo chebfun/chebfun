@@ -7,7 +7,7 @@ classdef chebtech < smoothfun % (Abstract)
 %
 % See also CHEBTECH1, CHEBTECH2, CHEBTECH.TECHPREF.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -233,6 +233,9 @@ classdef chebtech < smoothfun % (Abstract)
         
         % Flip/reverse a CHEBTECH object.
         f = flipud(f)
+        
+        % Fractional integral of a CHEBTECH object.
+        f = fracInt(f, mu, b)
 
         % Happiness test for a CHEBTECH
         [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, pref)
@@ -278,6 +281,9 @@ classdef chebtech < smoothfun % (Abstract)
 
         % A 'loose' (i.e., not too strict) check for happiness.
         [ishappy, epslevel, cutoff] = looseCheck(f, values, pref)
+        
+        % Evaluate a CHEBTECH at -1.
+        out = lval(f)
 
         % Convert an array-valued CHEBTECH into an ARRAY of CHEBTECH objects.
         g = mat2cell(f, M, N)
@@ -353,6 +359,9 @@ classdef chebtech < smoothfun % (Abstract)
         
         % Round a CHEBTECH towards nearest integer.
         g = round(f)
+        
+        % Evaluate a CHEBTECH at +1.
+        out = rval(f)
 
         % Test an evaluation of the input OP against a CHEBTECH approx.
         pass = sampleTest(op, values, f)

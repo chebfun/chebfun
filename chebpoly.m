@@ -13,10 +13,10 @@ function f = chebpoly(n, d, kind)
 %
 % See also LEGPOLY, FOURPOLY, and CHEBPTS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.chebfun.org/ for Chebfun information. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
 
-% TODO: This method requires a test.
+% TODO: Add support for 3rd and 4th kind polynomials?
 
 % Defaults:
 defaultKind = 1;
@@ -39,23 +39,26 @@ elseif ( nargin == 2 )
     end
 end    
 
+if ( ~( kind == 1 || kind == 2 ) )
+    error('CHEBFUN:chebpoly:kind', ...
+        'CHEBPOLY(N, KIND) only supports KIND = 1 or KIND = 2.');
+end
+
 % Cannot handle unbounded domains:
 if ( any(isinf(d)) )
     error('CHEBFUN:chebpoly:infdomain', ...
     'Chebyshev polynomials are not defined over an unbounded domain.');
 end
 
-% [TODO]: 2nd-kind polynomials:
-if ( kind == 2 )
-    error('CHEBFUN:chebpoly:kind', ...
-    '2nd-kind Chebyshev polynomials have not been implemented yet.');
-end
-
 % Construct the Chebyshev coefficients:
-N = max(n)+1;
-c = zeros(N, numel(n));
-for k = 1:numel(n)
-    c(n(k)+1, k) = 1;
+N = max(n) + 1;
+c = eye(N);
+c = c(:,n+1);
+
+% 2nd-kind polynomials:
+if ( kind == 2 )
+    % Use the recurrence relation from ultraS to map from Chebyshev U to T.
+    c = ultraS.convertmat(N, 0, 0)\c;
 end
 
 % Construct a CHEBFUN from the coefficients:

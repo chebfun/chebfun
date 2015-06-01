@@ -15,7 +15,7 @@ function [bcrow, bcvalue] = constructBC(bcArg, bcpos, een, bcn, dom, scl, order)
 %   bcvalue = vector of discretized nonhomogeneous part of the constraint 
 %   (satisfying bcrow * X = bcvalue, or X * bcrow' = bcvalue').
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isa(bcArg, 'chebfun') )
@@ -90,7 +90,7 @@ elseif ( isa( bcArg, 'function_handle' ) )
         end
         
         % Now go find the constants in the boundary conditions: 
-        L = linearize(chebop(bcArg, dom));
+        L = linearize(chebop(bcArg, dom), [], [], 0, 0);
         p = recoverCoeffs(L);
         
         % Set up the boundary rows that will impose the linear constraints: 

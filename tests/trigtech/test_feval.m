@@ -31,13 +31,15 @@ pass(2) = (norm(feval(f, x) - f_exact(x), inf) < ...
 f = testclass.make(@(x) cos(100*sin(pi*x)), [], pref);
 f_exact = @(x) cos(100*sin(pi*x));
 pass(3) = (norm(feval(f, x) - f_exact(x), inf) < ...
-    10*f.vscale.*f.epslevel);
+    1e3*f.vscale.*f.epslevel);
+    
+
 
 f = testclass.make(@(x) exp(1i*pi*x), [], pref);
 f_exact = @(x) exp(1i*pi*x);
 pass(4) = (norm(feval(f, x) - f_exact(x), inf) < ...
     10*f.vscale.*f.epslevel);
-    
+
 %%
 % Check row vector and matrix input.
     

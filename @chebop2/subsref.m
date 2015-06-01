@@ -8,7 +8,7 @@ function varargout = subsref(N, ref)
 %   N(F) return the forward application of N to the CHEBFUN2 F. This is
 %   equivalent to N * F. 
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 indx = ref(1).subs;
@@ -47,7 +47,16 @@ switch ( ref(1).type )
         elseif ( length(indx) == 1 && isa(indx{1}, 'chebfun2') )
             % Forward application of a CHEBOP2 to a CHEBFUN2.
             op = N.op; 
-            varargout = { op(indx{1}) }; 
+            if ( nargin( op ) == 1 )
+                varargout = { op(indx{1}) };
+            elseif ( nargin( op ) == 3)
+                x = chebfun2(@(x,y) x, N.domain); 
+                y = chebfun2(@(x,y) y, N.domain);
+                varargout = {op(x, y, indx{1}) };
+            else
+                error('CHEBFUN:CHEBOP2:subsref:oparguments',...
+                'Unknown number of arguments to differential operator.')
+            end
         else
             error('CHEBFUN:CHEBOP2:subsref:nonnumeric',...
                 'Only numeric values and chebfun2 are recognised.')

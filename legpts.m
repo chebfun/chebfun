@@ -22,13 +22,14 @@ function [x, w, v, t] = legpts(n, int, meth)
 %    METHOD = 'GW' uses the traditional Golub-Welsch eigenvalue method,
 %     which is maintained mostly for historical reasons.
 %
-%   [X, W, V, T] = LEGPTS(N) returns also the arccos of the nodes, T = acos(X).
-%   In some situations (in particular with 'ASY') these can be computed to a
-%   much better relative precision than X.
+%   [X, W, V, T] = LEGPTS(...) returns also the arccos of the nodes (scaled to
+%   lie in [-1, 1] if the INTERVAL argument is used), T = acos(X).  In some
+%   situations (in particular with 'ASY') these can be computed to a much
+%   better relative precision than X.
 %
 % See also CHEBPTS, JACPTS, LOBPTS, RADAUPTS, HERMPTS, LAGPTS, and TRIGPTS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -113,7 +114,7 @@ elseif ( n == 1 )
     x = mean(interval);
     w = diff(interval);
     v = 1;
-    t = 1;
+    t = pi/2;
     return
 elseif ( n == 2 )
     x0 = [-1 ; 1]/sqrt(3);

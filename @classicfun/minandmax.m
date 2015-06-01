@@ -15,7 +15,7 @@ function [vals, pos] = minandmax(f)
 %
 % See also MIN, MAX.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Call minandmax for the ONEFUN of f:

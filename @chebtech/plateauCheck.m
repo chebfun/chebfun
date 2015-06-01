@@ -1,4 +1,4 @@
-function [ishappy, epsLevel, cutoff] = plateauCheck(f, values, pref)
+function [ishappy, epslevel, cutOff] = plateauCheck(f, values, pref)
 %PLATEAUCHECK   Attempt to trim trailing Chebyshev coefficients in a CHEBTECH.
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = PLATEAUCHECK(F, VALUES) returns an estimated
 %   location, the CUTOFF, at which the CHEBTECH F could be truncated. One of two
@@ -26,18 +26,18 @@ function [ishappy, epsLevel, cutoff] = plateauCheck(f, values, pref)
 %
 % See also LINOPV4CHECK, STRICTCHECK, CLASSICCHECK.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Grab some preferences:
 if ( nargin == 1 )
     pref = f.techPref();
-    epsLevel = pref.eps;
+    epslevel = pref.eps;
 elseif ( isnumeric(pref) )
-    epsLevel = pref;
+    epslevel = pref;
     pref = f.techPref();
 else
-    epsLevel = pref.eps;
+    epslevel = pref.eps;
 end
 
 % Grab the coefficients:
@@ -57,12 +57,12 @@ maxvals = max(abs(values), [], 1);
 if ( max(maxvals) == 0 )
     % This is the zero function, so we must be happy!
     ishappy = true;
-    cutoff = 1;
+    cutOff = 1;
     return
 elseif ( any(isinf(maxvals)) )
     % Inf located. No cutoff.
     ishappy = false;
-    cutoff = n;
+    cutOff = n;
     return
 end
 
@@ -71,25 +71,27 @@ end
 n90 = ceil( 0.90*n );
 absCoeff = abs( coeff(1:n90,:) );
 vscale = max(absCoeff,[],1);          % scaling in each column
-vscale = max( [vscale(:); f.vscale] );
-absCoeff = absCoeff / vscale;
+vscale = max( [vscale ; f.vscale] );
+absCoeff = absCoeff * diag(1./vscale);
 
 %% Deal with array-valued functions.
 
 numCol = size(coeff, 2);
 ishappy = false(1,numCol);
-epsLevels = zeros(1,numCol);
-cutoff = zeros(1,numCol);
+epslevels = zeros(1,numCol);
+cutOff = zeros(1,numCol);
 for m = 1:numCol
-    [ishappy(m), epsLevels(m), cutoff(m)] = checkColumn(absCoeff(:,m),epsLevel);
+    [ishappy(m), epslevels(m), cutOff(m)] = checkColumn(absCoeff(:,m), epslevel);
     if ( ~ishappy(m) )
         % No need to continue if it fails on any column.
         break
     end
 end
 
-epsLevel = max(epsLevels);
+epslevel = epslevels;
+% epslevel = max(epslevel)
 ishappy = all(ishappy); 
+cutOff = max(cutOff);
 
 end
 

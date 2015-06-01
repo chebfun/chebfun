@@ -1,7 +1,7 @@
 classdef chebop2
-%CHEBOP2   CHEBOP2 class for representing partial differential operators.
+%CHEBOP2   CHEBOP2 class for representing linear partial differential operators.
 %
-% Class used to solve PDEs defined on rectangular domains that have unique and
+% Class used to solve linear PDEs defined on rectangular domains that have unique and
 % globally smooth solutions.
 %
 % N = CHEBOP2(@(u) op(u)) constructs an operator N representing the operator
@@ -11,24 +11,37 @@ classdef chebop2
 % functions of two variables defined on [a,b] by [c,d].
 %
 % N = CHEBOP2(@(x,y,u) op(x,y,u),...) constructs a variable coefficient PDE
-% operator.
+% operator. If a partial differential operator is constant coefficient, we
+% recommend the @(u) notation rather than @(x,y,u) as it is more efficient. 
 %
 % Boundary conditions are imposed via the syntax N.lbc, N.rbc, N.ubc, and N.dbc.
 %
-% Example (solve Poisson with Dirichlet conditions):
+% Example 1: (Poisson with Dirichlet conditions):
 %    N = chebop2(@(u) diff(u,2,1) + diff(u,2,2));
 %    N.bc = 0;
 %    u = N \ 1;
+% 
+% Example 2: (Helmholtz equation with gravity)
+%    N = chebop2(@(x,y,u) laplacian(u) - 10*y.^2.*u, [-1 1 -3 0]); 
+%    N.bc = 1; 
+%    u = N \ 0; 
 %
+% Example 3: (Klein-Gordon equation) 
+%    N = chebop2(@(u) diff(u,2,1) - diff(u,2,2) + 5*u,[-1 1 0 3]); 
+%    N.lbc = 0; N.rbc = 0; 
+%    N.dbc = @(x,u) [u - exp(-30*x.^2) ; diff(u)];
+%    u = N \ 0; 
+% 
 % For further details about the PDE solver, see:
 %
 % A. Townsend and S. Olver, The automatic solution of partial differential
 % equations using a global spectral method, in preparation, 2014.
 %
 % Warning: This PDE solver is an experimental new feature. It has not been
-% publicly advertised.
+% publicly advertised.  Chebop2 cannot do nonlinear problems as more 
+% algorithmic advances are needed. 
 
-% Copyright 2014 by The University of Oxford and The Chebfun2 Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun2 Developers.
 % See http://www.chebfun.org/ for Chebfun information.
     
     %% PROPERTIES.

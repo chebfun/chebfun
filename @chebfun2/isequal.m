@@ -5,7 +5,7 @@ function out = isequal( f, g )
 % CHEBFUN2, up to relative machine precision. If returns 0 then F and G are
 % not the same up to relative machine precision. 
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty(f) )
@@ -23,9 +23,9 @@ frows = f.rows;
 fpiv = f.pivotValues;
 
 % Get the low rank representation for g. 
-gcols = f.cols; 
-grows = f.rows; 
-gpiv = f.pivotValues;
+gcols = g.cols; 
+grows = g.rows; 
+gpiv = g.pivotValues;
 
 % Test every part: 
 out = ( isequal(fcols, gcols) & isequal(frows, grows) & isequal(fpiv, gpiv) );

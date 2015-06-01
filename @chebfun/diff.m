@@ -24,7 +24,7 @@ function F = diff(F, n, dim)
 %   can switch to the Caputo definition with a call of the form DIFF(F, ALPHA,
 %   'Caputo'). [Requires SINGFUN].
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Trivial case:
@@ -40,16 +40,13 @@ if ( nargin < 3 )
     dim = 1;
 end
 
-if ( ~any(dim == [1, 2]) )
+if ( isnumeric(dim) && ~any(dim == [1, 2]) )
     error('CHEBFUN:CHEBFUN:diff:dim', 'Dimension must either be 1 or 2.');
 end
     
 if ( round(n) ~= n )
-    % Fractional integral:
-    % [TODO]: Implement this!
-    error('CHEBFUN:CHEBFUN:diff:notImplemented', ...
-        'Fractional derivatives not yet implemented.');
-    F = fracCalc(F, n);
+    % Fractional derivative:
+    F = fracDiff(F, n, dim);
     return
 end
 
@@ -168,7 +165,8 @@ f.pointValues = pointValues;
             data.domain = f.domain;
             data.deltaMag = deltaMag.'/2;
             data.deltaLoc = f.domain;
-            f = deltafun(f, data, pref);
+            % Add new delta functions to the existing fun:
+            f = deltafun(0, data, pref) + f;
         end
     end
 

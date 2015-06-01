@@ -5,7 +5,7 @@ function D = baryDiffMat(x, w, k, t)
 %   points.
 %
 %   D = BARYDIFFMAT(X, W) is the same, but here the derivative is of the
-%   barycentrix interpolant defined by the points X and the weights W.
+%   barycentric interpolant defined by the points X and the weights W.
 %
 %   D = BARYDIFFMAT(X, W, K) is the same, but for the Kth derivative.
 %
@@ -25,7 +25,7 @@ function D = baryDiffMat(x, w, k, t)
 %  [4] R. Baltensperger and M.R. Trummer, "Spectral Differencing with a Twist",
 %   SIAM J. Sci. Comp., Vol. 24, No. 5, pp. 1465–1487, 2003.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 N = length(x);

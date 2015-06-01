@@ -16,7 +16,7 @@ function varargout = qr(f, ignored)
 %
 % See also LU, and CHOL. 
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 
@@ -28,9 +28,10 @@ end
 % As always start with the CDR decomposition: 
 [C, D, R] = cdr( f ); 
 
-% Balance out the scaling: 
-C = C * sqrt( D ); 
-R = R * sqrt( D ); 
+% Balance out the scaling, becareful about signs: 
+sgns = sign( diag( D ) ); 
+C = C * diag(sgns) * sqrt( abs(D) );   % Put the signs into Q
+R = R * sqrt( abs(D) ); 
 
 % QR of the column 
 [Q, RC] = qr( C ); 

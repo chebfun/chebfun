@@ -3,7 +3,7 @@ function B = getConstraints(disc)
 %   B = GETONSTRAINTS(DISC) returns a matrix discretization of the constraints
 %   and continuity conditions from the linear operator in DISC.SOURCE. 
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Developer note:

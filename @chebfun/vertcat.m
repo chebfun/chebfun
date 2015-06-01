@@ -6,7 +6,7 @@ function out = vertcat(varargin)
 %
 % See alos HORZCAT, CAT, CHEBMATRIX, QUASIMATRIX.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -28,7 +28,8 @@ if ( ~all(chebfun1(1).isTransposed == ...
         'Dimensions of matrices being concatenated are not consistent. ');
 end
 
-numElements = cellfun(@(u) min(size(u)), varargin);
+numElements = cellfun(@(u) numel(u), varargin);
+numElements(isCheb) = cellfun(@(u) min(size(u)), varargin(isCheb));
 if ( any(numElements > 1) )
     for k = 1:numel(varargin)
         varargin{k} = chebmatrix(num2cell(varargin{k}));
@@ -45,7 +46,7 @@ end
 % Horizontal concatenation of row CHEBFUN objects produces a CHEBMATRIX:
 if ( chebfun1(1).isTransposed )
     args = cellfun(@transpose, varargin, 'UniformOutput', false);
-    out = horzcat(args{:}).';
+    out = horzcat(args{:})';
 else
     out = chebmatrix(varargin.');
 end

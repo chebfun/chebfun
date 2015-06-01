@@ -4,7 +4,7 @@ function f = changeMap(f, newdom)
 %   BNDFUN G defined on [c, d], where c = NEWDOM(1), d = NEWDOM(2), such that
 %       G(x) = F(a*(d - x)/(d - c) + b*(x - c)/(d - c)) for all x in [c, d].
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Assign a new linear map to f, obtained from the BNDFUN.CREATEMAP() method:

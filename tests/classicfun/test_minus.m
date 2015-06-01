@@ -117,7 +117,8 @@ h = f - g;
 hVals = feval(h, x);
 hExact = oph(x);
 err = hVals - hExact;
-pass(22) = norm(err, inf) < get(h,'epslevel').*get(h,'vscale');
+pass(22) = norm(err, inf) < 1e1*get(h,'epslevel').*get(h,'vscale');
+
 
 end
 
@@ -143,5 +144,6 @@ function result = test_sub_function_and_function(f, f_op, g, g_op, x)
     h_exact = @(x) f_op(x) - g_op(x);
     norm(feval(h1, x) - h_exact(x), inf);
     result(2) = norm(feval(h1, x) - h_exact(x), inf) <= ...
-        10*max(get(h1,'vscale').*get(h1,'epslevel'));
+        100*max(get(h1,'vscale').*get(h1,'epslevel'));
+        
 end

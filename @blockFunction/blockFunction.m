@@ -4,7 +4,7 @@ classdef blockFunction
 %
 % See also LINOP, CHEBOP, CHEBOPPREF.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -118,9 +118,9 @@ classdef blockFunction
         end
 
         function F = mult(A, f)
-            %MULT
-            %
-            % Returns a BLOCKFUNCTION corresponding to a call to CHEBFUN/TIMES.
+        %MULT
+        %
+        % Returns a BLOCKFUNCTION corresponding to a call to CHEBFUN/TIMES.
             
             % Note, we wrap this in a nested function to support scalar
             % expansion.
@@ -145,18 +145,26 @@ classdef blockFunction
             C = blockFunction( @(z) A.func(z) + B.func(z) );
         end
 
+        function F = outer(A, f, g)
+        %OUTER
+        %
+        % Returns a BLOCKFUNCTION corresponding to a call to CHEBFUN/MTIMES
+        % with the outer product of two CHEBFUNs F and G.         
+            F = blockFunction( @(z) f * (g*z) );      
+        end
+
         function S = sum(A)
         %SUM
         %
         % Returns a BLOCKFUNCTION corresponding to a call to chebfun/sum.
             S = blockFunction( @(z) sum(z) );
         end
-        
+
         function C = uminus(A)
         %-     Unary minus of BLOCKFUNCTION.
             C = blockFunction( @(z) -A.func(z) );
         end
-        
+
         function A = uplus(A)
         %-     Unary plus of BLOCKFUNCTION.
         end      
@@ -168,7 +176,7 @@ classdef blockFunction
         % zero scalar.
             z = blockFunction( @(u) 0 );
         end
-        
+
         function Z = zeros(A)
         %ZEROS
         %
@@ -176,7 +184,7 @@ classdef blockFunction
         % zero chebfun.
             Z = blockFunction( @(z) chebfun(0, A.domain) );
         end
-        
+
     end
     
 end

@@ -9,7 +9,7 @@ classdef fun % (Abstract)
 %
 % See also DELTAFUN, CLASSICFUN.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -61,8 +61,7 @@ classdef fun % (Abstract)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Abstract = true, Static = false )
 
-        % Test if the FUN is constructed with a basis of periodic
-        % functions.
+        % Test if the FUN is constructed with a basis of periodic functions.
         out = isPeriodicTech(f);
 
         % Return a version of the fun with all deltas removed.
