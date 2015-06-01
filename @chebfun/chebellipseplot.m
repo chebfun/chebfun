@@ -1,5 +1,5 @@
 function varargout = chebellipseplot(u, varargin)
-%CHEBELLIPSEPLOT   Plot the Bernstein (aka Chebyshev) ellipses.
+%CHEBELLIPSEPLOT   Plot the estimated Bernstein ellipses, a.k.a. Chebfun ellipse.
 %   CHEBELLIPSEPLOT(U) plots Bernstein ellipses in the complex plane for each
 %   piecewise part of U, with foci at points in U.domain and semi-minor and
 %   major axes summing to rho(k) = C*exp(abs(log(EPS))/N(k)), where C is the
