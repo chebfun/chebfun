@@ -38,5 +38,10 @@ p = chebfun2(@(x,y) x - y + .5);
 q = chebfun2(@(x,y) x + y );
 r = roots([p; q]); 
 pass(j) = norm( r - [-.25 .25] ) < tol; j = j + 1; 
-end
 
+p = chebfun2(@(x, y) y + x/2 + 1/10);
+q = chebfun2(@(x, y) y - 2.1*x + 2);
+r = roots([p ;  q], 'resultant');
+pass(j) = norm(r - [0.730769230769231, -0.465384615384615]) < tol; j = j + 1;
+
+end

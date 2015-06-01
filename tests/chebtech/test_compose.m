@@ -48,7 +48,8 @@ for n = 1:4
     x = g.points();
     values = g.coeffs2vals(g.coeffs);
     pass(n, 4) = norm(sin([x x x.^2]) - values, inf) < ...
-        10*max(h.vscale.*h.epslevel);
+        1e2*max(h.vscale.*h.epslevel);
+    
     
     % Compose 2 CHEBTECH objects with a binary function:
     f1 = testclass.make(@(x) sin(x));
@@ -68,7 +69,8 @@ for n = 1:4
     hvalues = h.coeffs2vals(h.coeffs);
     gvalues = g.coeffs2vals(g.coeffs);
     pass(n, 6) = norm(hvalues - gvalues, inf) < ...
-        max(10*h.vscale.*h.epslevel);
+        10*max(10*h.vscale.*h.epslevel); 
+        
     
     % Compose g(f), when f and g are CHEBTECH objects:
     f = testclass.make(@(x) x.^2);

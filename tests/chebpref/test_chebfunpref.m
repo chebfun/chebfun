@@ -107,6 +107,15 @@ q.techPrefs.testPref = 'testq';
 pass(15) = isequalNaN(chebfunpref.mergeTechPrefs(p, q), ...
     chebfunpref.mergeTechPrefs(p.techPrefs, q.techPrefs));
 
+% Test that chebfunpref().techPrefs returns a complete set of tech prefs.
+p = chebfunpref();
+
+p.tech = @chebtech2;
+pass(16) = isequalNaN(p.techPrefs, chebtech2().techPref());
+
+p.tech = @trigtech;
+pass(17) = isequalNaN(p.techPrefs, trigtech().techPref());
+
 % Test functions for managing default preferences.
 savedPrefs = chebfunpref();
 
@@ -114,14 +123,14 @@ try
     chebfunpref.setDefaults('factory');
     factoryPrefs = chebfunpref.getFactoryDefaults();
     p = chebfunpref();
-    pass(16) = isequalNaN(p, factoryPrefs);
+    pass(18) = isequalNaN(p, factoryPrefs);
 
     chebfunpref.setDefaults('factory');
     p = chebfunpref();
     p.domain = [-2 7];
     p.testPref = 'testq';
     chebfunpref.setDefaults(p);
-    pass(17) = strcmp(chebfunpref().testPref, 'testq') && ...
+    pass(19) = strcmp(chebfunpref().testPref, 'testq') && ...
         isequal(chebfunpref().domain, [-2 7]);
 
     chebfunpref.setDefaults('factory');
@@ -129,18 +138,18 @@ try
     p.domain = [-2 7];
     p.testPref = 'testq';
     chebfunpref.setDefaults(p);
-    pass(18) = strcmp(chebfunpref().testPref, 'testq') && ...
+    pass(20) = strcmp(chebfunpref().testPref, 'testq') && ...
         isequal(chebfunpref().domain, [-2 7]);
 
     chebfunpref.setDefaults('factory');
     chebfunpref.setDefaults('domain', [-2 7], 'testPref', 'testq');
-    pass(19) = strcmp(chebfunpref().testPref, 'testq') && ...
+    pass(21) = strcmp(chebfunpref().testPref, 'testq') && ...
         isequal(chebfunpref().domain, [-2 7]);
 
     % Test getting defaults:
-    pass(20) = isnumeric(chebfunpref().eps);
-    pass(21) = ischar(chebfunpref().blowupPrefs.defaultSingType);
-    pass(22) = ischar(chebfunpref().refinementFunction);
+    pass(22) = isnumeric(chebfunpref().eps);
+    pass(23) = ischar(chebfunpref().blowupPrefs.defaultSingType);
+    pass(24) = ischar(chebfunpref().refinementFunction);
     
 catch ME
     

@@ -48,7 +48,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
 %
 % See also CHEBOPPREF, LINOP, CHEBMATRIX.MATRIX, CHEBMATRIX.SPY.
     
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -120,7 +120,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             end
 
             if ( nargin > 1 )
-                A.domain = A.mergeDomains(A, dom);
+                A.domain = A.mergeDomains(A.domain, dom);
             end
             
         end
@@ -141,12 +141,6 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods
                    
-        function A = set.domain(A, d)
-        %SET.DOMAIN   Insert breakpoints in the domain of the CHEBMATRIX.
-        %   We don't allow removing breakpoints, or changing endpoints.
-            A.domain = A.mergeDomains(d, A.domain);
-        end
-        
         function d = get.diffOrder(L)
         %GET.DIFFORDER    Differential order of each CHEBMATRIX block. 
         %   Also accessible via property: get(A, 'diffOrder');

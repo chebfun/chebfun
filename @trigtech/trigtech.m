@@ -44,7 +44,7 @@ classdef trigtech < smoothfun % (Abstract)
 %
 % See also TRIGTECH.TECHPREF, TRIGPTS, HAPPINESSCHECK, REFINE.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -425,7 +425,7 @@ classdef trigtech < smoothfun % (Abstract)
         
         % Aliasing:
         coeffs = alias(coeffs, m)
-        
+
         % Differentiation matrix in Fourier basis.
         D = diffmat(n, p)
         

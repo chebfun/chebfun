@@ -78,14 +78,16 @@ for n = 1:2
     x = testclass.chebpts(k);
     values = g.coeffs2vals(g.coeffs);
     pass(n, 10) = norm(values - [F(x), -F(x)], inf) < ...
-        10*max(g.vscale.*g.epslevel);
-
+        1e3*max(g.vscale.*g.epslevel);
+    
+    
     k = 100;
     g = prolong(f, k);
     x = testclass.chebpts(k);
     values = g.coeffs2vals(g.coeffs);
     pass(n, 11) = norm(values - [F(x), -F(x)], inf) < ...
-        10*max(g.vscale.*g.epslevel);
+        1e4*max(g.vscale.*g.epslevel);
+    
 
     g = prolong(f, 1);
     pass(n, 12) = size(g, 1) == 1 && norm(g.coeffs, inf) < ...
@@ -96,7 +98,8 @@ for n = 1:2
     exact_values = [sin(1000*y) -sin(1000*y)];
     values = g.coeffs2vals(g.coeffs);
     pass(n, 13) = size(g, 1) == 2 && ...
-        norm(values - exact_values, inf) < 10*max(g.vscale.*g.epslevel);
+        norm(values - exact_values, inf) < 1e3*max(g.vscale.*g.epslevel);
+    
 
     F = @(x) cos(1000*x);
     f = testclass.make(@(x) [F(x), -F(x)], [], pref);
@@ -111,7 +114,8 @@ for n = 1:2
     exact_values = [cos(1000*y) -cos(1000*y)];
     values = g.coeffs2vals(g.coeffs);
     pass(n, 15) = length(g) == 2 && ...
-        norm(values - exact_values, inf) < 10*max(g.vscale.*g.epslevel);
+        norm(values - exact_values, inf) < 1e3*max(g.vscale.*g.epslevel);
+    
 
     v = [1 2 3];
     f = testclass.make(v, [], pref);

@@ -78,8 +78,8 @@ classdef cheboppref < chebpref
 %     ['ode113']
 %     'ode15s'
 %     'ode45'
-%     collocation
-%     ultraS
+%     'collocation'
+%     'ultraS'
 %
 %     This options determines which of the MATLAB built-in IVP solvers is used
 %     for solving IVPs posed with the CHEBOP class. Any option of
@@ -157,7 +157,7 @@ classdef cheboppref < chebpref
 %
 % See also CHEBFUNPREF.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % TODO:  Further documentation of CHEBOPPREF preferences.

@@ -25,6 +25,10 @@ classdef chebfun
 %   CHEBFUN(@(x) abs(x), [-1, 0, 1]).
 % If a domain is passed to the constructor, it should always be the 2nd input.
 %
+% CHEBFUN(F, N) constructs a CHEBFUN object obtained by interpolating F on an N
+% point Chebyshev grid of the second kind in [-1,1]. Note that this is
+% different from CHEBFUN(F, 'trunc', N), which is described below.
+% 
 % CHEBFUN(A) or CHEBFUN(A, 'chebkind', 2), where A is an Nx1 matrix, constructs
 % a CHEBFUN object which interpolates the data in A on an N-point Chebyshev grid
 % of the second kind (see >> help chebpts). CHEBFUN(A, 'chebkind', 1) and
@@ -103,7 +107,7 @@ classdef chebfun
 %
 % See also CHEBFUNPREF, CHEBPTS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -282,9 +286,6 @@ classdef chebfun
         % Display a CHEBFUN object.
         display(f);
 
-        % Accuracy estimate of a CHEBFUN object.
-        out = epslevel(f, flag);
-        
         % Evaluate a CHEBFUN.
         y = feval(f, x, varargin)
         
@@ -363,6 +364,12 @@ classdef chebfun
         
         % Overlap the domain of two CHEBFUN objects.
         [f, g] = overlap(f, g)
+        
+        % Solve a PDE with CHEBFUN and ODE15S.
+        varargout = pde15s(varargin);
+        
+        % Solve a PDE with CHEBFUN and ODE23T.
+        varargout = pde23t(varargin);
         
         % Plot a CHEBFUN object:
         varargout = plot(f, varargin);
@@ -463,6 +470,9 @@ classdef chebfun
         % Compare domains of two CHEBFUN objects.
         pass = domainCheck(f, g);        
         
+        % Accuracy estimate of a CHEBFUN object.
+        out = epslevel(f, flag);
+
         % Extract columns of an array-valued CHEBFUN object.
         f = extractColumns(f, columnIndex);
         
@@ -480,6 +490,9 @@ classdef chebfun
         
         % Number of columns (or rows) of a CHEBFUN quasimatrix.
         out = numColumns(f)
+        
+        % Solve a PDE with CHEBFUN.
+        varargout = pdeSolve(varargin);
         
         % Obtain data used for plotting a CHEBFUN object:
         data = plotData(f, g, h)
@@ -515,12 +528,18 @@ classdef chebfun
         % Discrete cosine transform:
         y = dct(u, kind);
         
-        % Inverse discrete cosine transform:
-        u = idct(y, kind);
+        % Discrete Legendre transform:
+        y = dlt(u);
         
         % Discrete sine transform:
         y = dst(u, kind);
         
+        % Inverse discrete cosine transform:
+        u = idct(y, kind);
+        
+        % Inverse discrete Legendre transform:
+        u = idlt(y, kind);
+                
         % Inverse discrete sine transform:
         u = idst(y, kind);
         
@@ -529,6 +548,9 @@ classdef chebfun
 
         % Compute Lagrange basis functions for a given set of points.
         f = lagrange(x, varargin);
+        
+        % Non-uniform discrete cosine transform:
+        y = ndct(u);
 
         % ODE113 with CHEBFUN output.
         [t, y] = ode113(varargin);
@@ -691,7 +713,7 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
             end
         elseif ( strcmpi(args{1}, 'equi') )
             % Enable FUNQUI when dealing with equispaced data.
-            keywordPrefs.tech = 'funqui';
+            keywordPrefs.enableFunqui = true;
             args(1) = [];
         elseif ( strcmpi(args{1}, 'vectorize') || ...
                  strcmpi(args{1}, 'vectorise') )
@@ -772,7 +794,7 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
             % Store singularity types.
             data.singType = args{2};
             args(1:2) = [];            
-        elseif ( strcmpi(args{1}, 'exps') )
+        elseif ( strcmpi(args{1}, 'exps') || strcmpi(args{1}, 'exponents') )
             % Store exponents.
             data.exponents = args{2};
             args(1:2) = [];
@@ -867,6 +889,7 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
         % Translate 'periodic' or 'trig'.
         pref.tech = @trigtech;
         pref.splitting = false;
+        pref.enableFunqui = false;
         if ( numel(dom) > 2 )
             error('CHEBFUN:parseInputs:periodic', ...
                 '''periodic'' or ''trig'' option is only supported for smooth domains.');
@@ -893,7 +916,7 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
         if ( isa(op, 'chebfun') )
             op = @(x) feval(op, x);
         end
-        if ( isa(op, 'function_handle') && strcmp(pref.tech, 'funqui') )
+        if ( isa(op, 'function_handle') && pref.enableFunqui )
             if ( isfield(pref.techPrefs, 'fixedLength') && ...
                  ~isnan(pref.techPrefs.fixedLength) )
                 x = linspace(dom(1), dom(end), pref.techPrefs.fixedLength).';

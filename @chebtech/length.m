@@ -4,7 +4,7 @@ function len = length(f)
 %
 % See also SIZE.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % The length of a CHEBTECH is the length of its vector of values.

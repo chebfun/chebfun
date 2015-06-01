@@ -4,7 +4,7 @@ function varargout = subsasgn(f, index, varargin)
 % Note: Designed so boundary conditions of an operator can be converted to 
 % CHEBFUNs before a call to MLDIVIDE.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 idx = index(1).subs;

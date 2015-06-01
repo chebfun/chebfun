@@ -19,7 +19,7 @@ function guess = constructInit(initInput, allVarNames, indVarNameSpace, xt)
 %       GUESS: A CHEBFUN/CHEBMATRIX representing the initial guess/condition for
 %           the problem.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % In order to be able to evaluate the input below, we need to assign r, x or t

@@ -5,7 +5,7 @@ function discjk = extractBlock(disc, j, k)
 %   DISCJK. DISCJK.dimension will be modified by the amount specified in
 %   DISC.dimAdjust(j,k).
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 discjk = extractBlock@chebDiscretization(disc, j, k);

@@ -13,7 +13,7 @@ function f = compose(f, op, g, data, pref)
 %   constructor data in the structure DATA and the options passed by the
 %   CHEBFUNPREF or preference structure PREF to build the returned ONEFUN.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Parse inputs:

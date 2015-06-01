@@ -8,7 +8,7 @@ function populate(hObject, handles, chebg)
 %   CHEBG:      A CHEBGUI object, containing the information we want to fill
 %               the figure with.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Fill the String fields of the handles
@@ -52,6 +52,14 @@ set(handles.menu_tolerance, 'UserData', chebg.tol);
 if ( strcmpi(chebg.type, 'pde') )
     
     set(handles.input_timedomain, 'String', chebg.timedomain);
+
+    if ( strcmp(chebg.options.pdeSolver, 'pde15s') )
+        set(handles.menu_pdeSolver_pde15s, 'Checked', 'On');
+        set(handles.menu_pdeSolver_pde23t, 'Checked', 'Off');
+    else
+        set(handles.menu_pdeSolver_pde15s, 'Checked', 'Off');
+        set(handles.menu_pdeSolver_pde23t, 'Checked', 'On');
+    end
     
     if ( ~strcmp(chebg.options.plotting, 'off') )
         set(handles.menu_pdeplottingon, 'Checked', 'On');

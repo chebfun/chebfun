@@ -7,7 +7,7 @@ function varargout = plotcoeffs2( f )
 %
 % See also PLOTCOEFFS, CHEBCOEFFS2.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % TODO: Needs to be adapted for different kinds of techs.
@@ -21,6 +21,12 @@ X = abs( chebcoeffs2( f ) ); % Absolute value of coefficients.
 h = stem3(xx, yy, X, 'fill', 'markerfacecolor', 'k', 'markeredgecolor', 'k');
 set(gca, 'ZScale', 'log', 'view', [40 20])
 box off
+
+% Add title and labels
+title(gca, 'Chebyshev coefficients')
+xlabel(gca, 'Degree of Chebyshev polynomial (rows)')
+ylabel(gca, 'Degree of Chebyshev polynomial (columns)')
+zlabel(gca, 'Magnitude of coefficient')
 
 % output handle
 if ( nargout ~=0 )

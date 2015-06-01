@@ -5,7 +5,7 @@ function n = normal(c, unit)
 %
 %   N = NORMAL(C, 'unit') returns the unit normal vector to the curve C. 
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % [TODO]:  Reconsider how this function should behave in the presence of cusps

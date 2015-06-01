@@ -18,7 +18,7 @@ function v = null(A, pref)
 %
 % See also LINOP/SVDS, LINOP/EIGS, NULL.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Grab defaults if needed.
@@ -79,7 +79,7 @@ for dim = dimVals
     
     % Test the happiness of the function pieces:
     vscale = zeros(1, sum(isFun));  % intrinsic scaling only.
-    [isDone, epsLevel] = testConvergence(discA, v(isFun), vscale, pref);
+    [isDone, epslevel] = testConvergence(discA, v(isFun), vscale, pref);
     
     if ( all(isDone) )
         break
@@ -99,15 +99,15 @@ end
 v = mat2fun(discA, P*V);
 
 % Simplify and orthogonalize:
-epsLevel = min(epsLevel, eps(1));
+epslevel = min(epslevel, eps(1));
 if ( m == 1 )
     v{1} = qr(v{1});
-    v{1} = simplify(v{1}, epsLevel);
+    v{1} = simplify(v{1}, epslevel);
 else % system of eqns
     [Q, R] = qr(join(v{:}));
     for j = 1:numel(v)
         v{j} = v{j}/R;
-        v{j} = simplify(v{j}, epsLevel);
+        v{j} = simplify(v{j}, epslevel);
     end
 end
 

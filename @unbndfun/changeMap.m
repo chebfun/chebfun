@@ -5,7 +5,7 @@ function f = changeMap(f, newDom)
 %
 % See also CREATEMAP.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Assign a new nonlinear map to f:

@@ -21,7 +21,7 @@ function u = solvepde(N, f, varargin)
 % Warning: This PDE solver is an experimental new feature. It has not been
 % publicly advertised.  
         
-% Copyright 2014 by The University of Oxford and The Chebfun2 Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun2 Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Try and make a CHEBFUN2 out of right hand side.

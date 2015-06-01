@@ -1,3 +1,7 @@
+# dom = [0, 2*pi];
+# N = chebop(@(u) diff(u, 2) + diff(u), dom);
+# N.bc = 'periodic';
+# [V, D] = eigs(N, 15);
 'Advection-diffusion with periodic BCs'
 'scalar'
 domain = '[0 2*pi]';

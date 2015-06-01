@@ -19,7 +19,7 @@ function varargout = matrix(A, varargin)
 %
 % See also CHEBOPPREF, CHEBDISCRETIZATION, CHEBDISCRETIZATION/MATRIX. 
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Any non-numeric argument should be a chebDiscretization constructor. 

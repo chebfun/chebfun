@@ -188,7 +188,7 @@ classdef (InferiorClasses = {?double}) chebop
 %
 % See also CHEBOP/MTIMES, CHEBOP/MLDIVIDE, CHEBOPPREF.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. See
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -198,8 +198,11 @@ classdef (InferiorClasses = {?double}) chebop
         domain = [];    % Domain of the operator
         op = [];        % The operator
         lbc = [];       % Left boundary condition(s)
+        lbcShow = [];   % Pretty print left boundary condition(s)
         rbc = [];       % Right boundary condition(s)
+        rbcShow = [];   % Pretty print right boundary condition(s)
         bc = [];        % Other/internal/mixed boundary conditions
+        bcShow = [];   % Pretty print other boundary condition(s)
         init = [];      % Initial guess of a solution
         numVars = [];   % Number of variables the CHEBOP operates on.
         vectorize = []; % Automatic vectorization?
@@ -406,7 +409,12 @@ classdef (InferiorClasses = {?double}) chebop
             %   conditions than simply accessing the .lbc field, or using standard
             %   subsref.
             
-            N.lbc = parseBC(N, val, 'lrbc');            
+            N.lbc = parseBC(N, val, 'lrbc'); 
+            N.lbcShow = val;
+            % Clear periodic boundary conditions if they were present
+            if ( strcmp(N.bc, 'periodic') )
+                N.bc = [];
+            end
         end
         
         function N = set.rbc(N, val)
@@ -416,6 +424,12 @@ classdef (InferiorClasses = {?double}) chebop
             %   subsref.
             
             N.rbc = parseBC(N, val, 'lrbc');
+            N.rbcShow = val;
+            
+            % Clear periodic boundary conditions if they were present
+            if ( strcmp(N.bc, 'periodic') )
+                N.bc = [];
+            end
         end
         
         function N = set.bc(N, val)
@@ -437,26 +451,32 @@ classdef (InferiorClasses = {?double}) chebop
                 end
                 if ( isfield(val, 'other') )
                     N.bc = parseBC(N, val.other, 'bc');
+                    N.bcShow = val;
                 end
                 
             elseif ( strcmpi(val, 'periodic') )
                 N.lbc = [];
                 N.rbc = [];
                 N.bc = 'periodic';
+                N.bcShow = val;
                 
                 
             elseif ( ischar(val) || isstruct(val) || isnumeric(val) )
                 % V4 style keywords and numeric settings are understood to
                 % apply to both ends.
                 N.bc = [];
-                result = parseBC(N, val, 'bc');
-                N.lbc = result; %#ok<MCSUP>
-                N.rbc = result; %#ok<MCSUP>
-                
+                N.bcShow = [];
+                if ( ~isempty(val) )
+                    result = parseBC(N, val, 'bc');
+                    N.lbc = result; %#ok<MCSUP>
+                    N.lbcShow = val;
+                    N.rbc = result; %#ok<MCSUP>
+                    N.rbcShow = val;
+                end
             else
                 % A proper function was supplied.
                 N.bc = parseBC(N, val, 'bc');
-                
+                N.bcShow = val;
             end
             
         end

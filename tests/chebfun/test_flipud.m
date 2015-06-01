@@ -83,6 +83,7 @@ g = flipud(f);
 vals_g = feval(g,x);
 vals_exact = feval(opflip,x);
 err = vals_g - vals_exact;
-pass(11) = ( norm(err, inf) < 1e2*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(11) = ( norm(err, inf) < 1e4*get(f,'epslevel')*norm(vals_exact, inf) );
+
 
 end

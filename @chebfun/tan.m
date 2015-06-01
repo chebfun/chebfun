@@ -7,7 +7,7 @@ function F = tan(F, varargin)
 %
 % See also ATAN, TAND.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % [TODO]:  Restore or change this once we have decided the proper behavior or

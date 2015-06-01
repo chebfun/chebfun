@@ -76,11 +76,12 @@ check = zeros(1,4);
 check(1) = all( fout.domain == gout.domain );
 check(2) = all( fout.domain == unique([f.domain, g.domain]) );
 check(3) = ( norm(vals_fout - vals_f, inf) < ...
-    50*epslevel(fout)*norm(vals_fout, inf) );
+    1e4*epslevel(fout)*norm(vals_fout, inf) );
 check(4) = ( norm(vals_gout - vals_g, inf) < ...
-    5*epslevel(gout)*norm(vals_gout, inf) );
+    1e3*epslevel(gout)*norm(vals_gout, inf) );
 
 pass(6) = all( check );
+
 
 %% Test for function defined on unbounded domain:
 
@@ -112,9 +113,10 @@ check = zeros(1,4);
 check(1) = all( fout.domain == gout.domain );
 check(2) = all( fout.domain == unique([f.domain, g.domain]) );
 check(3) = ( norm(vals_fout - vals_f, inf) < ...
-    5e1*epslevel(fout)*norm(vals_fout, inf) );
+    1e3*epslevel(fout)*norm(vals_fout, inf) );
 check(4) = ( norm(vals_gout - vals_g, inf) < ...
-    5e1*epslevel(gout)*norm(vals_gout, inf) );
+    1e3*epslevel(gout)*norm(vals_gout, inf) );
+
 
 pass(7) = all( check );
 

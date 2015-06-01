@@ -12,7 +12,7 @@ function p = normal2(mu, Sigma, dom)
 %      p = cheb.normal2([1,0], [1 1;1 5]);
 %      surf(p)
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( any(eig(Sigma) < 0) || norm(Sigma - Sigma') > 0 )

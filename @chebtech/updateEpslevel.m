@@ -8,7 +8,7 @@ function epslevel = updateEpslevel(f, pref)
 %
 % See also HAPPINESSCHECK.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -46,5 +46,8 @@ epslevel = min(newEpslevel, epslevelBnd);
 
 % Don't change the epslevel of NaN columns.
 epslevel(nanCols) = f.epslevel(nanCols);
+
+% set epslevel = eps
+epslevel = eps + 0*epslevel;
 
 end
