@@ -22,8 +22,7 @@ end
 dom = f.domain; 
 x = linspace(dom(1), dom(2), 10); 
 y = linspace(dom(3), dom(4), 10);
-[xx, yy] = meshgrid(x, y);
-vals = feval(f, xx, yy); 
+vals = fevalm(f, x, y); 
 if ( norm( vals, inf ) > 0 ) 
    out = 0; 
    return
