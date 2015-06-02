@@ -5,6 +5,13 @@ function v = sum2( f )
 % on the sphere since the rows in this case are anti-periodic with period
 % pi.  Thus, we only need to integrate the plus terms.
 [cols,d,rows] = cdr(f);
+
+% If there are no plus terms then the integral is zero
+if isempty(f.idxPlus)
+    v = 0;
+    return
+end
+
 cols = cols(:,f.idxPlus);
 rows = rows(:,f.idxPlus);
 d = diag(d(f.idxPlus,f.idxPlus)).';
