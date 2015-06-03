@@ -12,11 +12,11 @@ if ( ~isa(f, 'separableApprox') ) % ??? + SEPARABLEAPPROX
     
 elseif ( isempty(g) ) % SEPARABLEAPPROX + []
     
-    h = g; 
+    h = f; 
     
 elseif ( isempty(f) ) % [] + SEPARABLEAPPROX
     
-    h = f; 
+    h = g; 
     
 elseif ( isa( g, 'double' ) )           % SEPARABLEAPPROX + DOUBLE
     
