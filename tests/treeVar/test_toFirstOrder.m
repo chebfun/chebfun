@@ -4,7 +4,7 @@ function pass = test_toFirstOrder()
 %% Setup
 dom = [-1, 4];
 x = chebfun(@(x) x, dom);
-tol = 2e-14;
+tol = 5e-14;
 
 %% Simple test
 % We have the expression 5*(diff(u, 2) + 3*u), so expect the first order
