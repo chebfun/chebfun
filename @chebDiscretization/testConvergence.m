@@ -52,7 +52,7 @@ for i = 1:numInt
     c = cat(2, coeffs{i,:});
     f = tech.make({[], c});
     f.vscale = vscale;
-    [isDone(i), neweps, cutoff(i,:)] = plateauCheck(f, get(f, 'values'), ...
+    [isDone(i), neweps, cutoff(i,:)] = standardCheck(f, get(f, 'values'), ...
         prefTech);
     epslevel = max(epslevel, neweps);
 end
