@@ -6,6 +6,10 @@ function [ishappy, epslevel, cutOff] = standardCheck(f, values, pref)
 coeffs = f.coeffs;
 [n,m] = size(coeffs);
 
+% We omit the last 10% because aliasing can pollute them significantly.
+n90 = ceil(0.90*n);
+coeffs = coeffs(1:n90,:);
+
 %% initialize ishappy
 ishappy = false;
 
@@ -13,7 +17,7 @@ ishappy = false;
 epslevel = eps*ones(1,m); 
 
 %% initialize tol
-tol = 2^(-52);
+tol = eps;
 
 % NaNs are not allowed.
 if ( any(isnan(coeffs)) )
@@ -69,8 +73,8 @@ function [ishappy, cutOff] = standardChop(coeffs, tol)
 % last index in the sequence that should be retained.
 
 %%
-% This rule works from a tolerance TOL, which by default is
-% machine epsilon (2.2e-16).  The series will never be chopped
+% This rule works from a tolerance TOL.  
+% The series will never be chopped
 % unless it falls at least below TOL^(2/3).  It will always be
 % chopped if it has a long enough segment below TOL.
 
@@ -118,6 +122,9 @@ ishappy = false;
 % Step 3: fix the chopping point where sequence a, plus a linear function
 % included to bias the result towards the left end, is minimal.
   
+%semilogy((1:n)',abs(coeffs),(1:n)',m)
+%hold on, semilogy(K,m(K),'o'), hold off
+
   if a(K) == 0
       ishappy = true;
       cutOff = K-1;
@@ -128,5 +135,7 @@ ishappy = false;
       ishappy = true;
       cutOff = d-1;
   end
+
+%hold on, semilogy(cutOff,m(cutOff),'x'), hold off
 
 end
