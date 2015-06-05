@@ -45,8 +45,8 @@ else                                     % SPHEREFUN + SPHEREFUN
         % @separableApprox/compression plus on each pair of plus and minus
         % components.
         
-        [fp,fm] = split(f);
-        [gp,gm] = split(g);
+        [fp,fm] = partition(f);
+        [gp,gm] = partition(g);
         
         hp = plus@separableApprox(fp,gp);
         hm = plus@separableApprox(fm,gm);

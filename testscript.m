@@ -77,6 +77,25 @@ g = spherefun( f );
 exact_int = 4*pi;
 pass(15) = abs( sum2( g ) - exact_int ) < tol;
 
+% Plus tests
+f1 = @(x,y,z) sin(pi*x.*y);  % Strictly even/pi-periodic
+f2 = @(x,y,z) sin(pi*x.*z);  % Strictly odd/anti-periodic
+g1 = spherefun(f1);
+g2 = spherefun(f2);
+gplus = g1 + g2;
+fplus = redefine_function_handle( @(x,y,z) f1(x,y,z) + f2(x,y,z) );
+lambda = rand; theta = rand; 
+pass(16) = abs( feval(gplus, theta, lambda) - fplus(theta, lambda) ) < tol; 
+
+f1 = @(lam,th) exp(cos(lam-1).*sin(th).*cos(th));  % Mixed symmetric terms
+f2 = @(lam,th) exp(sin(lam-0.35).*sin(th).*cos(th));  % Mixed symmetric terms
+g1 = spherefun(f1);
+g2 = spherefun(f2);
+gplus = g1 + g2;
+fplus = @(lam,th) f1(lam,th) + f2(lam,th) ;
+lambda = rand; theta = rand; 
+pass(17) = abs( feval(gplus, theta, lambda) - fplus(theta, lambda) ) < tol; 
+
 end
 
 function sample_error = SampleError( h, g ) 

@@ -1,8 +1,8 @@
-function [fp,fm] = split(f)
-% SPLIT    Splits a spherefun into its even/periodic odd/anti-periodic
+function [fp,fm] = partition(f)
+% PARTITION  Partition a spherefun into its even/periodic odd/anti-periodic
 % parts.
 %
-% [fp,fm] = split(f) splits f into two spherefuns fp & fm with the
+% [fp,fm] = partition(f) partitions f into two spherefuns fp & fm with the
 % following properties:
 % 
 %   fp has a CDR decomposition such that C is even and R is pi periodic
@@ -11,7 +11,7 @@ function [fp,fm] = split(f)
 % See also COMBINE
 
 if ~isa(f,'spherefun')
-    error('SPHEREFUN:split:unknown',['Undefined function ''split'' for ' ...
+    error('SPHEREFUN:partition:unknown',['Undefined function ''partition'' for ' ...
         'input argument of type %s.'], class(f));
 end
 
