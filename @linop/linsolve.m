@@ -149,12 +149,6 @@ for dim = [dimVals inf]
         testConvergence(disc, u(isFun), vscale(isFun), prefs);
     
     if ( all(isDone) || isinf(dim) )
-    
-        % trim function pieces
-        vals = u{isFun};
-        cfs = chebtech1.vals2coeffs(vals);
-        u{isFun} = chebtech1.coeffs2vals(cfs(1:cutoff,:));
-
         break
     else
         % Update the discretiztion dimension on unhappy pieces:
@@ -174,7 +168,7 @@ end
 % one by one.
 values = cat(2, u{isFun});
 for k = 1:size(values, 2)
-    v = disc.toFunctionOut(values(:,k));
+    v = disc.toFunctionOut(values(:,k),cutoff);
     uOut{k} = v;
 end
 

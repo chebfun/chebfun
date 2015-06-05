@@ -1,4 +1,4 @@
-function f = toFunctionOut(disc, values)
+function f = toFunctionOut(disc, values, cutoff)
 %TOFUNCTIONOUT   Convert CHEBCOLLOC2 discretization to a CHEBFUN. 
 %   TOFUNCTIONOUT(DISC, VALUES) converts the _solution_ values of a
 %   CHEBCOLLOC2-discretized function (i.e., those at DISC.EQUATIONPOINTS) to a
@@ -20,9 +20,17 @@ else
     values = {values};
 end
 
+% Check for cutoff
+if ( nargin == 3 ) 
+    m = cutoff;
+else
+    m = inf;
+end
+
 % Convert to values at 2nd-kind points:
 for k = 1:numel(values)
     coeffs = chebtech1.vals2coeffs(values{k});
+    coeffs = coeffs(1:min(m,length(coeffs)),:);
     values{k} = chebtech2.coeffs2vals(coeffs);
 end
 
