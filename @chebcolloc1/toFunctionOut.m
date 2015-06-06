@@ -15,6 +15,8 @@ function f = toFunctionOut(disc, values, cutoff)
 % Break into one cell per interval. 
 if ( disc.numIntervals > 1 )
     values = mat2cell(values, disc.dimension);
+else
+    values = {values};
 end
 
 % Check for cutoff

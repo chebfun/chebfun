@@ -17,7 +17,8 @@ ishappy = false;
 epslevel = eps*ones(1,m); 
 
 %% initialize tol
-tol = eps;
+%tol = eps;
+tol = 1e-14;
 
 % NaNs are not allowed.
 if ( any(isnan(coeffs)) )
