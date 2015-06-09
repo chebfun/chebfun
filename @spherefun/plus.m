@@ -49,7 +49,10 @@ else                                     % SPHEREFUN + SPHEREFUN
         [gp,gm] = partition(g);
         
         hp = plus@separableApprox(fp,gp);
+        hp.idxPlus = 1:size(hp.cols,2);
+        
         hm = plus@separableApprox(fm,gm);
+        hm.idxMinus = 1:size(hm.cols,2);
         
         % Put pieces back together.
         h = combine(hp,hm);

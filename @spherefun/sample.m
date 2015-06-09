@@ -30,8 +30,8 @@ end
 [cols, d, rows] = cdr(f);
 
 % I really wish techs had a "sample" function too that would return m values
-% of the tech at it's natural grid.  Someone should suggest this on the
-% tracker.  Oh wait, I already did about a year ago.
+% of the tech at it's natural grid.  This has been on the chebfun tracker
+% for sometime now.
 
 % Ugly!
 C = trigtech.coeffs2vals(trigtech.alias( cols.funs{:}.onefun.coeffs, 2*n ));

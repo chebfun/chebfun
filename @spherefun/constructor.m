@@ -49,9 +49,9 @@ end
 % 4. Add fixed-rank.
 % 5. Add tensor-product.
 
-tol = 50*eps;       % Tolerance
 maxRank = 4000; 
 maxSample = 4000;
+pseudoLevel = eps;
 
 % If f is defined in terms of x,y,z; then convert it to
 % (longitude,latitude).
@@ -65,11 +65,14 @@ happy_rank = 0;     % Happy with phase one?
 failure = false;
 while ( ~happy_rank && ~failure )
     n = 2*n;
-    
+        
     % Sample function on a tensor product grid.
     % TODO: Add a more sophisticated evaluate function that does
     % vectorization like chebfun2.
     F = evaluate(h, n, n, dom);
+    
+    tol = GetTol(F, pi/n, pi/n, dom, pseudoLevel);
+
     [ pivotIndices, pivotMatrices, happy_rank, removePoles ] = PhaseOne( F, tol );
     if ( n >= maxRank  )
         warning('SPHEREFUN:CONSTRUCTOR:MAXRANK', ... 
@@ -604,6 +607,27 @@ if ( nargin( f ) == 3 )
 %     % Double g up.
 %     f = @(lam, th) sph2torus(f,lam,th);
 end
+
+end
+
+function tol = GetTol(F, hx, hy, dom, pseudoLevel)
+% GETTOL     Calculate a tolerance for the spherefun constructor.
+%
+%  This is the 2D analogue of the tolerance employed in the trigtech
+%  constructors. It is based on a finite difference approximation to the
+%  gradient, the size of the approximation domain, the internal working
+%  tolerance, and an arbitrary (2/3) exponent. 
+
+[m, n] = size( F ); 
+grid = max( m, n );
+
+% Remove some edge values so that df_dx and df_dy have the same size. 
+dfdx = diff(F(1:m-1,:),1,2) / hx; % xx diffs column-wise.
+dfdy = diff(F(:,1:n-1),1,1) / hy; % yy diffs row-wise.
+% An approximation for the norm of the gradient over the whole domain.
+Jac_norm = max( max( abs(dfdx(:)), abs(dfdy(:)) ) );
+vscale = max( abs( F(:) ) );
+tol = grid.^(2/3) * max( abs(dom(:) ) ) * max( Jac_norm, vscale) * pseudoLevel;
 
 end
 
