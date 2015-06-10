@@ -122,7 +122,7 @@ pole2 = mean(F(m,:));     % the mean of all the samples at the poles.
 % If the the values at both poles are not zero then we need to add zero
 % them out before removing these entries from F.
 removePole = false;
-if abs(pole1) > vscl*10*eps || abs(pole2) > vscl*10*eps
+if abs(pole1) > vscl*tol || abs(pole2) > vscl*tol
     % Determine the column with maximum inf-norm
     [ignored, poleCol] = max(max(abs(F(:,1:n/2)),[],1));
     % Zero out the pole using the poleCol.
@@ -140,17 +140,17 @@ F = F( 2:m-1, : );
 % Update the number of rows F now contains.
 m = m-2;
 
-while ( norm( F( : ), inf ) > tol*vscl )
+while ( norm( F( : ), inf ) > tol )
     % Find pivot:
     % Calculate the maximum 1st singular value of all the special 2x2
     % submatrices.
     % S1 = max(  abs(F - flipud(F)), abs(F + flipud(F)) );
     % S1 = S1(1:m/2, 1:n/2);
-    F11 = F(:,1:n/2);    %% (1,1) Block of F.
-    F12 = F(:,n/2+1:n);  % (1,2) block of F.
-    Fplus = F11 + F12;
-    Fminus = F11 - F12;
-    S1 = max( abs(Fplus), abs(Fminus) );
+    B = F(:,1:n/2);    %% (1,1) Block of F.
+    C = F(:,n/2+1:n);  % (1,2) block of F.
+    Fp = B + C;
+    Fm = B - C;
+    S1 = max( abs(Fp), abs(Fm) );
     [ignored, idx] = max( S1(:) );
     [j, k] = myind2sub( size( S1 ), idx );
     
@@ -158,7 +158,7 @@ while ( norm( F( : ), inf ) > tol*vscl )
     % M = [ F(j,k) F(j,k+n/2) ; F(j,k+n/2) F(j,k)]
     % This is what we really care about in the algorithm.
 
-    ev = [ ( F(j,k) + F(j,k+n/2) ), ( F(j,k) - F(j,k+n/2) ) ];
+    ev = [ Fp(j,k) , Fm(j,k) ];
     % Singular-values sorted by magnitude
     sv = sort( abs(ev), 1, 'descend' );  % equivalent to svd( M )
         
@@ -169,8 +169,8 @@ while ( norm( F( : ), inf ) > tol*vscl )
         % Calculate inverse of pivot matrix:
 %         invM = [M(1,1) -M(1,2);-M(1,2) M(1,1)]./(M(1,1)^2 - M(1,2)^2);
 %         F = F - F(:, [k k+n/2] ) * ( invM * F( [j m-j+1],: ) );
-        plusBlk = 1/(2*ev(1))*(Fplus(:,k)*Fplus(j,:));
-        minusBlk = 1/(2*ev(2))*(Fminus(:,k)*Fminus(j,:));
+        plusBlk = 1/(2*ev(1))*(Fp(:,k)*Fp(j,:));
+        minusBlk = 1/(2*ev(2))*(Fm(:,k)*Fm(j,:));
         F =  F - [plusBlk plusBlk] - [minusBlk -minusBlk];                  
         rank_count = rank_count + 2; 
         pivotMatrices = [pivotMatrices ; ev ];
@@ -180,11 +180,11 @@ while ( norm( F( : ), inf ) > tol*vscl )
 %         pinvM = getPseudoInv( M );
 %         F = F - F(:, [k k+n/2] ) * ( pinvM *  F( [j m-j+1],: ) );
         if abs(ev(1)) > abs(ev(2))
-            plusBlk = 1/(2*ev(1))*(Fplus(:,k)*Fplus(j,:));
+            plusBlk = 1/(2*ev(1))*(Fp(:,k)*Fp(j,:));
             F =  F - [plusBlk plusBlk];
             ev(2) = 0;
         else
-            minusBlk = 1/(2*ev(2))*(Fminus(:,k)*Fminus(j,:));
+            minusBlk = 1/(2*ev(2))*(Fm(:,k)*Fm(j,:));
             F =  F - [minusBlk -minusBlk];                  
             ev(1) = 0;
         end
