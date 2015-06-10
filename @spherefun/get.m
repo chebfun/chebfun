@@ -31,6 +31,10 @@ switch ( propName )
         val = f.pivotLocations;
     case 'blockDiag'
         val = f.blockDiag;
+    case 'idxPlus'
+        val = f.idxPlus;
+    case 'idxMinus'
+        val = f.idxMinus;
     otherwise
         error('CHEBFUN:SPHEREFUN:get:propName', ...
             [propName,' is not a valid SPHEREFUN property.'])
