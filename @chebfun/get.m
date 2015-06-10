@@ -10,8 +10,6 @@ function out = get(f, prop, simpLevel)
 %       'hscale'         - Horizontal scale of F.
 %       'hscale-local'   - Local horizontal scales of F.
 %       'ishappy'        - Is F happy?
-%       'epslevel'       - Approximate accuracy estimate of F.
-%       'epslevel-local' - Approximate accuracy estimate of F's components.
 %       'lval'           - Value(s) of F at left-hand side of domain.
 %       'rval'           - Value(s) of F at right-hand side of domain.
 %       'lval-local      - Value(s) of F's FUNs at left sides of their domains.
@@ -102,6 +100,9 @@ switch prop
     case 'hscale'
         out = hscale(f);
     case 'epslevel'
+        warning('CHEBFUN:CHEBFUN:get:epslevel', ...
+            ['f.epslevel and get(f,''epslevel'') now always returns machine\n'...
+            'epsilon, and is likely to be removed from Chebfun in the future.'])
         out = epslevel(f);
     case 'ishappy'
         out = ishappy(f);

@@ -25,6 +25,10 @@ classdef chebfun
 %   CHEBFUN(@(x) abs(x), [-1, 0, 1]).
 % If a domain is passed to the constructor, it should always be the 2nd input.
 %
+% CHEBFUN(F, N) constructs a CHEBFUN object obtained by interpolating F on an N
+% point Chebyshev grid of the second kind in [-1,1]. Note that this is
+% different from CHEBFUN(F, 'trunc', N), which is described below.
+% 
 % CHEBFUN(A) or CHEBFUN(A, 'chebkind', 2), where A is an Nx1 matrix, constructs
 % a CHEBFUN object which interpolates the data in A on an N-point Chebyshev grid
 % of the second kind (see >> help chebpts). CHEBFUN(A, 'chebkind', 1) and
@@ -282,9 +286,6 @@ classdef chebfun
         % Display a CHEBFUN object.
         display(f);
 
-        % Accuracy estimate of a CHEBFUN object.
-        out = epslevel(f, flag);
-        
         % Evaluate a CHEBFUN.
         y = feval(f, x, varargin)
         
@@ -469,6 +470,9 @@ classdef chebfun
         % Compare domains of two CHEBFUN objects.
         pass = domainCheck(f, g);        
         
+        % Accuracy estimate of a CHEBFUN object.
+        out = epslevel(f, flag);
+
         % Extract columns of an array-valued CHEBFUN object.
         f = extractColumns(f, columnIndex);
         
@@ -709,7 +713,7 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
             end
         elseif ( strcmpi(args{1}, 'equi') )
             % Enable FUNQUI when dealing with equispaced data.
-            keywordPrefs.tech = 'funqui';
+            keywordPrefs.enableFunqui = true;
             args(1) = [];
         elseif ( strcmpi(args{1}, 'vectorize') || ...
                  strcmpi(args{1}, 'vectorise') )
@@ -790,7 +794,7 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
             % Store singularity types.
             data.singType = args{2};
             args(1:2) = [];            
-        elseif ( strcmpi(args{1}, 'exps') )
+        elseif ( strcmpi(args{1}, 'exps') || strcmpi(args{1}, 'exponents') )
             % Store exponents.
             data.exponents = args{2};
             args(1:2) = [];
@@ -885,6 +889,7 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
         % Translate 'periodic' or 'trig'.
         pref.tech = @trigtech;
         pref.splitting = false;
+        pref.enableFunqui = false;
         if ( numel(dom) > 2 )
             error('CHEBFUN:parseInputs:periodic', ...
                 '''periodic'' or ''trig'' option is only supported for smooth domains.');
@@ -911,7 +916,7 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
         if ( isa(op, 'chebfun') )
             op = @(x) feval(op, x);
         end
-        if ( isa(op, 'function_handle') && strcmp(pref.tech, 'funqui') )
+        if ( isa(op, 'function_handle') && pref.enableFunqui )
             if ( isfield(pref.techPrefs, 'fixedLength') && ...
                  ~isnan(pref.techPrefs.fixedLength) )
                 x = linspace(dom(1), dom(end), pref.techPrefs.fixedLength).';

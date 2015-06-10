@@ -125,7 +125,7 @@ end
                 
             % Reshape solution:
             Uk = reshape(U(:,kk), n, SYSSIZE);
-            uCurrent = chebfun(Uk, DOMAIN, 'tech', tech);
+            uCurrent = chebfun(Uk, DOMAIN, 'tech', techHandle);
             tCurrent = t(kk);
             % Store for output:
             COUNTER = COUNTER + 1;

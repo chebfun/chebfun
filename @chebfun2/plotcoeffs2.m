@@ -22,6 +22,12 @@ h = stem3(xx, yy, X, 'fill', 'markerfacecolor', 'k', 'markeredgecolor', 'k');
 set(gca, 'ZScale', 'log', 'view', [40 20])
 box off
 
+% Add title and labels
+title(gca, 'Chebyshev coefficients')
+xlabel(gca, 'Degree of Chebyshev polynomial (rows)')
+ylabel(gca, 'Degree of Chebyshev polynomial (columns)')
+zlabel(gca, 'Magnitude of coefficient')
+
 % output handle
 if ( nargout ~=0 )
     varargout = { h };
