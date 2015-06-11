@@ -7,8 +7,8 @@ coeffs = f.coeffs;
 [n,m] = size(coeffs);
 
 % We omit the last 10% because aliasing can pollute them significantly.
-n90 = ceil(0.90*n);
-coeffs = coeffs(1:n90,:);
+%n90 = ceil(0.90*n);
+%coeffs = coeffs(1:n90,:);
 
 %% initialize ishappy
 ishappy = false;
@@ -17,8 +17,7 @@ ishappy = false;
 epslevel = eps*ones(1,m); 
 
 %% initialize tol
-%tol = eps;
-tol = 1e-15;
+tol = eps;
 
 % NaNs are not allowed.
 if ( any(isnan(coeffs)) )
