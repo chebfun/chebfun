@@ -248,6 +248,8 @@ classdef cheboppref < chebpref
                 prefList.display);
             fprintf([padString('    errTol:') '%g\n'], ...
                 prefList.errTol);
+            fprintf([padString('    happinessCheck:') '%s\n'], ...
+                func2str(prefList.happinessCheck));
             fprintf([padString('    ivpAbsTol:') '%g\n'], ...
                 prefList.ivpAbsTol);
             fprintf([padString('    ivpRelTol:') '%g\n'], ...
@@ -424,6 +426,7 @@ classdef cheboppref < chebpref
             factoryPrefs.damping = 1;
             factoryPrefs.display = 'off';
             factoryPrefs.errTol = 1e-10;
+            factoryPrefs.happinessCheck = @plateauCheck;
             factoryPrefs.ivpAbsTol = 1e5*eps;
             factoryPrefs.ivpRelTol = 100*eps;
             factoryPrefs.ivpSolver = @chebfun.ode113;

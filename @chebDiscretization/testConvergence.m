@@ -52,7 +52,8 @@ for i = 1:numInt
     c = cat(2, coeffs{i,:});
     f = tech.make({[], c});
     f.vscale = vscale;
-    [isDone(i), neweps, cutoff(i,:)] = plateauCheck(f, get(f, 'values'), ...
+    happinessChecker = pref.happinessCheck;
+    [isDone(i), neweps, cutoff(i,:)] = happinessChecker(f, get(f, 'values'), ...
         prefTech);
     epslevel = max(epslevel, neweps);
 end
