@@ -2,7 +2,7 @@ function b = iscolat( f )
 % B = ISCOLAT( d ) Determines if the latitudinal variable of the SPHEREFUN
 % is measured in co-latitude.
 %
-% Returns true of the domain of the latitudinal variable of the SPHEREFUN
+% Returns true if the domain of the latitudinal variable of the SPHEREFUN
 % is measured in co-latitude, i.e. the North pole = 0 radians latitude,
 % South Pole = pi radians latitude.
 
