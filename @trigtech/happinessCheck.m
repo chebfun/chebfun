@@ -13,10 +13,15 @@ if ( nargin == 1 )
 elseif ( (nargin == 2) && isstruct(op) )
     pref = op;
     op = [];
-elseif ( nargin < 4 )
+elseif ( nargin < 5 )
     pref = f.techPref();
-elseif ( nargin == 3 ) 
-    pref = f.techPref(); 
+end
+
+if ( nargin < 3 ) 
+    values = [];
+end
+if ( nargin < 4 ) 
+    vscl = [];
 end
 
 % What does happiness mean to you?

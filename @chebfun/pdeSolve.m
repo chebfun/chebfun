@@ -220,7 +220,7 @@ end
             c = (1+sin(1:SYSSIZE)).'; % Arbitrarily linear combination.
             Uk2 = (Uk*c/sum(c));
             uk2 = chebtech2(Uk2, pref);
-            [ishappy, epslevel, cutoff] = classicCheck(uk2, Uk2, pref);
+            [ishappy, epslevel, cutoff] = classicCheck(uk2, Uk2, [], pref);
 
             if ( ishappy )  
                 
