@@ -15,8 +15,29 @@ classdef spherefun < separableApprox
                 return
             end
             
+            % Type of construction
+            constructorType = 1; % Default using rank BMC preserving rank 1 updates.
+            
+            % Remove this code when we are done testing the constructor.
+            if numel(varargin) > 1
+                if ischar(varargin{2})
+                    if strcmpi(varargin{2},'2by2')
+                        constructorType = 2;
+                        varargin{2} = [];
+                    end
+                end
+            end
+            
             % Call the constructor, all the work is done here:
-            f = constructor(f, varargin{:});            
+            switch constructorType
+                case 1
+                    f = constructor(f, varargin{:});
+                case 2
+                    f = constructor2by2(f, varargin{:});
+                otherwise
+                    f = constructor(f, varargin{:});
+            end
+                    
         end
         
     end
@@ -85,7 +106,6 @@ classdef spherefun < separableApprox
         % which corresponds to using colatitude for the elevation angle
         % (second input argument).  Doubled-up sphere will have a domain of
         % [-pi,pi] x [-pi,pi].        
-        blockDiag       % Pivot matrices used during GE
         idxPlus
         idxMinus
         pivotIndices
