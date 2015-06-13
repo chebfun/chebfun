@@ -20,6 +20,6 @@ u = solvebvp(N, f, pref);
 
 % Happy?
 err = norm(N(u) - f);
-pass = ( err < 1e-8 );
+pass = ( err < 1e-7 );
 
 % end

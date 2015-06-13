@@ -1,9 +1,10 @@
 function f = toFunctionOut(disc, values, cutoff)
 %TOFUNCTIONOUT   Convert CHEBCOLLOC2 discretization to a CHEBFUN. 
-%   TOFUNCTIONOUT(DISC, VALUES) converts the _solution_ values of a
-%   CHEBCOLLOC2-discretized function (i.e., those at DISC.EQUATIONPOINTS) to a
-%   CHEBFUN. If DISC.DOMAIN has breakpoints, the input should be a vector having
-%   the smooth pieces stacked.
+%   TOFUNCTIONIN(DISC, VALUES, CUTOFF) converts the values of a 
+%   CHEBCOLLOC2-discretized function to a CHEBFUN. If CUTOFF is
+%   specified the resulting CHEBFUN will have length CUTOFF. If DISC.DOMAIN 
+%   has breakpoints, the input should have cell arrrays corresponding 
+%   to smooth pieces.
 %
 %   If VALUES is matrix valued, the output is an array-valued CHEBFUN, where
 %   each column of the CHEBFUN corresponds to a column of the input.
@@ -27,10 +28,15 @@ else
     m = inf;
 end
 
-% Convert to values at 2nd-kind points:
+% adjust size of cutoff if necessary
+if ( length(m) ~= numel(values) )
+    m = max(m)*ones(numel(values),1);
+end
+
+% Cutoff coefficients
 for k = 1:numel(values)
     coeffs = chebtech1.vals2coeffs(values{k});
-    coeffs = coeffs(1:min(m,length(coeffs)),:);
+    coeffs = coeffs(1:min(m(k),size(coeffs,1)),:);
     values{k} = chebtech2.coeffs2vals(coeffs);
 end
 

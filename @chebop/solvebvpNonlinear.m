@@ -215,9 +215,6 @@ while ( ~terminate )
     
 end
 
-% Simplify the result before returning it and printing solver info:
-u = simplify(u);
-
 % Evaluate how far off we are from satisfying the boundary conditions.
 errEstBC = normBCres(N, u, x, diffOrder, pref);
 
