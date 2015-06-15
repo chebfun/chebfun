@@ -63,7 +63,8 @@ classdef cheboppref < chebpref
 %     than the value of errTol.
 %
 %   happinessCheck              - Routine for checking that solution converged
-%     [@plateauCheck]
+%     [@bvpV5Check]
+%     @plateauCheck
 %     @classicCheck
 %     @looseCheck
 %     @strictCheck
@@ -440,7 +441,7 @@ classdef cheboppref < chebpref
             factoryPrefs.damping = 1;
             factoryPrefs.display = 'off';
             factoryPrefs.errTol = 1e-10;
-            factoryPrefs.happinessCheck = @plateauCheck;
+            factoryPrefs.happinessCheck = @bvpV5Check;
             factoryPrefs.ivpAbsTol = 1e5*eps;
             factoryPrefs.ivpRelTol = 100*eps;
             factoryPrefs.ivpSolver = @chebfun.ode113;
