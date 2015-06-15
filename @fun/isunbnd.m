@@ -6,7 +6,7 @@ function out = isunbnd(f)
 % [TODO]: Should the name of this function go camel case? So far, all is*
 % function are named without camel case.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 out = any( isinf(f.domain) );

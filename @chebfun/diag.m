@@ -5,7 +5,7 @@ function M = diag(f)
 %
 %   This method is mainly provided for backwards compatibility.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 M = operatorBlock.mult(f);

@@ -7,7 +7,7 @@ function pass = sampleTest(op, values, f, vscl)
 %   the difference is large, it returns FALSE. SAMPLETEST(OP, VALUES, F, VSCL)
 %   will test relative the the values given in VSCL, rather than F.VSCALE.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

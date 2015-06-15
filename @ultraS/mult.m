@@ -12,7 +12,7 @@ function M = mult(A, f, lambda)
 %   If lambda > 1, then the operator does not have any Toeplitz/Hankel structure
 %   and is constructed using a three-term recurrence.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Obtaining some useful information:

@@ -4,7 +4,7 @@ function out = ishappy(f)
 %   otherwise.  F is happy if all of the FUNs that form each of its columns (or
 %   rows, if F is a row CHEBFUN or quasimatrix) are happy.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 for j = 1:numel(f)

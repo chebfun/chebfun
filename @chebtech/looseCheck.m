@@ -3,7 +3,7 @@ function [ishappy, epslevel, cutoff] = looseCheck(f, values, vscl, pref) %#ok<IN
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = LOOSECHECK(F, VALUES, VSCL, PREF). This file
 %   is not yet implemented.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 error('CHEBFUN:CHEBTECH:looseCheck:notDone', ...

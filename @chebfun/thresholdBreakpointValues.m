@@ -4,7 +4,7 @@ function f = thresholdBreakpointValues(f)
 %   G such that all breakpoint values smaller than VSCALE(F)*EPSLEVEL(F) are
 %   set to zero.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 for k = 1:numel(f)    

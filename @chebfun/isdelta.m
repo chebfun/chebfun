@@ -3,7 +3,7 @@ function out = isdelta(f)
 %   out = ISDELTA(F) returns logical true if F has at least one FUN which is 
 %   made of DELTAFUN and false otherwise.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 out = any(cellfun(@(f) isdelta(f), f.funs));

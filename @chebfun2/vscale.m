@@ -4,7 +4,7 @@ function vscl = vscale(f)
 % VSCL = VSCALE(F) returns the vertial scale of a CHEBFUN2 as determined
 % by evaluating on a coarse Chebyshev tensor-product grid. 
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % TODO: Should this also be taking the maximum along the edges when we are

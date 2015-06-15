@@ -7,7 +7,7 @@ function bc = createBC(bcArg, ends)
 %   is sufficiently compliciated then this command gives up and passes
 %   resposibility to the solver. 
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% Developer note %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

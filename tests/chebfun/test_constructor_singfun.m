@@ -334,4 +334,11 @@ f_exact = op(x);
 err = fx - f_exact;
 pass(15) = norm(err, inf) < 1e1*epslevel(f)*norm(f_exact, inf);
 
+%% See #1486
+
+f = chebfun(@(x) tan(x),[0 pi],'splitting','on','blowup','on');
+pass(16) = norm(f, inf) > 0;
+f = chebfun(@(x) tan(x),[5*pi,6*pi], 'splitting', 'on', 'blowup', 1);
+pass(17) = numel(f.domain) == 3;
+
 end

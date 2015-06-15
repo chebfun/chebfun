@@ -1,7 +1,7 @@
 function expmDimAdjust = getExpmDimAdjust(disc)
 %GETEXPMDIMADJUST    Adjust dimension of discretization for LINOP/EXPM.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % For TRIGCOLLOC, we don't need to adjust the dimensions, since no rectangular

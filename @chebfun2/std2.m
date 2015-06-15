@@ -10,7 +10,7 @@ function v = std2(f)
 %
 % See also MEAN, MEAN2, STD.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 h = f - mean2( f ); 

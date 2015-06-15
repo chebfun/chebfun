@@ -16,7 +16,7 @@ function B = barymat(y, x, w, s, r, doFlip)
 %   for this work, and it is assumed that S and R are sorted in descending
 %   order.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty(y) || isempty(x) )

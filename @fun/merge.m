@@ -10,7 +10,7 @@ function [h, ishappy] = merge(f, g, vscale, hscale, pref)
 %   ... = MERGE(F, G, VSCALE, HSCALE, PREF) uses uses the values VSCALE and
 %   HSCALE and the CHEBFUNPREF object PREF in the construction of the new FUN.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Extract domain info:

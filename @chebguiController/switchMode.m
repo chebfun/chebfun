@@ -6,7 +6,7 @@ function handles = switchMode(handles, newMode)
 %   HANDLES:    A MATLAB handle object for the CHEBGUI figure.
 %   NEWMODE:    Mode we want to switch to.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Do a lot of disabling/enabling and hiding/showing objects on the CHEBGUI

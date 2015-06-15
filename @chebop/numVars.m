@@ -3,7 +3,7 @@ function nVars = numVars(N)
 %   NVARS = NUMVARS(N), where N is a CHEBOP, returns the integer NVARS which is
 %   equal to the number of variables that N operates on.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % NUMVARS indicate how many unknown function we seek. This can be tricky of the

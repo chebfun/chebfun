@@ -14,7 +14,7 @@ function [isDone, epslevel, vscale, cutoff] = testConvergence(disc, values, vsca
 %      EPSLEVEL: Apparent resolution accuracy (relative to VSCALE or the
 %      functions' intrinsic scale).
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin < 4 )

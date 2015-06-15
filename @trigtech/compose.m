@@ -15,7 +15,7 @@ function f = compose(f, op, g, data, pref)
 %   particular, one can set PREF.REFINEMENTFUNCTION to be a function which takes
 %   advantage of F and possibly OP or G being TRIGTECH objects.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Parse inputs:

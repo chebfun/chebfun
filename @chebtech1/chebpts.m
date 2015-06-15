@@ -12,7 +12,7 @@ function [x, w, v, t] = chebpts(n)
 %
 % See also ANGLES, TRIGPTS, LEGPTS, JACPTS, LAGPTS, and HERMPTS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( n == 0 )     % Special case (no points)

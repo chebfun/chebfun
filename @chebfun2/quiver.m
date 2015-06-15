@@ -23,7 +23,7 @@ function varargout = quiver( f1, f2, varargin )
 %
 % See also CHEBFUN2V/QUIVER.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty(varargin) )

@@ -10,7 +10,7 @@ function r = range(f, dim)
 %
 % See also CHEBFUN/MINANDMAX.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty(f) )

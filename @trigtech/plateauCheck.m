@@ -26,7 +26,7 @@ function [ishappy, epslevel, cutoff] = plateauCheck(f, values, vscl, pref)
 %
 % See also LINOPV4CHECK, STRICTCHECK, CLASSICCHECK.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % TODO: We currently need to do this as trigtech has a vscale and chebtech
@@ -36,6 +36,7 @@ f.vscale = max(f.vscale, vscl);
 % [TODO]: implement PLATEAUCHECK for TRIGTECH. For the moment, we just call
 % classicCheck. The reason why the plateauCheck() is needed for TRIGTECH is 
 % that it gets called in CHEBDISCRETIZATION/TESTCONVERGENCE.
+
 [ishappy, epslevel, cutoff] = classicCheck(f, values, vscl, pref);
 
 end

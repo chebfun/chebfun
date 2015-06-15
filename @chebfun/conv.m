@@ -33,7 +33,7 @@ function h = conv(f, g, varargin)
 %   series", SIAM Journal on Scientific Computing, Vol. 36, No. 3, pages
 %   A1207-A1220, 2014.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
