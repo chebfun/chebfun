@@ -100,6 +100,11 @@ if ( any(isnan(f.coeffs(:))) )
         'Function returned NaN when evaluated.')
 end
 
+% We require values. Get these before we alter the coeffs:
+if ( isempty(values) )
+    values = f.coeffs2vals(f.coeffs);
+end
+
 % Do the test on the vector formed by the sum of the absolute value of the
 % positive and negative mode coefficients.
 % [TODO] This reversal of coeffs can be removed but then classicCheck will need
