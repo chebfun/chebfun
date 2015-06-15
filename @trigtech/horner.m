@@ -141,12 +141,12 @@ v = sin(pi*x);
 co = a(n);
 si = b(n);
 for j = n-1:-1:2
-    temp = u.*co + v.*si + a(j);
-    si = u.*si - v.*co + b(j);
+    temp = a(j) + u.*co + v.*si;
+    si = b(j) + u.*si - v.*co;
     co = temp;
 end
 
-q = 2*u.*co + 2*v.*si + a(1);
+q = a(1) + 2*u.*co + 2*v.*si;
 
 end
 
@@ -178,11 +178,11 @@ v = repmat(sin(pi*x),[1 numCols]);
 co = e*a(n,:);
 si = e*b(n,:);
 for j = n-1:-1:2
-    temp = u.*co + v.*si + e*a(j,:);
-    si = u.*si - v.*co + e*b(j,:);
+    temp = e*a(j,:) + u.*co + v.*si;
+    si = e*b(j,:) + u.*si - v.*co;
     co = temp;
 end
 
-q = 2*u.*co + 2*v.*si + e*a(1,:);
+q = 2*(u.*co + v.*si) + e*a(1,:);
 
 end
