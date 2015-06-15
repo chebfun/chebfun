@@ -18,7 +18,7 @@ function [xy, idx] = paduapts(n, dom)
 %        "Padua2DM: fast interpolation and cubature at the Padua points in
 %         Matlab/Octave."
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Default domain:

@@ -8,7 +8,7 @@ function f = toFunctionIn(disc, values)
 %
 % See also TOVALUES.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Convert the VALUES matrix into a CHEBFUN on the appropriate domain

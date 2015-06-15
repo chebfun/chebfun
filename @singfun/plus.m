@@ -4,7 +4,7 @@ function s = plus(f, g)
 %
 % See also MINUS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % If one of the arguments is empty:
@@ -60,7 +60,7 @@ end
 fExps = f.exponents;
 gExps = g.exponents;
 tolExps = chebfunpref().blowupPrefs.exponentTol;
-tolSmth = 1e2*eps;
+tolSmth = 1e3*eps;
 
 %%
 if ( all(abs(fExps - gExps) < tolExps) )
@@ -81,15 +81,15 @@ elseif ( all(abs(round(fExps - gExps) - (fExps - gExps)) < tolExps) )
     %   (1+x).^-4 + (1+x).^-1 = (1+x).^-4 .* ( 1 + (1+x).^3 )
     
     % Start off each compensating quotient as 1.
-    factorF = @(x) 1;
-    factorG = @(x) 1;
+    factorF = @(x) 1+0*x;
+    factorG = @(x) 1+0*x;
     newExps = zeros(1, 2);    
     for side = 1:2
         % The algebraically smaller of the two exponents is the exponent of 
         % the sum.
         [e, k] = sort([fExps(side), gExps(side)]);
         newExps(side) = e(1);
-        
+
         % The quotient factor is the difference in the exponents.
         if ( side == 1 )
             newFactor = @(x) (1 + x).^diff(e);
@@ -105,18 +105,19 @@ elseif ( all(abs(round(fExps - gExps) - (fExps - gExps)) < tolExps) )
             factorF = @(x) factorF(x).*newFactor(x);
         end
     end
-    
-    % Construct the function handle for the new smooth fun:
-    sF = f.smoothPart;
-    sG = g.smoothPart;
-    smoothOp = @(x) feval(sF, x).*factorF(x) + feval(sG, x).*factorG(x);
-    
-    % Construct the new smooth fun:
-    s = singfun.zeroSingFun();
-    s.smoothPart = singfun.constructSmoothPart(smoothOp, [], []);
+        
+    % Add the new smooth parts:
+    s = f;
+    s.smoothPart = f.smoothPart.*f.smoothPart.make(factorF) + ...
+        g.smoothPart.*g.smoothPart.make(factorG);
     
     % Assign new exponents:
     s.exponents = newExps;
+    
+    % Result is zero:
+    if ( normest(s.smoothPart) < tolSmth )
+       s = singfun.zeroSingFun();     
+    end
     
 else
     % Case 3: Nontrivial difference in the exponents of F and G. Form a new

@@ -15,7 +15,7 @@ function out = horzcat(varargin)
 %
 % See also VERTCAT, CAT, QUASIMATRIX, CHEBMATRIX.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Remove empties:
@@ -46,7 +46,8 @@ end
 
 % Horizontal concatenation of row CHEBFUN objects produces a CHEBMATRIX:
 if ( chebfun1(1).isTransposed )
-    out = chebmatrix(varargin);
+    args = cellfun(@transpose, varargin, 'UniformOutput', false);
+    out = vertcat(args{:})';
     return
 end
 

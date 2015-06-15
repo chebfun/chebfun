@@ -24,7 +24,7 @@ function [u, disc] = linsolve(L, f, varargin)
 %
 % See also CHEBOPPREF, CHEBOP.MLDIVIDE.
 
-%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
+%  Copyright 2015 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -37,7 +37,7 @@ function [u, disc] = linsolve(L, f, varargin)
 % Parse input
 prefs = [];    % no prefs given
 disc = [];     % no discretization given
-vscale = zeros(size(L,2),1);
+vscale = zeros(1, size(L, 2));
 for j = 1:nargin-2
     item = varargin{j};
     if ( isa(item, 'cheboppref') )
@@ -45,7 +45,7 @@ for j = 1:nargin-2
     elseif ( isa(item,'chebDiscretization') )
         disc = item;
     elseif ( isnumeric(item) )
-        vscale = item;
+        vscale = item(:)';
     else
         error('CHEBFUN:LINOP:linsolve:badInput', ...
             'Could not parse argument number %i.',j+2)
@@ -115,9 +115,10 @@ for dim = [dimVals inf]
     else
         [A, P] = matrix(disc);
         if ( size(A, 1) ~= size(A, 2) )
-            % [TODO]: Improve this warning.
             warning('CHEBFUN:LINOP:linsolve:notSquare', ...
-                'Matrix is not square!');
+                ['Operator may not have the correct number of boundary ' ...
+                'conditions.\n' ...
+                'Matrix is not square. Problem may be ill-posed.']);
         end
     end
     
@@ -139,12 +140,12 @@ for dim = [dimVals inf]
     u = partition(disc, v);
     
     % Need a vector of vscales.
-    if ( numel(vscale)==1 ) 
-        vscale = repmat(vscale, sum(isFun), 1);
+    if ( numel(vscale) == 1 ) 
+        vscale = repmat(vscale, 1, length(isFun));
     end
 
     % Test the happiness of the function pieces:
-    [isDone, epsLevel, vscale, cutoff] = ...
+    [isDone, epslevel, vscale, cutoff] = ...
         testConvergence(disc, u(isFun), vscale(isFun), prefs);
     
     if ( all(isDone) || isinf(dim) )

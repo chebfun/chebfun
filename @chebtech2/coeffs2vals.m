@@ -11,7 +11,7 @@ function values = coeffs2vals(coeffs)
 %
 % See also VALS2COEFFS, CHEBPTS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -34,7 +34,7 @@ end
 coeffs(2:n-1,:) = coeffs(2:n-1,:)/2;
 
 % Mirror the coefficients (to fake a DCT using an FFT):
-tmp = [ coeffs(1:n,:) ; coeffs(n-1:-1:2,:) ];
+tmp = [ coeffs ; coeffs(n-1:-1:2,:) ];
 
 if ( isreal(coeffs) )
     % Real-valued case:

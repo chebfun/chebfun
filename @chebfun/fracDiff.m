@@ -9,9 +9,8 @@ function f = fracDiff(f, mu, type)
 %   Currently this only supports the situation where F is smooth (i.e., it has
 %   no breakpoints or endpoint singularities) and on a finite domain.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
-
 
 % Default to Riemann-Liouville:
 if ( nargin < 3  )
@@ -19,29 +18,28 @@ if ( nargin < 3  )
 end
 
 % Extract the fractional part:
-mu_int = floor(mu);
-mu_frac = mu - mu_int;
+n = ceil(mu);
 
-if ( mu_frac == 0 )
-    f = diff(f, mu_int);
+if ( n == mu )
+    f = diff(f, n);
     return
 end
 
 % No piecewise support yet:
 if ( numel(f.funs) > 1 )
-    error('CHEBFUN:CHEBFUN:fracInt:breakpoints', ...
-        'FRACINT() does not currently support piecewise functions.');
+    error('CHEBFUN:CHEBFUN:fracDiff:breakpoints', ...
+        'FRACDIFF does not currently support piecewise functions.');
 end
 
 if ( strcmpi(type, 'Caputo') )
     % Caputo:
-    f = fracInt(f, 1 - mu_frac);
-    f = diff(f, mu_int + 1);
+    f = diff(f, n);
+    f = fracInt(f, n - mu); 
     
 else
     % Riemann-Liouville:
-    f = diff(f, mu_int + 1);
-    f = fracInt(f, 1 - mu_frac); 
+    f = fracInt(f, n - mu);
+    f = diff(f, n);
     
 end
 

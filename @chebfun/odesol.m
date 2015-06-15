@@ -16,7 +16,7 @@ function varargout = odesol(sol, dom, opt)
 %   domain of Y. Note that the order of outputs is the reverse of that from
 %   standard MATLAB calls to BVP4C(), ODE45(), etc.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 %% Extract data from sol:
@@ -65,12 +65,11 @@ end
 %% Create a CHEBFUN object.
 p = chebfunpref();
 p.techPrefs.eps = max(relTol); % Use the same tolerance for each column.
-p.splitting = true;            % use splitting, always, or there is no hope.
-p.splitPrefs.splitLength = 300;
-p.splitPrefs.splitMaxLength = p.techPrefs.maxLength;
+
 % Need to sort the domain D, since if we solve a final value problem, it will
 % have been flipped.
 dom = sort(dom);
+
 % Construct a CHEBFUN by sampling the SOL input.
 y = chebfun(@(x) deval(sol, x).', dom, p);
 

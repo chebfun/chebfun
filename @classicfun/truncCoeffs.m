@@ -3,7 +3,7 @@ function c = truncCoeffs(f, N)
 %   C = TRUNCCOEFFS(F, N) returns the 'middle' 2*N+1 trigonometric 
 %   Fourier coefficients of F.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 

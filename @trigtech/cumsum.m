@@ -15,7 +15,7 @@ function f = cumsum(f, m, dim)
 %
 % See also DIFF, SUM.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -76,12 +76,21 @@ function f = cumsumContinuousDim(f, m)
     c = f.coeffs; % Obtain Fourier coefficients {c_k}
     numCoeffs = size(c,1);
     
-    fIsEven = mod(numCoeffs,2) == 0;
+    fIsEven = mod(numCoeffs, 2) == 0;
+
+    % index of constant coefficient
+    if fIsEven
+       ind = numCoeffs/2 + 1;
+    else
+       ind = (numCoeffs + 1)/2;
+    end
 
     % Check that the mean of the TRIGtech is zero.  If it is not, then
     % throw an error.
-    if any(abs(c((numCoeffs+1-fIsEven)/2,:)) > f.vscale.*f.epslevel)
-        error('CHEBFUN:TRIGTECH:cumsum:meanNotZero', 'Indefinite integrals are only possible for TRIGTECH objects with zero mean.');
+    if ( any(abs(c(ind,:)) > 1e1*f.vscale.*f.epslevel) )
+        error('CHEBFUN:TRIGTECH:cumsum:meanNotZero', ...
+            ['Indefinite integrals are only possible for TRIGTECH objects '...
+            'with zero mean.']);
     end
     
     % Force the mean to be exactly zero.

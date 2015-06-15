@@ -1,3 +1,7 @@
+# dom = [-8 8];
+# N = chebop(@(x,u) -diff(u, 2) + x.^2*u, dom);
+# N.bc = 0;
+# [V, D] = eigs(N, 6);
 'Harmonic oscillator'
 'scalar'
 domain = '[-8 8]';

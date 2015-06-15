@@ -5,7 +5,7 @@ function s = rdivide(f, g)
 %
 % See also LDIVIDE, TIMES.
 %
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Case of empty arguments:
@@ -25,7 +25,7 @@ end
 %% Reciprocal: ( CLASSICFUN or DOUBLE ). / DELTAFUN
 if ( isa(f, 'double') || isa( f, 'classicfun') && isa(g, 'deltafun') )    
     if ( anyDelta(g) )
-        error('CHEBFUN:DELTAFUN:rdivide:rdivide',
+        error('CHEBFUN:DELTAFUN:rdivide:rdivide', ...
             'Division by delta functions is not defined.');
     end
     % A smooth function is returned in this case:
@@ -59,7 +59,7 @@ end
 %% DELTAFUN./DELTAFUN
 if ( isa(f, 'deltafun') && isa(g, 'deltafun') )
     if ( anyDelta(g) )
-        error('CHEBFUN:DELTAFUN:rdivide:rdivide',
+        error('CHEBFUN:DELTAFUN:rdivide:rdivide', ...
             'Division by delta functions is not defined.');
     end
     % Take reciprocal of the funPart only and make a DELTAFUN:

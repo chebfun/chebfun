@@ -11,7 +11,7 @@ function B = bspline(m)
 %      for k=1:4, plot(B{k}), end
 %      axis([-0.1 1.1 -2 2])
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 s = chebfun(1, [-.5 .5]);

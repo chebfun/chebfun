@@ -64,7 +64,7 @@ function varargout = plot(varargin)
 %
 % See also PLOTDATA, PLOT3.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -198,7 +198,8 @@ while ( ~isempty(varargin) )
             newData.xJumps = NaN;
             newData.yJumps = NaN;  
             newData.xDeltas = NaN;
-            newData.yDeltas = NaN;
+            newData.yDeltas1 = NaN;
+            newData.yDeltas2 = NaN;
             % Do nothing
         elseif ( numel(f) == 1 && numel(g) == 1 )
             % Array-valued CHEBFUN case:
@@ -282,7 +283,8 @@ while ( ~isempty(varargin) )
         pointData = [pointData, newData(k).xPoints, newData(k).yPoints, ...
             styleData];
         jumpData = [jumpData, newData(k).xJumps, newData(k).yJumps, styleData];
-        deltaData = [deltaData, newData(k).xDeltas, newData(k).yDeltas, styleData];
+        deltaData{k} = {newData(k).xDeltas, newData(k).yDeltas, ...
+            newData(k).yDeltaBase, styleData};
         
         defaultXLim = defaultXLim & newData(k).defaultXLim;
         defaultYLim = defaultYLim & newData(k).defaultYLim;
@@ -346,16 +348,11 @@ if ( ~jumpLineIsSet )
     set(h3, 'Marker', 'none') 
 end
 
-% Reset color cycle prior to delta function plot if running R2014b.
-if ( ~verLessThan('matlab', '8.4') )
-    set(gca, 'ColorOrderIndex', 1);
-end
-
 % Plot the Delta functions:
-if ( isempty(deltaData) || ~isnumeric(deltaData{1}) )
-    h4 = stem([]);
+if ( isempty(deltaData) || ~isnumeric(deltaData{1}{1}) )
+    h4 = plot([]);
 else
-    h4 = mystem(deltaData{:});
+    h4 = plotDeltas(deltaData);
 end
 if ( ~isempty(deltaStyle) )
     set(h4, deltaStyle{:});
@@ -417,38 +414,120 @@ end
 
 end
 
-function h = mystem(varargin)
-%MYSTEM   Plot multiple STEM plots in one call.
-% We need this because stem doesn't supoprt multiple inputs in the same way
-% PLOT does. An alternative option would be to write our own version of STEM.
+function h = plotDeltas(deltaData)
+%PLOTDELTAS   Plots delta functions.
+    h = [];
+
+    % Get and save the current ColorOrder if running on R2014a or earlier.
+    if ( verLessThan('matlab', '8.4') )
+        originalColorOrder = get(gca, 'ColorOrder');
+        colorOrder = circshift(originalColorOrder, 1);
+    end
+
+    for (k = 1:1:numel(deltaData))
+        % Set color for the next delta function plot.
+        if ( verLessThan('matlab', '8.4') )
+            % Manually manipulate the ColorOrder for R2014a or earlier.
+            colorOrder = circshift(colorOrder, -1);
+            set(gca, 'ColorOrder', colorOrder);
+        else
+            % Use ColorOrderIndex for R2014b and later.
+            set(gca, 'ColorOrderIndex', k);
+        end
+
+        h = [h, plotDeltasForOneFunction(deltaData{k}{:})];
+    end
+
+    % Restore the ColorOrder if running on R2014a or earlier.
+    if ( verLessThan('matlab', '8.4') )
+        set(gca, 'ColorOrder', originalColorOrder);
+    end
+end
+
+function h = plotDeltasForOneFunction(varargin)
+%PLOTDELTASFORONEFUNCTION   Plots delta functions for one function.
 
 h = [];
 j = 1;
-% Separate out each individual plot by looking for two consecutive doubles.
-isDouble = cellfun(@isnumeric, varargin);
-startLoc = [1 find([0 diff(isDouble)] == 1 & [diff(isDouble) 0] == 0) nargin+1];
-for k = 1:numel(startLoc)-1
-    data = varargin(startLoc(k):startLoc(k+1)-1);
+while ( ~isempty(varargin) )
+    % Extract data which is in triplets:
+    xData = varargin{1};  % locations of delta functions
+    yData = varargin{2};  % magnitude of delta functions
+    yBase = varargin{3};  % starting height for delta functions
+    
+    % Delete these arguments, since they have been copied:
+    varargin(1:3) = [];
+
+    % Handle the delta style argument:
+    style = '';
+    if ( ~isempty(varargin{1}) && iscell(varargin{1}) )
+        style = varargin{1}{1};
+    end
+    varargin(1) = [];
+    
     % Ignore complete NaN data:
-    if ( all(isnan(data{1})) )
+    if ( all(isnan(xData)) )
         continue
     end
     
-    if ( isnumeric(data{1}) )
+    if ( isnumeric(xData) )
         % Remove mixed NaN data:
-        xData = data{1};
-        yData = data{2};
         nanIdx = isnan(xData);
         xData(nanIdx) = [];
         yData(nanIdx) = [];
-        
+        yBase(nanIdx) = [];
+
         % merge duplicate delta functions.
-        [yData, xData] = deltafun.mergeColumns(yData.', xData.');
-        data{1} = xData.';
-        data{2} = yData.';
+        [yData, xData, dupIdx] = deltafun.mergeColumns(yData.', xData.');
+        xData = xData.';
+        yData = yData.';
+        
+        % For delta functions at discontinuities, set the base value to the
+        % average of the function values:
+        yBase(dupIdx-1) = 1/2*(yBase(dupIdx-1)+yBase(dupIdx));
+        yBase(dupIdx) = [];
+        yFinish = yBase + yData;
+                        
+        % Add NaNs in order to plot isolated vertical lines:
+
+        % NaNs for xData:
+        xFullData = zeros(3*size(xData,1), 1);
+        xFullData(1:3:end) = xData;
+        xFullData(2:3:end) = xData;
+        xFullData(3:3:end) = NaN;
+        
+        % NaNs for yData
+        yFullData = zeros(3*size(xData,1), 1);
+        yFullData(1:3:end) = yBase;
+        yFullData(2:3:end) = yFinish;
+        yFullData(3:3:end) = NaN;
+        
+        fullData{1} = xFullData;
+        fullData{2} = yFullData;        
+        fullData{3} = style;
     end
-    h(j) = stem(data{:}, 'fill');
-    set(h(j), 'ShowBaseLine', 'off')
+
+    % Plot the vertical lines:
+    h(j) = plot(fullData{:});
+    
+    % Plot the markers for delta functions:
+    for jj = 1:length(xData)
+        % For positive delta functions, we plot an arrow:
+        if ( yData(jj) >= 0 )
+            marker = '^';
+        end
+        % For negative delta functions, we plot a v: 
+        if ( yData(jj) < 0 )
+            marker = 'v';
+        end        
+
+        % Plot the markers and match the color with the delta lines:
+        hjj = plot(xData(jj), yFinish(jj), marker, ...
+            'markersize', 6, 'linestyle', 'none', 'handlevis', 'off');
+        set(hjj, 'color', get(h(j), 'color'));
+        set(hjj, 'markerfacecolor', get(h(j), 'color'))
+    end
+        
     j = j + 1;
 end
 

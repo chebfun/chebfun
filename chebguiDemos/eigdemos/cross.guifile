@@ -1,3 +1,8 @@
+# dom = [0, 2*pi];
+# N = chebop(@(u) -diff(u, 2), dom);
+# B = chebop(@(u) u + diff(u), dom);
+# N.bc = 0;
+# [V, D] = eigs(N, B, 12);
 'A cross of eigenvalues'
 'scalar'
 domain = '[0 2*pi]';

@@ -1,11 +1,12 @@
-function [A, v] = mergeColumns(A, v, pref)
-%MERGECOLUMNS Merges columns of A if two locations given in V are almost equal.
-%   [A v] = MERGECOLUMNS(A, V) merges two columns if the corresponding entries
-%   in V are equal or close to each other more than a certain tolerance.
+function [A, v, I] = mergeColumns(A, v, pref)
+%MERGECOLUMNS Merges columns of A if locations given in V are almost equal.
+%   [A, v, I] = MERGECOLUMNS(A, V) merges two columns if the corresponding
+%   entries in V are equal or close to each other more than a certain
+%   tolerance. I contains the indices where duplication existed.
 %
 % See also CLEANCOLUMNS, MERGEDELTAS, CLEANROWS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Get the tolerance:
@@ -23,6 +24,7 @@ end
 % Make sure the input is sorted:
 [v, idx] = sort(v);
 A = A(:,idx);
+I = [];
 
 j = 2;
 for k = 2:m
@@ -48,6 +50,7 @@ for k = 2:m
         % Remove the copied column of A and the corresponding location in v:
         A(:, j) = [];
         v(j) = [];
+        I = [I, k]; %#ok<AGROW>
     else
         j = j + 1;
     end

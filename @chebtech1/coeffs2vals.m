@@ -11,7 +11,7 @@ function values = coeffs2vals(coeffs)
 %
 % See also VALS2COEFFS, CHEBPTS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -30,21 +30,27 @@ if ( n <= 1 )
     return
 end
 
-% Pre-compute the weight vector:
-w = repmat((exp(-1i*(0:2*n-1)*pi/(2*n))/2).', 1, m);
-w(1,:) = 2*w(1, :);
-w(n+1,:) = 0;
-w(n+2:end,:) = -w(n+2:end, :);
+% Computing the weight vector often accounts for at least half the cost of this
+% transformation. Given that (a) the weight vector depends only on the length of
+% the coefficients and not the coefficients themselves and (b) that we often
+% perform repeated transforms of the same length, we store w persistently.
+persistent w
+if ( size(w, 1) ~= 2*n )
+    % Pre-compute the weight vector:
+    w = (exp(-1i*(0:2*n-1)*pi/(2*n))/2).';
+    w([1, n+1]) = [2*w(1); 0];
+    w(n+2:end) = -w(n+2:end);
+end
 
 % Mirror the values for FFT:
-tmp = [coeffs(1:end,:) ; ones(1, m) ; coeffs(end:-1:2,:)];
+c_mirror = [coeffs ; ones(1, m) ; coeffs(end:-1:2,:)];
 
 % Apply the weight vector:
-tmp = tmp.*w;
-values = fft(tmp);
+c_weight = bsxfun(@times, c_mirror, w);
+values = fft(c_weight);
 
-% Truncate, flip the order, and multiply the weight vector:
-values = values(n:-1:1, :);
+% Truncate and flip the order:
+values = values(n:-1:1,:);
 
 % Post-process:
 if ( isreal(coeffs) )           

@@ -2,7 +2,7 @@ function f = fracInt(f, mu)
 %FRACINT  Fractional integral of a BNDFUN. 
 %   FRACINT(F, MU) gives the order MU fractional integral of a BNDFUN object F.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Scaling for domain:

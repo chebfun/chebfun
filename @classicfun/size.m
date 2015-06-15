@@ -4,7 +4,7 @@ function [size1, size2] = size(f, varargin)
 %
 % See also LENGTH.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % The size of a CLASSICFUN is the size of its onefun.

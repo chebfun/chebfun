@@ -3,7 +3,7 @@ function A = vander(f, n)
 %   A = VANDER(F, N) returns a Vandermonde array-valued CHEBFUN whose N columns
 %   are powers of the CHEBFUN F, that is A(:,j) = F.^(N-j), j = 0...N-1.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( f(1).isTransposed || numColumns(f) > 1 )

@@ -72,22 +72,23 @@ pass(12) = norm(feval(fh,xx) - feval(f,xx), inf) < 1e2*get(f, 'epslevel');
 fh = @(x) exp(sin(x))./((1+x).^a.*(1-x).^b);
 f = singfun(fh);
 pass(13) = norm(f.exponents + [a,b], inf) < pref.blowupPrefs.exponentTol;
-pass(14) = norm(feval(fh,x) - feval(f,x), inf) < 1e3*get(f, 'epslevel');
-
+pass(14) = norm(feval(fh,x) - feval(f,x), inf) < 1e5*get(f, 'epslevel');
+    
 %%
 % Positive fractional exponents
 fh = @(x) sin(exp(cos(x))).*(1+x).^a.*(1-x).^b;
 f = singfun(fh);
 pass(15) = norm(f.exponents - [a,b], inf) < pref.blowupPrefs.exponentTol;
-pass(16) = norm(feval(fh,x) - feval(f,x), inf) < 1e1*get(f, 'epslevel');
-
+pass(16) = norm(feval(fh,x) - feval(f,x), inf) < 1e3*get(f, 'epslevel');
+    
 %%
 % Negative integer exponents
 fh = @(x) exp(sin(x.^2))./((1+x).^a_int.*(1-x).^b_int);
 f = singfun(fh);
 pass(17) = norm(f.exponents + [a_int, b_int], inf) < pref.blowupPrefs.exponentTol;
 xx = x(20:80);
-pass(18) = norm(feval(fh,xx) - feval(f,xx), inf) < 5e1*get(f, 'epslevel');
+pass(18) = norm(feval(fh,xx) - feval(f,xx), inf) < 1e3*get(f, 'epslevel');
+
 
 %%
 % Construction with smoothfuns:
@@ -100,5 +101,18 @@ data.singType = {'sing', 'sing'};
 s = singfun(f, data, pref);
 pass(20) = iszero(f - s.smoothPart);
 pass(21) = norm(s.exponents - [-1.5, -1], inf) < pref.blowupPrefs.exponentTol;
+
+%%
+% Construction from double:
+f = singfun(42);
+pass(22) = iszero(f - 42);
+data = struct();
+data.exponents = [1.5, 1];
+data.singType = {'sing', 'sing'};
+f = singfun(42, data, pref);
+g = singfun(@(x) 42+0*x);
+g.exponents = [1.5, 1];
+pass(23) = iszero(f - g);
+pass(24) = norm(s.exponents - [-1.5, -1], inf) < pref.blowupPrefs.exponentTol;
 
 end

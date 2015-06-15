@@ -171,7 +171,7 @@ pass(20) = err1 < tol && err2 < tol;
 f = chebfun(@(x) [sin(x) cos(x)]);
 h = max(f, .75);
 pass(21) = norm(h([-.9 0 .8 .9].') - ...
-    [.75 .75 ;.75 1 ; .75 .75 ; sin(.9) .75]) < epslevel(h)*vscale(h);
+    [.75 .75 ;.75 1 ; .75 .75 ; sin(.9) .75]) < 10*epslevel(h)*vscale(h);
 
 %% Test on function defined on unbounded domain:
 
@@ -187,6 +187,7 @@ yExact = exp(-1);
 xExact = 1;
 errY = y - yExact;
 errX = x - xExact;
-pass(22) = norm([errY errX], inf) < 100*epslevel(f).*vscale(f);
+pass(22) = norm([errY errX], inf) < 1e3*epslevel(f).*vscale(f);
+
 
 end

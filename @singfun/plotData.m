@@ -12,7 +12,7 @@ function data = plotData(f, g, h)
 %
 % See also PLOT.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%
@@ -92,7 +92,7 @@ if ( singMask(1) )
     else
         idxl = find(data.yLine >= data.yLim(1), 1, 'first');
     end
-    idxl = floor((3/5)*idxl);
+    idxl = max(floor((3/5)*idxl), 1);
     data.xLim(1) = data.xLine(idxl);
 end
 

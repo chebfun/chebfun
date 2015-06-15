@@ -221,7 +221,8 @@ function result = test_mult_function_by_function(f, f_op, g, g_op, x, checkpos)
 h = f .* g;
 h_exact = @(x) f_op(x) .* g_op(x);
 tol = 10*max(get(h, 'vscale').*get(h, 'epslevel'));
-result(1) = all(max(abs(feval(h, x) - h_exact(x))) < 20*tol);
+result(1) = all(max(abs(feval(h, x) - h_exact(x))) < 1e4*tol);
+    
 if ( checkpos )
     result(2) = all(feval(h, x) >= 0);
 end

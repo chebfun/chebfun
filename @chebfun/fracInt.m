@@ -5,13 +5,13 @@ function f = fracInt(f, mu)
 %   Currently this only supports the situation where F is smooth (i.e., it has
 %   no breakpoints or endpoint singularities) and on a finite domain.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % No piecewise support yet:
 if ( numel(domain(f)) > 2 )
     error('CHEBFUN:CHEBFUN:fracInt:breakpoints', ...
-        'FRACINT() does not currently support piecewise functions.');
+        'FRACINT does not currently support piecewise functions.');
 end
 
 % Extract the fractional part of mu:

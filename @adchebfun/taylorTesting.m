@@ -23,7 +23,7 @@ function [order1, order2, nDiff2] = taylorTesting(f, hMax, numOut, plotting)
 %
 % See also: TAYLORTESTINGBINARY, VALUETESTING, VALUETESTINGBINARY.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % The following is taken from Birkisson's DPhil thesis [TODO: Citation?].

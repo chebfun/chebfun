@@ -3,7 +3,7 @@ function N1 = plus(N1, N2)
 %
 % N = PLUS(N1, N2) is the same as N = N1 + N2. 
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
  
 % Check domains are the same. 

@@ -1,5 +1,5 @@
 function out = jaccoeffs(f, n, a, b)
-%LEGPOLY   Jacobi polynomial coefficients of a CHEBFUN.
+%JACCOEFFS   Jacobi polynomial coefficients of a CHEBFUN.
 %   A = JACCOEFFS(F, N, ALPHA, BETA) returns the first N+1 coefficients in the
 %   Jacobi series expansion of the CHEBFUN F, so that such that F approximately
 %   equals A(1) J_N(x) + ... + A(N) J_1(x) + A(N+1) J_0(x) where J_N(x) denotes
@@ -7,17 +7,13 @@ function out = jaccoeffs(f, n, a, b)
 %   vector.
 %
 %   If F is smooth (i.e., numel(f.funs) == 1), then A = JACCOEFFS(F, ALPHA,
-%   BETA) will assume that N = length(F) - 1;
-%
-%   There is also a JACCOEFFS command in the Chebfun root directory which
-%   computes the CHEBFUN corresponding to the Jacobi polynomial J_n(x, ALPHA,
-%   BETA). Both versions of JACCOEFFS use the same normalization.
+%   BETA) will assume that N = length(F).
 %
 %   JACCOEFFS does not support quasimatrices.
 %
 % See also CHEBCOEFFS, LEGCOEFFS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( numel(f) > 1 )
@@ -30,15 +26,35 @@ if ( (numel(f.funs) == 1) && (nargin < 4) )
     a = n;
     n = length(f);
 end
+
+%%
+% Special cases:
+if ( a == 0 && b == 0 )
+    out = legcoeffs(f, n);
+    return
+elseif ( a == -.5 && b == -.5 )
+    out = chebcoeffs(f, n, 'kind', 1);
+    return
+elseif ( a == .5 && b == .5 )
+    out = chebcoeffs(f, n, 'kind', 2);
+    return
+end
     
-% Jacobi-Vandermonde matrix:
-Enorm = jacpoly(0:n-1, a, b, f.domain);
+%% 
+if ( numel(f.funs) == 1 )
+    
+    % Compute Jacobi coefficients of the single fun.
+    out = jaccoeffs(f.funs{1}, n, a, b);
+   
+else
 
-% Compute the projection (with correct scaling):
-out = Enorm \ f;
+    % Jacobi-Vandermonde matrix:
+    Enorm = jacpoly(0:n-1, a, b, f.domain);
 
-% Convention is that the output is a row vector:
-out = out.';
+    % Compute the projection (with correct scaling):
+    out = Enorm \ f;
+    
+end
 
 end
                 

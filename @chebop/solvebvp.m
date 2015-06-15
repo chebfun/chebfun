@@ -6,8 +6,13 @@ function [u, info] = solvebvp(N, rhs, varargin)
 %
 %       N(U) = RHS + boundary conditions specified by N
 %
-%   Observe that U = SOLVEBVP(N, RHS) has the same effect as U = N\RHS, but this
-%   method allows greater flexibility than CHEBOP backslash, as described below.
+%   Observe that U = SOLVEBVP(N, RHS), where N specifies a boundary-value
+%   problem (BVP), has the same effect as U = N\RHS, but this method allows
+%   greater flexibility than CHEBOP backslash, as described below. Problems are
+%   determined to be a BVP as follows:
+%       * Both N.LBC and N.RBC is non-empty, or N.BC is non-empty.
+%   Otherwise, problems are considered to be initial/final-value problems, and
+%   U=N\RHS will in general have the same effect as U = SOLVEIVP(N, RHS).
 %
 %   If successful, the solution returned, U, is a CHEBFUN if N specifies a
 %   scalar problem, and a CHEBMATRIX if N specifies a coupled systems of
@@ -50,7 +55,7 @@ function [u, info] = solvebvp(N, rhs, varargin)
 % See also: CHEBOP, CHEBOP/MLDIVIDE, CHEBOPPREF, CHEBOP/SOLVEBVPLINEAR,
 %   CHEBOP/SOLVEBVPNONLINEAR, CHEBOP/SOLVEIVP, LINOP/MLDIVIDE.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Developer note:
@@ -94,6 +99,14 @@ x = chebfun(@(x) x, dom);
 
 % Linearize and attach preferences.
 [L, residual, isLinear] = linearize(N, u0, x);
+
+% Before attempting to solve, check whether we actually have any BCs imposed:
+maxDiffOrder = max(max(L.diffOrder));
+if maxDiffOrder > 0 && isempty(N.lbc) && isempty(N.rbc) && isempty(N.bc)
+    % Differential equations need BCs (but integral eqns. are OK):
+    error('CHEBFUN:CHEBOP:solvebvp:bcEmpty', ...
+        'Boundary conditions must be provided.');
+end
 
 warnState = warning();
 [ignored, lastwarnID] = lastwarn(); %#ok<ASGLU>

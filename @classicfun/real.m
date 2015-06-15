@@ -4,7 +4,7 @@ function f = real(f)
 %
 % See also IMAG, ISREAL, CONJ.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Assign the ONEFUN to be the real part of the ONEFUN of the input:

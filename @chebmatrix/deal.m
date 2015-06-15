@@ -13,7 +13,7 @@ function varargout = deal(X)
 %       [u,v] = deal(N \ 0);  % solution components of a system
 %                             % of differential equations
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 

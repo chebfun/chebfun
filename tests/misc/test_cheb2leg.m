@@ -45,7 +45,7 @@ c_cheb(2:2:end) = -c_cheb(2:2:end);
 c_leg = cheb2leg(c_cheb);
 c_leg442 = -8.239505429144573e-04;
 err = abs(c_leg(559) - c_leg442)/abs(c_leg442);
-pass(5) = err < tol;
+pass(5) = err < 10*tol;
 
 % Test conversion back to cheb coeffs:
 c_cheb2 = leg2cheb(c_leg);
@@ -72,15 +72,15 @@ pass(8) = ( norm( B - E ) < tol );
 % Test normalization: 
 A = rand(10, 2); 
 B = cheb2leg( A ); 
-C = cheb2leg( A, 1); 
+C = cheb2leg( A, 'norm'); 
 D = cheb2leg( A, 'normalized'); 
-pass(9) = ( norm( diag(1./(sqrt((9:-1:0)' + 1/2)))*B - C ) < 10*tol ); 
+pass(9) = ( norm( diag(1./(sqrt((0:9)' + 1/2)))*B - C ) < 10*tol ); 
 pass(10) = ( norm( C - D ) < tol ); 
 
 % Test normalization: 
 A = rand(1000, 2);  
 B = cheb2leg( A ); 
-C = cheb2leg( A, 1); 
+C = cheb2leg( A, 'norm'); 
 D = cheb2leg( A, 'normalized'); 
 pass(11) = ( norm( diag(1./(sqrt((0:999)' + 1/2)))*B - C ) < tol ); 
 pass(12) = ( norm( C - D ) < tol ); 

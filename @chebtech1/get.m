@@ -12,7 +12,7 @@ function out = get(f, prop)
 %
 % See also CHEBTECH, CHEBTECH1.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -27,9 +27,9 @@ switch prop
     case 'points'
         out = f.points();
     case 'lval'
-        out = feval(f, -1);
+        out = lval(f);
     case 'rval'
-        out = feval(f, 1);
+        out = rval(f);
     case 'values'
         out = f.coeffs2vals(f.coeffs);
     case 'tech'

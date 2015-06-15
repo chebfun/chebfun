@@ -3,7 +3,7 @@ function u0 = fitBCs(L, prefs)
 %   U0 = FITBCS(L) Returns a CHEBMATRIX which will satisfy the BCs
 %        and other conditions of the linop L.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -145,7 +145,7 @@ function u = mypartition(disc, values, dimAdjust)
 %   of individual variables in the system. I.e., deduce the variable boundaries
 %   within the discretization.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % TODO: Document dimAdjust.

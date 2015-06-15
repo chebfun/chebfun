@@ -5,7 +5,7 @@ function A = subsasgn(A, sa, B)
 %
 %   A.(...) = B changes a named property of A. 
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 switch(sa(1).type)

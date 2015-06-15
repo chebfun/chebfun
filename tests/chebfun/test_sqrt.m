@@ -47,7 +47,8 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = norm(vals_g - vals_exact, inf);
-tol = 1e1*epslevel(f).*norm(vals_exact, inf);
+tol = 1e3*epslevel(f).*norm(vals_exact, inf);
+
 pass(3) = err < tol;
 
 %% Another complex piece-wise case:
@@ -62,7 +63,8 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
-pass(4) = ( norm(err, inf) < 1e2*epslevel(f).*norm(vals_exact, inf) );
+pass(4) = ( norm(err, inf) < 1e4*epslevel(f).*norm(vals_exact, inf) );
+
 
 %% An array-valued CHEBFUN: 
 
@@ -74,7 +76,8 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = norm(vals_g - vals_exact, inf);
-tol = 1e2*get(f,'epslevel')*norm(vals_exact, inf);
+tol = 1e3*get(f,'epslevel')*norm(vals_exact, inf);
+
 pass(5) = err < tol;
 
 %% A positive piece-wise example with singularities:
@@ -114,7 +117,8 @@ g = sqrt(f);
 gVals = feval(g, x);
 gExact = opg(x);
 err = gVals - gExact;
-pass(7) = norm(err, inf) < epslevel(g)*vscale(g);
+pass(7) = norm(err, inf) < 1e2*epslevel(g)*vscale(g);
+
 
 % Blow-up function:
 op = @(x) x.^2.*(1-exp(-x.^2))+2;
@@ -124,7 +128,8 @@ g = sqrt(f);
 gVals = feval(g, x);
 gExact = opg(x);
 err = gVals - gExact;
-pass(8) = norm(err, inf) < 1e2*epslevel(g)*vscale(g);
+pass(8) = norm(err, inf) < 1e4*epslevel(g)*vscale(g);
+
 
 %% Functions on [a inf]:
 
@@ -143,7 +148,8 @@ g = sqrt(f);
 gVals = feval(g, x);
 gExact = opg(x);
 err = gVals - gExact;
-pass(9) = norm(err, inf) < epslevel(g)*vscale(g);
+pass(9) = norm(err, inf) < 1e2*epslevel(g)*vscale(g);
+
 
 % Oscillatory function with varying sign and integer power:
 op = @(x) 0.1+sin(10*x)./exp(x);
@@ -153,7 +159,8 @@ g = sqrt(f);
 gVals = feval(g, x);
 gExact = opg(x);
 err = gVals - gExact;
-pass(10) = norm(err, inf) < epslevel(g)*vscale(g);
+pass(10) = norm(err, inf) < 1e2*epslevel(g)*vscale(g);
+
 
 % Blow-up function and negative integer power:
 op = @(x) x.*(5+exp(-x.^3));
@@ -163,6 +170,7 @@ g = sqrt(f);
 gVals = feval(g, x);
 gExact = opg(x);
 err = gVals - gExact;
-pass(11) = norm(err, inf) < epslevel(g)*vscale(g);
+pass(11) = norm(err, inf) < 1e2*epslevel(g)*vscale(g);
+
 
 end

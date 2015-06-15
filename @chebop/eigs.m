@@ -39,7 +39,7 @@ function varargout = eigs(N, varargin)
 %
 % See also LINOP/EIGS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Did we get preferences passed?
@@ -51,19 +51,33 @@ else
     isPrefGiven = 0;
 end
 
-% Linearize and check whether the chebop is linear:
-[L, ignored, fail] = linop(N); %#ok<ASGLU>
+% Tell CHEBOP/LINEARIZE() to stop if it detects nonlinearity:
+linCheck = true; 
+
+% Linearize, thereby obtaining linearity information, a LINOP, and an input of
+% the correct dimensions to pass to N:
+[L, ignored, isLinear, u0] = linearize(N, N.init, [], linCheck);
+
+% We need the entire operator (including BCs) to be linear:
+assert(all(isLinear), 'CHEBFUN:CHEBOP:eigs:nonlinear', ...
+    ['The input operator appears to be nonlinear.\n', ...
+    'EIGS() supports only linear CHEBOP instances.']);
 
 % Support for generalised problems:
-if ( ~fail && nargin > 1 && isa(varargin{1}, 'chebop') )
+if ( nargin > 1 && isa(varargin{1}, 'chebop') )
+    % Tell CHEBOP/LINEARIZE() that we don't want it to try to reshape inputs
+    % that it believes are parameters to doubles, rather than CHEBFUNs.
+    paramReshape = false;
+    
     % Linearise the second CHEBOP:
-    [varargin{1}, ignored, fail] = linop(varargin{1}); %#ok<ASGLU>
-end
+    [varargin{1}, ignored, isLinear] = ...
+        linearize(varargin{1}, u0, [], linCheck, paramReshape);
 
-if ( fail )
-    error('CHEBFUN:CHEBOP:eigs:nonlinear', ...
-        ['The operator appears to be nonlinear.\n', ...
-         'EIGS() supports only linear CHEBOP instances.']);
+    % We need the entire operator (including BCs) to be linear:
+    assert(all(isLinear), 'CHEBFUN:CHEBOP:eigs:nonlinear', ...
+        ['The second input operator appears to be nonlinear.\n', ...
+        'EIGS() supports only linear CHEBOP instances.']);
+    
 end
 
 % Determine the discretization.

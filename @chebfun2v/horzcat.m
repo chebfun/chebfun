@@ -3,7 +3,7 @@ function varargout = horzcat( varargin )
 %   This is not allowed and returns an error.  This function exists so that the
 %   error message is meaningful to a CHEBFUN2 user.
 
-% Copyright 2014 by The University of Oxford and The Chebfun2 Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun2 Developers.
 % See http://www.chebfun.org/ for Chebfun2 information.
 
 error('CHEBFUN:CHEBFUN2V:horzcat:notSupported', ...

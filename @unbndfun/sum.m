@@ -5,7 +5,7 @@ function out = sum(g)
 %
 % See also CUMSUM, DIFF.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Get the domain.
@@ -31,8 +31,8 @@ tol = get(g, 'epslevel').*get(g, 'vscale');
 
 % Check 1: Check if the function values are vanishing at infinity/ies.
 unbounded = zeros(2, size(g, 2));
-maskLeft = ( abs(vends(1, :)) > 1e4*tol );
-maskRight = ( abs(vends(2, :)) > 1e4*tol );
+maskLeft = ( abs(vends(1, :)) > 1e5*tol );
+maskRight = ( abs(vends(2, :)) > 1e5*tol );
 
 % Mark the endpoints where function is not decaying fast enough:
 if ( isinf(dom(1)) && any( maskLeft ) )
