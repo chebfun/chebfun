@@ -1,7 +1,8 @@
 function f = power(f, b)
-%.^   BNDFUN power.
-%   F.^G returns a BNDFUN F to the scalar power G, a scalar F to the BNDFUN
-%   power G, or a BNDFUN F to the BNDFUN power G. F and or G may be complex. 
+%.^   CLASSICFUN power.
+%   F.^G returns a CLASSICFUN F to the scalar power G, a scalar F to the
+%   CLASSICFUN power G, or a CLASSICFUN F to the CLASSICFUN power G. F and or G
+%   may be complex.
 %
 %   This function assumes that the curve traced out by F in the complex plane
 %   both (1) does not come too close to zero except at the domain boundaries 
