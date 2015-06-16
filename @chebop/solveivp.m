@@ -105,7 +105,7 @@ end
 % If pref.ivpSolver is set to a global method, we really should be calling
 % CHEBOP/SOLVEBVP():
 if ( isempty(strfind(func2str(pref.ivpSolver), 'chebfun.ode')) )
-    [y, info] = solvebvp(N, rhs, pref, varargin{:});
+    [varargout{1:nargout}] = solvebvp(N, rhs, pref, varargin{:});
     info.solver = 'Global method';
     return
 end
@@ -123,7 +123,7 @@ catch ME
     % Did we encounter an unsupported method? If so, try to solve it globally:
     if ( ~isempty(regexp(ME.identifier, 'CHEBFUN:TREEVAR:.+:notSupported', ...
             'once')) )
-        [y, info] = solvebvp(N, rhs, pref, varargin{:});
+        [varargout{1:nargout}] = solvebvp(N, rhs, pref, varargin{:});
         return
     else
         % Otherwise, an unexpected error occured, rethrow it.
