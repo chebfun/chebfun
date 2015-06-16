@@ -54,7 +54,6 @@ scalarValued = size(c,2) == 1;
 
 if scalarValued && all(isReal)
     y = horner_scl_real(x, c);
-%     y = real(horner_scl_cmplx(x, c));
 elseif ~scalarValued && all(isReal)
     y = horner_vec_real(x, c);
 elseif scalarValued && ~all(isReal)
@@ -130,8 +129,7 @@ end
 end
 
 % Uses real arithmetic by summing the cosine/sine series version of the
-% complex exponential series.  This is related to Clenshaw summation, but
-% is not always called this in the trigonometric series context.
+% complex exponential series.
 function q = horner_scl_real(x, c)
 
 N = size(c, 1);
@@ -171,8 +169,8 @@ q = a(1) + 2*(u.*co + v.*si);
 end
 
 % Uses real arithmetic by summing the cosine/sine series version of the
-% complex exponential series.  This is related to Clenshaw summation, but
-% is not always called this in the trigonometric series context.
+% complex exponential series.  This is measurably faster when c is a
+% matrix, i.e array valued polynomial.
 function q = horner_vec_real(x, c)
 
 nValsX = size(x, 1);
@@ -213,3 +211,118 @@ end
 q = e*a(1,:) + 2*(u.*co + v.*si);
 
 end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Developer note: The code below implements the Clenshaw algortithm for
+% summing a Fourier series (also called the Goertzel-Watt algorithm).  This
+% algorithm is about 1.5 times faster than the horner schemes implemented
+% above.  However, it is unstable when x is close to zero or +/- 1 (and the
+% periodic extensions of these values); see, for example, W. M. Gentleman,
+% "An error analysis of Goertzel's (Watt's) method for computing Fourier
+% coefficients" or A. C. R. Newbery, "Error analysis for Fourier series
+% evaluation." Mathematics of Computation 27.123 (1973): 639-644.  The
+% latter article describes how to fix this using a "phase-shift" for select
+% values of x in the unstable region. However, the logic involved in doing
+% this will probably outweigh any benefits of the speed-up of this
+% algorithm over the Horner schemes implemented above.  I am leaving these
+% algorithms here as someone in the future may figure out a slick way to
+% implement stable versions of them.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 
+% function q = clenshaw_scl_real(x, c)
+% 
+% N = size(c, 1);
+% 
+% % Get all negative indexed coefficients coefficients so that the constant
+% % is the first term.
+% n = ceil((N+1)/2);
+% c = c(n:-1:1,:);
+% a = real(c);
+% b = imag(c);
+% 
+% % Adjust the last coefficient which corresponds to the pure cos(pi*n*x) 
+% % mode in the case that N is even.
+% if mod(N,2) == 0
+%     a(n) = a(n)/2;
+%     b(n) = 0;
+% end
+% 
+% % Just return the constant term.
+% if N == 1
+%     q = a;
+%     return
+% end
+% 
+% % Clenshaw scheme for scalar-valued functions.
+% bk1u = 0*x; 
+% bk2u = bk1u;
+% bk1v = bk1u; 
+% bk2v = bk1u;
+% 
+% u = 2*cos(pi*x);
+% n = size(b,1)-1;
+% for k = (n+1):-2:3
+%     bk2u = a(k) + u.*bk1u - bk2u;
+%     bk1u = a(k-1) + u.*bk2u - bk1u;
+%     bk2v = b(k) + u.*bk1v - bk2v;
+%     bk1v = b(k-1) + u.*bk2v - bk1v;
+% end
+% if ( mod(n, 2) )
+%     [bk1u, bk2u] = deal(a(2) + u.*bk1u - bk2u, bk1u);
+%     bk1v = b(2) + u.*bk1v - bk2v;
+% end
+% q = a(1) + u.*bk1u - 2*bk2u + (2*sin(pi*x)).*bk1v;
+% end
+% 
+% % Uses real arithmetic by summing the cosine/sine series version of the
+% % complex exponential series.  This is related to Clenshaw summation, but
+% % is not always called this in the trigonometric series context.
+% function q = clenshaw_vec_real(x, c)
+% 
+% nValsX = size(x, 1);
+% N = size(c, 1);
+% numCols = size(c,2);
+% 
+% % Get all negative indexed coefficients coefficients so that the constant
+% % is the first term.
+% n = ceil((N+1)/2);
+% c = c(n:-1:1,:);
+% a = real(c);
+% b = imag(c);
+% e = ones(nValsX,1);
+% 
+% % Adjust the last coefficient which corresponds to the pure cos(pi*n*x) 
+% % mode in the case that N is even.
+% if mod(N,2) == 0
+%     a(n,:) = a(n,:)/2;
+%     b(n,:) = 0;
+% end
+% 
+% % Just return the constant term.
+% if N == 1
+%     q = e*a;
+%     return
+% end
+% 
+% x = repmat(x,[1 numCols]);
+% 
+% % Clenshaw scheme for scalar-valued functions.
+% bk1u = zeros(nValsX,numCols);
+% bk2u = bk1u;
+% bk1v = bk1u; 
+% bk2v = bk1u;
+% 
+% u = 2*cos(pi*x);
+% n = size(b,1)-1;
+% for k = (n+1):-2:3
+%     bk2u = e*a(k,:) + u.*bk1u - bk2u;
+%     bk1u = e*a(k-1,:) + u.*bk2u - bk1u;
+%     bk2v = e*b(k,:) + u.*bk1v - bk2v;
+%     bk1v = e*b(k-1,:) + u.*bk2v - bk1v;
+% end
+% if ( mod(n, 2) )
+%     [bk1u, bk2u] = deal(e*a(2,:) + u.*bk1u - bk2u, bk1u);
+%     bk1v = e*b(2,:) + u.*bk1v - bk2v;
+% end
+% q = e*a(1,:) + u.*bk1u - 2*bk2u + (2*sin(pi*x)).*bk1v;
+% end
