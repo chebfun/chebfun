@@ -54,6 +54,7 @@ scalarValued = size(c,2) == 1;
 
 if scalarValued && all(isReal)
     y = horner_scl_real(x, c);
+%     y = real(horner_scl_cmplx(x, c));
 elseif ~scalarValued && all(isReal)
     y = horner_vec_real(x, c);
 elseif scalarValued && ~all(isReal)
@@ -72,11 +73,17 @@ function q = horner_scl_cmplx(x, c)
 N = size(c, 1);
 z = exp(1i*pi*x); % Use complex exponential
 q = c(N);  % Same as polyval for coeffs flipped from 0th deg to Nth deg
+
+% Just return the constant term.
+if N == 1
+    return
+end
+
 for j = N-1:-1:2
-    q = z.*q + c(j);
+    q = c(j) + z.*q;
 end
 if mod(N, 2) == 1
-    q = exp(-1i*pi*(N-1)/2*x).*(z.*q + c(1));
+    q = exp(-1i*pi*(N-1)/2*x).*(c(1) + z.*q);
 else
     q = exp(-1i*pi*(N/2-1)*x).*q + cos(N/2*pi*x)*c(1);
 end
@@ -88,6 +95,12 @@ end
 function q = horner_vec_cmplx(x, c)
 nValsX = size(x, 1);
 N = size(c, 1);
+% Just return the constant term.
+if N == 1
+    q = repmat(c(N,:),[nValsX 1]);
+    return
+end
+
 z = exp(1i*pi*x); % Use complex exponential
 numCols = size(c,2);
 if nValsX > 1
@@ -95,10 +108,10 @@ if nValsX > 1
     e = ones(nValsX,1);
     q = repmat(c(N,:),[nValsX 1]);
     for j = N-1:-1:2
-        q = z.*q + e*c(j,:);
+        q = e*c(j,:) + z.*q;
     end
     if mod(N, 2) == 1
-        q = bsxfun(@times, exp(-1i*pi*(N-1)/2*x), z.*q + e*c(1,:));
+        q = bsxfun(@times, exp(-1i*pi*(N-1)/2*x), e*c(1,:) + z.*q);
     else
         q = bsxfun(@times, exp(-1i*pi*(N/2-1)*x), q) + cos(N/2*pi*x)*c(1,:);
     end
@@ -130,6 +143,13 @@ c = c(n:-1:1,:);
 a = real(c);
 b = imag(c);
 
+% Adjust the last coefficient which corresponds to the pure cos(pi*n*x) 
+% mode in the case that N is even.
+if mod(N,2) == 0
+    a(n) = a(n)/2;
+    b(n) = 0;
+end
+
 % Just return the constant term.
 if N == 1
     q = a;
@@ -146,7 +166,7 @@ for j = n-1:-1:2
     co = temp;
 end
 
-q = a(1) + 2*u.*co + 2*v.*si;
+q = a(1) + 2*(u.*co + v.*si);
 
 end
 
@@ -167,6 +187,13 @@ a = real(c);
 b = imag(c);
 e = ones(nValsX,1);
 
+% Adjust the last coefficient which corresponds to the pure cos(pi*n*x) 
+% mode in the case that N is even.
+if mod(N,2) == 0
+    a(n,:) = a(n,:)/2;
+    b(n,:) = 0;
+end
+
 % Just return the constant term.
 if N == 1
     q = e*a;
@@ -183,6 +210,6 @@ for j = n-1:-1:2
     co = temp;
 end
 
-q = 2*(u.*co + v.*si) + e*a(1,:);
+q = e*a(1,:) + 2*(u.*co + v.*si);
 
 end
