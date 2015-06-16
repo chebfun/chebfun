@@ -251,7 +251,10 @@ classdef classicfun < fun % (Abstract)
 
         % Addition of two CLASSICFUN objects.
         f = plus(f, g)
-
+        
+        % CLASSICFUN power function.
+        f = power(f, b)
+        
         % Right array divide for a CLASSICFUN.
         f = rdivide(f, c, pref)
 
