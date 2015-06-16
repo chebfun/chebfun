@@ -44,6 +44,7 @@ indVarNameSpace = expInfo.indVarNameSpace;
 bcInput = expInfo.bcInput;
 periodic = expInfo.periodic;
 initInput = expInfo.initInput;
+numVars = expInfo.numVars;
 % Create the independent variable on DOM.
 xt = chebfun(@(x) x, dom);
 
@@ -129,12 +130,15 @@ end
 if ( guiMode )
     displayFunction = ...
         @(mode, varargin) chebgui.displayBVPinfo(handles, mode, varargin{:});
-    [u, info] = mldivide(N, 0, options, displayFunction);
+    [u{1:numVars,1}, info] = mldivide(N, 0, options, displayFunction);
 else
-    [u, info] = mldivide(N, 0, options);
+    [u{1:numVars,1}, info] = mldivide(N, 0, options);
     varargout{1} = u;
     varargout{2} = info;
 end
+
+% Convert the cell-array we get returned above to a chebmatrix
+u = chebmatrix(u);
 
 % ISLINEAR is returned as a vector in the INFO structure (with elements
 % corresponding to DE and BCs. Convert to a binary, 1 if everything in the
