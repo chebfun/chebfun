@@ -1,10 +1,11 @@
-function pass = sampleTest(op, values, f)
+function pass = sampleTest(op, values, f, vscl)
 %SAMPLETEST   Test an evaluation of input OP against a CHEBTECH approximation.
 %   SAMPLETEST(OP, VALUES, F) evaluates both the function OP and its CHEBTECH
 %   representation F at one or more points within [-1,1]. The difference of
 %   these values is computed, and if this is sufficiently small (relative to
-%   F.VSCALE, F.HSCALE, and F.EPSLEVEL) the test passes and returns TRUE. If the
-%   difference is large, it returns FALSE.
+%   F.VSCALE, F.HSCALE, and F.EPSLEVEL) the test passes and returns TRUE. If
+%   the difference is large, it returns FALSE. SAMPLETEST(OP, VALUES, F, VSCL)
+%   will test relative the the values given in VSCL, rather than F.VSCALE.
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -19,6 +20,10 @@ x = f.chebpts(n);
 
 % Set a tolerance:
 tol = max(f.epslevel, 1e3*eps) * n;
+
+if ( nargin < 4 || isempty(vscl) )
+    vscl = max(abs(values), [], 1);
+end
 
 % Choose a point to evaluate at:
 if ( n == 1 )
@@ -37,7 +42,7 @@ vFun = feval(f, xeval);
 vOp = feval(op, xeval);
 
 % If the CHEBTECH evaluation differs from the op evaluation, SAMPLETEST failed:
-err = bsxfun(@rdivide, abs(vOp - vFun), f.vscale); % Relative (to vscale) error.
+err = bsxfun(@rdivide, abs(vOp - vFun), vscl); % Relative (to vscl) error.
 if ( any(max(abs(err)) > tol) )
     pass = false; % :(
 else
