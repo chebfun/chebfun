@@ -65,7 +65,8 @@ end
 %% Create a CHEBFUN object.
 p = chebfunpref();
 p.techPrefs.eps = max(relTol); % Use the same tolerance for each column.
-
+temp = cheboppref;
+p.techPrefs.happinessCheck = temp.happinessCheck;
 % Need to sort the domain D, since if we solve a final value problem, it will
 % have been flipped.
 dom = sort(dom);

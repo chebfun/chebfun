@@ -62,6 +62,20 @@ classdef cheboppref < chebpref
 %     considered to have converged if the error estimate it computes is less
 %     than the value of errTol.
 %
+%   happinessCheck              - Routine for checking that solution converged
+%     [@basicCheck]
+%     @plateauCheck
+%     @classicCheck
+%     @looseCheck
+%     @strictCheck
+%     @happinessCheck
+%     @linopV4Check
+%
+%     This options determines which routine is used to determine that the
+%     approximate solution has converged. Any of the above options may be
+%     used, as well as any user defined function handle that conforms to 
+%     the happinessCheck standards.
+%
 %   ivpAbsTol                    - Absolute tolerance for the ivpSolver
 %     [1e5*eps]
 %
@@ -248,6 +262,8 @@ classdef cheboppref < chebpref
                 prefList.display);
             fprintf([padString('    errTol:') '%g\n'], ...
                 prefList.errTol);
+            fprintf([padString('    happinessCheck:') '%s\n'], ...
+                func2str(prefList.happinessCheck));
             fprintf([padString('    ivpAbsTol:') '%g\n'], ...
                 prefList.ivpAbsTol);
             fprintf([padString('    ivpRelTol:') '%g\n'], ...
@@ -398,6 +414,7 @@ classdef cheboppref < chebpref
                         % Support user-friendlier syntax for specifying
                         % discretization choice:
                         prefValue = cheboppref.parseDiscretization(prefValue);
+                        prefValue = cheboppref.parseHappinessCheck(prefValue);
                         prefValue = cheboppref.parseIVPsolver(prefValue);
                         if ( isfield(defaultPrefs, prefName) )
                             defaultPrefs.(prefName) = prefValue;
@@ -424,6 +441,7 @@ classdef cheboppref < chebpref
             factoryPrefs.damping = 1;
             factoryPrefs.display = 'off';
             factoryPrefs.errTol = 1e-10;
+            factoryPrefs.happinessCheck = @basicCheck;
             factoryPrefs.ivpAbsTol = 1e5*eps;
             factoryPrefs.ivpRelTol = 100*eps;
             factoryPrefs.ivpSolver = @chebfun.ode113;
@@ -462,6 +480,33 @@ classdef cheboppref < chebpref
                 
             elseif ( any(strcmpi(val, {'trigcolloc', 'periodic'})) )
                 val = @trigcolloc;       
+                 
+            end
+                
+        end
+        
+        function val = parseHappinessCheck(val)
+        %PARSEHAPPINESSCHECK    Allow different syntax for specifying
+        %                       happinessCheck.
+            
+            % handle:
+            if ( any(strcmpi(val, {'classic', 'classicCheck'})) )
+                val = @classicCheck;
+                
+            elseif ( any(strcmpi(val, {'plateau', 'plateauCheck'})) )
+                val = @plateauCheck;
+                
+            elseif ( any(strcmpi(val, {'strict', 'strictCheck'})) )
+                val = @strictCheck;
+                 
+            elseif ( any(strcmpi(val, {'loose', 'looseCheck'})) )
+                val = @looseCheck;
+                 
+            elseif ( any(strcmpi(val, {'happiness', 'happinessCheck'})) )
+                val = @happinessCheck;
+                 
+            elseif ( any(strcmpi(val, {'linopV4', 'linopV4Check'})) )
+                val = @linopV4Check;
                  
             end
                 

@@ -51,7 +51,9 @@ prefTech.eps = pref.errTol;
 for i = 1:numInt
     c = cat(2, coeffs{i,:});
     f = tech.make({[], c});
-    [isDone(i), neweps, cutoff(i,:)] = plateauCheck(f, [], vscale, prefTech);
+    happinessChecker = pref.happinessCheck;
+    [isDone(i), neweps, cutoff(i,:)] = happinessChecker(f, [],...
+         vscale, prefTech);
     epslevel = max(epslevel, neweps);
 end
 
