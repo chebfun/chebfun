@@ -53,8 +53,8 @@ for i = 1:numInt
     f = tech.make({[], c});
     f.vscale = vscale;
     happinessChecker = pref.happinessCheck;
-    [isDone(i), neweps, cutoff(i,:)] = happinessChecker(f, get(f, 'values'), ...
-        prefTech);
+    [isDone(i), neweps, cutoff(i,:)] = happinessChecker(f, [],...
+         vscale, prefTech);
     epslevel = max(epslevel, neweps);
 end
 

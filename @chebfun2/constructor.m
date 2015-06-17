@@ -315,10 +315,10 @@ while ( ~isHappy && ~failure )
     colData.vscale = dom(3:4);
     tech = pref.tech();
     colChebtech = tech.make(sum(colValues,2), colData);
-    resolvedCols = happinessCheck(colChebtech,[],sum(colValues,2));
+    resolvedCols = happinessCheck(colChebtech,[],sum(colValues,2), vscale);
     rowData.vscale = dom(1:2);
     rowChebtech = tech.make(sum(rowValues.',2), rowData);
-    resolvedRows = happinessCheck(rowChebtech,[],sum(rowValues.',2));
+    resolvedRows = happinessCheck(rowChebtech,[],sum(rowValues.',2), vscale);
     isHappy = resolvedRows & resolvedCols;
     
     % If the function is zero, set midpoint of domain as pivot location.
