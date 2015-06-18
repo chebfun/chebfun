@@ -93,6 +93,10 @@ end
 discretization = chebguiExporter.discOption(periodic, dom, ...
     guifile.options.discretization);
 
+% Add spaces to DOM and ALLVARSTRING so it looks nices once we export
+dom = strrep(dom, ',', ', ');
+allVarString = strrep(allVarString, ',', ', ');
+
 %% Fill up the expInfo struct
 expInfo.dom = dom;
 expInfo.deInput = deInput;
@@ -104,6 +108,7 @@ expInfo.allVarNames = allVarNames;
 expInfo.indVarNameSpace = indVarNameSpace;
 expInfo.periodic = periodic;
 expInfo.useLatest = useLatest;
+expInfo.numVars = length(allVarNames);
 
 % Information related to options set-up
 expInfo.tol = guifile.tol;

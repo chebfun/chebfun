@@ -1,4 +1,4 @@
-function [u, info] = solvebvp(N, rhs, varargin)
+function varargout = solvebvp(N, rhs, varargin)
 %SOLVEBVP   Solve a linear or nonlinear CHEBOP BVP system.
 %
 %   U = SOLVEBVP(N, RHS), where N is a CHEBOP and RHS is a CHEBMATRIX, CHEBFUN
@@ -225,13 +225,26 @@ end
 % Revert warning state:
 warning(warnState);
 
-% Return a CHEBFUN rather than a CHEBMATRIX for scalar problems:
-if ( all(size(u) == [1 1]) )
-    u = u{1};
-end
 
 % Return the linearity information as well:
 info.isLinear = isLinear;
+
+% Return a CHEBFUN rather than a CHEBMATRIX for scalar problems:
+if ( all(size(u) == [1 1]) )
+    varargout{1} = u{1};
+    varargout{2} = info;
+elseif ( nargout == 1 )
+    varargout{1} = u;
+elseif ( nargout == size(u, 1) )
+    [varargout{1:nargout}] = deal(u);
+elseif ( nargout == size(u, 1) + 1 )
+    [varargout{1:nargout - 1}] = deal(u);
+    varargout{nargout} = info;
+else
+    error('CHEBFUN:CHEBOP:solvebvp:numberOfOutputs', ...
+        'Incorrect number of outputs.');
+end
+
 
 end
 
