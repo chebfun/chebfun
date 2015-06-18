@@ -39,7 +39,6 @@ end
 
 % Append new data to an empty CHEBTECH:
 g = f.make(); % Make an empty CHEBTECH.
-g.vscale = [f.vscale];
 g.ishappy = min([f.ishappy]);
 g.epslevel = max([f.epslevel]);
 g.coeffs = cell2mat(coeffs);

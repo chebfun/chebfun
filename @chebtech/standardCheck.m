@@ -1,14 +1,10 @@
-function [ishappy, epslevel, cutOff] = standardCheck(f, values, pref)
+function [ishappy, epslevel, cutOff] = standardCheck(f, op, values, vscl, pref)
 %STANDARDCHECK  This function is a wrapper for Nick's standardChop
 %  routine to chop a series of Chebyshev coefficients, see below.
 
 % Grab the coefficients:
 coeffs = f.coeffs;
 [n,m] = size(coeffs);
-
-% We omit the last 10% because aliasing can pollute them significantly.
-%n90 = ceil(0.90*n);
-%coeffs = coeffs(1:n90,:);
 
 %% initialize ishappy
 ishappy = false;
@@ -60,9 +56,9 @@ end
 
 function [ishappy, cutOff] = standardChop(coeffs, tol)
 %%
-% A chopping rule of "standard" type, that is, with an input
-% tolerance tol (currently hardwired) that is applied with some
-% flexibility.  Still under development!  Nick Trefethen, 18 May 2014.
+% A chopping rule of "standard" type, that is, with an input tolerance TOL that
+% is applied with some flexibility.  Still under development!  Nick Trefethen,
+% 18 May 2014.
 
 %%
 % INPUT: a sequence of numbers coeffs
@@ -80,6 +76,13 @@ function [ishappy, cutOff] = standardChop(coeffs, tol)
 
 %% initialize ishappy
 ishappy = false;
+
+%% zero function
+if max(abs(coeffs)) == 0
+  ishappy = true;
+  cutOff = 1;
+  return
+end
 
 %%
 % Make sure sequence coeffs has length at least 17:

@@ -240,7 +240,7 @@ for dim = [dimVals NaN]
 
     % Test the happiness of the function pieces:
     vscale = zeros(1, sum(isFun));   % intrinsic scaling only
-    [isDone, epslevel] = testConvergence(discA, u(isFun), vscale, pref);
+    [isDone, epslevel, ~, cutoff] = testConvergence(discA, u(isFun), vscale, pref);
 
     if ( all(isDone) )
         break
@@ -276,7 +276,7 @@ if ( nargout < 2 )  % Return the eigenvalues only
     varargout = { diag(D) };
 else            % Unwrap the eigenvectors for output
 
-    u = mat2fun(discA, P*V);
+    u = mat2fun(discA, P*V, cutoff);
 
     % For normalizing eigenfunctions, so that they always have the same sign:
     signMat = [];

@@ -8,7 +8,7 @@ end
 % Toby Driscoll, June 2014
 % Based on issue #665
 
-tol = pref.errTol;
+tol = 1e1*pref.errTol;
 
 %%
 N = chebop(@(s, V) diff(V, 2), [-1, 1]);
@@ -28,4 +28,5 @@ err(5) = abs(y(1) - 1);
 
 %%
 pass = err < tol;
+
 end

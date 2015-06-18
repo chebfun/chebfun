@@ -51,10 +51,9 @@ prefTech.eps = pref.errTol;
 for i = 1:numInt
     c = cat(2, coeffs{i,:});
     f = tech.make({[], c});
-    f.vscale = vscale;
     happinessChecker = pref.happinessCheck;
-    [isDone(i), neweps, cutoff(i,:)] = happinessChecker(f, get(f, 'values'), ...
-        prefTech);
+    [isDone(i), neweps, cutoff(i,:)] = happinessChecker(f, [],...
+         vscale, prefTech);
     epslevel = max(epslevel, neweps);
 end
 

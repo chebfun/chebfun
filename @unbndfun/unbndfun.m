@@ -175,9 +175,6 @@ classdef unbndfun < classicfun
         % Polynomial coefficients of an UNBNDFUN.
         out = poly(f)
         
-        % UNBNDFUN power function.
-        f = power(f, b)
-        
         % QR factorisation for UNBNDFUN object is not supported.
         [f, R, E] = qr(f, flag)
 

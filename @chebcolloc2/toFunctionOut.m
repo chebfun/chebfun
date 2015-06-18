@@ -25,7 +25,7 @@ end
 if ( nargin == 3 ) 
     m = cutoff;
 else
-    m = inf;
+    m = inf; 
 end
 
 % adjust size of cutoff if necessary

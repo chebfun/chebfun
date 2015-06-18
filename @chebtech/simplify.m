@@ -40,8 +40,8 @@ end
 % Check for trailing zero coefficients:
 % [ignored, firstNonZeroRow] = find(f.coeffs.' ~= 0, 1);
 
-% Check for trailing coefficients smaller than the tolerance relative
-% to F.VSCALE:
+% Check for trailing coefficients smaller than the tolerance relative to
+% F.VSCALE:
 largeCoeffs = (bsxfun(@minus, abs(f.coeffs), tol.*f.vscale) > 0);
 [ignored, lastNonZeroRow] = find(largeCoeffs.' == 1, 1, 'last');
 
