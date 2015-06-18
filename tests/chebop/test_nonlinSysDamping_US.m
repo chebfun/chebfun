@@ -19,9 +19,7 @@ f = [ 0*x ; 0*x ];
 
 %% ULTRAS 
 pref.discretization = @ultraS;
-[u12, info] = solvebvp(A, f, pref);
-
-u1 = u12{1}; u2 = u12{2};
+[u1, u2, info] = solvebvp(A, f, pref);
 
 % Want to check BCs as well.
 bcFunLeft = chebfun(A.lbc(u1,u2));

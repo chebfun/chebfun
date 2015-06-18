@@ -12,15 +12,24 @@ function printPostSolver(fid, expInfo)
 
 % Extract info from the EXPINFO struct:
 allVarNames = expInfo.allVarNames;
+allVarString = expInfo.allVarString;
+numVars = expInfo.numVars;
 indVarNameSpace = expInfo.indVarNameSpace;
 
 % Print commands that will create a plot of the solution obtained:
 fprintf(fid, '\n%%%% Plot the solution.\n');
-fprintf(fid, ['figure\nplot(u, ''LineWidth'', 2)\n', ...
-    'title(''Final solution''), xlabel(''%s'')'], indVarNameSpace);
+fprintf(fid, 'figure\n');
+if ( numVars == 1 ) % Scalar case
+    fprintf(fid, 'plot(%s, ''LineWidth'', 2)\n', allVarString);
+else
+    fprintf(fid, 'plot([%s], ''LineWidth'', 2)\n', allVarString);  
+end
+
+% Title and xlabel
+fprintf(fid, 'title(''Final solution''), xlabel(''%s'')', indVarNameSpace);
 
 % Deal with ylabel (scalar problem) or legend (systems):
-if ( numel(allVarNames) == 1 )
+if ( numVars == 1 )
     % Scalar problem:
     fprintf(fid, ', ylabel(''%s'')', allVarNames{:});
 else
