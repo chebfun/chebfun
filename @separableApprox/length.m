@@ -1,9 +1,10 @@
-function [out1, out2] = length(F)
+function [out1, out2] = length( F )
 %LENGTH  The rank of a SEPARABLEAPPROX.
-%   K = LENGTH(F) returns the rank of the SEPARABLEAPPROX.
+%   K = LENGTH(F) returns the rank of the SEPARABLEAPPROX representation.
 %
-%   [M, N] = LENGTH(F) returns the polynomial degree of the column and row
-%   slices.
+%   [M, N] = LENGTH( F ) returns the length of the column and 
+%   row slices employed in the separable model.  The interpretation 
+%   of this quantity depends on the underlying representation. 
 %
 % See also RANK.
 
@@ -23,11 +24,12 @@ if ( iszero( F ) )
     return
 end
 
+% Extract length of underlying objects. 
 if ( nargout <= 1 )
-    out1 = length(F.pivotValues);
+    out1 = length( F.pivotValues );
 else
-    out1 = length(F.rows);
-    out2 = length(F.cols);
+    out1 = length( F.rows );
+    out2 = length( F.cols );
 end
 
 end
