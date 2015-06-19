@@ -38,7 +38,7 @@ function r = unbndFilter(r, f)
 
 numRoots = length(r);
 mask = false(numRoots, 1);
-tol = f.vscale*f.epslevel;
+tol = 10*f.vscale*f.epslevel;
 
 % We sample at an arbitrary number of points between the located root and
 % the nearest enpoint. We take max(20, numRoots), with the reasoning being that

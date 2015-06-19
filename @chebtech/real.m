@@ -18,6 +18,4 @@ if ( ~any(f.coeffs(:)) )
     f.ishappy = 1;
 end
 
-f.vscale = getvscl(f);
-
 end

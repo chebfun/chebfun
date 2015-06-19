@@ -9,6 +9,7 @@ function out = get(f, prop)
 %       'LVAL'            - Value of F at -1.
 %       'RVAL'            - Value of F at +1.
 %       'TECH'            - Handle to the CHEBTECH1 constructor. *
+%       'VSCALE'          - Vertical scale of the CHEBTECH1.
 %
 % See also CHEBTECH, CHEBTECH1.
 
@@ -32,6 +33,8 @@ switch prop
         out = rval(f);
     case 'values'
         out = f.coeffs2vals(f.coeffs);
+    case 'vscale'
+        out = vscale(f);
     case 'tech'
         % TODO: Return function handle, or empty instance of the tech?
         out = @chebtech1;

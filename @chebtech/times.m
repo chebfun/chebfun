@@ -39,7 +39,6 @@ elseif ( isa(g, 'double') )     % CHEBTECH .* double
     epslevelBound = f.epslevel + abs(eps(g)./g);
     epslevelBound(g == 0) = eps;
     f.epslevel = updateEpslevel(f, epslevelBound);
-    f.vscale = abs(g).*f.vscale;
     return
 
 elseif ( ~isa(f, 'chebtech') || ~isa(g, 'chebtech') ) 
@@ -67,22 +66,20 @@ elseif ( size(g.coeffs, 1) == 1)
     
 end
 
+% Store vscales:
+oldVsclF = f.vscale;
+oldVsclG = g.vscale;
+
 % Do muliplication in coefficient space:
 [f.coeffs, pos] = coeff_times_main(f.coeffs, g.coeffs); 
 
 % Update vscale, epslevel, and ishappy:
-vscale = getvscl(f);
-
-% Avoid NaNs:
-tmpVscale = vscale;
-tmpVscale(vscale == 0) = 1;
-f.vscale(f.vscale == 0) = 1;
-g.vscale(g.vscale == 0) = 1;
+vscl = f.vscale;
+vscl(vscl == 0) = 1; % Avoid NaNs:
 
 % See CHEBTECH CLASSDEF file for documentation on this:
-epslevelBound = (f.epslevel + g.epslevel) .* (f.vscale.*g.vscale./tmpVscale);
+epslevelBound = (f.epslevel + g.epslevel) .* (oldVsclF.*oldVsclG./vscl);
 f.epslevel = updateEpslevel(f, epslevelBound);
-f.vscale  = vscale;
 f.ishappy = f.ishappy && g.ishappy;
 
 % Simplify!
