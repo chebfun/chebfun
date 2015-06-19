@@ -114,7 +114,7 @@ if ( n <= 4000 )
     
     % Project the values onto a Legendre grid: (where integrals of polynomials
     % p_n*q_n will be computed exactly and on an n-point grid)
-    if ( (length(WP) ~= n) || (~isempty(type) && isa(f, type)) )
+    if ( (length(WP) ~= n) || (~isempty(type) && ~isa(f, type)) )
         % The matrices WP and inv(WP) depends only on the length of the
         % discretization and the cheb-type of f (i.e., not the function values
         % themselves.) We therefore store these persistently which save a lot of
