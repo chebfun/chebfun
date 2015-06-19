@@ -185,7 +185,6 @@ else
     S = spdiags(s, 0, m, m);       % }
     Q = Winv*Q*S;                  % Fix Q. (Note, Q is still on Legendre grid.)
     Q_coeffs = leg2cheb( chebfun.idlt( Q ) ); % Chebyshev coefficients.
-    Q = f.coeffs2vals( Q_coeffs ); % Values on Chebyshev grid.
     R = S*R;                       % Fix R.
     
 end
