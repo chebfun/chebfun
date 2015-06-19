@@ -504,17 +504,20 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % f.linearity = f.linearity;
         end
         
-        function Nu = deflationFun(Nu, u, r)
-            % Norm function
+        function Nu = deflationFun(Nu, u, r, alp)
+            % Extract the function part of U and the undeflated operator:
             u = u.func;
             ffunc = Nu.func;
-            normFun = norm(u-r, 'fro');
             
-            Nu.jacobian = kron(ffunc,(-1/normFun^3)*(u-r)','op') + ...
-                1/normFun*Nu.jacobian;
+            % Norm function
+            normFun = norm(u-r, 'fro')^2;
             
-            % Deflator operator
-            Nu.func = ffunc/normFun;
+            % Derivative of deflation operator:
+            Nu.jacobian = (Nu.jacobian*(1+normFun*alp) - ...
+                kron(ffunc,(2/normFun)*(u-r)','op'))/normFun;
+            
+            % Deflated function
+            Nu.func = ffunc*(alp+ 1/normFun);
         end
         
         function f = diff(f, k)
