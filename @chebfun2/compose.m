@@ -3,7 +3,7 @@ function f = compose( f, op, varargin )
 % 
 %  F = COMPOSE(F, OP )  returns the CHEBFUN2 that approximates OP(F).
 % 
-%  F = COMPOSE(F, OP, G )  returns the CHEBFUN2 that approximates OP(F).
+%  F = COMPOSE(F, OP, G )  returns the CHEBFUN2 that approximates OP(F,G).
 %
 % This command is a wrapper for the CHEBFUN2 constructor. 
 
