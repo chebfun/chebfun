@@ -102,7 +102,7 @@ while counter <= maxCounter
     % Find a tangent direction, but only if we were told by Newton not to
     % retract
     if ~retract
-        [t, tau] = tangentBVP(H,A,g,BCstruct,uold, lamold, told,tauold);
+        [t, tau] = tangentBVP(H,uold, lamold, told,tauold);
         if counter == 1
             t = direction*t;
             tau = direction*tau;
