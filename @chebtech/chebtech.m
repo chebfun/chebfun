@@ -43,29 +43,23 @@ classdef chebtech < smoothfun % (Abstract)
 % Here is a rough guide to how scale and accuracy information is propagated in
 % subsequent operations after construction:
 %   h = f + c:
-%     h.vscale = getvscl(h);
-%     h.epslevel = (f.epslevel*f.vscale + eps(c)) / h.vscale;
+%     h.epslevel = (f.epslevel*f.vscale + eps(c)) / vscale(h);
 %
 %   h = f * c:
-%     h.vscale = getvscl(h) = abs(c)*f.vscale;
 %     h.epslevel = f.epslevel + eps(c)/c;
 %
 %   h = f + g:
-%     h.vscale = getvscl(h);
 %     h.epslevel = (f.epslevel*f.vscale + g.epslevel*g.vscale) / h.vscale
 %
 %   h = f .* g:
-%     h.vscale = getvscl(h);
 %     h.epslevel = (f.epslevel + g.epslevel) * (f.vscale*g.vscale)/h.vscale
 %
 %   h = diff(f):
-%     h.vscale = getvscl(h);
 %     % [TODO]: Figure this out rigourously.
 %     h.epslevel = n*log(n)*f.epslevel*f.vscale; % *(h.vscale/h.vscale)
-%     % Note we don't divide by h.vscale here as we must also multiply by it.
+%     % Note we don't divide by vscale(h) here as we must also multiply by it.
 %
 %   h = cumsum(f):
-%     h.vscale = getvscl(h);
 %     % [TODO]: Figure this out rigourously.
 %     h.epslevel = 2*f.epslevel*f.vscale/h.vscale
 %
@@ -99,11 +93,6 @@ classdef chebtech < smoothfun % (Abstract)
         % the first entry and c_0 is the last. For array-valued CHEBTECH
         % objects, each column represents the coefficients of a single function.
         coeffs % (nxm double)
-
-        % Vertical scale of the CHEBTECH. This is a row vector storing the
-        % magnitude of the largest entry in each column of VALUES. It is
-        % convenient to store this as a property.
-        vscale = 0 % (1xm double >= 0)
 
         % Horizontal scale of the CHEBTECH. Although CHEBTECH objects have in
         % principle no notion of horizontal scale invariance (since they always
@@ -193,7 +182,7 @@ classdef chebtech < smoothfun % (Abstract)
         [h1, h2] = plotcoeffs(f, varargin)
 
         % Check the happiness of a CHEBTECH. (Classic definition).
-        [ishappy, epslevel, cutoff] = classicCheck(f, values, pref)
+        [ishappy, epslevel, cutoff] = classicCheck(f, values, vscl, pref)
 
         % Complex conjugate of a CHEBTECH.
         f = conj(f)
@@ -238,7 +227,7 @@ classdef chebtech < smoothfun % (Abstract)
         f = fracInt(f, mu, b)
 
         % Happiness test for a CHEBTECH
-        [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, pref)
+        [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, vscl, pref)
 
         % Imaginary part of a CHEBTECH.
         f = imag(f)
@@ -280,7 +269,7 @@ classdef chebtech < smoothfun % (Abstract)
         f = logical(f)
 
         % A 'loose' (i.e., not too strict) check for happiness.
-        [ishappy, epslevel, cutoff] = looseCheck(f, values, pref)
+        [ishappy, epslevel, cutoff] = looseCheck(f, values, vscl, pref)
         
         % Evaluate a CHEBTECH at -1.
         out = lval(f)
@@ -334,7 +323,7 @@ classdef chebtech < smoothfun % (Abstract)
         out = poly(f)
 
         % Populate a CHEBTECH class with values.
-        [f, values] = populate(f, op, vscale, hscale, pref)
+        [f, values] = populate(f, op, vscl, hscale, pref)
         
         % Power function of a CHEBTECH.
         f = power(f, b)
@@ -364,7 +353,7 @@ classdef chebtech < smoothfun % (Abstract)
         out = rval(f)
 
         % Test an evaluation of the input OP against a CHEBTECH approx.
-        pass = sampleTest(op, values, f)
+        pass = sampleTest(op, values, f, vscl)
         
         % Signum of a CHEBTECH. (f should have no zeros in its domain)
         f = sign(f, pref)
@@ -376,7 +365,7 @@ classdef chebtech < smoothfun % (Abstract)
         [siz1, siz2] = size(f, varargin)
 
         % Strict happiness check.
-        [ishappy, epslevel, cutoff] = strictCheck(f, values, pref)
+        [ishappy, epslevel, cutoff] = strictCheck(f, values, vscl, pref)
 
         % Definite integral of a CHEBTECH on the interval [-1,1].
         out = sum(f, dim)
@@ -392,6 +381,9 @@ classdef chebtech < smoothfun % (Abstract)
 
         % Unary plus of a CHEBTECH.
         f = uplus(f)
+        
+        % Vertical scale of a CHEBTECH:
+        vscl = vscale(f);
 
     end
     

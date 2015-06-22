@@ -69,7 +69,6 @@ end
 % Update f:
 g = f;
 g.coeffs = c_new;
-g.vscale = getvscl(f);
-g.epslevel = updateEpslevel(f);
+g.epslevel = updateEpslevel(g);
 
 end

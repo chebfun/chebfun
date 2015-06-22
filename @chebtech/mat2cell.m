@@ -48,7 +48,6 @@ end
 
 % Split the coefficients into cells of the correct size:
 coeffs = mat2cell(f.coeffs, n, N);
-vscale = mat2cell(f.vscale, 1, N);
 epslevel = mat2cell(f.epslevel, 1, N);
 
 % Create a cell for storing the CHEBTECH objects
@@ -62,7 +61,6 @@ for k = 1:numel(N)
     % Assign values to the fields of the CHEBTECH
     gk.ishappy = f.ishappy;
     gk.coeffs = coeffs{k};
-    gk.vscale = vscale{k};
     gk.epslevel = epslevel{k};
     
     % Store the CHEBTECH in the cell-array returned.

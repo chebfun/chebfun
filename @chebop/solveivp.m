@@ -1,4 +1,4 @@
-function [y, info] = solveivp(N, rhs, pref, varargin)
+function varargout = solveivp(N, rhs, pref, varargin)
 %SOLVEIVP    Solve an IVP by reforming it to a first order system.
 %
 %   U = SOLVEIVP(N, RHS), where N is a CHEBOP and RHS is a CHEBMATRIX, CHEBFUN
@@ -105,7 +105,7 @@ end
 % If pref.ivpSolver is set to a global method, we really should be calling
 % CHEBOP/SOLVEBVP():
 if ( isempty(strfind(func2str(pref.ivpSolver), 'chebfun.ode')) )
-    [y, info] = solvebvp(N, rhs, pref, varargin{:});
+    [varargout{1:nargout}] = solvebvp(N, rhs, pref, varargin{:});
     info.solver = 'Global method';
     return
 end
@@ -123,7 +123,7 @@ catch ME
     % Did we encounter an unsupported method? If so, try to solve it globally:
     if ( ~isempty(regexp(ME.identifier, 'CHEBFUN:TREEVAR:.+:notSupported', ...
             'once')) )
-        [y, info] = solvebvp(N, rhs, pref, varargin{:});
+        [varargout{1:nargout}] = solvebvp(N, rhs, pref, varargin{:});
         return
     else
         % Otherwise, an unexpected error occured, rethrow it.
@@ -260,5 +260,21 @@ end
 
 % Return useful information about the solution:
 info.solver = solver;
+
+% Return a CHEBFUN rather than a CHEBMATRIX for scalar problems:
+if ( ~isa(y, 'chebmatrix') )
+    varargout{1} = y;
+    varargout{2} = info;
+elseif ( nargout == 1 )
+    varargout{1} = y;
+elseif ( nargout == size(y, 1) )
+    [varargout{1:nargout}] = deal(y);
+elseif ( nargout == size(y, 1) + 1 )
+    [varargout{1:nargout - 1}] = deal(y);
+    varargout{nargout} = info;
+else
+    error('CHEBFUN:CHEBOP:solveivp:numberOfOutputs', ...
+        'Incorrect number of outputs.');
+end
 
 end
