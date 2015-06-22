@@ -509,16 +509,29 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             u = u.func;
             ffunc = Nu.func;
             
+            if ( isa(r,'chebfun') )
+                r = mat2cell(r);
+            end
+            
             % Norm function
-            phi = norm(u-r,'fro')^2;
+            for rCounter = 1:length(r)
+                phiVec(rCounter) = 1/norm(u-r{rCounter},'fro')^2;
+            end
+            phi = prod(phiVec);
             normFun = phi^(p/2);
             
+            defDeriv = 0;
+            for rCounter = 1:length(r)
+                defDeriv = defDeriv + kron(ffunc,(p*phiVec(rCounter))*(u-r{rCounter})','op');
+            end
+            defDeriv = normFun*defDeriv;
+            
             % Derivative of deflation operator:
-            Nu.jacobian = Nu.jacobian*(1/normFun+alp) - ...
-                kron(ffunc,(p/phi^(p/2+1))*(u-r)','op');
+            Nu.jacobian = Nu.jacobian*(normFun+alp) - ...
+                defDeriv;
             
             % Deflated function
-            Nu.func = ffunc*(alp+ 1/normFun);
+            Nu.func = ffunc*(alp+ normFun);
         end
         
         
