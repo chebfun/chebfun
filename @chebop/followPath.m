@@ -1,4 +1,4 @@
-function [uquasi, lamvec, mvec] = followPath(H, A, g, BCstruct, u0, lam0, measure, direction, varargin)
+function [uquasi, lamvec, mvec] = followPath(H, u0, lam0, measure, direction, varargin)
 %FOLLOWPATH    A pseudo-arclength continuation algorithm for ODEs in Chebfun
 %
 % Calling sequence:
@@ -113,7 +113,7 @@ while counter <= maxCounter
     end
 
     % Find a Newton correction
-    [u, lam, iter, retract] = newtonBVP(H,A,g,BCstruct,uinit,laminit,t,tau);
+    [u, lam, iter, retract] = newtonBVP(H,uinit,laminit,t,tau);
     
     if retract % Newton told us we were trying to take too long tangent steps
         if printing 
