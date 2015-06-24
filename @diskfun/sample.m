@@ -34,8 +34,8 @@ end
 % for sometime now.
 
 % Ugly!
-C = trigtech.coeffs2vals(trigtech.alias( cols.funs{:}.onefun.coeffs, 2*n ));
-C = C(n+1:2*n,:);  % Remove doubled up points.
+C = chebtech2.coeffs2vals(chebtech2.alias( cols.funs{:}.onefun.coeffs, 2*n+1 ));
+C = C(n+1:2*n+1,:);  % Remove doubled up points.
 R = trigtech.coeffs2vals(trigtech.alias( rows.funs{:}.onefun.coeffs, m )); 
 
 % Evaluate: 
