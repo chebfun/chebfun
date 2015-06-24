@@ -205,8 +205,7 @@ m = n;
 [x, y] = getPoints( m, n, dom );
 
 rk = size( pivotIndices, 1);
-id = pivotIndices'; id = id(:);
-id_rows = id(1:2:end); id_cols = id(2:2:end); 
+id_rows = pivotIndices(:,1); id_cols = pivotIndices(:,2);
 % Need to also include id_cols+n to account for the entries in the C
 % block
 id_cols = reshape([id_cols id_cols+n].',[],1);
@@ -461,7 +460,7 @@ dfdy = diff(F(:,1:n-1),1,1) / hy; % yy diffs row-wise.
 % An approximation for the norm of the gradient over the whole domain.
 Jac_norm = max( max( abs(dfdx(:)), abs(dfdy(:)) ) );
 vscale = max( abs( F(:) ) );
-tol = grid.^(2/3) * max( abs(dom(:) ) ) * max( Jac_norm, vscale) * pseudoLevel;
+tol = grid.^(2/3) * max( abs( dom(:) ) ) * max( Jac_norm, vscale) * pseudoLevel;
 
 end
 
