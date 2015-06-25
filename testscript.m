@@ -1,5 +1,5 @@
 function pass = testscript( )
-
+tic
 tol = 1e3*eps;
 % Construction: 
 % A few tests for construction: 
@@ -95,7 +95,7 @@ gplus = g1 + g2;
 fplus = @(lam,th) f1(lam,th) + f2(lam,th) ;
 lambda = rand; theta = rand; 
 pass(17) = abs( feval(gplus, theta, lambda) - fplus(theta, lambda) ) < tol; 
-
+toc
 end
 
 function sample_error = SampleError( h, g ) 
