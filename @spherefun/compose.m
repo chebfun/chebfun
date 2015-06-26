@@ -18,11 +18,11 @@ elseif ( nargin == 3 && nargin(op) == 2 )
     
     g = varargin{1}; 
     if ( isa( g, 'double' ) )     % promote
-        g = spherefun(g, f.domain); 
+        g = spherefun(@(x,y,z) g + 0*x, f.domain); 
     end
     
     if ( isa( f, 'double' ) )     % promote
-        f = spherefun(f, g.domain); 
+        f = spherefun(@(x,y,z) f + 0*x, g.domain); 
     end
     
     % Call constructor: 

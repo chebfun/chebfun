@@ -5,7 +5,8 @@ pass(1) = all(test_constructor( ));
 pass(2) = all(test_feval( )); 
 pass(3) = all(test_sum2( )); 
 pass(4) = all(test_plus( ));
-
+pass(5) = all(test_times( )); 
+pass(6) = all(test_power( ));
 end 
 
 
@@ -139,7 +140,33 @@ end
 pass(3) = norm( g - 11*f ) < vscale(g)*tol; 
 pass(4) = ( rank( g ) - r ) == 0; 
 
+% Check what happens with cancellation errors: 
+f = spherefun(@(x,y,z) sin(x.*y.*z)); 
+g = 2*f; 
+pass(5) = ( norm( g - f - f ) < tol ); 
+
 end
+
+function pass = test_times( ) 
+% Test times in SPHEREFUN 
+
+tol = 1e3*chebfunpref().techPrefs.eps;
+
+f = spherefun(@(x,y,z) sin(x.*y.*z)); 
+pass(1) = norm( f.*f - f.^2 ) < tol; 
+
+end 
+
+function pass = test_power( ) 
+% Test power in SPHEREFUN 
+
+tol = 1e3*chebfunpref().techPrefs.eps;
+
+f = spherefun(@(x,y,z) z );
+g = spherefun(@(x,y,z) z.^2 );
+pass(1) = norm( f.^2 - g ) < tol; 
+
+end 
 
 function sample_error = SampleError( h, g ) 
 m = 6; n = m;  
