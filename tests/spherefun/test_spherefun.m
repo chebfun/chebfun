@@ -7,6 +7,7 @@ pass(3) = all(test_sum2( ));
 pass(4) = all(test_plus( ));
 pass(5) = all(test_times( )); 
 pass(6) = all(test_power( ));
+pass(7) = all(test_abs( ));
 end 
 
 
@@ -165,6 +166,16 @@ tol = 1e3*chebfunpref().techPrefs.eps;
 f = spherefun(@(x,y,z) z );
 g = spherefun(@(x,y,z) z.^2 );
 pass(1) = norm( f.^2 - g ) < tol; 
+
+end 
+
+function pass = test_abs( ) 
+% Test abs in SPHEREFUN 
+
+tol = 1e3*chebfunpref().techPrefs.eps;
+
+f = spherefun(@(x,y,z) -(x.^2 + y.^2 + z.^2) );
+pass(1) = norm( abs(f) + f ) < tol; 
 
 end 
 
