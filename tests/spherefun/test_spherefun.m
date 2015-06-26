@@ -1,8 +1,19 @@
-function pass = testscript( )
-tic
-tol = 1e3*eps;
-% Construction: 
-% A few tests for construction: 
+function pass = testspherefun( )
+% Main testing file, for now.  
+
+pass(1) = all(test_constructor( )); 
+pass(2) = all(test_feval( )); 
+pass(3) = all(test_sum2( )); 
+pass(4) = all(test_plus( ));
+
+end 
+
+
+function pass = test_constructor( ) 
+% Test the spherefun constructor 
+
+% Get tolerance: 
+tol = 1e3*chebfunpref().techPrefs.eps;
 
 f = @(x,y,z) x.^2 + y.^2 + z.^2;
 f = redefine_function_handle( f );
@@ -49,35 +60,57 @@ f = redefine_function_handle( f );
 g = spherefun( f );
 pass(9) = ( SampleError( f, g ) < tol ); 
 
-% feval: 
+end
+
+function pass = test_feval( ) 
+% Test spherefun feval. 
+
+tol = 1e3*chebfunpref().techPrefs.eps;
+
+f = @(x,y,z) sin(x+ y.*z) + 1;
+f = redefine_function_handle( f );
+g = spherefun( f );
 lambda = rand; theta = rand; 
-pass(10) = abs( feval(g, theta, lambda) - f(theta, lambda) ) < tol; 
+pass(1) = abs( feval(g, theta, lambda) - f(theta, lambda) ) < tol; 
 
 % feval at vectors: 
 lambda = rand(10,1); theta = rand(10,1); 
-pass(11) = norm( feval(g, theta, lambda) - f(theta, lambda) ) < tol; 
+pass(2) = norm( feval(g, theta, lambda) - f(theta, lambda) ) < tol; 
 
 % feval at vectors: 
 % This breaks in feval@separableApprox.
 % lambda = rand(1,10); theta = rand(1,10); 
 % pass(12) = norm( feval(g, theta, lambda) - f(theta, lambda) ) < tol;
-pass(12) = true;
+pass(3) = true;
 
 % feval at vectors: 
 lambda = rand(2,10); theta = rand(2,10); 
-pass(13) = norm( feval(g, theta, lambda) - f(theta, lambda) ) < tol; 
+pass(4) = norm( feval(g, theta, lambda) - f(theta, lambda) ) < tol; 
 
 % feval at meshgrid: 
 [lambda, theta] = meshgrid( rand(3,1) ); 
-pass(14) = norm( feval(g, theta, lambda) - f(theta, lambda) ) < tol; 
+pass(5) = norm( feval(g, theta, lambda) - f(theta, lambda) ) < tol; 
 
-% Sum2 tests: 
+end 
+
+
+function pass = test_sum2( ) 
+% Test spherefun sum2() command. 
+
+tol = 1e3*chebfunpref().techPrefs.eps;
+
 f = @(x,y,z) 1 + x + y + z; 
 g = spherefun( f ); 
 exact_int = 4*pi;
-pass(15) = abs( sum2( g ) - exact_int ) < tol;
+pass(1) = abs( sum2( g ) - exact_int ) < tol;
 
-% Plus tests
+end 
+
+function pass = test_plus( ) 
+% Test spherefun plus() command 
+
+tol = 1e3*chebfunpref().techPrefs.eps;
+
 f1 = @(x,y,z) sin(pi*x.*y);  % Strictly even/pi-periodic
 f2 = @(x,y,z) sin(pi*x.*z);  % Strictly odd/anti-periodic
 g1 = spherefun(f1);
@@ -85,7 +118,7 @@ g2 = spherefun(f2);
 gplus = g1 + g2;
 fplus = redefine_function_handle( @(x,y,z) f1(x,y,z) + f2(x,y,z) );
 lambda = rand; theta = rand; 
-pass(16) = abs( feval(gplus, theta, lambda) - fplus(theta, lambda) ) < tol; 
+pass(1) = abs( feval(gplus, theta, lambda) - fplus(theta, lambda) ) < tol; 
 
 f1 = @(lam,th) exp(cos(lam-1).*sin(th).*cos(th));  % Mixed symmetric terms
 f2 = @(lam,th) exp(sin(lam-0.35).*sin(th).*cos(th));  % Mixed symmetric terms
@@ -94,8 +127,18 @@ g2 = spherefun(f2);
 gplus = g1 + g2;
 fplus = @(lam,th) f1(lam,th) + f2(lam,th) ;
 lambda = rand; theta = rand; 
-pass(17) = abs( feval(gplus, theta, lambda) - fplus(theta, lambda) ) < tol; 
-toc
+pass(2) = abs( feval(gplus, theta, lambda) - fplus(theta, lambda) ) < tol; 
+
+% Check that compression is working: 
+f = spherefun(@(x,y,z) x.^2 + y.^2 + z.^2); 
+r = rank( f ); 
+g = f; 
+for k = 1:10
+    g = g + f; 
+end 
+pass(3) = norm( g - 11*f ) < vscale(g)*tol; 
+pass(4) = ( rank( g ) - r ) == 0; 
+
 end
 
 function sample_error = SampleError( h, g ) 
