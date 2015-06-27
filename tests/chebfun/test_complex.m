@@ -25,7 +25,7 @@ imf = chebfun(@sin, [-1 0 1], pref);
 f = complex(ref, imf);
 f_exact = @(x) exp(1i*x);
 err = feval(f, xr) - f_exact(xr);
-pass(4) = norm(err, inf) < 10*f.vscale*f.epslevel;
+pass(4) = norm(err, inf) < 1e2*f.vscale*f.epslevel;
 
 % Check behavior for an array-valued function.
 ref = chebfun(@(x) [cos(x) -sin(x)], [-1 0 1], pref);
