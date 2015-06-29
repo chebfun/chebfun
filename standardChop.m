@@ -1,4 +1,4 @@
-function [ishappy, cutOff] = standardChop(coeffs, tol)
+function [ishappy, cutOff] = standardChop(coeffs, tol, vscl)
 %%
 % A chopping rule of "standard" type, that is, with an input tolerance TOL that
 % is applied with some flexibility.  Still under development!  Nick Trefethen,
@@ -55,16 +55,12 @@ end
 % If a plateau point K is found, then we know we are going to chop the
 % series, but the precise chopping point cutOff >= K-1 is not yet determined.
 
-% use TOL^(rho) instead
-rho = 1/3;
-
   for j = 1:n
     j2 = round(1.25*j+5); 
     if j2 > n, return, end         % there is no plateau: exit
     a1 = a(j);
     a2 = a(j2);
-    %r = 3*(1-log(a1)/log(tol));
-    r = (1-log(a1)/log(tol/m(1)))/(1-rho);
+    r = 3*(1-log(a1)/log(tol));
     plateau = (a1 == 0) | (a2/a1 > r);
     if plateau, K = j; break, end
   end
@@ -81,7 +77,7 @@ rho = 1/3;
       cutOff = K-1;
   else
       aa = log10(a(1:j2)); aa = aa(:);
-      aa = aa + linspace(0,(-1/3)*log10(eps),j2)';
+      aa = aa + linspace(0,(-1/3)*log10(tol),j2)';
       [ignore,d] = min(aa);
       ishappy = true;
       cutOff = d-1;

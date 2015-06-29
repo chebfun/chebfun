@@ -19,25 +19,26 @@ if ( any(isnan(coeffs)) )
 end
 
 % Compute some values if none were given:
-if ( nargin < 2 || isempty(values) )
-    values = f.coeffs2vals(f.coeffs);
-end
-if ( isempty(vscl) || isempty(vscl) )
-    vscl = max(abs(values), [],  1);
-end
-vscl = max(vscl ,max(abs(values), [],  1));
+%if ( nargin < 2 || isempty(values) )
+%    values = f.coeffs2vals(f.coeffs);
+%end
+%if ( isempty(vscl) || isempty(vscl) )
+%    vscl = max(abs(values), [],  1);
+%end
+%vscl = max(vscl ,max(abs(values), [],  1));
 
 % Set the function scaling for each vector of values.
 maxvals = max(abs(values), [], 1);
 
 % set tolerance
 tol = eps;
+tol = pref.eps;
 
 %% Loop through columns of coeffs
 ishappy = false(1,m);
 cutOff = zeros(1,m);
 for k = 1:m
-    [ishappy(k), cutOff(k)] = standardChop(coeffs(:,k), tol);
+    [ishappy(k), cutOff(k)] = standardChop(coeffs(:,k), tol, vscl(k));
     if ( ~ishappy(k) )
         % No need to continue if it fails on any column.
         break
