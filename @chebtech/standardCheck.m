@@ -1,4 +1,4 @@
-function [ishappy, epslevel, cutOff] = standardCheck(f, op, values, vscl, pref)
+function [ishappy, epslevel, cutOff] = standardCheck(f, values, vscl, pref)
 %STANDARDCHECK  This function is a wrapper for Nick's standardChop
 %  routine to chop a series of Chebyshev coefficients, see below.
 
@@ -11,9 +11,6 @@ ishappy = false;
 
 %% initialize epslevel
 epslevel = eps*ones(1,m); 
-
-%% initialize tol
-tol = eps;
 
 % NaNs are not allowed.
 if ( any(isnan(coeffs)) )
@@ -37,11 +34,26 @@ elseif ( any(isinf(maxvals)) )
     return
 end
 
+% Grab some preferences:
+if ( nargin == 1 )
+    pref = f.techPref();
+    tol = pref.eps;
+elseif ( isnumeric(pref) )
+    tol = pref;
+else
+    tol = pref.eps;
+end
+
+% make sure tol has the correct form
+if length(tol) ~= m
+   tol = max(tol)*ones(1,m);
+end
+
 %% Loop through columns of coeffs
 ishappy = false(1,m);
 cutOff = zeros(1,m);
 for k = 1:m
-    [ishappy(k), cutOff(k)] = standardChop(coeffs(:,k), tol);
+    [ishappy(k), cutOff(k)] = standardChop(coeffs(:,k), tol(k));
     if ( ~ishappy(k) )
         % No need to continue if it fails on any column.
         break

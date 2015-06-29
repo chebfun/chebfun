@@ -55,12 +55,16 @@ end
 % If a plateau point K is found, then we know we are going to chop the
 % series, but the precise chopping point cutOff >= K-1 is not yet determined.
 
+% use TOL^(rho) instead
+rho = 1/3;
+
   for j = 1:n
     j2 = round(1.25*j+5); 
     if j2 > n, return, end         % there is no plateau: exit
     a1 = a(j);
     a2 = a(j2);
-    r = 3*(1-log(a1)/log(tol));
+    %r = 3*(1-log(a1)/log(tol));
+    r = (1-log(a1)/log(tol))/(1-rho);
     plateau = (a1 == 0) | (a2/a1 > r);
     if plateau, K = j; break, end
   end
