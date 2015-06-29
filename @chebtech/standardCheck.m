@@ -18,42 +18,26 @@ if ( any(isnan(coeffs)) )
         'Function returned NaN when evaluated.')
 end
 
+% Compute some values if none were given:
+if ( nargin < 2 || isempty(values) )
+    values = f.coeffs2vals(f.coeffs);
+end
+if ( isempty(vscl) || isempty(vscl) )
+    vscl = max(abs(values), [],  1);
+end
+vscl = max(vscl ,max(abs(values), [],  1));
+
 % Set the function scaling for each vector of values.
 maxvals = max(abs(values), [], 1);
 
-% Check the vertical scale:
-if ( max(maxvals) == 0 )
-    % This is the zero function, so we must be happy!
-    ishappy = true;
-    cutOff = 1;
-    return
-elseif ( any(isinf(maxvals)) )
-    % Inf located. No cutoff.
-    ishappy = false;
-    cutOff = n;
-    return
-end
-
-% Grab some preferences:
-if ( nargin == 1 )
-    pref = f.techPref();
-    tol = pref.eps;
-elseif ( isnumeric(pref) )
-    tol = pref;
-else
-    tol = pref.eps;
-end
-
-% make sure tol has the correct form
-if length(tol) ~= m
-   tol = max(tol)*ones(1,m);
-end
+% set tolerance
+tol = eps;
 
 %% Loop through columns of coeffs
 ishappy = false(1,m);
 cutOff = zeros(1,m);
 for k = 1:m
-    [ishappy(k), cutOff(k)] = standardChop(coeffs(:,k), tol(k));
+    [ishappy(k), cutOff(k)] = standardChop(coeffs(:,k), tol);
     if ( ~ishappy(k) )
         % No need to continue if it fails on any column.
         break

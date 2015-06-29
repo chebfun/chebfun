@@ -64,7 +64,7 @@ rho = 1/3;
     a1 = a(j);
     a2 = a(j2);
     %r = 3*(1-log(a1)/log(tol));
-    r = (1-log(a1)/log(tol))/(1-rho);
+    r = (1-log(a1)/log(tol/m(1)))/(1-rho);
     plateau = (a1 == 0) | (a2/a1 > r);
     if plateau, K = j; break, end
   end
