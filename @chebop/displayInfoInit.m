@@ -13,7 +13,7 @@ function [displayFig, displayTimer] = displayInfoInit(u0, pref)
 %
 % See also: DISPLAYINFO.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Obtain preferences for what we want to show

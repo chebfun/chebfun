@@ -27,7 +27,8 @@ f = chebfun(@(x) [exp(1i*x).*abs(x - 0.1) 1i*exp(-1i*x).*cos(x)], [-1 1], pref);
 imf = imag(f);
 imf_exact = @(x) [sin(x).*abs(x - 0.1) cos(x).^2];
 err = feval(imf, xr) - imf_exact(xr);
-pass(3) = isreal(imf) && (norm(err(:), inf) < 10*imf.vscale.*imf.epslevel);
+pass(3) = isreal(imf) && (norm(err(:), inf) < 1e2*imf.vscale.*imf.epslevel);
+    
 
 f = chebfun(@(x) 1i*cos(x).*abs(x - 0.1), [-1 1], pref);
 imf = real(f);

@@ -37,7 +37,8 @@ op = @(x) sin(100*x)./((x-dom(1)).^0.5.*(x-dom(2)).^0.5);
 f = chebfun(op, dom, 'exps', [-0.5 -0.5], 'splitting', 'on');
 m = mean(f);
 m_exact = -0.01273522016443600i;
-pass(9) = abs(m - m_exact) < 1e1*get(f,'epslevel')*abs(m_exact);
+pass(9) = abs(m - m_exact) < 1e3*get(f,'epslevel')*abs(m_exact);
+
 
 %% singular function: an infinite case
 
@@ -80,7 +81,8 @@ dom = [0 Inf];
 op = @(x) 0.75+sin(10*x)./exp(x);
 f = chebfun(op, dom, 'splitting', 'on');
 M = mean(f);
-pass(13) = abs(M - 0.75) < 10*epslevel(f).*vscale(f);
+pass(13) = abs(M - 0.75) < 1e2*epslevel(f).*vscale(f);
+
 
 end
 

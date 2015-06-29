@@ -1,4 +1,4 @@
-function [isDone, epsLevel, vscale, cutoff] = testConvergence(disc, values, vscale, pref)
+function [isDone, epslevel, vscale, cutoff] = testConvergence(disc, values, vscale, pref)
 %TESTCONVERGENCE   Happiness check.
 %   Given: 
 %      DISC: chebDiscretization, 
@@ -14,7 +14,7 @@ function [isDone, epsLevel, vscale, cutoff] = testConvergence(disc, values, vsca
 %      EPSLEVEL: Apparent resolution accuracy (relative to VSCALE or the
 %      functions' intrinsic scale).
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin < 4 )
@@ -35,7 +35,7 @@ d = disc.domain;
 numInt = numel(d) - 1;
 isDone = false(numInt, 1);
 cutoff = zeros(numInt, numCol);
-epsLevel = 0;
+epslevel = 0;
 
 % Get the discretization, and the appropriate tech to use:
 discPreference = pref.discretization();
@@ -51,10 +51,8 @@ prefTech.eps = pref.errTol;
 for i = 1:numInt
     c = cat(2, coeffs{i,:});
     f = tech.make({[], c});
-    f.vscale = vscale;
-    [isDone(i), neweps, cutoff(i,:)] = plateauCheck(f, get(f, 'values'), ...
-        prefTech);
-    epsLevel = max(epsLevel, neweps);
+    [isDone(i), neweps, cutoff(i,:)] = plateauCheck(f, [], vscale, prefTech);
+    epslevel = max(epslevel, neweps);
 end
 
 isDone = all(isDone, 2);

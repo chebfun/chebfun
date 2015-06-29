@@ -1,4 +1,4 @@
-function [ishappy, epsLevel, cutoff] = linopV4Check(f, values, pref)
+function [ishappy, epslevel, cutoff] = linopV4Check(f, values, pref)
 %LINOPV4CHECK   Attempt to trim trailing Chebyshev coefficients in a CHEBTECH.
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = LINOPV4CHECK(F, VALUES) returns an estimated
 %   location, the CUTOFF, at which the CHEBTECH F could be truncated. It's
@@ -30,18 +30,18 @@ function [ishappy, epsLevel, cutoff] = linopV4Check(f, values, pref)
 %
 % See also PLATEAUCHECK, STRICTCHECK, CLASSICCHECK.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Grab some preferences:
 if ( nargin == 1 )
     pref = f.techPref();
-    epsLevel = pref.eps;
+    epslevel = pref.eps;
 elseif ( isnumeric(pref) )
-    epsLevel = pref;
+    epslevel = pref;
     pref = f.techPref();
 else
-    epsLevel = pref.eps;
+    epslevel = pref.eps;
 end
 
 % Grab the coefficients:
@@ -73,26 +73,26 @@ end
 % We omit the last 10% because aliasing can pollute them significantly.
 n90 = ceil( 0.90*n );
 absCoeff = abs( coeff(end:-1:end+1-n90,:) );  % switch to low->high ordering
-vscale = max(absCoeff,[],1);          % scaling in each column
-vscale = max( [vscale(:); f.vscale] );
-absCoeff = absCoeff / vscale;
+vscl = max(absCoeff, [], 1);                  % scaling in each column
+vscl = max([vscl(:) ; f.vscale]);
+absCoeff = absCoeff / vscl;
 
 
 %% Deal with array-valued functions.
 
 numCol = size(coeff, 2);
-ishappy = false(1,numCol);
-epsLevel = zeros(1,numCol);
-cutoff = zeros(1,numCol);
+ishappy = false(1, numCol);
+epslevel = zeros(1, numCol);
+cutoff = zeros(1, numCol);
 for m = 1:numCol
-    [ishappy(m), epsLevel(m), cutoff(m)] = checkColumn(absCoeff(:,m),pref.eps);
+    [ishappy(m), epslevel(m), cutoff(m)] = checkColumn(absCoeff(:,m), pref.eps);
     if ( ~ishappy(m) )
         % No need to continue if it fails on any column.
         break
     end
 end
 
-epsLevel = max(epsLevel);
+epslevel = max(epslevel);
 ishappy = all(ishappy); 
 
 end

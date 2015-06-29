@@ -14,7 +14,7 @@ function X = bartelsStewart(A, B, C, D, E, xsplit, ysplit)
 % This Bartels--Stewart solver also takes information xsplit, ysplit so
 % that if possible it decouples the even and odd modes.
 
-% Copyright 2014 by The University of Oxford and The Chebfun2 Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun2 Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 prefs = chebfunpref(); 

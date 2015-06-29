@@ -44,7 +44,7 @@ classdef trigtech < smoothfun % (Abstract)
 %
 % See also TRIGTECH.TECHPREF, TRIGPTS, HAPPINESSCHECK, REFINE.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -235,7 +235,7 @@ classdef trigtech < smoothfun % (Abstract)
         [h1, h2] = coeffsplot(f, varargin)
 
         % Check the happiness of a TRIGTECH. (Classic definition).
-        [ishappy, epslevel, cutoff] = classicCheck(f, values, pref)
+        [ishappy, epslevel, cutoff] = classicCheck(f, values, vscl, pref)
 
         % Compose two TRIGTECH objects or a TRIGTECH with a function handle:
         h = compose(f, op, g, data, pref)
@@ -277,7 +277,7 @@ classdef trigtech < smoothfun % (Abstract)
         val = get(f, prop);
 
         % Happiness test for a TRIGTECH
-        [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, pref)
+        [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, vscl, pref)
 
         % Imaginary part of a TRIGTECH.
         f = imag(f)
@@ -425,7 +425,7 @@ classdef trigtech < smoothfun % (Abstract)
         
         % Aliasing:
         coeffs = alias(coeffs, m)
-        
+
         % Differentiation matrix in Fourier basis.
         D = diffmat(n, p)
         

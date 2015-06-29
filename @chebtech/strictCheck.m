@@ -1,15 +1,16 @@
-function [ishappy, epslevel, cutoff] = strictCheck(f, values, pref)
+function [ishappy, epslevel, cutoff] = strictCheck(f, values, vscl, pref)
 %STRICTCHECK   Attempt to trim trailing Chebyshev coefficients in a CHEBTECH.
-%   [ISHAPPY, EPSLEVEL, CUTOFF] = STRICTCHECK(F) returns an estimated location
-%   CUTOFF at which the CHEBTECH F could be truncated to maintain an accuracy of
-%   EPSLEVEL relative to F.VSCALE and F.HSCALE. ISHAPPY is TRUE if CUTOFF <
-%   MIN(LENGTH(F.COEFFS), 2) or F.VSCALE = 0, and FALSE otherwise. If ISHAPPY is
-%   false, EPSLEVEL returns an estimate of the accuracy achieved.
+%   [ISHAPPY, EPSLEVEL, CUTOFF] = STRICTCHECK(F, VALUES, VSCL) returns an
+%   estimated location CUTOFF at which the CHEBTECH F could be truncated to
+%   maintain an accuracy of EPSLEVEL relative to VSCL and F.HSCALE. ISHAPPY is
+%   TRUE if CUTOFF < MIN(LENGTH(F.COEFFS), 2) or F.VSCALE=0, and FALSE
+%   otherwise. If ISHAPPY is false, EPSLEVEL returns an estimate of the accuracy
+%   achieved.
 %
-%   [ISHAPPY, EPSLEVEL, CUTOFF] = STRICTCHECK(F, VALUES, PREF) allows additional
-%   preferences to be passed. In particular, one can adjust the target accuracy
-%   with PREF.EPS. The VALUES field is ignored, but included for consistency
-%   with other happiness checks.
+%   [ISHAPPY, EPSLEVEL, CUTOFF] = STRICTCHECK(F, VALUES, VSCL, PREF) allows
+%   additional preferences to be passed. In particular, one can adjust the
+%   target accuracy with PREF.EPS. The VALUES field is ignored, but included for
+%   consistency with other happiness checks.
 %
 %   STRICTCHECK tests to see if the absolute values of the entries in the tail
 %   of coeffs, i.e., f.coeffs(1:TESTLENGTH,:), where
@@ -26,7 +27,7 @@ function [ishappy, epslevel, cutoff] = strictCheck(f, values, pref)
 %
 % See also STRICTCHECK, LOOSECHECK.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with special cases ------------------------------------------------------
@@ -59,24 +60,27 @@ if ( n < 2 )  % (Can't be simpler than a constant.)
 end
 
 % Check the vertical scale:
-if ( max(f.vscale) == 0 )
+if ( isempty(vscl) || isempty(vscl) )
+    if ( nargin < 2 || isempty(values) )
+        % Compute some values if none were given:
+        values = f.coeffs2vals(f.coeffs);
+    end
+    vscl = max(abs(values), [],  1);
+else
+    vscl = max(vscl, max(abs(values), [],  1));
+end
+
+if ( max(vscl) == 0 )
     % This is the zero function, so we must be happy.
     ishappy = true;
     cutoff = 1;
     return
-elseif ( any(isinf(f.vscale)) )
+elseif ( any(isinf(vscl(:))) )
     % Inf located. No cutoff.
     cutoff = n;
     epslevel = inf*epslevel;
     return
 end
-
-% If one column of f is the zero function, we will get into trouble further
-% down when we take the absolute value of the coefficients relative to vscale
-% and compute the relative condition number estimate in happinessCheck.  We
-% zero vscales by eps to avoid division by zero.
-ind = f.vscale == 0;
-f.vscale(ind) = eps;
 
 % NaNs are not allowed.
 if ( any(isnan(f.coeffs(:))) )
@@ -86,7 +90,7 @@ end
 
 % Check for convergence and chop location --------------------------------------
 testLength = min(n, max(5, round((n-1)/8))); 
-ac = bsxfun(@rdivide, abs(f.coeffs), f.vscale);
+ac = bsxfun(@rdivide, abs(f.coeffs), vscl);
 f.coeffs(bsxfun(@le, ac, epslevel)) = 0;
 tail = f.coeffs(end-testLength+1:end,:);
 if ( ~any(tail(:)) )

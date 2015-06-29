@@ -56,13 +56,13 @@ function outPref = techPref(inPref)
 %
 % See also TRIGTECH, CHEBTECH, CHEBTECH1, CHEBTECH2
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 outPref.eps                = 2^-52;
 outPref.gridType           = 2;
 outPref.minSamples         = 17;
-outPref.maxLength          = 2^16 + 1;
+outPref.maxLength          = 2^16;
 outPref.fixedLength        = NaN;
 outPref.extrapolate        = false;
 outPref.sampleTest         = true;

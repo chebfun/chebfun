@@ -7,7 +7,7 @@ function f = simplify(f, tol)
 %  F = SIMPLIFY(F, TOL) does the same thing but uses TOL supplied by the user
 %  and pass it to SIMPLIFY in SMOOTHFUN.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin == 2 )

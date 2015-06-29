@@ -40,6 +40,7 @@ df_exact = @(x) (1+x).^(a-1).*(a+1+x).*exp(x);
 vals_exact = feval(df_exact, x);
 err = vals_df - vals_exact;
 pass(3) = (norm(err, inf) < 1e2*get(f,'epslevel')*norm(vals_exact, inf));
+    
 
 % fractional pole at the left endpoint
 data.exponents = [d 0];

@@ -57,7 +57,7 @@ u = exp(3*sin(pi*x));
 plot(u); hold on
 f = @(u) -diff(u);
 opts = pdeset('eps', 1e-4, 'abstol', 1e-4, 'reltol', 1e-4, 'plot', 1);
-uu = pde15s(f, 0:.05:2, u, 'periodic', opts);
+uu = pde23t(f, 0:.05:2, u, 'periodic', opts);
 
 %% Nonuniform Advection
 close all
@@ -65,7 +65,7 @@ d = [-1, 1]; x = chebfun('x', d);
 u = exp(3*sin(pi*x));
 f = @(t, x, u) -(1+0.3*sin(pi*x)).*diff(u);
 opts = pdeset('eps', 1e-4, 'abstol', 1e-4, 'reltol', 1e-4, 'plot', 1);
-uu = pde15s(f, 0:.05:1.5, u, 'periodic', opts);
+uu = pde23t(f, 0:.05:2.5, u, 'periodic', opts);
 
 %% Advection-diffusion
 close all
@@ -83,7 +83,7 @@ d = [-3*pi/4, pi]; x = chebfun('x', d);
 u = sin(2*x);
 f = @(t, x, u) E*diff(u, 2)+diff(u);
 lbc = {'neumann', 0};
-rbc = {'dirichlet', 1};
+rbc = {'dirichlet', 0};
 bc = struct; bc.left = lbc; bc.right = rbc;
 opts = pdeset('HoldPlot', 'on');
 tt = linspace(0, 5, 21);
@@ -127,6 +127,7 @@ close all
 d = [-1, 1]; x = chebfun('x', d);
 u = .53*x-.47*sin(1.5*pi*x);
 f = @(u) u.*(1-u.^2) + 5e-4*diff(u, 2);
+bc = struct;
 % bc.left = struct('op', 'dirichlet', 'val', -1);
 % bc.right = struct('op', 'dirichlet', 'val', 1);
 bc.left = @(u) u + 1;
@@ -162,7 +163,7 @@ bc = struct;
 bc.left = @(u) [u+1 ; diff(u)];
 bc.right = @(u) [u+1 ; diff(u)];
 f = @(t, x, u) -diff(u, 4) + diff(u.^3, 2)-diff(u, 2);
-tt = linspace(0, .01, 51);
+tt = linspace(0, .02, 51);
 uu = pde15s(f, tt, u, bc, opts);
 
 %% integral operator:
@@ -227,7 +228,7 @@ u = exp(-20*x.^2) .* sin(14*x);  u = [u ; -u];
 f = @(u, v) [diff(v) ; diff(u)];
 bc.left = @(u, v) u; bc.right = @(u, v) v;        % New way
 opt = pdeset('eps', 1e-6, 'Ylim', pi/2*[-1 1], 'AbsTol', 1e-6, 'RelTol', 1e-6);
-uu = pde15s(f, 0:.05:.5, u, bc, opt, 64);
+uu = pde23t(f, 0:.05:.5, u, bc, opt);
 
 %% 
 %chebop-style synatx
@@ -235,7 +236,7 @@ uu = pde15s(f, 0:.05:.5, u, bc, opt, 64);
 close all
 x = chebfun('x');
 u = 1 + 0.5*exp(-40*x.^2);
-bcc = @(x, u) [u(-1)-1 ; feval(diff(u),-1) ; u(1)-1 ; feval(diff(u),1)];
+bcc = @(x,t, u) [u(-1)-1 ; feval(diff(u),-1) ; u(1)-1 ; feval(diff(u),1)];
 f = @(u) u.*diff(u) - diff(u, 2) - 0.006*diff(u, 4);
 opts = pdeset('Ylim', [-30 30], 'PlotStyle', {'LineWidth', 2});
 uu = pde15s(f, 0:.025:.5, u, bcc, opts);
@@ -252,7 +253,7 @@ uu = pde15s(f, 0:.025:.5, u, bcc, opts);
     u = exp(3*sin(pi*x));
     f = @(u,t,x,diff) -(1+0.3*sin(pi*x)).*diff(u);
     opts = pdeset('eps', 1e-4, 'abstol', 1e-4, 'reltol', 1e-4, 'plot', 1);
-    uu = pde15s(f, 0:.05:2, u, 'periodic', opts);
+    uu = pde23t(f, 0:.05:2, u, 'periodic', opts);
 
 %% Example 2: Kuramoto-Sivashinsky
   close all

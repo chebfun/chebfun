@@ -49,7 +49,7 @@ function varargout = eigs(A, varargin)
 %
 % See also CHEBOPPREF, CHEBOP.EIGS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Parsing inputs.
@@ -240,7 +240,7 @@ for dim = [dimVals NaN]
 
     % Test the happiness of the function pieces:
     vscale = zeros(1, sum(isFun));   % intrinsic scaling only
-    [isDone, epsLevel] = testConvergence(discA, u(isFun), vscale, pref);
+    [isDone, epslevel] = testConvergence(discA, u(isFun), vscale, pref);
 
     if ( all(isDone) )
         break
@@ -286,7 +286,7 @@ else            % Unwrap the eigenvectors for output
     for j = 1:length(u)
         if ( isFun(j) )
             % Compress the representation.
-            u{j} = simplify(u{j}, max(eps,epsLevel));
+            u{j} = simplify(u{j}, max(eps,epslevel));
             if (isempty(signMat))
                 % Find what domain we are working on:
                 dom = domain(u{j});

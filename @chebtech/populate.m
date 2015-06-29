@@ -1,4 +1,4 @@
-function [f, values] = populate(f, op, vscale, hscale, pref)
+function [f, values] = populate(f, op, vscl, hscale, pref)
 %POPULATE   Populate a CHEBTECH class with values.
 %   F = F.POPULATE(OP) returns a CHEBTECH representation populated with values
 %   VALUES of the function OP evaluated on a Chebyshev grid. The fields
@@ -29,7 +29,7 @@ function [f, values] = populate(f, op, vscale, hscale, pref)
 %
 % See also CHEBTECH, TECHPREF, HAPPINESSCHECK.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -60,8 +60,8 @@ function [f, values] = populate(f, op, vscale, hscale, pref)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Parse inputs:
-if ( (nargin < 3) || isempty(vscale) )
-    vscale = 0;
+if ( (nargin < 3) || isempty(vscl) )
+    vscl = 0;
 end
 if ( (nargin < 4) || isempty(hscale) )
     f.hscale = 1;
@@ -88,18 +88,15 @@ if ( isnumeric(op) || iscell(op) )
         % OP is a cell {values, coeffs}
         f.coeffs = op{2};
     end
-    
-    % Update vscale:
-    f.vscale = getvscl(f);
-    
+
     % We're always happy if given discrete data:
     f.ishappy = true;
     
     % Scale the epslevel relative to the largest column:
-    vscale = f.vscale;
-    f.epslevel = 10*eps(max(f.vscale));
-    vscale(vscale <= f.epslevel) = 1;
-    f.epslevel = f.epslevel./vscale;
+    vscl = f.vscale;
+    f.epslevel = 10*eps(max(vscl));
+    vscl(vscl <= f.epslevel) = 1;
+    f.epslevel = f.epslevel./vscl;
 
     return
 end
@@ -122,7 +119,7 @@ while ( 1 )
     % Update vertical scale: (Only include sampled finite values)
     valuesTemp = values;
     valuesTemp(~isfinite(values)) = 0;
-    vscale = max(vscale, max(abs(valuesTemp)));
+    vscl = max(vscl, max(abs(valuesTemp)));
     
     % Extrapolate out NaNs:
     [values, maskNaN, maskInf] = extrapolate(f, values);
@@ -132,8 +129,7 @@ while ( 1 )
     
     % Check for happiness:
     f.coeffs = coeffs;
-    f.vscale = vscale;
-    [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, pref); 
+    [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, vscl, pref); 
         
     if ( ishappy ) % We're happy! :)
         % Alias the discarded coefficients:
@@ -149,23 +145,19 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Update the vscale. %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Compute the 'true' vscale (as defined in CHEBTECH classdef):
-vscaleOut = max(abs(values), [], 1);
+vsclOut = max(abs(values), [], 1);
 % Update vertical scale one last time:
-vscaleGlobal = max(vscale, vscaleOut);
-
-% Output the 'true' vscale (i.e., the max of the stored values):
-vscale = vscaleOut;
+vsclGlobal = max(vscl, vsclOut);
 
 % Adjust the epslevel appropriately:
-ind = vscaleOut < epslevel;
-vscaleOut(ind) = epslevel(ind);
-ind = vscaleGlobal < epslevel;
-vscaleGlobal(ind) = epslevel(ind);
-epslevel = epslevel.*vscaleGlobal./vscaleOut;
+ind = vsclOut < epslevel;
+vsclOut(ind) = epslevel(ind);
+ind = vsclGlobal < epslevel;
+vsclGlobal(ind) = epslevel(ind);
+epslevel = epslevel.*vsclGlobal./vsclOut;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% Assign to CHEBTECH object. %%%%%%%%%%%%%%%%%%%%%%%%%%
 f.coeffs = coeffs;
-f.vscale = vscale;
 f.ishappy = ishappy;
 f.epslevel = epslevel;
 

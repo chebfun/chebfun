@@ -3,7 +3,7 @@ function cg = demo()
 %   CG = CHEBGUI.DEMO() returns a random BVP CHEBGUI demo, on a CHEBGUI object
 % format.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Find the folders which demos are stored in. The chebguiDemos folder lives in

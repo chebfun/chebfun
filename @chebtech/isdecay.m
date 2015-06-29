@@ -8,13 +8,13 @@ function out = isdecay(f)
 %   Note that ISDECAY is designed for and expected to be called only by UNBNDFUN
 %   class for handling functions defined on unbounded domains.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 out = zeros(2, size(f, 2));
 
 % Set a tolerance:
-tol = 1e2*get(f, 'epslevel').*get(f, 'vscale');
+tol = 1e2*f.epslevel.*f.vscale;
 
 %% If F is a constant:
 if ( length(f) == 1 )
@@ -35,7 +35,7 @@ if ( any(maskLeft) )
     g = extractBoundaryRoots(f, rootsLeft);
     
     % Check decaying speed:
-    mask = abs(get(g, 'lval')) < 1e3*tol;
+    mask = abs(get(g, 'lval')) < 1e4*tol;
     if ( any(mask) )
         out(1, mask) = 1;
     end
@@ -51,7 +51,7 @@ if ( any(maskRight) )
     g = extractBoundaryRoots(f, rootsRight);
     
     % Check decaying speed:
-    mask = abs(get(g, 'rval')) < 1e3*tol;
+    mask = abs(get(g, 'rval')) < 1e4*tol;
     if ( any(mask) )
         out(2, mask) = 1;
     end

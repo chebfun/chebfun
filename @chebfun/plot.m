@@ -64,7 +64,7 @@ function varargout = plot(varargin)
 %
 % See also PLOTDATA, PLOT3.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -283,8 +283,8 @@ while ( ~isempty(varargin) )
         pointData = [pointData, newData(k).xPoints, newData(k).yPoints, ...
             styleData];
         jumpData = [jumpData, newData(k).xJumps, newData(k).yJumps, styleData];
-        deltaData = [deltaData, newData(k).xDeltas, newData(k).yDeltas, ...
-                                         newData(k).yDeltaBase, styleData];
+        deltaData{k} = {newData(k).xDeltas, newData(k).yDeltas, ...
+            newData(k).yDeltaBase, styleData};
         
         defaultXLim = defaultXLim & newData(k).defaultXLim;
         defaultYLim = defaultYLim & newData(k).defaultYLim;
@@ -348,16 +348,11 @@ if ( ~jumpLineIsSet )
     set(h3, 'Marker', 'none') 
 end
 
-% Reset color cycle prior to delta function plot if running R2014b.
-if ( ~verLessThan('matlab', '8.4') )
-    set(gca, 'ColorOrderIndex', 1);
-end
-
 % Plot the Delta functions:
-if ( isempty(deltaData) || ~isnumeric(deltaData{1}) )
+if ( isempty(deltaData) || ~isnumeric(deltaData{1}{1}) )
     h4 = plot([]);
 else
-    h4 = plotDeltas(deltaData{:});
+    h4 = plotDeltas(deltaData);
 end
 if ( ~isempty(deltaStyle) )
     set(h4, deltaStyle{:});
@@ -419,8 +414,38 @@ end
 
 end
 
-function h = plotDeltas(varargin)
+function h = plotDeltas(deltaData)
 %PLOTDELTAS   Plots delta functions.
+    h = [];
+
+    % Get and save the current ColorOrder if running on R2014a or earlier.
+    if ( verLessThan('matlab', '8.4') )
+        originalColorOrder = get(gca, 'ColorOrder');
+        colorOrder = circshift(originalColorOrder, 1);
+    end
+
+    for (k = 1:1:numel(deltaData))
+        % Set color for the next delta function plot.
+        if ( verLessThan('matlab', '8.4') )
+            % Manually manipulate the ColorOrder for R2014a or earlier.
+            colorOrder = circshift(colorOrder, -1);
+            set(gca, 'ColorOrder', colorOrder);
+        else
+            % Use ColorOrderIndex for R2014b and later.
+            set(gca, 'ColorOrderIndex', k);
+        end
+
+        h = [h, plotDeltasForOneFunction(deltaData{k}{:})];
+    end
+
+    % Restore the ColorOrder if running on R2014a or earlier.
+    if ( verLessThan('matlab', '8.4') )
+        set(gca, 'ColorOrder', originalColorOrder);
+    end
+end
+
+function h = plotDeltasForOneFunction(varargin)
+%PLOTDELTASFORONEFUNCTION   Plots delta functions for one function.
 
 h = [];
 j = 1;
@@ -432,14 +457,13 @@ while ( ~isempty(varargin) )
     
     % Delete these arguments, since they have been copied:
     varargin(1:3) = [];
+
+    % Handle the delta style argument:
     style = '';
-    % Check if there are other arguments for delta style:
-    if ( ~isempty(varargin) )
-        if ( ~isnumeric(varargin{1}) )
-            style = varargin{1};
-            varargin(1) = [];
-        end
+    if ( ~isempty(varargin{1}) && iscell(varargin{1}) )
+        style = varargin{1}{1};
     end
+    varargin(1) = [];
     
     % Ignore complete NaN data:
     if ( all(isnan(xData)) )

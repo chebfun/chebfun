@@ -5,7 +5,7 @@ function val = feval(f, x, varargin)
 %   functions, a signed infinity is returned. If howerver, there are higher
 %   order delta functions present as well, a NaN is returned.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 

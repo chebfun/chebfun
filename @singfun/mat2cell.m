@@ -4,7 +4,7 @@ function g = mat2cell(f, M, N)
 %   returns G = {F}, regardless of M and N, to make it compatible with the
 %   prototype for MAT2CELL established by ONEFUN.
 %
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 g = {f};

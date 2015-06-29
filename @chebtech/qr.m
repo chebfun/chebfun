@@ -23,7 +23,7 @@ function [Q, R, E] = qr(f, outputFlag, methodFlag)
 %   [1] L.N. Trefethen, "Householder triangularization of a quasimatrix", IMA J
 %   Numer Anal (2010) 30 (4): 887-897.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -87,9 +87,9 @@ end
 % condition number one. Therefore we assume Q has the same global accuracy as f,
 % and simply factor out the new vscale. TODO: It may be sensible to include some
 % knowledge of R here?
-col_acc = f.epslevel.*f.vscale;  % Accuracy of each column in f.
-glob_acc = max(col_acc);         % The best of these.
-epslevelApprox = glob_acc./Q.vscale; % Scale out vscale of Q.
+col_acc = f.epslevel.*f.vscale;        % Accuracy of each column in f.
+glob_acc = max(col_acc);               % The best of these.
+epslevelApprox = glob_acc./Q.vscale;   % Scale out vscale of Q.
 Q.epslevel = updateEpslevel(Q, epslevelApprox);
 
 end
@@ -114,7 +114,7 @@ if ( n <= 4000 )
     
     % Project the values onto a Legendre grid: (where integrals of polynomials
     % p_n*q_n will be computed exactly and on an n-point grid)
-    if ( (length(WP) ~= n) || (~isempty(type) && isa(f, type)) )
+    if ( (length(WP) ~= n) || (~isempty(type) && ~isa(f, type)) )
         % The matrices WP and inv(WP) depends only on the length of the
         % discretization and the cheb-type of f (i.e., not the function values
         % themselves.) We therefore store these persistently which save a lot of
@@ -185,14 +185,12 @@ else
     S = spdiags(s, 0, m, m);       % }
     Q = Winv*Q*S;                  % Fix Q. (Note, Q is still on Legendre grid.)
     Q_coeffs = leg2cheb( chebfun.idlt( Q ) ); % Chebyshev coefficients.
-    Q = f.coeffs2vals( Q_coeffs ); % Values on Chebyshev grid.
     R = S*R;                       % Fix R.
     
 end
 
 % Apply data to CHEBTECH:
-f.coeffs = Q_coeffs;           % Store coefficients. 
-f.vscale = max(abs(Q), [], 1); % Update vscale. 
+f.coeffs = Q_coeffs;               % Store coefficients. 
 
 end
 
@@ -232,9 +230,6 @@ end
 f.coeffs = f.vals2coeffs(Q);
 % Trim the unneeded ones:
 f.coeffs(newN/2+1:end,:) = [];
-
-% Update the vscale:
-f.vscale = getvscl(f);
 
 % Additional output argument:
 if ( nargout == 3 )

@@ -54,7 +54,8 @@ gHandle2 = @(x) cos(pi*(x-.5));
 g = chebfun(@(x) [gHandle1(x), gHandle2(x)] , -3:3, pref);
 g4 = sign(g);
 pass(3,1) = length(g4.funs) == 6;
-pass(3,2) = normest(f1 - g4) < tol;
+pass(3,2) = normest(f1 - g4) < 1e1*tol;
+
 h4 = chebfun(@(x) sign([gHandle1(x), gHandle2(x)]), -3:3, pref);
 pass(3,3) = length(h4.funs) == 6;
 pass(3,4) = normest(f1 - h4) < tol;
@@ -64,7 +65,8 @@ f = chebfun(@(x) sin(1i*x).*(1i*x + exp(5i*x)));
 g = chebfun(@(x) sign(sin(1i*x).*(1i*x + exp(5i*x))),[-1 0 1], ...
     'extrapolate', 'on');
 h = sign(f);
-pass(4,:) = normest(g - h) < 200*get(h, 'epslevel')*length(h);
+pass(4,:) = normest(g - h) < 1e3*get(h, 'epslevel')*length(h);
+
 
 %% Test sign() for a complex-valued CHEBFUN.
 f = chebfun(@(x) exp(2*pi*1i*x)./(1 + (x - 0.1).^2), [-1 1]);

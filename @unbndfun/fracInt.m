@@ -2,7 +2,7 @@ function f = fracInt(f, mu)
 %FRACINT  Fractional integral of an UNBNDFUN. 
 %   Fractional integrals on unbounded domain are not supported.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 error('CHEBFUN:UNBNDFUN:fracInt:noSupport', ...

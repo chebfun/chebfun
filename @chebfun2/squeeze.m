@@ -4,7 +4,7 @@ function g = squeeze(f)
 %   on the x-variable a row CHEBFUN is returned and if it depends on just the
 %   y-variable a column CHEBFUN is returned.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty( f ) )  % Check for an empty CHEBFUN2.

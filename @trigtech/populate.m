@@ -29,7 +29,7 @@ function f = populate(f, op, vscale, hscale, pref)
 %
 % See also TRIGTECH, TECHPREF, HAPPINESSCHECK.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( (nargin < 3) || isempty(vscale) )
@@ -116,7 +116,7 @@ while ( 1 )
     % Check for happiness:
     f.coeffs = coeffs;
     f.vscale = vscale;
-    [ishappy, epslevel, cutoff] = happinessCheck(f, op, f.values, pref);
+    [ishappy, epslevel, cutoff] = happinessCheck(f, op, f.values, vscale, pref);
     
         
     % We're happy! :)

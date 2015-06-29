@@ -17,7 +17,7 @@ function out = get(f, propName)
 %       'YORDER'         - The order of differentiation in the y-direction.
 %       'U', 'S', 'V'    - The low rank structure of N.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( numel(f) > 1 )

@@ -34,7 +34,7 @@ function [x, w, v] = jacpts(n, a, b, int, meth)
 %
 % See also CHEBPTS, LEGPTS, LOBPTS, RADAUPTS, HERMPTS, LAGPTS, and TRIGPTS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. See
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

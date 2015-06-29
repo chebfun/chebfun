@@ -99,7 +99,8 @@ h_exactg = feval(opg, x(indComp) + (domg(1) - domf(2)));
 h_exact = [h_exactf; h_exactg];
 err = h_exact - h_vals;
 pass(9) = isequal(h.domain, [-Inf -3 Inf]) && ...
-    norm(err, inf) < vscale(h)*epslevel(h);
+    norm(err, inf) < 1e1*vscale(h)*epslevel(h);
+
 
 end
 

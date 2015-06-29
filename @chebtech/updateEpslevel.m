@@ -8,7 +8,7 @@ function epslevel = updateEpslevel(f, pref)
 %
 % See also HAPPINESSCHECK.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -18,33 +18,36 @@ function epslevel = updateEpslevel(f, pref)
 %   and TIMES.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Obtain a preference / epslevel bound:
-if ( nargin == 1 )
-    pref = f.techPref();
-    epslevelBnd = pref.eps;  % TODO:  This really should be Inf?
-elseif ( isnumeric(pref) )
-    epslevelBnd = pref;
-    pref = f.techPref();
-    pref.eps = max(epslevelBnd/100, pref.eps);
-else
-    epslevelBnd = pref.eps;  % TODO:  This really should be Inf?
-end
+% % Obtain a preference / epslevel bound:
+% if ( nargin == 1 )
+%     pref = f.techPref();
+%     epslevelBnd = pref.eps;  % TODO:  This really should be Inf?
+% elseif ( isnumeric(pref) )
+%     epslevelBnd = pref;
+%     pref = f.techPref();
+%     pref.eps = max(epslevelBnd/100, pref.eps);
+% else
+%     epslevelBnd = pref.eps;  % TODO:  This really should be Inf?
+% end
+% 
+% % Temporarily replace NaNs to prevent HAPPINESSCHECK() from crashing.
+% nanLocs = isnan(f.coeffs);
+% nanCols = any(nanLocs);
+% f.coeffs(nanLocs) = 0;
+% 
+% % Call HAPPINESSCHECK()
+% [ignored, newEpslevel] = happinessCheck(f, [], [], [], pref);
+% 
+% % Restore NaNs.
+% f.coeffs(nanLocs) = NaN;
+% 
+% % Respect the bound:
+% epslevel = min(newEpslevel, epslevelBnd);
+% 
+% % Don't change the epslevel of NaN columns.
+% epslevel(nanCols) = f.epslevel(nanCols);
 
-% Temporarily replace NaNs to prevent HAPPINESSCHECK() from crashing.
-nanLocs = isnan(f.coeffs);
-nanCols = any(nanLocs);
-f.coeffs(nanLocs) = 0;
-
-% Call HAPPINESSCHECK()
-[ignored, newEpslevel] = happinessCheck(f, [], [], pref);
-
-% Restore NaNs.
-f.coeffs(nanLocs) = NaN;
-
-% Respect the bound:
-epslevel = min(newEpslevel, epslevelBnd);
-
-% Don't change the epslevel of NaN columns.
-epslevel(nanCols) = f.epslevel(nanCols);
+% set epslevel = eps
+epslevel = repmat(eps, 1, size(f.coeffs, 2));
 
 end

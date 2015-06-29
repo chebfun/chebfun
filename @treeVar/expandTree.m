@@ -18,7 +18,7 @@ function newTree = expandTree(tree, maxOrder)
 %                  taken out of any parenthesis where other variables with lower
 %                  differential order appear.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( ~isstruct(tree) || tree.height <= 1 || all(tree.diffOrder < maxOrder) ||...

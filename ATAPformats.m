@@ -10,7 +10,7 @@ function ATAPformats(flag)
 %
 % ATAPFORMATS('factory') will reset these defaults to the MATLAB default state.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin == 0 )

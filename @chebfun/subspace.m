@@ -16,7 +16,7 @@ function theta = subspace(A, B)
 %       SIAM Journal on Scientific Computing, 23 (2002), no. 6, 2009-2041.
 %       http://epubs.siam.org:80/sam-bin/dbq/article/37733
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( ~isa(A, 'chebfun') || ~isa(B, 'chebfun') )
