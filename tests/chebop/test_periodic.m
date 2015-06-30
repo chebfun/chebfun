@@ -270,7 +270,7 @@ L = chebop(@(u) a.*diff(u, 2) + b.*diff(u) + c.*u, dom);
 L.bc = 'periodic';
 
 % Solve with TRIGSPEC.
-pref.discretization = @trigspec;
+pref.discretization = 'coeffs';
 u = solvebvp(L, f, pref);
 
 pass(37) = norm(L*u - f) < tol;

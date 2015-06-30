@@ -460,10 +460,10 @@ classdef cheboppref < chebpref
                 end
                 val = @chebcolloc1; 
                 
-            elseif ( any(strcmpi(val, {'trigspec'})) )
+            elseif ( any(strcmpi(val, {'trigspec', 'coeffs'})) )
                 val = @trigspec;
                 
-            elseif ( any(strcmpi(val, {'trigcolloc', 'periodic'})) )
+            elseif ( any(strcmpi(val, {'trigcolloc', 'periodic', 'values'})) )
                 val = @trigcolloc;       
                  
             end
