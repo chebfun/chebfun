@@ -6,10 +6,10 @@ function [ishappy, epslevel, cutOff] = standardCheck(f, values, vscl, pref)
 coeffs = f.coeffs;
 [n,m] = size(coeffs);
 
-%% initialize ishappy
+% initialize ishappy
 ishappy = false;
 
-%% initialize epslevel
+% initialize epslevel
 epslevel = eps*ones(1,m); 
 
 % NaNs are not allowed.
@@ -18,33 +18,52 @@ if ( any(isnan(coeffs)) )
         'Function returned NaN when evaluated.')
 end
 
+% Grab some preferences:
+if ( nargin == 1 )
+    pref = f.techPref();
+    tol = pref.eps;
+elseif ( isnumeric(pref) )
+    tol = pref;
+else
+    tol = pref.eps;
+end
+if size(tol,2) ~= m
+  tol = ones(1,m)*max(tol);
+end
+
 % Compute some values if none were given:
-%if ( nargin < 2 || isempty(values) )
-%    values = f.coeffs2vals(f.coeffs);
-%end
-%if ( isempty(vscl) || isempty(vscl) )
-%    vscl = max(abs(values), [],  1);
-%end
-%vscl = max(vscl ,max(abs(values), [],  1));
+if ( nargin < 2 || isempty(values) )
+    values = f.coeffs2vals(f.coeffs);
+end
+if ( isempty(vscl) || isempty(vscl) )
+    vscl = max(abs(values), [],  1);
+end
 
-% Set the function scaling for each vector of values.
-maxvals = max(abs(values), [], 1);
+% get points
+x = f.points;
 
-% set tolerance
-tol = eps;
-tol = pref.eps;
+% get hscale
+hscale = f.hscale;
 
-%% Loop through columns of coeffs
+% Estimate the condition number of the input function by
+dy = diff(values);
+dx = diff(x)*ones(1, size(values, 2));
+gradEst = max(abs(dy./dx)).*hscale./max(abs(values));  % Finite difference approx.
+
+% Loop through columns of coeffs
 ishappy = false(1,m);
 cutOff = zeros(1,m);
 for k = 1:m
-    [ishappy(k), cutOff(k)] = standardChop(coeffs(:,k), tol, vscl(k));
+
+    % call standardChop
+    [ishappy(k), cutOff(k)] = standardChop(coeffs(:,k), tol(k), vscl(k)*gradEst(k));
     if ( ~ishappy(k) )
         % No need to continue if it fails on any column.
         break
     end
 end
 
+% set outputs
 ishappy = all(ishappy); 
 cutOff = max(cutOff);
 

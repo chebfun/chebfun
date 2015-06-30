@@ -41,9 +41,13 @@ vFun = feval(f, xeval);
 % Evaluate the op:
 vOp = feval(op, xeval);
 
+% estimate condition number 
+df = diff(f);
+condEst = max(abs(bsxfun(@times,feval(df, xeval),f.hscale)),1);
+
 % If the CHEBTECH evaluation differs from the op evaluation, SAMPLETEST failed:
-err = bsxfun(@rdivide, abs(vOp - vFun), vscl); % Relative (to vscl) error.
-if ( any(max(abs(err)) > tol) )
+err = bsxfun(@rdivide, abs(vOp - vFun), 1); % Relative (to vscl) error.
+if ( any(abs(err) > condEst*tol) )
     pass = false; % :(
 else
     pass = true;  % :)

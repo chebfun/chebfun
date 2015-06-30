@@ -89,7 +89,7 @@ g = merge(f);
 gVals = feval(g, x);
 gExact = op(x);
 err = norm(gVals - gExact, inf);
-tol = 100*epslevel(f)*vscale(f);
+tol = 1e2*epslevel(f)*vscale(f);
 pass(13) = err < tol;
 
 end

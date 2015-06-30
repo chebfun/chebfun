@@ -27,13 +27,13 @@ for type = 1:2
     F = @(x) exp(1i*pi*x);
     f = testclass.make(@(x) F(x), [], pref);
     h = abs(f);
-    pass(type, 3) = normest(h - 1) < 10*f.epslevel;
+    pass(type, 3) = normest(h - 1) < 1e2*f.epslevel;
     
     % Test a complex array-valued function:
     F = @(x) [(2+sin(x)).*exp(1i*pi*x), -(2+sin(x)).*exp(1i*pi*x), 2+sin(x)];
     f = testclass.make(@(x) F(x), [], pref);
     g = testclass.make(@(x) [2+sin(x), 2+sin(x), 2+sin(x)]);
     h = abs(f);
-    pass(type, 4) = normest(h - g) < 10*max(f.epslevel);
+    pass(type, 4) = normest(h - g) < 1e1*max(f.epslevel);
     
 end

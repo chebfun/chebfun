@@ -41,8 +41,8 @@ end
   m = b(end)*ones(n,1);
   for j = n-1:-1:1
     m(j) = max(b(j),m(j+1));
-  end
-  a = m/m(1);   
+  end   
+  a = m/m(1)/max(vscl,1);
 
 %%
 % Step 2: Scan sequence a for a "plateau point K", the first
@@ -80,7 +80,7 @@ end
       aa = aa + linspace(0,(-1/3)*log10(tol),j2)';
       [ignore,d] = min(aa);
       ishappy = true;
-      cutOff = d-1;
+      cutOff = max(d-1,1);
   end
 
 %hold on, semilogy(cutOff,m(cutOff),'x'), hold off
