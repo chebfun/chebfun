@@ -45,10 +45,13 @@ x = f.points;
 % get hscale
 hscale = f.hscale;
 
-% Estimate the condition number of the input function by
-dy = diff(values);
-dx = diff(x)*ones(1, size(values, 2));
-gradEst = max(abs(dy./dx)).*hscale./max(abs(values));  % Finite difference approx.
+% Estimate the condition number of the input function using finite differences
+gradEst = max(abs(bsxfun(@rdivide,diff(values),diff(x)))).*hscale;
+scl = max(abs(values)); scl(scl==0) = 1;
+gradEst = gradEst./scl;
+if isempty(gradEst)
+  gradEst = ones(1,m);
+end
 
 % Loop through columns of coeffs
 ishappy = false(1,m);
