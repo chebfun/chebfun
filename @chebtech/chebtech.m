@@ -94,14 +94,6 @@ classdef chebtech < smoothfun % (Abstract)
         % objects, each column represents the coefficients of a single function.
         coeffs % (nxm double)
 
-        % Horizontal scale of the CHEBTECH. Although CHEBTECH objects have in
-        % principle no notion of horizontal scale invariance (since they always
-        % live on [-1,1]), the input OP may have been implicitly mapped. HSCALE
-        % is then used to enforce horizontal scale invariance in construction
-        % and other subsequent operations that require it. It defaults to 1 and
-        % is never updated.
-        hscale = 1 % (scalar > 0)
-
         % Boolean value designating whether the CHEBTECH is 'happy' or not. See
         % HAPPINESSCHECK.m for full documentation.
         ishappy % (logical)
@@ -182,7 +174,7 @@ classdef chebtech < smoothfun % (Abstract)
         [h1, h2] = plotcoeffs(f, varargin)
 
         % Check the happiness of a CHEBTECH. (Classic definition).
-        [ishappy, epslevel, cutoff] = classicCheck(f, values, vscl, pref)
+        [ishappy, epslevel, cutoff] = classicCheck(f, values, vscl, hscl, pref)
 
         % Complex conjugate of a CHEBTECH.
         f = conj(f)
@@ -227,7 +219,7 @@ classdef chebtech < smoothfun % (Abstract)
         f = fracInt(f, mu, b)
 
         % Happiness test for a CHEBTECH
-        [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, vscl, pref)
+        [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, vscl, hscl, pref)
 
         % Imaginary part of a CHEBTECH.
         f = imag(f)
@@ -365,7 +357,7 @@ classdef chebtech < smoothfun % (Abstract)
         [siz1, siz2] = size(f, varargin)
 
         % Strict happiness check.
-        [ishappy, epslevel, cutoff] = strictCheck(f, values, vscl, pref)
+        [ishappy, epslevel, cutoff] = strictCheck(f, values, vscl, hscl, pref)
 
         % Definite integral of a CHEBTECH on the interval [-1,1].
         out = sum(f, dim)

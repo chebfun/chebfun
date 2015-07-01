@@ -47,11 +47,12 @@ tech = tech();
 vscale = max(u.vscale, vscale);
 prefTech = tech.techPref();
 prefTech.eps = pref.errTol;
+hscale = norm(d, inf);
 
 for i = 1:numInt
     c = cat(2, coeffs{i,:});
     f = tech.make({[], c});
-    [isDone(i), neweps, cutoff(i,:)] = plateauCheck(f, [], vscale, prefTech);
+    [isDone(i), neweps, cutoff(i,:)] = plateauCheck(f, [], vscale, hscale, prefTech);
     epslevel = max(epslevel, neweps);
 end
 

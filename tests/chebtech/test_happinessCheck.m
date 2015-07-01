@@ -9,6 +9,9 @@ end
 
 inputPref = pref;
 
+vscl = [];
+hscl = [];
+
 for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();
@@ -27,7 +30,7 @@ for n = 1:2
     f = @(x) sin(x);
     g = testclass.make(f(x));
     values = g.coeffs2vals(g.coeffs); 
-    [ishappy, epslevel, tail] = happinessCheck(g, f, values, [], pref);
+    [ishappy, epslevel, tail] = happinessCheck(g, f, values, vscl, hscl, pref);
     pass(n, 1) = tail == 14;
     pass(n, 2) = ishappy && epslevel < tol;
     
@@ -36,7 +39,7 @@ for n = 1:2
     f = @(x) [sin(x) cos(x) exp(x)];
     g = testclass.make(f(x));
     values = g.coeffs2vals(g.coeffs); 
-    [ishappy, epslevel, tail] = happinessCheck(g, f, values, [], pref);
+    [ishappy, epslevel, tail] = happinessCheck(g, f, values, vscl, hscl, pref);
     pass(n, 3) = abs(tail - 15) < 2;
     pass(n, 4) = ishappy && all(epslevel < tol);
     
@@ -50,7 +53,7 @@ for n = 1:2
     pref.sampleTest = 0;
     g = testclass.make(f(x));
     values = g.coeffs2vals(g.coeffs); 
-    [ishappy, epslevel, tail] = happinessCheck(g, f, values, [], pref);
+    [ishappy, epslevel, tail] = happinessCheck(g, f, values, vscl, hscl, pref);
     if (n == 1)
         pass(n, 5) = ( ishappy && tail == 15);
     else
@@ -61,7 +64,7 @@ for n = 1:2
     pref.sampleTest = 1;
     g = testclass.make(f(x));
     values = g.coeffs2vals(g.coeffs); 
-    [ishappy, epslevel, tail] = happinessCheck(g, f, values, [], pref);
+    [ishappy, epslevel, tail] = happinessCheck(g, f, values, vscl, hscl, pref);
     pass(n, 6) = ~ishappy && tail == 33;
 
     % g1 has a few coefficients that are small but not enough to satisfy
@@ -73,14 +76,14 @@ for n = 1:2
 
     g1 = testclass.make(f(testclass.chebpts(39)));
     values1 = g1.coeffs2vals(g1.coeffs);
-    ishappy1 = happinessCheck(g1, f, values1, [], pref);
+    ishappy1 = happinessCheck(g1, f, values1, vscl, hscl, pref);
 
     g2 = testclass.make(f(testclass.chebpts(41)));
     values2 = g2.coeffs2vals(g2.coeffs);
-    ishappy2 = happinessCheck(g2, f, values2, [], pref);
+    ishappy2 = happinessCheck(g2, f, values2, vscl, hscl, pref);
 
     pref.happinessCheck = 'classic';
-    ishappy3 = happinessCheck(g1, f, values1, [], pref);
+    ishappy3 = happinessCheck(g1, f, values1, vscl, hscl, pref);
 
     pass(n, 7) = ~ishappy1 && ishappy2 && ishappy3;
 
@@ -91,11 +94,11 @@ for n = 1:2
 
     g1 = testclass.make(f(testclass.chebpts(39)));
     values1 = g1.coeffs2vals(g1.coeffs);
-    ishappy1 = happinessCheck(g1, f, values1, [], pref);
+    ishappy1 = happinessCheck(g1, f, values1, vscl, hscl, pref);
 
     g2 = testclass.make(f(testclass.chebpts(41)));
     values2 = g2.coeffs2vals(g2.coeffs);
-    ishappy2 = happinessCheck(g2, f, values2, [], pref);
+    ishappy2 = happinessCheck(g2, f, values2, vscl, hscl, pref);
 
     pass(n, 8) = ~ishappy1 && ishappy2;
     

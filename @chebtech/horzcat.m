@@ -37,7 +37,4 @@ out.coeffs = cell2mat(cellfun(@(f) f.coeffs, F, 'UniformOutput', false));
 epslevels = cellfun(@(f) f.epslevel, F, 'UniformOutput', false);
 out.epslevel = cell2mat(epslevels);
 
-% Hscale:
-out.hscale = max(cellfun(@(f) f.hscale, F));
-
 end
