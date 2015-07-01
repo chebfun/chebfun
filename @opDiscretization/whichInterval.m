@@ -23,7 +23,7 @@ intNum = find( location >= disc.domain, 1, 'last' );
 % check for being at the right endpoint.
 if ( intNum == numIntervals )
     if ( direction > 0 )
-        error('CHEBFUN:CHEBDISCRETIZATION:whichInterval:undefined', ...
+        error('CHEBFUN:OPDISCRETIZATION:whichInterval:undefined', ...
             'Evaluation direction is undefined at the location.')
     end
     direction = -1;  % this forces the adjustment below

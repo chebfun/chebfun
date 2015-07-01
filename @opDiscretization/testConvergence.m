@@ -1,7 +1,7 @@
 function [isDone, epslevel, vscale, cutoff] = testConvergence(disc, values, vscale, pref)
 %TESTCONVERGENCE   Happiness check.
 %   Given: 
-%      DISC: chebDiscretization, 
+%      DISC: opDiscretization, 
 %      VALUES: a cell array of scalars/sampled function values (see the
 %           toFunction method),
 %      VSCALE: scalar value giving the desired scale by which to measure

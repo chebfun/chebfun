@@ -4,7 +4,7 @@ function [PA, P, PS] = reduce(disc, A, S)
 %   discretization of DISC.SOURCE) to a matrix.
 %
 %   [PA, P, PS] = REDUCE(DISC, A, S) is required for consistency with other
-%   CHEBDISCRETIZATION reductions. Here S is ignored, P is the identity and
+%   OPDISCRETIZATION reductions. Here S is ignored, P is the identity and
 %   PS = P.
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.

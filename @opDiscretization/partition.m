@@ -1,6 +1,6 @@
 function u = partition(disc, values)
-%CHEBDISCRETIZATION.PARTITION   Partition values to appropriate variables.
-%   U = CHEBDISCRETIZATION.PARTITION(DISC, VALUES) will, given a vector or
+%OPDISCRETIZATION.PARTITION   Partition values to appropriate variables.
+%   U = OPDISCRETIZATION.PARTITION(DISC, VALUES) will, given a vector or
 %   matrix (columnwise) VALUES of values corresponding to all the discretized
 %   variables and scalars in a system DISC, convert to a cell-valued partition
 %   of individual variables in the system. I.e., deduce the variable boundaries

@@ -8,7 +8,7 @@ function varargout = matrix(A, varargin)
 %   MATRIX(A, DIM, DOMAIN) replaces the 'native' domain of A with DOMAIN.
 %   Usually this would be done to introduce a breakpoint.
 %
-%   MATRIX(A,...,DISCTYPE) uses the chebDiscretization whose consructor is
+%   MATRIX(A,...,DISCTYPE) uses the opDiscretization whose consructor is
 %   DISCTYPE. The default is set by CHEBOPPREF. 
 %
 %   Example:
@@ -17,12 +17,12 @@ function varargout = matrix(A, varargin)
 %     matrix(A, 5, @chebcolloc2)
 %     matrix(A, 5, @ultraS)
 %
-% See also CHEBOPPREF, CHEBDISCRETIZATION, CHEBDISCRETIZATION/MATRIX. 
+% See also CHEBOPPREF, OPDISCRETIZATION, OPDISCRETIZATION/MATRIX. 
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Any non-numeric argument should be a chebDiscretization constructor. 
+% Any non-numeric argument should be a opDiscretization constructor. 
 discType = [];
 numericargs = cellfun(@isnumeric, varargin);
 for k = find( ~numericargs(:)' )

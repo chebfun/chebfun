@@ -4,8 +4,8 @@ function spy(disc, varargin)
 %   D = chebop(@(x,u) diff(u));
 %   spy(chebcolloc2(linop(D)))
 
-error('CHEBFUN:CHEBDISCRETIZATION:spy:noSupported', ...
-    'Chebdiscretization currently does not support spy().');
+error('CHEBFUN:OPDISCRETIZATION:spy:noSupported', ...
+    'OPDISCRETIZATION currently does not support spy().');
 end
 % %SPY    Visualize a LINOP.
 % %   SPY(DISC) creates a picture of the nonzero pattern of the given LiNOP

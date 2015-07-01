@@ -1,5 +1,5 @@
-classdef chebDiscretization 
-%CHEBDISCRETIZATION    Convert a chebmatrix or linop to discrete form.
+classdef opDiscretization 
+%OPDISCRETIZATION    Convert a chebmatrix or linop to discrete form.
 %   This class is not called directly by the end user. 
 %
 % See also COLLOC, ULTRAS.
@@ -13,7 +13,7 @@ classdef chebDiscretization
 %   domain, and dimension (vector of discretization lengths). In other words,
 %   they have a CHEBMATRIX or LINOP object, which represent an abstract linear
 %   operator (with or without constraints). Most importantly, objects of types
-%   of concrete implementation of CHEBDISCRETIZATION are able to instantianate
+%   of concrete implementation of OPDISCRETIZATION are able to instantianate
 %   themselves to a matrix corresponding to discretization of the operator on a
 %   Chebyshev grid. Objects of this type also have to implement a mldivide
 %   (backslash) method, which yields solution to problems of ODEs.
@@ -93,12 +93,12 @@ classdef chebDiscretization
     methods
         
         function n = get.numIntervals(disc)
-            %NUMINTERVALS   Number of subintervals a CHEBDISCRETIZATION acts on.
+            %NUMINTERVALS   Number of subintervals a OPDISCRETIZATION acts on.
             n = length(disc.domain) - 1;
         end
         
         function t = isempty(disc)
-            %ISEMPTY   Check if source property of a CHEBDISCRETIZATION is empty.
+            %ISEMPTY   Check if source property of a OPDISCRETIZATION is empty.
             t = isempty(disc.source);
         end
         
@@ -111,7 +111,7 @@ classdef chebDiscretization
         end
         
         function [x, disc] = mldivide(disc, A, b)
-            %CHEBDISCRETIZATION.MLDIVIDE
+            %OPDISCRETIZATION.MLDIVIDE
             %   By default, the solution of a discrete Ax = b uses standard
             %   backslash. But concrete implementations may overload it.
             x = A\b;

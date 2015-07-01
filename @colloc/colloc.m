@@ -1,11 +1,11 @@
-classdef colloc < chebDiscretization
+classdef colloc < opDiscretization
 %COLLOC   Abstract class for collocation discretization of operators.
-%   COLLOC is a partial implementation of CHEBDISCRETIZATION using
+%   COLLOC is a partial implementation of OPDISCRETIZATION using
 %   first-kind Chebyshev points, second-kind Chebyshev points, or equally
 %   spaced points. COLLOC cannot be used directly as a discretization for 
 %   LINOPs. CHEBCOLLOC1, CHEBCOLLOC2, and TRIGCOLLOC are full implementations.
 %
-% See also CHEBCOLLOC, TRIGCOLLOC, CHEBCOLLOC1, CHEBCOLLOC2, CHEBDISCRETIZATION.
+% See also CHEBCOLLOC, TRIGCOLLOC, CHEBCOLLOC1, CHEBCOLLOC2, OPDISCRETIZATION.
 
 %  Copyright 2015 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org/ for Chebfun information.

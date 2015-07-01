@@ -7,7 +7,7 @@ classdef trigcolloc < colloc
 %   automatically to resolve the solution. You can control the allowed values of
 %   N through CHEBOPPREF.
 %
-% See also COLLOC, CHEBDISCRETIZATION, CHEBOPPREF, CHEBOP.
+% See also COLLOC, OPDISCRETIZATION, CHEBOPPREF, CHEBOP.
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

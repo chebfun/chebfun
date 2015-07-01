@@ -35,7 +35,7 @@ f.vscale = max(f.vscale, vscl);
 
 % [TODO]: implement PLATEAUCHECK for TRIGTECH. For the moment, we just call
 % classicCheck. The reason why the plateauCheck() is needed for TRIGTECH is 
-% that it gets called in CHEBDISCRETIZATION/TESTCONVERGENCE.
+% that it gets called in OPDISCRETIZATION/TESTCONVERGENCE.
 
 [ishappy, epslevel, cutoff] = classicCheck(f, values, vscl, pref);
 

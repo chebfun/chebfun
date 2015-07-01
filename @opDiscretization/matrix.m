@@ -25,17 +25,17 @@ end
 
 % Check subinterval compatibility of domain and dimension.
 if ( (length(disc.domain) - 1) ~= length(disc.dimension) )
-    error('CHEBFUN:CHEBDISCRETIZATION:matrix:subIntDim', ...
+    error('CHEBFUN:OPDISCRETIZATION:matrix:subIntDim', ...
         'Must specify one dimension value for each subinterval.')
 end
 
 if ( nargout > 1 && ~isa(disc.source, 'linop') )
-    error('CHEBFUN:CHEBDISCRETIZATION:matrix:matrix', ...
+    error('CHEBFUN:OPDISCRETIZATION:matrix:matrix', ...
         'MATRIX() of a %s can only return one output.', class(disc.source))
 end
 
 if ( any(isinf(disc.domain)) )
-    error('CHEBFUN:CHEBDISCRETIZATION:matrix:isinf', ...
+    error('CHEBFUN:OPDISCRETIZATION:matrix:isinf', ...
         'Discretization on unbounded domains is not supported.');
 end
 
