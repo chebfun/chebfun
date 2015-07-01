@@ -39,19 +39,8 @@ if ( isempty(vscl) || isempty(vscl) )
     vscl = max(abs(values), [],  1);
 end
 
-% get points
-x = f.points;
-
 % get hscale
 hscale = f.hscale;
-
-% Estimate the condition number of the input function using finite differences
-gradEst = max(abs(bsxfun(@rdivide,diff(values),diff(x)))).*hscale;
-scl = max(abs(values)); scl(scl==0) = 1;
-gradEst = gradEst./scl;
-if isempty(gradEst)
-  gradEst = ones(1,m);
-end
 
 % Loop through columns of coeffs
 ishappy = false(1,m);
@@ -59,7 +48,8 @@ cutOff = zeros(1,m);
 for k = 1:m
 
     % call standardChop
-    [ishappy(k), cutOff(k)] = standardChop(coeffs(:,k), tol(k), vscl(k)*gradEst(k));
+    [cutOff(k)] = standardChop(coeffs(:,k), tol(k), vscl(k)*hscale);
+    ishappy(k) = ( cutOff(k) < n );
     if ( ~ishappy(k) )
         % No need to continue if it fails on any column.
         break
