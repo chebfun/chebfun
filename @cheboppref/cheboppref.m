@@ -461,8 +461,10 @@ classdef cheboppref < chebpref
                 val = @chebcolloc1;
                 
             elseif ( any(strcmpi(val, {'trigcolloc', 'periodic'})) )
-                val = @trigcolloc;       
-                 
+                val = @trigcolloc;      
+                
+            elseif ( any(strcmpi(val, {'values', 'coeffs'})) )
+                val = str2func(val);
             end
                 
         end

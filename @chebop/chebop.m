@@ -304,6 +304,10 @@ classdef (InferiorClasses = {?double}) chebop
         % The number of input arguments to a CHEBOP .OP field.
         nIn = nargin(N)
         
+        % Determine discretization for a CHEBOP object with periodic
+        % boundary conditions.
+        pref = determineDiscretization(N, L, isPrefGiven, pref)
+        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -320,10 +324,6 @@ classdef (InferiorClasses = {?double}) chebop
         
         % Solve a nonlinear problem posed with CHEBOP
         [u, info] = solvebvpNonlinear(N, rhs, L, u0, res, pref, displayInfo)
-        
-        % Determine discretization for a CHEBOP object with periodic
-        % boundary conditions.
-        pref = determineDiscretization(N, L, isPrefGiven, pref)
         
         % Clear periodic boundary conditions.
         [N, L] = clearPeriodicBCs(N, L)
