@@ -1,9 +1,9 @@
-function C = mtimes(A, B)
-%*   Multiplication of COLLOC discretizations.
+function F = mult(disc, f)
+%MULT   Multiplication operator in VALSDISCRETIZATION.
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-C = A*B;
+F = diag( toValues(disc, f) );
 
 end

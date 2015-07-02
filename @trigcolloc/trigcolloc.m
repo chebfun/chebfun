@@ -1,7 +1,7 @@
-classdef trigcolloc < colloc
+classdef trigcolloc <valsDiscretization
 %TRIGCOLLOC   Collocation discretization on equally spaced points.
 %   TRIGCOLLOC is an implementation of COLLOC that implements spectral
-%   collocation on equi-spaced points for differential and integral operators.
+%  valsDiscretizationation on equi-spaced points for differential and integral operators.
 %
 %   Linear algebra operations generally take O(N^3) flops, where N is determined
 %   automatically to resolve the solution. You can control the allowed values of
@@ -18,7 +18,7 @@ classdef trigcolloc < colloc
     methods ( Access = public, Static = false )
         
         function disc = trigcolloc(varargin)
-            disc = disc@colloc(varargin{:});
+            disc = discvalsDiscretization(varargin{:});
             % No dimension adjustment are required for TRIGCOLLOC.
             disc.dimAdjust = 0; 
             disc.projOrder = 0; 

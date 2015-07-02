@@ -1,5 +1,5 @@
 function Z = zero(disc)
-%ZERO   Zero functional in COLLOC.
+%ZERO   Zero functional in VALSDISCRETIZATION.
 %
 % See also ZEROS, FUNCTIONALBLOCK.ZERO.
 

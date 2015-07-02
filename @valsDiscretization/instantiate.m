@@ -1,5 +1,5 @@
 function [M, S] = instantiate(disc)
-%INSTANTIATE   Convert a COLLOC discretization to discrete form.
+%INSTANTIATE   Convert a VALSDISCRETIZATION discretization to discrete form.
 %   M = INSTANTIATE(DISC) converts each item DISC.SOURCE to discrete form
 %   using the information in discretization DISC. The result M is return a cell
 %   array if DISC.SOURCE has more than one component.
@@ -49,7 +49,7 @@ elseif ( isa(item, 'chebfun') )
 elseif ( isnumeric(item) )
     A = item;
 else   
-    error('CHEBFUN:COLLOC:instantiate:instantiateOne', 'Unrecognized item.')
+    error('CHEBFUN:VALSDISCRETIZATION:instantiate:instantiateOne', 'Unrecognized item.')
 end
 
 end

@@ -1,18 +1,21 @@
 function [x, w, v, t] = points(varargin)
 %POINTS    Discretization points.
-%   X = COLLOC.POINTS(DISC, POINTSFUN) returns points to be for the domain and
-%   dimension stored in DISC. POINTSFUN should be a function handle taking a
-%   single scalar input argument N which returns the required points in the
-%   interval [-1,1].
+%   X = VALSDISCRETIZATION.POINTS(DISC, POINTSFUN) returns points to be for the 
+%   domain and dimension stored in DISC. POINTSFUN should be a function handle 
+%   taking a single scalar input argument N which returns the required points in 
+%   the interval [-1,1].
 %
-%   COLLOC.POINTS(DOMAIN, DIMENSION, POINTSFUN) is an equivalent syntax.
+%   VALSDISCRETIZATION.POINTS(DOMAIN, DIMENSION, POINTSFUN) is an equivalent 
+%   syntax.
 %
-%   [X, W, V] = COLLOC.POINTS(DISC, POINTSFUN) also returns quadrature weights
-%   and barycentric interpolation weights, respectively, appropriately scaled to
-%   DISC.DOMAIN, if these are also returned by POINTSFUN.
+%   [X, W, V] = VALSDISCRETIZATION.POINTS(DISC, POINTSFUN) also returns 
+%   quadrature weights and barycentric interpolation weights, respectively, 
+%   appropriately scaled to DISC.DOMAIN, if these are also returned by 
+%   POINTSFUN.
 %
-%   [X, W, V, T] = COLLOC.POINTS(DISC, POINTSFUN) returns also the angles T so
-%   that T = COS(X). This can often be computed more accurately than X itself.
+%   [X, W, V, T] = VALSDISCRETIZATION.POINTS(DISC, POINTSFUN) returns also the 
+%   angles T so that T = COS(X). This can often be computed more accurately than
+%   X itself.
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -29,7 +32,7 @@ elseif ( nargin == 3 )
     pointsFun = varargin{3};
     
 else
-    error('CHEBFUN:COLLOC:points:nargin', ...
+    error('CHEBFUN:VALSDISCRETIZATION:points:nargin', ...
         'Must be called with two or three arguments.')
     
 end

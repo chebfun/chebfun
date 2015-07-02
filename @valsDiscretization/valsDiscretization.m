@@ -1,9 +1,11 @@
-classdef colloc < opDiscretization
-%COLLOC   Abstract class for collocation discretization of operators.
-%   COLLOC is a partial implementation of OPDISCRETIZATION using
+classdef valsDiscretization < opDiscretization
+%VALSDISCRETIZATION   Abstract class for collocation discretization of 
+%operators.
+%   VALSDISCRETIZATION is a partial implementation of OPDISCRETIZATION using
 %   first-kind Chebyshev points, second-kind Chebyshev points, or equally
-%   spaced points. COLLOC cannot be used directly as a discretization for 
-%   LINOPs. CHEBCOLLOC1, CHEBCOLLOC2, and TRIGCOLLOC are full implementations.
+%   spaced points. VALSDISCRETIZATION cannot be used directly as a 
+%   discretization for LINOPs. CHEBCOLLOC1, CHEBCOLLOC2, and TRIGCOLLOC are full 
+%   implementations.
 %
 % See also CHEBCOLLOC, TRIGCOLLOC, CHEBCOLLOC1, CHEBCOLLOC2, OPDISCRETIZATION.
 
@@ -23,8 +25,8 @@ classdef colloc < opDiscretization
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
         
-        function disc = colloc(source, dimension, domain)
-            %COLLOC    Collocation discretization constructor.
+        function disc = valsDiscretization(source, dimension, domain)
+            %VALSDISCRETIZATION    Collocation discretization constructor.
             %   (Called by subclasses for parts in common.)
             
             if ( (nargin == 0) || isempty(source) )
@@ -36,8 +38,8 @@ classdef colloc < opDiscretization
             disc.source = source;
             disc.domain = source.domain;
             % Determine the dimension adjustment:
-            disc.dimAdjust = colloc.getDimAdjust(source);
-            disc.projOrder = colloc.getProjOrder(source);
+            disc.dimAdjust = valsDiscretization.getDimAdjust(source);
+            disc.projOrder = valsDiscretization.getProjOrder(source);
             
             % Assign DIMENSIONS and DOMAIN if they were passed:
             if ( nargin > 1 )
@@ -93,7 +95,7 @@ classdef colloc < opDiscretization
             maxPow = log2(pref.maxDimension);
             
             if ( minPow > maxPow )
-                error('CHEBFUN:COLLOC:colloc:dimensionValues', ...
+                error('CHEBFUN:VALSDISCRETIZATION:valsDiscretization:dimensionValues', ...
                     ['Minimum discretiation specified is greater than ' ...
                      'maximum discretization specified.']);
             end

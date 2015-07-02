@@ -1,12 +1,10 @@
-function Z = zeros(disc)
-%ZEROS    Zero operator in COLLOC.
-%
-% See also ZERO, OPERATORBLOCK.ZEROS.
+function I = eye(disc)
+%EYE   Identity operator for VALSDISCRETIZATION discretization.
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 n = disc.dimension;
-Z = zeros(sum(n));
+I = eye(sum(n));
 
 end

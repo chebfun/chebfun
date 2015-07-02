@@ -1,5 +1,5 @@
 function b = rhs(disc, f)
-%RHS   Discretize the right-hand side of a linear system for COLLOC.
+%RHS   Discretize the right-hand side of a linear system for VALSDISCRETIZATION.
 %   B = RHS(DISC, F) returns a discrete version, B,  of the function (or
 %   chebmatrix) F, as defined by the discretization DISC.
 %

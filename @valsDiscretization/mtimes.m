@@ -1,11 +1,9 @@
-function A = uplus(A)
-%+   Unary plus for COLLOC.
+function C = mtimes(A, B)
+%*   Multiplication of VALSDISCRETIZATION discretizations.
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Step 1. Sit down.
-% Step 2. Keep doing it.
-% Step 3. The end.
+C = A*B;
 
 end

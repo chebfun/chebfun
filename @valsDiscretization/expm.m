@@ -1,5 +1,5 @@
 function [E, P] = expm(disc, t)
-%EXPM   Operator exponential for COLLOC discretization.
+%EXPM   Operator exponential for VALSDISCRETIZATION discretization.
 %   This EXPM is called by LINOP.EXPM to perform propagation of a discrete
 %   initial condition via matrix exponential. The returned matrix is the
 %   propagator for a discretization of the problem.

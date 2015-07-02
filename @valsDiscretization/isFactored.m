@@ -1,5 +1,5 @@
 function t = isFactored(disc)
-%ISFACTORED   Check if a useful factorization of a COLLOC is stored.
+%ISFACTORED   Check if a useful factorization of a VALSDISCRETIZATION is stored.
 %   ISFACTORED(DISC) returns true if the discretization has stored LU
 %   factors whose dimensions are compatible with the current discretization
 %   size.
