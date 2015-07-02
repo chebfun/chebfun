@@ -52,9 +52,6 @@ classdef (InferiorClasses = {?double}) chebop
 %                 given in OP and return a CHEBFUN or CHEBMATRIX. All elements
 %                 of the result are evaluated at the endpoint, and for the
 %                 solution of the BVP, they are made to equal zero.
-%
-% See note below for how to specify initial value problems so that they will be
-% solved via time-marching methods, rather than global spectral methods.
 % 
 % A boundary condition function may be nonlinear; it must not accept the
 % independent variable X as an input. Again, in case of systems, the function
@@ -304,8 +301,7 @@ classdef (InferiorClasses = {?double}) chebop
         % The number of input arguments to a CHEBOP .OP field.
         nIn = nargin(N)
         
-        % Determine discretization for a CHEBOP object with periodic
-        % boundary conditions.
+        % Determine discretization for a CHEBOP object
         pref = determineDiscretization(N, L, pref)
         
     end
