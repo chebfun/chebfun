@@ -114,7 +114,7 @@ if ( n <= 4000 )
     
     % Project the values onto a Legendre grid: (where integrals of polynomials
     % p_n*q_n will be computed exactly and on an n-point grid)
-    if ( (length(WP) ~= n) || (~isempty(type) && isa(f, type)) )
+    if ( (length(WP) ~= n) || (~isempty(type) && ~isa(f, type)) )
         % The matrices WP and inv(WP) depends only on the length of the
         % discretization and the cheb-type of f (i.e., not the function values
         % themselves.) We therefore store these persistently which save a lot of
@@ -185,7 +185,6 @@ else
     S = spdiags(s, 0, m, m);       % }
     Q = Winv*Q*S;                  % Fix Q. (Note, Q is still on Legendre grid.)
     Q_coeffs = leg2cheb( chebfun.idlt( Q ) ); % Chebyshev coefficients.
-    Q = f.coeffs2vals( Q_coeffs ); % Values on Chebyshev grid.
     R = S*R;                       % Fix R.
     
 end
