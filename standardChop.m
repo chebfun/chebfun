@@ -1,27 +1,29 @@
 function cutoff = standardChop(coeffs, tol, shift)
-%%
-% A chopping rule of "standard" (as opposed to "loose" or "strict")
+%CUTOFF   A chopping rule of "standard" (as opposed to "loose" or "strict")
 % type, that is, with an input tolerance TOL that is applied with some
 % flexibility.  Our aim is for this code to be used in all parts of
 % Chebfun that make chopping decisions, including chebfun construction
 % (CHEBTECH, TRIGTECH), solution of ODE BVPs (SOLVEBVP), solution of
 % ODE IVPs (ODESOL), simplification of chebfuns (SIMPLIFY), and
-% Chebfun2.  Since there has been lack of clarity about these matters
-% in the Chebfun project for so many years, it is also our aim that this
-% code should have very carefully written explanations in the comments.
+% Chebfun2.  Since this code is nontrivial and central to the functionality
+% of Chebfun, it is also our aim that it should have exceptionally
+% thorough and carefully written explanations in the comments.
 %
 % Jared Aurentz and Nick Trefethen, 2 July 2015.
+%
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
 
 %%
 % Input:
 %
-% COEFFS  A nonempty vector of real or complex numbers
-%         which typically are Chebyshev or Fourier coefficients
+% COEFFS  A nonempty row or column vector of real or complex numbers
+%         which typically are Chebyshev or Fourier coefficients.
 %
-% TOL     A number in (0,1) which typically would be set to the
+% TOL     A number in (0,1) which typically will be set to the
 %         Chebfun EPS parameter, by default equal to machine epsilon.
 %       
-% SHIFT   A number in (0,1] which typically would take the value 1
+% SHIFT   A number in (0,1] which typically will take the value 1
 %         but will be, e.g., 1e-6 for a construction where it is
 %         expected that 6 digits will be lost to scaling/conditioning,
 %         e.g. in a piece of a chebfun whose vertical or horizontal
@@ -30,7 +32,7 @@ function cutoff = standardChop(coeffs, tol, shift)
 % Output:
 %
 % CUTOFF  A positive integer
-%         If CUTOFF = length(COEFFS), then we are "not happy":
+%         If CUTOFF == length(COEFFS), then we are "not happy":
 %         a satisfactory chopping point has not been found.
 %         If CUTOFF < length(COEFFS), we are "happy" and CUTOFF
 %         represents the last index of COEFFS that should be retained.
@@ -52,7 +54,7 @@ end
   
 %%
 % Step 1: Convert COEFFS to a new monotonically nonincreasing envelope
-%         sequence A normalized to begin with the value SHIFT
+%         vector A normalized to begin with the value SHIFT.
 
 b = abs(coeffs);
 m = b(end)*ones(n, 1);
@@ -104,7 +106,7 @@ end
 % and that is what Step 3 achieves.
 %
 % CUTOFF should be smaller than K-1 if the last few coefficients
-% made negligible improvement just but managed to bring the
+% made negligible improvement but just managed to bring the
 % vector A below the level TOL^(2/3), above which no plateau will
 % ever be detected; this is the reason for the word "approximately"
 % in the opening comments of this file.  This part of the code
@@ -122,9 +124,10 @@ end
 if ( a(K) == 0 )
     cutoff = K-1;
 else
-    aa = log10(a(1:j2)); aa = aa(:);
+    aa = log10(a(1:j2));
+    aa = aa(:);
     aa = aa + linspace(0, (-1/3)*log10(tol),j2)';
-    [ignore, d] = min(aa);
+    [~, d] = min(aa);
     cutoff = max(d-1, 1);
 end
 
