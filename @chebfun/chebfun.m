@@ -788,7 +788,7 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
             args(1:2) = [];
         elseif ( strcmpi(args{1}, 'hscale') )
             % Store vscale types.
-            data.vscale = args{2};
+            data.hscale = args{2};
             args(1:2) = [];            
         elseif ( strcmpi(args{1}, 'singType') )
             % Store singularity types.
