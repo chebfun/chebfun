@@ -16,15 +16,13 @@ L = linearize(N, u0, x);
 N.bc = 'periodic';
 options = cheboppref();
 options.discretization = 'values';
-isPrefGiven = 1;
-out = determineDiscretization(N, L, isPrefGiven, options);
+out = determineDiscretization(N, L, options);
 pass(1) = isequal(out.discretization, @trigcolloc);
 
 % Test when coeffs is passed with periodic boundary conditions:
 options.discretization = 'coeffs';
-isPrefGiven = 1;
-out = determineDiscretization(N, L, isPrefGiven, options);
-pass(2) = isequal(out.discretization, @ultraS);
+out = determineDiscretization(N, L, options);
+pass(2) = isequal(out.discretization, @trigspec);
 
 % Test when values is passed with periodic boundary conditions and breakpoints:
 dom = [0 pi 2*pi];
@@ -33,14 +31,12 @@ u0 = chebfun('0',dom);
 x = chebfun('x',dom);
 L = linearize(N, u0, x);
 options.discretization = 'values';
-isPrefGiven = 1;
-out = determineDiscretization(N, L, isPrefGiven, options);
+out = determineDiscretization(N, L, options);
 pass(3) = isequal(out.discretization, @chebcolloc2);
 
 % Test when coeffs is passed with periodic boundary conditions and breakpoints:
 options.discretization = 'coeffs';
-isPrefGiven = 1;
-out = determineDiscretization(N, L, isPrefGiven, options);
+out = determineDiscretization(N, L, options);
 pass(4) = isequal(out.discretization, @ultraS);
 
 % Test when values is passed with dirichlet boundary conditions:
@@ -51,17 +47,15 @@ x = chebfun('x',dom);
 L = linearize(N, u0, x);
 N.bc = 'dirichlet';
 options.discretization = 'values';
-isPrefGiven = 1;
-out = determineDiscretization(N, L, isPrefGiven, options);
+out = determineDiscretization(N, L, options);
 pass(5) = isequal(out.discretization, @chebcolloc2);
 
 % Test when coeffs is passed with dirichlet boundary conditions:
 options.discretization = 'coeffs';
-isPrefGiven = 1;
-out = determineDiscretization(N, L, isPrefGiven, options);
+out = determineDiscretization(N, L, options);
 pass(6) = isequal(out.discretization, @ultraS);
 
-%% Test the default:
+%% Test default:
 
 % Default with dirichlet:
 dom = [-1 1];
@@ -70,26 +64,22 @@ u0 = chebfun('0',dom);
 x = chebfun('x',dom);
 L = linearize(N, u0, x);
 N.bc = 'dirichlet';
-isPrefGiven = 0; % use the default
-out = determineDiscretization(N, L, isPrefGiven, pref); % use pref
+out = determineDiscretization(N, L, pref); % use pref
 pass(7) = isequal(out.discretization, @chebcolloc2);
 
 % Default with periodic:
 N.bc = 'periodic';
-isPrefGiven = 0; % use the default
-out = determineDiscretization(N, L, isPrefGiven, pref); % use pref
+out = determineDiscretization(N, L, pref); % use pref
 pass(8) = isequal(out.discretization, @trigcolloc);
 
-%% Test CHEBCOLLOC1/ULTRAS is passed:
+%% Test CHEBCOLLOC1/ULTRAS:
 
 options.discretization = @chebcolloc1;
-isPrefGiven = 1; 
-out = determineDiscretization(N, L, isPrefGiven, options);
+out = determineDiscretization(N, L, options);
 pass(9) = isequal(out.discretization, @chebcolloc1);
 
 options.discretization = @ultraS;
-isPrefGiven = 1; 
-out = determineDiscretization(N, L, isPrefGiven, options);
+out = determineDiscretization(N, L, options);
 pass(10) = isequal(out.discretization, @ultraS);
 
 
