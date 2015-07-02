@@ -306,7 +306,7 @@ classdef (InferiorClasses = {?double}) chebop
         
         % Determine discretization for a CHEBOP object with periodic
         % boundary conditions.
-        pref = determineDiscretization(N, L, isPrefGiven, pref)
+        pref = determineDiscretization(N, L, pref)
         
     end
     
@@ -317,7 +317,7 @@ classdef (InferiorClasses = {?double}) chebop
 
         % Find damped Newton step.
         [u, dampingInfo] = dampingErrorBased(N, u, rhs, delta, L, ...
-            disc, dampingInfo)
+            disc, dampingInfo, pref)
         
         % Parse boundary conditions for CHEBOP object.
         result = parseBC(N, BC, type)

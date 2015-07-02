@@ -15,7 +15,7 @@ if ( isa(pref.discretization, 'char') )
     
     % Case 1.1. Determine the discretization if the user wants a discretization 
     % using values:
-    if ( isequal(pref.discretization, 'values') )
+    if ( strcmpi(pref.discretization, 'values') )
         % The default for the periodic case if TRIGCOLLOC. But, since TRIGCOLLOC
         % does not support breakpoints, it will be used only if there are no
         % breakpoints. Note that here and below, we look at L.domain rather
@@ -33,7 +33,7 @@ if ( isa(pref.discretization, 'char') )
         
     % Case 1.2. Determine the discretization if the user wants a discretization 
     % using coefficients:
-    elseif ( isequal(pref.discretization, 'coeffs') )
+    elseif ( strcmpi(pref.discretization, 'coeffs') )
         % Same here with TRIGSPEC and breakpoints:
         if ( isa(N.bc, 'char') && strcmpi(N.bc, 'periodic') && ...
                 length(L.domain) < 3 )
