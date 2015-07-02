@@ -1,4 +1,4 @@
-classdef ultraS < COEFFSDISCRETIZATION
+classdef ultraS < coeffsDiscretization
 %ULTRAS   ULTRASPHERICAL class for discretizating differential operators
 %         on bounded domain.
 %

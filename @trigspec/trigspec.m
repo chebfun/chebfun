@@ -1,4 +1,4 @@
-classdef trigspec < COEFFSDISCRETIZATION
+classdef trigspec < coeffsDiscretization
 %TRIGSPEC    Fourier spectral method in coefficient space.
 %   TRIGSPEC is an implementation of OPDISCRETIZATION that implements a
 %   Fourier spectral method in coefficient space.

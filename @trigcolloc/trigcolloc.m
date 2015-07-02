@@ -18,7 +18,7 @@ classdef trigcolloc <valsDiscretization
     methods ( Access = public, Static = false )
         
         function disc = trigcolloc(varargin)
-            disc = discvalsDiscretization(varargin{:});
+            disc = disc@valsDiscretization(varargin{:});
             % No dimension adjustment are required for TRIGCOLLOC.
             disc.dimAdjust = 0; 
             disc.projOrder = 0; 

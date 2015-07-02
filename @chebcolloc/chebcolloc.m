@@ -1,4 +1,4 @@
-classdef chebcolloc < colloc
+classdef chebcolloc < valsDiscretization
 %CHEBCOLLOC   Abstract class for collocation discretization of operators.
 %   CHEBCOLLOC is a partial implementation of VALSDISCRETIZATION using 1st or
 %   2nd kind Chebyshev points.
