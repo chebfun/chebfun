@@ -40,8 +40,10 @@ function cutoff = standardChop(coeffs, tol, shift)
 %%
 % The series will never be chopped unless it is of length at least 17
 % and COEFFS*SHIFT falls at least below approximately TOL^(2/3).
-% It will always be chopped if COEFFS*SHIFT has a long enough final
-% segment below TOL.
+% (Experimentation indicates that the numbers 17 and 2/3 are good
+% choices; they are not justified by a mathematical argument and we do
+% not claim they are optimal.)  It will always be chopped if COEFFS*SHIFT
+% has a long enough final segment below TOL.
 
 %%
 % Make sure COEFFS has length at least 17:
@@ -54,7 +56,7 @@ end
   
 %%
 % Step 1: Convert COEFFS to a new monotonically nonincreasing envelope
-%         vector A normalized to begin with the value SHIFT.
+%         vector C normalized to begin with the value SHIFT.
 
 b = abs(coeffs);
 m = b(end)*ones(n, 1);
@@ -65,15 +67,15 @@ if ( m(1) == 0 )
     cutoff = 1;
     return
 end
-a = (shift/m(1))*m;
+c = (shift/m(1))*m;
 
 %%
-% Step 2: Scan A for a "plateau point K", the first point J, if any,
+% Step 2: Scan C for a "plateau point K", the first point J, if any,
 % that is followed by a plateau.  A plateau is a stretch of coefficients
-% A(J),...,A(J2), J2 = round(1.25*J+5) <= N, with the property that
-% A(J2)/A(J) > R.  The number R ranges from R = 0 if A(J) = TOL to
-% R = 1 if A(J) = TOL^(2/3).  Thus a plateau with A(J) ~ TOL^(2/3)
-% has to be perfectly flat to count, whereas for A(J) ~ TOL it doesn't
+% C(J),...,C(J2), J2 = round(1.25*J+5) <= N, with the property that
+% C(J2)/C(J) > R.  The number R ranges from R = 0 if C(J) = TOL to
+% R = 1 if C(J) = TOL^(2/3).  Thus a plateau with C(J) ~ TOL^(2/3)
+% has to be perfectly flat to count, whereas for C(J) ~ TOL it doesn't
 % have to be flat at all.  If a plateau point K is found, then we know
 % we are going to chop the series, but the precise chopping point CUTOFF
 % still remains to be determined in Step 3.
@@ -84,10 +86,10 @@ for j = 1:n
         % there is no plateau: exit
         return
     end      
-    a1 = a(j);
-    a2 = a(j2);
-    r = 3*(1 - log(a1)/log(tol));
-    plateau = ( a1 == 0 ) | ( a2/a1 > r );
+    c1 = c(j);
+    c2 = c(j2);
+    r = 3*(1 - log(c1)/log(tol));
+    plateau = ( c1 == 0 ) | ( c2/c1 > r );
     if plateau
         % a plateau has been found: go to Step 3
         K = j;
@@ -96,7 +98,7 @@ for j = 1:n
 end
 
 %%
-% Step 3: fix CUTOFF at a point where A, plus a linear function
+% Step 3: fix CUTOFF at a point where C, plus a linear function
 % included to bias the result towards the left end, is minimal.
 %
 % Some explanation is needed here.  One might imagine that if a
@@ -107,7 +109,7 @@ end
 %
 % CUTOFF should be smaller than K-1 if the last few coefficients
 % made negligible improvement but just managed to bring the
-% vector A below the level TOL^(2/3), above which no plateau will
+% vector C below the level TOL^(2/3), above which no plateau will
 % ever be detected; this is the reason for the word "approximately"
 % in the opening comments of this file.  This part of the code
 % is important to avoiding situations where a coefficient sequence
@@ -121,13 +123,13 @@ end
 % the code is important to getting an extra digit or two beyond the
 % minimal prescribed accuracy when it is easy to do so.
  
-if ( a(K) == 0 )
+if ( c(K) == 0 )
     cutoff = K-1;
 else
-    aa = log10(a(1:j2));
-    aa = aa(:);
-    aa = aa + linspace(0, (-1/3)*log10(tol),j2)';
-    [~, d] = min(aa);
+    cc = log10(c(1:j2));
+    cc = cc(:);
+    cc = cc + linspace(0, (-1/3)*log10(tol),j2)';
+    [~, d] = min(cc);
     cutoff = max(d-1, 1);
 end
 
