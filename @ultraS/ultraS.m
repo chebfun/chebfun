@@ -1,4 +1,4 @@
-classdef ultraS < spec
+classdef ultraS < COEFFSDISCRETIZATION
 %ULTRAS   ULTRASPHERICAL class for discretizating differential operators
 %         on bounded domain.
 %
@@ -34,7 +34,7 @@ classdef ultraS < spec
     methods ( Access = public, Static = false )
         
         function disc = ultraS(varargin)
-            disc = disc@spec(varargin{:});
+            disc = disc@coeffsDiscretization(varargin{:});
         end
         
         % Dimension reduction for operator matrix.

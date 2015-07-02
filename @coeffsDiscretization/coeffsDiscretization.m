@@ -1,4 +1,4 @@
-classdef spec < opDiscretization
+classdef coeffsDiscretization < opDiscretization
 
 %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org/ for Chebfun information.
@@ -8,10 +8,10 @@ classdef spec < opDiscretization
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
         
-        function disc = spec(source, dimension, dom)
+        function disc = coeffsDiscretization(source, dimension, dom)
             
             if ( (nargin == 0) || isempty(source) )
-                % Construct an empty SPEC.
+                % Construct an empty COEFFSDISCRETIZATION.
                 return
             end
             
