@@ -1,4 +1,4 @@
-function [ishappy, epslevel, cutOff] = standardCheck(f, values, vscl, pref)
+function [ishappy, epslevel, cutoff] = standardCheck(f, values, vscl, pref)
 %STANDARDCHECK  This function is a wrapper for Nick's standardChop
 %  routine to chop a series of Chebyshev coefficients, see below.
 
@@ -42,16 +42,17 @@ if ( isempty(vscl) )
 else
     shift = max(abs(values), [],  1)./max(vscl,1);
 end
-shift = shift./max(f.hscale,1);
+shift = max(shift.*f.hscale,1);
+shift = 1./shift;
 
 % Loop through columns of coeffs
 ishappy = false(1,m);
-cutOff = zeros(1,m);
+cutoff = zeros(1,m);
 for k = 1:m
 
     % call standardChop
-    [cutOff(k)] = standardChop(coeffs(:,k), tol(k), shift(k));
-    ishappy(k) = ( cutOff(k) < n );
+    [cutoff(k)] = standardChop(coeffs(:,k), tol(k), shift(k));
+    ishappy(k) = ( cutoff(k) < n );
     if ( ~ishappy(k) )
         % No need to continue if it fails on any column.
         break
@@ -60,7 +61,7 @@ end
 
 % set outputs
 ishappy = all(ishappy); 
-cutOff = max(cutOff);
+cutoff = max(cutoff);
 
 end
 
