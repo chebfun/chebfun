@@ -35,12 +35,14 @@ end
 if ( nargin < 2 || isempty(values) )
     values = f.coeffs2vals(f.coeffs);
 end
-if ( isempty(vscl) || isempty(vscl) )
-    vscl = max(abs(values), [],  1);
-end
 
-% get hscale
-hscale = f.hscale;
+% Compute shift
+if ( isempty(vscl) )
+    shift = ones(1,m);
+else
+    shift = max(abs(values), [],  1)./max(vscl,1);
+end
+shift = shift./max(f.hscale,1);
 
 % Loop through columns of coeffs
 ishappy = false(1,m);
@@ -48,7 +50,7 @@ cutOff = zeros(1,m);
 for k = 1:m
 
     % call standardChop
-    [cutOff(k)] = standardChop(coeffs(:,k), tol(k), vscl(k)*hscale);
+    [cutOff(k)] = standardChop(coeffs(:,k), tol(k), shift(k));
     ishappy(k) = ( cutOff(k) < n );
     if ( ~ishappy(k) )
         % No need to continue if it fails on any column.
