@@ -43,6 +43,9 @@ else
     coeffs = [coeffs(n:-1:(n+1)/2+1,:)+coeffs(1:(n+1)/2-1,:);coeffs((n+1)/2,:)];
 end
 coeffs = flipud(coeffs);
+if ( size(coeffs,1) < 17 )
+    coeffs = [coeffs;zeros(17-size(coeffs,1),m)];
+end
 
 % Use the default tolerance if none was supplied:
 if ( nargin < 2 )
@@ -67,6 +70,7 @@ if ( ~mod(n,2) )
 end
 mid = (n+1)/2;
 f.coeffs = coeffs(mid-cutoff+1:mid+cutoff-1,:);
+f.values = trigtech.coeffs2vals(f.coeffs);
 
 % Update epslevel:
 f.epslevel = eps + 0*f.epslevel;

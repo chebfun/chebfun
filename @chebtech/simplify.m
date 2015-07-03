@@ -32,6 +32,9 @@ end
 % Grab coefficients
 coeffs = f.coeffs;
 [n,m] = size(coeffs);
+if ( n < 17 )
+    coeffs = [coeffs;zeros(17-n,m)];
+end
 
 % Use the chebfunpref.eps if no tolerance was supplied:
 if ( nargin < 2 )
