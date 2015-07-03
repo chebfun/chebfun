@@ -40,10 +40,10 @@ end
 if ( isempty(vscl) )
     shift = ones(1,m);
 else
-    shift = max(abs(values), [],  1)./max(vscl,1);
+    shift = vscl;
 end
-shift = max(shift.*f.hscale,1);
-shift = 1./shift;
+shift = shift.*f.hscale;
+shift = 1./max(shift,1);
 
 % Loop through columns of coeffs
 ishappy = false(1,m);
