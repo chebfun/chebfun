@@ -29,34 +29,29 @@ if ( ~f.ishappy )
     return
 end
 
-% Use the f.epslevel if no tolerance was supplied:
+% Grab coefficients
+coeffs = f.coeffs;
+[n,m] = size(coeffs);
+
+% Use the chebfunpref.eps if no tolerance was supplied:
 if ( nargin < 2 )
-    tol = f.epslevel;
+    p = chebfunpref;
+    tol = p.eps;
+end
+if length(tol) ~= m
+    tol = max(tol)*ones(1,m);
 end
 
-% Until July 2014 we used to zero interior coefficients as well
-% as trailing ones with the following code:
-% f.coeffs(bsxfun(@minus, abs(f.coeffs), tol.*f.vscale) < 0) = 0;
-% Check for trailing zero coefficients:
-% [ignored, firstNonZeroRow] = find(f.coeffs.' ~= 0, 1);
-
-% Check for trailing coefficients smaller than the tolerance relative to
-% F.VSCALE:
-largeCoeffs = (bsxfun(@minus, abs(f.coeffs), tol.*f.vscale) > 0);
-[ignored, lastNonZeroRow] = find(largeCoeffs.' == 1, 1, 'last');
-
-% If the whole thing is now zero, leave just one coefficient:
-if ( isempty(lastNonZeroRow) )
-    lastNonZeroRow = 1;
-    f.coeffs = 0*f.coeffs;
+% Loop through columns to compute cutoff
+cutoff = 1;
+for k = 1:m
+    cutoff = max(cutoff,standardChop(coeffs(:,k),tol(k),1));
 end
 
-% Remove trailing zeros:
-if ( lastNonZeroRow > 0 )
-    f.coeffs = f.coeffs(1:lastNonZeroRow, :);
-end
+% Chop coefficients
+f.coeffs = coeffs(1:cutoff,:);
 
-% Update epslevel:
-f.epslevel = max(f.epslevel, tol);
+% Make sure epslevel is eps
+f.epslevel = eps + 0*f.epslevel;
 
 end

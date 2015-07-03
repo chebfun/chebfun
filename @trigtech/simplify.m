@@ -29,71 +29,46 @@ if ( ~f.ishappy )
     return;
 end
 
+% Grab the coefficients:
+coeffs = abs(f.coeffs(end:-1:1,:));
+[n,m] = size(coeffs);
+
+% Need to handle odd/even cases separately.
+isEven = ~mod(n, 2);
+if isEven
+    % In this case the negative cofficients have an additional term
+    % corresponding to the cos(N/2*x) coefficient.
+    coeffs = [coeffs(n,:);coeffs(n-1:-1:n/2+1,:)+coeffs(1:n/2-1,:);coeffs(n/2,:)];
+else
+    coeffs = [coeffs(n:-1:(n+1)/2+1,:)+coeffs(1:(n+1)/2-1,:);coeffs((n+1)/2,:)];
+end
+coeffs = flipud(coeffs);
+
 % Use the default tolerance if none was supplied:
 if ( nargin < 2 )
-    tol = f.epslevel/2;
+    p = chebfunpref;
+    tol = p.eps;
+end
+if length(tol) ~= m
+    tol = max(tol)*ones(1,m);
 end
 
-c = f.coeffs;  % Obtain Fourier coefficients {c_k}
-numCoeffs = size(c, 1);
-fIsEven = ( mod(numCoeffs, 2) == 0 );
-
-% Split the coefficients into the positive and negative Fourier modes.
-if ( fIsEven )
-    % In this case the negative coefficients have an additional term
-    % corresponding to the cos(N/2*x) coefficient. We account for this by
-    % making the positive coefficients symmetric.
-    numModes = numCoeffs/2+1;
-    cn = c(numModes:-1:1,:);
-    cn(numModes,:) = 0.5*cn(numModes,:);
-    cp = [c(numModes:numCoeffs,:); cn(numModes,:)];
-else
-    numModes = (numCoeffs+1)/2;
-    cp = c(numModes:numCoeffs,:);
-    cn = c(numModes:-1:1,:);
-end
-
-% Need to check both the positive and negative coefficients in the Fourier
-% expansion.
-
-% Check for trailing coefficients smaller than the tolerance relative
-% to F.VSCALE:
-idp = bsxfun(@minus, abs(cp), tol.*f.vscale) > 0;
-idn = bsxfun(@minus, abs(cn), tol.*f.vscale) > 0;
-
-% Before July 2014 we used to zero all small coefficients:
-% cp(idp) = 0;
-% cn(idn) = 0;
-% Check for trailing zero coefficients:
-% [ignored, firstNonZeroRowP] = find(cp.' ~= 0, 1);
-% [ignored, firstNonZeroRowN] = find(cn.' ~= 0, 1);
-
-% Check for trailing small coefficients:
-[ignored, lastNonZeroRowP] = find(idp.' == 1, 1, 'last');
-[ignored, lastNonZeroRowN] = find(idn.' == 1, 1, 'last');
-
-% If the whole thing's now zero, leave just one coefficient:
-if ( isempty(lastNonZeroRowP) && isempty(lastNonZeroRowN) )
-    lastNonZeroRowP = 1;
-    lastNonZeroRowN = 1;
-    cp = 0*cp; 
-    cn = 0*cn;
-end
-
-lastNonZeroRow = max(lastNonZeroRowP, lastNonZeroRowN);
-
-% Remove trailing zeros:
-if ( lastNonZeroRow > 0 )
-    cp = cp(1:lastNonZeroRow,:);
-    cn = cn(1:lastNonZeroRow,:);
+% Loop through columns to compute cutoff
+cutoff = 1;
+for k = 1:m
+    cutoff = max(cutoff,standardChop(coeffs(:,k),tol(k),1));
 end
 
 % Now put the coefficients vector back together.
-f.coeffs = [cn(end:-1:2,:); cp(1:end,:)];
+coeffs = f.coeffs;
+if ( ~mod(n,2) )
+    coeffs = [.5*coeffs(n,:);coeffs(1:n-1,:);.5*coeffs(n,:)];
+    n = n+1;
+end
+mid = (n+1)/2;
+f.coeffs = coeffs(mid-cutoff+1:mid+cutoff-1,:);
 
-% Update values and epslevel:
-f.values = f.coeffs2vals(f.coeffs);
-f.vscale = max(abs(f.values), [], 1);
-f.epslevel = max(f.epslevel, tol);
+% Update epslevel:
+f.epslevel = eps + 0*f.epslevel;
 
 end

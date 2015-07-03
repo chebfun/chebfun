@@ -1,34 +1,79 @@
-function [ishappy, epslevel, cutoff] = standardCheck(f, varargin)
-%PLATEAUCHECK   Attempt to trim trailing TRIGIER coefficients in a TRIGTECH.
-%   [ISHAPPY, EPSLEVEL, CUTOFF] = PLATEAUCHECK(F, VALUES) returns an estimated
-%   location, the CUTOFF, at which the TRIGTECH F could be truncated. One of two
-%   criteria must be met: Either:
-%
-%     (1) The coefficients are sufficiently small (as specified by the default
-%     EPS property of TRIGTECH) relative to F.VSCALE (or using absolute size if
-%     F.VSCALE=0); or
-%
-%     (2) The coefficients are somewhat small and apparently unlikely to
-%     continue decreasing in a meaningful amount (i.e., have reached a "plateau"
-%     in convergence).
-%
-%   The reason for criterion (2) is that the problem may have a large condition
-%   number that prevents convergence to the full requested accuracy, as often
-%   happens in the collocation of differential equations.
-%
-%   Output EPSLEVEL is an estimate of the relative size of the last
-%   "meaningful" expansion coefficients of the function, and the output 
-%   CUTOFF is an estimate of how many of the coefficients are useful.
-%
-%   [ISHAPPY, EPSLEVEL, CUTOFF] = PLATEAUCHECK(F, VALUES, PREF) allows
-%   additional preferences to be passed. In particular, one can adjust the
-%   target accuracy with PREF.EPS.
-%
-% See also LINOPV4CHECK, STRICTCHECK, CLASSICCHECK.
+function [ishappy, epslevel, cutoff] = standardCheck(f, values, vscl, pref)
+%STANDARDCHECK  This function is a wrapper for Nick's standardChop
+%  routine to chop a series of Chebyshev coefficients, see below.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org/ for Chebfun information.
+% Grab the coefficients:
+coeffs = abs(f.coeffs(end:-1:1,:));
+[n,m] = size(coeffs);
 
-[ishappy, epslevel, cutoff] = classicCheck(f, varargin{:});
+% Need to handle odd/even cases separately.
+isEven = ~mod(n, 2);
+if isEven
+    % In this case the negative cofficients have an additional term
+    % corresponding to the cos(N/2*x) coefficient.
+    coeffs = [coeffs(n,:);coeffs(n-1:-1:n/2+1,:)+coeffs(1:n/2-1,:);coeffs(n/2,:)];
+else
+    coeffs = [coeffs(n:-1:(n+1)/2+1,:)+coeffs(1:(n+1)/2-1,:);coeffs((n+1)/2,:)];
+end
+coeffs = flipud(coeffs);
+
+% initialize ishappy
+ishappy = false;
+
+% initialize epslevel
+epslevel = eps*ones(1,m); 
+
+% NaNs are not allowed.
+if ( any(isnan(coeffs)) )
+    error('CHEBFUN:CHEBTECH:standardCheck:nanEval', ...
+        'Function returned NaN when evaluated.')
+end
+
+% Grab some preferences:
+if ( nargin == 1 )
+    pref = f.techPref();
+    tol = pref.eps;
+elseif ( isnumeric(pref) )
+    tol = pref;
+else
+    tol = pref.eps;
+end
+if size(tol,2) ~= m
+  tol = ones(1,m)*max(tol);
+end
+
+% Compute some values if none were given:
+if ( nargin < 2 || isempty(values) )
+    values = f.coeffs2vals(f.coeffs);
+end
+
+% Compute shift
+if ( isempty(vscl) )
+    shift = ones(1,m);
+else
+    shift = vscl;
+end
+shift = shift.*f.hscale;
+shift = 1./max(shift,1);
+
+% Loop through columns of coeffs
+ishappy = false(1,m);
+cutoff = zeros(1,m);
+for k = 1:m
+
+    % call standardChop
+    [cutoff(k)] = standardChop(coeffs(:,k), tol(k), shift(k));
+    ishappy(k) = ( cutoff(k) < n );
+    if ( ~ishappy(k) )
+        % No need to continue if it fails on any column.
+        break
+    end
+end
+
+% set outputs
+ishappy = all(ishappy); 
+cutoff = 2*max(cutoff)+1;
 
 end
+
+

@@ -49,7 +49,8 @@ function outPref = techPref(inPref)
 %       function_handle  - A user-defined refinement function.  See REFINE.m
 %
 %     happinessCheck     - Define function for testing happiness.
-%      ['classic']       - Use the default process from Chebfun v4.
+%      ['standard']      - Standard check routine 
+%       'classic'        - Use the default process from Chebfun v4.
 %       'strict'         - Strict tolerance for coefficients.
 %       'loose'          - A looser tolerance for coefficients.
 %       function_handle  - A user defined happiness. See HAPPINESSCHECK.m
@@ -67,7 +68,7 @@ outPref.fixedLength        = NaN;
 outPref.extrapolate        = false;
 outPref.sampleTest         = true;
 outPref.refinementFunction = 'nested';
-outPref.happinessCheck     = 'classic';
+outPref.happinessCheck     = @standardCheck;
 
 if ( nargin == 1 )
     validPrefs = fieldnames(outPref);

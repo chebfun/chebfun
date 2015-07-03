@@ -65,6 +65,9 @@ if ( nargin < 2 )
     tol = eps;
 end
 
+tol = tol/shift;
+shift = 1;
+
 % Make sure COEFFS has length at least 17:
 n = length(coeffs);
 cutoff = n;
