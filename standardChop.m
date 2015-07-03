@@ -1,4 +1,4 @@
-function cutoff = standardChop(coeffs, tol, shift)
+function cutoff = standardChop(coeffs, tol)
 %STANDARDCHOP  A sequence chopping rule of "standard" (as opposed to "loose"
 % or "strict") type, that is, with an input tolerance TOL that is applied
 % with some flexibility.  Our aim is for this code to be used in all parts 
@@ -14,16 +14,11 @@ function cutoff = standardChop(coeffs, tol, shift)
 % COEFFS  A nonempty row or column vector of real or complex numbers
 %         which typically will be Chebyshev or Fourier coefficients.
 %
-% TOL     A number in (0,1) which typically will be set to the Chebfun
-%         EPS parameter.  Default value: machine epsilon (MATLAB EPS).
-%       
-% SHIFT   A number in (0,1] which typically will take the value 1 but
-%         will be, e.g., 1e-6 for a construction where it is expected
-%         that 6 digits may be lost to scaling/conditioning, e.g. in a
-%         piece of a chebfun whose vertical or horizontal scale is 1e6
-%         times smaller than that of the global chebfun.  (On a log
-%         scale, TOL introduces a multiplicative scaling whereas
-%         SHIFT introduces an additive shift.)  Default value: 1.
+% TOL     A number in (0,1) representing a target relative accuracy.
+%         TOL will typically will be set to the Chebfun EPS parameter,
+%         sometimes multiplied by a factor such as vglobal/vlocal in
+%         construction of local pieces of global chebfuns.
+%      .  Default value: machine epsilon (MATLAB EPS).
 %
 % Output:
 %
@@ -47,26 +42,20 @@ function cutoff = standardChop(coeffs, tol, shift)
 % Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% STANDARDCHOP normally chops a vector at a point beyond which COEFFS*SHIFT
-% is smaller than TOL^(2/3).  The vector will never be chopped unless it 
-% is of length at least 17 and COEFFS*SHIFT falls at least below TOL^(1/3).
-% It will always be chopped if COEFFS*SHIFT has a long enough final segment
-% below TOL.  These parameters result from extensive experimentation as
-% described in Chebfun discussion documents 14-constructorOct30_2014.pdf,
+% STANDARDCHOP normally chops COEFFS at a point beyond which it is smaller
+% than TOL^(2/3).  It will never be chopped unless it is of length at least
+% 17 and falls at least below TOL^(1/3).  It will always be chopped if it has
+% a long enough final segment below TOL, and the final entry COEFFS(CUTOFF)
+% will never be zero.  These parameters result from extensive experimentation
+% as described in Chebfun discussion documents 14-constructorOct30_2014.pdf,
 % 20-epslevel_proposal.pdf, 21-epslevel-progress.pdf and
-% 23-standardChopMemo.pdf.  They are not derived from first principles
-% and there is no claim that they are optimal.
+% 23-standardChopMemo.pdf.  They are not derived from first principles and
+% there is no claim that they are optimal.
 
-% Set defaults if fewer than 3 inputs are supplied: 
-if ( nargin < 3 )
-    shift = 1;
-end
+% Set default if fewer than 2 inputs are supplied: 
 if ( nargin < 2 )
     tol = eps;
 end
-
-tol = tol/shift;
-shift = 1;
 
 % Make sure COEFFS has length at least 17:
 n = length(coeffs);
@@ -76,7 +65,7 @@ if ( n < 17 )
 end
   
 % Step 1: Convert COEFFS to a new monotonically nonincreasing
-%         vector ENVELOPE normalized to begin with the value SHIFT.
+%         vector ENVELOPE normalized to begin with the value 1.
 
 b = abs(coeffs);
 m = b(end)*ones(n, 1);
@@ -87,7 +76,7 @@ if ( m(1) == 0 )
     cutoff = 1;
     return
 end
-envelope = (shift/m(1))*m;
+envelope = m/m(1);
 
 % Step 2: Scan ENVELOPE for a value PLATEAUPOINT, the first point J-1, if
 % any, that is followed by a plateau.  A plateau is a stretch of coefficients
@@ -121,9 +110,9 @@ end
 % included to bias the result towards the left end, is minimal.
 %
 % Some explanation is needed here.  One might imagine that if a plateau
-% point is found, then one should simply set CUTOFF = PLATEAUPOINT and
-% be done, without the need for a Step 3. However, sometimes CUTOFF should
-% be smaller or larger than PLATEAUPOINT, and that is what Step 3 achieves.
+% is found, then one should simply set CUTOFF = PLATEAUPOINT and be done,
+% without the need for a Step 3. However, sometimes CUTOFF should be smaller
+% or larger than PLATEAUPOINT, and that is what Step 3 achieves.
 %
 % CUTOFF should be smaller than PLATEAUPOINT if the last few coefficients
 % made negligible improvement but just managed to bring the vector ENVELOPE
