@@ -135,10 +135,12 @@ while counter <= maxCounter
         return
     end
     % Store values for plotting
-    mvec = [mvec; measure(u)]; lamvec = [lamvec;lam];
+    mvec = [mvec; measure(u)];
+    lamvec = [lamvec;lam];
     
     if printing
-        fprintf('%7i \t   %2i \t\t %6.4f       %6.4f \t   %i \n',counter,iter,sl, measure(u), numSols)
+        fprintf('%7i \t   %2i \t\t %6.4f       %6.4f \t   %i \n', ...
+            counter,iter,sl, measure(u), numSols)
     end
     
     if (mvec(end)*mvec(end-1) < 0 )
