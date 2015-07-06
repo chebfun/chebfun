@@ -38,6 +38,12 @@ C = trigtech.coeffs2vals(trigtech.alias( cols.funs{:}.onefun.coeffs, 2*n ));
 C = C(n+1:2*n,:);  % Remove doubled up points.
 R = trigtech.coeffs2vals(trigtech.alias( rows.funs{:}.onefun.coeffs, m )); 
 
+% More ugliness
+if all(cols.funs{:}.onefun.isReal) && all(rows.funs{:}.onefun.isReal)
+    C = real(C);
+    R = real(R);
+end
+
 % Evaluate: 
 if ( nargout <= 1 )
     varargout = {C * d * R.'}; 
