@@ -8,8 +8,14 @@ function varargout = matrix(A, varargin)
 %   MATRIX(A, DIM, DOMAIN) replaces the 'native' domain of A with DOMAIN.
 %   Usually this would be done to introduce a breakpoint.
 %
-%   MATRIX(A,...,DISCTYPE) uses the chebDiscretization whose consructor is
-%   DISCTYPE. The default is set by CHEBOPPREF. 
+%   MATRIX(A,...,DISCTYPE) uses the chebDiscretization whose constructor is
+%   DISCTYPE. The default is set by CHEBOPPREF as follows:
+%       * If the default discretization specified by cheboppref is a function
+%         handle, it is used.
+%       * If the default discretization specified by cheboppref is 'values',
+%         @chebcolloc2 is used.
+%       * If the default discretization specified by cheboppref is 'values',
+%         @ultraS is used.
 %
 %   Example:
 %     d = [0 1];
@@ -30,10 +36,19 @@ for k = find( ~numericargs(:)' )
     varargin(k) = [];  % Delete from list.
 end
 
-% Apply the default if needed.
-if ( isempty(discType) || ~isa(discType, 'function_handle') )
+% Get the default discretization type if needed
+if ( isempty(discType) )
     p = cheboppref;
     discType = p.discretization;
+end
+
+% Deal with a 'values' or 'coeffs' discType.
+if ( ischar(discType) )
+    if ( strcmp(discType, 'values') )
+        discType = @chebcolloc2;
+    elseif ( strcmp(discType, 'coeffs') )
+        discType = @ultraS;
+    end
 end
 
 % Discretize.
