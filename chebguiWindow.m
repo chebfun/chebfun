@@ -1111,10 +1111,10 @@ end
 function button_export_Callback(hObject, eventdata, handles)
 
     % What discretization do we want to use?
-    if ( get(handles.button_collocation, 'Value') )
-        handles.guifile.options.discretization = 'collocation';
+    if ( get(handles.button_discretization_values, 'Value') )
+        handles.guifile.options.discretization = 'values';
     else
-        handles.guifile.options.discretization = 'ultraspherical';
+        handles.guifile.options.discretization = 'coeffs';
     end
 
     % Create a CHEBGUIEXPORTER object of the correct type:

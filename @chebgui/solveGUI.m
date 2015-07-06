@@ -98,10 +98,10 @@ if ( strcmp(get(handles.button_solve, 'string'), 'Solve') )   % In solve mode
     set(handles.menu_demos, 'Enable','off');
 
     % What discretization do we want to use?
-    if ( get(handles.button_collocation, 'Value') )
-        guifile.options.discretization = 'collocation';
+    if ( get(handles.button_discretization_values, 'Value') )
+        guifile.options.discretization = 'values';
     else
-        guifile.options.discretization = 'ultraspherical';
+        guifile.options.discretization = 'coeffs';
     end
     
     % Call the private method solveGUIbvp, ivp, pde, or eig, which do the work.

@@ -197,12 +197,14 @@ else
 end
 
 % Show what discretization was used
-if ( strcmpi(func2str(pref.discretization), 'ultraS') )
-    discString = 'Ultraspherical';
+if ( strcmpi(func2str(pref.discretization), 'coeffs') || ...
+        isequal(pref.discretization, @ultraS) || ...
+        isequal(pref.discretization, @trigspec))
+    discString = 'Coefficients';
 else
-    discString = 'Collocation';
+    discString = 'Values';
 end
-finalStr = [finalStr; sprintf('Discretization method used: %s.', ...
+finalStr = [finalStr; sprintf('Discretization basis used: %s.', ...
     discString)];
     
 % Print info about the final error estimates...
@@ -228,14 +230,16 @@ function displayBVPinfoLinear(handles, u, nrmRes, pref)
 str = {'Linear equation detected. Converged in one step.'};
 
 % Show what discretization was used:
-if ( strcmpi(func2str(pref.discretization), 'ultraS') )
-    discString = 'Ultraspherical';
+if ( strcmpi(func2str(pref.discretization), 'coeffs') || ...
+        isequal(pref.discretization, @ultraS) || ...
+        isequal(pref.discretization, @trigspec))
+    discString = 'Coefficients';
 else
-    discString = 'Collocation';
+    discString = 'Values';
 end
 
 % Concatenate strings:
-str = [str ; sprintf('Discretization method used: %s.',  discString)];
+str = [str ; sprintf('Discretization basis used: %s.',  discString)];
 str = [str ; sprintf('Length of solution: %i.', length(chebfun(u)))];
 str = [str ; sprintf('Norm of residual: %.2e.', nrmRes)];
 
