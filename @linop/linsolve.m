@@ -105,7 +105,7 @@ isDone = false(1, numInt);
 isFun = isFunVariable(L);
 
 for dim = [dimVals inf]
-    
+
     % [TODO]: It's weird that the current value of dim is the _next_ disc size.
     % Discretize the operator (incl. constraints/continuity), unless there is a
     % currently valid factorization at hand.
@@ -143,7 +143,7 @@ for dim = [dimVals inf]
     if ( numel(vscale) == 1 ) 
         vscale = repmat(vscale, 1, length(isFun));
     end
-    
+
     % Test the happiness of the function pieces:
     [isDone, epslevel, vscale, cutoff] = ...
         testConvergence(disc, u(isFun), vscale(isFun), prefs);

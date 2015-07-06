@@ -4,6 +4,7 @@ function pass = test_expm
 tol = 1e-9; 
 d = [-pi pi];
 x = chebfun('x',d);
+pref = cheboppref();
 %%
 [Z, I, D, C] = linop.primitiveOperators(d);
 [z, E, s] = linop.primitiveFunctionals(d);
@@ -15,6 +16,7 @@ A = addConstraint(A, E(pi), 0);
 % smooth initial condition
 u0 = sin(exp(x)).*(pi^2-x.^2);
 t = 0.02;
+pref.discretization = @chebcolloc2;
 u = expm(A,t,u0);
 exact = -4.720369127510475;
 err(1,1) = abs( u(pi/2) - exact); 
@@ -33,7 +35,7 @@ A = addConstraint(A, E(-pi), 0);
 A = addConstraint(A, E(pi), 0);
 
 u0 = chebfun(@(x) -abs(x)/pi+1, [-pi 0 pi]);
-u = expm(A,0.01,u0);
+u = expm(A,0.01,u0, pref);
 
 exact = 0.95545945604534127;  % mathematica
 err(2,1) = abs( u(.1) - exact);

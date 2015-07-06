@@ -15,7 +15,14 @@ function u = expm(L, t, u0, prefs)
 %   B*u(t)=0 for a linear functional B.
 %
 %   EXPM(..., PREFS) accepts a preference structure or object like that created
-%   by CHEBOPPREF.
+%   by CHEBOPPREF. If no PREFS is passed, the default CHEBOPPREF object is used,
+%   and the discretization is set as follows:
+%       * If the default discretization specified by cheboppref is a function
+%         handle, it is used.
+%       * If the default discretization specified by cheboppref is 'values',
+%         @chebcolloc2 is used.
+%       * If the default discretization specified by cheboppref is 'values',
+%         @ultraS is used.
 %
 %   EXAMPLE: Heat equation
 %      d = [-1 1];  x = chebfun('x', d);
@@ -38,9 +45,26 @@ function u = expm(L, t, u0, prefs)
 
 if ( nargin < 4 )
     prefs = cheboppref;
+else
+    % Make sure we have a valid discretization preference at this level.
+    assert(~ischar(prefs.discretization), 'CHEBFUN:LINOP:expm:discretization', ...
+        'pref.discretization must be a function handle, not a string.');
 end
 
+% Store discretization type
 discType = prefs.discretization;
+
+% Deal with discType = 'values' or 'coeffs'
+if ( ischar(discType) )
+    discType = prefs.discretization;
+    if ( ischar(discType) && strcmp(discType, 'values') )
+        discType = @chebcolloc2;
+    elseif ( ischar(discType) && strcmp(discType, 'coeffs') )
+        discType = @ultraS;
+    end
+    prefs.discretization = discType;
+end
+
 isFun = isFunVariable(L); 
 
 %% Set up the discretization:
