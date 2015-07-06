@@ -15,7 +15,7 @@ classdef cheboppref < chebpref
 %     no domain argument is explicitly passed to the constructor.
 %
 %   discretization             - Discretization of linear problems
-%     'values'
+%     ['values']
 %     'coeffs'
 %     @chebcolloc1
 %     @chebcolloc2
@@ -450,42 +450,28 @@ classdef cheboppref < chebpref
             % strings we want to allow, and convert them to the correct function
             % handle:
             if ( any(strcmpi(val, {'ultraspherical', 'ultraS'})) )
-                if ( strcmpi(val, {'ultraspherical'}) )
-                    warning('CHEBOPPREF:PARSEDISCRETIZATION', ...
-                        'ULTRASPHERICAL is deprecated. Please use COEFFS.');
-                end
-                if ( strcmpi(val, {'ultraS'}) )
-                    warning('CHEBOPPREF:PARSEDISCRETIZATION', ...
-                        'ULTRAS is deprecated. Please use COEFFS.');
-                end
+                warning('CHEBOPPREF:PARSEDISCRETIZATION', ...
+                    ['''ULTRAS''/''ULTRASPHERICAL'' is deprecated. \n' ...
+                    'Please use ''COEFFS''/@ultraS.']);
                 val = @ultraS;
                 
             elseif ( any(strcmpi(val, {'chebcolloc2', 'collocation', 'colloc2'})) )
-                if ( strcmpi(val, {'colloc2'}) )
-                    warning('CHEBOPPREF:PARSEDISCRETIZATION', ...
-                        'COLLOC2 is deprecated. Please use VALUES.');
-                end
-                if ( strcmpi(val, {'collocation'}) )
-                    warning('CHEBOPPREF:PARSEDISCRETIZATION', ...
-                        'COLLOCATION is deprecated. Please use VALUES.');
-                end
+                warning('CHEBOPPREF:PARSEDISCRETIZATION', ...
+                    ['''COLLOCATION''/''COLLOC2''/''CHEBCOLLOC2'' is deprecated. \n' ...
+                    'Please use ''VALUES''/@chebcolloc2.']);
                 val = @chebcolloc2;
                 
             elseif ( any(strcmpi(val, {'chebcolloc1', 'colloc1'})) )
-                if ( strcmpi(val, {'colloc1'}) )
-                    warning('CHEBOPPREF:PARSEDISCRETIZATION', ...
-                        'COLLOC1 is deprecated. Please use CHEBCOLLOC1.');
-                end
+                warning('CHEBOPPREF:PARSEDISCRETIZATION', ...
+                    ['''COLLOC1''/''CHEBCOLLOC1'' is deprecated. \n' ...
+                    'Please use ''VALUES''/@chebcolloc2.']);
                 val = @chebcolloc1;
                 
             elseif ( any(strcmpi(val, {'trigcolloc', 'periodic'})) )
-                if ( strcmpi(val, {'periodic'}) )
-                    warning('CHEBOPPREF:PARSEDISCRETIZATION', ...
-                        'PERIODIC is deprecated. Please use VALUES.');
-                end
-                val = @trigcolloc;      
-                
-            elseif ( any(strcmpi(val, {'values', 'coeffs'})) )
+                warning('CHEBOPPREF:PARSEDISCRETIZATION', ...
+                    ['''TRIGCOLLOC''/''PERIODIC'' is deprecated. \n' ...
+                    'Please use ''VALUES''/@trigcolloc.']);
+                val = @trigcolloc;
             end
                 
         end
