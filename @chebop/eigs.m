@@ -81,7 +81,7 @@ if ( nargin > 1 && isa(varargin{1}, 'chebop') )
 end
 
 % Determine the discretization.
-pref = determineDiscretization(N, L, isPrefGiven, pref);
+pref = determineDiscretization(N, L, pref);
 
 % Clear boundary conditions if the dicretization uses periodic functions (since
 % if we're using periodic basis functions, the boundary conditions will be
