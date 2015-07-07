@@ -1,4 +1,4 @@
-function [u,lam,iter, retract] = newtonBVP(H,uinit, laminit, udot,lamdot)
+function [u,lam,iter, retract] = newtonBVP(H,uinit, laminit, udot,lamdot, prefs)
 
 % Find a tangent to the curve H(u,lambda)=0 at the given point, by solving
 % a boundary-value problem.
@@ -29,7 +29,7 @@ while ~accept
     % condition
     rhs = [-res{1};0];
         
-    dudlam = L\rhs;
+    dudlam = linsolve(L, rhs, prefs);
     du = dudlam{1};
     dlam = dudlam{2};
     

@@ -1,4 +1,4 @@
-function [t,tau] = tangentBVP(H, u, lambda, told, tauold)
+function [t,tau] = tangentBVP(H, u, lambda, told, tauold, prefs)
 
 % Find a tangent to the curve H(u,lambda)=0 at the given point, by solving
 % a boundary-value problem.
@@ -24,7 +24,7 @@ S.constraint = Scon;
 % Right hand side
 rhs = [chebfun(0,d);1];
 
-ttau = S\rhs;
+ttau = linsolve(S, rhs, prefs);
 
 % Extract function and scalar
 t = ttau{1};
