@@ -24,7 +24,7 @@ fprintf(fid, 'options = cheboppref();\n');
 fprintf(fid, '\n%% Specify the discretization to use. Possible options are:\n');
 fprintf(fid, '%%  ''values'' (default)\n');
 fprintf(fid, '%%  ''coeffs''\n');
-fprintf(fid, '%%  A function handle (see help cheboppref for details).\n');
+fprintf(fid, '%%  A function handle (see ''help cheboppref'' for details).\n');
 fprintf(fid, 'options.discretization = ''%s'';\n', discretization);
 
 % Specify number of eigenvalues to compute:

@@ -58,7 +58,7 @@ else
     % Option for discretization:
     fprintf(fid, ['\n%% Option for discretization (either ''values'' ' ...
         'or ''coeffs'').\n']);
-    fprintf(fid, 'options.discretization = ''%s'';\n', discretization);
+    fprintf(fid, 'options.discretization = ''%s'';\n', ivpSolver);
     
     % Plot during Newton iteration?
     if ( ~strcmp(plotting, 'off') )

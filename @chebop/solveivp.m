@@ -102,9 +102,13 @@ if ( ~all(isfinite(N.domain)) )
         'Solving IVPs on unbounded intervals is not supported.');
 end
 
+% What solver do we want to use for the IVP?
+solver = pref.ivpSolver;
+
 % If pref.ivpSolver is set to a global method, we really should be calling
 % CHEBOP/SOLVEBVP():
-if ( isempty(strfind(func2str(pref.ivpSolver), 'chebfun.ode')) )
+if ( strcmp(solver, 'values') || strcmp(solver, 'coeffs') || ...
+        isempty(strfind(func2str(solver), 'chebfun.ode')) )
     [varargout{1:nargout}] = solvebvp(N, rhs, pref, varargin{:});
     info.solver = 'Global method';
     return
@@ -225,9 +229,6 @@ initVals = initVals(idx);
 
 % Create an ODESET struct for specifying tolerance:
 opts = odeset('absTol', pref.ivpAbsTol, 'relTol', pref.ivpRelTol);
-
-% What solver do we want to use for the IVP?
-solver = pref.ivpSolver;
 
 % Solve!
 [t, y]= solver(anonFun, odeDom, initVals, opts);
