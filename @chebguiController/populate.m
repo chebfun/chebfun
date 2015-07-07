@@ -128,10 +128,10 @@ elseif ( any(strcmpi(chebg.type, {'bvp', 'ivp'})) )
                 chebguiWindow('menu_ivpODE15s_Callback', hObject, [], handles)
             case 'ode45'
                 chebguiWindow('menu_ivpODE45_Callback', hObject, [], handles)
-            case 'collocation'
+            case 'values'
                 chebguiWindow('menu_ivpCollocation_Callback', ...
                     hObject, [], handles)
-            case 'ultraspherical'
+            case 'coeffs'
                 chebguiWindow('menu_ivpCollocation_Ultraspherical', ...
                     hObject, [], handles)
         end

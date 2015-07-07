@@ -670,7 +670,7 @@ set(handles.menu_ivpODE15s, 'checked', 'off');
 set(handles.menu_ivpODE45, 'checked', 'off');
 set(handles.menu_ivpCollocation, 'checked', 'on');
 set(handles.menu_ivpUltraspherical, 'checked', 'off');
-handles.guifile.options.ivpSolver = 'collocation';
+handles.guifile.options.ivpSolver = 'values';
 set(handles.panel_IVPsolver,'SelectedObject', handles.button_global)
 set(handles.panel_initialGuess, 'Visible', 'on')
 guidata(hObject, handles);
@@ -682,7 +682,7 @@ set(handles.menu_ivpODE15s, 'checked', 'off');
 set(handles.menu_ivpODE45, 'checked', 'off');
 set(handles.menu_ivpCollocation, 'checked', 'off');
 set(handles.menu_ivpUltraspherical, 'checked', 'on');
-handles.guifile.options.ivpSolver = 'ultraspherical';
+handles.guifile.options.ivpSolver = 'coeffs';
 set(handles.panel_IVPsolver,'SelectedObject', handles.button_global)
 set(handles.panel_initialGuess, 'Visible', 'on')
 guidata(hObject, handles);
