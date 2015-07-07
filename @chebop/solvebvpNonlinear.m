@@ -119,7 +119,7 @@ while ( ~terminate )
         % Find the next Newton iterate (the method finds the step-size, then
         % takes the damped Newton and returns the next iterate).
         [u, dampingInfo] = dampingErrorBased(N, u, rhs, delta, ...
-            L, disc, dampingInfo);
+            L, disc, dampingInfo, pref);
         
         % If we're in damped mode, we don't get an error estimate...
         errEst = NaN;

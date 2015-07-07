@@ -15,7 +15,7 @@ if ( isnumeric(f) )
 end
 
 dom = disc.domain;
-numInts = disc.numIntervals();
+numInts = disc.numIntervals;
 dim = disc.dimension;
 
 % Restrict F to DOM (e.g. if we need to introduce more breakpoints in F)
