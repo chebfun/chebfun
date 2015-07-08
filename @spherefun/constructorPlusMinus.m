@@ -190,7 +190,7 @@ while ( norm( F( : ), inf ) > tol )
 end
 
 % If the rank of the matrix is less than 1/4 its size. We are happy:
-if ( rank_count < min(size(F))/4 )
+if ( rank_count < min(size(F))/8 )
     happy = 1;
 else
     happy = 0;

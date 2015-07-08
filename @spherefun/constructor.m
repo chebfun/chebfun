@@ -32,6 +32,12 @@ if ( nargin < 3 || isempty(dom) )
     dom = [-pi pi 0 pi];
 end
 
+if ~isempty(varargin)
+    alpha = varargin{1};
+else
+    alpha = 2;
+end
+
 % TODO: Should we allow any other domains that latitude and co-latitude?
 
 if ( isa(op, 'spherefun') )  % SPHEREFUN( SPHEREFUN )
@@ -70,7 +76,7 @@ while ( ~happy_rank && ~failure )
     
     tol = GetTol(F, pi/(n-1), pi/n, dom, pseudoLevel);
 
-    [ pivotIndices, pivotMatrices, happy_rank, removePoles ] = PhaseOne( F, tol );
+    [ pivotIndices, pivotMatrices, happy_rank, removePoles ] = PhaseOne( F, tol, alpha );
     if ( n >= maxRank  )
         warning('SPHEREFUN:CONSTRUCTOR:MAXRANK', ... 
                                 'Unresolved with maximum rank.');
@@ -80,7 +86,7 @@ end
 
 % PHASE TWO 
 % Find the appropriate discretizations in the columns and rows. 
-[cols, pivots, rows, pivotLocations, idxPlus, idxMinus] = PhaseTwo( h, pivotIndices, pivotMatrices, n, dom, tol, maxSample, removePoles );
+[cols, pivots, rows, pivotLocations, idxPlus, idxMinus] = PhaseTwo( h, pivotIndices, pivotMatrices, n, dom, tol, maxSample, removePoles, alpha );
 
 g.cols = chebfun( cols, dom(3:4)-[pi 0], 'trig');
 g.rows = chebfun( rows, dom(1:2), 'trig');
@@ -93,10 +99,10 @@ g.domain = dom;
 
 end
 
-function [pivotIndices, pivotMatrices, happy, removePole] = PhaseOne( F, tol )
+function [pivotIndices, pivotMatrices, happy, removePole] = PhaseOne( F, tol, alpha )
 
 % Phase 1: Go find rank, plus pivot locations, ignore cols and rows.
-alpha = spherefun.alpha; % get growth rate factor.
+% alpha = spherefun.alpha; % get growth rate factor.
 [m, n] = size( F );
 pivotIndices = []; pivotMatrices = [];
 vscl = norm( F( : ), inf);
@@ -128,12 +134,14 @@ F = F( 2:m-1, : );
 % Update the number of rows F now contains.
 m = m-2;
 
-while ( norm( F( : ), inf ) > tol )
+B = F(:,1:n/2);    %% (1,1) Block of F.
+C = F(:,n/2+1:n);  % (1,2) block of F.
+
+% while ( norm( F( : ), inf ) > tol )
+while ( max(norm(B(:),inf),norm(C(:),inf) ) > tol )
     % Find pivot:
     % Calculate the maximum 1st singular value of all the special 2x2
     % submatrices.
-    B = F(:,1:n/2);    %% (1,1) Block of F.
-    C = F(:,n/2+1:n);  % (1,2) block of F.
     Fp = B + C;
     Fm = B - C;
     S1 = max( abs(Fp), abs(Fm) );
@@ -142,7 +150,10 @@ while ( norm( F( : ), inf ) > tol )
     
     % Calculate the eigenvalues of the pivot matrix:
     % This is what we really care about in the algorithm.
-    ev = [ Fp(j,k) , Fm(j,k) ];
+    ev = 2*[Fp(j,k) Fm(j,k)];
+    evp = ev(1);
+    evm = ev(2);
+    
     % Singular-values sorted by magnitude
     sv = [max(abs(ev)) min(abs(ev))];
         
@@ -150,21 +161,24 @@ while ( norm( F( : ), inf ) > tol )
 
     if ( sv(1) <= alpha*sv(2) )  % Theoretically, should be s1 <= 2*s2.
         % Calculate inverse of pivot matrix:
-        plusBlk = 1/(2*ev(1))*(Fp(:,k)*Fp(j,:));
-        minusBlk = 1/(2*ev(2))*(Fm(:,k)*Fm(j,:));
-        F =  F - [plusBlk plusBlk] - [minusBlk -minusBlk];                  
+        plusBlk = Fp(:,k)*(Fp(j,:)*(1/evp));
+        minusBlk = Fm(:,k)*(Fm(j,:)*(1/evm));
+        B = B - plusBlk - minusBlk;
+        C = C - plusBlk + minusBlk;
         rank_count = rank_count + 2; 
         pivotMatrices = [pivotMatrices ; ev ];
     else
         % Calculate pseudoinverse of pivot matrix, there is
         % no full rank pivot matrix:
-        if abs(ev(1)) > abs(ev(2))
-            plusBlk = 1/(2*ev(1))*(Fp(:,k)*Fp(j,:));
-            F =  F - [plusBlk plusBlk];
+        if abs(evp) > abs(evm)
+            plusBlk = Fp(:,k)*(Fp(j,:)*(1/evp));
+            B = B - plusBlk;
+            C = C - plusBlk;
             ev(2) = 0;
         else
-            minusBlk = 1/(2*ev(2))*(Fm(:,k)*Fm(j,:));
-            F =  F - [minusBlk -minusBlk];                  
+            minusBlk = Fm(:,k)*(Fm(j,:)*(1/evm));
+            B = B - minusBlk;
+            C = C + minusBlk;
             ev(1) = 0;
         end
         pivotMatrices = [pivotMatrices ; ev ];
@@ -182,12 +196,12 @@ end
 % the pivot matrix.
 if removePole
     pivotIndices = [ 1 poleCol; pivotIndices ];
-    ev = [2 0];
+    ev = [4 0];
     pivotMatrices = [ev ; pivotMatrices];
 end
 
 % If the rank of the matrix is less than 1/4 its size. We are happy:
-if ( rank_count < min(size(F))/4 )
+if ( rank_count < min(size(F))/8 )
     happy = 1;
 else
     happy = 0;
@@ -195,9 +209,9 @@ end
 
 end
 
-function [cols, pivots, rows, pivotLocations, idxPlus, idxMinus] = PhaseTwo( h, pivotIndices, pivotMatrices, n, dom, tol, maxSample, removePoles)
+function [cols, pivots, rows, pivotLocations, idxPlus, idxMinus] = PhaseTwo( h, pivotIndices, pivotMatrices, n, dom, tol, maxSample, removePoles, alpha )
 
-alpha = spherefun.alpha; % get growth rate factor.
+% alpha = spherefun.alpha; % get growth rate factor.
 happy_columns = 0;   % Not happy, until proven otherwise.
 happy_rows = 0;
 m = n;
@@ -270,20 +284,20 @@ while ( ~(happy_columns && happy_rows) && ~failure)
             % Store the columns and rows.
             colsPlus(:,plusCount) = colPlus;
             rowsPlus(plusCount,:) = rowPlus;
-            pivotPlus(plusCount) = 2*ev(1);
+            pivotPlus(plusCount) = ev(1);
             plusCount = plusCount + 1;
 
             colsMinus(:,minusCount) = colMinus;
             rowsMinus(minusCount,:) = rowMinus;
-            pivotMinus(minusCount) = 2*ev(2);
+            pivotMinus(minusCount) = ev(2);
             minusCount = minusCount + 1;
 
             newCols = newCols - ...
-                    1/(2*ev(1))*(colPlus*rowPlus(id_cols)) - ...
-                    1/(2*ev(2))*(colMinus*rowMinus(id_cols));                
+                    colPlus*(rowPlus(id_cols)*(1/ev(1))) - ...
+                    colMinus*(rowMinus(id_cols)*(1/ev(2)));
             newRows = newRows - ...
-                    1/(2*ev(1))*(colPlus(id_rows)*rowPlus) - ...
-                    1/(2*ev(2))*(colMinus(id_rows)*rowMinus);
+                    ((1/ev(1))*colPlus(id_rows))*rowPlus - ...
+                    ((1/ev(2))*colMinus(id_rows))*rowMinus;
         else
             % Use the pseudoinverse of the pivot matrix, there is
             % no full rank pivot matrix:
@@ -295,13 +309,13 @@ while ( ~(happy_columns && happy_rows) && ~failure)
                 % Store the columns and rows.
                 colsPlus(:,plusCount) = colPlus;
                 rowsPlus(plusCount,:) = rowPlus;
-                pivotPlus(plusCount) = 2*ev(1);
+                pivotPlus(plusCount) = ev(1);
                 plusCount = plusCount + 1;
                 
                 newCols = newCols - ...
-                        1/(2*ev(1))*(colPlus*rowPlus(id_cols));
+                        colPlus*(rowPlus(id_cols)*(1/ev(1)));
                 newRows = newRows - ...
-                        1/(2*ev(1))*(colPlus(id_rows)*rowPlus);
+                        ((1/ev(1))*colPlus(id_rows))*rowPlus;
             else
                 colMinus = newCols(:,2*ii-1) - newCols(:,2*ii);
                 temp = newRows(ii,1:n) - newRows(ii,n+1:2*n);
@@ -310,13 +324,13 @@ while ( ~(happy_columns && happy_rows) && ~failure)
                 % Store the columns and rows.
                 colsMinus(:,minusCount) = colMinus;
                 rowsMinus(minusCount,:) = rowMinus;
-                pivotMinus(minusCount) = 2*ev(2);
+                pivotMinus(minusCount) = ev(2);
                 minusCount = minusCount + 1;
                 
                 newCols = newCols - ...
-                        1/(2*ev(2))*(colMinus*rowMinus(id_cols));                
+                        colMinus*(rowMinus(id_cols)*(1/ev(2)));
                 newRows = newRows - ...
-                        1/(2*ev(2))*(colMinus(id_rows)*rowMinus);
+                        ((1/ev(2))*colMinus(id_rows))*rowMinus;
             end
         end
     end    

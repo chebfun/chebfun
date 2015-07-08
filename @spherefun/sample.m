@@ -1,5 +1,5 @@
 function varargout = sample( f, varargin )
-%SAMPLE      Samples of f a tensor product grid.
+%SAMPLE      Samples f on a tensor product grid.
 %   X = SAMPLE(F) returns the matrix of values of F on a tensor
 %   product grid.
 %
@@ -20,7 +20,7 @@ if ( nargin == 1 )
     % Get degrees:
     [m, n] = length( f );  
 elseif ( nargin == 2 ) 
-    error('CHEBFUN:CHEBFUN2:chebpolyval2:inputs', 'Dimension not specified.'); 
+    error('SPHEREFUN:sample:inputs', 'Dimension not specified.'); 
 else
     m = varargin{ 1 }; 
     n = varargin{ 2 }; 

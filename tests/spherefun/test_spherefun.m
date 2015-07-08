@@ -16,7 +16,7 @@ function pass = test_constructor( )
 % Test the spherefun constructor 
 
 % Get tolerance: 
-tol = 1e3*chebfunpref().techPrefs.eps;
+tol = 2e3*chebfunpref().techPrefs.eps;
 
 f = @(x,y,z) x.^2 + y.^2 + z.^2;
 f = redefine_function_handle( f );

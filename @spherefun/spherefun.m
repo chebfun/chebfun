@@ -120,7 +120,7 @@ classdef spherefun < separableApprox
     %% Private constant properties
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Constant )
-        alpha = 50;  % Growth factor control.
+%         alpha = 2;  % Growth factor control.
     end
     
     %
