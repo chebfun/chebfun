@@ -129,7 +129,7 @@ while ( 1 )
     
     % Check for happiness:
     f.coeffs = coeffs;
-    [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, vscl, pref); 
+    [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, vscl, pref);
         
     if ( ishappy ) % We're happy! :)
         % Alias the discarded coefficients:

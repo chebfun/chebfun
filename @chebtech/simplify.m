@@ -52,6 +52,7 @@ cutoff = 1;
 for k = 1:m
     cutoff = max(cutoff,standardChop(coeffs(:,k),tol(k)));
 end
+cutoff = min(cutoff,n);
 
 % Chop coefficients
 f.coeffs = coeffs(1:cutoff,:);
