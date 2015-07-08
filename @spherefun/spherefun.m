@@ -38,7 +38,7 @@ classdef spherefun < separableApprox
                 case 2
                     f = constructor2by2(f, varargin{:});
                 case 3
-                    f = constructorSplit(f, varargin{:});
+                    f = constructorPlusMinus(f, varargin{:});
                 otherwise
                     f = constructor(f, varargin{:});
             end
