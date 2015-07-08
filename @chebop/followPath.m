@@ -11,7 +11,7 @@ function [uquasi, lamvec, mvec] = followPath(N, lam0, varargin)
 % It is possible to pass the method various option pairs on the form
 %   'OPTIONNAME', OPTIONVALUE
 % The options supported are
-%   'UNIT'      : Initial solution U on the solution curve.
+%   'UINIT'     : Initial solution U on the solution curve.
 %   'DIRECTION' : Whether the curve should be tracked in positive or negative
 %                 direction. Possible values: +1 (default), -1.
 %   'MEASURE'   : An anonymous function that takes U as argument, used for
