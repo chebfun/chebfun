@@ -33,6 +33,15 @@ end
 coeffs = abs(f.coeffs(end:-1:1,:));
 [n,m] = size(coeffs);
 
+% Use the default tolerance if none was supplied:
+if ( nargin < 2 )
+    p = chebfunpref;
+    tol = p.eps;
+end
+if length(tol) ~= m
+    tol = max(tol)*ones(1,m);
+end
+
 % Need to handle odd/even cases separately.
 isEven = ~mod(n, 2);
 if isEven
@@ -43,23 +52,20 @@ else
     coeffs = [coeffs(n:-1:(n+1)/2+1,:)+coeffs(1:(n+1)/2-1,:);coeffs((n+1)/2,:)];
 end
 coeffs = flipud(coeffs);
+coeffs = [coeffs(1,:);kron(coeffs(2:end,:),[1;1])];
 if ( size(coeffs,1) < 17 )
-    coeffs = [coeffs;zeros(17-size(coeffs,1),m)];
-end
-
-% Use the default tolerance if none was supplied:
-if ( nargin < 2 )
-    p = chebfunpref;
-    tol = p.eps;
-end
-if length(tol) ~= m
-    tol = max(tol)*ones(1,m);
+    coeffs = [coeffs;ones(17-n,1)*min(min(abs(coeffs), [],1),tol)];
 end
 
 % Loop through columns to compute cutoff
 cutoff = 1;
 for k = 1:m
-    cutoff = max(cutoff,standardChop(coeffs(:,k),tol(k),1));
+    cutoff = max(cutoff,standardChop(coeffs(:,k),tol(k)));
+end
+if ( ~mod(cutoff,2) )
+    cutoff = cutoff/2 + 1;
+else
+    cutoff = (cutoff-1)/2 + 1;
 end
 
 % Now put the coefficients vector back together.
@@ -69,6 +75,7 @@ if ( ~mod(n,2) )
     n = n+1;
 end
 mid = (n+1)/2;
+cutoff = min(cutoff,mid);
 f.coeffs = coeffs(mid-cutoff+1:mid+cutoff-1,:);
 f.values = trigtech.coeffs2vals(f.coeffs);
 

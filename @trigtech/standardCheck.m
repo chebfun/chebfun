@@ -6,6 +6,11 @@ function [ishappy, epslevel, cutoff] = standardCheck(f, values, vscl, pref)
 coeffs = abs(f.coeffs(end:-1:1,:));
 [n,m] = size(coeffs);
 
+% Compute some values if none were given:
+if ( nargin < 2 || isempty(values) )
+    values = f.coeffs2vals(f.coeffs);
+end
+
 % Need to handle odd/even cases separately.
 isEven = ~mod(n, 2);
 if isEven
@@ -42,11 +47,6 @@ if size(tol,2) ~= m
   tol = ones(1,m)*max(tol);
 end
 
-% Compute some values if none were given:
-if ( nargin < 2 || isempty(values) )
-    values = f.coeffs2vals(f.coeffs);
-end
-
 % Compute shift
 if ( isempty(vscl) )
     shift = ones(1,m);
@@ -57,17 +57,24 @@ shift = shift.*f.hscale;
 shift = 1./max(shift,1);
 
 % Loop through columns of coeffs
+coeffs = [coeffs(1,:);kron(coeffs(2:end,:),[1;1])];
 ishappy = false(1,m);
 cutoff = zeros(1,m);
 for k = 1:m
 
     % call standardChop
-    [cutoff(k)] = standardChop(coeffs(:,k), tol(k), shift(k));
+    [cutoff(k)] = standardChop(coeffs(:,k), tol(k)/shift(k));
     ishappy(k) = ( cutoff(k) < n );
     if ( ~ishappy(k) )
         % No need to continue if it fails on any column.
         break
     end
+    if ( ~mod(cutoff(k),2) )
+        cutoff(k) = cutoff(k)/2;
+    else
+        cutoff(k) = (cutoff(k)-1)/2;
+    end
+
 end
 
 % set outputs

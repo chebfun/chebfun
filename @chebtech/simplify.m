@@ -32,9 +32,6 @@ end
 % Grab coefficients
 coeffs = f.coeffs;
 [n,m] = size(coeffs);
-if ( n < 17 )
-    coeffs = [coeffs;zeros(17-n,m)];
-end
 
 % Use the chebfunpref.eps if no tolerance was supplied:
 if ( nargin < 2 )
@@ -45,10 +42,15 @@ if length(tol) ~= m
     tol = max(tol)*ones(1,m);
 end
 
+% extend to 17 if necessary
+if ( n < 17 )
+    coeffs = [coeffs;ones(17-n,1)*min(min(abs(coeffs), [],1),tol)];
+end
+
 % Loop through columns to compute cutoff
 cutoff = 1;
 for k = 1:m
-    cutoff = max(cutoff,standardChop(coeffs(:,k),tol(k),1));
+    cutoff = max(cutoff,standardChop(coeffs(:,k),tol(k)));
 end
 
 % Chop coefficients

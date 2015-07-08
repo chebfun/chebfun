@@ -51,7 +51,7 @@ cutoff = zeros(1,m);
 for k = 1:m
 
     % call standardChop
-    [cutoff(k)] = standardChop(coeffs(:,k), tol(k), shift(k));
+    [cutoff(k)] = standardChop(coeffs(:,k), tol(k)/shift(k));
     ishappy(k) = ( cutoff(k) < n );
     if ( ~ishappy(k) )
         % No need to continue if it fails on any column.
