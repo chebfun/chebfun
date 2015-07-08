@@ -91,7 +91,11 @@ if ( isempty(N.init) )
     u0 = chebmatrix(u0);
 else
     % Get the initial guess.
-    u0 = N.init; 
+    u0 = N.init;
+    % Ensure that initial guess is a CHEBMATRIX (as later code assumes it is):
+    if ( isa(u0, 'chebfun') )
+        u0 = chebmatrix(u0);
+    end 
 end
 
 % Initialise the independent variable:
