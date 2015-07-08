@@ -1,22 +1,24 @@
-function [uquasi, lamvec, mvec] = followPath(N, lam0, varargin)
+function [uquasi, lamvec, mvec, lamfun, mfun] = followPath(N, lam0, varargin)
 %FOLLOWPATH    A pseudo-arclength continuation algorithm for ODEs in Chebfun
 %
 % Calling sequence:
-%   [UQUASI, LAMVEC] = FOLLOWPATH(N, LAM0, 'OPT1', VAL1, ...)
+%   [U, LAM] = FOLLOWPATH(N, LAM0, 'OPT1', VAL1, ...)
 % Here, the inputs are:
 %   
-%   N    : A chebop, whose N.op arguments are x, u and lambda.
+%   N    : A chebop, whose N.op arguments are x, u and lambda, and boundary
+%          conditions also depends on u and lambda.
 %   lam0 : Initial value of lambda for finding initial point on solution curve.
 %
 % It is possible to pass the method various option pairs on the form
 %   'OPTIONNAME', OPTIONVALUE
 % The options supported are
-%   'UINIT'     : Initial solution U on the solution curve.
+%   'UINIT'     : Initial solution U on the solution curve, with LAMBDA = LAM0.
 %   'DIRECTION' : Whether the curve should be tracked in positive or negative
 %                 direction. Possible values: +1 (default), -1.
 %   'MEASURE'   : An anonymous function that takes U as argument, used for
-%                 drawing a bifurcation diagram during the tracing of the
-%                 solution curve.
+%                 computing data for a bifurcation diagram during the tracing of
+%                 the solution curve. See note below on how to call the method
+%                 for the values of MEASURE to be returned.
 %   'PLOTTING'  : Whether intermediate solutions and bifurcation diagram should
 %                 be plotted during the tracing of the curve. Possible values
 %                 TRUE, FALSE (default). Note that if 'PLOTTING' is set to TRUE,
@@ -49,7 +51,7 @@ function [uquasi, lamvec, mvec] = followPath(N, lam0, varargin)
 %         solution curve, so that the ith element of LAM corresponds to the ith
 %         column of U.
 %
-% Note 1: If no UNIT is passed, the initial solution U used is the one computed
+% Note 1: If no UINIT is passed, the initial solution U used is the one computed
 % by chebop.
 %
 % Note 2: If MEASURE is passed, it is possible to call the method with three
@@ -57,6 +59,54 @@ function [uquasi, lamvec, mvec] = followPath(N, lam0, varargin)
 %   [UQUASI, LAMVEC, MVEC] = FOLLOWPATH(N, LAM0, 'OPT1', VAL1, ...)
 % In this case, MVEC contains the value of MEASURE at all points on the solution
 % curve computed.
+%
+% Note 3: Calling the function with five outputs:
+%   [UQUASI, LAMVEC, MVEC, LAMFUN, MFUN] = FOLLOWPATH(N, LAM0, ...)
+% also returns the chebfuns LAMFUN and MFUN, which are spline interpolants of
+% the LAMVEC and MVEC data. For a smooth bifurcation diagram, it is then
+% possible to call
+%   plot(lamfun, mfun)
+%
+% Example 1 -- Bratu problem, continuation on lambda parameter:
+%   N = chebop(@(x,u,lam) diff(u,2) + lam*exp(u), [0 1]);
+%   N.lbc = @(u,lam) u;
+%   N.rbc = @(u,lam) u;
+%   lam0 = 0.01;
+%   % Call method, no plotting, no printing
+%   [u, lamvec] = followPath(N, lam0);
+%   % Call method, specifying more options
+%   [u, lamvec, mvec] = followPath(H, lam0, ...
+%       'measure', @(u) u(.5), 'printing', true, 'plotting',true);
+%   
+% Example 2 -- Herceg problem (singularly perturbed ODE). Fix solution value at
+%              left endpoint, vary slope at right endpoint.
+%   d = [0 1];
+%   ep = 2^-2;
+%   % Start by finding initial solution U on curve
+%   N = chebop(@(x,u) -ep^2*diff(u,2)+(u.^2+u-.75).*(u.^2+u-3.75), d);
+%   N.lbc = 0;
+%   N.rbc = 0;
+%   u0 = N\0;
+%   % Trace solution curve:
+%   N = chebop(@(x,u,lam) -ep^2*diff(u,2) + (u.^2+u-.75).*(u.^2+u-3.75), d);
+%   lam0 = feval(diff(u0),d(2)); % Initial value for LAMBDA
+%   N.lbc = @(u, lam) u;
+%   N.rbc = @(u, lam) diff(u) - lam;
+%   [u, lamvec, mvec, lamfun, mfun] = followPath(N, lam0, 'maxiter', 30, ...
+%       'uinit', u0, 'measure', @(u)u(1), 'slmax', 1, 'printing', 1);
+%   % Plot a bifurcation diagram
+%   plot(lamfun, mfun)
+%
+% Example 3 -- Herceg problem, continuation on perturbation parameter
+%   ep = 2^-2;
+%   H = chebop(@(x,u,lam) -lam*diff(u,2)+(u.^2+u-.75).*(u.^2+u-3.75), [0 1]);
+%   lam0 = ep^2;
+%   H.lbc = @(u, lam) u;
+%   H.rbc = @(u, lam) u;
+%   measure = @(u) norm(diff(u), inf); 
+%   [u, lamvec, mvec] = followPath(H, lam0, ...
+%       'measure', measure, 'direction', -1, 'plotting', 1, ...
+%       'stopfun', @(u,lam) lam < 5e-3, 'slmax', .1);
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.
@@ -240,9 +290,6 @@ while counter <= maxiter
         continue
     end
     
-    if ( stopfun(u, lam) )
-        return
-    end
     % Store values for plotting
     
     if ( haveMeasure )
@@ -271,7 +318,13 @@ while counter <= maxiter
         subplot(1,2,1);
         plot(u),title(['Solution for \lambda =' num2str(lam)]), xlabel('x'),ylabel('u(x)')
         subplot(1,2,2)
-        plot(lamvec,mvec,'-*'), 
+        lamspline = chebfun.spline(linspace(0,1,length(lamvec)),lamvec);
+        mspline = chebfun.spline(linspace(0,1,length(lamvec)), mvec);
+        plot(lamspline,mspline),
+        hold on
+        set(gca,'ColorOrderIndex', 1)
+        plot(lamvec, mvec, '*')
+        hold off
         title('Bifurcation diagram'), xlabel('\lambda'), ylabel(mstring)
         drawnow, shg
     end
@@ -289,5 +342,11 @@ while counter <= maxiter
     % Update quasimatrix to be returned
     uquasi = [uquasi, u];
     
+    if ( stopfun(u, lam) )
+        return
+    end
+    
 end
-
+lamfun = chebfun.spline(linspace(0,1,length(lamvec)),lamvec);
+mfun = chebfun.spline(linspace(0,1,length(lamvec)), mvec);
+end
