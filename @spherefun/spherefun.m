@@ -24,6 +24,9 @@ classdef spherefun < separableApprox
                     if strcmpi(varargin{2},'2by2')
                         constructorType = 2;
                         varargin{2} = [];
+                    elseif strcmpi(varargin{2},'PlusMinus')
+                        constructorType = 3;
+                        varargin{2} = [];
                     end
                 end
             end
@@ -34,6 +37,8 @@ classdef spherefun < separableApprox
                     f = constructor(f, varargin{:});
                 case 2
                     f = constructor2by2(f, varargin{:});
+                case 3
+                    f = constructorSplit(f, varargin{:});
                 otherwise
                     f = constructor(f, varargin{:});
             end
