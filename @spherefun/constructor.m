@@ -74,7 +74,7 @@ while ( ~happy_rank && ~failure )
     % vectorization like chebfun2.
     F = evaluate(h, n, n, dom);
     
-    tol = GetTol(F, pi/(n-1), pi/n, dom, pseudoLevel);
+    tol = GetTol(F, pi/n, pi/n, dom, pseudoLevel);
 
     [ pivotIndices, pivotMatrices, happy_rank, removePoles ] = PhaseOne( F, tol, alpha );
     if ( n >= maxRank  )
@@ -229,9 +229,13 @@ row_pivots = y(id_rows);
 
 numPosPivots = sum( abs( pivotMatrices(:,1) ) > 0 );
 numMinusPivots = sum( abs( pivotMatrices(:,2) ) > 0 );
+totalPivots = numPosPivots + numMinusPivots;
 
 pivotPlus = zeros(numPosPivots,1);
 pivotMinus = zeros(numMinusPivots,1);
+pivots = zeros(totalPivots,1);
+idxPlus = zeros(numPosPivots,1);
+idxMinus = zeros(numMinusPivots,1);
 
 % Phase 2: Calculate decomposition on sphere.
 failure = false;
@@ -256,6 +260,7 @@ while ( ~(happy_columns && happy_rows) && ~failure)
     rowsMinus = zeros( numMinusPivots, 2*n );
     plusCount = 1;
     minusCount = 1;
+    pivotCount = 1;
 
     % Need to remove pole, which means we use the column with the largest
     % max norm (repeated) with rows of all ones in the elimination
@@ -285,12 +290,20 @@ while ( ~(happy_columns && happy_rows) && ~failure)
             colsPlus(:,plusCount) = colPlus;
             rowsPlus(plusCount,:) = rowPlus;
             pivotPlus(plusCount) = ev(1);
+            idxPlus(plusCount) = pivotCount;
+            pivots(pivotCount) = ev(1);
+            
             plusCount = plusCount + 1;
+            pivotCount = pivotCount + 1;
 
             colsMinus(:,minusCount) = colMinus;
             rowsMinus(minusCount,:) = rowMinus;
             pivotMinus(minusCount) = ev(2);
+            idxMinus(minusCount) = pivotCount;
+            pivots(pivotCount) = ev(2);
+
             minusCount = minusCount + 1;
+            pivotCount = pivotCount + 1;
 
             newCols = newCols - ...
                     colPlus*(rowPlus(id_cols)*(1/ev(1))) - ...
@@ -310,7 +323,11 @@ while ( ~(happy_columns && happy_rows) && ~failure)
                 colsPlus(:,plusCount) = colPlus;
                 rowsPlus(plusCount,:) = rowPlus;
                 pivotPlus(plusCount) = ev(1);
+                idxPlus(plusCount) = pivotCount;
+                pivots(pivotCount) = ev(1);
+
                 plusCount = plusCount + 1;
+                pivotCount = pivotCount + 1;
                 
                 newCols = newCols - ...
                         colPlus*(rowPlus(id_cols)*(1/ev(1)));
@@ -325,8 +342,12 @@ while ( ~(happy_columns && happy_rows) && ~failure)
                 colsMinus(:,minusCount) = colMinus;
                 rowsMinus(minusCount,:) = rowMinus;
                 pivotMinus(minusCount) = ev(2);
+                idxMinus(minusCount) = pivotCount;
+                pivots(pivotCount) = ev(2);
+
                 minusCount = minusCount + 1;
-                
+                pivotCount = pivotCount + 1;
+
                 newCols = newCols - ...
                         colMinus*(rowMinus(id_cols)*(1/ev(2)));
                 newRows = newRows - ...
@@ -338,8 +359,15 @@ while ( ~(happy_columns && happy_rows) && ~failure)
     % TODO: Make this more similar to hapiness check in trigtech.
 
     % Double up the columns
-    cols = [ [colsPlus colsMinus] ; [flipud(colsPlus(2:m,:)) -flipud(colsMinus(2:m,:))] ];
-    rows = [ rowsPlus ;  rowsMinus ].';
+    cols = zeros( 2*m, totalPivots );
+    cols(:,idxPlus) = [ colsPlus; flipud(colsPlus(2:m,:)) ];
+    cols(:,idxMinus) = [ colsMinus; -flipud(colsMinus(2:m,:)) ];
+%     cols = [ [colsPlus colsMinus] ; [flipud(colsPlus(2:m,:)) -flipud(colsMinus(2:m,:))] ];
+    
+    rows = zeros( 2*n, totalPivots );
+    rows(:,idxPlus) = rowsPlus.';
+    rows(:,idxMinus) = rowsMinus.';
+%     rows = [ rowsPlus ;  rowsMinus ].';
     col_coeffs = trigtech.vals2coeffs( cols ); 
     % Length of tail to test.
     testLength = min(m, max(3, round((m-1)/8)));
@@ -379,9 +407,9 @@ while ( ~(happy_columns && happy_rows) && ~failure)
 end
 
 % Combine the types of pivots and set-up indices to track them
-pivots = [pivotPlus;pivotMinus];
-idxPlus = 1:numPosPivots;
-idxMinus = (numPosPivots+1):(numPosPivots+numMinusPivots);
+% pivots = [pivotPlus;pivotMinus];
+% idxPlus = 1:numPosPivots;
+% idxMinus = (numPosPivots+1):(numPosPivots+numMinusPivots);
 
 pivotLocations = [col_pivots(1:length(col_pivots)/2) row_pivots];
 

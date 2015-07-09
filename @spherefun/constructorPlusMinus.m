@@ -45,22 +45,13 @@ end
 % 4. Add fixed-rank.
 % 5. Add tensor-product.
 
-maxRank = 4000; 
-maxSample = 4000;
+maxRank = 8192; 
+maxSample = 8192;
 pseudoLevel = eps;
 
 % If f is defined in terms of x,y,z; then convert it to
 % (longitude,latitude).
 h = redefine_function_handle( op );
-
-% hplus = @(lam,th) 0.5*(h(lam,th) + h(lam+pi,th));
-% hminus = @(lam,th) 0.5*(h(lam,th) - h(lam+pi,th));
-% 
-% pref = chebfunpref;
-% pref.tech = @trigtech;
-% 
-% hp = chebfun2(hplus,[-pi 0 -pi pi],pref);
-% hm = chebfun2(hminus,[-pi 0 -pi pi],pref);
 
 % PHASE ONE  
 % Sample at square grids, determine the numerical rank of the
@@ -77,20 +68,23 @@ while ( ~happyRank && ~failure )
     % TODO: Add a more sophisticated evaluate function that does
     % vectorization like chebfun2.
     F = evaluate(h, n, n, dom);
-    tol = GetTol(F, pi/(n-1), pi/n, dom, pseudoLevel);
     
     % Split into even and odd parts:
     B = F(:,1:n);
     C = F(:,n+1:2*n);
-    
+    Fplus = 0.5*(B + C);
+    Fminus = 0.5*(B - C);
+
+    tolplus = GetTol(Fplus, pi/n, pi/n, [-pi 0 0 pi], pseudoLevel);
+    tolminus = GetTol(Fminus, pi/n, pi/n, [-pi 0 0 pi], pseudoLevel);
+    tol = max(tolplus,tolminus);
+  
     if ~happyRankPlus
-        Fplus = 0.5*(B + C);
         [ pivotIndicesPlus, pivotsPlus, happyRankPlus, removePoles ] = PhaseOnePlus( Fplus, tol );
         nplus = n;
     end
     
     if ~happyRankMinus
-        Fminus = 0.5*(B - C);
         [ pivotIndicesMinus, pivotsMinus, happyRankMinus] = PhaseOne( Fminus, tol );
         nminus = n;
     end
@@ -117,6 +111,11 @@ g.pivotLocations = [pivotLocationsPlus;pivotLocationsMinus];
 g.idxPlus = 1:length(pivotsPlus);
 g.idxMinus = length(pivotsPlus)+1:length(g.pivotValues);
 g.domain = dom;
+
+% Sort according to the maginuted of the pivots using the partition and
+% combine functions.
+[gp,gm] = partition(g);
+g = combine(gp,gm);
 
 end
 
@@ -228,7 +227,7 @@ numPivots = sum( abs( pivots ) > 0 );
 
 % Phase 2: Calculate decomposition on sphere.
 failure = false;
-while ( ~(happy_columns && happy_rows) && ~failure)
+while ( ~(happy_columns && happy_rows) && ~failure )
     
     [x, y] = getPoints( m, n, dom );
     [xx, yy] = meshgrid( col_pivots, y);
@@ -296,7 +295,7 @@ while ( ~(happy_columns && happy_rows) && ~failure)
     if ( all(abs( tail ) <= 1e2*tol*norm(rows,inf)) )
         happy_rows = 1; 
     end
-    
+        
     % Adaptive:
     if( ~happy_columns )
         m = 2*m;
