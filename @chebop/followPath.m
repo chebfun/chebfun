@@ -23,7 +23,7 @@ function [uquasi, lamvec, mvec, lamfun, mfun] = followPath(N, lam0, varargin)
 %                 be plotted during the tracing of the curve. Possible values
 %                 TRUE, FALSE (default). Note that if 'PLOTTING' is set to TRUE,
 %                 'MEASURE' has to be passed as well.
-%   'MAXSTEPS'  : Maximum number of points to compute on the solution curve.
+%   'MAXSTEPNO' : Maximum number of points to compute on the solution curve.
 %                 Default value: 25.
 %   'STEPMAX'   : Maximum steplength accepted for pseudo-arclength continuation.
 %                 Default value: .5.
@@ -36,7 +36,7 @@ function [uquasi, lamvec, mvec, lamfun, mfun] = followPath(N, lam0, varargin)
 %   'STOPFUN'   : An anonymous function that takes U and LAMBDA as arguments and
 %                 returns a Boolean value, so that when 
 %                     STOPFUN(U,LAMBDA) == TRUE
-%                 the pathfollowing program gets terminated, even if MAXSTEPS
+%                 the pathfollowing program gets terminated, even if MAXSTEPNO
 %                 has not been reached.
 %   'DER'       : A struct that contains anonymous functions that describe the
 %                 Frechet derivatives of N. [TODO: Describe further and
@@ -92,7 +92,7 @@ function [uquasi, lamvec, mvec, lamfun, mfun] = followPath(N, lam0, varargin)
 %   lam0 = feval(diff(u0),d(2)); % Initial value for LAMBDA
 %   N.lbc = @(u, lam) u;
 %   N.rbc = @(u, lam) diff(u) - lam;
-%   [u, lamvec, mvec, lamfun, mfun] = followPath(N, lam0, 'maxsteps', 30, ...
+%   [u, lamvec, mvec, lamfun, mfun] = followPath(N, lam0, 'maxstepno', 30, ...
 %       'uinit', u0, 'measure', @(u)u(1), 'stepmax', 1, 'printing', 1);
 %   % Plot a bifurcation diagram
 %   figure, plot(lamfun, mfun)
@@ -120,7 +120,7 @@ direction = 1;
 stepmax = .5;      % Maximum steplength
 stepmin = 1e-4;    % Mininum steplength
 stepinit = [];        % Initial steplength
-maxsteps = 25;
+maxstepno = 25;
 stopfun = @(u, lambda) 0;
 prefs = [];
 
@@ -145,8 +145,8 @@ while ~isempty(varargin)  % Recurse
             plotting = val;
         case 'stepinit'
             stepinit = val;
-        case 'maxsteps'
-            maxsteps = val;
+        case 'maxstepno'
+            maxstepno = val;
         case 'stepmax'
             stepmax = val;
         case 'printing'
@@ -257,7 +257,7 @@ if ( printing )
     
 end
 numSols = 1;
-while counter <= maxsteps
+while counter <= maxstepno
     % Find a tangent direction, but only if we were told by Newton not to
     % retract
     if ~retract
