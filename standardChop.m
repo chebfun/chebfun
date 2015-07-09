@@ -30,26 +30,28 @@ function cutoff = standardChop(coeffs, tol)
 %
 % Examples:
 %
-% If coeffs = 10.^-(1:50) and random = cos(1:50), then:
-% standardChop(coeffs) = 25
-% standardChop(coeffs + 1e-16*random) = 15
-% standardChop(coeffs + 1e-13*random) = 13
-% standardChop(coeffs + 1e-10*random) = 50
-% standardChop(coeffs + 1e-10*random, 1e-10) = 9
+% coeffs = 10.^-(1:50); random = cos((1:50).^2);
+% standardChop(coeffs) % = 18
+% standardChop(coeffs + 1e-16*random) % = 15
+% standardChop(coeffs + 1e-13*random) % = 13
+% standardChop(coeffs + 1e-10*random) % = 50
+% standardChop(coeffs + 1e-10*random, 1e-10) % = 10
  
 % Jared Aurentz and Nick Trefethen, 2 July 2015.
 %
 % Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% STANDARDCHOP normally chops COEFFS at a point beyond which it is smaller
-% than TOL^(2/3).  It will never be chopped unless it is of length at least
-% 17 and falls at least below TOL^(1/3).  It will always be chopped if it has
-% a long enough final segment below TOL, and the final entry COEFFS(CUTOFF)
-% will never be zero.  These parameters result from extensive experimentation
-% as described in Chebfun discussion documents 14-constructorOct30_2014.pdf,
-% 20-epslevel_proposal.pdf, 21-epslevel-progress.pdf and
-% 23-standardChopMemo.pdf.  They are not derived from first principles and
+% STANDARDCHOP normally chops COEFFS at a point beyond which it is smaller than
+% TOL^(2/3).  It will never be chopped unless it is of length at least 17 and
+% falls at least below TOL^(1/3).  It will always be chopped if it has a long
+% enough final segment below TOL, and the final entry COEFFS(CUTOFF) will never
+% be smaller than TOL^(7/6).  All these statements are relative to
+% MAX(ABS(COEFFS)) and assume CUTOFF > 1.  These parameters result from
+% extensive experimentation as described in Chebfun discussion documents
+% 14-constructorOct30_2014.pdf, 20-epslevel_proposal.pdf,
+% 21-epslevel-progress.pdf, 23-standardChopMemo.pdf and
+% 26-standardChopNotes.pdf.  They are not derived from first principles and
 % there is no claim that they are optimal.
 
 % Set default if fewer than 2 inputs are supplied: 
@@ -133,6 +135,11 @@ end
 if ( envelope(plateauPoint) == 0 )
     cutoff = plateauPoint;
 else
+    j3 = sum(envelope >= tol^(7/6));
+    if ( j3 < j2 )
+        j2 = j3 + 1;
+        envelope(j2) = tol^(7/6);
+    end
     cc = log10(envelope(1:j2));
     cc = cc(:);
     cc = cc + linspace(0, (-1/3)*log10(tol),j2)';

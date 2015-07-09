@@ -46,10 +46,12 @@ end
 tol = tol.*f.vscale;
 
 % STANDARDCHOP requires at least 17 coefficients, so for F such that LENGTH(F) <
-% 17, the coefficients are padded with entries between TOL^(4/3) and TOL.
-if ( n < 17 )
+% 17, the coefficients are padded with entries between TOL^(7/6) and TOL.
+% See STANDARDCHOP for details.
+N = max(17,round(n*1.25+5));
+if ( n < N )
     coeffs = [coeffs;...
-              ones(17-n,1)*max(tol.^(4/3),min(min(abs(coeffs), [], 1),tol))];
+              ones(N-n,1)*max(tol.^(7/6),min(min(abs(coeffs), [], 1),tol))];
 end
 
 % Loop through columns to compute CUTOFF.
