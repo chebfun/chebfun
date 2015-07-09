@@ -44,7 +44,7 @@ for n = 1:2
     % operator.
     for k = 1:1:size(f.coeffs, 2)
         fx = fun_op(x(:, k));
-        if ( max(abs(fx(:, k) - y_exact(:, k))) > 10*max(f.vscale.*f.epslevel) )
+        if ( max(abs(fx(:, k) - y_exact(:, k))) > 1e1*max(f.vscale.*f.epslevel) )
             pass(n, 6) = 0;
             break;
         end
@@ -58,7 +58,7 @@ for n = 1:2
     f2 = testclass.make(@(x) 1i*cos(20*x));
     [vals2, pos2] = minandmax(f2);
     pass(n, 7) = norm(abs(vals) - abs([vals1 vals2]), inf) < ...
-        10*max(f.vscale.*f.epslevel);
+        1e2*max(f.vscale.*f.epslevel);
     % Note, we don't expect pos(:,2) = pos2 as the min and max are not unique.
     pass(n, 8) = norm(pos(:,1) - pos1, inf) < 500*max(f.vscale.*f.epslevel);
 

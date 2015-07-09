@@ -2,62 +2,67 @@ function f = simplify(f, tol)
 %SIMPLIFY  Remove small trailing Chebyshev coeffs of a happy CHEBTECH object.
 %  G = SIMPLIFY(F) attempts to compute a 'simplified' version G of the happy
 %  CHEBTECH object F such that LENGTH(G) <= LENGTH(F) but ||G - F|| is small in
-%  a relative sense: ||G - F|| < G.EPSLEVEL*G.VSCALE. It does this by removing
-%  trailing coefficients of F that are relatively small; more precisely, those
-%  that are smaller in magnitude than the product of F.VSCALE and F.EPSLEVEL.
-%  G.EPSLEVEL is set to F.EPSLEVEL.
+%  a relative sense. It does this by calling the routine STANDARDCHOP.
 %
 %  If F is not happy, F is returned unchanged.
 %
 %  G = SIMPLIFY(F, TOL) does the same as above but uses TOL instead of
-%  F.EPSLEVEL as the relative threshold level for deciding whether a coefficient
-%  is small enough to be removed. Here, G.EPSLEVEL is set to the maximum of
-%  F.EPSLEVEL and TOL.
+%  EPS. 
 %
 % See also HAPPINESSCHECK.
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Deal with empty case:
+% Deal with empty case.
 if ( isempty(f) )
     return
 end
 
-% Do nothing to an unhappy CHEBTECH:
+% Set F.EPSLEVEL to be MATLAB EPS.
+f.epslevel = eps + 0*f.epslevel;
+
+% Do nothing to an unhappy CHEBTECH.
 if ( ~f.ishappy )
     return
 end
 
-% Grab coefficients
+% Grab coefficients of F.
 coeffs = f.coeffs;
 [n,m] = size(coeffs);
 
-% Use the chebfunpref.eps if no tolerance was supplied:
+% Use CHEBFUNPREF.EPS if no tolerance was supplied.
 if ( nargin < 2 )
     p = chebfunpref;
     tol = p.eps;
 end
-if length(tol) ~= m
+
+% Recast TOL as a row vector.
+if ( size(tol,2) ~= m )
     tol = max(tol)*ones(1,m);
 end
 
-% extend to 17 if necessary
+% Multiply TOL by F.VSCALE.
+tol = tol.*f.vscale;
+
+% STANDARDCHOP requires at least 17 coefficients, so for F such that LENGTH(F) <
+% 17, the coefficients are padded with entries between TOL^(4/3) and TOL.
 if ( n < 17 )
-    coeffs = [coeffs;ones(17-n,1)*min(min(abs(coeffs), [],1),tol)];
+    coeffs = [coeffs;...
+              ones(17-n,1)*max(tol.^(4/3),min(min(abs(coeffs), [], 1),tol))];
 end
 
-% Loop through columns to compute cutoff
+% Loop through columns to compute CUTOFF.
 cutoff = 1;
 for k = 1:m
     cutoff = max(cutoff,standardChop(coeffs(:,k),tol(k)));
 end
+
+% Take the minimum of CUTOFF and LENGTH(F). This is necessary when padding was
+% required.
 cutoff = min(cutoff,n);
 
-% Chop coefficients
+% Chop coefficients using CUTOFF.
 f.coeffs = coeffs(1:cutoff,:);
-
-% Make sure epslevel is eps
-f.epslevel = eps + 0*f.epslevel;
 
 end
