@@ -18,7 +18,7 @@ function cutoff = standardChop(coeffs, tol)
 %         TOL will typically will be set to the Chebfun EPS parameter,
 %         sometimes multiplied by a factor such as vglobal/vlocal in
 %         construction of local pieces of global chebfuns.
-%      .  Default value: machine epsilon (MATLAB EPS).
+%         Default value: machine epsilon (MATLAB EPS).
 %
 % Output:
 %
@@ -54,7 +54,8 @@ function cutoff = standardChop(coeffs, tol)
 
 % Set default if fewer than 2 inputs are supplied: 
 if ( nargin < 2 )
-    tol = eps;
+    p = chebfunpref;
+    tol = p.eps;
 end
 
 % Make sure COEFFS has length at least 17:
