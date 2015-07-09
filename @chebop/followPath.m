@@ -23,21 +23,21 @@ function [uquasi, lamvec, mvec, lamfun, mfun] = followPath(N, lam0, varargin)
 %                 be plotted during the tracing of the curve. Possible values
 %                 TRUE, FALSE (default). Note that if 'PLOTTING' is set to TRUE,
 %                 'MEASURE' has to be passed as well.
-%   'MAXITER'   : Maximum number of points to compute on the solution curve.
+%   'MAXSTEPS'  : Maximum number of points to compute on the solution curve.
 %                 Default value: 25.
-%   'SMAX'      : Maximum steplength accepted for pseudo-arclength continuation.
+%   'STEPMAX'   : Maximum steplength accepted for pseudo-arclength continuation.
 %                 Default value: .5.
-%   'SMIN'      : Minimum steplength accepted for pseudo-arclength continuation.
+%   'STEPMIN'   : Minimum steplength accepted for pseudo-arclength continuation.
 %                 Note that if the path-following algorithm wants to take a step
-%                 smaller than SMIN, the program will give up.
+%                 smaller than STEPMIN, the program will terminate.
 %                 Default value: 1e-4.
-%   'S0'        : Initial steplength accepted for pseudo-arclength continuation.
-%                 Default value: Set to be the same as SMAX.
+%   'STEPINIT'  : Initial steplength accepted for pseudo-arclength continuation.
+%                 Default value: Set to be the same as STEPMAX.
 %   'STOPFUN'   : An anonymous function that takes U and LAMBDA as arguments and
 %                 returns a Boolean value, so that when 
 %                     STOPFUN(U,LAMBDA) == TRUE
-%                 the pathfollowing program gets terminated, even if MAXITER has
-%                 not been reached.
+%                 the pathfollowing program gets terminated, even if MAXSTEPS
+%                 has not been reached.
 %   'DER'       : A struct that contains anonymous functions that describe the
 %                 Frechet derivatives of N. [TODO: Describe further and
 %                 implement].
@@ -92,10 +92,10 @@ function [uquasi, lamvec, mvec, lamfun, mfun] = followPath(N, lam0, varargin)
 %   lam0 = feval(diff(u0),d(2)); % Initial value for LAMBDA
 %   N.lbc = @(u, lam) u;
 %   N.rbc = @(u, lam) diff(u) - lam;
-%   [u, lamvec, mvec, lamfun, mfun] = followPath(N, lam0, 'maxiter', 30, ...
-%       'uinit', u0, 'measure', @(u)u(1), 'slmax', 1, 'printing', 1);
+%   [u, lamvec, mvec, lamfun, mfun] = followPath(N, lam0, 'maxsteps', 30, ...
+%       'uinit', u0, 'measure', @(u)u(1), 'stepmax', 1, 'printing', 1);
 %   % Plot a bifurcation diagram
-%   plot(lamfun, mfun)
+%   figure, plot(lamfun, mfun)
 %
 % Example 3 -- Herceg problem, continuation on perturbation parameter
 %   ep = 2^-2;
@@ -106,7 +106,7 @@ function [uquasi, lamvec, mvec, lamfun, mfun] = followPath(N, lam0, varargin)
 %   measure = @(u) norm(diff(u), inf); 
 %   [u, lamvec, mvec] = followPath(H, lam0, ...
 %       'measure', measure, 'direction', -1, 'plotting', 1, ...
-%       'stopfun', @(u,lam) lam < 5e-3, 'slmax', .1);
+%       'stopfun', @(u,lam) lam < 5e-3, 'stepmax', .1);
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.
@@ -117,10 +117,10 @@ measure = [];
 plotting = false; % Option for plotting
 printing = false;
 direction = 1;
-smax = .5;      % Maximum steplength
-smin = 1e-4;    % Mininum steplength
-s0 = [];        % Initial steplength
-maxiter = 25;
+stepmax = .5;      % Maximum steplength
+stepmin = 1e-4;    % Mininum steplength
+stepinit = [];        % Initial steplength
+maxsteps = 25;
 stopfun = @(u, lambda) 0;
 prefs = [];
 
@@ -143,12 +143,12 @@ while ~isempty(varargin)  % Recurse
             measure = val;
         case 'plotting'
             plotting = val;
-        case 's0'
-            s0 = val;
-        case 'maxiter'
-            maxiter = val;
-        case 'slmax'
-            smax = val;
+        case 'stepinit'
+            stepinit = val;
+        case 'maxsteps'
+            maxsteps = val;
+        case 'stepmax'
+            stepmax = val;
         case 'printing'
             printing = val;
         case 'stopfun'
@@ -161,9 +161,9 @@ while ~isempty(varargin)  % Recurse
     varargin(1:2) = [];
 end
 
-% If S0 was not specified, set it to SMAX
-if ( isempty(s0) )
-    s0 = smax;
+% If STEPINIT was not specified, set it to STEPMAX
+if ( isempty(stepinit) )
+    stepinit = stepmax;
 end
 
 % No preferences specified
@@ -228,7 +228,7 @@ if ( plotting && ~haveMeasure )
         'If plotting is ON for path-following, measure has to be supplied.')
 end
 
-sl = s0;
+sl = stepinit;
 
 % If plotting, before starting path following, plot initial information
 if ( plotting )
@@ -257,7 +257,7 @@ if ( printing )
     
 end
 numSols = 1;
-while counter <= maxiter
+while counter <= maxsteps
     % Find a tangent direction, but only if we were told by Newton not to
     % retract
     if ~retract
@@ -283,8 +283,8 @@ while counter <= maxiter
         sl = sl/4;
         uinit = uold+sl*t;
         laminit = lamold+sl*tau;       
-        if sl < smin
-            disp('FAILED: sl < slmin')
+        if sl < stepmin
+            disp('FAILED: sl < stepmin')
             return
         end
         continue
@@ -331,9 +331,9 @@ while counter <= maxiter
     
     counter = counter + 1;
     if iter >= 5
-        sl = max(sl/2,smin); % Half steplength
+        sl = max(sl/2,stepmin); % Half steplength
     else
-        sl = min(sl*2,smax); % Try to increase steplength
+        sl = min(sl*2,stepmax); % Try to increase steplength
     end
     
     % If successful, update old values
