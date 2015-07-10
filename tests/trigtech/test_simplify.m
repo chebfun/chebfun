@@ -60,11 +60,11 @@ pass(10) = all(norm(feval(f, x) - feval(g, x), inf) < ...
     10*max(simptol.*f.vscale));
 
 %%
-% Try a contrived example which will leave a zero TRIGTECH:
+% Try a contrived example which will return a length 1 trigtech.
 
 f = testclass.make(@(x) sin(100*pi*(x + 0.1)));
 g = simplify(f, 1e20);
-pass(11) = iszero(g);
+pass(11) = ( length(g) == 1 );
 
 %%
 % Check that a long identically-zero TRIGTECH simplifies correctly:

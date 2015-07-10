@@ -60,6 +60,12 @@ if ( nargin < 2 )
     tol = p.eps;
 end
 
+% Check magnitude of TOL:
+if ( tol >= 1 ) 
+    cutoff = 1;
+    return
+end
+
 % Make sure COEFFS has length at least 17:
 n = length(coeffs);
 cutoff = n;
