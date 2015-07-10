@@ -12,7 +12,7 @@ testclass = trigtech();
 f = testclass.make(@(x) cos(5*pi*x), [], pref);
 r = roots(f);
 exact = (-0.9:0.2:0.9).';
-pass(1) = norm(r-exact,Inf) < length(f)*f.epslevel;
+pass(1) = norm(r-exact,Inf) < 1e1*length(f)*f.epslevel;
 
 %% More complicated:
 k = 20;

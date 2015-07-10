@@ -9,7 +9,7 @@ function f = simplify(f, tol)
 %  G = SIMPLIFY(F, TOL) does the same as above but uses TOL instead of
 %  EPS. 
 %
-% See also HAPPINESSCHECK.
+% See also STANDARDCHOP.
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -42,16 +42,15 @@ if ( size(tol,2) ~= m )
     tol = max(tol)*ones(1,m);
 end
 
-% Multiply TOL by F.VSCALE.
-tol = tol.*f.vscale;
-
 % STANDARDCHOP requires at least 17 coefficients, so for F such that LENGTH(F) <
 % 17, the coefficients are padded with entries between TOL^(7/6) and TOL.
 % See STANDARDCHOP for details.
 N = max(17,round(n*1.25+5));
+cfmins = min(abs(coeffs), [], 1);
+cfmaxs = max(abs(coeffs), [], 1);
 if ( n < N )
-    coeffs = [coeffs;...
-              ones(N-n,1)*max(tol.^(7/6),min(min(abs(coeffs), [], 1),tol))];
+    coeffs = [coeffs;ones(N-n,1)*...
+              (max(tol.^(7/6),min(cfmins./cfmaxs,tol)).*cfmaxs)];
 end
 
 % Loop through columns to compute CUTOFF.

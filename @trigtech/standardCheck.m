@@ -1,40 +1,64 @@
 function [ishappy, epslevel, cutoff] = standardCheck(f, values, vscl, pref)
-%STANDARDCHECK  This function is a wrapper for Nick's standardChop
-%  routine to chop a series of Chebyshev coefficients, see below.
+%STANDARDCHECK   Attempt to trim trailing Fourier coefficients in a TRIGTECH.
+%   [ISHAPPY, EPSLEVEL, CUTOFF] = STANDARDCHECK(F) uses the routine STANDARDCHOP
+%   to compute a positive integer CUTOFF which represents the number of
+%   coefficients of F that are deemed accurate enough to keep. ISHAPPY is TRUE
+%   if the CUTOFF value returned by STANDARDCHOP is less than LENGTH(F) and
+%   FALSE otherwise. EPSLEVEL is always returned as MATLAB EPS.
+%
+%   [ISHAPPY, EPSLEVEL, CUTOFF] = STANDARDCHECK(F, VALUES, VSCL, PREF) allows
+%   additional preferences to be passed. VALUES is a matrix of the function
+%   values of F at the corresponding interpolation points. VSCL is an
+%   approximation of the maximum function value of F on a possibly larger
+%   approximation interval. PREF is a data structure used to pass in additional
+%   information, e.g. a target accuracy tolerance could be passed using
+%   PREF.EPS.
+%
+% See also CLASSICCHECK, STRICTCHECK, LOOSECHECK.
 
-% Grab the coefficients:
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+% Grab the coefficients of F.
 coeffs = abs(f.coeffs(end:-1:1,:));
 [n,m] = size(coeffs);
 
-% Compute some values if none were given:
+% Compute some values if none were given.
 if ( nargin < 2 || isempty(values) )
     values = f.coeffs2vals(f.coeffs);
 end
 
+% In order to work with STANDARDCHOP, the coefficients of F are modified so that
+% the entries corresponding to wave numbers k and -k appear sequentially in the
+% new matrix of coefficients. These entries are also replaced by the sum of the
+% absolute values of the k and -k coefficients.
+
 % Need to handle odd/even cases separately.
 isEven = ~mod(n, 2);
 if isEven
-    % In this case the negative cofficients have an additional term
-    % corresponding to the cos(N/2*x) coefficient.
     coeffs = [coeffs(n,:);coeffs(n-1:-1:n/2+1,:)+coeffs(1:n/2-1,:);coeffs(n/2,:)];
 else
     coeffs = [coeffs(n:-1:(n+1)/2+1,:)+coeffs(1:(n+1)/2-1,:);coeffs((n+1)/2,:)];
 end
 coeffs = flipud(coeffs);
+coeffs = [coeffs(1,:);kron(coeffs(2:end,:),[1;1])];
 
-% initialize ishappy
+% Initialize ISHAPPY.
 ishappy = false;
 
-% initialize epslevel
+% Initialize EPSLEVEL.
 epslevel = eps*ones(1,m); 
+
+% Initialize CUTOFF.
+cutoff = n; 
 
 % NaNs are not allowed.
 if ( any(isnan(coeffs)) )
-    error('CHEBFUN:CHEBTECH:standardCheck:nanEval', ...
+    error('CHEBFUN:TRIGTECH:standardCheck:nanEval', ...
         'Function returned NaN when evaluated.')
 end
 
-% Grab some preferences:
+% Grab some preferences.
 if ( nargin == 1 )
     pref = f.techPref();
     tol = pref.eps;
@@ -43,32 +67,36 @@ elseif ( isnumeric(pref) )
 else
     tol = pref.eps;
 end
+
+% Reshape TOL.
 if size(tol,2) ~= m
   tol = ones(1,m)*max(tol);
 end
 
-% Compute shift
+% Scale TOL by the MAX(||F||*F.HSCALE, VSCL);
+nrmf = max(abs(values), [], 1);
 if ( isempty(vscl) )
-    shift = ones(1,m);
-else
-    shift = vscl;
+    vscl = nrmf;
 end
-shift = shift.*f.hscale;
-shift = 1./max(shift,1);
+tol = tol.*max(nrmf.*f.hscale, vscl);
 
 % Loop through columns of coeffs
-coeffs = [coeffs(1,:);kron(coeffs(2:end,:),[1;1])];
 ishappy = false(1,m);
 cutoff = zeros(1,m);
 for k = 1:m
 
-    % call standardChop
-    [cutoff(k)] = standardChop(coeffs(:,k), tol(k)/shift(k));
+    % Call STANDARDCHOP.
+    cutoff(k) = standardChop(coeffs(:,k), tol(k));
+
+    % Check for happiness.
     ishappy(k) = ( cutoff(k) < n );
+
+    % Break if unhappy.
     if ( ~ishappy(k) )
-        % No need to continue if it fails on any column.
         break
     end
+
+    % Divided CUTOFF by 2.
     if ( ~mod(cutoff(k),2) )
         cutoff(k) = cutoff(k)/2;
     else
@@ -77,8 +105,10 @@ for k = 1:m
 
 end
 
-% set outputs
+% Set outputs.
 ishappy = all(ishappy); 
+
+% CUTOFF is always odd.
 cutoff = 2*max(cutoff)+1;
 
 end
