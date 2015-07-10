@@ -61,6 +61,8 @@ happyRankPlus = 0;     % Happy with phase one?
 happyRankMinus = 0;
 happyRank = 0;
 failure = false;
+pivotIndicesPlus = []; pivotsPlus = [];
+pivotIndicesMinus = []; pivotsMinus = [];
 while ( ~happyRank && ~failure )
     n = 2*n;
         
@@ -80,13 +82,36 @@ while ( ~happyRank && ~failure )
     tol = max(tolplus,tolminus);
   
     if ~happyRankPlus
+        pivotIndicesPlus2 = pivotIndicesPlus;
+        pivotsPlus2 = pivotsPlus;
         [ pivotIndicesPlus, pivotsPlus, happyRankPlus, removePoles ] = PhaseOnePlus( Fplus, tol );
-        nplus = n;
+        if size(pivotsPlus,1) > size(pivotsPlus2,1)
+            happyRankPlus = 0;
+            nplus = n;
+        elseif happyRankPlus
+            pivotIndicesPlus = pivotIndicesPlus2;
+            pivotsPlus = pivotsPlus2;
+            nplus = n/2;
+        else
+            nplus = n;
+        end
     end
     
     if ~happyRankMinus
-        [ pivotIndicesMinus, pivotsMinus, happyRankMinus] = PhaseOne( Fminus, tol );
-        nminus = n;
+        pivotIndicesMinus2 = pivotIndicesMinus;
+        pivotsMinus2 = pivotsMinus;
+        
+        [ pivotIndicesMinus, pivotsMinus, happyRankMinus] = PhaseOne( Fminus, tol, 0 );
+        if size(pivotsMinus,1) > size(pivotsMinus2,1)
+            happyRankMinus = 0;
+            nminus = n;
+        elseif happyRankMinus
+            pivotIndicesMinus = pivotIndicesMinus2;
+            pivotsMinus = pivotsMinus2;
+            nminus = n/2;
+        else
+            nminus = n;
+        end
     end
     
     happyRank = happyRankPlus && happyRankMinus;
@@ -123,7 +148,6 @@ function [pivotIndices, pivots, happy, poleRemoved] = PhaseOnePlus( F, tol )
 
 [m, n] = size( F );
 
-pivotIndices = []; pivots = [];
 vscl = norm( F( : ), inf);
 
 %
@@ -134,14 +158,14 @@ pole2 = mean(F(m,:));     % the mean of all the samples at the poles.
 
 % If the the values at both poles are not zero then we need to add zero
 % them out before removing these entries from F.
-poleRemoved = false;
+poleRemoved = 0;
 if abs(pole1) > vscl*tol || abs(pole2) > vscl*tol
     % Determine the column with maximum inf-norm
     [ignored, poleCol] = max(max(abs(F),[],1));
     % Zero out the pole using the poleCol.
     F = F - F(:, poleCol)*ones(1,n);
     % Do we need to keep track of the pivot locations?
-    poleRemoved = true;
+    poleRemoved = 1;
 end
 
 % Remove the rows corresponding to the poles in F before determining the
@@ -149,7 +173,7 @@ end
 % code below requires.
 F = F( 2:m-1, : );
 
-[pivotIndices, pivots, happy] = PhaseOne( F, tol );
+[pivotIndices, pivots, happy] = PhaseOne( F, tol, poleRemoved );
 
 % Adjust the pivot locations so that they now correspond to F having
 % the poles.
@@ -166,11 +190,10 @@ end
 
 end
 
-function [pivotIndices, pivots, happy] = PhaseOne( F, tol )
+function [pivotIndices, pivots, happy] = PhaseOne( F, tol, rank_count )
 
 % Phase 1: Go find rank, plus pivot locations, ignore cols and rows.
 pivotIndices = []; pivots = [];
-rank_count = 0;    % keep track of the rank of the approximation.
 
 % Do GE with complete pivoting
 
@@ -275,24 +298,24 @@ while ( ~(happy_columns && happy_rows) && ~failure )
     % TODO: Make this more similar to hapiness check in trigtech.
 
     % Double up the columns
-    cols = [ cols ; sgn*flipud(cols(2:m,:)) ];
-    rows = [ rows sgn*rows ];
-    col_coeffs = trigtech.vals2coeffs( cols ); 
+    colsSum = sum([ cols ; sgn*flipud(cols(2:m,:)) ],2);
+    col_coeffs = trigtech.vals2coeffs( colsSum ); 
     % Length of tail to test.
     testLength = min(m, max(3, round((m-1)/8)));
-    tail = col_coeffs(1:testLength,:);
+    tail = col_coeffs(1:testLength);
 
-    if ( all( abs( tail ) <= 1e2*tol*norm(cols,inf) ) )
+    if ( all( abs( tail ) <= 1e1*tol*norm(colsSum,inf) ) )
         happy_columns = 1;
     end
     
     % Happiness check for rows:
     % TODO: Make this more similar to hapiness check in trigtech.
-    row_coeffs = trigtech.vals2coeffs( rows.' ); 
+    rowsSum = sum([ rows sgn*rows ],1).';
+    row_coeffs = trigtech.vals2coeffs( rowsSum ); 
     % Length of tail to test.
     testLength = min(n, max(3, round((n-1)/8)));
-    tail = row_coeffs(1:testLength,:);
-    if ( all(abs( tail ) <= 1e2*tol*norm(rows,inf)) )
+    tail = row_coeffs(1:testLength);
+    if ( all(abs( tail ) <= 1e1*tol*norm(rowsSum,inf)) )
         happy_rows = 1; 
     end
         
@@ -314,6 +337,8 @@ while ( ~(happy_columns && happy_rows) && ~failure )
         failure = true;
     end 
 end
+cols = [ cols ; sgn*flipud(cols(2:end-1,:)) ];
+rows = [ rows sgn*rows ];
 
 % Adjust pivots to track indicies.
 pivotLocations = [col_pivots row_pivots];

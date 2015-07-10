@@ -52,8 +52,8 @@ end
 % 4. Add fixed-rank.
 % 5. Add tensor-product.
 
-maxRank = 4000; 
-maxSample = 4000;
+maxRank = 8192; 
+maxSample = 8192;
 pseudoLevel = eps;
 
 % If f is defined in terms of x,y,z; then convert it to
@@ -66,6 +66,8 @@ h = redefine_function_handle( op );
 n = 4;
 happy_rank = 0;     % Happy with phase one? 
 failure = false;
+pivotIndices = [];
+pivotMatrices = [];
 while ( ~happy_rank && ~failure )
     n = 2*n;
         
@@ -75,8 +77,18 @@ while ( ~happy_rank && ~failure )
     F = evaluate(h, n, n, dom);
     
     tol = GetTol(F, pi/n, pi/n, dom, pseudoLevel);
-
+    
+    pivotIndices2 = pivotIndices;
+    pivotMatrices2 = pivotMatrices;
     [ pivotIndices, pivotMatrices, happy_rank, removePoles ] = PhaseOne( F, tol, alpha );
+    if size(pivotIndices,1) > size(pivotIndices2,1)
+        happy_rank = 0;
+    elseif happy_rank
+        pivotIndices = pivotIndices2;
+        pivotMatrices = pivotMatrices2;
+        n = n/2;
+    end
+    
     if ( n >= maxRank  )
         warning('SPHEREFUN:CONSTRUCTOR:MAXRANK', ... 
                                 'Unresolved with maximum rank.');
@@ -124,6 +136,8 @@ if abs(pole1) > vscl*tol || abs(pole2) > vscl*tol
     F = F - 0.25*F(:, [poleCol poleCol+n/2])*(ones(2)*ones(2,n));
     % Do we need to keep track of the pivot locations?
     removePole = true;
+    % Update the rank count
+    rank_count = rank_count + 1;
 end
 
 % Remove the rows corresponding to the poles in F before determining the
@@ -201,7 +215,7 @@ if removePole
 end
 
 % If the rank of the matrix is less than 1/4 its size. We are happy:
-if ( rank_count < min(size(F))/8 )
+if ( rank_count < min(size(F))/4 )
     happy = 1;
 else
     happy = 0;
@@ -358,32 +372,26 @@ while ( ~(happy_columns && happy_rows) && ~failure)
     % Happiness check for columns:
     % TODO: Make this more similar to hapiness check in trigtech.
 
-    % Double up the columns
-    cols = zeros( 2*m, totalPivots );
-    cols(:,idxPlus) = [ colsPlus; flipud(colsPlus(2:m,:)) ];
-    cols(:,idxMinus) = [ colsMinus; -flipud(colsMinus(2:m,:)) ];
-%     cols = [ [colsPlus colsMinus] ; [flipud(colsPlus(2:m,:)) -flipud(colsMinus(2:m,:))] ];
+    % Double up the columns and rows.
+    colsSum = sum([ [colsPlus colsMinus] ; [flipud(colsPlus(2:m,:)) -flipud(colsMinus(2:m,:))] ],2);
+    rowsSum = sum([ rowsPlus ;  rowsMinus ].',2);
     
-    rows = zeros( 2*n, totalPivots );
-    rows(:,idxPlus) = rowsPlus.';
-    rows(:,idxMinus) = rowsMinus.';
-%     rows = [ rowsPlus ;  rowsMinus ].';
-    col_coeffs = trigtech.vals2coeffs( cols ); 
+    col_coeffs = trigtech.vals2coeffs( colsSum );
     % Length of tail to test.
     testLength = min(m, max(3, round((m-1)/8)));
-    tail = col_coeffs(1:testLength,:);
+    tail = col_coeffs(1:testLength);
 
-    if ( all( abs( tail ) <= 1e2*tol*norm(cols,inf) ) )
+    if ( all( abs( tail ) <= 1e1*tol*norm(colsSum,inf) ) )
         happy_columns = 1;
     end
     
     % Happiness check for rows:
     % TODO: Make this more similar to hapiness check in trigtech.
-    row_coeffs = trigtech.vals2coeffs( rows ); 
+    row_coeffs = trigtech.vals2coeffs( rowsSum ); 
     % Length of tail to test.
     testLength = min(n, max(3, round((n-1)/8)));
-    tail = row_coeffs(1:testLength,:);
-    if ( all(abs( tail ) <= 1e2*tol*norm(rows,inf)) )
+    tail = row_coeffs(1:testLength);
+    if ( all(abs( tail ) <= 1e1*tol*norm(rowsSum,inf)) )
         happy_rows = 1; 
     end
     
@@ -410,6 +418,13 @@ end
 % pivots = [pivotPlus;pivotMinus];
 % idxPlus = 1:numPosPivots;
 % idxMinus = (numPosPivots+1):(numPosPivots+numMinusPivots);
+cols = zeros( 2*size(colsPlus,1)-2, totalPivots );
+cols(:,idxPlus) = [ colsPlus; flipud(colsPlus(2:end-1,:)) ];
+cols(:,idxMinus) = [ colsMinus; -flipud(colsMinus(2:end-1,:)) ];
+
+rows = zeros( size(rowsPlus,2), totalPivots );
+rows(:,idxPlus) = rowsPlus.';
+rows(:,idxMinus) = rowsMinus.';
 
 pivotLocations = [col_pivots(1:length(col_pivots)/2) row_pivots];
 
