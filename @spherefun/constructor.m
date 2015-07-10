@@ -214,8 +214,8 @@ if removePole
     pivotMatrices = [ev ; pivotMatrices];
 end
 
-% If the rank of the matrix is less than 1/4 its size. We are happy:
-if ( rank_count < min(size(F))/4 )
+% If the rank of the matrix is less than 1/8 its size. We are happy:
+if ( rank_count < min(size(F))/8 )
     happy = 1;
 else
     happy = 0;
@@ -381,7 +381,7 @@ while ( ~(happy_columns && happy_rows) && ~failure)
     testLength = min(m, max(3, round((m-1)/8)));
     tail = col_coeffs(1:testLength);
 
-    if ( all( abs( tail ) <= 1e1*tol*norm(colsSum,inf) ) )
+    if ( all( abs( tail ) <= 1e1*tol ) )
         happy_columns = 1;
     end
     
@@ -391,7 +391,7 @@ while ( ~(happy_columns && happy_rows) && ~failure)
     % Length of tail to test.
     testLength = min(n, max(3, round((n-1)/8)));
     tail = row_coeffs(1:testLength);
-    if ( all(abs( tail ) <= 1e1*tol*norm(rowsSum,inf)) )
+    if ( all( abs( tail ) <= 1e1*tol ) )
         happy_rows = 1; 
     end
     

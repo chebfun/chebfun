@@ -211,7 +211,7 @@ while ( norm( F( : ), inf ) > tol )
     rank_count = rank_count + 1; 
 end
 
-% If the rank of the matrix is less than 1/4 its size. We are happy:
+% If the rank of the matrix is less than 1/8 its size. We are happy:
 if ( rank_count < min(size(F))/8 )
     happy = 1;
 else
@@ -304,7 +304,7 @@ while ( ~(happy_columns && happy_rows) && ~failure )
     testLength = min(m, max(3, round((m-1)/8)));
     tail = col_coeffs(1:testLength);
 
-    if ( all( abs( tail ) <= 1e1*tol*norm(colsSum,inf) ) )
+    if ( all( abs( tail ) <= 1e1*tol ) )
         happy_columns = 1;
     end
     
@@ -315,7 +315,7 @@ while ( ~(happy_columns && happy_rows) && ~failure )
     % Length of tail to test.
     testLength = min(n, max(3, round((n-1)/8)));
     tail = row_coeffs(1:testLength);
-    if ( all(abs( tail ) <= 1e1*tol*norm(rowsSum,inf)) )
+    if ( all( abs( tail ) <= 1e1*tol ) )
         happy_rows = 1; 
     end
         
@@ -331,6 +331,19 @@ while ( ~(happy_columns && happy_rows) && ~failure )
         id_cols = 2*id_cols - 1;
     end
     
+%     if happy_rows && n < 256 
+%         happy_rows = false;
+%         n = 2*n; 
+%         id_cols = 2*id_cols - 1;
+%     end
+%     
+%     if happy_columns && m < 256 
+%         happy_columns = false;
+%         m = 2*m; 
+%         ii = [1:2:m-1 m+2:2:2*m]; 
+%         id_rows = ii(id_rows); 
+%     end
+        
     if ( max(m, n) >= maxSample ) 
         warning('SPHEREFUN:constructor:notResolved', ...
         'Unresolved with maximum length: %u.', maxSample);
