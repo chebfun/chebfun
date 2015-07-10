@@ -93,15 +93,15 @@ end
 % Discretization type.
 discType = pref.discretization;
 
-% Deal with discType = 'values' or 'coeffs'
+% Deal with discType = 'values' or 'coeffs':
 if ( ischar(discType) )
-    discType = prefs.discretization;
+    discType = pref.discretization;
     if ( ischar(discType) && strcmp(discType, 'values') )
         discType = @chebcolloc2;
     elseif ( ischar(discType) && strcmp(discType, 'coeffs') )
         discType = @ultraS;
     end
-    prefs.discretization = discType;
+    pref.discretization = discType;
 end
 
 % Make sure we have a valid discretization preference at this level.
