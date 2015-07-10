@@ -149,6 +149,10 @@ while ~isempty(varargin)  % Recurse
             maxstepno = val;
         case 'stepmax'
             stepmax = val;
+        case 'stepmin'
+            stepmin = val;
+        case 'stepinit'
+            stepinit = val;
         case 'printing'
             printing = val;
         case 'stopfun'
@@ -181,6 +185,18 @@ if ( isempty(uinit) )
     end
     Ninit = N;
     Ninit.op = @(x,u) N.op(x, u, lam0);
+    if ( ~isempty(Ninit.bc) )
+        Ninit.bc = @(x,u) Ninit.bc(x,u,lam0);
+    end
+    
+    if ( ~isempty(Ninit.lbc) )
+        Ninit.lbc = @(u) Ninit.lbc(u,lam0);
+    end
+    
+    if ( ~isempty(Ninit.rbc) )
+        Ninit.rbc = @(u) Ninit.rbc(u,lam0);
+    end
+    
     uinit = Ninit\0;
     
     if ( printing )
