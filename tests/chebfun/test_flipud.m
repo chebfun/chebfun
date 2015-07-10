@@ -29,7 +29,7 @@ g = chebfun(@(x) [sin(x).*abs(x - 0.1) cos(x).*sign(x + 0.2)], ...
 gg = flipud(g);
 gg_exact = @(x) [sin(-x).*abs(-x - 0.1) cos(-x).*sign(-x + 0.2)];
 err = feval(gg, xr) - gg_exact(xr);
-pass(4) = norm(err(:), inf) < 10*gg.vscale.*gg.epslevel;
+pass(4) = norm(err(:), inf) < 1e2*gg.vscale.*gg.epslevel;
 pass(5) = isequal(flipud(gg), g);
 
 % Check behavior for row chebfuns.

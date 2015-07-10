@@ -159,13 +159,13 @@ epslevel = epslevel.*vsclGlobal./vsclOut;
 %%%%%%%%%%%%%%%%%%%%%%%%%% Assign to CHEBTECH object. %%%%%%%%%%%%%%%%%%%%%%%%%%
 f.coeffs = coeffs;
 f.ishappy = ishappy;
-f.epslevel = epslevel;
+f.epslevel = eps + 0*epslevel;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Ouput. %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if ( ishappy )
     % We're done, and can return.
-    f = simplify(f, f.epslevel/100);
+    f = simplify(f, f.epslevel);
     return
 end
 

@@ -64,7 +64,9 @@ nrmf = max(abs(values), [], 1);
 if ( isempty(vscl) )
     vscl = nrmf;
 end
-tol = tol.*max(nrmf.*f.hscale, vscl);
+%tol = tol.*max(nrmf.*f.hscale, vscl);
+tol = tol.*vscl./nrmf;
+%ratio = vscl./nrmf
 
 % Loop through columns of coeffs.
 ishappy = false(1,m);
