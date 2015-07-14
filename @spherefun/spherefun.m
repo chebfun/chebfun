@@ -23,10 +23,10 @@ classdef spherefun < separableApprox
                 if ischar(varargin{2})
                     if strcmpi(varargin{2},'2by2')
                         constructorType = 2;
-                        varargin{2} = [];
+                        varargin(2) = [];
                     elseif strcmpi(varargin{2},'PlusMinus')
                         constructorType = 3;
-                        varargin{2} = [];
+                        varargin(2) = [];
                     end
                 end
             end
