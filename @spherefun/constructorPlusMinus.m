@@ -132,10 +132,20 @@ g.cols = [chebfun( colsPlus, dom(3:4)-[pi 0], 'trig') chebfun( colsMinus, dom(3:
 g.rows = [chebfun( rowsPlus.', dom(1:2), 'trig') chebfun( rowsMinus.', dom(1:2), 'trig')];
 g.pivotValues = [pivotsPlus;pivotsMinus];
 g.pivotIndices = [pivotIndicesPlus; pivotIndicesMinus];
-g.pivotLocations = [pivotLocationsPlus;pivotLocationsMinus];
 g.idxPlus = 1:length(pivotsPlus);
 g.idxMinus = length(pivotsPlus)+1:length(g.pivotValues);
 g.domain = dom;
+
+% Adjust the pivot locations so that they correspond to 
+% -pi < lam < pi and 0 < th < pi or -pi/2 < th < pi/2
+pivotLocations = [pivotLocationsPlus;pivotLocationsMinus];
+if iscolat(g)
+    pivotLocations(:,2) = -pivotLocations(:,2);
+else
+    pivotLocations(:,2) = -(pivotLocations(:,2)+pi);
+end
+pivotLocations(:,1) = pivotLocations(:,1) + pi;
+g.pivotLocations = pivotLocations;
 
 % Sort according to the maginuted of the pivots using the partition and
 % combine functions.
