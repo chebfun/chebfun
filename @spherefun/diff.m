@@ -24,11 +24,11 @@ else
     K = varargin{2};
 end
 
-if ( dim ~= 1 || dim ~= 2 )
+if ( dim ~= 1 && dim ~= 2 )
     error('SPHEREFUN:DIFF:DIM', 'Unrecognized coordinate dimension');
 end
 
-if ( abs( K - round(K) ) < eps )
+if ( abs( K - round(K) ) > eps )
     error('SPHEREFUN:DIFF:DIFFORDER', 'Fractional derivatives not allowed')
 end
 K = round( K );
