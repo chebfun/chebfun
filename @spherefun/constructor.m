@@ -98,7 +98,7 @@ end
 
 % PHASE TWO 
 % Find the appropriate discretizations in the columns and rows. 
-[cols, pivots, rows, pivotLocations, idxPlus, idxMinus] = PhaseTwo( h, pivotIndices, pivotMatrices, n, dom, tol, maxSample, removePoles, alpha );
+[cols, pivots, rows, pivotLocations, idxPlus, idxMinus] = PhaseTwo( h, pivotIndices, pivotMatrices, n, dom, tol, maxSample, removePoles );
 
 g.cols = chebfun( cols, dom(3:4)-[pi 0], 'trig');
 g.rows = chebfun( rows, dom(1:2), 'trig');
@@ -165,41 +165,46 @@ end
 Fp = Fp( 2:m-1, : );
 Fm = Fm( 2:m-1, : );
 
-% while ( norm( F( : ), inf ) > tol )
-% while ( max(norm(B(:),inf),norm(C(:),inf) ) > tol )
-while ( max(norm(Fp(:),inf),norm(Fm(:),inf) ) > tol )    
+[maxp,idxp] = max(abs(Fp(:)));
+[maxm,idxm] = max(abs(Fm(:)));
+
+while ( max( maxp, maxm ) > tol )    
     % Find pivots:
-    S1 = max( abs(Fp), abs(Fm) );
-    [ignored, idx] = max( S1(:) );
-    [j, k] = myind2sub( size( S1 ), idx );
+    if maxp >= maxm
+        idx = idxp;
+    else
+        idx = idxm;
+    end
+    [j, k] = myind2sub( [m-2 n/2], idx );
     
     % Use maximum of the Fp and Fm matrices for pivots
-    ev = [Fp(j,k) Fm(j,k)];
-    evp = ev(1);
-    evm = ev(2);
-    
-    % Singular-values sorted by magnitude
-    sv = [max(abs(ev)) min(abs(ev))];
-        
+    evp = Fp(j,k); absevp = abs(evp);
+    evm = Fm(j,k); absevm = abs(evm);
+            
     pivotIndices = [ pivotIndices ; j k];
-
-    if ( sv(1) <= alpha*sv(2) )  % Theoretically, should be s1 <= 2*s2.
-        % Calculate inverse of pivot matrix:
+    
+    % Smallest pivots is within an acceptable multiple of larger pivot so
+    % do a rank 2 update.
+    if ( max( absevp, absevm ) <= alpha*min( absevp, absevm ) )
         Fp = Fp - Fp(:,k)*(Fp(j,:)*(1/evp));
         Fm = Fm - Fm(:,k)*(Fm(j,:)*(1/evm));
         rank_count = rank_count + 2; 
-        pivotMatrices = [pivotMatrices ; ev ];
+        pivotMatrices = [pivotMatrices ; [evp evm] ];
+        [maxp,idxp] = max(abs(Fp(:)));
+        [maxm,idxm] = max(abs(Fm(:)));
     else
-        % Calculate pseudoinverse of pivot matrix, there is
-        % no full rank pivot matrix:
-        if abs(evp) > abs(evm)
+        % Positive pivot dominates
+        if absevp > absevm
             Fp = Fp - Fp(:,k)*(Fp(j,:)*(1/evp));
-            ev(2) = 0;
+            evm = 0;
+            [maxp,idxp] = max(abs(Fp(:)));
+        % Negative pivot dominates
         else
             Fm = Fm - Fm(:,k)*(Fm(j,:)*(1/evm));
-            ev(1) = 0;
+            evp = 0;
+            [maxm,idxm] = max(abs(Fm(:)));
         end
-        pivotMatrices = [pivotMatrices ; ev ];
+        pivotMatrices = [pivotMatrices ; [evp evm] ];
         rank_count = rank_count + 1; 
     end
 end
@@ -214,8 +219,7 @@ end
 % the pivot matrix.
 if removePole
     pivotIndices = [ 1 poleCol; pivotIndices ];
-    ev = [1 0];
-    pivotMatrices = [ev ; pivotMatrices];
+    pivotMatrices = [[1 0] ; pivotMatrices];
 end
 
 % If the rank of the matrix is less than 1/8 its size. We are happy:
@@ -227,7 +231,7 @@ end
 
 end
 
-function [cols, pivots, rows, pivotLocations, idxPlus, idxMinus] = PhaseTwo( h, pivotIndices, pivotMatrices, n, dom, tol, maxSample, removePoles, alpha )
+function [cols, pivots, rows, pivotLocations, idxPlus, idxMinus] = PhaseTwo( h, pivotIndices, pivotMatrices, n, dom, tol, maxSample, removePoles )
 
 % alpha = spherefun.alpha; % get growth rate factor.
 happy_columns = 0;   % Not happy, until proven otherwise.
@@ -241,13 +245,6 @@ id_rows = pivotIndices(:,1); id_cols = pivotIndices(:,2);
 
 row_pivots = y(id_rows);
 col_pivots = x(id_cols);
-
-% % Need to also include id_cols+n to account for the entries in the C
-% % block
-% id_cols = reshape([id_cols id_cols+n].',[],1);
-% 
-% col_pivots = x(id_cols);
-% row_pivots = y(id_rows);
 
 numPosPivots = sum( abs( pivotMatrices(:,1) ) > 0 );
 numMinusPivots = sum( abs( pivotMatrices(:,2) ) > 0 );
@@ -300,12 +297,12 @@ while ( ~(happy_columns && happy_rows) && ~failure)
     
     for ii = 1:rk
         
-        % Get the eigenvalues of the pivot matrix M
-        ev = pivotMatrices( ii, : );
-        s = [max(abs(ev)) min(abs(ev))];
-                                
+        % Get the pivots
+        evp = pivotMatrices( ii, 1 );
+        evm = pivotMatrices( ii, 2 );
+                                        
         % Do GE step on both matrices
-        if ( s(1) <= alpha*s(2) )
+        if evp ~=0 && evm ~= 0
             colPlus = newColsPlus(:,ii);
             rowPlus = newRowsPlus(ii,:);
             
@@ -315,51 +312,49 @@ while ( ~(happy_columns && happy_rows) && ~failure)
             % Store the columns and rows.
             colsPlus(:,plusCount) = colPlus;
             rowsPlus(plusCount,:) = rowPlus;
-            pivotPlus(plusCount) = ev(1);
+            pivotPlus(plusCount) = evp;
             idxPlus(plusCount) = pivotCount;
-            pivots(pivotCount) = ev(1);
+            pivots(pivotCount) = evp;
             
             plusCount = plusCount + 1;
             pivotCount = pivotCount + 1;
 
             colsMinus(:,minusCount) = colMinus;
             rowsMinus(minusCount,:) = rowMinus;
-            pivotMinus(minusCount) = ev(2);
+            pivotMinus(minusCount) = evm;
             idxMinus(minusCount) = pivotCount;
-            pivots(pivotCount) = ev(2);
+            pivots(pivotCount) = evm;
 
             minusCount = minusCount + 1;
             pivotCount = pivotCount + 1;
 
             newColsPlus = newColsPlus - ...
-                    colPlus*(rowPlus(id_cols)*(1/ev(1)));
+                    colPlus*(rowPlus(id_cols)*(1/evp));
             newRowsPlus = newRowsPlus - ...
-                    ((1/ev(1))*colPlus(id_rows))*rowPlus;
+                    ((1/evp)*colPlus(id_rows))*rowPlus;
             newColsMinus = newColsMinus - ...
-                    colMinus*(rowMinus(id_cols)*(1/ev(2)));
+                    colMinus*(rowMinus(id_cols)*(1/evm));
             newRowsMinus = newRowsMinus - ...
-                    ((1/ev(2))*colMinus(id_rows))*rowMinus;
+                    ((1/evm)*colMinus(id_rows))*rowMinus;
         else
-            % Use the pseudoinverse of the pivot matrix, there is
-            % no full rank pivot matrix:
-            if abs(ev(1)) > abs(ev(2))                
+            if ( evp ~= 0 )
                 colPlus = newColsPlus(:,ii);
                 rowPlus = newRowsPlus(ii,:);
 
                 % Store the columns and rows.
                 colsPlus(:,plusCount) = colPlus;
                 rowsPlus(plusCount,:) = rowPlus;
-                pivotPlus(plusCount) = ev(1);
+                pivotPlus(plusCount) = evp;
                 idxPlus(plusCount) = pivotCount;
-                pivots(pivotCount) = ev(1);
+                pivots(pivotCount) = evp;
 
                 plusCount = plusCount + 1;
                 pivotCount = pivotCount + 1;
                 
                 newColsPlus = newColsPlus - ...
-                        colPlus*(rowPlus(id_cols)*(1/ev(1)));
+                        colPlus*(rowPlus(id_cols)*(1/evp));
                 newRowsPlus = newRowsPlus - ...
-                        ((1/ev(1))*colPlus(id_rows))*rowPlus;
+                        ((1/evp)*colPlus(id_rows))*rowPlus;
             else
                 colMinus = newColsMinus(:,ii);
                 rowMinus = newRowsMinus(ii,:);
@@ -367,17 +362,17 @@ while ( ~(happy_columns && happy_rows) && ~failure)
                 % Store the columns and rows.
                 colsMinus(:,minusCount) = colMinus;
                 rowsMinus(minusCount,:) = rowMinus;
-                pivotMinus(minusCount) = ev(2);
+                pivotMinus(minusCount) = evm;
                 idxMinus(minusCount) = pivotCount;
-                pivots(pivotCount) = ev(2);
+                pivots(pivotCount) = evm;
 
                 minusCount = minusCount + 1;
                 pivotCount = pivotCount + 1;
 
                 newColsMinus = newColsMinus - ...
-                        colMinus*(rowMinus(id_cols)*(1/ev(2)));
+                        colMinus*(rowMinus(id_cols)*(1/evm));
                 newRowsMinus = newRowsMinus - ...
-                        ((1/ev(2))*colMinus(id_rows))*rowMinus;
+                        ((1/evm)*colMinus(id_rows))*rowMinus;
             end
         end
     end    

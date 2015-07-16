@@ -169,7 +169,7 @@ pole2 = mean(F(m,:));     % the mean of all the samples at the poles.
 % If the the values at both poles are not zero then we need to add zero
 % them out before removing these entries from F.
 poleRemoved = 0;
-if abs(pole1) > vscl*tol || abs(pole2) > vscl*tol
+if abs(pole1) > tol || abs(pole2) > tol
     % Determine the column with maximum inf-norm
     [ignored, poleCol] = max(max(abs(F),[],1));
     % Zero out the pole using the poleCol.
