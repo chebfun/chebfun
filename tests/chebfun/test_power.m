@@ -191,7 +191,7 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = norm(vals_g - vals_exact, inf);
-tol = 1e3*epslevel(f).*norm(vals_exact, inf);
+tol = 1e4*epslevel(f).*norm(vals_exact, inf);
 pass(27) = ( err < tol );
 
 
@@ -328,7 +328,7 @@ g = power(f, pow);
 gVals = feval(g, x);
 gExact = opg(x);
 err = gVals - gExact;
-pass(35) = norm(err, inf) < 1e6*epslevel(g)*vscale(g);
+pass(35) = norm(err, inf) < 1e7*epslevel(g)*vscale(g);
 
 %% Functions on [a inf]:
 
@@ -359,7 +359,7 @@ g = power(f, pow);
 gVals = feval(g, x);
 gExact = opg(x);
 err = gVals - gExact;
-pass(37) = norm(err, inf) < 1e2*epslevel(g)*vscale(g);
+pass(37) = norm(err, inf) < 1e5*epslevel(g)*vscale(g);
 
 
 % Blow-up function and negative integer power:

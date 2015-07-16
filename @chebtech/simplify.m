@@ -39,7 +39,7 @@ end
 
 % Recast TOL as a row vector.
 if ( size(tol,2) ~= m )
-    tol = max(tol)*ones(1,m);
+    tol = max(max(tol),eps^(7/6))*ones(1,m);
 end
 
 % STANDARDCHOP requires at least 17 coefficients, so for F such that LENGTH(F) <
