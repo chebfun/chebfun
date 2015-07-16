@@ -20,7 +20,7 @@ function [isDone, epslevel, vscale, cutoff] = testConvergence(disc, values, vsca
 if ( nargin < 4 )
     pref = cheboppref;
     if ( nargin < 3 )
-        vscale = 0;   % will have no effect
+        vscale = 1;   % will have no effect
     end
 end
 
@@ -35,7 +35,7 @@ d = disc.domain;
 numInt = numel(d) - 1;
 isDone = false(numInt, 1);
 cutoff = zeros(numInt, numCol);
-epslevel = 0;
+epslevel = eps;
 
 % Get the discretization, and the appropriate tech to use:
 discPreference = pref.discretization();
@@ -54,7 +54,7 @@ for i = 1:numInt
     happinessChecker = pref.happinessCheck;
     [isDone(i), neweps, cutoff(i,:)] = happinessChecker(f, [],...
          vscale, prefTech);
-    epslevel = max(epslevel, neweps);
+    epslevel = eps + 0*epslevel;
 end
 
 isDone = all(isDone, 2);
