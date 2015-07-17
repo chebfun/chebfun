@@ -97,7 +97,7 @@ end
 function [pivotIndices, pivotMatrices, happy, removePole, ranks, counters] = PhaseOne( F, tol )
 
 % Phase 1: Go find rank, plus pivot locations, ignore cols and rows.
-alpha = spherefun.alpha; % get growth rate factor.
+alpha = 2;%spherefun.alpha; % get growth rate factor.
 [m, n] = size( F );
 pivotIndices = []; pivotMatrices = [];
 vscl = norm( F( : ), inf);
@@ -201,7 +201,7 @@ end
 
 function [cols, pivots, rows, pivotLocations, idxPlus, idxMinus] = PhaseTwo( h, pivotIndices, pivotMatrices, n, dom, tol, maxSample, removePoles)
 
-alpha = spherefun.alpha; % get growth rate factor.
+alpha = 2;%spherefun.alpha; % get growth rate factor.
 happy_columns = 0;   % Not happy, until proven otherwise.
 happy_rows = 0;
 m = n;

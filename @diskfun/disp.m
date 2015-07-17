@@ -18,7 +18,7 @@ end
 dom = F.domain;                           % Domain
 len = length(F);                          % Numerical rank
 [xx, yy] = meshgrid(dom(1:2), dom(3:4));   
-vals = feval(F, xx, yy ).';               % Corner values
+vals = feval(F, xx, yy,0 ).';               % Corner values
 vals = vals(:);
 vscl = vscale(F);                         % vertical scale
 
