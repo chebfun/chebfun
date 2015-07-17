@@ -77,7 +77,7 @@ dampingInfo.x =             x;
 dampingInfo.giveUp =        0;
 
 linpref = pref;
-linpref.errTol = pref.errTol/10;
+linpref.errTol = pref.errTol/200;
 
 % Get the differential order of the LINOP L (needed when evaluating the residual
 % of periodic boundary conditions):

@@ -122,8 +122,9 @@ for i = 1:length(t)
         uFun = u(isFun);
         vscale = discu.scale(uFun);
         
-        % Test the happieness of the function pieces:
-        [isDone, epslevel] = testConvergence(disc, uFun, vscale, prefs);
+        % Test the happiness of the function pieces:
+        [isDone, epslevel, ~, cutoff] = ...
+                        testConvergence(disc, uFun, vscale, prefs);
         
         if ( all(isDone) )
             break
@@ -137,14 +138,12 @@ for i = 1:length(t)
     end
     
     %% Tidy the solution for output:
-    ucell = mat2fun(disc, u);
+    ucell = mat2fun(disc, u, cutoff);
     if ( numInt > 1 )
         % The solution will always be smooth for any t > 0.
         doMerge = @(f) merge(f);
         ucell = cellfun(doMerge, ucell, 'uniform', false);
     end
-    doSimplify = @(f) simplify(f, max(eps, epslevel));
-    ucell = cellfun(doSimplify, ucell, 'uniform', false);
     allU = [ allU, chebmatrix(ucell) ]; %#ok<AGROW>
 end
 

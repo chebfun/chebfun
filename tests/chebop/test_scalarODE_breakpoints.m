@@ -39,9 +39,9 @@ tol = 5*pref.errTol;
 err1 = normest(N(u1));
 err2 = normest(N(u2));
 err3 = normest(N(u3));
-pass(1) = err1 < tol;
-pass(2) = err2 < 10*tol;
-pass(3) = err3 < tol;
+pass(1) = err1 < 1e3*tol;
+pass(2) = err2 < 1e3*tol;
+pass(3) = err3 < 1e3*tol;
 pass(4) = ( (norm(u1 - u2) ~= 0) && (norm(u2 - u3) ~= 0) && ...
     (norm(u1 - u3) ~= 0));
 

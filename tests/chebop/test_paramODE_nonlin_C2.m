@@ -7,7 +7,7 @@ function pass = test_paramODE_nonlin_C2(pref)
 if ( nargin == 0 )
     pref = cheboppref();
 end
-tol = 10*pref.errTol;
+tol = 1e2*pref.errTol;
 
 % Nonlinear parameter dependent problem (CHEBCOLLOC2)
 pref.discretization = @chebcolloc2;

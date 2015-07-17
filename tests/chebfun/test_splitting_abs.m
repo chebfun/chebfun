@@ -69,7 +69,6 @@ g = abs(f);
 gVals = feval(g, x);
 gExact = opAbs(x);
 err = gVals - gExact;
-norm(err,inf)
 pass(j+2,:) = norm(err, inf) < 1e3*epslevel(g)*vscale(g);
 
 

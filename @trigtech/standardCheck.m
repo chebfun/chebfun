@@ -91,16 +91,16 @@ for k = 1:m
     % Check for happiness.
     ishappy(k) = ( cutoff(k) < n );
 
-    % Break if unhappy.
-    if ( ~ishappy(k) )
-        break
-    end
-
-    % Divided CUTOFF by 2.
+    % Divide CUTOFF by 2.
     if ( ~mod(cutoff(k),2) )
         cutoff(k) = cutoff(k)/2;
     else
         cutoff(k) = (cutoff(k)-1)/2;
+    end
+
+    % Break if unhappy.
+    if ( ~ishappy(k) )
+        break
     end
 
 end

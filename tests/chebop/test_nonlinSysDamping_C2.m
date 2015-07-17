@@ -7,7 +7,7 @@ if ( nargin == 0 )
     pref = cheboppref;
 end
 
-tol = 1e-10;
+tol = 1e-9;
 
 % Smooth domain:
 d = [-pi pi];
