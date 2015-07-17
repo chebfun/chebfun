@@ -143,8 +143,6 @@ while ~isempty(varargin)  % Recurse
             measure = val;
         case 'plotting'
             plotting = val;
-        case 'stepinit'
-            stepinit = val;
         case 'maxstepno'
             maxstepno = val;
         case 'stepmax'
@@ -213,7 +211,8 @@ else
 end
 
 % Store all the solutions to be returned
-uquasi = uinit;
+uquasi = cell(1, maxstepno);
+uquasi{1} = uinit;
 
 % Constraint for tangent
 J = @(u,lam) sum(u).^2+lam.^2;
@@ -290,6 +289,10 @@ while counter <= maxstepno
     % Find a Newton correction
     [u, lam, iter, retract] = newtonBVP(N, uinit, laminit, t, tau, prefs);
     
+    % Simplify
+    lenOld = length(u);
+    u = simplify(u);
+    fprintf('Simplified. Old length: %i. New length: %i.\n', lenOld, length(u));
     if retract % Newton told us we were trying to take too long tangent steps
         if printing 
             fprintf('retracted\n')
@@ -356,13 +359,15 @@ while counter <= maxstepno
     told = t; tauold = tau; uold = u; lamold = lam;
     
     % Update quasimatrix to be returned
-    uquasi = [uquasi, u];
+    uquasi{counter} = u;
     
     if ( stopfun(u, lam) )
-        return
+        break
     end
     
 end
+uquasi(counter+1:end) = [];
+uquasi = chebfun(chebmatrix(uquasi));
 lamfun = chebfun.spline(linspace(0,1,length(lamvec)),lamvec);
 mfun = chebfun.spline(linspace(0,1,length(lamvec)), mvec);
 end
