@@ -29,6 +29,17 @@ end
 % Discretization type.
 discType = pref.discretization;
 
+% Deal with discType = 'values' or 'coeffs':
+if ( ischar(discType) )
+    discType = pref.discretization;
+    if ( ischar(discType) && strcmp(discType, 'values') )
+        discType = @chebcolloc2;
+    elseif ( ischar(discType) && strcmp(discType, 'coeffs') )
+        discType = @ultraS;
+    end
+    pref.discretization = discType;
+end
+
 % Check for square operator. (This is not strict enough, technically.)
 m = size(A, 2);
 if ( m ~= size(A, 1) )

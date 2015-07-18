@@ -93,6 +93,21 @@ end
 % Discretization type.
 discType = pref.discretization;
 
+% Deal with discType = 'values' or 'coeffs':
+if ( ischar(discType) )
+    discType = pref.discretization;
+    if ( ischar(discType) && strcmp(discType, 'values') )
+        discType = @chebcolloc2;
+    elseif ( ischar(discType) && strcmp(discType, 'coeffs') )
+        discType = @ultraS;
+    end
+    pref.discretization = discType;
+end
+
+% Make sure we have a valid discretization preference at this level.
+assert(~ischar(discType), 'CHEBFUN:LINOP:expm:discretization', ...
+    'pref.discretization must be a function handle, not a string.');
+
 % Assign default to k if needed.
 if ( isempty(k) || isnan(k) )
     k = 6;

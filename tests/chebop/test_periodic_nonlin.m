@@ -22,7 +22,7 @@ N = chebop(@(u) diff(u, 2) - sin(u), dom);
 % Solve using the periodic tag.
 N.bc = 'periodic';
 N.init = u0;
-pref.discretization = 'chebcolloc2';
+pref.discretization = @chebcolloc2;
 u = solvebvp(N, f, pref);
 
 % Solve imposing directly the periodic boundary condition.

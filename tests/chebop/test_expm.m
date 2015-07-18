@@ -57,6 +57,7 @@ u = expm(A, t, u0);
 pass(3) = isequal(get(u{1}.funs{1}, 'tech'), @trigtech);
 
 % Solve with CHEBYSHEV technology.
+pref.discretization = @chebcolloc2;
 v = expm(A, t, u0, pref);
 pass(4) = isequal(get(v{1}.funs{1}, 'tech'), @chebtech2);
 

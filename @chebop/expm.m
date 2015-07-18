@@ -38,14 +38,12 @@ function varargout = expm(N, t, u0, pref)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Grab a preference if not given one:
-isPrefGiven = 1;
 if ( nargin < 4 )
     pref = cheboppref();
-    isPrefGiven = 0;
 end
 
 % Linearize and check whether the CHEBOP is linear:
-[L, ignored, fail] = linop(N);
+[L, ~, fail] = linop(N);
 
 if ( fail )
     error('CHEBFUN:CHEBOP:expm:nonlin', ...
@@ -54,7 +52,7 @@ if ( fail )
 end
 
 % Determine the discretization.
-pref = determineDiscretization(N, L, isPrefGiven, pref);
+pref = determineDiscretization(N, L, pref);
 
 % Clear boundary conditions if the dicretization uses periodic functions (since
 % if we're using periodic basis functions, the boundary conditions will be
@@ -74,7 +72,7 @@ else
     warning('CHEBFUN:CHEBOP:expm:deprecated', ...
         ['The E = expm(L) syntax is deprecated and may not behave as expected.\n', ...
          'Please review EXPM documentation for details.'])
-    varargout{1} = chebop(@(u) expm(L, 1, u), N.domain);
+    varargout{1} = chebop(@(u) expm(L, 1, u, pref), N.domain);
 end
 
 end
