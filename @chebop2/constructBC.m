@@ -56,27 +56,11 @@ elseif ( isa( bcArg, 'function_handle' ) )
         end 
         
         bcvalue = zeros(een , nf);
-        % Do we have bcs with derivatives in them?
-%         dummy = adchebfun2(chebfun2(@(x,y) 1 + 0*x, [dom, dom]));
-%         fcell = bcArg( 0, dummy ); % Use AD to pull out derivative info. 
-%         
-%         % Find scaling factors for rhs: 
-%         cc = ones(1, nf);
-%         for jj = 1:nf
-%             if ( isa(fcell, 'cell') )
-%                 v = fcell{jj};
-%             else
-%                 v = fcell(jj,:);
-%             end
-%             cc(jj) = abs(diff(scl)/2).^(length(v.jacobian) - 1);
-%         end
-%         
-        % Find f(x):  
+        % Construct f(x):  
         for jj = 1:nf
             g = f{jj};
             % bcvalue = -f as it's going in the RHS: 
             cg = g.coeffs(:);
-            %bcvalue(:,jj) = -resize(cc(jj)*cg, een);
             bcvalue(:,jj) = -resize(cg, een);
         end
         
