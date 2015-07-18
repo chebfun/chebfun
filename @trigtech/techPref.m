@@ -68,7 +68,7 @@ outPref.fixedLength        = NaN;
 outPref.extrapolate        = false;
 outPref.sampleTest         = true;
 outPref.refinementFunction = 'nested';
-outPref.happinessCheck     = @standardCheck;
+outPref.happinessCheck     = 'standard';
 
 if ( nargin == 1 )
     validPrefs = fieldnames(outPref);

@@ -55,7 +55,13 @@ if ( nargin < 4 )
 end
 
 % What does happiness mean to you?
-if ( strcmpi(pref.happinessCheck, 'classic') )
+if ( strcmpi(pref.happinessCheck, 'standard') )
+    % Use the 'standard' happiness check:
+    
+    % Check the coefficients are happy:
+    [ishappy, epslevel, cutoff] = standardCheck(f, values, vscl, pref);
+
+elseif ( strcmpi(pref.happinessCheck, 'classic') )
     % Use the default happiness check procedure from Chebfun V4.
     
     % Check the coefficients are happy:
@@ -75,8 +81,8 @@ elseif ( strcmpi(pref.happinessCheck, 'plateau') )
     
 else
     % Call a user-defined happiness check:
-    [ishappy, epslevel, cutoff] = ...
-        pref.happinessCheck(f, values, vscl, pref);
+    checker = pref.happinessCheck;
+    [ishappy, epslevel, cutoff] = checker(f, values, vscl, pref);
     
 end
 
