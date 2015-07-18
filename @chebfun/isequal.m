@@ -46,7 +46,7 @@ if ( numel(f.funs) ~= numel(g.funs) )
 end
 
 % Check the pointValues:
-tol = max(epslevel(f), epslevel(g));
+tol = 1e1*max(epslevel(f), epslevel(g));
 if ( norm(f.pointValues(:) - g.pointValues(:), inf) > tol )
     out = false;
     return
