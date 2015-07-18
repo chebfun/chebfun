@@ -56,28 +56,17 @@ elseif ( isa( bcArg, 'function_handle' ) )
         end 
         
         bcvalue = zeros(een , nf);
-        % Do we have bcs with derivatives in them.
-        try
-            % This works if the BC operators are vectorized. 
-            % Evaluate at xy for AD information: 
-            fcell = bcArg(adchebfun2(chebfun2(0, [dom, dom])),...
-                           abchebfun2(chebfun2(@(x,y) x.*y, [dom, dom])));
-        catch
-            % Cannot do it all at once, so do it term by term: 
-            gg = adchebfun2(chebfun2(@(x,y) cos(x.*y), [dom, dom]));
-            fcell = cell(1, nf); 
-            for jj = 1:nf
-                fcell{jj} = diff(gg, jj-1);
-            end
-        end
+        % Do we have bcs with derivatives in them?
+        dummy = adchebfun2(chebfun2(@(x,y) 1 + 0*x, [dom, dom]));
+        fcell = bcArg( 0, dummy ); % Use AD to pull out derivative info. 
         
-        % Find constants: 
-        cc = ones(1,nf);
+        % Find scaling factors for rhs: 
+        cc = ones(1, nf);
         for jj = 1:nf
             if ( isa(fcell, 'cell') )
                 v = fcell{jj};
             else
-                v = fcell;
+                v = fcell(jj,:);
             end
             cc(jj) = abs(diff(scl)/2).^(length(v.jacobian) - 1);
         end
@@ -86,7 +75,8 @@ elseif ( isa( bcArg, 'function_handle' ) )
         for jj = 1:nf
             g = f{jj};
             % bcvalue = -f as it's going in the RHS: 
-            bcvalue(:,jj) = -resize(cc(jj)*g.coeffs(:), een);
+            cg = g.coeffs(:);
+            bcvalue(:,jj) = -resize(cc(jj)*cg, een);
         end
         
         % Now go find the constants in the boundary conditions: 
