@@ -62,7 +62,6 @@ v = expm(A, t, u0, pref);
 pass(4) = isequal(get(v{1}.funs{1}, 'tech'), @chebtech2);
 
 % Compare solutions at final time.
-plot([u{6},v{6}])
-%pass(5) = norm(u{6} - v{6}, inf) < tol;
+pass(5) = norm(u{6} - v{6}, inf) < tol;
 
 end
