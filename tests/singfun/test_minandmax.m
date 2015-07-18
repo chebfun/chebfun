@@ -34,8 +34,8 @@ y_exact = [-92.48807414703726; Inf];
 x_exact = [-0.9717902218389038; -1];
 err_y = y(1) - y_exact(1);
 err_x = x - x_exact; 
-pass(2) = (norm(err_x, inf) < get(f, 'epslevel')*f.smoothPart.vscale &&...
-    abs(err_y) < 1e2*get(f, 'epslevel')*f.smoothPart.vscale) && (y(2) == Inf);
+pass(2) = (norm(err_x, inf) < 1e1*get(f, 'epslevel')*f.smoothPart.vscale &&...
+    abs(err_y) < 1e4*get(f, 'epslevel')*f.smoothPart.vscale) && (y(2) == Inf);
     
 % fractional root at the right endpoint and the smooth part has no roots in 
 % [-1 1].
