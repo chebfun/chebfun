@@ -22,8 +22,8 @@ function y = feval( f, c1, c2, c3)
       %  end
     %end
     % Convert to polar coordinates
-    if c3 ==1
-    [theta,r] = cart2pol(c1,c2);
+    if c3 == 1
+        [theta,r] = cart2pol(c1,c2);
     else 
      theta = c1;
      r = c2; 
@@ -33,6 +33,7 @@ function y = feval( f, c1, c2, c3)
      %   theta = pi/2 - theta;
     %end
 %end
+    end
 
 y = feval@separableApprox( f, theta, r);
 
