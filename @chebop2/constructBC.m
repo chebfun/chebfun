@@ -204,7 +204,7 @@ end
 end
 
 function val = chebValues(k, n, x)
-%CHEBBALUES   Return the values of Chebyshev {T0^(k)(x),..Tn^(k)(x)}, x being 
+%CHEBVALUES   Return the values of Chebyshev {T0^(k)(x),..Tn^(k)(x)}, x being 
 % 1 or -1. 
 if ( k == 0 )
     val = x.^((0:n-1).');
