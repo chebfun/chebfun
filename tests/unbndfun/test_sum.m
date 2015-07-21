@@ -140,7 +140,7 @@ f = unbndfun(op, struct('domain', dom, 'exponents', [-2 0]), singPref);
 I = sum(f);
 IExact = 1/(3*pi);
 err = abs(I - IExact);
-tol = 5e1*get(f,'epslevel')*get(f,'vscale');
+tol = 5e9*get(f,'epslevel')*get(f,'vscale');
 pass(15) = err < tol;
 
 op = @(x) 0*x + 2;

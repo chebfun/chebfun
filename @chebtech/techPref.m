@@ -33,6 +33,10 @@ function outPref = techPref(inPref)
 %                    points.
 %       false      - Do not test.
 %
+%     sampleTestEps  - Relative tolerance used for sample test. Its default
+%                      value is set same as eps, i.e. [2^-52], which can be
+%                      loosen for certain construction process, e.g. singfun.
+%
 %   CHEBTECH-SPECIFIC PREFERENCES
 %
 %     minSamples   - Minimum number of points used by the constructor.  Should

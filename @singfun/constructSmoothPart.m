@@ -12,7 +12,7 @@ if ( isempty(pref) )
     pref = chebfunpref();
 end
 
-pref.techPrefs.sampleTest = 0;
+% pref.techPrefs.sampleTest = 0;
 pref.techPrefs.sampleTestEps = 1e-9;
 
 % Call the SMOOTHFUN constructor:
