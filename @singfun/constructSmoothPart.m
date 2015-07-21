@@ -13,6 +13,7 @@ if ( isempty(pref) )
 end
 
 pref.techPrefs.sampleTest = 0;
+pref.techPrefs.sampleTestEps = 1e-9;
 
 % Call the SMOOTHFUN constructor:
 s = smoothfun.constructor(op, data, pref);

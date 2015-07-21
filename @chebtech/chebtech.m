@@ -13,7 +13,7 @@ classdef chebtech < smoothfun % (Abstract)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % CHEBTECH Class Description:
 %
-% The CHEBTECH class is an abstract class for representations of smooth
+% The CHEBTECH class is an abstract class for representations of smootha
 % functions on the interval [-1,1] via interpolated function values at Chebyshev
 % points and coefficients of the corresponding first-kind Chebyshev series
 % expansion.
@@ -353,7 +353,7 @@ classdef chebtech < smoothfun % (Abstract)
         out = rval(f)
 
         % Test an evaluation of the input OP against a CHEBTECH approx.
-        pass = sampleTest(op, values, f, vscl)
+        pass = sampleTest(op, values, f, vscl, pref)
         
         % Signum of a CHEBTECH. (f should have no zeros in its domain)
         f = sign(f, pref)

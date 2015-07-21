@@ -66,6 +66,7 @@ outPref.maxLength          = 2^16;
 outPref.fixedLength        = NaN;
 outPref.extrapolate        = false;
 outPref.sampleTest         = true;
+outPref.sampleTestEps      = outPref.eps;
 outPref.refinementFunction = 'nested';
 outPref.happinessCheck     = 'classic';
 

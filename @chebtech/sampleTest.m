@@ -1,4 +1,4 @@
-function pass = sampleTest(op, values, f, vscl)
+function pass = sampleTest(op, values, f, vscl, pref)
 %SAMPLETEST   Test an evaluation of input OP against a CHEBTECH approximation.
 %   SAMPLETEST(OP, VALUES, F) evaluates both the function OP and its CHEBTECH
 %   representation F at one or more points within [-1,1]. The difference of
@@ -19,7 +19,7 @@ n = length(f);
 x = f.chebpts(n);
 
 % Set a tolerance:
-tol = max(f.epslevel, 1e3*eps) * n;
+tol = max(f.epslevel, 1e3*pref.sampleTestEps) * n;
 
 if ( nargin < 4 || isempty(vscl) )
     vscl = max(abs(values), [], 1);
