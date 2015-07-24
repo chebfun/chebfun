@@ -33,9 +33,12 @@ if ( abs( K - round(K) ) > eps )
 end
 K = round( K );
 
-if ( dim == 1 )
+if ( dim == 1 )            % y 
     % latitude derivative
     f.cols = diff(f.cols, K);
-elseif ( dim == 2)
+elseif ( dim == 2)         % x
+    cost = chebfun(@(th) cos(th), [-pi,pi], 'trig');
+    
+    cols = 
     f.rows = diff(f.rows, K);
 end

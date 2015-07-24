@@ -27,6 +27,16 @@ if ( isa(op, 'spherefun') )  % SPHEREFUN( SPHEREFUN )
     return
 end
 
+if ( isa(op, 'chebfun2') )  % SPHEREFUN( CHEBFUN2 ) 
+    g = spherefun; 
+    g.cols = op.cols; 
+    g.rows = op.rows; 
+    g.domain = op.domain; 
+    g.pivotLocations = op.pivotLocations;
+    g.pivotValues = op.pivotValues; 
+    return
+end
+
 % If domain is empty take it to be co-latitude (doubled up).
 if ( nargin < 3 || isempty(dom) )
     dom = [-pi pi 0 pi];
