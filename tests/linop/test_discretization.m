@@ -2,6 +2,9 @@ function pass = test_discretization
 
 % TODO: Tests 2,3,5 assume a chebcolloc2 discretization.
 
+pref = cheboppref();
+pref.discretization = @chebcolloc2;
+
 %% Building blocks
 dom = [-2 2];
 I = chebmatrix( operatorBlock.eye(dom) );
@@ -17,10 +20,10 @@ D55 = [
    0.250000000000000  -0.585786437626905   1.000000000000000  -3.414213562373094   2.750000000000000];
 
 %% Collocation discretizations
-err(1) = norm( matrix(I,5) - eye(5) );
-err(2) = norm( matrix(D,5) - D55 );
+err(1) = norm( matrix(I,5,pref) - eye(5) );
+err(2) = norm( matrix(D,5,pref) - D55 );
 xx = chebpts(5, dom);
-err(3) = norm( matrix(U,5) - diag(u(xx)) );
+err(3) = norm( matrix(U,5,pref) - diag(u(xx)) );
 
 %% Building blocks
 dom = [-2 1 1.5 2];
@@ -38,9 +41,9 @@ for k = 1:3
 end
 
 %% Collocation discretizations
-err(4) = norm( matrix(I,n) - eye(sum(n)) );
+err(4) = norm( matrix(I,n,pref) - eye(sum(n)) );
 xx = chebpts(n, dom);
-err(5) = norm( matrix(U,n) - diag(u(xx)) );
+err(5) = norm( matrix(U,n,pref) - diag(u(xx)) );
 pass = err < 1e-9;
 
 end
