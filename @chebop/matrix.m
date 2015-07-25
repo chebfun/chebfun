@@ -15,15 +15,18 @@ function out = matrix(N, varargin)
 % See also FEVAL, LINOP/MATRIX, LINOP/FEVAL.
 
 % Get the preferences if given:
+isPrefGiven = 0;
 for j = 1:nargin-1
     item = varargin{j};
     if ( isa(item,'cheboppref') )
         prefs = item;
         isPrefGiven = 1;
-    else
-        prefs = cheboppref();
-        isPrefGiven = 0;
     end
+end
+
+% Otherwise, use default prefs
+if ( ~isPrefGiven )
+    prefs = cheboppref();
 end
 
 % Linearize:
@@ -45,10 +48,10 @@ if ( (numel(varargin) > 1) && strcmpi(varargin{2}, 'oldschool') )
 else
     % Add the preferences in vargarin to pass them to LINOP/MATRIX:
     if ( isPrefGiven )
-        % If a CHEBOPPREF was passed to the method, it will have been at the last
-        % position of varargin, indexed at nargin-1. Overwrite it with the current
-        % PREFS.DISCRETIZATION, as the discretization might have changed in the
-        % periodic case:
+        % If a CHEBOPPREF was passed to the method, it will have been at the
+        % last position of varargin, indexed at nargin-1. Overwrite it with the
+        % current PREFS.DISCRETIZATION, as the discretization might have changed
+        % in the periodic case:
         varargin{nargin-1} = prefs;
     else
         % Otherwise, add the PREFS.DISCRETIZATION to VARARGIN, so that it can be
