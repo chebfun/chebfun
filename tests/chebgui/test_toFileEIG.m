@@ -13,6 +13,10 @@ if ( ~attr.UserWrite )
     return;
 end
 
+% Disable discretization warnings.
+% TODO: Remove this when #1555 gets merged.
+warnstate = warning('OFF', 'CHEBOPPREF:PARSEDISCRETIZATION');
+
 % Find the folders which demos are stored in. The chebguiDemos folder lives in
 % the trunk folder, find the path of the Chebfun trunk.
 trunkPath = chebfunroot();
@@ -58,5 +62,6 @@ end
 % Delete the temporary file we wrote to:
 delete(fullfile(tempPath, tempFileName))
 
-
+% TODO: Remove this when #1555 gets merged.
+warning(warnstate.state, 'CHEBOPPREF:PARSEDISCRETIZATION')
 end
