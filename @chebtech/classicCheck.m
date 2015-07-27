@@ -1,15 +1,15 @@
-function [ishappy, epslevel, cutoff] = classicCheck(f, values, vscl, pref)
+function [ishappy, epslevel, cutoff] = classicCheck(f, values, vscl, hscl, pref)
 %CLASSICCHECK   Attempt to trim trailing Chebyshev coefficients in a CHEBTECH.
-%   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F, VALUES, VSCL) returns an
+%   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F, VALUES, VSCL, HSCL) returns an
 %   estimated location, the CUTOFF, at which the CHEBTECH F could be truncated
-%   to maintain an accuracy of EPSLEVEL relative to VSCL and F.HSCALE. ISHAPPY
-%   is TRUE if the representation is "happy" in the sense described further
-%   below and FALSE otherwise.  If ISHAPPY is FALSE, EPSLEVEL returns an
-%   estimate of the accuracy achieved.
+%   to maintain an accuracy of EPSLEVEL relative to VSCL and HSCL. ISHAPPY is
+%   TRUE if the representation is "happy" in the sense described further below
+%   and FALSE otherwise.  If ISHAPPY is FALSE, EPSLEVEL returns an estimate of
+%   the accuracy achieved.
 %
-%   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F, VALUES, PREF) allows
-%   additional preferences to be passed. In particular, one can adjust the
-%   target accuracy with PREF.EPS.
+%   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(..., PREF) allows additional
+%   preferences to be passed. In particular, one can adjust the target accuracy
+%   with PREF.EPS.
 %
 %   CLASSICCHECK first queries HAPPINESSREQUIREMENTS to obtain TESTLENGTH and
 %   EPSLEVEL (see documentation below). If |F.COEFFS(1:TESTLENGTH)|/VSCALE <
@@ -18,7 +18,7 @@ function [ishappy, epslevel, cutoff] = classicCheck(f, values, vscl, pref)
 %   can be reduced if there are further COEFFS which fall below EPSLEVEL).
 %
 %   HAPPINESSREQUIREMENTS defines what it means for a CHEBTECH to be happy.
-%   [TESTLENGTH, EPSLEVEL] = HAPPINESSREQUIREMENTS(VALUES, COEFFS, VSCALE,
+%   [TESTLENGTH, EPSLEVEL] = HAPPINESSREQUIREMENTS(VALUES, COEFFS, VSCL, HSCL
 %   PREF) returns two scalars TESTLENGTH and EPSLEVEL. A CHEBTECH is deemed to
 %   be 'happy' if the coefficients COEFFS(END-TESTLENGTH+1:END) (recall that
 %   COEFFS are stored in ascending order) are all below EPSLEVEL. The default
@@ -102,6 +102,10 @@ else
     vscl(~vscl) = 1;
 end
 
+if ( (nargin < 4) || isempty(hscl) )
+    hscl = 1;
+end
+
 % Check for convergence and chop location --------------------------------------
 
 % Absolute value of coefficients, relative to vscale:
@@ -109,7 +113,7 @@ ac = bsxfun(@rdivide, abs(f.coeffs), vscl);
 
 % Happiness requirements:
 [testLength, epslevel] = ...
-    happinessRequirements(values, f.coeffs, f.points(), vscl, f.hscale, epslevel);
+    happinessRequirements(values, f.coeffs, f.points(), vscl, hscl, epslevel);
 
 if ( all(max(ac(end-testLength+1:end, :)) < epslevel) ) % We have converged! Chop tail:
 
@@ -163,7 +167,7 @@ end
 end
 
 function [testLength, epslevel] = ...
-    happinessRequirements(values, coeffs, x, vscl, hscale, epslevel) %#ok<INUSL>
+    happinessRequirements(values, coeffs, x, vscl, hscl, epslevel) %#ok<INUSL>
 %HAPPINESSREQUIREMENTS   Define what it means for a CHEBTECH to be happy.
 %   See documentation above.
 
@@ -185,7 +189,7 @@ tailErr = min(tailErr, minPrec);
 dy = diff(values);
 dx = diff(x)*ones(1, size(values, 2));
 gradEst = max(abs(dy./dx));             % Finite difference approx.
-condEst = eps(hscale)./vscl.*gradEst; % Condition number estimate.
+condEst = eps(hscl)./vscl.*gradEst;     % Condition number estimate.
 condEst = min(condEst, minPrec);      
 
 % Choose maximum between prescribed tolerance and estimated rounding errors:

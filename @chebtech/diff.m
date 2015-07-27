@@ -95,7 +95,6 @@ function f = diffContinuousDim(f, k)
     if ( k >= n ) 
         z = zeros(size(f, 2));
         data.vscale = z;
-        data.hscale = f.hscale;
         f = f.make(z, data);
         return
     end

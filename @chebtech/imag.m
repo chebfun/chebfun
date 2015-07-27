@@ -13,7 +13,6 @@ f.coeffs = imag(f.coeffs);
 if ( ~any(f.coeffs(:)) )
     % Input was real, so output a zero CHEBTECH:
     data.vscale = 0;
-    data.hscale = f.hscale;
     f = f.make(zeros(1, size(f.coeffs, 2)), data);
     f.ishappy = 1;
 end

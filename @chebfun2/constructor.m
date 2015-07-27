@@ -312,13 +312,15 @@ while ( ~isHappy && ~failure )
     end
     
     % Check if the column and row slices are resolved.
-    colData.hscale = norm(dom(3:4), inf);
+    hscale = norm(dom(3:4), inf);
+    colData.hscale = hscale;
     tech = pref.tech();
     colChebtech = tech.make(sum(colValues,2), colData);
-    resolvedCols = happinessCheck(colChebtech,[],sum(colValues,2), vscale);
-    rowData.hscale = norm(dom(1:2), inf);
+    resolvedCols = happinessCheck(colChebtech,[],sum(colValues,2), vscale, hscale);
+    hscale = norm(dom(1:2), inf);
+    rowData.hscale = hscale;
     rowChebtech = tech.make(sum(rowValues.',2), rowData);
-    resolvedRows = happinessCheck(rowChebtech,[],sum(rowValues.',2), vscale);
+    resolvedRows = happinessCheck(rowChebtech,[],sum(rowValues.',2), vscale, hscale);
     isHappy = resolvedRows & resolvedCols;
     
     % If the function is zero, set midpoint of domain as pivot location.

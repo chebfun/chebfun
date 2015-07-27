@@ -1,4 +1,4 @@
-function [ishappy, epslevel, cutoff] = classicCheck(f, values, vscl, pref)
+function [ishappy, epslevel, cutoff] = classicCheck(f, values, vscl, hscl, pref)
 %CLASSICCHECK   Attempt to trim trailing Fourier coefficients in a TRIGTECH.
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F, VALUES) returns an estimated
 %   location, the CUTOFF, at which the TRIGTECH F could be truncated to maintain
@@ -74,6 +74,7 @@ end
 if ( (nargin < 3) || isempty(vscl) )
     vscl = f.vscale;
 end
+hscl = f.hscale;
 
 % Check the vertical scale:
 if ( max(vscl) == 0 )

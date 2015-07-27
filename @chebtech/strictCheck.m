@@ -1,16 +1,15 @@
-function [ishappy, epslevel, cutoff] = strictCheck(f, values, vscl, pref)
+function [ishappy, epslevel, cutoff] = strictCheck(f, values, vscl, hscl, pref)
 %STRICTCHECK   Attempt to trim trailing Chebyshev coefficients in a CHEBTECH.
-%   [ISHAPPY, EPSLEVEL, CUTOFF] = STRICTCHECK(F, VALUES, VSCL) returns an
+%   [ISHAPPY, EPSLEVEL, CUTOFF] = STRICTCHECK(F, VALUES, VSCL, HSCL) returns an
 %   estimated location CUTOFF at which the CHEBTECH F could be truncated to
-%   maintain an accuracy of EPSLEVEL relative to VSCL and F.HSCALE. ISHAPPY is
-%   TRUE if CUTOFF < MIN(LENGTH(F.COEFFS), 2) or F.VSCALE=0, and FALSE
-%   otherwise. If ISHAPPY is false, EPSLEVEL returns an estimate of the accuracy
-%   achieved.
+%   maintain an accuracy of EPSLEVEL relative to VSCL and HSCL. ISHAPPY is TRUE
+%   if CUTOFF < MIN(LENGTH(F.COEFFS), 2) or all(VALUES)==0, and FALSE otherwise.
+%   If ISHAPPY is false, EPSLEVEL returns an estimate of the accuracy achieved.
 %
-%   [ISHAPPY, EPSLEVEL, CUTOFF] = STRICTCHECK(F, VALUES, VSCL, PREF) allows
-%   additional preferences to be passed. In particular, one can adjust the
-%   target accuracy with PREF.EPS. The VALUES field is ignored, but included for
-%   consistency with other happiness checks.
+%   [ISHAPPY, EPSLEVEL, CUTOFF] = STRICTCHECK(F, VALUES, VSCL, HSCL, PREF)
+%   allows additional preferences to be passed. In particular, one can adjust
+%   the target accuracy with PREF.EPS. The VALUES field is ignored, but included
+%   for consistency with other happiness checks.
 %
 %   STRICTCHECK tests to see if the absolute values of the entries in the tail
 %   of coeffs, i.e., f.coeffs(1:TESTLENGTH,:), where
@@ -68,6 +67,11 @@ if ( isempty(vscl) || isempty(vscl) )
     vscl = max(abs(values), [],  1);
 else
     vscl = max(vscl, max(abs(values), [],  1));
+end
+
+% Default hscl to 1.
+if ( (nargin < 4) || isempty(hscl) )
+    hscl = 1;
 end
 
 if ( max(vscl) == 0 )

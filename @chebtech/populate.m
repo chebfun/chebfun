@@ -1,4 +1,4 @@
-function [f, values] = populate(f, op, vscl, hscale, pref)
+function [f, values] = populate(f, op, vscl, hscl, pref)
 %POPULATE   Populate a CHEBTECH class with values.
 %   F = F.POPULATE(OP) returns a CHEBTECH representation populated with values
 %   VALUES of the function OP evaluated on a Chebyshev grid. The fields
@@ -63,10 +63,8 @@ function [f, values] = populate(f, op, vscl, hscale, pref)
 if ( (nargin < 3) || isempty(vscl) )
     vscl = 0;
 end
-if ( (nargin < 4) || isempty(hscale) )
-    f.hscale = 1;
-else
-    f.hscale = hscale;
+if ( (nargin < 4) || isempty(hscl) )
+    hscl = 1;
 end
 if ( nargin < 5 )
     pref = chebtech.techPref();
@@ -129,7 +127,7 @@ while ( 1 )
     
     % Check for happiness:
     f.coeffs = coeffs;
-    [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, vscl, pref); 
+    [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, vscl, hscl, pref); 
         
     if ( ishappy ) % We're happy! :)
         % Alias the discarded coefficients:

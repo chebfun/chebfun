@@ -7,6 +7,10 @@ if ( nargin < 1 )
     pref = trigtech.techPref();
 end
 
+vscl = [];
+hscl = [];
+vals = [];
+
 testclass = trigtech();
 
 % Set the tolerance:
@@ -18,7 +22,7 @@ x = testclass.trigpts(33);
 omega = 8;
 f = @(x) sin(omega*pi*x);
 g = testclass.make(f(x));
-[ishappy, epslevel, tail] = happinessCheck(g, f, [], [], pref);
+[ishappy, epslevel, tail] = happinessCheck(g, f, vals, vscl, hscl, pref);
 pass(1) = tail == 2*omega+1;
 pass(2) = ishappy && epslevel < tol;
 
@@ -27,7 +31,7 @@ pass(2) = ishappy && epslevel < tol;
 omega = 7;
 f = @(x) [sin(pi*x) cos(floor(omega/2)*pi*x) (sin(omega*pi*x)+cos(omega*pi*x))];
 g = testclass.make(f(x));
-[ishappy, epslevel, tail] = happinessCheck(g, f, [], [], pref);
+[ishappy, epslevel, tail] = happinessCheck(g, f, vals, vscl, hscl, pref);
 pass(3) = tail == 2*omega+1;
 pass(4) = ishappy && all(epslevel < tol);
 
@@ -40,13 +44,13 @@ f = @(x) sin((k+m+1)*pi*x);
 % This should be happy, as aliasing fools the happiness test:
 pref.sampleTest = 0;
 g = testclass.make(f(x));
-[ishappy, epslevel, tail] = happinessCheck(g, f, [], [], pref);
+[ishappy, epslevel, tail] = happinessCheck(g, f, vals, vscl, hscl, pref);
 pass(5) = ( ishappy && tail == 2*m+1);
 
 % This should be unhappy, as sampletest fixes things:
 pref.sampleTest = 1;
 g = testclass.make(f(x));
-[ishappy, epslevel, tail] = happinessCheck(g, f, [], [], pref);
+[ishappy, epslevel, tail] = happinessCheck(g, f, vals, vscl, hscl, pref);
 pass(6) = ~ishappy && tail == 33;
 
 end
