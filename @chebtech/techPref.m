@@ -34,8 +34,8 @@ function outPref = techPref(inPref)
 %       false      - Do not test.
 %
 %     sampleTestEps  - Relative tolerance used for sample test. Its default
-%                      value is set same as eps, i.e. [2^-52], which can be
-%                      loosen for certain construction process, e.g. singfun.
+%                      value is set same as eps, i.e. 2^-52, which can be
+%                      loosen for certain construction processes, e.g. singfun.
 %
 %   CHEBTECH-SPECIFIC PREFERENCES
 %
