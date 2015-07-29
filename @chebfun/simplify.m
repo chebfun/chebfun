@@ -39,7 +39,7 @@ end
 
 vscl = f.vscale;
 
-% Simplfy each of the FUN objects:
+% Simplify each of the FUN objects:
 for k = 1:numel(f.funs)
     scl = vscl./get(f.funs{k},'vscale');
     f.funs{k} = simplify(f.funs{k}, tol(k)*scl);
