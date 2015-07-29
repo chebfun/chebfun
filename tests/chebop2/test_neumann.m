@@ -24,6 +24,15 @@ pass(3) = ( norm(uy(:,d(3))-((x-d(1))/(d(2)-d(1))+1)) < 5*tol );
 pass(4) = ( norm(u(d(1),:) - N.lbc) < tol );
 pass(5) = ( norm(laplacian(u)) < 400*tol );
 
+% Nick Hale's example for Neumann conditions: 
+N = chebop2(@(u) laplacian(u), [0 1 0 1]);
+N.ubc = 0; N.rbc = 0; N.lbc = 0;
+N.dbc = @(x, u) diff(u) - sin(2*pi*x);
+u = N\0;
+dudx = diffy(u);
+bc = chebfun( @(x) sin(2*pi*x), [0,1] ); 
+pass(6) = ( norm( dudx(:,0) - bc' ) < 10*tol ); 
+
 
 %%
 % d = [-2 3 -1 1];
