@@ -70,7 +70,7 @@ pass(4) = ( norm(err, inf) < 1e2*epslevel(f)*vscale(f) ) && ...
 
 % Blow-up function:
 op = @(x) x.^2.*(1-exp(-x.^2))-2;
-f = chebfun(op, dom, 'exps', [2 2], 'happinessCheck', @classicCheck);
+f = chebfun(op, dom, 'exps', [2 2]);
 g = addBreaksAtRoots(f);
 rExact = [-1.4962104914103104707 ; 1.4962104914103104707];
 

@@ -43,7 +43,8 @@ if ( size(tol,2) ~= m )
 end
 
 % STANDARDCHOP requires at least 17 coefficients, so for F such that LENGTH(F) <
-% 17, the coefficients are padded with entries between TOL^(7/6) and TOL.
+% 17, the coefficients are padded with entries between TOL^(7/6) and TOL. These
+% parameters are chosen explicitly to work with STANDARDCHOP.
 % See STANDARDCHOP for details.
 N = max(17,round(n*1.25+5));
 cfmins = min(abs(coeffs), [], 1);
