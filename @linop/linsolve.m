@@ -1,5 +1,8 @@
 function [u, disc] = linsolve(L, f, varargin)
 %LINSOLVE  Solve a linear differential/integral equation.
+%   Important: A CHEBOPPREF object PREFS has to be passed. When this method
+%   is called via CHEBOP/MLDIVIDE, PREFS is inherited from the CHEBOP level.
+%
 %   U = LINSOLVE(L, F), or U = L\F, solves the linear system defined by L*U=F
 %   for a LINOP L and CHEBMATRIX F. The result is a CHEBMATRIX.
 %
@@ -17,8 +20,8 @@ function [u, disc] = linsolve(L, f, varargin)
 %     [Z,I,D] = linop.primitiveOperators(d);
 %     A = linop( D^2 - I );
 %     E = functionalBlock.eval(d);
-%     A = addBC(A,E(0),0);
-%     A = addBC(A,E(pi),1);
+%     A = addbc(A,E(0),0);
+%     A = addbc(A,E(pi),1);
 %     u = A \ chebfun('x',d);
 %     plot(u{1})
 %
@@ -56,11 +59,6 @@ end
 if ( ~all(isfinite(L.domain)) )
     error('CHEBFUN:LINOP:linsolve:infDom', ...
         'Unbounded domains are not supported.');
-end
-
-% Grab defaults.
-if ( isempty(prefs) )
-    prefs = cheboppref;
 end
 
 % If RHS is a CHEBFUN or a DOUBLE, we need to convert it to CHEBMATRIX in
