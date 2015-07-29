@@ -46,7 +46,7 @@ intRows = sum(rows);
 %
 % Fast code: We know the columns are even functions, which means they have
 % cosine series expansions:
-% col(:,j) = sum_{k=0}^{m} b_k cos(k*t)
+% col(:,j) = sum_{k=0}^{m} a_k cos(k*t)
 % So, in the case of the elevation angle being measured as co-latitude, we
 % want to compute the integral
 % int_{0}^{pi}col(:,j).*sin(t)dt = sum_{k=0}^{m} a_k int_{0}^{pi}cos(k*t).*sin(t)dt
