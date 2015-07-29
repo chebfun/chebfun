@@ -221,7 +221,7 @@ else
     [u, info] = solvebvpNonlinear(N, rhs, L, u0, residual, pref, displayInfo);
 
 % simplify output
-u = simplify(u,pref.errTol);
+u = simplify(u);
     
 end
 

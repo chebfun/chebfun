@@ -13,6 +13,9 @@ function [isDone, epslevel, vscale, cutoff] = testConvergence(disc, values, vsca
 %      ISDONE: True if the functions passed in are sufficiently resolved.
 %      EPSLEVEL: Apparent resolution accuracy (relative to VSCALE or the
 %      functions' intrinsic scale).
+%      VSCALE: Maximum of the input VSCALE and the computed VSCALE of DISC.
+%      CUTOFF: The point at which the coefficient series for DISC should
+%              be chopped. If ~ISDONE then CUTOFF = LENGTH(DISC).
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
