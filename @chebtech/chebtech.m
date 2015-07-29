@@ -13,7 +13,7 @@ classdef chebtech < smoothfun % (Abstract)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % CHEBTECH Class Description:
 %
-% The CHEBTECH class is an abstract class for representations of smootha
+% The CHEBTECH class is an abstract class for representations of smooth
 % functions on the interval [-1,1] via interpolated function values at Chebyshev
 % points and coefficients of the corresponding first-kind Chebyshev series
 % expansion.
