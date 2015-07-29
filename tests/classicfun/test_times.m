@@ -154,7 +154,7 @@ g_exact = bndfun(op_exact, singData, singPref);
 
 err = norm(feval(g, x) - feval(g_exact, x), inf);
 tol = 10*get(f, 'epslevel')*norm(feval(g_exact, x), inf);
-pass(24) = ( err < tol );
+pass(24) = ( err < 1e1*tol );
 
 % Case of two functions:
 pow1 = -0.3;
