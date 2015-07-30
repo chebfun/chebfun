@@ -8,7 +8,7 @@ if ( nargin == 0 )
     pref = cheboppref;
 end
 
-tol = 1e-8;
+tol = 1e-10;
 
 d = [-pi 0 pi];
 x = chebfun('x',d);
