@@ -32,7 +32,8 @@ if ( nargin < 5 )
 end
 tol = max(pref.eps);
 
-% Blowup prefs
+% Blowup detection is turned off in order to avoid the occurrence of spurious
+% poles inside an interval where a piecewise function was originally smooth.
 pref.blowup = 0;
 
 % Check the domains:
@@ -74,12 +75,12 @@ function y = myFun(x, f, g, dom)
 % Evaluate F:
 idxF = x <= dom(2);
 if ( any(idxF) )
-    y(idxF,:) = [feval(f, x(idxF))];
+    y(idxF,:) = feval(f, x(idxF));
 end
 % Evaluate G:
 idxG = x >= dom(3);
 if ( any(idxG) )
-    y(idxG,:) = [feval(g, x(idxG))];
+    y(idxG,:) = feval(g, x(idxG));
 end
 
 end

@@ -32,14 +32,14 @@ coeffs = f.coeffs;
 [n, m] = size(coeffs);
 
 % Use CHEBFUNPREF.EPS if no tolerance was supplied.
+p = chebfunpref;
 if ( nargin < 2 )
-    p = chebfunpref;
     tol = p.eps;
 end
 
 % Recast TOL as a row vector.
 if ( size(tol, 2) ~= m )
-    tol = max(max(tol), eps^(7/6))*ones(1, m);
+    tol = max(max(tol), p.eps)*ones(1, m);
 end
 
 % STANDARDCHOP requires at least 17 coefficients, so for F such that LENGTH(F) <

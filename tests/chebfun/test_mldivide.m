@@ -51,7 +51,6 @@ for j = 0:6
    xj = -1 + j/4;
    A = [ A , max(0, 1-4*abs(x-xj)) ];
 end
-[Q,R] = qr(A,0); 
 u = A\x;
 expected = [...
   -0.999851249504164

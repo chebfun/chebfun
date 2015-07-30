@@ -29,14 +29,14 @@ coeffs = abs(f.coeffs(end:-1:1,:));
 [n, m] = size(coeffs);
 
 % Use the default tolerance if none was supplied.
+p = chebfunpref;
 if ( nargin < 2 )
-    p = chebfunpref;
     tol = p.eps;
 end
 
 % Reshape TOL.
 if ( size(tol, 2) ~= m )
-    tol = max(tol)*ones(1, m);
+    tol = max(max(tol),p.eps)*ones(1, m);
 end
 
 % In order to work with STANDARDCHOP, the coefficients of F are modified so that
@@ -81,7 +81,7 @@ end
 
 % Now put the coefficients vector back together.
 coeffs = f.coeffs;
-if ( mod(n, 2) == 0 )
+if ( isEven )
     coeffs = [.5*coeffs(n,:) ; coeffs(1:n-1,:) ; .5*coeffs(n,:)];
     n = n + 1;
 end
