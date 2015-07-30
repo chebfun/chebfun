@@ -25,6 +25,21 @@ if ( nargin < 4 || isempty(vscl) )
     vscl = max(abs(values), [], 1);
 end
 
+% Scale TOL by the MAX(F.HSCALE, VSCL/||F||).
+% This choice of scaling is the result of undesirable behavior when using
+% standardCheck to construct the function f(x) = sqrt(1-x) on the interval [0,1]
+% with splitting turned on. Due to the way standardChop checks for plateaus, the
+% approximations on the subdomains were chopped incorrectly leading to poor
+% quality results. This choice of scaling corrects this by giving less weight to
+% subintervals that are much smaller than the global approximation domain, i.e.
+% HSCALE >> 1. For functions on a single domain with no breaks, this scaling has
+% no effect since HSCALE = 1. 
+nrmf = max(abs(values), [], 1);
+if ( isempty(vscl) )
+    vscl = nrmf;
+end
+tol = tol.*max(f.hscale*nrmf, vscl);
+
 % Choose a point to evaluate at:
 if ( n == 1 )
     xeval = 0.61; % Pseudo-random test value
@@ -41,14 +56,9 @@ vFun = feval(f, xeval);
 % Evaluate the op:
 vOp = feval(op, xeval);
 
-% shift
-shift = max(vscl, 1);
-shift = max(f.hscale, shift);
-shift = 1./shift;
-
 % If the CHEBTECH evaluation differs from the op evaluation, SAMPLETEST failed:
-err = bsxfun(@times, abs(vOp - vFun), shift ); 
-if ( any(abs(err) > tol) )
+err = abs(vOp - vFun); % Relative (to vscl) error.
+if ( any(max(abs(err)) > tol) )
     pass = false; % :(
 else
     pass = true;  % :)

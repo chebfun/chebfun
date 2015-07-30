@@ -81,14 +81,13 @@ elseif ( strcmpi(pref.happinessCheck, 'plateau') )
     
 else
     % Call a user-defined happiness check:
-    checker = pref.happinessCheck;
-    [ishappy, epslevel, cutoff] = checker(f, values, vscl, pref);
+    [ishappy, epslevel, cutoff] = pref.happinessCheck(f, values, vscl, pref);
     
 end
 
 % Check also that sampleTest is happy:
 if ( ishappy && ~isempty(op) && ~isnumeric(op) && pref.sampleTest )
-    f.epslevel = epslevel;
+    f.epslevel = eps + 0*epslevel;
     ishappy = sampleTest(op, values, f, vscl, pref);
     if ( ~ishappy )
         % It wasn't. Revert cutoff. :(

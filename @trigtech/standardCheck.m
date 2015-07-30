@@ -73,12 +73,12 @@ if ( size(tol, 2) ~= m )
   tol = ones(1, m)*max(tol);
 end
 
-% Scale TOL by the MAX(||F||*F.HSCALE, VSCL);
+% Scale TOL by VSCL/||F||;
 nrmf = max(abs(values), [], 1);
 if ( isempty(vscl) )
     vscl = nrmf;
 end
-tol = tol.*max(f.hscale, vscl./nrmf);
+tol = tol.*vscl./nrmf;
 
 % Loop through columns of coeffs
 ishappy = false(1, m);

@@ -28,21 +28,21 @@ end
 
 function f = columnSimplify(f, tol)
 
-if ( nargin < 2 || isempty(tol) )
-    p = chebfunpref;
-    tol = p.eps;
-end
-
-if ( length(tol) ~= numel(f.funs) )
+if ( nargin < 2 || isempty(tol) ) 
+    % Choose a tolerance:
+    loc_epsl = get(f, 'epslevel-local'); % Epslevel of each columns and each fun
+    loc_vscl = get(f, 'vscale-local');   % Vscale of each columns and each fun
+    loc_acc = loc_epsl.*loc_vscl;        % Pointwise multiply of the two
+    col_vscl = max(loc_vscl, [], 1);     % Vscale of each column
+    col_vscl(col_vscl == 0) = 1;         % Remove zero vscales (TODO: Improve?)
+    tol = bsxfun(@rdivide, loc_acc, col_vscl); % Factor out col_vscl
+elseif ( isscalar(tol) )
     tol = repmat(tol, 1, numel(f.funs));
 end
 
-vscl = f.vscale;
-
-% Simplify each of the FUN objects:
+% Simplfy each of the FUN objects:
 for k = 1:numel(f.funs)
-    scl = vscl./get(f.funs{k},'vscale');
-    f.funs{k} = simplify(f.funs{k}, tol(k)*scl);
+    f.funs{k} = simplify(f.funs{k}, tol(k));
 end
 
 end

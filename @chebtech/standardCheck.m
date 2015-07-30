@@ -59,7 +59,15 @@ if ( nargin < 2 || isempty(values) )
     values = f.coeffs2vals(f.coeffs);
 end
 
-% Scale TOL by the MAX(||F||*F.HSCALE, VSCL);
+% Scale TOL by the MAX(F.HSCALE, VSCL/||F||).
+% This choice of scaling is the result of undesirable behavior when using
+% standardCheck to construct the function f(x) = sqrt(1-x) on the interval [0,1]
+% with splitting turned on. Due to the way standardChop checks for plateaus, the
+% approximations on the subdomains were chopped incorrectly leading to poor
+% quality results. This choice of scaling corrects this by giving less weight to
+% subintervals that are much smaller than the global approximation domain, i.e.
+% HSCALE >> 1. For functions on a single domain with no breaks, this scaling has
+% no effect since HSCALE = 1. 
 nrmf = max(abs(values), [], 1);
 if ( isempty(vscl) )
     vscl = nrmf;
