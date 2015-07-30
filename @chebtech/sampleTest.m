@@ -42,7 +42,8 @@ vFun = feval(f, xeval);
 vOp = feval(op, xeval);
 
 % shift
-shift = max(f.hscale.*max(abs(values), [], 1).^2./max(vscl,1),1);
+shift = max(vscl, 1);
+shift = max(f.hscale, shift);
 shift = 1./shift;
 
 % If the CHEBTECH evaluation differs from the op evaluation, SAMPLETEST failed:
