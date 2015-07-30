@@ -209,7 +209,7 @@ f = chebfun(op, dom, 'exps', [pow 0], 'splitting', 'on');
 fval = feval(f, x);
 vals_exact = feval(op, x);
 err = fval - vals_exact;
-pass(31) = ( norm(err, inf) < 1e4*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(31) = ( norm(err, inf) < 1e5*get(f,'epslevel')*norm(vals_exact, inf) );
 
 
 %% Test for function defined on unbounded domain:

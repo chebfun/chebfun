@@ -55,6 +55,10 @@ function outPref = techPref(inPref)
 %       'loose'          - A looser tolerance for coefficients.
 %       function_handle  - A user defined happiness. See HAPPINESSCHECK.m
 %
+%     sampleTestEps  - Relative tolerance used for sample test. Its default
+%                      value is set same as eps, i.e. 2^-52, which can be
+%                      loosen for a certain construction process, e.g. singfun.
+%
 % See also TRIGTECH, CHEBTECH, CHEBTECH1, CHEBTECH2
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
@@ -67,6 +71,7 @@ outPref.maxLength          = 2^16;
 outPref.fixedLength        = NaN;
 outPref.extrapolate        = false;
 outPref.sampleTest         = true;
+outPref.sampleTestEps      = outPref.eps;
 outPref.refinementFunction = 'nested';
 outPref.happinessCheck     = 'standard';
 
