@@ -71,7 +71,7 @@ for n = 1:2
 
     f = testclass.make(@(x) sin(100*(x + 0.1)));
     g = simplify(f, 1e20);
-    pass(n, 13) = ( length(g) == 1 );
+    pass(n, 13) = length(g) == 1;
 
     % Check that a long identically-zero CHEBTECH simplifies correctly:
     f = testclass.make(@(x) 0*x, [], struct('fixedLength', 8));

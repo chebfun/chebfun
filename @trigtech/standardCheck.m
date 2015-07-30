@@ -21,7 +21,7 @@ function [ishappy, epslevel, cutoff] = standardCheck(f, values, vscl, pref)
 
 % Grab the coefficients of F.
 coeffs = abs(f.coeffs(end:-1:1,:));
-[n,m] = size(coeffs);
+[n, m] = size(coeffs);
 
 % Compute some values if none were given.
 if ( nargin < 2 || isempty(values) )
@@ -34,20 +34,20 @@ end
 % absolute values of the k and -k coefficients.
 
 % Need to handle odd/even cases separately.
-isEven = ~mod(n, 2);
+isEven = mod(n, 2) == 0;
 if isEven
-    coeffs = [coeffs(n,:);coeffs(n-1:-1:n/2+1,:)+coeffs(1:n/2-1,:);coeffs(n/2,:)];
+    coeffs = [coeffs(n,:) ; coeffs(n-1:-1:n/2+1,:) + coeffs(1:n/2-1,:) ; coeffs(n/2,:)];
 else
-    coeffs = [coeffs(n:-1:(n+1)/2+1,:)+coeffs(1:(n+1)/2-1,:);coeffs((n+1)/2,:)];
+    coeffs = [coeffs(n:-1:(n+1)/2+1,:) + coeffs(1:(n+1)/2-1,:) ; coeffs((n+1)/2,:)];
 end
 coeffs = flipud(coeffs);
-coeffs = [coeffs(1,:);kron(coeffs(2:end,:),[1;1])];
+coeffs = [coeffs(1,:) ; kron(coeffs(2:end,:), [1 ; 1])];
 
 % Initialize ISHAPPY.
 ishappy = false;
 
 % Initialize EPSLEVEL.
-epslevel = eps*ones(1,m); 
+epslevel = eps*ones(1, m);
 
 % Initialize CUTOFF.
 cutoff = n; 
@@ -69,8 +69,8 @@ else
 end
 
 % Reshape TOL.
-if size(tol,2) ~= m
-  tol = ones(1,m)*max(tol);
+if ( size(tol, 2) ~= m )
+  tol = ones(1, m)*max(tol);
 end
 
 % Scale TOL by the MAX(||F||*F.HSCALE, VSCL);
@@ -81,8 +81,8 @@ end
 tol = tol.*max(f.hscale, vscl./nrmf);
 
 % Loop through columns of coeffs
-ishappy = false(1,m);
-cutoff = zeros(1,m);
+ishappy = false(1, m);
+cutoff = zeros(1, m);
 for k = 1:m
 
     % Call STANDARDCHOP.
@@ -92,10 +92,10 @@ for k = 1:m
     ishappy(k) = ( cutoff(k) < n );
 
     % Divide CUTOFF by 2.
-    if ( ~mod(cutoff(k),2) )
+    if ( mod(cutoff(k), 2) == 0 )
         cutoff(k) = cutoff(k)/2;
     else
-        cutoff(k) = (cutoff(k)-1)/2;
+        cutoff(k) = (cutoff(k) - 1)/2;
     end
 
     % Break if unhappy.
@@ -109,7 +109,7 @@ end
 ishappy = all(ishappy); 
 
 % CUTOFF is always odd.
-cutoff = 2*max(cutoff)+1;
+cutoff = 2*max(cutoff) + 1;
 
 end
 

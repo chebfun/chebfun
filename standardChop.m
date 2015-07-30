@@ -106,10 +106,10 @@ for j = 1:n
     e1 = envelope(j);
     e2 = envelope(j2);
     r = 3*(1 - log(e1)/log(tol));
-    plateau = ( e1 == 0 ) | ( e2/e1 > r );
+    plateau = (e1 == 0) | (e2/e1 > r);
     if plateau
         % a plateau has been found: go to Step 3
-        plateauPoint = j-1;
+        plateauPoint = j - 1;
         break
     end
 end
@@ -146,9 +146,9 @@ else
     end
     cc = log10(envelope(1:j2));
     cc = cc(:);
-    cc = cc + linspace(0, (-1/3)*log10(tol),j2)';
+    cc = cc + linspace(0, (-1/3)*log10(tol), j2)';
     [~, d] = min(cc);
-    cutoff = max(d-1, 1);
+    cutoff = max(d - 1, 1);
 end
 
 end

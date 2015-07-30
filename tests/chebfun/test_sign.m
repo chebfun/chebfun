@@ -72,7 +72,7 @@ pass(4,:) = normest(g - h) < 1e4*get(h, 'epslevel')*length(h);
 f = chebfun(@(x) exp(2*pi*1i*x)./(1 + (x - 0.1).^2), [-1 1]);
 h = sign(f);
 h_exact = @(x) exp(2*pi*1i*x);
-pass(5,:) = norm(feval(h, x) - h_exact(x), inf) < 10*vscale(h)*epslevel(h);
+pass(5,:) = norm(feval(h, x) - h_exact(x), inf) < 1e2*vscale(h)*epslevel(h);
 
 %% Test on singular function: a real case
 
