@@ -42,7 +42,7 @@ pass(7) = isequal(flipud(ff), f.');
 gg = flipud(g.');
 gg_exact = @(x) [cos(x).*sign(x + 0.2) sin(x).*abs(x - 0.1)].';
 err = feval(gg, xr) - gg_exact(xr);
-pass(8) = norm(err(:), inf) < 10*gg.vscale.*gg.epslevel;
+pass(8) = norm(err(:), inf) < 1e2*gg.vscale.*gg.epslevel;
 pass(9) = isequal(flipud(gg), g.');
 
 %% Test on integration of SINGFUN - A column CHEBFUN:
