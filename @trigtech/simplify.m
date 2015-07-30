@@ -26,7 +26,7 @@ end
 
 % Grab the coefficients of F.
 coeffs = abs(f.coeffs(end:-1:1,:));
-[n,m] = size(coeffs);
+[n, m] = size(coeffs);
 
 % Use the default tolerance if none was supplied.
 if ( nargin < 2 )
@@ -35,8 +35,8 @@ if ( nargin < 2 )
 end
 
 % Reshape TOL.
-if size(tol,2) ~= m
-    tol = max(tol)*ones(1,m);
+if ( size(tol, 2) ~= m )
+    tol = max(tol)*ones(1, m);
 end
 
 % In order to work with STANDARDCHOP, the coefficients of F are modified so that
@@ -45,50 +45,50 @@ end
 % absolute values of the k and -k coefficients.
 
 % Need to handle odd/even cases separately.
-isEven = ~mod(n, 2);
+isEven = mod(n, 2) == 0;
 if isEven
-    coeffs = [coeffs(n,:);coeffs(n-1:-1:n/2+1,:)+coeffs(1:n/2-1,:);coeffs(n/2,:)];
+    coeffs = [coeffs(n,:) ; coeffs(n-1:-1:n/2+1,:) + coeffs(1:n/2-1,:) ; coeffs(n/2,:)];
 else
-    coeffs = [coeffs(n:-1:(n+1)/2+1,:)+coeffs(1:(n+1)/2-1,:);coeffs((n+1)/2,:)];
+    coeffs = [coeffs(n:-1:(n+1)/2+1,:) + coeffs(1:(n+1)/2-1,:) ; coeffs((n+1)/2,:)];
 end
 coeffs = flipud(coeffs);
-coeffs = [coeffs(1,:);kron(coeffs(2:end,:),[1;1])];
+coeffs = [coeffs(1,:) ; kron(coeffs(2:end,:),[1 ; 1])];
 
 % STANDARDCHOP requires at least 17 coefficients, so for F such that LENGTH(F) <
 % 17, the coefficients are padded with entries between TOL^(7/6) and TOL.
 % These parameters are chosen explicitly to work with STANDARDCHOP.
 % See STANDARDCHOP for details.
-N = max(17,round(n*1.25+5));
+N = max(17, round(n*1.25 + 5));
 cfmins = min(abs(coeffs), [], 1);
 cfmaxs = max(abs(coeffs), [], 1);
 if ( n < N )
-    coeffs = [coeffs;ones(N-n,1)*...
-              (max(tol.^(7/6),min(cfmins./cfmaxs,tol)).*cfmaxs)];
+    coeffs = [coeffs ; ones(N - n, 1)* ...
+              (max(tol.^(7/6), min(cfmins./cfmaxs,tol)).*cfmaxs)];
 end
 
 % Loop through columns to compute CUTOFF.
 cutoff = 1;
 for k = 1:m
-    cutoff = max(cutoff,standardChop(coeffs(:,k),tol(k)));
+    cutoff = max(cutoff, standardChop(coeffs(:,k), tol(k)));
 end
 
 % Divide CUTOFF by 2.
-if ( ~mod(cutoff,2) )
+if ( mod(cutoff, 2) == 0 )
     cutoff = cutoff/2 + 1;
 else
-    cutoff = (cutoff-1)/2 + 1;
+    cutoff = (cutoff - 1)/2 + 1;
 end
 
 % Now put the coefficients vector back together.
 coeffs = f.coeffs;
-if ( ~mod(n,2) )
-    coeffs = [.5*coeffs(n,:);coeffs(1:n-1,:);.5*coeffs(n,:)];
-    n = n+1;
+if ( mod(n, 2) == 0 )
+    coeffs = [.5*coeffs(n,:) ; coeffs(1:n-1,:) ; .5*coeffs(n,:)];
+    n = n + 1;
 end
 
 % Use CUTOFF to trim F.
-mid = (n+1)/2;
-cutoff = min(cutoff,mid);
+mid = (n + 1)/2;
+cutoff = min(cutoff, mid);
 f.coeffs = coeffs(mid-cutoff+1:mid+cutoff-1,:);
 f.values = trigtech.coeffs2vals(f.coeffs);
 

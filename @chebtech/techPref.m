@@ -46,7 +46,7 @@ function outPref = techPref(inPref)
 %
 %     happinessCheck     - Define function for testing happiness.
 %      ['standard']      - Standard chopping routine.
-%       'classic'        - the default process from Chebfun v4.
+%       'classic'        - The default process from Chebfun v4.
 %       'strict'         - Strict tolerance for coefficients.
 %       'loose'          - A looser tolerance for coefficients.
 %       function_handle  - A user defined happiness. See HAPPINESSCHECK.m

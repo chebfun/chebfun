@@ -21,13 +21,13 @@ function [ishappy, epslevel, cutoff] = standardCheck(f, values, vscl, pref)
 
 % Grab the coefficients of F.
 coeffs = f.coeffs;
-[n,m] = size(coeffs);
+[n, m] = size(coeffs);
 
 % Initialize ISHAPPY to be FALSE.
 ishappy = false;
 
 % Initialize EPSLEVEL to be MATLAB EPS.
-epslevel = eps*ones(1,m); 
+epslevel = eps*ones(1, m);
 
 % Initialize CUTOFF to be LENGTH(F).
 cutoff = length(f);
@@ -50,8 +50,8 @@ else
 end
 
 % Convert TOL to a row vector.
-if ( size(tol,2) ~= m )
-  tol = ones(1,m)*max(tol);
+if ( size(tol, 2) ~= m )
+  tol = ones(1, m)*max(tol);
 end
 
 % Compute function values of F if none were given.
