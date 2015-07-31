@@ -165,7 +165,7 @@ end
 % one by one.
 values = cat(2, u{isFun});
 for k = 1:size(values, 2)
-    v = disc.toFunctionOut(values(:,k));
+    v = disc.toFunctionOut(values(:,k),cutoff);
     uOut{k} = v;
 end
 

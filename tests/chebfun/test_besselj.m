@@ -52,7 +52,7 @@ f = chebfun(f_op, [-1 0 0.5 1], pref);
 
 h = besselj(nu, f, 0, pref);
 pass(7) = norm(feval(h, xr) - besselj(nu, f_op(xr), 0), inf) < ...
-    10*epslevel(h)*vscale(h);
+    1e2*epslevel(h)*vscale(h);
 
 % Check for error on nu.
 try

@@ -219,6 +219,9 @@ else
 
     % Call solver method for nonlinear problems.
     [u, info] = solvebvpNonlinear(N, rhs, L, u0, residual, pref, displayInfo);
+
+% simplify output
+u = simplify(u,pref.errTol/200);
     
 end
 

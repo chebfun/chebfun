@@ -61,7 +61,7 @@ expected = [...
    0.196152320507735
    0.700961919873066];
 err = norm(u - expected, inf);
-pass(6) = err < 10*epslevel(A);
+pass(6) = err < 1e3*epslevel(A);
 
 %% Test on SINGFUN:
 

@@ -233,7 +233,7 @@ classdef chebfun
                 % Remove unnecessary breaks (but not those that were given):
                 [ignored, index] = setdiff(f.domain, dom);
                 f = merge(f, index(:).', pref);
-                
+               
             end
 
             if ( flags.trunc )

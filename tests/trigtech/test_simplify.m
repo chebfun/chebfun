@@ -36,7 +36,7 @@ f = testclass.make(@(x) exp(sin(2*pi*x)) + exp(cos(3*pi*x)));
 g = simplify(f, simptol);
 pass(3) = abs(g.coeffs(end)) ~= 0;
 pass(4) = length(g) < length(f);
-pass(5) = norm(feval(f, x) - feval(g, x), inf) < 10*g.epslevel*g.vscale;
+pass(5) = norm(feval(f, x) - feval(g, x), inf) < 1e1*simptol*f.vscale;
 
 %%
 % Lengths of simplifications should be invariant under scaling:
@@ -57,14 +57,14 @@ g = simplify(f, simptol);
 pass(8) = any(abs(g.coeffs(1, :)) ~= 0);
 pass(9) = length(g) < length(f);
 pass(10) = all(norm(feval(f, x) - feval(g, x), inf) < ...
-    10*max(g.epslevel.*g.vscale));
+    10*max(simptol.*f.vscale));
 
 %%
-% Try a contrived example which will leave a zero TRIGTECH:
+% Try a contrived example which will return a length 1 trigtech.
 
 f = testclass.make(@(x) sin(100*pi*(x + 0.1)));
 g = simplify(f, 1e20);
-pass(11) = iszero(g);
+pass(11) = ( length(g) == 1 );
 
 %%
 % Check that a long identically-zero TRIGTECH simplifies correctly:

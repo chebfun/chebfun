@@ -33,7 +33,7 @@ f3 = chebfun(@(x) [sin(x) cos(x) exp(x)], [-1 -0.5 0.5 1], pref);
 df3 = diff(f3);
 df3_exact = @(x) [cos(x) -sin(x) exp(x)];
 pass(4) = max(max(abs(feval(df3, xr) - df3_exact(xr)))) < ...
-    100*vscale(df3)*epslevel(df3);
+    1e3*vscale(df3)*epslevel(df3);
 %%
 % Check N argument.
 d2f1 = diff(f1, 2);
@@ -44,7 +44,7 @@ pass(5) = norm(feval(d2f1, xr) - d2f1_exact(xr), inf) < ...
 d2f3 = diff(f3, 2);
 d2f3_exact = @(x) [-sin(x) -cos(x) exp(x)];
 pass(6) = max(max(abs(feval(d2f3, xr) - d2f3_exact(xr)))) < ...
-    1e4*vscale(d2f3)*epslevel(d2f3);
+    1e5*vscale(d2f3)*epslevel(d2f3);
 
 % Check dim argument.
 df3_col = diff(f3, 1, 2);
@@ -83,7 +83,7 @@ vals_df = feval(df, x);
 df_exact = @(x) (x - dom(1)).^(pow-1).*(pow*sin(200*x)+200*(x - dom(1)).*cos(200*x));
 vals_exact = feval(df_exact, x);
 err = vals_df - vals_exact;
-pass(10) = ( norm(err, inf) < 1e5*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(10) = ( norm(err, inf) < 1e6*get(f,'epslevel')*norm(vals_exact, inf) );
 
 
 %% Test on function defined on unbounded domain:

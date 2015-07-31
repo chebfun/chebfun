@@ -34,7 +34,7 @@ f = chebfun(op, dom, 'exps', [0 0 -0.5 0 0 0]);
 vals = chebfun.getValuesAtBreakpoints(f.funs);
 vals_exact = [op1(dom(1)) Inf mean([op2(dom(3)) op3(dom(3))]) op3(dom(end))];
 pass(5) = ( norm(vals([1, 3:4]) - vals_exact([1, 3:4]).', inf) ...
-    < epslevel(f)*norm(vals_exact([1, 3:4]), inf) ) && ( vals(2) == Inf );
+    < 1e1*epslevel(f)*norm(vals_exact([1, 3:4]), inf) ) && ( vals(2) == Inf );
 
 %% Test for function defined on unbounded domain:
 
