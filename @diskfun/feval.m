@@ -1,11 +1,11 @@
 function y = feval( f, c1, c2, c3)
 %FEVAL  Evaluate a DISKFUN at one or more points.
-%   Y = FEVAL( F, THETA, r, 0)  evaluates a diskfun F at (THETA,
+%   Y = FEVAL( F, THETA, r, 1)  evaluates a diskfun F at (THETA,
 %   r) where THETA and r are doubles representing central angle in radians and radius on the disk.
 %   
 %   
 %
-%   Y = FEVAL( F, X, Y, 1 )  evaluates a diskfun F at a point (X,Y) in
+%   Y = FEVAL( F, X, Y, 0 )  evaluates a diskfun F at a point (X,Y) in
 %   Cartesian cooridnates.   
 
 % See also SUBSREF.
@@ -22,7 +22,7 @@ function y = feval( f, c1, c2, c3)
       %  end
     %end
     % Convert to polar coordinates
-    if c3 == 1
+    if c3 == 0
         [theta,r] = cart2pol(c1,c2);
     else 
      theta = c1;

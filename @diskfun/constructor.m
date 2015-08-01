@@ -1,4 +1,4 @@
-function g = constructor( g, op, dom, varargin ) 
+function g = constructor( g, op, coords, dom, varargin ) 
 %CONSTRUCTOR   The main DISKFUN constructor.
 %
 % The algorithm for constructing a DISKFUN comes in two phases:
@@ -28,10 +28,16 @@ if ( isa(op, 'diskfun') )  % SPHEREFUN( SPHEREFUN )
 end
 
 
-if ( nargin < 3 || isempty(dom) )
+if ( nargin < 4 || isempty(dom) )
    dom = [-pi pi 0 1];
 end
 
+if ( nargin < 3 || isempty(coords) ) %for now assume polar if not specified
+    coords = 1
+end
+
+%coords=1 -> polar
+%coords=0 -> cartesian
 
 
 if ( isa(op, 'diskfun') )  % SPHEREFUN( SPHEREFUN )
@@ -52,7 +58,18 @@ pseudoLevel = eps;
 
 % If f is defined in terms of x,y,z; then convert it to
 % (longitude,latitude).
-h = redefine_function_handle( op );
+
+%if numel(varargin) > 0
+               % if ischar(varargin{1})
+                  %  if strcmpi(varargin{1},'p')
+                    %    polarcoords=1;
+                    %    varargin{1} = [];
+                  %  end
+               % end
+           % end
+
+
+h = redefine_function_handle( op, coords );
 
 % PHASE ONE  
 % Sample at square grids, determine the numerical rank of the
@@ -71,7 +88,7 @@ while ( ~happy_rank && ~failure )
     
     tol = GetTol(F, pi/(n-1), pi/n, dom, pseudoLevel); 
      %tol=3e-14;
-    [ pivotIndices, pivotMatrices, happy_rank, removePoles, ranks, counters ] = PhaseOne( F, tol );
+    [ pivotIndices, pivotMatrices, happy_rank, removePoles ] = PhaseOne( F, tol );
     if ( n >= maxRank  )
         warning('SPHEREFUN:CONSTRUCTOR:MAXRANK', ... 
                                 'Unresolved with maximum rank.');
@@ -94,7 +111,7 @@ g.domain = dom;
 
 end
 
-function [pivotIndices, pivotMatrices, happy, removePole, ranks, counters] = PhaseOne( F, tol )
+function [pivotIndices, pivotMatrices, happy, removePole] = PhaseOne( F, tol )
 
 % Phase 1: Go find rank, plus pivot locations, ignore cols and rows.
 alpha = 2;%spherefun.alpha; % get growth rate factor.
@@ -129,9 +146,7 @@ F = F( 1:m-1, : );
 % Update the number of rows F now contains.
 m = m-1; 
 
-counters=[];
-ranks=[];
-counter=0;
+
 while ( norm( F( : ), inf ) > tol )
    
     % Find pivot:
@@ -175,9 +190,7 @@ while ( norm( F( : ), inf ) > tol )
         pivotMatrices = [pivotMatrices ; ev ];
         rank_count = rank_count + 1; 
     end
-     counter=counter+1;
-        counters=[counters, counter];
-        ranks = [ranks, rank_count];
+     
 end
 
 
@@ -372,7 +385,7 @@ while ( ~(happy_columns && happy_rows) && ~failure)
     end
     
     if ( max(m, n) >= maxSample ) 
-        warning('SPHEREFUN:constructor:notResolved', ...
+        warning('DISKFUN:constructor:notResolved', ...
         'Unresolved with maximum length: %u.', maxSample);
         failure = true;
     end 
@@ -404,7 +417,7 @@ end
 function [x, y] = getPoints( m, n)
 
 x = trigpts(2*n, [-pi, pi]);
-y =  chebpts(2*m+1, [-1, 1]); %doubled; we want y to be the non-doubled pts
+y =  chebpts(2*m+1, [-1, 1]); %doubled;
 y = y(1:(2*m)/2+1); %this includes pole (r=0), which needs evaluated. 
 
 
@@ -434,13 +447,16 @@ row = ( vi - 1 ) + 1;
 end
 
 
-function f = redefine_function_handle( f )
-% nargin( f ) = 2, then we are already on the sphere, if nargin( f ) = 3,
-% then do change of variables:
+function f = redefine_function_handle( f, coords )
 
-%if ( polarf == 2 ) %ADD polar var for now; need to either determine another way or ask user at diskfun input
+
+
+
+
     % Wrap f so it can be evaluated in spherical coordinates
+    if ~(coords==1)
     f = @(th, r) diskfun.pol2cartf(f,th, r);
+    end
 %     % Double g up.
 %     f = @(lam, th) sph2torus(f,lam,th);
 end

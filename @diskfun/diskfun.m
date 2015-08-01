@@ -88,8 +88,8 @@ classdef diskfun < separableApprox
         % coordinates on the sphere.
         fdf = pol2cartf(f, r, th);
         
-        % Degree l Order m spherical harmonic.
-        %Y = sphharm(l,m,coord)          
+        % Disk harmonics
+        Y = diskharm(l,m,type)          
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
