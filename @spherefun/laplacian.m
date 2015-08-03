@@ -8,9 +8,37 @@ realf = isreal(f);
 % TODO: Handle the case where the user selects latitude instead of
 % co-latittude.
 
-[cols,D,rows] = cdr(f);
+if realf
+    f = real(f);
+end
+
+m = length(f.cols);
+
+% [fp,fm] = partition(f);
+% 
+% valp = computeLaplacian(fp);
+% valm = computeLaplacian(fm);
+% 
+% f = valp+valm;
+
+f = computeLaplacian(f);
+
+if realf
+    f = real(f);
+end
+
+f(m/2,:) = mean(f(m/2,:));
+f(m,:) = mean(f(m,:));
+
+f = spherefun(f(m/2:m,:));
+
+end
+
+function val = computeLaplacian(f)
 
 % We are going to work at the tech level to make things faster.
+[cols,D,rows] = cdr(f);
+
 coltechs = cols.funs{1}.onefun;
 rowtechs = rows.funs{1}.onefun;
 
@@ -76,15 +104,6 @@ m1 =  floor((m-1)/2);
 m2 = (m/2)*ones(rem(m+1,2));
 waveNum = [(0:m1)  m2 (-m1:-1)]';
 
-f = ifft(bsxfun(@times,fft(f),exp(1i*shift*pi).^waveNum));
-
-if realf
-    f = real(f);
-end
-
-f(m/2,:) = mean(f(m/2,:));
-f(m,:) = mean(f(m,:));
-
-f = spherefun(f(m/2:m,:));
+val = ifft(bsxfun(@times,fft(f),exp(1i*shift*pi).^waveNum));
 
 end 
