@@ -18,10 +18,6 @@ if ( nargin == 0 )          % SPHEREFUN( )
     return
 end
 
-if ( nargin == 0 )          % SPHEREFUN( )
-    return
-end
-
 if ( isa(op, 'spherefun') )  % SPHEREFUN( SPHEREFUN )
     g = op;
     return
@@ -37,7 +33,7 @@ if ( isa(op, 'chebfun2') )  % SPHEREFUN( CHEBFUN2 )
     return
 end
 
-% If domain is empty take it to be co-latitude (doubled up).
+% If domain is empty take it to be co-latitude.
 if ( nargin < 3 || isempty(dom) )
     dom = [-pi pi 0 pi];
 end
@@ -48,12 +44,7 @@ else
     alpha = 2;
 end
 
-% TODO: Should we allow any other domains that latitude and co-latitude?
-
-if ( isa(op, 'spherefun') )  % SPHEREFUN( SPHEREFUN )
-    g = op;
-    return
-end
+% TODO: Should we allow any other domains than latitude and co-latitude?
 
 % TODO: 
 % 1. Need to allow for different domains.
@@ -66,49 +57,77 @@ maxRank = 8192;
 maxSample = 8192;
 pseudoLevel = eps;
 
-% If f is defined in terms of x,y,z; then convert it to
-% (longitude,latitude).
-h = redefine_function_handle( op );
+if ( isa(op, 'double') )    % SPHEREFUN( DOUBLE )
+    % Should we allow coefficients to be passed in?
+    
+    % Only do Phase I on the values.
+    F = op;
+    [n, m] = size(F);
+    
+    % Flip F arround since Phase I operates on the doubled-up portion of
+    % the sphere [-pi pi] x [-pi, 0] or [-pi pi] x [-3*pi/2 -pi/2]
+    F = [F(n:-1:1,m/2+1:m) F(n:-1:1,1:m/2)];
+    
+    % TODO: Add a way to loosen tolerances for this type of construction.
+    tol = 10*GetTol(F, 2*pi/m, pi/(n-1), dom, pseudoLevel);
+    [pivotIndices, pivotArray, removePole, happyRank, cols, pivots, ...
+        rows, idxPlus, idxMinus ] = PhaseOne( F, tol, alpha, 0 );
+    [x, y] = getPoints( m, n, dom );
+    pivotLocations = [x(pivotIndices(:,2)) y(pivotIndices(:,1))];
+    
+else  % SPHEREFUN( FUNCTION )
+    % If f is defined in terms of x,y,z; then convert it to
+    % (longitude,latitude).
+    h = redefine_function_handle( op );
 
-% PHASE ONE  
-% Sample at square grids, determine the numerical rank of the
-% function.
-n = 4;
-happy_rank = 0;     % Happy with phase one? 
-failure = false;
-pivotIndices = [];
-pivotMatrices = [];
-while ( ~happy_rank && ~failure )
-    n = 2*n;
-        
-    % Sample function on a tensor product grid.
-    % TODO: Add a more sophisticated evaluate function that does
-    % vectorization like chebfun2.
-    F = evaluate(h, n, n, dom);
-    
-    tol = GetTol(F, pi/n, pi/n, dom, pseudoLevel);
-    
-    pivotIndices2 = pivotIndices;
-    pivotMatrices2 = pivotMatrices;
-    [ pivotIndices, pivotMatrices, happy_rank, removePoles ] = PhaseOne( F, tol, alpha );
-    if size(pivotIndices,1) > size(pivotIndices2,1)
-        happy_rank = 0;
-    elseif happy_rank
-        pivotIndices = pivotIndices2;
-        pivotMatrices = pivotMatrices2;
-        n = n/2;
+    % PHASE ONE  
+    % Sample at square grids, determine the numerical rank of the
+    % function.
+    n = 4;
+    happyRank = 0;     % Happy with phase one? 
+    failure = 0;
+    pivotIndices = [];
+    pivotArray = [];
+    while ( ~happyRank && ~failure )
+        n = 2*n;
+
+        % Sample function on a tensor product grid.
+        % TODO: Add a more sophisticated evaluate function that does
+        % vectorization like chebfun2.
+        F = evaluate(h, n, n, dom);
+
+        tol = GetTol(F, pi/n, pi/n, dom, pseudoLevel);
+
+        pivotIndices2 = pivotIndices;
+        pivotArray2 = pivotArray;
+        [ pivotIndices, pivotArray, removePoles, happyRank ] = ...
+            PhaseOne( F, tol, alpha, 8 );
+
+        if size(pivotIndices,1) > size(pivotIndices2,1)
+            happyRank = 0;
+        else
+            % If the norm of the pivots for the n/2 case is within 1/10 of
+            % the norm for the n case then just keep the smaller n as this
+            % will be faster.
+            if norm(pivotArray2,inf) > 0.1*norm(pivotArray,inf)
+                pivotIndices = pivotIndices2;
+                pivotArray = pivotArray2;
+                n = n/2;
+            end
+        end
+
+        if ( n >= maxRank  )
+            warning('SPHEREFUN:CONSTRUCTOR:MAXRANK', ... 
+                                    'Unresolved with maximum rank.');
+            failure = 1;
+        end
     end
-    
-    if ( n >= maxRank  )
-        warning('SPHEREFUN:CONSTRUCTOR:MAXRANK', ... 
-                                'Unresolved with maximum rank.');
-        failure = true;
-    end
+
+    % PHASE TWO 
+    % Find the appropriate discretizations in the columns and rows. 
+    [cols, pivots, rows, pivotLocations, idxPlus, idxMinus] = ...
+        PhaseTwo( h, pivotIndices, pivotArray, n, dom, tol, maxSample, removePoles );
 end
-
-% PHASE TWO 
-% Find the appropriate discretizations in the columns and rows. 
-[cols, pivots, rows, pivotLocations, idxPlus, idxMinus] = PhaseTwo( h, pivotIndices, pivotMatrices, n, dom, tol, maxSample, removePoles );
 
 g.cols = chebfun( cols, dom(3:4)-[pi 0], 'trig');
 g.rows = chebfun( rows, dom(1:2), 'trig');
@@ -135,14 +154,17 @@ g.pivotLocations = pivotLocations;
 
 end
 
-function [pivotIndices, pivotMatrices, happy, removePole] = PhaseOne( F, tol, alpha )
+function [pivotIndices, pivotArray, removePole, ihappy, cols, pivots, ...
+        rows, idxPlus, idxMinus ] = PhaseOne( F, tol, alpha, factor )
 
-% Phase 1: Go find rank, plus pivot locations, ignore cols and rows.
-% alpha = spherefun.alpha; % get growth rate factor.
+% Phase 1: Go find rank and pivot locations
+
+% Setup
 [m, n] = size( F );
-pivotIndices = []; pivotMatrices = [];
-vscl = norm( F( : ), inf);
-rank_count = 0;    % keep track of the rank of the approximation.
+minSize = min(m,n);
+width = minSize/factor;
+pivotIndices = []; pivotArray = [];
+ihappy = 0;  % Assume we are not happy
 
 B = F(:,1:n/2);    %% (1,1) Block of F.
 C = F(:,n/2+1:n);  % (1,2) block of F.
@@ -155,18 +177,27 @@ Fm = 0.5*(B - C);
 pole1 = mean(Fp(1,:));     % Take the value at the poles to be 
 pole2 = mean(Fp(m,:));     % the mean of all the samples at the poles.
 
+colsPlus = []; rowsPlus = []; kplus = 0;  idxPlus = [];
+colsMinus = []; rowsMinus = []; kminus = 0; idxMinus = [];
+
+rankCount = 0;    % keep track of the rank of the approximation.
+
 % If the the values at both poles are not zero then we need to add zero
 % them out before removing these entries from F.
 removePole = false;
-if abs(pole1) > vscl*tol || abs(pole2) > vscl*tol
+if abs(pole1) > tol || abs(pole2) > tol
     % Determine the column with maximum inf-norm
     [ignored, poleCol] = max(max(abs(Fp),[],1));
     % Zero out the pole using the poleCol.
-    Fp = Fp - Fp(:, poleCol)*ones(1,n/2);
+    rowPole = ones(1,n/2);
+    colPole = Fp(:, poleCol);
+    Fp = Fp - colPole*rowPole;
+%     kplus = kplus + 1;
     % Do we need to keep track of the pivot locations?
     removePole = true;
     % Update the rank count
-    rank_count = rank_count + 1;
+    rankCount = rankCount + 1;
+%     idxPlus(kplus) = rankCount;
 end
 
 % Remove the rows corresponding to the poles before determining the
@@ -178,7 +209,16 @@ Fm = Fm( 2:m-1, : );
 [maxp,idxp] = max(abs(Fp(:)));
 [maxm,idxm] = max(abs(Fm(:)));
 
-while ( max( maxp, maxm ) > tol )    
+% Zero function
+if ( maxp == 0 ) && ( maxm == 0 )
+    colsPlus = 0;
+    rowsPlus = 0;
+    pivotArray = [0 0];
+    ihappy = 1;
+end
+
+while ( ( max( maxp, maxm ) > tol ) && ( rankCount < width ) && ...
+    ( rankCount < minSize ) )    
     % Find pivots:
     if maxp >= maxm
         idx = idxp;
@@ -196,27 +236,100 @@ while ( max( maxp, maxm ) > tol )
     % Smallest pivots is within an acceptable multiple of larger pivot so
     % do a rank 2 update.
     if ( max( absevp, absevm ) <= alpha*min( absevp, absevm ) )
-        Fp = Fp - Fp(:,k)*(Fp(j,:)*(1/evp));
-        Fm = Fm - Fm(:,k)*(Fm(j,:)*(1/evm));
-        rank_count = rank_count + 2; 
-        pivotMatrices = [pivotMatrices ; [evp evm] ];
+        kplus = kplus + 1;
+        colsPlus(:,kplus) = Fp(:,k);
+        rowsPlus(kplus,:) = Fp(j,:);
+        Fp = Fp - colsPlus(:,kplus)*(rowsPlus(kplus,:)*(1/evp));
+        
+        kminus = kminus + 1;
+        colsMinus(:,kminus) = Fm(:,k);
+        rowsMinus(kminus,:) = Fm(j,:);
+        Fm = Fm - colsMinus(:,kminus)*(rowsMinus(kminus,:)*(1/evm));        
+        
+        rankCount = rankCount + 1;
+        if absevp >= absevm
+            idxPlus(kplus) = rankCount;
+            rankCount = rankCount + 1;
+            idxMinus(kminus) = rankCount;
+        else
+            idxMinus(kminus) = rankCount;
+            rankCount = rankCount + 1;
+            idxPlus(kplus) = rankCount;
+        end            
+        pivotArray = [pivotArray ; [evp evm] ];
         [maxp,idxp] = max(abs(Fp(:)));
         [maxm,idxm] = max(abs(Fm(:)));
     else
         % Positive pivot dominates
         if absevp > absevm
-            Fp = Fp - Fp(:,k)*(Fp(j,:)*(1/evp));
+            kplus = kplus + 1;
+            rankCount = rankCount + 1;
+
+            colsPlus(:,kplus) = Fp(:,k);
+            rowsPlus(kplus,:) = Fp(j,:);
+            Fp = Fp - colsPlus(:,kplus)*(rowsPlus(kplus,:)*(1/evp));
+            idxPlus(kplus) = rankCount;
+            
+            % Minus pivot is zero
             evm = 0;
             [maxp,idxp] = max(abs(Fp(:)));
         % Negative pivot dominates
         else
-            Fm = Fm - Fm(:,k)*(Fm(j,:)*(1/evm));
+            kminus = kminus + 1;
+            rankCount = rankCount + 1;
+
+            colsMinus(:,kminus) = Fm(:,k);
+            rowsMinus(kminus,:) = Fm(j,:);
+            Fm = Fm - colsMinus(:,kminus)*(rowsMinus(kminus,:)*(1/evm));
+            idxMinus(kminus) = rankCount;
+
+            % Plus pivot is zero
             evp = 0;
             [maxm,idxm] = max(abs(Fm(:)));
         end
-        pivotMatrices = [pivotMatrices ; [evp evm] ];
-        rank_count = rank_count + 1; 
+        pivotArray = [pivotArray ; [evp evm] ];
     end
+end
+
+if ( max( maxp, maxm ) <= tol )
+    ihappy = 1;                               % We are happy
+end
+if ( rankCount >= width )
+    ihappy = 0;                               % We are not happy
+end
+
+% No sense in giving row and column values if they are not wanted.
+if ( nargout > 4 )
+    % Combine the types of pivots and set-up indices to track them
+    cols = zeros( 2*m-2, rankCount );
+    rows = zeros( n, rankCount );
+    pivots = zeros( rankCount, 1);
+    if kplus ~= 0
+        cols(2:m-1,idxPlus) = colsPlus;
+        cols(m+1:2*m-2,idxPlus) = flipud(colsPlus);
+        rows(:,idxPlus) = [rowsPlus rowsPlus].';
+        pivotPlus = pivotArray(pivotArray(:,1) ~= 0,1);
+        pivots(idxPlus) = pivotPlus;
+    end
+    
+    if kminus ~= 0
+        cols(2:m-1,idxMinus) = colsMinus;
+        cols(m+1:2*m-2,idxMinus) = -flipud(colsMinus);
+        rows(:,idxMinus) = [rowsMinus -rowsMinus].';
+        pivotMinus = pivotArray(pivotArray(:,2) ~= 0,2);
+        pivots(idxMinus) = pivotMinus;
+    end
+    
+%     pivots = reshape(pivotArray.',[],1);
+%     pivots = pivots(pivots ~= 0 );
+%     pivots = pivots([idxPlus idxMinus]);
+
+    if removePole
+        cols(:,1) = [colPole;flipud(colPole(2:m-1))];
+        rows(:,1) = [rowPole rowPole];
+        pivots(1) = 1;
+    end
+
 end
 
 % Adjust the pivot locations so that they now correspond to F having
@@ -225,23 +338,17 @@ if ~isempty( pivotIndices )
     pivotIndices(:,1) = pivotIndices(:,1) + 1;
 end
 
-% Put the poles at the begining the pivot locations array and also include
+% Put the poles at the begining of the pivot locations array and also include
 % the pivot matrix.
 if removePole
     pivotIndices = [ 1 poleCol; pivotIndices ];
-    pivotMatrices = [[1 0] ; pivotMatrices];
-end
-
-% If the rank of the matrix is less than 1/8 its size. We are happy:
-if ( rank_count < min(size(F))/8 )
-    happy = 1;
-else
-    happy = 0;
+    pivotArray = [[1 0] ; pivotArray];
+    idxPlus = [1 idxPlus];
 end
 
 end
 
-function [cols, pivots, rows, pivotLocations, idxPlus, idxMinus] = PhaseTwo( h, pivotIndices, pivotMatrices, n, dom, tol, maxSample, removePoles )
+function [cols, pivots, rows, pivotLocations, idxPlus, idxMinus] = PhaseTwo( h, pivotIndices, pivotArray, n, dom, tol, maxSample, removePoles )
 
 % alpha = spherefun.alpha; % get growth rate factor.
 happy_columns = 0;   % Not happy, until proven otherwise.
@@ -256,8 +363,8 @@ id_rows = pivotIndices(:,1); id_cols = pivotIndices(:,2);
 row_pivots = y(id_rows);
 col_pivots = x(id_cols);
 
-numPosPivots = sum( abs( pivotMatrices(:,1) ) > 0 );
-numMinusPivots = sum( abs( pivotMatrices(:,2) ) > 0 );
+numPosPivots = sum( abs( pivotArray(:,1) ) > 0 );
+numMinusPivots = sum( abs( pivotArray(:,2) ) > 0 );
 totalPivots = numPosPivots + numMinusPivots;
 
 pivotPlus = zeros(numPosPivots,1);
@@ -308,8 +415,8 @@ while ( ~(happy_columns && happy_rows) && ~failure)
     for ii = 1:rk
         
         % Get the pivots
-        evp = pivotMatrices( ii, 1 );
-        evm = pivotMatrices( ii, 2 );
+        evp = pivotArray( ii, 1 );
+        evm = pivotArray( ii, 2 );
                                         
         % Do GE step on both matrices
         if evp ~=0 && evm ~= 0
@@ -323,20 +430,10 @@ while ( ~(happy_columns && happy_rows) && ~failure)
             colsPlus(:,plusCount) = colPlus;
             rowsPlus(plusCount,:) = rowPlus;
             pivotPlus(plusCount) = evp;
-            idxPlus(plusCount) = pivotCount;
-            pivots(pivotCount) = evp;
             
-            plusCount = plusCount + 1;
-            pivotCount = pivotCount + 1;
-
             colsMinus(:,minusCount) = colMinus;
             rowsMinus(minusCount,:) = rowMinus;
             pivotMinus(minusCount) = evm;
-            idxMinus(minusCount) = pivotCount;
-            pivots(pivotCount) = evm;
-
-            minusCount = minusCount + 1;
-            pivotCount = pivotCount + 1;
 
             newColsPlus = newColsPlus - ...
                     colPlus*(rowPlus(id_cols)*(1/evp));
@@ -346,6 +443,21 @@ while ( ~(happy_columns && happy_rows) && ~failure)
                     colMinus*(rowMinus(id_cols)*(1/evm));
             newRowsMinus = newRowsMinus - ...
                     ((1/evm)*colMinus(id_rows))*rowMinus;
+                
+            if abs(evp) >= abs(evm)
+                idxPlus(plusCount) = pivotCount;
+                idxMinus(minusCount) = pivotCount+1;
+                pivots(pivotCount) = evp;
+                pivots(pivotCount+1) = evm;
+            else
+                idxMinus(minusCount) = pivotCount;
+                idxPlus(plusCount) = pivotCount+1;
+                pivots(pivotCount) = evm;
+                pivots(pivotCount+1) = evp;
+            end 
+            plusCount = plusCount + 1;
+            minusCount = minusCount + 1;
+            pivotCount = pivotCount + 2;
         else
             if ( evp ~= 0 )
                 colPlus = newColsPlus(:,ii);
