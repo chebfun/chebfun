@@ -19,7 +19,7 @@ n = length(f);
 x = f.chebpts(n);
 
 % Set a tolerance:
-tol = max(f.epslevel, 1e3*pref.sampleTestEps) * n;
+tol = max(max(f.epslevel, pref.eps), 1e3*pref.sampleTestEps) * n;
 
 if ( nargin < 4 || isempty(vscl) )
     vscl = max(abs(values), [], 1);

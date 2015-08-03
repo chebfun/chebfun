@@ -59,7 +59,7 @@ end
 % Check also that sampleTest is happy:
 if ( ishappy && ~isempty(op) && ~isnumeric(op) && pref.sampleTest )
     f.epslevel = epslevel;
-    ishappy = sampleTest(op, f);
+    ishappy = sampleTest(op, f, pref);
     if ( ~ishappy )
         % It wasn't. Revert cutoff. :(
         cutoff = size(f.values, 1);
