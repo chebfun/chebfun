@@ -46,7 +46,9 @@ function c = chebCoeffsTurbo(f, rho, n)
 K = 4*n;                                    % Number of quadrature nodes.
 g = @(z) f((rho*z + 1./(rho*z))/2);         % Remap ellipse to unit circle.
 z = exp(2*pi*1i*(0:1:(K - 1)).'/K);         % Roots of unity.
-c = (fft(g(z))/K)./(rho.^(0:1:(K - 1)).');  % Compute integrals with trap. rule.
-c = [c(1) ; 2*c(2:n)];                      % Rescale to get coefficients.
+
+% Compute integrals with trap. rule and rescale to get coefficients.
+c = bsxfun(@rdivide, fft(g(z))/K, rho.^(0:1:(K - 1)).');
+c = [c(1,:) ; 2*c(2:n,:)];
 
 end
