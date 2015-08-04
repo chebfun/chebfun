@@ -14,12 +14,20 @@ end
 
 m = length(f.cols);
 
-% [fp,fm] = partition(f);
+% Should we increase the length before doing the computation
+% ctech = f.cols.funs{1}.onefun;
+% coeffs = ctech.coeffs;
+% ctech.coeffs = ctech.alias(coeffs,2*m);
+% ctech.values = ctech.coeffs2vals(ctech.coeffs);
+% f.cols.funs{1}.onefun = ctech;
+% m = length(f.cols);
 % 
-% valp = computeLaplacian(fp);
-% valm = computeLaplacian(fm);
-% 
-% f = valp+valm;
+% n = length(f.rows);
+% ctech = f.rows.funs{1}.onefun;
+% coeffs = ctech.coeffs;
+% ctech.coeffs = ctech.alias(coeffs,2*n);
+% ctech.values = ctech.coeffs2vals(ctech.coeffs);
+% f.rows.funs{1}.onefun = ctech;
 
 f = computeLaplacian(f);
 

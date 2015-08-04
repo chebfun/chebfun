@@ -69,10 +69,10 @@ if ( isa(op, 'double') )    % SPHEREFUN( DOUBLE )
     F = [F(n:-1:1,m/2+1:m) F(n:-1:1,1:m/2)];
     
     % TODO: Add a way to loosen tolerances for this type of construction.
-    tol = 10*GetTol(F, 2*pi/m, pi/(n-1), dom, pseudoLevel);
+    tol = GetTol(F, 2*pi/m, pi/(n-1), dom, 50*pseudoLevel);
     [pivotIndices, pivotArray, removePole, happyRank, cols, pivots, ...
         rows, idxPlus, idxMinus ] = PhaseOne( F, tol, alpha, 0 );
-    [x, y] = getPoints( m, n, dom );
+    [x, y] = getPoints( n, m, dom );
     pivotLocations = [x(pivotIndices(:,2)) y(pivotIndices(:,1))];
     
 else  % SPHEREFUN( FUNCTION )
