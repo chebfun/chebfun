@@ -32,7 +32,16 @@ rhoCheb = exp(abs(log(eps())) / length(f));
 rho = rhoCheb^(2/3);
 
 % Do the contour integrals.
-f.coeffs = chebCoeffsTurbo(op, rho, n);
+c = chebCoeffsTurbo(op, rho, n);
+
+% Assign the new coefficients.
+if ( isreal(f) )
+    f.coeffs = real(c);
+elseif ( isreal(1i*f) )
+    f.coeffs = imag(c);
+else
+    f.coeffs = c;
+end
 
 end
 
