@@ -10,7 +10,7 @@ function f = round(f)
 %
 % See also CEIL, FLOOR, FIX.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Evaluate at the two end points, and an arbitrary interior point:
@@ -20,7 +20,6 @@ fx = feval(f, [-1 ; arbitraryPoint ; 1]);
 meanfx = mean(fx, 1);
 % Compute the round:
 f.coeffs = round(meanfx);
-f.vscale = abs(f.coeffs);
-f.epslevel = 0*f.vscale + eps;
+f.epslevel = 0*f.coeffs + eps;
 
 end

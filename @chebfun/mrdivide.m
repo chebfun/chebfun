@@ -4,7 +4,7 @@ function X = mrdivide(B, A)
 %
 % See also RDIVIDE, MLDIVIDE.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % TODO: Something is wrong with the comment lines below.

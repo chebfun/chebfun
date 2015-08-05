@@ -116,8 +116,9 @@ h = f + g;
 vals_h = feval(h, x);
 op = @(x)  (x - dom(2)).^pow.*(sin(100*x)+cos(300*x));
 h_exact = op(x);
-pass(28) = ( norm(vals_h-h_exact, inf) < max(get(f, 'epslevel'), get(g, 'epslevel'))*...
+pass(28) = ( norm(vals_h-h_exact, inf) < 1e3*max(get(f, 'epslevel'), get(g, 'epslevel'))*...
     norm(h_exact, inf) );
+
 
 %% Test for function defined on unbounded domain:
 
@@ -139,7 +140,7 @@ h = f + g;
 hVals = feval(h, x);
 hExact = oph(x);
 err = hVals - hExact;
-pass(29) = norm(err, inf) < get(h,'epslevel').*get(h,'vscale');
+pass(29) = norm(err, inf) < 1e1*get(h,'epslevel').*get(h,'vscale');
 
 %% Test addition between a CHEBFUN and a TRIGFUN.
 
@@ -167,7 +168,8 @@ pass(32) = strcmpi(func2str(get(h1(:,1).funs{1}.onefun, 'tech')), ...
 pass(33) = strcmpi(func2str(get(h1(:,2).funs{1}.onefun, 'tech')), ...
                    func2str(get(g(:,2).funs{1}.onefun, 'tech')));
 h2 = chebfun(@(x) [x + cos(x), x.^3 + sin(x)], dom, pref);
-pass(34) = norm(h1-h2, inf) < 1e1*get(h2,'epslevel').*get(h2,'vscale');
+pass(34) = norm(h1-h2, inf) < 1e2*get(h2,'epslevel').*get(h2,'vscale');
+
 
 end
 
@@ -189,5 +191,6 @@ function result = test_add_function_to_function(f, f_op, g, g_op, x)
     result(1) = isequal(h1, h2);
     h_exact = @(x) f_op(x) + g_op(x);
     norm(feval(h1, x) - h_exact(x), inf);
-    result(2) = norm(feval(h1, x) - h_exact(x), inf) < 10*vscale(h1)*epslevel(h1);
+    result(2) = norm(feval(h1, x) - h_exact(x), inf) < 1e2*vscale(h1)*epslevel(h1);
+        
 end

@@ -4,7 +4,7 @@ function f = real(f)
 %
 % See also ISREAL, IMAG, CONJ.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % If f is real then there is nothing to do:

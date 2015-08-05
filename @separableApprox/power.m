@@ -4,7 +4,7 @@ function f = power( f, n )
 % F.^G returns a SEPARABLEAPPROX F to the scalar power G, a scalar F to the
 % SEPARABLEAPPROX power G, or a SEPARABLEAPPROX F to the SEPARABLEAPPROX power G.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty( f ) )    % Check for empty objects.

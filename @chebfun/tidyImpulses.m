@@ -7,7 +7,7 @@ function f = tidyImpulses(f)
 % [TODO]: This function should no longer be required since the DELTAFUN class
 % handles all delta functions.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 for n = size(f.pointValues, 3):-1:2

@@ -139,8 +139,9 @@ vals_h = feval(h, x);
 pow = pow1-pow2;
 op = @(x) (x - dom(2)).^pow.*(sin(100*x)./(cos(300*x).^2+1));
 h_exact = op(x);
-pass(16) = ( norm(vals_h-h_exact, inf) < 1e1*max(get(f, 'epslevel'), ...
+pass(16) = ( norm(vals_h-h_exact, inf) < 1e5*max(get(f, 'epslevel'), ...
     get(g, 'epslevel'))*norm(h_exact, inf) );
+
 
 %% Test for function defined on unbounded domain:
 
@@ -172,7 +173,8 @@ z = chebfun('4*exp(1i*s)',[0 2*pi],'trig');
 f = z./((exp(z)-1));
 B10 = factorial(k)*sum((f./z.^(k+1)).*diff(z))/(2i*pi);  % 10 Bernoulli num
 exact = 5/66;
-pass(18) = abs(exact-B10) < get(f,'epslevel')*get(f,'vscale');
+pass(18) = abs(exact-B10) < 1e2*get(f,'epslevel')*get(f,'vscale');
+
 
 %% Test division between a CHEBFUN and a TRIGFUN.
 
@@ -186,7 +188,8 @@ h1 = f./g;
 pass(19) = strcmpi(func2str(get(h1.funs{1}.onefun, 'tech')), ...
                    func2str(get(f.funs{1}.onefun, 'tech')));
 h2 = chebfun(@(x) (x + x.^2)./(2+cos(x)), dom, pref);
-pass(20) = norm(h1-h2, inf) < get(h2,'epslevel').*get(h2,'vscale');
+pass(20) = norm(h1-h2, inf) < 1e2*get(h2,'epslevel').*get(h2,'vscale');
+
 
 % 2. Quasimatrix case.
 f = chebfun(@(x) [cos(x), sin(x)], [dom(1) dom(end)], 'periodic');
@@ -198,7 +201,8 @@ pass(21) = strcmpi(func2str(get(h1(:,1).funs{1}.onefun, 'tech')), ...
 pass(22) = strcmpi(func2str(get(h1(:,2).funs{1}.onefun, 'tech')), ...
                    func2str(get(g(:,2).funs{1}.onefun, 'tech')));
 h2 = chebfun(@(x) [cos(x)./(2+x), sin(x)./(2+x.^3)], dom, pref);
-pass(23) = norm(h1-h2, inf) < get(h2,'epslevel').*get(h2,'vscale');
+pass(23) = norm(h1-h2, inf) < 1e2*get(h2,'epslevel').*get(h2,'vscale');
+
 
 %%
 % #1111

@@ -10,7 +10,7 @@ function out = sum(f, dim)
 %
 % See also CUMSUM, DIFF.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Get the length of the values:
@@ -37,8 +37,9 @@ if ( isempty(f) )
     % Empty TRIGTECH
     out = []; 
 else
-    % Trapezium rule:
-    out = sum(f.values, 1)*(2/n);
+    % By orthogonality of complex exponentials integral is 2x 
+    % zeroth coefficient: 
+    out = 2*f.coeffs( floor((n+2)/2), :); 
 end
 
 % Return a real result if f is real:

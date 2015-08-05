@@ -1,7 +1,7 @@
 function C = plus(A, B)
 %+   Sum of CHEBMATRIX objects or a CHEBMATRIX and another compatible object.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Ensure the first argument is a CHEBMATRIX:

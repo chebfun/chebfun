@@ -53,7 +53,8 @@ A = randn(3, 3);
 g = f*A;
 g_exact = @(x) [sin(x) cos(x) exp(x)]*A;
 err = abs(feval(g, x) - g_exact(x));
-pass(8) = max(err(:)) < 2*max(get(g, 'vscale').*get(g, 'epslevel'));
+pass(8) = max(err(:)) < 10*max(get(g, 'vscale').*get(g, 'epslevel'));
+    
     
 %%
 % Verify error handling and corner cases.
@@ -115,6 +116,7 @@ gVals = feval(g, x);
 op = @(x) [exp(x) x.*exp(x) (1-exp(x))./x]*A;
 gExact = op(x);
 err = gVals - gExact;
-pass(13) = norm(err, inf) < 1e1*max(get(g,'epslevel').*get(g,'vscale'));
+pass(13) = norm(err, inf) < 1e2*max(get(g,'epslevel').*get(g,'vscale'));
+
 
 end

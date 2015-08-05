@@ -32,7 +32,7 @@ classdef bndfun < classicfun
 %
 % See also CLASSICFUN, CHEBFUNPREF, ONEFUN.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -148,9 +148,6 @@ classdef bndfun < classicfun
                 
         % Polynomial coefficients of a BNDFUN.
         out = poly(f)
-        
-        % BNDFUN power function.
-        f = power(f, b)
         
         % QR factorisation of an array-valued BNDFUN.
         [f, R, E] = qr(f, flag)

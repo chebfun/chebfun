@@ -4,7 +4,7 @@ function f = abs(f, varargin)
 %   that the fun part of F has no roots in the domain of F. If 
 %   ~isempty(roots(F)), then ABS(F) will return garbage with no warning.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Take the absolute values:

@@ -1,3 +1,7 @@
+# dom = [0, 10];
+# N = chebop(@(u) diff(u, 2) + diff(u), dom);
+# N.bc = 0;
+# [V, D] = eigs(N, 6);
 'Advection-diffusion'
 'scalar'
 domain = '[0 10]';

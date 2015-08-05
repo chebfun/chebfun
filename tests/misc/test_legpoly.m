@@ -113,7 +113,8 @@ pass(14) = err < tol;
 % Test 15 confirms orthogonality:
 p = legpoly(1:100, [0 155 3333 10000]);
 err = norm(p'*p - diag(diag(p'*p)));
-pass(15) = err < 5e4*epslevel(p)*vscale(p);
+pass(15) = err < 1e6*epslevel(p)*vscale(p);
+    
 
 % Test 16 confirms othonormality:
 p = legpoly(1:100, [0 3333 10000], 'normalize');
@@ -128,8 +129,9 @@ p = legpoly(1500, [-1 -0.5 -0.3 1]);
 xx = linspace(-1, 1, 10);
 P = legendre(1500, xx);
 err = norm(feval(p, xx) - P(1, :), inf);
-tol = 1e4*epslevel(p)*vscale(p);
+tol = 1e6*epslevel(p)*vscale(p);
 pass(17) = err < tol;
+    
 
 % Test 18 confirms normaliztion:
 p = legpoly(1500, [-1 0 1], 'normalize');

@@ -3,7 +3,7 @@ function nIn = nargin(N)
 %   NARGIN(N) returns the number of input arguments to N.OP, or zero if N.OP is
 %   empty.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( ~isempty(N.op) )

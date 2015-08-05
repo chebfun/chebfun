@@ -22,7 +22,7 @@ function r = roots( f, g, varargin )
 %  
 % See also CHEBFUN2V/ROOTS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 tol = 1e-5; % Go for five digits.

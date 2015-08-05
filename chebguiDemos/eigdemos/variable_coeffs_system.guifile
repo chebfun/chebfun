@@ -1,3 +1,8 @@
+# dom = [-2 2];
+# N = chebop(@(x,u,v) [diff(u,2) + u*x + v; diff(v,2) + sin(x)*u], dom);
+# N.lbc = @(u,v) [u;v];
+# N.rbc = @(u,v) [u;v];
+# [V, D] = eigs(N, 6);
 'System with variable coefficients'
 'system'
 domain = '[-2 2]';

@@ -3,7 +3,7 @@ function out = iszero(f)
 %   ISZERO(F) returns logical TRUE is F.COEFFS has only zero entries and logical
 %   FALSE otherwise.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 out = ~any(f.coeffs, 1);

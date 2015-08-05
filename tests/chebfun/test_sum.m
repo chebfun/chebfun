@@ -142,7 +142,8 @@ op = @(x) (x - dom(1)).^pow.*sin(100*x);
 f = chebfun(op, dom, 'exps', [pow 0], 'splitting', 'on');
 I = sum(f);
 I_exact = 0.17330750941063138;
-pass(26) = ( abs(I-I_exact) < 20*get(f, 'epslevel')*abs(I_exact) );
+pass(26) = ( abs(I-I_exact) < 1e3*get(f, 'epslevel')*abs(I_exact) );
+
 
 %% Test for functions defined on unbounded domain:
 
@@ -226,7 +227,7 @@ f = chebfun(@(x)[exp(-x.^2) 0*x+1], [1 Inf]);
 I = sum(f);
 % The following exact value is obtained by Mathematica.
 I_exact = 0.139402792640331;
-pass(34) = abs(I(1)-I_exact) < get(f,'epslevel')*get(f,'vscale') && ...
+pass(34) = abs(I(1)-I_exact) < 1e1*get(f,'epslevel')*get(f,'vscale') && ...
     isinf(I(2));
 
 end

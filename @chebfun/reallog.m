@@ -6,7 +6,7 @@ function g = reallog(f, pref)
 %
 % See also LOG, LOG2, LOG10, EXP, REALPOW, REALSQRT.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information. 
 
 % Check for complex CHEBFUN objects:

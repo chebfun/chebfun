@@ -83,7 +83,8 @@ h = compose(f, g);
 hVals = feval(h, x);
 hExact = oph(x);
 err = hVals - hExact;
-pass(11) = norm(err, inf) < get(h,'epslevel')*get(h,'vscale');
+pass(11) = norm(err, inf) < 1e1*get(h,'epslevel')*get(h,'vscale');
+
 
 %% Test compose with a discontinuous breakpoint. See #1074.
 ep = 0.25;

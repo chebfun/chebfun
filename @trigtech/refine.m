@@ -1,7 +1,7 @@
 function [values, giveUp] = refine(op, values, pref)
 %REFINE   Refinement method for TRIGTECH construction.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Obtain some preferences:
@@ -42,13 +42,11 @@ function [values, giveUp] = refineResampling(op, values, pref)
         % (Approximately) powers of sqrt(2):
         pow = log2(size(values, 1));
         if ( (pow == floor(pow)) && (pow > 5) )
-            n = round(2^(floor(pow) + .5)) + 1;
-            n = n - mod(n, 2) + 1;
+            n = 3*2^(pow-1);
         else
             n = 2^(floor(pow) + 1);
         end
     end
-    
     % n is too large:
     if ( n > pref.maxLength )
         giveUp = true;

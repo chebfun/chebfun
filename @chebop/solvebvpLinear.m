@@ -21,7 +21,7 @@ function [u, info] = solvebvpLinear(L, rhs, Ninit, pref, displayInfo)
 %
 % See also: chebop/solvebvp
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Get defaults:
@@ -53,9 +53,6 @@ if ( ~isempty(Ninit) )
 else
     u = del;
 end
-
-% Simplify the result before returning it and printing solver info:
-u = simplify(u);
 
 % Norm of residual:
 normRes = norm(L*u - rhs, 'fro');

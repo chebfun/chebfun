@@ -11,7 +11,7 @@ function expInfo = exportInfo(guifile)
 %   EXPINFO:    A struct, containing fields with information for exporting to an
 %               .m-file.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Extract information from the CHEBGUI fields
@@ -109,61 +109,39 @@ if ( ~isempty(bcInput{1}) )
     end
 end
 
+% What discretization option do we want?
+discretization = chebguiExporter.discOption(periodic, dom, ...
+    guifile.options.discretization);
+
+% We need a cheboppref to be able to call matrix() below to determine whether
+% the problem is generalized.
+pref = cheboppref();
+pref.discretization = discretization;
+
 % Variable which determines whether it's a generalized problem. If
 % rhsString is empty, we can be sure it's not a generalized problem.
 generalized = 1;
-% For some generalized problems, we sometimes want to negate the LHS operator.
-% This is indicated by the FLIPSIGNS variable.
-flipSigns = 0;
-% Create the chebops, and try to linearise them.
-% We will always have a string for the LHS, if the one for RHS is empty, we
-% know we have a non-generalised problem.
-N_LHS = chebop(LHS, d, BC);
-
-% Check whether we actually have a linear problem.
-% TODO: Do we care when exporting? This would cause an error when a user tries
-% to run the .m file later anyway...
-try
-    A = linop(N_LHS);
-catch ME
-    MEID = ME.identifier;
-    if ( guiMode && ~isempty(strfind(MEID, 'linop:nonlinear')) )
-        errordlg('Operator is not linear.', 'Chebgui error', 'modal');
-    else
-        rethrow(ME)
-    end
-    expInfo = [];
-    return
-end
 
 % Check for a generalised problem.
-% TODO: This should be a joint method with solveGUIeig
 if ( ~isempty(rhsString) )
     RHS  = eval(rhsString);
     N_RHS = chebop(RHS, d);
 
-    try
-        B = linop(N_RHS);
-    catch ME
-        MEID = ME.identifier;
-        if ( guiMode  && ~isempty(strfind(MEID, 'linop:nonlinear')) )
-            errordlg('Operator is not linear.', 'Chebgui error', 'modal');
-        else
-            rethrow(ME)
-        end
-        expInfo = [];
-        return
-    end
+    % Linearize the RHS operator, so that it can be compared with the identity
+    % operator.
+    linCheck = false;
+    paramReshape = false;
+    B = linearize(N_RHS, [], [], linCheck, paramReshape);
     
-    % Check whether we are working with generalized
-    % problems or not by comparing B with the identity operator on the domain.
-    I = operatorBlock.eye(d);
     % Set a discretization size for comparing operators
     discDim = repmat(10, 1, length(d) - 1);    
     % Obtain a discretisation of the operator B
-    Bdisc = matrix(B, discDim);
-    % Obtain a discretization of the identity operator on the domain
-    Idisc = matrix(linop(I), discDim);
+    Bdisc = matrix(B, discDim, pref);
+    % Obtain a discretization of the chebop specified via chebop(@(u) u). Notice
+    % that this is not identical to the discretization of identity operator on
+    % the domain, due to the fact that chebop/linearize now tries to
+    % automatically detect parameters appearing in the problem!
+    Idisc = ones(10*(length(d) - 1), 1);
     % In case of systems, B will have a block structure. Need to get the
     % corresponding block identity operator by tiling the identity operator.
     % Start by wrapping in a cell and call repmat
@@ -172,29 +150,30 @@ if ( ~isempty(rhsString) )
     Idisc = blkdiag(Idisc{:});
     
     % Compare the discretizations to see whether they are the same. If Bdisc is
-    % not square, B is certainly not the identity operator!
-    if ( size(Bdisc, 1) ~= size(Bdisc, 2) )
+    % not tall and skinny, it can't have been the identity operator! In other
+    % words, if Bdisc has more columns than number of variables that appear in
+    % the problem, it will not have been the identity operator.
+    if ( size(Bdisc, 2) ~= size(B, 2) )
         generalized = 1;
     else
-
+        
         opDifference = Bdisc - Idisc;
         opSum = Bdisc + Idisc;
-        if ( isempty(nonzeros(opDifference)) )
+        tol = 10*(length(d) - 1)*size(B, 2)*eps;
+        % Check whether B matches identity (allow for numerical roundoff errors)
+        if ( norm(opDifference) < tol )
             generalized = 0;
         end
 
-        if ( isempty(nonzeros(opSum)) )
+        if ( norm(opSum) < tol )
             generalized = 0;
-            flipSigns = 1;
         end
     end
 else
     generalized = 0;
 end
 
-% What discretization option do we want?
-discretization = chebguiExporter.discOption(periodic, dom, ...
-    guifile.options.discretization);
+
 
 %% Fill up the expInfo struct
 expInfo.dom = dom;
@@ -205,7 +184,6 @@ expInfo.bcInput = bcInput;
 expInfo.K = K;
 expInfo.sigma = sigma;
 expInfo.generalized = generalized;
-expInfo.flipSigns = flipSigns;
 expInfo.lname = lname;
 
 % And then some...

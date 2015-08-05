@@ -1,4 +1,4 @@
-function [u, info] = solvebvp(N, rhs, varargin)
+function varargout = solvebvp(N, rhs, varargin)
 %SOLVEBVP   Solve a linear or nonlinear CHEBOP BVP system.
 %
 %   U = SOLVEBVP(N, RHS), where N is a CHEBOP and RHS is a CHEBMATRIX, CHEBFUN
@@ -6,8 +6,13 @@ function [u, info] = solvebvp(N, rhs, varargin)
 %
 %       N(U) = RHS + boundary conditions specified by N
 %
-%   Observe that U = SOLVEBVP(N, RHS) has the same effect as U = N\RHS, but this
-%   method allows greater flexibility than CHEBOP backslash, as described below.
+%   Observe that U = SOLVEBVP(N, RHS), where N specifies a boundary-value
+%   problem (BVP), has the same effect as U = N\RHS, but this method allows
+%   greater flexibility than CHEBOP backslash, as described below. Problems are
+%   determined to be a BVP as follows:
+%       * Both N.LBC and N.RBC is non-empty, or N.BC is non-empty.
+%   Otherwise, problems are considered to be initial/final-value problems, and
+%   U=N\RHS will in general have the same effect as U = SOLVEIVP(N, RHS).
 %
 %   If successful, the solution returned, U, is a CHEBFUN if N specifies a
 %   scalar problem, and a CHEBMATRIX if N specifies a coupled systems of
@@ -50,7 +55,7 @@ function [u, info] = solvebvp(N, rhs, varargin)
 % See also: CHEBOP, CHEBOP/MLDIVIDE, CHEBOPPREF, CHEBOP/SOLVEBVPLINEAR,
 %   CHEBOP/SOLVEBVPNONLINEAR, CHEBOP/SOLVEIVP, LINOP/MLDIVIDE.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Developer note:
@@ -61,7 +66,7 @@ function [u, info] = solvebvp(N, rhs, varargin)
 %   details.
 
 % Parse inputs:
-[pref, isPrefGiven, displayInfo] = parseInputs(N, varargin{:});
+[pref, displayInfo] = parseInputs(varargin{:});
 
 % Find out how many variables N operates on:
 nVars = numVars(N);
@@ -156,7 +161,7 @@ if ( isnumeric(u0) )
 end
 
 % Determine the discretization.
-pref = determineDiscretization(N, L, isPrefGiven, pref);
+pref = determineDiscretization(N, L, pref);
 disc = pref.discretization();
 
 % Determine the TECH used by the discretization.
@@ -214,23 +219,39 @@ else
 
     % Call solver method for nonlinear problems.
     [u, info] = solvebvpNonlinear(N, rhs, L, u0, residual, pref, displayInfo);
+
+% simplify output
+u = simplify(u,pref.errTol/200);
     
 end
 
 % Revert warning state:
 warning(warnState);
 
-% Return a CHEBFUN rather than a CHEBMATRIX for scalar problems:
-if ( all(size(u) == [1 1]) )
-    u = u{1};
-end
 
 % Return the linearity information as well:
 info.isLinear = isLinear;
 
+% Return a CHEBFUN rather than a CHEBMATRIX for scalar problems:
+if ( all(size(u) == [1 1]) )
+    varargout{1} = u{1};
+    varargout{2} = info;
+elseif ( nargout == 1 )
+    varargout{1} = u;
+elseif ( nargout == size(u, 1) )
+    [varargout{1:nargout}] = deal(u);
+elseif ( nargout == size(u, 1) + 1 )
+    [varargout{1:nargout - 1}] = deal(u);
+    varargout{nargout} = info;
+else
+    error('CHEBFUN:CHEBOP:solvebvp:numberOfOutputs', ...
+        'Incorrect number of outputs.');
 end
 
-function [pref, isPrefGiven, displayInfo] = parseInputs(N, varargin)
+
+end
+
+function [pref, displayInfo] = parseInputs(varargin)
 %PARSEINPUTS   Parse the input arguments to SOLVEBVP.
 
 % Initialise the outputs:
@@ -246,7 +267,6 @@ while ( ~isempty(varargin) )
     elseif ( isa(varargin{1}, 'cheboppref') )
         pref = varargin{1};
         varargin(1) = [];
-        isPrefGiven = 1;
     elseif ( isa(varargin{1}, 'function_handle') )
         displayInfo = varargin{1};
         varargin(1) = [];
@@ -259,7 +279,6 @@ end
 % No preferences passed; use the current chebopprefs:
 if ( isempty(pref) )
     pref = cheboppref();
-    isPrefGiven = 0;
 end
 
 % If no DISPLAYINFO function handle passed, use the default CHEBOP one.

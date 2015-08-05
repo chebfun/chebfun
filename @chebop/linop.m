@@ -12,7 +12,7 @@ function [L, f, FAIL] = linop(N)
 %
 % See also LINOP, CHEBOP/LINEARIZE, CHEBOP/ISLINEAR.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Tell CHEBOP/LINEARIZE() to stop if it detects nonlinearity:

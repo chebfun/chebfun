@@ -3,7 +3,7 @@ function cg = demo2chebgui(demoPath)
 %   CG = CHEBGUI.DEMO2CHEBGUI(DEMOPATH) convert the .guifile stored on DEMOPATH
 %   to a CHEBGUI object.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Import from the given file and evaluate to fill the workspace
@@ -20,8 +20,9 @@ inputEnded = 0;
 while ( ~inputEnded )
     tline = fgetl(fid);
 
-    % Don't eval names and demotypes
-    if ( isempty(strfind(tline, '=')) )
+    % Don't eval names and demotypes. Also, don't eval lines that start at #, as
+    % those are problem description lines needed for testing.
+    if ( isempty(tline) || isempty(strfind(tline, '=')) || tline(1) == '#' )
         continue
     end
 

@@ -7,7 +7,7 @@ function comet3(f, g, h, ignored)
 %
 % See also COMET.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( (nargin == 1) && (numColumns(f) == 3) )

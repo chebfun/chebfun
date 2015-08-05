@@ -14,8 +14,8 @@ function f = volt( K, v )
 %
 % See also FRED.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org/ for Chebfun information.
+% Copyright 2015 by The University of Oxford and The Chebfun2 Developers.
+% See http://www.chebfun.org/ for Chebfun2 information.
 
 if ( ~isa( K, 'separableApprox' ) )
     error('CHEBFUN:SEPARABLEAPPROX:volt:input', ...

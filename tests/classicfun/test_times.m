@@ -153,7 +153,7 @@ g = c.*f;
 g_exact = bndfun(op_exact, singData, singPref);
 
 err = norm(feval(g, x) - feval(g_exact, x), inf);
-tol = 10*get(f, 'epslevel')*norm(feval(g_exact, x), inf);
+tol = 1e2*get(f, 'epslevel')*norm(feval(g_exact, x), inf);
 pass(24) = ( err < tol );
 
 % Case of two functions:
@@ -221,7 +221,8 @@ function result = test_mult_function_by_function(f, f_op, g, g_op, x, checkpos)
 h = f .* g;
 h_exact = @(x) f_op(x) .* g_op(x);
 tol = 10*max(get(h, 'vscale').*get(h, 'epslevel'));
-result(1) = all(max(abs(feval(h, x) - h_exact(x))) < 20*tol);
+result(1) = all(max(abs(feval(h, x) - h_exact(x))) < 1e4*tol);
+    
 if ( checkpos )
     result(2) = all(feval(h, x) >= 0);
 end

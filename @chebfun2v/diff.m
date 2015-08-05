@@ -12,7 +12,7 @@ function F = diff(F, n, dim)
 %   and NY of F in the second derivative. For example, DIFF(F,[1 2]) is
 %   d^3F/dxd^2y.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check:

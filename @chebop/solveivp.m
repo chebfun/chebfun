@@ -1,4 +1,4 @@
-function [y, info] = solveivp(N, rhs, pref, varargin)
+function varargout = solveivp(N, rhs, pref, varargin)
 %SOLVEIVP    Solve an IVP by reforming it to a first order system.
 %
 %   U = SOLVEIVP(N, RHS), where N is a CHEBOP and RHS is a CHEBMATRIX, CHEBFUN
@@ -6,8 +6,14 @@ function [y, info] = solveivp(N, rhs, pref, varargin)
 %
 %       N(U) = RHS + boundary conditions specified by N
 %
-%   Observe that U = SOLVEIVP(N, RHS) has the same effect as U = N\RHS, but this
-%   method allows greater flexibility than CHEBOP backslash, as described below.
+%   Observe that U = SOLVEIVP(N, RHS), where N specifies an initial/final-value
+%   problem (IVP/FVP), has the same effect as U = N\RHS, but this method allows
+%   greater flexibility than CHEBOP backslash, as described below. Problems are
+%   determined to be an IVP/FVP as follows:
+%       * N.LBC is non-empty, N.RBC and N.BC are empty => IVP.
+%       * N.RBC is non-empty, N.LBC and N.BC are empty => FVP.
+%   Otherwise, problems are considered to be boundary-value problems, and
+%   U=N\RHS will in general have the same effect as U = SOLVEBVP(N, RHS).
 %
 %   If successful, the solution returned, U, is a CHEBFUN if N specifies a
 %   scalar problem, and a CHEBMATRIX if N specifies a coupled systems of
@@ -53,7 +59,7 @@ function [y, info] = solveivp(N, rhs, pref, varargin)
 % See also: CHEBOP, CHEBOP/MLDIVIDE, CHEBOPPREF, CHEBOP/SOLVEBVP,
 % CHEBFUN/ODE113, CHEBFUN/ODE15S, CHEBFUN/ODE45, CHEBFUN/ODESOL, TREEVAR. 
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Developer note:
@@ -99,7 +105,7 @@ end
 % If pref.ivpSolver is set to a global method, we really should be calling
 % CHEBOP/SOLVEBVP():
 if ( isempty(strfind(func2str(pref.ivpSolver), 'chebfun.ode')) )
-    [y, info] = solvebvp(N, rhs, pref, varargin{:});
+    [varargout{1:nargout}] = solvebvp(N, rhs, pref, varargin{:});
     info.solver = 'Global method';
     return
 end
@@ -117,7 +123,7 @@ catch ME
     % Did we encounter an unsupported method? If so, try to solve it globally:
     if ( ~isempty(regexp(ME.identifier, 'CHEBFUN:TREEVAR:.+:notSupported', ...
             'once')) )
-        [y, info] = solvebvp(N, rhs, pref, varargin{:});
+        [varargout{1:nargout}] = solvebvp(N, rhs, pref, varargin{:});
         return
     else
         % Otherwise, an unexpected error occured, rethrow it.
@@ -209,9 +215,9 @@ assert(sum(diffOrders) == length(initVals), ...
 % evaluates the conditions with TREEVAR inputs, which gives it enough
 % information to be able to sort them in the correct order.
 if ( isIVP )
-    idx = treeVar.sortConditions(N.lbc, N.domain);
+    idx = treeVar.sortConditions(N.lbc, N.domain, diffOrders);
 else
-    idx = treeVar.sortConditions(N.rbc, N.domain);
+    idx = treeVar.sortConditions(N.rbc, N.domain, diffOrders);
 end
 
 % Sort the results from above:
@@ -222,6 +228,9 @@ opts = odeset('absTol', pref.ivpAbsTol, 'relTol', pref.ivpRelTol);
 
 % What solver do we want to use for the IVP?
 solver = pref.ivpSolver;
+
+% What happiness check do we want to use for the IVP?
+opts.happinessCheck = pref.happinessCheck;
 
 % Solve!
 [t, y]= solver(anonFun, odeDom, initVals, opts);
@@ -254,5 +263,21 @@ end
 
 % Return useful information about the solution:
 info.solver = solver;
+
+% Return a CHEBFUN rather than a CHEBMATRIX for scalar problems:
+if ( ~isa(y, 'chebmatrix') )
+    varargout{1} = y;
+    varargout{2} = info;
+elseif ( nargout == 1 )
+    varargout{1} = y;
+elseif ( nargout == size(y, 1) )
+    [varargout{1:nargout}] = deal(y);
+elseif ( nargout == size(y, 1) + 1 )
+    [varargout{1:nargout - 1}] = deal(y);
+    varargout{nargout} = info;
+else
+    error('CHEBFUN:CHEBOP:solveivp:numberOfOutputs', ...
+        'Incorrect number of outputs.');
+end
 
 end

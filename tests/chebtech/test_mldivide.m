@@ -40,8 +40,9 @@ for n = 1:2
     tol_f = 10*max(f.vscale.*f.epslevel);
     tol_g = 10*max(f.vscale.*f.epslevel);
     x = f \ g;
-    pass(n, 5) = max(abs(x - [32/35 ; 1 ; 6/7 ; 1])) < max(tol_f, tol_g);
-
+    pass(n, 5) = max(abs(x - [32/35 ; 1 ; 6/7 ; 1])) < 1e1*max(tol_f, tol_g);
+    
+    
     %%
     % Check error conditions.
 

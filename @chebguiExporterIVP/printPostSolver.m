@@ -7,17 +7,26 @@ function printPostSolver(fid, expInfo)
 %   FID:        ID of a file-writing stream.
 %   EXPINFO:    Struct containing information for printing the problem.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Extract info from the EXPINFO struct:
 allVarNames = expInfo.allVarNames;
+allVarString = expInfo.allVarString;
+numVars = expInfo.numVars;
 indVarNameSpace = expInfo.indVarNameSpace;
 
 % Print commands that will create a plot of the solution obtained:
 fprintf(fid, '\n%%%% Plot the solution.\n');
-fprintf(fid, ['figure\nplot(u, ''LineWidth'', 2)\n', ...
-    'title(''IVP solution''), xlabel(''%s'')'], indVarNameSpace);
+fprintf(fid, 'figure\n');
+if ( numVars == 1 ) % Scalar case
+    fprintf(fid, 'plot(%s, ''LineWidth'', 2)\n', allVarString);
+else
+    fprintf(fid, 'plot([%s], ''LineWidth'', 2)\n', allVarString);
+end
+
+% Title and xlabel
+fprintf(fid, 'title(''IVP solution''), xlabel(''%s'')', indVarNameSpace);
 
 % Deal with ylabel (scalar problem) or legend (systems):
 if ( numel(allVarNames) == 1 )

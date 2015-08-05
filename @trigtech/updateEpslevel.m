@@ -8,7 +8,7 @@ function epslevel = updateEpslevel(f, pref)
 %
 % See also HAPPINESSCHECK.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -31,10 +31,13 @@ else
 end
 
 % Call HAPPINESSCHECK()
-[ignored, newEpslevel] = happinessCheck(f, [], [], pref);
+[ignored, newEpslevel] = happinessCheck(f, [], [], [], pref);
 
 % Respect the bound:
 epslevel = min(newEpslevel, epslevelBnd);
+
+% set epslevel = eps
+epslevel = eps + 0*epslevel;
 
 end
     
