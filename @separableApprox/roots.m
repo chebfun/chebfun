@@ -78,7 +78,7 @@ if ( nargin == 1 )
     end
     
 elseif ( isa(g, 'separableApprox') )
-    
+    % TODO: This should not call chebfun2v directly.
     r = roots( chebfun2v( f, g ), varargin{:} );
     
 end

@@ -2,13 +2,9 @@ function v = mean2( f )
 %MEAN2   Mean of a SEPARABLEAPPROX.
 %   V = MEAN2(F) returns the mean of a SEPARABLEAPPROX: 
 % 
-%                        d  b
-%                       /  /   
-%   V = 1/(d-c)/(b-a)   |  |   f(x,y) dx dy 
-%                       /  /
-%                      c  a
+%   V = 1/A*integral2( f )
 % 
-% 	where the domain of F is [a,b] x [c,d]. 
+% 	where the A is the area of the domain of F. 
 %
 % See also MEAN, STD2.
 
@@ -21,10 +17,6 @@ if ( isempty( f ) )
 end 
 
 % Apply the formula: 
-dom = f.domain; 
-width = diff( dom(1:2) ); 
-height = diff( dom(3:4) );   
-area = width * height; 
-v = sum2( f ) / area;  
+v = sum2( f ) / domainarea( f );  
 
 end

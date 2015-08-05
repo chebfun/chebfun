@@ -18,11 +18,8 @@ function [out, wzero] = singleSignTest( F )
 
 out = false;                  % Assume false
 
-% Evaluate on a grid: 
-[cols, d, rows] = cdr( F );
-C = cols.values;
-R = rows.values;
-X = C * d * R.'; 
+% Evaluate on a grid:
+X = sample( F );
 
 X = X(:);
 

@@ -50,6 +50,24 @@ classdef separableApprox
         % Get method.
         val = get(f, prop);
         
+        % Sample method: samples f on a tensor product grid.  Options
+        %   X = SAMPLE(F) returns the matrix of values of F on a tensor
+        %   product grid.
+        %
+        %   [U, D, V] = SAMPLE(F) returns the low rank representation of the
+        %   values of F on a tensor product grid. X = U * D * V'.
+        %
+        %   [U, D, V] = SAMPLE(F,M,N) returns the values of F on a M-by-N
+        %   tensor product grid.
+        varargout = sample(f, varargin);
+        
+        % Get bivariate expansion coefficients.  Options
+        %  X = COEFFS2( F ) returns matrix of coefficients
+        %
+        % [C, D, R] = COEFFS2( F ) returns a low rank approximation to
+        % bivariat coefficients.
+%         varargout = coeffs2(f);
+        c = coeffs2(f);
     end
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

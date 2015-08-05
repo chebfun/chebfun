@@ -2,7 +2,7 @@ function vscl = vscale(f)
 %VSCALE   Vertical scale of a SEPARABLEAPPROX.
 % 
 % VSCL = VSCALE(F) returns the vertial scale of a SEPARABLEAPPROX as determined
-% by evaluating on a coarse Chebyshev tensor-product grid. 
+% by evaluating on a coarse tensor-product grid. 
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -24,7 +24,7 @@ m = min(max(m, 9),2000);
 n = min(max(n, 9),2000); % cannot afford to go over 2000x2000. 
 
 % Calculate values on a tensor grid: 
-vals = chebpolyval2(f, m, n); 
+vals = sample(f, m, n); 
 
 % Take the absolute maximum: 
 vscl = max(abs(vals(:))); 

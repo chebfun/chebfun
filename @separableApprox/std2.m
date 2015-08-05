@@ -1,12 +1,10 @@
 function v = std2(f)
 %STD2   Standard deviation of a SEPARABLEAPPROX.
 %   V = STD2(F) computes the standard deviation of a SEPARABLEAPPROX, i.e., 
-%                                 d  b
-%                                 /  /
-%     STD2(F)^2 = 1/(b-a)/(d-c)  |  |  |f(x,y) - m|^2 dx dy
-%                                /  /
-%                               c  a 
-%   where the domain of F is [a,b] x [c,d], and m = mean2(F). 
+%
+%     STD2(F)^2 = 1/A*sum2(|f(x,y) - m|^2)
+%
+%   where A is the area of the domain of F.
 %
 % See also MEAN, MEAN2, STD.
 

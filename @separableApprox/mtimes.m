@@ -29,7 +29,14 @@ if ( isa(f, 'separableApprox') )           % SEPARABLEAPPROX * ???
         h = cols * fScl * X;
         
     elseif ( isa(g, 'separableApprox') )   % SEPARABLEAPPROX * SEPARABLEAPPROX compute
-        
+
+        % Type check:
+        if ( ~strcmp( class(f),class(g) ) )
+            error( 'CHEBFUN:SEPARABLEAPPROX:plus:unknown', ...
+                ['Undefined function ''mtimes'' for input arguments of type %s ' ...
+                'and %s. Try converting to the same type.'], class(f), class(g));
+        end 
+                
         % Get the columns and rows of f
         fCols = f.cols;
         fRows = f.rows;

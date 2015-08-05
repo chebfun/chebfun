@@ -8,6 +8,6 @@ function L = del2( f )
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-L = ( diff(f, 2 , 2) + diff(f, 2, 1) ) / 4; 
+L = laplacian( f )/4;
 
 end

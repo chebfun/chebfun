@@ -25,7 +25,7 @@ dom = f.domain;
 % the do the tensor product median.
 
 sample = 2049;
-vals = chebpolyval2( f, sample, sample );   % sample on tensor grid. 
+vals = sample( f, sample, sample );   % sample on tensor grid. 
 mX = median( vals, dim );                   % discrete median.
 mX = mX(:);              
 

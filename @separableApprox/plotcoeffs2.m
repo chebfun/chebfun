@@ -10,11 +10,9 @@ function varargout = plotcoeffs2( f )
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% TODO: Needs to be adapted for different kinds of techs.
-
 % Compute the bivariate coefficients, truncate them when they fall below
 % tolerance for better visual, use stem3.
-X = abs( chebcoeffs2( f ) ); % Absolute value of coefficients. 
+X = abs( coeffs2( f ) ); % Absolute value of coefficients. 
  
 % Use a stem3 plot changing the axis to log scale. 
 [xx, yy] = meshgrid( 1:size(X,2), 1:size(X,1) );
@@ -23,9 +21,9 @@ set(gca, 'ZScale', 'log', 'view', [40 20])
 box off
 
 % Add title and labels
-title(gca, 'Chebyshev coefficients')
-xlabel(gca, 'Degree of Chebyshev polynomial (rows)')
-ylabel(gca, 'Degree of Chebyshev polynomial (columns)')
+title(gca,  'Bivariate coefficients')
+xlabel(gca, 'Degree of polynomial (rows)')
+ylabel(gca, 'Degree of polynomial (columns)')
 zlabel(gca, 'Magnitude of coefficient')
 
 % output handle

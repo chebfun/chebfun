@@ -21,6 +21,9 @@ if ( isempty( f ) )
     return
 end
 
+% This is a default implementation for separableApprox children that do not
+% have know how to properly implement this method.
+
 % Maximum possible sample matrix size:
 maxsize = 4e3; 
 
@@ -36,6 +39,10 @@ frows = f.rows;
 fcols = f.cols;
 piv = f.pivotValues;
 dom = f.domain;
+
+% Convert rows and columns to chebfuns.
+frows = chebfun(frows,dom(1:2));
+fcols = chebfun(fcols,dom(3:4));
 
 % Share out scaling:
 sgn = sign( piv ).';

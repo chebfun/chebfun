@@ -44,13 +44,13 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 dom = f.domain;
-sample = 2049; 
+n = 2049; 
 if ( dim == 1 )
-    vals = chebpolyval2(f, sample, sample); 
+    vals = sample(f, n, n); 
     h = chebfun( max( vals ).', dom(1:2), 'splitting', 'on' );
     h = simplify( h.' ); 
 elseif ( dim == 2 )
-    vals = chebpolyval2(f, sample, sample);  
+    vals = sample(f, n, n);  
     h = chebfun( max( vals, [], 2 ), dom(3:4), 'splitting', 'on' );
     h = simplify( h );
 elseif ( dim == 0 ) 

@@ -36,6 +36,13 @@ else                                     % SEPARABLEAPPROX + SEPARABLEAPPROX
         error('CHEBFUN:SEPARABLEAPPROX:plus:domain', 'Inconsistent domains.');
     end
     
+    % Type check:
+    if ( ~strcmp( class(f),class(g) ) )
+        error( 'CHEBFUN:SEPARABLEAPPROX:plus:unknown', ...
+            ['Undefined function ''plus'' for input arguments of type %s ' ...
+            'and %s. Try converting to the same type.'], class(f), class(g));
+    end 
+    
     % Check for zero SEPARABLEAPPROX objects:
     if ( iszero(f) )
         h = g;
@@ -94,8 +101,8 @@ vscl = max(vf, vg);
 % Remove singular values that fall below eps*vscale: 
 idx = find( s > eps * vscl, 1, 'last');
 if ( isempty(idx) )
-    % return 0 chebfun2
-    h = chebfun2(0, f.domain);
+    % Return 0 separableApprox
+    h = 0*f;
 else
     U = U(:,1:idx);
     V = V(:,1:idx);
