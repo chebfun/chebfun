@@ -77,7 +77,7 @@ else
     % Do full n^2 by n^2 matrix kronecker product.
     % Make massive mn by mn matrix.
     sz = size(CC{1,1}, 1) * size(CC{2,1}, 2);
-    if sz > 60^2
+    if sz > 65^2
         error('CHEBFUN:CHEBOP2:denseSolve:unresolved1', ...
             'Solution was unresolved on a 60 by 60 grid.');
     end
