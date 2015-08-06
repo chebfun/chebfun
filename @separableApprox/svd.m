@@ -24,10 +24,10 @@ if ( isempty( f ) )
     return
 end
 
-if ( iszero( f ) ) 
-    varargout = {0}; 
-    return
-end
+% if ( iszero( f ) ) 
+%     varargout = {0}; 
+%     return
+% end
 
 % Get the low rank representation for f.
 [cols, D, rows] = cdr(f);
@@ -41,8 +41,9 @@ height = diff( dom( 3:4 ) );
 % If the function is the zero function then special care is required.
 if ( norm( d ) == 0 )
     if ( nargout > 1 )
-        U = chebfun2( 1./sqrt( width ), dom(1:2) );
-        V = chebfun2( 1./sqrt( height ), dom(3:4) );
+        f = 1 + 0*f;
+        U = 1/sqrt( width )*simplify(f.cols);
+        V = 1/sqrt( height )*simplify(f.rows);
         varargout = { U, 0, V };
     else
         varargout = { 0 };

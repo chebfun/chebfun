@@ -78,7 +78,7 @@ for k = 1:ndims
     end
     H(:,k) = v1(2:numpts+1);
 end
-% scale [0,1]^2 to the domain of the chebfun2. 
+% scale [0,1]^2 to the domain of the separableApprox. 
 x = H(:,1); 
 x = (domain(2) - domain(1))*x + domain(1); 
 y = H(:,2); 
