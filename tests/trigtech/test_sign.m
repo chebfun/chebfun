@@ -3,7 +3,7 @@
 function pass = test_sign(pref)
 
 if ( nargin < 1 )
-    pref = chebtech.techPref();
+    pref = trigtech.techPref();
 end
 
 testclass = trigtech();

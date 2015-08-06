@@ -82,6 +82,11 @@ deString = chebguiExporter.prettyPrintFevalString(deString, allVarNames);
 
 % Do we want to solve the problem globally, or with timestepping?
 timeSteppingSolver = ~isempty(strfind(guifile.options.ivpSolver, 'ode'));
+
+% Add spaces to DOM and ALLVARSTRING so it looks nices once we export
+dom = strrep(dom, ',', ', ');
+allVarString = strrep(allVarString, ',', ', ');
+
 %% Fill up the expInfo struct
 expInfo.dom = dom;
 expInfo.deInput = deInput;
@@ -90,6 +95,7 @@ expInfo.initInput = initInput;
 expInfo.deString = deString;
 expInfo.allVarString = allVarString;
 expInfo.allVarNames = allVarNames;
+expInfo.numVars = length(allVarNames);
 expInfo.indVarNameSpace = indVarNameSpace;
 expInfo.useLatest = useLatest;
 expInfo.timeSteppingSolver = timeSteppingSolver;

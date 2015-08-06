@@ -73,19 +73,19 @@ end
 % We omit the last 10% because aliasing can pollute them significantly.
 n90 = ceil( 0.90*n );
 absCoeff = abs( coeff(end:-1:end+1-n90,:) );  % switch to low->high ordering
-vscale = max(absCoeff,[],1);          % scaling in each column
-vscale = max( [vscale(:); f.vscale] );
-absCoeff = absCoeff / vscale;
+vscl = max(absCoeff, [], 1);                  % scaling in each column
+vscl = max([vscl(:) ; f.vscale]);
+absCoeff = absCoeff / vscl;
 
 
 %% Deal with array-valued functions.
 
 numCol = size(coeff, 2);
-ishappy = false(1,numCol);
-epslevel = zeros(1,numCol);
-cutoff = zeros(1,numCol);
+ishappy = false(1, numCol);
+epslevel = zeros(1, numCol);
+cutoff = zeros(1, numCol);
 for m = 1:numCol
-    [ishappy(m), epslevel(m), cutoff(m)] = checkColumn(absCoeff(:,m),pref.eps);
+    [ishappy(m), epslevel(m), cutoff(m)] = checkColumn(absCoeff(:,m), pref.eps);
     if ( ~ishappy(m) )
         % No need to continue if it fails on any column.
         break

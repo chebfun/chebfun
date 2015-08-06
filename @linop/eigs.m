@@ -1,26 +1,29 @@
 function varargout = eigs(A, varargin)
 %EIGS    Eigenvalues and eigenfunctions of a linear operator.
-%   Important: While you can construct a LINOP and apply this method, the
-%   recommended procedure is to use CHEBOP.EIGS instead.
+%   Important (1): While you can construct a LINOP and apply this method, the
+%   recommended procedure is to use CHEBOP/EIGS instead.
+%   Important (2): A CHEBOPPREF object PREFS has to be passed. When this method
+%   is called via CHEBOP/EIGS, PREFS is inherited from the CHEBOP level.
 %
-%   D = EIGS(A) returns a vector of 6 eigenvalues of the linop A. EIGS will
-%   attempt to return the eigenvalues corresponding to the most easily
+%   D = EIGS(A, PREFS) returns a vector of 6 eigenvalues of the linop A. EIGS 
+%   will attempt to return the eigenvalues corresponding to the most easily
 %   resolved eigenfunctions. (This is unlike the built-in EIGS, which
 %   returns the largest eigenvalues by default.)
 %
-%   [V, D] = EIGS(A) returns a diagonal 6x6 matrix D of A's most easily
+%   [V, D] = EIGS(A, PREFS) returns a diagonal 6x6 matrix D of A's most easily
 %   resolved eigenvalues, and their corresponding eigenfunctions in the
 %   chebmatrix V, where V{i}(:,j) is the jth eigenfunction in variable i of
 %   the system.
 %
-%   [...] = EIGS(A, B) solves the generalized eigenproblem A*V = B*V*D,
+%   [...] = EIGS(A, B, PREFS) solves the generalized eigenproblem A*V = B*V*D,
 %   where B is another linop.
 %
-%   EIGS(A, K) and EIGS(A, B, K) find the K most easily resolved eigenvalues.
+%   EIGS(A, K, PREFS) and EIGS(A, B, K, PREFS) find the K most easily resolved 
+%   eigenvalues.
 %
-%   EIGS(A, K, SIGMA) and EIGS(A, B, K, SIGMA) find K eigenvalues. If SIGMA is a
-%   scalar, the eigenvalues found are the ones closest to SIGMA. Other selection
-%   possibilities for SIGMA are:
+%   EIGS(A, K, SIGMA, PREFS) and EIGS(A, B, K, SIGMA, PREFS) find K eigenvalues. 
+%   If SIGMA is a scalar, the eigenvalues found are the ones closest to SIGMA. 
+%   Other selection possibilities for SIGMA are:
 %
 %      'LM' (or Inf) and 'SM' for largest and smallest magnitude
 %      'LR' and 'SR' for largest and smallest real part
@@ -28,9 +31,6 @@ function varargout = eigs(A, varargin)
 %
 %   SIGMA must be chosen appropriately for the given operator. For example,
 %   'LM' for an unbounded operator will fail to converge.
-%
-%   EIGS(..., PREFS) accepts a CHEBOPPREF to control the behavior of
-%   the algorithm. If empty, defaults are used.
 %
 %   This version of EIGS does not use iterative methods as in the built-in
 %   EIGS for sparse matrices. Instead, it uses the built-in EIG on dense
@@ -44,7 +44,9 @@ function varargout = eigs(A, varargin)
 %   E = functionalBlock.eval(d);
 %   A = addBC(A, E(0), 0);
 %   A = addBC(A, E(pi), 0);
-%   [V,D] = eigs(A, 10);
+%   prefs = cheboppref();
+%   prefs.discretization = @chebcolloc2;
+%   [V,D] = eigs(A, 10, prefs);
 %   format long, sqrt(-diag(D))  % integers, to 14 digits
 %
 % See also CHEBOPPREF, CHEBOP.EIGS.
@@ -56,7 +58,7 @@ function varargout = eigs(A, varargin)
 B = [];       % no generalized operator
 k = [];       % will be made default value below
 sigma = [];   % default 'auto' mode
-pref = [];
+prefs = [];
 gotk = false; % until we detect a value of k in inputs
 for j = 1:nargin-1
     item = varargin{j};
@@ -64,7 +66,7 @@ for j = 1:nargin-1
         % Generalized operator term
         B = item;
     elseif ( isa(item,'cheboppref') )
-        pref = item;
+        prefs = item;
     elseif ( ~gotk && isnumeric(item) && (item > 0) && (item == round(item) ) )
         % k should be given before sigma (which might also be integer)
         k = item;
@@ -84,14 +86,13 @@ end
 
 %#ok<*ASGLU> % Prevent MLINT warnings for unused variables, which are used in 
              % many places in this code to avoid the [~, arg2] = ... syntax.
-
-% Grab defaults if needed.
-if ( isempty(pref) )
-    pref = cheboppref();
-end
              
-% Discretization type.
-discType = pref.discretization;
+% Discretization type:
+discType = prefs.discretization;
+
+% Make sure we have a valid discretization preference at this level.
+assert(~ischar(discType), 'CHEBFUN:LINOP:expm:discretization', ...
+    'pref.discretization must be a function handle, not a string.');
 
 % Assign default to k if needed.
 if ( isempty(k) || isnan(k) )
@@ -120,7 +121,7 @@ if ( isa(discType, 'function_handle') )
     discA = discType(A);
 
     % Set the allowed discretisation lengths:
-    dimVals = discA.dimensionValues(pref);
+    dimVals = discA.dimensionValues(prefs);
 
     % Update the discretiztion dimension on unhappy pieces:
     discA.dimension = repmat(dimVals(1), 1, numel(discA.domain)-1);
@@ -240,7 +241,8 @@ for dim = [dimVals NaN]
 
     % Test the happiness of the function pieces:
     vscale = zeros(1, sum(isFun));   % intrinsic scaling only
-    [isDone, epslevel] = testConvergence(discA, u(isFun), vscale, pref);
+    [isDone, epslevel, ~, cutoff] = testConvergence(discA, u(isFun),...
+                                                    vscale, prefs);
 
     if ( all(isDone) )
         break
@@ -276,7 +278,7 @@ if ( nargout < 2 )  % Return the eigenvalues only
     varargout = { diag(D) };
 else            % Unwrap the eigenvectors for output
 
-    u = mat2fun(discA, P*V);
+    u = mat2fun(discA, P*V, cutoff);
 
     % For normalizing eigenfunctions, so that they always have the same sign:
     signMat = [];

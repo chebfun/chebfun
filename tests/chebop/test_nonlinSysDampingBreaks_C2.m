@@ -21,8 +21,7 @@ A = chebop(@(x,u,v) [u - diff(v,2); diff(u,2) + cos(v)], d);
 A.lbc = @(u,v) [u-1/2; v+1/4];
 A.rbc = @(u,v) [v-1/4; u+1/2];
 
-[u, info] = solvebvp(A, f, pref);
-u1 = u{1}; u2 = u{2};
+[u1, u2, info] = solvebvp(A, f, pref);
 
 % Want to check BCs as well.
 bcFunLeft = chebfun(A.lbc(u1,u2));

@@ -26,7 +26,6 @@ elseif ( isa(B, 'double') )  % CHEBTECH / double
         % Scalar case is easy:
         X = A;                              % Copy A to X
         X.coeffs = A.coeffs/B;              % Divide coeffs
-        X.vscale = A.vscale/abs(B);         % Divide vscale
     else
         % For matrix case, we do least squares via QR:
         [Q, R] = qr(A, 0);

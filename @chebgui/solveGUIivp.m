@@ -43,6 +43,7 @@ allVarNames = expInfo.allVarNames;
 indVarNameSpace = expInfo.indVarNameSpace;
 bcInput = expInfo.bcInput;
 initInput = expInfo.initInput;
+numVars = expInfo.numVars;
 % Create the independent variable on DOM.
 xt = chebfun(@(x) x, dom);
 
@@ -152,7 +153,10 @@ if ( guiMode )
         options.discretization = options.ivpSolver;
         
         % Solve!
-        [u, info] = solvebvp(N, 0, options, displayFunction);
+        [u{1:numVars, 1}, info] = solvebvp(N, 0, options, displayFunction);
+        
+        % Convert the cell-array returned above to a chebmatrix
+        u = chebmatrix(u);
         
         % Make the popup-menu for the choice of plots visible:
         set(handles.popupmenu_bottomFig, 'Visible', 'on')

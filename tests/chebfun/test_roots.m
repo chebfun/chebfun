@@ -87,7 +87,7 @@ pass(8) = all(size(exact) == [5,3]) && max(abs(exact(:) - r(:))) < 1e2*epslevel(
 f = quasimatrix(@(x) [1i*x, x, sin(2*pi*x)]);
 exact = [[0,0;NaN(4,2)], linspace(-1,1,5).'];
 r = roots(f);
-pass(9) = all(size(exact) == [5,3]) && max(abs(exact(:) - r(:))) < 10*epslevel(f);
+pass(9) = all(size(exact) == [5,3]) && max(abs(exact(:) - r(:))) < 1e2*epslevel(f);
 
 %% Test on singular function: piecewise smooth chebfun - splitting on.
 
@@ -125,7 +125,7 @@ f = chebfun(op, dom, 'exps', [2 2]);
 r = roots(f);
 rExact = [-1.4962104914103104707 ; 1.4962104914103104707];
 err = r - rExact;
-pass(12) = norm(err, inf) < epslevel(f)*vscale(f);
+pass(12) = norm(err, inf) < 1e2*epslevel(f)*vscale(f);
 
 % Functions on [a inf]:
 dom = [0 Inf];

@@ -52,9 +52,6 @@ classdef (InferiorClasses = {?double}) chebop
 %                 given in OP and return a CHEBFUN or CHEBMATRIX. All elements
 %                 of the result are evaluated at the endpoint, and for the
 %                 solution of the BVP, they are made to equal zero.
-%
-% See note below for how to specify initial value problems so that they will be
-% solved via time-marching methods, rather than global spectral methods.
 % 
 % A boundary condition function may be nonlinear; it must not accept the
 % independent variable X as an input. Again, in case of systems, the function
@@ -304,6 +301,9 @@ classdef (InferiorClasses = {?double}) chebop
         % The number of input arguments to a CHEBOP .OP field.
         nIn = nargin(N)
         
+        % Determine discretization for a CHEBOP object
+        pref = determineDiscretization(N, L, pref)
+        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -313,17 +313,13 @@ classdef (InferiorClasses = {?double}) chebop
 
         % Find damped Newton step.
         [u, dampingInfo] = dampingErrorBased(N, u, rhs, delta, L, ...
-            disc, dampingInfo)
+            disc, dampingInfo, pref)
         
         % Parse boundary conditions for CHEBOP object.
         result = parseBC(N, BC, type)
         
         % Solve a nonlinear problem posed with CHEBOP
         [u, info] = solvebvpNonlinear(N, rhs, L, u0, res, pref, displayInfo)
-        
-        % Determine discretization for a CHEBOP object with periodic
-        % boundary conditions.
-        pref = determineDiscretization(N, L, isPrefGiven, pref)
         
         % Clear periodic boundary conditions.
         [N, L] = clearPeriodicBCs(N, L)

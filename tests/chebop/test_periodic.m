@@ -216,9 +216,7 @@ u = L \ f;
 
 pass(27) = norm(L*u - f) < tol;
 pass(28) = abs(u(dom(1)) - u(dom(end))) < tol;
-discPreference = cheboppref().discretization();
-tech = discPreference.returnTech();
-pass(29) = isequal(get(u.funs{1}, 'tech'), tech);
+pass(29) = isequal(get(u.funs{1}, 'tech'), @chebtech2);
 
 %% Test breakpoint introduced by a coefficient.
 %  u'' + abs(x)u = 1, on [-1 1].
@@ -230,8 +228,6 @@ u = L \ 1;
 
 pass(30) = norm(L*u - 1) < tol;
 pass(31) = abs(u(dom(1)) - u(dom(2))) < tol;
-discPreference = cheboppref().discretization();
-tech = discPreference.returnTech();
-pass(32) = isequal(get(u.funs{1}, 'tech'), tech);
+pass(32) = isequal(get(u.funs{1}, 'tech'), @chebtech2);
 
 end

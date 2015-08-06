@@ -37,8 +37,9 @@ if ( isempty(f) )
     % Empty TRIGTECH
     out = []; 
 else
-    % Trapezium rule:
-    out = sum(f.values, 1)*(2/n);
+    % By orthogonality of complex exponentials integral is 2x 
+    % zeroth coefficient: 
+    out = 2*f.coeffs( floor((n+2)/2), :); 
 end
 
 % Return a real result if f is real:

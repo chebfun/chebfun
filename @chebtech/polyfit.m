@@ -32,7 +32,5 @@ if ( n <= length(f) )
     % Convert to Chebyshev coefficients:
     c_cheb = leg2cheb(c_leg);
     f.coeffs = c_cheb;
-    % Update vscale of the CHEBTECH:
-    f.vscale = getvscl(f);
     
 end
