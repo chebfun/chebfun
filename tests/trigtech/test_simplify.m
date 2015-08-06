@@ -4,7 +4,7 @@ function pass = test_simplify(pref)
 
 % Get preferences:
 if ( nargin < 1 )
-    pref = chebtech.techPref();
+    pref = trigtech.techPref();
 end
 
 % Generate a few random points to use as test values.
