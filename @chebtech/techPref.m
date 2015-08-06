@@ -69,6 +69,7 @@ outPref.sampleTest         = true;
 outPref.sampleTestEps      = outPref.eps;
 outPref.refinementFunction = 'nested';
 outPref.happinessCheck     = 'standard';
+outPref.useTurbo           = false;
 
 if ( nargin == 1 )
     validPrefs = fieldnames(outPref);

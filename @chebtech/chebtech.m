@@ -186,7 +186,10 @@ classdef chebtech < smoothfun % (Abstract)
 
         % Complex conjugate of a CHEBTECH.
         f = conj(f)
-        
+
+        % Constructor subroutine that handles "turbo" mode.
+        f = constructorTurbo(f, op, pref)
+
         % CHEBTECH objects are not transposable.
         f = ctranspose(f)
 

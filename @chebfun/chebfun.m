@@ -728,6 +728,10 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
             % Construct Chebfun twice as long as usually would be constructed.
             flags.doubleLength = true;
             args(1) = [];
+        elseif ( strcmpi(args{1}, 'turbo') )
+            % "turbo" flag for constructing "turbocharged" chebfuns.
+            keywordPrefs.techPrefs.useTurbo = true;
+            args(1) = [];
         elseif ( strcmpi(args{1}, 'coeffs') && isnumeric(op) )
             % Hack to support construction from coefficients.            
             op = {{[], op}};
