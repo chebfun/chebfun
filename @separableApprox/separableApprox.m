@@ -66,8 +66,7 @@ classdef separableApprox
         %
         % [C, D, R] = COEFFS2( F ) returns a low rank approximation to
         % bivariat coefficients.
-%         varargout = coeffs2(f);
-        c = coeffs2(f);
+        varargout = coeffs2(f);
     end
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

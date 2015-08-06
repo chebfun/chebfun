@@ -29,6 +29,7 @@ maxsize = 4e3;
 
 % Is the function the zero function?
 if ( iszero( f )  ) 
+    dom = f.domain;
     X = [ (dom(2) + dom(1))/2 (dom(4) + dom(3))/2 ];
     X = [ X ; X ];
     Y = [0 ; 0];
