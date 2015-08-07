@@ -23,7 +23,7 @@ else
     K = varargin{2};
 end
 
-if ( dim ~= 1 && dim ~= 2 & dim ~= 3 )
+if ( dim ~= 1 && dim ~= 2 && dim ~= 3 )
     error('SPHEREFUN:DIFF:DIM', 'Unrecognized coordinate dimension');
 end
 
@@ -36,7 +36,7 @@ K = round( K );
 realf = isreal(f);
 
 % We are going to work at the tech level to make things faster.
-[cols,D,rows] = cdr(f);
+[cols, D, rows] = cdr( f );
 
 coltechs = cols.funs{1}.onefun;
 rowtechs = rows.funs{1}.onefun;
@@ -45,7 +45,7 @@ rowtechs = rows.funs{1}.onefun;
 d_coltechs = diff(coltechs)/pi;
 d_rowtechs = diff(rowtechs)/pi;
 
-% We will do everyting in value space on on [-1,1] at the tech level.
+% We will do everyting in value space on [-1,1] at the tech level.
 
 % Evaluate at the half grid points in theta, so the poles are not included.
 m = length(cols);
@@ -91,14 +91,14 @@ idcol2 = m/2:-1:1;
 val = 0.5*(val + [val(idcol1,n/2+1:n) val(idcol1,1:n/2) ; ...
                   val(idcol2,n/2+1:n) val(idcol2,1:n/2)] );
 
-% Wave numbers ordering accoriding to MATLAB's FFT
+% Wave numbers ordering according to MATLAB's FFT
 m1 =  floor((m-1)/2);
 m2 = (m/2)*ones(rem(m+1,2));
 waveNum = [(0:m1)  m2 (-m1:-1)]';
 
 val = ifft(bsxfun(@times,fft(val),exp(1i*shift*pi).^waveNum));
 
-if realf
+if ( realf )
     val = real(val);
 end
 
