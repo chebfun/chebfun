@@ -253,7 +253,7 @@ f = @(lam,th) exp(-sig2*r2(lam,th));
 exact = @(lam,th) sig2*exp(-sig2*r2(lam,th)).*(-4 + r2(lam,th).*(2 - sig2*(-4 + r2(lam,th))));
 lap = laplacian(spherefun(f));
 g = spherefun(exact);
-pass(end+1) = SampleError(g,lap) < tol;
+pass(end+1) = SampleError(g,lap) < 10*tol;
 
 end
 

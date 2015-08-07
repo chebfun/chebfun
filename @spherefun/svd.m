@@ -10,6 +10,24 @@ function varargout = svd( f )
 
 [C,D,R] = cdr(f);
 
+% Extract information:
+dom = f.domain;
+width = diff( dom( 1:2 ) );
+height = diff( dom( 3:4 ) );
+
+% If the function is the zero function then special care is required.
+if ( norm( D ) == 0 )
+    if ( nargout > 1 )
+        f = spherefun(@(x,y,z) ones(size(x)),dom);
+        U = 1/sqrt( width )*simplify(f.cols);
+        V = 1/sqrt( height )*simplify(f.rows);
+        varargout = { U, 0, V };
+    else
+        varargout = { 0 };
+    end
+    return
+end
+
 % Split into the plus/minus decomposition and do SVD on each piece.
 % Does this actually work???
 

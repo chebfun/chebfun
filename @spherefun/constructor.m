@@ -210,11 +210,13 @@ Fm = Fm( 2:m-1, : );
 [maxm,idxm] = max(abs(Fm(:)));
 
 % Zero function
-if ( maxp == 0 ) && ( maxm == 0 )
+if ( maxp == 0 ) && ( maxm == 0 ) && ~( removePole )
     colsPlus = 0;
     rowsPlus = 0;
     pivotArray = [0 0];
+    pivotIndices = [1 1];
     ihappy = 1;
+    return;
 end
 
 while ( ( max( maxp, maxm ) > tol ) && ( rankCount < width ) && ...

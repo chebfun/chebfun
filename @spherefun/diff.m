@@ -1,5 +1,5 @@
 function f = diff( f, varargin )
-% DIFF    Derivative of a spherefun
+% DIFF    Derivative of a spherefun in Cartesian coordinates.
 %
 %  F = DIFF( F ) computes the first derivative of F with respect to x.
 %
@@ -10,6 +10,8 @@ function f = diff( f, varargin )
 %
 %  F = DIFF( F, DIM, K) computes the kth derivatives of F in the variable
 %  given by DIM.
+%
+%  See also GRADIENT, LAPLACIAN
 
 % Parse user inputs:
 if ( nargin == 1 )
@@ -21,6 +23,10 @@ elseif ( nargin == 2 )
 else
     dim = varargin{1};
     K = varargin{2};
+end
+
+if K > 1
+    error('SPHEREFUN:DIFF:ORDER', 'Only first derivatives currently allowed.');
 end
 
 if ( dim ~= 1 && dim ~= 2 && dim ~= 3 )
@@ -102,8 +108,8 @@ if ( realf )
     val = real(val);
 end
 
-val(m/2,:) = mean(val(m/2,:));
-val(m,:) = mean(val(m,:));
+% val(m/2,:) = mean(val(m/2,:));
+% val(m,:) = mean(val(m,:));
 
 % Create the spherefun
 f = spherefun(val(m/2:m,:));
