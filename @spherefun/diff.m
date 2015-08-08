@@ -76,7 +76,7 @@ drowv = d_rowtechs.values.';
 if ( dim == 1 )            % x
     val = -((1./sin(pi*th))*sin(pi*lam)).*(colv*D*drowv) + ...
         (cos(pi*th)*cos(pi*lam)).*(dcolv*D*rowv);
-elseif ( dim == 2)         % y
+elseif ( dim == 2 )         % y
     val = ((1./sin(pi*th))*cos(pi*lam)).*(colv*D*drowv) + ...
         (cos(pi*th)*sin(pi*lam)).*(dcolv*D*rowv);
 else
