@@ -182,7 +182,7 @@ end
 
 function pass = test_diff( )
 
-tol = 1e3*chebfunpref().techPrefs.eps;
+tol = 5e2*chebfunpref().techPrefs.eps;
 
 % Simple tests:
 f = spherefun(@(lam,th) cos(lam).*sin(th));  % x
@@ -225,8 +225,7 @@ r2 = @(lam,th) 2*(1 - (sin(th)*sin(th0)).*cos(lam-lam0)-cos(th)*cos(th0));
 f = @(lam,th) exp(-sig2*r2(lam,th));
 fx = diff(spherefun(f),1);
 exact = @(lam,th) -0.5*sig2*exp(-sig2*r2(lam,th)).*(2*cos(lam).*cos(th0).*sin(2*th)+(cos(2*lam-lam0)-3*cos(lam0)-2*cos(lam).*cos(lam-lam0).*cos(2*th))*sin(th0));
-pass(10) = SampleError( exact, fx ) < 100*tol;
-
+pass(10) = SampleError( exact, fx ) < tol;
 
 end
 

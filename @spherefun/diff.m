@@ -38,81 +38,79 @@ if ( abs( K - round(K) ) > eps )
 end
 K = round( K );
 
-% Track whether f is real.
-realf = isreal(f);
+% TODO: This code will not work for complex valued spherefuns, if we ever
+% allow them.
+% realf = isreal(f);
 
 % We are going to work at the tech level to make things faster.
-[cols, D, rows] = cdr( f );
+[C, D, R] = cdr( f );
 
-coltechs = cols.funs{1}.onefun;
-rowtechs = rows.funs{1}.onefun;
+% Do everything with even length columns since then no special
+% modifications are required for dividing the cosine/sine series expansion.
+n = length(C)+mod(length(C),2);
+m = length(R);
+
+% Matrices for multiplying by sin/cos in coefficient space.
+Msinn = .5i*spdiags(ones(n,1)*[-1,1],[-1 1],n,n);
+Msinm = .5i*spdiags(ones(m,1)*[-1,1],[-1 1],m,m);
+Mcosn = .5*spdiags(ones(n,1)*[1,1],[-1 1],n,n);
+Mcosm = .5*spdiags(ones(m,1)*[1,1],[-1 1],m,m);
+
+% Work at the tech level to make things faster.
+ctechs = C.funs{1}.onefun;
+rtechs = R.funs{1}.onefun;
 
 % Compute the derivatives
-d_coltechs = diff(coltechs)/pi;
-d_rowtechs = diff(rowtechs)/pi;
-
-% We will do everyting in value space on [-1,1] at the tech level.
-
-% Evaluate at the half grid points in theta, so the poles are not included.
-m = length(cols);
-n = length(rows);
-
-h = 2*pi/m;
-shift = h/2/pi;
-
-coltechs = circshift(coltechs,-shift);
-colv = coltechs.values;
-d_coltechs = circshift(d_coltechs,-shift);
-dcolv = d_coltechs.values;
-
-% Theta at half-grid points (on on [-1,1]);
-th = trigpts(m,[-1,1]) + h/2/pi;
-lam = trigpts(n,[-1,1]).';
-
-% Evalute rows and the derivatives at the grid
-rowv = rowtechs.values.';
-drowv = d_rowtechs.values.';
+dCdth = diff(ctechs)/pi;
+dRdlam = diff(rtechs)/pi;
 
 if ( dim == 1 )            % x
-    val = -((1./sin(pi*th))*sin(pi*lam)).*(colv*D*drowv) + ...
-        (cos(pi*th)*cos(pi*lam)).*(dcolv*D*rowv);
+    % Calculate the C * D * R.' decomposition of -sin(lam)./sin(th) dfdlam
+    C_cfs = ctechs.alias(ctechs.coeffs,n);
+    C1 = Msinn \ C_cfs;
+    R1 = -Msinm*dRdlam.coeffs;
+    
+    % Calculate the C * D * R.' decomposition of cos(lam)cos(th) dfdth
+    C2 = Mcosn*ctechs.alias(dCdth.coeffs,n);
+    R2 = Mcosm*rtechs.coeffs;
 elseif ( dim == 2 )         % y
-    val = ((1./sin(pi*th))*cos(pi*lam)).*(colv*D*drowv) + ...
-        (cos(pi*th)*sin(pi*lam)).*(dcolv*D*rowv);
+    % Calculate the C * D * R.' decomposition of cos(lam)./sin(th) dfdlam
+    C_cfs = ctechs.alias(ctechs.coeffs,n);
+    C1 = Msinn \ C_cfs;
+    R1 = Mcosm*dRdlam.coeffs;
+    
+    % Calculate the C * D * R.' decomposition of sin(lam)cos(th) dfdth
+    C2 = Mcosn*ctechs.alias(dCdth.coeffs,n);
+    R2 = Msinm*rtechs.coeffs;
 else
-    val = -bsxfun(@times,dcolv*D*rowv,sin(pi*th));
+    % No dfdlam term;
+    C1 = 0;
+    R1 = 0;
+    
+    % Calculate the C * D * R.' decomposition of sin(th) dfdth
+    C2 = -Msinn*ctechs.alias(dCdth.coeffs,n);
+    R2 = rtechs.coeffs;
 end
+% Put pieces back together
+f1 = f; 
+c1techs = real(trigtech({'',C1}));
+f1.cols.funs{1}.onefun = c1techs;
+r1techs = real(trigtech({'',R1}));
+f1.rows.funs{1}.onefun = r1techs;
 
-%
-% Shift back to regular grid points in theta.
-%
+f2 = f; 
+c2techs = real(trigtech({'',C2}));
+f2.cols.funs{1}.onefun = c2techs;
+r2techs = real(trigtech({'',R2}));
+f2.rows.funs{1}.onefun = r2techs;
 
-% Just do the works ourselves rather than call trigtech as the code will be
-% faster and we know how to easily shift back by h/2.
+% Weird feval behavior in chebfun requires this
+f1.cols.pointValues = feval(c1techs,[-1;1]);
+f1.rows.pointValues = feval(r1techs,[-1;1]); 
+f2.cols.pointValues = feval(c2techs,[-1;1]);
+f2.rows.pointValues = feval(r2techs,[-1;1]);
 
-n = length(rows);
-idcol1 = m:-1:m/2+1;
-idcol2 = m/2:-1:1;
-% Enforce exact symmetry
-val = 0.5*(val + [val(idcol1,n/2+1:n) val(idcol1,1:n/2) ; ...
-                  val(idcol2,n/2+1:n) val(idcol2,1:n/2)] );
-
-% Wave numbers ordering according to MATLAB's FFT
-m1 =  floor((m-1)/2);
-m2 = (m/2)*ones(rem(m+1,2));
-waveNum = [(0:m1)  m2 (-m1:-1)]';
-
-val = ifft(bsxfun(@times,fft(val),exp(1i*shift*pi).^waveNum));
-
-if ( realf )
-    val = real(val);
-end
-
-% val(m/2,:) = mean(val(m/2,:));
-% val(m,:) = mean(val(m,:));
-
-% Create the spherefun
-f = spherefun(val(m/2:m,:));
+f = f1 + f2;
 
 end
 
