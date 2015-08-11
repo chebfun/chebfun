@@ -182,7 +182,7 @@ end
 
 function pass = test_diff( )
 
-tol = 5e2*chebfunpref().techPrefs.eps;
+tol = 1e3*chebfunpref().techPrefs.eps;
 
 % Simple tests:
 f = spherefun(@(lam,th) cos(lam).*sin(th));  % x
@@ -251,8 +251,7 @@ r2 = @(lam,th) 2*(1 - (sin(th)*sin(th0)).*cos(lam-lam0)-cos(th)*cos(th0));
 f = @(lam,th) exp(-sig2*r2(lam,th));
 exact = @(lam,th) sig2*exp(-sig2*r2(lam,th)).*(-4 + r2(lam,th).*(2 - sig2*(-4 + r2(lam,th))));
 lap = laplacian(spherefun(f));
-g = spherefun(exact);
-pass(end+1) = SampleError(g,lap) < 10*tol;
+pass(end+1) = SampleError(exact,lap) < 10*tol;
 
 end
 
@@ -267,7 +266,7 @@ F = h(L2, T2);
 % [C,D,R] = cdr(g);
 % approx = feval(g.cols,y/pi) * g.blockDiag * feval(g.rows,x/pi)';
 approx = fevalm(g,x,y);
-sample_error = norm( F - approx , inf );
+sample_error = norm( F(:) - approx(:) , inf );
 end
 
 function [x, y] = getPoints( m, n )

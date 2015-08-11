@@ -69,7 +69,7 @@ if ( isa(op, 'double') )    % SPHEREFUN( DOUBLE )
     F = [F(n:-1:1,m/2+1:m) F(n:-1:1,1:m/2)];
     
     % TODO: Add a way to loosen tolerances for this type of construction.
-    tol = GetTol(F, 2*pi/m, pi/(n-1), dom, 50*pseudoLevel);
+    tol = GetTol(F, 2*pi/m, pi/(n-1), dom, pseudoLevel);
     [pivotIndices, pivotArray, removePole, happyRank, cols, pivots, ...
         rows, idxPlus, idxMinus ] = PhaseOne( F, tol, alpha, 0 );
     [x, y] = getPoints( n, m, dom );
@@ -502,6 +502,19 @@ while ( ~(happy_columns && happy_rows) && ~failure)
     end    
     % Happiness check for columns:
     % TODO: Make this more similar to hapiness check in trigtech.
+    
+    if removePoles
+        colsPlus(1,2:end) = 0;
+        colsPlus(end,2:end) = 0;
+    elseif ~isempty(colsPlus)
+        colsPlus(1,:) = 0;
+        colsPlus(end,:) = 0;
+    end
+    
+    if ~isempty(colsMinus)
+        colsMinus(1,:) = 0;
+        colsMinus(end,:) = 0;
+    end
 
     % Double up the columns.
     temp1 = sum([colsPlus colsMinus],2); temp2 = sum([colsPlus -colsMinus],2);

@@ -84,8 +84,8 @@ elseif ( dim == 2 )         % y
     R2 = Msinm*rtechs.coeffs;
 else
     % No dfdlam term;
-    C1 = 0;
-    R1 = 0;
+    C1 = zeros(size(D));
+    R1 = zeros(size(D));
     
     % Calculate the C * D * R.' decomposition of sin(th) dfdth
     C2 = -Msinn*ctechs.alias(dCdth.coeffs,n);
@@ -110,7 +110,12 @@ f1.rows.pointValues = feval(r1techs,[-1;1]);
 f2.cols.pointValues = feval(c2techs,[-1;1]);
 f2.rows.pointValues = feval(r2techs,[-1;1]);
 
-f = f1 + f2;
+% Compression plus may not preserve the expansion properties we want.
+% So we sample each piece add them together and construct a spherefun.
+% TODO: Fix this!
+f = spherefun(sample(f1,m,n)+sample(f2,m,n));
+% f = compose(f1,@plus,f2);
+% f = spherefun(sample(f1+f2));
+% f = f1 + f2;
 
 end
-
