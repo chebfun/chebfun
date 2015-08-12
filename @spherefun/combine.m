@@ -32,12 +32,16 @@ pivots = [g.pivotValues(idpg);h.pivotValues(idph);...
           g.pivotValues(idmg);h.pivotValues(idmh)];
 cols = [g.cols(:,idpg) h.cols(:,idph) g.cols(:,idmg) h.cols(:,idmh)];
 rows = [g.rows(:,idpg) h.rows(:,idph) g.rows(:,idmg) h.rows(:,idmh)];
+indices = [g.pivotIndices;h.pivotIndices];
+locations = [g.pivotLocations;h.pivotLocations];
 
 % Sort the results 
 [ignore,perm] = sort( abs(pivots), 1, 'descend' );
 pivots = pivots(perm);
 cols = cols(:,perm);
 rows = rows(:,perm);
+indices = indices(perm,:);
+locations = locations(perm,:);
 
 % Figure out where the plus/minus terms went
 idx = 1:length(pivots);
@@ -50,8 +54,11 @@ idxMinus = find( ~plusFlag );
 g.cols = cols;
 g.rows = rows;
 g.pivotValues = pivots;
+g.pivotIndices = indices;
+g.pivotLocations = locations;
 g.idxPlus = idxPlus;
 g.idxMinus = idxMinus;
+g.nonZeroPoles = g.nonZeroPoles || h.nonZeroPoles;
 
 end
 

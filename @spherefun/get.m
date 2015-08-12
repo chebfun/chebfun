@@ -35,6 +35,8 @@ switch ( propName )
         val = f.idxPlus;
     case 'idxMinus'
         val = f.idxMinus;
+    case 'nonZeroPoles'
+        val = f.nonZeroPoles;
     otherwise
         error('CHEBFUN:SPHEREFUN:get:propName', ...
             [propName,' is not a valid SPHEREFUN property.'])

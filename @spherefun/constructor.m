@@ -70,7 +70,7 @@ if ( isa(op, 'double') )    % SPHEREFUN( DOUBLE )
     
     % TODO: Add a way to loosen tolerances for this type of construction.
     tol = GetTol(F, 2*pi/m, pi/(n-1), dom, pseudoLevel);
-    [pivotIndices, pivotArray, removePole, happyRank, cols, pivots, ...
+    [pivotIndices, pivotArray, removePoles, happyRank, cols, pivots, ...
         rows, idxPlus, idxMinus ] = PhaseOne( F, tol, alpha, 0 );
     [x, y] = getPoints( n, m, dom );
     pivotLocations = [x(pivotIndices(:,2)) y(pivotIndices(:,1))];
@@ -136,6 +136,7 @@ g.pivotIndices = pivotIndices;
 g.domain = dom;
 g.idxPlus = idxPlus;
 g.idxMinus = idxMinus;
+g.nonZeroPoles = removePoles;
 
 % Adjust the pivot locations so that they correspond to 
 % -pi < lam < pi and 0 < th < pi or -pi/2 < th < pi/2

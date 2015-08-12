@@ -12,6 +12,7 @@ classdef spherefun < separableApprox
             
             % Return an empty CHEBFUN:
             if ( (nargin == 0) || isempty(varargin{1}) )
+                f.domain = [-pi pi 0 pi];
                 return
             end
             
@@ -114,6 +115,7 @@ classdef spherefun < separableApprox
         idxPlus
         idxMinus
         pivotIndices
+        nonZeroPoles = 0;
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
