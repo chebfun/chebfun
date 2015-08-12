@@ -5,7 +5,7 @@ g = @(th,r) (r.*sin(th)).^2.*exp(sin(r.*cos(th))+cos(5*r.*sin(th))-1);
 %f = @(x,y) sin(x) + cos(5*y); 
 %g = @(th,r) 1+r.*cos(th)+r.*sin(th)+(r.*cos(th)).^2;
 % g = @(th, r) sin(r.*cos(th))+ cos(5*r.*sin(th));
-t = diskfun(f); 
+t = diskfun(f,0); 
 u = chebfun2(g, [-pi pi 0 1]); 
 
 %rank(t)

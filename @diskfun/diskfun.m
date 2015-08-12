@@ -63,7 +63,7 @@ classdef diskfun < separableApprox
     methods ( Access = public, Static = false )
      
         % The main bulk of the SPHEREFUN constructor:
-        g = constructor(g, op, dom, varargin);
+        g = constructor(g, op, coords, dom, varargin);
         
     end
     

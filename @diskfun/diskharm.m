@@ -7,9 +7,6 @@
 function Y = diskharm(L,m, type)
 
 
-
-
-
 if ( nargin < 3 || isempty(type))
     type='D';
 end
@@ -32,7 +29,8 @@ dom = [-pi pi 0 1];
        lsign=sign(L+1); 
        L=abs(L);
        
-       %searches for mth zero using lower bound on m=1 and asymptotic upper bound
+       %searches for mth zero using lower bound on m=1 and McMahon's asymptotic upper bound
+       % see R. C. McCann, "Lower bounds for the zeros of Bessel functions"
        if type=='D'
        jzero = roots(chebfun(@(x) besselj(L,x), [sqrt((3/4)^2*pi^2+L^2) (m+L/2)*pi]));
        jzero=jzero(m);
@@ -51,6 +49,8 @@ dom = [-pi pi 0 1];
        %choose sin or cos based on L value
        pos = abs(max(0,lsign));  
        
+      
+      
        
        Z=((pos)*cos(L*theta) +(1-pos)*sin(L*theta)).*z;
        

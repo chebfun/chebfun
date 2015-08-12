@@ -1,7 +1,7 @@
 function g = combine(g,h)
-% COMBINE  Combines two spherefuns together.  
+% COMBINE  Combines two diskfuns together.  
 %
-% f = combine(g,h) combines g and h into one spherefun.  This is useful
+% f = combine(g,h) combines g and h into one diskfun.  This is useful
 % when g and h have the following properties:
 % 
 %   g has a CDR decomposition such that C is even and R is pi periodic
@@ -11,8 +11,8 @@ function g = combine(g,h)
 %
 % See also SPLIT
 
-if ~isa(g,'spherefun') || ~isa(h,'spherefun')
-    error('SPHEREFUN:combine:unknown',['Undefined function ''combine'' for ' ...
+if ~isa(g,'diskfun') || ~isa(h,'diskfun')
+    error('DISKFUN:combine:unknown',['Undefined function ''combine'' for ' ...
         'input argument of type %s and %s.'], class(g),class(h));
 end
 

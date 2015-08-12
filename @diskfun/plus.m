@@ -1,45 +1,45 @@
 function h = plus(f, g)
-%+   Plus for SPHEREFUN objects.
+%+   Plus for SPHEREFUN/DISKFUN objects.
 %
-% F + G adds F and G. F and G can be scalars or SPHEREFUN objects.
+% F + G adds F and G. F and G can be scalars or DISKFUN objects.
 
-if ( ~isa(f, 'spherefun') ) % ??? + SPHEREFUN
+if ( ~isa(f, 'diskfun') ) % ??? + DISKFUN
     
     h = plus(g, f);
     
-elseif ( isempty(g) ) % SPHEREFUN + []
+elseif ( isempty(g) ) % DISKFUN + []
     
     h = g; 
     
-elseif ( isempty(f) ) % [] + SPHEREFUN
+elseif ( isempty(f) ) % [] + DISKFUN
     
     h = f; 
     
-elseif ( isa( g, 'double' ) )           % SPHEREFUN + DOUBLE
+elseif ( isa( g, 'double' ) )           % DISKFUN + DOUBLE
     
     g = compose( 0*f,@plus, g);   % promote double to object class.  
     h = plus(f, g); 
     
-elseif ( ~isa(g, 'spherefun') )          % SPHEREFUN + ???
+elseif ( ~isa(g, 'diskfun') )          % DISKFUN + ???
     
-    error( 'SPHEREFUN:plus:unknown', ...
+    error( 'DISKFUN:plus:unknown', ...
         ['Undefined function ''plus'' for input arguments of type %s ' ...
         'and %s.'], class( f ), class( g ));
         
-else                                     % SPHEREFUN + SPHEREFUN
+else                                     % DISKFUN + DISKFUN
     
     % Domain Check:
     if ( ~domainCheck(f, g) )
-        error('SPHEREFUN:plus:domain', 'Inconsistent domains.');
+        error('DISKFUN:plus:domain', 'Inconsistent domains.');
     end
     
-    % Check for zero SPHEREFUN objects:
+    % Check for zero DISKFUN objects:
     if ( iszero(f) )
         h = g;
     elseif ( iszero(g) )
         h = f;
     else
-        % Add together two nonzero SPHEREFUN objects:
+        % Add together two nonzero DISKFUN objects:
         % The algorithm is as follows: Split f and g into their plus/minus
         % components.  Do the compression_plus algorithm described in
         % @separableApprox/compression plus on each pair of plus and minus

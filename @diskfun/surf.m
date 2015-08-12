@@ -1,6 +1,6 @@
 function varargout = surf( f, varargin )
-%SURF  Surface plot of a SPHEREFUN.
-%   SURF( F ) plots the F on the surface of a sphere.
+%SURF  Surface plot of a DISKFUN.
+%   SURF( F ) plots the F on the surface of the unit disk.
 %
 %   SURF(X, Y, F, ...) calls separableApprox/SURF.  See this function for
 %   details.

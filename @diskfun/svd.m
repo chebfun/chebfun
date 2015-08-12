@@ -1,5 +1,5 @@
 function varargout = svd( f ) 
-% SVD      Singular value decomposition of a spherefun 
+% SVD      Singular value decomposition of a diskfun 
 % 
 % S = SVD( F )  returns the singular values of F 
 % 
