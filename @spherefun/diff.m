@@ -64,58 +64,70 @@ rtechs = R.funs{1}.onefun;
 dCdth = diff(ctechs)/pi;
 dRdlam = diff(rtechs)/pi;
 
-if ( dim == 1 )            % x
-    % Calculate the C * D * R.' decomposition of -sin(lam)./sin(th) dfdlam
-    C_cfs = ctechs.alias(ctechs.coeffs,n);
-    C1 = Msinn \ C_cfs;
-    R1 = -Msinm*dRdlam.coeffs;
+% dx and dy involve two terms while dz is only one so we handle the cases
+% separately
+if ( dim == 1 ) || ( dim == 2)
+    if ( dim == 1 )            % x
+        % Calculate the C * D * R.' decomposition of -sin(lam)./sin(th) dfdlam
+        C_cfs = ctechs.alias(ctechs.coeffs,n);
+        C1 = Msinn \ C_cfs;
+        R1 = -Msinm*dRdlam.coeffs;
+
+        % Calculate the C * D * R.' decomposition of cos(lam)cos(th) dfdth
+        C2 = Mcosn*ctechs.alias(dCdth.coeffs,n);
+        R2 = Mcosm*rtechs.coeffs;
+    elseif ( dim == 2 )         % y
+        % Calculate the C * D * R.' decomposition of cos(lam)./sin(th) dfdlam
+        C_cfs = ctechs.alias(ctechs.coeffs,n);
+        C1 = Msinn \ C_cfs;
+        R1 = Mcosm*dRdlam.coeffs;
+
+        % Calculate the C * D * R.' decomposition of sin(lam)cos(th) dfdth
+        C2 = Mcosn*ctechs.alias(dCdth.coeffs,n);
+        R2 = Msinm*rtechs.coeffs;
+    end
+    % Put pieces back together
+    f1 = f; 
+    c1techs = real(trigtech({'',C1}));
+    f1.cols.funs{1}.onefun = c1techs;
+    r1techs = real(trigtech({'',R1}));
+    f1.rows.funs{1}.onefun = r1techs;
     
-    % Calculate the C * D * R.' decomposition of cos(lam)cos(th) dfdth
-    C2 = Mcosn*ctechs.alias(dCdth.coeffs,n);
-    R2 = Mcosm*rtechs.coeffs;
-elseif ( dim == 2 )         % y
-    % Calculate the C * D * R.' decomposition of cos(lam)./sin(th) dfdlam
-    C_cfs = ctechs.alias(ctechs.coeffs,n);
-    C1 = Msinn \ C_cfs;
-    R1 = Mcosm*dRdlam.coeffs;
-    
-    % Calculate the C * D * R.' decomposition of sin(lam)cos(th) dfdth
-    C2 = Mcosn*ctechs.alias(dCdth.coeffs,n);
-    R2 = Msinm*rtechs.coeffs;
+    % Parity changes
+    temp = f1.idxPlus;
+    f1.idxPlus = f1.idxMinus;
+    f1.idxMinus = temp;
+
+    f2 = f; 
+    c2techs = real(trigtech({'',C2}));
+    f2.cols.funs{1}.onefun = c2techs;
+    r2techs = real(trigtech({'',R2}));
+    f2.rows.funs{1}.onefun = r2techs;
+
+    % Parity changes
+    temp = f2.idxPlus;
+    f2.idxPlus = f2.idxMinus;
+    f2.idxMinus = temp;
+
+    % Compression plus may not preserve the expansion properties we want.
+    % So we sample each piece add them together and construct a spherefun.
+    % TODO: Fix this so everything is done in coefficient space, like this
+    % f = f1 + f2;        
+    f = spherefun(sample(f1,m,n)+sample(f2,m,n));    
 else
-    % No dfdlam term;
-    C1 = zeros(size(D));
-    R1 = zeros(size(D));
-    
     % Calculate the C * D * R.' decomposition of sin(th) dfdth
-    C2 = -Msinn*ctechs.alias(dCdth.coeffs,n);
-    R2 = rtechs.coeffs;
-end
-% Put pieces back together
-f1 = f; 
-c1techs = real(trigtech({'',C1}));
-f1.cols.funs{1}.onefun = c1techs;
-r1techs = real(trigtech({'',R1}));
-f1.rows.funs{1}.onefun = r1techs;
+    C1 = -Msinn*ctechs.alias(dCdth.coeffs,n);
+    R1 = rtechs.coeffs;
 
-f2 = f; 
-c2techs = real(trigtech({'',C2}));
-f2.cols.funs{1}.onefun = c2techs;
-r2techs = real(trigtech({'',R2}));
-f2.rows.funs{1}.onefun = r2techs;
+    % Put pieces back together
+    c1techs = real(trigtech({'',C1}));
+    f.cols.funs{1}.onefun = c1techs;
+    r1techs = real(trigtech({'',R1}));
+    f.rows.funs{1}.onefun = r1techs;    
 
-% Weird feval behavior in chebfun requires this
-f1.cols.pointValues = feval(c1techs,[-1;1]);
-f1.rows.pointValues = feval(r1techs,[-1;1]); 
-f2.cols.pointValues = feval(c2techs,[-1;1]);
-f2.rows.pointValues = feval(r2techs,[-1;1]);
-
-% Compression plus may not preserve the expansion properties we want.
-% So we sample each piece add them together and construct a spherefun.
-% TODO: Fix this!
-f = spherefun(sample(f1,m,n)+sample(f2,m,n));
-% f = compose(f1,@plus,f2);
-% f = spherefun(sample(f1+f2));
-% f = f1 + f2;
+    % Weird feval behavior in chebfun requires this
+    f.cols.pointValues = feval(c1techs,[-1;1]);
+    f.rows.pointValues = feval(r1techs,[-1;1]); 
+end    
 
 end

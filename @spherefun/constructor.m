@@ -109,7 +109,7 @@ else  % SPHEREFUN( FUNCTION )
             % If the norm of the pivots for the n/2 case is within 1/10 of
             % the norm for the n case then just keep the smaller n as this
             % will be faster.
-            if norm(pivotArray2,inf) > 0.1*norm(pivotArray,inf)
+            if norm(pivotArray2,inf) > 0.1*norm(pivotArray,inf) && happyRank
                 pivotIndices = pivotIndices2;
                 pivotArray = pivotArray2;
                 n = n/2;
