@@ -10,10 +10,10 @@ f = chebfun2(@(x,y) cos(x.*y));
 g = chebfun2(@(x,y) sin(x+y.^2));
 
 % Simple consistency check: 
-x = linspace(-1,1); 
+x = linspace(-1,1,3); 
 [xx, yy] = meshgrid(x);
 h = f + 1i *g; 
-pass(1) = norm( imag( feval(h,xx,yy) ) - g(xx,yy) ) < 10*tol;
+pass(1) = norm( imag( feval(h,xx,yy) ) - feval(g,xx,yy) ) < 10*tol;
 pass(2) = norm( imag( h ) - g ) < tol;
 
 end
