@@ -82,7 +82,7 @@ end
 % Now put the coefficients vector back together.
 coeffs = f.coeffs;
 if ( isEven )
-    coeffs = [.5*coeffs(n,:) ; coeffs(1:n-1,:) ; .5*coeffs(n,:)];
+    coeffs = [.5*coeffs(1,:) ; coeffs(2:n,:) ; .5*coeffs(1,:)];
     n = n + 1;
 end
 
