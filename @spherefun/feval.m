@@ -32,4 +32,8 @@ end
 
 y = feval@separableApprox( f, lambda, theta );
 
+if size(lambda,1) == 1 && size(theta,1) == 1
+    y = y.';
+end
+
 end 

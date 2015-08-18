@@ -1,13 +1,16 @@
 function V = vorticity( fx, fy, fz ) 
 %VORTICITY  Numerical surface vorticity of a SPHEREFUN. 
 %   V = VORTICITY(FX, FY, FZ) returns the numerical surface vorticity of the
-%   scalar SPHEREFUN F.  This is the defined as the normal component of the
-%   surface curl of the vector [FX FY FZ] to the sphere.  It is the generalization of 
-%   the standard 2D scalar vorticity for the surface of the sphere.
-%   FX, FY, and FZ should be the components of the vector field expressed
-%   in cartesian coordinates.
+%   vector field [FX FY FZ], where each component is a SPHEREFUN F and the
+%   whole field is expressed in Cartesian coordinates. 
+%   
+%   Vorticity is the defined as the normal component of the surface curl of
+%   the vector [FX FY FZ] to the sphere.  It is the generalization of the
+%   standard 2D scalar vorticity for the surface of the sphere. FX, FY, and
+%   FZ should be the components of the vector field expressed in cartesian
+%   coordinates.
 %
-% See also VORT, GRAD, GRADIENT.
+% See also VORT, DIVERGENCE, GRADIENT, CURL
 
 %
 % Compute the surface curl of the vector field.

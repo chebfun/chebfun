@@ -4,7 +4,7 @@ function [fx,fy,fz] = gradient( f )
 %   SPHEREFUN F, where FX, FY, and FZ are the x, y, and z componets of the 
 %   the gradient.
 %
-% See also GRAD.
+% See also DIVERIGENCE, CURL, VORTICITY
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

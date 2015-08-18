@@ -71,7 +71,7 @@ else                                     % SPHEREFUN + SPHEREFUN
         hm.pivotIndices = nan(r,2);
         hm.pivotLocations = nan(r,2);
                 
-        if ( ~isempty( fPole ) ) && ( ~isempty( gPole ) )
+        if ( ~isempty( fPole ) ) || ( ~isempty( gPole ) )
             % Set tolerance for determining if fPole+gPole=0.
             tol = eps*max(vscale(f),vscale(g)); 
             g = addPoles(fPole,gPole,tol);
@@ -99,6 +99,13 @@ end
 end
 
 function f = addPoles(f,g,tol)
+
+if isempty(g)
+    return;
+elseif isempty(f)
+    f = g;
+    return;
+end
 
 fmean = mean(f.rows);
 gmean = mean(g.rows);
