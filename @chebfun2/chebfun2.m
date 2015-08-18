@@ -1,4 +1,4 @@
-classdef chebfun2
+classdef chebfun2 < separableApprox
 %CHEBFUN2   CHEBFUN2 class for representing functions on [a,b]x[c,d].
 % 
 %   Class for approximating functions defined on finite rectangles. The 
@@ -35,26 +35,10 @@ classdef chebfun2
 %
 % See also CHEBFUN, CHEBFUN2V.
 
-% Copyright 2014 by The University of Oxford and The Chebfun2 Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun2 Developers.
 % See http://www.chebfun.org/ for Chebfun2 information.
 
 % TODO: Improve documentation of input options.
-
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% CLASS PROPERTIES:
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    properties ( Access = public )
-        % COLS: column slices used in low rank representation.
-        cols 
-        % ROWS: row slices used in low rank representation.
-        rows
-        % PIVOTVALUES: pivot values used in low rank representation.
-        pivotValues
-        % PIVOTLOCATIONS: pivot locations used in GE.
-        pivotLocations
-        % DOMAIN: rectangle of CHEBFUN2, default is [-1,1] x [-1,1].
-        domain = [-1 1 -1 1];
-    end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% CLASS CONSTRUCTOR:
@@ -80,7 +64,7 @@ classdef chebfun2
     %% CLASS METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods
-         f = conj(f);
+         %f = conj(f);
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -88,29 +72,12 @@ classdef chebfun2
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false, Hidden = true )
         
-        % Check to see if domains are equal.
-        out = domainCheck(f, g)
-        
-        % Scale rows and cols of a CHEBFUN2 so that all pivots are 1
-        F = normalizePivots(F)
-        
-        % Normalize the rows and columns of a CHEBFUN2.
-        F = normalizeRowsAndCols(F, p)
-        
-        % Sample Test in constructor. 
-        pass = sampleTest(f, op, tol, flag)
-        
-        % Is a chebfun2 all positive or negative? 
-        [bol, wzero] = singleSignTest(f) 
-        
-        % Get the vertical scale of a Chebfun2.
-        vscl = vscale(f) 
     end
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% PRIVATE METHODS:
+    %% PUBLIC METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    methods ( Access = private, Static = false )
+    methods ( Access = public, Static = false )
         
         % The main bulk of the CHEBFUN2 constructor:
         g = constructor(g, op, dom, varargin);

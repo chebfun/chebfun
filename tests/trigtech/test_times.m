@@ -163,7 +163,7 @@ function result = test_mult_function_by_function(f, f_op, g, g_op, x, checkpos)
     h = f .* g;
     h_exact = @(x) f_op(x) .* g_op(x);
     result(1) = norm(feval(h, x) - h_exact(x), inf) < ...
-        1e4*max(h.vscale.*h.epslevel);
+        1e5*max(h.vscale.*h.epslevel);
         
     if ( checkpos )
         values = h.coeffs2vals(h.coeffs); 

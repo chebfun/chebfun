@@ -14,7 +14,7 @@ function f = restrict(f, s)
 %
 %   Note that restrict does not 'simplify' its output.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with empty case:
@@ -45,22 +45,19 @@ if ( m > 1 )
     numCols = m*numInts;
     index = reshape(reshape(1:numCols, numInts, m)', 1, numCols);
     values = values(:, index);
-else
-    numCols = numInts;
 end
 
 % Update coeffs and vscale:
 coeffs = f.vals2coeffs(values);
-vscale = max(abs(values), [], 1);
+vscl = max(abs(values), [], 1);
 
 % Update epslevel:
 % (The product of the epslevels and vscales of the 'child' pieces should be the
 % same as the product of the epslevel and vscale of their 'parent'.)
-epsBound = repmat(f.epslevel.*f.vscale, 1, numInts)./vscale;
+epsBound = repmat(f.epslevel.*f.vscale, 1, numInts)./vscl;
 
 % Append data to CHEBTECH:
 f.coeffs = coeffs;
-f.vscale = vscale;
 f.epslevel = updateEpslevel(f, epsBound);
 
 if ( numInts > 1 )

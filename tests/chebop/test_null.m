@@ -5,7 +5,7 @@ if ( nargin == 0 )
 end
 
 tol = pref.errTol;
-disc = {'chebcolloc1', 'chebcolloc2', 'ultraS'};
+disc = {@chebcolloc1, @chebcolloc2, @ultraS};
 
 pass = zeros(3, 7);
 err = zeros(3, 7);

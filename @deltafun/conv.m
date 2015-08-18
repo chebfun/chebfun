@@ -9,7 +9,7 @@ function h = conv(f, g)
 %   the convolution of F and G is zero, an empty cell is returned. The cell
 %   array returned is used by higher level convolutions.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Return empty for an empty input:

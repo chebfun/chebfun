@@ -12,7 +12,7 @@ function data = plotData(f, g, h)
 %
 % See also PLOT.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%
@@ -103,6 +103,9 @@ if ( singMask(2) )
         idxr = find(data.yLine >= data.yLim(1), 1, 'last');
     end
     idxr = idxr + floor((2/5)*(length(data.yLine)-idxr)) + 1;
+    if ( idxr > length(data.xLine) )
+        idxr = length(data.xLine);
+    end
     data.xLim(2) = data.xLine(idxr);
 end
 

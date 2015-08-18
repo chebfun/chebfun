@@ -15,7 +15,7 @@ function varargout = trigstripplot(u, varargin)
 %       u = trigtech(@(x) 1./(1 + sin(pi*x).^2));
 %       trigstripplot(u, 'r--');
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( size(u, 2) > 1 )

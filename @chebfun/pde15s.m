@@ -74,7 +74,7 @@ function varargout = pde15s(varargin)
 %
 % See also PDESET, ODE15S, PDE23T, PDESOLVE.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. See
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.
 
 % Loop over the inputs and look for a PDESET struct:

@@ -69,7 +69,7 @@ pass(6) = (norm(err, inf) < max([tol_f ; tol_g ; tol_df ; tol_dg]));
 
 errfn = diff(f.*g) - (f.*dg + g.*df);
 err = feval(errfn, x);
-pass(7) = (norm(err, inf) < max([tol_f ; tol_g ; tol_df ; tol_dg]));
+pass(7) = (norm(err, inf) < 1e1*max([tol_f ; tol_g ; tol_df ; tol_dg]));
 
 const = bndfun(@(x) ones(size(x)), struct('domain', dom), pref);
 dconst = diff(const);

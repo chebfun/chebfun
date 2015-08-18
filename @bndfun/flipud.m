@@ -4,7 +4,7 @@ function f = flipud(f)
 %   defined on [a,b], such that G(x) = F(a+b-x) for all x in [a,b], i.e., FLIPUD
 %   flips the BNDFUN around the center of the domain it is defined on.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Flip the onefun:

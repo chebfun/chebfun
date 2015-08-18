@@ -6,7 +6,7 @@ function h = gt(f, g)
 %
 % See also LT, GE, LE.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 h = lt(g, f);

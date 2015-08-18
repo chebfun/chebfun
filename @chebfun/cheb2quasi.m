@@ -6,7 +6,7 @@ function G = cheb2quasi(F)
 %
 % See also QUASIMATRIX, QUASI2CHEB, NUM2CELL.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( numel(F) > 1 )

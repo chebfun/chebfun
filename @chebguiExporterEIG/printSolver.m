@@ -7,7 +7,7 @@ function printSolver(fid, expInfo)
 %   FID:        ID of a file-writing stream.
 %   EXPINFO:    Struct containing information for printing the problem.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Extract information from the EXPINFO struct:

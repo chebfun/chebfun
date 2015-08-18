@@ -19,7 +19,7 @@ function N = set(N, varargin)
 %   N.U = U, N.S = S, N.V = V, sets the rank approximation to the partial
 %   differential operator. 
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check.

@@ -164,12 +164,7 @@ end
 function pass = test_restrict_one_function(f, f_exact, dom, map, xr)
     fr = restrict(f, dom);
     x = map(xr, dom(1), dom(end));
-    tol = 10*fr.vscale*fr.epslevel;
     err = norm(feval(fr, x) - f_exact(x), inf);
-%     tol2 = 10*fr.vscale*fr.epslevel
-%     err2 = max(cellfun(@(d) min(abs(d-fr.domain)), num2cell(dom)))
-%     pass = err2 < tol && all(err(:) < tol); % TODO: remove?
     pass = all(ismember(dom, fr.domain)) && ...
         all(err(:) < 1e5*fr.vscale*fr.epslevel); 
-    
 end

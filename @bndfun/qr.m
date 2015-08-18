@@ -14,7 +14,7 @@ function [Q, R, E] = qr(f, varargin)
 %   Similarly, [Q, R, E] = QR(F, 'matrix') returns a permutation matrix E. This
 %   is the default behavior.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with empty case:

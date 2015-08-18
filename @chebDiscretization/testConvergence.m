@@ -13,14 +13,17 @@ function [isDone, epslevel, vscale, cutoff] = testConvergence(disc, values, vsca
 %      ISDONE: True if the functions passed in are sufficiently resolved.
 %      EPSLEVEL: Apparent resolution accuracy (relative to VSCALE or the
 %      functions' intrinsic scale).
+%      VSCALE: Maximum of the input VSCALE and the computed VSCALE of DISC.
+%      CUTOFF: The point at which the coefficient series for DISC should
+%              be chopped. If ~ISDONE then CUTOFF = LENGTH(DISC).
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin < 4 )
     pref = cheboppref;
     if ( nargin < 3 )
-        vscale = 0;   % will have no effect
+        vscale = 1;   % will have no effect
     end
 end
 
@@ -35,7 +38,7 @@ d = disc.domain;
 numInt = numel(d) - 1;
 isDone = false(numInt, 1);
 cutoff = zeros(numInt, numCol);
-epslevel = 0;
+epslevel = eps;
 
 % Get the discretization, and the appropriate tech to use:
 discPreference = pref.discretization();
@@ -51,10 +54,10 @@ prefTech.eps = pref.errTol;
 for i = 1:numInt
     c = cat(2, coeffs{i,:});
     f = tech.make({[], c});
-    f.vscale = vscale;
-    [isDone(i), neweps, cutoff(i,:)] = plateauCheck(f, get(f, 'values'), ...
-        prefTech);
-    epslevel = max(epslevel, neweps);
+    happinessChecker = pref.happinessCheck;
+    [isDone(i), neweps, cutoff(i,:)] = happinessChecker(f, [],...
+         vscale, prefTech);
+    epslevel = eps + 0*epslevel;
 end
 
 isDone = all(isDone, 2);

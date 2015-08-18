@@ -7,11 +7,13 @@ if (nargin < 1)
     pref = chebfunpref();
 end
 
+seedRNG(0);
 % Set the domain:
 dom = [-Inf 3*pi];
 domCheck = [-1e6 3*pi];
 
 %% Generate a few random points to use as test values:
+seedRNG(6178);
 x = diff(domCheck) * rand(100, 1) + domCheck(1);
 
 % Case 1: X*B = A, where B is a scalar and A is an array-valued UNBNDFUN
@@ -37,5 +39,4 @@ X = A/B;
 res = X*B - A;
 err = feval(res, x);
 pass(2) = norm(err(:), inf) < 1e1*max(get(X,'epslevel').*get(X,'vscale'));
-
 end

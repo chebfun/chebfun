@@ -8,7 +8,7 @@ function handles = callbackBCs(handles, inputString, type)
 %   TYPE:           Whether the input was passed to the BC field (used in BVP
 %                   and EIG modes) or the LBC and RBC fields (used in PDE mode). 
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % For systems we check one row at a time.

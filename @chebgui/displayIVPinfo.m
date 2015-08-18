@@ -12,7 +12,7 @@ function displayIVPinfo(handles, u, isIVP, varargin)
 %
 % See also: chebop/displayInfo.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Are we dealing with a CHEBFUN or a CHEBMATRIX?

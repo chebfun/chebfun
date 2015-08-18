@@ -27,7 +27,7 @@ for type = 1:2
     F = @(x) exp(1i*pi*x);
     f = testclass.make(@(x) F(x), [], pref);
     h = sign(f);
-    pass(type, 3) = normest(h - f) < 10*f.epslevel;
+    pass(type, 3) = normest(h - f) < 1e2*f.epslevel;
     
     % Test a complex array-valued function:
     xx = linspace(-.95, .97);

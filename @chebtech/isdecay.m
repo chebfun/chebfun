@@ -8,13 +8,13 @@ function out = isdecay(f)
 %   Note that ISDECAY is designed for and expected to be called only by UNBNDFUN
 %   class for handling functions defined on unbounded domains.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 out = zeros(2, size(f, 2));
 
 % Set a tolerance:
-tol = 1e2*get(f, 'epslevel').*get(f, 'vscale');
+tol = 1e2*f.epslevel.*f.vscale;
 
 %% If F is a constant:
 if ( length(f) == 1 )

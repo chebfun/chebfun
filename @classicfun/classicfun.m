@@ -26,7 +26,7 @@ classdef classicfun < fun % (Abstract)
 %
 % See also CHEBFUNPREF, ONEFUN, BNDFUN, UNBNDFUN.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -251,7 +251,10 @@ classdef classicfun < fun % (Abstract)
 
         % Addition of two CLASSICFUN objects.
         f = plus(f, g)
-
+        
+        % CLASSICFUN power function.
+        f = power(f, b)
+        
         % Right array divide for a CLASSICFUN.
         f = rdivide(f, c, pref)
 

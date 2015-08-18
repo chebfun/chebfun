@@ -8,15 +8,19 @@ function f = cumsum(f, m, dim)
 %
 %   CUMSUM(F, N) returns the Nth integral of F. If N is not an integer then
 %   CUMSUM(F, MU) returns the fractional integral of order MU as defined by the
-%   Riemann-Liouville integral.
+%   Riemann-Liouville integral [1]. In the latter case an error is thrown if F
+%   is not smooth or is defined on an unbounded domain.
 %
 %   CUMSUM(F, N, 2) will take the Nth cumulative sum over the columns F an
 %   array-valued CHEBFUN or quasimatrix.
 %
 % See also SUM, INTEGRAL.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
+
+% References:
+%  [1] http://en.wikipedia.org/wiki/Riemann%E2%80%93Liouville_integral
 
 % TODO: The input sequence is not the same as MATLAB. In particular, MATLAB only
 % supports m = 1.

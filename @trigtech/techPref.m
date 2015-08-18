@@ -49,25 +49,31 @@ function outPref = techPref(inPref)
 %       function_handle  - A user-defined refinement function.  See REFINE.m
 %
 %     happinessCheck     - Define function for testing happiness.
-%      ['classic']       - Use the default process from Chebfun v4.
+%      ['standard']      - Standard check routine 
+%       'classic'        - Use the default process from Chebfun v4.
 %       'strict'         - Strict tolerance for coefficients.
 %       'loose'          - A looser tolerance for coefficients.
 %       function_handle  - A user defined happiness. See HAPPINESSCHECK.m
 %
+%     sampleTestEps  - Relative tolerance used for sample test. Its default
+%                      value is set same as eps, i.e. 2^-52, which can be
+%                      loosen for a certain construction process, e.g. singfun.
+%
 % See also TRIGTECH, CHEBTECH, CHEBTECH1, CHEBTECH2
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 outPref.eps                = 2^-52;
 outPref.gridType           = 2;
 outPref.minSamples         = 17;
-outPref.maxLength          = 2^16 + 1;
+outPref.maxLength          = 2^16;
 outPref.fixedLength        = NaN;
 outPref.extrapolate        = false;
 outPref.sampleTest         = true;
+outPref.sampleTestEps      = outPref.eps;
 outPref.refinementFunction = 'nested';
-outPref.happinessCheck     = 'classic';
+outPref.happinessCheck     = 'standard';
 
 if ( nargin == 1 )
     validPrefs = fieldnames(outPref);

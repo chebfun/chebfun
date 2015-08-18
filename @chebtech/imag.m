@@ -4,7 +4,7 @@ function f = imag(f)
 %
 % See also REAL, ISREAL, CONJ.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Compute imaginary part of the coefficients:
@@ -17,7 +17,5 @@ if ( ~any(f.coeffs(:)) )
     f = f.make(zeros(1, size(f.coeffs, 2)), data);
     f.ishappy = 1;
 end
-
-f.vscale = getvscl(f); 
 
 end

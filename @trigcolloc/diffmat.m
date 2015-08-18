@@ -13,7 +13,7 @@ function D = diffmat(N, m)
 %   [2] J.A.C. Weideman and S.C. Reddy, A MATLAB differentiation matrix suite, 
 %       ACM TOMS, Vol. 26, No. 4, Page 465--519, 2000. 
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % First deal with some trivial cases.

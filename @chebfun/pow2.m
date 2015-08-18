@@ -4,7 +4,7 @@ function g = pow2(f)
 %
 % See also LOG2, POWER.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information. 
 
 g = power(2, f);

@@ -18,7 +18,7 @@ function coeffs = vals2coeffs(values)
 %
 % See also COEFFS2VALS, TRIGPTS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Get the length of the input:

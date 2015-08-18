@@ -19,7 +19,7 @@ function spy(A, varargin)
 %
 % See also CHEBMATRIX, CHEBMATRIX.MATRIX, CHEBOPPREF.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Obtain domain information.
@@ -35,6 +35,7 @@ if ( any(isPref) )
 else
     % Take the default preferences:
     pref = cheboppref();
+    pref.discretization = @chebcolloc2;
     if ( length(dom) == 2 )
         dim = 10;
     else
@@ -72,7 +73,7 @@ end
 holdState = ishold;
 
 % Discretize and do a regular spy plot.
-data = matrix(A, dim, dom, pref.discretization);
+data = matrix(A, dim, dom, pref);
 spy(data, varargin{:}); hold on
 s =  sprintf('%i,', dim);    % list of sizes
 s = [ 'piecewise dimension = [', s(1:end-1), ']' ];

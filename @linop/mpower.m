@@ -3,7 +3,7 @@ function B = mpower(A,pow)
 %   B = A^m, for positive integer m, returns a linop that is the mth power
 %   of A. Note that boundary conditions are not carried into the result. 
 
-%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
+%  Copyright 2015 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org/ for Chebfun information.
 
 B = linop( mpower@chebmatrix(A,pow) );

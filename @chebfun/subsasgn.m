@@ -16,7 +16,7 @@ function f = subsasgn(f, index, val)
 %
 % See also SUBSREF, DEFINEPOINT, DEFINEINTERVAL.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % TODO: Error checking. Particularly integer indicies and quasimatrix indexing.

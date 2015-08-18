@@ -9,7 +9,7 @@ end
 testclass = trigtech();
 
 % Check behavior for any() down columns.
-pass(1) = ~any(testclass());
+pass(1) = ~any(testclass);
 
 f = testclass.make(@(x) [sin(pi*x) 0*x cos(pi*x)]);
 pass(2) = isequal(any(f), [1 0 1]);

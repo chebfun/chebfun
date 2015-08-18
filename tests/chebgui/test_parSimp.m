@@ -1,6 +1,6 @@
 function pass = test_parSimp(varargin)
 
-% Copyright 2011 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 S = loadtests;

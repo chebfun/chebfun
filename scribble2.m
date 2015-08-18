@@ -9,7 +9,7 @@ function varargout = scribble2( s, rk )
 %
 % See also scribble.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin == 0 )
@@ -301,14 +301,51 @@ else
     f = chebfun2( flipud(Str) );
 end
 
+% if ( nargout == 0 )
+%    % Plot: 
+%     contour(f,.3:.1:.85,'numpts',1000), axis off
+%     rk = length(f);
+%     t = sprintf('Rank = %u',rk);
+%     title(t,'fontsize',16)
+% else
+%     varargout = {f};
+% end
+x = linspace(-1,1,200); 
+[xx,yy] = meshgrid(x); 
+[C, D, R] = cdr( f ); 
+C = C(x',:); 
+R = R(x',:); 
 if ( nargout == 0 )
-   % Plot: 
-    contour(f,.3:.1:.85,'numpts',1000), axis off
-    rk = length(f);
-    t = sprintf('Rank = %u',rk);
-    title(t,'fontsize',16)
+    r = rank(f);
+    for rk = 1:r
+        use = rk; 
+        if ( rk == 11 ) 
+            use = 10; 
+        end
+        if ( rk == 16 ) 
+            use = 15; 
+        end
+        g = C(:,1:use)*D(use,use)*R(:,1:use)'; %chebfun2(flipud(Str), rk);
+        contour(xx,yy,g,.35:.05:.85), axis off
+%        set(gcf, 'color', 'w')
+        %rk = length(f);
+        t = sprintf('Rank = %u',rk);
+        title(t,'fontsize',16), shg
+%         im = frame2im(getframe());
+%         [imind, cm] = rgb2ind(im, 16);
+%         if ( rk == 1 )
+%             imwrite(imind, cm, 'Scribble2.gif', 'gif', ...
+%                 'Loopcount', inf, 'DelayTime', 1e-5);
+%         else
+%             imwrite(imind, cm, 'Scribble2.gif', 'gif', ...
+%                 'WriteMode', 'append', 'DelayTime', 1e-5);
+%         end
+        shg
+        drawnow
+        
+    end
 else
-    varargout = {f};
+ 	varargout = {f}; 
 end
 
 

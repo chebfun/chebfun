@@ -7,7 +7,7 @@ function [PA, P, PS] = reduce(disc, A, S)
 %   CHEBDISCRETIZATION reductions. Here S is ignored, P is the identity and
 %   PS = P.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Convert A to a matrix.

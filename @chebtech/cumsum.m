@@ -8,7 +8,7 @@ function f = cumsum(f, dim)
 %
 % See also DIFF, SUM.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -65,16 +65,13 @@ v(2:2:end) = -1;
 b(1,:) = v*b(2:end,:);             % Compute b_0 (satisfies f(-1) = 0)
 
 % Store the old vscale.
-tmpVscale = f.vscale;
+oldVscl = f.vscale;
 
 % Recover coeffs:
 f.coeffs = b;
 
-% Update vscale: 
-f.vscale = getvscl(f);
-
 % Update epslevel:
-epslevelBound = 2*f.epslevel.*tmpVscale./f.vscale;
+epslevelBound = 2*f.epslevel.*oldVscl./f.vscale;
 f.epslevel = updateEpslevel(f, epslevelBound);
 
 % Simplify (as suggested in Chebfun ticket #128)
@@ -90,9 +87,8 @@ function f = cumsumFiniteDim(f)
 % CUMSUM over the finite dimension.
 
 f.coeffs = cumsum(f.coeffs, 2);
-newVscale = getvscl(f);
-epslevelApprox = sum(f.epslevel.*f.vscale, 2)/sum(newVscale, 2); % TODO: Is this right?
+newVscl = f.vscale;
+epslevelApprox = sum(f.epslevel.*newVscl, 2)/sum(newVscl, 2); % TODO: Is this right?
 f.epslevel = updateEpslevel(f, epslevelApprox);
-f.vscale = newVscale;
 
 end

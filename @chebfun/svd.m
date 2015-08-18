@@ -18,7 +18,7 @@ function [U, S, V] = svd(A, econ)
 %
 % See also QR, MRDIVIDE, RANK.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( (nargin > 2) || ((nargin == 2) && (econ ~= 0)) )

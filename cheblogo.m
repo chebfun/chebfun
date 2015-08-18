@@ -4,7 +4,7 @@ function varargout = cheblogo()
 %
 %   F = CHEBLOGO() returns a CHEBFUN of the Chebfun logo.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Make a CHEBFUN of the logo:
