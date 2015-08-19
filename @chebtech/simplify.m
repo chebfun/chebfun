@@ -47,11 +47,17 @@ end
 % parameters are chosen explicitly to work with STANDARDCHOP.
 % See STANDARDCHOP for details.
 N = max(17, round(n*1.25 + 5));
-cfmins = min(abs(coeffs), [], 1);
-cfmaxs = max(abs(coeffs), [], 1);
+%cfmins = min(abs(coeffs), [], 1);
+%cfmaxs = max(abs(coeffs), [], 1);
+%if ( n < N )
+%    coeffs = [coeffs ; ones(N - n, 1)* ...
+%              (max(tol.^(7/6), min(cfmins./cfmaxs, tol)).*cfmaxs)];
+%end
+
 if ( n < N )
-    coeffs = [coeffs ; ones(N - n, 1)* ...
-              (max(tol.^(7/6), min(cfmins./cfmaxs, tol)).*cfmaxs)];
+     coeffs = [coeffs; zeros(N - n,size(coeffs,2))];
+     vals = chebtech2.coeffs2vals(coeffs);
+     coeffs = chebtech2.vals2coeffs(vals);
 end
 
 % Loop through columns to compute CUTOFF.
