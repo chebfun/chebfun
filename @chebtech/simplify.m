@@ -31,13 +31,14 @@ end
 % 17, the coefficients are padded using prolong. The following
 % parameters are chosen explicitly to work with STANDARDCHOP.
 % See STANDARDCHOP for details.
-n = length(f);
-N = max(17, round(n*1.25 + 5));
+nold = length(f);
+N = max(17, round(nold*1.25 + 5));
 f = prolong(f,N);
 
 % Grab coefficients of F.
 coeffs = f.coeffs;
 [n, m] = size(coeffs);
+coeffs = chebtech2.vals2coeffs(chebtech2.coeffs2vals(coeffs));
 
 % Use CHEBFUNPREF.EPS if no tolerance was supplied.
 p = chebfunpref;
@@ -58,7 +59,7 @@ end
 
 % Take the minimum of CUTOFF and LENGTH(F). This is necessary when padding was
 % required.
-cutoff = min(cutoff, n);
+cutoff = min(cutoff, nold);
 
 % Chop coefficients using CUTOFF.
 f.coeffs = coeffs(1:cutoff,:);

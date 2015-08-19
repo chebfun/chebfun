@@ -28,13 +28,14 @@ end
 % 17, the coefficients are padded using prolong. The following
 % parameters are chosen explicitly to work with STANDARDCHOP.
 % See STANDARDCHOP for details.
-n = length(f);
-N = max(17, round(n*1.25 + 5));
+nold = length(f);
+N = max(17, round(nold*1.25 + 5));
 f = prolong(f,N);
 
 % Grab the coefficients of F.
 coeffs = abs(f.coeffs(end:-1:1,:));
 [n, m] = size(coeffs);
+coeffs = trigtech.vals2coeffs(trigtech.coeffs2vals(coeffs));
 
 % Use the default tolerance if none was supplied.
 p = chebfunpref;
@@ -67,6 +68,7 @@ cutoff = 1;
 for k = 1:m
     cutoff = max(cutoff, standardChop(coeffs(:,k), tol(k)));
 end
+cutoff = min(cutoff,nold);
 
 % Divide CUTOFF by 2.
 if ( mod(cutoff, 2) == 0 )
