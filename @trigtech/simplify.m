@@ -24,6 +24,14 @@ if ( ~f.ishappy )
     return;
 end
 
+% STANDARDCHOP requires at least 17 coefficients, so for F such that LENGTH(F) <
+% 17, the coefficients are padded using prolong. The following
+% parameters are chosen explicitly to work with STANDARDCHOP.
+% See STANDARDCHOP for details.
+n = length(f);
+N = max(17, round(n*1.25 + 5));
+f = prolong(f,N);
+
 % Grab the coefficients of F.
 coeffs = abs(f.coeffs(end:-1:1,:));
 [n, m] = size(coeffs);
@@ -53,18 +61,6 @@ else
 end
 coeffs = flipud(coeffs);
 coeffs = [coeffs(1,:) ; kron(coeffs(2:end,:),[1 ; 1])];
-
-% STANDARDCHOP requires at least 17 coefficients, so for F such that LENGTH(F) <
-% 17, the coefficients are padded with entries between TOL^(7/6) and TOL.
-% These parameters are chosen explicitly to work with STANDARDCHOP.
-% See STANDARDCHOP for details.
-N = max(17, round(n*1.25 + 5));
-cfmins = min(abs(coeffs), [], 1);
-cfmaxs = max(abs(coeffs), [], 1);
-if ( n < N )
-    coeffs = [coeffs ; ones(N - n, 1)* ...
-              (max(tol.^(7/6), min(cfmins./cfmaxs,tol)).*cfmaxs)];
-end
 
 % Loop through columns to compute CUTOFF.
 cutoff = 1;
