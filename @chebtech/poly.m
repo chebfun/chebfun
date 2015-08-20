@@ -14,7 +14,7 @@ function out = poly(f)
 %
 % See also CHEBCOEFFS, FOURCOEFFS, LEGCOEFFS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -28,7 +28,8 @@ if ( isempty(f) )
     return
 end
 
-coeffs = f.coeffs;
+% Flip the Chebyshev coefficients to match Matlab ordering:
+coeffs = flipud(f.coeffs);
 [n, m] = size(coeffs);
 
 % Coefficients on the unit interval:

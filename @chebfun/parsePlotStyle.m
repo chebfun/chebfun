@@ -9,13 +9,13 @@ function [lineStyle, pointStyle, jumpStyle, deltaStyle, out] = parsePlotStyle(va
 %
 % See also PLOT, PLOT3.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 lineOpts = {'LineStyle', 'LineWidth'};
 pointOpts = {'Marker', 'MarkerSize', 'MarkerFaceColor', 'MarkerEdgeColor'};
 
-% Supress MLINT warning for growing arrays.
+% Suppress MLINT warning for growing arrays.
 %#ok<*AGROW>
 
 % Initialise:

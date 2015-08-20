@@ -77,7 +77,11 @@ dampingInfo.x =             x;
 dampingInfo.giveUp =        0;
 
 linpref = pref;
-linpref.errTol = pref.errTol/10;
+linpref.errTol = pref.errTol/200;
+
+% Get the differential order of the LINOP L (needed when evaluating the residual
+% of periodic boundary conditions):
+diffOrder = L.diffOrder;
 
 % Start the Newton iteration!
 while ( ~terminate )
@@ -115,7 +119,7 @@ while ( ~terminate )
         % Find the next Newton iterate (the method finds the step-size, then
         % takes the damped Newton and returns the next iterate).
         [u, dampingInfo] = dampingErrorBased(N, u, rhs, delta, ...
-            L, disc, dampingInfo);
+            L, disc, dampingInfo, pref);
         
         % If we're in damped mode, we don't get an error estimate...
         errEst = NaN;
@@ -212,7 +216,7 @@ while ( ~terminate )
 end
 
 % Evaluate how far off we are from satisfying the boundary conditions.
-errEstBC = normBCres(N, u, x);
+errEstBC = normBCres(N, u, x, diffOrder, pref);
 
 % Print information depending on why we stopped the Newton iteration.
 if ( success )
@@ -238,12 +242,12 @@ end
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function bcNorm = normBCres(N, u, x)
+function bcNorm = normBCres(N, u, x, diffOrder, pref)
 %NORMBCRES   Compute residual norm of the boundary conditions.
-%   NORMBCRES(N, U, X) returns the combined Frobenius norm of N.lbc(U),
+%   NORMBCRES(N, U, X, DIFFORDER, PREF) returns the combined Frobenius norm of N.lbc(U),
 %   N.rbc(U), and N.bc(X, U).
 
-% TODO: This might be useful elsewehere (i.e. chebop/linearize), do we want to
+% [TODO]: This might be useful elsewehere (i.e. chebop/linearize), do we want to
 % move this into a separate file?
 
 % Initialize:
@@ -308,10 +312,33 @@ if ( ~isempty(N.rbc) )
 end
 
 % Evaluate and linearise the remaining constraints:
-if ( ~isempty(N.bc) )
-    % Evaluate. The output, BCU, will be a vector.
-    bcU = N.bc(x, uBlocks{:});
-    bcNorm = bcNorm + norm(bcU, 2).^2;
+disc = pref.discretization();
+tech = disc.returnTech();
+techUsed = tech();
+
+if ( ~isempty(N.bc) || isequal(pref.discretization, @trigcolloc) )
+    % Periodic case. 
+    if ( (isa(N.bc, 'char') && strcmpi(N.bc, 'periodic')) || ...
+            isPeriodicTech(techUsed) )
+        bcU = 0;
+        % Need to evaluate the residual of the boundary condition for each
+        % independent variable uBlocks{k} separately, since each variable can
+        % have a different maximum differential order associated with it in a
+        % problem.
+        for k = 1:numel(uBlocks)
+            for l = 0:max(diffOrder(:, k))
+                % Compute residual of appropriately many derivatives:
+                bcU = bcU + (feval(diff(uBlocks{k}, l), N.domain(end)) - ...
+                    feval(diff(uBlocks{k}, l), N.domain(1)))^2;
+            end
+        end
+        bcNorm = bcNorm + bcU;
+        
+    else
+        % Evaluate. The output, BCU, will be a vector.
+        bcU = N.bc(x, uBlocks{:});
+        bcNorm = bcNorm + norm(bcU, 2).^2;
+    end
 end
 
 bcNorm = sqrt(bcNorm);

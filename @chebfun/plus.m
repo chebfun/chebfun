@@ -8,7 +8,7 @@ function f = plus(f, g)
 %   The dimensions of F and G must be compatible. Note that scalar expansion is
 %   _not_ supported if both F and G are CHEBFUN objects.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( ~isa(f, 'chebfun') )   % ??? + CHEBFUN
@@ -88,6 +88,14 @@ else                          % CHEBFUN + CHEBFUN
     
     if ( numel(f) == 1 && numel(g) == 1 )
         % CHEBFUN case:
+        
+        % If one of the two CHEBFUNs uses a PERIODICTECH reprensetation, 
+        % cast it to a NONPERIODICTECH.
+        if ( ~isPeriodicTech(f.funs{1}) && isPeriodicTech(g.funs{1}) )
+            g = chebfun(g, g.domain, 'tech', get(f.funs{1}, 'tech'));
+        elseif ( isPeriodicTech(f.funs{1}) && ~isPeriodicTech(g.funs{1}) )
+            f = chebfun(f, f.domain, 'tech', get(g.funs{1}, 'tech'));
+        end
         
         % Overlap the CHEBFUN objects:
         [f, g] = overlap(f, g);

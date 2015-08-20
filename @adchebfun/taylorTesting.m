@@ -23,7 +23,7 @@ function [order1, order2, nDiff2] = taylorTesting(f, hMax, numOut, plotting)
 %
 % See also: TAYLORTESTINGBINARY, VALUETESTING, VALUETESTINGBINARY.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % The following is taken from Birkisson's DPhil thesis [TODO: Citation?].
@@ -85,7 +85,7 @@ nDiff2 = zeros(hMax, numOut);
 % Factor we decrease by:
 fact = 1/5;
 
-% Evalute F at u:
+% Evaluate F at u:
 [fu{1:numOut}] = f(u);
 for hCounter = 1:hMax
     % Compute a perturbation function:

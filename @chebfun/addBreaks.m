@@ -12,7 +12,7 @@ function f = addBreaks(f, breaks, tol)
 %
 % See also ADDBREAKSATROOTS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Lower bound for tolerance:
@@ -47,6 +47,11 @@ end
 if ( ~isempty(breaks) )
     % Get the domain with the new breakpoints: (union is not required, by above)
     dom = unique([f.domain, breaks.']);
+    
+    % Handle periodic functions:
+    if ( isPeriodicTech(f) )
+        f = chebfun(f);
+    end
 
     % Introduce these breakpoints into f:
     f = restrict(f, dom);

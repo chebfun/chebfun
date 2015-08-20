@@ -20,8 +20,9 @@ f = chebfun(op1, dom, 'exps', [0 pow1], 'splitting', 'on');
 g = chebfun(op2, dom, 'exps', [0 pow2], 'splitting', 'on');
 I = innerProduct(f,g);
 I_exact = 0.35838148154346034 - 0.26037938759089226i;
-pass(1) = ( abs(I-I_exact) < 1e2*max(get(f, 'epslevel'), get(g, 'epslevel'))*...
+pass(1) = ( abs(I-I_exact) < 1e5*max(get(f, 'epslevel'), get(g, 'epslevel'))*...
     abs(I_exact) );
+
 
 %% Test for functions defined on unbounded domains:
 

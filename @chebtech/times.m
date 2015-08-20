@@ -8,7 +8,7 @@ function f = times(f, g, varargin)
 %
 % See also MTIMES, RDIVIDE.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty(f) || isempty(g) )
@@ -35,11 +35,10 @@ elseif ( isa(g, 'double') )     % CHEBTECH .* double
         f.coeffs = 0*f.coeffs(1,:);
     end
     
-    % Update epslevel:
-    f.epslevel = f.epslevel + eps(g);
-    
-    f.vscale = abs(g).*f.vscale;
-    
+    % Update epslevel and vscale:
+    epslevelBound = f.epslevel + abs(eps(g)./g);
+    epslevelBound(g == 0) = eps;
+    f.epslevel = updateEpslevel(f, epslevelBound);
     return
 
 elseif ( ~isa(f, 'chebtech') || ~isa(g, 'chebtech') ) 
@@ -50,37 +49,37 @@ elseif ( ~isa(f, 'chebtech') || ~isa(g, 'chebtech') )
          'Make sure functions are of the same type.']);
     
 elseif ( size(f.coeffs, 1) == 1 )
-    % If we have (constant CHEBTECH).*CHEBTECH, reverse the order and call TIMES
-    % again:
+    % If we have (constant CHEBTECH).*CHEBTECH, convert the (constant CHEBTECH)
+    % to a scalar and call TIMES again:
     f = times(g, f.coeffs);
-    f.epslevel = max(f.epslevel, g.epslevel);
+    epslevelBound = max(f.epslevel, g.epslevel);
+    f.epslevel = updateEpslevel(f, epslevelBound);
     return
     
 elseif ( size(g.coeffs, 1) == 1)
     % If we have CHEBTECH.*(constant CHEBTECH), convert the (constant CHEBTECH)
     % to a scalar and call TIMES again:
     f = times(f, g.coeffs);
-    f.epslevel = max(f.epslevel, g.epslevel);
+    epslevelBound = max(f.epslevel, g.epslevel);
+    f.epslevel = updateEpslevel(f, epslevelBound);
     return
     
 end
+
+% Store vscales:
+oldVsclF = f.vscale;
+oldVsclG = g.vscale;
 
 % Do muliplication in coefficient space:
 [f.coeffs, pos] = coeff_times_main(f.coeffs, g.coeffs); 
 
 % Update vscale, epslevel, and ishappy:
-vscale = getvscl(f);
-
-% Avoid NaNs:
-tmpVscale = vscale;
-tmpVscale(vscale == 0) = 1;
-f.vscale(f.vscale == 0) = 1;
-g.vscale(g.vscale == 0) = 1;
+vscl = f.vscale;
+vscl(vscl == 0) = 1; % Avoid NaNs:
 
 % See CHEBTECH CLASSDEF file for documentation on this:
-epslevelBound = (f.epslevel + g.epslevel) .* (f.vscale.*g.vscale./tmpVscale);
+epslevelBound = (f.epslevel + g.epslevel) .* (oldVsclF.*oldVsclG./vscl);
 f.epslevel = updateEpslevel(f, epslevelBound);
-f.vscale  = vscale;
 f.ishappy = f.ishappy && g.ishappy;
 
 % Simplify!
@@ -97,10 +96,6 @@ end
 end
 
 function [coeffs, pos] = coeff_times_main(f, g)
-
-% Flip for convenience:
-f = flipud(f);
-g = flipud(g);
 
 % Get the size of each CHEBTECH:
 [fn, fm] = size(f);
@@ -141,9 +136,6 @@ else
     coeffs = coeff_times( f, g );
 end
 
-% Assign values and coefficients back to f: % TODO: Why is this needed here?
-coeffs = flipud(coeffs);
-
 end
 
 function hc = coeff_times(fc, gc)
@@ -160,7 +152,7 @@ function hc = coeff_times(fc, gc)
 mn = length(fc);
 t = [2*fc(1,:) ; fc(2:end,:)];                    % Toeplitz vector.
 x = [2*gc(1,:) ; gc(2:end,:)];                    % Embed in Circulant.
-xprime = fft([x ; x(end:-1:2,:)]);              % FFT for Circulant mult.
+xprime = fft([x ; x(end:-1:2,:)]);                % FFT for Circulant mult.
 aprime = fft([t ; t(end:-1:2,:)]);
 Tfg = ifft(aprime.*xprime);                   % Diag in function space.
 hc = .25*[Tfg(1,:); Tfg(2:end,:) + Tfg(end:-1:2,:)];% Extract out result.

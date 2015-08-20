@@ -1,8 +1,8 @@
 function out = chebcoeffs(f, N)
 %CHEBCOEFFS   Chebyshev polynomial coefficients of a CLASSICFUN.
 %   A = CHEBCOEFFS(F) returns the row vector of coefficients such that F = A(1)
-%   T_M(x) + ... + A(M) T_1(x) + A(M+1) T_0(x), where T_M(x) denotes the M-th
-%   Chebyshev polynomial.
+%   T_0(x) + ... + A(M) T_{M - 1}(x) + A(M+1) T_M(x), where T_M(x) denotes the
+%   M-th Chebyshev polynomial.
 %
 %   A = CHEBCOEFFS(F, N) truncates or pads the vector A so that N coefficients of
 %   the CLASSICFUN F are returned. If N is not given, N = LENGTH(F) is used by default.
@@ -11,7 +11,7 @@ function out = chebcoeffs(f, N)
 %
 % See also LEGPOLY FOURCOEFFS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin == 1 )

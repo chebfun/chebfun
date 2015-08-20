@@ -8,7 +8,7 @@ function handles = callbackBCs(handles, inputString, type)
 %   TYPE:           Whether the input was passed to the BC field (used in BVP
 %                   and EIG modes) or the LBC and RBC fields (used in PDE mode). 
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % For systems we check one row at a time.
@@ -68,26 +68,6 @@ elseif ( strcmp(type, 'rbc') )
     end
     
 elseif ( strcmp(type, 'bc') )
-    % Deal with the BC input.
-    if ( periodicFlag )
-        set(handles.input_LBC, 'String', 'periodic');
-        handles.guifile.LBC = 'periodic';
-        set(handles.input_LBC, 'Enable', 'off');
-        set(handles.input_RBC, 'String', 'periodic');
-        handles.guifile.RBC = 'periodic';
-        set(handles.input_RBC, 'Enable', 'off');
-    else
-        if ( strcmp(get(handles.input_LBC, 'String'), 'periodic') )
-            handles.guifile.LBC = '';
-            set(handles.input_LBC, 'String', '');
-        end
-        set(handles.input_LBC, 'Enable', 'on');
-        if ( strcmp(get(handles.input_RBC, 'String'), 'periodic') )
-            handles.guifile.RBC = '';
-            set(handles.input_RBC, 'String', '');
-        end
-        set(handles.input_RBC, 'Enable', 'on');
-    end
     
 else
     error('CHEBFUN:CHEBGUICONTROLLER:callbackBCs:unknown', ...

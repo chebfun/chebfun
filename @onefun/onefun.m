@@ -10,9 +10,9 @@ classdef onefun % (Abstract)
 %   PREF), else it calls SINGFUN.CONSTRUCTOR(OP, DATA, PREF) if PREF.BLOWUP is
 %   nonzero.
 %
-% See also SINGFUN, SMOOTHFUN.
+% See also CLASSICFUN, SINGFUN, SMOOTHFUN.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -22,14 +22,14 @@ classdef onefun % (Abstract)
 % interval [-1,1].
 %
 % The current instances of ONEFUNs are SMOOTHFUNs and SINGFUNs. The former are
-% used to represenet smooth functions on [-1,1}, whereas the latter are able to
+% used to represenet smooth functions on [-1,1], whereas the latter are able to
 % represent some forms of endpoint singularites. 
 %
-% Class diagram: [<<CLASSICFUN>>] <>-- [<<ONEFUN>>] <-- [<<smoothfun>>]
-%                                                   <-- [   singfun   ] 
+% Class diagram: [<<CLASSICFUN>>] <>-- [<<ONEFUN>>] <-- [<<SMOOTHFUN>>]
+%                                                   <-- [   SINGFUN   ] 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -90,7 +90,7 @@ classdef onefun % (Abstract)
         % Complex conjugate of a ONEFUN.
         f = conj(f)
         
-        % ONEFUN obects are not transposable.
+        % ONEFUN objects are not transposable.
         f = ctranspose(f)
 
         % Indefinite integral of a ONEFUN.
@@ -107,6 +107,9 @@ classdef onefun % (Abstract)
         
         % Flip/reverse a ONEFUN object.
         f = flipud(f)
+        
+        % Fractional integral of a ONEFUN object.
+        f = fracInt(f, mu)
 
         % Imaginary part of a ONEFUN.
         f = imag(f)
@@ -129,6 +132,10 @@ classdef onefun % (Abstract)
         % Test if a ONEFUN has any NaN values.
         out = isnan(f)
 
+        % Test if the ONEFUN is constructed with a basis of periodic
+        % functions.
+        out = isPeriodicTech(f)
+        
         % True for real ONEFUN.
         out = isreal(f)
         
@@ -217,5 +224,5 @@ classdef onefun % (Abstract)
         f = uplus(f)
 
     end
-
+   
 end

@@ -37,7 +37,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
 %
 % See also CLASSICFUN, ONEFUN, FUN
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -165,7 +165,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         % Complex conjugate of a DELTAFUN.
         f = conj(f)
         
-        % DELTAFUN obects are not tCOLLOC2ransposable.
+        % DELTAFUN objects are not transposable.
         f = ctranspose(f)
         
         % Indefinite integral of a DELTAFUN.
@@ -209,6 +209,14 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         
         % Test if a DELTAFUN has any NaN values.
         out = isnan(f)
+        
+        function out = isPeriodicTech(f)
+        %ISPERIODICTECH    Test if the smooth part of f is is constructed with a 
+        %basis of periodic functions. 
+        
+            % Calls ISPERIODICTECH on the CLASSICFUN part.
+            out = isPeriodicTech(f.funPart);
+        end
         
         % True for real DELTAFUN.
         out = isreal(f)
@@ -282,6 +290,9 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         % DELTAFUN multiplication.
         f = times(f, g)
         
+        % Transfer delta function at the right end point to the next:
+        [f, g] = transferDeltas(f, g);
+        
         % DELTAFUN objects are not transposable.
         f = transpose(f)
         
@@ -316,7 +327,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         f = make(varargin)
         
         % Merge columns of a matrix based on duplicate values in v.
-        [A, v] = mergeColumns(A, v, pref)
+        [A, v, I] = mergeColumns(A, v, pref)
         
         % Merge delta function matrix
         [D, w] = mergeDeltas(A, v, B, u);

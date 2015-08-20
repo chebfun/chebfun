@@ -5,7 +5,7 @@ function f = times(f, g)
 %
 % See also MTIMES.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with the special cases:
@@ -78,10 +78,18 @@ else                           % CHEBFUN .* CHEBFUN
     if ( numColumns(f) ~= numColumns(g) )
         error('CHEBFUN:CHEBFUN:times:matdim', 'Matrix dimensions must agree.');
     end
-
+        
     if ( numel(f) == 1 && numel(g) == 1 )
-        % Array-valued CHEBFUN case:
+        % CHEBFUN case:
 
+        % If one of the two CHEBFUNs uses a PERIODICTECH reprensetation, 
+        % cast it to a NONPERIODICTECH.
+        if ( ~isPeriodicTech(f.funs{1}) && isPeriodicTech(g.funs{1}) )
+            g = chebfun(g, g.domain, 'tech', get(f.funs{1}, 'tech'));
+        elseif ( isPeriodicTech(f.funs{1}) && ~isPeriodicTech(g.funs{1}) )
+            f = chebfun(f, f.domain, 'tech', get(g.funs{1}, 'tech'));
+        end
+        
         % Overlap:
         [f, g] = overlap(f, g);
 

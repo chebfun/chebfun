@@ -6,7 +6,7 @@ function fx = toValues(disc, f, flag)
 %   C = TOVALUES(DISC, F, 1) converts the (perhaps piecewise smooth) chebfun F
 %   to coefficients C for use by an ULTRAS discretization DISC.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isnumeric(f) )
@@ -15,7 +15,7 @@ if ( isnumeric(f) )
 end
 
 dom = disc.domain;
-numInts = disc.numIntervals();
+numInts = disc.numIntervals;
 dim = disc.dimension;
 
 % Restrict F to DOM (e.g. if we need to introduce more breakpoints in F)
@@ -25,7 +25,7 @@ f = restrict(f, dom);
 % in the cell-array C.
 c = cell(numInts, 1);
 for k = 1:numInts
-    c{k} = flipud(chebcoeffs(f.funs{k}, dim(k)));
+    c{k} = chebcoeffs(f.funs{k}, dim(k));
 end
 c = cell2mat(c); 
 

@@ -10,7 +10,7 @@ function f = rdivide(f, c, pref)
 %
 % See also MRDIVIDE, TIMES.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isa(c, 'double') )
@@ -29,15 +29,11 @@ if ( isa(c, 'double') )
     elseif ( numel(c) == 1 )
         % Scalar
         f.coeffs = f.coeffs/c;      % Divide coeffs
-        f.vscale = f.vscale/abs(c); % Divide vscale
     else
         % Array-valued CHEBTECH
         n = size(f.coeffs, 1);   
         f.coeffs = f.coeffs./repmat(c, n, 1);   % Divide coeffs
-        f.vscale = f.vscale./abs(c);            % Divide vscale
-        
         f.coeffs(:, c == 0) = NaN;
-        f.vscale(:, c == 0) = NaN;
     end
 else
     % Dividing by another CHEBTECH is harder. Call COMPOSE.

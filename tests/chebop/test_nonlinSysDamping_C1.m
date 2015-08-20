@@ -17,11 +17,9 @@ A.rbc = @(u,v) [v-1/2; diff(v)];
 x = chebfun('x',d);
 f = [ 0*x ; 0*x ];
 
-%% COLLOC1
-pref.discretization = @colloc1;
-[u12, info] = solvebvp(A, f, pref);
-
-u1 = u12{1}; u2 = u12{2};
+%% CHEBCOLLOC1
+pref.discretization = @chebcolloc1;
+[u1, u2, info] = solvebvp(A, f, pref);
 
 % Want to check BCs as well.
 bcFunLeft = chebfun(A.lbc(u1,u2));

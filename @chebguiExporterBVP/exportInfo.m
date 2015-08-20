@@ -11,7 +11,7 @@ function expInfo = exportInfo(guifile)
 %   EXPINFO:    A struct, containing fields with information for exporting to an
 %               .m-file.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Extract information from the GUI fields
@@ -37,8 +37,21 @@ end
 [deString, allVarString, indVarNameDE, dummy, dummy, dummy, allVarNames] = ...
     setupFields(guifile, deInput, 'DE');
 
-% Do some error checking before we do further printing. Check that independent
-% variable name match.
+% Do some error checking before we do further printing. 
+
+% Ensure that no EIG specific variables appear:
+eigNames = {'lambda'; 'lam'; 'l'};
+eigMatch = zeros(size(allVarNames));
+
+for eigNameCounter = 1:length(eigNames);
+    eigMatch = eigMatch + strcmp(allVarNames, eigNames{eigNameCounter});
+end
+
+assert(~any(eigMatch), 'CHEBFUN:CHEBGUIEXPORTER:exportInfo:eig', ...
+    ['Problem appears to be an eigenvalue problem. \n Please make sure ' ...
+    '''l'', ''lam'' or ''lambda'' do not appear in appear in input.']);
+
+%Check that independent variable name match.
 
 % Obtain the independent variable name appearing in the initial condition:
 useLatest = strcmpi(initInput{1}, 'Using latest solution');
@@ -76,6 +89,14 @@ else
     periodic = false;
 end
 
+% What discretization option do we want?
+discretization = chebguiExporter.discOption(periodic, dom, ...
+    guifile.options.discretization);
+
+% Add spaces to DOM and ALLVARSTRING so it looks nices once we export
+dom = strrep(dom, ',', ', ');
+allVarString = strrep(allVarString, ',', ', ');
+
 %% Fill up the expInfo struct
 expInfo.dom = dom;
 expInfo.deInput = deInput;
@@ -87,11 +108,12 @@ expInfo.allVarNames = allVarNames;
 expInfo.indVarNameSpace = indVarNameSpace;
 expInfo.periodic = periodic;
 expInfo.useLatest = useLatest;
+expInfo.numVars = length(allVarNames);
 
 % Information related to options set-up
 expInfo.tol = guifile.tol;
 expInfo.dampingOn = guifile.options.damping;
-expInfo.discretization = guifile.options.discretization;
+expInfo.discretization = discretization;
 expInfo.plotting = guifile.options.plotting;
 
 end

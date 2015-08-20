@@ -4,7 +4,8 @@ function varargout = chebtest(varargin)
 %   directory $chebfunroot/tests/. These m-files should return a scalar,
 %   vector, or matrix of logical values. A test is deemed to pass if all the
 %   returned values are logical true.  There is no functional output from
-%   CHEBTEST, but the data is piped to the command window with fprintf.
+%   CHEBTEST, but the data is piped to the command window with fprintf. Note
+%   that CHEBTEST will automatically close any open figure windows.
 %
 %   CHEBTEST('DIR1', 'DIR2', ...) will run only those tests given as inputs,
 %   i.e., those in <chebfunroot>/tests/DIR1, $chebfunroot/tests/DIR2, and so
@@ -56,7 +57,7 @@ function varargout = chebtest(varargin)
 %
 %   Any of the '--' input arguments can be used in tandem.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Find directory in which Chebfun was installed:
@@ -175,15 +176,8 @@ cd(currDir);
 
 % Write the log if requested to.
 if ( writeLog )
-    logDir = fullfile(installDir, 'logs');
-    if ( ~exist(logDir, 'dir') )
-        [success, msg] = mkdir(installDir, 'logs');
-        if ( ~success )
-            warning('CHEBFUN:chebtest:writePermission', msg);
-        end
-    end
     filename = ['chebtest-' datestr(now, 'yyyymmddHHMMSS') '.log'];
-    writeToLog(fullfile(logDir, filename), allResults);
+    writeToLog(filename, allResults);
 end
 
 % Return.
@@ -232,6 +226,7 @@ errorMessages = {'FAILED', 'CRASHED'};
 % We don't want these warning to be displayed in CHEBTEST:
 warnState = warning('off', 'CHEBFUN:CHEBFUN:vertcat:join');
 warning('off', 'CHEBFUN:CHEBOP2:chebop2:experimental')
+warning('off', 'CHEBFUN:CHEBFUN:get:epslevel')
 
 % Attempt to run all of the tests:
 try % Note, we try-catch as we've CD'd and really don't want to end up elsewhere
@@ -369,6 +364,8 @@ function duration = runTest(testFile)
 % Store current default preference states:
 prefState1 = chebfunpref();
 prefState2 = cheboppref();
+% Close any open windows:
+close all
 
 % Attempt to run the test:
 try
@@ -390,6 +387,8 @@ catch ME %#ok<NASGU>
     %rethrow(ME)
 end
 
+% Close any windows the test may have left open:
+close all
 % Ensure global preferences aren't modified by tests.
 chebfunpref.setDefaults(prefState1);
 cheboppref.setDefaults(prefState2);

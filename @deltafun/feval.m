@@ -1,11 +1,11 @@
 function val = feval(f, x, varargin)
 %FEVAL   Evaluate a DELTAFUN.
 %   FEVAL(F, X) evaluates the DELTAFUN F at the given points X. If the point of
-%   evaluation has a non-trivial delta function but no higer order delta 
+%   evaluation has a non-trivial delta function but no higher order delta 
 %   functions, a signed infinity is returned. If howerver, there are higher
 %   order delta functions present as well, a NaN is returned.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 
@@ -51,7 +51,7 @@ if ( isa(f, 'deltafun') )
             % If there is a delta function, assign a signed infinity:
             val(idx) = Inf*sign(f.deltaMag(1, i));
         else
-            % If there is no delta function but higer order, assign NaNs:
+            % If there is no delta function but higher order, assign NaNs:
             val(idx) = NaN;
         end
     end

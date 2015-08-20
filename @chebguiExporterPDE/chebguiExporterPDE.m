@@ -6,7 +6,7 @@ classdef chebguiExporterPDE < chebguiExporter
 %
 % See also CHEBGUI, CHEBGUIEXPORTER.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -15,7 +15,7 @@ classdef chebguiExporterPDE < chebguiExporter
     properties ( Access = public )
         
         % The default file name when exporting to an .m-file:
-        defaultFileName = 'pde.m';
+        defaultFileName = 'chebpde.m';
         
         % Description for printing to .m files:
         description = 'a partial differential equation.';

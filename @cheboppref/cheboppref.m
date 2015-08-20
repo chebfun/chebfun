@@ -15,12 +15,29 @@ classdef cheboppref < chebpref
 %     no domain argument is explicitly passed to the constructor.
 %
 %   discretization             - Discretization of linear problems
-%     [@colloc2]
+%     ['values']
+%     'coeffs'
+%     @chebcolloc1
+%     @chebcolloc2
 %     @ultraS
+%     @trigcolloc
+%     @trigspec
 %
 %     This options determines whether linear operators are discretized using
-%     rectangular collocation methods or the ultraspherical method.
-%  
+%     rectangular collocation methods or the ultraspherical method. Please
+%     observe that
+%         * 'values' and 'coeffs' are convenient ways of specifying the 
+%           @chebcolloc2 and @ultraS options respectively (when the boundary 
+%           conditions are not periodic), and @trigcolloc and @trigspec 
+%           respectively (when the boundary conditions are periodic).
+%         * The @trigcolloc/@trigspec options are only supported for problems
+%           that are specified to have periodic boundary conditions. 
+%         * Specifying the @chebcolloc1 option causes the CHEBFUN solution
+%           returned to be based on the @chebtech1 tech. The @chebtech2/@ultraS
+%           option causes the CHEBFUN solution returned to be based on the
+%           @chebtech2 tech. The @trigcolloc/@trigspec option causes the 
+%           CHEBFUN solution to be periodic, based on the @trigtech tech.
+%        
 %   damping                     - Should Newton's method be damped?
 %     [true]
 %     false
@@ -45,7 +62,47 @@ classdef cheboppref < chebpref
 %     considered to have converged if the error estimate it computes is less
 %     than the value of errTol.
 %
-%   lambdaMin                   - Minimum allowed step-size
+%   happinessCheck              - Routine for checking that solution converged
+%     [@standardCheck]
+%     @basicCheck
+%     @plateauCheck
+%     @classicCheck
+%     @looseCheck
+%     @strictCheck
+%     @happinessCheck
+%     @linopV4Check
+%
+%     This options determines which routine is used to determine that the
+%     approximate solution has converged. Any of the above options may be
+%     used, as well as any user defined function handle that conforms to 
+%     the happinessCheck standards.
+%
+%   ivpAbsTol                    - Absolute tolerance for the ivpSolver
+%     [1e5*eps]
+%
+%     This options specifies the option for the absolute tolerance passed as an
+%     option to the built-in MATLAB ODE solver when solving IVPs.
+%
+%   ivpRelTol                    - Relavtive tolerance for the ivpSolver
+%     [100*eps]
+%
+%     This options specifies the option for the relative tolerance passed as an
+%     option to the built-in MATLAB ODE solver when solving IVPs.
+%
+%   ivpSolver                  - Solver for IVPs
+%     ['ode113']
+%     'ode15s'
+%     'ode45'
+%     'values'
+%     'coeffs'
+%
+%     This options determines which of the MATLAB built-in IVP solvers is used
+%     for solving IVPs posed with the CHEBOP class. Any option of
+%     CHEBOPPREF.discretization (see above) is allowed, which causes IVPs to be
+%     solved globally via spectral methods, rather than reformulating them as
+%     first-order problems and then solved via time-stepping method.
+%
+%   lambdaMin                   - Minimum allowed step-size for Newton's method
 %     [1e-6]
 %
 %     The value of lambdaMin determines the minimum allowed step-size that the
@@ -88,6 +145,15 @@ classdef cheboppref < chebpref
 %   paused and the plots are shown until the user presses a button. If plotting
 %   = 'off', no plots are shown during the Newton iteration.
 %
+%   vectorize                   - Automatic vectorization of anon. functions
+%     [true]
+%     false
+%
+%   Determines whether the CHEBOP class should try to automatically try to
+%   vectorize anonymous functions used for describing the differential equation
+%   and boundary condition(s).
+%
+%
 % The default values for any of these preferences may be globally overridden
 % using CHEBOPPREF.SETDEFAULTS(); see the documentation for that function for
 % further details.
@@ -106,7 +172,7 @@ classdef cheboppref < chebpref
 %
 % See also CHEBFUNPREF.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % TODO:  Further documentation of CHEBOPPREF preferences.
@@ -130,7 +196,7 @@ classdef cheboppref < chebpref
                          'Please use cheboppref().prop.']);
                 else
                     error('CHEBFUN:CHEBOPPREF:cheboppref:deprecated', ...
-                        ['chebfoppref() no longer assignment ', ...
+                        ['cheboppref() no longer supports assignment ', ...
                          'via cheboppref(''prop'', val).\n', ...
                          'Please use cheboppref.setDefaults(''prop'', val).']);
                 end
@@ -189,14 +255,28 @@ classdef cheboppref < chebpref
             fprintf('cheboppref object with the following preferences:\n');
             fprintf([padString('    domain:') '[%g, %g]\n'], ...
                 prefList.domain(1), prefList.domain(end));
-            fprintf([padString('    discretization:') '%s\n'], ...
-                func2str(prefList.discretization));
+            if ( isa(prefList.discretization,'function_handle') )
+                fprintf([padString('    discretization:') '%s\n'], ...
+                    func2str(prefList.discretization));
+            elseif ( isa(prefList.discretization,'char') )
+                fprintf([padString('    discretization:') '%s\n'], ...
+                    prefList.discretization);
+            end
+  
             fprintf([padString('    damping:') '%d\n'], ...
                 prefList.damping);
             fprintf([padString('    display:') '%s\n'], ...
                 prefList.display);
             fprintf([padString('    errTol:') '%g\n'], ...
                 prefList.errTol);
+            fprintf([padString('    happinessCheck:') '%s\n'], ...
+                func2str(prefList.happinessCheck));
+            fprintf([padString('    ivpAbsTol:') '%g\n'], ...
+                prefList.ivpAbsTol);
+            fprintf([padString('    ivpRelTol:') '%g\n'], ...
+                prefList.ivpRelTol);
+            fprintf([padString('    ivpSolver:') '%s\n'], ...
+                func2str(prefList.ivpSolver));
             fprintf([padString('    lambdaMin:') '%g\n'], ...
                 prefList.lambdaMin);
             fprintf([padString('    maxDimension:') '%d\n'], ...
@@ -207,6 +287,8 @@ classdef cheboppref < chebpref
                 prefList.minDimension);
             fprintf([padString('    plotting:') '%s\n'], ...
                 prefList.plotting);
+            fprintf([padString('    vectorize:') '%i\n'], ...
+                prefList.vectorize);
        end
 
         function pref = subsasgn(pref, ind, val)
@@ -221,6 +303,9 @@ classdef cheboppref < chebpref
             % Support user-friendlier syntax for specifying discretization
             % choice:
             val = cheboppref.parseDiscretization(val);
+            
+            % Support user-friendlier syntax for specifying IVP solver choice:
+            val = cheboppref.parseIVPsolver(val);
             
             % Call the superclass method.
             pref = subsasgn@chebpref(pref, ind, val);
@@ -336,6 +421,8 @@ classdef cheboppref < chebpref
                         % Support user-friendlier syntax for specifying
                         % discretization choice:
                         prefValue = cheboppref.parseDiscretization(prefValue);
+                        prefValue = cheboppref.parseHappinessCheck(prefValue);
+                        prefValue = cheboppref.parseIVPsolver(prefValue);
                         if ( isfield(defaultPrefs, prefName) )
                             defaultPrefs.(prefName) = prefValue;
                         else
@@ -356,16 +443,21 @@ classdef cheboppref < chebpref
         %   preferences.
 
             factoryPrefs.domain = [-1 1];
-            factoryPrefs.discretization = @colloc2;
+            factoryPrefs.discretization = 'values';
             factoryPrefs.scale = NaN;
             factoryPrefs.damping = 1;
             factoryPrefs.display = 'off';
             factoryPrefs.errTol = 1e-10;
+            factoryPrefs.happinessCheck = @standardCheck;
+            factoryPrefs.ivpAbsTol = 1e5*eps;
+            factoryPrefs.ivpRelTol = 100*eps;
+            factoryPrefs.ivpSolver = @chebfun.ode113;
             factoryPrefs.lambdaMin = 1e-6;
             factoryPrefs.maxDimension = 4096;
             factoryPrefs.maxIter = 25;
             factoryPrefs.minDimension = 32;
             factoryPrefs.plotting = 'off';
+            factoryPrefs.vectorize = true;
         end
         
         function val = parseDiscretization(val)
@@ -377,15 +469,75 @@ classdef cheboppref < chebpref
             % strings we want to allow, and convert them to the correct function
             % handle:
             if ( any(strcmpi(val, {'ultraspherical', 'ultraS'})) )
+                warning('CHEBOPPREF:PARSEDISCRETIZATION', ...
+                    ['''ULTRAS''/''ULTRASPHERICAL'' is deprecated. \n' ...
+                    'Please use ''COEFFS''/@ultraS.']);
                 val = @ultraS;
-            elseif ( any(strcmpi(val, {'collocation', 'colloc2'})) )
-                val = @colloc2;
-            elseif ( strcmpi(val, 'colloc1') )
-                val = @colloc1;
+                
+            elseif ( any(strcmpi(val, {'chebcolloc2', 'collocation', 'colloc2'})) )
+                warning('CHEBOPPREF:PARSEDISCRETIZATION', ...
+                    ['''COLLOCATION''/''COLLOC2''/''CHEBCOLLOC2'' is deprecated. \n' ...
+                    'Please use ''VALUES''/@chebcolloc2.']);
+                val = @chebcolloc2;
+                
+            elseif ( any(strcmpi(val, {'chebcolloc1', 'colloc1'})) )
+                warning('CHEBOPPREF:PARSEDISCRETIZATION', ...
+                    ['''COLLOC1''/''CHEBCOLLOC1'' is deprecated. \n' ...
+                    'Please use ''VALUES''/@chebcolloc2.']);
+                val = @chebcolloc1;
+                
+            elseif ( any(strcmpi(val, {'trigcolloc', 'periodic'})) )
+                warning('CHEBOPPREF:PARSEDISCRETIZATION', ...
+                    ['''TRIGCOLLOC''/''PERIODIC'' is deprecated. \n' ...
+                    'Please use ''VALUES''/@trigcolloc.']);
+                val = @trigcolloc;
             end
                 
         end
+        
+        function val = parseHappinessCheck(val)
+        %PARSEHAPPINESSCHECK    Allow different syntax for specifying
+        %                       happinessCheck.
+            
+            % handle:
+            if ( any(strcmpi(val, {'classic', 'classicCheck'})) )
+                val = @classicCheck;
+                
+            elseif ( any(strcmpi(val, {'plateau', 'plateauCheck'})) )
+                val = @plateauCheck;
+                
+            elseif ( any(strcmpi(val, {'strict', 'strictCheck'})) )
+                val = @strictCheck;
+                 
+            elseif ( any(strcmpi(val, {'loose', 'looseCheck'})) )
+                val = @looseCheck;
+                 
+            elseif ( any(strcmpi(val, {'happiness', 'happinessCheck'})) )
+                val = @happinessCheck;
+                 
+            elseif ( any(strcmpi(val, {'linopV4', 'linopV4Check'})) )
+                val = @linopV4Check;
+                 
+            end
+                
+        end
+        
+        function val = parseIVPsolver(val)
+        %PARSEIVPSOLVER   Allow different syntax for specifying the IVPsolver.
+            
+            % Check whether we got pref.ivpSolver = @ode113/@ode45/@ode15s, that
+            % is, a function handle, but not the CHEBFUN overload of it.
+            if ( isa(val, 'function_handle') && ...
+                    any(strcmpi(func2str(val), {'ode113', 'ode15s', 'ode45'})) )
+                val = eval(['@chebfun.', func2str(val)]);
+                
+            % Check whether we got a string argument, e.g. 
+            % pref.ivpSolver = 'ode113'.
+            elseif ( any(strcmpi(val, {'ode113', 'ode15s', 'ode45'})) )
+                val = eval(['@chebfun.', val]);
+            end
+        end
 
     end
-
+    
 end

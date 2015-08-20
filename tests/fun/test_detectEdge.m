@@ -76,7 +76,7 @@ pass(6) = ( err < 5*eps );
 %err = abs(edge - x0)
 %pass(6) = ( err < 5*eps );
 
-%% A test for a blow-up function with large domain. This is to excercise the
+%% A test for a blow-up function with large domain. This is to exercise the
 % relevant part in findBlowup@detectEdge.
 f = classicfun.constructor(0, struct('domain', [1 2]));
 op = @(x) tan(x);

@@ -13,7 +13,7 @@ function g = cumsum(f, dim)
 %
 % See also SUM.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % [TODO]: Improvement on the algorithm to handle the case with singularities at
@@ -65,7 +65,7 @@ end
 % SINGFUN representation for the indefinite integral of a SINGFUN. It now can
 % only handle integrand with singularity at one end of the domain, but not at
 % both. The algorithm was due to Nick Hale and Sheehan Olver. Some minor
-% modification are made during Chebfun v5 refactorization. See the working note
+% modifications are made during Chebfun v5 refactoring. See the working note
 % by Nick Hale and Sheehan Olver for the detail about the algorithm.
 
 function g = singIntegral(f)
@@ -111,9 +111,8 @@ function g = singIntegral(f)
         xs = prolong(xs, N + 1);
     end
     
-    % We flip up and down to have the coefficients of xs ordered with ascending
-    % indices.
-    aa = flipud(xs.coeffs);
+    % Get the coefficients of xs:
+    aa = xs.coeffs;
     
     % The recurrence to solve for the coefficients for u', i.e., c_k. (*)
     c = zeros(N, 1);
@@ -152,13 +151,12 @@ function g = singIntegral(f)
         cc = cc(1:oldN+2);
     end
     
-    % Flip up and down and drop the leading zeros in the coefficients:
-    cc = flipud(cc);
-    ind = find(cc ~= 0, 1, 'first');
+    % Drop the leading zeros in the coefficients:
+    ind = find(cc ~= 0, 1, 'last');
     if ( isempty(ind) )
         cc = 0;
     else
-        cc = cc(ind:end);
+        cc = cc(1:ind);
     end
     
     % Construct u as a smoothfun object:
@@ -166,14 +164,14 @@ function g = singIntegral(f)
     
     % Construct the SINGFUN object of the solution:
     g = singfun;
-    tol = f.smoothPart.epslevel;
-    if ( abs(ra - a) > tol*f.smoothPart.vscale ) 
+    tol = get(f, 'epslevel').*get(f, 'vscale');
+    if ( abs(ra - a) > tol ) 
         % No log term: fractional poles, fractional roots, or integer roots:
         CM = Cm/(ra - a);
         if ( iszero(u) && abs(CM) > tol*f.smoothPart.vscale )
             g.smoothPart = f.smoothPart.make(@(x) CM + 0*x);
             g.exponents = [ra - a 0];
-        elseif ( ~iszero(u) && abs(CM) < tol*f.smoothPart.vscale )
+        elseif ( ~iszero(u) && abs(CM) < tol )
             [u, rootsLeft, ignored] = extractBoundaryRoots(u);
             g.smoothPart = u;
             g.exponents = [exps(1)+rootsLeft 0];
@@ -184,7 +182,7 @@ function g = singIntegral(f)
             g.exponents = [exps(1)+rootsLeft 0];
         end
         
-    elseif ( abs(Cm) < tol*f.smoothPart.vscale )
+    elseif ( abs(Cm) < tol )
         % No log term: fractional poles with non-constant smooth part:
         [u, rootsLeft, ignored] = extractBoundaryRoots(u);
         g.smoothPart = u;

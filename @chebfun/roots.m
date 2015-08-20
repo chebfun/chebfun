@@ -31,7 +31,7 @@ function r = roots(F, varargin)
 %   used to activate and deactivate the recursion procedure respectively, to
 %   compute the roots as explained in the 'all' and 'complex' modes.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % [TODO]: Scales and tolerances are quite arbitrary here..
@@ -81,7 +81,7 @@ function r = columnRoots(f, rootsPref)
 el = epslevel(f);
 hs = hscale(f);
 vs = vscale(f);
-htol = 10*el*hs;
+htol = 100*eps*hs;
 vtol = el*vs;
 dom = f.domain;
 
@@ -129,9 +129,6 @@ for k = 1:numFuns
     r = [ r ; rk ]; %#ok<AGROW>    
 
 end
-
-% Set any ridiculously small roots to zero:
-r(abs(r) < eps*vs*hs/10) = 0;
 
 % Remove unnecessary NaNs:
 r = sort(r, 1);             % Sort will place NaNs in the final rows.

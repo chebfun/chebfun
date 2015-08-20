@@ -5,7 +5,7 @@ function G = cell2quasi(F)
 %
 % See also QUASIMATRIX, CHEB2CELL.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( ~iscell(F) )
@@ -39,8 +39,14 @@ for k = chebIdx
     end
 end
 
+% A zero chebfun of the correct 'type' on the correct domain.
+zFun = 0*F{chebIdx(1)};
+
 % Assign entries of F to columns of G:
 for k = numel(F):-1:1
+    if ( isnumeric(F{k}) )
+        F{k} = zFun + F{k}; % Cast double to a chebfun.
+    end
     G(k) = F{k};
 end
 

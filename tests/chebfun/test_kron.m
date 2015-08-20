@@ -7,6 +7,8 @@ end
 
 tol = 200*pref.eps; 
 
+%% Kronecker products resulting in CHEBFUN2 objects
+
 % Rank 1 chebfun2 
 f = chebfun(@(x) x.^2, pref);
 g = chebfun(@(y) sin(y), pref);

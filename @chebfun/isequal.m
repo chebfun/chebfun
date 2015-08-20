@@ -5,7 +5,7 @@ function out = isequal(f, g)
 %
 % See also EQ.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Check the empty case:
@@ -22,7 +22,7 @@ if ( ~domainCheck(f, g) || f(1).isTransposed ~= g(1).isTransposed || ...
 end
 
 if ( numel(f) == 1 && numel(g) == 1 )
-    % Array-valued CHEBFUIN case:
+    % Array-valued CHEBFUN case:
     out = columnIsequal(f, g);
 else
     % QUASIMATRIX case:
@@ -46,7 +46,7 @@ if ( numel(f.funs) ~= numel(g.funs) )
 end
 
 % Check the pointValues:
-tol = max(epslevel(f), epslevel(g));
+tol = 1e1*max(epslevel(f), epslevel(g));
 if ( norm(f.pointValues(:) - g.pointValues(:), inf) > tol )
     out = false;
     return

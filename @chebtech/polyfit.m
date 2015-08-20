@@ -11,7 +11,7 @@ function f = polyfit(f, n)
 %
 % See also LEG2CHEB, CHEB2LEG.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % [TODO]: 
@@ -32,7 +32,5 @@ if ( n <= length(f) )
     % Convert to Chebyshev coefficients:
     c_cheb = leg2cheb(c_leg);
     f.coeffs = c_cheb;
-    % Update vscale of the CHEBTECH:
-    f.vscale = getvscl(f);
     
 end

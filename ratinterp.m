@@ -59,7 +59,7 @@ function [p, q, r, mu, nu, poles, residues] = ratinterp(varargin)
 %
 % See also INTERP1, CHEBPADE.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % TODO:  Deal with array-valued CHEBFUNs / quasimatrices.
@@ -520,11 +520,11 @@ md = 0.5 * sum(dom);
 ihd = 2.0 / diff(dom);
 
 % Build the numerator polynomial.
-p = chebfun(a(end:-1:1), dom, 'coeffs');
+p = chebfun(a, dom, 'coeffs');
 
 % Build the denominator polynomial and form the function handle.
 if ( nu > 0 )
-    q = chebfun(b(end:-1:1), dom, 'coeffs');
+    q = chebfun(b, dom, 'coeffs');
 
     px = idct2(a);
     qx = idct2(b);

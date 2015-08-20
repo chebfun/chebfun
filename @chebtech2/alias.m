@@ -7,7 +7,7 @@ function coeffs = alias(coeffs, m)
 %
 % See also PROLONG.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -28,12 +28,9 @@ n = size(coeffs, 1);
 
 % Pad with zeros:
 if ( m > n )
-    coeffs = [ zeros(m-n, size(coeffs, 2)) ; coeffs ];
+    coeffs = [ coeffs; zeros(m-n, size(coeffs, 2)) ];
     return
 end
-
-% It's more natural to work with the coefficients in the other order:
-coeffs = coeffs(end:-1:1,:);
 
 % Alias coefficients: (see eq. (4.4) of Trefethen, Approximation Theory and
 % Approximation Practice, SIAM, 2013):
@@ -55,7 +52,7 @@ else
     end
 end
 
-% Flip the coefficients back again:
-coeffs = coeffs(m:-1:1,:);
+% Truncate:
+coeffs = coeffs(1:m,:);
 
 end

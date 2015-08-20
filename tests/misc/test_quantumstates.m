@@ -31,6 +31,6 @@ efuns = horzcat(efuns{1:n});
 op = @(u) -h^2*diff(u,2) + repmat(V, 1, n).*u;
 
 % Did quantumstates() return eigenfunctions and eigenvalues?
-err = norm( op(efuns) - evals*efuns );
+err = norm( op(efuns) - efuns*evals );
 pass(2) = err < 5e-8;
 end

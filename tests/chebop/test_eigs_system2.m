@@ -52,7 +52,7 @@ A = chebop(@(u) [-u{1} + diff(u{2}) ; diff(u{1})], d);
 A.lbc = @(u) u{1};
 A.rbc = @(u) u{1};
 % Let's change the discretization, just for fun:
-pref.discretization = @colloc1;
+pref.discretization = @chebcolloc1;
 [V, D] = eigs(A, 5, pref);
 lam = diag(D);
 lam = abs(lam);
@@ -66,6 +66,6 @@ err(6) = norm(AV - V*D);
 
 %%
 
-pass = err < 1e-11;
+pass = err < 1e-9;
 
 end

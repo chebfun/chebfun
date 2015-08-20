@@ -61,7 +61,7 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
 %   SINGFUN(OP, DATA, PREF) constructs a SINGFUN using the preferences given by
 %   PREF.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -145,15 +145,17 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
                 obj.exponents = singfun.findSingExponents(op, data.singType);
             end
 
-            % Make sure that op is a function handle or a smoothfun.
-            if ( ~isa(op, 'function_handle') && ~isa(op, 'smoothfun') )
+            % Make sure that op is a function handle, a smoothfun, or numeric.
+            if ( ~isnumeric(op) && ~isa(op, 'function_handle') && ...
+                    ~isa(op, 'smoothfun') )
                 error( 'CHEBFUN:SINGFUN:singfun:badOp', ...
                     ['First argument must be a function handle or a ', ...
                      'SMOOTHFUN, not a %s.'], class(op));
             end
 
-            % Check to avoid array-vapolylued operators.
-            if ( size(feval(op, 0), 2) > 1 )
+            % Check to avoid array-valued operators.
+            if ( (isnumeric(op) && size(op, 2) > 1) || ...
+                 (~isnumeric(op) && size(feval(op, 0), 2) > 1) )
                 error('CHEBFUN:SINGFUN:singfun:arrayValued', ...
                     'SINGFUN does not support array-valued construction.');
             end
@@ -167,19 +169,19 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
             if ( isa(op, 'smoothfun') )
                 % smoothPart was handed to us.
                 obj.smoothPart = op;
-            else
-                % Construct New Function Handle
-                
+            elseif ( isnumeric(op) )
+                % Constructing from numeric. No function handle to moidify.
+                obj.smoothPart = singfun.constructSmoothPart(op, data, pref);
+            else               
                 % Loosen tolerance:
                 if ( any(obj.exponents) )
                     pref.eps = max(pref.eps, 1e-14);
                 end
-                
-                % Factor out singular terms from the operator based on the values
-                % in exponents.
+                % Construct new function Handle by factorinf out singular terms
+                % from the operator based on the values in exponents.
                 smoothOp = singOp2SmoothOp(op, obj.exponents);
-                obj.smoothPart = singfun.constructSmoothPart(smoothOp, data, ...
-                    pref);
+                obj.smoothPart = ...
+                    singfun.constructSmoothPart(smoothOp, data, pref);
             end
         end
         
@@ -238,6 +240,9 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         % SINGFUN does not support FLOOR.
         g = floor(f)
         
+        % Fractional integral of a SINGFUN object.
+        f = fracInt(f, mu)
+        
         % Get method:
         val = get(f, prop)
         
@@ -261,6 +266,14 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         
         % Test if a SINGFUN has any NaN values.
         out = isnan(f)
+        
+        function out = isPeriodicTech(f)
+        %ISPERIODICTECH   Test if the smooth part of f is is constructed with a 
+        %basis of periodic functions. 
+        
+            % Calls ISPERIODICTECH on the SMOOTHFUN part.
+            out = isPeriodicTech(f.smoothPart);
+        end
         
         % True for real SINGFUN.
         out = isreal(f)
@@ -442,7 +455,7 @@ function op = singOp2SmoothOp(op, exponents)
 %
 % See also SINGFUN.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( all(exponents) )

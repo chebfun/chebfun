@@ -10,7 +10,7 @@ function F = besselj(nu, F, scale, pref)
 %
 % See also AIRY, BESSELH, BESSLI, BESSELK, BESSELY.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin < 4 )

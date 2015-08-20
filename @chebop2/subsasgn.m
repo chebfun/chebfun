@@ -4,7 +4,7 @@ function varargout = subsasgn(f, index, varargin)
 % Note: Designed so boundary conditions of an operator can be converted to 
 % CHEBFUNs before a call to MLDIVIDE.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 idx = index(1).subs;
@@ -12,8 +12,10 @@ vin = varargin{:};
 
 switch index(1).type
     
-    case '.'
-        if strcmp(idx, 'lbc')
+    case '.' 
+        if strcmp(idx, 'bc')
+            varargout = {set(f, 'bc', vin)};
+        elseif strcmp(idx, 'lbc')
             varargout = {set(f, 'lbc', vin)};
         elseif strcmp(idx, 'rbc')
             varargout = {set(f, 'rbc', vin)};
@@ -37,6 +39,9 @@ switch index(1).type
             varargout = {set(f, 'S', vin)};
         elseif strcmp(idx, 'V')
             varargout = {set(f, 'V', vin)};
+        else
+            error('CHEBFUN:CHEBOP2:subsasgn:UnexpectedType', ...
+                'Unrecognized chebop2 property.')
         end
         
 end

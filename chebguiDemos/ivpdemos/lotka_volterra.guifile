@@ -1,0 +1,8 @@
+'Lotka-Volterra predator-prey'
+'system'
+domain = '[0 18]';
+DE = {'u'' =  2*u - u*v';'v'' = -v + u*v'};
+BC = {'u(0) = 3';'v(0) = 1'};
+tol = '1e-10';
+damping = '0'; plotting = '0.4';
+type = 'ivp';

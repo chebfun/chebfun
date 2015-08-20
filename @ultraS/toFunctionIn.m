@@ -4,7 +4,7 @@ function f = toFunctionIn(disc, coeffs)
 %   CHEBFUN. The input may be piecewise smooth, as indicated by the dimension
 %   property of the discretization.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 dom = disc.domain;         % Domain we're working on, including breakpoints
@@ -12,7 +12,7 @@ c = mat2cell(full(coeffs), disc.dimension); % Break into smooth pieces
 funs = cell(numel(c), 1);  % One FUN per piece
 for k = 1:numel(c)
     % Construct CHEBTECH2 objects from each piece:
-    ct = chebtech2({[], flipud(c{k})});
+    ct = chebtech2({[], c{k}});
     % Assign each piece to a subinterval with a BNDFUN:
     funs{k} = bndfun(ct, struct('domain', dom(k: k + 1)));
 end

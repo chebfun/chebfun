@@ -34,7 +34,7 @@ function [field, allVarString, indVarName, pdeVarNames, pdeflag, ...
 %   ALLVARNAMES:    A cell array of string, containing the name of all variables
 %                   that appear in a problem.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % For BCs, we need to check whether varNames contains anything not found in
@@ -63,6 +63,12 @@ if ( numOfRows == 1 )
     % Check whether we have too many variables involved in a PDE.
     if ( ~isempty(pdeVarNames) ) % Not a PDE (or we can't do this type yet!)
         pdeflag = true;
+        
+        % Are we actually working in PDE mode?
+        assert(strcmpi(guifile.type, 'PDE'), ...
+            'CHEBFUN:CHEBGUI:setupField:incorrectPDEmode', ...
+            ['Problem specified appears to be a PDE. Please ensure you''re' ...
+            'working in the correct mode in Chebgui.'])
         
         % Check whether we have a match of variable names, i.e. we want u
         % and u_t, not u and v_t:
@@ -202,6 +208,12 @@ else % Have a system, go through each row
         allPdeVarNames(strcmp(allPdeVarNames, '|')) = []; % Delete the junk
         pdeVarNames = allPdeVarNames;
     end
+    
+    % Did we have PDE variables but are not actually working in PDE mode?
+    assert( ~( any(pdeflag) && ~strcmpi(guifile.type, 'PDE')), ...
+        'CHEBFUN:CHEBGUI:setupField:incorrectPDEmode', ...
+        ['Problem specified appears to be a PDE. Please ensure that you''re' ...
+        ' working in the correct mode in Chebgui.'])
     
     % If we are solving a BVP or EIG, we now need x as the first argument as
     % well. However, we don't want that variable in allVarString as we use that

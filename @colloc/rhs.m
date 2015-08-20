@@ -5,7 +5,7 @@ function b = rhs(disc, f)
 %
 % See also MATRIX, REDUCE.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Developers note: This method works as follows. 
@@ -18,13 +18,14 @@ for k = 1:numel(f.blocks)
         f.blocks{k} = feval(f.blocks{k}, xOut);
     end
 end
-b = cell2mat(f.blocks);       
+b = cell2mat(f.blocks);  
 
 % Developer note:
 %   The continuity conditions go above the constraints. See getConstraints().
 
 % Prepend the values of the constraints and continuity conditions.
 L = disc.source;
+
 if ( ~isempty(L.constraint) )
     b = [ L.constraint.values ; b ];
 end

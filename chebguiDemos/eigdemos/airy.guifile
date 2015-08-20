@@ -1,4 +1,8 @@
-'Airy operator'
+# dom = [-1, 1];
+# N = chebop(@(x,u) 0.002*diff(u, 2) + 1i*x*u, dom);
+# N.bc = 0;
+# [V, D] = eigs(N, 25);
+'Complex Airy operator'
 'scalar'
 domain = '[-1 1]';
 DE = '0.002*u" + 1i*x*u = lambda*u';

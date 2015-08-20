@@ -2,7 +2,7 @@ function [y, x] = max(f, flag, dim)
 %MAX   Maximum value of a CHEBFUN.
 %   MAX(F) and MAX(F, 'global') return the maximum value of the CHEBFUN F.
 %
-%   [Y, X] = MAX(F) returns also points X such that F(X) = Y.
+%   [Y, X] = MAX(F) returns also a point X such that F(X) = Y.
 %
 %   [Y, X] = MAX(F, 'local') returns not just the global maximum value but all
 %   of the local maxima.
@@ -20,13 +20,13 @@ function [y, x] = max(f, flag, dim)
 %
 %   MAX(F, [], DIM) computes the maximum of the CHEBFUN F in the dimension DIM.
 %   If DIM = 1 and F is a column CHEBFUN or DIM = 2 and F is a row CHEBFUN, this
-%   is equivalent to MAX(F). Othewise, MAX(F, [], DIM) returns a CHEBFUN which
+%   is equivalent to MAX(F). Otherwise, MAX(F, [], DIM) returns a CHEBFUN which
 %   is the maximum across the discrete dimension of F. For example, if F is a
 %   quasimatrix with two columns, MAX(F, [], 2) = MAX(F(:,1), F(:,2)).
 %
 % See also MIN, MINANDMAX, ROOTS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Trivial empty case.

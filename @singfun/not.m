@@ -5,7 +5,7 @@ function f = not(f)
 %   have roots, then NOT(F) will return garbage with no warning. F may be
 %   complex.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 f = ~f.smoothPart;

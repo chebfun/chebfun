@@ -11,7 +11,7 @@ function a = any(f, dim)
 %
 %   ANY(F) is shorthand for ANY(F, 1).
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information
 
 % Parse inputs:
@@ -25,8 +25,7 @@ elseif ( dim == 2 )     % ANY down the rows.
     a = f;
     arbitraryPoint = 0.1273881594;
     a.coeffs = any(feval(a, arbitraryPoint));
-    a.vscale = getvscl(a);
-    a.epslevel = 0*a.vscale + eps;
+    a.epslevel = 0*a.coeffs + eps;
 else
     error('CHEBFUN:CHEBTECH:any:dim', 'DIM input must be 1 or 2.');
 end

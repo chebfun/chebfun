@@ -7,15 +7,15 @@ function M = multmat(n, f, lambda)
 %  M = MULTMAT(N, F, LAMBDA) also works when F is a vector of Chebyshev
 %  coefficients.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isa(f, 'chebfun') ) 
     % Get Chebyshev T coefficients
-    a = flipud(get(f, 'coeffs'));
+    a = get(f, 'coeffs');
 elseif ( isa(f, 'bndfun') ) 
     % Get Chebyshev T coefficients
-    a = flipud(get(f, 'coeffs'));
+    a = get(f, 'coeffs');
 elseif ( isa( f, 'double') )
     a = f; 
 else

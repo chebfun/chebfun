@@ -1,13 +1,13 @@
 classdef colloc < chebDiscretization
 %COLLOC   Abstract class for collocation discretization of operators.
-%   COLLOC is a partial implementation of CHEBDISCRETIZATION that creates
-%   scaffolding common to first-kind and second-kind points. COLLOC cannot be
-%   used directly as a discretization for linops. Both COLLOC1 and COLLOC2 are
-%   full implementations.
+%   COLLOC is a partial implementation of CHEBDISCRETIZATION using
+%   first-kind Chebyshev points, second-kind Chebyshev points, or equally
+%   spaced points. COLLOC cannot be used directly as a discretization for 
+%   LINOPs. CHEBCOLLOC1, CHEBCOLLOC2, and TRIGCOLLOC are full implementations.
 %
-% See also COLLOC1, COLLOC2, CHEBDISCRETIZATION.
+% See also CHEBCOLLOC, TRIGCOLLOC, CHEBCOLLOC1, CHEBCOLLOC2, CHEBDISCRETIZATION.
 
-%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
+%  Copyright 2015 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org/ for Chebfun information.
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -63,10 +63,10 @@ classdef colloc < chebDiscretization
         D = diff(disc, m)
         
         % Points where function values are represented:
-        [x, w] = functionPoints(disc)
+        [x, w, v, t] = functionPoints(disc)
         
         % Points where equations are enforced:
-        [x, w] = equationPoints(disc)
+        [x, w, v, t] = equationPoints(disc)
         
     end
     
@@ -75,11 +75,9 @@ classdef colloc < chebDiscretization
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
         
-        % Barycentric differentiation matrix:
-        D = baryDiffMat(x, w, k, t);
-        
-        % Discretization points: (used by both colloc1 and colloc2)
-        [x, w, v] = points(varargin);
+        % Discretization points: used by CHEBCOLLOC1, CHEBCOLLOC2, and 
+        % TRIGCOLLOC.
+        [x, w, v, t] = points(varargin);
         
         function dimVals = dimensionValues(pref)
             %DIMENSIONVALUES   Return a vector of desired discretization sizes.
@@ -101,7 +99,7 @@ classdef colloc < chebDiscretization
             end
             
             if ( maxPow <= 9 )
-                % We're happy to go up in steps of 2 up until 512
+                % We're happy to go up in steps of 2 up until 512.
                 powVec = minPow:maxPow;
             elseif ( minPow >= 9 )
                 powVec = minPow:.5:maxPow;

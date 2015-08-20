@@ -29,7 +29,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
 %
 % See also CHEBFUN, LINBLOCK, LINOP, CHEBOP, ADCHEBFUN/SEED.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -686,7 +686,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             f.func = fred(K, f.func);
             
             % Update derivative part
-            f.jacobian = operatorBlock.fred(f.domain, K, varargin{:})*...
+            f.jacobian = operatorBlock.fred(K, f.domain, varargin{:})*...
                 f.jacobian;
             
             % FRED is a linear operation, so no need to update linearity info.
@@ -1029,14 +1029,19 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = PROD(F)       PROD of an ADCHEBFUN
             % 
             % See also chebfun/prod.
-            
-            f = exp(sum(log(f)));
+                        
+            % Temporary step to get dimensions correct
+            f = sum(log(f));
+            % Update FUNC part
+            f.func = exp(f.func);
+            % Update JACOBIAN part
+            f.jacobian = f.func*f.jacobian;
         end     
         
         function f = rdivide(f, g)
             % ./    ADCHEBFUN division
             %
-            % F./G divides F and G, where F and G may be ADHCEBFUN or CHEBFUN
+            % F./G divides F and G, where F and G may be ADCHEBFUN or CHEBFUN
             % objects or scalars.
             
             % ADCHEBFUN./SCALAR or ADCHEBFUN./CHEBFUN
@@ -1161,7 +1166,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
 
                 % Convert the cell-array to a CHEBMATRIX and assign to the
                 % derivative field of U:
-                u.jacobian = linop( blocks );
+                u.jacobian = chebmatrix( blocks );
                 
                 % Initalise linearity information. The output is linear in all
                 % variables.
@@ -1393,7 +1398,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         function f = times(f, g)
             % .*    ADCHEBFUN multiplication
             %
-            % F.*G multiplies F and G, where F and G may be ADHCEBFUN or CHEBFUN
+            % F.*G multiplies F and G, where F and G may be ADCHEBFUN or CHEBFUN
             % objects or scalars.
                         
             if ( isnumeric(g) )                 % ADCHEBFUN.*SCALAR
@@ -1455,7 +1460,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             f.func = volt(K, f.func);
             
             % Update derivative part
-            f.jacobian = operatorBlock.volt(f.domain, K, varargin{:})*f.jacobian;
+            f.jacobian = operatorBlock.volt(K, f.domain, varargin{:})*f.jacobian;
             
             % VOLT is a linear operation, so no need to update linearity info.
             % f.linearity = f.linearity;

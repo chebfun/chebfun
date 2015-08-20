@@ -7,7 +7,7 @@ function g = restrict(f, s)
 %   an array of DELTAFUN objects, where the entries hold F restricted to each of
 %   the subintervals defined by S.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with empty case:
@@ -21,6 +21,16 @@ dom = domain(f);
 a = dom(1); 
 b = dom(2);
 
+% If the first or the last break points is very close to the original domain,
+% merge it:
+pref = chebfunpref();
+tol = pref.deltaPrefs.proximityTol;
+if ( abs(s(1) - a) < tol )
+    s(1) = a;
+end
+if ( abs(s(end) - b) < tol )
+    s(end) = b;
+end
 % Check if s is actually a subinterval:
 if ( (s(1) < a) || (s(end) > b) || (any(diff(s) <= 0)) )
     error('CHEBFUN:DELTAFUN:restrict:badInterval', 'Not a valid subinterval.')

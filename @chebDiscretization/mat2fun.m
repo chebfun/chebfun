@@ -1,4 +1,4 @@
-function f = mat2fun(disc, values)
+function f = mat2fun(disc, values, cutoff)
 %MAT2FUN    Convert a matrix of values to cell of CHEBFUNs.
 %
 %   Input data layout:
@@ -25,7 +25,7 @@ function f = mat2fun(disc, values)
 %     {                                             }
 %     {   [ varN,col1       varN,col2      ...  ]   }
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Start by obtaining required information:
@@ -47,7 +47,9 @@ values = mat2cell( values, componentLength, size(values,2) );
 % from vector of values to chebfun:
 f = cell(numVar, 1);
 for j = 1:numVar
-    if ( isFun(j) )
+    if ( isFun(j) && nargin == 3 )
+        f{j} = toFunctionOut(disc, values{j}, cutoff);
+    elseif ( isFun(j) )
         f{j} = toFunctionOut(disc, values{j});
     else
         f{j} = values{j};

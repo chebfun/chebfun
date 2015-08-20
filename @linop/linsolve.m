@@ -1,7 +1,10 @@
 function [u, disc] = linsolve(L, f, varargin)
 %LINSOLVE  Solve a linear differential/integral equation.
+%   Important: A CHEBOPPREF object PREFS has to be passed. When this method
+%   is called via CHEBOP/MLDIVIDE, PREFS is inherited from the CHEBOP level.
+%
 %   U = LINSOLVE(L, F), or U = L\F, solves the linear system defined by L*U=F
-%   for a linop L and chebmatrix F. The result is a chebmatrix.
+%   for a LINOP L and CHEBMATRIX F. The result is a CHEBMATRIX.
 %
 %   An equivalent syntax to U = LINSOLVE(L, F) is U = L\F.
 %
@@ -17,14 +20,14 @@ function [u, disc] = linsolve(L, f, varargin)
 %     [Z,I,D] = linop.primitiveOperators(d);
 %     A = linop( D^2 - I );
 %     E = functionalBlock.eval(d);
-%     A = addBC(A,E(0),0);
-%     A = addBC(A,E(pi),1);
+%     A = addbc(A,E(0),0);
+%     A = addbc(A,E(pi),1);
 %     u = A \ chebfun('x',d);
 %     plot(u{1})
 %
 % See also CHEBOPPREF, CHEBOP.MLDIVIDE.
 
-%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
+%  Copyright 2015 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -37,7 +40,7 @@ function [u, disc] = linsolve(L, f, varargin)
 % Parse input
 prefs = [];    % no prefs given
 disc = [];     % no discretization given
-vscale = zeros(size(L,2),1);
+vscale = zeros(1, size(L, 2));
 for j = 1:nargin-2
     item = varargin{j};
     if ( isa(item, 'cheboppref') )
@@ -45,7 +48,7 @@ for j = 1:nargin-2
     elseif ( isa(item,'chebDiscretization') )
         disc = item;
     elseif ( isnumeric(item) )
-        vscale = item;
+        vscale = item(:)';
     else
         error('CHEBFUN:LINOP:linsolve:badInput', ...
             'Could not parse argument number %i.',j+2)
@@ -56,11 +59,6 @@ end
 if ( ~all(isfinite(L.domain)) )
     error('CHEBFUN:LINOP:linsolve:infDom', ...
         'Unbounded domains are not supported.');
-end
-
-% Grab defaults.
-if ( isempty(prefs) )
-    prefs = cheboppref;
 end
 
 % If RHS is a CHEBFUN or a DOUBLE, we need to convert it to CHEBMATRIX in
@@ -105,19 +103,20 @@ isDone = false(1, numInt);
 isFun = isFunVariable(L);
 
 for dim = [dimVals inf]
-    
-    % TODO: It's weird that the current value of dim is the _next_ disc size.
-    
+
+    % [TODO]: It's weird that the current value of dim is the _next_ disc size.
     % Discretize the operator (incl. constraints/continuity), unless there is a
     % currently valid factorization at hand.
     if ( isFactored(disc) )
         A = [];
+        P = speye(disc.dimension*size(L,2));
     else
         [A, P] = matrix(disc);
         if ( size(A, 1) ~= size(A, 2) )
-            % TODO: Improve this warning.
             warning('CHEBFUN:LINOP:linsolve:notSquare', ...
-                'Matrix is not square!');
+                ['Operator may not have the correct number of boundary ' ...
+                'conditions.\n' ...
+                'Matrix is not square. Problem may be ill-posed.']);
         end
     end
     
@@ -130,21 +129,20 @@ for dim = [dimVals inf]
     % Project the solution:
     v = P*v;
     
-    % TODO: We could test each variable at their input dimension, but then
+    % [TODO]: We could test each variable at their input dimension, but then
     % each would be different and we would nopt be able to use the trick of
     % taking a linear combination. Instead we project and test convergence
     % at the size of the output dimension.
     
-    % Convert the different components into cells
+    % Convert the different components into cells:
     u = partition(disc, v);
     
     % Need a vector of vscales.
-    if ( numel(vscale)==1 ) 
-        vscale = repmat(vscale,sum(isFun),1);
+    if ( numel(vscale) == 1 ) 
+        vscale = repmat(vscale, 1, length(isFun));
     end
-    
     % Test the happiness of the function pieces:
-    [isDone, epsLevel, vscale, cutoff] = ...
+    [isDone, epslevel, vscale, cutoff] = ...
         testConvergence(disc, u(isFun), vscale(isFun), prefs);
     
     if ( all(isDone) || isinf(dim) )
@@ -165,9 +163,9 @@ end
 % The variable u is a cell array with the different components of the solution.
 % Because each function component may be piecewise defined, we will loop through
 % one by one.
-values = cat(2,u{isFun});
-for k = 1:size(values,2)
-    v = disc.toFunctionOut(values(:,k));
+values = cat(2, u{isFun});
+for k = 1:size(values, 2)
+    v = disc.toFunctionOut(values(:,k),cutoff);
     uOut{k} = v;
 end
 

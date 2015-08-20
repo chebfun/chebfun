@@ -35,7 +35,7 @@ function varargout = str2anon(str, problemType, fieldType)
 %    commaSeparated: Equal to 1 if the input expression was comma-separated, 
 %                    e.g., 'u(-1) = 0, u(1) = 1'. Equal to 0 otherwise.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin < 3 )
@@ -80,7 +80,7 @@ syntaxTree = stringParser.parser(lexOut);
 % Convert a potential = at the top of the tree to a -. The type of the problem
 % determines what complications we need to take into account, hence three
 % different methods.
-if ( strcmp(problemType, 'bvp') )
+if ( any(strcmpi(problemType, {'bvp','ivp'})) )
     syntaxTree = stringParser.splitTree(syntaxTree);
     
     % Obtain the prefix form.

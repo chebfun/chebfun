@@ -8,7 +8,7 @@ function f = cumsum(f, dim)
 %
 % See also DIFF, SUM.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -51,34 +51,35 @@ function f = cumsumContinuousDim(f)
 % CUMSUM over the continuous dimension.
 
 % Initialise storage:
-c = f.coeffs;                     % Obtain Chebyshev coefficients {c_r}
+c = f.coeffs;                      % Obtain Chebyshev coefficients {c_r}
 
 [n, m] = size(c);
-c = [ zeros(2, m) ; c ];          % Pad with zeros
-b = zeros(n-1, m);                % Initialize vector b = {b_r}
+c = [ c ; zeros(2, m) ;];          % Pad with zeros
+b = zeros(n+1, m);                 % Initialize vector b = {b_r}
 
-% Compute b_(n+1) ... b_2:
-b(1:n-1,:) = (c(3:end-1,:) - c(1:end-3,:)) ./ repmat(2*(n:-1:2)', 1, m);
-b(n,:) = c(end,:) - c(end-2,:)/2; % Compute b_1
+% Compute b_(2) ... b_(n+1):
+b(3:n+1,:) = (c(2:n,:) - c(4:n+2,:)) ./ repmat(2*(2:n).', 1, m);
+b(2,:) = c(1,:) - c(3,:)/2;        % Compute b_1
 v = ones(1, n);
-v(end-1:-2:1) = -1;
-b(n+1,:) = v*b;                   % Compute b_0 (satisfies f(-1) = 0)
+v(2:2:end) = -1;
+b(1,:) = v*b(2:end,:);             % Compute b_0 (satisfies f(-1) = 0)
+
+% Store the old vscale.
+oldVscl = f.vscale;
 
 % Recover coeffs:
 f.coeffs = b;
 
-% Update vscale: 
-f.vscale = getvscl(f);
-
 % Update epslevel:
-f.epslevel = updateEpslevel(f);
+epslevelBound = 2*f.epslevel.*oldVscl./f.vscale;
+f.epslevel = updateEpslevel(f, epslevelBound);
 
 % Simplify (as suggested in Chebfun ticket #128)
 f = simplify(f);
 
 % Ensure f(-1) = 0:
 lval = get(f, 'lval');
-f.coeffs(end,:) = f.coeffs(end,:) - lval;
+f.coeffs(1,:) = f.coeffs(1,:) - lval;
 
 end
 
@@ -86,9 +87,8 @@ function f = cumsumFiniteDim(f)
 % CUMSUM over the finite dimension.
 
 f.coeffs = cumsum(f.coeffs, 2);
-newVscale = getvscl(f);
-epslevelApprox = sum(f.epslevel.*f.vscale, 2)/sum(newVscale, 2); % TODO: Is this right?
+newVscl = f.vscale;
+epslevelApprox = sum(f.epslevel.*newVscl, 2)/sum(newVscl, 2); % TODO: Is this right?
 f.epslevel = updateEpslevel(f, epslevelApprox);
-f.vscale = newVscale;
 
 end

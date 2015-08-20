@@ -12,7 +12,8 @@ pass(1) = norm(f - g, inf) < epslevel(f);
 chebvar x [0 10]
 f = sin(x.^2) + sin(x).^2;
 g = chebfun(@(x) sin(x.^2) + sin(x).^2, [0 10], pref);
-pass(2) = norm(f - g, inf) < 10*epslevel(f);
+pass(2) = norm(f - g, inf) < 1e4*epslevel(f);
+    
 
 chebvar x y z [0 1]
 f = sin(x);

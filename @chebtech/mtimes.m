@@ -7,7 +7,7 @@ function f = mtimes(f, c)
 %
 % See also TIMES.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty(f) || isempty(c) )     % CHEBTECH * [] = []
@@ -32,25 +32,26 @@ elseif ( isa(c, 'double') )         % CHEBTECH * double
             'Inner matrix dimensions must agree.');
     end
     
+    % Store vscale:
+    vsclOld = f.vscale;
+    % Multiply the coefficients:
     f.coeffs = f.coeffs*c;
     if ( numel(c) == 1 )
         % See CHEBTECH CLASSDEF file for documentation on this.
-        f.vscale = f.vscale*abs(c);
-        f.epslevel = f.epslevel + eps;
+        vsclNew = f.vscale;
+        epslevelBound = f.epslevel + abs(eps(c)./c);
+        epslevelBound(c == 0) = eps;
+        f.epslevel = updateEpslevel(f, epslevelBound);
     else
         % See CHEBTECH CLASSDEF file for documentation on this.
-        vscaleNew = getvscl(f);
-        f.epslevel = ((f.epslevel.*f.vscale)*abs(c))./vscaleNew;
-        f.vscale = vscaleNew;
-
-        % Assume condition number 1.
-%         glob_acc = max(f.epslevel.*f.vscale);
-%         f.vscale = getvscl(f);
-%         f.epslevel = glob_acc./f.vscale;
+        vsclNew = f.vscale;
+        vsclNew(vsclNew == 0) = 1;  % Avoid NaNs.
+        epslevelBound = ((f.epslevel.*vsclOld)*abs(c))./vsclNew;
+        f.epslevel = updateEpslevel(f, epslevelBound);
     end
     
     % If the vertical scale is zero, set the CHEBTECH to zero:
-    if ( all(f.vscale == 0) )
+    if ( all(vsclNew == 0) )
         f.coeffs = zeros(1, size(f.coeffs, 2));
     end
     

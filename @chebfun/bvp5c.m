@@ -26,7 +26,7 @@ function varargout = bvp5c(fun1, fun2, y0, varargin)
 %
 % See also BVPINIT, BVPSET, BVP4C, ODE113.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Parse the inputs.
@@ -57,7 +57,7 @@ init = bvpinit(x, f, params{:});
 
 % Call BVP solver and convert to CHEBFUN.
 sol = bvp5c(fun1, fun2, init, opts{:});
-varargout{1} = chebfun.odesol(sol, opts{:});
+varargout{1} = chebfun.odesol(sol, dom, opts{:});
 
 % Look for parameter output.
 if ( ~isempty(params) )

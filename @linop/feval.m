@@ -1,7 +1,7 @@
 function M = feval(L, n, flag)
-%FEVAL    Deprecated function, provided for limited backward compatability.
+%FEVAL    Deprecated function, provided for limited backward compatibility.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 warning('CHEBFUN:LINOP:feval:deprecated',...
@@ -17,7 +17,7 @@ end
 if ( nargin < 3 )
     flag = 'bc';
 end
-% TODO: Should we always use a colloc2 representation here?
+% TODO: Should we always use a chebcolloc2 representation here?
 % if ( nargin < 4 )
 %     pref = cheboppref();
 %     discType = pref.discretization;
@@ -26,7 +26,7 @@ end
 % elseif ( ischar(discType) )
 %     discType = str2func(discType);
 % end
-discType = @colloc2;
+discType = @chebcolloc2;
 
 if ( isa(n, 'chebfun') )
     M = L*n;   % application to a function

@@ -3,7 +3,7 @@ function disp(f)
 %
 % See also DISPLAY.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % If the 'format loose' setting is enabled, we print additional linebreaks:
@@ -41,7 +41,7 @@ if ( numel(f) > 1 )
             fprintf('\n');
         end
     end
-    
+
 else
     % Transpose information:
     if ( f.isTransposed )
@@ -76,7 +76,7 @@ end
 [extraItem, extraData] = dispData(f);
 
 % Loop through each of the funs to display the following information:
-s = [s, sprintf('\n       interval       length   endpoint values %s\n', extraItem)];
+s = [s, sprintf('\n       interval       length     endpoint values %s\n', extraItem)];
 len = zeros(numFuns, 1);
 for j = 1:numFuns
     len(j) = length(f.funs{j});
@@ -113,16 +113,15 @@ for j = 1:numFuns
 end
 
 % Display epslevel:
-s = [s, sprintf('Epslevel = %i.', epslevel(f))];
-s = [s, sprintf('  Vscale = %i.', vscale(f, 'sup'))];
+s = [s, sprintf('vscale = %i.', vscale(f, 'sup'))];
 
 % Display total length for piecewise chebfuns:
 if ( numFuns > 1 )
-    s = [s, sprintf('  Total length = %i.', sum(len))];
+    s = [s, sprintf('   Total length = %i', sum(len))];
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Dispaly for delta functions:
+% Display for delta functions:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 out = get(f, 'deltas');
 if ( ~isempty(out) )
@@ -132,7 +131,7 @@ if ( ~isempty(out) )
     m = size(deltaMag, 1);
     n = size(deltaMag, 2);
     for i = 1: m
-        for j = 1:n            
+        for j = 1:n
             s = [s, sprintf('%8.2g', deltaMag(i, j))];
         end
         s = [s, sprintf('\n')];

@@ -191,7 +191,8 @@ gVals = feval(g, x);
 opAbs = @(x) abs(-x.^2.*(1+exp(-x.^2)));
 gExact = opAbs(x);
 err = gVals - gExact;
-pass(10,:) = norm(err, inf) < 1e4*epslevel(g)*vscale(g);
+pass(10,:) = norm(err, inf) < 1e5*epslevel(g)*vscale(g);
+
 
 % Functions on [a inf]:
 dom = [0 Inf];
@@ -208,5 +209,14 @@ gVals = feval(g, x);
 gExact = opAbs(x);
 err = gVals - gExact;
 pass(11,:) = norm(err, inf) < 2e1*epslevel(g)*vscale(g);
+
+% test trig functions
+f = chebfun(@(x) sin(3*x), [0, 2*pi], 'trig');
+h = chebfun(@(x) sin(3*x), [0, 2*pi]);
+g = abs(f);
+tech = pref.tech;
+pass(12, :) = isequal(get(g.funs{1}, 'tech'), tech);
+pass(13, :) = norm(g - abs(h), inf ) < 1e4*vscale(h)*epslevel(h);
+    
 
 end

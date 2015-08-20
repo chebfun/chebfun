@@ -6,7 +6,7 @@ function C = vertcat(varargin)
 %
 % See also CHEBMATRIX.CAT, CHEBMATRIX.HORZCAT.
 
-%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
+%  Copyright 2015 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org/ for Chebfun information.
 
 % Remove empty arguments.
@@ -38,7 +38,7 @@ else
         'Incompatible column sizes.')
 end
 
-% Now we need to flatten out all the inner nested cell divisons, leaving
+% Now we need to flatten out all the inner nested cell divisions, leaving
 % just a cell of blocks. 
 cs = [0 cumsum(m)];
 for j = 1:nargin

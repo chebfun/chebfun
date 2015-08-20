@@ -3,7 +3,7 @@ function varargout = surfc(u, varargin)
 %   SURFC(...) is the same as SURF(...) except that a contour plot is drawn
 %   beneath the surface.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 transState = u(1).isTransposed;

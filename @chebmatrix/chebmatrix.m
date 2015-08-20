@@ -48,7 +48,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
 %
 % See also CHEBOPPREF, LINOP, CHEBMATRIX.MATRIX, CHEBMATRIX.SPY.
     
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -78,6 +78,8 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
     properties ( Dependent = true )
         % DIFFORDER is a dependent property.
         diffOrder
+        % ISNOTDIFFORINT is a dependent property.
+        isNotDiffOrInt
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -118,10 +120,19 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             end
 
             if ( nargin > 1 )
-                A.domain = A.mergeDomains(A, dom);
+                A.domain = A.mergeDomains(A.domain, dom);
             end
             
         end
+        
+    end
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% HIDDEN METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Hidden = true, Static = false )
+        
+        % Convert the entries of a CHEBMATRIX to another TECH.
+        A = changeTech(A, newtech);
         
     end
     
@@ -130,12 +141,6 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods
                    
-        function A = set.domain(A, d)
-        %SET.DOMAIN   Insert breakpoints in the domain of the CHEBMATRIX.
-        %   We don't allow removing breakpoints, or changing endpoints.
-            A.domain = A.mergeDomains(d, A.domain);
-        end
-        
         function d = get.diffOrder(L)
         %GET.DIFFORDER    Differential order of each CHEBMATRIX block. 
         %   Also accessible via property: get(A, 'diffOrder');
@@ -150,6 +155,24 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             for j = 1:numel(A.blocks);
                 if ( isa(A.blocks{j}, 'operatorBlock') )
                     d(j) = A.blocks{j}.diffOrder;
+                end
+            end
+        end
+
+        function d = get.isNotDiffOrInt(L)
+        %GET.ISNOTDIFFORINT    Are the CHEBMATRIX blocks multiplication operators?
+        %   Also accessible via property: get(A, 'isNotDiffOrInt');
+            d = getIsNotDiffOrInt(L);
+        end
+
+        function d = getIsNotDiffOrInt(A)
+        %GETISNOTDIFFORINT    Are the CHEBMATRIX block multiplication operators.
+        %   Also accessible via property: A.isNotDiffOrInt;
+            d = zeros(size(A));
+            % Loop through all elements.
+            for j = 1:numel(A.blocks);
+                if ( isa(A.blocks{j}, 'operatorBlock') )
+                    d(j) = A.blocks{j}.isNotDiffOrInt;
                 end
             end
         end
@@ -198,6 +221,16 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             end
             A.blocks = transpose(A.blocks);
         end
+        
+        function l = length(A)
+            %LENGTH    Length of a CHEBMATRIX
+            %
+            % LENGTH(A) returns the length of the CHEBMATRIX A. It is equivalent
+            % to MAX(SIZE(A)) for non-empty CHEBMATRIX objects and 0 for empty 
+            % ones.
+            l = max(size(A));
+        end
+   
         
         function varargout = loglog(A, varargin)
         %LOGLOG   Log-log plot of a CHEBMATRIX.
@@ -504,6 +537,10 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         
         function A = diff(A, varargin)
             A = cellfun(@(A) diff(A, varargin{:}), A);
+        end
+        
+        function A = double(A)
+            A = cellfun(@double, A, 'UniformOutput', true);
         end
         
         function A = erf(A)

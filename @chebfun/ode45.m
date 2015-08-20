@@ -17,14 +17,14 @@ function varargout = ode45(varargin)
 %
 % See also ODESET, ODE113, ODE15S,
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Call the built in ODE45():
 sol = ode45(varargin{:});
 
 % Convert solution to a CHEBFUN:
-[t, y] = chebfun.odesol(sol); 
+[t, y] = chebfun.odesol(sol, varargin{2}); 
 
 % Output in a consistent way with the built in routine:
 if ( nargout == 1 )

@@ -14,13 +14,13 @@ function varargout = plotcoeffs(f, varargin)
 %   The final entry is that of the epslevel plot.
 %
 %   What 'coefficients' means in this context is dictated by the 'tech' that is
-%   being used to represent F. See the PLOTCOEFFS method at the relevent tech 
-%   levelfor more details. Note that you can find what tech is being used by 
+%   being used to represent F. See the PLOTCOEFFS method at the relevant tech
+%   level for more details. Note that you can find what tech is being used by
 %   calling GET(F, 'tech').
 %
 % See also CHEBFUN/PLOT.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with an empty input:
@@ -72,7 +72,7 @@ doLogLog = cellfun(@(s) strcmpi(s, 'loglog'), varargin);
 doLogLog = any(doLogLog);
 noEpsLevel = cellfun(@(s) strcmpi(s, 'noEpsLevel'), varargin);
 varargin(noEpsLevel) = []; % Strip this out, as we don't want to pass it down.
-doEpsLevel = ~any(noEpsLevel);
+doEpsLevel = 0;
 
 % Convert to a cell array for easy handling:
 f = mat2cell(f);

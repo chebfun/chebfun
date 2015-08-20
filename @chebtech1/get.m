@@ -9,10 +9,11 @@ function out = get(f, prop)
 %       'LVAL'            - Value of F at -1.
 %       'RVAL'            - Value of F at +1.
 %       'TECH'            - Handle to the CHEBTECH1 constructor. *
+%       'VSCALE'          - Vertical scale of the CHEBTECH1.
 %
 % See also CHEBTECH, CHEBTECH1.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -27,11 +28,13 @@ switch prop
     case 'points'
         out = f.points();
     case 'lval'
-        out = feval(f, -1);
+        out = lval(f);
     case 'rval'
-        out = feval(f, 1);
+        out = rval(f);
     case 'values'
         out = f.coeffs2vals(f.coeffs);
+    case 'vscale'
+        out = vscale(f);
     case 'tech'
         % TODO: Return function handle, or empty instance of the tech?
         out = @chebtech1;

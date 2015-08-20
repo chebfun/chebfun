@@ -4,7 +4,7 @@ classdef (InferiorClasses = {?chebfun}) linBlock
 %
 % See also LINOP, CHEBOP, CHEBOPPREF.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -21,7 +21,7 @@ classdef (InferiorClasses = {?chebfun}) linBlock
 % rather than to manipulate the blocks themselves.
 %
 % The stack is used three different ways within the system:
-%       (1) Replace the  building blocks with appropriate matrices, and then
+%       (1) Replace the building blocks with appropriate matrices, and then
 %           apply the algebra. (I.e., collocation.) 
 %       (2) Derive the coefficients of each power of the derivative. 
 %           (See the method toCoeff.) 
@@ -45,8 +45,17 @@ classdef (InferiorClasses = {?chebfun}) linBlock
         diffOrder = 0;
         
         % Is the operator the zero operator or the zero functional? Usually not,
-        % so default value is set to 0: 
+        % so default value is set to FALSE: 
         iszero = false;
+        
+        % Is the operator a pure evaluation or multiplication operator, i.e. one
+        % that does not involve differentiation or integration? For 
+        % operatorBlocks, in oldschool collocation mode (before rectangular
+        % projection became the standard approach), this would amount to a
+        % diagonal operator. For functionalBlocks, these kind of functionals
+        % usually correspond to evaluation at a point, or inner products with
+        % chebfuns.
+        isNotDiffOrInt = false;
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

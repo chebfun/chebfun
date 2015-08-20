@@ -1,6 +1,6 @@
 function pass = test_parSimp(varargin)
 
-% Copyright 2011 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 S = loadtests;
@@ -103,4 +103,14 @@ S{40} = {'((diff(u,2)+u.*x)+v)',
 S{41} = {'(diff(v,2)+sin(x).*u)',
     'diff(v,2)+sin(x).*u'};
 
-    
+% MISC
+
+% Check exponential notation
+S{42} = {'(diff(v,2)-1e-2*u)',
+    'diff(v,2)-1e-2*u'};
+S{43} = {'(diff(v,2)-1e+2*u)',
+    'diff(v,2)-1e+2*u'};
+S{44} = {'(diff(v,2)+1e-2*u)',
+    'diff(v,2)+1e-2*u'};
+S{45} = {'(diff(v,2)+1e+2*u)',
+    'diff(v,2)+1e+2*u'};

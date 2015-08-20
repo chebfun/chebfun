@@ -18,7 +18,7 @@ function f = compose(f, op, g, pref)
 %   advance, they should be applied to F and/or G using RESTRICT() before the
 %   call to COMPOSE().
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -188,6 +188,14 @@ if ( numInts > 1 )
     pref.extrapolate = 1;
 end
 
+% Make sure that the tech preference is set correctly.
+%
+% TODO:  What is the right thing to do here when composing two chebfuns f(g)?
+% This line assumes that the compose method for f is the one that gets called
+% ultimately instead of the one for g (which is true currently but could
+% change).
+pref.tech = get(f.funs{1}, 'tech');
+
 % Suppress growing vector Mlint warnings (which are inevitable here):
 %#ok<*AGROW>
 
@@ -308,20 +316,22 @@ if ( ~isreal(f) )
     warning('CHEBFUN:CHEBFUN:compose:composeTwoChebfuns:complex', ...
         ['F should be real valued to construct G(F).\n', ...
          'Results may be inaccurate if G is not a polynomial.']);
-end
+     warning('off', 'CHEBFUN:CHEBFUN:compose:composeTwoChebfuns:complex');
+else
 
-% Get epslevels and set a tolerance:
-tol = 10*max(vscale(f).*epslevel(f), vscale(g).*epslevel(g));
-hsf = hscale(f); 
-% Find the range of F:
-mmF = minandmax(f);
-minF = min(mmF(:));
-maxF = max(mmF(:));
-% Range of f must be in the domain of g:
-if ( g.domain(1) > minF + tol*hsf || g.domain(end) < maxF - tol*hsf )
-    error('CHEBFUN:CHEBFUN:compose:domain', ...
-        'Range of F, [%g, %g], must be in the domain of G, [%g, %g].', ...
-        minF, maxF, g.domain(1), g.domain(end))
+    % Get epslevels and set a tolerance:
+    tol = 10*max(vscale(f).*epslevel(f), vscale(g).*epslevel(g));
+    hsf = hscale(f); 
+    % Find the range of F:
+    mmF = minandmax(f);
+    minF = min(mmF(:));
+    maxF = max(mmF(:));
+    % Range of f must be in the domain of g:
+    if ( g.domain(1) > minF + tol*hsf || g.domain(end) < maxF - tol*hsf )
+        error('CHEBFUN:CHEBFUN:compose:domain', ...
+            'Range of F, [%g, %g], must be in the domain of G, [%g, %g].', ...
+            minF, maxF, g.domain(1), g.domain(end))
+    end
 end
 
 if ( isdelta(f) || isdelta(g) )

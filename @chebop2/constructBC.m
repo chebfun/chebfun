@@ -15,7 +15,7 @@ function [bcrow, bcvalue] = constructBC(bcArg, bcpos, een, bcn, dom, scl, order)
 %   bcvalue = vector of discretized nonhomogeneous part of the constraint 
 %   (satisfying bcrow * X = bcvalue, or X * bcrow' = bcvalue').
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isa(bcArg, 'chebfun') )
@@ -30,7 +30,7 @@ if ( isa(bcArg, 'chebfun') )
         % Dirichlet conditions at x = bcpos (or y = bcpos):
         bcrow = cos((0:bcn-1) * acos(bcpos));
     end
-    bcvalue = resize(flipud(bcArg.coeffs(:)), een);
+    bcvalue = resize(bcArg.coeffs(:), een);
     
 elseif ( isa( bcArg, 'function_handle' ) )
     % More general conditions are sorted out here: 
@@ -56,41 +56,16 @@ elseif ( isa( bcArg, 'function_handle' ) )
         end 
         
         bcvalue = zeros(een , nf);
-        % Do we have bcs with derivatives in them.
-        try
-            % This works if the BC operators are vectorized. 
-            % Evaluate at xy for AD information: 
-            fcell = bcArg(adchebfun2(chebfun2(0, [dom, dom])),...
-                           abchebfun2(chebfun2(@(x,y) x.*y, [dom, dom])));
-        catch
-            % Cannot do it all at once, so do it term by term: 
-            gg = adchebfun2(chebfun2(@(x,y) cos(x.*y), [dom, dom]));
-            fcell = cell(1, nf); 
-            for jj = 1:nf
-                fcell{jj} = diff(gg, jj-1);
-            end
-        end
-        
-        % Find constants: 
-        cc = ones(1,nf);
-        for jj = 1:nf
-            if ( isa(fcell, 'cell') )
-                v = fcell{jj};
-            else
-                v = fcell;
-            end
-            cc(jj) = abs(diff(scl)/2).^(length(v.jacobian) - 1);
-        end
-        
-        % Find f(x):  
+        % Construct f(x):  
         for jj = 1:nf
             g = f{jj};
             % bcvalue = -f as it's going in the RHS: 
-            bcvalue(:,jj) = -resize(cc(jj)*flipud(g.coeffs(:)), een);
+            cg = g.coeffs(:);
+            bcvalue(:,jj) = -resize(cg, een);
         end
         
         % Now go find the constants in the boundary conditions: 
-        L = linearize(chebop(bcArg, dom));
+        L = linearize(chebop(bcArg, dom), [], [], 0, 0);
         p = recoverCoeffs(L);
         
         % Set up the boundary rows that will impose the linear constraints: 
@@ -101,7 +76,10 @@ elseif ( isa( bcArg, 'function_handle' ) )
                 for kk = 1 : size(pp, 2)
                     c = feval(chebfun(pp(:,kk)), bcpos);
                     if ( abs(c) > 0 )
-                        val = chebValues(kk-1, bcn, bcpos);
+                        % Each derivative must be scaled by a factor
+                        % depends on the other variable's domain. 
+                        dx_scaling = abs(2/diff(scl)).^(kk-1);
+                        val =  dx_scaling*chebValues(kk-1, bcn, bcpos);
                         bcrow(:, jj) = bcrow(:, jj) + c*val;
                     end
                 end
@@ -198,7 +176,7 @@ p = cell(s);                     % Initialise output.
 p0 = L*repmat(x0, 1, s(2));      % Compute non-autonomous component.
 
 % The main routine:
-for hh = 1:s(2)                 % Loop over each of the dependant variables.
+for hh = 1:s(2)                 % Loop over each of the dependent variables.
     x0l = repmat(x0,1,hh-1);    % Set dep vars to the left to zero.
     x0r = repmat(x0,1,s(2)-hh); % Set dep vars to the right to zero.
     p1 = L*[x0l 1+0*x x0r];     % Evaluate all equations for [0 ... 1 ... 0]
@@ -226,7 +204,7 @@ end
 end
 
 function val = chebValues(k, n, x)
-%CHEBBALUES   Return the values of Chebyshev {T0^(k)(x),..Tn^(k)(x)}, x being 
+%CHEBVALUES   Return the values of Chebyshev {T0^(k)(x),..Tn^(k)(x)}, x being 
 % 1 or -1. 
 if ( k == 0 )
     val = x.^((0:n-1).');

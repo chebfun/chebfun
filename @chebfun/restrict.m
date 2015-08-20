@@ -16,7 +16,7 @@ function F = restrict(F, newDomain)
 %
 % See also OVERLAP, SUBSREF, DEFINE, SIMPLIFY.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Tweak the domain of a quasimatrix input:
@@ -41,6 +41,12 @@ elseif ( isempty(newDomain) || numel(newDomain) == 1 )
     f = chebfun();
     return
 end
+
+% Cast a periodic chebfun to a regualr chebfun:
+if ( isPeriodicTech(f) )
+    f = chebfun(f);
+end
+
 
 % Grab domain from f:
 oldDomain = f.domain;

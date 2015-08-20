@@ -40,7 +40,7 @@ function [CC, rhs, bb, gg, Px, Py, xsplit, ysplit] = discretize(N, f, m, n, flag
 % Returns RHS with degrees of freedom removed and bb which stores
 % elminated boundary conditions, gg eliminated boundary rows.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Parse inputs.
@@ -56,6 +56,16 @@ prefs = chebfunpref();
 tol = prefs.techPrefs.eps; 
 xorder = N.xorder;
 yorder = N.yorder;
+
+%%
+% Check if the PDO was given as a variable coefficient PDO with the notation
+% @(x,y,u), but is actually a constant coefficient PDO. 
+if ( iscell( A ) ) 
+    doesNotDependOnXorY = all(all(cellfun(@isnumeric, N.coeffs))); 
+    if ( doesNotDependOnXorY ) 
+        A = cell2mat( A ).'; 
+    end
+end
 
 %%
 % Convert matrix of coefficients to a discretization for the PDE using the
@@ -188,9 +198,13 @@ Gx = Gx.'; % Now transpose so that X*B = g;
 %% 
 % Construct the RHS of the Sylvester matrix equation.
 
+% Complete the RHS (part of the RHS could have been in the operator): 
+if ( ~isempty(N.rhs) && ( isa(N.rhs, 'chebfun2') || isa(N.rhs, 'double') ) )
+    f = f + N.rhs; 
+end
 E = zeros(m, n);
 [n2, n1] = length(f);
-F = rot90(chebcoeffs2(f), 2); % CHEBFUN's ordering is the other way around.
+F = chebcoeffs2(f);
 
 % Map the RHS to the right ultraspherical space.
 lmap = ultraS.convertmat(n1, 0, yorder-1);
@@ -283,8 +297,7 @@ for kk = 1:size(ODE, 1)
     
     if ( iscell(ODE(kk,jj)) && isa(ODE{kk,jj}, 'chebfun') )
         % Variable coefficient term: 
-        c = ODE{kk,jj}.coeffs; 
-        c = c(end:-1:1);
+        c = ODE{kk,jj}.coeffs;        
         M = ultraS.multmat(n, c, kk-1); 
         A = S * M * D;
         

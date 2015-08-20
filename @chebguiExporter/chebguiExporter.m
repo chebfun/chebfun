@@ -14,7 +14,7 @@ classdef chebguiExporter
 %   class and subclasses.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -70,7 +70,7 @@ classdef chebguiExporter
     methods ( Access = public, Static = false )
         
         function toFile(exporter, guifile, fileName, pathName)
-        %TOFILE   Export a CHEBGUI to an .m-file
+        %TOFILE   Export a CHEBGUI to an m-file
         %   TOFILE(EXPORTER, GUIFILE, FILENAME, PATHNAME) exports the CHEBGUI
         %   object GUIFILE to the file 'PATHNAME/FILENAME' using the
         %   CHEBGUIEXPORTER object EXPORTER (of BVP, EIG, or PDE kind).
@@ -140,6 +140,9 @@ classdef chebguiExporter
                 case 'eig'
                     obj = chebguiExporterEIG;
 
+                case 'ivp'
+                    obj = chebguiExporterIVP;
+                    
                 case 'pde'
                     obj = chebguiExporterPDE;
                     
@@ -196,6 +199,20 @@ classdef chebguiExporter
             
         end
         
+        function disc = discOption(isPeriodic, dom, opt)
+            % Do we want to use TRIGCOLLOC for the discretization? This will be
+            % the case if we're solving a periodic problem, and have
+            % 'collocation' specified as the discretization option. However, we
+            % don't want to use TRIGCOLLOC if there are breakpoints in the
+            % domain.
+            if ( isPeriodic && strcmp(opt, 'collocation') &&  ...
+                    ( length(str2num(dom)) == 2 ) )
+                disc = 'periodic';
+            else
+                disc = opt;
+            end
+        end
+        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -220,16 +237,17 @@ classdef chebguiExporter
             end
             
             % Print first few lines of the .m-file:
-            fprintf(fid, ['%%%% %s -- an executable .m-file for solving ', ...
+            fprintf(fid, ['%%%% %s -- an executable m-file for solving ', ...
                 '%s.\n'], filename, e.description);
             fprintf(fid, ['%% Automatically created in CHEBGUI ', ...
                 'by user %s.\n'], userName);
-            fprintf(fid, '%% Date created: %s. Time created: %s.\n\n', ...
-                datestr(floor(now)), datestr(rem(now, 1), 13));
+            fprintf(fid, '%% Created on %s', ...
+                datestr(now, 'mmmm dd, yyyy at HH:MM.\n\n'));
             
             fprintf(fid, '%%%% Problem description.\n');
             
         end
+        
     end
     
 end

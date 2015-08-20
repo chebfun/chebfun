@@ -8,7 +8,7 @@ function [vals, pos] = minandmax(f)
 %
 % See also MIN, MAX.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Check for the empty case:
@@ -23,7 +23,7 @@ end
     
 f = simplifyDeltas(f);
 % Deal with the case when there are delta functions:
-% NOTE: Higer order delta functions have no effect on maxima or minima of the
+% NOTE: Higher order delta functions have no effect on maxima or minima of the
 % function.
 if ( isa(f, 'deltafun') )
     deltaMag = f.deltaMag;       % All delta functions in f.

@@ -5,7 +5,7 @@ function f = poly(v, d)
 %
 % See also CHEBFUN/POLY.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with array input:
@@ -28,7 +28,7 @@ if ( any(isnan(v)) )
     return
 end
 
-% Return empty CHEBUN if v is empty:
+% Return empty CHEBFUN if v is empty:
 if ( N == 0 )
     f = chebfun();
     return

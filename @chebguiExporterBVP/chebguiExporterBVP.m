@@ -6,7 +6,7 @@ classdef chebguiExporterBVP < chebguiExporter
 %
 % See also CHEBGUI, CHEBGUIEXPORTER.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -15,7 +15,7 @@ classdef chebguiExporterBVP < chebguiExporter
     properties
         
         % The default file name when exporting to an .m-file:
-        defaultFileName = 'bvp.m';
+        defaultFileName = 'chebbvp.m';
         
         % Description for printing to .m files:
         description = 'a boundary-value problem';
@@ -86,7 +86,7 @@ classdef chebguiExporterBVP < chebguiExporter
             end
             
             % Extract the norm of the updates, the CHEBOP and all options.
-            normVec = handles.latest.norms;  %#ok<NASGU>
+            normVec = handles.latest.normDelta;  %#ok<NASGU>
             N = handles.latest.chebop;  %#ok<NASGU>
             options = handles.latest.options;  %#ok<NASGU>
             
@@ -130,7 +130,7 @@ classdef chebguiExporterBVP < chebguiExporter
                 for k = 1:nv
                     assignin('base', answer{k+1}, sol(:,k));
                 end
-                assignin('base', answer{nv+2}, handles.latest.norms);
+                assignin('base', answer{nv+2}, handles.latest.normDelta);
                 assignin('base', answer{nv+3}, handles.latest.options);
             end
         end

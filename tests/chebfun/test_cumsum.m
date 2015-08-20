@@ -89,7 +89,8 @@ vals_g = feval(g, x);
 g_exact = @(x) (x-dom(1)).^(pow+1)./(pow+1);
 vals_exact = feval(g_exact, x);
 err = vals_g - vals_exact;
-pass(10) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(10) = ( norm(err, inf) < 1e4*get(f,'epslevel')*norm(vals_exact, inf) );
+
 
 %% piecewise smooth chebfun: smoothfun + singfun & splitting off:
 
@@ -157,7 +158,8 @@ vals_check = feval(g_check, x);
 err = gval - vals_check;
 err = norm(err-mean(err), inf);
 tol = 5e5*get(f,'epslevel')*norm(vals_check, inf);
-pass(12) = err < tol;
+pass(12) = err < 1e2*tol;
+
 
 %% Tests for functions defined on unbounded domain:
 
@@ -226,6 +228,72 @@ g2Exact = opg2(x2);
 err1 = g1Vals - g1Exact;
 err2 = g2Vals - g2Exact;
 pass(15) = norm([err1 ; err2], inf) < 5e4*get(g,'epslevel').*get(g,'vscale');
+
+% Check delta functions:
+x = chebfun('x');
+f = heaviside(x+.5)+heaviside(x) + heaviside(x-.5);
+fp = diff(f);
+fpp = diff(fp);
+fp = cumsum(fpp);
+pass(16) = norm(f - cumsum(fp)) < 100*eps;
+
+% Bug reported by LNT #1289:
+f = sign(x)-x;
+f2 = cumsum(diff(f));
+pass(17) = norm(f-f2) < 100*eps;
+
+% Check quasi matrix with delta functions:
+f = heaviside(x);
+g = heaviside(x-.5);
+s = [diff(f), diff(g)];
+S = cumsum(s);
+pass(18) = norm(S(:,1) - f) < 100*eps;
+pass(19) = norm(S(:,2) - g) < 100*eps;
+
+%% Check on trigfuns
+xr = pi*xr;
+% trigfun with zero mean
+f = chebfun(@(x) cos(x+sqrt(3)) + sin(x-sqrt(2.1)), [-pi,pi], 'trig', pref);
+If = cumsum(f);
+If_exact = @(x) sin(x+sqrt(3)) - cos(x-sqrt(2.1)) - (sin(-pi+sqrt(3)) - cos(-pi-sqrt(2.1)));
+pass(20) = max(max(abs(feval(If, xr) - If_exact(xr)))) < ...
+    10*vscale(If)*epslevel(If);
+pass(21) = isPeriodicTech(If);
+
+% trigfun without zero mean - should be converted to chebfun
+f = chebfun(@(x) 1 + cos(x+sqrt(3)) + sin(x-sqrt(2.1)), [-pi,pi], 'trig', pref);
+If = cumsum(f);
+If_exact = @(x) x + sin(x+sqrt(3)) - cos(x-sqrt(2.1)) - ...
+    (-pi + sin(-pi+sqrt(3)) - cos(-pi-sqrt(2.1)));
+pass(22) = max(max(abs(feval(If, xr) - If_exact(xr)))) < ...
+    10*vscale(If)*epslevel(If);
+pass(23) = ~isPeriodicTech(If);
+
+% Array-valued trigfuns with zero-mean
+f3 = chebfun(@(x) [cos(x) -sin(x) cos(x+sqrt(3))], [-pi,pi], 'trig', pref);
+If3 = cumsum(f3);
+If3_exact = @(x) [sin(x) cos(x) sin(x+sqrt(3))] - ...
+    repmat([sin(-pi) cos(-pi) sin(-pi+sqrt(3))], size(x, 1), 1);
+pass(24) = max(max(abs(feval(If3, xr) - If3_exact(xr)))) < ...
+    10*vscale(If3)*epslevel(If3);
+pass(25) = isPeriodicTech(f3);
+
+% Even length with non-zero mean
+f = chebfun( ones(32,1), [-pi,pi], 'trig'  );
+If = cumsum(f);
+If_exact = @(x) x + pi;
+pass(26) = max(max(abs(feval(If, xr) - If_exact(xr)))) < ...
+    10*vscale(If)*epslevel(If);
+pass(27) = ~isPeriodicTech(If);
+
+% Even length with zero mean
+f = chebfun( sin(trigpts(33,[-pi,pi])), [-pi,pi], 'trig'  );
+If = cumsum(f);
+If_exact = @(x) -cos(x)-1;
+pass(28) = max(max(abs(feval(If, xr) - If_exact(xr)))) < ...
+    10*vscale(If)*epslevel(If);
+pass(29) = isPeriodicTech(If);
+
 
 % [TODO]:  Check fractional antiderivatives once implemented.
 

@@ -10,7 +10,7 @@ function p = chebpolyvalm(p, A)
 % 
 % See also POLYVALM, CHEBPOLYVAL.  
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Check inputs:
@@ -22,8 +22,8 @@ if ( ~isvector(p) )
     error('CHEBFUN:chebpolyvalm:vector', 'P must be a vector.'); 
 end
 
-% Flip the coefficients. 
-p = p(end:-1:1); 
+% The input vector p is in Matlab style ordering, flip it:
+p = flipud(p(:));
 
 % Initialise:
 p(1) = 2*p(1);

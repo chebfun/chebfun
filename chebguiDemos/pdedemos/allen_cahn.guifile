@@ -1,6 +1,6 @@
 'Allen-Cahn equation'
 'scalar'
-domain = '[-3 3]';
+domain = '[-4 4]';
 t = '0:0.2:10';
 DE = 'u_t = .03*u'''' + u - u^3';
 LBC = 'periodic';

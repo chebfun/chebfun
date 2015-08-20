@@ -11,9 +11,9 @@ classdef chebdouble
 %   FEVAL, in which the stored values are presumbed to be values on a Chebyshev
 %   grid, and the appropriate action is taken.
 %
-%   This class in intended solely as a worker-class for PDE15s.
+%   This class in intended solely as a worker-class for PDESOLVE.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -25,11 +25,12 @@ classdef chebdouble
         values = [];
         
         % DOMAIN: Domain of the interpolant.
-        domain = [-1,1];
+        domain = [-1, 1];
         
         % DIFFORDER: Used to determine the highest order spatial derivative in a
         % PDE or system of PDEs.
         diffOrder = 0;
+        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -44,7 +45,6 @@ classdef chebdouble
             end
         end
     end
-    
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% CLASS METHODS:
@@ -71,7 +71,7 @@ classdef chebdouble
             
             % Construct D if we don't match a previous discretization.
             if ( isempty(D) || numel(D) < k || size(D{k}, 1) ~= N )
-                D{k} = colloc2.diffmat(N, k); % Diffmat
+                D{k} = chebcolloc2.diffmat(N, k); % Diffmat
             end
             
             % Interval scaling
@@ -171,7 +171,7 @@ classdef chebdouble
             
             % Compute cumsum matrix:
             if ( numel(C) ~= N )
-                C = colloc2.cumsummat(N);
+                C = chebcolloc2.cumsummat(N);
             end
             
             % Compute the indefinite integral:
@@ -241,7 +241,16 @@ classdef chebdouble
         function out = feval(u, y)
             %FEVAL   Evaluate polynomial interpolant of data {X_cheb, U} at a
             % point y using barycentric interpolation.
-            [x, w, v] = chebpts(length(u.values), u.domain);
+            
+            persistent dom x v
+            
+            N = length(u.values);
+                        
+            if ( length(x) ~= N || isempty(dom) || ~all(dom == u.domain) )
+                [x, w, v] = chebpts(N, u.domain);
+                dom = u.domain;
+            end
+            
             out = bary(y, u.values, x, v);
         end
         
@@ -512,6 +521,9 @@ classdef chebdouble
             elseif ( isnumeric(u) )
                 v.values = u*v.values;
                 u = v;
+            elseif ( numel(u.values) < 2 || numel(v.values) < 2 )
+                u.values = u.values*v;
+                u.diffOrder = max(u.diffOrder, v.diffOrder);   
             else
                 error('CHEBFUN:CHEBDOUBLE:mtimes:dim', ...
                     'Matrix dimensions must agree.');
@@ -577,6 +589,10 @@ classdef chebdouble
         
         function u = sinh(u)
             u.values = sinh(u.values);
+        end
+        
+        function u = sqrt(u)
+            u.values = sqrt(u.values);
         end
         
         function u = subsref(u, s)

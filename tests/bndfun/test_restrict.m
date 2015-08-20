@@ -66,7 +66,8 @@ h2 = restrict(f, [2.3 6.8]);
 x = linspace(-1, 1, 100).';
 err1 = norm(feval(g{1} - h1, x), inf);
 err2 = norm(feval(g{2} - h2, x+4), inf);
-tol = 10*get(f, 'epslevel');
+tol = 1e3*get(f, 'epslevel');
+    
 pass(11) = err1 < tol && err2 < tol;
 
 %%
@@ -115,5 +116,6 @@ y_exact = fun_op(x);
 y_approx = feval(g, x);
 
 result = norm(y_exact - y_approx, Inf) < ...
-    10*max(get(f, 'vscale').*get(f, 'epslevel'));
+    1e4*max(get(f, 'vscale').*get(f, 'epslevel'));
+    
 end

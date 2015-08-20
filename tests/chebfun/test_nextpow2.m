@@ -35,7 +35,7 @@ f = chebfun([1 3 4 7 9], [-1 1], pref);
 g = nextpow2(f);
 g_exact = chebfun([0 2 2 3 4], [-1 1], pref);
 err = feval(g, x) - feval(g_exact, x);
-pass(3) = norm(err(:), Inf) == 0;
+pass(3) = norm(err(:), Inf) < 10*vscale(f).*epslevel(f);
 
 f_op = @(x) 4 + 3*[sin(x) sin(x)];
 f = chebfun(@(x) 4 + 3*[sin(x) sin(x)], [-1 0 1], pref);

@@ -140,12 +140,22 @@ f = unbndfun(op, struct('domain', dom, 'exponents', [-2 0]), singPref);
 I = sum(f);
 IExact = 1/(3*pi);
 err = abs(I - IExact);
-tol = 5e1*get(f,'epslevel')*get(f,'vscale');
+tol = 5e3*get(f,'epslevel')*get(f,'vscale');
 pass(15) = err < tol;
 
 op = @(x) 0*x + 2;
 f = unbndfun(op, struct('domain', dom));
 I = sum(f);
 pass(16) = isequal(I, Inf);
+
+f1 = chebfun(@(t) t.^0.5./exp(t), [0,inf], 'exps', [0.5 0]);
+f2 = chebfun(@(t) t.^0.5./exp(t), [0,1,inf], 'exps', [0.5 0 0 0]);
+f3 = f1; f3(1) = f3(1);
+I = [sum(f1); sum(f2); sum(f3)];
+IMathematica = 0.88622692545274;
+err = abs(I - IMathematica);
+pass(17) = err(1) < 5e1*get(f1,'epslevel')*get(f1,'vscale');
+pass(18) = err(2) < 1e3*get(f2,'epslevel')*get(f2,'vscale');
+pass(19) = err(3) < 1e2*get(f3,'epslevel')*get(f3,'vscale');
 
 end

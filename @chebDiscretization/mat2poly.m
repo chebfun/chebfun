@@ -28,7 +28,7 @@ function c = mat2poly(disc,values)
 %   variable on the jth interval, with rows giving decreasing degree. If the ith
 %   variable is a scalar, then out{i} is just a row vector of values.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Start by obtaining required information:

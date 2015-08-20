@@ -3,7 +3,7 @@ function display(N)
 % DISPLAY is called automatically when a statement that results in a
 % CHEBOP2 output is not terminated with a semicolon.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 loose = ~isequal(get(0, 'FormatSpacing'), 'compact');
@@ -23,12 +23,11 @@ dom = N.domain;
 op = N.op; 
 
 % Display the information.
-disp('chebop2 object: (partial differential equation)')
+fprintf('chebop2 of rank %u: (linear bivariate operator)\n',rank(N))
 fprintf('         domain               operator  \n');
 
-fprintf(['[%4.2g,%4.2g] x [%4.2g,%4.2g]    ' func2str(op)  '\n'], dom(1),...
+fprintf(['[%3.2g,%3.2g] x [%3.2g,%3.2g]  ' func2str(op)  '\n'], dom(1),...
                                           dom(2), dom(3), dom(4));
-     
 printBoundaryConditions(N.lbc, 'left');  
 printBoundaryConditions(N.rbc, 'right');
 printBoundaryConditions(N.ubc, 'top');
@@ -46,18 +45,18 @@ function printBoundaryConditions(BC, string)
     exists = ~isempty(BC);
     if ( exists )
         if ( isa(BC, 'double') )
-            fprintf(['boundary ' string ' = %u'], BC);
+            fprintf([string ' boundary = %u'], BC);
         elseif ( isa(BC, 'chebfun') )
             % Try to convert to a double: 
             n = length(BC); 
             if ( n == 1 )
-                val = BC.values{:};
+                val = BC.values;
                 printBoundaryConditions(val, string)
                 return
             end
-            fprintf(['boundary ' string ' = function']);
+            fprintf([string ' boundary = function']);
         elseif ( isa(BC, 'function_handle') )
-            fprintf(['boundary ' string ' = ' func2str(BC)]);
+            fprintf([string ' boundary = ' func2str(BC)]);
         end
         fprintf('\n');
     end

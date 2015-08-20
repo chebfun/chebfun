@@ -46,7 +46,7 @@ classdef chebtech2 < chebtech
 %
 % See also CHEBTECH, CHEBTECH.TECHPREF, CHEBPTS, HAPPINESSCHECK, REFINE.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -90,8 +90,10 @@ classdef chebtech2 < chebtech
 
             data = parseDataInputs(data, pref);
 
-            % Force nonadaptive construction if PREF.FIXEDLENGTH is numeric:
-            if ( ~isempty(pref.fixedLength) && ~isnan(pref.fixedLength) )
+            % Force nonadaptive construction if PREF.FIXEDLENGTH is numeric and
+            % we're not using contour integrals.
+            if ( ~(isnumeric(op) || iscell(op)) && ...
+                    ~isnan(pref.fixedLength) && ~pref.useTurbo )
                 % Evaluate op on the Chebyshev grid of given size:
                 op = feval(op, chebtech2.chebpts(pref.fixedLength));
             end
@@ -99,7 +101,20 @@ classdef chebtech2 < chebtech
             % Actual construction takes place here:
             [obj, values] = populate(obj, op, data.vscale, data.hscale, pref);
 
-            if ( obj.ishappy || isnumeric(op) || iscell(op) )
+            if ( isnumeric(op) || iscell(op) )
+                % Set length of obj to PREF.FIXEDLENGTH (if it is non-trivial).
+                if ( ~isnan(pref.fixedLength ) )
+                    obj = prolong(obj, pref.fixedLength);
+                end
+
+                % No need to error check when constructing from discrete data.
+                return
+            elseif ( obj.ishappy )
+                % Use contour integrals if requested.
+                if ( pref.useTurbo )
+                    obj = constructorTurbo(obj, op, pref);
+                end
+
                 % No need to error check if we are happy:
                 return
             end
@@ -155,7 +170,7 @@ classdef chebtech2 < chebtech
         
         % Compute Chebyshev points (x) and optionally quadrature (w)
         % and barycentric (v) weights:
-        [x, w, v] = chebpts(n);
+        [x, w, v, t] = chebpts(n);
         
         % Convert coefficients to values:
         values = coeffs2vals(coeffs);

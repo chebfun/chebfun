@@ -6,7 +6,7 @@ classdef chebguiExporterEIG < chebguiExporter
 %
 % See also CHEBGUI, CHEBGUIEXPORTER.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -15,7 +15,7 @@ classdef chebguiExporterEIG < chebguiExporter
     properties ( Access = public )
         
         % The default file name when exporting to an .m-file:
-        defaultFileName = 'bvpeig.m';
+        defaultFileName = 'chebeig.m';
         
         % Description for printing to .m files:
         description = 'an eigenvalue problem';
@@ -69,14 +69,14 @@ classdef chebguiExporterEIG < chebguiExporter
                         
             % Extract the latest solution
             d = handles.latest.solution;
-            V = handles.latest.solutionT;
+            U = handles.latest.solutionT;
             
             % Export to workspace
-            for k = 1:numel(varnames)
-                assignin('base', varnames{k}, V{k});
-            end
             assignin('base', lambdaName, d);
+            assignin('base', 'U', U);
+            % Print in the command window the name of the variables
             evalin('base', lambdaName);
+            evalin('base', 'U');
         end
         
         function toMat(handles)
@@ -96,7 +96,7 @@ classdef chebguiExporterEIG < chebguiExporter
             % Setup dialog for asking the user for variable names to be used.
             prompt = {'Eigenvalues', 'Eigenmodes'};
             name = 'Export to workspace';
-            defaultAnswer ={'D', 'V'};
+            defaultAnswer ={'lambda', 'U'};
             numlines = 1;
             options.Resize ='on';
             options.WindowStyle ='modal';
@@ -106,8 +106,11 @@ classdef chebguiExporterEIG < chebguiExporter
             
             % Assign to workspace:
             if ( ~isempty(answer) )
-                assignin('base', answer{1}, diag(handles.latest.solution));
+                assignin('base', answer{1}, handles.latest.solution);
                 assignin('base', answer{2}, handles.latest.solutionT);
+                % Print in the command window the name of the variables
+                evalin('base', answer{1})
+                evalin('base', answer{2});
             end
         end
         

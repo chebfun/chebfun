@@ -6,8 +6,6 @@ end
 
 tol = 1e-10;
 
-pref.discretization = @colloc2;
-
 %%
 D = chebop(@(u) diff(u));
 

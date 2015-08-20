@@ -4,7 +4,7 @@ function T = spconvert(n, lam)
 %   C^{lam} (Ultraspherical polynomials) to C^{lam+1}.  The truncation gives
 %   back a matrix of size n x n.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Relation is: C_n^(lam) = (lam/(n+lam))(C_n^(lam+1) - C_{n-2}^(lam+1))

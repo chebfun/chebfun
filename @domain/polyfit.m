@@ -10,7 +10,7 @@ function f = polyfit(x, y, n, d)
 %
 % See also CHEBFUN/POLYFIT.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Convert domain to a double:
@@ -39,6 +39,6 @@ Tx = feval(T, x);
 % Solve for coefficients (least squares)
 c = Tx\y;
 % Construct Chebfun:
-f = chebfun(flipud(c), d, 'coeffs');
+f = chebfun(c, d, 'coeffs');
 
 end

@@ -33,7 +33,7 @@ classdef unbndfun < classicfun
 %
 % See also CLASSICFUN, CHEBFUNPREF, ONEFUN.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -170,13 +170,10 @@ classdef unbndfun < classicfun
         X = mrdivide(B, A)
         
         % Data for plotting an UNBNDFUN
-        data = plotData(f, g);
+        data = plotData(f, g, h);
                 
         % Polynomial coefficients of an UNBNDFUN.
         out = poly(f)
-        
-        % UNBNDFUN power function.
-        f = power(f, b)
         
         % QR factorisation for UNBNDFUN object is not supported.
         [f, R, E] = qr(f, flag)

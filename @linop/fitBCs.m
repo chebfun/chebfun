@@ -3,7 +3,7 @@ function u0 = fitBCs(L, prefs)
 %   U0 = FITBCS(L) Returns a CHEBMATRIX which will satisfy the BCs
 %        and other conditions of the linop L.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -16,9 +16,9 @@ function u0 = fitBCs(L, prefs)
 %  obtained from the iszero information of the linearised BCs in the linop L.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Fix the discretization to @colloc2, so that we can be sure we always get the
-% same initial guesses for Newton iteration.
-prefs.discretization = @colloc2;
+% Fix the discretization to @chebcolloc2, so that we can be sure we always get 
+% the same initial guesses for Newton iteration.
+prefs.discretization = @chebcolloc2;
 
 % Store the total number of interior breakpoints
 dom = L.domain;
@@ -145,7 +145,7 @@ function u = mypartition(disc, values, dimAdjust)
 %   of individual variables in the system. I.e., deduce the variable boundaries
 %   within the discretization.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % TODO: Document dimAdjust.

@@ -1,15 +1,14 @@
-function initSuccess = populate(handles, chebg)
+function populate(hObject, handles, chebg)
 %POPULATE   Fill in the CHEBGUI figure using the information of a CHEBGUI object
 % Calling sequence:
-%   INITSUCCESS = POPULATE(HANDLES, CHEBG)
+%   POPULATE(HOBJECT, HANDLES, CHEBG)
 % where
-%   INITSUCCESS:    Has value 1 if we managed to populate the figures without
-%                   any troubles, 0 otherwise.
-%   HANDLES:        A MATLAB handle of the CHEBGUI figure.
-%   CHEBG:          A CHEBGUI object, containing the information we want to fill
-%                   the figure with.
+%   HOBJECT:    A MATLAB object of class MATLAB.UI.FIGURE.
+%   HANDLES:    A MATLAB handle of the CHEBGUI figure.
+%   CHEBG:      A CHEBGUI object, containing the information we want to fill
+%               the figure with.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Fill the String fields of the handles
@@ -53,6 +52,14 @@ set(handles.menu_tolerance, 'UserData', chebg.tol);
 if ( strcmpi(chebg.type, 'pde') )
     
     set(handles.input_timedomain, 'String', chebg.timedomain);
+
+    if ( strcmp(chebg.options.pdeSolver, 'pde15s') )
+        set(handles.menu_pdeSolver_pde15s, 'Checked', 'On');
+        set(handles.menu_pdeSolver_pde23t, 'Checked', 'Off');
+    else
+        set(handles.menu_pdeSolver_pde15s, 'Checked', 'Off');
+        set(handles.menu_pdeSolver_pde23t, 'Checked', 'On');
+    end
     
     if ( ~strcmp(chebg.options.plotting, 'off') )
         set(handles.menu_pdeplottingon, 'Checked', 'On');
@@ -86,7 +93,7 @@ if ( strcmpi(chebg.type, 'pde') )
         set(handles.menu_fixNoff, 'Checked', 'On');
     end
     
-elseif ( strcmpi(chebg.type, 'bvp') )
+elseif ( any(strcmpi(chebg.type, {'bvp', 'ivp'})) )
     
     if ( strcmp(chebg.options.damping, '1') )
         set(handles.menu_odedampednewtonon, 'Checked', 'On');
@@ -106,6 +113,29 @@ elseif ( strcmpi(chebg.type, 'bvp') )
         set(handles.menu_odeplottingoff, 'Checked', 'On');
     end
     
+    % Furthermore, set IVP solver option if in IVP mode:
+    if ( strcmpi(chebg.type, 'ivp') )
+        if ( isfield(chebg.options, 'ivpSolver') )
+            ivpSolver = chebg.options.ivpSolver;
+        else
+            ivpSolver = 'ode113';
+        end
+        
+        switch lower(ivpSolver)
+            case 'ode113'
+                chebguiWindow('menu_ivpODE113_Callback', hObject, [], handles)
+            case 'ode15s'
+                chebguiWindow('menu_ivpODE15s_Callback', hObject, [], handles)
+            case 'ode45'
+                chebguiWindow('menu_ivpODE45_Callback', hObject, [], handles)
+            case 'collocation'
+                chebguiWindow('menu_ivpCollocation_Callback', ...
+                    hObject, [], handles)
+            case 'ultraspherical'
+                chebguiWindow('menu_ivpCollocation_Ultraspherical', ...
+                    hObject, [], handles)
+        end
+    end
 end
 
 % Make sure that we enable the BCs fields again when we load a new demo
@@ -173,6 +203,7 @@ if ( ~isempty(chebg.init) )
         
         axes(handles.fig_sol);
         plot(initChebfun, 'LineWidth', 2)
+        set(handles.fig_sol, 'fontsize', handles.fontsizePanels);
         
         if ( ~isempty(chebg.options.fixYaxisLower) ) % Fix y-axis
             ylim([str2num(chebg.options.fixYaxisLower), ...
@@ -185,21 +216,16 @@ if ( ~isempty(chebg.init) )
         end
         
         if ( strcmpi(chebg.type, 'bvp') )
-            title('Initial guess of solution')
+            set(handles.panel_figSol, 'title', 'Initial guess of solution')
         else
-            title('Initial condition')
+            set(handles.panel_figSol, 'title', 'Initial condition')
         end
-        
-        % Hurray, managed to do everything we wanted.
-        initSuccess = 1;
         
     catch
         % Something went wrong.
-        initSuccess = 0;
+        error('CHEBFUN:CHEBGUICONTROLLER:populate', ...
+            'Failed to load demo. Please check file for errors.')
     end
-    
-else % isempty(chebg.init)
-    initSuccess = 0;
 end
 
 % If we have periodic BCs, we want to disable some fields.

@@ -23,8 +23,8 @@ fh = @(x) sin(cos(10*x.^2));
 data.exponents = [0, 0];
 data.singType = {'none', 'none'};
 f = singfun(fh, data, pref);
-pass(2) = norm(feval(f,x) - feval(fh,x), inf) < get(f, 'epslevel');
-
+pass(2) = norm(feval(f,x) - feval(fh,x), inf) < 1e1*get(f, 'epslevel');
+    
 %%
 % Check feval on a SINGFUN with negative exponents
 a = 1 + rand();
@@ -45,6 +45,6 @@ fh = @(x) sin(cos(10*x.^2)).*(1+x).^a.*(1-x).^b;
 data.exponents = [a, b];
 data.singType = {'root', 'root'};
 f = singfun(fh, data, pref);
-pass(4) = norm(feval(f,x) - feval(fh,x), inf) < get(f, 'epslevel');
-
+pass(4) = norm(feval(f,x) - feval(fh,x), inf) < 1e1*get(f, 'epslevel');
+    
 end

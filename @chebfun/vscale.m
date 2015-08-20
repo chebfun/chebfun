@@ -14,7 +14,7 @@ function out = vscale(F, supString)
 %
 % See also MAX, MINANADMAX.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty(F) )
@@ -33,7 +33,7 @@ else
         case 'sup'
             ignoreBreaks = 0;   % Don't ignore break point values.
         otherwise
-            error( 'CHEBFUN:CHEBUN:vscale:unknownFlag', 'unknown flag passed.' )
+            error( 'CHEBFUN:CHEBFUN:vscale:unknownFlag', 'unknown flag passed.' )
     end
 end
             

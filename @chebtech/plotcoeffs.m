@@ -19,7 +19,7 @@ function varargout = plotcoeffs(f, varargin)
 %
 % See also CHEBCOEFFS, PLOT.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -64,16 +64,17 @@ end
 % Store the hold state of the current axis:
 holdState = ishold;
 
-% The coefficients:
+% The coefficients and vertical scale:
 absCoeffs = abs(f.coeffs);
+vscl = f.vscale;
 
 % Add a tiny amount to zeros to make plots look nicer:
-if ( f.vscale > 0 )
+if ( vscl > 0 )
     if ( doBar )
-        absCoeffs(absCoeffs < min(f.epslevel.*f.vscale)/100) = 0;
+        absCoeffs(absCoeffs < min(f.epslevel.*vscl)/100) = 0;
     else
         % Min of epslevel*vscale and the minimum non-zero coefficient:
-        absCoeffs(~absCoeffs) = min( min(f.epslevel.*f.vscale), ...
+        absCoeffs(~absCoeffs) = min( min(f.epslevel.*vscl), ...
                                  min(absCoeffs(logical(absCoeffs))) );                             
     end
 else
@@ -84,7 +85,7 @@ end
 % Get the size:
 [n, m] = size(absCoeffs);
 
-xx = n-1:-1:0;
+xx = 0:1:n-1;
 yy = absCoeffs;
 if ( any(doBar) )
     [xx, yy] = padData(xx,yy);
@@ -96,7 +97,7 @@ hold on
 
 if ( plotEpsLevel )
     % Plot the epslevel:
-    h2 = semilogy([0 n-1], repmat(f.vscale.*f.epslevel, 2, 1), args{:});
+    h2 = semilogy([0 n-1], repmat(vscl.*f.epslevel, 2, 1), args{:});
     for k = 1:m
         c = get(h(k), 'color');
         set(h2(k), 'linestyle', ':', 'linewidth', 1, 'marker', 'none', 'color', c);
@@ -120,6 +121,14 @@ end
 % Adjust xLim:
 xLim = get(gca, 'xlim');
 set(gca, 'xLim', [min(xLim(1), 0), max(xLim(2), n)])
+
+% Add title and labels
+title(gca, 'Chebyshev coefficients')
+xlabel(gca, 'Degree of Chebyshev polynomial')
+ylabel(gca, 'Magnitude of coefficient')
+
+% By default, set grid on
+grid(gca, 'on')
 
 % Give an output if one was requested:
 if ( nargout > 0 )

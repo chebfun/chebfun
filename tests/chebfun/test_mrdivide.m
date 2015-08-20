@@ -51,7 +51,8 @@ op = @(x) sin(20*x)./(3*(x+1));
 g_vals = feval(g, xr);
 g_exact = op(xr);
 err = g_vals - g_exact;
-pass(6) = norm(err, inf) < 1e4*vscale(g)*epslevel(g);
+pass(6) = norm(err, inf) < 1e5*vscale(g)*epslevel(g);
+
 
 % [1 x INF] * [INF x 1] = scalar => scalar/column SINGFUN:
 f = chebfun(@(x)(sin(100*x).^2+1)./(1-x).^0.4, 'exps', [0 -0.4], 'splitting', 'on');
@@ -90,7 +91,21 @@ opExact = @(x) [exp(x)/3 x.*exp(x)/3 (1-exp(x))./(3*x)];
 XVals = feval(X, x);
 XExact = opExact(x);
 err = XVals - XExact;
-pass(9) = norm(err, inf) < 2*max(get(X,'epslevel').*get(X,'vscale'));
+pass(9) = norm(err, inf) < 1e2*max(get(X,'epslevel').*get(X,'vscale'));
+    
+
+%% #1111
+
+try
+    f = chebfun(@(x) exp(x));
+    g = 0;
+    f/g;
+    pass(10) = false;
+catch ME
+    pass(10) = strcmp(ME.identifier, ...
+        'CHEBFUN:CHEBFUN:mrdivide:divisionByZero');
+end
+
 
 %% [TODO]: Revive the following test:
 

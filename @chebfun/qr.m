@@ -10,7 +10,7 @@ function [Q, R] = qr(A, econ)
 %
 % See also SVD, MRDIVIDE, RANK.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -44,7 +44,8 @@ if ( numel(A) > 1 )
     for k = 1:numel(A)
         %isSimple = isSimple && all(cellfun(@(f) isa(f.onefun, 'chebtech'), A(k).funs));
         isSimple = isSimple && ~isdelta(A(k)) ...
-            && all(cellfun(@(f) isa(f.onefun, 'chebtech'), A(k).funs));
+            && ( all(cellfun(@(f) isa(f.onefun, 'chebtech'), A(k).funs))...
+            ||   all(cellfun(@(f) isa(f.onefun, 'trigtech'), A(k).funs)) );
     end
 
     if ( isSimple )

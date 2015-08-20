@@ -1,6 +1,6 @@
 function [pass, u1, u2, info1, info2] = test_scalarODEdamping(pref)
 % A nonlinear CHEBOP test. This test tests a scalar ODE, where no breakpoints
-% occur. It solves the problem using colloc1, colloc2 and ultraS
+% occur. It solves the problem using chebcolloc1, chebcolloc2 and ultraS
 % discretizations. The problem solved requires damping for the Newton iteration
 % to converge.
 %
@@ -21,14 +21,14 @@ pref.errTol = 1e-10;
 
 % Try different discretizations:
 
-%% Start with colloc2
-pref.discretization = @colloc2;
+%% Start with chebcolloc2
+pref.discretization = @chebcolloc2;
 pref.errTol = 1e-13;
 [u1, info1] = solvebvp(N, rhs, pref);
 err(1) = norm(N(u1));
 
-%% Change to colloc1
-pref.discretization = @colloc1;
+%% Change to chebcolloc1
+pref.discretization = @chebcolloc1;
 [u2, info2] = solvebvp(N, rhs, pref);
 err(2) = norm(N(u2));
 

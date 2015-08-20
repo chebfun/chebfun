@@ -10,7 +10,7 @@ function plotEigenmodes(handles, selection, h1, h2)
 %   H1:         A handle to the top plot of the CHEBGUI figure.
 %   H2:         A handle to the bottom plot of the CHEBGUI figure.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % No recent solution available
@@ -76,9 +76,9 @@ if ( ~isempty(h1) )
         grid on
     end
 
-    title('Eigenvalues');
-    xlabel('real');
-    ylabel('imag');
+    set(handles.panel_figSol, 'title', 'Eigenvalues (imag vs real parts)')
+    
+    set(h1, 'Fontsize', handles.fontsizePanels);
 
     if ( any(selection) && (nargin < 4) )
         xlim(h1, xlim_sol);
@@ -137,10 +137,7 @@ if ( ~isSystem )
     if ( handles.guifile.options.grid )
         grid on
     end
-    
-    % ylabel:
-    ylabel(handles.varnames);
-    
+        
 else
     % Linestyles for the eigenmodes.
     LS = repmat({'-', '--', ':', '-.'}, 1, ceil(numVar/4));
@@ -177,8 +174,7 @@ else
 end
 set(h2, 'NextPlot', 'replace')
 
-% Set x-label and title of the plot.
-xlabel(handles.indVarName);
-title(s);
-
+% Set title of the panel
+set(handles.panel_figNorm, 'title', s)
+set(h2, 'Fontsize', handles.fontsizePanels);
 end

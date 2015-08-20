@@ -29,7 +29,7 @@ function [coeffs, poles, k] = residue(u, v, k)
 %   resulting poles and residues. Problem formulations making use of state-space
 %   or zero-pole representations are preferable.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( min(size(u)) > 1 || min(size(v)) > 1 )

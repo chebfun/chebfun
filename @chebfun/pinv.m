@@ -7,7 +7,7 @@ function X = pinv(A, tol)
 %
 % See also SVD, RANK.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information. 
 
 if ( A(1).isTransposed ) 

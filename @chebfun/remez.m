@@ -1,10 +1,10 @@
 function varargout = remez(f, varargin)
-%REMEZ   Best polynomial or rational approximation.
+%REMEZ   Best polynomial or rational approximation for real valued chebfuns.
 %   P = REMEZ(F, M) computes the best polynomial approximation of degree M to
-%   the CHEBFUN F in the infinity norm using the Remez algorithm.
+%   the real CHEBFUN F in the infinity norm using the Remez algorithm.
 %
 %   [P, Q] = REMEZ(F, M, N) computes the best rational approximation P/Q of type
-%   (M, N) to the CHEBFUN F using the Remez algorithm.
+%   (M, N) to the real CHEBFUN F using the Remez algorithm.
 %
 %   [P, Q, R_HANDLE] = REMEZ(F, M, N) does the same but additionally returns a
 %   function handle R_HANDLE for evaluating the rational function P/Q.
@@ -45,19 +45,24 @@ function varargout = remez(f, varargin)
 %
 % See also CF.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 dom = f.domain([1, end]);
 normf = norm(f);
 
+if ( ~isreal(f) )
+    error('CHEBFUN:CHEBFUN:remez:real', ...
+        'REMEZ only supports real valued functions.');
+end
+
 if ( numColumns(f) > 1 )
-    error ('CHEBFUN:remez:quasi', ...
+    error('CHEBFUN:CHEBFUN:remez:quasi', ...
         'REMEZ does not currently support quasimatrices.');
 end
 
 if ( issing(f) )
-    error('CHEBFUN:remez:singularFunction', ...
+    error('CHEBFUN:CHEBFUN:remez:singularFunction', ...
         'REMEZ does not currently support functions with singularities.');
 end
 

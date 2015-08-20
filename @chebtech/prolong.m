@@ -9,7 +9,7 @@ function f = prolong(f, nOut)
 %
 % See also CHEBTECH1/ALIAS, CHEBTECH2/ALIAS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Store the number of values the input function has:
@@ -27,7 +27,7 @@ end
 % Constant case:
 if ( nIn == 1 )
     m = size(f.coeffs, 2);
-    f.coeffs = [zeros(nDiff, m) ; f.coeffs(1,:)];
+    f.coeffs = [ f.coeffs(1,:) ; zeros(nDiff, m) ];
     return
 end
 

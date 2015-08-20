@@ -7,7 +7,7 @@ function printOptions(fid, expInfo)
 %   FID:        ID of a file-writing stream.
 %   EXPINFO:    Struct containing information for printing the problem.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Extract info from the expInfo struct:
@@ -18,10 +18,12 @@ plotting = expInfo.plotting;
 
 % Set up preferences
 fprintf(fid, '\n%%%% Setup preferences for solving the problem.');
-fprintf(fid, '\n%% Create a CHEBOPPREF object for passing preferences: \n');
-fprintf(fid, 'options = cheboppref();\n');
+fprintf(fid, '\n%% Create a CHEBOPPREF object for passing preferences.\n');
+fprintf(fid, '%% (See ''help cheboppref'' for more possible options.)\n');
+fprintf(fid, 'options = cheboppref();\n\n');
 
 % Always show iteration information:
+fprintf(fid, '%% Print information to the command window while solving:\n');
 fprintf(fid, 'options.display = ''iter'';\n');
 
 % Specify tolerance:
@@ -39,14 +41,11 @@ else
 end
 
 % Option for discretization:
-fprintf(fid, ['\n%% Option for discretization (either ''collocation'' ' ...
-    'or ''ultraspherical'').\n']);
-if ( isa(discretization(), 'colloc') )
-    discString = 'collocation';
-else
-    discString = 'ultraspherical';
-end
-fprintf(fid, 'options.discretization = ''%s'';\n', discString);
+fprintf(fid, '\n%% Specify the discretization to use. Possible options are:\n');
+fprintf(fid, '%%  ''collocation'' (default)\n');
+fprintf(fid, '%%  ''ultraspherical''\n');
+fprintf(fid, '%%  ''periodic'' (only for periodic problems).\n');
+fprintf(fid, 'options.discretization = ''%s'';\n', discretization);
 
 % Plot during Newton iteration?
 if ( ~strcmp(plotting, 'off') )

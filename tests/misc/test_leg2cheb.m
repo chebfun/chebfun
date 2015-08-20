@@ -19,11 +19,11 @@ err = norm(c_leg - c_cheb, inf);
 pass(1) = err < tol;
 
 % Test an arbitrary vector against a stored value:
-c_leg = 1./(1:N)'.^2; 
+c_leg = 1./(N:-1:1)'.^2; 
 c_leg(2:2:end) = -c_leg(2:2:end);
 c_cheb = leg2cheb(c_leg);
-c_cheb19 = 0.087275909551917;
-err = abs(c_cheb(19) - c_cheb19)/abs(c_cheb19);
+c_cheb2 = -0.087275909551917;
+err = abs(c_cheb(2) - c_cheb2)/abs(c_cheb2);
 pass(2) = err < tol;
 
 % Test conversion back to cheb coeffs:
@@ -40,12 +40,12 @@ err = norm(c_leg - c_cheb, inf);
 pass(4) = err < 10*tol;
 
 % Test an arbitrary vector against a stored value:
-c_leg = 1./(1:N)'.^2; 
+c_leg = 1./(N:-1:1)'.^2; 
 c_leg(2:2:end) = -c_leg(2:2:end);
 c_cheb = leg2cheb(c_leg);
-c_cheb442 = -6.379508600687388e-04;
-err = abs(c_cheb(442) - c_cheb442)/abs(c_cheb442);
-pass(5) = err < tol;
+c_cheb559 = 6.379508600687388e-04;
+err = abs(c_cheb(559) - c_cheb559)/abs(c_cheb559);
+pass(5) = err < 10*tol;
 
 % Test conversion back to cheb coeffs:
 c_leg2 = cheb2leg(c_cheb);
@@ -70,7 +70,7 @@ pass(8) = ( norm( B - E ) < tol );
 
 %% Test normalization, small N: 
 A = zeros(10, 1); A(1) = 1; 
-B = leg2cheb( A, 1 ); 
+B = leg2cheb( A, 'norm' ); 
 f = chebfun( B , 'coeffs'); 
 pass(9) = ( norm( f ) - 1 ) < tol; 
 
@@ -83,13 +83,30 @@ pass(10) = ( norm( f ) - 1 ) < tol;
 
 %% Test normalization and inverse, small N: 
 A = zeros(10,1); A(1) = 1; 
-B = leg2cheb( A, 1); 
-C = cheb2leg( B, 1); 
+B = leg2cheb( A, 'norm'); 
+C = cheb2leg( B, 'norm'); 
 pass(11) = ( norm( A - C ) ) < tol; 
 
 %% Test normalization and inverse, large N: 
 A = zeros(1000,1); A(1) = 1; 
-B = leg2cheb( A, 1); 
-C = cheb2leg( B, 1); 
-pass(11) = ( norm( A - C ) ) < 10*tol; 
+B = leg2cheb( A, 'norm'); 
+C = cheb2leg( B, 'norm'); 
+pass(12) = ( norm( A - C ) ) < 10*tol; 
+
+%% Test transpose small:
+N = 10;
+seedRNG(0);
+c = rand(N,1);
+L = leg2cheb(eye(N));
+err = norm(L'*c - leg2cheb(c, 'trans'), inf);
+pass(13) = err < 10*tol;
+
+%% Test transpose large:
+N = 514;
+seedRNG(0);
+c = rand(N,1);
+L = leg2cheb(eye(N));
+err = norm(L'*c - leg2cheb(c, 'trans'), inf);
+pass(13) = err < 10*tol;
+
 end

@@ -5,14 +5,15 @@ function s = constructSmoothPart(op, data, pref)
 %   and preferences for the SMOOTHFUN class can be passed through the
 %   corresponding arguments.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty(pref) )
     pref = chebfunpref();
 end
 
-pref.techPrefs.sampleTest = 0;
+% Loosen the tolerance for sampleTest:
+pref.techPrefs.sampleTestEps = 1e-7;
 
 % Call the SMOOTHFUN constructor:
 s = smoothfun.constructor(op, data, pref);

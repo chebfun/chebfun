@@ -14,7 +14,7 @@ seedRNG(7681);
 x = linspace(-1, 1, 1000)';
 y = x.^2;
 dom = domain([-1 1]);
-f = polyfit(x, y, 3, dom);
+f = polyfit(x, y, 2, dom);
 err = norm(feval(f, x) - y);
 pass(1) = err < 100*epslevel(f)*vscale(f);
 
@@ -22,7 +22,7 @@ pass(1) = err < 100*epslevel(f)*vscale(f);
 x = linspace(-1, 1, 100)';
 y = x.^3;
 dom = domain([-1 1]);
-f = polyfit(x, y, 4, dom);
+f = polyfit(x, y, 3, dom);
 err = norm(feval(f, x) - y);
 pass(2) = err < 5e5*epslevel(f)*vscale(f);
 
@@ -30,7 +30,7 @@ pass(2) = err < 5e5*epslevel(f)*vscale(f);
 x = linspace(-1, 1, 50)';
 y = 2*x + 4*x.^2 + x.^4;
 dom = domain([-1 1]);
-f = polyfit(x, y, 5, dom);
+f = polyfit(x, y, 4, dom);
 err = norm(feval(f, x) - y);
 pass(3) = err < 5e5*epslevel(f)*vscale(f);
 
@@ -38,7 +38,7 @@ pass(3) = err < 5e5*epslevel(f)*vscale(f);
 x = chebpts(1000);
 y = 2*x + 4*x.^2 + x.^4;
 dom = domain([-1 1]);
-f = polyfit(x, y, 5, dom);
+f = polyfit(x, y, 4, dom);
 err = norm(feval(f, x) - y);
 pass(4) = err < 5e5*epslevel(f)*vscale(f);
 
@@ -66,7 +66,7 @@ pass(6) = err < 100*epslevel(f)*vscale(f);
 x = linspace(0, 1000, 1000)';
 y = x.^2;
 dom = domain([0 1000]);
-f = polyfit(x, y, 3, dom);
+f = polyfit(x, y, 2, dom);
 err = norm(feval(f, x) - y);
 pass(7) = err < 5e1*epslevel(f)*vscale(f);
 
@@ -74,6 +74,6 @@ pass(7) = err < 5e1*epslevel(f)*vscale(f);
 x = linspace(-1, 1, 10)';
 y = [x.^2 x.^3];
 dom = domain([-1 1]);
-f = polyfit(x, y, 4, dom);
+f = polyfit(x, y, 3, dom);
 err = norm(feval(f, x) - y);
 pass(8) = err(:) < 10*vscale(f)*epslevel(f);

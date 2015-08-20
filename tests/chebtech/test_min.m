@@ -48,9 +48,10 @@ for n = 1:2
     exact_max = [0.074968381369117-0.319744137826069i, ...
         0.995004165278026+0.099833416646827i];
     fx = fun_op(x); fx = fx([1 4]);
-    tol = 10*max(f.vscale.*f.epslevel);
+    tol = 1e2*max(f.vscale.*f.epslevel);
     pass(n, 8) = (all(abs(y - exact_max) < tol) && ...
                   all(abs(fx - exact_max) < tol));
+    
 end
 
 end

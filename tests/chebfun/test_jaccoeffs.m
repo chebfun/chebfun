@@ -1,4 +1,4 @@
-function pass = test_jacpoly(pref)
+function pass = test_jaccoeffs(pref)
 
 if ( nargin == 0 )
     pref = chebfunpref();
@@ -13,9 +13,10 @@ b = -.3;
 J = jacpoly(0:n, a, b);
 c = rand(n+1,1);
 f = J*c;
-err = norm(c - jaccoeffs(f, n+1, a, b).', inf);
-tol = 10*epslevel(f);
+err = norm(c - jaccoeffs(f, n+1, a, b), inf);
+tol = 1e2*epslevel(f);
 pass(1) = err < tol;
+
 
 % Piecewise domain:
 n = 11;
@@ -24,8 +25,8 @@ b = -.9;
 J = jacpoly(0:n, a, b, [-1 0 1]);
 c = rand(n+1,1);
 f = J*c;
-err = norm(c - jaccoeffs(f, n+1, a, b).', inf);
-tol = 10*epslevel(f);
+err = norm(c - jaccoeffs(f, n+1, a, b), inf);
+tol = 10*vscale(f)*epslevel(f);
 pass(2) = err < tol;
 
 end

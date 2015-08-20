@@ -7,7 +7,7 @@ function printDescription(fid, expInfo)
 %   FID:        ID of a file-writing stream.
 %   EXPINFO:    Struct containing information for printing the problem.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Extract info from the expInfo struct:
@@ -37,7 +37,7 @@ fprintf(fid, '%% for %s in %s', indVarName{1}, dom);
 % Print the boundary conditions:
 if ( ~isempty(bcInput{1}) )
     % Non-periodic conditions:
-    fprintf(fid,',  subject to\n%%');
+    fprintf(fid,', subject to\n%%');
     for k = 1:numel(bcInput)
         fprintf(fid, '   %s', bcInput{k});
         if ( (k ~= numel(bcInput)) && (numel(bcInput) > 1) )

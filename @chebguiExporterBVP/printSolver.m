@@ -7,14 +7,20 @@ function printSolver(fid, expInfo)
 %   FID:        ID of a file-writing stream.
 %   EXPINFO:    Struct containing information for printing the problem.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Names of variables involved
+allVarString = expInfo.allVarString;
+numVars = expInfo.numVars;
 % Print commands for solving the problem:
-fprintf(fid,'\n%%%% Solve the problem!');
-fprintf(fid, ['\n%% Here, we call the solvebvp() method ' ...
-    '(which offers the same functionality \n%% as nonlinear '...
-    'backslash, but with more customizability).\n']);
-fprintf(fid, 'u = solvebvp(N, rhs, options);\n');
+fprintf(fid,'\n%%%% Solve!\n');
+fprintf(fid, ['%% Call solvebvp to solve the problem.\n' ...
+    '%% (With the default options, this is equivalent to u = N\\rhs.)\n']);
 
+if ( numVars == 1) % Scalar case
+    fprintf(fid, '%s = solvebvp(N, rhs, options);\n', allVarString);
+else
+    fprintf(fid, '[%s] = solvebvp(N, rhs, options);\n', allVarString);
+end
 end

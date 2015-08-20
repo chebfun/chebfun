@@ -1,5 +1,5 @@
 function update(varargin)
-%CHEBFUN.UPDATE   Update Chebun source files.
+%CHEBFUN.UPDATE   Update Chebfun source files.
 %   UPDATECHEBFUN() updates the Chebfun source files with the latest stable
 %   release from the Github repository https://github.com/chebfun/chebfun/
 %   WARNING: ALL FOLDERS AND FILES IN THE $CHEBFUNROOT/ DIRECTORY WILL BE
@@ -22,7 +22,7 @@ function update(varargin)
 %
 % See also CHEBFUNROOT().
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 version = 'release';  % 'release' or 'development'?
