@@ -72,4 +72,10 @@ f = testclass.make(@(x) 0*x, [], struct('fixedLength', 8));
 g = simplify(f);
 pass(12) = iszero(g) && (length(g) == 1);
 
+%%
+% Check simplification of even trigtech
+f = testclass.make(ones(8,1));
+g = simplify(f);
+pass(13) = g.values == 1;
+
 end
