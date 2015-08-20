@@ -1,4 +1,4 @@
-function f = populate(f, op, vscale, hscale, pref)
+function f = populate(f, op, data, pref)
 %POPULATE   Populate a TRIGTECH class with values.
 %   F = F.POPULATE(OP) returns a TRIGTECH representation populated with values
 %   F.VALUES of the function OP evaluated on an equally spaced grid. The fields
@@ -32,19 +32,6 @@ function f = populate(f, op, vscale, hscale, pref)
 % Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( (nargin < 3) || isempty(vscale) )
-    vscale = 0;
-end
-if ( (nargin < 4) || isempty(hscale) )
-    f.hscale = 1;
-else
-    f.hscale = hscale;
-end
-if ( nargin < 5 )
-    pref = trigtech.techPref();
-end
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%% Non-adaptive construction. %%%%%%%%%%%%%%%%%%%%%%%%%%
 % Values (and possibly coefficients) have been given.
 if ( isnumeric(op) || iscell(op) )
@@ -65,10 +52,10 @@ if ( isnumeric(op) || iscell(op) )
     f.ishappy = true;
     
     % Scale the epslevel relative to the largest column:
-    vscale = f.vscale;
+    data.vscale = f.vscale;
     f.epslevel = 10*eps(max(f.vscale));
-    vscale(vscale <= f.epslevel) = 1;
-    f.epslevel = f.epslevel./vscale;
+    data.vscale(data.vscale <= f.epslevel) = 1;
+    f.epslevel = f.epslevel./data.vscale;
 
     % Threshold to determine if f is real or not.
     f.isReal = max(abs(imag( f.values ))) <= 2*(f.epslevel.*f.vscale);
@@ -108,15 +95,15 @@ while ( 1 )
     % Update vertical scale: (Only include sampled finite values)
     valuesTemp = f.values;
     valuesTemp(~isfinite(f.values)) = 0;
-    vscale = max(vscale, max(abs(valuesTemp)));
+    data.vscale = max(data.vscale, max(abs(valuesTemp)));
     
     % Compute the trigonometric coefficients:
     coeffs = f.vals2coeffs(f.values);
     
     % Check for happiness:
     f.coeffs = coeffs;
-    f.vscale = vscale;
-    [ishappy, epslevel, cutoff] = happinessCheck(f, op, f.values, vscale, pref);
+    f.vscale = data.vscale;
+    [ishappy, epslevel, cutoff] = happinessCheck(f, op, f.values, data, pref);
     
         
     % We're happy! :)
@@ -132,10 +119,10 @@ end
 % Compute the 'true' vscale (as defined in TRIGTECH classdef):
 vscaleOut = max(abs(f.values), [], 1);
 % Update vertical scale one last time:
-vscaleGlobal = max(vscale, vscaleOut);
+vscaleGlobal = max(data.vscale, vscaleOut);
 
 % Output the 'true' vscale (i.e., the max of the stored values):
-vscale = vscaleOut;
+data.vscale = vscaleOut;
 
 % Adjust the epslevel appropriately:
 ind = vscaleOut < epslevel;
@@ -146,7 +133,7 @@ epslevel = epslevel.*vscaleGlobal./vscaleOut;
     
 %%%%%%%%%%%%%%%%%%%%%%%%%% Assign to TRIGTECH object. %%%%%%%%%%%%%%%%%%%%%%%%%%
 f.coeffs = coeffs;
-f.vscale = vscale;
+f.vscale = data.vscale;
 f.ishappy = ishappy;
 f.epslevel = epslevel;
 

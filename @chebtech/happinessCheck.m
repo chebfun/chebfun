@@ -61,14 +61,10 @@ data.vscale = max(data.vscale, f.vscale);
 % What does happiness mean to you?
 if ( strcmpi(pref.happinessCheck, 'standard') )
     % Use the 'standard' happiness check:
-    
-    % Check the coefficients are happy:
     [ishappy, epslevel, cutoff] = standardCheck(f, values, data, pref);
 
 elseif ( strcmpi(pref.happinessCheck, 'classic') )
     % Use the default happiness check procedure from Chebfun V4.
-    
-    % Check the coefficients are happy:
     [ishappy, epslevel, cutoff] = classicCheck(f, values, data, pref);
 
 elseif ( strcmpi(pref.happinessCheck, 'strict') )

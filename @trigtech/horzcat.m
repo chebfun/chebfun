@@ -42,9 +42,6 @@ out.vscale = cell2mat(vscales);
 epslevels = cellfun(@(f) f.epslevel, F, 'UniformOutput', false);
 out.epslevel = cell2mat(epslevels);
 
-% Hscale:
-out.hscale = max(cellfun(@(f) f.hscale, F));
-
 % IsReal:
 areReal = cellfun(@(f) f.isReal, F, 'UniformOutput', false);
 out.isReal = cell2mat(areReal);

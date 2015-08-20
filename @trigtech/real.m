@@ -19,7 +19,6 @@ f.vscale = max(abs(f.values), [], 1);
 if ( ~any(f.values(:)) )
     % Input was imaginary, so output a zero TRIGTECH:
     data.vscale = f.vscale;
-    data.hscale = f.hscale;
     f = f.make(zeros(1, size(f.values, 2)), data);
     f.ishappy = 1;
 else

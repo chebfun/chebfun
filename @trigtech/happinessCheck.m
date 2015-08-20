@@ -1,4 +1,4 @@
-function  [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, vscl, pref)
+function  [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, data, pref)
 %HAPPINESSCHECK   Happiness test for a TRIGTECH
 %
 % See also CLASSICCHECK, SAMPLETEST.
@@ -21,25 +21,26 @@ if ( nargin < 3 )
     values = [];
 end
 if ( nargin < 4 ) 
-    vscl = [];
+    data = struct();
 end
+data = trigtech.parseDataInputs(data);
+
+% vscale defaults to zero if not given but should be at least f.vscale.  (Only
+% makes sense to have a larger "global" vscale.)
+data.vscale = max(data.vscale, f.vscale);
 
 % What does happiness mean to you?
 if ( strcmpi(pref.happinessCheck, 'standard') )
     % Use the 'standard' happiness check:
-    
-    % Check the coefficients are happy:
-    [ishappy, epslevel, cutoff] = standardCheck(f, values, vscl, pref);
+    [ishappy, epslevel, cutoff] = standardCheck(f, values, data, pref);
 
 elseif ( strcmpi(pref.happinessCheck, 'classic') )
     % Use the default happiness check procedure from Chebfun V4.
-    
-    % Check the coefficients are happy:
-    [ishappy, epslevel, cutoff] = classicCheck(f, values, vscl, pref);
+    [ishappy, epslevel, cutoff] = classicCheck(f, values, data, pref);
     
 elseif ( strcmpi(pref.happinessCheck, 'plateau') )
     % Use the 'plateau' happiness check:
-    [ishappy, epslevel, cutoff] = plateauCheck(f, values, vscl, pref);
+    [ishappy, epslevel, cutoff] = plateauCheck(f, values, data, pref);
 
 elseif ( strcmpi(pref.happinessCheck, 'strict') )
     error('CHEBFUN:TRIGTECH:happinessCheck:strictCheck',...
@@ -52,7 +53,7 @@ elseif ( strcmpi(pref.happinessCheck, 'loose') )
 else
     % Call a user-defined happiness check:
     checker = pref.happinessCheck;
-    [ishappy, epslevel, cutoff] = checker(f, values, vscl, pref);
+    [ishappy, epslevel, cutoff] = checker(f, values, data, pref);
     
 end
 

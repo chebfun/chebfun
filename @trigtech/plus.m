@@ -85,7 +85,6 @@ elseif ( isa(f, 'trigtech') && isa(g, 'trigtech') )  % TRIGTECH + TRIGTECH.
         ishappy = f.ishappy && g.ishappy;
         z = zeros(1, size(f.values, 2));
         data.vscale = z;
-        data.hscale = f.hscale;
         f = f.make(z, data);
         f.epslevel = epslevel;
         f.ishappy = ishappy;

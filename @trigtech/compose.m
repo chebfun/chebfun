@@ -76,9 +76,6 @@ if ( ischar(pref.refinementFunction) )
     end
 end
 
-if ( ~isfield(data, 'hscale') || isempty(data.hscale) )
-    data.hscale = f.hscale;
-end
 f = f.make(op, data, pref);
 
 % Throw a warning:

@@ -135,14 +135,6 @@ classdef trigtech < smoothfun % (Abstract)
         % convenient to store this as a property.
         vscale = 0 % (1xm double >= 0)
 
-        % Horizontal scale of the TRIGTECH. Although TRIGTECH objects have in
-        % principle no notion of horizontal scale invariance (since they always
-        % live on [-1,1)), the input OP may have been implicitly mapped. HSCALE
-        % is then used to enforce horizontal scale invariance in construction
-        % and other subsequent operations that require it. It defaults to 1 and
-        % is never updated.
-        hscale = 1 % (scalar > 0)
-
         % Boolean value designating whether the TRIGTECH is 'happy' or not.
         % See HAPPINESSCHECK.m for full documentation.
         ishappy % (logical)
@@ -184,7 +176,7 @@ classdef trigtech < smoothfun % (Abstract)
                 pref = trigtech.techPref(pref);
             end
 
-            data = parseDataInputs(data, pref);
+            data = trigtech.parseDataInputs(data, pref);
 
             % Force nonadaptive construction if PREF.FIXEDLENGTH is numeric:
             if ( ~(isnumeric(op) || iscell(op)) && ...
@@ -196,7 +188,7 @@ classdef trigtech < smoothfun % (Abstract)
             end
 
             % Actual construction takes place here:
-            obj = populate(obj, op, data.vscale, data.hscale, pref);
+            obj = populate(obj, op, data, pref);
             
             % Set length of obj to PREF.FIXEDLENGTH (if it is non-trivial).
             if ( (isnumeric(op) || iscell(op)) && ...
@@ -451,23 +443,8 @@ classdef trigtech < smoothfun % (Abstract)
         % Convert values to coefficients:
         coeffs = vals2coeffs(values)
 
+        % TODO:  Document.
+        data = parseDataInputs(data, pref)
     end
     
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% METHODS IMPLEMENTED IN THIS FILE:
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function data = parseDataInputs(data, pref)
-%PARSEDATAINPUTS   Parse inputs from the DATA structure and assign defaults.
-
-if ( ~isfield(data, 'vscale') || isempty(data.vscale) )
-    data.vscale = 0;
-end
-
-if ( ~isfield(data, 'hscale') || isempty(data.hscale) )
-    data.hscale = 1;
-end
-
 end
