@@ -86,7 +86,6 @@ end
 
 % Use CUTOFF to trim F.
 mid = (n + 1)/2;
-cutoff = min(cutoff, mid);
 f.coeffs = coeffs(mid-cutoff+1:mid+cutoff-1,:);
 f.values = trigtech.coeffs2vals(f.coeffs);
 
