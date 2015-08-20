@@ -1,7 +1,7 @@
 function legcoeffs = chebcoeffs2legcoeffs( chebcoeffs )
 % CHEBCOEFFS2LEGCOEFFS       Convert Chebyshev coeffs to Legendre coeffs
 % 
-%  LEGCOEFFS = CHEBCOEFFS2LEGCOEFFS( CHEBCOEFFS ), converts the vector of
+%  LEGCOEFFS = CHEBCOEFFS2LEGCOEFFS( CHEBCOEFFS ), converts a vector of
 %  CHEBCOEFFS representing Chebyshev coefficients of an expansion to 
 %  a vector LEGCOEFFS representing Legendre coefficients. That is, 
 % 
