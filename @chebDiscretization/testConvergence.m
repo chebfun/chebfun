@@ -48,15 +48,18 @@ tech = tech();
 % If an external vscale was supplied, it can supplant the inherent scale of the
 % result.
 vscale = max(u.vscale, vscale);
+
+% TODO:  Assign hscale (to data.hscale)?
+data.vscale = vscale;
 prefTech = tech.techPref();
 prefTech.eps = pref.errTol;
+prefTech.happinessCheck = pref.happinessCheck;
 
 for i = 1:numInt
     c = cat(2, coeffs{i,:});
     f = tech.make({[], c});
-    happinessChecker = pref.happinessCheck;
-    [isDone(i), neweps, cutoff(i,:)] = happinessChecker(f, [],...
-         vscale, prefTech);
+    [isDone(i), neweps, cutoff(i,:)] = happinessCheck(f, [], [], ...
+        data, prefTech);
     epslevel = eps + 0*epslevel;
 end
 
