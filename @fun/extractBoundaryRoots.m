@@ -15,7 +15,7 @@ if ( ~isnumeric(f) )
     
     % Get the boundary values:
     endVals = [get(f, 'lval'); get(f, 'rval')];
-    tol = 1e1*get(f, 'vscale').*get(f, 'epslevel');
+    tol = 2e1*get(f, 'vscale').*get(f, 'epslevel');
     
     if ( any(any(abs(endVals) < repmat(tol, 2, 1))) )
         

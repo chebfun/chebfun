@@ -86,12 +86,12 @@ x = [-.5, .5];
 pass(15) = numel(f.funs) == 1  && norm(feval(f, x) - x) < get(f, 'epslevel');
 
 % Test 'minSamples' flag.
-f_op = @(x) -x - x.^2 + exp(-(30*(x - .5)).^4);
-f1 = chebfun(f_op, 'minSamples', 9);
+f_op = @(x) -x - x.^2 + exp(-(50*(x - .5)).^4);
+f1 = chebfun(f_op, 'minSamples', 17);
 err1 = norm(feval(f1, xx) - f_op(xx), inf);
-f2 = chebfun(f_op, 'minSamples', 17);
+f2 = chebfun(f_op, 'minSamples', 33);
 err2 = norm(feval(f2, xx) - f_op(xx), inf);
-pass(16) = (err1 > 1e-3) && (err2 < 10*vscale(f2)*epslevel(f2));
+pass(16) = (err1 > 1e-3) && (err2 < 1e2*vscale(f2)*epslevel(f2));
 
 % Test support for "legacy" preferences.
 f_op = @(x) sin(200*x);

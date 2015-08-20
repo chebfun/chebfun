@@ -229,6 +229,9 @@ opts = odeset('absTol', pref.ivpAbsTol, 'relTol', pref.ivpRelTol);
 % What solver do we want to use for the IVP?
 solver = pref.ivpSolver;
 
+% What happiness check do we want to use for the IVP?
+opts.happinessCheck = pref.happinessCheck;
+
 % Solve!
 [t, y]= solver(anonFun, odeDom, initVals, opts);
 

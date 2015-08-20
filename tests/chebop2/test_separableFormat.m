@@ -1,4 +1,4 @@
-function pass = test_SeparableFormat( pref ) 
+function pass = test_separableFormat( pref ) 
 % Test code for computing separable format of PDOs. 
 %
 % Alex Townsend, September 2014. 

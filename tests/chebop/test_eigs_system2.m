@@ -66,6 +66,6 @@ err(6) = norm(AV - V*D);
 
 %%
 
-pass = err < 1e-11;
+pass = err < 1e-9;
 
 end
