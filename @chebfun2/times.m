@@ -13,7 +13,10 @@ if ( isa(f, 'chebfun2') )    % CHEBFUN2 .* ???
     elseif ( isa( g, 'chebfun2') )
         bol = domainCheck(f, g);
         if ( bol )
-            h = chebfun2(@(x, y) feval(f, x, y).*feval(g, x, y), f.domain);
+            pref = chebfunpref; 
+            pref.techPrefs.eps = max( [epslevel(f.cols), epslevel(f.rows),...
+                                      epslevel(g.cols), epslevel(g.rows) ]); 
+            h = chebfun2(@(x, y) feval(f, x, y).*feval(g, x, y), f.domain, pref);
         else
             error('CHEBFUN:CHEBFUN2:times:domain', 'Inconsistent domains');
         end
