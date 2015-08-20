@@ -1,4 +1,4 @@
-function  [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, vscl, pref)
+function  [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, data, pref)
 %HAPPINESSCHECK   Happiness test for a CHEBTECH
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = HAPPINESSCHECK(F, OP, VALUES, VSCL) tests if
 %   the CHEBTECH with values VALUES and coefficients F.COEFFS would be a 'happy'
@@ -48,47 +48,51 @@ end
 
 if ( nargin < 3 )
     values = [];
-%     values = f.coeffs2vals(f.coeffs);
 end
 if ( nargin < 4 )
-    vscl = [];
+    data = struct();
 end
+data = chebtech.parseDataInputs(data, pref);
+
+% vscale defaults to zero if not given but should be at least f.vscale.  (Only
+% makes sense to have a larger "global" vscale.)
+data.vscale = max(data.vscale, f.vscale);
 
 % What does happiness mean to you?
 if ( strcmpi(pref.happinessCheck, 'standard') )
     % Use the 'standard' happiness check:
     
     % Check the coefficients are happy:
-    [ishappy, epslevel, cutoff] = standardCheck(f, values, vscl, pref);
+    [ishappy, epslevel, cutoff] = standardCheck(f, values, data, pref);
 
 elseif ( strcmpi(pref.happinessCheck, 'classic') )
     % Use the default happiness check procedure from Chebfun V4.
     
     % Check the coefficients are happy:
-    [ishappy, epslevel, cutoff] = classicCheck(f, values, vscl, pref);
+    [ishappy, epslevel, cutoff] = classicCheck(f, values, data, pref);
 
 elseif ( strcmpi(pref.happinessCheck, 'strict') )
     % Use the 'strict' happiness check:
-    [ishappy, epslevel, cutoff] = strictCheck(f, values, vscl, pref);
+    [ishappy, epslevel, cutoff] = strictCheck(f, values, data, pref);
     
 elseif ( strcmpi(pref.happinessCheck, 'loose') )
     % Use the 'loose' happiness check:
-    [ishappy, epslevel, cutoff] = looseCheck(f, values, vscl, pref);
+    [ishappy, epslevel, cutoff] = looseCheck(f, values, data, pref);
     
 elseif ( strcmpi(pref.happinessCheck, 'plateau') )
     % Use the 'plateau' happiness check:
-    [ishappy, epslevel, cutoff] = plateauCheck(f, values, vscl, pref);    
+    [ishappy, epslevel, cutoff] = plateauCheck(f, values, data, pref);
     
 else
     % Call a user-defined happiness check:
-    [ishappy, epslevel, cutoff] = pref.happinessCheck(f, values, vscl, pref);
+    [ishappy, epslevel, cutoff] = pref.happinessCheck(f, values, data, pref);
     
 end
 
 % Check also that sampleTest is happy:
 if ( ishappy && ~isempty(op) && ~isnumeric(op) && pref.sampleTest )
     f.epslevel = eps + 0*epslevel;
-    ishappy = sampleTest(op, values, f, vscl, pref);
+    ishappy = sampleTest(op, values, f, data, pref);
     if ( ~ishappy )
         % It wasn't. Revert cutoff. :(
         cutoff = size(values, 1);

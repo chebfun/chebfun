@@ -1,4 +1,4 @@
-function [ishappy, epslevel, cutoff] = looseCheck(f, values, vscl, pref) %#ok<INUSD,STOUT>
+function [ishappy, epslevel, cutoff] = looseCheck(f, values, data, pref) %#ok<INUSD,STOUT>
 %LOOSECHECK   Loose happiness check for Chebtech construction.
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = LOOSECHECK(F, VALUES, VSCL, PREF). This file
 %   is not yet implemented.

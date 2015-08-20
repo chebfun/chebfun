@@ -1,4 +1,4 @@
-function [ishappy, epslevel, cutOff] = plateauCheck(f, values, vscl, pref)
+function [ishappy, epslevel, cutOff] = plateauCheck(f, values, data, pref)
 %PLATEAUCHECK   Attempt to trim trailing Chebyshev coefficients in a CHEBTECH.
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = PLATEAUCHECK(F, VALUES, VSCL) returns an
 %   estimated location, the CUTOFF, at which the CHEBTECH F could be truncated.
@@ -71,7 +71,7 @@ end
 n90 = ceil( 0.90*n );
 absCoeff = abs( coeff(1:n90,:) );
 vscl = max(absCoeff,[],1);          % scaling in each column
-vscl = max( [vscl ; f.vscale] );
+vscl = max( [vscl ; data.vscale] );
 absCoeff = absCoeff * diag(1./vscl);
 
 %% Deal with array-valued functions.

@@ -1,4 +1,4 @@
-function [ishappy, epslevel, cutoff] = strictCheck(f, values, vscl, pref)
+function [ishappy, epslevel, cutoff] = strictCheck(f, values, data, pref)
 %STRICTCHECK   Attempt to trim trailing Chebyshev coefficients in a CHEBTECH.
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = STRICTCHECK(F, VALUES, VSCL) returns an
 %   estimated location CUTOFF at which the CHEBTECH F could be truncated to
@@ -59,23 +59,12 @@ if ( n < 2 )  % (Can't be simpler than a constant.)
     return
 end
 
-% Check the vertical scale:
-if ( isempty(vscl) || isempty(vscl) )
-    if ( nargin < 2 || isempty(values) )
-        % Compute some values if none were given:
-        values = f.coeffs2vals(f.coeffs);
-    end
-    vscl = max(abs(values), [],  1);
-else
-    vscl = max(vscl, max(abs(values), [],  1));
-end
-
-if ( max(vscl) == 0 )
+if ( max(data.vscale) == 0 )
     % This is the zero function, so we must be happy.
     ishappy = true;
     cutoff = 1;
     return
-elseif ( any(isinf(vscl(:))) )
+elseif ( any(isinf(data.vscale(:))) )
     % Inf located. No cutoff.
     cutoff = n;
     epslevel = inf*epslevel;
@@ -90,7 +79,7 @@ end
 
 % Check for convergence and chop location --------------------------------------
 testLength = min(n, max(5, round((n-1)/8))); 
-ac = bsxfun(@rdivide, abs(f.coeffs), vscl);
+ac = bsxfun(@rdivide, abs(f.coeffs), data.vscale);
 f.coeffs(bsxfun(@le, ac, epslevel)) = 0;
 tail = f.coeffs(end-testLength+1:end,:);
 if ( ~any(tail(:)) )

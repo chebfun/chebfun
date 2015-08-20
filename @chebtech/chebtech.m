@@ -94,14 +94,6 @@ classdef chebtech < smoothfun % (Abstract)
         % objects, each column represents the coefficients of a single function.
         coeffs % (nxm double)
 
-        % Horizontal scale of the CHEBTECH. Although CHEBTECH objects have in
-        % principle no notion of horizontal scale invariance (since they always
-        % live on [-1,1]), the input OP may have been implicitly mapped. HSCALE
-        % is then used to enforce horizontal scale invariance in construction
-        % and other subsequent operations that require it. It defaults to 1 and
-        % is never updated.
-        hscale = 1 % (scalar > 0)
-
         % Boolean value designating whether the CHEBTECH is 'happy' or not. See
         % HAPPINESSCHECK.m for full documentation.
         ishappy % (logical)
@@ -230,7 +222,7 @@ classdef chebtech < smoothfun % (Abstract)
         f = fracInt(f, mu, b)
 
         % Happiness test for a CHEBTECH
-        [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, vscl, pref)
+        [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, data, pref)
 
         % Imaginary part of a CHEBTECH.
         f = imag(f)
@@ -326,7 +318,7 @@ classdef chebtech < smoothfun % (Abstract)
         out = poly(f)
 
         % Populate a CHEBTECH class with values.
-        [f, values] = populate(f, op, vscl, hscale, pref)
+        [f, values] = populate(f, op, data, pref)
         
         % Power function of a CHEBTECH.
         f = power(f, b)
@@ -356,7 +348,7 @@ classdef chebtech < smoothfun % (Abstract)
         out = rval(f)
 
         % Test an evaluation of the input OP against a CHEBTECH approx.
-        pass = sampleTest(op, values, f, vscl, pref)
+        pass = sampleTest(op, values, f, data, pref)
         
         % Signum of a CHEBTECH. (f should have no zeros in its domain)
         f = sign(f, pref)
@@ -368,7 +360,7 @@ classdef chebtech < smoothfun % (Abstract)
         [siz1, siz2] = size(f, varargin)
 
         % Strict happiness check.
-        [ishappy, epslevel, cutoff] = strictCheck(f, values, vscl, pref)
+        [ishappy, epslevel, cutoff] = strictCheck(f, values, data, pref)
 
         % Definite integral of a CHEBTECH on the interval [-1,1].
         out = sum(f, dim)
@@ -401,6 +393,8 @@ classdef chebtech < smoothfun % (Abstract)
         % Retrieve and modify preferences for this class.
         p = techPref(q)
 
+        % TODO:  Document.
+        data = parseDataInputs(data, pref)
     end
 
 end

@@ -93,10 +93,7 @@ function f = diffContinuousDim(f, k)
 
     % If k >= n, we know the result will be the zero function:
     if ( k >= n ) 
-        z = zeros(size(f, 2));
-        data.vscale = z;
-        data.hscale = f.hscale;
-        f = f.make(z, data);
+        f = f.make(zeros(1, size(f, 2)));
         return
     end
     

@@ -75,9 +75,6 @@ if ( ischar(pref.refinementFunction) )
 end
 
 % Make CHEBTECH object:
-if ( ~isfield(data, 'hscale') || isempty(data.hscale) )
-    data.hscale = f.hscale;
-end
 f = f.make(op, data, pref);
 
 end

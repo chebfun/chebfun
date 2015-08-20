@@ -176,7 +176,8 @@ end
 c = f.coeffs/f.vscale;
 
 % Call the recursive rootsunit function:
-r = rootsunit_coeffs(c, 100*eps*max(f.hscale, 1));
+%r = rootsunit_coeffs(c, 100*eps*max(f.hscale, 1));
+r = rootsunit_coeffs(c, 100*eps);
 
 % Try to filter out spurious roots:
 if ( ~isempty(rootsPref.filter) )

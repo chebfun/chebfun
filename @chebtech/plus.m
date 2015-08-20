@@ -70,7 +70,6 @@ elseif ( isa(f, 'chebtech') && isa(g, 'chebtech') )  % CHEBTECH + CHEBTECH
         z = zeros(1, size(f.coeffs, 2));
 
         data.vscale = z;
-        data.hscale = f.hscale;
         f = f.make(z, data);
         f.epslevel = epslevel;
         f.ishappy = ishappy;

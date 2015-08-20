@@ -1,4 +1,4 @@
-function [ishappy, epslevel, cutoff] = classicCheck(f, values, vscl, pref)
+function [ishappy, epslevel, cutoff] = classicCheck(f, values, data, pref)
 %CLASSICCHECK   Attempt to trim trailing Chebyshev coefficients in a CHEBTECH.
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F, VALUES, VSCL) returns an
 %   estimated location, the CUTOFF, at which the CHEBTECH F could be truncated
@@ -82,34 +82,30 @@ end
 if ( nargin < 2 || isempty(values) )
     values = f.coeffs2vals(f.coeffs);
 end
-if ( isempty(vscl) || isempty(vscl) )
-    vscl = max(abs(values), [],  1);
-end
-vscl = max(vscl ,max(abs(values), [],  1));
 
 % Check the vertical scale:
-if ( max(vscl) == 0 )
+if ( max(data.vscale) == 0 )
     % This is the zero function, so we must be happy!
     ishappy = true;
     cutoff = 1;
     return
-elseif ( any(isinf(vscl)) )
+elseif ( any(isinf(data.vscale)) )
     % Inf located. No cutoff.
     cutoff = n;
     return
 else
     % We need this for constructing the zero function:
-    vscl(~vscl) = 1;
+    data.vscale(~data.vscale) = 1;
 end
 
 % Check for convergence and chop location --------------------------------------
 
 % Absolute value of coefficients, relative to vscale:
-ac = bsxfun(@rdivide, abs(f.coeffs), vscl);
+ac = bsxfun(@rdivide, abs(f.coeffs), data.vscale);
 
 % Happiness requirements:
 [testLength, epslevel] = ...
-    happinessRequirements(values, f.coeffs, f.points(), vscl, f.hscale, epslevel);
+    happinessRequirements(values, f.coeffs, f.points(), data, epslevel);
 
 if ( all(max(ac(end-testLength+1:end, :)) < epslevel) ) % We have converged! Chop tail:
 
@@ -163,7 +159,7 @@ end
 end
 
 function [testLength, epslevel] = ...
-    happinessRequirements(values, coeffs, x, vscl, hscale, epslevel) %#ok<INUSL>
+    happinessRequirements(values, coeffs, x, data, epslevel) %#ok<INUSL>
 %HAPPINESSREQUIREMENTS   Define what it means for a CHEBTECH to be happy.
 %   See documentation above.
 
@@ -184,8 +180,8 @@ tailErr = min(tailErr, minPrec);
 %    ||f(x+eps(x)) - f(x)||_inf / ||f||_inf ~~ (eps(hscale)/vscale)*f'.
 dy = diff(values);
 dx = diff(x)*ones(1, size(values, 2));
-gradEst = max(abs(dy./dx));             % Finite difference approx.
-condEst = eps(hscale)./vscl.*gradEst; % Condition number estimate.
+gradEst = max(abs(dy./dx));                       % Finite difference approx.
+condEst = eps(data.hscale)./data.vscale.*gradEst; % Condition number estimate.
 condEst = min(condEst, minPrec);      
 
 % Choose maximum between prescribed tolerance and estimated rounding errors:
