@@ -29,6 +29,7 @@ home
 close all
 % Create a new figure, and add space to the bottom for a text box
 fig = figure;
+shg
 % Want thick lines by default
 set(fig, 'DefaultLineLineWidth', 3)
 figPos = get(fig, 'position');
@@ -293,7 +294,6 @@ elseif ( length(f) > 1 )
 end
 textBox = myTextbox(str, textBox);
 %% Waterfall plot is what we have drawn.
-% TODO: Delete the markers from above. Make waterfall plot points as well.
 water = waterfall(f, '-', 'nslices', min(length(f), 6), 'markersize', 35);
 
 % tilt, pan, tilt
@@ -313,14 +313,11 @@ mypause(psectionbreak)
 % Get the pivot locations of the actually resolved CHEBFUN2
 P = f.pivotLocations;
 markers=[]; trun = min(6,length(f)); P = P(1:trun,:);
-for j = 1:min(6, length(f))
-    [xx, yy] = meshgrid(P(:,1), chebpts(33));
-    mark1 = plot3(xx,yy,scl+0*xx,'.k','MarkerSize',20);
-    [xx, yy] = meshgrid(chebpts(33), P(:,2));
-    mark2 = plot3(xx, yy, scl+0*xx, '.k', 'MarkerSize', 20);
-    mypause(psectionbreak)
-end
-%     delete(mark1), delete(mark2),
+[xx, yy] = meshgrid(P(:,1), chebpts(33));
+mark1 = plot3(xx,yy,scl+0*xx,'.k','MarkerSize',20);
+[xx, yy] = meshgrid(chebpts(33), P(:,2));
+mark2 = plot3(xx, yy, scl+0*xx, '.k', 'MarkerSize', 20);
+mypause(psectionbreak)
 delete(water), clf
 
 %% Do chebpolyplots of all the columns and rows
@@ -338,8 +335,11 @@ if length(f) > 6
     Ccfs(:, 7:length(f)) = [];
 end
 
+% Prepare coefficients for plotting:
 Ccfs = log10(abs(flipud(Ccfs))); Ccfs(Ccfs==-inf)=log10(eps);
 PivPos = f.pivotLocations;
+
+% First plot columns:
 cols = [];
 for jj = 1:min(6,length(f))
     xx = PivPos(jj,1)*ones(length(Ccfs), 1);
@@ -351,8 +351,9 @@ for jj = 1:min(6,length(f))
     cols=[col cols];
 end
 
-% Now we do the rows.
+% Now plot rows:
 Rcfs = get(f.rows, 'coeffs');
+
 % Only want the first six rows:
 if length(f) > 6
     Rcfs(:, 7:length(f)) = [];
@@ -362,7 +363,7 @@ Rcfs = log10(abs(Rcfs));Rcfs(Rcfs==-inf)=log10(eps);
 rows=[];
 for jj = 1:min(6,length(f))
     xx=linspace(-1,1,length(Rcfs));
-    yy=PivPos(jj,1)*ones(length(Rcfs),1);
+    yy=PivPos(jj,2)*ones(length(Rcfs),1);
     row = plot3(xx,yy,Rcfs(:,jj),'Color',co(jj,:));
     rows=[row rows];
 end
@@ -418,7 +419,7 @@ for jj= 1:min(6,length(f))
 end
 campos([0 0 10]);
 
-pause(pbreak)
+mypause(psectionbreak)
 clf
 
 %% Show how the chebfun2 is stored
@@ -453,6 +454,7 @@ end
 str = 'It''s stored as two chebfun quasi-matrices just like this:';
 textBox = myTextbox(str, textBox);
 pause(pbreak)
+
 for t = 0:.1:1
     delete(cols),delete(rows), delete(markers)
     cols=[];
@@ -480,7 +482,8 @@ for t = 0:.1:1
     end
     pause(pbreak);
 end
-% Create textbox
+
+% Create textbox for equation:
 delete(textBox);
 annotation(gcf,'textbox',...
     [0.143441860465116 0.201923076923077 0.764988372093023 0.0913461538461542],...
@@ -497,6 +500,8 @@ end
 
 
 function h = fullpan(h, p)
+% Do a full pan
+
 % Set the camera view angle to manual mode, so that the size of the plot
 % doesn't keep changing as we rotate
 set(gca, 'cameraviewanglemode', 'manual')
@@ -533,6 +538,7 @@ end
 end
 
 function h = mycomet(pivot, h, color, p)
+% Draw lines, a row and a column out from a pivot
 t = 0:.01:1;
 x=zeros(1, length(t));
 xeven = pivot(1) + t(1:2:end)*(1 - pivot(1));
@@ -630,6 +636,8 @@ textBox = annotation('textbox', [0.05, 0.025, 0.9, 0.175],...
 end
 
 function [P, ff, e, scl, sclinf, pts] = myACA(f, nGridPoints, nIter)
+% MYACA    A basic ACA algorithm for approximating a 2D function
+
 % Sample the function on a finer Chebyshev grid so that we can compute (and
 % plot) the residual after taking one step.
 nPlotGrid = 200;
