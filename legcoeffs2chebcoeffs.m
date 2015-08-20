@@ -1,14 +1,16 @@
 function chebcoeffs = legcoeffs2chebcoeffs( legcoeffs )
-% LEGCOEFFS2CHEBCOEFFS      Convert Legendre coeffs to Chebyshev coeffs
-% 
-%  CHEBCOEFFS = LEGCOEFFS2CHEBCOEFFS( LEGCOEFFS ), converts a vector of
-%  LEGCOEFFS representing Legendre coefficients of an expansion to 
-%  a vector CHEBCOEFFS representing Chebyshev coefficients. That is,   
-% 
-%      sum_k  LEGCOEFFS( k ) P_k(x)    =  sum_k CHEBCOEFFS( k )  T_k(x)
-% 
-% See also vals2coeffs, chebpts.
+%CHEB2LEG  Convert Legendre coefficients to Chebyshev coefficients. 
+%   C_CHEB = LEG2CHEB(C_LEG) converts the vector C_LEG of Legendre coefficients
+%   to a vector C_CHEB of Chebyshev coefficients such that 
+%       C_CHEB(1)*T0 + ... + C_CHEB(N)*T{N-1} = ...
+%           C_LEG(N)*P0 + ... + C_LEG(1)*P{N-1}, 
+%   where P{k} is the degree k Legendre polynomial normalized so that max(|P{k}|
+%   = 1.
 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
+
+% This command is a wrapper for chebfun/leg2cheb.
 chebcoeffs = chebfun.leg2cheb( legcoeffs ); 
 
 end
