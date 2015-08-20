@@ -79,8 +79,11 @@ if ( isnumeric(op) || iscell(op) )
     % We're always happy if given discrete data:
     f.ishappy = true;
     
-    % Set epslevel to eps:
-    f.epslevel = eps*ones(1, size(f.coeffs, 2));
+    % Scale the epslevel relative to the largest column:
+    vscl = f.vscale;
+    f.epslevel = 10*eps(max(vscl));
+    vscl(vscl <= f.epslevel) = 1;
+    f.epslevel = f.epslevel./vscl;
 
     return
 end
