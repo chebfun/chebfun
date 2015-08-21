@@ -29,7 +29,7 @@ coeffs = abs(f.coeffs(end:-1:1,:));
 [n, m] = size(coeffs);
 
 % Use the default tolerance if none was supplied.
-p = chebfunpref;
+p = trigtech.techPref();
 if ( nargin < 2 )
     tol = p.eps;
 end
@@ -46,7 +46,7 @@ end
 
 % Need to handle odd/even cases separately.
 isEven = mod(n, 2) == 0;
-if isEven
+if ( isEven )
     coeffs = [coeffs(n,:) ; coeffs(n-1:-1:n/2+1,:) + coeffs(1:n/2-1,:) ; coeffs(n/2,:)];
 else
     coeffs = [coeffs(n:-1:(n+1)/2+1,:) + coeffs(1:(n+1)/2-1,:) ; coeffs((n+1)/2,:)];

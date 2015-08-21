@@ -66,13 +66,8 @@ if ( isempty(col) )
     end
 end
 
-% Deal with 'LogLog' and 'noEpsLevel' input:
-doLogLog = cellfun(@(s) strcmpi(s, 'loglog'), varargin);
-% varargin(doLoglog) = [];
-doLogLog = any(doLogLog);
-noEpsLevel = cellfun(@(s) strcmpi(s, 'noEpsLevel'), varargin);
-varargin(noEpsLevel) = []; % Strip this out, as we don't want to pass it down.
-doEpsLevel = 0;
+% Deal with 'LogLog' and input:
+doLogLog = any(cellfun(@(s) strcmpi(s, 'loglog'), varargin));
 
 % Convert to a cell array for easy handling:
 f = mat2cell(f);

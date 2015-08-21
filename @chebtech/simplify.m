@@ -28,8 +28,8 @@ end
 coeffs = f.coeffs;
 [n, m] = size(coeffs);
 
-% Use CHEBFUNPREF.EPS if no tolerance was supplied.
-p = chebfunpref;
+% Use the default tolerance if none was supplied.
+p = chebtech.techPref();
 if ( nargin < 2 )
     tol = p.eps;
 end

@@ -99,8 +99,6 @@ switch prop
         out = vscale(f);
     case 'hscale'
         out = hscale(f);
-    case 'epslevel'
-        out = eps;
     case 'ishappy'
         out = ishappy(f);
     case fieldnames(f)

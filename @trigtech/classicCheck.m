@@ -62,7 +62,7 @@ end
 
 % Convert scalar epslevel/tolerance inputs into vectors.
 if ( isscalar(epslevel) )
-    epslevel = repmat(epslevel, size(vscale(f)));
+    epslevel = repmat(epslevel, 1, size(f.coeffs, 2));
 end
 
 % Deal with the trivial case:

@@ -25,9 +25,6 @@ function out = get(f, prop)
 switch prop
     case fieldnames(f)
         out = f.(prop);
-    case 'epslevel'
-        % TODO:  Remove this case.
-        out = eps;
     case 'points'
         out = f.points();
     case 'lval'
