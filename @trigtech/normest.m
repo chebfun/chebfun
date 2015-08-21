@@ -9,6 +9,6 @@ function out = normest(f)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Since f.vscale = max(abs(f.values)) calling max(f.vscale) is sufficient:
-out = max(f.vscale);
+out = max(vscale(f));
             
 end

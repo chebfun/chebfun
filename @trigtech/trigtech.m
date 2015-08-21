@@ -134,12 +134,6 @@ classdef trigtech < smoothfun % (Abstract)
         % See HAPPINESSCHECK.m for full documentation.
         ishappy % (logical)
 
-        % Happiness level to which the TRIGTECH was constructed (See
-        % HAPPINESSCHECK.m for full documentation) or a rough accuracy estimate
-        % of subsequent operations (See TRIGTECH class documentation for
-        % details).
-        epslevel % (double >= 0)
-        
         % Boolean value designating whether the TRIGTECH represents a
         % real-valued function. This allows us to always return a real result
         % for things like evaluating a TRIGTECH.
@@ -162,7 +156,7 @@ classdef trigtech < smoothfun % (Abstract)
             end
 
             if ( (nargin < 2) || isempty(data) )
-                    data = struct();
+                data = struct();
             end
 
             if ( (nargin < 3) || isempty(pref) )

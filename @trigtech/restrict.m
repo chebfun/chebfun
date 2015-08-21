@@ -44,7 +44,7 @@ if ( numInts > 1 )
 end
 
 op = @(x) feval(f, .5 * [1 - x, 1 + x] * [s(1) ; s(end)]);
-data.vscale = f.vscale;
+data.vscale = vscale(f);
 pref = f.techPref;
 pref.minSamples = min(length(f), pref.minSamples);
 F = f.make(op, data, pref);

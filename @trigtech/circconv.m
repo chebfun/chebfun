@@ -50,12 +50,6 @@ g = circshift(g,-1);
 f.values = 2/n*ifft(fft(f.values).*fft(g.values));
 f.coeffs = f.vals2coeffs(f.values);
 
-% Scale the epslevel relative to the largest column:
-vscl = vscale(f);
-f.epslevel = 10*eps(max(vscl));
-vscl(vscl <= f.epslevel) = 1;
-f.epslevel = f.epslevel./vscl;
-
 % TODO:  Why do we simplify twice?  (Once here and once below.)
 f = simplify(f);
 
@@ -65,7 +59,7 @@ f.isReal = f.isReal && g.isReal;  % Are you real happy though?
 f.values(:,f.isReal) = real(f.values(:,f.isReal));
 
 if ( f.ishappy )
-    f = simplify(f, f.epslevel);
+    f = simplify(f);
 end
 
 end

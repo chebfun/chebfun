@@ -47,15 +47,10 @@ if ( isnumeric(op) || iscell(op) )
 
     % We're always happy if given discrete data:
     f.ishappy = true;
-    
-    % Scale the epslevel relative to the largest column:
-    data.vscale = vscale(f);
-    f.epslevel = 10*eps(max(data.vscale));
-    data.vscale(data.vscale <= f.epslevel) = 1;
-    f.epslevel = f.epslevel./data.vscale;
 
     % Threshold to determine if f is real or not.
-    f.isReal = max(abs(imag( f.values ))) <= 2*(f.epslevel.*data.vscale);
+    vscl = max(data.vscale, vscale(f));
+    f.isReal = max(abs(imag( f.values ))) <= 2*(eps.*vscl);
     f.values(:,f.isReal) = real(f.values(:,f.isReal));
 
     return
@@ -67,15 +62,16 @@ end
 f.values = [];
 % Check a random value of op in (-1,1) to see if the result is complex and
 % if the value is a NaN or Inf.
-rndval = feval(op,(2*rand-1));
+pseudoRand = 0.376989633393435;
+rndVal = feval(op, (2*pseudoRand - 1));
 
-if any(isnan(rndval)) || any(isinf(rndval))
+if ( any(isnan(rndVal)) || any(isinf(rndVal)) )
     error('CHEBFUN:TRIGTECH:populate:isNan','Cannot handle functions that evaluate to Inf or NaN.');
 end
 
-f.isReal = false(size(rndval));
-for k = 1:numel(rndval)
-    f.isReal(k) = isreal(rndval(k));
+f.isReal = false(size(rndVal));
+for k = 1:numel(rndVal)
+    f.isReal(k) = isreal(rndVal(k));
 end
 
 % Loop until ISHAPPY or GIVEUP:
@@ -111,26 +107,9 @@ while ( 1 )
 
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Update the vscale. %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Compute the 'true' vscale (as defined in TRIGTECH classdef):
-vscaleOut = max(abs(f.values), [], 1);
-% Update vertical scale one last time:
-vscaleGlobal = max(data.vscale, vscaleOut);
-
-% Output the 'true' vscale (i.e., the max of the stored values):
-data.vscale = vscaleOut;
-
-% Adjust the epslevel appropriately:
-ind = vscaleOut < epslevel;
-vscaleOut(ind) = epslevel(ind);
-ind = vscaleGlobal < epslevel;
-vscaleGlobal(ind) = epslevel(ind);
-epslevel = epslevel.*vscaleGlobal./vscaleOut;
-    
 %%%%%%%%%%%%%%%%%%%%%%%%%% Assign to TRIGTECH object. %%%%%%%%%%%%%%%%%%%%%%%%%%
 f.coeffs = coeffs;
 f.ishappy = ishappy;
-f.epslevel = epslevel;
 
 % Force the values to be real if the imaginary part is zero
 f.values(:,f.isReal) = real(f.values(:,f.isReal));
@@ -139,7 +118,7 @@ f.values(:,f.isReal) = real(f.values(:,f.isReal));
 
 if ( ishappy )
     % We're done, and can return.
-    f = simplify(f, f.epslevel/2);
+    f = simplify(f, eps/2);
 end
 
 end

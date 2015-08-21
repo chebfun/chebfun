@@ -26,7 +26,6 @@ elseif ( dim == 2 )     % ANY down the rows.
     arbitraryPoint = 0.1273881594;
     a.values = any(feval(a, arbitraryPoint));
     a.coeffs = a.values;
-    a.epslevel = eps;
     a.isReal = true(1, size(f.coeffs, 2));
 else
     error('TRIGTECH:any:dim', 'DIM input must be 1 or 2.');

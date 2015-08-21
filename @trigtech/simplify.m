@@ -92,7 +92,4 @@ cutoff = min(cutoff, mid);
 f.coeffs = coeffs(mid-cutoff+1:mid+cutoff-1,:);
 f.values = trigtech.coeffs2vals(f.coeffs);
 
-% Set F.EPSLEVEL to MATLAB EPS.
-f.epslevel = eps + 0*f.epslevel;
-
 end

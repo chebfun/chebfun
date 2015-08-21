@@ -16,7 +16,6 @@ if ( isempty(g) )
     h = f;
     h.values(:,colIdx) = [];
     h.coeffs(:,colIdx) = [];
-    h.epslevel(:,colIdx) = [];
     h.isReal(:,colIdx) = [];
     return
 end
@@ -35,7 +34,6 @@ h.coeffs(:, colIdx) = g.coeffs;
 
 % Update happiness, vscale, and epslevel:
 h.ishappy = f.ishappy && g.ishappy;
-h.epslevel(colIdx) = g.epslevel;
 h.isReal(colIdx) = g.isReal;
 
 end

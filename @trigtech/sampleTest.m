@@ -13,7 +13,7 @@ function pass = sampleTest(op, f, pref)
 n = length(f);
 
 % Set a tolerance:
-tol = max(max(f.epslevel, pref.eps), 1e3*eps) * n;
+tol = max(pref.eps, 1e3*eps) * n;
 
 % Choose a point to evaluate at:
 if ( n == 1 )
@@ -33,7 +33,7 @@ vFun = feval(f, xeval);
 vOp = feval(op, xeval);
 
 % If the TRIGTECH evaluation differs from the op evaluation, SAMPLETEST failed:
-err = bsxfun(@rdivide, abs(vOp - vFun), f.vscale); % Relative (to vscale) error.
+err = bsxfun(@rdivide, abs(vOp - vFun), vscale(f)); % Relative (to vscale) error.
 if ( any(max(abs(err)) > tol) )
     pass = false; % :(
 else

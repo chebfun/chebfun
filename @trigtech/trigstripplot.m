@@ -1,8 +1,8 @@
 function varargout = trigstripplot(u, varargin)
 %TRIGSTRIPPLOT   Plot the strip of analyticity.
 %   TRIGSTRIPPLOT(U) plots estimated strip of analyticity in the complex plane
-%   for U. The width of the strip is 2*a(k)=1/N(k)/pi*log(4/EPS+1), where EPS is
-%   the EPSLEVEL of U and N(k) is the number of Fourier modes.
+%   for U. The width of the strip is 2*a(k)=1/N(k)/pi*log(4/EPS+1), where N(k)
+%   is the number of Fourier modes.
 %
 %   TRIGSTRIPPLOT(U, EPS) allows a user-specified EPS.
 %
@@ -34,9 +34,6 @@ end
 
 % Parse the inputs.
 [ee, args] = parseInputs(varargin{:});
-if ( isnan(ee) )
-    ee = u.epslevel;
-end
 
 % Compute the intercept of the strip on the imaginary axis
 M = length(u);
@@ -79,7 +76,7 @@ end
 function [ee, args] = parseInputs(varargin)
 
 % Default options
-ee = NaN;               % Default EPS
+ee = eps;               % Default EPS
 args = {};              % Additional plotting args.
 
 % Sort out the inputs.

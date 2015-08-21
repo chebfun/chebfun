@@ -13,7 +13,6 @@ function f = extractColumns(f, colIdx)
 % Extract/re-order the columns from f.values, f.coeffs:
 f.values = f.values(:,colIdx);
 f.coeffs = f.coeffs(:,colIdx);
-f.epslevel = f.epslevel(colIdx);
 f.isReal = f.isReal(colIdx);
 
 end

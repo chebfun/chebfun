@@ -62,7 +62,7 @@ h = testclass.make([exp(sin(pi*x)+cos(pi*x)) exp(cos(pi*x)+sin(pi*cos(pi*x)))]);
 hvalues = h.coeffs2vals(h.coeffs);
 gvalues = g.coeffs2vals(g.coeffs);
 pass(6) = norm(hvalues - gvalues, inf) < ...
-    max(10*h.vscale.*h.epslevel);
+    max(1e2*h.vscale.*h.epslevel);
 
 % Compose g(f), when f and g are TRIGTECH objects:
 f = testclass.make(@(x) sin(pi*x));

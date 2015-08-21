@@ -24,6 +24,9 @@ switch prop
     case fieldnames(f)
         % Allow access to any of the properties of F via GET:
         out = f.(prop);
+    case 'epslevel'
+        % TODO:  Delete this case.
+        out = eps;
     case 'vscale'
         % Get the vscale:
         out = vscale(f);

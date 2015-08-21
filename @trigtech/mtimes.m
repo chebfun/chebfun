@@ -35,19 +35,9 @@ elseif ( isa(c, 'double') )         % TRIGTECH * double.
             'Inner matrix dimensions must agree.');
     end
     
-    vscaleOld = vscale(f);
     f.values = f.values*c;
     f.coeffs = f.coeffs*c;
-    f.isReal = repmat(all(f.isReal) & isreal(c),1,size(c,2));
-    
-    if ( numel(c) == 1 )
-        % See TRIGTECH CLASSDEF file for documentation on this.
-        f.epslevel = f.epslevel + eps;
-    else
-        % See TRIGTECH CLASSDEF file for documentation on this.
-        vscaleNew = vscale(f);
-        f.epslevel = ((f.epslevel.*vscaleOld)*abs(c))./vscaleNew;
-    end
+    f.isReal = repmat(all(f.isReal) & isreal(c), 1, size(c, 2));
     
     % If the vertical scale is zero, set the TRIGTECH to zero:
     if ( all(vscale(f) == 0) )

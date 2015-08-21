@@ -32,7 +32,6 @@ elseif ( isa(g, 'double') )     % TRIGTECH .* double.
         f.values = f.values*g;
         f.coeffs = f.coeffs*g;
     end
-    f.epslevel = f.epslevel + eps(g);
     f.isReal = f.isReal & isreal(g);
     return
 
@@ -47,14 +46,12 @@ elseif ( size(f.values, 1) == 1 )
     % If we have (constant TRIGTECH).*TRIGTECH, reverse the order and call TIMES
     % again:
     f = times(g, f.values);
-    f.epslevel = max(f.epslevel, g.epslevel);
     return
     
 elseif ( size(g.values, 1) == 1)
     % If we have TRIGTECH.*(constant TRIGTECH), convert the (constant TRIGTECH)
     % to a scalar and call TIMES again:
     f = times(f, g.values); 
-    f.epslevel = max(f.epslevel, g.epslevel);
     return
 end
 
@@ -100,22 +97,10 @@ else
 end
 
 % Assign values and coefficients back to f:
-vscaleOldf = vscale(f);
-vscaleOldg = vscale(g);
 f.values = values;
 f.coeffs = f.vals2coeffs(values);
 
-% Update vscale, epslevel, and ishappy:
-vscaleNew = vscale(f);
-
-% Avoid NaNs:
-vscaleNew(vscaleNew == 0) = 1;
-vscaleOldf(vscaleOldf == 0) = 1;
-vscaleOldg(vscaleOldg == 0) = 1;
- 
-% See CHEBTECH CLASSDEF file for documentation on this:
-epslevelBound = (f.epslevel + g.epslevel) .* (vscaleOldf.*vscaleOldg./vscaleNew);
-f.epslevel = updateEpslevel(f, epslevelBound);
+% Update ishappy:
 f.ishappy = f.ishappy && g.ishappy;
 
 % Simplify.

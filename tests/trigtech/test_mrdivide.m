@@ -40,7 +40,7 @@ A = [1 1];
 g = f / A;
 g_exact = @(x) (exp(sin(pi*x)) + 3./(4-cos(pi*x)))/2;
 pass(4) = norm(feval(g, x) - g_exact(x), inf) < ...
-    10*max(g.vscale.*g.epslevel);
+    1e2*max(g.vscale.*g.epslevel);
 
 %%
 % Check division of a numeric array by a TRIGTECH object.

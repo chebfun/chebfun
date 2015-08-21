@@ -29,10 +29,6 @@ function [ishappy, epslevel, cutoff] = plateauCheck(f, values, data, pref)
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% TODO: We currently need to do this as trigtech has a vscale and chebtech
-% doesn't.
-f.vscale = max(f.vscale, data.vscale);
-
 % [TODO]: implement PLATEAUCHECK for TRIGTECH. For the moment, we just call
 % classicCheck. The reason why the plateauCheck() is needed for TRIGTECH is 
 % that it gets called in CHEBDISCRETIZATION/TESTCONVERGENCE.
