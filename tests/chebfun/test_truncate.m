@@ -10,14 +10,14 @@ f = sign(x);
 g = truncate(f, 10);
 pass(1) = length(g) == 10;
 c = chebcoeffs(g);
-pass(2) = abs(c(end) - 4/(9*pi)) < epslevel(g);
+pass(2) = abs(c(end) - 4/(9*pi)) < 10*epslevel(g);
 
 %% Test 'trunc' flag:
 G = chebfun(@(x) sign(x), 'trunc', 10, pref);
 pass(3) = length(g) == 10;
 pass(4) = norm(g - G, inf) < epslevel(g);
 c = chebcoeffs(g);
-pass(5) = abs(c(end) - 4/(9*pi)) < epslevel(G);
+pass(5) = abs(c(end) - 4/(9*pi)) < 10*epslevel(G);
 
 %% Test trig-based:
 f = chebfun(@(x) exp(sin(pi*x)), 'trig', pref);

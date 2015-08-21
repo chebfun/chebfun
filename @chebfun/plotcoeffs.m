@@ -78,8 +78,7 @@ doEpsLevel = 0;
 f = mat2cell(f);
 
 % Initialise the output:
-h1 = cell(1, numel(f));
-h2 = cell(1, numel(f));
+h = cell(1, numel(f));
 
 % Loop over the columns in a quasimatrix:
 for k = 1:numel(f)
@@ -90,7 +89,7 @@ for k = 1:numel(f)
         colk = col(k,:);
     end
     % Call the column version:
-    [h1{k}, h2{k}] = columnPlotCoeffs(f{k}, colk, varargin{:});
+    h{k} = columnPlotCoeffs(f{k}, colk, varargin{:});
 end
 
 % Return hold state to what it was before:
@@ -103,36 +102,27 @@ if ( doLogLog )
     set(gca, 'xScale', 'Log');
 end
 
-% Remove epslevels if they're not wanted:
-if ( ~doEpsLevel )
-    for k = 1:numel(f)
-        set(h2{k}, 'visible', 'off');
-    end
-end
-
 % Give an output if one was requested:
 if ( nargout > 0 )
     try 
-        h1 = cell2mat(h1);
-        h2 = cell2mat(h2);
+        h = cell2mat(h);
     catch
         % shrug
     end
-    varargout = {h1, h2};
+    varargout = {h};
 end
 
 end
 
-function [h1, h2] = columnPlotCoeffs(f, col, varargin)
+function h = columnPlotCoeffs(f, col, varargin)
 numFuns = numel(f.funs);
 
 % Initialise handle storage:
-h1 = zeros(numFuns, 1);
-h2 = zeros(numFuns, 1);
+h = zeros(numFuns, 1);
 
 % Call plotcoeffs at the tech level:
 for j = 1:numFuns
-    [h1(j), h2(j)] = plotcoeffs(f.funs{j}, varargin{:}, 'color', col); hold on
+    h(j) = plotcoeffs(f.funs{j}, varargin{:}, 'color', col); hold on
 end
 
 end

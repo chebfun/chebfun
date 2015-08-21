@@ -23,7 +23,7 @@ dom = [.01, 10.01];
 x = (0:10)';  
 y = [sin(x), cos(x)];
 f = chebfun.pchip(x, y, dom);
-tol = epslevel(f);
+tol = 10*epslevel(f);
 pass(7) = all(f.domain == [dom(1), 1:10, dom(2)]);
 pass(8) = norm(feval(f, x(2:end)) - y(2:end,:)) < tol;
 pass(9) = numel(f.funs) == 11;

@@ -111,7 +111,7 @@ pass(31) = length(f) == length(x);
 % Test a different domain:
 dom = [-.01, 10.01];
 f = chebfun.interp1(x, y, dom);
-tol = 100*epslevel(f);
+tol = 1e3*epslevel(f);
 pass(32) = norm(feval(f, x) - y) < tol;
 pass(33) = numel(f.funs) == 1;
 pass(34) = length(f) == length(x);
