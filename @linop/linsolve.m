@@ -142,7 +142,7 @@ for dim = [dimVals inf]
         vscale = repmat(vscale, 1, length(isFun));
     end
     % Test the happiness of the function pieces:
-    [isDone, epslevel, vscale, cutoff] = ...
+    [isDone, vscale, cutoff] = ...
         testConvergence(disc, u(isFun), vscale(isFun), prefs);
     
     if ( all(isDone) || isinf(dim) )

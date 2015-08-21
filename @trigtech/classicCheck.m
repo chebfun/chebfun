@@ -1,4 +1,4 @@
-function [ishappy, epslevel, cutoff] = classicCheck(f, values, data, pref)
+function [ishappy, cutoff] = classicCheck(f, values, data, pref)
 %CLASSICCHECK   Attempt to trim trailing Fourier coefficients in a TRIGTECH.
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F, VALUES) returns an estimated
 %   location, the CUTOFF, at which the TRIGTECH F could be truncated to maintain

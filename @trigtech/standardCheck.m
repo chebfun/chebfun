@@ -1,4 +1,4 @@
-function [ishappy, epslevel, cutoff] = standardCheck(f, values, data, pref)
+function [ishappy, cutoff] = standardCheck(f, values, data, pref)
 %STANDARDCHECK   Attempt to trim trailing Fourier coefficients in a TRIGTECH.
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = STANDARDCHECK(F) uses the routine STANDARDCHOP
 %   to compute a positive integer CUTOFF which represents the number of
@@ -45,9 +45,6 @@ coeffs = [coeffs(1,:) ; kron(coeffs(2:end,:), [1 ; 1])];
 
 % Initialize ISHAPPY.
 ishappy = false;
-
-% Initialize EPSLEVEL.
-epslevel = eps*ones(1, m);
 
 % Initialize CUTOFF.
 cutoff = n; 

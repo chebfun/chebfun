@@ -1,4 +1,4 @@
-function [ishappy, epslevel, cutoff] = strictCheck(f, values, data, pref)
+function [ishappy, cutoff] = strictCheck(f, values, data, pref)
 %STRICTCHECK   Attempt to trim trailing Chebyshev coefficients in a CHEBTECH.
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = STRICTCHECK(F, VALUES, VSCL) returns an
 %   estimated location CUTOFF at which the CHEBTECH F could be truncated to
@@ -67,7 +67,6 @@ if ( max(data.vscale) == 0 )
 elseif ( any(isinf(data.vscale(:))) )
     % Inf located. No cutoff.
     cutoff = n;
-    epslevel = inf*epslevel;
     return
 end
 
@@ -87,8 +86,6 @@ if ( ~any(tail(:)) )
     ishappy = true;
 else
     cutoff = n;
-    % Estimate the epslevel:
-    epslevel = mean(abs(tail));
 end
 
 end

@@ -1,4 +1,4 @@
-function [ishappy, epslevel, cutoff] = linopV4Check(f, values, pref)
+function [ishappy, cutoff] = linopV4Check(f, values, pref)
 %LINOPV4CHECK   Attempt to trim trailing Chebyshev coefficients in a CHEBTECH.
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = LINOPV4CHECK(F, VALUES) returns an estimated
 %   location, the CUTOFF, at which the CHEBTECH F could be truncated. It's

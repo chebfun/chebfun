@@ -216,7 +216,7 @@ classdef trigtech < smoothfun % (Abstract)
         [h1, h2] = coeffsplot(f, varargin)
 
         % Check the happiness of a TRIGTECH. (Classic definition).
-        [ishappy, epslevel, cutoff] = classicCheck(f, values, vscl, pref)
+        [ishappy, cutoff] = classicCheck(f, values, data, pref)
 
         % Compose two TRIGTECH objects or a TRIGTECH with a function handle:
         h = compose(f, op, g, data, pref)
@@ -258,7 +258,7 @@ classdef trigtech < smoothfun % (Abstract)
         val = get(f, prop);
 
         % Happiness test for a TRIGTECH
-        [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, vscl, pref)
+        [ishappy, cutoff] = happinessCheck(f, op, values, data, pref)
 
         % Imaginary part of a TRIGTECH.
         f = imag(f)

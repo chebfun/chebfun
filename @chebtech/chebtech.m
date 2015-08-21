@@ -168,7 +168,7 @@ classdef chebtech < smoothfun % (Abstract)
         [h1, h2] = plotcoeffs(f, varargin)
 
         % Check the happiness of a CHEBTECH. (Classic definition).
-        [ishappy, epslevel, cutoff] = classicCheck(f, values, vscl, pref)
+        [ishappy, cutoff] = classicCheck(f, values, vscl, pref)
 
         % Complex conjugate of a CHEBTECH.
         f = conj(f)
@@ -216,7 +216,7 @@ classdef chebtech < smoothfun % (Abstract)
         f = fracInt(f, mu, b)
 
         % Happiness test for a CHEBTECH
-        [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, data, pref)
+        [ishappy, cutoff] = happinessCheck(f, op, values, data, pref)
 
         % Imaginary part of a CHEBTECH.
         f = imag(f)
@@ -258,7 +258,7 @@ classdef chebtech < smoothfun % (Abstract)
         f = logical(f)
 
         % A 'loose' (i.e., not too strict) check for happiness.
-        [ishappy, epslevel, cutoff] = looseCheck(f, values, vscl, pref)
+        [ishappy, cutoff] = looseCheck(f, values, vscl, pref)
         
         % Evaluate a CHEBTECH at -1.
         out = lval(f)
@@ -354,7 +354,7 @@ classdef chebtech < smoothfun % (Abstract)
         [siz1, siz2] = size(f, varargin)
 
         % Strict happiness check.
-        [ishappy, epslevel, cutoff] = strictCheck(f, values, data, pref)
+        [ishappy, cutoff] = strictCheck(f, values, data, pref)
 
         % Definite integral of a CHEBTECH on the interval [-1,1].
         out = sum(f, dim)

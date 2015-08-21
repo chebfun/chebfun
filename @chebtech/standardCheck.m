@@ -1,4 +1,4 @@
-function [ishappy, epslevel, cutoff] = standardCheck(f, values, data, pref)
+function [ishappy, cutoff] = standardCheck(f, values, data, pref)
 %STANDARDCHECK   Attempt to trim trailing Chebyshev coefficients in a CHEBTECH.
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = STANDARDCHECK(F) uses the routine STANDARDCHOP
 %   to compute a positive integer CUTOFF which represents the number of
@@ -22,9 +22,6 @@ function [ishappy, epslevel, cutoff] = standardCheck(f, values, data, pref)
 % Grab the coefficients of F.
 coeffs = f.coeffs;
 [n, m] = size(coeffs);
-
-% Initialize EPSLEVEL to be MATLAB EPS.
-epslevel = eps*ones(1, m);
 
 % Check for NaNs and exit if any are found.
 if ( any(isnan(coeffs)) )

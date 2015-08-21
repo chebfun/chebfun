@@ -1,4 +1,4 @@
-function  [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, data, pref)
+function  [ishappy, cutoff] = happinessCheck(f, op, values, data, pref)
 %HAPPINESSCHECK   Happiness test for a TRIGTECH
 %
 % See also CLASSICCHECK, SAMPLETEST.
@@ -32,15 +32,15 @@ data.vscale = max(data.vscale, vscale(f));
 % What does happiness mean to you?
 if ( strcmpi(pref.happinessCheck, 'standard') )
     % Use the 'standard' happiness check:
-    [ishappy, epslevel, cutoff] = standardCheck(f, values, data, pref);
+    [ishappy, cutoff] = standardCheck(f, values, data, pref);
 
 elseif ( strcmpi(pref.happinessCheck, 'classic') )
     % Use the default happiness check procedure from Chebfun V4.
-    [ishappy, epslevel, cutoff] = classicCheck(f, values, data, pref);
+    [ishappy, cutoff] = classicCheck(f, values, data, pref);
     
 elseif ( strcmpi(pref.happinessCheck, 'plateau') )
     % Use the 'plateau' happiness check:
-    [ishappy, epslevel, cutoff] = plateauCheck(f, values, data, pref);
+    [ishappy, cutoff] = plateauCheck(f, values, data, pref);
 
 elseif ( strcmpi(pref.happinessCheck, 'strict') )
     error('CHEBFUN:TRIGTECH:happinessCheck:strictCheck',...
@@ -53,7 +53,7 @@ elseif ( strcmpi(pref.happinessCheck, 'loose') )
 else
     % Call a user-defined happiness check:
     checker = pref.happinessCheck;
-    [ishappy, epslevel, cutoff] = checker(f, values, data, pref);
+    [ishappy, cutoff] = checker(f, values, data, pref);
     
 end
 
@@ -65,8 +65,5 @@ if ( ishappy && ~isempty(op) && ~isnumeric(op) && pref.sampleTest )
         cutoff = size(f.values, 1);
     end
 end
-
-% set epslevel = eps
-epslevel = eps;
 
 end

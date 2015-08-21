@@ -1,4 +1,4 @@
-function [ishappy, epslevel, cutOff] = plateauCheck(f, values, data, pref)
+function [ishappy, cutOff] = plateauCheck(f, values, data, pref)
 %PLATEAUCHECK   Attempt to trim trailing Chebyshev coefficients in a CHEBTECH.
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = PLATEAUCHECK(F, VALUES, VSCL) returns an
 %   estimated location, the CUTOFF, at which the CHEBTECH F could be truncated.

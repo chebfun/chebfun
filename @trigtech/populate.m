@@ -95,7 +95,7 @@ while ( 1 )
     
     % Check for happiness:
     f.coeffs = coeffs;
-    [ishappy, epslevel, cutoff] = happinessCheck(f, op, f.values, data, pref);
+    [ishappy, cutoff] = happinessCheck(f, op, f.values, data, pref);
     
         
     % We're happy! :)
