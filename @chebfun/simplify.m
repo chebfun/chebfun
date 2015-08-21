@@ -7,8 +7,8 @@ function F = simplify(F, tol)
 %  F.VSCALE and F.EPSLEVEL) and the local VSCALEs of F's individual FUN
 %  objects.
 %
-%  G = SIMPLIFY(F, TOL) does the same as above but uses TOL instead of the
-%  default simplification tolerances as the relative threshold level.
+%  G = SIMPLIFY(F, TOL) does the same as above but uses the scalar TOL instead
+%  of the default simplification tolerance as the relative threshold level.
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -21,8 +21,13 @@ end
 
 % Loop over the columns:
 for j = 1:numel(F)
+    % Adjust tolerance based on ratio of the global and local vscales:
+    vscaleLocal = get(F(j), 'vscale-local');
+    vscaleGlobal = vscale(F(j));
+    tolj = tol.*vscaleLocal./vscaleGlobal;
+
     for k = 1:numel(F(j).funs)
-        F(j).funs{k} = simplify(F(j).funs{k}, tol);
+        F(j).funs{k} = simplify(F(j).funs{k}, tolj(k));
     end
 end
 
