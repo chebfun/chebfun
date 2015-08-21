@@ -3,11 +3,13 @@ function [uquasi, lamvec, mvec, lamfun, mfun] = followPath(N, lam0, varargin)
 %
 % Calling sequence:
 %   [U, LAM] = FOLLOWPATH(N, LAM0, 'OPT1', VAL1, ...)
+%
 % Here, the inputs are:
 %   
 %   N    : A chebop, whose N.op arguments are x, u and lambda, and boundary
-%          conditions also depends on u and lambda.
-%   lam0 : Initial value of lambda for finding initial point on solution curve.
+%          conditions also depend on u and lambda.
+%   LAM0 : Initial value of lambda for finding an initial point on the solution
+%          curve.
 %
 % It is possible to pass the method various option pairs on the form
 %   'OPTIONNAME', OPTIONVALUE
@@ -38,11 +40,11 @@ function [uquasi, lamvec, mvec, lamfun, mfun] = followPath(N, lam0, varargin)
 %                     STOPFUN(U,LAMBDA) == TRUE
 %                 the pathfollowing program gets terminated, even if MAXSTEPNO
 %                 has not been reached.
-%   'DER'       : A struct that contains anonymous functions that describe the
-%                 Frechet derivatives of N. [TODO: Describe further and
-%                 implement].
 %   'PREFS'     : A CHEBOPPREF object. By default, a new CHEBOPPREF object with
-%                 the current global preferences is used.
+%                 the current global preferences is used if PREFS is not passed.
+%                 Note that the discretization option of PREFS has to be
+%                 specified as a function handle, not string, see 'help
+%                 cheboppref' for more details.
 %
 % The outputs are
 %   U   : An array-valued CHEBFUN that contains all computed functions on the
@@ -52,7 +54,7 @@ function [uquasi, lamvec, mvec, lamfun, mfun] = followPath(N, lam0, varargin)
 %         column of U.
 %
 % Note 1: If no UINIT is passed, the initial solution U used is the one computed
-% by chebop.
+% by the CHEBOP SOLVEBVP algorithm.
 %
 % Note 2: If MEASURE is passed, it is possible to call the method with three
 % outputs:
@@ -65,7 +67,7 @@ function [uquasi, lamvec, mvec, lamfun, mfun] = followPath(N, lam0, varargin)
 % also returns the chebfuns LAMFUN and MFUN, which are spline interpolants of
 % the LAMVEC and MVEC data. For a smooth bifurcation diagram, it is then
 % possible to call
-%   plot(lamfun, mfun)
+%   plot(LAMFUN, MFUN)
 %
 % Example 1 -- Bratu problem, continuation on lambda parameter:
 %   N = chebop(@(x,u,lam) diff(u,2) + lam*exp(u), [0 1]);
@@ -75,7 +77,7 @@ function [uquasi, lamvec, mvec, lamfun, mfun] = followPath(N, lam0, varargin)
 %   % Call method, no plotting, no printing
 %   [u, lamvec] = followPath(N, lam0);
 %   % Call method, specifying more options
-%   [u, lamvec, mvec] = followPath(H, lam0, ...
+%   [u, lamvec, mvec] = followPath(N, lam0, ...
 %       'measure', @(u) u(.5), 'printing', true, 'plotting',true);
 %   
 % Example 2 -- Herceg problem (singularly perturbed ODE). Fix solution value at
@@ -111,27 +113,36 @@ function [uquasi, lamvec, mvec, lamfun, mfun] = followPath(N, lam0, varargin)
 % Copyright 2015 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.
 
+% ========================= Developer comment ==================================
+% For every BVP we solve during the run of FOLLOWPATH, we need to compute
+% derivatives of the operators involved. Currently this is done with AD, which
+% is fairly slow as it has to happen so often. It'd be desirable to be able to
+% pass in a recipe for the derivative as an option, e.g.:
+%   'DER'       : A struct that contains anonymous functions that describe the
+%                 Frechet derivatives of N. Passing DER leads to a faster run of
+%                 the program, as then it is not necessary to user automatic
+%                 differentiation to compute the operator derivatives required.
+% or analyse the evaluation tree of the operator to compute the derivative once
+% and for all at the start of the run.
+
 % Set default values
-uinit = [];
-measure = [];
-plotting = false; % Option for plotting
-printing = false;
-direction = 1;
-stepmax = .5;      % Maximum steplength
-stepmin = 1e-4;    % Mininum steplength
-stepinit = [];        % Initial steplength
-maxstepno = 25;
-stopfun = @(u, lambda) 0;
+uinit = [];                 % By default, use chebop to compute the initial sol
+measure = [];               % By default, no measure is computed during run
+plotting = false;           % By default, don't plot anything during the run
+printing = false;           % By default, don't print anything during the run
+direction = 1;              % By default, go in positive direction
+stepmax = .5;               % Maximum steplength
+stepmin = 1e-4;             % Mininum steplength
+stepinit = [];              % Initial steplength
+maxstepno = 25;             % Maximum number of steps taken
+stopfun = @(u, lambda) 0;   % Default stopfun that always evaluates to false
 prefs = [];
 
-if ( nargin < 8 )
-    direction = 1;
-end
 
-% Parse varargin
-while ~isempty(varargin)  % Recurse
+% Parse VARARGIN
+while ~isempty(varargin)    % Go through all elements
     if ~ischar(varargin{1}) && ~isnumeric(varargin{2})
-        error('followpath:inputArgument','Incorrect input arguments');
+        error('followpath:inputArgument','Incorrect options input arguments');
     end
     val = varargin{2};
     switch lower(varargin{1})
@@ -159,7 +170,7 @@ while ~isempty(varargin)  % Recurse
             prefs = val;
     end
     
-    % Throw away arguments and move on
+    % Throw away option name and argument and move on
     varargin(1:2) = [];
 end
 
@@ -168,19 +179,29 @@ if ( isempty(stepinit) )
     stepinit = stepmax;
 end
 
-% No preferences specified
+% No preferences specified, use current CHEBOPPREF
 if ( isempty(prefs) )
     prefs = cheboppref();
-    % TODO: Deal with values/coeffs, and periodic case.
-    prefs.discretization = @chebcolloc2;
+    
+    % By default, cheboppref now has the discretization option specified as a
+    % string ('values' or 'coeffs'). As we're not going through CHEBOP/SOLVEBVP
+    % below, we need to call determineDiscretization to get the correct
+    % discretization option as a function handle. That method require a linop
+    % argument as well (in case of breakpoints), hence the call to linearize:
+    prefs = determineDiscretization(N, linearize(N), prefs);
 end
 
-% No initial u passed -> find a u0 matching lam0
+% No initial u passed => find a u0 matching lam0:
 if ( isempty(uinit) )
+    
     if ( printing )
         fprintf('=====================================================\n')
         fprintf('Computing initial solution for pathfollowing...')
     end
+    
+    % Create an "initial chebop" from the augmented one passed in. This requires
+    % us to evaluate the boundary conditions, so that we get BCs that only
+    % depend on U (by fixing LAM to be LAM0).
     Ninit = N;
     Ninit.op = @(x,u) N.op(x, u, lam0);
     if ( ~isempty(Ninit.bc) )
@@ -195,6 +216,7 @@ if ( isempty(uinit) )
         Ninit.rbc = @(u) Ninit.rbc(u,lam0);
     end
     
+    % Compute the initial solution
     uinit = Ninit\0;
     
     if ( printing )
@@ -210,31 +232,24 @@ else
     haveMeasure = true;
 end
 
-% Store all the solutions to be returned
-uquasi = cell(1, maxstepno);
+% Store all the solutions to be returned, as well as lambda values and the
+% measure values. The sizes are all maxstepno + 1, as we also store the initial
+% solution.
+uquasi = cell(1, maxstepno + 1);
 uquasi{1} = uinit;
+lamvec = zeros(maxstepno + 1, 1);
+lamvec(1) = lam0;
+mvec = zeros(maxstepno + 1, 1);
 
-% Constraint for tangent
-J = @(u,lam) sum(u).^2+lam.^2;
-
-% Iterate along path.
-% Begin by finding a tangent direction, then set steplength, then compute
-% Newton correction, and repeat.
-counter = 1;
-uold = uinit;
-lamold = lam0;
-if isa(lam0,'chebconst')
-    lamvec = lam0.vals;
-else
-    lamvec = lam0;
-end
-
+% If we have a measure passed, we evaluate it at the initial solution, and
+% convert it to a nice string for the plot:
 if ( haveMeasure )
-    mvec = measure(uinit);
-    
+    measu = measure(uinit);
+    mvec(1) = measu;
     % Obtain a nice string to set on ylabel of bifurcation diagram
     mstring = func2str(measure);
-    mstring = mstring(min(strfind(mstring,')'))+1:end); % Throw away the @(u) part
+    % Throw away the @(u) part
+    mstring = mstring(min(strfind(mstring,')'))+1:end);
 end
 
 % If user wants to plot, a measure has to be passed!
@@ -243,131 +258,185 @@ if ( plotting && ~haveMeasure )
         'If plotting is ON for path-following, measure has to be supplied.')
 end
 
-sl = stepinit;
-
 % If plotting, before starting path following, plot initial information
 if ( plotting )
+    % Plot solution
     subplot(1,2,1);
-    plot(uinit), title(['Solution for \lambda =' num2str(lamvec)]), xlabel('x'),ylabel('u(x)')
+    plot(uinit)
+    title(['Solution for \lambda =' num2str(lam0)])
+    xlabel('x'),ylabel('u(x)')
+    
+    % Plot the bifurcation diagram
     subplot(1,2,2)
     plot(lamvec,mvec,'-*')
     title('Bifurcation diagram'), xlabel('\lambda'), ylabel(mstring)
     drawnow, shg
 end
 
-% Set up initial tangent and tau we want to be orthogonal to.
-told = chebfun(0,domain(uinit)); tauold = 1;
+% Create the independent problem on the domain of the problem:
+dom = domain(uinit);
+x = chebfun(@(x) x, domain(uinit));
+% A diagonal sum operator on the domain of the problem, used below.
+dSum = diag(sum(dom));
 
-retract = 0; % retract == 1 if Newton told us to go back along the tangent.
+% Set up initial tangent and tau we want to be orthogonal to.
+told = chebfun(0, domain(uinit));
+tauold = 1;
+
+% Print initial information if we're printing:
 if ( printing )
     if ( haveMeasure )
         fprintf('#Sol    #Newton     lambda     Steplength    Measure    \n')
         fprintf('--------------------------------------------------------\n')
+        fprintf('%3i \t       \t   %6.2e \t            %6.2e \n', ...
+            1, lam0, measu)
     else
         fprintf('#Sol    #Newton     lambda     Steplength   \n')
         fprintf('--------------------------------------------\n')
-    end
-    %     fprintf('No. path iter    Newton iter   Steplength    Measure    Num. sol.\n')
-    %     fprintf('----------------------------------------------------------------\n')
-    
+        fprintf('%3i \t       \t   %6.2e \t \n', ...
+            1, lam0)
+    end    
 end
-numSols = 1;
-while counter <= maxstepno
+
+% Variable for keeping track of whether we accept the tangent step or retract.
+% If retract == 1, the Newton step told us to go back along the tangent and
+% shrink the stepsize.
+retract = false;
+% Counter for the number of steps we take:
+counter = 1;
+% Store previous solution:
+uold = uinit;
+% Store previous value of lambda:
+lamold = lam0;
+% Set steplength to initial steplength specified:
+sl = stepinit;
+
+% Start the pseudo-arclength path following algorithm. It proceeds as follows:
+%   1. Find a tangent direction.
+%   2. Move in the direction of the tangent for the given steplength.
+%   3. Compute the Newton correction.
+%   4. If Newton was happy, accept the new point on the curve. If not, shrink
+%      the steplength by a factor of 4 and go back to step 2.
+while ( counter < maxstepno )
     % Find a tangent direction, but only if we were told by Newton not to
-    % retract
-    if ~retract
-        [t, tau] = tangentBVP(N, uold, lamold, told, tauold, prefs);
-        if counter == 1
+    % retract. At the start of the while loop, recall that RETRACT == false.
+    if ( ~retract )
+        % Compute the tangent
+        [t, tau] = tangentBVP(N, uold, lamold, told, tauold, x, dSum, prefs);
+        % At the start, we need to ensure we're going in right direction:
+        if ( counter == 1 )
             t = direction*t;
             tau = direction*tau;
         end
         % Move in the direction of the tangent
-        uinit = uold+sl*t;
-        laminit = lamold+sl*tau;
+        uinit = uold + sl*t;
+        laminit = lamold + sl*tau;
     end
 
-    % Find a Newton correction
-    [u, lam, iter, retract] = newtonBVP(N, uinit, laminit, t, tau, prefs);
+    % Find a Newton correction to get back on the solution curve:
+    [u, lam, newtonIter, retract] = ...
+        newtonBVP(N, uinit, laminit, t, tau, x, dSum, prefs);
     
-    % Simplify
-    lenOld = length(u);
-    u = simplify(u);
-    fprintf('Simplified. Old length: %i. New length: %i.\n', lenOld, length(u));
-    if retract % Newton told us we were trying to take too long tangent steps
-        if printing 
-            fprintf('retracted\n')
-        end
+    % If the Newton correction algorithm told us we were trying to take too long
+    % tangent steps, we decrease the steplength.
+    if ( retract )
         % Move in the direction of the current tangent, but only with
         % quarter of the steplength
         sl = sl/4;
-        uinit = uold+sl*t;
-        laminit = lamold+sl*tau;       
-        if sl < stepmin
+        uinit = uold + sl*t;
+        laminit = lamold + sl*tau;
+        
+        % Have we reached the mininum steplength approved?
+        if ( sl < stepmin )
             disp('FAILED: sl < stepmin')
-            return
+            break
         end
+        
+        % Go back to the start of the while loop, haven taken a smaller tangent
+        % step:
         continue
     end
     
-    % Store values for plotting
+    % We've found a new point, update counter:
+    counter = counter + 1;
     
+    % Store values for plotting
     if ( haveMeasure )
         measu = measure(u);
-        mvec = [mvec; measu];
+        mvec(counter) = measu;
     end
-    lamvec = [lamvec;lam];
     
-    if printing
+    lamvec(counter) = lam;
+    
+    % Print information at the current step.
+    if ( printing )
         if ( haveMeasure )
             fprintf('%3i \t   %2i \t   %6.2e \t %6.4f     %6.2e \n', ...
-                counter,iter,lam, sl, measu)
+                counter, newtonIter, lam, sl, measu)
         else
             fprintf('%3i \t   %2i \t   %6.2e \t %6.4f \n', ...
-                counter,iter,lam, sl)
+                counter, newtonIter, lam, sl)
         end
     end
-    
-    % Count number of solutions found
-%     if ( haveMeasure && mvec(end)*mvec(end-1) < 0 )
-%         numSols = numSols + 1;
-%     end
 
-
-    if plotting
+    % Update diagram if we're plotting:
+    if ( plotting )
+        % Plot current solution
         subplot(1,2,1);
-        plot(u),title(['Solution for \lambda =' num2str(lam)]), xlabel('x'),ylabel('u(x)')
+        plot(u)
+        title(['Solution for \lambda =' num2str(lam)])
+        xlabel('x'),ylabel('u(x)')
+        
+        % Update bifurcation diagram:
         subplot(1,2,2)
-        lamspline = chebfun.spline(linspace(0,1,length(lamvec)),lamvec);
-        mspline = chebfun.spline(linspace(0,1,length(lamvec)), mvec);
-        plot(lamspline,mspline),
+        % Create splines to draw a smooth bifurcation curve
+        lamspline = chebfun.spline(linspace(0, 1, counter), ...
+            lamvec(1:counter));
+        mspline = chebfun.spline(linspace(0, 1, counter), ...
+            mvec(1:counter));
+        plot(lamspline, mspline)
+        
+        % Add the points on the solution curve
         hold on
-        set(gca,'ColorOrderIndex', 1)
+        set(gca, 'ColorOrderIndex', 1)
         plot(lamvec, mvec, '*')
         hold off
         title('Bifurcation diagram'), xlabel('\lambda'), ylabel(mstring)
         drawnow, shg
     end
     
-    counter = counter + 1;
-    if iter >= 5
-        sl = max(sl/2,stepmin); % Half steplength
-    else
-        sl = min(sl*2,stepmax); % Try to increase steplength
+    % If we're experiencing good Newton convergence, we try to get the
+    % steplength closer to the maximum steplength allowed:
+    if newtonIter <= 3
+        sl = min(sl*2, stepmax);
     end
     
-    % If successful, update old values
-    told = t; tauold = tau; uold = u; lamold = lam;
+    % If we've been successful to get here, update old variable values:
+    told = t;
+    tauold = tau;
+    uold = u;
+    lamold = lam;
     
     % Update quasimatrix to be returned
     uquasi{counter} = u;
     
+    % Is STOPFUN telling us to stop?
     if ( stopfun(u, lam) )
         break
     end
     
 end
-uquasi(counter+1:end) = [];
+
+% Throw away unneeded elements of the cell and vectors:
+uquasi(counter + 1 : end) = [];
+lamvec(counter + 1 : end) = [];
+mvec(counter + 1 : end) = [];
+
+% Convert cell to an array valued chebfun to be returned:
 uquasi = chebfun(chebmatrix(uquasi));
-lamfun = chebfun.spline(linspace(0,1,length(lamvec)),lamvec);
-mfun = chebfun.spline(linspace(0,1,length(lamvec)), mvec);
+
+% Create splines of lambdas and measures to be returned for plotting afterwards:
+lamfun = chebfun.spline(linspace(0, 1, length(lamvec)),lamvec);
+mfun = chebfun.spline(linspace(0, 1, length(lamvec)), mvec);
+
 end
