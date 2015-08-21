@@ -14,7 +14,7 @@ function varargout = semilogy(varargin)
 % Find the CHEBFUNS:
 isCheb = cellfun(@(v) isa(v, 'chebfun'), varargin);
 % Choose a TOL based on epslevels and vscale:
-tol = max(cellfun(@(f) max(epslevel(f).*vscale(f)), varargin(isCheb)));
+tol = max(cellfun(@(f) max(eps.*vscale(f)), varargin(isCheb)));
 % Loop over the different plot components:
 for j = 1:numel(h)
     % Get the y data:

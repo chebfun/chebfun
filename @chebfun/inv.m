@@ -97,7 +97,7 @@ end
 function [tol, opts, pref] = parseInputs(f, varargin)
 
 % Default options:
-tol = epslevel(f);
+tol = eps;
 opts.monoCheck = false;
 opts.rangeCheck = false;
 opts.algorithm = 6; % Default  = brent's method.

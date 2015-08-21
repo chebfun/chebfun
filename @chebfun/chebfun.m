@@ -469,9 +469,6 @@ classdef chebfun
         
         % Compare domains of two CHEBFUN objects.
         pass = domainCheck(f, g);        
-        
-        % Accuracy estimate of a CHEBFUN object.
-        out = epslevel(f, flag);
 
         % Extract columns of an array-valued CHEBFUN object.
         f = extractColumns(f, columnIndex);

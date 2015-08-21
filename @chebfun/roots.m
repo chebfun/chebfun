@@ -78,7 +78,7 @@ end
 function r = columnRoots(f, rootsPref)
 
 % Set horizontal and vertical scales:
-el = epslevel(f);
+el = eps;
 hs = hscale(f);
 vs = vscale(f);
 htol = 100*eps*hs;

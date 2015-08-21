@@ -30,7 +30,7 @@ function out = columnIszero(f, tol)
 
 % Choose a tolerance:
 if ( nargin < 2 )
-    tol = vscale(f)*epslevel(f);
+    tol = vscale(f)*eps;
     % TODO: Remove this once epslevels of zero CHEBFUNs have been improved.
     if ( isnan(tol) )
         tol = eps;

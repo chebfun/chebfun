@@ -11,7 +11,7 @@ f = addBreaksAtRoots(f);
 
 % Tolerance:
 vs = vscale(f);
-el = epslevel(f);
+el = eps;
 vs(vs < el) = 1;
 tol = el.*vs;
 

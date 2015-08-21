@@ -261,7 +261,7 @@ end
 
 % Function has more than one FUN:
 dom = f.domain;
-valTol = 100*max(vscale(f).*epslevel(f));
+valTol = 100*max(vscale(f).*eps);
 for i = 2:length(dom)-1        
     fLeft = feval(f, dom(i), 'left');
     fRight = feval(f, dom(i), 'right');

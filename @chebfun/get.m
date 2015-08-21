@@ -100,10 +100,7 @@ switch prop
     case 'hscale'
         out = hscale(f);
     case 'epslevel'
-        warning('CHEBFUN:CHEBFUN:get:epslevel', ...
-            ['f.epslevel and get(f,''epslevel'') now always returns machine\n'...
-            'epsilon, and is likely to be removed from Chebfun in the future.'])
-        out = epslevel(f);
+        out = eps;
     case 'ishappy'
         out = ishappy(f);
     case fieldnames(f)
@@ -126,10 +123,6 @@ switch prop
         out = getSimpleNumericLocalProp(f, 'rval', simpLevel);
     case 'vscale-local'
         out = getSimpleNumericLocalProp(f, 'vscale', simpLevel);
-    case 'hscale-local'
-        out = getSimpleNumericLocalProp(f, 'hscale', simpLevel);
-    case 'epslevel-local'
-        out = getSimpleNumericLocalProp(f, 'epslevel', simpLevel);
     case {'values', 'coeffs', 'points'}
         out = getSimpleNumericLocalProp(f, prop, simpLevel);
     case {'exps', 'exponents'}

@@ -55,7 +55,7 @@ if ( isreal(u) )
             dn = compose(u, @(u) dnFun(u, m, tol), pref);
         end
     elseif ( isnumeric(u) )  % U = double, M = CHEBFUN
-        mTol = max(epslevel(m).*vscale(m), tol);
+        mTol = max(eps.*vscale(m), tol);
         % SN
         sn = compose(m, @(m) ellipj(u, fudge(m, mTol), tol), pref);
         % CN
@@ -67,7 +67,7 @@ if ( isreal(u) )
             dn = compose(m, @(m) dnFun(u, fudge(m, mTol), tol), pref);
         end
     else                     % U = CHEBFUN, M = CHEBFUN
-        mTol = max(epslevel(m).*vscale(m), tol);
+        mTol = max(eps.*vscale(m), tol);
         % SN
         sn = compose(u, @(u, m) ellipj(u, fudge(m, mTol), tol), m, pref);
         % CN

@@ -55,7 +55,7 @@ if ( nargin > 1 )
 end
     
 % Get the epslevel and the domain of f:
-tol = epslevel(f);
+tol = eps;
 dom = f.domain;
 a = dom(1);
 b = dom(end);

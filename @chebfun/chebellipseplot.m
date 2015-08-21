@@ -51,7 +51,7 @@ u = simplify(u);
 % Parse the inputs.
 [k, ee, numpts, legends, args] = parseInputs(varargin{:});
 if ( isnan(ee) )
-    ee = epslevel(u);
+    ee = eps;
 end
 [lineStyle, pointStyle, jumpStyle, deltaStyle, args] = ...
     chebfun.parsePlotStyle(args{:});

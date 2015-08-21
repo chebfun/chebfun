@@ -37,7 +37,7 @@ end
 
 % Choose a tolerance:
 vs = vscale(p);
-el = epslevel(p);
+el = eps;
 tol = 100*el*vs;
 
 % Store data about the pointValues for later:
