@@ -87,7 +87,6 @@ end
 
 % Check also that sampleTest is happy:
 if ( ishappy && ~isempty(op) && ~isnumeric(op) && pref.sampleTest )
-    f.epslevel = eps + 0*epslevel;
     ishappy = sampleTest(op, values, f, data, pref);
     if ( ~ishappy )
         % It wasn't. Revert cutoff. :(
@@ -96,6 +95,7 @@ if ( ishappy && ~isempty(op) && ~isnumeric(op) && pref.sampleTest )
 end
 
 % set epslevel = eps
-epslevel = eps + 0*epslevel;
+% TODO:  Remove this line when we update the prototype for happinessCheck().
+epslevel = eps;
 
 end

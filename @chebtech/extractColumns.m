@@ -12,6 +12,5 @@ function f = extractColumns(f, colIdx)
 
 % Extract/re-order the columns from f.coeffs and f.epslevel:
 f.coeffs = f.coeffs(:, colIdx);
-f.epslevel = f.epslevel(colIdx);
 
 end

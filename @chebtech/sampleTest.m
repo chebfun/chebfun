@@ -19,7 +19,7 @@ n = length(f);
 x = f.chebpts(n);
 
 % Set a tolerance:
-tol = max(max(f.epslevel, pref.eps), 1e3*pref.sampleTestEps) * n;
+tol = max(max(eps, pref.eps), 1e3*pref.sampleTestEps) * n;
 
 % Scale TOL by the MAX(F.HSCALE, VSCL/||F||).
 % This choice of scaling is the result of undesirable behavior when using

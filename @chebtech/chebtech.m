@@ -97,12 +97,6 @@ classdef chebtech < smoothfun % (Abstract)
         % Boolean value designating whether the CHEBTECH is 'happy' or not. See
         % HAPPINESSCHECK.m for full documentation.
         ishappy % (logical)
-
-        % Happiness level to which the CHEBTECH was constructed (See
-        % HAPPINESSCHECK.m for full documentation) or a rough accuracy estimate
-        % of subsequent operations (See CHEBTECH class documentation for
-        % details).
-        epslevel % (double >= 0)
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

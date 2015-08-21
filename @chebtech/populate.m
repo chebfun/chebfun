@@ -78,12 +78,6 @@ if ( isnumeric(op) || iscell(op) )
 
     % We're always happy if given discrete data:
     f.ishappy = true;
-    
-    % Scale the epslevel relative to the largest column:
-    vscl = f.vscale;
-    f.epslevel = 10*eps(max(vscl));
-    vscl(vscl <= f.epslevel) = 1;
-    f.epslevel = f.epslevel./vscl;
 
     return
 end
@@ -130,29 +124,15 @@ while ( 1 )
 
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Update the vscale. %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Compute the 'true' vscale (as defined in CHEBTECH classdef):
-vsclOut = max(abs(values), [], 1);
-% Update vertical scale one last time:
-vsclGlobal = max(data.vscale, vsclOut);
-
-% Adjust the epslevel appropriately:
-ind = vsclOut < epslevel;
-vsclOut(ind) = epslevel(ind);
-ind = vsclGlobal < epslevel;
-vsclGlobal(ind) = epslevel(ind);
-epslevel = epslevel.*vsclGlobal./vsclOut;
-
 %%%%%%%%%%%%%%%%%%%%%%%%%% Assign to CHEBTECH object. %%%%%%%%%%%%%%%%%%%%%%%%%%
 f.coeffs = coeffs;
 f.ishappy = ishappy;
-f.epslevel = eps + 0*epslevel;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Ouput. %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if ( ishappy )
     % We're done, and can return.
-    f = simplify(f, f.epslevel);
+    f = simplify(f);
     return
 end
 

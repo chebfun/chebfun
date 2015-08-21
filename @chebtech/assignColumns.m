@@ -15,7 +15,6 @@ function h = assignColumns(f, colIdx, g)
 if ( isempty(g) )
     h = f;
     h.coeffs(:,colIdx) = [];
-    h.epslevel(:,colIdx) = [];
     return
 end
 
@@ -32,6 +31,5 @@ h.coeffs(:, colIdx) = g.coeffs;
 
 % Update happiness, vscale, and epslevel:
 h.ishappy = f.ishappy && g.ishappy;
-h.epslevel(colIdx) = g.epslevel;
 
 end

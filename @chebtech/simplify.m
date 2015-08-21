@@ -19,9 +19,6 @@ if ( isempty(f) )
     return
 end
 
-% Set F.EPSLEVEL to be MATLAB EPS.
-f.epslevel = eps + 0*f.epslevel;
-
 % Do nothing to an unhappy CHEBTECH.
 if ( ~f.ishappy )
     return
