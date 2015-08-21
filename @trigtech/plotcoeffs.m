@@ -34,7 +34,7 @@ loglogPlot = false;
 % Copy input arguments:
 args = varargin;
 
-% Check inputs for 'loglog' or 'noepslevel'.
+% Check inputs for 'loglog'.
 j = 1;
 while ( j <= length(args) )
     if ( strcmpi(args{j}, 'loglog') )
@@ -64,11 +64,11 @@ end
 
 % Add a tiny amount to zeros to make plots look nicer:
 if ( vscale(f) > 0 )
-    % (Min of epslevel*vscale and the minimum non-zero coefficient)
+    % (Min of eps*vscale and the minimum non-zero coefficient)
     absCoeffs(~absCoeffs) = min( min(eps.*vscale(f)), ...
                                  min(absCoeffs(logical(absCoeffs))) );                             
 else
-    % (add epslevel for zero CHEBTECHs)
+    % (add eps for zero CHEBTECHs)
     absCoeffs = absCoeffs + eps;
 end
 

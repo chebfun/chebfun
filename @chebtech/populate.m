@@ -1,11 +1,10 @@
 function [f, values] = populate(f, op, data, pref)
 %POPULATE   Populate a CHEBTECH class with values.
 %   F = F.POPULATE(OP) returns a CHEBTECH representation populated with values
-%   VALUES of the function OP evaluated on a Chebyshev grid. The fields
-%   F.ISHAPPY and F.EPSLEVEL indicate whether the representation is deemed
-%   'happy' and to what accuracy (see HAPPINESSCHECK.m). Essentially this means
-%   that such an interpolant is a sufficiently accurate (i.e., to a relative
-%   accuracy of F.EPSLEVEL) approximation to OP. If F.ISHAPPY is FALSE, then
+%   VALUES of the function OP evaluated on a Chebyshev grid. The field
+%   F.ISHAPPY indicates whether the representation is deemed 'happy' (see
+%   HAPPINESSCHECK.m). Essentially this means that such an interpolant is a
+%   sufficiently accurate approximation to OP.  If F.ISHAPPY is FALSE, then
 %   POPULATE was not able to obtain a happy result.
 %
 %   OP should be vectorized (i.e., accept a vector input), and output a vector
@@ -48,8 +47,8 @@ function [f, values] = populate(f, op, data, pref)
 %   | [compute COEFFS] COEFFS = VALS2COEFFS(VALUES)
 %   |        |
 %   |        v
-%    -<--[ISHAPPY?]    [ISHAPPY, EPSLEVEL, CUTOFF] = PREF.HAPPINESSCHECK(F, OP,
-%     no     |         PREF). Default calls CLASSICCHECK() and SAMPLETEST().
+%    -<--[ISHAPPY?]    [ISHAPPY, CUTOFF] = PREF.HAPPINESSCHECK(F, OP, PREF).
+%     no     |         Default calls STANDARDCHECK() and SAMPLETEST().
 %            | yes     
 %            v
 %      [alias COEFFS]  COEFFS = ALIAS(COEFFS, CUTOFF)

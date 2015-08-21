@@ -8,7 +8,6 @@ function out = get(f, prop, simpLevel)
 %       'vscale'         - Vertical scale of F.
 %       'vscale-local'   - Local vertical scales of F.
 %       'hscale'         - Horizontal scale of F.
-%       'hscale-local'   - Local horizontal scales of F.
 %       'ishappy'        - Is F happy?
 %       'lval'           - Value(s) of F at left-hand side of domain.
 %       'rval'           - Value(s) of F at right-hand side of domain.

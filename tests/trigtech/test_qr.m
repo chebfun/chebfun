@@ -66,8 +66,8 @@ pass(19) = 1;
 
 
 %%
-% Check that the vscale and epslevel come out with the correct size for
-% QR of an array-valued chebtech.
+% Check that the vscale comes out with the correct size for QR of an
+% array-valued chebtech.
 f = testclass.make(@(x) [sin(pi*x) cos(pi*x) cos(2*pi*x)], [], pref);
 [Q, R] = qr(f, []);
 pass(20) = isequal(size(Q.vscale), [1 3]);

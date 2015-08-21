@@ -3,8 +3,7 @@ function varargout = chebellipseplot(u, varargin)
 %   CHEBELLIPSEPLOT(U) plots Bernstein ellipses in the complex plane for each
 %   piecewise part of U, with foci at points in U.domain and semi-minor and
 %   major axes summing to rho(k) = C*exp(abs(log(EPS))/N(k)), where C is the
-%   appropriate scaling for the interval [U.ends(k) U.ends(k+1)] and EPS is the
-%   EPSLEVEL of U.
+%   appropriate scaling for the interval [U.ends(k) U.ends(k+1)].
 %
 %   CHEBELLIPSEPLOT(U, EPS) allows a user-specified EPS.
 %
@@ -45,7 +44,7 @@ if ( isempty(u) )
     return
 end
 
-% Simplify first, to make sure length matches the epslevel:
+% Simplify first:
 u = simplify(u);
 
 % Parse the inputs.

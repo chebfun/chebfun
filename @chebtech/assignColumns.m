@@ -29,7 +29,7 @@ end
 h = f;
 h.coeffs(:, colIdx) = g.coeffs;
 
-% Update happiness, vscale, and epslevel:
+% Update ishappy:
 h.ishappy = f.ishappy && g.ishappy;
 
 end

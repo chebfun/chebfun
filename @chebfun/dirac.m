@@ -54,7 +54,7 @@ if ( nargin > 1 )
     end
 end
     
-% Get the epslevel and the domain of f:
+% Set a tolerance and get the domain of f:
 tol = eps;
 dom = f.domain;
 a = dom(1);

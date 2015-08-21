@@ -1,9 +1,9 @@
 function [ishappy, cutoff] = linopV4Check(f, values, pref)
 %LINOPV4CHECK   Attempt to trim trailing Chebyshev coefficients in a CHEBTECH.
-%   [ISHAPPY, EPSLEVEL, CUTOFF] = LINOPV4CHECK(F, VALUES) returns an estimated
-%   location, the CUTOFF, at which the CHEBTECH F could be truncated. It's
-%   based on the same functionality provided in Version 4 of Chebfun and is
-%   more aggressive about truncation than the alternative PLATEAUCHECK.
+%   [ISHAPPY, CUTOFF] = LINOPV4CHECK(F, VALUES) returns an estimated location,
+%   the CUTOFF, at which the CHEBTECH F could be truncated. It's based on the
+%   same functionality provided in Version 4 of Chebfun and is more aggressive
+%   about truncation than the alternative PLATEAUCHECK.
 %
 %   The first output measures "happiness" (sufficient resolution). One of two
 %   criteria must be met. Either:
@@ -20,9 +20,7 @@ function [ishappy, cutoff] = linopV4Check(f, values, pref)
 %   number that prevents convergence to the full requested accuracy, as often
 %   happens in the collocation of differential equations.
 %
-%   Output EPSLEVEL is an estimate of the relative size of the last
-%   "meaningful" expansion coefficients of the function, and the output 
-%   CUTOFF is an estimate of how many of the coefficients are useful.
+%   Output CUTOFF is an estimate of how many of the coefficients are useful.
 %
 %   [...] = LINOPV4CHECK(F, VALUES, PREF) allows additional
 %   preferences to be passed. In particular, one can adjust the target 
@@ -100,8 +98,9 @@ end
 %% %%%%%%%%%%%%%%%%%%%%%%% Serious checking starts here. %%%%%%%%%%%%%%%%%%%%%%%
 function [ishappy, epslevel, cutoff] = checkColumn(absCoeff,epslevel)
 
-% There are two ways to pass the test. Either the coefficients have achieved the
-% goal epslevel or the convergence appears to have leveled off for good
+% There are two ways to pass the test. Either the coefficients have achieved
+% the goal epslevel/accuracy or the convergence appears to have leveled off for
+% good.
 
 % Guilty until proven innocent.
 ishappy = false;
@@ -174,7 +173,7 @@ else
     
 end
 
-% Deduce an epslevel. 
+% Deduce an epslevel/accuracy.
 if ( ishappy )
     winEnd = min( n, cutoff + 4 );
     epslevel = max( absCoeff(cutoff:winEnd) );
@@ -182,7 +181,7 @@ else
     epslevel = absCoeff(n);
 end
     
-% Epslevel can't be better than eps:
+% Accuracy can't be better than eps:
 epslevel = max(epslevel, eps);
 
 end

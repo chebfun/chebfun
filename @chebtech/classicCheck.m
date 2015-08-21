@@ -1,15 +1,14 @@
 function [ishappy, cutoff] = classicCheck(f, values, data, pref)
 %CLASSICCHECK   Attempt to trim trailing Chebyshev coefficients in a CHEBTECH.
-%   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F, VALUES, VSCL) returns an
-%   estimated location, the CUTOFF, at which the CHEBTECH F could be truncated
-%   to maintain an accuracy of EPSLEVEL relative to VSCL and F.HSCALE. ISHAPPY
-%   is TRUE if the representation is "happy" in the sense described further
-%   below and FALSE otherwise.  If ISHAPPY is FALSE, EPSLEVEL returns an
-%   estimate of the accuracy achieved.
+%   [ISHAPPY, CUTOFF] = CLASSICCHECK(F, VALUES, DATA) returns an estimated
+%   location, the CUTOFF, at which the CHEBTECH F could be truncated to
+%   maintain an accuracy of EPSLEVEL (see documentation below) relative to
+%   DATA.VSCALE and DATA.HSCALE. ISHAPPY is TRUE if the representation is
+%   "happy" in the sense described further below and FALSE otherwise.
 %
-%   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F, VALUES, PREF) allows
-%   additional preferences to be passed. In particular, one can adjust the
-%   target accuracy with PREF.EPS.
+%   [ISHAPPY, CUTOFF] = CLASSICCHECK(F, VALUES, DATA, PREF) allows additional
+%   preferences to be passed. In particular, one can adjust the target accuracy
+%   with PREF.EPS.
 %
 %   CLASSICCHECK first queries HAPPINESSREQUIREMENTS to obtain TESTLENGTH and
 %   EPSLEVEL (see documentation below). If |F.COEFFS(1:TESTLENGTH)|/VSCALE <
@@ -18,11 +17,13 @@ function [ishappy, cutoff] = classicCheck(f, values, data, pref)
 %   can be reduced if there are further COEFFS which fall below EPSLEVEL).
 %
 %   HAPPINESSREQUIREMENTS defines what it means for a CHEBTECH to be happy.
-%   [TESTLENGTH, EPSLEVEL] = HAPPINESSREQUIREMENTS(VALUES, COEFFS, VSCALE,
-%   PREF) returns two scalars TESTLENGTH and EPSLEVEL. A CHEBTECH is deemed to
-%   be 'happy' if the coefficients COEFFS(END-TESTLENGTH+1:END) (recall that
-%   COEFFS are stored in ascending order) are all below EPSLEVEL. The default
-%   choice of the test length is:
+%   [TESTLENGTH, EPSLEVEL] = HAPPINESSREQUIREMENTS(VALUES, COEFFS, POINTS,
+%   DATA, EPS) returns two scalars TESTLENGTH and EPSLEVEL.  POINTS is the
+%   vector of points at which F was sampled to get the values in VALUES.  EPS
+%   is the desired accuracy.  A CHEBTECH is deemed to be 'happy' if the
+%   coefficients COEFFS(END-TESTLENGTH+1:END) (recall that COEFFS are stored in
+%   ascending order) are all below EPSLEVEL.  The default choice of the test
+%   length is:
 %       TESTLENGTH = n,             for n = 1:4
 %       TESTLENGTH = 5,             for n = 5:44
 %       TESTLENGTH = round((n-1)/8) for n > 44
@@ -32,7 +33,7 @@ function [ishappy, cutoff] = classicCheck(f, values, data, pref)
 %       * eps*TESTLENGTH
 %       * eps*condEst (where condEst is an estimate of the condition number
 %                      based upon a finite difference approximation to the
-%                      gradient of the function from F.VALUES.).
+%                      gradient of the function from VALUES.).
 %   However, the final two estimated values can be no larger than 1e-4.
 %
 %   Note that the accuracy check implemented in this function is (roughly) the

@@ -33,8 +33,8 @@ function r = unbndFilter(r, f)
 %   values of the function at some points in [-1, r] and [r, 1].
 
 % TODO: This assumes that the tech eventually used to find the roots lives on
-% [-1,1] and has .vscale and .epslevel properties. Currently this is only a
-% verbal agreement, as there is no abstract tech class.
+% [-1,1] and has a .vscale property. Currently this is only a verbal agreement,
+% as there is no abstract tech class.
 
 numRoots = length(r);
 mask = false(numRoots, 1);

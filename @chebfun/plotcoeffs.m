@@ -1,17 +1,15 @@
 function varargout = plotcoeffs(f, varargin)
 %PLOTCOEFFS   Display coefficients graphically.
 %   PLOTCOEFFS(F) plots the coefficients underlying the representation of a
-%   CHEBFUN F on a semilogy scale. A horizontal line at the epslevel of F is
-%   also plotted. If F is an array-valued CHEBFUN or has breakpoints, then a
-%   curve is plotted for each FUN of each component (column) of F.
+%   CHEBFUN F on a semilogy scale. If F is an array-valued CHEBFUN or has
+%   breakpoints, then a curve is plotted for each FUN of each component
+%   (column) of F.
 %
 %   PLOTCOEFFS(F, S) allows further plotting options, such as linestyle,
 %   linecolor, etc, as in the standard MATLAB manner. If S contains a string
-%   'LOGLOG', the coefficients will be displayed on a log-log scale. If S
-%   contains a string 'NOEPSLEVEL', the epslevel is not plotted.
+%   'LOGLOG', the coefficients will be displayed on a log-log scale.
 %
 %   H = PLOTCOEFFS(F) returns a column vector of handles to lineseries objects.
-%   The final entry is that of the epslevel plot.
 %
 %   What 'coefficients' means in this context is dictated by the 'tech' that is
 %   being used to represent F. See the PLOTCOEFFS method at the relevant tech

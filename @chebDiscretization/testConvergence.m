@@ -11,8 +11,6 @@ function [isDone, vscale, cutoff] = testConvergence(disc, values, vscale, pref)
 %
 %   Output:  
 %      ISDONE: True if the functions passed in are sufficiently resolved.
-%      EPSLEVEL: Apparent resolution accuracy (relative to VSCALE or the
-%      functions' intrinsic scale).
 %      VSCALE: Maximum of the input VSCALE and the computed VSCALE of DISC.
 %      CUTOFF: The point at which the coefficient series for DISC should
 %              be chopped. If ~ISDONE then CUTOFF = LENGTH(DISC).

@@ -176,7 +176,7 @@ end
 c = f.coeffs/vscale(f);
 
 % Call the recursive rootsunit function:
-%r = rootsunit_coeffs(c, 100*eps*max(f.hscale, 1));
+% TODO:  Does the tolerance need to depend on some notion of hscale?
 r = rootsunit_coeffs(c, 100*eps);
 
 % Try to filter out spurious roots:

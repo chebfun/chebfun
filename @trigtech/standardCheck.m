@@ -1,18 +1,17 @@
 function [ishappy, cutoff] = standardCheck(f, values, data, pref)
 %STANDARDCHECK   Attempt to trim trailing Fourier coefficients in a TRIGTECH.
-%   [ISHAPPY, EPSLEVEL, CUTOFF] = STANDARDCHECK(F) uses the routine STANDARDCHOP
-%   to compute a positive integer CUTOFF which represents the number of
-%   coefficients of F that are deemed accurate enough to keep. ISHAPPY is TRUE
+%   [ISHAPPY, CUTOFF] = STANDARDCHECK(F) uses the routine STANDARDCHOP to
+%   compute a positive integer CUTOFF which represents the number of
+%   coefficients of F that are deemed accurate enough to keep.  ISHAPPY is TRUE
 %   if the CUTOFF value returned by STANDARDCHOP is less than LENGTH(F) and
-%   FALSE otherwise. EPSLEVEL is always returned as MATLAB EPS.
+%   FALSE otherwise.
 %
-%   [ISHAPPY, EPSLEVEL, CUTOFF] = STANDARDCHECK(F, VALUES, VSCL, PREF) allows
-%   additional preferences to be passed. VALUES is a matrix of the function
-%   values of F at the corresponding interpolation points. VSCL is an
-%   approximation of the maximum function value of F on a possibly larger
-%   approximation interval. PREF is a data structure used to pass in additional
-%   information, e.g. a target accuracy tolerance could be passed using
-%   PREF.EPS.
+%   [ISHAPPY, CUTOFF] = STANDARDCHECK(F, VALUES, DATA, PREF) allows additional
+%   preferences to be passed. VALUES is a matrix of the function values of F at
+%   the corresponding interpolation points. DATA.VSCALE is an approximation of
+%   the maximum function value of F on a possibly larger approximation
+%   interval.  PREF is a data structure used to pass in additional information,
+%   e.g. a target accuracy tolerance could be passed using PREF.EPS.
 %
 % See also CLASSICCHECK, STRICTCHECK, LOOSECHECK.
 

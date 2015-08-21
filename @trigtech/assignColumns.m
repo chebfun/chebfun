@@ -32,7 +32,7 @@ h = f;
 h.values(:, colIdx) = g.values;
 h.coeffs(:, colIdx) = g.coeffs;
 
-% Update happiness, vscale, and epslevel:
+% Update ishappy:
 h.ishappy = f.ishappy && g.ishappy;
 h.isReal(colIdx) = g.isReal;
 

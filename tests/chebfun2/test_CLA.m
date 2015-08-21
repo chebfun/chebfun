@@ -1,6 +1,5 @@
 function pass = test_CLA( pref )
-% Try out some basic continuous linear algebra. Mainly checking
-% epslevels...
+% Try out some basic continuous linear algebra.
 
 if ( nargin < 1 )
     pref = chebfunpref; 

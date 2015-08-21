@@ -1,7 +1,7 @@
 function f = thresholdBreakpointValues(f)
 %THRESHOLDBREAKPOINTVALUES   Set small breakpoint values to zero.
-%   G = THRESHOLDBREAKPOINTVALUES(F), where F is a CHEBFUN, returns a CHEBFUN
-%   G such that all breakpoint values smaller than VSCALE(F)*EPSLEVEL(F) are
+%   G = THRESHOLDBREAKPOINTVALUES(F), where F is a CHEBFUN, returns a CHEBFUN G
+%   such that all breakpoint values smaller than (roughly) VSCALE(F)*EPS are
 %   set to zero.
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.

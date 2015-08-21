@@ -1,14 +1,14 @@
 function [ishappy, cutoff] = classicCheck(f, values, data, pref)
 %CLASSICCHECK   Attempt to trim trailing Fourier coefficients in a TRIGTECH.
-%   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F, VALUES) returns an estimated
-%   location, the CUTOFF, at which the TRIGTECH F could be truncated to maintain
-%   an accuracy of EPSLEVEL relative to F.VSCALE and F.HSCALE. ISHAPPY is TRUE
-%   if CUTOFF < MIN(LENGTH(VALUES),2) or F.VSCALE = 0, and FALSE otherwise.
-%   If ISHAPPY is false, EPSLEVEL returns an estimate of the accuracy achieved.
+%   [ISHAPPY, CUTOFF] = CLASSICCHECK(F, VALUES, DATA) returns an estimated
+%   location, the CUTOFF, at which the TRIGTECH F could be truncated to
+%   maintain an accuracy of EPSLEVEL (see documentation below) relative to
+%   DATA.VSCALE and DATA.HSCALE. ISHAPPY is TRUE if CUTOFF <
+%   MIN(LENGTH(VALUES),2) or VSCALE(F) = 0 and FALSE otherwise.
 %
-%   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F, VALUES, PREF) allows
-%   additional preferences to be passed. In particular, one can adjust the
-%   target accuracy with PREF.EPS.
+%   [ISHAPPY, CUTOFF] = CLASSICCHECK(F, VALUES, DATA, PREF) allows additional
+%   preferences to be passed. In particular, one can adjust the target accuracy
+%   with PREF.EPS.
 %
 %   CLASSICCHECK first queries HAPPINESSREQUIREMENTS to obtain TESTLENGTH and
 %   EPSLEVEL (see documentation below). If |F.COEFFS(1:TESTLENGTH)|/VSCALE <
@@ -17,11 +17,13 @@ function [ishappy, cutoff] = classicCheck(f, values, data, pref)
 %   can be reduced if there are further COEFFS which fall below EPSLEVEL).
 %
 %   HAPPINESSREQUIREMENTS defines what it means for a TRIGTECH to be happy.
-%   [TESTLENGTH, EPSLEVEL] = HAPPINESSREQUIREMENTS(VALUES, COEFFS, VSCALE, PREF)
-%   returns two scalars TESTLENGTH and EPSLEVEL. A TRIGTECH is deemed to be
-%   'happy' if the coefficients COEFFS(1:TESTLENGTH) (recall that COEFFS are
-%   stored in ascending order) are all below EPSLEVEL. The default choice of
-%   the test length is:
+%   [TESTLENGTH, EPSLEVEL] = HAPPINESSREQUIREMENTS(VALUES, COEFFS, POINTS,
+%   DATA, EPS) returns two scalars TESTLENGTH and EPSLEVEL.  POINTS is the
+%   vector of points at which F was sampled to get the values in VALUES.  EPS
+%   is the desired accuracy.  A TRIGTECH is deemed to be 'happy' if the
+%   coefficients COEFFS(END-TESTLENGTH+1:END) (recall that COEFFS are stored in
+%   ascending order) are all below EPSLEVEL.  The default choice of the test
+%   length is:
 %       TESTLENGTH = n,             for n = 1:2
 %       TESTLENGTH = 3,             for n = 3:44
 %       TESTLENGTH = round((n-1)/8) for n > 44

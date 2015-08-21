@@ -1,12 +1,11 @@
 function f = populate(f, op, data, pref)
 %POPULATE   Populate a TRIGTECH class with values.
 %   F = F.POPULATE(OP) returns a TRIGTECH representation populated with values
-%   F.VALUES of the function OP evaluated on an equally spaced grid. The fields
-%   F.ISHAPPY and F.EPSLEVEL indicate whether the representation is deemed
-%   'happy' and to what accuracy (see HAPPINESSCHECK.m). Essentially this means
-%   that such an interpolant is a sufficiently accurate (i.e., to a relative
-%   accuracy of F.EPSLEVEL) approximation to OP. If F.ISHAPPY is FALSE, then
-%   POPULATE was not able to obtain a happy result.
+%   F.VALUES of the function OP evaluated on an equally spaced grid. The field
+%   F.ISHAPPY indicates whether the representation is deemed 'happy'.
+%   Essentially this means that such an interpolant is a sufficiently accurate
+%   approximation to OP. If F.ISHAPPY is FALSE, then POPULATE was not able to
+%   obtain a happy result.
 %
 %   OP should be vectorized (i.e., accept a vector input), and output a vector
 %   of the same length. Furthermore, OP may be an array-valued function, in

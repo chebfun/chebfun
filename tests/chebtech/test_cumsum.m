@@ -1,8 +1,5 @@
 % Test file for chebtech/cumsum.m
 
-% [TODO]:  Fix test tolerances once we've figured out how to properly update
-% epslevels in chebtech.cumsum().
-
 function pass = test_cumsum(pref)
 
 % Get preferences.

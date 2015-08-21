@@ -1,16 +1,15 @@
 function  [ishappy, cutoff] = happinessCheck(f, op, values, data, pref)
 %HAPPINESSCHECK   Happiness test for a CHEBTECH
-%   [ISHAPPY, EPSLEVEL, CUTOFF] = HAPPINESSCHECK(F, OP, VALUES, VSCL) tests if
-%   the CHEBTECH with values VALUES and coefficients F.COEFFS would be a 'happy'
-%   approximation (in the sense defined below and relative to VSCL and F.HSCALE)
-%   to the function handle OP. If the approximation is happy, the output ISHAPPY
-%   is TRUE, the happiness level is returned in EPSLEVEL, and CUTOFF indicates
-%   the point to which the coefficients COEFFS may be truncated. If ISHAPPY is
-%   false, EPSLEVEL returns an estimate of the accuracy achieved.
+%   [ISHAPPY, CUTOFF] = HAPPINESSCHECK(F, OP, VALUES, DATA) tests if the
+%   CHEBTECH with values VALUES and coefficients F.COEFFS would be a 'happy'
+%   approximation (in the sense defined below and relative to DATA.VSCALE and
+%   DATA.HSCALE) to the function handle OP. If the approximation is happy, the
+%   output ISHAPPY is TRUE, the  CUTOFF indicates the point to which the
+%   coefficients COEFFS may be truncated.
 %
 %   HAPPINESSCHECK(F) computes VALUES used above from F.COEFFS2VALS(F.COEFFS).
 %
-%   HAPPINESSCHECK(F, OP, VALUES, PREF) allows different preferences to be
+%   HAPPINESSCHECK(F, OP, VALUES, DATA,PREF) allows different preferences to be
 %   used; in particular PREF.EPS sets the target tolerance for happiness.  If
 %   constructing an array-valued CHEBTECH, PREF.EPS may be a row vector of
 %   target tolerances for each column.
@@ -18,9 +17,9 @@ function  [ishappy, cutoff] = happinessCheck(f, op, values, data, pref)
 %   Furthermore, alternative definitions of happiness can be chosen by setting
 %   the PREF.HAPPINESSCHECK field. This field may be one of the built in
 %   checks: 'CLASSIC', 'STRICT', 'LOOSE', or a function handle pointing to a
-%   function with the template [ISHAPPY, EPSLEVEL, CUTOFF] = @(F, PREF). The
-%   built in checks are:
-%      CLASSIC: Chooses an EPSLEVEL based upon the length on the 'tail' and a
+%   function with the template [ISHAPPY, CUTOFF] = @(F, PREF). The built in
+%   checks are:
+%      CLASSIC: Chooses an CUTOFF based upon the length on the 'tail' and a
 %               finite difference gradient approximation.
 %      STRICT : The tail _must_ be below that specified by PREF.EPS.
 %      LOOSE  : To be specified.

@@ -24,7 +24,7 @@ g.onefun = cancelExponents(g.onefun);
 % the domain can be infinite.
 vends = [get(g, 'lval'); get(g, 'rval')];
 
-% Get the epslevel and vscale of the function g.
+% Set a tolerance based on the vscale of g:
 tol = eps.*get(g, 'vscale');
 
 % A dirty checklist:

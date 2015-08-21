@@ -34,35 +34,6 @@ classdef chebtech < smoothfun % (Abstract)
 % enforce scale invariance when the input OP has been implicitly mapped from a
 % domain other than [-1 1] before being passed to a CHEBTECH constructor.
 %
-% EPSLEVEL is the happiness level to which the CHEBTECH was constructed (See
-% HAPPINESSCHECK.m for full documentation) or a rough accuracy estimate of
-% subsequent operations, both relative to VSCALE. Therefore EPSLEVEL could be
-% regarded as the number of correct digits in the sampled value that created
-% VSCALE.
-%
-% Here is a rough guide to how scale and accuracy information is propagated in
-% subsequent operations after construction:
-%   h = f + c:
-%     h.epslevel = (f.epslevel*f.vscale + eps(c)) / vscale(h);
-%
-%   h = f * c:
-%     h.epslevel = f.epslevel + eps(c)/c;
-%
-%   h = f + g:
-%     h.epslevel = (f.epslevel*f.vscale + g.epslevel*g.vscale) / h.vscale
-%
-%   h = f .* g:
-%     h.epslevel = (f.epslevel + g.epslevel) * (f.vscale*g.vscale)/h.vscale
-%
-%   h = diff(f):
-%     % [TODO]: Figure this out rigourously.
-%     h.epslevel = n*log(n)*f.epslevel*f.vscale; % *(h.vscale/h.vscale)
-%     % Note we don't divide by vscale(h) here as we must also multiply by it.
-%
-%   h = cumsum(f):
-%     % [TODO]: Figure this out rigourously.
-%     h.epslevel = 2*f.epslevel*f.vscale/h.vscale
-%
 % If the input operator OP in a call to a concrete CHEBTECH constructor, say,
 % CHEBTECH1(OP), evaluates to NaN or Inf at any of the sample points used by the
 % constructor, then a suitable replacement is found by extrapolating (globally)
