@@ -173,7 +173,7 @@ if ( length(f) == 1 )
 end
 
 % Get scaled coefficients for the recursive call:
-c = f.coeffs/f.vscale;
+c = f.coeffs/vscale(f);
 
 % Call the recursive rootsunit function:
 %r = rootsunit_coeffs(c, 100*eps*max(f.hscale, 1));

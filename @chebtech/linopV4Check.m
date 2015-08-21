@@ -74,7 +74,7 @@ end
 n90 = ceil( 0.90*n );
 absCoeff = abs( coeff(end:-1:end+1-n90,:) );  % switch to low->high ordering
 vscl = max(absCoeff, [], 1);                  % scaling in each column
-vscl = max([vscl(:) ; f.vscale]);
+vscl = max([vscl(:) ; vscale(f)]);
 absCoeff = absCoeff / vscl;
 
 
