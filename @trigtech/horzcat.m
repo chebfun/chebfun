@@ -34,10 +34,6 @@ out = varargin{1};
 out.coeffs = cell2mat(cellfun(@(f) f.coeffs, F, 'UniformOutput', false));
 out.values = cell2mat(cellfun(@(f) f.values, F, 'UniformOutput', false));
 
-% Vscales:
-vscales = cellfun(@(f) f.vscale, F, 'UniformOutput', false);
-out.vscale = cell2mat(vscales);
-
 % Epslevel:
 epslevels = cellfun(@(f) f.epslevel, F, 'UniformOutput', false);
 out.epslevel = cell2mat(epslevels);

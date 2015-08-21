@@ -27,7 +27,7 @@ data = trigtech.parseDataInputs(data);
 
 % vscale defaults to zero if not given but should be at least f.vscale.  (Only
 % makes sense to have a larger "global" vscale.)
-data.vscale = max(data.vscale, f.vscale);
+data.vscale = max(data.vscale, vscale(f));
 
 % What does happiness mean to you?
 if ( strcmpi(pref.happinessCheck, 'standard') )

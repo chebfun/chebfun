@@ -28,11 +28,9 @@ elseif ( isa(g, 'double') )     % TRIGTECH .* double.
     if ( size(g, 2) > 1 )
         f.values = bsxfun(@times, f.values, g);
         f.coeffs = f.vals2coeffs(f.values);
-        f.vscale = f.vscale.*abs(g);
     else
         f.values = f.values*g;
         f.coeffs = f.coeffs*g;
-        f.vscale = f.vscale*abs(g);
     end
     f.epslevel = f.epslevel + eps(g);
     f.isReal = f.isReal & isreal(g);
@@ -102,22 +100,22 @@ else
 end
 
 % Assign values and coefficients back to f:
+vscaleOldf = vscale(f);
+vscaleOldg = vscale(g);
 f.values = values;
 f.coeffs = f.vals2coeffs(values);
 
 % Update vscale, epslevel, and ishappy:
-vscale = max(abs(f.values), [], 1);
+vscaleNew = vscale(f);
 
 % Avoid NaNs:
-tmpVscale = vscale;
-tmpVscale(vscale == 0) = 1;
-f.vscale(f.vscale == 0) = 1;
-g.vscale(g.vscale == 0) = 1;
+vscaleNew(vscaleNew == 0) = 1;
+vscaleOldf(vscaleOldf == 0) = 1;
+vscaleOldg(vscaleOldg == 0) = 1;
  
 % See CHEBTECH CLASSDEF file for documentation on this:
-epslevelBound = (f.epslevel + g.epslevel) .* (f.vscale.*g.vscale./tmpVscale);
+epslevelBound = (f.epslevel + g.epslevel) .* (vscaleOldf.*vscaleOldg./vscaleNew);
 f.epslevel = updateEpslevel(f, epslevelBound);
-f.vscale  = vscale;
 f.ishappy = f.ishappy && g.ishappy;
 
 % Simplify.

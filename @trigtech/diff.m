@@ -50,20 +50,20 @@ function f = diffFiniteDim(f, k)
     else 
         for j = 1:k
             % Differentiate values across dim:
+            vscaleOld = vscale(f);
             f.values = diff(f.values, 1, 2);
             % Differentiate coefficients across dim:
             f.coeffs = diff(f.coeffs, 1, 2);
             % Update vscale and epslevel as in PLUS().
-            vscale = max(abs(f.values), [], 1);
-            ev = f.epslevel.*f.vscale;
+            vscl = vscale(f);
+            ev = f.epslevel.*vscaleOld;
             for l = 1:size(f,2)-1
                 f.epslevel(l) = ev(l) + ev(l+1);
             end
             % We've lost a column, so we lose an epslevel:
             f.epslevel(end) = [];
             % New vscale and epslevel:
-            f.epslevel = f.epslevel./vscale;
-            f.vscale = vscale;
+            f.epslevel = f.epslevel./vscl;
             f.isReal = ~logical(diff(~f.isReal));
         end
     end
@@ -94,13 +94,13 @@ function f = diffContinuousDim(f, k)
     v(:,f.isReal) = real(v(:,f.isReal));
 
     % Store new coefficients and values:
+    vscaleOld = vscale(f);
     f.coeffs = c;
     f.values = v;
 
     % Update epslevel and the vertical scale: (See TRIGTECH CLASSDEF file
     % for documentation.)
-    newVScale = max(abs(v), [], 1); 
-    epslevelBnd = (N*log(N)).^k*(f.epslevel.*f.vscale)./newVScale;
+    vscaleNew = vscale(f);
+    epslevelBnd = (N*log(N)).^k*(f.epslevel.*vscaleOld)./vscaleNew;
     f.epslevel = updateEpslevel(f, epslevelBnd);
-    f.vscale = newVScale;    
 end

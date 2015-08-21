@@ -87,14 +87,14 @@ function f = cumsumContinuousDim(f, m)
 
     % Check that the mean of the TRIGtech is zero.  If it is not, then
     % throw an error.
-    if ( any(abs(c(ind,:)) > 1e1*f.vscale.*f.epslevel) )
+    if ( any(abs(c(ind,:)) > 1e1*vscale(f).*f.epslevel) )
         error('CHEBFUN:TRIGTECH:cumsum:meanNotZero', ...
             ['Indefinite integrals are only possible for TRIGTECH objects '...
             'with zero mean.']);
     end
     
     % Force the mean to be exactly zero.
-    if fIsEven
+    if ( fIsEven )
         % Set coeff corresponding to the constant mode to zero:
         c(numCoeffs/2+1,:) = 0;
         % Expand the coefficients to be symmetric (see above discussion).
@@ -137,9 +137,6 @@ function f = cumsumContinuousDim(f, m)
     
     f.coeffs = c;
 
-    % Update vscale
-    f.vscale = max(abs(f.values), [], 1);
-
     % Update epslevel:
     f.epslevel = updateEpslevel(f);
     
@@ -157,12 +154,12 @@ function f = cumsumFiniteDim(f, m)
 % CUMSUM over the finite dimension.
 
     for k = 1:m
+        oldVscale = vscale(f);
         f.values = cumsum(f.values, 2);
         f.coeffs = cumsum(f.coeffs, 2);
-        newVscale = max(abs(f.values), [], 1);
-        epslevelApprox = sum(f.epslevel.*f.vscale, 2)/sum(newVscale, 2); % TODO: Is this right?        
+        newVscale = vscale(f);
+        epslevelApprox = sum(f.epslevel.*oldVscale, 2)/sum(newVscale, 2); % TODO: Is this right?        
         f.epslevel = updateEpslevel(f, epslevelApprox);
-        f.vscale = newVscale;
     end
 
 end

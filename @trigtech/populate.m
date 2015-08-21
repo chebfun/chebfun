@@ -44,21 +44,18 @@ if ( isnumeric(op) || iscell(op) )
         f.coeffs = op{2};
         f.values = f.coeffs2vals(f.coeffs);
     end
-    
-    % Update vscale:
-    f.vscale = max(abs(f.values), [], 1);
-    
+
     % We're always happy if given discrete data:
     f.ishappy = true;
     
     % Scale the epslevel relative to the largest column:
-    data.vscale = f.vscale;
-    f.epslevel = 10*eps(max(f.vscale));
+    data.vscale = vscale(f);
+    f.epslevel = 10*eps(max(data.vscale));
     data.vscale(data.vscale <= f.epslevel) = 1;
     f.epslevel = f.epslevel./data.vscale;
 
     % Threshold to determine if f is real or not.
-    f.isReal = max(abs(imag( f.values ))) <= 2*(f.epslevel.*f.vscale);
+    f.isReal = max(abs(imag( f.values ))) <= 2*(f.epslevel.*data.vscale);
     f.values(:,f.isReal) = real(f.values(:,f.isReal));
 
     return
@@ -102,7 +99,6 @@ while ( 1 )
     
     % Check for happiness:
     f.coeffs = coeffs;
-    f.vscale = data.vscale;
     [ishappy, epslevel, cutoff] = happinessCheck(f, op, f.values, data, pref);
     
         
@@ -133,7 +129,6 @@ epslevel = epslevel.*vscaleGlobal./vscaleOut;
     
 %%%%%%%%%%%%%%%%%%%%%%%%%% Assign to TRIGTECH object. %%%%%%%%%%%%%%%%%%%%%%%%%%
 f.coeffs = coeffs;
-f.vscale = data.vscale;
 f.ishappy = ishappy;
 f.epslevel = epslevel;
 

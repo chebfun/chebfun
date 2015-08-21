@@ -41,12 +41,8 @@ elseif ( isa(g, 'double') ) % TRIGTECH + double.
     % Update isReal:
     f.isReal = f.isReal & isreal(g);
     
-    % Update scale:
-    vscaleNew = max(abs(f.values), [], 1);
-    
     % See TRIGTECH CLASSDEF file for documentation on this:
     f.epslevel = updateEpslevel(f);
-    f.vscale = vscaleNew;
     
 elseif ( isa(f, 'double') ) % double + TRIGTECH.
     
@@ -68,6 +64,9 @@ elseif ( isa(f, 'trigtech') && isa(g, 'trigtech') )  % TRIGTECH + TRIGTECH.
         f = prolong(f, ng);
     end
     
+    % Store the old vscale:
+    vscaleOld = f.vscale;
+
     % Update values and coefficients:
     f.values = f.values + g.values;
     f.coeffs = f.vals2coeffs(f.values);
@@ -90,11 +89,10 @@ elseif ( isa(f, 'trigtech') && isa(g, 'trigtech') )  % TRIGTECH + TRIGTECH.
         f.ishappy = ishappy;
     else
         % Update vscale, epslevel, and ishappy:
-        vscaleNew = max(abs(f.values), [], 1);
+        vscaleNew = vscale(f);
         % See TRIGTECH CLASSDEF file for documentation on this:
-        epslevelBound = (f.epslevel.*f.vscale + g.epslevel.*g.vscale)./vscaleNew;
+        epslevelBound = (f.epslevel.*vscaleOld + g.epslevel.*vscale(g))./vscaleNew;
         f.epslevel = updateEpslevel(f, epslevelBound);
-        f.vscale = vscaleNew;
         f.ishappy = f.ishappy && g.ishappy;
     end
     

@@ -9,13 +9,11 @@ function f = imag(f)
 
 if ( isreal(f) )
     % Input was real, so output a zero TRIGTECH:
-    data.vscale = f.vscale;
-    f = f.make(zeros(1, size(f.values, 2)), data);
+    f = f.make(zeros(1, size(f.values, 2)));
     f.ishappy = 1;
 else
     % Compute the imaginary part of the values and update vscale:
     f.values = imag(f.values);
-    f.vscale = max(abs(f.values), [], 1);
     % Compute imaginary part of the coefficients:
     f.coeffs = f.vals2coeffs(f.values);
     f.isReal = true(1,size(f.values,2));

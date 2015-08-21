@@ -50,15 +50,13 @@ g = circshift(g,-1);
 f.values = 2/n*ifft(fft(f.values).*fft(g.values));
 f.coeffs = f.vals2coeffs(f.values);
 
-% Update the vscale.
-f.vscale = max(abs(f.values), [], 1);
-
 % Scale the epslevel relative to the largest column:
-vscale = f.vscale;
-f.epslevel = 10*eps(max(f.vscale));
-vscale(vscale <= f.epslevel) = 1;
-f.epslevel = f.epslevel./vscale;
+vscl = vscale(f);
+f.epslevel = 10*eps(max(vscl));
+vscl(vscl <= f.epslevel) = 1;
+f.epslevel = f.epslevel./vscl;
 
+% TODO:  Why do we simplify twice?  (Once here and once below.)
 f = simplify(f);
 
 f.ishappy = f.ishappy && g.ishappy;

@@ -54,9 +54,9 @@ f = simplify(f);
 % condition number one. Therefore we assume Q has the same global accuracy as f,
 % and simply factor out the new vscale. [TODO]: It may be sensible to include some
 % knowledge of R here?
-col_acc = f.epslevel.*f.vscale;  % Accuracy of each column in f.
-glob_acc = max(col_acc);         % The best of these.
-epslevelApprox = glob_acc./Q.vscale; % Scale out vscale of Q.
+col_acc = f.epslevel.*vscale(f);      % Accuracy of each column in f.
+glob_acc = max(col_acc);              % The best of these.
+epslevelApprox = glob_acc./vscale(Q); % Scale out vscale of Q.
 Q.epslevel = updateEpslevel(Q, epslevelApprox);
 
 end
@@ -65,7 +65,7 @@ function [f, R, Eperm] = qr_householder(f, flag)
 
 % Get some useful values
 [n, numCols] = size(f);
-tol = max(f.epslevel.*f.vscale);
+tol = max(f.epslevel.*vscale(f));
 
 % Make the discrete analog of f:
 newN = 2*max(n, numCols);
@@ -94,9 +94,6 @@ f.coeffs = f.vals2coeffs(Q);
 % If any columns of f where not real, we cannot guarantee that the columns
 % of Q should remain real.
 f.isReal(:) = all(f.isReal);
-
-% Update the vscale:
-f.vscale = max(abs(f.values), [], 1);
 
 % Additional output argument:
 if ( nargout == 3 )

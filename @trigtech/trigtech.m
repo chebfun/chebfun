@@ -130,11 +130,6 @@ classdef trigtech < smoothfun % (Abstract)
         % of a single function.
         coeffs % (nxm double)
 
-        % Vertical scale of the TRIGTECH. This is a row vector storing the
-        % magnitude of the largest entry in each column of VALUES. It is
-        % convenient to store this as a property.
-        vscale = 0 % (1xm double >= 0)
-
         % Boolean value designating whether the TRIGTECH is 'happy' or not.
         % See HAPPINESSCHECK.m for full documentation.
         ishappy % (logical)

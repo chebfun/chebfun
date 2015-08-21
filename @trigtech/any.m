@@ -26,7 +26,6 @@ elseif ( dim == 2 )     % ANY down the rows.
     arbitraryPoint = 0.1273881594;
     a.values = any(feval(a, arbitraryPoint));
     a.coeffs = a.values;
-    a.vscale = abs(a.values);
     a.epslevel = eps;
     a.isReal = true(1, size(f.coeffs, 2));
 else
