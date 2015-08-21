@@ -29,8 +29,8 @@ f = testclass.make(fun_op, [], pref);
 [y, x] = max(f);
 exact_max = [exp(1) 1 1];
 fx = [exp(-cos(2*pi*x(1))) sin(10*pi*x(2)) exp(-sin(pi*(x(3)-0.32)).^100)];
-pass(6) = (all(abs(y - exact_max) < 100*f.epslevel) && ...
-           all(abs(fx - exact_max) < 10*f.epslevel));
+pass(6) = (all(abs(y - exact_max) < 100*eps) && ...
+           all(abs(fx - exact_max) < 10*eps));
     
     
 %%
@@ -47,7 +47,7 @@ function result = test_spotcheck_max(testclass, fun_op, exact_max, pref)
 f = testclass.make(fun_op,[], pref);
 [y, x] = max(f);
 fx = fun_op(x);
-result = (all(abs(y - exact_max) < 100*f.vscale.*f.epslevel) && ...
-          all(abs(fx - exact_max) < 100*f.vscale.*f.epslevel));
+result = (all(abs(y - exact_max) < 100*f.vscale.*eps) && ...
+          all(abs(fx - exact_max) < 100*f.vscale.*eps));
     
 end

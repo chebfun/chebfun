@@ -15,37 +15,37 @@ f = testclass.make(F, [], pref);
 k = 101;
 go = prolong(f, k);
 x = testclass.trigpts(k);
-pass(1) = size(go,1) == k  && norm(go.values - F(x), inf) < 10*go.vscale.*go.epslevel;
+pass(1) = size(go,1) == k  && norm(go.values - F(x), inf) < 10*go.vscale.*eps;
 
 % Even prolongation.
 k = 100;
 ge = prolong(f, k);
 x = testclass.trigpts(k);
-pass(2) = size(ge,1) == k  && norm(ge.values - F(x), inf) < 10*ge.vscale.*ge.epslevel;
+pass(2) = size(ge,1) == k  && norm(ge.values - F(x), inf) < 10*ge.vscale.*eps;
 
 % Odd restriction from odd length f.
 k = 89;
 g = prolong(go, k);
 x = testclass.trigpts(k);
-pass(3) = size(g,1) == k  && norm(g.values - F(x), inf) < 10*g.vscale.*g.epslevel;
+pass(3) = size(g,1) == k  && norm(g.values - F(x), inf) < 10*g.vscale.*eps;
 
 % Even restriction from odd length f.
 k = 88;
 g = prolong(go, k);
 x = testclass.trigpts(k);
-pass(4) = size(g,1) == k  && norm(g.values - F(x), inf) < 10*g.vscale.*g.epslevel;
+pass(4) = size(g,1) == k  && norm(g.values - F(x), inf) < 10*g.vscale.*eps;
 
 % Odd restriction from even length f.
 k = 89;
 g = prolong(ge, k);
 x = testclass.trigpts(k);
-pass(5) = size(g,1) == k  && norm(g.values - F(x), inf) < 10*g.vscale.*g.epslevel;
+pass(5) = size(g,1) == k  && norm(g.values - F(x), inf) < 10*g.vscale.*eps;
 
 % Even restriction from even length f.
 k = 88;
 g = prolong(ge, k);
 x = testclass.trigpts(k);
-pass(6) = size(g,1) == k  && norm(g.values - F(x), inf) < 10*g.vscale.*g.epslevel;
+pass(6) = size(g,1) == k  && norm(g.values - F(x), inf) < 10*g.vscale.*eps;
 
 % Restriction to length 1.
 g = prolong(f, 1);
@@ -59,7 +59,7 @@ g = prolong(f, k);
 x = testclass.trigpts(k);
 values = g.coeffs2vals(g.coeffs);
 pass(8) = size(g,1) == k && norm(values - [F(x), -F(x)], inf) < ...
-    100*max(g.vscale.*g.epslevel);
+    100*max(g.vscale.*eps);
 
 g = prolong(f, 1);
 pass(9) = size(g,1) == 1;
@@ -76,6 +76,6 @@ f = testclass.make(v, [], pref);
 g = prolong(f, 5);
 values = g.coeffs2vals(g.coeffs);
 pass(11) = norm(values - repmat([1 2 3], 5, 1), inf) < ...
-   10*max(g.vscale.*g.epslevel);
+   10*max(g.vscale.*eps);
 
 end

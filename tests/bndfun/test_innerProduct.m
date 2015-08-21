@@ -23,22 +23,22 @@ beta = -0.526634844879922 - 0.685484380523668i;
 f = bndfun(@(x) sin(2*pi*x), struct('domain', dom), pref);
 g = bndfun(@(x) cos(2*pi*x), struct('domain', dom), pref);
 pass(1) = abs(innerProduct(f, g)) < ...
-    10*max(get(f, 'epslevel'), get(g, 'epslevel'));
+    10*max(eps, eps);
 
 g = bndfun(@(x) cos(4*pi*x), struct('domain', dom), pref);
 pass(2) = abs(innerProduct(f, g)) < ...
-    10*max(get(f, 'epslevel'), get(g, 'epslevel'));
+    10*max(eps, eps);
 
 f = bndfun(@(x) exp(x), struct('domain', dom), pref);
 g = bndfun(@(x) exp(-x), struct('domain', dom), pref);
 pass(3) = abs(innerProduct(f, g) - 9) < 1e2*max(get(f, 'vscale'), ...
-    get(g, 'vscale'))*max(get(f, 'epslevel'), get(g, 'epslevel'));
+    get(g, 'vscale'))*max(eps, eps);
     
 
 g = bndfun(@(x) sin(x), struct('domain', dom), pref);
 exact = exp(7)*(sin(7) - cos(7))/2 - exp(-2)*(sin(-2) - cos(-2))/2;
 pass(4) = abs(innerProduct(f, g) - exact) < max(get(f, 'vscale'), ...
-    get(g, 'vscale'))*10*max(get(f, 'epslevel'), get(g, 'epslevel'));
+    get(g, 'vscale'))*10*max(eps, eps);
     
 
 %%
@@ -80,8 +80,8 @@ g = bndfun(@(x) [exp(x) 1./(1 + x.^2) airy(x)], struct('domain', dom), pref);
 ip = innerProduct(f, g);
 exact = [-53.1070904269318222 0.0025548835039100  -0.4683303433821355;
          773.70343924989359096771 1.3148120368924471 0.6450791915572742];
-pass(10) = norm(ip(:) - exact(:), inf) < 10*max([get(f, 'epslevel'), ...
-    get(g, 'epslevel')])*max([get(f, 'vscale') get(g, 'vscale')]);
+pass(10) = norm(ip(:) - exact(:), inf) < 10*max([eps, ...
+    eps])*max([get(f, 'vscale') get(g, 'vscale')]);
 
 %%
 % Check error conditition
@@ -110,7 +110,7 @@ g = bndfun(op2, data, pref);
 I = innerProduct(f,g);
 I_exact = -0.65182492763883119+0.47357853074362785i;
 err = abs(I - I_exact);
-tol = 5e2*max(get(f, 'epslevel'), get(g, 'epslevel'))*abs(I_exact);
+tol = 5e2*max(eps, eps)*abs(I_exact);
 pass(12) = err < tol;
 
 end

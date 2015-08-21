@@ -33,15 +33,15 @@ F2_vals = feval(F{2}, x);
 F3_vals = feval(F{3}, x);
 
 err1 = normest(F{1} - g);
-tol1 = 1e2*get(g, 'epslevel')*get(g, 'vscale');
+tol1 = 1e2*eps*get(g, 'vscale');
 pass(1) = ~isempty(F{1}) && (err1 < tol1);
 
 err2 = normest(F{2} - h);
-tol2 = 10*max(get(h, 'epslevel').*get(h, 'vscale'));
+tol2 = 10*max(eps.*get(h, 'vscale'));
 pass(2) = ~isempty(F{2}) && (err2 < tol2);
 
 err3 = normest(F{3} - l);
-tol3 = 10*get(l, 'epslevel')*get(l, 'vscale');
+tol3 = 10*eps*get(l, 'vscale');
 pass(3) = ~isempty(F{3}) && (err3 < tol3);
 
 % Test two arguments.
@@ -51,17 +51,17 @@ F2_vals = feval(F{2}, x);
 F3_vals = feval(F{3}, x);
 
 err4 = normest(F{1} - g);
-tol4 = 1e2*get(g, 'epslevel')*get(g, 'vscale');
+tol4 = 1e2*eps*get(g, 'vscale');
 pass(4) = ~isempty(F{1}) && (err4 < tol4);
-    norm(F1_vals - g_vals, inf) < 1e1*get(g, 'epslevel')*get(g, 'vscale');
+    norm(F1_vals - g_vals, inf) < 1e1*eps*get(g, 'vscale');
 
 err5 = normest(F{2} - h);
-tol5 = 10*max(get(h, 'epslevel').*get(h, 'vscale'));
+tol5 = 10*max(eps.*get(h, 'vscale'));
 pass(5) = ~isempty(F{2}) && (err5 < tol5);
-    norm(F2_vals - h_vals, inf) < max(get(h, 'epslevel').*get(h, 'vscale'));
+    norm(F2_vals - h_vals, inf) < max(eps.*get(h, 'vscale'));
 
 err6 = normest(F{3} - l);
-tol6 = 10*get(l, 'epslevel')*get(l, 'vscale');
+tol6 = 10*eps*get(l, 'vscale');
 pass(6) = ~isempty(F{3}) && (err6 < tol6);
 
 %% Test for UNBNDFUN:
@@ -91,7 +91,7 @@ err1 = F1Vals - F1Exact;
 err2 = F2Vals - F2Exact;
 
 pass(7) = norm([err1; err2(:)], inf) < ...
-    1e2*max(get(f,'epslevel').*get(f,'vscale'));
+    1e2*max(eps.*get(f,'vscale'));
 
 
 end

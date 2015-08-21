@@ -31,16 +31,16 @@ f = testclass.make(fun_op, [], pref);
 [y, x] = min(f);
 exact_min = -[exp(1) 1 1];
 fx = -[exp(-cos(2*pi*x(1))) sin(10*pi*x(2)) exp(-sin(pi*(x(3)-0.32)).^100)];
-pass(6) = (all(abs(y - exact_min) < 100*f.epslevel) && ...
-           all(abs(fx - exact_min) < 10*f.epslevel));
+pass(6) = (all(abs(y - exact_min) < 100*eps) && ...
+           all(abs(fx - exact_min) < 10*eps));
            
 %%
 % Test for complex-valued trigtech objects.
 f = testclass.make(@(x) cos(pi*x) + exp(1i*pi*x), [], pref);
 [y, x] = min(f);
 exact_min = 1i; % Could be +/- 1i depending on machine.
-pass(7) = ( (abs(y - exact_min) < 1e2*f.vscale.*f.epslevel) || ...
-            (abs(y + exact_min) < 1e2*f.vscale.*f.epslevel) );
+pass(7) = ( (abs(y - exact_min) < 1e2*f.vscale.*eps) || ...
+            (abs(y + exact_min) < 1e2*f.vscale.*eps) );
             
                 
 end
@@ -51,8 +51,8 @@ function result = test_spotcheck_min(testclass, fun_op, exact_min, pref)
 f = testclass.make(fun_op, [], pref);
 [y, x] = min(f);
 fx = fun_op(x);
-result = ((abs(y - exact_min) < 100*f.vscale.*f.epslevel) && ... 
-          (abs(fx - exact_min) < 10*f.vscale.*f.epslevel));
+result = ((abs(y - exact_min) < 100*f.vscale.*eps) && ... 
+          (abs(fx - exact_min) < 10*f.vscale.*eps));
     
     
 end

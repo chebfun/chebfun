@@ -81,16 +81,16 @@ f = bndfun(@(x) [sin(x) cos(x) exp(x)], data, pref);
 g = bndfun(@(x) tanh(x), data, pref);
 h1 = f .* g;
 h2 = g .* f;
-pass(12) = ( normest(h1 - h2) < 1000*max(get(h1, 'vscale').*get(h1, 'epslevel')) );
+pass(12) = ( normest(h1 - h2) < 1000*max(get(h1, 'vscale').*eps) );
 h_exact = @(x) [tanh(x).*sin(x) tanh(x).*cos(x) tanh(x).*exp(x)];
 err = feval(h1, x) - h_exact(x);
-pass(13) = max(abs(err(:))) < 10*max(get(h1, 'vscale').*get(h1, 'epslevel'));
+pass(13) = max(abs(err(:))) < 10*max(get(h1, 'vscale').*eps);
 
 g = bndfun(@(x) [sinh(x) cosh(x) tanh(x)], data, pref);
 h = f .* g;
 h_exact = @(x) [sinh(x).*sin(x) cosh(x).*cos(x) tanh(x).*exp(x)];
 err = feval(h, x) - h_exact(x);
-pass(14) = max(abs(err(:))) < 10*max(get(h, 'vscale').*get(h, 'epslevel'));
+pass(14) = max(abs(err(:))) < 10*max(get(h, 'vscale').*eps);
 
 %%
 % This should fail with a dimension mismatch error.
@@ -126,7 +126,7 @@ h1_vals = feval(h1, x);
 h2 = bndfun(@(x) f_op(x) .* g_op(x), data, pref);
 h2_vals = feval(h2, x);
 pass(21) = ( norm(h1_vals - h2_vals, inf) < ...
-    2e1*get(h1, 'epslevel').*get(h1, 'vscale') );
+    2e1*eps.*get(h1, 'vscale') );
 
 %%
 % Check that multiplying a BNDFUN by an unhappy BNDFUN gives an unhappy
@@ -153,7 +153,7 @@ g = c.*f;
 g_exact = bndfun(op_exact, singData, singPref);
 
 err = norm(feval(g, x) - feval(g_exact, x), inf);
-tol = 1e2*get(f, 'epslevel')*norm(feval(g_exact, x), inf);
+tol = 1e2*eps*norm(feval(g_exact, x), inf);
 pass(24) = ( err < tol );
 
 % Case of two functions:
@@ -172,7 +172,7 @@ singData.exponents = [0 pow1+pow2];
 h_exact = bndfun(op_exact, singData, singPref);
 
 err = norm(feval(h, x) - feval(h_exact, x), inf);
-tol = 1e2*max(get(f, 'epslevel'), get(g, 'epslevel'))*norm(feval(h_exact, x), inf);
+tol = 1e2*max(eps, eps)*norm(feval(h_exact, x), inf);
 pass(25) = ( err < tol );
 
 %% Tests for UNBNDFUN:
@@ -195,7 +195,7 @@ h = f.*g;
 hVals = feval(h, x);
 hExact = oph(x);
 err = norm(hVals - hExact, inf);
-tol = get(f,'epslevel')*get(f,'vscale');
+tol = eps*get(f,'vscale');
 pass(26) = err < 2*tol;
 
 end
@@ -208,7 +208,7 @@ g1 = f .* alpha;
 g2 = alpha .* f;
 result(1) = isequal(g1, g2);
 g_exact = @(x) f_op(x) .* alpha;
-tol = 10*max(get(g1, 'vscale').*get(g1, 'epslevel'));
+tol = 10*max(get(g1, 'vscale').*eps);
 result(2) = norm(feval(g1, x) - g_exact(x), inf) < tol;
 end
 
@@ -220,7 +220,7 @@ end
 function result = test_mult_function_by_function(f, f_op, g, g_op, x, checkpos)
 h = f .* g;
 h_exact = @(x) f_op(x) .* g_op(x);
-tol = 10*max(get(h, 'vscale').*get(h, 'epslevel'));
+tol = 10*max(get(h, 'vscale').*eps);
 result(1) = all(max(abs(feval(h, x) - h_exact(x))) < 1e4*tol);
     
 if ( checkpos )

@@ -83,7 +83,7 @@ h = compose(f, g);
 hVals = feval(h, x);
 hExact = oph(x);
 err = hVals - hExact;
-pass(11) = norm(err, inf) < 1e1*get(h,'epslevel')*get(h,'vscale');
+pass(11) = norm(err, inf) < 1e1*eps*get(h,'vscale');
 
 
 %% Test compose with a discontinuous breakpoint. See #1074.
@@ -106,7 +106,7 @@ function pass = test_one_compose_chebfuns(f_exact, g_exact, dom, pref)
     h_exact = @(x) g_exact(f_exact(x));
     x = ((dom(end) - dom(1))/2)*xr + dom(1) + (dom(end) - dom(1))/2;
     err = norm(feval(h, x) - h_exact(x), inf);
-    pass = (err < 20*vscale(h)*epslevel(h)) && ...
+    pass = (err < 20*vscale(h)*eps) && ...
         isequal(feval(g, feval(f, dom)), feval(h, dom));
 end
 
@@ -119,6 +119,6 @@ function pass = test_one_compose_chebfuns_quasi(f_exact, g_exact, dom, pref, f, 
     h_exact = @(x) g_exact(f_exact(x));
     x = ((dom(end) - dom(1))/2)*xr + dom(1) + (dom(end) - dom(1))/2;
     err = norm(feval(h, x) - h_exact(x), inf);
-    pass = (err < 20*vscale(h)*epslevel(h)) && ...
+    pass = (err < 20*vscale(h)*eps) && ...
         isequal(feval(g, feval(f, dom)), feval(h, dom));
 end

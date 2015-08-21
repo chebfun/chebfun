@@ -35,7 +35,7 @@ approx_fg = feval(hfg,x);
 approx_gf = feval(hgf,x);
 expected = 0;
 err = abs(approx_fg - expected);
-tol = 1e2*hgf.epslevel;
+tol = 1e2*eps;
 pass(2) = err < tol;
 
 f_op = @(x) tanh(cos(pi*(x)));
@@ -51,7 +51,7 @@ approx = feval(g,0);
 % Expected answer:
 expected = sum(f.*f);
 err = abs(approx - expected);
-tol = 1e2*g.epslevel.*g.vscale;
+tol = 1e2*eps.*g.vscale;
 pass(3) = err < tol;
 
 % Computed answer at x:
@@ -60,7 +60,7 @@ approx = feval(g,x);
 h = testclass.make(fa_op, [], pref);
 expected = sum(f.*h);
 err = abs(approx - expected);
-tol = 1e2*g.epslevel.*g.vscale;
+tol = 1e2*eps.*g.vscale;
 pass(4) = err < tol;
 
 end

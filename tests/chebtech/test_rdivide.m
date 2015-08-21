@@ -45,7 +45,7 @@ for n = 1:2
     
     g = f ./ [alpha beta];
     g_exact = @(x) [sin(x)./alpha cos(x)./beta];
-    pass(n, 5) = norm(feval(g, x) - g_exact(x), inf) < 10*max(g.epslevel);
+    pass(n, 5) = norm(feval(g, x) - g_exact(x), inf) < 10*max(eps);
     
     g = f ./ [alpha 0];
     pass(n, 6) = isnan(g) && ~any(isnan(g.coeffs(:, 1))) ...
@@ -124,7 +124,7 @@ end
 function result = test_div_function_by_scalar(f, f_op, alpha, x)
     g = f ./ alpha;
     g_exact = @(x) f_op(x) ./ alpha;
-    result = norm(feval(g, x) - g_exact(x), inf) < 10*max(g.vscale.*g.epslevel);
+    result = norm(feval(g, x) - g_exact(x), inf) < 10*max(g.vscale.*eps);
 end
 
 % Test the division of a scalar ALPHA by a CHEBTECH, specified by F_OP, using
@@ -132,7 +132,7 @@ end
 function result = test_div_scalar_by_function(alpha, f, f_op, x)
     g = alpha ./ f;
     g_exact = @(x) alpha ./ f_op(x);
-    result = norm(feval(g, x) - g_exact(x), inf) < 10*max(g.vscale.*g.epslevel);
+    result = norm(feval(g, x) - g_exact(x), inf) < 10*max(g.vscale.*eps);
 end
 
 % Test the division of two CHEBTECH objects F and G, specified by F_OP and
@@ -141,7 +141,7 @@ function result = test_div_function_by_function(f, f_op, g, g_op, x)
     h = f ./ g;
     h_exact = @(x) f_op(x) ./ g_op(x);
     norm(feval(h, x) - h_exact(x), inf);
-    result = norm(feval(h, x) - h_exact(x), inf) < 1e4*max(h.vscale.*h.epslevel);
+    result = norm(feval(h, x) - h_exact(x), inf) < 1e4*max(h.vscale.*eps);
         
         % (1e2 is enough except solely for test 10, which requires bigger)
 end

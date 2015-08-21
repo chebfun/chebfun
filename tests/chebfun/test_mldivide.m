@@ -12,7 +12,7 @@ T = restrict(chebpoly(0:3), [-1 -0.5 0 0.5 1]);
 L = restrict(legpoly(0:3), [-1 0 1]);
 
 %% Scalar A:
-pass(1) = normest(2\T - .5*T) < 10*epslevel(T);
+pass(1) = normest(2\T - .5*T) < 10*eps;
 
 %% Numeric A:
 B = T.';
@@ -20,12 +20,12 @@ A = (1:4).';
 x = A\B;
 x0 = feval(x, 0);
 x0_true = -1/15;
-pass(2) = abs(x0 - x0_true) < 10*epslevel(x);
+pass(2) = abs(x0 - x0_true) < 10*eps;
 
 A = eye(4);
 X = A\B;
 X0 = feval(X, 0);
-pass(3) = norm(X0 - [1 0 -1 0].') < 10*epslevel(X);
+pass(3) = norm(X0 - [1 0 -1 0].') < 10*eps;
 
 %% Transposed A:
 A = T.';
@@ -33,7 +33,7 @@ B = (1:4).';
 X = A\B;
 X0 = feval(X, 0);
 X0_true = -2.625;
-pass(4) = abs(X0 - X0_true) < 10*epslevel(X);
+pass(4) = abs(X0 - X0_true) < 10*eps;
 
 %% Else
 
@@ -41,7 +41,7 @@ X = T\L;
 C = diag([1 1 .75 .625]); 
 C(1, 3) = .25;
 C(2, 4) = .375;
-pass(5) = norm(X - C, inf) < 10*epslevel(L);
+pass(5) = norm(X - C, inf) < 10*eps;
 
 %% Test a bug from #437
 
@@ -61,7 +61,7 @@ expected = [...
    0.196152320507735
    0.700961919873066];
 err = norm(u - expected, inf);
-pass(6) = err < 1e3*epslevel(A);
+pass(6) = err < 1e3*eps;
 
 %% Test on SINGFUN:
 
@@ -73,7 +73,7 @@ op = @(x) sin(20*x)./(3*(x+1));
 g_vals = feval(g, xr);
 g_exact = op(xr).';
 err = g_vals - g_exact;
-pass(7) = norm(err, inf) < 1e5*vscale(g)*epslevel(g);
+pass(7) = norm(err, inf) < 1e5*vscale(g)*eps;
 
 
 % [1 x INF] * [INF x 1] = scalar => row SINGFUN\scalar:
@@ -81,7 +81,7 @@ f = chebfun(@(x)(sin(100*x).^2+1)./((x+1).^0.25), 'exps', [-0.25 0], 'splitting'
 f = f.';
 g = f\3;
 err = f*g - 3;
-pass(8) = abs(err) < 10*vscale(g)*epslevel(g);
+pass(8) = abs(err) < 10*vscale(g)*eps;
     
 
 % [INF x 1] * SCALAR = [INF x 1] => column SINGFUN\column SINGFUN:
@@ -90,7 +90,7 @@ f = chebfun(@(x)3*(x.^2+3)./(x+1).^0.4, 'exps', [-0.4 0], 'splitting', 'on');
 g = chebfun(@(x)(x.^2+3)./(x+1).^0.4, 'exps', [-0.4 0], 'splitting', 'on');
 h = f\g;
 err = h - 1/3;
-pass(9) = norm(err, inf) < vscale(f)*epslevel(f);
+pass(9) = norm(err, inf) < vscale(f)*eps;
 
 
 
@@ -114,7 +114,7 @@ pass(9) = norm(err, inf) < vscale(f)*epslevel(f);
 % X = A\B;
 % res = A*X - B;
 % err = feval(res, x);
-% pass(10) = norm(err(:), inf) < max([get(A,'epslevel').*get(A,'vscale') ...
-%     get(B,'epslevel').*get(B,'vscale')]);
+% pass(10) = norm(err(:), inf) < max([eps.*get(A,'vscale') ...
+%     eps.*get(B,'vscale')]);
 
 end

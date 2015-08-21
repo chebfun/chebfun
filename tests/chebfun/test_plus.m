@@ -67,7 +67,7 @@ f = chebfun(@(x) [sin(x) cos(x) exp(x)], pref);
 g = f + [1 2 3];
 g_exact = @(x) [(1 + sin(x)) (2 + cos(x)) (3 + exp(x))];
 err = feval(g, x) - g_exact(x);
-pass(17) = norm(err(:), inf) < 10*max(g.vscale*g.epslevel);
+pass(17) = norm(err(:), inf) < 10*max(g.vscale*eps);
 
 % Test scalar expansion in chebfun argument.
 f = chebfun(@(x) sin(x), pref);
@@ -75,7 +75,7 @@ g = f + [1 2 3];
 g_exact = @(x) [(1 + sin(x)) (2 + sin(x)) (3 + sin(x))];
 err = feval(g, x) - g_exact(x);
 pass(18) = isequal(size(g, 2), 3) && norm(err(:), inf) < ...
-    10*max(g.vscale*g.epslevel);
+    10*max(g.vscale*eps);
 
 %% QUASIMATRIX
 
@@ -97,7 +97,7 @@ f = quasimatrix(@(x) [sin(x) cos(x) exp(x)], pref);
 g = f + [1 2 3];
 g_exact = @(x) [(1 + sin(x)) (2 + cos(x)) (3 + exp(x))];
 err = feval(g, x) - g_exact(x);
-pass(27) = norm(err(:), inf) < 10*max(vscale(g)*epslevel(g));
+pass(27) = norm(err(:), inf) < 10*max(vscale(g)*eps);
 
 %% Test on singular function: piecewise smooth chebfun - splitting on.
 
@@ -116,7 +116,7 @@ h = f + g;
 vals_h = feval(h, x);
 op = @(x)  (x - dom(2)).^pow.*(sin(100*x)+cos(300*x));
 h_exact = op(x);
-pass(28) = ( norm(vals_h-h_exact, inf) < 1e3*max(get(f, 'epslevel'), get(g, 'epslevel'))*...
+pass(28) = ( norm(vals_h-h_exact, inf) < 1e3*max(eps, eps)*...
     norm(h_exact, inf) );
 
 
@@ -140,7 +140,7 @@ h = f + g;
 hVals = feval(h, x);
 hExact = oph(x);
 err = hVals - hExact;
-pass(29) = norm(err, inf) < 1e1*get(h,'epslevel').*get(h,'vscale');
+pass(29) = norm(err, inf) < 1e1*eps.*get(h,'vscale');
 
 %% Test addition between a CHEBFUN and a TRIGFUN.
 
@@ -155,7 +155,7 @@ pass(30) = strcmpi(func2str(get(h1.funs{1}.onefun, 'tech')), ...
                    func2str(get(f.funs{1}.onefun, 'tech')));
 h2 = chebfun(@(x) x + x.^2 + cos(x), dom, pref);
 err = norm(h1 - h2, inf);
-tol = 10*get(h2,'epslevel').*get(h2,'vscale');
+tol = 10*eps.*get(h2,'vscale');
 pass(31) = err < tol;
 
 % 2. Quasimatrix case.
@@ -168,7 +168,7 @@ pass(32) = strcmpi(func2str(get(h1(:,1).funs{1}.onefun, 'tech')), ...
 pass(33) = strcmpi(func2str(get(h1(:,2).funs{1}.onefun, 'tech')), ...
                    func2str(get(g(:,2).funs{1}.onefun, 'tech')));
 h2 = chebfun(@(x) [x + cos(x), x.^3 + sin(x)], dom, pref);
-pass(34) = norm(h1-h2, inf) < 1e2*get(h2,'epslevel').*get(h2,'vscale');
+pass(34) = norm(h1-h2, inf) < 1e2*eps.*get(h2,'vscale');
 
 
 end
@@ -180,7 +180,7 @@ function result = test_add_function_to_scalar(f, f_op, alpha, x)
     g2 = alpha + f;
     result(1) = isequal(g1, g2);
     g_exact = @(x) f_op(x) + alpha;
-    result(2) = norm(feval(g1, x) - g_exact(x), inf) < 10*vscale(g1)*epslevel(g1);
+    result(2) = norm(feval(g1, x) - g_exact(x), inf) < 10*vscale(g1)*eps;
 end
 
 % Test the addition of two chebfun objects F and G, specified by F_OP and
@@ -191,6 +191,6 @@ function result = test_add_function_to_function(f, f_op, g, g_op, x)
     result(1) = isequal(h1, h2);
     h_exact = @(x) f_op(x) + g_op(x);
     norm(feval(h1, x) - h_exact(x), inf);
-    result(2) = norm(feval(h1, x) - h_exact(x), inf) < 1e2*vscale(h1)*epslevel(h1);
+    result(2) = norm(feval(h1, x) - h_exact(x), inf) < 1e2*vscale(h1)*eps;
         
 end

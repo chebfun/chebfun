@@ -115,7 +115,7 @@ function result = test_sub_function_and_scalar(f, f_op, alpha, x)
     result(1) = isequal(g1, -g2);
     g_exact = @(x) f_op(x) - alpha;
     result(2) = norm(feval(g1, x) - g_exact(x), inf) <= ...
-        10*max(g1.vscale.*g1.epslevel);
+        10*max(g1.vscale.*eps);
 end
 
 % Test the subraction of two CHEBTECH objects F and G, specified by F_OP and
@@ -127,6 +127,6 @@ function result = test_sub_function_and_function(f, f_op, g, g_op, x)
     h_exact = @(x) f_op(x) - g_op(x);
     norm(feval(h1, x) - h_exact(x), inf);
     result(2) = norm(feval(h1, x) - h_exact(x), inf) <= ...
-        1e4*max(h1.vscale.*h1.epslevel);
+        1e4*max(h1.vscale.*eps);
     
 end

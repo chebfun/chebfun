@@ -105,7 +105,7 @@ for n = 1:2
     f1 = testclass.make(@(x) [sin(x) cos(x)], [], p);
     p.happinessCheck = @plateauCheck;
     f2 = testclass.make(@(x) [sin(x) cos(x)], [], p);
-    pass(n, 9) = normest(f1 - f2) < 10*max(f2.epslevel);
+    pass(n, 9) = normest(f1 - f2) < 10*max(eps);
 
 end
 

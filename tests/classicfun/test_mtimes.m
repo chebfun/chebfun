@@ -31,7 +31,7 @@ g2 = f*alpha;
 pass(2) = isequal(g1, g2);
 g_exact = @(x) alpha*sin(x);
 pass(3) = norm(feval(g1, x) - g_exact(x), inf) < ...
-    10*get(g1, 'vscale')*get(g1, 'epslevel');
+    10*get(g1, 'vscale')*eps;
 
 g = 0*f;
 pass(4) = all(feval(g, x) == 0);
@@ -44,7 +44,7 @@ g2 = f*alpha;
 pass(5) = isequal(g1, g2);
 g_exact = @(x) alpha*[sin(x) cos(x) exp(x)];
 err = abs(feval(g1, x) - g_exact(x));
-pass(6) = max(err(:)) < 10*max(get(g1, 'vscale').*get(g1, 'epslevel'));
+pass(6) = max(err(:)) < 10*max(get(g1, 'vscale').*eps);
     
 g = 0*f;
 pass(7) = all(all(feval(g, x) == zeros(numel(x), 3)));
@@ -53,7 +53,7 @@ A = randn(3, 3);
 g = f*A;
 g_exact = @(x) [sin(x) cos(x) exp(x)]*A;
 err = abs(feval(g, x) - g_exact(x));
-pass(8) = max(err(:)) < 10*max(get(g, 'vscale').*get(g, 'epslevel'));
+pass(8) = max(err(:)) < 10*max(get(g, 'vscale').*eps);
     
     
 %%
@@ -116,7 +116,7 @@ gVals = feval(g, x);
 op = @(x) [exp(x) x.*exp(x) (1-exp(x))./x]*A;
 gExact = op(x);
 err = gVals - gExact;
-pass(13) = norm(err, inf) < 1e2*max(get(g,'epslevel').*get(g,'vscale'));
+pass(13) = norm(err, inf) < 1e2*max(eps.*get(g,'vscale'));
 
 
 end

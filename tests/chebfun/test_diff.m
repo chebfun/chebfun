@@ -19,43 +19,43 @@ f1 = chebfun(@sin, [-1 -0.5 0.5 1], pref);
 df1 = diff(f1);
 df1_exact = @cos;
 pass(2) = norm(feval(df1, xr) - df1_exact(xr), inf) < ...
-    100*vscale(df1)*epslevel(df1);
+    100*vscale(df1)*eps;
 
 % Check behavior for row chebfuns.
 f1t = f1.';
 df1t = diff(f1t, 1, 2);
 df1t_exact = @(x) cos(x).';
 pass(3) = norm(feval(df1t, xr) - df1t_exact(xr), inf) < ...
-    100*vscale(df1t)*epslevel(df1t);
+    100*vscale(df1t)*eps;
 %%
 % Check behavior for array-valued chebfuns.
 f3 = chebfun(@(x) [sin(x) cos(x) exp(x)], [-1 -0.5 0.5 1], pref);
 df3 = diff(f3);
 df3_exact = @(x) [cos(x) -sin(x) exp(x)];
 pass(4) = max(max(abs(feval(df3, xr) - df3_exact(xr)))) < ...
-    1e3*vscale(df3)*epslevel(df3);
+    1e3*vscale(df3)*eps;
 %%
 % Check N argument.
 d2f1 = diff(f1, 2);
 d2f1_exact = @(x) -sin(x);
 pass(5) = norm(feval(d2f1, xr) - d2f1_exact(xr), inf) < ...
-    1e4*vscale(d2f1)*epslevel(d2f1);
+    1e4*vscale(d2f1)*eps;
 %%
 d2f3 = diff(f3, 2);
 d2f3_exact = @(x) [-sin(x) -cos(x) exp(x)];
 pass(6) = max(max(abs(feval(d2f3, xr) - d2f3_exact(xr)))) < ...
-    1e5*vscale(d2f3)*epslevel(d2f3);
+    1e5*vscale(d2f3)*eps;
 
 % Check dim argument.
 df3_col = diff(f3, 1, 2);
 df3_col_exact = @(x) [(cos(x) - sin(x)) (exp(x) - cos(x))];
 pass(7) = max(max(abs(feval(df3_col, xr) - df3_col_exact(xr)))) < ...
-    10*vscale(df3_col)*epslevel(df3_col);
+    10*vscale(df3_col)*eps;
 
 df3t_row = diff(f3.', 1, 1);
 df3t_row_exact = @(x) [(cos(x) - sin(x)) (exp(x) - cos(x))].';
 pass(8) = max(max(abs(feval(df3t_row, xr) - df3t_row_exact(xr)))) < ...
-    10*vscale(df3t_row)*epslevel(df3t_row);
+    10*vscale(df3t_row)*eps;
 
 % Check error conditions.
 try
@@ -83,7 +83,7 @@ vals_df = feval(df, x);
 df_exact = @(x) (x - dom(1)).^(pow-1).*(pow*sin(200*x)+200*(x - dom(1)).*cos(200*x));
 vals_exact = feval(df_exact, x);
 err = vals_df - vals_exact;
-pass(10) = ( norm(err, inf) < 1e6*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(10) = ( norm(err, inf) < 1e6*eps*norm(vals_exact, inf) );
 
 
 %% Test on function defined on unbounded domain:
@@ -104,7 +104,7 @@ op_g = @(x) 2*exp(-x.^2) + (exp(-x.^2) - 1)./x.^2;
 gVals = feval(g, x);
 gExact = op_g(x);
 err = gVals - gExact;
-pass(11) = norm(err, inf) < 1e2*get(g,'epslevel')*get(g,'vscale');
+pass(11) = norm(err, inf) < 1e2*eps*get(g,'vscale');
     
 
 % [TODO]:  Check fractional derivatives once implemented.

@@ -26,21 +26,21 @@ f = unbndfun(op, struct('domain', dom));
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
-pass(1) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
+pass(1) = norm(err, inf) < 1e1*eps*get(f,'vscale');
 
 op = @(x) x.^2.*exp(-x.^2);
 f = unbndfun(op, struct('domain', dom));
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
-pass(2) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
+pass(2) = norm(err, inf) < 1e1*eps*get(f,'vscale');
 
 op = @(x) (1-exp(-x.^2))./x;
 f = unbndfun(op, struct('domain', dom));
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
-pass(3) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
+pass(3) = norm(err, inf) < 1e1*eps*get(f,'vscale');
 
 % Blow-up function:
 op = @(x) x.^2.*(1-exp(-x.^2));
@@ -48,7 +48,7 @@ f = unbndfun(op, struct('domain', dom, 'exponents', [2 2]), singPref);
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
-pass(4) = norm(err, inf) < 1e5*get(f,'epslevel')*get(f,'vscale');
+pass(4) = norm(err, inf) < 1e5*eps*get(f,'vscale');
 
 %% Functions on [a inf]:
 
@@ -64,28 +64,28 @@ f = unbndfun(op, struct('domain', dom));
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
-pass(5) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
+pass(5) = norm(err, inf) < 1e1*eps*get(f,'vscale');
 
 op = @(x) x.*exp(-x);
 f = unbndfun(op, struct('domain', dom));
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
-pass(6) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
+pass(6) = norm(err, inf) < 1e1*eps*get(f,'vscale');
 
 op = @(x) (1-exp(-x))./x;
 f = unbndfun(op, struct('domain', dom));
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
-pass(7) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
+pass(7) = norm(err, inf) < 1e1*eps*get(f,'vscale');
 
 op = @(x) 1./x;
 f = unbndfun(op, struct('domain', dom));
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
-pass(8) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
+pass(8) = norm(err, inf) < 1e1*eps*get(f,'vscale');
 
 % Blow-up function:
 op = @(x) x.*(5+exp(-x.^3));
@@ -93,7 +93,7 @@ f = unbndfun(op, struct('domain', dom, 'exponents', [0 1]), singPref);
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
-pass(9) = norm(err, inf) < 1e2*get(f,'epslevel')*get(f,'vscale');
+pass(9) = norm(err, inf) < 1e2*eps*get(f,'vscale');
 
 %% Functions on [-inf b]:
 
@@ -109,28 +109,28 @@ f = unbndfun(op, struct('domain', dom));
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
-pass(10) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
+pass(10) = norm(err, inf) < 1e1*eps*get(f,'vscale');
 
 op = @(x) x.*exp(x);
 f = unbndfun(op, struct('domain', dom));
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
-pass(11) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
+pass(11) = norm(err, inf) < 1e1*eps*get(f,'vscale');
 
 op = @(x) (1-exp(x))./x;
 f = unbndfun(op, struct('domain', dom));
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
-pass(12) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
+pass(12) = norm(err, inf) < 1e1*eps*get(f,'vscale');
 
 op = @(x) 1./x;
 f = unbndfun(op, struct('domain', dom));
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
-pass(13) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
+pass(13) = norm(err, inf) < 1e1*eps*get(f,'vscale');
 
 % Blow-up function:
 op = @(x) x.*(5+exp(x.^3))./(dom(2)-x);
@@ -138,7 +138,7 @@ f = unbndfun(op, struct('domain', dom, 'exponents', [0 -1]), singPref);
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
-pass(14) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
+pass(14) = norm(err, inf) < 1e1*eps*get(f,'vscale');
 
 % Array-valued function:
 op = @(x) [exp(x) x.*exp(x) (1-exp(x))./x];
@@ -146,7 +146,7 @@ f = unbndfun(op, struct('domain', dom));
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
-pass(15) = norm(err, inf) < 1e2*max(get(f,'epslevel').*get(f,'vscale'));
+pass(15) = norm(err, inf) < 1e2*max(eps.*get(f,'vscale'));
 
 %% MISC:
 

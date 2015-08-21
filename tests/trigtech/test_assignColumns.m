@@ -18,7 +18,7 @@ g = testclass.make(@(x) [exp(cos(pi*x)) exp(sin(pi*x))], [], pref);
 h = assignColumns(f, [1 3], g);
 h_exact = @(x) [exp(cos(pi*x)) cos(pi*x) exp(sin(pi*x))];
 err = feval(h, x) - h_exact(x);
-pass(1) = h.ishappy && (norm(err(:), inf) < 3e2*max(h.vscale.*h.epslevel));
+pass(1) = h.ishappy && (norm(err(:), inf) < 3e2*max(h.vscale.*eps));
 
 g = testclass.make(@(x) x, [], pref);
 h = assignColumns(f, 1, g);
@@ -28,7 +28,7 @@ h = assignColumns(f, 1, []);
 h_exact = @(x) [cos(pi*x) exp(1i*pi*x)];
 err = feval(h, x) - h_exact(x);
 pass(3) = all(size(h.vscale) == [1 2]) && ...
-    (norm(err(:), inf) < 3e2*max(h.vscale.*h.epslevel));
+    (norm(err(:), inf) < 3e2*max(h.vscale.*eps));
 
 f = testclass.make(@(x) sin(pi*x));
 g = testclass.make(@(x) cos(pi*x));

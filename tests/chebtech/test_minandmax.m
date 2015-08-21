@@ -38,13 +38,13 @@ for n = 1:2
     y_exact = [-1 airy(1)  (-1.25)^3*cosh(-1);
                 1 airy(-1) 0.75^3*cosh(1)];
 
-    pass(n, 6) = all(abs(y(:) - y_exact(:)) < 10*max(f.vscale.*f.epslevel));
+    pass(n, 6) = all(abs(y(:) - y_exact(:)) < 10*max(f.vscale.*eps));
 
     % Check that the points x are indeed extreme points of the function 
     % operator.
     for k = 1:1:size(f.coeffs, 2)
         fx = fun_op(x(:, k));
-        if ( max(abs(fx(:, k) - y_exact(:, k))) > 1e1*max(f.vscale.*f.epslevel) )
+        if ( max(abs(fx(:, k) - y_exact(:, k))) > 1e1*max(f.vscale.*eps) )
             pass(n, 6) = 0;
             break;
         end
@@ -58,9 +58,9 @@ for n = 1:2
     f2 = testclass.make(@(x) 1i*cos(20*x));
     [vals2, pos2] = minandmax(f2);
     pass(n, 7) = norm(abs(vals) - abs([vals1 vals2]), inf) < ...
-        1e2*max(f.vscale.*f.epslevel);
+        1e2*max(f.vscale.*eps);
     % Note, we don't expect pos(:,2) = pos2 as the min and max are not unique.
-    pass(n, 8) = norm(pos(:,1) - pos1, inf) < 500*max(f.vscale.*f.epslevel);
+    pass(n, 8) = norm(pos(:,1) - pos1, inf) < 500*max(f.vscale.*eps);
 
 end
 
@@ -74,7 +74,7 @@ f = testclass.make(fun_op, [], pref);
 [y, x] = minandmax(f);
 y_exact = [exact_min ; exact_max];
 fx = fun_op(x);
-result = ((max(abs(y - y_exact)) < 10*f.vscale.*f.epslevel) && ... 
-          (max(abs(fx - y_exact)) < 10*f.vscale.*f.epslevel));
+result = ((max(abs(y - y_exact)) < 10*f.vscale.*eps) && ... 
+          (max(abs(fx - y_exact)) < 10*f.vscale.*eps));
 
 end

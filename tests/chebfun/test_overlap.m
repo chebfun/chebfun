@@ -33,8 +33,8 @@ g = chebfun(@sin, [-1 0 0.5 1], pref);
 [f2, g2] = overlap(f, g);
 xx = linspace(-1, 1);
 pass(3) = isequal(f2.domain, g2.domain) && ...
-    norm(feval(f, xx) - feval(f2, xx), inf) < 10*epslevel(f)*vscale(f) && ...
-    norm(feval(g, xx) - feval(g2, xx), inf) < 10*epslevel(g)*vscale(g);
+    norm(feval(f, xx) - feval(f2, xx), inf) < 10*eps*vscale(f) && ...
+    norm(feval(g, xx) - feval(g2, xx), inf) < 10*eps*vscale(g);
 
 % [TODO]: Are these the same tests as above?
 % Check correct behavior for higher-order impulses.  [TODO]:  Use a function
@@ -42,14 +42,14 @@ pass(3) = isequal(f2.domain, g2.domain) && ...
 [f2, g2] = overlap(f, g);
 xx = linspace(-1, 1);
 pass(4) = isequal(f2.domain, g2.domain) && ...
-    norm(feval(f, xx) - feval(f2, xx), inf) < 10*epslevel(f)*vscale(f) && ...
-    norm(feval(g, xx) - feval(g2, xx), inf) < 10*epslevel(g)*vscale(g);
+    norm(feval(f, xx) - feval(f2, xx), inf) < 10*eps*vscale(f) && ...
+    norm(feval(g, xx) - feval(g2, xx), inf) < 10*eps*vscale(g);
 
 [g2, f2] = overlap(g, f);
 xx = linspace(-1, 1);
 pass(5) = isequal(f2.domain, g2.domain) && ...
-    norm(feval(f, xx) - feval(f2, xx), inf) < 10*epslevel(f)*vscale(f) && ...
-    norm(feval(g, xx) - feval(g2, xx), inf) < 10*epslevel(g)*vscale(g);
+    norm(feval(f, xx) - feval(f2, xx), inf) < 10*eps*vscale(f) && ...
+    norm(feval(g, xx) - feval(g2, xx), inf) < 10*eps*vscale(g);
 
 %% Test on singular function: piecewise smooth chebfun - splitting on.
 
@@ -76,9 +76,9 @@ check = zeros(1,4);
 check(1) = all( fout.domain == gout.domain );
 check(2) = all( fout.domain == unique([f.domain, g.domain]) );
 check(3) = ( norm(vals_fout - vals_f, inf) < ...
-    1e4*epslevel(fout)*norm(vals_fout, inf) );
+    1e4*eps*norm(vals_fout, inf) );
 check(4) = ( norm(vals_gout - vals_g, inf) < ...
-    1e3*epslevel(gout)*norm(vals_gout, inf) );
+    1e3*eps*norm(vals_gout, inf) );
 
 pass(6) = all( check );
 
@@ -113,9 +113,9 @@ check = zeros(1,4);
 check(1) = all( fout.domain == gout.domain );
 check(2) = all( fout.domain == unique([f.domain, g.domain]) );
 check(3) = ( norm(vals_fout - vals_f, inf) < ...
-    1e3*epslevel(fout)*norm(vals_fout, inf) );
+    1e3*eps*norm(vals_fout, inf) );
 check(4) = ( norm(vals_gout - vals_g, inf) < ...
-    1e3*epslevel(gout)*norm(vals_gout, inf) );
+    1e3*eps*norm(vals_gout, inf) );
 
 
 pass(7) = all( check );

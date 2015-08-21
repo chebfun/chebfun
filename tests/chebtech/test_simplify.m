@@ -48,12 +48,12 @@ for n = 1:2
 
     f1 = 1e-8*f;
     g1 = simplify(f1, simptol);
-    pass(n, 6) = all(abs(g1.coeffs) >= g1.epslevel*g1.vscale);
+    pass(n, 6) = all(abs(g1.coeffs) >= eps*g1.vscale);
     pass(n, 7) = length(g1) == length(g);
 
     f2 = 1e8*f;
     g2 = simplify(f2, simptol);
-    pass(n, 8) = all(abs(g2.coeffs) >= g1.epslevel*g2.vscale);
+    pass(n, 8) = all(abs(g2.coeffs) >= eps*g2.vscale);
     pass(n, 9) = length(g2) == length(g);
 
     %%

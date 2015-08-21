@@ -43,7 +43,7 @@ pass(4) = isnan(g);
 g = f ./ [alpha beta];
 g_exact = @(x) [sin(x)./alpha cos(x)./beta];
 pass(5) = norm(feval(g, x) - g_exact(x), inf) < ...
-    10*max(get(g, 'vscale').*get(g, 'epslevel'));
+    10*max(get(g, 'vscale').*eps);
     
 g = f ./ [alpha 0];
 isn = isnan(feval(g, x));
@@ -83,13 +83,13 @@ f = bndfun(@(x) sin(x), data, pref);
 h1 = f ./ alpha;
 h2 = bndfun(@(x) sin(x) ./ alpha, data, pref);
 pass(12) = norm(feval(h1, x) - feval(h2, x), inf) < ...
-    10*get(h2, 'vscale')*get(h2, 'epslevel');
+    10*get(h2, 'vscale')*eps;
     
 g = bndfun(@(x) exp(x), data, pref);
 h1 = f ./ g;
 h2 = bndfun(@(x) sin(x) ./ exp(x), data, pref);
 pass(13) = norm(feval(h1, x) - feval(h2, x), inf) < ...
-    5e3*get(h2, 'vscale')*get(h2, 'epslevel');
+    5e3*get(h2, 'vscale')*eps;
 
 %% 
 % Test on singular BNDFUN.
@@ -108,7 +108,7 @@ pow = pow1-pow2;
 op = @(x)  (x - data.domain(2)).^pow.*(sin(x)./(cos(x).^2+1));
 h_exact = op(x);
 pass(14) = ( norm(vals_h-h_exact, inf) < 1e2* ...
-    max(get(f, 'epslevel'), get(g, 'epslevel'))*norm(h_exact, inf) );
+    max(eps, eps)*norm(h_exact, inf) );
 
 %% Tests for UNBNDFUN:
 
@@ -130,7 +130,7 @@ h = f./g;
 hVals = feval(h, x);
 hExact = oph(x);
 err = hVals - hExact;
-pass(15) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
+pass(15) = norm(err, inf) < 1e1*eps*get(f,'vscale');
 
 end
 
@@ -141,7 +141,7 @@ function result = test_div_function_by_scalar(f, f_op, alpha, x)
     g = f ./ alpha;
     g_exact = @(x) f_op(x) ./ alpha;
     err = norm(feval(g, x) - g_exact(x), inf);
-    tol = 10*max(get(g, 'vscale').*get(g, 'epslevel'));
+    tol = 10*max(get(g, 'vscale').*eps);
     result = err < tol;
 end
 
@@ -152,7 +152,7 @@ function result = test_div_scalar_by_function(alpha, f, f_op, x)
     g = alpha ./ f;
     g_exact = @(x) alpha ./ f_op(x);
     err = norm(feval(g, x) - g_exact(x), inf);
-    tol = 1e4*max(get(g, 'vscale').*get(g, 'epslevel'));
+    tol = 1e4*max(get(g, 'vscale').*eps);
         
     result = err < tol;
 end
@@ -164,7 +164,7 @@ function result = test_div_function_by_function(f, f_op, g, g_op, x)
     h = f ./ g;
     h_exact = @(x) f_op(x) ./ g_op(x);
     err = norm(feval(h, x) - h_exact(x), inf);
-    tol = 1e5*max(get(h, 'vscale').*get(h, 'epslevel'));
+    tol = 1e5*max(get(h, 'vscale').*eps);
         
     result = err < tol;
 end

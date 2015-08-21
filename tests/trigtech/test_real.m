@@ -14,7 +14,7 @@ f = testclass.make(@(x) exp(20i*pi*x) + 1i*sin(100*pi*x), [], pref);
 g = testclass.make(@(x) cos(20*pi*x), [], pref);
 h = real(f);
 g = prolong(g, length(h));
-pass(1) = norm(h.coeffs - g.coeffs, inf) < 10*h.vscale.*h.epslevel;
+pass(1) = norm(h.coeffs - g.coeffs, inf) < 10*h.vscale.*eps;
 
 % Test an array-valued function.
 f = testclass.make(@(x) [exp(20i*pi*x) + 1i*sin(100*pi*x), -exp(10i*pi*x)], [], pref);
@@ -22,7 +22,7 @@ g = testclass.make(@(x) [cos(20*pi*x), -real(exp(10i*pi*x))], [], pref);
 h = real(f);
 n = max(length(g),length(h));
 g = prolong(g,n); h = prolong(h,n);
-pass(2) = norm(h.coeffs - g.coeffs, inf) < 10*max(h.vscale.*h.epslevel);
+pass(2) = norm(h.coeffs - g.coeffs, inf) < 10*max(h.vscale.*eps);
 
 % Test a real function.
 f = 1i*testclass.make(@(x) cos(30*pi*x), [], pref);

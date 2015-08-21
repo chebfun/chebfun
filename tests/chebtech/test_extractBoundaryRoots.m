@@ -21,7 +21,7 @@ for n = 1:2
     [g, l, r] = extractBoundaryRoots(f);
     gexact = testclass.make(@(x) sin(2*x), [], pref);
     err = feval(g, x) - feval(gexact, x);
-    pass(n, 1) = (norm(err, Inf) < (1e3^ml)*f.epslevel) && (l == ml);
+    pass(n, 1) = (norm(err, Inf) < (1e3^ml)*eps) && (l == ml);
     
     %% Test roots at right endpoint:
     mr = 2;
@@ -29,7 +29,7 @@ for n = 1:2
     [g, l, r] = extractBoundaryRoots(f);
     gexact = testclass.make(@(x) sin(cos(3*x)), [], pref);
     err = feval(g, x) - feval(gexact, x);
-    pass(n, 2) = (norm(err, Inf) < (5e2^mr)*f.epslevel) && (r == mr);
+    pass(n, 2) = (norm(err, Inf) < (5e2^mr)*eps) && (r == mr);
     
     %% Test roots at both endpoints:
     ml = 1;
@@ -38,7 +38,7 @@ for n = 1:2
     [g, l, r] = extractBoundaryRoots(f);
     gexact = testclass.make(@(x) exp(x), [], pref);
     err = feval(g, x) - feval(gexact, x);
-    pass(n, 3) = (norm(err, Inf) < (1e2^(ml + mr))*f.epslevel) && ...
+    pass(n, 3) = (norm(err, Inf) < (1e2^(ml + mr))*eps) && ...
         (l == ml) && (r == mr);
     
     %% Test complex case:
@@ -49,7 +49,7 @@ for n = 1:2
     [g, l, r] = extractBoundaryRoots(f);
     gexact = testclass.make(@(x) x.^2 + exp(x) + 1i*cos(2*x), [], pref);
     err = feval(g, x) - feval(gexact, x);
-    pass(n, 4) = (norm(err, Inf) < (2e1^(ml + mr))*f.epslevel) && ...
+    pass(n, 4) = (norm(err, Inf) < (2e1^(ml + mr))*eps) && ...
         (l == ml) && (r == mr);
     
     %% Test when no roots:
@@ -63,7 +63,7 @@ for n = 1:2
     [g, l, r] = extractBoundaryRoots(f);
     gexact = testclass.make(@(x) sin(1 - x)./(1 - x), [], pref);
     err = feval(g, x) - feval(gexact, x);
-    pass(n, 6) = (norm(err, Inf) < 1e2*f.epslevel) && (r == 1);
+    pass(n, 6) = (norm(err, Inf) < 1e2*eps) && (r == 1);
     
     %% Test array-valued case:
     f_op = @(x) [sin(x).*((1-x).^2) cos(x.^2).*(1+x).*(1-x)];
@@ -71,7 +71,7 @@ for n = 1:2
     [g, l, r] = extractBoundaryRoots(f);
     gexact = testclass.make(@(x) [sin(x) cos(x.^2)], [], pref);
     err = feval(g, x) - feval(gexact, x);
-    pass(n, 7) = (norm(err, Inf) < (1e2^2)*max(f.epslevel)) && all(l == [0 1]) && ...
+    pass(n, 7) = (norm(err, Inf) < (1e2^2)*max(eps)) && all(l == [0 1]) && ...
         all(r == [2 1]);
     
     %% Test on full arguments:
@@ -81,7 +81,7 @@ for n = 1:2
     g = extractBoundaryRoots(f, [ml; mr]);
     gexact = testclass.make(@(x) exp(x), [], pref);
     err = feval(g, x) - feval(gexact, x);
-    pass(n, 8) = (norm(err, Inf) < (1e2^(ml + mr))*f.epslevel);
+    pass(n, 8) = (norm(err, Inf) < (1e2^(ml + mr))*eps);
        
     %% Test on wrong multiplicities supplied by users:
     ml = 1;
@@ -90,7 +90,7 @@ for n = 1:2
     [g, l, r] = extractBoundaryRoots(f, [ml+1; mr+2]);
     gexact = testclass.make(@(x) exp(x), [], pref);
     err = feval(g, x) - feval(gexact, x);
-    pass(n, 9) = ( (norm(err, Inf) < 1e1*(1e1^(ml + mr))*f.epslevel) && ...
+    pass(n, 9) = ( (norm(err, Inf) < 1e1*(1e1^(ml + mr))*eps) && ...
          ( l == ml ) && ( r == mr ) );    
 
 end

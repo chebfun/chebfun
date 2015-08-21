@@ -14,12 +14,12 @@ Q = chebfun([ 1; 0.1155; -0.8573; -0.2679; 0.5246 ], dom, 'coeffs');
 R = P./Q;
 [p, q, r] = chebpade(R, 4, 4, 'maehly');
 err = norm(P - p) + norm(Q - q);
-pass(1) = err < 100*max(vscale(R).*epslevel(R));
+pass(1) = err < 100*max(vscale(R).*eps);
 
 % An example which requires degree-reduction.
 [p, q, r] = chebpade(P./Q, 6, 5, 'maehly');
 err = norm(P - p) + norm(Q - q);
-pass(2) = err < 100*max(vscale(R).*epslevel(R));
+pass(2) = err < 100*max(vscale(R).*eps);
 
 % An example by Geddes.
 a = [-464/6375 ; -742/6375 ; 349/12750 ; 512/6375 ; 13/3400 ; 2129/51000 ; ...

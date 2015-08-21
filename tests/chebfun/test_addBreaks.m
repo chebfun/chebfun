@@ -14,13 +14,13 @@ x = 2 * rand(100, 1) - 1;
 f = chebfun(@(x) sin(x), [-1 -0.5 0 0.5 1], pref);
 g = addBreaks(f, [-0.25 0.25]);
 pass(1) = isequal(g.domain, [-1 -0.5 -0.25 0 0.25 0.5 1]) && ...
-    (norm(feval(f, x) - feval(g, x), Inf) < 10*vscale(f).*epslevel(f));
+    (norm(feval(f, x) - feval(g, x), Inf) < 10*vscale(f).*eps);
 
 % Test an array-valued chebfun.
 f = chebfun(@(x) [sin(x) cos(x) exp(x)], [-1 -0.5 0 0.5 1], pref);
 g = addBreaks(f, [-0.25 0.25]);
 err = feval(f, x) - feval(g, x);
 pass(2) = isequal(g.domain, [-1 -0.5 -0.25 0 0.25 0.5 1]) && ...
-    (norm(err(:), Inf) < 10*vscale(f).*epslevel(f));
+    (norm(err(:), Inf) < 10*vscale(f).*eps);
 
 end

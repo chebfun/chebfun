@@ -23,7 +23,7 @@ for n = 1:2
     h = assignColumns(f, [1 3], g);
     h_exact = @(x) [x cos(x) x.^2];
     err = feval(h, x) - h_exact(x);
-    pass(1) = h.ishappy && (norm(err(:), inf) < 10*max(h.vscale.*h.epslevel));
+    pass(1) = h.ishappy && (norm(err(:), inf) < 10*max(h.vscale.*eps));
 
     %
     g = testclass.make(@(x) sqrt(x), [], pref);
