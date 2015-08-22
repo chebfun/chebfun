@@ -51,7 +51,7 @@ approx = feval(g,0);
 % Expected answer:
 expected = sum(f.*f);
 err = abs(approx - expected);
-tol = 1e2*eps.*g.vscale;
+tol = 1e2*eps.*vscale(g);
 pass(3) = err < tol;
 
 % Computed answer at x:
@@ -60,7 +60,7 @@ approx = feval(g,x);
 h = testclass.make(fa_op, [], pref);
 expected = sum(f.*h);
 err = abs(approx - expected);
-tol = 1e2*eps.*g.vscale;
+tol = 1e2*eps.*vscale(g);
 pass(4) = err < tol;
 
 end

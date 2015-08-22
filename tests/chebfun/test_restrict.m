@@ -32,7 +32,7 @@ f = chebfun(f_exact, [], pref);
 fr = restrict(f, [-1 1]);
 x = xr;
 pass(3) = isequal(fr.domain, [-1 1]) && ...
-    (norm(feval(fr, x) - f_exact(x), inf) < 10*fr.vscale*eps);
+    (norm(feval(fr, x) - f_exact(x), inf) < 10*vscale(fr)*eps);
 
 % Test behavior on bogus subinterval input.
 try
@@ -166,5 +166,5 @@ function pass = test_restrict_one_function(f, f_exact, dom, map, xr)
     x = map(xr, dom(1), dom(end));
     err = norm(feval(fr, x) - f_exact(x), inf);
     pass = all(ismember(dom, fr.domain)) && ...
-        all(err(:) < 1e5*fr.vscale*eps);
+        all(err(:) < 1e5*vscale(fr)*eps);
 end

@@ -58,7 +58,7 @@ Q = simplify(Q,100*eps);
 pass(18) = 1;
 I = eye(3);
 %pass(19) = norm(innerProduct(Q, Q) - I, inf) < ...
-%10*max(f.vscale.*eps);
+%10*max(vscale(f).*eps);
 pass(19) = 1;
 % These tests should be reverted once issue #1441 is
 % fixed.
@@ -70,7 +70,7 @@ pass(19) = 1;
 % array-valued chebtech.
 f = testclass.make(@(x) [sin(pi*x) cos(pi*x) cos(2*pi*x)], [], pref);
 [Q, R] = qr(f, []);
-pass(20) = isequal(size(Q.vscale), [1 3]);
+pass(20) = isequal(size(vscale(Q)), [1 3]);
 
 end
 
@@ -82,11 +82,11 @@ function result = test_one_qr(f, x)
 
     % Check orthogonality.
     ip = innerProduct(Q, Q);
-    result(1) = max(max(abs(ip - eye(N)))) < 10*max(f.vscale.*eps);
+    result(1) = max(max(abs(ip - eye(N)))) < 10*max(vscale(f).*eps);
 
     % Check that the factorization is accurate.
     err = Q*R - f;
-    result(2) = norm(feval(err, x), inf) < 100*max(f.vscale.*eps);
+    result(2) = norm(feval(err, x), inf) < 100*max(vscale(f).*eps);
 end
 
 % Same as the previous function but this time uses the QR factorization with
@@ -97,9 +97,9 @@ function result = test_one_qr_with_perm(f, x)
 
     % Check orthogonality.
     ip = innerProduct(Q, Q);
-    result(1) = max(max(abs(ip - eye(N)))) < 10*max(f.vscale.*eps);
+    result(1) = max(max(abs(ip - eye(N)))) < 10*max(vscale(f).*eps);
 
     % Check that the factorization is accurate.
     err = Q*R - f*E;
-    result(2) = norm(feval(err, x), inf) < 100*max(f.vscale.*eps);
+    result(2) = norm(feval(err, x), inf) < 100*max(vscale(f).*eps);
 end

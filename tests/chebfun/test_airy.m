@@ -35,7 +35,7 @@ for im = [0 1]
             end
 
             f = F(x);
-            pass(im+1,k) = norm(feval(f,xx) - F(xx), inf) < 1e2*max(eps.*f.vscale);
+            pass(im+1,k) = norm(feval(f,xx) - F(xx), inf) < 1e2*max(eps.*vscale(f));
             
             k = k + 1;
 

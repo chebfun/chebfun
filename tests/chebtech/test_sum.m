@@ -17,19 +17,19 @@ for n = 1:2
     %%
     % Spot-check integrals for a couple of functions.
     f = testclass.make(@(x) exp(x) - 1, [], pref);
-    pass(n, 1) = (abs(sum(f) - 0.350402387287603) < 10*f.vscale.*eps);
+    pass(n, 1) = (abs(sum(f) - 0.350402387287603) < 10*vscale(f).*eps);
 
     f = testclass.make(@(x) 1./(1 + x.^2), [], pref);
-    pass(n, 2) = (abs(sum(f) - pi/2) < 10*f.vscale.*eps);
+    pass(n, 2) = (abs(sum(f) - pi/2) < 10*vscale(f).*eps);
 
     f = testclass.make(@(x) cos(1e4*x), [], pref);
     exact = -6.112287777765043e-05;
-    pass(n, 3) = (abs(sum(f) - exact)/abs(exact) < 1e6*f.vscale.*eps);
+    pass(n, 3) = (abs(sum(f) - exact)/abs(exact) < 1e6*vscale(f).*eps);
     
     
     z = exp(2*pi*1i/6);
     f = testclass.make(@(t) sinh(t*z), [], pref);
-    pass(n, 4) = (abs(sum(f)) < 10*f.vscale.*eps);
+    pass(n, 4) = (abs(sum(f)) < 10*vscale(f).*eps);
 
     %%
     % Check a few basic properties.
@@ -43,13 +43,13 @@ for n = 1:2
     gdf = g.*df;
     fdg = f.*dg;
 
-    tol_f = 10*f.vscale.*eps;
-    tol_g = 10*f.vscale.*eps;
-    tol_df = 10*df.vscale.*eps;
-    tol_dg = 10*dg.vscale.*eps;
-    tol_fg = 10*fg.vscale.*eps;
-    tol_fdg = 10*fdg.vscale.*eps;
-    tol_gdf = 10*gdf.vscale.*eps;
+    tol_f = 10*vscale(f).*eps;
+    tol_g = 10*vscale(f).*eps;
+    tol_df = 10*vscale(df).*eps;
+    tol_dg = 10*vscale(dg).*eps;
+    tol_fg = 10*vscale(fg).*eps;
+    tol_fdg = 10*vscale(fdg).*eps;
+    tol_gdf = 10*vscale(gdf).*eps;
 
     % Linearity.
     pass(n, 5) = (abs(sum(a*f + b*g) - (a*sum(f) + b*sum(g))) < ...
@@ -70,7 +70,7 @@ for n = 1:2
     f = testclass.make(@(x) [sin(x) x.^2 exp(1i*x)], [], pref);
     I = sum(f);
     I_exact = [0 2/3 2*sin(1)];
-    pass(n, 9) = (max(abs(I - I_exact)) < 10*max(f.vscale.*eps));
+    pass(n, 9) = (max(abs(I - I_exact)) < 10*max(vscale(f).*eps));
 
     % Generate a few random points to use as test values.
     seedRNG(6178);
@@ -80,7 +80,7 @@ for n = 1:2
     g = sum(f, 2);
     h = @(x) sin(x) + x.^2 + exp(1i*x);
     pass(n, 10) = (norm(feval(g, x) - h(x), inf) < ...
-        10*max(g.vscale.*eps));
+        10*max(vscale(g).*eps));
 
     % DIM option with non-array-valued input should leave everything alone.
     h = testclass.make(@(x) cos(x));

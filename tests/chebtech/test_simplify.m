@@ -41,19 +41,19 @@ for n = 1:2
     g = simplify(f, simptol);
     pass(n, 3) = abs(g.coeffs(end)) ~= 0;
     pass(n, 4) = length(g) < length(f);
-    pass(n, 5) = norm(feval(f, x) - feval(g, x), inf) < 1e2*simptol*f.vscale;
+    pass(n, 5) = norm(feval(f, x) - feval(g, x), inf) < 1e2*simptol*vscale(f);
 
     %%
     % Lengths of simplifications should be invariant under scaling:
 
     f1 = 1e-8*f;
     g1 = simplify(f1, simptol);
-    pass(n, 6) = all(abs(g1.coeffs) >= eps*g1.vscale);
+    pass(n, 6) = all(abs(g1.coeffs) >= eps*vscale(g1));
     pass(n, 7) = length(g1) == length(g);
 
     f2 = 1e8*f;
     g2 = simplify(f2, simptol);
-    pass(n, 8) = all(abs(g2.coeffs) >= eps*g2.vscale);
+    pass(n, 8) = all(abs(g2.coeffs) >= eps*vscale(g2));
     pass(n, 9) = length(g2) == length(g);
 
     %%
@@ -64,7 +64,7 @@ for n = 1:2
     pass(n, 10) = any(abs(g.coeffs(1, :)) ~= 0);
     pass(n, 11) = length(g) < length(f);
     pass(n, 12) = all(norm(feval(f, x) - feval(g, x), inf) < ...
-        10*max(simptol.*f.vscale));
+        10*max(simptol.*vscale(f)));
 
     %%
     % Try a contrived example which will leave a length 1 CHEBTECH:

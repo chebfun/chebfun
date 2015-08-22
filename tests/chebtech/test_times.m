@@ -157,7 +157,7 @@ function result = test_mult_function_by_scalar(f, f_op, alpha, x)
     result(1) = isequal(g1, g2);
     g_exact = @(x) f_op(x) .* alpha;
     result(2) = norm(feval(g1, x) - g_exact(x), inf) < ...
-        10*max(g1.vscale.*eps);
+        10*max(vscale(g1).*eps);
 end
 
 % Test the multiplication of two CHEBTECH objects F and G, specified by F_OP and
@@ -167,7 +167,7 @@ end
 function result = test_mult_function_by_function(f, f_op, g, g_op, x, checkpos)
     h = f .* g;
     h_exact = @(x) f_op(x) .* g_op(x);
-    tol = 1e4*max(h.vscale.*eps);
+    tol = 1e4*max(vscale(h).*eps);
     result(1) = norm(feval(h, x) - h_exact(x), inf) < tol;
     if ( checkpos )
         values = h.coeffs2vals(h.coeffs); 

@@ -25,14 +25,14 @@ for n = 1:4
     f = testclass.make(@(x) x);
     g = compose(f, @sin, [], [], pref);
     h = testclass.make(@sin);
-    pass(n, 1) = norm(h.coeffs - g.coeffs, inf) < 10*h.vscale.*eps;
+    pass(n, 1) = norm(h.coeffs - g.coeffs, inf) < 10*vscale(h).*eps;
 
     % Compose an array-valued CHEBTECH object with sin(x):
     f = testclass.make(@(x) [x x]);
     g = compose(f, @sin, [], [], pref);
     h = testclass.make(@(x) [sin(x) sin(x)]);
     pass(n, 2) = norm(h.coeffs - g.coeffs, inf) < ...
-        10*max(h.vscale.*eps);
+        10*max(vscale(h).*eps);
 
     % Compose an array-valued CHEBTECH object with sin(x):
     f = testclass.make(@(x) [x x.^2]);
@@ -40,7 +40,7 @@ for n = 1:4
     x = g.points();
     values = g.coeffs2vals(g.coeffs);
     pass(n, 3) = norm(sin([x, x.^2])- values, inf) < ...
-        1e2*max(h.vscale.*eps);
+        1e2*max(vscale(h).*eps);
     
     % Compose an array-valued CHEBTECH object with sin(x):
     f = testclass.make(@(x) [x x x.^2]);
@@ -48,7 +48,7 @@ for n = 1:4
     x = g.points();
     values = g.coeffs2vals(g.coeffs);
     pass(n, 4) = norm(sin([x x x.^2]) - values, inf) < ...
-        1e2*max(h.vscale.*eps);
+        1e2*max(vscale(h).*eps);
     
     
     % Compose 2 CHEBTECH objects with a binary function:
@@ -59,7 +59,7 @@ for n = 1:4
     h = testclass.make(sin(x) + cos(x));
     hvalues = h.coeffs2vals(h.coeffs);
     gvalues = g.coeffs2vals(g.coeffs);
-    pass(n, 5) = norm(hvalues - gvalues, inf) < 10*h.vscale.*eps;
+    pass(n, 5) = norm(hvalues - gvalues, inf) < 10*vscale(h).*eps;
     
     % Compose 2 array-valued CHEBTECH objects with a binary function:
     f1 = testclass.make(@(x) [sin(x) cos(x)]);
@@ -69,7 +69,7 @@ for n = 1:4
     hvalues = h.coeffs2vals(h.coeffs);
     gvalues = g.coeffs2vals(g.coeffs);
     pass(n, 6) = norm(hvalues - gvalues, inf) < ...
-        10*max(10*h.vscale.*eps); 
+        10*max(10*vscale(h).*eps); 
         
     
     % Compose g(f), when f and g are CHEBTECH objects:
@@ -78,7 +78,7 @@ for n = 1:4
     h = compose(f, g); 
     hvalues = h.coeffs2vals(h.coeffs);
     x = testclass.chebpts(length(h));
-    pass(n, 7) = norm(hvalues - sin(x.^2), inf) < 10*h.vscale.*eps;
+    pass(n, 7) = norm(hvalues - sin(x.^2), inf) < 10*vscale(h).*eps;
     
     % Compose g(f), when f and g are CHEBTECH objects and g is array-valued:
     f = testclass.make(@(x) x.^2);
@@ -87,7 +87,7 @@ for n = 1:4
     x = testclass.chebpts(length(h));
     hvalues = h.coeffs2vals(h.coeffs);
     pass(n, 8) = norm(hvalues - [sin(x.^2) cos(x.^2)], inf) < ...
-        10*max(h.vscale.*eps);
+        10*max(vscale(h).*eps);
     
     % Compose g(f), when f and g are CHEBTECH objects and f is array-valued:
     f = testclass.make(@(x) [x x.^2]);
@@ -96,7 +96,7 @@ for n = 1:4
     x = testclass.chebpts(length(h));
     hvalues = h.coeffs2vals(h.coeffs);
     pass(n, 9) = norm(hvalues - [sin(x) sin(x.^2)], inf) < ...
-        10*max(h.vscale.*eps);
+        10*max(vscale(h).*eps);
     
     % We cannot expect to compose two array-valued CHEBTECH objects f(g):
     try 

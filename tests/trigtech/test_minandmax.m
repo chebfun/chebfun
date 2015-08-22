@@ -31,13 +31,13 @@ f = testclass.make(fun_op, [], pref);
 y_exact = [exp(-1) -1 exp(-1);
            exp(1)   1 1];
 
-pass(6) = all(abs(y(:) - y_exact(:)) < 100*max(f.vscale.*eps));
+pass(6) = all(abs(y(:) - y_exact(:)) < 100*max(vscale(f).*eps));
 
 % Check that the points x are indeed extreme points of the function 
 % operator.
 for k = 1:1:size(f.coeffs, 2)
     fx = fun_op(x(:, k));
-    if ( max(abs(fx(:, k) - y_exact(:, k))) > 10*max(f.vscale.*eps) )
+    if ( max(abs(fx(:, k) - y_exact(:, k))) > 10*max(vscale(f).*eps) )
         pass(6) = 0;
         break;
     end
@@ -51,7 +51,7 @@ f1 = testclass.make(@(x) exp(sin(2*pi*x)));
 f2 = testclass.make(@(x) 1i*cos(20*pi*x));
 [vals2, pos2] = minandmax(f2);
 pass(7) = norm(abs(vals) - abs([vals1 vals2]), inf) < ...
-    1e2*max(f.vscale.*eps);
+    1e2*max(vscale(f).*eps);
 end
 
 % Spot-check the results for a given function.
@@ -62,7 +62,7 @@ f = testclass.make(fun_op, [], pref);
 [y, x] = minandmax(f);
 y_exact = [exact_min ; exact_max];
 fx = fun_op(x);
-result = ((max(abs(y - y_exact)) < 100*f.vscale.*eps) && ... 
-          (max(abs(fx - y_exact)) < 10*f.vscale.*eps));
+result = ((max(abs(y - y_exact)) < 100*vscale(f).*eps) && ... 
+          (max(abs(fx - y_exact)) < 10*vscale(f).*eps));
     
 end

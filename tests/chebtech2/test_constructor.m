@@ -22,7 +22,7 @@ g = populate(chebtech2, f, data, pref);
 x = chebtech2.chebpts(length(g.coeffs));
 values = g.coeffs2vals(g.coeffs);
 pass(1) = norm(f(x) - values, inf) < tol;
-pass(2) = abs(g.vscale - sin(1)) < eps && g.ishappy && eps < tol;
+pass(2) = abs(vscale(g) - sin(1)) < eps && g.ishappy && eps < tol;
 
 pref.extrapolate = 1;
 pref.refinementFunction = 'nested';
@@ -30,7 +30,7 @@ g = populate(chebtech2, f, data, pref);
 x = chebtech2.chebpts(length(g.coeffs));
 values = g.coeffs2vals(g.coeffs);
 pass(3) = norm(f(x) - values, inf) < tol;
-pass(4) = norm(g.vscale - sin(1), inf) < tol && logical(eps);
+pass(4) = norm(vscale(g) - sin(1), inf) < tol && logical(eps);
 
 pref.extrapolate = 0;
 pref.refinementFunction = 'resampling';
@@ -38,7 +38,7 @@ g = populate(chebtech2, f, data, pref);
 x = chebtech2.chebpts(length(g.coeffs));
 values = g.coeffs2vals(g.coeffs);
 pass(5) = norm(f(x) - values, inf) < tol;
-pass(6) = abs(g.vscale - sin(1)) < eps && logical(eps);
+pass(6) = abs(vscale(g) - sin(1)) < eps && logical(eps);
 
 pref.extrapolate = 1;
 pref.refinementFunction = 'resampling';
@@ -46,7 +46,7 @@ g = populate(chebtech2, f, data, pref);
 x = chebtech2.chebpts(length(g.coeffs));
 values = g.coeffs2vals(g.coeffs);
 pass(7) = norm(f(x) - values, inf) < tol;
-pass(8) = norm(g.vscale - sin(1), inf) < tol && logical(eps);
+pass(8) = norm(vscale(g) - sin(1), inf) < tol && logical(eps);
 
 %%
 % Test on an array-valued function:

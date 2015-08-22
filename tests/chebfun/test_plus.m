@@ -67,7 +67,7 @@ f = chebfun(@(x) [sin(x) cos(x) exp(x)], pref);
 g = f + [1 2 3];
 g_exact = @(x) [(1 + sin(x)) (2 + cos(x)) (3 + exp(x))];
 err = feval(g, x) - g_exact(x);
-pass(17) = norm(err(:), inf) < 10*max(g.vscale*eps);
+pass(17) = norm(err(:), inf) < 10*max(vscale(g)*eps);
 
 % Test scalar expansion in chebfun argument.
 f = chebfun(@(x) sin(x), pref);
@@ -75,7 +75,7 @@ g = f + [1 2 3];
 g_exact = @(x) [(1 + sin(x)) (2 + sin(x)) (3 + sin(x))];
 err = feval(g, x) - g_exact(x);
 pass(18) = isequal(size(g, 2), 3) && norm(err(:), inf) < ...
-    10*max(g.vscale*eps);
+    10*max(vscale(g)*eps);
 
 %% QUASIMATRIX
 

@@ -33,7 +33,7 @@ for k = 1:1:numel(trigFunctions)
     g_exact = @(x) trig_op(base_op(x));
     g = trig_op(f, pref);
     err = feval(g, xr) - g_exact(xr);
-    pass(k) = norm(err, inf) < 50*g.vscale.*eps;
+    pass(k) = norm(err, inf) < 50*vscale(g).*eps;
 end
 
 end

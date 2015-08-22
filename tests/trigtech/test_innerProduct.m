@@ -19,26 +19,26 @@ testclass = trigtech();
 % Orthogonality test
 f = testclass.make(@(x) sin(2*pi*x), [], pref);
 g = testclass.make(@(x) cos(2*pi*x), [], pref);
-tol_f = 10*eps.*f.vscale;
-tol_g = 10*eps.*g.vscale;
+tol_f = 10*eps.*vscale(f);
+tol_g = 10*eps.*vscale(g);
 pass(1) = abs(innerProduct(f, g)) < max(tol_f, tol_g);
 
 % Orthogonality test
 g = testclass.make(@(x) cos(4*pi*x), [], pref);
-tol_g = 10*eps.*g.vscale;
+tol_g = 10*eps.*vscale(g);
 pass(2) = abs(innerProduct(f, g)) < max(tol_f, tol_g);
 
 % Easy known result
 f = testclass.make(@(x) exp(cos(pi*x)), [], pref);
 g = testclass.make(@(x) exp(-cos(pi*x)), [], pref);
-tol_f = 10*eps.*f.vscale;
-tol_g = 10*eps.*g.vscale;
+tol_f = 10*eps.*vscale(f);
+tol_g = 10*eps.*vscale(g);
 pass(3) = abs(innerProduct(f, g) - 2) < max(tol_f, tol_g);
 
 % Harder known result
 f = testclass.make(@(x) 1 + 0*x, [], pref);
 g = testclass.make(@(x) sin(pi*x).^4, [], pref);
-tol_g = 10*eps.*g.vscale;
+tol_g = 10*eps.*vscale(g);
 exact = 3/4;
 pass(4) = abs(innerProduct(f, g) - exact) < max(tol_f, tol_g);
 
@@ -48,9 +48,9 @@ pass(4) = abs(innerProduct(f, g) - exact) < max(tol_f, tol_g);
 f = testclass.make(@(x) sin(pi*x).^4);
 g = testclass.make(@(x) exp(cos(2*pi*x)));
 h = testclass.make(@(x) exp(1i*4*pi*x));
-tol_f = 10*eps.*f.vscale;
-tol_g = 10*eps.*g.vscale;
-tol_h = 10*eps.*h.vscale;
+tol_f = 10*eps.*vscale(f);
+tol_g = 10*eps.*vscale(g);
+tol_h = 10*eps.*vscale(h);
 
 ip1 = innerProduct(alpha*f, beta*g);
 ip2 = conj(alpha)*beta*innerProduct(f, g);
@@ -79,8 +79,8 @@ pass(9) = isreal(n2vals) && all(n2vals >= 0);
 
 f = testclass.make(@(x) [cos(pi*sin(2*pi*x)) exp(sin(2*pi*x)) sin(pi*sin(pi*x))]);
 g = testclass.make(@(x) [exp(cos(pi*x)) exp(-sin(2*pi*x)) cos(pi*x)]);
-tol_f = 10*max(f.vscale.*eps);
-tol_g = 10*max(g.vscale.*eps);
+tol_f = 10*max(vscale(f).*eps);
+tol_g = 10*max(vscale(g).*eps);
 ip = innerProduct(f, g);
 exact = [-0.765066454912991 -1.032310819204998 0;
           3.204359383938947  2                 0;

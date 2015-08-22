@@ -17,14 +17,14 @@ pref.refinementFunction = 'nested';
 f = @(x) tanh(sin(pi*x));
 g = populate(trigtech, f, data, pref);
 x = trigtech.trigpts(length(g.coeffs));
-pass(1) = norm(f(x) - g.values, inf) < 10*g.vscale.*eps;
+pass(1) = norm(f(x) - g.values, inf) < 10*vscale(g).*eps;
 
 % Test on an array-valued function:
 pref.refinementFunction = 'nested';
 f = @(x) [exp(sin(pi*x)) sin(cos(4*pi*x)) cos(pi*x)];
 g = populate(trigtech, f, data, pref);
 x = trigtech.trigpts(length(g.coeffs));
-pass(2) = norm(f(x) - g.values, inf) < 10*max(g.vscale.*eps);
+pass(2) = norm(f(x) - g.values, inf) < 10*max(vscale(g).*eps);
 
 %%
 % Test on a scalar-valued function:
@@ -32,14 +32,14 @@ pref.refinementFunction = 'resampling';
 f = @(x) tanh(sin(pi*x));
 g = populate(trigtech, f, data, pref);
 x = trigtech.trigpts(length(g.coeffs));
-pass(3) = norm(f(x) - g.values, inf) < 10*g.vscale.*eps;
+pass(3) = norm(f(x) - g.values, inf) < 10*vscale(g).*eps;
 
 % Test on an array-valued function:
 pref.refinementFunction = 'resampling';
 f = @(x) [exp(sin(pi*x)) sin(cos(4*pi*x)) cos(pi*x)];
 g = populate(trigtech, f, data, pref);
 x = trigtech.trigpts(length(g.coeffs));
-pass(4) = norm(f(x) - g.values, inf) < 10*max(g.vscale.*eps);
+pass(4) = norm(f(x) - g.values, inf) < 10*max(vscale(g).*eps);
 
 %%
 % Some other tests:

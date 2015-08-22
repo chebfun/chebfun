@@ -13,7 +13,7 @@ g = testclass.make(@(x) sin(pi*x), [], pref);
 h = testclass.make(@(x) [cos(pi*x) exp(cos(pi*x))], [], pref);
 
 F = mat2cell(f, 1, [1 2]);
-pass(1) = sum(F{1} - g) < 10*g.vscale.*eps;
-pass(2) = all( sum(F{2} - h) < 10*max(h.vscale.*eps) );
+pass(1) = sum(F{1} - g) < 10*vscale(g).*eps;
+pass(2) = all( sum(F{2} - h) < 10*max(vscale(h).*eps) );
 
 end

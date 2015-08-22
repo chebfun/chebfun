@@ -31,7 +31,7 @@ pass(3:4) = test_mult_function_by_scalar(f1, f1_op, alpha, x);
 % Test use of mtimes() to compute products.
 f = chebfun({@(x) sin(2*pi*x), @(x) cos(2*pi*x)}, [-1 0 1]);
 g = chebfun({@(x) exp(2*pi*1i*x), @(x) cos(2*pi*x)}, [-1 0 1]);
-tol = 10*max(f.vscale*eps, g.vscale*eps);
+tol = 10*max(vscale(f)*eps, vscale(g)*eps);
 pass(5) = abs(g.'*f - (0.5 + 0.5i)) < tol;
 
 %% ARRAY-VALUED
@@ -46,7 +46,7 @@ f = chebfun({@(x) [sin(2*pi*x) sin(2*pi*x)], ...
 g = chebfun({@(x) [sin(4*pi*x) sin(4*pi*x)], ...
     @(x) [cos(2*pi*x) cos(4*pi*x)]}, [-1 0 1]);
 err = g.'*f - [0.5 0; 0 0.5];
-tol = 10*max(f.vscale*eps, g.vscale*eps);
+tol = 10*max(vscale(f)*eps, vscale(g)*eps);
 pass(8) = norm(err(:), inf) < tol;
 
 A = randn(2, 2);

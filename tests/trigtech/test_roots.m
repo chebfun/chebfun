@@ -29,7 +29,7 @@ pass(3) = isempty(r);
 %% Test that complex roots are now allowed.
 f = testclass.make(@(x) 2 + cos(pi*x), [], pref);
 r = roots(f, 'complex', 1);
-pass(4) = norm( feval(f,r) ) < f.vscale*eps;
+pass(4) = norm( feval(f,r) ) < vscale(f)*eps;
 
 f = testclass.make(@(x) sin(100*pi*x));
 r1 = roots(f, 'complex', 1);
