@@ -130,7 +130,7 @@ for dim = [dimVals inf]
     v = P*v;
     
     % [TODO]: We could test each variable at their input dimension, but then
-    % each would be different and we would nopt be able to use the trick of
+    % each would be different and we would not be able to use the trick of
     % taking a linear combination. Instead we project and test convergence
     % at the size of the output dimension.
     
@@ -141,8 +141,9 @@ for dim = [dimVals inf]
     if ( numel(vscale) == 1 ) 
         vscale = repmat(vscale, 1, length(isFun));
     end
+    
     % Test the happiness of the function pieces:
-    [isDone, vscale, cutoff] = ...
+    [isDone, cutoff, vscale] = ...
         testConvergence(disc, u(isFun), vscale(isFun), prefs);
     
     if ( all(isDone) || isinf(dim) )
@@ -164,11 +165,11 @@ end
 % Because each function component may be piecewise defined, we will loop through
 % one by one.
 values = cat(2, u{isFun});
+uOut = cell(size(values, 2), 1);
 for k = 1:size(values, 2)
     v = disc.toFunctionOut(values(:,k),cutoff);
     uOut{k} = v;
 end
-
 u(isFun) = uOut;
 
 % Convert to chebmatrix

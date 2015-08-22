@@ -125,7 +125,7 @@ for i = 1:length(t)
         vscale = discu.scale(uFun);
         
         % Test the happiness of the function pieces:
-        [isDone, ignored, cutoff] = testConvergence(disc, uFun, vscale, prefs);
+        [isDone, cutoff] = testConvergence(disc, uFun, vscale, prefs);
         
         if ( all(isDone) )
             break

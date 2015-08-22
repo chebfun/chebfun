@@ -1,4 +1,4 @@
-function [isDone, vscale, cutoff] = testConvergence(disc, values, vscale, pref)
+function [isDone, cutoff, vscale] = testConvergence(disc, values, vscale, pref)
 %TESTCONVERGENCE   Happiness check.
 %   Given: 
 %      DISC: chebDiscretization, 
@@ -11,9 +11,9 @@ function [isDone, vscale, cutoff] = testConvergence(disc, values, vscale, pref)
 %
 %   Output:  
 %      ISDONE: True if the functions passed in are sufficiently resolved.
-%      VSCALE: Maximum of the input VSCALE and the computed VSCALE of DISC.
 %      CUTOFF: The point at which the coefficient series for DISC should
 %              be chopped. If ~ISDONE then CUTOFF = LENGTH(DISC).
+%      VSCALE: Maximum of the input VSCALE and the computed VSCALE of DISC.
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -44,7 +44,8 @@ tech = tech();
 
 % If an external vscale was supplied, it can supplant the inherent scale of the
 % result.
-data.vscale = max(u.vscale, vscale);
+vscale = max(u.vscale, vscale);
+data.vscale = vscale;
 % TODO:  Assign hscale (to data.hscale)?
 prefTech = tech.techPref();
 prefTech.eps = pref.errTol;

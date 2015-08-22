@@ -241,7 +241,7 @@ for dim = [dimVals NaN]
 
     % Test the happiness of the function pieces:
     vscale = zeros(1, sum(isFun));   % intrinsic scaling only
-    [isDone, ignored, cutoff] = testConvergence(discA, u(isFun), vscale, prefs);
+    [isDone, cutoff] = testConvergence(discA, u(isFun), vscale, prefs);
 
     if ( all(isDone) )
         break
