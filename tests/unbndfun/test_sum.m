@@ -156,6 +156,6 @@ IMathematica = 0.88622692545274;
 err = abs(I - IMathematica);
 pass(17) = err(1) < 5e1*eps*get(f1,'vscale');
 pass(18) = err(2) < 1e3*eps*get(f2,'vscale');
-pass(19) = err(3) < 1e2*eps*get(f3,'vscale');
+pass(19) = err(3) < 1e3*eps*get(f3,'vscale');
 
 end
