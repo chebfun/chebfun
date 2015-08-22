@@ -9,8 +9,8 @@ function [ishappy, cutoff] = linopV4Check(f, values, pref)
 %   criteria must be met. Either:
 %
 %     (1) The coefficients are sufficiently small (as specified by the default
-%     EPS property of CHEBTECH) relative to F.VSCALE (or using absolute size if
-%     F.VSCALE=0); or
+%     EPS property of CHEBTECH) relative to VSCALE(F) (or using absolute size if
+%     VSCALE(F)=0); or
 %
 %     (2) The coefficients are somewhat small and apparently unlikely to
 %     continue decreasing in a meaningful amount (i.e., have reached a "plateau"

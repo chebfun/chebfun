@@ -53,8 +53,8 @@ if ( nargin < 4 )
 end
 data = chebtech.parseDataInputs(data, pref);
 
-% vscale defaults to zero if not given but should be at least f.vscale.  (Only
-% makes sense to have a larger "global" vscale.)
+% vscale defaults to zero if not given but should be at least vscale(f). 
+% (It only makes sense to have a larger "global" vscale.)
 data.vscale = max(data.vscale, vscale(f));
 
 % What does happiness mean to you?

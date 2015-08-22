@@ -1,9 +1,9 @@
 function vscl = vscale( f )
 %VSCALE   Estimate the vertical scale of a function.
-%   VSCALE(F) of F.VSCALE estimates the vertical scale (also known as the
-%   dynamical range) of a function. This is required because a TRIGTECH does not
-%   store its interpolation data. If F is an array-valued TRIGTECH with K
-%   columns, then the result is a row vector of length K.
+%   VSCALE(F) estimates the vertical scale (also known as the dynamical range)
+%   of a function. This is required because a TRIGTECH does not store its
+%   interpolation data. If F is an array-valued TRIGTECH with K columns, then
+%   the result is a row vector of length K.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

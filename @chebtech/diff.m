@@ -91,9 +91,6 @@ function f = diffContinuousDim(f, k)
         n = n - 1;
     end
     
-    % Store the old vscale:
-    oldVscl = f.vscale;
-    
     % Store new coefficients:
     f.coeffs = c;
     

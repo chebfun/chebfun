@@ -56,9 +56,9 @@ for n = 1:4
     pass(n, 17) = all(err(:) == 0);
 
 %%
-% In branch feature-prescribed-eps this test fails due to an
-% epslevel related issue. Until this issue is resolved this 
-% test is being bypassed.
+% TODO: In branch feature-prescribed-eps this test fails due to an epslevel
+% related issue. Until this issue is resolved this test is being bypassed.
+
     %%
     % Check a rank-deficient problem:
     % [TODO]: Is this correct?

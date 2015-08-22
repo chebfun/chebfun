@@ -6,7 +6,7 @@ function [ishappy, cutoff] = plateauCheck(f, values, data, pref)
 %
 %     (1) The coefficients are sufficiently small (as specified by the default
 %     EPS property of TRIGTECH) relative to F.VSCALE (or using absolute size if
-%     F.VSCALE=0); or
+%     VSCALE(F)=0); or
 %
 %     (2) The coefficients are somewhat small and apparently unlikely to
 %     continue decreasing in a meaningful amount (i.e., have reached a "plateau"

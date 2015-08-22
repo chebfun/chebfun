@@ -53,27 +53,5 @@ if ( f.ishappy && ~F.ishappy )
     error('CHEBFUN:TRIGTECH:restrict:notPeriodic', ...
         'Restrict failed. Perhaps f is not perioidic in [s(1), s(2)]?');
 end
-  
-% TODO: The code below produces a CHEBTECH on the subdomains. Should we do this?
-% % Simply make a new chebtech object on the restricted domains.  
-% % This handled by the linear scaling of the input arguments to f.
-% F = cell(numInts, 1);
-% for j = 1:numInts
-%     op = @(x) feval(f,.5*[1 - x, 1 + x] * [s(j) ; s(j+1)]);
-%     data.vscale = f.vscale;
-%     data.hscale = f.hscale;
-%     F{j} = f.make(op, data, f.chebtech());
-% end
-% 
-% if ( numInts == 1 )
-%     % Remove f from the cell.
-%     F = F{1};
-% end
 
 end
-
-%RESTRICT   Restrict a TRIGTECH to a subinterval.
-%   Since restrictions of F will, in general, not be perioidic, RESTRICT(F, S)
-%   throws an error unless S = F.domain or ISEMPTY(F). 
-%
-%   In future, this behaviour might change.

@@ -18,11 +18,11 @@ function [isDone, vscale, cutoff] = testConvergence(disc, values, vscale, pref)
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+if ( nargin < 3 )
+    vscale = 0;   % will have no effect
+end
 if ( nargin < 4 )
     pref = cheboppref;
-    if ( nargin < 3 )
-        vscale = 1;   % will have no effect
-    end
 end
 
 % Convert to a piecewise array-valued CHEBFUN.
@@ -44,10 +44,8 @@ tech = tech();
 
 % If an external vscale was supplied, it can supplant the inherent scale of the
 % result.
-vscale = max(u.vscale, vscale);
-
+data.vscale = max(u.vscale, vscale);
 % TODO:  Assign hscale (to data.hscale)?
-data.vscale = vscale;
 prefTech = tech.techPref();
 prefTech.eps = pref.errTol;
 prefTech.happinessCheck = pref.happinessCheck;

@@ -4,7 +4,7 @@ function [ishappy, cutoff] = strictCheck(f, values, data, pref)
 %   location CUTOFF at which the CHEBTECH F could be truncated to maintain an
 %   accuracy of the default CHEBTECH EPS preference relative to DATA.VSCALE and
 %   DATA.HSCALE. ISHAPPY is TRUE if CUTOFF < MIN(LENGTH(F.COEFFS), 2) or
-%   F.VSCALE=0, and FALSE otherwise.
+%   VSCALE(F)=0, and FALSE otherwise.
 %
 %   [ISHAPPY, CUTOFF] = STRICTCHECK(F, VALUES, DATA, PREF) allows
 %   additional preferences to be passed. In particular, one can adjust the
