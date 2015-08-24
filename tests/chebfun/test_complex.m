@@ -49,7 +49,7 @@ pass(7) = norm(err(:), inf) < 10*f.vscale*f.epslevel;
 f = complex(alpha, imf);
 f_exact = @(x) alpha + 1i*[sin(x) cos(x)];
 err = feval(f, xr) - f_exact(xr);
-pass(8) = norm(err(:), inf) < 10*f.vscale*f.epslevel;
+pass(8) = norm(err(:), inf) < 1e2*f.vscale*f.epslevel;
 
 % Check error conditions.
 f = chebfun(@sin, [-1 1]);
