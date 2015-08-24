@@ -185,6 +185,8 @@ err = [normF, normLoc] - p_exact;
 pass(30) = norm(err, inf) < vscale(f).*eps;
 
 % -Inf-norm:
+op = @(x) 1./x;
+f = chebfun(op, dom);
 [normF, normLoc] = norm(f, -Inf);
 pass(31) = ( abs(normF) < vscale(f)*eps ) && ...
     ( normLoc == Inf );
