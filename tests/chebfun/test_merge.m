@@ -72,7 +72,7 @@ x = diff(domCheck) * rand(100, 1) + domCheck(1);
 vals_h = feval(h, x);
 vals_exact = feval(op, x);
 err = vals_h - vals_exact;
-pass(12) = (norm(err, inf) < 1e4*get(h, 'vscale')*get(h, 'epslevel'));
+pass(12) = (norm(err, inf) < 2e4*get(h, 'vscale')*get(h, 'epslevel'));
 
 
 %% Test for function defined on unbounded domain:

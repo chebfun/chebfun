@@ -77,6 +77,8 @@ switch index(1).type
             elseif ( max(idx{2}) > columnIndex(end) )
                 error('CHEBFUN:CHEBFUN:subsref:badsubscript', ...
                     'Index exceeds CHEBFUN dimensions.');
+            elseif ( isempty(idx{2}) )
+                columnIndex = [];
             end
 
         elseif ( length(idx) == 2 && strcmp(idx{2}, ':') )
