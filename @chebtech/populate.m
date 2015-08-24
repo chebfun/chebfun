@@ -131,7 +131,6 @@ f.ishappy = ishappy;
 
 if ( ishappy )
     % We're done, and can return.
-    f = simplify(f);
     return
 end
 

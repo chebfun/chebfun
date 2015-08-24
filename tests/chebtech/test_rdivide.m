@@ -114,6 +114,9 @@ for n = 1:2
     g = testclass.make(@(x) exp(x), [], pref);
     h1 = f ./ g;
     h2 = testclass.make(@(x) sin(x) ./ exp(x), [], pref);
+    maxlengthtmp = max(length(h1),length(h2));
+    h1 = prolong(h1,maxlengthtmp);
+    h2 = prolong(h2,maxlengthtmp);
     pass(n, 15) = norm(h1.coeffs - h2.coeffs, inf) < tol;
 end
 

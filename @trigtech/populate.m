@@ -117,7 +117,7 @@ f.values(:,f.isReal) = real(f.values(:,f.isReal));
 
 if ( ishappy )
     % We're done, and can return.
-    f = simplify(f, eps/2);
+    return
 end
 
 end

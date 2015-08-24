@@ -121,8 +121,7 @@ g = (1./r)./r - r.^-2;          % rdivides == times
 h = 1./(r.^2) - (1./r).^2;      % associativity
 pass(13) = ( norm(f, Inf) < get(r, 'vscale')*eps );
 pass(14) = ( norm(g, Inf) < get(r, 'vscale')*eps );
-pass(15) = ( norm(h, Inf) < 1e1*get(r, 'vscale')*eps );
-    
+pass(15) = ( norm(h, Inf) < 1e2*get(r, 'vscale')*eps );
     
 %% Check simplification of (1+x) / sqrt(1+x) has positive exponents.
 f = singfun(@(x) 1+x);

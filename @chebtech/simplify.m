@@ -24,9 +24,18 @@ if ( ~f.ishappy )
     return
 end
 
+% STANDARDCHOP requires at least 17 coefficients, so for F such that LENGTH(F) <
+% 17, the coefficients are padded using prolong. The following
+% parameters are chosen explicitly to work with STANDARDCHOP.
+% See STANDARDCHOP for details.
+nold = length(f);
+N = max(17, round(nold*1.25 + 5));
+f = prolong(f,N);
+
 % Grab coefficients of F.
 coeffs = f.coeffs;
 [n, m] = size(coeffs);
+coeffs = chebtech2.vals2coeffs(chebtech2.coeffs2vals(coeffs));
 
 % Use the default tolerance if none was supplied.
 p = chebtech.techPref();
@@ -39,18 +48,6 @@ if ( size(tol, 2) ~= m )
     tol = max(max(tol), p.eps)*ones(1, m);
 end
 
-% STANDARDCHOP requires at least 17 coefficients, so for F such that LENGTH(F) <
-% 17, the coefficients are padded with entries between TOL^(7/6) and TOL. These
-% parameters are chosen explicitly to work with STANDARDCHOP.
-% See STANDARDCHOP for details.
-N = max(17, round(n*1.25 + 5));
-cfmins = min(abs(coeffs), [], 1);
-cfmaxs = max(abs(coeffs), [], 1);
-if ( n < N )
-    coeffs = [coeffs ; ones(N - n, 1)* ...
-              (max(tol.^(7/6), min(cfmins./cfmaxs, tol)).*cfmaxs)];
-end
-
 % Loop through columns to compute CUTOFF.
 cutoff = 1;
 for k = 1:m
@@ -59,7 +56,7 @@ end
 
 % Take the minimum of CUTOFF and LENGTH(F). This is necessary when padding was
 % required.
-cutoff = min(cutoff, n);
+cutoff = min(cutoff, nold);
 
 % Chop coefficients using CUTOFF.
 f.coeffs = coeffs(1:cutoff,:);
