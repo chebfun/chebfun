@@ -54,6 +54,6 @@ tolFuns = 4e-7;
 
 tol = repmat([tolVals, tolFuns], 1, 3);
 
-pass = err < tol;
+pass = err < 10*tol;
 
 end

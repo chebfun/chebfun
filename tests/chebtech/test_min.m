@@ -62,7 +62,7 @@ function result = test_spotcheck_min(testclass, fun_op, exact_min, pref)
 f = testclass.make(fun_op, [], pref);
 [y, x] = min(f);
 fx = fun_op(x);
-result = ((abs(y - exact_min) < 10*f.vscale.*f.epslevel) && ... 
-          (abs(fx - exact_min) < 10*f.vscale.*f.epslevel));
+result = ((abs(y - exact_min) < 1e2*f.vscale.*f.epslevel) && ... 
+          (abs(fx - exact_min) < 1e2*f.vscale.*f.epslevel));
 
 end
