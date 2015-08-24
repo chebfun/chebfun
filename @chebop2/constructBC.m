@@ -56,37 +56,12 @@ elseif ( isa( bcArg, 'function_handle' ) )
         end 
         
         bcvalue = zeros(een , nf);
-        % Do we have bcs with derivatives in them.
-        try
-            % This works if the BC operators are vectorized. 
-            % Evaluate at xy for AD information: 
-            fcell = bcArg(adchebfun2(chebfun2(0, [dom, dom])),...
-                           abchebfun2(chebfun2(@(x,y) x.*y, [dom, dom])));
-        catch
-            % Cannot do it all at once, so do it term by term: 
-            gg = adchebfun2(chebfun2(@(x,y) cos(x.*y), [dom, dom]));
-            fcell = cell(1, nf); 
-            for jj = 1:nf
-                fcell{jj} = diff(gg, jj-1);
-            end
-        end
-        
-        % Find constants: 
-        cc = ones(1,nf);
-        for jj = 1:nf
-            if ( isa(fcell, 'cell') )
-                v = fcell{jj};
-            else
-                v = fcell;
-            end
-            cc(jj) = abs(diff(scl)/2).^(length(v.jacobian) - 1);
-        end
-        
-        % Find f(x):  
+        % Construct f(x):  
         for jj = 1:nf
             g = f{jj};
             % bcvalue = -f as it's going in the RHS: 
-            bcvalue(:,jj) = -resize(cc(jj)*g.coeffs(:), een);
+            cg = g.coeffs(:);
+            bcvalue(:,jj) = -resize(cg, een);
         end
         
         % Now go find the constants in the boundary conditions: 
@@ -101,7 +76,10 @@ elseif ( isa( bcArg, 'function_handle' ) )
                 for kk = 1 : size(pp, 2)
                     c = feval(chebfun(pp(:,kk)), bcpos);
                     if ( abs(c) > 0 )
-                        val = chebValues(kk-1, bcn, bcpos);
+                        % Each derivative must be scaled by a factor
+                        % depends on the other variable's domain. 
+                        dx_scaling = abs(2/diff(scl)).^(kk-1);
+                        val =  dx_scaling*chebValues(kk-1, bcn, bcpos);
                         bcrow(:, jj) = bcrow(:, jj) + c*val;
                     end
                 end
@@ -226,7 +204,7 @@ end
 end
 
 function val = chebValues(k, n, x)
-%CHEBBALUES   Return the values of Chebyshev {T0^(k)(x),..Tn^(k)(x)}, x being 
+%CHEBVALUES   Return the values of Chebyshev {T0^(k)(x),..Tn^(k)(x)}, x being 
 % 1 or -1. 
 if ( k == 0 )
     val = x.^((0:n-1).');

@@ -32,6 +32,10 @@ if ( nargin < 5 )
 end
 tol = max(pref.eps);
 
+% Blowup detection is turned off in order to avoid the occurrence of spurious
+% poles inside an interval where a piecewise function was originally smooth.
+pref.blowup = 0;
+
 % Check the domains:
 if ( abs(domF(2) - domG(1)) > hscale*tol )
     error('CHEBFUN:FUN:merge:domains', ...
@@ -53,7 +57,7 @@ elseif ( issing(g) )
     expsG = get(g, 'exponents');
     data.exponents = [0, expsG(2)];
 end
-    
+
 % Attempt to form a merged FUN:
 h = fun.constructor(@(x) myFun(x, f, g, dom), data, pref);
 

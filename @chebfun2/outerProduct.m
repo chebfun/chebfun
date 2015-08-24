@@ -1,5 +1,6 @@
 function h = outerProduct(f, g)
 %OUTERPRODUCT    The outer product of two CHEBFUN objects. 
+%
 %   H = OUTERPRODUCT(F, G) returns the CHEBFUN2 representing H(x,y) = F(y)G(x),
 %   where F and G are two CHEBFUN objects.
 %

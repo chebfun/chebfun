@@ -110,7 +110,7 @@ x = diff(dom_test) * rand(100, 1) + dom_test(1);
 f = chebfun (op, dom, 'exps', [2 2], 'splitting', 'on');
 vals = f(x);
 exact = op(x);
-pass(10) = ( norm(vals-exact, inf) < 1e3*epslevel(f)*vscale(f) );
+pass(10) = ( norm(vals-exact, inf) < 1e5*epslevel(f)*vscale(f) );
 
 
 % % Test X*LOG(X) on [0 1]:

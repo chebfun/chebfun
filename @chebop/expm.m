@@ -1,4 +1,4 @@
-function varargout = expm(N, t, u0, pref)
+function varargout = expm(N, t, u0, prefs)
 %EXPM    Exponential semigroup of a linear CHEBOP.
 %   U = EXPM(L, T, U0) uses matrix exponentiation to propagate an initial
 %   condition U0 for time T through the differential equation u' = L*u, where L
@@ -39,7 +39,7 @@ function varargout = expm(N, t, u0, pref)
 
 % Grab a preference if not given one:
 if ( nargin < 4 )
-    pref = cheboppref();
+    prefs = cheboppref();
 end
 
 % Linearize and check whether the CHEBOP is linear:
@@ -51,28 +51,27 @@ if ( fail )
          'EXPM() supports only linear CHEBOP instances.']);
 end
 
-% Determine the discretization.
-pref = determineDiscretization(N, L, pref);
+% Determine the discretization:
+prefs = determineDiscretization(N, L, prefs);
 
 % Clear boundary conditions if the dicretization uses periodic functions (since
 % if we're using periodic basis functions, the boundary conditions will be
 % satisfied by construction).
-disc = pref.discretization();
+disc = prefs.discretization();
 tech = disc.returnTech();
 if ( isPeriodicTech(tech()) )
     [N, L] = clearPeriodicBCs(N, L);
 end
 
-
 if ( nargin >= 3 )
     % Evaluate the matrix exponential for the given u0:
-	[varargout{1:nargout}] = expm(L, t, u0, pref);
+	[varargout{1:nargout}] = expm(L, t, u0, prefs);
 else
     % For backwards compatibility:
     warning('CHEBFUN:CHEBOP:expm:deprecated', ...
         ['The E = expm(L) syntax is deprecated and may not behave as expected.\n', ...
          'Please review EXPM documentation for details.'])
-    varargout{1} = chebop(@(u) expm(L, 1, u, pref), N.domain);
+    varargout{1} = chebop(@(u) expm(L, 1, u, prefs), N.domain);
 end
 
 end

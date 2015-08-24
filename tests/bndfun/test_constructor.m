@@ -79,6 +79,6 @@ f = bndfun(op, data, pref);
 vals_f = feval(f, x);
 vals_exact = feval(op, x);
 err = vals_f-vals_exact;
-pass(6) = ( norm(err, inf) < 3e2*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(6) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
 
 end

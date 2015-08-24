@@ -4,7 +4,7 @@ function pass = test_hermpoly( prefs )
 if ( nargin < 1 ) 
     prefs = chebfunpref(); 
 end
-tol = 1e5*prefs.techPrefs.eps;
+tol = 1e6*prefs.techPrefs.eps;
 
 % Physicists' Hermite polynomials
 h0 = hermpoly(0); 

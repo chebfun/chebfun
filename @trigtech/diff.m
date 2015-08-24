@@ -78,20 +78,18 @@ function f = diffContinuousDim(f, k)
     % Get the coefficients:
     c = f.coeffs;
     
-    % If N is even make it odd
-    if ( mod(N,2) == 0 )
-        % half the first coefficient and add it to the end
-        c = [c(1,:)/2;c(2:end,:);c(1,:)/2];
-        
-        % increment N
-        N = N+1;
+    % Code depends on parity of N
+    if ( mod(N,2) == 1 ) % Odd
+        % Since N is odd things are easy.
+        waveNumber = (-(N-1)/2:(N-1)/2).';
+    else
+        % Wave numbers are non-symmetric in the even case
+        waveNumber = (-N/2:N/2-1).';
     end 
 
-    % Since N is always odd things are easy.
-    waveNumber = (-(N-1)/2:(N-1)/2).';
-    
     % Derivative in Fourier space.
     c = bsxfun(@times,c,(1i*pi*waveNumber).^k);
+    
     v = f.coeffs2vals(c);
     v(:,f.isReal) = real(v(:,f.isReal));
 

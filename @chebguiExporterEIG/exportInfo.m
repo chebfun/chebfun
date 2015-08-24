@@ -109,6 +109,15 @@ if ( ~isempty(bcInput{1}) )
     end
 end
 
+% What discretization option do we want?
+discretization = chebguiExporter.discOption(periodic, dom, ...
+    guifile.options.discretization);
+
+% We need a cheboppref to be able to call matrix() below to determine whether
+% the problem is generalized.
+pref = cheboppref();
+pref.discretization = discretization;
+
 % Variable which determines whether it's a generalized problem. If
 % rhsString is empty, we can be sure it's not a generalized problem.
 generalized = 1;
@@ -127,7 +136,7 @@ if ( ~isempty(rhsString) )
     % Set a discretization size for comparing operators
     discDim = repmat(10, 1, length(d) - 1);    
     % Obtain a discretisation of the operator B
-    Bdisc = matrix(B, discDim);
+    Bdisc = matrix(B, discDim, pref);
     % Obtain a discretization of the chebop specified via chebop(@(u) u). Notice
     % that this is not identical to the discretization of identity operator on
     % the domain, due to the fact that chebop/linearize now tries to
@@ -164,9 +173,7 @@ else
     generalized = 0;
 end
 
-% What discretization option do we want?
-discretization = chebguiExporter.discOption(periodic, dom, ...
-    guifile.options.discretization);
+
 
 %% Fill up the expInfo struct
 expInfo.dom = dom;

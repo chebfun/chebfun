@@ -387,7 +387,7 @@ classdef trigtech < smoothfun % (Abstract)
         out = roots(f, varargin)
         
         % Test an evaluation of the input OP against a TRIGTECH approx.
-        pass = sampleTest(op, values, f)
+        pass = sampleTest(op, f, pref)
         
         % Signum of a TRIGTECH. (f should have no zeros in its domain)
         f = sign(f, pref)
