@@ -1,5 +1,5 @@
 function varargout = sample( f, varargin )
-%SAMPLE      Samples f on a tensor product grid.
+%SAMPLE      Samples of f a tensor product grid.
 %   X = SAMPLE(F) returns the matrix of values of F on a tensor
 %   product grid.
 %
@@ -20,7 +20,7 @@ if ( nargin == 1 )
     % Get degrees:
     [m, n] = length( f );  
 elseif ( nargin == 2 ) 
-    error('DISKFUN:sample:inputs', 'Dimension not specified.'); 
+    error('CHEBFUN:CHEBFUN2:chebpolyval2:inputs', 'Dimension not specified.'); 
 else
     m = varargin{ 1 }; 
     n = varargin{ 2 }; 
@@ -37,11 +37,6 @@ end
 C = chebtech2.coeffs2vals(chebtech2.alias( cols.funs{:}.onefun.coeffs, 2*n+1 ));
 C = C(n+1:2*n+1,:);  % Remove doubled up points.
 R = trigtech.coeffs2vals(trigtech.alias( rows.funs{:}.onefun.coeffs, m )); 
-
-% More ugliness
-if  all(rows.funs{:}.onefun.isReal)
-    R = real(R);
-end
 
 % Evaluate: 
 if ( nargout <= 1 )

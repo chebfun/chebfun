@@ -18,15 +18,15 @@ elseif ( nargin == 3 && nargin(op) == 2 )
     
     g = varargin{1}; 
     if ( isa( g, 'double' ) )     % promote
-        g = diskfun(g, f.domain); 
+        g = diskfun(@(x,y) g + 0*x, f.domain); 
     end
     
     if ( isa( f, 'double' ) )     % promote
-        f = diskfun(f, g.domain); 
+        f = diskfun(@(x,y) f + 0*x, g.domain); 
     end
     
     % Call constructor: 
-    f = diskfun(@(x,y) op( feval(f, x, y,1), feval(g, x, y,1) ), f.domain); %polar
+    f = diskfun(@(x,y) op( feval(f, x, y), feval(g, x, y) ), f.domain); %polar
 else
     % Not sure what to do, error: 
     error('CHEBFUN:DISKFUN:COMPOSE:OP', 'NARGIN(OP) not correct.')
@@ -34,3 +34,4 @@ else
 end
 
 end 
+

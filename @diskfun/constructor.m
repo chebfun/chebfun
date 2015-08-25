@@ -39,7 +39,11 @@ if ( nargin < 4 || isempty(dom) )
 end
 
 if ( nargin < 3 || isempty(coords) ) %for now assume polar if not specified
-    coords = 1
+    coords = 1;
+end
+
+if strcmpi(coords,'cart')
+    coords = 0;
 end
 
 %coords=1 -> polar
