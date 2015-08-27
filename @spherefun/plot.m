@@ -42,7 +42,7 @@ function varargout = plot( f, varargin )
 % See http://www.chebfun.org/ for Chebfun information. 
 
 % Make a user option?
-plot_full_grid = true;
+plot_full_grid = false;
 
 if ( ~isempty(varargin) )
     
@@ -97,7 +97,8 @@ if ( ~isempty(varargin) )
         % Full grid on the sphere
         m = length(f.cols);
         n = length(f.rows);
-        [LL,TT] = meshgrid(trigpts(n,dom(1:2)),linspace(dom(3),dom(4),m/2+1));
+%         [LL,TT] = meshgrid(trigpts(n,dom(1:2)),linspace(dom(3),dom(4),m/2+1));
+        [LL,TT] = meshgrid(linspace(dom(1),dom(2),n+1),linspace(dom(3),dom(4),m/2+1));
 
         % Plot pivots:
         

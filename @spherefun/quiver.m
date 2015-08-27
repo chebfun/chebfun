@@ -39,7 +39,7 @@ fxv = feval(fx,x(:,1),x(:,2),x(:,3));
 fyv = feval(fy,x(:,1),x(:,2),x(:,3));
 fzv = feval(fz,x(:,1),x(:,2),x(:,3));
 
-h = quiver3(x(:,1),x(:,2),x(:,3),fxv,fyv,fzv);
+h = quiver3(x(:,1),x(:,2),x(:,3),fxv,fyv,fzv,'k');
 
 if ~holdState
     hold off;
