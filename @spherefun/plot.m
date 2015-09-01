@@ -42,7 +42,7 @@ function varargout = plot( f, varargin )
 % See http://www.chebfun.org/ for Chebfun information. 
 
 % Make a user option?
-plot_full_grid = false;
+plot_full_grid = true;
 
 if ( ~isempty(varargin) )
     
@@ -120,6 +120,12 @@ if ( ~isempty(varargin) )
             YY = sin(LL).*cos(TT);
             ZZ = sin(TT);
         end
+                if plot_full_grid
+            % Plot grayed out grid
+            clrGrid = [192 192 192]/256;
+            plot3(XX,YY,ZZ,'-','Color',clrGrid);
+            plot3(XX',YY',ZZ','-','Color',clrGrid);
+        end
         % Also plot points marking the pivots shifted by pi in longitude
         % since these are technically also included in the GE algorithm.
         pivotsCart = [pivotsCart;[-pivotsCart(:,1:2) pivotsCart(:,3)]];
@@ -169,16 +175,11 @@ if ( ~isempty(varargin) )
                 opts = { opts{:}, 'LineStyle', ll{:}, 'color', cc{:} };
             end
             % Plot column lines:
-            plot3(colCircs(:,1),colCircs(:,2),colCircs(:,3), opts{:} );
+            plot3(colCircs(:,1),colCircs(:,2),colCircs(:,3), opts{:},'linewidth',2 );
             % Plot row lines:
-            plot3(rowCircs(:,1),rowCircs(:,2),rowCircs(:,3), opts{:} );            
+            plot3(rowCircs(:,1),rowCircs(:,2),rowCircs(:,3), opts{:},'linewidth', 2 );            
         end
-        if plot_full_grid
-            % Plot grayed out grid
-            clrGrid = [192 192 192]/256;
-            plot3(XX,YY,ZZ,'-','Color',clrGrid);
-            plot3(XX',YY',ZZ','-','Color',clrGrid);
-        end
+
         if ~holdState
             hold off;
             view(180-37.5,30);
