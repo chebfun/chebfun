@@ -1,4 +1,4 @@
-function varargout = plot2( f, varargin )
+function varargout = plot( f, varargin )
 %PLOT  Surface plot of a DISKFUN.
 %
 %   PLOT(F) if F is a real-valued DISKFUN then this is the surface plot and is
