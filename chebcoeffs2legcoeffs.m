@@ -1,6 +1,6 @@
 function legcoeffs = chebcoeffs2legcoeffs( chebcoeffs )
 %CHEBCOEFFS2LEGCOEFFS  Convert Chebyshev coefficients to Legendre coefficients. 
-%   C_LEG = CHEB2LEG(C_CHEB) converts the vector C_CHEB of Chebyshev
+%   C_LEG = CHEBCOEFFS2LEGCOEFFS(C_CHEB) converts the vector C_CHEB of Chebyshev
 %   coefficients to a vector C_LEG of Legendre coefficients such that
 %       C_CHEB(1)*T0 + ... + C_CHEB(N)*T{N-1} = ...
 %           C_LEG(1)*P0 + ... + C_LEG(N)*P{N-1},
