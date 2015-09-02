@@ -93,7 +93,9 @@ if ( numFuns == 1 )
     if ( kind == 2 )
         out(1,:) = 2*out(1,:);
         out = 0.5*[out(1:end-2,:) - out(3:end,:) ; out(end-1:end,:)];
-        out = out(1:end-2,:);
+        if ( ~isempty(N) )
+            out = out(1:end-2,:);
+        end
     end
     
 else
