@@ -33,6 +33,14 @@ if ( isempty(opt) && isfield(sol, 'extdata') && ...
     opt = sol.extdata.options;
 end
 
+% HappinessChecker
+if ( ~isempty(opt) && isfield(opt, 'happinessCheck') )  
+    checker = opt.happinessCheck;
+else
+    temp = cheboppref();
+    checker = temp.happinessCheck;
+end
+
 %% Find relative tolerances used in computations.
 % Start with odeset default values:
 relTol = 1e-6*ones(numCols, 1);         % Relative
@@ -65,7 +73,8 @@ end
 %% Create a CHEBFUN object.
 p = chebfunpref();
 p.techPrefs.eps = max(relTol); % Use the same tolerance for each column.
-
+p.techPrefs.happinessCheck = checker;
+p.techPrefs.sampleTest = 0;
 % Need to sort the domain D, since if we solve a final value problem, it will
 % have been flipped.
 dom = sort(dom);

@@ -95,4 +95,9 @@ err = norm(f{-1, -0.1, 0.2, 1} - restrict(f, [-1 -0.1 0.2 1]), inf);
 tol = epslevel(f);
 pass(22) = err < 5*tol;
 
+% Test that we get an empty chebfun back when we exceed the index
+f = chebfun(@(x) cos(x));
+g = f(:,2:end);
+pass(23) = isempty(g);
+
 end

@@ -79,7 +79,7 @@ err(length(err) + 1) = norm(A*ev - ev*ew)/1e3;
 
 %% Happy?
 
-tol = 1e-14;
+tol = 1e-12;
 pass = err < tol;
 
 end

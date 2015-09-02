@@ -79,7 +79,7 @@ pass(14) = norm(feval(fh,x) - feval(f,x), inf) < 1e5*get(f, 'epslevel');
 fh = @(x) sin(exp(cos(x))).*(1+x).^a.*(1-x).^b;
 f = singfun(fh);
 pass(15) = norm(f.exponents - [a,b], inf) < pref.blowupPrefs.exponentTol;
-pass(16) = norm(feval(fh,x) - feval(f,x), inf) < 1e3*get(f, 'epslevel');
+pass(16) = norm(feval(fh,x) - feval(f,x), inf) < 1e4*get(f, 'epslevel');
     
 %%
 % Negative integer exponents

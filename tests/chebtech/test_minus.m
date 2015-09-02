@@ -90,7 +90,8 @@ for n = 1:2
     g = testclass.make(@(x) cos(x) - 1, [], pref);
     h1 = f - g;
     h2 = testclass.make(@(x) x - (cos(x) - 1), [], pref);
-    pass(n, 19) = norm(h1.coeffs - h2.coeffs, inf) < tol;
+    h3 = h1 - h2;
+    pass(n, 19) = norm(h3.coeffs, inf) < tol;
 
     %%
     % Check that subtracting a CHEBTECH and an unhappy CHEBTECH gives an

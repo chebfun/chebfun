@@ -5,7 +5,7 @@ function pass = test_exactInitial(pref)
 if ( nargin == 0 )
     pref = cheboppref;
 end
-tol = 1e-9;
+tol = 1e-7;
 
 %% Problem set-up
 % Define the domain.

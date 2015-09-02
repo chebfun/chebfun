@@ -154,27 +154,27 @@ f = chebfun(f_exact, [], pref);
 
 x = xr;
 err = feval(f, x) - f_exact(x);
-pass(21) = all(max(abs(err)) < 10*f.epslevel*f.vscale);
+pass(21) = all(max(abs(err)) < 1e2*f.epslevel*f.vscale);
 
 x_mtx = reshape(x, [100 10]);
 err = feval(f, x_mtx) - f_exact(x_mtx);
 pass(22) = isequal(size(err), [100 30]) && (norm(err(:), inf) < ...
-    10*f.epslevel*f.vscale);
+    1e2*f.epslevel*f.vscale);
 
 x_3mtx = reshape(x, [5 20 10]);
 err = feval(f, x_3mtx) - f_exact(x_3mtx);
 pass(23) = isequal(size(err), [5 60 10]) && (norm(err(:), inf) < ...
-    10*f.epslevel*f.vscale);
+    1e2*f.epslevel*f.vscale);
 
 x_4mtx = reshape(x, [5 4 5 10]);
 err = feval(f, x_4mtx) - f_exact(x_4mtx);
 pass(24) = isequal(size(err), [5 12 5 10]) && (norm(err(:), inf) < ...
-    10*f.epslevel*f.vscale);
+    1e2*f.epslevel*f.vscale);
 
 f.isTransposed = 1;
 err = feval(f, x_4mtx) - permute(f_exact(x_4mtx), [2 1 3 4]);
 pass(25) = isequal(size(err), [12 5 5 10]) && (norm(err(:), inf) < ...
-    10*f.epslevel*f.vscale);
+    1e2*f.epslevel*f.vscale);
 
 err = feval(f, 'left') - [sin(-1) 1 exp(-1i)].';
 pass(26) = norm(err(:), inf) < 10*f.epslevel*f.vscale;
@@ -209,7 +209,7 @@ f = chebfun(op, dom, 'exps', [pow 0], 'splitting', 'on');
 fval = feval(f, x);
 vals_exact = feval(op, x);
 err = fval - vals_exact;
-pass(31) = ( norm(err, inf) < 1e4*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(31) = ( norm(err, inf) < 1e5*get(f,'epslevel')*norm(vals_exact, inf) );
 
 
 %% Test for function defined on unbounded domain:

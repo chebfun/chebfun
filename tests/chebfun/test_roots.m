@@ -125,7 +125,7 @@ f = chebfun(op, dom, 'exps', [2 2]);
 r = roots(f);
 rExact = [-1.4962104914103104707 ; 1.4962104914103104707];
 err = r - rExact;
-pass(12) = norm(err, inf) < epslevel(f)*vscale(f);
+pass(12) = norm(err, inf) < 1e2*epslevel(f)*vscale(f);
 
 % Functions on [a inf]:
 dom = [0 Inf];

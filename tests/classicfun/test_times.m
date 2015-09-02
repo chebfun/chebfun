@@ -153,7 +153,7 @@ g = c.*f;
 g_exact = bndfun(op_exact, singData, singPref);
 
 err = norm(feval(g, x) - feval(g_exact, x), inf);
-tol = 10*get(f, 'epslevel')*norm(feval(g_exact, x), inf);
+tol = 1e2*get(f, 'epslevel')*norm(feval(g_exact, x), inf);
 pass(24) = ( err < tol );
 
 % Case of two functions:

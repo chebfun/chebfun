@@ -66,7 +66,7 @@ function varargout = solvebvp(N, rhs, varargin)
 %   details.
 
 % Parse inputs:
-[pref, isPrefGiven, displayInfo] = parseInputs(N, varargin{:});
+[pref, displayInfo] = parseInputs(varargin{:});
 
 % Find out how many variables N operates on:
 nVars = numVars(N);
@@ -91,7 +91,11 @@ if ( isempty(N.init) )
     u0 = chebmatrix(u0);
 else
     % Get the initial guess.
-    u0 = N.init; 
+    u0 = N.init;
+    % Ensure that initial guess is a CHEBMATRIX (as later code assumes it is):
+    if ( isa(u0, 'chebfun') )
+        u0 = chebmatrix(u0);
+    end 
 end
 
 % Initialise the independent variable:
@@ -161,7 +165,7 @@ if ( isnumeric(u0) )
 end
 
 % Determine the discretization.
-pref = determineDiscretization(N, L, isPrefGiven, pref);
+pref = determineDiscretization(N, L, pref);
 disc = pref.discretization();
 
 % Determine the TECH used by the discretization.
@@ -219,6 +223,9 @@ else
 
     % Call solver method for nonlinear problems.
     [u, info] = solvebvpNonlinear(N, rhs, L, u0, residual, pref, displayInfo);
+
+% simplify output
+u = simplify(u,pref.errTol/200);
     
 end
 
@@ -248,7 +255,7 @@ end
 
 end
 
-function [pref, isPrefGiven, displayInfo] = parseInputs(N, varargin)
+function [pref, displayInfo] = parseInputs(varargin)
 %PARSEINPUTS   Parse the input arguments to SOLVEBVP.
 
 % Initialise the outputs:
@@ -264,7 +271,6 @@ while ( ~isempty(varargin) )
     elseif ( isa(varargin{1}, 'cheboppref') )
         pref = varargin{1};
         varargin(1) = [];
-        isPrefGiven = 1;
     elseif ( isa(varargin{1}, 'function_handle') )
         displayInfo = varargin{1};
         varargin(1) = [];
@@ -277,7 +283,6 @@ end
 % No preferences passed; use the current chebopprefs:
 if ( isempty(pref) )
     pref = cheboppref();
-    isPrefGiven = 0;
 end
 
 % If no DISPLAYINFO function handle passed, use the default CHEBOP one.

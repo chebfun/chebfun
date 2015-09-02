@@ -227,7 +227,7 @@ f = chebfun(@(x)[exp(-x.^2) 0*x+1], [1 Inf]);
 I = sum(f);
 % The following exact value is obtained by Mathematica.
 I_exact = 0.139402792640331;
-pass(34) = abs(I(1)-I_exact) < get(f,'epslevel')*get(f,'vscale') && ...
+pass(34) = abs(I(1)-I_exact) < 1e1*get(f,'epslevel')*get(f,'vscale') && ...
     isinf(I(2));
 
 end

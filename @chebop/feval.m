@@ -70,13 +70,17 @@ if ( (nargin == 2) && isnumeric(varargin{1}) )
     % cases.
     n = varargin{1};
     L = linop(N);
-    if ( ~isa(cheboppref().discretization(), 'chebcolloc2') )
+    pref = cheboppref();
+    disc = pref.discretization;
+    if ( isa(disc, 'char') && strcmpi(disc, 'values') )
+        pref.discretization = @chebcolloc2;
+    elseif ( isa(disc, 'function_handle') && ~isequal(disc, @chebcolloc2) ) 
         % We only support CHEBCOLLOC2 discretizations!
         error('CHEBFUN:CHEBOP:feval:notColloc2', ...
             ['FEVAL(N, DIM) only supports CHEBCOLLOC2 discretizations.\n', ...
              'Use MATRIX(N, DIM) or change the discretization in CHEBOPPREF.']);
     end
-    A = matrix(L, n); % has n rows but maybe more columns
+    A = matrix(L, n, pref); % has n rows but maybe more columns
 
     % We want an n by n result. We have that A is (n-d) x n where d =
     % L.diffOrder. Also, the output of A is at 1st kind points. We need to do:
