@@ -45,6 +45,6 @@ err(3) = norm( lam_pw - lamCorrect, inf );
 err(4) = norm(AV - V*D);
 %%
 
-pass = err < 1e-11;
+pass = err < 1e-9;
 
 end

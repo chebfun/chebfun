@@ -76,7 +76,7 @@ pass(3, problemNo) = all(domOut == dom);
 pass(4, problemNo) = ( norm(coeffs{1} - 3*(x+2).*(x+1)) < tol);
 pass(5, problemNo) = all( diffOrders == 2);
 res =  anonFun(-.5, [2 2]);
-pass(5) = all( res == [2;-4]);
+pass(5) = all( abs(res-[2;-4]) < tol );
 
 %% Introduce breakpoints
 problemNo = 6;

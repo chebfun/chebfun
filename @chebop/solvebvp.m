@@ -91,7 +91,11 @@ if ( isempty(N.init) )
     u0 = chebmatrix(u0);
 else
     % Get the initial guess.
-    u0 = N.init; 
+    u0 = N.init;
+    % Ensure that initial guess is a CHEBMATRIX (as later code assumes it is):
+    if ( isa(u0, 'chebfun') )
+        u0 = chebmatrix(u0);
+    end 
 end
 
 % Initialise the independent variable:
@@ -230,6 +234,9 @@ else
 
     % Call solver method for nonlinear problems.
     [u, info] = solvebvpNonlinear(N, rhs, L, u0, residual, pref, displayInfo);
+
+% simplify output
+u = simplify(u,pref.errTol/200);
     
     % Enforce the function to be real if the imaginary part is small if using a 
     % periodic TECH:

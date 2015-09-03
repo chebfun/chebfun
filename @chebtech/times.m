@@ -149,7 +149,7 @@ function hc = coeff_times(fc, gc)
 %   SIAM Review, 2013). This can be embedded into a Circular matrix and applied
 %   using the FFT:
 
-mn = length(fc);
+mn = size(fc, 1);
 t = [2*fc(1,:) ; fc(2:end,:)];                    % Toeplitz vector.
 x = [2*gc(1,:) ; gc(2:end,:)];                    % Embed in Circulant.
 xprime = fft([x ; x(end:-1:2,:)]);                % FFT for Circulant mult.

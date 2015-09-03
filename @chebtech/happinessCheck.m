@@ -55,7 +55,13 @@ if ( nargin < 4 )
 end
 
 % What does happiness mean to you?
-if ( strcmpi(pref.happinessCheck, 'classic') )
+if ( strcmpi(pref.happinessCheck, 'standard') )
+    % Use the 'standard' happiness check:
+    
+    % Check the coefficients are happy:
+    [ishappy, epslevel, cutoff] = standardCheck(f, values, vscl, pref);
+
+elseif ( strcmpi(pref.happinessCheck, 'classic') )
     % Use the default happiness check procedure from Chebfun V4.
     
     % Check the coefficients are happy:
@@ -75,15 +81,14 @@ elseif ( strcmpi(pref.happinessCheck, 'plateau') )
     
 else
     % Call a user-defined happiness check:
-    [ishappy, epslevel, cutoff] = ...
-        pref.happinessCheck(f, values, vscl, pref);
+    [ishappy, epslevel, cutoff] = pref.happinessCheck(f, values, vscl, pref);
     
 end
 
 % Check also that sampleTest is happy:
 if ( ishappy && ~isempty(op) && ~isnumeric(op) && pref.sampleTest )
-    f.epslevel = epslevel;
-    ishappy = sampleTest(op, values, f, vscl);
+    f.epslevel = eps + 0*epslevel;
+    ishappy = sampleTest(op, values, f, vscl, pref);
     if ( ~ishappy )
         % It wasn't. Revert cutoff. :(
         cutoff = size(values, 1);

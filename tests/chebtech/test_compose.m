@@ -40,7 +40,7 @@ for n = 1:4
     x = g.points();
     values = g.coeffs2vals(g.coeffs);
     pass(n, 3) = norm(sin([x, x.^2])- values, inf) < ...
-        10*max(h.vscale.*h.epslevel);
+        1e2*max(h.vscale.*h.epslevel);
     
     % Compose an array-valued CHEBTECH object with sin(x):
     f = testclass.make(@(x) [x x x.^2]);

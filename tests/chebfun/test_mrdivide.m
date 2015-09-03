@@ -25,7 +25,7 @@ pass(2) = abs(x0 - x0_true) < 10*epslevel(x);
 A = eye(4);
 X = A/L;
 X0 = feval(X, 0);
-pass(3) = norm(X0 - [.5 0 -1.25 0].') < 10*epslevel(X);
+pass(3) = norm(X0 - [.5 0 -1.25 0].') < 1e2*epslevel(X);
 
 %% ~Transposed A:
 A = T;

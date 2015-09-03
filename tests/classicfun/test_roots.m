@@ -115,6 +115,6 @@ f = unbndfun(op, singData, singPref);
 r = roots(f);
 rExact = [-1.4962104914103104707 ; 1.4962104914103104707];
 err = r - rExact;
-pass(11) = norm(err, inf) < get(f,'epslevel').*get(f,'vscale');
+pass(11) = norm(err, inf) < 1e2*get(f,'epslevel').*get(f,'vscale');
 
 end

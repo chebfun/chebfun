@@ -1,27 +1,22 @@
 function varargout = matrix(A, varargin)
 %MATRIX   Discretize a CHEBMATRIX as an ordinary matrix.
-%   M = MATRIX(A, DIM) discretizes each block in the chebmatrix A using the
-%   dimension vector DIM for all functions. In case the domain of A has
+%   Important: A CHEBOPPREF object PREFS has to be passed. When this method
+%   is called via CHEBOP/MATRIX, PREFS is inherited from the CHEBOP level.
+%
+%   M = MATRIX(A, DIM, PREFS) discretizes each block in the chebmatrix A using 
+%   the dimension vector DIM for all functions. In case the domain of A has
 %   breakpoints, the vector DIM must specify the desired discretization
 %   dimension for each subinterval.
 %
-%   MATRIX(A, DIM, DOMAIN) replaces the 'native' domain of A with DOMAIN.
+%   MATRIX(A, DIM, DOMAIN, PREFS) replaces the 'native' domain of A with DOMAIN.
 %   Usually this would be done to introduce a breakpoint.
-%
-%   MATRIX(A,...,DISCTYPE) uses the chebDiscretization whose constructor is
-%   DISCTYPE. The default is set by CHEBOPPREF as follows:
-%       * If the default discretization specified by cheboppref is a function
-%         handle, it is used.
-%       * If the default discretization specified by cheboppref is 'values',
-%         @chebcolloc2 is used.
-%       * If the default discretization specified by cheboppref is 'values',
-%         @ultraS is used.
 %
 %   Example:
 %     d = [0 1];
 %     A = [ operatorBlock.eye(d), operatorBlock.diff(d) ];
-%     matrix(A, 5, @chebcolloc2)
-%     matrix(A, 5, @ultraS)
+%     prefs = cheboppref();
+%     prefs.discretization = @chebcolloc2;
+%     matrix(A, 5, prefs)
 %
 % See also CHEBOPPREF, OPDISCRETIZATION, OPDISCRETIZATION/MATRIX. 
 
@@ -36,7 +31,7 @@ for k = find( ~numericargs(:)' )
     varargin(k) = [];  % Delete from list.
 end
 
-% Get the default discretization type if needed
+% Get the default discretization type if needed.
 if ( isempty(discType) )
     p = cheboppref;
     discType = p.discretization;
@@ -51,7 +46,7 @@ if ( ischar(discType) )
     end
 end
 
-% Discretize.
+% Discretize:
 d = discType(A, varargin{:});
 [varargout{1:nargout}] = matrix(d);
 

@@ -233,7 +233,7 @@ classdef chebfun
                 % Remove unnecessary breaks (but not those that were given):
                 [ignored, index] = setdiff(f.domain, dom);
                 f = merge(f, index(:).', pref);
-                
+               
             end
 
             if ( flags.trunc )
@@ -727,6 +727,10 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
         elseif ( strcmpi(args{1}, 'doublelength') )
             % Construct Chebfun twice as long as usually would be constructed.
             flags.doubleLength = true;
+            args(1) = [];
+        elseif ( strcmpi(args{1}, 'turbo') )
+            % "turbo" flag for constructing "turbocharged" chebfuns.
+            keywordPrefs.techPrefs.useTurbo = true;
             args(1) = [];
         elseif ( strcmpi(args{1}, 'coeffs') && isnumeric(op) )
             % Hack to support construction from coefficients.            

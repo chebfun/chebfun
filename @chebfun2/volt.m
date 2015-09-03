@@ -1,12 +1,12 @@
 function f = volt( K, v )
-%VOLT  Volterra integral operator.
-%   V = VOLT(K, f) returns a row chebfun resulting from the integral
+%VOLT      Volterra integral operator for SEPARABLEAPPROX.
+%   V = VOLT(K, f) returns a row CHEBFUN resulting from the integral
 %
 %      f(x) = (K*v)(x) = int( K(x,y) v(y), y=a..x ),
 %
 %   where K is defined on a domain [a,b]x[a,b].
 %
-%   The kernel function K(x,y) must be a smooth CHEBFUN2 defined on a square
+%   The kernel function K(x,y) must be a smooth SEPARABLEAPPROX defined on a square
 %   domain.
 %
 % Example:
@@ -17,12 +17,13 @@ function f = volt( K, v )
 % Copyright 2015 by The University of Oxford and The Chebfun2 Developers.
 % See http://www.chebfun.org/ for Chebfun2 information.
 
-if ( ~isa( K, 'chebfun2' ) )
-    error('CHEBFUN:CHEBFUN2:volt:input', 'First argument must be a CHEBFUN2.');
+if ( ~isa( K, 'separableApprox' ) )
+    error('CHEBFUN:SEPARABLEAPPROX:volt:input', ...
+                          'First argument must be a SEPARABLEAPPROX.');
 end
 
 % Get the low rank representation for f.
-[cols, D, rows] = cdr(K);
+[cols, D, rows] = cdr( K );
 dom = K.domain;
 
 if isa( v, 'function_handle' )
@@ -32,8 +33,8 @@ end
 
 % Domain compatibility:
 if ( ~domainCheck(cols, v) )
-    error('CHEBFUN:CHEBFUN2:volt:domainMismatch', ...
-        'Domain of CHEBFUN and CHEBFUN2 kernel do not match.');
+    error('CHEBFUN:SEPARABLEAPPROX:volt:domainMismatch', ...
+        'Domain of CHEBFUN and SEPARABLEAPPROX kernel do not match.');
 end
 
 RR = rows * D;
