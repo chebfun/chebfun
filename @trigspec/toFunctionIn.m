@@ -2,15 +2,22 @@ function f = toFunctionIn(disc, coeffs)
 %TOFUNCTION   Convert discrete values of a TRIGSPEC to a CHEBFUN.
 %   F = TOFUNCTIONIN(DISC, COEFFS) converts the coeffs returned by TRIGSPEC 
 %   to a CHEBFUN. 
+%
+% See also TOVALUES, TOFUNCTIONOUT.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-dom = disc.domain; % Domain. 
+% Get the domain:
+dom = disc.domain; 
+
+% Create a TRIGTECH object from the coefficients: 
 tech = trigtech({[], coeffs});
+
+% Create a BNDFUN from the TRIGTECH:
 fun{1} = bndfun(tech, struct('domain', dom));
+
+% Create a CHEBFUN from the BNDFUN:
 f = chebfun(fun);
-if norm(imag(f)) < 1e4*eps*f.vscale
-    f = real(f);
-end
+
 end
