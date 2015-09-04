@@ -1,5 +1,5 @@
 function u = Poisson( f, int_const, m, n )
-% POISSON              POISSON SOLVER FOR THE SPHERE 
+% POISSON             FAST POISSON SOLVER FOR THE SPHERE 
 % 
 % POISSON( F, CONST, N) solves  
 %  
@@ -45,7 +45,7 @@ th0 = pi*trigpts( n );
 
 % Calculate trigcoeffs of the forcing term: 
 [ll, tt] = meshgrid( lam0, th0 ); 
-vals = sin(tt).^2.*f( ll, tt );
+vals = sin(tt).^2 .* feval(f, ll, tt );
 G = trigtech.vals2coeffs( trigtech.vals2coeffs( vals ).' ).'; 
 
 % Construct useful spectral discretization matrices: 
@@ -62,14 +62,14 @@ L = Msin2*DF2n + Msin*DF1n;
 
 % We want to solve 
 %     L * X  +  X * DF2^T  = (sin(th))^2*g  
-% such that X(m/2+1,m/2+1) = int_const.  
+% such that X(m/2+1, m/2+1) = int_const.  
 
 % Notice that the matrix equation decouples and we can solve for X one
 % column at a time: 
 CFS = zeros( n, m ); 
 % We leave out the (m/2+1)th column because that needs a constraint
 for k = [1:m/2 m/2+2:m]  
-    CFS(:,k) = ( L +  DF2m(k,k)*speye( n ) ) \ G(:,k);
+    CFS(:, k) = ( L +  DF2m(k, k)*speye( n ) ) \ G(:, k);
 end
 
 % Now do the equation where we need the integral constraint. 

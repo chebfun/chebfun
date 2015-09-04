@@ -78,7 +78,7 @@ classdef spherefun < separableApprox
     methods ( Access = public, Static = true )
         
         % Poisson solver: 
-        u = Poisson( f, const, n);
+        u = Poisson( f, const, m, n);
         
         % Converts a function in spherical coordinates to one in Cartesian
         % coordinates on the sphere.
