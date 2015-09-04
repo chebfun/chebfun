@@ -9,6 +9,12 @@ function varargout = waterfall( f, varargin )
 %   WATERFALL(F, S, 'nslices', N) displays the first min(N,length(f)) columns
 %   and rows.
 %
+%   WATERFALL supports passing options to the plot, similar to standard Matlab
+%   plot commands. The options supported are:
+%       'color':      Color of lines and markers plotted.
+%       'marker':     Marker for pivot points.
+%       'markersize': Size of markers plotted at pivot points.
+%
 %   H = WATERFALL(...) returns a handle to a waterfall plot object.
 %
 % See also PLOT.
@@ -26,12 +32,32 @@ if ( isempty(f) )
     end
 end
 
+% Options for plotting:
+plotOpts = {};
+
+% For plotting, it's useful to know whether we're running in old or new
+% Matlab graphics mode
+if ( ~verLessThan('matlab', '8.4') )
+    newMatlabVersion = true;
+else
+    newMatlabVersion = false;
+end
+
 % Number of points to slices:
 nslices = length(f); 
 j = 1; argin = {};
 while ( ~isempty(varargin) )
-    if strcmpi(varargin{1}, 'nslices')
+    if ( strcmpi(varargin{1}, 'nslices') )
         nslices = varargin{2};
+        varargin(1:2) = [];
+    elseif ( strcmpi(varargin{1}, 'color') )
+        plotOpts = [plotOpts, 'color', varargin{2}];
+        varargin(1:2) = [];
+    elseif ( strcmpi(varargin{1}, 'marker') )
+        plotOpts = [plotOpts, 'marker', varargin{2}];
+        varargin(1:2) = [];
+    elseif ( strcmpi(varargin{1}, 'markersize') )
+        plotOpts = [plotOpts, 'markersize', varargin{2}];
         varargin(1:2) = [];
     else
         argin{j} = varargin{1};
@@ -39,6 +65,7 @@ while ( ~isempty(varargin) )
         j = j+1;
     end
 end
+
 nslices = min( nslices, length(f) );
 varargin = argin; 
 mynargin = length(varargin) + 1; 
@@ -89,50 +116,68 @@ else
         % Evaluate on a grid.
         P = f.pivotLocations;
         
-        defaultopts = {'MarkerSize', 7};
-        extraopts = {'Marker', mm{:}, 'Color', cc{:}};
+        defaultopts = {'markersize',7, 'marker', '.'};
         lineopts = {'linewidth', 2, 'linestyle', ll{:}};
         if ( ~plotline )
             % Just plot the pivots at height f(x,y)
             h = plot3(P(:,1), P(:,2), feval( f, P(:,1), P(:,2) ), '.', ...
-                                             extraopts{:}, defaultopts{:});
+                defaultopts{:}, plotOpts{:});
         else
-            % Plot the pivots.
+            h = [];
+%             hold on
+%             % Plot the pivots, rows and columns, one set at a time:
+%             for pivotCounter = 1:nslices
+%                 % Reset color cycle prior to point plot if running R2014b.
+%                 if ( newMatlabVersion )
+%                     set(gca, 'ColorOrderIndex', pivotCounter);
+%                 end
+%                 tempPoint = P(pivotCounter,:)
+%                 hTemp = plot3(tempPoint(1), tempPoint(2), ...
+%                     feval(f, tempPoint(1), tempPoint(2)), ...
+%                     defaultopts{:}, plotOpts{:});
+% %                 h1 = plot3(P(pivotCounter, 1), P(ss, 2), feval( f, P(ss ,1), P(ss, 2) ), ...
+% %                     '.', defaultopts{:}, plotOpts{:} ); hold on
+%                 pivotCounter
+%                 h = [h; hTemp];
+%             end
+
             ss = 1:nslices;
-            h1 = plot3(P(ss, 1), P(ss, 2), feval( f, P(ss ,1), P(ss, 2) ),...
-                                '.', extraopts{:}, defaultopts{:} ); hold on
             
             
             [xx, yy]=meshgrid (P(:, 1), chebpts( length(f.cols), dom(3:4) ) );
             vals = feval( f, xx, yy );
             
             % Plot column slices
-            xx = [];
-            yy = []; 
-            zz = [];
             for jj = 1:nslices
-                xx = [xx chebfun( P(jj, 1), dom(1:2) )];
-                yy = [yy chebfun( [-1 ; 1], dom(3:4) )]; 
-                zz = [zz chebfun( vals(:,jj), dom(1:2) )];
+                xxTemp = chebfun( P(jj, 1), dom(1:2) );
+                yyTemp = chebfun( [-1 ; 1], dom(3:4) ); 
+                zzTemp = chebfun( vals(:,jj), dom(1:2) );
+                if ( newMatlabVersion )
+                    set(gca, 'ColorOrderIndex', jj);
+                end
+                plot3(P(jj, 1), P(jj, 2), feval( f, P(jj ,1), P(jj, 2) ), ...
+                    '.', defaultopts{:}, plotOpts{:} ); hold on
+                if ( newMatlabVersion )
+                    set(gca, 'ColorOrderIndex', jj);
+                end
+                h2 = plot3( xxTemp, yyTemp, zzTemp, lineopts{:} ); hold on
             end
-            h2 = plot3( xx, yy, zz, lineopts{:} ); hold on
             
             [xx, yy] = meshgrid( chebpts( length(f.rows), dom(1:2) ), P(:,2) );
-            vals = feval( f, xx, yy );
-            xx = []; 
-            yy = []; 
-            zz = [];
-            
+            vals = feval( f, xx, yy );            
             % Plot row slices:
             for jj = 1:nslices
-                xx = [xx chebfun( [-1 ; 1], dom(1:2) )]; 
-                yy = [yy chebfun( P(jj, 2), dom(3:4) )];
-                zz = [zz chebfun( vals(jj,:).', dom(3:4) )];
+                xxTemp = chebfun( [-1 ; 1], dom(1:2) ); 
+                yyTemp = chebfun( P(jj, 2), dom(3:4) );
+                zzTemp = chebfun( vals(jj,:).', dom(3:4) );
+                if ( newMatlabVersion )
+                    set(gca, 'ColorOrderIndex', jj);
+                end
+                h3 = plot3( xxTemp, yyTemp, zzTemp, lineopts{:} );
             end
-            h3 = plot3( xx, yy, zz, lineopts{:} );
             axis equal
             
-            h = [h1(:) ; h2(:) ; h3(:)];
+%             h = [h1(:) ; h2(:) ; h3(:)];
             if ( ~holdState )
                 hold off
             end
