@@ -77,17 +77,8 @@ classdef spherefun < separableApprox
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
         
-        %         % Convert Chebyshev coefficients to values:
-        %         X = coeffs2vals(U);
-        
-        %         % Convert values to Chebyshev coefficients:
-        %         X = vals2coeffs(U);
-        
-        %         % Tensor product of Chebyshev points:
-        %         [xx, yy] = chebpts2(nx, ny, domain, kind);
-        
-        %         % Outer-product of two chebfuns:
-        %         F = outerProduct(f, g);
+        % Poisson solver: 
+        u = Poisson( f, const, n);
         
         % Converts a function in spherical coordinates to one in Cartesian
         % coordinates on the sphere.
