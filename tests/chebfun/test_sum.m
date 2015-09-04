@@ -83,7 +83,7 @@ F3_col2_exact = @(x) sin(-x.^2 + 1) - sin(x.^2 - 1);
 F3_col3_exact = @(x) exp(-x.^2 + 1) - exp(x.^2 - 1);
 F3_exact = @(x) [F3_col1_exact(x) F3_col2_exact(x) F3_col3_exact(x)];
 err = feval(F3, xr) - F3_exact(xr);
-pass(16) = norm(err(:), inf) < 10*vscale(F3)*epslevel(F3);
+pass(16) = norm(err(:), inf) < 100*vscale(F3)*epslevel(F3);
 
 %% Check dim argument.
 g = sum(f, 2);
