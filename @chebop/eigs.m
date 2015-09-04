@@ -44,10 +44,10 @@ function varargout = eigs(N, varargin)
 
 % Did we get preferences passed?
 if ( (nargin > 1) && isa(varargin{end}, 'cheboppref') )
-    pref = varargin{end};
+    prefs = varargin{end};
     isPrefGiven = 1;
 else
-    pref = cheboppref();
+    prefs = cheboppref();
     isPrefGiven = 0;
 end
 
@@ -56,7 +56,7 @@ linCheck = true;
 
 % Linearize, thereby obtaining linearity information, a LINOP, and an input of
 % the correct dimensions to pass to N:
-[L, ignored, isLinear, u0] = linearize(N, N.init, [], linCheck);
+[L, ~, isLinear, u0] = linearize(N, N.init, [], linCheck);
 
 % We need the entire operator (including BCs) to be linear:
 assert(all(isLinear), 'CHEBFUN:CHEBOP:eigs:nonlinear', ...
@@ -70,7 +70,7 @@ if ( nargin > 1 && isa(varargin{1}, 'chebop') )
     paramReshape = false;
     
     % Linearise the second CHEBOP:
-    [varargin{1}, ignored, isLinear] = ...
+    [varargin{1}, ~, isLinear] = ...
         linearize(varargin{1}, u0, [], linCheck, paramReshape);
 
     % We need the entire operator (including BCs) to be linear:
@@ -81,27 +81,27 @@ if ( nargin > 1 && isa(varargin{1}, 'chebop') )
 end
 
 % Determine the discretization.
-pref = determineDiscretization(N, L, isPrefGiven, pref);
+prefs = determineDiscretization(N, L, prefs);
 
 % Clear boundary conditions if the dicretization uses periodic functions (since
 % if we're using periodic basis functions, the boundary conditions will be
 % satisfied by construction).
-disc = pref.discretization();
+disc = prefs.discretization();
 tech = disc.returnTech();
 if ( isPeriodicTech(tech()) )
-    [N, L] = clearPeriodicBCs(N, L);
+    [~, L] = clearPeriodicBCs(N, L);
 end
 
 % Add the preferences in vargarin to pass them to LINOP/EIGS.
 if ( isPrefGiven )
     % If a CHEBOPPREF was passed to the method, it will have been at the last
-    % position of varargin, indexed at nargin - 1. Overwrite it with the current
-    % PREF, as the discretization might have changed in the periodic case:
-    varargin{nargin-1} = pref;
+    % position of varargin, indexed at nargin-1. Overwrite it with the current
+    % PREFS, as the discretization might have changed in the periodic case:
+    varargin{nargin-1} = prefs;
 else
-    % Otherwise, add the PREF to VARARGIN, so that it can be passed to the call
+    % Otherwise, add the PREFS to VARARGIN, so that it can be passed to the call
     % to LINOP/EIGS below.
-    varargin{nargin} = pref;
+    varargin{nargin} = prefs;
 end
 
 

@@ -26,7 +26,7 @@ for (n = 1:2)
 
     h = testfn(nu, f);
     pass(n, 1) = norm(feval(h, xr) - testfn(nu, exp(xr)), inf) < ...
-        10*epslevel(h)*vscale(h);
+        1e2*epslevel(h)*vscale(h);
 
     h2 = testfn(nu, f, 0);
     pass(n, 2) = normest(h - h2) < ...

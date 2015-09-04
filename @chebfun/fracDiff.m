@@ -12,7 +12,6 @@ function f = fracDiff(f, mu, type)
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-
 % Default to Riemann-Liouville:
 if ( nargin < 3  )
     type = 'RL';

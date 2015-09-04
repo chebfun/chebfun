@@ -54,9 +54,6 @@ else
     u = del;
 end
 
-% Simplify the result before returning it and printing solver info:
-u = simplify(u);
-
 % Norm of residual:
 normRes = norm(L*u - rhs, 'fro');
 

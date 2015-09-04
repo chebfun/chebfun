@@ -233,7 +233,7 @@ classdef chebfun
                 % Remove unnecessary breaks (but not those that were given):
                 [ignored, index] = setdiff(f.domain, dom);
                 f = merge(f, index(:).', pref);
-                
+               
             end
 
             if ( flags.trunc )
@@ -286,9 +286,6 @@ classdef chebfun
         % Display a CHEBFUN object.
         display(f);
 
-        % Accuracy estimate of a CHEBFUN object.
-        out = epslevel(f, flag);
-        
         % Evaluate a CHEBFUN.
         y = feval(f, x, varargin)
         
@@ -473,6 +470,9 @@ classdef chebfun
         % Compare domains of two CHEBFUN objects.
         pass = domainCheck(f, g);        
         
+        % Accuracy estimate of a CHEBFUN object.
+        out = epslevel(f, flag);
+
         % Extract columns of an array-valued CHEBFUN object.
         f = extractColumns(f, columnIndex);
         
@@ -713,7 +713,7 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
             end
         elseif ( strcmpi(args{1}, 'equi') )
             % Enable FUNQUI when dealing with equispaced data.
-            keywordPrefs.tech = 'funqui';
+            keywordPrefs.enableFunqui = true;
             args(1) = [];
         elseif ( strcmpi(args{1}, 'vectorize') || ...
                  strcmpi(args{1}, 'vectorise') )
@@ -727,6 +727,10 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
         elseif ( strcmpi(args{1}, 'doublelength') )
             % Construct Chebfun twice as long as usually would be constructed.
             flags.doubleLength = true;
+            args(1) = [];
+        elseif ( strcmpi(args{1}, 'turbo') )
+            % "turbo" flag for constructing "turbocharged" chebfuns.
+            keywordPrefs.techPrefs.useTurbo = true;
             args(1) = [];
         elseif ( strcmpi(args{1}, 'coeffs') && isnumeric(op) )
             % Hack to support construction from coefficients.            
@@ -788,13 +792,13 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
             args(1:2) = [];
         elseif ( strcmpi(args{1}, 'hscale') )
             % Store vscale types.
-            data.vscale = args{2};
+            data.hscale = args{2};
             args(1:2) = [];            
         elseif ( strcmpi(args{1}, 'singType') )
             % Store singularity types.
             data.singType = args{2};
             args(1:2) = [];            
-        elseif ( strcmpi(args{1}, 'exps') )
+        elseif ( strcmpi(args{1}, 'exps') || strcmpi(args{1}, 'exponents') )
             % Store exponents.
             data.exponents = args{2};
             args(1:2) = [];
@@ -889,6 +893,7 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
         % Translate 'periodic' or 'trig'.
         pref.tech = @trigtech;
         pref.splitting = false;
+        pref.enableFunqui = false;
         if ( numel(dom) > 2 )
             error('CHEBFUN:parseInputs:periodic', ...
                 '''periodic'' or ''trig'' option is only supported for smooth domains.');
@@ -915,7 +920,7 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
         if ( isa(op, 'chebfun') )
             op = @(x) feval(op, x);
         end
-        if ( isa(op, 'function_handle') && strcmp(pref.tech, 'funqui') )
+        if ( isa(op, 'function_handle') && pref.enableFunqui )
             if ( isfield(pref.techPrefs, 'fixedLength') && ...
                  ~isnan(pref.techPrefs.fixedLength) )
                 x = linspace(dom(1), dom(end), pref.techPrefs.fixedLength).';

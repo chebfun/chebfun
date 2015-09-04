@@ -19,7 +19,7 @@ f = chebfun(@(x) exp(x), [-1 -0.5 0 0.5 1], pref);
 
 h = besselh(nu, f);
 pass(1) = norm(feval(h, xr) - besselh(nu, exp(xr)), inf) < ...
-    10*epslevel(h)*vscale(h);
+    1e2*epslevel(h)*vscale(h);
 
 h2 = besselh(nu, 1, f);
 pass(2) = normest(h - h2) < ...
@@ -31,7 +31,7 @@ pass(3) = normest(h - h3) < ...
 
 h = besselh(nu, 2, f);
 pass(4) = norm(feval(h, xr) - besselh(nu, 2, exp(xr)), inf) < ...
-    10*epslevel(h)*vscale(h);
+    1e2*epslevel(h)*vscale(h);
 
 h = besselh(nu, 1, f, 1);
 pass(5) = norm(feval(h, xr) - besselh(nu, 1, exp(xr), 1), inf) < ...

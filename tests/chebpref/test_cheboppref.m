@@ -51,11 +51,11 @@ pass(8) = isnumeric(cheboppref().errTol);
 
 % Test specifying discretization via strings
 cheboppref.setDefaults('factory');
-cheboppref.setDefaults('discretization', 'ultraspherical');
+cheboppref.setDefaults('discretization', 'values');
 pref = cheboppref;
-pass(9) = strcmp(func2str(pref.discretization), 'ultraS');
-pref.discretization = 'collocation';
-pass(10) = strcmp(func2str(pref.discretization), 'chebcolloc2');
+pass(9) = strcmp(pref.discretization, 'values');
+pref.discretization = 'coeffs';
+pass(10) = strcmp(pref.discretization, 'coeffs');
 
 
 end

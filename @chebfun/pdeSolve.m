@@ -125,7 +125,7 @@ end
                 
             % Reshape solution:
             Uk = reshape(U(:,kk), n, SYSSIZE);
-            uCurrent = chebfun(Uk, DOMAIN, 'tech', tech);
+            uCurrent = chebfun(Uk, DOMAIN, 'tech', techHandle);
             tCurrent = t(kk);
             % Store for output:
             COUNTER = COUNTER + 1;
@@ -160,7 +160,7 @@ end
             c = (1+sin(1:SYSSIZE)).'; % Arbitrarily linear combination.
             Uk2 = (Uk*c/sum(c));
             uk2 = tech.make(Uk2, pref);
-            [ishappy, epslevel, cutoff] = classicCheck(uk2, Uk2, pref);
+            [ishappy, epslevel, cutoff] = classicCheck(uk2, Uk2, [], pref);
 
             if ( ishappy )  
 
@@ -428,7 +428,7 @@ else
     bc.right = dealWithStructInput(bc.right);
     
     if ( isempty(bc.left) )
-        bc.left.op = [];
+        bc.left = struct('op', []);
     elseif ( ischar(bc.left) || (iscell(bc.left) && ischar(bc.left{1})) )
         %% %%%%%%%%%%%%%%%%%%%%% DIRICHLET AND NEUMANN BCS (LEFT) %%%%%%%%%%%%%%
         if ( iscell(bc.left) )
@@ -449,6 +449,7 @@ else
         else
             error('CHEBFUN:CHEBFUN:pde15s:bcSyntax1', 'Unknown BC syntax');
         end
+        bc.left = struct('op', []);
         bc.left.op = cell(SYSSIZE, 1);
         for k = 1:SYSSIZE
             bc.left.op{k} = @(n) [zeros(1, ( k -1)*n) A(n) ...
@@ -461,7 +462,7 @@ else
         uTmp = chebdouble(ones(1, SYSSIZE));
         sizeOp = size(op(0, mean(DOMAIN), uTmp));
         leftNonlinBCLocs = 1:max(sizeOp);
-        bc.left = [];
+        bc.left = struct('op', []);
         bc.left.op = {@(n) zeros(max(sizeOp), SYSSIZE*n)}; % Dummy entries.
         BCRHS = num2cell(zeros(1, max(sizeOp)));
         leftNonlinBCFuns = op;
@@ -482,7 +483,7 @@ else
     end
     
     if ( isempty(bc.right) )
-        bc.right.op = [];
+        bc.right = struct('op', []);
     elseif ( ischar(bc.right) || (iscell(bc.right) && ischar(bc.right{1})) )
         %% %%%%%%%%%%%%%%%%%%%%% DIRICHLET AND NEUMANN BCS (RIGHT) %%%%%%%%%%%%%
         if ( iscell(bc.right) )
@@ -503,6 +504,7 @@ else
         else
             error('CHEBFUN:CHEBFUN:pde15s:bcSyntax3', 'Unknown BC syntax');
         end
+        bc.right = struct('op', []);
         bc.right.op = cell(SYSSIZE, 1);
         for k = 1:SYSSIZE
             bc.right.op{k} = @(n) [zeros(1,(k-1)*n) A(n) zeros(1,(SYSSIZE-k)*n)];
@@ -515,7 +517,7 @@ else
         uTmp = chebdouble(ones(1, SYSSIZE));
         sizeOp = size(op(0, mean(DOMAIN), uTmp));
         rightNonlinBCLocs = 1:max(sizeOp);
-        bc.right = [];
+        bc.right = struct('op', []);
         bc.right.op = {@(n) zeros(max(sizeOp), SYSSIZE*n)};
         BCRHS = [BCRHS num2cell(zeros(1, max(sizeOp)))];
         rightNonlinBCFuns = op;

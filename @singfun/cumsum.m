@@ -164,14 +164,14 @@ function g = singIntegral(f)
     
     % Construct the SINGFUN object of the solution:
     g = singfun;
-    tol = f.smoothPart.epslevel;
-    if ( abs(ra - a) > tol*f.smoothPart.vscale ) 
+    tol = get(f, 'epslevel').*get(f, 'vscale');
+    if ( abs(ra - a) > tol ) 
         % No log term: fractional poles, fractional roots, or integer roots:
         CM = Cm/(ra - a);
         if ( iszero(u) && abs(CM) > tol*f.smoothPart.vscale )
             g.smoothPart = f.smoothPart.make(@(x) CM + 0*x);
             g.exponents = [ra - a 0];
-        elseif ( ~iszero(u) && abs(CM) < tol*f.smoothPart.vscale )
+        elseif ( ~iszero(u) && abs(CM) < tol )
             [u, rootsLeft, ignored] = extractBoundaryRoots(u);
             g.smoothPart = u;
             g.exponents = [exps(1)+rootsLeft 0];
@@ -182,7 +182,7 @@ function g = singIntegral(f)
             g.exponents = [exps(1)+rootsLeft 0];
         end
         
-    elseif ( abs(Cm) < tol*f.smoothPart.vscale )
+    elseif ( abs(Cm) < tol )
         % No log term: fractional poles with non-constant smooth part:
         [u, rootsLeft, ignored] = extractBoundaryRoots(u);
         g.smoothPart = u;

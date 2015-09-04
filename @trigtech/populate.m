@@ -116,7 +116,7 @@ while ( 1 )
     % Check for happiness:
     f.coeffs = coeffs;
     f.vscale = vscale;
-    [ishappy, epslevel, cutoff] = happinessCheck(f, op, f.values, pref);
+    [ishappy, epslevel, cutoff] = happinessCheck(f, op, f.values, vscale, pref);
     
         
     % We're happy! :)
@@ -157,7 +157,7 @@ f.values(:,f.isReal) = real(f.values(:,f.isReal));
 
 if ( ishappy )
     % We're done, and can return.
-    f = simplify(f, f.epslevel/2);
+    return
 end
 
 end

@@ -73,7 +73,7 @@ h_exact2 = feval(op2, x(indComp)+1);
 h_exact = [h_exact1; h_exact2];
 err = h_exact - h_vals;
 pass(8) = isequal(h.domain, [-1 -0.5 0 1]) && ...
-    norm(err, inf) < 1e4*vscale(h)*epslevel(h);
+    norm(err, inf) < 1e5*vscale(h)*epslevel(h);
 
 % Test for function defined on unbounded domain:
 

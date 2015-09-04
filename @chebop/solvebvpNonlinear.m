@@ -77,7 +77,7 @@ dampingInfo.x =             x;
 dampingInfo.giveUp =        0;
 
 linpref = pref;
-linpref.errTol = pref.errTol/10;
+linpref.errTol = pref.errTol/200;
 
 % Get the differential order of the LINOP L (needed when evaluating the residual
 % of periodic boundary conditions):
@@ -119,7 +119,7 @@ while ( ~terminate )
         % Find the next Newton iterate (the method finds the step-size, then
         % takes the damped Newton and returns the next iterate).
         [u, dampingInfo] = dampingErrorBased(N, u, rhs, delta, ...
-            L, disc, dampingInfo);
+            L, disc, dampingInfo, pref);
         
         % If we're in damped mode, we don't get an error estimate...
         errEst = NaN;
@@ -214,9 +214,6 @@ while ( ~terminate )
     end
     
 end
-
-% Simplify the result before returning it and printing solver info:
-u = simplify(u);
 
 % Evaluate how far off we are from satisfying the boundary conditions.
 errEstBC = normBCres(N, u, x, diffOrder, pref);
