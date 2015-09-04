@@ -106,7 +106,7 @@ holdState = ishold();
 
 % Plot the ellipses.
 h = plot(UK{:}, lineStyle{:});
-cl = get(h, 'Color');
+cl = get(h, {'Color'});
 hold on
 
 % Plot the auxiliary lines:
