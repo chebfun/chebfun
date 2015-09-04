@@ -1,4 +1,4 @@
-function legcoeffs = chebcoeffs2legcoeffs( chebcoeffs )
+function legcoeffs = chebcoeffs2legcoeffs(chebcoeffs)
 %CHEBCOEFFS2LEGCOEFFS  Convert Chebyshev coefficients to Legendre coefficients. 
 %   C_LEG = CHEBCOEFFS2LEGCOEFFS(C_CHEB) converts the vector C_CHEB of Chebyshev
 %   coefficients to a vector C_LEG of Legendre coefficients such that
@@ -12,7 +12,7 @@ function legcoeffs = chebcoeffs2legcoeffs( chebcoeffs )
 % Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% This command is a wrapper for chebfun/cheb2leg.
-legcoeffs = chebfun.cheb2leg( chebcoeffs ); 
+% This command is a wrapper for cheb2leg.
+legcoeffs = cheb2leg(chebcoeffs);
 
 end

@@ -1,10 +1,11 @@
-function chebvals = chebcoeffs2chebvals( chebcoeffs )
+function chebvals = chebcoeffs2chebvals(chebcoeffs)
 %CHEBCOEFFS2CHEBVALS  Convert Chebyshev coefficients to values.
-%   CHEBVALS = CHEBCOEFFS2CHEBVALS(CHEBCOEFFS), converts the columns vector
-%   CHEBCOEFFS representing Chebyshev coefficients in the Chebyshev series
+%   CHEBVALS = CHEBCOEFFS2CHEBVALS(CHEBCOEFFS), converts the column vector
+%   CHEBCOEFFS of Chebyshev coefficients in the Chebyshev series
 %       F(X) = C_CHEB(1)*T0(X) + ... + C_CHEB(N)*T{N-1}(X), 
-%   to a vector CHEBVALS representing values of the expansion at CHEBPTS, i.e., 
-%       CHEBVALS = F(chebpts(N));
+%   to a vector CHEBVALS of values of the expansion at second-kind Chebyshev
+%   points, i.e.,
+%       CHEBVALS = F(CHEBPTS(N));
 % 
 % See also CHEBTECH2.COEFFS2VALS, CHEBPTS.
 
@@ -12,6 +13,6 @@ function chebvals = chebcoeffs2chebvals( chebcoeffs )
 % See http://www.chebfun.org/ for Chebfun information.
 
 % This command is a wrapper for chebtech2/coeffs2vals:
-chebvals = chebtech2.coeffs2vals( chebcoeffs ); 
+chebvals = chebtech2.coeffs2vals(chebcoeffs);
 
 end

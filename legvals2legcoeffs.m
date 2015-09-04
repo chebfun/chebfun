@@ -1,4 +1,4 @@
-function legcoeffs = legvals2legcoeffs( legvals )
+function legcoeffs = legvals2legcoeffs(legvals)
 %LEGVALS2LEGCOEFFS  Convert Legendre values to Legendre coefficients.
 % 	LEGCOEFFS = LEGVALS2LEGCOEFFS(LEGVALS), converts the column vector
 %   LEGVALS representing values on a Legendre grid (i.e, F(LEGPTS)) to a
@@ -11,6 +11,6 @@ function legcoeffs = legvals2legcoeffs( legvals )
 % See http://www.chebfun.org/ for Chebfun information.
 
 % This command is a wrapper for chebfun/idlt.
-legcoeffs = chebfun.idlt( legvals ); 
+legcoeffs = chebfun.idlt(legvals);
 
 end
