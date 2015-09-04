@@ -5,6 +5,6 @@ function varargout = functionPoints(disc)
 % See http://www.chebfun.org/ for Chebfun information.
 
 pointsFun = @(n) trigtech.trigpts(n);
-[varargout{1:nargout}] =valsDiscretization.points(disc, pointsFun);
+[varargout{1:nargout}] = valsDiscretization.points(disc, pointsFun);
 
 end

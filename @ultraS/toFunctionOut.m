@@ -1,6 +1,7 @@
 function f = toFunctionOut(disc, coeffs, cutoff)
 %TOFUNCTIONOUT   Convert discrete values of an ULTRAS discretization to a 
 %   CHEBFUN.
+%
 %   F = TOFUNCTIONOUT(DISC, COEFFS, CUTOFF) converts the coeffs returned by 
 %   ULTRAS to a CHEBFUN. The input may be piecewise smooth, as indicated by the 
 %   dimension property of the discretization.

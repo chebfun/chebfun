@@ -68,7 +68,7 @@ elseif ( isa(item, 'functionalBlock') )
     collocDisc = chebcolloc2(item, dim, dom);
     M = matrix(collocDisc);
     
-    %Convert fromvalsDiscretization-space to coeff-space using COEFFS2VALS.
+    %Convert from value-space to coeff-space using COEFFS2VALS.
     cumsumDim = [0, cumsum(dim)];
     tmp = cell(1, numel(dom)-1);
     for l = 1:numel(tmp)

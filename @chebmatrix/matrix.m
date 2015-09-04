@@ -23,7 +23,7 @@ function varargout = matrix(A, varargin)
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Any non-numeric argument should be a opDiscretization constructor. 
+% Any non-numeric argument should be an OPDISCRETIZATION constructor. 
 discType = [];
 numericargs = cellfun(@isnumeric, varargin);
 for k = find( ~numericargs(:)' )

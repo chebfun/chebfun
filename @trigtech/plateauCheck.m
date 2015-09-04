@@ -14,7 +14,7 @@ function [ishappy, epslevel, cutoff] = plateauCheck(f, values, vscl, pref)
 %
 %   The reason for criterion (2) is that the problem may have a large condition
 %   number that prevents convergence to the full requested accuracy, as often
-%   happens in thevalsDiscretizationation of differential equations.
+%   happens in collocation of differential equations.
 %
 %   Output EPSLEVEL is an estimate of the relative size of the last
 %   "meaningful" expansion coefficients of the function, and the output 

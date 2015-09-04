@@ -209,9 +209,9 @@ else
     if ( isempty(N.init) )
         
         if ( ~isPeriodicTech(techUsed) )
-            % Find a new initial guess that satisfies the BCs of L.
-            % If we are using a periodic discretization,
-            % we don't need to do that because the zero CHEBFUN is periodic.
+            % Find a new initial guess that satisfies the BCs of L. Note that if
+            % we are using a periodic discretization, we don't need to do that
+            % because the zero CHEBFUN is periodic.
             u0 = fitBCs(L, pref);
         end
         
@@ -235,9 +235,9 @@ else
     % Call solver method for nonlinear problems.
     [u, info] = solvebvpNonlinear(N, rhs, L, u0, residual, pref, displayInfo);
 
-% simplify output
-u = simplify(u,pref.errTol/200);
-    
+    % Simplify output
+    u = simplify(u,pref.errTol/200);
+
     % Enforce the function to be real if the imaginary part is small if using a 
     % periodic TECH:
     if ( isPeriodicTech(techUsed) )
