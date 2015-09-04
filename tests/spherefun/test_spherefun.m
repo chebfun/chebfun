@@ -182,7 +182,7 @@ end
 
 function pass = test_diff( )
 
-tol = 1e3*chebfunpref().techPrefs.eps;
+tol = 2e2*chebfunpref().techPrefs.eps;
 
 % Simple tests:
 f = spherefun(@(lam,th) cos(lam).*sin(th));  % x
@@ -231,7 +231,7 @@ end
 
 function pass = test_laplacian( )
 
-tol = 1e5*chebfunpref().techPrefs.eps;
+tol = 1e4*chebfunpref().techPrefs.eps;
 
 k = 1;
 for ell = [1 2 4 5 7 8 9]
@@ -239,7 +239,8 @@ for ell = [1 2 4 5 7 8 9]
         f = spherefun.sphharm(ell,m);
         lap = laplacian(f);
         pass(k,1) = numel(lap.pivotValues) == numel(f.pivotValues);
-        pass(k,2) = SampleError( -ell*(ell+1)*f, lap ) < tol;
+        err(k) = SampleError( -ell*(ell+1)*f, lap )/(ell*(ell+1));
+        pass(k,2) = SampleError( -ell*(ell+1)*f, lap ) < ell*(ell+1)*tol;
         k = k+1;
     end
 end

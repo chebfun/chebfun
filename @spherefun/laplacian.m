@@ -3,7 +3,7 @@ function f = laplacian( f )
 % 
 % L = LAPLACIAN( F )
 
-f = laplacianD( f );
+f = laplacianE( f );
 
 end
 
@@ -178,8 +178,34 @@ function g = laplacianD( f )
 % Slow way is divergence of the gradient.
 [dfdx,dfdy,dfdz] = gradient(f);
 [m,n] = length(f);
+% Ensure n is even
+n = n + mod(n,2);
 % g = compose(compose(diff(dfdx,1),@plus,diff(dfdy,2)),@plus,diff(dfdz,3));
-g = spherefun(sample(diff(dfdx,1),m,n)+sample(diff(dfdy,2),m,n)+sample(diff(dfdz,3),m,n));
+g = spherefun( sample(diff(dfdx,1),m,n/2) + ...
+    sample(diff(dfdy,2),m,n/2) + sample(diff(dfdz,3),m,n/2) );
+
+end
+
+% Similar to D, but adds seconds derivatives together instead of sampling
+function g = laplacianE( f )
+
+fxx = diff(f,1,2); 
+fyy = diff(f,2,2); 
+fzz = diff(f,3,2);
+
+[mxx,nxx] = length(fxx);
+[myy,nyy] = length(fyy);
+[mzz,nzz] = length(fzz);
+
+m = max([mxx myy mzz]);
+n = max([nxx nyy nzz]);
+
+% Ensure m and n are even
+m = m + mod(m,2);
+n = n + mod(n,2);
+
+% g = diff(f,1,2) + diff(f,2,2) + diff(f,3,2);
+g = spherefun( sample(fxx,m,n/2) + sample(fyy,m,n/2) + sample(fzz,m,n/2) );
 
 end
 
