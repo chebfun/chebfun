@@ -27,14 +27,15 @@ function varargout = matrix(A, varargin)
 discType = [];
 numericargs = cellfun(@isnumeric, varargin);
 for k = find( ~numericargs(:)' )
-    discType = varargin{k};
+    prefs = varargin{k};
+    discType = prefs.discretization;
     varargin(k) = [];  % Delete from list.
 end
 
 % Get the default discretization type if needed.
 if ( isempty(discType) )
-    p = cheboppref;
-    discType = p.discretization;
+    prefs = cheboppref;
+    discType = prefs.discretization;
 end
 
 % Deal with a 'values' or 'coeffs' discType.
@@ -46,7 +47,7 @@ if ( ischar(discType) )
     end
 end
 
-% Discretize:
+% Discretize.
 d = discType(A, varargin{:});
 [varargout{1:nargout}] = matrix(d);
 
