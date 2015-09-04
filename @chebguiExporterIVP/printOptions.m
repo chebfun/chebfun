@@ -58,7 +58,7 @@ else
     % Option for discretization:
     fprintf(fid, ['\n%% Option for discretization (either ''collocation'' ' ...
         'or ''ultraspherical'').\n']);
-    if ( isa(discretization(), 'colloc') )
+    if ( isa(discretization, 'colloc') )
         discString = 'collocation';
     else
         discString = 'ultraspherical';
