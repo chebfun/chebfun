@@ -18,8 +18,6 @@ function explain(f, varargin)
 %   f = chebfun2(@(x,y) franke(x,y)); explain(f, 'control')
 %   f = chebfun2(@(x,y) exp(-(x.^2+y.^2)/2)); explain(f, 2)
 %   f = chebfun2(@(x,y) cos(x.*y)); explain(f, .5)
-%
-% Note: This function is not a direct analogue of the movie function in MATLAB.
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
@@ -46,7 +44,7 @@ shg
 %% Setup the options for playing the movie, in particular, the speed of it.
 
 % Select the mode to play the chebfun2 explanation movie in.
-if nargin > 1
+if ( nargin > 1 )
     if ( isnumeric(varargin{1}) )
         mode = 'speed';
         speed = varargin{1};
@@ -65,13 +63,13 @@ end
 %   PFADE: Pause between steps while fading
 %   PBREAK:
 %   PSECTIONBREAK: The pause between sections of the movie
-if strcmpi(mode, 'control')
+if ( strcmpi(mode, 'control') )
     ppan   = 0.1;
     pmove  = 0.05;
     pfade  = 0.05;
     pbreak = 0.2;
     psectionbreak = inf;
-elseif strcmpi(mode, 'speed')
+elseif ( strcmpi(mode, 'speed') )
     c = 1/speed;
     ppan   = 0.1*c;
     pmove  = 0.05*c;
@@ -221,6 +219,7 @@ if numCoarsePivots > 1
     delete(comets{2})
 end
 delete(markers), delete(pts);
+
 %% We did not resolve the function with two pivot points, so take more.
 if ( length(f) > 2 )
     % Update the text box (with pauses in between)
@@ -238,7 +237,6 @@ if ( length(f) > 2 )
     alpha(sf,.5);
     axis equal, axis off
     mypause(psectionbreak)
-    
     
     str = 'We repeat the same process as before, just on a larger matrix...';
     textBox = myTextbox(str, textBox);
@@ -267,18 +265,20 @@ if ( length(f) > 2 )
         axis([rect,min(min(ff{jj})) - .2, scl + .1]);
         mypause(psectionbreak)
     end
+
     for comCounter=1:length(comets)
         delete(comets{comCounter})
     end
+
     delete(markers)
     delete(pts)
     delete(sf)  % Remove everything so we can pan around.
-    sf=plot(f);
+    sf = plot(f);
     axis([rect, sclinf - .1, scl + .1]);
     axis equal, axis off
 else
     delete(sf)  % Remove everything so we can pan around.
-    sf=plot(f);
+    sf = plot(f);
     axis([rect, -scl - .1, scl + .1]);
     axis equal, axis off
 end
@@ -294,12 +294,16 @@ elseif ( length(f) > 1 )
     str = {str; 'The first stage is done.'};
 end
 textBox = myTextbox(str, textBox);
+
 %% Waterfall plot is what we have drawn.
 water = waterfall(f, '-', 'nslices', min(length(f), 6), 'markersize', 35);
 
 % tilt, pan, tilt
-sf = tilt(sf, pmove, -1); sf = fullpan(sf, ppan); pause(pbreak)
-sf = tilt(sf, pmove, 1); campos([0 0 10]), hold on
+sf = tilt(sf, pmove, -1);
+sf = fullpan(sf, ppan); pause(pbreak)
+sf = tilt(sf, pmove, 1);
+campos([0 0 10])
+hold on
 
 str = {'To resolve your function we just need to resolve the';
     'selected columns and rows.';
@@ -313,15 +317,18 @@ mypause(psectionbreak)
 %% Skeleton version of ACA.
 % Get the pivot locations of the actually resolved CHEBFUN2
 P = f.pivotLocations;
-markers=[]; trun = min(6,length(f)); P = P(1:trun,:);
+markers = [];
+trun = min(6, length(f));
+P = P(1:trun,:);
 [xx, yy] = meshgrid(P(:,1), chebpts(33));
-mark1 = plot3(xx,yy,scl+0*xx,'.k','MarkerSize',20);
+mark1 = plot3(xx, yy, scl + 0*xx, '.k', 'MarkerSize', 20);
 [xx, yy] = meshgrid(chebpts(33), P(:,2));
-mark2 = plot3(xx, yy, scl+0*xx, '.k', 'MarkerSize', 20);
+mark2 = plot3(xx, yy, scl + 0*xx, '.k', 'MarkerSize', 20);
 mypause(psectionbreak)
-delete(water), clf
+delete(water)
+clf
 
-%% Do chebpolyplots of all the columns and rows
+%% Do coefficient plots of all the columns and rows
 str = 'We use Chebfun to approximate it!';
 textBox = myTextbox(str, textBox);
 mypause(psectionbreak);
@@ -329,49 +336,53 @@ str = {str; ['To check the columns and rows of your chebfun2 are resolved ' ...
     'we can look at their Chebyshev coefficients.']};
 textBox = myTextbox(str, textBox);
 set(gca,'position', axPos);
-% Draw chebpolyplot on the slices. Here are the columns.
+% Draw coefficient plot on the slices. Here are the columns.
 Ccfs = get(f.cols, 'coeffs');
 % Only want the first six columns
-if length(f) > 6
+if ( length(f) > 6 )
     Ccfs(:, 7:length(f)) = [];
 end
 
 % Prepare coefficients for plotting:
-Ccfs = log10(abs(flipud(Ccfs))); Ccfs(Ccfs==-inf)=log10(eps);
+Ccfs = log10(abs(flipud(Ccfs)));
+Ccfs(Ccfs == -inf) = log10(eps);
 PivPos = f.pivotLocations;
 
 % First plot columns:
 cols = [];
-for jj = 1:min(6,length(f))
+for jj = 1:min(6, length(f))
     xx = PivPos(jj,1)*ones(length(Ccfs), 1);
     yy = linspace(-1, 1, length(Ccfs));
     col=plot3(xx, yy, Ccfs(:,jj), 'Color', co(jj,:));
     hold on
     campos([0 0 10])
     axis equal, axis off
-    cols=[col cols];
+    cols = [col cols];
 end
 
 % Now plot rows:
 Rcfs = get(f.rows, 'coeffs');
 
 % Only want the first six rows:
-if length(f) > 6
+if ( length(f) > 6 )
     Rcfs(:, 7:length(f)) = [];
 end
-Rcfs = log10(abs(Rcfs));Rcfs(Rcfs==-inf)=log10(eps);
+
+Rcfs = log10(abs(Rcfs));
+Rcfs(Rcfs == -inf) = log10(eps);
 
 rows=[];
-for jj = 1:min(6,length(f))
-    xx=linspace(-1,1,length(Rcfs));
-    yy=PivPos(jj,2)*ones(length(Rcfs),1);
-    row = plot3(xx,yy,Rcfs(:,jj),'Color',co(jj,:));
-    rows=[row rows];
+for jj = 1:min(6, length(f))
+    xx = linspace(-1, 1, length(Rcfs));
+    yy = PivPos(jj,2)*ones(length(Rcfs), 1);
+    row = plot3(xx, yy, Rcfs(:,jj), 'Color', co(jj,:));
+    rows = [row rows];
 end
 
 %% Tilt and camorbit to show the coefficients decaying
 % Fix axis zlimit before panning.
-zlim([min(min(min(Ccfs)), min(min(Rcfs))) 0]), axis square;
+zlim([min(min(min(Ccfs)), min(min(Rcfs))) 0]);
+axis square;
 shg
 sf = tilt(sf, pmove, -1);
 pause(pbreak);
@@ -383,39 +394,50 @@ for i = 1:k
     pause(pmove)
     drawnow
 end
+
 str = 'This shows that the rows are resolved.';
 textBox = myTextbox(str, textBox);
 mypause(psectionbreak)
+
 for i = 1:k
     camorbit(-1, 0, 'data', [0 0 1])
     camorbit(0, -1, 'data', [0 1 0])
     pause(pmove)
     drawnow
 end
+
 pause(pbreak)
+
 for i = 1:k
     camorbit(-1.5, 0, 'data', [0 0 1])
-    camorbit(0, 1, 'data', [0 1 0]), pause(pmove)
+    camorbit(0, 1, 'data', [0 1 0])
+    pause(pmove)
     drawnow
 end
+
 str = 'This shows that the columns are resolved.';
 textBox = myTextbox(str, textBox);
 mypause(psectionbreak)
+
 for i = 1:k
     camorbit(1.5, 0, 'data', [0 0 1])
     camorbit(0, -1, 'data', [0 1 0])
     pause(pmove)
     drawnow
 end
+
 pause(pbreak)
-sf=tilt(sf,pmove,1);
+sf = tilt(sf, pmove, 1);
 
 
 % Put back the pivot locations.
-P = PivPos; U = f.pivotValues; markers=[];
-for jj= 1:min(6,length(f))
-    val = feval(f,P(jj,1),P(jj,2)) + eps;
-    mark = plot3(P(jj,1),P(jj,2),val,'Color',co(jj,:),'Marker','.','MarkerSize',40);
+P = PivPos;
+U = f.pivotValues;
+markers = [];
+for jj = 1:min(6, length(f))
+    val = feval(f, P(jj,1), P(jj,2)) + eps;
+    mark = plot3(P(jj,1), P(jj,2), val, 'Color', co(jj,:), 'Marker', '.', ...
+        'MarkerSize', 40);
     markers = [mark markers];
 end
 campos([0 0 10]);
@@ -425,40 +447,51 @@ clf
 
 %% Show how the chebfun2 is stored
 txt = scribble('How is it stored?');
-plot(txt); axis([-1 1 -1 1]), axis off
-mypause(psectionbreak), clf
+plot(txt);
+axis([-1 1 -1 1])
+axis off
+mypause(psectionbreak)
+clf
 
 % Make a plot that looks a bit like plot(f, '.-')
-crosses = PivPos(1:min(6,length(f)),:);
+crosses = PivPos(1:min(6, length(f)),:);
 cols = line([crosses(:,1) crosses(:,1)].', [-1 1]);
 hold on
-rows = line([-1 1],[crosses(:,2),crosses(:,2)].');
+rows = line([-1 1], [crosses(:,2),crosses(:,2)].');
 axis(2.3*[-1 1 -1 1]), axis square, axis off
 
 % Again plot pivot positions.
 P = PivPos;
 U = f.pivotValues;
-markers=[];
-for jj= 1:min(6,length(f))
-    mark = plot(P(jj,1),P(jj,2),'Marker','.','MarkerSize',40,'Color',co(jj,:));
+markers = [];
+for jj = 1:min(6, length(f))
+    mark = plot(P(jj,1), P(jj,2), 'Marker', '.', 'MarkerSize', 40, ...
+        'Color', co(jj,:));
     markers = [mark markers];
 end
 
 % Slowly move columns and rows to low rank storage structure.
 if length(f) > 1
-    cc = linspace(-1.75,-1,min(length(f),6));
-    rr = linspace(.25,1,min(length(f),6)); rr=rr(end:-1:1);
-    dd = linspace(-.6,.15,min(length(f),6));
+    cc = linspace(-1.75, -1, min(length(f), 6));
+    rr = linspace(.25, 1, min(length(f), 6));
+    rr = rr(end:-1:1);
+    dd = linspace(-.6, .15, min(length(f), 6));
 else
-    cc = -1; rr = 1; dd=-.6;
+    cc = -1;
+    rr = 1;
+    dd = -.6;
 end
+
 str = 'It''s stored as two chebfun quasi-matrices just like this:';
 textBox = myTextbox(str, textBox);
 pause(pbreak)
 
 for t = 0:.1:1
-    delete(cols),delete(rows), delete(markers)
-    cols=[];
+    delete(cols)
+    delete(rows)
+    delete(markers)
+
+    cols = [];
     for jj= 1:min(6, length(f))
         st = t*(cc(jj) - crosses(jj, 1));
         col = line([crosses(jj,1) + st, crosses(jj,1) + st].', [-1 1], ...
@@ -466,6 +499,7 @@ for t = 0:.1:1
         hold on
         cols = [col, cols];
     end
+
     rows = [];
     for jj= 1:min(6, length(f))
         st = t*(rr(jj) - crosses(jj,2));
@@ -474,6 +508,7 @@ for t = 0:.1:1
             'Color', co(jj,:));
         rows = [row, rows];
     end
+
     markers = [];
     for jj= 1:min(6, length(f))
         stx = t*(dd(jj) - P(jj,1)); sty = t*(rr(jj) - P(jj,2));
@@ -481,22 +516,24 @@ for t = 0:.1:1
             'MarkerSize', 40, 'Color', co(jj,:));
         markers = [mark markers];
     end
+
     pause(pbreak);
 end
 
 % Create textbox for equation:
 delete(textBox);
-annotation(gcf,'textbox',...
-    [0.243441860465116 0.701923076923077 0.764988372093023 0.0913461538461542],...
-    'String',{'f(x,y) = C(y)         U          R(x)'},...
-    'FontSize',20,...
-    'FitBoxToText','off',...
-    'LineStyle','none',...
-    'LineWidth',3);
+annotation(gcf, 'textbox', ...
+    [0.243441860465116 0.701923076923077 0.764988372093023 0.0913461538461542], ...
+    'String', {'f(x,y) = C(y)         U          R(x)'}, ...
+    'FontSize', 20, ...
+    'FitBoxToText', 'off', ...
+    'LineStyle', 'none', ...
+    'LineWidth', 3);
 
 str = 'The end. Thanks for watching!';
 pause(pbreak)
 textBox = myTextbox(str, textBox);
+
 end
 
 
@@ -515,11 +552,12 @@ for i = 1:k
     pause(p)
     drawnow
 end
+
 end
 
 function h = tilt(h, p, whichway)
 %TILT
-set(gca,'cameraviewanglemode','auto')
+set(gca, 'cameraviewanglemode', 'auto')
 k = 36;
 s = whichway;
 for i = 1:k
@@ -528,6 +566,7 @@ for i = 1:k
     pause(p)
     drawnow
 end
+
 end
 
 function fade(alpha1, alpha2, h, p)
@@ -536,67 +575,81 @@ for a = alpha1:-.1:alpha2
     alpha(h, a);
     pause(p);
 end
+
 end
 
 function h = mycomet(pivot, h, color, p)
 % Draw lines, a row and a column out from a pivot
 t = 0:.01:1;
-x=zeros(1, length(t));
+x = zeros(1, length(t));
 xeven = pivot(1) + t(1:2:end)*(1 - pivot(1));
 xodd = pivot(1) + t(2:2:end)*(-1 - pivot(1));
-x(1:2:end)=xeven;
-x(2:2:end)=xodd;
+x(1:2:end) = xeven;
+x(2:2:end) = xodd;
 y = pivot(2)*ones(length(t), 1);
 
-if verLessThan('matlab', '8.4')
-    body = line('parent',h,'color',color,'linestyle','-','LineWidth',3,'erase','none', ...
-        'xdata',[],'ydata',[]);
+if ( verLessThan('matlab', '8.4') )
+    body = line('parent', h, 'color', color, 'linestyle', '-', ...
+        'LineWidth', 3, 'erase', 'none', 'xdata', [], 'ydata', []);
+
     for jj = 1
-        set(body,'xdata',x(jj),'ydata',y(jj)), drawnow, hold on
+        set(body, 'xdata', x(jj), 'ydata', y(jj)),
+        drawnow
+        hold on
     end
+
     for jj = 2:length(x)
         j = jj-1:jj;
-        set(body,'xdata',x(j),'ydata',y(j)), drawnow
+        set(body, 'xdata', x(j), 'ydata', y(j))
+        drawnow
         pause(p)
     end
     
-    body2 = line('parent',h,'color',color,'linestyle','-','LineWidth',2,'erase','none', ...
-        'xdata',[],'ydata',[]);
-    x = pivot(1)*ones(length(t),1);
-    yeven = pivot(2) + t(1:2:end)*(1-pivot(2));
-    yodd = pivot(2) + t(2:2:end)*(-1-pivot(2));
-    y(1:2:end)=yeven; y(2:2:end)=yodd;
+    body2 = line('parent', h, 'color', color, 'linestyle', '-', ...
+        'LineWidth', 2, 'erase','none', 'xdata', [], 'ydata', []);
+    x = pivot(1)*ones(length(t), 1);
+    yeven = pivot(2) + t(1:2:end)*(1 - pivot(2));
+    yodd = pivot(2) + t(2:2:end)*(-1 - pivot(2));
+    y(1:2:end) = yeven;
+    y(2:2:end) = yodd;
+
     for jj = 1
-        set(body2,'xdata',x(jj),'ydata',y(jj)), drawnow
+        set(body2, 'xdata', x(jj), 'ydata', y(jj))
+        drawnow
     end
+
     for jj = 2:length(x)
         j = jj-1:jj;
-        set(body2,'xdata',x(j),'ydata',y(j)), drawnow
+        set(body2, 'xdata', x(j), 'ydata', y(j))
+        drawnow
         pause(p)
     end
 else
-    body = animatedline('parent',h,'color',color,'linestyle','-','LineWidth',3);
-    body2 = animatedline('parent',h,'color',color,'linestyle','-','LineWidth',3);
+    body = animatedline('parent', h, 'color', color, 'linestyle', '-', ...
+        'LineWidth', 3);
+    body2 = animatedline('parent', h, 'color', color, 'linestyle', '-', ...
+        'LineWidth', 3);
     for k = 1:length(x);
         addpoints(body, x(k), y(k))
         pause(p)
         drawnow update
     end
     
-    x = pivot(1)*ones(length(t),1);
-    yeven = pivot(2) + t(1:2:end)*(1-pivot(2));
-    yodd = pivot(2) + t(2:2:end)*(-1-pivot(2));
-    y(1:2:end)=yeven; y(2:2:end)=yodd;
-    for k = 1:length(x);
+    x = pivot(1)*ones(length(t), 1);
+    yeven = pivot(2) + t(1:2:end)*(1 - pivot(2));
+    yodd = pivot(2) + t(2:2:end)*(-1 - pivot(2));
+    y(1:2:end) = yeven;
+    y(2:2:end) = yodd;
+
+    for k = 1:length(x)
         addpoints(body2, x(k), y(k))
         pause(p)
         drawnow update
     end
-    
 end
 
 
-h={[body body2]};
+h = {[body body2]};
 
 end
 
@@ -614,6 +667,7 @@ if ( n == inf )
 else
     pause(n)
 end
+
 end
 
 function textBox = myTextbox(str, oldBox)
@@ -631,9 +685,11 @@ if (nargin > 1 )
         delete(oldBox)
     end
 end
+
 % Draw a new textbox.
-textBox = annotation('textbox', [0.05, 0.025, 0.9, 0.25],...
+textBox = annotation('textbox', [0.05, 0.025, 0.9, 0.25], ...
            'String', str, 'fontsize', 18, 'linewidth', 1);
+
 end
 
 function [P, ff, e, scl, sclinf, pts] = myACA(f, nGridPoints, nIter)
@@ -682,4 +738,5 @@ for j = 1:nIter
     % Store the error after the current iteration:
     e(j) = norm(A);
 end
+
 end
