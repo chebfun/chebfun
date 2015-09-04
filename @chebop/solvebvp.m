@@ -238,15 +238,6 @@ else
     % Simplify output
     u = simplify(u,pref.errTol/200);
 
-    % Enforce the function to be real if the imaginary part is small if using a 
-    % periodic TECH:
-    if ( isPeriodicTech(techUsed) )
-        normImag = @(f) norm(imag(f),inf);
-        if ( max(cellfun(normImag, u.blocks)) < max(pref.errTol*vscale(u)) )
-           u = real(u);
-        end
-    end
-
 end
 
 % Revert warning state:
