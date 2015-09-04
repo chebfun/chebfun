@@ -17,8 +17,6 @@ function data = plotregionData(u, userEps, numpts)
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-%%
-
 if ( nargin < 3 )
     numpts = 500;
 end

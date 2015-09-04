@@ -1,4 +1,4 @@
-function plotregionData(~, ~, ~)
+function plotregionData(varargin)
 %PLOTREGIONDATA   SINGFUN does not support PLOTREGIONDATA.
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.

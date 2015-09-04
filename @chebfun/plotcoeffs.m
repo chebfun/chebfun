@@ -1,6 +1,6 @@
 function varargout = plotcoeffs(f, varargin)
 %PLOTCOEFFS   Display coefficients graphically.
-%   PLOTCOEFFS(F) plots the absolute values of coefficients underlying the 
+%   PLOTCOEFFS(F) plots the absolute values of the coefficients underlying the
 %   representation of a CHEBFUN F on a semilogy scale. A horizontal line at the 
 %   epslevel of F is also plotted. If F is an array-valued CHEBFUN or has 
 %   breakpoints, then a curve is plotted for each FUN of each component (column)
