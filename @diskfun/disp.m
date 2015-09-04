@@ -1,13 +1,13 @@
 function disp(F)
-%DISP   Display a SPHEREFUN to the command line.
+%DISP   Display a DISKFUN to the command line.
 % 
 % See also DISPLAY.
 
 loose = strcmp( get(0, 'FormatSpacing'), 'loose' );
 
-% Get display style and remove trivial empty CHEBFUN2 case. 
+% Get display style and remove trivial empty DISKFUN case. 
 if ( isempty(F) )
-    fprintf('    empty spherefun\n')
+    fprintf('    empty diskfun\n')
     if ( loose )
         fprintf('\n');
     end
@@ -23,7 +23,7 @@ vals = vals(:);
 vscl = vscale(F);                         % vertical scale
 
 % Display the information: 
-disp('   spherefun object: (1 smooth surface)')
+disp('   diskfun object: (1 smooth surface)')
 fprintf('       domain                 rank       corner values\n');
 if ( isreal(vals) )
     fprintf('[%4.2g,%4.2g] x [%4.2g,%4.2g]   %6i     [%4.2g %4.2g %4.2g %4.2g]\n', ...

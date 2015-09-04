@@ -1,5 +1,5 @@
 function val = get( f, propName )
-%GET       GET method for SPHEREFUN class.
+%GET       GET method for DISKFUN class.
 %   P = GET(F, PROP) returns the property P specified in the string PROP from
 %   the DISKFUN object F. Valid entries for the string PROP are:
 %    'DOMAIN'

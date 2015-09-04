@@ -68,7 +68,7 @@ if ( isa(op, 'double') )    % DISKFUN( DOUBLE )
     F = op;
     [n, m] = size(F);
     
-    % Flip F arround since Phase I operates on the doubled-up portion of
+    % Flip F around since Phase I operates on the doubled-up portion of
     % the disk [-pi pi] x [-1, 0] 
     F = [F(n:-1:1,m/2+1:m) F(n:-1:1,1:m/2)];
     

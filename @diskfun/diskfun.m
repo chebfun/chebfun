@@ -62,7 +62,7 @@ classdef diskfun < separableApprox
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
      
-        % The main bulk of the SPHEREFUN constructor:
+        % The main bulk of the DISKFUN constructor:
         g = constructor(g, op, coords, dom, varargin);
         
     end
@@ -72,17 +72,8 @@ classdef diskfun < separableApprox
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
         
-        %         % Convert Chebyshev coefficients to values:
-        %         X = coeffs2vals(U);
-        
-        %         % Convert values to Chebyshev coefficients:
-        %         X = vals2coeffs(U);
-        
-        %         % Tensor product of Chebyshev points:
-        %         [xx, yy] = chebpts2(nx, ny, domain, kind);
-        
-        %         % Outer-product of two chebfuns:
-        %         F = outerProduct(f, g);
+        % Fast Poisson solver: 
+        u = Poisson( f, bc, m, n );
         
         % Converts a function in spherical coordinates to one in Cartesian
         % coordinates on the sphere.
@@ -119,16 +110,5 @@ classdef diskfun < separableApprox
     properties ( Constant )
         alpha = 50;  % Growth factor control.
     end
-    
-    %
-     %   methods
-          %   function g = spherefun( varargin )
-           %      if( nargin == 0 )
-    %
-             %    else
-           %          g = constructor(g , varargin{:} );  % pass to constructor.
-          %       end
-         %    end
-        % end
     
 end
