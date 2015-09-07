@@ -74,7 +74,7 @@ for n = 1:2
     
     errfn = diff(f.*g) - (f.*dg + g.*df);
     err = feval(errfn, x);
-    pass(n, 7) = (norm(err, inf) < length(f)*max(tol_f, tol_g));
+    pass(n, 7) = (norm(err, inf) < 10*length(f)*max(tol_f, tol_g));
     
     const = testclass.make(@(x) ones(size(x)), [], pref);
     dconst = diff(const);

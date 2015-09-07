@@ -132,7 +132,16 @@ for n = 1:2
     h2 = testclass.make(@(x) f_op(x) .* g_op(x), [], pref);
     h2 = prolong(h2, length(h1));
     pass(n, 21) = norm(h1.coeffs - h2.coeffs, inf) < tol;
-
+    
+    %%
+    % Check that multiplying array valued chebtechs of moderate dimensions work.
+    f = testclass.make(@(x) x);
+    f8 = [f f f f f f f f ];
+    f20 = [f8 f8 f f f f];
+    f8_2  = f8.*f8;
+    f20_2 = f20.*f20;
+    pass(n, 22) = norm(f8_2.coeffs(:,1) - f20_2.coeffs(:,1), inf) < tol;
+    
     %%
     % Check that multiplying a CHEBTECH by an unhappy CHEBTECH gives an unhappy
     % result.  
@@ -141,10 +150,12 @@ for n = 1:2
     f = testclass.make(@(x) cos(x+1));    % Happy
     g = testclass.make(@(x) sqrt(x+1));   % Unhappy
     h = f.*g;  % Multiply unhappy by happy.
-    pass(n, 22) = (~g.ishappy) && (~h.ishappy); %#ok<*BDSCI,*BDLGI>
+    pass(n, 23) = (~g.ishappy) && (~h.ishappy); %#ok<*BDSCI,*BDLGI>
     h = g.*f;  % Multiply happy by unhappy.
-    pass(n, 23) = (~g.ishappy) && (~h.ishappy);
+    pass(n, 24) = (~g.ishappy) && (~h.ishappy);
     warning on; % Re-enable warnings.
+    
+
 end
 
 end
