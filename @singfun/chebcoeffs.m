@@ -1,4 +1,4 @@
-function out = chebcoeffs(f, N)
+function out = chebcoeffs(f, N, kind)
 %CHEBCOEFFS   Chebyshev polynomial coefficients of a SINGFUN.
 %   A = CHEBCOEFFS(F, N) returns the row vector of first N Chebyshev coefficients
 %   of F such that F = ... + A(1) T_{N-1}(x) + ... + A(N-1) T_1(x) + A(N) T_0(x)
@@ -16,9 +16,21 @@ if ( any(f.exponents <= -.5 ) )
         'F does not have a well-defined Chebyshev expansion.');
 end
 
-if ( (nargin == 1) || isempty(N) )
+if ( (nargin < 2) || isempty(N) )
     error('CHEBFUN:SINGFUN:chebcoeffs:input', ...
         'F does not have a finite Chebyshev series. Please input N.');
+end
+
+% Use first-kind Chebyshev polynomials by default.
+if ( (nargin < 3) || isempty(kind) )
+    kind = 1;
+end
+
+% TODO:  Support 2nd-kind polynomials.
+if ( kind ~= 1 )
+    error('CHEBFUN:SINGFUN:chebcoeffs:badKind', ...
+        ['SINGFUN does not currently support expansion in 2nd-kind ' ...
+         'Chebyshev polynomials']);
 end
 
 if ( isa(f.smoothPart, 'chebtech') )
