@@ -55,6 +55,8 @@ err(4) = abs(u(dom(1)) - u(dom(2)));
 err(5) = abs(feval(diff(u), dom(1)) - feval(diff(u), dom(2)));
 err(6) = abs(v(dom(1)) - v(dom(2)));
 err(7) = abs(feval(diff(v), dom(1)) - feval(diff(v), dom(2)));
+classCheck(1) = isequal(get(u.funs{1}, 'tech'), @trigtech) && ...
+     isequal(get(v.funs{1}, 'tech'), @trigtech);
 
 %% Test the TRIGCOLLOC class. FIRST AND SECOND ORDER NONLINEAR ODEs.
 %  u - v' + v = 0, u'' - cos(v) = cos(x).
@@ -77,6 +79,8 @@ err(10) = abs(u(dom(1)) - u(dom(2)));
 err(11) = abs(feval(diff(u), dom(1)) - feval(diff(u), dom(2)));
 err(12) = abs(v(dom(1)) - v(dom(2)));
 err(13) = abs(feval(diff(v), dom(1)) - feval(diff(v), dom(2)));
+classCheck(2) = isequal(get(u.funs{1}, 'tech'), @trigtech) && ...
+     isequal(get(v.funs{1}, 'tech'), @trigtech);
 
 %% Test the TRIGSPEC class. FIRST AND SECOND ORDER LINEAR ODEs.
 % u - v' = 0, u'' + v = cos(x), on [-pi pi].
@@ -99,8 +103,11 @@ err(16) = abs(u(dom(1)) - u(dom(2)));
 err(17) = abs(feval(diff(u), dom(1)) - feval(diff(u), dom(2)));
 err(18) = abs(v(dom(1)) - v(dom(2)));
 err(19) = abs(feval(diff(v), dom(1)) - feval(diff(v), dom(2)));
+classCheck(3) = isequal(get(u.funs{1}, 'tech'), @trigtech) && ...
+     isequal(get(v.funs{1}, 'tech'), @trigtech);
+
 
 %%
-pass = err < tol;
+pass = [classCheck, err < tol];
 
 end
