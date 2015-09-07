@@ -296,11 +296,11 @@ if ( strncmpi(xi_type , 'type' , 4) )
         col(1) = row(1);
         Z = toeplitz(col, row(1:(n+1)));
     elseif ( xi_type(5) == '1' )     % 1st-kind Chebyshev points.
-        D = dct1(diag(f'))';
-        Z = dct1(D(:,1:(n+1)));
+        D = chebtech1.coeffs2vals(eye(N1));
+        Z = chebtech1.vals2coeffs(diag(f) * D(:,1:(n+1)));
     else                             % 2nd-kind Chebyshev points.
-        D = idct2(eye(N1));
-        Z = dct2(diag(f) * D(:,1:(n+1)));
+        D = chebtech2.coeffs2vals(eye(N1));
+        Z = chebtech2.vals2coeffs(diag(f) * D(:,1:(n+1)));
     end
     R = [];
 else                                 % Other nodes.
@@ -383,10 +383,12 @@ if ( strncmpi(xi_type, 'type', 4) )
         a = fft(ifft(b, N1, 1) .* f);
         a = a(1:(m+1));
     elseif ( xi_type(5) == '1' )  % 1st-kind Chebyshev points.
-        a = dct1(idct1([b ; zeros(N - n, 1)]) .* f);
+        b_pad = [b ; zeros(N - n, 1)];
+        a = chebtech1.vals2coeffs(chebtech1.coeffs2vals(b_pad) .* f);
         a = a(1:(m+1));
     elseif ( xi_type(5) == '2' )  % 2nd-kind Chebyshev points.
-        a = dct2(idct2([b ; zeros(N - n, 1)]) .* f);
+        b_pad = [b ; zeros(N - n, 1)];
+        a = chebtech2.vals2coeffs(chebtech2.coeffs2vals(b_pad) .* f);
         a = a(1:(m+1));
     end
 else
@@ -488,13 +490,16 @@ function [p, q, r] = constructRatApproxCheb1(a, b, mu, nu, dom)
 md = 0.5 * sum(dom);
 ihd = 2.0 / diff(dom);
 
+% Store handle to the tech constructor to work around MATLAB parser bug.
+tech = @chebtech1;
+
 % Build the numerator polynomial.
-px = idct1(a);
-p = chebfun(px, dom, 'tech', @chebtech1);
+px = chebtech1.coeffs2vals(a);
+p = chebfun(px, dom, 'tech', tech);
 
 % Build the denominator polynomial and form the function handle.
 if ( nu > 0 )
-    qx = idct1(b);
+    qx = chebtech1.coeffs2vals(b);
 
     wp = sin((2*(0:mu) + 1)*pi/(2*(mu + 1)));
     wp(2:2:end) = -wp(2:2:end);
@@ -503,12 +508,12 @@ if ( nu > 0 )
     wq = sin((2*(0:nu) + 1)*pi/(2*(nu + 1)));
     wq(2:2:end) = -wq(2:2:end);
 
-    q = chebfun(qx, dom, 'tech', @chebtech1);
+    q = chebfun(qx, dom, 'tech', tech);
 
     r = @(x) ratbary(ihd*(x - md), px, qx, ...
         chebpts(mu + 1, 1), chebpts(nu + 1, 1), wp, wq);
 else
-    q = chebfun(b, dom, 'tech', @chebtech1);
+    q = chebfun(b, dom, 'tech', tech);
     r = @(x) p(x)/b;
 end
 
@@ -526,8 +531,8 @@ p = chebfun(a, dom, 'coeffs');
 if ( nu > 0 )
     q = chebfun(b, dom, 'coeffs');
 
-    px = idct2(a);
-    qx = idct2(b);
+    px = chebtech2.coeffs2vals(a);
+    qx = chebtech2.coeffs2vals(b);
 
     wp = ones(1,(mu+1));
     wp(2:2:end) = -1;
@@ -649,42 +654,5 @@ lq(lq == 0) = 1;
 
 % Multiply by ratio of node polynomials and reshape if needed.
 y = reshape(y(:) .* lp ./ lq , size(x));
-
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Discrete cosine transforms.
-
-% DCT for Chebyshev points of the first kind.
-function y = dct1(x)
-
-n = size(x, 1);
-w = 2*(-1).^((0:1:(n - 1)).');
-w(1) = sqrt(2)*w(1);
-y = diag(w)*chebtech1.vals2coeffs(x);
-
-end
-
-% iDCT for Chebyshev points of the first kind.
-function y = idct1(x)
-
-n = size(x, 1);
-w = 0.5*(-1).^((0:1:(n - 1)).');
-w(1) = w(1)/sqrt(2);
-y = chebtech1.coeffs2vals(diag(w)*x);
-
-end
-
-% DCT for Chebyshev points of the second kind.
-function y = dct2(x)
-
-y = chebtech2.vals2coeffs(x);
-
-end
-
-% iDCT for Chebyshev points of the second kind.
-function y = idct2(x)
-
-y = chebtech2.coeffs2vals(x);
 
 end
