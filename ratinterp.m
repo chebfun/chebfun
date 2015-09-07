@@ -659,88 +659,32 @@ end
 function y = dct1(x)
 
 n = size(x, 1);
-w = (2/n)*(exp(-1i*(0:(n-1))*pi/(2*n))).';
-w(1) = w(1)/sqrt(2);
-
-if ( (mod(n, 2) == 1) || ~isreal(x) )
-    y = fft([x ; x(n:-1:1,:)]);
-    y = diag(w)*y(1:n,:);
-else
-    y = fft([x(1:2:n,:) ; x(n:-2:2,:)]);
-    y = diag(2*w)*y;
-end
-
-if ( isreal(x) )
-    y = real(y);
-end
+w = 2*(-1).^((0:1:(n - 1)).');
+w(1) = sqrt(2)*w(1);
+y = diag(w)*chebtech1.vals2coeffs(x);
 
 end
 
 % iDCT for Chebyshev points of the first kind.
-function x = idct1(y)
+function y = idct1(x)
 
-n = size(y, 1);
-w = (n/2)*(exp(1i*(0:(n-1))*pi/(2*n))).';
-
-if ( (mod(n, 2) == 1) || ~isreal(y) )
-    w(1) = w(1)*sqrt(2);
-    x = ifft([diag(w)*y
-              zeros(1, size(y, 2))
-              -1i*diag(w(2:n))*y(n:-1:2,:)]);
-    x = x(1:n,:);
-else
-    w(1) = w(1)/sqrt(2);
-    x([1:2:n n:-2:2],:) = ifft(diag(w)*y);
-end
-
-if ( isreal(y) )
-    x = real(x);
-end
+n = size(x, 1);
+w = 0.5*(-1).^((0:1:(n - 1)).');
+w(1) = w(1)/sqrt(2);
+y = chebtech1.coeffs2vals(diag(w)*x);
 
 end
 
 % DCT for Chebyshev points of the second kind.
-function c = dct2(v)
+function y = dct2(x)
 
-n = size(v, 1);
-c = [v(end:-1:2,:) ; v(1:end-1,:)];
-
-if ( isreal(v) )
-    c = fft(c)/(2*n - 2);
-    c = real(c);
-elseif ( isreal(1i*v) )
-    c = fft(imag(c))/(2*n - 2);
-    c = 1i*real(c);
-else
-    c = fft(c)/(2*n - 2);
-end
-
-c = c(n:-1:1,:);
-if ( n > 2 )
-    c(2:end-1,:) = 2*c(2:end-1,:);
-end
-c = c(end:-1:1,:);
+y = chebtech2.vals2coeffs(x);
 
 end
 
 % iDCT for Chebyshev points of the second kind.
-function v = idct2(c)
+function y = idct2(x)
 
-n = size(c, 1);
-ii = 2:(n - 1);
-c = c(end:-1:1,:);
-c(ii,:) = c(ii,:)/2;
-v = [c(end:-1:1,:) ; c(ii,:)];
-
-if ( isreal(c) )
-    v = real(ifft(v));
-elseif ( isreal(1i*c) )
-    v = 1i*real(ifft(imag(v)));
-else
-    v = ifft(v);
-end
-
-v = (n - 1)*[2*v(1,:) ; (v(ii,:) + v(2*n-ii,:)) ; 2*v(n,:)];
-v = v(end:-1:1,:);
+y = chebtech2.coeffs2vals(x);
 
 end
