@@ -42,14 +42,12 @@ if ( kind == 1 )
     end
 elseif ( kind == 2 )
     % We compute 2nd-kind coefficients by computing the 1st-kind coefficients
-    % and using the recurrence T_n(x) = (1/2)*(U_n(x) - U_{n-2}(x)).  The
-    % coefficient of U_n requires the coefficients of T_n and T_{n + 2}, so we
-    % need to compute two extra 1st-kind coefficients if 2nd-kind coefficients
-    % have been requested.
-    out = chebcoeffs(f, N + 2, 1);
-    out(1,:) = 2*out(1,:);
-    out = 0.5*[out(1:end-2,:) - out(3:end,:) ; out(end-1:end,:)];
-    out = out(1:end-2,:);
+    % and using CHEBTCOEFFS2CHEBUCOEFFS.  That function uses a recurrence in
+    % which the coefficient of U_n requires the coefficients of T_n and T_{n +
+    % 2}, so we compute two extra 1st-kind coefficients if 2nd-kind
+    % coefficients have been requested.
+    out = chebtech.chebTcoeffs2chebUcoeffs(chebcoeffs(f, N + 2, 1));
+    out = out(1:N,:);
 else
     error('CHEBFUN:CHEBTECH:chebcoeffs:badKind', ...
         '''kind'' input must be 1 or 2.');
