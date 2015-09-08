@@ -76,26 +76,9 @@ end
 
 %% Compute the coefficients:
 if ( numFuns == 1 )
-    
-    % We compute 2nd-kind coefficients by computing the 1st-kind coefficients and
-    % using a recurrence relation.  The recurrence for the coefficient of U_n
-    % requires the coefficients of T_n and T_{n + 2}, so we need to compute two
-    % extra 1st-kind coefficients if 2nd-kind coefficients have been requested.
-    if ( kind == 2 )
-        N = N + 2;
-    end
-    
     % CHEBCOEFFS() of a smooth piece:
-    out = chebcoeffs(f.funs{1}, N);   
-    
-    % Compute 2nd-kind coefficients from 1st-kind ones using the recurrence
-    %   T_n(x) = (1/2)*(U_n(x) - U_{n-2}(x)):
-    if ( kind == 2 )
-        out(1,:) = 2*out(1,:);
-        out = 0.5*[out(1:end-2,:) - out(3:end,:) ; out(end-1:end,:)];
-        out = out(1:end-2,:);
-    end
-    
+    out = chebcoeffs(f.funs{1}, N, kind);
+
 else
     % CHEBCOEFFS() of a piecewise smooth CHEBFUN:
 

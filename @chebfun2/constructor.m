@@ -68,7 +68,7 @@ maxSample = tpref.maxLength;
 pseudoLevel = tpref.eps;
 
 % Deal with periodic functions:
-if ( any(strcmpi(dom, 'periodic')) )
+if ( any(strcmpi(dom, {'trig', 'periodic'})) )
     % If periodic flag, then map chebfun2 with TRIGTECHs.
     pref.tech = @trigtech;
     tpref = chebfunpref.mergeTechPrefs(pref, tech.techPref);
@@ -76,7 +76,7 @@ if ( any(strcmpi(dom, 'periodic')) )
     maxSample = tpref.maxLength;
     pseudoLevel = tpref.eps;
     dom = [-1 1 -1 1];
-elseif ( (nargin > 3) && (any(strcmpi(varargin{1}, 'periodic'))) )
+elseif ( (nargin > 3) && (any(strcmpi(varargin{1}, {'trig', 'periodic'}))) )
     % If periodic flag, then map chebfun2 with TRIGTECHs
     pref.tech = @trigtech;
     tpref = chebfunpref.mergeTechPrefs(pref, tech.techPref);
