@@ -51,4 +51,27 @@ pass(8) = norm( Au - A*u ) < tol;
 pass(9)  = norm( Au(xx1) - matrix(AC, 200, @chebcolloc1)*u(xx1) ) < tol;
 pass(10) = norm( Au(xx2) - matrix(AC, 200, @chebcolloc2)*u(xx2) ) < tol;
 
+%% Invalid calls to kron with op output:
+
+try
+    kron(f, g, 'invalid')
+    pass(11) = 0;
+catch ME
+    pass(11) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:kron:sizes');
+end
+
+try
+    kron(f.', g, 'op')
+    pass(12) = 0;
+catch ME
+    pass(12) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:kron:columnsAndRows');
+end
+
+try
+    kron(quasimatrix(f), g', 'op')
+    pass(13) = 0;
+catch ME
+    pass(13) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:kron:quasimatrix');
+end
+
 end
