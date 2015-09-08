@@ -985,17 +985,17 @@ function op = vectorCheck(op, dom, vectorize)
 
 % Make a slightly narrower domain to evaluate on. (Endpoints can be tricky).
 y = dom([1 end]);
-
+del = diff(y)/200;
 if ( y(1) > 0 )
-    y(1) = 1.01*y(1); 
+    y(1) = (1+del)*y(1); 
 else
-    y(1) = .99*y(1); 
+    y(1) = (1-del)*y(1); 
 end
 
 if ( y(end) > 0 )
-    y(end) = .99*y(end); 
+    y(end) = (1-del)*y(end); 
 else
-    y(end) = 1.01*y(end); 
+    y(end) = (1+del)*y(end); 
 end
 
 y = y(:);

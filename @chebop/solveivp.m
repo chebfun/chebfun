@@ -232,6 +232,10 @@ solver = pref.ivpSolver;
 % What happiness check do we want to use for the IVP?
 opts.happinessCheck = pref.happinessCheck;
 
+% anonFun
+% odeDom
+% initVals
+
 % Solve!
 [t, y]= solver(anonFun, odeDom, initVals, opts);
 
