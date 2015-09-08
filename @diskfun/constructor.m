@@ -140,7 +140,7 @@ g.pivotIndices = pivotIndices;
 g.domain = dom;
 g.idxPlus = idxPlus;
 g.idxMinus = idxMinus;
-
+g.nonZeroPoles = removePoles;
 % Adjust the pivot locations so that they correspond to 
 % -pi < th < pi and 0 < r <1
 

@@ -110,6 +110,7 @@ classdef diskfun < separableApprox
         idxPlus
         idxMinus
         pivotIndices
+        nonZeroPoles
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,14 +1,15 @@
 function val = get( f, propName )
 %GET       GET method for SPHEREFUN class.
 %   P = GET(F, PROP) returns the property P specified in the string PROP from
-%   the SPHEREFUN object F. Valid entries for the string PROP are:
+%   the DISKFUN object F. Valid entries for the string PROP are:
 %    'DOMAIN'
 %    'COLS'
 %    'ROWS' 
 %    'PIVOTVALUES'
 %    'PIVOTLOCATIONS'
+%    
 
-% Loop through an array of SPHEREFUN objects.
+% Loop through an array of DISKFUN objects.
 if ( numel(f) > 1 )
     val = cell(numel(f));
     for k = 1:numel(f)
@@ -33,7 +34,9 @@ switch ( propName )
         val = f.idxPlus;
     case 'idxMinus'
         val = f.idxMinus;
+    case 'nonZeroPoles'
+        val = f.nonZeroPoles
     otherwise
-        error('CHEBFUN:SPHEREFUN:get:propName', ...
-            [propName,' is not a valid SPHEREFUN property.'])
+        error('CHEBFUN:DISKFUN:get:propName', ...
+            [propName,' is not a valid DISKFUN property.'])
 end
