@@ -36,7 +36,7 @@ fdom = domain(f);
 gdom = domain(g);
 dom = [gdom, fdom]; 
 
-h = chebfun2(0, dom); 
+h = chebfun2();
 % Form outerproduct: 
 if ( size(f, 2) == size(g, 1) )
     h.cols = f; 
