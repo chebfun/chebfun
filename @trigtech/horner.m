@@ -140,7 +140,6 @@ n = ceil((N+1)/2);
 c = c(n:-1:1,:);
 a = real(c);
 b = imag(c);
-e = ones( size(x, 1), 1);
 
 % Adjust the last coefficient which corresponds to the pure cos(pi*n*x) 
 % mode in the case that N is even.
@@ -151,7 +150,7 @@ end
 
 % Just return the constant term.
 if N == 1
-    q = e*a;
+    q = ones( size(x, 1), 1)*a;
     return
 end
     
