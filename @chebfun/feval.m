@@ -56,25 +56,28 @@ end
 
 %% DEAL WITH QUASIMATRICES:
 out = cell(1, numel(F));
-if ( F(1).isTransposed )
-    out = out.';
-end
 for k = 1:numel(F)
     out{k} = columnFeval(F(k), x, varargin{:});
 end
 out = cell2mat(out);
+if ( F(1).isTransposed )
+    % We got a passed a row CHEBFUN. If X had more than two dimensions, we can't
+    % simply transpose the output from above, instead, we need to use permute.
+    ndimsx = ndims(x);
+    if ( ndimsx <= 2 )
+        out = out.';
+    else
+        % We define "transposition" in this case to mean the switching of the
+        % first two dimensions.
+        out = permute(out, [2 1 3:ndimsx]);
+    end
+end
         
 end
 
 function out = columnFeval(f, x, varargin)
 
 %% INITIALISE:
-% Un-transpose f if necessary so that the call to size() below returns the
-% right thing.  (We'll compensate for this further down.)
-wasTransposed = f.isTransposed;
-if ( f.isTransposed )
-    f = transpose(f);
-end
 
 % Reshape x to be a column vector.
 sizex = size(x);
@@ -82,8 +85,9 @@ ndimsx = ndims(x);
 x = x(:);
 
 % Initialise output:
-numCols = size(f, 2);
+numCols = numColumns(f);
 numFuns = numel(f.funs);
+
 out = zeros(size(x, 1), numCols);
 funs = f.funs;
 dom = f.domain;
@@ -160,10 +164,6 @@ sizefx(2) = numCols*sizex(2);
 if ( ndimsx == 2 )
     % If x was just a matrix or vector, the reshape is straightforward.
     out = reshape(out, sizefx);
-
-    if ( wasTransposed )
-        out = out.';
-    end
 else
     % If x had more than two dimensions, we have to be more careful.  The
     % cell2mat(mat2cell(...).') effects a transpose which keeps certain
@@ -173,12 +173,6 @@ else
     blocksPerCol = prod(sizex(3:end));
     out = reshape(cell2mat(mat2cell(out, blockLength*ones(1, blocksPerCol), ...
         ones(1, numCols)).'), sizefx);
-
-    % We define "transposition" in this case to mean the switching of the first
-    % two dimensions.  [TODO]:  Is this the right thing to do?
-    if ( wasTransposed )
-        out = permute(out, [2 1 3:ndimsx]);
-    end
 end
 
 end
