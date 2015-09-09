@@ -150,7 +150,7 @@ end
 
 % Just return the constant term.
 if N == 1
-    q = a;
+    q = ones( size(x, 1), 1)*a;
     return
 end
     
