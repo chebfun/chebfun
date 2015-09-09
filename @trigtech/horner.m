@@ -140,7 +140,7 @@ n = ceil((N+1)/2);
 c = c(n:-1:1,:);
 a = real(c);
 b = imag(c);
-e = ones(nValsX,1);
+e = ones( size(x, 1), 1);
 
 % Adjust the last coefficient which corresponds to the pure cos(pi*n*x) 
 % mode in the case that N is even.
