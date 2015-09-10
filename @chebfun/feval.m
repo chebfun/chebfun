@@ -111,36 +111,28 @@ end
 
 if ( numFuns == 1 )
     
-    % Things are simple when there is only a single fun:
+    % Things are simple when there is only a single FUN:
     out = feval(funs{1}, x(:), varargin{:});
     
 else
     
-    % For multiple funs we must detrmine which fun corresponds to each x.
+    % For multiple FUNs we must determine which FUN corresponds to each x.
     
     % Initialise output matrix:
     out = zeros(numel(x), numCols);
     
-    % Points to the left of the domain:
+    % Replace the first and last domain entries with +/-inf. (Since we want to
+    % use FUN{1} if real(x) < dom(1) and FUN{end} if real(x) > dom(end)).
+    domInf = [-inf, dom(2:end-1), inf];
+    
+    % Loop over each fun. If  real(x) is in [dom(k) dom(k+1)] then use FUN{k}.
     xReal = real(x);
-    I = xReal < dom(1);
-    if ( any(I(:)) )
-        out(I,:) = feval(funs{1}, x(I), varargin{:});
-    end
-
-    % Points within the domain:
     for k = 1:numFuns
-        I = ( xReal >= dom(k) ) & ( xReal < dom(k+1) );
+        I = ( xReal >= domInf(k) ) & ( xReal < domInf(k+1) );
         if ( any(I(:)) )
             % Evaluate the appropriate fun:
             out(I,:) = feval(funs{k}, x(I), varargin{:});
         end
-    end
-
-    % Points to the right of the domain:
-    I = ( xReal >= dom(end) );
-    if ( any(I(:)) )
-        out(I,:) =  feval(funs{end}, x(I), varargin{:});
     end
     
 end
@@ -151,7 +143,7 @@ end
 
 % Loop over the FUNs:
 for k = 1:(numFuns + 1)
-    index = x == dom(k);
+    index = ( x == dom(k) );
     if ( any(index) )
         % If a left or right flag has been passed, we reassign pointValues 
         % to be left/right values.
