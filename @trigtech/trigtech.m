@@ -436,6 +436,9 @@ classdef trigtech < smoothfun % (Abstract)
         % Convert coefficients to values:
         values = coeffs2vals(coeffs);
         
+        % Horner scheme for evaluation of a TRIGTECH
+        y = horner(x, c, allReal)
+
         % Make a TRIGTECH (constructor shortcut):
         f = make(varargin);
         

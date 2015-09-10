@@ -116,7 +116,7 @@ else
         % Evaluate on a grid.
         P = f.pivotLocations;
         
-        defaultopts = {'markersize',7, 'marker', '.'};
+        defaultopts = {'markersize', 20, 'marker', '.'};
         lineopts = {'linewidth', 2, 'linestyle', ll{:}};
         if ( ~plotline )
             % Just plot the pivots at height f(x,y)
