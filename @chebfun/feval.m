@@ -88,7 +88,6 @@ x = x(:);
 numCols = numColumns(f);
 numFuns = numel(f.funs);
 
-out = zeros(size(x, 1), numCols);
 funs = f.funs;
 dom = f.domain;
 
@@ -110,26 +109,40 @@ end
 
 %% VALUES FROM FUNS:
 
-% Points to the left of the domain:
-xReal = real(x);
-I = xReal < dom(1);
-if ( any(I(:)) )
-    out(I,:) = feval(funs{1}, x(I), varargin{:});
-end
-
-% Points within the domain:
-for k = 1:numFuns
-    I = ( xReal >= dom(k) ) & ( xReal < dom(k+1) );
+if ( numFuns == 1 )
+    
+    % Things are simple when there is only a single fun:
+    out = feval(funs{1}, x(:), varargin{:});
+    
+else
+    
+    % For multiple funs we must detrmine which fun corresponds to each x.
+    
+    % Initialise output matrix:
+    out = zeros(numel(x), numCols);
+    
+    % Points to the left of the domain:
+    xReal = real(x);
+    I = xReal < dom(1);
     if ( any(I(:)) )
-        % Evaluate the appropriate fun:
-        out(I,:) = feval(funs{k}, x(I), varargin{:});
+        out(I,:) = feval(funs{1}, x(I), varargin{:});
     end
-end
 
-% Points to the right of the domain:
-I = ( xReal >= dom(end) );
-if ( any(I(:)) )
-    out(I,:) =  feval(funs{end}, x(I), varargin{:});
+    % Points within the domain:
+    for k = 1:numFuns
+        I = ( xReal >= dom(k) ) & ( xReal < dom(k+1) );
+        if ( any(I(:)) )
+            % Evaluate the appropriate fun:
+            out(I,:) = feval(funs{k}, x(I), varargin{:});
+        end
+    end
+
+    % Points to the right of the domain:
+    I = ( xReal >= dom(end) );
+    if ( any(I(:)) )
+        out(I,:) =  feval(funs{end}, x(I), varargin{:});
+    end
+    
 end
 
 %% POINTVALUES:
@@ -137,7 +150,7 @@ end
 % pointValues. 
 
 % Loop over the FUNs:
-for k = 1:numFuns + 1
+for k = 1:(numFuns + 1)
     index = x == dom(k);
     if ( any(index) )
         % If a left or right flag has been passed, we reassign pointValues 
