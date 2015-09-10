@@ -85,7 +85,6 @@ ndimsx = ndims(x);
 x = x(:);
 
 % Initialise output:
-numCols = numColumns(f);
 numFuns = numel(f.funs);
 
 funs = f.funs;
@@ -113,12 +112,13 @@ if ( numFuns == 1 )
     
     % Things are simple when there is only a single FUN:
     out = feval(funs{1}, x(:), varargin{:});
-    
+    numCols = size(out, 2);
 else
     
     % For multiple FUNs we must determine which FUN corresponds to each x.
     
     % Initialise output matrix:
+    numCols = numColumns(f);
     out = zeros(numel(x), numCols);
     
     % Replace the first and last domain entries with +/-inf. (Since we want to
