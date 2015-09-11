@@ -168,8 +168,10 @@ for wCounter = 1:length(fevalResult)
     maxDerLoc = find(expTree.diffOrder == totalDiffOrders);
     
     % Convert the derivative part to infix form.
+    % Indicate that we are converting a coeffFun
+    isCoeffFun = true;
     [infixDer, varArrayDer] = ...
-        treeVar.tree2infix(derTree, maxDerLoc, indexStartDer);
+        treeVar.tree2infix(derTree, maxDerLoc, indexStartDer, isCoeffFun);
     
     % Convert the infix form of the expression that gives us the coefficient
     % multiplying the highest order derivative appearing in the expression to an
@@ -202,8 +204,9 @@ for wCounter = 1:length(fevalResult)
     newTree = struct('method', 'minus', 'numArgs', 2, ...
         'left', rhs{wCounter}, 'right', newTree);
     % Convert current expression to infix form:
+    isCoeffFun = false;
     [infix, varArray] = ...
-        treeVar.tree2infix(newTree, maxDerLoc, indexStart);
+        treeVar.tree2infix(newTree, maxDerLoc, indexStart, isCoeffFun);
     % Store the infix form and the variables that appeared in the anonymous
     % function.
     systemInfix{maxDerLoc} = infix;
