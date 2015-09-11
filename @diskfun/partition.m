@@ -11,7 +11,7 @@ function [fp,fm] = partition(f)
 % See also COMBINE
 
 if ~isa(f,'diskfun')
-    error('SPHEREFUN:partition:unknown',['Undefined function ''partition'' for ' ...
+    error('DISKFUN:partition:unknown',['Undefined function ''partition'' for ' ...
         'input argument of type %s.'], class(f));
 end
 

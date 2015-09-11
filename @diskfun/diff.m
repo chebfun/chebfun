@@ -1,4 +1,4 @@
-function f = diffv3( f, varargin )
+function f = diff( f, varargin )
 % DIFF    Derivative of a diskfun in Cartesian coordinates.
 %
 %  F = DIFF( F ) computes the first derivative of F with respect to x.

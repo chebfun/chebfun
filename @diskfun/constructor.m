@@ -74,7 +74,7 @@ if ( isa(op, 'double') )    % DISKFUN( DOUBLE )
     
     % TODO: Add a way to loosen tolerances for this type of construction.
     tol = GetTol(F, 2*pi/m, pi/(n-1), dom, 50*pseudoLevel);
-    [pivotIndices, pivotArray, removePole, happyRank, cols, pivots, ...
+    [pivotIndices, pivotArray, removePoles, happyRank, cols, pivots, ...
         rows, idxPlus, idxMinus ] = PhaseOne( F, tol, alpha, 0 );
     [x, y] = getPoints( n, m);
     pivotLocations = [x(pivotIndices(:,2)) y(pivotIndices(:,1))];
@@ -129,7 +129,7 @@ else  % DISKFUN( FUNCTION )
 
     % PHASE TWO 
     % Find the appropriate discretizations in the columns and rows. 
-    [cols, pivots, rows, pivotLocations, idxPlus, idxMinus] = ...
+    [cols, pivots, rows, pivotLocations, idxPlus, idxMinus, removePoles] = ...
         PhaseTwo( h, pivotIndices, pivotArray, n, dom, tol, maxSample, removePoles );
 end
 
@@ -156,7 +156,7 @@ g.pivotLocations = pivotLocations;
 
 end
 
-function [pivotIndices, pivotArray, removePole, ihappy, cols, pivots, ...
+function [pivotIndices, pivotArray, removePoles, ihappy, cols, pivots, ...
         rows, idxPlus, idxMinus ] = PhaseOne( F, tol, alpha, factor )
 
 % Phase 1: Go find rank and pivot locations
@@ -186,7 +186,7 @@ rankCount = 0;    % keep track of the rank of the approximation.
 
 % If the the value at pole is not zero then we need to zero
 % out before removing these entries from F.
-removePole = false;
+removePoles = false;
 if  abs(pole) > tol
     % Determine the column with maximum inf-norm
     [ignored, poleCol] = max(max(abs(Fp),[],1));
@@ -196,7 +196,7 @@ if  abs(pole) > tol
     Fp = Fp - colPole*rowPole;
 %     kplus = kplus + 1;
     % Do we need to keep track of the pivot locations?
-    removePole = true;
+    removePoles = true;
     % Update the rank count
     rankCount = rankCount + 1;
 %     idxPlus(kplus) = rankCount;
@@ -212,7 +212,7 @@ Fm = Fm( 1:m-1, : );
 [maxm,idxm] = max(abs(Fm(:)));
 
 % Zero function
-if ( maxp == 0 ) && ( maxm == 0 ) && ~( removePole )
+if ( maxp == 0 ) && ( maxm == 0 ) && ~( removePoles )
     colsPlus = 0;
     rowsPlus = 0;
     pivotArray = [0 0];
@@ -328,7 +328,7 @@ if ( nargout > 4 )
 %     pivots = pivots(pivots ~= 0 );
 %     pivots = pivots([idxPlus idxMinus]);
 
-    if removePole
+    if removePoles
         cols(:,1) = [colPole;flipud(colPole(1:m-1))];
         rows(:,1) = [rowPole rowPole];
         pivots(1) = 1;
@@ -344,7 +344,7 @@ end
 
 % Put the poles at the begining of the pivot locations array and also include
 % the pivot matrix.
-if removePole
+if removePoles
     pivotIndices = [ 1 poleCol; pivotIndices ];
     pivotArray = [[1 0] ; pivotArray];
     idxPlus = [1 idxPlus];
@@ -352,7 +352,7 @@ end
 
 end
 
-function [cols, pivots, rows, pivotLocations, idxPlus, idxMinus] = PhaseTwo( h, pivotIndices, pivotArray, n, dom, tol, maxSample, removePoles )
+function [cols, pivots, rows, pivotLocations, idxPlus, idxMinus, removePoles] = PhaseTwo( h, pivotIndices, pivotArray, n, dom, tol, maxSample, removePoles )
 
 % alpha = spherefun.alpha; % get growth rate factor.
 happy_columns = 0;   % Not happy, until proven otherwise.

@@ -12,6 +12,7 @@ classdef diskfun < separableApprox
             
             % Return an empty CHEBFUN:
             if ( (nargin == 0) || isempty(varargin{1}) )
+                f.domain = [-pi pi 0 1];
                 return
             end
             
