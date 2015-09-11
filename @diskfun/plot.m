@@ -42,7 +42,7 @@ function varargout = plot( f, varargin )
 % See http://www.chebfun.org/ for Chebfun information. 
 
 % Make a user option?
-plot_full_grid = false;
+plot_full_grid = true;
 
 if ( ~isempty(varargin) )
     
@@ -107,7 +107,7 @@ if ( ~isempty(varargin) )
         % Full grid on the disk
         m = length(f.cols);
         n = length(f.rows);
-        [TT, RR] = meshgrid([trigpts(n,dom(1:2)); dom(2)],linspace(dom(3),dom(4),m/2+1));
+        [TT, RR] = meshgrid([trigpts(n,dom(1:2)); dom(2)],chebpts(m));
 
         % Plot pivots:
         
@@ -144,10 +144,7 @@ if ( ~isempty(varargin) )
             rowCircs = [];
             
             
-            for k=1:size(pivots,1) %note on pole: if r=0 the result will be zero point 
-               % if abs(pivots(k,2))<100*eps  %faster to just assign it
-                    %colslices=[colslices; 0 0; nan nan];
-                   % rowCircs=[rowCircs; 0 0; nan nan];
+            for k=1:size(pivots,1) 
                  if abs(pivotsCart(k,1))>100*eps  %special case if x=0 
                     colslices = [colslices; [-cos(pivots(k,1)); cos(pivots(k,1))]...
                         pivotsCart(k,2)/pivotsCart(k,1)*[-cos(pivots(k,1)); cos(pivots(k,1))]];
