@@ -130,6 +130,11 @@ else  % SPHEREFUN( FUNCTION )
 end
 
 g.cols = chebfun( cols, dom(3:4)-[pi 0], 'trig');
+% c = g.cols.funs{1}.onefun.coeffs;
+% offset = real(sum(c));
+% n = size(c,1);
+% c(n/2+1,:) = c(n/2+1,:)-offset;
+% g.cols.funs{1}.onefun.coeffs = c;
 g.rows = chebfun( rows, dom(1:2), 'trig');
 g.pivotValues = pivots;
 g.pivotIndices = pivotIndices;

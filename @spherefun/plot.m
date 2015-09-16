@@ -42,7 +42,7 @@ function varargout = plot( f, varargin )
 % See http://www.chebfun.org/ for Chebfun information. 
 
 % Make a user option?
-plot_full_grid = false;
+plot_full_grid = true;
 
 if ( ~isempty(varargin) )
     
@@ -97,7 +97,6 @@ if ( ~isempty(varargin) )
         % Full grid on the sphere
         m = length(f.cols);
         n = length(f.rows);
-%         [LL,TT] = meshgrid(trigpts(n,dom(1:2)),linspace(dom(3),dom(4),m/2+1));
         [LL,TT] = meshgrid(linspace(dom(1),dom(2),n+1),linspace(dom(3),dom(4),m/2+1));
 
         % Plot pivots:
@@ -120,7 +119,7 @@ if ( ~isempty(varargin) )
             YY = sin(LL).*cos(TT);
             ZZ = sin(TT);
         end
-                if plot_full_grid
+        if plot_full_grid
             % Plot grayed out grid
             clrGrid = [192 192 192]/256;
             plot3(XX,YY,ZZ,'-','Color',clrGrid);
@@ -146,9 +145,9 @@ if ( ~isempty(varargin) )
             % horizontal cirlces at the right latitude for the row pivot
             % lines.
             if plot_full_grid
-                num_t = max(5*size(XX,1),201);
+                num_t = max(50*size(XX,1),201);
             else
-                num_t = 201;
+                num_t= 201;
             end
                 
             t = linspace(-pi,pi,num_t)';  % Parametric variable
