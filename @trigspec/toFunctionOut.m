@@ -10,7 +10,7 @@ function f = toFunctionOut(disc, coeffs, cutoff)
 
 % Check for cutoff:
 if ( nargin == 3 ) 
-    if ( ~mod(cutoff,2) )
+    if ( ~mod(cutoff, 2) )
         m = cutoff + 1;
     else
         m = cutoff;
@@ -21,22 +21,22 @@ end
 
 % Adjust size of cutoff if necessary:
 if ( length(m) ~= numel(coeffs) )
-    m = max(m)*ones(numel(coeffs),1);
+    m = max(m)*ones(numel(coeffs), 1);
 end
 
 % Cutoff coefficients:
 for k = 1:numel(coeffs)
-    [N,~] = size(coeffs);
-    if ( ~mod(N,2) )
-        coeffs = [.5*coeffs(1,:);coeffs(2:end,:);.5*coeffs(1:end,:)];
-        N = N+1;
+    [N, ~] = size(coeffs);
+    if ( ~mod(N, 2) )
+        coeffs = [.5*coeffs(1,:); coeffs(2:end,:); .5*coeffs(1:end,:)];
+        N = N + 1;
     end
     C = ceil(N/2);
-    m(k) = min(N,m(k));
+    m(k) = min(N, m(k));
     c = ceil(m(k)/2);
     inds = 1:m(k);
-    inds = inds+(C-c);
-    coeffs = coeffs(inds,:);
+    inds = inds + (C - c);
+    coeffs = coeffs(inds, :);
 end
 
 % Get the domain:
