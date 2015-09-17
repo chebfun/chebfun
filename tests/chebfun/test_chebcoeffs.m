@@ -66,4 +66,9 @@ c_exact = [c_exact c_exact];
 err = c - c_exact;
 pass(8) = norm(err(:), inf) < 1e2*vscale(f).*epslevel(f);
 
+%%
+% See #1589
+err = chebcoeffs(chebpoly(5, 2), 'kind', 2) - [zeros(5,1) ; 1];
+pass(9) = norm(err, inf) < 1e-14;
+
 end

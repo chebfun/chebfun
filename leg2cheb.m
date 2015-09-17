@@ -1,5 +1,5 @@
 function c_cheb = leg2cheb(c_leg, varargin)
-%LEG2CHEB convert Legendre coefficients to Chebyshev coefficients. 
+%LEG2CHEB   Convert Legendre coefficients to Chebyshev coefficients. 
 %   C_CHEB = LEG2CHEB(C_LEG) converts the vector C_LEG of Legendre coefficients
 %   to a vector C_CHEB of Chebyshev coefficients such that 
 %       C_CHEB(1)*T0 + ... + C_CHEB(N)*T{N-1} = ...

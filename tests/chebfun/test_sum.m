@@ -52,7 +52,7 @@ pass(10) = norm(sum(f) - [0 2*sin(1) (exp(1) - exp(-1))], inf) < ...
     10*vscale(f)*epslevel(f);
 
 ft = f.';
-pass(11) = norm(sum(ft) - [0 2*sin(1) (exp(1) - exp(-1))], inf) < ...
+pass(11) = norm(sum(ft) - [0 2*sin(1) (exp(1) - exp(-1))].', inf) < ...
     10*vscale(ft)*epslevel(ft);
 
 pass(12) = norm(sum(f, [-1 1]) - [0 2*sin(1) (exp(1) - exp(-1))], inf) < ...
@@ -83,7 +83,7 @@ F3_col2_exact = @(x) sin(-x.^2 + 1) - sin(x.^2 - 1);
 F3_col3_exact = @(x) exp(-x.^2 + 1) - exp(x.^2 - 1);
 F3_exact = @(x) [F3_col1_exact(x) F3_col2_exact(x) F3_col3_exact(x)];
 err = feval(F3, xr) - F3_exact(xr);
-pass(16) = norm(err(:), inf) < 10*vscale(F3)*epslevel(F3);
+pass(16) = norm(err(:), inf) < 100*vscale(F3)*epslevel(F3);
 
 %% Check dim argument.
 g = sum(f, 2);
@@ -123,7 +123,7 @@ pass(22) = norm(sum(f) - [0 2*sin(1) (exp(1) - exp(-1))], inf) < ...
     10*vscale(f)*epslevel(f);
 
 ft = f.';
-pass(23) = norm(sum(ft) - [0 2*sin(1) (exp(1) - exp(-1))], inf) < ...
+pass(23) = norm(sum(ft) - [0 2*sin(1) (exp(1) - exp(-1))].', inf) < ...
     10*vscale(ft)*epslevel(ft);
 
 pass(24) = norm(sum(f, [-1 1]) - [0 2*sin(1) (exp(1) - exp(-1))], inf) < ...
