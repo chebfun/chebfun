@@ -1,9 +1,9 @@
-classdef chebcolloc < colloc
+classdef chebcolloc < valsDiscretization
 %CHEBCOLLOC   Abstract class for collocation discretization of operators.
-%   CHEBCOLLOC is a partial implementation of COLLOC using 1st or 2nd kind
-%   Chebyshev points.
+%   CHEBCOLLOC is a partial implementation of VALSDISCRETIZATION using 1st or
+%   2nd kind Chebyshev points.
 %
-% See also COLLOC, CHEBCOLLOC1, CHEBCOLLOC2, CHEBDISCRETIZATION.
+% See also VALSDISCRETIZATION, CHEBCOLLOC1, CHEBCOLLOC2, OPDISCRETIZATION.
 
 %  Copyright 2015 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org/ for Chebfun information.
@@ -14,7 +14,7 @@ classdef chebcolloc < colloc
     methods ( Access = public, Static = false )
         
         function disc = chebcolloc(varargin)
-            disc = disc@colloc(varargin{:});
+            disc = disc@valsDiscretization(varargin{:});
         end
         
         % Dimension reduction for operator matrix.

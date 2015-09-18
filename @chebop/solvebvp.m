@@ -189,8 +189,19 @@ end
 
 % Solve:
 if ( all(isLinear) )
+    % Ensure that rhs-residual is of correct discretization, and convert it to a 
+    % CHEBMATRIX if necessary.
+    rhs = rhs - residual;
+    if ( isa(rhs, 'chebfun') )
+        rhs = chebmatrix(chebfun(rhs, dom, 'tech', tech));
+    elseif ( isa(rhs, 'chebmatrix') )
+        constr = @(f) chebfun(f, dom, 'tech', tech);
+        rhs.blocks = cellfun(constr, rhs.blocks, 'uniformOutput', false);
+    end
+    
     % Call solver method for linear problems.
-    [u, info] = N.solvebvpLinear(L, rhs - residual, N.init, pref, displayInfo);
+    [u, info] = N.solvebvpLinear(L, rhs, N.init, pref, displayInfo);
+    
 else
     % [TODO]: Switch between residual and error oriented Newton methods.
     
@@ -198,9 +209,9 @@ else
     if ( isempty(N.init) )
         
         if ( ~isPeriodicTech(techUsed) )
-            % Find a new initial guess that satisfies the BCs of L.
-            % If we are using TRIGCOLLOC, we don't need to do that because 
-            % the zero CHEBFUN is periodic.
+            % Find a new initial guess that satisfies the BCs of L. Note that if
+            % we are using a periodic discretization, we don't need to do that
+            % because the zero CHEBFUN is periodic.
             u0 = fitBCs(L, pref);
         end
         
@@ -224,9 +235,9 @@ else
     % Call solver method for nonlinear problems.
     [u, info] = solvebvpNonlinear(N, rhs, L, u0, residual, pref, displayInfo);
 
-% simplify output
-u = simplify(u,pref.errTol/200);
-    
+    % Simplify output
+    u = simplify(u,pref.errTol/200);
+
 end
 
 % Revert warning state:

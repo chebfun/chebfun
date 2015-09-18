@@ -14,7 +14,7 @@ function [ishappy, cutoff] = plateauCheck(f, values, data, pref)
 %
 %   The reason for criterion (2) is that the problem may have a large condition
 %   number that prevents convergence to the full requested accuracy, as often
-%   happens in the collocation of differential equations.
+%   happens in collocation of differential equations.
 %
 %   Output CUTOFF is an estimate of how many of the coefficients are useful.
 %
@@ -29,7 +29,7 @@ function [ishappy, cutoff] = plateauCheck(f, values, data, pref)
 
 % [TODO]: implement PLATEAUCHECK for TRIGTECH. For the moment, we just call
 % classicCheck. The reason why the plateauCheck() is needed for TRIGTECH is 
-% that it gets called in CHEBDISCRETIZATION/TESTCONVERGENCE.
+% that it gets called in OPDISCRETIZATION/TESTCONVERGENCE.
 
 [ishappy, cutoff] = classicCheck(f, values, data, pref);
 

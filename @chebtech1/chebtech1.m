@@ -171,6 +171,11 @@ classdef chebtech1 < chebtech
         % Refinement function for CHEBTECH1 construction (evaluates OP on grid):
         [values, points, giveUp] = refine(op, values, pref)
         
+        % Return the value-based discretization class which uses CHEBTECH1: 
+        function disc = returnValsDisc()
+            disc = @chebcolloc1;
+        end
+        
         % Convert values to coefficients:
         coeffs = vals2coeffs(values)
         
