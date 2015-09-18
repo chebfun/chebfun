@@ -83,12 +83,12 @@ else
     % CHEBCOEFFS() of a piecewise smooth CHEBFUN:
 
     % Compute coefficients via inner products.
-    d = f.domain([1, end]);
+    d = f.domain;
     x = chebfun('x', d);
     if ( kind == 1 )
-        w = 1./sqrt((x - d(1)).*(d(2) - x));
+        w = 1./sqrt((x - d(1)).*(d(end) - x));
     elseif ( kind == 2 )
-        w = sqrt((x - d(1)).*(d(2) - x));
+        w = sqrt((x - d(1)).*(d(end) - x));
     end
     
     numCols = numColumns(f);
