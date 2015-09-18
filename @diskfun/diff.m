@@ -24,9 +24,7 @@ else
     K = varargin{2};
 end
 
-if K > 1
-    error('DISKFUN:DIFF:ORDER', 'Only first derivatives currently allowed.');
-end
+
 
 if ( dim ~= 1 && dim ~= 2  )
     error('DISKFUN:DIFF:DIM', 'Unrecognized coordinate dimension');
@@ -37,9 +35,20 @@ if ( abs( K - round(K) ) > eps )
 end
 K = round( K );
 
+
+% Implement higher derivatives as repeated (iterated) differentiation
+for j=1:K
+    f = onediff(f, dim);
+end
+
+end
 % TODO: This code will not work for complex valued spherefuns, if we ever
 % allow them.
 % realf = isreal(f);
+
+function f = onediff(f, dim)
+
+f=simplify(f); 
 
 % We are going to work at the tech level to make things faster.
 [C, D, R] = cdr( f );
@@ -49,17 +58,27 @@ K = round( K );
 n = length(C)+mod(length(C),2);
 m = length(R);
 
-% Matrices for multiplying by sin/cos in coefficient space.
-%Msinn = .5i*spdiags(ones(n,1)*[-1,1],[-1 1],n,n);
+% The variable coefficients in the definitions of the derivatives means
+% that the length of the columns and rows will increase by one wave number
+% after taking the derivatives with respect to x and y. 
+m = m+2;
+n=n+2;
+
+% Matrices for multiplying by sin/cos and 1/r in coefficient space.
+
 Msinm = .5i*spdiags(ones(m,1)*[-1,1],[-1 1],m,m);
-%Mcosn = .5*spdiags(ones(n,1)*[1,1],[-1 1],n,n);
+
 Mcosm = .5*spdiags(ones(m,1)*[1,1],[-1 1],m,m);
 Mn = ultraS.multmat(n, [0;1], 0); %used for the 1/r multiply
-%Mm = ultraS.multmat(m, [0;1], 0);
+
 
 % Work at the tech level to make things faster.
 ctechs = C;
 rtechs = R.funs{1}.onefun;
+
+% alias to get the extra zeros in place
+ctechs = chebfun(chebtech2.alias(C.coeffs, n), 'coeffs'); 
+rtechs.coeffs = rtechs.alias(rtechs.coeffs, m); 
 
 % Compute the derivatives
 dCdr = diff(ctechs);
@@ -92,26 +111,7 @@ else  %d/dy
     C2 = dCdr.coeffs;
     R2 = Msinm*rtechs.coeffs;
 end
-%if ( dim == 1 ) || ( dim == 2)
- %   if ( dim == 1 )            % x
-        % Calculate the C * D * R.' decomposition of -sin(lam)./sin(th) dfdlam
-     %   C_cfs = ctechs.alias(ctechs.coeffs,n);
-     %   C1 = Msinn \ C_cfs;
-      %  R1 = -Msinm*dRdth.coeffs;
 
-        % Calculate the C * D * R.' decomposition of cos(lam)cos(th) dfdth
-      %  C2 = Mcosn*ctechs.alias(dCdr.coeffs,n);
-       % R2 = Mcosm*rtechs.coeffs;
-   % elseif ( dim == 2 )         % y
-        % Calculate the C * D * R.' decomposition of cos(lam)./sin(th) dfdlam
-      % C_cfs = ctechs.alias(ctechs.coeffs,n);
-       % C1 = Msinn \ C_cfs;
-       % R1 = Mcosm*dRdth.coeffs;
-
-        % Calculate the C * D * R.' decomposition of sin(lam)cos(th) dfdth
-       % C2 = Mcosn*ctechs.alias(dCdr.coeffs,n);
-       % R2 = Msinm*rtechs.coeffs;
-   % end
     % Put pieces back together
     f1 = f; 
     %c1cols = real(C1);
@@ -139,6 +139,8 @@ end
     % So we sample each piece add them together and construct a spherefun.
     % TODO: Fix this so everything is done in coefficient space, like this
     % f = f1 + f2;        
+    m = m + mod(m, 2); 
+    
     f = diskfun(sample(f1,m,n)+sample(f2,m,n));    
-
 end
+
