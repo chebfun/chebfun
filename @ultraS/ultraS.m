@@ -70,9 +70,6 @@ classdef ultraS < coeffsDiscretization
         
         % Multiplication matrices for ultraspherical spectral method.
         D = multmat(n, f, lambda)
-      
-        % Obtain the range of the ultrapspherical spectral operator.
-        outputSpace = getOutputSpace(source)
         
     end
     

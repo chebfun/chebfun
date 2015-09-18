@@ -4,7 +4,7 @@ function D = diffmat(N, m)
 %   Fourier coefficients and returns N coefficients that represent the mth 
 %   derivative of the Fourier series. 
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Parse inputs.

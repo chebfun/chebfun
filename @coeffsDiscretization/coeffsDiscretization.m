@@ -1,4 +1,12 @@
 classdef coeffsDiscretization < opDiscretization
+%COEFFSDISCRETIZATION   Abstract class for coefficients-based discretization of 
+%operators.
+%   COEFFSDISCRETIZATION is a partial implementation of OPDISCRETIZATION using
+%   Chebyshev coefficients or Fourier coefficients. COEFFSDISCRETIZATION cannot 
+%   be used directly as a discretization for LINOPs. ULTRAS and TRIGSPEC are 
+%   full implementations.
+%
+% See also OPDISCRETIZATION, TRIGSPEC, ULTRAS.
 
 %  Copyright 2015 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org/ for Chebfun information.
@@ -71,6 +79,9 @@ classdef coeffsDiscretization < opDiscretization
         
         % Get coefficient representation of the source.
         c = getCoeffs(source)
+        
+        % Obtain the range of the spectral operator.
+        outputSpace = getOutputSpace(source)
         
         % Sparse Toeplitz matrix.
         T = sptoeplitz(col, row)
