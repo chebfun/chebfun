@@ -49,7 +49,7 @@ if ( isnumeric(op) || iscell(op) )
 
     % Threshold to determine if f is real or not.
     vscl = max(data.vscale, vscale(f));
-    f.isReal = max(abs(imag( f.values ))) <= 2*(eps.*vscl);
+    f.isReal = max(abs(imag(f.values))) <= 3*(eps.*vscl);
     f.values(:,f.isReal) = real(f.values(:,f.isReal));
 
     return
