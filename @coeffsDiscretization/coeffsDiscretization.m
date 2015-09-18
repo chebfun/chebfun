@@ -1,5 +1,5 @@
 classdef coeffsDiscretization < opDiscretization
-%COEFFSDISCRETIZATION   Abstract class for coefficients-based discretization of 
+%COEFFSDISCRETIZATION   Abstract class for coefficient-based discretization of 
 %operators.
 %   COEFFSDISCRETIZATION is a partial implementation of OPDISCRETIZATION using
 %   Chebyshev coefficients or Fourier coefficients. COEFFSDISCRETIZATION cannot 

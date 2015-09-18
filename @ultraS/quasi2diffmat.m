@@ -1,4 +1,4 @@
-function [L, S] = quasi2USdiffmat(disc)
+function [L, S] = quasi2diffmat(disc)
 %QUASI2USDIFFMAT(DISC)   Convert DISC.coeffs to a differential operator.
 %   L = QUASI2USDIFFMAT(DISC) returns a matrix L of the US representation of the
 %   differential operator L*u = (C{1}*D^[m] + ... C{m+1}*I)*u.
