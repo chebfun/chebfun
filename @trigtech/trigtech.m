@@ -448,6 +448,11 @@ classdef trigtech < smoothfun % (Abstract)
         % Refinement function for TRIGTECH construction (evaluates OP on grid):
         [values, points, giveUp] = refine(op, values, pref)
         
+         % Return the value-based discretization class which uses TRIGTECH: 
+        function disc = returnValsDisc()
+            disc = @trigcolloc;
+        end
+        
         % Retrieve and modify preferences for this class.
         p = techPref(q)
 
