@@ -40,15 +40,8 @@ if ( isempty(vscl) )
 end
 tol = tol.*max(f.hscale*nrmf, vscl);
 
-% Choose a point to evaluate at:
-if ( n == 1 )
-    xeval = 0.61; % Pseudo-random test value
-else
-    % Test a point where the (finite difference) gradient of values is largest:
-    [ignored, index] = max(bsxfun(@rdivide, abs(diff(values)), diff(x)));
-    xeval = ( x(index + 1) + 1.41*x(index) ) / 2.41;
-end
-xeval = [-1+1e-12 ; xeval ; 1-1e-12];
+% choose points to evaluate
+xeval = 1e-5*[-1;1]/sqrt(3);
 
 % Evaluate the CHEBTECH:
 vFun = feval(f, xeval);
@@ -56,12 +49,6 @@ vFun = feval(f, xeval);
 % Evaluate the op:
 vOp = feval(op, xeval);
 
-% If the CHEBTECH evaluation differs from the op evaluation, SAMPLETEST failed:
-err = abs(vOp - vFun); % Relative (to vscl) error.
-if ( any(max(abs(err)) > tol) )
-    pass = false; % :(
-else
-    pass = true;  % :)
-end
+pass = all(max(abs(vFun-vOp), [], 1) <= tol);
 
 end
