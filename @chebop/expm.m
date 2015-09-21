@@ -52,7 +52,7 @@ if ( fail )
 end
 
 % Determine the discretization:
-prefs = determineDiscretization(N, L, prefs);
+prefs = determineDiscretization(N, length(L.domain), prefs);
 
 % Clear boundary conditions if the dicretization uses periodic functions (since
 % if we're using periodic basis functions, the boundary conditions will be
