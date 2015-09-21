@@ -186,7 +186,7 @@ if ( isPeriodicTech(techUsed) )
     % Clear the boundary conditions.
     [N, L] = clearPeriodicBCs(N, L);
     
-    % ENsure that u0 is of correct discretization:
+    % Ensure that u0 is of correct discretization:
     u0 = changeTech(u0, tech);
 end
 

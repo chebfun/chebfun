@@ -84,7 +84,7 @@ pass(10) = isequal(out.discretization, @ultraS);
 
 %% Test a discontinuous RHS:
 
-% Zero boundary condtion at the left:
+% Zero boundary condition at the left:
 dom = [-1 1];
 L = chebop(dom);
 L.op = @(x,u) diff(u) + 2*u;
