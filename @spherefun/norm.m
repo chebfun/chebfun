@@ -24,21 +24,21 @@ if ( isempty( f ) )
 else
     switch ( p )  % Different cases on different norms.
         case 1
-            error('CHEBFUN:CHEBFUN2:norm:norm', ...
-                'CHEBFUN2 does not support L1-norm, yet');
+            error('CHEBFUN:SPHEREFUN:norm:norm', ...
+                'SPHEREFUN does not support L1-norm, yet');
             
         case {2, 'fro'}  % Definite integral of f.^2
-            % L^2-norm is sum of squares of sv.
-            normF = sqrt( sum( svd( f ).^2 ) );  
+           
+            normF = sqrt( sum2(( f ).^2 ) );  
             
-%         case {inf, 'inf', 'max'}
-%             [Y, X] = minandmax2(f);
-%             [normF, idx] = max( abs( Y ) );
-%             normloc = X( idx, : );
+        case {inf, 'inf', 'max'}
+             [Y, X] = minandmax2(f);
+             [normF, idx] = max( abs( Y ) );
+             normloc = X( idx, : );
             
         case {-inf, '-inf', 'min'}
-            error('CHEBFUN:CHEBFUN2:norm:norm', ...
-                'CHEBFUN2 does not support this norm.');
+            error('CHEBFUN:SPHEREFUN:norm:norm', ...
+                'SPHEREFUN does not support this norm.');
             
 %         case {'op', 'operator'}
 %             [C, D, R] = cdr( f ); 
@@ -49,22 +49,22 @@ else
         otherwise
            % TODO:
             error 
-%             if ( isnumeric(p) && isreal(p) )
-%                 if ( abs(round(p) - p) < eps )
-%                     p = round(p); f = f.^p;
-%                     if ( ~mod(p,2) )
-%                         normF = ( sum2( f ) ).^( 1/p );
-%                     else
-%                         error('CHEBFUN:CHEBFUN2:norm:norm', ...
-%                             'p-norm must have p even for now.');
-%                     end
-%                 else
-%                     error('CHEBFUN:CHEBFUN2:norm:norm', ...
-%                         'CHEBFUN2 does not support this norm.');
-%                 end
-%             else
-%                 error('CHEBFUN:CHEBFUN2:norm:unknown', 'Unknown norm.');
-%             end
+             if ( isnumeric(p) && isreal(p) )
+                if ( abs(round(p) - p) < eps )
+                     p = round(p); f = f.^p;
+                     if ( ~mod(p,2) )
+                        normF = ( sum2( f ) ).^( 1/p );
+                     else
+                         error('CHEBFUN:SPHEREFUN:norm:norm', ...
+                             'p-norm must have p even for now.');
+                    end
+                 else
+                     error('CHEBFUN:SPHEREFUN:norm:norm', ...
+                         'SPHEREFUN does not support this norm.');
+                 end
+             else
+                 error('CHEBFUN:SPHEREFUN:norm:unknown', 'Unknown norm.');
+             end
             
     end
 end
