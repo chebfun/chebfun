@@ -29,7 +29,7 @@ else
             
         case {2, 'fro'}  % Definite integral of f.^2
             % 
-            normF = sqrt( sum2( ( f .*f ) );  
+            normF = sqrt( sum2( ( f .*f ) ));  
             
          case {inf, 'inf', 'max'}
              [Y, X] = minandmax2(f);
