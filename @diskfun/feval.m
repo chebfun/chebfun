@@ -13,6 +13,9 @@ if nargin < 4
     c3 = 1;
 end
 
+if strcmpi(c3,'cart')
+    c3 = 0;
+end
     % Convert to polar coordinates
     if c3 == 0
         [theta,r] = cart2pol(c1,c2);

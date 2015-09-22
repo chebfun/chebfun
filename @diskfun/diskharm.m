@@ -48,10 +48,6 @@ dom = [-pi pi 0 1];
        end
        %choose sin or cos based on L value
        pos = abs(max(0,lsign));  
-       
-      
-      
-       
        Z=((pos)*cos(L*theta) +(1-pos)*sin(L*theta)).*z;
        
        Z=reshape(Z,sz1);

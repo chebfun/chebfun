@@ -30,12 +30,14 @@ switch ( propName )
         val = f.pivotValues;
     case 'pivotLocations'
         val = f.pivotLocations;
+    case 'pivotIndices'
+        val = f.pivotIndices;
     case 'idxPlus'
         val = f.idxPlus;
     case 'idxMinus'
         val = f.idxMinus;
     case 'nonZeroPoles'
-        val = f.nonZeroPoles
+        val = f.nonZeroPoles;
     otherwise
         error('CHEBFUN:DISKFUN:get:propName', ...
             [propName,' is not a valid DISKFUN property.'])

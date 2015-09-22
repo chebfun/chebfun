@@ -1,15 +1,15 @@
 function [ normF ] = norm( f, p )
 %NORM   Norm of a SPHEREFUN
-% For CHEBFUN2 objects:
-%    SPHEREFUN(F) = sqrt(integral of abs(F)^2).
-%    SPHEREFUN(F, 2) = largest singular value of F.
-%    SPHEREFUN(F,'fro') is the same as NORM(F).
-%    SPHEREFUN(F, 1) = NOT IMPLEMENTED.
-%    SPHEREFUN(F, inf) = global maximum in absolute value.
-%    SPHEREFUN(F, max) = global maximum in absolute value.
-%    SPHEREFUN(F, min) = NOT IMPLEMENTED
+% For DISKFUN objects:
+%    DISKFUN(F) = sqrt(integral of abs(F)^2).
+%    DISKFUN(F, 2) = largest singular value of F.
+%    DISKFUN(F,'fro') is the same as NORM(F).
+%    DISKFUN(F, 1) = NOT IMPLEMENTED.
+%    DISKFUN(F, inf) = global maximum in absolute value.
+%    DISKFUN(F, max) = global maximum in absolute value.
+%    DISKFUN(F, min) = NOT IMPLEMENTED
 %
-% Furthermore, the inf norm for SPHEREFUN objects also returns a second output,
+% Furthermore, the inf norm for DISKFUN objects also returns a second output,
 % giving a position where the max occurs.
 
 if ( nargin == 1 ) 
@@ -24,21 +24,21 @@ if ( isempty( f ) )
 else
     switch ( p )  % Different cases on different norms.
         case 1
-            error('CHEBFUN:CHEBFUN2:norm:norm', ...
-                'CHEBFUN2 does not support L1-norm, yet');
+            error('CHEBFUN:DISKFUN:norm:norm', ...
+                'DISKFUN does not support L1-norm, yet');
             
         case {2, 'fro'}  % Definite integral of f.^2
-            % L^2-norm is sum of squares of sv.
-            normF = sqrt( sum( svd( f ).^2 ) );  
+            % 
+            normF = sqrt( sum2( ( f .*f ) );  
             
-%         case {inf, 'inf', 'max'}
-%             [Y, X] = minandmax2(f);
-%             [normF, idx] = max( abs( Y ) );
-%             normloc = X( idx, : );
+         case {inf, 'inf', 'max'}
+             [Y, X] = minandmax2(f);
+             [normF, idx] = max( abs( Y ) );
+             normloc = X( idx, : );
             
         case {-inf, '-inf', 'min'}
-            error('CHEBFUN:CHEBFUN2:norm:norm', ...
-                'CHEBFUN2 does not support this norm.');
+            error('CHEBFUN:DISKFUN:norm:norm', ...
+                'DISKFUN does not support this norm.');
             
 %         case {'op', 'operator'}
 %             [C, D, R] = cdr( f ); 
@@ -49,22 +49,22 @@ else
         otherwise
            % TODO:
             error 
-%             if ( isnumeric(p) && isreal(p) )
-%                 if ( abs(round(p) - p) < eps )
-%                     p = round(p); f = f.^p;
-%                     if ( ~mod(p,2) )
-%                         normF = ( sum2( f ) ).^( 1/p );
-%                     else
-%                         error('CHEBFUN:CHEBFUN2:norm:norm', ...
-%                             'p-norm must have p even for now.');
-%                     end
-%                 else
-%                     error('CHEBFUN:CHEBFUN2:norm:norm', ...
-%                         'CHEBFUN2 does not support this norm.');
-%                 end
-%             else
-%                 error('CHEBFUN:CHEBFUN2:norm:unknown', 'Unknown norm.');
-%             end
+            if ( isnumeric(p) && isreal(p) )
+                if ( abs(round(p) - p) < eps )
+                    p = round(p); f = f.^p;
+                    if ( ~mod(p,2) )
+                        normF = ( sum2( f ) ).^( 1/p );
+                    else
+                        error('CHEBFUN:DISKFUN:norm:norm', ...
+                            'p-norm must have p even for now.');
+                    end
+                else
+                    error('CHEBFUN:DISKFUN:norm:norm', ...
+                        'DISKFUN does not support this norm.');
+                end
+            else
+                error('CHEBFUN:DISKFUN:norm:unknown', 'Unknown norm.');
+            end
             
     end
 end
