@@ -18,17 +18,36 @@ function varargout = matrix(A, varargin)
 %     prefs.discretization = @chebcolloc2;
 %     matrix(A, 5, prefs)
 %
-% See also CHEBOPPREF, CHEBDISCRETIZATION, CHEBDISCRETIZATION/MATRIX. 
+% See also CHEBOPPREF, OPDISCRETIZATION, OPDISCRETIZATION/MATRIX. 
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Get the preferences:
-prefs = varargin{end};
-discType = prefs.discretization;
-varargin(end) = [];
+% Any non-numeric argument should be an OPDISCRETIZATION constructor. 
+discType = [];
+numericargs = cellfun(@isnumeric, varargin);
+for k = find( ~numericargs(:)' )
+    prefs = varargin{k};
+    discType = prefs.discretization;
+    varargin(k) = [];  % Delete from list.
+end
 
-% Discretize:
+% Get the default discretization type if needed.
+if ( isempty(discType) )
+    prefs = cheboppref;
+    discType = prefs.discretization;
+end
+
+% Deal with a 'values' or 'coeffs' discType.
+if ( ischar(discType) )
+    if ( strcmp(discType, 'values') )
+        discType = @chebcolloc2;
+    elseif ( strcmp(discType, 'coeffs') )
+        discType = @ultraS;
+    end
+end
+
+% Discretize.
 d = discType(A, varargin{:});
 [varargout{1:nargout}] = matrix(d);
 
