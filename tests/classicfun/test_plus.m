@@ -111,7 +111,7 @@ h = f + g;
 vals_h = feval(h, x);
 op = @(x)  (x - data.domain(2)).^pow.*(sin(x)+cos(3*x));
 h_exact = op(x);
-pass(22) = ( norm(vals_h-h_exact, inf) < 1e2*max(get(f, 'epslevel'), ...
+pass(22) = ( norm(vals_h-h_exact, inf) < 1e3*max(get(f, 'epslevel'), ...
     get(g, 'epslevel'))*norm(h_exact, inf) );
     
     
@@ -135,7 +135,7 @@ h = f + g;
 hVals = feval(h, x);
 hExact = oph(x);
 err = hVals - hExact;
-pass(23) = norm(err, inf) < get(h,'epslevel').*get(h,'vscale');
+pass(23) = norm(err, inf) < 1e1*get(h,'epslevel').*get(h,'vscale');
 
 end
 

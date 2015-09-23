@@ -186,7 +186,10 @@ classdef chebtech < smoothfun % (Abstract)
 
         % Complex conjugate of a CHEBTECH.
         f = conj(f)
-        
+
+        % Constructor subroutine that handles "turbo" mode.
+        f = constructorTurbo(f, op, pref)
+
         % CHEBTECH objects are not transposable.
         f = ctranspose(f)
 
@@ -353,7 +356,7 @@ classdef chebtech < smoothfun % (Abstract)
         out = rval(f)
 
         % Test an evaluation of the input OP against a CHEBTECH approx.
-        pass = sampleTest(op, values, f, vscl)
+        pass = sampleTest(op, values, f, vscl, pref)
         
         % Signum of a CHEBTECH. (f should have no zeros in its domain)
         f = sign(f, pref)
@@ -394,6 +397,9 @@ classdef chebtech < smoothfun % (Abstract)
 
         % Clenshaw's algorithm for evaluating a Chebyshev polynomial.
         out = clenshaw(x, coeffs)
+
+        % Convert Chebyshev-T coefficients to Chebyshev-U coefficients.
+        cU = chebTcoeffs2chebUcoeffs(cT)
 
         % Retrieve and modify preferences for this class.
         p = techPref(q)

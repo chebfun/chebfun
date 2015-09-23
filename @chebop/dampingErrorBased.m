@@ -16,7 +16,7 @@ function [u, dampingInfo] = dampingErrorBased(N, u, rhs, delta, L, disc, damping
 %    RHS:    Current right-hand side of the differential equation
 %    DELTA:  Current Newton corrections
 %    L:      A LINOP, that is the linearization of N around U
-%    DISC:   The CHEBDISCRETIZATION object arising from L
+%    DISC:   The OPDISCRETIZATION object arising from L
 %    RHS:    Right hand side of ODE
 %    V:      The new solution
 %
@@ -165,6 +165,9 @@ while ( ~accept )
     % Switch to pure Newton if we are experiencing good convergence
     if ( lambdaPrime == 1 && cFactor < .5 )
         dampingInfo.damping = 0;
+    else
+        % Ensure we stay in damped mode
+        dampingInfo.damping = 1;
     end
     
     % TODO: Document

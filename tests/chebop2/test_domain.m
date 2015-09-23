@@ -47,4 +47,13 @@ N.dbc = @(x) bdy(x,d(3)); N.ubc = @(x) bdy(x,d(4));
 u = N \ 0; exact = chebfun2(bdy, d);
 pass(9) = ( norm( exact - u ) < 100*tol );
 
+% Check that Robin conditions are being dealt with correctly by AD: 
+N = chebop2(@(u) laplacian(u), [0 1 0 pi/6]);
+N.ubc = 0; N.rbc = 0; N.lbc = 0;
+N.dbc = @(x, u) u + 2.1*diff(u) - sin(2*pi*x);
+u = N\0;
+dudx = u + 2.1*diffy(u);
+bc = chebfun( @(x) sin(2*pi*x), [0,1] ); 
+pass(10) = ( norm( dudx(:,0) - bc' ) < 10*tol ); 
+
 end

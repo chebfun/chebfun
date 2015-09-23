@@ -387,7 +387,7 @@ classdef trigtech < smoothfun % (Abstract)
         out = roots(f, varargin)
         
         % Test an evaluation of the input OP against a TRIGTECH approx.
-        pass = sampleTest(op, values, f)
+        pass = sampleTest(op, f, pref)
         
         % Signum of a TRIGTECH. (f should have no zeros in its domain)
         f = sign(f, pref)
@@ -436,6 +436,9 @@ classdef trigtech < smoothfun % (Abstract)
         % Convert coefficients to values:
         values = coeffs2vals(coeffs);
         
+        % Horner scheme for evaluation of a TRIGTECH
+        y = horner(x, c, allReal)
+
         % Make a TRIGTECH (constructor shortcut):
         f = make(varargin);
         
@@ -444,6 +447,11 @@ classdef trigtech < smoothfun % (Abstract)
         
         % Refinement function for TRIGTECH construction (evaluates OP on grid):
         [values, points, giveUp] = refine(op, values, pref)
+        
+         % Return the value-based discretization class which uses TRIGTECH: 
+        function disc = returnValsDisc()
+            disc = @trigcolloc;
+        end
         
         % Retrieve and modify preferences for this class.
         p = techPref(q)

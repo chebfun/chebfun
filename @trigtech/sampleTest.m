@@ -1,4 +1,4 @@
-function pass = sampleTest(op, f)
+function pass = sampleTest(op, f, pref)
 %SAMPLETEST   Test an evaluation of input OP against a TRIGTECH approximation.
 %   SAMPLETEST(OP, F) evaluates both the function OP and its TRIGTECH
 %   representation F at one or more points within [-1,1). The difference of
@@ -13,7 +13,7 @@ function pass = sampleTest(op, f)
 n = length(f);
 
 % Set a tolerance:
-tol = max(f.epslevel, 1e3*eps) * n;
+tol = max(max(f.epslevel, pref.eps), 1e3*eps) * n;
 
 % Choose a point to evaluate at:
 if ( n == 1 )

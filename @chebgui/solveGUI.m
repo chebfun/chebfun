@@ -106,6 +106,9 @@ if ( strcmp(get(handles.button_solve, 'string'), 'Solve') )   % In solve mode
     
     % Call the private method solveGUIbvp, ivp, pde, or eig, which do the work.
     try
+        % Disable discretization warnings.
+        % TODO: Remove this when #1555 gets merged.
+        warnstate = warning('OFF', 'CHEBOPPREF:PARSEDISCRETIZATION');
         if ( strcmpi(handles.guifile.type, 'bvp') )
             handles = solveGUIbvp(guifile, handles);
         elseif ( strcmpi(handles.guifile.type, 'ivp') )
@@ -116,7 +119,12 @@ if ( strcmp(get(handles.button_solve, 'string'), 'Solve') )   % In solve mode
             handles = solveGUIeig(guifile, handles);            
         end
         handles.hasSolution = 1;
+        % TODO: Remove this when #1555 gets merged.
+        warning(warnstate.state, 'CHEBOPPREF:PARSEDISCRETIZATION')
     catch ME
+        % TODO: Remove this when #1555 gets merged.
+        warning(warnstate.state, 'CHEBOPPREF:PARSEDISCRETIZATION')
+        
         Mstruct = struct('identifier', ME.identifier, 'message', ME.message, ...
             'stack', ME.stack);
         MEID = ME.identifier;

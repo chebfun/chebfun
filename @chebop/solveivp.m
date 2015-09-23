@@ -230,6 +230,9 @@ initVals = initVals(idx);
 % Create an ODESET struct for specifying tolerance:
 opts = odeset('absTol', pref.ivpAbsTol, 'relTol', pref.ivpRelTol);
 
+% What happiness check do we want to use for the IVP?
+opts.happinessCheck = pref.happinessCheck;
+
 % Solve!
 [t, y]= solver(anonFun, odeDom, initVals, opts);
 

@@ -21,7 +21,7 @@ for n = 1:2
     [g, l, r] = extractBoundaryRoots(f);
     gexact = testclass.make(@(x) sin(2*x), [], pref);
     err = feval(g, x) - feval(gexact, x);
-    pass(n, 1) = (norm(err, Inf) < (1e2^ml)*f.epslevel) && (l == ml);
+    pass(n, 1) = (norm(err, Inf) < (1e3^ml)*f.epslevel) && (l == ml);
     
     %% Test roots at right endpoint:
     mr = 2;
