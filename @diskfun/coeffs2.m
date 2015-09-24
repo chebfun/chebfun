@@ -1,8 +1,8 @@
 function varargout = coeffs2( f ) 
 % COEFFS2   Fourier--Chebyshev coefficients of a diskfun 
 % 
-%  X = COEFFS2( F ) returns the modes of the spherefun in the 
-%  Fourier--Chebyshev based. 
+%  X = COEFFS2( F ) returns the modes of the diskfun in the 
+%  Fourier--Chebyshev bases. 
 % 
 % [C, D, R] = COEFFS2( F ) returns a low rank approximation to the modes. 
 % 
@@ -14,7 +14,7 @@ function varargout = coeffs2( f )
 % Calculate the CDR decomposition: 
 [C, D, R] = cdr( f ); 
 
-% Find the Fourier coefficients of each slice: 
+% Find the  coefficients of each slice: 
 U = C.coeffs; 
 R = R.coeffs;
 

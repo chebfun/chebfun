@@ -31,8 +31,8 @@ else
     fp.cols = fp.cols(:,id);
     fp.rows = fp.rows(:,id);
     fp.pivotValues = fp.pivotValues(id);
-    fp.pivotLocations = fp.pivotLocations(id);
-    fp.pivotIndices = fp.pivotIndices(id);
+    fp.pivotLocations = fp.pivotLocations(id); %fix locations and indices (s.b. two columns)
+    fp.pivotIndices = fp.pivotIndices(id);      % not sure why fixing this causes other issues
     fp.idxPlus = 1:length(id);
     fp.idxMinus = [];
 end

@@ -1,5 +1,5 @@
 function [ normF ] = norm( f, p )
-%NORM   Norm of a SPHEREFUN
+%NORM  
 % For DISKFUN objects:
 %    DISKFUN(F) = sqrt(integral of abs(F)^2).
 %    DISKFUN(F, 2) = largest singular value of F.
@@ -18,7 +18,7 @@ if ( nargin == 1 )
 end
 
 if ( isempty( f ) )  
-    % Empty chebfun has norm 0.
+    % Empty diskfun has norm 0.
     normF = [];
     
 else

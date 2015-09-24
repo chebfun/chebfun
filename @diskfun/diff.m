@@ -10,7 +10,7 @@ function f = diff( f, varargin )
 %  F = DIFF( F, DIM, K) computes the kth derivatives of F in the variable
 %  given by DIM.
 %
-%  See also GRADIENT, LAPLACIAN
+%  See also LAPLACIAN
 
 % Parse user inputs:
 if ( nargin == 1 )
@@ -35,14 +35,13 @@ if ( abs( K - round(K) ) > eps )
 end
 K = round( K );
 
-
 % Implement higher derivatives as repeated (iterated) differentiation
 for j=1:K
     f = onediff(f, dim);
 end
 
 end
-% TODO: This code will not work for complex valued spherefuns, if we ever
+% TODO: This code will not work for complex valued diskfuns, if we ever
 % allow them.
 % realf = isreal(f);
 
@@ -64,12 +63,12 @@ m = length(R);
 m = m+2;
 n=n+2;
 
-% Matrices for multiplying by sin/cos and 1/r in coefficient space.
+% Matrices for multiplying by sin(theta), cos(theta) and 1/r in coefficient space.
 
 Msinm = .5i*spdiags(ones(m,1)*[-1,1],[-1 1],m,m);
 
 Mcosm = .5*spdiags(ones(m,1)*[1,1],[-1 1],m,m);
-Mn = ultraS.multmat(n, [0;1], 0); %used for the 1/r multiply
+Mn = ultraS.multmat(n, [0;1], 0); 
 
 
 % Work at the tech level to make things faster.
@@ -114,8 +113,6 @@ end
 
     % Put pieces back together
     f1 = f; 
-    %c1cols = real(C1);
-    %f1.cols= c1cols;
     f1.cols = chebfun(C1, 'coeffs'); 
     r1techs = real(trigtech({'',R1}));
     f1.rows.funs{1}.onefun = r1techs;
@@ -136,9 +133,11 @@ end
     f2.idxMinus = temp;
 
     % Compression plus may not preserve the expansion properties we want.
-    % So we sample each piece add them together and construct a spherefun.
+    % So we sample each piece add them together and construct a diskfun.
     % TODO: Fix this so everything is done in coefficient space, like this
-    % f = f1 + f2;        
+    % f = f1 + f2; 
+    
+    %constructor requires even m
     m = m + mod(m, 2); 
     
     f = diskfun(sample(f1,m,n)+sample(f2,m,n));    

@@ -57,7 +57,7 @@ if ( isa(f,'diskfun') )
         [tt, rr] = meshgrid(t, r);
         
        
-        %[xx,yy] = pol2cart(tt,rr);
+        
         xx=rr.*cos(tt);
         yy=rr.*sin(tt);
         % Make some corrections to C for prettier plotting.

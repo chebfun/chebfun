@@ -1,10 +1,10 @@
 function [f,h] = extractPole(f)
-% EXTRACTPOLE  Removes from F the term accounting for the non-zero poles
+% EXTRACTPOLE  Removes from F the term accounting for non-zero pole
 %
-% [G,H] = EXTRACTPOLE(F) if F is non-zero at the poles, then this function
+% [G,H] = EXTRACTPOLE(F) if F is non-zero at the pole, then this function
 % returns DISKFUNs G and H, such that H is rank 1, G = F - H, and G is
 % zero at the poles. If F is zero at the poles then G is an empty
-% DISFUN.
+% DISKFUN.
 %
 
 if ~isempty(f) && f.nonZeroPoles

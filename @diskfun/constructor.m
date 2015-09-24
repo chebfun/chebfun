@@ -42,7 +42,7 @@ if ( nargin < 3 || isempty(coords) ) %for now assume polar if not specified
     coords = 1;
 end
 
-if strcmpi(coords,'cart')
+if strcmpi(coords,'cart') 
     coords = 0;
 end
 
@@ -141,6 +141,7 @@ g.domain = dom;
 g.idxPlus = idxPlus;
 g.idxMinus = idxMinus;
 g.nonZeroPoles = removePoles;
+
 % Adjust the pivot locations so that they correspond to 
 % -pi < th < pi and 0 < r <1
 
@@ -150,7 +151,7 @@ pivotLocations(:,1) = pivotLocations(:,1) + pi; %adjust horz using BMC sym.
 g.pivotLocations = pivotLocations;
 
 % Sort according to the maginuted of the pivots using the partition and
-% combine functions.
+% combine functions. 
 % [gp,gm] = partition(g);
 % g = combine(gp,gm);
 
@@ -338,9 +339,7 @@ end
 
 % Adjust the pivot locations so that they now correspond to F having
 % the poles.
-%if ~isempty( pivotIndices )
- %   pivotIndices(:,1) = pivotIndices(:,1) + 1;
-%end
+
 
 % Put the poles at the begining of the pivot locations array and also include
 % the pivot matrix.
@@ -354,7 +353,7 @@ end
 
 function [cols, pivots, rows, pivotLocations, idxPlus, idxMinus, removePoles] = PhaseTwo( h, pivotIndices, pivotArray, n, dom, tol, maxSample, removePoles )
 
-% alpha = spherefun.alpha; % get growth rate factor.
+% alpha = diskfun.alpha; % get growth rate factor.
 happy_columns = 0;   % Not happy, until proven otherwise.
 happy_rows = 0;
 m = n;
@@ -619,7 +618,7 @@ function f = redefine_function_handle( f, coords )
 end
 
 function tol = GetTol(F, hx, hy, dom, pseudoLevel)
-% GETTOL     Calculate a tolerance for the spherefun constructor.
+% GETTOL     Calculate a tolerance for the diskfun constructor.
 %
 %  This is the 2D analogue of the tolerance employed in the trigtech
 %  constructors. It is based on a finite difference approximation to the
@@ -639,11 +638,5 @@ tol = grid.^(2/3) * max( abs( dom(:) ) ) * max( Jac_norm, vscale) * pseudoLevel;
 
 end
 
-% function f = redefine_function_handle_pole( f, poleColPivot )
-% % Set f to f - f(poleColPivot,theta) where poleColPivot is the value of
-% % lambda (the column) used to zero out the poles of f.
-% 
-% f = @(lam, th) f(lam,th) - f(poleColPivot,th);
-% 
-% end
+
 

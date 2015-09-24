@@ -5,7 +5,7 @@ function varargout = plot( f, varargin )
 %   the same as surf(F). If F is a complex valued then this returns a domain
 %   colouring plot of F.
 %
-%   PLOT(F) if F is a complex-valued SPHEREFUN then we do Wegert's phase portrait
+%   PLOT(F) if F is a complex-valued DISKFUN then we do Wegert's phase portrait
 %   plots.
 %
 %   PLOT(F, S) Plotting with option string plots the column and row slices, and
@@ -56,7 +56,7 @@ if ( ~isempty(varargin) )
         N = 100; %used to generate solid disk as well as plot slicing lines
         th = trigpts(N, dom); th=[th; dom(2)];
         % If the plot is not being added to another then plot a solid
-        % sphere so the lines are more easily discernable.
+        % disk so the lines are more easily discernable.
         if ~holdState
             %
             % Generate a unit disk
@@ -65,7 +65,7 @@ if ( ~isempty(varargin) )
             r = exp(1i*th);
             
             clr = [255 255 204]/255;
-            fill(real(r),imag(r), clr, 'Edgecolor', 'None'); %is there a way to eliminate border?            
+            fill(real(r),imag(r), clr, 'Edgecolor', 'None');             
         end
         
         %% Column, row, pivot plot
@@ -117,7 +117,7 @@ if ( ~isempty(varargin) )
       
         % Also plot points marking the pivots shifted by pi in longitude
         % since these are technically also included in the GE algorithm.
-        pivotsCart = [pivotsCart;[-pivotsCart(:,1:2)]];
+        pivotsCart = [pivotsCart;-pivotsCart(:,1:2)];
         
         defaultopts = { 'MarkerSize', 7 };
         extraopts = { 'Marker', mm{:}, 'LineStyle', 'none', 'Color', cc{:} };

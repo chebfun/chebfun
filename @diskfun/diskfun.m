@@ -8,9 +8,9 @@ classdef diskfun < separableApprox
     methods ( Access = public, Static = false )
         
         function f = diskfun(varargin)
-            % The main spherefun constructor!
+            % The main diskfun constructor!
             
-            % Return an empty CHEBFUN:
+            % Return an empty DISKFUN:
             if ( (nargin == 0) || isempty(varargin{1}) )
                 f.domain = [-pi pi 0 1];
                 return
@@ -20,6 +20,7 @@ classdef diskfun < separableApprox
             constructorType = 1; % Default using rank BMC preserving rank 1 updates.
             
             % Remove this code when we are done testing the constructor.
+            %NOTE: 2x2 constructor in diskfun is not up to date.
             if numel(varargin) > 1
                 if ischar(varargin{2})
                     if strcmpi(varargin{2},'2by2')
@@ -76,8 +77,8 @@ classdef diskfun < separableApprox
         % Fast Poisson solver: 
         u = Poisson( f, bc, m, n );
         
-        % Converts a function in spherical coordinates to one in Cartesian
-        % coordinates on the sphere.
+        % Converts a function in polar coordinates to one in Cartesian
+        % coordinates on the disk
         fdf = pol2cartf(f, r, th);
         
         % Disk harmonics
@@ -85,7 +86,7 @@ classdef diskfun < separableApprox
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% Private Static methods implemented by SPHEREFUN class.
+    %% Private Static methods implemented by DISKFUN class.
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = private, Static = true )
         
@@ -95,10 +96,9 @@ classdef diskfun < separableApprox
     %% CLASS PROPERTIES
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
-        % DOMAIN: default for the is [-pi,pi] x [0,pi].
-        % which corresponds to using colatitude for the elevation angle
-        % (second input argument).  Doubled-up sphere will have a domain of
-        % [-pi,pi] x [-pi,pi].        
+        % DOMAIN: default for the is [-pi,pi] x [0,1].
+        %  Doubled-up sphere will have a domain of
+        % [-pi,pi] x [-1,1].        
         idxPlus
         idxMinus
         pivotIndices
