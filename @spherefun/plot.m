@@ -142,7 +142,7 @@ if ( ~isempty(varargin) )
         if ( plotline )
             % Use parametrization for great circles passing through each
             % pivot location and the poles for the column pivot lines and
-            % horizontal cirlces at the right latitude for the row pivot
+            % horizontal circles at the right latitude for the row pivot
             % lines.
             if plot_full_grid
                 num_t = max(50*size(XX,1),201);
