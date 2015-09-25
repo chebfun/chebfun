@@ -25,41 +25,8 @@ function varargout = ode113(odefun, tspan, uinit, varargin)
 % Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% TODO: Option for disabling resetting 
-
-% If varargin{1} (which correspond to options) does not have a field call
-% resetSolver, or opts don't get passed in, this throws an error, which is
-% resolved in the catch statement to go to the default behaviour of resetting.
-try
-    resetSolver = varargin{1}.resetSolver;
-catch
-    resetSolver = true;
-end
-
-% We don't want to reset the solver, or we just have one interval
-if ( ( length(tspan) == 2 ) || ~resetSolver )
-    sol = ode113(odefun, tspan, uinit, varargin{:});
-    [t, y] = chebfun.odesol(sol, tspan, varargin{:});
-else
-    % Initialize a cell for storing the individual SOL pieces:
-    solCell = cell(1, length(tspan) - 1);
-    % Loop through the pieces
-    for domCounter = 1:length(tspan)-1
-        sol = ode113(odefun, tspan(domCounter:domCounter+1), uinit, varargin{:});
-        solCell{domCounter} = sol;
-        % Obtain a new initial condition for the next piece
-        uinit = sol.y(:, end);
-    end
-    % Convert all the pieces into a CHEBFUN:
-    [t, y] = chebfun.odesol(solCell, tspan, varargin{:});
-end
-
-% Output in a consistent way with the built in routine:
-if ( nargout == 1 )
-    % Only y will be returned in this case.
-    varargout = {y};
-else
-    varargout = {t, y};
-end
+% Call the CONSTRUCTODESOL method, with ode113 specified as the solver:
+[varargout{1:nargout}] = chebfun.constructODEsol(@ode113, odefun, tspan, ...
+    uinit, varargin{:});
 
 end

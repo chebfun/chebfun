@@ -599,6 +599,9 @@ classdef chebfun
         % Convert ODE solutions into CHEBFUN objects:
         [y, t] = odesol(sol, dom, opt);
         
+        % Call one of the MATLAB ODE solvers and return a CHEBFUN
+        [t,y] = constructODEsol(solver, odefun, tspan, uinit, varargin)
+        
         % Parse inputs to PLOT. Extract 'lineWidth', etc.
         [lineStyle, pointStyle, jumpStyle, deltaStyle, out] = ...
             parsePlotStyle(varargin)
