@@ -26,8 +26,6 @@ function varargout = ode45(varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Call the CONSTRUCTODESOL method, with ode45 specified as the solver:
-[varargout{1:nargout}] = chebfun.constructODEsol(@ode45, odefun, tspan, ...
-    uinit, varargin{:});
-
+[varargout{1:nargout}] = chebfun.constructODEsol(@ode45, varargin{:});
 
 end

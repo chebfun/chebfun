@@ -988,6 +988,8 @@ function op = vectorCheck(op, dom, vectorize)
 
 % Make a slightly narrower domain to evaluate on. (Endpoints can be tricky).
 y = dom([1 end]);
+% This used to be fixed at 0.01. But this can cause troubles at very narrow
+% domains, where 1.01*y(1) might actually be larger than y(end)!
 del = diff(y)/200;
 if ( y(1) > 0 )
     y(1) = (1+del)*y(1); 

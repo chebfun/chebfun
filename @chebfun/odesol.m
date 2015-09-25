@@ -36,7 +36,7 @@ else
     % Obtain a cell of function handles that we can evaluate to obtain a
     % CHEBFUN:
     dfun = @(sol) @(x) deval(sol, x).';
-    devalFun = cellfun(dfun, sol,'uniformOutput',false);
+    devalFun = cellfun(dfun, sol, 'uniformOutput', false);
 end
 
 % Options:

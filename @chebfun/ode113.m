@@ -1,4 +1,4 @@
-function varargout = ode113(odefun, tspan, uinit, varargin)
+function varargout = ode113(varargin)
 %ODE113   Solve stiff differential equations and DAEs. Output a CHEBFUN.
 %   Y = CHEBFUN.ODE113(ODEFUN, D, ...) applies the standard ODE113 method to
 %   solve an initial-value problem on the domain D. The result is then converted
@@ -26,7 +26,6 @@ function varargout = ode113(odefun, tspan, uinit, varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Call the CONSTRUCTODESOL method, with ode113 specified as the solver:
-[varargout{1:nargout}] = chebfun.constructODEsol(@ode113, odefun, tspan, ...
-    uinit, varargin{:});
+[varargout{1:nargout}] = chebfun.constructODEsol(@ode113, varargin{:});
 
 end
