@@ -38,7 +38,7 @@ pivots = [g.pivotValues(idpg);h.pivotValues(idph);...
           g.pivotValues(idmg);h.pivotValues(idmh)];
 cols = [g.cols(:,idpg) h.cols(:,idph) g.cols(:,idmg) h.cols(:,idmh)];
 rows = [g.rows(:,idpg) h.rows(:,idph) g.rows(:,idmg) h.rows(:,idmh)];
-indices = [g.pivotIndices(:);h.pivotIndices(:)];
+indices = [g.pivotIndices;h.pivotIndices];
 locations = [g.pivotLocations;h.pivotLocations];
 
 numPlus = length(idpg)+length(idph);
