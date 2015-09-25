@@ -34,10 +34,10 @@ vOp = feval(op, xeval);
 
 % If the TRIGTECH evaluation differs from the op evaluation, SAMPLETEST failed:
 err = bsxfun(@rdivide, abs(vOp - vFun), f.vscale); % Relative (to vscale) error.
-if ( any(max(abs(err)) > tol) )
-    pass = false; % :(
-else
+if ( all(max(abs(err)) <= tol) )
     pass = true;  % :)
+else
+    pass = false; % :(
 end
 
 end
