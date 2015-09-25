@@ -171,8 +171,9 @@ f = @(zz) bary(zz, vals, x, w);
 
 end
 
-function w = fhBaryWts(x, d, maxind) 
-% Function for the computation of the FH weights.
+function w = fhBaryWts(x, d, maxind)
+% Function for the computation of the FH weights.  Implements (18) from the
+% Floater-Hormann paper (cited above).
 
 n = length(x) - 1;
 
@@ -180,21 +181,19 @@ if ( nargin < 3 )
     maxind = n + 1;
 end
 
-w = zeros(min(n + 1, maxind), 1);
+numWeights = min(n + 1, maxind);
 
-for k = 1:min(n + 1, maxind)
-   for m = k-d:k
-      if ( (m < 1) || (m > n + 1 - d) )
-         continue
-      end
-      prod = 1;
-      for j = m:m+d
-         if ( j ~= k )
-            prod = prod/(x(k) - x(j));
-         end
-      end
-      w(k) = w(k) + (-1)^m*prod;
-   end
+w = zeros(numWeights, 1);
+for k = 0:(numWeights - 1)
+    for i = max(0, (k - d)):min(k, n - d)
+        s = 1;
+        for j = i:(min(n, i +  d))
+            if ( j ~= k )
+                s = s/(x(k + 1) - x(j + 1));
+            end
+        end
+        w(k + 1) = w(k + 1) + (-1)^i*s;
+    end
 end
 
 end
