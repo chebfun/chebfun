@@ -89,6 +89,15 @@ classdef cheboppref < chebpref
 %     This options specifies the option for the relative tolerance passed as an
 %     option to the built-in MATLAB ODE solver when solving IVPs.
 %
+%   ivpRestartSolver             - Restart IVP solvers at breakpoints
+%     false
+%     [true]
+%
+%     This option specifies whether the MATLAB built in solvers should be
+%     restarted at breakpoints, that is whether each subinterval of a piecewise
+%     problem will get integrated separately. This can be very useful for e.g.
+%     short forcing pulses, which otherwise might get overlooked.
+%
 %   ivpSolver                  - Solver for IVPs
 %     ['ode113']
 %     'ode15s'
@@ -275,6 +284,8 @@ classdef cheboppref < chebpref
                 prefList.ivpAbsTol);
             fprintf([padString('    ivpRelTol:') '%g\n'], ...
                 prefList.ivpRelTol);
+            fprintf([padString('    ivpRestartSolver:') '%d\n'], ...
+                prefList.ivpRestartSolver);
             fprintf([padString('    ivpSolver:') '%s\n'], ...
                 func2str(prefList.ivpSolver));
             fprintf([padString('    lambdaMin:') '%g\n'], ...
@@ -451,6 +462,7 @@ classdef cheboppref < chebpref
             factoryPrefs.happinessCheck = @standardCheck;
             factoryPrefs.ivpAbsTol = 1e5*eps;
             factoryPrefs.ivpRelTol = 100*eps;
+            factoryPrefs.ivpRestartSolver = true;
             factoryPrefs.ivpSolver = @chebfun.ode113;
             factoryPrefs.lambdaMin = 1e-6;
             factoryPrefs.maxDimension = 4096;
