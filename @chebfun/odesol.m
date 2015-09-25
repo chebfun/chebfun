@@ -48,7 +48,8 @@ if ( isempty(opt) )
     if ( ~iscell(sol) && isfield(sol, 'extdata') && ...
         isfield(sol.extdata, 'options') )
         opt = sol.extdata.options;
-    elseif ( isfield(sol{1}, 'extdata') && isfield(sol{1}.extdata, 'options') )
+    elseif ( iscell(sol) && isfield(sol{1}, 'extdata') && ...
+            isfield(sol{1}.extdata, 'options') )
         % In multipiece case, take opts from the first piece. When solving IVPs
         % using CHEBOPs, OPTS should always get passed in from higher leves. 
         opt = sol{1}.extdata.options;
