@@ -126,7 +126,7 @@ fvalsrm(rmIndex) = [];
 % Select a d:
 if ( norm(fvals(rmIndex), inf) < 2*eps*norm(fvals, inf) ) 
     % This case fools funqui, so take a small d:
-    dOpt = 4;
+    dOpt = min(4, n);
 else
     % Find a near optimal d:
     for d = 0:min(n - 2, maxd) 
