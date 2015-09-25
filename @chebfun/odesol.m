@@ -5,6 +5,8 @@ function varargout = odesol(sol, dom, opt)
 % boundary-value problem by standard MATLAB methods into a CHEBFUN
 % representation Y. The inputs to the method are:
 %   SOL:   The one-output form of any solver such as ODE45, ODE15S, BVP5C, etc.
+%          SOL can also be a cell-array of SOL structs, computed by resetting
+%          the ODE solvers at breakpoints.
 %   DOM:   The interval that the problem was solved on (may include
 %          breakpoints).
 %   OPT:   (Optional) the option structure used by the ODE solver. If OPT is not
@@ -20,17 +22,37 @@ function varargout = odesol(sol, dom, opt)
 % See http://www.chebfun.org/ for Chebfun information.
 
 %% Extract data from sol:
-vscale = max(abs(sol.y), [], 2); % Vertical scale (needed for RelTol)
-numCols = size(sol.y, 1);
+if ( ~iscell(sol) )
+    % Just one piece (or resetting turned off)
+    vscale = max(abs(sol.y), [], 2); % Vertical scale (needed for RelTol)
+    numCols = size(sol.y, 1);
+    devalFun = @(x) deval(sol, x).';
+else
+    % Get the overall vscale
+    maxabs = @(sol) max(abs(sol.y));
+    vscale = max(cellfun(maxabs, sol));
+    % Get the number of columns we're dealing with
+    numCols = size(sol{1}.y, 1);
+    % Obtain a cell of function handles that we can evaluate to obtain a
+    % CHEBFUN:
+    dfun = @(sol) @(x) deval(sol, x).';
+    devalFun = cellfun(dfun, sol,'uniformOutput',false);
+end
 
 % Options:
 if ( nargin < 3 ) 
     opt = [];
 end
-if ( isempty(opt) && isfield(sol, 'extdata') && ...
-     isfield(sol.extdata, 'options') )
-    % Take options from sol if none are given:
-    opt = sol.extdata.options;
+if ( isempty(opt) )
+    % Take options from SOL if none are given. 
+    if ( ~iscell(sol) && isfield(sol, 'extdata') && ...
+        isfield(sol.extdata, 'options') )
+        opt = sol.extdata.options;
+    elseif ( isfield(sol{1}, 'extdata') && isfield(sol{1}.extdata, 'options') )
+        % In multipiece case, take opts from the first piece. When solving IVPs
+        % using CHEBOPs, OPTS should always get passed in from higher leves. 
+        opt = sol{1}.extdata.options;
+    end
 end
 
 % HappinessChecker
@@ -81,8 +103,9 @@ p.splitPrefs.splitMaxLength = 20000;
 % have been flipped.
 dom = sort(dom);
 
-% Construct a CHEBFUN by sampling the SOL input.
-y = chebfun(@(x) deval(sol, x).', dom, p);
+% The output from DEVAL, based on what the ODE solvers return, is always
+% vectorized, so we can turn the vectorcheck off.
+y = chebfun(devalFun, dom, 'novectorcheck', p);
 
 % Parse outputs:
 if ( nargout > 1 )
@@ -93,4 +116,3 @@ else
 end
 
 end
-
