@@ -41,7 +41,8 @@ end
 tol = tol.*max(f.hscale*nrmf, vscl);
 
 % choose points to evaluate
-xeval = 1e-5*[-1;1]/sqrt(3);
+%xeval = 1e-5*[-1;1]/sqrt(3);
+xeval = 1e-5*[-1;1];
 
 % Evaluate the CHEBTECH:
 vFun = feval(f, xeval);
