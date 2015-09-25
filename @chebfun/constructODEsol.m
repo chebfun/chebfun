@@ -13,8 +13,8 @@ function varargout = constructODEsol(solver, odefun, tspan, uinit, varargin)
 %
 %   It is possible to pass a MATLAB ODESET struct to this method for specifying
 %   options. The CHEBFUN overloads of the MATLAB ODE methods allow an extra
-%   option, 'resetSolver', which if set to TRUE, will restart the ODE solver at
-%   every breakpoint encountered. This is the default behaviour
+%   option, 'restartSolver', which if set to TRUE, will restart the ODE solver
+%   at every breakpoint encountered. This is the default behaviour
 %
 % See also ODESET, ODE113, ODE15s, ODE45.
 
@@ -26,13 +26,13 @@ function varargout = constructODEsol(solver, odefun, tspan, uinit, varargin)
 % RESETSOLVER, or options don't get passed in, this throws an error, which is
 % resolved in the catch statement to go to the default behaviour of resetting.
 try
-    resetSolver = varargin{1}.resetSolver;
+    restartSolver = varargin{1}.restartSolver;
 catch
-    resetSolver = true;
+    restartSolver = true;
 end
 
 % We don't want to reset the solver, or we just have one interval
-if ( ( length(tspan) == 2 ) || ~resetSolver )
+if ( ( length(tspan) == 2 ) || ~restartSolver )
     sol = solver(odefun, tspan, uinit, varargin{:});
     [t, y] = chebfun.odesol(sol, tspan, varargin{:});
 else
@@ -40,7 +40,8 @@ else
     solCell = cell(1, length(tspan) - 1);
     % Loop through the pieces
     for domCounter = 1:length(tspan)-1
-        sol = solver(odefun, tspan(domCounter:domCounter+1), uinit, varargin{:});
+        sol = solver(odefun, tspan(domCounter:domCounter+1), uinit, ...
+            varargin{:});
         solCell{domCounter} = sol;
         % Obtain a new initial condition for the next piece
         uinit = sol.y(:, end);

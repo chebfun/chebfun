@@ -13,8 +13,8 @@ function varargout = ode15s(varargin)
 %
 %   It is possible to pass a MATLAB ODESET struct to this method for specifying
 %   options. The CHEBFUN overloads of the MATLAB ODE methods allow an extra
-%   option, 'resetSolver', which if set to TRUE, will restart the ODE solver at
-%   every breakpoint encountered.
+%   option, 'restartSolver', which if set to TRUE, will restart the ODE solver
+%   at every breakpoint encountered.
 %
 % Example:
 %   y = chebfun.ode15s(@vdp1000, [0, 3000], [2; 0]); % Solve Van der Pol problem
