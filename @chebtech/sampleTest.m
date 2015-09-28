@@ -10,16 +10,11 @@ function pass = sampleTest(op, values, f, vscl, pref)
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% [TODO]: Describe where we evaluate? (Approx to largest derivative and at
-% -1+1e-12, 1-1e-12?)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Get the interpolation points:
 n = length(f);
-x = f.chebpts(n);
 
 % Set a tolerance:
-tol = max(max(f.epslevel, pref.eps), 1e3*pref.sampleTestEps) * n;
+tol = max(f.epslevel, pref.eps) * n;
 
 if ( nargin < 4 || isempty(vscl) )
     vscl = max(abs(values), [], 1);
@@ -41,8 +36,7 @@ end
 tol = tol.*max(f.hscale*nrmf, vscl);
 
 % choose points to evaluate
-%xeval = 1e-5*[-1;1]/sqrt(3);
-xeval = 1e-5*[-1;1];
+xeval = [-0.357998918959666; 0.036785641195074];
 
 % Evaluate the CHEBTECH:
 vFun = feval(f, xeval);
