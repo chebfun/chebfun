@@ -141,30 +141,7 @@ g.domain = dom;
 g.idxPlus = idxPlus;
 g.idxMinus = idxMinus;
 g.nonZeroPoles = removePoles;
-
-% Adjust the pivot locations so that they correspond to 
-% -pi < lam < pi and 0 < th < pi or -pi/2 < th < pi/2
-if iscolat(g)
-    pivotLocations(:,2) = -pivotLocations(:,2);
-else
-    pivotLocations(:,2) = -(pivotLocations(:,2)+pi);
-end
-pivotLocations(:,1) = pivotLocations(:,1) + pi;
-
-% We will store the pivotLocations for both the plus and minus
-% pieces, which could result in duplicate values being stored.  This
-% happens whenever a rank-2 deflation step occurs. Really only one set of
-% pivotLocations need to be stored in this case, but we will double up the
-% information as it makes the combine and partition methods much easier to
-% write.  If this is changed then look the combine and partition methods
-% need to also be changed.
-g.pivotLocations = pivotLocations;
-
-% Sort according to the maginuted of the pivots using the partition and
-% combine functions.
-% [gp,gm] = partition(g);
-% g = combine(gp,gm);
-
+g.pivotLocations = adjustPivotLocations(pivotLocations, pivotArray, iscolat(g) ); 
 end
 
 function [pivotIndices, pivotArray, removePole, ihappy, cols, pivots, ...
@@ -600,7 +577,6 @@ F = h( xx, yy );
 
 end
 
-
 function [x, y] = getPoints( m, n, dom )
 
 colat = [-pi pi 0 pi]; % Colatitude (doubled up)
@@ -643,7 +619,6 @@ row = ( vi - 1 ) + 1;
 
 end
 
-
 function f = redefine_function_handle( f )
 % nargin( f ) = 2, then we are already on the sphere, if nargin( f ) = 3,
 % then do change of variables:
@@ -678,6 +653,40 @@ tol = grid.^(2/3) * max( abs( dom(:) ) ) * max( Jac_norm, vscale) * pseudoLevel;
 
 end
 
+function pivLocNew = adjustPivotLocations(pivLoc, pivArray, colat)
+
+% Adjust the pivot locations so that they correspond to 
+% -pi < lam < pi and 0 < th < pi or -pi/2 < th < pi/2
+if colat
+    pivLoc(:,2) = -pivLoc(:,2);
+else
+    pivLoc(:,2) = -(pivLoc(:,2)+pi);
+end
+pivLoc(:,1) = pivLoc(:,1) + pi;
+
+% We will store the pivotLocations for both the plus and minus
+% pieces, which could result in duplicate values being stored.  This
+% happens whenever a rank-2 deflation step occurs. Really only one set of
+% pivotLocations need to be stored in this case, but we will double up the
+% information as it makes the combine and partition methods much easier to
+% write.  If this is changed then look the combine and partition methods
+% need to also be changed.
+
+pivLocNew = zeros(sum(sum(pivArray ~= 0)),2);
+count = 1;
+for j=1:size(pivLoc,1)
+    if pivArray(j,1) ~= 0 && pivArray(j,2) ~= 0
+        pivLocNew(count,:) = pivLoc(j,:);
+        pivLocNew(count+1,:) = pivLoc(j,:);
+        count = count + 2;
+    else
+        pivLocNew(count,:) = pivLoc(j,:);
+        count = count + 1;
+    end
+end
+
+end
+
 % function f = redefine_function_handle_pole( f, poleColPivot )
 % % Set f to f - f(poleColPivot,theta) where poleColPivot is the value of
 % % lambda (the column) used to zero out the poles of f.
@@ -685,4 +694,5 @@ end
 % f = @(lam, th) f(lam,th) - f(poleColPivot,th);
 % 
 % end
+
 
