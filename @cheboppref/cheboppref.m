@@ -94,7 +94,7 @@ classdef cheboppref < chebpref
 %     [true]
 %
 %     This option specifies whether the MATLAB built in solvers should be
-%     restarted at breakpoints, that is whether each subinterval of a piecewise
+%     restarted at breakpoints. That is, whether each subinterval of a piecewise
 %     problem will get integrated separately. This can be very useful for e.g.
 %     short forcing pulses, which otherwise might get overlooked.
 %
