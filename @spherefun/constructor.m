@@ -137,7 +137,6 @@ g.cols = chebfun( cols, dom(3:4)-[pi 0], 'trig');
 % g.cols.funs{1}.onefun.coeffs = c;
 g.rows = chebfun( rows, dom(1:2), 'trig');
 g.pivotValues = pivots;
-g.pivotIndices = pivotIndices;
 g.domain = dom;
 g.idxPlus = idxPlus;
 g.idxMinus = idxMinus;
@@ -151,6 +150,14 @@ else
     pivotLocations(:,2) = -(pivotLocations(:,2)+pi);
 end
 pivotLocations(:,1) = pivotLocations(:,1) + pi;
+
+% We will store the pivotLocations for both the plus and minus
+% pieces, which could result in duplicate values being stored.  This
+% happens whenever a rank-2 deflation step occurs. Really only one set of
+% pivotLocations need to be stored in this case, but we will double up the
+% information as it makes the combine and partition methods much easier to
+% write.  If this is changed then look the combine and partition methods
+% need to also be changed.
 g.pivotLocations = pivotLocations;
 
 % Sort according to the maginuted of the pivots using the partition and

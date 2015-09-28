@@ -105,7 +105,6 @@ classdef spherefun < separableApprox
         % [-pi,pi] x [-pi,pi].        
         idxPlus
         idxMinus
-        pivotIndices
         nonZeroPoles = 0;
     end
     

@@ -62,13 +62,11 @@ else                                     % SPHEREFUN + SPHEREFUN
         hp.idxPlus = 1:r;
         % Indices or locations of the pivots do not make sense after a
         % compression plus, so we set them to NaN.
-        hp.pivotIndices = nan(r,2);
         hp.pivotLocations = nan(r,2);  % This should be done at the separableApprox level.
         
         hm = plus@separableApprox(fm,gm);
         r = size(hm.cols,2);
         hm.idxMinus = 1:r;
-        hm.pivotIndices = nan(r,2);
         hm.pivotLocations = nan(r,2);
                 
         if ( ~isempty( fPole ) ) || ( ~isempty( gPole ) )
@@ -83,7 +81,6 @@ else                                     % SPHEREFUN + SPHEREFUN
             hp.cols = [g.cols hp.cols];
             hp.rows = [g.rows hp.rows];
             hp.pivotValues = [g.pivotValues;hp.pivotValues];
-            hp.pivotIndices = [g.pivotIndices;hp.pivotIndices];
             hp.pivotLocations = [g.pivotLocations;hp.pivotLocations];
             hp.idxPlus = 1:size(hp.cols,2);
             hp.nonZeroPoles = ~isempty(g);
@@ -127,7 +124,6 @@ f.cols = (fmean/f.pivotValues)*f.cols + (gmean/g.pivotValues)*g.cols;
 f.rows = chebfun('1',f.domain(1:2),'trig');
 f.pivotValues = pivot;
 % No idea what indices or locations should be after plus
-f.pivotIndices = [nan nan];
 f.pivotLocations = [nan nan];
 f.nonZeroPoles = nonZeroPoles;
 

@@ -32,7 +32,6 @@ else
     fp.rows = fp.rows(:,id);
     fp.pivotValues = fp.pivotValues(id);
     fp.pivotLocations = fp.pivotLocations(id, :);
-    fp.pivotIndices = fp.pivotIndices(id, :);
     fp.idxPlus = 1:length(id);
     fp.idxMinus = [];
 end
@@ -48,7 +47,6 @@ else
     fm.rows = fm.rows(:,id);
     fm.pivotValues = fm.pivotValues(id);
     fm.pivotLocations = fm.pivotLocations(id, :);
-    fm.pivotIndices = fm.pivotIndices(id, :);
     fm.idxMinus = 1:length(id);
     fm.idxPlus = [];
     fm.nonZeroPoles = 0;
