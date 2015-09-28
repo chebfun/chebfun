@@ -1,15 +1,17 @@
 function f = diff( f, varargin )
-% DIFF    Derivative of a spherefun in Cartesian coordinates.
+% DIFF  Tangential derivative of a spherefun in Cartesian coordinates.
 %
-%  F = DIFF( F ) computes the first derivative of F with respect to x.
+%  F = DIFF( F ) computes the first tangential derivative of F with respect
+%  to x.  This is the projection of the surface gradient of f in the
+%  x-direction
+%  
+%  F = DIFF( F, DIM )  computes the first tangential derivative of F. If
+%  DIM = 1, the tangential derivative is taken in the x-direction. If DIM =
+%  2, the tangential derivative is taken in the y-direction and if DIM = 3,
+%  the tangential derivative is taken in the z-direction.
 %
-%  F = DIFF( F, DIM )  computes the first derivative of F. If DIM = 1, the
-%  derivative is taken in the x-direction. If DIM = 2, the derivative
-%  is taken in the y-direction and if DIM = 3, the derivative is taken in
-%  the z-direction.
-%
-%  F = DIFF( F, DIM, K) computes the kth derivatives of F in the variable
-%  given by DIM.
+%  F = DIFF( F, DIM, K) computes the kth tangential derivatives of F in the
+%  variable given by DIM.
 %
 %  See also GRADIENT, LAPLACIAN
 

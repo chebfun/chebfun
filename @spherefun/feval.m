@@ -6,7 +6,7 @@ function y = feval( f, c1, c2, c3)
 %
 %   Y = FEVAL( F, X, Y, Z )  evaluates a spherefun F at a point (X,Y,Z) in
 %   Cartesian cooridnates on the surface of a sphere.  
-
+%
 % See also SUBSREF.
 
 if nargin == 3      % Spherical coordinates used.
