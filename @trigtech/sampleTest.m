@@ -14,6 +14,7 @@ n = length(f);
 
 % Set a tolerance:
 tol = max(pref.eps, 1e3*eps) * n;
+tol = tol.*max(vscale(f));
 
 % Choose a point to evaluate at:
 if ( n == 1 )
@@ -33,11 +34,11 @@ vFun = feval(f, xeval);
 vOp = feval(op, xeval);
 
 % If the TRIGTECH evaluation differs from the op evaluation, SAMPLETEST failed:
-err = bsxfun(@rdivide, abs(vOp - vFun), vscale(f)); % Relative (to vscale) error.
-if ( any(max(abs(err)) > tol) )
-    pass = false; % :(
-else
+err = abs(vOp - vFun); % Relative (to vscale) error.
+if ( all(max(err) <= tol) )
     pass = true;  % :)
+else
+    pass = false; % :(
 end
 
 end

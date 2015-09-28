@@ -44,10 +44,10 @@ vOp = feval(op, xeval);
 
 % If the CHEBTECH evaluation differs from the op evaluation, SAMPLETEST failed:
 err = abs(vOp - vFun); % Relative (to vscl) error.
-if ( any(max(abs(err)) > tol) )
-    pass = false; % :(
-else
+if ( all(max(abs(err)) <= tol) )
     pass = true;  % :)
+else
+    pass = false; % :(
 end
 
 end

@@ -102,6 +102,10 @@ while ( 1 )
     data.vscale = max(data.vscale, max(abs(valuesTemp)));
     
     % Extrapolate out NaNs:
+    %
+    % TODO:  This will extrapolate out however many NaNs / Infs there are, even
+    % if that number is larger than the number of function values.  This is
+    % probably not good.
     [values, maskNaN, maskInf] = extrapolate(f, values);
 
     % Compute the Chebyshev coefficients:
