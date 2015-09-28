@@ -6,8 +6,9 @@ function T = tangent( F )
 %
 %   See also NORMAL, DOT, CURL
 
-% If the spherefunv is empty just return the normal vector to the sphere.
-if ~isempty( F )
+% If the spherefunv is empty just return an empty spherefunv.
+if isempty( F )
+    T = F;
     return;
 end
 

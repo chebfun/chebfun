@@ -20,7 +20,7 @@ z = spherefun(@(x,y,z) z, dom);
 N = spherefunv(x,y,z);
 
 % If the spherefunv is empty just return the normal vector to the sphere.
-if ~isempty( F )
+if isempty( F )
     return;
 end
 
@@ -28,6 +28,6 @@ end
 f = dot( F, N );
 
 % Multiply by the normal.
-N = f.*N;
+N = N.*f;
 
 end
