@@ -14,9 +14,8 @@ function varargout = odesol(sol, dom, opt)
 %
 % The output Y is a (potentially) piecewise CHEBFUN representing the solution.
 %
-%   [Y, T] = ODESOL(SOL, DOM, OPT) returns also the linear CHEBFUN T on the
-%   domain of Y. Note that the order of outputs is the reverse of that from
-%   standard MATLAB calls to BVP4C(), ODE45(), etc.
+%   [T, Y] = ODESOL(SOL, DOM, OPT) returns also the linear CHEBFUN T on the
+%   domain of Y.
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
