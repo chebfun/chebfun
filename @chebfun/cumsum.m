@@ -80,7 +80,7 @@ if ( isPeriodicTech(f) )
     else
        ind = (numCoeffs + 1)/2;
     end
-    if ( any(abs(c(ind,:)) > 1e1*vscale(f).*eps) )
+    if ( any(abs(c(ind,:)) > 1e1*vscale(f)*eps) )
         % Mean is not zero, convert it to a CHEBTECH based chebfun:
         f = chebfun(f);
     end
