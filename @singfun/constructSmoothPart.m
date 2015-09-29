@@ -12,9 +12,6 @@ if ( isempty(pref) )
     pref = chebfunpref();
 end
 
-% Loosen the tolerance for sampleTest:
-pref.techPrefs.sampleTestEps = 1e-7;
-
 % Call the SMOOTHFUN constructor:
 s = smoothfun.constructor(op, data, pref);
 

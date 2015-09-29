@@ -38,8 +38,8 @@ f = unbndfun(op, struct('domain', dom));
 I = sum(f);
 IExact = 2*sqrt(pi);
 err = abs(I - IExact);
-tol = 3e4*eps*get(f,'vscale');
-pass(3) = err < 2*tol;
+tol = 1e5*eps*get(f,'vscale');
+pass(3) = err < tol;
 
 % Blow-up function:
 op = @(x) x.^2.*(1-exp(-x.^2));

@@ -16,16 +16,8 @@ n = length(f);
 tol = max(pref.eps, 1e3*eps) * n;
 tol = tol.*max(vscale(f));
 
-% Choose a point to evaluate at:
-if ( n == 1 )
-    xeval = 0.61; % Pseudo-random test value.
-else
-    % Test a point where the (finite difference) gradient of values is largest:
-    x = f.trigpts(n);
-    [ignored, index] = max(bsxfun(@rdivide, abs(diff(f.values)), diff(x)));
-    xeval = ( x(index + 1) + 1.41*x(index) ) / 2.41;
-end
-xeval = [-1+1e-12 ; xeval ; 1-1e-12];
+% pseudo random sample points
+xeval = [-0.357998918959666; 0.036785641195074];
 
 % Evaluate the TRIGTECH:
 vFun = feval(f, xeval);
