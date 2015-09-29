@@ -1,4 +1,4 @@
-function [uquasi, lamvec, mvec, lamfun, mfun] = followPath(N, lam0, varargin)
+function [uquasi, lamvec, mvec, lamfun, mfun] = followpath(N, lam0, varargin)
 %FOLLOWPATH    A pseudo-arclength continuation algorithm for ODEs in Chebfun
 %
 % Calling sequence:
@@ -75,9 +75,9 @@ function [uquasi, lamvec, mvec, lamfun, mfun] = followPath(N, lam0, varargin)
 %   N.rbc = @(u,lam) u;
 %   lam0 = 0.01;
 %   % Call method, no plotting, no printing
-%   [u, lamvec] = followPath(N, lam0);
+%   [u, lamvec] = followpath(N, lam0);
 %   % Call method, specifying more options
-%   [u, lamvec, mvec] = followPath(N, lam0, ...
+%   [u, lamvec, mvec] = followpath(N, lam0, ...
 %       'measure', @(u) u(.5), 'printing', true, 'plotting',true);
 %   
 % Example 2 -- Herceg problem (singularly perturbed ODE). Fix solution value at
@@ -94,7 +94,7 @@ function [uquasi, lamvec, mvec, lamfun, mfun] = followPath(N, lam0, varargin)
 %   lam0 = feval(diff(u0),d(2)); % Initial value for LAMBDA
 %   N.lbc = @(u, lam) u;
 %   N.rbc = @(u, lam) diff(u) - lam;
-%   [u, lamvec, mvec, lamfun, mfun] = followPath(N, lam0, 'maxstepno', 30, ...
+%   [u, lamvec, mvec, lamfun, mfun] = followpath(N, lam0, 'maxstepno', 30, ...
 %       'uinit', u0, 'measure', @(u)u(1), 'stepmax', 1, 'printing', 1);
 %   % Plot a bifurcation diagram
 %   figure, plot(lamfun, mfun)
@@ -106,7 +106,7 @@ function [uquasi, lamvec, mvec, lamfun, mfun] = followPath(N, lam0, varargin)
 %   H.lbc = @(u, lam) u;
 %   H.rbc = @(u, lam) u;
 %   measure = @(u) norm(diff(u), inf); 
-%   [u, lamvec, mvec] = followPath(H, lam0, ...
+%   [u, lamvec, mvec] = followpath(H, lam0, ...
 %       'measure', measure, 'direction', -1, 'plotting', 1, ...
 %       'stopfun', @(u,lam) lam < 5e-3, 'stepmax', .1);
 
@@ -257,7 +257,7 @@ end
 
 % If user wants to plot, a measure has to be passed!
 if ( plotting && ~haveMeasure )
-    error('CHEBFUN:CHEBOP:followPath:plotButNoMeasure', ...
+    error('CHEBFUN:CHEBOP:followpath:plotButNoMeasure', ...
         'If plotting is ON for path-following, measure has to be supplied.')
 end
 
