@@ -22,22 +22,14 @@ function varargout = odesol(sol, dom, opt)
 % See http://www.chebfun.org/ for Chebfun information.
 
 %% Extract data from sol:
-if ( ~iscell(sol) )
-    % Just one piece (or resetting turned off)
-    vscale = max(abs(sol.y), [], 2); % Vertical scale (needed for RelTol)
-    numCols = size(sol.y, 1);
-    devalFun = @(x) deval(sol, x).';
-else
-    % Get the overall vscale
-    maxabs = @(sol) max(abs(sol.y));
-    vscale = max(cellfun(maxabs, sol));
-    % Get the number of columns we're dealing with
-    numCols = size(sol{1}.y, 1);
-    % Obtain a cell of function handles that we can evaluate to obtain a
-    % CHEBFUN:
-    dfun = @(sol) @(x) deval(sol, x).';
-    devalFun = cellfun(dfun, sol, 'uniformOutput', false);
-end
+% Compute vertical scale (needed for RelTol)
+maxabs = @(sol) max(abs(sol.y));
+vscale = max(arrayfun(maxabs, sol));
+% Number of columns of the solution:
+numCols = size(sol(1).y, 1);
+dfun = @(sol) @(x) deval(sol, x).';
+% Obtain a cell of function handles that we can evaluate to obtain a CHEBFUN:
+devalFun = arrayfun(dfun, sol, 'uniformOutput', false);
 
 % Options:
 if ( nargin < 3 ) 
@@ -102,7 +94,12 @@ p.splitPrefs.splitMaxLength = 20000;
 
 % Need to sort the domain D, since if we solve a final value problem, it will
 % have been flipped.
-dom = sort(dom);
+[dom, idx] = sort(dom);
+
+% If we flipped the domain, we also need to flip devalFun:
+if ( idx(1) > idx(2) )
+    devalFun = fliplr(devalFun);
+end
 
 % The output from DEVAL, based on what the ODE solvers return, is always
 % vectorized, so we can turn the vectorcheck off.

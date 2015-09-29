@@ -38,19 +38,27 @@ if ( ( length(tspan) == 2 ) || ~restartSolver )
     sol = solver(odefun, tspan, uinit, varargin{:});
     [t, y] = chebfun.odesol(sol, tspan, varargin{:});
 else
-    'foo'
-    % Initialize a cell for storing the individual SOL pieces:
-    solCell = cell(1, length(tspan) - 1);
+    % Number of pieces of the solution:
+    numPieces = length(tspan) - 1;
+    
+    % Initialize a struct for storing the individual SOL pieces:
+    solStruct(numPieces) = struct('solver', '', 'extdata', struct(), ...
+        'x', [], 'y', [], 'stats', struct(), 'idata', struct());
+
     % Loop through the pieces
-    for domCounter = 1:length(tspan)-1
+    for domCounter = 1:numPieces
+        % Compute the solution for the current interval
         sol = solver(odefun, tspan(domCounter:domCounter+1), uinit, ...
             varargin{:});
-        solCell{domCounter} = sol;
+        % Store the current SOL piece
+        solStruct(domCounter) = sol;
         % Obtain a new initial condition for the next piece
-        uinit = sol.y(:, end);
+        uinit = sol.y(:, end);    
     end
-    % Convert all the pieces into a CHEBFUN:
-    [t, y] = chebfun.odesol(solCell, tspan, varargin{:});
+    % Convert all the pieces into a CHEBFUN:  
+    [t, y] = chebfun.odesol(solStruct, tspan, varargin{:});
+    
+    % TODO: use varargout{1:nargout} trick
 end
 
 % Output in a consistent way with the built in routine:
