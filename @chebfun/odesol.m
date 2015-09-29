@@ -27,9 +27,20 @@ maxabs = @(sol) max(abs(sol.y));
 vscale = max(arrayfun(maxabs, sol));
 % Number of columns of the solution:
 numCols = size(sol(1).y, 1);
-dfun = @(sol) @(x) deval(sol, x).';
-% Obtain a cell of function handles that we can evaluate to obtain a CHEBFUN:
-devalFun = arrayfun(dfun, sol, 'uniformOutput', false);
+
+% In the case where we have multiple entries in SOL, we construct a cell of
+% function handles that we can evaluate to obtain a CHEBFUN. This is not needed
+% in the single SOL case, and would actually cause an error later on if we have
+% only one SOL for a piecewise domain (i.e. if restarting is turned off), so we
+% treat the cases differently:
+if ( length(sol) == 1)
+    devalFun = @(x) deval(sol, x).';
+else
+    dfun = @(sol) @(x) deval(sol, x).';
+    % Obtain a cell of function handles that we can evaluate to obtain a
+    % CHEBFUN:
+    devalFun = arrayfun(dfun, sol, 'uniformOutput', false);
+end
 
 % Options:
 if ( nargin < 3 ) 
