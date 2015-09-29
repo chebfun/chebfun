@@ -10,16 +10,11 @@ function pass = sampleTest(op, values, f, vscl, pref)
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% [TODO]: Describe where we evaluate? (Approx to largest derivative and at
-% -1+1e-12, 1-1e-12?)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Get the interpolation points:
 n = length(f);
-x = f.chebpts(n);
 
 % Set a tolerance:
-tol = max(max(f.epslevel, pref.eps), 1e3*pref.sampleTestEps) * n;
+tol = max(f.epslevel, pref.eps) * n;
 
 if ( nargin < 4 || isempty(vscl) )
     vscl = max(abs(values), [], 1);
@@ -40,15 +35,8 @@ if ( isempty(vscl) )
 end
 tol = tol.*max(f.hscale*nrmf, vscl);
 
-% Choose a point to evaluate at:
-if ( n == 1 )
-    xeval = 0.61; % Pseudo-random test value
-else
-    % Test a point where the (finite difference) gradient of values is largest:
-    [ignored, index] = max(bsxfun(@rdivide, abs(diff(values)), diff(x)));
-    xeval = ( x(index + 1) + 1.41*x(index) ) / 2.41;
-end
-xeval = [-1+1e-12 ; xeval ; 1-1e-12];
+% choose points to evaluate
+xeval = [-0.357998918959666; 0.036785641195074];
 
 % Evaluate the CHEBTECH:
 vFun = feval(f, xeval);
@@ -58,10 +46,10 @@ vOp = feval(op, xeval);
 
 % If the CHEBTECH evaluation differs from the op evaluation, SAMPLETEST failed:
 err = abs(vOp - vFun); % Relative (to vscl) error.
-if ( any(max(abs(err)) > tol) )
-    pass = false; % :(
-else
+if ( all(max(abs(err)) <= tol) )
     pass = true;  % :)
+else
+    pass = false; % :(
 end
 
 end

@@ -14,17 +14,10 @@ n = length(f);
 
 % Set a tolerance:
 tol = max(max(f.epslevel, pref.eps), 1e3*eps) * n;
+tol = tol.*max(f.vscale);
 
-% Choose a point to evaluate at:
-if ( n == 1 )
-    xeval = 0.61; % Pseudo-random test value.
-else
-    % Test a point where the (finite difference) gradient of values is largest:
-    x = f.trigpts(n);
-    [ignored, index] = max(bsxfun(@rdivide, abs(diff(f.values)), diff(x)));
-    xeval = ( x(index + 1) + 1.41*x(index) ) / 2.41;
-end
-xeval = [-1+1e-12 ; xeval ; 1-1e-12];
+% pseudo random sample points
+xeval = [-0.357998918959666; 0.036785641195074];
 
 % Evaluate the TRIGTECH:
 vFun = feval(f, xeval);
@@ -33,11 +26,11 @@ vFun = feval(f, xeval);
 vOp = feval(op, xeval);
 
 % If the TRIGTECH evaluation differs from the op evaluation, SAMPLETEST failed:
-err = bsxfun(@rdivide, abs(vOp - vFun), f.vscale); % Relative (to vscale) error.
-if ( any(max(abs(err)) > tol) )
-    pass = false; % :(
-else
+err = abs(vOp - vFun); % Relative (to vscale) error.
+if ( all(max(err) <= tol) )
     pass = true;  % :)
+else
+    pass = false; % :(
 end
 
 end
