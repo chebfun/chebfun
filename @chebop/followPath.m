@@ -179,17 +179,6 @@ if ( isempty(stepinit) )
     stepinit = stepmax;
 end
 
-% No preferences specified, use current CHEBOPPREF
-if ( isempty(prefs) )
-    prefs = cheboppref();
-    
-    % By default, cheboppref now has the discretization option specified as a
-    % string ('values' or 'coeffs'). As we're not going through CHEBOP/SOLVEBVP
-    % below, we need to call determineDiscretization to get the correct
-    % discretization option as a function handle. That method require a linop
-    % argument as well (in case of breakpoints), hence the call to linearize:
-    prefs = determineDiscretization(N, linearize(N), prefs);
-end
 
 % No initial u passed => find a u0 matching lam0:
 if ( isempty(uinit) )
@@ -223,6 +212,20 @@ if ( isempty(uinit) )
         fprintf(' done!\n')
         fprintf('=====================================================\n\n')
     end
+end
+
+% No preferences specified, use current CHEBOPPREF
+if ( isempty(prefs) )
+    prefs = cheboppref();
+    
+    % By default, cheboppref now has the discretization option specified as a
+    % string ('values' or 'coeffs'). As we're not going through CHEBOP/SOLVEBVP
+    % below, we need to call determineDiscretization to get the correct
+    % discretization option as a function handle. That method require a linop
+    % argument as well (in case of breakpoints), hence the call to linearize:
+    L = linearize(N, [uinit; lam0]);
+    lengthDom = max(length(L.domain), length(uinit.domain));
+    prefs = determineDiscretization(N, lengthDom, prefs);
 end
 
 % Did we have a measure passed?
