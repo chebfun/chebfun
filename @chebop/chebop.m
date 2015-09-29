@@ -302,7 +302,7 @@ classdef (InferiorClasses = {?double}) chebop
         nIn = nargin(N)
         
         % Determine discretization for a CHEBOP object
-        pref = determineDiscretization(N, L, pref)
+        pref = determineDiscretization(N, lengthDom, pref)
         
     end
     
