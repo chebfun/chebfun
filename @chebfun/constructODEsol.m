@@ -33,11 +33,13 @@ else
 end
 
 
-% We don't want to reset the solver, or we just have one interval
 if ( ( length(tspan) == 2 ) || ~restartSolver )
+    % We don't want to restart the solver, or we just have one interval.
     sol = solver(odefun, tspan, uinit, varargin{:});
-    [t, y] = chebfun.odesol(sol, tspan, varargin{:});
+    [varargout{1:nargout}] = chebfun.odesol(sol, tspan, varargin{:});
 else
+    % Here, we wish to restart the solver at each breakpoint encountered.
+    
     % Number of pieces of the solution:
     numPieces = length(tspan) - 1;
     
@@ -55,18 +57,10 @@ else
         % Obtain a new initial condition for the next piece
         uinit = sol.y(:, end);    
     end
-    % Convert all the pieces into a CHEBFUN:  
-    [t, y] = chebfun.odesol(solStruct, tspan, varargin{:});
     
-    % TODO: use varargout{1:nargout} trick
-end
-
-% Output in a consistent way with the built in routine:
-if ( nargout == 1 )
-    % Only y will be returned in this case.
-    varargout = {y};
-else
-    varargout = {t, y};
+    % Convert all the pieces into a CHEBFUN:  
+    [varargout{1:nargout}] = chebfun.odesol(solStruct, tspan, varargin{:});
+    
 end
 
 end
