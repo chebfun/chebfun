@@ -74,7 +74,7 @@ cla
 axes(handles.fig_sol)
 
 % Plot initial guess
-plot(chebfun(u), '.-')
+plot(chebfun(u), '.-', 'linewidth', 2)
 set(handles.panel_figSol, 'title', 'Initial guess of solution')
 
 % Remove title from bottom plot panel
@@ -126,8 +126,8 @@ set(handles.iter_list, 'Value', iterNo);
 % Switch focus to the fig_sol plot on the GUI.
 axes(handles.fig_sol)
 
-% Plot initial guess
-plot(chebfun(u), '.-')
+% Plot current iterate
+plot(chebfun(u), '.-', 'linewidth', 2)
 set(handles.panel_figSol, 'title', 'Current solution')
 
 % Do different things for the axes depending on if the solution is real.
@@ -143,7 +143,7 @@ end
 axes(handles.fig_norm)
 
 % Plot Newton update
-plot(chebfun(delta), '.-')
+plot(chebfun(delta), '.-',  'linewidth', 2)
 set(handles.panel_figNorm, 'title', 'Current correction step')
 
 % Update the fontsize of plots
@@ -245,7 +245,7 @@ set(handles.iter_list, 'Value', 1);
 
 % Plot
 axes(handles.fig_sol)
-plot(u, 'Linewidth',2)
+plot(u, 'linewidth', 2)
 % Do different things depending on whether the solution is real or not
 if ( isreal(u{1}) )
     axis tight

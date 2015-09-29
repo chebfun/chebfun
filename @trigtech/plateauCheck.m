@@ -14,7 +14,7 @@ function [ishappy, epslevel, cutoff] = plateauCheck(f, values, vscl, pref)
 %
 %   The reason for criterion (2) is that the problem may have a large condition
 %   number that prevents convergence to the full requested accuracy, as often
-%   happens in the collocation of differential equations.
+%   happens in collocation of differential equations.
 %
 %   Output EPSLEVEL is an estimate of the relative size of the last
 %   "meaningful" expansion coefficients of the function, and the output 
@@ -35,7 +35,7 @@ f.vscale = max(f.vscale, vscl);
 
 % [TODO]: implement PLATEAUCHECK for TRIGTECH. For the moment, we just call
 % classicCheck. The reason why the plateauCheck() is needed for TRIGTECH is 
-% that it gets called in CHEBDISCRETIZATION/TESTCONVERGENCE.
+% that it gets called in OPDISCRETIZATION/TESTCONVERGENCE.
 
 [ishappy, epslevel, cutoff] = classicCheck(f, values, vscl, pref);
 

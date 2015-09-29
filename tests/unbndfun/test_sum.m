@@ -38,8 +38,8 @@ f = unbndfun(op, struct('domain', dom));
 I = sum(f);
 IExact = 2*sqrt(pi);
 err = abs(I - IExact);
-tol = 3e4*get(f,'epslevel')*get(f,'vscale');
-pass(3) = err < 2*tol;
+tol = 1e5*get(f,'epslevel')*get(f,'vscale');
+pass(3) = err < tol;
 
 % Blow-up function:
 op = @(x) x.^2.*(1-exp(-x.^2));
@@ -156,6 +156,6 @@ IMathematica = 0.88622692545274;
 err = abs(I - IMathematica);
 pass(17) = err(1) < 5e1*get(f1,'epslevel')*get(f1,'vscale');
 pass(18) = err(2) < 1e3*get(f2,'epslevel')*get(f2,'vscale');
-pass(19) = err(3) < 1e2*get(f3,'epslevel')*get(f3,'vscale');
+pass(19) = err(3) < 1e3*get(f3,'epslevel')*get(f3,'vscale');
 
 end

@@ -30,7 +30,7 @@ else
     n = size(f, 1);
     [~, w] = legpts(n);                           % Legendre weights
     wf = bsxfun(@times, w.', f);                  % Scale by weights
-    c = ndct_tranpose(wf);                        % NDCT transpose
+    c = ndct_transpose(wf);                       % NDCT transpose
     
     % Stage II:
     c = leg2cheb(c, 'transpose');                 % LEG2CHEB transpose
@@ -67,7 +67,7 @@ v = bsxfun(@times, (0:N-1).' + .5, v);        % Scaling
 
 end
 
-function c = ndct_tranpose(f)
+function c = ndct_transpose(f)
 %NDCT_TRANSPOSE  Evalute transpose of the NDCT operator.
 %   See NDCT in DLT.M.
 

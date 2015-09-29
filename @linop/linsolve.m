@@ -8,7 +8,7 @@ function [u, disc] = linsolve(L, f, varargin)
 %
 %   An equivalent syntax to U = LINSOLVE(L, F) is U = L\F.
 %
-%   LINSOLVE(L,F,CDISC) uses the chebDiscretization CDISC to solve the
+%   LINSOLVE(L,F,CDISC) uses the opDiscretization CDISC to solve the
 %   problem. This can be used, for example, to introduce new breakpoints that
 %   are not in the domain of either L or F.
 %
@@ -45,7 +45,7 @@ for j = 1:nargin-2
     item = varargin{j};
     if ( isa(item, 'cheboppref') )
         prefs = item;
-    elseif ( isa(item,'chebDiscretization') )
+    elseif ( isa(item,'opDiscretization') )
         disc = item;
     elseif ( isnumeric(item) )
         vscale = item(:)';
@@ -141,6 +141,7 @@ for dim = [dimVals inf]
     if ( numel(vscale) == 1 ) 
         vscale = repmat(vscale, 1, length(isFun));
     end
+
     % Test the happiness of the function pieces:
     [isDone, epslevel, vscale, cutoff] = ...
         testConvergence(disc, u(isFun), vscale(isFun), prefs);
@@ -168,10 +169,9 @@ for k = 1:size(values, 2)
     v = disc.toFunctionOut(values(:,k),cutoff);
     uOut{k} = v;
 end
-
 u(isFun) = uOut;
 
 % Convert to chebmatrix
 u = chebmatrix(u);
-    
+
 end

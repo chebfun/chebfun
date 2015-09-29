@@ -398,6 +398,9 @@ classdef chebtech < smoothfun % (Abstract)
         % Clenshaw's algorithm for evaluating a Chebyshev polynomial.
         out = clenshaw(x, coeffs)
 
+        % Convert Chebyshev-T coefficients to Chebyshev-U coefficients.
+        cU = chebTcoeffs2chebUcoeffs(cT)
+
         % Retrieve and modify preferences for this class.
         p = techPref(q)
 

@@ -76,6 +76,10 @@ elseif ( doSubDomain )                  % Integrate over a subdomain:
         out{k} = sumSubDom(F(k), a, b);
     end
     out = [out{:}];
+
+    if ( F(1).isTransposed )
+        out = out.';
+    end
 else                                    % Integrate over the whole domain:
     % Loop over the columns:
     for k = 1:numel(F)
@@ -83,6 +87,10 @@ else                                    % Integrate over the whole domain:
         out{k} = sumFullDom(F(k));
     end
     out = [out{:}];
+
+    if ( F(1).isTransposed )
+        out = out.';
+    end
 end
     
 end
