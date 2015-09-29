@@ -81,16 +81,16 @@ f = bndfun(@(x) [sin(x) cos(x) exp(x)], data, pref);
 g = bndfun(@(x) tanh(x), data, pref);
 h1 = f .* g;
 h2 = g .* f;
-pass(12) = ( normest(h1 - h2) < 1000*max(get(h1, 'vscale').*eps) );
+pass(12) = ( normest(h1 - h2) < 1000*max(get(h1, 'vscale')*eps) );
 h_exact = @(x) [tanh(x).*sin(x) tanh(x).*cos(x) tanh(x).*exp(x)];
 err = feval(h1, x) - h_exact(x);
-pass(13) = max(abs(err(:))) < 10*max(get(h1, 'vscale').*eps);
+pass(13) = max(abs(err(:))) < 10*max(get(h1, 'vscale')*eps);
 
 g = bndfun(@(x) [sinh(x) cosh(x) tanh(x)], data, pref);
 h = f .* g;
 h_exact = @(x) [sinh(x).*sin(x) cosh(x).*cos(x) tanh(x).*exp(x)];
 err = feval(h, x) - h_exact(x);
-pass(14) = max(abs(err(:))) < 10*max(get(h, 'vscale').*eps);
+pass(14) = max(abs(err(:))) < 10*max(get(h, 'vscale')*eps);
 
 %%
 % This should fail with a dimension mismatch error.
@@ -208,7 +208,7 @@ g1 = f .* alpha;
 g2 = alpha .* f;
 result(1) = isequal(g1, g2);
 g_exact = @(x) f_op(x) .* alpha;
-tol = 10*max(get(g1, 'vscale').*eps);
+tol = 10*max(get(g1, 'vscale')*eps);
 result(2) = norm(feval(g1, x) - g_exact(x), inf) < tol;
 end
 
@@ -220,7 +220,7 @@ end
 function result = test_mult_function_by_function(f, f_op, g, g_op, x, checkpos)
 h = f .* g;
 h_exact = @(x) f_op(x) .* g_op(x);
-tol = 10*max(get(h, 'vscale').*eps);
+tol = 10*max(get(h, 'vscale')*eps);
 result(1) = all(max(abs(feval(h, x) - h_exact(x))) < 1e4*tol);
     
 if ( checkpos )

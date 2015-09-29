@@ -98,7 +98,7 @@ f = bndfun(op, singData, singPref);
 r = roots(f);
 r_exact = [-1/2; 1/2; 3/2]*pi;
 err = r - r_exact;
-pass(10) = (norm(err, inf) < 1e2*get(f, 'vscale').*eps);
+pass(10) = (norm(err, inf) < 1e2*get(f, 'vscale')*eps);
     
 %% Tests for UNBNDFUN:
 

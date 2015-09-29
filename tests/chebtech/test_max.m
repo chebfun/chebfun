@@ -60,7 +60,7 @@ function result = test_spotcheck_max(testclass, fun_op, exact_max, pref)
 f = testclass.make(fun_op,[], pref);
 [y, x] = max(f);
 fx = fun_op(x);
-result = (all(abs(y - exact_max) < 10*vscale(f).*eps) && ...
-          all(abs(fx - exact_max) < 10*vscale(f).*eps));
+result = (all(abs(y - exact_max) < 10*vscale(f)*eps) && ...
+          all(abs(fx - exact_max) < 10*vscale(f)*eps));
 
 end

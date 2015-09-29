@@ -95,5 +95,5 @@ function result = test_spotcheck_restrict(testclass, fun_op, subint, pref)
     y_exact = fun_op(x);
     y_approx = feval(g, map(x));
 
-    result = norm(y_exact - y_approx, Inf) < 100*max(vscale(g).*eps);
+    result = norm(y_exact - y_approx, Inf) < 100*max(vscale(g)*eps);
 end

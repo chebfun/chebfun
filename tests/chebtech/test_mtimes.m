@@ -37,7 +37,7 @@ for n = 1:2
     pass(n, 2) = isequal(g1, g2);
     g_exact = @(x) alpha*sin(x);
     pass(n, 3) = norm(feval(g1, x) - g_exact(x), inf) < ...
-        10*vscale(g1).*eps;
+        10*vscale(g1)*eps;
     
     g = 0*f;
     pass(n, 4) = all(g.coeffs == 0);
@@ -51,7 +51,7 @@ for n = 1:2
     pass(n, 5) = isequal(g1, g2);
     g_exact = @(x) alpha*[sin(x) cos(x) exp(x)];
     err = abs(feval(g1, x) - g_exact(x));
-    pass(n, 6) = max(err(:)) < 10*max(vscale(g1).*eps);
+    pass(n, 6) = max(err(:)) < 10*max(vscale(g1)*eps);
     
     g = 0*f;
     pass(n, 7) =  all(g.coeffs == 0);
@@ -60,7 +60,7 @@ for n = 1:2
     g = f*A;
     g_exact = @(x) [sin(x) cos(x) exp(x)]*A;
     err = abs(feval(g, x) - g_exact(x));
-    pass(n, 8) = max(err(:)) < 10*max(vscale(g).*eps);
+    pass(n, 8) = max(err(:)) < 10*max(vscale(g)*eps);
     
     %%
     % Verify error handling and corner cases.

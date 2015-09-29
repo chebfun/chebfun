@@ -17,13 +17,13 @@ for n = 1:2
     f = testclass.make(@(x) exp(1i*x) + 1i*sin(x), [], pref);
     g = testclass.make(@(x) cos(x), [], pref);
     h = real(f);
-    pass(n, 1) = norm(h.coeffs - g.coeffs, inf) < 10*vscale(h).*eps;
+    pass(n, 1) = norm(h.coeffs - g.coeffs, inf) < 10*vscale(h)*eps;
     
     % Test an array-valued function:
     f = testclass.make(@(x) [exp(1i*x) + 1i*sin(x), -exp(1i*x)], [], pref);
     g = testclass.make(@(x) [cos(x), -real(exp(1i*x))], [], pref);
     h = real(f);
-    pass(n, 2) = norm(h.coeffs - g.coeffs, inf) < 10*max(vscale(h).*eps);
+    pass(n, 2) = norm(h.coeffs - g.coeffs, inf) < 10*max(vscale(h)*eps);
     
     % Test a real function:
     f = testclass.make(@(x) 1i*cos(x), [], pref);

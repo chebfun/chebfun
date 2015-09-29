@@ -47,13 +47,13 @@ fg = f.*g;
 gdf = g.*df;
 fdg = f.*dg;
 
-tol_f = 10*max(get(f, 'vscale').*eps);
-tol_g = 10*max(get(g, 'vscale').*eps);
-tol_fg = 10*max(get(fg, 'vscale').*eps);
-tol_df = 10*max(get(df, 'vscale').*eps);
-tol_dg = 10*max(get(dg, 'vscale').*eps);
-tol_gdf = 10*max(get(gdf, 'vscale').*eps);
-tol_fdg = 10*max(get(fdg, 'vscale').*eps);
+tol_f = 10*max(get(f, 'vscale')*eps);
+tol_g = 10*max(get(g, 'vscale')*eps);
+tol_fg = 10*max(get(fg, 'vscale')*eps);
+tol_df = 10*max(get(df, 'vscale')*eps);
+tol_dg = 10*max(get(dg, 'vscale')*eps);
+tol_gdf = 10*max(get(gdf, 'vscale')*eps);
+tol_fdg = 10*max(get(fdg, 'vscale')*eps);
 
 % Linearity.
 pass(5) = (abs(sum(a*f + b*g) - (a*sum(f) + b*sum(g))) < max(tol_f, tol_g));
@@ -74,13 +74,13 @@ f = bndfun(@(x) [sin(x) x.^2 exp(1i*x)], struct('domain', dom), pref);
 I = sum(f);
 I_exact = [(cos(dom(1)) - cos(dom(2))) (dom(2)^3 - dom(1)^3)/3 ...
     1i*(exp(1i*dom(1)) - exp(1i*dom(2)))];
-pass(9) = (max(abs(I - I_exact)) < 10*max(get(f, 'vscale').*eps));
+pass(9) = (max(abs(I - I_exact)) < 10*max(get(f, 'vscale')*eps));
 
 % DIM option with array-valued input.
 g = sum(f, 2);
 h = @(x) sin(x) + x.^2 + exp(1i*x);
 pass(10) = (norm(feval(g, x) - h(x), inf) < ...
-    10*max(get(g, 'vscale').*eps));
+    10*max(get(g, 'vscale')*eps));
 
 % DIM option with non-array-valued input should leave everything as it was.
 h = bndfun(@(x) cos(x), struct('domain', dom), pref);

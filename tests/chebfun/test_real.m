@@ -21,14 +21,14 @@ f = chebfun(@(x) exp(1i*x).*abs(x - 0.1), [-1 1], pref);
 ref = real(f);
 ref_exact = @(x) cos(x).*abs(x - 0.1);
 err = feval(ref, xr) - ref_exact(xr);
-pass(2) = isreal(ref) && (norm(err(:), inf) < 1e2*vscale(ref).*eps);
+pass(2) = isreal(ref) && (norm(err(:), inf) < 1e2*vscale(ref)*eps);
     
 
 f = chebfun(@(x) [exp(1i*x).*abs(x - 0.1) 1i*exp(-1i*x).*cos(x)], [-1 1], pref);
 ref = real(f);
 ref_exact = @(x) [cos(x).*abs(x - 0.1) sin(x).*cos(x)];
 err = feval(ref, xr) - ref_exact(xr);
-pass(3) = isreal(ref) && (norm(err(:), inf) < 1e3*vscale(ref).*eps);
+pass(3) = isreal(ref) && (norm(err(:), inf) < 1e3*vscale(ref)*eps);
 
 
 f = chebfun(@(x) 1i*cos(x).*abs(x - 0.1), [-1 1], pref);

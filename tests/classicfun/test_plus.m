@@ -148,7 +148,7 @@ function result = test_add_function_to_scalar(f, f_op, alpha, x)
     result(1) = isequal(g1, g2);
     g_exact = @(x) f_op(x) + alpha;
     result(2) = norm(feval(g1, x) - g_exact(x), inf) < ...
-        10*max(get(g1, 'vscale').*eps);
+        10*max(get(g1, 'vscale')*eps);
 end
 
 %% 
@@ -160,6 +160,6 @@ function result = test_add_function_to_function(f, f_op, g, g_op, x)
     result(1) = isequal(h1, h2);
     h_exact = @(x) f_op(x) + g_op(x);
     result(2) = norm(feval(h1, x) - h_exact(x), inf) <= ...
-        100*max(get(h1, 'vscale').*eps);
+        100*max(get(h1, 'vscale')*eps);
         
 end

@@ -152,7 +152,7 @@ function result = test_mult_function_by_scalar(f, f_op, alpha, x)
     result(1) = isequal(g1, g2);
     g_exact = @(x) f_op(x) .* alpha;
     result(2) = norm(feval(g1, x) - g_exact(x), inf) < ...
-        200*max(vscale(g1).*eps);
+        200*max(vscale(g1)*eps);
 end
 
 % Test the multiplication of two TRIGTECH objects F and G, specified by F_OP and
@@ -163,7 +163,7 @@ function result = test_mult_function_by_function(f, f_op, g, g_op, x, checkpos)
     h = f .* g;
     h_exact = @(x) f_op(x) .* g_op(x);
     result(1) = norm(feval(h, x) - h_exact(x), inf) < ...
-        1e5*max(vscale(h).*eps);
+        1e5*max(vscale(h)*eps);
         
     if ( checkpos )
         values = h.coeffs2vals(h.coeffs); 

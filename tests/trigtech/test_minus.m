@@ -101,7 +101,7 @@ f = testclass.make(@(x) exp([sin(pi*x) cos(pi*x) -sin(pi*x).^2]));
 g = f - [1 2 3];
 g_exact = @(x) [exp(sin(pi*x))-1 exp(cos(pi*x))-2 exp(-sin(pi*x).^2)-3];
 err = feval(g, x) - g_exact(x);
-pass(20) = norm(err(:), inf) < 10*max(vscale(g).*eps);
+pass(20) = norm(err(:), inf) < 10*max(vscale(g)*eps);
 
 %%
 % Test scalar expansion in TRIGTECH argument.
@@ -111,7 +111,7 @@ g = f - [1 2 3];
 g_exact = @(x) [(-1 + sin(pi*x)) (-2 + sin(pi*x)) (-3 + sin(pi*x))];
 err = feval(g, x) - g_exact(x);
 pass(21) = isequal(size(g.coeffs, 2), 3) && norm(err(:), inf) < ...
-    10*max(vscale(g).*eps);
+    10*max(vscale(g)*eps);
 
 end
 
@@ -123,7 +123,7 @@ function result = test_sub_function_and_scalar(f, f_op, alpha, x)
     result(1) = isequal(g1, -g2);
     g_exact = @(x) f_op(x) - alpha;
     result(2) = norm(feval(g1, x) - g_exact(x), inf) <= ...
-        1000*max(vscale(g1).*eps);
+        1000*max(vscale(g1)*eps);
 end
 
 % Test the subraction of two TRIGTECH objects F and G, specified by F_OP and
@@ -135,5 +135,5 @@ function result = test_sub_function_and_function(f, f_op, g, g_op, x)
     h_exact = @(x) f_op(x) - g_op(x);
     norm(feval(h1, x) - h_exact(x), inf);
     result(2) = norm(feval(h1, x) - h_exact(x), inf) <= ...
-        1e3*max(vscale(h1).*eps);       
+        1e3*max(vscale(h1)*eps);       
 end

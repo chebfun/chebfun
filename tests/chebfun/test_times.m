@@ -180,7 +180,7 @@ function result = test_mult_function_by_scalar(f, f_op, alpha, x)
     result(1) = isequal(g1, g2);
     g_exact = @(x) f_op(x) .* alpha;
     err = feval(g1, x) - g_exact(x);
-    result(2) = norm(err(:), inf) < 1e2*max(vscale(g1).*eps);
+    result(2) = norm(err(:), inf) < 1e2*max(vscale(g1)*eps);
         
 end
 
@@ -189,9 +189,9 @@ end
 function result = test_mult_function_by_function(f, f_op, g, g_op, x)
     h1 = f .* g;
     h2 = g .* f;
-    result(1) = norm(h1 - h2) < 10*max(vscale(h1).*eps);
+    result(1) = norm(h1 - h2) < 10*max(vscale(h1)*eps);
     h_exact = @(x) f_op(x) .* g_op(x);
     err = feval(h1, x) - h_exact(x);
-    result(2) = norm(err(:), inf) < 1e2*max(vscale(h1).*eps);
+    result(2) = norm(err(:), inf) < 1e2*max(vscale(h1)*eps);
         
 end

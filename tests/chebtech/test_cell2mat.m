@@ -19,7 +19,7 @@ for n = 1:2
     h = testclass.make(@(x) [cos(x) exp(x)], [], pref);
     
     F = cell2mat([g h]);
-    pass(n, 1) = all( sum(F - f) < max(vscale(f).*eps) );
+    pass(n, 1) = all( sum(F - f) < max(vscale(f)*eps) );
 end
 
 end

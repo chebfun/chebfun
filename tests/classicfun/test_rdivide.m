@@ -43,7 +43,7 @@ pass(4) = isnan(g);
 g = f ./ [alpha beta];
 g_exact = @(x) [sin(x)./alpha cos(x)./beta];
 pass(5) = norm(feval(g, x) - g_exact(x), inf) < ...
-    10*max(get(g, 'vscale').*eps);
+    10*max(get(g, 'vscale')*eps);
     
 g = f ./ [alpha 0];
 isn = isnan(feval(g, x));
@@ -141,7 +141,7 @@ function result = test_div_function_by_scalar(f, f_op, alpha, x)
     g = f ./ alpha;
     g_exact = @(x) f_op(x) ./ alpha;
     err = norm(feval(g, x) - g_exact(x), inf);
-    tol = 10*max(get(g, 'vscale').*eps);
+    tol = 10*max(get(g, 'vscale')*eps);
     result = err < tol;
 end
 
@@ -152,7 +152,7 @@ function result = test_div_scalar_by_function(alpha, f, f_op, x)
     g = alpha ./ f;
     g_exact = @(x) alpha ./ f_op(x);
     err = norm(feval(g, x) - g_exact(x), inf);
-    tol = 1e4*max(get(g, 'vscale').*eps);
+    tol = 1e4*max(get(g, 'vscale')*eps);
         
     result = err < tol;
 end
@@ -164,7 +164,7 @@ function result = test_div_function_by_function(f, f_op, g, g_op, x)
     h = f ./ g;
     h_exact = @(x) f_op(x) ./ g_op(x);
     err = norm(feval(h, x) - h_exact(x), inf);
-    tol = 1e5*max(get(h, 'vscale').*eps);
+    tol = 1e5*max(get(h, 'vscale')*eps);
         
     result = err < tol;
 end

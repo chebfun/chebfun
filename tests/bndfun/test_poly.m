@@ -41,6 +41,6 @@ p_exact = [0 0     3;
            0 6.4   (-3i);
            4 (-2i) 3.7];
 pass(5) = (norm(p(:) - p_exact(:), inf) < ...
-    max(get(f, 'vscale').*eps));
+    max(get(f, 'vscale')*eps));
 
 end

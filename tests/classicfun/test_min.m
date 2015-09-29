@@ -30,7 +30,7 @@ f = bndfun(fun_op, data, pref);
 [y, x] = min(f);
 exact_max = -[1 0.535656656015700 0.7^3*cosh(0.7)];
 fx = -[sin(10*x(1)) airy(x(2)) (x(3)/10).^3.*cosh(x(3)/10)];
-tol = 10*get(f, 'vscale').*eps;
+tol = 10*get(f, 'vscale')*eps;
 pass(5) = (all(abs(y - exact_max) < 10*tol) && ...
     all(abs(fx - exact_max) < tol));
         
@@ -47,7 +47,7 @@ f = bndfun(fun_op, data, pref);
 exact_min = [exp(1i) -exp(-1i/2)];
 fx = fun_op(x); 
 fx = fx([1 4]);
-tol = 10*max(get(f, 'vscale').*eps);
+tol = 10*max(get(f, 'vscale')*eps);
 pass(7) = (all(abs(y - exact_min) < 10*tol) && ...
     all(abs(fx - exact_min) < 10*tol));
 

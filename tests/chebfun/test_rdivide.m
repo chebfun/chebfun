@@ -45,7 +45,7 @@ g = chebfun(@(x) [exp(-x) exp(x)], [-1 1], pref);
 h = f./g;
 h_exact = @(x) [exp(2*x) exp(-2*x)];
 err = feval(h, x) - h_exact(x);
-pass(6) = norm(err(:), inf) < 10*max(vscale(h).*eps);
+pass(6) = norm(err(:), inf) < 10*max(vscale(h)*eps);
 
 ft = f.';
 gt = g.';

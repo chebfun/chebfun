@@ -31,33 +31,33 @@ for n = 1:2
     g = f / alpha;
     g_exact = @(x) f_op(x) ./ alpha;
     pass(n, 2) = norm(feval(g, x) - g_exact(x), inf) < ...
-        10*max(vscale(g).*eps);
+        10*max(vscale(g)*eps);
     
     % A "least-squares" case where the solution is obvious.
     I = eye(2);
     g = f / I;
     err = g*I - f;
-    pass(n, 3) = max(max(abs(feval(err, x)))) < 10*max(vscale(g).*eps);
+    pass(n, 3) = max(max(abs(feval(err, x)))) < 10*max(vscale(g)*eps);
     
     % A less trivial least-squares case for which we still know the answer.
     A = [1 1];
     g = f / A;
     g_exact = @(x) (sin(x) + cos(x))/2;
     pass(n, 4) = norm(feval(g, x) - g_exact(x), inf) < ...
-        10*max(vscale(g).*eps);
+        10*max(vscale(g)*eps);
     
     %%
     % Check division of a numeric array by a chebtech object.
     
     f = testclass.make(@(x) sin(x));
     g = alpha / f;
-    pass(n, 5) = abs(innerProduct(f, g) - alpha) < 10*max(vscale(g).*eps);
+    pass(n, 5) = abs(innerProduct(f, g) - alpha) < 10*max(vscale(g)*eps);
     
     f = testclass.make(@(x) [sin(2*pi*x) cos(2*pi*x)]);
     g = [1 1]/f;
     g_exact = @(x) (sin(2*pi*x) + cos(2*pi*x));
     pass(n, 6) = norm(feval(g, x) - g_exact(x), inf) < ...
-        1e2*max(vscale(g).*eps);
+        1e2*max(vscale(g)*eps);
     
     %%
     % Check error conditions.

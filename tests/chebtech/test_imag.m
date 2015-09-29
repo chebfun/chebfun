@@ -18,14 +18,14 @@ for n = 1:2
     g = testclass.make(@(x) sin(x), [], pref);
     h = imag(f);
     h = prolong(h, length(g));
-    pass(n, 1) = norm(h.coeffs - g.coeffs, inf) < 10*vscale(h).*eps;
+    pass(n, 1) = norm(h.coeffs - g.coeffs, inf) < 10*vscale(h)*eps;
     
     % Test an array-valued function:
     f = testclass.make(@(x) [exp(x) + 1i*sin(x), -exp(1i*x)], [], pref);
     g = testclass.make(@(x) [sin(x), -imag(exp(1i*x))], [], pref);
     h = imag(f);
     h = prolong(h, length(g));
-    pass(n, 2) = norm(h.coeffs - g.coeffs, inf) < 10*max(vscale(h).*eps);
+    pass(n, 2) = norm(h.coeffs - g.coeffs, inf) < 10*max(vscale(h)*eps);
     
     % Test a real function:
     f = testclass.make(@(x) cos(x), [], pref);

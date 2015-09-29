@@ -108,19 +108,19 @@ pass(11) = (norm(err, inf) <= get(df6, 'vscale')^6*eps);
 f = bndfun(@(x) [sin(x) x.^2 exp(1i*x)], struct('domain', dom), pref);
 df_exact = @(x) [cos(x) 2*x 1i*exp(1i*x)];
 err = feval(diff(f), x) - df_exact(x);
-pass(12) = (norm(err(:), inf) < 1e3*max(get(f, 'vscale').*eps));
+pass(12) = (norm(err(:), inf) < 1e3*max(get(f, 'vscale')*eps));
     
 
 % DIM option.
 dim2df = diff(f, 1, 2);
 g = @(x) [(x.^2 - sin(x)) (exp(1i*x) - x.^2)];
 err = feval(dim2df, x) - g(x);
-pass(13) = (norm(err(:), inf) < 10*max(get(f, 'vscale').*eps));
+pass(13) = (norm(err(:), inf) < 10*max(get(f, 'vscale')*eps));
 
 dim2df2 = diff(f, 2, 2);
 g = @(x) exp(1i*x) - 2*x.^2 + sin(x);
 err = feval(dim2df2, x) - g(x);
-pass(14) = (norm(err(:), inf) < 10*max(get(f, 'vscale').*eps));
+pass(14) = (norm(err(:), inf) < 10*max(get(f, 'vscale')*eps));
 
 % DIM option should return an empty bndfun for non-array-valued input.
 f = bndfun(@(x) x.^3, struct('domain', dom), pref);

@@ -54,7 +54,7 @@ f1 = bndfun(@(x) exp(sin(2*x)), data);
 f2 = bndfun(@(x) 1i*cos(20*x), data);
 [vals2, pos2] = minandmax(f2);
 pass(7) = norm(abs(vals) - abs([vals1 vals2]), inf) < ...
-    100*max(get(f, 'vscale').*eps);
+    100*max(get(f, 'vscale')*eps);
     
     
 %% 
@@ -74,7 +74,7 @@ f1 = bndfun(@(x) exp(sin(2*x)), data);
 f2 = bndfun(@(x) 1i*cos(20*x), data);
 [vals2, pos2] = minandmax(f2);
 pass(9) = norm(abs(vals) - abs([vals1 vals2]), inf) < ...
-    100*max(get(f, 'vscale').*eps);
+    100*max(get(f, 'vscale')*eps);
     
     
 %% Tests for UNBNDFUN:

@@ -79,8 +79,8 @@ pass(9) = isreal(n2vals) && all(n2vals >= 0);
 
 f = testclass.make(@(x) [cos(pi*sin(2*pi*x)) exp(sin(2*pi*x)) sin(pi*sin(pi*x))]);
 g = testclass.make(@(x) [exp(cos(pi*x)) exp(-sin(2*pi*x)) cos(pi*x)]);
-tol_f = 10*max(vscale(f).*eps);
-tol_g = 10*max(vscale(g).*eps);
+tol_f = 10*max(vscale(f)*eps);
+tol_g = 10*max(vscale(g)*eps);
 ip = innerProduct(f, g);
 exact = [-0.765066454912991 -1.032310819204998 0;
           3.204359383938947  2                 0;

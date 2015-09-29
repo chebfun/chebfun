@@ -131,7 +131,7 @@ function result = test_sub_function_and_scalar(f, f_op, alpha, x)
     result(1) = isequal(g1, -g2);
     g_exact = @(x) f_op(x) - alpha;
     result(2) = norm(feval(g1, x) - g_exact(x), inf) < ...
-        10*max(get(f,'vscale').*eps);
+        10*max(get(f,'vscale')*eps);
 end
 
 %% 
@@ -144,6 +144,6 @@ function result = test_sub_function_and_function(f, f_op, g, g_op, x)
     h_exact = @(x) f_op(x) - g_op(x);
     norm(feval(h1, x) - h_exact(x), inf);
     result(2) = norm(feval(h1, x) - h_exact(x), inf) <= ...
-        100*max(get(h1,'vscale').*eps);
+        100*max(get(h1,'vscale')*eps);
         
 end

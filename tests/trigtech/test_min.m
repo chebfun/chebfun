@@ -39,8 +39,8 @@ pass(6) = (all(abs(y - exact_min) < 100*eps) && ...
 f = testclass.make(@(x) cos(pi*x) + exp(1i*pi*x), [], pref);
 [y, x] = min(f);
 exact_min = 1i; % Could be +/- 1i depending on machine.
-pass(7) = ( (abs(y - exact_min) < 1e2*vscale(f).*eps) || ...
-            (abs(y + exact_min) < 1e2*vscale(f).*eps) );
+pass(7) = ( (abs(y - exact_min) < 1e2*vscale(f)*eps) || ...
+            (abs(y + exact_min) < 1e2*vscale(f)*eps) );
             
                 
 end
@@ -51,8 +51,8 @@ function result = test_spotcheck_min(testclass, fun_op, exact_min, pref)
 f = testclass.make(fun_op, [], pref);
 [y, x] = min(f);
 fx = fun_op(x);
-result = ((abs(y - exact_min) < 100*vscale(f).*eps) && ... 
-          (abs(fx - exact_min) < 10*vscale(f).*eps));
+result = ((abs(y - exact_min) < 100*vscale(f)*eps) && ... 
+          (abs(fx - exact_min) < 10*vscale(f)*eps));
     
     
 end

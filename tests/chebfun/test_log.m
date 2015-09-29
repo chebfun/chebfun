@@ -26,7 +26,7 @@ for (k = 1:1:numel(logFunctions))
     g_exact = @(x) log_op(base_op(x));
     g = log_op(f, pref);
     err = feval(g, xr) - g_exact(xr);
-    pass(k) = norm(err, inf) < 1e2*vscale(g).*eps;
+    pass(k) = norm(err, inf) < 1e2*vscale(g)*eps;
     
 end
 

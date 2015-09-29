@@ -44,7 +44,7 @@ g2 = f*alpha;
 pass(5) = isequal(g1, g2);
 g_exact = @(x) alpha*[sin(x) cos(x) exp(x)];
 err = abs(feval(g1, x) - g_exact(x));
-pass(6) = max(err(:)) < 10*max(get(g1, 'vscale').*eps);
+pass(6) = max(err(:)) < 10*max(get(g1, 'vscale')*eps);
     
 g = 0*f;
 pass(7) = all(all(feval(g, x) == zeros(numel(x), 3)));
@@ -53,7 +53,7 @@ A = randn(3, 3);
 g = f*A;
 g_exact = @(x) [sin(x) cos(x) exp(x)]*A;
 err = abs(feval(g, x) - g_exact(x));
-pass(8) = max(err(:)) < 10*max(get(g, 'vscale').*eps);
+pass(8) = max(err(:)) < 10*max(get(g, 'vscale')*eps);
     
     
 %%
