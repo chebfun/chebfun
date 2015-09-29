@@ -22,8 +22,8 @@ function varargout = odesol(sol, dom, opt)
 
 %% Extract data from sol:
 % Compute vertical scale (needed for RelTol)
-maxabs = @(sol) max(abs(sol.y));
-vscale = max(arrayfun(maxabs, sol));
+maxabs = @(sol) max(abs(sol.y),[],2);
+vscale = max(cell2mat(arrayfun(maxabs, sol,'uniformOutput',false)),[],2);
 % Number of columns of the solution:
 numCols = size(sol(1).y, 1);
 
