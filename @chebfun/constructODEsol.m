@@ -22,14 +22,16 @@ function varargout = constructODEsol(solver, odefun, tspan, uinit, varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 
 
-% If varargin{1} (which correspond to options) does not have a field called
-% RESETSOLVER, or options don't get passed in, this throws an error, which is
-% resolved in the catch statement to go to the default behaviour of resetting.
-try
+% By default, we want to restart the solver at breakpoints to catch behaviour
+% that only happens at small intervals (cf. #1512). This can be overwritten by
+% passing a 'restartSolver' option for the ODESET options structure passed to
+% this method.
+if ( nargin > 4 && isfield(varargin{1}, 'restartSolver') )
     restartSolver = varargin{1}.restartSolver;
-catch
+else
     restartSolver = true;
 end
+
 
 % We don't want to reset the solver, or we just have one interval
 if ( ( length(tspan) == 2 ) || ~restartSolver )
