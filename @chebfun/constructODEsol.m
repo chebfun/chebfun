@@ -38,6 +38,7 @@ if ( ( length(tspan) == 2 ) || ~restartSolver )
     sol = solver(odefun, tspan, uinit, varargin{:});
     [t, y] = chebfun.odesol(sol, tspan, varargin{:});
 else
+    'foo'
     % Initialize a cell for storing the individual SOL pieces:
     solCell = cell(1, length(tspan) - 1);
     % Loop through the pieces

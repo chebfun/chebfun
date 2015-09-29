@@ -23,7 +23,7 @@ pass(2) = all(uShortPulse.domain == [0 1 1.05 2]) && ...
 
 %% Turn off restarting
 
-% Once we turn off restarting, we execpt u = uShortPulse (up to a small error).
+% Once we turn off restarting, we expect u = uShortPulse (up to a small error).
 % This is discussed in #1512, in particular, @nickhale makes a comment that this
 % is a MATLAB fault. If this part of the test starts failing, it might be
 % because MATLAB are correctly detecting short pulses.
