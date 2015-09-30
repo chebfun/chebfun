@@ -1,6 +1,5 @@
 function varargout = odesol(sol, dom, opt)
 %ODESOL   Convert an ODE solution to CHEBFUN.
-%
 % Y = ODESOL(SOL, DOM, OPT) converts the solution of an ODE initial-value or
 % boundary-value problem by standard MATLAB methods into a CHEBFUN
 % representation Y. The inputs to the method are:
@@ -22,8 +21,9 @@ function varargout = odesol(sol, dom, opt)
 
 %% Extract data from sol:
 % Compute vertical scale (needed for RelTol)
-maxabs = @(sol) max(abs(sol.y),[],2);
-vscale = max(cell2mat(arrayfun(maxabs, sol,'uniformOutput',false)),[],2);
+maxabs = @(sol) max(abs(sol.y), [], 2);
+vscale = max(cell2mat(arrayfun(maxabs, sol, 'uniformOutput',false)), [], 2);
+
 % Number of columns of the solution:
 numCols = size(sol(1).y, 1);
 
@@ -32,7 +32,7 @@ numCols = size(sol(1).y, 1);
 % in the single SOL case, and would actually cause an error later on if we have
 % only one SOL for a piecewise domain (i.e. if restarting is turned off), so we
 % treat the cases differently:
-if ( length(sol) == 1)
+if ( length(sol) == 1 )
     devalFun = @(x) deval(sol, x).';
 else
     dfun = @(sol) @(x) deval(sol, x).';

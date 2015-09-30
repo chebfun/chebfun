@@ -23,10 +23,10 @@ function varargout = constructODEsol(solver, odefun, tspan, uinit, varargin)
 
 
 % By default, we want to restart the solver at breakpoints to catch behaviour
-% that only happens at small intervals (cf. #1512). This can be overwritten by
+% that only happens at small intervals (cf.ï¿½#1512). This can be overwritten by
 % passing a 'restartSolver' option for the ODESET options structure passed to
 % this method.
-if ( nargin > 4 && isfield(varargin{1}, 'restartSolver') )
+if ( (nargin > 4) && isfield(varargin{1}, 'restartSolver') )
     restartSolver = varargin{1}.restartSolver;
 else
     restartSolver = true;
@@ -37,6 +37,7 @@ if ( ( length(tspan) == 2 ) || ~restartSolver )
     % We don't want to restart the solver, or we just have one interval.
     sol = solver(odefun, tspan, uinit, varargin{:});
     [varargout{1:nargout}] = chebfun.odesol(sol, tspan, varargin{:});
+    
 else
     % Here, we wish to restart the solver at each breakpoint encountered.
     
@@ -44,22 +45,19 @@ else
     numPieces = length(tspan) - 1;
     
     % Initialize a struct for storing the individual SOL pieces:
-    solStruct(numPieces) = struct('solver', '', 'extdata', struct(), ...
+    sol(numPieces) = struct('solver', '', 'extdata', struct(), ...
         'x', [], 'y', [], 'stats', struct(), 'idata', struct());
 
     % Loop through the pieces
-    for domCounter = 1:numPieces
+    for k = 1:numPieces
         % Compute the solution for the current interval
-        sol = solver(odefun, tspan(domCounter:domCounter+1), uinit, ...
-            varargin{:});
-        % Store the current SOL piece
-        solStruct(domCounter) = sol;
+        sol(k) = solver(odefun, tspan(k:k+1), uinit, varargin{:});
         % Obtain a new initial condition for the next piece
-        uinit = sol.y(:, end);    
+        uinit = sol(k).y(:,end);    
     end
     
     % Convert all the pieces into a CHEBFUN:  
-    [varargout{1:nargout}] = chebfun.odesol(solStruct, tspan, varargin{:});
+    [varargout{1:nargout}] = chebfun.odesol(sol, tspan, varargin{:});
     
 end
 
