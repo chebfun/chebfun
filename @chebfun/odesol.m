@@ -4,7 +4,7 @@ function varargout = odesol(sol, dom, opt)
 % boundary-value problem by standard MATLAB methods into a CHEBFUN
 % representation Y. The inputs to the method are:
 %   SOL:   The one-output form of any solver such as ODE45, ODE15S, BVP5C, etc.
-%          SOL can also be a cell-array of SOL structs, computed by resetting
+%          SOL can also be an array of SOL structs, computed by resetting
 %          the ODE solvers at breakpoints.
 %   DOM:   The interval that the problem was solved on (may include
 %          breakpoints).
@@ -19,10 +19,25 @@ function varargout = odesol(sol, dom, opt)
 % Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
+%% Parse inputs:
+if ( nargin < 3 ) 
+    opt = [];
+end
+% Take options from (first piece of) SOL if none are given. 
+if ( isempty(opt) && isfield(sol, 'extdata') && isfield(sol.extdata, 'options') )
+    opt = sol(1).extdata.options;
+end
+% HappinessChecker
+if ( ~isempty(opt) && isfield(opt, 'happinessCheck') )  
+    checker = opt.happinessCheck;
+else
+    checker = cheboppref().happinessCheck;
+end
+
 %% Extract data from sol:
-% Compute vertical scale (needed for RelTol)
-maxabs = @(sol) max(abs(sol.y), [], 2);
-vscale = max(cell2mat(arrayfun(maxabs, sol, 'uniformOutput',false)), [], 2);
+% Compute vertical scale (needed for RelTol). This is the max absolute value 
+% (over all pieces when sol is an array) of each variable. 
+vscale = max(abs([sol(:).y]), [], 2);
 
 % Number of columns of the solution:
 numCols = size(sol(1).y, 1);
@@ -36,34 +51,8 @@ if ( length(sol) == 1 )
     devalFun = @(x) deval(sol, x).';
 else
     dfun = @(sol) @(x) deval(sol, x).';
-    % Obtain a cell of function handles that we can evaluate to obtain a
-    % CHEBFUN:
+    % Cell array of function handles that we can evaluate to obtain a CHEBFUN:
     devalFun = arrayfun(dfun, sol, 'uniformOutput', false);
-end
-
-% Options:
-if ( nargin < 3 ) 
-    opt = [];
-end
-if ( isempty(opt) )
-    % Take options from SOL if none are given. 
-    if ( ~iscell(sol) && isfield(sol, 'extdata') && ...
-        isfield(sol.extdata, 'options') )
-        opt = sol.extdata.options;
-    elseif ( iscell(sol) && isfield(sol{1}, 'extdata') && ...
-            isfield(sol{1}.extdata, 'options') )
-        % In multipiece case, take opts from the first piece. When solving IVPs
-        % using CHEBOPs, OPTS should always get passed in from higher leves. 
-        opt = sol{1}.extdata.options;
-    end
-end
-
-% HappinessChecker
-if ( ~isempty(opt) && isfield(opt, 'happinessCheck') )  
-    checker = opt.happinessCheck;
-else
-    temp = cheboppref();
-    checker = temp.happinessCheck;
 end
 
 %% Find relative tolerances used in computations.
