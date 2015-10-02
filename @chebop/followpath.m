@@ -1,5 +1,5 @@
 function [uquasi, lamvec, mvec, lamfun, mfun] = followpath(N, lam0, varargin)
-%FOLLOWPATH    A pseudo-arclength continuation algorithm for ODEs in Chebfun
+%FOLLOWPATH    A pseudo-arclength continuation algorithm for ODEs in Chebfun.
 %
 % Calling sequence:
 %   [U, LAM] = FOLLOWPATH(N, LAM0, 'OPT1', VAL1, ...)
@@ -140,8 +140,8 @@ prefs = [];
 
 
 % Parse VARARGIN
-while ~isempty(varargin)    % Go through all elements
-    if ~ischar(varargin{1}) && ~isnumeric(varargin{2})
+while ( ~isempty(varargin) ) % Go through all elements
+    if ( ~ischar(varargin{1}) && ~isnumeric(varargin{2}) )
         error('followpath:inputArgument','Incorrect options input arguments');
     end
     val = varargin{2};
@@ -188,19 +188,17 @@ if ( isempty(uinit) )
         fprintf('Computing initial solution for pathfollowing...')
     end
     
-    % Create an "initial chebop" from the augmented one passed in. This requires
-    % us to evaluate the boundary conditions, so that we get BCs that only
-    % depend on U (by fixing LAM to be LAM0).
+    % Create an "initial chebop" from the augmented one passed in. 
     Ninit = N;
     Ninit.op = @(x,u) N.op(x, u, lam0);
+    % This requires us to evaluate the boundary conditions, so that we get BCs
+    % that only depend on U (by fixing LAM to be LAM0):
     if ( ~isempty(Ninit.bc) )
         Ninit.bc = @(x,u) Ninit.bc(x,u,lam0);
     end
-    
     if ( ~isempty(Ninit.lbc) )
         Ninit.lbc = @(u) Ninit.lbc(u,lam0);
     end
-    
     if ( ~isempty(Ninit.rbc) )
         Ninit.rbc = @(u) Ninit.rbc(u,lam0);
     end
@@ -368,7 +366,6 @@ while ( counter < maxstepno )
         measu = measure(u);
         mvec(counter) = measu;
     end
-    
     lamvec(counter) = lam;
     
     % Print information at the current step.
@@ -410,7 +407,7 @@ while ( counter < maxstepno )
     
     % If we're experiencing good Newton convergence, we try to get the
     % steplength closer to the maximum steplength allowed:
-    if newtonIter <= 3
+    if ( newtonIter <= 3 )
         sl = min(sl*2, stepmax);
     end
     
