@@ -67,9 +67,10 @@ L = Msin2*DF2n + Msin*DF1n;
 % Notice that the matrix equation decouples and we can solve for X one
 % column at a time: 
 CFS = zeros( n, m ); 
+I = speye( n );
 % We leave out the (m/2+1)th column because that needs a constraint
 for k = [1:m/2 m/2+2:m]  
-    CFS(:, k) = ( L +  DF2m(k, k)*speye( n ) ) \ G(:, k);
+    CFS(:, k) = ( L +  DF2m(k, k)*I ) \ G(:, k);
 end
 
 % Now do the equation where we need the integral constraint. 
@@ -83,10 +84,12 @@ CFS(:, m/2+1) = [ en ;  L([1:n/2 n/2+2:n], :)] \ ...
 VALS = trigtech.coeffs2vals( trigtech.coeffs2vals( CFS ).' ).'; 
 
 % Now restrict down to region of interest:
-VALS = VALS([n/2+1:n n/2+1], :); 
+VALS = VALS([n/2+1:n n/2+1], :);
+
+u = VALS;
 
 % Finally, make a spherefun object out of the values: 
-u = spherefun( real( VALS ) ); 
+% u = spherefun( real( VALS ) ); 
 
 % - DEBUG
 % % Plot: 
