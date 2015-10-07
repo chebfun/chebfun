@@ -140,7 +140,7 @@ h = f + g;
 hVals = feval(h, x);
 hExact = oph(x);
 err = hVals - hExact;
-pass(29) = norm(err, inf) < 1e1*eps.*get(h,'vscale');
+pass(29) = norm(err, inf) < 1e1*eps*get(h,'vscale');
 
 %% Test addition between a CHEBFUN and a TRIGFUN.
 
@@ -155,7 +155,7 @@ pass(30) = strcmpi(func2str(get(h1.funs{1}.onefun, 'tech')), ...
                    func2str(get(f.funs{1}.onefun, 'tech')));
 h2 = chebfun(@(x) x + x.^2 + cos(x), dom, pref);
 err = norm(h1 - h2, inf);
-tol = 10*eps.*get(h2,'vscale');
+tol = 10*eps*get(h2,'vscale');
 pass(31) = err < tol;
 
 % 2. Quasimatrix case.
@@ -168,7 +168,7 @@ pass(32) = strcmpi(func2str(get(h1(:,1).funs{1}.onefun, 'tech')), ...
 pass(33) = strcmpi(func2str(get(h1(:,2).funs{1}.onefun, 'tech')), ...
                    func2str(get(g(:,2).funs{1}.onefun, 'tech')));
 h2 = chebfun(@(x) [x + cos(x), x.^3 + sin(x)], dom, pref);
-pass(34) = norm(h1-h2, inf) < 1e2*eps.*get(h2,'vscale');
+pass(34) = norm(h1-h2, inf) < 1e2*eps*get(h2,'vscale');
 
 
 end

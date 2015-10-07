@@ -139,7 +139,7 @@ for k = 1:2
     err2 = F2Vals - F2Exact;
     
     pass(k,18) = norm([err1; err2(:)], inf) < ...
-        1e2*max(eps.*get(f,'vscale'));
+        1e2*max(eps*get(f,'vscale'));
     
 end
 

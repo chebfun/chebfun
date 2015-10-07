@@ -154,7 +154,7 @@ h1 = f.*g;
 pass(27) = strcmpi(func2str(get(h1.funs{1}.onefun, 'tech')), ...
                    func2str(get(f.funs{1}.onefun, 'tech')));
 h2 = chebfun(@(x) (x.^2).*cos(x), dom, pref);
-pass(28) = norm(h1-h2, inf) < 1e1*eps.*get(h2,'vscale');
+pass(28) = norm(h1-h2, inf) < 1e1*eps*get(h2,'vscale');
 
 % 2. Quasimatrix case.
 f = chebfun(@(x) [cos(x), sin(x)], [dom(1) dom(end)], 'periodic');
@@ -166,7 +166,7 @@ pass(29) = strcmpi(func2str(get(h1(:,1).funs{1}.onefun, 'tech')), ...
 pass(30) = strcmpi(func2str(get(h1(:,2).funs{1}.onefun, 'tech')), ...
                    func2str(get(g(:,2).funs{1}.onefun, 'tech')));
 h2 = chebfun(@(x) [x.*cos(x), x.^3.*sin(x)], dom, pref);
-pass(31) = norm(h1-h2, inf) < 1e2*eps.*get(h2,'vscale');
+pass(31) = norm(h1-h2, inf) < 1e2*eps*get(h2,'vscale');
 
 end
 

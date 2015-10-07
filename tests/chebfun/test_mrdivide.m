@@ -91,7 +91,7 @@ opExact = @(x) [exp(x)/3 x.*exp(x)/3 (1-exp(x))./(3*x)];
 XVals = feval(X, x);
 XExact = opExact(x);
 err = XVals - XExact;
-pass(9) = norm(err, inf) < 1e2*max(eps.*get(X,'vscale'));
+pass(9) = norm(err, inf) < 1e2*max(eps*get(X,'vscale'));
     
 
 %% #1111
@@ -118,6 +118,6 @@ end
 % X = A/B; 
 % res = X*B - A;
 % err = feval(res, x);
-% pass(10) = norm(err(:), inf) < 1e1*max(eps.*get(X,'vscale'));
+% pass(10) = norm(err(:), inf) < 1e1*max(eps*get(X,'vscale'));
 
 end

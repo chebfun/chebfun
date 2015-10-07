@@ -27,7 +27,7 @@ g1 = c(1)*x1.^2 + c(2)*x1 + c(3);
 g2 = c(1)*x2.^2 + c(2)*x2 + c(3);
 err1 = norm(g1 - f2(:,1), inf);
 err2 = norm(g2 - f2(:,2), inf);
-pass(2) = all([err1, err2] < 10*eps.*vscale(f2));
+pass(2) = all([err1, err2] < 10*eps*vscale(f2));
 
 %% Test matrix:
 
@@ -38,7 +38,7 @@ f3 = polyval(cc, x);
 g4 = c2(1)*x.^2 + c2(2)*x + c2(3);
 err3 = norm(g1 - f3(:,1), inf);
 err4 = norm(g4 - f3(:,2), inf);
-pass(3) = all([err3, err4] < 10*eps.*vscale(f3));
+pass(3) = all([err3, err4] < 10*eps*vscale(f3));
 
 %% Test matrix and quasimatrix:
 

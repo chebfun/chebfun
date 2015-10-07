@@ -40,7 +40,7 @@ gVals = feval(g, x);
 gExact = opg(x);
 err = gVals - gExact;
 
-pass(4) = norm(err, inf) < 1e2*eps.*vscale(f);
+pass(4) = norm(err, inf) < 1e2*eps*vscale(f);
 
 
 end

@@ -113,6 +113,6 @@ h = complex(f, g);
 hVals = feval(h, x);
 hExact = oph(x);
 err = hVals - hExact;
-pass(12) = norm(err, inf) < eps.*vscale(h);
+pass(12) = norm(err, inf) < eps*vscale(h);
 
 end

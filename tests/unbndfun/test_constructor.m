@@ -146,7 +146,7 @@ f = unbndfun(op, struct('domain', dom));
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
-pass(15) = norm(err, inf) < 1e2*max(eps.*get(f,'vscale'));
+pass(15) = norm(err, inf) < 1e2*max(eps*get(f,'vscale'));
 
 %% MISC:
 

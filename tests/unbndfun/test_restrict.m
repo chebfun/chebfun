@@ -178,9 +178,9 @@ fExact3 = op(x3);
 err1 = abs(g1Vals - fExact1);
 err2 = abs(g2Vals - fExact2);
 err3 = abs(g3Vals - fExact3);
-bound1 = eps.*get(g{1},'vscale');
-bound2 = eps.*get(g{2},'vscale');
-bound3 = eps.*get(g{3},'vscale');
+bound1 = eps*get(g{1},'vscale');
+bound2 = eps*get(g{2},'vscale');
+bound3 = eps*get(g{3},'vscale');
 pass(7) = ( all( max(err1) < max(bound1, eps) ) ...
     && all( max(err2) < max(bound2, eps) ) ...
     && all( max(err3) < max(bound3, eps) ) );

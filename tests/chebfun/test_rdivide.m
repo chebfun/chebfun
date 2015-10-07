@@ -188,7 +188,7 @@ h1 = f./g;
 pass(19) = strcmpi(func2str(get(h1.funs{1}.onefun, 'tech')), ...
                    func2str(get(f.funs{1}.onefun, 'tech')));
 h2 = chebfun(@(x) (x + x.^2)./(2+cos(x)), dom, pref);
-pass(20) = norm(h1-h2, inf) < 1e2*eps.*get(h2,'vscale');
+pass(20) = norm(h1-h2, inf) < 1e2*eps*get(h2,'vscale');
 
 
 % 2. Quasimatrix case.
@@ -201,7 +201,7 @@ pass(21) = strcmpi(func2str(get(h1(:,1).funs{1}.onefun, 'tech')), ...
 pass(22) = strcmpi(func2str(get(h1(:,2).funs{1}.onefun, 'tech')), ...
                    func2str(get(g(:,2).funs{1}.onefun, 'tech')));
 h2 = chebfun(@(x) [cos(x)./(2+x), sin(x)./(2+x.^3)], dom, pref);
-pass(23) = norm(h1-h2, inf) < 1e2*eps.*get(h2,'vscale');
+pass(23) = norm(h1-h2, inf) < 1e2*eps*get(h2,'vscale');
 
 
 %%

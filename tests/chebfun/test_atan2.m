@@ -29,7 +29,7 @@ pass(2) = norm(hi - h.pointValues([1 end])) < 2*tol;
 
 %% Scalar-valued, tan(g, f):
 h = atan2(g, f);
-tol = 1e3*eps.*vscale(h);
+tol = 1e3*eps*vscale(h);
 hh = atan2(gg, ff);
 err = norm(feval(h, xx) - hh, inf);
 pass(3) = err < tol;

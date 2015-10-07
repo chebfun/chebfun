@@ -135,7 +135,7 @@ h = f + g;
 hVals = feval(h, x);
 hExact = oph(x);
 err = hVals - hExact;
-pass(23) = norm(err, inf) < 1e1*eps.*get(h,'vscale');
+pass(23) = norm(err, inf) < 1e1*eps*get(h,'vscale');
 
 end
 

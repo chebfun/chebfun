@@ -125,7 +125,7 @@ g1Exact = op1(x1);
 g2Exact = op2(x2);
 err1 = g1Vals - g1Exact;
 err2 = g2Vals - g2Exact;
-pass(24) = norm([err1 ; err2], inf) < 1e2*eps.*get(g,'vscale');
+pass(24) = norm([err1 ; err2], inf) < 1e2*eps*get(g,'vscale');
 
 
 %% Test a bug from issue #528

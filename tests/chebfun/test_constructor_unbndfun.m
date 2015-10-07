@@ -142,7 +142,7 @@ f = chebfun(op, dom);
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
-pass(15) = norm(err, inf) < 1e2*max(eps.*vscale(f));
+pass(15) = norm(err, inf) < 1e2*max(eps*vscale(f));
 
 
 end

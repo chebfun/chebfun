@@ -160,7 +160,7 @@ gVals = feval(g, x);
 op = @(x) [exp(x) x.*exp(x) (1-exp(x))./x]*A;
 gExact = op(x);
 err = gVals - gExact;
-pass(23) = norm(err, inf) < 1e2*max(eps.*get(g,'vscale'));
+pass(23) = norm(err, inf) < 1e2*max(eps*get(g,'vscale'));
 
 
 % Some tests which make sure MTIMES behaves correctly regarding the dimensions

@@ -29,7 +29,7 @@ gVals = feval(g, x);
 opg = @(x) sqrt(pi)*erf(x)/2 + sqrt(pi)/2;
 gExact = opg(x);
 errg = norm(gVals - gExact, inf);
-tol = 5e4*eps.*get(g,'vscale');
+tol = 5e4*eps*get(g,'vscale');
 pass(1) = errg < tol;
 
 % [TODO]: Revive when log is ready.
@@ -43,7 +43,7 @@ pass(1) = errg < tol;
 % gVals = feval(g, x);
 % gExact = opg(x);
 % err = gVals - gExact;
-% pass(3) = norm(err, inf) < 1e4*eps.*get(g,'vscale');
+% pass(3) = norm(err, inf) < 1e4*eps*get(g,'vscale');
 pass(2) = 1;
 
 %% Functions on [a inf]:
@@ -63,7 +63,7 @@ gVals = feval(g, x);
 opg = @(x) -exp(-x).*(x + 1) + 2*exp(-1);
 gExact = opg(x);
 err = gVals - gExact;
-pass(3) = norm(err, inf) < 1e6*eps.*get(g,'vscale');
+pass(3) = norm(err, inf) < 1e6*eps*get(g,'vscale');
 
 % Blow-up function:
 op = @(x) 5*x;
@@ -74,7 +74,7 @@ gVals = feval(g, x);
 opg = @(x) 5*x.^2/2 - 5/2 + get(g, 'lval');
 gExact = opg(x);
 err = norm(gVals - gExact, inf);
-tol = 100*eps.*get(g,'vscale');
+tol = 100*eps*get(g,'vscale');
 pass(4) = err < tol;
 
 %% Functions on [-inf b]:
@@ -94,7 +94,7 @@ gVals = feval(g, x);
 opg = @(x) exp(x);
 gExact = opg(x);
 err = norm(gVals - gExact, inf);
-tol = 1e5*eps.*get(g,'vscale');
+tol = 1e5*eps*get(g,'vscale');
 pass(5) = err < tol;
 
 %% Array-valued function:
@@ -106,7 +106,7 @@ gVals = feval(g, x);
 opg = @(x) [exp(x) exp(x).*(x - 1)];
 gExact = opg(x);
 err = norm(gVals - gExact, inf);
-tol = 5e5*max(eps.*get(g,'vscale'));
+tol = 5e5*max(eps*get(g,'vscale'));
 pass(6) = err < tol;
 
 %% Test on cumulative sum over the columns
@@ -116,6 +116,6 @@ hVals = feval(h, x);
 oph = @(x) [exp(x) exp(x).*(x+1)];
 hExact = oph(x);
 err = hVals - hExact;
-pass(7) = norm(err, inf) < 1e1*max(eps.*get(h,'vscale'));
+pass(7) = norm(err, inf) < 1e1*max(eps*get(h,'vscale'));
 
 end

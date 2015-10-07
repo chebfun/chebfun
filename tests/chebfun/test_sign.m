@@ -104,7 +104,7 @@ s_exact = @(x) exp(2*pi*1i*x);
 vals_s = feval(s, x);
 vals_exact = feval(s_exact, x);
 err = vals_s - vals_exact;
-pass(7,:) = ( norm(err, inf) < 1e1*eps.*get(s, 'vscale') );
+pass(7,:) = ( norm(err, inf) < 1e1*eps*get(s, 'vscale') );
 
 %% Functions on [-inf inf]:
 

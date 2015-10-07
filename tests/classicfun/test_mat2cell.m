@@ -37,7 +37,7 @@ tol1 = 1e2*eps*get(g, 'vscale');
 pass(1) = ~isempty(F{1}) && (err1 < tol1);
 
 err2 = normest(F{2} - h);
-tol2 = 10*max(eps.*get(h, 'vscale'));
+tol2 = 10*max(eps*get(h, 'vscale'));
 pass(2) = ~isempty(F{2}) && (err2 < tol2);
 
 err3 = normest(F{3} - l);
@@ -56,9 +56,9 @@ pass(4) = ~isempty(F{1}) && (err4 < tol4);
     norm(F1_vals - g_vals, inf) < 1e1*eps*get(g, 'vscale');
 
 err5 = normest(F{2} - h);
-tol5 = 10*max(eps.*get(h, 'vscale'));
+tol5 = 10*max(eps*get(h, 'vscale'));
 pass(5) = ~isempty(F{2}) && (err5 < tol5);
-    norm(F2_vals - h_vals, inf) < max(eps.*get(h, 'vscale'));
+    norm(F2_vals - h_vals, inf) < max(eps*get(h, 'vscale'));
 
 err6 = normest(F{3} - l);
 tol6 = 10*eps*get(l, 'vscale');
@@ -91,7 +91,7 @@ err1 = F1Vals - F1Exact;
 err2 = F2Vals - F2Exact;
 
 pass(7) = norm([err1; err2(:)], inf) < ...
-    1e2*max(eps.*get(f,'vscale'));
+    1e2*max(eps*get(f,'vscale'));
 
 
 end

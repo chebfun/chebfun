@@ -41,38 +41,38 @@ pass(1) = norm(r-exact,Inf) < 10*length(f)*eps;
 k = 100;
 f = bndfun(@(x) sin(pi*k*x), data, pref);
 r = roots(f);
-pass(2) = norm(r-(-2*k:7*k)'/k, inf) < 10*eps.*get(f, 'vscale');
+pass(2) = norm(r-(-2*k:7*k)'/k, inf) < 10*eps*get(f, 'vscale');
     
     
 %%
 % Test a perturbed polynomial BNDFUN:
 f = bndfun( @(x) (x-.1).*(x+.9).*x.*(x-.9) + 1e-14*x.^5, data, pref);
 r = roots(f);
-pass(3) = length(r) == 4 && norm(feval(f, r), inf) < 100*eps.*get(f, 'vscale');
+pass(3) = length(r) == 4 && norm(feval(f, r), inf) < 100*eps*get(f, 'vscale');
     
     
 %%
 %  Test a some simple polynomials BNDFUN:
 f = bndfun(@(x) x, data, pref);
 r = roots(f);
-tol = eps.*get(f, 'vscale');
+tol = eps*get(f, 'vscale');
 pass(4) = abs(r) < tol;
 
 f = bndfun([20.25 ; 0 ; 20.25]);
 r = roots(f);
 err = norm(r, inf);
-tol = eps.*get(f, 'vscale');
+tol = eps*get(f, 'vscale');
 pass(5) = numel(r) == 2 && ( err < tol );
 
 %%
 % Test some complex roots of BNDFUN:
 f = bndfun(@(x) 1 + x.^2, data, pref);
 r = roots(f, 'complex', 1);
-pass(6) = norm( r - [1i ; -1i], inf) < eps.*get(f, 'vscale');
+pass(6) = norm( r - [1i ; -1i], inf) < eps*get(f, 'vscale');
 
 f = bndfun(@(x) (1 + 25*x.^2).*exp(x), struct('domain', [-1 1]), pref);
 r = roots(f, 'complex', 1, 'prune', 1);
-pass(7) = norm( r - [1i ; -1i]/5, inf) < 10*eps.*get(f, 'vscale');
+pass(7) = norm( r - [1i ; -1i]/5, inf) < 10*eps*get(f, 'vscale');
     
     
 f = bndfun(@(x) sin(10*pi*x), data, pref);
@@ -85,7 +85,7 @@ pass(8) = numel(r2) >= numel(r1);
 f = bndfun(@(x) [sin(pi*x), cos(pi*x), x.^2+1], data, pref);
 r = roots(f);
 r2 = [-2:7 -1.5:6.5 NaN(1,11)].';
-pass(9) = all( r(:) - r2 < 1e1*max(eps.*get(f, 'vscale')) | isnan(r2) );
+pass(9) = all( r(:) - r2 < 1e1*max(eps*get(f, 'vscale')) | isnan(r2) );
 
     
 %% 
@@ -115,6 +115,6 @@ f = unbndfun(op, singData, singPref);
 r = roots(f);
 rExact = [-1.4962104914103104707 ; 1.4962104914103104707];
 err = r - rExact;
-pass(11) = norm(err, inf) < 1e2*eps.*get(f,'vscale');
+pass(11) = norm(err, inf) < 1e2*eps*get(f,'vscale');
 
 end

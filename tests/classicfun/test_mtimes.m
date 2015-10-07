@@ -116,7 +116,7 @@ gVals = feval(g, x);
 op = @(x) [exp(x) x.*exp(x) (1-exp(x))./x]*A;
 gExact = op(x);
 err = gVals - gExact;
-pass(13) = norm(err, inf) < 1e2*max(eps.*get(g,'vscale'));
+pass(13) = norm(err, inf) < 1e2*max(eps*get(g,'vscale'));
 
 
 end

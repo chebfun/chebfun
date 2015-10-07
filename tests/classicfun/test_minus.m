@@ -84,7 +84,7 @@ h1_vals = feval(h1, x);
 h2 = bndfun(@(x) x - (cos(x) - 1), data, pref);
 h2_vals = feval(h2, x);
 pass(19) = ( norm(h1_vals - h2_vals, inf) < ...
-    1e1*eps.*get(h1, 'vscale') );
+    1e1*eps*get(h1, 'vscale') );
 
 %% 
 % Check that subtracting a BNDFUN and an unhappy BNDFUN gives an
@@ -117,7 +117,7 @@ h = f - g;
 hVals = feval(h, x);
 hExact = oph(x);
 err = hVals - hExact;
-pass(22) = norm(err, inf) < 1e1*eps.*get(h,'vscale');
+pass(22) = norm(err, inf) < 1e1*eps*get(h,'vscale');
 
 
 end

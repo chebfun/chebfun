@@ -275,8 +275,8 @@ f = chebfun(op, dom);
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
-pass(35) = ( norm(err, inf) < 1e2*max(eps.*vscale(f)) ) && ...
-    all( feval(f, -Inf) < 1e2*eps.*vscale(f) );
+pass(35) = ( norm(err, inf) < 1e2*max(eps*vscale(f)) ) && ...
+    all( feval(f, -Inf) < 1e2*eps*vscale(f) );
 
 
 end

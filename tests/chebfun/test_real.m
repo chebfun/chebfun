@@ -60,6 +60,6 @@ g = real(f);
 gVals = feval(g, x);
 gExact = opg(x);
 err = gVals - gExact;
-pass(6) = norm(err, inf) < eps.*vscale(f);
+pass(6) = norm(err, inf) < eps*vscale(f);
 
 end

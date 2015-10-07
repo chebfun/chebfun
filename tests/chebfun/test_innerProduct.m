@@ -84,7 +84,7 @@ pass(5) = err < tol;
 E = exp(X);
 I = innerProduct(E, S);
 err = norm(I - 1.634574774192848, inf);
-tol = max(eps.*get(E,'vscale'));
+tol = max(eps*get(E,'vscale'));
 pass(6) = err < tol;
 
 end

@@ -21,7 +21,7 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
-pass(1) = ( norm(err, inf) < 1e2*eps.*norm(vals_exact, inf) );
+pass(1) = ( norm(err, inf) < 1e2*eps*norm(vals_exact, inf) );
 
 %% A piece-wise smooth case:
 op = @(x) sin(50*x).^2+1;
@@ -33,7 +33,7 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
-pass(2) = ( norm(err, inf) < 1e2*eps.*norm(vals_exact, inf) );
+pass(2) = ( norm(err, inf) < 1e2*eps*norm(vals_exact, inf) );
 
 %% A complex piece-wise case:
 
@@ -47,7 +47,7 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = norm(vals_g - vals_exact, inf);
-tol = 1e4*eps.*norm(vals_exact, inf);
+tol = 1e4*eps*norm(vals_exact, inf);
 
 pass(3) = err < tol;
 
@@ -63,7 +63,7 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
-pass(4) = ( norm(err, inf) < 1e4*eps.*norm(vals_exact, inf) );
+pass(4) = ( norm(err, inf) < 1e4*eps*norm(vals_exact, inf) );
 
 
 %% An array-valued CHEBFUN: 
@@ -96,7 +96,7 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
-pass(6) = ( norm(err, inf) < 1e2*eps.*norm(vals_exact, inf) );
+pass(6) = ( norm(err, inf) < 1e2*eps*norm(vals_exact, inf) );
 
 %%%%%%%%%%%%%%%%%%%%%%% function on unbounded domain: %%%%%%%%%%%%%%%%%%%%%%%%%%
 

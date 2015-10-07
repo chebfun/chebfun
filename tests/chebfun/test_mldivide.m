@@ -114,7 +114,7 @@ pass(9) = norm(err, inf) < vscale(f)*eps;
 % X = A\B;
 % res = A*X - B;
 % err = feval(res, x);
-% pass(10) = norm(err(:), inf) < max([eps.*get(A,'vscale') ...
-%     eps.*get(B,'vscale')]);
+% pass(10) = norm(err(:), inf) < max([eps*get(A,'vscale') ...
+%     eps*get(B,'vscale')]);
 
 end
