@@ -33,7 +33,6 @@ if ( nargin == 1 )
     epslevel = pref.eps;
 elseif ( isnumeric(pref) )
     epslevel = pref;
-    pref = f.techPref();
 else
     epslevel = pref.eps;
 end
@@ -86,7 +85,6 @@ for m = 1:numCol
     end
 end
 
-epslevel = epslevels;
 ishappy = all(ishappy); 
 cutOff = max(cutOff);
 
