@@ -55,7 +55,7 @@ function [f, R, Eperm] = qr_householder(f, flag)
 
 % Get some useful values
 [n, numCols] = size(f);
-tol = max(eps.*vscale(f));
+tol = max(eps*vscale(f));
 
 % Make the discrete analog of f:
 newN = 2*max(n, numCols);

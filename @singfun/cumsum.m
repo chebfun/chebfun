@@ -164,7 +164,7 @@ function g = singIntegral(f)
     
     % Construct the SINGFUN object of the solution:
     g = singfun;
-    tol = eps.*get(f, 'vscale');
+    tol = eps*get(f, 'vscale');
     if ( abs(ra - a) > tol ) 
         % No log term: fractional poles, fractional roots, or integer roots:
         CM = Cm/(ra - a);

@@ -20,7 +20,7 @@ end
 
 % Get tolerance we think things can be resolved to: 
 pref = chebfunpref(); 
-pref.techPrefs.eps = eps.*vscale(c);
+pref.techPrefs.eps = eps*vscale(c);
 % Restrict to the chebfun domains: 
 F1_handle = @(t) feval(F.components{1}, real(c(t)), imag(c(t)));
 F2_handle = @(t) feval(F.components{2}, real(c(t)), imag(c(t)));

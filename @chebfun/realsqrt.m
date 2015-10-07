@@ -17,7 +17,7 @@ end
 % X is real positive, so call SQRT.
 R = sqrt(X);
 
-if ( normest(imag(R)) < 100*max(eps.*vscale(R)) )
+if ( normest(imag(R)) < 100*max(eps*vscale(R)) )
     R = real(R);
 end
 

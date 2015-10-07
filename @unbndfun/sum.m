@@ -25,7 +25,7 @@ g.onefun = cancelExponents(g.onefun);
 vends = [get(g, 'lval'); get(g, 'rval')];
 
 % Set a tolerance based on the vscale of g:
-tol = eps.*get(g, 'vscale');
+tol = eps*get(g, 'vscale');
 
 % A dirty checklist:
 
@@ -123,7 +123,7 @@ function y = unbndfunIntegrand(x, g)
 %   This function is meant to be used to create a ONEFUN for the integrand,
 %   which can then be integrated with the ONEFUN's implementation of SUM.
 
-tol = 10*eps.*get(g, 'vscale');
+tol = 10*eps*get(g, 'vscale');
 y = feval(g, g.mapping.For(x));
 y(abs(y) < repmat(tol, size(y, 1), 1)) = 0;
 y = y.*repmat(g.mapping.Der(x), 1, size(y, 2));
