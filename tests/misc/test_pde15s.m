@@ -228,7 +228,7 @@ u = exp(-20*x.^2) .* sin(14*x);  u = [u ; -u];
 f = @(u, v) [diff(v) ; diff(u)];
 bc.left = @(u, v) u; bc.right = @(u, v) v;        % New way
 opt = pdeset('eps', 1e-6, 'Ylim', pi/2*[-1 1], 'AbsTol', 1e-6, 'RelTol', 1e-6);
-uu = pde23t(f, 0:.05:.5, u, bc, opt);
+uu = pde23t(f, 0:.05:2, u, bc, opt);
 
 %% 
 %chebop-style synatx
@@ -244,8 +244,6 @@ uu = pde15s(f, 0:.025:.5, u, bcc, opts);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% V4 syntax
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% TODO: These seem to have stopped working..
 
 %% Example 1: Nonuniform advection
     close all
