@@ -6,8 +6,9 @@ function f = simplify(f, tol)
 %
 %  If F is not happy, F is returned unchanged.
 %
-%  G = SIMPLIFY(F, TOL) does the same as above but uses TOL instead of
-%  EPS. 
+%  G = SIMPLIFY(F, TOL) does the same as above but uses TOL instead of EPS.  If
+%  TOL is a row vector with as many columns as F, then TOL(k) will be used as
+%  the simplification tolerance for column k of F.
 %
 % See also STANDARDCHOP.
 
@@ -38,14 +39,14 @@ coeffs = abs(f.coeffs(end:-1:1,:));
 coeffs = trigtech.vals2coeffs(trigtech.coeffs2vals(coeffs));
 
 % Use the default tolerance if none was supplied.
-p = trigtech.techPref();
 if ( nargin < 2 )
+    p = trigtech.techPref();
     tol = p.eps;
 end
 
-% Reshape TOL.
+% Recast TOL as a row vector.
 if ( size(tol, 2) ~= m )
-    tol = max(max(tol),p.eps)*ones(1, m);
+    tol = max(tol)*ones(1, m);
 end
 
 % In order to work with STANDARDCHOP, the coefficients of F are modified so that
