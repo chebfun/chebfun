@@ -232,6 +232,9 @@ solver = pref.ivpSolver;
 % What happiness check do we want to use for the IVP?
 opts.happinessCheck = pref.happinessCheck;
 
+% Do we want to restart the solver at breakpoints?
+opts.restartSolver = pref.ivpRestartSolver;
+
 % Solve!
 [t, y]= solver(anonFun, odeDom, initVals, opts);
 
