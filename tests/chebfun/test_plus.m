@@ -116,7 +116,7 @@ h = f + g;
 vals_h = feval(h, x);
 op = @(x)  (x - dom(2)).^pow.*(sin(100*x)+cos(300*x));
 h_exact = op(x);
-pass(28) = ( norm(vals_h-h_exact, inf) < 1e3*max(eps, eps)*...
+pass(28) = ( norm(vals_h-h_exact, inf) < 1e3*eps*...
     norm(h_exact, inf) );
 
 

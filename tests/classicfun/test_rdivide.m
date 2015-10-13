@@ -108,7 +108,7 @@ pow = pow1-pow2;
 op = @(x)  (x - data.domain(2)).^pow.*(sin(x)./(cos(x).^2+1));
 h_exact = op(x);
 pass(14) = ( norm(vals_h-h_exact, inf) < 1e2* ...
-    max(eps, eps)*norm(h_exact, inf) );
+    eps*norm(h_exact, inf) );
 
 %% Tests for UNBNDFUN:
 

@@ -136,7 +136,7 @@ g = chebfun(@(x) cos(30*x), 'splitting', 'on');
 h = f*g;
 h_exact = 0.13033807496531659;
 err = h - h_exact;
-pass(22) = abs(err) < 1e2*h_exact*max(eps, eps);
+pass(22) = abs(err) < 1e2*h_exact*eps;
 
 
 %% Tests for function defined on unbounded domain:

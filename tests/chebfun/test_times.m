@@ -116,7 +116,7 @@ h = f.*g;
 h_exact = chebfun(op_exact, dom, 'exps', [0 pow1+pow2], 'splitting', 'on');
 
 err = norm(feval(h, x) - feval(h_exact, x), inf);
-pass(25) = ( err < 1e4*max(eps, eps)*...
+pass(25) = ( err < 1e4*eps*...
     norm(feval(h_exact, x), inf) );
 
 

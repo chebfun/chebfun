@@ -172,7 +172,7 @@ singData.exponents = [0 pow1+pow2];
 h_exact = bndfun(op_exact, singData, singPref);
 
 err = norm(feval(h, x) - feval(h_exact, x), inf);
-tol = 1e2*max(eps, eps)*norm(feval(h_exact, x), inf);
+tol = 1e2*eps*norm(feval(h_exact, x), inf);
 pass(25) = ( err < tol );
 
 %% Tests for UNBNDFUN:
