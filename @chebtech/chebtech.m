@@ -361,7 +361,7 @@ classdef chebtech < smoothfun % (Abstract)
         % Retrieve and modify preferences for this class.
         p = techPref(q)
 
-        % TODO:  Document.
+        % Parse inputs passed to the constructor via the DATA argument.
         data = parseDataInputs(data, pref)
     end
 

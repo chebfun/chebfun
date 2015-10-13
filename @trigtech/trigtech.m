@@ -406,7 +406,7 @@ classdef trigtech < smoothfun % (Abstract)
         % Convert values to coefficients:
         coeffs = vals2coeffs(values)
 
-        % TODO:  Document.
+        % Parse inputs passed to the constructor via the DATA argument.
         data = parseDataInputs(data, pref)
     end
     
