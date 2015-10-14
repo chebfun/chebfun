@@ -67,7 +67,7 @@ for n = 1:4
     pass(n, 18) = all(size(Q) == 3) && all(size(R) == 3);
     I = eye(3);
     %pass(n, 19) = norm(innerProduct(Q, Q) - I, inf) < ...
-    %    1e2*vscale(f)*eps;
+    %    1e2*max(vscale(f)*eps);
     pass(n, 19) = 1;
 
     %%
@@ -82,13 +82,13 @@ n = 4999;
 L = legpoly( n:n+1 ); 
 [Q, R] = qr( L ) ;
 pass(:, 21) = ones(4,1) * (  norm(Q*diag(sqrt(1./((n:n+1)+.5))) - L) < ...
-                                         5e4*vscale(f)*eps  );  
+                                         5e4*max(vscale(f)*eps)  );  
 
 n = 10000; 
 L = legpoly( n:n+5 ); 
 [Q, R] = qr( L ) ;
 pass(:, 22) = ones(4,1) * (  norm(Q*diag(sqrt(1./((n:n+5)+.5))) - L) < ...
-                                         5e4*vscale(f)*eps  );  
+                                         5e4*max(vscale(f)*eps)  );  
 
 end
 
@@ -100,12 +100,12 @@ function result = test_one_qr(f, x, method)
 
     % Check orthogonality.
     ip = innerProduct(Q, Q);
-    result(1) = max(max(abs(ip - eye(N)))) < 1e3*vscale(f)*eps;
+    result(1) = max(max(abs(ip - eye(N)))) < 1e3*max(vscale(f)*eps);
     
 
     % Check that the factorization is accurate.
     err = Q*R - f;
-    result(2) = norm(feval(err, x), inf) < 1e3*vscale(f)*eps;
+    result(2) = norm(feval(err, x), inf) < 1e3*max(vscale(f)*eps);
 end
 
 % Same as the previous function but this time uses the QR factorization with
@@ -116,10 +116,10 @@ function result = test_one_qr_with_perm(f, x, method)
 
     % Check orthogonality.
     ip = innerProduct(Q, Q);
-    result(1) = max(max(abs(ip - eye(N)))) < 1e3*vscale(f)*eps;
+    result(1) = max(max(abs(ip - eye(N)))) < 1e3*max(vscale(f)*eps);
     
 
     % Check that the factorization is accurate.
     err = Q*R - f*E;
-    result(2) = norm(feval(err, x), inf) < 1e3*vscale(f)*eps;
+    result(2) = norm(feval(err, x), inf) < 1e3*max(vscale(f)*eps);
 end

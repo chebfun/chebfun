@@ -64,7 +64,7 @@ pass(8) = (abs(sum(dg) - (feval(g, 1) - feval(g, -1))) < ...
 f = testclass.make(@(x) [sin(pi*x) 1-cos(1e2*pi*x) sin(cos(pi*x))], [], pref);
 I = sum(f);
 I_exact = [0 2 0];
-pass(9) = (max(abs(I - I_exact)) < 10*vscale(f)*eps);
+pass(9) = (max(abs(I - I_exact)) < 10*max(vscale(f)*eps));
 
 % Generate a few random points to use as test values.
 seedRNG(6178);

@@ -70,7 +70,7 @@ for n = 1:2
     f = testclass.make(@(x) [sin(x) x.^2 exp(1i*x)], [], pref);
     I = sum(f);
     I_exact = [0 2/3 2*sin(1)];
-    pass(n, 9) = (max(abs(I - I_exact)) < 10*vscale(f)*eps);
+    pass(n, 9) = (max(abs(I - I_exact)) < 10*max(vscale(f)*eps));
 
     % Generate a few random points to use as test values.
     seedRNG(6178);
