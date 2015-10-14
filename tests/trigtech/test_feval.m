@@ -79,7 +79,7 @@ pass(10) = (all(size(err) == [10 10 10])) && (norm(err(:), inf) < ...
 f = testclass.make(@(x) [(2+sin(pi*x)).*exp(1i*pi*x), -(2+sin(pi*x)).*exp(1i*pi*x), 2+sin(pi*x)], [], pref);
 f_exact = @(x) [(2+sin(pi*x)).*exp(1i*pi*x), -(2+sin(pi*x)).*exp(1i*pi*x), 2+sin(pi*x)];
 err = feval(f, x) - f_exact(x);
-pass(11) = all(max(abs(err)) < 10*max(vscale(f)*eps));
+pass(11) = all(max(abs(err)) < 10*vscale(f)*eps);
 
 %%
 % Test for evaluating array-valued trigtech objects at matrix arguments if
@@ -90,6 +90,6 @@ x2 = [-1 0 1 ; .25 .5 .75];
 fx = feval(f, x2);
 f_exact = [0 0 0 -1 1 -1 exp(-1i*pi) 1 exp(1i*pi)
     [1 sqrt(2) 1 1 0 -1]/sqrt(2) exp(1i*pi.*[.25 .5 .75])];
-pass(12) = all(all(abs(fx - f_exact) < 10*max(vscale(f)*eps)));
+pass(12) = all(all(abs(fx - f_exact) < 10*vscale(f)*eps));
 
 end

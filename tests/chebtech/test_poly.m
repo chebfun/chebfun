@@ -43,7 +43,7 @@ for n = 1:2
     p_exact = [0 0     3;
                0 6.4   (-3i);
     	   4 (-2i) 3.7];
-    pass(n, 5) = (norm(p(:) - p_exact(:), inf) < 10*max(vscale(f)*eps));
+    pass(n, 5) = (norm(p(:) - p_exact(:), inf) < 10*vscale(f)*eps);
 end
 
 end

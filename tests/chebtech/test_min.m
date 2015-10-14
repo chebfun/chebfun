@@ -34,7 +34,7 @@ for n = 1:2
     [y, x] = min(f);
     exact_max = -[1 airy(-1) 0.75^3*cosh(1)];
     fx = -[sin(10*x(1)) airy(x(2)) (x(3) - 0.25).^3.*cosh(x(3))];
-    tol = 10*max(vscale(f)*eps);
+    tol = 10*vscale(f)*eps;
     pass(n, 6) = (all(abs(y - exact_max) < tol) && ...
                all(abs(fx - exact_max) < tol));
     
@@ -48,7 +48,7 @@ for n = 1:2
     exact_max = [0.074968381369117-0.319744137826069i, ...
         0.995004165278026+0.099833416646827i];
     fx = fun_op(x); fx = fx([1 4]);
-    tol = 1e2*max(vscale(f)*eps);
+    tol = 1e2*vscale(f)*eps;
     pass(n, 8) = (all(abs(y - exact_max) < tol) && ...
                   all(abs(fx - exact_max) < tol));
     

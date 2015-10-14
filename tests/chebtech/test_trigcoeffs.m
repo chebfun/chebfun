@@ -55,7 +55,7 @@ for n = 1:2
                3 1   1;...
                0 0.5 0;...
                0 0   1];
-    pass(n,9) = (norm(p(:) - p_exact(:), inf) < 10*max(vscale(f)*eps));
+    pass(n,9) = (norm(p(:) - p_exact(:), inf) < 10*vscale(f)*eps);
 
     p = trigcoeffs(f,7);
     p_exact = [0 0   0;...
@@ -65,13 +65,13 @@ for n = 1:2
                0 0.5 0;...
                0 0   1;...
                0 0   0];
-    pass(n,10) = (norm(p(:) - p_exact(:), inf) < 10*max(vscale(f)*eps));
+    pass(n,10) = (norm(p(:) - p_exact(:), inf) < 10*vscale(f)*eps);
 
     p = trigcoeffs(f,3);
     p_exact = [0 0.5 1;...   
                3 1   1;...
                0 0.5 0];
-    pass(n,11) = (norm(p(:) - p_exact(:), inf) < 10*max(vscale(f)*eps));
+    pass(n,11) = (norm(p(:) - p_exact(:), inf) < 10*vscale(f)*eps);
 
     p = trigcoeffs(f,0);
     pass(n,12) = isempty(p);

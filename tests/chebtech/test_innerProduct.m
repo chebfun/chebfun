@@ -79,7 +79,7 @@ for n = 1:2
     
     f = testclass.make(@(x) [sin(x) cos(x)]);
     g = testclass.make(@(x) [exp(x) 1./(1 + x.^2) airy(x)]);
-    tol_f = 10*max(vscale(f)*eps);
+    tol_f = 10*vscale(f)*eps;
     tol_g = 10*max(vscale(g)*eps);
     ip = innerProduct(f, g);
     exact = [0.663493666631241 0                 -0.135033172317858;

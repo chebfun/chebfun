@@ -68,7 +68,7 @@ for n = 1:2
     f = testclass.make(@(x) [sin(x) x.^2 exp(1i*x)], [], pref);
     f_exact = @(x) [sin(x) x.^2 exp(1i*x)];
     err = feval(f, x) - f_exact(x);
-    pass(n, 8) = all(max(abs(err)) < 10*max(vscale(f)*eps));
+    pass(n, 8) = all(max(abs(err)) < 10*vscale(f)*eps);
     
     %%
     % Test for evaluating array-valued chebtech objects at matrix arguments if 
@@ -78,7 +78,7 @@ for n = 1:2
     fx = feval(f, x2);
     f_exact = [0 0 0 -1 1 -1 exp(-pi) 1 exp(pi)
               [1 sqrt(2) 1 1 0 -1]/sqrt(2) exp(pi.*[.25 .5 .75])];
-    pass(n, 9) = all(all(abs(fx - f_exact) < 10*max(vscale(f)*eps)));
+    pass(n, 9) = all(all(abs(fx - f_exact) < 10*vscale(f)*eps));
 end
 
 end
