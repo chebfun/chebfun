@@ -87,7 +87,7 @@ h2 = restrict(f, [0.1 1]);
 x = linspace(-.5, 0, 100).';
 err1 = norm(feval(g{1} - h1, x), inf);
 err2 = norm(feval(g{2} - h2, x+.7), inf);
-tol = 10*max(eps);
+tol = 10*eps;
 pass(14) = err1 < tol && err2 < tol;
 
 %% Test on singular function:

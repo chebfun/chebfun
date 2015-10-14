@@ -40,7 +40,7 @@ pass(5) = numel(r1) == 200 & numel(r2) >= 201;
 f = testclass.make(@(x) [sin(pi*x), cos(pi*x)], [], pref);
 r = roots(f);
 r2 = [-1 0 1 -.5 .5 NaN].';
-pass(6) = all( r(:) - r2 < 10*length(f)*max(eps) | isnan(r2) );
+pass(6) = all( r(:) - r2 < 10*length(f)*eps | isnan(r2) );
 
 f = testclass.make(@(x) [cos(2*pi*x), sin(pi*x)], [], pref);
 r = roots(f, 'complex', 1);
@@ -48,6 +48,6 @@ r = r(:);
 [temp, id] = sort(real(r));
 r = r(id);
 r2 = [0.75 -0.75 0.25 -0.25 0 1 NaN NaN].';
-pass(7) = all( abs(r(:) - sort(r2)) < 10*length(f)*max(eps) | isnan(r2) );
+pass(7) = all( abs(r(:) - sort(r2)) < 10*length(f)*eps | isnan(r2) );
 
 end

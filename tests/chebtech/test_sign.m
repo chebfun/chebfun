@@ -37,6 +37,6 @@ for type = 1:2
     gg = ff./abs(ff);
     h = sign(f);
     hh = feval(h, xx);
-    pass(type, 4) = norm(hh - gg, inf) < 10*max(eps);
+    pass(type, 4) = norm(hh - gg, inf) < 10*eps;
     
 end

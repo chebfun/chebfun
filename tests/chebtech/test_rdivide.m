@@ -45,7 +45,7 @@ for n = 1:2
     
     g = f ./ [alpha beta];
     g_exact = @(x) [sin(x)./alpha cos(x)./beta];
-    pass(n, 5) = norm(feval(g, x) - g_exact(x), inf) < 10*max(eps);
+    pass(n, 5) = norm(feval(g, x) - g_exact(x), inf) < 10*eps;
     
     g = f ./ [alpha 0];
     pass(n, 6) = isnan(g) && ~any(isnan(g.coeffs(:, 1))) ...

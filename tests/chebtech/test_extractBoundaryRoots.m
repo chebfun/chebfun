@@ -71,7 +71,7 @@ for n = 1:2
     [g, l, r] = extractBoundaryRoots(f);
     gexact = testclass.make(@(x) [sin(x) cos(x.^2)], [], pref);
     err = feval(g, x) - feval(gexact, x);
-    pass(n, 7) = (norm(err, Inf) < (1e2^2)*max(eps)) && all(l == [0 1]) && ...
+    pass(n, 7) = (norm(err, Inf) < (1e2^2)*eps) && all(l == [0 1]) && ...
         all(r == [2 1]);
     
     %% Test on full arguments:

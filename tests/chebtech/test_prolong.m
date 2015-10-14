@@ -40,7 +40,7 @@ for n = 1:2
     pass(n, 4) = norm(values - [F(x), -F(x)], inf) < 10*max(vscale(g)*eps);
 
     g = prolong(f, 1);
-    pass(n, 5) = size(g,1) == 1 && norm(g.coeffs, inf) < 10*max(eps);
+    pass(n, 5) = size(g,1) == 1 && norm(g.coeffs, inf) < 10*eps;
 
     g = prolong(f, 2);
     y = testclass.chebpts(2);
@@ -83,14 +83,14 @@ for n = 1:2
     
 
     g = prolong(f, 1);
-    pass(n, 12) = size(g, 1) == 1 && norm(g.coeffs, inf) < 10*max(eps);
+    pass(n, 12) = size(g, 1) == 1 && norm(g.coeffs, inf) < 10*eps;
 
     g = prolong(f, 2);
     y = testclass.chebpts(2);
     exact_values = [sin(1000*y) -sin(1000*y)];
     values = g.coeffs2vals(g.coeffs);
     pass(n, 13) = size(g, 1) == 2 && ...
-        norm(values - exact_values, inf) < 1e3*max(eps);
+        norm(values - exact_values, inf) < 1e3*eps;
     
 
     F = @(x) cos(1000*x);

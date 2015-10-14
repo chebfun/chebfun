@@ -30,7 +30,7 @@ f = bndfun(fun_op, data, pref);
 [y, x] = minandmax(f);
 y_exact = [-1 7.492128863997157e-07  (-.2)^3*cosh(-.2);
     1 0.535656656015700 0.7^3*cosh(0.7)];
-pass(5) = all(abs(y(:) - y_exact(:)) < 100*max(eps));
+pass(5) = all(abs(y(:) - y_exact(:)) < 100*eps);
     
     
 % Check that the points x are indeed extreme points of the function 

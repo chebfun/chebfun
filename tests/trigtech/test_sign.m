@@ -33,6 +33,6 @@ ff = feval(f, xx);
 gg = ff./abs(ff);
 h = sign(f);
 hh = feval(h, xx);
-pass(4) = norm(hh - gg, inf) < 10*max(eps);
+pass(4) = norm(hh - gg, inf) < 10*eps;
     
 end

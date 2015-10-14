@@ -40,7 +40,7 @@ pass(4) = isnan(g);
 
 g = f ./ [alpha beta];
 g_exact = @(x) [sin(10*pi*x)./alpha sin(20*pi*x)./beta];
-pass(5) = norm(feval(g, x) - g_exact(x), inf) < 1e3*max(eps);
+pass(5) = norm(feval(g, x) - g_exact(x), inf) < 1e3*eps;
 
 g = f ./ [alpha 0];
 pass(6) = isnan(g) && ~any(isnan(g.coeffs(:, 1))) ...

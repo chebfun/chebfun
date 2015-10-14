@@ -82,17 +82,17 @@ g_op = @(x) tanh(sin(pi*x)+cos(pi*x));
 g = testclass.make(g_op, [], pref);
 h1 = f .* g;
 h2 = g .* f;
-pass(12) = (norm(h1.coeffs-h2.coeffs) < 10*max(eps));
+pass(12) = (norm(h1.coeffs-h2.coeffs) < 10*eps);
 h_exact = @(x) bsxfun(@times,g_op(x),f_op(x));
 err = feval(h1, x) - h_exact(x);
-pass(13) = max(abs(err(:))) < 100*max(eps);
+pass(13) = max(abs(err(:))) < 100*eps;
         
 g_op = @(x) [tanh(sin(pi*x)+cos(pi*x)) sin(pi*x) exp(sin(pi*x))];
 g = testclass.make(g_op, [], pref);
 h = f .* g;
 h_exact = @(x) g_op(x).*f_op(x);
 err = feval(h, x) - h_exact(x);
-pass(14) = max(abs(err(:))) < 100*max(eps);
+pass(14) = max(abs(err(:))) < 100*eps;
 
 % This should fail with a dimension mismatch error.
 try

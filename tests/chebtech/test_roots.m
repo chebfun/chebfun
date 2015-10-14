@@ -80,7 +80,7 @@ for n = 1:2
     f = testclass.make(@(x) [sin(pi*x), cos(pi*x)], [], pref);
     r = roots(f);
     r2 = [-1 0 1 -.5 .5 NaN].';
-    pass(n, 9) = all( r(:) - r2 < 10*length(f)*max(eps) | isnan(r2) );
+    pass(n, 9) = all( r(:) - r2 < 10*length(f)*eps | isnan(r2) );
 
     % Adding test for 'qz' flag: 
     f = testclass.make(@(x) 1e-10*x.^3 + x.^2 - 1e-12, [], pref); 

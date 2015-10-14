@@ -88,7 +88,7 @@ for n = 1:2
     x = linspace(-1, 1, 100).';
     err1 = norm(feval(g{1} - h1, x), inf);
     err2 = norm(feval(g{2} - h2, x), inf);
-    tol = 10*max(eps);
+    tol = 10*eps;
     pass(n, 10) = err1 < tol && err2 < tol;
 end
 

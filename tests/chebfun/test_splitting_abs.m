@@ -24,7 +24,7 @@ for j = 1:numel(FF);
     xx = linspace(-1, 1);
     
     err = norm(feval(f, xx) - feval(F, xx), inf);
-    pass(j, k+1) = err < 50*max(eps);
+    pass(j, k+1) = err < 50*eps;
     pass(j, k+2) = err < 1000*pref.eps;
 
 end

@@ -28,6 +28,6 @@ F = @(x) [(2+sin(pi*x)).*exp(1i*pi*x), -(2+sin(pi*x)).*exp(1i*pi*x), 2+sin(pi*x)
 f = testclass.make(@(x) F(x), [], pref);
 g = testclass.make(@(x) [2+sin(pi*x), 2+sin(pi*x), 2+sin(pi*x)]);
 h = abs(f);
-pass(4) = normest(h - g) < 10*max(eps);
+pass(4) = normest(h - g) < 10*eps;
 
 end

@@ -86,16 +86,16 @@ for n = 1:2
     g = testclass.make(@(x) tanh(x), [], pref);
     h1 = f .* g;
     h2 = g .* f;
-    pass(n, 12) = (norm(h1.coeffs-h2.coeffs) < 10*max(eps));
+    pass(n, 12) = (norm(h1.coeffs-h2.coeffs) < 10*eps);
     h_exact = @(x) [tanh(x).*sin(x) tanh(x).*cos(x) tanh(x).*exp(x)];
     err = feval(h1, x) - h_exact(x);
-    pass(n, 13) = max(abs(err(:))) < 10*max(eps);
+    pass(n, 13) = max(abs(err(:))) < 10*eps;
     
     g = testclass.make(@(x) [sinh(x) cosh(x) tanh(x)], [], pref);
     h = f .* g;
     h_exact = @(x) [sinh(x).*sin(x) cosh(x).*cos(x) tanh(x).*exp(x)];
     err = feval(h, x) - h_exact(x);
-    pass(n, 14) = max(abs(err(:))) < 10*max(eps);
+    pass(n, 14) = max(abs(err(:))) < 10*eps;
     
     % This should fail with a dimension mismatch error.
     try
