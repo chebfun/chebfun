@@ -15,7 +15,7 @@ pass(2) = abs(c(end) - 4/(9*pi)) < 10*eps;
 %% Test 'trunc' flag:
 G = chebfun(@(x) sign(x), 'trunc', 10, pref);
 pass(3) = length(g) == 10;
-pass(4) = norm(g - G, inf) < eps;
+pass(4) = norm(g - G, inf) < 10*eps;
 c = chebcoeffs(g);
 pass(5) = abs(c(end) - 4/(9*pi)) < 10*eps;
 
