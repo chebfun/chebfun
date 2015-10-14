@@ -84,12 +84,12 @@ CFS(:, m/2+1) = [ en ;  L([1:n/2 n/2+2:n], :)] \ ...
 VALS = trigtech.coeffs2vals( trigtech.coeffs2vals( CFS ).' ).'; 
 
 % Now restrict down to region of interest:
-VALS = VALS([n/2+1:n n/2+1], :);
+VALS = VALS([n/2+1:n 1], :);
 
-u = VALS;
+% u = real(VALS);
 
-% Finally, make a spherefun object out of the values: 
-% u = spherefun( real( VALS ) ); 
+% Finally, make a spherefun obxject out of the values: 
+u = spherefun( real( VALS ) ); 
 
 % - DEBUG
 % % Plot: 
