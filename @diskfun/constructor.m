@@ -177,9 +177,14 @@ Fm = 0.5*(B - C);
 %
 % Deal with the pole by removing them from Fp.
 %
-                           % Take the value at the pole to be 
-pole = mean(Fp(m,:));     % the mean of all the samples at the poles.
+                           
+[pole,constValue] = checkPole(Fp(m,:),tol);
 
+if ~constValue
+    warning('CHEBFUN:DISKFUN:constructor:constOrigin',...
+        ['Results may be inaccurate as the function may not be constant'...
+         'at the origin (r=0).']);
+end
 colsPlus = []; rowsPlus = []; kplus = 0;  idxPlus = [];
 colsMinus = []; rowsMinus = []; kminus = 0; idxMinus = [];
 
@@ -638,5 +643,21 @@ tol = grid.^(2/3) * max( abs( dom(:) ) ) * max( Jac_norm, vscale) * pseudoLevel;
 
 end
 
+% Check that the values at the pole are constant.
+function [pole,constVal] = checkPole(val,tol)
 
+% Take the mean of the values that are at the pole.
+pole = mean(val);
+% Compute there standard deviation
+stddev = std(val);
+
+% If the standard deviation does not exceed the tolearnce then the pole is
+% "constant"
+if stddev <= tol
+    constVal = 1;
+else
+    constVal = 0;
+end
+
+end
 
