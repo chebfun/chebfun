@@ -28,6 +28,14 @@ pass(5) = doesNotCrash(@() plotcoeffs(Q));
 pass(6) = doesNotCrash(@() plotcoeffs(g, 'loglog'));
 pass(7) = doesNotCrash(@() plotcoeffs(g, '.--'));
 
+% Check behavior with trigtech.
+f = chebfun(@(x) sin(pi*x), pref, 'trig');
+F = chebfun(@(x) [sin(pi*x) cos(pi*x)], pref, 'trig');
+pass(8) = doesNotCrash(@() plotcoeffs(f));
+pass(9) = doesNotCrash(@() plotcoeffs(F));
+pass(10) = doesNotCrash(@() plotcoeffs(f, 'loglog'));
+pass(11) = doesNotCrash(@() plotcoeffs(f, '.--'));
+
 close(hfig);
 
 end
@@ -39,7 +47,6 @@ try
     pass = true;
 catch ME;
     pass = false;
-    rethrow(ME)
 end
 
 end
