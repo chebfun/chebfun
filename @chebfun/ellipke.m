@@ -16,7 +16,7 @@ function [k, e] = ellipke(m, pref)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Choose a tolerance:
-tol = get(m, 'epslevel');
+tol = eps;
 if ( nargin == 1 )
     pref = chebfunpref();
     tol = max(pref.techPrefs.eps, tol);
@@ -36,7 +36,7 @@ end
 
 % Loop over the columns:
 for j = numel(m):-1:1
-    mTol = max(epslevel(m(j)).*vscale(m(j)), tol);
+    mTol = max(eps*vscale(m(j)), tol);
     try
         % Call COMPOSE():
         k(j) = compose(m(j), @(m) ellipke(fudge(m, mTol), .1*tol), pref);
@@ -54,7 +54,7 @@ end
 if ( nargout == 2 )
     e(numel(m)) = chebfun();
     for j = numel(m):-1:1
-        mTol = max(epslevel(m(j)).*vscale(m(j)), tol);
+        mTol = max(eps*vscale(m(j)), tol);
         % Call COMPOSE():
         e(j) = compose(m(j), @(m) eFun(fudge(m, mTol), tol), pref);
     end

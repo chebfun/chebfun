@@ -1,8 +1,8 @@
 function f = simplify(f, varargin)
 %SIMPLIFY   Simplify the ONEFUN of the CLASSICFUN object F. 
-%   G = SIMPLIFY(F) attempts to compute a 'simplified' version G of the CLASSICFUN
-%   object F. The difference between F and G should be small, in the sense that
-%   ||G - F|| < get(G,'EPSLEVEL')*get(G,'VSCALE'), but the representation of G
+%   G = SIMPLIFY(F) attempts to compute a 'simplified' version G of the
+%   CLASSICFUN object F. The difference between F and G should be small, in the
+%   sense that ||G - F|| < EPS*get(G,'VSCALE'), but the representation of G
 %   should more compact (for example, requiring fewer coefficients).
 %
 %   G = SIMPLIFY(F, TOL) does the same, but simplifies according to the

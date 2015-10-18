@@ -160,7 +160,7 @@ end
             c = (1+sin(1:SYSSIZE)).'; % Arbitrarily linear combination.
             Uk2 = (Uk*c/sum(c));
             uk2 = tech.make(Uk2, pref);
-            [ishappy, epslevel, cutoff] = classicCheck(uk2, Uk2, [], pref);
+            [ishappy, cutoff] = happinessCheck(uk2, Uk2, [], [], pref);
 
             if ( ishappy )  
 
@@ -172,7 +172,7 @@ end
                 % Store these values:
                 tCurrent = t(kk);
                 uCurrent = chebfun(Uk, DOMAIN, 'tech', techHandle);
-                uCurrent = simplify(uCurrent, epslevel);
+                uCurrent = simplify(uCurrent);
                 
                 COUNTER = COUNTER + 1;
                 uOut{COUNTER} = uCurrent;

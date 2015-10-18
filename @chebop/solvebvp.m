@@ -241,6 +241,15 @@ else
 
 end
 
+% Enforce the function to be real if the imaginary part is small if using a 
+% periodic TECH:
+if ( isPeriodicTech(techUsed) )
+    normImag = @(f) norm(imag(f),inf);
+    if ( max(cellfun(normImag, u.blocks)) < max(pref.errTol*vscale(u)) )
+       u = real(u);
+    end
+end
+
 % Revert warning state:
 warning(warnState);
 

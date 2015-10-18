@@ -469,9 +469,6 @@ classdef chebfun
         
         % Compare domains of two CHEBFUN objects.
         pass = domainCheck(f, g);        
-        
-        % Accuracy estimate of a CHEBFUN object.
-        out = epslevel(f, flag);
 
         % Extract columns of an array-valued CHEBFUN object.
         f = extractColumns(f, columnIndex);
@@ -597,7 +594,10 @@ classdef chebfun
         [funs, ends] = constructor(op, domain, data, pref);
         
         % Convert ODE solutions into CHEBFUN objects:
-        [y, t] = odesol(sol, dom, opt);
+        [t, y] = odesol(sol, dom, opt);
+        
+        % Call one of the MATLAB ODE solvers and return a CHEBFUN
+        [t, y] = constructODEsol(solver, odefun, tspan, uinit, varargin);
         
         % Parse inputs to PLOT. Extract 'lineWidth', etc.
         [lineStyle, pointStyle, jumpStyle, deltaStyle, out] = ...
@@ -985,17 +985,19 @@ function op = vectorCheck(op, dom, vectorize)
 
 % Make a slightly narrower domain to evaluate on. (Endpoints can be tricky).
 y = dom([1 end]);
-
+% This used to be fixed at 0.01. But this can cause troubles at very narrow
+% domains, where 1.01*y(1) might actually be larger than y(end)!
+del = diff(y)/200;
 if ( y(1) > 0 )
-    y(1) = 1.01*y(1); 
+    y(1) = (1+del)*y(1); 
 else
-    y(1) = .99*y(1); 
+    y(1) = (1-del)*y(1); 
 end
 
 if ( y(end) > 0 )
-    y(end) = .99*y(end); 
+    y(end) = (1-del)*y(end); 
 else
-    y(end) = 1.01*y(end); 
+    y(end) = (1+del)*y(end); 
 end
 
 y = y(:);

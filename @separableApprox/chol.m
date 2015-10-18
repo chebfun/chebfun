@@ -82,7 +82,7 @@ r = 0.0192475;   % arbitrary point in [-1,1]
 s = -.34756987;  % arbitrary point in [-1,1]
 r = diff(dom(1:2))*r - dom(1); 
 s = diff(dom(3:4))*s - dom(3); 
-symTest = ( abs(feval(f,r,s) - feval(f,s,r)) < 10*max(epslevel(f.cols),epslevel(f.rows)) );
+symTest = abs(feval(f,r,s) - feval(f,s,r)) < 1e2*eps;
 if ( ~symTest )
     error('CHEBFUN:SEPARABLEAPPROX:chol:symmetric', ...
         'The SEPARABLEAPPROX must be a symmetric function.');

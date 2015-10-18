@@ -12,7 +12,7 @@ hvsde = @(x) .5*(sign(x) + 1);
 %% Simple tests
 pref.splitting = 0;
 f = chebfun('x.^2', pref);   
-tol = get(f, 'epslevel')*get(f, 'hscale');
+tol = eps*get(f, 'hscale');
 f1 = sign(f);
 pass(1,1) = all(feval(f1, x) == 1);
 
@@ -65,14 +65,14 @@ f = chebfun(@(x) sin(1i*x).*(1i*x + exp(5i*x)));
 g = chebfun(@(x) sign(sin(1i*x).*(1i*x + exp(5i*x))),[-1 0 1], ...
     'extrapolate', 'on');
 h = sign(f);
-pass(4,:) = normest(g - h) < 1e4*get(h, 'epslevel')*length(h);
+pass(4,:) = normest(g - h) < 1e4*eps*length(h);
 
 
 %% Test sign() for a complex-valued CHEBFUN.
 f = chebfun(@(x) exp(2*pi*1i*x)./(1 + (x - 0.1).^2), [-1 1]);
 h = sign(f);
 h_exact = @(x) exp(2*pi*1i*x);
-pass(5,:) = norm(feval(h, x) - h_exact(x), inf) < 1e2*vscale(h)*epslevel(h);
+pass(5,:) = norm(feval(h, x) - h_exact(x), inf) < 1e2*vscale(h)*eps;
 
 %% Test on singular function: a real case
 
@@ -104,7 +104,7 @@ s_exact = @(x) exp(2*pi*1i*x);
 vals_s = feval(s, x);
 vals_exact = feval(s_exact, x);
 err = vals_s - vals_exact;
-pass(7,:) = ( norm(err, inf) < 1e1*epslevel(s).*get(s, 'vscale') );
+pass(7,:) = ( norm(err, inf) < 1e1*eps*get(s, 'vscale') );
 
 %% Functions on [-inf inf]:
 

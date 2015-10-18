@@ -112,7 +112,7 @@ for j = 1:numFuns
     end
 end
 
-% Display epslevel:
+% Display vscale:
 s = [s, sprintf('vscale = %i.', vscale(f, 'sup'))];
 
 % Display total length for piecewise chebfuns:
