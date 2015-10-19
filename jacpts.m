@@ -51,11 +51,6 @@ function [x, w, v] = jacpts(n, a, b, int, meth)
 %       quadrature nodes and weights", SISC, 2012.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-if ( nargin == 0 )
-    jacpts(200,0.08,0.08,'asy');
-    return
-end
-
 % Defaults:
 interval = [-1, 1];
 method = 'default';
