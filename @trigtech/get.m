@@ -24,6 +24,9 @@ switch prop
     case fieldnames(f)
         % Allow access to any of the properties of F via GET:
         out = f.(prop);
+    case 'vscale'
+        % Get the vscale:
+        out = vscale(f);
     case 'points'
         % Get the trigier grid corresponding to the VALUES:
         out = f.points();

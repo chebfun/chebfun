@@ -40,11 +40,11 @@ pass(8) = g.isTransposed && (numel(g.funs) == 1) && all(feval(g, x) == 1);
 f = chebfun(@(x) [sin(x) 0*x], pref);
 g = any(f, 2);
 ind = find(g.pointValues == 0);
-pass(9) = ~g.isTransposed && (abs(g.domain(ind)) < 10*vscale(g)*epslevel(g)) ...
+pass(9) = ~g.isTransposed && (abs(g.domain(ind)) < 10*vscale(g)*eps) ...
     && isequal(g.pointValues, [1 0 1].') && all(feval(g, x) == 1);
 g = any(f.', 1);
 ind = find(g.pointValues == 0);
-pass(10) = g.isTransposed && (abs(g.domain(ind)) < 10*vscale(g)*epslevel(g)) ...
+pass(10) = g.isTransposed && (abs(g.domain(ind)) < 10*vscale(g)*eps) ...
     && isequal(g.pointValues, [1 0 1].') && all(feval(g, x) == 1);
 
 f = chebfun(@(x) [hvsde(x) sin(x).*hvsde(x)], [-1 0 1], pref);

@@ -21,7 +21,7 @@ g = chebfun(@(x) 0*x);
 h = f | g;
 ind = find(h.pointValues == 0);
 pass(2) = all(feval(h, x) == 1) && (numel(ind) == 1) && ...
-    (abs(h.domain(ind)) < 10*vscale(h)*epslevel(h));
+    (abs(h.domain(ind)) < 10*vscale(h)*eps);
 
 g = chebfun(@(x) exp(x));
 h = f | g;

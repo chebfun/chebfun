@@ -27,33 +27,33 @@ pass(1) = isnan(f / 0);
 g = f / alpha;
 g_exact = @(x) f_op(x) ./ alpha;
 pass(2) = norm(feval(g, x) - g_exact(x), inf) < ...
-    50*max(g.vscale.*g.epslevel);
+    50*max(vscale(g)*eps);
 
 % A "least-squares" case where the solution is obvious.
 I = eye(2);
 g = f / I;
 err = g*I - f;
-pass(3) = max(max(abs(feval(err, x)))) < 10*max(g.vscale.*g.epslevel);
+pass(3) = max(max(abs(feval(err, x)))) < 10*max(vscale(g)*eps);
 
 % A less trivial least-squares case for which we still know the answer.
 A = [1 1];
 g = f / A;
 g_exact = @(x) (exp(sin(pi*x)) + 3./(4-cos(pi*x)))/2;
 pass(4) = norm(feval(g, x) - g_exact(x), inf) < ...
-    10*max(g.vscale.*g.epslevel);
+    1e2*max(vscale(g)*eps);
 
 %%
 % Check division of a numeric array by a TRIGTECH object.
 
 f = testclass.make(@(x) cos(sin(pi*x)));
 g = alpha / f;
-pass(5) = abs(innerProduct(f, g) - alpha) < 10*max(g.vscale.*g.epslevel);
+pass(5) = abs(innerProduct(f, g) - alpha) < 10*max(vscale(g)*eps);
 
 f = testclass.make(@(x) [sin(2*pi*x) cos(2*pi*x)]);
 g = [1 1]/f;
 g_exact = @(x) (sin(2*pi*x) + cos(2*pi*x));
 pass(6) = norm(feval(g, x) - g_exact(x), inf) < ...
-    10*max(g.vscale.*g.epslevel);
+    10*max(vscale(g)*eps);
     
 %%
 % Check error conditions.

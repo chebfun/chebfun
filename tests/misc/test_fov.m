@@ -10,20 +10,20 @@ end
 A = [1 2 ; 3 2i];
 F = fov(A);
 err = abs(max(real(F)) - 3.049509756796393);
-tol = 1e2*vscale(F)*epslevel(F);
+tol = 1e2*vscale(F)*eps;
 pass(1) = err < tol;
 
 
 B = 7;
 F = fov(B);
 err = norm(abs(F - 7));
-tol = 10*vscale(F)*epslevel(F);
+tol = 10*vscale(F)*eps;
 pass(2) = err < tol;
 
 C = diag([-1 1 1i]);
 F = fov(C);
 err = abs(mean(F) - .25i);
-tol = 10*vscale(F)*epslevel(F);
+tol = 10*vscale(F)*eps;
 pass(3) = err < tol;
 
 A = [0 1 0 ; 0 0 0 ; 0 0 1];

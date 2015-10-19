@@ -93,8 +93,7 @@ V = conj( V );
 s = diag(S);
 
 % Compress the format if possible.
-% [TODO]: What should EPS be in the tolerance check below? Can we base it on
-% EPSLEVELS?
+% [TODO]: What should EPS be in the tolerance check below?
 vf = vscale(f); 
 vg = vscale(g);
 vscl = max(vf, vg); 
