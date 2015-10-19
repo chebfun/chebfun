@@ -42,9 +42,9 @@ end
 
 % Option for discretization:
 fprintf(fid, '\n%% Specify the discretization to use. Possible options are:\n');
-fprintf(fid, '%%  ''collocation'' (default)\n');
-fprintf(fid, '%%  ''ultraspherical''\n');
-fprintf(fid, '%%  ''periodic'' (only for periodic problems).\n');
+fprintf(fid, '%%  ''values'' (default)\n');
+fprintf(fid, '%%  ''coeffs''\n');
+fprintf(fid, '%%  A function handle (see ''help cheboppref'' for details).\n');
 fprintf(fid, 'options.discretization = ''%s'';\n', discretization);
 
 % Plot during Newton iteration?
