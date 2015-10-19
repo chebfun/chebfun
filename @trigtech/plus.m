@@ -41,13 +41,6 @@ elseif ( isa(g, 'double') ) % TRIGTECH + double.
     % Update isReal:
     f.isReal = f.isReal & isreal(g);
     
-    % Update scale:
-    vscaleNew = max(abs(f.values), [], 1);
-    
-    % See TRIGTECH CLASSDEF file for documentation on this:
-    f.epslevel = updateEpslevel(f);
-    f.vscale = vscaleNew;
-    
 elseif ( isa(f, 'double') ) % double + TRIGTECH.
     
     % Switch argument order and call TRIGTECH/PLUS again:
@@ -81,21 +74,12 @@ elseif ( isa(f, 'trigtech') && isa(g, 'trigtech') )  % TRIGTECH + TRIGTECH.
     % Look for a zero output:
     if ( ~any(f.values(:)) || ~any(f.coeffs(:)) )
         % Create a zero TRIGTECH:
-        epslevel = max(f.epslevel, g.epslevel);
         ishappy = f.ishappy && g.ishappy;
         z = zeros(1, size(f.values, 2));
         data.vscale = z;
-        data.hscale = f.hscale;
         f = f.make(z, data);
-        f.epslevel = epslevel;
         f.ishappy = ishappy;
     else
-        % Update vscale, epslevel, and ishappy:
-        vscaleNew = max(abs(f.values), [], 1);
-        % See TRIGTECH CLASSDEF file for documentation on this:
-        epslevelBound = (f.epslevel.*f.vscale + g.epslevel.*g.vscale)./vscaleNew;
-        f.epslevel = updateEpslevel(f, epslevelBound);
-        f.vscale = vscaleNew;
         f.ishappy = f.ishappy && g.ishappy;
     end
     

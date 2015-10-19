@@ -37,8 +37,7 @@ end
 
 % Choose a tolerance:
 vs = vscale(p);
-el = epslevel(p);
-tol = 100*el*vs;
+tol = 100*eps*vs;
 
 % Store data about the pointValues for later:
 lvals = feval(p, p.domain, 'left').';

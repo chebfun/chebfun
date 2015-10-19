@@ -15,14 +15,14 @@ for k = 1:numel(F)
     f = chebfun(@sin, pref);
     g = feval(F{k}, f);
     h = chebfun(@(x) feval(F{k}, sin(x)), pref);
-    pass(k, 1) = normest(g - h) < 10*epslevel(h);
+    pass(k, 1) = normest(g - h) < 10*eps;
     
     f = chebfun(@(x) [sin(x), exp(x-1.1), x/2], pref);
     g = feval(F{k}, f);
     h = chebfun(@(x) [feval(F{k}, sin(x)), ...
                       feval(F{k}, exp(x-1.1)), ...
                       feval(F{k}, x/2)], pref);
-    pass(k, 2) = normest(g - h) < 10*epslevel(h)*vscale(h);
+    pass(k, 2) = normest(g - h) < 10*eps*vscale(h);
     
 end
 

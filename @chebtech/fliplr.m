@@ -8,6 +8,5 @@ function f = fliplr(f)
 
 % Flip the orders of the columns of the matrices storing the coefficients.
 f.coeffs = fliplr(f.coeffs);
-f.epslevel = fliplr(f.epslevel);
 
 end
