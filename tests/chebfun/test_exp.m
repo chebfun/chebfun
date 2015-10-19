@@ -26,7 +26,7 @@ for (k = 1:1:numel(expFunctions))
     g_exact = @(x) exp_op(base_op(x));
     g = exp_op(f, pref);
     err = feval(g, xr) - g_exact(xr);
-    pass(k) = norm(err, inf) < 1e2*g.vscale.*g.epslevel;
+    pass(k) = norm(err, inf) < 1e2*vscale(g)*eps;
     
 end
 

@@ -164,11 +164,11 @@ function g = singIntegral(f)
     
     % Construct the SINGFUN object of the solution:
     g = singfun;
-    tol = get(f, 'epslevel').*get(f, 'vscale');
+    tol = eps*get(f, 'vscale');
     if ( abs(ra - a) > tol ) 
         % No log term: fractional poles, fractional roots, or integer roots:
         CM = Cm/(ra - a);
-        if ( iszero(u) && abs(CM) > tol*f.smoothPart.vscale )
+        if ( iszero(u) && abs(CM) > tol*vscale(f.smoothPart) )
             g.smoothPart = f.smoothPart.make(@(x) CM + 0*x);
             g.exponents = [ra - a 0];
         elseif ( ~iszero(u) && abs(CM) < tol )

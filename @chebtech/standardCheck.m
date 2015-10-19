@@ -1,18 +1,17 @@
-function [ishappy, epslevel, cutoff] = standardCheck(f, values, vscl, pref)
+function [ishappy, cutoff] = standardCheck(f, values, data, pref)
 %STANDARDCHECK   Attempt to trim trailing Chebyshev coefficients in a CHEBTECH.
-%   [ISHAPPY, EPSLEVEL, CUTOFF] = STANDARDCHECK(F) uses the routine STANDARDCHOP
-%   to compute a positive integer CUTOFF which represents the number of
+%   [ISHAPPY, CUTOFF] = STANDARDCHECK(F) uses the routine STANDARDCHOP to
+%   compute a positive integer CUTOFF which represents the number of
 %   coefficients of F that are deemed accurate enough to keep. ISHAPPY is TRUE
 %   if the CUTOFF value returned by STANDARDCHOP is less than LENGTH(F) and
-%   FALSE otherwise. EPSLEVEL is always returned as MATLAB EPS.
+%   FALSE otherwise.
 %
-%   [ISHAPPY, EPSLEVEL, CUTOFF] = STANDARDCHECK(F, VALUES, VSCL, PREF) allows
-%   additional preferences to be passed. VALUES is a matrix of the function
-%   values of F at the corresponding interpolation points. VSCL is an
-%   approximation of the maximum function value of F on a possibly larger
-%   approximation interval. PREF is a data structure used to pass in additional
-%   information, e.g. a target accuracy tolerance could be passed using
-%   PREF.EPS.
+%   [ISHAPPY, CUTOFF] = STANDARDCHECK(F, VALUES, DATA, PREF) allows additional
+%   preferences to be passed. VALUES is a matrix of the function values of F at
+%   the corresponding interpolation points. DATA.VSCALE is an approximation of
+%   the maximum function value of F on a possibly larger approximation
+%   interval.  PREF is a data structure used to pass in additional information,
+%   e.g. a target accuracy tolerance could be passed using PREF.EPS.
 %
 % See also CLASSICCHECK, STRICTCHECK, LOOSECHECK.
 
@@ -22,15 +21,6 @@ function [ishappy, epslevel, cutoff] = standardCheck(f, values, vscl, pref)
 % Grab the coefficients of F.
 coeffs = f.coeffs;
 [n, m] = size(coeffs);
-
-% Initialize ISHAPPY to be FALSE.
-ishappy = false;
-
-% Initialize EPSLEVEL to be MATLAB EPS.
-epslevel = eps*ones(1, m);
-
-% Initialize CUTOFF to be LENGTH(F).
-cutoff = length(f);
 
 % Check for NaNs and exit if any are found.
 if ( any(isnan(coeffs)) )
@@ -59,7 +49,7 @@ if ( nargin < 2 || isempty(values) )
     values = f.coeffs2vals(f.coeffs);
 end
 
-% Scale TOL by the MAX(F.HSCALE, VSCL/||F||).
+% Scale TOL by the MAX(DATA.HSCALE, DATA.VSCALE/VSCALE(F)).
 % This choice of scaling is the result of undesirable behavior when using
 % standardCheck to construct the function f(x) = sqrt(1-x) on the interval [0,1]
 % with splitting turned on. Due to the way standardChop checks for plateaus, the
@@ -67,12 +57,9 @@ end
 % quality results. This choice of scaling corrects this by giving less weight to
 % subintervals that are much smaller than the global approximation domain, i.e.
 % HSCALE >> 1. For functions on a single domain with no breaks, this scaling has
-% no effect since HSCALE = 1. 
-nrmf = max(abs(values), [], 1);
-if ( isempty(vscl) )
-    vscl = nrmf;
-end
-tol = tol.*max(f.hscale, vscl./nrmf);
+% no effect since HSCALE = 1.
+vscaleF = max(abs(values), [], 1);
+tol = tol.*max(data.hscale, data.vscale./vscaleF);
 
 % Loop through columns of coeffs.
 ishappy = false(1,m);

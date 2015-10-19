@@ -25,9 +25,8 @@ pass(4) = doesNotCrash(@() plotcoeffs(G));
 pass(5) = doesNotCrash(@() plotcoeffs(Q));
 
 % Check plot flags and other options.
-pass(6) = doesNotCrash(@() plotcoeffs(g, 'noepslevel'));
-pass(7) = doesNotCrash(@() plotcoeffs(g, 'loglog'));
-pass(8) = doesNotCrash(@() plotcoeffs(g, '.--'));
+pass(6) = doesNotCrash(@() plotcoeffs(g, 'loglog'));
+pass(7) = doesNotCrash(@() plotcoeffs(g, '.--'));
 
 close(hfig);
 

@@ -132,7 +132,6 @@ else
     
     % The new scales for the sum:
     vScale = get(f, 'vscale') + get(g, 'vscale');
-    hScale = get(f, 'hscale');
     
     % Take the smallest exponents to be those for the summation:
     exps = [get(f, 'exponents'); get(g, 'exponents')];
@@ -141,7 +140,6 @@ else
     % Construct a new SINGFUN for the sum:
     data.exponents = exps;
     data.vscale = vScale;
-    data.hscale = hScale;
     s = singfun(op, data, []);
 end
 
