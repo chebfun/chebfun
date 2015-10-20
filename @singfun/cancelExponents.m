@@ -17,7 +17,7 @@ exps = get(f, 'exponents');
 boundaryVals = [lval(f.smoothPart),  rval(f.smoothPart)];
 
 % Tolerance:
-tol = 100*eps*get(f.smoothPart, 'vscale');
+tol = 100*eps*vscale(f.smoothPart);
 
 % Boundaries with negative exponent and vanishing value:
 ind = ( exps < 0 ) & ( abs(boundaryVals) < repmat(tol, 1, 2) );
