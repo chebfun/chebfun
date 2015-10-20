@@ -81,17 +81,20 @@ if ( numFuns == 1 )
 
 else
     % CHEBCOEFFS() of a piecewise smooth CHEBFUN:
-
-    % Compute coefficients via inner products.
+    % (Compute coefficients via inner products.)
+    
+    % Construct a Chebfun of the appropriate Chebyshev weight:
     d = f.domain;
-    x = chebfun([d(1); d(end)], d);
+    x = chebfun([d(1) ; d(end)], d);
+    w = sqrt((x - d(1)).*(d(end) - x));
     if ( kind == 1 )
-        w = 1./sqrt((x - d(1)).*(d(end) - x));
-    elseif ( kind == 2 )
-        w = sqrt((x - d(1)).*(d(end) - x));
+        w = 1./w;
     end
     
+    % Chebyshev polynomials up to degree N - 1:
     T = chebpoly(0:(N-1), d, kind);
+    
+    % Compute the weighted inner products:
     numCols = numColumns(f);
     out = zeros(N, numCols);
     for j = 1:numCols
