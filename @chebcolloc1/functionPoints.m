@@ -5,6 +5,6 @@ function varargout = functionPoints(disc)
 % See http://www.chebfun.org/ for Chebfun information.
 
 pointsFun = @(n) chebtech1.chebpts(n);
-[varargout{1:nargout}] = colloc.points(disc, pointsFun);
+[varargout{1:nargout}] = valsDiscretization.points(disc, pointsFun);
 
 end

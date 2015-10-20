@@ -26,13 +26,13 @@ f = bndfun(@(x) 1./(1 + x.^2), struct('domain', dom1), pref);
 g = changeMap(f, dom2);
 gv = feval(g, y);
 fv = feval(f, x);
-pass(1) = norm(gv - fv, inf) < 10*get(f, 'vscale')*get(f, 'epslevel');
+pass(1) = norm(gv - fv, inf) < 10*get(f, 'vscale')*eps;
 
 % Change from dom2 to dom1.
 f = changeMap(g, dom1);
 fv = feval(f, x);
 gv = feval(g, y);
-pass(2) = norm(fv - gv, inf) < 10*get(f, 'vscale')*get(f, 'epslevel');
+pass(2) = norm(fv - gv, inf) < 10*get(f, 'vscale')*eps;
 
 %% tests on singfun:
 
@@ -44,12 +44,12 @@ f = bndfun(op, struct('domain', dom1), pref);
 g = changeMap(f, dom2);
 gv = feval(g, y);
 fv = feval(f, x);
-pass(3) = all( abs(gv - fv) < 1e4*abs(op(x))*get(f, 'vscale')*get(f, 'epslevel') );
+pass(3) = all( abs(gv - fv) < 1e4*abs(op(x))*get(f, 'vscale')*eps );
 
 % Change from dom2 to dom1.
 f = changeMap(g, dom1);
 fv = feval(f, x);
 gv = feval(g, y);
-pass(4) = all( abs(fv - gv) < 1e4*abs(op(x))*get(f, 'vscale')*get(f, 'epslevel') );
+pass(4) = all( abs(fv - gv) < 1e4*abs(op(x))*get(f, 'vscale')*eps );
 
 end

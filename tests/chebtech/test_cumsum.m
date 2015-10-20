@@ -1,8 +1,5 @@
 % Test file for chebtech/cumsum.m
 
-% [TODO]:  Fix test tolerances once we've figured out how to properly update
-% epslevels in chebtech.cumsum().
-
 function pass = test_cumsum(pref)
 
 % Get preferences.
@@ -32,21 +29,21 @@ for n = 1:2
   F = cumsum(f);
   F_ex = @(x) exp(x) - x;
   err = std(feval(F, x) - F_ex(x));
-  tol = 20*F.vscale.*F.epslevel;
+  tol = 20*vscale(F)*eps;
   pass(n, 1) = (err < tol) && (abs(feval(F, -1)) < tol);
   
   f = testclass.make(@(x) 1./(1 + x.^2), [], pref);
   F = cumsum(f);
   F_ex = @(x) atan(x);
   err = feval(F, x) - F_ex(x);
-  tol = 10*F.vscale.*F.epslevel;
+  tol = 10*vscale(F)*eps;
   pass(n, 2) = (std(err) < tol) && (abs(feval(F, -1)) < tol);
   
   f = testclass.make(@(x) cos(1e4*x), [], pref);
   F = cumsum(f);
   F_ex = @(x) sin(1e4*x)/1e4;
   err = feval(F, x) - F_ex(x);
-  tol = 5e4*F.vscale.*F.epslevel;
+  tol = 5e4*vscale(F)*eps;
   pass(n, 3) = (std(err) < tol) && (abs(feval(F, -1)) < tol);
   
   z = exp(2*pi*1i/6);
@@ -54,7 +51,7 @@ for n = 1:2
   F = cumsum(f);
   F_ex = @(t) cosh(t*z)/z;
   err = feval(F, x) - F_ex(x);
-  tol = 10*F.vscale.*F.epslevel;
+  tol = 10*vscale(F)*eps;
   pass(n, 4) = (std(err) < tol) && (abs(feval(F, -1)) < tol);
   
   %%
@@ -65,7 +62,7 @@ for n = 1:2
   F = testclass.make(@(x) 0.5*x - 0.0625*sin(8*x), [], pref);
   G = cumsum(f);
   err = G - F;
-  tol = 10*G.vscale.*G.epslevel;
+  tol = 10*vscale(G)*eps;
   values = err.coeffs2vals(err.coeffs); 
   pass(n, 5) = (std(values) < tol) && (abs(feval(G, -1)) < tol);
   
@@ -76,11 +73,11 @@ for n = 1:2
   f = testclass.make(@(x) x.*(x - 1).*sin(x) + 1, [], pref);
   g = diff(cumsum(f));
   err = feval(f, x) - feval(g, x);
-  tol = 10*g.vscale.*g.epslevel;
+  tol = 10*vscale(g)*eps;
   pass(n, 6) = (norm(err, inf) < 100*tol);
   h = cumsum(diff(f));
   err = feval(f, x) - feval(h, x);
-  tol = 10*h.vscale.*h.epslevel;
+  tol = 10*vscale(h)*eps;
   pass(n, 7) = (std(err) < tol)  && (abs(feval(h, -1)) < tol);
   
   %%
@@ -90,7 +87,7 @@ for n = 1:2
   F_exact = testclass.make(@(x) [(-cos(x)) (x.^3/3) (exp(1i*x)/1i)], [], pref);
   F = cumsum(f);
   err = std(feval(F, x) - feval(F_exact, x));
-  tol = 10*max(F.vscale.*F.epslevel);
+  tol = 10*max(vscale(F)*eps);
   pass(n, 8) = (norm(err, inf) < tol)  && all(abs(feval(F, -1)) < tol);
   
 end

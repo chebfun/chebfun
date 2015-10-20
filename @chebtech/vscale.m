@@ -1,11 +1,11 @@
 function vscl = vscale( f )
 %VSCALE   Estimate the vertical scale of a function. 
-%   VSCALE(F) of F.VSCALE estimates the vertical scale (also known as the
-%   dynamical range) of a function. This is required because a CHEBTECH does not
-%   store its interpolation data. If F is an array-valued CHEBTECH with K
-%   columns, then the result is a row vector of length K.
+%   VSCALE(F) estimates the vertical scale (also known as the dynamical range)
+%   of a function. This is required because a CHEBTECH does not store its
+%   interpolation data. If F is an array-valued CHEBTECH with K columns, then
+%   the result is a row vector of length K.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Get the coefficients:
@@ -19,7 +19,7 @@ elseif ( size(c, 1) == 1 )
 else
     % Compute values:
     vals = f.coeffs2vals( c );
-    % Taje max:
+    % Take max:
     vscl = max(abs(vals), [], 1);
 end
 

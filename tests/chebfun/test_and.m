@@ -25,7 +25,7 @@ g = chebfun(@(x) exp(x));
 h = f & g;
 ind = find(h.pointValues == 0);
 pass(3) = all(feval(h, x) == 1) && (numel(ind) == 1) && ...
-    (abs(h.domain(ind)) < 10*vscale(h)*epslevel(h));
+    (abs(h.domain(ind)) < 10*vscale(h)*eps);
 
 f = chebfun(@(x) [sin(x) cos(x)], pref);
 g = chebfun(@(x) [exp(x) 0*x], pref);

@@ -8,7 +8,7 @@ classdef chebcolloc1 < chebcolloc
 %   automatically to resolve the solution. You can control the allowed values of
 %   N through CHEBOPPREF.
 %
-% See also CHEBCOLLOC, COLLOC, CHEBDISCRETIZATION, CHEBOPPREF, CHEBOP.
+% See also CHEBCOLLOC, COLLOC, OPDISCRETIZATION, CHEBOPPREF, CHEBOP.
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

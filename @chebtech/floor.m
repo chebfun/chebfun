@@ -20,6 +20,5 @@ fx = feval(f, [-1 ; arbitraryPoint ; 1]);
 meanfx = mean(fx, 1);
 % Compute the floor:
 f.coeffs = floor(meanfx);
-f.epslevel = 0*f.coeffs + eps;
 
 end
