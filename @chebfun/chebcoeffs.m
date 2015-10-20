@@ -84,23 +84,19 @@ else
 
     % Compute coefficients via inner products.
     d = f.domain;
-    x = chebfun('x', d);
+    x = chebfun([d(1); d(end)], d);
     if ( kind == 1 )
         w = 1./sqrt((x - d(1)).*(d(end) - x));
     elseif ( kind == 2 )
         w = sqrt((x - d(1)).*(d(end) - x));
     end
     
+    T = chebpoly(0:(N-1), d, kind);
     numCols = numColumns(f);
     out = zeros(N, numCols);
-    f = mat2cell(f);
-    T = chebpoly(0:(N-1), d, kind);
-    T = mat2cell(T);
-    for k = 1:N
-        Tkw = T{k}.*w;
-        for j = 1:numCols
-            out(k,j) = innerProduct(f{j}, Tkw);
-        end
+    for j = 1:numCols
+        fjw = f(:,j).*w;
+        out(:,j) = innerProduct(fjw, T);
     end
      
     if ( kind == 1 )
