@@ -17,13 +17,14 @@ if ( isempty(BC) )
     result = [];
     
 elseif ( isnumeric(BC) )
-    % This means a Dirichlet condition set to the given value. 
+    % This means a Dirichlet condition set to the given value.
+    % TODO: Update documentation
     if ( numIn > 2 )
         % Allow only if we are dealing with a scalar problem.
         error('CHEBFUN:CHEBOP:parseBC:numeric', ...
             'Can only assign scalar BCs to scalar problems');
     else
-        result = @(u) u - BC;
+        result = @(u) setupNumericalConditions(u, BC);
     end
     
 elseif ( isa(BC, 'function_handle') )
@@ -91,4 +92,15 @@ else
 
 end
 
+end
+
+function out = setupNumericalConditions(u, BC)
+% out = u - BC(1);
+% out = zeros(length(BC),1);
+
+% We must always have at least one condition
+out = u - BC(1);
+for bcCounter = 2:length(BC)
+    out = [out; diff(u, bcCounter-1) - BC(bcCounter)];
+end
 end
