@@ -12,7 +12,6 @@ function f = and(f, g)
 
 arbitraryPoint = 0.1273881594;
 f.coeffs = feval(f, arbitraryPoint) & feval(g, arbitraryPoint);
-f.vscale = abs(f.coeffs);
 f.isReal = true(1, size(f.coeffs, 2));
 
 end

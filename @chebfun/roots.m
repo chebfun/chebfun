@@ -78,11 +78,10 @@ end
 function r = columnRoots(f, rootsPref)
 
 % Set horizontal and vertical scales:
-el = epslevel(f);
 hs = hscale(f);
 vs = vscale(f);
 htol = 100*eps*hs;
-vtol = el*vs;
+vtol = eps*vs;
 dom = f.domain;
 
 % Initialise vector to store roots:
@@ -91,7 +90,7 @@ NaNRow = NaN(1, numCols);
 r = NaNRow;
 
 % Zero pointValues are roots.
-index = abs(f.pointValues(1,:)) < vs*el;
+index = abs(f.pointValues(1,:)) < vs*eps;
 if ( any(index) )
     % Left pointValues is zero: (or sufficiently close)
     r(index) = dom(1);

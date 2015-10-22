@@ -1,20 +1,17 @@
 function varargout = plotcoeffs(f, varargin)
 %PLOTCOEFFS   Display Chebyshev coefficients graphically.
-%   PLOTCOEFFS(F) plots the Chebyshev coefficients of a CHEBTECH F on a semilogy
-%   scale. A horizontal line at the EPSLEVEL of F is also plotted. If F is an
-%   array-valued CHEBTECH then a curve is plotted for each component (column) of
-%   F.
+%   PLOTCOEFFS(F) plots the Chebyshev coefficients of a CHEBTECH F on a
+%   semilogy scale.  If F is an array-valued CHEBTECH then a curve is plotted
+%   for each component (column) of F.
 %
 %   PLOTCOEFFS(F, S) allows further plotting options, such as linestyle,
 %   linecolor, etc, in the standard MATLAB manner. If S contains a string
-%   'LOGLOG', the coefficients will be displayed on a log-log scale. If S
-%   contains a string 'NOEPSLEVEL', the EPSLEVEL is not plotted.
+%   'LOGLOG', the coefficients will be displayed on a log-log scale.
 %
 %   H = PLOTCOEFFS(F) returns a column vector of handles to lineseries objects.
-%   The final entry is that of the EPSLEVEL plot.
 %
 %   Note: to make the PLOTCOEFFS easier to read, zero coefficients have a small
-%   value added to them (typically F.EPSLEVEL) so that the curve displayed is
+%   value added to them (typically EPS*VSCALE(F)) so that the curve displayed is
 %   continuous.
 %
 % See also CHEBCOEFFS, PLOT.
@@ -38,20 +35,16 @@ end
 
 % Set defaults:
 loglogPlot = false;
-plotEpsLevel = true;
 doBar = false;
 
 % Copy input arguments:
 args = varargin;
 
-% Check inputs for 'loglog' or 'noepslevel'.
+% Check inputs for 'loglog' or 'barplot'.
 j = 1;
 while ( j <= length(args) )
     if ( strcmpi(args{j}, 'loglog') )
         loglogPlot = true; 
-        args(j) = [];
-    elseif ( strcmpi(args{j}, 'noepslevel') )
-        plotEpsLevel = false; 
         args(j) = [];
     elseif ( strcmpi(args{j}, 'barplot') )
         doBar = true;
@@ -66,20 +59,20 @@ holdState = ishold;
 
 % The coefficients and vertical scale:
 absCoeffs = abs(f.coeffs);
-vscl = f.vscale;
+vscl = vscale(f);
 
 % Add a tiny amount to zeros to make plots look nicer:
 if ( vscl > 0 )
     if ( doBar )
-        absCoeffs(absCoeffs < min(f.epslevel.*vscl)/100) = 0;
+        absCoeffs(absCoeffs < min(eps*vscl)/100) = 0;
     else
-        % Min of epslevel*vscale and the minimum non-zero coefficient:
-        absCoeffs(~absCoeffs) = min( min(f.epslevel.*vscl), ...
+        % Min of eps*vscale and the minimum non-zero coefficient:
+        absCoeffs(~absCoeffs) = min( min(eps*vscl), ...
                                  min(absCoeffs(logical(absCoeffs))) );                             
     end
 else
-    % Add epslevel for zero CHEBTECHs:
-    absCoeffs = absCoeffs + f.epslevel;
+    % Add eps for zero CHEBTECHs:
+    absCoeffs = absCoeffs + eps;
 end
 
 % Get the size:
@@ -94,19 +87,6 @@ end
 % Plot the coeffs:
 h = semilogy(xx, yy, args{:}); 
 hold on
-
-if ( plotEpsLevel )
-    % Plot the epslevel:
-    h2 = semilogy([0 n-1], repmat(vscl.*f.epslevel, 2, 1), args{:});
-    for k = 1:m
-        c = get(h(k), 'color');
-        set(h2(k), 'linestyle', ':', 'linewidth', 1, 'marker', 'none', 'color', c);
-    end
-    set(h2, 'handlevis', 'off');
-else
-    h2 = plot([]);
-    set(h2, 'handlevis', 'off');
-end
 
 % Do a loglog plot:
 if ( loglogPlot )
@@ -133,7 +113,6 @@ grid(gca, 'on')
 % Give an output if one was requested:
 if ( nargout > 0 )
     varargout{1} = h;
-    varargout{2} = h2;
 end
 
 end

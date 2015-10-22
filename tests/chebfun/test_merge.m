@@ -15,7 +15,7 @@ f = chebfun(@(x) x.^2, [-1 0 1], pref2);
 g = merge(f);
 pass(1) = all(size(g.funs) == 1);
 xx = linspace(-1, 1, 100);
-pass(2) = norm(feval(f, xx) - feval(g, xx), 'inf') < 10*epslevel(f);
+pass(2) = norm(feval(f, xx) - feval(g, xx), 'inf') < 10*eps;
 
 % Test selective merge on many points:
 pref2 = pref;
@@ -25,7 +25,7 @@ f = chebfun(@(x) sin(10*pi*x), [-1:.5:2], pref2);
 pass(3) = all(size(g.funs) == [1,2]);
 xx = linspace(-1, 2, 100);
 err = norm(feval(f, xx) - feval(g, xx), 'inf');
-tol = 1e2*epslevel(f);
+tol = 1e2*eps;
 
 pass(4) = err < tol;
 pass(5) = all(mergedPts == [2 4:6]);
@@ -34,7 +34,7 @@ pass(5) = all(mergedPts == [2 4:6]);
 h = chebfun(@(x) sin(x) + abs(x - 0.5), [-1 0 1], 'splitting', 'on');
 [p, mergedPts] = merge(h);
 pass(6) = numel(p.funs) == 2 && norm(p.domain - [-1 .5 1], inf) < 10*eps;
-pass(7) = norm(feval(h, xx) - feval(p, xx), 'inf') < 10*epslevel(h);
+pass(7) = norm(feval(h, xx) - feval(p, xx), 'inf') < 10*eps;
 pass(8) = all(mergedPts == 2);
 
 % Test an array-valued CHEBFUN:
@@ -72,7 +72,7 @@ x = diff(domCheck) * rand(100, 1) + domCheck(1);
 vals_h = feval(h, x);
 vals_exact = feval(op, x);
 err = vals_h - vals_exact;
-pass(12) = (norm(err, inf) < 2e4*get(h, 'vscale')*get(h, 'epslevel'));
+pass(12) = (norm(err, inf) < 2e4*get(h, 'vscale')*eps);
 
 
 %% Test for function defined on unbounded domain:
@@ -89,7 +89,7 @@ g = merge(f);
 gVals = feval(g, x);
 gExact = op(x);
 err = norm(gVals - gExact, inf);
-tol = 1e3*epslevel(f)*vscale(f);
+tol = 1e3*eps*vscale(f);
 pass(13) = err < tol;
 
 end

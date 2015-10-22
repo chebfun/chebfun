@@ -17,11 +17,11 @@ pass(2) = ~isa(imag(f), 'singfun');
 
 % Imaginary smooth.
 f = singfun(@(x) 1i*exp(x) );
-pass(3) = ( normest(1i*imag(f) - f.smoothPart) < 10*f.smoothPart.epslevel );
+pass(3) = normest(1i*imag(f) - f.smoothPart) < 10*eps;
 
 % Imaginary with exponents.
 f = singfun( @(x) 1i./((1+x).*(1-x)));
-pass(4) = ( normest(1i*imag(f) - f) < 10*f.smoothPart.epslevel  );
+pass(4) = normest(1i*imag(f) - f) < 10*eps;
 
 % Purely real.
 f = 1i*f;

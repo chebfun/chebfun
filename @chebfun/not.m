@@ -11,9 +11,8 @@ f = addBreaksAtRoots(f);
 
 % Tolerance:
 vs = vscale(f);
-el = epslevel(f);
-vs(vs < el) = 1;
-tol = el.*vs;
+vs(vs < eps) = 1;
+tol = eps*vs;
 
 % Loop over the FUNs:
 for k = 1:numel(f.funs)

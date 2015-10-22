@@ -33,11 +33,4 @@ out = varargin{1};
 % Coeffs:
 out.coeffs = cell2mat(cellfun(@(f) f.coeffs, F, 'UniformOutput', false));
 
-% Epslevel:
-epslevels = cellfun(@(f) f.epslevel, F, 'UniformOutput', false);
-out.epslevel = cell2mat(epslevels);
-
-% Hscale:
-out.hscale = max(cellfun(@(f) f.hscale, F));
-
 end
