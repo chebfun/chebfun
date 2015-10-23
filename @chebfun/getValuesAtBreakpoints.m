@@ -30,8 +30,7 @@ if ( (nargin < 3) || isnumeric(op) || iscell(op) )
     vals(1,:) = lval(funs{1});
     % Take the mean of the FUNs on either side of the break:
     for k = 2:numFuns
-%         vals(k,:) = (get(funs{k-1}, 'rval') + get(funs{k}, 'lval'))/2;
-        vals(k,:) = rval(funs{k-1}) + lval(funs{k})/2;
+        vals(k,:) = ( rval(funs{k-1}) + lval(funs{k})) / 2;
     end
     vals(numFuns+1,:) = rval(funs{numFuns});
 
