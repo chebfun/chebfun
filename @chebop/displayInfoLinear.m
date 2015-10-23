@@ -41,12 +41,14 @@ if ( strcmp(display, 'iter') || strcmp(display, 'final') )
     fprintf('Linear equation detected. Converged in one step.\n');
     
     % Show what discretization was used
-    if ( strcmpi(func2str(pref.discretization), 'ultraS') )
-        discString = 'Ultraspherical';
+    if ( strcmpi(func2str(pref.discretization), 'coeffs') || ...
+            isequal(pref.discretization, @ultraS) || ...
+            isequal(pref.discretization, @trigspec) )
+        discString = 'Coefficients';
     else
-        discString = 'Collocation';
+        discString = 'Values';
     end
-    fprintf('Discretization method used: %s. \n', discString);
+    fprintf('Discretization basis used: %s. \n', discString);
     fprintf('Length of solution: %i.\n', l);
     fprintf('Norm of residual: %.2e.\n', normRes);
     

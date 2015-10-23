@@ -1,5 +1,5 @@
-function [uquasi, lamvec, mvec, lamfun, mfun] = followPath(N, lam0, varargin)
-%FOLLOWPATH    A pseudo-arclength continuation algorithm for ODEs in Chebfun
+function [uquasi, lamvec, mvec, lamfun, mfun] = followpath(N, lam0, varargin)
+%FOLLOWPATH    A pseudo-arclength continuation algorithm for ODEs in Chebfun.
 %
 % Calling sequence:
 %   [U, LAM] = FOLLOWPATH(N, LAM0, 'OPT1', VAL1, ...)
@@ -75,9 +75,9 @@ function [uquasi, lamvec, mvec, lamfun, mfun] = followPath(N, lam0, varargin)
 %   N.rbc = @(u,lam) u;
 %   lam0 = 0.01;
 %   % Call method, no plotting, no printing
-%   [u, lamvec] = followPath(N, lam0);
+%   [u, lamvec] = followpath(N, lam0);
 %   % Call method, specifying more options
-%   [u, lamvec, mvec] = followPath(N, lam0, ...
+%   [u, lamvec, mvec] = followpath(N, lam0, ...
 %       'measure', @(u) u(.5), 'printing', true, 'plotting',true);
 %   
 % Example 2 -- Herceg problem (singularly perturbed ODE). Fix solution value at
@@ -94,7 +94,7 @@ function [uquasi, lamvec, mvec, lamfun, mfun] = followPath(N, lam0, varargin)
 %   lam0 = feval(diff(u0),d(2)); % Initial value for LAMBDA
 %   N.lbc = @(u, lam) u;
 %   N.rbc = @(u, lam) diff(u) - lam;
-%   [u, lamvec, mvec, lamfun, mfun] = followPath(N, lam0, 'maxstepno', 30, ...
+%   [u, lamvec, mvec, lamfun, mfun] = followpath(N, lam0, 'maxstepno', 30, ...
 %       'uinit', u0, 'measure', @(u)u(1), 'stepmax', 1, 'printing', 1);
 %   % Plot a bifurcation diagram
 %   figure, plot(lamfun, mfun)
@@ -106,7 +106,7 @@ function [uquasi, lamvec, mvec, lamfun, mfun] = followPath(N, lam0, varargin)
 %   H.lbc = @(u, lam) u;
 %   H.rbc = @(u, lam) u;
 %   measure = @(u) norm(diff(u), inf); 
-%   [u, lamvec, mvec] = followPath(H, lam0, ...
+%   [u, lamvec, mvec] = followpath(H, lam0, ...
 %       'measure', measure, 'direction', -1, 'plotting', 1, ...
 %       'stopfun', @(u,lam) lam < 5e-3, 'stepmax', .1);
 
@@ -140,8 +140,8 @@ prefs = [];
 
 
 % Parse VARARGIN
-while ~isempty(varargin)    % Go through all elements
-    if ~ischar(varargin{1}) && ~isnumeric(varargin{2})
+while ( ~isempty(varargin) ) % Go through all elements
+    if ( ~ischar(varargin{1}) && ~isnumeric(varargin{2}) )
         error('followpath:inputArgument','Incorrect options input arguments');
     end
     val = varargin{2};
@@ -188,19 +188,17 @@ if ( isempty(uinit) )
         fprintf('Computing initial solution for pathfollowing...')
     end
     
-    % Create an "initial chebop" from the augmented one passed in. This requires
-    % us to evaluate the boundary conditions, so that we get BCs that only
-    % depend on U (by fixing LAM to be LAM0).
+    % Create an "initial chebop" from the augmented one passed in. 
     Ninit = N;
     Ninit.op = @(x,u) N.op(x, u, lam0);
+    % This requires us to evaluate the boundary conditions, so that we get BCs
+    % that only depend on U (by fixing LAM to be LAM0):
     if ( ~isempty(Ninit.bc) )
         Ninit.bc = @(x,u) Ninit.bc(x,u,lam0);
     end
-    
     if ( ~isempty(Ninit.lbc) )
         Ninit.lbc = @(u) Ninit.lbc(u,lam0);
     end
-    
     if ( ~isempty(Ninit.rbc) )
         Ninit.rbc = @(u) Ninit.rbc(u,lam0);
     end
@@ -257,7 +255,7 @@ end
 
 % If user wants to plot, a measure has to be passed!
 if ( plotting && ~haveMeasure )
-    error('CHEBFUN:CHEBOP:followPath:plotButNoMeasure', ...
+    error('CHEBFUN:CHEBOP:followpath:plotButNoMeasure', ...
         'If plotting is ON for path-following, measure has to be supplied.')
 end
 
@@ -368,7 +366,6 @@ while ( counter < maxstepno )
         measu = measure(u);
         mvec(counter) = measu;
     end
-    
     lamvec(counter) = lam;
     
     % Print information at the current step.
@@ -410,7 +407,7 @@ while ( counter < maxstepno )
     
     % If we're experiencing good Newton convergence, we try to get the
     % steplength closer to the maximum steplength allowed:
-    if newtonIter <= 3
+    if ( newtonIter <= 3 )
         sl = min(sl*2, stepmax);
     end
     

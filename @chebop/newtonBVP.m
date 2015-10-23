@@ -31,7 +31,7 @@ function [u, lam, iter, retract] = newtonBVP(N, u, lam, t, tau, x, dsum, prefs)
 %   LAM     : A scalar that lies on the solution curve N(U, LAM) = 0 for the
 %             U value returned.
 %   ITER    : The number of Newton iteration required to converge.
-%   RETRACT : A Boolean, that tells the followPath algorithm whether it should
+%   RETRACT : A Boolean, that tells the followpath algorithm whether it should
 %             retract (take a smaller tangent step).
 %
 % See also: followpath, newtonBVP.
@@ -93,7 +93,7 @@ while ( ~accept )
         % Hoorayh. We've converged, so accept the tangent step!
         accept = 1;
     elseif ( iter >= 5 )
-        % We wanted to take too many iterations, so tell the followPath
+        % We wanted to take too many iterations, so tell the followpath
         % algorithm to retract and take a smaller tangent step.
         retract = 1;
         return
