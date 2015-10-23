@@ -48,7 +48,7 @@ if ( nargin == 1 )
     pref = chebfunpref();
 elseif ( nargin == 2 )
     if ( isstruct(index) || isa(index, 'chebfunpref') ) % MERGE(F, PREF)
-        % index actually is a struct of perefernces or a CHEBFUNPREF
+        % index actually is a struct of preferences or a CHEBFUNPREF
         pref = chebfunpref(index);
         % Choose all indices by default:
         index = 2:numel(f.funs);
