@@ -122,7 +122,7 @@ elseif ( isnumeric(bcShow) )
         % Print all remaining conditions:
         for bcCounter = 4:numBC
             fprintf('      %s^(%i) = %s\n', args, ...
-                bcCounter, num2str(bcShow(bcCounter)));
+                bcCounter-1, num2str(bcShow(bcCounter)));
         end
     else
         fprintf('      %s\n', num2str(bcShow));
