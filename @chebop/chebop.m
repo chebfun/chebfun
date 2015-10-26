@@ -45,7 +45,9 @@ classdef (InferiorClasses = {?double}) chebop
 % left and right endpoints of the domain D. Possible values for LBC and RBC are:
 %
 %   []          : No condition (for only assigning LBC or RBC in constructor).
-%   scalar      : All variables equal the given value.
+%   vector      : Only supported in the scalar case. The value of the solution 
+%                 is given by the first entry of the vector, the value of its
+%                 first derivative by the second entry, etc.
 %   'dirichlet' : All variables equal zero.
 %   'neumann'   : All variables have derivative zero.
 %   function    : A function handle that must accept all dependent variables as
@@ -58,17 +60,22 @@ classdef (InferiorClasses = {?double}) chebop
 % describing the boundary conditions must return vertically concatenated
 % elements (again, differing from V4 syntax).
 %
-% Examples of boundary condition functionals::
+% Examples of how boundary conditions can be specified:
 %
-%   @(u) diff(u) - 2;               % set u' = 2 at the appropriate endpoint
-%   @(u, v, w) [ u - 1 ; w ];       % set u = 1 and w = 0 at the endpoint
-%   @(u) [u{1} - 1; u{3}];          % Same as above, using CHEBMATRIX syntax.
-%   @(u, v, w) u.*v - diff(w);      % set u*v = w' at the endpoint
+%   N.lbc = 0;                         % Set u = 0 at the left endpoint
+%   N.rbc = 'neumann'                  % Set u' = 0 at the right endpoint
+%   N.lbc = [1; 3; 2];                 % Set u = 1, u' = 3, u'' = 2 at left end
+%   N.lbc = @(u) diff(u) - 2;          % set u' = 2 at the left endpoint
+%   N.lbc = @(u, v, w) [ u - 1 ; w ];  % set u = 1 and w = 0 at the endpoint
+%   N.lbc = @(u) [u{1} - 1; u{3}];     % Same as above, using CHEBMATRIX syntax.
+%   N.rbc = @(u, v, w) u.*v - diff(w); % set u*v = w' at the right endpoint
 %
 % CHEBOP(OP, D, BC) gives boundary or other side conditions in an alternate
 % form. Choices for BC are:
 %
-%   scalar      : All variables equal the given value at both endpoints.
+%   vector      : Only supported in the scalar case. The value of the solution 
+%                 at both endpoints is given by the first entry of the vector,
+%                 the value of its first derivative by the second entry, etc.
 %   'dirichlet' : All variables equal zero at both endpoints.
 %   'neumann'   : All variables have derivative zero at both endpoints.
 %   'periodic'  : Impose periodicity on all dependent variables.
@@ -127,7 +134,7 @@ classdef (InferiorClasses = {?double}) chebop
 %   vdpFun = @(u) diff(u, 2) - 20*(1-u.^2).*diff(u) + u;
 %   dom = [0 100];
 %   N = chebop(vdpFun, dom);
-%   N.lbc = @(u) [u - 2; diff(u)];
+%   N.lbc = [2; 0];
 %   u = N\0
 %   plot(u)
 %

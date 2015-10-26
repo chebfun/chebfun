@@ -17,8 +17,8 @@ if ( isempty(BC) )
     result = [];
     
 elseif ( isnumeric(BC) )
-    % This means a Dirichlet condition set to the given value.
-    % TODO: Update documentation
+    % This means setting up condition so that the solution equals the first
+    % entry of the vector at the endpoint, its derivative the second entry etc.
     if ( numIn > 2 )
         % Allow only if we are dealing with a scalar problem.
         error('CHEBFUN:CHEBOP:parseBC:numeric', ...
@@ -95,12 +95,19 @@ end
 end
 
 function out = setupNumericalConditions(u, BC)
-% out = u - BC(1);
-% out = zeros(length(BC),1);
+% SETUPNUMERICALCONDITIONS  Return anonymous function for evaluating BCs.
+%
+% We need this function so that we can construct a function handle that allows
+% specifying boundary conditions with a vector. Essentially, we are subtracting
+% the nth entry of the vector from the (n-1)st derivative of U.
 
 % We must always have at least one condition
 out = u - BC(1);
 for bcCounter = 2:length(BC)
-    out = [out; diff(u, bcCounter-1) - BC(bcCounter)];
+    % Add to the boundary conditions vector. It's tricky to initialize the OUT
+    % argument to the correct dimensions, as we need to be able to evaluate this
+    % both with CHEBFUNs, ADCHEBFUNs and TREEVARs, hence a cheeky growth of the
+    % array.
+    out = [out; diff(u, bcCounter-1) - BC(bcCounter)]; %#ok<AGROW>
 end
 end
