@@ -15,8 +15,10 @@ SYSSIZE = 0;
 
 % Default options:
 tol = 1e-6;             % 'eps' in Chebfun terminology
-doPlot = 1;             % Plot after every time chunk?
-doHold = 0;             % Hold plot?
+% The default behaviour with no outputs is to plot. If the method is called with
+% outputs, by default, we don't plot.
+doPlot = ( nargout == 0 );
+doHold = false;         % Hold plot?
 plotOpts = {'-'};       % Plotting style
 adjustBCs = true;       % Adjust inconsistent BCs
 throwBCwarning = true;  % Throw a warning for inconsistent BCs
