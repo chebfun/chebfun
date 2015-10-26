@@ -27,7 +27,7 @@ if ( isempty(f) )
 end
 
 % Reshape x to be a column vector for passing to CLENSHAW():
-[n, m] = size(f);
+m = size(f, 2);
 sizex = size(x);
 ndimsx = ndims(x);
 x = x(:);
