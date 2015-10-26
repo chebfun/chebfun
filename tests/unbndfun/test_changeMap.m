@@ -33,7 +33,7 @@ g = changeMap(f, domNew);
 fVals = feval(f, x);
 gVals = feval(g, xNew);
 err = fVals - gVals;
-pass(1) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
+pass(1) = norm(err, inf) < 1e1*eps*get(f,'vscale');
   
 % Blow-up function:
 op = @(x) x.*(5+exp(-x.^3));
@@ -42,7 +42,7 @@ g = changeMap(f, domNew);
 fVals = feval(f, x);
 gVals = feval(g, xNew);
 err = fVals - gVals;
-pass(2) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
+pass(2) = norm(err, inf) < 1e1*eps*get(f,'vscale');
  
 %% Functions on [-inf b]:
 
@@ -63,7 +63,7 @@ fVals = feval(f, x);
 g = changeMap(f, domNew);
 gVals = feval(g, xNew);
 err = fVals - gVals;
-pass(3) = norm(err, inf) < get(f,'epslevel')*get(f,'vscale');
+pass(3) = norm(err, inf) < eps*get(f,'vscale');
 
 % Blow-up function:
 op = @(x) x.*(5+exp(x.^3))./(dom(2)-x);
@@ -72,6 +72,6 @@ fVals = feval(f, x);
 g = changeMap(f, domNew);
 gVals = feval(g, xNew);
 err = fVals - gVals;
-pass(4) = norm(err, inf) < get(f,'epslevel')*get(f,'vscale');
+pass(4) = norm(err, inf) < eps*get(f,'vscale');
 
 end

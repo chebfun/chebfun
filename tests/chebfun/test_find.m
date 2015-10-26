@@ -12,11 +12,11 @@ pass(1) = isempty(find(chebfun()));
 % Check a few simple examples:
 f = chebfun(@sin, [0 2*pi], pref);
 x = find(f == 1/2) / pi;
-pass(2) = norm(x - [1/6 ; 5/6], inf) < 10*vscale(f)*epslevel(f);
+pass(2) = norm(x - [1/6 ; 5/6], inf) < 10*vscale(f)*eps;
 
 f = chebfun(@exp, [-1 -0.5 0 0.5 1], pref);
 x = find(f == 1);
-pass(3) = (length(x) == 1) && (abs(x) < 10*vscale(f)*epslevel(f));
+pass(3) = (length(x) == 1) && (abs(x) < 10*vscale(f)*eps);
 x = find(f <= 0);
 pass(4) = isempty(x);
 
@@ -25,7 +25,7 @@ f = chebfun(@(x) [sin(x) exp(x)], [-pi pi], pref);
 pass(5) = (length(x) == 3) && (length(col) == 3);
 fx = feval(f, x);
 err = [fx(1, col(1)) ; fx(2, col(2)) ; fx(3, col(3))];
-pass(6) = norm(err - 0.5, inf) < 10*vscale(f)*epslevel(f);
+pass(6) = norm(err - 0.5, inf) < 10*vscale(f)*eps;
 
 % Check behavior for row chebfuns.
 [row, y] = find(~logical(f.' - 0.5));

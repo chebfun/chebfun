@@ -33,9 +33,9 @@ u = chebfun(@(x) x, [-1 -0.5 0 0.5 1], pref);
 sn_err = feval(sn, xr) - sn_ex;
 cn_err = feval(cn, xr) - cn_ex;
 dn_err = feval(dn, xr) - dn_ex;
-pass(7) = norm(sn_err(:), inf) < 1e2*vscale(sn)*epslevel(sn) && ...
-          norm(cn_err(:), inf) < 1e2*vscale(cn)*epslevel(cn) && ...
-          norm(dn_err(:), inf) < 1e2*vscale(dn)*epslevel(dn);
+pass(7) = norm(sn_err(:), inf) < 1e2*vscale(sn)*eps && ...
+          norm(cn_err(:), inf) < 1e2*vscale(cn)*eps && ...
+          norm(dn_err(:), inf) < 1e2*vscale(dn)*eps;
 
 end
 
@@ -80,13 +80,13 @@ function pass = do_test_ellipj(u_op, m_op, xr, pref)
     dn_err = feval(dn, xr) - dn_ex;
 
     % Compute pass tolerances.
-    passtol_sn = 10*vscale(sn)*epslevel(sn);
-    passtol_cn = 10*vscale(cn)*epslevel(cn);
-    passtol_dn = 10*vscale(dn)*epslevel(dn);
+    passtol_sn = 10*vscale(sn)*eps;
+    passtol_cn = 10*vscale(cn)*eps;
+    passtol_dn = 10*vscale(dn)*eps;
 
     % Check pass condition.
-    pass = norm(sn_err(:), inf) < 1e2*vscale(sn)*epslevel(sn) && ...
-           norm(cn_err(:), inf) < 1e2*vscale(cn)*epslevel(cn) && ...
-           norm(dn_err(:), inf) < 1e2*vscale(dn)*epslevel(dn);
+    pass = norm(sn_err(:), inf) < 1e2*vscale(sn)*eps && ...
+           norm(cn_err(:), inf) < 1e2*vscale(cn)*eps && ...
+           norm(dn_err(:), inf) < 1e2*vscale(dn)*eps;
     
 end

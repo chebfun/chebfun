@@ -107,7 +107,7 @@ for j = 1:n
     e2 = envelope(j2);
     r = 3*(1 - log(e1)/log(tol));
     plateau = (e1 == 0) | (e2/e1 > r);
-    if plateau
+    if ( plateau )
         % a plateau has been found: go to Step 3
         plateauPoint = j - 1;
         break

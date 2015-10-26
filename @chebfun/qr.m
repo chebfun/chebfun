@@ -112,7 +112,7 @@ A = simplify(A);
     
 % Get some useful values
 numCols = numColumns(A);
-tol = epslevel(A)*vscale(A);
+tol = eps*vscale(A);
 dom = A.domain;
 a = dom(1);
 b = dom(end);

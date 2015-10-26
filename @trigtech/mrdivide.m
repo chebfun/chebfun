@@ -27,7 +27,6 @@ elseif ( isa(B, 'double') )  % TRIGTECH / double.
         X = A;                              % Copy A to X.
         X.values = A.values/B;              % Divide values.
         X.coeffs = A.coeffs/B;              % Divide coeffs.
-        X.vscale = A.vscale/abs(B);         % Divide vscale.
         X.isReal = A.isReal & isreal(B);
     else
         % For matrix case, we do least squares via QR:

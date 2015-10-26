@@ -28,7 +28,6 @@ if ( (nargin < 4) || isempty(hscale) )
 end
 if ( nargin < 5 )
     pref = chebfunpref();
-    pref.eps = max(get(f, 'epslevel'), get(g, 'epslevel'));
 end
 tol = max(pref.eps);
 
