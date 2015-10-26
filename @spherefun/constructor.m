@@ -703,9 +703,10 @@ pole = mean(val);
 % Compute there standard deviation
 stddev = std(val);
 
-% If the standard deviation does not exceed the tolearnce then the pole is
-% "constant"
-if stddev <= tol
+% If the standard deviation does not exceed the 100*tolearnce then the pole
+% is "constant".
+% TODO: Get a better feel for the tolerance check.
+if stddev <= 100*tol || stddev < eps
     constVal = 1;
 else
     constVal = 0;
