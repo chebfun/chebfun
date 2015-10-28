@@ -4,7 +4,7 @@ function [x, w, v, t] = ultrapts(n, lambda, int, meth, conv)
 %   parameter 0<=LAMBDA<=1 where the ultraspherical weight function is
 %   defined by w(x)=(1-x^2)^(LAMBDA-1/2).
 %
-%   [X, W] = ULTRAPTS(N, LAMBDA) returns also a column vector W of weights for
+%   [X, W] = ULTRAPTS(N, LAMBDA) returns also a row vector W of weights for
 %   Gauss-Gegenbauer quadrature.
 %   
 %   [X, W, V] = ULTRAPTS(N, LAMBDA) returns additionally a column vector V of
@@ -72,9 +72,9 @@ method_set = 0;
 if (lambda < 0 || lambda > 1)
     error('CHEBFUN:ultrapts:lambda', '0<=LAMBDA<=1'); 
     % [TODO]: lambda<0 and lambda>1.
-elseif (lambda<30*eps) % ASY is not accurate for LAMBDA<30*eps.
+elseif (lambda<30*eps && lambda~=0) % ASY is not accurate for 0<LAMBDA<30*eps.
     warning('CHEBFUN:ultrapts:smallLAMBDA',...
-        'LAMBDA<30*eps.  Results may not be accurate.')
+        '0<LAMBDA<30*eps.  Results may not be accurate with ASY.')
 end % [TODO]: What is the smallest NUMBER<1 for which ASY is not accurate? 
     % NUMBER=.99? 
 
@@ -131,7 +131,7 @@ elseif (n==1)
 elseif (n==2)
     x = [-1; 1]/sqrt(2*(1+lambda));
     w = gamma(lambda+.5)*sqrt(pi)/gamma(lambda+1);
-    w = [w; w]/2;
+    w = [w, w]/2;
     v = [1 ; -1];
     t = acos(x);
     [x, w] = rescale(x,w,interval,lambda);
@@ -141,14 +141,14 @@ end
 % Special cases:
 if ( lambda == 0 ) % Gauss-Chebyshev: lambda = 0
     [x, ~, v] = chebpts(n, interval, 1);
-    w = repmat(pi/n,1,n).';
+    w = repmat(pi/n,1,n);
     [~, w] = rescale(x, w, interval, lambda);
     t = acos(x);
     return
 elseif ( lambda == 1)   % Gauss-Chebyshev2: lambda = 1
     x = chebpts(n+2, 2);     
     x = x(2:n+1);
-    w = pi/(n+1)*(1-x.^2);
+    w = pi/(n+1)*(1-x.^2)';
     t = acos(x);
     v = (1-x.^2);  
     v(2:2:end) = -v(2:2:end); 
@@ -206,7 +206,7 @@ TT = diag(bb,1) + diag(bb,-1); % Jacobi matrix.
 x = diag(x); % Jacobi points.
 
 % Quadrature weights:
-w = transpose(V(1,:).^2*(2^(2*lambda)*gamma(lambda+.5)^2/gamma(2*lambda+1))); 
+w = V(1,:).^2*(2^(2*lambda)*gamma(lambda+.5)^2/gamma(2*lambda+1)); 
 v = sqrt(1-x.^2).*abs(V(1,:))'; % Barycentric weights.
 end
 
@@ -337,7 +337,7 @@ end
 x = [-x(1:m) ; x(m+s:-1:1)];
 
 % Reflect for quadrature weights:
-w = [w(1:m) ; w(m+s:-1:1)];
+w = [w(1:m) ; w(m+s:-1:1)]';
 
 % Reflect for derivatives:
 ders = [PP(1:m); PP(m+s:-1:1)];
@@ -401,7 +401,7 @@ bdy2 = (1:10);
 int1 = (m-10:-1:1+s);
 int2 = (1:m-10);
 x = [-x2(bdy1); -x1(int1); x1(int2); x2(bdy2)];
-w = [w2(bdy1); w1(int1); w1(int2); w2(bdy2)];
+w = [w2(bdy1); w1(int1); w1(int2); w2(bdy2)]';
 v = [v2(bdy1); -v1(int1); -v1(int2); v2(bdy2)];
 t = [pi-t2(bdy1); pi-t1(int1); t1(int2); t2(bdy2)];
 end
