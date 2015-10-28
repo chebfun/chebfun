@@ -21,9 +21,19 @@ else
     
     % Find the diagonal blocks.
     blocks = cell(numIntervals);
+    
+    % Check how many unique discretization sizes we've got:
+    nUnique = unique(n);
+    
+    % Create a discretization matrix for each unique discretization size:
+    for nn = nUnique
+        nBlocks{nn} = disc.diffmat(nn, m);
+    end
+    
+    % Scale the blocks appropriately, based on each subinterval length:
+    lengths = diff(d);
     for k = 1:numIntervals
-        len = d(k+1) - d(k);
-        blocks{k} = disc.diffmat(n(k),m) * (2/len)^m; % Scaled diffmats
+        blocks{k} = nBlocks{n(k)} * (2/lengths(k))^m;
     end
     
     % Assemble!

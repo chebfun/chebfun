@@ -92,16 +92,22 @@ function C = domainContinuity(dom, maxorder,left, right)
 % Returns expressions of continuity at the breakpoints of the domain of L.
 %   C{m,k} has the (m-1)th-order derivative at breakpoint k
 
-A = operatorBlock.eye(dom);
-D = operatorBlock.diff(dom,1);
-C = cell(maxorder+1,length(left));
-for m = 0:maxorder
-    for k = 1:length(left)
-        El = functionalBlock.feval(left(k),dom,-1);
-        Er = functionalBlock.feval(right(k),dom,+1);
-        C{m+1,k} = (El-Er)*A;
-    end
-    A = D*A;
+% Initialize output cell array
+numIntervals = length(left);
+C = cell(maxorder+1, numIntervals);
+
+% Construct all evaluation difference functionals, and start by storing those in
+% the output cell, C.
+for k = 1:numIntervals
+    C{1, k} = functionalBlock.feval(left(k), dom, -1) - ...
+        functionalBlock.feval(right(k), dom, +1);
 end
+
+% Now, multiply the top row of C by increasingly high differentation operators:
+for m = 1:maxorder
+    Dm = operatorBlock.diff(dom, m);
+    C(m+1, :) = cellfun(@mtimes, C(1,:), repmat({Dm}, 1, numIntervals), ...
+        'uniformOutput',false);
+end 
 
 end
