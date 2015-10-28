@@ -381,7 +381,7 @@ if (n<=21) % Use only boundary formula:
     s = mod(n,2);
     
     x = [-x2(end:-1:1+s); x2(1:end)];
-    w = [w2(end:-1:1+s); w2(1:end)];
+    w = [w2(end:-1:1+s); w2(1:end)]';
     v = [-v2(end:-1:1+s); v2(1:end)];
     t = [pi-t2(end:-1:1+s); t2(1:end)];
     return
