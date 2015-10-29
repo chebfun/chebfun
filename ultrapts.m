@@ -218,22 +218,7 @@ end
 function [x, w, v] = rec(n,lambda)
 
 % Constant for w: (cte = 4^(1-lambda)*pi*gamma(n+2*lambda)/gamma(n+1)/gamma(lambda)^2)
-% See ratio of gamma functions in [2]. 
-ds = .5*(2*lambda-1)^2/n;
-s = ds;
-j = 1;
-while ( abs(ds/s) > eps/100 ) % Taylor series in expansion 
-    j = j+1;
-    ds = -(2*lambda-1)*(j-1)/(j+1)/n*ds;
-    s = s + ds;
-end
-p2 = exp(s)*sqrt(n+2*lambda-1)*n^(2*lambda-1.5);
-% Stirling's series:
-g = [1, 1/12, 1/288, -139/51840, -571/2488320, 163879/209018880, ...
-    5246819/75246796800, -534703531/902961561600, ...
-    -4483131259/86684309913600, 432261921612371/514904800886784000];
-f = @(z) sum(g.*[1, cumprod(ones(1, 9)./z)]);
-cte = 4^(1-lambda)*pi/gamma(lambda)^2*p2*(f(n+2*lambda-1)/f(n));
+cte = 4^(1-lambda)*pi*exp(gammaln(n+2*lambda)-gammaln(n+1)-2*gammaln(lambda));
 
 % Constant:
 m = floor(.5*n);
@@ -307,26 +292,9 @@ end
 if ( mod(n,2) )
     s = 1;
     x(m+1,1) = 0;
-    
     % Calculate PP analytically: (PP =
     % (n+2*lambda-1)*gamma((n-1)/2+lambda)/gamma((n+1)/2)/gamma(lambda);
-    % See ratio of gamma functions in [2]. 
-    k = .5*(n-1);
-    ds = .5*(lambda-1)^2/k;
-    s0 = ds;
-    j = 1;
-    while ( abs(ds/s0) > eps/100 ) % Taylor series in expansion 
-        j = j+1;
-        ds = -(lambda-1)*(j-1)/(j+1)/k*ds;
-        s0 = s0 + ds;
-    end
-    p2 = exp(s0)*sqrt(k+lambda-1)*k^(lambda-1.5);
-    % Stirling's series:
-    g = [1, 1/12, 1/288, -139/51840, -571/2488320, 163879/209018880, ...
-        5246819/75246796800, -534703531/902961561600, ...
-        -4483131259/86684309913600, 432261921612371/514904800886784000];
-    f = @(z) sum(g.*[1, cumprod(ones(1, 9)./z)]);
-    PP(m+1,1) = (n+2*lambda-1)*p2*(f(k+lambda-1)/f(k))/gamma(lambda);
+    PP(m+1,1) = 2*exp(gammaln((n+1)/2+lambda)-gammaln((n+1)/2)-gammaln(lambda));
     PP2 = PP(m+1,1)*PP(m+1,1); % PP^2
     w(m+1,1) = cte/PP2;
 else
