@@ -23,8 +23,14 @@ function out = get(f, prop)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 switch prop
-    case fieldnames(f)
-        out = f.(prop);
+    case 'coeffs'
+        out = f.coeffs;
+    case 'hscale'
+        out = f.hscale;
+    case 'ishappy'
+        out = f.ishappy;
+    case 'epslevel'
+        out = f.epslevel;
     case 'points'
         out = f.points();
     case 'lval'

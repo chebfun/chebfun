@@ -632,8 +632,8 @@ function menu_ivpODE113_Callback(hObject, eventdata, handles)
 set(handles.menu_ivpODE113, 'checked', 'on');
 set(handles.menu_ivpODE15s, 'checked', 'off');
 set(handles.menu_ivpODE45, 'checked', 'off');
-set(handles.menu_ivpCollocation, 'checked', 'off');
-set(handles.menu_ivpUltraspherical, 'checked', 'off');
+set(handles.menu_ivpValues, 'checked', 'off');
+set(handles.menu_ivpCoefficients, 'checked', 'off');
 handles.guifile.options.ivpSolver = 'ode113';
 set(handles.panel_IVPsolver,'SelectedObject', handles.button_timestepping)
 set(handles.panel_initialGuess, 'Visible', 'off')
@@ -644,8 +644,8 @@ function menu_ivpODE15s_Callback(hObject, eventdata, handles)
 set(handles.menu_ivpODE113, 'checked', 'off');
 set(handles.menu_ivpODE15s, 'checked', 'on');
 set(handles.menu_ivpODE45, 'checked', 'off');
-set(handles.menu_ivpCollocation, 'checked', 'off');
-set(handles.menu_ivpUltraspherical, 'checked', 'off');
+set(handles.menu_ivpValues, 'checked', 'off');
+set(handles.menu_ivpCoefficients, 'checked', 'off');
 handles.guifile.options.ivpSolver = 'ode15s';
 set(handles.panel_IVPsolver,'SelectedObject', handles.button_timestepping)
 set(handles.panel_initialGuess, 'Visible', 'off')
@@ -656,33 +656,33 @@ function menu_ivpODE45_Callback(hObject, eventdata, handles)
 set(handles.menu_ivpODE113, 'checked', 'off');
 set(handles.menu_ivpODE15s, 'checked', 'off');
 set(handles.menu_ivpODE45, 'checked', 'on');
-set(handles.menu_ivpCollocation, 'checked', 'off');
-set(handles.menu_ivpUltraspherical, 'checked', 'off');
+set(handles.menu_ivpValues, 'checked', 'off');
+set(handles.menu_ivpCoefficients, 'checked', 'off');
 handles.guifile.options.ivpSolver = 'ode45';
 set(handles.panel_IVPsolver,'SelectedObject', handles.button_timestepping)
 set(handles.panel_initialGuess, 'Visible', 'off')
 guidata(hObject, handles);
 end
 
-function menu_ivpCollocation_Callback(hObject, eventdata, handles)
+function menu_ivpValues_Callback(hObject, eventdata, handles)
 set(handles.menu_ivpODE113, 'checked', 'off');
 set(handles.menu_ivpODE15s, 'checked', 'off');
 set(handles.menu_ivpODE45, 'checked', 'off');
-set(handles.menu_ivpCollocation, 'checked', 'on');
-set(handles.menu_ivpUltraspherical, 'checked', 'off');
-handles.guifile.options.ivpSolver = 'collocation';
+set(handles.menu_ivpValues, 'checked', 'on');
+set(handles.menu_ivpCoefficients, 'checked', 'off');
+handles.guifile.options.ivpSolver = 'values';
 set(handles.panel_IVPsolver,'SelectedObject', handles.button_global)
 set(handles.panel_initialGuess, 'Visible', 'on')
 guidata(hObject, handles);
 end
 
-function menu_ivpUltraspherical_Callback(hObject, eventdata, handles)
+function menu_ivpCoefficients_Callback(hObject, eventdata, handles)
 set(handles.menu_ivpODE113, 'checked', 'off');
 set(handles.menu_ivpODE15s, 'checked', 'off');
 set(handles.menu_ivpODE45, 'checked', 'off');
-set(handles.menu_ivpCollocation, 'checked', 'off');
-set(handles.menu_ivpUltraspherical, 'checked', 'on');
-handles.guifile.options.ivpSolver = 'ultraspherical';
+set(handles.menu_ivpValues, 'checked', 'off');
+set(handles.menu_ivpCoefficients, 'checked', 'on');
+handles.guifile.options.ivpSolver = 'coeffs';
 set(handles.panel_IVPsolver,'SelectedObject', handles.button_global)
 set(handles.panel_initialGuess, 'Visible', 'on')
 guidata(hObject, handles);
@@ -1111,10 +1111,10 @@ end
 function button_export_Callback(hObject, eventdata, handles)
 
     % What discretization do we want to use?
-    if ( get(handles.button_collocation, 'Value') )
-        handles.guifile.options.discretization = 'collocation';
+    if ( get(handles.button_discretization_values, 'Value') )
+        handles.guifile.options.discretization = 'values';
     else
-        handles.guifile.options.discretization = 'ultraspherical';
+        handles.guifile.options.discretization = 'coeffs';
     end
 
     % Create a CHEBGUIEXPORTER object of the correct type:

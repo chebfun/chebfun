@@ -94,7 +94,7 @@ else
 
     % Plot the coefficients for the positive and negative fourier modes
     % separately.
-    h = loglog([coeffIndexPos;nan(1,m);coeffIndexNeg], [cPos;nan(1,m);cNeg], args{:});
+    h = loglog([coeffIndexPos nan coeffIndexNeg], [cPos ; nan(1, m) ; cNeg], args{:});
 
     % Set the string for the x-axis label.  In this case we will be
     % plotting the absolute value of the wave number + 1 (since we can't

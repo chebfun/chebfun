@@ -120,7 +120,8 @@ end
 options = setupODEoptions(handles.guifile, expInfo);
 
 % Are we solving the problem globally, or with one of the MATLAB solvers?
-solvingGlobally = isempty(strfind(func2str(options.ivpSolver), 'chebfun'));
+solvingGlobally = strcmp(options.ivpSolver, 'values') || ...
+    strcmp(options.ivpSolver, 'coeffs');
 
 % Various things we only need to think about when in the GUI, changes GUI
 % compenents.
