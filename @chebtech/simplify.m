@@ -25,15 +25,19 @@ if ( ~f.ishappy )
     return
 end
 
-% STANDARDCHOP requires at least 17 coefficients, so for F such that LENGTH(F) <
-% 17, the coefficients are padded using prolong. The following
-% parameters are chosen explicitly to work with STANDARDCHOP.
+% STANDARDCHOP requires at least 17 coefficients to avoid outright rejection.
+% STANDARDCHOP also employs a look ahead feature for detecting plateaus. For F
+% with insufficient length the coefficients are padded using prolong. The
+% following parameters are chosen explicitly to work with STANDARDCHOP. 
 % See STANDARDCHOP for details.
 nold = length(f);
 N = max(17, round(nold*1.25 + 5));
 f = prolong(f,N);
 
-% Grab coefficients of F.
+% After the coefficients of F have been padded with zeros an artificial plateau
+% is created using the noisy output from the FFT. The slightly noisy plateau is
+% required since STANDARDCHOP uses logarithms to detect plateaus and this has
+% undesirable effects when the plateau is made up of all zeros.
 coeffs = f.coeffs;
 [n, m] = size(coeffs);
 coeffs = chebtech2.vals2coeffs(chebtech2.coeffs2vals(coeffs));
