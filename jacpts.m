@@ -414,33 +414,30 @@ function [vals, ders] = feval_asy1(n, a, b, t, idx, flag)
     cosA = cos(alpha);
     sinA = sin(alpha);
 
-    if ( flag )
+    if ( flag ) % Evaluate cos(alpha) using Taylor series.
+        k = 1:numel(t);
         if ( idx(1) == 1 )
-            k = numel(t):-1:1;
-        else
-            k = 1:numel(t);
+            k = fliplr(k);
         end
-        ta = double(single(t));   
-        tb = t - ta;
-        hi = n*ta;                
-        lo = n*tb + (a+b+1)*.5*t;
-        pia = double(single(pi));
-        pib = -8.742278000372485e-08; %pib = pi - pia;
-        dh = (hi - (k-.25)*pia) + lo - .5*a*pia - (k-.25+.5*a)*pib;
-        tmp = 0;
-        sgn = 1; fact = 1; DH = dh; dh2 = dh.*dh;
+        % Hi-lo computation to squeeze an extra digit in the computation.
+        ta = double(single(t));    tb = t - ta;
+        hi = n*ta;                 lo = n*tb + (a+b+1)*.5*t; 
+        pia = double(single(pi));  pib = -8.742278000372485e-08; % pib = pi-pia;
+        dh = ( hi - (k-.25)*pia ) + lo - .5*a*pia - ( k - .25 + .5*a )*pib;
+        tmp = 0; sgn = 1; fact = 1; DH = dh; dh2 = dh.*dh;       % Initialise.
         for j = 0:20
             dc = sgn*DH/fact;
             tmp = tmp + dc;
             sgn = -sgn;
             fact = fact*(2*j+3)*(2*j+2);
             DH = DH.*dh2;
-            if ( norm(dc,inf) < eps/2000 )
+            if ( norm(dc, inf) < eps/2000 )
                 break
             end
         end
-        tmp(2:2:end) = -tmp(2:2:end);
-        tmp = sign(cosA(1,2)*tmp(2))*tmp;
+        tmp(2:2:end) = -tmp(2:2:end);          % }
+        [~, loc] = max(abs(tmp));              %  } Fix up the sign.
+        tmp = sign(cosA(1,loc)*tmp(loc))*tmp;  % }
         cosA(1,:) = tmp;
     end
 
