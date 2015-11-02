@@ -57,10 +57,10 @@ function [x, w, v, t] = ultrapts(n, lambda, int, meth, conv)
 %   [2] N. Hale and A. Townsend, "Fast and accurate computation of Gauss-Legendre 
 %       and Gauss-Jacobi quadrature nodes and weights", SIAM J. Sci. Comp., 2013.
 %   [3] L. L. Peixoto, "Desigualdades que garantem a convergência do método
-%       de Newton-Raphson para os zeros do polinômio ultraesférico no caso
-%       principal", Master's thesis, UFMG, Belo Horizonte, 2015.
+%   de Newton-Raphson para os zeros do polinômio ultraesférico no caso
+%   principal", Master's thesis, UFMG, Belo Horizonte, 2015.
 %   [4] L. L. Peixoto, "On the convergence of Newton-Raphson to the zeros of
-%       ultraspherical polynomials on theta-variable", In preparation, 2016.
+%   ultraspherical polynomials on theta-variable", In preparation, 2016.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Defaults:
@@ -424,8 +424,7 @@ while ( norm(dt, inf) > sqrt(eps)/1000 )       % <-- Enough, as again below
     t = t - dt;
     dt = dt(1:idx-1);                          % Ignore boundary terms
 end
-[vals, ders] = feval_asy1(n, t, 0);  % Once more for good ders. 
-% Experimentally FLAG=0 is better than FLAG=1 in ASY1. 
+[vals, ders] = feval_asy1(n, t, 1);  % Once more for good ders. 
 
 t = transpose(t - vals./ders);
 
@@ -519,7 +518,7 @@ if ( ~flag )
     cosAlpha = cos(alpha);
     sinAlpha = sin(alpha);
 else
-    % Adapted from JACPTS:
+    % Adapted from JACPTS, and LEGPTS:
     %%%%%%%%%%%%%%%% Taylor expansion of cos(alpha0) %%%%%%%%%%%%%%
     k = numel(t):-1:1;
     % HI-LO expansion, to accurately compute (n+.5)*t - (k+.5*lambda-.5)*pi
@@ -542,7 +541,8 @@ else
         if ( norm(dc,inf) ) < eps/2000, break, end
     end
     tmp(2:2:end) = -tmp(2:2:end);
-    tmp = sign(cos((n+lambda)*t(2)-.5*lambda*pi)*tmp(2))*tmp;
+    [~, loc] = max(abs(tmp));
+    tmp = sign(cos((n+lambda)*t(loc)-.5*lambda*pi)*tmp(loc))*tmp;
     cosAlpha(1,:) = tmp;
 
     % Compute sinAlpha(1,:) using Taylor series:
@@ -556,15 +556,16 @@ else
         if (norm(dc, inf)) < eps/2000, break, end
     end
     tmp(2:2:end) = -tmp(2:2:end);
-    tmp = sign(sin((n+lambda)*t(2)-.5*lambda*pi)*tmp(2))*tmp;
+    [~, loc] = max(abs(tmp));
+    tmp = sign(sin((n+lambda)*t(loc)-.5*lambda*pi)*tmp(loc))*tmp;
     sinAlpha(1,:) = tmp;
 
     % Compute cosAlpha(k,:) and sinAlpha(k,:) for k = 2,...,M:
     sint = sin(t);
     cost = cos(t);
     for kk = 2:M
-        cosAlpha(kk,:) = cosAlpha(kk-1,:).*sint+sinAlpha(kk-1,:).*cost;
-        sinAlpha(kk,:) = sinAlpha(kk-1,:).*sint-cosAlpha(kk-1,:).*cost;
+        cosAlpha(kk,:) = cosAlpha(kk-1,:).*sint + sinAlpha(kk-1,:).*cost;
+        sinAlpha(kk,:) = sinAlpha(kk-1,:).*sint - cosAlpha(kk-1,:).*cost;
     end
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
