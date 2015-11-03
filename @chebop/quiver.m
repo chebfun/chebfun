@@ -77,9 +77,11 @@ while ~isempty(varargin)    % Go through all elements
     varargin(1:2) = [];
 end
 
+% Extract the x and y limits
 xl = axisLims(1:2);
 yl = axisLims(3:4);
 
+%%
 % If ylim is empty, we solve the problem to obtain a range for plotting on
 if ( isempty(xl) )
     u0 = N\0;
@@ -98,6 +100,7 @@ firstOrderFun = treeVar.toFirstOrder(N.op, 0, N.domain);
 
 %%
 
+% Vectors for constructing a meshgrid:
 y1 = linspace(xl(1), xl(end), xpts);
 y2 = linspace(yl(1), yl(end), ypts);
 
@@ -108,7 +111,7 @@ v = zeros(size(x));
 
 % Phase plane portraits really only make sense for autonomous systems, which
 % shouldn't depend on t, hence, we simply take t = 0 for evaluating
-t=0; 
+t = 0; 
 
 % TODO: Could probably vectorize this, with reshapes. For now, just loop.
 for i = 1:numel(x)
@@ -117,7 +120,7 @@ for i = 1:numel(x)
     v(i) = res(2);
 end
 
-if (normalize)
+if ( normalize )
     % Make all arrows equal length
     nrm = sqrt(u.^2 + v.^2);
     u = u./nrm;
