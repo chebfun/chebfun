@@ -16,6 +16,12 @@ function varargout = pde15s(varargin)
 %   definite integral operator (i.e., 'sum'), and C the indefinite integral
 %   operator (i.e., 'cumsum') is also supported.
 %
+%   By default, the solutions at intermediate time steps are not plotted when
+%   PDE15s is called with output arguments. See documentation below on how
+%   options can be specified and passed so that intermediate solutions get
+%   plotted. If PDE15s is called without any output arguments, the solutions at
+%   intermediate time steps are plotted by default.
+%
 %   For equations of one variable, UU is output as an array-valued CHEBFUN,
 %   where UU(:, k) is the solution at T(k). For systems, the solution UU is
 %   returned as a CHEBMATRIX with the different variables along the rows, and
