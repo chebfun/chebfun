@@ -11,9 +11,9 @@ function out = deriv(f, xx, m)
 %
 %   Example:
 %     u = chebfun(@sin);
-%     deval(u, 1) % u'(1)
-%     deval(u, .5, 2) % u''(.5)
-%     deval(u, 0.1:0.01:0.2) % u'(0.1:0.01:0.2)
+%     deriv(u, 1) % u'(1)
+%     deriv(u, .5, 2) % u''(.5)
+%     deriv(u, 0.1:0.01:0.2) % u'(0.1:0.01:0.2)
 %
 % See also chebfun/diff, chebfun/feval.
 
