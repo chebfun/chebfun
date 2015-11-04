@@ -1,20 +1,19 @@
-function varargout = quiver(N, varargin)
+function varargout = quiver(N, axisLims, varargin)
 % QUIVER   Draw phase plot diagrams, based on ODEs specified with CHEBOPS
 %
 % Calling sequence:
-%   H = QUIVER(N, 'OPT1', VAL1, ...)
+%   H = QUIVER(N, AXIS, 'OPT1', VAL1, ...)
 %
 % Here, the inputs are:
 %   
-%   N : A chebop, whose N.op arguments specifies a second order ODE, or a
-%       coupled system of first order ODEs.
+%   N    : A chebop, whose N.op arguments specifies a second order ODE, or a
+%          coupled system of first order ODEs.
+%   AXIS : A 4-vector with elements [XMIN XMAX YMIN YMAX] that specify the
+%          rectangular region shown on the phase plot.
 %
 % It is possible to pass the method various option pairs on the form
 %   'OPTIONNAME', OPTIONVALUE
 % The options supported are
-%   'AXIS'      : A 4-vector with elements [XMIN XMAX YMIN YMAX] that specify
-%                 the rectangular region shown on the phase plot. Default value:
-%                 [-1 1 -1 1].
 %   'XPTS'      : An integer, specifying the resolution of the x-axis for the
 %                 quiver plot. Default value: 10.
 %   'YPTS'      : An integer, specifying the resolution of the y-axis for the
@@ -46,13 +45,12 @@ function varargout = quiver(N, varargin)
 % http://www.chebfun.org/ for Chebfun information.
 
 % Set default values:
-axisLims = [-1 1 -1 1];
 scale = 1;
 normalize = false;
 u0 = [];
-xpts = 10;
-ypts = 10;
-
+xpts = 20;
+ypts = 20;
+linespec = {};
 
 % Parse VARARGIN
 while ~isempty(varargin)    % Go through all elements
@@ -61,8 +59,6 @@ while ~isempty(varargin)    % Go through all elements
     end
     val = varargin{2};
     switch lower(varargin{1})
-        case 'axis'
-            axisLims = val;
         case 'normalize'
             normalize = val;
         case 'xpts'
@@ -71,6 +67,8 @@ while ~isempty(varargin)    % Go through all elements
             ypts = val;
         case 'scale'
             scale = val;
+        case 'linespec'
+            linespec = val;
     end
     
     % Throw away option name and argument and move on
@@ -127,7 +125,7 @@ if ( normalize )
     v = v./nrm;
 end
 
-h = quiver(x, y, u, v, scale);
+h = quiver(x, y, u, v, scale,linespec{:});
 
 if ( nargout > 0 )
     varargout{1} = h;
