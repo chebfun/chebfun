@@ -6,8 +6,8 @@ function varargout = quiver(N, axisLims, varargin)
 %
 % Here, the inputs are:
 %   
-%   N    : A chebop, whose N.op arguments specifies a second order ODE, or a
-%          coupled system of first order ODEs.
+%   N    : A chebop, whose N.op arguments specifies a second order scalar ODE,
+%          or a coupled system of two first order ODEs.
 %   AXIS : A 4-vector with elements [XMIN XMAX YMIN YMAX] that specify the
 %          rectangular region shown on the phase plot.
 %
@@ -109,7 +109,16 @@ v = zeros(size(x));
 
 % Phase plane portraits really only make sense for autonomous systems, which
 % shouldn't depend on t, hence, we simply take t = 0 for evaluating
-t = 0; 
+t = 0;
+
+% Check if we got passed a system of too high order:
+numEquations = length(strfind(func2str(firstOrderFun),';'));
+
+if ( numEquations > 2 )
+    error('CHEBFUN:CHEBOP:quiver:tooHighOrder', ...
+        ['The ODE passed to chebop/quiver must either be a scalar, second ' ...
+        'order ODE or a system of two first order equations.'])
+end
 
 % TODO: Could probably vectorize this, with reshapes. For now, just loop.
 for i = 1:numel(x)
