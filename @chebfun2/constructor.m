@@ -404,8 +404,8 @@ while ( ~isHappy && ~failure )
     
     % Construct a CHEBFUN2:
     g.pivotValues = pivotValue;
-    g.cols = chebfun(colValues, dom(3:4), pref);
-    g.rows = chebfun(rowValues.', dom(1:2), pref );
+    g.cols = simplify(chebfun(colValues, dom(3:4), pref));
+    g.rows = simplify(chebfun(rowValues.', dom(1:2), pref ));
     g.pivotLocations = PivPos;
     g.domain = dom;
     

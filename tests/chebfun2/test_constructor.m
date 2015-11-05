@@ -53,4 +53,11 @@ p.tech = @chebtech2;
 f = chebfun2(@(x,y) sin(80*x+y), p);
 pass(10) = length(f.cols(:,1)) < 50;
 
+% Test whether there is an overestimation in the numerical degrees of
+% chebfun2s:
+f1 = chebfun(@(x) 1./(1+25*x.^2)); 
+f2 = chebfun2(@(x,y) 1./(1+25*x.^2)); 
+pass(11) = length(f2.cols) < 2;
+pass(12) = length(f2.rows) < length(f1) + 20;
+
 end
