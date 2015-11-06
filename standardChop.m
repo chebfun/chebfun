@@ -42,7 +42,7 @@ function cutoff = standardChop(coeffs, tol)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % STANDARDCHOP normally chops COEFFS at a point beyond which it is smaller than
-% TOL^(2/3).  It will never be chopped unless it is of length at least 17 and
+% TOL^(2/3).  COEFFS will never be chopped unless it is of length at least 17 and
 % falls at least below TOL^(1/3).  It will always be chopped if it has a long
 % enough final segment below TOL, and the final entry COEFFS(CUTOFF) will never
 % be smaller than TOL^(7/6).  All these statements are relative to
@@ -125,7 +125,7 @@ end
 % CUTOFF should be smaller than PLATEAUPOINT if the last few coefficients made
 % negligible improvement but just managed to bring the vector ENVELOPE below the
 % level TOL^(2/3), above which no plateau will ever be detected.  This part of
-% the code is important to avoiding situations where a coefficient vector is
+% the code is important for avoiding situations where a coefficient vector is
 % chopped at a point that looks "obviously wrong" with PLOTCOEFFS.
 %
 % CUTOFF should be larger than PLATEAUPOINT if, although a plateau has been
