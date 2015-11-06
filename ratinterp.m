@@ -1,4 +1,4 @@
-function [p, q, r, mu, nu, poles, residues] = ratinterp(varargin)
+function varargout = ratinterp(varargin)
 %RATINTERP  Robust rational interpolation or least-squares approximation.
 %   [P, Q, R_HANDLE] = RATINTERP(F, M, N) computes the (M, N) rational
 %   interpolant of F on the M + N + 1 Chebyshev points of the second kind. F
@@ -102,13 +102,27 @@ if ( nargout > 5 )
 
         % Residues are the coefficients of 1/(x - poles(j))
         for j = 1:(length(poles) - 1)
-            if (poles(j+1) == poles(j))
+            if ( poles(j+1) == poles(j) )
                 residues(j+1) = residues(j);
             end
         end
     else               % Just compute the poles.
           poles = roots(q, 'all');
     end
+else
+    poles = [];
+    residues = [];
+end
+    
+outArgs = {p, q, r, mu, nu, poles, residues};
+% Return the output based on nargout:
+if ( nargout <= 1  )
+    varargout{1} = r;
+elseif ( nargout <= 7  )
+    [varargout{1:nargout}] = outArgs{1:nargout};
+else
+    error('CHEBFUN:CHEBFUN:ratinterp:nargout', ...
+        'Incorrect number of output arguments.'); 
 end
 
 end
