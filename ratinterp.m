@@ -102,46 +102,28 @@ if ( nargout > 5 )
 
         % Residues are the coefficients of 1/(x - poles(j))
         for j = 1:(length(poles) - 1)
-            if (poles(j+1) == poles(j))
+            if ( poles(j+1) == poles(j) )
                 residues(j+1) = residues(j);
             end
         end
     else               % Just compute the poles.
           poles = roots(q, 'all');
     end
+else
+    poles = [];
+    residues = [];
 end
-
-% return the output based on nargout:
-if ( (nargout == 1) || (nargout == 0) )
+    
+outArgs = {p, q, r, mu, nu, poles, residues};
+% Return the output based on nargout:
+if ( nargout <= 1  )
     varargout{1} = r;
-elseif ( nargout == 2 )
-    varargout{1} = p;
-    varargout{2} = q;
-elseif ( nargout >= 3 && nargout <= 7)
-    varargout{1} = p;
-    varargout{2} = q;
-    varargout{3} = r;
+elseif ( nargout <= 7  )
+    [varargout{1:nargout}] = outArgs{1:nargout};
 else
     error('CHEBFUN:CHEBFUN:ratinterp:nargout', ...
-        'wrong number of output arguments.'); 
+        'Incorrect number of output arguments.'); 
 end
-
-if ( nargout >= 4 )
-    varargout{4} = mu;
-end
-
-if ( nargout >= 5 )
-    varargout{5} = nu;
-end
-
-if ( nargout >= 6 )
-    varargout{6} = poles;
-end
-
-if ( nargout == 7 )
-    varargout{7} = residues;
-end 
-
 
 end
 

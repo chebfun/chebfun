@@ -1,6 +1,6 @@
 function varargout = chebpade(F, m, n, varargin)
 %CHEBPADE   Chebyshev-Pade approximation.
-%   [P, Q, R_HANDLE ] = CHEBPADE(F, M, N) computes polynomials P and Q of degree
+%   [P, Q, R_HANDLE] = CHEBPADE(F, M, N) computes polynomials P and Q of degree
 %   M and N, respectively, such that the rational function P/Q is the type (M,
 %   N) Chebyshev-Pade approximation of type Clenshaw-Lord to the CHEBFUN F. That
 %   is, the Chebyshev series of P/Q coincides with that for the CHEBFUN F up to
@@ -90,20 +90,15 @@ if ( F.isTransposed )
     q = q.';
 end
 
-% return the output:
-if ( (nargout == 1) || (nargout == 0) )
+% Return the output:
+outArgs = {p, q, r_handle};
+if ( nargout <= 1 )
     varargout{1} = r_handle;
-    return
-elseif ( nargout == 2 )
-    varargout{1} = p;
-    varargout{2} = q;
-elseif ( nargout == 3 )
-    varargout{1} = p;
-    varargout{2} = q;
-    varargout{3} = r_handle;
+elseif ( nargout <= 3 )
+    [varargout{1:nargout}] = outArgs{1:nargout};
 else
     error('CHEBFUN:CHEBFUN:chebpade:nargout', ...
-        'wrong number of output arguments.'); 
+        'Incorrect number of output arguments.'); 
 end
 
 end
