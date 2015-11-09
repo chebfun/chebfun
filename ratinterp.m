@@ -93,6 +93,8 @@ nu = length(b) - 1;
 [p, q, r] = constructRatApprox(xi_type, R, a, b, mu, nu, dom);
 
 % Compute poles and residues if requested.
+poles = [];
+residues = [];
 if ( nargout > 5 )
     if ( nargout > 6 ) % Compute residues.
         % Compute partial fraction expansion of r.
@@ -107,11 +109,8 @@ if ( nargout > 5 )
             end
         end
     else               % Just compute the poles.
-          poles = roots(q, 'all');
+        poles = roots(q, 'all');
     end
-else
-    poles = [];
-    residues = [];
 end
     
 outArgs = {p, q, r, mu, nu, poles, residues};
@@ -461,7 +460,7 @@ if ( strncmpi(xi_type, 'type', 4) )
         [p, q, r] = constructRatApproxCheb2(a, b, mu, nu, dom);
     end
 else                              % Arbitrary points.
-        [p, q, r] = constructRatApproxArb(R, a, b, mu, nu, dom);
+    [p, q, r] = constructRatApproxArb(R, a, b, mu, nu, dom);
 end
 
 end
