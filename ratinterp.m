@@ -101,7 +101,7 @@ if ( nargout > 5 )
         [residues, poles] = residue(p, q);
         [poles, ind] = sort(poles);
         residues = residues(ind);
-        
+
         % Residues are the coefficients of 1/(x - poles(j))
         for j = 1:(length(poles) - 1)
             if ( poles(j+1) == poles(j) )
@@ -112,7 +112,7 @@ if ( nargout > 5 )
         poles = roots(q, 'all');
     end
 end
-
+    
 outArgs = {p, q, r, mu, nu, poles, residues};
 % Return the output based on nargout:
 if ( nargout <= 1  )
@@ -121,7 +121,7 @@ elseif ( nargout <= 7  )
     [varargout{1:nargout}] = outArgs{1:nargout};
 else
     error('CHEBFUN:CHEBFUN:ratinterp:nargout', ...
-        'Incorrect number of output arguments.');
+        'Incorrect number of output arguments.'); 
 end
 
 end
@@ -142,13 +142,13 @@ end
 if ( nargin == 7 )
     dom = varargin{1};
     varargin(1) = [];
-    
+
     if ( ~isempty(dom) && ...
-            (~isfloat(dom) || ~isequal(size(dom), [1 2])) )
+        (~isfloat(dom) || ~isequal(size(dom), [1 2])) )
         error('CHEBFUN:ratinterp:badDom1', ...
             'Domain should be a 1 x 2 row vector of endpoints.');
     end
-    
+
     if ( diff(dom) <= 0 )
         error('CHEBFUN:ratinterp:badDom2', 'Invalid domain.');
     end
@@ -185,7 +185,7 @@ end
 if ( isa(dom, 'domain') )
     warning('CHEBFUN:ratinterp:domainDeprecated', ...
         ['Using a DOMAIN object as an input to RATINTERP is deprecated.\n' ...
-        'Specify domains using a two-element row vector instead.']);
+         'Specify domains using a two-element row vector instead.']);
     warning('off', 'CHEBFUN:ratinterp:domainDeprecated');
     dom = double(dom);
 end
@@ -264,19 +264,19 @@ if ( strncmpi(xi_type, 'TYPE', 4) )
     if ( xi_type(5) == '0' )  % Roots of unity.
         if ( mod(N, 2) == 1 )
             M = floor(N/2);
-            
+
             fl = f(2:(M+1));
             fr = f((N+2-M):end);
-            
+
             fEven = norm(fl - fr, inf) < ts;
             fOdd = norm(fl + fr, inf) < ts;
         end
     else                      % 1st/2nd-kind Chebyshev points.
         M = ceil(N/2);
-        
+
         fl = f(1:M);
         fr = f(end:-1:(N1-M+1));
-        
+
         fEven = norm(fl - fr, inf) < ts;
         fOdd = norm(fl + fr, inf) < ts;
     end
@@ -289,10 +289,10 @@ else                          % Other nodes.
         xi = xs;
         f = f(ind);
         M = ceil(N/2);
-        
+
         fl = f(1:M);
         fr = f(end:-1:(N1-M+1));
-        
+
         fEven = norm(fl - fr, inf) < ts;
         fOdd = norm(fl + fr, inf) < ts;
     end
@@ -322,7 +322,7 @@ else                                 % Other nodes.
     for k = 3:N1
         C(:,k) = 2 * xi .* C(:,k-1) - C(:,k-2);
     end
-    
+
     [C, R] = qr(C);
     Z = C' * diag(f) * C(:, 1:(n+1));
 end
@@ -346,10 +346,10 @@ if ( (n > 0) && (~(fOdd || fEven) || (n > 1)) )
             b = zeros(n + 1, 1);
             b(1:2:end) = V(:,end);
         end
-        
+
         % Get the smallest singular value.
         ssv = S(ns, ns);
-        
+
         if ( ssv > ts )
             % Stop if converged.
             break;
@@ -361,7 +361,7 @@ if ( (n > 0) && (~(fOdd || fEven) || (n > 1)) )
             else
                 n = n - sum(s - ssv <= ts);
             end
-            
+
             % Terminate if denominator is trivial.
             if ( n == 0 )
                 b = 1;
@@ -425,11 +425,11 @@ if ( tol > 0 )
     % Nonnegligible coefficients.
     nna = abs(at) > ts;
     nnb = abs(bt) > tol;
-    
+
     % Discard trailing zeros.
     at = at(1:find(nna, 1, 'last'));
     bt = bt(1:find(nnb, 1, 'last'));
-    
+
     % Remove small leading coefficients.
     while ( ~isempty(at) && ~isempty(bt) && (abs(at(1)) < ts) && ...
             (abs(bt(1)) < ts) )
@@ -488,7 +488,7 @@ if ( nu > 0 )
         qx = b(k) + x .* qx;
     end
     q = chebfun(qx, dom, 'tech', @chebtech2);
-    
+
     r = @(x) polyval(a((mu+1):-1:1) , ihd*(x - md)) ...
         ./ polyval(b((nu+1):-1:1), ihd*(x - md));
 else
@@ -513,16 +513,16 @@ p = chebfun(px, dom, 'tech', tech);
 % Build the denominator polynomial and form the function handle.
 if ( nu > 0 )
     qx = chebtech1.coeffs2vals(b);
-    
+
     wp = sin((2*(0:mu) + 1)*pi/(2*(mu + 1)));
     wp(2:2:end) = -wp(2:2:end);
     wp = wp * 2^(mu - nu)/(mu + 1)*(nu + 1);
-    
+
     wq = sin((2*(0:nu) + 1)*pi/(2*(nu + 1)));
     wq(2:2:end) = -wq(2:2:end);
-    
+
     q = chebfun(qx, dom, 'tech', tech);
-    
+
     r = @(x) ratbary(ihd*(x - md), px, qx, ...
         chebpts(mu + 1, 1), chebpts(nu + 1, 1), wp, wq);
 else
@@ -543,21 +543,21 @@ p = chebfun(a, dom, 'coeffs');
 % Build the denominator polynomial and form the function handle.
 if ( nu > 0 )
     q = chebfun(b, dom, 'coeffs');
-    
+
     px = chebtech2.coeffs2vals(a);
     qx = chebtech2.coeffs2vals(b);
-    
+
     wp = ones(1,(mu+1));
     wp(2:2:end) = -1;
     wp(1) = 0.5;
     wp(end) = 0.5*wp(end);
     wp = wp * (-2)^(mu - nu) / mu * nu;
-    
+
     wq = ones(1,(nu+1));
     wq(2:2:end) = -1;
     wq(1) = 0.5;
     wq(end) = 0.5*wq(end);
-    
+
     r = @(x) ratbary(ihd*(x - md), px, qx, ...
         chebpts(mu + 1, 2), chebpts(nu + 1, 2), wp, wq);
 else
@@ -638,7 +638,7 @@ for i = 1:length(x)
     else
         y(i) = (pxw * dxpinv);
     end
-    
+
     % Compute the sum in the first-kind barycentric formula for q.
     dxqinv = 1.0 ./ (x(i) - xq(:));
     ind = find(~isfinite(dxqinv));
