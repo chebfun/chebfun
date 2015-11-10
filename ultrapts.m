@@ -57,10 +57,10 @@ function [x, w, v, t] = ultrapts(n, lambda, int, meth, conv)
 %   [2] N. Hale and A. Townsend, "Fast and accurate computation of Gauss-Legendre 
 %       and Gauss-Jacobi quadrature nodes and weights", SIAM J. Sci. Comp., 2013.
 %   [3] L. L. Peixoto, "Desigualdades que garantem a convergência do método
-%   de Newton-Raphson para os zeros do polinômio ultraesférico no caso
-%   principal", Master's thesis, UFMG, Belo Horizonte, 2015.
+%       de Newton-Raphson para os zeros do polinômio ultraesférico no caso
+%       principal", Master's thesis, UFMG, Belo Horizonte, 2015.
 %   [4] L. L. Peixoto, "On the convergence of Newton-Raphson to the zeros of
-%   ultraspherical polynomials on theta-variable", In preparation, 2016.
+%       ultraspherical polynomials on theta-variable", In preparation, 2016.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Defaults:
