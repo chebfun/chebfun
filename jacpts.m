@@ -11,7 +11,7 @@ function [x, w, v] = jacpts(n, a, b, int, meth)
 %   [X, W, V] = JACPTS(N, ALPHA, BETA) returns additionally a column vector V of
 %   weights in the barycentric formula corresponding to the points X.
 %
-%   JACPTS(N, ALPHA, BETA, INTERVAL, METHOD) or LEGPTS(N, ALPHA, BETA, METHOD)
+%   JACPTS(N, ALPHA, BETA, INTERVAL, METHOD) or JACPTS(N, ALPHA, BETA, METHOD)
 %   allows the user to select which method to use.
 %    METHOD = 'REC' uses the recurrence relation for the Jacobi polynomials
 %     and their derivatives to perform Newton iteration on the WKB approximation
