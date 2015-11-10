@@ -107,7 +107,12 @@ elseif ( isnumeric(bcShow) )
         % How many conditions are we dealing with?
         numBC = length(bcShow);
         % Extra whitespace to make things align
-        extraWS = repmat(' ', 1, min(numBC, 5)-1);
+        if ( numBC < 4)
+            extraWS = repmat(' ', 1, numBC - 1);
+        else
+            extraWS = '    ';
+        end
+        
         % We always need to print the first condition:
         fprintf('      %s%s = %s\n', args, extraWS, num2str(bcShow(1)));
         % If we got more conditions, print them as well:
@@ -122,7 +127,7 @@ elseif ( isnumeric(bcShow) )
         % Print all remaining conditions:
         for bcCounter = 4:numBC
             fprintf('      %s^(%i) = %s\n', args, ...
-                bcCounter, num2str(bcShow(bcCounter)));
+                bcCounter-1, num2str(bcShow(bcCounter)));
         end
     else
         fprintf('      %s\n', num2str(bcShow));
