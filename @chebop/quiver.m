@@ -5,15 +5,13 @@ function varargout = quiver(N, axisLims, varargin)
 %   H = QUIVER(N, AXIS, 'OPT1', VAL1, ...)
 %
 % Here, the inputs are:
-%   
 %   N    : A chebop, whose N.op arguments specifies a second order scalar ODE,
 %          or a coupled system of two first order ODEs.
 %   AXIS : A 4-vector with elements [XMIN XMAX YMIN YMAX] that specify the
 %          rectangular region shown on the phase plot.
 %
-% It is possible to pass the method various option pairs on the form
-%   'OPTIONNAME', OPTIONVALUE
-% The options supported are
+% It is possible to pass the method various option pairs of the form
+% 'OPTIONNAME', OPTIONVALUE. The options supported are:
 %   'XPTS'      : An integer, specifying the resolution of the x-axis for the
 %                 quiver plot. Default value: 10.
 %   'YPTS'      : An integer, specifying the resolution of the y-axis for the
@@ -35,11 +33,10 @@ function varargout = quiver(N, axisLims, varargin)
 % The optional output is
 %   H   : A quivergroup handle.
 %
-% Note 1: The CHEBOP QUIVER command works by reformulating higher order problems
+% Note: The CHEBOP QUIVER command works by reformulating higher order problems
 % as coupled first order systems, evaluating the resulting first order system at
 % grid that should be interpreted as values of u and u', then calling the
 % built-ing MATLAB QUIVER method on the results.
-%
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.
@@ -52,9 +49,9 @@ xpts = 20;
 ypts = 20;
 linespec = {};
 
-% Parse VARARGIN
-while ~isempty(varargin)    % Go through all elements
-    if ~ischar(varargin{1}) && ~isnumeric(varargin{2})
+% Parse VARARGIN, go through all elements:
+while ( ~isempty(varargin) )    
+    if ( ~ischar(varargin{1}) && ~isnumeric(varargin{2}) )
         error('followpath:inputArgument','Incorrect options input arguments');
     end
     val = varargin{2};
@@ -71,16 +68,15 @@ while ~isempty(varargin)    % Go through all elements
             linespec = val;
     end
     
-    % Throw away option name and argument and move on
+    % Throw away option name and argument and move on:
     varargin(1:2) = [];
 end
 
-% Extract the x and y limits
+% Extract the x and y limits:
 xl = axisLims(1:2);
 yl = axisLims(3:4);
 
-%%
-% If ylim is empty, we solve the problem to obtain a range for plotting on
+% If ylim is empty, we solve the problem to obtain a range for plotting on:
 if ( isempty(xl) )
     u0 = N\0;
     xl = 1.1*minandmax(u0);
@@ -93,10 +89,8 @@ if ( isempty(yl) )
     yl = 1.1*minandmax(diff(u0));
 end
 
-% Convert the operator in N to first order
+% Convert the operator in N to first order.
 firstOrderFun = treeVar.toFirstOrder(N.op, 0, N.domain);
-
-%%
 
 % Vectors for constructing a meshgrid:
 y1 = linspace(xl(1), xl(end), xpts);
@@ -108,7 +102,7 @@ u = zeros(size(x));
 v = zeros(size(x));
 
 % Phase plane portraits really only make sense for autonomous systems, which
-% shouldn't depend on t, hence, we simply take t = 0 for evaluating
+% shouldn't depend on t, hence, we simply take t = 0 for evaluating.
 t = 0;
 
 % Check if we got passed a system of too high order:
@@ -120,7 +114,7 @@ if ( numEquations > 2 )
         'order ODE or a system of two first order equations.'])
 end
 
-% TODO: Could probably vectorize this, with reshapes. For now, just loop.
+% [TODO]: Could probably vectorize this, with reshapes. For now, just loop.
 for i = 1:numel(x)
     res = firstOrderFun(t,[x(i); y(i)]);
     u(i) = res(1);
@@ -128,7 +122,7 @@ for i = 1:numel(x)
 end
 
 if ( normalize )
-    % Make all arrows equal length
+    % Make all arrows equal length:
     nrm = sqrt(u.^2 + v.^2);
     u = u./nrm;
     v = v./nrm;
