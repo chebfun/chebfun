@@ -132,6 +132,13 @@ for n = 1:2
     f = testclass.make(@(x) x.^3);
     dim2df = diff(f, 1, 2);
     pass(n, 15) = (isempty(dim2df.coeffs));
+
+    % Check for #1641.
+    f = testclass.make(@(x) [1 + x + x.^2, 1 - x + 2*x.^2]);
+    df = diff(f);
+    err = norm(df.coeffs - [1 -1 ; 2 4], 'fro');
+    tol = 10*eps;
+    pass(n, 16) = err < tol;
 end
 
 end
