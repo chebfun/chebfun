@@ -422,10 +422,12 @@ while ( ~isHappy && ~failure )
             isHappy = 0;
         end
     end
-    g.cols = simplify( g.cols );
-    g.rows = simplify( g.rows );
     
 end
+
+% Simplifying rows and columns after they are happy.
+g.cols = simplify( g.cols ); 
+g.rows = simplify( g.rows );
 
 % Fix the rank, if in nonadaptive mode.
 g = fixTheRank( g , fixedRank );
