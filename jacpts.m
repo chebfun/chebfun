@@ -1,4 +1,3 @@
-
 function [x, w, v] = jacpts(n, a, b, int, meth)
 %JACPTS  Gauss-Jacobi Quadrature Nodes and Weights.
 %   X = JACPTS(N, ALPHA, BETA) returns the N roots of the degree N Jacobi
@@ -12,7 +11,7 @@ function [x, w, v] = jacpts(n, a, b, int, meth)
 %   [X, W, V] = JACPTS(N, ALPHA, BETA) returns additionally a column vector V of
 %   weights in the barycentric formula corresponding to the points X.
 %
-%   JACPTS(N, ALPHA, BETA, INTERVAL, METHOD) or LEGPTS(N, ALPHA, BETA, METHOD)
+%   JACPTS(N, ALPHA, BETA, INTERVAL, METHOD) or JACPTS(N, ALPHA, BETA, METHOD)
 %   allows the user to select which method to use.
 %    METHOD = 'REC' uses the recurrence relation for the Jacobi polynomials
 %     and their derivatives to perform Newton iteration on the WKB approximation
@@ -415,33 +414,30 @@ function [vals, ders] = feval_asy1(n, a, b, t, idx, flag)
     cosA = cos(alpha);
     sinA = sin(alpha);
 
-    if ( flag )
+    if ( flag ) % Evaluate cos(alpha) using Taylor series.
+        k = 1:numel(t);
         if ( idx(1) == 1 )
-            k = numel(t):-1:1;
-        else
-            k = 1:numel(t);
+            k = fliplr(k);
         end
-        ta = double(single(t));   
-        tb = t - ta;
-        hi = n*ta;                
-        lo = n*tb + (a+b+1)*.5*t;
-        pia = double(single(pi));
-        pib = -8.742278000372485e-08; %pib = pi - pia;
-        dh = (hi - (k-.25)*pia) + lo - .5*a*pia - (k-.25+.5*a)*pib;
-        tmp = 0;
-        sgn = 1; fact = 1; DH = dh; dh2 = dh.*dh;
+        % Hi-lo computation to squeeze an extra digit in the computation.
+        ta = double(single(t));    tb = t - ta;
+        hi = n*ta;                 lo = n*tb + (a+b+1)*.5*t; 
+        pia = double(single(pi));  pib = -8.742278000372485e-08; % pib = pi-pia;
+        dh = ( hi - (k-.25)*pia ) + lo - .5*a*pia - ( k - .25 + .5*a )*pib;
+        tmp = 0; sgn = 1; fact = 1; DH = dh; dh2 = dh.*dh;       % Initialise.
         for j = 0:20
             dc = sgn*DH/fact;
             tmp = tmp + dc;
             sgn = -sgn;
             fact = fact*(2*j+3)*(2*j+2);
             DH = DH.*dh2;
-            if ( norm(dc,inf) < eps/2000 )
+            if ( norm(dc, inf) < eps/2000 )
                 break
             end
         end
-        tmp(2:2:end) = -tmp(2:2:end);
-        tmp = sign(cosA(1,2)*tmp(2))*tmp;
+        tmp(2:2:end) = -tmp(2:2:end);          % }
+        [~, loc] = max(abs(tmp));              %  } Fix up the sign.
+        tmp = sign(cosA(1,loc)*tmp(loc))*tmp;  % }
         cosA(1,:) = tmp;
     end
 
@@ -548,22 +544,23 @@ function [x, w, v] = asy2(n, a, b, npts)
 
 % Use Newton iterations to find the first few Bessel roots:
 smallK = min(30, npts);
-jk = besselRoots(a, min(npts, smallK));
+jk = besselAsy(a, min(npts, smallK));
 % Use asy formula for larger ones (See NIST 10.21.19, Olver 1974 p247)
 if ( npts > smallK )
     mu = 4*a^2;
     a8 = 8*((length(jk)+1:npts).'+.5*a-.25)*pi;
     jk2 = .125*a8-(mu-1)./a8 - 4*(mu-1)*(7*mu-31)/3./a8.^3 - ...
-          32*(mu-1)*(83*mu.^2-983*mu+3779)/15./a8.^5 - ...
+          32*(mu-1)*(83*mu.^2-982*mu+3779)/15./a8.^5 - ...
           64*(mu-1)*(6949*mu^3-153855*mu^2+1585743*mu-6277237)/105./a8.^7;
     jk = [jk ; jk2];
 end
 jk = real(jk(1:npts));
 
-% Approximate roots via asymptotic formula: (see Olver 1974)
-phik = jk/(n + .5*(a + b + 1));
-t = phik + ((a^2-.25)*(1-phik.*cot(phik))./(8*phik) - ...
-    .25*(a^2-b^2)*tan(.5*phik))/(n + .5*(a + b + 1))^2;
+% Approximate roots via asymptotic formula: (see Olver 1974, NIST, 18.16.8)
+rho = n + .5*(a + b + 1); 
+phik = jk/rho;
+t = phik + ((a^2-.25)*(1-phik.*cot(phik))./(2*phik) - ...
+    .25*(a^2-b^2)*tan(.5*phik))/rho^2;
 
 % Only first half (x > 0):
 if ( any(t > 1.1*pi/2) )
@@ -600,7 +597,6 @@ v = sin(t)./ders;
     % Evaluate the boundary asymptotic formula at x = cos(t).
     
         % Useful constants:
-        rho = n + .5*(a + b + 1); 
         rho2 = n + .5*(a + b - 1);
         A = (.25 - a^2);       
         B = (.25 - b^2);
@@ -665,57 +661,73 @@ v = sin(t)./ders;
 
 end
 
-function jk = besselRoots(nu, m)
-% BESSELROOTS(NU, M) returns the first M roots of besselj(nu, x).
-    
-% Find an approximation:
-jk = zeros(m,1); 
-m1 = 3;
-if ( nu == 0 )
-    xs = 2.404825557695773;
-elseif ( nu > 0 )
-    % See Hethcote 1970:
-    xs = nu + 1.8557*nu^(1/3);
-else
-    nu1 = nu + 1;
-    % See Piessens 1984:
-    xs = 2*sqrt(nu+1)*(1 + nu1/4 - 7*nu1^2/96 + 49*nu1^3/1152 - 8363*nu1/276480);
-    m1 = min(max(2*ceil(abs(log10(nu1))), 3), m);
-end
+function j = besselAsy(v, nbdy) 
+%BESSELASY    Roots of the function bessel(v, x).
+%   J = BESSELASY(V, NBDY) returns the first NBDY roots the Bessel function with
+%   parameter -1<=V<=5.
 
-% The first root:
-jk(1) = besselNewton(nu, xs);
-if ( m == 1 )
+% L. L. Peixoto, 2015
+
+% Piessens's Chebyshev series approximations (1984). Calculates the 6 first
+% zeros to at least 12 decimal figures in region -1 <= V <= 5:
+C = [
+   2.883975316228  8.263194332307 11.493871452173 14.689036505931 17.866882871378 21.034784308088
+   0.767665211539  4.209200330779  4.317988625384  4.387437455306  4.435717974422  4.471319438161
+  -0.086538804759 -0.164644722483 -0.130667664397 -0.109469595763 -0.094492317231 -0.083234240394
+   0.020433979038  0.039764618826  0.023009510531  0.015359574754  0.011070071951  0.008388073020
+  -0.006103761347 -0.011799527177 -0.004987164201 -0.002655024938 -0.001598668225 -0.001042443435
+   0.002046841322  0.003893555229  0.001204453026  0.000511852711  0.000257620149  0.000144611721
+  -0.000734476579 -0.001369989689 -0.000310786051 -0.000105522473 -0.000044416219 -0.000021469973
+   0.000275336751  0.000503054700  0.000083834770  0.000022761626  0.000008016197  0.000003337753
+  -0.000106375704 -0.000190381770 -0.000023343325 -0.000005071979 -0.000001495224 -0.000000536428
+   0.000042003336  0.000073681222  0.000006655551  0.000001158094  0.000000285903  0.000000088402
+  -0.000016858623 -0.000029010830 -0.000001932603 -0.000000269480 -0.000000055734 -0.000000014856
+   0.000006852440  0.000011579131  0.000000569367  0.000000063657  0.000000011033  0.000000002536
+  -0.000002813300 -0.000004672877 -0.000000169722 -0.000000015222 -0.000000002212 -0.000000000438
+   0.000001164419  0.000001903082  0.000000051084  0.000000003677  0.000000000448  0.000000000077
+  -0.000000485189 -0.000000781030 -0.000000015501 -0.000000000896 -0.000000000092 -0.000000000014
+   0.000000203309  0.000000322648  0.000000004736  0.000000000220  0.000000000019  0.000000000002
+  -0.000000085602 -0.000000134047 -0.000000001456 -0.000000000054 -0.000000000004               0
+   0.000000036192  0.000000055969  0.000000000450  0.000000000013               0               0
+  -0.000000015357 -0.000000023472 -0.000000000140 -0.000000000003               0               0
+   0.000000006537  0.000000009882  0.000000000043  0.000000000001               0               0
+  -0.000000002791 -0.000000004175 -0.000000000014               0               0               0
+   0.000000001194  0.000000001770  0.000000000004               0               0               0
+  -0.000000000512 -0.000000000752               0               0               0               0
+   0.000000000220  0.000000000321               0               0               0               0
+  -0.000000000095 -0.000000000137               0               0               0               0
+   0.000000000041  0.000000000059               0               0               0               0
+  -0.000000000018 -0.000000000025               0               0               0               0
+   0.000000000008  0.000000000011               0               0               0               0
+  -0.000000000003 -0.000000000005               0               0               0               0
+   0.000000000001  0.000000000002               0               0               0               0];
+j = chebtech.clenshaw((v-2)/3, C).';
+j(1) = j(1) * sqrt(v+1);
+      
+if ( nbdy <= 6 )
+    % Trim unnecessary points (if nbdy < 6 ).
+    j = j(1:nbdy);
     return
 end
-% The second root:
-jk(2) = besselNewton(nu, jk(1)+.9*pi);
-if ( m == 2) 
-    return
-end
-% Some more roots:
-for k = 3:m1
-    jk(k) = besselNewton(nu, jk(k-1)+.99*pi);
-end
-% The rest
-for k = m1+1:m
-    jk(k) = besselNewton(nu, jk(k-1)+pi);
-end
 
-end
+% McMahon's expansion. This expansion gives very accurate approximation 
+% for the sth zero (s >= 7) in the whole region v >=- 1:
+s = (7:nbdy);
+mu = 4*v^2;
+a1 = 1 / 8;
+a3 = (7*mu-31) / 384;
+a5 = 4*(3779+mu*(-982+83*mu)) / 61440; % Evaluate via Horner's method.
+a7 = 6*(-6277237+mu*(1585743+mu*(-153855+6949*mu))) / 20643840;
+a9 = 144*(2092163573+mu*(-512062548+mu*(48010494+mu*(-2479316+70197*mu)))) ...
+     / 11890851840;
+a11 = 720*(-8249725736393+mu*(1982611456181+mu*(-179289628602+mu*(8903961290 + ...
+    mu*(-287149133+5592657*mu))))) / 10463949619200;
+a13 = 576*(423748443625564327 + mu*(-100847472093088506+mu*(8929489333108377 + ...
+    mu*(-426353946885548+mu*(13172003634537+mu*(-291245357370 + mu*4148944183)))))) ...
+     / 13059009124761600;
+b = .25*(2*v+4*s-1)*pi; % beta
+j(s) = b - (mu-1)*polyval([a13 0 a11 0 a9 0 a7 0 a5 0 a3 0 a1 0], 1./b);
 
-function jk = besselNewton(nu, jk)
-% BESSELNEWTON(NU, JK)   Find roots of Bessel function using Newton iteration.
-
-dx = inf; j = 0;
-while ( dx > sqrt(eps)/1000 && j < 20 )
-    u = besselj(nu, jk, 0);
-    du = besselj(nu-1, jk, 0) - nu/jk*u;
-    dx = u./du;
-    jk = jk - dx;
-    j = j + 1;
-end
-    
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
