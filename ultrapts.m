@@ -42,9 +42,10 @@ function [x, w, v, t] = ultrapts(n, lambda, int, meth, conv)
 %
 % See also CHEBPTS, LEGPTS, JACPTS, LOBPTS, RADAUPTS, HERMPTS, LAGPTS, and
 % TRIGPTS.
-%
-% Copyright 2015 by The Chebfun Developers.
-% See http://www.chebfun.org/ for Chebfun information.
+
+% Copyright 2015 by The Chebfun Developers. See http://www.chebfun.org/ for
+% Chebfun information.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  'GW' by Nick Trefethen, March 2009 - algorithm adapted from [1].
 % 'REC' by Nick Hale, July 2011
