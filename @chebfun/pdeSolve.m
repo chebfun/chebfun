@@ -652,6 +652,9 @@ if ( doPlot && ~doHold )
     hold off
 end
 
+% Ensure tOut is a column vector
+tOut = tOut(:);
+
 uOut = prepare4output(uOut);
 
 switch nargout
@@ -664,12 +667,14 @@ switch nargout
     case 2
         varargout{1} = tOut;
         varargout{2} = uOut;
-    otherwise
+    case 1 + size(uOut, 1)
         varargout{1} = tOut;
-        varargout{2} = uOut;
-        varargout{3:nargout} = [];
-        warning('CHEBFUN:CHEBFUN:pde15s:output', ...
-            'PDE15S has a maximum of two outputs.');
+        for varCounter = 1:size(uOut, 1)
+            varargout{varCounter + 1} = chebfun(uOut(varCounter, :));
+        end
+    otherwise
+        error('CHEBFUN:CHEBFUN:pdeSolve:nargout', ...
+            'Incorrect number of output arguments.');
 end
 
 clear global DIFFORDER
