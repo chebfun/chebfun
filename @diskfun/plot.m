@@ -46,7 +46,7 @@ plot_full_grid = true;
 
 if ( ~isempty(varargin) )
     
-    % Plot the pivots on the surface of the sphere.
+    % Plot the pivots on the surface of the disk.
     if ( length(varargin{1}) < 5 )
         dom = f.domain;
         holdState = ishold;
@@ -67,6 +67,8 @@ if ( ~isempty(varargin) )
             clr = [255 255 204]/255;
             fill(real(r),imag(r), clr, 'Edgecolor', 'None');             
         end
+        
+        
         
         %% Column, row, pivot plot
         

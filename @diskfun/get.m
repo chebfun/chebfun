@@ -33,8 +33,6 @@ switch ( propName )
         val = f.pivotValues;
     case 'pivotLocations'
         val = f.pivotLocations;
-    case 'pivotIndices'
-        val = f.pivotIndices;
     case 'idxPlus'
         val = f.idxPlus;
     case 'idxMinus'
