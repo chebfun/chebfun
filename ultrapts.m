@@ -37,8 +37,8 @@ function [x, w, v, t] = ultrapts(n, lambda, int, meth, conv)
 %
 %   The cases LAMBDA=0 and LAMBDA=1 correspond to Gauss-Chebyshev quadratures 
 %   nodes and weights, and are treated specially (as a closed form of the nodes 
-%   and weights is available). The case LAMBDA=.5 correspond to
-%   Gauss-Legendre quadrature, see LEGPTS which is a more efficient code.
+%   and weights is available). The case LAMBDA=.5 correspond to Gauss-Legendre
+%   quadrature, and it calls LEGPTS which is a more efficient code.
 %
 % See also CHEBPTS, LEGPTS, JACPTS, LOBPTS, RADAUPTS, HERMPTS, LAGPTS, and
 % TRIGPTS.
@@ -154,6 +154,9 @@ elseif ( lambda == 1)   % Gauss-Chebyshev2: lambda = 1
     v = (1-x.^2);  
     v(2:2:end) = -v(2:2:end); 
     [x, w] = rescale(x,w,interval,lambda);
+    return
+elseif (lambda == .5) % Gauss-Legendre: lambda = 1/2
+    [x, w, v, t] = legpts(n, interval);
     return
 end
 
