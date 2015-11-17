@@ -7,7 +7,7 @@ function varargout = chebpolyplot( varargin )
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-warning('SEPARABLEAPPROX:chebpolyplot:deprecated', ...
+warning('CHEBFUN2:chebpolyplot:deprecated', ...
     'CHEBPOLYPLOT is deprecated. Please use PLOTCOEFFS instead.');
 warning('off', 'CHEBFUN2:chebpolyplot:deprecated');
 
