@@ -1,11 +1,12 @@
 function f = prolong(f, nOut)
 %PROLONG   Manually adjust the number of points used in a CHEBTECH.
 %   G = PROLONG(F, N) returns a CHEBTECH G where LENGTH(G) = N and G represents
-%   the same function as F but using more interpolation points/Chebyshev
-%   coefficients then were stored in F.
+%   the same function as F but using more or less coefficients than F.
 %
-%   If N < LENGTH(F) than the representation is compressed (by aliasing the
-%   coefficients), which may result in loss of accuracy.
+%   If N < LENGTH(F) than the representation is compressed by chopping
+%   coefficients, which may result in loss of accuracy.
+%
+%   If N > LENGTH(F) than the coefficients are padded with zeros.
 %
 % See also CHEBTECH1/ALIAS, CHEBTECH2/ALIAS.
 
@@ -24,14 +25,18 @@ if ( nDiff == 0 )
     return
 end
 
-% Constant case:
-if ( nIn == 1 )
+% nDiff > 0
+if ( nDiff > 0 )
     m = size(f.coeffs, 2);
-    f.coeffs = [ f.coeffs(1,:) ; zeros(nDiff, m) ];
+    f.coeffs = [ f.coeffs ; zeros(nDiff, m) ];
     return
 end
 
-% Prolong the coefficients using an FFT:
-f.coeffs = f.alias(f.coeffs, nOut);
+% nDiff < 0
+if ( nDiff < 0 )
+    m = max(nOut,0);
+    f.coeffs = f.coeffs(1:m,:);;
+    return
+end
 
 end

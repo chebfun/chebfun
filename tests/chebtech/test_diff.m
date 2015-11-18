@@ -47,7 +47,7 @@ for n = 1:2
     df = diff(f);
     df_exact = @(t) z*airy(1, z*t);
     err = norm(df_exact(x) - feval(df, x), inf);
-    tol = 100*vscale(df)*eps;
+    tol = 1e3*vscale(df)*eps;
     pass(n, 4) = err < tol;
     
     %%

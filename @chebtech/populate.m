@@ -116,8 +116,8 @@ while ( 1 )
     [ishappy, cutoff] = happinessCheck(f, op, values, data, pref);
         
     if ( ishappy ) % We're happy! :)
-        % Alias the discarded coefficients:
-        coeffs = f.alias(coeffs, cutoff);  
+        % disard unwanted coefficients
+        coeffs = coeffs(1:cutoff,:);  
         break
     end
     

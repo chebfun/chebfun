@@ -22,7 +22,7 @@ y_exact = [0; 2^a*exp(1)];
 x_exact = [-1; 1];
 err_x = norm(x-x_exact, inf);
 err_y = norm(y-y_exact, inf);
-pass(1) = (max([err_x err_y]) < eps*vscale(f.smoothPart));
+pass(1) = (max([err_x err_y]) < 1e1*eps*vscale(f.smoothPart));
 
 % fractional pole at the left endpoint and the function value is unbounded.
 data.exponents = [d+1 0];
