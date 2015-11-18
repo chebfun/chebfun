@@ -117,7 +117,7 @@ while ( 1 )
         
     if ( ishappy ) % We're happy! :)
         % disard unwanted coefficients
-        coeffs = coeffs(1:cutoff,:);  
+        f = prolong(f,cutoff);  
         break
     end
     
