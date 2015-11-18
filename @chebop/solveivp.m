@@ -17,9 +17,10 @@ function varargout = solveivp(N, rhs, pref, varargin)
 %
 %   If successful, the solution returned, U, is a CHEBFUN if N specifies a
 %   scalar problem, and a CHEBMATRIX if N specifies a coupled systems of
-%   ordinary differential equations. This method solves both linear and
-%   nonlinear problems be automatically converting them to a coupled first-order
-%   system, which can then be solved using MATLAB's built in solvers.
+%   ordinary differential equations. See note below on how to call the method
+%   with multiple outputs. This method solves both linear and nonlinear problems
+%   be automatically converting them to a coupled first-order system, which can
+%   then be solved using MATLAB's built in solvers.
 %
 %   U = SOLVEIVP(N, RHS, PREF) is the same as above, using the preferences
 %   specified by the CHEBOPPREF variable PREF.
@@ -29,6 +30,10 @@ function varargout = solveivp(N, rhs, pref, varargin)
 %   process. The fields of INFO are as follows (more may be added in future
 %   versions):
 %       SOLVER: The MATLAB solver used when solving the problem.
+%
+%   [U, V, ...] = SOLVEBVP(N, ...), where N specifies a coupled system of ODEs,
+%   returns CHEBFUNs U, V, ... for individual solution components, rather than a
+%   CHEBMATRIX.
 %
 %
 %   Note 1: CHEBOP allows the RHS of coupled system of ODEs to be a scalar,

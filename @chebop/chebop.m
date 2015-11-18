@@ -107,12 +107,18 @@ classdef (InferiorClasses = {?double}) chebop
 % of 'dirichlet', 'neumann', or 'periodic', removes pre-existing entries in
 % N.lbc, N.rbc, and N.bc.
 %
-% Example:
+% Example (second order BVP):
 %
 %   N = chebop(-5, 5);  % Constructs an empty CHEBOP on the interval [-5,5]
 %   N.op = @(x, u) 0.01*diff(u, 2) - x.*u;
 %   N.bc = 'dirichlet';
 %   plot(N\1)
+%
+% Example (Lotka-Volterra, first order coupled IVP):
+%   N = chebop(@(t,u,v) [diff(u)-2.*u+u.*v; diff(v)+v-u.*v], [0 20]);
+%   N.lbc = @(u,v) [u - 0.5; v - 1]; % Initial populations
+%   [u, v] = N\0;
+%   plot([u, v], 'linewidth', 2)
 %
 %
 % %% INITIAL VALUE PROBLEMS %%
@@ -200,7 +206,8 @@ classdef (InferiorClasses = {?double}) chebop
 % the default CHEBOPPREF via cheboppref.setDefaults('vectorize', false).
 %
 %
-% See also CHEBOP/MTIMES, CHEBOP/MLDIVIDE, CHEBOPPREF.
+% See also CHEBOP/MTIMES, CHEBOP/MLDIVIDE, CHEBOP/SOLVEBVP, CHEBOP/SOLVEIVP, 
+%   CHEBOPPREF.
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.
