@@ -3,10 +3,10 @@ function f = prolong(f, nOut)
 %   G = PROLONG(F, N) returns a CHEBTECH G where LENGTH(G) = N and G represents
 %   the same function as F but using more or less coefficients than F.
 %
-%   If N < LENGTH(F) than the representation is compressed by chopping
-%   coefficients, which may result in loss of accuracy.
+%   If N < LENGTH(F) the representation is compressed by chopping
+%   coefficients, which may result in a loss of accuracy.
 %
-%   If N > LENGTH(F) than the coefficients are padded with zeros.
+%   If N > LENGTH(F) the coefficients are padded with zeros.
 %
 % See also CHEBTECH1/ALIAS, CHEBTECH2/ALIAS.
 
