@@ -37,6 +37,25 @@ function varargout = quiver(N, axisLims, varargin)
 % as coupled first order systems, evaluating the resulting first order system at
 % grid that should be interpreted as values of u and u', then calling the
 % built-ing MATLAB QUIVER method on the results.
+%
+% Example 1 -- van der Pol equation (second order ODE)
+%   N = chebop(0,100);
+%   N.op = @(t,u) diff(u, 2) - 3*(1-u^2)*diff(u) + u;
+%   quiver(N,[-2.5 2.5 -5.5 5.5],'xpts', 40, 'ypts', 40, 'scale', .5, ...
+%       'normalize', true)
+%   hold on % Plot a particular solution on top of quiver plot
+%   N.lbc = [2; 0];
+%   u = N\0;
+%   plot(u, diff(u),'linewidth',2)
+%
+% Example 2 -- Lotka-Volterra (first order coupled system)
+%   N = chebop(@(t,u,v) [diff(u)-2.*u+u.*v; diff(v)+v-u.*v], [0 4]);
+%   quiver(N, [0 2.5 0 4])
+%   hold on
+%   N.lbc = @(u,v) [u - 0.5; v - 1]; % Initial populations
+%   [u, v] = N\0;
+%   plot(u, v, 'linewidth', 2)
+%   plot(0.5, 1,'m*','markersize',15) % Mark initial condition
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.

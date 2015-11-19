@@ -195,8 +195,16 @@ L.domain = domain.merge(L.domain, dom);
 % For problems with parameters, the system in L may not be square. This is OK if
 % u0 contains doubles for the parameter entries. If not, we correct for this
 % below by assuming that any variable that does not have a diffOrder greater
-% than 0 associated with it is a parameter, rather than a function.
-isParam = all(L.isNotDiffOrInt, 1);
+% than 0 associated with it is a parameter, rather than a function. However, if
+% no variable in the problem gets differentiated, we assume every variable is a
+% function (unless we were told otherwise by an initial guess passed).
+%
+% The any(any(~L.isNotDiffOrInt)) checks if anything gets differentiated or
+% integrated, the all(L.isNotDiffOrInt, 1) will then tell us what variables
+% never were differentiated. The combination will only give us values of TRUE
+% for variables that never get differentiated while other variables did.
+isParam = any(any(~L.isNotDiffOrInt)) & all(L.isNotDiffOrInt, 1);
+
 % If we have any parameters involved that are still thought to be functions, and
 % we did not get a U passed in to linearize around, we reseed the corresponding
 % variables.

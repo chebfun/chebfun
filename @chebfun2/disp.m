@@ -26,7 +26,7 @@ vals = vals(:);
 vscl = vscale(F);                         % vertical scale
 
 % Display the information: 
-disp('   chebfun2 object: (1 smooth surface)')
+disp('   chebfun2 object (1 smooth surface)')
 fprintf('       domain                 rank       corner values\n');
 if ( isreal(vals) )
     fprintf('[%4.2g,%4.2g] x [%4.2g,%4.2g]   %6i     [%4.2g %4.2g %4.2g %4.2g]\n', ...
