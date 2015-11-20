@@ -45,7 +45,9 @@ classdef (InferiorClasses = {?double}) chebop
 % left and right endpoints of the domain D. Possible values for LBC and RBC are:
 %
 %   []          : No condition (for only assigning LBC or RBC in constructor).
-%   scalar      : All variables equal the given value.
+%   vector      : Only supported in the scalar case. The value of the solution 
+%                 is given by the first entry of the vector, the value of its
+%                 first derivative by the second entry, etc.
 %   'dirichlet' : All variables equal zero.
 %   'neumann'   : All variables have derivative zero.
 %   function    : A function handle that must accept all dependent variables as
@@ -58,17 +60,22 @@ classdef (InferiorClasses = {?double}) chebop
 % describing the boundary conditions must return vertically concatenated
 % elements (again, differing from V4 syntax).
 %
-% Examples of boundary condition functionals::
+% Examples of how boundary conditions can be specified:
 %
-%   @(u) diff(u) - 2;               % set u' = 2 at the appropriate endpoint
-%   @(u, v, w) [ u - 1 ; w ];       % set u = 1 and w = 0 at the endpoint
-%   @(u) [u{1} - 1; u{3}];          % Same as above, using CHEBMATRIX syntax.
-%   @(u, v, w) u.*v - diff(w);      % set u*v = w' at the endpoint
+%   N.lbc = 0;                         % Set u = 0 at the left endpoint
+%   N.rbc = 'neumann'                  % Set u' = 0 at the right endpoint
+%   N.lbc = [1; 3; 2];                 % Set u = 1, u' = 3, u'' = 2 at left end
+%   N.lbc = @(u) diff(u) - 2;          % set u' = 2 at the left endpoint
+%   N.lbc = @(u, v, w) [ u - 1 ; w ];  % set u = 1 and w = 0 at the endpoint
+%   N.lbc = @(u) [u{1} - 1; u{3}];     % Same as above, using CHEBMATRIX syntax.
+%   N.rbc = @(u, v, w) u.*v - diff(w); % set u*v = w' at the right endpoint
 %
 % CHEBOP(OP, D, BC) gives boundary or other side conditions in an alternate
 % form. Choices for BC are:
 %
-%   scalar      : All variables equal the given value at both endpoints.
+%   vector      : Only supported in the scalar case. The value of the solution 
+%                 at both endpoints is given by the first entry of the vector,
+%                 the value of its first derivative by the second entry, etc.
 %   'dirichlet' : All variables equal zero at both endpoints.
 %   'neumann'   : All variables have derivative zero at both endpoints.
 %   'periodic'  : Impose periodicity on all dependent variables.
@@ -100,12 +107,18 @@ classdef (InferiorClasses = {?double}) chebop
 % of 'dirichlet', 'neumann', or 'periodic', removes pre-existing entries in
 % N.lbc, N.rbc, and N.bc.
 %
-% Example:
+% Example (second order BVP):
 %
 %   N = chebop(-5, 5);  % Constructs an empty CHEBOP on the interval [-5,5]
 %   N.op = @(x, u) 0.01*diff(u, 2) - x.*u;
 %   N.bc = 'dirichlet';
 %   plot(N\1)
+%
+% Example (Lotka-Volterra, first order coupled IVP):
+%   N = chebop(@(t,u,v) [diff(u)-2.*u+u.*v; diff(v)+v-u.*v], [0 20]);
+%   N.lbc = @(u,v) [u - 0.5; v - 1]; % Initial populations
+%   [u, v] = N\0;
+%   plot([u, v], 'linewidth', 2)
 %
 %
 % %% INITIAL VALUE PROBLEMS %%
@@ -127,7 +140,7 @@ classdef (InferiorClasses = {?double}) chebop
 %   vdpFun = @(u) diff(u, 2) - 20*(1-u.^2).*diff(u) + u;
 %   dom = [0 100];
 %   N = chebop(vdpFun, dom);
-%   N.lbc = @(u) [u - 2; diff(u)];
+%   N.lbc = [2; 0];
 %   u = N\0
 %   plot(u)
 %
@@ -137,7 +150,9 @@ classdef (InferiorClasses = {?double}) chebop
 % without the need to introduce extra equations into the system. Simply add the
 % unknown parameters in the list of arguments to the operator. By default, any
 % variable that is not acted on by differentiation or integration is treated as
-% a parameter, rather than a function.
+% a parameter, rather than a function. The exception is when no variable
+% appearing in a problem is differentiated or integrated, in which case, all
+% variables get treated as functions, rather than parameters.
 %
 % Example (unknown parameter in differential equation):
 %
@@ -154,6 +169,14 @@ classdef (InferiorClasses = {?double}) chebop
 %   N.bc = @(x, u, p) [u(0); u(1) - 2; feval(diff(u), 0) - p];
 %   up = N\0;
 %   plot(up), [u, p] = deal(up)
+%
+% Example (no differentiation/integration)
+%
+%   % Find u and v on [-1, 1] s.t. u^2 - x + sin(v) = v + exp(v) + u = sin(4x)+2
+%   x = chebfun('x');
+%   f = sin(4*x) + 2;
+%   N = chebop(@(x,u,v) [u.^2 - x + sin(v); v + exp(v) + u]);
+%   [u, v] = N\[f; f]
 %
 % It is possible to explicitly pass parameters as parts of the initial guess for
 % a nonlinear problem by assigning it to the appropriate entry of a CHEBMATRIX
@@ -183,7 +206,8 @@ classdef (InferiorClasses = {?double}) chebop
 % the default CHEBOPPREF via cheboppref.setDefaults('vectorize', false).
 %
 %
-% See also CHEBOP/MTIMES, CHEBOP/MLDIVIDE, CHEBOPPREF.
+% See also CHEBOP/MTIMES, CHEBOP/MLDIVIDE, CHEBOP/SOLVEBVP, CHEBOP/SOLVEIVP, 
+%   CHEBOPPREF.
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.

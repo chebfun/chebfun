@@ -1,7 +1,7 @@
 function [out, lengthFuns] = length(F)
 %LENGTH   Length of a Chebfun.
 %   LENGTH(F) returns the length of a scalar-valued CHEBFUN object F, which is
-%   defined as the sum of the length of F.funs. If F is an quasimatrix, then
+%   defined as the sum of the length of F.funs. If F is a quasimatrix, then
 %   LENGTH(F) returns the maximum length of the columns.
 %
 %   [LEN, LENFUNS] = LENGTH(F) also returns the length of each of the piecewise

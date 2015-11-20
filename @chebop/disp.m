@@ -102,9 +102,33 @@ if ( ischar(bcShow) )
     % We had an assignment such as N.lbc = 'neumann';
     fprintf('      %s\n', bcShow);
 elseif ( isnumeric(bcShow) )
-    % We had an assignment such as N.lbc = 2;
+    % We had an assignment such as N.lbc = [2; 3];
     if ( ~isempty(args) )
-        fprintf('      %s = %s\n', args, num2str(bcShow));
+        % How many conditions are we dealing with?
+        numBC = length(bcShow);
+        % Extra whitespace to make things align
+        if ( numBC < 4)
+            extraWS = repmat(' ', 1, numBC - 1);
+        else
+            extraWS = '    ';
+        end
+        
+        % We always need to print the first condition:
+        fprintf('      %s%s = %s\n', args, extraWS, num2str(bcShow(1)));
+        % If we got more conditions, print them as well:
+        if ( numBC >= 2 )
+            fprintf('      %s''%s = %s\n', args, ...
+                extraWS(1:end-1), num2str(bcShow(2)));
+        end
+        if ( numBC >= 3 )
+            fprintf('      %s''''%s = %s\n', args, ...
+                extraWS(1:end-2), num2str(bcShow(3)));
+        end
+        % Print all remaining conditions:
+        for bcCounter = 4:numBC
+            fprintf('      %s^(%i) = %s\n', args, ...
+                bcCounter-1, num2str(bcShow(bcCounter)));
+        end
     else
         fprintf('      %s\n', num2str(bcShow));
     end

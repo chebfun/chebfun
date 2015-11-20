@@ -34,6 +34,14 @@ end
 numVar = size(L, 2);
 isFun = isFunVariable(L);
 
+% If we have a problem where there is no integration or differentiation, we
+% construct a 0 CHEBMATRIX of correct size to use as an initial guess:
+if ( all(all(L.isNotDiffOrInt)) )
+    zeroFun = chebfun(@(x) 0*x, dom);
+    u0 = chebmatrix(repmat({zeroFun}, numVar, 1));
+    return
+end
+
 % We will construct a low-degree polynomial for each unknown function in the
 % problem. The degree of the polynomial depends on the number of conditions that
 % the unknown function appears in, find that degree!
