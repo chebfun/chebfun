@@ -402,7 +402,7 @@ classdef chebfun
         f = sign(f, pref)
         
         % Simplify the representation of a CHEBFUN object.
-        f = simplify(f, tol);
+        f = simplify(f, tol, flag);
 
         % Size of a CHEBFUN object.
         [s1, s2] = size(f, dim);
