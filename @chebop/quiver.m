@@ -149,7 +149,7 @@ end
 
 h = quiver(x, y, u, v, scale,linespec{:});
 
-% Set x and y limits
+% Set x and y limits:
 xlim(xl);
 ylim(yl);
 if ( nargout > 0 )
