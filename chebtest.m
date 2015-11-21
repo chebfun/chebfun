@@ -278,7 +278,7 @@ if ( all(durations > 0) )
     fprintf('All %s tests passed in %4.4fs.\n', testDir, sum(durations));
 elseif ( ~quietMode )
     % Note. We don't show this in quiet mode as it's already clear.
-    fprintf('%d failed test in %s directory.\n', sum(durations < 0), testDir);
+    fprintf('%d failed test(s) in %s directory.\n', sum(durations < 0), testDir);
 end
 
 % Restore the current working directory and return:
