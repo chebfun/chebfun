@@ -47,7 +47,7 @@ r = roots(f, 'complex', 1);
 r = r(:);
 [temp, id] = sort(real(r));
 r = r(id);
-r2 = [0.75 -0.75 0.25 -0.25 0 1 NaN NaN].';
-pass(7) = all( abs(r(:) - sort(r2)) < 10*length(f)*eps | isnan(r2) );
+r2 = [-1 -0.75 -0.25 0 0.25 0.75 NaN NaN].';
+pass(7) = all( abs(r(:) - sort(r2)) < 1e1*length(f)*eps | isnan(r2) );
 
 end

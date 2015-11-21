@@ -34,14 +34,14 @@ I = eye(2);
 g = f / I;
 err = g*I - f;
 pass(3) = max(max(abs(feval(err, x)))) < ...
-    10*max(get(g, 'vscale')*eps);
+    1e2*max(get(g, 'vscale')*eps);
 
 % A less trivial least-squares case for which we still know the answer.
 A = [1 1];
 g = f / A;
 g_exact = @(x) (sin(x) + cos(x))/2;
 pass(4) = norm(feval(g, x) - g_exact(x), inf) < ...
-    10*max(get(g, 'vscale')*eps);
+    1e2*max(get(g, 'vscale')*eps);
 
 %%
 % Check division of a numeric array by a BNDFUN object.
