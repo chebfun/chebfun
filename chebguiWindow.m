@@ -485,7 +485,7 @@ elseif ( get(handles.button_pde, 'Value') )
         end
         legend(varnames{:});
         % CHEBMATRIX/WATERFALL()
-        waterfall(u, tt, 'linewidth', 2, 'edgecolors', cols)
+        waterfall(u, tt, 'edgecolors', cols)
         % Much pretty. Wow.
         view([322.5 30])
         box off
