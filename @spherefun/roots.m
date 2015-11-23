@@ -27,7 +27,7 @@ r = cellmat( size(vals,2), 1 );
 % Go through each component and make it an array-valued chebfun: 
 for k = 1:size(vals,2)
     comp = feval(rts(:,k), x); 
-    [AX, AY, AZ] = sph2cart( real( comp ), imag( comp )+pi/2, ...
+    [AX, AY, AZ] = sph2cart( real( comp ), imag( comp )-pi/2, ...
                                                ones(numel(comp), 1));
     r{k} = chebfun( [AX, AY, AZ] ); 
 end
