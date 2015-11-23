@@ -461,7 +461,7 @@ elseif ( get(handles.button_pde, 'Value') )
     % Plot waterfall plots of the solution:
     if ( ~isa(u, 'chebmatrix') )
         figure
-        waterfall(u, tt, 'simple', 'linewidth', 2)
+        waterfall(u, tt, 'simple')
         xlabel(xLab);
         ylabel(tLab);
         zlabel(varnames{1});
@@ -469,7 +469,7 @@ elseif ( get(handles.button_pde, 'Value') )
         figure
         for k = 1:size(u, 1)
             subplot(1, size(u, 1), k);
-            waterfall(u(k, :), tt, 'linewidth', 2)
+            waterfall(u(k, :), tt)
             xlabel(xLab)
             ylabel(tLab)
             zlabel(varnames{k})
