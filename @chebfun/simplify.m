@@ -1,4 +1,4 @@
-function F = simplify(F, tol, flag)
+function F = simplify(F, tol, useGlobalTol)
 %SIMPLIFY  Simplify a CHEBFUN.
 %  G = SIMPLIFY(F) attempts to compute a CHEBFUN G which is a 'simplified'
 %  version of F in that length(G) <= length(F), but ||G - F|| is small in a
@@ -16,86 +16,89 @@ function F = simplify(F, tol, flag)
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Check if row chebfun
-istp = F.isTransposed;
-if ( istp )
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% DEVELOPER NOTE:  If the 'globaltol' flag is supplied, the "global" vscale
+% relative to which simplification is performed is the maximum of all the
+% vscales of the columns, i.e., just vscale(f).  If it is not, then the
+% "global" vscale is a vector of the vscales of each column.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Check for row chebfuns.
+isTrans = F.isTransposed;
+if ( isTrans )
     F = F.';
 end
 
-% check for tolerance
+% Check for tolerance.
 if ( nargin == 1 || isempty(tol) )
     tol = chebfunpref().techPrefs.eps;
 elseif ( isa(tol, 'chebfunpref') )
     tol = tol.techPrefs.eps;
 end
 
-% check for flag
-if ( nargin <= 2 || isempty(flag) )
-    flag = 0;
+% Check for 'globaltol' flag.
+if ( nargin <= 2 || isempty(useGlobalTol) )
+    useGlobalTol = false;
 else
-    flag = strcmp(flag,'globaltol');
+    useGlobalTol = strcmp(useGlobalTol, 'globaltol');
 end
 
-% array-valued chebfun case
+% Array-valued chebfun case.
 if ( numel(F) == 1 )
 
-    % cell array of cell arrays for local vscales
-    vscaleLocal = get(F,'vscale-local',2);
+    % Numeric matrix of local vscales.
+    vscaleLocal = get(F, 'vscale-local', 2);
 
-    % Compute global vscale
+    % Compute global vscale.
     vscaleGlobal = max(vscaleLocal, [], 1);
-    if ( flag )
-        vscaleGlobal = max(vscaleGlobal, [], 2)*ones(size(vscaleGlobal));
+    if ( useGlobalTol )
+        vscaleGlobal(:) = max(vscaleGlobal, [], 2);
     end
 
-    % Loop through funs
+    % Loop through funs:
     for k = 1:numel(F.funs)
-
-        % adjust tolerances for columns of funs
+        % Adjust tolerances for columns of this fun.
         tolk = tol*vscaleGlobal./vscaleLocal(k,:);
- 
-        % simplify individual funs
-        F.funs{k} = simplify(F.funs{k}, tolk);
 
+        % Simplify this fun.
+        F.funs{k} = simplify(F.funs{k}, tolk);
     end
 
-% array of chebfuns case
+% Array-of-chebfuns case.
 else
 
-    % cell array of cell arrays for local vscales
-    vscaleLocal = get(F,'vscale-local',0);
+    % Cell array of cell arrays of local vscales.
+    vscaleLocal = get(F, 'vscale-local', 0);
 
-    % Compute global vscale
+    % Compute global vscale.
     m = numel(vscaleLocal);
-    if ( flag )
-        vscaleGlobal = vscale(F)*ones(1,m);
+    if ( useGlobalTol )
+        vscaleGlobal = vscale(F)*ones(1, m);
     else
-        vscaleGlobal = [];
-        for j=1:m
-            vscaleGlobal = [vscaleGlobal,max(cell2mat(vscaleLocal{j}))];
+        vscaleGlobal = zeros(1, m);
+        for j = 1:m
+            vscaleGlobal(j) = max(cell2mat(vscaleLocal{j}));
         end
     end
 
     % Loop over the columns:
     for j = 1:m
-
         % Loop through funs in column:
         for k = 1:numel(F(j).funs)
-
-            % adjust tolerances for columns of funs
+            % Adjust tolerance for this fun.
             toljk = tol*vscaleGlobal(j)./vscaleLocal{j}{k};
- 
-            % simplify individual funs
+
+            % Simplify this fun.
             F(j).funs{k} = simplify(F(j).funs{k}, toljk);
-
         end
-
     end
 
 end
 
 % Undo transposition
-if ( istp )
+if ( isTrans )
     F = F.';
 end
 
