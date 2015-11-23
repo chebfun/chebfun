@@ -164,8 +164,16 @@ Fm = 0.5*(B - C);
 %
 % Deal with the poles by removing them from Fp.
 %
-pole1 = mean(Fp(1,:));     % Take the value at the poles to be 
-pole2 = mean(Fp(m,:));     % the mean of all the samples at the poles.
+
+% Check if the poles are numerically constant and get the value.
+[pole1,constValue1] = checkPole(Fp(1,:),tol);
+[pole2,constValue2] = checkPole(Fp(m,:),tol);
+
+if ~(constValue1 || constValue1)
+    warning('CHEBFUN:SPHEREFUN:constructor:constPoles',...
+        ['Results may be inaccurate as the function may not be constant'...
+         'at either the north or south poles.']);
+end
 
 colsPlus = []; rowsPlus = []; kplus = 0;  idxPlus = [];
 colsMinus = []; rowsMinus = []; kminus = 0; idxMinus = [];
@@ -683,6 +691,25 @@ for j=1:size(pivLoc,1)
         pivLocNew(count,:) = pivLoc(j,:);
         count = count + 1;
     end
+end
+
+end
+
+% Check that the values at the pole are constant.
+function [pole,constVal] = checkPole(val,tol)
+
+% Take the mean of the values that are at the pole.
+pole = mean(val);
+% Compute there standard deviation
+stddev = std(val);
+
+% If the standard deviation does not exceed the 100*tolearnce then the pole
+% is "constant".
+% TODO: Get a better feel for the tolerance check.
+if stddev <= 100*tol || stddev < eps
+    constVal = 1;
+else
+    constVal = 0;
 end
 
 end
