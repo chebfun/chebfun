@@ -1,4 +1,4 @@
-function rts = roots( varargin )
+function r = roots( varargin )
 %ROOTS   Zero contours of a SPHEREFUN
 %   R = ROOTS(F), returns the zero contours of F as a quasimatrix of array-valued
 %   chebfuns. Each column of R is one zero contour. This command only finds 
