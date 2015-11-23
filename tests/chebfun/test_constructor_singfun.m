@@ -27,7 +27,7 @@ f = chebfun(op, dom, 'exps', [pow 0]);
 fval = feval(f, x);
 vals_exact = feval(op, x);
 err = fval - vals_exact;
-pass(1) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(1) = ( norm(err, inf) < 1e3*eps*norm(vals_exact, inf) );
 
 %% Specify the singularity using Chebfun v4 syntax:
 % No singularity detection involved: 
@@ -50,7 +50,7 @@ f = chebfun(op, dom, 'exps', [pow 0]);
 fval = feval(f, x);
 vals_exact = feval(op, x);
 err = fval - vals_exact;
-pass(2) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(2) = ( norm(err, inf) < 1e3*eps*norm(vals_exact, inf) );
 
 %% Specify the singularity by specifying the type of singularities to preferences:
 % Singularity detection is involved: 
@@ -74,7 +74,7 @@ f = chebfun(op, dom, 'blowup', 2, ...
 fval = feval(f, x);
 vals_exact = feval(op, x);
 err = fval - vals_exact;
-pass(3) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(3) = ( norm(err, inf) < 1e3*eps*norm(vals_exact, inf) );
 
 %% Specify the singularity types using Chebfun v4 syntax:
 % Singularity detection is involved: 
@@ -97,14 +97,14 @@ f = chebfun(op, dom, 'blowup', 2);
 fval = feval(f, x);
 vals_exact = feval(op, x);
 err = fval - vals_exact;
-pass(4) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(4) = ( norm(err, inf) < 1e3*eps*norm(vals_exact, inf) );
 
 % Same thing but using 'blowup' and flag '2' instead:
 f = chebfun(op, dom, 'blowup', 2);
 fval = feval(f, x);
 vals_exact = feval(op, x);
 err = fval - vals_exact;
-pass(5) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(5) = ( norm(err, inf) < 1e3*eps*norm(vals_exact, inf) );
 
 %% Specify the singularity by naming the type of singularities to preferences:
 % Singularity detection is involved: 
@@ -128,7 +128,7 @@ f = chebfun(op, dom, 'blowup', 2, ...
 fval = feval(f, x);
 vals_exact = feval(op, x);
 err = fval - vals_exact;
-pass(6) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(6) = ( norm(err, inf) < 1e3*eps*norm(vals_exact, inf) );
 
 %% Specify the singularity types using Chebfun v4 syntax:
 % Singularity detection is involved: 
@@ -151,7 +151,7 @@ f = chebfun(op, dom, 'blowup', 1);
 fval = feval(f, x);
 vals_exact = feval(op, x);
 err = fval - vals_exact;
-pass(7) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(7) = ( norm(err, inf) < 1e3*eps*norm(vals_exact, inf) );
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -181,7 +181,7 @@ f = chebfun(op, 'blowup', 2, ...
 fval = feval(f, x);
 vals_exact = feval(op, x);
 err = fval - vals_exact;
-pass(8) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(8) = ( norm(err, inf) < 1e3*eps*norm(vals_exact, inf) );
 
 %% Specify the singularity types using Chebfun v4 syntax:
 % Singularity detection is involved: 
@@ -204,7 +204,7 @@ f = chebfun(op, 'blowup', 2);
 fval = feval(f, x);
 vals_exact = feval(op, x);
 err = fval - vals_exact;
-pass(9) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(9) = ( norm(err, inf) < 1e3*eps*norm(vals_exact, inf) );
 
 %% Specify the singularity by specifying the type of singularities to preferences:
 % Singularity detection is involved: 
@@ -228,7 +228,7 @@ f = chebfun(op, 'blowup', 2, ...
 fval = feval(f, x);
 vals_exact = feval(op, x);
 err = fval - vals_exact;
-pass(10) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(10) = ( norm(err, inf) < 1e3*eps*norm(vals_exact, inf) );
 
 %% Specify the singularity types using Chebfun v4 syntax:
 % Singularity detection is involved: 
@@ -251,7 +251,7 @@ f = chebfun(op, 'blowup', 1);
 fval = feval(f, x);
 vals_exact = feval(op, x);
 err = fval - vals_exact;
-pass(11) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(11) = ( norm(err, inf) < 1e3*eps*norm(vals_exact, inf) );
 
 %% Piecewise smooth chebfun: a mix of functions with finite and infinite values.
 % define the domain:
@@ -275,7 +275,7 @@ for j = 1:3
     fval = feval(f, x);
     vals_exact = feval(op{j}, x);
     err = fval - vals_exact;
-    result(j) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
+    result(j) = ( norm(err, inf) < 1e3*eps*norm(vals_exact, inf) );
 end
 
 pass(12) = all( result );
@@ -296,7 +296,7 @@ x = diff(dom) * rand(100, 1) + dom(1);
 fval = feval(f, x);
 vals_exact = feval(op, x);
 err = fval - vals_exact;
-pass(13) = all( norm(err, inf) < 1e4*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(13) = all( norm(err, inf) < 1e4*eps*norm(vals_exact, inf) );
 
 
 %% Multipole subdomains with blowup flag set 1:
@@ -321,7 +321,7 @@ fval2 = feval(f, x2);
 vals_exact2 = feval(op2, x2);
 err2 = fval2 - vals_exact2;
 
-pass(14) = norm([err1; err2], inf) < 1e2*epslevel(f)* ...
+pass(14) = norm([err1; err2], inf) < 1e2*eps* ...
     norm([vals_exact1; vals_exact2], inf);
 
 
@@ -332,7 +332,7 @@ x = 2 * rand(100, 1) - 1;
 fx = feval(f, x);
 f_exact = op(x);
 err = fx - f_exact;
-pass(15) = norm(err, inf) < 1e1*epslevel(f)*norm(f_exact, inf);
+pass(15) = norm(err, inf) < 1e1*eps*norm(f_exact, inf);
 
 %% See #1486
 

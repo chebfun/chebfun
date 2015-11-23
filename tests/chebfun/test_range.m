@@ -16,12 +16,12 @@ pass(1) = isempty(range(chebfun()));
 % Scalar row and column input.
 f = chebfun(@(x) x, [-1 0 1]);
 err = abs(range(f) - 2);
-tol = 10*vscale(f)*epslevel(f);
+tol = 10*vscale(f)*eps;
 pass(2) = err < tol;
 
 ft = f.';
 err = abs(range(ft) - 2);
-tol = 10*vscale(ft)*epslevel(ft);
+tol = 10*vscale(ft)*eps;
 pass(3) = err < tol;
 
 % Array-valued column and column quasimatrix inputs.
@@ -29,21 +29,21 @@ fa = chebfun(@(x) [x x.^2], [0 1 2]);
 fq = cheb2quasi(fa);
 
 err = norm(range(fa) - [2 4], Inf);
-tol = 10*vscale(fa)*epslevel(fa);
+tol = 10*vscale(fa)*eps;
 pass(4) = err < tol;
 
 err = norm(range(fq) - [2 4], Inf);
-tol = 10*vscale(fq)*epslevel(fq);
+tol = 10*vscale(fq)*eps;
 pass(5) = err < tol;
 
 ra = range(fa, 2);
 err = norm(feval(ra, x) - r_exact(x), Inf);
-tol = 10*vscale(ra)*epslevel(ra);
+tol = 10*vscale(ra)*eps;
 pass(6) = err < tol;
 
 rq = range(fq, 2);
 err = norm(feval(rq, x) - r_exact(x), Inf);
-tol = 10*vscale(rq)*epslevel(rq);
+tol = 10*vscale(rq)*eps;
 pass(7) = err < tol;
 
 % Array-valued row and row quasimatrix inputs.
@@ -51,16 +51,16 @@ fat = fa.';
 fqt = fq.';
 
 err = norm(range(fat, 2) - [2 ; 4], Inf);
-tol = 10*vscale(fa)*epslevel(fat);
+tol = 10*vscale(fa)*eps;
 pass(8) = err < tol;
 
 err = norm(range(fqt, 2) - [2 ; 4], Inf);
-tol = 10*vscale(fq)*epslevel(fqt);
+tol = 10*vscale(fq)*eps;
 pass(9) = err < tol;
 
 rat = range(fat, 1);
 err = norm(feval(rat, x) - r_exact(x).', Inf);
-tol = 10*vscale(rat)*epslevel(rat);
+tol = 10*vscale(rat)*eps;
 pass(10) = err < tol;
 
 % Dimension >= 3 input.

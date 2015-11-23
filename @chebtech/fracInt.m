@@ -69,6 +69,5 @@ end
 % Update f:
 g = f;
 g.coeffs = c_new;
-g.epslevel = updateEpslevel(g);
 
 end

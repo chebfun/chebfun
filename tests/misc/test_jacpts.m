@@ -46,4 +46,9 @@ a = 1; b = 2;
 [x, w] = jacpts( 1, a, b ); 
 pass(21) = abs( x - (b-a)/(a+b+2) ) < tol ; 
 pass(22) = abs( w - 2^(a+b+1)*beta(a+1, b+1) ) < tol; 
+
+% See #1634
+[x1, w1] = jacpts(2e5, .2, .2);
+pass(23) = abs(sum(w1*x1)) < 10*eps;
+
 end

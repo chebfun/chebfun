@@ -226,7 +226,6 @@ errorMessages = {'FAILED', 'CRASHED'};
 % We don't want these warning to be displayed in CHEBTEST:
 warnState = warning('off', 'CHEBFUN:CHEBFUN:vertcat:join');
 warning('off', 'CHEBFUN:CHEBOP2:chebop2:experimental')
-warning('off', 'CHEBFUN:CHEBFUN:get:epslevel')
 
 % Attempt to run all of the tests:
 try % Note, we try-catch as we've CD'd and really don't want to end up elsewhere
@@ -279,7 +278,7 @@ if ( all(durations > 0) )
     fprintf('All %s tests passed in %4.4fs.\n', testDir, sum(durations));
 elseif ( ~quietMode )
     % Note. We don't show this in quiet mode as it's already clear.
-    fprintf('%d failed test in %s directory.\n', sum(durations < 0), testDir);
+    fprintf('%d failed test(s) in %s directory.\n', sum(durations < 0), testDir);
 end
 
 % Restore the current working directory and return:

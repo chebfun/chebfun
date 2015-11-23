@@ -6,8 +6,9 @@ function f = simplify(f, tol)
 %
 %  If F is not happy, F is returned unchanged.
 %
-%  G = SIMPLIFY(F, TOL) does the same as above but uses TOL instead of
-%  EPS. 
+%  G = SIMPLIFY(F, TOL) does the same as above but uses TOL instead of EPS.  If
+%  TOL is a row vector with as many columns as F, then TOL(k) will be used as
+%  the simplification tolerance for column k of F.
 %
 % See also STANDARDCHOP.
 
@@ -24,28 +25,32 @@ if ( ~f.ishappy )
     return;
 end
 
-% STANDARDCHOP requires at least 17 coefficients, so for F such that LENGTH(F) <
-% 17, the coefficients are padded using prolong. The following
-% parameters are chosen explicitly to work with STANDARDCHOP.
+% STANDARDCHOP requires at least 17 coefficients to avoid outright rejection.
+% STANDARDCHOP also employs a look ahead feature for detecting plateaus. For F
+% with insufficient length the coefficients are padded using prolong. The
+% following parameters are chosen explicitly to work with STANDARDCHOP. 
 % See STANDARDCHOP for details.
 nold = length(f);
 N = max(17, round(nold*1.25 + 5));
 f = prolong(f,N);
 
-% Grab the coefficients of F.
+% After the coefficients of F have been padded with zeros an artificial plateau
+% is created using the noisy output from the FFT. The slightly noisy plateau is
+% required since STANDARDCHOP uses logarithms to detect plateaus and this has
+% undesirable effects when the plateau is made up of all zeros.
 coeffs = abs(f.coeffs(end:-1:1,:));
 [n, m] = size(coeffs);
 coeffs = trigtech.vals2coeffs(trigtech.coeffs2vals(coeffs));
 
 % Use the default tolerance if none was supplied.
-p = chebfunpref;
 if ( nargin < 2 )
+    p = trigtech.techPref();
     tol = p.eps;
 end
 
-% Reshape TOL.
+% Recast TOL as a row vector.
 if ( size(tol, 2) ~= m )
-    tol = max(max(tol),p.eps)*ones(1, m);
+    tol = max(tol)*ones(1, m);
 end
 
 % In order to work with STANDARDCHOP, the coefficients of F are modified so that
@@ -55,7 +60,7 @@ end
 
 % Need to handle odd/even cases separately.
 isEven = mod(n, 2) == 0;
-if isEven
+if ( isEven )
     coeffs = [coeffs(n,:) ; coeffs(n-1:-1:n/2+1,:) + coeffs(1:n/2-1,:) ; coeffs(n/2,:)];
 else
     coeffs = [coeffs(n:-1:(n+1)/2+1,:) + coeffs(1:(n+1)/2-1,:) ; coeffs((n+1)/2,:)];
@@ -88,8 +93,5 @@ end
 mid = (n + 1)/2;
 f.coeffs = coeffs(mid-cutoff+1:mid+cutoff-1,:);
 f.values = trigtech.coeffs2vals(f.coeffs);
-
-% Set F.EPSLEVEL to MATLAB EPS.
-f.epslevel = eps + 0*f.epslevel;
 
 end

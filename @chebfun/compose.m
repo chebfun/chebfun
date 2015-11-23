@@ -319,8 +319,8 @@ if ( ~isreal(f) )
      warning('off', 'CHEBFUN:CHEBFUN:compose:composeTwoChebfuns:complex');
 else
 
-    % Get epslevels and set a tolerance:
-    tol = 10*max(vscale(f).*epslevel(f), vscale(g).*epslevel(g));
+    % Set a tolerance:
+    tol = 10*eps*max(vscale(f), vscale(g));
     hsf = hscale(f); 
     % Find the range of F:
     mmF = minandmax(f);

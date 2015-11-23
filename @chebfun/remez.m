@@ -77,10 +77,10 @@ if ( n == 0 )
 end
 
 % Initial values for some parameters.
-iter = 0;       % Iteration count.
-delta = normf;  % Value for stopping criterion.
-deltamin = inf; % Minimum error encountered.
-diffx = 1;      % Maximum correction to trial reference.
+iter = 0;                 % Iteration count.
+delta = max(normf, eps);  % Value for stopping criterion.
+deltamin = inf;           % Minimum error encountered.
+diffx = 1;                % Maximum correction to trial reference.
 
 % Compute an initial reference set to start the algorithm.
 xk = getInitialReference(f, m, n, N);
