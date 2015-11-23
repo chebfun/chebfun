@@ -65,7 +65,7 @@ vals_df = feval(g, x);
 flip_exact = @(x) -(1+x).^b.*(x.^5);
 vals_exact = feval(flip_exact, x);
 err = vals_df - vals_exact;
-pass(4) = (norm(err, inf) < eps*norm(vals_exact, inf));
+pass(4) = (norm(err, inf) < 1e1*eps*norm(vals_exact, inf));
 
 % a combination of fractional pole and fractional root
 data.exponents = [b c];

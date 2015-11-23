@@ -72,7 +72,7 @@ tol_f = 10*get(f, 'vscale')*eps;
 tol_g = 10*get(g, 'vscale')*eps;
 
 err = feval(f, x) - feval(g, x);
-pass(6) = (norm(diff(err), inf) < 10*max(tol_f, tol_g));
+pass(6) = (norm(diff(err), inf) < 1e2*max(tol_f, tol_g));
 h = cumsum(diff(f));
 err = feval(f, x) - feval(h, x);
 pass(7) = (norm(diff(err), inf) < 10*max(tol_f, tol_g) && ...
