@@ -20,12 +20,12 @@ else
     tString = 'Column vector';
 end
 
-disp(['   spherefunv object ' '(' tString ') containing:' ])
+disp(['   spherefunv object ' '(' tString ') containing' ])
 if ( loose )
     fprintf('\n');
 end
 
-% Display its two CHEBFUN2 halves.
+% Display its two SPHERFUN halves.
 for j = 1:3
     disp( F.components{j} );
 end
