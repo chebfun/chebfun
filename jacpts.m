@@ -27,11 +27,13 @@ function [x, w, v] = jacpts(n, a, b, int, meth)
 %   The cases ALPHA = BETA = -.5 and ALPHA = BETA = .5 correspond to
 %   Gauss-Chebyshev nodes and quadrature, and are treated specially (as a closed
 %   form of the nodes and weights is available). ALPHA = BETA = 0 calls LEGPTS,
-%   which is a more efficient code.
+%   which is a more efficient code. ALPHA = BETA for ALPHA^2 < .25 calls
+%   ULTRAPTS, which is a faster code.
 % 
 %   When MAX(ALPHA, BETA) > 5 the results may not be accurate. 
 %
-% See also CHEBPTS, LEGPTS, LOBPTS, RADAUPTS, HERMPTS, LAGPTS, and TRIGPTS.
+% See also CHEBPTS, LEGPTS, LOBPTS, RADAUPTS, HERMPTS, LAGPTS, TRIGPTS, and
+% ULTRAPTS.
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.
@@ -118,23 +120,30 @@ elseif ( n == 1 )
 end
 
 % Special cases:
-if ( ~a && ~b )                 % Legendre: alpha = beta = 0
-    [x, w, v] = legpts(n, method);
-    [x, w] = rescale(x, w, interval, a, b);
-    return
-elseif ( a == -.5 && b == -.5 ) % Gauss-Chebyshev: alpha = beta = -.5
-    [x, ignored, v] = chebpts(n, interval, 1);
-    w = repmat(pi/n,1,n);
-    [ignored, w] = rescale(x, w, interval, a, b);
-    return
-elseif ( a == .5 && b == .5 )   % Gauss-Chebyshev2: alpha = beta = .5
-    x = chebpts(n+2, 2);     
-    x = x(2:n+1);
-    w = pi/(n+1)*(1-x.^2).';  
-    v = (1-x.^2);  
-    v(2:2:end) = -v(2:2:end); 
-    [x, w] = rescale(x,w,interval,a,b);
-    return
+if ( a == b  && a*a <= .25)
+    if ( a == 0 )  % Gauss-Legendre: alpha = beta = 0
+        [x, w, v] = legpts(n, method);
+        [x, w] = rescale(x, w, interval, a, b);
+        return
+    elseif ( a == -.5 )  % Gauss-Chebyshev: alpha = beta = -.5
+        [x, ignored, v] = chebpts(n, interval, 1);
+        w = repmat(pi/n,1,n);
+        [ignored, w] = rescale(x, w, interval, a, b);
+        return
+    elseif ( a == .5 )   % Gauss-Chebyshev2: alpha = beta = .5
+        x = chebpts(n+2, 2);
+        x = x(2:n+1);
+        w = pi/(n+1)*(1-x.^2).';
+        v = (1-x.^2);
+        v(2:2:end) = -v(2:2:end);
+        [x, w] = rescale(x,w,interval,a,b);
+        return
+    else % Gauss-Gegenbauer: -.5 < alpha = beta < .5
+        % [TODO]: ULTRAPTS: alpha^2 > .25
+        lambda = a + .5;
+        [x, w, v] = ultrapts(n, lambda, interval);
+        return
+    end
 end
 
 % Choose an algorithm:
@@ -901,6 +910,5 @@ tB3 = @(theta) bary(theta, tB3, t, v);
 A4 = @(theta) bary(theta, A4, t, v);
 
 end
-
 
 
