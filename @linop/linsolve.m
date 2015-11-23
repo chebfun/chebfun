@@ -109,7 +109,7 @@ for dim = [dimVals inf]
     % currently valid factorization at hand.
     if ( isFactored(disc) )
         A = [];
-        P = speye(disc.dimension*size(L,2));
+        P = speye(disc.dimension*sum(isFun)+sum(~isFun));
     else
         [A, P] = matrix(disc);
         if ( size(A, 1) ~= size(A, 2) )
