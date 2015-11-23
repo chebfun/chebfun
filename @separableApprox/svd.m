@@ -42,8 +42,8 @@ height = diff( dom( 3:4 ) );
 if ( norm( d ) == 0 )
     if ( nargout > 1 )
         f = 1 + 0*f;
-        U = 1/sqrt( width )*simplify(f.cols);
-        V = 1/sqrt( height )*simplify(f.rows);
+        U = 1/sqrt( width )*simplify(f.cols, [], 'globaltol');
+        V = 1/sqrt( height )*simplify(f.rows, [], 'globaltol');
         varargout = { U, 0, V };
     else
         varargout = { 0 };
