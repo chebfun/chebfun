@@ -239,8 +239,7 @@ else
 end
 
 if ( ~isa(u, 'chebmatrix') )
-    waterfall(u, t, 'linewidth', defaultLineWidth)
-
+    waterfall(u, t)
 else
     cols = get(0, 'DefaultAxesColorOrder');
     
@@ -253,7 +252,7 @@ else
 %     legend(allVarNames);
 
     % CHEBMATRIX/WATERFALL()
-    waterfall(u, t, 'linewidth', defaultLineWidth, 'edgecolors', cols)
+    waterfall(u, t,'edgecolors', cols)
 end
 
 % Update the fontsize of the bottom plot 

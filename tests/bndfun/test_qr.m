@@ -87,5 +87,5 @@ function result = test_one_qr_with_perm(f, x)
     % Check that the factorization is accurate.
     err = Q*R - f*E;
     result(2) = norm(feval(err, x), inf) < ...
-        10*max(get(f, 'vscale')*eps);
+        1e2*max(get(f, 'vscale')*eps);
 end

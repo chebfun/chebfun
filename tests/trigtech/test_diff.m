@@ -103,7 +103,7 @@ pass(11) = (norm(err, inf) < 100*vscale(df6)*eps);
 f = testclass.make(@(x) (1/10/pi)*cos(10*pi*sin(pi*x)), [], pref);
 df5 = diff(f, 5);
 err = feval(df5,[-1;1]);  % Odd derivatives of this function vanish at +-1
-pass(12) = (norm(err, inf) < 100*vscale(df5)*eps);
+pass(12) = (norm(err, inf) < 1e3*vscale(df5)*eps);
     
 
 %%

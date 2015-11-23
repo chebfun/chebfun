@@ -99,15 +99,13 @@ while ( 1 )
         
     % We're happy! :)
     if ( ishappy ) 
-        coeffs = f.alias(coeffs, cutoff);   % Alias the discarded coefficients.
-        f.values = f.coeffs2vals(coeffs);   % Compute values on this grid.
+        f = prolong(f,cutoff); % chop coefficients to length cutoff
         break
     end
 
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% Assign to TRIGTECH object. %%%%%%%%%%%%%%%%%%%%%%%%%%
-f.coeffs = coeffs;
 f.ishappy = ishappy;
 
 % Force the values to be real if the imaginary part is zero
