@@ -116,8 +116,8 @@ while ( 1 )
     [ishappy, cutoff] = happinessCheck(f, op, values, data, pref);
         
     if ( ishappy ) % We're happy! :)
-        % Alias the discarded coefficients:
-        coeffs = f.alias(coeffs, cutoff);  
+        % disard unwanted coefficients
+        f = prolong(f,cutoff);  
         break
     end
     
@@ -128,7 +128,6 @@ while ( 1 )
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% Assign to CHEBTECH object. %%%%%%%%%%%%%%%%%%%%%%%%%%
-f.coeffs = coeffs;
 f.ishappy = ishappy;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Ouput. %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

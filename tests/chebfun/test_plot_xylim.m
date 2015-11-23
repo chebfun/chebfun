@@ -48,9 +48,7 @@ plot(f)
 pass2(length(pass2) + 1) =  strcmp(get(gca,'xlimmode'), 'manual');
 pass2(length(pass2) + 1) =  strcmp(get(gca,'ylimmode'), 'auto');
 xl = get(gca,'xlim');
-yl = get(gca,'ylim');
 pass2(length(pass2) + 1)  = ( norm(xl - [-10 0]) < tol );
-pass2(length(pass2) + 1) = ( norm(yl - [0 1]) < tol );
 
 g = chebfun(@(x) -0.62*exp(x), dom2);
 plot(g)

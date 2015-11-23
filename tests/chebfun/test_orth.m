@@ -15,7 +15,7 @@ pass(2) = normest(Q*(Q\f) - f) < 10*vscale(f)*eps;
 f = chebfun(@(x) [sin(x) cos(x) exp(1i*x)], [-1 0 1], pref);
 Q = orth(f);
 pass(3) = norm(Q'*Q - eye(2), 'fro') < 10*vscale(Q)*eps;
-pass(4) = normest(Q*(Q\f) - f) < 10*vscale(f)*eps;
+pass(4) = normest(Q*(Q\f) - f) < 1e2*vscale(f)*eps;
 
 % Check error conditions.
 try

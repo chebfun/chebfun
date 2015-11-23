@@ -146,7 +146,7 @@ pass(26) = abs(f(1)-g(1)) < eps*vscale(f);
 f = chebfun(@(t) t.^0.5./exp(t), [0,inf], 'exps', [0.5 0]);
 g = f;
 f(1) = f(1); % restrict@unbndfun is called.
-pass(27) = ( norm(f-g, inf) < 10*eps );
+pass(27) = ( norm(f-g, inf) < 1e2*eps );
     
 
 %% Test trigfuns:
