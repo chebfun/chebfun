@@ -14,7 +14,7 @@ function pass = sampleTest(op, values, f, data, pref)
 n = length(f);
 
 % Set a tolerance:
-tol = n*max(eps, pref.eps);
+tol = sqrt(max(eps, pref.eps));
 
 % Scale TOL by the MAX(DATA.HSCALE*||F||, DATA.VSCALE). 
 % (See standardCheck for explanation)
