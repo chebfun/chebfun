@@ -25,21 +25,21 @@ for n = 1:2
     df = diff(f);
     df_exact = @(x) exp(x) - 1;
     err = norm(df_exact(x) - feval(df, x), inf);
-    tol = 100*df.vscale.*df.epslevel;
+    tol = 100*vscale(df)*eps;
     pass(n, 1) = err < tol;
     
     f = testclass.make(@(x) atan(x), [], pref);
     df = diff(f);
     df_exact = @(x) 1./(1 + x.^2);
     err = norm(df_exact(x) - feval(df, x), inf);
-    tol = 500*df.vscale.*df.epslevel;
+    tol = 500*vscale(df)*eps;
     pass(n, 2) = err < 10*tol;
     
     f = testclass.make(@(x) sin(x), [], pref);
     df = diff(f);
     df_exact = @(x) cos(x);
     err = norm(df_exact(x) - feval(df, x), inf);
-    tol = 100*df.vscale.*df.epslevel;
+    tol = 100*vscale(df)*eps;
     pass(n, 3) = err < tol;
     
     z = exp(2*pi*1i/3);
@@ -47,7 +47,7 @@ for n = 1:2
     df = diff(f);
     df_exact = @(t) z*airy(1, z*t);
     err = norm(df_exact(x) - feval(df, x), inf);
-    tol = 100*df.vscale.*df.epslevel;
+    tol = 100*vscale(df)*eps;
     pass(n, 4) = err < tol;
     
     %%
@@ -56,7 +56,7 @@ for n = 1:2
     f = testclass.make(@(x) 0.5*x - 0.0625*sin(8*x), [], pref);
     df = testclass.make(@(x) sin(4*x).^2, [], pref);
     err = diff(f) - df;
-    pass(n, 5) = (norm(err.coeffs, inf) < 100*df.vscale.*df.epslevel);
+    pass(n, 5) = (norm(err.coeffs, inf) < 100*vscale(df)*eps);
     
     %%
     % Verify basic differentiation rules.
@@ -65,8 +65,8 @@ for n = 1:2
     df = diff(f);
     g = testclass.make(@(x) exp(-x.^2), [], pref);
     dg = diff(g);
-    tol_f = 10*df.vscale.*df.epslevel;
-    tol_g = 10*dg.vscale.*dg.epslevel;
+    tol_f = 10*vscale(df)*eps;
+    tol_g = 10*vscale(dg)*eps;
     
     errfn = diff(f + g) - (df + dg);
     err = feval(errfn, x);
@@ -89,21 +89,21 @@ for n = 1:2
     df2 = diff(f, 2);
     df2_exact = @(x) 1./(1 + x.^2);
     err = df2_exact(x) - feval(df2, x);
-    pass(n, 9) = (norm(err, inf) < 1e6*df2.vscale.*df2.epslevel);
+    pass(n, 9) = (norm(err, inf) < 1e6*vscale(df2)*eps);
     
     
     f = testclass.make(@(x) sin(x), [], pref);
     df4 = diff(f, 4);
     df4_exact = @(x) sin(x);
     err = norm(df4_exact(x) - feval(df4, x), inf);
-    tol = 1e7*df4.vscale.*df4.epslevel;
+    tol = 1e7*vscale(df4)*eps;
     pass(n, 10) = err < tol;
 
     f = testclass.make(@(x) x.^5 + 3*x.^3 - 2*x.^2 + 4, [], pref);
     df6 = diff(f, 6);
     df6_exact = @(x) zeros(size(x));
     err = df6_exact(x) - feval(df6, x);
-    tol = 900*df4.vscale.*df4.epslevel;
+    tol = 900*vscale(df4)*eps;
     pass(n, 11) = (norm(err, inf) == 0);
     
     %%
@@ -113,25 +113,32 @@ for n = 1:2
     df = diff(f);
     df_exact = @(x) [cos(x) 2*x 1i*exp(1i*x)];
     err = feval(df, x) - df_exact(x);
-    pass(n, 12) = (norm(err(:), inf) < 1e2*max(df.vscale.*df.epslevel));
+    pass(n, 12) = (norm(err(:), inf) < 1e2*max(vscale(df)*eps));
     
     % DIM option.
     dim2df = diff(f, 1, 2);
     g = @(x) [(x.^2 - sin(x)) (exp(1i*x) - x.^2)];
     err = feval(dim2df, x) - g(x);
-    pass(n, 13) = isequal(size(dim2df.vscale), [1 2]) && ...
-        (norm(err(:), inf) < 10*max(dim2df.vscale.*dim2df.epslevel));
+    pass(n, 13) = isequal(size(vscale(dim2df)), [1 2]) && ...
+        (norm(err(:), inf) < 10*max(vscale(dim2df)*eps));
 
     dim2df2 = diff(f, 2, 2);
     g = @(x) exp(1i*x) - 2*x.^2 + sin(x);
     err = feval(dim2df2, x) - g(x);
-    pass(n, 14) = isequal(size(dim2df2.vscale), [1 1]) && ...
-        (norm(err(:), inf) < 10*max(dim2df2.vscale.*dim2df2.epslevel));
+    pass(n, 14) = isequal(size(vscale(dim2df2)), [1 1]) && ...
+        (norm(err(:), inf) < 10*max(vscale(dim2df2)*eps));
 
     % DIM option should return an empty chebtech for non-array-valued input.
     f = testclass.make(@(x) x.^3);
     dim2df = diff(f, 1, 2);
     pass(n, 15) = (isempty(dim2df.coeffs));
+
+    % Check for #1641.
+    f = testclass.make(@(x) [1 + x + x.^2, 1 - x + 2*x.^2]);
+    df = diff(f);
+    err = norm(df.coeffs - [1 -1 ; 2 4], 'fro');
+    tol = 10*eps;
+    pass(n, 16) = err < tol;
 end
 
 end

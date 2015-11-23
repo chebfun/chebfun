@@ -15,17 +15,17 @@ f = chebfun(@sin, [-1 0 1]);
 Q = repmat(f, 1, 3);
 Q_exact = @(x) [sin(x) sin(x) sin(x)];
 err = feval(Q, xr) - Q_exact(xr);
-pass(1) = norm(err(:), inf) < 10*vscale(Q)*epslevel(Q);
+pass(1) = norm(err(:), inf) < 10*vscale(Q)*eps;
 
 Q = repmat(f, [1 3]);
 Q_exact = @(x) [sin(x) sin(x) sin(x)];
 err = feval(Q, xr) - Q_exact(xr);
-pass(2) = norm(err(:), inf) < 10*vscale(Q)*epslevel(Q);
+pass(2) = norm(err(:), inf) < 10*vscale(Q)*eps;
 
 % TODO:  Comment this in once vertcat() becomes available.
 % Q = repmat(f.', 3, 1);
 % Q_exact = @(x) [sin(x) sin(x) sin(x)].';
 % err = feval(Q, xr) - Q_exact(xr);
-% pass(3) = norm(err(:), inf) < 10*vscale(Q)*epslevel(Q);
+% pass(3) = norm(err(:), inf) < 10*vscale(Q)*eps;
 
 end

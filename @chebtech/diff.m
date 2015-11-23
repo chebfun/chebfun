@@ -64,21 +64,8 @@ function f = diffFiniteDim(f, k)
         % The output will be an empty CHEBTECH:
         f = f.make();
     else 
-        for j = 1:k
-            % Update epslevel as in PLUS():
-            ev = f.epslevel.*f.vscale;
-            for l = 1:(size(f, 2)-1)
-                f.epslevel(l) = ev(l) + ev(l+1);
-            end
-            % We've lost a column, so we lose an epslevel:
-            f.epslevel(end) = [];
-            
-            % Differentiate coefficients across columns:
-            f.coeffs = diff(f.coeffs, 1, 2);
-            
-            % New epslevel:
-            f.epslevel = f.epslevel./f.vscale;
-        end
+        % Differentiate coefficients across columns:
+        f.coeffs = diff(f.coeffs, k, 2);
     end
 end
 
@@ -93,10 +80,7 @@ function f = diffContinuousDim(f, k)
 
     % If k >= n, we know the result will be the zero function:
     if ( k >= n ) 
-        z = zeros(size(f, 2));
-        data.vscale = z;
-        data.hscale = f.hscale;
-        f = f.make(z, data);
+        f = f.make(zeros(1, size(f, 2)));
         return
     end
     
@@ -107,15 +91,8 @@ function f = diffContinuousDim(f, k)
         n = n - 1;
     end
     
-    % Store the old vscale:
-    oldVscl = f.vscale;
-    
     % Store new coefficients:
     f.coeffs = c;
-    
-    % Update epslevel: (See CHEBTECH CLASSDEF file for documentation)
-    epslevelBnd = (n*log(n)).^k*(f.epslevel.*oldVscl)./f.vscale;
-    f.epslevel = updateEpslevel(f, epslevelBnd);
     
 end
       
@@ -126,10 +103,10 @@ function cout = computeDerCoeffs(c)
 %   whose columns are the derivatives of those of the original.
 
     [n, m] = size(c);
-    cout = zeros(n-1, m);                       % Initialize vector {c_r}
+    cout = zeros(n-1, m);                        % Initialize vector {c_r}
     w = repmat(2*(1:n-1)', 1, m);
-    v = w.*c(2:end,:);                          % Temporal vector
-    cout(n-1:-2:1,:) = cumsum(v(n-1:-2:1,:));   % Compute c_{n-2}, c_{n-4},...
-    cout(n-2:-2:1,:) = cumsum(v(n-2:-2:1,:));   % Compute c_{n-3}, c_{n-5},...
-    cout(1,:) = .5*cout(1,:);                   % Adjust the value for c_0
+    v = w.*c(2:end,:);                           % Temporal vector
+    cout(n-1:-2:1,:) = cumsum(v(n-1:-2:1,:), 1); % Compute c_{n-2}, c_{n-4}, ...
+    cout(n-2:-2:1,:) = cumsum(v(n-2:-2:1,:), 1); % Compute c_{n-3}, c_{n-5}, ...
+    cout(1,:) = .5*cout(1,:);                    % Adjust the value for c_0
 end

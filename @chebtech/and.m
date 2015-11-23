@@ -12,6 +12,5 @@ function f = and(f, g)
 
 arbitraryPoint = 0.1273881594;
 f.coeffs = feval(f, arbitraryPoint) & feval(g, arbitraryPoint);
-f.epslevel = 0*f.coeffs + eps;
 
 end
