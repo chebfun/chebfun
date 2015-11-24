@@ -58,4 +58,9 @@ f = chebfun(@(x) 1./(1+25*x.^2));
 f2 = chebfun2(@(x,y) 1./(1+25*x.^2));
 pass(11) = length(f2.rows) < length(f)+20;
 
+% Test whether reconstructing rows gives the same length.
+f = chebfun2(@(x,y) cos(pi*x.*y));
+frows = chebfun(f.rows);
+pass(12) = abs(length(frows)-length(f.rows)) < 10;
+
 end
