@@ -107,10 +107,6 @@ elseif ( n == 0 )   % Return empty vectors if n == 0:
     t = [];
     return
 elseif ( n == 1 )
-    % x = midpoint of interval
-    % w = length of interval 
-    % v = 1
-    % t = 1 
     x = mean(interval);
     w = diff(interval);
     v = 1;
