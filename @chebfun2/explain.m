@@ -291,7 +291,7 @@ if ( length(f) > 6 )
         'eventually sampled on a %u x %u Chebyshev grid.'], ...
         length(f.rows(:,1)), length(f.rows(:,1)))};
 elseif ( length(f) > 1 )
-    str = {str; 'The first stage is done.'};
+    str = 'The first stage is done.';
 end
 textBox = myTextbox(str, textBox);
 
