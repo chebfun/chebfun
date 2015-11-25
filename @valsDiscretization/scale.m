@@ -6,6 +6,6 @@ function scl = scale( disc, uFun )
 
 % TODO: Should this be taking the absolute values of uFun? (This was
 % originally copied from linop/expm.)
-scl = max( cellfun(@max, uFun) );
+scl = max( cellfun(@(v) max(abs(v)), uFun) );
 
 end
