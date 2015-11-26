@@ -92,7 +92,7 @@ for j = 1:numFuns
         % For complex-valued funs, we don't display the values.
 
         % Print information to screen:
-        s = [s, sprintf('[%8.2g,%8.2g]   %6i    complex values %s\n', ...
+        s = [s, sprintf('[%8.2g,%8.2g]   %6i     complex values %s\n', ...
             f.domain(j), f.domain(j+1), len(j), extraData{j})];
 
     else
