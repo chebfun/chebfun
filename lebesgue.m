@@ -55,6 +55,12 @@ end
 dom = unique([x(:) ; d.']).';
 L = chebfun(@(t) lebesgueFun(t, x(:), w), dom, pref);
 
+if ( isa(pref.tech(), 'chebtech') )
+    % Since we fixed the degree for chebtech-based representations, we must call
+    % simplify manualy.
+    L = simplify(L);
+end
+
 % Return the Lebesgue constant if asked.
 if ( nargout == 2 )
     Lconst = norm(L, inf);
