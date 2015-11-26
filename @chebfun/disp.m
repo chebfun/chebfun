@@ -20,50 +20,41 @@ if ( isempty(f) )
     return
 end
 
-% Convert array-valued CHEBFUN to a quasimatrx for unified output.
+% Convert array-valued CHEBFUN to a quasimatrix for unified output.
 if ( (numColumns(f) > 1) && (numel(f) == 1) )
     f = cheb2quasi(f);
 end
 
+% Transpose information:
+if ( f(1).isTransposed )
+    columnString = 'row';
+else
+    columnString = 'column';
+end
+
 if ( numel(f) > 1 )
     for k = 1:numel(f)
-        % Transpose information:
-        if ( f(1).isTransposed )
-            columnString = ['   chebfun row', int2str(k)];
-        else
-            columnString = ['   chebfun column', int2str(k)];
-        end
         % Call the column display subfunction:
-        fprintf(colDisp(f(k), columnString));
-        fprintf('\n');
+        fprintf(colDisp(f(k), [columnString, int2str(k)]));
         % Final line break:
         if ( loose )
             fprintf('\n');
         end
     end
-
 else
-    % Transpose information:
-    if ( f.isTransposed )
-        columnString = '   chebfun row';
-    else
-        columnString = '   chebfun column';
-    end
     % Call the column display subfunction:
     fprintf(colDisp(f, columnString));
-    fprintf('\n');
 end
 
 if ( loose )
     fprintf('\n');
 end
 
-
 end
 
 function s = colDisp(f, columnString)
 % Initialise s for this column:
-s = '';
+s = '   chebfun ';
 % Number of pieces (i.e., funs) information:
 numFuns = numel(f.funs);
 if ( numFuns > 1 )
@@ -140,5 +131,7 @@ if ( ~isempty(out) )
     s = [s, sprintf('%8.2g', deltaLoc)];
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+s = [s, '\n'];
 
 end
