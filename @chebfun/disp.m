@@ -32,7 +32,10 @@ else
     columnString = 'column';
 end
 
-if ( numel(f) > 1 )
+if ( numel(f) == 1 )
+    % Call the column display subfunction:
+    fprintf(colDisp(f, columnString));
+else
     for k = 1:numel(f)
         % Call the column display subfunction:
         fprintf(colDisp(f(k), [columnString, int2str(k)]));
@@ -41,9 +44,6 @@ if ( numel(f) > 1 )
             fprintf('\n');
         end
     end
-else
-    % Call the column display subfunction:
-    fprintf(colDisp(f, columnString));
 end
 
 if ( loose )
