@@ -109,14 +109,14 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 out = get(f, 'deltas');
 if ( ~isempty(out) )
-    deltaLoc = out(1, :);
-    deltaMag = out(2:end, :);
+    deltaLoc = out(1,:);
+    deltaMag = out(2:end,:);
     s = [s, sprintf('\nDelta functions:\n')];
     m = size(deltaMag, 1);
     n = size(deltaMag, 2);
     for i = 1: m
         for j = 1:n
-            s = [s, sprintf('%8.2g', deltaMag(i, j))];
+            s = [s, sprintf('%8.2g', deltaMag(i,j))];
         end
         s = [s, sprintf('\n')];
     end
