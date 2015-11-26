@@ -72,14 +72,7 @@ len = zeros(numFuns, 1);
 for j = 1:numFuns
     len(j) = length(f.funs{j});
 
-    if ( numColumns(f) > 1 )
-        % For array-valued funs, we don't display the values.
-
-        % Print information to screen:
-        s = [s, sprintf('[%8.2g,%8.2g]   %6i    array-valued (%d pieces)\n', ...
-            f.domain(j), f.domain(j+1), len(j), size(f.funs{j}, 2))];
-
-    elseif ( ~isreal(f.funs{j}) )
+    if ( ~isreal(f.funs{j}) )
         % For complex-valued funs, we don't display the values.
 
         % Print information to screen:
