@@ -835,13 +835,13 @@ clear global SYSSIZE
             indx = numLinBCs;
             if ( ~isempty(numLBCs) )
                 indx = 1:numLBCs;
-                uTmp = opLBC(t, x, myU);
-                uTmp = double(uTmp);
-                if ( size(uTmp, 1) ~= n )
+                fTmp = opLBC(t, x, myU);
+                fTmp = double(fTmp);
+                if ( size(fTmp, 1) ~= n )
                     error
-                    uTmp = reshape(uTmp, n, numel(uTmp)/n);
+                    fTmp = reshape(fTmp, n, numel(fTmp)/n);
                 end
-                F(indx) = uTmp(1, :);
+                F(indx) = fTmp(1, :);
             end
             if ( ~isempty(numMBCs) )
                 % TODO: This won't work if there are also left nonlin BCs
@@ -850,13 +850,13 @@ clear global SYSSIZE
             end            
             if ( ~isempty(numRBCs) )
                 indx = indx(end) + (1:numRBCs);
-                uTmp = opRBC(t, x, myU);
-                uTmp = double(uTmp);
-                if ( size(uTmp, 1) ~= n )
+                fTmp = opRBC(t, x, myU);
+                fTmp = double(fTmp);
+                if ( size(fTmp, 1) ~= n )
                     error
-                    uTmp = reshape(uTmp, n, numel(uTmp)/n);
+                    fTmp = reshape(fTmp, n, numel(fTmp)/n);
                 end
-                F(indx) = fliplr(uTmp(end, :));
+                F(indx) = fliplr(fTmp(end, :));
             end
             
             % Adjust BC rows by the needed offset from original time:
