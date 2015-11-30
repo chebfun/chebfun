@@ -265,7 +265,7 @@ uu = pde15s(f, 0:.025:.5, u, bcc, opts);
   try
     uu = pde15s(f,0:.01:.5,u,bc);
   catch ME
-      if ( ~strcmp(ME.identifier, 'CHEBFUN:pde15s:bcstruct') )
+      if ( ~strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:pde15s:bcstruct') )
           rethrow(ME)
       end
   end
