@@ -7,7 +7,7 @@ function r = rank(A, tol)
 %
 % See also SVD, QR.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Compute the singular values:
@@ -15,7 +15,7 @@ s = svd(A);
 
 % Choose a tolerance if none is given:
 if ( nargin == 1 )
-	tol = max(length(A)*eps(max(s)), vscale(A)*epslevel(A));
+	tol = max(length(A)*eps(max(s)), vscale(A)*eps);
 end
 
 % Compute the rank:

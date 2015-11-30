@@ -14,7 +14,7 @@ classdef chebguiExporter
 %   class and subclasses.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -238,7 +238,7 @@ classdef chebguiExporter
             
             % Print first few lines of the .m-file:
             fprintf(fid, ['%%%% %s -- an executable m-file for solving ', ...
-                '%s.\n'], filename, e.description);
+                '%s\n'], filename, e.description);
             fprintf(fid, ['%% Automatically created in CHEBGUI ', ...
                 'by user %s.\n'], userName);
             fprintf(fid, '%% Created on %s', ...

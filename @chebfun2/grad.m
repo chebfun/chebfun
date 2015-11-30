@@ -1,4 +1,4 @@
-function varargout = grad( f )
+function varargout = grad(varargin)
 %GRAD   Numerical gradient of a CHEBFUN2.
 %   [FX FY] = GRAD(F) returns the numerical gradient of the CHEBFUN2 F, where FX
 %   is the derivative of F in the x direction and FY is the derivative of F in
@@ -12,16 +12,9 @@ function varargout = grad( f )
 %
 % See also GRADIENT.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Call GRADIENT:
-if ( nargout <= 1 )
-    out = gradient( f );
-    varargout = { out };
-else
-    [fx, fy] = gradient( f );
-    varargout = {fx, fy};
-end
+[varargout{1:nargout}] = grad@separableApprox(varargin{:});
 
 end

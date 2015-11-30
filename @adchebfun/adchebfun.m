@@ -29,7 +29,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
 %
 % See also CHEBFUN, LINBLOCK, LINOP, CHEBOP, ADCHEBFUN/SEED.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1029,8 +1029,13 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = PROD(F)       PROD of an ADCHEBFUN
             % 
             % See also chebfun/prod.
-            
-            f = exp(sum(log(f)));
+                        
+            % Temporary step to get dimensions correct
+            f = sum(log(f));
+            % Update FUNC part
+            f.func = exp(f.func);
+            % Update JACOBIAN part
+            f.jacobian = f.func*f.jacobian;
         end     
         
         function f = rdivide(f, g)
@@ -1161,7 +1166,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
 
                 % Convert the cell-array to a CHEBMATRIX and assign to the
                 % derivative field of U:
-                u.jacobian = linop( blocks );
+                u.jacobian = chebmatrix( blocks );
                 
                 % Initalise linearity information. The output is linear in all
                 % variables.

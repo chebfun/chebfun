@@ -1,7 +1,7 @@
 function loadDemoMenu(handles)
 %LOADDEMOMENU    Populate the 'Demos' menu on the CHEBGUI figure.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Begin by checking whether we have already loaded the demos
@@ -146,8 +146,21 @@ function [demoName, demoFun, demoType] = parseDemoFile(demoPath, handles)
     % Need to obtain the name and type of the demo as well
     fid = fopen(demoPath);
 
+    % Loop through the problem descriptions for testing at the top of the files.
+    while ( true )
+        tline = fgetl(fid);
+        % Once we don't have a # at the start, we longer are in the problem
+        % description part of the file.
+        if ( isempty(tline) || tline(1) ~= '#')
+            break
+        end
+    end
+
+    % Now load the problem description and type lines, which will be the next
+    % lines up.
+    
     % Throw away ' at the ends of the string
-    demoName = fgetl(fid);
+    demoName = tline;
     demoName = demoName(2:end-1);
     demoType = fgetl(fid);
     demoType = demoType(2:end-1);

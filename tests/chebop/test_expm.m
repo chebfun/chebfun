@@ -45,22 +45,31 @@ u6 = E*u0;
 pass(2) = norm(V4 - feval(u6, chebpts(15))) < tol;
 
 %%
-% Test periodic boundary conditions.
+% Test periodic boundary conditions with TRIGCOLLOC.
 dom = [0 2*pi];
 A = chebop(@(u) diff(u, 2), dom);
 A.bc = 'periodic';
 u0 = chebfun(@(x) sin(x), dom); 
 t = [0 0.001 0.01 0.1 0.5 1];
 
-% Solve with FOURIER technology.
+% Solve with FOURIER technology in value space.
 u = expm(A, t, u0);
 pass(3) = isequal(get(u{1}.funs{1}, 'tech'), @trigtech);
 
-% Solve with CHEBYSHEV technology.
+% Solve with CHEBYSHEV technology in value space.
+pref.discretization = @chebcolloc2;
 v = expm(A, t, u0, pref);
 pass(4) = isequal(get(v{1}.funs{1}, 'tech'), @chebtech2);
 
+% Solve with CHEBYSHEV technology in coefficient space.
+pref.discretization = @ultraS;
+w = expm(A, t, u0, pref);
+pass(5) = isequal(get(w{1}.funs{1}, 'tech'), @chebtech2);
+
 % Compare solutions at final time.
-pass(5) = norm(u{6} - v{6}, inf) < tol;
+pass(6) = norm(u{6} - v{6}, inf) < tol;
+pass(7) = norm(w{6} - v{6}, inf) < tol;
+
+
 
 end

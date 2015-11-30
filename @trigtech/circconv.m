@@ -14,7 +14,7 @@ function f = circconv(f, g)
 %     h = circconv(f,g);
 %     plot(h);
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 %
 
@@ -50,15 +50,7 @@ g = circshift(g,-1);
 f.values = 2/n*ifft(fft(f.values).*fft(g.values));
 f.coeffs = f.vals2coeffs(f.values);
 
-% Update the vscale.
-f.vscale = max(abs(f.values), [], 1);
-
-% Scale the epslevel relative to the largest column:
-vscale = f.vscale;
-f.epslevel = 10*eps(max(f.vscale));
-vscale(vscale <= f.epslevel) = 1;
-f.epslevel = f.epslevel./vscale;
-
+% TODO:  Why do we simplify twice?  (Once here and once below.)
 f = simplify(f);
 
 f.ishappy = f.ishappy && g.ishappy;
@@ -67,7 +59,7 @@ f.isReal = f.isReal && g.isReal;  % Are you real happy though?
 f.values(:,f.isReal) = real(f.values(:,f.isReal));
 
 if ( f.ishappy )
-    f = simplify(f, f.epslevel);
+    f = simplify(f);
 end
 
 end

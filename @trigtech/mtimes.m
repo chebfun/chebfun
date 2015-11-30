@@ -7,7 +7,7 @@ function f = mtimes(f, c)
 %
 % See also TIMES.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty(f) || isempty(c) )     % TRIGTECH * [] = [].
@@ -37,26 +37,10 @@ elseif ( isa(c, 'double') )         % TRIGTECH * double.
     
     f.values = f.values*c;
     f.coeffs = f.coeffs*c;
-    f.isReal = repmat(all(f.isReal) & isreal(c),1,size(c,2));
-    
-    if ( numel(c) == 1 )
-        % See TRIGTECH CLASSDEF file for documentation on this.
-        f.vscale = f.vscale*abs(c);
-        f.epslevel = f.epslevel + eps;
-    else
-        % See TRIGTECH CLASSDEF file for documentation on this.
-        vscaleNew = max(abs(f.values), [], 1);
-        f.epslevel = ((f.epslevel.*f.vscale)*abs(c))./vscaleNew;
-        f.vscale = vscaleNew;
-
-        % Assume condition number 1.
-%         glob_acc = max(f.epslevel.*f.vscale);
-%         f.vscale = max(abs(f.values), [], 1);
-%         f.epslevel = glob_acc./f.vscale;
-    end
+    f.isReal = repmat(all(f.isReal) & isreal(c), 1, size(c, 2));
     
     % If the vertical scale is zero, set the TRIGTECH to zero:
-    if ( all(f.vscale == 0) )
+    if ( all(vscale(f) == 0) )
         f.values = zeros(1, size(f.values, 2));
         f.coeffs = zeros(1, size(f.values, 2));
     end

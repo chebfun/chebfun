@@ -8,7 +8,7 @@ function N = normal( F, varargin )
 %
 % See also CHEBFUN/NORMAL. 
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 N = cross( diff( F, 1, 2 ), diff( F, 1, 1 ) );

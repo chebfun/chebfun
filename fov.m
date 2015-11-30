@@ -41,7 +41,7 @@ function [f, lineSegs, theta] = fov(A, pref)
 %   e = eig(A);
 %   plot(complex(e), '*k'), hold off, axis equal
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin < 2 )

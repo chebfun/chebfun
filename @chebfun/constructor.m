@@ -34,7 +34,7 @@ function [funs, ends] = constructor(op, dom, data, pref)
 %
 % See also CHEBFUN, CHEBFUNPREF.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Initial setup:
@@ -227,28 +227,12 @@ while ( any(sad) )
     % Try to obtain happy child FUN objects on each new subinterval:
     [childLeft, happyLeft, data.vscale] = getFun(opk, [a, edge], data, pref);
     
-    % For the case where vscale is Inf due to blowup in the interior of the
-    % domain:
-    if ( isinf(data.vscale) )
-        % An infinite vscale doesn't help us at all, but ruin the consequential
-        % constructions at the lower levels:
-        data.vscale = 0;
-    end
-    
     if ( singDetect )
         % Extract the singularity information for this interval:
         data = getSingInfo(exps, singTypes, 2*k+1:2*k+2, data);
     end
     
     [childRight, happyRight, data.vscale] = getFun(opk, [edge, b], data, pref);
-    
-    % For the case where vscale is Inf due to blowup in the interior of the
-    % domain:
-    if ( isinf(data.vscale) )
-        % An infinite vscale doesn't help us at all, but ruin the consequential
-        % constructions at the lower levels:
-        data.vscale = 0;
-    end
     
     % Check for happiness/sadness:
     sad = [sad(1:k-1), ~happyLeft, ~happyRight, sad(k+1:end)];
@@ -295,7 +279,11 @@ g = fun.constructor(op, data, pref);
 ishappy = get(g, 'ishappy');
 
 % Update the vertical scale:
-vscale = max([data.vscale, get(g, 'vscale')]);
+if ( ishappy )
+    vscale = max([data.vscale, get(g, 'vscale')]);
+else
+    vscale = data.vscale;
+end
 
 end
 

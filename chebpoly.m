@@ -11,9 +11,9 @@ function f = chebpoly(n, d, kind)
 %   polynomials of the 1st kind, T_N(x)), when KIND = 1, and Chebyshev
 %   polynomials of the 2nd kind, U_N(x)), when KIND = 2.
 %
-% See also LEGPOLY, FOURPOLY, and CHEBPTS.
+% See also LEGPOLY, TRIGPOLY, and CHEBPTS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % TODO: Add support for 3rd and 4th kind polynomials?

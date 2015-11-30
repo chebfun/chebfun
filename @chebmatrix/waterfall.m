@@ -15,7 +15,7 @@ function varargout = waterfall(varargin)
 %
 % See also PLOT, PLOT3.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % % First input might be a figure handle:
@@ -60,6 +60,12 @@ h = cell(numRows, 1);
 colorData = {};
 holdState = ishold();
 
+% If we were given what looks like a system, create colordata
+if ( all(size(u) > 1) )
+    % Use default colors
+    col = get(0, 'DefaultAxesColorOrder');
+end
+
 % Loop over the rows:
 for k = 1:numRows
     
@@ -72,7 +78,7 @@ for k = 1:numRows
         elseif ( isnumeric(col) )
             colorData = {'edgecolor', col(k,:)};
         end
-    end 
+    end
     
     % Convert to a quasimatrix:
     uk = u.blocks(k,:);     % Get the blocks of this row.

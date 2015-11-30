@@ -14,7 +14,7 @@ function y = idst(u, type)
 %
 % See also CHEBFUN.DST, CHEBFUN.DCT, CHEBFUN.IDCT.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Default to kind 1:
@@ -34,16 +34,12 @@ switch type
     case 2
 
         % IDST-II is a scaled DST-III.
-        u(n, :) = 2 * u(n, :);
         y = ( 2 / n ) * chebfun.dst(u, 3); 
-        y(n, :) = y(n, :) / 2;
     
     case 3
         
         % IDST-III is a scaled DST-II:
-        u(n, :) = u(n, :) / 2;
         y = ( 2 / n ) * chebfun.dst(u, 2);
-        y(n, :) = 2 * y(n, :);
         
     case 4
         
@@ -67,8 +63,8 @@ switch type
         
     case 8
         
-%         error('CHEBFUN:CHEBFUN:IDST:EIGHT', 'Not implemented')
-        y = NaN;
+        error('CHEBFUN:CHEBFUN:IDST:EIGHT', 'Not implemented')
+%         y = NaN;
         
     otherwise
     

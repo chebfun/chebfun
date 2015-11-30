@@ -11,7 +11,7 @@ function c_jac = cheb2jac(c_cheb, alph, bet)
 %
 % See also JAC2CHEB.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -43,9 +43,9 @@ if ( N > 2^11 )
         'Maximum transform size (2048) is exceeded.');
 end
 if ( N <= 0 ), c_jac = c_cheb; return, end % Trivial case.
-f = dct1([c_cheb ; zeros(N, m)]);   % Values on 2*N+1 Chebyshev grid.
+f = chebtech2.coeffs2vals([c_cheb ; zeros(N, m)]); % Values on 2*N+1 Cheb grid.
 % 2*N+1 Chebyshev grid (reversed order) and Clenshaw-Curtis-Jacobi weights:
-[w, x] = ccjQuadwts(2*N+1, a, b); w = fliplr(w); x = flipud(x);
+[w, x] = ccjQuadwts(2*N+1, a, b); 
 
 % Make the Jacobi-Chebyshev Vandemonde matrix:
 apb = a + b; aa  = a * a; bb  = b * b;
@@ -81,18 +81,6 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%% DCT METHODS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function v = dct1(c)
-%DCT1   Compute a (scaled) DCT of type 1 using the FFT. 
-% DCT1(C) returns T_N(X_N)*C, where X_N = cos(pi*(0:N))/N and T_N(X) = [T_0,
-% T_1, ..., T_N](X) where T_k is the kth 1st-kind Chebyshev polynomial.
-N = size(c, 1);                     % Number of terms.
-ii = N-1:-1:2;                      % Indicies of interior coefficients.
-c(ii,:) = 0.5*c(ii,:);              % Scale interior coefficients.
-v = ifft([c ; c(ii,:)]);            % Mirror coefficients and call FFT.
-v = (N-1)*[ 2*v(N,:) ; v(ii,:) + v(2*N-ii,:) ; 2*v(1,:) ]; % Re-order.
-v = flipud(v);                      % Flip the order.
-end
 
 function [w, x] = ccjQuadwts(n, a, b)
 %CCJQUADWTS   Clenshaw-Curtis-Jacobi quadrature weights.

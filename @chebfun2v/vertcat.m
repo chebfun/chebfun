@@ -8,7 +8,7 @@ function F = vertcat( F , G )
 %   scalar then returns a CHEBFUN2V with three components. The first is f, and
 %   the second and third are the first and second components of F.
 
-% Copyright 2014 by The University of Oxford and The Chebfun2 Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun2 Developers.
 % See http://www.chebfun.org/ for Chebfun2 information.
 
 if ( isempty( F ) || isempty( G ) )

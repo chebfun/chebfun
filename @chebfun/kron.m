@@ -14,12 +14,13 @@ function h = kron(f, g, varargin)
 % This is function analogue of the MATLAB command KRON.
 %
 % H = KRON(F, G, 'op') or H = KRON(F, G, 'operator') if size(F) = [Inf, K] and
-% size(G) = [K, Inf], results in a rank-k CHEBMATRIX A such that A*U = F*(G*U)
+% size(G) = [K, Inf], results in a rank-k OPERATORBLOCK A such that 
+%   A*U = F*(G*U)
 % for any CHEBFUN U.
 %
 % See also KRON.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 assert( isa(f, 'chebfun') && isa(g, 'chebfun'), ...
@@ -57,29 +58,34 @@ if ( nargin <= 2 )
     end
     
 elseif ( nargin == 3 )
-    % Historically, this used to be called by F*G', where F and G where two
-    % CHEBFUNs.  Thus functionality has been moved to here since F*G' now
-    % returns a low rank CHEBFUN2.
+    % Developers note: Historically, this used to be called by F*G', where F and
+    % G where two CHEBFUNs.  Thus functionality has been moved to here since
+    % F*G' now returns a low rank CHEBFUN2. Also, we haven't come across an
+    % application for this method for quasimatrices (rather than array valued
+    % chebfuns), which is why we allow us just to throw an error in that case.
     
     assert( strcmpi(varargin{1}, 'op') || strcmpi(varargin{1}, 'operator'), ...
         'CHEBFUN:CHEBFUN:kron:opts', ...
         'Unrecognized optional parameter.');
 
-    h = 0;
     assert( all(fDom == gDom), ...
         'CHEBFUN:CHEBFUN:kron:domain',...
         'Domains must be identical for Kronecker products returning operators.')
+
+    assert( (numel(f) == 1) && (numel(g) == 1), ...
+        'CHEBFUN:CHEBFUN:kron:quasimatrix', ...
+        ['chebfun/kron with an operator output currently only supports ' ...
+         'array-valued chebfuns, not quasimatrices.'])
+     
+    assert( isinf(mf) && isinf(ng) , ...
+        'CHEBFUN:CHEBFUN:kron:columnsAndRows', ...
+        ['chebfun/kron with an operator output only supports inputs such ' ...
+         'that the first input is a column chebfun, and the second is a ' ...
+         'row chebfun.'])
     
-    for i = 1:size(numel(f))
-        fi = f(:, i);
-        gi = g(:, i);
-        
-        assert( numColumns(fi) == numColumns(gi), ...
-            'CHEBFUN:CHEBFUN:kron:nomColumns', ...
-            'The number of columns in input CHEBFUNs must agree');
-        
-        h = h + operatorBlock.outer(fi, gi, fDom);
-    end
+    % Construct the OPERATORBLOCK to be returned:
+    h = operatorBlock.outer(f, g, fDom);
+
 else
     error('CHEBFUN:CHEBFUN:kron:nargin','Too many input arguments.');
 end

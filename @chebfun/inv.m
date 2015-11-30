@@ -16,7 +16,7 @@ function g = inv(f, varargin)
 %   CHEBFUNPREF object PREF when constructing the inverse.
 %
 %   FINV = INV(..., 'EPS', TOL) will construct with the relative tolerance set
-%   by TOL.  If no tolerance is passed, TOL = EPSLEVEL(F) is used.
+%   by TOL.  If no tolerance is passed, TOL = EPS is used.
 %
 %   FINV = INV(..., 'SPLITTING', 'ON') enables breakpoint detection locally for
 %   INV.  Setting this option (or the equivalent preference in PREF) is
@@ -38,7 +38,7 @@ function g = inv(f, varargin)
 %
 % See also ROOTS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % No quasimatrix support:
@@ -97,7 +97,7 @@ end
 function [tol, opts, pref] = parseInputs(f, varargin)
 
 % Default options:
-tol = epslevel(f);
+tol = eps;
 opts.monoCheck = false;
 opts.rangeCheck = false;
 opts.algorithm = 6; % Default  = brent's method.

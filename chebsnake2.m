@@ -24,7 +24,7 @@ function chebsnake2( f, nodes, alfa )
 %
 % See also CHEBSNAKE, CHEBTUNE.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % TODO: This code needs to be cleaned up. A lot.
@@ -127,11 +127,11 @@ while (d ~= 0), % until quit
     go = plot(.7*scribble('ready?'), 'r', LW, lw);
     shg
     pause(1)
-    delete(go(~isnan(go)));
+    delete(go);
     go = plot(.4*scribble('go!'), 'r', LW, lw);
     shg
     pause(.5)
-    delete(go(~isnan(go)));
+    delete(go);
 
     while ( d ~= 0 )                     % until game over or quit
         
@@ -158,21 +158,20 @@ while (d ~= 0), % until quit
         end
         
         for k = 1:numel(hs1)
-            if ( isnan(hs1(k)) )
-                continue
-            end
             delete(hs1(k));
         end
         
         hs1 = plot3(real(c), imag(c), f(real(c), imag(c)), 'b-', LW, lw);
-        delete(hs2, hs1s, hs2s);
+        delete(hs2);
+        delete(hs1s);
+        delete(hs2s);
         hs2 = [plot3(real(y(1:end-1)), imag(y(1:end-1)), f(real(y(1:end-1)), ...
             imag(y(1:end-1))), 'bo', 'MarkerFaceColor', 'b', LW, lw), ...
             plot3(real(y(end)), imag(y(end)), f(real(y(end)), imag(y(end))), ...
             'bo', LW, lw)];
         hs1s = plot(c, 'k-', LW, lw/2);
         hs2s = plot(y, 'k.', LW, lw/2);
-        shg
+        drawnow;
         
         tic
         % check if the snake hits itself or the boundary
@@ -201,7 +200,7 @@ while (d ~= 0), % until quit
                 up = plot(.8*scribble('1 up!'), 'r', LW, lw);
                 chebtune(lv, 1);
                 shg; pause(1);
-                delete(up(~isnan(up)));
+                delete(up);
             end
             title(['Points : ' num2str(pts) '       Level : ' num2str(lvl) ...
                 '       Lives: ' num2str(failmax-fails)], 'color', 'k');
@@ -221,9 +220,6 @@ while (d ~= 0), % until quit
     end
     
     for k = 1:numel(ht)
-        if ( isnan(ht(k)) )
-            continue
-        end
         delete(ht(k));
     end
     

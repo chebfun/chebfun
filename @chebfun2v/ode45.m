@@ -32,7 +32,7 @@ function varargout = ode45(F,tspan,init,varargin)
 %  events occurred. Columns of SOL.y are the corresponding solutions, and
 %  indices in vector SOL.ie specify which event occurred.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % [TODO: When using events the default tolerance should be machine precision.]

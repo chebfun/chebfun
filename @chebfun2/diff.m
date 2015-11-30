@@ -1,5 +1,5 @@
-function F = diff(F, k, dim)
-%DIFF   Derivative of a CHEBFUN2s.
+function varargout = diff(varargin)
+%DIFF   Derivative of a CHEBFUN2 object.
 %   DIFF(F) is the derivative of F along the y direction.
 %
 %   DIFF(F, N) is the Nth derivative of F in the y direction.
@@ -14,37 +14,9 @@ function F = diff(F, k, dim)
 %
 % See also GRADIENT, SUM, PROD.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Empty check:
-if ( isempty(F) )
-    return
-end
-
-% Default to first derivative:
-if ( nargin < 2 )
-    k = 1;
-end
-
-% Default to partial derivative in y:
-if ( nargin < 3 )
-    dim = 1;
-elseif ( numel(dim) ~= 1 )
-    error('CHEBFUN:CHEBFUN2:diff:dim1', 'Dim should be either 1 or 2.');
-end
-
-% Diff the individual column and row slices:
-if ( numel(k) == 2 && nargin < 3 )
-   F.cols =  diff(F.cols, k(2));
-   F.rows = diff(F.rows, k(1));
-elseif ( dim == 1 )
-    F.cols = diff(F.cols, k);
-elseif ( dim == 2 )
-    F.rows = diff(F.rows, k);
-else 
-    error('CHEBFUN:CHEBFUN2:diff:dim2', ...
-        'Can compute derivative in x or y only.');
-end
+[varargout{1:nargout}] = diff@separableApprox(varargin{:});
 
 end

@@ -1,4 +1,4 @@
-function [infixOut, varArray] = tree2infix(tree, eqno, indexStart)
+function [infixOut, varArray] = tree2infix(tree, eqno, indexStart, isCoeffFun)
 %TREE2INFIX   Convert a syntax tree to infix form.
 %   Calling sequence:
 %      [OUT, VARCOUNTER, VARARRAY] = TREE2INFIX(TREE, EQNO, INDEXSTART)
@@ -15,7 +15,7 @@ function [infixOut, varArray] = tree2infix(tree, eqno, indexStart)
 %                  identifiers of variables (CHEBFUNs or scalars) that appear in
 %                  the equation we're currently converting to infix form.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % If the TREE is empty, do nothing.
@@ -34,12 +34,12 @@ varArray = [];
 
 % Start the recursive call for converting a syntax tree to infix form.
 [infixOut, varCounter, varArray] = ...
-    toInfix(tree, eqno, indexStart, varCounter, varArray);
+    toInfix(tree, eqno, indexStart, varCounter, varArray, isCoeffFun);
 end
 
 
 function [out, varCounter, varArray] = ...
-    toInfix(tree, eqno, indexStart, varCounter, varArray)
+    toInfix(tree, eqno, indexStart, varCounter, varArray, isCoeffFun)
 %TOINFIX   Recursively convert syntax tree of infix form.
 
 % Check whether we're converting a syntax tree to infix form, or whether we're
@@ -63,7 +63,7 @@ switch numArgs
         % CHEBFUN. Generate a string so that we can include it as a variable
         % later in the conversion process.
         [out, varArray, varCounter] = ...
-                scalarChebfunInfix(eqno, varCounter, tree, varArray);
+            scalarChebfunInfix(eqno, varCounter, tree, varArray, isCoeffFun);
     case 0
         % We've hit the TREEVAR constructor level. Return a string containing
         % the name of the dependent variable -- u -- and its index.
@@ -71,7 +71,7 @@ switch numArgs
     case 1
         % Unary operator tree, convert it recursively to a infix form string.
         [tempOut, varCounter, varArray] = ...
-            toInfix(tree.center, eqno, indexStart, varCounter, varArray);
+            toInfix(tree.center, eqno, indexStart, varCounter, varArray, isCoeffFun);
         % Generate a string using the information obtained above, and return it.
         out = sprintf('%s(%s)', tree.method, tempOut);
     case 2
@@ -90,23 +90,23 @@ switch numArgs
         if ( isstruct(tree.left) )
             % Left child node is a tree, convert it recursively to infix form.
             [leftInfix, varCounter, varArray] = ...
-                toInfix(tree.left, eqno, indexStart, varCounter, varArray);
+                toInfix(tree.left, eqno, indexStart, varCounter, varArray, isCoeffFun);
         else
             % Left child node is a CHEBFUN/scalar, generate an infix string we
             % can use later in the process.
             [leftInfix, varArray, varCounter] = ...
-                scalarChebfunInfix(eqno, varCounter, tree.left, varArray);
+                scalarChebfunInfix(eqno, varCounter, tree.left, varArray, isCoeffFun);
         end
         
         if ( isstruct(tree.right) )
             % Right child node is a tree, convert it recursively to infix form.
             [rightInfix, varCounter, varArray] = ...
-                toInfix(tree.right, eqno, indexStart, varCounter, varArray);
+                toInfix(tree.right, eqno, indexStart, varCounter, varArray, isCoeffFun);
         else
             % Left child node is a CHEBFUN/scalar, generate an infix string we
             % can use later in the process.
             [rightInfix, varArray, varCounter] = ...
-                scalarChebfunInfix(eqno, varCounter, tree.right, varArray);
+                scalarChebfunInfix(eqno, varCounter, tree.right, varArray, isCoeffFun);
         end
         
         % Combine the infix forms of the left and right nodes into one string on
@@ -118,7 +118,7 @@ end
 end
 
 function [infixOut, varArray, varCounter] = ...
-    scalarChebfunInfix(eqno, varCounter, tree, varArray)
+    scalarChebfunInfix(eqno, varCounter, tree, varArray, isCoeffFun)
 %SCALARCHEBFUNINFIX   Convert a scalar/CHEBFUN expression to infix form.
 %   A scalar/CHEBFUN expression is one that only contains a scalar or CHEBFUN.
 
@@ -129,10 +129,17 @@ varName = sprintf('eq%i_var%i', eqno, varCounter);
 if ( isnumeric(tree) )
     % The left tree is a scalar.
     infixOut = varName;
-else
-    % The left tree must be a chebfun -- need to be able to evaluate it on
-    % gridpoints
-    infixOut = [varName, '(t)'];
+    
+% Otherwise, the tree must be a CHEBFUN. However, we need to treat it
+% differently depending on whether it appears in the coeffFun (i.e., if we are
+% obtaining the coefficient multiplying the highest order derivative) or not. In
+% the first case, we want to compose it, so that we get a new CHEBFUN that can
+% be evaluated later at an arbitrary time. In the second case, we'll simply want
+% to evaluate the CHEBFUN at given gridpoints.
+elseif ( isCoeffFun ) 
+    infixOut = ['compose(t,', varName, ')'];
+elseif ( ~isCoeffFun )
+    infixOut = ['feval(', varName, ',t)'];
 end
 
 % Add the name and value of the current variable to the VARARRAY cell.

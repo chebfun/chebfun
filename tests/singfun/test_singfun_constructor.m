@@ -34,7 +34,7 @@ g = singfun(fh, data, pref);
 pass(1) = isequal(f,g);
 pass(2) = ~any(f.exponents + [a,b]);
 pass(3) = ~any(g.exponents + [a,b]);
-pass(4) = norm(feval(fh,x) - feval(f,x), inf) < 1e2*get(f, 'epslevel');
+pass(4) = norm(feval(fh,x) - feval(f,x), inf) < 1e2*eps;
 
 %%
 % Positive fractional exponents
@@ -48,7 +48,7 @@ g = singfun(fh, data, pref);
 pass(5) = isequal(f,g);
 pass(6) = ~any(f.exponents - [a,b]);
 pass(7) = ~any(g.exponents - [a,b]);
-pass(8) = norm(feval(fh,x) - feval(f,x), inf) < 1e1*get(f, 'epslevel');
+pass(8) = norm(feval(fh,x) - feval(f,x), inf) < 1e1*eps;
 
 %%
 % Negative integer exponents
@@ -64,7 +64,7 @@ pass(10) = ~any(f.exponents + [a_int, b_int]);
 pass(11) = ~any(g.exponents + [a_int, b_int]);
 % don't check near end-points
 xx = x(20:80);
-pass(12) = norm(feval(fh,xx) - feval(f,xx), inf) < 1e2*get(f, 'epslevel');
+pass(12) = norm(feval(fh,xx) - feval(f,xx), inf) < 1e2*eps;
 
 %% Test Syntax and construction when the user doesn't provide exponents
 %
@@ -72,22 +72,23 @@ pass(12) = norm(feval(fh,xx) - feval(f,xx), inf) < 1e2*get(f, 'epslevel');
 fh = @(x) exp(sin(x))./((1+x).^a.*(1-x).^b);
 f = singfun(fh);
 pass(13) = norm(f.exponents + [a,b], inf) < pref.blowupPrefs.exponentTol;
-pass(14) = norm(feval(fh,x) - feval(f,x), inf) < 1e3*get(f, 'epslevel');
-
+pass(14) = norm(feval(fh,x) - feval(f,x), inf) < 1e5*eps;
+    
 %%
 % Positive fractional exponents
 fh = @(x) sin(exp(cos(x))).*(1+x).^a.*(1-x).^b;
 f = singfun(fh);
 pass(15) = norm(f.exponents - [a,b], inf) < pref.blowupPrefs.exponentTol;
-pass(16) = norm(feval(fh,x) - feval(f,x), inf) < 1e1*get(f, 'epslevel');
-
+pass(16) = norm(feval(fh,x) - feval(f,x), inf) < 1e4*eps;
+    
 %%
 % Negative integer exponents
 fh = @(x) exp(sin(x.^2))./((1+x).^a_int.*(1-x).^b_int);
 f = singfun(fh);
 pass(17) = norm(f.exponents + [a_int, b_int], inf) < pref.blowupPrefs.exponentTol;
 xx = x(20:80);
-pass(18) = norm(feval(fh,xx) - feval(f,xx), inf) < 5e1*get(f, 'epslevel');
+pass(18) = norm(feval(fh,xx) - feval(f,xx), inf) < 1e3*eps;
+
 
 %%
 % Construction with smoothfuns:

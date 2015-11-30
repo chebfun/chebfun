@@ -11,27 +11,22 @@ function varargout = ode15s(varargin)
 %
 %   Note that CHEBFUN/ODE15S() uses a default RELTOL of 1e-6.
 %
+%   It is possible to pass a MATLAB ODESET struct to this method for specifying
+%   options. The CHEBFUN overloads of the MATLAB ODE methods allow an extra
+%   option, 'restartSolver', which if set to TRUE, will restart the ODE solver
+%   at every breakpoint encountered.
+%
 % Example:
 %   y = chebfun.ode15s(@vdp1000, [0, 3000], [2; 0]); % Solve Van der Pol problem
 %   roots(y(:,1) - 1);                               % Find when y = 1
 %
 % See also ODESET, ODE113, ODE45,
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Call the built in ODE15S():
-sol = ode15s(varargin{:});
+% Call the CONSTRUCTODESOL method, with ode15s specified as the solver:
+[varargout{1:nargout}] = chebfun.constructODEsol(@ode15s, varargin{:});
 
-% Convert solution to a CHEBFUN:
-[t, y] = chebfun.odesol(sol, varargin{2}); 
-
-% Output in a consistent way with the built in routine:
-if ( nargout == 1 )
-    % Only y will be returned in this case.
-    varargout = {y};
-else
-    varargout = {t, y};
-end
 
 end

@@ -5,7 +5,7 @@ function out = sum(g)
 %
 % See also CUMSUM, DIFF.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Get the domain.
@@ -24,15 +24,15 @@ g.onefun = cancelExponents(g.onefun);
 % the domain can be infinite.
 vends = [get(g, 'lval'); get(g, 'rval')];
 
-% Get the epslevel and vscale of the function g.
-tol = get(g, 'epslevel').*get(g, 'vscale');
+% Set a tolerance based on the vscale of g:
+tol = eps*get(g, 'vscale');
 
 % A dirty checklist:
 
 % Check 1: Check if the function values are vanishing at infinity/ies.
 unbounded = zeros(2, size(g, 2));
-maskLeft = ( abs(vends(1, :)) > 1e4*tol );
-maskRight = ( abs(vends(2, :)) > 1e4*tol );
+maskLeft = ( abs(vends(1, :)) > 1e5*tol );
+maskRight = ( abs(vends(2, :)) > 1e5*tol );
 
 % Mark the endpoints where function is not decaying fast enough:
 if ( isinf(dom(1)) && any( maskLeft ) )
@@ -123,7 +123,7 @@ function y = unbndfunIntegrand(x, g)
 %   This function is meant to be used to create a ONEFUN for the integrand,
 %   which can then be integrated with the ONEFUN's implementation of SUM.
 
-tol = 10*get(g, 'epslevel').*get(g, 'vscale');
+tol = 10*eps*get(g, 'vscale');
 y = feval(g, g.mapping.For(x));
 y(abs(y) < repmat(tol, size(y, 1), 1)) = 0;
 y = y.*repmat(g.mapping.Der(x), 1, size(y, 2));

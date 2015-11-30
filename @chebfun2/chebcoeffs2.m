@@ -1,14 +1,14 @@
 function varargout = chebcoeffs2(f)
 %CHEBCOEFFS2    Bivariate Chebyshev coefficients
 %   X = CHEBCOEFFS2(F) returns the matrix of bivariate coefficients such that
-%       F= sum_i ( sum_j X(i,j) T_i(y) T_j(x) ). 
+%       F= sum_{i=0}^{n-1} ( sum_{j=0}^{n-1} X(i+1,j+1) T_i(y) T_j(x) ).
 %
 %   [A, D, B] = CHEBCOEFFS2( f ) returns the same coefficients keeping them in
 %   low rank form, i.e., X = A * D * B'.
 %
 % See also PLOTCOEFFS2, CHEBCOEFFS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty(f) )

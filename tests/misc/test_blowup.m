@@ -22,7 +22,7 @@ try
     f = chebfun(@(x) F(x) , [-1 1]);
     x = .9*linspace(-1, 1, 20);
     err = norm(f(x) - F(x), inf);
-    tol = 1e2*epslevel(f).*vscale(f);
+    tol = 1e2*eps*vscale(f);
     pass(4) = err < tol;
     
     p2 = chebfunpref();
@@ -36,7 +36,7 @@ try
     f = chebfun(@(x) F(x) , [-1 1]);
     x = .9*linspace(-1, 1, 20);
     err = norm(f(x) - F(x), inf);
-    tol = 1e2*epslevel(f).*vscale(f);
+    tol = 1e2*eps*vscale(f);
     pass(8) = err < tol;
 
     pass(9) = blowup('off') == 2;

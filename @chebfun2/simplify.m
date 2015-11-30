@@ -1,17 +1,13 @@
-function f = simplify( f ) 
+function varargout = simplify(varargin)
 % Simplify a CHEBFUN2
-% 
+%
 % F = SIMPLIFY( F ) compressed the representation of F to one that is
 % numerically the same, but requires fewer parameters to store. Currently this
-% simplifies the polynomial degree of F, but not the rank. 
+% simplifies the polynomial degree of F, but not the rank.
 
-% Copyright 2014 by The University of Oxford and The Chebfun2 Developers.
-% See http://www.chebfun.org/ for Chebfun2 information.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
-% Simplify the column and row slices. 
-f.cols = simplify( f.cols ); 
-f.rows = simplify( f.rows ); 
+[varargout{1:nargout}] = simplify@separableApprox(varargin{:});
 
-% TODO: Simplify the rank 
-
-end 
+end

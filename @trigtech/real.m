@@ -4,7 +4,7 @@ function f = real(f)
 %
 % See also ISREAL, IMAG, CONJ.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % If f is real then there is nothing to do:
@@ -14,13 +14,10 @@ end
 
 % Compute the real part of the values and update vscale:
 f.values = real(f.values);
-f.vscale = max(abs(f.values), [], 1);
 
 if ( ~any(f.values(:)) )
     % Input was imaginary, so output a zero TRIGTECH:
-    data.vscale = f.vscale;
-    data.hscale = f.hscale;
-    f = f.make(zeros(1, size(f.values, 2)), data);
+    f = f.make(zeros(1, size(f.values, 2)));
     f.ishappy = 1;
 else
     % Compute the coefficients.

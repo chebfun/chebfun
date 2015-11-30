@@ -23,30 +23,32 @@ f = bndfun(@(x) exp(x/10) - 1, struct('domain', dom), pref);
 F = cumsum(f);
 F_ex = @(x) 10*exp(x/10) - x;
 err = feval(F, x) - F_ex(x);
-pass(1) = (norm(diff(err), inf) < 100*get(f, 'vscale')*get(f, 'epslevel')) ...
-    && (abs(feval(F, a)) <= get(f, 'vscale')*get(f, 'epslevel'));
+pass(1) = (norm(diff(err), inf) < 100*get(f, 'vscale')*eps) ...
+    && (abs(feval(F, a)) <= get(f, 'vscale')*eps);
 
 f = bndfun(@(x) 1./(1 + x.^2), struct('domain', dom), pref);
 F = cumsum(f);
 F_ex = @(x) atan(x);
 err = feval(F, x) - F_ex(x);
-pass(2) = (norm(diff(err), inf) < 100*get(f, 'vscale')*get(f, 'epslevel')) ...
-    && (abs(feval(F, a)) <= get(f, 'vscale')*get(f, 'epslevel'));
+pass(2) = (norm(diff(err), inf) < 1e3*get(f, 'vscale')*eps) ...
+    && (abs(feval(F, a)) <= 1e1*get(f, 'vscale')*eps);
+    
 
 f = bndfun(@(x) cos(1e4*x), struct('domain', dom), pref);
 F = cumsum(f);
 F_ex = @(x) sin(1e4*x)/1e4;
 err = feval(F, x) - F_ex(x);
-pass(3) = (norm(diff(err), inf) < 200*get(f, 'vscale')*get(f, 'epslevel')) ...
-    && (abs(feval(F, a)) <= get(f, 'vscale')*get(f, 'epslevel'));
+pass(3) = (norm(diff(err), inf) < 1e3*get(f, 'vscale')*eps) ...
+    && (abs(feval(F, a)) <= 1e1*get(f, 'vscale')*eps);
+    
 
 z = exp(2*pi*1i/6);
 f = bndfun(@(t) sinh(t*z), struct('domain', dom), pref);
 F = cumsum(f);
 F_ex = @(t) cosh(t*z)/z;
 err = feval(F, x) - F_ex(x);
-pass(4) = (norm(diff(err), inf) < 100*get(f, 'vscale')*get(f, 'epslevel')) ...
-    && (abs(feval(F, a)) <= get(f, 'vscale')*get(f, 'epslevel'));
+pass(4) = (norm(diff(err), inf) < 100*get(f, 'vscale')*eps) ...
+    && (abs(feval(F, a)) <= get(f, 'vscale')*eps);
 
 %%
 % Check that applying cumsum() and direct construction of the antiderivative
@@ -56,8 +58,9 @@ f = bndfun(@(x) sin(4*x).^2, struct('domain', dom), pref);
 F = bndfun(@(x) 0.5*x - 0.0625*sin(8*x), struct('domain', dom), pref);
 G = cumsum(f);
 err = feval(G - F, x);
-pass(5) = (norm(diff(err), inf) < 10*get(f, 'vscale')*get(f, 'epslevel')) && ...
-    (abs(feval(G, a)) < 10*get(f, 'vscale')*get(f, 'epslevel'));
+pass(5) = (norm(diff(err), inf) < 1e2*get(f, 'vscale')*eps) && ...
+    (abs(feval(G, a)) < 1e2*get(f, 'vscale')*eps);
+    
 
 %%
 % Check that diff(cumsum(f)) == f and that cumsum(diff(f)) == f up to a
@@ -65,11 +68,11 @@ pass(5) = (norm(diff(err), inf) < 10*get(f, 'vscale')*get(f, 'epslevel')) && ...
 
 f = bndfun(@(x) x.*(x - 1).*sin(x), struct('domain', dom), pref);
 g = diff(cumsum(f));
-tol_f = 10*get(f, 'vscale')*get(f, 'epslevel');
-tol_g = 10*get(g, 'vscale')*get(g, 'epslevel');
+tol_f = 10*get(f, 'vscale')*eps;
+tol_g = 10*get(g, 'vscale')*eps;
 
 err = feval(f, x) - feval(g, x);
-pass(6) = (norm(diff(err), inf) < 10*max(tol_f, tol_g));
+pass(6) = (norm(diff(err), inf) < 1e2*max(tol_f, tol_g));
 h = cumsum(diff(f));
 err = feval(f, x) - feval(h, x);
 pass(7) = (norm(diff(err), inf) < 10*max(tol_f, tol_g) && ...
@@ -84,8 +87,8 @@ F_exact = bndfun(@(x) [-cos(x) x.^3/3 exp(1i*x)/1i], struct('domain', dom), ...
 F = cumsum(f);
 err = feval(F, x) - feval(F_exact, x);
 pass(8) = (norm(diff(err), inf) < ...
-    10*max(get(f, 'vscale').*get(f, 'epslevel'))) && ...
-    all(abs(feval(F, a)) < max(get(f, 'vscale').*get(f, 'epslevel')));
+    10*max(get(f, 'vscale')*eps)) && ...
+    all(abs(feval(F, a)) < max(get(f, 'vscale')*eps));
 
 %% Test on singular function:
 pref.blowup = true;
@@ -102,7 +105,8 @@ vals_g = feval(g, x);
 g_exact = @(x) (x-a).^(pow+1)./(pow+1);
 vals_exact = feval(g_exact, x);
 err = vals_g - vals_exact;
-pass(9) = ( norm(err, inf) < 10*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(9) = ( norm(err, inf) < 1e2*eps*norm(vals_exact, inf) );
+    
 
 % Singularities at both endpoints:
 mid = mean(dom);
@@ -133,8 +137,8 @@ vals_exact1 = feval(g_exact1, x1);
 vals_exact2 = feval(g_exact2, x2);
 err1 = norm(vals_g1 - vals_exact1, inf);
 err2 = norm(vals_g2 - vals_exact2, inf);
-tol1 = 1e3*get(g{1},'epslevel')*norm(vals_exact1, inf);
-tol2 = 1e7*get(g{2},'epslevel')*norm(vals_exact2, inf);
+tol1 = 1e3*eps*norm(vals_exact1, inf);
+tol2 = 1e7*eps*norm(vals_exact2, inf);
 
 pass(10) = (err1 < tol1) && (err2 < tol2);
 

@@ -7,7 +7,7 @@ function printOptions(fid, expInfo)
 %   FID:        ID of a file-writing stream.
 %   EXPINFO:    Struct containing information for printing the problem.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Extract info from the expInfo struct:
@@ -30,7 +30,7 @@ fprintf(fid, '%% Specify the IVP solver to use. Possible options are:\n');
 fprintf(fid, '%%   Time-stepping solvers:\n');
 fprintf(fid, '%%     ''ode113'' (default), ''ode15s'' or ''ode45''.\n');
 fprintf(fid, '%%   Global methods:\n');
-fprintf(fid, '%%     ''collocation'' or ''ultraspherical''.\n');
+fprintf(fid, '%%     ''values'' or ''coefficients''.\n');
 fprintf(fid, 'options.ivpSolver = ''%s'';\n', ivpSolver);
 
 % We'll need different preferences depending on whether we're applying a global
@@ -56,14 +56,9 @@ else
     end
     
     % Option for discretization:
-    fprintf(fid, ['\n%% Option for discretization (either ''collocation'' ' ...
-        'or ''ultraspherical'').\n']);
-    if ( isa(discretization(), 'colloc') )
-        discString = 'collocation';
-    else
-        discString = 'ultraspherical';
-    end
-    fprintf(fid, 'options.discretization = ''%s'';\n', discString);
+    fprintf(fid, ['\n%% Option for discretization (either ''values'' ' ...
+        'or ''coeffs'').\n']);
+    fprintf(fid, 'options.discretization = ''%s'';\n', ivpSolver);
     
     % Plot during Newton iteration?
     if ( ~strcmp(plotting, 'off') )

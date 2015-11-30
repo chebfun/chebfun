@@ -10,7 +10,7 @@ function v = integral( F, c )
 %
 %   where the curve C is parameterised by the complex curve r(t).  
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information. 
 
 if ( F.nComponents == 3 )
@@ -20,7 +20,7 @@ end
 
 % Get tolerance we think things can be resolved to: 
 pref = chebfunpref(); 
-pref.techPrefs.eps = get(c, 'epslevel').*get(c, 'vscale'); 
+pref.techPrefs.eps = eps*vscale(c);
 % Restrict to the chebfun domains: 
 F1_handle = @(t) feval(F.components{1}, real(c(t)), imag(c(t)));
 F2_handle = @(t) feval(F.components{2}, real(c(t)), imag(c(t)));

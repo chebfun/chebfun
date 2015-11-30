@@ -10,7 +10,7 @@ function [Q, R] = qr(A, econ)
 %
 % See also SVD, MRDIVIDE, RANK.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -112,7 +112,7 @@ A = simplify(A);
     
 % Get some useful values
 numCols = numColumns(A);
-tol = epslevel(A)*vscale(A);
+tol = eps*vscale(A);
 dom = A.domain;
 a = dom(1);
 b = dom(end);

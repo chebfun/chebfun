@@ -15,7 +15,7 @@ function f = compose(f, op, g, data, pref)
 %   particular, one can set PREF.REFINEMENTFUNCTION to be a function which takes
 %   advantage of F and possibly OP or G being TRIGTECH objects.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Parse inputs:
@@ -37,7 +37,7 @@ end
 
 % Set some preferences:
 pref.minSamples = max(pref.minSamples, length(f));
-pref.eps = max(pref.eps, f.epslevel);
+pref.eps = max(pref.eps, eps);
 pref.sampleTest = false;
 
 if ( nfuns == 2 )
@@ -48,7 +48,6 @@ if ( nfuns == 2 )
 
     % Grab some data from G:
     pref.minSamples = max(pref.minSamples, length(g));
-    pref.eps = max(pref.eps, g.epslevel);
     
 elseif ( isa(op, 'trigtech') )
     % If OP is a TRIGTECH, we grab some of its data:
@@ -63,7 +62,6 @@ elseif ( isa(op, 'trigtech') )
     end
 
     pref.minSamples = max(pref.minSamples, length(op));
-    pref.eps = max(pref.eps, op.epslevel);
     
 end
 
@@ -76,13 +74,10 @@ if ( ischar(pref.refinementFunction) )
     end
 end
 
-if ( ~isfield(data, 'hscale') || isempty(data.hscale) )
-    data.hscale = f.hscale;
-end
 f = f.make(op, data, pref);
 
 % Throw a warning:
-if ( ~f.epslevel )
+if ( ~f.ishappy )
     warning('TRIGTECH:TRIGTECH:compose:convfail', ...
         [ 'Composition with ', func2str(op), ...
           ' failed to converge with ', int2str(length(f)), ' points.' ]);

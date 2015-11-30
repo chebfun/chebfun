@@ -1,7 +1,7 @@
 % Test file for @chebfun/remez.m.
 % Based on the Chebfun v4 test written by LNT, March. 27, 2009.
 
-function pass = remeztest(pref)
+function pass = test_remez(pref)
 
 % Generate a few random points to use as test values.
 seedRNG(6178);
@@ -39,5 +39,11 @@ f = abs(x);
 pbest = remez(f, 3);
 pbest_exact = x.^2 + 1/8;
 pass(5) = norm(pbest(xx) - pbest_exact(xx), inf) < 10*eps;
+
+% Test a zero function (#1656)
+f = 0*x;
+pbest = remez(f, 2);
+pbest_exact = 0*x;
+pass(6) = norm(pbest(xx) - pbest_exact(xx), inf) < 10*eps;
 
 end

@@ -5,7 +5,7 @@ function varargout = semilogy(varargin)
 %
 % See also PLOT, SEMILOGX, LOGLOG.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Standard CHEBFUN/PLOT():
@@ -13,8 +13,8 @@ function varargout = semilogy(varargin)
 
 % Find the CHEBFUNS:
 isCheb = cellfun(@(v) isa(v, 'chebfun'), varargin);
-% Choose a TOL based on epslevels and vscale:
-tol = max(cellfun(@(f) max(epslevel(f).*vscale(f)), varargin(isCheb)));
+% Choose a TOL based on vscale:
+tol = max(cellfun(@(f) max(eps*vscale(f)), varargin(isCheb)));
 % Loop over the different plot components:
 for j = 1:numel(h)
     % Get the y data:

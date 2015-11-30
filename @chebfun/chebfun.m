@@ -25,6 +25,10 @@ classdef chebfun
 %   CHEBFUN(@(x) abs(x), [-1, 0, 1]).
 % If a domain is passed to the constructor, it should always be the 2nd input.
 %
+% CHEBFUN(F, N) constructs a CHEBFUN object obtained by interpolating F on an N
+% point Chebyshev grid of the second kind in [-1,1]. Note that this is
+% different from CHEBFUN(F, 'trunc', N), which is described below.
+% 
 % CHEBFUN(A) or CHEBFUN(A, 'chebkind', 2), where A is an Nx1 matrix, constructs
 % a CHEBFUN object which interpolates the data in A on an N-point Chebyshev grid
 % of the second kind (see >> help chebpts). CHEBFUN(A, 'chebkind', 1) and
@@ -103,7 +107,7 @@ classdef chebfun
 %
 % See also CHEBFUNPREF, CHEBPTS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -198,23 +202,12 @@ classdef chebfun
             % Parse inputs:
             [op, dom, data, pref, flags] = parseInputs(varargin{:});
                         
-            if ( strcmp(op, 'done') )
+            if ( flags.done )
                 % An update was performed. Exit gracefully:
                 throwAsCaller(MException('', ''))
             end
             
-            % Deal with 'trunc' option:
-            doTrunc = false;
-            truncLength = NaN;
-            for k = 1:length(varargin)
-                if ( strcmpi(varargin{k}, 'trunc') )
-                    doTrunc = true;
-                    truncLength = varargin{k+1};
-                    break
-                end                
-            end
-            
-            if ( isa(op, 'chebfun') && doTrunc )
+            if ( isa(op, 'chebfun') && flags.trunc )
                 % Deal with the particular case when we're asked to truncate a
                 % CHEBFUN:
                 f = op;
@@ -240,17 +233,12 @@ classdef chebfun
                 % Remove unnecessary breaks (but not those that were given):
                 [ignored, index] = setdiff(f.domain, dom);
                 f = merge(f, index(:).', pref);
-                
+               
             end
 
-            if ( doTrunc )
+            if ( flags.trunc )
                 % Truncate the CHEBFUN to the required length:
-                if ( isa( pref.tech(),'chebtech' ) ) 
-                    c = chebcoeffs(f, truncLength);
-                else
-                    c = trigcoeffs(f, truncLength);
-                end
-                f = chebfun(c, f.domain([1,end]), 'coeffs', pref);
+                f = truncate(f, flags.trunc);
             end
 
         end
@@ -298,9 +286,6 @@ classdef chebfun
         % Display a CHEBFUN object.
         display(f);
 
-        % Accuracy estimate of a CHEBFUN object.
-        out = epslevel(f, flag);
-        
         % Evaluate a CHEBFUN.
         y = feval(f, x, varargin)
         
@@ -380,6 +365,12 @@ classdef chebfun
         % Overlap the domain of two CHEBFUN objects.
         [f, g] = overlap(f, g)
         
+        % Solve a PDE with CHEBFUN and ODE15S.
+        varargout = pde15s(varargin);
+        
+        % Solve a PDE with CHEBFUN and ODE23T.
+        varargout = pde23t(varargin);
+        
         % Plot a CHEBFUN object:
         varargout = plot(f, varargin);
         
@@ -411,7 +402,7 @@ classdef chebfun
         f = sign(f, pref)
         
         % Simplify the representation of a CHEBFUN object.
-        f = simplify(f, tol);
+        f = simplify(f, tol, flag);
 
         % Size of a CHEBFUN object.
         [s1, s2] = size(f, dim);
@@ -430,6 +421,9 @@ classdef chebfun
         
         % Transpose a CHEBFUN.
         f = transpose(f)
+        
+        % Truncate a CHEBFUN object.
+        f = truncate(f, n);
         
         % Unary minus of a CHEBFUN.
         f = uminus(f)
@@ -475,7 +469,7 @@ classdef chebfun
         
         % Compare domains of two CHEBFUN objects.
         pass = domainCheck(f, g);        
-        
+
         % Extract columns of an array-valued CHEBFUN object.
         f = extractColumns(f, columnIndex);
         
@@ -493,6 +487,9 @@ classdef chebfun
         
         % Number of columns (or rows) of a CHEBFUN quasimatrix.
         out = numColumns(f)
+        
+        % Solve a PDE with CHEBFUN.
+        varargout = pdeSolve(varargin);
         
         % Obtain data used for plotting a CHEBFUN object:
         data = plotData(f, g, h)
@@ -528,12 +525,18 @@ classdef chebfun
         % Discrete cosine transform:
         y = dct(u, kind);
         
-        % Inverse discrete cosine transform:
-        u = idct(y, kind);
+        % Discrete Legendre transform:
+        y = dlt(u);
         
         % Discrete sine transform:
         y = dst(u, kind);
         
+        % Inverse discrete cosine transform:
+        u = idct(y, kind);
+        
+        % Inverse discrete Legendre transform:
+        u = idlt(y, kind);
+                
         % Inverse discrete sine transform:
         u = idst(y, kind);
         
@@ -542,6 +545,9 @@ classdef chebfun
 
         % Compute Lagrange basis functions for a given set of points.
         f = lagrange(x, varargin);
+        
+        % Non-uniform discrete cosine transform:
+        y = ndct(u);
 
         % ODE113 with CHEBFUN output.
         [t, y] = ode113(varargin);
@@ -588,7 +594,10 @@ classdef chebfun
         [funs, ends] = constructor(op, domain, data, pref);
         
         % Convert ODE solutions into CHEBFUN objects:
-        [y, t] = odesol(sol, dom, opt);
+        [t, y] = odesol(sol, dom, opt);
+        
+        % Call one of the MATLAB ODE solvers and return a CHEBFUN
+        [t, y] = constructODEsol(solver, odefun, tspan, uinit, varargin);
         
         % Parse inputs to PLOT. Extract 'lineWidth', etc.
         [lineStyle, pointStyle, jumpStyle, deltaStyle, out] = ...
@@ -622,6 +631,12 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
     % TODO: Should we 'data' structure to be passed to the constructor?
     % Currently, like in CHEBFUN/COMPOSE(), we don't have a use for this, but it
     % might be useful in the future.
+    
+    % Non-preferences that need to live beyond parseInputs.
+    flags = struct();
+    flags.done = false;         % No construction needs to take place.
+    flags.doubleLength = false; % We will construct to double the length.
+    flags.trunc = false;        % We will truncate the result.
 
     % Deal with string input options.
     if ( strncmp(op, '--', 2) )
@@ -641,10 +656,10 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
             error('CHEBFUN:parseInputs:unknown', ...
                 'Unknow command %s.', op);
         end
-        op = 'done';
         dom = [];
         data = struct();
         pref = [];
+        flags.done = true;
         return
     end
 
@@ -679,10 +694,6 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
     % A struct to hold any preferences supplied by keyword (name-value pair).
     keywordPrefs = struct();
 
-    % Non-preferences that need to live beyond parseInputs.
-    flags = struct();
-    flags.doubleLength = false;
-
     % Parse the remaining arguments.
     prefWasPassed = false;
     isPeriodic = false;
@@ -702,7 +713,7 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
             end
         elseif ( strcmpi(args{1}, 'equi') )
             % Enable FUNQUI when dealing with equispaced data.
-            keywordPrefs.tech = 'funqui';
+            keywordPrefs.enableFunqui = true;
             args(1) = [];
         elseif ( strcmpi(args{1}, 'vectorize') || ...
                  strcmpi(args{1}, 'vectorise') )
@@ -717,6 +728,10 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
             % Construct Chebfun twice as long as usually would be constructed.
             flags.doubleLength = true;
             args(1) = [];
+        elseif ( strcmpi(args{1}, 'turbo') )
+            % "turbo" flag for constructing "turbocharged" chebfuns.
+            keywordPrefs.techPrefs.useTurbo = true;
+            args(1) = [];
         elseif ( strcmpi(args{1}, 'coeffs') && isnumeric(op) )
             % Hack to support construction from coefficients.            
             op = {{[], op}};
@@ -727,10 +742,12 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
         elseif ( any(strcmpi(args{1}, {'periodic', 'trig'})) )
             isPeriodic = true;
             args(1) = [];
-        elseif ( strcmpi(args{1}, 'trunc') )
-            % Pull out this preference, which is checked for later.
+        elseif ( strncmpi(args{1}, 'truncate', 5) )
+            % Set the local truncation option.
+            flags.trunc = args{2};
+            args(1:2) = [];   
+            % We split when truncation is selected. TODO: Why?
             keywordPrefs.splitting = true;
-            args(1:2) = [];
         elseif ( isnumeric(args{1}) && isscalar(args{1}) )
             % g = chebfun(@(x) f(x), N)
             keywordPrefs.techPrefs.fixedLength = args{1};
@@ -775,13 +792,13 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
             args(1:2) = [];
         elseif ( strcmpi(args{1}, 'hscale') )
             % Store vscale types.
-            data.vscale = args{2};
+            data.hscale = args{2};
             args(1:2) = [];            
         elseif ( strcmpi(args{1}, 'singType') )
             % Store singularity types.
             data.singType = args{2};
             args(1:2) = [];            
-        elseif ( strcmpi(args{1}, 'exps') )
+        elseif ( strcmpi(args{1}, 'exps') || strcmpi(args{1}, 'exponents') )
             % Store exponents.
             data.exponents = args{2};
             args(1:2) = [];
@@ -876,6 +893,7 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
         % Translate 'periodic' or 'trig'.
         pref.tech = @trigtech;
         pref.splitting = false;
+        pref.enableFunqui = false;
         if ( numel(dom) > 2 )
             error('CHEBFUN:parseInputs:periodic', ...
                 '''periodic'' or ''trig'' option is only supported for smooth domains.');
@@ -902,7 +920,7 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
         if ( isa(op, 'chebfun') )
             op = @(x) feval(op, x);
         end
-        if ( isa(op, 'function_handle') && strcmp(pref.tech, 'funqui') )
+        if ( isa(op, 'function_handle') && pref.enableFunqui )
             if ( isfield(pref.techPrefs, 'fixedLength') && ...
                  ~isnan(pref.techPrefs.fixedLength) )
                 x = linspace(dom(1), dom(end), pref.techPrefs.fixedLength).';
@@ -967,17 +985,19 @@ function op = vectorCheck(op, dom, vectorize)
 
 % Make a slightly narrower domain to evaluate on. (Endpoints can be tricky).
 y = dom([1 end]);
-
+% This used to be fixed at 0.01. But this can cause troubles at very narrow
+% domains, where 1.01*y(1) might actually be larger than y(end)!
+del = diff(y)/200;
 if ( y(1) > 0 )
-    y(1) = 1.01*y(1); 
+    y(1) = (1+del)*y(1); 
 else
-    y(1) = .99*y(1); 
+    y(1) = (1-del)*y(1); 
 end
 
 if ( y(end) > 0 )
-    y(end) = .99*y(end); 
+    y(end) = (1-del)*y(end); 
 else
-    y(end) = 1.01*y(end); 
+    y(end) = (1+del)*y(end); 
 end
 
 y = y(:);
@@ -999,16 +1019,23 @@ try
         % Here things seem OK! 
         
         % However, we may possibly be fooled if we have an array-valued function
-        % whose number of columns equals the number of test points(i.e., 2). We
-        % choose one additional point as a final check:
+        % whose number of columns equals the number of test points(i.e., 2) or 
+        % something unvectorized like sin(x)/x (no dot). We choose one 
+        % additional point as a final check:
         if ( sv(2) == sy(1) )
             v = op(y(1));
             if ( size(v, 1) > 1 )
                 op = @(x) op(x).';
-                warning('CHEBFUN:CHEBFUN:vectorCheck:transpose',...
+                warning('CHEBFUN:CHEBFUN:vectorCheck:transpose', ...
                     ['Chebfun input should return a COLUMN array.\n', ...
                      'Attempting to transpose.'])
+            elseif ( size(v, 2) ~= sv(2) )
+                % It doesn't really matter what this error message is as it will
+                % be caught in the try-catch statement.
+                error('CHEBFUN:CHEBFUN:vectorCheck:numColumns', ...
+                    'Number of columns increases with length(x).');
             end
+                
         end
         
     elseif ( all( sv == 1 ) )

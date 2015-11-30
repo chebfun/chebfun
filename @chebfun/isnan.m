@@ -2,7 +2,7 @@ function out = isnan(F)
 %ISNAN   Test if a CHEBFUN is NaN.
 %   ISNAN(F) returns TRUE if F has any NaN values and FALSE otherwise.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 out = false;

@@ -13,7 +13,7 @@ function p = atan2(y, x, pref)
 %
 % See also ATAN, ATAN2D.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %% Set up:
@@ -47,7 +47,7 @@ function p = columnAtan(y, x, pref)
 
 % We'll need to extrapolate here:
 pref.techPrefs.extrapolate = true;
-tol = 2*max(epslevel(y)*vscale(y), epslevel(x)*vscale(x));
+tol = 2*eps*max(vscale(y), vscale(x));
 
 % There's no reason why we shouldn't keep breaks in both x and y:
 [x, y] = overlap(x, y);

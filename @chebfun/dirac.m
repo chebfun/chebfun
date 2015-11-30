@@ -13,7 +13,7 @@ function d = dirac(f, varargin)
 %
 % See also HEAVISIDE.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty argument:
@@ -54,11 +54,12 @@ if ( nargin > 1 )
     end
 end
     
-% Get the epslevel and the domain of f:
-tol = epslevel(f);
+% Set a tolerance and get the domain of f:
+tol = eps;
 dom = f.domain;
 a = dom(1);
 b = dom(end);
+vscl = vscale(f);
 
 % Extract the 'normal' roots of f:
 r = roots(f, 'nojump', 'nozerofun');
@@ -67,14 +68,14 @@ r = sort(r(:));
 % Check roots at the end points of f:
 if ( isempty(r) )
     % If there are no roots, still check roots at the end points:
-    if ( abs(feval(f, a, 'right')) < 100*tol*f.vscale )
+    if ( abs(feval(f, a, 'right')) < 100*tol*vscl )
         rootA = 1;
         r = [r; a];
     else
         rootA = 0;
     end
     
-    if ( abs(feval(f, b, 'left')) < 100*tol*f.vscale )
+    if ( abs(feval(f, b, 'left')) < 100*tol*vscl )
         rootB = 1;
         r = [r; b];
     else
@@ -84,7 +85,7 @@ else
     % If there are roots, check if they are at the end points:
     if ( r(1) > a )
         rootA = 0;
-    elseif ( abs(feval(f, a, 'right')) < 100*tol*f.vscale )
+    elseif ( abs(feval(f, a, 'right')) < 100*tol*vscl )
         rootA = 1;
         if ( r(1) ~= a )
             r = [a ; r];
@@ -92,7 +93,7 @@ else
     end
     if ( r(end) < b )
         rootB = 0;
-    elseif ( abs(feval(f, b, 'left')) < 100*tol*f.vscale )
+    elseif ( abs(feval(f, b, 'left')) < 100*tol*vscl )
         rootB = 1;
         if ( r(end) ~= b )
             r = [r ; b];
@@ -114,7 +115,7 @@ fp = diff(f);
 fpVals = feval(fp, r);
  
 % Check root order for interior break-points:
-if ( any(abs(fpVals) < 100*tol*fp.vscale) )
+if ( any(abs(fpVals) < 100*tol*vscale(fp)) )
     error('CHEBFUN:CHEBFUN:dirac:dirac', ...
         'Function has a root which is not simple');
 else

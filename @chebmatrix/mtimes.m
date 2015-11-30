@@ -3,7 +3,7 @@ function C = mtimes(A, B)
 %
 % See also MPOWER.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Scalar operand is scalar*identity. But it's faster to interpret it as a
@@ -49,9 +49,15 @@ else
             C{i, j} = u;
         end
     end
-    % Convert the resulting cell C to a chebmatrix to be returned.
-    C = chebmatrix(C);
     
+    % Is the output only going to consist of doubles? In that case, return a
+    % standard matrix, rather than a chebmatrix
+    if (all(all(cellfun(@isnumeric, C))))
+        C = cell2mat(C);
+    else
+        % Convert the resulting cell C to a chebmatrix to be returned.
+        C = chebmatrix(C);
+    end
 end
     
 end

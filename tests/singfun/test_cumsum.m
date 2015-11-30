@@ -30,7 +30,8 @@ vals_g = feval(g, x);
 g_exact = @(x) (1+x).^(b+1)./(b+1);
 vals_exact = feval(g_exact, x);
 err = vals_g - vals_exact;
-pass(1) = (norm(err, inf) < get(f,'epslevel')*norm(vals_exact, inf));
+pass(1) = (norm(err, inf) < 1e1*eps*norm(vals_exact, inf));
+    
 
 % fractional pole with order < -1 at the right endpoint:
 data.exponents = [0 d];
@@ -41,7 +42,7 @@ vals_g = feval(g, x);
 g_exact = @(x)-(1-x).^(d+1)./(d+1) + 2^(d+1)/(d+1);
 vals_exact = feval(g_exact, x);
 err = vals_g - vals_exact;
-pass(2) = (norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf));
+pass(2) = (norm(err, inf) < 1e3*eps*norm(vals_exact, inf));
 
 % fractional root at the left endpoint:
 data.exponents = [a 0];
@@ -52,7 +53,7 @@ vals_g = feval(g, x);
 g_exact = @(x) (1+x).^(a+1)./(a+1);
 vals_exact = feval(g_exact, x);
 err = vals_g - vals_exact;
-pass(3) = (norm(err, inf) < get(f,'epslevel')*norm(vals_exact, inf));
+pass(3) = (norm(err, inf) < eps*norm(vals_exact, inf));
 
 % Integer pole:
 data.exponents = [0 -4];
@@ -63,7 +64,8 @@ vals_g = feval(g, x);
 g_exact = @(x)(1-x).^(-3)/3 - 2^(-3)/3;
 vals_exact = feval(g_exact, x);
 err = vals_g - vals_exact;
-pass(4) = (norm(err, inf) < get(f,'epslevel')*norm(vals_exact, inf));
+pass(4) = (norm(err, inf) < 1e2*eps*norm(vals_exact, inf));
+
 
 %% Tests without closed form solution:
 
@@ -87,7 +89,7 @@ h = h - feval(h, 1) + feval(u, 1);
 vals_g = feval(g, x);
 vals_exact = feval(h, x);
 err = norm(vals_g - vals_exact, inf);
-tol = 1e4*get(f,'epslevel')*norm(vals_exact, inf);
+tol = 1e4*eps*norm(vals_exact, inf);
 pass(5) = (err < tol);
 
 %%
@@ -110,7 +112,7 @@ h = h - feval(h, 1) + feval(u, 1);
 vals_g = feval(g, x);
 vals_exact = feval(h, x);
 err = vals_g - vals_exact;
-pass(6) = (norm(err, inf) < 1e2*get(f,'epslevel')*norm(vals_exact, inf));
+pass(6) = (norm(err, inf) < 1e2*eps*norm(vals_exact, inf));
 
 % Integer pole at the right endpoint (This can be tested only when log is ready):
 % f = singfun(@(x)sin(2+x.^2)./(1-x).^2, [0 -2], {'none', 'pole'}, [], [], pref);
@@ -119,6 +121,6 @@ pass(6) = (norm(err, inf) < 1e2*get(f,'epslevel')*norm(vals_exact, inf));
 % vals_g = feval(g, x);
 % vals_exact = feval(h, x);
 % err = vals_g - vals_exact;
-% pass(7) = (norm(err, inf) < get(f,'epslevel')*norm(vals_exact, inf));
+% pass(7) = (norm(err, inf) < eps*norm(vals_exact, inf));
 
 end

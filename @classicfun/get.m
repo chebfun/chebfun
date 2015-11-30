@@ -11,12 +11,16 @@ function out = get(f, prop)
 %
 % See also CLASSICFUN.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 switch prop
-    case fieldnames(f)
-        out = f.(prop);
+    case 'domain'
+        out = f.domain;
+    case 'onefun'
+        out = f.onefun;
+    case 'mapping'
+        out = f.mapping;
     case 'exponents'
         if ( issing(f) )
             out = get(f.onefun, prop);

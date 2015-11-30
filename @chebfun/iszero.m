@@ -6,7 +6,7 @@ function out = iszero(F, varargin)
 
 % TODO:  Document the TOL input.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % An empty CHEBFUN is zero:
@@ -30,11 +30,7 @@ function out = columnIszero(f, tol)
 
 % Choose a tolerance:
 if ( nargin < 2 )
-    tol = vscale(f)*epslevel(f);
-    % TODO: Remove this once epslevels of zero CHEBFUNs have been improved.
-    if ( isnan(tol) )
-        tol = eps;
-    end
+    tol = vscale(f)*eps;
 end
 
 % pointValues:

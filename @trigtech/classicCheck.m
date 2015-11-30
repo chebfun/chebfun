@@ -1,12 +1,12 @@
-function [ishappy, epslevel, cutoff] = classicCheck(f, pref)
+function [ishappy, cutoff] = classicCheck(f, values, data, pref)
 %CLASSICCHECK   Attempt to trim trailing Fourier coefficients in a TRIGTECH.
-%   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F, VALUES) returns an estimated
-%   location, the CUTOFF, at which the TRIGTECH F could be truncated to maintain
-%   an accuracy of EPSLEVEL relative to F.VSCALE and F.HSCALE. ISHAPPY is TRUE
-%   if CUTOFF < MIN(LENGTH(VALUES),2) or F.VSCALE = 0, and FALSE otherwise.
-%   If ISHAPPY is false, EPSLEVEL returns an estimate of the accuracy achieved.
+%   [ISHAPPY, CUTOFF] = CLASSICCHECK(F, VALUES, DATA) returns an estimated
+%   location, the CUTOFF, at which the TRIGTECH F could be truncated to
+%   maintain an accuracy of EPSLEVEL (see documentation below) relative to
+%   DATA.VSCALE and DATA.HSCALE. ISHAPPY is TRUE if CUTOFF <
+%   MIN(LENGTH(VALUES),2) or VSCALE(F) = 0 and FALSE otherwise.
 %
-%   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F, PREF) allows additional
+%   [ISHAPPY, CUTOFF] = CLASSICCHECK(F, VALUES, DATA, PREF) allows additional
 %   preferences to be passed. In particular, one can adjust the target accuracy
 %   with PREF.EPS.
 %
@@ -17,11 +17,13 @@ function [ishappy, epslevel, cutoff] = classicCheck(f, pref)
 %   can be reduced if there are further COEFFS which fall below EPSLEVEL).
 %
 %   HAPPINESSREQUIREMENTS defines what it means for a TRIGTECH to be happy.
-%   [TESTLENGTH, EPSLEVEL] = HAPPINESSREQUIREMENTS(VALUES, COEFFS, VSCALE, PREF)
-%   returns two scalars TESTLENGTH and EPSLEVEL. A TRIGTECH is deemed to be
-%   'happy' if the coefficients COEFFS(1:TESTLENGTH) (recall that COEFFS are
-%   stored in ascending order) are all below EPSLEVEL. The default choice of
-%   the test length is:
+%   [TESTLENGTH, EPSLEVEL] = HAPPINESSREQUIREMENTS(VALUES, COEFFS, POINTS,
+%   DATA, EPS) returns two scalars TESTLENGTH and EPSLEVEL.  POINTS is the
+%   vector of points at which F was sampled to get the values in VALUES.  EPS
+%   is the desired accuracy.  A TRIGTECH is deemed to be 'happy' if the
+%   coefficients COEFFS(END-TESTLENGTH+1:END) (recall that COEFFS are stored in
+%   ascending order) are all below EPSLEVEL.  The default choice of the test
+%   length is:
 %       TESTLENGTH = n,             for n = 1:2
 %       TESTLENGTH = 3,             for n = 3:44
 %       TESTLENGTH = round((n-1)/8) for n > 44
@@ -39,7 +41,7 @@ function [ishappy, epslevel, cutoff] = classicCheck(f, pref)
 %
 % See also STRICTCHECK, LOOSECHECK.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with special cases ------------------------------------------------------
@@ -62,7 +64,7 @@ end
 
 % Convert scalar epslevel/tolerance inputs into vectors.
 if ( isscalar(epslevel) )
-    epslevel = repmat(epslevel, size(f.vscale));
+    epslevel = repmat(epslevel, 1, size(f.coeffs, 2));
 end
 
 % Deal with the trivial case:
@@ -72,12 +74,12 @@ if ( n < 2 ) % (Can't be simpler than a constant!)
 end
 
 % Check the vertical scale:
-if ( max(f.vscale) == 0 )
+if ( max(data.vscale) == 0 )
     % This is the zero function, so we must be happy!
     ishappy = true;
     cutoff = 1;
     return
-elseif ( any(isinf(f.vscale)) )
+elseif ( any(isinf(data.vscale)) )
     % Inf located. No cutoff.
     cutoff = n;
     return
@@ -87,13 +89,17 @@ end
 % down when we take the absolute value of the coefficients relative to vscale
 % and compute the relative condition number estimate in happinessCheck.  We
 % replace zero vscales by eps to avoid division by zero.
-ind = f.vscale == 0;
-f.vscale(ind) = eps;
+data.vscale(data.vscale == 0) = eps;
 
 % NaNs are not allowed.
 if ( any(isnan(f.coeffs(:))) )
     error('CHEBFUN:FUN:classicCheck:NaNeval', ...
         'Function returned NaN when evaluated.')
+end
+
+% We require values. Get these before we alter the coeffs:
+if ( isempty(values) )
+    values = f.coeffs2vals(f.coeffs);
 end
 
 % Do the test on the vector formed by the sum of the absolute value of the
@@ -103,8 +109,8 @@ end
 absCoeffs = abs(f.coeffs(end:-1:1,:));
 
 % Need to handle odd/even cases separately.
-isEven = ~mod(n,2);
-if isEven
+isEven = ~mod(n, 2);
+if ( isEven )
     % In this case the negative cofficients have an additional term
     % corresponding to the cos(N/2*x) coefficient.
     f.coeffs = [absCoeffs(n,:);absCoeffs(n-1:-1:n/2+1,:)+absCoeffs(1:n/2-1,:);absCoeffs(n/2,:)];
@@ -117,11 +123,11 @@ n = size(f.coeffs, 1);
 % Check for convergence and chop location --------------------------------------
 
 % Absolute value of coefficients, relative to vscale: (max across columns)
-ac = bsxfun(@rdivide, abs(f.coeffs), f.vscale);
+ac = bsxfun(@rdivide, abs(f.coeffs), data.vscale);
 
 % Happiness requirements:
 [testLength, epslevel] = ...
-    happinessRequirements(f.values, f.coeffs, f.points(), f.vscale, f.hscale, epslevel);
+    happinessRequirements(values, f.coeffs, f.points(), data, epslevel);
 
 if ( all(max(ac(1:testLength, :)) < epslevel) ) % We have converged! Chop tail:
     % We must be happy.
@@ -141,10 +147,10 @@ if ( all(max(ac(1:testLength, :)) < epslevel) ) % We have converged! Chop tail:
     t = .25*eps*ones(1, size(ac, 2));
     ac = ac(1:Tloc, :);             % Restrict to coefficients of interest.
     for k = 1:size(ac, 1)           % Cumulative maximum.
-        ind = ac(k, :) < t;
+        ind = ac(k,:) < t;
         ac(k, ind) = t(ind);
-        ind = ac(k, :) >= t;
-        t(ind) = ac(k, ind);
+        ind = ac(k,:) >= t;
+        t(ind) = ac(k,ind);
     end
 
     % Obtain an estimate for much accuracy we'd gain compared to reducing
@@ -174,7 +180,7 @@ end
 end
 
 function [testLength, epslevel] = ...
-    happinessRequirements(values, coeffs, x, vscale, hscale, epslevel) %#ok<INUSL>
+    happinessRequirements(values, coeffs, x, data, epslevel) %#ok<INUSL>
 %HAPPINESSREQUIREMENTS   Define what it means for a TRIGTECH to be happy.
 %   See documentation above.
 
@@ -195,8 +201,8 @@ tailErr = min(tailErr, minPrec);
 % ||f(x+eps(x)) - f(x)||_inf / ||f||_inf ~~ (eps(hscale)/vscale)*f'.
 dy = diff(values);
 dx = diff(x)*ones(1, size(values, 2));
-gradEst = max(abs(dy./dx));             % Finite difference approx.
-condEst = eps(hscale)./vscale.*gradEst; % Condition number estimate.
+gradEst = max(abs(dy./dx));                       % Finite difference approx.
+condEst = eps(data.hscale)./data.vscale.*gradEst; % Condition number estimate.
 condEst = min(condEst, minPrec);      
 
 % Choose maximum between prescribed tolerance and estimated rounding errors:

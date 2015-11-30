@@ -31,7 +31,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
     %
     % See also CHEBOP, CHEBOP/SOLVEIVP.
     
-    % Copyright 2014 by The University of Oxford and The Chebfun Developers.
+    % Copyright 2015 by The University of Oxford and The Chebfun Developers.
     % See http://www.chebfun.org/ for Chebfun information.
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -501,7 +501,7 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         s = printTree(tree, ind, indStr)
         
         % Returns how the results of evaluating BCs should be sorted
-        idx = sortConditions(funIn, domain)
+        idx = sortConditions(funIn, domain, maxDiffOrders)
         
         % Convert higher order anonymous functions to first order systems
         [funOut, indexStart, problemDom, coeffs, totalDiffOrders] = ...
@@ -527,7 +527,8 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         funOut = toRHS(infix, varArray, coeff, indexStart, totalDiffOrders);
         
         % Convert a syntax tree to infix form
-        [infix, varArray] = tree2infix(tree, diffOrders, varCounter, varArray)
+        [infix, varArray] = ...
+            tree2infix(tree, diffOrders, varCounter, varArray, isCoeffFun)
            
         % Construct syntax trees for univariate methods
         treeOut = univariate(treeIn, method)

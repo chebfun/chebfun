@@ -4,7 +4,7 @@ function pass = test_restrict(pref)
 
 % Get preferences.
 if (nargin < 1)
-    pref = chebtech.techPref();
+    pref = trigtech.techPref();
 end
 
 testclass = trigtech();
@@ -70,8 +70,8 @@ g = testclass.make(@(x) -sin(pi*x), [], pref);
 x = linspace(-1, 1, 100).';
 err1 = norm(feval(g - h1, x), inf);
 err2 = norm(feval(g - h2, x), inf);
-pass(9) = err1 + err2 < f.epslevel;
-
+pass(9) = err1 + err2 < 10*eps;
+      
 % %%
 % % Check operation for array-valued functions.
 % pass(10) = test_spotcheck_restrict(testclass, ...
@@ -95,5 +95,5 @@ function result = test_spotcheck_restrict(testclass, fun_op, subint, pref)
     y_exact = fun_op(x);
     y_approx = feval(g, map(x));
 
-    result = norm(y_exact - y_approx, Inf) < 100*max(g.vscale.*g.epslevel);
+    result = norm(y_exact - y_approx, Inf) < 100*max(vscale(g)*eps);
 end

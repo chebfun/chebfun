@@ -32,7 +32,7 @@ f = chebfun(f_exact, [], pref);
 fr = restrict(f, [-1 1]);
 x = xr;
 pass(3) = isequal(fr.domain, [-1 1]) && ...
-    (norm(feval(fr, x) - f_exact(x), inf) < 10*fr.vscale*fr.epslevel);
+    (norm(feval(fr, x) - f_exact(x), inf) < 10*vscale(fr)*eps);
 
 % Test behavior on bogus subinterval input.
 try
@@ -125,27 +125,29 @@ g1Exact = op1(x1);
 g2Exact = op2(x2);
 err1 = g1Vals - g1Exact;
 err2 = g2Vals - g2Exact;
-pass(24) = norm([err1 ; err2], inf) < 5*get(g,'epslevel').*get(g,'vscale');
+pass(24) = norm([err1 ; err2], inf) < 1e2*eps*get(g,'vscale');
+
 
 %% Test a bug from issue #528
 f = chebfun(@(x) abs(x + 0.04), [-1 0.04 1], 'splitting', 'on');
 f = restrict(f, [-0.04 0.04]);
 g = chebfun(@(x) abs(x + 0.04), [-0.04 0.04], 'splitting', 'on');
 err = norm(f - g, inf);
-pass(25) = err < 10*epslevel(g);
+pass(25) = err < 10*eps;
 
 %% Test a bug from #727:
 
 f = chebfun(@(x) 4*x.^2-2, [-Inf, Inf]);
 g = restrict(f, [-1,1]);
-pass(26) = abs(f(1)-g(1)) < epslevel(f)*vscale(f);
+pass(26) = abs(f(1)-g(1)) < eps*vscale(f);
 
 %% Test a bug from #1026:
 
 f = chebfun(@(t) t.^0.5./exp(t), [0,inf], 'exps', [0.5 0]);
 g = f;
 f(1) = f(1); % restrict@unbndfun is called.
-pass(27) = ( norm(f-g, inf) < epslevel(f) );
+pass(27) = ( norm(f-g, inf) < 1e2*eps );
+    
 
 %% Test trigfuns:
 f = chebfun(@(x) sin(2*pi*x), [1 2], 'trig');
@@ -162,11 +164,7 @@ end
 function pass = test_restrict_one_function(f, f_exact, dom, map, xr)
     fr = restrict(f, dom);
     x = map(xr, dom(1), dom(end));
-    tol = 10*fr.vscale*fr.epslevel;
     err = norm(feval(fr, x) - f_exact(x), inf);
-%     tol2 = 10*fr.vscale*fr.epslevel
-%     err2 = max(cellfun(@(d) min(abs(d-fr.domain)), num2cell(dom)))
-%     pass = err2 < tol && all(err(:) < tol); % TODO: remove?
     pass = all(ismember(dom, fr.domain)) && ...
-        all(err(:) < 5e2*fr.vscale*fr.epslevel); 
+        all(err(:) < 1e5*vscale(fr)*eps);
 end

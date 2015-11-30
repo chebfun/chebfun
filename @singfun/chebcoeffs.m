@@ -1,4 +1,4 @@
-function out = chebcoeffs(f, N)
+function out = chebcoeffs(f, N, kind)
 %CHEBCOEFFS   Chebyshev polynomial coefficients of a SINGFUN.
 %   A = CHEBCOEFFS(F, N) returns the row vector of first N Chebyshev coefficients
 %   of F such that F = ... + A(1) T_{N-1}(x) + ... + A(N-1) T_1(x) + A(N) T_0(x)
@@ -6,55 +6,73 @@ function out = chebcoeffs(f, N)
 %
 % See also LEGPOLY.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
-
-% TODO: This requires a test.
 
 if ( any(f.exponents <= -.5 ) )
     error('CHEBFUN:SINGFUN:chebcoeffs:notIntegrable', ...
         'F does not have a well-defined Chebyshev expansion.');
 end
 
-if ( (nargin == 1) || isempty(N) )
+if ( (nargin < 2) || isempty(N) )
     error('CHEBFUN:SINGFUN:chebcoeffs:input', ...
         'F does not have a finite Chebyshev series. Please input N.');
 end
 
-if ( isa(f.smoothPart, 'chebtech') )
-    % Compute the required inner products in coefficient space efficiently.
-    
-    n = length(f);
-    % Compute the Chebyshev moments:
-    w = computeWeights(f.exponents - [.5 .5], n + N - 1).';
-    % The Chebyshev coefficients of f:
-    b = .5*[get(f, 'coeffs') ; zeros(N-1, 1)];
-    % Multiplication matrix for coefficients of f: (fast, using FFTs)
-    out = fastToeplitzMult(b, w) + fastHankelMult(b, w) - w(1)*b;
-    % Trim to required length:
-    out = out(1:N);
-    
-else
-    % Compute the required inner products by calling SUM().
-    
-    out = zeros(N, 1);
-    for k = 0:(N-1)
-        % Make the kth Chebyshev polynomial:
-        Tk = f.smoothPart.make(@(x) cos(k*acos(x)));
-        % Compute the product of f with T_k:
-        g = f.*Tk;
-        % Include the Chebyshev weight:
-        g.exponents = g.exponents - [.5, .5];
-        % Integrate using SUM():
-        out(k+1) = sum(g);
-    end
-   
+% Use first-kind Chebyshev polynomials by default.
+if ( (nargin < 3) || isempty(kind) )
+    kind = 1;
 end
 
-% Scale the T_0 term:
-out(1) = out(1)/2;
-% Scale all coefficients by (2/pi):
-out = (2/pi)*out;
+if ( kind == 1 )
+    if ( isa(f.smoothPart, 'chebtech') )
+        % Compute the required inner products in coefficient space efficiently.
+
+        n = length(f);
+        % Compute the Chebyshev moments:
+        w = computeWeights(f.exponents - [.5 .5], n + N - 1).';
+        % The Chebyshev coefficients of f:
+        b = .5*[get(f, 'coeffs') ; zeros(N-1, 1)];
+        % Multiplication matrix for coefficients of f: (fast, using FFTs)
+        out = fastToeplitzMult(b, w) + fastHankelMult(b, w) - w(1)*b;
+        % Trim to required length:
+        out = out(1:N);
+
+    else
+        % Compute the required inner products by calling SUM().
+
+        out = zeros(N, 1);
+        for k = 0:(N-1)
+            % Make the kth Chebyshev polynomial:
+            Tk = f.smoothPart.make(@(x) cos(k*acos(x)));
+            % Compute the product of f with T_k:
+            g = f.*Tk;
+            % Include the Chebyshev weight:
+            g.exponents = g.exponents - [.5, .5];
+            % Integrate using SUM():
+            out(k+1) = sum(g);
+        end
+
+    end
+
+    % Scale the T_0 term:
+    out(1) = out(1)/2;
+    % Scale all coefficients by (2/pi):
+    out = (2/pi)*out;
+elseif ( kind == 2 )
+    % Compute 2nd-kind coefficients by computing the 1st-kind coefficients and
+    % converting using the recurrence relation between U_n and T_n.  Since the
+    % the coefficient of U_n requires the coefficients of T_n and T_{n + 2}, we
+    % compute two extra 1st-kind coefficients.
+    %
+    % TODO:  Find a method that doesn't compute 2nd-kind coeffs. from 1st-kind
+    % ones.
+    out = chebtech.chebTcoeffs2chebUcoeffs(chebcoeffs(f, N + 2, 1));
+    out = out(1:N,:);
+else
+    error('CHEBFUN:SINGFUN:chebcoeffs:badKind', ...
+        '''kind'' input must be 1 or 2.');
+end
 
 end
 

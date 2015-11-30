@@ -102,7 +102,7 @@ g = c.*f;
 g_exact = chebfun(op_exact, dom, 'exps', [0 pow], 'splitting', 'on');
 
 err = norm(feval(g, x) - feval(g_exact, x), inf);
-pass(24) = ( err < 50*get(f, 'epslevel')*norm(feval(g_exact, x), inf) );
+pass(24) = ( err < 50*eps*norm(feval(g_exact, x), inf) );
 
 %% Case of two functions: piecewise smooth chebfun - splitting on.
 pow1 = -0.3;
@@ -116,8 +116,9 @@ h = f.*g;
 h_exact = chebfun(op_exact, dom, 'exps', [0 pow1+pow2], 'splitting', 'on');
 
 err = norm(feval(h, x) - feval(h_exact, x), inf);
-pass(25) = ( err < 1e1*max(get(f, 'epslevel'), get(g, 'epslevel'))*...
+pass(25) = ( err < 1e4*eps*...
     norm(feval(h_exact, x), inf) );
+
 
 %% Tests for function defined on unbounded domain:
 
@@ -139,7 +140,7 @@ h = f.*g;
 hVals = feval(h, x);
 hExact = oph(x);
 err = hVals - hExact;
-pass(26) = norm(err, inf) < 2*get(f,'epslevel')*get(f,'vscale');
+pass(26) = norm(err, inf) < 2*eps*get(f,'vscale');
 
 %% Test multiplication between a CHEBFUN and a TRIGFUN.
 
@@ -153,7 +154,7 @@ h1 = f.*g;
 pass(27) = strcmpi(func2str(get(h1.funs{1}.onefun, 'tech')), ...
                    func2str(get(f.funs{1}.onefun, 'tech')));
 h2 = chebfun(@(x) (x.^2).*cos(x), dom, pref);
-pass(28) = norm(h1-h2, inf) < 1e1*get(h2,'epslevel').*get(h2,'vscale');
+pass(28) = norm(h1-h2, inf) < 1e1*eps*get(h2,'vscale');
 
 % 2. Quasimatrix case.
 f = chebfun(@(x) [cos(x), sin(x)], [dom(1) dom(end)], 'periodic');
@@ -165,7 +166,7 @@ pass(29) = strcmpi(func2str(get(h1(:,1).funs{1}.onefun, 'tech')), ...
 pass(30) = strcmpi(func2str(get(h1(:,2).funs{1}.onefun, 'tech')), ...
                    func2str(get(g(:,2).funs{1}.onefun, 'tech')));
 h2 = chebfun(@(x) [x.*cos(x), x.^3.*sin(x)], dom, pref);
-pass(31) = norm(h1-h2, inf) < 1e2*get(h2,'epslevel').*get(h2,'vscale');
+pass(31) = norm(h1-h2, inf) < 1e2*eps*get(h2,'vscale');
 
 end
 
@@ -179,7 +180,8 @@ function result = test_mult_function_by_scalar(f, f_op, alpha, x)
     result(1) = isequal(g1, g2);
     g_exact = @(x) f_op(x) .* alpha;
     err = feval(g1, x) - g_exact(x);
-    result(2) = norm(err(:), inf) < 10*max(vscale(g1).*epslevel(g1));
+    result(2) = norm(err(:), inf) < 1e2*max(vscale(g1)*eps);
+        
 end
 
 % Test the multiplication of two chebfuns F and G, specified by F_OP and G_OP,
@@ -187,8 +189,9 @@ end
 function result = test_mult_function_by_function(f, f_op, g, g_op, x)
     h1 = f .* g;
     h2 = g .* f;
-    result(1) = norm(h1 - h2) < 10*max(vscale(h1).*epslevel(h1));
+    result(1) = norm(h1 - h2) < 10*max(vscale(h1)*eps);
     h_exact = @(x) f_op(x) .* g_op(x);
     err = feval(h1, x) - h_exact(x);
-    result(2) = norm(err(:), inf) < 10*max(vscale(h1).*epslevel(h1));
+    result(2) = norm(err(:), inf) < 1e2*max(vscale(h1)*eps);
+        
 end

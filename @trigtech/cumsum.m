@@ -15,7 +15,7 @@ function f = cumsum(f, m, dim)
 %
 % See also DIFF, SUM.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -76,16 +76,25 @@ function f = cumsumContinuousDim(f, m)
     c = f.coeffs; % Obtain Fourier coefficients {c_k}
     numCoeffs = size(c,1);
     
-    fIsEven = mod(numCoeffs,2) == 0;
+    fIsEven = mod(numCoeffs, 2) == 0;
+
+    % index of constant coefficient
+    if fIsEven
+       ind = numCoeffs/2 + 1;
+    else
+       ind = (numCoeffs + 1)/2;
+    end
 
     % Check that the mean of the TRIGtech is zero.  If it is not, then
     % throw an error.
-    if any(abs(c((numCoeffs+1-fIsEven)/2,:)) > f.vscale.*f.epslevel)
-        error('CHEBFUN:TRIGTECH:cumsum:meanNotZero', 'Indefinite integrals are only possible for TRIGTECH objects with zero mean.');
+    if ( any(abs(c(ind,:)) > 1e1*vscale(f)*eps) )
+        error('CHEBFUN:TRIGTECH:cumsum:meanNotZero', ...
+            ['Indefinite integrals are only possible for TRIGTECH objects '...
+            'with zero mean.']);
     end
     
     % Force the mean to be exactly zero.
-    if fIsEven
+    if ( fIsEven )
         % Set coeff corresponding to the constant mode to zero:
         c(numCoeffs/2+1,:) = 0;
         % Expand the coefficients to be symmetric (see above discussion).
@@ -106,7 +115,7 @@ function f = cumsumContinuousDim(f, m)
     % If this is an odd order cumsum and there are an even number of
     % coefficients then zero out the cofficient corresponding to sin(N/2x)
     % term, since this will be zero on the Fourier grid.
-    if mod(m,2) == 1 && fIsEven
+    if ( (mod(m, 2) == 1) && fIsEven )
         c(1,:) = 0;
         c(numCoeffs+1,:) = 0;
     end
@@ -118,7 +127,7 @@ function f = cumsumContinuousDim(f, m)
     % shrink the coefficent vector corresponding to its indefinite integral
     % back to its original size since it was increased by one above to make
     % the integration code slicker.
-    if fIsEven 
+    if ( fIsEven )
         c = c(1:end-1,:);
     end
             
@@ -128,12 +137,6 @@ function f = cumsumContinuousDim(f, m)
     
     f.coeffs = c;
 
-    % Update vscale
-    f.vscale = max(abs(f.values), [], 1);
-
-    % Update epslevel:
-    f.epslevel = updateEpslevel(f);
-    
     % Simplify (as suggested in Chebfun ticket #128)
     f = simplify(f);
     
@@ -150,10 +153,6 @@ function f = cumsumFiniteDim(f, m)
     for k = 1:m
         f.values = cumsum(f.values, 2);
         f.coeffs = cumsum(f.coeffs, 2);
-        newVscale = max(abs(f.values), [], 1);
-        epslevelApprox = sum(f.epslevel.*f.vscale, 2)/sum(newVscale, 2); % TODO: Is this right?        
-        f.epslevel = updateEpslevel(f, epslevelApprox);
-        f.vscale = newVscale;
     end
 
 end

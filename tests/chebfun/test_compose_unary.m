@@ -63,7 +63,7 @@ gVals = feval(g, x);
 opg = @(x) sin(sqrt(x));
 gExact = opg(x);
 err = gVals - gExact;
-pass(10) = ( norm(err, inf) < 1e1*vscale(g)*epslevel(g) ) && ...
+pass(10) = ( norm(err, inf) < 1e1*vscale(g)*eps ) && ...
         isequal(opg(domain(f)), feval(g, domain(f)));
     
 %% Compose a function defined on an unbounded domain with an operator, i.e. 
@@ -83,7 +83,8 @@ g = compose(f, @sin);
 gVals = feval(g, x);
 gExact = opg(x);
 err = gVals - gExact;
-pass(11) = norm(err, inf) < get(g,'epslevel')*get(g,'vscale');
+pass(11) = norm(err, inf) < 1e1*eps*get(g,'vscale');
+
 
 %% Test related to #686
 
@@ -128,8 +129,9 @@ function pass = test_one_compose_unary(f_exact, dom, op, pref)
     g_exact = @(x) op(f_exact(x));
     x = ((dom(end) - dom(1))/2)*xr + dom(1) + (dom(end) - dom(1))/2;
     err = norm(feval(g, x) - g_exact(x), inf);
-    pass = (err < 20*vscale(g)*epslevel(g)) && ...
+    pass = (err < 1e2*vscale(g)*eps) && ...
         isequal(g_exact(domain(f)), feval(g, domain(f)));
+    
 end
 
 % Test composition of a function with a unary operator.
@@ -143,6 +145,6 @@ function pass = test_one_compose_unary_quasi(f_exact, dom, op, pref)
     g_exact = @(x) op(f_exact(x));
     x = ((dom(end) - dom(1))/2)*xr + dom(1) + (dom(end) - dom(1))/2;
     err = norm(feval(g, x) - g_exact(x), inf);
-    pass = (err < 20*vscale(g)*epslevel(g)) && ...
+    pass = (err < 20*vscale(g)*eps) && ...
         isequal(g_exact(domain(f)), feval(g, domain(f)));
 end

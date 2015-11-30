@@ -1,4 +1,4 @@
-function [y, info] = solveivp(N, rhs, pref, varargin)
+function varargout = solveivp(N, rhs, pref, varargin)
 %SOLVEIVP    Solve an IVP by reforming it to a first order system.
 %
 %   U = SOLVEIVP(N, RHS), where N is a CHEBOP and RHS is a CHEBMATRIX, CHEBFUN
@@ -6,14 +6,21 @@ function [y, info] = solveivp(N, rhs, pref, varargin)
 %
 %       N(U) = RHS + boundary conditions specified by N
 %
-%   Observe that U = SOLVEIVP(N, RHS) has the same effect as U = N\RHS, but this
-%   method allows greater flexibility than CHEBOP backslash, as described below.
+%   Observe that U = SOLVEIVP(N, RHS), where N specifies an initial/final-value
+%   problem (IVP/FVP), has the same effect as U = N\RHS, but this method allows
+%   greater flexibility than CHEBOP backslash, as described below. Problems are
+%   determined to be an IVP/FVP as follows:
+%       * N.LBC is non-empty, N.RBC and N.BC are empty => IVP.
+%       * N.RBC is non-empty, N.LBC and N.BC are empty => FVP.
+%   Otherwise, problems are considered to be boundary-value problems, and
+%   U=N\RHS will in general have the same effect as U = SOLVEBVP(N, RHS).
 %
 %   If successful, the solution returned, U, is a CHEBFUN if N specifies a
 %   scalar problem, and a CHEBMATRIX if N specifies a coupled systems of
-%   ordinary differential equations. This method solves both linear and
-%   nonlinear problems be automatically converting them to a coupled first-order
-%   system, which can then be solved using MATLAB's built in solvers.
+%   ordinary differential equations. See note below on how to call the method
+%   with multiple outputs. This method solves both linear and nonlinear problems
+%   be automatically converting them to a coupled first-order system, which can
+%   then be solved using MATLAB's built in solvers.
 %
 %   U = SOLVEIVP(N, RHS, PREF) is the same as above, using the preferences
 %   specified by the CHEBOPPREF variable PREF.
@@ -24,19 +31,40 @@ function [y, info] = solveivp(N, rhs, pref, varargin)
 %   versions):
 %       SOLVER: The MATLAB solver used when solving the problem.
 %
+%   [U, V, ...] = SOLVEBVP(N, ...), where N specifies a coupled system of ODEs,
+%   returns CHEBFUNs U, V, ... for individual solution components, rather than a
+%   CHEBMATRIX.
 %
-%   Note that CHEBOP allows the RHS of coupled system of ODEs to be a scalar,
+%
+%   Note 1: CHEBOP allows the RHS of coupled system of ODEs to be a scalar,
 %   e.g., one can both call
-%       N = chebop(@(x, u, v) [diff(u) + v ; u + diff(v)], [0 10]);
-%       N.bc = @(x, u, v) [u(0) ; v(0)];
-%       uv = solvebvp(N, 0);
+%       N = chebop(@(x, u, v) [diff(u) - v.^2 ; u - diff(v)], [0 3]);
+%       N.lbc = @(u, v) [u - 1 ; v + 1];
+%       uv = solveivp(N, 0);
 %   and
-%       uv = solvebvp(N, [0; 0]);
+%       uv = solveivp(N, [0; 0]);
+%
+%
+%   Note 2: The solver tries to construct global CHEBFUNs to represent the
+%   solutions of ODEs if possible (however, breakpoints in the domain and
+%   coefficients do get respected). Turn on the global CHEBFUN splitting option
+%   if you wish to obtain solutions with further breakpoints, e.g.
+%       % Solve van der Pol equation without and with splitting
+%       N = chebop(@(t,u) diff(u,2)-5.*(1-u.^2).*diff(u)+u, [0 20]);
+%       N.lbc = @(u) [u-2; diff(u)];
+%       uNoSplit = N\0
+%       % Turn on splitting with max length of each piece equal to 300
+%       chebfunpref.setDefaults('splitting', true)
+%       chebfunpref.setDefaults({'splitPrefs','splitLength'}, 300)
+%       uSplit = N\0
+%       % Turn splitting back off
+%       chebfunpref.setDefaults('splitting', false)
+%       
 %
 % See also: CHEBOP, CHEBOP/MLDIVIDE, CHEBOPPREF, CHEBOP/SOLVEBVP,
 % CHEBFUN/ODE113, CHEBFUN/ODE15S, CHEBFUN/ODE45, CHEBFUN/ODESOL, TREEVAR. 
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Developer note:
@@ -79,10 +107,14 @@ if ( ~all(isfinite(N.domain)) )
         'Solving IVPs on unbounded intervals is not supported.');
 end
 
+% What solver do we want to use for the IVP?
+solver = pref.ivpSolver;
+
 % If pref.ivpSolver is set to a global method, we really should be calling
 % CHEBOP/SOLVEBVP():
-if ( isempty(strfind(func2str(pref.ivpSolver), 'chebfun.ode')) )
-    [y, info] = solvebvp(N, rhs, pref, varargin{:});
+if ( strcmp(solver, 'values') || strcmp(solver, 'coeffs') || ...
+        isempty(strfind(func2str(solver), 'chebfun.ode')) )
+    [varargout{1:nargout}] = solvebvp(N, rhs, pref, varargin{:});
     info.solver = 'Global method';
     return
 end
@@ -100,7 +132,7 @@ catch ME
     % Did we encounter an unsupported method? If so, try to solve it globally:
     if ( ~isempty(regexp(ME.identifier, 'CHEBFUN:TREEVAR:.+:notSupported', ...
             'once')) )
-        [y, info] = solvebvp(N, rhs, pref, varargin{:});
+        [varargout{1:nargout}] = solvebvp(N, rhs, pref, varargin{:});
         return
     else
         % Otherwise, an unexpected error occured, rethrow it.
@@ -192,9 +224,9 @@ assert(sum(diffOrders) == length(initVals), ...
 % evaluates the conditions with TREEVAR inputs, which gives it enough
 % information to be able to sort them in the correct order.
 if ( isIVP )
-    idx = treeVar.sortConditions(N.lbc, N.domain);
+    idx = treeVar.sortConditions(N.lbc, N.domain, diffOrders);
 else
-    idx = treeVar.sortConditions(N.rbc, N.domain);
+    idx = treeVar.sortConditions(N.rbc, N.domain, diffOrders);
 end
 
 % Sort the results from above:
@@ -203,8 +235,11 @@ initVals = initVals(idx);
 % Create an ODESET struct for specifying tolerance:
 opts = odeset('absTol', pref.ivpAbsTol, 'relTol', pref.ivpRelTol);
 
-% What solver do we want to use for the IVP?
-solver = pref.ivpSolver;
+% What happiness check do we want to use for the IVP?
+opts.happinessCheck = pref.happinessCheck;
+
+% Do we want to restart the solver at breakpoints?
+opts.restartSolver = pref.ivpRestartSolver;
 
 % Solve!
 [t, y]= solver(anonFun, odeDom, initVals, opts);
@@ -237,5 +272,21 @@ end
 
 % Return useful information about the solution:
 info.solver = solver;
+
+% Return a CHEBFUN rather than a CHEBMATRIX for scalar problems:
+if ( ~isa(y, 'chebmatrix') )
+    varargout{1} = y;
+    varargout{2} = info;
+elseif ( nargout == 1 )
+    varargout{1} = y;
+elseif ( nargout == size(y, 1) )
+    [varargout{1:nargout}] = deal(y);
+elseif ( nargout == size(y, 1) + 1 )
+    [varargout{1:nargout - 1}] = deal(y);
+    varargout{nargout} = info;
+else
+    error('CHEBFUN:CHEBOP:solveivp:numberOfOutputs', ...
+        'Incorrect number of outputs.');
+end
 
 end

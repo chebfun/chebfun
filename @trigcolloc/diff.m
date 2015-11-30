@@ -5,7 +5,7 @@ function D = diff(disc, m)
 %
 %   DIFF(DISC, M) for positive integer M returns D^M.
 
-%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
+%  Copyright 2015 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org/ for Chebfun information.
 
 % Store information about domain and dimensions.
@@ -18,5 +18,7 @@ if ( m == 0 )
 else
     rescaleFactor = dom(2) - dom(1);
     % Rescale the differentiation matrix.
-    D = trigcolloc.diffmat(n, m) * (2*pi/rescaleFactor)^m;
+    D = trigcolloc.diffmat(n, m) * (2/rescaleFactor)^m;
+end
+
 end

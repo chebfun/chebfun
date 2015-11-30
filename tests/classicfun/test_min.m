@@ -30,10 +30,11 @@ f = bndfun(fun_op, data, pref);
 [y, x] = min(f);
 exact_max = -[1 0.535656656015700 0.7^3*cosh(0.7)];
 fx = -[sin(10*x(1)) airy(x(2)) (x(3)/10).^3.*cosh(x(3)/10)];
-tol = 10*get(f, 'vscale').*get(f, 'epslevel');
-pass(5) = (all(abs(y - exact_max) < tol) && ...
+tol = 10*get(f, 'vscale')*eps;
+pass(5) = (all(abs(y - exact_max) < 10*tol) && ...
     all(abs(fx - exact_max) < tol));
-    
+        
+
 %%
 % Test for complex-valued BNDFUN.
 pass(6) = test_spotcheck_min( ...
@@ -46,7 +47,7 @@ f = bndfun(fun_op, data, pref);
 exact_min = [exp(1i) -exp(-1i/2)];
 fx = fun_op(x); 
 fx = fx([1 4]);
-tol = 10*max(get(f, 'vscale').*get(f, 'epslevel'));
+tol = 10*max(get(f, 'vscale')*eps);
 pass(7) = (all(abs(y - exact_min) < 10*tol) && ...
     all(abs(fx - exact_min) < 10*tol));
 
@@ -66,7 +67,7 @@ f = unbndfun(op, singData, singPref);
 yExact = -Inf;
 xExact = data.domain(2);
 errX = x - xExact;
-pass(8) = ( norm(errX, inf) < get(f,'epslevel')*get(f,'vscale') ) && ...
+pass(8) = ( norm(errX, inf) < eps*get(f,'vscale') ) && ...
     ( y == yExact );
 
 end
@@ -80,7 +81,7 @@ f = bndfun(fun_op, data, pref);
 fx = fun_op(x);
 err1 = abs(y - exact_min);
 err2 = abs(fx - exact_min);
-tol = 2e3*get(f, 'vscale')*get(f, 'epslevel');
+tol = 2e3*get(f, 'vscale')*eps;
 result = (err1 < tol) && (err2 < tol);
 
 end

@@ -11,12 +11,10 @@ function out = get(f, prop)
 %
 % See also SINGFUN.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-switch prop
-    case fieldnames(f)
-        out = f.(prop);
+switch prop      
     case 'values'
         % TODO:  This breaks encapsulation: not all techs have "points".
         pts = get(f.smoothPart, 'points');
@@ -25,6 +23,10 @@ switch prop
         out = feval(f, -1);
     case 'rval'
         out = feval(f, 1);
+    case 'smoothPart'
+        out = f.smoothPart;
+    case 'exponents'
+        out = f.exponents;
     otherwise
         out = get(f.smoothPart, prop);
 end

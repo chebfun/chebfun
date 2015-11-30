@@ -22,13 +22,14 @@ function [x, w, v, t] = legpts(n, int, meth)
 %    METHOD = 'GW' uses the traditional Golub-Welsch eigenvalue method,
 %     which is maintained mostly for historical reasons.
 %
-%   [X, W, V, T] = LEGPTS(N) returns also the arccos of the nodes, T = acos(X).
-%   In some situations (in particular with 'ASY') these can be computed to a
-%   much better relative precision than X.
+%   [X, W, V, T] = LEGPTS(...) returns also the arccos of the nodes (scaled to
+%   lie in [-1, 1] if the INTERVAL argument is used), T = acos(X).  In some
+%   situations (in particular with 'ASY') these can be computed to a much
+%   better relative precision than X.
 %
 % See also CHEBPTS, JACPTS, LOBPTS, RADAUPTS, HERMPTS, LAGPTS, and TRIGPTS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -106,14 +107,10 @@ elseif ( n == 0 )   % Return empty vectors if n == 0:
     t = [];
     return
 elseif ( n == 1 )
-    % x = midpoint of interval
-    % w = length of interval 
-    % v = 1
-    % t = 1 
     x = mean(interval);
     w = diff(interval);
     v = 1;
-    t = 1;
+    t = pi/2;
     return
 elseif ( n == 2 )
     x0 = [-1 ; 1]/sqrt(3);
@@ -468,8 +465,7 @@ k = (21:m).';
 ak = pi*(k-.25);
 % jk(k) = ak + polyval(p, .125./ak);
 ak82 = (.125./ak).^2;
-jk(k) = ak + .125./ak.*(1 + ak82.*(p(7) + ak82.*(p(5) + ak82.*(p(3) + ...
-    ak82.*p(1)))));
+jk(k) = ak + .125./ak.*(1 + ak82.*(p(7) + ak82.*(p(5) + ak82.*(p(3) + ak82.*p(1)))));
 
 end
 

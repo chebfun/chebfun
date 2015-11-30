@@ -8,7 +8,7 @@ function f = sign(f, pref)
 %
 % See also ABS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isreal(f) )
@@ -20,7 +20,6 @@ if ( isreal(f) )
     % Compute the floor:
     f.coeffs = sign(meanfx);
     f.values = f.coeffs;
-    f.vscale = abs(f.coeffs);
 else
     f = compose(f, @(x) x./abs(x));
 end

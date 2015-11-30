@@ -8,7 +8,7 @@ function h = assignColumns(f, colIdx, g)
 %
 % See also EXTRACTCOLUMNS, MAT2CELL.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % g is empty - remove columns:
@@ -16,8 +16,6 @@ if ( isempty(g) )
     h = f;
     h.values(:,colIdx) = [];
     h.coeffs(:,colIdx) = [];
-    h.vscale(:,colIdx) = [];
-    h.epslevel(:,colIdx) = [];
     h.isReal(:,colIdx) = [];
     return
 end
@@ -34,10 +32,8 @@ h = f;
 h.values(:, colIdx) = g.values;
 h.coeffs(:, colIdx) = g.coeffs;
 
-% Update happiness, vscale, and epslevel:
+% Update ishappy:
 h.ishappy = f.ishappy && g.ishappy;
-h.vscale(colIdx) = g.vscale;
-h.epslevel(colIdx) = g.epslevel;
 h.isReal(colIdx) = g.isReal;
 
 end

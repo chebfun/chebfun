@@ -52,7 +52,7 @@ if ( strcmp(newIVPsolver, get(handles.button_timestepping, 'String')) )
     set(handles.panel_initialGuess, 'Visible', 'off')
 else
     % User selected global solver. Default global method is collocation:
-    handles.guifile.options.ivpSolver = 'collocation';
+    handles.guifile.options.ivpSolver = 'values';
     % Make the initial guess panel visible:
     set(handles.panel_initialGuess, 'Visible', 'on')
 end

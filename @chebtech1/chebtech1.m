@@ -44,7 +44,7 @@ classdef chebtech1 < chebtech
 %
 % See also CHEBTECH, CHEBTECH.TECHPREF, CHEBPTS, HAPPINESSCHECK, REFINE.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -85,25 +85,33 @@ classdef chebtech1 < chebtech
                 pref = chebtech.techPref(pref);
             end
 
-            data = parseDataInputs(data, pref);
+            data = chebtech.parseDataInputs(data, pref);
 
-            % Force nonadaptive construction if PREF.FIXEDLENGTH is numeric:
+            % Force nonadaptive construction if PREF.FIXEDLENGTH is numeric and
+            % we're not using contour integrals.
             if ( ~(isnumeric(op) || iscell(op)) && ...
-                    ~isempty(pref.fixedLength) && ~isnan(pref.fixedLength) )
+                    ~isnan(pref.fixedLength) && ~pref.useTurbo )
                 % Evaluate op on the Chebyshev grid of given size:
                 op = feval(op, chebtech1.chebpts(pref.fixedLength));
             end
 
             % Actual construction takes place here:
-            obj = populate(obj, op, data.vscale, data.hscale, pref);
-            
-            % Set length of obj to PREF.FIXEDLENGTH (if it is non-trivial).
-            if ( (isnumeric(op) || iscell(op)) && ...
-                    ~isempty(pref.fixedLength) && ~isnan(pref.fixedLength) )
-                obj = prolong(obj, pref.fixedLength);
-            end
+            [obj, values] = populate(obj, op, data, pref);
 
-            if ( obj.ishappy || isnumeric(op) || iscell(op) )
+            if ( isnumeric(op) || iscell(op) )
+                % Set length of obj to PREF.FIXEDLENGTH (if it is non-trivial).
+                if ( ~isnan(pref.fixedLength ) )
+                    obj = prolong(obj, pref.fixedLength);
+                end
+
+                % No need to error check when constructing from discrete data.
+                return
+            elseif ( obj.ishappy )
+                % Use contour integrals ("turbo" mode) if requested.
+                if ( pref.useTurbo )
+                    obj = constructorTurbo(obj, op, pref);
+                end
+
                 % No need to error check if we are happy:
                 return
             end
@@ -163,26 +171,14 @@ classdef chebtech1 < chebtech
         % Refinement function for CHEBTECH1 construction (evaluates OP on grid):
         [values, points, giveUp] = refine(op, values, pref)
         
+        % Return the value-based discretization class which uses CHEBTECH1: 
+        function disc = returnValsDisc()
+            disc = @chebcolloc1;
+        end
+        
         % Convert values to coefficients:
         coeffs = vals2coeffs(values)
         
     end
         
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% METHODS IMPLEMENTED IN THIS FILE:
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function data = parseDataInputs(data, pref)
-%PARSEDATAINPUTS   Parse inputs from the DATA structure and assign defaults.
-
-if ( ~isfield(data, 'vscale') || isempty(data.vscale) )
-    data.vscale = 0;
-end
-
-if ( ~isfield(data, 'hscale') || isempty(data.hscale) )
-    data.hscale = 1;
-end
-
 end

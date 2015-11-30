@@ -7,7 +7,7 @@ function f = circshift(f,a)
 %
 % See also TRIGTECH.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 [n,m] = size(f);
@@ -24,19 +24,20 @@ end
 
 % The TRIGTECH object is defined as 
 %   If N is odd
-%       F(x) = C(1)*z^(N-1)/2 + C(2)*z^((N-1)/2-1) + ... + C(N)*z^(-(N-1)/2)
+%       F(x) = C(1)*z^(-(N-1)/2) + C(2)*z^(-(N-1)/2+1) + ... 
+%               + C(N)*z^((N-1)/2)
 %   If N is even
-%       F(x) = C(1)*z^(N/2-1) + C(2)*z^(N/2-2) + ... + C(N-1)*z^(-N/2-1) +
-%                  1/2*C(N)*(z^(N/2) + z^(-N/2))
+%       F(x) = 1/2*C(1)*(z^(N/2) + z^(-N/2)) + C(2)*z^(-N/2+1) + 
+%              + C(3)*z^(-N/2+2) + ... + C(N)*z^(N/2-1)
 %   where z = exp(1i*pi*x) and -1 <= x <= 1. 
 
 % So a shift by a only requires multiplying the kth coefficients by
 % (exp(-1i*pi*a))^k.
 
 if ( mod(n, 2) ) 
-    even_odd_fix = (exp(-1i*pi*a)).^((n-1)/2:-1:-(n-1)/2);
+    even_odd_fix = (exp(-1i*pi*a)).^(-(n-1)/2:(n-1)/2);
 else
-    even_odd_fix = (exp(-1i*pi*a)).^((n/2-1):-1:(-n/2));
+    even_odd_fix = (exp(-1i*pi*a)).^((-n/2):(n/2-1));
 end
 
 f.coeffs = bsxfun(@times, f.coeffs, even_odd_fix.');
