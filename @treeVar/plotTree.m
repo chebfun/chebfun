@@ -125,25 +125,17 @@ end
 function plotTreePlot(tree, maxDiffOrder, varNames)
 %PLOTREEPLOT   The actual plotting of the syntax tree.
 
+% Nice modern Matlab colours for lines and nodes:
 lineColor = [0 0.447 0.741];
 depVarColor = [0.85 0.325 0.098];
 indVarColor = [0.929 0.694 0.125];
-% Specify 20 different colours, so that each variable appearing in the tree can
-% be plotted with its own colour:
-colours = [160, 255, 0; 27, 244, 125; 0, 185, 140; 49, 105, 255; ...
-    114, 109, 255; 137, 0, 211; 220, 44, 148; 255, 51, 91; ...
-    252, 103, 1; 255, 145, 0; 255, 216, 0]/255;
-
-% Store the number of colours we use (so that we can take mod() later on):
-numCols = size(colours, 1);
 
 % Plot, depending on the number of arguments that the method has.
 switch tree.numArgs
     case 0
         % Plot the constructor leaves in different colours.
         if ( strcmp(tree.method, 'constr') )
-            varID = find(tree.ID == 1);
-            if ( isempty(varID) )
+            if ( ~any(tree.ID) )
                 % Independent variable
                 col = indVarColor;
             else
@@ -154,19 +146,21 @@ switch tree.numArgs
         
     case 1
         % Plot syntax tree for univariate methods:
-        plot(tree.center.x, tree.center.y, '.','markersize', 25, 'color', lineColor);
+        plot(tree.center.x, tree.center.y, '.','markersize', 25, ...
+            'color', lineColor);
         plot([tree.x tree.center.x], [tree.y tree.center.y], 'color',lineColor)
         plotTreePlot(tree.center, maxDiffOrder, varNames)
     
     case 2
-        % Plot syntax tree for bivariate methods:        
-        % Plot left sub-tree.
-        plot(tree.left.x, tree.left.y, '.','markersize', 25, 'color', lineColor);
+        % Plot syntax tree for bivariate methods. Start with left sub-tree.
+        plot(tree.left.x, tree.left.y, '.','markersize', 25, ...
+            'color', lineColor);
         plot([tree.x tree.left.x], [tree.y tree.left.y], 'color',lineColor)
         plotTreePlot(tree.left, maxDiffOrder, varNames)
         
         % Plot right sub-tree.
-        plot(tree.right.x, tree.right.y, '.','markersize', 25, 'color', lineColor);
+        plot(tree.right.x, tree.right.y, '.','markersize', 25, ...
+            'color', lineColor);
         plot([tree.x tree.right.x], [tree.y tree.right.y], 'color',lineColor)
         plotTreePlot(tree.right, maxDiffOrder, varNames)
 end
@@ -182,9 +176,11 @@ if ( strcmp(tree.method, 'constr') )
         varString = varNames{varID + 1};
     end
     
-    text(tree.x + 0.02, tree.y - 0.01, varString, 'Interpreter', 'none','fontsize',14)
+    text(tree.x + 0.02, tree.y - 0.01, varString, 'Interpreter', 'none', ...
+        'fontsize',14)
 else
-    text(tree.x + 0.02, tree.y - 0.01, tree.method, 'Interpreter', 'none','fontsize',14)
+    text(tree.x + 0.02, tree.y - 0.01, tree.method, 'Interpreter', 'none', ...
+        'fontsize',14)
 end
 
 end
