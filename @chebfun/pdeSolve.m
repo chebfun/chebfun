@@ -634,7 +634,7 @@ uOut{1} = uCurrent;
 tOut(1) = tt(1);
 
 % Initialise variables for ONESTEP():
-M = []; P = []; n = [];
+M = []; P = []; n = []; B = 0;
 
 % Set the preferences:
 pref = tech.techPref();
@@ -746,8 +746,6 @@ clear global
             if ( numLinBCs > 0 )
                 bcop = [bc.left.op ; bc.middle.op ; bc.right.op];
                 B = cell2mat(cellfun(@(f) feval(f, n), bcop, 'UniformOutput', false));
-            else
-                B = 0;
             end
             
             % Zero matrix for algebraic (boundary) terms:
