@@ -758,7 +758,8 @@ clear global
             M = cell(1, SYSSIZE);
             
             for kk = 1:SYSSIZE
-                xk = chebpts(n-DIFFORDER(kk), DOMAIN, 1);
+%                 xk = chebpts(n-DIFFORDER(kk), DOMAIN, 1);
+                xk = chebpts(n-DIFFORDER(kk)+2, DOMAIN, 2); xk([1,end]) = [];
                 P{kk} = barymat(xk, x);
                 M{kk} = pdeFlag(kk)*P{kk};
             end
