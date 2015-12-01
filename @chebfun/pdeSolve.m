@@ -399,6 +399,20 @@ numMBCs = 0;   % nonlinear other constraints
 numRBCs = 0;   % nonlinear RBCs
 BCRHS = {};    % RHS values for BCs
 
+    % Differentiation matrices at left and right endpoints:
+    function D = neumannLeft(n)
+        x = -cos(pi*(1:n-2)/(n-1));
+        D = [0, 2./(1+x), .5]; 
+        D(1:2:end) = -D(1:2:end);
+        D(1) = -sum(D);
+    end
+    function D = neumannRight(n)
+        x = -cos(pi*(1:n-2)/(n-1));
+        D = [-.5, 2./(x-1), 0]; 
+        D(end:-2:1) = -D(end:-2:1);
+        D(end) = -sum(D);
+    end
+
 if ( ischar(bc) && any(strcmpi(bc, {'periodic', 'trig'})) )
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%% PERIODIC BCS  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
@@ -461,8 +475,7 @@ else
         if ( strcmpi(bc.left, 'dirichlet') )
             A = @(n) [1, zeros(1, n-1)];
         elseif ( strcmpi(bc.left, 'neumann') )
-            % TODO: Make left diff operator explicitly.
-            A = @(n) [1, zeros(1, n-1)]*chebcolloc2.diffmat(n)*diff(DOMAIN)/2;
+            A = @(n) neumannLeft(n)*(diff(DOMAIN)/2);
         else
             error('CHEBFUN:CHEBFUN:pde15s:bcSyntax1', 'Unknown BC syntax');
         end
@@ -515,8 +528,7 @@ else
         if ( strcmpi(bc.right, 'dirichlet') )
             A = @(n) [zeros(1, n-1), 1];
         elseif ( strcmpi(bc.right, 'neumann') )
-            % TODO: Make right diff operator explicitly.
-            A = @(n) [zeros(1, n-1), 1]*chebcolloc2.diffmat(n)*diff(DOMAIN)/2;
+            A = @(n) neumannRight(n)*(diff(DOMAIN)/2);
         else
             error('CHEBFUN:CHEBFUN:pde15s:bcSyntax3', 'Unknown BC syntax');
         end
@@ -540,7 +552,7 @@ else
     
 end
 
-% TOtal number of BCs:
+% Total number of BCs:
 numBCs = numLinBCs + numLBCs + numMBCs + numRBCs;
 
 if ( isstruct(bc) && ~isfield(bc, 'middle') )
@@ -575,7 +587,6 @@ else
     u0 = simplify(u0, tol);
 end
 tech = techHandle();
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% %%%%%%%%%%%%%%%%%%% SETUP TOLERANCES AND INITIAL CONDITION %%%%%%%%%%%%%%%%%%
@@ -642,11 +653,13 @@ if ( doPlot )
     drawnow
 end
 DONE = false;
+
 if ( ~isnan(optN) )
     % Non-adaptive in space:
     currentLength = optN;
     tSpan = tt;
     solvePDE(tSpan); % Do all chunks at once!
+    
 else
     % Adaptive in space
     
@@ -751,8 +764,8 @@ clear global
                 P{kk} = barymat(xk, x);
                 M{kk} = pdeFlag(kk)*P{kk};
             end
-            P = [ Z ; blkdiag(P{:})];
-            M = [ Z ; blkdiag(M{:})];
+            P = [ Z ; blkdiag(P{:}) ];
+            M = [ Z ; blkdiag(M{:}) ];
             
             % Multiply by user-defined mass matrix
             if ( userMassSet )
@@ -1015,7 +1028,6 @@ for k = 2:idx-1
     varList1 = [varList1, ',', varNamesNewOrder{k}]; %#ok<AGROW>
     varList2 = [varList2, ',', varNames{k}]; %#ok<AGROW>
 end
-
 
 % Compile the new function string:
 funList = {'@diff', '@sum', '@cumsum', '@fred'};
