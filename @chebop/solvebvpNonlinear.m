@@ -28,6 +28,9 @@ function [u, info] = solvebvpNonlinear(N, rhs, L, u0, res, pref, displayInfo)
 maxIter  = pref.maxIter;
 bvpTol   = pref.bvpTol;
 
+% Loosen convergence tolerance for Newton iteration
+bvpTolNonlinear = 200*bvpTol;
+
 % Did the user request damped or undamped Newton iteration? Start in mode
 % requested (later on, the code can switch between modes).
 prefDamping = pref.damping;
@@ -65,7 +68,7 @@ errEst = inf;
 % Some initializations of the DAMPINGINFO struct. See 
 %   >> help dampingErrorBased 
 % for discussion of this struct. 
-dampingInfo.errTol =        200*bvpTol;
+dampingInfo.errTol =        bvpTolNonlinear;
 dampingInfo.normDeltaOld =  [];
 dampingInfo.normDeltaBar =  [];
 dampingInfo.lambda =        lambda;
@@ -189,7 +192,7 @@ while ( ~terminate )
         normDelta, cFactor, length(delta{1}), lambda, len, displayFig, ...
         displayTimer, pref);
     
-    if ( errEst < 200*bvpTol )  
+    if ( errEst < bvpTolNonlinear )  
         % Sweet, we have converged!      
         success = 1;
     elseif ( newtonCounter > maxIter )

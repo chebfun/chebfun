@@ -59,7 +59,9 @@ classdef cheboppref < chebpref
 %     [5e-13]
 %
 %     This is the relative tolerance used to test convergence during the
-%     apadtive solution of boundary value problems.
+%     adaptive solution of linear boundary value problems. For nonlinear
+%     boundary value problems the Newton convergence tolerance is set to
+%     200*bvpTol.
 %
 %   happinessCheck              - Routine for checking that solution converged
 %     [@standardCheck]
