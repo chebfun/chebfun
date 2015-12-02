@@ -55,12 +55,11 @@ classdef cheboppref < chebpref
 %     finished. If 'iter', information is printed at every Newton step. If
 %     'off', no information is printed.
 %
-%   errTol                      - Error tolerance
-%     [1e-10]
+%   bvpTol                      - Error tolerance for boundary value problems
+%     [5e-13]
 %
-%     The termination criteria for the Newton iteration. The Newton iteration is
-%     considered to have converged if the error estimate it computes is less
-%     than the value of errTol.
+%     This is the relative tolerance used to test convergence during the
+%     apadtive solution of boundary value problems.
 %
 %   happinessCheck              - Routine for checking that solution converged
 %     [@standardCheck]
@@ -276,8 +275,8 @@ classdef cheboppref < chebpref
                 prefList.damping);
             fprintf([padString('    display:') '%s\n'], ...
                 prefList.display);
-            fprintf([padString('    errTol:') '%g\n'], ...
-                prefList.errTol);
+            fprintf([padString('    bvpTol:') '%g\n'], ...
+                prefList.bvpTol);
             fprintf([padString('    happinessCheck:') '%s\n'], ...
                 func2str(prefList.happinessCheck));
             fprintf([padString('    ivpAbsTol:') '%g\n'], ...
@@ -458,7 +457,7 @@ classdef cheboppref < chebpref
             factoryPrefs.scale = NaN;
             factoryPrefs.damping = 1;
             factoryPrefs.display = 'off';
-            factoryPrefs.errTol = 1e-10;
+            factoryPrefs.bvpTol = 5e-13;
             factoryPrefs.happinessCheck = @standardCheck;
             factoryPrefs.ivpAbsTol = 1e5*eps;
             factoryPrefs.ivpRelTol = 100*eps;

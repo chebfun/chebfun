@@ -1,13 +1,12 @@
 function pass = test_carrier_US(pref)
 % Test Carrier equation.
 %
-% Toby Driscoll / Asgeir Birkisson, Jume 2014.
+% Toby Driscoll / Asgeir Birkisson, June 2014.
 if ( nargin == 0 )
     pref = cheboppref;
 end
 
-tol = 1e-10;
-pref.errTol = tol;
+tol = 1e2*pref.bvpTol;
 dom = [-1 1];
 
 %%
