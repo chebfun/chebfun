@@ -8,6 +8,14 @@ classdef cheboppref < chebpref
 %
 % Available Preferences:
 %
+%   bvpTol                      - Error tolerance for boundary value problems
+%     [5e-13]
+%
+%     This is the relative tolerance used to test convergence during the
+%     adaptive solution of linear boundary value problems. For nonlinear
+%     boundary value problems the Newton convergence tolerance is set to
+%     200*bvpTol.
+%
 %   domain                     - Construction domain.
 %     [-1, 1]
 %
@@ -54,13 +62,6 @@ classdef cheboppref < chebpref
 %     If 'final', information is only printed after the solver of BVPs has
 %     finished. If 'iter', information is printed at every Newton step. If
 %     'off', no information is printed.
-%
-%   errTol                      - Error tolerance
-%     [1e-10]
-%
-%     The termination criteria for the Newton iteration. The Newton iteration is
-%     considered to have converged if the error estimate it computes is less
-%     than the value of errTol.
 %
 %   happinessCheck              - Routine for checking that solution converged
 %     [@standardCheck]
@@ -262,6 +263,8 @@ classdef cheboppref < chebpref
             prefList = pref.prefList;
 
             fprintf('cheboppref object with the following preferences:\n');
+            fprintf([padString('    bvpTol:') '%g\n'], ...
+                prefList.bvpTol);
             fprintf([padString('    domain:') '[%g, %g]\n'], ...
                 prefList.domain(1), prefList.domain(end));
             if ( isa(prefList.discretization,'function_handle') )
@@ -276,8 +279,6 @@ classdef cheboppref < chebpref
                 prefList.damping);
             fprintf([padString('    display:') '%s\n'], ...
                 prefList.display);
-            fprintf([padString('    errTol:') '%g\n'], ...
-                prefList.errTol);
             fprintf([padString('    happinessCheck:') '%s\n'], ...
                 func2str(prefList.happinessCheck));
             fprintf([padString('    ivpAbsTol:') '%g\n'], ...
@@ -453,12 +454,12 @@ classdef cheboppref < chebpref
         %   contains all of the "factory default" values of the CHEBOP
         %   preferences.
 
+            factoryPrefs.bvpTol = 5e-13;
             factoryPrefs.domain = [-1 1];
             factoryPrefs.discretization = 'values';
             factoryPrefs.scale = NaN;
             factoryPrefs.damping = 1;
             factoryPrefs.display = 'off';
-            factoryPrefs.errTol = 1e-10;
             factoryPrefs.happinessCheck = @standardCheck;
             factoryPrefs.ivpAbsTol = 1e5*eps;
             factoryPrefs.ivpRelTol = 100*eps;

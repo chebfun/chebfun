@@ -241,7 +241,7 @@ else
     [u, info] = solvebvpNonlinear(N, rhs, L, u0, residual, pref, displayInfo);
 
     % Simplify output
-    u = simplify(u,pref.errTol/200);
+    u = simplify(u,pref.bvpTol);
 
 end
 
@@ -249,7 +249,7 @@ end
 % periodic TECH:
 if ( isPeriodicTech(techUsed) )
     normImag = @(f) norm(imag(f),inf);
-    if ( max(cellfun(normImag, u.blocks)) < max(pref.errTol*vscale(u)) )
+    if ( max(cellfun(normImag, u.blocks)) < max(pref.bvpTol*vscale(u)) )
        u = real(u);
     end
 end

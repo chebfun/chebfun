@@ -37,7 +37,7 @@ err(2) = norm(u - cn, inf);
 % %% DN
 % % The solution here is close to being singular, and we only enjoy linear
 % % convergence of Newton iteratin. Loosen the tolerance.
-% pref.errTol = 5e-5;
+% pref.bvpTol = 5e-5;
 % N.op = @(x, u) diff(u, 2) - (2-m)*u + 2*u.^3;
 % N.lbc = @(u) u - 1 ;
 % N.rbc = @(u) u - sqrt(1-m);
