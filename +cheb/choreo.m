@@ -1,12 +1,12 @@
 function choreo
-%CHOREO   Compute planar choreographies of the n-body problen.
-%    CHOREO computes a planar choreogpraphy using an hand-drawn initial guess. 
+%CHOREO   Compute planar choreographies of the n-body problem.
+%    CHOREO computes a planar choreogpraphy using hand-drawn initial guesses. 
 %   
 % It uses trignometric interpolation and quasi-Newton methods. See [1] for more
 % details.
 %
 % [1] H. Montanelli, N. I. Gushterov, Computing planar and spherical
-% choreographies, submitted to Physica D.
+% choreographies, SIAM Journal on Applied Dynamical Systems, to appear.
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -41,15 +41,16 @@ while 1
   hold on, plot(q0,'.-b',LW,lw), drawnow
   c0 = trigcoeffs(q0);
   c0 = [real(c0);imag(c0)];
-  A0 = actiongradeval(c0,n,w);
+  [A0,G0] = actiongradeval(c0,n,w);
   fprintf('\nInitial acion: %.6f\n',A0)
-  options = struct();
-  options.Method = 'lbfgs';
+  options = optimoptions('fminunc');
+  options.Algorithm = 'quasi-newton';
+  options.HessUpdate = 'bfgs'; 
+  options.GradObj = 'on';
   options.Display = 'off';
-  c = minFunc(@(x)actiongradeval(x,n),c0,options);
-  [A,G] = actiongradeval(c,n,w);
+  [c,A,~, ~,G] = fminunc(@(x)actiongradeval(x,n,w),c0,options);
   fprintf('Action after optimization: %.6f\n',A)
-  fprintf('Norm of the gradient: %.3e\n',norm(G))
+  fprintf('Norm of the gradient: %.3e\n',norm(G)/norm(G0))
 
 % Plot the result:
   c = c(1:N) + 1i*c(N+1:2*N);
@@ -68,9 +69,12 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [A,G] = actiongradeval(c,n,w)
-%ACTIONGRADEVAL   Compute the action and its gradient.
+%ACTIONGRADEVAL  Compute the action and its gradient in the plane.
 
 % Set up:
+  if nargin < 3
+      w = 0;
+  end
   N = length(c)/2; 
   u = c(1:N); 
   v = c(N+1:end);
@@ -81,41 +85,41 @@ function [A,G] = actiongradeval(c,n,w)
     k = (-(N-1)/2:(N-1)/2)';
   end
   [t,s] = trigpts(N,[0 2*pi]);
-  if nargin < 3
-      w = 0;
-  end
 
 % Evaluate action A:
   c = bsxfun(@times,exp(1i*k*(0:n-1)*2*pi/n),c(:,1));
   vals = ifft(N*c);
   dc = 1i*k.*c(:,1);
   if ( mod(N, 2) == 0 )
-    dc(1,1) = 0; % zero the k=-N/2 coefficient
+    dc(1,1) = 0; 
   end
-  dv = ifft(N*dc);
-  K = abs(dv + 1i*w*vals(:,1)).^2; 
+  dvals = ifft(N*dc);
+  K = abs(dvals+1i*w*vals(:,1)).^2; 
   U = 0;
   for i = 2:n
-    U = U + 1./abs(vals(:,1)-vals(:,i)); 
+    U = U - 1./abs(vals(:,1)-vals(:,i)); 
   end
-  A = n/2*s*(K + U); % trapezoidal rule
-
+  A = n/2*s*(K-U);
+  
 if nargout > 1
-% Evaluate gradient G:
-  G = zeros(2*N, 1);
-  % Loop over the bodies for the A_U contribution:
+    
+% Initialize gradient G:
+  G = zeros(2*N,1);
+  
+% Loop over the bodies for the AU contribution:
   for j = 1:n-1
     a = bsxfun(@times,1-cos(k'*j*2*pi/n),cos(t*k')) + ...
-        bsxfun(@times,sin(k'*j*2*pi/n),sin(t*k'));
+      bsxfun(@times,sin(k'*j*2*pi/n),sin(t*k'));
     b = bsxfun(@times,-1+cos(k'*j*2*pi/n),sin(t*k')) + ...
-        bsxfun(@times,sin(k'*j*2*pi/n),cos(t*k'));
-    f = sqrt((a*u + b*v).^2 + (-b*u + a*v).^2);
-    df = bsxfun(@times,a*u + b*v,a) + bsxfun(@times,b*u - a*v,b);
-    G(1:N) = G(1:N) - n/2*bsxfun(@rdivide,df,f.^3)'*s';
-    df = bsxfun(@times, a*u + b*v, b) + bsxfun(@times,-b*u + a*v,a);
-    G(N+1:2*N) = G(N+1:2*N) - n/2*bsxfun(@rdivide,df,f.^3)'*s';
+      bsxfun(@times,sin(k'*j*2*pi/n),cos(t*k'));
+    f = (a*u + b*v).^2 + (-b*u + a*v).^2;
+    df = 2*(bsxfun(@times,a*u + b*v,a) + bsxfun(@times,-b*u + a*v,-b));
+    G(1:N) = G(1:N) - n/4*bsxfun(@rdivide,df,f.^(3/2))'*s';
+    df = 2*(bsxfun(@times,a*u + b*v, b) + bsxfun(@times,-b*u + a*v,a));
+    G(N+1:2*N) = G(N+1:2*N) - n/4*bsxfun(@rdivide,df,f.^(3/2))'*s';
   end
-  % Add the A_K contribution:
+  
+% Add the AK contribution:
   if ( mod(N, 2) == 0 )
     G = G + 2*pi*n*[w;(k(2:end)+w);w;(k(2:end)+w)].^2.*[u;v];
   else
