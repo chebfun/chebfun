@@ -21,7 +21,7 @@ f = chebfun(@(x) sin(x).*abs(x - 0.1), [-1 0.1 1], pref);
 ff = fliplr(f.');
 ff_exact = @(x) (sin(-x).*abs(-x - 0.1)).';
 err = feval(ff, xr) - ff_exact(xr);
-pass(2) = norm(err(:), inf) < 10*ff.vscale.*ff.epslevel;
+pass(2) = norm(err(:), inf) < 10*vscale(ff)*eps;
 pass(3) = isequal(fliplr(ff), f.');
 
 g = chebfun(@(x) [sin(x).*abs(x - 0.1) cos(x).*sign(x + 0.2)], ...
@@ -29,20 +29,20 @@ g = chebfun(@(x) [sin(x).*abs(x - 0.1) cos(x).*sign(x + 0.2)], ...
 gg = fliplr(g.');
 gg_exact = @(x) [sin(-x).*abs(-x - 0.1) cos(-x).*sign(-x + 0.2)].';
 err = feval(gg, xr) - gg_exact(xr);
-pass(4) = norm(err(:), inf) < 10*gg.vscale.*gg.epslevel;
+pass(4) = norm(err(:), inf) < 1e2*vscale(gg)*eps;
 pass(5) = isequal(fliplr(gg), g.');
 
 %% Check behavior for column chebfuns.
 ff = fliplr(f);
 ff_exact = @(x) sin(x).*abs(x - 0.1);
 err = feval(ff, xr) - ff_exact(xr);
-pass(6) = norm(err(:), inf) < 10*ff.vscale.*ff.epslevel;
+pass(6) = norm(err(:), inf) < 10*vscale(ff)*eps;
 pass(7) = isequal(fliplr(ff), f);
 
 gg = fliplr(g);
 gg_exact = @(x) [cos(x).*sign(x + 0.2) sin(x).*abs(x - 0.1)];
 err = feval(gg, xr) - gg_exact(xr);
-pass(8) = norm(err(:), inf) < 10*gg.vscale.*gg.epslevel;
+pass(8) = norm(err(:), inf) < 1e2*vscale(gg)*eps;
 pass(9) = isequal(fliplr(gg), g);
 
 %% Test on singular function - A column CHEBFUN:
@@ -61,7 +61,7 @@ g = fliplr(f);
 vals_f = feval(f,x);
 vals_g = feval(g,x);
 err = vals_f - vals_g;
-pass(10) = ( norm(err, inf) < get(f,'epslevel')*norm(vals_f, inf) );
+pass(10) = ( norm(err, inf) < eps*norm(vals_f, inf) );
 
 %% Test on singular function - a row CHEBFUN:
 
@@ -83,7 +83,7 @@ g = fliplr(f);
 vals_g = feval(g,x);
 vals_exact = feval(opflip,x).';
 err = vals_g - vals_exact;
-pass(11) = ( norm(err, inf) < 1e4*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(11) = ( norm(err, inf) < 1e4*eps*norm(vals_exact, inf) );
 
 
 end

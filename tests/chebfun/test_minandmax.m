@@ -14,16 +14,16 @@ pass(1) = isempty(y) && isempty(x);
 f = chebfun(@(x) ((x - 0.2).^3 - (x - 0.2) + 1).*sec(x - 0.2), pref);
 [y, x] = minandmax(f);
 y_exact = [0.710869767377087 ; 1.884217141925336];
-pass(2) = all(abs(y - y_exact) <= 10*vscale(f)*epslevel(f)) && ...
-    all(abs(feval(f, x) - y_exact) <= 10*vscale(f)*epslevel(f));
+pass(2) = all(abs(y - y_exact) <= 10*vscale(f)*eps) && ...
+    all(abs(feval(f, x) - y_exact) <= 10*vscale(f)*eps);
 
 % Check operation with breakpoints.
 f = chebfun(@(x) ((x - 0.2).^3 - (x - 0.2) + 1).*sec(x - 0.2), ...
     linspace(-1, 1, 10), pref);
 [y, x] = minandmax(f);
 y_exact = [0.710869767377087 ; 1.884217141925336];
-pass(3) = all(abs(y - y_exact) <= 10*vscale(f)*epslevel(f)) && ...
-    all(abs(feval(f, x) - y_exact) <= 10*vscale(f)*epslevel(f));
+pass(3) = all(abs(y - y_exact) <= 10*vscale(f)*eps) && ...
+    all(abs(feval(f, x) - y_exact) <= 10*vscale(f)*eps);
 
 % Check operation for complex-valued chebfuns.
 f = chebfun({@(x) exp((1 + 1i)*x), @(x) 1-x/10}, [-1 0 1],  pref);
@@ -31,8 +31,8 @@ f = chebfun({@(x) exp((1 + 1i)*x), @(x) 1-x/10}, [-1 0 1],  pref);
 y_exact = [exp(-1 - 1i) ; 1];
 err1 = abs(y - y_exact);
 err2 = abs(feval(f, x) - y_exact);
-pass(4) = all(err1 <= 10*vscale(f)*epslevel(f)) && ...
-    all(err2 <= 10*vscale(f)*epslevel(f));
+pass(4) = all(err1 <= 10*vscale(f)*eps) && ...
+    all(err2 <= 10*vscale(f)*eps);
 
 % Check operation for pointValues.
 f = chebfun({-1, 1, 2}, [-1, 0, 1, 2]);
@@ -61,7 +61,7 @@ x_exact = [        0
    3.308480466603983
    3.776766383330969
    4.000000000000000];
-pass(7) = numel(y == 7) && norm(y - y_exact, inf) < 10*vscale(f)*epslevel(f);
+pass(7) = numel(y == 7) && norm(y - y_exact, inf) < 10*vscale(f)*eps;
 
 % Check operation for array-valued chebfuns.
 f = chebfun(@(x) [sin(10*x) cos(10*x) exp(x)], [-1 -0.5 0.5 1]);
@@ -69,8 +69,8 @@ f = chebfun(@(x) [sin(10*x) cos(10*x) exp(x)], [-1 -0.5 0.5 1]);
 y_exact = [-1 -1 exp(-1) ; 1 1 exp(1)];
 fx = feval(f, x(:));
 fx = [fx(1:2,1) fx(3:4,2) fx(5:6,3)];
-pass(8) = all(abs(y(:) - y_exact(:)) <= 10*vscale(f)*epslevel(f)) && ...
-    all(abs(fx(:) - y_exact(:)) <= 10*vscale(f)*epslevel(f));
+pass(8) = all(abs(y(:) - y_exact(:)) <= 10*vscale(f)*eps) && ...
+    all(abs(fx(:) - y_exact(:)) <= 10*vscale(f)*eps);
 
 f = chebfun(@(x) [exp((1 + 1i)*x) sec(1i*(x - 0.5))], [-1 0 1], ...
     pref);
@@ -78,8 +78,8 @@ f = chebfun(@(x) [exp((1 + 1i)*x) sec(1i*(x - 0.5))], [-1 0 1], ...
 y_exact = [exp(-1 - 1i) sec(-1.5i) ; exp(1 + 1i) 1];
 fx = feval(f, x(:));
 fx = [fx(1:2,1) fx(3:4,2)];
-pass(9) = all(abs(y(:) - y_exact(:)) <= 10*vscale(f)*epslevel(f)) && ...
-    all(abs(fx(:) - y_exact(:)) <= 10*vscale(f)*epslevel(f));
+pass(9) = all(abs(y(:) - y_exact(:)) <= 10*vscale(f)*eps) && ...
+    all(abs(fx(:) - y_exact(:)) <= 10*vscale(f)*eps);
 
 op = @(x) sin(x).^2 + sin(x.^2);
 f = chebfun(@(x) [op(x) op(x/2)], [0, 4]);
@@ -102,10 +102,10 @@ fx1 = feval(f, x_exact(:,1));
 fx2 = feval(f, x_exact(1:3,2));
 pass(10) = isequal(size(y), [7 2]) && ...
     all(isnan(y(4:end,2))) && all(isnan(x(4:end,2)));
-pass(11) = norm(y(:,1) - y_exact(:,1), inf) < 10*vscale(f)*epslevel(f) && ...
-    norm(y(1:3,2) - y_exact(1:3,2), inf) < 10*vscale(f)*epslevel(f) && ...
-    norm(fx1(:,1) - y_exact(:,1), inf) < 10*vscale(f)*epslevel(f) && ...
-    norm(fx2(:,2) - y_exact(1:3,2), inf) < 10*vscale(f)*epslevel(f);
+pass(11) = norm(y(:,1) - y_exact(:,1), inf) < 10*vscale(f)*eps && ...
+    norm(y(1:3,2) - y_exact(1:3,2), inf) < 10*vscale(f)*eps && ...
+    norm(fx1(:,1) - y_exact(:,1), inf) < 10*vscale(f)*eps && ...
+    norm(fx2(:,2) - y_exact(1:3,2), inf) < 10*vscale(f)*eps;
 
 %% Test on singular function: piecewise smooth chebfun - splitting on.
 
@@ -116,8 +116,8 @@ f = chebfun(op, dom, 'exps', [pow 0], 'splitting', 'on');
 [y, x] = minandmax(f);
 y_exact = [0 ; Inf];
 fx = op(x);
-pass(12) = ((max(abs(y - y_exact)) < 1e3*get(f, 'epslevel')) && ... 
-          (max(abs(fx - y_exact)) < 1e3*get(f, 'epslevel')));
+pass(12) = ((max(abs(y - y_exact)) < 1e4*eps) && ... 
+          (max(abs(fx - y_exact)) < 1e4*eps));
 
 
 %% Tests on function defined on unbounded domain:
@@ -135,14 +135,14 @@ vExact = [-0.6381726863389515 ; 0.6381726863389515];
 pExact = [-1.120906422778534 ; 1.120906422778534];
 errV = vals - vExact;
 errP = pos - pExact;
-pass(13) = ( norm(errV, inf) < 1e2*epslevel(f)*vscale(f) ) && ...
-    ( norm(errP, inf) < 1e2*epslevel(f)*vscale(f) );
+pass(13) = ( norm(errV, inf) < 1e2*eps*vscale(f) ) && ...
+    ( norm(errP, inf) < 1e2*eps*vscale(f) );
 
 
 %% from #824
 gam = chebfun('gamma(x)',[-4 4],'blowup','on','splitting','on');
 mm = minandmax(1./gam);
-pass(14) = norm(mm - [-1.125953228398760;4.079508980001102]) < 1e3*epslevel(gam);
+pass(14) = norm(mm - [-1.125953228398760;4.079508980001102]) < 1e4*eps;
 
 
 end

@@ -25,7 +25,7 @@ imf = chebfun(@sin, [-1 0 1], pref);
 f = complex(ref, imf);
 f_exact = @(x) exp(1i*x);
 err = feval(f, xr) - f_exact(xr);
-pass(4) = norm(err, inf) < 10*f.vscale*f.epslevel;
+pass(4) = norm(err, inf) < 1e2*vscale(f)*eps;
 
 % Check behavior for an array-valued function.
 ref = chebfun(@(x) [cos(x) -sin(x)], [-1 0 1], pref);
@@ -33,7 +33,7 @@ imf = chebfun(@(x) [sin(x) cos(x)], [-1 0 1], pref);
 f = complex(ref, imf);
 f_exact = @(x) [exp(1i*x) 1i*exp(1i*x)];
 err = feval(f, xr) - f_exact(xr);
-pass(5) = norm(err(:), inf) < 10*f.vscale*f.epslevel;
+pass(5) = norm(err(:), inf) < 1e2*vscale(f)*eps;
 
 % Check forming from just a single real chebfun.
 pass(6) = isequal(ref, complex(ref));
@@ -44,12 +44,12 @@ alpha = -0.194758928283640;
 f = complex(ref, alpha);
 f_exact = @(x) [cos(x) -sin(x)] + alpha*1i;
 err = feval(f, xr) - f_exact(xr);
-pass(7) = norm(err(:), inf) < 10*f.vscale*f.epslevel;
+pass(7) = norm(err(:), inf) < 10*vscale(f)*eps;
 
 f = complex(alpha, imf);
 f_exact = @(x) alpha + 1i*[sin(x) cos(x)];
 err = feval(f, xr) - f_exact(xr);
-pass(8) = norm(err(:), inf) < 10*f.vscale*f.epslevel;
+pass(8) = norm(err(:), inf) < 1e2*vscale(f)*eps;
 
 % Check error conditions.
 f = chebfun(@sin, [-1 1]);
@@ -89,7 +89,7 @@ x = diff(domCheck) * rand(100, 1) + domCheck(1);
 vals_h = feval(h, x);
 vals_exact = feval(op, x);
 err = vals_h - vals_exact;
-pass(11) = ( norm(err, inf) < 1e2*epslevel(h)*norm(vals_exact, inf) );
+pass(11) = ( norm(err, inf) < 1e2*eps*norm(vals_exact, inf) );
 
 
 %% Test on function defined on unbounded domain:
@@ -113,6 +113,6 @@ h = complex(f, g);
 hVals = feval(h, x);
 hExact = oph(x);
 err = hVals - hExact;
-pass(12) = norm(err, inf) < epslevel(h).*vscale(h);
+pass(12) = norm(err, inf) < eps*vscale(h);
 
 end

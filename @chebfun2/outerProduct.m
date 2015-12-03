@@ -1,5 +1,6 @@
 function h = outerProduct(f, g)
 %OUTERPRODUCT    The outer product of two CHEBFUN objects. 
+%
 %   H = OUTERPRODUCT(F, G) returns the CHEBFUN2 representing H(x,y) = F(y)G(x),
 %   where F and G are two CHEBFUN objects.
 %
@@ -35,7 +36,7 @@ fdom = domain(f);
 gdom = domain(g);
 dom = [gdom, fdom]; 
 
-h = chebfun2(0, dom); 
+h = chebfun2();
 % Form outerproduct: 
 if ( size(f, 2) == size(g, 1) )
     h.cols = f; 

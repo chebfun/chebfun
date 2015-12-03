@@ -31,7 +31,7 @@ f = chebfun2(@(z) sin(z)-sinh(z),2*pi*[-1 1 -1 1]);
 x = linspace(-2*pi,2*pi);  
 [xx,yy] = meshgrid(x); 
 pass(4) = ( norm( f(xx+1i*yy) - f(xx,yy), inf)) < tol;
-pass(5) = ( norm( f(xx+1i*yy) - sin(xx+1i*yy)+sinh(xx+1i*yy), inf)) < 200*tol;
+pass(5) = ( norm( f(xx+1i*yy) - sin(xx+1i*yy)+sinh(xx+1i*yy), inf)) < 1e3*tol;
 
 % commands from guide2: 
 f = chebfun2(@(x,y) sin(10*x.*y), [0 pi/4 0 3]);

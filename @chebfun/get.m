@@ -8,10 +8,7 @@ function out = get(f, prop, simpLevel)
 %       'vscale'         - Vertical scale of F.
 %       'vscale-local'   - Local vertical scales of F.
 %       'hscale'         - Horizontal scale of F.
-%       'hscale-local'   - Local horizontal scales of F.
 %       'ishappy'        - Is F happy?
-%       'epslevel'       - Approximate accuracy estimate of F.
-%       'epslevel-local' - Approximate accuracy estimate of F's components.
 %       'lval'           - Value(s) of F at left-hand side of domain.
 %       'rval'           - Value(s) of F at right-hand side of domain.
 %       'lval-local      - Value(s) of F's FUNs at left sides of their domains.
@@ -101,8 +98,6 @@ switch prop
         out = vscale(f);
     case 'hscale'
         out = hscale(f);
-    case 'epslevel'
-        out = epslevel(f);
     case 'ishappy'
         out = ishappy(f);
     case fieldnames(f)
@@ -125,10 +120,6 @@ switch prop
         out = getSimpleNumericLocalProp(f, 'rval', simpLevel);
     case 'vscale-local'
         out = getSimpleNumericLocalProp(f, 'vscale', simpLevel);
-    case 'hscale-local'
-        out = getSimpleNumericLocalProp(f, 'hscale', simpLevel);
-    case 'epslevel-local'
-        out = getSimpleNumericLocalProp(f, 'epslevel', simpLevel);
     case {'values', 'coeffs', 'points'}
         out = getSimpleNumericLocalProp(f, prop, simpLevel);
     case {'exps', 'exponents'}

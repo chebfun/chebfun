@@ -68,7 +68,7 @@ maxSample = tpref.maxLength;
 pseudoLevel = tpref.eps;
 
 % Deal with periodic functions:
-if ( any(strcmpi(dom, 'periodic')) )
+if ( any(strcmpi(dom, {'trig', 'periodic'})) )
     % If periodic flag, then map chebfun2 with TRIGTECHs.
     pref.tech = @trigtech;
     tpref = chebfunpref.mergeTechPrefs(pref, tech.techPref);
@@ -76,7 +76,7 @@ if ( any(strcmpi(dom, 'periodic')) )
     maxSample = tpref.maxLength;
     pseudoLevel = tpref.eps;
     dom = [-1 1 -1 1];
-elseif ( (nargin > 3) && (any(strcmpi(varargin{1}, 'periodic'))) )
+elseif ( (nargin > 3) && (any(strcmpi(varargin{1}, {'trig', 'periodic'}))) )
     % If periodic flag, then map chebfun2 with TRIGTECHs
     pref.tech = @trigtech;
     tpref = chebfunpref.mergeTechPrefs(pref, tech.techPref);
@@ -312,13 +312,14 @@ while ( ~isHappy && ~failure )
     end
     
     % Check if the column and row slices are resolved.
-    colData.vscale = dom(3:4);
+    colData.hscale = norm(dom(3:4), inf);
+    colData.vscale = vscale;
     tech = pref.tech();
     colChebtech = tech.make(sum(colValues,2), colData);
-    resolvedCols = happinessCheck(colChebtech,[],sum(colValues,2));
-    rowData.vscale = dom(1:2);
+    resolvedCols = happinessCheck(colChebtech, [], sum(colValues, 2), colData);
+    rowData.hscale = norm(dom(1:2), inf);
     rowChebtech = tech.make(sum(rowValues.',2), rowData);
-    resolvedRows = happinessCheck(rowChebtech,[],sum(rowValues.',2));
+    resolvedRows = happinessCheck(rowChebtech, [], sum(rowValues.', 2), colData);
     isHappy = resolvedRows & resolvedCols;
     
     % If the function is zero, set midpoint of domain as pivot location.
@@ -423,6 +424,16 @@ while ( ~isHappy && ~failure )
     end
     
 end
+
+% Simplifying rows and columns after they are happy.
+g = simplify( g ); 
+
+% Reconstruct using simplified coefficients to guarantee endpoint values are
+% correct.
+g.cols = chebfun(get(g.cols, 'coeffs'), domain(g.cols), 'coeffs', ...
+                  'tech', @tech.make);
+g.rows = chebfun(get(g.rows, 'coeffs'), domain(g.rows), 'coeffs', ...
+                  'tech', @tech.make);
 
 % Fix the rank, if in nonadaptive mode.
 g = fixTheRank( g , fixedRank );

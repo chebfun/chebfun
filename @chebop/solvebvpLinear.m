@@ -37,25 +37,18 @@ end
 % values of L.constraint:
 L.constraint = -L.constraint;
 
-% Solutions to the linearized problems need to be more accurate than the
-% nonlinear iteration tolerance.
-linpref = pref;
-linpref.errTol = max(eps, pref.errTol/100);
-
 % Solve the linear problem:
-del = linsolve(L, rhs, linpref);
+del = linsolve(L, rhs, pref);
 
 if ( ~isempty(Ninit) )
     % If Ninit is not empty, N will have been linearized around Ninit. In that
     % case, we need to regard the solution del obtained above as a Newton
     % correction to Ninit.
     u = Ninit + del;
+    u = simplify(u);
 else
     u = del;
 end
-
-% Simplify the result before returning it and printing solver info:
-u = simplify(u);
 
 % Norm of residual:
 normRes = norm(L*u - rhs, 'fro');

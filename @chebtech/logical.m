@@ -11,6 +11,5 @@ function f = logical(f)
 % TODO:  Should we use a tolerance here instead of any()?
 values = f.coeffs2vals(f.coeffs); 
 f.coeffs = any(values, 1);
-f.vscale = abs(f.coeffs);
 
 end

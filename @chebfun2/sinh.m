@@ -1,15 +1,9 @@
-function f = sinh( f )
+function varargout = sinh(varargin)
 %SINH   Hyperbolic sine of a CHEBFUN2.
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Empty check: 
-if ( isempty( f ) )    
-    return
-end 
-
-op = @(x,y) sinh( feval( f, x, y ) );  % Resample.
-f = chebfun2( op, f.domain );          % Call constructor. 
+[varargout{1:nargout}] = sinh@separableApprox(varargin{:});
 
 end

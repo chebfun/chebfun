@@ -15,8 +15,10 @@ SYSSIZE = 0;
 
 % Default options:
 tol = 1e-6;             % 'eps' in Chebfun terminology
-doPlot = 1;             % Plot after every time chunk?
-doHold = 0;             % Hold plot?
+% The default behaviour with no outputs is to plot. If the method is called with
+% outputs, by default, we don't plot.
+doPlot = ( nargout == 0 );
+doHold = false;         % Hold plot?
 plotOpts = {'-'};       % Plotting style
 adjustBCs = true;       % Adjust inconsistent BCs
 throwBCwarning = true;  % Throw a warning for inconsistent BCs
@@ -125,7 +127,7 @@ end
                 
             % Reshape solution:
             Uk = reshape(U(:,kk), n, SYSSIZE);
-            uCurrent = chebfun(Uk, DOMAIN, 'tech', tech);
+            uCurrent = chebfun(Uk, DOMAIN, 'tech', techHandle);
             tCurrent = t(kk);
             % Store for output:
             COUNTER = COUNTER + 1;
@@ -160,7 +162,7 @@ end
             c = (1+sin(1:SYSSIZE)).'; % Arbitrarily linear combination.
             Uk2 = (Uk*c/sum(c));
             uk2 = tech.make(Uk2, pref);
-            [ishappy, epslevel, cutoff] = classicCheck(uk2, Uk2, pref);
+            [ishappy, cutoff] = happinessCheck(uk2, Uk2, [], [], pref);
 
             if ( ishappy )  
 
@@ -172,7 +174,7 @@ end
                 % Store these values:
                 tCurrent = t(kk);
                 uCurrent = chebfun(Uk, DOMAIN, 'tech', techHandle);
-                uCurrent = simplify(uCurrent, epslevel);
+                uCurrent = simplify(uCurrent);
                 
                 COUNTER = COUNTER + 1;
                 uOut{COUNTER} = uCurrent;
@@ -428,7 +430,7 @@ else
     bc.right = dealWithStructInput(bc.right);
     
     if ( isempty(bc.left) )
-        bc.left.op = [];
+        bc.left = struct('op', []);
     elseif ( ischar(bc.left) || (iscell(bc.left) && ischar(bc.left{1})) )
         %% %%%%%%%%%%%%%%%%%%%%% DIRICHLET AND NEUMANN BCS (LEFT) %%%%%%%%%%%%%%
         if ( iscell(bc.left) )
@@ -449,6 +451,7 @@ else
         else
             error('CHEBFUN:CHEBFUN:pde15s:bcSyntax1', 'Unknown BC syntax');
         end
+        bc.left = struct('op', []);
         bc.left.op = cell(SYSSIZE, 1);
         for k = 1:SYSSIZE
             bc.left.op{k} = @(n) [zeros(1, ( k -1)*n) A(n) ...
@@ -461,7 +464,7 @@ else
         uTmp = chebdouble(ones(1, SYSSIZE));
         sizeOp = size(op(0, mean(DOMAIN), uTmp));
         leftNonlinBCLocs = 1:max(sizeOp);
-        bc.left = [];
+        bc.left = struct('op', []);
         bc.left.op = {@(n) zeros(max(sizeOp), SYSSIZE*n)}; % Dummy entries.
         BCRHS = num2cell(zeros(1, max(sizeOp)));
         leftNonlinBCFuns = op;
@@ -482,7 +485,7 @@ else
     end
     
     if ( isempty(bc.right) )
-        bc.right.op = [];
+        bc.right = struct('op', []);
     elseif ( ischar(bc.right) || (iscell(bc.right) && ischar(bc.right{1})) )
         %% %%%%%%%%%%%%%%%%%%%%% DIRICHLET AND NEUMANN BCS (RIGHT) %%%%%%%%%%%%%
         if ( iscell(bc.right) )
@@ -503,6 +506,7 @@ else
         else
             error('CHEBFUN:CHEBFUN:pde15s:bcSyntax3', 'Unknown BC syntax');
         end
+        bc.right = struct('op', []);
         bc.right.op = cell(SYSSIZE, 1);
         for k = 1:SYSSIZE
             bc.right.op{k} = @(n) [zeros(1,(k-1)*n) A(n) zeros(1,(SYSSIZE-k)*n)];
@@ -515,7 +519,7 @@ else
         uTmp = chebdouble(ones(1, SYSSIZE));
         sizeOp = size(op(0, mean(DOMAIN), uTmp));
         rightNonlinBCLocs = 1:max(sizeOp);
-        bc.right = [];
+        bc.right = struct('op', []);
         bc.right.op = {@(n) zeros(max(sizeOp), SYSSIZE*n)};
         BCRHS = [BCRHS num2cell(zeros(1, max(sizeOp)))];
         rightNonlinBCFuns = op;
@@ -648,6 +652,9 @@ if ( doPlot && ~doHold )
     hold off
 end
 
+% Ensure tOut is a column vector
+tOut = tOut(:);
+
 uOut = prepare4output(uOut);
 
 switch nargout
@@ -660,12 +667,14 @@ switch nargout
     case 2
         varargout{1} = tOut;
         varargout{2} = uOut;
-    otherwise
+    case 1 + size(uOut, 1)
         varargout{1} = tOut;
-        varargout{2} = uOut;
-        varargout{3:nargout} = [];
-        warning('CHEBFUN:CHEBFUN:pde15s:output', ...
-            'PDE15S has a maximum of two outputs.');
+        for varCounter = 1:size(uOut, 1)
+            varargout{varCounter + 1} = chebfun(uOut(varCounter, :));
+        end
+    otherwise
+        error('CHEBFUN:CHEBFUN:pdeSolve:nargout', ...
+            'Incorrect number of output arguments.');
 end
 
 clear global DIFFORDER

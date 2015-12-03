@@ -4,7 +4,7 @@ function pass = test_toFirstOrder()
 %% Setup
 dom = [-1, 4];
 x = chebfun(@(x) x, dom);
-tol = 2e-14;
+tol = 5e-14;
 
 %% Simple test
 % We have the expression 5*(diff(u, 2) + 3*u), so expect the first order
@@ -76,7 +76,7 @@ pass(3, problemNo) = all(domOut == dom);
 pass(4, problemNo) = ( norm(coeffs{1} - 3*(x+2).*(x+1)) < tol);
 pass(5, problemNo) = all( diffOrders == 2);
 res =  anonFun(-.5, [2 2]);
-pass(5) = all( res == [2;-4]);
+pass(5) = all( abs(res-[2;-4]) < tol );
 
 %% Introduce breakpoints
 problemNo = 6;

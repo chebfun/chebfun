@@ -1,4 +1,4 @@
-function f = cumsum(f, dim)
+function varargout = cumsum(varargin)
 %CUMSUM   Indefinite integral of a CHEBFUN2.
 %   F = CUMSUM(F) returns the indefinite integral of a CHEBFUN2 with respect to
 %   one variable and hence, returns a chebfun. The integration is done by
@@ -12,26 +12,6 @@ function f = cumsum(f, dim)
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Check for empty:
-if ( isempty( f ) )  
-    f = [];
-    return
-end
-
-if ( nargin == 1 )
-    % Default to integration along the y-direction.
-    dim = 1;
-end
-
-if ( dim == 1 )
-    % CUMSUM along the y-variable.
-    f.cols = cumsum( f.cols );
-elseif ( dim == 2 )
-    % CUMSUM along the rows.
-    f.rows = cumsum( f.rows );
-else
-    error('CHEBFUN:CHEBFUN2:cumsum:dim', ...
-        'Integration direction must be x or y.');
-end
+[varargout{1:nargout}] = cumsum@separableApprox(varargin{:});
 
 end

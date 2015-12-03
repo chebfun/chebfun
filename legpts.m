@@ -107,10 +107,6 @@ elseif ( n == 0 )   % Return empty vectors if n == 0:
     t = [];
     return
 elseif ( n == 1 )
-    % x = midpoint of interval
-    % w = length of interval 
-    % v = 1
-    % t = 1 
     x = mean(interval);
     w = diff(interval);
     v = 1;
@@ -469,8 +465,7 @@ k = (21:m).';
 ak = pi*(k-.25);
 % jk(k) = ak + polyval(p, .125./ak);
 ak82 = (.125./ak).^2;
-jk(k) = ak + .125./ak.*(1 + ak82.*(p(7) + ak82.*(p(5) + ak82.*(p(3) + ...
-    ak82.*p(1)))));
+jk(k) = ak + .125./ak.*(1 + ak82.*(p(7) + ak82.*(p(5) + ak82.*(p(3) + ak82.*p(1)))));
 
 end
 

@@ -28,28 +28,28 @@ switch r
         % Sheehan Olver, Mark Richardson, Zachary Battles
         % Alex Townsend, James Lottes, Matthew Green
 
-        s = 'Because Nick Trefethen said so!';
+        s = 'Because Nick said so!';
 
     case 2,
         % Spanish:
         % Ricardo Pachon
 
-        s = 'Porque Nick Trefethen lo dice!';
+        s = '!Porque Nick lo dice!';
 
     case 3,
         % Portuguese:
         % Rodrigo Platte
 
-        s = 'Porque o Nick Trefethen disse!';
+        s = 'Porque o Nick disse!';
 
     case 4,
         % Icelandic:
         % Asgeir Birkisson
 
         if ( ~simpleText )
-            s = 'Því Nick Trefethen mælti svo!';
+            s = 'Því Nick mælti svo!';
         else
-            s = 'Thvi Nick Trefethen maelti svo!';
+            s = 'Thvi Nick maelti svo!';
         end
 
     case 5,
@@ -57,46 +57,46 @@ switch r
         % Andre Weideman
 
         if ( ~simpleText )
-            s = 'Omdat Nick Trefethen so sê!';
+            s = 'Omdat Nick so sê!';
         else
-            s = 'Omdat Nick Trefethen so se!';
+            s = 'Omdat Nick so se!';
         end
 
     case 6,
         % Dutch:
         % Joris Van Deun
 
-        s = 'Omdat Nick Trefethen het zegt!';
+        s = 'Omdat Nick het zegt!';
 
     case 7,
         % Swiss German:
         % Pedro Gonnet
 
-        s = 'Wills dr Nick Trefethen gseit hett!';
+        s = 'Wills dr Nick gseit hett!';
 
     case 8,
         % French:
         % Cecile Piret
 
-        s = 'Parce que Nick Trefethen le dit!';
+        s = 'Parce-que Nick le dit !';
 
     case 9,
         % Urdu:
         % Mohsin Javed
 
-        s = 'Kiyon ke Nick Trefethen ne kaha tha!';
+        s = 'Kiyon ke Nick ne kaha tha!';
 
     case 10,
         % Luxembourgish:
         % Georges Klein
 
-        s = 'Well den Nick Trefethen et gesot huet!';
+        s = 'Well den Nick et gesot huet!';
         
     case 11,
         % German:
         % Stefan Guettel
         
-        s = 'Weil es Nick Trefethen so gesagt hat!';
+        s = 'Weil es Nick so gesagt hat!';
         
     case 12,
         % Chinese:

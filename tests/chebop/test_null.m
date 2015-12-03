@@ -4,8 +4,8 @@ if ( nargin == 0 )
     pref = cheboppref();
 end
 
-tol = pref.errTol;
-disc = {'chebcolloc1', 'chebcolloc2', 'ultraS'};
+tol = 1e1*pref.bvpTol;
+disc = {@chebcolloc1, @chebcolloc2, @ultraS};
 
 pass = zeros(3, 7);
 err = zeros(3, 7);

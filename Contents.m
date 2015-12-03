@@ -1,5 +1,5 @@
 % Chebfun
-% Version 5.1.0 12-Dec-2014
+% Version 5.3.0 26-Nov-2015
 %
 % Chebfun is an open-source software system for numerical computing with
 % functions. The mathematical basis of Chebfun is piecewise polynomial

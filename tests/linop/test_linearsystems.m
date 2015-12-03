@@ -43,7 +43,7 @@ L = addbc(L,B3,0);
 
 type = {@chebcolloc2, @ultraS, @chebcolloc1, @chebcolloc2, @ultraS, @chebcolloc1};
 prefs = cheboppref;
-prefs.errTol = 1e-13;
+prefs.bvpTol = 1e-13;
 
 for k = 1:6
 

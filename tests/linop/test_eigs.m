@@ -1,7 +1,7 @@
 function pass = test_eigs()
 % TAD, 10 Jan 2014
 
-tol = 1e-8;
+tol = 1e-7;
 
 dom = [-pi/2, pi/2];
 D2 = operatorBlock.diff(dom, 2);

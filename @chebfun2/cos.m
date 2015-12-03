@@ -1,4 +1,4 @@
-function f = cos( f ) 
+function varargout = cos(varargin)
 %COS   Cosine of a CHEBFUN2.
 %   COS(F) returns the cosine of F.
 %
@@ -7,12 +7,6 @@ function f = cos( f )
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Check for empty:
-if ( isempty( f ) )
-    return
-end 
-
-op = @(x,y) cos( feval( f, x, y ) );  % Resample. 
-f = chebfun2(op, f.domain);           % Call constructor. 
+[varargout{1:nargout}] = cos@separableApprox(varargin{:});
 
 end

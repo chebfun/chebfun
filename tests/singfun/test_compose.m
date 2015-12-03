@@ -21,7 +21,7 @@ op = @(x) (sin(x) + cos(x))./(x + 1);
 hVals = feval(h, x);
 hExact = op(x);
 err = hVals - hExact;
-pass(1) = norm(err, inf) < 1e3*get(h, 'epslevel')*get(h, 'vscale');
+pass(1) = norm(err, inf) < 1e3*eps*get(h, 'vscale');
 
 % Composition of an operator and a SINGFUN - OP(F)
 data.exponents = [0.5 0];
@@ -31,7 +31,7 @@ op = @(x) sin(sqrt(x+1));
 hVals = feval(h, x);
 hExact = op(x);
 err = hVals - hExact;
-pass(2) = norm(err, inf) < 1e1*get(h, 'epslevel')*get(h, 'vscale');
+pass(2) = norm(err, inf) < 1e1*eps*get(h, 'vscale');
     
     
 % Composition of a SMOOTHFUN and a SINGFUN - G(F)
@@ -43,6 +43,6 @@ op = @(x) cos(sqrt(x + 1));
 hVals = feval(h, x);
 hExact = op(x);
 err = hVals - hExact;
-pass(3) = norm(err, inf) < 1e4*get(h, 'epslevel')*get(h, 'vscale');
+pass(3) = norm(err, inf) < 1e4*eps*get(h, 'vscale');
     
 end

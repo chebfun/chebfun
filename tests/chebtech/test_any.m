@@ -14,7 +14,7 @@ for n = 1:2
     end
 
     % Check behavior for any() down columns.
-    pass(n, 1) = ~any(testclass());
+    pass(n, 1) = ~any(testclass);
 
     f = testclass.make(@(x) [sin(x) 0*x cos(x)]);
     pass(n, 2) = isequal(any(f), [1 0 1]);

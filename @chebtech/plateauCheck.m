@@ -1,12 +1,12 @@
-function [ishappy, epslevel, cutOff] = plateauCheck(f, values, pref)
+function [ishappy, cutOff] = plateauCheck(f, values, data, pref)
 %PLATEAUCHECK   Attempt to trim trailing Chebyshev coefficients in a CHEBTECH.
-%   [ISHAPPY, EPSLEVEL, CUTOFF] = PLATEAUCHECK(F, VALUES) returns an estimated
-%   location, the CUTOFF, at which the CHEBTECH F could be truncated. One of two
-%   criteria must be met: Either:
+%   [ISHAPPY, CUTOFF] = PLATEAUCHECK(F, VALUES, DATA) returns an estimated
+%   location, the CUTOFF, at which the CHEBTECH F could be truncated.  One of
+%   two criteria must be met: Either:
 %
 %     (1) The coefficients are sufficiently small (as specified by the default
-%     EPS property of CHEBTECH) relative to F.VSCALE (or using absolute size if
-%     F.VSCALE=0); or
+%     EPS property of CHEBTECH) relative to DATA.VSCALE (or using absolute
+%     size if DATA.VSCALE=0); or
 %
 %     (2) The coefficients are somewhat small and apparently unlikely to
 %     continue decreasing in a meaningful amount (i.e., have reached a "plateau"
@@ -16,13 +16,11 @@ function [ishappy, epslevel, cutOff] = plateauCheck(f, values, pref)
 %   number that prevents convergence to the full requested accuracy, as often
 %   happens in the collocation of differential equations.
 %
-%   Output EPSLEVEL is an estimate of the relative size of the last
-%   "meaningful" expansion coefficients of the function, and the output 
-%   CUTOFF is an estimate of how many of the coefficients are useful.
+%   Output CUTOFF is an estimate of how many of the coefficients are useful.
 %
-%   [ISHAPPY, EPSLEVEL, CUTOFF] = PLATEAUCHECK(F, VALUES, PREF) allows
-%   additional preferences to be passed. In particular, one can adjust the
-%   target accuracy with PREF.EPS.
+%   [ISHAPPY, CUTOFF] = PLATEAUCHECK(F, VALUES, DATA, PREF) allows additional
+%   preferences to be passed. In particular, one can adjust the target accuracy
+%   with PREF.EPS.
 %
 % See also LINOPV4CHECK, STRICTCHECK, CLASSICCHECK.
 
@@ -35,7 +33,6 @@ if ( nargin == 1 )
     epslevel = pref.eps;
 elseif ( isnumeric(pref) )
     epslevel = pref;
-    pref = f.techPref();
 else
     epslevel = pref.eps;
 end
@@ -70,9 +67,9 @@ end
 % We omit the last 10% because aliasing can pollute them significantly.
 n90 = ceil( 0.90*n );
 absCoeff = abs( coeff(1:n90,:) );
-vscale = max(absCoeff,[],1);          % scaling in each column
-vscale = max( [vscale ; f.vscale] );
-absCoeff = absCoeff * diag(1./vscale);
+vscl = max(absCoeff,[],1);          % scaling in each column
+vscl = max( [vscl ; data.vscale] );
+absCoeff = absCoeff * diag(1./vscl);
 
 %% Deal with array-valued functions.
 
@@ -88,8 +85,6 @@ for m = 1:numCol
     end
 end
 
-epslevel = epslevels;
-% epslevel = max(epslevel)
 ishappy = all(ishappy); 
 cutOff = max(cutOff);
 
@@ -98,9 +93,9 @@ end
 %% %%%%%%%%%%%%%%%%%%%%%%% Serious checking starts here. %%%%%%%%%%%%%%%%%%%%%%%
 function [ishappy, epslevel, cutoff] = checkColumn(absCoeff,epslevel)
 
-% There are two ways to pass the test. Either the coefficients have achieved the
-% goal epslevel or the convergence appears to have levelled off for good
-% (plateau).
+% There are two ways to pass the test. Either the coefficients have achieved
+% the goal epslevel/accuracy or the convergence appears to have levelled off
+% for good (plateau).
 
 % Guilty until proven innocent.
 ishappy = false;
@@ -194,7 +189,7 @@ else
     
 end
 
-% Deduce an epslevel. 
+% Deduce an epslevel/accuracy.
 if ( ishappy )
     winEnd = min( n, cutoff + 6 );
     epslevel = max( absCoeff(cutoff:winEnd) );
@@ -202,7 +197,7 @@ else
     epslevel = absCoeff(n);
 end
     
-% Epslevel can't be better than eps:
+% Accuracy can't be better than eps:
 epslevel = max(epslevel, eps);
 
 end

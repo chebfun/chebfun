@@ -1,99 +1,97 @@
 function f = simplify(f, tol)
-%SIMPLIFY  Remove small trailing Fourier coefficients of a happy TRIGTECH object.
+%SIMPLIFY  Remove small trailing Fourier coeffs of a happy TRIGTECH object.
 %  G = SIMPLIFY(F) attempts to compute a 'simplified' version G of the happy
 %  TRIGTECH object F such that LENGTH(G) <= LENGTH(F) but ||G - F|| is small in
-%  a relative sense: ||G - F|| < G.EPSLEVEL*G.VSCALE. It does this by removing
-%  trailing coefficients of F that are relatively small; more precisely, those 
-%  that are smaller in magnitude than the product of F.VSCALE and F.EPSLEVEL. 
-%  G.EPSLEVEL is set to F.EPSLEVEL.
+%  a relative sense. It does this by calling the routine STANDARDCHOP.
 %
 %  If F is not happy, F is returned unchanged.
 %
-%  G = SIMPLIFY(F, TOL) does the same as above but uses TOL instead of 
-%  F.EPSLEVEL as the relative threshold level for deciding whether a coefficient
-%  is small enough to be removed. Here, G.EPSLEVEL is set to the maximum of 
-%  F.EPSLEVEL and TOL.
+%  G = SIMPLIFY(F, TOL) does the same as above but uses TOL instead of EPS.  If
+%  TOL is a row vector with as many columns as F, then TOL(k) will be used as
+%  the simplification tolerance for column k of F.
 %
-% See also HAPPINESSCHECK.
+% See also STANDARDCHOP.
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Deal with empty case:
+% Deal with empty case.
 if ( isempty(f) )
     return
 end
 
-% Do nothing to an unhappy TRIGTECH. ([TODO]: Is this the right thing to do?)
+% Do nothing to an unhappy TRIGTECH. 
 if ( ~f.ishappy )
     return;
 end
 
-% Use the default tolerance if none was supplied:
+% STANDARDCHOP requires at least 17 coefficients to avoid outright rejection.
+% STANDARDCHOP also employs a look ahead feature for detecting plateaus. For F
+% with insufficient length the coefficients are padded using prolong. The
+% following parameters are chosen explicitly to work with STANDARDCHOP. 
+% See STANDARDCHOP for details.
+nold = length(f);
+N = max(17, round(nold*1.25 + 5));
+f = prolong(f,N);
+
+% After the coefficients of F have been padded with zeros an artificial plateau
+% is created using the noisy output from the FFT. The slightly noisy plateau is
+% required since STANDARDCHOP uses logarithms to detect plateaus and this has
+% undesirable effects when the plateau is made up of all zeros.
+coeffs = abs(f.coeffs(end:-1:1,:));
+[n, m] = size(coeffs);
+coeffs = trigtech.vals2coeffs(trigtech.coeffs2vals(coeffs));
+
+% Use the default tolerance if none was supplied.
 if ( nargin < 2 )
-    tol = f.epslevel/2;
+    p = trigtech.techPref();
+    tol = p.eps;
 end
 
-c = f.coeffs;  % Obtain Fourier coefficients {c_k}
-numCoeffs = size(c, 1);
-fIsEven = ( mod(numCoeffs, 2) == 0 );
+% Recast TOL as a row vector.
+if ( size(tol, 2) ~= m )
+    tol = max(tol)*ones(1, m);
+end
 
-% Split the coefficients into the positive and negative Fourier modes.
-if ( fIsEven )
-    % In this case the negative coefficients have an additional term
-    % corresponding to the cos(N/2*x) coefficient. We account for this by
-    % making the positive coefficients symmetric.
-    numModes = numCoeffs/2+1;
-    cn = c(numModes:-1:1,:);
-    cn(numModes,:) = 0.5*cn(numModes,:);
-    cp = [c(numModes:numCoeffs,:); cn(numModes,:)];
+% In order to work with STANDARDCHOP, the coefficients of F are modified so that
+% the entries corresponding to wave numbers k and -k appear sequentially in the
+% new matrix of coefficients. These entries are also replaced by the sum of the
+% absolute values of the k and -k coefficients.
+
+% Need to handle odd/even cases separately.
+isEven = mod(n, 2) == 0;
+if ( isEven )
+    coeffs = [coeffs(n,:) ; coeffs(n-1:-1:n/2+1,:) + coeffs(1:n/2-1,:) ; coeffs(n/2,:)];
 else
-    numModes = (numCoeffs+1)/2;
-    cp = c(numModes:numCoeffs,:);
-    cn = c(numModes:-1:1,:);
+    coeffs = [coeffs(n:-1:(n+1)/2+1,:) + coeffs(1:(n+1)/2-1,:) ; coeffs((n+1)/2,:)];
 end
+coeffs = flipud(coeffs);
+coeffs = [coeffs(1,:) ; kron(coeffs(2:end,:),[1 ; 1])];
 
-% Need to check both the positive and negative coefficients in the Fourier
-% expansion.
-
-% Check for trailing coefficients smaller than the tolerance relative
-% to F.VSCALE:
-idp = bsxfun(@minus, abs(cp), tol.*f.vscale) > 0;
-idn = bsxfun(@minus, abs(cn), tol.*f.vscale) > 0;
-
-% Before July 2014 we used to zero all small coefficients:
-% cp(idp) = 0;
-% cn(idn) = 0;
-% Check for trailing zero coefficients:
-% [ignored, firstNonZeroRowP] = find(cp.' ~= 0, 1);
-% [ignored, firstNonZeroRowN] = find(cn.' ~= 0, 1);
-
-% Check for trailing small coefficients:
-[ignored, lastNonZeroRowP] = find(idp.' == 1, 1, 'last');
-[ignored, lastNonZeroRowN] = find(idn.' == 1, 1, 'last');
-
-% If the whole thing's now zero, leave just one coefficient:
-if ( isempty(lastNonZeroRowP) && isempty(lastNonZeroRowN) )
-    lastNonZeroRowP = 1;
-    lastNonZeroRowN = 1;
-    cp = 0*cp; 
-    cn = 0*cn;
+% Loop through columns to compute CUTOFF.
+cutoff = 1;
+for k = 1:m
+    cutoff = max(cutoff, standardChop(coeffs(:,k), tol(k)));
 end
+cutoff = min(cutoff,nold);
 
-lastNonZeroRow = max(lastNonZeroRowP, lastNonZeroRowN);
-
-% Remove trailing zeros:
-if ( lastNonZeroRow > 0 )
-    cp = cp(1:lastNonZeroRow,:);
-    cn = cn(1:lastNonZeroRow,:);
+% Divide CUTOFF by 2.
+if ( mod(cutoff, 2) == 0 )
+    cutoff = cutoff/2 + 1;
+else
+    cutoff = (cutoff - 1)/2 + 1;
 end
 
 % Now put the coefficients vector back together.
-f.coeffs = [cn(end:-1:2,:); cp(1:end,:)];
+coeffs = f.coeffs;
+if ( isEven )
+    coeffs = [.5*coeffs(1,:) ; coeffs(2:n,:) ; .5*coeffs(1,:)];
+    n = n + 1;
+end
 
-% Update values and epslevel:
-f.values = f.coeffs2vals(f.coeffs);
-f.vscale = max(abs(f.values), [], 1);
-f.epslevel = max(f.epslevel, tol);
+% Use CUTOFF to trim F.
+mid = (n + 1)/2;
+f.coeffs = coeffs(mid-cutoff+1:mid+cutoff-1,:);
+f.values = trigtech.coeffs2vals(f.coeffs);
 
 end

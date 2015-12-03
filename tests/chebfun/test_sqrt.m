@@ -21,7 +21,7 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
-pass(1) = ( norm(err, inf) < 1e2*epslevel(f).*norm(vals_exact, inf) );
+pass(1) = ( norm(err, inf) < 1e2*eps*norm(vals_exact, inf) );
 
 %% A piece-wise smooth case:
 op = @(x) sin(50*x).^2+1;
@@ -33,7 +33,7 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
-pass(2) = ( norm(err, inf) < 1e2*epslevel(f).*norm(vals_exact, inf) );
+pass(2) = ( norm(err, inf) < 1e2*eps*norm(vals_exact, inf) );
 
 %% A complex piece-wise case:
 
@@ -47,7 +47,7 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = norm(vals_g - vals_exact, inf);
-tol = 1e3*epslevel(f).*norm(vals_exact, inf);
+tol = 1e4*eps*norm(vals_exact, inf);
 
 pass(3) = err < tol;
 
@@ -63,7 +63,7 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
-pass(4) = ( norm(err, inf) < 1e4*epslevel(f).*norm(vals_exact, inf) );
+pass(4) = ( norm(err, inf) < 1e4*eps*norm(vals_exact, inf) );
 
 
 %% An array-valued CHEBFUN: 
@@ -76,7 +76,7 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = norm(vals_g - vals_exact, inf);
-tol = 1e3*get(f,'epslevel')*norm(vals_exact, inf);
+tol = 1e3*eps*norm(vals_exact, inf);
 
 pass(5) = err < tol;
 
@@ -96,7 +96,7 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
-pass(6) = ( norm(err, inf) < 1e2*epslevel(f).*norm(vals_exact, inf) );
+pass(6) = ( norm(err, inf) < 1e2*eps*norm(vals_exact, inf) );
 
 %%%%%%%%%%%%%%%%%%%%%%% function on unbounded domain: %%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -117,7 +117,7 @@ g = sqrt(f);
 gVals = feval(g, x);
 gExact = opg(x);
 err = gVals - gExact;
-pass(7) = norm(err, inf) < 1e2*epslevel(g)*vscale(g);
+pass(7) = norm(err, inf) < 1e2*eps*vscale(g);
 
 
 % Blow-up function:
@@ -128,7 +128,7 @@ g = sqrt(f);
 gVals = feval(g, x);
 gExact = opg(x);
 err = gVals - gExact;
-pass(8) = norm(err, inf) < 1e4*epslevel(g)*vscale(g);
+pass(8) = norm(err, inf) < 1e4*eps*vscale(g);
 
 
 %% Functions on [a inf]:
@@ -148,7 +148,7 @@ g = sqrt(f);
 gVals = feval(g, x);
 gExact = opg(x);
 err = gVals - gExact;
-pass(9) = norm(err, inf) < 1e2*epslevel(g)*vscale(g);
+pass(9) = norm(err, inf) < 1e2*eps*vscale(g);
 
 
 % Oscillatory function with varying sign and integer power:
@@ -159,7 +159,7 @@ g = sqrt(f);
 gVals = feval(g, x);
 gExact = opg(x);
 err = gVals - gExact;
-pass(10) = norm(err, inf) < 1e2*epslevel(g)*vscale(g);
+pass(10) = norm(err, inf) < 1e5*eps*vscale(g);
 
 
 % Blow-up function and negative integer power:
@@ -170,7 +170,7 @@ g = sqrt(f);
 gVals = feval(g, x);
 gExact = opg(x);
 err = gVals - gExact;
-pass(11) = norm(err, inf) < 1e2*epslevel(g)*vscale(g);
+pass(11) = norm(err, inf) < 1e2*eps*vscale(g);
 
 
 end

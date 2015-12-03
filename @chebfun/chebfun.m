@@ -233,7 +233,7 @@ classdef chebfun
                 % Remove unnecessary breaks (but not those that were given):
                 [ignored, index] = setdiff(f.domain, dom);
                 f = merge(f, index(:).', pref);
-                
+               
             end
 
             if ( flags.trunc )
@@ -286,9 +286,6 @@ classdef chebfun
         % Display a CHEBFUN object.
         display(f);
 
-        % Accuracy estimate of a CHEBFUN object.
-        out = epslevel(f, flag);
-        
         % Evaluate a CHEBFUN.
         y = feval(f, x, varargin)
         
@@ -405,7 +402,7 @@ classdef chebfun
         f = sign(f, pref)
         
         % Simplify the representation of a CHEBFUN object.
-        f = simplify(f, tol);
+        f = simplify(f, tol, flag);
 
         % Size of a CHEBFUN object.
         [s1, s2] = size(f, dim);
@@ -472,7 +469,7 @@ classdef chebfun
         
         % Compare domains of two CHEBFUN objects.
         pass = domainCheck(f, g);        
-        
+
         % Extract columns of an array-valued CHEBFUN object.
         f = extractColumns(f, columnIndex);
         
@@ -597,7 +594,10 @@ classdef chebfun
         [funs, ends] = constructor(op, domain, data, pref);
         
         % Convert ODE solutions into CHEBFUN objects:
-        [y, t] = odesol(sol, dom, opt);
+        [t, y] = odesol(sol, dom, opt);
+        
+        % Call one of the MATLAB ODE solvers and return a CHEBFUN
+        [t, y] = constructODEsol(solver, odefun, tspan, uinit, varargin);
         
         % Parse inputs to PLOT. Extract 'lineWidth', etc.
         [lineStyle, pointStyle, jumpStyle, deltaStyle, out] = ...
@@ -713,7 +713,7 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
             end
         elseif ( strcmpi(args{1}, 'equi') )
             % Enable FUNQUI when dealing with equispaced data.
-            keywordPrefs.tech = 'funqui';
+            keywordPrefs.enableFunqui = true;
             args(1) = [];
         elseif ( strcmpi(args{1}, 'vectorize') || ...
                  strcmpi(args{1}, 'vectorise') )
@@ -727,6 +727,10 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
         elseif ( strcmpi(args{1}, 'doublelength') )
             % Construct Chebfun twice as long as usually would be constructed.
             flags.doubleLength = true;
+            args(1) = [];
+        elseif ( strcmpi(args{1}, 'turbo') )
+            % "turbo" flag for constructing "turbocharged" chebfuns.
+            keywordPrefs.techPrefs.useTurbo = true;
             args(1) = [];
         elseif ( strcmpi(args{1}, 'coeffs') && isnumeric(op) )
             % Hack to support construction from coefficients.            
@@ -788,13 +792,13 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
             args(1:2) = [];
         elseif ( strcmpi(args{1}, 'hscale') )
             % Store vscale types.
-            data.vscale = args{2};
+            data.hscale = args{2};
             args(1:2) = [];            
         elseif ( strcmpi(args{1}, 'singType') )
             % Store singularity types.
             data.singType = args{2};
             args(1:2) = [];            
-        elseif ( strcmpi(args{1}, 'exps') )
+        elseif ( strcmpi(args{1}, 'exps') || strcmpi(args{1}, 'exponents') )
             % Store exponents.
             data.exponents = args{2};
             args(1:2) = [];
@@ -889,6 +893,7 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
         % Translate 'periodic' or 'trig'.
         pref.tech = @trigtech;
         pref.splitting = false;
+        pref.enableFunqui = false;
         if ( numel(dom) > 2 )
             error('CHEBFUN:parseInputs:periodic', ...
                 '''periodic'' or ''trig'' option is only supported for smooth domains.');
@@ -915,7 +920,7 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
         if ( isa(op, 'chebfun') )
             op = @(x) feval(op, x);
         end
-        if ( isa(op, 'function_handle') && strcmp(pref.tech, 'funqui') )
+        if ( isa(op, 'function_handle') && pref.enableFunqui )
             if ( isfield(pref.techPrefs, 'fixedLength') && ...
                  ~isnan(pref.techPrefs.fixedLength) )
                 x = linspace(dom(1), dom(end), pref.techPrefs.fixedLength).';
@@ -980,17 +985,19 @@ function op = vectorCheck(op, dom, vectorize)
 
 % Make a slightly narrower domain to evaluate on. (Endpoints can be tricky).
 y = dom([1 end]);
-
+% This used to be fixed at 0.01. But this can cause troubles at very narrow
+% domains, where 1.01*y(1) might actually be larger than y(end)!
+del = diff(y)/200;
 if ( y(1) > 0 )
-    y(1) = 1.01*y(1); 
+    y(1) = (1+del)*y(1); 
 else
-    y(1) = .99*y(1); 
+    y(1) = (1-del)*y(1); 
 end
 
 if ( y(end) > 0 )
-    y(end) = .99*y(end); 
+    y(end) = (1-del)*y(end); 
 else
-    y(end) = 1.01*y(end); 
+    y(end) = (1+del)*y(end); 
 end
 
 y = y(:);
@@ -1012,16 +1019,23 @@ try
         % Here things seem OK! 
         
         % However, we may possibly be fooled if we have an array-valued function
-        % whose number of columns equals the number of test points(i.e., 2). We
-        % choose one additional point as a final check:
+        % whose number of columns equals the number of test points(i.e., 2) or 
+        % something unvectorized like sin(x)/x (no dot). We choose one 
+        % additional point as a final check:
         if ( sv(2) == sy(1) )
             v = op(y(1));
             if ( size(v, 1) > 1 )
                 op = @(x) op(x).';
-                warning('CHEBFUN:CHEBFUN:vectorCheck:transpose',...
+                warning('CHEBFUN:CHEBFUN:vectorCheck:transpose', ...
                     ['Chebfun input should return a COLUMN array.\n', ...
                      'Attempting to transpose.'])
+            elseif ( size(v, 2) ~= sv(2) )
+                % It doesn't really matter what this error message is as it will
+                % be caught in the try-catch statement.
+                error('CHEBFUN:CHEBFUN:vectorCheck:numColumns', ...
+                    'Number of columns increases with length(x).');
             end
+                
         end
         
     elseif ( all( sv == 1 ) )

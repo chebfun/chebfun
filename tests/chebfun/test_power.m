@@ -11,83 +11,83 @@ end
 %% Scalar-valued
 f = chebfun(@(x) sin(x));
 g = f.^0;
-pass(1) = normest(g - 1) < 10*epslevel(f);
+pass(1) = normest(g - 1) < 10*eps;
 
 g = f.^1;
-pass(2) = normest(g - f) < 10*epslevel(f);
+pass(2) = normest(g - f) < 10*eps;
 
 g = f.^2;
 h = chebfun(@(x) sin(x).^2);
-pass(3) = normest(g - h) < 10*epslevel(h);
+pass(3) = normest(g - h) < 10*eps;
 
 g = f.^3;
 h = chebfun(@(x) sin(x).^3);
-pass(4) = normest(g - h) < 10*epslevel(h);
+pass(4) = normest(g - h) < 10*eps;
 
 %% Array-valued
 f = chebfun(@(x) [sin(x), cos(x), 1i*exp(x)]);
 fq = quasimatrix(f);
 
 g = f.^0;
-pass(5) = min(size(g)) == 3 && normest(g - 1) < epslevel(f);
+pass(5) = min(size(g)) == 3 && normest(g - 1) < eps;
 gq = fq.^0;
-pass(6) = normest(gq - g) < epslevel(g)*vscale(g);
+pass(6) = normest(gq - g) < eps*vscale(g);
 
 g = f.^1;
-pass(7) = min(size(g)) == 3 && normest(g - f) < epslevel(f);
+pass(7) = min(size(g)) == 3 && normest(g - f) < eps;
 gq = fq.^1;
-pass(8) = normest(gq - g) < epslevel(g)*vscale(g);
+pass(8) = normest(gq - g) < eps*vscale(g);
 
 g = f.^2;
 h = chebfun(@(x) [sin(x).^2, cos(x).^2, -exp(2*x)]);
-pass(9) = min(size(g)) == 3 && normest(g - h) < 10*vscale(h)*epslevel(h);
+pass(9) = min(size(g)) == 3 && normest(g - h) < 10*vscale(h)*eps;
 gq = fq.^2;
-pass(10) = normest(gq - g) < 10*epslevel(g);
+pass(10) = normest(gq - g) < 10*eps;
 
 g = f.^3;
 h = chebfun(@(x) [sin(x).^3, cos(x).^3, -1i*exp(3*x)]);
-pass(11) = min(size(g)) == 3 && normest(g - h) < 10*vscale(h)*epslevel(h);
+pass(11) = min(size(g)) == 3 && normest(g - h) < 10*vscale(h)*eps;
 gq = fq.^3;
-pass(12) = normest(gq - g) < epslevel(g)*vscale(g);
+pass(12) = normest(gq - g) < eps*vscale(g);
 
 %% constant .^ CHEBFUN
 f = chebfun(@(x) sin(x));
 g = 1.^f;
-pass(13) = normest(g - 1) < 10*epslevel(f);
+pass(13) = normest(g - 1) < 10*eps;
 
 f = chebfun(@(x) sin(x));
 g = (2i).^f;
 h = chebfun(@(x) (2i).^sin(x));
-pass(14) = normest(g - h) < 10*epslevel(f);
+pass(14) = normest(g - h) < 10*eps;
 
 f = chebfun(@(x) [sin(x), cos(x), 1i*exp(x)]);
 fq = quasimatrix(f);
 g = 1.^f;
-pass(15) = min(size(g)) == 3 && normest(g - 1) < 10*epslevel(h);
+pass(15) = min(size(g)) == 3 && normest(g - 1) < 10*eps;
 gq = 1.^fq;
-pass(16) = normest(gq - g) < 10*epslevel(h)*vscale(h);
+pass(16) = normest(gq - g) < 10*eps*vscale(h);
 
 g = (2i).^f;
 h = chebfun(@(x) [2i.^sin(x), 2i.^cos(x), 2i.^(1i*exp(x))]);
-pass(17) = min(size(g)) == 3 && normest(g - h) < 100*epslevel(h);
+pass(17) = min(size(g)) == 3 && normest(g - h) < 100*eps;
 gq = (2i).^fq;
-pass(18) = normest(gq - g) < 10*epslevel(h)*vscale(h);
+pass(18) = normest(gq - g) < 10*eps*vscale(h);
 
 %% CHEBFUN .^ CHEBFUN
 
 x = chebfun(@(x) x, [.1, 2]);
 g = x.^x;
 h = chebfun(@(x) x.^x, [.1, 2]);
-pass(19) = normest(g - h, [.1, 2]) < 10*epslevel(h)*vscale(h);
+pass(19) = normest(g - h, [.1, 2]) < 10*eps*vscale(h);
 
 x = chebfun(@(x) [x, exp(1i*x)], [.1, 2]);
 g = x.^x;
 h = chebfun(@(x) [x.^x, exp(1i*x).^exp(1i*x)], [.1, 2]);
-pass(20) = normest(g - h, [.1, 2]) < 10*epslevel(h)*vscale(h);
+pass(20) = normest(g - h, [.1, 2]) < 10*eps*vscale(h);
 
 xq = quasimatrix(x);
 gq = xq.^xq;
-pass(21) = normest(g - gq, [.1, 2]) < 10*epslevel(h)*vscale(h);
+pass(21) = normest(g - gq, [.1, 2]) < 10*eps*vscale(h);
 
 %%%%%%%%%%%%%%%%%%%%%%%%% singular function: %%%%%%%%%%%%%%%%%%%%%%%%%%
 dom = [-2 7];
@@ -109,7 +109,7 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
-pass(22) = ( norm(err, inf) < 1e2*epslevel(f).*norm(vals_exact, inf) );
+pass(22) = ( norm(err, inf) < 1e2*eps*norm(vals_exact, inf) );
 
 
 %% SINGFUN .^ constant integer:
@@ -125,7 +125,7 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
-pass(23) = ( norm(err, inf) < 1e2*epslevel(f).*norm(vals_exact, inf) );
+pass(23) = ( norm(err, inf) < 1e2*eps*norm(vals_exact, inf) );
 
 
 %% Square root via POWER - A positive piece-wise example with singularities:
@@ -140,7 +140,7 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
-pass(24) = ( norm(err, inf) < 1e2*epslevel(f).*norm(vals_exact, inf) );
+pass(24) = ( norm(err, inf) < 1e2*eps*norm(vals_exact, inf) );
 
 %% General power - A smooth function - the Runge function and positive power:
 % Define a domain:
@@ -160,7 +160,7 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
-pass(25) = ( norm(err, inf) < 1e1*epslevel(f).*norm(vals_exact, inf) );
+pass(25) = ( norm(err, inf) < 1e1*eps*norm(vals_exact, inf) );
 
 
 %% General power - A smooth function - the Runge function and negative power:
@@ -175,7 +175,7 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
-pass(26) = ( norm(err, inf) < 1e3*epslevel(f).*norm(vals_exact, inf) );
+pass(26) = ( norm(err, inf) < 1e3*eps*norm(vals_exact, inf) );
 
 
 %% General power - A smooth function - a real function with varying sign and 
@@ -191,7 +191,7 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = norm(vals_g - vals_exact, inf);
-tol = 1e3*epslevel(f).*norm(vals_exact, inf);
+tol = 1e4*eps*norm(vals_exact, inf);
 pass(27) = ( err < tol );
 
 
@@ -208,9 +208,9 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = norm(vals_g - vals_exact, inf);
-tol = 1e4*epslevel(f).*norm(vals_exact, inf);
+tol = 1e4*eps*norm(vals_exact, inf);
     
-pass(28) = ( err < tol );
+pass(28) = ( err < 2*tol );
 
 %% General power - A smooth function - a complex function and positive power:
 
@@ -224,7 +224,7 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
-pass(29) = ( norm(err, inf) < 1e2*epslevel(f).*norm(vals_exact, inf) );
+pass(29) = ( norm(err, inf) < 1e2*eps*norm(vals_exact, inf) );
 
 
 %% General power - A smooth function - a complex function and negative power:
@@ -239,7 +239,7 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
-pass(30) = ( norm(err, inf) < 1e2*epslevel(f).*norm(vals_exact, inf) );
+pass(30) = ( norm(err, inf) < 1e2*eps*norm(vals_exact, inf) );
 
 
 %% General power - A singular function - a positive function and positive power:
@@ -260,7 +260,7 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
-pass(31) = ( norm(err, inf) < 1e1*epslevel(f).*norm(vals_exact, inf) );
+pass(31) = ( norm(err, inf) < 1e1*eps*norm(vals_exact, inf) );
 
 %% General power - A smooth function with varying sign and positive power:
 
@@ -274,7 +274,7 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = norm(vals_g - vals_exact, inf);
-tol = 1e3*epslevel(f).*norm(vals_exact, inf);
+tol = 1e3*eps*norm(vals_exact, inf);
 
 pass(32) = ( err < tol );
 
@@ -292,7 +292,7 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = norm(vals_g - vals_exact, inf);
-tol = 1e3*epslevel(f).*norm(vals_exact, inf);
+tol = 1e3*eps*norm(vals_exact, inf);
 
 pass(33) = ( err < tol );
 
@@ -316,7 +316,7 @@ g = power(f, pow);
 gVals = feval(g, x);
 gExact = opg(x);
 err = gVals - gExact;
-pass(34) = norm(err, inf) < 1e2*epslevel(g)*vscale(g);
+pass(34) = norm(err, inf) < 1e2*eps*vscale(g);
 
 
 % Blow-up function and general power:
@@ -328,7 +328,7 @@ g = power(f, pow);
 gVals = feval(g, x);
 gExact = opg(x);
 err = gVals - gExact;
-pass(35) = norm(err, inf) < 1e6*epslevel(g)*vscale(g);
+pass(35) = norm(err, inf) < 1e7*eps*vscale(g);
 
 %% Functions on [a inf]:
 
@@ -348,7 +348,7 @@ g = power(f, pow);
 gVals = feval(g, x);
 gExact = opg(x);
 err = gVals - gExact;
-pass(36) = norm(err, inf) < 1e1*epslevel(g)*vscale(g);
+pass(36) = norm(err, inf) < 1e1*eps*vscale(g);
 
 % Oscillatory function with varying sign and integer power:
 op = @(x) 0.1+sin(10*x)./exp(x);
@@ -359,7 +359,7 @@ g = power(f, pow);
 gVals = feval(g, x);
 gExact = opg(x);
 err = gVals - gExact;
-pass(37) = norm(err, inf) < 1e2*epslevel(g)*vscale(g);
+pass(37) = norm(err, inf) < 1e5*eps*vscale(g);
 
 
 % Blow-up function and negative integer power:
@@ -371,7 +371,7 @@ g = power(f, pow);
 gVals = feval(g, x);
 gExact = opg(x);
 err = gVals - gExact;
-pass(38) = norm(err, inf) < 1e2*epslevel(g)*vscale(g);
+pass(38) = norm(err, inf) < 1e2*eps*vscale(g);
 
 
 %% Test an array-valued CHEBFUN --> quasimatrix.
@@ -383,7 +383,7 @@ opExact = @(x) [x.^pow(1), (x+.5).^pow(2)];
 f = [x, x+.5];
 g = power(f, pow);
 err = norm(feval(g, xx) - opExact(xx), inf);
-tol = 1e4*max(epslevel(g).*vscale(g));
+tol = 1e4*max(eps*vscale(g));
 
 pass(39) = err < tol;
 

@@ -47,7 +47,7 @@ function p = columnAtan(y, x, pref)
 
 % We'll need to extrapolate here:
 pref.techPrefs.extrapolate = true;
-tol = 2*max(epslevel(y)*vscale(y), epslevel(x)*vscale(x));
+tol = 2*eps*max(vscale(y), vscale(x));
 
 % There's no reason why we shouldn't keep breaks in both x and y:
 [x, y] = overlap(x, y);

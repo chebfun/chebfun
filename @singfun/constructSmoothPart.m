@@ -12,8 +12,6 @@ if ( isempty(pref) )
     pref = chebfunpref();
 end
 
-pref.techPrefs.sampleTest = 0;
-
 % Call the SMOOTHFUN constructor:
 s = smoothfun.constructor(op, data, pref);
 

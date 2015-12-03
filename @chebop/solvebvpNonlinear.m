@@ -26,7 +26,10 @@ function [u, info] = solvebvpNonlinear(N, rhs, L, u0, res, pref, displayInfo)
 
 % Store preferences used in the Newton iteration in separate variables
 maxIter  = pref.maxIter;
-errTol   = pref.errTol;
+bvpTol   = pref.bvpTol;
+
+% Loosen convergence tolerance for Newton iteration
+bvpTolNonlinear = 200*bvpTol;
 
 % Did the user request damped or undamped Newton iteration? Start in mode
 % requested (later on, the code can switch between modes).
@@ -65,7 +68,7 @@ errEst = inf;
 % Some initializations of the DAMPINGINFO struct. See 
 %   >> help dampingErrorBased 
 % for discussion of this struct. 
-dampingInfo.errTol =        errTol;
+dampingInfo.errTol =        bvpTolNonlinear;
 dampingInfo.normDeltaOld =  [];
 dampingInfo.normDeltaBar =  [];
 dampingInfo.lambda =        lambda;
@@ -76,9 +79,6 @@ dampingInfo.damping =       damping;
 dampingInfo.x =             x;
 dampingInfo.giveUp =        0;
 
-linpref = pref;
-linpref.errTol = pref.errTol/10;
-
 % Get the differential order of the LINOP L (needed when evaluating the residual
 % of periodic boundary conditions):
 diffOrder = L.diffOrder;
@@ -87,7 +87,7 @@ diffOrder = L.diffOrder;
 while ( ~terminate )
     
     % Compute a Newton update:
-    [delta, disc] = linsolve(L, res, linpref, vscale(u));
+    [delta, disc] = linsolve(L, res, pref, vscale(u));
 
     % We had two output arguments above, need to negate DELTA.
     delta = -delta;
@@ -101,7 +101,7 @@ while ( ~terminate )
     % At the first Newton iteration, we have to do additional checks.
     if ( newtonCounter == 0)
         % Did we actually get an initial passed that solves the BVP?
-        if ( normDelta/sum(vscale(u)) < errTol/100 )
+        if ( normDelta/sum(vscale(u)) < bvpTol )
             displayInfo('exactInitial', pref);
             info.error = NaN;
             info.normDelta = normDelta;
@@ -119,7 +119,7 @@ while ( ~terminate )
         % Find the next Newton iterate (the method finds the step-size, then
         % takes the damped Newton and returns the next iterate).
         [u, dampingInfo] = dampingErrorBased(N, u, rhs, delta, ...
-            L, disc, dampingInfo);
+            L, disc, dampingInfo, pref);
         
         % If we're in damped mode, we don't get an error estimate...
         errEst = NaN;
@@ -139,13 +139,6 @@ while ( ~terminate )
         
     else % We are in undamped phase
         
-        % Update lambda so that we will print correct information in the
-        % displayInfo() method.
-        lambda = 1;
-        
-        % Take a full Newton step:
-        u = u + delta;
-        
         % Compute a contraction factor and an error estimate. Can only do so
         % once we have taken one step.
         if ( newtonCounter == 0 )
@@ -159,13 +152,22 @@ while ( ~terminate )
                 % anymore. Have to resort back to damped iteration (but only if
                 % the user wanted damped Newton in the first place).
                 damping = prefDamping;
-                if ( damping ) 
+                if ( damping )
                     continue    % Go back to the start of loop
+                else
+                    u = u + delta;
                 end
             else
                 % Error estimate based on the norm of the update and the contraction
                 % factor.
                 errEst =  normDelta / (1 - cFactor^2);
+                
+                % Update lambda so that we will print correct information in the
+                % displayInfo() method.
+                lambda = 1;
+                
+                % Take a full Newton step
+                u = u + delta;
             end
         end
         
@@ -190,7 +192,7 @@ while ( ~terminate )
         normDelta, cFactor, length(delta{1}), lambda, len, displayFig, ...
         displayTimer, pref);
     
-    if ( errEst < errTol )  
+    if ( errEst < bvpTolNonlinear )  
         % Sweet, we have converged!      
         success = 1;
     elseif ( newtonCounter > maxIter )
@@ -205,7 +207,7 @@ while ( ~terminate )
         % Linearize around current solution:
         [L, res] = linearize(N, u, x);
         % Need to subtract the original RHS from the residual:
-        res = res - rhs;
+        res = res - rhs;    
     end
     
     % Should we stop the Newton iteration?
@@ -214,9 +216,6 @@ while ( ~terminate )
     end
     
 end
-
-% Simplify the result before returning it and printing solver info:
-u = simplify(u);
 
 % Evaluate how far off we are from satisfying the boundary conditions.
 errEstBC = normBCres(N, u, x, diffOrder, pref);

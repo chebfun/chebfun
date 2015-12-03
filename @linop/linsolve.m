@@ -1,11 +1,14 @@
 function [u, disc] = linsolve(L, f, varargin)
 %LINSOLVE  Solve a linear differential/integral equation.
+%   Important: A CHEBOPPREF object PREFS has to be passed. When this method
+%   is called via CHEBOP/MLDIVIDE, PREFS is inherited from the CHEBOP level.
+%
 %   U = LINSOLVE(L, F), or U = L\F, solves the linear system defined by L*U=F
 %   for a LINOP L and CHEBMATRIX F. The result is a CHEBMATRIX.
 %
 %   An equivalent syntax to U = LINSOLVE(L, F) is U = L\F.
 %
-%   LINSOLVE(L,F,CDISC) uses the chebDiscretization CDISC to solve the
+%   LINSOLVE(L,F,CDISC) uses the opDiscretization CDISC to solve the
 %   problem. This can be used, for example, to introduce new breakpoints that
 %   are not in the domain of either L or F.
 %
@@ -17,8 +20,8 @@ function [u, disc] = linsolve(L, f, varargin)
 %     [Z,I,D] = linop.primitiveOperators(d);
 %     A = linop( D^2 - I );
 %     E = functionalBlock.eval(d);
-%     A = addBC(A,E(0),0);
-%     A = addBC(A,E(pi),1);
+%     A = addbc(A,E(0),0);
+%     A = addbc(A,E(pi),1);
 %     u = A \ chebfun('x',d);
 %     plot(u{1})
 %
@@ -42,7 +45,7 @@ for j = 1:nargin-2
     item = varargin{j};
     if ( isa(item, 'cheboppref') )
         prefs = item;
-    elseif ( isa(item,'chebDiscretization') )
+    elseif ( isa(item,'opDiscretization') )
         disc = item;
     elseif ( isnumeric(item) )
         vscale = item(:)';
@@ -56,11 +59,6 @@ end
 if ( ~all(isfinite(L.domain)) )
     error('CHEBFUN:LINOP:linsolve:infDom', ...
         'Unbounded domains are not supported.');
-end
-
-% Grab defaults.
-if ( isempty(prefs) )
-    prefs = cheboppref;
 end
 
 % If RHS is a CHEBFUN or a DOUBLE, we need to convert it to CHEBMATRIX in
@@ -105,13 +103,13 @@ isDone = false(1, numInt);
 isFun = isFunVariable(L);
 
 for dim = [dimVals inf]
-    
+
     % [TODO]: It's weird that the current value of dim is the _next_ disc size.
     % Discretize the operator (incl. constraints/continuity), unless there is a
     % currently valid factorization at hand.
     if ( isFactored(disc) )
         A = [];
-        P = speye(disc.dimension*size(L,2));
+        P = speye(disc.dimension*sum(isFun)+sum(~isFun));
     else
         [A, P] = matrix(disc);
         if ( size(A, 1) ~= size(A, 2) )
@@ -132,7 +130,7 @@ for dim = [dimVals inf]
     v = P*v;
     
     % [TODO]: We could test each variable at their input dimension, but then
-    % each would be different and we would nopt be able to use the trick of
+    % each would be different and we would not be able to use the trick of
     % taking a linear combination. Instead we project and test convergence
     % at the size of the output dimension.
     
@@ -145,7 +143,7 @@ for dim = [dimVals inf]
     end
 
     % Test the happiness of the function pieces:
-    [isDone, epslevel, vscale, cutoff] = ...
+    [isDone, cutoff, vscale] = ...
         testConvergence(disc, u(isFun), vscale(isFun), prefs);
     
     if ( all(isDone) || isinf(dim) )
@@ -167,14 +165,14 @@ end
 % Because each function component may be piecewise defined, we will loop through
 % one by one.
 values = cat(2, u{isFun});
+uOut = cell(size(values, 2), 1);
 for k = 1:size(values, 2)
-    v = disc.toFunctionOut(values(:,k));
+    v = disc.toFunctionOut(values(:,k),cutoff);
     uOut{k} = v;
 end
-
 u(isFun) = uOut;
 
 % Convert to chebmatrix
 u = chebmatrix(u);
-    
+
 end

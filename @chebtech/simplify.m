@@ -2,61 +2,68 @@ function f = simplify(f, tol)
 %SIMPLIFY  Remove small trailing Chebyshev coeffs of a happy CHEBTECH object.
 %  G = SIMPLIFY(F) attempts to compute a 'simplified' version G of the happy
 %  CHEBTECH object F such that LENGTH(G) <= LENGTH(F) but ||G - F|| is small in
-%  a relative sense: ||G - F|| < G.EPSLEVEL*G.VSCALE. It does this by removing
-%  trailing coefficients of F that are relatively small; more precisely, those
-%  that are smaller in magnitude than the product of F.VSCALE and F.EPSLEVEL.
-%  G.EPSLEVEL is set to F.EPSLEVEL.
+%  a relative sense. It does this by calling the routine STANDARDCHOP.
 %
 %  If F is not happy, F is returned unchanged.
 %
-%  G = SIMPLIFY(F, TOL) does the same as above but uses TOL instead of
-%  F.EPSLEVEL as the relative threshold level for deciding whether a coefficient
-%  is small enough to be removed. Here, G.EPSLEVEL is set to the maximum of
-%  F.EPSLEVEL and TOL.
+%  G = SIMPLIFY(F, TOL) does the same as above but uses TOL instead of EPS.  If
+%  TOL is a row vector with as many columns as F, then TOL(k) will be used as
+%  the simplification tolerance for column k of F.
 %
-% See also HAPPINESSCHECK.
+% See also STANDARDCHOP.
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Deal with empty case:
+% Deal with empty case.
 if ( isempty(f) )
     return
 end
 
-% Do nothing to an unhappy CHEBTECH:
+% Do nothing to an unhappy CHEBTECH.
 if ( ~f.ishappy )
     return
 end
 
-% Use the f.epslevel if no tolerance was supplied:
+% STANDARDCHOP requires at least 17 coefficients to avoid outright rejection.
+% STANDARDCHOP also employs a look ahead feature for detecting plateaus. For F
+% with insufficient length the coefficients are padded using prolong. The
+% following parameters are chosen explicitly to work with STANDARDCHOP. 
+% See STANDARDCHOP for details.
+nold = length(f);
+N = max(17, round(nold*1.25 + 5));
+f = prolong(f,N);
+
+% After the coefficients of F have been padded with zeros an artificial plateau
+% is created using the noisy output from the FFT. The slightly noisy plateau is
+% required since STANDARDCHOP uses logarithms to detect plateaus and this has
+% undesirable effects when the plateau is made up of all zeros.
+coeffs = f.coeffs;
+[n, m] = size(coeffs);
+coeffs = chebtech2.vals2coeffs(chebtech2.coeffs2vals(coeffs));
+
+% Use the default tolerance if none was supplied.
 if ( nargin < 2 )
-    tol = f.epslevel;
+    p = chebtech.techPref();
+    tol = p.eps;
 end
 
-% Until July 2014 we used to zero interior coefficients as well
-% as trailing ones with the following code:
-% f.coeffs(bsxfun(@minus, abs(f.coeffs), tol.*f.vscale) < 0) = 0;
-% Check for trailing zero coefficients:
-% [ignored, firstNonZeroRow] = find(f.coeffs.' ~= 0, 1);
-
-% Check for trailing coefficients smaller than the tolerance relative
-% to F.VSCALE:
-largeCoeffs = (bsxfun(@minus, abs(f.coeffs), tol.*f.vscale) > 0);
-[ignored, lastNonZeroRow] = find(largeCoeffs.' == 1, 1, 'last');
-
-% If the whole thing is now zero, leave just one coefficient:
-if ( isempty(lastNonZeroRow) )
-    lastNonZeroRow = 1;
-    f.coeffs = 0*f.coeffs;
+% Recast TOL as a row vector.
+if ( size(tol, 2) ~= m )
+    tol = max(tol)*ones(1, m);
 end
 
-% Remove trailing zeros:
-if ( lastNonZeroRow > 0 )
-    f.coeffs = f.coeffs(1:lastNonZeroRow, :);
+% Loop through columns to compute CUTOFF.
+cutoff = 1;
+for k = 1:m
+    cutoff = max(cutoff, standardChop(coeffs(:,k), tol(k)));
 end
 
-% Update epslevel:
-f.epslevel = max(f.epslevel, tol);
+% Take the minimum of CUTOFF and LENGTH(F). This is necessary when padding was
+% required.
+cutoff = min(cutoff, nold);
+
+% Chop coefficients using CUTOFF.
+f.coeffs = f.coeffs(1:cutoff,:);
 
 end

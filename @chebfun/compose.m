@@ -188,6 +188,14 @@ if ( numInts > 1 )
     pref.extrapolate = 1;
 end
 
+% Make sure that the tech preference is set correctly.
+%
+% TODO:  What is the right thing to do here when composing two chebfuns f(g)?
+% This line assumes that the compose method for f is the one that gets called
+% ultimately instead of the one for g (which is true currently but could
+% change).
+pref.tech = get(f.funs{1}, 'tech');
+
 % Suppress growing vector Mlint warnings (which are inevitable here):
 %#ok<*AGROW>
 
@@ -311,8 +319,8 @@ if ( ~isreal(f) )
      warning('off', 'CHEBFUN:CHEBFUN:compose:composeTwoChebfuns:complex');
 else
 
-    % Get epslevels and set a tolerance:
-    tol = 10*max(vscale(f).*epslevel(f), vscale(g).*epslevel(g));
+    % Set a tolerance:
+    tol = 10*eps*max(vscale(f), vscale(g));
     hsf = hscale(f); 
     % Find the range of F:
     mmF = minandmax(f);

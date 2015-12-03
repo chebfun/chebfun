@@ -20,7 +20,7 @@ s = diag(S);
 
 % Choose a tolerance if none is given:
 if ( nargin == 1 )
-	tol = max(length(A)*eps(max(s)), vscale(A)*epslevel(A));
+	tol = max(length(A)*eps(max(s)), vscale(A)*eps);
 end
 
 % Compute the rank:

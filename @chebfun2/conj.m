@@ -1,22 +1,13 @@
-function f = conj(f)
+function varargout = conj(varargin)
 %CONJ   Complex conjugate of a CHEBFUN2.
 %   CONJ(F) returns the complex conjugate of F.  For a complex F, CONJ(F) =
 %   REAL(F) - i*IMAG(F).
 %
-% See also REAL, IMAG. 
+% See also REAL, IMAG.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Check for empty CHEBFUN2. 
-if ( isempty( f ) )  
-   return
-end
-
-% TODO: Write down the formulas for conj, instead of calling the 
-% edconstructor.
-
-op = @(x,y) conj( feval(f, x, y) );  % Resample. 
-f = chebfun2( op, f.domain );        % Call constructor. 
+[varargout{1:nargout}] = conj@separableApprox(varargin{:});
 
 end

@@ -6,10 +6,11 @@ function f = extractColumns(f, colIdx)
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Extract/re-order the columns from f.coeffs, f.vscale, and f.epslevel:
 if ( numel(colIdx) ~= 1 || colIdx ~= 1 )
     error('CHEBFUN:SINGFUN:extractColumns:dim', ...
         'Index exceeds matrix dimensions.');
 end   
+
+% DEVELOPER NOTE: Singfuns currently only have a single column.
     
 end

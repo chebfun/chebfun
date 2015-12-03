@@ -26,15 +26,15 @@ for (n = 1:2)
 
     h = testfn(nu, f);
     pass(n, 1) = norm(feval(h, xr) - testfn(nu, exp(xr)), inf) < ...
-        10*epslevel(h)*vscale(h);
+        1e2*eps*vscale(h);
 
     h2 = testfn(nu, f, 0);
     pass(n, 2) = normest(h - h2) < ...
-        10*max(epslevel(h)*vscale(h), epslevel(h2)*vscale(h2));
+        10*max(eps*vscale(h), eps*vscale(h2));
 
     h = testfn(nu, f, 1);
     pass(n, 3) = norm(feval(h, xr) - testfn(nu, exp(xr), 1), inf) < ...
-        1e2*epslevel(h)*vscale(h);
+        1e2*eps*vscale(h);
         
 
     % Test for array-valued chebfun.
@@ -43,16 +43,16 @@ for (n = 1:2)
 
     h = testfn(nu, f);
     err = feval(h, xr) - testfn(nu, f_op(xr));
-    pass(n, 4) = norm(err(:), inf) < 1e3*epslevel(h)*vscale(h);
+    pass(n, 4) = norm(err(:), inf) < 1e3*eps*vscale(h);
         
 
     h2 = testfn(nu, f, 0);
     pass(n, 5) = normest(h - h2) < ...
-        10*max(epslevel(h)*vscale(h), epslevel(h2)*vscale(h2));
+        10*max(eps*vscale(h), eps*vscale(h2));
 
     h = testfn(nu, f, 1);
     err = feval(h, xr) - testfn(nu, f_op(xr), 1);
-    pass(n, 6) = norm(err(:), inf) < 1e2*epslevel(h)*vscale(h);
+    pass(n, 6) = norm(err(:), inf) < 1e2*eps*vscale(h);
     
  
     % Test for complex values.
@@ -62,7 +62,7 @@ for (n = 1:2)
 
     h = testfn(nu, f, 0, pref);
     pass(n, 7) = norm(feval(h, xr) - testfn(nu, f_op(xr), 0), inf) < ...
-        1e2*epslevel(h)*vscale(h);
+        1e2*eps*vscale(h);
     
 
     % Check for error on roots.
