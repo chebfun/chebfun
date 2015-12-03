@@ -42,7 +42,7 @@ function varargout = plot( f, varargin )
 % See http://www.chebfun.org/ for Chebfun information. 
 
 % Make a user option?
-plot_full_grid = true;
+plot_full_grid = false;
 
 if ( ~isempty(varargin) )
     
@@ -174,9 +174,9 @@ if ( ~isempty(varargin) )
                 opts = { opts{:}, 'LineStyle', ll{:}, 'color', cc{:} };
             end
             % Plot column lines:
-            plot3(colCircs(:,1),colCircs(:,2),colCircs(:,3), opts{:},'linewidth',2 );
+            plot3(colCircs(:,1),colCircs(:,2),colCircs(:,3), opts{:},'linewidth', 1 );
             % Plot row lines:
-            plot3(rowCircs(:,1),rowCircs(:,2),rowCircs(:,3), opts{:},'linewidth', 2 );            
+            plot3(rowCircs(:,1),rowCircs(:,2),rowCircs(:,3), opts{:},'linewidth', 1 );            
         end
 
         if ~holdState

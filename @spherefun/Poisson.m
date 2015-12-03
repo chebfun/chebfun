@@ -13,7 +13,7 @@ function u = Poisson( f, int_const, m, n )
 % discretization of size M x N. 
 %
 % EXAMPLE: 
-%  f = @(lam,th) .25*(9*cos(3*lam)-cos(lam));  
+%  f = @(lam,th) -6*(-1+5*cos(2*th)).*sin(lam).*sin(2*th);
 %  exact = @(lam,th) -2*sin(lam).*sin(2*th).*sin(th).^2 -...
 %            sin(lam).*sin(th).*cos(th) + .5*sin(lam).*sin(2*th).*cos(2*th);
 %  int_const = 0;

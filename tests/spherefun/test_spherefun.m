@@ -63,6 +63,10 @@ f = redefine_function_handle( f );
 g = spherefun( f );
 pass(9) = ( SampleError( f, g ) < tol ); 
 
+f = @(x,y,z) 0*x;
+g = spherefun( f );
+pass(10) = ( norm(g,inf) == 0 ); 
+
 end
 
 function pass = test_feval( ) 

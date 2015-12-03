@@ -64,6 +64,11 @@ if ( isa(op, 'double') )    % SPHEREFUN( DOUBLE )
     F = op;
     [n, m] = size(F);
     
+    if mod(m,2) ~= 0
+        error('SPHEREFUN:CONSTRUCTOR:VALUES', ... 
+         'When constructing from values the number of columns must be even.');
+    end
+    
     % Flip F arround since Phase I operates on the doubled-up portion of
     % the sphere [-pi pi] x [-pi, 0] or [-pi pi] x [-3*pi/2 -pi/2]
     F = [F(n:-1:1,m/2+1:m) F(n:-1:1,1:m/2)];
@@ -136,6 +141,9 @@ g.cols = chebfun( cols, dom(3:4)-[pi 0], 'trig');
 % c(n/2+1,:) = c(n/2+1,:)-offset;
 % g.cols.funs{1}.onefun.coeffs = c;
 g.rows = chebfun( rows, dom(1:2), 'trig');
+if all(pivots) == 0
+    pivots = inf;
+end
 g.pivotValues = pivots;
 g.domain = dom;
 g.idxPlus = idxPlus;
@@ -171,7 +179,7 @@ Fm = 0.5*(B - C);
 
 if ~(constValue1 || constValue1)
     warning('CHEBFUN:SPHEREFUN:constructor:constPoles',...
-        ['Results may be inaccurate as the function may not be constant'...
+        ['Results may be inaccurate as the function may not be constant '...
          'at either the north or south poles.']);
 end
 
@@ -209,10 +217,14 @@ Fm = Fm( 2:m-1, : );
 
 % Zero function
 if ( maxp == 0 ) && ( maxm == 0 ) && ~( removePole )
-    colsPlus = 0;
-    rowsPlus = 0;
+    m = 3; n = 3;
+    cols = zeros( 2*m-2, 1 );
+    rows = zeros( n, 1 );
+    idxPlus = 1;
+    idxMinus = [];
     pivotArray = [0 0];
     pivotIndices = [1 1];
+    pivots = inf;
     ihappy = 1;
     return;
 end
