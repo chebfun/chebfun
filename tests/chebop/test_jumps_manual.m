@@ -8,7 +8,7 @@ end
 % Toby Driscoll, June 2014
 % Based on issue #665
 
-tol = 1e1*pref.errTol;
+tol = 1e1*pref.bvpTol;
 
 %%
 N = chebop(@(s, V) diff(V, 2), [-1, 1]);

@@ -425,6 +425,16 @@ while ( ~isHappy && ~failure )
     
 end
 
+% Simplifying rows and columns after they are happy.
+g = simplify( g ); 
+
+% Reconstruct using simplified coefficients to guarantee endpoint values are
+% correct.
+g.cols = chebfun(get(g.cols, 'coeffs'), domain(g.cols), 'coeffs', ...
+                  'tech', @tech.make);
+g.rows = chebfun(get(g.rows, 'coeffs'), domain(g.rows), 'coeffs', ...
+                  'tech', @tech.make);
+
 % Fix the rank, if in nonadaptive mode.
 g = fixTheRank( g , fixedRank );
 

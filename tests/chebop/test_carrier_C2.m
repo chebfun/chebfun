@@ -7,7 +7,7 @@ if ( nargin == 0 )
 end
 
 tol = 1e-10;
-pref.errTol = tol;
+pref.bvpTol = tol;
 dom = [-1 1];
 
 %%

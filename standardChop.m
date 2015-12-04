@@ -94,7 +94,7 @@ envelope = m/m(1);
 % vector, but the precise chopping point CUTOFF still remains to be determined
 % in Step 3.
 
-for j = 1:n
+for j = 2:n
     j2 = round(1.25*j + 5); 
     if ( j2 > n )
         % there is no plateau: exit

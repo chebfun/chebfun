@@ -8,5 +8,4 @@
 domain = '[-2 2]';
 DE = {'u" + u*x + v  = lambda*u';'v" + sin(x)*u = lambda*v'};
 BC = {'u(-2) = 0';'v(-2) = 0' ; 'u(2)  = 0';'v(2)  = 0'};
-tol = '1e-10';
 type = 'eig';

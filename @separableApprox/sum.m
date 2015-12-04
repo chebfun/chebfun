@@ -29,7 +29,7 @@ if ( dim == 1 )
     % Integrate over y: 
     f = rows * ( sum(cols) * D ).';
     if ( isa(f, 'chebfun') ) 
-        f = simplify( f.' ); 
+        f = simplify( f.', [], 'globaltol' ); 
     else
         % f = double 
         f = chebfun(f, dom(1:2)).'; 
@@ -37,7 +37,7 @@ if ( dim == 1 )
 elseif ( dim == 2 )
     f = cols * ( D * sum( rows ).' );
     if  ( isa(f, 'chebfun') ) 
-        f = simplify( f );
+        f = simplify( f, [], 'globaltol' );
     else
         % f = double 
         f = chebfun( f, dom(3:4) ); 

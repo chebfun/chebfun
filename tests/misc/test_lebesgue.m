@@ -29,4 +29,13 @@ s = [-s s];
 [L, C] = lebesgue(s);
 pass(6) = min(L) > .999;
 
+% This test only applies to chebtechs. See #740.
+if ( isa(pref.tech(), 'chebtech') )
+    f = lebesgue(linspace(-1, 1, 40));
+    pass(7) = length(f) < 1560;
+else 
+    pass(7) = true;
+end
+
+
 end

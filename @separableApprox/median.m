@@ -36,6 +36,6 @@ else
 end
 
 g = chebfun(mX, interval);    % Form CHEBFUN. 
-g = simplify( g );            % Simplify.
+g = simplify( g, [], 'globaltol' );            % Simplify.
 
 end

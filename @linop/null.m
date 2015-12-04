@@ -69,7 +69,7 @@ coeff = @(n) 1./(2*(1:n).');
 for dim = dimVals
 
     % Get discrete null vectors:
-    [nullity, V, P] = getNullVectors(discA, prefs.errTol);
+    [nullity, V, P] = getNullVectors(discA, prefs.bvpTol);
 
     % Combine the singular vectors into a composite.
     v = V*coeff(size(V, 2));

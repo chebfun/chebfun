@@ -3,6 +3,6 @@
 domain = '[-4 4]';
 DE = 'u" + u - u^2 = 0';
 BC = {'u(-4) = 1'; 'u(4)  = 0'};
-init = ''; tol = '1e-10';
+init = '';
 damping = '1'; plotting = '0.1';
 type = 'bvp';
