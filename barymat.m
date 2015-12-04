@@ -8,7 +8,7 @@ function B = barymat(y, x, w, s, r, doFlip)
 %   2nd-kind Chebyshev grid: W(j) = (-1)^j, W([1, N]) = 0.5*W([1, N]).
 %
 %   BARYMAT(Y, X, W, S, R) is the same, where S = acos(Y) and R = acos(X). The
-%   purpose of this is that Y(j) - X(k) can be more accurately comuted in this
+%   purpose of this is that Y(j) - X(k) can be more accurately computed in this
 %   'theta space'. This is sometimes referred to as the 'trig trick' in spectral
 %   collocation. BARYMAT(Y, X, W, S, R, 1) also performs the 'flipping trick', 
 %   which takes advantage of the fact that the smaller entries in R and S can be

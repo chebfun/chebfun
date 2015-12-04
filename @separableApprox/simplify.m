@@ -9,8 +9,8 @@ function f = simplify( f )
 % See http://www.chebfun.org/ for Chebfun2 information.
 
 % Simplify the column and row slices. 
-f.cols = simplify( f.cols ); 
-f.rows = simplify( f.rows ); 
+f.cols = simplify( f.cols, [], 'globaltol' ); 
+f.rows = simplify( f.rows, [], 'globaltol' ); 
 
 % TODO: Simplify the rank 
 

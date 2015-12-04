@@ -22,9 +22,13 @@ function explain(f, varargin)
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
-%% Tidy up before we start the movie and create a new figure to plot on:
-home
-close all
+%% Explain only supports chebfun2 on the unit domain
+assert(all(f.domain == [-1 1 -1 1]), 'CHEBFUN:CHEBFUN2:explain:domain', ...
+    ['Explain only supports chebfun2 objects that are defined on the ' ...
+    'unit interval [-1 1 -1 1].']);
+
+%% Create a new figure to plot on:
+
 % Create a new figure, and add space to the bottom for a text box
 fig = figure;
 shg
@@ -201,7 +205,8 @@ if ( numCoarsePivots == 2 )
     
     % Make an observation if the function was of numerical rank 2
     if ( length(f) == 2)
-        fprintf('The first step is complete.')
+        str = [str; 'The first step is complete.'];
+        textBox = myTextbox(str, textBox);
         mypause(psectionbreak),
     end
     
@@ -291,7 +296,7 @@ if ( length(f) > 6 )
         'eventually sampled on a %u x %u Chebyshev grid.'], ...
         length(f.rows(:,1)), length(f.rows(:,1)))};
 elseif ( length(f) > 1 )
-    str = {str; 'The first stage is done.'};
+    str = 'The first stage is done.';
 end
 textBox = myTextbox(str, textBox);
 

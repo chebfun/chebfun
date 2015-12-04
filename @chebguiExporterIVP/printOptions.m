@@ -44,7 +44,7 @@ else
     % Specify tolerance:
     if ( ~isempty(tol) )
         fprintf(fid, '\n%% Option for tolerance.\n');
-        fprintf(fid, 'options.errTol = %s;\n', tol);
+        fprintf(fid, 'options.bvpTol = %s;\n', tol);
     end
     
     % Option for damping:

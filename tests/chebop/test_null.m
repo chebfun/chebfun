@@ -4,7 +4,7 @@ if ( nargin == 0 )
     pref = cheboppref();
 end
 
-tol = pref.errTol;
+tol = 1e1*pref.bvpTol;
 disc = {@chebcolloc1, @chebcolloc2, @ultraS};
 
 pass = zeros(3, 7);

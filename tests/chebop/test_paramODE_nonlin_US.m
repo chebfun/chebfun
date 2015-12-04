@@ -7,7 +7,7 @@ function pass = test_paramODE_nonlin_US(pref)
 if ( nargin == 0 )
     pref = cheboppref();
 end
-tol = 10*pref.errTol;
+tol = 1e3*pref.bvpTol;
 
 % Nonlinear parameter dependent problem (ULTRAS)
 pref.discretization = @ultraS;

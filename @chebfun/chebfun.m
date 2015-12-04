@@ -402,7 +402,7 @@ classdef chebfun
         f = sign(f, pref)
         
         % Simplify the representation of a CHEBFUN object.
-        f = simplify(f, tol);
+        f = simplify(f, tol, flag);
 
         % Size of a CHEBFUN object.
         [s1, s2] = size(f, dim);
@@ -1019,16 +1019,23 @@ try
         % Here things seem OK! 
         
         % However, we may possibly be fooled if we have an array-valued function
-        % whose number of columns equals the number of test points(i.e., 2). We
-        % choose one additional point as a final check:
+        % whose number of columns equals the number of test points(i.e., 2) or 
+        % something unvectorized like sin(x)/x (no dot). We choose one 
+        % additional point as a final check:
         if ( sv(2) == sy(1) )
             v = op(y(1));
             if ( size(v, 1) > 1 )
                 op = @(x) op(x).';
-                warning('CHEBFUN:CHEBFUN:vectorCheck:transpose',...
+                warning('CHEBFUN:CHEBFUN:vectorCheck:transpose', ...
                     ['Chebfun input should return a COLUMN array.\n', ...
                      'Attempting to transpose.'])
+            elseif ( size(v, 2) ~= sv(2) )
+                % It doesn't really matter what this error message is as it will
+                % be caught in the try-catch statement.
+                error('CHEBFUN:CHEBFUN:vectorCheck:numColumns', ...
+                    'Number of columns increases with length(x).');
             end
+                
         end
         
     elseif ( all( sv == 1 ) )

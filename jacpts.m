@@ -160,30 +160,9 @@ else
 end
 
 % Compute the constant for weights:
-if ( a && b )
-    if ( n > 50 ) % Use asymptotic approximation:
-        M = min(20, n-1); 
-        C = 1; 
-        phi = -a*b/n;
-        for m = 1:M
-            C = C + phi;
-            phi = -(m+a)*(m+b)/(m+1)/(n-m)*phi;
-            if ( abs(phi/C) < eps/100 )
-                break
-            end
-        end
-        if ( strcmpi(method, 'rec') )
-            C = gamma(2+a) * gamma(2+b) / (gamma(2+a+b)*(a+1)*(b+1));
-            w = w / sum(w);
-        end
-    else
-        C = gamma(n+a+1)*gamma(n+b+1)/gamma(n+a+b+1)/factorial(n);
-    end
-    C = 2^(a+b+1)*C;
-else
-    C = 2^(a+b+1);
-end
 if ( ~strcmpi(method,'GW') )
+    C = 2^(a+b+1) * exp( gammaln(n+a+1) + gammaln(n+b+1) ...
+                         - gammaln(n+a+b+1) - gammaln(n+1) );  
     w = C*w; 
 end
 

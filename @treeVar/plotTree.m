@@ -1,10 +1,12 @@
-function plotTree(tree)
+function plotTree(tree, varNames)
 %PLOTTREE   Plot a syntax tree (as stored in a TREEVAR object).
 %   Calling sequence:
-%      TREEVAR.PLOTTREE(TREE)
+%      TREEVAR.PLOTTREE(TREE, VARNAMES)
 %   where the input is:
-%      TREE:   A MATLAB struct, describing the syntax tree of a mathematical
-%              expression.
+%      TREE:     A MATLAB struct, describing the syntax tree of a mathematical
+%                expression.
+%      VARNAMES: An optional cellstring, whose elements are the name of the
+%                variables that appear in a problem.
 %
 %   Usually, this method is called from within the TREEVAR plot() method.
 %
@@ -23,6 +25,22 @@ function plotTree(tree)
 % Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Number of variables involved in the problem
+numVars = length(tree.ID);
+
+% Default variable names if none are passed:
+if ( nargin < 2 )
+    varNames = cell(1, numVars + 1);
+    varNames{1} = 't';
+    if ( numVars == 1 )
+        % Simpler output for scalar case
+        varNames{2} = 'u';
+    else
+        for varCounter = 1:numVars
+            varNames{varCounter + 1} = sprintf('u%i', varCounter);
+        end
+    end
+end
 
 % Starting values for plotting
 startx = .5;
@@ -33,14 +51,14 @@ deltax = .25;
 tree = layoutNodes(tree, startx, deltax, tree.height + 1, tree.height + 1); 
 
 % Create a figure, and plot the first node
-plot(tree.x, tree.y, 'bo');
+plot(tree.x, tree.y, '.','markersize', 25);
 hold on
 
 % Maximum differential orders that appear in the tree
 maxDiffOrder = tree.diffOrder;
 
 % Start the recursive calls to the actual plotting method:
-plotTreePlot(tree, maxDiffOrder);
+plotTreePlot(tree, maxDiffOrder, varNames);
 
 % Some final massaging of the figure:
 xlim([0, 1])
@@ -104,61 +122,65 @@ end
 
 end
 
-function plotTreePlot(tree, maxDiffOrder)
+function plotTreePlot(tree, maxDiffOrder, varNames)
 %PLOTREEPLOT   The actual plotting of the syntax tree.
 
-% Specify 20 different colours, so that each variable appearing in the tree can
-% be plotted with its own colour:
-colours = [160, 255, 0; 27, 244, 125; 0, 185, 140; 49, 105, 255; ...
-    114, 109, 255; 137, 0, 211; 220, 44, 148; 255, 51, 91; ...
-    252, 103, 1; 255, 145, 0; 255, 216, 0]/255;
-
-% Store the number of colours we use (so that we can take mod() later on):
-numCols = size(colours, 1);
+% Nice modern Matlab colours for lines and nodes:
+lineColor = [0 0.447 0.741];
+depVarColor = [0.85 0.325 0.098];
+indVarColor = [0.929 0.694 0.125];
 
 % Plot, depending on the number of arguments that the method has.
 switch tree.numArgs
     case 0
         % Plot the constructor leaves in different colours.
         if ( strcmp(tree.method, 'constr') )
-            varID = find(tree.ID == 1);
-            colID = colours(mod(varID, numCols) + 1, :);
-            plot(tree.x, tree.y, 'o', 'color', colID);
-            plot(tree.x, tree.y, '.', 'markersize', 20, 'color', colID);
+            if ( ~any(tree.ID) )
+                % Independent variable
+                col = indVarColor;
+            else
+                col = depVarColor;
+            end
+            plot(tree.x, tree.y, '.','markersize', 25, 'color', col);
         end
         
     case 1
         % Plot syntax tree for univariate methods:
-        plot(tree.center.x, tree.center.y, 'bo');
-        plot([tree.x tree.center.x], [tree.y tree.center.y], '-')
-        plotTreePlot(tree.center, maxDiffOrder)
+        plot(tree.center.x, tree.center.y, '.','markersize', 25, ...
+            'color', lineColor);
+        plot([tree.x tree.center.x], [tree.y tree.center.y], 'color',lineColor)
+        plotTreePlot(tree.center, maxDiffOrder, varNames)
     
     case 2
-        % Plot syntax tree for bivariate methods:        
-        % Plot left sub-tree.
-        plot(tree.left.x, tree.left.y, 'o');
-        plot([tree.x tree.left.x], [tree.y tree.left.y], '-')
-        plotTreePlot(tree.left, maxDiffOrder)
+        % Plot syntax tree for bivariate methods. Start with left sub-tree.
+        plot(tree.left.x, tree.left.y, '.','markersize', 25, ...
+            'color', lineColor);
+        plot([tree.x tree.left.x], [tree.y tree.left.y], 'color',lineColor)
+        plotTreePlot(tree.left, maxDiffOrder, varNames)
         
         % Plot right sub-tree.
-        plot(tree.right.x, tree.right.y, 'o');
-        plot([tree.x tree.right.x], [tree.y tree.right.y], '-')
-        plotTreePlot(tree.right, maxDiffOrder)
+        plot(tree.right.x, tree.right.y, '.','markersize', 25, ...
+            'color', lineColor);
+        plot([tree.x tree.right.x], [tree.y tree.right.y], 'color',lineColor)
+        plotTreePlot(tree.right, maxDiffOrder, varNames)
 end
 
 % Add the method name to the plot:
 if ( strcmp(tree.method, 'constr') )
     % If we're at a constructor leaf, change the text slightly:
-    if ( length(tree.ID) == 1)
-        % Scalar case.
-        varString = 'u';    
+    varID = find(tree.ID == 1);
+    if ( isempty(varID) )
+        % Independent variable
+        varString = varNames{1};
     else
-        % Systems case, print u and the variable number:
-        varString = sprintf('u%i', find(tree.ID == 1));
+        varString = varNames{varID + 1};
     end
-    text(tree.x + 0.02, tree.y - 0.01, varString, 'Interpreter', 'none')
+    
+    text(tree.x + 0.02, tree.y - 0.01, varString, 'Interpreter', 'none', ...
+        'fontsize',14)
 else
-    text(tree.x + 0.02, tree.y - 0.01, tree.method, 'Interpreter', 'none')
+    text(tree.x + 0.02, tree.y - 0.01, tree.method, 'Interpreter', 'none', ...
+        'fontsize',14)
 end
 
 end

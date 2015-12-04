@@ -7,6 +7,5 @@
 domain = '[-pi pi]';
 DE = '-u'' = lambda*u';
 BC = 'periodic';
-tol = '1e-10';
 type = 'eig';
 numeigs = '16';

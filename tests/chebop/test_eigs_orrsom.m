@@ -11,7 +11,7 @@ pass = true;
 if ( nargin == 0 )
     pref = cheboppref();
 end
-pref.errTol = 1e-9;
+pref.bvpTol = 1e-9;
 
 Re = 5772.22;               % Reynolds number
 alph = 1;                   % longitudinal Fourier parameter

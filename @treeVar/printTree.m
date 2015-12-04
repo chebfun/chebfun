@@ -1,12 +1,14 @@
-function s = printTree(tree, indentStr)
+function s = printTree(tree, varNames, indentStr)
 %PRINTTREE   Print a syntax tree.
 %   Calling sequence:
-%      S = TREEVAR.PRINTTREE(TREE, INDSTR)
+%      S = TREEVAR.PRINTTREE(TREE, VARNAMES, INDSTR)
 %   where the inputs are:
-%      TREE:   A MATLAB struct, specifying a syntax tree (usually stored in a
-%              TREEVAR)
-%      INDSTR: A MATLAB string, that governs the indentation when printing the
-%              current node in the syntax tree.
+%      TREE:     A MATLAB struct, specifying a syntax tree (usually stored in a
+%                TREEVAR)
+%      VARNAMES: An optional cellstring, whose elements are the name of the
+%                variables that appear in a problem.
+%      INDSTR:   A optional string, that governs the indentation when printing
+%                the current node in the syntax tree.
 %   and the output is:
 %      S:      A MATLAB string, which describes the syntax tree.
 %
@@ -27,6 +29,23 @@ function s = printTree(tree, indentStr)
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Number of variables involved in the problem
+numVars = length(tree.ID);
+
+% Default variable names if none are passed:
+if ( nargin < 2 )
+    varNames = cell(1, numVars + 1);
+    varNames{1} = 't';
+    if ( numVars == 1 )
+        % Simpler output for scalar case
+        varNames{2} = 'u';
+    else
+        for varCounter = 1:numVars
+            varNames{varCounter + 1} = sprintf('u%i', varCounter);
+        end
+    end
+end
+
 if ( isempty(tree) )
     % Print an empty tree:
     s = sprintf('(empty tree)\n');
@@ -38,17 +57,17 @@ s = '';
 
 varString = tree.method;
 if ( strcmp(varString, 'constr') )
-    % If we're at a constructor leaf, change the text slightly:
-    if ( length(tree.ID) == 1)
-        % Scalar case.
-        varString = 'u';    
+    % If we're at a constructor leaf, print correct variable name
+    varID = find(tree.ID == 1);
+    if ( isempty(varID) )
+        % Independent variable
+        varString = varNames{1};
     else
-        % Systems case, print u and the variable number:
-        varString = sprintf('u%i', find(tree.ID == 1));
+        varString = varNames{varID + 1};
     end
 end
 
-if ( nargin < 2 )
+if ( nargin < 3 )
     % We're at the start of the recursion (otherwise, we'd have passed in an
     % INDENTSTR as well).
     
@@ -86,14 +105,14 @@ indentStr = [ indentStr, '  ' ];
 switch tree.numArgs
     case 1
         % Printing univariate methods.
-        s = [ s, treeVar.printTree(tree.center, [indentStr, ' ']) ];
+        s = [ s, treeVar.printTree(tree.center, varNames, [indentStr, ' ']) ];
     
     case 2
         % Printing bivariate methods.
         
         if ( isstruct(tree.left) )
             % If the left child is a tree, print it recursively:
-            s = [ s, treeVar.printTree(tree.left, [indentStr, '|']) ];
+            s = [ s, treeVar.printTree(tree.left, varNames, [indentStr, '|']) ];
         elseif ( isnumeric(tree.left) )
             % Left node was a scalar:
             s = [ s, sprintf('%s|--numerical \tValue: %s\n', ...
@@ -105,7 +124,7 @@ switch tree.numArgs
         
         if ( isstruct(tree.right) )
             % If the right child is a tree, print it recursively:
-            s = [ s, treeVar.printTree(tree.right, [indentStr, ' ']) ];
+            s = [ s, treeVar.printTree(tree.right, varNames, [indentStr, ' '])];
         elseif ( isnumeric(tree.right) )
             % Right node is a scalar:
             s = [ s, sprintf('%s|--numerical \tValue: %s\n', ...
