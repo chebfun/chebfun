@@ -206,6 +206,15 @@ if abs(pole1) > tol || abs(pole2) > tol
 %     idxPlus(kplus) = rankCount;
 end
 
+% If given a 2xn matrix, then this only gives us a function samples at the 
+% two poles and an error should be thrown. 
+if ( m <= 2 ) 
+    error('CHEBFUN:SPHEREFUN:constructor:poleSamples',...
+        ['Matrix of function samples contains <= 2 rows. ',...
+        'Only information at the poles is known. Please increase ',...
+        'samples in the latitudinal direction.'])
+end
+
 % Remove the rows corresponding to the poles before determining the
 % rank.  We do this because then F is an even BMC matrix, which is what the
 % code below requires.
