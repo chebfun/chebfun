@@ -7,7 +7,7 @@ function [ normF ] = norm( f, p )
 %    SPHEREFUN(F, 1) = NOT IMPLEMENTED.
 %    SPHEREFUN(F, inf) = global maximum in absolute value.
 %    SPHEREFUN(F, max) = global maximum in absolute value.
-%    SPHEREFUN(F, min) = NOT IMPLEMENTED
+%    SPHEREFUN(F, min) = NOT SUPPORTED
 %
 % Furthermore, the inf norm for SPHEREFUN objects also returns a second output,
 % giving a position where the max occurs.

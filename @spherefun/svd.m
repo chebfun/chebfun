@@ -5,10 +5,15 @@ function varargout = svd( f )
 % 
 % [U, S, V] = svd( F ) returns the singular value decomposition of F. 
 
-% TODO: Check if this is good enough, structure and orthongonality may
-% not be preserved. :( 
+% DEVELOPER'S NOTE: 
+% This is the SVD of the spherefun as if it lives on the domain
+% [-pi,pi]x[-pi,pi] with respect to the L2 innerproduct. Another
+% interpretation of the SVD is on the sphere with respect to the spherical
+% measure. For now, we have implemented this one, but we are a little
+% uneasy about calling it the SVD on the sphere (because it isn't). 
 
-[C,D,R] = cdr(f);
+% Get CDR decomposition of f.
+[C, D, R] = cdr( f );
 
 % Extract information:
 dom = f.domain;
@@ -29,8 +34,6 @@ if ( norm( D ) == 0 )
 end
 
 % Split into the plus/minus decomposition and do SVD on each piece.
-% Does this actually work???
-
 if ~isempty(f.idxPlus);
     Cplus = C(:,f.idxPlus);
     Rplus = R(:,f.idxPlus);
@@ -73,7 +76,7 @@ end
 
 function [U, S, V] = svdCDR(C,D,R)
 
-% Standard stuff.
+% Standard skinny QR algorithm for computing SVD: 
 %
 % Algorithm:
 %   f = C D R'                 (cdr decomposition)
