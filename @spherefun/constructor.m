@@ -150,6 +150,7 @@ g.idxPlus = idxPlus;
 g.idxMinus = idxMinus;
 g.nonZeroPoles = removePoles;
 g.pivotLocations = adjustPivotLocations(pivotLocations, pivotArray, iscolat(g) ); 
+
 end
 
 function [pivotIndices, pivotArray, removePole, ihappy, cols, pivots, ...
