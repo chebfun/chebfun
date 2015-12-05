@@ -11,6 +11,11 @@ function [Y, X] = max2( f )
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Check for empty:
+if ( isempty( f ) )
+    return
+end 
+
 % Call MINANDMAX2:
 [Y, X] = minandmax2(f);   
 
