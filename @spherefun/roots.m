@@ -15,6 +15,12 @@ function r = roots( varargin )
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Check for empty:
+if ( isempty( varargin{ 1 }  ) )
+    r = []; 
+    return
+end
+
 rts = roots@separableApprox( varargin{ : } );
 
 % Now make into a collection of array-valued chebfuns ready for plotting on
