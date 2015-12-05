@@ -15,6 +15,11 @@ function f = diff( f, varargin )
 %
 %  See also GRADIENT, LAPLACIAN
 
+% Check for empty:
+if ( isempty( f ) )
+    return
+end 
+
 % Parse user inputs:
 if ( nargin == 1 )
     dim = 1;

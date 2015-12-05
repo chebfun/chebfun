@@ -10,7 +10,7 @@ loose = strcmp(get(0,'FormatSpacing'),'loose');
 
 % Compact version
 if ( isempty( F ) )
-    fprintf('empty spherefunv\n')
+    fprintf('empty spherefunv\n\n')
     return
 end
 
