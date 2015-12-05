@@ -151,6 +151,9 @@ g.idxMinus = idxMinus;
 g.nonZeroPoles = removePoles;
 g.pivotLocations = adjustPivotLocations(pivotLocations, pivotArray, iscolat(g) ); 
 
+% Simplifying rows and columns after they are happy.
+g = simplify( g );
+
 end
 
 function [pivotIndices, pivotArray, removePole, ihappy, cols, pivots, ...
