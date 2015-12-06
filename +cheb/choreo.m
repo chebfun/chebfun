@@ -1,11 +1,12 @@
 function choreo
 %CHOREO   Compute planar choreographies of the n-body problem.
-%    CHOREO computes a planar choreogpraphy using hand-drawn initial guesses. 
+%    CHEB.CHOREO computes a planar choreogpraphy using hand-drawn initial 
+%    guesses. 
 %   
-% It uses trignometric interpolation and quasi-Newton methods. See [1] for more
+% It uses trignometric interpolation and quasi-Newton methods. See [1] for
 % details.
 %
-% [1] H. Montanelli, N. I. Gushterov, Computing planar and spherical
+% [1] H. Montanelli and N. I. Gushterov, Computing planar and spherical
 % choreographies, SIAM Journal on Applied Dynamical Systems, to appear.
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
