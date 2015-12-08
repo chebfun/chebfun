@@ -11,7 +11,7 @@ pass(1) = abs( feval(g, theta, lambda) - f(theta, lambda) ) < tol;
 
 % feval at vectors: 
 lambda = rand(10,1); theta = rand(10,1); 
-pass(2) = norm( feval(g, theta, lambda) - f(theta, lambda) ) < tol; 
+pass(2) = norm( feval(g, theta, lambda) - f(theta, lambda), inf ) < tol; 
 
 % feval at vectors: 
 % This breaks in feval@separableApprox.
@@ -21,11 +21,11 @@ pass(3) = true;
 
 % feval at vectors: 
 lambda = rand(2,10); theta = rand(2,10); 
-pass(4) = norm( feval(g, theta, lambda) - f(theta, lambda) ) < tol; 
+pass(4) = norm( feval(g, theta, lambda) - f(theta, lambda), inf ) < tol; 
 
 % feval at meshgrid: 
 [lambda, theta] = meshgrid( rand(3,1) ); 
-pass(5) = norm( feval(g, theta, lambda) - f(theta, lambda) ) < tol; 
+pass(5) = norm( feval(g, theta, lambda) - f(theta, lambda), inf ) < tol; 
 
 end 
 
