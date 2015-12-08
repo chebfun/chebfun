@@ -1,18 +1,24 @@
 function g = constructor( g, op, dom, varargin )
 %CONSTRUCTOR   The main SPHEREFUN constructor.
 %
+% This code is when functions on the surface of the sphere are represented
+% as SPHEREFUN objects. A SPHEREFUN object is a low rank representation and
+% expresses a function as a sum of rank-0 or 1 outerproduct of univariate
+% functions in spherical coordinates.
+%
 % The algorithm for constructing a SPHEREFUN comes in two phases:
 %
 % PHASE 1: The first phase attempts to determine the numerical rank of the
-% function by performing Gaussian elimination with special 2x2 pivoting matrices 
-% on a tensor grid of sample values. GE is perform until the sample matrix
-% is approximated.  At the end of this stage we have candidate pivot locations
-% and pivot elements.
+% function by performing Gaussian elimination with special 2x2 pivoting
+% matrices on a tensor grid of sample values. GE is perform until the
+% sample matrix is approximated.  At the end of this stage we have
+% candidate pivot locations and pivot elements.
 %
-% PHASE 2: The second phase attempts to resolve the corresponding column and row
-% slices by sampling along the slices and performing GE (pivoting at 2x2 matrices) 
-% on the skeleton.   Sampling along each slice is increased until the Fourier 
-% coefficients of the slice fall below machine precision.
+% PHASE 2: The second phase attempts to resolve the corresponding column
+% and row slices by sampling along the slices and performing GE (pivoting
+% at 2x2 matrices) on the skeleton.   Sampling along each slice is
+% increased until the Fourier coefficients of the slice fall below machine
+% precision.
 
 if ( nargin == 0 )          % SPHEREFUN( )
     return
@@ -168,6 +174,28 @@ width = minSize/factor;
 pivotIndices = []; pivotArray = [];
 ihappy = 0;  % Assume we are not happy
 
+% If given a 1xn matrix, then this only gives us a function samples at the 
+% two poles, which is simple to deal with.
+if ( m <= 1 ) 
+    error('CHEBFUN:SPHEREFUN:constructor:poleSamples',...
+        ['Matrix of function samples contains < 2 rows. ',...
+        'This is not enough information to reconstruct the function. Please increase samples in the latitudinal direction.'])
+end
+
+% Only information at the poles is given.
+if ( m == 2) 
+    cols = F(:,1);
+    rows = F(1,:).';
+    idxPlus = 1;
+    idxMinus = [];
+    pivotArray = [1 0];
+    pivotIndices = [1 1];
+    removePole = false;
+    pivots = 1;
+    ihappy = 1;
+    return;
+end
+
 B = F(:,1:n/2);    %% (1,1) Block of F.
 C = F(:,n/2+1:n);  % (1,2) block of F.
 Fp = 0.5*(B + C);
@@ -210,13 +238,12 @@ if abs(pole1) > tol || abs(pole2) > tol
 %     idxPlus(kplus) = rankCount;
 end
 
-% If given a 2xn matrix, then this only gives us a function samples at the 
-% two poles and an error should be thrown. 
-if ( m <= 2 ) 
+% If given a 1xn matrix, then this only gives us a function samples at the 
+% two poles, which is simple to deal with.
+if ( m <= 1 ) 
     error('CHEBFUN:SPHEREFUN:constructor:poleSamples',...
-        ['Matrix of function samples contains <= 2 rows. ',...
-        'Only information at the poles is known. Please increase ',...
-        'samples in the latitudinal direction.'])
+        ['Matrix of function samples contains < 2 rows. ',...
+        'This is not enough information to reconstruct the function. Please increase samples in the latitudinal direction.'])
 end
 
 % Remove the rows corresponding to the poles before determining the
@@ -731,7 +758,7 @@ stddev = std(val);
 % If the standard deviation does not exceed the 100*tolearnce then the pole
 % is "constant".
 % TODO: Get a better feel for the tolerance check.
-if stddev <= 100*tol || stddev < eps
+if stddev <= 1e8*tol || stddev < eps
     constVal = 1;
 else
     constVal = 0;
