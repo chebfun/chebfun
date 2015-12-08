@@ -47,6 +47,11 @@ if ( strcmp( index(1).type,'()' ) )
             out = f;
         end
         varargout = { out }; 
+    elseif ( length( idx ) == 2 )
+        y = idx{2}; 
+        if ( strcmp(x, ':') && strcmp(y, ':') )
+            varargout = { f };
+        end
     elseif ( isa(x, 'spherefunv') )
         out = feval(f, x);
         varargout = { out }; 
