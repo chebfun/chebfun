@@ -8,7 +8,7 @@ f2 = @(x,y,z) sin(pi*x.*z);  % Strictly odd/anti-periodic
 g1 = spherefun(f1);
 g2 = spherefun(f2);
 gplus = g1 + g2;
-fplus = redefine_function_handle( @(x,y,z) f1(x,y,z) + f2(x,y,z) );
+fplus = @(lam, th) spherefun.sphf2cartf(@(x,y,z) f1(x,y,z) + f2(x,y,z),lam,th,0);
 lambda = rand; theta = rand; 
 pass(1) = abs( feval(gplus, theta, lambda) - fplus(theta, lambda) ) < tol; 
 
@@ -35,18 +35,5 @@ pass(4) = ( rank( g ) - r ) == 0;
 f = spherefun(@(x,y,z) sin(x.*y.*z)); 
 g = 2*f; 
 pass(5) = ( norm( g - f - f, inf ) < tol ); 
-
-end
-
-function f = redefine_function_handle( f )
-% nargin( f ) = 2, then we are already on the sphere, if nargin( f ) = 3,
-% then do change of variables:
-
-if ( nargin( f ) == 3 )
-    % Wrap f so it can be evaluated in spherical coordinates
-    f = @(lam, th) spherefun.sphf2cartf(f,lam,th,0);
-%     % Double g up.
-%     f = @(lam, th) sph2torus(f,lam,th);
-end
 
 end

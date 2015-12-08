@@ -1,5 +1,5 @@
 function u = Poisson( f, int_const, m, n )
-% POISSON             FAST POISSON SOLVER FOR THE SPHERE 
+% POISSON         FAST POISSON SOLVER FOR THE SPHERE 
 % 
 % POISSON( F, CONST, N) solves  
 %  

@@ -1,10 +1,10 @@
-function [ normF ] = norm( f, p )
+function [ normF, normloc ] = norm( f, p )
 %NORM   Norm of a SPHEREFUN
 % 
 %    SPHEREFUN(F) = sqrt(integral of abs(F)^2).
 %    SPHEREFUN(F, 2) = largest singular value of F.
 %    SPHEREFUN(F,'fro') is the same as NORM(F).
-%    SPHEREFUN(F, 1) = NOT IMPLEMENTED.
+%    SPHEREFUN(F, 1) = NOT SUPPORTED.
 %    SPHEREFUN(F, inf) = global maximum in absolute value.
 %    SPHEREFUN(F, max) = global maximum in absolute value.
 %    SPHEREFUN(F, min) = NOT SUPPORTED
