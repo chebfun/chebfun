@@ -50,6 +50,9 @@ if ( strcmp( index(1).type,'()' ) )
     elseif ( isa(x, 'spherefunv') )
         out = feval(f, x);
         varargout = { out }; 
+    else
+        error('CHEBFUN:SPHEREFUN:subsref:inputs', ...
+                'Can only evaluate at functions (X,Y,Z) or (LAM,TH)');    
     end
 elseif ( strcmp( index(1).type,'()' ) )
     if ( numel(idx)==4 )
