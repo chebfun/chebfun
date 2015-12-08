@@ -51,6 +51,14 @@ if ( strcmp( index(1).type,'()' ) )
         out = feval(f, x);
         varargout = { out }; 
     end
+elseif ( strcmp( index(1).type,'()' ) )
+    if ( numel(idx)==4 )
+        % This intentionally fails: 
+        varargout = { restrict(f,[idx{1}, idx{2}, idx{3}, idx{4}]) };
+    else
+        error('CHEBFUN:SPHEREFUN:SUBSREF:restrict',...
+              'Restriction domain is given by four corners');
+    end
 else
     [varargout{1:nargout}] = subsref@separableApprox(f, index);
 end
