@@ -152,7 +152,7 @@ g.nonZeroPoles = removePoles;
 g.pivotLocations = adjustPivotLocations(pivotLocations, pivotArray, iscolat(g) ); 
 
 % Simplifying rows and columns after they are happy.
-%g = simplify( g );
+g = simplify( g );
 
 end
 
