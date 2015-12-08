@@ -28,3 +28,16 @@ pass(4) = norm( feval(g, theta, lambda) - f(theta, lambda) ) < tol;
 pass(5) = norm( feval(g, theta, lambda) - f(theta, lambda) ) < tol; 
 
 end 
+
+function f = redefine_function_handle( f )
+% nargin( f ) = 2, then we are already on the sphere, if nargin( f ) = 3,
+% then do change of variables:
+
+if ( nargin( f ) == 3 )
+    % Wrap f so it can be evaluated in spherical coordinates
+    f = @(lam, th) spherefun.sphf2cartf(f,lam,th,0);
+%     % Double g up.
+%     f = @(lam, th) sph2torus(f,lam,th);
+end
+
+end
