@@ -28,13 +28,13 @@ g = f;
 for k = 1:10
     g = g + f; 
 end 
-pass(3) = norm( g - 11*f ) < vscale(g)*tol; 
+pass(3) = norm( g - 11*f, inf ) < vscale(g)*tol; 
 pass(4) = ( rank( g ) - r ) == 0; 
 
 % Check what happens with cancellation errors: 
 f = spherefun(@(x,y,z) sin(x.*y.*z)); 
 g = 2*f; 
-pass(5) = ( norm( g - f - f ) < tol ); 
+pass(5) = ( norm( g - f - f, inf ) < tol ); 
 
 end
 

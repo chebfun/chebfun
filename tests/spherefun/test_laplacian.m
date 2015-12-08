@@ -13,7 +13,7 @@ for ell = [1 2 4 5 7 8 9]
         k = k+1;
     end
 end
-pass = pass(:);
+pass = pass(:)';
 
 % Gaussian
 lam0 = pi/sqrt(2); th0 = (sqrt(5) - 2)/2; sig2 = 1;

@@ -5,6 +5,6 @@ tol = 1e3*chebfunpref().techPrefs.eps;
 
 f = spherefun(@(x,y,z) z );
 g = spherefun(@(x,y,z) z.^2 );
-pass(1) = norm( f.^2 - g ) < tol; 
+pass(1) = norm( sample(f,100,100).^2 - sample(g,100,100), inf ) < tol; 
 
 end 
