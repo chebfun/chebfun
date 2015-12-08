@@ -33,6 +33,7 @@ if ( iszero( f )  )
     X = [ (dom(2) + dom(1))/2 (dom(4) + dom(3))/2 ];
     X = [ X ; X ];
     Y = [0 ; 0];
+    return; 
 end
 
 % Extract low rank representation:
