@@ -36,7 +36,7 @@ idx = index(1).subs;
 % 3. f( x ), x is a spherefunv. 
 % Pass the other cases off to separableApprox/subsref.
 
-if strcmp( index(1).type,'()' )        
+if ( strcmp( index(1).type,'()' ) )        
     x = idx{1};
     if ( length(idx) == 3 )
         y = idx{2};
@@ -47,14 +47,13 @@ if strcmp( index(1).type,'()' )
             out = f;
         end
         varargout = { out }; 
-        return                    
     elseif ( isa(x, 'spherefunv') )
         out = feval(f, x);
         varargout = { out }; 
-        return
     end
+else
+    [varargout{1:nargout}] = subsref@separableApprox(f, index);
 end
 
-[varargout{1:nargout}] = subsref@separableApprox(f, index);
 
 end
