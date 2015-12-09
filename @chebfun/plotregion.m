@@ -27,7 +27,7 @@ function varargout = plotregion(u, varargin)
 %
 %   Example:
 %       u = chebfun({@sin, @cos, @tan, @cot}, [-2, -1, 0, 1, 2]);
-%       plotregion(u);
+%       plotregion(u)
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
