@@ -5,7 +5,7 @@ function cutoff = standardChop(coeffs, tol)
 % decisions, including chebfun construction (CHEBTECH, TRIGTECH), solution of
 % ODE BVPs (SOLVEBVP), solution of ODE IVPs (ODESOL), simplification of chebfuns
 % (SIMPLIFY), and Chebfun2.  See J. L. Aurentz and L. N. Trefethen, "Chopping a
-% Chebyshev series", arXiv, December 2015.
+% Chebyshev series", http://arxiv.org/abs/1512.01803, December 2015.
 %
 % Input:
 %
