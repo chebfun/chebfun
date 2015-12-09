@@ -1,14 +1,13 @@
 function varargout = plotregion(u, varargin)
-%PLOTREGION   Plot the estimated regions of analyticity.
+%PLOTREGION   Plot estimated regions of analyticity.
 %   PLOTREGION(U) plots the estimated region of analyticity in the complex
 %   plane for each piecewise part of U. If U is a Chebyshev-based chebfun, this 
-%   estimated region of analyticity is an ellipse with foci at the end points of
-%   U.domain and semi-minor and major axes summing to rho(k) = 
-%   C*exp(abs(log(EPS))/N(k)), where C is the appropriate scaling for the 
-%   interval [U.ends(k) U.ends(k+1)] and EPS is the machine precision. If U
-%   is a trigonometric-based periodic chebfun, the estimated region of
-%   analyticity is a strip symmetric about the real axis with half width being 
-%   log(1/EPS)/(pi*N).
+%   is the ellipse with foci at the endpoints of U.domain and semi-minor
+%   and semi-major axes summing to rho(k) = C*exp(abs(log(EPS))/N(k)),
+%   where C is the appropriate scaling for the interval
+%   [U.ends(k) U.ends(k+1)] and EPS is the machine precision. If U
+%   is a trigonometric-based periodic chebfun, it is the strip symmetric
+%   about the real axis with half-width log(1/EPS)/(pi*N).
 %
 %   PLOTREGION(U, EPS) allows a user-specified EPS.
 %
@@ -28,7 +27,7 @@ function varargout = plotregion(u, varargin)
 %
 %   Example:
 %       u = chebfun({@sin, @cos, @tan, @cot}, [-2, -1, 0, 1, 2]);
-%       plotregion(u, sqrt(eps), '--');
+%       plotregion(u);
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
