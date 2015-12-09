@@ -19,6 +19,12 @@ function g = constructor( g, op, dom, varargin )
 % at 2x2 matrices) on the skeleton.   Sampling along each slice is
 % increased until the Fourier coefficients of the slice fall below machine
 % precision.
+%
+% The algorithm is fully described in:
+%  A. Townsend, H. Wilber, and G. Wright, Computing with function on
+%  spherical and polar geometries I. The sphere, submitted, 2015. 
+%
+% See also SPHEREFUN.
 
 if ( nargin == 0 )          % SPHEREFUN( )
     return
@@ -29,26 +35,16 @@ if ( isa(op, 'spherefun') )  % SPHEREFUN( SPHEREFUN )
     return
 end
 
-if ( isa(op, 'chebfun2') )  % SPHEREFUN( CHEBFUN2 ) 
-    g = spherefun; 
-    g.cols = op.cols; 
-    g.rows = op.rows; 
-    g.domain = op.domain; 
-    g.pivotLocations = op.pivotLocations;
-    g.pivotValues = op.pivotValues; 
-    return
-end
-
 % If domain is empty take it to be co-latitude.
-if ( nargin < 3 || isempty(dom) )
-    dom = [-pi pi 0 pi];
-end
+% if ( nargin < 3 || isempty(dom) )
+%     dom = [-pi pi 0 pi];
+% end
 
-if ~isempty(varargin)
-    alpha = varargin{1};
-else
-    alpha = 2;
-end
+% Default domain
+dom = [-pi pi 0 pi];
+
+% Default value for coupling parameter
+alpha = 100;
 
 % TODO: Should we allow any other domains than latitude and co-latitude?
 
@@ -225,17 +221,15 @@ rankCount = 0;    % keep track of the rank of the approximation.
 removePole = false;
 if abs(pole1) > tol || abs(pole2) > tol
     % Determine the column with maximum inf-norm
-    [ignored, poleCol] = max(max(abs(Fp),[],1));
+    [rowVal, poleCol] = max(max(abs(Fp),[],1));
     % Zero out the pole using the poleCol.
-    rowPole = ones(1,n/2);
+    rowPole = rowVal*ones(1,n/2);
     colPole = Fp(:, poleCol);
-    Fp = Fp - colPole*rowPole;
-%     kplus = kplus + 1;
+    Fp = Fp - colPole*(rowPole/rowVal);
     % Do we need to keep track of the pivot locations?
     removePole = true;
     % Update the rank count
     rankCount = rankCount + 1;
-%     idxPlus(kplus) = rankCount;
 end
 
 % If given a 1xn matrix, then this only gives us a function samples at the 
@@ -379,7 +373,7 @@ if ( nargout > 4 )
     if removePole
         cols(:,1) = [colPole;flipud(colPole(2:m-1))];
         rows(:,1) = [rowPole rowPole];
-        pivots(1) = 1;
+        pivots(1) = rowVal;
     end
 
 end
@@ -394,7 +388,7 @@ end
 % the pivot matrix.
 if removePole
     pivotIndices = [ 1 poleCol; pivotIndices ];
-    pivotArray = [[1 0] ; pivotArray];
+    pivotArray = [[rowVal 0] ; pivotArray];
     idxPlus = [1 idxPlus];
 end
 
@@ -460,7 +454,7 @@ while ( ~(happy_columns && happy_rows) && ~failure)
     % max norm (repeated) with rows of all ones in the elimination
     % algorithm.
     if removePoles
-        newRowsPlus(1,:) = 1;
+        newRowsPlus(1,:) = pivotArray(1,1);
     end
     
     
@@ -570,6 +564,11 @@ while ( ~(happy_columns && happy_rows) && ~failure)
     temp1 = sum([colsPlus colsMinus],2); temp2 = sum([colsPlus -colsMinus],2);
     col_coeffs = trigtech.vals2coeffs( [temp1;temp2(m:-1:2)] );
 
+%     colData.hscale = norm(dom(3:4), inf);
+%     colValues = [temp1;temp2(m:-1:2)];
+%     colTrigtech = trigtech.make(colValues, colData);
+%     resolvedCol = happinessCheck(colTrigtech, [], colValues, colData);
+    
     % Length of tail to test.
     testLength = min(m, max(3, round((m-1)/8)));
     tail = col_coeffs(1:testLength);
@@ -585,6 +584,11 @@ while ( ~(happy_columns && happy_rows) && ~failure)
     temp1 = sum([rowsPlus; rowsMinus],1); temp2 = sum([rowsPlus; -rowsMinus],1);
     row_coeffs = trigtech.vals2coeffs( [temp1 temp2].' );
 
+%     rowValues = [temp1 temp2].';
+%     rowData.hscale = norm(dom(1:2), inf);
+%     rowTrigtech = trigtech.make(rowValues, rowData);
+%     resolvedRows = happinessCheck(rowTrigtech, [], rowValues, rowData);
+    
     % Length of tail to test.
     testLength = min(n, max(3, round((n-1)/8)));
     tail = row_coeffs(1:testLength);

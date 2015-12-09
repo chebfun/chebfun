@@ -1,16 +1,16 @@
 function u = Poisson( f, int_const, m, n )
-% POISSON         FAST POISSON SOLVER FOR THE SPHERE 
+% POISSON  Fast Poisson solver for the sphere
 % 
-% POISSON( F, CONST, N) solves  
+% POISSON( f, const, n ) solves  
 %  
 %  sin(th)^2u_thth   + sin(th)cos(th)u_th +  u_{lam,lam}  =  sin(th)^2 * f   
 %
 % on the unit sphere written in spherical coordinates (lam, th) 
-% with integral condition  sum2( u ) = CONST with a discretization of 
+% with integral condition  sum2( u ) = const with a discretization of 
 % size N x N.
 %
-% POISSON( F, CONST, M, N) same as POISSON( F, CONST, N), but with a
-% discretization of size M x N. 
+% POISSON( f, const, m, n ) same as POISSON( f, const, n), but with a
+% discretization of size m x n. 
 %
 % EXAMPLE: 
 %  f = @(lam,th) -6*(-1+5*cos(2*th)).*sin(lam).*sin(2*th);
