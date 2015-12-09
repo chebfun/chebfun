@@ -1,7 +1,31 @@
 classdef spherefun < separableApprox
-    
-    % TODO: Improve documentation of input options.
-    
+%SPHEREFUN class for representing functions on the unit sphere.
+% 
+%   Class for approximating functions defined on the unit sphere. The 
+%   functions should be smooth.
+%
+% SPHEREFUN(F) constructs a SPHEREFUN object representing the function F on
+% the unit. F can be a function handle in (x,y,z), 
+% e.g., @(x,y,z) x.*y.*z + cos(x), in the intrinsic spherical coordinate 
+% system, e.g., @(la,th) cos(cos(la).*sin(th)), or a matrix of numbers. 
+% Currently, F should allow for vectorized evaluations.
+%
+% If F is a matrix, F = (f_ij), the numbers fij are used as function values
+% at tensor equally-spaced points in the intrinsic spherical coordinate 
+% system, i.e., [-pi,pi]x[0,pi].
+%
+% The SPHEREFUN software system is based on: 
+%
+% A. Townsend, H. Wilber, and G. Wright, Computing with function on
+% spherical and polar geometries I. The sphere, submitted, 2015. 
+%
+% See also CHEBFUN2, SPHEREFUNV.
+
+% Copyright 2015 by The University of Oxford and The CHEBFUN Developers.
+% See http://www.chebfun.org/ for CHEBFUN information.
+
+% TODO: Improve documentation of input options. 
+
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% CLASS CONSTRUCTOR:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
