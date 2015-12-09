@@ -17,6 +17,10 @@ if l < abs(m)
     error('SPHEREFUN:sphHarm','The degree of the spherical harmonic must be greater than or equal to the magnitude of the order');
 end
 
+if abs(l) > 75
+    error('SPHEREFUN:sphHarm','Only spherical harmonics of degree <= 75.');
+end
+
 if nargin <= 2
     coord = 0;
 end
@@ -62,7 +66,10 @@ end
 sz = size(z); z = z(:)'; lam = lam(:)';
 
 % Normalization
-a = sqrt((2*l+1)/2/pi*factorial(l-abs(m))/factorial(l+abs(m))*(2-double(m==0)));
+% a = sqrt((2*l+1)/2/pi*factorial(l-abs(m))/factorial(l+abs(m))*(2-double(m==0)));
+kk = l-abs(m)+1:l+abs(m);
+aa = exp(-sum(log(kk)));
+a = sqrt((2*l+1)/2/pi*aa*(2-double(m==0)));
 Y = legendre(l,z);
 % Get the right associated legendre function
 Y = squeeze(Y(abs(m)+1,:,:));
