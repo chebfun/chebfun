@@ -16,7 +16,14 @@ if ( isa(f, 'separableApprox') )           % SEPARABLEAPPROX * ???
     if ( isa(g, 'double') )         % SEPARABLEAPPROX * DOUBLE
         if ( numel(g) == 1 )
             h = f;
-            h.pivotValues = h.pivotValues ./ g;
+            if (g ~= 0)
+                h.pivotValues = h.pivotValues ./ g;
+            else
+                h.cols = 0*h.cols(:,1);
+                h.rows = 0*h.rows(:,1);
+                h.pivotValues = inf;
+                h.pivotLocations = h.pivotLocations(1,:);
+            end
         else
             error('CHEBFUN:SEPARABLEAPPROX:mtimes:size', 'Sizes are inconsistent.');
         end

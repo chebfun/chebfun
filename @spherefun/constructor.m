@@ -76,7 +76,7 @@ if ( isa(op, 'double') )    % SPHEREFUN( DOUBLE )
     F = [F(n:-1:1,m/2+1:m) F(n:-1:1,1:m/2)];
     
     % TODO: Add a way to loosen tolerances for this type of construction.
-    tol = GetTol(F, 2*pi/m, pi/(n-1), dom, pseudoLevel);
+    [tol,vscale] = GetTol(F, 2*pi/m, pi/(n-1), dom, pseudoLevel);
     [pivotIndices, pivotArray, removePoles, happyRank, cols, pivots, ...
         rows, idxPlus, idxMinus ] = PhaseOne( F, tol, alpha, 0 );
     [x, y] = getPoints( n, m, dom );
@@ -103,7 +103,7 @@ else  % SPHEREFUN( FUNCTION )
         % vectorization like chebfun2.
         F = evaluate(h, n, n, dom);
 
-        tol = GetTol(F, pi/n, pi/n, dom, pseudoLevel);
+        [tol,vscale] = GetTol(F, pi/n, pi/n, dom, pseudoLevel);
 
         pivotIndices2 = pivotIndices;
         pivotArray2 = pivotArray;
@@ -133,7 +133,7 @@ else  % SPHEREFUN( FUNCTION )
     % PHASE TWO 
     % Find the appropriate discretizations in the columns and rows. 
     [cols, pivots, rows, pivotLocations, idxPlus, idxMinus] = ...
-        PhaseTwo( h, pivotIndices, pivotArray, n, dom, tol, maxSample, removePoles );
+        PhaseTwo( h, pivotIndices, pivotArray, n, dom, vscale, maxSample, removePoles );
 end
 
 g.cols = chebfun( cols, dom(3:4)-[pi 0], 'trig');
@@ -394,7 +394,7 @@ end
 
 end
 
-function [cols, pivots, rows, pivotLocations, idxPlus, idxMinus] = PhaseTwo( h, pivotIndices, pivotArray, n, dom, tol, maxSample, removePoles )
+function [cols, pivots, rows, pivotLocations, idxPlus, idxMinus] = PhaseTwo( h, pivotIndices, pivotArray, n, dom, vscale, maxSample, removePoles )
 
 % alpha = spherefun.alpha; % get growth rate factor.
 happy_columns = 0;   % Not happy, until proven otherwise.
@@ -545,7 +545,6 @@ while ( ~(happy_columns && happy_rows) && ~failure)
         end
     end    
     % Happiness check for columns:
-    % TODO: Make this more similar to hapiness check in trigtech.
     
     if removePoles
         colsPlus(1,2:end) = 0;
@@ -562,39 +561,23 @@ while ( ~(happy_columns && happy_rows) && ~failure)
 
     % Double up the columns.
     temp1 = sum([colsPlus colsMinus],2); temp2 = sum([colsPlus -colsMinus],2);
-    col_coeffs = trigtech.vals2coeffs( [temp1;temp2(m:-1:2)] );
 
-%     colData.hscale = norm(dom(3:4), inf);
-%     colValues = [temp1;temp2(m:-1:2)];
-%     colTrigtech = trigtech.make(colValues, colData);
-%     resolvedCol = happinessCheck(colTrigtech, [], colValues, colData);
-    
-    % Length of tail to test.
-    testLength = min(m, max(3, round((m-1)/8)));
-    tail = col_coeffs(1:testLength);
-
-    if ( all( abs( tail ) <= 1e1*tol ) )
-        happy_columns = 1;
-    end
+    colData.hscale = norm(dom(3:4), inf);
+    colData.vscale = vscale;
+    colValues = [temp1;temp2(m:-1:2)];
+    colTrigtech = trigtech.make(colValues, colData);
+    happy_columns = happinessCheck(colTrigtech, [], colValues, colData);
     
     % Happiness check for rows:
-    % TODO: Make this more similar to hapiness check in trigtech.
 
     % Double up the rows.
     temp1 = sum([rowsPlus; rowsMinus],1); temp2 = sum([rowsPlus; -rowsMinus],1);
-    row_coeffs = trigtech.vals2coeffs( [temp1 temp2].' );
 
-%     rowValues = [temp1 temp2].';
-%     rowData.hscale = norm(dom(1:2), inf);
-%     rowTrigtech = trigtech.make(rowValues, rowData);
-%     resolvedRows = happinessCheck(rowTrigtech, [], rowValues, rowData);
-    
-    % Length of tail to test.
-    testLength = min(n, max(3, round((n-1)/8)));
-    tail = row_coeffs(1:testLength);
-    if ( all( abs( tail ) <= 1e1*tol ) )
-        happy_rows = 1; 
-    end
+    rowValues = [temp1 temp2].';
+    rowData.hscale = norm(dom(1:2), inf);
+    rowData.vscale = vscale;
+    rowTrigtech = trigtech.make(rowValues, rowData);
+    happy_rows = happinessCheck(rowTrigtech, [], rowValues, rowData);
     
     % Adaptive:
     if( ~happy_columns )
@@ -696,7 +679,7 @@ end
 
 end
 
-function tol = GetTol(F, hx, hy, dom, pseudoLevel)
+function [tol,vscale] = GetTol(F, hx, hy, dom, pseudoLevel)
 % GETTOL     Calculate a tolerance for the spherefun constructor.
 %
 %  This is the 2D analogue of the tolerance employed in the trigtech

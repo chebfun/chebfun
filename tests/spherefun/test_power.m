@@ -11,6 +11,6 @@ pass(1) = norm( sample(f,100,100).^2 - ...
 % Another example: 
 f = spherefun(@(x,y,z) cos(x.*y.*z)); 
 g = spherefun(@(x,y,z) cos(x.*y.*z).^cos(x.*y.*z)); 
-pass(2) = ( norm( f.^f - g ) < tol );
+pass(2) = ( norm( sample(f.^f,100,100) - sample(g,100,100) ) < tol );
 
 end

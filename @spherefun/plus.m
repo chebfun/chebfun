@@ -38,6 +38,8 @@ else                                     % SPHEREFUN + SPHEREFUN
         h = g;
     elseif ( iszero(g) )
         h = f;
+    elseif ( isequal(f,-g) )
+        h = 0*f;
     else
         % Add together two nonzero SPHEREFUN objects:
         % The algorithm is as follows: Split f and g into their plus/minus
