@@ -35,7 +35,7 @@ pref.discretization = @chebcolloc1;
 %% Did we pass? 
 % To pass, both residuals have to be small, but we should not expect u1 and u2
 % to be identical!
-tol = 1e4*pref.bvpTol;
+tol = 5e4*pref.bvpTol;
 err1 = normest(N(u1));
 err2 = normest(N(u2));
 err3 = normest(N(u3));
