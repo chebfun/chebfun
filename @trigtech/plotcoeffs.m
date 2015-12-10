@@ -75,7 +75,9 @@ end
 if ( ~loglogPlot )
     % Plot the coefficients:
     h = semilogy(coeffIndex, absCoeffs, args{:});
-    xlim([coeffIndex(1) -coeffIndex(1)]);
+    if ( ~holdState )
+        xlim([coeffIndex(1) -coeffIndex(1)]);
+    end
     % Set the string for the x-axis label.
     xlabelStr = 'Wave number';
 else
