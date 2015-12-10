@@ -51,6 +51,8 @@ if ( strcmp( index(1).type,'()' ) )
         y = idx{2}; 
         if ( strcmp(x, ':') && strcmp(y, ':') )
             varargout = { f };
+        elseif ( isnumeric( x ) && isnumeric( y ) )
+            varargout = { feval(f, x, y) }; 
         end
     elseif ( isa(x, 'spherefunv') )
         out = feval(f, x);

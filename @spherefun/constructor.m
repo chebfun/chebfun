@@ -36,12 +36,19 @@ if ( isa(op, 'spherefun') )  % SPHEREFUN( SPHEREFUN )
 end
 
 % If domain is empty take it to be co-latitude.
-% if ( nargin < 3 || isempty(dom) )
-%     dom = [-pi pi 0 pi];
-% end
-
-% Default domain
-dom = [-pi pi 0 pi];
+if ( nargin < 3 || isempty( dom ) )
+     dom = [-pi pi 0 pi]; 
+elseif ( numel( dom ) ~= 4 )
+    error('CHEBFUN:SPHEREFUN:CONSTRUCTOR:domain',... 
+          ['A domain is rarely given for spherefun, ' ... 
+          'but it needs to be given by four corner values' 
+          'in intrinstic coordinates.'])
+elseif ( numel( dom ) == 4 && norm( dom(:)' - [-pi pi 0 pi] ) >0 )
+    error('CHEBFUN:SPHEREFUN:CONSTRUCTOR:domain',...
+        'The domain of a spherefun is always [-pi pi]x[0 pi] in intrinstic coordinates');
+else
+    dom = [-pi pi 0 pi];
+end
 
 % Default value for coupling parameter
 alpha = 100;
