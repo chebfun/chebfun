@@ -1,4 +1,4 @@
-function varargout = quiver(N, axisLims, varargin)
+function varargout = quiver(N, varargin)
 % QUIVER   Draw phase plot diagrams, based on ODEs specified with CHEBOPS
 %
 % Calling sequence:
@@ -68,11 +68,14 @@ normalize = false;
 u0 = [];
 xpts = 20;
 ypts = 20;
-linespec = {};
+axisLims = [-1 1 -1 1];
 
-% Defaults limits for axes
-if ( nargin < 2 )
-    axisLims = [-1 1 -1 1];
+% The limits for the axes have to appear in the first entry of varargin if
+% they're specified. They'll always be a 4-vector.
+if ( ~isempty(varargin) && length(varargin{1}) == 4 )
+    axisLims = varargin{1};
+    % Throw away the axisLims:
+    varargin(1) = [];
 end
 
 % Cell for linespecs
