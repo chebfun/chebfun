@@ -8,7 +8,8 @@ function varargout = quiver(N, axisLims, varargin)
 %   N    : A chebop, whose N.op arguments specifies a second order scalar ODE,
 %          or a coupled system of two first order ODEs.
 %   AXIS : A 4-vector with elements [XMIN XMAX YMIN YMAX] that specify the
-%          rectangular region shown on the phase plot.
+%          rectangular region shown on the phase plot. If none is passed, the
+%          default values [-1 1 -1 1] is used.
 %
 % It is possible to pass the method various option pairs of the form
 % 'OPTIONNAME', OPTIONVALUE. The options supported are:
@@ -27,8 +28,9 @@ function varargout = quiver(N, axisLims, varargin)
 %                 information.
 %   'LINESPEC'    Specifies options for the quiver plot. The LINESPEC argument
 %                 can either be a string supported by the MATLAB PLOT command,
-%                 such as 'ro', or a cell array consisting of plot option names
-%                 and their values, e.g. {'linewidth', 4}.
+%                 such as 'ro', or a parameter/value pair to specify additional
+%                 properties of the quiver lines, such as 
+%                   quiver(N,[0 2 0 2], 'k', 'linewidth', 1.4).
 %
 % The optional output is
 %   H   : A quivergroup handle.
@@ -41,8 +43,8 @@ function varargout = quiver(N, axisLims, varargin)
 % Example 1 -- van der Pol equation (second order ODE)
 %   N = chebop(0,100);
 %   N.op = @(t,u) diff(u, 2) - 3*(1-u^2)*diff(u) + u;
-%   quiver(N,[-2.5 2.5 -5.5 5.5],'xpts', 40, 'ypts', 40, 'scale', .5, ...
-%       'normalize', true)
+%   quiver(N,[-2.5 2.5 -5.5 5.5], 'r', 'xpts', 40, 'ypts', 40, 'scale', .5, ...
+%       'normalize', true, 'linewidth', 1.5)
 %   hold on % Plot a particular solution on top of quiver plot
 %   N.lbc = [2; 0];
 %   u = N\0;
@@ -68,28 +70,55 @@ xpts = 20;
 ypts = 20;
 linespec = {};
 
+% Defaults limits for axes
+if ( nargin < 2 )
+    axisLims = [-1 1 -1 1];
+end
+
+% Store how many varargins we got passed
+lv = length(varargin);
+
+% Cell for linespecs
+linespec = {};
+
 % Parse VARARGIN, go through all elements:
 while ( ~isempty(varargin) )    
     if ( ~ischar(varargin{1}) && ~isnumeric(varargin{2}) )
         error('followpath:inputArgument','Incorrect options input arguments');
     end
-    val = varargin{2};
+    
+    throwAwayLength = 2;
     switch lower(varargin{1})
         case 'normalize'
-            normalize = val;
+            normalize = varargin{2};
         case 'xpts'
-            xpts = val;
+            xpts = varargin{2};
         case 'ypts'
-            ypts = val;
+            ypts = varargin{2};
         case 'scale'
-            scale = val;
-        case 'linespec'
-            linespec = val;
+            scale = varargin{2};
+        otherwise
+            % Must have gotten something to do with linespec
+            findNorm = strcmpi(varargin, 'normalize');
+            findXpts = strcmpi(varargin, 'xpts');
+            findYpts = strcmpi(varargin, 'ypts');
+            findScale = strcmpi(varargin, 'scale');
+            optionPos = findNorm | findXpts | findYpts | findScale;
+            nextOption = find(optionPos, 1, 'first');
+            % If nextOption is empty, we only got linespec options left
+            if ( isempty(nextOption) )
+                nextOption = length(varargin) + 1;
+            end
+            linespec = [linespec, varargin{1:nextOption - 1}];
+            throwAwayLength = nextOption - 1;
     end
     
     % Throw away option name and argument and move on:
-    varargin(1:2) = [];
+    varargin(1:throwAwayLength) = [];
 end
+
+% What's left in varargin will be the linespecs
+
 
 % Extract the x and y limits:
 xl = axisLims(1:2);
