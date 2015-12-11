@@ -16,6 +16,10 @@ function varargout = deal(X, simplifyFlag)
 %       N.bc = @(x,u,v) [u(0) - 1; v(0)];
 %       [u,v] = deal(N \ 0);  % solution components of a system
 %                             % of differential equations
+%
+%   However, users do not normally need this syntax as it is
+%   simpler to write  [u,v] = N \ 0 ; .
+
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
