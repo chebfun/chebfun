@@ -9,7 +9,7 @@ function varargout = quiver(N, axisLims, varargin)
 %          or a coupled system of two first order ODEs.
 %   AXIS : A 4-vector with elements [XMIN XMAX YMIN YMAX] that specify the
 %          rectangular region shown on the phase plot. If none is passed, the
-%          default values [-1 1 -1 1] is used.
+%          default values [-1 1 -1 1] are used.
 %
 % It is possible to pass the method various option pairs of the form
 % 'OPTIONNAME', OPTIONVALUE. The options supported are:
@@ -26,7 +26,7 @@ function varargout = quiver(N, axisLims, varargin)
 %                 plot the arrows without the automatic scaling. See the
 %                 documentation for the built-in MATLAB QUIVER for more
 %                 information.
-%   'LINESPEC'    Specifies options for the quiver plot. The LINESPEC argument
+%   LINESPEC      Specifies options for the quiver plot. The LINESPEC argument
 %                 can either be a string supported by the MATLAB PLOT command,
 %                 such as 'ro', or a parameter/value pair to specify additional
 %                 properties of the quiver lines, such as 
@@ -75,9 +75,6 @@ if ( nargin < 2 )
     axisLims = [-1 1 -1 1];
 end
 
-% Store how many varargins we got passed
-lv = length(varargin);
-
 % Cell for linespecs
 linespec = {};
 
@@ -116,9 +113,6 @@ while ( ~isempty(varargin) )
     % Throw away option name and argument and move on:
     varargin(1:throwAwayLength) = [];
 end
-
-% What's left in varargin will be the linespecs
-
 
 % Extract the x and y limits:
 xl = axisLims(1:2);
