@@ -51,7 +51,7 @@ myInnerProduct = @(u, v) sum( weight.*conj(u).*v, [0, 1] );
 [QwR, RwR] = qr( R );
 
 % Use the QR factorizations of the columns and rows to make up the SVD of
-% the SPHEREFUN object.  Since
+% the DISKFUN object.  Since
 %
 %        C * D * R = QwC * ( RwC * D * RwR' ) * QwR'
 %
