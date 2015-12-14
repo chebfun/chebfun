@@ -1,12 +1,15 @@
-function varargout = svd( f ) 
-% SVD      Singular value decomposition of a diskfun 
+function varargout = BMCsvd( f )
+% BMCSVD      Singular value decomposition of a diskfun on [-pi,pi]x[0,1]
 % 
-% S = SVD( F )  returns the singular values of F 
-% 
-% [U, S, V] = svd( F ) returns the singular value decomposition of F. 
+% S = BMCSVD( F )  returns the singular values of F
+%
+% [U, S, V] = BMCSVD( F ) returns the singular value decomposition of F.
+%
+% Also see: DISKFUN/SVD
 
 % TODO: Check if this is good enough, structure and orthongonality may
-% not be preserved. :( 
+% not be preserved. :(
+        
 
 [C,D,R] = cdr(f);
 
