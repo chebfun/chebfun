@@ -16,7 +16,7 @@ if ~isempty(f) && f.nonZeroPoles
     h.pivotValues = f.pivotValues(1);
     h.idxPlus = 1;
     h.idxMinus = [];
-    h.pivotIndices = f.pivotIndices(1,:);
+%    h.pivotIndices = f.pivotIndices(1,:);
     h.pivotLocations = f.pivotLocations(1,:);
     
     % Now remove these rows and columns from f
@@ -31,7 +31,6 @@ if ~isempty(f) && f.nonZeroPoles
     f.pivotValues = f.pivotValues(2:end);
     f.idxPlus = f.idxPlus(2:end)-1;
     f.idxMinus = f.idxMinus - 1;
-    f.pivotIndices = f.pivotIndices(2:end,:);
     f.pivotLocations = f.pivotLocations(2:end,:);
     f.nonZeroPoles = 0;
 else

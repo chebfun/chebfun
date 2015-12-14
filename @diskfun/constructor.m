@@ -136,19 +136,12 @@ end
 g.cols = chebfun( cols, dom(3:4)-[1 0]);
 g.rows = chebfun( rows, dom(1:2), 'trig');
 g.pivotValues = pivots;
-g.pivotIndices = pivotIndices;
 g.domain = dom;
 g.idxPlus = idxPlus;
 g.idxMinus = idxMinus;
 g.nonZeroPoles = removePoles;
+g.pivotLocations = adjustPivotLocations(pivotLocations, pivotArray);
 
-% Adjust the pivot locations so that they correspond to 
-% -pi < th < pi and 0 < r <1
-
-pivotLocations(:,2) = -pivotLocations(:,2); %vertical in [0 1]
-
-pivotLocations(:,1) = pivotLocations(:,1) + pi; %adjust horz using BMC sym.
-g.pivotLocations = pivotLocations;
 
 % Sort according to the maginuted of the pivots using the partition and
 % combine functions. 
@@ -648,10 +641,10 @@ function [pole,constVal] = checkPole(val,tol)
 
 % Take the mean of the values that are at the pole.
 pole = mean(val);
-% Compute there standard deviation
+% Compute  standard deviation
 stddev = std(val);
 
-% If the standard deviation does not exceed the tolearnce then the pole is
+% If the standard deviation does not exceed the tolerance then the pole is
 % "constant"
 if stddev <= tol
     constVal = 1;
@@ -661,3 +654,35 @@ end
 
 end
 
+function pivLocNew = adjustPivotLocations(pivLoc, pivArray)
+
+
+% Adjust the pivot locations so that they correspond to 
+% -pi < th < pi and 0 < r <1
+
+pivLoc(:,2) = -pivLoc(:,2); %vertical in [0 1]
+pivLoc(:,1) = pivLoc(:,1) + pi; %adjust horz using BMC sym.
+
+
+% We will store the pivotLocations for both the plus and minus
+% pieces, which could result in duplicate values being stored.  This
+% happens whenever a rank-2 deflation step occurs. Really only one set of
+% pivotLocations need to be stored in this case, but we will double up the
+% information as it makes the combine and partition methods much easier to
+% write.  If this is changed then look the combine and partition methods
+% need to also be changed.
+
+pivLocNew = zeros(sum(sum(pivArray ~= 0)),2);
+count = 1;
+for j=1:size(pivLoc,1)
+    if pivArray(j,1) ~= 0 && pivArray(j,2) ~= 0
+        pivLocNew(count,:) = pivLoc(j,:);
+        pivLocNew(count+1,:) = pivLoc(j,:);
+        count = count + 2;
+    else
+        pivLocNew(count,:) = pivLoc(j,:);
+        count = count + 1;
+    end
+end
+
+end
