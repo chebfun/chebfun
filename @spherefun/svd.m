@@ -23,6 +23,7 @@ function varargout = svd( f )
 
 if ( isempty( f ) )
     varargout = {[]};
+    return
 end
 
 % Get CDR decomposition of f:
