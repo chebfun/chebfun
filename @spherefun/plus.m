@@ -145,7 +145,8 @@ if isempty( f )
     return;
 end
 
-% Only need to operate on the column coefficients
+% Operate on the column coefficients first to project them onto even
+% functions.
 X = f.cols.funs{1}.onefun.coeffs;
 
 % Get size: 
@@ -201,6 +202,16 @@ end
 
 f.cols.funs{1}.onefun = real(trigtech({'',X}));
 
+% Now operate on the rows. The coefficients for the rows of an even BMCI
+% function should only contain even wave numbers. The projection is to
+% simply zero out the odd wave numbers.
+X = f.rows.funs{1}.onefun.coeffs;
+n = size(X,1); 
+zeroMode = floor(n/2)+1;
+oddModes = [fliplr(zeroMode-1:-2:1) zeroMode+1:2:n];
+X(oddModes,:) = 0;
+f.rows.funs{1}.onefun = real(trigtech({'',X}));
+
 end
 
 function f = projectOntoOddBMCI( f )
@@ -214,7 +225,8 @@ if isempty( f )
     return;
 end
 
-% Only need to operate on the column coefficients
+% Operate on the column coefficients first to project them onto odd
+% functions.
 X = f.cols.funs{1}.onefun.coeffs;
 
 % Get size: 
@@ -244,6 +256,16 @@ if ( isevenM )
 end
 
 f.cols.funs{1}.onefun = real(trigtech({'',X}));
+
+% Now operate on the rows. The coefficients for the rows of an odd BMCI
+% function should only contain odd wave numbers. The projection is to
+% simply zero out the even wave numbers.
+X = f.rows.funs{1}.onefun.coeffs;
+n = size(X,1); 
+zeroMode = floor(n/2)+1;
+evenModes = [fliplr(zeroMode-2:-2:1) zeroMode:2:n];
+X(evenModes,:) = 0;
+f.rows.funs{1}.onefun = real(trigtech({'',X}));
 
 end
 
