@@ -22,7 +22,9 @@ if ( isa(f, 'separableApprox') )           % SEPARABLEAPPROX * ???
                 h.cols = 0*h.cols(:,1);
                 h.rows = 0*h.rows(:,1);
                 h.pivotValues = inf;
-                h.pivotLocations = h.pivotLocations(1,:);
+                if ~isempty( h.pivotLocations )
+                    h.pivotLocations = h.pivotLocations(1,:);
+                end
             end
         else
             error('CHEBFUN:SEPARABLEAPPROX:mtimes:size', 'Sizes are inconsistent.');
