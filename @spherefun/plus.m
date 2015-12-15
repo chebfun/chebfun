@@ -200,7 +200,8 @@ if ( isevenM )
     X = X(1:m-1,:);
 end
 
-f.cols.funs{1}.onefun = real(trigtech({'',X}));
+ctechs = real(trigtech({'',X}));
+f.cols.funs{1}.onefun = ctechs;
 
 % Now operate on the rows. The coefficients for the rows of an even BMCI
 % function should only contain even wave numbers. The projection is to
@@ -210,7 +211,12 @@ n = size(X,1);
 zeroMode = floor(n/2)+1;
 oddModes = [fliplr(zeroMode-1:-2:1) zeroMode+1:2:n];
 X(oddModes,:) = 0;
-f.rows.funs{1}.onefun = real(trigtech({'',X}));
+rtechs = real(trigtech({'',X}));
+f.rows.funs{1}.onefun = rtechs;
+
+% Weird feval behavior in chebfun requires this
+f.cols.pointValues = feval(ctechs,[-1;1]);
+f.rows.pointValues = feval(rtechs,[-1;1]); 
 
 end
 
@@ -255,7 +261,8 @@ if ( isevenM )
     X = X(1:m-1,:);
 end
 
-f.cols.funs{1}.onefun = real(trigtech({'',X}));
+ctechs = real(trigtech({'',X}));
+f.cols.funs{1}.onefun = ctechs;
 
 % Now operate on the rows. The coefficients for the rows of an odd BMCI
 % function should only contain odd wave numbers. The projection is to
@@ -265,7 +272,13 @@ n = size(X,1);
 zeroMode = floor(n/2)+1;
 evenModes = [fliplr(zeroMode-2:-2:1) zeroMode:2:n];
 X(evenModes,:) = 0;
-f.rows.funs{1}.onefun = real(trigtech({'',X}));
+
+rtechs = real(trigtech({'',X}));
+f.rows.funs{1}.onefun = rtechs;
+
+% Weird feval behavior in chebfun requires this
+f.cols.pointValues = feval(ctechs,[-1;1]);
+f.rows.pointValues = feval(rtechs,[-1;1]); 
 
 end
 
