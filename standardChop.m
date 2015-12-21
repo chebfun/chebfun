@@ -1,11 +1,13 @@
 function cutoff = standardChop(coeffs, tol)
+%disp(length(coeffs)-1)
 %STANDARDCHOP  A sequence chopping rule of "standard" (as opposed to "loose" or
 % "strict") type, that is, with an input tolerance TOL that is applied with some
 % flexibility.  This code is used in all parts of Chebfun that make chopping
 % decisions, including chebfun construction (CHEBTECH, TRIGTECH), solution of
 % ODE BVPs (SOLVEBVP), solution of ODE IVPs (ODESOL), simplification of chebfuns
-% (SIMPLIFY), and Chebfun2.  See J. L. Aurentz and L. N. Trefethen, "Chopping a
-% Chebyshev series", http://arxiv.org/abs/1512.01803, December 2015.
+% (SIMPLIFY), and Chebfun2.  Since this code is central to the functionality of
+% Chebfun, it is also our aim that it should have exceptionally thorough and
+% carefully written explanations in the comments.
 %
 % Input:
 %
@@ -35,7 +37,7 @@ function cutoff = standardChop(coeffs, tol)
 % standardChop(coeffs + 1e-10*random) % = 50
 % standardChop(coeffs + 1e-10*random, 1e-10) % = 10
  
-% Jared Aurentz and Nick Trefethen, July 2015.
+% Jared Aurentz and Nick Trefethen, 2 July 2015.
 %
 % Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -46,8 +48,10 @@ function cutoff = standardChop(coeffs, tol)
 % enough final segment below TOL, and the final entry COEFFS(CUTOFF) will never
 % be smaller than TOL^(7/6).  All these statements are relative to
 % MAX(ABS(COEFFS)) and assume CUTOFF > 1.  These parameters result from
-% extensive experimentation involving functions such as those presented in
-% the paper cited above.  They are not derived from first principles and
+% extensive experimentation as described in Chebfun discussion documents
+% 14-constructorOct30_2014.pdf, 20-epslevel_proposal.pdf,
+% 21-epslevel-progress.pdf, 23-standardChopMemo.pdf and
+% 26-standardChopNotes.pdf.  They are not derived from first principles and
 % there is no claim that they are optimal.
 
 % Set default if fewer than 2 inputs are supplied: 
@@ -82,6 +86,7 @@ if ( m(1) == 0 )
     return
 end
 envelope = m/m(1);
+% save step1 b envelope %%%
 
 % Step 2: Scan ENVELOPE for a value PLATEAUPOINT, the first point J-1, if any,
 % that is followed by a plateau.  A plateau is a stretch of coefficients
@@ -94,7 +99,7 @@ envelope = m/m(1);
 % vector, but the precise chopping point CUTOFF still remains to be determined
 % in Step 3.
 
-for j = 2:n
+for j = 1:n
     j2 = round(1.25*j + 5); 
     if ( j2 > n )
         % there is no plateau: exit
@@ -146,6 +151,9 @@ else
     cc = cc + linspace(0, (-1/3)*log10(tol), j2)';
     [~, d] = min(cc);
     cutoff = max(d - 1, 1);
+n2 = length(coeffs);
+disp(['actual n2 ' int2str(n2)])
+save explaindata plateauPoint cutoff n2
 end
 
 end
