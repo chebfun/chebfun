@@ -609,7 +609,13 @@ while ( ~(happy_columns && happy_rows) && ~failure)
     
     if ( max(m, n) >= maxSample ) 
         warning('SPHEREFUN:constructor:notResolved', ...
-        'Unresolved with maximum length: %u.', maxSample);
+        'Unresolved with maximum length: %u.', ...
+        maxSample + mod(maxSample+1,2) );
+        % Note the reason for adding one to maxSample when it's even: Since
+        % we call simplify after construction the columns will always be an
+        % odd length, but maxSample should always be even since we resample
+        % in powers of 2.  The warning message needs to have the right
+        % value in the case that maxSample is even.
         failure = true;
     end 
 end
