@@ -60,6 +60,10 @@ a = axis; if a(3)>1e-80 & a(3) < 1e-9, a(3) = 1e-20; end
           if g.vscale<1e11 & a(4) > 1e-6, a(4) = 1e2; end
 if g.vscale<1e-98, a(3) = 1e-120; a(4) = 1e-98; end
 
+% Plot envelope
+envelope(envelope == 0) = a(3);
+semilogy(0:ng-1,envelope,'-g')
+
 % Plot zero data values, if any, on relabeled bottom axis:
 if any(gc==0)
   gzeros = find(gc==0);
@@ -89,6 +93,18 @@ ss = strrep(ss,'cos','\cos'); ss = strrep(ss,'abs','\hbox{abs}');
 a(2) = max(a(2),ng);
 axis(a), set(gca,FS,9)
 text(xpos,ypos,['$' ss '$'],FS,13,HA,'right',IN,'latex')
+
+% Plot plateauPoint
 plot(plateauPoint-1,gc(plateauPoint),'sb',MS,10)
 
+% Plot j2
+plot(j2-1,envelope(j2),'^b',MS,10)
+
+% Plot cc
+plot(0:j2-1,10.^cc','g')
+
 hold off
+
+% delete explaindata file
+delete explaindata.mat
+
