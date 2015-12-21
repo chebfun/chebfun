@@ -111,6 +111,15 @@ else  % SPHEREFUN( FUNCTION )
         F = evaluate(h, n, n, dom);
 
         [tol,vscale] = GetTol(F, pi/n, pi/n, dom, pseudoLevel);
+        
+        % Does the function blow up or evaluate to NaN?:
+        if ( isinf(vscale) )
+            error('CHEBFUN:SPHEREFUN:constructor:inf', ...
+                'Function returned INF when evaluated');
+        elseif ( any(isnan(F(:)) ) )
+            error('CHEBFUN:SPHEREFUN:constructor:nan', ...
+                'Function returned NaN when evaluated');
+        end
 
         pivotIndices2 = pivotIndices;
         pivotArray2 = pivotArray;
