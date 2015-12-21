@@ -93,6 +93,13 @@ else  % SPHEREFUN( FUNCTION )
     % If f is defined in terms of x,y,z; then convert it to
     % (longitude,latitude).
     h = redefine_function_handle( op );
+    
+    % Check for op = @(lam,th) const
+    [ll,tt] = meshgrid(dom(1:2),dom(3:4));
+    if numel( h(ll,tt) ) == 1
+        h1 = h;
+        h = @(ll,tt) h1(ll,tt) + 0*ll;
+    end
 
     % PHASE ONE  
     % Sample at square grids, determine the numerical rank of the
