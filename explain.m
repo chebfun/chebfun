@@ -59,6 +59,8 @@ a = axis;
 a = axis; if a(3)>1e-80 & a(3) < 1e-9, a(3) = 1e-20; end
           if g.vscale<1e11 & a(4) > 1e-6, a(4) = 1e2; end
 if g.vscale<1e-98, a(3) = 1e-120; a(4) = 1e-98; end
+a(2) = max(a(2),ng);
+axis(a), set(gca,FS,9)
 
 % Plot envelope
 envelope(envelope == 0) = a(3);
@@ -90,8 +92,6 @@ ss = strrep(ss,'acos','cos^{-1}'); ss = strrep(ss,'abs','\hbox{abs}');
 ss = strrep(ss,'cos','\cos'); ss = strrep(ss,'abs','\hbox{abs}');
 
 % Print a label in the upper-right:
-a(2) = max(a(2),ng);
-axis(a), set(gca,FS,9)
 text(xpos,ypos,['$' ss '$'],FS,13,HA,'right',IN,'latex')
 
 % Plot plateauPoint
