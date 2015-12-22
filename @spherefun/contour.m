@@ -33,7 +33,6 @@ holdState = ishold;
 % Minimum number of plotting points:
 minplotnum = 200;
 doPivotPlot = 0;
-contourOption = [];
 
 % Extract from the inputs the user defined options: 
 j = 1; 
@@ -50,9 +49,6 @@ while ( ~isempty( varargin ) )
         end
         argin{j} = varargin{2};
         varargin(1:2) = [];
-    elseif ( isnumeric( varargin{1} ) ) 
-        contourOption = varargin{1};
-        varargin(1) = [];
     else
         argin{j} = varargin{1};
         varargin(1) = [];
@@ -74,24 +70,16 @@ end
 if ( isa(f, 'spherefun') ) 
     
     dom = f.domain;
-    if ( ( nargin == 1) || ( ( nargin > 1 ) && ( ~isempty(contourOption) ) ) )    
-        % CONTOUR(f) 
-        
-        % Evaluate at equally spaced grid: 
-        x = linspace( dom(1), dom(2), minplotnum );
-        y = linspace( dom(3), dom(4), minplotnum );
-        vals = sample(f, minplotnum-1, minplotnum-1);
-        vals = [vals vals(:,1)];
-        
-    else
-        error('CHEBFUN:SPHEREFUN:contour:inputs1', ...
-            'Unrecognized input arguments.');
-    end
-    
+    % Evaluate at equally spaced grid: 
+    x = linspace( dom(1), dom(2), minplotnum );
+    y = linspace( dom(3), dom(4), minplotnum );
+    vals = sample(f, minplotnum-1, minplotnum-1);
+    vals = [vals vals(:,1)];
+            
 else
     
-    error('CHEBFUN:SPHEREFUN:contour:inputs2', ...
-        'Unrecognized input arguments.');
+    error('CHEBFUN:SPHEREFUN:contour:inputs', ...
+        'Input must be a spherefun.');
     
 end
 
@@ -104,6 +92,19 @@ else
     yc = @(ll,tt) sin(ll).*cos(tt);
     zc = @(tt) sin(tt);
 end
+
+% Use contour rather than contourc so that it can handle parsing the inputs
+% correctly.
+[C,H] = contour( x', y', vals, argin{:} );
+% Extract out the options we need to plot the contours with plot3.
+LW = 'LineWidth'; lw = H.LineWidth;
+LS = 'LineStyle'; ls = H.LineStyle;
+LC = 'Color'; lc = H.LineColor;
+levelList = H.LevelList;
+clrmap = parula(numel(levelList));
+
+% Remove the contour plot that was generated.
+delete(H);
 
 % If the plot is not being added to another then plot a solid 
 % sphere so the lines are more easily discernable.
@@ -122,14 +123,6 @@ if ~holdState
     hold on;
 end
 
-if isempty( contourOption )
-    % Contour plot:
-    C = contourc( x', y', vals );
-else
-    % Contour plot:
-    C = contourc( x', y', vals, contourOption );
-end    
-
 cl = size(C,2);
 k = 1;
 while k < cl
@@ -138,7 +131,17 @@ while k < cl
     xv = xc(C(1,v),C(2,v));
     yv = yc(C(1,v),C(2,v));
     zv = zc(C(2,v));
-    plot3(xv,yv,zv,argin{:});
+    % If the line color is a float then we are plotting all contours in a
+    % single color.
+    if isfloat(lc)
+        plot3(xv,yv,zv,LW,lw,LC,lc,LS,ls);
+    else
+        % We need to plot each contour in a color using the default
+        % colormap.
+        % Determine the color for the level being plotted.
+        clr = clrmap(abs(C(1,k)-levelList) < 10*eps,:);
+        plot3(xv,yv,zv,LW,lw,LC,clr,LS,ls);
+    end        
     k = k+kl+1;
 end
 if ~holdState
