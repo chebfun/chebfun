@@ -1,7 +1,36 @@
 classdef spherefun < separableApprox
-    
-    % TODO: Improve documentation of input options.
-    
+%SPHEREFUN class for representing functions on the unit sphere.
+% 
+%   Class for approximating functions defined on the unit sphere. The 
+%   functions should be smooth.
+%
+% SPHEREFUN(F) constructs a SPHEREFUN object representing the function F on
+% the unit. F can have the following form:
+%    1. A function handle in (x,y,z), e.g., @(x,y,z) x.*y.*z + cos(x).
+%    2. A function handle in spherical coordinates (lambdda,theta), where
+%       lambda is the azimuthal variable and satisfies -pi <= lambda <= pi
+%       and theta is the polar angle and satisfies 0 <= theta < pi,
+%       e.g., @(lambda,theta) cos(cos(lambda).*sin(theta))
+%    3. A matrix of numbers. 
+% If F is a function handle then it should allow for vectorized 
+% evaluations.
+%
+% If F is a matrix, F = (f_ij), the numbers fij are used as function values
+% at tensor equally-spaced points in the intrinsic spherical coordinate 
+% system, i.e., [-pi,pi]x[0,pi].
+%
+% The SPHEREFUN software system is based on: 
+%
+% A. Townsend, H. Wilber, and G. Wright, Computing with function on
+% spherical and polar geometries I. The sphere, submitted, 2015. 
+%
+% See also CHEBFUN2, SPHEREFUNV.
+
+% Copyright 2015 by The University of Oxford and The CHEBFUN Developers.
+% See http://www.chebfun.org/ for CHEBFUN information.
+
+% TODO: Improve documentation of input options. 
+
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% CLASS CONSTRUCTOR:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -16,34 +45,7 @@ classdef spherefun < separableApprox
                 return
             end
             
-            % Type of construction
-            constructorType = 1; % Default using rank BMC preserving rank 1 updates.
-            
-            % Remove this code when we are done testing the constructor.
-            if numel(varargin) > 1
-                if ischar(varargin{2})
-                    if strcmpi(varargin{2},'2by2')
-                        constructorType = 2;
-                        varargin(2) = [];
-                    elseif strcmpi(varargin{2},'PlusMinus')
-                        constructorType = 3;
-                        varargin(2) = [];
-                    end
-                end
-            end
-            
-            % Call the constructor, all the work is done here:
-            switch constructorType
-                case 1
-                    f = constructor(f, varargin{:});
-                case 2
-                    f = constructor2by2(f, varargin{:});
-                case 3
-                    f = constructorPlusMinus(f, varargin{:});
-                otherwise
-                    f = constructor(f, varargin{:});
-            end
-                    
+            f = constructor(f, varargin{:});                    
         end
         
     end
@@ -76,7 +78,7 @@ classdef spherefun < separableApprox
     %% STATIC METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
-        
+  
         % Poisson solver: 
         u = Poisson( f, const, m, n);
         

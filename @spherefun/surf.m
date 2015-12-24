@@ -69,7 +69,11 @@ if ( isa(f,'spherefun') )
         end
         h = surf(xx, yy, zz, C, defaultOpts{:}, argin{:});
         xlim([-1 1]), ylim([-1 1]), zlim([-1 1])
-        
+        % Make the aspect ratio equal if the plot is not currently being
+        % held.
+        if ( ~ishold )
+            daspect([1 1 1]);
+        end
     else
         % Pass this along to the surf function in separableApprox.
         h = surf@separableApprox( f, varargin{:} );

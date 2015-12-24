@@ -57,7 +57,7 @@ chebfunpref.setDefaults(savedPrefs);
 
 % A test involving innerProduct:
 x = chebfun('x');
-pass(5) = innerProduct(dirac(x), x) < epslevel(f);
+pass(5) = innerProduct(dirac(x), x) < eps;
 
 % Test quasi matrix construction
 x = chebfun('x');

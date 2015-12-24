@@ -1,19 +1,19 @@
 function u = Poisson( f, int_const, m, n )
-% POISSON             FAST POISSON SOLVER FOR THE SPHERE 
+% POISSON  Fast Poisson solver for the sphere
 % 
-% POISSON( F, CONST, N) solves  
+% POISSON( f, const, n ) solves  
 %  
 %  sin(th)^2u_thth   + sin(th)cos(th)u_th +  u_{lam,lam}  =  sin(th)^2 * f   
 %
 % on the unit sphere written in spherical coordinates (lam, th) 
-% with integral condition  sum2( u ) = CONST with a discretization of 
+% with integral condition  sum2( u ) = const with a discretization of 
 % size N x N.
 %
-% POISSON( F, CONST, M, N) same as POISSON( F, CONST, N), but with a
-% discretization of size M x N. 
+% POISSON( f, const, m, n ) same as POISSON( f, const, n), but with a
+% discretization of size m x n. 
 %
 % EXAMPLE: 
-%  f = @(lam,th) .25*(9*cos(3*lam)-cos(lam));  
+%  f = @(lam,th) -6*(-1+5*cos(2*th)).*sin(lam).*sin(2*th);
 %  exact = @(lam,th) -2*sin(lam).*sin(2*th).*sin(th).^2 -...
 %            sin(lam).*sin(th).*cos(th) + .5*sin(lam).*sin(2*th).*cos(2*th);
 %  int_const = 0;
@@ -84,9 +84,9 @@ CFS(:, m/2+1) = [ en ;  L([1:n/2 n/2+2:n], :)] \ ...
 VALS = trigtech.coeffs2vals( trigtech.coeffs2vals( CFS ).' ).'; 
 
 % Now restrict down to region of interest:
-VALS = VALS([n/2+1:n n/2+1], :);
+VALS = VALS([n/2+1:n 1], :);
 
-% Finally, make a spherefun object out of the values: 
+% Finally, make a spherefun obxject out of the values: 
 u = spherefun( real( VALS ) ); 
 
 % - DEBUG

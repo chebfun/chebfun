@@ -28,6 +28,7 @@ if ~holdState
     % show up more clearly.
     scl = 0.99;
     surf(scl*XX,scl*YY,scl*ZZ,1+0*XX,'EdgeColor','None','FaceColor',clr);
+    daspect([1 1 1]);
 end
 
 % Plot vectors at the Icosahedral nodes, which are well separated and make
@@ -39,7 +40,7 @@ fxv = feval(fx,x(:,1),x(:,2),x(:,3));
 fyv = feval(fy,x(:,1),x(:,2),x(:,3));
 fzv = feval(fz,x(:,1),x(:,2),x(:,3));
 
-h = quiver3(x(:,1),x(:,2),x(:,3),fxv,fyv,fzv,'k');
+h = quiver3(x(:,1),x(:,2),x(:,3),fxv,fyv,fzv,2,'k');
 
 if ~holdState
     hold off;

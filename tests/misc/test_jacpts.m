@@ -1,7 +1,7 @@
 function pass = test_jacpts(pref)
 
 % Choose a tolerance:
-tol = 1e-14;
+tol = 1e-12;
 
 % Test a small n (using REC)
 n = 42;
@@ -17,7 +17,7 @@ pass(6) = abs(v(37) - 0.320696510075909) < tol;
 
 % Test on [0, 10]:
 [x, w, v] = jacpts(n, a, b, [0, 10]);
-pass(7) = abs(w*x - 81.519974175439359) < 10*tol && abs(w*x.^2 - 585.9248143859702) < 100*tol;
+pass(7) = abs(w*x - 81.519974175437831) < 10*tol && abs(w*x.^2 - 585.9248143859594) < 100*tol;
 pass(8) = abs(x(38) - 9.702339316456870) < tol;
 pass(9) = abs(w(38) - 0.279566831611687) < tol;
 pass(10) = abs(v(38) + 0.248832970298009) < tol;
@@ -46,4 +46,9 @@ a = 1; b = 2;
 [x, w] = jacpts( 1, a, b ); 
 pass(21) = abs( x - (b-a)/(a+b+2) ) < tol ; 
 pass(22) = abs( w - 2^(a+b+1)*beta(a+1, b+1) ) < tol; 
+
+% See #1634
+[x1, w1] = jacpts(2e5, .2, .2);
+pass(23) = abs(sum(w1*x1)) < 10*eps;
+
 end

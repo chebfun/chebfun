@@ -7,7 +7,11 @@ function f = compose( f, op, varargin )
 %
 % This command is a wrapper for the SPHEREFUN constructor. 
 
-if ( nargin == 2 && nargin(op) == 1)
+if ( isempty( op ) )
+    return
+elseif ( isempty( f ) )
+    f = op;
+elseif ( nargin == 2 && nargin(op) == 1)
     % OP has one input variable.
     
     % Call constructor: 
@@ -30,8 +34,7 @@ elseif ( nargin == 3 && nargin(op) == 2 )
     
 else
     % Not sure what to do, error: 
-    error('CHEBFUN:SPHEREFUN:COMPOSE:OP', 'NARGIN(OP) not correct.')
-    
+    error('CHEBFUN:SPHEREFUN:COMPOSE:OP', 'NARGIN(OP) not correct.') 
 end
 
 end 

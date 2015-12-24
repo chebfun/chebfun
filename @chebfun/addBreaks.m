@@ -31,7 +31,7 @@ breaks( isinf(breaks) ) = [];
 domain = f.domain( isfinite(f.domain) );
 
 % Set a tolerance:
-breakTol = max(100*epslevel(f)*max(min(diff(domain)), 1), tol);
+breakTol = max(100*eps*max(min(diff(domain)), 1), tol);
 
 % Distance between new breakpoints and existing ones:
 dist = abs(bsxfun(@minus, breaks, domain));

@@ -9,9 +9,11 @@ function f = simplify( f )
 % See http://www.chebfun.org/ for Chebfun2 information.
 
 % Simplify the column and row slices. 
-f.cols = simplify( f.cols ); 
-f.rows = simplify( f.rows ); 
+f.cols = simplify( f.cols, [], 'globaltol' ); 
+f.rows = simplify( f.rows, [], 'globaltol' ); 
 
-% TODO: Simplify the rank 
+% Note that we do not simplify the rank here because that would require 
+% calling the constructor and is expensive.  In almost all situations we 
+% are happy with simplifying the columns and rows only. 
 
 end 

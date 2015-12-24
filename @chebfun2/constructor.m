@@ -313,12 +313,13 @@ while ( ~isHappy && ~failure )
     
     % Check if the column and row slices are resolved.
     colData.hscale = norm(dom(3:4), inf);
+    colData.vscale = vscale;
     tech = pref.tech();
     colChebtech = tech.make(sum(colValues,2), colData);
-    resolvedCols = happinessCheck(colChebtech,[],sum(colValues,2), vscale);
+    resolvedCols = happinessCheck(colChebtech, [], sum(colValues, 2), colData);
     rowData.hscale = norm(dom(1:2), inf);
     rowChebtech = tech.make(sum(rowValues.',2), rowData);
-    resolvedRows = happinessCheck(rowChebtech,[],sum(rowValues.',2), vscale);
+    resolvedRows = happinessCheck(rowChebtech, [], sum(rowValues.', 2), colData);
     isHappy = resolvedRows & resolvedCols;
     
     % If the function is zero, set midpoint of domain as pivot location.
@@ -423,6 +424,16 @@ while ( ~isHappy && ~failure )
     end
     
 end
+
+% Simplifying rows and columns after they are happy.
+g = simplify( g ); 
+
+% Reconstruct using simplified coefficients to guarantee endpoint values are
+% correct.
+g.cols = chebfun(get(g.cols, 'coeffs'), domain(g.cols), 'coeffs', ...
+                  'tech', @tech.make);
+g.rows = chebfun(get(g.rows, 'coeffs'), domain(g.rows), 'coeffs', ...
+                  'tech', @tech.make);
 
 % Fix the rank, if in nonadaptive mode.
 g = fixTheRank( g , fixedRank );

@@ -36,7 +36,7 @@ f = testclass.make(@(x) exp(sin(2*pi*x)) + exp(cos(3*pi*x)));
 g = simplify(f, simptol);
 pass(3) = abs(g.coeffs(end)) ~= 0;
 pass(4) = length(g) < length(f);
-pass(5) = norm(feval(f, x) - feval(g, x), inf) < 1e1*simptol*f.vscale;
+pass(5) = norm(feval(f, x) - feval(g, x), inf) < 1e1*simptol*vscale(f);
 
 %%
 % Lengths of simplifications should be invariant under scaling:
@@ -57,7 +57,7 @@ g = simplify(f, simptol);
 pass(8) = any(abs(g.coeffs(1, :)) ~= 0);
 pass(9) = length(g) < length(f);
 pass(10) = all(norm(feval(f, x) - feval(g, x), inf) < ...
-    10*max(simptol.*f.vscale));
+    10*max(simptol.*vscale(f)));
 
 %%
 % Try a contrived example which will return a length 1 trigtech.

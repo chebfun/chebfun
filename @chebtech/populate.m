@@ -1,11 +1,10 @@
-function [f, values] = populate(f, op, vscl, hscale, pref)
+function [f, values] = populate(f, op, data, pref)
 %POPULATE   Populate a CHEBTECH class with values.
 %   F = F.POPULATE(OP) returns a CHEBTECH representation populated with values
-%   VALUES of the function OP evaluated on a Chebyshev grid. The fields
-%   F.ISHAPPY and F.EPSLEVEL indicate whether the representation is deemed
-%   'happy' and to what accuracy (see HAPPINESSCHECK.m). Essentially this means
-%   that such an interpolant is a sufficiently accurate (i.e., to a relative
-%   accuracy of F.EPSLEVEL) approximation to OP. If F.ISHAPPY is FALSE, then
+%   VALUES of the function OP evaluated on a Chebyshev grid. The field
+%   F.ISHAPPY indicates whether the representation is deemed 'happy' (see
+%   HAPPINESSCHECK.m). Essentially this means that such an interpolant is a
+%   sufficiently accurate approximation to OP.  If F.ISHAPPY is FALSE, then
 %   POPULATE was not able to obtain a happy result.
 %
 %   OP should be vectorized (i.e., accept a vector input), and output a vector
@@ -48,8 +47,8 @@ function [f, values] = populate(f, op, vscl, hscale, pref)
 %   | [compute COEFFS] COEFFS = VALS2COEFFS(VALUES)
 %   |        |
 %   |        v
-%    -<--[ISHAPPY?]    [ISHAPPY, EPSLEVEL, CUTOFF] = PREF.HAPPINESSCHECK(F, OP,
-%     no     |         PREF). Default calls CLASSICCHECK() and SAMPLETEST().
+%    -<--[ISHAPPY?]    [ISHAPPY, CUTOFF] = PREF.HAPPINESSCHECK(F, OP, PREF).
+%     no     |         Default calls STANDARDCHECK() and SAMPLETEST().
 %            | yes     
 %            v
 %      [alias COEFFS]  COEFFS = ALIAS(COEFFS, CUTOFF)
@@ -58,19 +57,6 @@ function [f, values] = populate(f, op, vscl, hscale, pref)
 %     [compute VALUES] VALUES = COEFFS2VALS(COEFFS)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Parse inputs:
-if ( (nargin < 3) || isempty(vscl) )
-    vscl = 0;
-end
-if ( (nargin < 4) || isempty(hscale) )
-    f.hscale = 1;
-else
-    f.hscale = hscale;
-end
-if ( nargin < 5 )
-    pref = chebtech.techPref();
-end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% Non-adaptive construction. %%%%%%%%%%%%%%%%%%%%%%%%%%
 % Values (and possibly coefficients) have been given.
@@ -91,12 +77,6 @@ if ( isnumeric(op) || iscell(op) )
 
     % We're always happy if given discrete data:
     f.ishappy = true;
-    
-    % Scale the epslevel relative to the largest column:
-    vscl = f.vscale;
-    f.epslevel = 10*eps(max(vscl));
-    vscl(vscl <= f.epslevel) = 1;
-    f.epslevel = f.epslevel./vscl;
 
     return
 end
@@ -119,7 +99,7 @@ while ( 1 )
     % Update vertical scale: (Only include sampled finite values)
     valuesTemp = values;
     valuesTemp(~isfinite(values)) = 0;
-    vscl = max(vscl, max(abs(valuesTemp)));
+    data.vscale = max(data.vscale, max(abs(valuesTemp)));
     
     % Extrapolate out NaNs:
     %
@@ -133,11 +113,11 @@ while ( 1 )
     
     % Check for happiness:
     f.coeffs = coeffs;
-    [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, vscl, pref);
+    [ishappy, cutoff] = happinessCheck(f, op, values, data, pref);
         
     if ( ishappy ) % We're happy! :)
-        % Alias the discarded coefficients:
-        coeffs = f.alias(coeffs, cutoff);  
+        % disard unwanted coefficients
+        f = prolong(f,cutoff);  
         break
     end
     
@@ -147,23 +127,8 @@ while ( 1 )
 
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Update the vscale. %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Compute the 'true' vscale (as defined in CHEBTECH classdef):
-vsclOut = max(abs(values), [], 1);
-% Update vertical scale one last time:
-vsclGlobal = max(vscl, vsclOut);
-
-% Adjust the epslevel appropriately:
-ind = vsclOut < epslevel;
-vsclOut(ind) = epslevel(ind);
-ind = vsclGlobal < epslevel;
-vsclGlobal(ind) = epslevel(ind);
-epslevel = epslevel.*vsclGlobal./vsclOut;
-
 %%%%%%%%%%%%%%%%%%%%%%%%%% Assign to CHEBTECH object. %%%%%%%%%%%%%%%%%%%%%%%%%%
-f.coeffs = coeffs;
 f.ishappy = ishappy;
-f.epslevel = eps + 0*epslevel;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Ouput. %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -171,14 +136,5 @@ if ( ishappy )
     % We're done, and can return.
     return
 end
-
-% [TODO]: Further decision needs to be made for whether the following lines
-% should be deleted permanently. Currently they are commented out by KX.
-
-% Check for Infs: (if not happy)
-% if ( any(isinf(vscale)) )                       
-%     error('CHEBFUN:CHEBTECH:populate:infBlowup', ...
-%      'Function returned Inf when evaluated.')
-% end
 
 end

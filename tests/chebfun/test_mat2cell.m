@@ -33,25 +33,25 @@ for k = 1:2
     pass(k,2) = isequal(size(C), [1 3]) && (size(C{1}, 2) == 1) && ...
         (size(C{2}, 2) == 1) && (size(C{3}, 2) == 1);
     pass(k,3) = norm(feval(C{1}, xr) - feval(f, xr), inf) < ...
-        10*vscale(C{1})*epslevel(C{1});
+        10*vscale(C{1})*eps;
     pass(k,4) = norm(feval(C{2}, xr) - feval(g, xr), inf) < ...
-        10*vscale(C{2})*epslevel(C{2});
+        10*vscale(C{2})*eps;
     pass(k,5) = norm(feval(C{3}, xr) - feval(h, xr), inf) < ...
-        10*vscale(C{3})*epslevel(C{3});
+        10*vscale(C{3})*eps;
 
     C = mat2cell(F, [2 1]);
     pass(k,6) = isequal(size(C), [1 2]) && (size(C{1}, 2) == 2) && ...
         (size(C{2}, 2) == 1);
     err = feval(C{1}, xr) - feval(fg, xr);
-    pass(k,7) = norm(err(:), inf) < 10*vscale(C{1})*epslevel(C{1}) && ...
-        norm(feval(C{2}, xr) - feval(h, xr), inf) < 10*vscale(C{2})*epslevel(C{2});
+    pass(k,7) = norm(err(:), inf) < 10*vscale(C{1})*eps && ...
+        norm(feval(C{2}, xr) - feval(h, xr), inf) < 10*vscale(C{2})*eps;
 
     C = mat2cell(F, 1, [2 1]);
     pass(k,8) = isequal(size(C), [1 2]) && (size(C{1}, 2) == 2) && ...
         (size(C{2}, 2) == 1);
     err = feval(C{1}, xr) - feval(fg, xr);
-    pass(k,9) = norm(err(:), inf) < 10*vscale(C{1})*epslevel(C{1}) && ...
-        norm(feval(C{2}, xr) - feval(h, xr), inf) < 10*vscale(C{2})*epslevel(C{2});
+    pass(k,9) = norm(err(:), inf) < 10*vscale(C{1})*eps && ...
+        norm(feval(C{2}, xr) - feval(h, xr), inf) < 10*vscale(C{2})*eps;
 
     % Check that sizes come out right for row chebfuns.
     Ft = F.';
@@ -139,7 +139,7 @@ for k = 1:2
     err2 = F2Vals - F2Exact;
     
     pass(k,18) = norm([err1; err2(:)], inf) < ...
-        1e2*max(get(f,'epslevel').*get(f,'vscale'));
+        1e2*max(eps*get(f,'vscale'));
     
 end
 

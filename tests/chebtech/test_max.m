@@ -32,8 +32,8 @@ for n = 1:2
     [y, x] = max(f);
     exact_max = [1 airy(-1) 0.75^3*cosh(1)];
     fx = [sin(10*x(1)) airy(x(2)) (x(3) - 0.25).^3.*cosh(x(3))];
-    pass(n, 6) = (all(abs(y - exact_max) < 10*f.epslevel) && ...
-               all(abs(fx - exact_max) < 10*f.epslevel));
+    pass(n, 6) = (all(abs(y - exact_max) < 10*eps) && ...
+               all(abs(fx - exact_max) < 10*eps));
 
     %%
     % Test for complex-valued chebtech objects.
@@ -47,7 +47,7 @@ for n = 1:2
     [y, x] = max(f);
     exact_max = [-10.017874927409903i 3.626860407847019];
     fx = [sin(z(x(1))) sinh(z(x(2)))];
-    tol = 10*max(f.vscale, f.epslevel);
+    tol = 10*max(vscale(f), eps);
     pass(n, 8) = (all(abs(y - exact_max) < tol) && ...
                   all(abs(fx - exact_max) < tol));
 end
@@ -60,7 +60,7 @@ function result = test_spotcheck_max(testclass, fun_op, exact_max, pref)
 f = testclass.make(fun_op,[], pref);
 [y, x] = max(f);
 fx = fun_op(x);
-result = (all(abs(y - exact_max) < 10*f.vscale.*f.epslevel) && ...
-          all(abs(fx - exact_max) < 10*f.vscale.*f.epslevel));
+result = (all(abs(y - exact_max) < 10*vscale(f)*eps) && ...
+          all(abs(fx - exact_max) < 10*vscale(f)*eps));
 
 end

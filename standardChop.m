@@ -4,9 +4,8 @@ function cutoff = standardChop(coeffs, tol)
 % flexibility.  This code is used in all parts of Chebfun that make chopping
 % decisions, including chebfun construction (CHEBTECH, TRIGTECH), solution of
 % ODE BVPs (SOLVEBVP), solution of ODE IVPs (ODESOL), simplification of chebfuns
-% (SIMPLIFY), and Chebfun2.  Since this code is central to the functionality of
-% Chebfun, it is also our aim that it should have exceptionally thorough and
-% carefully written explanations in the comments.
+% (SIMPLIFY), and Chebfun2.  See J. L. Aurentz and L. N. Trefethen, "Chopping a
+% Chebyshev series", arXiv, December 2015.
 %
 % Input:
 %
@@ -36,21 +35,19 @@ function cutoff = standardChop(coeffs, tol)
 % standardChop(coeffs + 1e-10*random) % = 50
 % standardChop(coeffs + 1e-10*random, 1e-10) % = 10
  
-% Jared Aurentz and Nick Trefethen, 2 July 2015.
+% Jared Aurentz and Nick Trefethen, July 2015.
 %
 % Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % STANDARDCHOP normally chops COEFFS at a point beyond which it is smaller than
-% TOL^(2/3).  It will never be chopped unless it is of length at least 17 and
+% TOL^(2/3).  COEFFS will never be chopped unless it is of length at least 17 and
 % falls at least below TOL^(1/3).  It will always be chopped if it has a long
 % enough final segment below TOL, and the final entry COEFFS(CUTOFF) will never
 % be smaller than TOL^(7/6).  All these statements are relative to
 % MAX(ABS(COEFFS)) and assume CUTOFF > 1.  These parameters result from
-% extensive experimentation as described in Chebfun discussion documents
-% 14-constructorOct30_2014.pdf, 20-epslevel_proposal.pdf,
-% 21-epslevel-progress.pdf, 23-standardChopMemo.pdf and
-% 26-standardChopNotes.pdf.  They are not derived from first principles and
+% extensive experimentation involving functions such as those presented in
+% the paper cited above.  They are not derived from first principles and
 % there is no claim that they are optimal.
 
 % Set default if fewer than 2 inputs are supplied: 
@@ -97,7 +94,7 @@ envelope = m/m(1);
 % vector, but the precise chopping point CUTOFF still remains to be determined
 % in Step 3.
 
-for j = 1:n
+for j = 2:n
     j2 = round(1.25*j + 5); 
     if ( j2 > n )
         % there is no plateau: exit
@@ -107,7 +104,7 @@ for j = 1:n
     e2 = envelope(j2);
     r = 3*(1 - log(e1)/log(tol));
     plateau = (e1 == 0) | (e2/e1 > r);
-    if plateau
+    if ( plateau )
         % a plateau has been found: go to Step 3
         plateauPoint = j - 1;
         break
@@ -125,7 +122,7 @@ end
 % CUTOFF should be smaller than PLATEAUPOINT if the last few coefficients made
 % negligible improvement but just managed to bring the vector ENVELOPE below the
 % level TOL^(2/3), above which no plateau will ever be detected.  This part of
-% the code is important to avoiding situations where a coefficient vector is
+% the code is important for avoiding situations where a coefficient vector is
 % chopped at a point that looks "obviously wrong" with PLOTCOEFFS.
 %
 % CUTOFF should be larger than PLATEAUPOINT if, although a plateau has been

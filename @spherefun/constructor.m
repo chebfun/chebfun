@@ -1,18 +1,30 @@
 function g = constructor( g, op, dom, varargin )
 %CONSTRUCTOR   The main SPHEREFUN constructor.
 %
+% This code is when functions on the surface of the sphere are represented
+% as SPHEREFUN objects. A SPHEREFUN object is a low rank representation and
+% expresses a function as a sum of rank-0 or 1 outerproduct of univariate
+% functions in spherical coordinates.
+%
 % The algorithm for constructing a SPHEREFUN comes in two phases:
 %
 % PHASE 1: The first phase attempts to determine the numerical rank of the
-% function by performing Gaussian elimination with special 2x2 pivoting matrices 
-% on a tensor grid of sample values. GE is perform until the sample matrix
-% is approximated.  At the end of this stage we have candidate pivot locations
-% and pivot elements.
+% function by performing Gaussian elimination with special 2x2 pivoting
+% matrices on a tensor grid of sample values. GE is perform until the
+% sample matrix is approximated.  At the end of this stage we have
+% candidate pivot locations and pivot elements.
 %
-% PHASE 2: The second phase attempts to resolve the corresponding column and row
-% slices by sampling along the slices and performing GE (pivoting at 2x2 matrices) 
-% on the skeleton.   Sampling along each slice is increased until the Fourier 
-% coefficients of the slice fall below machine precision.
+% PHASE 2: The second phase attempts to resolve the corresponding column
+% and row slices by sampling along the slices and performing GE (pivoting
+% at 2x2 matrices) on the skeleton.   Sampling along each slice is
+% increased until the Fourier coefficients of the slice fall below machine
+% precision.
+%
+% The algorithm is fully described in:
+%  A. Townsend, H. Wilber, and G. Wright, Computing with function on
+%  spherical and polar geometries I. The sphere, submitted, 2015. 
+%
+% See also SPHEREFUN.
 
 if ( nargin == 0 )          % SPHEREFUN( )
     return
@@ -23,26 +35,23 @@ if ( isa(op, 'spherefun') )  % SPHEREFUN( SPHEREFUN )
     return
 end
 
-if ( isa(op, 'chebfun2') )  % SPHEREFUN( CHEBFUN2 ) 
-    g = spherefun; 
-    g.cols = op.cols; 
-    g.rows = op.rows; 
-    g.domain = op.domain; 
-    g.pivotLocations = op.pivotLocations;
-    g.pivotValues = op.pivotValues; 
-    return
-end
-
 % If domain is empty take it to be co-latitude.
-if ( nargin < 3 || isempty(dom) )
+if ( nargin < 3 || isempty( dom ) )
+     dom = [-pi pi 0 pi]; 
+elseif ( numel( dom ) ~= 4 )
+    error('CHEBFUN:SPHEREFUN:CONSTRUCTOR:domain',... 
+          ['A domain is rarely given for spherefun, ' ... 
+          'but it needs to be given by four corner values' 
+          'in intrinstic coordinates.'])
+elseif ( numel( dom ) == 4 && norm( dom(:)' - [-pi pi 0 pi] ) >0 )
+    error('CHEBFUN:SPHEREFUN:CONSTRUCTOR:domain',...
+        'The domain of a spherefun is always [-pi pi]x[0 pi] in intrinstic coordinates');
+else
     dom = [-pi pi 0 pi];
 end
 
-if ~isempty(varargin)
-    alpha = varargin{1};
-else
-    alpha = 2;
-end
+% Default value for coupling parameter
+alpha = 100;
 
 % TODO: Should we allow any other domains than latitude and co-latitude?
 
@@ -64,12 +73,17 @@ if ( isa(op, 'double') )    % SPHEREFUN( DOUBLE )
     F = op;
     [n, m] = size(F);
     
+    if mod(m,2) ~= 0
+        error('SPHEREFUN:CONSTRUCTOR:VALUES', ... 
+         'When constructing from values the number of columns must be even.');
+    end
+    
     % Flip F arround since Phase I operates on the doubled-up portion of
     % the sphere [-pi pi] x [-pi, 0] or [-pi pi] x [-3*pi/2 -pi/2]
     F = [F(n:-1:1,m/2+1:m) F(n:-1:1,1:m/2)];
     
     % TODO: Add a way to loosen tolerances for this type of construction.
-    tol = GetTol(F, 2*pi/m, pi/(n-1), dom, pseudoLevel);
+    [tol,vscale] = GetTol(F, 2*pi/m, pi/(n-1), dom, pseudoLevel);
     [pivotIndices, pivotArray, removePoles, happyRank, cols, pivots, ...
         rows, idxPlus, idxMinus ] = PhaseOne( F, tol, alpha, 0 );
     [x, y] = getPoints( n, m, dom );
@@ -79,6 +93,13 @@ else  % SPHEREFUN( FUNCTION )
     % If f is defined in terms of x,y,z; then convert it to
     % (longitude,latitude).
     h = redefine_function_handle( op );
+    
+    % Check for op = @(lam,th) const
+    [ll,tt] = meshgrid(dom(1:2),dom(3:4));
+    if numel( h(ll,tt) ) == 1
+        h1 = h;
+        h = @(ll,tt) h1(ll,tt) + 0*ll;
+    end
 
     % PHASE ONE  
     % Sample at square grids, determine the numerical rank of the
@@ -96,7 +117,16 @@ else  % SPHEREFUN( FUNCTION )
         % vectorization like chebfun2.
         F = evaluate(h, n, n, dom);
 
-        tol = GetTol(F, pi/n, pi/n, dom, pseudoLevel);
+        [tol,vscale] = GetTol(F, pi/n, pi/n, dom, pseudoLevel);
+        
+        % Does the function blow up or evaluate to NaN?:
+        if ( isinf(vscale) )
+            error('CHEBFUN:SPHEREFUN:constructor:inf', ...
+                'Function returned INF when evaluated');
+        elseif ( any(isnan(F(:)) ) )
+            error('CHEBFUN:SPHEREFUN:constructor:nan', ...
+                'Function returned NaN when evaluated');
+        end
 
         pivotIndices2 = pivotIndices;
         pivotArray2 = pivotArray;
@@ -126,7 +156,7 @@ else  % SPHEREFUN( FUNCTION )
     % PHASE TWO 
     % Find the appropriate discretizations in the columns and rows. 
     [cols, pivots, rows, pivotLocations, idxPlus, idxMinus] = ...
-        PhaseTwo( h, pivotIndices, pivotArray, n, dom, tol, maxSample, removePoles );
+        PhaseTwo( h, pivotIndices, pivotArray, n, dom, vscale, maxSample, removePoles );
 end
 
 g.cols = chebfun( cols, dom(3:4)-[pi 0], 'trig');
@@ -136,12 +166,19 @@ g.cols = chebfun( cols, dom(3:4)-[pi 0], 'trig');
 % c(n/2+1,:) = c(n/2+1,:)-offset;
 % g.cols.funs{1}.onefun.coeffs = c;
 g.rows = chebfun( rows, dom(1:2), 'trig');
+if all(pivots) == 0
+    pivots = inf;
+end
 g.pivotValues = pivots;
 g.domain = dom;
 g.idxPlus = idxPlus;
 g.idxMinus = idxMinus;
 g.nonZeroPoles = removePoles;
 g.pivotLocations = adjustPivotLocations(pivotLocations, pivotArray, iscolat(g) ); 
+
+% Simplifying rows and columns after they are happy.
+g = simplify( g );
+
 end
 
 function [pivotIndices, pivotArray, removePole, ihappy, cols, pivots, ...
@@ -156,6 +193,28 @@ width = minSize/factor;
 pivotIndices = []; pivotArray = [];
 ihappy = 0;  % Assume we are not happy
 
+% If given a 1xn matrix, then this only gives us a function samples at the 
+% two poles, which is simple to deal with.
+if ( m <= 1 ) 
+    error('CHEBFUN:SPHEREFUN:constructor:poleSamples',...
+        ['Matrix of function samples contains < 2 rows. ',...
+        'This is not enough information to reconstruct the function. Please increase samples in the latitudinal direction.'])
+end
+
+% Only information at the poles is given.
+if ( m == 2) 
+    cols = F(:,1);
+    rows = F(1,:).';
+    idxPlus = 1;
+    idxMinus = [];
+    pivotArray = [1 0];
+    pivotIndices = [1 1];
+    removePole = false;
+    pivots = 1;
+    ihappy = 1;
+    return;
+end
+
 B = F(:,1:n/2);    %% (1,1) Block of F.
 C = F(:,n/2+1:n);  % (1,2) block of F.
 Fp = 0.5*(B + C);
@@ -164,8 +223,16 @@ Fm = 0.5*(B - C);
 %
 % Deal with the poles by removing them from Fp.
 %
-pole1 = mean(Fp(1,:));     % Take the value at the poles to be 
-pole2 = mean(Fp(m,:));     % the mean of all the samples at the poles.
+
+% Check if the poles are numerically constant and get the value.
+[pole1,constValue1] = checkPole(Fp(1,:),tol);
+[pole2,constValue2] = checkPole(Fp(m,:),tol);
+
+if ~(constValue1 || constValue1)
+    warning('CHEBFUN:SPHEREFUN:constructor:constPoles',...
+        ['Results may be inaccurate as the function may not be constant '...
+         'at either the north or south poles.']);
+end
 
 colsPlus = []; rowsPlus = []; kplus = 0;  idxPlus = [];
 colsMinus = []; rowsMinus = []; kminus = 0; idxMinus = [];
@@ -177,17 +244,23 @@ rankCount = 0;    % keep track of the rank of the approximation.
 removePole = false;
 if abs(pole1) > tol || abs(pole2) > tol
     % Determine the column with maximum inf-norm
-    [ignored, poleCol] = max(max(abs(Fp),[],1));
+    [rowVal, poleCol] = max(max(abs(Fp),[],1));
     % Zero out the pole using the poleCol.
-    rowPole = ones(1,n/2);
+    rowPole = rowVal*ones(1,n/2);
     colPole = Fp(:, poleCol);
-    Fp = Fp - colPole*rowPole;
-%     kplus = kplus + 1;
+    Fp = Fp - colPole*(rowPole/rowVal);
     % Do we need to keep track of the pivot locations?
     removePole = true;
     % Update the rank count
     rankCount = rankCount + 1;
-%     idxPlus(kplus) = rankCount;
+end
+
+% If given a 1xn matrix, then this only gives us a function samples at the 
+% two poles, which is simple to deal with.
+if ( m <= 1 ) 
+    error('CHEBFUN:SPHEREFUN:constructor:poleSamples',...
+        ['Matrix of function samples contains < 2 rows. ',...
+        'This is not enough information to reconstruct the function. Please increase samples in the latitudinal direction.'])
 end
 
 % Remove the rows corresponding to the poles before determining the
@@ -201,10 +274,14 @@ Fm = Fm( 2:m-1, : );
 
 % Zero function
 if ( maxp == 0 ) && ( maxm == 0 ) && ~( removePole )
-    colsPlus = 0;
-    rowsPlus = 0;
+    m = 3; n = 3;
+    cols = zeros( 2*m-2, 1 );
+    rows = zeros( n, 1 );
+    idxPlus = 1;
+    idxMinus = [];
     pivotArray = [0 0];
     pivotIndices = [1 1];
+    pivots = inf;
     ihappy = 1;
     return;
 end
@@ -319,7 +396,7 @@ if ( nargout > 4 )
     if removePole
         cols(:,1) = [colPole;flipud(colPole(2:m-1))];
         rows(:,1) = [rowPole rowPole];
-        pivots(1) = 1;
+        pivots(1) = rowVal;
     end
 
 end
@@ -334,13 +411,13 @@ end
 % the pivot matrix.
 if removePole
     pivotIndices = [ 1 poleCol; pivotIndices ];
-    pivotArray = [[1 0] ; pivotArray];
+    pivotArray = [[rowVal 0] ; pivotArray];
     idxPlus = [1 idxPlus];
 end
 
 end
 
-function [cols, pivots, rows, pivotLocations, idxPlus, idxMinus] = PhaseTwo( h, pivotIndices, pivotArray, n, dom, tol, maxSample, removePoles )
+function [cols, pivots, rows, pivotLocations, idxPlus, idxMinus] = PhaseTwo( h, pivotIndices, pivotArray, n, dom, vscale, maxSample, removePoles )
 
 % alpha = spherefun.alpha; % get growth rate factor.
 happy_columns = 0;   % Not happy, until proven otherwise.
@@ -400,7 +477,7 @@ while ( ~(happy_columns && happy_rows) && ~failure)
     % max norm (repeated) with rows of all ones in the elimination
     % algorithm.
     if removePoles
-        newRowsPlus(1,:) = 1;
+        newRowsPlus(1,:) = pivotArray(1,1);
     end
     
     
@@ -491,7 +568,6 @@ while ( ~(happy_columns && happy_rows) && ~failure)
         end
     end    
     % Happiness check for columns:
-    % TODO: Make this more similar to hapiness check in trigtech.
     
     if removePoles
         colsPlus(1,2:end) = 0;
@@ -508,29 +584,23 @@ while ( ~(happy_columns && happy_rows) && ~failure)
 
     % Double up the columns.
     temp1 = sum([colsPlus colsMinus],2); temp2 = sum([colsPlus -colsMinus],2);
-    col_coeffs = trigtech.vals2coeffs( [temp1;temp2(m:-1:2)] );
 
-    % Length of tail to test.
-    testLength = min(m, max(3, round((m-1)/8)));
-    tail = col_coeffs(1:testLength);
-
-    if ( all( abs( tail ) <= 1e1*tol ) )
-        happy_columns = 1;
-    end
+    colData.hscale = norm(dom(3:4), inf);
+    colData.vscale = vscale;
+    colValues = [temp1;temp2(m:-1:2)];
+    colTrigtech = trigtech.make(colValues, colData);
+    happy_columns = happinessCheck(colTrigtech, [], colValues, colData);
     
     % Happiness check for rows:
-    % TODO: Make this more similar to hapiness check in trigtech.
 
     % Double up the rows.
     temp1 = sum([rowsPlus; rowsMinus],1); temp2 = sum([rowsPlus; -rowsMinus],1);
-    row_coeffs = trigtech.vals2coeffs( [temp1 temp2].' );
 
-    % Length of tail to test.
-    testLength = min(n, max(3, round((n-1)/8)));
-    tail = row_coeffs(1:testLength);
-    if ( all( abs( tail ) <= 1e1*tol ) )
-        happy_rows = 1; 
-    end
+    rowValues = [temp1 temp2].';
+    rowData.hscale = norm(dom(1:2), inf);
+    rowData.vscale = vscale;
+    rowTrigtech = trigtech.make(rowValues, rowData);
+    happy_rows = happinessCheck(rowTrigtech, [], rowValues, rowData);
     
     % Adaptive:
     if( ~happy_columns )
@@ -546,7 +616,13 @@ while ( ~(happy_columns && happy_rows) && ~failure)
     
     if ( max(m, n) >= maxSample ) 
         warning('SPHEREFUN:constructor:notResolved', ...
-        'Unresolved with maximum length: %u.', maxSample);
+        'Unresolved with maximum length: %u.', ...
+        maxSample + mod(maxSample+1,2) );
+        % Note the reason for adding one to maxSample when it's even: Since
+        % we call simplify after construction the columns will always be an
+        % odd length, but maxSample should always be even since we resample
+        % in powers of 2.  The warning message needs to have the right
+        % value in the case that maxSample is even.
         failure = true;
     end 
 end
@@ -632,7 +708,7 @@ end
 
 end
 
-function tol = GetTol(F, hx, hy, dom, pseudoLevel)
+function [tol,vscale] = GetTol(F, hx, hy, dom, pseudoLevel)
 % GETTOL     Calculate a tolerance for the spherefun constructor.
 %
 %  This is the 2D analogue of the tolerance employed in the trigtech
@@ -683,6 +759,25 @@ for j=1:size(pivLoc,1)
         pivLocNew(count,:) = pivLoc(j,:);
         count = count + 1;
     end
+end
+
+end
+
+% Check that the values at the pole are constant.
+function [pole,constVal] = checkPole(val,tol)
+
+% Take the mean of the values that are at the pole.
+pole = mean(val);
+% Compute there standard deviation
+stddev = std(val);
+
+% If the standard deviation does not exceed the 100*tolearnce then the pole
+% is "constant".
+% TODO: Get a better feel for the tolerance check.
+if stddev <= 1e8*tol || stddev < eps
+    constVal = 1;
+else
+    constVal = 0;
 end
 
 end

@@ -33,21 +33,21 @@ for n = 1:2
                 84.0390907769381901578795; 87.1806298436411536512617
                 90.3221726372104800557177; 93.4637187819447741711905
                 96.6052679509962687781216; 99.7468198586805964702799 ];
-    pass(n, 1) = norm(r-exact,Inf) < 1e1*length(f)*f.epslevel;
+    pass(n, 1) = norm(r-exact,Inf) < 1e1*length(f)*eps;
      
 
     %% Test roots of an oscillatory function:
     k = 500;
     f = testclass.make(@(x) sin(pi*k*x), [], pref);
     r = roots(f);
-    pass(n, 2) = norm(r-(-k:k)'/k, inf) < length(f)*f.epslevel;
+    pass(n, 2) = norm(r-(-k:k)'/k, inf) < length(f)*eps;
 
     %% Test a perturbed polynomial:
     f = testclass.make( @(x) (x-.1).*(x+.9).*x.*(x-.9) + 1e-14*x.^5, ...
         [], pref);
     r = roots(f);
     pass(n, 3) = length(r) == 4 && norm(feval(f, r), inf) < ...
-        1e2*length(f)*f.epslevel;
+        1e2*length(f)*eps;
     
     
     %% Test a some simple polynomials:
@@ -57,42 +57,43 @@ for n = 1:2
 
     f = testclass.make([1 ; 0 ; 1]);
     r = roots(f);
-    pass(n, 5) = numel(r) == 2 && (norm(r, inf) < f.epslevel);
+    pass(n, 5) = numel(r) == 2 && (norm(r, inf) < eps);
 
     %% Test some complex roots:
     f = testclass.make(@(x) 1 + 25*x.^2, [], pref);
     r = roots(f, 'complex', 1);
 
-    pass(n, 6) = norm( r - [1i ; -1i]/5, inf) < 10*f.epslevel;
+    pass(n, 6) = norm( r - [1i ; -1i]/5, inf) < 10*eps;
         
 
     f = testclass.make(@(x) (1 + 25*x.^2).*exp(x), [], pref);
     r = roots(f, 'complex', 1, 'prune', 1);
 
-    pass(n, 7) = norm( r - [1i ; -1i]/5, inf) < 10*length(f)*f.epslevel;
+    pass(n, 7) = norm( r - [1i ; -1i]/5, inf) < 10*length(f)*eps;
 
     f = testclass.make(@(x) sin(100*pi*x));
     r1 = roots(f, 'complex', 1, 'recurse', 0);
     r2 = roots(f, 'complex', 1);
-    pass(n, 8) = numel(r1) == 201 & numel(r2) >= 214;
+
+    pass(n, 8) = numel(r1) == 201 && numel(r2) >= 213;
 
     %% Test an array-valued function:
     f = testclass.make(@(x) [sin(pi*x), cos(pi*x)], [], pref);
     r = roots(f);
     r2 = [-1 0 1 -.5 .5 NaN].';
-    pass(n, 9) = all( r(:) - r2 < 10*length(f)*max(f.epslevel) | isnan(r2) );
+    pass(n, 9) = all( r(:) - r2 < 10*length(f)*eps | isnan(r2) );
 
     % Adding test for 'qz' flag: 
     f = testclass.make(@(x) 1e-10*x.^3 + x.^2 - 1e-12, [], pref); 
     r = roots(f, 'qz', 1);
     pass(n, 10) = ~isempty( r );
-    pass(n, 11) = norm(feval(f, r), inf) < 10*f.epslevel;
+    pass(n, 11) = norm(feval(f, r), inf) < 10*eps;
         
     
     % Add a rootfinding test for low degree non-even functions: 
     f = testclass.make(@(x) (x-.5).*(x-1/3), [], pref); 
     r = roots(f, 'qz', 1);
-    pass(n, 12) = norm(feval(f, r), inf) < f.epslevel; 
+    pass(n, 12) = norm(feval(f, r), inf) < eps; 
 end
 
 end

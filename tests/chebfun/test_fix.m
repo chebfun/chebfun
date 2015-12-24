@@ -17,30 +17,30 @@ pass(1) = isempty(fix(chebfun()));
 f = chebfun(@(x) 2*sin(x), [-1 -0.5 0.5 1], pref);
 g = fix(f);
 g_exact = @(x) fix(2*sin(x));
-pass(2) = (norm(feval(g, x) - g_exact(x), inf) <= 10*vscale(g)*epslevel(g));
+pass(2) = (norm(feval(g, x) - g_exact(x), inf) <= 10*vscale(g)*eps);
 
 f = chebfun(@(x) exp(x), [-1 -0.5 0.5 1], pref);
 g = fix(f);
 g_exact = @(x) fix(exp(x));
-pass(3) = (norm(feval(g, x) - g_exact(x), inf) <= 10*vscale(g)*epslevel(g));
+pass(3) = (norm(feval(g, x) - g_exact(x), inf) <= 10*vscale(g)*eps);
 
 % Check complex-valued functions.
 f2 = 1i*f;
 g = fix(f2);
 g_exact = @(x) fix(1i*exp(x));
-pass(4) = (norm(feval(g, x) - g_exact(x), inf) <= 10*vscale(g)*epslevel(g));
+pass(4) = (norm(feval(g, x) - g_exact(x), inf) <= 10*vscale(g)*eps);
 
 f3 = f + 1i*f;
 g = fix(f3);
 g_exact = @(x) fix(exp(x) + 1i*exp(x));
-pass(5) = (norm(feval(g, x) - g_exact(x), inf) <= 10*vscale(g)*epslevel(g));
+pass(5) = (norm(feval(g, x) - g_exact(x), inf) <= 10*vscale(g)*eps);
 
 % Check array-valued function.
 f = chebfun(@(x) [2*sin(x) exp(x)], [-1 -0.5 0.5 1], pref);
 g = fix(f);
 g_exact = @(x) fix([2*sin(x) exp(x)]);
 err = feval(g, x) - g_exact(x);
-pass(6) = (norm(err(:), inf) <= 10*vscale(g)*epslevel(g));
+pass(6) = (norm(err(:), inf) <= 10*vscale(g)*eps);
 
 % Check error conditions.
 % [TODO]: what to do here
@@ -70,6 +70,6 @@ fVals = feval(f, x);
 opExact = @(x) fix(op(x));
 fExact = opExact(x);
 err = fVals - fExact;
-pass(7) = norm(err, inf) < epslevel(f)*vscale(f);
+pass(7) = norm(err, inf) < eps*vscale(f);
 
 end

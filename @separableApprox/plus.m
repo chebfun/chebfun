@@ -93,13 +93,12 @@ V = conj( V );
 s = diag(S);
 
 % Compress the format if possible.
-% [TODO]: What should EPS be in the tolerance check below? Can we base it on
-% EPSLEVELS?
+% [TODO]: What should EPS be in the tolerance check below?
 vf = vscale(f); 
 vg = vscale(g);
-vscl = max(vf, vg); 
-% Remove singular values that fall below eps*vscale: 
-idx = find( s > eps * vscl, 1, 'last');
+vscl = vf + vg; 
+% Remove singular values that fall below 2*eps*vscale: 
+idx = find( s > 2 * eps * vscl, 1, 'last');
 if ( isempty(idx) )
     % Return 0 separableApprox
     h = 0*f;

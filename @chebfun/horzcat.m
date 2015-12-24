@@ -85,7 +85,7 @@ differentBreakpoints = false;
 if ( any(diff(cellfun(@(d) length(d), allDomainsCell))) )
     differentBreakpoints = true;
 else
-    tol = max(cellfun(@(f) hscale(f).*epslevel(f), varargin));
+    tol = max(cellfun(@(f) hscale(f)*eps, varargin));
     if ( any(cellfun(@(d) any(d - domain1) > tol, allDomainsCell)) )
         differentBreakpoints = true;
     end

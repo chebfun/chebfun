@@ -5,14 +5,16 @@ function pass = test_linearizationDimensions
 %% Example 1
 L = chebop(@(x,u,v) u + v);
 LL = linop(L); LLB = LL.blocks;
-% Should expect both blocks to be chebfuns.
-pass(1) = isa(LLB{1}, 'chebfun') && isa(LLB{2}, 'chebfun');
+% Should expect both blocks to be OPERARTORBLOCK, since no variable gets
+% differentiated or integrated.
+pass(1) = isa(LLB{1}, 'operatorBlock') && isa(LLB{2}, 'operatorBlock');
 
 %% Example 2:
 L = chebop(@(x,u) u{1} + u{2});
 LL = linop(L); LLB = LL.blocks;
-% Should expect both blocks to be chebfuns
-pass(2) = isa(LLB{1}, 'chebfun') && isa(LLB{2}, 'chebfun');
+% Should expect both blocks to be OPERARTORBLOCK, since no variable gets
+% differentiated or integrated.
+pass(2) = isa(LLB{1}, 'operatorBlock') && isa(LLB{2}, 'operatorBlock');
 
 %% Example 3:
 L = chebop(@(x,u,v) diff(u) + v);

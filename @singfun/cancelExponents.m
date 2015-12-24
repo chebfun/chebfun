@@ -14,13 +14,13 @@ function f = cancelExponents(f)
 exps = get(f, 'exponents');
 
 % Grab boundary values:
-boundaryVals = [get(f.smoothPart,'lval'),  get(f.smoothPart,'rval')];
+boundaryVals = [lval(f.smoothPart),  rval(f.smoothPart)];
 
 % Tolerance:
-tol = 100*get(f.smoothPart, 'vscale').*get(f.smoothPart, 'epslevel');
+tol = 100*eps*vscale(f.smoothPart);
 
 % Boundaries with negative exponent and vanishing value:
-ind  = ( exps < 0 ) & ( abs(boundaryVals) < repmat(tol, 1, 2) );
+ind = ( exps < 0 ) & ( abs(boundaryVals) < repmat(tol, 1, 2) );
 
 % Extract boundary roots to cancel the exponents:
 if ( any(ind) )

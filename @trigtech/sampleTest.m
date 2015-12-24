@@ -3,8 +3,8 @@ function pass = sampleTest(op, f, pref)
 %   SAMPLETEST(OP, F) evaluates both the function OP and its TRIGTECH
 %   representation F at one or more points within [-1,1). The difference of
 %   these values is computed, and if this is sufficiently small (relative to
-%   F.VSCALE, F.HSCALE, and F.EPSLEVEL) the test passes and returns TRUE. If the
-%   difference is large, it returns FALSE.
+%   VSCALE(F)) the test passes and returns TRUE. If the difference is large,
+%   it returns FALSE.
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -13,8 +13,8 @@ function pass = sampleTest(op, f, pref)
 n = length(f);
 
 % Set a tolerance:
-tol = max(max(f.epslevel, pref.eps), 1e3*eps) * n;
-tol = tol.*max(f.vscale);
+tol =sqrt(max(pref.eps, eps));
+tol = tol.*max(vscale(f));
 
 % pseudo random sample points
 xeval = [-0.357998918959666; 0.036785641195074];

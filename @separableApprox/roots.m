@@ -25,6 +25,13 @@ function r = roots( f, g, varargin )
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+
+% Check for empty:
+if ( isempty( f ) )
+    r = []; 
+    return
+end 
+
 tol = 1e-5; % Go for five digits.
 dom = f.domain;
 
@@ -62,7 +69,7 @@ if ( nargin == 1 )
             k = j + C(2, j);
             D = C(:, j+1:k);
             f = chebfun( (D(1,:) +  1i*(D(2,:)+realmin)).' );
-            f = simplify( f, tol );
+            f = simplify( f, tol, 'globaltol' );
             j = k + 1;
             r = [ r , f ];
         end

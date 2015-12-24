@@ -3,6 +3,6 @@
 domain = '[-1 1]';
 DE = 'u" = (u-1)*(1+(u'')^2)^1.5';
 BC = {'u(-1) = 0'; 'u(1)  = 0'};
-init = ''; tol = '1e-8';
+init = ''; 
 damping = '1'; plotting = '0.1';
 type = 'bvp';
