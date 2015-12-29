@@ -69,8 +69,8 @@ end
 
 if ( isempty(nullity) )
     nullity = sum(discA.projOrder) - ...
-    ( size(discA.source.continuity.values,1) + ...
-      size(discA.source.constraint.values,1) );
+    ( size(discA.source.continuity.values, 1) + ...
+      size(discA.source.constraint.values, 1) );
 end
 
 % Boundary conditions are not applied, so we want square operators:
@@ -112,7 +112,7 @@ if ( ~isempty(nullity) && max(S) > tol )
     warning('CHEBFUN:linop:null:nullity', ...
         ['Number of requested null-vectors exceeds computed ', ...
          'nullity of the operator.\n', ...
-        '(Relative) siungular value of ' num2str(norm(S, inf)) ' encountered.'])
+        '(Relative) singular value of ' num2str(norm(S, inf)) ' encountered.'])
     V = V(:,1:(sum(S<tol) - 1));
 end
 
@@ -160,7 +160,7 @@ function [V, P, S] = getNullVectors(discA, tol, nullity)
     % Construct one big matrix from the unprojected block entries:
     A = cell2mat(A);
     
-    % Compute the discrete SVD. (Note: It saves no time to calll the built-in
+    % Compute the discrete SVD. (Note: It saves no time to call the built-in
     % NULL() method, and this simply calls the built-in SVD method.)
     [~, S, V] = svd(full(A), 0);
     S = diag(S)/S(1);

@@ -21,7 +21,7 @@ for k = 1:3
     err(k,1)  = norm(N(V), 2);           % Check residual.
     pass(k,1) = err(k,1) < tol;
     pass(k,2) = size(V, 2) == 1;
-    err(k,3)  = abs(V'*V - 1);           % Check orthanormality.
+    err(k,3)  = abs(V'*V - 1);           % Check orthonormality.
     pass(k,3) = err(k,3) < tol;
 
     % Test 2:
@@ -31,7 +31,7 @@ for k = 1:3
     err(k,4) = norm(N(V), 2);           % Check residual.
     pass(k,4) = err(k,4) < 1e5*tol;         
     pass(k,5) = size(V, 2) == 2;
-    err(k,6) = norm(V'*V - eye(2), inf);  % Check orthanomrality.
+    err(k,6) = norm(V'*V - eye(2), inf);  % Check orthonomrality.
     pass(k,6) = err(k,6) < tol;
     err(k,7) = norm(feval(V, 1), inf);    % Check BC is satisfied.
     pass(k,7) = err(k,7) < tol;

@@ -11,7 +11,7 @@ function v = null(N, prefs, nullity)
 %   CHEBOPPREF, PREFS.
 %
 %   NULL(n, PREFS, K) or NULL(N, K) attempts to find K null vectors. If the
-%   nullity of N is determined to be less than K then an warning is thrown. This
+%   nullity of N is determined to be less than K then a warning is thrown. This
 %   is useful in situations where the nullity is known in advance and the
 %   algorithm struggles to determine it automatically.
 %
