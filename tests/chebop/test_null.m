@@ -62,6 +62,10 @@ for k = 1:3
     v = null(L, pref);
     pass(k, 12) = ~isempty(v);
     
+    % This comes from #1653
+    L = chebop(@(r,u) (r-0.7).*diff(u, 2)-diff(u)-3*u, [1, 10]);
+    pass(k, 13) = size(null(L, pref), 2) == 2;
+    
 end
 
 
