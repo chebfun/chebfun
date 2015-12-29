@@ -54,6 +54,15 @@ for k = 1:3
     err(k,  11) = norm(V'*V - eye(6), inf);  % Check orthonormality.
     pass(k, 11) = err(k,9) < tol;
     
+    % This comes from the Example ode-eig/Nullspace which was having some trouble.
+    dom = [-pi, pi];
+    L = chebop(@(x, u) diff(u, 2) + .1*x.*(1-x.^2).*diff(u) + sin(x).*u, dom);
+    L.lbc = 0;
+    L.rbc = [];
+    v = null(L, pref);
+    pass(k, 12) = ~isempty(v);
+    
 end
+
 
 end

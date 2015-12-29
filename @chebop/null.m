@@ -3,7 +3,9 @@ function v = null(N, prefs, nullity)
 %   Z = NULL(N) returns a CHEBMATRIX with orthonormal columns which span the
 %   null space of the linear CHEBOP N. That is, N(Z) has negligible elements,
 %   SIZE(Z, 2) is the nullity of N, and Z'*Z = I. N may contain linear boundary
-%   conditions, but they will be treated as homogeneous.
+%   conditions, but they will be treated as homogeneous. The nullity is
+%   determined by comparing the differential order of the system and the number
+%   of supplied boundary conditions.
 %
 %   NULL(N, PREFS) allows additional preferences to be passed via the 
 %   CHEBOPPREF, PREFS.

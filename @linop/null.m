@@ -8,7 +8,9 @@ function [v, S] = null(A, prefs, nullity)
 %   Z = NULL(A, PREFS) returns a CHEBMATRIX with orthonormal columns which span 
 %   the null space of the LINOP A. That is, A*Z has negligible elements, 
 %   SIZE(Z, 2) is the nullity of A, and Z'*Z = I. A may contain linear 
-%   boundary conditions, but they will be treated as homogeneous.
+%   boundary conditions, but they will be treated as homogeneous. The nullity 
+%   is determined by comparing the differential order of the system and the
+%   number of supplied boundary conditions.
 %
 %   Z = NULL(A, PREFS, K) or Z = NULL(A, K) attempts to find K null vectors. If
 %   the nullity of A is determined to be less than K then an warning is thrown.
@@ -22,8 +24,6 @@ function [v, S] = null(A, prefs, nullity)
 %   prefs.discretization = @chebcolloc2;
 %   V = null(A, prefs);
 %   norm(A*V)
-%
-%   Systems of equations are not yet supported.
 %
 % See also LINOP/SVDS, LINOP/EIGS, NULL.
 
@@ -65,6 +65,12 @@ end
 if ( isempty(A.continuity) )
      % Apply continuity conditions:
      discA.source = deriveContinuity(discA.source);
+end
+
+if ( isempty(nullity) )
+    nullity = sum(discA.projOrder) - ...
+    ( size(discA.source.continuity.values,1) + ...
+      size(discA.source.constraint.values,1) );
 end
 
 % Boundary conditions are not applied, so we want square operators:
