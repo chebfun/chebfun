@@ -101,13 +101,13 @@ switch r
     case 12,
         % Chinese:
         % Kuan Xu
-        
+
         if ( ~simpleText )
-            s = '因为尼克.特雷弗森是这么说的！';
+            s = '因为尼克是这么说的！';
         else
-            s = 'Yin Wei Ni Ke Te Fen Sen Shi Zhe Me Shuo De!';
+            s = 'Yin Wei Ni Ke Shi Zhe Me Shuo De!';
         end
-        
+
     otherwise,
         s = 'Good question!';
 
