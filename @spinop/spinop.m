@@ -48,6 +48,10 @@ classdef spinop < spinoperator
             S.nonlinearPartCoeffs = Nc;
             S.nonlinearPartVals = Nv;
             
+            if ( isempty(S.domain) == 1 )
+                S.domain = [-1 1];
+            end
+            
         end
         
     end

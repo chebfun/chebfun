@@ -2,16 +2,16 @@ function [L, Nc] = discretize(S, N)
 %DISCRETIZE   Discretize a SPINOP.
 %   [L, NC] = DISCRETIZE(S, N) uses a Fourier spectral method in coefficient 
 %   space to discretize the SPINOP S with N grid points. L is the linear part, a 
-%   diagonal matrix stored as a vector, and NC is the diffenriation term of the 
-%   nonlinear part (and hence is linear).
+%   NxN diagonal matrix stored as a Nx1 vector, and NC is the diffenriation term 
+%   of the nonlinear part (and hence is linear).
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %% Set-up:
 
-% Get the domain DOM, the linear part LFUN, the nonlinear part NFUN, and the 
-% number of variables NVARS from S:
+% Get the domain DOM, the linear part FUNCL, the nonlinear part FUNCN, and the 
+% number of variables NVARS:
 dom = S.domain;
 funcL = S.linearPart;
 funcNc = S.nonlinearPartCoeffs;

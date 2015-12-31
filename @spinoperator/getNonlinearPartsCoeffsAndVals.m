@@ -23,16 +23,19 @@
  % Get the number of variables NVARS:
  nVars = nargin(N);
  
- % For scalar equation, we support nonlinearities of the form
- %  diff(f(u),m) with m>=0:
- if ( nVars == 1)
+ % Get the dimension DIM:
+ dim = S.dimension;
+ 
+ % For scalar equations in 1D, we support nonlinearities of the form
+ % diff(f(u),m) with m>=0:
+ if ( dim == 1 && nVars == 1 )
      
      % Get rid of the differentiation part in STRN to get NV=f(u):
      oldString = {'diff', ',\d*)'};
      newString = {'', ')'};
      Nv = regexprep(strN, oldString, newString);
-     Nv = str2func(Nv);
-     
+     Nv = eval(Nv);
+
      % Compute the differentiation order to get NC=diff(u,m):
      diffOrderTwoOrGreater = regexp(strN, ',\d*', 'match');
      diffOrderOne = regexp(strN, 'diff(', 'match');
@@ -46,8 +49,9 @@
      Nc = ['@(u) diff(u,', diffOrder, ')'];
      Nc = str2func(Nc);
      
- % For systems of equations, we only support nonlinearities of the form
- % f_i(u_1,...,u_n), i.e., with no differentiation, so Nv=N and Nc=1:
+ % For scalar equations in 2D and 3D, and for systems of equations in 1D, 2D and
+ % 3D, we only support nonlinearities of the form f_i(u_1,...,u_n), i.e., with 
+ % no differentiation, so Nv=N and Nc=1:
  else
      
      % Nv=N and Nc=1:
