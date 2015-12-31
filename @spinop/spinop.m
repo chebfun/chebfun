@@ -143,16 +143,22 @@ end
         if ( nVars == 1)
             
             % Get rid of the differentiation part in STRN to get NV=f(u):
-            oldString = {'diff', ',\s*\d*)'};
+            oldString = {'diff', ',\d*)'};
             newString = {'', ')'};
             Nv = regexprep(strN, oldString, newString);
             Nv = str2func(Nv);
             
             % Compute the differentiation order to get NC=diff(u,m):
-            C = chebop(str2func(strrep(strN, '@(', '@(x,')));
-            L = linearize(C);
-            m = getDiffOrder(L);
-            Nc = ['@(u) diff(u,', num2str(m), ')'];
+            diffOrderTwoOrGreater = regexp(strN, ',\d*', 'match');
+            diffOrderOne = regexp(strN, 'diff(', 'match');
+            if ( isempty(diffOrderTwoOrGreater) == 0 )
+                diffOrder = diffOrderTwoOrGreater{1}(2:end);
+            elseif ( isempty(diffOrderOne) == 0 )
+                diffOrder = '1';
+            else
+                diffOrder = '0';
+            end
+            Nc = ['@(u) diff(u,', diffOrder, ')'];
             Nc = str2func(Nc);
         
         % For systems of equations, we only support nonlinearities of the form
