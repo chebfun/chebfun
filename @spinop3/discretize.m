@@ -1,8 +1,8 @@
 function [L, Nc] = discretize(S, N)
-%DISCRETIZE   Discretize a SPINOP2.
+%DISCRETIZE   Discretize a SPINOP3.
 %   [L, NC] = DISCRETIZE(S, N) uses a Fourier spectral method in coefficient 
-%   space to discretize the SPINOP2 S with N grid points. L is the linear part, 
-%   a N^2xN^2 diagonal matrix stored as a NxN matrix, and NC is the 
+%   space to discretize the SPINOP3 S with N grid points. L is the linear part, 
+%   a N^3xN^3 diagonal matrix stored as a NxNxN tensor, and NC is the 
 %   diffenriation term of the nonlinear part (and hence is linear).
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
@@ -14,6 +14,7 @@ function [L, Nc] = discretize(S, N)
 % number of variables NVARS from S:
 dom = S.domain;
 funcL = S.linearPart;
+funcNc = S.nonlinearPartCoeffs;
 nVars = nargin(funcL);
 
 % Get the variables of the workspace:
@@ -42,12 +43,12 @@ else
     D2 = ifftshift(D2);
 end
 
-% Compute the N^2xN^2 Laplacian with KRON:
+% Compute the N^3xN^3 Laplacian with KRON:
 I = eye(N);
-lapmat = kron(I, D2) + kron(D2, I);
+lapmat = kron(kron(D2, I), I)  + kron(kron(I, D2), I) + kron(kron(I, I), D2);
 
-% Create a NxN matrix with the diagonal of the N^2xN^2 Laplacian:
-lapmat = reshape(full(diag(lapmat)), N, N);
+% Create a NxNxN tensor with the diagonal of the N^3xN^3 Laplacian:
+lapmat = reshape(full(diag(lapmat)), N, N, N);
 
 % Get the constants in front of the Laplacian:
 strL = func2str(funcL);
