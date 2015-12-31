@@ -27,6 +27,9 @@ classdef spinoperator
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Abstract = true, Static = false )
         
+        % Discretize a SPINOPERATOR:
+        [L, Nc] = discretize(S, N)
+        
     end
    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -34,13 +37,14 @@ classdef spinoperator
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Abstract = false, Static = false )
         
-        % Discretize a SPINOPERATOR:
-        [L, Nc] = discretize(S, N)
+        % Create a contour around each eigenvalue of the linear part of a 
+        % SPINOPERATOR.
+        LR = computeLR(S, L, N, M, dt)
         
         % Get the nonlinear parts, in coefficient and value space, of a
         % SPINOPERATOR:
         [Nc, Nv] = getNonlinearPartsCoeffsAndVals(S)
-               
+           
     end
     
 end

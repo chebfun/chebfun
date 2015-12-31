@@ -14,7 +14,6 @@ function [L, Nc] = discretize(S, N)
 % number of variables NVARS from S:
 dom = S.domain;
 funcL = S.linearPart;
-funcNc = S.nonlinearPartCoeffs;
 nVars = nargin(funcL);
 
 % Get the variables of the workspace:
@@ -50,7 +49,7 @@ lapmat = kron(kron(D2, I), I)  + kron(kron(I, D2), I) + kron(kron(I, I), D2);
 % Create a NxNxN tensor with the diagonal of the N^3xN^3 Laplacian:
 lapmat = reshape(full(diag(lapmat)), N, N, N);
 
-% Get the constants in front of the Laplacian:
+% Get the constants in front of the Laplacians:
 strL = func2str(funcL);
 strL = strrep(strL, 'laplacian', '');
 funcL = eval(strL);

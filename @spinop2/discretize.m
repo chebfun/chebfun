@@ -49,7 +49,7 @@ lapmat = kron(I, D2) + kron(D2, I);
 % Create a NxN matrix with the diagonal of the N^2xN^2 Laplacian:
 lapmat = reshape(full(diag(lapmat)), N, N);
 
-% Get the constants in front of the Laplacian:
+% Get the constants in front of the Laplacians:
 strL = func2str(funcL);
 strL = strrep(strL, 'laplacian', '');
 funcL = eval(strL);
