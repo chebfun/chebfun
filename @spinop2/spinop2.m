@@ -1,8 +1,8 @@
-classdef spinop < spinoperator
-%SPINOP   Class for representing the spatial part of 1D differential operators 
+classdef spinop2 < spinoperator
+%SPINOP2   Class for representing the spatial part of 2D differential operators 
 %for time-dependent PDEs.
 %
-% See also SPINOPERATOR, SPINOP2, SPINOP3.
+% See also SPINOPERATOR, SPINOP, SPINOP3.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -11,7 +11,7 @@ classdef spinop < spinoperator
     %% CLASS PROPERTIES:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
-        dimension = 1; % Spatial dimension (1 for SPINOP)
+        dimension = 2; % Spatial dimension (2 for SPINOP2)
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -19,7 +19,7 @@ classdef spinop < spinoperator
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
         
-        function S = spinop(varargin)
+        function S = spinop2(varargin)
 
             if ( nargin == 0 )
                 return
@@ -67,48 +67,28 @@ end
 
     function [L, N] = getLinearAndNonlinearParts(pdechar)
         %GETLINEARANDNONLINEARPARTS   Get the linear and the nonlinear parts of 
-        %a 1D time-dependent PDE from a key word.
+        %a 2D time-dependent PDE from a key word.
         %   [L, N] = GETLINEARANDNONLINEARPARTS(PDECHAR), where PDECHAR is a 
         %   string, outputs two function handles L and N which represent the
         %   linear and the nonlinear parts of the PDE represented by PDECHAR.
-
-        % Allen-Cahn equation:
-        if ( strcmpi(pdechar, 'AC') == 1 )
-            L = @(u) 5e-3*diff(u, 2);
-            N = @(u) u - u.^3;
             
-        % Cahn-Hilliard equation:
-        elseif ( strcmpi(pdechar, 'CH') == 1 )
-            L = @(u) -0.01*(diff(u, 2) + 0.001*diff(u, 4));
-            N = @(u) 0.01*diff(u.^3, 2);
-            
+        % Ginzburg-Landau equations:
+        if ( strcmpi(pdechar, 'GL') == 1 )
+            L = @(u) laplacian(u);
+            N = @(u) u - (1 + 1.3i)*u.*(abs(u).^2);
+        
         % Gray-Scott equations:
         elseif ( strcmpi(pdechar, 'GS') == 1 )
-            L = @(u,v) [diff(u,2); 0.01*diff(v,2)];
-            N = @(u,v) [ 0.09*(1 - u) - u.*v.^2; - 0.0862*v + u.*v.^2];
+            L = @(u,v) [2e-5*laplacian(u); 1e-5*laplacian(v)];
+            N = @(u,v) [ 0.035*(1 - u) - u.*v.^2; -(0.035+0.0625)*v + u.*v.^2];
             
-        % Korteweg-de Vries equation:
-        elseif ( strcmpi(pdechar, 'KdV') == 1 )
-            L = @(u) -diff(u, 3);
-            N = @(u) -.5*diff(u.^2);
+        % Schnakenberg equations:
+        elseif ( strcmpi(pdechar, 'Schnak') == 1 )
+            L = @(u,v) [laplacian(u); 10*laplacian(v)];
+            N = @(u,v) [ .1 - u + u.^2.*v; .9 - u.^2.*v];
             
-        % Kuramoto-Sivashinsky equation:
-        elseif ( strcmpi(pdechar, 'KS') == 1 )
-            L = @(u) -(diff(u, 2) + diff(u, 4));
-            N = @(u) -.5*diff(u.^2);
-            
-       % Nonlinear Schrodinger equation:
-        elseif ( strcmpi(pdechar, 'NLS') == 1 )
-            L = @(u) 1i*diff(u, 2);
-            N = @(u) 1i*abs(u).^2.*u;
- 
-        % Viscous Burgers equation:
-        elseif ( strcmpi(pdechar, 'Burg') == 1 )
-            L = @(u) 1e-3*diff(u, 2);
-            N = @(u) -.5*diff(u.^2);
-
         else
-            error('SPINOP:getLinearAndNonlinearParts', 'Unrecognized PDE.')
+            error('SPINOP2:getLinearAndNonlinearParts', 'Unrecognized PDE.')
         end
 
     end
