@@ -20,51 +20,51 @@ q = K.steps;
 N = size(uSol{1}, 1)/nVars;
 
 % Create a cell-array to store the coefficients at the Q steps:
-uSolnew = cell(q, 1);
+coeffs = cell(q, 1);
 
 % Store the initial conidition in the last column:
-uSolnew{q} = uSol{1};
+coeffs{q} = uSol{1};
 
 % Set-up ETDRK4:
 K = spinscheme('etdrk4');
-coeffs = computeCoeffs(K, dt, L, LR, S);
+schemeCoeffs = computeCoeffs(K, dt, L, LR, S);
 if ( adapTime == 1 )
     LR2 = computeLR(S, dt/2, L, M, N);
-    coeffs2 = computeCoeffs(K, dt/2, L, LR2, S);
+    schemeCoeffs2 = computeCoeffs(K, dt/2, L, LR2, S);
 end
 
 % Do Q-1 steps of ETDRK4:
 iter = 1;
 while ( iter <= q-1 ) 
     
-    cnew = oneStep(K, coeffs, Nc, S, uSol);
+    cnew = oneStep(K, schemeCoeffs, Nc, S, uSol);
      
     % If adpative in time, two steps in time with DT/2 and N points:
     if ( adapTime == 1 )
-        cnew2 = oneStep(K, coeffs2, Nc, S, uSol);
-        cnew2 = oneStep(K, coeffs, Nc, S, cnew2);
-        err = norm(cnew{1} - cnew2{1}, inf);
+        cnew2 = oneStep(K, schemeCoeffs2, Nc, S, uSol);
+        cnew2 = oneStep(K, schemeCoeffs, Nc, S, cnew2);
+        err = max(max(max(abs(cnew{1} - cnew2{1}))));
         % If successive step, store it:
         if ( err < errTol ) 
-            uSolnew{q-iter} = cnew2{1};
+            coeffs{q-iter} = cnew2{1};
             uSol = cnew2;
             iter = iter + 1;
         % Otherwise, redo the step with DT/2 and N points:
         else
             dt = dt/2;
-            coeffs = coeffs2;
+            schemeCoeffs = schemeCoeffs2;
             LR2 = computeLR(S, dt/2, L, M, N);
-            coeffs2 = computeCoeffs(K, dt/2, L, LR2, S);
+            schemeCoeffs2 = computeCoeffs(K, dt/2, L, LR2, S);
         end
         
     % If not adaptive in time, keep CNEW:
     else
-        uSolnew{q-iter} = cnew{1};
+        coeffs{q-iter} = cnew{1};
         uSol = cnew;
         iter = iter + 1;
     end
 
 end
-uSol = uSolnew;
+uSol = coeffs;
 
 end

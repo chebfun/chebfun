@@ -74,7 +74,7 @@
          idx1 = [num2str((k-1)/nVars), '*', 'length(u)', '+1'];
          idx2 = [num2str(k/nVars), '*', 'length(u)'];
          strNvNew = strrep(strNv, variablesNames{k}, ...
-             ['u(', idx1, ':', idx2, ')']);
+             ['u(', idx1, ':', idx2, ',:,:)']);
          strNv = strNvNew;
      end
      Nv = str2func(['@(u)', strNvNew]);

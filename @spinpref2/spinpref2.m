@@ -69,7 +69,7 @@ classdef spinpref2 < spinpreference
                 pref.Nmin = 128;
                 pref.Nmax = 1024;
             else
-                pref = spinpref();
+                pref = spinpref2();
                 for k = 1:nargin/2
                     pref.(varargin{2*(k-1)+1}) = varargin{2*k};
                 end

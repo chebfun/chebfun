@@ -35,7 +35,7 @@ for j = 1:nargin
         u0 = item;
     elseif ( isa(item, 'spinoperator') )
         S = item;
-    elseif ( isa(item, 'spinpref') )
+    elseif ( isa(item, 'spinpreference') )
         pref = item;
     else
         error('SPINOPERATOR:solvepde', 'Unrecognized input.')
@@ -132,12 +132,41 @@ q = K.steps;
 
 % Compute coefficients for the time-stepping scheme:
 LR = computeLR(S, dt, L, M, N);
-coeffs = computeCoeffs(K, dt, L, LR, S);
+schemeCoeffs = computeCoeffs(K, dt, L, LR, S);
 
 % If adaptive in time, get the coefficients with DT/2:
 if ( adaptiveTime == 1 )
     LR2 = computeLR(S, dt/2, L, M, N);
-    coeffs2 = computeCoeffs(K, dt/2, L, LR2, S);
+    schemeCoeffs2 = computeCoeffs(K, dt/2, L, LR2, S);
+end
+
+% Set-up spatial grid, and initial condition:
+nVars = S.numVars;
+xx = trigpts(N, dom(1:2));
+if ( dim == 2 )
+    [xx, yy] = meshgrid(xx, xx);
+elseif ( dim == 3 )
+    [xx, yy, zz] = meshgrid(xx, xx, xx);
+end
+v = [];
+for k = 1:nVars
+    if ( dim == 1 )
+        v = [v; feval(u0{k}, xx)]; %#ok<*AGROW>
+    elseif ( dim == 2 )
+        v = [v; feval(u0{k}, xx, yy)];
+    elseif ( dim == 3 )
+        v = [v; feval(u0{k}, xx, yy, zz)];
+    end
+end
+c{1} = [];
+for k = 1:nVars
+    idx = (k-1)*N + 1;
+    c{1} = [c{1}; fftn(v(idx:idx+N-1,:,:))];
+end
+
+% Get enough initial data when using a multistep scheme:
+if ( q > 1 )
+    [c, dt] = startMultistep(K, adaptiveTime, dt, L, LR, Nc, pref, S, c);
 end
 
 %%
@@ -181,7 +210,8 @@ elseif ( strcmpi(pdechar, 'GL3') == 1 )
 
 elseif ( strcmpi(pdechar, 'GS') == 1 )
     tspan = [0 2000];
-    dom = 50*[-1 1];
+    L = 50;
+    dom = L*[-1 1];
     u01 = chebfun(@(x) 1 - 1/2*sin(pi*(x-L)/(2*L)).^100, dom, 'trig');
     u02 = chebfun(@(x) 1/4*sin(pi*(x-L)/(2*L)).^100, dom, 'trig');
     u0 = chebmatrix(u01);
