@@ -1,8 +1,8 @@
-function coeffs = computeCoeffs(K, L, LR, S, dt)
+function coeffs = computeCoeffs(K, dt, L, LR, S)
 %COMPUTECOEFFS   Compute coefficients of a SPINSCHEME.
-%   COEFFS = COMPUTECOEFFS(K, L, LR, S, DT) computes the coefficients needed by  
-%   the SPINSCHEME K from the linear part L, the linear part for complex means
-%   LR, the SPINOP S, and the timestep DT.
+%   COEFFS = COMPUTECOEFFS(K, DT, L, LR, S) computes the coefficients needed by  
+%   the SPINSCHEME K from the timestep DT, the linear part L, the linear part 
+%   for complex means LR, and the SPINOP S.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

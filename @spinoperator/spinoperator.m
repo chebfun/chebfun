@@ -49,7 +49,7 @@ classdef spinoperator
         
         % Create a contour around each eigenvalue of the linear part of a 
         % SPINOPERATOR:
-        LR = computeLR(S, L, M, N, dt)
+        LR = computeLR(S, dt, L, M, N)
         
         % Get the nonlinear parts, in coefficient and value space, of a
         % SPINOPERATOR:

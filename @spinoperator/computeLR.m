@@ -1,10 +1,10 @@
-function LR = computeLR(S, L, M, N, dt)
+function LR = computeLR(S, dt, L, M, N)
 %COMPUTELR   Create a contour around each eigenvalue of the linear part of a 
 %SPINOPERATOR.
-%   LR = COMPUTELR(S, L, M, N, DT) outputs a matrix to be used for the complex
-%   means. L is the linear part of the SPINOPERATOR S, discretized with N points 
-%   in each space direction, M is the number of points to discretize the 
-%   contour, and dt is the timestep.
+%   LR = COMPUTELR(S, DT, L, M, N) outputs a matrix to be used for the complex
+%   means. DT is the timestep, L is the linear part of the SPINOPERATOR S, 
+%   discretized with N points in each space direction, and M is the number of
+%   points to discretize the contour.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

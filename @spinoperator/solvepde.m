@@ -127,18 +127,17 @@ K = spinscheme(schemeName);
 % Get the number of steps of the scheme:
 q = K.steps;
 
-% Operators (linear part L, nonlinear part NC and NV):
+% Operators (linear part L, differentiation term NC of the nonliner part):
 [L, Nc] = discretize(S, N);
-Nv = S.nonlinearPartVals;
 
 % Compute coefficients for the time-stepping scheme:
-LR = computeLR(S, L, M, N, dt);
-coeffs = computeCoeffs(K, L, LR, S, dt);
+LR = computeLR(S, dt, L, M, N);
+coeffs = computeCoeffs(K, dt, L, LR, S);
 
 % If adaptive in time, get the coefficients with DT/2:
 if ( adaptiveTime == 1 )
-    LR2 = computeLR(S, L, M, N, dt/2);
-    coeffs2 = computeCoeffs(K, L, LR, S, dt/2);
+    LR2 = computeLR(S, dt/2, L, M, N);
+    coeffs2 = computeCoeffs(K, dt/2, L, LR2, S);
 end
 
 %%
