@@ -84,6 +84,64 @@ if ( isempty(pref) == 1 )
     end
 end
 
+% Dealiasing (0=NO, 1=YES):
+dealias = pref.dealias;
+
+% Error tolerance:
+errTol = pref.errTol;
+
+% Points for complex means:
+M = pref.M;
+
+% Number of grid points N:
+Nmin = pref.Nmin;
+Nmax = pref.Nmax;
+adaptiveSpace = isempty(pref.N);
+if ( adaptiveSpace == 1 )
+    % Adaptive in space, start with NMIN:
+    N = Nmin;
+else
+    % Not adpative in space, i.e., use the N given by the user:
+    N = pref.N;
+end
+
+% Time-step dt:
+dtmin = pref.dtmin;
+dtmax = pref.dtmax;
+adaptiveTime = isempty(pref.dt);
+if ( adaptiveTime == 1 )
+    % Adaptive in time, start with DTMAX:
+    dt = dtmax;
+else
+    % Not adpative in time, i.e., use the dt given by the user:
+    dt = pref.dt;
+end
+
+% Plotting options:
+plottingstyle = pref.plotting;
+
+% Create a time-stepping scheme:
+schemeName = pref.scheme;
+K = spinscheme(schemeName);
+
+% Get the number of steps of the scheme:
+q = K.steps;
+
+% Operators (linear part L, nonlinear part NC and NV):
+[L, Nc] = discretize(S, N);
+Nv = S.nonlinearPartVals;
+
+% Compute coefficients for the time-stepping scheme:
+LR = computeLR(S, L, M, N, dt);
+coeffs = computeCoeffs(K, L, LR, S, dt);
+
+% If adaptive in time, get the coefficients with DT/2:
+if ( adaptiveTime == 1 )
+    LR2 = computeLR(S, L, M, N, dt/2);
+    coeffs2 = computeCoeffs(K, L, LR, S, dt/2);
+end
+
+%%
 tout = [];
 uout = [];
 
