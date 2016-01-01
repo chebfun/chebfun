@@ -11,6 +11,7 @@ classdef spinoperator
     %% CLASS PROPERTIES:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
+        dimension           % Spatial dimension
         domain              % Spatial domain
         linearPart          % Linear part of the operator
         nonlinearPart       % Nonlinear part of the operator
