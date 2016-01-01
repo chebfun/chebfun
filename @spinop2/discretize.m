@@ -1,9 +1,9 @@
 function [L, Nc] = discretize(S, N)
 %DISCRETIZE   Discretize a SPINOP2.
 %   [L, NC] = DISCRETIZE(S, N) uses a Fourier spectral method in coefficient 
-%   space to discretize the SPINOP2 S with N grid points. L is the linear part, 
-%   a N^2xN^2 diagonal matrix stored as a NxN matrix, and NC is the 
-%   diffenriation term of the nonlinear part (and hence is linear).
+%   space to discretize the SPINOP2 S with N grid points in each direction. L is 
+%   the linear part, a N^2xN^2 diagonal matrix stored as a NxN matrix, and NC is 
+%   the diffenriation term of the nonlinear part (and hence is linear).
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -65,6 +65,8 @@ end
 
 %% Disretize the differentiation term of the nonlinear part:
 
+% We only support no differentiation, i.e., NC = 1.
+% [TODO]: Support diff order > 1.
 Nc = 1;
 
 end

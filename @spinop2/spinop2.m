@@ -72,17 +72,17 @@ end
         %   linear and the nonlinear parts of the PDE represented by PDECHAR.
             
         % Ginzburg-Landau equations:
-        if ( strcmpi(pdechar, 'GL') == 1 )
+        if ( strcmpi(pdechar, 'GL2') == 1 )
             L = @(u) laplacian(u);
             N = @(u) u - (1 + 1.3i)*u.*(abs(u).^2);
         
         % Gray-Scott equations:
-        elseif ( strcmpi(pdechar, 'GS') == 1 )
+        elseif ( strcmpi(pdechar, 'GS2') == 1 )
             L = @(u,v) [2e-5*laplacian(u); 1e-5*laplacian(v)];
             N = @(u,v) [ 0.035*(1 - u) - u.*v.^2; -(0.035+0.0625)*v + u.*v.^2];
             
         % Schnakenberg equations:
-        elseif ( strcmpi(pdechar, 'Schnak') == 1 )
+        elseif ( strcmpi(pdechar, 'Schnak2') == 1 )
             L = @(u,v) [laplacian(u); 10*laplacian(v)];
             N = @(u,v) [ .1 - u + u.^2.*v; .9 - u.^2.*v];
             

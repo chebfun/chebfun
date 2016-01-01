@@ -1,6 +1,6 @@
 classdef spinpref < spinpreference
 %SPINPREF   Class for managing SPIN/SPINOP preferences.
-
+%
 % Available preferences ([] = defaults):
 %
 %   dealias                   * If 1, use the 2/3-rule to zero high wavenumbers.
@@ -9,6 +9,9 @@ classdef spinpref < spinpreference
 %   dt                        * Time-step for time discretization. Default is 
 %     []                        empty, i.e., adaptively chosen by the code to 
 %                               achieve errTol. 
+%
+%   dtmax                     * Maximum time-step when using an apative grid in
+%     [1e-1]                   time.
 %
 %   dtmin                     * Minimum time-step when using an apative grid in
 %     [1e-10]                   time.
@@ -23,8 +26,11 @@ classdef spinpref < spinpreference
 %     []                        Default is empty, i.e., adaptively chosen by the 
 %                               code to achieve errTol.
 %
-%   Nmax                      * Maximum number of points in one direction when   
-%     [4096]                    using an adaptive grid in space.
+%   Nmin                      * Minimum number of points when using an adaptive
+%     [256]                     grid in space.
+%
+%   Nmax                      * Maximum number of points when using an adaptive
+%     [4096]                    grid in space.
 %                                         
 %   plotting                  * Plotting options: 'movie' for plotting a 
 %     ['movie']                 movie of the solution, 'waterfall' to use the 
@@ -41,7 +47,7 @@ classdef spinpref < spinpreference
 %     []                        (in 1D only). Default is empty, i.e., 
 %                               automatically chosen by the code. 
 %                                
-% See also SPINPREFERENCE, SPINPREF2, SPINPREF3.
+% See also SPINPREF2, SPINPREF3.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -60,7 +66,10 @@ classdef spinpref < spinpreference
         
         function pref = spinpref(varargin) 
             if ( nargin == 0 )
+                pref.dtmax = 1e-1;
                 pref.errTol = 1e-6;
+                pref.iterPlot = 20;
+                pref.Nmin = 256;
                 pref.Nmax = 4096;
             else
                 pref = spinpref();

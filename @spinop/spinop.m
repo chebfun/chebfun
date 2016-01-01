@@ -76,6 +76,11 @@ end
             L = @(u) 5e-3*diff(u, 2);
             N = @(u) u - u.^3;
             
+        % Viscous Burgers equation:
+        elseif ( strcmpi(pdechar, 'Burg') == 1 )
+            L = @(u) 1e-3*diff(u, 2);
+            N = @(u) -.5*diff(u.^2);
+            
         % Cahn-Hilliard equation:
         elseif ( strcmpi(pdechar, 'CH') == 1 )
             L = @(u) -0.01*(diff(u, 2) + 0.001*diff(u, 4));
@@ -100,11 +105,6 @@ end
         elseif ( strcmpi(pdechar, 'NLS') == 1 )
             L = @(u) 1i*diff(u, 2);
             N = @(u) 1i*abs(u).^2.*u;
- 
-        % Viscous Burgers equation:
-        elseif ( strcmpi(pdechar, 'Burg') == 1 )
-            L = @(u) 1e-3*diff(u, 2);
-            N = @(u) -.5*diff(u.^2);
 
         else
             error('SPINOP:getLinearAndNonlinearParts', 'Unrecognized PDE.')

@@ -12,12 +12,14 @@ classdef spinpreference
     properties ( Access = public )
         dealias = 0             % To use dealiasing with 2/3-rule
         dt                      % Timestep
-        dtmin = 1e-10;          % Minimum timestep if using an apative time-grid
+        dtmin = 1e-10;          % Minimum timestep for apative time-grid
+        dtmax                   % Maximum timestep for apative time-grid
         errTol                  % Desired accuracy on the solution
+        iterPlot                % Plot every ITERPLOT iterations with 'movie'
         M = 64;                 % Number of points for complex means
-        N                       % Number of points for spatial discretization if
-                                % using a fixed space-gird
-        Nmax                    % Max. number of points for space discretization 
+        N                       % Number of points for space-grid
+        Nmin                    % Min. number of points for apative space-grid
+        Nmax                    % Max. number of points for apative space-grid
                                 % discretization if using an adaptive space-grid
         plotting  = 'movie';    % Plotting options
         scheme = 'etdrk4';      % Time-stepping scheme
