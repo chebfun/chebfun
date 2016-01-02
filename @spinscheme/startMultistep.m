@@ -42,7 +42,7 @@ while ( iter <= q-1 )
     % If adpative in time, two steps in time with DT/2 and N points:
     if ( adapTime == 1 )
         cnew2 = oneStep(K, schemeCoeffs2, Nc, S, uSol);
-        cnew2 = oneStep(K, schemeCoeffs, Nc, S, cnew2);
+        cnew2 = oneStep(K, schemeCoeffs2, Nc, S, cnew2);
         err = max(max(max(abs(cnew{1} - cnew2{1}))));
         % If successive step, store it:
         if ( err < errTol ) 
