@@ -6,25 +6,24 @@ classdef spinpref3 < spinpreference
 %   dealias                   * If 1, use the 2/3-rule to zero high wavenumbers.
 %     [0]                       No dealiasing by default.
 % 
-%   dt                        * Time-step for time discretization. Default is 
-%     []                        empty, i.e., adaptively chosen by the code to 
-%                               achieve errTol. 
+%   dt                        * Timestep for time discretization. To switch to
+%     [1]                       adaptive timestepping, set dt=[].
 %
-%   dtmax                     * Maximum time-step when using an apative grid in
+%   dtmax                     * Maximum timestep when using an apative grid in
 %     [1]                       time.
 %
-%   dtmin                     * Minimum time-step when using an apative grid in
+%   dtmin                     * Minimum timestep when using an apative grid in
 %     [1e-10]                   time.
 %
 %   errTol                    * Desired accuracy on the solution.
-%     [1e-2]
+%     [1e-1]
 %
 %   M                         * Number of points for complex means to evaluate
 %     [64]                      the phi-functions.
 %
 %   N                         * Number points in each direction for spatial 
-%     []                        discretization. Default is empty, i.e., 
-%                               adaptively chosen by the code to achieve errTol.
+%     [32]                      discretization. To switch to adaptive grid, set
+%                               N=[].
 %
 %   Nmin                      * Minimum number of points in each direction when 
 %     [32]                      using an adaptive grid in space.
@@ -35,7 +34,7 @@ classdef spinpref3 < spinpreference
 %   plotting                  * Plotting options: 'movie' for plotting a 
 %     ['movie']                 movie of the solution, or [] for no plotting.
 %
-%   scheme                    * Time-stepping scheme.
+%   scheme                    * Timestepping scheme.
 %     [@etdrk4]  
 %      @exprk5s8
 %      @krogstad
@@ -54,9 +53,11 @@ classdef spinpref3 < spinpreference
         
         function pref = spinpref3(varargin) 
             if ( nargin == 0 )
+                pref.dt = 1;
                 pref.dtmax = 1;
-                pref.errTol = 1e-2;
+                pref.errTol = 1e-1;
                 pref.iterPlot = 1;
+                pref.N = 32;
                 pref.Nmin = 32;
                 pref.Nmax = 128;
             else

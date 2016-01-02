@@ -226,23 +226,7 @@ while ( t < tf )
     end
     
     % Check if N is large enough (i.e., check resolution in space):
-%     for k = 1:nVars
-%         idx = (k-1)*N + 1;
-%         cnewShift = ifftshift(cnew{1}(idx:idx+N-1));
-%         if ( mod(N,2) == 0 )
-%             cnewShift = [cnewShift(N); cnewShift(N-1:-1:N/2+1) + ...
-%                 cnewShift(1:N/2-1); cnewShift(N/2)];
-%         else
-%             cnewShift = [cnewShift(N:-1:(N+1)/2+1,:) + cnewShift(1:(N+1)/2-1,:); ...
-%                 cnewShift((N+1)/2,:)];
-%         end
-%         cnewShift = flipud(cnewShift);
-%         cnewShift = [cnewShift(1,1); kron(cnewShift(2:end,1), [1; 1])];
-%         cutoff = standardChop(cnewShift, errTol);
-%         ishappy(k) = ( cutoff < N );
-%     end
-%     ishappy = all(ishappy == 1);
-    ishappy = 1;
+    ishappy = checkHappiness(S, cnew, pref);
     
     % If resolved in space, or N>=Nmax, or not adpative in space, check if
     % resolved in time:
@@ -370,13 +354,27 @@ while ( t < tf )
     % If not resolved in space, double N, update quantities which depend on N,
     % and redo the step:
     else
+        xx = trigpts(2*N, dom(1:2));
+        if ( dim == 2 )
+            [xx, yy] = meshgrid(xx, xx);
+        elseif ( dim == 3 )
+            [xx, yy, zz] = meshgrid(xx, xx, xx);
+        end
         for i = 1:q
             coeffs = [];
             for k = 1:nVars
                 idx = (k-1)*N + 1;
-                vals = ifft(c{i}(idx:idx+N-1));
-                u = trigtech({vals, trigtech.vals2coeffs(vals)});
-                coeffs = [coeffs; fft(feval(u, trigpts(2*N)))];
+                vals = ifftn(c{i}(idx:idx+N-1,:,:));
+                if ( dim == 1 )
+                    u = trigtech({vals, trigtech.vals2coeffs(vals)});
+                    coeffs = [coeffs; fft(feval(u, xx))];
+                elseif ( dim == 2 )
+                    u = chebfun2(vals, dom, 'trig');   
+                    coeffs = [coeffs; fftn(feval(u, xx, yy))];
+                elseif ( dim == 3 )
+                    u = chebfun3(vals, dom, 'trig');
+                    coeffs = [coeffs; fftn(feval(u, xx, yy, zz))];
+                end
             end
             c{i} = coeffs;
         end
@@ -388,7 +386,6 @@ while ( t < tf )
         schemeCoeffs2 = computeCoeffs(K, dt/2, L, LR2, S);
         ind = false(N, 1);
         ind(floor(N/2)+1-ceil(N/6):floor(N/2)+ceil(N/6)) = 1;
-        xx = trigpts(N, dom);
         if ( dim == 1 )
             gridPoints = xx;
         elseif ( dim == 2 )

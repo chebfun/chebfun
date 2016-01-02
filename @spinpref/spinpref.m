@@ -6,14 +6,14 @@ classdef spinpref < spinpreference
 %   dealias                   * If 1, use the 2/3-rule to zero high wavenumbers.
 %     [0]                       No dealiasing by default.
 % 
-%   dt                        * Time-step for time discretization. Default is 
+%   dt                        * Timestep for time discretization. Default is 
 %     []                        empty, i.e., adaptively chosen by the code to 
 %                               achieve errTol. 
 %
-%   dtmax                     * Maximum time-step when using an apative grid in
+%   dtmax                     * Maximum timestep when using an apative grid in
 %     [1e-1]                   time.
 %
-%   dtmin                     * Minimum time-step when using an apative grid in
+%   dtmin                     * Minimum timestep when using an apative grid in
 %     [1e-10]                   time.
 %
 %   errTol                    * Desired accuracy on the solution.
@@ -36,7 +36,7 @@ classdef spinpref < spinpreference
 %     ['movie']                 movie of the solution, 'waterfall' to use the 
 %      'waterfall'              CHEBFUN WATERFALL command. [] for no plotting.
 %
-%   scheme                    * Time-stepping scheme.
+%   scheme                    * Timestepping scheme.
 %     [@etdrk4]  
 %      @exprk5s8
 %      @krogstad
