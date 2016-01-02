@@ -12,20 +12,20 @@ yy = gridPoints{2};
 N = size(xx, 1);
 nVars = S.numVars;
 
-% Plot:
+% Loop over the variables:
 xxplot = [xx, 2*xx(:,end) - xx(:,end-1)];
 xxplot = [xxplot; xxplot(1,:)];
 yyplot = [yy; 2*yy(end,:) - yy(end-1,:)];
 yyplot = [yyplot, yyplot(:,1)];
 for k = 1:nVars
     
-    % Extract data of each variable:
+    % Extract each variable:
     idx = (k-1)*N + 1;
     vplot = real(v(idx:idx+N-1,:));
     vplot = [vplot, vplot(:,1)]; %#ok<*AGROW>
     vplot = [vplot; vplot(1,:)];
     
-    % Update data:
+    % Update it:
     set(p{k}, 'xdata', xxplot, 'ydata', yyplot, 'zdata', vplot)
     set(p{k}.Parent, 'xlim', [dom(1), dom(2)], 'ylim', [dom(3) dom(4)])
 

@@ -12,8 +12,6 @@ zz = gridPoints{3};
 N = size(xx, 1);
 nVars = S.numVars;
 dom = S.domain;
-
-% Plot:
 xxplot = [xx, 2*xx(:,end,:) - xx(:,end-1,:)];
 xxplot =  [xxplot; xxplot(1,:,:)];
 xxplot = cat(3, xxplot, xxplot(:,:,1));
@@ -23,14 +21,19 @@ yyplot = cat(3, yyplot, yyplot(:,:,1));
 zzplot = cat(3, zz, 2*zz(:,:,end) - zz(:,:,end-1));
 zzplot = [zzplot; zzplot(1,:,:)];
 zzplot = [zzplot, zzplot(:,1,:)];
-% p = cell(nVars, 1); 
+
+% Loop over the variables:
 clf
 for k = 1:nVars
+    
+    % Extract each variable:
     idx = (k-1)*N + 1;
-    vplot = v(idx:idx+N-1,:,:);
+    vplot = real(v(idx:idx+N-1,:,:));
     vplot = [vplot, vplot(:,1,:)]; %#ok<*AGROW>
     vplot = [vplot; vplot(1,:,:)];
     vplot = cat(3, vplot, vplot(:,:,1));
+    
+    % Plot it:
     subplot(nVars, 1, k)
     isosurface(xxplot, yyplot, zzplot, vplot)
     axis([dom(1) dom(2) dom(3) dom(4) dom(5) dom(6)]), colorbar, camlight 
@@ -39,8 +42,9 @@ for k = 1:nVars
         title(sprintf('N = %i, dt = %1.1e, t = %.4f', N, dt, 0))
     end
     drawnow
+    
 end
-disp('Type <enter> when ready.'), pause
+disp('Type <space> when ready.'), pause
 p = [];
 plotOption = [];
 

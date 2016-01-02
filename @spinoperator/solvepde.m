@@ -258,7 +258,8 @@ while ( t < tf )
             if ( dealias == 1 )
                 cnew2{1}(ind) = 0;
             end
-            err = max(abs(cnew{1} - cnew2{1}))/max(abs(cnew2{1}));
+            err = max(max(max(abs(cnew{1} - cnew2{1}))));
+            err = err/max(max(max(abs(cnew2{1}))));
             
         % If not adaptive in time, set CNEW2=CNEW and ERR=1:
         else
@@ -283,7 +284,7 @@ while ( t < tf )
                 for k = 1:nVars
                     idx = (k-1)*N + 1;
                     temp = ifftn(c{1}(idx:idx+N-1,:,:));
-                    if ( norm(imag(temp), inf) < errTol )
+                    if ( max(max(max(abs(imag(temp))))) < errTol )
                         temp = real(temp);
                     end
                     v = [v; temp];
@@ -299,7 +300,7 @@ while ( t < tf )
                 for k = 1:nVars
                     idx = (k-1)*N + 1;
                     temp = ifft(c{1}(idx:idx+N-1));
-                    if ( norm(imag(temp), inf) < errTol )
+                    if ( max(max(max(abs(imag(temp))))) < errTol )
                         temp = real(temp);
                     end
                     v = [v; temp];
