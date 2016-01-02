@@ -296,13 +296,17 @@ while ( t < tf )
             
             % Make sure that the solution is computed at the entries of TSPAN:
             if ( t + 2*dt > tspan(pos) && t ~= tspan(pos) )
-                dt = tspan(pos) - t;
-                LR = computeLR(S, dt, L, M, N);
-                schemeCoeffs = computeCoeffs(K, dt, L, LR, S);
-                LR2 = computeLR(S, dt/2, L, M, N);
-                schemeCoeffs2 = computeCoeffs(K, dt/2, L, LR2, S);
-                success = 0;
-                continue
+                if ( dt == tspan(pos) - t )
+                    continue
+                else
+                    dt = tspan(pos) - t;
+                    LR = computeLR(S, dt, L, M, N);
+                    schemeCoeffs = computeCoeffs(K, dt, L, LR, S);
+                    LR2 = computeLR(S, dt/2, L, M, N);
+                    schemeCoeffs2 = computeCoeffs(K, dt/2, L, LR2, S);
+                    success = 0;
+                    continue
+                end
             end
             
             % Output the solution if T correponds to an entry of TSPAN:
@@ -312,7 +316,7 @@ while ( t < tf )
                     for k = 1:nVars
                         idx = (k-1)*N + 1;
                         temp = ifftn(c{1}(idx:idx+N-1,:,:));
-                        if ( norm(imag(temp), inf) < errTol )
+                        if ( max(max(max(abs(imag(temp))))) < errTol )
                             temp = real(temp);
                         end
                         v = [v; temp];
