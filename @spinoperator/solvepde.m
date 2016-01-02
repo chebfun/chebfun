@@ -169,6 +169,27 @@ if ( q > 1 )
     [c, dt] = startMultistep(K, adaptiveTime, dt, L, LR, Nc, pref, S, c);
 end
 
+% Plot initial condition if using MOVIE:
+if ( strcmpi(plottingstyle, 'movie') == 1 )
+    if ( dim == 1 )
+        gridPoints = xx;
+    elseif ( dim == 2 )
+        gridPoints = {xx; yy};
+    elseif ( dim == 3 );
+        gridPoints = {xx; yy; zz};
+    end
+    [p, plotOptions] = initializeMovie(S, dt, pref, v, gridPoints);
+end
+
+% Values to output:
+vout{1} = v;
+
+% Values to plot if using WATERFALL:
+if ( strcmpi(plottingstyle, 'waterfall') == 1 )
+    vwater{1} = v;
+    twater = 0;
+end
+
 %%
 tout = [];
 uout = [];
@@ -223,6 +244,15 @@ elseif ( strcmpi(pdechar, 'GS2') == 1 )
     dom = G*[0 1 0 1];
     u01 = chebfun2(@(x,y) 1 - exp(-150*((x-G/2).^2 + (y-G/2).^2)), dom, 'trig');
     u02 = chebfun2(@(x,y) exp(-150*((x-G/2).^2 + 2*(y-G/2).^2)), dom, 'trig');
+    u0 = chebmatrix(u01);
+    u0(2,1) = u02;
+    
+elseif ( strcmpi(pdechar, 'GS3') == 1 )
+    tspan = [0 150];
+    vals = .1*randn(32, 32, 32);
+    dom = [0 100 0 100 0 100];
+    u01 = chebmatrix(chebfun3(vals, dom, 'trig'));
+    u02 = u01;
     u0 = chebmatrix(u01);
     u0(2,1) = u02;
 

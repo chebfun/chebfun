@@ -43,7 +43,8 @@ classdef spinpref2 < spinpreference
 %      @pecec433
 %
 %   view                      * Graph view specification when using 'movie'.
-%                                
+%     [0 90]   
+%
 % See also SPINPREF, SPINPREF3.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.

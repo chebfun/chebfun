@@ -3,7 +3,7 @@ function [L, Nc] = discretize(S, N)
 %   [L, NC] = DISCRETIZE(S, N) uses a Fourier spectral method in coefficient 
 %   space to discretize the SPINOP3 S with N grid points in each direction. L is 
 %   the linear part, a N^3xN^3 diagonal matrix stored as a NxNxN tensor, and NC 
-%   is the diffenriation term of the nonlinear part (and hence is linear).
+%   is the differentiation term of the nonlinear part (and hence is linear).
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

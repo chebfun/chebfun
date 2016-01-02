@@ -31,6 +31,12 @@ classdef spinoperator
         % Discretize a SPINOPERATOR:
         [L, Nc] = discretize(S, N)
         
+        % Initialize a movie when solving a PDE specified by a SPINOPERATOR:
+        [p, plotOption] = initializeMovie(S, dt, pref, v, gridPoints)
+        
+        % Plot a movie when solving a PDE specified by a SPINOPERATOR:
+        plotMovie
+        
     end
    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -38,7 +44,7 @@ classdef spinoperator
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Abstract = false, Static = true )
         
-        [uout, tout] = solvepde(in)
+        [uout, tout] = solvepde(varargin)
    
     end
 
