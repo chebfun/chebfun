@@ -26,7 +26,7 @@ yyplot = [yyplot, yyplot(:,1)];
 p = cell(nVars, 1); clf
 for k = 1:nVars
     idx = (k-1)*N + 1;
-    vplot = v(idx:idx+N-1,:);
+    vplot = real(v(idx:idx+N-1,:));
     vplot = [vplot, vplot(:,1)]; %#ok<*AGROW>
     vplot = [vplot; vplot(1,:)];
     subplot(nVars, 1, k)

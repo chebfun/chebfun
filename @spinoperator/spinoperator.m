@@ -35,7 +35,7 @@ classdef spinoperator
         [p, plotOption] = initializeMovie(S, dt, pref, v, gridPoints)
         
         % Plot a movie when solving a PDE specified by a SPINOPERATOR:
-        plotMovie
+        plotOption = plotMovie(S, dt, p, plotOption, t, v, gridPoints)
         
     end
    

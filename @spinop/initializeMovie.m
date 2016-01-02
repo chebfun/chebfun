@@ -17,7 +17,7 @@ vscale = max(abs(v));
 p = cell(nVars, 1); clf
 for k = 1:nVars
     idx = (k-1)*N + 1;
-    vplot = v(idx:idx+N-1);
+    vplot = real(v(idx:idx+N-1));
     vplot = [vplot; vplot(1)]; %#ok<*AGROW>
     if ( isempty(pref.Ylim) == 1 )
         Ylim(2*(k-1) + 1) = min(vplot) - .1*vscale;

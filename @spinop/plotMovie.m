@@ -15,6 +15,8 @@ Ylim = plotOption;
 % Plot:
 xxplot = [xx; 2*xx(end) - xx(end-1)];
 for k = 1:nVars
+    
+    % Extract data of each variable:
     idx = (k-1)*N + 1;
     vplot = real(v(idx:idx+N-1));
     vplot = [vplot; vplot(1)]; %#ok<*AGROW>

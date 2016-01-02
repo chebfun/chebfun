@@ -289,7 +289,7 @@ while ( t < tf )
                     v = [v; temp];
                 end
                 valuesUpdated = 1;
-                plotOption = plotMovie(S, dt, p, plotOption, t, v, xx);
+                plotOption = plotMovie(S, dt, p, plotOption, t, v, gridPoints);
                 
             % Store the values every ITERPLOT iterations if using WATERFALL:
             % Note: Only in dimension 1.
@@ -388,6 +388,13 @@ while ( t < tf )
         ind = false(N, 1);
         ind(floor(N/2)+1-ceil(N/6):floor(N/2)+ceil(N/6)) = 1;
         xx = trigpts(N, dom);
+        if ( dim == 1 )
+            gridPoints = xx;
+        elseif ( dim == 2 )
+            gridPoints = {xx; yy};
+        elseif ( dim == 3 );
+            gridPoints = {xx; yy; zz};
+        end
         success = 0;
     end
     
