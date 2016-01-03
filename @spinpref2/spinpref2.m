@@ -41,7 +41,7 @@ classdef spinpref2 < spinpreference
 %      @eglm433
 %      @pecec433
 %
-%   view                      * Graph view specification when using 'movie'.
+%   view                      * Viewpoint specification when using 'movie'.
 %     [0 90]   
 %
 % See also SPINPREF, SPINPREF3.
@@ -53,7 +53,7 @@ classdef spinpref2 < spinpreference
     %% CLASS PROPERTIES:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
-        view = [0 90];        % Graph view specification
+        view = [0 90];        % Viewpoint of the plot
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

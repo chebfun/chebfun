@@ -40,11 +40,22 @@ classdef spinpref3 < spinpreference
 %      @krogstad
 %      @eglm433
 %      @pecec433 
+%
+%   slices                    * Slices of the volumetric slice plot when using 
+%     []                       'movie'. Default is empty, i.e., automatically 
+%                               chosen by the code.                                            
 %                                
 % See also SPINPREF, SPINPREF2.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CLASS PROPERTIES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    properties ( Access = public )
+        slices = [];        % Slices of the volumetric slice plot
+    end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% CLASS CONSTRUCTOR:

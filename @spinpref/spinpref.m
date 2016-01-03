@@ -44,8 +44,8 @@ classdef spinpref < spinpreference
 %      @pecec433
 %
 %   Ylim                      * Limit of the y-axis when 'plotting' is 'movie'
-%     []                        (in 1D only). Default is empty, i.e., 
-%                               automatically chosen by the code. 
+%     []                        Default is empty, i.e., automatically chosen by 
+%                               the code. 
 %                                
 % See also SPINPREF2, SPINPREF3.
 
@@ -56,7 +56,7 @@ classdef spinpref < spinpreference
     %% CLASS PROPERTIES:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
-        Ylim         % Limit of the y-axis
+        Ylim         % Limit of the y-axis of the plot
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

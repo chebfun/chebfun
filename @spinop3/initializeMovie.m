@@ -12,6 +12,35 @@ zz = gridPoints{3};
 N = size(xx, 1);
 nVars = S.numVars;
 dom = S.domain;
+tt = trigpts(N, dom);
+if ( isempty(pref.slices) == 1 )
+    idx1 = floor(N/10);
+    idx2 = floor(9*N/10);
+    idx3 = floor(N/2) + 1;
+    Sx = [tt(idx1); tt(idx2)];
+    Sy = tt(idx3);
+    Sz = Sx;
+else
+    slices = pref.slices;
+    Sx = slices{1};
+    for k = 1:length(Sx)
+        pos = Sx(k);
+        [~, id] = min(abs(tt-pos));
+        Sx(k) = tt(id);
+    end
+    Sy = slices{2};
+    for k = 1:length(Sy)
+        pos = Sy(k);
+        [~, id] = min(abs(tt-pos));
+        Sy(k) = tt(id);
+    end
+    Sz = slices{3};
+    for k = 1:length(Sz)
+        pos = Sz(k);
+        [~, id] = min(abs(tt-pos));
+        Sz(k) = tt(id);
+    end
+end
 xxplot = [xx, 2*xx(:,end,:) - xx(:,end-1,:)];
 xxplot =  [xxplot; xxplot(1,:,:)];
 xxplot = cat(3, xxplot, xxplot(:,:,1));
@@ -23,7 +52,7 @@ zzplot = [zzplot; zzplot(1,:,:)];
 zzplot = [zzplot, zzplot(:,1,:)];
 
 % Loop over the variables:
-clf
+p = cell(nVars, 1); clf
 for k = 1:nVars
     
     % Extract each variable:
@@ -34,9 +63,9 @@ for k = 1:nVars
     vplot = cat(3, vplot, vplot(:,:,1));
     
     % Plot it:
-    subplot(nVars, 1, k)
-    isosurface(xxplot, yyplot, zzplot, vplot)
-    axis([dom(1) dom(2) dom(3) dom(4) dom(5) dom(6)]), colorbar, camlight 
+    subplot(nVars, 1, k) 
+    p{k} = slice(xxplot, yyplot, zzplot, vplot, Sx, Sy, Sz);
+    axis([dom(1) dom(2) dom(3) dom(4) dom(5) dom(6)]), colorbar
     xlabel('x'), ylabel('y'), zlabel('z'), set(gca, 'FontSize', 16), box on
     if ( k == 1 )
         title(sprintf('N = %i, dt = %1.1e, t = %.4f', N, dt, 0))
@@ -45,7 +74,6 @@ for k = 1:nVars
     
 end
 disp('Type <space> when ready.'), pause
-p = [];
 plotOption = [];
 
 end
