@@ -10,6 +10,7 @@ classdef spinpreference
     %% CLASS PROPERTIES:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
+        dataToPlot = 'real';    % Which data to plot when complex values
         dealias = 0             % To use dealiasing with 2/3-rule
         dt                      % Timestep
         dtmin = 1e-10;          % Minimum timestep for apative time-grid

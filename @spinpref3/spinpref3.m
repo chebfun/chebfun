@@ -3,6 +3,11 @@ classdef spinpref3 < spinpreference
 %
 % Available preferences ([] = defaults):
 %
+%   dataToPlot                * What data to plot when the solution is complex-
+%     ['real']                  valued.
+%      'imag'
+%      'abs'
+%
 %   dealias                   * If 1, use the 2/3-rule to zero high wavenumbers.
 %     [0]                       No dealiasing by default.
 % 

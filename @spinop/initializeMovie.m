@@ -1,4 +1,4 @@
-function [p, plotOption] = initializeMovie(S, dt, pref, v, gridPoints)
+function [p, plotOptions] = initializeMovie(S, dt, pref, v, gridPoints)
 %INITIALIZEMOVIE   Initialize a movie when solving a PDE specified by a SPINOP.
 %   INITIALIZEMOVIE
 
@@ -12,6 +12,7 @@ N = size(xx, 1);
 nVars = S.numVars;
 xxplot = [xx; 2*xx(end) - xx(end-1)];
 vscale = max(abs(v));
+dataToPlot = str2func(pref.dataToPlot);
 
 % Loop over the variables:
 p = cell(nVars, 1); clf
@@ -19,7 +20,7 @@ for k = 1:nVars
     
     % Extract each variable:
     idx = (k-1)*N + 1;
-    vplot = real(v(idx:idx+N-1));
+    vplot = dataToPlot(real(v(idx:idx+N-1)));
     vplot = [vplot; vplot(1)]; %#ok<*AGROW>
     
     % Get the YLIM for the y-axis:
@@ -47,6 +48,7 @@ for k = 1:nVars
     
 end
 disp('Type <space> when ready.'), shg, pause
-plotOption = Ylim;
+plotOptions{1} = Ylim;
+plotOptions{2} = dataToPlot;
 
 end

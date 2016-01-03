@@ -1,4 +1,4 @@
-function [p, plotOption] = initializeMovie(S, dt, pref, v, gridPoints)
+function [p, plotOptions] = initializeMovie(S, dt, pref, v, gridPoints)
 %INITIALIZEMOVIE   Initialize a movie when solving a PDE specified by a SPINOP3.
 %   INITIALIZEMOVIE
 
@@ -11,6 +11,7 @@ yy = gridPoints{2};
 zz = gridPoints{3};
 N = size(xx, 1);
 nVars = S.numVars;
+dataToPlot = str2func(pref.dataToPlot);
 dom = S.domain;
 tt = trigpts(N, dom);
 if ( isempty(pref.slices) == 1 )
@@ -57,7 +58,7 @@ for k = 1:nVars
     
     % Extract each variable:
     idx = (k-1)*N + 1;
-    vplot = real(v(idx:idx+N-1,:,:));
+    vplot = dataToPlot(v(idx:idx+N-1,:,:));
     vplot = [vplot, vplot(:,1,:)]; %#ok<*AGROW>
     vplot = [vplot; vplot(1,:,:)];
     vplot = cat(3, vplot, vplot(:,:,1));
@@ -74,6 +75,7 @@ for k = 1:nVars
     
 end
 disp('Type <space> when ready.'), shg, pause
-plotOption = [];
+plotOptions{1} = {Sx, Sy, Sz};
+plotOptions{2} = dataToPlot;
 
 end

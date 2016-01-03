@@ -181,7 +181,7 @@ if ( strcmpi(plottingstyle, 'movie') == 1 )
     elseif ( dim == 3 );
         gridPoints = {xx; yy; zz};
     end
-    [p, plotOption] = initializeMovie(S, dt, pref, v, gridPoints);
+    [p, plotOptions] = initializeMovie(S, dt, pref, v, gridPoints);
 end
 
 
@@ -274,7 +274,7 @@ while ( t < tf )
                     v = [v; temp];
                 end
                 valuesUpdated = 1;
-                plotOption = plotMovie(S, dt, p, plotOption, t, v, gridPoints);
+                plotOptions = plotMovie(S, dt, p, plotOptions, t, v, gridPoints);
                 
             % Store the values every ITERPLOT iterations if using WATERFALL:
             % Note: Only in dimension 1.
@@ -404,7 +404,7 @@ end
 
 % Make sure that the solution at TF has been plotted if using MOVIE:
 if ( strcmpi(plottingstyle, 'movie') == 1 )
-    plotMovie(S, dt, p, plotOption, t, v, gridPoints);
+    plotMovie(S, dt, p, plotOptions, t, v, gridPoints);
 end
 
 % Use WATERFALL if using WATERFALL:

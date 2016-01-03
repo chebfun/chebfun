@@ -1,4 +1,4 @@
-function plotOption = plotMovie(S, dt, p, plotOption, t, v, gridPoints)
+function plotOptions = plotMovie(S, dt, p, plotOptions, t, v, gridPoints)
 %PLOTMOVIE   Plot a movie when solving a PDE specified by a SPINOP3.
 %   PLOTMOVIE
 
@@ -11,6 +11,7 @@ yy = gridPoints{2};
 zz = gridPoints{3};
 N = size(xx, 1);
 nVars = S.numVars;
+dataToPlot = plotOptions{2};
 dom = S.domain;
 tt = trigpts(N, dom);
 xxplot = [xx, 2*xx(:,end,:) - xx(:,end-1,:)];
@@ -28,7 +29,7 @@ for k = 1:nVars
     
     % Extract each variable:
     idx = (k-1)*N + 1;
-    vplot = real(v(idx:idx+N-1,:,:));
+    vplot = dataToPlot(v(idx:idx+N-1,:,:));
     vplot = [vplot, vplot(:,1,:)]; %#ok<*AGROW>
     vplot = [vplot; vplot(1,:,:)];
     vplot = cat(3, vplot, vplot(:,:,1));
@@ -79,6 +80,5 @@ for k = 1:nVars
     end
     drawnow
 end
-plotOption = [];
 
 end

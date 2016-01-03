@@ -1,4 +1,4 @@
-function [p, plotOption] = initializeMovie(S, dt, pref, v, gridPoints)
+function [p, plotOptions] = initializeMovie(S, dt, pref, v, gridPoints)
 %INITIALIZEMOVIE   Initialize a movie when solving a PDE specified by a SPINOP2.
 %   INITIALIZEMOVIE
 
@@ -9,6 +9,7 @@ function [p, plotOption] = initializeMovie(S, dt, pref, v, gridPoints)
 dom = S.domain;
 nVars = S.numVars;
 viewSpec = pref.view;
+dataToPlot = str2func(pref.dataToPlot);
 defaultPref = spinpref2();
 defaultView = defaultPref.view;
 while ( length(viewSpec) < 2*nVars )
@@ -28,7 +29,7 @@ for k = 1:nVars
     
     % Extract each variable:
     idx = (k-1)*N + 1;
-    vplot = real(v(idx:idx+N-1,:));
+    vplot = dataToPlot(v(idx:idx+N-1,:));
     vplot = [vplot, vplot(:,1)]; %#ok<*AGROW>
     vplot = [vplot; vplot(1,:)];
     
@@ -45,6 +46,7 @@ for k = 1:nVars
     
 end
 disp('Type <space> when ready.'), shg, pause
-plotOption = viewSpec;
+plotOptions{1} = viewSpec;
+plotOptions{2} = dataToPlot;
 
 end

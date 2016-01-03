@@ -35,10 +35,10 @@ classdef spinoperator
         [L, Nc] = discretize(S, N)
         
         % Initialize a movie when solving a PDE specified by a SPINOPERATOR:
-        [p, plotOption] = initializeMovie(S, dt, pref, v, gridPoints)
+        [p, plotOptions] = initializeMovie(S, dt, pref, v, gridPoints)
         
         % Plot a movie when solving a PDE specified by a SPINOPERATOR:
-        plotOption = plotMovie(S, dt, p, plotOption, t, v, gridPoints)
+        plotOptions = plotMovie(S, dt, p, plotOptions, t, v, gridPoints)
         
     end
    
