@@ -14,12 +14,12 @@ nVars = S.numVars;
 dom = S.domain;
 tt = trigpts(N, dom);
 if ( isempty(pref.slices) == 1 )
-    idx1 = floor(N/10);
-    idx2 = floor(9*N/10);
-    idx3 = floor(N/2) + 1;
-    Sx = [tt(idx1); tt(idx2)];
-    Sy = tt(idx3);
-    Sz = Sx;
+    leftPos = floor(N/10);
+    midPos = floor(N/2) + 1;
+    rightPos = floor(9*N/10);
+    Sx = tt(midPos);
+    Sy = Sx;
+    Sz = [tt(leftPos); tt(rightPos)];
 else
     slices = pref.slices;
     Sx = slices{1};
@@ -73,7 +73,7 @@ for k = 1:nVars
     drawnow
     
 end
-disp('Type <space> when ready.'), pause
+disp('Type <space> when ready.'), shg, pause
 plotOption = [];
 
 end

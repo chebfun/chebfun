@@ -74,7 +74,7 @@ end
         % Ginzburg-Landau equations:
         if ( strcmpi(pdechar, 'GL3') == 1 )
             L = @(u) laplacian(u);
-            N = @(u) u - (1 + 1.3i)*u.*(abs(u).^2);
+            N = @(u) u - (1 + 1.1i)*u.*(abs(u).^2);
         
         % Gray-Scott equations:
         elseif ( strcmpi(pdechar, 'GS3') == 1 )

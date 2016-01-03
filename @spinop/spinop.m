@@ -89,7 +89,7 @@ end
         % Gray-Scott equations:
         elseif ( strcmpi(pdechar, 'GS') == 1 )
             L = @(u,v) [diff(u,2); 0.01*diff(v,2)];
-            N = @(u,v) [ 0.09*(1 - u) - u.*v.^2; - 0.0862*v + u.*v.^2];
+            N = @(u,v) [ 0.02*(1 - u) - u.*v.^2; -.0862*v + u.*v.^2];
             
         % Korteweg-de Vries equation:
         elseif ( strcmpi(pdechar, 'KdV') == 1 )
