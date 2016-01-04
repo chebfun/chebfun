@@ -12,14 +12,25 @@ function [newTree, lambdaTree, lambdaSign] = splitTreeEIG(treeIn)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Begin by finding the subtree which contains the eigenvalue parameter LAMBDA.
-[newTree, lambdaTree, lambdaSign] = findLambda(treeIn, 1);
+[newTree, lambdaTree, lambdaSign, lambdaFactors] = findLambda(treeIn, 1);
+
+% We allow at most 1 factor where lambda appears in, i.e. lambda*(u + u') is OK,
+% but lambda*u/2 is not.  CF #1697.
+assert(lambdaFactors < 2, 'CHEBFUN:STRINGPARSER:splitTreeEIG:factors', ...
+    ['Only one factor where lambda appears is supported, e.g.\n', ...
+    '       lambda*u/x \n' ...
+    'or \n ', ...
+    '       lambda*(u+ u'')*2 \n', ...
+    'are not supported on the right-hand side.\n', ...
+    'Please rearrange the equation(s) accordingly.'])
 
 % Do the basic splitting (converting = into -) in newTree
 newTree = stringParser.splitTree(newTree);
 
 end
 
-function [newTree, lambdaTree, lambdaSign] = findLambda(treeIn, lambdaSign)
+function [newTree, lambdaTree, lambdaSign, lambdaFactors] = ...
+    findLambda(treeIn, lambdaSign)
 %FINDLAMBDA   Find where the eigenvalue parameter LAMBDA appears in TREEIN.
 
 % Initialization.
@@ -28,6 +39,12 @@ newTree = treeIn;
 % Start with empty trees.
 leftEmpty = 1;
 rightEmpty = 1;
+
+% Counters for the lambda factors. CF #1697.
+lambdaFactorsLeft = 0;
+lambdaFactorsRight = 0;
+
+% Initialize trees.
 lambdaTree = [];
 lambdaTreeLeft = [];
 lambdaTreeRight = [];
@@ -36,7 +53,8 @@ treeCenter = treeIn.center;
 % Check whether we have a syntax tree to the left. If so, look recursively for
 % LAMBDA in there.
 if ( isfield(treeIn, 'left') )
-    [newLeft, lambdaTreeLeft, lambdaSign] = findLambda(treeIn.left, lambdaSign);
+    [newLeft, lambdaTreeLeft, lambdaSign, lambdaFactorsLeft] = ...
+        findLambda(treeIn.left, lambdaSign);
     newTree.left = newLeft;
     leftEmpty = 0;
 end
@@ -44,11 +62,14 @@ end
 % Check whether we have a syntax tree to the right. If so, look recursively for
 % LAMBDA in there.
 if ( isfield(treeIn, 'right') )
-    [newRight, lambdaTreeRight, lambdaSign] = findLambda(treeIn.right, ...
-        lambdaSign);
+    [newRight, lambdaTreeRight, lambdaSign, lambdaFactorsRight] = ...
+        findLambda(treeIn.right, lambdaSign);
     newTree.right = newRight;
     rightEmpty = 0;
 end
+
+% Update the count of lambdaFactors
+lambdaFactors = lambdaFactorsLeft + lambdaFactorsRight;
 
 % Return a new lambdaTree. If the operator in the center of treeIn is a *, we
 % want to return the whole treeIn (e.g. when we see lambda*u). If not, we return
@@ -67,6 +88,7 @@ if ( ~isempty(lambdaTreeLeft) )
     else
         lambdaTree = lambdaTreeLeft;
     end
+    lambdaFactors = lambdaFactors + any(strcmp(treeCenter{2}, {'OP*','OP/'}));
 end
 
 % Then go through the right tree:
@@ -74,14 +96,15 @@ if ( ~isempty(lambdaTreeRight) )
     if ( strcmp(treeCenter{2},'OP*') )
         lambdaTree = treeIn;
     elseif ( strcmp(treeCenter{2}, 'UN-') )
-        lambdaTree= struct('center', {{'-','UN-'}}, 'right', lambdaTreeRight);
+        lambdaTree = struct('center', {{'-','UN-'}}, 'right', lambdaTreeRight);
     % If we have a binary -, and lambda is on the right, we need to switch
     % signs on the lambdaTree. Add a unary minus at the top of the tree.
     elseif ( strcmp(treeCenter{2}, 'OP-') )
-        lambdaTree= struct('center', {{'-','UN-'}}, 'right', lambdaTreeRight);
+        lambdaTree = struct('center', {{'-','UN-'}}, 'right', lambdaTreeRight);
     else
         lambdaTree = lambdaTreeRight;
     end
+    lambdaFactors = lambdaFactors + any(strcmp(treeCenter{2}, {'OP*','OP/'}));
 end
 
 % Both left and right trees are empty. We must be at a leaf!
