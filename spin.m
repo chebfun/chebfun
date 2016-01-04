@@ -6,6 +6,6 @@ function [uout, tout] = spin(varargin)
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-[uout, tout] = spinoperator.solvepde(varargin);
+[uout, tout] = spinoperator.solvepde(varargin{:});
 
 end

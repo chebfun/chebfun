@@ -12,30 +12,28 @@ pref = [];
 S = [];
 tspan = [];
 u0 = [];
-varargin = varargin{1};
-nargin = length(varargin);
 for j = 1:nargin
     item =  varargin{j};
     if ( isa(item, 'char') == 1 )
         pdechar = item;
-    elseif ( isa(item, 'double') ) 
+    elseif ( isa(item, 'double') == 1 ) 
         tspan = item;
-    elseif ( isa(item, 'chebfun') )
+    elseif ( isa(item, 'chebfun') == 1 )
         u0 = chebmatrix(item);
-    elseif ( isa(item, 'chebfun2') )
+    elseif ( isa(item, 'chebfun2') == 1 )
         u0 = chebmatrix(item);
-    elseif ( isa(item, 'chebfun2v') )
+    elseif ( isa(item, 'chebfun2v') == 1 )
         u0 = chebmatrix(item(1));
         for k = 2:size(item, 1)
             u0(k,1) = item(k);
         end
-    elseif ( isa(item, 'chebfun3') )
+    elseif ( isa(item, 'chebfun3') == 1 )
         u0 = chebmatrix(item);
-    elseif ( isa(item, 'chebmatrix') )
+    elseif ( isa(item, 'chebmatrix') == 1 )
         u0 = item;
-    elseif ( isa(item, 'spinoperator') )
+    elseif ( isa(item, 'spinoperator') == 1 )
         S = item;
-    elseif ( isa(item, 'spinpreference') )
+    elseif ( isa(item, 'spinpreference') == 1 )
         pref = item;
     else
         error('SPINOPERATOR:solvepde', 'Unrecognized input.')
@@ -256,8 +254,12 @@ while ( t < tf )
         if (  err <= errTol || dt <= dtmin || adaptiveTime == 0 )
             
             % Update time T, iteration ITER and Fourier coefficients C:
-            t = t + dt;
             iter = iter + 1;
+            if ( adaptiveTime == 1 )
+                t = t + dt;
+            else
+                t = (iter + q - 1)*dt;
+            end
             success = success + 1;
             c = cnew2;
             
@@ -296,7 +298,7 @@ while ( t < tf )
             
             % Make sure that the solution is computed at the entries of TSPAN:
             if ( t + 2*dt > tspan(pos) && t ~= tspan(pos) )
-                if ( dt == tspan(pos) - t )
+                if ( t + dt == tspan(pos) || adaptiveTime == 0 )
                     continue
                 else
                     dt = tspan(pos) - t;
