@@ -32,47 +32,15 @@ if ( isreal(L) == 1 )
     phi2 = real(phi2);
     phi3 = real(phi3);
 end
-   
-if ( strcmpi(schemeName, 'eglm433') == 1 )
     
-    % Compute C:
-    C(1) = 0;
-    C(2) = 1/2;
-    C(3) = 1;
-    
-    % Compute the phi functions:
-    phi4 = spinscheme.phiEval(4, LR, N, dim, nVars);
-    phi5 = spinscheme.phiEval(5, LR, N, dim, nVars);
-    phit{1,2} = spinscheme.phitEval(1, C(2), LR, N, dim, nVars);
-    phit{1,3} = spinscheme.phitEval(1, C(3), LR, N, dim, nVars);
-    phit{2,2} = spinscheme.phitEval(2, C(2), LR, N, dim, nVars);
-    phit{3,2} = spinscheme.phitEval(3, C(2), LR, N, dim, nVars);
-    
-    % Take real part fo diffusive problems (real eigenvalues):
-    if ( isreal(L) == 1 )
-        phi4 = real(phi4);
-        phi5 = real(phi5);
-        phit = cellfun(@(f) real(f), phit, 'UniformOutput', 0);
-    end
-    
-    % Compute A:
-    A{3,2} = 16/15*phi2 + 16/5*phi3 + 16/5*phi4;
-    
-    % Compute B:
-    B{2} = 32/15*(phi2 + phi3) - 64/5*phi4 - 128/5*phi5;
-    B{3} = -1/3*phi2 + 1/3*phi3 + 5*phi4 + 8*phi5;
-    
-    % Compute U:
-    U{2,1} = -2*(phit{2,2} + phit{3,2});
-    U{3,1} = -2/3*phi2 + 2*phi3 + 4*phi4;
-    U{2,2} = 1/2*phit{2,2} + phit{3,2};
-    U{3,2} = 1/10*phi2 - 1/5*phi3 - 6/5*phi4;
-    
-    % Compute V:
-    V{1} = -1/3*phi2 + 5/3*phi3 - phi4 - 8*phi5;
-    V{2} = 1/30*phi2 - 2/15*phi3 - 1/5*phi4 + 8/5*phi5;
-    
-elseif ( strcmpi(schemeName, 'etdrk4') == 1 )
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ETD MULTISTEP:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ETD RUNGE-KUTTA:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+if ( strcmpi(schemeName, 'etdrk4') == 1 )
         
     % Compute C:
     C(1) = 0;
@@ -156,7 +124,71 @@ elseif ( strcmpi(schemeName, 'exprk5s8') == 1 )
     B{6} = (125/14)*phi2 - (625/14)*phi3 + (1125/14)*phi4;
     B{7} = -(27/14)*phi2 + (162/7)*phi3 - (405/7)*phi4;
     B{8} = (1/2)*phi2 - (13/2)*phi3 + (45/2)*phi4;
-
+    
+elseif ( strcmpi(schemeName, 'friedli') == 1 )
+    
+    % Compute C:
+    C(1) = 0;
+    C(2) = 1/2;
+    C(3) = 1/2;
+    C(4) = 1;
+    
+    % Compute the phi functions:
+    phit{1,2} = spinscheme.phitEval(1, C(2), LR, N, dim, nVars);
+    phit{1,3} = spinscheme.phitEval(1, C(3), LR, N, dim, nVars);
+    phit{1,4} = spinscheme.phitEval(1, C(4), LR, N, dim, nVars);
+    phit{2,2} = spinscheme.phitEval(2, C(2), LR, N, dim, nVars);
+    
+    % Take real part fo diffusive problems (real eigenvalues):
+    if ( isreal(L) == 1 )
+        phit = cellfun(@(f) real(f), phit, 'UniformOutput', 0);
+    end
+    
+    % Compute A:
+    A{3,2} = 2*phit{2,2};
+    A{4,2} = -26/25*phi1 + 2/25*phi2;
+    A{4,3} = 26/25*phi1 + 48/25*phi2;
+    
+    % Compute B:
+    B{1} = phi1 - 3*phi2 + 4*phi3;
+    B{3} = 4*phi2 - 8*phi3;
+    B{4} = -phi2 + 4*phi3;
+    
+elseif ( strcmpi(schemeName, 'hochbruck-ostermann') == 1 )
+    
+    % Compute C:
+    C(1) = 0;
+    C(2) = 1/2;
+    C(3) = 1/2;
+    C(4) = 1;
+    C(5) = 1/2;
+    
+    % Compute the phi functions:
+    phit{1,2} = spinscheme.phitEval(1, C(2), LR, N, dim, nVars);
+    phit{1,3} = spinscheme.phitEval(1, C(3), LR, N, dim, nVars);
+    phit{1,4} = spinscheme.phitEval(1, C(4), LR, N, dim, nVars);
+    phit{1,5} = spinscheme.phitEval(1, C(5), LR, N, dim, nVars);
+    phit{2,2} = spinscheme.phitEval(2, C(2), LR, N, dim, nVars);
+    phit{3,2} = spinscheme.phitEval(3, C(2), LR, N, dim, nVars);
+     
+    % Take real part fo diffusive problems (real eigenvalues):
+    if ( isreal(L) == 1 )
+        phit = cellfun(@(f) real(f), phit, 'UniformOutput', 0);
+    end
+    
+    % Compute A:
+    A{3,2} = 4*phit{2,2};
+    A{4,2} = phi2;
+    A{5,2} = 1/4*phi2 - phi3 + 2*phit{2,2} - 4*phit{3,2};
+    A{4,3} = A{4,2};
+    A{5,3} = A{5,2};
+    A{5,4} = phit{2,2} - A{5,2};
+    
+    % Compute B:
+    B{1} = phi1 - 3*phi2 + 4*phi3;
+    B{4} = -phi2 + 4*phi3;
+    B{5} = 4*phi2 - 8*phi3;
+    
 elseif ( strcmpi(schemeName, 'krogstad') == 1 )
     
     % Compute C:
@@ -184,7 +216,87 @@ elseif ( strcmpi(schemeName, 'krogstad') == 1 )
     B{2} = 2*phi2 - 4*phi3;
     B{3} = 2*phi2 - 4*phi3;
     B{4} = -phi2 + 4*phi3;
+    
+elseif ( strcmpi(schemeName, 'minchev') == 1 )
+    
+    % Compute C:
+    C(1) = 0;
+    C(2) = 1/2;
+    C(3) = 1/2;
+    C(4) = 1;
+    
+    % Compute the phi functions:
+    phi4 = spinscheme.phiEval(4, LR, N, dim, nVars);
+    phit{1,2} = spinscheme.phitEval(1, C(2), LR, N, dim, nVars);
+    phit{1,3} = spinscheme.phitEval(1, C(3), LR, N, dim, nVars);
+    phit{1,4} = spinscheme.phitEval(1, C(4), LR, N, dim, nVars);
+    phit{2,2} = spinscheme.phitEval(2, C(2), LR, N, dim, nVars);
+    
+    % Take real part fo diffusive problems (real eigenvalues):
+    if ( isreal(L) == 1 )
+        phi4 = real(phi4);
+        phit = cellfun(@(f) real(f), phit, 'UniformOutput', 0);
+    end
+    
+    % Compute A:
+    A{3,2} = 4/25*phit{1,2} + 24/25*phit{2,2};
+    A{4,2} = 21/5*phi2 - 108/5*phi3;
+    A{4,3} = 1/20*phi1 - 33/10*phi2 + 123/5*phi3;
+    
+    % Compute B:
+    B{1} = 31/30*phi1 - 17/5*phi2 + 6*phi3 - 4*phi4;
+    B{2} = -1/10*phi1 + 1/5*phi2 - 4*phi3 + 12*phi4;
+    B{3} = 1/30*phi1 + 23/5*phi2 - 8*phi3 - 4*phi4;
+    B{4} = 1/30*phi1 - 7/5*phi2 + 6*phi3 - 4*phi4;
+    
+elseif ( strcmpi(schemeName, 'strehmel-weiner') == 1 )
+    
+    % Compute C:
+    C(1) = 0;
+    C(2) = 1/2;
+    C(3) = 1/2;
+    C(4) = 1;
+    
+    % Compute the phi functions:
+    phit{1,2} = spinscheme.phitEval(1, C(2), LR, N, dim, nVars);
+    phit{1,3} = spinscheme.phitEval(1, C(3), LR, N, dim, nVars);
+    phit{1,4} = spinscheme.phitEval(1, C(4), LR, N, dim, nVars);
+    phit{2,2} = spinscheme.phitEval(2, C(2), LR, N, dim, nVars);
+    
+    % Take real part fo diffusive problems (real eigenvalues):
+    if ( isreal(L) == 1 )
+        phit = cellfun(@(f) real(f), phit, 'UniformOutput', 0);
+    end
+    
+    % Compute A:
+    A{3,2} = 2*phit{2,2};
+    A{4,2} = -2*phi2;
+    A{4,3} = 4*phi2;
+    
+    % Compute B:
+    B{1} = phi1 - 3*phi2 + 4*phi3;
+    B{3} = 4*phi2 - 8*phi3;
+    B{4} = -phi2 + 4*phi3;
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% EPI RUNGE-KUTTA:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% LAWSON:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% GENERALIZED LAWSON:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% MODIFIED GENERALIZED LAWSON:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PREDICTOR-CORRECTOR:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 elseif ( strcmpi(schemeName, 'pecec433') == 1 )
     
     % Compute C:
@@ -219,6 +331,48 @@ elseif ( strcmpi(schemeName, 'pecec433') == 1 )
     V{1} = -phi2 + phi3 + 3*phi4;
     V{2} = 1/6*phi2 - phi4;
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% MISC:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+elseif ( strcmpi(schemeName, 'eglm433') == 1 )
+    
+    % Compute C:
+    C(1) = 0;
+    C(2) = 1/2;
+    C(3) = 1;
+    
+    % Compute the phi functions:
+    phi4 = spinscheme.phiEval(4, LR, N, dim, nVars);
+    phi5 = spinscheme.phiEval(5, LR, N, dim, nVars);
+    phit{1,2} = spinscheme.phitEval(1, C(2), LR, N, dim, nVars);
+    phit{1,3} = spinscheme.phitEval(1, C(3), LR, N, dim, nVars);
+    phit{2,2} = spinscheme.phitEval(2, C(2), LR, N, dim, nVars);
+    phit{3,2} = spinscheme.phitEval(3, C(2), LR, N, dim, nVars);
+    
+    % Take real part fo diffusive problems (real eigenvalues):
+    if ( isreal(L) == 1 )
+        phi4 = real(phi4);
+        phi5 = real(phi5);
+        phit = cellfun(@(f) real(f), phit, 'UniformOutput', 0);
+    end
+    
+    % Compute A:
+    A{3,2} = 16/15*phi2 + 16/5*phi3 + 16/5*phi4;
+    
+    % Compute B:
+    B{2} = 32/15*(phi2 + phi3) - 64/5*phi4 - 128/5*phi5;
+    B{3} = -1/3*phi2 + 1/3*phi3 + 5*phi4 + 8*phi5;
+    
+    % Compute U:
+    U{2,1} = -2*(phit{2,2} + phit{3,2});
+    U{3,1} = -2/3*phi2 + 2*phi3 + 4*phi4;
+    U{2,2} = 1/2*phit{2,2} + phit{3,2};
+    U{3,2} = 1/10*phi2 - 1/5*phi3 - 6/5*phi4;
+    
+    % Compute V:
+    V{1} = -1/3*phi2 + 5/3*phi3 - phi4 - 8*phi5;
+    V{2} = 1/30*phi2 - 2/15*phi3 - 1/5*phi4 + 8/5*phi5;
+    
 end
 
 % PUT everything in COEFFS:

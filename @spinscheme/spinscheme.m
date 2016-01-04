@@ -27,13 +27,14 @@ classdef spinscheme
                 return
             end
             
-            if ( strcmpi(schemeName, 'eglm433') == 1 )
-                K.internalStages = 3;
-                K.order = 4;
-                K.scheme = schemeName;
-                K.steps = 3;
-                
-            elseif ( strcmpi(schemeName, 'etdrk4') == 1 )
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            % ETD MULTISTEP:
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            % ETD RUNGE-KUTTA:
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            if ( strcmpi(schemeName, 'etdrk4') == 1 )
                 K.internalStages = 4;
                 K.order = 4;
                 K.scheme = schemeName;
@@ -45,13 +46,65 @@ classdef spinscheme
                 K.scheme = schemeName;
                 K.steps = 1;
                 
+            elseif ( strcmpi(schemeName, 'friedli') == 1 )
+                K.internalStages = 4;
+                K.order = 4;
+                K.scheme = schemeName;
+                K.steps = 1;
+                
+            elseif ( strcmpi(schemeName, 'hochbruck-ostermann') == 1 )
+                K.internalStages = 5;
+                K.order = 4;
+                K.scheme = schemeName;
+                K.steps = 1;
+                  
             elseif ( strcmpi(schemeName, 'krogstad') == 1 )
                 K.internalStages = 4;
                 K.order = 4;
                 K.scheme = schemeName;
                 K.steps = 1;
                 
+            elseif ( strcmpi(schemeName, 'minchev') == 1 )
+                K.internalStages = 4;
+                K.order = 4;
+                K.scheme = schemeName;
+                K.steps = 1;
+                
+            elseif ( strcmpi(schemeName, 'strehmel-weiner') == 1 )
+                K.internalStages = 4;
+                K.order = 4;
+                K.scheme = schemeName;
+                K.steps = 1;
+                
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
+            % EPI RUNGE-KUTTA:
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            % LAWSON:
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            % GENERALIZED LAWSON:
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            % MODIFIED GENERALIZED LAWSON:
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            % PREDICTOR-CORRECTOR:    
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             elseif ( strcmpi(schemeName, 'pecec433') == 1 )
+                K.internalStages = 3;
+                K.order = 4;
+                K.scheme = schemeName;
+                K.steps = 3;
+
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            % MISC:
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            elseif ( strcmpi(schemeName, 'eglm433') == 1 )
                 K.internalStages = 3;
                 K.order = 4;
                 K.scheme = schemeName;
