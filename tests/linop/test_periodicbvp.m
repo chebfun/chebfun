@@ -22,7 +22,7 @@ L = addbc(L,'periodic');
 
 type = {@chebcolloc2, @chebcolloc1, @ultraS, @chebcolloc2, @chebcolloc1, @ultraS};
 prefs = cheboppref;
-prefs.errTol = 1e-14;
+prefs.bvpTol = 1e-14;
 
 w = [];
 for k = 1:6

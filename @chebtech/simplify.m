@@ -64,6 +64,6 @@ end
 cutoff = min(cutoff, nold);
 
 % Chop coefficients using CUTOFF.
-f.coeffs = coeffs(1:cutoff,:);
+f.coeffs = f.coeffs(1:cutoff,:);
 
 end

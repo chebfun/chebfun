@@ -1,8 +1,8 @@
 function varargout = cheblogo()
 %CHEBLOGO   Plot the Chebfun logo.
-%   CHEBLOGO() plots the Chebfun logo.
+%   CHEBLOGO plots the Chebfun logo.
 %
-%   F = CHEBLOGO() returns a CHEBFUN of the Chebfun logo.
+%   F = CHEBLOGO returns a CHEBFUN of the Chebfun logo.
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.

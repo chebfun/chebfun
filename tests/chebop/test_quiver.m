@@ -18,7 +18,7 @@ pass(2) = doesNotCrash(@() quiver(N,[0 1 0 2],'xpts',25','ypts', 25, ...
 %% Lotka-Volterra, first order coupled system
 N = chebop(@(t,u,v) [diff(u)-2.*u+u.*v; diff(v)+v-u.*v], [0 4]);
 pass(3) = doesNotCrash(@() quiver(N, [0 2 0 4], 'normalize', true, ...
-    'scale',.5,'linespec',{'linewidth',2}));
+    'scale',.5,'linewidth',2));
 
 %% Third order ODE should give an error
 N = chebop(0, 10*pi);

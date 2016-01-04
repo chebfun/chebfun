@@ -47,7 +47,7 @@ pass(7) = (~cheboppref().damping) && strcmp(cheboppref().plotting, 'on');
 cheboppref.setDefaults(savedPrefs);
 
 % Test getting defaults:
-pass(8) = isnumeric(cheboppref().errTol);
+pass(8) = isnumeric(cheboppref().bvpTol);
 
 % Test specifying discretization via strings
 cheboppref.setDefaults('factory');

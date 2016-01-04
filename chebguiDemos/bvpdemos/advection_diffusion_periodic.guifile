@@ -4,7 +4,6 @@ domain = '[0, 2*pi]';
 DE = '0.02*u'''' + u'' + u = exp(4*cos(3*x))';
 BC = {'periodic'};
 init = ''; 
-tol = '1e-10';
 damping = '0';
 plotting = '0.1';
 type = 'bvp';
