@@ -17,6 +17,17 @@ funcL = S.linearPart;
 funcNc = S.nonlinearPartCoeffs;
 nVars = nargin(funcL);
 
+% Get the variables of the workspace:
+func = functions(funcL);
+wrk = func.workspace{1};
+names = fieldnames(wrk);
+if ( isempty(names) == 0 )
+    lengthNames = size(names, 1);
+    for k = 1:lengthNames
+        eval(sprintf('%s = wrk.(names{k});', names{k}));
+    end
+end
+
 % Create a CHEBOPPREF object with TRIGSPEC discretization:
 pref = cheboppref();
 pref.discretization = @trigspec;
@@ -26,7 +37,7 @@ pref.discretization = @trigspec;
 % Add the dependent variable 'x': 
 strL = func2str(funcL);
 strL = strrep(strL, '@(', '@(x,');
-funcL = str2func(strL);
+funcL = eval(strL);
 
 % USE CHEBOP, LINOP and MATRIX with TRIGSPEC discretization:
 matL = matrix(linop(chebop(funcL, dom)), N, pref);

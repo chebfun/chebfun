@@ -47,7 +47,7 @@
          diffOrder = '0';
      end
      Nc = ['@(u) diff(u,', diffOrder, ')'];
-     Nc = str2func(Nc);
+     Nc = eval(Nc);
      
  % For scalar equations in 2D and 3D, and for systems of equations in 1D, 2D and
  % 3D, we only support nonlinearities of the form f_i(u_1,...,u_n), i.e., with 
@@ -77,7 +77,8 @@
              ['u(', idx1, ':', idx2, ',:,:)']);
          strNv = strNvNew;
      end
-     Nv = str2func(['@(u)', strNvNew]);
+     Nv = ['@(u)', strNvNew];
+     Nv = eval(Nv);
      
  end
  
