@@ -285,6 +285,37 @@ elseif ( strcmpi(schemeName, 'strehmel-weiner') == 1 )
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % LAWSON:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+elseif ( strcmpi(schemeName, 'lawson4') == 1 )
+    
+    % Compute C:
+    C(1) = 0;
+    C(2) = 1/2;
+    C(3) = 1/2;
+    C(4) = 1;
+    
+    % Compute the phi functions:
+    phi0 = spinscheme.phiEval(0, LR, N, dim, nVars);
+    phit{1,2} = spinscheme.phitEval(1, C(2), LR, N, dim, nVars);
+    phit{1,3} = spinscheme.phitEval(1, C(3), LR, N, dim, nVars);
+    phit{1,4} = spinscheme.phitEval(1, C(4), LR, N, dim, nVars);
+    phit02 = spinscheme.phitEval(0, C(2), LR, N, dim, nVars);
+    
+    % Take real part fo diffusive problems (real eigenvalues):
+    if ( isreal(L) == 1 )
+        phi0 = real(phi0);
+        phit02 = real(phit02);
+        phit = cellfun(@(f) real(f), phit, 'UniformOutput', 0);
+    end
+    
+    % Compute A:
+    A{3,2} = 1/2;
+    A{4,3} = phit02;
+    
+    % Compute B:
+    B{1} = 1/6*phi0;
+    B{2} = 1/3*phit02;
+    B{3} = B{2};
+    B{4} = 1/6;
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % GENERALIZED LAWSON:
@@ -330,7 +361,50 @@ elseif ( strcmpi(schemeName, 'pecec433') == 1 )
     % Compute V:
     V{1} = -phi2 + phi3 + 3*phi4;
     V{2} = 1/6*phi2 - phi4;
+    
+elseif ( strcmpi(schemeName, 'pecec635') == 1 )
+        
+    % Compute C:
+    C(1) = 0;
+    C(2) = 1;
+    C(3) = 1;
+    
+    % Compute the phi- and phit-functions:
+    phi4 = spinscheme.phiEval(4, LR, N, dim, nVars);
+    phi5 = spinscheme.phiEval(5, LR, N, dim, nVars);
+    phi6 = spinscheme.phiEval(6, LR, N, dim, nVars);
+    phit{1,2} = spinscheme.phitEval(1, C(2), LR, N, dim, nVars);
+    phit{1,3} = spinscheme.phitEval(1, C(3), LR, N, dim, nVars);
+    
+    % Take real part for diffusive problems (real eigenvalues):
+    if ( isreal(L) == 1 )
+        phi4 = real(phi4);
+        phit = cellfun(@(f) real(f), phit, 'UniformOutput', 0);
+    end
+    
+    % Compute A:
+    A{3,2} = 1/5*phi2 + 5/6*phi3 + 7/4*phi4 + 2*phi5 + phi6;
 
+    % Compute B:
+    B{1} =  phi1 + 13/12*phi2 - 5/4*phi3 - 25/4*phi4 - 9*phi5 - 5*phi6;
+    B{3} = 1/5*phi2 + 5/6*phi3 + 7/4*phi4 + 2*phi5 + phi6;
+   
+    % Compute U:
+    U{2,1} = -4*phi2 - 26/3*phi3 - 9*phi4 - 4*phi5;
+    U{2,2} = 3*phi2 + 19/2*phi3 + 12*phi4 + 6*phi5;
+    U{2,3} = -4/3*phi2 - 14/3*phi3 - 7*phi4 - 4*phi5;
+    U{2,4} = 1/4*phi2 + 11/12*phi3 + 3/2*phi4 + phi5;
+    U{3,1} = -2*phi2 - 1/3*phi3 + 17/2*phi4 + 16*phi5 + 10*phi6;
+    U{3,2} = phi2 + 7/6*phi3 - 11/2*phi4 - 14*phi5 - 10*phi6;
+    U{3,3} = -1/3*phi2 - 1/2*phi3 + 7/4*phi4 + 6*phi5 + 5*phi6;
+    U{3,4} = 1/20*phi2 + 1/12*phi3 - 1/4*phi4 - phi5 - phi6;
+    
+    % Compute V:
+    V{1} = -2*phi2 - 1/3*phi3 + 17/2*phi4 + 16*phi5 + 10*phi6;
+    V{2} = phi2 + 7/6*phi3 - 11/2*phi4 - 14*phi5 - 10*phi6;
+    V{3} = -1/3*phi2 - 1/2*phi3 + 7/4*phi4 + 6*phi5 + 5*phi6;
+    V{4} = 1/20*phi2 + 1/12*phi3 - 1/4*phi4 - phi5 - phi6;
+    
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % MISC:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
