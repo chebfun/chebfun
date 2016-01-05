@@ -69,7 +69,7 @@ elseif ( isa(u0{1}, 'chebfun3') == 1 )
 end
     
 % We estimate the exact solution using a very small time step (half the smallest
-% time step given) and using EXPRK5S8:
+% time step given) and using PECEC635 (6th-order multistep scheme):
 if ( isa(pref, 'spinpref') == 1 )
     prefuexact = spinpref();
 elseif ( isa(pref, 'spinpref2') == 1 )
@@ -77,7 +77,7 @@ elseif ( isa(pref, 'spinpref2') == 1 )
 elseif ( isa(pref, 'spinpref3') == 1 )
     prefuexact = spinpref3();
 end
-prefuexact.scheme = 'exprk5s8';
+prefuexact.scheme = 'pecec635';
 prefuexact.dt = min(timesteps)/2;
 prefuexact.plotting = [];
 prefuexact.M = pref.M;
@@ -149,7 +149,7 @@ for l = 1:nSchemes
 end
 left = 10^(floor(log10(min(timesteps))));
 right = 10^(ceil(log10(max(timesteps))));
-set(gca, 'fontsize', 16), axis([left right 1e-14 1e2])
+set(gca, 'fontsize', 16), axis([left right 1e-16 1e0])
 xlabel('Relative time-step'), ylabel(sprintf('Relative error at t = %.3f', TF))
 legend(labels, 'Location', 'NorthWest')
 
@@ -169,7 +169,7 @@ for l = 1:nSchemes
 end
 left = 10^(floor(log10(min(min(time)))));
 right = 10^(ceil(log10(max(max(time)))));
-set(gca, 'fontsize', 16), axis([left right 1e-14 1e2])
+set(gca, 'fontsize', 16), axis([left right 1e-16 1e0])
 xlabel('Computer time (s)'), ylabel(sprintf('Relative error at t = %.3f', TF))
 legend(labels, 'Location', 'NorthEast')
 

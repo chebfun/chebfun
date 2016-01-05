@@ -1,7 +1,7 @@
 function [uSol, dt] = startMultistep(K, adapTime, dt, L, LR, Nc, pref, S, uSol)
 %STARTMULTISTEP  Get enough initial data when using a multistep scheme.
 %    [USOL, DT] = STARTMULTISTEP(K, ADAPTIME, DT, L, LR, NC, PREF, S, USOL) does
-%    a few steps of ETDRK4 with timestep DT to get enough initial data C to 
+%    a few steps of EXPRK5S8 with timestep DT to get enough initial data C to 
 %    start the multistep SPINSCHEME K, using the linear part L, the linear part 
 %    for complex means LR, the nonlinear part of the operator in coefficient
 %    space NC, the SPINPREFERENCE object PREF, and the SPINOPERATOR S. ADAPTIME
@@ -25,15 +25,15 @@ coeffs = cell(q, 1);
 % Store the initial conidition in the last column:
 coeffs{q} = uSol{1};
 
-% Set-up ETDRK4:
-K = spinscheme('etdrk4');
+% Set-up EXPRK5S8 (5th-order one-step scheme):
+K = spinscheme('exprk5s8');
 schemeCoeffs = computeCoeffs(K, dt, L, LR, S);
 if ( adapTime == 1 )
     LR2 = computeLR(S, dt/2, L, M, N);
     schemeCoeffs2 = computeCoeffs(K, dt/2, L, LR2, S);
 end
 
-% Do Q-1 steps of ETDRK4:
+% Do Q-1 steps of EXPRK5S8:
 iter = 1;
 while ( iter <= q-1 ) 
     
