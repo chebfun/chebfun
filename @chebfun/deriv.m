@@ -1,13 +1,17 @@
-function out = deriv(f, xx, m)
+function out = deriv(f, xx, varargin)
 %DERIV   Evaluate a derivative of a CHEBFUN.
 %
-%   OUT = DERIV(F, X) evaluates the first derivative of the CHEBFUN F at the
-%   points in X. If F is a quasimatrix with columns F1, ..., FN, then the result
-%   will be [F1(X), ..., FN(X)], the horizontal concatenation of the results of
+%   DERIV(F, X) evaluates the first derivative of the CHEBFUN F at the points in
+%   X. If F is a quasimatrix with columns F1, ..., FN, then the result will be
+%   [F1(X), ..., FN(X)], the horizontal concatenation of the results of
 %   evaluating each column at the points in X.
 %
-%   OUT = DERIV(F, X, M) is the same as above, but returns the values of the Mth
+%   DERIV(F, X, M) is the same as above, but returns the values of the Mth
 %   derivative of F.
+%
+%   DERIV(F, X, S) or DERIV(F, X, S) where S is one of the strings 'left',
+%   'right', '+', or '-', evaluates the left- or right-sided limit as described
+%   in chebfun/feval.
 %
 %   Example:
 %     u = chebfun(@sin);
@@ -25,15 +29,27 @@ if ( isempty(f) )
     return
 end
 
-if ( nargin < 3 )
-    m = 1; % By default, compute first derivative
+% By default, compute first derivative:
+m = 1;      
+
+% Parse the inputs:
+if ( nargin == 3 )
+    if ( isnumeric(varargin{1}) ) % DERIV(F, X, M)
+        m = varargin{1};
+        varargin = {};
+    else                          % DERIV(F, X, S)
+        m = 1;  % By default, compute first derivative
+    end
+elseif ( nargin == 4 )            % DERIV(F, X, S, M)
+    m = varargin{2};
+    varargin{2} = [];
 end
 
 if ( m == 0 )
     % Trivial case
-    out = feval(f, xx);
+    out = feval(f, xx, varargin{:});
 else
-    out = feval(diff(f, m), xx);
+    out = feval(diff(f, m), xx, varargin{:});
 end
 
 end

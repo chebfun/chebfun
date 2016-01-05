@@ -24,4 +24,10 @@ pass(4) = norm(deriv(u, xx, 4) - feval(diff(u, 4), xx)) == 0;
 pass(5) = norm(deriv([u cos(u)], xx) - feval(diff([u cos(u)]), xx)) == 0;
 pass(6) = norm(deriv([u cos(u)], xx, 2) - feval(diff([u cos(u)], 2), xx)) == 0;
 
+%% Left- and right-sided evaluation
+x = chebfun(@(x) x, [-1 1]);
+v = cumsum(sign(x));
+pass(7) = norm(feval(diff(v), 0, 'left') - deriv(v, 0, 'left')) == 0;
+pass(8) = norm(feval(diff(v, 2), 0, '+') - deriv(v, 0, '+', 2)) == 0;
+
 end
