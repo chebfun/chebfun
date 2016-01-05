@@ -139,7 +139,13 @@ for l = 1:nSchemes
     if ( l > 1 )
         hold on
     end
-    loglog(timesteps, err(:, l), '.-', 'linewidth', 2, 'markersize', 20)
+    if ( l < 8 )
+        loglog(timesteps, err(:, l), '.-', 'linewidth', 2, 'markersize', 30)
+    elseif ( l < 15 )
+        loglog(timesteps, err(:, l), 'x-', 'linewidth', 2, 'markersize', 10)
+    else
+        loglog(timesteps, err(:, l), 'o-', 'linewidth', 2, 'markersize', 10)
+    end
 end
 left = 10^(floor(log10(min(timesteps))));
 right = 10^(ceil(log10(max(timesteps))));
@@ -153,7 +159,13 @@ for l = 1:nSchemes
     if ( l > 1 )
         hold on
     end
-    loglog(time(:,l), err(:, l), '.-', 'linewidth', 2, 'markersize', 20)
+    if ( l < 8 )
+        loglog(time(:,l), err(:, l), '.-', 'linewidth', 2, 'markersize', 30)
+   elseif ( l < 15 )
+        loglog(time(:,l), err(:, l), 'x-', 'linewidth', 2, 'markersize', 10)
+    else
+        loglog(time(:,l), err(:, l), 'o-', 'linewidth', 2, 'markersize', 10)
+    end
 end
 left = 10^(floor(log10(min(min(time)))));
 right = 10^(ceil(log10(max(max(time)))));

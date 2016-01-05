@@ -20,41 +20,37 @@ for k = 1:nVars
     % First set of coefficients.
     % IFFTSHIFT to use CHEBFUN indexing of wavenumbers:
     setToCheck = 1;
-    cShift = ifftshift(c{1}(idx:idx+N-1,setToCheck,setToCheck));
+    cCheb = ifftshift(c{1}(idx:idx+N-1,setToCheck,setToCheck));
     if ( mod(N,2) == 0 )
-        cShift = [cShift(N); cShift(N-1:-1:N/2+1) + ...
-            cShift(1:N/2-1); cShift(N/2)];
+        cCheb = [cCheb(N); cCheb(N-1:-1:N/2+1) + cCheb(1:N/2-1); cCheb(N/2)];
     else
-        cShift = [cShift(N:-1:(N+1)/2+1,:) + ...
-            cShift(1:(N+1)/2-1,:); cShift((N+1)/2,:)];
+        cCheb = [cCheb(N:-1:(N+1)/2+1) + cCheb(1:(N+1)/2-1); cCheb((N+1)/2)];
     end
     
     % Trick used in TRIGTECH/STANDARCHECK to get decaying coefficients:
-    cShift = flipud(cShift);
-    cShift = [cShift(1,1); kron(cShift(2:end,1), [1; 1])];
+    cCheb = flipud(cCheb);
+    cCheb = [cCheb(1,1); kron(cCheb(2:end,1), [1; 1])];
     
     % Use CHEBFUN STANDARDCHOP command:
-    cutoff = standardChop(cShift, errTol);
+    cutoff = standardChop(cCheb, errTol);
     ishappy(k) = ( cutoff < N );
     
     % Second set of coefficients.
     % IFFTSHIFT to use CHEBFUN indexing of wavenumbers:
     setToCheck = N;
-    cShift = ifftshift(c{1}(idx:idx+N-1,setToCheck,setToCheck));
+    cCheb = ifftshift(c{1}(idx:idx+N-1,setToCheck,setToCheck));
     if ( mod(N,2) == 0 )
-        cShift = [cShift(N); cShift(N-1:-1:N/2+1) + ...
-            cShift(1:N/2-1); cShift(N/2)];
+        cCheb = [cCheb(N); cCheb(N-1:-1:N/2+1) + cCheb(1:N/2-1); cCheb(N/2)];
     else
-        cShift = [cShift(N:-1:(N+1)/2+1,:) + ...
-            cShift(1:(N+1)/2-1,:); cShift((N+1)/2,:)];
+        cCheb = [cCheb(N:-1:(N+1)/2+1) + cCheb(1:(N+1)/2-1); cCheb((N+1)/2)];
     end
     
     % Trick used in TRIGTECH/STANDARCHECK to get decaying coefficients:
-    cShift = flipud(cShift);
-    cShift = [cShift(1,1); kron(cShift(2:end,1), [1; 1])];
+    cCheb = flipud(cCheb);
+    cCheb = [cCheb(1,1); kron(cCheb(2:end,1), [1; 1])];
     
     % Use CHEBFUN STANDARDCHOP command:
-    cutoff = standardChop(cShift, errTol);
+    cutoff = standardChop(cCheb, errTol);
     ishappy(k) = ishappy(k) && ( cutoff < N );
     
 end

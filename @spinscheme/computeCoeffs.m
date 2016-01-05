@@ -53,7 +53,7 @@ if ( strcmpi(schemeName, 'etdrk4') == 1 )
     phit{1,3} = spinscheme.phitEval(1, C(3), LR, N, dim, nVars);
     phit{1,4} = spinscheme.phitEval(1, C(4), LR, N, dim, nVars);
     
-    % Take real part fo diffusive problems (real eigenvalues):
+    % Take real part of diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
         phit = cellfun(@(f) real(f), phit, 'UniformOutput', 0);
     end
@@ -98,7 +98,7 @@ elseif ( strcmpi(schemeName, 'exprk5s8') == 1 )
     phit{4,6} = spinscheme.phitEval(4, C(6), LR, N, dim, nVars);
     phit{4,7} = spinscheme.phitEval(4, C(7), LR, N, dim, nVars);
     
-    % Take real part fo diffusive problems (real eigenvalues):
+    % Take real part of diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
         phi4 = real(phi4);
         phit = cellfun(@(f) real(f), phit, 'UniformOutput', 0);
@@ -139,7 +139,7 @@ elseif ( strcmpi(schemeName, 'friedli') == 1 )
     phit{1,4} = spinscheme.phitEval(1, C(4), LR, N, dim, nVars);
     phit{2,2} = spinscheme.phitEval(2, C(2), LR, N, dim, nVars);
     
-    % Take real part fo diffusive problems (real eigenvalues):
+    % Take real part of diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
         phit = cellfun(@(f) real(f), phit, 'UniformOutput', 0);
     end
@@ -171,7 +171,7 @@ elseif ( strcmpi(schemeName, 'hochbruck-ostermann') == 1 )
     phit{2,2} = spinscheme.phitEval(2, C(2), LR, N, dim, nVars);
     phit{3,2} = spinscheme.phitEval(3, C(2), LR, N, dim, nVars);
      
-    % Take real part fo diffusive problems (real eigenvalues):
+    % Take real part of diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
         phit = cellfun(@(f) real(f), phit, 'UniformOutput', 0);
     end
@@ -203,7 +203,7 @@ elseif ( strcmpi(schemeName, 'krogstad') == 1 )
     phit{1,4} = spinscheme.phitEval(1, C(4), LR, N, dim, nVars);
     phit{2,2} = spinscheme.phitEval(2, C(2), LR, N, dim, nVars);
     
-    % Take real part fo diffusive problems (real eigenvalues):
+    % Take real part of diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
         phit = cellfun(@(f) real(f), phit, 'UniformOutput', 0);
     end
@@ -232,7 +232,7 @@ elseif ( strcmpi(schemeName, 'minchev') == 1 )
     phit{1,4} = spinscheme.phitEval(1, C(4), LR, N, dim, nVars);
     phit{2,2} = spinscheme.phitEval(2, C(2), LR, N, dim, nVars);
     
-    % Take real part fo diffusive problems (real eigenvalues):
+    % Take real part of diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
         phi4 = real(phi4);
         phit = cellfun(@(f) real(f), phit, 'UniformOutput', 0);
@@ -263,7 +263,7 @@ elseif ( strcmpi(schemeName, 'strehmel-weiner') == 1 )
     phit{1,4} = spinscheme.phitEval(1, C(4), LR, N, dim, nVars);
     phit{2,2} = spinscheme.phitEval(2, C(2), LR, N, dim, nVars);
     
-    % Take real part fo diffusive problems (real eigenvalues):
+    % Take real part of diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
         phit = cellfun(@(f) real(f), phit, 'UniformOutput', 0);
     end
@@ -300,7 +300,7 @@ elseif ( strcmpi(schemeName, 'lawson4') == 1 )
     phit{1,4} = spinscheme.phitEval(1, C(4), LR, N, dim, nVars);
     phit02 = spinscheme.phitEval(0, C(2), LR, N, dim, nVars);
     
-    % Take real part fo diffusive problems (real eigenvalues):
+    % Take real part of diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
         phi0 = real(phi0);
         phit02 = real(phit02);
@@ -423,7 +423,7 @@ elseif ( strcmpi(schemeName, 'eglm433') == 1 )
     phit{2,2} = spinscheme.phitEval(2, C(2), LR, N, dim, nVars);
     phit{3,2} = spinscheme.phitEval(3, C(2), LR, N, dim, nVars);
     
-    % Take real part fo diffusive problems (real eigenvalues):
+    % Take real part of diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
         phi4 = real(phi4);
         phi5 = real(phi5);

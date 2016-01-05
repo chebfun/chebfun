@@ -184,8 +184,8 @@ end
 
 
 % Indexes for dealiasing:
-toOne = floor(N/2)+1-ceil(N/6):floor(N/2)+ceil(N/6);
-if ( dim == 1 )
+toOne = floor(N/2) + 1 - ceil(N/6):floor(N/2) + ceil(N/6);
+if ( dim == 1 ) 
     ind = false(N, 1);
     ind(toOne) = 1;
 elseif ( dim == 2 )
@@ -360,7 +360,7 @@ while ( t < tf )
     % If not resolved in space, double N, update quantities which depend on N,
     % and redo the step:
     else
-        xx = trigpts(2*N, dom(1:2));
+        xx = trigpts(2*N);
         if ( dim == 2 )
             [xx, yy] = meshgrid(xx, xx);
         elseif ( dim == 3 )
@@ -390,15 +390,22 @@ while ( t < tf )
         schemeCoeffs = computeCoeffs(K, dt, L, LR, S);
         LR2 = computeLR(S, dt/2, L, M, N);
         schemeCoeffs2 = computeCoeffs(K, dt/2, L, LR2, S);
-        ind = false(N, 1);
-        ind(floor(N/2)+1-ceil(N/6):floor(N/2)+ceil(N/6)) = 1;
+        toOne = floor(N/2) + 1 - ceil(N/6):floor(N/2) + ceil(N/6);
+        xx = trigpts(N, dom(1:2));
         if ( dim == 1 )
+            ind = false(N, 1);
+            ind(toOne) = 1;
             gridPoints = xx;
         elseif ( dim == 2 )
+            ind = false(N, N);
+            ind(toOne, toOne) = 1;
             gridPoints = {xx; yy};
         elseif ( dim == 3 );
+            ind = false(N, N, N);
+            ind(toOne, toOne, toOne) = 1;
             gridPoints = {xx; yy; zz};
         end
+        ind = repmat(ind, nVars, 1);
         success = 0;
     end
     
@@ -517,7 +524,7 @@ elseif ( strcmpi(pdechar, 'GL3') == 1 )
     u0 = chebmatrix(chebfun3(vals, dom, 'trig'));
 
 elseif ( strcmpi(pdechar, 'GS') == 1 )
-    tspan = [0 20000];
+    tspan = [0 10000];
     L = 50;
     dom = L*[-1 1];
     u01 = chebfun(@(x) 1 - 1/2*sin(pi*(x-L)/(2*L)).^100, dom, 'trig');
