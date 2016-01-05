@@ -295,10 +295,10 @@ elseif ( strcmpi(schemeName, 'lawson4') == 1 )
     
     % Compute the phi functions:
     phi0 = spinscheme.phiEval(0, LR, N, dim, nVars);
+    phit02 = spinscheme.phitEval(0, C(2), LR, N, dim, nVars);
     phit{1,2} = spinscheme.phitEval(1, C(2), LR, N, dim, nVars);
     phit{1,3} = spinscheme.phitEval(1, C(3), LR, N, dim, nVars);
     phit{1,4} = spinscheme.phitEval(1, C(4), LR, N, dim, nVars);
-    phit02 = spinscheme.phitEval(0, C(2), LR, N, dim, nVars);
     
     % Take real part of diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
@@ -320,11 +320,97 @@ elseif ( strcmpi(schemeName, 'lawson4') == 1 )
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % GENERALIZED LAWSON:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+elseif ( strcmpi(schemeName, 'genlawson43') == 1 )
     
+    % Compute C:
+    C(1) = 0;
+    C(2) = 1/2;
+    C(3) = 1/2;
+    C(4) = 1;
+    
+    % Compute the phi functions:
+    phit02 = spinscheme.phitEval(0, C(2), LR, N, dim, nVars);
+    phit{1,2} = spinscheme.phitEval(1, C(2), LR, N, dim, nVars);
+    phit{1,3} = spinscheme.phitEval(1, C(3), LR, N, dim, nVars);
+    phit{1,4} = spinscheme.phitEval(1, C(4), LR, N, dim, nVars);
+    phit{2,2} = spinscheme.phitEval(2, C(2), LR, N, dim, nVars);
+    phit{3,2} = spinscheme.phitEval(3, C(2), LR, N, dim, nVars);
+
+    % Take real part of diffusive problems (real eigenvalues):
+    if ( isreal(L) == 1 )
+        phit02 = real(phit02);
+        phit = cellfun(@(f) real(f), phit, 'UniformOutput', 0);
+    end
+    
+    % Compute A:
+    A{3,2} = 1/2;
+    A{4,3} = phit02;
+    
+    % Compute B:
+    B{2} = 1/3*phit02;
+    B{3} = B{2};
+    B{4} = 1/6;
+    
+    % Compute U:
+    U{2,1} = -2*phit{2,2} - 2*phit{3,2};
+    U{3,1} = -2*phit{2,2} - 2*phit{3,2} + 5/8;
+    U{4,1} = -2*phi2 - 2*phi3 + 5/4*phit02;
+    U{2,2} = 1/2*phit{2,2} + phit{3,2};
+    U{3,2} = 1/2*phit{2,2} + phit{3,2} - 3/16;
+    U{4,2} = 1/2*phi2 + phi3 - 3/8*phit02;
+    
+    % Compute V:
+    V{1} = -2*phi2 - 2*phi3 + 5/6*phit02 + 1/2;
+    V{2} = 1/2*phi2 + phi3 - 1/4*phit02 - 1/6;
+      
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % MODIFIED GENERALIZED LAWSON:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+elseif ( strcmpi(schemeName, 'modgenlawson43') == 1 )
     
+    % Compute C:
+    C(1) = 0;
+    C(2) = 1/2;
+    C(3) = 1/2;
+    C(4) = 1;
+    
+    % Compute the phi functions:
+    phi4 = spinscheme.phiEval(4, LR, N, dim, nVars);
+    phit02 = spinscheme.phitEval(0, C(2), LR, N, dim, nVars);
+    phit{1,2} = spinscheme.phitEval(1, C(2), LR, N, dim, nVars);
+    phit{1,3} = spinscheme.phitEval(1, C(3), LR, N, dim, nVars);
+    phit{1,4} = spinscheme.phitEval(1, C(4), LR, N, dim, nVars);
+    phit{2,2} = spinscheme.phitEval(2, C(2), LR, N, dim, nVars);
+    phit{3,2} = spinscheme.phitEval(3, C(2), LR, N, dim, nVars);
+
+    % Take real part of diffusive problems (real eigenvalues):
+    if ( isreal(L) == 1 )
+        phi4 = real(phi4);
+        phit02 = real(phit02);
+        phit = cellfun(@(f) real(f), phit, 'UniformOutput', 0);
+    end
+    
+    % Compute A:
+    A{3,2} = 1/2;
+    A{4,3} = phit02;
+    
+    % Compute B:
+    B{2} = 1/3*phit02;
+    B{3} = B{2};
+    B{4} = 1/3*phi2 + phi3 + phi4 - 5/24*phit02;
+    
+    % Compute U:
+    U{2,1} = -2*phit{2,2} - 2*phit{3,2};
+    U{3,1} = -2*phit{2,2} - 2*phit{3,2} + 5/8;
+    U{4,1} = -2*phi2 - 2*phi3 + 5/4*phit02;
+    U{2,2} = 1/2*phit{2,2} + phit{3,2};
+    U{3,2} = 1/2*phit{2,2} + phit{3,2} - 3/16;
+    U{4,2} = 1/2*phi2 + phi3 - 3/8*phit02;
+    
+    % Compute V:
+    V{1} = -phi2 + phi3 + 3*phi4 + 5/24*phit02;
+    V{2} = 1/6*phi2 - phi4 - 1/24*phit02;
+      
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % PREDICTOR-CORRECTOR:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 

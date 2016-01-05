@@ -92,11 +92,21 @@ classdef spinscheme
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             % GENERALIZED LAWSON:
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-            
+            elseif ( strcmpi(schemeName, 'genlawson43') == 1 )
+                K.order = 4;
+                K.internalStages = 4;
+                K.steps = 3;
+                K.scheme = schemeName;
+                
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             % MODIFIED GENERALIZED LAWSON:
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-            
+            elseif ( strcmpi(schemeName, 'modgenlawson43') == 1 )
+                K.order = 4;
+                K.internalStages = 4;
+                K.steps = 3;
+                K.scheme = schemeName;
+                
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             % PREDICTOR-CORRECTOR:    
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
