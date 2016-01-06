@@ -9,15 +9,21 @@ function out = deriv(f, xx, varargin)
 %   DERIV(F, X, M) is the same as above, but returns the values of the Mth
 %   derivative of F.
 %
-%   DERIV(F, X, S) or DERIV(F, X, S) where S is one of the strings 'left',
+%   DERIV(F, X, S) or DERIV(F, X, S, M) where S is one of the strings 'left',
 %   'right', '+', or '-', evaluates the left- or right-sided limit as described
 %   in chebfun/feval.
 %
-%   Example:
+%   Example 1:
 %     u = chebfun(@sin);
 %     deriv(u, 1) % u'(1)
 %     deriv(u, .5, 2) % u''(.5)
 %     deriv(u, 0.1:0.01:0.2) % u'(0.1:0.01:0.2)
+%
+%   Example 2:
+%     x = chebfun('x')
+%     u = abs(x);
+%     deriv(u, 0, 'left')  % ans = -1
+%     deriv(u, 0, 'right') % ans = +1
 %
 % See also chebfun/diff, chebfun/feval.
 
