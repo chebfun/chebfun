@@ -1,4 +1,5 @@
-function [uSol, dt] = startMultistep(K, adapTime, dt, L, LR, Nc, pref, S, uSol)
+function [uSol, dt] = startMultistep(K, adapTime, dt, L, LR, Nc, Nv, pref, ...
+    S, uSol)
 %STARTMULTISTEP  Get enough initial data when using a multistep scheme.
 %    [USOL, DT] = STARTMULTISTEP(K, ADAPTIME, DT, L, LR, NC, PREF, S, USOL) does
 %    a few steps of EXPRK5S8 with timestep DT to get enough initial data C to 
@@ -13,8 +14,8 @@ function [uSol, dt] = startMultistep(K, adapTime, dt, L, LR, Nc, pref, S, uSol)
 % Set-up:
 errTol = pref.errTol;
 M = pref.M;
-nVars = S.numVars;
 q = K.steps;
+nVars = S.numVars;
 
 % Number of points to discretize the domain:
 N = size(uSol{1}, 1)/nVars;
@@ -37,12 +38,12 @@ end
 iter = 1;
 while ( iter <= q-1 ) 
     
-    cnew = oneStep(K, schemeCoeffs, Nc, S, uSol);
+    cnew = oneStep(K, schemeCoeffs, Nc, Nv, nVars, uSol);
      
     % If adpative in time, two steps in time with DT/2 and N points:
     if ( adapTime == 1 )
-        cnew2 = oneStep(K, schemeCoeffs2, Nc, S, uSol);
-        cnew2 = oneStep(K, schemeCoeffs2, Nc, S, cnew2);
+        cnew2 = oneStep(K, schemeCoeffs2, Nc, Nv, nVars, uSol);
+        cnew2 = oneStep(K, schemeCoeffs2, Nc, Nv, nVars, cnew2);
         err = max(max(max(abs(cnew{1} - cnew2{1}))));
         % If successive step, store it:
         if ( err < errTol ) 

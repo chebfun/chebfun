@@ -39,10 +39,6 @@ classdef spinop < spinoperator
                 end
             end
             
-            [Nc, Nv] = getNonlinearPartsCoeffsAndVals(S);
-            S.nonlinearPartCoeffs = Nc;
-            S.nonlinearPartVals = Nv;
-            
             if ( isempty(S.domain) == 1 )
                 S.domain = [-1 1];
             end

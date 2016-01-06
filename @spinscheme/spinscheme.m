@@ -163,10 +163,12 @@ classdef spinscheme
         coeffs = computeCoeffs(K, dt, L, LR, S)
         
         % Do one step of a SPINSCHEME:
-        uSol = oneStep(K, coeffs, Nc, S, uSol)
+        uSol = oneStep(K, schemeCoeffs, Nc, Nv, nVars, uSol)
         
         % Get enough initial data when using a multistep SPINSCHEME:
-        [uSol, dt] = startMultistep(K, adapTime, dt, L, LR, Nc, pref, S, uSol)
+        [uSol, dt] = startMultistep(K, adapTime, dt, L, LR, Nc, Nv, pref, S, ...
+            uSol)
+        
     end
     
 end

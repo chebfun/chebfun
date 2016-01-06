@@ -128,8 +128,9 @@ K = spinscheme(schemeName);
 % Get the number of steps of the scheme:
 q = K.steps;
 
-% Operators (linear part L, differentiation term NC of the nonliner part):
+% Operators (linear part L, and nonlinear parts Nc and Nv):
 [L, Nc] = discretize(S, N);
+Nv = S.nonlinearPartVals;
 
 % Compute coefficients for the time-stepping scheme:
 LR = computeLR(S, dt, L, M, N);
@@ -167,19 +168,19 @@ end
 
 % Get enough initial data when using a multistep scheme:
 if ( q > 1 )
-    [c, dt] = startMultistep(K, adaptiveTime, dt, L, LR, Nc, pref, S, c);
+    [c, dt] = startMultistep(K, adaptiveTime, dt, L, LR, Nc, Nv, pref, S, c);
 end
 
 % Plot initial condition if using MOVIE:
 if ( strcmpi(plottingstyle, 'movie') == 1 )
     if ( dim == 1 )
-        gridPoints = xx;
+        gridpts = xx;
     elseif ( dim == 2 )
-        gridPoints = {xx; yy};
+        gridpts = {xx; yy};
     elseif ( dim == 3 );
-        gridPoints = {xx; yy; zz};
+        gridpts = {xx; yy; zz};
     end
-    [p, plotOptions] = initializeMovie(S, dt, pref, v, gridPoints);
+    [p, plotOptions] = initializeMovie(S, dt, pref, v, gridpts);
 end
 
 
@@ -215,7 +216,7 @@ pos = 2;
 while ( t < tf )
 
     % One step in time with DT and N points:
-    cnew = oneStep(K, schemeCoeffs, Nc, S, c);
+    cnew = oneStep(K, schemeCoeffs, Nc, Nv, nVars, c);
     valuesUpdated = 0;
     
     % Dealiasing procedure:
@@ -232,11 +233,11 @@ while ( t < tf )
         
         % Two steps in time with DT/2 and N points (if adpative in time):
         if ( adaptiveTime == 1 )
-            cnew2 = oneStep(K, schemeCoeffs2, Nc, S, c);
+            cnew2 = oneStep(K, schemeCoeffs2, Nc, Nv, nVars, c);
             if ( dealias == 1 )
                 cnew2{1}(ind) = 0;
             end
-            cnew2 = oneStep(K, schemeCoeffs2, Nc, S, cnew2);
+            cnew2 = oneStep(K, schemeCoeffs2, Nc, Nv, nVars, cnew2);
             if ( dealias == 1 )
                 cnew2{1}(ind) = 0;
             end
@@ -276,7 +277,7 @@ while ( t < tf )
                     v = [v; temp];
                 end
                 valuesUpdated = 1;
-                plotOptions = plotMovie(S, dt, p, plotOptions, t, v, gridPoints);
+                plotOptions = plotMovie(S, dt, p, plotOptions, t, v, gridpts);
                 
             % Store the values every ITERPLOT iterations if using WATERFALL:
             % Note: Only in dimension 1.
@@ -344,7 +345,7 @@ while ( t < tf )
             % Half DT only if DT/2>DTMIN:
             if ( dt/2 > dtmin )
                 dt = dt/2;
-                % Othewise use DTMIN:
+            % Othewise use DTMIN:
             else
                 dt = dtmin;
                 warning(['The time-step has been set to its minimum ', ...
@@ -360,24 +361,23 @@ while ( t < tf )
     % If not resolved in space, double N, update quantities which depend on N,
     % and redo the step:
     else
-        xx = trigpts(2*N);
-        if ( dim == 2 )
-            [xx, yy] = meshgrid(xx, xx);
-        elseif ( dim == 3 )
-            [xx, yy, zz] = meshgrid(xx, xx, xx);
-        end
         for i = 1:q
             coeffs = [];
             for k = 1:nVars
                 idx = (k-1)*N + 1;
                 vals = ifftn(c{i}(idx:idx+N-1,:,:));
                 if ( dim == 1 )
+                    xx = trigpts(2*N);
                     u = trigtech({vals, trigtech.vals2coeffs(vals)});
                     coeffs = [coeffs; fft(feval(u, xx))];
                 elseif ( dim == 2 )
+                    xx = trigpts(2*N, dom(1:2));
+                    [xx, yy] = meshgrid(xx, xx);
                     u = chebfun2(vals, dom, 'trig');   
                     coeffs = [coeffs; fftn(feval(u, xx, yy))];
                 elseif ( dim == 3 )
+                    xx = trigpts(2*N, dom(1:2));
+                    [xx, yy, zz] = meshgrid(xx, xx, xx);
                     u = chebfun3(vals, dom, 'trig');
                     coeffs = [coeffs; fftn(feval(u, xx, yy, zz))];
                 end
@@ -391,19 +391,18 @@ while ( t < tf )
         LR2 = computeLR(S, dt/2, L, M, N);
         schemeCoeffs2 = computeCoeffs(K, dt/2, L, LR2, S);
         toOne = floor(N/2) + 1 - ceil(N/6):floor(N/2) + ceil(N/6);
-        xx = trigpts(N, dom(1:2));
         if ( dim == 1 )
             ind = false(N, 1);
             ind(toOne) = 1;
-            gridPoints = xx;
+            gridpts = trigpts(N, dom(1:2));
         elseif ( dim == 2 )
             ind = false(N, N);
-            ind(toOne, toOne) = 1;
-            gridPoints = {xx; yy};
+            ind(toOne, toOne) = 1;  
+            gridpts = {xx; yy};
         elseif ( dim == 3 );
             ind = false(N, N, N);
-            ind(toOne, toOne, toOne) = 1;
-            gridPoints = {xx; yy; zz};
+            ind(toOne, toOne, toOne) = 1;              
+            gridpts = {xx; yy; zz};
         end
         ind = repmat(ind, nVars, 1);
         success = 0;
@@ -413,7 +412,7 @@ end
 
 % Make sure that the solution at TF has been plotted if using MOVIE:
 if ( strcmpi(plottingstyle, 'movie') == 1 )
-    plotMovie(S, dt, p, plotOptions, t, v, gridPoints);
+    plotMovie(S, dt, p, plotOptions, t, v, gridpts);
 end
 
 % Use WATERFALL if using WATERFALL:
