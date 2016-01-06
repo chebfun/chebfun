@@ -92,10 +92,34 @@ classdef spinscheme
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             % GENERALIZED LAWSON:
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            elseif ( strcmpi(schemeName, 'genlawson41') == 1 )
+                K.order = 4;
+                K.internalStages = 4;
+                K.steps = 1;
+                K.scheme = schemeName;
+                
+            elseif ( strcmpi(schemeName, 'genlawson42') == 1 )
+                K.order = 4;
+                K.internalStages = 4;
+                K.steps = 2;
+                K.scheme = schemeName;
+                
             elseif ( strcmpi(schemeName, 'genlawson43') == 1 )
                 K.order = 4;
                 K.internalStages = 4;
                 K.steps = 3;
+                K.scheme = schemeName;
+                
+            elseif ( strcmpi(schemeName, 'genlawson44') == 1 )
+                K.order = 5;
+                K.internalStages = 4;
+                K.steps = 4;
+                K.scheme = schemeName;
+                
+            elseif ( strcmpi(schemeName, 'genlawson45') == 1 )
+                K.order = 6;
+                K.internalStages = 4;
+                K.steps = 5;
                 K.scheme = schemeName;
                 
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
