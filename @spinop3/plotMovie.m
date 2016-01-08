@@ -76,7 +76,8 @@ for k = 1:nVars
 
     % Update title:
     if ( k == 1 )
-        title(sprintf('N = %i, dt = %1.1e, t = %.4f', N, dt, t))
+        title(sprintf(['N = %i (DoFs = %i), dt = %1.1e, ', 't = %.4f'], N, ...
+            nVars*N^3, dt, t))
     end
     drawnow
 end

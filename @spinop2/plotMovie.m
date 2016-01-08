@@ -32,7 +32,8 @@ for k = 1:nVars
 
     % Update title:
     if ( k == 1 )
-        title(p{k}.Parent, sprintf('N = %i, dt = %1.1e, t = %.4f', N, dt, t))
+        title(p{k}.Parent, sprintf(['N = %i (DoFs = %i), dt = %1.1e, ', ...
+            't = %.4f'], N, nVars*N^2, dt, t))
     end
     drawnow
 end

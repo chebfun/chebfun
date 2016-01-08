@@ -70,7 +70,8 @@ for k = 1:nVars
     axis([dom(1) dom(2) dom(3) dom(4) dom(5) dom(6)]), colorbar
     xlabel('x'), ylabel('y'), zlabel('z'), set(gca, 'FontSize', 16), box on
     if ( k == 1 )
-        title(sprintf('N = %i, dt = %1.1e, t = %.4f', N, dt, 0))
+        title(sprintf(['N = %i (DoFs = %i), dt = %1.1e, ', 't = %.4f'], N, ...
+            nVars*N^3, dt, 0))
     end
     drawnow
     

@@ -41,8 +41,11 @@ for k = 1:nVars
         xlabel('x'), ylabel(['u_',num2str(k),'(t,x)']), grid on
     end
     set(gca, 'FontSize', 16), box on
+    
+    % Title:
     if ( k == 1 )
-        title(p{k}.Parent, sprintf('N = %i, dt = %1.1e, t = %.4f', N, dt, 0))
+        title(p{k}.Parent, sprintf(['N = %i (DoFs = %i), dt = %1.1e, ', ...
+            't = %.4f'], N, nVars*N, dt, 0))
     end
     drawnow
     

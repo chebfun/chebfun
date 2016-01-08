@@ -39,8 +39,11 @@ for k = 1:nVars
     axis([dom(1) dom(2) dom(3) dom(4)])
     view(viewSpec(2*(k - 1) + 1 : 2*(k - 1) + 2)), colorbar
     xlabel('x'), ylabel('y'), set(gca, 'FontSize', 16), box on
+    
+    % Title:
     if ( k == 1 )
-        title(p{k}.Parent, sprintf('N = %i, dt = %1.1e, t = %.4f', N, dt, 0))
+        title(p{k}.Parent, sprintf(['N = %i (DoFs = %i), dt = %1.1e, ', ...
+            't = %.4f'], N, nVars*N^2, dt, 0))
     end
     drawnow
     
