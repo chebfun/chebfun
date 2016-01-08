@@ -14,6 +14,7 @@ nVars = S.numVars;
 dataToPlot = str2func(pref.dataToPlot);
 dom = S.domain;
 tt = trigpts(N, dom);
+tt = [tt; 2*tt(end) - tt(end-1)];
 if ( isempty(pref.slices) == 1 )
     leftPos = floor(N/10);
     midPos = floor(N/2) + 1;

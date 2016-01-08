@@ -521,9 +521,9 @@ elseif ( strcmpi(schemeName, 'genlawson45') == 1 )
     B{4} = 1/6;
     
     % Compute U:
-    U{2,1} = -4*phit{2,2} - 26/3*phit{3,2} - 9*phit{4,2} - 4*phit{5,2};
+    U{2,1} = -4*phit{2,2} - 13/12*8*phit{3,2} - 9*phit{4,2} - 4*phit{5,2};
     U{2,2} = 3*phit{2,2} + 19/2*phit{3,2} + 12*phit{4,2} + 6*phit{5,2};
-    U{2,3} = -4/3*phit{2,2} - 14/3*phit{3,2} - 7*phit{4,2} - 4*phit{5,2};
+    U{2,3} = -4/3*phit{2,2} - 7/12*16*phit{3,2} - 7*phit{4,2} - 4*phit{5,2};
     U{2,4} = 1/4*phit{2,2} + 88/96*phit{3,2} + 3/2*phit{4,2} + phit{5,2};
     
     U{3,1} = U{2,1} + 105/64;
