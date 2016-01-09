@@ -183,6 +183,12 @@ classdef spinscheme
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             % PREDICTOR-CORRECTOR:    
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            elseif ( strcmpi(schemeName, 'pec423') == 1 )
+                K.order = 4;
+                K.internalStages = 2;
+                K.steps = 3;
+                K.scheme = schemeName;
+           
             elseif ( strcmpi(schemeName, 'pecec433') == 1 )
                 K.order = 4;
                 K.internalStages = 3;

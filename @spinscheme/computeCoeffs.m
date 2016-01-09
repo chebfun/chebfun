@@ -922,6 +922,33 @@ elseif ( strcmpi(schemeName, 'modgenlawson45') == 1 )
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % PREDICTOR-CORRECTOR:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+elseif ( strcmpi(schemeName, 'pec423') == 1 )
+    
+    % Compute C:
+    C(1) = 0;
+    C(2) = 1;
+    
+    % Compute the phi- and phit-functions:
+    phi4 = spinscheme.phiEval(4, LR, N, dim, nVars);
+    phit{1,2} = spinscheme.phitEval(1, C(2), LR, N, dim, nVars);
+
+    % Take real part for diffusive problems (real eigenvalues):
+    if ( isreal(L) == 1 )
+        phi4 = real(phi4);
+        phit = cellfun(@(f) real(f), phit, 'UniformOutput', 0);
+    end
+    
+    % Compute B:
+    B{2} = 1/3*phi2 + phi3 + phi4;
+    
+    % Compute U:
+    U{2,1} = -2*phi2 - 2*phi3;
+    U{2,2} = 1/2*phi2 + phi3;
+    
+    % Compute V:
+    V{1} = -phi2 + phi3 + 3*phi4;
+    V{2} = 1/6*phi2 - phi4;
+   
 elseif ( strcmpi(schemeName, 'pecec433') == 1 )
     
     % Compute C:
