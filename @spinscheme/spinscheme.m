@@ -48,6 +48,12 @@ classdef spinscheme
                 K.steps = 6;
                 K.scheme = schemeName;
                 
+            elseif ( strcmpi(schemeName, 'emam4') == 1 )
+                K.order = 4;
+                K.internalStages = 1;
+                K.steps = 4;
+                K.scheme = schemeName;
+                
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             % ETD RUNGE-KUTTA:
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

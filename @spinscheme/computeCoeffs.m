@@ -124,6 +124,41 @@ elseif ( strcmpi(schemeName, 'abnorsett6') == 1 )
     V{4} = U{1,4};
     V{5} = U{1,5};
     
+elseif ( strcmpi(schemeName, 'emam4') == 1 )
+    
+    % Compute C:
+    C(1) = 0;
+    C(2) = 1;
+    
+    % Compute the phi functions:
+    phi14 = spinscheme.phiEval(1, 4*LR, N, dim, nVars);
+    phi24 = spinscheme.phiEval(2, 4*LR, N, dim, nVars);
+    phi34 = spinscheme.phiEval(3, 4*LR, N, dim, nVars);
+    phi44 = spinscheme.phiEval(4, 4*LR, N, dim, nVars); 
+    phit{1,2} = spinscheme.phitEval(1, C(2), LR, N, dim, nVars);
+    
+    % Take real part of diffusive problems (real eigenvalues):
+    if ( isreal(L) == 1 )
+        phi14 = real(phi14);
+        phi24 = real(phi24);
+        phi34 = real(phi34);
+        phi44 = real(phi44);
+        phit = cellfun(@(f) real(f), phit, 'UniformOutput', 0);
+    end
+    
+    % Compute
+    B{1} = 16/3*phi24 - 64*phi34 + 256*phi44; 
+    
+    % Compute U:
+    U{1,1} = -24*phi24 + 256*phi34 - 768*phi44;
+    U{1,2} = 48*phi24 - 320*phi34 + 768*phi44;
+    U{1,3} = 4*phi14 - 88/3*phi24 + 128*phi34 - 256*phi44;
+    
+    % Compute V:
+    V{1} = U{1,1};
+    V{2} = U{1,2};
+    V{3} = U{1,3};
+        
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ETD RUNGE-KUTTA:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1042,7 +1077,7 @@ V = coeffs.V;
 s = K.internalStages;
 q = K.steps;
 
-% Precompute the coefficients Ai1 using the row summation property.
+% Precompute the coefficients Ai1 using the row summation property:
 for i = 2:s
     A{i,1} = phit{1,i};
     for j = 2:i-1
@@ -1057,25 +1092,31 @@ for i = 2:s
     end
 end
 
-% Precompute the coefficient B1 using the row summation property.
-B{1} = phi1;
-for i = 2:s
-    if ( ~isempty(B{i}) )
-        B{1} = B{1} - B{i};
+% Precompute the coefficient B1 using the row summation property:
+if ( strcmpi(K.scheme, 'emam4') == 0 )
+    B{1} = phi1;
+    for i = 2:s
+        if ( ~isempty(B{i}) )
+            B{1} = B{1} - B{i};
+        end
     end
-end
-for i = 1:q-1
-    if ( ~isempty(V{i}) )
-        B{1} = B{1} - V{i};
+    for i = 1:q-1
+        if ( ~isempty(V{i}) )
+            B{1} = B{1} - V{i};
+        end
     end
 end
 
-% Precompute the E quantities.
+% Precompute the E quantities:
 E = cell(s+1, 1);
 for i = 1:s
    E{i} = exp(C(i)*dt*L);
 end
-E{s+1} = exp(dt*L);
+if ( strcmpi(K.scheme, 'emam4') == 1 )
+    E{s+1} = exp(4*dt*L);
+else
+	E{s+1} = exp(dt*L);
+end
 
 % Multiply by timestep:
 A = cellfun(@(A) dt*A, A, 'UniformOutput', 0);

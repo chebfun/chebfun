@@ -96,7 +96,11 @@ end
 
 % Compute the solution at t_{n+1}:
 % u_{n+1} = exp(h*L)*u_{n} + ...
-vSol{1} = E{s+1}.*vSol{1};
+if ( strcmpi(K.scheme, 'emam4') == 1 )
+    vSol{1} = E{s+1}.*uSol{4};
+else
+    vSol{1} = E{s+1}.*vSol{1};
+end
 % ... + h*sum_{i=1}^{s}B_{i}*N(v_{i})
 for i = 1:s
     if ( isempty(B{i}) == 0 )
