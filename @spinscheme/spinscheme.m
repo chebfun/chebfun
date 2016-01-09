@@ -30,11 +30,28 @@ classdef spinscheme
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             % ETD MULTISTEP:
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-            
+            if ( strcmpi(schemeName, 'abnorsett4') == 1 )
+                K.order = 4;
+                K.internalStages = 1;
+                K.steps = 4;
+                K.scheme = schemeName;
+                
+            elseif ( strcmpi(schemeName, 'abnorsett5') == 1 )
+                K.order = 5;
+                K.internalStages = 1;
+                K.steps = 5;
+                K.scheme = schemeName;
+                
+            elseif ( strcmpi(schemeName, 'abnorsett6') == 1 )
+                K.order = 6;
+                K.internalStages = 1;
+                K.steps = 6;
+                K.scheme = schemeName;
+                
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             % ETD RUNGE-KUTTA:
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-            if ( strcmpi(schemeName, 'etdrk4') == 1 )
+            elseif ( strcmpi(schemeName, 'etdrk4') == 1 )
                 K.order = 4;
                 K.internalStages = 4;
                 K.steps = 1;
@@ -76,13 +93,15 @@ classdef spinscheme
                 K.steps = 1;
                 K.scheme = schemeName;
                 
-            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
-            % EPI RUNGE-KUTTA:
-            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-            
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             % LAWSON:
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            elseif ( strcmpi(schemeName, 'ablawson4') == 1 )
+                K.order = 4;
+                K.internalStages = 1;
+                K.steps = 4;
+                K.scheme = schemeName;
+                
             elseif ( strcmpi(schemeName, 'lawson4') == 1 )
                 K.order = 4;
                 K.internalStages = 4;
