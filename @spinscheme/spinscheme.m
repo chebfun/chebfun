@@ -195,10 +195,40 @@ classdef spinscheme
                 K.steps = 3;
                 K.scheme = schemeName;
                 
+            elseif ( strcmpi(schemeName, 'pec524') == 1 )
+                K.order = 5;
+                K.internalStages = 2;
+                K.steps = 4;
+                K.scheme = schemeName;
+                
+            elseif ( strcmpi(schemeName, 'pecec534') == 1 )
+                K.order = 5;
+                K.internalStages = 3;
+                K.steps = 4;
+                K.scheme = schemeName;
+                
+            elseif ( strcmpi(schemeName, 'pec625') == 1 )
+                K.order = 6;
+                K.internalStages = 2;
+                K.steps = 5;
+                K.scheme = schemeName;
+                
             elseif ( strcmpi(schemeName, 'pecec635') == 1 )
                 K.order = 6;
                 K.internalStages = 3;
                 K.steps = 5;
+                K.scheme = schemeName;
+                
+            elseif ( strcmpi(schemeName, 'pec726') == 1 )
+                K.order = 7;
+                K.internalStages = 2;
+                K.steps = 6;
+                K.scheme = schemeName;
+                
+            elseif ( strcmpi(schemeName, 'pecec736') == 1 )
+                K.order = 7;
+                K.internalStages = 3;
+                K.steps = 6;
                 K.scheme = schemeName;
                 
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

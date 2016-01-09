@@ -983,6 +983,112 @@ elseif ( strcmpi(schemeName, 'pecec433') == 1 )
     V{1} = -phi2 + phi3 + 3*phi4;
     V{2} = 1/6*phi2 - phi4;
     
+elseif ( strcmpi(schemeName, 'pec524') == 1 )
+    
+    % Compute C:
+    C(1) = 0;
+    C(2) = 1;
+    
+    % Compute the phi- and phit-functions:
+    phi4 = spinscheme.phiEval(4, LR, N, dim, nVars);
+    phi5 = spinscheme.phiEval(5, LR, N, dim, nVars);
+    phit{1,2} = spinscheme.phitEval(1, C(2), LR, N, dim, nVars);
+
+    % Take real part for diffusive problems (real eigenvalues):
+    if ( isreal(L) == 1 )
+        phi4 = real(phi4);
+        phi5 = real(phi5);
+        phit = cellfun(@(f) real(f), phit, 'UniformOutput', 0);
+    end
+    
+    % Compute B:
+    B{2} = 1/4*phi2 + 11/12*phi3 + 3/2*phi4 + phi5;
+                                 
+    % Compute U:
+    U{2,1} = -3*phi2 - 5*phi3 - 3*phi4;
+    U{2,2} = 3/2*phi2 + 4*phi3 + 3*phi4;
+    U{2,3} = -1/3*phi2 - phi3 - phi4;
+    
+    % Compute V:
+    V{1} = -3/2*phi2 + 1/2*phi3 + 6*phi4 + 6*phi5;
+    V{2} = 1/2*phi2 + 1/3*phi3 - 3*phi4 - 4*phi5;
+    V{3} = -1/12*phi2 - 1/12*phi3 + 1/2*phi4 + phi5;
+
+elseif ( strcmpi(schemeName, 'pecec534') == 1 )
+               
+    % Compute C:
+    C(1) = 0;
+    C(2) = 1;
+    C(3) = 1;
+    
+    % Compute the phi- and phit-functions:
+    phi4 = spinscheme.phiEval(4, LR, N, dim, nVars);
+    phi5 = spinscheme.phiEval(5, LR, N, dim, nVars);
+    phit{1,2} = spinscheme.phitEval(1, C(2), LR, N, dim, nVars);
+    phit{1,3} = spinscheme.phitEval(1, C(3), LR, N, dim, nVars);
+    
+    % Take real part for diffusive problems (real eigenvalues):
+    if ( isreal(L) == 1 )
+        phi4 = real(phi4);
+        phi5 = real(phi5);
+        phit = cellfun(@(f) real(f), phit, 'UniformOutput', 0);
+    end
+    
+    % Compute A:
+    A{3,2} = 1/4*phi2 + 11/12*phi3 + 3/2*phi4 + phi5;
+
+    % Compute B:
+    B{3} = 1/4*phi2 + 11/12*phi3 + 3/2*phi4 + phi5;
+   
+    % Compute U:
+    U{2,1} = -3*phi2 - 5*phi3 - 3*phi4;
+    U{2,2} = 3/2*phi2 + 4*phi3 + 3*phi4;
+    U{2,3} = -1/3*phi2 - phi3 - phi4;
+
+    U{3,1} = -3/2*phi2 + 1/2*phi3 + 6*phi4 + 6*phi5;
+    U{3,2} = 1/2*phi2 + 1/3*phi3 - 3*phi4 - 4*phi5;
+    U{3,3} = -1/12*phi2 - 1/12*phi3 + 1/2*phi4 + phi5;
+
+    % Compute V:
+    V{1} = -3/2*phi2 + 1/2*phi3 + 6*phi4 + 6*phi5;
+    V{2} = 1/2*phi2 + 1/3*phi3 - 3*phi4 - 4*phi5;
+    V{3} = -1/12*phi2 - 1/12*phi3 + 1/2*phi4 + phi5;
+
+elseif ( strcmpi(schemeName, 'pec625') == 1 )
+        
+    % Compute C:
+    C(1) = 0;
+    C(2) = 1;
+    
+    % Compute the phi- and phit-functions:
+    phi4 = spinscheme.phiEval(4, LR, N, dim, nVars);
+    phi5 = spinscheme.phiEval(5, LR, N, dim, nVars);
+    phi6 = spinscheme.phiEval(6, LR, N, dim, nVars);
+    phit{1,2} = spinscheme.phitEval(1, C(2), LR, N, dim, nVars);
+    
+    % Take real part for diffusive problems (real eigenvalues):
+    if ( isreal(L) == 1 )
+        phi4 = real(phi4);
+        phi5 = real(phi5);
+        phi6 = real(phi6);
+        phit = cellfun(@(f) real(f), phit, 'UniformOutput', 0);
+    end
+    
+    % Compute B:
+    B{2} = 1/5*phi2 + 5/6*phi3 + 7/4*phi4 + 2*phi5 + phi6;
+
+    % Compute U:
+    U{2,1} = -4*phi2 - 26/3*phi3 - 9*phi4 - 4*phi5;
+    U{2,2} = 3*phi2 + 19/2*phi3 + 12*phi4 + 6*phi5;
+    U{2,3} = -4/3*phi2 - 14/3*phi3 - 7*phi4 - 4*phi5;
+    U{2,4} = 1/4*phi2 + 11/12*phi3 + 3/2*phi4 + phi5;
+    
+    % Compute V:
+    V{1} = -2*phi2 - 1/3*phi3 + 17/2*phi4 + 16*phi5 + 10*phi6;
+    V{2} = phi2 + 7/6*phi3 - 11/2*phi4 - 14*phi5 - 10*phi6;
+    V{3} = -1/3*phi2 - 1/2*phi3 + 7/4*phi4 + 6*phi5 + 5*phi6;
+    V{4} = 1/20*phi2 + 1/12*phi3 - 1/4*phi4 - phi5 - phi6;
+    
 elseif ( strcmpi(schemeName, 'pecec635') == 1 )
         
     % Compute C:
@@ -1000,6 +1106,8 @@ elseif ( strcmpi(schemeName, 'pecec635') == 1 )
     % Take real part for diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
         phi4 = real(phi4);
+        phi5 = real(phi5);
+        phi6 = real(phi6);
         phit = cellfun(@(f) real(f), phit, 'UniformOutput', 0);
     end
     
@@ -1007,7 +1115,6 @@ elseif ( strcmpi(schemeName, 'pecec635') == 1 )
     A{3,2} = 1/5*phi2 + 5/6*phi3 + 7/4*phi4 + 2*phi5 + phi6;
 
     % Compute B:
-    B{1} =  phi1 + 13/12*phi2 - 5/4*phi3 - 25/4*phi4 - 9*phi5 - 5*phi6;
     B{3} = 1/5*phi2 + 5/6*phi3 + 7/4*phi4 + 2*phi5 + phi6;
    
     % Compute U:
@@ -1025,6 +1132,97 @@ elseif ( strcmpi(schemeName, 'pecec635') == 1 )
     V{2} = phi2 + 7/6*phi3 - 11/2*phi4 - 14*phi5 - 10*phi6;
     V{3} = -1/3*phi2 - 1/2*phi3 + 7/4*phi4 + 6*phi5 + 5*phi6;
     V{4} = 1/20*phi2 + 1/12*phi3 - 1/4*phi4 - phi5 - phi6;
+    
+elseif ( strcmpi(schemeName, 'pec726') == 1 )
+        
+    % Compute C:
+    C(1) = 0;
+    C(2) = 1;
+    
+    % Compute the phi- and phit-functions:
+    phi4 = spinscheme.phiEval(4, LR, N, dim, nVars);
+    phi5 = spinscheme.phiEval(5, LR, N, dim, nVars);
+    phi6 = spinscheme.phiEval(6, LR, N, dim, nVars);
+    phi7 = spinscheme.phiEval(7, LR, N, dim, nVars);
+    phit{1,2} = spinscheme.phitEval(1, C(2), LR, N, dim, nVars);
+    
+    % Take real part for diffusive problems (real eigenvalues):
+    if ( isreal(L) == 1 )
+        phi4 = real(phi4);
+        phi5 = real(phi5);
+        phi6 = real(phi6);
+        phi7 = real(phi7);
+        phit = cellfun(@(f) real(f), phit, 'UniformOutput', 0);
+    end
+    
+    % Compute B:
+    B{2} = 1/6*phi2 + 137/180*phi3 + 15/8*phi4 + 17/6*phi5 + 5/2*phi6 + phi7;
+   
+    % Compute U:
+    U{2,1} = -5*phi2 - 77/6*phi3 - 71/4*phi4 - 14*phi5 - 5*phi6;
+    U{2,2} = 5*phi2 + 107/6*phi3 + 59/2*phi4 + 26*phi5 + 10*phi6;
+    U{2,3} = -10/3*phi2 - 13*phi3 - 49/2*phi4 - 24*phi5 - 10*phi6;
+    U{2,4} = 5/4*phi2 + 61/12*phi3 + 41/4*phi4 + 11*phi5 + 5*phi6;
+    U{2,5} = -1/5*phi2 - 5/6*phi3 - 7/4*phi4 - 2*phi5 - phi6;
+    
+    % Compute V:
+    V{1} = -5/2*phi2 - 17/12*phi3 + 83/8*phi4 + 57/2*phi5 + 65/2*phi6 + 15*phi7;
+    V{2} = 5/3*phi2 + 47/18*phi3 - 8*phi4 - 92/3*phi5 - 40*phi6 - 20*phi7;
+    V{3} = -5/6*phi2 - 19/12*phi3 + 29/8*phi4 + 37/2*phi5 + 55/2*phi6 + 15*phi7;
+    V{4} =  1/4*phi2 + 31/60*phi3 - phi4 - 6*phi5 - 10*phi6 - 6*phi7;
+    V{5} = -1/30*phi2 - 13/180*phi3 + 1/8*phi4 + 5/6*phi5 + 3/2*phi6 + phi7;
+
+elseif ( strcmpi(schemeName, 'pecec736') == 1 )
+        
+    % Compute C:
+    C(1) = 0;
+    C(2) = 1;
+    C(3) = 1;
+    
+    % Compute the phi- and phit-functions:
+    phi4 = spinscheme.phiEval(4, LR, N, dim, nVars);
+    phi5 = spinscheme.phiEval(5, LR, N, dim, nVars);
+    phi6 = spinscheme.phiEval(6, LR, N, dim, nVars);
+    phi7 = spinscheme.phiEval(7, LR, N, dim, nVars);
+    phit{1,2} = spinscheme.phitEval(1, C(2), LR, N, dim, nVars);
+    phit{1,3} = spinscheme.phitEval(1, C(3), LR, N, dim, nVars);
+    
+    % Take real part for diffusive problems (real eigenvalues):
+    if ( isreal(L) == 1 )
+        phi4 = real(phi4);
+        phi5 = real(phi5);
+        phi6 = real(phi6);
+        phi7 = real(phi7);
+        phit = cellfun(@(f) real(f), phit, 'UniformOutput', 0);
+    end
+    
+    % Compute A:
+    A{3,2} = 1/6*phi2 + 137/180*phi3 + 15/8*phi4 + 17/6*phi5 + 5/2*phi6 + phi7;
+ 
+    % Compute B:
+    B{3} = 1/6*phi2 + 137/180*phi3 + 15/8*phi4 + 17/6*phi5 + 5/2*phi6 + phi7;
+   
+    % Compute U:
+    U{2,1} = -5*phi2 - 77/6*phi3 - 71/4*phi4 - 14*phi5 - 5*phi6;
+    U{2,2} = 5*phi2 + 107/6*phi3 + 59/2*phi4 + 26*phi5 + 10*phi6;
+    U{2,3} = -10/3*phi2 - 13*phi3 - 49/2*phi4 - 24*phi5 - 10*phi6;
+    U{2,4} = 5/4*phi2 + 61/12*phi3 + 41/4*phi4 + 11*phi5 + 5*phi6;
+    U{2,5} = -1/5*phi2 - 5/6*phi3 - 7/4*phi4 - 2*phi5 - phi6;
+    
+    U{3,1} = -5/2*phi2 - 17/12*phi3 + 83/8*phi4 + 57/2*phi5 + 65/2*phi6 + ...
+        15*phi7;
+    U{3,2} = 5/3*phi2 + 47/18*phi3 - 8*phi4 - 92/3*phi5 - 40*phi6 - 20*phi7;
+    U{3,3} = -5/6*phi2 - 19/12*phi3 + 29/8*phi4 + 37/2*phi5 + 55/2*phi6 + ...
+        15*phi7;
+    U{3,4} = 1/4*phi2 + 31/60*phi3 - phi4 - 6*phi5 - 10*phi6 - 6*phi7;
+    U{3,5} = -1/30*phi2 - 13/180*phi3 + 1/8*phi4 + 5/6*phi5 + 3/2*phi6 + phi7;
+    
+    % Compute V:
+    V{1} = -5/2*phi2 - 17/12*phi3 + 83/8*phi4 + 57/2*phi5 + 65/2*phi6 + 15*phi7;
+    V{2} = 5/3*phi2 + 47/18*phi3 - 8*phi4 - 92/3*phi5 - 40*phi6 - 20*phi7;
+    V{3} = -5/6*phi2 - 19/12*phi3 + 29/8*phi4 + 37/2*phi5 + 55/2*phi6 + 15*phi7;
+    V{4} = 1/4*phi2 + 31/60*phi3 - phi4 - 6*phi5 - 10*phi6 - 6*phi7;
+    V{5} = -1/30*phi2 - 13/180*phi3 + 1/8*phi4 + 5/6*phi5 + 3/2*phi6 + phi7;
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % MISC:
