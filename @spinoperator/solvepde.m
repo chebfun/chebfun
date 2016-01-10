@@ -132,17 +132,10 @@ q = K.steps;
 [L, Nc] = discretize(S, N);
 Nv = S.nonlinearPartVals;
 
-% Compute coefficients for the time-stepping scheme:
+% Create a contour around each eigenvalue of the linear part L:
 LR = computeLR(S, dt, L, M, N);
-schemeCoeffs = computeCoeffs(K, dt, L, LR, S);
 
-% If adaptive in time, get the coefficients with DT/2:
-if ( adaptiveTime == 1 )
-    LR2 = computeLR(S, dt/2, L, M, N);
-    schemeCoeffs2 = computeCoeffs(K, dt/2, L, LR2, S);
-end
-
-% Set-up spatial grid, and initial condition:
+% Set-up spatial grid, and initial condition (values V and Fourier coeffs C):
 nVars = S.numVars;
 xx = trigpts(N, dom(1:2));
 if ( dim == 2 )
@@ -168,21 +161,20 @@ end
 
 % Get enough initial data when using a multistep scheme:
 if ( q > 1 )
-    [c, dt] = startMultistep(K, adaptiveTime, dt, L, LR, Nc, Nv, pref, S, c);
+    [c, dt, phi] = startMultistep(K, adaptiveTime, dt, L, LR, Nc, Nv, pref, ...
+        S, c);
+else
+    phi = [];
 end
 
-% Plot initial condition if using MOVIE:
-if ( strcmpi(plottingstyle, 'movie') == 1 )
-    if ( dim == 1 )
-        gridpts = xx;
-    elseif ( dim == 2 )
-        gridpts = {xx; yy};
-    elseif ( dim == 3 );
-        gridpts = {xx; yy; zz};
-    end
-    [p, plotOptions] = initializeMovie(S, dt, pref, v, gridpts);
-end
+% Compute the coefficients of the scheme:
+schemeCoeffs = computeCoeffs(K, dt, L, LR, S, phi);
 
+% If adaptive in time, get the coefficients with DT/2:
+if ( adaptiveTime == 1 )
+    LR2 = computeLR(S, dt/2, L, M, N);
+    schemeCoeffs2 = computeCoeffs(K, dt/2, L, LR2, S);
+end
 
 % Indexes for dealiasing:
 toOne = floor(N/2) + 1 - ceil(N/6):floor(N/2) + ceil(N/6);
@@ -198,13 +190,25 @@ elseif ( dim == 3 )
 end
 ind = repmat(ind, nVars, 1);
 
-% Values to output:
+% Values VOUT to output:
 vout{1} = v;
 
-% Values to plot if using WATERFALL:
+% Values VWATER to plot if using WATERFALL:
 if ( strcmpi(plottingstyle, 'waterfall') == 1 )
     vwater{1} = v;
     twater = 0;
+end
+
+% Plot initial condition if using MOVIE:
+if ( strcmpi(plottingstyle, 'movie') == 1 )
+    if ( dim == 1 )
+        gridpts = xx;
+    elseif ( dim == 2 )
+        gridpts = {xx; yy};
+    elseif ( dim == 3 );
+        gridpts = {xx; yy; zz};
+    end
+    [p, plotOptions] = initializeMovie(S, dt, pref, v, gridpts);
 end
 
 %% Time-stepping loop:
@@ -410,6 +414,8 @@ while ( t < tf )
     
 end
 
+%% Post-processing:
+
 % Make sure that the solution at TF has been plotted if using MOVIE:
 if ( strcmpi(plottingstyle, 'movie') == 1 )
     plotMovie(S, dt, p, plotOptions, t, v, gridpts);
@@ -438,8 +444,6 @@ if ( strcmpi(plottingstyle, 'waterfall') == 1 )
         view([10 70])
     end
 end
-
-%% Post-processing:
 
 % Get the right type of CHEBFUN:
 if ( dim == 1 )
