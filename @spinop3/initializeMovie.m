@@ -16,12 +16,9 @@ dom = S.domain;
 tt = trigpts(N, dom);
 tt = [tt; 2*tt(end) - tt(end-1)];
 if ( isempty(pref.slices) == 1 )
-    leftPos = floor(N/10);
-    midPos = floor(N/2) + 1;
-    rightPos = floor(9*N/10);
-    Sx = tt(midPos);
+    Sx = tt(floor(N/2) + 1);
     Sy = Sx;
-    Sz = [tt(leftPos); tt(rightPos)];
+    Sz = Sx;
 else
     slices = pref.slices;
     Sx = slices{1};
@@ -67,6 +64,7 @@ for k = 1:nVars
     % Plot it:
     subplot(nVars, 1, k) 
     p{k} = slice(xxplot, yyplot, zzplot, vplot, Sx, Sy, Sz);
+    set(p{k}, 'edgecolor', 'none')
     axis([dom(1) dom(2) dom(3) dom(4) dom(5) dom(6)]), colorbar
     xlabel('x'), ylabel('y'), zlabel('z'), set(gca, 'FontSize', 16), box on
     if ( k == 1 )
