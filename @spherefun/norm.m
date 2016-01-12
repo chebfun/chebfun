@@ -30,7 +30,7 @@ else
         case {2, 'fro'}  % Definite integral of f.^2
            
             s = svd( f ); 
-            normF = sqrt( sum2( s.^2 ) );  
+            normF = sqrt( sum( s.^2 ) );  
             
         case {inf, 'inf', 'max'}
              [Y, X] = minandmax2(f);

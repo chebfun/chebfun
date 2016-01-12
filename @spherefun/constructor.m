@@ -38,16 +38,30 @@ end
 % If domain is empty take it to be co-latitude.
 if ( nargin < 3 || isempty( dom ) )
      dom = [-pi pi 0 pi]; 
-elseif ( numel( dom ) ~= 4 )
+elseif ( isa(dom,'double') && numel( dom ) ~= 4 )
     error('CHEBFUN:SPHEREFUN:CONSTRUCTOR:domain',... 
-          ['A domain is rarely given for spherefun, ' ... 
-          'but it needs to be given by four corner values' 
+          ['A domain is rarely given for spherefun, ', ... 
+          'but it needs to be given by four corner values',... 
           'in intrinstic coordinates.'])
-elseif ( numel( dom ) == 4 && norm( dom(:)' - [-pi pi 0 pi] ) >0 )
+elseif (  isa(dom,'double') && numel( dom ) == 4 && norm( dom(:)' - [-pi pi 0 pi] ) >0 )
     error('CHEBFUN:SPHEREFUN:CONSTRUCTOR:domain',...
         'The domain of a spherefun is always [-pi pi]x[0 pi] in intrinstic coordinates');
+end
+
+% Look for vectorize flag:
+vectorize = 0;
+if (any(strcmpi(dom, 'vectorize')) || any(strcmpi(dom, 'vectorise')))
+    vectorize = 1;
+    dom = [-pi pi 0 pi];
+elseif ( (nargin > 3) && (any(strcmpi(varargin{1}, 'vectorize')) ||...
+        any(strcmpi(varargin{1}, 'vectorise'))))
+    vectorize = 1;
 else
     dom = [-pi pi 0 pi];
+end
+
+if ( isa(op, 'char') )     % CHEBFUN2( CHAR )
+    op = str2op( op );
 end
 
 % Default value for coupling parameter
@@ -115,7 +129,9 @@ else  % SPHEREFUN( FUNCTION )
         % Sample function on a tensor product grid.
         % TODO: Add a more sophisticated evaluate function that does
         % vectorization like chebfun2.
-        F = evaluate(h, n, n, dom);
+        [x, y] = getPoints( n, n, dom );
+        [xx, yy] = meshgrid(x, y);
+        F = evaluate(h, xx, yy, vectorize);
 
         [tol,vscale] = GetTol(F, pi/n, pi/n, dom, pseudoLevel);
         
@@ -156,7 +172,7 @@ else  % SPHEREFUN( FUNCTION )
     % PHASE TWO 
     % Find the appropriate discretizations in the columns and rows. 
     [cols, pivots, rows, pivotLocations, idxPlus, idxMinus] = ...
-        PhaseTwo( h, pivotIndices, pivotArray, n, dom, vscale, maxSample, removePoles );
+        PhaseTwo( h, pivotIndices, pivotArray, n, dom, vscale, maxSample, removePoles, vectorize );
 end
 
 g.cols = chebfun( cols, dom(3:4)-[pi 0], 'trig');
@@ -419,7 +435,7 @@ end
 
 end
 
-function [cols, pivots, rows, pivotLocations, idxPlus, idxMinus] = PhaseTwo( h, pivotIndices, pivotArray, n, dom, vscale, maxSample, removePoles )
+function [cols, pivots, rows, pivotLocations, idxPlus, idxMinus] = PhaseTwo( h, pivotIndices, pivotArray, n, dom, vscale, maxSample, removePoles, vectorize )
 
 % alpha = spherefun.alpha; % get growth rate factor.
 happy_columns = 0;   % Not happy, until proven otherwise.
@@ -450,12 +466,13 @@ while ( ~(happy_columns && happy_rows) && ~failure)
     
     [x, y] = getPoints( m, n, dom );
     [xx, yy] = meshgrid( col_pivots, y);
-    newCols = h( xx, yy ); temp = h( xx + pi, yy );
+    newCols = evaluate(h, xx, yy, vectorize ); 
+    temp = evaluate(h, xx + pi, yy, vectorize );
     newColsPlus = 0.5*(newCols + temp);
     newColsMinus = 0.5*(newCols - temp);
     
     [xx, yy] = meshgrid( x, row_pivots );
-    newRows = h( xx, yy );
+    newRows = evaluate(h, xx, yy, vectorize );
 
     % This code will be unnecessary once ticket #1532 is addressed on the
     % chebfun tracker.  Don't forget to remove it.
@@ -642,16 +659,20 @@ pivotLocations = [col_pivots row_pivots];
 
 end
 
-function F = evaluate( h, m, n, dom )
+function vals = evaluate( h, xx, yy, vectorize )
 % Evaluate h on a m-by-n tensor product grid.
 
-[x, y] = getPoints( m, n, dom );
-
-% Tensor product grid
-[xx,yy] = meshgrid(x, y);
-
 % Evaluate h on the non-doubled up grid
-F = h( xx, yy );
+if ( vectorize )
+    vals = zeros( size( yy, 1), size( xx, 2) );
+    for jj = 1 : size( yy, 1)
+        for kk = 1 : size( xx , 2 )
+            vals(jj, kk) = feval(h, xx( 1, kk) , yy( jj, 1 ) );
+        end
+    end
+else
+    vals = feval(h, xx, yy );  % Matrix of values at cheb2 pts.
+end
 
 end
 
@@ -783,13 +804,3 @@ else
 end
 
 end
-
-% function f = redefine_function_handle_pole( f, poleColPivot )
-% % Set f to f - f(poleColPivot,theta) where poleColPivot is the value of
-% % lambda (the column) used to zero out the poles of f.
-% 
-% f = @(lam, th) f(lam,th) - f(poleColPivot,th);
-% 
-% end
-
-

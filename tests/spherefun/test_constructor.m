@@ -53,6 +53,14 @@ f = @(x,y,z) 0*x;
 g = spherefun( f );
 pass(10) = ( norm(g,inf) == 0 ); 
 
+% Test the vectorize flag is working: 
+f = spherefun(@(x,y,z) cos(z));
+g = spherefun(@(x,y,z) cos(z), 'vectorize');
+pass(11) = ( norm(f - g) < tol );
+
+f = spherefun(@(x,y,z) x.*y.*z);
+g = spherefun(@(x,y,z) x*y*z, 'vectorize');
+pass(12) = ( norm(f - g) < tol );
 end
 
 

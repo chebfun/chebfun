@@ -29,6 +29,6 @@ else
     error('SPHEREFUN:sphf2cartf:CoordSysUnknown: Unknown coordinate system for the sphere.');
 end
 
-fdf = f(x,y,z);
+fdf = feval(f, x, y, z);
 
 end
