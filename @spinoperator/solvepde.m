@@ -1,4 +1,4 @@
-function [uout, tout] = solvepde(varargin)
+function [uOut, tOut] = solvepde(varargin)
 %SOLVEPDE  
 %   SOLVEPDE
 
@@ -140,9 +140,9 @@ LR = computeLR(S, dt, L, M, N);
 nVars = S.numVars;
 xx = trigpts(N, dom(1:2));
 if ( dim == 2 )
-    [xx, yy] = meshgrid(xx, xx);
+    [xx, yy] = meshgrid(xx);
 elseif ( dim == 3 )
-    [xx, yy, zz] = meshgrid(xx, xx, xx);
+    [xx, yy, zz] = meshgrid(xx);
 end
 vInit = [];
 for k = 1:nVars
@@ -205,11 +205,11 @@ end
 ind = repmat(ind, nVars, 1);
 
 % Values VOUT to output:
-vout{1} = vInit;
+vOut{1} = vInit;
 
 % Values VWATER to plot if using WATERFALL:
 if ( strcmpi(plottingstyle, 'waterfall') == 1 )
-    vwater{1} = vInit;
+    vWater{1} = vInit;
     twater = 0;
 end
 
@@ -317,7 +317,7 @@ while ( t < tf )
                     v = [v; temp];
                 end
                 valuesUpdated = 1;
-                vwater{iter/iterplot + 1} = v;
+                vWater{iter/iterplot + 1} = v;
                 twater = [twater, t];
             end
             
@@ -349,7 +349,7 @@ while ( t < tf )
                         v = [v; temp];
                     end
                 end
-                vout{pos} = v;
+                vOut{pos} = v;
                 pos = pos + 1;
             end
             
@@ -399,12 +399,12 @@ while ( t < tf )
                     temp = feval(u, xx);
                 elseif ( dim == 2 )
                     xx = trigpts(2*N, dom(1:2));
-                    [xx, yy] = meshgrid(xx, xx);
+                    [xx, yy] = meshgrid(xx);
                     u = chebfun2(valsOld, dom, 'trig');   
                     temp = feval(u, xx, yy);
                 elseif ( dim == 3 )
                     xx = trigpts(2*N, dom(1:2));
-                    [xx, yy, zz] = meshgrid(xx, xx, xx);
+                    [xx, yy, zz] = meshgrid(xx);
                     u = chebfun3(valsOld, dom, 'trig');
                     temp = feval(u, xx, yy, zz);
                 end
@@ -459,10 +459,10 @@ if ( strcmpi(plottingstyle, 'waterfall') == 1 )
     clf
     for k = 1:nVars
         uwater = [];
-        for l = 1:size(vwater, 2)
-            N = length(vwater{l})/nVars;
+        for l = 1:size(vWater, 2)
+            N = length(vWater{l})/nVars;
             idx = (k-1)*N + 1;
-            uwater = [ uwater, chebfun(real(vwater{l}(idx:idx+N-1)), ...
+            uwater = [ uwater, chebfun(real(vWater{l}(idx:idx+N-1)), ...
                 dom, 'trig') ]; %#ok<*AGROW>
         end
         subplot(nVars, 1, k)
@@ -485,32 +485,41 @@ elseif ( dim == 2 )
     fun = @chebfun2;
 elseif ( dim == 3 )
     fun = @chebfun3;
+    % The data come from MESHGRID, need to permute them because the CHEBFUN3
+    % constructor assumes that the data come from NDGRID:
+    for l = 1:size(vOut, 2)
+        for k = 1:nVars
+            idx = (k-1)*N + 1;
+            vals = vOut{l}(idx:idx+N-1,:,:);
+            vOut{l}(idx:idx+N-1,:,:) = permute(vals, [2 1 3]);
+        end
+    end
 end
 
 % Output a CHEBFUN/CHEBMATRIX from values VOUT:
 if ( length(tspan) == 2 )
-    N = length(vout{end})/nVars;
+    N = length(vOut{end})/nVars;
     if ( nVars == 1 )
-        uout = fun(vout{end}(1:N,:,:), dom, 'trig');
+        uOut = fun(vOut{end}(1:N,:,:), dom, 'trig');
     else
-        uout = chebmatrix(fun(vout{end}(1:N,:,:), dom, 'trig'));
+        uOut = chebmatrix(fun(vOut{end}(1:N,:,:), dom, 'trig'));
         for k = 2:nVars
             idx = (k-1)*N + 1;
-            uout(k,1) = fun(vout{end}(idx:idx+N-1,:,:), dom, 'trig');
+            uOut(k,1) = fun(vOut{end}(idx:idx+N-1,:,:), dom, 'trig');
         end
     end
 else
-    N = length(vout{1})/nVars;
-    uout = chebmatrix(fun(vout{1}(1:N,:,:), dom, 'trig')); 
+    N = length(vOut{1})/nVars;
+    uOut = chebmatrix(fun(vOut{1}(1:N,:,:), dom, 'trig')); 
     for k = 2:nVars
         idx = (k-1)*N + 1;
-        uout(k,1) = fun(vout{1}(idx:idx+N-1,:,:), dom, 'trig');
+        uOut(k,1) = fun(vOut{1}(idx:idx+N-1,:,:), dom, 'trig');
     end
-    for l = 2:size(vout, 2)
-        N = length(vout{l})/nVars;
+    for l = 2:size(vOut, 2)
+        N = length(vOut{l})/nVars;
         for k = 1:nVars
             idx = (k-1)*N + 1;
-            uout(k,l) = fun(vout{l}(idx:idx+N-1,:,:), dom, 'trig'); 
+            uOut(k,l) = fun(vOut{l}(idx:idx+N-1,:,:), dom, 'trig'); 
         end
     end
 end
@@ -518,9 +527,9 @@ end
 % Output TOUT:
 if ( nargout == 2 )
     if ( length(tspan) == 2 )
-        tout = tspan(2);
+        tOut = tspan(2);
     else
-        tout = tspan;
+        tOut = tspan;
     end
 end
 
