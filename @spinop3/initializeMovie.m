@@ -61,15 +61,21 @@ for k = 1:nVars
     vplot = [vplot; vplot(1,:,:)];
     vplot = cat(3, vplot, vplot(:,:,1));
     
-    % Plot it:
+    % Plot each variable:
     subplot(nVars, 1, k) 
     p{k} = slice(xxplot, yyplot, zzplot, vplot, Sx, Sy, Sz);
     set(p{k}, 'edgecolor', 'none')
     axis([dom(1) dom(2) dom(3) dom(4) dom(5) dom(6)]), colorbar
     xlabel('x'), ylabel('y'), zlabel('z'), set(gca, 'FontSize', 16), box on
+    
+    % Title:
     if ( k == 1 )
-        title(sprintf(['N = %i (DoFs = %i), dt = %1.1e, ', 't = %.4f'], N, ...
-            nVars*N^3, dt, 0))
+        lin = ['L: ', func2str(S.linearPart)];
+        nonlin = ['N: ', func2str(S.nonlinearPart)];
+        data = sprintf('Nx = Ny = Nz = %i (DoFs = %i), dt = %1.1e, t = %.4f', N, ...
+            nVars*N^3, dt, 0);
+        titleString = {[]; lin; []; nonlin; []; data; []};
+        title(titleString, 'interpreter', 'none')
     end
     drawnow
     

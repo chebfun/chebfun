@@ -33,7 +33,7 @@ for k = 1:nVars
     vplot = [vplot, vplot(:,1)]; %#ok<*AGROW>
     vplot = [vplot; vplot(1,:)];
     
-    % Plot it:
+    % Plot each variable:
     subplot(nVars, 1, k)
     p{k} = surf(xxplot, yyplot, vplot, 'edgecolor', 'none');
     axis([dom(1) dom(2) dom(3) dom(4)])
@@ -42,8 +42,12 @@ for k = 1:nVars
     
     % Title:
     if ( k == 1 )
-        title(p{k}.Parent, sprintf(['N = %i (DoFs = %i), dt = %1.1e, ', ...
-            't = %.4f'], N, nVars*N^2, dt, 0))
+        lin = ['L: ', func2str(S.linearPart)];
+        nonlin = ['N: ', func2str(S.nonlinearPart)];
+        data = sprintf('Nx = Ny = %i (DoFs = %i), dt = %1.1e, t = %.4f', N, ...
+            nVars*N^2, dt, 0);
+        titleString = {[]; lin; []; nonlin; []; data; []};
+        title(p{k}.Parent, titleString, 'interpreter', 'none')
     end
     drawnow
     

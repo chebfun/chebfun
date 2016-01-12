@@ -44,8 +44,12 @@ for k = 1:nVars
     
     % Title:
     if ( k == 1 )
-        title(p{k}.Parent, sprintf(['N = %i (DoFs = %i), dt = %1.1e, ', ...
-            't = %.4f'], N, nVars*N, dt, 0))
+        lin = ['L: ', func2str(S.linearPart)];
+        nonlin = ['N: ', func2str(S.nonlinearPart)];
+        data = sprintf('Nx = %i (DoFs = %i), dt = %1.1e, t = %.4f', N, ...
+            nVars*N, dt, 0);
+        titleString = {[]; lin; []; nonlin; []; data; []};
+        title(p{k}.Parent, titleString, 'interpreter', 'none')
     end
     drawnow
     
