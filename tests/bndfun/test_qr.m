@@ -52,7 +52,7 @@ f = bndfun(@(x) [x x x], struct('domain', dom), pref);
 pass(18) = all(size(Q) == 3) && all(size(R) == 3);
 I = eye(3);
 pass(19) = norm(innerProduct(Q, Q) - I, inf) < ...
-    max(get(f, 'vscale').*get(f, 'epslevel'));
+    max(get(f, 'vscale')*eps);
 
 end
 
@@ -65,12 +65,12 @@ function result = test_one_qr(f, x)
     % Check orthogonality.
     ip = innerProduct(Q, Q);
     result(1) = max(max(abs(ip - eye(N)))) < ...
-        10*max(get(f, 'vscale').*get(f, 'epslevel'));
+        10*max(get(f, 'vscale')*eps);
 
     % Check that the factorization is accurate.
     err = Q*R - f;
     result(2) = norm(feval(err, x), inf) < ...
-        1e2*max(get(f, 'vscale').*get(f, 'epslevel'));
+        1e2*max(get(f, 'vscale')*eps);
 end
 
 % Same as the previous function but this time uses the QR factorization with
@@ -82,10 +82,10 @@ function result = test_one_qr_with_perm(f, x)
     % Check orthogonality.
     ip = innerProduct(Q, Q);
     result(1) = max(max(abs(ip - eye(N)))) < ...
-        10*max(get(f, 'vscale').*get(f, 'epslevel'));
+        10*max(get(f, 'vscale')*eps);
 
     % Check that the factorization is accurate.
     err = Q*R - f*E;
     result(2) = norm(feval(err, x), inf) < ...
-        10*max(get(f, 'vscale').*get(f, 'epslevel'));
+        1e2*max(get(f, 'vscale')*eps);
 end

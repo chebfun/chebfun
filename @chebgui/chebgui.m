@@ -120,14 +120,14 @@ classdef chebgui
         timedomain = '';    % Time domain (should include breakpoints)
         sigma = '';         % Third input to an EIGS call
         init = '';          % Initial guess/condition for nonlin BVPs/PDEs
-        tol = '1e-10';      % Solution tolerance
+        tol = '5e-13';      % Solution tolerance
 
         % This initalises the OPTIONS struct for CHEBGUI. It containts a list of
         % miscellaneous options for when solving problems with CHEBGUI, namely:
         %   damping:        Whether the Newton iteration is to be damped or not.
         %   grid:           Show grids on plots in CHEBGUI.
-        %   discretization: Discretization for ODEs ('collocation' or 
-        %                   'ultraspherical').
+        %   discretization: Discretization for ODEs ('values' or 
+        %                   'coeffs').
         %   pdeholdplot:    Hold plot during solving PDEs.
         %   fixYaxisLower:  Fix lower y axis while solving PDEs.
         %   fixYaxisUpper:  Fix upper y axis while solving PDEs.
@@ -137,7 +137,7 @@ classdef chebgui
         options = struct('damping', '1', ...
             'plotting', '0.5', ...
             'grid', 1, ...
-            'discretization', 'collocation', ...
+            'discretization', 'values', ...
             'ivpSolver', 'ode113', ...
             'pdeSolver', 'pde15s', ...
             'pdeholdplot', 0, ...

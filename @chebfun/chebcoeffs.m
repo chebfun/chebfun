@@ -76,48 +76,30 @@ end
 
 %% Compute the coefficients:
 if ( numFuns == 1 )
-    
-    % We compute 2nd-kind coefficients by computing the 1st-kind coefficients and
-    % using a recurrence relation.  The recurrence for the coefficient of U_n
-    % requires the coefficients of T_n and T_{n + 2}, so we need to compute two
-    % extra 1st-kind coefficients if 2nd-kind coefficients have been requested.
-    if ( kind == 2 )
-        N = N + 2;
-    end
-    
     % CHEBCOEFFS() of a smooth piece:
-    out = chebcoeffs(f.funs{1}, N);   
-    
-    % Compute 2nd-kind coefficients from 1st-kind ones using the recurrence
-    %   T_n(x) = (1/2)*(U_n(x) - U_{n-2}(x)):
-    if ( kind == 2 )
-        out(1,:) = 2*out(1,:);
-        out = 0.5*[out(1:end-2,:) - out(3:end,:) ; out(end-1:end,:)];
-        out = out(1:end-2,:);
-    end
-    
+    out = chebcoeffs(f.funs{1}, N, kind);
+
 else
     % CHEBCOEFFS() of a piecewise smooth CHEBFUN:
+    % (Compute coefficients via inner products.)
 
-    % Compute coefficients via inner products.
-    d = f.domain([1, end]);
-    x = chebfun('x', d);
+    % Construct a Chebfun of the appropriate Chebyshev weight:
+    d = f.domain;
+    x = chebfun([d(1) ; d(end)], [d(1), d(end)]);
+    w = sqrt((x - d(1)).*(d(end) - x));
     if ( kind == 1 )
-        w = 1./sqrt((x - d(1)).*(d(2) - x));
-    elseif ( kind == 2 )
-        w = sqrt((x - d(1)).*(d(2) - x));
+        w = 1./w;
     end
     
+    % Chebyshev polynomials up to degree N - 1:
+    T = chebpoly(0:(N-1), d, kind);
+    
+    % Compute the weighted inner products:
     numCols = numColumns(f);
     out = zeros(N, numCols);
-    f = mat2cell(f);
-    T = chebpoly(0:(N-1), d, kind);
-    T = mat2cell(T);
-    for k = 1:N
-        Tkw = T{k}.*w;
-        for j = 1:numCols
-            out(k,j) = innerProduct(f{j}, Tkw);
-        end
+    for j = 1:numCols
+        fjw = extractColumns(f, j).*w;
+        out(:,j) = innerProduct(fjw, T);
     end
      
     if ( kind == 1 )

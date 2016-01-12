@@ -34,35 +34,6 @@ classdef chebtech < smoothfun % (Abstract)
 % enforce scale invariance when the input OP has been implicitly mapped from a
 % domain other than [-1 1] before being passed to a CHEBTECH constructor.
 %
-% EPSLEVEL is the happiness level to which the CHEBTECH was constructed (See
-% HAPPINESSCHECK.m for full documentation) or a rough accuracy estimate of
-% subsequent operations, both relative to VSCALE. Therefore EPSLEVEL could be
-% regarded as the number of correct digits in the sampled value that created
-% VSCALE.
-%
-% Here is a rough guide to how scale and accuracy information is propagated in
-% subsequent operations after construction:
-%   h = f + c:
-%     h.epslevel = (f.epslevel*f.vscale + eps(c)) / vscale(h);
-%
-%   h = f * c:
-%     h.epslevel = f.epslevel + eps(c)/c;
-%
-%   h = f + g:
-%     h.epslevel = (f.epslevel*f.vscale + g.epslevel*g.vscale) / h.vscale
-%
-%   h = f .* g:
-%     h.epslevel = (f.epslevel + g.epslevel) * (f.vscale*g.vscale)/h.vscale
-%
-%   h = diff(f):
-%     % [TODO]: Figure this out rigourously.
-%     h.epslevel = n*log(n)*f.epslevel*f.vscale; % *(h.vscale/h.vscale)
-%     % Note we don't divide by vscale(h) here as we must also multiply by it.
-%
-%   h = cumsum(f):
-%     % [TODO]: Figure this out rigourously.
-%     h.epslevel = 2*f.epslevel*f.vscale/h.vscale
-%
 % If the input operator OP in a call to a concrete CHEBTECH constructor, say,
 % CHEBTECH1(OP), evaluates to NaN or Inf at any of the sample points used by the
 % constructor, then a suitable replacement is found by extrapolating (globally)
@@ -94,23 +65,9 @@ classdef chebtech < smoothfun % (Abstract)
         % objects, each column represents the coefficients of a single function.
         coeffs % (nxm double)
 
-        % Horizontal scale of the CHEBTECH. Although CHEBTECH objects have in
-        % principle no notion of horizontal scale invariance (since they always
-        % live on [-1,1]), the input OP may have been implicitly mapped. HSCALE
-        % is then used to enforce horizontal scale invariance in construction
-        % and other subsequent operations that require it. It defaults to 1 and
-        % is never updated.
-        hscale = 1 % (scalar > 0)
-
         % Boolean value designating whether the CHEBTECH is 'happy' or not. See
         % HAPPINESSCHECK.m for full documentation.
         ishappy % (logical)
-
-        % Happiness level to which the CHEBTECH was constructed (See
-        % HAPPINESSCHECK.m for full documentation) or a rough accuracy estimate
-        % of subsequent operations (See CHEBTECH class documentation for
-        % details).
-        epslevel % (double >= 0)
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -182,7 +139,7 @@ classdef chebtech < smoothfun % (Abstract)
         [h1, h2] = plotcoeffs(f, varargin)
 
         % Check the happiness of a CHEBTECH. (Classic definition).
-        [ishappy, epslevel, cutoff] = classicCheck(f, values, vscl, pref)
+        [ishappy, cutoff] = classicCheck(f, values, vscl, pref)
 
         % Complex conjugate of a CHEBTECH.
         f = conj(f)
@@ -230,7 +187,7 @@ classdef chebtech < smoothfun % (Abstract)
         f = fracInt(f, mu, b)
 
         % Happiness test for a CHEBTECH
-        [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, vscl, pref)
+        [ishappy, cutoff] = happinessCheck(f, op, values, data, pref)
 
         % Imaginary part of a CHEBTECH.
         f = imag(f)
@@ -272,7 +229,7 @@ classdef chebtech < smoothfun % (Abstract)
         f = logical(f)
 
         % A 'loose' (i.e., not too strict) check for happiness.
-        [ishappy, epslevel, cutoff] = looseCheck(f, values, vscl, pref)
+        [ishappy, cutoff] = looseCheck(f, values, vscl, pref)
         
         % Evaluate a CHEBTECH at -1.
         out = lval(f)
@@ -326,7 +283,7 @@ classdef chebtech < smoothfun % (Abstract)
         out = poly(f)
 
         % Populate a CHEBTECH class with values.
-        [f, values] = populate(f, op, vscl, hscale, pref)
+        [f, values] = populate(f, op, data, pref)
         
         % Power function of a CHEBTECH.
         f = power(f, b)
@@ -356,7 +313,7 @@ classdef chebtech < smoothfun % (Abstract)
         out = rval(f)
 
         % Test an evaluation of the input OP against a CHEBTECH approx.
-        pass = sampleTest(op, values, f, vscl, pref)
+        pass = sampleTest(op, values, f, data, pref)
         
         % Signum of a CHEBTECH. (f should have no zeros in its domain)
         f = sign(f, pref)
@@ -368,7 +325,7 @@ classdef chebtech < smoothfun % (Abstract)
         [siz1, siz2] = size(f, varargin)
 
         % Strict happiness check.
-        [ishappy, epslevel, cutoff] = strictCheck(f, values, vscl, pref)
+        [ishappy, cutoff] = strictCheck(f, values, data, pref)
 
         % Definite integral of a CHEBTECH on the interval [-1,1].
         out = sum(f, dim)
@@ -398,9 +355,14 @@ classdef chebtech < smoothfun % (Abstract)
         % Clenshaw's algorithm for evaluating a Chebyshev polynomial.
         out = clenshaw(x, coeffs)
 
+        % Convert Chebyshev-T coefficients to Chebyshev-U coefficients.
+        cU = chebTcoeffs2chebUcoeffs(cT)
+
         % Retrieve and modify preferences for this class.
         p = techPref(q)
 
+        % Parse inputs passed to the constructor via the DATA argument.
+        data = parseDataInputs(data, pref)
     end
 
 end

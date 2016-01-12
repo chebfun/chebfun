@@ -36,9 +36,9 @@ pref.discretization = @chebcolloc1;
 % To pass, both residuals have to be small, but we should not expect u1 and u2
 % to be identical!
 
-% TODO: This used to be pref.errTol. Once we tune the algorithms better, should
+% TODO: This used to be pref.bvpTol. Once we tune the algorithms better, should
 % try to restore it.
-tol = 1e2*pref.errTol;
+tol = 1e3*pref.bvpTol;
 pass(1) = norm(N(u1)) < tol;
 pass(2) = norm(N(u2)) < tol;
 pass(3) = norm(N(u3)) < tol;

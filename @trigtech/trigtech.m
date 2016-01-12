@@ -64,40 +64,6 @@ classdef trigtech < smoothfun % (Abstract)
 % enforce scale invariance when the input OP has been implicitly mapped from a
 % domain other than [-1 1] before being passed to the TRIGTECH constructor.
 %
-% EPSLEVEL is the happiness level to which the TRIGTECH was constructed (See
-% HAPPINESSCHECK.m for full documentation) or a rough accuracy estimate of
-% subsequent operations, both relative to VSCALE. Therefore EPSLEVEL could be
-% regarded as the number of correct digits in the sampled value that created
-% VSCALE.
-%
-% Here is a rough guide to how scale and accuracy information is propagated in
-% subsequent operations after construction:
-%   h = f + c:
-%     h.vscale = max(abs(f.values), [], 1);
-%     h.epslevel = (f.epslevel*f.vscale + eps(c)) / h.vscale;
-%
-%   h = f * c:
-%     h.vscale = abs(c)*f.vscale;
-%     h.epslevel = f.epslevel + eps(c)/c;
-%
-%   h = f + g:
-%     h.vscale = max(abs(h.values), [], 1);
-%     h.epslevel = (f.epslevel*f.vscale + g.epslevel*g.vscale) / h.vscale
-%
-%   h = f .* g:
-%     h.vscale = max(abs(h.values), [], 1);
-%     h.epslevel = (f.epslevel + g.epslevel) * (f.vscale*g.vscale)/h.vscale
-%
-%   h = diff(f):
-%     h.vscale = max(abs(h.values), [], 1);
-%     % [TODO]: Figure this out rigourously.
-%     h.epslevel = n*log(n)*f.epslevel*f.vscale; % *(h.vscale/h.vscale)
-%     % Note we don't divide by h.vscale here as we must also multiply by it.
-%
-%   h = cumsum(f):
-%     h.vscale = max(abs(h.values), [], 1);
-%     h.epslevel = happinessCheck(h);
-%
 % If the input operator OP in a call to TRIGTECH evaluates to NaN or Inf at
 % any of the sample points used by the constructor, then an error is thrown.
 %
@@ -130,29 +96,10 @@ classdef trigtech < smoothfun % (Abstract)
         % of a single function.
         coeffs % (nxm double)
 
-        % Vertical scale of the TRIGTECH. This is a row vector storing the
-        % magnitude of the largest entry in each column of VALUES. It is
-        % convenient to store this as a property.
-        vscale = 0 % (1xm double >= 0)
-
-        % Horizontal scale of the TRIGTECH. Although TRIGTECH objects have in
-        % principle no notion of horizontal scale invariance (since they always
-        % live on [-1,1)), the input OP may have been implicitly mapped. HSCALE
-        % is then used to enforce horizontal scale invariance in construction
-        % and other subsequent operations that require it. It defaults to 1 and
-        % is never updated.
-        hscale = 1 % (scalar > 0)
-
         % Boolean value designating whether the TRIGTECH is 'happy' or not.
         % See HAPPINESSCHECK.m for full documentation.
         ishappy % (logical)
 
-        % Happiness level to which the TRIGTECH was constructed (See
-        % HAPPINESSCHECK.m for full documentation) or a rough accuracy estimate
-        % of subsequent operations (See TRIGTECH class documentation for
-        % details).
-        epslevel % (double >= 0)
-        
         % Boolean value designating whether the TRIGTECH represents a
         % real-valued function. This allows us to always return a real result
         % for things like evaluating a TRIGTECH.
@@ -175,7 +122,7 @@ classdef trigtech < smoothfun % (Abstract)
             end
 
             if ( (nargin < 2) || isempty(data) )
-                    data = struct();
+                data = struct();
             end
 
             if ( (nargin < 3) || isempty(pref) )
@@ -184,7 +131,7 @@ classdef trigtech < smoothfun % (Abstract)
                 pref = trigtech.techPref(pref);
             end
 
-            data = parseDataInputs(data, pref);
+            data = trigtech.parseDataInputs(data, pref);
 
             % Force nonadaptive construction if PREF.FIXEDLENGTH is numeric:
             if ( ~(isnumeric(op) || iscell(op)) && ...
@@ -196,7 +143,7 @@ classdef trigtech < smoothfun % (Abstract)
             end
 
             % Actual construction takes place here:
-            obj = populate(obj, op, data.vscale, data.hscale, pref);
+            obj = populate(obj, op, data, pref);
             
             % Set length of obj to PREF.FIXEDLENGTH (if it is non-trivial).
             if ( (isnumeric(op) || iscell(op)) && ...
@@ -235,7 +182,7 @@ classdef trigtech < smoothfun % (Abstract)
         [h1, h2] = coeffsplot(f, varargin)
 
         % Check the happiness of a TRIGTECH. (Classic definition).
-        [ishappy, epslevel, cutoff] = classicCheck(f, values, vscl, pref)
+        [ishappy, cutoff] = classicCheck(f, values, data, pref)
 
         % Compose two TRIGTECH objects or a TRIGTECH with a function handle:
         h = compose(f, op, g, data, pref)
@@ -277,7 +224,7 @@ classdef trigtech < smoothfun % (Abstract)
         val = get(f, prop);
 
         % Happiness test for a TRIGTECH
-        [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, vscl, pref)
+        [ishappy, cutoff] = happinessCheck(f, op, values, data, pref)
 
         % Imaginary part of a TRIGTECH.
         f = imag(f)
@@ -436,6 +383,9 @@ classdef trigtech < smoothfun % (Abstract)
         % Convert coefficients to values:
         values = coeffs2vals(coeffs);
         
+        % Horner scheme for evaluation of a TRIGTECH
+        y = horner(x, c, allReal)
+
         % Make a TRIGTECH (constructor shortcut):
         f = make(varargin);
         
@@ -445,29 +395,19 @@ classdef trigtech < smoothfun % (Abstract)
         % Refinement function for TRIGTECH construction (evaluates OP on grid):
         [values, points, giveUp] = refine(op, values, pref)
         
+         % Return the value-based discretization class which uses TRIGTECH: 
+        function disc = returnValsDisc()
+            disc = @trigcolloc;
+        end
+        
         % Retrieve and modify preferences for this class.
         p = techPref(q)
 
         % Convert values to coefficients:
         coeffs = vals2coeffs(values)
 
+        % Parse inputs passed to the constructor via the DATA argument.
+        data = parseDataInputs(data, pref)
     end
     
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% METHODS IMPLEMENTED IN THIS FILE:
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function data = parseDataInputs(data, pref)
-%PARSEDATAINPUTS   Parse inputs from the DATA structure and assign defaults.
-
-if ( ~isfield(data, 'vscale') || isempty(data.vscale) )
-    data.vscale = 0;
-end
-
-if ( ~isfield(data, 'hscale') || isempty(data.hscale) )
-    data.hscale = 1;
-end
-
 end

@@ -69,7 +69,7 @@ end
 options = cheboppref;
 
 % Check whether the tolerance is too tight.
-defaultTol = options.errTol;
+defaultTol = options.bvpTol;
 tolInput = guifile.tol;
 if ( isempty(tolInput) )
     tolNum = defaultTol;

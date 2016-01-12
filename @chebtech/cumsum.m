@@ -38,11 +38,11 @@ if ( nargin < 2 )
 end
 
 if ( dim == 1 )
-    % Take difference across 1st dimension:
+    % cumsum across 1st dimension:
     f = cumsumContinuousDim(f);
 else
-    % Take difference across 2nd dimension:
-    f = cumsumFiniteDim(f);
+    % cumsum across 2nd dimension:
+    f.coeffs = cumsum(f.coeffs, 2);
 end
 
 end
@@ -64,15 +64,8 @@ v = ones(1, n);
 v(2:2:end) = -1;
 b(1,:) = v*b(2:end,:);             % Compute b_0 (satisfies f(-1) = 0)
 
-% Store the old vscale.
-oldVscl = f.vscale;
-
 % Recover coeffs:
 f.coeffs = b;
-
-% Update epslevel:
-epslevelBound = 2*f.epslevel.*oldVscl./f.vscale;
-f.epslevel = updateEpslevel(f, epslevelBound);
 
 % Simplify (as suggested in Chebfun ticket #128)
 f = simplify(f);
@@ -80,15 +73,5 @@ f = simplify(f);
 % Ensure f(-1) = 0:
 lval = get(f, 'lval');
 f.coeffs(1,:) = f.coeffs(1,:) - lval;
-
-end
-
-function f = cumsumFiniteDim(f)
-% CUMSUM over the finite dimension.
-
-f.coeffs = cumsum(f.coeffs, 2);
-newVscl = f.vscale;
-epslevelApprox = sum(f.epslevel.*newVscl, 2)/sum(newVscl, 2); % TODO: Is this right?
-f.epslevel = updateEpslevel(f, epslevelApprox);
 
 end

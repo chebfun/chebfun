@@ -34,9 +34,15 @@ if ( a == 0 && b == 0 )
     return
 elseif ( a == -.5 && b == -.5 )
     out = chebcoeffs(f, n, 'kind', 1);
+    nn = 0:(n-2);
+    scl = repmat([1 ; cumprod((nn'+.5)./(nn'+1))], 1, size(out, 2));
+    out = out./scl;
     return
 elseif ( a == .5 && b == .5 )
     out = chebcoeffs(f, n, 'kind', 2);
+    nn = 0:(n-2);
+    scl = repmat([1 ; cumprod((nn'+1.5)./(nn'+1))], 1, size(out, 2));
+    out = (1:n)'.*out./scl;
     return
 end
     

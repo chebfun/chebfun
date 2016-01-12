@@ -10,7 +10,7 @@ g = chebfun(@(x) x.^5, pref);
 [r, p, k] = residue(g, f);
 [G, F] = residue(r, p, k);
 
-tol = 100*epslevel(k);
+tol = 100*eps;
 
 pexact = [10i ; 1.1 ; -1i ; 1i];
 

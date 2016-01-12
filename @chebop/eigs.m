@@ -3,7 +3,7 @@ function varargout = eigs(N, varargin)
 %   D = EIGS(A) returns a vector of 6 eigenvalues of the linear CHEBOP A. EIGS
 %   will attempt to return the eigenvalues corresponding to the least
 %   oscillatory eigenfunctions. (This is unlike the built-in EIGS, which returns
-%   the largest eigenvalues by default.). If A is not linear, an error is
+%   the largest eigenvalues by default.) If A is not linear, an error is
 %   returned.
 %
 %   [V, D] = EIGS(A) returns a diagonal 6x6 matrix D of A's least oscillatory
@@ -81,7 +81,7 @@ if ( nargin > 1 && isa(varargin{1}, 'chebop') )
 end
 
 % Determine the discretization.
-prefs = determineDiscretization(N, L, prefs);
+prefs = determineDiscretization(N, length(L.domain), prefs);
 
 % Clear boundary conditions if the dicretization uses periodic functions (since
 % if we're using periodic basis functions, the boundary conditions will be

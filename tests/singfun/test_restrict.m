@@ -119,7 +119,7 @@ for j = 1: NumInts
     
     % check the error
     err = norm(abs(y_exact - y_approx), inf);
-    tol = norm(5e4*absy*get(f, 'epslevel'), inf);
+    tol = norm(5e4*absy*eps, inf);
     result(j) = err < tol;
 end
 

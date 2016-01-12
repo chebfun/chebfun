@@ -73,7 +73,7 @@ for n = 1:2
     x = linspace(-1, 1, 100).';
     err1 = norm(feval(g{1} - h1, x), inf);
     err2 = norm(feval(g{2} - h2, x), inf);
-    tol = 10*get(f, 'epslevel');
+    tol = 10*eps;
     pass(n, 10) = err1 < tol && err2 < tol;
 
     %%
@@ -88,7 +88,7 @@ for n = 1:2
     x = linspace(-1, 1, 100).';
     err1 = norm(feval(g{1} - h1, x), inf);
     err2 = norm(feval(g{2} - h2, x), inf);
-    tol = 10*max(get(f, 'epslevel'));
+    tol = 10*eps;
     pass(n, 10) = err1 < tol && err2 < tol;
 end
 
@@ -110,6 +110,6 @@ function result = test_spotcheck_restrict(testclass, fun_op, subint, pref)
     y_exact = fun_op(x);
     y_approx = feval(g, map(x));
 
-    result = norm(y_exact - y_approx, Inf) < 1e3*max(g.vscale.*g.epslevel);
+    result = norm(y_exact - y_approx, Inf) < 1e3*max(vscale(g)*eps);
     
 end

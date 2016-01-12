@@ -175,7 +175,7 @@ end
 end
 
 % Initialization for simplification.
-newlen = length(infixOut());
+newlen = length(infixOut);
 len = inf;
 
 % Do some simplifications on the returned string. In particular, we want to

@@ -46,8 +46,7 @@ else
     % Create periodic conditions, using only endpoints.
     left = dom(end);
     right = dom(1);
-end
-    
+end    
 
 if ( ( max(diffOrd) > 0 ) && ( ~isempty(left) ) )
     
@@ -58,10 +57,10 @@ if ( ( max(diffOrd) > 0 ) && ( ~isempty(left) ) )
     % Each function variable gets a zero functional block; each scalar variable
     % gets a scalar zero.
     z = functionalBlock.zero(dom);
-    Z = {};
+    Z = {}; %#ok<*AGROW>
     for var = 1:length(diffOrd)
         if ( isnan(diffOrd(var)) || diffOrd(var) == 0 )  % scalar variable
-            Z = [Z, 0];
+            Z = [Z, 0]; 
         else   % function variable
             Z = [Z, z];
         end
@@ -87,21 +86,26 @@ L.continuity = cont;
 
 end
 
-
 function C = domainContinuity(dom, maxorder,left, right)
 % Returns expressions of continuity at the breakpoints of the domain of L.
 %   C{m,k} has the (m-1)th-order derivative at breakpoint k
 
-A = operatorBlock.eye(dom);
-D = operatorBlock.diff(dom,1);
-C = cell(maxorder+1,length(left));
-for m = 0:maxorder
-    for k = 1:length(left)
-        El = functionalBlock.feval(left(k),dom,-1);
-        Er = functionalBlock.feval(right(k),dom,+1);
-        C{m+1,k} = (El-Er)*A;
-    end
-    A = D*A;
+% Initialize output cell array
+numIntervals = length(left);
+C = cell(maxorder+1, numIntervals);
+
+% Construct all evaluation difference functionals, and start by storing those in
+% the output cell, C.
+for k = 1:numIntervals
+    C{1, k} = functionalBlock.feval(left(k), dom, -1) - ...
+              functionalBlock.feval(right(k), dom, +1);
 end
+
+% Now multiply the top row of C by increasingly high differentation operators:
+for m = 1:maxorder
+    Dm = operatorBlock.diff(dom, m);
+    Dm_rep = repmat({Dm}, 1, numIntervals);
+    C(m+1, :) = cellfun(@mtimes, C(1,:), Dm_rep, 'uniformOutput', false);
+end 
 
 end

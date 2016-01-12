@@ -16,11 +16,11 @@ function varargout = solvebvp(N, rhs, varargin)
 %
 %   If successful, the solution returned, U, is a CHEBFUN if N specifies a
 %   scalar problem, and a CHEBMATRIX if N specifies a coupled systems of
-%   ordinary differential equations. If N specifies a linear operator, the BVP
-%   is solved using a spectral or a pseudospectral method. If N specifies a
-%   nonlinear operator, damped Newton iteration in function space is performed,
-%   where each linear problem arising is solved via a spectral/pseudospectral
-%   method.
+%   ordinary differential equations. See note below on how to call the method
+%   with multiple outputs. If N specifies a linear operator, the BVP is solved
+%   using a spectral or a pseudospectral method. If N specifies a nonlinear
+%   operator, damped Newton iteration in function space is performed, where each
+%   linear problem arising is solved via a spectral/pseudospectral method.
 %
 %   U = SOLVEBVP(N, RHS, PREF) is the same as above, using the preferences
 %   specified by the CHEBOPPREF variable PREF.
@@ -44,13 +44,17 @@ function varargout = solvebvp(N, rhs, varargin)
 %       ERROR:      An error estimate for the convergence of the Newton
 %                   iteration.
 %
+%   [U, V, ...] = SOLVEBVP(N, ...), where N specifies a coupled system of ODEs,
+%   returns CHEBFUNs U, V, ... for individual solution components, rather than a
+%   CHEBMATRIX.
+%
 %   Note that CHEBOP allows the RHS of coupled system of ODEs to be a scalar,
 %   e.g., one can both call
 %       N = chebop(@(x, u, v) [diff(u) + v ; u + diff(v)]);
 %       N.bc = @(x, u, v) [u(-1) ; v(1)];
-%       uv = solvebvp(N, 0);
+%       [u, v] = solvebvp(N, 0);
 %   and
-%       uv = solvebvp(N, [0; 0]);
+%       [u, v] = solvebvp(N, [0; 0]);
 %
 % See also: CHEBOP, CHEBOP/MLDIVIDE, CHEBOPPREF, CHEBOP/SOLVEBVPLINEAR,
 %   CHEBOP/SOLVEBVPNONLINEAR, CHEBOP/SOLVEIVP, LINOP/MLDIVIDE.
@@ -128,11 +132,13 @@ if ( isnumeric(rhs) )
     if ( ~(all(size(rhs) == [numRow, numCol])) &&  (max(size(rhs)) > 1) )
         if ( all(size(rhs) == [numCol, numRow]) )
             warning('CHEBFUN:CHEBOP:solvebvp:vertcat1', ...
-                'Please concatenate the right-hand side of the BVP vertically. Transposing.')
+                ['Please concatenate the right-hand side of the BVP ' ...
+                'vertically. Transposing.'])
             rhs = rhs.';
         else
             error('CHEBFUN:CHEBOP:solvebvp:rhs', ...
-                'The right-hand side does not match the output dimensions of the operator.');
+                ['The right-hand side does not match the output dimensions ' ...
+                'of the operator.'])
         end
     end
     
@@ -164,8 +170,12 @@ if ( isnumeric(u0) )
     u0 = u0 + 0*residual;
 end
 
-% Determine the discretization.
-pref = determineDiscretization(N, L, pref);
+% Determine the discretization. We look at the max of L.domain and rhs.domain.
+% Note that we look at L.domain rather than N.domain, as the domain of the LINOP
+% L will also include any breakpoints arising from discontinuous coefficients of 
+% N (which we only become aware of when we do the linearization):
+lengthDom = max(max(length(L.domain), length(rhs.domain)), length(u0.domain));
+pref = determineDiscretization(N, lengthDom, pref);
 disc = pref.discretization();
 
 % Determine the TECH used by the discretization.
@@ -175,22 +185,28 @@ techUsed = tech();
 % If the dicretization uses periodic functions, then clear the boundary
 % conditions (if we're using periodic basis functions, the boundary conditions
 % will be satisfied by construction). Also, ensure that u0 is of correct
-% discretization, and convert it to a CHEBMATRIX if necessary.
+% discretization:
 if ( isPeriodicTech(techUsed) )
     % Clear the boundary conditions.
     [N, L] = clearPeriodicBCs(N, L);
-    % Do the conversion.
-    if ( isa(u0, 'chebfun') )
-        u0 = chebmatrix(changeTech(u0, tech));
-    elseif ( isa(u0, 'chebmatrix') )
-        u0 = changeTech(u0, tech);
-    end
+    
+    % Ensure that u0 is of correct discretization:
+    u0 = changeTech(u0, tech);
 end
 
 % Solve:
 if ( all(isLinear) )
+    % This step also ensures that RHS is a CHEBMATRIX:
+    rhs = rhs - residual;
+    
+    % Ensure that rhs-residual is of correct discretization:
+    if ( isPeriodicTech(techUsed) )
+        rhs = changeTech(rhs, tech);
+    end
+    
     % Call solver method for linear problems.
-    [u, info] = N.solvebvpLinear(L, rhs - residual, N.init, pref, displayInfo);
+    [u, info] = N.solvebvpLinear(L, rhs, N.init, pref, displayInfo);
+    
 else
     % [TODO]: Switch between residual and error oriented Newton methods.
     
@@ -198,9 +214,9 @@ else
     if ( isempty(N.init) )
         
         if ( ~isPeriodicTech(techUsed) )
-            % Find a new initial guess that satisfies the BCs of L.
-            % If we are using TRIGCOLLOC, we don't need to do that because 
-            % the zero CHEBFUN is periodic.
+            % Find a new initial guess that satisfies the BCs of L. Note that if
+            % we are using a periodic discretization, we don't need to do that
+            % because the zero CHEBFUN is periodic.
             u0 = fitBCs(L, pref);
         end
         
@@ -224,9 +240,18 @@ else
     % Call solver method for nonlinear problems.
     [u, info] = solvebvpNonlinear(N, rhs, L, u0, residual, pref, displayInfo);
 
-% simplify output
-u = simplify(u,pref.errTol/200);
-    
+    % Simplify output
+    u = simplify(u,pref.bvpTol);
+
+end
+
+% Enforce the function to be real if the imaginary part is small if using a 
+% periodic TECH:
+if ( isPeriodicTech(techUsed) )
+    normImag = @(f) norm(imag(f),inf);
+    if ( max(cellfun(normImag, u.blocks)) < max(pref.bvpTol*vscale(u)) )
+       u = real(u);
+    end
 end
 
 % Revert warning state:

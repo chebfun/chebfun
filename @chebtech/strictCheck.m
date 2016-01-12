@@ -1,13 +1,12 @@
-function [ishappy, epslevel, cutoff] = strictCheck(f, values, vscl, pref)
+function [ishappy, cutoff] = strictCheck(f, values, data, pref)
 %STRICTCHECK   Attempt to trim trailing Chebyshev coefficients in a CHEBTECH.
-%   [ISHAPPY, EPSLEVEL, CUTOFF] = STRICTCHECK(F, VALUES, VSCL) returns an
-%   estimated location CUTOFF at which the CHEBTECH F could be truncated to
-%   maintain an accuracy of EPSLEVEL relative to VSCL and F.HSCALE. ISHAPPY is
-%   TRUE if CUTOFF < MIN(LENGTH(F.COEFFS), 2) or F.VSCALE=0, and FALSE
-%   otherwise. If ISHAPPY is false, EPSLEVEL returns an estimate of the accuracy
-%   achieved.
+%   [ISHAPPY, CUTOFF] = STRICTCHECK(F, VALUES, DATA) returns an estimated
+%   location CUTOFF at which the CHEBTECH F could be truncated to maintain an
+%   accuracy of the default CHEBTECH EPS preference relative to DATA.VSCALE and
+%   DATA.HSCALE. ISHAPPY is TRUE if CUTOFF < MIN(LENGTH(F.COEFFS), 2) or
+%   VSCALE(F)=0, and FALSE otherwise.
 %
-%   [ISHAPPY, EPSLEVEL, CUTOFF] = STRICTCHECK(F, VALUES, VSCL, PREF) allows
+%   [ISHAPPY, CUTOFF] = STRICTCHECK(F, VALUES, DATA, PREF) allows
 %   additional preferences to be passed. In particular, one can adjust the
 %   target accuracy with PREF.EPS. The VALUES field is ignored, but included for
 %   consistency with other happiness checks.
@@ -17,11 +16,10 @@ function [ishappy, epslevel, cutoff] = strictCheck(f, values, vscl, pref)
 %       TESTLENGTH = n,             for n = 1:4
 %       TESTLENGTH = 5,             for n = 5:44
 %       TESTLENGTH = round((n-1)/8) for n > 44
-%   all lie below the value in PREF.EPS. This value is returned in
-%   EPSLEVEL and CUTOFF is the location of the first entry above EPSLEVEL in
-%   absolute value.
+%   all lie below the value in PREF.EPS.  CUTOFF is the location of the first
+%   entry above PREF.EPS in absolute value.
 %
-%   STRICKCHECK differs from CLASSICCHECK() in that the tolerance on EPSLEVEL is
+%   STRICKCHECK differs from CLASSICCHECK() in that the tolerance PREF.EPS is
 %   not relaxed by the length of the representation of F or by any finite
 %   difference approximation of the gradient of F.
 %
@@ -50,7 +48,7 @@ end
 
 % Convert scalar epslevel/tolerance inputs into vectors.
 if ( isscalar(epslevel) )
-    epslevel = repmat(epslevel, size(f.vscale));
+    epslevel = repmat(epslevel, 1, size(f.coeffs, 2));
 end
 
 % Deal with the trivial case:
@@ -59,26 +57,14 @@ if ( n < 2 )  % (Can't be simpler than a constant.)
     return
 end
 
-% Check the vertical scale:
-if ( isempty(vscl) || isempty(vscl) )
-    if ( nargin < 2 || isempty(values) )
-        % Compute some values if none were given:
-        values = f.coeffs2vals(f.coeffs);
-    end
-    vscl = max(abs(values), [],  1);
-else
-    vscl = max(vscl, max(abs(values), [],  1));
-end
-
-if ( max(vscl) == 0 )
+if ( max(data.vscale) == 0 )
     % This is the zero function, so we must be happy.
     ishappy = true;
     cutoff = 1;
     return
-elseif ( any(isinf(vscl(:))) )
+elseif ( any(isinf(data.vscale(:))) )
     % Inf located. No cutoff.
     cutoff = n;
-    epslevel = inf*epslevel;
     return
 end
 
@@ -90,7 +76,7 @@ end
 
 % Check for convergence and chop location --------------------------------------
 testLength = min(n, max(5, round((n-1)/8))); 
-ac = bsxfun(@rdivide, abs(f.coeffs), vscl);
+ac = bsxfun(@rdivide, abs(f.coeffs), data.vscale);
 f.coeffs(bsxfun(@le, ac, epslevel)) = 0;
 tail = f.coeffs(end-testLength+1:end,:);
 if ( ~any(tail(:)) )
@@ -98,8 +84,6 @@ if ( ~any(tail(:)) )
     ishappy = true;
 else
     cutoff = n;
-    % Estimate the epslevel:
-    epslevel = mean(abs(tail));
 end
 
 end

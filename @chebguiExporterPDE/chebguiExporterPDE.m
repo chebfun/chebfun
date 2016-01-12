@@ -18,7 +18,7 @@ classdef chebguiExporterPDE < chebguiExporter
         defaultFileName = 'chebpde.m';
         
         % Description for printing to .m files:
-        description = 'a partial differential equation.';
+        description = 'a partial differential equation';
         
     end
     

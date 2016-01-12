@@ -85,7 +85,7 @@ classdef chebtech1 < chebtech
                 pref = chebtech.techPref(pref);
             end
 
-            data = parseDataInputs(data, pref);
+            data = chebtech.parseDataInputs(data, pref);
 
             % Force nonadaptive construction if PREF.FIXEDLENGTH is numeric and
             % we're not using contour integrals.
@@ -96,7 +96,7 @@ classdef chebtech1 < chebtech
             end
 
             % Actual construction takes place here:
-            [obj, values] = populate(obj, op, data.vscale, data.hscale, pref);
+            [obj, values] = populate(obj, op, data, pref);
 
             if ( isnumeric(op) || iscell(op) )
                 % Set length of obj to PREF.FIXEDLENGTH (if it is non-trivial).
@@ -171,26 +171,14 @@ classdef chebtech1 < chebtech
         % Refinement function for CHEBTECH1 construction (evaluates OP on grid):
         [values, points, giveUp] = refine(op, values, pref)
         
+        % Return the value-based discretization class which uses CHEBTECH1: 
+        function disc = returnValsDisc()
+            disc = @chebcolloc1;
+        end
+        
         % Convert values to coefficients:
         coeffs = vals2coeffs(values)
         
     end
         
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% METHODS IMPLEMENTED IN THIS FILE:
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function data = parseDataInputs(data, pref)
-%PARSEDATAINPUTS   Parse inputs from the DATA structure and assign defaults.
-
-if ( ~isfield(data, 'vscale') || isempty(data.vscale) )
-    data.vscale = 0;
-end
-
-if ( ~isfield(data, 'hscale') || isempty(data.hscale) )
-    data.hscale = 1;
-end
-
 end

@@ -10,11 +10,9 @@ function f = extractColumns(f, colIdx)
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Extract/re-order the columns from f.values, f.coeffs, and f.vscale:
+% Extract/re-order the columns from f.values, f.coeffs:
 f.values = f.values(:,colIdx);
 f.coeffs = f.coeffs(:,colIdx);
-f.vscale = f.vscale(colIdx);
-f.epslevel = f.epslevel(colIdx);
 f.isReal = f.isReal(colIdx);
 
 end

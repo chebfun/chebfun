@@ -62,7 +62,7 @@ if ( nargin == 1 )
             k = j + C(2, j);
             D = C(:, j+1:k);
             f = chebfun( (D(1,:) +  1i*(D(2,:)+realmin)).' );
-            f = simplify( f, tol );
+            f = simplify( f, tol, 'globaltol' );
             j = k + 1;
             r = [ r , f ];
         end

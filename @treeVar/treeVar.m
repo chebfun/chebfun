@@ -364,11 +364,11 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             h.domain = updateDomain(f, g);
         end
         
-        function plot(treeVar)
+        function plot(treeVar, varargin)
             %PLOT   Plot of a TREEVAR syntax tree.
             %
             % See also TREEVAR.PLOTTREE.
-            treeVar.plotTree(treeVar.tree);
+            treeVar.plotTree(treeVar.tree, varargin{:});
         end
         
         function h = plus(f, g)
@@ -387,11 +387,11 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             h.domain = updateDomain(f, g);
         end
         
-        function s = print(treeVar)
+        function s = print(treeVar, varargin)
             %PRINT   Text rendering of a TREEVAR syntax tree.
             %
             % See also TREEVAR.PRINTTREE.
-            s = treeVar.printTree(treeVar.tree);
+            s = treeVar.printTree(treeVar.tree, varargin{:});
         end
         
         function h = rdivide(f, g)
@@ -527,7 +527,8 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         funOut = toRHS(infix, varArray, coeff, indexStart, totalDiffOrders);
         
         % Convert a syntax tree to infix form
-        [infix, varArray] = tree2infix(tree, diffOrders, varCounter, varArray)
+        [infix, varArray] = ...
+            tree2infix(tree, diffOrders, varCounter, varArray, isCoeffFun)
            
         % Construct syntax trees for univariate methods
         treeOut = univariate(treeIn, method)

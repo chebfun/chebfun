@@ -7,7 +7,7 @@ function pass = test_paramODE_inBCs(pref)
 if ( nargin == 0 )
     pref = cheboppref();
 end
-tol = 10*pref.errTol;
+tol = 10*pref.bvpTol;
 
 %% Second order problem with parameter in BC.
 dom = [0 1];
