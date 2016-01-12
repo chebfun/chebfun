@@ -24,7 +24,7 @@ classdef spinpref2 < spinpreference
 %     [1e-3]
 %
 %   M                         * Number of points for complex means to evaluate
-%     [64]                      the phi-functions.
+%     [32]                      the phi-functions.
 %
 %   N                         * Number points in each direction for spatial 
 %     [256]                     discretization. To switch to adaptive grid, set
@@ -72,6 +72,7 @@ classdef spinpref2 < spinpreference
                 pref.dtmax = 1;
                 pref.errTol = 1e-3;
                 pref.iterPlot = 1;
+                pref.M = 32;
                 pref.N = 256;
                 pref.Nmin = 128;
                 pref.Nmax = 1024;

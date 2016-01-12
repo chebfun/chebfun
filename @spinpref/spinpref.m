@@ -74,6 +74,7 @@ classdef spinpref < spinpreference
                 pref.dtmax = 1e-1;
                 pref.errTol = 1e-6;
                 pref.iterPlot = 20;
+                pref.M = 64;
                 pref.Nmin = 256;
                 pref.Nmax = 4096;
             else

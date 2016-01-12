@@ -17,7 +17,7 @@ classdef spinpreference
         dtmax                   % Maximum timestep for apative time-grid
         errTol                  % Desired accuracy on the solution
         iterPlot                % Plot every ITERPLOT iterations with 'movie'
-        M = 64;                 % Number of points for complex means
+        M                       % Number of points for complex means
         N                       % Number of points for space-grid
         Nmin                    % Min. number of points for apative space-grid
         Nmax                    % Max. number of points for apative space-grid
