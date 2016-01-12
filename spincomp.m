@@ -1,4 +1,4 @@
-function spincomp(pdechar, tspan, u0, pref)
+function [err, time] = spincomp(pdechar, tspan, u0, pref)
 %SPINCOMP  Compare time-stepping schemes.
 %   SPINCOMP(PDECHAR, TSPAN, U0, PREF) solves the PDE specified by the STRING
 %   PDECHAR on TSPAN x U0.DOMAIN, with initial condition U0, using the various

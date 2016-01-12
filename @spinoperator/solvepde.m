@@ -135,7 +135,8 @@ Nv = S.nonlinearPartVals;
 % Create a contour around each eigenvalue of the linear part L:
 LR = computeLR(S, dt, L, M, N);
 
-% Set-up spatial grid, and initial condition (values V and Fourier coeffs C):
+% Set-up spatial grid, and initial condition (values VINIT and Fourier coeffs 
+% CINIT):
 nVars = S.numVars;
 xx = trigpts(N, dom(1:2));
 if ( dim == 2 )
@@ -143,32 +144,45 @@ if ( dim == 2 )
 elseif ( dim == 3 )
     [xx, yy, zz] = meshgrid(xx, xx, xx);
 end
-v = [];
+vInit = [];
 for k = 1:nVars
     if ( dim == 1 )
-        v = [v; feval(u0{k}, xx)]; %#ok<*AGROW>
+        vInit = [vInit; feval(u0{k}, xx)]; %#ok<*AGROW>
     elseif ( dim == 2 )
-        v = [v; feval(u0{k}, xx, yy)];
+        vInit = [vInit; feval(u0{k}, xx, yy)];
     elseif ( dim == 3 )
-        v = [v; feval(u0{k}, xx, yy, zz)];
+        vInit = [vInit; feval(u0{k}, xx, yy, zz)];
     end
 end
-c{1} = [];
+cInit{1} = [];
 for k = 1:nVars
     idx = (k-1)*N + 1;
-    c{1} = [c{1}; fftn(v(idx:idx+N-1,:,:))];
+    cInit{1} = [cInit{1}; fftn(vInit(idx:idx+N-1,:,:))];
 end
 
+% Store the nonlinear evaluation of the initial data in NCINIT:
+vals = ifftn(cInit{1}(1:N,:,:));
+for k = 1:nVars-1
+    idx = k*N + 1;
+    vals = [vals; ifftn(cInit{1}(idx:idx+N-1,:,:))];
+end
+vals = Nv(vals);
+coeffs = fftn(vals(1:N,:,:));
+for k = 1:nVars-1
+    idx = k*N + 1;
+    coeffs = [coeffs; fftn(vals(idx:idx+N-1,:,:))];
+end
+coeffs = Nc.*coeffs;
+NcInit{1} = coeffs;
+    
 % Get enough initial data when using a multistep scheme:
 if ( q > 1 )
-    [c, dt, phi] = startMultistep(K, adaptiveTime, dt, L, LR, Nc, Nv, pref, ...
-        S, c);
-else
-    phi = [];
+    [cInit, NcInit, dt] = startMultistep(K, adaptiveTime, dt, L, LR, Nc, ...
+        Nv, pref, S, cInit, NcInit);
 end
 
 % Compute the coefficients of the scheme:
-schemeCoeffs = computeCoeffs(K, dt, L, LR, S, phi);
+schemeCoeffs = computeCoeffs(K, dt, L, LR, S);
 
 % If adaptive in time, get the coefficients with DT/2:
 if ( adaptiveTime == 1 )
@@ -191,11 +205,11 @@ end
 ind = repmat(ind, nVars, 1);
 
 % Values VOUT to output:
-vout{1} = v;
+vout{1} = vInit;
 
 % Values VWATER to plot if using WATERFALL:
 if ( strcmpi(plottingstyle, 'waterfall') == 1 )
-    vwater{1} = v;
+    vwater{1} = vInit;
     twater = 0;
 end
 
@@ -208,7 +222,7 @@ if ( strcmpi(plottingstyle, 'movie') == 1 )
     elseif ( dim == 3 );
         gridpts = {xx; yy; zz};
     end
-    [p, plotOptions] = initializeMovie(S, dt, pref, v, gridpts);
+    [p, plotOptions] = initializeMovie(S, dt, pref, vInit, gridpts);
 end
 
 %% Time-stepping loop:
@@ -217,19 +231,21 @@ iter = 0;
 t = (q-1)*dt;
 success = 0;
 pos = 2;
+cOld = cInit;
+NcOld = NcInit;
 while ( t < tf )
 
     % One step in time with DT and N points:
-    cnew = oneStep(K, schemeCoeffs, Nc, Nv, nVars, c);
+    [cNew, NcNew] = oneStep(K, schemeCoeffs, Nc, Nv, nVars, cOld, NcOld);
     valuesUpdated = 0;
     
     % Dealiasing procedure:
     if ( dealias == 1 )
-        cnew{1}(ind) = 0;
+        cNew{1}(ind) = 0;
     end
     
     % Check if N is large enough (i.e., check resolution in space):
-    ishappy = checkHappiness(S, cnew, pref);
+    ishappy = checkHappiness(S, cNew, pref);
     
     % If resolved in space, or N>=Nmax, or not adpative in space, check if
     % resolved in time:
@@ -237,21 +253,24 @@ while ( t < tf )
         
         % Two steps in time with DT/2 and N points (if adpative in time):
         if ( adaptiveTime == 1 )
-            cnew2 = oneStep(K, schemeCoeffs2, Nc, Nv, nVars, c);
+            [cNew2, NcNew2] = oneStep(K, schemeCoeffs2, Nc, Nv, nVars, ...
+                cOld, NcOld);
             if ( dealias == 1 )
-                cnew2{1}(ind) = 0;
+                cNew2{1}(ind) = 0;
             end
-            cnew2 = oneStep(K, schemeCoeffs2, Nc, Nv, nVars, cnew2);
+            [cNew2, NcNew2] = oneStep(K, schemeCoeffs2, Nc, Nv, nVars, ...
+                cNew2, NcNew2);
             if ( dealias == 1 )
-                cnew2{1}(ind) = 0;
+                cNew2{1}(ind) = 0;
             end
-            err = max(max(max(abs(cnew{1} - cnew2{1}))));
-            err = err/max(max(max(abs(cnew2{1}))));
+            err = max(max(max(abs(cNew{1} - cNew2{1}))));
+            err = err/max(max(max(abs(cNew2{1}))));
             
         % If not adaptive in time, set CNEW2=CNEW and ERR=1:
         else
             err = 1;
-            cnew2 = cnew;
+            cNew2 = cNew;
+            NcNew2 = NcNew;
         end
         
         % If |cnew - cnew2| is small enough, or DT<=DTMIN, or not adadptive in
@@ -266,7 +285,8 @@ while ( t < tf )
                 t = (iter + q - 1)*dt;
             end
             success = success + 1;
-            c = cnew2;
+            cOld = cNew2;
+            NcOld = NcNew2;
             
             % Plot every ITERPLOT iterations if using MOVIE:
             if ( strcmpi(plottingstyle, 'movie') == 1 && ...
@@ -274,7 +294,7 @@ while ( t < tf )
                 v = [];
                 for k = 1:nVars
                     idx = (k-1)*N + 1;
-                    temp = ifftn(c{1}(idx:idx+N-1,:,:));
+                    temp = ifftn(cOld{1}(idx:idx+N-1,:,:));
                     if ( max(max(max(abs(imag(temp))))) < errTol )
                         temp = real(temp);
                     end
@@ -290,7 +310,7 @@ while ( t < tf )
                 v = [];
                 for k = 1:nVars
                     idx = (k-1)*N + 1;
-                    temp = ifft(c{1}(idx:idx+N-1));
+                    temp = ifft(cOld{1}(idx:idx+N-1));
                     if ( max(max(max(abs(imag(temp))))) < errTol )
                         temp = real(temp);
                     end
@@ -322,7 +342,7 @@ while ( t < tf )
                     v = [];
                     for k = 1:nVars
                         idx = (k-1)*N + 1;
-                        temp = ifftn(c{1}(idx:idx+N-1,:,:));
+                        temp = ifftn(cOld{1}(idx:idx+N-1,:,:));
                         if ( max(max(max(abs(imag(temp))))) < errTol )
                             temp = real(temp);
                         end
@@ -365,31 +385,44 @@ while ( t < tf )
     % If not resolved in space, double N, update quantities which depend on N,
     % and redo the step:
     else
+        [L, Nc] = discretize(S, 2*N);
+        % Loop over the number of steps of the method:
         for i = 1:q
             coeffs = [];
+            vals = [];
             for k = 1:nVars
                 idx = (k-1)*N + 1;
-                vals = ifftn(c{i}(idx:idx+N-1,:,:));
+                valsOld = ifftn(cOld{i}(idx:idx+N-1,:,:));
                 if ( dim == 1 )
                     xx = trigpts(2*N);
-                    u = trigtech({vals, trigtech.vals2coeffs(vals)});
-                    coeffs = [coeffs; fft(feval(u, xx))];
+                    u = trigtech({valsOld, trigtech.vals2coeffs(valsOld)});
+                    temp = feval(u, xx);
                 elseif ( dim == 2 )
                     xx = trigpts(2*N, dom(1:2));
                     [xx, yy] = meshgrid(xx, xx);
-                    u = chebfun2(vals, dom, 'trig');   
-                    coeffs = [coeffs; fftn(feval(u, xx, yy))];
+                    u = chebfun2(valsOld, dom, 'trig');   
+                    temp = feval(u, xx, yy);
                 elseif ( dim == 3 )
                     xx = trigpts(2*N, dom(1:2));
                     [xx, yy, zz] = meshgrid(xx, xx, xx);
-                    u = chebfun3(vals, dom, 'trig');
-                    coeffs = [coeffs; fftn(feval(u, xx, yy, zz))];
+                    u = chebfun3(valsOld, dom, 'trig');
+                    temp = feval(u, xx, yy, zz);
                 end
+                vals = [vals; temp];
+                coeffs = [coeffs; fftn(temp)];
             end
-            c{i} = coeffs;
+            % % Update the Fourier coefficients:
+            cOld{i} = coeffs;
+            vals = Nv(vals);
+            coeffs = fftn(vals(1:2*N,:,:));
+            for k = 1:nVars-1
+                idx = k*2*N + 1;
+                coeffs = [coeffs; fftn(vals(idx:idx+2*N-1,:,:))];
+            end
+            % % Update the nonlinear evaluations:
+            NcOld{i} = Nc.*coeffs;
         end
         N = 2*N;
-        [L, Nc] = discretize(S, N);
         LR = computeLR(S, dt, L, M, N);
         schemeCoeffs = computeCoeffs(K, dt, L, LR, S);
         LR2 = computeLR(S, dt/2, L, M, N);

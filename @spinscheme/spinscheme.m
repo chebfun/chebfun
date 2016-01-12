@@ -48,12 +48,6 @@ classdef spinscheme
                 K.steps = 6;
                 K.scheme = schemeName;
                 
-            elseif ( strcmpi(schemeName, 'emam4') == 1 )
-                K.order = 4;
-                K.internalStages = 1;
-                K.steps = 4;
-                K.scheme = schemeName;
-                
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             % ETD RUNGE-KUTTA:
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -252,15 +246,15 @@ classdef spinscheme
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Abstract = false, Static = true )
         
-        %  Evaluate a phi function:
+        %  Evaluate a phi-function:
         phi = phiEval(l, LR, N, dim, nVars)
         
-        % Evaluate a phit function:
-        phit = phitEval(l, C, LR, N, dim, nVars)
-        
-        % Get a function handle to a phi function:
+        % Get a function handle to a phi-function:
         phi = phiFun(l)
-       
+        
+        % Evaluate a psi-function:
+        psi = psiEval(l, C, LR, N, dim, nVars)
+        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -269,14 +263,14 @@ classdef spinscheme
     methods ( Access = public, Abstract = false, Static = false )
        
         % Compute coefficients of a SPINSCHEME:
-        [coeffs, phi] = computeCoeffs(K, dt, L, LR, S, phi)
+        schemeCoeffs = computeCoeffs(K, dt, L, LR, S)
         
         % Do one step of a SPINSCHEME:
-        uSol = oneStep(K, schemeCoeffs, Nc, Nv, nVars, uSol)
+        [uSol, NuSol] = oneStep(K, schemeCoeffs, Nc, Nv, nVars, uSol, NuSol)
         
         % Get enough initial data when using a multistep SPINSCHEME:
-        [uSol, dt, phi] = startMultistep(K, adapTime, dt, L, LR, Nc, Nv, ...
-            pref, S, uSol)
+        [uSol, NuSol, dt] = startMultistep(K, adaptiveTime, dt, L, LR, Nc, ...
+            Nv, pref, S, uSol, NuSol);
         
     end
     
