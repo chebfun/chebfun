@@ -23,6 +23,7 @@ function varargout = svd( f )
 
 if ( isempty( f ) )
     varargout = { [ ] };
+    return
 end
 
 % Get CDR decomposition of f:
@@ -37,7 +38,7 @@ E = C;
 rts = GLRbesselroots(0, size(C,2));
 r = chebfun(@(r) r );
 for kk = 0:size(C,2)-1
-    nrm = sqrt(2)./besselj(1,rts(kk+1));
+    nrm = sqrt(2)./besselj(1, rts(kk+1));
     E(:,kk+1) = besselj( 0, rts(kk+1)*r )*nrm;
 end
 
