@@ -28,6 +28,7 @@ end
 
 % Get CDR decomposition of f:
 [C, D, R] = cdr( f );
+C = restrict(C, [0, 1]);
 
 % Generate normalized Bessel functions J_0( l(k) r ), where l(k) 
 % is the kth root of J_0.  These set of functions satisfy the following:
@@ -36,20 +37,20 @@ end
 
 E = C; 
 rts = GLRbesselroots(0, size(C,2));
-r = chebfun(@(r) r );
+r = chebfun(@(r) r, [0 1] );
 for kk = 0:size(C,2)-1
     nrm = sqrt(2)./besselj(1, rts(kk+1));
     E(:,kk+1) = besselj( 0, rts(kk+1)*r )*nrm;
 end
 
 % The weighted inner-product that will be used in the theta-variable:
-weight = chebfun( @(r) r );
-myInnerProduct = @(u, v) sum( weight.*conj(u).*v, [0, 1] );
+myInnerProduct = @(u, v) sum( r.*conj(u).*v );
 
 % Do QR in both variables, one with the weighted inner-product and one with
 % the standard L2 inner-product.
 [QwC, RwC] = abstractQR(C, E, myInnerProduct);
 [QwR, RwR] = qr( R );
+
 
 % Use the QR factorizations of the columns and rows to make up the SVD of
 % the DISKFUN object.  Since
