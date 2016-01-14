@@ -1,7 +1,7 @@
 function out = deflationFun(Nu, u, r, p, alp)
 
-if (isa(r,'chebfun'))
-    r=  mat2cell(r);
+if (isa(r, 'chebfun'))
+    r =  mat2cell(r);
 end
 % Norm function
 normFun = 1;

@@ -1,5 +1,7 @@
 function r = deflate(N, r0, p, alp)
-
+%CHEBOP    Apply deflation to seek multiple solutions to BVPs
+%
+%   R = DEFLATE(N, R0, P, ALP)
 if (isa(r0,'chebfun'))
     r0 = mat2cell(r0);
 end

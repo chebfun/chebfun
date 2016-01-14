@@ -505,10 +505,15 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end
         
         function Nu = deflationFun(Nu, u, r, p, alp)
-            % Extract the function part of U and the undeflated operator:
+            % NU = DEFLATIONFUN(NU, U, R, P, ALP)
+            
+            % Extract the function part of U (current guess of solution) and the
+            % undeflated operator:
             u = u.func;
             ffunc = Nu.func;
             
+            % Ensure we're working with a cell of CHEBFUN objects, makes it
+            % easier to work with when we have multiple roots to deflate.
             if ( isa(r,'chebfun') )
                 r = mat2cell(r);
             end
@@ -520,18 +525,20 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             phi = prod(phiVec);
             normFun = phi^(p/2);
             
+            % Build up the derivative of the deflated operator.
             defDeriv = 0;
             for rCounter = 1:length(r)
-                defDeriv = defDeriv + kron(ffunc,(p*phiVec(rCounter))*(u-r{rCounter})','op');
+                defDeriv = defDeriv + ...
+                    kron(ffunc,(p*phiVec(rCounter))*(u-r{rCounter})','op');
             end
             defDeriv = normFun*defDeriv;
             
             % Derivative of deflation operator:
-            Nu.jacobian = Nu.jacobian*(normFun+alp) - ...
+            Nu.jacobian = Nu.jacobian*(normFun + alp) - ...
                 defDeriv;
             
             % Deflated function
-            Nu.func = ffunc*(alp+ normFun);
+            Nu.func = ffunc*(alp + normFun);
         end
         
         
