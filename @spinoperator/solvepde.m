@@ -137,9 +137,6 @@ q = K.steps;
 [L, Nc] = discretize(S, N);
 Nv = S.nonlinearPartVals;
 
-% Create a contour around each eigenvalue of the linear part L:
-LR = computeLR(S, dt, L, M, N);
-
 % Set-up spatial grid, and initial condition (values VINIT and Fourier coeffs 
 % CINIT):
 nVars = S.numVars;
@@ -182,17 +179,16 @@ NcInit{1} = coeffs;
     
 % Get enough initial data when using a multistep scheme:
 if ( q > 1 )
-    [cInit, NcInit, dt] = startMultistep(K, adaptiveTime, dt, L, LR, Nc, ...
-        Nv, pref, S, cInit, NcInit);
+    [cInit, NcInit, dt] = startMultistep(K, adaptiveTime, dt, L, Nc, Nv, ...
+        pref, S, cInit, NcInit);
 end
 
 % Compute the coefficients of the scheme:
-schemeCoeffs = computeCoeffs(K, dt, L, LR, S);
+schemeCoeffs = computeCoeffs(K, dt, L, M, S);
 
 % If adaptive in time, get the coefficients with DT/2:
 if ( adaptiveTime == 1 )
-    LR2 = computeLR(S, dt/2, L, M, N);
-    schemeCoeffs2 = computeCoeffs(K, dt/2, L, LR2, S);
+    schemeCoeffs2 = computeCoeffs(K, dt/2, L, M, S);
 end
 
 % Indexes for dealiasing:
@@ -354,10 +350,8 @@ while ( t < tf )
                     continue
                 else
                     dt = (tspan(pos) - t)/2;
-                    LR = computeLR(S, dt, L, M, N);
-                    schemeCoeffs = computeCoeffs(K, dt, L, LR, S);
-                    LR2 = computeLR(S, dt/2, L, M, N);
-                    schemeCoeffs2 = computeCoeffs(K, dt/2, L, LR2, S);
+                    schemeCoeffs = computeCoeffs(K, dt, L, M, S);
+                    schemeCoeffs2 = computeCoeffs(K, dt/2, L, M, S);
                     success = 0;
                     continue
                 end
@@ -368,8 +362,7 @@ while ( t < tf )
             if ( adaptiveTime == 1 && success >= 50 && 2*dt < dtmax )
                 dt = 2*dt;
                 schemeCoeffs2 = schemeCoeffs;
-                LR = computeLR(S, dt, L, M, N);
-                schemeCoeffs = computeCoeffs(K, dt, L, LR, S);
+                schemeCoeffs = computeCoeffs(K, dt, L, M, S);
                 success = 0;
             end
             
@@ -387,8 +380,7 @@ while ( t < tf )
             end
             % Update quantities:
             schemeCoeffs = schemeCoeffs2;
-            LR2 = computeLR(S, dt/2, L, M, N);
-            schemeCoeffs2 = computeCoeffs(K, dt/2, L, LR2, S);
+            schemeCoeffs2 = computeCoeffs(K, dt/2, L, M, S);
             success = 0;
         end
         
@@ -433,10 +425,8 @@ while ( t < tf )
             NcOld{i} = Nc.*coeffs;
         end
         N = 2*N;
-        LR = computeLR(S, dt, L, M, N);
-        schemeCoeffs = computeCoeffs(K, dt, L, LR, S);
-        LR2 = computeLR(S, dt/2, L, M, N);
-        schemeCoeffs2 = computeCoeffs(K, dt/2, L, LR2, S);
+        schemeCoeffs = computeCoeffs(K, dt, L, M, S);
+        schemeCoeffs2 = computeCoeffs(K, dt/2, L, M, S);
         toOne = floor(N/2) + 1 - ceil(N/6):floor(N/2) + ceil(N/6);
         if ( dim == 1 )
             ind = false(N, 1);

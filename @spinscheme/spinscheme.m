@@ -263,14 +263,14 @@ classdef spinscheme
     methods ( Access = public, Abstract = false, Static = false )
        
         % Compute coefficients of a SPINSCHEME:
-        schemeCoeffs = computeCoeffs(K, dt, L, LR, S)
+        schemeCoeffs = computeCoeffs(K, dt, L, M, S)
         
         % Do one step of a SPINSCHEME:
         [uSol, NuSol] = oneStep(K, schemeCoeffs, Nc, Nv, nVars, uSol, NuSol)
         
         % Get enough initial data when using a multistep SPINSCHEME:
-        [uSol, NuSol, dt] = startMultistep(K, adaptiveTime, dt, L, LR, Nc, ...
-            Nv, pref, S, uSol, NuSol);
+        [uSol, NuSol, dt] = startMultistep(K, adaptiveTime, dt, L, Nc, Nv, ...
+            pref, S, uSol, NuSol);
         
     end
     

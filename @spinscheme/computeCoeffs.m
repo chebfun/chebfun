@@ -1,4 +1,4 @@
-function schemeCoeffs = computeCoeffs(K, dt, L, LR, S)
+function schemeCoeffs = computeCoeffs(K, dt, L, M, S)
 %COMPUTECOEFFS   Compute coefficients of a SPINSCHEME.
 %   SCHEMECOEFFS = COMPUTECOEFFS(K, DT, L, LR, S) computes the coefficients 
 %   needed by the SPINSCHEME K from the timestep DT, the linear part L, the 
@@ -25,6 +25,9 @@ B = cell(s, 1);
 C = zeros(s, 1);
 U = cell(s, q-1);
 V = cell(q-1, 1);
+
+% Create a contour around each eigenvalue of the linear part L:
+LR = computeLR(S, dt, L, M, N);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ETD MULTISTEP:

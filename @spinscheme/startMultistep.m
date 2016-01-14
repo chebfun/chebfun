@@ -1,5 +1,5 @@
-function [uSol, NuSol, dt] = startMultistep(K, adaptiveTime, dt, L, LR, Nc, ...
-    Nv, pref, S, uSol, NuSol)
+function [uSol, NuSol, dt] = startMultistep(K, adaptiveTime, dt, L, Nc, Nv, ...
+    pref, S, uSol, NuSol)
 %STARTMULTISTEP  Get enough initial data when using a multistep scheme.
 %    [USOL, NUSOL, DT] = STARTMULTISTEP(K, ADAPTIVETIME, DT, L, LR, NC, NV, ...
 %    PREF, S, USOL, NUSOL) does a few steps of a one-step scheme with timestep 
@@ -17,7 +17,6 @@ errTol = pref.errTol;       % error tolerance
 M = pref.M;                 % points for the contour integral
 q = K.steps;                % number of steps 
 nVars = S.numVars;          % number of unknown functions
-N = size(uSol{1}, 1)/nVars; % number of grid points
 
 % Create a cell-array to store the coefficients at the Q steps:
 coeffs = cell(q, 1);
@@ -29,10 +28,9 @@ Ncoeffs{q} = NuSol{1};
 
 % Set-up ETDRK4:
 K = spinscheme('etdrk4');
-schemeCoeffs = computeCoeffs(K, dt, L, LR, S);
+schemeCoeffs = computeCoeffs(K, dt, L, M, S);
 if ( adaptiveTime == 1 )
-    LR2 = computeLR(S, dt/2, L, M, N);
-    schemeCoeffs2 = computeCoeffs(K, dt/2, L, LR2, S);
+    schemeCoeffs2 = computeCoeffs(K, dt/2, L, M, S);
 end
 
 % Do Q-1 steps of EXPRK5S8:
@@ -57,8 +55,7 @@ while ( iter <= q-1 )
         else
             dt = dt/2;
             schemeCoeffs = schemeCoeffs2;
-            LR2 = computeLR(S, dt/2, L, M, N);
-            schemeCoeffs2 = computeCoeffs(K, dt/2, L, LR2, S);
+            schemeCoeffs2 = computeCoeffs(K, dt/2, L, M, S);
         end
         
     % If not adaptive in time, keep CNEW:
