@@ -27,7 +27,7 @@ U = cell(s, q-1);
 V = cell(q-1, 1);
 
 % Create a contour around each eigenvalue of the linear part L:
-LR = computeLR(S, dt, L, M, N);
+LR = computeLR(S, dt, L, M);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ETD MULTISTEP:

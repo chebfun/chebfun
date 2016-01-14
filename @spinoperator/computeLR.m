@@ -1,17 +1,17 @@
-function LR = computeLR(S, dt, L, M, N)
+function LR = computeLR(S, dt, L, M)
 %COMPUTELR   Create a contour around each eigenvalue of the linear part of a 
 %SPINOPERATOR.
-%   LR = COMPUTELR(S, DT, L, M, N) outputs a matrix to be used for the complex
-%   means. DT is the timestep, L is the linear part of the SPINOPERATOR S, 
-%   discretized with N points in each space direction, and M is the number of
-%   points to discretize the contour.
+%   LR = COMPUTELR(S, DT, L, M) outputs a matrix to be used for the complex
+%   means. DT is the timestep, L is the linear part of the SPINOPERATOR S, and
+%   M is the number of points to discretize the contour.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Get the dimension DIM and the number of variables NVARS:
-dim = S.dimension;
-nVars = S.numVars;
+% Set-up:
+dim = S.dimension;     % spatial dimension (1, 2 or 3)
+nVars = S.numVars;     % number of unknown functions
+N = size(L, 1)/nVars;  % grid points
 
 % Roots of unity:
 if ( isreal(L) == 1 )

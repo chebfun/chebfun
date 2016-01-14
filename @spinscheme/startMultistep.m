@@ -1,13 +1,12 @@
 function [uSol, NuSol, dt] = startMultistep(K, adaptiveTime, dt, L, Nc, Nv, ...
     pref, S, uSol, NuSol)
 %STARTMULTISTEP  Get enough initial data when using a multistep scheme.
-%    [USOL, NUSOL, DT] = STARTMULTISTEP(K, ADAPTIVETIME, DT, L, LR, NC, NV, ...
+%    [USOL, NUSOL, DT] = STARTMULTISTEP(K, ADAPTIVETIME, DT, L, NC, NV, ...
 %    PREF, S, USOL, NUSOL) does a few steps of a one-step scheme with timestep 
 %    DT to get enough initial data start the multistep SPINSCHEME K, using the 
-%    linear part L, the linear part for complex means LR, the nonlinear parts of 
-%    the operator in coefficient and value space NC and NV, the SPINPREFERENCE 
-%    object PREF, and the SPINOPERATOR S. ADAPTIME is 1 if adpative in time, 
-%    0 otherwise.
+%    linear part L, the nonlinear parts of the operator in coefficient and value 
+%    space NC and NV, the SPINPREFERENCE object PREF, and the SPINOPERATOR S. 
+%    ADAPTIVETIME is 1 if adpative in time, 0 otherwise.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -45,12 +44,14 @@ while ( iter <= q-1 )
         [cNew2, NcNew2] = oneStep(K, schemeCoeffs2, Nc, Nv, nVars, cNew2, ...
             NcNew2);
         err = max(max(max(abs(cNew{1} - cNew2{1}))));
+        
         % If successive step, store it:
         if ( err < errTol ) 
             coeffs{q-iter} = cNew2{1};
             Ncoeffs{q-iter} = NcNew2{1};
             uSol = cNew2;
             iter = iter + 1;
+            
         % Otherwise, redo the step with DT/2 and N points:
         else
             dt = dt/2;
