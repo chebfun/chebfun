@@ -161,9 +161,10 @@ end
 
 % Compute the constant for weights:
 if ( ~strcmpi(method,'GW') )
-    C = 2^(a+b+1) * exp( gammaln(n+a+1) - gammaln(n+a+b+1) + ...
-                         gammaln(n+b+1) - gammaln(n+1) ); 
-                     
+    cte1 = ratiogamma(n+a+1,b);
+    cte2 = ratiogamma(n+1,b);
+    C = 2^(a+b+1) * (cte2/cte1);
+
     w = C*w; 
 end
 
@@ -186,6 +187,27 @@ function [x, w] = rescale(x, w, interval, a, b)
         x = c1 + c2*x;    
     end
 end
+
+function [cte] = ratiogamma(m,delta)
+%RATIOGAMMA Compute the ratio gamma(m+delta)/gamma(m). See [2].
+    % cte = gamma(m+delta)/gamma(m)
+    ds = .5*delta^2/(m-1);
+    s = ds;
+    j = 1;
+    while ( abs(ds/s) > eps/100 ) % Taylor series in expansion 
+        j = j+1;
+        ds = -delta*(j-1)/(j+1)/(m-1)*ds;
+        s = s + ds;
+    end
+    p2 = exp(s)*sqrt(1+delta/(m-1))*(m-1)^(delta);
+    % Stirling's series:
+    g = [1, 1/12, 1/288, -139/51840, -571/2488320, 163879/209018880, ...
+        5246819/75246796800, -534703531/902961561600, ...
+        -4483131259/86684309913600, 432261921612371/514904800886784000];
+    f = @(z) sum(g.*[1, cumprod(ones(1, 9)./z)]);
+    cte = p2*(f(m+delta-1)/f(m-1));
+end
+
 
 %% ------------------------- Routines for GW ----------------------------
     
