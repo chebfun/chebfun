@@ -161,8 +161,9 @@ end
 
 % Compute the constant for weights:
 if ( ~strcmpi(method,'GW') )
-    C = 2^(a+b+1) * exp( gammaln(n+a+1) + gammaln(n+b+1) ...
-                         - gammaln(n+a+b+1) - gammaln(n+1) );  
+    C = 2^(a+b+1) * exp( gammaln(n+a+1) - gammaln(n+a+b+1) + ...
+                         gammaln(n+b+1) - gammaln(n+1) ); 
+                     
     w = C*w; 
 end
 
