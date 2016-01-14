@@ -16,8 +16,7 @@ function normA = norm(A, n)
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% [TODO]: Add support for norms of operators (inf x inf blocks that are neither 
-% CHEBFUN2 nor CHEBFUN3).
+% [TODO]: Add support for norms of operators.
 
 % Empty CHEBMATRIX has norm 0.
 if ( isempty(A) )
@@ -33,10 +32,12 @@ end
 % CHEBFUN2 nor CHEBFUN3 is not supported:
 s = cellfun(@(b) min(size(b)), A.blocks);
 t = cellfun(@(b) isa(b, 'chebfun2') || isa(b, 'chebfun3'), A.blocks);
-% if ( ~all(isfinite(s(:))) )
-%     error('CHEBFUN:CHEBMATRIX:norm:notSupported', ...
-%     'Norm of a chebmatrix with inf x inf block(s) is not supported.')
-% end
+if ( ~all(isfinite(s(:))) )
+    if ( ~any(t) )
+        error('CHEBFUN:CHEBMATRIX:norm:notSupported', ...
+            'Norm of a chebmatrix with operator block(s) is not supported.')
+    end
+end
 
 % Deal with different cases.
 switch n
