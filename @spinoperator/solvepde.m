@@ -204,8 +204,9 @@ elseif ( dim == 3 )
 end
 ind = repmat(ind, nVars, 1);
 
-% Values VOUT to output:
+% Values VOUT and times TOUT to output:
 vOut{1} = vInit;
+tOut(1) = 0;
 
 % Values VWATER to plot if using WATERFALL:
 if ( strcmpi(plottingstyle, 'waterfall') == 1 )
@@ -320,24 +321,9 @@ while ( t < tf )
                 vWater{iter/iterplot + 1} = v;
                 twater = [twater, t];
             end
-            
-            % Make sure that the solution is computed at the entries of TSPAN:
-            if ( t + 2*dt > tspan(pos) && t ~= tspan(pos) )
-                if ( t + dt == tspan(pos) || adaptiveTime == 0 )
-                    continue
-                else
-                    dt = tspan(pos) - t;
-                    LR = computeLR(S, dt, L, M, N);
-                    schemeCoeffs = computeCoeffs(K, dt, L, LR, S);
-                    LR2 = computeLR(S, dt/2, L, M, N);
-                    schemeCoeffs2 = computeCoeffs(K, dt/2, L, LR2, S);
-                    success = 0;
-                    continue
-                end
-            end
-            
+                      
             % Output the solution if T correponds to an entry of TSPAN:
-            if ( t == tspan(pos) )
+            if ( abs(t - tspan(pos)) < eps )
                 if ( valuesUpdated == 0 )
                     v = [];
                     for k = 1:nVars
@@ -350,12 +336,31 @@ while ( t < tf )
                     end
                 end
                 vOut{pos} = v;
+                tOut(pos) = t;
                 pos = pos + 1;
+                if ( pos > length(tspan) )
+                    continue
+                end
             end
             
+            % Make sure that the solution is computed at the entries of TSPAN:
+            if ( t + 2*dt > tspan(pos) && t ~= tspan(pos) )
+                if ( t + dt == tspan(pos) || adaptiveTime == 0 )
+                    continue
+                else
+                    dt = (tspan(pos) - t)/2;
+                    LR = computeLR(S, dt, L, M, N);
+                    schemeCoeffs = computeCoeffs(K, dt, L, LR, S);
+                    LR2 = computeLR(S, dt/2, L, M, N);
+                    schemeCoeffs2 = computeCoeffs(K, dt/2, L, LR2, S);
+                    success = 0;
+                    continue
+                end
+            end
+
             % If 50 consecutive steps have been successful, double DT, and
             % update quantities which depend on DT:
-            if ( adaptiveTime == 1 && success == 50 && 2*dt < dtmax )
+            if ( adaptiveTime == 1 && success >= 50 && 2*dt < dtmax )
                 dt = 2*dt;
                 schemeCoeffs2 = schemeCoeffs;
                 LR = computeLR(S, dt, L, M, N);
@@ -527,9 +532,7 @@ end
 % Output TOUT:
 if ( nargout == 2 )
     if ( length(tspan) == 2 )
-        tOut = tspan(2);
-    else
-        tOut = tspan;
+        tOut = tOut(2);
     end
 end
 

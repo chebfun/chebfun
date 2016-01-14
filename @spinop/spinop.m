@@ -94,7 +94,7 @@ end
             
         % Kuramoto-Sivashinsky equation:
         elseif ( strcmpi(pdechar, 'KS') == 1 )
-            L = @(u) -(diff(u, 2) + diff(u, 4));
+            L = @(u) -diff(u, 2) - diff(u, 4);
             N = @(u) -.5*diff(u.^2);
             
        % Nonlinear Schrodinger equation:
