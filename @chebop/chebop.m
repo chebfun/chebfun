@@ -309,10 +309,6 @@ classdef (InferiorClasses = {?double}) chebop
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
         
-        % Deflation
-        % TODO: Fill in and uncomment
-        % varargout = deflate(N, r);
-
         % Alternate & syntax for BC's.
         N = and(N, BC)
         
