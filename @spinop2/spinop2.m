@@ -27,7 +27,6 @@ classdef spinop2 < spinoperator
                     [L, N] = getLinearAndNonlinearParts(item);
                     S.linearPart = L;
                     S.nonlinearPart = N;
-                    S.numVars = nargin(L);
                 elseif ( isa(item, 'function_handle') && countFun == 0 )
                     S.linearPart = item;
                     S.numVars = nargin(item);
