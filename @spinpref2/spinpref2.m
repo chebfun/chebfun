@@ -27,24 +27,20 @@ classdef spinpref2 < spinpreference
 %     [32]                      the phi-functions.
 %
 %   N                         * Number points in each direction for spatial 
-%     [256]                     discretization. To switch to adaptive grid, set
+%     [64]                      discretization. To switch to adaptive grid, set
 %                               N=[].
 %
 %   Nmin                      * Minimum number of points in each direction when 
-%     [128]                     using an adaptive grid in space.
+%     [64]                      using an adaptive grid in space.
 %
 %   Nmax                      * Maximum number of points in each direction when   
-%     [1024]                    using an adaptive grid in space.
+%     [512]                     using an adaptive grid in space.
 %                                         
 %   plotting                  * Plotting options: 'movie' for plotting a 
 %     ['movie']                 movie of the solution, [] for no plotting.
 %
-%   scheme                    * Timestepping scheme.
-%     [@etdrk4]  
-%      @exprk5s8
-%      @krogstad
-%      @eglm433
-%      @pecec433
+%   scheme                    * Timestepping scheme. HELP/SPINPSCHEME for more
+%     [@etdrk4]                 schemes.
 %
 %   view                      * Viewpoint specification when using 'movie'.
 %     [0 90]   
@@ -73,9 +69,9 @@ classdef spinpref2 < spinpreference
                 pref.errTol = 1e-3;
                 pref.iterPlot = 1;
                 pref.M = 32;
-                pref.N = 256;
-                pref.Nmin = 128;
-                pref.Nmax = 1024;
+                pref.N = 64;
+                pref.Nmin = 64;
+                pref.Nmax = 512;
             else
                 pref = spinpref2();
                 for k = 1:nargin/2

@@ -306,9 +306,9 @@ while ( t < tf )
                 plotOptions = plotMovie(S, dt, p, plotOptions, t, v, gridpts);
                 
             % Store the values every ITERPLOT iterations if using WATERFALL:
-            % Note: Only in dimension 1.
+            % (Remark: Only in dimension 1.)
             elseif ( strcmpi(plottingstyle, 'waterfall') == 1 && ...
-                    mod(iter,iterplot) == 0 )
+                    mod(iter, iterplot) == 0 )
                 v = [];
                 for k = 1:nVars
                     idx = (k-1)*N + 1;
@@ -369,25 +369,41 @@ while ( t < tf )
         % If |cnew - cnew2| is not small enough, half DT, update quantities
         % which depend on DT, and redo the step:
         else
+            
             % Half DT only if DT/2>DTMIN:
             if ( dt/2 > dtmin )
                 dt = dt/2;
+                
             % Othewise use DTMIN:
             else
                 dt = dtmin;
                 warning(['The time-step has been set to its minimum ', ...
                     'value %1.1e.\n'], dtmin)
             end
+            
             % Update quantities:
             schemeCoeffs = schemeCoeffs2;
             schemeCoeffs2 = computeCoeffs(K, dt/2, L, M, S);
             success = 0;
+            
         end
         
-    % If not resolved in space, double N, update quantities which depend on N,
+    % If not resolved in space, increase N, update quantities which depend on N,
     % and redo the step:
     else
-        [L, Nc] = discretize(S, 2*N);
+        
+        % Increase N:
+        if ( dim == 1 )
+            NN = 2*N;
+        elseif ( dim == 2 )
+            NN = 1.5*N;
+        elseif ( dim == 3 )
+            NN = 1.25*N;
+        end
+        
+        % Update L and NC:
+        [L, Nc] = discretize(S, NN);
+        
         % Loop over the number of steps of the method:
         for i = 1:q
             coeffs = [];
@@ -396,16 +412,16 @@ while ( t < tf )
                 idx = (k-1)*N + 1;
                 valsOld = ifftn(cOld{i}(idx:idx+N-1,:,:));
                 if ( dim == 1 )
-                    xx = trigpts(2*N);
+                    xx = trigpts(NN);
                     u = trigtech({valsOld, trigtech.vals2coeffs(valsOld)});
                     temp = feval(u, xx);
                 elseif ( dim == 2 )
-                    xx = trigpts(2*N, dom(1:2));
+                    xx = trigpts(NN, dom(1:2));
                     [xx, yy] = meshgrid(xx);
                     u = chebfun2(valsOld, dom, 'trig');   
                     temp = feval(u, xx, yy);
                 elseif ( dim == 3 )
-                    xx = trigpts(2*N, dom(1:2));
+                    xx = trigpts(NN, dom(1:2));
                     [xx, yy, zz] = meshgrid(xx);
                     u = chebfun3(valsOld, dom, 'trig');
                     temp = feval(u, xx, yy, zz);
@@ -413,20 +429,27 @@ while ( t < tf )
                 vals = [vals; temp];
                 coeffs = [coeffs; fftn(temp)];
             end
-            % % Update the Fourier coefficients:
+            
+            % Update the Fourier coefficients:
             cOld{i} = coeffs;
             vals = Nv(vals);
-            coeffs = fftn(vals(1:2*N,:,:));
+            coeffs = fftn(vals(1:NN,:,:));
             for k = 1:nVars-1
-                idx = k*2*N + 1;
-                coeffs = [coeffs; fftn(vals(idx:idx+2*N-1,:,:))];
+                idx = k*NN + 1;
+                coeffs = [coeffs; fftn(vals(idx:idx+NN-1,:,:))];
             end
-            % % Update the nonlinear evaluations:
+            
+            % Update the nonlinear evaluations:
             NcOld{i} = Nc.*coeffs;
+            
         end
-        N = 2*N;
+        
+        % Compute the new coefficients for the scheme:
+        N = NN;
         schemeCoeffs = computeCoeffs(K, dt, L, M, S);
         schemeCoeffs2 = computeCoeffs(K, dt/2, L, M, S);
+        
+        % Update the indexes for dealiasing:
         toOne = floor(N/2) + 1 - ceil(N/6):floor(N/2) + ceil(N/6);
         if ( dim == 1 )
             ind = false(N, 1);
@@ -442,7 +465,9 @@ while ( t < tf )
             gridpts = {xx; yy; zz};
         end
         ind = repmat(ind, nVars, 1);
+
         success = 0;
+        
     end
     
 end
@@ -485,6 +510,7 @@ elseif ( dim == 2 )
     fun = @chebfun2;
 elseif ( dim == 3 )
     fun = @chebfun3;
+    
     % The data come from MESHGRID, need to permute them because the CHEBFUN3
     % constructor assumes that the data come from NDGRID:
     for l = 1:size(vOut, 2)
@@ -494,6 +520,7 @@ elseif ( dim == 3 )
             vOut{l}(idx:idx+N-1,:,:) = permute(vals, [2 1 3]);
         end
     end
+    
 end
 
 % Output a CHEBFUN/CHEBMATRIX from values VOUT:

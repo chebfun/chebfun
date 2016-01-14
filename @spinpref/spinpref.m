@@ -41,12 +41,8 @@ classdef spinpref < spinpreference
 %     ['movie']                 movie of the solution, 'waterfall' to use the 
 %      'waterfall'              CHEBFUN WATERFALL command. [] for no plotting.
 %
-%   scheme                    * Timestepping scheme.
-%     [@etdrk4]  
-%      @exprk5s8
-%      @krogstad
-%      @eglm433
-%      @pecec433
+%   scheme                    * Timestepping scheme. HELP/SPINPSCHEME for more
+%     [@etdrk4]                 schemes.
 %
 %   Ylim                      * Limit of the y-axis when 'plotting' is 'movie'
 %     []                        Default is empty, i.e., automatically chosen by 

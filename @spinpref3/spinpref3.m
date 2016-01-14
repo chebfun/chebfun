@@ -34,17 +34,13 @@ classdef spinpref3 < spinpreference
 %     [32]                      using an adaptive grid in space.
 %
 %   Nmax                      * Maximum number of points in each direction when   
-%     [128]                     using an adaptive grid in space.
+%     [64]                      using an adaptive grid in space.
 %                                         
 %   plotting                  * Plotting options: 'movie' for plotting a 
 %     ['movie']                 movie of the solution, or [] for no plotting.
 %
-%   scheme                    * Timestepping scheme.
-%     [@etdrk4]  
-%      @exprk5s8
-%      @krogstad
-%      @eglm433
-%      @pecec433 
+%   scheme                    * Timestepping scheme. HELP/SPINPSCHEME for more
+%     [@etdrk4]                 schemes.
 %
 %   slices                    * Slices of the volumetric slice plot when using 
 %     []                       'movie'. Default is empty, i.e., automatically 
@@ -76,7 +72,7 @@ classdef spinpref3 < spinpreference
                 pref.M = 32;
                 pref.N = 32;
                 pref.Nmin = 32;
-                pref.Nmax = 128;
+                pref.Nmax = 64;
             else
                 pref = spinpref3();
                 for k = 1:nargin/2
