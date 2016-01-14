@@ -29,6 +29,11 @@ for j = 1:nargin
         end
     elseif ( isa(item, 'chebfun3') == 1 )
         u0 = chebmatrix(item);
+    elseif ( isa(item, 'chebfun3v') == 1 )
+        u0 = chebmatrix(item(1));
+        for k = 2:size(item, 1)
+            u0(k,1) = item(k);
+        end
     elseif ( isa(item, 'chebmatrix') == 1 )
         u0 = item;
     elseif ( isa(item, 'spinoperator') == 1 )

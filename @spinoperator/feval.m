@@ -37,8 +37,8 @@ else
     
 end
 
-% Convert to a CHEBMATRIX if it's a CHEBFUN2V:
-if ( isa(out, 'chebfun2v') )
+% Convert to a CHEBMATRIX if it's a CHEBFUN2V or a CHEBFUN3V:
+if ( isa(out, 'chebfun2v') || isa(out, 'chebfun3v') )
     
     u = chebmatrix(out(1));
     for k = 2:size(out, 1)
