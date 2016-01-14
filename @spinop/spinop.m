@@ -46,13 +46,6 @@ classdef spinop < spinoperator
         end
         
     end
-    
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% CONCRETE AND NON-STATIC METHODS:
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    methods ( Access = public, Abstract = false, Static = false )
-        
-    end
 
 end
 

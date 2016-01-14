@@ -15,6 +15,9 @@ classdef spinoperator
         domain              % Spatial domain
         linearPart          % Linear part of the operator
         nonlinearPart       % Nonlinear part of the operator
+    end
+    
+    properties ( Access = public, Dependent = true )
         numVars             % Number of unknown functions (>1 for systems)
     end
     
@@ -144,7 +147,13 @@ classdef spinoperator
                 
             end
         end
-    
+        
+        function nVars = get.numVars(S)
+            
+            nVars = nargin(S.linearPart);
+            
+        end
+        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

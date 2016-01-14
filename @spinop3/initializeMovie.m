@@ -40,6 +40,8 @@ else
         Sz(k) = tt(id);
     end
 end
+
+% Grid of the computation:
 xxplot = [xx, 2*xx(:,end,:) - xx(:,end-1,:)];
 xxplot =  [xxplot; xxplot(1,:,:)];
 xxplot = cat(3, xxplot, xxplot(:,:,1));
@@ -50,20 +52,37 @@ zzplot = cat(3, zz, 2*zz(:,:,end) - zz(:,:,end-1));
 zzplot = [zzplot; zzplot(1,:,:)];
 zzplot = [zzplot, zzplot(:,1,:)];
 
+% Finer grid for interploation:
+Nplot = max(N, 64);
+[xxxplot, yyyplot, zzzplot] = meshgrid(trigpts(Nplot, dom));
+xxxplot = [xxxplot, 2*xxxplot(:,end,:) - xxxplot(:,end-1,:)];
+xxxplot =  [xxxplot; xxxplot(1,:,:)];
+xxxplot = cat(3, xxxplot, xxxplot(:,:,1));
+yyyplot = [yyyplot; 2*yyyplot(end,:,:) - yyyplot(end-1,:,:)];
+yyyplot = [yyyplot, yyyplot(:,1,:)];
+yyyplot = cat(3, yyyplot, yyyplot(:,:,1));
+zzzplot = cat(3, zzzplot, 2*zzzplot(:,:,end) - zzzplot(:,:,end-1));
+zzzplot = [zzzplot; zzzplot(1,:,:)];
+zzzplot = [zzzplot, zzzplot(:,1,:)];
+
 % Loop over the variables:
 p = cell(nVars, 1); clf
 for k = 1:nVars
     
     % Extract each variable:
     idx = (k-1)*N + 1;
-    vplot = dataToPlot(v(idx:idx+N-1,:,:));
-    vplot = [vplot, vplot(:,1,:)]; %#ok<*AGROW>
-    vplot = [vplot; vplot(1,:,:)];
-    vplot = cat(3, vplot, vplot(:,:,1));
+    vvplot = dataToPlot(v(idx:idx+N-1,:,:));
+    vvplot = [vvplot, vvplot(:,1,:)]; %#ok<*AGROW>
+    vvplot = [vvplot; vvplot(1,:,:)];
+    vvplot = cat(3, vvplot, vvplot(:,:,1));
+    
+    % Interpolate each variable on a finer grid:
+    vvvplot = interp3(xxplot, yyplot, zzplot, vvplot, xxxplot, yyyplot, ...
+        zzzplot, 'spline');
     
     % Plot each variable:
     subplot(nVars, 1, k) 
-    p{k} = slice(xxplot, yyplot, zzplot, vplot, Sx, Sy, Sz);
+    p{k} = slice(xxxplot, yyyplot, zzzplot, vvvplot, Sx, Sy, Sz);
     set(p{k}, 'edgecolor', 'none')
     axis([dom(1) dom(2) dom(3) dom(4) dom(5) dom(6)]), colorbar
     xlabel('x'), ylabel('y'), zlabel('z'), set(gca, 'FontSize', 16), box on

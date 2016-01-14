@@ -13,7 +13,8 @@ N = size(xx, 1);
 nVars = S.numVars;
 dataToPlot = plotOptions{2};
 dom = S.domain;
-tt = trigpts(N, dom);
+
+% Grid of the computation:
 xxplot = [xx, 2*xx(:,end,:) - xx(:,end-1,:)];
 xxplot =  [xxplot; xxplot(1,:,:)];
 xxplot = cat(3, xxplot, xxplot(:,:,1));
@@ -24,15 +25,33 @@ zzplot = cat(3, zz, 2*zz(:,:,end) - zz(:,:,end-1));
 zzplot = [zzplot; zzplot(1,:,:)];
 zzplot = [zzplot, zzplot(:,1,:)];
 
+% Finer grid for interploation:
+Nplot = max(N, 64);
+tt = trigpts(Nplot, dom);
+[xxxplot, yyyplot, zzzplot] = meshgrid(trigpts(Nplot, dom));
+xxxplot = [xxxplot, 2*xxxplot(:,end,:) - xxxplot(:,end-1,:)];
+xxxplot =  [xxxplot; xxxplot(1,:,:)];
+xxxplot = cat(3, xxxplot, xxxplot(:,:,1));
+yyyplot = [yyyplot; 2*yyyplot(end,:,:) - yyyplot(end-1,:,:)];
+yyyplot = [yyyplot, yyyplot(:,1,:)];
+yyyplot = cat(3, yyyplot, yyyplot(:,:,1));
+zzzplot = cat(3, zzzplot, 2*zzzplot(:,:,end) - zzzplot(:,:,end-1));
+zzzplot = [zzzplot; zzzplot(1,:,:)];
+zzzplot = [zzzplot, zzzplot(:,1,:)];
+
 % Loop over the variables:
 for k = 1:nVars
     
     % Extract each variable:
     idx = (k-1)*N + 1;
-    vplot = dataToPlot(v(idx:idx+N-1,:,:));
-    vplot = [vplot, vplot(:,1,:)]; %#ok<*AGROW>
-    vplot = [vplot; vplot(1,:,:)];
-    vplot = cat(3, vplot, vplot(:,:,1));
+    vvplot = dataToPlot(v(idx:idx+N-1,:,:));
+    vvplot = [vvplot, vvplot(:,1,:)]; %#ok<*AGROW>
+    vvplot = [vvplot; vvplot(1,:,:)];
+    vvplot = cat(3, vvplot, vvplot(:,:,1));
+    
+    % Interpolate each variable on a finer grid:
+    vvvplot = interp3(xxplot, yyplot, zzplot, vvplot, xxxplot, yyyplot, ...
+        zzzplot, 'spline');
     
     % Loop over the surfaces:
     subplot(nVars, 1, k)
@@ -51,26 +70,26 @@ for k = 1:nVars
             pos = p{k}(l).XData;
             pos = pos(1);
             [~, id] = min(abs(tt-pos));
-            set(p{k}(l), 'xdata', squeeze(xxplot(:,id,:)))
-            set(p{k}(l), 'ydata', squeeze(yyplot(:,id,:)))
-            set(p{k}(l), 'zdata', squeeze(zzplot(:,id,:)))
-            set(p{k}(l), 'cdata', squeeze(vplot(:,id,:)))
+            set(p{k}(l), 'xdata', squeeze(xxxplot(:,id,:)))
+            set(p{k}(l), 'ydata', squeeze(yyyplot(:,id,:)))
+            set(p{k}(l), 'zdata', squeeze(zzzplot(:,id,:)))
+            set(p{k}(l), 'cdata', squeeze(vvvplot(:,id,:)))
         elseif ( Sy == 1 )
             pos = p{k}(l).YData;
             pos = pos(1);
             [~, id] = min(abs(tt-pos));
-            set(p{k}(l), 'xdata', squeeze(xxplot(id,:,:)))
-            set(p{k}(l), 'ydata', squeeze(yyplot(id,:,:)))
-            set(p{k}(l), 'zdata', squeeze(zzplot(id,:,:)))
-            set(p{k}(l), 'cdata', squeeze(vplot(id,:,:)))
+            set(p{k}(l), 'xdata', squeeze(xxxplot(id,:,:)))
+            set(p{k}(l), 'ydata', squeeze(yyyplot(id,:,:)))
+            set(p{k}(l), 'zdata', squeeze(zzzplot(id,:,:)))
+            set(p{k}(l), 'cdata', squeeze(vvvplot(id,:,:)))
         elseif ( Sz == 1 )
             pos = p{k}(l).ZData;
             pos = pos(1);
             [~, id] = min(abs(tt-pos));
-            set(p{k}(l), 'xdata', squeeze(xxplot(:,:,id)))
-            set(p{k}(l), 'ydata', squeeze(yyplot(:,:,id)))
-            set(p{k}(l), 'zdata', squeeze(zzplot(:,:,id)))
-            set(p{k}(l), 'cdata', squeeze(vplot(:,:,id)))
+            set(p{k}(l), 'xdata', squeeze(xxxplot(:,:,id)))
+            set(p{k}(l), 'ydata', squeeze(yyyplot(:,:,id)))
+            set(p{k}(l), 'zdata', squeeze(zzzplot(:,:,id)))
+            set(p{k}(l), 'cdata', squeeze(vvvplot(:,:,id)))
         end
     end
 

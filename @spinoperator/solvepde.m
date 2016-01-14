@@ -588,7 +588,7 @@ elseif ( strcmpi(pdechar, 'GS') == 1 )
     u0(2,1) = u02;
 
 elseif ( strcmpi(pdechar, 'GS2') == 1 )
-    tspan = [0 20000];
+    tspan = [0 3000];
     G = 1.25;
     dom = G*[0 1 0 1];
     u01 = chebfun2(@(x,y) 1 - exp(-150*((x-G/2).^2 + (y-G/2).^2)), dom, 'trig');
@@ -597,7 +597,7 @@ elseif ( strcmpi(pdechar, 'GS2') == 1 )
     u0(2,1) = u02;
     
 elseif ( strcmpi(pdechar, 'GS3') == 1 )
-    tspan = [0 10000];
+    tspan = [0 3000];
     G = 0.75;
     dom = G*[0 1 0 1 0 1];
     u01 = chebfun3(@(x,y,z) 1 - exp(-150*((x-G/2).^2 + (y-G/2).^2 + ...
@@ -627,7 +627,7 @@ elseif ( strcmpi(pdechar, 'NLS') == 1 )
     u0 = chebmatrix(chebfun(u0, dom, 'trig'));
     
 elseif ( strcmpi(pdechar, 'Schnak2') == 1 ) 
-    tspan = [0 1000];
+    tspan = [0 300];
     G = 50;
     dom = G*[0 1 0 1];
     u01 = chebfun2(@(x,y) 1 - exp(-10*((x-G/2).^2 + (y-G/2).^2)), dom, 'trig');
@@ -636,7 +636,7 @@ elseif ( strcmpi(pdechar, 'Schnak2') == 1 )
     u0(2,1) = u02;
     
 elseif ( strcmpi(pdechar, 'Schnak3') == 1 )
-    tspan = [0 500];
+    tspan = [0 400];
     G = 20;
     dom = G*[0 1 0 1 0 1];
     u01 = chebfun3(@(x,y,z) 1 - exp(-10*((x-G/2).^2 + (y-G/2).^2 + ...

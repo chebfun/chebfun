@@ -10,9 +10,16 @@ dom = S.domain;
 xx = gridPoints;
 N = size(xx, 1);
 nVars = S.numVars;
-xxplot = [xx; 2*xx(end) - xx(end-1)];
 vscale = max(abs(v));
 dataToPlot = str2func(pref.dataToPlot);
+
+% Grid of the computation:
+xxplot = [xx; 2*xx(end) - xx(end-1)];
+
+% Finer grid for interploation:
+Nplot = 1024;
+xxxplot = trigpts(Nplot, dom);
+xxxplot = [xxxplot; 2*xxxplot(end) - xxxplot(end-1)];
 
 % Loop over the variables:
 p = cell(nVars, 1); clf
@@ -20,20 +27,23 @@ for k = 1:nVars
     
     % Extract each variable:
     idx = (k-1)*N + 1;
-    vplot = dataToPlot(real(v(idx:idx+N-1)));
-    vplot = [vplot; vplot(1)]; %#ok<*AGROW>
+    vvplot = dataToPlot(real(v(idx:idx+N-1)));
+    vvplot = [vvplot; vvplot(1)]; %#ok<*AGROW>
     
     % Get the YLIM for the y-axis:
     if ( isempty(pref.Ylim) == 1 )
-        Ylim(2*(k-1) + 1) = min(vplot) - .1*vscale;
-        Ylim(2*(k-1) + 2) = max(vplot) + .1*vscale;
+        Ylim(2*(k-1) + 1) = min(vvplot) - .1*vscale;
+        Ylim(2*(k-1) + 2) = max(vvplot) + .1*vscale;
     else
         Ylim = pref.Ylim;
     end
     
+    % Interpolate each variable on a finer grid:
+    vvvplot = interp1(xxplot, vvplot, xxxplot, 'spline');
+    
     % Plot each variable:
     subplot(nVars, 1, k)
-    p{k} = plot(xxplot, vplot, 'linewidth', 3);
+    p{k} = plot(xxxplot, vvvplot, 'linewidth', 3);
     axis([dom(1), dom(2), Ylim(2*(k-1) + 1), Ylim(2*(k-1) + 2)])
     if ( nVars == 1 )
         xlabel('x'), ylabel('u(t,x)'), grid on

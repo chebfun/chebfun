@@ -47,13 +47,6 @@ classdef spinop3 < spinoperator
         
     end
     
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% CONCRETE AND NON-STATIC METHODS:
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    methods ( Access = public, Abstract = false, Static = false )
-        
-    end
-
 end
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
@@ -75,12 +68,18 @@ end
         % Gray-Scott equations:
         elseif ( strcmpi(pdechar, 'GS3') == 1 )
             L = @(u,v) [2e-5*laplacian(u); 1e-5*laplacian(v)];
-            N = @(u,v) [ 0.035*(1 - u) - u.*v.^2; -(0.035+0.0625)*v + u.*v.^2];
+            % Mitosis (1):     F = 0.0367; K = 0.0649;
+            % Fingerpint (1):  F = 0.0545; K = 0.062;
+            % Mitosis (2):     F = 0.035;  K = 0.0625;
+            % Fingerpint (2):  F = 0.035;  K = 0.06;
+            F = 0.035;  K = 0.06;
+            N = @(u,v) [ F*(1 - u) - u.*v.^2; -(F+K)*v + u.*v.^2];
             
         % Schnakenberg equations:
         elseif ( strcmpi(pdechar, 'Schnak3') == 1 )
             L = @(u,v) [laplacian(u); 10*laplacian(v)];
-            N = @(u,v) [ .1 - u + u.^2.*v; .9 - u.^2.*v];
+            A = .1; B = .9; G = 1;
+            N = @(u,v) [ G*(A - u + u.^2.*v); G*(B - u.^2.*v)];
             
         else
             error('SPINOP3:getLinearAndNonlinearParts', 'Unrecognized PDE.')

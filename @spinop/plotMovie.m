@@ -13,19 +13,25 @@ nVars = S.numVars;
 Ylim = plotOptions{1};
 dataToPlot = plotOptions{2};
 
-% Loop over the variables:
+% Grid of the computation:
 xxplot = [xx; 2*xx(end) - xx(end-1)];
+
+% Finer grid for interploation:
+Nplot = 1024;
+xxxplot = trigpts(Nplot, dom);
+xxxplot = [xxxplot; 2*xxxplot(end) - xxxplot(end-1)];
+
 for k = 1:nVars
     
     % Extract each variable:
     idx = (k-1)*N + 1;
-    vplot = dataToPlot(v(idx:idx+N-1));
-    vplot = [vplot; vplot(1)]; %#ok<*AGROW>
+    vvplot = dataToPlot(v(idx:idx+N-1));
+    vvplot = [vvplot; vvplot(1)]; %#ok<*AGROW>
     
     % Change axes if necessary:
     if ( nargout == 1 )
-        minvnew = min(dataToPlot(vplot));
-        maxvnew = max(dataToPlot(vplot));
+        minvnew = min(dataToPlot(vvplot));
+        maxvnew = max(dataToPlot(vvplot));
         if ( maxvnew > Ylim(2*(k-1) + 2) )
             vscalenew = max(abs(minvnew), maxvnew);
             Ylim(2*(k-1) + 2) = maxvnew + .1*vscalenew;
@@ -36,8 +42,11 @@ for k = 1:nVars
         end
     end
     
+    % Interpolate each variable on a finer grid:
+    vvvplot = interp1(xxplot, vvplot, xxxplot, 'spline');
+    
     % Update each variable:
-    set(p{k}, 'xdata', xxplot), set(p{k}, 'ydata', vplot)
+    set(p{k}, 'xdata', xxxplot), set(p{k}, 'ydata', vvvplot)
     set(p{k}.Parent, 'xlim', [dom(1), dom(2)])
     set(p{k}.Parent, 'ylim', [Ylim(2*(k-1) + 1), Ylim(2*(k-1) + 2)])
     

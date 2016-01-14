@@ -18,10 +18,20 @@ end
 xx = gridPoints{1};
 yy = gridPoints{2};
 N = size(xx, 1);
+
+% Grid of the computation:
 xxplot = [xx, 2*xx(:,end) - xx(:,end-1)];
 xxplot = [xxplot; xxplot(1,:)];
 yyplot = [yy; 2*yy(end,:) - yy(end-1,:)];
 yyplot = [yyplot, yyplot(:,1)];
+
+% Finer grid for interploation:
+Nplot = max(N, 256);
+[xxxplot, yyyplot] = meshgrid(trigpts(Nplot, dom));
+xxxplot = [xxxplot, 2*xxxplot(:,end) - xxxplot(:,end-1)];
+xxxplot = [xxxplot; xxxplot(1,:)];
+yyyplot = [yyyplot; 2*yyyplot(end,:) - yyyplot(end-1,:)];
+yyyplot = [yyyplot, yyyplot(:,1)];
 
 % Loop over the variables:
 p = cell(nVars, 1); clf
@@ -29,13 +39,16 @@ for k = 1:nVars
     
     % Extract each variable:
     idx = (k-1)*N + 1;
-    vplot = dataToPlot(v(idx:idx+N-1,:));
-    vplot = [vplot, vplot(:,1)]; %#ok<*AGROW>
-    vplot = [vplot; vplot(1,:)];
+    vvplot = dataToPlot(v(idx:idx+N-1,:));
+    vvplot = [vvplot, vvplot(:,1)]; %#ok<*AGROW>
+    vvplot = [vvplot; vvplot(1,:)];
+    
+    % Interpolate each variable on a finer grid:
+    vvvplot = interp2(xxplot, yyplot, vvplot, xxxplot, yyyplot, 'spline');
     
     % Plot each variable:
     subplot(nVars, 1, k)
-    p{k} = surf(xxplot, yyplot, vplot, 'edgecolor', 'none');
+    p{k} = surf(xxxplot, yyyplot, vvvplot, 'edgecolor', 'none');
     axis([dom(1) dom(2) dom(3) dom(4)])
     view(viewSpec(2*(k - 1) + 1 : 2*(k - 1) + 2)), colorbar
     xlabel('x'), ylabel('y'), set(gca, 'FontSize', 16), box on
