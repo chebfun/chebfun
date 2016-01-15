@@ -661,7 +661,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             f.func = expm1(f.func);      
         end
         
-        function f = feval(f, x)
+        function f = feval(f, x, varargin)
             % F = FEVAL(F,X)    Evaluate an ADCHEBFUN F at point X.
             %
             % The output will be an ADCHEBFUN with derivative representing
@@ -669,7 +669,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % dictated by the chain rule).
             
             % Create an feval linear operator at the point X.
-            E = functionalBlock.feval(x, f.domain);
+            E = functionalBlock.feval(x, f.domain, varargin{:});
             % Update derivative part
             f.jacobian = E*f.jacobian;
             % Update CHEBFUN part
@@ -677,6 +677,16 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % Evaluation is a linear operation, so no need to update linearity
             % information.
             % f.linearity = f.linearity;
+            
+            % If we had nargin > 2, we're introducing a jump (evaluation from
+            % one side), so update domain and jump info:
+            if ( nargin > 2 )
+                % Update the domain, introducing a break at the jump location
+                f.domain = union(f.domain, x);
+                % Signal that an explicit jump condition has been given, so
+                % that automatic continuity won't be applied.
+                f.jumpLocations = union(f.jumpLocations, x);
+            end
         end 
         
         function f = fred(K, f, varargin)
@@ -1306,7 +1316,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         
             switch index(1).type
                 case '()'
-                    out = feval(f, index.subs{1});
+                    out = feval(f, index.subs{:});
                 case '{}'
                     out = f(index.subs{1});
                 case '.'
