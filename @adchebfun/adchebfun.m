@@ -504,6 +504,40 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % f.linearity = f.linearity;
         end
         
+        function f = deriv(f, xx, varargin)
+            %
+            % The most trivial case:
+            if ( isempty(f) )
+                return
+            end
+            
+            % By default, compute first derivative:
+            m = 1;
+            
+            % Parse the inputs:
+            if ( nargin == 3 )
+                if ( isnumeric(varargin{1}) ) % DERIV(F, X, M)
+                    m = varargin{1};
+                    varargin = {};
+                else                          % DERIV(F, X, S)
+                    m = 1;  % By default, compute first derivative
+                end
+            elseif ( nargin == 4 )            % DERIV(F, X, S, M)
+                m = varargin{2};
+                varargin{2} = [];
+            end
+            
+            if ( m == 0 )
+                % Trivial case
+                f = feval(f, xx, varargin{:});
+            else
+                f = feval(diff(f, m), xx, varargin{:});
+            end
+            
+        end
+            
+            
+        
         function f = diff(f, k)
             % F = DIFF(F, K)   DIFF of an ADCHEBFUN
             
