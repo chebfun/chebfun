@@ -324,7 +324,7 @@ while ( t < tf )
             end
                       
             % Output the solution if T correponds to an entry of TSPAN:
-            if ( abs(t - tspan(pos)) < eps )
+            if ( abs(t - tspan(pos)) < 1e-10 )
                 if ( valuesUpdated == 0 )
                     v = [];
                     for k = 1:nVars
@@ -340,13 +340,13 @@ while ( t < tf )
                 tOut(pos) = t;
                 pos = pos + 1;
                 if ( pos > length(tspan) )
-                    continue
+                    break
                 end
             end
-            
+          
             % Make sure that the solution is computed at the entries of TSPAN:
             if ( t + 2*dt > tspan(pos) && t ~= tspan(pos) )
-                if ( t + dt == tspan(pos) || adaptiveTime == 0 )
+                if ( abs(t + dt - tspan(pos)) < 1e-10 || adaptiveTime == 0 )
                     continue
                 else
                     dt = (tspan(pos) - t)/2;
