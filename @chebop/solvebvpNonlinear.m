@@ -87,7 +87,15 @@ diffOrder = L.diffOrder;
 while ( ~terminate )
     
     % Compute a Newton update:
-    [delta, disc] = linsolve(L, res, pref, vscale(u));
+    [delta, disc, converged] = linsolve(L, res, pref, vscale(u));
+    
+    % If solving for the Newton update did not converge, we have a gibberish
+    % update. This will cause the solution process to halt (we're solving
+    % something that's way too noisy), so bail out of the Newton iteration:
+    if ( ~converged )
+        giveUp = true;
+        break
+    end
 
     % We had two output arguments above, need to negate DELTA.
     delta = -delta;
@@ -208,6 +216,14 @@ while ( ~terminate )
         [L, res] = linearize(N, u, x);
         % Need to subtract the original RHS from the residual:
         res = res - rhs;    
+    end
+    
+    if ( newtonCounter > 1 && isnan(cFactor) )
+        % If we get a contraction factor that's a NaN, something has gone
+        % terribly wrong with the latest update. If we try to keep the Newton
+        % iteration running, we expect the process to halt, so break out of the
+        % iteration
+        giveUp = true;
     end
     
     % Should we stop the Newton iteration?
