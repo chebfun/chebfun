@@ -4,7 +4,8 @@ function pass = test_deflate(~)
 %% Bratu equation
 N = chebop(@(x,u) diff(u,2) + 2*exp(u), [0 1], 0, 0);
 r0 = N\0;
-r1 = deflate(N,r0,1,0);
+Ndef = deflate(N, r0, 1, 0);
+r1 = Ndef\0;
 
 % Ensure we got two solutions
 pass(1, 1) = norm(N(r0)) < 1e-8 && norm(N(r1)) < 1e-8;
@@ -20,9 +21,9 @@ N = chebop(@(x,u) diff(u,2)-u.^2+x, d);
 N.lbc = 0;
 N.rbc = sqrt(L);
 
-
 r0 = N\0; % First solution
-r1 = deflate(N, r0, 3, .1); % Deflate for second solution
+Ndef = deflate(N, r0, 3, .1); % Deflate for second solution;
+r1 = Ndef\0;
 
 % Ensure we got two solutions
 pass(1, 2) = norm(N(r0)) < 1e-9 && norm(N(r1)) < 1e-9;
@@ -39,9 +40,11 @@ u0 = 0*x;
 N.init = u0;
 
 r0 = N\0;
-r1 = deflate(N, r0, 1, 0);
+Ndef = deflate(N, r0, 1, 0);
+r1 = Ndef\0;
 % Deflate again
-r2 = deflate(N, [r0, r1], 1, 0);
+Ndef = deflate(N, [r0 r1], 1, 0);
+r2 = Ndef\0;
 
 % Ensure we got three solutions
 pass(1, 3) = norm(N(r0)) < 1e-9 && norm(N(r1)) < 1e-9 && norm(N(r2)) < 1e-9;
