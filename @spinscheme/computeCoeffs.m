@@ -38,7 +38,6 @@ switch schemeName
         
         % Compute C:
         C(1) = 0;
-        C(2) = 1;
         
         % Compute the phi-functions:
         phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
@@ -47,29 +46,23 @@ switch schemeName
         phi{4} = spinscheme.phiEval(4, LR, N, dim, nVars);
         
         % Compute the psi-functions:
-        psi{1,2} = spinscheme.psiEval(1, C(2), LR, N, dim, nVars);
+        psi{1,1} = spinscheme.psiEval(1, C(1), LR, N, dim, nVars);
         
         % Take real part for diffusive problems (real eigenvalues):
         if ( isreal(L) == 1 )
             phi = cellfun(@(f) real(f), phi, 'UniformOutput', 0);
             psi = cellfun(@(f) real(f), psi, 'UniformOutput', 0);
         end
-        
-        % Compute U:
-        U{1,1} =  -3*phi{2} - 5*phi{3} - 3*phi{4};
-        U{1,2} = 3/2*phi{2} + 4*phi{3} + 3*phi{4};
-        U{1,3} = -1/3*phi{2} - phi{3} - phi{4};
-        
+
         % Compute V:
-        V{1} = U{1,1};
-        V{2} = U{1,2};
-        V{3} = U{1,3};
+        V{1} = -3*phi{2} - 5*phi{3} - 3*phi{4};
+        V{2} = 3/2*phi{2} + 4*phi{3} + 3*phi{4};
+        V{3} = -1/3*phi{2} - phi{3} - phi{4};
         
     case 'abnorsett5'
         
         % Compute C:
         C(1) = 0;
-        C(2) = 1;
         
         % Compute the phi-functions:
         phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
@@ -79,7 +72,7 @@ switch schemeName
         phi{5} = spinscheme.phiEval(5, LR, N, dim, nVars);
         
         % Compute the psi-functions:
-        psi{1,2} = spinscheme.psiEval(1, C(2), LR, N, dim, nVars);
+        psi{1,1} = spinscheme.psiEval(1, C(1), LR, N, dim, nVars);
         
         % Take real part for diffusive problems (real eigenvalues):
         if ( isreal(L) == 1 )
@@ -87,23 +80,16 @@ switch schemeName
             psi = cellfun(@(f) real(f), psi, 'UniformOutput', 0);
         end
         
-        % Compute U:
-        U{1,1} = -(4*phi{2} + 26/3*phi{3} + 9*phi{4} + 4*phi{5});
-        U{1,2} = 3*phi{2} + 19/2*phi{3} + 12*phi{4} + 6*phi{5};
-        U{1,3} = -(4/3*phi{2} + 14/3*phi{3} + 7*phi{4} + 4*phi{5});
-        U{1,4} = 1/4*phi{2} + 11/12*phi{3} + 3/2*phi{4} + phi{5};
-        
         % Compute V:
-        V{1} = U{1,1};
-        V{2} = U{1,2};
-        V{3} = U{1,3};
-        V{4} = U{1,4};
+        V{1} = -(4*phi{2} + 26/3*phi{3} + 9*phi{4} + 4*phi{5});
+        V{2} = 3*phi{2} + 19/2*phi{3} + 12*phi{4} + 6*phi{5};
+        V{3} = -(4/3*phi{2} + 14/3*phi{3} + 7*phi{4} + 4*phi{5});
+        V{4} = 1/4*phi{2} + 11/12*phi{3} + 3/2*phi{4} + phi{5};
         
     case 'abnorsett6'
         
         % Compute C:
         C(1) = 0;
-        C(2) = 1;
         
         % Compute the phi-functions:
         phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
@@ -114,7 +100,7 @@ switch schemeName
         phi{6} = spinscheme.phiEval(6, LR, N, dim, nVars);
         
         % Compute the psi-functions:
-        psi{1,2} = spinscheme.psiEval(1, C(2), LR, N, dim, nVars);
+        psi{1,1} = spinscheme.psiEval(1, C(1), LR, N, dim, nVars);
         
         % Take real part for diffusive problems (real eigenvalues):
         if ( isreal(L) == 1 )
@@ -123,19 +109,11 @@ switch schemeName
         end
         
         % Compute U:
-        U{1,1} = -(5*phi{2} + 77/6*phi{3} + 71/4*phi{4} + 14*phi{5} + 5*phi{6});
-        U{1,2} = 5*phi{2} + 107/6*phi{3} + 59/2*phi{4} + 26*phi{5} + 10*phi{6};
-        U{1,3} = -(10/3*phi{2} + 13*phi{3} + 49/2*phi{4} + 24*phi{5} + ...
-            10*phi{6});
-        U{1,4} = 5/4*phi{2} + 61/12*phi{3} + 41/4*phi{4} + 11*phi{5} + 5*phi{6};
-        U{1,5} = -(1/5*phi{2} + 5/6*phi{3} + 7/4*phi{4} + 2*phi{5} + phi{6});
-        
-        % Compute V:
-        V{1} = U{1,1};
-        V{2} = U{1,2};
-        V{3} = U{1,3};
-        V{4} = U{1,4};
-        V{5} = U{1,5};
+        V{1} = -(5*phi{2} + 77/6*phi{3} + 71/4*phi{4} + 14*phi{5} + 5*phi{6});
+        V{2} = 5*phi{2} + 107/6*phi{3} + 59/2*phi{4} + 26*phi{5} + 10*phi{6};
+        V{3} = -(10/3*phi{2} + 13*phi{3} + 49/2*phi{4} + 24*phi{5} + 10*phi{6});
+        V{4} = 5/4*phi{2} + 61/12*phi{3} + 41/4*phi{4} + 11*phi{5} + 5*phi{6};
+        V{5} = -(1/5*phi{2} + 5/6*phi{3} + 7/4*phi{4} + 2*phi{5} + phi{6});
         
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % ETD RUNGE-KUTTA:
@@ -425,14 +403,13 @@ switch schemeName
         
         % Compute C:
         C(1) = 0;
-        C(2) = 1;
         
         % Compute the phi-functions:
         phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
         
         % Compute the psi-functions:
-        psi02 = spinscheme.psiEval(0, C(2), LR, N, dim, nVars);
-        psi{1,2} = spinscheme.psiEval(1, C(2), LR, N, dim, nVars);
+        psi02 = spinscheme.psiEval(0, 1, LR, N, dim, nVars);
+        psi{1,1} = spinscheme.psiEval(1, C(1), LR, N, dim, nVars);
         
         % Take real part for diffusive problems (real eigenvalues):
         if ( isreal(L) == 1 )
@@ -445,15 +422,10 @@ switch schemeName
         e3z = e2z.*psi02;
         e4z = e2z.*e2z;
         
-        % Compute U:
-        U{1,1} = -59/24*e2z;
-        U{1,2} = 37/24*e3z;
-        U{1,3} = -3/8*e4z;
-        
         % Compute V:
-        V{1} = U{1,1};
-        V{2} = U{1,2};
-        V{3} = U{1,3};
+        V{1} = -59/24*e2z;
+        V{2} = 37/24*e3z;
+        V{3} = -3/8*e4z;
         
     case 'lawson4'
         
