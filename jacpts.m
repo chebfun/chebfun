@@ -161,8 +161,9 @@ end
 
 % Compute the constant for weights:
 if ( ~strcmpi(method,'GW') )
-    C = 2^(a+b+1) * exp( gammaln(n+a+1) + gammaln(n+b+1) ...
-                         - gammaln(n+a+b+1) - gammaln(n+1) );  
+    C = 2^(a+b+1) * exp( gammaln(n+a+1) - gammaln(n+a+b+1) + ...
+                         gammaln(n+b+1) - gammaln(n+1) ); 
+                     
     w = C*w; 
 end
 
@@ -410,8 +411,9 @@ function [vals, ders] = feval_asy1(n, a, b, t, idx, flag)
         % Hi-lo computation to squeeze an extra digit in the computation.
         ta = double(single(t));    tb = t - ta;
         hi = n*ta;                 lo = n*tb + (a+b+1)*.5*t; 
-        pia = double(single(pi));  pib = -8.742278000372485e-08; % pib = pi-pia;
-        dh = ( hi - (k-.25)*pia ) + lo - .5*a*pia - ( k - .25 + .5*a )*pib;
+        pia = 3.1415927410125732;  pib = -8.742278000372485e-08; % pib = pi-pia;
+        % Doing this means that pi - pia - pib = 10^-24
+        dh = ( hi - (k-.25)*pia ) + lo - .5*a*pia - (k-.25+.5*a)*pib;
         tmp = 0; sgn = 1; fact = 1; DH = dh; dh2 = dh.*dh;       % Initialise.
         for j = 0:20
             dc = sgn*DH/fact;
