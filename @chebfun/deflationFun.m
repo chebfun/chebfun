@@ -1,14 +1,12 @@
 function out = deflationFun(Nu, u, r, p, alp)
+% DEFLATIONFUN    Wrapper for CHEBMATRIX/DEFLATIONFUN
+%
+% See also chebmatrix.deflationFun
 
-if (isa(r, 'chebfun'))
-    r =  mat2cell(r);
-end
-% Norm function
-normFun = 1;
-for rCounter = 1:length(r)
-    normFun = normFun*norm(u-r{rCounter}, 'fro')^p;
-end
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
-% Deflator operator
-out = Nu*(1/normFun+alp);
+% Call the CHEBMATRIX method, which is what CHEBOP uses
+out = deflationFun(Nu, u, chebmatrix(r), p, alp);
+
 end
