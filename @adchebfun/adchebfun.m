@@ -505,7 +505,21 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end
         
         function f = deriv(f, xx, varargin)
+            % DERIV   Evaluate a derivative of an ADCHEBFUN.
             %
+            %   DERIV(F, X) evaluates the first derivative of the ADCHEBFUN F at
+            %   the points in X. If F is a quasimatrix with columns F1, ..., FN,
+            %   then the result will be [F1(X), ..., FN(X)], the horizontal
+            %   concatenation of the results of evaluating each column at the
+            %   points in X.
+            %
+            %   DERIV(F, X, M) is the same as above, but returns the values of
+            %   the Mth derivative of F.
+            %
+            %   DERIV(F, X, S) or DERIV(F, X, S, M) where S is one of the
+            %   strings 'left', 'right', '+', or '-', evaluates the left- or
+            %   right-sided limit as described in chebfun/feval.
+            
             % The most trivial case:
             if ( isempty(f) )
                 return
@@ -513,7 +527,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             
             % By default, compute first derivative:
             m = 1;
-            
+
             % Parse the inputs:
             if ( nargin == 3 )
                 if ( isnumeric(varargin{1}) ) % DERIV(F, X, M)
@@ -526,14 +540,14 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 m = varargin{2};
                 varargin{2} = [];
             end
-            
+
             if ( m == 0 )
                 % Trivial case
                 f = feval(f, xx, varargin{:});
             else
                 f = feval(diff(f, m), xx, varargin{:});
             end
-            
+
         end
             
             
