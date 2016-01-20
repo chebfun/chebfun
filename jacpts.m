@@ -161,7 +161,7 @@ end
 
 % Compute the constant for the weights:
 if ( ~strcmpi(method,'GW') )
-    if ( strcmpi(method,'ASY') )
+    if ( n >= 100 )
         cte1 = ratiogamma(n+a+1,b);
         cte2 = ratiogamma(n+1,b);
         C = 2^(a+b+1)*(cte2/cte1);
