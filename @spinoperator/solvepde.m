@@ -698,6 +698,26 @@ elseif ( strcmpi(pdechar, 'Schnak3') == 1 )
     u0(2,1) = u02;
     pref = [];
     
+elseif ( strcmpi(pdechar, 'SH2') == 1 ) 
+    tspan = [0 150];
+    dom = [0 50 0 50];
+    vals = .1*randn(64, 64);
+    u0 = chebmatrix(chebfun2(vals, dom, 'trig'));
+    %u0 = @(x,y) 1/4*(sin(pi*x/10) + sin(pi*y/10) + sin(pi*x/2).*sin(pi*y/2));
+    %u0 = chebmatrix(chebfun2(u0, dom));
+    pref = [];
+    
+elseif ( strcmpi(pdechar, 'SH3') == 1 ) 
+    tspan = [0 150];
+    dom = [0 50 0 50 0 50];
+    %vals = .1*randn(32, 32, 32);
+    %u0 = chebmatrix(chebfun3(vals, dom, 'trig'));
+    u0 = @(x,y,z) 1/4*(sin(pi*x/10) + sin(pi*y/10) + sin(pi*z/10) + ...
+        sin(pi*x/2).*sin(pi*y/2) + sin(pi*x/2).*sin(pi*z/2) + ...
+        sin(pi*z/2).*sin(pi*y/2));
+    u0 = chebmatrix(chebfun3(u0, dom));
+    pref = [];
+    
 else
     error('SPINOPERATOR:SOLVEPDE:parseInputs', 'Unrecognized PDE.')
 end

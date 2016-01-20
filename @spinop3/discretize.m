@@ -42,25 +42,75 @@ else
     D2 = ifftshift(D2);
 end
 
-% Compute the N^3xN^3 Laplacian with KRON:
-I = eye(N);
-lapmat = kron(kron(D2, I), I)  + kron(kron(I, D2), I) + kron(kron(I, I), D2);
-
-% Create a NxNxN tensor with the diagonal of the N^3xN^3 Laplacian:
-lapmat = reshape(full(diag(lapmat)), N, N, N);
-
-% Get the constants in front of the Laplacians:
+% Look for 'laplacian' and 'biharmonic':
 strL = func2str(funcL);
-strL = strrep(strL, 'laplacian', '');
-funcL = eval(strL);
+isLap = ~isempty(strfind(strL, 'laplacian'));
+isBih = ~isempty(strfind(strL, 'biharmonic'));
+
+% NxN identity matrix for the Kronecker products:
+I = eye(N);
+
+% The linear part has a A*laplacian(u) term:
+if ( isLap == 1 )
+    
+    % Compute the N^3xN^3 Laplacian with KRON:
+    lapmat = kron(kron(I, I), D2) + kron(kron(I, D2), I) + kron(kron(D2, I), I);
+    
+    % Create a NxNxN tensor with the diagonal of the N^3xN^3 Laplacian:
+    lapmat = reshape(full(diag(lapmat)), N, N, N);
+    
+else
+    lapmat = 0;
+end
+
+% The linear part has a B*biharmonic(u) term:
+if ( isBih == 1 )
+    
+    % Fourth order Fourier differentiation matrix:
+    D4 = trigspec.diffmat(N,4)*(2*pi/(dom(2) - dom(1)))^4;
+    if ( mod(N,2) == 0 )
+        D4 = fftshift(D4);
+    else
+        D4 = ifftshift(D4);
+    end
+    
+    % Compute the N^3xN^3 biharmonic operator with KRON:
+    bihmat = kron(kron(I, I), D4) + kron(kron(I, D4), I) + ...
+        kron(kron(D4, I), I) + 2*kron(kron(I, I), D2)*kron(kron(I, D2), I) + ...
+        + 2*kron(kron(I, I), D2)*kron(kron(D2, I), I) + ...
+        + 2*kron(kron(D2, I), I)*kron(kron(I, D2), I);
+    
+    % Create a NxNxN tensor with the diagonal of the N^3xN^3 biharmonic
+    % operator:
+    bihmat = reshape(full(diag(bihmat)), N, N, N);
+    
+else
+    bihmat = 0;
+end
+
+% Convert to a string and initialize L:
+strL = func2str(funcL);
+L = [];
+
+% Get the constants A in front of the Laplacians:
+str = strrep(strL, 'laplacian', '');
+str = strrep(str, 'biharmonic', '0*');
+func = eval(str);
 inputs = cell(1, nVars);
 for k = 1:nVars
    inputs{k} = 1; 
 end
-constants = feval(funcL, inputs{:}); 
-L = [];
+A = feval(func, inputs{:}); 
+
+% Get the constants B in front of the biharmonic operators:
+str = strrep(strL, 'laplacian', '0*');
+str = strrep(str, 'biharmonic', '');
+func = eval(str);
+B = feval(func, inputs{:}); 
+
+% Compute L:
 for k = 1:nVars
-    L = [L; constants(k)*lapmat]; %#ok<*AGROW>
+    L = [L; A(k)*lapmat + B(k)*bihmat]; %#ok<*AGROW>
 end
 
 %% Disretize the differentiation term of the nonlinear part:

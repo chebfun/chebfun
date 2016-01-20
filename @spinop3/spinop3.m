@@ -79,6 +79,12 @@ end
             L = @(u,v) [laplacian(u); 10*laplacian(v)];
             A = .1; B = .9; G = 1;
             N = @(u,v) [ G*(A - u + u.^2.*v); G*(B - u.^2.*v)];
+                          
+        %  Swift-Hohenberg equation:
+        elseif ( strcmpi(pdechar, 'SH3') == 1 )
+            epsilon = .1; g = 1;
+            L = @(u) -2*laplacian(u) - biharmonic(u);
+            N = @(u) (epsilon-1)*u + g*u.^2 - u.^3;
             
         else
             error('SPINOP3:getLinearAndNonlinearParts', 'Unrecognized PDE.')
