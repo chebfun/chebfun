@@ -1,3 +1,4 @@
+
 classdef (InferiorClasses = {?chebfun}) adchebfun 
 %ADCHEBFUN   A class for supporting automatic differentiation in Chebfun.
 %
@@ -518,18 +519,64 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 r = mat2cell(r);
             end
             
-            % Norm function
+            % Initalise a variable for the derivative of the deflated operator:
+            defDeriv = 0;
+            
+            % Compute the norms between the function and the roots. At the same
+            % time, build up the derivative of the deflation part.
+            phiVec = zeros(length(r), 1);
             for rCounter = 1:length(r)
-                phiVec(rCounter) = 1/norm(u-r{rCounter},'fro')^2;
+                ur = u - r{rCounter};
+                currNorm2 = norm(ur, 'fro')^2;
+                currRecipNorm = 1/currNorm2; 
+                phiVec(rCounter) = currRecipNorm;
+                
+                defDeriv = defDeriv + kron(ffunc, currRecipNorm*ur', 'op');
+            end
+            phi = prod(phiVec);
+            normFun = phi^(p/2);
+            defDeriv = (p*normFun)*defDeriv;
+            
+            % Complete derivative of the deflation operator:
+            Nu.jacobian = Nu.jacobian*(normFun + alp) - ...
+                defDeriv;
+            
+            % Deflated function
+            Nu.func = ffunc*(alp + normFun);
+        end
+        
+        function Nu = deflationFunH1(Nu, u, r, p, alp)
+            % NU = DEFLATIONFUN(NU, U, R, P, ALP)
+            
+            % Extract the function part of U (current guess of solution) and the
+            % undeflated operator:
+            u = u.func;
+            ffunc = Nu.func;
+            
+            % Ensure we're working with a cell of CHEBFUN objects, makes it
+            % easier to work with when we have multiple roots to deflate.
+            if ( isa(r,'chebfun') )
+                r = mat2cell(r);
+            end
+            
+            % Norm function
+            phiVec = zeros(length(r), 1);
+            for rCounter = 1:length(r)
+                ur = u - r{rCounter};
+                phiVec(rCounter) = 1/(norm(ur,'fro')^2 + norm(diff(ur), 'fro')^2);
             end
             phi = prod(phiVec);
             normFun = phi^(p/2);
             
             % Build up the derivative of the deflated operator.
             defDeriv = 0;
+            D = operatorBlock.diff(u.domain);
             for rCounter = 1:length(r)
+                ur = u - r{rCounter};
+                dur = diff(ur);
                 defDeriv = defDeriv + ...
-                    kron(ffunc,(p*phiVec(rCounter))*(u-r{rCounter})','op');
+                    kron(ffunc,(p*phiVec(rCounter))*ur','op') + ...
+                    kron(ffunc,(p*phiVec(rCounter))*dur','op')*D;
             end
             defDeriv = normFun*defDeriv;
             
@@ -943,7 +990,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 f = rdivide(f, g);
             else
                 error('CHEBFUN:ADCHEBFUN:mrdivide:dims', ...
-                    ['Matrix dimensions must agree. Use f./g to divide' ...
+                    ['Matrix dimensions must agree. Use f./g to divide ' ...
                     'ADCHEBFUN objects.']);
             end
         end
@@ -971,9 +1018,35 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             
             % TODO: Do we want this method to return an ADCHEBFUN? Makes sense
             % in the 2-norm case, in particular for 2-norm squared. Perhaps we
-            % want a speical 2-norm squared method?
-            [varargout{1:nargout}] = norm(f.func, varargin{:});
-        end     
+            % want a specical 2-norm squared method?
+            if ( ( nargin == 1 ) || strcmp(varargin{1}, 'fro') || ...
+                (varargin{1} == 2) )
+                % Linearity information
+                f.linearity = iszero(f.jacobian);
+                % Update derivative part
+                f.jacobian = functionalBlock.inner(f.func, f.domain)*f.jacobian;
+                % Update CHEBFUN part
+                f.func = norm(f.func, 2);
+                % Update Jacobian
+                f.jacobian = f.jacobian*(1/f.func);
+                % Return
+                varargout{1} = f;
+            else
+                [varargout{1:nargout}] = norm(f.func, varargin{:});
+            end
+        end
+        
+        function varargout = normsq(f)
+            % NORMSQ(F)    Squared 2-norm of ADCHEBFUN objects.
+            %
+            % See also CHEBFUN/norm.
+            
+            f.linearity = iszero(f.jacobian);
+            f.jacobian = functionalBlock.inner(2*f.func, f.domain)*f.jacobian;
+            f.func = norm(f.func, 2)^2;
+            varargout{1} = f;
+
+        end
         
         function varargout = plot(f, varargin)
             % PLOT      Plot the CHEBFUN part of an ADCHEBFUN
