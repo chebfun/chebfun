@@ -1,9 +1,9 @@
 function choreo
 %CHOREO   Compute planar choreographies of the n-body problem.
-%    CHEB.CHOREO computes a planar choreogpraphy using hand-drawn initial 
+%    CHEB.CHOREO computes a planar choreography using hand-drawn initial
 %    guesses. 
 %   
-% It uses trignometric interpolation and quasi-Newton methods. See [1] for
+% It uses trigonometric interpolation and quasi-Newton methods. See [1] for
 % details.
 %
 % [1] H. Montanelli and N. I. Gushterov, Computing planar and spherical
@@ -43,7 +43,7 @@ while 1
   c0 = trigcoeffs(q0);
   c0 = [real(c0);imag(c0)];
   [A0,G0] = actiongradeval(c0,n,w);
-  fprintf('\nInitial acion: %.6f\n',A0)
+  fprintf('\nInitial action: %.6f\n',A0)
   options = optimoptions('fminunc');
   options.Algorithm = 'quasi-newton';
   options.HessUpdate = 'bfgs'; 
