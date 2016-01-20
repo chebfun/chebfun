@@ -1,4 +1,4 @@
-function N = deflate(N, r, p, alp)
+function N = deflate(N, r, p, alp, type)
 %DEFLATE   Deflate known solutions from the operator of a CHEBOP
 %
 %   Calling sequence:
@@ -8,6 +8,8 @@ function N = deflate(N, r, p, alp)
 %       R:    A CHEBFUN or CHEBMATRIX of previously found solutions
 %       P:    The power coefficient of the deflation scheme
 %       ALP:  The shift coefficient of the deflation scheme
+%       TYPE: Type of norm used for deflation. Possible options are 'L2'
+%             (default) and 'H1'.
 %   and the output is
 %       N:    A CHEBOP, whose N.OP has had the solutions R deflated from
 %
@@ -27,6 +29,10 @@ function N = deflate(N, r, p, alp)
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+if ( nargin < 5 )
+    type = 'L2';
+end
+
 if (isa(r, 'chebfun'))
     % Ensure R is a CHEBMATRIX to pass to DEFLATIONFUN below:
     r = chebmatrix(r);
@@ -36,6 +42,10 @@ if (nargin(N.op) < 2 )
     error('must pass x and u to N.op');
 end
 
-N.op = @(x,u) deflationFun(N.op(x,u), u, r, p, alp);
+if ( strcmp(type, 'L2') )
+    N.op = @(x,u) deflationFun(N.op(x,u), u, r, p, alp);
+else
+    N.op = @(x,u) deflationFunH1(N.op(x,u), u, r, p, alp);
+end
 
 end
