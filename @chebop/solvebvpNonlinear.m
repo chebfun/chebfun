@@ -247,6 +247,7 @@ end
 % Return useful information in the INFO structure
 info.normDelta = normDeltaVec(1:newtonCounter);
 info.error = errEst;
+info.converged = success;
 
 end
 
