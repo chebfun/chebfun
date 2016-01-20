@@ -5,7 +5,7 @@ function f = simplify( f, tol )
 % numerically the same, but requires fewer parameters to store. Currently this
 % simplifies the polynomial degree of F, but not the rank. 
 %
-% G = SIMPLIFY(F, TOL) does the same as above but uses the scalar TOL instead
+% F = SIMPLIFY(F, TOL) does the same as above but uses the scalar TOL instead
 % of the default simplification tolerance as the relative threshold level.
 
 % Copyright 2015 by The University of Oxford and The Chebfun2 Developers.
