@@ -218,14 +218,6 @@ while ( ~terminate )
         res = res - rhs;    
     end
     
-    if ( newtonCounter > 1 && isnan(cFactor) )
-        % If we get a contraction factor that's a NaN, something has gone
-        % terribly wrong with the latest update. If we try to keep the Newton
-        % iteration running, we expect the process to halt, so break out of the
-        % iteration
-        giveUp = true;
-    end
-    
     % Should we stop the Newton iteration?
     if ( success || maxIterExceeded || ( giveUp == 1) || stopReq )
         break
@@ -255,6 +247,7 @@ end
 % Return useful information in the INFO structure
 info.normDelta = normDeltaVec(1:newtonCounter);
 info.error = errEst;
+info.converged = success;
 
 end
 
