@@ -159,13 +159,16 @@ else
     
 end
 
-% Compute the constant for weights:
+% Compute the constant for the weights:
 if ( ~strcmpi(method,'GW') )
-    cte1 = ratiogamma(n+a+1,b);
-    cte2 = ratiogamma(n+1,b);
-    C = 2^(a+b+1) * (cte2/cte1);
-
-    w = C*w; 
+    if ( strcmpi(method,'ASY') )
+        cte1 = ratiogamma(n+a+1,b);
+        cte2 = ratiogamma(n+1,b);
+        C = 2^(a+b+1)*(cte2/cte1);
+    else
+        C = 2^(a+b+1)*beta(a+1, b+1)/sum(w);
+    end
+    w = C*w;
 end
 
 % Scale the nodes and quadrature weights:
