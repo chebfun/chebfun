@@ -37,7 +37,7 @@ for k = 1:numel(funcList)
     [err, lin] = adchebfun.valueTesting(funcList{k});
 
     % First, check that the computed function values match what we expect
-    pass(1, k) = ( abs(err) < 10*eps );
+    pass(1, k) = ( abs(err) < 50*eps );
     
     % Call the taylorTesting method
     [order1, order2] = adchebfun.taylorTesting(funcList{k});
