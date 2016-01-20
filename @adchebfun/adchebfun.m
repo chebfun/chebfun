@@ -1081,17 +1081,6 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             end
         end
         
-        function varargout = normsq(f)
-            % NORMSQ(F)    Squared 2-norm of ADCHEBFUN objects.
-            %
-            % See also CHEBFUN/norm.
-            
-            f.linearity = iszero(f.jacobian);
-            f.jacobian = functionalBlock.inner(2*f.func, f.domain)*f.jacobian;
-            f.func = norm(f.func, 2)^2;
-            varargout{1} = f;
-
-        end
         
         function varargout = plot(f, varargin)
             % PLOT      Plot the CHEBFUN part of an ADCHEBFUN
