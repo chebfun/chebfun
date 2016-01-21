@@ -62,7 +62,7 @@ titleString = sprintf('Nx = Ny = %i (DoFs = %i), dt = %1.1e, t = %.4f', N, ...
 set(gcf, 'NextPlot', 'add');
 ax = axes;
 h = title(titleString);
-set(ax, 'Visible', 'off', 'Fontsize', 16);
+set(ax, 'Visible', 'off', 'HandleVisibility', 'off', 'Fontsize', 16);
 set(h, 'Visible', 'on', 'Position', [.47 1.02 .5])
 
 % Ask the user to press SPACE:

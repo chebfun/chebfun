@@ -54,7 +54,6 @@ for k = 1:nVars
         zzzplot, 'spline');
     
     % Loop over the surfaces:
-    subplot(nVars, 1, k)
     for l = 1:length(p{k})
         pkl = p{k}(l);
         Sx = ( pkl.XData(1,1) == pkl.XData(1,2) ) && ...

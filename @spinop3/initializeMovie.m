@@ -66,7 +66,7 @@ zzzplot = [zzzplot; zzzplot(1,:,:)];
 zzzplot = [zzzplot, zzzplot(:,1,:)];
 
 % Loop over the variables:
-p = cell(nVars, 1); clf
+p = cell(nVars + 1, 1); clf
 for k = 1:nVars
     
     % Extract each variable:
@@ -96,7 +96,7 @@ titleString = sprintf('Nx = Ny = Nz = %i (DoFs = %i), dt = %1.1e, t = %.4f', ...
 set(gcf, 'NextPlot', 'add');
 ax = axes;
 h = title(titleString);
-set(ax, 'Visible', 'off', 'Fontsize', 16);
+set(ax, 'Visible', 'off', 'HandleVisibility', 'off', 'Fontsize', 16)
 set(h, 'Visible', 'on', 'Position', [.47 1.02 .5])
 
 % Ask the user to press SPACE:
