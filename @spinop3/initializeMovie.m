@@ -66,7 +66,7 @@ zzzplot = [zzzplot; zzzplot(1,:,:)];
 zzzplot = [zzzplot, zzzplot(:,1,:)];
 
 % Loop over the variables:
-p = cell(nVars + 1, 1); clf
+p = cell(nVars + 1, 1); clf reset
 for k = 1:nVars
     
     % Extract each variable:

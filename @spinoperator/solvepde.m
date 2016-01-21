@@ -493,17 +493,17 @@ end
 
 % Use WATERFALL if using WATERFALL:
 if ( strcmpi(plottingstyle, 'waterfall') == 1 )
-    clf
+    clf reset
     for k = 1:nVars
         uwater = [];
         for l = 1:size(vWater, 2)
             N = length(vWater{l})/nVars;
             idx = (k-1)*N + 1;
-            uwater = [ uwater, chebfun(real(vWater{l}(idx:idx+N-1)), ...
-                dom, 'trig') ]; %#ok<*AGROW>
+            uwater = [ uwater, chebfun(real(vWater{l}(idx:idx+N-1)), dom, ...
+                'trig') ]; 
         end
-        subplot(nVars, 1, k)
-        waterfall(uwater, twater), axis([xx(1), xx(end), 0, tf])
+        subplot(1, nVars, k)
+        waterfall(uwater, twater), axis([dom(1), dom(end), 0, tf])
         set(gca, 'FontSize', 16), box on
         xlabel('x'), ylabel('t')
         if ( nVars == 1 )
@@ -663,6 +663,12 @@ elseif ( strcmpi(pdechar, 'KdV') == 1 )
     pref = [];
     
 elseif ( strcmpi(pdechar, 'KS') == 1 )
+    tspan = [0 300];
+    dom = [0 32*pi];
+    u0 = chebmatrix(chebfun('cos(x/16).*(1 + sin((x-1)/16))', dom, 'trig'));
+    pref = [];
+    
+elseif ( strcmpi(pdechar, 'Niko') == 1 )
     tspan = [0 300];
     dom = [0 32*pi];
     u0 = chebmatrix(chebfun('cos(x/16).*(1 + sin((x-1)/16))', dom, 'trig'));

@@ -89,6 +89,13 @@ end
             L = @(u) -diff(u, 2) - diff(u, 4);
             N = @(u) -.5*diff(u.^2);
             
+        % Nikolaevskiy equation:
+        elseif ( strcmpi(pdechar, 'Niko') == 1 )
+            r = .9; alpha = 10; beta = 2.6;
+            L = @(u) (1-r)*diff(u, 2) + alpha*diff(u, 3) + diff(u, 4) + ...
+                + beta*diff(u, 5) + diff(u, 6);
+            N = @(u) -.5*diff(u.^2);
+            
        % Nonlinear Schrodinger equation:
         elseif ( strcmpi(pdechar, 'NLS') == 1 )
             L = @(u) 1i*diff(u, 2);

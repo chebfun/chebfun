@@ -34,7 +34,7 @@ yyyplot = [yyyplot; 2*yyyplot(end,:) - yyyplot(end-1,:)];
 yyyplot = [yyyplot, yyyplot(:,1)];
 
 % Loop over the variables:
-p = cell(nVars + 1, 1); clf
+p = cell(nVars + 1, 1); clf reset
 for k = 1:nVars
     
     % Extract each variable:

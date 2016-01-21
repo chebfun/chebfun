@@ -22,7 +22,7 @@ xxxplot = trigpts(Nplot, dom);
 xxxplot = [xxxplot; 2*xxxplot(end) - xxxplot(end-1)];
 
 % Loop over the variables:
-p = cell(nVars, 1); clf
+p = cell(nVars, 1); clf reset
 for k = 1:nVars
     
     % Extract each variable:
