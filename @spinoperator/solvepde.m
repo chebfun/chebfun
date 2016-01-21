@@ -684,8 +684,8 @@ elseif ( strcmpi(pdechar, 'NLS') == 1 )
     
 elseif ( strcmpi(pdechar, 'OK') == 1 )
     tspan = [0 10];
-    dom = [-pi pi];
-    u0 = chebmatrix(chebfun('cos(x).*(1 + sin(x))', dom, 'trig'));
+    dom = [0 2*pi];
+    u0 = chebmatrix(chebfun('cos(x)/2', dom, 'trig'));
     pref = [];
     
 elseif ( strcmpi(pdechar, 'Schnak2') == 1 ) 

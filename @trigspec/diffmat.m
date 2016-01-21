@@ -18,13 +18,20 @@ if ( m > 0 )
         if ( mod(m, 2) == 1 ) % m odd
             D = (1i)^m*spdiags([0, -N/2+1:1:N/2-1]', 0, N, N).^m;
         else % m even
-            D = (1i)^m*spdiags([-N/2:1:N/2-1]', 0, N, N).^m;
+            D = (1i)^m*spdiags((-N/2:1:N/2-1)', 0, N, N).^m;
         end
     else % N odd
-        D = (1i)^m*spdiags([-(N-1)/2:1:(N-1)/2]', 0, N, N).^m;
+        D = (1i)^m*spdiags((-(N-1)/2:1:(N-1)/2)', 0, N, N).^m;
     end
-else
+elseif ( m == 0 )
     D = speye(N);
+end
+
+% Temporary, m=7 means sum(u):
+if ( m == 7 ) 
+    Z = zeros(N, 1);
+    Z(floor(N/2) + 1) = 1;
+    D = spdiags(Z, 0, N, N);
 end
 
 end

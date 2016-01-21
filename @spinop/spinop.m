@@ -103,9 +103,9 @@ end
             
         % Ohta-Kawasaki equation:
         elseif ( strcmpi(pdechar, 'OK') == 1 )
-            epsilon = 1; sigma = 1;
-            L = @(u) -epsilon^2*diff(u, 2) - sigma*(u - sum(u));
-            N = @(u) diff(u.^3 - u, 2);
+            ep = .1; sig = 4;
+            L = @(u) -ep^2*diff(u, 4) - diff(u, 2) - sig*(u - diff(u, 7));
+            N = @(u) diff(u.^3, 2);
 
         else
             error('SPINOP:getLinearAndNonlinearParts', 'Unrecognized PDE.')
