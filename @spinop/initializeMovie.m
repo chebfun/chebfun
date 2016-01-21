@@ -42,7 +42,7 @@ for k = 1:nVars
     vvvplot = interp1(xxplot, vvplot, xxxplot, 'spline');
     
     % Plot each variable:
-    subplot(nVars, 1, k)
+    subplot(1, nVars, k)
     p{k} = plot(xxxplot, vvvplot, 'linewidth', 3);
     axis([dom(1), dom(2), Ylim(2*(k-1) + 1), Ylim(2*(k-1) + 2)])
     if ( nVars == 1 )
@@ -51,20 +51,24 @@ for k = 1:nVars
         xlabel('x'), ylabel(['u_',num2str(k),'(t,x)']), grid on
     end
     set(gca, 'FontSize', 16), box on
-    
-    % Title:
-    if ( k == 1 )
-        lin = ['L: ', func2str(S.linearPart)];
-        nonlin = ['N: ', func2str(S.nonlinearPart)];
-        data = sprintf('Nx = %i (DoFs = %i), dt = %1.1e, t = %.4f', N, ...
-            nVars*N, dt, 0);
-        titleString = {[]; lin; []; nonlin; []; data; []};
-        title(p{k}.Parent, titleString, 'interpreter', 'none')
-    end
     drawnow
     
 end
+
+% Title:
+titleString = sprintf('Nx = %i (DoFs = %i), dt = %1.1e, t = %.4f', N, ...
+    nVars*N, dt, 0);
+set(gcf, 'NextPlot', 'add');
+ax = axes;
+h = title(titleString);
+set(ax, 'Visible', 'off', 'Fontsize', 16);
+set(h, 'Visible', 'on', 'Position', [.5 1.02 .5])
+
+% Ask the user to press SPACE:
 disp('Type <space> when ready.'), shg, pause
+
+% Outputs:
+p{nVars + 1} = h;
 plotOptions{1} = Ylim;
 plotOptions{2} = dataToPlot;
 

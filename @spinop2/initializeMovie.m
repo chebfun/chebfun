@@ -34,7 +34,7 @@ yyyplot = [yyyplot; 2*yyyplot(end,:) - yyyplot(end-1,:)];
 yyyplot = [yyyplot, yyyplot(:,1)];
 
 % Loop over the variables:
-p = cell(nVars, 1); clf
+p = cell(nVars + 1, 1); clf
 for k = 1:nVars
     
     % Extract each variable:
@@ -47,25 +47,29 @@ for k = 1:nVars
     vvvplot = interp2(xxplot, yyplot, vvplot, xxxplot, yyyplot, 'spline');
     
     % Plot each variable:
-    subplot(nVars, 1, k)
+    subplot(1, nVars, k)
     p{k} = surf(xxxplot, yyyplot, vvvplot, 'edgecolor', 'none');
     axis([dom(1) dom(2) dom(3) dom(4)])
     view(viewSpec(2*(k - 1) + 1 : 2*(k - 1) + 2)), colorbar
     xlabel('x'), ylabel('y'), set(gca, 'FontSize', 16), box on
-    
-    % Title:
-    if ( k == 1 )
-        lin = ['L: ', func2str(S.linearPart)];
-        nonlin = ['N: ', func2str(S.nonlinearPart)];
-        data = sprintf('Nx = Ny = %i (DoFs = %i), dt = %1.1e, t = %.4f', N, ...
-            nVars*N^2, dt, 0);
-        titleString = {[]; lin; []; nonlin; []; data; []};
-        title(p{k}.Parent, titleString, 'interpreter', 'none')
-    end
     drawnow
     
 end
+
+% Title:
+titleString = sprintf('Nx = Ny = %i (DoFs = %i), dt = %1.1e, t = %.4f', N, ...
+    nVars*N^2, dt, 0);
+set(gcf, 'NextPlot', 'add');
+ax = axes;
+h = title(titleString);
+set(ax, 'Visible', 'off', 'Fontsize', 16);
+set(h, 'Visible', 'on', 'Position', [.47 1.02 .5])
+
+% Ask the user to press SPACE:
 disp('Type <space> when ready.'), shg, pause
+
+% Outputs:
+p{nVars + 1} = h;
 plotOptions{1} = viewSpec;
 plotOptions{2} = dataToPlot;
 

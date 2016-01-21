@@ -41,17 +41,13 @@ for k = 1:nVars
     % Update each variable:
     set(p{k}, 'xdata', xxxplot, 'ydata', yyyplot, 'zdata', vvvplot)
     set(p{k}.Parent, 'xlim', [dom(1), dom(2)], 'ylim', [dom(3) dom(4)])
-
-    % Update title:
-    if ( k == 1 )
-        lin = ['L: ', func2str(S.linearPart)];
-        nonlin = ['N: ', func2str(S.nonlinearPart)];
-        data = sprintf('Nx = Ny = %i (DoFs = %i), dt = %1.1e, t = %.4f', N, ...
-            nVars*N^2, dt, t);
-        titleString = {[]; lin; []; nonlin; []; data; []};
-        title(p{k}.Parent, titleString, 'interpreter', 'none')
-    end
     drawnow
+    
 end
+
+% Update title:
+titleString = sprintf('Nx = Ny = %i (DoFs = %i), dt = %1.1e, t = %.4f', N, ...
+    nVars*N^2, dt, t);
+set(p{nVars + 1}, 'String', titleString)
 
 end

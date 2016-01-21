@@ -92,17 +92,13 @@ for k = 1:nVars
             set(p{k}(l), 'cdata', squeeze(vvvplot(:,:,id)))
         end
     end
-
-    % Update title:
-    if ( k == 1 )
-        lin = ['L: ', func2str(S.linearPart)];
-        nonlin = ['N: ', func2str(S.nonlinearPart)];
-        data = sprintf('Nx = Ny = Nz = %i (DoFs = %i), dt = %1.1e, t = %.4f', N, ...
-            nVars*N^3, dt, t);
-        titleString = {[]; lin; []; nonlin; []; data; []};
-        title(titleString, 'interpreter', 'none')
-    end
     drawnow
+    
 end
+
+% Update title:
+titleString = sprintf('Nx = Ny = Nz = %i (DoFs = %i), dt = %1.1e, t = %.4f', ...
+    N, nVars*N^3, dt, t);
+set(p{nVars + 1}, 'String', titleString)
 
 end

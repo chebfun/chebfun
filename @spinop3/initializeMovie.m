@@ -81,25 +81,29 @@ for k = 1:nVars
         zzzplot, 'spline');
     
     % Plot each variable:
-    subplot(nVars, 1, k) 
+    subplot(1, nVars, k) 
     p{k} = slice(xxxplot, yyyplot, zzzplot, vvvplot, Sx, Sy, Sz);
     set(p{k}, 'edgecolor', 'none')
     axis([dom(1) dom(2) dom(3) dom(4) dom(5) dom(6)]), colorbar
     xlabel('x'), ylabel('y'), zlabel('z'), set(gca, 'FontSize', 16), box on
-    
-    % Title:
-    if ( k == 1 )
-        lin = ['L: ', func2str(S.linearPart)];
-        nonlin = ['N: ', func2str(S.nonlinearPart)];
-        data = sprintf('Nx = Ny = Nz = %i (DoFs = %i), dt = %1.1e, t = %.4f', N, ...
-            nVars*N^3, dt, 0);
-        titleString = {[]; lin; []; nonlin; []; data; []};
-        title(titleString, 'interpreter', 'none')
-    end
     drawnow
     
 end
+
+% Title:
+titleString = sprintf('Nx = Ny = Nz = %i (DoFs = %i), dt = %1.1e, t = %.4f', ...
+    N, nVars*N^3, dt, 0);
+set(gcf, 'NextPlot', 'add');
+ax = axes;
+h = title(titleString);
+set(ax, 'Visible', 'off', 'Fontsize', 16);
+set(h, 'Visible', 'on', 'Position', [.47 1.02 .5])
+
+% Ask the user to press SPACE:
 disp('Type <space> when ready.'), shg, pause
+
+% Outputs:
+p{nVars + 1} = h;
 plotOptions{1} = {Sx, Sy, Sz};
 plotOptions{2} = dataToPlot;
 

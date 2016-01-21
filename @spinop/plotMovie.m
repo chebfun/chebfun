@@ -49,19 +49,16 @@ for k = 1:nVars
     set(p{k}, 'xdata', xxxplot), set(p{k}, 'ydata', vvvplot)
     set(p{k}.Parent, 'xlim', [dom(1), dom(2)])
     set(p{k}.Parent, 'ylim', [Ylim(2*(k-1) + 1), Ylim(2*(k-1) + 2)])
-    
-    % Update title:
-    if ( k == 1 )
-        lin = ['L: ', func2str(S.linearPart)];
-        nonlin = ['N: ', func2str(S.nonlinearPart)];
-        data = sprintf('Nx = %i (DoFs = %i), dt = %1.1e, t = %.4f', N, ...
-            nVars*N, dt, t);
-        titleString = {[]; lin; []; nonlin; []; data; []};
-        title(p{k}.Parent, titleString, 'interpreter', 'none')
-    end
     drawnow
     
 end
+
+% Update title:
+titleString = sprintf('Nx = %i (DoFs = %i), dt = %1.1e, t = %.4f', N, ...
+    nVars*N, dt, t);
+set(p{nVars + 1}, 'String', titleString)
+
+% Update outputs:
 plotOptions{1} = Ylim;
 
 end
