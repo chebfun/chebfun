@@ -78,6 +78,7 @@ classdef spinoperator
                 
                 % Nc=1:
                 Nc = 1;
+                
             end
             
         end
