@@ -5,7 +5,7 @@ function [normF, normloc] = norm( f, p )
 %    NORM(F, 2) = largest singular value of F.
 %    NORM(F,'fro') is the same as NORM(F).
 %    NORM(F, 1) = NOT IMPLEMENTED.
-%    NORM(F, 'inf') = global maximum in absolute value.
+%    NORM(F, inf) = global maximum in absolute value.
 %    NORM(F, 'max') = global maximum in absolute value.
 %    NORM(F, 'min') = NOT IMPLEMENTED
 %
