@@ -24,8 +24,9 @@ rBlocks = r.blocks;
 normFun = 1;
 for rCounter = 1:length(r)
     ur = u-rBlocks{rCounter};
-    normFun = normFun*(norm(ur, 'fro')^p + norm(diff(ur), 'fro')^p);
+    normFun = normFun*(norm(ur, 'fro')^2 + norm(diff(ur), 'fro')^2);
 end
+normFun = normFun^(p/2);
 
 % Residual of the deflated operator
 out = Nu*(1/normFun + alp);
