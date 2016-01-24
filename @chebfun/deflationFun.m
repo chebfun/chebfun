@@ -1,4 +1,4 @@
-function out = deflationFun(Nu, u, r, p, alp)
+function out = deflationFun(Nu, u, r, p, alp, type)
 % DEFLATIONFUN    Wrapper for CHEBMATRIX/DEFLATIONFUN
 %
 % See also chebmatrix.deflationFun
@@ -7,6 +7,6 @@ function out = deflationFun(Nu, u, r, p, alp)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Call the CHEBMATRIX method, which is what CHEBOP uses
-out = deflationFun(Nu, u, chebmatrix(r), p, alp);
+out = deflationFun(Nu, u, chebmatrix(r), p, alp, type);
 
 end

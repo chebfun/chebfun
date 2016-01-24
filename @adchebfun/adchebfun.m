@@ -504,8 +504,12 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % f.linearity = f.linearity;
         end
         
-        function Nu = deflationFun(Nu, u, r, p, alp)
+        function Nu = deflationFun(Nu, u, r, p, alp, type)
             % NU = DEFLATIONFUN(NU, U, R, P, ALP)
+            %
+            % Calling sequence follows chebop/deflate. 
+            %
+            % See also chebop/deflate .
             
             % Extract the function part of U (current guess of solution) and the
             % undeflated operator:
@@ -524,16 +528,44 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % Compute the norms between the function and the roots. At the same
             % time, build up the derivative of the deflation part.
             phiVec = zeros(length(r), 1);
-            for rCounter = 1:length(r)
-                ur = u - r{rCounter};
-                currNorm2 = norm(ur, 'fro')^2;
-                currRecipNorm = 1/currNorm2; 
-                phiVec(rCounter) = currRecipNorm;
+            
+            if ( strcmp(type, 'L2') )
+                % Deflate each root
+                for rCounter = 1:length(r)
+                    ur = u - r{rCounter};
+                    currNorm2 = norm(ur, 'fro')^2;
+                    currRecipNorm = 1/currNorm2;
+                    phiVec(rCounter) = currRecipNorm;
+                    
+                    defDeriv = defDeriv + kron(ffunc, currRecipNorm*ur', 'op');
+                end
+            else
+                % Differentiation operator on the domain
+                D = operatorBlock.diff(u.domain);
+
+                % Deflate each root
+                for rCounter = 1:length(r)
+                    ur = u - r{rCounter};
+                    dur = diff(ur);
+
+                    currNorm2 = norm(ur, 'fro')^2 + norm(diff(ur), 'fro')^2;
+                    currRecipNorm = 1/currNorm2;
+                    phiVec(rCounter) = currRecipNorm;
+                    
+                    defDeriv = defDeriv + ...
+                        kron(ffunc,currRecipNorm*ur','op') + ...
+                        kron(ffunc,currRecipNorm*dur','op')*D;
+
+                end
                 
-                defDeriv = defDeriv + kron(ffunc, currRecipNorm*ur', 'op');
             end
+            
+            % Multiply together all the deflation factors, and raise to the
+            % correct power.
             phi = prod(phiVec);
             normFun = phi^(p/2);
+            
+            % Derivative of the deflation part
             defDeriv = (p*normFun)*defDeriv;
             
             % Complete derivative of the deflation operator:
@@ -544,48 +576,6 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             Nu.func = ffunc*(alp + normFun);
         end
         
-        function Nu = deflationFunH1(Nu, u, r, p, alp)
-            % NU = DEFLATIONFUN(NU, U, R, P, ALP)
-            
-            % Extract the function part of U (current guess of solution) and the
-            % undeflated operator:
-            u = u.func;
-            ffunc = Nu.func;
-            
-            % Ensure we're working with a cell of CHEBFUN objects, makes it
-            % easier to work with when we have multiple roots to deflate.
-            if ( isa(r,'chebfun') )
-                r = mat2cell(r);
-            end
-            
-            % Norm function
-            phiVec = zeros(length(r), 1);
-            for rCounter = 1:length(r)
-                ur = u - r{rCounter};
-                phiVec(rCounter) = 1/(norm(ur,'fro')^2 + norm(diff(ur), 'fro')^2);
-            end
-            phi = prod(phiVec);
-            normFun = phi^(p/2);
-            
-            % Build up the derivative of the deflated operator.
-            defDeriv = 0;
-            D = operatorBlock.diff(u.domain);
-            for rCounter = 1:length(r)
-                ur = u - r{rCounter};
-                dur = diff(ur);
-                defDeriv = defDeriv + ...
-                    kron(ffunc,(p*phiVec(rCounter))*ur','op') + ...
-                    kron(ffunc,(p*phiVec(rCounter))*dur','op')*D;
-            end
-            defDeriv = normFun*defDeriv;
-            
-            % Derivative of deflation operator:
-            Nu.jacobian = Nu.jacobian*(normFun + alp) - ...
-                defDeriv;
-            
-            % Deflated function
-            Nu.func = ffunc*(alp + normFun);
-        end
         
         function f = deriv(f, xx, varargin)
             % DERIV   Evaluate a derivative of an ADCHEBFUN.

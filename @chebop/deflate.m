@@ -13,6 +13,18 @@ function N = deflate(N, r, p, alp, type)
 %   and the output is
 %       N:    A CHEBOP, whose N.OP has had the solutions R deflated from
 %
+%   The deflation operator constructed corresponds to a new CHEBOP G, so that
+%
+%       G(u) = M(u, r)N(u)
+%   
+%   where N is the input CHEBOP, and M is the deflation operator
+%       
+%       M(u;r) = 1/(||u-r||^p_{type}) + alp
+%
+%   or in the case of multiple roots r_1, ..., r_n being deflated
+%
+%       M(u; r_1, ... r_n) = 1/(||u-r_1||^p_{type}*...*||u-r_n||^p_{type}) + alp
+%
 %   Note: DEFLATE(N, ...) only returns a modified CHEBOP, it is then necessary
 %   to \ to compute new solutions.
 %
@@ -42,10 +54,7 @@ if (nargin(N.op) < 2 )
     error('must pass x and u to N.op');
 end
 
-if ( strcmp(type, 'L2') )
-    N.op = @(x,u) deflationFun(N.op(x,u), u, r, p, alp);
-else
-    N.op = @(x,u) deflationFunH1(N.op(x,u), u, r, p, alp);
-end
+% Modify the output operator to reflect the deflation:
+N.op = @(x,u) deflationFun(N.op(x,u), u, r, p, alp, type);
 
 end
