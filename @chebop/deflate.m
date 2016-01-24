@@ -37,6 +37,11 @@ function N = deflate(N, r, p, alp, type)
 %       r0 = N\0; % First solution
 %       Ndef = deflate(N, r0, 3, .1);   % Deflate
 %       r1 = Ndef\0;                    % Compute second solutions
+%
+% References:
+%   [1] Deflation techniques for finding distinct solutions of nonlinear
+%   partial differential equations (P. E. Farrell, Á. Birkisson, S. W. Funke),
+%   In SIAM Journal on Scientific Computing, volume 37, 2015.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
