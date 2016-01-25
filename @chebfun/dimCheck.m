@@ -34,7 +34,7 @@ else
     
 end
 
-if ( (out > 0) && verLessThan('matlab', '8.6') )
+if ( (out > 1) && verLessThan('matlab', '8.6') )
    out = 0; 
 end
 
