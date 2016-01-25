@@ -82,9 +82,6 @@ if ( isa(op, 'chebfun') )
     % Call the COMPOSETWOCHEBFUNS method if OP is a CHEBFUN object:
     g = op;
     
-%     if ( numColumns(f) ~= numColumns(g) )
-%             error('CHEBFUN:CHEBFUN:compose:dims', 'Matrix dimensions must agree.')
-%     end
     if ( numColumns(f) > 1 && numColumns(g) > 1 )
         error('CHEBFUN:CHEBFUN:compose:trans', ...
             'Cannot compose two array-valued CHEBFUN objects.');
@@ -112,10 +109,7 @@ if ( isa(op, 'chebfun') )
 elseif ( opIsBinary )
     % Binary composition:
     
-    if ( numColumns(f) ~= numColumns(g) )
-            error('CHEBFUN:CHEBFUN:compose:dims', ...
-                'Matrix dimensions must agree.')
-    end
+    dimCheck(f, g, 1);
     
     if ( numel(f) == 1 && numel(g) == 1 )
         % Array-valued CHEBFUN case:
