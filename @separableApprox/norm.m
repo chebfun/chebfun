@@ -6,8 +6,8 @@ function [normF, normloc] = norm( f, p )
 %    NORM(F,'fro') is the same as NORM(F).
 %    NORM(F, 1) = NOT IMPLEMENTED.
 %    NORM(F, inf) = global maximum in absolute value.
-%    NORM(F, max) = global maximum in absolute value.
-%    NORM(F, min) = NOT IMPLEMENTED
+%    NORM(F, 'max') = global maximum in absolute value.
+%    NORM(F, 'min') = NOT IMPLEMENTED
 %
 % Furthermore, the inf norm for SEPARABLEAPPROX objects also returns a second output,
 % giving a position where the max occurs.
@@ -47,7 +47,7 @@ else
             [C, D, R] = cdr( f ); 
             L = C * D * R; 
             s = svd( L ); 
-            normF = s(1);
+            normF = s(1);      
             
         otherwise
             if ( isnumeric(p) && isreal(p) )
