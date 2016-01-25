@@ -36,7 +36,7 @@ function [x, w, v, t] = ultrapts(n, lambda, int, meth)
 % See also CHEBPTS, LEGPTS, JACPTS, LOBPTS, RADAUPTS, HERMPTS, LAGPTS, and
 % TRIGPTS.
 
-% Copyright 2015 by The Chebfun Developers. See http://www.chebfun.org/ for
+% Copyright 2016 by The Chebfun Developers. See http://www.chebfun.org/ for
 % Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
