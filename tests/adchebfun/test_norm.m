@@ -1,4 +1,4 @@
-% Test file for ADCHEBFUN exp, log related functions
+% Test file for ADCHEBFUN norm related functions
 
 function pass = test_norm
 
