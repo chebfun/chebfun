@@ -69,17 +69,17 @@ end
 % Check inputs:
 if ( nargin > 3 )
     if ( nargin == 5 )
-        % Calling sequence = LEGPTS(N, INTERVAL, METHOD)
+        % Calling sequence = JACPTS(N, INTERVAL, METHOD)
         interval = int;
         method = meth;
         method_set = 1;
     elseif ( nargin == 4 )
         if ( ischar(int) )
-            % Calling sequence = LEGPTS(N, METHOD)
+            % Calling sequence = JACPTS(N, METHOD)
             method = int;
             method_set = true;
         else
-            % Calling sequence = LEGPTS(N, INTERVAL)
+            % Calling sequence = JACPTS(N, INTERVAL)
             interval = int;
         end
     end
@@ -887,22 +887,23 @@ if ( nargout < 6 )
     return
 end
 
-% A2p:
+% A3p:
 A3p = D*A3;
 A3p = A3p - A3p(1);
 A3p_t = A3p./t;
 % Extrapolate point at t = 0:
 w = pi/2-t(2:end);
 w(2:2:end) = -w(2:2:end);
+w(end) = .5*w(end);
 A3p_t(1) = sum(w.*A3p_t(2:end))/sum(w);
 
-% B2:
+% B3:
 tB3 = -.5*A3p - (.5+alph)*(C*A3p_t) + .5*C*(f.*A3);
 B3 = tB3./t;
 % Extrapolate point at t = 0
 B3(1) = sum(w.*B3(2:end))/sum(w);
 
-% A3:
+% A4:
 K = C*(f.*tB3);
 A4 = .5*(D*tB3) - (.5+alph)*B3 - .5*K;
 A4 = A4 - A4(1);
