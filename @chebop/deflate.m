@@ -1,5 +1,5 @@
 function N = deflate(N, r, p, alp, type)
-%DEFLATE   Deflate known solutions from the operator of a CHEBOP
+%DEFLATE   Deflate known solutions from the operator of a CHEBOP.
 %
 %   Calling sequence:
 %       N = DEFLATE(N, R, P, ALP)
@@ -40,7 +40,7 @@ function N = deflate(N, r, p, alp, type)
 %
 % References:
 %   [1] Deflation techniques for finding distinct solutions of nonlinear
-%   partial differential equations (P. E. Farrell, ¡. Birkisson, S. W. Funke),
+%   partial differential equations (P. E. Farrell, √Å. Birkisson, S. W. Funke),
 %   In SIAM Journal on Scientific Computing, volume 37, 2015.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
