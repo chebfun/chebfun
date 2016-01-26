@@ -62,7 +62,7 @@ end
         % Ginzburg-Landau equations:
         if ( strcmpi(pdechar, 'GL3') == 1 )
             L = @(u) laplacian(u);
-            N = @(u) u - (1 + 1.1i)*u.*(abs(u).^2);
+            N = @(u) u - (1 + 1.3i)*u.*(abs(u).^2);
         
         % Gray-Scott equations:
         elseif ( strcmpi(pdechar, 'GS3') == 1 )
@@ -80,7 +80,7 @@ end
             A = .1; B = .9; G = 1;
             N = @(u,v) [ G*(A - u + u.^2.*v); G*(B - u.^2.*v)];
                           
-        %  Swift-Hohenberg equation:
+        % Swift-Hohenberg equation:
         elseif ( strcmpi(pdechar, 'SH3') == 1 )
             epsilon = .1; g = 1;
             L = @(u) -2*laplacian(u) - biharmonic(u);
