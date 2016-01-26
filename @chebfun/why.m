@@ -1,5 +1,5 @@
 function varargout = why(f, r)
-%WHY   Provides a succinct answer to almost any Chebfun related question in the
+%WHY   Provides a succinct answer to almost any Chebfun-related question in the
 %      many languages of the friends of Chebfun.
 %   WHY, by itself, provides a random answer.
 %   WHY(N) provides the N-th answer.
@@ -101,13 +101,13 @@ switch r
     case 12,
         % Chinese:
         % Kuan Xu
-        
+
         if ( ~simpleText )
-            s = '因为尼克.特雷弗森是这么说的！';
+            s = '因为尼克是这么说的！';
         else
-            s = 'Yin Wei Ni Ke Te Fen Sen Shi Zhe Me Shuo De!';
+            s = 'Yin Wei Ni Ke Shi Zhe Me Shuo De!';
         end
-        
+
     otherwise,
         s = 'Good question!';
 

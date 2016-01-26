@@ -30,7 +30,7 @@ if ( ~generalized )
     fprintf(fid, 'N = chebop(%s, dom);\n', lhsString);
 else
     fprintf(fid, ['\n%% Assign the equation to two chebops N and B such' ...
-        'that N(u) = %s*B(u).\n'], lname);
+        ' that N(u) = %s*B(u).\n'], lname);
     fprintf(fid, 'N = chebop(%s, dom);\n', lhsString);
     fprintf(fid, 'B = chebop(%s, dom);\n', rhsString);
 end
