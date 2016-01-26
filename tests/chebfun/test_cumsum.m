@@ -201,7 +201,7 @@ gVals = feval(g, x);
 opg = @(x) 5*x.^2/2 - 5/2 + get(g, 'lval');
 gExact = opg(x);
 err = norm(gVals - gExact, inf);
-tol = 100*eps*get(g,'vscale');
+tol = 200*eps*get(g,'vscale');
 pass(14) = err < tol;
 
 %% Piecewise function on [-inf b]:
@@ -294,8 +294,31 @@ pass(28) = max(max(abs(feval(If, xr) - If_exact(xr)))) < ...
     10*vscale(If)*eps;
 pass(29) = isPeriodicTech(If);
 
+%% See #1727
+
+x = chebfun('x');
+n = 2;
+
+a1 = 0;
+b1 = .5;
+w1 = (1+x).^b1.*(1-x).^a1;
+J1 = jacpoly(n, a1, b1);
+f1 = w1.*J1;
+F1 = cumsum(f1);
+
+a2 = eps;
+b2 = .5;
+w2 = (1+x).^b2.*(1-x).^a2;
+J2 = jacpoly(n, a2, b2);
+f2 = w2.*J2;
+F2 = cumsum(f2);
+
+pass(30) = norm(F1 - F2, inf) < 10*eps;
+
+%%
 
 % [TODO]:  Check fractional antiderivatives once implemented.
+
 
 end
 
