@@ -127,8 +127,6 @@ else  % SPHEREFUN( FUNCTION )
         n = 2*n;
 
         % Sample function on a tensor product grid.
-        % TODO: Add a more sophisticated evaluate function that does
-        % vectorization like chebfun2.
         [x, y] = getPoints( n, n, dom );
         [xx, yy] = meshgrid(x, y);
         F = evaluate(h, xx, yy, vectorize);
@@ -144,23 +142,8 @@ else  % SPHEREFUN( FUNCTION )
                 'Function returned NaN when evaluated');
         end
 
-        pivotIndices2 = pivotIndices;
-        pivotArray2 = pivotArray;
         [ pivotIndices, pivotArray, removePoles, happyRank ] = ...
             PhaseOne( F, tol, alpha, 8 );
-
-        if size(pivotIndices,1) > size(pivotIndices2,1)
-            happyRank = 0;
-        else
-            % If the norm of the pivots for the n/2 case is within 1/10 of
-            % the norm for the n case then just keep the smaller n as this
-            % will be faster.
-            if norm(pivotArray2,inf) > 0.1*norm(pivotArray,inf) && happyRank
-                pivotIndices = pivotIndices2;
-                pivotArray = pivotArray2;
-                n = n/2;
-            end
-        end
 
         if ( n >= maxRank  )
             warning('SPHEREFUN:CONSTRUCTOR:MAXRANK', ... 
@@ -176,11 +159,6 @@ else  % SPHEREFUN( FUNCTION )
 end
 
 g.cols = chebfun( cols, dom(3:4)-[pi 0], 'trig');
-% c = g.cols.funs{1}.onefun.coeffs;
-% offset = real(sum(c));
-% n = size(c,1);
-% c(n/2+1,:) = c(n/2+1,:)-offset;
-% g.cols.funs{1}.onefun.coeffs = c;
 g.rows = chebfun( rows, dom(1:2), 'trig');
 if all(pivots) == 0
     pivots = inf;
@@ -227,7 +205,7 @@ if ( m == 2)
     idxMinus = [];
     pivotArray = [1 0];
     pivotIndices = [1 1];
-    removePole = false;
+    removePole = true;
     pivots = 1;
     ihappy = 1;
     return;
@@ -381,6 +359,7 @@ end
 if ( max( maxp, maxm ) <= tol )
     ihappy = 1;                               % We are happy
 end
+
 if ( rankCount >= width )
     ihappy = 0;                               % We are not happy
 end

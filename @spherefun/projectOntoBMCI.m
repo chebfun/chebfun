@@ -47,19 +47,23 @@ if mod(m,2) == 0
     isevenM = true;
 end
 
-% Only project the nonzero Fourier modes:
-waveNumbers = -(m-1)/2:(m-1)/2;
+% Goal is to enforce the expansion is even in theta
 
 evenModes = 1:n;
-A = [];
 if f.nonZeroPoles
     zeroMode = 1;
-    % Need to handle the zero mode in lambda separately
-    % Enforce the expansion is even in theta
-    I = eye(m); A = I - fliplr(I); A = A(1:(m-1)/2,:);
-    % Solution to underdetermined system A*(X + Y) = 0 with smallest Frobenius
-    % norm: 
-    C = A\(A*X(:,zeroMode));
+    % Need to handle the zero mode in lambda separately as the expansion
+    % only has to be forced to be even in theta.
+
+    % Let 
+    % I = eye(m); A = I - fliplr(I); A = A(1:(m-1)/2,:);
+    % then we want to compute to find C with smallest two-norm such that
+    % A*(X + C) = 0
+    % The solution is 
+    % C = A'*((A*A')\(A*X))
+    % However, because of the form of the matrix equation the solution can
+    % be worked out to just be
+    C = 0.5*(X(1:m,zeroMode)-X(m:-1:1,zeroMode));
 
     % Update coeff matrix: 
     X(:,zeroMode) = X(:,zeroMode) - C; 
@@ -69,17 +73,27 @@ if f.nonZeroPoles
     evenModes = 2:n;
 end
 
-% Second do the even, non-zero modes in lambda
-% Enforce these are zero at the poles and that the expansion is even in 
-% theta
-A = [[ones(1,m); (-1).^waveNumbers];A];
+if ~isempty( evenModes )
+    % Second do the even, non-zero modes in lambda
 
-% Solution to underdetermined system A*(X + Y) = 0 with smallest Frobenius
-% norm: 
-C = A\(A*X(:,evenModes));
+    % First enforce these are even as above.
+    C = 0.5*(X(1:m,evenModes)-X(m:-1:1,evenModes));
+    X(:,evenModes) = X(:,evenModes) - C;
 
-% Update coeff matrix: 
-X(:,evenModes) = X(:,evenModes) - C; 
+    % Now enforce these are zero at the poles (evenness is preserved)
+    % Letting 
+    % A = [[ones(1,m); (-1).^waveNumbers];
+    % We want to find the C with smallest two-norm such that 
+    % A*(X + C) = 0
+    % The solution is 
+    % C = A'*((A*A')\(A*X))
+    % However, we can again work out the solution in close form because of
+    % the special structure of the matrix equations.
+    X(1:2:m,evenModes) = bsxfun(@minus,...
+        X(1:2:m,evenModes),(2/(m+1))*sum(X(1:2:m,evenModes),1));
+    X(2:2:m,evenModes) = bsxfun(@minus,...
+        X(2:2:m,evenModes),(2/(m-1))*sum(X(2:2:m,evenModes),1));    
+end
 
 % If m is even we need to remove the mode that was appended 
 if ( isevenM )
@@ -133,12 +147,15 @@ if mod(m,2) == 0
     isevenM = true;
 end
 
-I = eye(m); A = I + fliplr(I); 
-A = A(1:(m-1)/2+1,:); A((m-1)/2+1,(m-1)/2+1) = 1;
-
-% Solution to underdetermined system A*(X + Y) = 0 with smallest Frobenius
-% norm: 
-C = A\(A*X);
+% I = eye(m); A = I + fliplr(I); 
+% A = A(1:(m-1)/2+1,:); A((m-1)/2+1,(m-1)/2+1) = 1;
+% 
+% % Solution to underdetermined system A*(X + Y) = 0 with smallest Frobenius
+% % norm: 
+% C = A\(A*X);
+% % Update coeff matrix: 
+% X = X - C; 
+C = 0.5*(X(1:m,:)+X(m:-1:1,:));
 % Update coeff matrix: 
 X = X - C; 
 

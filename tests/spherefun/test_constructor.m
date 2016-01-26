@@ -61,8 +61,28 @@ pass(11) = ( norm(f - g) < tol );
 f = spherefun(@(x,y,z) x.*y.*z);
 g = spherefun(@(x,y,z) x*y*z, 'vectorize');
 pass(12) = ( norm(f - g) < tol );
+
+% Test construction from samples
+f = spherefun(@(x,y,z) 1 + x.*sin(x.*y));
+[m,n] = length(f);
+F = sample(f,m+mod(m,2),n);
+g = spherefun(F);
+pass(13) = ( norm(f - g) < tol );
+
+f = spherefun(@(x,y,z) 1 + 0*x);
+F = ones(2,2);
+g = spherefun(F);
+pass(14) = ( norm(f - g) < tol );
+
+F = ones(1,2);
+try
+    g = spherefun(F);
+    pass(15) = false;
+catch ME
+    pass(15) = strcmp(ME.identifier,'CHEBFUN:SPHEREFUN:constructor:poleSamples');
 end
 
+end
 
 function f = redefine_function_handle( f )
 % nargin( f ) = 2, then we are already on the sphere, if nargin( f ) = 3,
