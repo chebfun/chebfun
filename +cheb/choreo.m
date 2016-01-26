@@ -1,6 +1,6 @@
 function choreo
 %CHOREO   Compute planar choreographies of the n-body problem.
-%    CHEB.CHOREO computes a planar choreogpraphy using hand-drawn initial 
+%    CHEB.CHOREO computes a planar choreography using hand-drawn initial 
 %    guesses. At the end of the computation, the user is asked to press <1> to 
 %    simulate the motion of the planets. To stop the program, press <CTRL>-<C>.
 %    
@@ -8,7 +8,7 @@ function choreo
 % the bodies share a single orbit. This orbit can be fixed or rotating with some 
 % angular velocity relative to an inertial reference frame.
 %
-% The algorithm uses trignometric interpolation and quasi-Newton methods. 
+% The algorithm uses trigonometric interpolation and quasi-Newton methods. 
 % See [1] for details.
 %
 % [1] H. Montanelli and N. I. Gushterov, Computing planar and spherical
@@ -48,7 +48,7 @@ while 1
   c0 = trigcoeffs(q0);
   c0 = [real(c0);imag(c0)];
   [A0,G0] = actiongradeval(c0,n,w);
-  fprintf('\nInitial acion: %.6f\n',A0)
+  fprintf('\nInitial action: %.6f\n',A0)
   options = optimoptions('fminunc');
   options.Algorithm = 'quasi-newton';
   options.HessUpdate = 'bfgs'; 
@@ -140,7 +140,7 @@ function plotonplane(q,n,w)
 %PLOTONPLANE   Plot a planar choreography.
 
 vscale = max(max(real(q)),max(imag(q)));
-xmax = 1.2*vscale; ymax = xmax;
+xmax = 1.3*vscale; ymax = xmax;
 LW = 'linewidth'; MS = 'markersize'; FS = 'fontsize';
 lw = 2; ms = 30; fs = 18;
 dom = [0 2*pi]; T = 2*pi; dt = .1;

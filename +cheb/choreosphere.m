@@ -1,6 +1,6 @@
 function choreosphere
 %CHOREOSPHERE   Compute spherical choreographies of the curved n-body problem.
-%    CHEB.CHOREOSPHERE computes a spherical choreogpraphy using hand-drawn 
+%    CHEB.CHOREOSPHERE computes a spherical choreography using hand-drawn 
 %    initial guesses. At the end of the computation, the user is asked to press 
 %    <1> to simulate the motion of the planets. To stop the program, press 
 %    <CTRL>-<C>.
@@ -9,7 +9,7 @@ function choreosphere
 % sphere in which the bodies share a single orbit. This orbit can be fixed or 
 % rotating with some angular velocity relative to an inertial reference frame.
 %
-% The algorithm uses trignometric interpolation, stereographic projection and 
+% The algorithm uses trigonometric interpolation, stereographic projection and 
 % quasi-Newton methods. See [1] for details.
 %
 % [1] H. Montanelli and N. I. Gushterov, Computing planar and spherical
@@ -50,7 +50,7 @@ while 1
   c0 = trigcoeffs(q0);
   c0 = [real(c0);imag(c0)];
   [A0,G0] = actiongradevalsphere(c0,n,w,R);
-  fprintf('\nInitial acion: %.6f\n',A0)
+  fprintf('\nInitial action: %.6f\n',A0)
   options = optimoptions('fminunc');
   options.Algorithm = 'quasi-newton';
   options.HessUpdate = 'bfgs'; 
