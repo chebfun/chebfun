@@ -1,15 +1,20 @@
 function choreo
 %CHOREO   Compute planar choreographies of the n-body problem.
 %    CHEB.CHOREO computes a planar choreogpraphy using hand-drawn initial 
-%    guesses. 
-%   
-% It uses trignometric interpolation and quasi-Newton methods. See [1] for
-% details.
+%    guesses. At the end of the computation, the user is asked to press <1> to 
+%    simulate the motion of the planets. To stop the program, press <CTRL>-<C>.
+%    
+% Planar choreographies are periodic solutions of the n-body problem in which 
+% the bodies share a single orbit. This orbit can be fixed or rotating with some 
+% angular velocity relative to an inertial reference frame.
+%
+% The algorithm uses trignometric interpolation and quasi-Newton methods. 
+% See [1] for details.
 %
 % [1] H. Montanelli and N. I. Gushterov, Computing planar and spherical
 % choreographies, SIAM Journal on Applied Dynamical Systems, to appear.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 close all
@@ -17,7 +22,7 @@ LW = 'linewidth'; MS = 'markersize'; FS = 'fontsize';
 lw = 2; ms = 30; fs = 18;
 format long, format compact
 n = input('How many bodies? (e.g. 5) '); 
-w = input('Angular velocity? (non-integer, e.g. 1.2) ');
+w = input('Angular velocity? (e.g. 1.2) ');
 k = 15;
 N = k*n;
 dom = [0 2*pi];
@@ -60,7 +65,7 @@ while 1
   hold on, plot(q,'r',LW,lw)
   hold on, plot(q(2*pi*(0:n-1)/n),'.k',MS,ms), title('')
   s = input('Want to see the planets dancing? (Yes=1, No=0) '); 
-  if s == 1
+  if ( s == 1 )
     hold off, plotonplane(q,n,w), pause
   end
   
@@ -73,7 +78,7 @@ function [A,G] = actiongradeval(c,n,w)
 %ACTIONGRADEVAL  Compute the action and its gradient in the plane.
 
 % Set up:
-  if nargin < 3
+  if ( nargin < 3 )
       w = 0;
   end
   N = length(c)/2; 
@@ -102,7 +107,7 @@ function [A,G] = actiongradeval(c,n,w)
   end
   A = n/2*s*(K-U);
   
-if nargout > 1
+if ( nargout > 1 )
     
 % Initialize gradient G:
   G = zeros(2*N,1);
@@ -147,10 +152,10 @@ for t = dt:dt:10*T
     axis equal, axis([-xmax xmax -ymax ymax]), box on
     set(gca,FS,fs)
     hold on, plot(xStars,yStars,'.w',MS,4)
-    if w ~= 0
+    if ( w ~= 0 )
         q = chebfun(@(t)exp(1i*w*dt).*q(t),dom,length(q),'trig');
     end
-    if t < T
+    if ( t < T )
         hold on, plot(q,'r',LW,lw)
     end
     for j = 1:n

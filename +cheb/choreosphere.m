@@ -1,15 +1,21 @@
 function choreosphere
 %CHOREOSPHERE   Compute spherical choreographies of the curved n-body problem.
 %    CHEB.CHOREOSPHERE computes a spherical choreogpraphy using hand-drawn 
-%    initial guesses. 
+%    initial guesses. At the end of the computation, the user is asked to press 
+%    <1> to simulate the motion of the planets. To stop the program, press 
+%    <CTRL>-<C>.
 %   
-% It uses trignometric interpolation, stereographic projection and quasi-Newton 
-% methods. See [1] for details.
+% Spherical choreographies are periodic solutions of the n-body problem on the 
+% sphere in which the bodies share a single orbit. This orbit can be fixed or 
+% rotating with some angular velocity relative to an inertial reference frame.
+%
+% The algorithm uses trignometric interpolation, stereographic projection and 
+% quasi-Newton methods. See [1] for details.
 %
 % [1] H. Montanelli and N. I. Gushterov, Computing planar and spherical
 % choreographies, SIAM Journal on Applied Dynamical Systems, to appear.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 close all
@@ -18,7 +24,7 @@ lw = 2; ms = 30; fs = 18;
 format long, format compact
 n = input('How many bodies? (e.g. 5) '); 
 R = input('Radius? (e.g. 2) ');
-w = input('Angular velocity? (non-integer, e.g. 1.2) ');
+w = input('Angular velocity? (e.g. 1.2) ');
 k = 15;
 N = k*n;
 dom = [0 2*pi];
@@ -59,8 +65,8 @@ while 1
   q = chebfun(c,dom,'coeffs','trig');
   hold on, plot(q,'r',LW,lw)
   hold on, plot(q(2*pi*(0:n-1)/n),'.k',MS,ms), title('')
-  s = input('Want to see the planets dancing? (Yes=1, No=Enter) '); 
-  if s == 1
+  s = input('Want to see the planets dancing? (Yes=1, No=0) '); 
+  if ( s == 1 )
     hold off, plotonsphere(q,n,w,R), pause
   end
   
@@ -73,11 +79,11 @@ function [A, G] = actiongradevalsphere(c,n,w,R)
 %ACTIONGRADEVALSPHERE  Compute the action and its gradient on the sphere.
 
 % Set up:
-  if nargin < 3
+  if ( nargin < 3 )
     w = 0;
     R = 2;
   end
-  if nargin < 4
+  if ( nargin < 4 )
     R = 2;
   end
   N = length(c)/2; 
@@ -111,7 +117,7 @@ function [A, G] = actiongradevalsphere(c,n,w,R)
   K = (2*R^2*abs(dvals+1i*w*vals(:,1))./(R^2+v1.^2)).^2;
   A = s*n/2*(K-U);
   
-if nargout > 1
+if ( nargout > 1 )
 % Initialize gradient G:
   G = zeros(2*N,1);
 
@@ -174,7 +180,7 @@ end
 function plotonsphere(q,n,w,R)
 %PLOTONPLANE   Plot a spherical choreography.
 
-if nargin < 3
+if ( nargin < 3 )
     w = 0;
     R = 1;
 end
@@ -198,10 +204,10 @@ for t = dt:dt:10*T
   surf(Xs,Ys,Zs,'EdgeColor','none'), alpha(.15)
   hold on, plot3(Xs(:,1:ns:end),Ys(:,1:ns:end),Zs(:,1:ns:end),'k',LW,1e-10)
   hold on, plot3(XXs,YYs,ZZs,'k',LW,1e-10), view(-45.5,46)
-  if t > 5*T
+  if ( t > 5*T )
     view(0,90)
   end
-  if t < 3*T
+  if ( t < 3*T )
     if w ~= 0
       M = [X';Y';Z'];
       Rot = [cos(w*dt),-sin(w*dt),0;sin(w*dt),cos(w*dt),0;0,0,1];
@@ -232,7 +238,7 @@ end
 function [x1,x2,x3] = plane2sphere(z,R)
 %PLANE2SPHERE   Inverse stereographic projection.
 
-if nargin < 2
+if ( nargin < 2 )
     R = 1;
 end
 x1 = 2*R^2*real(z)./(R^2 + abs(z).^2);
