@@ -25,12 +25,12 @@ if ( nargin == 1 )
     % Get degrees:
     [m, n] = length( f );  
 elseif ( nargin == 2 ) 
-    error('SPHEREFUN:sample:inputs', 'Dimension not specified.'); 
+    error('CHEBFUN:SPHEREFUN:sample:inputs', 'Dimension not specified.'); 
 else
     m = varargin{ 1 }; 
     n = varargin{ 2 }; 
     if ( ( m <= 0 ) || ( n <= 0 ) )
-        error('SPHEREFUN:sample:inputs', 'Number of sample points must be positive.'); 
+        error('CHEBFUN:SPHEREFUN:sample:inputs', 'Number of sample points must be positive.'); 
     end
 end
 
