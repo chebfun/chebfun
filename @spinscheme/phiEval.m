@@ -3,6 +3,8 @@ function phi = phiEval(l, LR, N, dim, nVars)
 %   PHI = PHIEVAL(L, LR, N, DIM, NVARS) evaluates the phi function of index L 
 %   with the contour LR, N grid points, in dimension DIM and with NVARS
 %   variables.
+%
+% See also SPINSCHEME/PHIFUN, SPINSCHEME/PSIFUN.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

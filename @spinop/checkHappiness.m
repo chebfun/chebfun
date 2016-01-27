@@ -1,6 +1,10 @@
 function ishappy = checkHappiness(S, c, pref)
-%CHECKHAPPINESS   Check if the solution is resolved in space for SPINOP.
-%   CHECKHAPPINESS 
+%CHECKHAPPINESS   Check if the solution is resolved in space when using SPIN.
+%   ISHAPPY = CHECKHAPPINESS(S, C, PREF) checks if the solution C of the PDE 
+%   defined by the SPINOP S is resolved in space relative to PREF.ERRTOL.
+%   ISHAPPY is 1 if it is resolved, 0 otherwise.
+%
+% See also SPIN.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

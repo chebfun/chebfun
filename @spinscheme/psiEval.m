@@ -3,6 +3,8 @@ function psi = psiEval(l, C, LR, N, dim, nVars)
 %   PSI = PSIEVAL(L, LR, N, DIM, NVARS) evaluates the psi-function of index L 
 %   and coefficient C with the contour LR, N grid points, in dimension DIM and 
 %   with NVARS variables.
+%
+% See also SPINSCHEME/PHIEVAL, SPINSCHEME/PHIFUN.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

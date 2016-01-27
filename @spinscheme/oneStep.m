@@ -1,16 +1,16 @@
 function [uSol, NuSol] = oneStep(K, schemeCoeffs, Nc, Nv, nVars, uSol, NuSol)
-%ONESTEP   Compute solution at t_{n+1} from solution at previous timesteps.
+%ONESTEP   Compute solution at t_{n+1} from solution at previous time-steps.
 %   [USOL, NUSOL] = ONESTEP(K, SCHEMECOEFFS, NC, S, USOL, NUSOL) updates the 
 %   solution USOL and its nonlinear evaluations NUSOL using the coefficients 
 %   SCHEMECOEFFS of the SPINSCHEME K, the nonlinear parts of the PDE in 
 %   coefficient and value space NC and NV, and the number of variables NVARS.
 
 % Notes: USOL and NUSOL are cell-arrays of Fourier coefficients that represents 
-% the solution at different timesteps. They have Q entries for a multi-step 
+% the solution at different time-steps. They have Q entries for a multi-step 
 % scheme with Q steps. USOL{1} is the vector of Fourier coefficients of the 
 % solution at t_{n} (a matrix in 2D and a tensor in 3D), USOL{2} is the solution 
 % at t_{n-1}, ..., and USOL{q} is the solution at time t_{n-q+1}. The solution 
-% at t_{n+1} is computed from the solution at previous timesteps and is stored 
+% at t_{n+1} is computed from the solution at previous time-steps and is stored 
 % in USOL{1}, and the others are shifted from one position to the right, i.e.,
 % USOL{2}=USOL{1}, USOL{3}=USOL{2}, ..., USOL{Q}=USOL{Q-1}. Same for NUSOL.
 % The formula for an expnonential general linear method is:

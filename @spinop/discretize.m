@@ -4,6 +4,11 @@ function [L, Nc] = discretize(S, N)
 %   space to discretize the SPINOP S with N grid points. L is the linear part, a 
 %   NxN diagonal matrix stored as a Nx1 vector, and NC is the differentiation 
 %   term of the nonlinear part (and hence is linear).
+%
+% Remark: DISCRETIZE will fail to discretize SPINOP objects which are not of the 
+%         right form. See HELP/SPINOP.
+%         
+% See also SPINOP.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

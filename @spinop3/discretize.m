@@ -4,6 +4,11 @@ function [L, Nc] = discretize(S, N)
 %   space to discretize the SPINOP3 S with N grid points in each direction. L is 
 %   the linear part, a N^3xN^3 diagonal matrix stored as a NxNxN tensor, and NC 
 %   is the differentiation term of the nonlinear part (and hence is linear).
+%
+% Remark: DISCRETIZE will fail to discretize SPINOP3 objects which are not of 
+%         the right form. See HELP/SPINOP3.
+%
+% See also SPINOP3.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

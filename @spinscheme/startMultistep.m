@@ -2,7 +2,7 @@ function [uSol, NuSol, dt] = startMultistep(K, adaptiveTime, dt, L, Nc, Nv, ...
     pref, S, uSol, NuSol)
 %STARTMULTISTEP  Get enough initial data when using a multistep scheme.
 %    [USOL, NUSOL, DT] = STARTMULTISTEP(K, ADAPTIVETIME, DT, L, NC, NV, ...
-%    PREF, S, USOL, NUSOL) does a few steps of a one-step scheme with timestep 
+%    PREF, S, USOL, NUSOL) does a few steps of a one-step scheme with time-step 
 %    DT to get enough initial data start the multistep SPINSCHEME K, using the 
 %    linear part L, the nonlinear parts of the operator in coefficient and value 
 %    space NC and NV, the SPINPREFERENCE object PREF, and the SPINOPERATOR S. 

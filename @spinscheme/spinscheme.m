@@ -1,8 +1,10 @@
 classdef spinscheme
-    %SPINSCHEME   Class for representing timestepping schemes.
-    
-    % Copyright 2016 by The University of Oxford and The Chebfun Developers.
-    % See http://www.chebfun.org/ for Chebfun information.
+%SPINSCHEME   Class for representing time-stepping schemes.
+%   SPINSCHEME is a class used by SPIN, SPIN2 and SPIN3 when solving PDEs in 1D
+%   2D and 3D.
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% CLASS PROPERTIES:
@@ -11,9 +13,9 @@ classdef spinscheme
         
         internalStages  % number of internal stages
         order           % order of the method
-        scheme          % Timestepping scheme
-        steps           % number of previous timesteps used (1 if one-step
-        % method, > 1 if multistep method)
+        scheme          % Time-stepping scheme
+        steps           % number of previous time-steps used (1 if one-step
+                        % method, > 1 if multistep method)
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

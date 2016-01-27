@@ -1,7 +1,7 @@
 function schemeCoeffs = computeCoeffs(K, dt, L, M, S)
 %COMPUTECOEFFS   Compute coefficients of a SPINSCHEME.
 %   SCHEMECOEFFS = COMPUTECOEFFS(K, DT, L, LR, S) computes the coefficients
-%   needed by the SPINSCHEME K from the timestep DT, the linear part L, the
+%   needed by the SPINSCHEME K from the time-step DT, the linear part L, the
 %   linear part for complex means LR, and the SPINOP S.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
@@ -1386,7 +1386,7 @@ function schemeCoeffs = computeMissingCoeffs(K, L, schemeCoeffs, dt, phi, psi)
 %the summation properties of the coefficients.
 %   SCHEMECOEFFS = COMPUTEMISSINGCOEFFS(K, L, SCHEMECOEFFS, DT, PHI, PSI) uses
 %   the row summation properties to compute the coefficients A{i,1}, B{1} and E
-%   of the SPINSCHEME K, using the linear part L of the opeartor, the timestep
+%   of the SPINSCHEME K, using the linear part L of the opeartor, the time-step
 %   DT, and the phi- and psi-functions.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
@@ -1438,7 +1438,7 @@ for i = 1:s
 end
 E{s+1} = exp(dt*L);
 
-% Multiply by timestep:
+% Multiply by time-step:
 A = cellfun(@(A) dt*A, A, 'UniformOutput', 0);
 B = cellfun(@(B) dt*B, B, 'UniformOutput', 0);
 U = cellfun(@(U) dt*U, U, 'UniformOutput', 0);
