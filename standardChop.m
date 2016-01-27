@@ -152,7 +152,6 @@ else
     [~, d] = min(cc);
     cutoff = max(d - 1, 1);
 n2 = length(coeffs);
-disp(['actual n2 ' int2str(n2)])
 save explaindata envelope plateauPoint cutoff n2 j2 cc 
 end
 
