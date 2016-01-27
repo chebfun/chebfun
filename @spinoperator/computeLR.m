@@ -21,14 +21,7 @@ else
     r = exp(2i*pi*((1:M) - .5)/M);
 end
 
-% In dimension 2, L is NxN, and in dimension 3, L is NxNxN. Reshape it to get a 
-% N^2x1 vector in dimension 2, or a N^3x1 vector in dimension 3. 
-% (Note that for systems, L is a (NVARS*N^DIM)x1 vector.)
-if ( dim == 2 || dim == 3 )
-    L = L(:);
-end
-
 % Move each root of unity around each entry of DT*L:
-LR = dt*repmat(L, 1, M) + repmat(r, nVars*N^dim, 1);
+LR = dt*repmat(L(:), 1, M) + repmat(r, nVars*N^dim, 1);
 
 end

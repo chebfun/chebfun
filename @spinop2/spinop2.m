@@ -36,6 +36,17 @@ classdef spinop2 < spinoperator
 %
 %           u_t = -2*laplacian(u) - biharmonic(u) - .9*u + u^2 - u^3.
 %
+% Remark 2: The linear part PDEFULIN has to be of the form 
+%           
+%               @(u) A*laplacian(u) + B*biharmonic(u), 
+%
+%           for some numbers A and B, and the linear part has be of the form, 
+%
+%               @(u) f(u), 
+%
+%           where f is a nonlinear unction of u that does not involve any 
+%           derivative of u.
+%
 % See also SPINOPERATOR, SPINOP2, SPINOP3.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
@@ -63,7 +74,6 @@ classdef spinop2 < spinoperator
                     S.nonlinearPart = N;
                 elseif ( isa(item, 'function_handle') && countFun == 0 )
                     S.linearPart = item;
-                    S.numVars = nargin(item);
                     countFun = 1;
                 elseif ( isa(item, 'function_handle') && countFun == 1 )
                     S.nonlinearPart = item;

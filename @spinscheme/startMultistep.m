@@ -43,8 +43,9 @@ while ( iter <= q-1 )
         [cNew2, NcNew2] = oneStep(K, schemeCoeffs2, Nc, Nv, nVars, uSol, NuSol);
         [cNew2, NcNew2] = oneStep(K, schemeCoeffs2, Nc, Nv, nVars, cNew2, ...
             NcNew2);
-        err = max(max(max(abs(cNew{1} - cNew2{1}))));
-        
+        err = max(abs(cNew{1}(:) - cNew2{1}(:)));
+        err = err/max(abs(cNew2{1}(:)));
+            
         % If successive step, store it:
         if ( err < errTol ) 
             coeffs{q-iter} = cNew2{1};
