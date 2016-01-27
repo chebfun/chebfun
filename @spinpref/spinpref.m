@@ -1,5 +1,5 @@
 classdef spinpref < spinpreference
-%SPINPREF   Class for managing SPIN/SPINOP preferences.
+%SPINPREF   Class for managing preferences when solving a 1D PDE with SPIN.
 %
 % Available preferences ([] = defaults):
 %
@@ -8,21 +8,25 @@ classdef spinpref < spinpreference
 %      'imag'
 %      'abs'
 %
-%   dealias                   * If 1, use the 2/3-rule to zero high wavenumbers.
-%     [0]                       No dealiasing by default.
-% 
-%   dt                        * Timestep for time discretization. Default is 
+%   dealias                   * If it is 'on', use the 2/3-rule to zero high 
+%     ['off']                   wavenumbers.
+%      'on'
+%
+%   dt                        * Time-step for time discretization. Default is 
 %     []                        empty, i.e., adaptively chosen by the code to 
 %                               achieve errTol. 
 %
-%   dtmax                     * Maximum timestep when using an apative grid in
-%     [1e-1]                   time.
+%   dtmax                     * Maximum time-step when using an apative grid in
+%     [1e-1]                    time.
 %
-%   dtmin                     * Minimum timestep when using an apative grid in
+%   dtmin                     * Minimum time-step when using an apative grid in
 %     [1e-10]                   time.
 %
 %   errTol                    * Desired accuracy on the solution.
 %     [1e-6]
+%
+%   iterPlot                  * Plot the solution every ITERPLOT iterations of
+%     [20]                      the time-stepping loop if 'plot' is 'movie'.
 %
 %   M                         * Number of points for complex means to evaluate
 %     [64]                      the phi-functions.
@@ -37,18 +41,25 @@ classdef spinpref < spinpreference
 %   Nmax                      * Maximum number of points when using an adaptive
 %     [4096]                    grid in space.
 %                                         
-%   plotting                  * Plotting options: 'movie' for plotting a 
-%     ['movie']                 movie of the solution, 'waterfall' to use the 
-%      'waterfall'              CHEBFUN WATERFALL command. [] for no plotting.
+%   plot                      * Plot options: 'movie' to plot a movie of the 
+%     ['movie']                 solution, 'waterfall' to use the WATERFALL
+%      'waterfall'              command, 'off' otherwise.
+%      'off'
 %
-%   scheme                    * Timestepping scheme. HELP/SPINPSCHEME for more
-%     [@etdrk4]                 schemes.
+%   scheme                    * Time-stepping scheme. HELP/SPINPSCHEME for the
+%     ['etdrk4']                list of available schemes.
 %
-%   Ylim                      * Limit of the y-axis when 'plotting' is 'movie'
+%   Ylim                      * Limit of the y-axis when 'plot' is 'movie'.
 %     []                        Default is empty, i.e., automatically chosen by 
 %                               the code. 
-%                                
-% See also SPINPREF2, SPINPREF3.
+%              
+% Construction:
+%   PREF = SPINPREF() creates a SPINPREF object with the default values.
+%
+%   PREF = SPINPREF(PROP, VALUE) creates a SPINPREF object with the property
+%   PROP set to VALUE.
+%
+% See also SPIN.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

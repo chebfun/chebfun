@@ -135,8 +135,8 @@ else
     dt = pref.dt;
 end
 
-% Plotting options:
-plottingstyle = pref.plotting;
+% Plot options:
+plotStyle = pref.plot;
 
 % Create a time-stepping scheme:
 schemeName = pref.scheme;
@@ -222,13 +222,13 @@ vOut{1} = vInit;
 tOut(1) = 0;
 
 % Values VWATER to plot if using WATERFALL:
-if ( strcmpi(plottingstyle, 'waterfall') == 1 )
+if ( strcmpi(plotStyle, 'waterfall') == 1 )
     vWater{1} = vInit;
     twater = 0;
 end
 
 % Plot initial condition if using MOVIE:
-if ( strcmpi(plottingstyle, 'movie') == 1 )
+if ( strcmpi(plotStyle, 'movie') == 1 )
     if ( dim == 1 )
         gridpts = xx;
     elseif ( dim == 2 )
@@ -254,7 +254,7 @@ while ( t < tf )
     valuesUpdated = 0;
     
     % Dealiasing procedure:
-    if ( dealias == 1 )
+    if ( strcmpi(dealias, 'on') == 1 )
         cNew{1}(ind) = 0;
     end
     
@@ -269,12 +269,12 @@ while ( t < tf )
         if ( adaptiveTime == 1 )
             [cNew2, NcNew2] = oneStep(K, schemeCoeffs2, Nc, Nv, nVars, ...
                 cOld, NcOld);
-            if ( dealias == 1 )
+            if ( strcmpi(dealias, 'on') == 1 )
                 cNew2{1}(ind) = 0;
             end
             [cNew2, NcNew2] = oneStep(K, schemeCoeffs2, Nc, Nv, nVars, ...
                 cNew2, NcNew2);
-            if ( dealias == 1 )
+            if ( strcmpi(dealias, 'on') == 1 )
                 cNew2{1}(ind) = 0;
             end
             err = max(abs(cNew{1}(:) - cNew2{1}(:)));
@@ -303,7 +303,7 @@ while ( t < tf )
             NcOld = NcNew2;
             
             % Plot every ITERPLOT iterations if using MOVIE:
-            if ( strcmpi(plottingstyle, 'movie') == 1 && ...
+            if ( strcmpi(plotStyle, 'movie') == 1 && ...
                     mod(iter,iterplot) == 0 )
                 v = [];
                 for k = 1:nVars
@@ -319,7 +319,7 @@ while ( t < tf )
                 
             % Store the values every ITERPLOT iterations if using WATERFALL:
             % (Remark: Only in dimension 1.)
-            elseif ( strcmpi(plottingstyle, 'waterfall') == 1 && ...
+            elseif ( strcmpi(plotStyle, 'waterfall') == 1 && ...
                     mod(iter, iterplot) == 0 )
                 v = [];
                 for k = 1:nVars
@@ -487,12 +487,12 @@ end
 %% Post-processing:
 
 % Make sure that the solution at TF has been plotted if using MOVIE:
-if ( strcmpi(plottingstyle, 'movie') == 1 )
+if ( strcmpi(plotStyle, 'movie') == 1 )
     plotMovie(S, dt, p, plotOptions, t, v, gridpts);
 end
 
 % Use WATERFALL if using WATERFALL:
-if ( strcmpi(plottingstyle, 'waterfall') == 1 )
+if ( strcmpi(plotStyle, 'waterfall') == 1 )
     clf reset
     for k = 1:nVars
         uwater = [];
