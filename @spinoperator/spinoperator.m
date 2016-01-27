@@ -1,7 +1,11 @@
 classdef spinoperator
 %SPINOPERATOR   Abstract class for representing the spatial part of differential 
-%operators for time-dependent PDEs.
-%
+%operators for time-dependent PDEs. 
+%   SPINOPERATOR is a class for representing the spartial part S of a 
+%   time-dependent PDE of the form u_t = S(u) = Lu + N(u), where L is a linear 
+%   operator and N is a nonlinear operator. SPINOP (in 1D), SPINOP2 (in 2D) and 
+%   SPINOP3 (in 3D) are full implementations.
+%   
 % See also SPINOP, SPINOP2, SPINOP3.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
@@ -17,13 +21,15 @@ classdef spinoperator
         nonlinearPart       % Nonlinear part of the operator
     end
     
+    % DEPENDENT PROPERTIES:
     properties ( Access = public, Dependent = true )
         numVars             % Number of unknown functions (>1 for systems)
     end
     
+    % DEPENDENT AND HIDDEN PROPERTIES:
     properties ( Access = public, Hidden = true, Dependent = true )
-        nonlinearPartCoeffs % Nonlinear part of the operator in coeffs space
-        nonlinearPartVals   % Nonlinear part of the operator in values space
+        nonlinearPartCoeffs % Nonlinear part of the operator in coeff. space
+        nonlinearPartVals   % Nonlinear part of the operator in value space
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -31,6 +37,14 @@ classdef spinoperator
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods
         
+        % METHOD for numVars:
+        function nVars = get.numVars(S)
+            
+            nVars = nargin(S.linearPart);
+            
+        end
+        
+        % METHOD for nonlinearPartCoeffs:
         function Nc = get.nonlinearPartCoeffs(S)
             
             % Get the variables of the workspace:
@@ -83,6 +97,7 @@ classdef spinoperator
             
         end
         
+        % METHOD for nonlinearPartVals:
         function Nv = get.nonlinearPartVals(S)
             
             % Get the variables of the workspace:
@@ -149,12 +164,6 @@ classdef spinoperator
             end
         end
         
-        function nVars = get.numVars(S)
-            
-            nVars = nargin(S.linearPart);
-            
-        end
-        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -181,6 +190,7 @@ classdef spinoperator
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Abstract = false, Static = true )
         
+        % Solve a PDE defined by a SPINOPERATOR:
         [uout, tout] = solvepde(varargin)
    
     end

@@ -1,8 +1,42 @@
 classdef spinop2 < spinoperator
 %SPINOP2   Class for representing the spatial part of 2D differential operators 
 %for time-dependent PDEs.
+%   SPINOP2 is a class for representing the spartial part S of a time-dependent 
+%   PDE of the form u_t = S(u) = Lu + N(u) in 2D, where L is a linear 
+%   operator and N is a nonlinear operator. 
 %
-% See also SPINOPERATOR, SPINOP, SPINOP3.
+%   S = SPINOP2(PDECHAR) creates a SPINOP2 object S defined by the string 
+%   PDECHAR. Default domain is [-1 1 -1 1]. Strings available include 'GL2' for 
+%   Ginzburg-Landau equation and 'GS2' for Gray-Scott equations. Many other PDEs 
+%   are available, see Remark 1.
+%
+%   S = SPINOP2(PDEFUNLIN, PDEFUNNONLIN) creates a SPINOP2 object S defined by 
+%   the function handles PDEFUNLIN (representing the linear part L) and 
+%   PDEFUNNONLIN (representing N). Default domain is [-1 1 -1 1]. See Remark 2.
+%
+%   S = SPINOP2(..., DOM) creates a SPINOP2 object S on the domain DOM.
+%
+% Remark 1: Available strings PDECHAR are
+%
+%    - 'GL2' for Ginzburg-Landau equation 
+%
+%           u_t = laplacian(u) + u - (1+1.3i)*u*|u|^2,
+%
+%    - 'GS2' for Gray-Scott equations
+%
+%           u_t = 2e-5*laplacian(u) + 3.5e-2*(1-u)*u - u*v^2,
+%           v_t = 1e-5*laplacian(v) - 9.5e-2*v + u*v^2,
+%           
+%    - 'Schnak2' for Schnakenberg equations
+%
+%           u_t = laplacian(u) + .1 - u + u^2*v,
+%           v_t = 10*laplacian(v) + .9 - u^2*v,
+%
+%    - and 'SH2' for Swift-Hohenberg equation
+%
+%           u_t = -2*laplacian(u) - biharmonic(u) - .9*u + u^2 - u^3.
+%
+% See also SPINOPERATOR, SPINOP2, SPINOP3.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -59,7 +93,7 @@ end
         %   string, outputs two function handles L and N which represent the
         %   linear and the nonlinear parts of the PDE represented by PDECHAR.
             
-        % Ginzburg-Landau equations:
+        % Ginzburg-Landau equation:
         if ( strcmpi(pdechar, 'GL2') == 1 )
             L = @(u) laplacian(u);
             N = @(u) u - (1 + 1.3i)*u.*(abs(u).^2);
@@ -67,24 +101,17 @@ end
         % Gray-Scott equations:
         elseif ( strcmpi(pdechar, 'GS2') == 1 )
             L = @(u,v) [2e-5*laplacian(u); 1e-5*laplacian(v)];
-            % Mitosis (1):     F = 0.0367; K = 0.0649;
-            % Fingerpint (1):  F = 0.0545; K = 0.062;
-            % Mitosis (2):     F = 0.035;  K = 0.0625;
-            % Fingerpint (2):  F = 0.035;  K = 0.06;
-            F = 0.035;  K = 0.06;
-            N = @(u,v) [ F*(1 - u) - u.*v.^2; -(F+K)*v + u.*v.^2];
+            N = @(u,v) [3.5e-2*(1 - u) - u.*v.^2; -9.5e-2*v + u.*v.^2];
             
         % Schnakenberg equations:
         elseif ( strcmpi(pdechar, 'Schnak2') == 1 )
             L = @(u,v) [laplacian(u); 10*laplacian(v)];
-            A = .1; B = .9; G = 1;
-            N = @(u,v) [ G*(A - u + u.^2.*v); G*(B - u.^2.*v)];
+            N = @(u,v) [.1 - u + u.^2.*v; .9 - u.^2.*v];
             
         % Swift-Hohenberg equation:
         elseif ( strcmpi(pdechar, 'SH2') == 1 )
-            epsilon = .1; g = 1;
             L = @(u) -2*laplacian(u) - biharmonic(u);
-            N = @(u) (epsilon-1)*u + g*u.^2 - u.^3;
+            N = @(u) -.9*u + u.^2 - u.^3;
             
         else
             error('SPINOP2:getLinearAndNonlinearParts', 'Unrecognized PDE.')
