@@ -146,7 +146,7 @@ if ( dim == 1 ) || ( dim == 2)
     % f = f1 + f2;        
     % When constructing from samples, m must be even.
     m = m + mod(m,2);
-    f = spherefun(sample(f1,m,n/2)+sample(f2,m,n/2));    
+    f = spherefun(sample(f1,m,n/2+1)+sample(f2,m,n/2+1));    
 else
     % Calculate the C * D * R.' decomposition of sin(th) dfdth
     C1 = -Msinn*dCdth.coeffs;

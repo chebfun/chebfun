@@ -9,22 +9,22 @@ f = spherefun( @(x,y,z) sin(pi*x.*y) );
 % Ensure the matrix of sampled values is correct.
 [m,n] = length(f);
 [nn,mm] = size( sample(f) );
-pass(1) = (m == mm) && (n+1 == nn);
+pass(1) = (m == mm) && (n == nn);
 
 % Sample on fixed grids of various sizes to make sure the right size output
 % is given.
 m = 120; n = 121;
 [nn,mm] = size( sample(f,m,n) );
-pass(2) = (m == mm) && (n+1 == nn);
+pass(2) = (m == mm) && (n == nn);
 
 m = 121; n = 120;
 [nn,mm] = size( sample(f,m,n) );
-pass(3) = (m == mm) && (n+1 == nn);
+pass(3) = (m == mm) && (n == nn);
 
 % Check samples are correct.
 % m and n even
 m = 30; n = 20;
-[lam,th] = meshgrid(trigpts(m,[-pi,pi]),linspace(0,pi,n+1));
+[lam,th] = meshgrid(trigpts(m,[-pi,pi]),linspace(0,pi,n));
 F = f(lam,th);
 G = sample(f,m,n);
 pass(4) = norm(F(:)-G(:),inf) < tol;
@@ -34,7 +34,7 @@ pass(5) = norm(F(:)-G(:),inf) < tol;
 
 % m even and n odd
 m = 30; n = 21;
-[lam,th] = meshgrid(trigpts(m,[-pi,pi]),linspace(0,pi,n+1));
+[lam,th] = meshgrid(trigpts(m,[-pi,pi]),linspace(0,pi,n));
 F = f(lam,th);
 G = sample(f,m,n);
 pass(6) = norm(F(:)-G(:),inf) < tol;
@@ -44,7 +44,7 @@ pass(7) = norm(F(:)-G(:),inf) < tol;
 
 % m odd and n even
 m = 31; n = 20;
-[lam,th] = meshgrid(trigpts(m,[-pi,pi]),linspace(0,pi,n+1));
+[lam,th] = meshgrid(trigpts(m,[-pi,pi]),linspace(0,pi,n));
 F = f(lam,th);
 G = sample(f,m,n);
 pass(8) = norm(F(:)-G(:),inf) < tol;
@@ -54,7 +54,7 @@ pass(9) = norm(F(:)-G(:),inf) < tol;
 
 % m odd and n odd
 m = 31; n = 21;
-[lam,th] = meshgrid(trigpts(m,[-pi,pi]),linspace(0,pi,n+1));
+[lam,th] = meshgrid(trigpts(m,[-pi,pi]),linspace(0,pi,n));
 F = f(lam,th);
 G = sample(f,m,n);
 pass(10) = norm(F(:)-G(:),inf) < tol;

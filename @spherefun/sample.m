@@ -1,19 +1,18 @@
 function varargout = sample( f, varargin )
 %SAMPLE      Samples f on a tensor product grid.
 %   X = SAMPLE(F) returns the matrix of values of F on a tensor
-%   n-by-m product grid, where n is length columns plus one of F and m is
-%   the length of the rows.
+%   n-by-m product grid, where n is length columns of F and m is the
+%   length of the rows.
 %
 %   [U, D, V] = SAMPLE(F) returns the low rank representation of the
-%   values of F on a n-by-m tensor product grid. X = U * D * V', where n is
-%   the length of the columns plus one of F and m is the length of the
-%   rows.
+%   values of F on a n-by-m tensor product grid. X = U * D * V', where
+%   n is the length of the columns of F and m is the length of the rows.
 %
 %   X = SAMPLE(F,M,N) returns the matrix of values of F on a tensor
-%   (n+1)-by-m product grid.
+%   n-by-m product grid.
 %
 %   [U, D, V] = SAMPLE(F,M,N) returns the low rank representation of F 
-%   on a (n+1)-by-m tensor product grid.
+%   on a n-by-m tensor product grid.
 %   
 
 % Empty check. 
@@ -43,8 +42,12 @@ end
 % for sometime now.
 
 % Ugly!
-C = trigtech.coeffs2vals(trigtech.alias( cols.funs{:}.onefun.coeffs, 2*n ));
-C = C([n+1:2*n 1],:);  % Remove doubled up points.
+if n > 1
+    C = trigtech.coeffs2vals(trigtech.alias( cols.funs{:}.onefun.coeffs, max(2*n-2,1) ));
+else
+    C = cols.funs{:}.onefun.values;
+end
+C = C([n:2*n-2 1],:);  % Remove doubled up points.
 R = trigtech.coeffs2vals(trigtech.alias( rows.funs{:}.onefun.coeffs, m )); 
 
 % More ugliness

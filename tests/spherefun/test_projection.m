@@ -6,7 +6,7 @@ tol = 1e2*chebfunpref().techPrefs.eps;
 % Test a constant plus noise
 f = spherefun(@(x,y,z) 1 + 0*x);
 % Add noise to the samples then construct a spherefun from the samples
-U = sample(f,16,15) + (1-2*rand(16))*1e-10;
+U = sample(f,16,16) + (1-2*rand(16))*1e-10;
 g = spherefun(U);
 % Sample the spherefun.
 m = 101;
@@ -23,7 +23,7 @@ pass(3) = norm(V(id1,id1)-V(id3,id2),inf) < tol && ...
 % Test a more complicated function plus noise
 f = spherefun(@(x,y,z) cos(pi*x.*z) + sin(pi*x.*y));
 % Add noise to the samples then construct a spherefun from the samples
-U = sample(f,16,15) + (1-2*rand(16))*1e-10;
+U = sample(f,16,16) + (1-2*rand(16))*1e-10;
 g = spherefun(U);
 % Sample the spherefun.
 m = 101;
