@@ -35,7 +35,8 @@ while 1
     xmax = 2; ymax = xmax;
     clf, hold off, axis equal, axis([-xmax xmax -ymax ymax]), box on
     set(gca,FS,fs), title('Draw a curve!')
-    try % Try to use IMFREEHAND (need the image processing toolbox):
+    if ( exist('imfreehand') == 2 )
+        % Try to use IMFREEHAND (need the image processing toolbox):
         h = imfreehand();
         z = getPosition(h);
         delete(h)
@@ -45,7 +46,8 @@ while 1
         c0 = trigcoeffs(q0);
         c0(1+floor(N/2)) = 0;
         q0 = chebfun(c0,dom,'coeffs','trig');
-    catch % Otherwise, use GINPUT:
+    else
+        % Otherwise, use GINPUT:
         x = []; y = []; button = 1;
         disp('Input points with mouse, press <enter> for final point.')
         while ( button == 1 )
