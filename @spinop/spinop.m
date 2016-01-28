@@ -148,6 +148,11 @@ end
             L = @(u) 1e-3*diff(u, 2);
             N = @(u) -.5*diff(u.^2);
             
+        % Belousov-Zhabotinsky equation:
+        elseif ( strcmpi(pdechar, 'BZ') == 1 )
+            L = @(u,v,w)[1e-5*diff(u,2); 2e-5*diff(v,2); 1e-5*diff(w,2)];
+            N = @(u,v,w)[u + v - u.*v - u.^2; w - v - u.*v; u - w];
+            
         % Cahn-Hilliard equation:
         elseif ( strcmpi(pdechar, 'CH') == 1 )
             L = @(u) -1e-2*(diff(u, 2) + 1e-3*diff(u, 4));

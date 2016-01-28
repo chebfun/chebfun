@@ -152,8 +152,8 @@ classdef spinoperator
                 % Second, relabel the variables:
                 strNv = strNv(closeParenthesis+1:end);
                 for k = 1:nVars
-                    idx1 = [num2str((k-1)/nVars), '*', 'length(u)', '+1'];
-                    idx2 = [num2str(k/nVars), '*', 'length(u)'];
+                    idx1 = [num2str(rats((k-1)/nVars)), '*', 'length(u)', '+1'];
+                    idx2 = [num2str(rats(k/nVars)), '*', 'length(u)'];
                     strNvNew = strrep(strNv, variablesNames{k}, ...
                         ['u(', idx1, ':', idx2, ',:,:)']);
                     strNv = strNvNew;

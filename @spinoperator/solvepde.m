@@ -601,6 +601,17 @@ elseif ( strcmpi(pdechar, 'Burg') == 1 )
     u0 = chebmatrix(chebfun('(1-x.^2).*exp(-30.*(x+1/2).^2)', dom, 'trig'));
     pref = [];
     
+elseif ( strcmpi(pdechar, 'BZ') == 1 )
+    tspan = [0 30];
+    dom = [-1 1];
+    u01 = chebfun(@(x) exp(-100*(x+.5).^2), dom, 'trig');
+    u02 = chebfun(@(x) exp(-100*(x).^2), dom, 'trig');
+    u03 = chebfun(@(x) exp(-100*(x-.5).^2), dom, 'trig');
+    u0 = chebmatrix(u01);
+    u0(2,1) = u02;
+    u0(3,1) = u03;
+    pref = [];
+    
 elseif ( strcmpi(pdechar, 'CH') == 1 )
     tspan = [0 70];
     dom = [-1 1];
