@@ -107,39 +107,7 @@ vals_exact = feval(g_exact, x);
 err = vals_g - vals_exact;
 pass(9) = ( norm(err, inf) < 1e2*eps*norm(vals_exact, inf) );
     
-
-% Singularities at both endpoints:
-mid = mean(dom);
-x = diff(dom) * rand(100, 1) + dom(1);
-pow1 = -0.5;
-pow2 = -0.5;
-op = @(x) (x-dom(1)).^pow1.*(dom(2)-x).^pow2;
-data.domain = dom;
-data.exponents = [pow1 pow2];
-f = bndfun(op, data, pref);
-
-% We temporarily disable this warning: 
-warning('off', 'CHEBFUN:SINGFUN:plus:exponentDiff');
-g = cumsum(f);
-warning('on', 'CHEBFUN:SINGFUN:plus:exponentDiff');
-x = sort(x);
-x1 = x(x <= mid);
-x2 = x(x > mid);
-vals_g1 = feval(g{1}, x1); 
-vals_g2 = feval(g{2}, x2);
-
-% This exact solution is acquired using Matlab symbolic toolbox:
-g_exact = @(x) 4*atan((sqrt(dom(2)) - sqrt(dom(2) - x))./ ...
-    (sqrt(x - dom(1)) - sqrt(-dom(1)))); 
-g_exact1 = @(x) g_exact(x) - g_exact(dom(1)) + get(g{1}, 'lval');
-g_exact2 = @(x) g_exact(x) - g_exact(dom(2)) + get(g{2}, 'rval');
-vals_exact1 = feval(g_exact1, x1);
-vals_exact2 = feval(g_exact2, x2);
-err1 = norm(vals_g1 - vals_exact1, inf);
-err2 = norm(vals_g2 - vals_exact2, inf);
-tol1 = 1e3*eps*norm(vals_exact1, inf);
-tol2 = 1e7*eps*norm(vals_exact2, inf);
-
-pass(10) = (err1 < tol1) && (err2 < tol2);
+% TODO: Singularities at both endpoints. (Note, NH has an idea for an improved
+% algorithm for this case. Will add a test once that is implemented.)
 
 end
