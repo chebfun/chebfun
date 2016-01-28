@@ -137,16 +137,9 @@ else
         ['Non-integer difference in the exponents of the two SINGFUN ' ...
         'objects: The result may not be accurate.']);
     
-    % Define a function handle for the sum:
-    op = @(x) feval(f, x) + feval(g, x);
-        
-    % Take the smallest exponents to be those for the summation:
-    exps = [get(f, 'exponents'); get(g, 'exponents')];
-    exps = min(exps);
-    
     % Construct a new SINGFUN for the sum:
-    data.exponents = exps;
-    s = singfun(op, data, []);
+    op = @(x) feval(f, x) + feval(g, x);
+    s = singfun(op, [], []);
 end
 
 %%
