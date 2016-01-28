@@ -3,10 +3,8 @@
 % SPHEREFUNV(F,G,H) constructs a SPHEREFUNV with two components from the
 % function handles F, G, and H.  These can also be SPHEREFUN objects or any
 % other object that the SPHEREFUN constructor accepts.  Each component is
-% represented as a SPHEREFUN.
-%
-% SPHEREFUNV(F,G,H,[A B C D]) constructs a SPHEREFUNV object from F, G, and
-% H on the domain [A B] x [C D].
+% represented as a SPHEREFUN.  The domain of F, G, and H in instrinsic
+% coordinates is [-pi,pi]x[0 pi].
 %
 % See also SPHEREFUN. 
 
@@ -41,9 +39,9 @@ classdef spherefunv
                 return
             end
                        
-            % This function calls the SPHEREFUN2 constructor once for each 
-            % non-zero component because a SPHEREFUN2V is just vector of 
-            % SPHEREFUN2 objects.
+            % This function calls the SPHEREFUN constructor once for each 
+            % non-zero component because a SPHEREFUNV is just vector of 
+            % SPHEREFUN objects.
             
             % If the argument is a SPHEREFUN2V, nothing to do:
             if ( isa(varargin{1}, 'spherefunv') ) 
@@ -51,16 +49,16 @@ classdef spherefunv
                 return
             end
             
-            % Go and try find the domain: 
-            domain = [-pi pi 0 pi];
-            for jj = 1:numel(varargin)
-               if ( isa( varargin{jj}, 'double') && numel( varargin{jj}) == 4 ) 
-                   domain = varargin{jj}; 
-                   varargin(jj) = []; 
-               elseif ( isa( varargin{jj}, 'spherefun') ) 
-                   domain = varargin{jj}.domain;  
-               end
-            end
+%             % Go and try find the domain: 
+%             domain = [-pi pi 0 pi];
+%             for jj = 1:numel(varargin)
+%                if ( isa( varargin{jj}, 'double') && numel( varargin{jj}) == 4 ) 
+%                    domain = varargin{jj}; 
+%                    varargin(jj) = []; 
+%                elseif ( isa( varargin{jj}, 'spherefun') ) 
+%                    domain = varargin{jj}.domain;  
+%                end
+%             end
             
             % Go pick up vectorize flag: 
             vectorize = 0; 
@@ -90,36 +88,36 @@ classdef spherefunv
             for jj = 1:numel(varargin)
                 if ( isa( varargin{jj}, 'function_handle') )
                     if ( ~vectorize )
-                        newcheb = spherefun( varargin{jj}, domain);
+                        newcheb = spherefun( varargin{jj} );
                     else
-                        newcheb = spherefun( varargin{jj}, domain, 'vectorize');
+                        newcheb = spherefun( varargin{jj}, 'vectorize' );
                     end
                     fh{jj} = newcheb;
                 elseif ( isa( varargin{jj}, 'spherefun') )
                     fh{jj} = varargin{jj};
                 elseif ( isa( varargin{jj}, 'chebfun') )
-                    fh{jj} = spherefun( varargin{jj}, domain);
+                    fh{jj} = spherefun( varargin{jj} );
                 elseif ( isa( varargin{jj}, 'double') )
-                    fh{jj} = spherefun( varargin{jj}, domain);  
+                    fh{jj} = spherefun( varargin{jj} );  
                 end
             end
 
             % Stop now if there are too many components
             if ( numel( fh ) > 3 ) 
-                error('SPHEREFUN:SPHEREFUN2V:spherefunv:arrayValued', ...
+                error('CHEBFUN:SPHEREFUNV:spherefunv:arrayValued', ...
                           'More than three components is not supported.')
             end 
             
             % Stop now if there are too few components: 
             if ( numel( fh ) < 3 ) 
-                error('SPHEREFUN:SPHEREFUN2V:spherefunv:arrayValued', ...
+                error('CHEBFUN:SPHEREFUNV:spherefunv:arrayValued', ...
                 'Less than three components is not supported.')
             end
 
             % Stop now if there are no components: 
             if ( numel( fh ) == 0 ) 
-                error('SPHEREFUN:SPHEREFUN2V:spherefunv:empty', ...
-                'The Chebfun2 constructor needs to be given function handles or chebfun2 objects.')
+                error('CHEBFUN:SPHEREFUNV:spherefunv:empty', ...
+                'The spherefunv constructor needs to be given function handles or spherefun objects.')
             end
             
             % Check the domains of all the spherfuns are the same:
@@ -129,7 +127,7 @@ classdef spherefunv
             end
             
             if ( ~all(pass) )
-                error('SPHEREFUN:SPHEREFUN2V:spherefunv:domainCheck', ...
+                error('SPHEREFUN:SPHEREFUNV:spherefunv:domainCheck', ...
                     'All spherefun objects need to have the same domain.');
             end
             
