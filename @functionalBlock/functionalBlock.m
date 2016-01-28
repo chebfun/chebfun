@@ -112,7 +112,19 @@ classdef functionalBlock < linBlock
             C.diffOrder = max(A.diffOrder, B.diffOrder);
             C.iszero = A.iszero && B.iszero;
             C.isNotDiffOrInt = A.isNotDiffOrInt && B.isNotDiffOrInt;
-        end        
+        end 
+   
+        function F = promote(F)
+            F.stack = @(z) promoteStack(F.stack, z);
+            
+            function Sz = promoteStack(S, z)
+                Sz = S(z);
+                if ( isnumeric(Sz) )
+                    Sz = repmat(Sz, size(Sz, 2), 1);
+                end
+            end
+                
+        end
         
         function out = iszero(A)
             out = A.iszero;
