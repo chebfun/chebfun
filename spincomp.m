@@ -2,32 +2,36 @@ function [err, time] = spincomp(pdechar, tspan, u0, pref)
 %SPINCOMP  Compare time-stepping schemes.
 %   SPINCOMP(PDECHAR, TSPAN, U0, PREF) solves the PDE specified by the STRING
 %   PDECHAR on TSPAN x U0.DOMAIN, with initial condition U0, using the various
-%   time-steps DT stored in PREF.DT and the timestepping schemes listed in
-%   PREF.SCHEME. PREF is a SPINPREF OBJECT.
+%   time-steps DT stored in PREF.DT and the time-stepping schemes listed in
+%   PREF.SCHEME. PREF is a SPINPREF OBJECT. See HELP/SPIN, HELP/SPIN2 and 
+%   HELP/SPIN3 for a list of available strings.
 %
-% Example 1: Compare ETDRK4 and KROGSTAD for Kuramoto-Sivashinsky equation
+% Example 1: Compare the ETDRK schemes for 1D Kuramoto-Sivashinsky equation
 %
-%    dom = [0 32*pi]; tspan = [0 10];
+%    dom = [0 32*pi]; tspan = [0 30];
 %    u0 = chebfun('cos(x/16).*(1 + sin(x/16))',dom,'trig');
 %    pref = spinpref();
 %    pref.dt = [1, 5e-1, 2e-1, 1e-1, 5e-2, 2e-2, 1e-2];
-%    pref.scheme = {'etdrk4', 'krogstad'};
+%    pref.scheme = {'etdrk4', 'exprk5s8', 'krogstad', 'friedli', ...
+%       'hochbruck-ostermann', 'minchev', 'strehmel-weiner'};
 %    pref.N = 256;
 %    pref.plotting = [];
 %    spincomp('KS', tspan, u0, pref)
 %
-% Example 2: Compare ETDRK4 and EXPRK5S8 for Korteweg-de Vries equation
+% Example 2: Compare the PREDICTOR-CORRECTOR schemes for 2D Gray-Scott equations
 %
-%    dom = [-pi pi]; tspan = [0 5e-3]; A = 25; B = 16;
-%    u0 = @(x) 3*A^2*sech(.5*A*(x+2)).^2 + 3*B^2*sech(.5*B*(x+1)).^2;
-%    u0 = chebfun(u0, dom, 'trig');
-%    pref = spinpref();
-%    pref.dt = [2e-5, 1e-5, 5e-6, 2e-6, 1e-6];
-%    pref.scheme = {'etdrk4', 'exprk5s8'};
-%    pref.N = 256;
-%    pref.plotting = [];
-%    spincomp('KdV', tspan, u0, pref)
-
+%    G = 1.25; dom = G*[0 1 0 1]; tspan = [0 30];
+%    u01 = chebfun2(@(x,y) 1-exp(-150*((x-G/2).^2 + (y-G/2).^2)), dom, 'trig');
+%    u02 = chebfun2(@(x,y) exp(-150*((x-G/2).^2 + 2*(y-G/2).^2)), dom, 'trig');
+%    u0 = chebmatrix(u01);
+%    u0(2,1) = u02;
+%    pref = spinpref2;
+%    pref.dt = [1, 5e-1, 2e-1, 1e-1, 5e-2, 2e-2];
+%    pref.scheme = {'pec423', 'pecec433', 'pec524', 'pecec534', 'pec625', ...
+%       'pecec635', 'pec726', 'pecec736'};
+%
+% See also SPIN, SPIN2, SPIN3, SPINPREF, SPINPREF2, SPINPREF3, SPINSCHEME.
+%
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
@@ -35,7 +39,7 @@ function [err, time] = spincomp(pdechar, tspan, u0, pref)
 schemes = pref.scheme;
 nSchemes = length(schemes);
 
-% Get the timesteps:
+% Get the time-steps:
 timesteps = pref.dt;
 nTimesteps = length(timesteps);
 
@@ -62,10 +66,10 @@ if ( isa(u0{1}, 'chebfun') == 1 )
     dim = 1;
 elseif ( isa(u0{1}, 'chebfun2') == 1 )
     dim = 2;
-    [xx, yy] = meshgrid(xx, xx);
+    [xx, yy] = meshgrid(xx);
 elseif ( isa(u0{1}, 'chebfun3') == 1 )
     dim = 3;
-    [xx, yy, zz] = meshgrid(xx, xx, xx);
+    [xx, yy, zz] = meshgrid(xx);
 end
     
 % We estimate the exact solution using a very small time step (half the smallest
@@ -97,7 +101,7 @@ for i = 1:nVars
     end
 end
 
-% Now, compute the solutions for the different schemes and different time steps:
+% Now, compute the solutions for the different schemes and different time-steps:
 prefu = spinpref();
 prefu.plotting = [];
 prefu.M = pref.M;
@@ -129,9 +133,9 @@ for k = 1:nTimesteps
 end
 err = err/scale; % Relative error
 TF = tspan(end);
-timesteps = timesteps/TF; % Relative time steps
+timesteps = timesteps/TF; % Relative time-steps
 
-% Plot Accuarcy vs time step:
+% Plot Accuarcy vs time-step:
 figure, subplot(1, 2, 1)
 labels = cell(nSchemes, 1);
 for l = 1:nSchemes
