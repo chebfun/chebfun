@@ -1,7 +1,34 @@
 classdef spinscheme
-%SPINSCHEME   Class for representing time-stepping schemes.
-%   SPINSCHEME is a class used by SPIN, SPIN2 and SPIN3 when solving PDEs in 1D
-%   2D and 3D.
+%SPINSCHEME   Class for representing exponential integrators time-stepping 
+%schemes.
+%   SPINSCHEME is a class for representing exponential integrators. It is used 
+%   by SPIN, SPIN2 and SPIN3 when solving PDEs in 1D, 2D and 3D.
+%
+% Construction: 
+%
+%   K = SPINSCHEME(SCHEME) constructs a SPINSCHEME object corresponding to
+%   the exponential integrator SCHEME. SCHEME is a STRING.
+%
+% Available strings are:
+%
+%   ETD ADAMS-BASHFORT: 'abnorsett4', 'abnorsett5', 'abnorsett6'
+%
+%   ETD RUNGE-KUTTA: 'etdrk4', 'exprk5s8', 'friedli', 'hochbruck-ostermann',
+%                    'krogstad', 'minchev', 'strehmel-weiner'
+%
+%   LAWSON: 'lawson4', 'ablawson4'
+%
+%   GENERALIZED LAWSON: 'genlawson41', genlawson42', genlawson43', genlawson44',
+%                       'genlawson45'
+%
+%   MODIFIED GENERALIZED LAWSON: 'modgenlawson41', modgenlawson42', 
+%                                'modgenlawson43', modgenlawson44',
+%                                'modgenlawson45'
+%
+%   PREDICTOR-CORRECTOR: 'pec423', 'pecec433', 'pec524', 'pecec534', 'pec625',
+%                        'pecec635', 'pec726', 'pecec736'
+%
+% See also SPINSCHEME/COMPUTECOEFFS, SPIN, SPIN2, SPIN3.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -32,7 +59,7 @@ classdef spinscheme
             switch schemeName
                 
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                % ETD MULTISTEP:
+                % ETD ADAMS-BASHFORT:
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 case 'abnorsett4'
                     K.order = 4;
@@ -113,7 +140,7 @@ classdef spinscheme
                     K.scheme = schemeName;
                     
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                    % GENERALIZED LAWSON:
+                % GENERALIZED LAWSON:
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 case 'genlawson41'
                     K.order = 4;

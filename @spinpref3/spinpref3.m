@@ -52,6 +52,7 @@ classdef spinpref3 < spinpreference
 %                               automatically chosen by the code.                                                                       
 %                
 % Construction:
+%
 %   PREF = SPINPREF3() creates a SPINPREF3 object with the default values.
 %
 %   PREF = SPINPREF3(PROP, VALUE) creates a SPINPRE32 object with the property

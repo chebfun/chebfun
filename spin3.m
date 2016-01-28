@@ -1,9 +1,9 @@
 function [uout, tout] = spin3(varargin)
 %SPIN3  Solve a time-dependent PDE in 3D with periodicity in space, using a 
-%Fourier spectral method in space and an exponential integrator in time.
+%Fourier spectral method and an exponential integrator time-stepping scheme.
 %   SPIN3
 
-% See also SPINPREF3, SPIN, SPIN2.
+% See also SPINPREF3, SPINSCHEME, SPIN, SPIN2.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

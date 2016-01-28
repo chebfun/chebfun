@@ -54,6 +54,7 @@ classdef spinpref < spinpreference
 %                               the code. 
 %              
 % Construction:
+%
 %   PREF = SPINPREF() creates a SPINPREF object with the default values.
 %
 %   PREF = SPINPREF(PROP, VALUE) creates a SPINPREF object with the property

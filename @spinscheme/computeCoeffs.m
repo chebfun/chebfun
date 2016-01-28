@@ -3,7 +3,9 @@ function schemeCoeffs = computeCoeffs(K, dt, L, M, S)
 %   SCHEMECOEFFS = COMPUTECOEFFS(K, DT, L, LR, S) computes the coefficients
 %   needed by the SPINSCHEME K from the time-step DT, the linear part L, the
 %   linear part for complex means LR, and the SPINOP S.
-
+%
+% See also SPINSCHEME.
+%
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
@@ -32,7 +34,7 @@ LR = computeLR(S, dt, L, M);
 switch schemeName
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % ETD MULTISTEP:
+    % ETD ADAMS-BASHFORT:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     case 'abnorsett4'
         
