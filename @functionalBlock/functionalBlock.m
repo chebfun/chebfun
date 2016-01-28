@@ -115,15 +115,17 @@ classdef functionalBlock < linBlock
         end 
    
         function F = promote(F)
+        %PROMOTE   PROMOTE a FUNCTIONALBLOCK.
+        %
+        %   F = PROMOTE(F) where F is A FUNCTIONALBLOCK converts the row F.STACK
+        %   to a matrix.
             F.stack = @(z) promoteStack(F.stack, z);
-            
             function Sz = promoteStack(S, z)
                 Sz = S(z);
                 if ( isnumeric(Sz) )
                     Sz = repmat(Sz, size(Sz, 2), 1);
                 end
             end
-                
         end
         
         function out = iszero(A)

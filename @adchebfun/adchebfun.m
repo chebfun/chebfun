@@ -1012,9 +1012,8 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 f.func = f.func + g.func;
                 % Jumps
                 f.jumpLocations = union(f.jumpLocations,g.jumpLocations);
-                
                 % Derivative part 
-                %  (promote functionals top operators if  necessary!)
+                % (Ppromote functionals top operators if  necessary!)
                 if ( isa(f.jacobian, 'functionalBlock') && ...
                         isa(g.jacobian, 'operatorBlock') )
                     f.jacobian = promote(f.jacobian);
@@ -1022,8 +1021,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                         isa(f.jacobian, 'operatorBlock') )
                     g.jacobian = promote(g.jacobian);
                 end
-                f.jacobian = f.jacobian + g.jacobian;
-                
+                f.jacobian = f.jacobian + g.jacobian; 
             end
             
             % Need to update domain in case new breakpoints were introduced
