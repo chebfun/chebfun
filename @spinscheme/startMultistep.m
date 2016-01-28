@@ -25,14 +25,14 @@ Ncoeffs = cell(q, 1);
 coeffs{q} = uSol{1};
 Ncoeffs{q} = NuSol{1};
 
-% Set-up ETDRK4:
+% Set-up the scheme:
 K = spinscheme('etdrk4');
 schemeCoeffs = computeCoeffs(K, dt, L, M, S);
 if ( adaptiveTime == 1 )
     schemeCoeffs2 = computeCoeffs(K, dt/2, L, M, S);
 end
 
-% Do Q-1 steps of EXPRK5S8:
+% Do Q-1 steps:
 iter = 1;
 while ( iter <= q-1 ) 
     

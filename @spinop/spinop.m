@@ -26,6 +26,12 @@ classdef spinop < spinoperator
 %
 %           u_t = 1e-3*u_xx - u*u_x,
 %
+%    - 'BZ' for Belousov-Zhabotinsky equation
+%
+%           u_t = 1e-5*diff(u,2) + u + v - u*v - u^2,
+%           v_t = 2e-5*diff(v,2) + w - v - u*v,
+%           w_t = 1e-5*diff(w,2) + u - w
+% 
 %    - 'CH' for Cahn-Hilliard equation 
 %
 %           u_t = 1e-2*(-u_xx - 1e-3*u_xxxx + (u^3)_xx),
