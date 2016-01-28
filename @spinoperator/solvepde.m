@@ -566,16 +566,12 @@ else
     end
 end
 
-% Simpliyfy: (Remeark: CHEBFUN3/SIMPLIFY not implemented yet.)
+% Simpliyfy:
 if ( nVars == 1 )
-    if ( dim == 1 || dim == 2 )
-        uOut = simplify(uOut);
-    end
+    uOut = simplify(uOut);
 else
-    if ( dim == 1 || dim == 2 )
-        doSimplify = @(f) simplify(f);
-        uOut.blocks = cellfun(doSimplify, uOut.blocks, 'UniformOutput', 0);
-    end
+    doSimplify = @(f) simplify(f);
+    uOut.blocks = cellfun(doSimplify, uOut.blocks, 'UniformOutput', 0);
 end
 
 % Output TOUT:
