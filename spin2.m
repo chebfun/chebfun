@@ -3,7 +3,7 @@ function [uout, tout] = spin2(varargin)
 %Fourier spectral method and an exponential integrator time-stepping scheme.
 %   SPIN2
 
-% See also SPINPREF2, SPINSCHEME, SPIN, SPIN3.
+% See also SPINOP2, SPINPREF2, SPINSCHEME, SPIN, SPIN3.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
