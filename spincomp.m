@@ -15,7 +15,6 @@ function [err, time] = spincomp(pdechar, tspan, u0, pref)
 %    pref.scheme = {'etdrk4', 'exprk5s8', 'krogstad', 'friedli', ...
 %       'hochbruck-ostermann', 'minchev', 'strehmel-weiner'};
 %    pref.N = 256;
-%    pref.plot = 'off';
 %    spincomp('KS', tspan, u0, pref)
 %
 % Example 2: Compare the PREDICTOR-CORRECTOR schemes for 2D Gray-Scott equations
@@ -29,8 +28,8 @@ function [err, time] = spincomp(pdechar, tspan, u0, pref)
 %    pref.dt = [1, 5e-1, 2e-1, 1e-1, 5e-2, 2e-2];
 %    pref.scheme = {'pec423', 'pecec433', 'pec524', 'pecec534', 'pec625', ...
 %       'pecec635', 'pec726', 'pecec736'};
-%   pref.N = 128;
-%   pref.plot = 'off';
+%    pref.N = 128;
+%    spincomp('GS2', tspan, u0, pref)
 %
 % See also SPIN, SPIN2, SPIN3, SPINPREF, SPINPREF2, SPINPREF3, SPINSCHEME.
 %
@@ -85,7 +84,7 @@ elseif ( isa(pref, 'spinpref3') == 1 )
 end
 prefuexact.scheme = 'pecec635';
 prefuexact.dt = min(timesteps)/2;
-prefuexact.plotting = [];
+prefuexact.plot = 'off';
 prefuexact.M = pref.M;
 prefuexact.N = pref.N;
 uexact = spinoperator.solvepde(pdechar, tspan, u0, prefuexact);
@@ -105,7 +104,7 @@ end
 
 % Now, compute the solutions for the different schemes and different time-steps:
 prefu = spinpref();
-prefu.plotting = [];
+prefu.plot = 'off';
 prefu.M = pref.M;
 prefu.N = pref.N;
 err = zeros(nTimesteps, nSchemes);
