@@ -49,9 +49,6 @@ classdef trigspec < coeffsDiscretization
         % Multiplication matrices for TRIGSPEC.
         D = multmat(N, f)
         
-        % Definite intergral matrices for TRIGSPEC.
-        D = summat(N)
-        
     end
     
 end
