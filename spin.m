@@ -11,7 +11,7 @@ function [uout, tout] = spin(varargin)
 %   UOUT is a CHEBFUN corresponding to the solution at the final time 
 %   (a CHEBMATRIX for systems of equations, each row representing one variable). 
 %
-%   UOUT = SPIN(PDECHAR, TSPAN) solves the PDE from T0=TPSAN(1) to TF=TSPAN(END)
+%   UOUT = SPIN(PDECHAR, TSPAN) solves the PDE from TPSAN(1) to TSPAN(END)
 %   where TSPAN=[0 T1 T2 ... TF] is a vector of time chunks. The output UOUT is 
 %   a CHEBMATRIX, each row corresponding to one variable and each column to one 
 %   time chunk (unless TSPAN=[0 TF] and there is only one variable, in that case 
@@ -199,8 +199,8 @@ function [uout, tout] = spin(varargin)
 %       pref = spinpref('dt', 1e-5, 'N', 256, 'plot', 'waterfall');
 %       u = spin('KdV', pref);
 %
-%   solves the KdV equation a time-step dt=1e-5, N=256 grid points and produces
-%   a WATERFALL plot as opposed to a movie.
+%   solves the KdV equation using a time-step dt=1e-5, N=256 grid points and 
+%   produces a WATERFALL plot as opposed to a movie.
 %
 % See also SPINOP, SPINPREF, SPINSCHEME, SPIN2, SPIN3.
 
