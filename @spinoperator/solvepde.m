@@ -66,6 +66,9 @@ elseif ( isempty(u0) == 1 )
         [~, u0] = parseInputs(pdechar);
     else
         [~, u0, pref] = parseInputs(pdechar);
+        % TSPAN was given by the user, so we want to be sure that we're going
+        % to compute the solution at the right times, so use adaptive dt:
+        pref.dt = [];
     end
 end
 
