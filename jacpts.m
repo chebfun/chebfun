@@ -878,44 +878,8 @@ K = C*(f.*tB2);
 A3 = .5*(D*tB2) - (.5+alph)*B2 - .5*K;
 A3 = A3 - A3(1);
 
-if ( nargout < 6 )
-    % Make function for output
-    tB1 = @(theta) bary(theta, tB1, t, v);
-    A2 = @(theta) bary(theta, A2, t, v);
-    tB2 = @(theta) bary(theta, tB2, t, v);
-    A3 = @(theta) bary(theta, A3, t, v);
-    return
-end
-
-% A3p:
-A3p = D*A3;
-A3p = A3p - A3p(1);
-A3p_t = A3p./t;
-% Extrapolate point at t = 0:
-w = pi/2-t(2:end);
-w(2:2:end) = -w(2:2:end);
-w(end) = .5*w(end);
-A3p_t(1) = sum(w.*A3p_t(2:end))/sum(w);
-
-% B3:
-tB3 = -.5*A3p - (.5+alph)*(C*A3p_t) + .5*C*(f.*A3);
-B3 = tB3./t;
-% Extrapolate point at t = 0
-B3(1) = sum(w.*B3(2:end))/sum(w);
-
-% A4:
-K = C*(f.*tB3);
-A4 = .5*(D*tB3) - (.5+alph)*B3 - .5*K;
-A4 = A4 - A4(1);
-
-% Make function for output:
 tB1 = @(theta) bary(theta, tB1, t, v);
 A2 = @(theta) bary(theta, A2, t, v);
 tB2 = @(theta) bary(theta, tB2, t, v);
 A3 = @(theta) bary(theta, A3, t, v);
-tB3 = @(theta) bary(theta, tB3, t, v);
-A4 = @(theta) bary(theta, A4, t, v);
-
 end
-
-
