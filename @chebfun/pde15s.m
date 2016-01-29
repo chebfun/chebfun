@@ -7,6 +7,16 @@ function varargout = pde15s(varargin)
 %   PDEFUN(UU, t, x) with the initial condition U0 and boundary conditions BC
 %   over the time interval T.
 %
+%   [TT, UU] = PDE15s(PDEFUN, T, U0, BC, OPTS, N) returns also the time chunks
+%   TT. If T is a two-vector these will be given by linspace(T(1), T(2), 51).
+%
+%   [TT, UU, VV, ...] = PDE15s(...), in the case of a coupled systems, will
+%   return the quasimatrices UU, VV, ..., whose columns corresponds to the each
+%   function at the times in the vector TT.
+%
+%   [TT, UU] = PDE15s(...), in case of a coupled systems, will return the
+%   CHEBMATRIX UU, where each row corresponds a variable at the times TT.
+%
 %   PDEFUN should take the form @(T, X, U1, U2, ..., UN), where U1, ..., UN are
 %   the unknown dependent variables to be solved for, T is time, and X is space.
 %
@@ -15,6 +25,12 @@ function varargout = pde15s(varargin)
 %   solved for, T is time, X is space, D is the differential operator, S is the
 %   definite integral operator (i.e., 'sum'), and C the indefinite integral
 %   operator (i.e., 'cumsum') is also supported.
+%
+%   By default, the solutions at intermediate time steps are not plotted when
+%   PDE15s is called with output arguments. See documentation below on how
+%   options can be specified and passed so that intermediate solutions get
+%   plotted. If PDE15s is called without any output arguments, the solutions at
+%   intermediate time steps are plotted by default.
 %
 %   For equations of one variable, UU is output as an array-valued CHEBFUN,
 %   where UU(:, k) is the solution at T(k). For systems, the solution UU is
@@ -46,7 +62,7 @@ function varargout = pde15s(varargin)
 %                        .2*diff(v, 2) - 100*u.*v ; ...
 %                        .001*diff(w, 2) + 2*100*u.*v ];
 %      opts = pdeset('Ylim', [0 2], 'PlotStyle', {'LineWidth', 2});
-%      uu = pde15s(f, 0:.1:3, u, 'neumann', opts);
+%      [t, u, v, w] = pde15s(f, 0:.1:3, u, 'neumann', opts);
 %      mesh(uu{3})
 %
 % See chebfun/test/test_pde15s.m for more examples.
@@ -57,8 +73,6 @@ function varargout = pde15s(varargin)
 %   UU = PDE15s(PDEFUN, T, U0, BC, OPTS, N) will not adapt the grid size in
 %   space. Alternatively OPTS.N can be set to the desired size.
 %
-%   [TT, UU] = PDE15s(PDEFUN, T, U0, BC, OPTS, N) returns also the time chunks
-%   TT. If T is a two-vector these will be given by linspace(T(1), T(2), 51).
 %
 %   There is some support for nonlinear and time-dependent boundary conditions,
 %   such as

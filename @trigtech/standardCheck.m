@@ -1,18 +1,17 @@
-function [ishappy, epslevel, cutoff] = standardCheck(f, values, vscl, pref)
+function [ishappy, cutoff] = standardCheck(f, values, data, pref)
 %STANDARDCHECK   Attempt to trim trailing Fourier coefficients in a TRIGTECH.
-%   [ISHAPPY, EPSLEVEL, CUTOFF] = STANDARDCHECK(F) uses the routine STANDARDCHOP
-%   to compute a positive integer CUTOFF which represents the number of
-%   coefficients of F that are deemed accurate enough to keep. ISHAPPY is TRUE
+%   [ISHAPPY, CUTOFF] = STANDARDCHECK(F) uses the routine STANDARDCHOP to
+%   compute a positive integer CUTOFF which represents the number of
+%   coefficients of F that are deemed accurate enough to keep.  ISHAPPY is TRUE
 %   if the CUTOFF value returned by STANDARDCHOP is less than LENGTH(F) and
-%   FALSE otherwise. EPSLEVEL is always returned as MATLAB EPS.
+%   FALSE otherwise.
 %
-%   [ISHAPPY, EPSLEVEL, CUTOFF] = STANDARDCHECK(F, VALUES, VSCL, PREF) allows
-%   additional preferences to be passed. VALUES is a matrix of the function
-%   values of F at the corresponding interpolation points. VSCL is an
-%   approximation of the maximum function value of F on a possibly larger
-%   approximation interval. PREF is a data structure used to pass in additional
-%   information, e.g. a target accuracy tolerance could be passed using
-%   PREF.EPS.
+%   [ISHAPPY, CUTOFF] = STANDARDCHECK(F, VALUES, DATA, PREF) allows additional
+%   preferences to be passed. VALUES is a matrix of the function values of F at
+%   the corresponding interpolation points. DATA.VSCALE is an approximation of
+%   the maximum function value of F on a possibly larger approximation
+%   interval.  PREF is a data structure used to pass in additional information,
+%   e.g. a target accuracy tolerance could be passed using PREF.EPS.
 %
 % See also CLASSICCHECK, STRICTCHECK, LOOSECHECK.
 
@@ -35,7 +34,7 @@ end
 
 % Need to handle odd/even cases separately.
 isEven = mod(n, 2) == 0;
-if isEven
+if ( isEven )
     coeffs = [coeffs(n,:) ; coeffs(n-1:-1:n/2+1,:) + coeffs(1:n/2-1,:) ; coeffs(n/2,:)];
 else
     coeffs = [coeffs(n:-1:(n+1)/2+1,:) + coeffs(1:(n+1)/2-1,:) ; coeffs((n+1)/2,:)];
@@ -45,9 +44,6 @@ coeffs = [coeffs(1,:) ; kron(coeffs(2:end,:), [1 ; 1])];
 
 % Initialize ISHAPPY.
 ishappy = false;
-
-% Initialize EPSLEVEL.
-epslevel = eps*ones(1, m);
 
 % Initialize CUTOFF.
 cutoff = n; 
@@ -75,10 +71,7 @@ end
 
 % Scale TOL by VSCL/||F||;
 nrmf = max(abs(values), [], 1);
-if ( isempty(vscl) )
-    vscl = nrmf;
-end
-tol = tol.*vscl./nrmf;
+tol = tol.*data.vscale./nrmf;
 
 % Loop through columns of coeffs
 ishappy = false(1, m);
@@ -112,5 +105,3 @@ ishappy = all(ishappy);
 cutoff = 2*max(cutoff) + 1;
 
 end
-
-

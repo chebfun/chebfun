@@ -20,12 +20,12 @@ pass(2) = isequal(f, unwrap(f));
 pref.techPrefs.extrapolate = 1;
 f = chebfun(@mysawtooth, [0 2*pi 4*pi 6*pi 8*pi], pref);
 uf = unwrap(f);
-pass(3) = norm(feval(uf, x) - (x - pi), inf) < 10*vscale(uf)*epslevel(uf);
+pass(3) = norm(feval(uf, x) - (x - pi), inf) < 10*vscale(uf)*eps;
 
 % Check tol input.
 g = 10*f;
 ug = unwrap(g, 10*pi);
-pass(4) = norm(feval(ug, x) - 10*(x - pi), inf) < 10*vscale(ug)*epslevel(ug);
+pass(4) = norm(feval(ug, x) - 10*(x - pi), inf) < 10*vscale(ug)*eps;
 
 % Check error conditions.
 try

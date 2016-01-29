@@ -54,6 +54,11 @@ try
     g = chebfun([1 1], pref);
     pass(10) = norm(f - g) == 0;
     
+    % See #1671.
+    f = chebfun(@(x) x/cos(x), pref);
+    g = chebfun(@(x) x./cos(x), pref);
+    pass(11) = norm(f - g) == 0;
+    
     warning(warnState);
     
 catch ME

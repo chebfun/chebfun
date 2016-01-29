@@ -9,5 +9,4 @@
 domain = '[0 pi]';
 DE = {'u'' =  lambda*v';'v'' = -lambda*u'};
 BC = {'u(0)  = 0'; 'u(pi) = 0'};
-tol = '1e-10';
 type = 'eig';

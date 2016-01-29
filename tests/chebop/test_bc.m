@@ -7,7 +7,6 @@ function pass = test_bc(pref)
 if ( nargin == 0 )
     pref = cheboppref;
 end
-pref.errTol = 1e-12;
 
 %% linear: numeric and string input
 d = [-3 4];

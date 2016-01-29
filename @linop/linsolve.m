@@ -109,7 +109,7 @@ for dim = [dimVals inf]
     % currently valid factorization at hand.
     if ( isFactored(disc) )
         A = [];
-        P = speye(disc.dimension*size(L,2));
+        P = speye(disc.dimension*sum(isFun)+sum(~isFun));
     else
         [A, P] = matrix(disc);
         if ( size(A, 1) ~= size(A, 2) )
@@ -130,7 +130,7 @@ for dim = [dimVals inf]
     v = P*v;
     
     % [TODO]: We could test each variable at their input dimension, but then
-    % each would be different and we would nopt be able to use the trick of
+    % each would be different and we would not be able to use the trick of
     % taking a linear combination. Instead we project and test convergence
     % at the size of the output dimension.
     
@@ -143,7 +143,7 @@ for dim = [dimVals inf]
     end
 
     % Test the happiness of the function pieces:
-    [isDone, epslevel, vscale, cutoff] = ...
+    [isDone, cutoff, vscale] = ...
         testConvergence(disc, u(isFun), vscale(isFun), prefs);
     
     if ( all(isDone) || isinf(dim) )
@@ -165,6 +165,7 @@ end
 % Because each function component may be piecewise defined, we will loop through
 % one by one.
 values = cat(2, u{isFun});
+uOut = cell(size(values, 2), 1);
 for k = 1:size(values, 2)
     v = disc.toFunctionOut(values(:,k),cutoff);
     uOut{k} = v;

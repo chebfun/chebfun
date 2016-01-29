@@ -16,11 +16,11 @@ function varargout = solvebvp(N, rhs, varargin)
 %
 %   If successful, the solution returned, U, is a CHEBFUN if N specifies a
 %   scalar problem, and a CHEBMATRIX if N specifies a coupled systems of
-%   ordinary differential equations. If N specifies a linear operator, the BVP
-%   is solved using a spectral or a pseudospectral method. If N specifies a
-%   nonlinear operator, damped Newton iteration in function space is performed,
-%   where each linear problem arising is solved via a spectral/pseudospectral
-%   method.
+%   ordinary differential equations. See note below on how to call the method
+%   with multiple outputs. If N specifies a linear operator, the BVP is solved
+%   using a spectral or a pseudospectral method. If N specifies a nonlinear
+%   operator, damped Newton iteration in function space is performed, where each
+%   linear problem arising is solved via a spectral/pseudospectral method.
 %
 %   U = SOLVEBVP(N, RHS, PREF) is the same as above, using the preferences
 %   specified by the CHEBOPPREF variable PREF.
@@ -44,13 +44,17 @@ function varargout = solvebvp(N, rhs, varargin)
 %       ERROR:      An error estimate for the convergence of the Newton
 %                   iteration.
 %
+%   [U, V, ...] = SOLVEBVP(N, ...), where N specifies a coupled system of ODEs,
+%   returns CHEBFUNs U, V, ... for individual solution components, rather than a
+%   CHEBMATRIX.
+%
 %   Note that CHEBOP allows the RHS of coupled system of ODEs to be a scalar,
 %   e.g., one can both call
 %       N = chebop(@(x, u, v) [diff(u) + v ; u + diff(v)]);
 %       N.bc = @(x, u, v) [u(-1) ; v(1)];
-%       uv = solvebvp(N, 0);
+%       [u, v] = solvebvp(N, 0);
 %   and
-%       uv = solvebvp(N, [0; 0]);
+%       [u, v] = solvebvp(N, [0; 0]);
 %
 % See also: CHEBOP, CHEBOP/MLDIVIDE, CHEBOPPREF, CHEBOP/SOLVEBVPLINEAR,
 %   CHEBOP/SOLVEBVPNONLINEAR, CHEBOP/SOLVEIVP, LINOP/MLDIVIDE.
@@ -237,8 +241,17 @@ else
     [u, info] = solvebvpNonlinear(N, rhs, L, u0, residual, pref, displayInfo);
 
     % Simplify output
-    u = simplify(u,pref.errTol/200);
+    u = simplify(u,pref.bvpTol);
 
+end
+
+% Enforce the function to be real if the imaginary part is small if using a 
+% periodic TECH:
+if ( isPeriodicTech(techUsed) )
+    normImag = @(f) norm(imag(f),inf);
+    if ( max(cellfun(normImag, u.blocks)) < max(pref.bvpTol*vscale(u)) )
+       u = real(u);
+    end
 end
 
 % Revert warning state:

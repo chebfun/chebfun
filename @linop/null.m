@@ -69,7 +69,7 @@ coeff = @(n) 1./(2*(1:n).');
 for dim = dimVals
 
     % Get discrete null vectors:
-    [nullity, V, P] = getNullVectors(discA, prefs.errTol);
+    [nullity, V, P] = getNullVectors(discA, prefs.bvpTol);
 
     % Combine the singular vectors into a composite.
     v = V*coeff(size(V, 2));
@@ -78,7 +78,7 @@ for dim = dimVals
     
     % Test the happiness of the function pieces:
     vscale = zeros(1, sum(isFun));  % intrinsic scaling only.
-    [isDone, epslevel] = testConvergence(discA, v(isFun), vscale, prefs);
+    isDone = testConvergence(discA, v(isFun), vscale, prefs);
     
     if ( all(isDone) )
         break
@@ -98,15 +98,14 @@ end
 v = mat2fun(discA, P*V);
 
 % Simplify and orthogonalize:
-epslevel = min(epslevel, eps(1));
 if ( m == 1 )
     v{1} = qr(v{1});
-    v{1} = simplify(v{1}, epslevel);
+    v{1} = simplify(v{1});
 else % system of eqns
     [Q, R] = qr(join(v{:}));
     for j = 1:numel(v)
         v{j} = v{j}/R;
-        v{j} = simplify(v{j}, epslevel);
+        v{j} = simplify(v{j});
     end
 end
 

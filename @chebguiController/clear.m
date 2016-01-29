@@ -20,7 +20,7 @@ set(handles.input_LBC, 'String', '');
 set(handles.input_RBC, 'String', '');
 set(handles.input_BC, 'String', '');
 set(handles.input_GUESS, 'String', '');
-set(handles.menu_tolerance, 'UserData', '1e-10'); % The default tolerance
+set(handles.menu_tolerance, 'UserData', '5e-13'); % The default tolerance
 
 % Clear the figures:
 chebguiController.initialiseFigures(handles)
