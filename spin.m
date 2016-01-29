@@ -4,7 +4,7 @@ function [uout, tout] = spin(varargin)
 %
 %   UOUT = SPIN(PDECHAR) solves the PDE specified by the string PDECHAR, and 
 %   plots a movie of the solution as it computes it. The space and time 
-%   intervals, and the initial condition are chosen to produce beautiful movies. 
+%   intervals and the initial condition are chosen to produce beautiful movies. 
 %   Strings available include 'AC' for Allen-Cahn equation, 'KS' for 
 %   Kuramoto-Sivashinsky equation and 'KdV' for Korteweg-de Vries equation. 
 %   Many other PDEs are available, see Remark 1 and Examples 1-10. The output 
@@ -14,8 +14,8 @@ function [uout, tout] = spin(varargin)
 %   UOUT = SPIN(PDECHAR, TSPAN) solves the PDE from TPSAN(1) to TSPAN(END)
 %   where TSPAN=[0 T1 T2 ... TF] is a vector of time chunks. The output UOUT is 
 %   a CHEBMATRIX, each row corresponding to one variable and each column to one 
-%   time chunk (unless TSPAN=[0 TF] and there is only one variable, in that case 
-%   the ouput is a CHEBFUN at TF).
+%   time chunk (unless TSPAN=[0 TF] and there is only one variable, in which 
+%   case the output is a CHEBFUN at TF).
 %
 %   UOUT = SPIN(PDECHAR, TSPAN, U0) solves the PDE specified by the string 
 %   PDECHAR on TSPAN x U0.DOMAIN, with initial condition a CHEBFUN U0 (one 
@@ -30,145 +30,146 @@ function [uout, tout] = spin(varargin)
 %   [UOUT, TOUT] = SPIN(...) also returns the times chunks TOUT at which UOUT
 %   was computed.
 %
-% Remark 1: Available strings PDECHAR are
+% Remark 1: Available (case-insensitive) strings PDECHAR are
 %
-%    - 'AC' for Allen-Cahn equation 
+%    - 'AC' for Allen-Cahn equation, 
+%    - 'Burg' for viscous Burgers equation,
+%    - 'BZ' for Belousov-Zhabotinsky equation,
+%    - 'CH' for Cahn-Hilliard equation,
+%    - 'GS' for Gray-Scott equations,  
+%    - 'KdV' for Korteweg-de Vries equation,
+%    - 'KS' for Kuramoto-Sivashinsky equation, 
+%    - 'Niko' for Nikolaevskiy equation, 
+%    - 'NLS' for the focusing nonlinear Schroedinger equation,
+%    - 'OK' for the Ohta-Kawasaki equation.
 %
-%           u_t = 5e-3*u_xx - u^3 + u,
-%
-%    - 'Burg' for viscous Burgers equation 
-%
-%           u_t = 1e-3*u_xx - u*u_x,
-%
-%    - 'BZ' for Belousov-Zhabotinsky equation
-%
-%           u_t = 1e-5*diff(u,2) + u + v - u*v - u^2,
-%           v_t = 2e-5*diff(v,2) + w - v - u*v,
-%           w_t = 1e-5*diff(w,2) + u - w
-% 
-%    - 'CH' for Cahn-Hilliard equation 
-%
-%           u_t = 1e-2*(-u_xx - 1e-3*u_xxxx + (u^3)_xx),
-%
-%    - 'GS' for Gray-Scott equations
-%
-%           u_t = diff(u,2) + 2e-2*(1-u) - u*v^2,
-%           v_t = 1e-2*diff(u,2) - 8.62e-2*v + u*v^2,
-%           
-%    - 'KdV' for Korteweg-de Vries equation 
-%
-%           u_t = -u*u_x - u_xxx,
-%
-%    - 'KS' for Kuramoto-Sivashinsky equation 
-%
-%           u_t = -u*u_x - u_xx - u_xxxx,
-% 
-%    - 'Niko' for Nikolaevskiy equation 
-%
-%           u_t = -u*u_x + 1e-1*u_xx + u_xxxx + u_xxxxxx,
-%
-%    - 'NLS' for the focusing nonlinear Schrodinger equation 
-%
-%           u_t = 1i*u_xx + 1i*|u|^2*u,
-%
-%    - and 'OK' for the Ohta-Kawasaki equation
-%
-%           u_t = -u_xx - 1e-2*u_xxxx - 4(u - sum(u)) + (u^3)_xx.
-%
-% Example 1: Allen-Cahn equation (mestable patterns)
+% Example 1: Allen-Cahn equation (metastable solutions)
 %
 %       u = spin('AC');
 %
-%    solves the Allen-Cahn equation on [] from t=0 to t=300, with initial
-%    condition 
+%    solves the Allen-Cahn equation 
 %
-%       u0(x) = tanh(2*sin(x)) + 3*exp(-27.*(x-4.2).^2) 
-%               - 3*exp(-23.5.*(x-pi/2).^2) + 3*exp(-38.*(x-5.4).^2).
+%       u_t = 5e-3*u_xx - u^3 + u,
+%
+%    on [0 2*pi] from t=0 to t=300, with initial condition 
+%
+%       u0(x) = tanh(2*sin(x)) + 3*exp(-27*(x-4.2)^2) 
+%               - 3*exp(-23.5*(x-pi/2)^2) + 3*exp(-38*(x-5.4)^2).
 %
 % Example 2: Viscous Burgers equation (shock formation and dissipation)
 %
 %       u = spin('Burg');
 %
-%    solves the viscous Burgers equation on [-1 1] from t=0 to t=20, with 
-%    initial condition 
+%    solves the viscous Burgers equation 
 %
-%       u0(x) = (1-x.^2).*exp(-30.*(x+1/2).^2.
+%           u_t = 1e-3*u_xx - u*u_x,
+%
+%   on [-1 1] from t=0 to t=20, with initial condition 
+%
+%       u0(x) = (1-x^2)*exp(-30*(x+1/2)^2.
 %
 % Example 3: Belousov-Zhabotinsky (reaction-diffusion with three species)
 %
 %       u = spin('BZ');
 %
-%    solves the Belousov-Zhabotinsky equation on [-1 1] from t=0 to t=30, with 
-%    initial condition 
+%    solves the Belousov-Zhabotinsky equation 
 %
-%       u0(x) = exp(-100*(x+.5).^2),
-%       v0(x) = exp(-100*(x).^2),
-%       w0(x) = exp(-100*(x-.5).^2).
+%       u_t = 1e-5*diff(u,2) + u + v - u*v - u^2,
+%       v_t = 2e-5*diff(v,2) + w - v - u*v,
+%       w_t = 1e-5*diff(w,2) + u - w
 %
-% Example 4: Cahn-Hilliard equation (metastable patterns)
+%    on [-1 1] from t=0 to t=30, with initial condition 
+%
+%       u0(x) = exp(-100*(x+.5)^2),
+%       v0(x) = exp(-100*(x)^2),
+%       w0(x) = exp(-100*(x-.5)^2).
+%
+% Example 4: Cahn-Hilliard equation (metastable solutions)
 %
 %       u = spin('CH');
 %
-%    solves the Cahn-Hilliard equation on [-1 1] from t=0 to t=70, with 
-%    initial condition 
+%    solves the Cahn-Hilliard equation 
 %
-%       u0(x) = (sin(4*pi*x)).^5-sin(pi*x).
+%       u_t = 1e-2*(-u_xx - 1e-3*u_xxxx + (u^3)_xx),
+%   
+%    on [-1 1] from t=0 to t=70, with initial condition 
+%
+%       u0(x) = (sin(4*pi*x))^5-sin(pi*x).
 %
 % Example 5: Gray-Scott equations (pulse splitting)
 %
 %       u = spin('GS');
 %
-%    solves the Gray-Scott equations on [-50 50] from t=0 to t=15000, with 
-%    initial condition 
+%    solves the Gray-Scott equations 
 %
-%       u0(x) = 1 - 1/2*sin(pi*(x-L)/(2*L)).^100,
-%       v0(x) = 1/4*sin(pi*(x-L)/(2*L)).^100,
+%       u_t = diff(u,2) + 2e-2*(1-u) - u*v^2,
+%       v_t = 1e-2*diff(u,2) - 8.62e-2*v + u*v^2,
+%
+%    on [-50 50] from t=0 to t=15000, with initial condition 
+%
+%       u0(x) = 1 - 1/2*sin(pi*(x-L)/(2*L))^100,
+%       v0(x) = 1/4*sin(pi*(x-L)/(2*L))^100,
 %           with L=50.
 %
 % Example 6: Korteweg-de Vries equation (two-soliton solution)
 %
 %       u = spin('KdV');
 %
-%    solves the Korteweg-de Vries equation on [-pi pi] from t=0 to t=0.03015,
-%    with initial condition 
+%    solves the Korteweg-de Vries equation 
 %
-%       u0(x) = 3*A^2*sech(.5*A*(x+2)).^2 + 3*B^2*sech(.5*B*(x+1)).^2,
+%       u_t = -u*u_x - u_xxx,
+%
+%    on [-pi pi] from t=0 to t=0.03015, with initial condition 
+%
+%       u0(x) = 3*A^2*sech(.5*A*(x+2))^2 + 3*B^2*sech(.5*B*(x+1))^2,
 %           with A=25 and B=16.
 %
 % Example 7: Kuramoto-Sivashinsky (chaotic attractor)
 %
 %       u = spin('KS');
 %
-%    solves the Kuramoto-Sivashinsky equation on [0 32*pi] from t=0 to t=300, 
-%    with intial condition 
+%    solves the Kuramoto-Sivashinsky equation 
 %
-%       u0(x) = cos(x/16).*(1 + sin(x/16)).
+%       u_t = -u*u_x - u_xx - u_xxxx,
+%
+%    on [0 32*pi] from t=0 to t=300, with intial condition 
+%
+%       u0(x) = cos(x/16)*(1 + sin(x/16)).
 %
 % Example 8: Nikolaevskiy equation (chaotic attractor)
 %
 %       u = spin('Niko');
 %
-%    solves the Kuramoto-Sivashinsky equation on [0 32*pi] from t=0 to t=300, 
-%    with intial condition 
+%    solves the Nikolaevskiy equation 
 %
-%       u0(x) = cos(x/16).*(1 + sin(x/16)).
+%       u_t = -u*u_x + 1e-1*u_xx + u_xxxx + u_xxxxxx,
 %
-% Example 9: Nonlinear Schrodinger equation (breather solution)
+%    on [0 32*pi] from t=0 to t=300, with intial condition 
+%
+%       u0(x) = cos(x/16)*(1 + sin(x/16)).
+%
+% Example 9: Nonlinear Schroedinger equation (breather solution)
 %
 %       u = spin('NLS');
 %
-%    solves the Nonlinear Schrodinger equation on [-pi pi] from t=0 to t=20,
-%    with initial condition 
+%    solves the focusing Nonlinear Schroedinger equation 
 %
-%       u0(x) = 2*B^2./(2 - sqrt(2)*sqrt(2-B^2)*cos(A*B*x)) - 1)*A ,
+%       u_t = i*u_xx + i*|u|^2*u,
+%
+%    on [-pi pi] from t=0 to t=20, with initial condition 
+%
+%       u0(x) = 2*B^2/(2 - sqrt(2)*sqrt(2-B^2)*cos(A*B*x)) - 1)*A,
 %           with A=2 and B=1.
 %
 % Example 10: Ohta-Kawasaki equation (pattern formation)
 %
 %       u = spin('OK');
 %
-%    solves the Ohta-Kawasaki equation on [0 2*pi] from t=0 to t=4,
-%    with initial condition 
+%    solves the Ohta-Kawasaki equation 
+%
+%       u_t = -u_xx - 1e-2*u_xxxx - 4(u - sum(u)) + (u^3)_xx,
+%
+%    on [0 2*pi] from t=0 to t=4, with initial condition 
 %
 %       u0(x) = cos(x)/2.
 %
