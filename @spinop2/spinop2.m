@@ -105,22 +105,22 @@ end
             
         % Ginzburg-Landau equation:
         if ( strcmpi(pdechar, 'GL2') == 1 )
-            L = @(u) laplacian(u);
+            L = @(u) lap(u);
             N = @(u) u - (1 + 1.3i)*u.*(abs(u).^2);
         
         % Gray-Scott equations:
         elseif ( strcmpi(pdechar, 'GS2') == 1 )
-            L = @(u,v) [2e-5*laplacian(u); 1e-5*laplacian(v)];
+            L = @(u,v) [2e-5*lap(u); 1e-5*lap(v)];
             N = @(u,v) [3.5e-2*(1 - u) - u.*v.^2; -9.5e-2*v + u.*v.^2];
             
         % Schnakenberg equations:
         elseif ( strcmpi(pdechar, 'Schnak2') == 1 )
-            L = @(u,v) [laplacian(u); 10*laplacian(v)];
+            L = @(u,v) [lap(u); 10*lap(v)];
             N = @(u,v) [.1 - u + u.^2.*v; .9 - u.^2.*v];
             
         % Swift-Hohenberg equation:
         elseif ( strcmpi(pdechar, 'SH2') == 1 )
-            L = @(u) -2*laplacian(u) - biharmonic(u);
+            L = @(u) -2*lap(u) - biharm(u);
             N = @(u) -.9*u + u.^2 - u.^3;
             
         else

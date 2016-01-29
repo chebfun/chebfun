@@ -47,10 +47,12 @@ else
     D2 = ifftshift(D2);
 end
 
-% Look for 'laplacian' and 'biharmonic':
+% Look for 'laplacian'/'lap' and 'biharmonic'/'biharm':
 strL = func2str(funcL);
-isLap = ~isempty(strfind(strL, 'laplacian'));
-isBih = ~isempty(strfind(strL, 'biharmonic'));
+isLap = isempty(strfind(strL,'laplacian')) && isempty(strfind(strL,'lap'));
+isLap = ~isLap;
+isBih = isempty(strfind(strL,'biharmonic')) && isempty(strfind(strL,'biharm'));
+isBih = ~isBih;
 
 % NxN identity matrix for the Kronecker products:
 I = eye(N);
@@ -95,7 +97,9 @@ L = [];
 
 % Get the constants A in front of the Laplacians:
 str = strrep(strL, 'laplacian', '');
+str = strrep(str, 'lap', '');
 str = strrep(str, 'biharmonic', '0*');
+str = strrep(str, 'biharm', '0*');
 func = eval(str);
 inputs = cell(1, nVars);
 for k = 1:nVars
@@ -105,7 +109,9 @@ A = feval(func, inputs{:});
 
 % Get the constants B in front of the biharmonic operators:
 str = strrep(strL, 'laplacian', '0*');
+str = strrep(str, 'lap', '0*');
 str = strrep(str, 'biharmonic', '');
+str = strrep(str, 'biharm', '');
 func = eval(str);
 B = feval(func, inputs{:}); 
 
