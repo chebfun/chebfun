@@ -44,8 +44,10 @@ f = @(r,th) feval(f, th, r);  % switch convention
 x0 = chebpts( m );    
 th0 = pi*trigpts( n );
 
+
+
 % Construct useful spectral matrices: 
-DF = -spdiags((-n/2:n/2-1)', 0, n, n).^2; % 2nd order Fourier diffmat
+DF = -spdiags((-n/2:0)', 0, n/2+1, n/2+1).^2; % 2nd order Fourier diffmat
 D1 = ultraS.diffmat( m, 1 );              % 1st order ultraS diffmat
 D2 = ultraS.diffmat( m, 2 );              % 2nd order ultraS diffmat
 Mr = ultraS.multmat(m,[0;1],1);           % multiplication of r in ChebU 
@@ -58,9 +60,10 @@ L = Mr2*D2 + S12*Mr*D1;
 
 % Are the boundary conditions inhomogeneous or homogenous? 
 downvals = feval(bc, th0);
-downbc = trigtech.vals2coeffs(downvals);
+downbc = trigtech.vals2coeffs(downvals); downbc=downbc(1:n/2+1);
 % Flip for Dirichlet along r=-1
 topbc = trigtech.vals2coeffs([downvals(n/2+1:n) ; downvals(1:n/2)]); 
+topbc = topbc(1:n/2+1);
 
 % Forcing term:
 % Given a function handle we need to compute the tensor coefficients in the
@@ -70,24 +73,49 @@ F = rhs_r.^2.*feval( f, rhs_r, rhs_theta );           % Get (chebvals,trigvals) 
 F = (S1*chebtech2.vals2coeffs( F.' )).';        % Get (C^{(2)},trigvals) basis
 F = trigtech.vals2coeffs( F ); % fftshift puts them in the  
 
+
+
+
 % Want to solve        X L^T   +  DF X S1^T = F  
 %    subject to        X (+/-1's) =  topbc ,   X (1's) = downbc
 % Note that the matrix equation decouples because DF is diagonal.
-
+%m = 
 % Solve decoupled matrix equation for X, one row at a time: 
-CFS = zeros(n, m); 
-for k = 1 : n
+CFS = zeros(n/2+1, m); 
+
+%modify BC so even/odd decouples
+
+modified_bc_data1 = (downbc + topbc)/2;
+modified_bc_data2 = (downbc - topbc)/2;
+
+for k = 1 : n/2+1
     % Make discretization: 
     A = [                 (-1).^(0:m-1)              ;...
                            ones(1,m)                 ;...
           (L(1:end-2,:) + DF(k,k)*S1(1:end-2,:))    ];
     % Make rhs: 
+    
+    
     b =  [            topbc(k)      ; ... 
                       downbc(k)     ; ... 
                    F(k,1:end-2).'  ];
     % Solve using Woodbury formula: 
-    CFS(k,:) = WoodburySolver( A, b ); 
+    %CFS(k,:) = WoodburySolver( A, b ); 
+    
+        % Split into even and odd problems: 
+    Aeven = A(1:2:end,1:2:end); 
+    Aodd = A(2:2:end, 2:2:end); 
+    b =  [     modified_bc_data1(k) ; ... 
+               modified_bc_data2(k) ; ... 
+                   F(k,1:end-2).'  ];
+    % Solve: 
+    CFS(k,1:2:end) = WoodburySolver( Aeven, b(1:2:end) );
+    CFS(k,2:2:end) = WoodburySolver( Aodd, b(2:2:end) ); 
+    
 end
+
+
+CFS=[CFS; flip(conj(CFS(2:end-1,:)))]; %get the rest of the Fourier coeffs
 
 % Convert ot VALUES on the grid: 
 VALS = trigtech.coeffs2vals( chebtech2.coeffs2vals( CFS.' ).' ); 
@@ -95,8 +123,9 @@ VALS = trigtech.coeffs2vals( chebtech2.coeffs2vals( CFS.' ).' );
 % Now restrict down to region of interest:
 VALS = VALS(:, (m-1)/2+1:m ); 
 
-% Finally, make a spherefun object out of the values: 
+% Finally, make a diskfun object out of the values: 
 u = diskfun( real( VALS ).' ); 
+
 
 % DEBUG 
 % % Plot: 
