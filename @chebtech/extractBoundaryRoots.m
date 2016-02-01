@@ -32,10 +32,10 @@ rootsRight = zeros(1, m);
 
 % Tolerance for a root (we will loosen this with each run of the loop below if
 % there are multiple roots):
-tol = 1e3*f.vscale.*f.epslevel;
+tol = 1e3*vscale(f)*eps;
 
 % Values at ends:
-endValues = abs([feval(f, -1); feval(f, 1)]);
+endValues = abs(feval(f, [-1;1]));
 
 % If there are no roots, there is nothing to do!
 if ( all(min(endValues, [], 1) > tol) )
@@ -107,7 +107,7 @@ while ( ( ( nargin == 1 ) && any( min(endValues, [], 1) <= tol ) ) ...
     f.coeffs = c;
     
     % Update endValues:
-    endValues = abs([feval(f, -1); feval(f, 1)]);
+    endValues = abs(feval(f, [-1;1]));
     
     % Loosen the tolerance for checking multiple roots:
     tol = 1e2*tol;

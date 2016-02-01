@@ -5,7 +5,7 @@ function options = setupODEoptions(guifile, expInfo)
 options = cheboppref();
 
 % Default tolerance:
-defaultTol = options.errTol;
+defaultTol = options.bvpTol;
 tolInput = guifile.tol;
 if ( isempty(tolInput) )
     tolNum = defaultTol;
@@ -23,7 +23,7 @@ if ( tolNum < chebfunp.techPrefs.eps )
 end
 
 % Set the tolerance for the solution process
-options.errTol = tolNum;
+options.bvpTol = tolNum;
 
 % Always display iter. information
 options.display = 'iter';

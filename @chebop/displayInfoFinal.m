@@ -43,12 +43,14 @@ if ( strcmp(display,'iter') || strcmp(display,'final') )
     end
     
     % Show what discretization was used
-    if ( strcmpi(func2str(pref.discretization), 'ultraS') )
-        discString = 'Ultraspherical';
+    if ( strcmpi(func2str(pref.discretization), 'coeffs') || ...
+            isequal(pref.discretization, @ultraS) || ...
+            isequal(pref.discretization, @trigspec) )
+        discString = 'Coefficients';
     else
-        discString = 'Collocation';
+        discString = 'Values';
     end
-    fprintf('Discretization method used: %s. \n', discString);
+    fprintf('Discretization basis used: %s. \n', discString);
     
     % Print info about the final error estimates.
     fprintf(['Final error estimate: %.2e (differential equation) \n' ...

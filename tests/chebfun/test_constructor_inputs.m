@@ -66,11 +66,11 @@ pass(11) = all(feval(f, linspace(-1, 1, 10)) == 1);
 % Test 'trunc', flag.
 f = chebfun(@abs, 'trunc', 10, 'splitting', 'on');
 c = get(f, 'coeffs');
-pass(12) = abs(-4/63/pi - c(9)) < get(f, 'epslevel');
+pass(12) = abs(-4/63/pi - c(9)) < 10*eps;
 
 % Test construction from cells of strings:
 f = chebfun({'x','x-1'}, [0 1 2]);
-pass(13) = norm(feval(f, [.5, 1.5]) - .5) < get(f, 'epslevel');
+pass(13) = norm(feval(f, [.5, 1.5]) - .5) < eps;
 
 % Test construction from a chebfun:
 x = chebfun('x', [0, 5]);
@@ -83,7 +83,7 @@ pass(14) = all(domain(f) == [0 2] );
 % Test construction from a piecewise chebfun:
 f = chebfun(chebfun({'x','x'}, [-1 0 1]));
 x = [-.5, .5];
-pass(15) = numel(f.funs) == 1  && norm(feval(f, x) - x) < get(f, 'epslevel');
+pass(15) = numel(f.funs) == 1  && norm(feval(f, x) - x) < eps;
 
 % Test 'minSamples' flag.
 f_op = @(x) -x - x.^2 + exp(-(50*(x - .5)).^4);
@@ -91,7 +91,7 @@ f1 = chebfun(f_op, 'minSamples', 17);
 err1 = norm(feval(f1, xx) - f_op(xx), inf);
 f2 = chebfun(f_op, 'minSamples', 33);
 err2 = norm(feval(f2, xx) - f_op(xx), inf);
-pass(16) = (err1 > 1e-3) && (err2 < 1e2*vscale(f2)*epslevel(f2));
+pass(16) = (err1 > 1e-3) && (err2 < 1e2*vscale(f2)*eps);
 
 % Test support for "legacy" preferences.
 f_op = @(x) sin(200*x);

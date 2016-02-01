@@ -40,9 +40,7 @@ end
 
 % Append new data to an empty TRIGTECH:
 g = f.make(); % Make an empty TRIGTECH.
-g.vscale = [ f.vscale ];
 g.ishappy = min([f.ishappy]);
-g.epslevel = [ f.epslevel ];
 g.values = cell2mat(values);
 g.coeffs = [ f.coeffs ];
 g.isReal = [ f.isReal ];

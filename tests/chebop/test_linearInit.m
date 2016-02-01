@@ -7,7 +7,6 @@ dom = [0 pi];
 if ( nargin == 0 )
     pref = cheboppref;
 end
-pref.errTol = 1e-10;
  
 %% Simple scalar problem
 N = chebop(@(x,u) diff(u,2) + x.*u, dom);
@@ -43,5 +42,5 @@ err(5) = norm(A(uv)-rhs);
 err(6) = abs(feval(A.lbc(uv{1}, uv{2}), d(1))) + ...
     abs(feval(A.rbc(uv{1}, uv{2}), d(end)));
 %% Happy?
-tol = 100*pref.errTol;
+tol = 1e3*pref.bvpTol;
 pass = err < tol;

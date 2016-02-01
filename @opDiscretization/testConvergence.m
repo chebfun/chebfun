@@ -1,4 +1,4 @@
-function [isDone, epslevel, vscale, cutoff] = testConvergence(disc, values, vscale, pref)
+function [isDone, cutoff, vscale] = testConvergence(disc, values, vscale, pref)
 %TESTCONVERGENCE   Happiness check.
 %   Given: 
 %      DISC: chebDiscretization, 
@@ -11,20 +11,18 @@ function [isDone, epslevel, vscale, cutoff] = testConvergence(disc, values, vsca
 %
 %   Output:  
 %      ISDONE: True if the functions passed in are sufficiently resolved.
-%      EPSLEVEL: Apparent resolution accuracy (relative to VSCALE or the
-%      functions' intrinsic scale).
-%      VSCALE: Maximum of the input VSCALE and the computed VSCALE of DISC.
 %      CUTOFF: The point at which the coefficient series for DISC should
 %              be chopped. If ~ISDONE then CUTOFF = LENGTH(DISC).
+%      VSCALE: Maximum of the input VSCALE and the computed VSCALE of DISC.
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+if ( nargin < 3 )
+    vscale = 0;   % will have no effect
+end
 if ( nargin < 4 )
     pref = cheboppref;
-    if ( nargin < 3 )
-        vscale = 1;   % will have no effect
-    end
 end
 
 % Convert to a piecewise array-valued CHEBFUN.
@@ -38,7 +36,6 @@ d = disc.domain;
 numInt = numel(d) - 1;
 isDone = false(numInt, 1);
 cutoff = zeros(numInt, numCol);
-epslevel = eps;
 
 % Get the discretization, and the appropriate tech to use:
 discPreference = pref.discretization();
@@ -48,16 +45,16 @@ tech = tech();
 % If an external vscale was supplied, it can supplant the inherent scale of the
 % result.
 vscale = max(u.vscale, vscale);
+data.vscale = vscale;
+% TODO:  Assign hscale (to data.hscale)?
 prefTech = tech.techPref();
-prefTech.eps = pref.errTol;
+prefTech.eps = pref.bvpTol;
+prefTech.happinessCheck = pref.happinessCheck;
 
 for i = 1:numInt
     c = cat(2, coeffs{i,:});
     f = tech.make({[], c});
-    happinessChecker = pref.happinessCheck;
-    [isDone(i), neweps, cutoff(i,:)] = happinessChecker(f, [],...
-         vscale, prefTech);
-    epslevel = eps + 0*epslevel;
+    [isDone(i), cutoff(i,:)] = happinessCheck(f, [], [], data, prefTech);
 end
 
 isDone = all(isDone, 2);

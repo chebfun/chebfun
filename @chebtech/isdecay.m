@@ -14,7 +14,7 @@ function out = isdecay(f)
 out = zeros(2, size(f, 2));
 
 % Set a tolerance:
-tol = 1e2*f.epslevel.*f.vscale;
+tol = 1e2*eps*vscale(f);
 
 %% If F is a constant:
 if ( length(f) == 1 )

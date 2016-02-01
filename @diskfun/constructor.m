@@ -71,9 +71,10 @@ if ( isa(op, 'double') )    % DISKFUN( DOUBLE )
     % Flip F around since Phase I operates on the doubled-up portion of
     % the disk [-pi pi] x [-1, 0] 
     F = [F(n:-1:1,m/2+1:m) F(n:-1:1,1:m/2)];
-    
+    [xx,yy] = getPoints( n-1, m/2 );
+    [xx,yy] = meshgrid(xx,yy);
     % TODO: Add a way to loosen tolerances for this type of construction.
-    tol = GetTol(F, 2*pi/m, pi/(n-1), dom, 50*pseudoLevel);
+    [tol,vscale] = GetTol(F, xx, yy, dom, 50*pseudoLevel);
     [pivotIndices, pivotArray, removePoles, happyRank, cols, pivots, ...
         rows, idxPlus, idxMinus ] = PhaseOne( F, tol, alpha, 0 );
     [x, y] = getPoints( n, m);
@@ -98,9 +99,9 @@ else  % DISKFUN( FUNCTION )
         % Sample function on a tensor product grid.
         % TODO: Add a more sophisticated evaluate function that does
         % vectorization like chebfun2.
-        F = evaluate(h, n, n);
+        [F,xx,yy] = evaluate(h, n, n);
 
-        tol = GetTol(F, pi/n, pi/n, dom, pseudoLevel);
+        [tol, vscale] = GetTol(F, xx, yy, dom, pseudoLevel);
 
         pivotIndices2 = pivotIndices;
         pivotArray2 = pivotArray;
@@ -130,7 +131,7 @@ else  % DISKFUN( FUNCTION )
     % PHASE TWO 
     % Find the appropriate discretizations in the columns and rows. 
     [cols, pivots, rows, pivotLocations, idxPlus, idxMinus, removePoles] = ...
-        PhaseTwo( h, pivotIndices, pivotArray, n, dom, tol, maxSample, removePoles );
+        PhaseTwo( h, pivotIndices, pivotArray, n, dom, vscale, maxSample, removePoles );
 end
 
 g.cols = chebfun( cols, dom(3:4)-[1 0]);
@@ -142,6 +143,8 @@ g.idxMinus = idxMinus;
 g.nonZeroPoles = removePoles;
 g.pivotLocations = adjustPivotLocations(pivotLocations, pivotArray);
 
+% Simplifying rows and columns after they are happy.
+g = simplify( g );
 
 % Sort according to the maginuted of the pivots using the partition and
 % combine functions. 
@@ -175,7 +178,7 @@ Fm = 0.5*(B - C);
 
 if ~constValue
     warning('CHEBFUN:DISKFUN:constructor:constOrigin',...
-        ['Results may be inaccurate as the function may not be constant'...
+        ['Results may be inaccurate as the function may not be constant '...
          'at the origin (r=0).']);
 end
 colsPlus = []; rowsPlus = []; kplus = 0;  idxPlus = [];
@@ -349,7 +352,7 @@ end
 
 end
 
-function [cols, pivots, rows, pivotLocations, idxPlus, idxMinus, removePoles] = PhaseTwo( h, pivotIndices, pivotArray, n, dom, tol, maxSample, removePoles )
+function [cols, pivots, rows, pivotLocations, idxPlus, idxMinus, removePoles] = PhaseTwo( h, pivotIndices, pivotArray, n, dom, vscale, maxSample, removePoles )
 
 % alpha = diskfun.alpha; % get growth rate factor.
 happy_columns = 0;   % Not happy, until proven otherwise.
@@ -500,34 +503,26 @@ while ( ~(happy_columns && happy_rows) && ~failure)
         end
     end    
     % Happiness check for columns:
-    % TODO: Make this more similar to hapiness check in trigtech.
 
     % Double up the columns.
     temp1 = sum([colsPlus colsMinus],2); temp2 = sum([colsPlus -colsMinus],2);
-    col_coeffs = chebtech2.vals2coeffs( [temp1;temp2(m:-1:1)] );
-
-    % Length of tail to test.
-    testLength = min(m, max(3, round((m-1)/8)));
-    %tail = col_coeffs(1:testLength);
-    tail = col_coeffs(end-testLength+1:end,:);
-
-    if ( all( abs( tail ) <= 1e1*tol ) )
-        happy_columns = 1;
-    end
+    
+    colValues = [temp1;temp2(m:-1:1)];
+    colData.hscale = norm(dom(3:4), inf);
+    colData.vscale = vscale;
+    colChebtech1 = chebtech2.make(colValues, colData);
+    happy_columns = happinessCheck(colChebtech1, [], colValues, colData);
     
     % Happiness check for rows:
-    % TODO: Make this more similar to hapiness check in trigtech.
-
+    
     % Double up the rows.
     temp1 = sum([rowsPlus; rowsMinus],1); temp2 = sum([rowsPlus; -rowsMinus],1);
-    row_coeffs = trigtech.vals2coeffs( [temp1 temp2].' );
 
-    % Length of tail to test.
-    testLength = min(n, max(3, round((n-1)/8)));
-    tail = row_coeffs(1:testLength);
-    if ( all( abs( tail ) <= 1e1*tol ) )
-        happy_rows = 1; 
-    end
+    rowValues = [temp1 temp2].';
+    rowData.hscale = norm(dom(1:2), inf);
+    rowData.vscale = vscale;
+    rowTrigtech = trigtech.make(rowValues, rowData);
+    happy_rows = happinessCheck(rowTrigtech, [], rowValues, rowData);
     
     % Adaptive:
     if( ~happy_columns )
@@ -561,7 +556,7 @@ pivotLocations = [col_pivots row_pivots];
 
 end
 
-function F = evaluate( h, m, n)
+function [F,xx,yy] = evaluate( h, m, n)
 % Evaluate h on a m-by-n tensor product grid.
 
 [x, y] = getPoints( m, n);
@@ -615,7 +610,7 @@ function f = redefine_function_handle( f, coords )
 
 end
 
-function tol = GetTol(F, hx, hy, dom, pseudoLevel)
+function [tol,vscale] = GetTol(F, xx, yy, dom, pseudoLevel)
 % GETTOL     Calculate a tolerance for the diskfun constructor.
 %
 %  This is the 2D analogue of the tolerance employed in the trigtech
@@ -627,8 +622,8 @@ function tol = GetTol(F, hx, hy, dom, pseudoLevel)
 grid = max( m, n );
 
 % Remove some edge values so that df_dx and df_dy have the same size. 
-dfdx = diff(F(1:m-1,:),1,2) / hx; % xx diffs column-wise.
-dfdy = diff(F(:,1:n-1),1,1) / hy; % yy diffs row-wise.
+dfdx = diff(F(1:m-1,:),1,2) ./ diff(xx(1:m-1,:),1,2); % xx diffs column-wise.
+dfdy = diff(F(:,1:n-1),1,1) ./ diff(yy(:,1:n-1,1,1)); % yy diffs row-wise.
 % An approximation for the norm of the gradient over the whole domain.
 Jac_norm = max( max( abs(dfdx(:)), abs(dfdy(:)) ) );
 vscale = max( abs( F(:) ) );

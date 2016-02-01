@@ -1,4 +1,4 @@
-function [p, q, r, mu, nu, poles, residues] = ratinterp(varargin)
+function varargout = ratinterp(varargin)
 %RATINTERP  Robust rational interpolation or least-squares approximation.
 %   [P, Q, R_HANDLE] = RATINTERP(F, M, N) computes the (M, N) rational
 %   interpolant of F on the M + N + 1 Chebyshev points of the second kind. F
@@ -93,6 +93,8 @@ nu = length(b) - 1;
 [p, q, r] = constructRatApprox(xi_type, R, a, b, mu, nu, dom);
 
 % Compute poles and residues if requested.
+poles = [];
+residues = [];
 if ( nargout > 5 )
     if ( nargout > 6 ) % Compute residues.
         % Compute partial fraction expansion of r.
@@ -102,13 +104,24 @@ if ( nargout > 5 )
 
         % Residues are the coefficients of 1/(x - poles(j))
         for j = 1:(length(poles) - 1)
-            if (poles(j+1) == poles(j))
+            if ( poles(j+1) == poles(j) )
                 residues(j+1) = residues(j);
             end
         end
     else               % Just compute the poles.
-          poles = roots(q, 'all');
+        poles = roots(q, 'all');
     end
+end
+    
+outArgs = {p, q, r, mu, nu, poles, residues};
+% Return the output based on nargout:
+if ( nargout <= 1  )
+    varargout{1} = r;
+elseif ( nargout <= 7  )
+    [varargout{1:nargout}] = outArgs{1:nargout};
+else
+    error('CHEBFUN:CHEBFUN:ratinterp:nargout', ...
+        'Incorrect number of output arguments.'); 
 end
 
 end
@@ -447,7 +460,7 @@ if ( strncmpi(xi_type, 'type', 4) )
         [p, q, r] = constructRatApproxCheb2(a, b, mu, nu, dom);
     end
 else                              % Arbitrary points.
-        [p, q, r] = constructRatApproxArb(R, a, b, mu, nu, dom);
+    [p, q, r] = constructRatApproxArb(R, a, b, mu, nu, dom);
 end
 
 end

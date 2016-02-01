@@ -1,8 +1,7 @@
 function out = isequal(f, g)
 %ISEQUAL   Test if TRIGTECH objects are equal.
 %   ISEQUAL(F, G) returns TRUE if the TRIGTECH objects F and G have the same
-%   length, values, and coefficients. They may have different values of vscale
-%   and epslevel.
+%   length, values, and coefficients.
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.

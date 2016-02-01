@@ -7,6 +7,5 @@
 domain = '[-1 1]';
 DE = '0.002*u" + 1i*x*u = lambda*u';
 BC = {'u(-1) = 0'; 'u(1)  = 0'};
-tol = '1e-10';
 type = 'eig';
 numeigs = '25';

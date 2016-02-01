@@ -20,7 +20,6 @@ if ( isreal(f) )
     % Compute the floor:
     f.coeffs = sign(meanfx);
     f.values = f.coeffs;
-    f.vscale = abs(f.coeffs);
 else
     f = compose(f, @(x) x./abs(x));
 end

@@ -47,6 +47,6 @@ pass(6) = all(feval(f, linspace(-1, 1, 10)) == 1);
 % Test 'trunc', flag.
 f = chebfun(@(x) 1 + sin(pi*sin(10*pi*x)), 'periodic', 'trunc', 11);
 c = get(f, 'coeffs');
-pass(7) = abs(1 - c(6)) < get(f, 'epslevel');
+pass(7) = abs(1 - c(6)) < eps;
 
 end

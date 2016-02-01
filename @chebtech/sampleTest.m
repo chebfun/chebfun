@@ -1,11 +1,11 @@
-function pass = sampleTest(op, values, f, vscl, pref)
+function pass = sampleTest(op, values, f, data, pref)
 %SAMPLETEST   Test an evaluation of input OP against a CHEBTECH approximation.
 %   SAMPLETEST(OP, VALUES, F) evaluates both the function OP and its CHEBTECH
 %   representation F at one or more points within [-1,1]. The difference of
 %   these values is computed, and if this is sufficiently small (relative to
-%   F.VSCALE, F.HSCALE, and F.EPSLEVEL) the test passes and returns TRUE. If
-%   the difference is large, it returns FALSE. SAMPLETEST(OP, VALUES, F, VSCL)
-%   will test relative the the values given in VSCL, rather than F.VSCALE.
+%   DATA.VSCALE and DATA.HSCALE) the test passes and returns TRUE. If the
+%   difference is large, it returns FALSE. SAMPLETEST(OP, VALUES, F, DATA) will
+%   test relative to the values given in DATA.VSCALE, rather than VSCALE(F).
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -14,26 +14,12 @@ function pass = sampleTest(op, values, f, vscl, pref)
 n = length(f);
 
 % Set a tolerance:
-tol = max(f.epslevel, pref.eps) * n;
+tol = sqrt(max(eps, pref.eps));
 
-if ( nargin < 4 || isempty(vscl) )
-    vscl = max(abs(values), [], 1);
-end
-
-% Scale TOL by the MAX(F.HSCALE, VSCL/||F||).
-% This choice of scaling is the result of undesirable behavior when using
-% standardCheck to construct the function f(x) = sqrt(1-x) on the interval [0,1]
-% with splitting turned on. Due to the way standardChop checks for plateaus, the
-% approximations on the subdomains were chopped incorrectly leading to poor
-% quality results. This choice of scaling corrects this by giving less weight to
-% subintervals that are much smaller than the global approximation domain, i.e.
-% HSCALE >> 1. For functions on a single domain with no breaks, this scaling has
-% no effect since HSCALE = 1. 
-nrmf = max(abs(values), [], 1);
-if ( isempty(vscl) )
-    vscl = nrmf;
-end
-tol = tol.*max(f.hscale*nrmf, vscl);
+% Scale TOL by the MAX(DATA.HSCALE*||F||, DATA.VSCALE). 
+% (See standardCheck for explanation)
+vscaleF = max(abs(values), [], 1);
+tol = tol.*max(data.hscale*vscaleF, data.vscale);
 
 % choose points to evaluate
 xeval = [-0.357998918959666; 0.036785641195074];

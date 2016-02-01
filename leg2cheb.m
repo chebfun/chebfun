@@ -270,25 +270,6 @@ end
 
 function C = constantOutTheFront(N) % (See Hale and Townsend, 2014)
 %CONSTANTOUTTHEFRONT(N) returns sqrt(4/pi)*gamma((0:N)+1)/gamma((0:N)+3/2))
-% Initialise:
-NN = (0:N)';
-NN(1) = 1; % Set the first value different from 0 to avoid complications.
-ds = -1/8./NN; s = ds; j = 1; ds(1) = 1;
-while ( norm(ds(10:end)./s(10:end),inf) > eps/100 )
-    j = j + 1;
-    ds = -.5*(j-1)/(j+1)./NN.*ds;
-    s = s + ds;
-end
-NN(1) = 0; % Reset the first value.
-p2 = exp(s).*sqrt(4./(NN+.5)/pi);
-% Stirling's series:
-g = [1 1/12 1/288 -139/51840 -571/2488320 163879/209018880 ...
-    5246819/75246796800 -534703531/902961561600 ...
-    -4483131259/86684309913600 432261921612371/514904800886784000];
-eN = ones(N+1, 1); e9 = ones(1, 9);
-ff1 = sum(bsxfun(@times, g, [eN, cumprod(bsxfun(@rdivide, e9, NN),2)]), 2);
-ff2 = sum(bsxfun(@times, g, [eN, cumprod(bsxfun(@rdivide, e9, NN+.5),2)]), 2);
-C = p2.*ff1./ff2;
-% Use direct evaluation for the small values:
-C(1:10) = sqrt(4/pi)*gamma((0:9)+1)./gamma((0:9)+3/2);
+NN = (0:N).';
+C = sqrt(4/pi)*exp(gammaln(NN+1) - gammaln(NN+3/2));
 end

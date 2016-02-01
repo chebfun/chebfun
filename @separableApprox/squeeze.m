@@ -20,8 +20,8 @@ if ( rank( f ) == 1 )
     % If f is of rank 1, then it may be a function of just one variable:
     
     % Simplify rows and cols:
-    cols = simplify( cols );
-    rows = simplify( rows );
+    cols = simplify( cols, [], 'globaltol' );
+    rows = simplify( rows, [], 'globaltol' );
     if ( length( cols ) == 1 )
         % If cols are constant then function of x.
         g = mean( cols ) * D * rows.';
@@ -43,7 +43,7 @@ else
 end
 
 if ( isa( g, 'chebfun' ) )
-    g = simplify( g );
+    g = simplify( g, [], 'globaltol' );
 end
 
 end
