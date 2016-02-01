@@ -45,7 +45,8 @@ function D = diffmat(N, varargin)
 %   conditions.
 %
 %   D = DIFFMAT(N, 'periodic') returns the N x N first-order Fourier 
-%   differentiation matrix on the default interval [-1 1].
+%   differentiation matrix on the default interval [-1 1]. The tag
+%   'periodic' can be replaced by 'trig'.
 %
 %   D = DIFFMAT(N, P, 'periodic') returns the N x N Fourier differentiation 
 %   matrix of order P  on the default interval [-1 1].
@@ -517,9 +518,9 @@ for j = 1:numel(varargin)
                     m = n - p;
                 end
                 
-            case 'periodic'
-                mapFrom = v;
-                mapTo = v;
+            case {'periodic', 'trig'}
+                mapFrom = 'periodic';
+                mapTo = 'periodic';
                 if ( m ~= n )
                     error('CHEBFUN:diffmat:wrongInput', ...
                         ['Rectangular Fourier differentiation matrices are '...
