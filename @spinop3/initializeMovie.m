@@ -99,7 +99,11 @@ set(ax, 'Visible', 'off', 'HandleVisibility', 'off', 'Fontsize', 16)
 set(h, 'Visible', 'on', 'Position', [.47 1.02 .5])
 
 % Ask the user to press SPACE:
-disp('Type <space> when ready.'), shg, pause
+state = pause;
+if ( strcmpi(state, 'on') == 1 )
+    disp('Type <space> when ready.')
+end
+shg, pause
 
 % Outputs:
 p{nVars + 1} = h;
