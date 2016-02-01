@@ -63,8 +63,8 @@ a(2) = max(a(2),ng);
 axis(a), set(gca,FS,9)
 
 % Plot envelope
-%envelope(envelope == 0) = a(3);
-%semilogy(0:ng-1,envelope,'-g')
+m(m == 0) = a(3);
+semilogy(0:ng-1,m,'-g')
 
 % Plot zero data values, if any, on relabeled bottom axis:
 if any(gc==0)

@@ -152,7 +152,7 @@ else
     [~, d] = min(cc);
     cutoff = max(d - 1, 1);
 n2 = length(coeffs);
-save explaindata envelope plateauPoint cutoff n2 j2 cc 
+save explaindata envelope plateauPoint cutoff n2 j2 cc m
 end
 
 end
