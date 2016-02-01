@@ -1,16 +1,15 @@
 function out = dimCheck(f, g, ~)
 %DIMCHECK   Check dimension compatability of two CHEBFUN objects.
 %   In MATLAB 2015b and below DIMCHECK(F, G) returns:
-%       1 if numColumns(F) == numColumns(G)
-%       0 otherwise.
+%       1    if numColumns(F) == numColumns(G)
+%     error  otherwise.
 %
 %   In MATLAB 2016a and above DIMCHECK(F, G) returns:
-%       1 if numColumns(F) == numColumns(G)
-%       2 if numColumns(F) == 1
-%       3 if numColumns(G) == 1
-%       0 otherwise.
+%       1    if numColumns(F) == numColumns(G)
+%      -1    if numColumns(F) == 1 or numColumns(G) == 1
+%     error  otherwise.
 %
-%   DIMCHECK(F, G, 1) will thrown a dimension error rather than return 0. 
+%   DIMCHECK(F, G, 1) will return 0 rather than throw a dimension error.
 %
 % See also NUMCOLUMNS, SIZE.
 
@@ -20,26 +19,25 @@ function out = dimCheck(f, g, ~)
 nf = numColumns(f);
 ng = numColumns(g);
 
+% Check dimensions:
 if ( nf == ng )
     out = 1;
-    
-elseif ( nf == 1 )
-    out = 2;
-    
-elseif ( ng == 1 )
-    out = 3;
-    
+elseif ( nf == 1 || ( ng == 1 ) )
+    out = -1;
 else
     out = 0;
-    
 end
 
-if ( (out > 1) && verLessThan('matlab', '8.6') )
+% Adjust for MATLAB version if out = -1:
+if ( (out == -1 ) && verLessThan('matlab', '8.6') )
    out = 0; 
 end
 
-if ( nargin == 3 && out == 0 )
-    error('CHEBFUN:CHEBFUN:dimCheck:dims', 'Matrix dimensions must agree.');
+if ( out == 0 && nargin == 2 )
+    % Throw an error if requested (as the caller):
+    ME = MException('CHEBFUN:CHEBFUN:dimCheck:dim', ...
+        'Matrix dimensions must agree.');
+    throwAsCaller(ME)
 end
 
 end

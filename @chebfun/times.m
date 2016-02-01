@@ -75,7 +75,7 @@ else                           % CHEBFUN .* CHEBFUN
             'Matrix dimensions must agree. (One input is transposed).');
     end
     
-    dimCheck(f, g, 1);
+    dimCheck(f, g);
         
     if ( numel(f) == 1 && numel(g) == 1 )
         % CHEBFUN case:

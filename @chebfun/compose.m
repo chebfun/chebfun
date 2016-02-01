@@ -109,7 +109,7 @@ if ( isa(op, 'chebfun') )
 elseif ( opIsBinary )
     % Binary composition:
     
-    dimCheck(f, g, 1);
+    dimCheck(f, g);
     
     if ( numel(f) == 1 && numel(g) == 1 )
         % Array-valued CHEBFUN case:

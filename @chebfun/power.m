@@ -26,7 +26,7 @@ end
 if ( isa(f, 'chebfun') && isa(b, 'chebfun') )
     
     % Check the number of columns match:
-    dimCheck(f, b, 1);
+    dimCheck(f, b);
     
     if ( numel(f) == 1 && numel(b) == 1 )
         % Array-valued CHEBFUN case:
