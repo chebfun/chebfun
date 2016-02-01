@@ -865,7 +865,7 @@ function Ja = besselTaylor(t, z, a)
 % BESSELTAYLOR(T, Z, A) evaluates J_A(Z+T) by a Taylor series expansion about Z. 
 
 npts = numel(t);
-kmax = min(ceil(abs(log(eps)/log(norm(t, inf)))), 30);
+kmax = 30;
 H = bsxfun(@power, t, 0:kmax).';
 % Compute coeffs in Taylor expansions about z (See NIST 10.6.7)
 [nu, JK] = meshgrid(-kmax:kmax, z);
