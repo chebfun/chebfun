@@ -74,6 +74,21 @@ tol = 10*max(get(h1, 'vscale')*eps, ...
     get(h2, 'vscale')*eps);
 pass(14) = norm(feval(h1, x) - feval(h2, x), inf) < tol;
 
+% Check that plus handles "small" results appropriately in the case of a
+% non-integer exponent difference.
+warnState = warning('off', 'CHEBFUN:SINGFUN:plus:exponentDiff');
+
+pref_fixed = pref;
+pref_fixed.fixedLength = 256;
+op = @(x) ((x + 1)/2).^pi;
+data.exponents = [pi - 3, 0];
+f = singfun(op, data, pref);
+g = singfun(op, [], pref_fixed);
+h = f - g;
+pass(15) = get(h, 'ishappy') && (length(h) < 1024);
+
+warning(warnState);
+
 end
 
 % Test the addition of a SINGFUN F, specified by Fh, to a scalar C using
