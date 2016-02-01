@@ -7,6 +7,9 @@ function [L, Lconst] = lebesgue(x, varargin)
 %   [a, b] returns the Lebesgue function associated with polynomial
 %   interpolation in those points in that domain.
 %
+%   L = LEBESGUE(..., 'trig') does the same but for trigonometric interpolation
+%   instead of polynomial interpolation.
+%
 %   [L, LCONST] = LEBESGUE(...) also returns the Lebesgue constant.
 %
 %   Example:
@@ -28,37 +31,13 @@ function [L, Lconst] = lebesgue(x, varargin)
 %  See http://www.chebfun.org/ for Chebfun information.
 
 % Parse inputs.
-if ( nargin == 1 )     % LEBESGUE(X)
-    d = [-1 1];
-elseif ( nargin == 2 ) % LEBESGUE(X, [A B])
-    d = varargin{1};
-elseif ( nargin == 3 ) % LEBESGUE(X, A, B)
-    d = [varargin{1} varargin{2}];
+[d, doTrig] = parseInputs(x, varargin{:});
+
+% Construct the appropriate Lebesgue function.
+if ( doTrig )
+    L = trigLebesgue(x, d);
 else
-    error('CHEBFUN:lebesgue:tooManyArgs', 'Too many input arguments.');
-end
-
-% Compute the barycentric weights for the interpolation grid.
-w = baryWeights(x);
-
-% Set preferences.
-pref = chebfunpref();
-pref.techPrefs.sampleTest = false;
-if ( isa(pref.tech(), 'chebtech') )
-    % In between the interpolation nodes, the Lebesgue function is guaranteed
-    % by definition to be a polynomial of degree at most length(x) - 1.
-    pref.techPrefs.fixedLength = length(x);
-end
-
-% Set breakpoints at the interpolation nodes.  (NB:  unique() returns the
-% points in sorted order.)
-dom = unique([x(:) ; d.']).';
-L = chebfun(@(t) lebesgueFun(t, x(:), w), dom, pref);
-
-if ( isa(pref.tech(), 'chebtech') )
-    % Since we fixed the degree for chebtech-based representations, we must call
-    % simplify manualy.
-    L = simplify(L);
+    L = polyLebesgue(x, d);
 end
 
 % Return the Lebesgue constant if asked.
@@ -68,8 +47,95 @@ end
 
 end
 
-function L = lebesgueFun(t, x, w)
-%LEBESGUEFUN:  Evaluate Lebesgue function for an interpolation grid at a point.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function [d, doTrig] = parseInputs(x, varargin)
+
+% Parse inputs.  (NB:  We've already stripped out the X input.)
+if ( nargin == 1 )     % LEBESGUE(X)
+    d = [-1 1];
+    doTrig = false;
+elseif ( nargin == 2 ) % LEBESGUE(X, [A B]) or LEBESGUE(X, 'trig')
+    if ( isnumeric(varargin{1}) )
+        d = varargin{1};
+        doTrig = false;
+    elseif ( strcmpi(varargin{1}, 'trig') )
+        d = [-1 1];
+        doTrig = true;
+    else
+        error('CHEBFUN:lebesgue:parseInputs:badArg1', 'Invalid argument.');
+    end
+elseif ( nargin == 3 ) % LEBESGUE(X, A, B) or LEBESGUE(X, [A B], 'trig')
+    if ( isnumeric(varargin{1}) && isnumeric(varargin{2}) )
+        d = [varargin{1} varargin{2}];
+        doTrig = false;
+    elseif ( isnumeric(varargin{1}) && strcmpi(varargin{2}, 'trig') )
+        d = varargin{1};
+        doTrig = true;
+    else
+        error('CHEBFUN:lebesgue:parseInputs:badArg2', 'Invalid argument.');
+    end
+elseif ( nargin == 4 ) % LEBESGUE(X, A, B, 'trig')
+    if ( isnumeric(varargin{1}) && isnumeric(varargin{2}) && ...
+         strcmpi(varargin{3}, 'trig') )
+        d = [varargin{1} varargin{2}];
+        doTrig = true;
+    else
+        error('CHEBFUN:lebesgue:parseInputs:badArg3', 'Invalid argument.');
+    end
+else
+    error('CHEBFUN:lebesgue:tooManyArgs', 'Too many input arguments.');
+end
+
+if ( ~isequal(size(d), [1 2]) || (d(1) >= d(2)) )
+    error('CHEBFUN:lebesgue:badDom', ...
+          ['Domain input must be either two numbers or a row vector with ' ...
+           'two elements, listed in ascending order.']);
+end
+
+if ( any(x < d(1) - 10*eps(d(1))) || any(x > d(2) + 10*eps(d(2))) )
+    error('CHEBFUN:lebesgue:pointsOutsideDomain', ...
+          sprintf(['Interpolation points must be inside domain ' ...
+                   '([%.6f %.6f]).'], d(1), d(2)));
+end
+
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function L = polyLebesgue(x, d)
+%POLYLEBESGUE   Compute Lebesgue function for polynomial interpolation.
+%  X - Interpolation nodes.
+%  D - Interpolation domain.
+
+% Compute the barycentric weights for the interpolation grid.
+w = baryWeights(x);
+
+% Set preferences.
+pref = chebfunpref();
+pref.techPrefs.sampleTest = false;
+if ( isa(pref.tech(), 'chebtech') )
+    % In between the interpolation nodes, the Lebesgue function is
+    % guaranteed by definition to be a polynomial of degree at most
+    % length(x) - 1.
+    pref.techPrefs.fixedLength = length(x);
+end
+
+% Set breakpoints at the interpolation nodes.  (NB:  unique() returns the
+% points in sorted order.)
+dom = unique([x(:) ; d.']).';
+L = chebfun(@(t) polyLebesgueFun(t, x(:), w), dom, pref);
+
+if ( isa(pref.tech(), 'chebtech') )
+    % Since we fixed the degree for chebtech-based representations, we must
+    % call simplify manualy.
+    L = simplify(L);
+end
+
+end
+
+function L = polyLebesgueFun(t, x, w)
+%POLYLEBESGUEFUN:  Evaluate Lebesgue function for poly. interp. grid at a point.
 %  T - Evaluation points.
 %  X - Interpolation nodes.
 %  W - Barycentric weights.
@@ -84,4 +150,14 @@ for i = 1:numel(t)
     end
 end
 
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function L = trigLebesgue(x, d)
+L = [];
+end
+
+function L = trigLebesgueFun(t, x, w)
+L = [];
 end
