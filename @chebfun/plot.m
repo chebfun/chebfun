@@ -101,6 +101,10 @@ end
 
 % Store the hold state of the current axis:
 holdState = ishold;
+% Acquire initial color cycle if running R2014b+.
+if ( ~verLessThan('matlab', '8.4') )
+    originalColorOrder = get(gca, 'ColorOrderIndex');
+end
 
 % Store the current X and Y-limits, and whether ylim is in manual or auto mode.
 if ( holdState )
@@ -301,7 +305,7 @@ while ( ~isempty(varargin) )
 end
 
 %% Plotting starts here:
-
+% keyboard
 % Plot the lines:
 h1 = plot(lineData{:});
 set(h1, 'Marker', 'none', lineStyle{:})
@@ -311,7 +315,7 @@ hold on
 
 % Reset color cycle prior to point plot if running R2014b.
 if ( ~verLessThan('matlab', '8.4') )
-    set(gca, 'ColorOrderIndex', 1);
+    set(gca, 'ColorOrderIndex', originalColorOrder);
 end
 
 % Plot the points:
@@ -325,7 +329,7 @@ end
 
 % Reset color cycle prior to jump plot if running R2014b.
 if ( ~verLessThan('matlab', '8.4') )
-    set(gca, 'ColorOrderIndex', 1);
+    set(gca, 'ColorOrderIndex', originalColorOrder);
 end
 
 % Plot the jumps:
@@ -358,7 +362,7 @@ end
 
 % Reset colors prior to legend data plot if running R2014b.
 if ( ~verLessThan('matlab', '8.4') )
-    set(gca, 'ColorOrderIndex', 1);
+    set(gca, 'ColorOrderIndex', originalColorOrder);
 end
 
 % Plot the dummy data, which includes both line and point style:
@@ -422,7 +426,7 @@ function h = plotDeltas(deltaData)
         colorOrder = circshift(originalColorOrder, 1);
     end
 
-    for (k = 1:1:numel(deltaData))
+    for k = 1:1:numel(deltaData)
         % Set color for the next delta function plot.
         if ( verLessThan('matlab', '8.4') )
             % Manually manipulate the ColorOrder for R2014a or earlier.
