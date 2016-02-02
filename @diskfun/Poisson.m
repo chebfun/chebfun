@@ -102,7 +102,7 @@ for k = 1 : n/2+1
     % Solve using Woodbury formula: 
     %CFS(k,:) = WoodburySolver( A, b ); 
     
-        % Split into even and odd problems: 
+    % Split into even and odd problems: 
     Aeven = A(1:2:end,1:2:end); 
     Aodd = A(2:2:end, 2:2:end); 
     b =  [     modified_bc_data1(k) ; ... 
