@@ -2,7 +2,7 @@ function choreosphere
 %CHOREOSPHERE   Compute spherical choreographies of the curved n-body problem.
 %    CHEB.CHOREOSPHERE computes a spherical choreography using hand-drawn
 %    initial guesses. At the end of the computation, the user is asked to press
-%    <1> to simulate the motion of the planets. To stop the program, press
+%    <1> to display the motion of the planets. To stop the program, press
 %    <CTRL>-<C>.
 %
 % Spherical choreographies are periodic solutions of the n-body problem on the
@@ -24,7 +24,7 @@ lw = 2; ms = 30; fs = 18;
 format long, format compact
 n = input('How many bodies? (e.g. 5) ');
 R = input('Radius? (e.g. 2) ');
-w = input('Angular velocity? (e.g. 1.2) ');
+w = input('Angular velocity? (e.g. 0 or 1.2) ');
 k = 15;
 N = k*n;
 dom = [0 2*pi];

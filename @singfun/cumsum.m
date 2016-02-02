@@ -174,18 +174,18 @@ function g = singIntegral(f)
         elseif ( ~iszero(u) && abs(CM) < tol )
             g.smoothPart = u;
             g.exponents = exps;
-            g = extractBoundaryRoots(g, [1, 0]);            
+            g = extractBoundaryRoots(g, [1 ; 0]);            
         else % The general case that both terms are non-trivial
             g.smoothPart = u + CM*xa;
             g.exponents = exps;
-            g = extractBoundaryRoots(g, [1, 0]);
+            g = extractBoundaryRoots(g, [1 ; 0]);
         end
         
     elseif ( abs(Cm) < tol )
         % No log term: fractional poles with non-constant smooth part:
         g.smoothPart = u;
         g.exponents = exps;
-        g = extractBoundaryRoots(g, [1, 0]);
+        g = extractBoundaryRoots(g, [1 ; 0]);
     else
         % Log term: integer poles with constant or non-constant smooth part:
         % [TODO]: Construct a representation of log.
