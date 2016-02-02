@@ -641,7 +641,7 @@ stddev = std(val);
 
 % If the standard deviation does not exceed the tolerance then the pole is
 % "constant"
-if stddev <= tol
+if stddev <= 1e8*tol
     constVal = 1;
 else
     constVal = 0;

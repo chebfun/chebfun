@@ -98,7 +98,11 @@ if ( ~isempty(varargin) )
         % Full grid on the disk
         m = length(f.cols);
         n = length(f.rows);
-        [TT, RR] = meshgrid([trigpts(n,dom(1:2)); dom(2)],chebpts(m));
+        r = chebpts(m);
+        r = r(floor(m/2)+1:m);
+        [TT, RR] = meshgrid([trigpts(max(n,1000),dom(1:2)); dom(2)],r);
+        [TT1, RR1] = meshgrid([trigpts(n,dom(1:2)); dom(2)],r);
+        
         
         % Plot pivots:
         
@@ -109,11 +113,13 @@ if ( ~isempty(varargin) )
         pivotsCart(:,2) = (pivots(:,2)).*sin(pivots(:,1)); %y=rsinth
         XX = RR.*cos(TT);
         YY = RR.*sin(TT);
+        XX1 = RR1.*cos(TT1);
+        YY1 = RR1.*sin(TT1);
 
         if plot_full_grid
             % Plot grayed out grid
             clrGrid = [192 192 192]/256;
-            plot(XX,YY,'-','Color',clrGrid);
+            plot(XX1,YY1,'-','Color',clrGrid);
             plot(XX',YY','-','Color',clrGrid);
         end            
       
