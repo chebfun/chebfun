@@ -162,11 +162,14 @@ end
 % Compute the constant for the weights:
 if ( ~strcmpi(method,'GW') )
     if ( n >= 100 )
-        cte1 = ratiogamma(n+a+1,b);
-        cte2 = ratiogamma(n+1,b);
+        cte1 = ratioOfGamma(n+a+1,b);
+        cte2 = ratioOfGamma(n+1,b);
         C = 2^(a+b+1)*(cte2/cte1);
     else
-        C = 2^(a+b+1)*beta(a+1, b+1)/sum(w);
+        C = 2^(a+b+1) * exp( gammaln(n+a+1) - gammaln(n+a+b+1) + ...
+            gammaln(n+b+1) - gammaln(n+1) );   % An alternative approach could
+%        be used: C = 2^(a+b+1)*beta(a+1, b+1)/sum(w), but we prefer
+%        compute the weights independently.
     end
     w = C*w;
 end
@@ -191,7 +194,7 @@ function [x, w] = rescale(x, w, interval, a, b)
     end
 end
 
-function [cte] = ratiogamma(m,delta)
+function [cte] = ratioOfGamma(m,delta)
 %RATIOGAMMA Compute the ratio gamma(m+delta)/gamma(m). See [2].
     % cte = gamma(m+delta)/gamma(m)
     ds = .5*delta^2/(m-1);
