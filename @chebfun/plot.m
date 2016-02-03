@@ -101,10 +101,6 @@ end
 
 % Store the hold state of the current axis:
 holdState = ishold;
-% Acquire initial color cycle if running R2014b+.
-if ( ~verLessThan('matlab', '8.4') )
-    originalColorOrder = get(gca, 'ColorOrderIndex');
-end
 
 % Store the current X and Y-limits, and whether ylim is in manual or auto mode.
 if ( holdState )
@@ -305,7 +301,15 @@ while ( ~isempty(varargin) )
 end
 
 %% Plotting starts here:
-% keyboard
+
+% Acquire initial color cycle if running R2014b+.
+if ( ~verLessThan('matlab', '8.4') )
+    if ( ~holdState )
+        set(gca, 'ColorOrderIndex', 1);
+    end
+    originalColorOrder = get(gca, 'ColorOrderIndex');
+end
+
 % Plot the lines:
 h1 = plot(lineData{:});
 set(h1, 'Marker', 'none', lineStyle{:})
@@ -313,9 +317,10 @@ set(h1, 'Marker', 'none', lineStyle{:})
 % Ensure the plot is held:
 hold on
 
-% Reset color cycle prior to point plot if running R2014b.
+% Get color cycle prior to point plot if running R2014b.
 if ( ~verLessThan('matlab', '8.4') )
-    set(gca, 'ColorOrderIndex', originalColorOrder);
+    newColorOrder = get(gca, 'ColorOrderIndex');
+    set(gca, 'ColorOrderIndex', originalColorOrder)
 end
 
 % Plot the points:
@@ -369,6 +374,11 @@ end
 hDummy = plot(lineData{:});
 if ( ~isempty(lineStyle) || ~isempty(pointStyle) )
     set(hDummy, lineStyle{:}, pointStyle{:});
+end
+
+% Reset colors prior to legend data plot if running R2014b.
+if ( ~verLessThan('matlab', '8.4') )
+    set(gca, 'ColorOrderIndex', newColorOrder);
 end
 
 %% Setting xLim and yLim:
