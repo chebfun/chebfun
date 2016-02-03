@@ -64,4 +64,11 @@ dom = [-pi pi];
 y = trigBary(2, fvals, xk, dom);
 pass(8) = ~isinf(y) && ~isnan(y) && (abs(y - 1) < 10*eps);
 
+% Check for #1744.
+w = trigBaryWeights(linspace(-1, 1, 4).');
+w_ex = [0.38883657630910357 ; -1.0 ; 1.0 ; -0.38883657630910357];
+err = norm(abs(w) - abs(w_ex), Inf);
+tol = 10*eps;
+pass(9) = err < tol;
+
 end
