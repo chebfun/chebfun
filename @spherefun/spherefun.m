@@ -82,6 +82,12 @@ classdef spherefun < separableApprox
         % Poisson solver: 
         u = Poisson( f, const, m, n);
         
+        % Helmholtz solver: 
+        u = Helmholtz( f, K, m, n);
+        
+        % Convert matrix of coefficients to a spherefun: 
+        f = coeffs2spherefun( CFS ); 
+        
         % Converts a function in spherical coordinates to one in Cartesian
         % coordinates on the sphere.
         fdf = sphf2cartf(f, lam, th, coord);
