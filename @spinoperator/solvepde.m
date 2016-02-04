@@ -60,14 +60,13 @@ elseif ( isempty(tspan) == 1 )
         tspan = parseInputs(pdechar);
     else
         [tspan, ~, pref] = parseInputs(pdechar);
+        pref.dt = [];
     end
 elseif ( isempty(u0) == 1 )
     if ( isempty(pref) == 0 )
         [~, u0] = parseInputs(pdechar);
     else
         [~, u0, pref] = parseInputs(pdechar);
-        % TSPAN was given by the user, so we want to be sure that we're going
-        % to compute the solution at the right times, so use adaptive dt:
         pref.dt = [];
     end
 end
