@@ -1,11 +1,10 @@
-function L = laplacian( f )
+function L = laplacian(f)
 %LAPLACIAN   Laplacian of a SEPARABLEAPPROX.
-%
 %   L = LAPLACIAN(F) returns a SEPARABLEAPPROX representing the Laplacian of F.
 %
-% See also LAP.
+% See also SEPARABLEAPPROX/LAP.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % laplacian(f) = f_xx + f_yy: 

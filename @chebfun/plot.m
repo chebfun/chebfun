@@ -302,6 +302,14 @@ end
 
 %% Plotting starts here:
 
+% Acquire initial color cycle if running R2014b+.
+if ( ~verLessThan('matlab', '8.4') )
+    if ( ~holdState )
+        set(gca, 'ColorOrderIndex', 1);
+    end
+    originalColorOrder = get(gca, 'ColorOrderIndex');
+end
+
 % Plot the lines:
 h1 = plot(lineData{:});
 set(h1, 'Marker', 'none', lineStyle{:})
@@ -309,9 +317,10 @@ set(h1, 'Marker', 'none', lineStyle{:})
 % Ensure the plot is held:
 hold on
 
-% Reset color cycle prior to point plot if running R2014b.
+% Get color cycle prior to point plot if running R2014b.
 if ( ~verLessThan('matlab', '8.4') )
-    set(gca, 'ColorOrderIndex', 1);
+    newColorOrder = get(gca, 'ColorOrderIndex');
+    set(gca, 'ColorOrderIndex', originalColorOrder)
 end
 
 % Plot the points:
@@ -325,7 +334,7 @@ end
 
 % Reset color cycle prior to jump plot if running R2014b.
 if ( ~verLessThan('matlab', '8.4') )
-    set(gca, 'ColorOrderIndex', 1);
+    set(gca, 'ColorOrderIndex', originalColorOrder);
 end
 
 % Plot the jumps:
@@ -358,13 +367,18 @@ end
 
 % Reset colors prior to legend data plot if running R2014b.
 if ( ~verLessThan('matlab', '8.4') )
-    set(gca, 'ColorOrderIndex', 1);
+    set(gca, 'ColorOrderIndex', originalColorOrder);
 end
 
 % Plot the dummy data, which includes both line and point style:
 hDummy = plot(lineData{:});
 if ( ~isempty(lineStyle) || ~isempty(pointStyle) )
     set(hDummy, lineStyle{:}, pointStyle{:});
+end
+
+% Reset colors prior to legend data plot if running R2014b.
+if ( ~verLessThan('matlab', '8.4') )
+    set(gca, 'ColorOrderIndex', newColorOrder);
 end
 
 %% Setting xLim and yLim:
@@ -422,7 +436,7 @@ function h = plotDeltas(deltaData)
         colorOrder = circshift(originalColorOrder, 1);
     end
 
-    for (k = 1:1:numel(deltaData))
+    for k = 1:1:numel(deltaData)
         % Set color for the next delta function plot.
         if ( verLessThan('matlab', '8.4') )
             % Manually manipulate the ColorOrder for R2014a or earlier.
