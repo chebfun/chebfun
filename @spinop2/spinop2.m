@@ -40,8 +40,6 @@ classdef spinop2 < spinoperator
         
         function S = spinop2(varargin)
             
-            S.dimension = 2;
-            
             if ( nargin == 0 )
                 return
             end

@@ -55,8 +55,6 @@ classdef spinop < spinoperator
         
         function S = spinop(varargin)
             
-            S.dimension = 1;
-            
             if ( nargin == 0 )
                 return
             end

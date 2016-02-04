@@ -16,7 +16,7 @@ function schemeCoeffs = computeCoeffs(K, dt, L, M, S)
 % Set-up:
 s = K.internalStages;  % internal stages
 q = K.steps;           % number of steps (>1 for multistep methods)
-dim = S.dimension;     % spatial dimension (1, 2 or 3)
+dim = getDimension(S); % spatial dimension (1, 2 or 3)
 nVars = S.numVars;     % number of unknown functions
 schemeName = K.scheme; % scheme
 N = size(L, 1)/nVars;  % grid points

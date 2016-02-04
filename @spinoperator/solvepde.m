@@ -94,18 +94,16 @@ tf = tspan(end);
 % If no SPINOPERATOR was given (i.e., DEMO mode), create one:
 if ( isempty(S) == 1 ) 
     if ( isa(u0{1}, 'chebfun') == 1 )
-        dim = 1;
         S = spinop(pdechar, dom);
     elseif ( isa(u0{1}, 'chebfun2') == 1 )
-        dim = 2;
         S = spinop2(pdechar, dom);
     elseif ( isa(u0{1}, 'chebfun3') == 1 )
-        dim = 3;
         S = spinop3(pdechar, dom);
     end
-else
-    dim = S.dimension;
 end
+
+% Get the spatial dimension:
+dim = getDimension(S);
 
 % Create a SPINPREFERENCE object if none:
 if ( isempty(pref) == 1 )

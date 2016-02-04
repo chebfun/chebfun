@@ -38,8 +38,6 @@ classdef spinop3 < spinoperator
         
         function S = spinop3(varargin)
             
-            S.dimension = 3;
-            
             if ( nargin == 0 )
                 return
             end

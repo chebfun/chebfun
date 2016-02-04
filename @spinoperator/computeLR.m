@@ -9,7 +9,7 @@ function LR = computeLR(S, dt, L, M)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Set-up:
-dim = S.dimension;     % spatial dimension (1, 2 or 3)
+dim = getDimension(S); % spatial dimension (1, 2 or 3)
 nVars = S.numVars;     % number of unknown functions
 N = size(L, 1)/nVars;  % grid points
 

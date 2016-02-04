@@ -15,7 +15,6 @@ classdef spinoperator
     %% CLASS PROPERTIES:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
-        dimension           % Spatial dimension
         domain              % Spatial domain
         linearPart          % Linear part of the operator
         nonlinearPart       % Nonlinear part of the operator
@@ -74,7 +73,7 @@ classdef spinoperator
             nVars = nargin(N);
             
             % Get the dimension DIM:
-            dim = S.dimension;
+            dim = getDimension(S);
             
             % For scalar equations in 1D, we support nonlinearities of the form
             % diff(f(u),m) with m>=0:
@@ -136,7 +135,7 @@ classdef spinoperator
             nVars = nargin(N);
             
             % Get the dimension DIM:
-            dim = S.dimension;
+            dim = getDimension(S);
             
             % For scalar equations in 1D, we support nonlinearities of the form
             % diff(f(u),m) with m>=0:
@@ -193,6 +192,10 @@ classdef spinoperator
         
         % Discretize a SPINOPERATOR:
         [L, Nc] = discretize(S, N)
+
+        % Returns the spatial dimension (1 for SPINOP, 2 for SPINOP2 and 
+        % 3 for SPINOP3):
+        dim = getDimension(S)
         
         % Initialize a movie when solving a PDE specified by a SPINOPERATOR:
         [p, plotOptions] = initializeMovie(S, dt, pref, v, gridPoints)
