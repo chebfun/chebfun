@@ -16,7 +16,7 @@ dataToPlot = str2func(pref.dataToPlot);
 xxplot = [xx; 2*xx(end) - xx(end-1)];
 
 % Finer grid for interploation:
-Nplot = 1024;
+Nplot = max(N, 1024);
 xxxplot = trigpts(Nplot, dom);
 xxxplot = [xxxplot; 2*xxxplot(end) - xxxplot(end-1)];
 

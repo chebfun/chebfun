@@ -71,7 +71,7 @@ function [uout, tout] = spin3(varargin)
 %       u_t = laplacian(u) + .1 - u + u^2*v,
 %       v_t = 10*laplacian(v) + .9 - u^2*v,
 %
-%    on [0 20]^3 from t=0 to t=400, with initial condition 
+%    on [0 20]^3 from t=0 to t=200, with initial condition 
 %
 %       u0(x,y,z) = 1 - exp(-10*((x-G/2)^2 + (y-G/2)^2 + (z-G/2)^2)),
 %       v0(x,y,z) = exp(-10*((x-G/2)^2 + 2*(y-G/2)^2 + (z-G/2)^2)),

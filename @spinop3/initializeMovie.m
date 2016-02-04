@@ -52,7 +52,7 @@ zzplot = [zzplot; zzplot(1,:,:)];
 zzplot = [zzplot, zzplot(:,1,:)];
 
 % Finer grid for interploation:
-Nplot = max(N, 64);
+Nplot = max(N, 100);
 [xxxplot, yyyplot, zzzplot] = meshgrid(trigpts(Nplot, dom));
 xxxplot = [xxxplot, 2*xxxplot(:,end,:) - xxxplot(:,end-1,:)];
 xxxplot =  [xxxplot; xxxplot(1,:,:)];

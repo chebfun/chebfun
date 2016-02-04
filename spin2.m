@@ -71,7 +71,7 @@ function [uout, tout] = spin2(varargin)
 %       u_t = laplacian(u) + .1 - u + u^2*v,
 %       v_t = 10*laplacian(v) + .9 - u^2*v,
 %
-%    on [0 50]^2 from t=0 to t=300, with initial condition 
+%    on [0 50]^2 from t=0 to t=200, with initial condition 
 %
 %       u0(x,y) = 1 - exp(-10*((x-G/2)^2 + (y-G/2)^2))
 %       v0(x,y) = exp(-10*((x-G/2)^2 + 2*(y-G/2)^2)),

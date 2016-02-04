@@ -105,7 +105,7 @@ function [uout, tout] = spin(varargin)
 %       u_t = diff(u,2) + 2e-2*(1-u) - u*v^2,
 %       v_t = 1e-2*diff(u,2) - 8.62e-2*v + u*v^2,
 %
-%    on [-50 50] from t=0 to t=15000, with initial condition 
+%    on [-50 50] from t=0 to t=12000, with initial condition 
 %
 %       u0(x) = 1 - 1/2*sin(pi*(x-L)/(2*L))^100,
 %       v0(x) = 1/4*sin(pi*(x-L)/(2*L))^100,
@@ -156,7 +156,7 @@ function [uout, tout] = spin(varargin)
 %
 %       u_t = i*u_xx + i*|u|^2*u,
 %
-%    on [-pi pi] from t=0 to t=20, with initial condition 
+%    on [-pi pi] from t=0 to t=18, with initial condition 
 %
 %       u0(x) = 2*B^2/(2 - sqrt(2)*sqrt(2-B^2)*cos(A*B*x)) - 1)*A,
 %           with A=2 and B=1.
