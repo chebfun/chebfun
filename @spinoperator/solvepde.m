@@ -588,7 +588,7 @@ end
 %% Function to parse the inputs:
 
 function [tspan, u0, pref] = parseInputs(pdechar)
-%PARSEINPUTS   Parse inputs.
+%PARSEINPUTS   Parse inputs when using SPIN, SPIN2 and SPIN3 with a STRING.
 
 if ( strcmpi(pdechar, 'AC') == 1 )
     tspan = [0 300];

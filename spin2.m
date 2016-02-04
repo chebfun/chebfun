@@ -39,7 +39,7 @@ function [uout, tout] = spin2(varargin)
 %
 % Example 1: Ginzburg-Landau equation (spiral waves)
 %
-%       u = spin('GL2');
+%       u = spin2('GL2');
 %
 %    solves the Ginzburg-Landau equation 
 %
@@ -49,7 +49,7 @@ function [uout, tout] = spin2(varargin)
 %
 % Example 2: Gray-Scott equations (fingerprints patterns)
 %
-%       u = spin('GS2');
+%       u = spin2('GS2');
 %
 %    solves the Gray-Scott equations 
 %
@@ -64,7 +64,7 @@ function [uout, tout] = spin2(varargin)
 %
 % Example 3: Schnakenberg equations (pattern formation)
 %
-%       u = spin('Schnak2');
+%       u = spin2('Schnak2');
 %
 %    solves the Schnakenberg equations 
 %
@@ -79,7 +79,7 @@ function [uout, tout] = spin2(varargin)
 %
 % Example 4: Swift-Hohenberg equation (Rayleigh-Benard convection)
 %
-%       u = spin('SH2');
+%       u = spin2('SH2');
 %
 %    solves the Swift-Hohenberg equation 
 %

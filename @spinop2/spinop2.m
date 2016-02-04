@@ -20,7 +20,8 @@ classdef spinop2 < spinoperator
 %           
 %               @(u) A*laplacian(u) + B*biharmonic(u), 
 %
-%           for some numbers A and B, and the linear part has be of the form, 
+%           for some numbers A and B, and the nonlinear part has to be of the 
+%           form, 
 %
 %               @(u) f(u), 
 %
@@ -49,9 +50,10 @@ classdef spinop2 < spinoperator
             for j = 1:nargin
                 item =  varargin{j};
                 if ( isa(item, 'char') == 1 )
-                    [L, N] = getLinearAndNonlinearParts(item);
+                    [L, N, dom] = parseInputs(item);
                     S.linearPart = L;
                     S.nonlinearPart = N;
+                    S.domain = dom;
                 elseif ( isa(item, 'function_handle') && countFun == 0 )
                     S.linearPart = item;
                     countFun = 1;
@@ -76,35 +78,39 @@ end
     %% METHODS IMPLEMENTED IN THIS FILE:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
-    function [L, N] = getLinearAndNonlinearParts(pdechar)
-        %GETLINEARANDNONLINEARPARTS   Get the linear and the nonlinear parts of 
-        %a 2D time-dependent PDE from a key word.
-        %   [L, N] = GETLINEARANDNONLINEARPARTS(PDECHAR), where PDECHAR is a 
-        %   string, outputs two function handles L and N which represent the
-        %   linear and the nonlinear parts of the PDE represented by PDECHAR.
+    function [L, N, dom] = parseInputs(pdechar)
+        %PARSEINPUTS   Parse inputs when using a STRING.
+        %   [L, N, DOM] = PARSEINPUTS(PDECHAR), where PDECHAR is a string,
+        %   outputs two function handles L and N which represent the linear
+        %   and the nonlinear parts of the PDE represented by PDECHAR, and the 
+        %   domain DOM.
             
         % Ginzburg-Landau equation:
         if ( strcmpi(pdechar, 'GL2') == 1 )
             L = @(u) lap(u);
             N = @(u) u - (1 + 1.3i)*u.*(abs(u).^2);
-        
+            dom = [0 200 0 200];
+            
         % Gray-Scott equations:
         elseif ( strcmpi(pdechar, 'GS2') == 1 )
             L = @(u,v) [2e-5*lap(u); 1e-5*lap(v)];
             N = @(u,v) [3.5e-2*(1 - u) - u.*v.^2; -9.5e-2*v + u.*v.^2];
+            dom = [0 1.25 0 1.25];
             
         % Schnakenberg equations:
         elseif ( strcmpi(pdechar, 'Schnak2') == 1 )
             L = @(u,v) [lap(u); 10*lap(v)];
             N = @(u,v) [.1 - u + u.^2.*v; .9 - u.^2.*v];
+            dom = [0 50 0 50];
             
         % Swift-Hohenberg equation:
         elseif ( strcmpi(pdechar, 'SH2') == 1 )
             L = @(u) -2*lap(u) - biharm(u);
             N = @(u) -.9*u + u.^2 - u.^3;
+            dom = [0 50 0 50];
             
         else
-            error('SPINOP2:getLinearAndNonlinearParts', 'Unrecognized PDE.')
+            error('SPINOP2:parseInputs', 'Unrecognized PDE.')
         end
 
     end

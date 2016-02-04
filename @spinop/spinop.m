@@ -65,9 +65,10 @@ classdef spinop < spinoperator
             for j = 1:nargin
                 item =  varargin{j};
                 if ( isa(item, 'char') == 1 )
-                    [L, N] = getLinearAndNonlinearParts(item);
+                    [L, N, dom] = parseInputs(item);
                     S.linearPart = L;
                     S.nonlinearPart = N;
+                    S.domain = dom;
                 elseif ( isa(item, 'function_handle') && countFun == 0 )
                     S.linearPart = item;
                     countFun = 1;
@@ -92,65 +93,75 @@ end
     %% METHODS IMPLEMENTED IN THIS FILE:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
-    function [L, N] = getLinearAndNonlinearParts(pdechar)
-        %GETLINEARANDNONLINEARPARTS   Get the linear and the nonlinear parts of 
-        %a 1D time-dependent PDE from a key word.
-        %   [L, N] = GETLINEARANDNONLINEARPARTS(PDECHAR), where PDECHAR is a 
-        %   string, outputs two function handles L and N which represent the
-        %   linear and the nonlinear parts of the PDE represented by PDECHAR.
+    function [L, N, dom] = parseInputs(pdechar)
+        %PARSEINPUTS   Parse inputs when using a STRING.
+        %   [L, N, DOM] = PARSEINPUTS(PDECHAR), where PDECHAR is a string,
+        %   outputs two function handles L and N which represent the linear and
+        %   the nonlinear parts of the PDE represented by PDECHAR, and the
+        %   domain DOM.
 
         % Allen-Cahn equation:
         if ( strcmpi(pdechar, 'AC') == 1 )
             L = @(u) 5e-3*diff(u, 2);
             N = @(u) u - u.^3;
+            dom = [0 2*pi];
             
         % Viscous Burgers equation:
         elseif ( strcmpi(pdechar, 'Burg') == 1 )
             L = @(u) 1e-3*diff(u, 2);
             N = @(u) -.5*diff(u.^2);
+            dom = [-1 1];
             
         % Belousov-Zhabotinsky equation:
         elseif ( strcmpi(pdechar, 'BZ') == 1 )
             L = @(u,v,w)[1e-5*diff(u,2); 2e-5*diff(v,2); 1e-5*diff(w,2)];
             N = @(u,v,w)[u + v - u.*v - u.^2; w - v - u.*v; u - w];
+            dom = [-1 1];
             
         % Cahn-Hilliard equation:
         elseif ( strcmpi(pdechar, 'CH') == 1 )
             L = @(u) -1e-2*(diff(u, 2) + 1e-3*diff(u, 4));
             N = @(u) 1e-2*diff(u.^3, 2);
+            dom = [-1 1];
             
         % Gray-Scott equations:
         elseif ( strcmpi(pdechar, 'GS') == 1 )
             L = @(u,v) [diff(u,2); 1e-2*diff(v,2)];
             N = @(u,v) [2e-2*(1 - u) - u.*v.^2; -8.62e-2*v + u.*v.^2];
+            dom = [-50 50];
             
         % Korteweg-de Vries equation:
         elseif ( strcmpi(pdechar, 'KdV') == 1 )
             L = @(u) -diff(u, 3);
             N = @(u) -.5*diff(u.^2);
+            dom = [-pi pi];
             
         % Kuramoto-Sivashinsky equation:
         elseif ( strcmpi(pdechar, 'KS') == 1 )
             L = @(u) -diff(u, 2) - diff(u, 4);
             N = @(u) -.5*diff(u.^2);
+            dom = [0 32*pi];
             
         % Nikolaevskiy equation:
         elseif ( strcmpi(pdechar, 'Niko') == 1 )
             L = @(u) .1*diff(u, 2) + diff(u, 4) + diff(u, 6);
             N = @(u) -.5*diff(u.^2);
+            dom = [0 32*pi];
             
        % Nonlinear Schroedinger equation:
         elseif ( strcmpi(pdechar, 'NLS') == 1 )
             L = @(u) 1i*diff(u, 2);
             N = @(u) 1i*abs(u).^2.*u;
+            dom = [-pi pi];
             
         % Ohta-Kawasaki equation:
         elseif ( strcmpi(pdechar, 'OK') == 1 )
             L = @(u) - diff(u, 2) - 1e-2*diff(u, 4)  - 4*(u - diff(u, 7));
             N = @(u) diff(u.^3, 2);
-
+            dom = [0 2*pi];
+            
         else
-            error('SPINOP:getLinearAndNonlinearParts', 'Unrecognized PDE.')
+            error('SPINOP:parseInputs', 'Unrecognized PDE.')
         end
 
     end
