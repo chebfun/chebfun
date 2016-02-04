@@ -47,8 +47,16 @@ classdef spinoperator
         % METHOD for nonlinearPartCoeffs:
         function Nc = get.nonlinearPartCoeffs(S)
             
-            % Get the variables of the workspace:
+            % Extract the nonlinear part:
             N = S.nonlinearPart;
+            
+            % If N is empty, we are done:
+            if ( isempty(N) == 1 )
+                Nc = @(u) 0*u;
+                return
+            end
+            
+            % Else, get the variables of the workspace:
             func = functions(N);
             wrk = func.workspace{1};
             names = fieldnames(wrk);
@@ -100,7 +108,16 @@ classdef spinoperator
         % METHOD for nonlinearPartVals:
         function Nv = get.nonlinearPartVals(S)
             
-            % Get the variables of the workspace:
+            % Extract the nonlinear part:
+            N = S.nonlinearPart;
+            
+            % If N is empty, we are done:
+            if ( isempty(N) == 1 )
+                Nv = @(u) 0*u;
+                return
+            end
+            
+            % Else, get the variables of the workspace:
             N = S.nonlinearPart;
             func = functions(N);
             wrk = func.workspace{1};

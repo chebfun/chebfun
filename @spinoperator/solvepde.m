@@ -10,6 +10,20 @@ function [uOut, tOut] = solvepde(varargin)
 
 %% Inputs:
 
+% Throw an error if no input:
+if ( nargin == 0 ) 
+    error('SPINOPERATOR:solvepde', 'Not enough input arguments.')
+end
+
+% Throw an error if the first input is not appropriate:
+if ( nargin == 1 )
+   item = varargin{1};
+   if ( isa(item, 'spinoperator') == 0 && isa(item, 'char') == 0 )
+       error('SPINOPERATOR:solvepde', ['Firt input should be a ', ...
+           'SPINOPERATOR or a STRING.'])
+   end
+end
+
 % Get the inputs:
 pref = [];
 S = [];
@@ -133,8 +147,9 @@ dtmin = pref.dtmin;
 dtmax = pref.dtmax;
 adaptiveTime = isempty(pref.dt);
 if ( adaptiveTime == 1 )
-    % Adaptive in time, start with DTMAX:
-    dt = dtmax;
+    % Adaptive in time, start with DTMAX: 
+    % (Unless the interval is shorter than DTMAX.)
+    dt = min(tspan(end), dtmax);
 else
     % Not adpative in time, i.e., use the dt given by the user:
     dt = pref.dt;
@@ -612,7 +627,7 @@ elseif ( strcmpi(pdechar, 'BZ') == 1 )
     u0 = chebmatrix(u01);
     u0(2,1) = u02;
     u0(3,1) = u03;
-    pref = spinpref('dt', 5e-2, 'N', 256);
+    pref = spinpref('dt', 1e-2, 'N', 256);
     
 elseif ( strcmpi(pdechar, 'CH') == 1 )
     tspan = [0 70];
@@ -621,18 +636,18 @@ elseif ( strcmpi(pdechar, 'CH') == 1 )
     pref = spinpref('dt', 2e-2, 'N', 256);
     
 elseif ( strcmpi(pdechar, 'GL2') == 1 )
-    tspan = [0 150];
+    tspan = [0 80];
     vals = .1*randn(128, 128);
     dom = [0 200 0 200];
     u0 = chebmatrix(chebfun2(vals, dom, 'trig'));
-    pref = spinpref2('dt', 1, 'N', 64);
+    pref = spinpref2('dt', 2e-1, 'N', 64);
     
 elseif ( strcmpi(pdechar, 'GL3') == 1 )
-    tspan = [0 200];
+    tspan = [0 50];
     vals = .1*randn(32, 32, 32);
     dom = [0 100 0 100 0 100];
     u0 = chebmatrix(chebfun3(vals, dom, 'trig'));
-    pref = spinpref3('dt', 1, 'N', 32);
+    pref = spinpref3('dt', 2e-1, 'N', 32);
     
 elseif ( strcmpi(pdechar, 'GS') == 1 )
     tspan = [0 12000];
@@ -642,7 +657,7 @@ elseif ( strcmpi(pdechar, 'GS') == 1 )
     u02 = chebfun(@(x) 1/4*sin(pi*(x-L)/(2*L)).^100, dom, 'trig');
     u0 = chebmatrix(u01);
     u0(2,1) = u02;
-    pref = spinpref('N', 256, 'dt', 5);
+    pref = spinpref('dt', 5, 'N', 256);
     
 elseif ( strcmpi(pdechar, 'GS2') == 1 )
     tspan = [0 3200];
@@ -652,7 +667,7 @@ elseif ( strcmpi(pdechar, 'GS2') == 1 )
     u02 = chebfun2(@(x,y) exp(-150*((x-G/2).^2 + 2*(y-G/2).^2)), dom, 'trig');
     u0 = chebmatrix(u01);
     u0(2,1) = u02;
-    pref = spinpref2('dt', 8);
+    pref = spinpref2('dt', 8, 'N', 64);
     
 elseif ( strcmpi(pdechar, 'GS3') == 1 )
     tspan = [0 1600];

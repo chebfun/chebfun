@@ -11,7 +11,7 @@ classdef spinscheme
 %
 % Available strings are:
 %
-%   ETD ADAMS-BASHFORT: 'abnorsett4', 'abnorsett5', 'abnorsett6'
+%   ETD ADAMS-BASHFORTH: 'abnorsett4', 'abnorsett5', 'abnorsett6'
 %
 %   ETD RUNGE-KUTTA: 'etdrk4', 'exprk5s8', 'friedli', 'hochbruck-ostermann',
 %                    'krogstad', 'minchev', 'strehmel-weiner'
@@ -59,7 +59,7 @@ classdef spinscheme
             switch schemeName
                 
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                % ETD ADAMS-BASHFORT:
+                % ETD ADAMS-BASHFORTH:
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 case 'abnorsett4'
                     K.order = 4;

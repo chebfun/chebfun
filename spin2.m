@@ -45,7 +45,7 @@ function [uout, tout] = spin2(varargin)
 %
 %        u_t = laplacian(u) + u - (1+1.3i)*u*|u|^2,
 %
-%    on [0 200]^2 from t=0 to t=150, with a random initial condition.
+%    on [0 200]^2 from t=0 to t=80, with a random initial condition.
 %
 % Example 2: Gray-Scott equations (fingerprints patterns)
 %
