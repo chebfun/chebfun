@@ -55,6 +55,9 @@ for j = 1:nargin
         u0 = item;
     elseif ( isa(item, 'spinoperator') == 1 )
         S = item;
+        if ( nargin < 3 )
+            error('SPINOPERATOR:solvepde', 'Not enough input arguments.')
+        end
     elseif ( isa(item, 'spinpreference') == 1 )
         pref = item;
     else
@@ -88,6 +91,15 @@ end
 % Space interval DOM and final time TF:
 dom = u0{1}.domain;
 tf = tspan(end);
+
+% Throw an error if the domains of the initial condition and the SPINOPERATOR
+% are different:
+if ( isempty(S) == 0 )
+    if ( isequal(S.domain, dom) == 0 )
+        error('SPINOPERATOR:solvepde', ['The initial condition and the ', ...
+            'operator do not live on the same domain.'])
+    end
+end
 
 %% Pre-processing:
 
