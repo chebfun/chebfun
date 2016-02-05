@@ -80,7 +80,8 @@ end
 
 % Additional output argument:
 if ( nargout == 3 )
-    if ( nargin == 2 && strcmp(outputFlag, 'vector') )
+    [~, numCols] = size(f);
+    if ( nargin > 1 && strcmp(outputFlag, 'vector') )
         E = 1:numCols;
     else
         E = eye(numCols);
