@@ -504,6 +504,54 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % f.linearity = f.linearity;
         end
         
+        function f = deriv(f, xx, varargin)
+            % DERIV   Evaluate a derivative of an ADCHEBFUN.
+            %
+            %   DERIV(F, X) evaluates the first derivative of the ADCHEBFUN F at
+            %   the points in X. If F is a quasimatrix with columns F1, ..., FN,
+            %   then the result will be [F1(X), ..., FN(X)], the horizontal
+            %   concatenation of the results of evaluating each column at the
+            %   points in X.
+            %
+            %   DERIV(F, X, M) is the same as above, but returns the values of
+            %   the Mth derivative of F.
+            %
+            %   DERIV(F, X, S) or DERIV(F, X, S, M) where S is one of the
+            %   strings 'left', 'right', '+', or '-', evaluates the left- or
+            %   right-sided limit as described in chebfun/feval.
+            
+            % The most trivial case:
+            if ( isempty(f) )
+                return
+            end
+            
+            % By default, compute first derivative:
+            m = 1;
+
+            % Parse the inputs:
+            if ( nargin == 3 )
+                if ( isnumeric(varargin{1}) ) % DERIV(F, X, M)
+                    m = varargin{1};
+                    varargin = {};
+                else                          % DERIV(F, X, S)
+                    m = 1;  % By default, compute first derivative
+                end
+            elseif ( nargin == 4 )            % DERIV(F, X, S, M)
+                m = varargin{2};
+                varargin{2} = [];
+            end
+
+            if ( m == 0 )
+                % Trivial case
+                f = feval(f, xx, varargin{:});
+            else
+                f = feval(diff(f, m), xx, varargin{:});
+            end
+
+        end
+            
+            
+        
         function f = diff(f, k)
             % F = DIFF(F, K)   DIFF of an ADCHEBFUN
             
@@ -661,7 +709,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             f.func = expm1(f.func);      
         end
         
-        function f = feval(f, x)
+        function f = feval(f, x, varargin)
             % F = FEVAL(F,X)    Evaluate an ADCHEBFUN F at point X.
             %
             % The output will be an ADCHEBFUN with derivative representing
@@ -669,7 +717,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % dictated by the chain rule).
             
             % Create an feval linear operator at the point X.
-            E = functionalBlock.feval(x, f.domain);
+            E = functionalBlock.feval(x, f.domain, varargin{:});
             % Update derivative part
             f.jacobian = E*f.jacobian;
             % Update CHEBFUN part
@@ -677,6 +725,16 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % Evaluation is a linear operation, so no need to update linearity
             % information.
             % f.linearity = f.linearity;
+            
+            % If we had nargin > 2, we're introducing a jump (evaluation from
+            % one side), so update domain and jump info:
+            if ( nargin > 2 )
+                % Update the domain, introducing a break at the jump location
+                f.domain = union(f.domain, x);
+                % Signal that an explicit jump condition has been given, so
+                % that automatic continuity won't be applied.
+                f.jumpLocations = union(f.jumpLocations, x);
+            end
         end 
         
         function f = fred(K, f, varargin)
@@ -1306,7 +1364,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         
             switch index(1).type
                 case '()'
-                    out = feval(f, index.subs{1});
+                    out = feval(f, index.subs{:});
                 case '{}'
                     out = f(index.subs{1});
                 case '.'

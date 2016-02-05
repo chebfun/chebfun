@@ -21,7 +21,7 @@ for k = 1:3
     err(k,1)  = norm(N(V), 2);           % Check residual.
     pass(k,1) = err(k,1) < tol;
     pass(k,2) = size(V, 2) == 1;
-    err(k,3)  = abs(V'*V - 1);           % Check orthanormality.
+    err(k,3)  = abs(V'*V - 1);           % Check orthonormality.
     pass(k,3) = err(k,3) < tol;
 
     % Test 2:
@@ -31,7 +31,7 @@ for k = 1:3
     err(k,4) = norm(N(V), 2);           % Check residual.
     pass(k,4) = err(k,4) < 1e5*tol;         
     pass(k,5) = size(V, 2) == 2;
-    err(k,6) = norm(V'*V - eye(2), inf);  % Check orthanomrality.
+    err(k,6) = norm(V'*V - eye(2), inf);  % Check orthonomrality.
     pass(k,6) = err(k,6) < tol;
     err(k,7) = norm(feval(V, 1), inf);    % Check BC is satisfied.
     pass(k,7) = err(k,7) < tol;
@@ -54,6 +54,19 @@ for k = 1:3
     err(k,  11) = norm(V'*V - eye(6), inf);  % Check orthonormality.
     pass(k, 11) = err(k,9) < tol;
     
+    % This comes from the Example ode-eig/Nullspace which was having some trouble.
+    dom = [-pi, pi];
+    L = chebop(@(x, u) diff(u, 2) + .1*x.*(1-x.^2).*diff(u) + sin(x).*u, dom);
+    L.lbc = 0;
+    L.rbc = [];
+    v = null(L, pref);
+    pass(k, 12) = ~isempty(v);
+    
+    % This comes from #1653
+    L = chebop(@(r,u) (r-0.7).*diff(u, 2)-diff(u)-3*u, [1, 10]);
+    pass(k, 13) = size(null(L, pref), 2) == 2;
+    
 end
+
 
 end

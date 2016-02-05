@@ -1,8 +1,8 @@
 function varargout = cheb2logo
 %CHEB2LOGO   The unofficial Chebfun2 logo.
-%   CHEB2LOGO() plots the Chebfun2 logo.
+%   CHEB2LOGO plots the Chebfun2 logo.
 %
-%   H = CHEB2LOGO() returns a figure handle to the logo.
+%   H = CHEB2LOGO returns a figure handle to the logo.
 %
 % See also CHEBLOGO.
 
