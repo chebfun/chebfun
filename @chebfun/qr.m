@@ -82,10 +82,10 @@ else
     numFuns = numel(A.funs);
 
     % Perform QR on each piece:
-    Q = A;
     R = cell(numFuns, 1);
+    Q = R;
     for k = 1:numFuns
-        [Q.funs{k}, R{k}] = qr(Q.funs{k});
+        [Q{k}, R{k}] = qr(A.funs{k});
     end
 
     % Compute [Qhat, Rhat] = qr(Q):
@@ -100,8 +100,10 @@ else
     R = S*Rhat;
     % ... and fold Qhat back in to Q:
     for k = 1:numFuns
-        Q.funs{k} = Q.funs{k}*(Qhat{k,1}*S);
+        Q{k} = Q{k}*(Qhat{k,1}*S);
     end
+    
+    Q = chebfun(Q);
 
 end
 
