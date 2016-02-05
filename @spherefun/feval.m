@@ -1,4 +1,4 @@
-function y = feval( f, c1, c2, c3)
+function y = feval( f, x, y, z)
 %FEVAL  Evaluate a SPHEREFUN at one or more points.
 %   Y = FEVAL( F, LAMBDA, THETA )  evaluates a spherefun F at (LAMBDA,
 %   THETA) where LAMBDA and THETA are doubles representing the longitudinal
@@ -10,30 +10,46 @@ function y = feval( f, c1, c2, c3)
 % See also SUBSREF.
 
 if nargin == 3      % Spherical coordinates used.
-    lambda = c1;
-    theta = c2;
+    lambda = x;
+    theta = y;
+    y = feval@separableApprox( f, lambda, theta );        
+
+    if size(lambda,1) == 1 && size(theta,1) == 1
+        y = y.';
+    end        
 elseif nargin == 4  % Cartesian coordinates used.
-    if ~isnumeric(c1) || ~isnumeric(c1) || ~isnumeric(c1)
-        if strcmpi(c1, ':') || strcmpi(c2, ':') || strcmpi(c3, ':') 
-            error('SPHEREFUN:feval:colon','Colon operator not allowed when using Cartesian coordinates');
-        else
-            error('SPHEREFUN:feval:unknown','Unkown input feval(%s,%s,%s)',c1,c2,c3);
+    if ( isnumeric(x) && isnumeric(y) && isnumeric(z) )
+        % Convert to spherical coordinates
+        [lambda,theta] = cart2sph(x,y,z);
+
+        % Check latitudinal coordinate system to set the elevation angle
+        % appropriately.
+        if iscolat( f )
+            theta = pi/2 - theta;
         end
+        y = feval@separableApprox( f, lambda, theta );        
+        
+        if size(lambda,1) == 1 && size(theta,1) == 1
+            y = y.';
+        end        
+    elseif ( strcmp(x, ':') && strcmp(y, ':') && strcmp(z, ':') )
+        y = f;
+    elseif ( strcmp(x, ':') && isnumeric( y ) && isnumeric( z ) ) 
+        y = [feval(f,sqrt(1-y.^2-z.^2),y,z) ; feval(f,-sqrt(1-y.^2-z.^2),y,z)];
+    elseif ( strcmp(y, ':') && isnumeric( x ) && isnumeric( z ) ) 
+        y = [feval(f,x,sqrt(1-x.^2-z.^2),z) ; feval(f,x,-sqrt(1-x.^2-z.^2),z)];
+    elseif ( strcmp(z, ':') && isnumeric( x ) && isnumeric( y ) ) 
+        y = [feval(f,x,y,sqrt(1-x.^2-y.^2)) ; feval(f,x,y,-sqrt(1-x.^2-y.^2))];        
+    elseif ( strcmp(x, ':') && strcmp(y, ':') && isnumeric( z ) )
+        y = chebfun( @(t) feval(f,sqrt(1-z.^2).*cos(t),sqrt(1-z.^2).*sin(t),z),[-pi,pi],'trig');
+    elseif ( strcmp(x, ':') && strcmp(z, ':') && isnumeric( y ) )
+        y = chebfun( @(t) feval(f,sqrt(1-y.^2).*cos(t),y,sqrt(1-y.^2).*sin(t)),[-pi,pi],'trig');
+    elseif ( strcmp(y, ':') && strcmp(z, ':') && isnumeric( x ) )
+        y = chebfun( @(t) feval(f,x,sqrt(1-x.^2).*cos(t),sqrt(1-x.^2).*sin(t)),[-pi,pi],'trig');
+    else
+        error('CHEBFUN:SPHEREFUN:feval:argin','Unkown input feval(%s,%s,%s)',x,y,z);
     end
-    % Convert to spherical coordinates
-    [lambda,theta] = cart2sph(c1,c2,c3);
 
-    % Check latitudinal coordinate system to set the elevation angle
-    % appropriately.
-    if iscolat( f )
-        theta = pi/2 - theta;
-    end
-end
-
-y = feval@separableApprox( f, lambda, theta );
-
-if size(lambda,1) == 1 && size(theta,1) == 1
-    y = y.';
 end
 
 end 

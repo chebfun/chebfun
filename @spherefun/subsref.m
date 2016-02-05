@@ -41,21 +41,7 @@ if ( strcmp( index(1).type,'()' ) )
     if ( length(idx) == 3 )
         y = idx{2};
         z = idx{3};
-        if ( isnumeric( x ) && isnumeric( y ) && isnumeric( z ))
-            out = feval(f, x, y, z);
-        elseif ( strcmp(x, ':') && strcmp(y, ':') && strcmp(z, ':') )
-            out = f;
-        elseif ( strcmp(x, ':') && isnumeric( y ) && isnumeric( z ) ) ||...
-            ( strcmp(y, ':') && isnumeric( x ) && isnumeric( z ) ) ||...
-            ( strcmp(z, ':') && isnumeric( x ) && isnumeric( y ) )
-            out = feval(f, x, y, z);
-        elseif ( strcmp(x, ':') && strcmp(y, ':') && isnumeric( z ) ) ||...
-            ( strcmp(x, ':') && strcmp(z, ':') && isnumeric( y ) ) ||...
-            ( strcmp(y, ':') && strcmp(z, ':') && isnumeric( y ) )
-            out = feval(f, x, y, z);
-        else
-            error('CHEBFUN:SPHEREFUN:subsref:colon','One colon operator not allowed when using Cartesian coordinates.');            
-        end
+        out = feval(f, x, y, z);
         varargout = { out }; 
     elseif ( length( idx ) == 2 )
         out = subsref@separableApprox(f,index);
