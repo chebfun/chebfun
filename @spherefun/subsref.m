@@ -45,15 +45,21 @@ if ( strcmp( index(1).type,'()' ) )
             out = feval(f, x, y, z);
         elseif ( strcmp(x, ':') && strcmp(y, ':') && strcmp(z, ':') )
             out = f;
+        elseif ( strcmp(x, ':') && isnumeric( y ) && isnumeric( z ) ) ||...
+            ( strcmp(y, ':') && isnumeric( x ) && isnumeric( z ) ) ||...
+            ( strcmp(z, ':') && isnumeric( x ) && isnumeric( y ) )
+            out = feval(f, x, y, z);
+        elseif ( strcmp(x, ':') && strcmp(y, ':') && isnumeric( z ) ) ||...
+            ( strcmp(x, ':') && strcmp(z, ':') && isnumeric( y ) ) ||...
+            ( strcmp(y, ':') && strcmp(z, ':') && isnumeric( y ) )
+            out = feval(f, x, y, z);
+        else
+            error('CHEBFUN:SPHEREFUN:subsref:colon','One colon operator not allowed when using Cartesian coordinates.');            
         end
         varargout = { out }; 
     elseif ( length( idx ) == 2 )
-        y = idx{2}; 
-        if ( strcmp(x, ':') && strcmp(y, ':') )
-            varargout = { f };
-        elseif ( isnumeric( x ) && isnumeric( y ) )
-            varargout = { feval(f, x, y) }; 
-        end
+        out = subsref@separableApprox(f,index);
+        varargout = { out };
     elseif ( isa(x, 'spherefunv') )
         out = feval(f, x);
         varargout = { out }; 
