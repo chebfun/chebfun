@@ -73,7 +73,7 @@ if ( isa(f, 'spherefun') )
     % Evaluate at equally spaced grid: 
     x = linspace( dom(1), dom(2), minplotnum );
     y = linspace( dom(3), dom(4), minplotnum );
-    vals = sample(f, minplotnum-1, minplotnum-1);
+    vals = sample(f, minplotnum-1, minplotnum);
     vals = [vals vals(:,1)];
             
 else

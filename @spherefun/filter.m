@@ -5,11 +5,11 @@ function g = filter( f, dt )
 %  Gaussian filtering.  
 % 
 %  G = FILTER( F, dt ), applies a low-pass filter to F with parameter dt.
-%  The default to dt =1e-6, which is equivalent to running the Heat
+%  The default to dt=1e-4, which is equivalent to running the Heat
 %  equation for time dt with the initial condition being F. 
 
 if ( nargin < 2 ) 
-    dt = 1e-3; 
+    dt = 1e-4; 
 end
 K = sqrt(1/dt)*1i;
 
@@ -20,5 +20,8 @@ K = sqrt(1/dt)*1i;
 % Since, g is expected to smoother than f, and mxn discretization should
 % suffice. 
 g = spherefun.Helmholtz( -f, K, m, n);
+
+% Handle the scaling
+g = 1/dt*g;
 
 end 
