@@ -70,8 +70,8 @@ elseif ( isArrayValued )
     % Step 2b: Ensure the diagonal is non-negative. (A = QR = (Q*S)*(S*R))
     s = sign(diag(R)); s(~s) = 1;
     S = spdiags(s, 0, numCols, numCols);
-    R = S*R;
     Qhat = Qhat*S;
+    R = S*R;
 
     % Step 2c: Separate the segments of Qhat back into a cell.
     m = cellfun(@(v) size(v, 1), Rhat); % m(k) = length of A.FUN{k}.
