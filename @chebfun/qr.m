@@ -41,7 +41,7 @@ if ( isArrayValued && (numel(A.funs) == 1) )
     Q = chebfun({Q});
 
 elseif ( isArrayValued )   
-    % Array-valued CHEBFUN with multiple funs.
+    % Array-valued CHEBFUN with multiple FUNS.
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Developer note:
