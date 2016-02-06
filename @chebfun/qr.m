@@ -4,10 +4,6 @@ function [Q, R] = qr(A, econ)
 %   produces a column CHEBFUN Q with n orthonormal columns and an n x n upper
 %   triangular matrix R such that A = Q*R.
 %
-%   The algorithm used is described in L.N. Trefethen, "Householder
-%   triangularization of a quasimatrix", IMA J. Numer. Anal. (30), 887-897
-%   (2010).
-%
 % See also SVD, MRDIVIDE, RANK.
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
@@ -35,40 +31,37 @@ if ( ~all(isfinite(A(1).domain)) )
         'CHEBFUN QR does not support unbounded domains.');
 end
 
+% Try to convert to an array-valued CHEBFUN:
+A = quasi2cheb(A);
+
 numCols = numColumns(A);
 
 if ( numCols == 1 )
-    % If f has only one column we simply scale it.
+    % If A has only one column we simply scale it.
     R = sqrt(innerProduct(A, A));
     Q = A./R;
     
 elseif ( numel(A) > 1 )
     % Quasimatrix case:
 
-    % Try to convert to an array-valued CHEBFUN:
-    [A, isSimple] = quasi2cheb(A);
-    
-    if ( isSimple ) % Successfully converted to array-valued CHEBFUN.
-        
-        [Q, R] = qr(A, 0);
-        
-    else            % We can't convert to array valued. Tricky case.
-        
-        % TODO: This case is not tested!
-        %  DEVELOPER NOTE:
-        %   Currently (5th Feb 2016) the only way this is reachable is in the
-        %   case of a quasimatrix consisting of SINGFUN or DELTAFUN objects,
-        %   neither of which return anything sensible when we attempt to compute
-        %   a QR factorization.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Developer note:
+    %   Currently (5th Feb 2016) the only way this is reachable is in the
+    %   case of a quasimatrix consisting of SINGFUN or DELTAFUN objects,
+    %   neither of which return anything sensible when we attempt to compute
+    %   a QR factorization. Try for example
+    %    x = chebfun('x', [0 1]);
+    %    qr([1 x sqrt(x)])
+    %
+    %   This case is not tested (which is OK)
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-        % Legendre-Vandermonde matrix:
-        L = legpoly(0:numCols-1, domain(A), 'norm', 1);
-        % Convert so that L is also quasimatrix:
-        L = cheb2quasi(L);
-        % Call abstract QR:
-        [Q, R] = abstractQR(A, L, @innerProduct, @normest);
-        
-    end
+    % Legendre-Vandermonde matrix:
+    L = legpoly(0:numCols-1, domain(A), 'norm', 1);
+    % Convert so that L is also quasimatrix:
+    L = cheb2quasi(L);
+    % Call abstract QR:
+    [Q, R] = abstractQR(A, L, @innerProduct, @normest);
     
 elseif ( numel(A.funs) == 1 )
     % No breakpoints = easy case.
@@ -77,7 +70,18 @@ elseif ( numel(A.funs) == 1 )
     [Q, R] = qr(A.funs{1});
     Q = chebfun({Q});
 
-else
+else     
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Developer note:
+    %   Here we essentially use a panel factored QR which allows us to do a QR
+    %   factorization on each fun individually and then combine the result.
+    %   Here's an example of this in a 2-FUN case:
+    %    [A1] = [Q1*R1] = [Q1 0][R1] = [Q1 0][Q^1 ~][R^] = [Q1*Q^1]R^
+    %    [A2]   [Q2*R2]   [0 Q2][R2]   [0 Q2][Q^2 ~][0 ]   [Q2*Q^2]
+    %                                ^
+    %                               here [Q^:=Qhat, R^:=Rhat] = qr(R:=[R1;R2])
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     numFuns = numel(A.funs);
 
@@ -88,21 +92,23 @@ else
         [Q{k}, R{k}] = qr(A.funs{k});
     end
 
-    % Compute [Qhat, Rhat] = qr(Q):
-    m = cellfun(@(v) size(v, 1), R);
-    [Qhat, Rhat] = qr(cell2mat(R));
-    Rhat = Rhat(1:numCols,:); % Extract require entries.
+    % Compute [Qhat, Rhat] = qr(R):
+    m = cellfun(@(v) size(v, 1), R); % m(k) = length of A.FUN{k}.
+    [Qhat, Rhat] = qr(cell2mat(R));  % 
+    Rhat = Rhat(1:numCols,:);        % Extract require entries.
     Qhat = mat2cell(Qhat(:,1:numCols), m, numCols);
 
     % Ensure diagonal has positive sign ...
     s = sign(diag(Rhat)); s(~s) = 1; 
     S = spdiags(s, 0, numCols, numCols); 
     R = S*Rhat;
+    
     % ... and fold Qhat back in to Q:
     for k = 1:numFuns
         Q{k} = Q{k}*(Qhat{k,1}*S);
     end
     
+    % Construct a new CHEBFUN from the computed FUNS:
     Q = chebfun(Q);
 
 end
