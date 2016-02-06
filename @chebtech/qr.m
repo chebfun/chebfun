@@ -72,19 +72,13 @@ f = simplify(f);
 % Decide which algorithm to use:
 if ( strcmpi(methodFlag, 'householder') )
     % Call Trefethen's Householder implementation:
-    [Q, R] = qr_householder(f);
+    [Q, R, E] = qr_householder(f, outputFlag);
 else
     % The 'built-in' algorithm. i.e., qeighted discrete QR():
-    [Q, R] = qr_builtin(f);
-end
-
-% Additional output argument:
-if ( nargout == 3 )
-    [~, numCols] = size(f);
-    if ( nargin > 1 && strcmp(outputFlag, 'vector') )
-        E = 1:numCols;
+    if ( nargout == 3 )
+        [Q, R, E] = qr_builtin(f, outputFlag);
     else
-        E = eye(numCols);
+        [Q, R] = qr_builtin(f, outputFlag);
     end
 end
 
@@ -92,36 +86,107 @@ end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [f, R] = qr_builtin(f)
+function [f, R, E] = qr_builtin(f, outputFlag)
+
+persistent WP invWP type
+% Persistently store these matrices, which only depend on the length of the
+% input (and the type of chebtech!), not the data. This is very helpful for
+% CHEBFUN2 which relies heavily on QR.
 
 % We must enforce that f.coeffs has at least as many rows as columns:
 [n, m] = size(f);
 if ( n < m )
     f = prolong(f, m);
+    n = m;
 end
 
-n = size(f.coeffs, 1); 
-scl = sqrt((0:n-1)'+.5);
-legA = cheb2leg( f.coeffs );          % Get Legendre coefficients.
-legA = bsxfun(@times, legA, 1./scl ); % Orthonormalization constants.
-[Qleg, R] = qr(legA, 0);              % Discrete QR
-     
-% Ensure diagonals of R are of +ve sign.
-s = sign(diag(R)); 
-s(~s) = 1; 
-S = spdiags(s, 0, m, m); 
-R = S*R; 
-Qleg = Qleg*S;  
+if ( n <= 4000 )
+    
+    % Project the values onto a Legendre grid: (where integrals of polynomials
+    % p_n*q_n will be computed exactly and on an n-point grid)
+    if ( (length(WP) ~= n) || (~isempty(type) && ~isa(f, type)) )
+        % The matrices WP and inv(WP) depends only on the length of the
+        % discretization and the cheb-type of f (i.e., not the function values
+        % themselves.) We therefore store these persistently which save a lot of
+        % times in situations where we performa number of QR factorizations of
+        % the same length (for example, in Chebfun2).
+        xc = f.chebpts(n);
+        vc = f.barywts(n);
+        [xl, wl, vl] = legpts(n);
+        P = barymat(xl, xc, vc);     % Map from Chebyshev values to Legendre values.
+        W = spdiags(sqrt(wl.'), 0, n, n); % Weighted QR with Gauss-Legendre weights.
+        Winv = spdiags(1./sqrt(wl.'), 0, n, n);    % Undo the weighting used for QR.
+        Pinv = barymat(xc, xl, vl); % Revert to Chebyshev grid (from Legendre grid).
+        % Persistent storage:
+        WP = W*P;
+        invWP = Pinv*Winv;
+        type = class(f);
+    end
+    
+    % Compute the weighted QR factorisation:
+    values = f.coeffs2vals(f.coeffs);
+    if ( nargout == 3 )
+        [Q, R, E] = qr(WP * values, 0);
+        % For consistency with the MATLAB QR behavior:
+        if ( (nargin == 1) || ~(strcmpi(outputFlag, 'vector') || isequal(outputFlag, 0)) )
+            % Return E in matrix form:
+            I = eye(m);
+            E = I(:,E);
+        end
+    else
+        converted = WP * values;
+        [Q, R] = qr(converted, 0);
+    end
+    
+    % Remove the weighting and revert to the Chebyshev grid.
+    s = sign(diag(R));             % }
+    s(~s) = 1;                     %  } Enforce diag(R) >= 0
+    S = spdiags(s, 0, m, m);       % }
+    Q = invWP*Q*S;                 % Fix Q.
+    Q_coeffs = f.vals2coeffs(Q);   % Compute new coefficients.
+    R = S*R;                       % Fix R.
+                
+else
+    % Where n >> 4000 we must use fast transforms as we cannot store the n x n
+    % matrices. Below is the same algorithm as the n <= 4000 above, except that
+    % we never form a large dense matrix.
+    
+    % Compute the weighted QR factorisation:
+    [ignored, wl, ignored] = legpts(n);
+    W = spdiags(sqrt(wl.'), 0, n, n); % Weighted QR with Gauss-Legendre weights.
+    Winv = spdiags(1./sqrt(wl.'), 0, n, n);    % Undo the weighting used for QR.
+    if ( nargout == 3 )
+        converted = W*chebfun.ndct( f.coeffs ); % WP * values.
+        [Q, R, E] = qr( converted , 0);
+        % For consistency with the MATLAB QR behavior:
+        if ( (nargin == 1) || ~(strcmpi(outputFlag, 'vector') || isequal(outputFlag, 0)) )
+            % Return E in matrix form:
+            I = eye(m);
+            E = I(:,E);
+        end
+    else
+        converted = W*chebfun.ndct( f.coeffs ); % WP * values.
+        [Q, R] = qr(converted, 0);
+    end
+    
+    % Remove the weighting and revert to the Chebyshev grid.
+    s = sign(diag(R));             % }
+    s(~s) = 1;                     %  } Enforce diag(R) >= 0
+    S = spdiags(s, 0, m, m);       % }
+    Q = Winv*Q*S;                  % Fix Q. (Note, Q is still on Legendre grid.)
+    Q_coeffs = leg2cheb( chebfun.idlt( Q ) ); % Chebyshev coefficients.
+    R = S*R;                       % Fix R.
+    
+end
 
-Qleg = bsxfun(@times, Qleg, scl);    % Apply scaling.
-Qcheb = leg2cheb( Qleg );            % Convert back to Chebyshev.
-f.coeffs = Qcheb;                    % Store coefficients. 
+% Apply data to CHEBTECH:
+f.coeffs = Q_coeffs;               % Store coefficients. 
 
 end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [f, R] = qr_householder(f)
+function [f, R, Eperm] = qr_householder(f, flag)
 
 % Get some useful values
 [n, numCols] = size(f);
@@ -155,5 +220,14 @@ end
 f.coeffs = f.vals2coeffs(Q);
 % Trim the unneeded ones:
 f.coeffs(newN/2+1:end,:) = [];
+
+% Additional output argument:
+if ( nargout == 3 )
+    if ( nargin == 2 && strcmp(flag, 'vector') )
+        Eperm = 1:numCols;
+    else
+        Eperm = eye(numCols);
+    end
+end
 
 end
