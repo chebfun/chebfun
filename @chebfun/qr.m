@@ -61,22 +61,24 @@ elseif ( isArrayValued )
     for k = 1:numFuns
         [Q{k}, Rhat{k}] = qr(A.funs{k});
     end
-
-    % Step 2:
-    [Qhat, R] = qr(cell2mat(Rhat));     % Compute [Qhat, R] = qr(Rhat). 
-    R = R(1:numCols,:);                 % Extract require entries (top square).
-    m = cellfun(@(v) size(v, 1), Rhat); % m(k) = length of A.FUN{k}.
-    Qhat = mat2cell(Qhat(:,1:numCols), m, numCols); % Only need first column.
-
-    % Step 2b: Ensure diagonal has positive sign. (A = QR = (Q*S)*(S*R))
-    s = sign(diag(R)); s(~s) = 1; 
-    S = spdiags(s, 0, numCols, numCols); 
-    R = S*R; % (Qhat --> Qhat*S is performed below)
     
-    % Step 3: Fold Qhat (more precisely, Qhat*S) back in to Q.
-    for k = 1:numFuns
-        Q{k} = Q{k}*(Qhat{k,1}*S);
-    end
+    % Step 2: Compute [Qhat, R] = qr(Rhat),
+    [Qhat, R] = qr(cell2mat(Rhat));
+    R = R(1:numCols,:);       % Extract first block row.
+    Qhat = Qhat(:,1:numCols); % Extract first block column.
+
+    % Step 2b: Ensure the diagonal is non-negative. (A = QR = (Q*S)*(S*R))
+    s = sign(diag(R)); s(~s) = 1;
+    S = spdiags(s, 0, numCols, numCols);
+    R = S*R;
+    Qhat = Qhat*S;
+
+    % Step 2c: Separate the segments of Qhat back into a cell.
+    m = cellfun(@(v) size(v, 1), Rhat); % m(k) = length of A.FUN{k}.
+    Qhat = mat2cell(Qhat, m, numCols);
+    
+    % Step 3: Fold Qhat back in to Q.
+    Q = cellfun(@mtimes, Q, Qhat, 'UniformOutput', false);
     
     % Construct a new CHEBFUN from the computed FUNS:
     Q = chebfun(Q);
