@@ -19,9 +19,6 @@ K = sqrt(1/dt)*1i;
 % Solve the Helmholtz equation on the sphere to apply the Gaussian filter. 
 % Since, g is expected to smoother than f, and mxn discretization should
 % suffice. 
-g = spherefun.Helmholtz( -f, K, m, n);
-
-% Handle the scaling
-g = 1/dt*g;
+g = spherefun.Helmholtz( -1/dt*f, K, m, n);
 
 end 

@@ -11,13 +11,24 @@ function f = projectOntoBMCI( f )
 % The projection is orthogonal, i.e., the correction matrix to fix up the
 % structure has the smallest possible Frobenius norm.
 
-[fp,fm] = partition( f );
+% Even part
+feven = f;
+feven.cols = feven.cols(:,feven.idxPlus);
+feven.rows = feven.rows(:,feven.idxPlus);
+feven = projectOntoEvenBMCI( feven );
 
-fp = projectOntoEvenBMCI( fp );
-fm = projectOntoOddBMCI( fm );
+% Odd part
+fodd = f;
+fodd.cols = fodd.cols(:,fodd.idxMinus);
+fodd.rows = fodd.rows(:,fodd.idxMinus);
+fodd = projectOntoOddBMCI( fodd );
 
 % Put pieces back together.
-f = combine(fp,fm);
+f.cols(:,f.idxPlus) = feven.cols;
+f.rows(:,f.idxPlus) = feven.rows;
+
+f.cols(:,f.idxMinus) = fodd.cols;
+f.rows(:,f.idxMinus) = fodd.rows;
 
 end
 
