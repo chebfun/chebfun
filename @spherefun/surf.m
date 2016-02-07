@@ -1,6 +1,6 @@
 function varargout = surf( f, varargin )
 %SURF  Surface plot of a SPHEREFUN.
-%   SURF( F ) plots the F on the surface of a sphere.
+%   SURF( F ) plots F on the surface of a sphere.
 %
 %   SURF(X, Y, F, ...) calls separableApprox/SURF.  See this function for
 %   details.
@@ -8,6 +8,9 @@ function varargout = surf( f, varargin )
 %   SURF(..., 'PropertyName', PropertyValue,...) sets the value of the specified
 %   surface property. Multiple property values can be set with a single
 %   statement.
+%
+%   SURF(..., 'earth') includes the outline of the landmasses of earth on
+%   the surface plot.
 %
 %   H = SURF(...) returns a handle to a surface plot object.
 %
