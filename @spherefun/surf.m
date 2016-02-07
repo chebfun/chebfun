@@ -25,6 +25,8 @@ end
 % How dense to make the samples.
 minPlotNum = 200;
 defaultOpts = {'facecolor', 'interp', 'edgealpha', .5, 'edgecolor', 'none'};
+% Plot the land masses of earth
+plotEarth = false;
 
 % Number of points to plot
 j = 1; argin = {};
@@ -32,6 +34,9 @@ while ( ~isempty(varargin) )
     if strcmpi(varargin{1}, 'numpts')
         minPlotNum = varargin{2};
         varargin(1:2) = [];
+    elseif strcmpi(varargin{1}, 'earth')
+        plotEarth = true;
+        varargin(1) = [];
     else
         argin{j} = varargin{1};
         varargin(1) = [];
@@ -47,7 +52,8 @@ if ( isa(f,'spherefun') )
     
     if ( (nargin == 1) || ...
             ( (nargin > 1) && ~isempty(argin) && ~isa(argin{1}, 'separableApprox') ) || ...
-            ( (nargin == 3) && isempty(argin)) )
+            ( (nargin == 3) && isempty(argin)) ) || ...
+            ( (nargin == 2) && plotEarth == true )
         % surf(f,...)
         
         dom = f.domain;
@@ -73,6 +79,16 @@ if ( isa(f,'spherefun') )
         % held.
         if ( ~ishold )
             daspect([1 1 1]);
+        end
+        
+        if ( plotEarth )
+            % Land masses are stored in the data file CoastData.mat
+            x = load('./CoastData.mat','coast');
+            if ( ~ishold )
+                hold on;
+                plot3(x.coast(:,1),x.coast(:,2),x.coast(:,3),'k-');
+                hold off
+            end
         end
     else
         % Pass this along to the surf function in separableApprox.
