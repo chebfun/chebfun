@@ -86,7 +86,7 @@ if ( isa(f,'spherefun') )
         
         if ( plotEarth )
             % Land masses are stored in the data file CoastData.mat
-            x = load('./CoastData.mat','coast');
+            x = load('CoastData.mat','coast');
             if ( ~ishold )
                 hold on;
                 plot3(x.coast(:,1),x.coast(:,2),x.coast(:,3),'k-');
