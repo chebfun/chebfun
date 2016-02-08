@@ -43,6 +43,7 @@ DF2n = trigspec.diffmat( n, 2 );
 Mcossin = spdiags( .25i*[-ones(m,1) ones(m,1)], [-2 2], m ,m ); % multiplication for sin(theta).*cos(theta)
 Msin2 = spdiags( .5*[-.5*ones(m,1) ones(m,1) -.5*ones(m,1)], [-2 0 2], m ,m );% multiplication for sin(theta)^2
 Im = speye( m );
+scl = diag(DF2n); 
 
 % There is a factor of 4 sped up here, by taking account of real 
 % solution, and even/odd symmetry.
