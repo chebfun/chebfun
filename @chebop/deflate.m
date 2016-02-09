@@ -1,10 +1,11 @@
 function N = deflate(N, r, p, alp, type)
-%DEFLATE   Deflate known solutions from the operator of a CHEBOP
+%DEFLATE   Deflate known solutions from the operator of a CHEBOP.
 %
 %   Calling sequence:
 %       N = DEFLATE(N, R, P, ALP)
 %   where the inputs are
-%       N:    A CHEBOP, whose arguments are X and U
+%       N:    A CHEBOP, whose arguments are X and U. At the moment, only scalar
+%             problems are supported.
 %       R:    A CHEBFUN or CHEBMATRIX of previously found solutions
 %       P:    The power coefficient of the deflation scheme
 %       ALP:  The shift coefficient of the deflation scheme
@@ -40,7 +41,7 @@ function N = deflate(N, r, p, alp, type)
 %
 % References:
 %   [1] Deflation techniques for finding distinct solutions of nonlinear
-%   partial differential equations (P. E. Farrell, ¡. Birkisson, S. W. Funke),
+%   partial differential equations (P. E. Farrell, √Å. Birkisson, S. W. Funke),
 %   In SIAM Journal on Scientific Computing, volume 37, 2015.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
@@ -55,11 +56,14 @@ if (isa(r, 'chebfun'))
     r = chebmatrix(r);
 end
 
-if (nargin(N.op) < 2 )
-    error('must pass x and u to N.op');
-end
+assert(nargin(N.op) <= 2, 'CHEBFUN:CHEBOP:deflate:nargin', ...
+    'Currently, CHEBOP deflation only supports scalar problems.');
 
 % Modify the output operator to reflect the deflation:
-N.op = @(x,u) deflationFun(N.op(x,u), u, r, p, alp, type);
+if (nargin(N.op) == 1 )
+    N.op = @(x,u) deflationFun(N.op(u), u, r, p, alp, type);
+else
+    N.op = @(x,u) deflationFun(N.op(x,u), u, r, p, alp, type);
+end
 
 end
