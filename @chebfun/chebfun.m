@@ -461,6 +461,9 @@ classdef chebfun
         % Supply new definition for a CHEBFUN at a point or set of points.
         f = definePoint(f, s, v)
         
+        % Function used for deflation, wrapper for CHEBMATRIX/DEFLATIONFUN.
+        out = deflationFun(Nu, u, r, p, alp, type)
+        
         % Multiplication operator.
         M = diag(f)
 

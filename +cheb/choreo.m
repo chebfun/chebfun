@@ -2,7 +2,7 @@ function choreo
 %CHOREO   Compute planar choreographies of the n-body problem.
 %    CHEB.CHOREO computes a planar choreography using hand-drawn initial
 %    guesses. At the end of the computation, the user is asked to press <1> to
-%    simulate the motion of the planets. To stop the program, press <CTRL>-<C>.
+%    display the motion of the planets. To stop the program, press <CTRL>-<C>.
 %
 % Planar choreographies are periodic solutions of the n-body problem in which
 % the bodies share a single orbit. This orbit can be fixed or rotating with some
@@ -22,7 +22,7 @@ LW = 'linewidth'; MS = 'markersize'; FS = 'fontsize';
 lw = 2; ms = 30; fs = 18;
 format long, format compact
 n = input('How many bodies? (e.g. 5) ');
-w = input('Angular velocity? (e.g. 1.2) ');
+w = input('Angular velocity? (e.g. 0 or 1.2) ');
 k = 15;
 N = k*n;
 dom = [0 2*pi];
