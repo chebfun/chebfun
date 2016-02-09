@@ -4,7 +4,8 @@ function N = deflate(N, r, p, alp, type)
 %   Calling sequence:
 %       N = DEFLATE(N, R, P, ALP)
 %   where the inputs are
-%       N:    A CHEBOP, whose arguments are X and U
+%       N:    A CHEBOP, whose arguments are X and U. At the moment, only scalar
+%             problems are supported.
 %       R:    A CHEBFUN or CHEBMATRIX of previously found solutions
 %       P:    The power coefficient of the deflation scheme
 %       ALP:  The shift coefficient of the deflation scheme
@@ -55,11 +56,14 @@ if (isa(r, 'chebfun'))
     r = chebmatrix(r);
 end
 
-if (nargin(N.op) < 2 )
-    error('must pass x and u to N.op');
-end
+assert(nargin(N.op) <= 2, 'CHEBFUN:CHEBOP:deflate:nargin', ...
+    'Currently, CHEBOP deflation only supports scalar problems.');
 
 % Modify the output operator to reflect the deflation:
-N.op = @(x,u) deflationFun(N.op(x,u), u, r, p, alp, type);
+if (nargin(N.op) == 1 )
+    N.op = @(x,u) deflationFun(N.op(u), u, r, p, alp, type);
+else
+    N.op = @(x,u) deflationFun(N.op(x,u), u, r, p, alp, type);
+end
 
 end
