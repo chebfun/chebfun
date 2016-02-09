@@ -51,4 +51,15 @@ pass(22) = abs( w - 2^(a+b+1)*beta(a+1, b+1) ) < tol;
 [x1, w1] = jacpts(2e5, .2, .2);
 pass(23) = abs(sum(w1*x1)) < 10*eps;
 
+% See #1707
+[~, w] = jacpts(1e6, -.5, 0);
+pass(24) = sum(w) - 2*sqrt(2) < 100*eps;
+
+[~, w] = jacpts(114, -.5, 0);
+pass(25) = sum(w) - 2*sqrt(2) < 10*eps;
+
+[x, w] = jacpts(1e5, 1, 1);
+pass(26) = sum(w) - 4/3 < 100*eps;
+pass(27) = w*x.^2 - 4/15 < 10*eps;
+
 end
