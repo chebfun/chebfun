@@ -154,7 +154,13 @@ for l = 1:nSchemes
 end
 left = 10^(floor(log10(min(timesteps))));
 right = 10^(ceil(log10(max(timesteps))));
-set(gca, 'fontsize', 16), axis([left right 1e-16 1e0])
+down = 1e-12;
+if ( max(err(:)) > 1e0 )
+    up = 1e2;
+else
+    up = 1e0;
+end
+set(gca, 'fontsize', 16), axis([left right down up])
 xlabel('Relative time-step'), ylabel(sprintf('Relative error at t = %.3f', TF))
 legend(labels, 'Location', 'NorthWest')
 
@@ -174,7 +180,7 @@ for l = 1:nSchemes
 end
 left = 10^(floor(log10(min(min(time)))));
 right = 10^(ceil(log10(max(max(time)))));
-set(gca, 'fontsize', 16), axis([left right 1e-16 1e0])
+set(gca, 'fontsize', 16), axis([left right down up])
 xlabel('Computer time (s)'), ylabel(sprintf('Relative error at t = %.3f', TF))
 legend(labels, 'Location', 'NorthEast')
 

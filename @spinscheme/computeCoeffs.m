@@ -38,9 +38,6 @@ switch schemeName
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     case 'abnorsett4'
         
-        % Compute C:
-        C(1) = 0;
-        
         % Compute the phi-functions:
         phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
         phi{2} = spinscheme.phiEval(2, LR, N, dim, nVars);
@@ -62,9 +59,6 @@ switch schemeName
         V{3} = -1/3*phi{2} - phi{3} - phi{4};
         
     case 'abnorsett5'
-        
-        % Compute C:
-        C(1) = 0;
         
         % Compute the phi-functions:
         phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
@@ -89,9 +83,6 @@ switch schemeName
         V{4} = 1/4*phi{2} + 11/12*phi{3} + 3/2*phi{4} + phi{5};
         
     case 'abnorsett6'
-        
-        % Compute C:
-        C(1) = 0;
         
         % Compute the phi-functions:
         phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
@@ -402,9 +393,6 @@ switch schemeName
     % LAWSON:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     case 'ablawson4'
-        
-        % Compute C:
-        C(1) = 0;
         
         % Compute the phi-functions:
         phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
