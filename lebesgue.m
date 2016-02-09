@@ -170,7 +170,7 @@ map = @(t) pi/(d(2) - d(1))*(2*t - d(1) - d(2));
 xm  = map(x);
 
 % Remove a periodic endpoint.  This will make it so that, e.g.,
-% lebesgue(linspace(-pi, pi, 17), 'trig') does the "expected" thing instead
+% lebesgue(linspace(-pi, pi, 16), 'trig') does the "expected" thing instead
 % of treating -pi and pi as two distinct points that are really, really
 % close to each other.
 if ( norm([xm(1), xm(end)] - [-pi, pi], Inf) < 2*pi*eps )
@@ -181,7 +181,8 @@ end
 if ( mod(length(xm), 2) == 0 )
     error('CHEBFUN:lebesgue:trigLebesgue:evenLengthGrid', ...
           ['LEBESGUE for trigonometric interpolation requires an ' ...
-           'odd-length grid.']);
+           'odd-length grid.\n(If you supplied an odd-length grid, ' ...
+           'perhaps it has a periodic endpoint?)']);
 end
 
 % Evaluate the barycentric weights.
