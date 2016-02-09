@@ -15,6 +15,21 @@ function out = deflationFun(Nu, u, r, p, alp, type)
 %             (default) and 'H1'.
 %   and the output is
 %       OUT:  A CHEBFUN, corresponding to the residual of the deflated problem.
+%
+%   The resididual OUT is the function
+%       M_{P, ALP}(U, R) * NU
+%   where the deflation operator M_{P, ALP}(U, R) is given by Equation (2.8) of
+%   [2], and Nu is the residual of the undeflated operator N, evaluated at U
+%   (the first input to this function).
+%
+% References:
+%   [1] Numerical Solution of Nonlinear Boundary Value Problems for Ordinary
+%   Differential Equations in the Continuous Framework, Asgeir Birkisson, DPhil
+%   Thesis.
+%
+%   [2] Deflation techniques for finding distinct solutions of nonlinear
+%   partial differential equations (P. E. Farrell, A. Birkisson, S. W. Funke),
+%   In SIAM Journal on Scientific Computing, volume 37, 2015.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -27,7 +42,8 @@ end
 % Extract the blocks from the CHEBMATRIX R
 rBlocks = r.blocks;
 
-% Norm function
+% Norm function. In case of multiple roots being deflated, we build up the
+% operator as described on p. 168 in [1].
 normFun = 1;
 if ( strcmp(type, 'L2') )
     for rCounter = 1:length(r)

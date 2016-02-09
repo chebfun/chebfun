@@ -509,6 +509,13 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             %
             % Calling sequence follows chebop/deflate. 
             %
+            %
+            % References:
+            %   [1] Deflation techniques for finding distinct solutions of
+            %   nonlinear partial differential equations (P. E. Farrell, A.
+            %   Birkisson, S. W. Funke), In SIAM Journal on Scientific
+            %   Computing, volume 37, 2015.
+            %
             % See also chebop/deflate .
             
             % Extract the function part of U (current guess of solution) and the
@@ -530,7 +537,9 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             phiVec = zeros(length(r), 1);
             
             if ( strcmp(type, 'L2') )
-                % Deflate each root
+                % Deflate each root, as described on p. 168 in [1]. The
+                % form of the derivative of the deflated operator is derived in
+                % Section 5.1.3 of [1].
                 for rCounter = 1:length(r)
                     ur = u - r{rCounter};
                     currNorm2 = norm(ur, 'fro')^2;
@@ -543,7 +552,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 % Differentiation operator on the domain
                 D = operatorBlock.diff(u.domain);
 
-                % Deflate each root
+                % Deflate each root, as described on p. 168 in [1].
                 for rCounter = 1:length(r)
                     ur = u - r{rCounter};
                     dur = diff(ur);
