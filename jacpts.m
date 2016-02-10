@@ -69,17 +69,17 @@ end
 % Check inputs:
 if ( nargin > 3 )
     if ( nargin == 5 )
-        % Calling sequence = LEGPTS(N, INTERVAL, METHOD)
+        % Calling sequence = JACPTS(N, INTERVAL, METHOD)
         interval = int;
         method = meth;
         method_set = 1;
     elseif ( nargin == 4 )
         if ( ischar(int) )
-            % Calling sequence = LEGPTS(N, METHOD)
+            % Calling sequence = JACPTS(N, METHOD)
             method = int;
             method_set = true;
         else
-            % Calling sequence = LEGPTS(N, INTERVAL)
+            % Calling sequence = JACPTS(N, INTERVAL)
             interval = int;
         end
     end
@@ -159,12 +159,20 @@ else
     
 end
 
-% Compute the constant for weights:
+% Compute the constant for the weights:
 if ( ~strcmpi(method,'GW') )
-    C = 2^(a+b+1) * exp( gammaln(n+a+1) - gammaln(n+a+b+1) + ...
-                         gammaln(n+b+1) - gammaln(n+1) ); 
-                     
-    w = C*w; 
+    if ( n >= 100 )
+        cte1 = ratioOfGammaFunctions(n+a+1, b);
+        cte2 = ratioOfGammaFunctions(n+1, b);
+        C = 2^(a+b+1)*(cte2/cte1);
+    else
+        C = 2^(a+b+1) * exp( gammaln(n+a+1) - gammaln(n+a+b+1) + ...
+            gammaln(n+b+1) - gammaln(n+1) );   
+        % An alternative approach could be used: 
+        %   C = 2^(a+b+1)*beta(a+1, b+1)/sum(w), 
+        % but we prefer compute the weights independently.
+    end
+    w = C*w;
 end
 
 % Scale the nodes and quadrature weights:
@@ -186,6 +194,27 @@ function [x, w] = rescale(x, w, interval, a, b)
         x = c1 + c2*x;    
     end
 end
+
+function cte = ratioOfGammaFunctions(m,delta)
+%RATIOGAMMA Compute the ratio gamma(m+delta)/gamma(m). See [2].
+    % cte = gamma(m+delta)/gamma(m)
+    ds = .5*delta^2/(m-1);
+    s = ds;
+    j = 1;
+    while ( abs(ds/s) > eps/100 ) % Taylor series in expansion 
+        j = j+1;
+        ds = -delta*(j-1)/(j+1)/(m-1)*ds;
+        s = s + ds;
+    end
+    p2 = exp(s)*sqrt(1+delta/(m-1))*(m-1)^(delta);
+    % Stirling's series:
+    g = [1, 1/12, 1/288, -139/51840, -571/2488320, 163879/209018880, ...
+        5246819/75246796800, -534703531/902961561600, ...
+        -4483131259/86684309913600, 432261921612371/514904800886784000];
+    f = @(z) sum(g.*[1, cumprod(ones(1, 9)./z)]);
+    cte = p2*(f(m+delta-1)/f(m-1));
+end
+
 
 %% ------------------------- Routines for GW ----------------------------
     
@@ -853,43 +882,8 @@ K = C*(f.*tB2);
 A3 = .5*(D*tB2) - (.5+alph)*B2 - .5*K;
 A3 = A3 - A3(1);
 
-if ( nargout < 6 )
-    % Make function for output
-    tB1 = @(theta) bary(theta, tB1, t, v);
-    A2 = @(theta) bary(theta, A2, t, v);
-    tB2 = @(theta) bary(theta, tB2, t, v);
-    A3 = @(theta) bary(theta, A3, t, v);
-    return
-end
-
-% A2p:
-A3p = D*A3;
-A3p = A3p - A3p(1);
-A3p_t = A3p./t;
-% Extrapolate point at t = 0:
-w = pi/2-t(2:end);
-w(2:2:end) = -w(2:2:end);
-A3p_t(1) = sum(w.*A3p_t(2:end))/sum(w);
-
-% B2:
-tB3 = -.5*A3p - (.5+alph)*(C*A3p_t) + .5*C*(f.*A3);
-B3 = tB3./t;
-% Extrapolate point at t = 0
-B3(1) = sum(w.*B3(2:end))/sum(w);
-
-% A3:
-K = C*(f.*tB3);
-A4 = .5*(D*tB3) - (.5+alph)*B3 - .5*K;
-A4 = A4 - A4(1);
-
-% Make function for output:
 tB1 = @(theta) bary(theta, tB1, t, v);
 A2 = @(theta) bary(theta, A2, t, v);
 tB2 = @(theta) bary(theta, tB2, t, v);
 A3 = @(theta) bary(theta, A3, t, v);
-tB3 = @(theta) bary(theta, tB3, t, v);
-A4 = @(theta) bary(theta, A4, t, v);
-
 end
-
-
