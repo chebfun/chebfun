@@ -1014,14 +1014,6 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 f.jumpLocations = union(f.jumpLocations,g.jumpLocations);
                 
                 % Derivative part 
-                %  (promote functionals top operators if  necessary!)
-                if ( isa(f.jacobian, 'functionalBlock') && ...
-                        isa(g.jacobian, 'operatorBlock') )
-                    f.jacobian = promote(f.jacobian);
-                elseif ( isa(g.jacobian, 'functionalBlock') && ...
-                        isa(f.jacobian, 'operatorBlock') )
-                    g.jacobian = promote(g.jacobian);
-                end
                 f.jacobian = f.jacobian + g.jacobian;
                 
             end

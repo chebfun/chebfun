@@ -151,7 +151,16 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
                 % Swap arguments.
                 C = mtimes(B, A);
             
+            elseif ( isa(A, 'functionalBlock') )
+                C = mtimes(promote(A), B);
+                return
+                
+            elseif ( isa(B, 'functionalBlock') )
+                C = mtimes(A, promote(B));
+                return
+                
             else
+                
                 % Here, we are dealing with an OPERATORBLOCK * OPERATORBLOCK.
                 
                 % Create an OPERATORBLOCK to be returned.
@@ -195,7 +204,14 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
             elseif ( isnumeric(B) )
                 B = B*operatorBlock.eye(A.domain);
             end
-
+            
+            % Did we get passed an functionalBlock?
+            if ( isa(A, 'functionalBlock') )
+                A = promote(A);
+            elseif ( isa(B, 'functionalBlock') )
+                B = promote(B);
+            end
+            
             % Operator addition.
             dom = domain.merge(A.domain, B.domain);
             C = operatorBlock(dom);
