@@ -238,7 +238,6 @@ switch schemeName
         A{4,3} = 26/25*phi{1} + 48/25*phi{2};
         
         % Compute B:
-        B{1} = phi{1} - 3*phi{2} + 4*phi{3};
         B{3} = 4*phi{2} - 8*phi{3};
         B{4} = -phi{2} + 4*phi{3};
         
@@ -279,7 +278,6 @@ switch schemeName
         A{5,4} = psi{2,2} - A{5,2};
         
         % Compute B:
-        B{1} = phi{1} - 3*phi{2} + 4*phi{3};
         B{4} = -phi{2} + 4*phi{3};
         B{5} = 4*phi{2} - 8*phi{3};
         
@@ -349,7 +347,6 @@ switch schemeName
         A{4,3} = 1/20*phi{1} - 33/10*phi{2} + 123/5*phi{3};
         
         % Compute B:
-        B{1} = 31/30*phi{1} - 17/5*phi{2} + 6*phi{3} - 4*phi{4};
         B{2} = -1/10*phi{1} + 1/5*phi{2} - 4*phi{3} + 12*phi{4};
         B{3} = 1/30*phi{1} + 23/5*phi{2} - 8*phi{3} - 4*phi{4};
         B{4} = 1/30*phi{1} - 7/5*phi{2} + 6*phi{3} - 4*phi{4};
@@ -385,7 +382,6 @@ switch schemeName
         A{4,3} = 4*phi{2};
         
         % Compute B:
-        B{1} = phi{1} - 3*phi{2} + 4*phi{3};
         B{3} = 4*phi{2} - 8*phi{3};
         B{4} = -phi{2} + 4*phi{3};
         
@@ -395,22 +391,25 @@ switch schemeName
     case 'ablawson4'
         
         % Compute the phi-functions:
+        phi0 = spinscheme.phiEval(0, LR, N, dim, nVars);
         phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
         
         % Compute the psi-functions:
-        psi02 = spinscheme.psiEval(0, 1, LR, N, dim, nVars);
         psi{1,1} = spinscheme.psiEval(1, C(1), LR, N, dim, nVars);
         
         % Take real part for diffusive problems (real eigenvalues):
         if ( isreal(L) == 1 )
             phi = cellfun(@(f) real(f), phi, 'UniformOutput', 0);
-            psi02 = real(psi02);
+            phi0 = real(phi0);
             psi = cellfun(@(f) real(f), psi, 'UniformOutput', 0);
         end
         
-        e2z = psi02.*psi02;
-        e3z = e2z.*psi02;
+        e2z = phi0.*phi0;
+        e3z = e2z.*phi0;
         e4z = e2z.*e2z;
+        
+        % Compute B:
+        B{1} = 55/24*phi0;
         
         % Compute V:
         V{1} = -59/24*e2z;
@@ -444,6 +443,7 @@ switch schemeName
         end
         
         % Compute A:
+        A{2,1} = 1/2*psi02;
         A{3,2} = 1/2;
         A{4,3} = psi02;
         
