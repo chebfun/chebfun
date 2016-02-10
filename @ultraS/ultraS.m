@@ -37,9 +37,6 @@ classdef ultraS < coeffsDiscretization
             disc = disc@coeffsDiscretization(varargin{:});
         end
         
-        % Dimension reduction for operator matrix.
-        [PA, P, PS] = reduce(disc, A, S)
-        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
