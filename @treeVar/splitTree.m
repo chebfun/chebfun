@@ -46,7 +46,7 @@ end
 switch tree.numArgs
     case 1
         % We're dealing with a unary operator.
-        [newTree, derTree] = splitTree(tree, maxOrder);
+        [newTree, derTree] = treeVar.splitTree(tree.center, maxOrder);
         
     case 2
         if ( any(strcmp(tree.method, {'diff', 'times', 'rdivide'})) )
