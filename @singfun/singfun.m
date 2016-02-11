@@ -234,27 +234,6 @@ end
 %% OTHER FUNCTIONS IMPLEMENTED IN THIS M-FILE:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function checkSingTypes(singType)
-%CHECKSINGTYPES   Function to check types of exponents in a SINGFUN object.
-%   The valid types can be 'sing', 'pole', 'root' or 'none'. If the type is
-%   different than these four strings (ignoring case), an error message is
-%   thrown.
-
-if ( ~isa(singType, 'cell') )
-    error( 'CHEBFUN:SINGFUN:checkSingTypes:notCell', ...
-        'singType must be a 1x2 cell with two strings');
-end
-
-check(1) = any(strcmpi(singType{1}, {'pole', 'sing', 'root', 'none'}));
-check(2) = any(strcmpi(singType{2}, {'pole', 'sing', 'root', 'none'}));
-
-if ( ~all(check) )
-    error('CHEBFUN:SINGFUN:checkSingTypes:badType', ...
-        'Unknown singularity type.');
-end
-
-end
-
 function op = singOp2SmoothOp(op, exponents)
 %SINGOP2SMOOTHOP   Converts a singular operator to a smooth one by removing the
 %   singularity(ies).
