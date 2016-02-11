@@ -55,9 +55,6 @@ for j = 1:nargin
         u0 = item;
     elseif ( isa(item, 'spinoperator') == 1 )
         S = item;
-        if ( nargin < 3 )
-            error('SPINOPERATOR:solvepde', 'Not enough input arguments.')
-        end
     elseif ( isa(item, 'spinpreference') == 1 )
         pref = item;
     else
@@ -65,26 +62,77 @@ for j = 1:nargin
     end
 end
 
-% Parse the inputs:
-if ( isempty(tspan) == 1 && isempty(u0) == 1 )
-    if ( isempty(pref) == 0 )
-        [tspan, u0] = parseInputs(pdechar);
-    else
-        [tspan, u0, pref] = parseInputs(pdechar);
+% A SPINOPERATOR was given by the user:
+if ( isempty(S) == 0 )
+    dim = getDimension(S);
+    
+    % Create a SPINPREFERENCE object if none:
+    if ( isempty(pref) == 1 )
+        if ( dim == 1 )
+            pref = spinpref();
+        elseif ( dim == 2 )
+            pref = spinpref2();
+        elseif ( dim == 3 )
+            pref = spinpref3();
+        end
     end
-elseif ( isempty(tspan) == 1 )
-    if ( isempty(pref) == 0 )
-        tspan = parseInputs(pdechar);
-    else
-        [tspan, ~, pref] = parseInputs(pdechar);
-        pref.dt = [];
+    
+% DEMO mode, i.e., a STRING was given by the user:    
+else
+    
+    % Create a SPINOPERATOR:
+    is2D = ~isempty(strfind(pdechar, '2'));
+    is3D = ~isempty(strfind(pdechar, '3'));
+    is1D = ( is2D == 0 && is3D == 0 );
+    if ( is1D == 1 )
+        dim = 1;
+        S = spinop(pdechar);
+    elseif ( is2D == 1 )
+        dim = 2;
+        S = spinop2(pdechar);
+    elseif ( is3D == 1 )
+        dim = 3;
+        S = spinop3(pdechar);
     end
-elseif ( isempty(u0) == 1 )
-    if ( isempty(pref) == 0 )
-        [~, u0] = parseInputs(pdechar);
-    else
-        [~, u0, pref] = parseInputs(pdechar);
-        pref.dt = [];
+    
+    % Create a SPINPREFERENCE object if none:
+    if ( isempty(pref) == 1 )
+        if ( dim == 1 )
+            if ( isempty(tspan) == 1 )
+                pref = spinpref(pdechar);
+            else
+                pref = spinpref();
+            end
+        elseif ( dim == 2 )
+            if ( isempty(tspan) == 1 )
+                pref = spinpref2(pdechar);
+            else
+                pref = spinpref2();
+            end
+        elseif ( dim == 3 )
+            if ( isempty(tspan) == 1 )
+                pref = spinpref3(pdechar);
+            else
+                pref = spinpref3();
+            end
+        end
+    end
+end
+   
+% Time interval TSPAN:
+if ( isempty(tspan) == 1 )
+    tspan = S.tspan;
+end
+    
+% Initial condition U0:
+if ( isempty(u0) == 1 )
+    u0 = S.init;
+    if ( isa(u0, 'chebfun') == 1 )
+        u0 = chebmatrix(u0);
+    elseif ( isa(u0, 'chebfun2') == 1 )
+        u0 = chebmatrix(u0);
+    elseif ( isa(u0, 'chebfun3') == 1 )
+        u0 = chebmatrix(u0);
     end
 end
 
@@ -102,31 +150,6 @@ if ( isempty(S) == 0 )
 end
 
 %% Pre-processing:
-
-% If no SPINOPERATOR was given (i.e., DEMO mode), create one:
-if ( isempty(S) == 1 ) 
-    if ( isa(u0{1}, 'chebfun') == 1 )
-        S = spinop(pdechar, dom);
-    elseif ( isa(u0{1}, 'chebfun2') == 1 )
-        S = spinop2(pdechar, dom);
-    elseif ( isa(u0{1}, 'chebfun3') == 1 )
-        S = spinop3(pdechar, dom);
-    end
-end
-
-% Get the spatial dimension:
-dim = getDimension(S);
-
-% Create a SPINPREFERENCE object if none:
-if ( isempty(pref) == 1 )
-    if ( dim == 1 )
-        pref = spinpref();
-    elseif ( dim == 2 )
-        pref = spinpref2();
-    elseif ( dim == 3 )
-        pref = spinpref3();
-    end
-end
 
 % Dealiasing:
 dealias = pref.dealias;
@@ -611,167 +634,6 @@ if ( nargout > 2 )
     if ( length(tspan) == 2 )
         tOut = tOut(2);
     end
-end
-
-end
-
-%% Function to parse the inputs:
-
-function [tspan, u0, pref] = parseInputs(pdechar)
-%PARSEINPUTS   Parse inputs when using SPIN, SPIN2 and SPIN3 with a STRING.
-
-if ( strcmpi(pdechar, 'AC') == 1 )
-    tspan = [0 300];
-    dom = [0 2*pi];
-    u0 = chebmatrix(chebfun(@(x) tanh(2*sin(x)) + 3*exp(-27.*(x-4.2).^2) ...
-        - 3*exp(-23.5.*(x-pi/2).^2) + 3*exp(-38.*(x-5.4).^2), dom, 'trig'));
-    pref = spinpref(pdechar);
-    
-elseif ( strcmpi(pdechar, 'Burg') == 1 )
-    tspan = [0 20];
-    dom = [-1 1];
-    u0 = chebmatrix(chebfun('(1-x.^2).*exp(-30.*(x+1/2).^2)', dom, 'trig'));
-    pref = spinpref(pdechar);
-    
-elseif ( strcmpi(pdechar, 'BZ') == 1 )
-    tspan = [0 30];
-    dom = [-1 1];
-    u01 = chebfun(@(x) exp(-100*(x+.5).^2), dom, 'trig');
-    u02 = chebfun(@(x) exp(-100*(x).^2), dom, 'trig');
-    u03 = chebfun(@(x) exp(-100*(x-.5).^2), dom, 'trig');
-    u0 = chebmatrix(u01);
-    u0(2,1) = u02;
-    u0(3,1) = u03;
-    pref = spinpref(pdechar);
-    
-elseif ( strcmpi(pdechar, 'CH') == 1 )
-    tspan = [0 70];
-    dom = [-1 1];
-    u0 = chebmatrix(chebfun('(sin(4*pi*x)).^5 - sin(pi*x)', dom, 'trig'));
-    pref = spinpref(pdechar);
-    
-elseif ( strcmpi(pdechar, 'GL2') == 1 )
-    tspan = [0 80];
-    vals = .1*randn(128, 128);
-    dom = [0 200 0 200];
-    u0 = chebmatrix(chebfun2(vals, dom, 'trig'));
-    pref = spinpref2(pdechar);
-    
-elseif ( strcmpi(pdechar, 'GL3') == 1 )
-    tspan = [0 50];
-    vals = .1*randn(32, 32, 32);
-    dom = [0 100 0 100 0 100];
-    u0 = chebmatrix(chebfun3(vals, dom, 'trig'));
-    pref = spinpref3(pdechar);
-    
-elseif ( strcmpi(pdechar, 'GS') == 1 )
-    tspan = [0 12000];
-    L = 50;
-    dom = L*[-1 1];
-    u01 = chebfun(@(x) 1 - 1/2*sin(pi*(x-L)/(2*L)).^100, dom, 'trig');
-    u02 = chebfun(@(x) 1/4*sin(pi*(x-L)/(2*L)).^100, dom, 'trig');
-    u0 = chebmatrix(u01);
-    u0(2,1) = u02;
-    pref = spinpref(pdechar);
-    
-elseif ( strcmpi(pdechar, 'GS2') == 1 )
-    tspan = [0 3200];
-    G = 1.25;
-    dom = G*[0 1 0 1];
-    u01 = chebfun2(@(x,y) 1 - exp(-150*((x-G/2).^2 + (y-G/2).^2)), dom, 'trig');
-    u02 = chebfun2(@(x,y) exp(-150*((x-G/2).^2 + 2*(y-G/2).^2)), dom, 'trig');
-    u0 = chebmatrix(u01);
-    u0(2,1) = u02;
-    pref = spinpref2(pdechar);
-    
-elseif ( strcmpi(pdechar, 'GS3') == 1 )
-    tspan = [0 1600];
-    G = 0.75;
-    dom = G*[0 1 0 1 0 1];
-    u01 = chebfun3(@(x,y,z) 1 - exp(-150*((x-G/2).^2 + (y-G/2).^2 + ...
-        (z-G/2).^2)), dom, 'trig');
-    u02 = chebfun3(@(x,y,z) exp(-150*((x-G/2).^2 + 2*(y-G/2).^2 + ...
-        (z-G/2).^2)), dom, 'trig');
-    u0 = chebmatrix(u01);
-    u0(2,1) = u02;
-    pref = spinpref3(pdechar);
-    
-elseif ( strcmpi(pdechar, 'KdV') == 1 )
-    A = 25^2; B = 16^2;
-    tspan = [0 0.03015];
-    dom = [-pi pi];
-    u0 = @(x) 3*A*sech(.5*sqrt(A)*x).^2 + 3*B*sech(.5*sqrt(B)*(x-1)).^2;
-    u0 = chebmatrix(chebfun(u0, dom, 'trig'));
-    pref = spinpref(pdechar);
-    
-elseif ( strcmpi(pdechar, 'KS') == 1 )
-    tspan = [0 300];
-    dom = [0 32*pi];
-    u0 = chebmatrix(chebfun('cos(x/16).*(1 + sin((x-1)/16))', dom, 'trig'));
-    pref = spinpref(pdechar);
-    
-elseif ( strcmpi(pdechar, 'Niko') == 1 )
-    tspan = [0 300];
-    dom = [0 32*pi];
-    u0 = chebmatrix(chebfun('cos(x/16).*(1 + sin((x-1)/16))', dom, 'trig'));
-    pref = spinpref(pdechar);
-    
-elseif ( strcmpi(pdechar, 'NLS') == 1 )
-    tspan = [0 18];
-    A = 2; B = 1;
-    dom = [-pi pi];
-    u0 = @(x) (2*B^2./(2 - sqrt(2)*sqrt(2-B^2)*cos(A*B*x)) - 1)*A;
-    u0 = chebmatrix(chebfun(u0, dom, 'trig'));
-    pref = spinpref(pdechar);
-    
-elseif ( strcmpi(pdechar, 'OK') == 1 )
-    tspan = [0 4];
-    dom = [0 2*pi];
-    u0 = chebmatrix(chebfun('cos(x)/2', dom, 'trig'));
-    pref = spinpref(pdechar);
-    
-elseif ( strcmpi(pdechar, 'Schnak2') == 1 ) 
-    tspan = [0 200];
-    G = 50;
-    dom = G*[0 1 0 1];
-    u01 = chebfun2(@(x,y) 1 - exp(-10*((x-G/2).^2 + (y-G/2).^2)), dom, 'trig');
-    u02 = chebfun2(@(x,y) exp(-10*((x-G/2).^2 + 2*(y-G/2).^2)), dom, 'trig');
-    u0 = chebmatrix(u01);
-    u0(2,1) = u02;
-    pref = spinpref2(pdechar);
-    
-elseif ( strcmpi(pdechar, 'Schnak3') == 1 )
-    tspan = [0 200];
-    G = 20;
-    dom = G*[0 1 0 1 0 1];
-    u01 = chebfun3(@(x,y,z) 1 - exp(-10*((x-G/2).^2 + (y-G/2).^2 + ...
-        (z-G/2).^2)), dom, 'trig');
-    u02 = chebfun3(@(x,y,z) exp(-10*((x-G/2).^2 + 2*(y-G/2).^2 + ...
-        (z-G/2).^2)), dom, 'trig');
-    u0 = chebmatrix(u01);
-    u0(2,1) = u02;
-    pref = spinpref3(pdechar);
-    
-elseif ( strcmpi(pdechar, 'SH2') == 1 ) 
-    tspan = [0 200];
-    L = 50;
-    dom = [0 L 0 L];
-    vals = .1*randn(64, 64);
-    u0 = chebmatrix(chebfun2(vals, dom, 'trig'));
-    pref = spinpref2(pdechar);
-    
-elseif ( strcmpi(pdechar, 'SH3') == 1 ) 
-    tspan = [0 200];
-    L = 50;
-    dom = [0 L 0 L 0 L];
-    u0 = @(x,y,z) 1/4*(sin(pi*x/10) + sin(pi*y/10) + sin(pi*z/10) + ...
-        sin(pi*x/2).*sin(pi*y/2) + sin(pi*x/2).*sin(pi*z/2) + ...
-        sin(pi*z/2).*sin(pi*y/2));
-    u0 = chebmatrix(chebfun3(u0, dom));
-    pref = spinpref3(pdechar);
-    
-else
-    error('SPINOPERATOR:SOLVEPDE:parseInputs', 'Unrecognized PDE.')
 end
 
 end

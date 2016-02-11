@@ -56,7 +56,7 @@ function [uout, tout] = spin3(varargin)
 %       u_t = 2e-5*laplacian(u) + 3.5e-2*(1-u)*u - u*v^2,
 %       v_t = 1e-5*laplacian(v) - 9.5e-2*v + u*v^2,
 %
-%    on [0 .75]^3 from t=0 to t=1600, with initial condition 
+%    on [0 .75]^3 from t=0 to t=1500, with initial condition 
 %
 %       u0(x,y,z) = 1 - exp(-150*((x-G/2)^2 + (y-G/2)^2 + (z-G/2)^2)),
 %       v0(x,y,z) = exp(-150*((x-G/2)^2 + 2*(y-G/2)^2 + (z-G/2)^2)),
@@ -97,7 +97,7 @@ function [uout, tout] = spin3(varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % [TEMPORARY]: Throw an error for users who do not have Chebfun3:
-if ( exist('chebfun33') == 0 ) %#ok<*EXIST>
+if ( exist('chebfun3') == 0 ) %#ok<*EXIST>
     error('CHEBFUN:SPIN3', ['SPIN3 will be available in a future release ', ...
         'together with chebfun3 objects.'])
 end

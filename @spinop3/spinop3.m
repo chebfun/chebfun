@@ -46,10 +46,12 @@ classdef spinop3 < spinoperator
             for j = 1:nargin
                 item =  varargin{j};
                 if ( isa(item, 'char') == 1 )
-                    [L, N, dom] = parseInputs(item);
+                    [L, N, dom, tspan, u0] = parseInputs(item);
                     S.linearPart = L;
                     S.nonlinearPart = N;
                     S.domain = dom;
+                    S.tspan = tspan;
+                    S.init = u0;
                 elseif ( isa(item, 'function_handle') && countFun == 0 )
                     S.linearPart = item;
                     countFun = 1;
@@ -74,37 +76,63 @@ end
     %% METHODS IMPLEMENTED IN THIS FILE:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
-    function [L, N, dom] = parseInputs(pdechar)
+    function [L, N, dom, tspan, u0] = parseInputs(pdechar)
         %PARSEINPUTS   Parse inputs when using a STRING.
-        %   [L, N, DOM] = PARSEINPUTS(PDECHAR), where PDECHAR is a string,
-        %   outputs two function handles L and N which represent the linear
-        %   and the nonlinear parts of the PDE represented by PDECHAR, and the 
-        %   domain DOM.
+        %   [L, N, DOM, TSPAN, U0] = PARSEINPUTS(PDECHAR), where PDECHAR is a 
+        %   string, outputs two function handles L and N which represent the 
+        %   linear and the nonlinear parts of the PDE represented by PDECHAR, 
+        %   the domain DOM, the time interval TSPAN and the initial condition
+        %   U0.
             
         % Ginzburg-Landau equation:
         if ( strcmpi(pdechar, 'GL3') == 1 )
             L = @(u) lap(u);
             N = @(u) u - (1 + 1.3i)*u.*(abs(u).^2);
             dom = [0 100 0 100 0 100];
+            tspan = [0 50];
+            vals = .1*randn(32, 32, 32);
+            u0 = chebfun3(vals, dom, 'trig');
             
         % Gray-Scott equations:
         elseif ( strcmpi(pdechar, 'GS3') == 1 )
             L = @(u,v) [2e-5*lap(u); 1e-5*lap(v)];
             N = @(u,v) [3.5e-2*(1 - u) - u.*v.^2; -9.5e-2*v + u.*v.^2];
-            dom = [0 .75 0 .75 0 .75];
+            G = 0.75;
+            dom = G*[0 1 0 1 0 1];
+            tspan = [0 1500];
+            u01 = @(x,y,z) 1 - exp(-150*((x-G/2).^2 + (y-G/2).^2 + (z-G/2).^2));
+            u01 = chebfun3(u01, dom, 'trig');
+            u02 = @(x,y,z) exp(-150*((x-G/2).^2 + 2*(y-G/2).^2 + (z-G/2).^2));
+            u02 = chebfun3(u02, dom, 'trig');
+            u0 = chebmatrix(u01);
+            u0(2,1) = u02;
             
         % Schnakenberg equations:
         elseif ( strcmpi(pdechar, 'Schnak3') == 1 )
             L = @(u,v) [lap(u); 10*lap(v)];
             N = @(u,v) [.1 - u + u.^2.*v; .9 - u.^2.*v];
-            dom = [0 20 0 20 0 20];
+            G = 20;
+            dom = G*[0 1 0 1 0 1];
+            tspan = [0 200];
+            u01 = @(x,y,z) 1 - exp(-10*((x-G/2).^2 + (y-G/2).^2 + (z-G/2).^2));
+            u01 = chebfun3(u01, dom, 'trig');
+            u02 = @(x,y,z) exp(-10*((x-G/2).^2 + 2*(y-G/2).^2 + (z-G/2).^2));
+            u02 = chebfun3(u02, dom, 'trig');
+            u0 = chebmatrix(u01);
+            u0(2,1) = u02;
             
         % Swift-Hohenberg equation:
         elseif ( strcmpi(pdechar, 'SH3') == 1 )
             L = @(u) -2*lap(u) - biharm(u);
             N = @(u) -.9*u + u.^2 - u.^3;
-            dom = [0 50 0 50 0 50];
-            
+            G = 50;
+            dom = G*[0 1 0 1 0 1];
+            tspan = [0 200];
+            u0 = @(x,y,z) 1/4*(sin(pi*x/10) + sin(pi*y/10) + sin(pi*z/10) + ...
+                sin(pi*x/2).*sin(pi*y/2) + sin(pi*x/2).*sin(pi*z/2) + ...
+                sin(pi*z/2).*sin(pi*y/2));
+            u0 = chebfun3(u0, dom);
+    
         else
             error('SPINOP3:parseInputs', 'Unrecognized PDE.')
         end

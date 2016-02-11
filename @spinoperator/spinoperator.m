@@ -16,8 +16,10 @@ classdef spinoperator
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
         domain              % Spatial domain
+        init                % Initial condition
         linearPart          % Linear part of the operator
         nonlinearPart       % Nonlinear part of the operator
+        tspan               % Time interval
     end
     
     % DEPENDENT PROPERTIES:

@@ -98,7 +98,7 @@ classdef spinpref2 < spinpreference
                     pref.dt = 2e-1;
                     pref.N = 64;
                 elseif ( strcmpi(pdechar, 'GS2') == 1 )
-                    pref.dt = 8;
+                    pref.dt = 6;
                     pref.N = 64;
                 elseif ( strcmpi(pdechar, 'Schnak2') == 1 )
                     pref.dt = 1;
