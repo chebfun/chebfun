@@ -96,6 +96,25 @@ function [uout, tout] = spin3(varargin)
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+for j = 1:nargin
+    item =  varargin{j};
+    if ( isa(item, 'spinoperator') == 1 )
+        if ( isa(item, 'spinop') == 1 )
+            error('CHEBFUN:SPIN', 'Use SPIN for PDEs in one space dimension.')
+        elseif ( isa(item, 'spinop2') == 1 )
+            error('CHEBFUN:SPIN', 'Use SPIN2 for PDEs in two space dimensions.')
+        end
+    elseif ( isa(item, 'char') == 1 )
+        is1D = isempty(strfind(item, '2')) && isempty(strfind(item, '3'));
+        is2D = ~isempty(strfind(item, '2'));
+        if ( is1D == 1 )
+            error('CHEBFUN:SPIN', 'Use SPIN for PDEs in one space dimension.')
+        elseif ( is2D == 1 )
+            error('CHEBFUN:SPIN', 'Use SPIN2 for PDEs in two space dimensions.')
+        end
+    end
+end
+
 % SPIN3 is a wrapper for SOLVPDE:
 [uout, tout] = spinoperator.solvepde(varargin{:});
 
