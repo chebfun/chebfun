@@ -211,7 +211,7 @@ classdef spinoperator
     methods ( Access = public, Abstract = false, Static = true )
         
         % Solve a PDE defined by a SPINOPERATOR:
-        [uout, tout, pref] = solvepde(varargin)
+        [uout, tout] = solvepde(varargin)
    
     end
 

@@ -55,8 +55,13 @@ classdef spinpref3 < spinpreference
 %
 %   PREF = SPINPREF3() creates a SPINPREF3 object with the default values.
 %
-%   PREF = SPINPREF3(PROP, VALUE) creates a SPINPRE32 object with the property
-%   PROP set to VALUE.
+%   PREF = SPINPREF3(PDECHAR) creates a SPINPREF3 object corresponding to the 
+%   preferences used for the SPIN3(PDECHAR) demo. Strings available include
+%   'GL3' for Ginzburg-Landau equation and 'GS3' for Gray-Scott equations. 
+%   Other PDEs are available, see HELP/SPIN3.
+%
+%   PREF = SPINPREF3(PROP1, VALUE1, PROP2, VALUE2, ...) creates a SPINPREF3
+%   object with the properties PROP1 and PROP2 set to VALUE1 and VALUE2.
 %
 % See also SPIN3.
 
@@ -85,6 +90,26 @@ classdef spinpref3 < spinpreference
                 pref.N = 32;
                 pref.Nmin = 32;
                 pref.Nmax = 128;
+            elseif ( nargin == 1 )
+                pdechar = varargin{1};
+                pref.dtmin = [];
+                pref.iterPlot = 1;
+                pref.M = 32;
+                if ( strcmpi(pdechar, 'GL3') == 1 )
+                    pref.dt = 2e-1;
+                    pref.N = 32;   
+                elseif ( strcmpi(pdechar, 'GS3') == 1 )
+                    pref.dt = 8;
+                    pref.N = 32;     
+                elseif ( strcmpi(pdechar, 'Schnak3') == 1 )
+                    pref.dt = 1;
+                    pref.N = 16;
+                elseif ( strcmpi(pdechar, 'SH3') == 1 )
+                    pref.dt = 1;
+                    pref.N = 32;
+                else
+                    error('SPINPREF3:CONSTRUCTOR', 'Unrecognized PDE.')
+                end
             else
                 pref = spinpref3();
                 for k = 1:nargin/2

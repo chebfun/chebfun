@@ -57,8 +57,13 @@ classdef spinpref < spinpreference
 %
 %   PREF = SPINPREF() creates a SPINPREF object with the default values.
 %
-%   PREF = SPINPREF(PROP, VALUE) creates a SPINPREF object with the property
-%   PROP set to VALUE.
+%   PREF = SPINPREF(PDECHAR) creates a SPINPREF object corresponding to the 
+%   preferences used for the SPIN(PDECHAR) demo. Strings available include 'AC'
+%   for Allen-Cahn equation, 'KS' for Kuramoto-Sivashinsky equation, and 'KdV' 
+%   for Korteweg-de Vries equation. Other PDEs are available, see HELP/SPIN.
+%
+%   PREF = SPINPREF(PROP1, VALUE1, PROP2, VALUE2, ...) creates a SPINPREF object
+%   with the properties PROP1 and PROP2 set to VALUE1 and VALUE2.
 %
 % See also SPIN.
 
@@ -85,6 +90,44 @@ classdef spinpref < spinpreference
                 pref.M = 64;
                 pref.Nmin = 256;
                 pref.Nmax = 4096;
+            elseif ( nargin == 1 )
+                pdechar = varargin{1};
+                pref.dtmin = [];
+                pref.iterPlot = 20;
+                pref.M = 64;
+                if ( strcmpi(pdechar, 'AC') == 1 )
+                    pref.dt = 1e-1;
+                    pref.N = 256;  
+                elseif ( strcmpi(pdechar, 'Burg') == 1 )
+                    pref.dt = 5e-3;
+                    pref.N = 1024;      
+                elseif ( strcmpi(pdechar, 'BZ') == 1 )
+                    pref.dt = 1e-2;
+                    pref.N = 256;
+                elseif ( strcmpi(pdechar, 'CH') == 1 )
+                    pref.dt = 2e-2;
+                    pref.N = 256;  
+                elseif ( strcmpi(pdechar, 'GS') == 1 )
+                    pref.dt = 5;
+                    pref.N = 256;
+                elseif ( strcmpi(pdechar, 'KdV') == 1 )
+                    pref.dt = 5e-6;
+                    pref.N = 256;
+                elseif ( strcmpi(pdechar, 'KS') == 1 )
+                    pref.dt = 1e-1;
+                    pref.N = 256;
+                elseif ( strcmpi(pdechar, 'Niko') == 1 )
+                    pref.dt = 1e-1;
+                    pref.N = 256; 
+                elseif ( strcmpi(pdechar, 'NLS') == 1 )
+                    pref.dt = 1.5e-3;
+                    pref.N = 256;  
+                elseif ( strcmpi(pdechar, 'OK') == 1 )
+                    pref.dt = 1e-3;
+                    pref.N = 256;    
+                else
+                    error('SPINPREF:CONSTRUCTOR', 'Unrecognized PDE.')
+                end
             else
                 pref = spinpref();
                 for k = 1:nargin/2

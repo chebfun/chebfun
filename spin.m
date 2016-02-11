@@ -1,4 +1,4 @@
-function [uout, tout, pref] = spin(varargin)
+function [uout, tout] = spin(varargin)
 %SPIN  Solve a time-dependent PDE in 1D with periodicity in space, using a 
 %Fourier spectral method and an exponential integrator time-stepping scheme.
 %
@@ -29,9 +29,6 @@ function [uout, tout, pref] = spin(varargin)
 % 
 %   [UOUT, TOUT] = SPIN(...) also returns the times chunks TOUT at which UOUT
 %   was computed.
-%
-%   [UOUT, TOUT, PREF] = SPIN(...) also returns the preferences used for the 
-%   computation.
 %
 % Remark 1: Available (case-insensitive) strings PDECHAR are
 %
@@ -233,6 +230,6 @@ for j = 1:nargin
 end
 
 % SPIN is a wrapper for SOLVPDE:
-[uout, tout, pref] = spinoperator.solvepde(varargin{:});
+[uout, tout] = spinoperator.solvepde(varargin{:});
 
 end

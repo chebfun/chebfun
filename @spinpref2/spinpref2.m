@@ -54,8 +54,13 @@ classdef spinpref2 < spinpreference
 %
 %   PREF = SPINPREF2() creates a SPINPREF2 object with the default values.
 %
-%   PREF = SPINPREF2(PROP, VALUE) creates a SPINPREF2 object with the property
-%   PROP set to VALUE.
+%   PREF = SPINPREF2(PDECHAR) creates a SPINPREF2 object corresponding to the 
+%   preferences used for the SPIN2(PDECHAR) demo. Strings available include
+%   'GL2' for Ginzburg-Landau equation and 'GS2' for Gray-Scott equations. 
+%   Other PDEs are available, see HELP/SPIN2.
+%
+%   PREF = SPINPREF2(PROP1, VALUE1, PROP2, VALUE2, ...) creates a SPINPREF2 
+%   object with the properties PROP1 and PROP2 set to VALUE1 and VALUE2.
 %
 % See also SPIN2.
 
@@ -84,6 +89,26 @@ classdef spinpref2 < spinpreference
                 pref.N = 64;
                 pref.Nmin = 64;
                 pref.Nmax = 512;
+            elseif ( nargin == 1 )
+                pdechar = varargin{1};
+                pref.dtmin = [];
+                pref.iterPlot = 1;
+                pref.M = 32;
+                if ( strcmpi(pdechar, 'GL2') == 1 )
+                    pref.dt = 2e-1;
+                    pref.N = 64;
+                elseif ( strcmpi(pdechar, 'GS2') == 1 )
+                    pref.dt = 8;
+                    pref.N = 64;
+                elseif ( strcmpi(pdechar, 'Schnak2') == 1 )
+                    pref.dt = 1;
+                    pref.N = 64;
+                elseif ( strcmpi(pdechar, 'SH2') == 1 )
+                    pref.dt = 1;
+                    pref.N = 64; 
+                else
+                    error('SPINPREF2:CONSTRUCTOR', 'Unrecognized PDE.')
+                end
             else
                 pref = spinpref2();
                 for k = 1:nargin/2

@@ -1,4 +1,4 @@
-function [uout, tout, pref] = spin2(varargin)
+function [uout, tout] = spin2(varargin)
 %SPIN2  Solve a time-dependent PDE in 2D with periodicity in space, using a 
 %Fourier spectral method and an exponential integrator time-stepping scheme.
 %
@@ -29,9 +29,6 @@ function [uout, tout, pref] = spin2(varargin)
 % 
 %   [UOUT, TOUT] = SPIN2(...) also returns the times chunks TOUT at which UOUT
 %   was computed.
-%
-%   [UOUT, TOUT, PREF] = SPIN2(...) also returns the preferences used for the 
-%   computation.
 %
 % Remark 1: Available (case-insensitive) strings PDECHAR are
 %
@@ -117,6 +114,6 @@ for j = 1:nargin
 end
 
 % SPIN2 is a wrapper for SOLVPDE:
-[uout, tout, pref] = spinoperator.solvepde(varargin{:});
+[uout, tout] = spinoperator.solvepde(varargin{:});
 
 end
