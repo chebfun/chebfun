@@ -17,9 +17,6 @@ classdef chebcolloc < valsDiscretization
             disc = disc@valsDiscretization(varargin{:});
         end
         
-        % Dimension reduction for operator matrix.
-        [PA, P, PS] = reduce(disc, A, S)
-        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
