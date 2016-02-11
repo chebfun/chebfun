@@ -1367,17 +1367,41 @@ schemeCoeffs.U = U;
 schemeCoeffs.V = V;
 
 % Compute the missing oefficients using the summation properties of the coeffs:
-schemeCoeffs = computeMissingCoeffs(K, L, schemeCoeffs, dt, phi, psi);
+% (Unless the scheme is ABLAWSON4 or LAWSON4.)
+switch schemeName
+    case {'ablawson4', 'lawson4'}
+    otherwise
+        schemeCoeffs = computeMissingCoeffs(K, schemeCoeffs, phi, psi);
+end
+
+% Precompute the E quantities:
+E = cell(s+1, 1);
+for i = 1:s
+    E{i} = exp(C(i)*dt*L);
+end
+E{s+1} = exp(dt*L);
+
+% Multiply by time-step:
+A = cellfun(@(A) dt*A, A, 'UniformOutput', 0);
+B = cellfun(@(B) dt*B, B, 'UniformOutput', 0);
+U = cellfun(@(U) dt*U, U, 'UniformOutput', 0);
+V = cellfun(@(V) dt*V, V, 'UniformOutput', 0);
+
+% Put everything in SCHEMECOEFFS:
+schemeCoeffs.A = A;
+schemeCoeffs.B = B;
+schemeCoeffs.E = E;
+schemeCoeffs.U = U;
+schemeCoeffs.V = V;
 
 end
 
-function schemeCoeffs = computeMissingCoeffs(K, L, schemeCoeffs, dt, phi, psi)
+function schemeCoeffs = computeMissingCoeffs(K, schemeCoeffs, phi, psi)
 %COMPUTEMISSINGCOEFFS   Compute the missing oefficients of a SPINSCHEME using
 %the summation properties of the coefficients.
-%   SCHEMECOEFFS = COMPUTEMISSINGCOEFFS(K, L, SCHEMECOEFFS, DT, PHI, PSI) uses
-%   the row summation properties to compute the coefficients A{i,1}, B{1} and E
-%   of the SPINSCHEME K, using the linear part L of the opeartor, the time-step
-%   DT, and the phi- and psi-functions.
+%   SCHEMECOEFFS = COMPUTEMISSINGCOEFFS(K, SCHEMECOEFFS, PHI, PSI) uses the row
+%   summation properties to compute the SCHEMECOEFFS A{i,1} and B{1} of the
+%   SPINSCHEME K, using and the phi- and psi-functions.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -1385,7 +1409,6 @@ function schemeCoeffs = computeMissingCoeffs(K, L, schemeCoeffs, dt, phi, psi)
 % Get the coefficients:
 A = schemeCoeffs.A;
 B = schemeCoeffs.B;
-C = schemeCoeffs.C;
 U = schemeCoeffs.U;
 V = schemeCoeffs.V;
 
@@ -1420,25 +1443,5 @@ for i = 1:q-1
         B{1} = B{1} - V{i};
     end
 end
-
-% Precompute the E quantities:
-E = cell(s+1, 1);
-for i = 1:s
-    E{i} = exp(C(i)*dt*L);
-end
-E{s+1} = exp(dt*L);
-
-% Multiply by time-step:
-A = cellfun(@(A) dt*A, A, 'UniformOutput', 0);
-B = cellfun(@(B) dt*B, B, 'UniformOutput', 0);
-U = cellfun(@(U) dt*U, U, 'UniformOutput', 0);
-V = cellfun(@(V) dt*V, V, 'UniformOutput', 0);
-
-% Put everything in SCHEMECOEFFS:
-schemeCoeffs.A = A;
-schemeCoeffs.B = B;
-schemeCoeffs.E = E;
-schemeCoeffs.U = U;
-schemeCoeffs.V = V;
 
 end

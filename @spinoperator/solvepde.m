@@ -1,4 +1,4 @@
-function [uOut, tOut] = solvepde(varargin)
+function [uOut, tOut, pref] = solvepde(varargin)
 %SOLVEPDE   Solve a PDE defined by a SPINOP, a SPINOP2 or a SPINOP3.
 %   SOLVEPDE is called by SPIN, SPIN2 and SPIN3. It is not called directly by
 %   the user. Appropriate help texts can be found in SPIN, SPIN2 and SPIN3.
@@ -602,7 +602,7 @@ else
 end
 
 % Output TOUT:
-if ( nargout == 2 )
+if ( nargout > 2 )
     if ( length(tspan) == 2 )
         tOut = tOut(2);
     end

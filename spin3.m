@@ -1,4 +1,4 @@
-function [uout, tout] = spin3(varargin)
+function [uout, tout, pref] = spin3(varargin)
 %SPIN3  Solve a time-dependent PDE in 3D with periodicity in space, using a 
 %Fourier spectral method and an exponential integrator time-stepping scheme.
 %
@@ -29,6 +29,9 @@ function [uout, tout] = spin3(varargin)
 % 
 %   [UOUT, TOUT] = SPIN3(...) also returns the times chunks TOUT at which UOUT
 %   was computed.
+%
+%   [UOUT, TOUT, PREF] = SPIN3(...) also returns the preferences used for the 
+%   computation.
 %
 % Remark 1: Available (case-insensitive) strings PDECHAR are
 %
@@ -124,6 +127,6 @@ for j = 1:nargin
 end
 
 % SPIN3 is a wrapper for SOLVPDE:
-[uout, tout] = spinoperator.solvepde(varargin{:});
+[uout, tout, pref] = spinoperator.solvepde(varargin{:});
 
 end
