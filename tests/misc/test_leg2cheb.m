@@ -45,7 +45,7 @@ c_leg(2:2:end) = -c_leg(2:2:end);
 c_cheb = leg2cheb(c_leg);
 c_cheb559 = 6.379508600687388e-04;
 err = abs(c_cheb(559) - c_cheb559)/abs(c_cheb559);
-pass(5) = err < 10*tol;
+pass(5) = err < 100*tol;
 
 % Test conversion back to cheb coeffs:
 c_leg2 = cheb2leg(c_cheb);
