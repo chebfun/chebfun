@@ -12,8 +12,9 @@ classdef spinpref2 < spinpreference
 %     ['off']                   wavenumbers.
 %      'on'
 % 
-%   dt                        * Time-step for time discretization. To switch to
-%     [1]                       adaptive time-stepping, set dt=[].
+%   dt                        * Time-step for time discretization. Default is 
+%     []                        empty, i.e., adaptively chosen by the code to 
+%                               achieve errTol. 
 %
 %   dtmax                     * Maximum time-step when using an apative grid in
 %     [5]                       time.
@@ -81,7 +82,6 @@ classdef spinpref2 < spinpreference
         
         function pref = spinpref2(varargin) 
             if ( nargin == 0 )
-                pref.dt = 1;
                 pref.dtmax = 5;
                 pref.errTol = 1e-4;
                 pref.iterPlot = 1;
