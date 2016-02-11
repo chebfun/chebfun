@@ -96,18 +96,18 @@ for j = 1:nargin
     item =  varargin{j};
     if ( isa(item, 'spinoperator') == 1 )
         if ( isa(item, 'spinop') == 1 )
-            error('CHEBFUN:SPIN', 'Use SPIN for PDEs in one space dimension.')
+            error('CHEBFUN:SPIN2', 'Use SPIN for PDEs in one space dimension.')
         elseif ( isa(item, 'spinop3') == 1 )
-            error('CHEBFUN:SPIN', ['Use SPIN3 for PDEs in three space ', ...
+            error('CHEBFUN:SPIN2', ['Use SPIN3 for PDEs in three space ', ...
                 'dimensions.'])
         end
     elseif ( isa(item, 'char') == 1 )
         is1D = isempty(strfind(item, '2')) && isempty(strfind(item, '3'));
         is3D = ~isempty(strfind(item, '3'));
         if ( is1D == 1 )
-            error('CHEBFUN:SPIN', 'Use SPIN for PDEs in one space dimension.')
+            error('CHEBFUN:SPIN2', 'Use SPIN for PDEs in one space dimension.')
         elseif ( is3D == 1 )
-            error('CHEBFUN:SPIN', ['Use SPIN3 for PDEs in three space ', ...
+            error('CHEBFUN:SPIN2', ['Use SPIN3 for PDEs in three space ', ...
                 'dimensions.'])
         end
     end
