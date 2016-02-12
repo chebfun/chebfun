@@ -395,6 +395,12 @@ classdef chebfun
         
         % Which interval is a point in?
         out = whichInterval(dom, x, direction);
+
+        % Like built-in UNION but with a tolerance for checking equality.
+        C = tolUnion(A, B, tol);
+
+        % Like built-in UNIQUE but with a tolerance for checking equality.
+        C = tolUnique(A, tol);
         
     end
 
@@ -415,7 +421,6 @@ classdef chebfun
         % Parse inputs to PLOT. Extract 'lineWidth', etc.
         [lineStyle, pointStyle, jumpStyle, deltaStyle, out] = ...
             parsePlotStyle(varargin)
-
     end
 
 end
