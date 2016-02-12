@@ -350,7 +350,7 @@ if ( numel(g.domain) > 2 )
         newDom = [newDom, r(:).'];
     end
 end
-newDom = unique(sort(newDom));
+newDom = chebfun.tolUnique(sort(newDom));
 
 % Restrict f to the new domain:
 f = restrict(f, newDom);

@@ -53,8 +53,10 @@ end
 pref.splitting = true;
 pref.domain = [0, 2*pi];
 
-% Construct a CHEBFUN of the FOV curve:
+% Construct a CHEBFUN of the FOV curve, and try to merge any unnecessary
+% breakpoints out of the result:
 f = chebfun(@(theta) fovCurve(theta, A), pref);
+f = merge(f);
 
 if ( nargout == 1 )
     return

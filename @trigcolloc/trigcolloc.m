@@ -26,9 +26,6 @@ classdef trigcolloc < valsDiscretization
             disc.projOrder = 0; 
         end
         
-        % Dimension reduction for operator matrix.
-        [PA, P, PS] = reduce(disc, A, S);
-        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
