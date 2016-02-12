@@ -47,41 +47,13 @@ if ( isa(item, 'operatorBlock') )
         % Coefficients of the block are available, convert to a diffmat.
         [M, S] = quasi2diffmat(disc);
     else
-        error('COEFFSDISCRETIZATION:instantiate:fail', ...
-         'Cannot represent this operator. Suggest you use VALSDISCRETIZATION.')
+        [M, S] = convertOperator(disc, item);
     end
     
 elseif ( isa(item, 'functionalBlock') )
     % Convert a row block.
     
-    % Developer note: In general we can't represent functional
-    % blocks via coeffs. To get around this we instantiate a
-    % TRIGCOLLOC discretization and convert it to coefficient space
-    % using COEFFS2VALS(). (Note it's COEFFS2VALS() rather than
-    % VALS2COEFFS() because it's a right-multiply (I think..).)
-    
-    % For convenience:
-    dim = disc.dimension;
-    dom = disc.domain;
-    
-    % Create a TECH and a VALSDISCRETIZATION:
-    tech = disc.returnTech;
-    tech = tech();
-    valsDisc = tech.returnValsDisc;
-    valsDisc = valsDisc(item, dim, dom);
-    M = matrix(valsDisc);
-    
-    % Convert from value-space to coeff-space using COEFFS2VALS.
-    cumsumDim = [0, cumsum(dim)];
-    tmp = cell(1, numel(dom)-1);
-    for l = 1:numel(tmp)
-        Ml = M(cumsumDim(l) + (1:dim(l)));
-        Ml = rot90(Ml);
-        tmp{l} = rot90(tech.coeffs2vals(Ml), -1);
-    end
-    
-    M = cell2mat(tmp);
-    S = zeros(size(M));
+    [M, S] = convertFunctional();
     
 elseif ( isa(item, 'chebfun') )
     % Block is a CHEBFUN. Convert to value space.
@@ -105,4 +77,35 @@ else
     
 end
 
+end
+
+function [M, S] = convertFunctional(disc, item)
+    % Developer note: In general we can't represent functional
+    % blocks via coeffs. To get around this we instantiate a
+    % TRIGCOLLOC discretization and convert it to coefficient space
+    % using COEFFS2VALS(). (Note it's COEFFS2VALS() rather than
+    % VALS2COEFFS() because it's a right-multiply (I think..).)
+
+    % For convenience:
+    dim = disc.dimension;
+    dom = disc.domain;
+
+    % Create a TECH and a VALSDISCRETIZATION:
+    tech = disc.returnTech;
+    tech = tech();
+    valsDisc = tech.returnValsDisc;
+    valsDisc = valsDisc(item, dim, dom);
+    M = matrix(valsDisc);
+
+    % Convert from value-space to coeff-space using COEFFS2VALS.
+    cumsumDim = [0, cumsum(dim)];
+    tmp = cell(1, numel(dom)-1);
+    for l = 1:numel(tmp)
+        Ml = M(cumsumDim(l) + (1:dim(l)));
+        Ml = rot90(Ml);
+        tmp{l} = rot90(tech.coeffs2vals(Ml), -1);
+    end
+
+    M = cell2mat(tmp);
+    S = zeros(size(M));
 end
