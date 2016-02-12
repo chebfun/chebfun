@@ -92,6 +92,8 @@ classdef spinop < spinoperator
                         'should be DOUBLE.'])
                     end
                 end
+            
+            % More than two input arguments:
             else
                 error('SPINOP:constructor', 'Too many input arguments.')
             end

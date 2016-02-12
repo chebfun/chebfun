@@ -185,14 +185,14 @@ function [uout, tout] = spin(varargin)
 %
 % Example 12: PDE specified by a SPINOP
 %
-%       L = @(u) -diff(u,2)-diff(u,4);
-%       N = @(u) -.5*diff(u.^2);
-%       S = spinop(L, N, [0 32*pi]);
-%       u0 = chebfun(cos(x/16).*(1 + sin(x/16)), [0 32*pi], 'trig');
-%       tspan = [0 300];
-%       u = spin(S, u0, tspan);
+%       dom = [0 32*pi]; tspan = [0 300];
+%       S = spinop(dom, tspan);
+%       S.linearPart = @(u) -diff(u,2)-diff(u,4);
+%       S.nonlinearPart = @(u) -.5*diff(u.^2);
+%       S.init = chebfun(cos(x/16).*(1 + sin(x/16)), dom, 'trig');
+%       u = spin(S);
 %
-%   is equivalent to u = spin('KS').
+%   is equivalent to u = spin('KS') and u = spin(spinop('ks')).
 %
 % Example 13: Using preferences
 %
