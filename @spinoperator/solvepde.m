@@ -127,12 +127,14 @@ end
 % Initial condition U0:
 if ( isempty(u0) == 1 )
     u0 = S.init;
-    if ( isa(u0, 'chebfun') == 1 )
+    if ( isa(u0, 'chebfun') || isa(u0, 'chebfun2') || isa(u0, 'chebfun3') )
         u0 = chebmatrix(u0);
-    elseif ( isa(u0, 'chebfun2') == 1 )
-        u0 = chebmatrix(u0);
-    elseif ( isa(u0, 'chebfun3') == 1 )
-        u0 = chebmatrix(u0);
+    elseif ( isa(u0, 'chebfun2v') || isa(u0, 'chebfun3v') )
+        temp = chebmatrix(u0(1));
+        for k = 2:size(u0, 1)
+            temp(k,1) = u0(k);
+        end
+        u0 = temp;
     end
 end
 
