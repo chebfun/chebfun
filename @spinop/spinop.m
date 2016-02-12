@@ -33,13 +33,6 @@ classdef spinop < spinoperator
 %               pdefunnonlin = @(u) u.*diff(u); 
 %               pdefunnonlin = @(u) diff(u.^2, 2) + diff(u.^3, 2);
 % 
-%           For example, to construct a SPINOP which correponds to the KdV 
-%           equation on [-1 1],       
-%           
-%               L = @(u) -diff(u, 3);
-%               N = @(u) -.5*diff(u.^2);
-%               S = spinop(L, N);
-% 
 %           For systems of equations, PDEFUNNONLIN has to be of the form 
 %           @(u) f(u), i.e., no differentiation.         
 %          

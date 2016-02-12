@@ -1380,19 +1380,13 @@ for i = 1:s
     E{i} = exp(C(i)*dt*L);
 end
 E{s+1} = exp(dt*L);
+schemeCoeffs.E = E;
 
 % Multiply by time-step:
-A = cellfun(@(A) dt*A, A, 'UniformOutput', 0);
-B = cellfun(@(B) dt*B, B, 'UniformOutput', 0);
-U = cellfun(@(U) dt*U, U, 'UniformOutput', 0);
-V = cellfun(@(V) dt*V, V, 'UniformOutput', 0);
-
-% Put everything in SCHEMECOEFFS:
-schemeCoeffs.A = A;
-schemeCoeffs.B = B;
-schemeCoeffs.E = E;
-schemeCoeffs.U = U;
-schemeCoeffs.V = V;
+schemeCoeffs.A = cellfun(@(A) dt*A, schemeCoeffs.A, 'UniformOutput', 0);
+schemeCoeffs.B = cellfun(@(B) dt*B, schemeCoeffs.B, 'UniformOutput', 0);
+schemeCoeffs.U = cellfun(@(U) dt*U, schemeCoeffs.U, 'UniformOutput', 0);
+schemeCoeffs.V = cellfun(@(V) dt*V, schemeCoeffs.V, 'UniformOutput', 0);
 
 end
 
@@ -1443,5 +1437,9 @@ for i = 1:q-1
         B{1} = B{1} - V{i};
     end
 end
+
+% Put everything in SCHEMECOEFFS:
+schemeCoeffs.A = A;
+schemeCoeffs.B = B;
 
 end

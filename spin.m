@@ -17,12 +17,11 @@ function [uout, tout] = spin(varargin)
 %   time chunk (unless TSPAN=[0 TF] and there is only one variable, in which 
 %   case the output is a CHEBFUN at TF).
 %
-%   UOUT = SPIN(PDECHAR, TSPAN, U0) solves the PDE specified by the string 
-%   PDECHAR on TSPAN x U0.DOMAIN, with initial condition a CHEBFUN U0 (one 
-%   variable) or a CHEBMATRIX U0 (systems). See Example 11.
+%   UOUT = SPIN(PDECHAR, TSPAN, U0) solves the PDE with initial condition a 
+%   CHEBFUN U0 (one variable) or a CHEBMATRIX U0 (systems). See Example 11.
 %
-%   UOUT = SPIN(S, TSPAN, U0) solves the PDE specified by the spinop S and plots
-%   a movie of the solution as it computes it. See HELP/SPINOP and Example 12.
+%   UOUT = SPIN(S) solves the PDE specified by the SPINOP S and plots a movie of 
+%   the solution as it computes it. See HELP/SPINOP and Example 12.
 %
 %   UOUT = SPIN(..., PREF) allows one to use the preferences specified by the 
 %   SPINPREF object PREF. See HELP/SPINPREF and Example 13.

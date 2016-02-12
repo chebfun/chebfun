@@ -17,12 +17,11 @@ function [uout, tout] = spin2(varargin)
 %   time chunk (unless TSPAN=[0 TF] and there is only one variable, in which 
 %   case the output is a CHEBFUN2 at TF).
 %
-%   UOUT = SPIN2(PDECHAR, TSPAN, U0) solves the PDE specified by the string 
-%   PDECHAR on TSPAN x U0.DOMAIN, with initial condition a CHEBFUN2 U0 (one 
-%   variable) or a CHEBMATRIX U0 (systems). 
+%   UOUT = SPIN2(PDECHAR, TSPAN, U0) solves the PDE with initial condition a 
+%   CHEBFUN2 U0 (one variable) or a CHEBMATRIX U0 (systems). 
 %
-%   UOUT = SPIN2(S, TSPAN, U0) solves the PDE specified by the spinop S and plots
-%   a movie of the solution as it computes it. See HELP/SPINOP2.
+%   UOUT = SPIN2(S) solves the PDE specified by the SPINOP2 S and plots a movie
+%   of the solution as it computes it. See HELP/SPINOP2.
 %
 %   UOUT = SPIN2(..., PREF) allows one to use the preferences specified by the 
 %   SPINPREF object PREF. See HELP/SPINPREF2.
@@ -56,7 +55,7 @@ function [uout, tout] = spin2(varargin)
 %       u_t = 2e-5*laplacian(u) + 3.5e-2*(1-u)*u - u*v^2,
 %       v_t = 1e-5*laplacian(v) - 9.5e-2*v + u*v^2,
 %
-%    on [0 1.25]^2 from t=0 to t=3000, with initial condition 
+%    on [0 1.25]^2 from t=0 to t=3200, with initial condition 
 %
 %       u0(x,y) = 1 - exp(-150*((x-G/2)^2 + (y-G/2)^2)),
 %       v0(x,y) = exp(-150*((x-G/2)^2 + 2*(y-G/2)^2)),
