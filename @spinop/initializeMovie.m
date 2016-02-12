@@ -61,7 +61,7 @@ set(gcf, 'NextPlot', 'add');
 ax = axes;
 h = title(titleString);
 set(ax, 'Visible', 'off', 'HandleVisibility', 'off', 'Fontsize', 16);
-set(h, 'Visible', 'on', 'Position', [.5 1.02 .5])
+set(h, 'Visible', 'on', 'Position', [.5 1.00 .5])
 
 % Ask the user to press SPACE:
 state = pause;

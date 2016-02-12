@@ -35,18 +35,10 @@ for j = 1:nargin
         pdechar = item;
     elseif ( isa(item, 'double') == 1 ) 
         tspan = item;
-    elseif ( isa(item, 'chebfun') == 1 )
+    elseif ( isa(item, 'chebfun') == 1 || isa(item, 'chebfun2') == 1 || ...
+        isa(item, 'chebfun3') == 1 )
         u0 = chebmatrix(item);
-    elseif ( isa(item, 'chebfun2') == 1 )
-        u0 = chebmatrix(item);
-    elseif ( isa(item, 'chebfun2v') == 1 )
-        u0 = chebmatrix(item(1));
-        for k = 2:size(item, 1)
-            u0(k,1) = item(k);
-        end
-    elseif ( isa(item, 'chebfun3') == 1 )
-        u0 = chebmatrix(item);
-    elseif ( isa(item, 'chebfun3v') == 1 )
+    elseif ( isa(item, 'chebfun2v') == 1 || isa(item, 'chebfun3v') == 1 )
         u0 = chebmatrix(item(1));
         for k = 2:size(item, 1)
             u0(k,1) = item(k);
@@ -127,9 +119,10 @@ end
 % Initial condition U0:
 if ( isempty(u0) == 1 )
     u0 = S.init;
-    if ( isa(u0, 'chebfun') || isa(u0, 'chebfun2') || isa(u0, 'chebfun3') )
+    if ( isa(u0, 'chebfun') == 1 || isa(u0, 'chebfun2') == 1 || ...
+        isa(u0, 'chebfun3') == 1 )
         u0 = chebmatrix(u0);
-    elseif ( isa(u0, 'chebfun2v') || isa(u0, 'chebfun3v') )
+    elseif ( isa(u0, 'chebfun2v') == 1 || isa(u0, 'chebfun3v') == 1 )
         temp = chebmatrix(u0(1));
         for k = 2:size(u0, 1)
             temp(k,1) = u0(k);

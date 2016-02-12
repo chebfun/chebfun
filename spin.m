@@ -63,7 +63,7 @@ function [uout, tout] = spin(varargin)
 %
 %           u_t = 1e-3*u_xx - u*u_x,
 %
-%   on [-1 1] from t=0 to t=20, with initial condition 
+%   on [-1 1] from t=0 to t=15, with initial condition 
 %
 %       u0(x) = (1-x^2)*exp(-30*(x+1/2)^2.
 %

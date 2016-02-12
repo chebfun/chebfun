@@ -109,7 +109,7 @@ end
             L = @(u) 1e-3*diff(u, 2);
             N = @(u) -.5*diff(u.^2);
             dom = [-1 1];
-            tspan = [0 20];
+            tspan = [0 15];
             u0 = chebfun('(1-x.^2).*exp(-30.*(x+1/2).^2)', dom, 'trig');
             
         % Belousov-Zhabotinsky equation:
