@@ -10,6 +10,7 @@ yy = gridPoints{2};
 zz = gridPoints{3};
 N = size(xx, 1);
 nVars = S.numVars;
+vscale = max(abs(v(:)));
 dataToPlot = str2func(pref.dataToPlot);
 dom = S.domain;
 tt = trigpts(N, dom);
@@ -75,6 +76,14 @@ for k = 1:nVars
     vvplot = [vvplot; vvplot(1,:,:)];
     vvplot = cat(3, vvplot, vvplot(:,:,1));
     
+    % Get the CLIM for the colorbar:
+    if ( isempty(pref.Clim) == 1 )
+        Clim(2*(k-1) + 1) = min(vvplot(:)) - .1*vscale;
+        Clim(2*(k-1) + 2) = max(vvplot(:)) + .1*vscale;
+    else
+        Clim = pref.Clim;
+    end
+    
     % Interpolate each variable on a finer grid:
     vvvplot = interp3(xxplot, yyplot, zzplot, vvplot, xxxplot, yyyplot, ...
         zzzplot, 'spline');
@@ -83,6 +92,7 @@ for k = 1:nVars
     subplot(1, nVars, k) 
     p{k} = slice(xxxplot, yyyplot, zzzplot, vvvplot, Sx, Sy, Sz);
     set(p{k}, 'edgecolor', 'none')
+    ax = p{k}.Parent; set(ax, 'clim', [Clim(2*(k-1) + 1), Clim(2*(k-1) + 2)])
     axis([dom(1) dom(2) dom(3) dom(4) dom(5) dom(6)]), colorbar
     xlabel('x'), ylabel('y'), zlabel('z'), set(gca, 'FontSize', 16), box on
     drawnow
@@ -107,7 +117,8 @@ shg, pause
 
 % Outputs:
 p{nVars + 1} = h;
-plotOptions{1} = {Sx, Sy, Sz};
-plotOptions{2} = dataToPlot;
+plotOptions{1} = Clim;
+plotOptions{2} = {Sx, Sy, Sz};
+plotOptions{3} = dataToPlot;
 
 end

@@ -368,7 +368,17 @@ while ( t < tf )
                     v = [v; temp];
                 end
                 valuesUpdated = 1;
-                plotOptions = plotMovie(S, dt, p, plotOptions, t, v, gridpts);
+                if ( dim == 1 )
+                    isLimGiven = ~isempty(pref.Ylim);
+                elseif ( dim == 2 || dim == 3 ) 
+                    isLimGiven = ~isempty(pref.Clim);
+                end
+                if ( isLimGiven == 1 )
+                    plotMovie(S, dt, p, plotOptions, t, v, gridpts);
+                else
+                    plotOptions = plotMovie(S, dt, p, plotOptions, t, v, ...
+                        gridpts);
+                end
                 
             % Store the values every ITERPLOT iterations if using WATERFALL:
             % (Remark: Only in dimension 1.)

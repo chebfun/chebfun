@@ -3,6 +3,10 @@ classdef spinpref3 < spinpreference
 %
 % Available preferences ([] = defaults):
 %
+%   Clim                      * Limits of the colorbar when 'plot' is 'movie'.
+%     []                        Default is empty, i.e., automatically chosen by 
+%                               the code. 
+%
 %   dataToPlot                * What data to plot when the solution is complex-
 %     ['real']                  valued.
 %      'imag'
@@ -73,7 +77,8 @@ classdef spinpref3 < spinpreference
     %% CLASS PROPERTIES:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
-        slices = [];        % Slices of the volumetric slice plot
+        Clim                % Limits of the colorbar
+        slices              % Slices of the volumetric slice plot
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

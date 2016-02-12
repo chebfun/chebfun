@@ -3,6 +3,10 @@ classdef spinpref2 < spinpreference
 %
 % Available preferences ([] = defaults):
 %
+%   Clim                      * Limits of the colorbar when 'plot' is 'movie'.
+%     []                        Default is empty, i.e., automatically chosen by 
+%                               the code. 
+%
 %   dataToPlot                * What data to plot when the solution is complex-
 %     ['real']                  valued.
 %      'imag'
@@ -72,6 +76,7 @@ classdef spinpref2 < spinpreference
     %% CLASS PROPERTIES:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
+        Clim                  % Limits of the colorbar
         view = [0 90];        % Viewpoint of the plot
     end
     

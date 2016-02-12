@@ -49,7 +49,7 @@ classdef spinpref < spinpreference
 %   scheme                    * Time-stepping scheme. HELP/SPINPSCHEME for the
 %     ['etdrk4']                list of available schemes.
 %
-%   Ylim                      * Limit of the y-axis when 'plot' is 'movie'.
+%   Ylim                      * Limits of the y-axis when 'plot' is 'movie'.
 %     []                        Default is empty, i.e., automatically chosen by 
 %                               the code. 
 %              

@@ -8,6 +8,7 @@ function [p, plotOptions] = initializeMovie(S, dt, pref, v, gridPoints)
 dom = S.domain;
 nVars = S.numVars;
 viewSpec = pref.view;
+vscale = max(abs(v(:)));
 dataToPlot = str2func(pref.dataToPlot);
 defaultPref = spinpref2();
 defaultView = defaultPref.view;
@@ -42,12 +43,21 @@ for k = 1:nVars
     vvplot = [vvplot, vvplot(:,1)]; %#ok<*AGROW>
     vvplot = [vvplot; vvplot(1,:)];
     
+    % Get the CLIM for the colorbar:
+    if ( isempty(pref.Clim) == 1 )
+        Clim(2*(k-1) + 1) = min(vvplot(:)) - .1*vscale;
+        Clim(2*(k-1) + 2) = max(vvplot(:)) + .1*vscale;
+    else
+        Clim = pref.Clim;
+    end
+    
     % Interpolate each variable on a finer grid:
     vvvplot = interp2(xxplot, yyplot, vvplot, xxxplot, yyyplot, 'spline');
     
     % Plot each variable:
     subplot(1, nVars, k)
     p{k} = surf(xxxplot, yyyplot, vvvplot, 'edgecolor', 'none');
+    set(p{k}.Parent, 'clim', [Clim(2*(k-1) + 1), Clim(2*(k-1) + 2)])
     axis([dom(1) dom(2) dom(3) dom(4)])
     view(viewSpec(2*(k - 1) + 1 : 2*(k - 1) + 2)), colorbar
     xlabel('x'), ylabel('y'), set(gca, 'FontSize', 16), box on
@@ -73,7 +83,8 @@ shg, pause
 
 % Outputs:
 p{nVars + 1} = h;
-plotOptions{1} = viewSpec;
-plotOptions{2} = dataToPlot;
+plotOptions{1} = Clim;
+plotOptions{2} = viewSpec;
+plotOptions{3} = dataToPlot;
 
 end

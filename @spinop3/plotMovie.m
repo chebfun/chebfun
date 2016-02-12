@@ -10,8 +10,9 @@ yy = gridPoints{2};
 zz = gridPoints{3};
 N = size(xx, 1);
 nVars = S.numVars;
-dataToPlot = plotOptions{2};
 dom = S.domain;
+Clim = plotOptions{1};
+dataToPlot = plotOptions{3};
 
 % Grid of the computation:
 xxplot = [xx, 2*xx(:,end,:) - xx(:,end-1,:)];
@@ -47,6 +48,20 @@ for k = 1:nVars
     vvplot = [vvplot, vvplot(:,1,:)]; %#ok<*AGROW>
     vvplot = [vvplot; vvplot(1,:,:)];
     vvplot = cat(3, vvplot, vvplot(:,:,1));
+    
+    % Change axes if necessary:
+    if ( nargout == 1 )
+        minvnew = min(vvplot(:));
+        maxvnew = max(vvplot(:));
+        if ( maxvnew > Clim(2*(k-1) + 2) )
+            vscalenew = max(abs(minvnew), maxvnew);
+            Clim(2*(k-1) + 2) = maxvnew + .1*vscalenew;
+        end
+        if ( minvnew < Clim(2*(k-1) + 1) )
+            vscalenew = max(abs(minvnew), maxvnew);
+            Clim(2*(k-1) + 1) = minvnew - .1*vscalenew;
+        end
+    end
     
     % Interpolate each variable on a finer grid:
     vvvplot = interp3(xxplot, yyplot, zzplot, vvplot, xxxplot, yyyplot, ...
@@ -90,6 +105,7 @@ for k = 1:nVars
             set(p{k}(l), 'cdata', squeeze(vvvplot(:,:,id)))
         end
     end
+    ax = p{k}.Parent; set(ax, 'clim', [Clim(2*(k-1) + 1), Clim(2*(k-1) + 2)])
     drawnow
     
 end
@@ -98,5 +114,8 @@ end
 titleString = sprintf('Nx = Ny = Nz = %i (DoFs = %i), dt = %1.1e, t = %.4f', ...
     N, nVars*N^3, dt, t);
 set(p{nVars + 1}, 'String', titleString)
+
+% Update outputs:
+plotOptions{1} = Clim;
 
 end
