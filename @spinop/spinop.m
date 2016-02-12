@@ -6,36 +6,45 @@ classdef spinop < spinoperator
 %   operator and N is a nonlinear operator. 
 %
 %   S = SPINOP(PDECHAR) creates a SPINOP object S defined by the string PDECHAR.
-%   The default domain is [-1 1]. Strings available include 'AC' for Allen-Cahn 
-%   equation, 'KS' for Kuramoto-Sivashinsky equation, and 'KdV' for Korteweg-de 
-%   Vries equation. Many other PDEs are available, see HELP/SPIN.
+%   Strings available include 'AC' for Allen-Cahn equation, 'KS' for 
+%   Kuramoto-Sivashinsky equation, and 'KdV' for Korteweg-de Vries equation. 
+%   Many other PDEs are available, see HELP/SPIN.
 %
-%   S = SPINOP(PDEFUNLIN, PDEFUNNONLIN) creates a SPINOP object S defined by the 
-%   function handles PDEFUNLIN (representing the linear part L) and PDEFUNNONLIN
-%   (representing N). The default domain is [-1 1]. See Remark 1.
+%   S = SPINOP(DOM, TSPAN) creates a SPINOP object S on DOM x TSPAN. The other
+%   fields of a SPINOP are its linear part S.LINEARPART, its nonlienar part
+%   S.NONLINEARPART and the initial condition S.INIT. The fields can be set via
+%   S.PROP = VALUE. See Remark 1 and Example 1.
+% 
+% Remark 1: The linear part can be any linear constant-coefficient differential
+%           operator, e.g., @(u) diff(u,3) + u. The nonlinear par has to be
+%           constant-coefficient and of the form @(u) C*diff(f(u), m), where C 
+%           is a number, f is a nonlinear function of u that does not involve 
+%           any derivatives of u, and m is the differentiation order. If m=0, 
+%           the nonlinear par can be of any form. The following function handles 
+%           are allowed:
 %
-%   S = SPINOP(..., DOM) creates a SPINOP object S on the domain DOM.
-%
-% Remark 1: The linear part PDEFUNLIN can be any linear constant-coefficient 
-%           differential operator, e.g., @(u) diff(u,3) + 5*u or @(u) diff(u,6).
-%           The nonlinear part PDEFUNNONLIN has to be constant-coefficient and
-%           of the form @(u) C*diff(f(u), m), where C is a number, f is a 
-%           nonlinear function of u that does not involve any derivatives of u, 
-%           and m is the differentiation order. If m=0, PDEFUNNONLIN can be of 
-%           any form. The following function handles are allowed:
-%
-%               pdefunnonlin = @(u) .5*diff(u.^2);
-%               pdefunnonlin = @(u) diff(u.^2 + u.^3, 2);
-%               pdefunnonlin = @(u) exp(u) + cos(sin(2*u));
+%               L = @(u) .5*diff(u.^2);
+%               L = @(u) diff(u.^2 + u.^3, 2);
+%               L = @(u) exp(u) + cos(sin(2*u));
 %
 %           The following function handles are not allowed:
 %
-%               pdefunnonlin = @(u) u.*diff(u); 
-%               pdefunnonlin = @(u) diff(u.^2, 2) + diff(u.^3, 2);
+%               N = @(u) u.*diff(u); 
+%               N = @(u) diff(u.^2, 2) + diff(u.^3, 2);
 % 
-%           For systems of equations, PDEFUNNONLIN has to be of the form 
+%           For systems of equations, the nonlinear part has to be of the form 
 %           @(u) f(u), i.e., no differentiation.         
 %          
+% Example 1: To construct a SPINOP corresponding to the KdV equation on 
+%            DOM = [-pi pi] x TSPAN = [0 1e-2] with initial condition 
+%            u0(x) = 100*sin(x), one can type
+%
+%            dom = [-pi pi]; tspan = [0 1e-2];
+%            S = spinop(dom, tspan);
+%            S.linearPart = @(u) -diff(u,3);
+%            S.nonlinearPart = @(u) -.5*diff(u.^2);
+%            S.init = chebfun(@(x) 100*sin(x), dom);
+%
 % See also SPINOPERATOR, SPINOP2, SPINOP3, SPIN.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
@@ -48,32 +57,43 @@ classdef spinop < spinoperator
         
         function S = spinop(varargin)
             
+            % Zero input argument:
             if ( nargin == 0 )
                 return
-            end
             
-            countFun = 0;
-            for j = 1:nargin
-                item =  varargin{j};
-                if ( isa(item, 'char') == 1 )
-                    [L, N, dom, tspan, u0] = parseInputs(item);
+            % One input argument:
+            elseif ( nargin == 1 )
+                if ( isa(varargin{1}, 'char') == 1 )
+                    [L, N, dom, tspan, u0] = parseInputs(varargin{1});
                     S.linearPart = L;
                     S.nonlinearPart = N;
                     S.domain = dom;
                     S.tspan = tspan;
                     S.init = u0;
-                elseif ( isa(item, 'function_handle') && countFun == 0 )
-                    S.linearPart = item;
-                    countFun = 1;
-                elseif ( isa(item, 'function_handle') && countFun == 1 )
-                    S.nonlinearPart = item;
-                elseif ( isa(item, 'double') == 1 )
-                    S.domain = item;
+                else
+                    error('SPINOP:constructor', ['When constructing a ', ...
+                        'SPINOP with one input argument, this argument ', ...
+                        'should be a STRING.'])
                 end
-            end
             
-            if ( isempty(S.domain) == 1 )
-                S.domain = [-1 1];
+            % Two input arguments:
+            elseif ( nargin == 2 )
+                countDouble = 0;
+                for j = 1:nargin
+                    item =  varargin{j};
+                    if ( isa(item, 'double') == 1 && countDouble == 0 )
+                        S.domain = item;
+                        countDouble = 1;
+                    elseif ( isa(item, 'double') == 1 && countDouble == 1 )
+                        S.tspan = item;
+                    else
+                    error('SPINOP:constructor', ['When constructing a ', ...
+                        'SPINOP with two input arguments, these arguments ', ...
+                        'should be DOUBLE.'])
+                    end
+                end
+            else
+                error('SPINOP:constructor', 'Too many input arguments.')
             end
             
         end

@@ -6,17 +6,15 @@ classdef spinop2 < spinoperator
 %   operator and N is a nonlinear operator. 
 %
 %   S = SPINOP2(PDECHAR) creates a SPINOP2 object S defined by the string 
-%   PDECHAR. The default domain is [-1 1]^2. Strings available include 'GL2' for 
-%   Ginzburg-Landau equation and 'GS2' for Gray-Scott equations. Many other PDEs 
-%   are available, see HELP/SPIN2.
+%   PDECHAR. Strings available include 'GL2' for Ginzburg-Landau equation and 
+%   'GS2' for Gray-Scott equations. Other PDEs are available, see HELP/SPIN2.
 %
-%   S = SPINOP2(PDEFUNLIN, PDEFUNNONLIN) creates a SPINOP2 object S defined by 
-%   the function handles PDEFUNLIN (representing the linear part L) and 
-%   PDEFUNNONLIN (representing N). The default domain is [-1 1]^2. See Remark 1.
+%   S = SPINOP2(DOM, TSPAN) creates a SPINOP2 object S on DOM x TSPAN. The other
+%   fields of a SPINOP2 are its linear part S.LINEARPART, its nonlienar part
+%   S.NONLINEARPART and the initial condition S.INIT. The fields can be set via
+%   S.PROP = VALUE. See Remark 1 and Example 1.
 %
-%   S = SPINOP2(..., DOM) creates a SPINOP2 object S on the domain DOM.
-%
-% Remark 1: The linear part PDEFULIN has to be of the form 
+% Remark 1: The linear part has to be of the form 
 %           
 %               @(u) A*laplacian(u) + B*biharmonic(u), 
 %
@@ -27,6 +25,16 @@ classdef spinop2 < spinoperator
 %
 %           where f is a nonlinear function of u that does not involve any 
 %           derivatives of u.
+%
+% Example 1: To construct a SPINOP2 corresponding to the GL2 equation on 
+%            DOM = [0 200]^2 x TSPAN = [0 10] with initial condition 
+%            u0(x,y) = cos(pi*x/100)*sin(y*pi/100), one can type
+%
+%            dom = [0 200 0 200]; tspan = [0 10];
+%            S = spinop2(dom, tspan);
+%            S.linearPart = @(u) lap(u);
+%            S.nonlinearPart = @(u) u - (1+1.3i)*u.*(abs(u).^2);
+%            S.init = chebfun2(@(x,y) cos(pi*x/100).*sin(y*pi/100), dom);
 %
 % See also SPINOPERATOR, SPINOP2, SPINOP3, SPIN2.
 
@@ -40,32 +48,43 @@ classdef spinop2 < spinoperator
         
         function S = spinop2(varargin)
             
+            % Zero input argument:
             if ( nargin == 0 )
                 return
-            end
             
-            countFun = 0;
-            for j = 1:nargin
-                item =  varargin{j};
-                if ( isa(item, 'char') == 1 )
-                    [L, N, dom, tspan, u0] = parseInputs(item);
+            % One input argument:
+            elseif ( nargin == 1 )
+                if ( isa(varargin{1}, 'char') == 1 )
+                    [L, N, dom, tspan, u0] = parseInputs(varargin{1});
                     S.linearPart = L;
                     S.nonlinearPart = N;
                     S.domain = dom;
                     S.tspan = tspan;
                     S.init = u0;
-                elseif ( isa(item, 'function_handle') && countFun == 0 )
-                    S.linearPart = item;
-                    countFun = 1;
-                elseif ( isa(item, 'function_handle') && countFun == 1 )
-                    S.nonlinearPart = item;
-                elseif ( isa(item, 'double') == 1 )
-                    S.domain = item;
+                else
+                    error('SPINOP2:constructor', ['When constructing a ', ...
+                        'SPINOP2 with one input argument, this argument ', ...
+                        'should be a STRING.'])
                 end
-            end
             
-            if ( isempty(S.domain) == 1 )
-                S.domain = [-1 1 -1 1];
+            % Two input arguments:
+            elseif ( nargin == 2 )
+                countDouble = 0;
+                for j = 1:nargin
+                    item =  varargin{j};
+                    if ( isa(item, 'double') == 1 && countDouble == 0 )
+                        S.domain = item;
+                        countDouble = 1;
+                    elseif ( isa(item, 'double') == 1 && countDouble == 1 )
+                        S.tspan = item;
+                    else
+                    error('SPINOP2:constructor', ['When constructing a ', ...
+                        'SPINOP2 with two input arguments, these arguments ', ...
+                        'should be DOUBLE.'])
+                    end
+                end
+            else
+                error('SPINOP2:constructor', 'Too many input arguments.')
             end
             
         end
