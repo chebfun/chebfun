@@ -266,7 +266,7 @@ elseif ( n > 21 )
     % boundary region:
     Lam = lambda*(1-lambda);
     N = sqrt((n+lambda)^2+lambda*(1-lambda)/3);
-    bz = transpose(besselpts(lambda-.5,10)); % Approximates zeros of Bessel.
+    bz = besselpts(lambda-.5,10); % Approximates zeros of Bessel.
     x(1:10) = cos(bz/N-Lam/90.*(bz.^3+2*(lambda^2-lambda-.75).*bz)/N^5);
 end
 
