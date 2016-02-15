@@ -45,17 +45,15 @@ timesteps = pref.dt;
 nTimesteps = length(timesteps);
 
 % Convert to CHEBMATRIX:
-if ( isa(u0, 'chebfun') == 1 )
+if ( isa(u0, 'chebfun') == 1 || isa(u0, 'chebfun2') == 1 || ...
+    isa(u0, 'chebfun3') == 1)
     u0 = chebmatrix(u0);
-elseif ( isa(u0, 'chebfun2') == 1 )
-    u0 = chebmatrix(u0);
-elseif ( isa(u0, 'chebfun2v') == 1 )
-    u0 = chebmatrix(u0(1));
+elseif ( isa(u0, 'chebfun2v') == 1 || isa(u0, 'chebfun3v') == 1 )
+    temp = chebmatrix(u0(1));
     for k = 2:size(u0, 1)
-        u0(k,1) = u0(k);
+        temp(k,1) = u0(k);
     end
-elseif ( isa(u0, 'chebfun3') == 1 )
-    u0 = chebmatrix(u0);
+    u0 = temp;
 end
 nVars = length(u0);
 
@@ -152,14 +150,10 @@ for l = 1:nSchemes
         loglog(timesteps, err(:, l), 'o-', 'linewidth', 2, 'markersize', 10)
     end
 end
-left = 10^(floor(log10(min(timesteps))));
-right = 10^(ceil(log10(max(timesteps))));
-down = 1e-12;
-if ( max(err(:)) > 1e0 )
-    up = 1e2;
-else
-    up = 1e0;
-end
+left = 10^floor(log10(min(timesteps)));
+right = 10^ceil(log10(max(timesteps)));
+down = min(1e-12, 10^floor(log10(min(err(:)))));
+up = max(1, 10^ceil(log10(max(err(:)))));
 set(gca, 'fontsize', 16), axis([left right down up])
 xlabel('Relative time-step'), ylabel(sprintf('Relative error at t = %.3f', TF))
 legend(labels, 'Location', 'NorthWest')
