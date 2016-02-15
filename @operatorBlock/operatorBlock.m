@@ -150,14 +150,15 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
             elseif ( isnumeric(B) )
                 % Swap arguments.
                 C = mtimes(B, A);
-            
-            elseif ( isa(A, 'functionalBlock') )
-                C = mtimes(promote(A), B);
-                return
-                
-            elseif ( isa(B, 'functionalBlock') )
-                C = mtimes(A, promote(B));
-                return
+ 
+                % TODO: We would like to do this, but it breaks nonlinear BCs.
+%             elseif ( isa(A, 'functionalBlock') )
+%                 C = mtimes(promote(A), B);
+%                 return
+%                
+%             elseif ( isa(B, 'functionalBlock') )
+%                 C = mtimes(A, promote(B));
+%                 return
                 
             else
                 
