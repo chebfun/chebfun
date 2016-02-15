@@ -64,8 +64,8 @@ gEnds = minandmax(f).';
 fBreaks = f.domain(2:end-1);
 gBreaksL = feval(f, fBreaks, 'left');  % We must evaluate to the left and the 
 gBreaksR = feval(f, fBreaks, 'right'); % of breaks in f in case there are jumps.
-gBreaks = union(gBreaksL, gBreaksR);   % TODO: Include a tolerance?
-gDomain = union(gEnds, gBreaks);       % TODO: Include a tolerance?
+gBreaks = chebfun.tolUnion(gBreaksL, gBreaksR);
+gDomain = chebfun.tolUnion(gEnds, gBreaks);
 
 % Compute the inverse:
 if ( opts.algorithm == 1 )     % Algorithm based on ROOTS.
