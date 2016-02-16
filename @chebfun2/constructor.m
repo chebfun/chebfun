@@ -27,48 +27,35 @@ function g = constructor(g, op, varargin)
 % Copyright 2015 by The University of Oxford and The Chebfun2 Developers.
 % See http://www.chebfun.org/ for Chebfun2 information.
 
-% TODO: The input parsing of CHEBFUN2 needs to be improved.
-
-if ( nargin == 0 )          % CHEBFUN2( )
-    return
-end
-
 if ( isa(op, 'chebfun2') )  % CHEBFUN2( CHEBFUN2 )
     g = op;
     return
 end
 
-[op, dom, pref, localPrefs] = parseInputs(op, varargin{:});
+% Parse the inputs:
+[op, dom, pref, isEqui, fixedRank, vectorize] = parseInputs(op, varargin{:});
 
 % Preferences:
-tech = pref.tech();
-tpref = tech.techPref;
-minSample = tpref.minSamples;
-maxSample = tpref.maxLength;
-cheb2Prefs = pref.cheb2Prefs;
-sampleTest = cheb2Prefs.sampleTest;
-maxRank = cheb2Prefs.maxRank;
+tech        = pref.tech();
+tpref       = tech.techPref;
+minSample   = tpref.minSamples;
+maxSample   = tpref.maxLength;
+cheb2Prefs  = pref.cheb2Prefs;
+sampleTest  = cheb2Prefs.sampleTest;
+maxRank     = cheb2Prefs.maxRank;
 pseudoLevel = pref.eps;
-isEqui = localPrefs.isEqui;
-vectorize = localPrefs.vectorize;
-fixedRank = localPrefs.fixedRank;
 
+factor  = 4; % Ratio between size of matrix and no. pivots.
+isHappy = 0; % If we are currently unresolved.
+failure = 0; % Reached max discretization size without being happy.
 
-% Deal with constructions from equally spaced data:
-
+% Deal with constructions from numeric data:
 if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
-    if ( isEqui )
-        g = constructFromEqui(op, dom, pref);
-    else
-        g = constructFromDouble(op, dom, pref, localPrefs);
-    end
+    g = constructFromDouble(op, dom, pref, isEqui);
+    % Fix the rank:
     g = fixTheRank(g, fixedRank);
     return
 end
-
-factor = 4;  % ratio between size of matrix and no. pivots.
-isHappy = 0; % If we are currently unresolved.
-failure = 0; % Reached max discretization size without being happy.
 
 while ( ~isHappy && ~failure )
     grid = minSample;
@@ -76,7 +63,7 @@ while ( ~isHappy && ~failure )
     % Sample function on a Chebyshev tensor grid:
     [xx, yy] = points2D(grid, grid, dom, pref);
     vals = evaluate(op, xx, yy, vectorize);
-   
+    
     % Does the function blow up or evaluate to NaN?:
     vscale = max(abs(vals(:)));
     if ( isinf(vscale) )
@@ -88,9 +75,10 @@ while ( ~isHappy && ~failure )
     end
     
     % Two-dimensional version of CHEBFUN's tolerance:
-    tol = GetTol(xx, yy, vals, dom, pseudoLevel);
+    tol = getTol(xx, yy, vals, dom, pseudoLevel);
+%     pref.eps = tol;
     
-    %%% PHASE 1: %%%
+    %% %%% PHASE 1: %%%
     % Do GE with complete pivoting:
     [pivotValue, pivotPosition, rowValues, colValues, iFail] = CompleteACA(vals, tol, factor);
     
@@ -103,17 +91,18 @@ while ( ~isHappy && ~failure )
         vals = evaluate(op, xx, yy, vectorize); % resample
         vscale = max(abs(vals(:)));
         % New tolerance:
-        tol = GetTol(xx, yy, vals, dom, pseudoLevel);
+        tol = getTol(xx, yy, vals, dom, pseudoLevel);
+%         pref.eps = tol;
         % New GE:
         [pivotValue, pivotPosition, rowValues, colValues, iFail] = CompleteACA(vals, tol, factor);
         % If the function is 0+noise then stop after three strikes.
-        if ( abs(pivotValue(1))<1e4*vscale*tol )
+        if ( abs(pivotValue(1)) < 1e4*vscale*tol )
             strike = strike + 1;
         end
     end
     
     % If the rank of the function is above maxRank then stop.
-    if ( grid > factor*(maxRank-1)+1 )
+    if ( grid > factor*(maxRank-1) + 1 )
         warning('CHEBFUN:CHEBFUN2:constructor:rank', ...
             'Not a low-rank function.');
         failure = 1;
@@ -123,10 +112,11 @@ while ( ~isHappy && ~failure )
     colData.hscale = norm(dom(3:4), inf);
     colData.vscale = vscale;
     colChebtech = tech.make(sum(colValues,2), colData);
-    resolvedCols = happinessCheck(colChebtech, [], sum(colValues, 2), colData);
+    resolvedCols = happinessCheck(colChebtech, [], sum(colValues, 2), colData, pref);
     rowData.hscale = norm(dom(1:2), inf);
+    rowData.vscale = vscale;
     rowChebtech = tech.make(sum(rowValues.',2), rowData);
-    resolvedRows = happinessCheck(rowChebtech, [], sum(rowValues.', 2), colData);
+    resolvedRows = happinessCheck(rowChebtech, [], sum(rowValues.', 2), rowData, pref);
     isHappy = resolvedRows & resolvedCols;
     
     % If the function is zero, set midpoint of domain as pivot location.
@@ -138,29 +128,29 @@ while ( ~isHappy && ~failure )
         PP = pivotPosition;
     end
     
-    %%% PHASE 2: %%%
+    %% %%% PHASE 2: %%%
     % Now resolve along the column and row slices:
     n = grid;  m = grid;
     while ( ~isHappy && ~failure  )
         if ( ~resolvedCols )
             % Double sampling along columns
             [n, nesting] = gridRefine( n , pref );
-            [xx, yy] = meshgrid(PivPos(:, 1), mypoints(n, dom(3:4), pref));
+            [xx, yy] = meshgrid(PivPos(:, 1), myPoints(n, dom(3:4), pref));
             colValues = evaluate(op, xx, yy, vectorize);
             % Find location of pivots on new grid (using nesting property).
             PP(:, 1) = nesting(PP(:, 1));
         else
-            [xx, yy] = meshgrid(PivPos(:, 1), mypoints(n, dom(3:4), pref));
+            [xx, yy] = meshgrid(PivPos(:, 1), myPoints(n, dom(3:4), pref));
             colValues = evaluate(op, xx, yy, vectorize);
         end
         if ( ~resolvedRows )
             [m, nesting] = gridRefine( m , pref );
-            [xx, yy] = meshgrid(mypoints(m, dom(1:2), pref), PivPos(:, 2));
+            [xx, yy] = meshgrid(myPoints(m, dom(1:2), pref), PivPos(:, 2));
             rowValues = evaluate(op, xx, yy, vectorize);
             % find location of pivots on new grid  (using nesting property).
             PP(:, 2) = nesting(PP(:, 2));
         else
-            [xx, yy] = meshgrid(mypoints(m, dom(1:2), pref), PivPos(:, 2));
+            [xx, yy] = meshgrid(myPoints(m, dom(1:2), pref), PivPos(:, 2));
             rowValues = evaluate(op, xx, yy, vectorize);
         end
         
@@ -181,11 +171,11 @@ while ( ~isHappy && ~failure )
         % Are the columns and rows resolved now?
         if ( ~resolvedCols )
             colChebtech = tech.make(sum(colValues,2));
-            resolvedCols = happinessCheck(colChebtech,[],sum(colValues,2));
+            resolvedCols = happinessCheck(colChebtech,[],sum(colValues,2), colData, pref);
         end
         if ( ~resolvedRows )
             rowChebtech = tech.make(sum(rowValues.',2));
-            resolvedRows = happinessCheck(rowChebtech,[],sum(rowValues.',2));
+            resolvedRows = happinessCheck(rowChebtech,[],sum(rowValues.',2), rowData, pref);
         end
         isHappy = resolvedRows & resolvedCols;
         
@@ -211,7 +201,7 @@ while ( ~isHappy && ~failure )
     
     % Construct a CHEBFUN2:
     g.pivotValues = pivotValue;
-    g.cols = chebfun(colValues, dom(3:4), pref);
+    g.cols = chebfun(colValues,   dom(3:4), pref);
     g.rows = chebfun(rowValues.', dom(1:2), pref );
     g.pivotLocations = PivPos;
     g.domain = dom;
@@ -219,13 +209,13 @@ while ( ~isHappy && ~failure )
     % Sample Test:
     if ( sampleTest )
         % wrap the op with evaluate in case the 'vectorize' flag is on:
-        sampleOP = @(x,y) evaluate( op, x, y, vectorize);
+        sampleOP = @(x,y) evaluate(op, x, y, vectorize);
         
         % Evaluate at points in the domain:
-        pass = g.sampleTest( sampleOP, tol, vectorize);
+        pass = g.sampleTest(sampleOP, tol, vectorize);
         if ( ~pass )
             % Increase minSamples and try again.
-            minSample = gridRefine( minSample, pref );
+            minSample = gridRefine(minSample, pref);
             isHappy = 0;
         end
     end
@@ -247,62 +237,52 @@ g = fixTheRank( g , fixedRank );
 
 end
 
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function g = constructFromDouble(op, dom, pref, localPrefs)
+function g = constructFromDouble(op, dom, pref, isEqui)
+
 g = chebfun2();
 
-if ( localPrefs.coeffs )
-    op = chebfun2.coeffs2vals( op );
-elseif ( localPrefs.padua )
-    op = chebfun2.paduaVals2coeffs( op );
-    op = chebfun2.coeffs2vals( op );
-end
 
-if ( numel( op ) == 1 )
+if ( ~isEqui && (numel( op ) == 1) )
     % LNT wants this:
     g = constructor(g, @(x,y) op + 0*x, dom);
-
-else
-
-    % Calculate a tolerance and find numerical rank to this tolerance:
-    % The tolerance assumes the samples are from a function. It depends
-    % on the size of the sample matrix, hscale of domain, vscale of
-    % the samples, condition number of the function, and the accuracy
-    % target in chebfun2 preferences.
-    [xx, yy] = points2D(size(op,2), size(op,1), dom, pref);
-    tol = GetTol(xx, yy, op, dom, pref.eps);
-    
-    % Perform GE with complete pivoting:
-    [pivotValue, ~, rowValues, colValues] = CompleteACA(op, tol, 0);
-    
-    % Construct a CHEBFUN2:
-    g.pivotValues = pivotValue;
-    g.cols = chebfun(colValues, dom(3:4), pref );
-    g.rows = chebfun(rowValues.', dom(1:2), pref );
-    g.domain = dom;
-    
+    return
 end
-end
-
-function g = constructFromEqui(op, dom, pref)
+    
 % Calculate a tolerance and find numerical rank to this tolerance:
 % The tolerance assumes the samples are from a function. It depends
 % on the size of the sample matrix, hscale of domain, vscale of
 % the samples, condition number of the function, and the accuracy
 % target in chebfun2 preferences.
-x = linspace(dom(1), dom(2), size(op,2));
-y = linspace(dom(3), dom(4), size(op,1));
-[xx, yy] = meshgrid(x, y);
-tol = GetTol(xx, yy, op, dom, pref.eps);
-[pivotValue, ~, rowValues, colValues] = CompleteACA(op, tol, 0); % Do ACA on matrices
-
-% Make a chebfun2:
-g = chebfun2();
-g.pivotValues = pivotValue;
-g.cols = chebfun(colValues, dom(3:4), 'equi' );
-g.rows = chebfun(rowValues.', dom(1:2), 'equi');
-g.domain = dom;
+if ( ~isEqui )
+    [xx, yy] = points2D(size(op,2), size(op,1), dom, pref);
+else
+    x = linspace(dom(1), dom(2), size(op,2));
+    y = linspace(dom(3), dom(4), size(op,1));
+    [xx, yy] = meshgrid(x, y);
 end
+    
+tol = getTol(xx, yy, op, dom, pref.eps);
+% pref.eps = tol;
+
+% Perform GE with complete pivoting:
+[pivotValue, ~, rowValues, colValues] = CompleteACA(op, tol, 0);
+
+% Construct a CHEBFUN2:
+g.pivotValues = pivotValue;
+if ( ~isEqui )
+    g.cols = chebfun(colValues,   dom(3:4), pref);
+    g.rows = chebfun(rowValues.', dom(1:2), pref);
+else
+    g.cols = chebfun(colValues,   dom(3:4), 'equi', pref);
+    g.rows = chebfun(rowValues.', dom(1:2), 'equi', pref);
+end
+g.domain = dom;
+
+end
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [pivotValue, pivotElement, rows, cols, ifail] = ...
     CompleteACA(A, tol, factor)
@@ -379,6 +359,7 @@ end
 
 end
 
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [row, col] = myind2sub(siz, ndx)
 % My version of ind2sub. In2sub is slow because it has a varargout. Since this
@@ -391,6 +372,7 @@ row = ( vi - 1 ) + 1;
 
 end
 
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function vals = evaluate( op, xx, yy, flag )
 % EVALUATE  Wrap the function handle in a FOR loop if the vectorize flag is
@@ -409,6 +391,7 @@ end
 
 end
 
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function op = str2op( op )
 % OP = STR2OP(OP), finds the dependent variables in a string and returns an op
@@ -427,6 +410,7 @@ end
 
 end
 
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function g = fixTheRank( g , fixedRank )
 % Fix the rank of a CHEBFUN2. Used for nonadaptive calls to the constructor.
@@ -434,9 +418,7 @@ function g = fixTheRank( g , fixedRank )
 if ( fixedRank < 0 )
     error('CHEBFUN:CHEBFUN2:constructor:fixTheRank:negative', ...
         'Nonadaptive rank should be positive.')
-end
-
-if ( fixedRank > 0 )
+elseif ( fixedRank )
     if ( length(g.pivotValues) > fixedRank )
         % Truncate things:
         g.cols = g.cols(:,1:fixedRank);
@@ -456,6 +438,7 @@ end
 
 end
 
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [xx, yy] = points2D(m, n, dom, pref)
 % Get the sample points that correspond to the right grid for a particular
@@ -483,8 +466,9 @@ end
 
 end
 
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function x = mypoints(n, dom, pref)
+function x = myPoints(n, dom, pref)
 % Get the sample points that correspond to the right grid for a particular
 % technology.
 
@@ -529,7 +513,9 @@ end
 
 end
 
-function tol = GetTol(xx, yy, vals, dom, pseudoLevel)
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function tol = getTol(xx, yy, vals, dom, pseudoLevel)
 % GETTOL     Calculate a tolerance for the Chebfun2 constructor.
 %
 %  This is the 2D analogue of the tolerance employed in the chebtech
@@ -549,13 +535,9 @@ tol = grid.^(2/3) * max( abs(dom(:) ) ) * max( Jac_norm, vscale) * pseudoLevel;
 
 end
 
-function [op, dom, pref, localPrefs] = parseInputs(op, varargin)
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-localPrefs = struct('isEqui', false, ...
-                   'fixedRank', 0, ...
-                   'vectorize', false, ...
-                   'coeffs', false, ...
-                   'padua', false);
+function [op, dom, pref, isEqui, fixedRank, vectorize] = parseInputs(op, varargin)
 
 if ( isa(op, 'char') )     % CHEBFUN2( CHAR )
     op = str2op( op );
@@ -611,7 +593,6 @@ if ( nargin > 1 && isnumeric(varargin{1}) )
             'Domain not fully determined.');
     end
 end
-localPrefs.fixedRank = fixedRank;
 
 % Check for infinite domains:
 if ( any( isinf( dom ) ) )
@@ -635,7 +616,9 @@ end
 isEqui = find(cellfun(@(p) strcmpi(p, 'equi'), varargin));
 if ( isEqui )
     varargin(isEqui) = [];
-    localPrefs.isEqui = true;
+    isEqui = true;
+else
+    isEqui = false;
 end
 
 isTrig = find(cellfun(@(p) any(strcmpi(p, {'trig', 'periodic'})), varargin));
@@ -657,65 +640,65 @@ pref.eps = max(pref.eps, pseudoLevel);
 vectorize = find(cellfun(@(p) strncmpi(p, 'vectori', 7), varargin));
 if ( vectorize )
     varargin(vectorize) = [];
-    localPrefs.vectorize = true;
+    vectorize = true;
+else
+    vectorize = false;
 end
-
 % If the vectorize flag is off, do we need to give user a warning?
-if ( localPrefs.vectorize == 0 && ~isnumeric(op) ) % another check
-    [localPrefs.vecotorize, op] = vectorCheck(op, dom, pref.eps);
+if ( ~vectorize && ~isnumeric(op) ) % another check
+    [vectorize, op] = vectorCheck(op, dom, pref.eps);
 end
 
 isPadua = find(cellfun(@(p) strcmpi(p, 'padua'), varargin));
 if ( isPadua )
     varargin(isPadua) = [];
-    localPrefs.padua = true;
+    op = chebfun2.paduaVals2coeffs( op );
+    op = chebfun2.coeffs2vals( op );
 end
 
 isCoeffs = find(cellfun(@(p) strcmpi(p, 'coeffs'), varargin));
 if ( isCoeffs )
     varargin(isCoeffs) = [];
-    localPrefs.coeffs = true;
+    op = chebfun2.coeffs2vals( op );
 end
 
 end
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [vectorize, op] = vectorCheck(op, dom, pseudoLevel)
 % Check for cases: @(x,y) x*y, and @(x,y) x*y'
 
-    vectorize = false;
-    [xx, yy] = meshgrid( dom(1:2), dom(3:4));
-    
-    try 
-        A = op(xx, yy);
-    catch
-        throwVectorWarning();
-        vectorize = true;
-        return
+vectorize = false;
+[xx, yy] = meshgrid( dom(1:2), dom(3:4));
+try
+    A = op(xx, yy);
+catch
+    throwVectorWarning();
+    vectorize = true;
+    return
+end
+if ( isscalar(A) )
+    op = @(x,y) op(x,y) + 0*x + 0*y;
+    A = op(xx, yy);
+end
+B = zeros(2);
+for j = 1:2
+    for k = 1:2
+        B(j,k) = op(dom(j), dom(2+k));
     end
-    
-    if ( isscalar(A) )
-        op = @(x,y) op(x,y) + 0*x + 0*y;
-        A = op(xx, yy);
-        
-    end
-    B = zeros(2);
-    for j = 1:2
-        for k = 1:2
-            B(j,k) = op(dom(j), dom(2+k));
-        end
-    end
-    if ( any(any( abs(A - B.') > min( 1000*pseudoLevel, 1e-4 ) ) ) )
-        % Function handle probably needs vectorizing.
-        % Give user a warning and then vectorize.
-        throwVectorWarning();
-        vectorize = true;
-    end
-    
+end
+if ( any(any( abs(A - B.') > min( 1000*pseudoLevel, 1e-4 ) ) ) )
+    % Function handle probably needs vectorizing.
+    % Give user a warning and then vectorize.
+    throwVectorWarning();
+    vectorize = true;
+end
     function throwVectorWarning()
         warning('CHEBFUN:CHEBFUN2:constructor:vectorize',...
-        ['Function did not correctly evaluate on an array.\n', ...
-        'Turning on the ''vectorize'' flag. Did you intend this?\n', ...
-        'Use the ''vectorize'' flag in the CHEBFUN2 constructor\n', ...
-        'call to avoid this warning message.']);
+            ['Function did not correctly evaluate on an array.\n', ...
+            'Turning on the ''vectorize'' flag. Did you intend this?\n', ...
+            'Use the ''vectorize'' flag in the CHEBFUN2 constructor\n', ...
+            'call to avoid this warning message.']);
     end
 end
