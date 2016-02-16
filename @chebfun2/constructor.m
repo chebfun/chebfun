@@ -76,11 +76,10 @@ while ( ~isHappy && ~failure )
     
     % Two-dimensional version of CHEBFUN's tolerance:
     tol = getTol(xx, yy, vals, dom, pseudoLevel);
-%     pref.eps = tol;
     
     %% %%% PHASE 1: %%%
     % Do GE with complete pivoting:
-    [pivotValue, pivotPosition, rowValues, colValues, iFail] = CompleteACA(vals, tol, factor);
+    [pivotVal, pivotPos, rowVals, colVals, iFail] = completeACA(vals, tol, factor);
     
     strike = 1;
     % grid <= 4*(maxRank-1)+1, see Chebfun2 paper.
@@ -92,11 +91,10 @@ while ( ~isHappy && ~failure )
         vscale = max(abs(vals(:)));
         % New tolerance:
         tol = getTol(xx, yy, vals, dom, pseudoLevel);
-%         pref.eps = tol;
         % New GE:
-        [pivotValue, pivotPosition, rowValues, colValues, iFail] = CompleteACA(vals, tol, factor);
+        [pivotVal, pivotPos, rowVals, colVals, iFail] = completeACA(vals, tol, factor);
         % If the function is 0+noise then stop after three strikes.
-        if ( abs(pivotValue(1)) < 1e4*vscale*tol )
+        if ( abs(pivotVal(1)) < 1e4*vscale*tol )
             strike = strike + 1;
         end
     end
@@ -111,21 +109,21 @@ while ( ~isHappy && ~failure )
     % Check if the column and row slices are resolved.
     colData.hscale = norm(dom(3:4), inf);
     colData.vscale = vscale;
-    colChebtech = tech.make(sum(colValues,2), colData);
-    resolvedCols = happinessCheck(colChebtech, [], sum(colValues, 2), colData, pref);
+    colChebtech = tech.make(sum(colVals,2), colData);
+    resolvedCols = happinessCheck(colChebtech, [], sum(colVals, 2), colData, pref);
     rowData.hscale = norm(dom(1:2), inf);
     rowData.vscale = vscale;
-    rowChebtech = tech.make(sum(rowValues.',2), rowData);
-    resolvedRows = happinessCheck(rowChebtech, [], sum(rowValues.', 2), rowData, pref);
+    rowChebtech = tech.make(sum(rowVals.',2), rowData);
+    resolvedRows = happinessCheck(rowChebtech, [], sum(rowVals.', 2), rowData, pref);
     isHappy = resolvedRows & resolvedCols;
     
     % If the function is zero, set midpoint of domain as pivot location.
-    if ( length(pivotValue) == 1 && pivotValue == 0 )
-        PivPos = [0, 0];
+    if ( length(pivotVal) == 1 && pivotVal == 0 )
+        pivPos = [0, 0];
         isHappy = 1;
     else
-        PivPos = [xx(1, pivotPosition(:, 2)); yy(pivotPosition(:, 1), 1).'].';
-        PP = pivotPosition;
+        pivPos = [xx(1, pivotPos(:, 2)); yy(pivotPos(:, 1), 1).'].';
+        PP = pivotPos;
     end
     
     %% %%% PHASE 2: %%%
@@ -135,47 +133,47 @@ while ( ~isHappy && ~failure )
         if ( ~resolvedCols )
             % Double sampling along columns
             [n, nesting] = gridRefine( n , pref );
-            [xx, yy] = meshgrid(PivPos(:, 1), myPoints(n, dom(3:4), pref));
-            colValues = evaluate(op, xx, yy, vectorize);
+            [xx, yy] = meshgrid(pivPos(:, 1), myPoints(n, dom(3:4), pref));
+            colVals = evaluate(op, xx, yy, vectorize);
             % Find location of pivots on new grid (using nesting property).
             PP(:, 1) = nesting(PP(:, 1));
         else
-            [xx, yy] = meshgrid(PivPos(:, 1), myPoints(n, dom(3:4), pref));
-            colValues = evaluate(op, xx, yy, vectorize);
+            [xx, yy] = meshgrid(pivPos(:, 1), myPoints(n, dom(3:4), pref));
+            colVals = evaluate(op, xx, yy, vectorize);
         end
         if ( ~resolvedRows )
             [m, nesting] = gridRefine( m , pref );
-            [xx, yy] = meshgrid(myPoints(m, dom(1:2), pref), PivPos(:, 2));
-            rowValues = evaluate(op, xx, yy, vectorize);
+            [xx, yy] = meshgrid(myPoints(m, dom(1:2), pref), pivPos(:, 2));
+            rowVals = evaluate(op, xx, yy, vectorize);
             % find location of pivots on new grid  (using nesting property).
             PP(:, 2) = nesting(PP(:, 2));
         else
-            [xx, yy] = meshgrid(myPoints(m, dom(1:2), pref), PivPos(:, 2));
-            rowValues = evaluate(op, xx, yy, vectorize);
+            [xx, yy] = meshgrid(myPoints(m, dom(1:2), pref), pivPos(:, 2));
+            rowVals = evaluate(op, xx, yy, vectorize);
         end
         
         % Do GE on the skeleton to update slices:
-        nn = numel(pivotValue);
+        nn = numel(pivotVal);
         for kk = 1:nn-1
-            colValues(:, kk+1:end) = colValues(:, kk+1:end) -...
-                colValues(:, kk)*(rowValues(kk, PP(kk+1:nn, 2))./pivotValue(kk));
-            rowValues(kk+1:end, :) = rowValues(kk+1:end, :) -...
-                colValues(PP(kk+1:nn, 1), kk)*(rowValues(kk, :)./pivotValue(kk));
+            colVals(:, kk+1:end) = colVals(:, kk+1:end) -...
+                colVals(:, kk)*(rowVals(kk, PP(kk+1:nn, 2))./pivotVal(kk));
+            rowVals(kk+1:end, :) = rowVals(kk+1:end, :) -...
+                colVals(PP(kk+1:nn, 1), kk)*(rowVals(kk, :)./pivotVal(kk));
         end
         
         % If function is on rank-1 then make rowValues a row vector:
         if ( nn == 1 )
-            rowValues = rowValues(:).';
+            rowVals = rowVals(:).';
         end
         
         % Are the columns and rows resolved now?
         if ( ~resolvedCols )
-            colChebtech = tech.make(sum(colValues,2));
-            resolvedCols = happinessCheck(colChebtech,[],sum(colValues,2), colData, pref);
+            colChebtech = tech.make(sum(colVals,2));
+            resolvedCols = happinessCheck(colChebtech,[],sum(colVals,2), colData, pref);
         end
         if ( ~resolvedRows )
-            rowChebtech = tech.make(sum(rowValues.',2));
-            resolvedRows = happinessCheck(rowChebtech,[],sum(rowValues.',2), rowData, pref);
+            rowChebtech = tech.make(sum(rowVals.',2));
+            resolvedRows = happinessCheck(rowChebtech,[],sum(rowVals.',2), rowData, pref);
         end
         isHappy = resolvedRows & resolvedCols;
         
@@ -191,19 +189,19 @@ while ( ~isHappy && ~failure )
     % For some reason, on some computers simplify is giving back a scalar zero.
     % In which case the function is numerically zero. Artificially set the
     % columns and rows to zero.
-    if ( (norm(colValues) == 0) || (norm(rowValues) == 0) )
-        colValues = 0;
-        rowValues = 0;
-        pivotValue = Inf;
-        PivPos = [0, 0];
+    if ( (norm(colVals) == 0) || (norm(rowVals) == 0) )
+        colVals = 0;
+        rowVals = 0;
+        pivotVal = Inf;
+        pivPos = [0, 0];
         isHappy = 1;
     end
     
     % Construct a CHEBFUN2:
-    g.pivotValues = pivotValue;
-    g.cols = chebfun(colValues,   dom(3:4), pref);
-    g.rows = chebfun(rowValues.', dom(1:2), pref );
-    g.pivotLocations = PivPos;
+    g.pivotValues = pivotVal;
+    g.cols = chebfun(colVals,   dom(3:4), pref);
+    g.rows = chebfun(rowVals.', dom(1:2), pref );
+    g.pivotLocations = pivPos;
     g.domain = dom;
     
     % Sample Test:
@@ -223,14 +221,7 @@ while ( ~isHappy && ~failure )
 end
 
 % Simplifying rows and columns after they are happy.
-g = simplify( g );
-
-% Reconstruct using simplified coefficients to guarantee endpoint values are
-% correct.
-g.cols = chebfun(get(g.cols, 'coeffs'), domain(g.cols), 'coeffs', ...
-    'tech', @tech.make);
-g.rows = chebfun(get(g.rows, 'coeffs'), domain(g.rows), 'coeffs', ...
-    'tech', @tech.make);
+g = simplify( g, pref.eps );
 
 % Fix the rank, if in nonadaptive mode.
 g = fixTheRank( g , fixedRank );
@@ -242,7 +233,6 @@ end
 function g = constructFromDouble(op, dom, pref, isEqui)
 
 g = chebfun2();
-
 
 if ( ~isEqui && (numel( op ) == 1) )
     % LNT wants this:
@@ -264,10 +254,9 @@ else
 end
     
 tol = getTol(xx, yy, op, dom, pref.eps);
-% pref.eps = tol;
 
 % Perform GE with complete pivoting:
-[pivotValue, ~, rowValues, colValues] = CompleteACA(op, tol, 0);
+[pivotValue, ~, rowValues, colValues] = completeACA(op, tol, 0);
 
 % Construct a CHEBFUN2:
 g.pivotValues = pivotValue;
@@ -285,7 +274,7 @@ end
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [pivotValue, pivotElement, rows, cols, ifail] = ...
-    CompleteACA(A, tol, factor)
+    completeACA(A, tol, factor)
 % Adaptive Cross Approximation with complete pivoting. This command is
 % the continuous analogue of Gaussian elimination with complete pivoting.
 % Here, we attempt to adaptively find the numerical rank of the function.
