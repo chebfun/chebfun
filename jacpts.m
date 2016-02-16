@@ -563,7 +563,7 @@ function [x, w, v] = asy2(n, a, b, npts)
 
 % Use Newton iterations to find the first few Bessel roots:
 smallK = min(30, npts);
-jk = besselpts(a, min(npts, smallK));
+jk = besselroots(a, min(npts, smallK));
 % Use asy formula for larger ones (See NIST 10.21.19, Olver 1974 p247)
 if ( npts > smallK )
     mu = 4*a^2;

@@ -266,7 +266,7 @@ elseif ( n > 21 )
     % boundary region:
     Lam = lambda*(1-lambda);
     N = sqrt((n+lambda)^2+lambda*(1-lambda)/3);
-    bz = besselpts(lambda-.5,10); % Approximates zeros of Bessel.
+    bz = besselroots(lambda-.5,10); % Approximates zeros of Bessel.
     x(1:10) = cos(bz/N-Lam/90.*(bz.^3+2*(lambda^2-lambda-.75).*bz)/N^5);
 end
 
@@ -578,7 +578,7 @@ Lam = lambda*(1-lambda);
 if ( lambda > 1 || lambda < 0 )
     % Gatteschi's approximation (1979):
     N = sqrt((n+lambda)^2+lambda*(1-lambda)/3);
-    bz = besselpts(lambda-.5,nbdy); % Approximates zeros of Bessel
+    bz = besselroots(lambda-.5,nbdy); % Approximates zeros of Bessel
     t = bz/N-Lam/90.*(bz.^3+2*(lambda^2-lambda-.75).*bz)/N^5;
 else
     % This initial guess guarantees convergence for 0<lambda<1 [4]:

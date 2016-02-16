@@ -269,7 +269,7 @@ function [x, w, v, t] = asy(n, nout)
 
 % Compute roots of BesselJ(0, x);
 m = ceil(n/2);
-jk = besselpts(0,m);
+jk = besselroots(0,m);
 
 % Useful values:
 vn = 1./(n + .5);
