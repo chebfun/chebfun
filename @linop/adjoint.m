@@ -1,63 +1,65 @@
-function L = adjoint(L, bctype)
+function [Lstar, adjcoeffs, bcOp] = adjoint(L, bcType)
 %ADJOINT   Compute the adjoint of a LINOP.
-%   L = ADJOINT(L), where L is a LINOP, returns the adjoint LINOP of L under
-%   the assumption that L only has endpoint functional constraints.
+%   ADJOINT(L), where L is a LINOP, returns the adjoint LINOP of L under
+%   the assumption that L only has endpoint or periodic functional constraints.
 %
-%   L = ADJOINT(L, BCTYPE) allows for more general boundary conditions.
+%   ADJOINT(L, BCTYPE) allows for more general boundary conditions.
 %
 % See also ?.
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Check diffOrder
+if ( L.diffOrder == 0 )
+    % Trivial case:
+    Lstar = L;
+    return
+elseif ( L.diffOrder < 0 )
+    error('CHEBFUN:LINOP:adjoint:difforder', ...
+    'ADJOINT doesn''t support integral operators for the moment.');
+end
+
 % Check BCTYPE
 if ( nargin < 2 )
-    bctype = 'endpoints';
+    bcType = 'bvp';
     warning('CHEBFUN:LINOP:adjoint:boundaryconditions', ...
     ['ADJOINT only supports purely differential operators with ',...
      'end point boundary conditions.']);
-
-
-elseif ( ~strcmp(bctype,'periodic') && ~strcmp(bctype,'endpoints') )
+elseif ( ~strcmp(bcType, 'periodic') && ~strcmp(bcType, 'bvp') )
     error('CHEBFUN:LINOP:adjoint:boundaryconditions', ...
     'ADJOINT doesn''t support this type of boundary conditions for the moment.');
-
 end
 
-% Check diffOrder
-if ( L.diffOrder < 0 )
-    error('CHEBFUN:LINOP:adjoint:difforder', ...
-    'ADJOINT doesn''t support integral operators for the moment.');
-
+if ( strcmp(bcType, 'general') )
+    error('cannot do this case')
 end
 
-% Trivial case:
-if ( L.diffOrder == 0 )
-    return
-end
+%% 
+% Check dimensions.
 
+%%
 % Formal adjoint
-[Lstar, adjcoeffs] = formalAdjoint(L,bctype);
+[Lstar, adjcoeffs] = formalAdjoint(L, bcType);
 
+%%
 % Create adjoint linop
-% periodic bcs
-if ( strcmp(bctype,'periodic') )
+if ( strcmp(bcType, 'periodic') )
+    % Periodic bcs
     Lstar.constraint = L.constraint;
-    L = Lstar;
-
-% other bcs
+    B = 'periodic';
 else
     % Adjoint boundary conditions
+    [constraint, B] = getAdjointBCs(L, bcType);
+    Lstar.constraint = constraint;
+    Lstar.continuity = continuity;
+end
 
+if ( nargout == 3 )
+    bcOp = prettyPrint(B);
 end
 
 end
-
-
-
-
-
-
 
 function [L, adjcoeffs] = formalAdjoint(L,bctype)
 %FORMALADJOINT   Computes the formal adjoint of a LINOP.
@@ -102,6 +104,7 @@ else
 end
 
 % Compute the coefficients of the adjoint:
+% adjcoeffs = cellfun(@(x) 0*x, coeffs, 'uniformOutput', false)'
 adjcoeffs = cell(n+1,1);
 for k = 0:n
     adjcoeffs{k+1} = 0*coeffs{k+1};
@@ -117,13 +120,13 @@ end
 if ( strcmp(bctype,'periodic') )
     for k = 0:n
         c = adjcoeffs{k+1};
-        adjcoeffs{k+1} = chebfun( @(x) feval(c,x), domain(c), 'trig');
+        adjcoeffs{k+1} = chebfun( @(x) feval(c,x), dom, 'trig');
     end
 end
 
 % Construct a LINOP from these new coefficients:
+n = length(adjcoeffs);
 L = operatorBlock.mult(adjcoeffs{n},dom);
-n = length(coeffs);
 for k = 1:n-1
     L = L + operatorBlock.mult(adjcoeffs{n-k},dom)*operatorBlock.diff(dom,k);
 end
@@ -136,3 +139,10 @@ end
 
 end
 
+function [constraint, B] = getAdjointBCs(L, bcType)
+
+end
+
+function bcOp = prettyPrint(B)
+
+end

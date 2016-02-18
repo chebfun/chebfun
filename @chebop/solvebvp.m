@@ -106,7 +106,7 @@ end
 x = chebfun(@(x) x, dom);
 
 % Linearize and attach preferences.
-[L, residual, isLinear] = linearize(N, u0, x);
+[L, residual, isLinear] = linearize(N, u0, x)
 
 % Before attempting to solve, check whether we actually have any BCs imposed:
 maxDiffOrder = max(max(L.diffOrder));
