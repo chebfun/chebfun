@@ -63,11 +63,10 @@ maxRank = prefStruct.maxRank;
 % Get default preferences from the techPref:
 tech = pref.tech();
 tpref = chebfunpref.mergeTechPrefs(pref, tech.techPref);
-minSample = tpref.minSamples;
 maxSample = tpref.maxLength;
 pseudoLevel = tpref.eps;
 
-% Deal with periodic functions:
+% Set preferences and correct minSamples:
 if ( any(strcmpi(dom, {'trig', 'periodic'})) )
     % If periodic flag, then map chebfun2 with TRIGTECHs.
     pref.tech = @trigtech;
@@ -81,10 +80,13 @@ elseif ( (nargin > 3) && (any(strcmpi(varargin{1}, {'trig', 'periodic'}))) )
     % If periodic flag, then map chebfun2 with TRIGTECHs
     pref.tech = @trigtech;
     tpref = chebfunpref.mergeTechPrefs(pref, tech.techPref);
-    % make sure minSample is a power of 2 plus one:
-    minSample = 2.^(floor(log2(tpref.minSamples))) + 1; 
+    % make sure minSample is a power of 2:
+    minSample = 2.^(floor(log2(tpref.minSamples))); 
     maxSample = tpref.maxLength;
     pseudoLevel = tpref.eps;
+else
+    % Make sure that minSamples is a power of 2 plus one: 
+    minSample = 2.^(floor(log2(tpref.minSamples-1)))+1;
 end
 
 % Deal with constructions from equally spaced data:
