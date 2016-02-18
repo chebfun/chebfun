@@ -4,9 +4,11 @@ if ( isempty(N.bc) )
     if ( isempty(N.lbc) && isempty(N.rbc) )
         bcType = 'nobc';
     elseif ( isempty(N.rbc) )
-        bcType = 'ivp';
+%         bcType = 'ivp'; % For now, just treat as BVP case.
+        bcType = 'bvp';
     elseif ( isempty(N.lbc) )
-        bcType = 'fvp';
+%         bcType = 'fvp'; % For now, just treat as BVP case.
+        bcType = 'bvp'; 
     else
         bcType = 'bvp';
     end

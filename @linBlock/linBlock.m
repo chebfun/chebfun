@@ -94,10 +94,10 @@ classdef (InferiorClasses = {?chebfun}) linBlock
             f = B.func;
         end
         
-        function c = toCoeff(A)
+        function c = toCoeff(A, varargin)
             % Convert the LINBLOCK to a CHEBFUN of coefficients multiplying the
             % powers of the derivative.
-            B = blockCoeff(A);
+            B = blockCoeff(A, varargin{:});
             c = chebmatrix( B.coeffs );
         end
         
