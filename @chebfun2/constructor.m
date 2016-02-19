@@ -595,10 +595,6 @@ isPref = find(cellfun(@(p) isa(p, 'chebfunpref'), varargin));
 if ( any(isPref) )
     pref = varargin{isPref};
     varargin(isPref) = [];
-elseif ( isa(dom, 'chebfunpref') )
-    % Support chebfun2(op, pref);
-    pref = dom;
-    dom = [-1 1 -1 1];
 else
     pref = chebfunpref();
 end
