@@ -30,8 +30,8 @@ end
 
 % Use CDR decomposition so we can keep it in low rank form: 
 [C, D, R] = cdr( f ); 
-Cvals = chebfun(C, m).values; 
-Rvals = chebfun(R, n).values; 
+[ignored, Cvals] = sample(chebfun(C), m);
+[ignored, Rvals] = sample(chebfun(R), n);
 
 
 % Evaluate: 
