@@ -529,11 +529,12 @@ end
 function [op, dom, pref, isEqui, fixedRank, vectorize] = parseInputs(op, varargin)
 
 if ( isa(op, 'char') )     % CHEBFUN2( CHAR )
-    op = str2op( op );
+    op = str2op(op);
 end
-if ( isa(op, 'function_handle') && nargin(op) == 1 )
-    % If the operator has one argument, then make it complex.
-    op = @(x, y) op( x + 1i*y );
+
+% If the operator has one argument, then make it complex.
+if ( isa(op, 'function_handle') && (nargin(op) == 1) )
+    op = @(x, y) op(x + 1i*y);
 end
 
 % Get the domain: (Always first if given)
@@ -543,25 +544,25 @@ if ( nargin > 1 && isnumeric(varargin{1}) )
     d = varargin{1};
     varargin(1) = [];
     
-    if ( numel(d) == 4 )
+    if ( numel(d) == 4 )                 % CHEBFUN2(OP, [A B C D])
         dom = d;
         
     elseif ( numel(d) == 2 )
-        if ( ( nargin > 2) && isa(varargin{1}, 'double') )
+        if ( (nargin > 2) && isa(varargin{1}, 'double') )
             ends = varargin{1};
-            if ( numel( ends ) == 2 )
+            if ( numel( ends ) == 2 )    % CHEBFUN2(OP, [A B], [C D])
                 dom = [d(:) ; ends(:)].';
-            elseif ( numel(ends) == 4 )
+            elseif ( numel(ends) == 4 )  % CHEBFUN2(OP, [M N], [A B C D])
                 % Interpret this as the user wants a degree (dom(1),dom(2))
                 % chebfun2 on the domain [ends].
                 [xx, yy] = chebfun2.chebpts2(d(1), d(2), ends);
                 op = op(xx, yy);
                 dom = ends;
             else
-                error('CHEBFUN:CHEBFUN2:constructor:domain1', ...
+                error('CHEBFUN:CHEBFUN2:constructor:parseInputs:domain1', ...
                     'Domain not valid or fully determined.');
             end
-        else
+        else                             % CHEBFUN2(OP, [M N])
             % The domain is not given, but perhaps the user
             % wants a degree (dom(1),dom(2)) representation.
             if ( d(2) - d(1) > 0 && d(1) > 0 && ...  % Valid bivariate degree?
@@ -570,22 +571,22 @@ if ( nargin > 1 && isnumeric(varargin{1}) )
                 [xx, yy] = chebfun2.chebpts2(d(1), d(2));
                 op = op(xx, yy);
             else
-                error('CHEBFUN:CHEBFUN2:constructor:domain2', ...
+                error('CHEBFUN:CHEBFUN2:constructor:parseInputs:domain2', ...
                     'Domain not valid or fully determined.');
             end
         end
-    elseif ( numel(d) == 1 )
+    elseif ( numel(d) == 1 )             % CHEBFUN2(OP, K)
         fixedRank = d;
         
     elseif ( numel(d) ~= 4 )
-        error('CHEBFUN:CHEBFUN2:constructor:DOMAIN', ...
-            'Domain not fully determined.');
+        error('CHEBFUN:CHEBFUN2:constructor:parseInputs:domain3', ...
+            'Domain not valid or fully determined.');
     end
 end
 
 % Check for infinite domains:
-if ( any( isinf( dom ) ) )
-    error('CHEBFUN2:DOMAIN:INFINITE', ...
+if ( any(isinf(dom) ) )
+    error('CHEBFUN:CHEBFUN2:constructor:parseInputs:infDomain', ...
         'Chebfun2 cannot approximation functions on infinite domains.');
 end
 
@@ -633,6 +634,7 @@ if ( vectorize )
 else
     vectorize = false;
 end
+
 % If the vectorize flag is off, do we need to give user a warning?
 if ( ~vectorize && ~isnumeric(op) ) % another check
     [vectorize, op] = vectorCheck(op, dom, pref.eps);
@@ -641,14 +643,14 @@ end
 isPadua = find(cellfun(@(p) strcmpi(p, 'padua'), varargin));
 if ( isPadua )
     varargin(isPadua) = [];
-    op = chebfun2.paduaVals2coeffs( op );
-    op = chebfun2.coeffs2vals( op );
+    op = chebfun2.paduaVals2coeffs(op);
+    op = chebfun2.coeffs2vals(op);
 end
 
 isCoeffs = find(cellfun(@(p) strcmpi(p, 'coeffs'), varargin));
 if ( isCoeffs )
     varargin(isCoeffs) = [];
-    op = chebfun2.coeffs2vals( op );
+    op = chebfun2.coeffs2vals(op);
 end
 
 end
