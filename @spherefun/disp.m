@@ -19,7 +19,7 @@ len = length(F);                          % Numerical rank
 vscl = vscale(F);                         % vertical scale
 
 % Display the information: 
-disp('   spherefun object (1 smooth surface)')
+disp('   spherefun object')
 fprintf('       domain        rank    vertical scale\n');
 fprintf('     unit sphere  %6i          %3.2g\n', len, vscl);
 
