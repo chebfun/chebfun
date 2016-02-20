@@ -3,6 +3,9 @@ function pass = test_feval( )
 
 tol = 1e3*chebfunpref().techPrefs.eps;
 
+% See the random number generator.
+rng(9);
+
 f = @(x,y,z) sin(x+ y.*z) + 1;
 f = redefine_function_handle( f );
 g = spherefun( f );
@@ -13,11 +16,9 @@ pass(1) = abs( feval(g, theta, lambda) - f(theta, lambda) ) < tol;
 lambda = rand(10,1); theta = rand(10,1); 
 pass(2) = norm( feval(g, theta, lambda) - f(theta, lambda), inf ) < tol; 
 
-% feval at vectors: 
-% This breaks in feval@separableApprox.
-% lambda = rand(1,10); theta = rand(1,10); 
-% pass(12) = norm( feval(g, theta, lambda) - f(theta, lambda) ) < tol;
-pass(3) = true;
+% feval at row vectors: 
+lambda = rand(1,10); theta = rand(1,10); 
+pass(3) = norm( feval(g, theta, lambda) - f(theta, lambda) ) < tol;
 
 % feval at vectors: 
 lambda = rand(2,10); theta = rand(2,10); 
@@ -27,6 +28,30 @@ pass(4) = norm( feval(g, theta, lambda) - f(theta, lambda), inf ) < tol;
 [lambda, theta] = meshgrid( rand(3,1) ); 
 pass(5) = norm( feval(g, theta, lambda) - f(theta, lambda), inf ) < tol; 
 
+% feval using Cartesian coordinates
+f = @(x,y,z) sin(x+ y.*z) + 1;
+x = rand(1,3); x = x/sqrt(sum(x.^2)); y = x(1,2); z = x(1,3); x = x(1,1); 
+pass(6) = norm( feval(g, x, y, z) - f(x, y, z), inf ) < tol; 
+
+% feval using Cartesian coordinates at a vector of points
+x = rand(10,3); nrm = sqrt(sum(x.^2,2)); 
+y = x(:,2)./nrm; z = x(:,3)./nrm; x = x(:,1)./nrm;
+pass(7) = norm( feval(g, x, y, z) - f(x, y, z), inf ) < tol; 
+
+% feval using Cartesian coordinates at a vector of points
+x = rand(10,3); y = rand(10,3); z = rand(10,3);
+nrm = sqrt(x.^2 + y.^2 + z.^2); 
+y = y./nrm; z = z./nrm; x = x./nrm;
+pass(8) = norm( feval(g, x, y, z) - f(x, y, z), inf ) < tol; 
+
+% Check for the appropriate error flag.
+try
+    y = feval(g,1,1,1);
+    pass(9) = false;
+catch ME
+    pass(9) = strcmp(ME.identifier,'CHEBFUN:SPHEREFUN:FEVAL:pointsNotOnSphere');
+end
+ 
 end 
 
 function f = redefine_function_handle( f )

@@ -20,8 +20,14 @@ if nargin == 3      % Spherical coordinates used.
 elseif nargin == 4  % Cartesian coordinates used.
     if ( isnumeric(x) && isnumeric(y) && isnumeric(z) )
         % Convert to spherical coordinates
-        [lambda,theta] = cart2sph(x,y,z);
-
+        [lambda,theta, rad] = cart2sph(x,y,z);
+        
+        if any( rad > (1 + 1e-8) )
+            error('CHEBFUN:SPHEREFUN:FEVAL:pointsNotOnSphere',...
+                ['The specified points to evaluate the function do not '...
+                'lie sufficiently close to the surface of the '...
+                'unit sphere.']);
+        end
         % Check latitudinal coordinate system to set the elevation angle
         % appropriately.
         if iscolat( f )
