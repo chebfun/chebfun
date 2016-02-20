@@ -93,7 +93,10 @@ classdef spherefun < separableApprox
         fdf = sphf2cartf(f, lam, th, coord);
         
         % Degree l Order m spherical harmonic.
-        Y = sphharm(l,m,coord)          
+        Y = sphharm(l,m,coord)     
+        
+        % Plot the outline of the landmasses of earth
+        h = plotEarth(linespec);
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

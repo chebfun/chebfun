@@ -9,9 +9,6 @@ function varargout = surf( f, varargin )
 %   surface property. Multiple property values can be set with a single
 %   statement.
 %
-%   SURF(..., 'earth') includes the outline of the landmasses of earth on
-%   the surface plot.
-%
 %   H = SURF(...) returns a handle to a surface plot object.
 %
 % See also SEPARABLEAPPROX/SURF, PLOT.
@@ -28,8 +25,6 @@ end
 % How dense to make the samples.
 minPlotNum = 200;
 defaultOpts = {'facecolor', 'interp', 'edgealpha', .5, 'edgecolor', 'none'};
-% Plot the land masses of earth
-plotEarth = false;
 
 % Number of points to plot
 j = 1; argin = {};
@@ -37,9 +32,6 @@ while ( ~isempty(varargin) )
     if strcmpi(varargin{1}, 'numpts')
         minPlotNum = varargin{2};
         varargin(1:2) = [];
-    elseif strcmpi(varargin{1}, 'earth')
-        plotEarth = true;
-        varargin(1) = [];
     else
         argin{j} = varargin{1};
         varargin(1) = [];
@@ -82,17 +74,7 @@ if ( isa(f,'spherefun') )
         % held.
         if ( ~ishold )
             daspect([1 1 1]);
-        end
-        
-        if ( plotEarth )
-            % Land masses are stored in the data file CoastData.mat
-            x = load('CoastData.mat','coast');
-            if ( ~ishold )
-                hold on;
-                plot3(x.coast(:,1),x.coast(:,2),x.coast(:,3),'k-');
-                hold off
-            end
-        end
+        end        
     else
         % Pass this along to the surf function in separableApprox.
         h = surf@separableApprox( f, varargin{:} );
