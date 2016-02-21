@@ -222,7 +222,7 @@ while ( ~isHappy && ~failure )
 end
 
 % Simplifying rows and columns after they are happy.
-% g = simplify( g, tol );
+g = simplify( g );
 
 % Fix the rank, if in nonadaptive mode.
 g = fixTheRank( g , fixedRank );
