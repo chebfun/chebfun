@@ -109,12 +109,12 @@ while ( ~isHappy && ~failure )
     % Check if the column and row slices are resolved.
     colData.hscale = norm(dom(3:4), inf);
     colData.vscale = vscale;
-    colChebtech = tech.make(sum(colVals,2), colData);
-    resolvedCols = happinessCheck(colChebtech, [], sum(colVals, 2), colData, pref);
+    colTech = tech.make(sum(colVals,2), colData);
+    resolvedCols = happinessCheck(colTech, [], sum(colVals, 2), colData, pref);
     rowData.hscale = norm(dom(1:2), inf);
     rowData.vscale = vscale;
-    rowChebtech = tech.make(sum(rowVals.',2), rowData);
-    resolvedRows = happinessCheck(rowChebtech, [], sum(rowVals.', 2), rowData, pref);
+    rowTech = tech.make(sum(rowVals.',2), rowData);
+    resolvedRows = happinessCheck(rowTech, [], sum(rowVals.', 2), rowData, pref);
     isHappy = resolvedRows & resolvedCols;
     
     % If the function is zero, set midpoint of domain as pivot location.
@@ -127,6 +127,7 @@ while ( ~isHappy && ~failure )
     end
     
     %% %%% PHASE 2: %%%
+    pref.eps = tol;
     % Now resolve along the column and row slices:
     n = grid;  m = grid;
     while ( ~isHappy && ~failure  )
@@ -168,12 +169,12 @@ while ( ~isHappy && ~failure )
         
         % Are the columns and rows resolved now?
         if ( ~resolvedCols )
-            colChebtech = tech.make(sum(colVals,2));
-            resolvedCols = happinessCheck(colChebtech,[],sum(colVals,2), colData, pref);
+            colTech = tech.make(sum(colVals,2));
+            resolvedCols = happinessCheck(colTech,[],sum(colVals,2), colData, pref);
         end
         if ( ~resolvedRows )
-            rowChebtech = tech.make(sum(rowVals.',2));
-            resolvedRows = happinessCheck(rowChebtech,[],sum(rowVals.',2), rowData, pref);
+            rowTech = tech.make(sum(rowVals.',2));
+            resolvedRows = happinessCheck(rowTech,[],sum(rowVals.',2), rowData, pref);
         end
         isHappy = resolvedRows & resolvedCols;
         
@@ -221,7 +222,7 @@ while ( ~isHappy && ~failure )
 end
 
 % Simplifying rows and columns after they are happy.
-g = simplify( g, pref.eps );
+% g = simplify( g, tol );
 
 % Fix the rank, if in nonadaptive mode.
 g = fixTheRank( g , fixedRank );
