@@ -51,6 +51,7 @@ function r = roots(F, varargin)
 
 % Deal with the trivial empty case:
 if ( isempty(F) )
+    r = [];
     return
 end
 
