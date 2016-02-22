@@ -13,8 +13,6 @@ function varargout = subsref(f, index)
 %   used. The colon operator for Cartesian coordinates is not supported 
 %   except for F(:, :, :) which just returns F.
 %
-%   F(G), where G is also a SPHEREFUN2V computes the composition of F and G.
-%
 % .
 %   F.PROP returns the property PROP of F as defined by GET(F, 'PROP').
 %
@@ -25,7 +23,7 @@ function varargout = subsref(f, index)
 %
 % See also FEVAL, GET, RESTRICT, SUBSREF.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 idx = index(1).subs;
@@ -46,12 +44,9 @@ if ( strcmp( index(1).type,'()' ) )
     elseif ( length( idx ) == 2 )
         out = subsref@separableApprox(f,index);
         varargout = { out };
-    elseif ( isa(x, 'spherefunv') )
-        out = feval(f, x);
-        varargout = { out }; 
     else
         error('CHEBFUN:SPHEREFUN:subsref:inputs', ...
-                'Can only evaluate at functions (X,Y,Z) or (LAM,TH)');    
+                'Can only evaluate spherefuns at (X,Y,Z) or (LAM,TH)');    
     end
 elseif ( strcmp( index(1).type,'()' ) )
     if ( numel(idx)==4 )
