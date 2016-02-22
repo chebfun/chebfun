@@ -246,196 +246,6 @@ classdef chebfun
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% CLASS METHODS:
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    methods ( Access = public, Static = false )
-
-        % Absolute value of a CHEBFUN.
-        f = abs(f, pref)
-        
-        % True if any element of a CHEBFUN is a nonzero number, ignoring NaN.
-        a = any(f, dim)
-        
-        % Compute the length of the arc defined by a CHEBFUN.
-        out = arcLength(f, a, b)
-        
-        % Solve boundary value problems for ODEs by collocation.
-        [y, t] = bvp4c(fun1, fun2, y0, varargin);
-        
-        % Solve boundary value problems for ODEs by collocation.
-        [y, t] = bvp5c(fun1, fun2, y0, varargin);
-        
-        % Round a CHEBFUN towards plus infinity.
-        g = ceil(f)
-        
-        % Plot information regarding the representation of a CHEBFUN object:
-        h = plotcoeffs(f, varargin);
-
-        % Construct complex CHEBFUN from real and imaginary parts.
-        C = complex(A, B)
-
-        % Compose CHEBFUN objects with another function.
-        h = compose(f, op, g, pref)
-        
-        % Complex conjugate of a CHEBFUN.
-        f = conj(f)
-        
-        % Complex transpose of a CHEBFUN.
-        f = ctranspose(f)
-        
-        % Display a CHEBFUN object.
-        display(f);
-
-        % Evaluate a CHEBFUN.
-        y = feval(f, x, varargin)
-        
-        % Round a CHEBFUN towards zero.
-        g = fix(f);
-        
-        % Round a CHEBFUN towards minus infinity.
-        g = floor(f);
-        
-        % Fractional derivative of a CHEBFUN object:
-        f = fracDiff(f, mu, type)
-        
-        % Fractional integral of a CHEBFUN object:
-        f = fracInt(f, mu)
-
-        % Get properties of a CHEBFUN object.
-        out = get(f, prop, simpLevel);
-        
-        % Horizontal scale of a CHEBFUN object.
-        out = hscale(f);
-
-        % Imaginary part of a CHEBFUN.
-        f = imag(f)
-        
-        % True for an empty CHEBFUN.
-        out = isempty(f)
-
-        % Test if CHEBFUN objects are equal.
-        out = isequal(f, g)
-
-        % Test if a CHEBFUN is bounded.
-        out = isfinite(f)
-        
-        % Test if a CHEBFUN is unbounded.
-        out = isinf(f)
-
-        % Test if a CHEBFUN has any NaN values.
-        out = isnan(f)
-        
-        % True for real CHEBFUN.
-        out = isreal(f);
-        
-        % Test if a CHEBFUN object is built upon DELTAFUN.
-        out = isdelta(f);
-        
-        % Test if a CHEBFUN object is built upon SINGFUN.
-        out = issing(f)
-        
-        % Test if a CHEBFUN object is built upon a basis of periodic 
-        % functions, i.e., a periodic TECH.
-        out = isPeriodicTech(f)
-        
-        % True for zero CHEBFUN objects.
-        out = iszero(f)
-        
-        % Kronecker product of two CHEBFUN object.
-        out = kron(f, g, varargin)
-        
-        % Length of a CHEBFUN.
-        [out, out2] = length(f);
-        
-        % Return Legendre coefficients of a CHEBFUN.
-        c_leg = legpoly(f, n)
-        
-        % Plot a CHEBFUN object on a loglog scale:
-        h = loglog(f, varargin);
-        
-        % Subtraction of two CHEBFUN objects.
-        f = minus(f, g)
-        
-        % Multiplication of CHEBFUN objects.
-        f = mtimes(f, c)
-        
-        % Remove unnecessary breakpoints in from a CHEBFUN.
-        [f, mergedPts] = merge(f, index, pref)
-        
-        % Overlap the domain of two CHEBFUN objects.
-        [f, g] = overlap(f, g)
-        
-        % Solve a PDE with CHEBFUN and ODE15S.
-        varargout = pde15s(varargin);
-        
-        % Solve a PDE with CHEBFUN and ODE23T.
-        varargout = pde23t(varargin);
-        
-        % Plot a CHEBFUN object:
-        varargout = plot(f, varargin);
-        
-        % 3-D plot for CHEBFUN objects.
-        varargout = plot3(f, g, h, varargin)
-        
-        % Power of a CHEBFUN
-        f = power(f, b, pref);
-        
-        % Real part of a CHEBFUN.
-        f = real(f)
-        
-        % Restrict a CHEBFUN object to a subdomain.
-        f = restrict(f, newDomain);
-
-        % The roots of the CHEBFUN F.
-        r = roots(f, varargin);
-        
-        % Round a CHEBFUN towards nearest integer.
-        g = round(f)
-
-        % Plot a CHEBFUN object on a log-linear scale:
-        h = semilogx(f, varargin);
-
-        % Plot a CHEBFUN object on a linear-log scale:
-        h = semilogy(f, varargin);
-        
-        % Signum of a CHEBFUN.
-        f = sign(f, pref)
-        
-        % Simplify the representation of a CHEBFUN object.
-        f = simplify(f, tol, flag);
-
-        % Size of a CHEBFUN object.
-        [s1, s2] = size(f, dim);
-
-        % Square root of a CHEBFUN.
-        f = sqrt(f, pref)
-        
-        % Retrieve and modify preferences for this class.
-        varargout = subsref(f, index);
-
-        % Retrieve and modify preferences for this class.
-        varargout = subsasgn(f, varargin);
-        
-        % CHEBFUN multiplication.
-        f = times(f, g, varargin)
-        
-        % Transpose a CHEBFUN.
-        f = transpose(f)
-        
-        % Truncate a CHEBFUN object.
-        f = truncate(f, n);
-        
-        % Unary minus of a CHEBFUN.
-        f = uminus(f)
-
-        % Unary plus of a CHEBFUN.
-        f = uplus(f)
-        
-        % Vertical scale of a CHEBFUN object.
-        out = vscale(f, s);
-    end
-    
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% HIDDEN METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Hidden = true, Static = false )
@@ -460,6 +270,9 @@ classdef chebfun
         
         % Supply new definition for a CHEBFUN at a point or set of points.
         f = definePoint(f, s, v)
+        
+        % Function used for deflation, wrapper for CHEBMATRIX/DEFLATIONFUN.
+        out = deflationFun(Nu, u, r, p, alp, type)
         
         % Multiplication operator.
         M = diag(f)
@@ -497,8 +310,8 @@ classdef chebfun
         % Deprecated function.
         varargin = quad(varargout);
         
-        % Set pointValues property:
-        f = setPointValues(f, j, k, vals)
+        % Reset pointValues property to the average of left and right limits.
+        f = resetPointValues(f);
         
         % Remove all-zero layers of higher-order impulses.
         f = tidyImpulses(f)
@@ -582,6 +395,12 @@ classdef chebfun
         
         % Which interval is a point in?
         out = whichInterval(dom, x, direction);
+
+        % Like built-in UNION but with a tolerance for checking equality.
+        C = tolUnion(A, B, tol);
+
+        % Like built-in UNIQUE but with a tolerance for checking equality.
+        C = tolUnique(A, tol);
         
     end
 
@@ -602,7 +421,6 @@ classdef chebfun
         % Parse inputs to PLOT. Extract 'lineWidth', etc.
         [lineStyle, pointStyle, jumpStyle, deltaStyle, out] = ...
             parsePlotStyle(varargin)
-
     end
 
 end

@@ -96,9 +96,11 @@ s = diag(S);
 % [TODO]: What should EPS be in the tolerance check below?
 vf = vscale(f); 
 vg = vscale(g);
-vscl = vf + vg; 
-% Remove singular values that fall below 2*eps*vscale: 
-idx = find( s > 2 * eps * vscl, 1, 'last');
+
+vscl = 2*max(vf, vg); 
+% Remove singular values that fall below eps*vscale: 
+idx = find( s > 10*eps * vscl, 1, 'last');
+
 if ( isempty(idx) )
     % Return 0 separableApprox
     h = 0*f;

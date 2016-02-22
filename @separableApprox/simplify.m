@@ -23,4 +23,8 @@ end
 f.cols = simplify( f.cols, tol, 'globaltol' ); 
 f.rows = simplify( f.rows, tol, 'globaltol' ); 
 
+% Ensure the left and right limits match the endpoints:
+f.cols = resetPointValues(f.cols);
+f.rows = resetPointValues(f.rows);
+
 end 

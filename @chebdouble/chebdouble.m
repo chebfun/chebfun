@@ -44,6 +44,7 @@ classdef chebdouble
                 obj.domain = dom;
             end
         end
+
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
