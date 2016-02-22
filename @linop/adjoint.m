@@ -1,4 +1,4 @@
-function [Lstar, adjcoeffs, bcOp] = adjoint(L, bcType)
+function [Lstar, op, bcOpL, bcOpR, bcOpM] = adjoint(L, bcType)
 %ADJOINT   Compute the adjoint of a LINOP.
 %   ADJOINT(L), where L is a LINOP, returns the adjoint LINOP of L under
 %   the assumption that L only has endpoint or periodic functional constraints.
@@ -26,22 +26,20 @@ pref = chebfunpref();
 if ( strcmpi(bcType, 'periodic') )
     pref.tech = @trigtech;
 end 
-[Lstar, adjcoeffs] = formalAdjoint(L, pref);
+[Lstar, op] = formalAdjoint(L, pref);
 
 %%
 % Create adjoint linop
 if ( strcmp(bcType, 'periodic') )
     % Periodic bcs
     Lstar.constraint = L.constraint;
-    B = 'periodic';
+    bcOpL = [];
+    bcOpR = [];
+    bcOpM = 'periodic';
 else
     % Adjoint boundary conditions
-    [constraint, B] = adjointBCs(L, bcType);
+    [constraint, bcOpL, bcOpR, bcOpM] = adjointBCs(L, bcType);
     Lstar.constraint = constraint;
-end
-
-if ( nargout == 3 )
-    bcOp = prettyPrint(B);
 end
 
 end
@@ -67,7 +65,7 @@ end
 
 end
 
-function [L, adjCoeffs] = formalAdjoint(L, pref)
+function [L, op] = formalAdjoint(L, pref)
 %FORMALADJOINT   Computes the formal adjoint of a LINOP.
 %   L = FORMALADJOINT(L, BCTYPE) returns the formal adjoint of a LINOP L.
 %
@@ -93,17 +91,29 @@ end
 L = 0;
 M = @(f) operatorBlock.mult(f, dom);
 D = @(k) operatorBlock.diff(dom, k);
+a = [];
 for k = 0:n
-    L = L + M(adjCoeffs{n+1-k}) * D(k);
+    varname = genvarname(['a', int2str(k)]);
+    eval([varname, '= adjCoeffs{n+1-k};']);
+    L = L + M(varname) * D(k);
 end
 L = linop(L);
 
+% set op
+op = 'a0*u';
+for k = 1:n
+  op = ['a',int2str(k),'*diff(u,',int2str(k),') + ',op];
+end
+eval(['op = @(x,u) ',vectorize(op),';']);
+
 end
 
-function [constraint, Bstar] = adjointBCs(L, bcType)
+
+
+
+
+function [constraint, bcOpL, bcOpR, bcOpM] = adjointBCs(L, bcType)
 %ADJOINTBCS   Computes the adjoint boundary conditions of a LINOP.
-%   [CONSTRAINT,B] = ADJOINTBCS(L, BCTYPE) returns the adjoint
-%   constraints..
 %
 % See also FORMALADJOINT.
 
@@ -141,7 +151,6 @@ M(n+1:end,n+1:end) = A22;
 funs = constraint.functional;
 nbcs = size(funs,1);
 nadjbcs = 2*n-nbcs;
-funs
 
 % vector of chebpolys and derivatives
 V = chebpoly(0:2*n-1,dom); F = funs*V;
@@ -153,19 +162,51 @@ end
 v = [vl;vr];
 
 % solve system to get B
-B = (v'\F')'
+B = (v'\F')';
+if ( rank(B) ~= nbcs )
+    error('CHEBFUN:LINOP:adjoint:boundaryconditions', ...
+    'Boundary condtions of L are not linearly independent.');
+end
+[~,ind] = max(abs(B),[],2);
+rmax = diag(B(1:end,ind));
+B = diag(1./rmax)*B;
+B( abs(B) < 10*eps ) = 0;
+
+% label each boundary condition as 
+% left (0), right (1) or mixed (2)
+bcTypes = 2*ones(nbcs,1);
+for ii = 1:nbcs
+  if ( max(abs(B(ii,1:n))) == 0 )
+    bcTypes(ii,:) = 1;
+  elseif ( max(abs(B(ii,n+1:end))) == 0 )
+    bcTypes(ii,:) = 0;
+  end
+end
 
 % need the null space of B which we get via QR
-[qB,rB] = qr(B');
-nulB = qB(:,nbcs+1:end);
+if ( sum(bcTypes == 2) )
+  [qB,~] = qr(B');
+  nulB = qB(:,nbcs+1:end);
+% if no mixed boundary conditions we ensure that the adjoint bcs 
+% are strictly left and right
+else
+  nlbcs = sum(bcTypes == 0);
+  [qBl,~] = qr(B(1:nlbcs,1:n)');
+  nrbcs = nbcs - nlbcs;
+  [qBr,~] = qr(B(nlbcs+1:end,n+1:2*n)');
+  nulB = zeros(2*n,nadjbcs);
+  nulB(1:n,1:n-nlbcs) = qBl(:,nlbcs+1:end);
+  nulB(n+1:2*n,n-nlbcs+1:nadjbcs) = qBr(:,nrbcs+1:end);
+end
 
 % compute Bstar
 Bstar = nulB'*M;
 [~,ind] = max(abs(Bstar),[],2);
 rmax = diag(Bstar(1:end,ind));
 Bstar = diag(1./rmax)*Bstar;
+Bstar( abs(Bstar) < 10*eps ) = 0;
 
-% attempt to label each boundary condition as 
+% label each boundary condition as 
 % left (0), right (1) or mixed (2)
 starTypes = 2*ones(nadjbcs,1);
 for ii = 1:nadjbcs
@@ -178,7 +219,7 @@ end
 
 % sort in ascending order
 [starTypes,ind] = sort(starTypes,'ascend');
-Bstar = Bstar(ind,:)
+Bstar = Bstar(ind,:);
 
 % create star functionals
 FL = functionalBlock.feval(dom(1), dom);
@@ -207,11 +248,15 @@ constraint.values = zeros(nadjbcs,1);
 
 % create function handles for left, right and mixed bcs
 inds = (1:nadjbcs)';
-indsL = inds( starTypes == 0 );
-indsR = inds( starTypes == 1 );
-indsM = inds( starTypes == 2 );
+indsL = inds( starTypes == 0 )';
+indsR = inds( starTypes == 1 )';
+indsM = inds( starTypes == 2 )';
+bcOpL = [];
+bcOpR = [];
+bcOpM = [];
 
 % left
+if ( ~isempty(indsL) )
 bcOpL = '@(u) [';
 for ii = indsL
   for jj = 1:n
@@ -223,15 +268,11 @@ for ii = indsL
   bcOpL = [bcOpL,'; '];
 end
 bcOpL = [bcOpL,']'];
-bcOpL = str2func(vectorize(bcOpL))
-
-x = chebfun('x',dom);
-g = sin(x);
-
-feval(bcOpL(g),dom(1))
-starFuns{indsL}*g
+bcOpL = str2func(vectorize(bcOpL));
+end
 
 % right
+if ( ~isempty(indsR) )
 bcOpR = '@(u) [';
 for ii = indsR
   for jj = 1:n
@@ -243,13 +284,12 @@ for ii = indsR
   bcOpR = [bcOpR,'; '];
 end
 bcOpR = [bcOpR,']'];
-bcOpR = str2func(vectorize(bcOpR))
-
-feval(bcOpR(g),dom(2))
-starFuns{indsR}*g
+bcOpR = str2func(vectorize(bcOpR));
+end
 
 % mixed
-bcOpM = '@(u) [';
+if ( ~isempty(indsM) )
+bcOpM = '@(x,u) [';
 for ii = indsM
   for jj = 1:n
     if ( Bstar(ii,jj) ~= 0 )
@@ -258,7 +298,6 @@ for ii = indsM
                ',',int2str(jj-1),')'];
     end
   end
-  bcOpM = [bcOpM,'; '];
   for jj = 1:n
     if ( Bstar(ii,n+jj) ~= 0 )
       bcOpM = [bcOpM,' + ',num2str(Bstar(ii,n+jj),'%1.15e'),...
@@ -269,9 +308,8 @@ for ii = indsM
   bcOpM = [bcOpM,'; '];
 end
 bcOpM = [bcOpM,']'];
-bcOpM = str2func(vectorize(bcOpM))
-
-
+bcOpM = str2func(vectorize(bcOpM));
+end
 
 end
 
@@ -279,6 +317,7 @@ end
 
 
 function A = compmat(x,coeffs)
+%COMPMAT - routine for computing complementarity matrix.
 
   n = length(coeffs)-1;
 
@@ -292,6 +331,11 @@ function A = compmat(x,coeffs)
         end
       end
     end
+  end
+
+  nrmA = norm(A);
+  if ( nrmA ~= 0 )
+    A = A/nrmA;
   end
 
 end

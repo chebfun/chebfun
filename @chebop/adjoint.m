@@ -33,11 +33,15 @@ if ( n == 0 )
     return
 end
 
-[Nstar, bc] = adjoint(L, getBCType(N));
+[Lstar, op, bcOpL, bcOpR, bcOpM] = adjoint(L, getBCType(N));
 
 %% 
 % Construct chebop of the adjoint with pretty print bcs
-
+Nstar = chebop(Lstar.domain);
+Nstar.op = op;
+Nstar.lbc = bcOpL;
+Nstar.rbc = bcOpR;
+Nstar.bc = bcOpM;
 
 end
 
