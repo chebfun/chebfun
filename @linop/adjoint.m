@@ -91,11 +91,10 @@ end
 L = 0;
 M = @(f) operatorBlock.mult(f, dom);
 D = @(k) operatorBlock.diff(dom, k);
-a = [];
 for k = 0:n
     varname = genvarname(['a', int2str(k)]);
     eval([varname, '= adjCoeffs{n+1-k};']);
-    L = L + M(varname) * D(k);
+    L = L + M(adjCoeffs{n+1-k}) * D(k);
 end
 L = linop(L);
 

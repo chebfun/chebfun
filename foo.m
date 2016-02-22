@@ -1,25 +1,39 @@
-rng(1);
-dom = [-pi,pi];
-x = chebfun('x',dom);
-a3 = 1+ sin(x).^2; a2 = 1 + x.^2; a1 = sin(x); a0 = exp(x);
-br2 = randn; br1 = randn; br0 = randn;
-bl12 = randn; bl11 = randn; bl10 = randn;
-bl22 = randn; bl21 = randn; bl20 = randn;
-N = chebop(@(x,u) a3.*diff(u,3) + a2.*diff(u,2) + a1.*diff(u) + a0.*u, dom);
-lbcOp = @(u) [ bl12*diff(u,2) + bl11*diff(u) + bl10*u;...
-               bl22*diff(u,2) + bl21*diff(u) + bl20*u ];
-rbcOp = @(u) br2*diff(u,2) + br1*diff(u) + br0*u;
-N.lbc = lbcOp; 
-N.rbc = rbcOp;
+%dom = [0,10];
+%a = 1;
+%b = 1;
+%alpha = 1;
+%beta = 0;
+%x = chebfun('x', dom);
 
-Nstar = adjoint(N)
+%G = chebop(@(x,u,w) .5*(a*u.^2 + b*w.^2), dom);
 
-f = chebpoly(5,dom);
-u = N\f; 
-v = Nstar\f;
-plot([f,u,v])
+%F = chebop(@(x,u,w) diff(u,2) + sin(u) - w, dom);
+%F.lbc = @(u,w) [u-alpha; diff(u)-beta]; 
 
-i1 = v'*(N*u);
-i2 = (Nstar*v)'*u;
+%u0 = alpha + beta*(x-1);
+%u0 = 0*x;
+%w0 = 0*x;
 
-abs(i1-i2)/abs(i1)
+%[u,w,Gval] = fmincon(G,F,u0,w0);
+
+
+
+dom = [-1,1];
+a = 1;
+b = 10;
+alpha = 1;
+beta = 1.3;
+x = chebfun('x', dom);
+
+G = chebop(@(x,u,w) .5*(a*u.^2 + b*w.^2), dom);
+
+F = chebop(@(x,u,w) .2*diff(u,3) + cos(u) - w, dom);
+F.lbc = @(u,w) [u-alpha;diff(u)]; 
+F.rbc = @(u,w) u-beta; 
+
+u0 = 0*x;
+w0 = 0*x;
+
+[u,w,Gval] = fmincon(G,F,u0,w0);
+
+
