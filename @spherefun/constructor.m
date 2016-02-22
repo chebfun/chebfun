@@ -224,11 +224,13 @@ Fm = 0.5*(B - C);
 [pole1,constValue1] = checkPole(Fp(1,:),tol);
 [pole2,constValue2] = checkPole(Fp(m,:),tol);
 
-if ~(constValue1 || constValue1)
-    warning('CHEBFUN:SPHEREFUN:constructor:constPoles',...
-        ['Results may be inaccurate as the function may not be constant '...
-         'at either the north or south poles.']);
-end
+% TODO: Figure out if we really need to warn the user about their function
+% not being constant along the poles.
+% if ~(constValue1 || constValue1)
+%     warning('CHEBFUN:SPHEREFUN:constructor:constPoles',...
+%         ['Results may be inaccurate as the function may not be constant '...
+%          'at either the north or south poles.']);
+% end
 
 colsPlus = []; rowsPlus = []; kplus = 0;  idxPlus = [];
 colsMinus = []; rowsMinus = []; kminus = 0; idxMinus = [];
