@@ -114,7 +114,7 @@ classdef spinpref < spinpreference
                     pref.dt = 5e-6;
                     pref.N = 256;
                 elseif ( strcmpi(pdechar, 'KS') == 1 )
-                    pref.dt = 1e-1;
+                    pref.dt = 5e-2;
                     pref.N = 256;
                 elseif ( strcmpi(pdechar, 'Niko') == 1 )
                     pref.dt = 1e-1;

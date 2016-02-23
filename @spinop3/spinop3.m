@@ -125,9 +125,8 @@ end
             u01 = chebfun3(u01, dom, 'trig');
             u02 = @(x,y,z) exp(-150*((x-G/2).^2 + 2*(y-G/2).^2 + (z-G/2).^2));
             u02 = chebfun3(u02, dom, 'trig');
-            u0 = chebmatrix(u01);
-            u0(2,1) = u02;
-            
+            u0 = [u01; u02];
+       
         % Schnakenberg equations:
         elseif ( strcmpi(pdechar, 'Schnak3') == 1 )
             L = @(u,v) [lap(u); 10*lap(v)];
@@ -139,8 +138,7 @@ end
             u01 = chebfun3(u01, dom, 'trig');
             u02 = @(x,y,z) exp(-10*((x-G/2).^2 + 2*(y-G/2).^2 + (z-G/2).^2));
             u02 = chebfun3(u02, dom, 'trig');
-            u0 = chebmatrix(u01);
-            u0(2,1) = u02;
+            u0 = [u01; u02];
             
         % Swift-Hohenberg equation:
         elseif ( strcmpi(pdechar, 'SH3') == 1 )

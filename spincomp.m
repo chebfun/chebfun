@@ -153,7 +153,7 @@ end
 left = 10^floor(log10(min(timesteps)));
 right = 10^ceil(log10(max(timesteps)));
 down = min(1e-12, 10^floor(log10(min(err(:)))));
-up = max(1, 10^ceil(log10(max(err(:)))));
+up = min(max(1, 10^ceil(log10(max(err(:))))), 1e2);
 set(gca, 'fontsize', 16), axis([left right down up])
 xlabel('Relative time-step'), ylabel(sprintf('Relative error at t = %.3f', TF))
 legend(labels, 'Location', 'NorthWest')

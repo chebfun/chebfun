@@ -98,19 +98,22 @@ classdef spinpref3 < spinpreference
             elseif ( nargin == 1 )
                 pdechar = varargin{1};
                 pref.dtmin = [];
-                pref.iterPlot = 1;
                 pref.M = 32;
                 if ( strcmpi(pdechar, 'GL3') == 1 )
                     pref.dt = 2e-1;
+                    pref.iterPlot = 1;
                     pref.N = 32;   
                 elseif ( strcmpi(pdechar, 'GS3') == 1 )
-                    pref.dt = 8;
+                    pref.dt = 6;
+                    pref.iterPlot = 2;
                     pref.N = 32;     
                 elseif ( strcmpi(pdechar, 'Schnak3') == 1 )
                     pref.dt = 1;
+                    pref.iterPlot = 1;
                     pref.N = 16;
                 elseif ( strcmpi(pdechar, 'SH3') == 1 )
                     pref.dt = 1;
+                    pref.iterPlot = 1;
                     pref.N = 32;
                 else
                     error('SPINPREF3:CONSTRUCTOR', 'Unrecognized PDE.')
