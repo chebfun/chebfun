@@ -10,15 +10,16 @@ function [Lstar, op, bcOpL, bcOpR, bcOpM] = adjoint(L, bcType)
 % Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Trivial case:
-if ( L.diffOrder == 0 )
-    Lstar = L;
-    return
-end
-
 %% 
-% Check to so if we can do compute an adjoint for this operator!
+% Check to so if we can compute an adjoint for this operator!
 parseInputs(L, bcType);
+
+%%
+% if L.blocks{1} is a chebfun convert to operator block
+if ( strcmp( class(L.blocks{1}), 'chebfun' ) )
+    b = L.blocks{1};
+    L.blocks{1} = operatorBlock.mult(b,b.domain);
+end
 
 %%
 % Formal adjoint:
@@ -27,6 +28,14 @@ if ( strcmpi(bcType, 'periodic') )
     pref.tech = @trigtech;
 end 
 [Lstar, op] = formalAdjoint(L, pref);
+
+% Trivial case:
+if ( L.diffOrder == 0 )
+    bcOpL = [];
+    bcOpR = [];
+    bcOpM = [];
+    return
+end
 
 %%
 % Create adjoint linop
