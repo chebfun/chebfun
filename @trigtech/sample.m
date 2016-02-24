@@ -8,10 +8,14 @@ function [points, values] = sample(f, n)
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-    if (nargin < 2)
+    if ( nargin < 2 )
         n = length(f);
     end
 
     points = trigtech.trigpts(n);
-    values = feval(f, points);
+    if ( n == length(f) )
+        values = f.values;
+    else
+        values = trigtech.coeffs2vals(trigtech.alias(f.coeffs, n));
+    end
 end
