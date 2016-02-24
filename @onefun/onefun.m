@@ -203,7 +203,7 @@ classdef onefun % (Abstract)
         out = roots(f, varargin)
 
         % Sample a ONEFUN on an "appropriate" grid.
-        [values, points] = sample(f, n)
+        varargout = sample(f, n)
 
         % Simplify the representation of a ONEFUN.
         f = simplify(f, pref, force)

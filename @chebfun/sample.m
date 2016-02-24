@@ -1,11 +1,13 @@
-function [values, points] = sample(f, varargin)
+function varargout = sample(f, varargin)
 %SAMPLE   Sample a CHEBFUN on an "appropriate" grid.
-%   If F has a single FUN, [VALUES, POINTS] = SAMPLE(F, N) returns a vector
-%   POINTS of N "appropriately-chosen" points and a vector VALUES of the values
-%   of F at those points.  What "appropriately-chosen" means depends on the
-%   type of representation on which F is ultimately based.
+%   If F has a single FUN, VALUES = SAMPLE(F, N) returns a vector VALUES of the
+%   values of F at "appropriately-chosen" points.  What "appropriately-chosen"
+%   means depends on the type of representation on which F is ultimately based.
 %
-%   [VALUES, POINTS] = SAMPLE(F) uses N = LENGTH(F).
+%   [VALUES, POINTS] = SAMPLE(F, N) returns also the vector POINTS at which the
+%   values were computed.
+%
+%   [...] = SAMPLE(F) uses N = LENGTH(F).
 %
 %   If F has multiple FUNs, this function throws an error.
 
@@ -32,5 +34,5 @@ function [values, points] = sample(f, varargin)
               'SAMPLE is not supported for CHEBFUN objects with several FUNs.');
     end
 
-    [values, points] = sample(f.funs{1}, varargin{:});
+    [varargout{1:nargout}] = sample(f.funs{1}, varargin{:});
 end
