@@ -10,7 +10,7 @@ end
 f = chebfun(@(x) [sin(x) cos(x) exp(x)], [-1 0 1], pref);
 Q = orth(f);
 pass(1) = norm(Q'*Q - eye(3), 'fro') < 10*vscale(Q)*eps;
-pass(2) = normest(Q*(Q\f) - f) < 10*vscale(f)*eps;
+pass(2) = normest(Q*(Q\f) - f) < 100*vscale(f)*eps;
 
 f = chebfun(@(x) [sin(x) cos(x) exp(1i*x)], [-1 0 1], pref);
 Q = orth(f);
