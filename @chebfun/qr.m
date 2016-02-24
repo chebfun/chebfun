@@ -26,7 +26,11 @@ numCols = numColumns(A);
 if ( numCols == 1 )
     % Trivial case: If A has only one column we simply scale it.
     R = sqrt(innerProduct(A, A));
-    Q = A./R;
+    if ( R ~= 0 )
+       Q = A./R;
+    else
+       Q = 1./sqrt(diff(A.domain)) + 0*A;
+    end
     return
 end
     
