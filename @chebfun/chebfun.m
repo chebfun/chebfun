@@ -309,6 +309,9 @@ classdef chebfun
         
         % Deprecated function.
         varargin = quad(varargout);
+
+        % Sample a CHEBFUN on an "appropriate" grid.
+        varargout = sample(f, n);
         
         % Reset pointValues property to the average of left and right limits.
         f = resetPointValues(f);
