@@ -17,21 +17,21 @@ for n = 1:2
     f = testclass.make(@(x) sin(x - 0.1));
 
     % Test on a grid equal to length(f).
-    [p, v] = sample(f);
+    [v, p] = sample(f);
     p_ex = testclass.chebpts(length(f));
     v_ex = feval(f, p_ex);
     pass(n, 1) = (norm(p - p_ex) < 100*eps) && (norm(v - v_ex) < 100*eps);
 
     % Test on a grid shorter than length(f).
     m = round(length(f)/2);
-    [p, v] = sample(f, m);
+    [v, p] = sample(f, m);
     p_ex = testclass.chebpts(m);
     v_ex = feval(f, p_ex);
     pass(n, 2) = (norm(p - p_ex) < 100*eps) && (norm(v - v_ex) < 100*eps);
 
     % Test on a grid longer than length(f).
     m = round(2*length(f));
-    [p, v] = sample(f, m);
+    [v, p] = sample(f, m);
     p_ex = testclass.chebpts(m);
     v_ex = feval(f, p_ex);
     pass(n, 3) = (norm(p - p_ex) < 100*eps) && (norm(v - v_ex) < 100*eps);

@@ -311,7 +311,7 @@ classdef chebfun
         varargin = quad(varargout);
 
         % Sample a CHEBFUN on an "appropriate" grid.
-        [points, values] = sample(f, n);
+        [values, points] = sample(f, n);
         
         % Set pointValues property:
         f = setPointValues(f, j, k, vals)
