@@ -2,10 +2,8 @@ function Nstar = adjoint(N)
 %ADJOINT   Compute the adjoint of a linear CHEBOP.
 %   ADJOINT(N), where N is a CHEBOP, returns the adjoint CHEBOP of N.
 %
-%   [Nstar, adjcoeffs] = ADJOINT(N) also returns a CHEBMATRIX ADJCOEFFS which
-%   stores the (variables) coefficients of the adjoint. The indexation is as
-%   follows:
-%      Nstar = adjcoeffs{1}*u^(n) + adjcoeffs{2}*u^(n-1) + ... + adjcoeffs{n+1}*u
+%   NSTAR = ADJOINT(N) also returns the adjoint of a scalar CHEBOP that
+%   has either periodic or endpoint constraints.
 %
 % See also LINOP/ADJOINT.
 
@@ -33,6 +31,7 @@ if ( n == 0 )
     return
 end
 
+% call linop adjoint
 [Lstar, op, bcOpL, bcOpR, bcOpM] = adjoint(L, getBCType(N));
 
 %% 

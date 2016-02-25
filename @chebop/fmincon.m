@@ -59,7 +59,7 @@ s = -simplify(H(dg) + K*dg);
 w = simplify(w + s);
   
 dgold = dg; 
-res = [res,norm(dg,inf)/abs(gval)];
+res = [res,norm(dg,inf)/norm(w,inf)];
 
 % create local chebop
 N.op = @(x,u) fop(x,u,w);
@@ -115,7 +115,7 @@ subplot(3,1,3), plot(s), pause(.1)
 disp(sprintf(' %d %e %e %e',kk,gval,norm(dg,inf),norm(s,inf)))
 
     % update res
-    res = [res,norm(dg,inf)/abs(gval)];
+    res = [res,norm(dg,inf)/norm(w,inf)];
 
     % exit if converged
     if ( res(end) < tol ), break, end
@@ -327,7 +327,8 @@ N = chebop(dom);
     u = N\0;
 
 gval = sum(g(u,w));
-scl = .10;
+scl_init = .1;
+scl_max = .5;
 
 % use adjoint method to compute gradient
 disp('gradient descent')
@@ -340,11 +341,14 @@ for kk = 1:itmax
     % compute gradient
     dg = gradient(g,f,u,w);
 
-    % adjust scale
-    if ( mod(kk,15) == 0 ), scl = min(.5,2*scl); end
-
     % update w and u
-    w = w - scl*dg;
+    if ( kk == 1 )
+      w = w - scl_init*dg;
+    elseif ( res(end) > scl_init )
+      w = w - scl_init*dg;
+    else
+      w = w - scl_max*dg;
+    end
 
     % create local chebop
     N.op = @(x,u) fop(x,u,w);
@@ -359,7 +363,7 @@ for kk = 1:itmax
     gval = sum(g(u,w));
 
     % update res
-    res = [res,norm(dg,inf)/abs(gval)];
+    res = [res,norm(dg,inf)/norm(w,inf)];
 disp(sprintf(' %d %e %e %e',kk,gval,norm(dg,inf),res(end)))
 
 subplot(2,1,1),plot([u,w,dg])

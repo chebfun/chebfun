@@ -2,13 +2,11 @@ function bcType = getBCType(N)
 
 if ( isempty(N.bc) )
     if ( isempty(N.lbc) && isempty(N.rbc) )
-        bcType = 'nobc';
-    elseif ( isempty(N.rbc) )
-%         bcType = 'ivp'; % For now, just treat as BVP case.
         bcType = 'bvp';
+    elseif ( isempty(N.rbc) )
+        bcType = 'ivp';
     elseif ( isempty(N.lbc) )
-%         bcType = 'fvp'; % For now, just treat as BVP case.
-        bcType = 'bvp'; 
+        bcType = 'fvp'; 
     else
         bcType = 'bvp';
     end
