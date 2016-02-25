@@ -97,6 +97,7 @@ classdef spinpref2 < spinpreference
             elseif ( nargin == 1 )
                 pdechar = varargin{1};
                 pref.dtmin = [];
+                pref.errTol = 1e-4;
                 pref.M = 32;
                 if ( strcmpi(pdechar, 'GL2') == 1 )
                     pref.dt = 2e-1;

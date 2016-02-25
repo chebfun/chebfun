@@ -93,6 +93,7 @@ classdef spinpref < spinpreference
             elseif ( nargin == 1 )
                 pdechar = varargin{1};
                 pref.dtmin = [];
+                pref.errTol = 1e-6;
                 pref.iterPlot = 20;
                 pref.M = 64;
                 if ( strcmpi(pdechar, 'AC') == 1 )
@@ -111,7 +112,7 @@ classdef spinpref < spinpreference
                     pref.dt = 5;
                     pref.N = 256;
                 elseif ( strcmpi(pdechar, 'KdV') == 1 )
-                    pref.dt = 5e-6;
+                    pref.dt = 3e-6;
                     pref.N = 256;
                 elseif ( strcmpi(pdechar, 'KS') == 1 )
                     pref.dt = 5e-2;

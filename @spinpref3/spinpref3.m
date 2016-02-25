@@ -98,6 +98,7 @@ classdef spinpref3 < spinpreference
             elseif ( nargin == 1 )
                 pdechar = varargin{1};
                 pref.dtmin = [];
+                pref.errTol = 1e-2;
                 pref.M = 32;
                 if ( strcmpi(pdechar, 'GL3') == 1 )
                     pref.dt = 2e-1;
