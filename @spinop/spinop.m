@@ -199,15 +199,7 @@ end
             A = 2; B = 1;
             u0 = @(x) (2*B^2./(2 - sqrt(2)*sqrt(2-B^2)*cos(A*B*x)) - 1)*A;
             u0 = chebfun(u0, dom, 'trig');
-            
-        % Ohta-Kawasaki equation:
-        elseif ( strcmpi(pdechar, 'OK') == 1 )
-            L = @(u) - diff(u, 2) - 1e-2*diff(u, 4)  - 4*(u - diff(u, 7));
-            N = @(u) diff(u.^3, 2);
-            dom = [0 2*pi];
-            tspan = [0 4];
-            u0 = chebfun('cos(x)/2', dom, 'trig');
-            
+             
         else
             error('SPINOP:parseInputs', 'Unrecognized PDE.')
         end

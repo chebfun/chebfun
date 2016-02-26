@@ -7,7 +7,7 @@ function [uout, tout] = spin(varargin)
 %   intervals and the initial condition are chosen to produce beautiful movies. 
 %   Strings available include 'AC' for Allen-Cahn equation, 'KS' for 
 %   Kuramoto-Sivashinsky equation and 'KdV' for Korteweg-de Vries equation. 
-%   Many other PDEs are available, see Remark 1 and Examples 1-10. The output 
+%   Many other PDEs are available, see Remark 1 and Examples 1-9. The output 
 %   UOUT is a CHEBFUN corresponding to the solution at the final time 
 %   (a CHEBMATRIX for systems of equations, each row representing one variable). 
 %
@@ -18,13 +18,13 @@ function [uout, tout] = spin(varargin)
 %   case the output is a CHEBFUN at TF).
 %
 %   UOUT = SPIN(PDECHAR, TSPAN, U0) solves the PDE with initial condition a 
-%   CHEBFUN U0 (one variable) or a CHEBMATRIX U0 (systems). See Example 11.
+%   CHEBFUN U0 (one variable) or a CHEBMATRIX U0 (systems). See Example 10.
 %
 %   UOUT = SPIN(S) solves the PDE specified by the SPINOP S and plots a movie of 
-%   the solution as it computes it. See HELP/SPINOP and Example 12.
+%   the solution as it computes it. See HELP/SPINOP and Example 11.
 %
 %   UOUT = SPIN(..., PREF) allows one to use the preferences specified by the 
-%   SPINPREF object PREF. See HELP/SPINPREF and Example 13.
+%   SPINPREF object PREF. See HELP/SPINPREF and Example 12.
 % 
 %   [UOUT, TOUT] = SPIN(...) also returns the times chunks TOUT at which UOUT
 %   was computed.
@@ -39,8 +39,7 @@ function [uout, tout] = spin(varargin)
 %    - 'KdV' for Korteweg-de Vries equation,
 %    - 'KS' for Kuramoto-Sivashinsky equation, 
 %    - 'Niko' for Nikolaevskiy equation, 
-%    - 'NLS' for the focusing nonlinear Schroedinger equation,
-%    - 'OK' for the Ohta-Kawasaki equation.
+%    - 'NLS' for the focusing nonlinear Schroedinger equation.
 %
 % Example 1: Allen-Cahn equation (metastable solutions)
 %
@@ -160,19 +159,7 @@ function [uout, tout] = spin(varargin)
 %       u0(x) = 2*B^2/(2 - sqrt(2)*sqrt(2-B^2)*cos(A*B*x)) - 1)*A,
 %           with A=2 and B=1.
 %
-% Example 10: Ohta-Kawasaki equation (pattern formation)
-%
-%       u = spin('OK');
-%
-%    solves the Ohta-Kawasaki equation 
-%
-%       u_t = -u_xx - 1e-2*u_xxxx - 4(u - sum(u)) + (u^3)_xx,
-%
-%    on [0 2*pi] from t=0 to t=4, with initial condition 
-%
-%       u0(x) = cos(x)/2.
-%
-% Example 11: KdV with different time interval and intial condition
+% Example 10: KdV with different time interval and intial condition
 %
 %       tspan = [0 1e-2];
 %       u0 = chebfun(@(x) 1000*sin(x), [-pi pi]);
@@ -183,7 +170,7 @@ function [uout, tout] = spin(varargin)
 %
 %       u0(x) = 1000*sin(x).
 %
-% Example 12: PDE specified by a SPINOP
+% Example 11: PDE specified by a SPINOP
 %
 %       dom = [0 32*pi]; tspan = [0 300];
 %       S = spinop(dom, tspan);
@@ -194,7 +181,7 @@ function [uout, tout] = spin(varargin)
 %
 %   is equivalent to u = spin('KS') and u = spin(spinop('ks')).
 %
-% Example 13: Using preferences
+% Example 12: Using preferences
 %
 %       pref = spinpref('dt', 1e-5, 'N', 256, 'plot', 'waterfall');
 %       u = spin('KdV', pref);

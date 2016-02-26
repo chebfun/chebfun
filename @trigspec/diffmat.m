@@ -27,11 +27,4 @@ elseif ( m == 0 )
     D = speye(N);
 end
 
-% Temporary, m=7 means sum(u):
-if ( m == 7 ) 
-    Z = zeros(N, 1);
-    Z(floor(N/2) + 1) = 1;
-    D = spdiags(Z, 0, N, N);
-end
-
 end
