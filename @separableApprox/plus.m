@@ -98,7 +98,7 @@ vf = vscale(f);
 vg = vscale(g);
 vscl = max(vf, vg); 
 % Remove singular values that fall below eps*vscale: 
-idx = find( s > eps * vscl, 1, 'last');
+idx = find( s > 10*eps * vscl, 1, 'last');
 if ( isempty(idx) )
     % Return 0 separableApprox
     h = 0*f;

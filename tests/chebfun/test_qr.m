@@ -73,4 +73,20 @@ pass(13) = isa(f.funs{1}.onefun, 'chebtech1') && ...
 [Q2, R2] = qr(cheb2quasi(f));
 pass(14) = normest(Q - Q2) + norm(R - R2) < 1e-13*(tol/eps);
 
+% Check QR of a CHEBFUN based on CHEBTECH1.
+p = pref;
+p.tech = @chebtech1;
+f = chebfun(@(x) [sin(x) cos(x) exp(x)], [-1 0 1], p);
+[Q, R] = qr(f);
+pass(13) = isa(f.funs{1}.onefun, 'chebtech1') && ...
+    norm(f - Q*R) < 10*vscale(f)*eps && ...
+    norm(Q'*Q - eye(3), 'fro') < 10*vscale(Q)*eps;
+[Q2, R2] = qr(cheb2quasi(f));
+pass(14) = normest(Q - Q2) + norm(R - R2) < 1e-13*(tol/eps);
+
+%%
+% Test QR of a zero chebfun
+[Q, R] = qr(chebfun(0, [0, 3]));
+pass(15) = (R == 0) && abs(Q'*Q - 1) < 1e-13*(tol/eps);
+
 end
