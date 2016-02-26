@@ -53,7 +53,7 @@ if ( isa(item, 'operatorBlock') )
 elseif ( isa(item, 'functionalBlock') )
     % Convert a row block.
     
-    [M, S] = convertFunctional();
+    [M, S] = convertFunctional(disc, item);
     
 elseif ( isa(item, 'chebfun') )
     % Block is a CHEBFUN. Convert to value space.
