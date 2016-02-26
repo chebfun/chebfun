@@ -43,4 +43,15 @@ u = N\rhs;
 pass(7) = norm(N(u) - rhs, inf) < tol;
 pass(8) = isequal(get(u.funs{1}, 'tech'), @trigtech);
 
+%% Periodic (with coeffs):
+
+N = chebop(@(u) diff(u,2) + sum(u));
+N.bc = 'periodic';
+rhs = chebfun(@(x) cos(pi*x));
+pref = cheboppref();
+pref.discretization = 'coeffs';
+u = solvebvp(N, rhs, pref);
+pass(9) = norm(N(u) - rhs, inf) < tol;
+pass(10) = isequal(get(u.funs{1}, 'tech'), @trigtech);
+
 end
