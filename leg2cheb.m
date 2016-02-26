@@ -65,7 +65,7 @@ K = ceil(log(N/nM0)/log(1/aM));                 % Number of block partitions.
 if ( M == 0 || N < 513 || K == 0 )
 
     %%%%%%%%%%%%%%%%%%%% Use direct approach if N is small %%%%%%%%%%%%%%%%%%%%%
-    L = legchebvandermonde(N);
+    L = legvandermonde(N, cos(pi*(0:N)'/N));
     if ( ~trans )
         c_cheb = idct1(L*c_leg);
     else
@@ -109,14 +109,9 @@ function c_cheb = leg2cheb_fast()
 %%%%%%%%%%%%%%%%%%%%%% Recurrence / boundary region %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 v_rec = zeros(N+1, n);
 for k = 1:K % Loop over the partitions:
-    j_bdy = [jK2(k+1,1):jK2(k,1)-1, jK2(k,2)+1:jK2(k+1,2)];
-    x_bdy = cos(t(j_bdy));                      % Boundary indicies.
-    P = zeros(length(x_bdy), nM(k)+1); P(:,1) = 1; P(:,2) = x_bdy; % Initialise.
-    for kk = 1:(nM(k)-1)                        % Recurrence:
-        P(:,kk+2) = (2-1/(kk+1))*P(:,kk+1).*x_bdy - (1-1/(kk+1))*P(:,kk);
-    end
-    tmp = P*c_leg(1:nM(k)+1,:);
-    v_rec(j_bdy,:) = v_rec(j_bdy,:) + tmp;      % Global correction LHS.
+    j_bdy = [jK2(k+1,1):jK2(k,1)-1, jK2(k,2)+1:jK2(k+1,2)]; % Boundary indicies.
+    tmp = legvandermonde_bdy(nM(k), t(j_bdy), c_leg(1:nM(k)+1,:));
+    v_rec(j_bdy,:) = v_rec(j_bdy,:) + tmp;        % Global correction LHS.
 end
 %%%%%%%%%%%%%%%%%%%% Asymptotics / interior region %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 C = constantOutTheFront(N);
@@ -157,14 +152,7 @@ f = idct1(c_leg);
 c_rec = zeros(N+1, n);
 for k = 1:K    % Loop over the block partitions:
     j_bdy = [jK2(k+1,1):jK2(k,1)-1, jK2(k,2)+1:jK2(k+1,2)];% Boundary indicies.
-    x_bdy = cos(t(j_bdy));                         % Boundary x values.
-    f_bdy = f(j_bdy,:);                            % f at boundary.
-    P = zeros(size(f_bdy,1), nM(k)-1); 
-    P(:,1) = 1; P(:,2) = x_bdy; % Initialise.
-    for kk = 1:(nM(k)-1)        % Recurrence:
-        P(:,kk+2) = (2-1/(kk+1))*(P(:,kk+1).*x_bdy) - (1-1/(kk+1))*P(:,kk); 
-    end
-    ck = P'*f_bdy;
+    ck = legvandermonde_bdy_trans(nM(k)+1, t(j_bdy), f(j_bdy,:));
     idxk = 1:(nM(k)+1);
     c_rec(idxk,:) = c_rec(idxk,:) + ck;            % Global correction LHS.
 end
@@ -201,16 +189,54 @@ end
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%% DIRECT METHOD %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function L = legchebvandermonde(N)
-x = cos(pi*(0:N)'/N);                       % Chebyshev grid (reversed order).
-% Make the Legendre-Chebyshev Vandemonde matrix:
+function L = legvandermonde(N, x)
+% Legendre-Chebyshev Vandemonde matrix:
 Pm2 = 1; Pm1 = x;                           % Initialise.
-L = zeros(N+1, N+1);                        % Vandermonde matrix. 
+L = zeros(length(x), N+1);                  % Vandermonde matrix. 
 L(:,1:2) = [1+0*x, x];                      % P_0 and P_1.     
 for n = 1:N-1                               % Recurrence relation:
     P = (2-1/(n+1))*Pm1.*x - (1-1/(n+1))*Pm2;  
     Pm2 = Pm1; Pm1 = P; 
     L(:,2+n) = P;
+end
+end
+
+function v = legvandermonde_bdy(N, t, c)
+% Matrix-free implementation of v = L*c where L(:,k+1) = P_k(cos(t)).
+x = cos(t); x0 = sign(x);
+% dx = x0 - x;
+idx = t > pi/2; dx = 0*t; 
+dx(idx) = 2*cos(t(idx)/2).^2; dx(~idx) = -2*sin(t(~idx)/2).^2;
+rn = sign(x0); pn = 1; dn = 0; 
+if ( size(c, 2) == 1 )
+    v(1,:) = c(1,:);                        % Scalar case.
+    myTimes = @(a,b) a.*b;
+else
+    v = bsxfun(@times, c(1,:), 1+0*x);      % Array case.
+    myTimes = @(a,b) bsxfun(@times, a, b);  
+end
+for n = 0:N-1
+    dn = ( (2-1/(n+1))*dx.*pn + (1-1/(n+1) )*dn) ./ rn;
+    pn = (pn + dn).*rn;
+%     v = v + pn.*c(n+2,:);                 % Scalar case.
+%     v = v + bsxfun(@times, c(n+2,:), pn); % Array case.
+    v = v + myTimes(c(n+2,:), pn);
+end
+end
+
+function v = legvandermonde_bdy_trans(N, t, c)
+% Matrix-free implementation of v = L'*c where L(:,k+1) = P_k(cos(t)).
+x = cos(t);
+x0 = sign(x);
+% dx = x - x0;
+idx = t > pi/2; dx = 0*t; 
+dx(idx) = 2*cos(t(idx)/2).^2; dx(~idx) = -2*sin(t(~idx)/2).^2;
+rn = sign(x0); pn = 1; dn = 0*x;
+v = zeros(N, size(c,2)); v(1,:) = sum(c, 1);
+for n = 0:N-2
+    dn = ( (2-1/(n+1))*dx.*pn + (1-1/(n+1))*dn) .* rn;
+    pn = (pn + dn).*rn;
+    v(n+2,:) = pn.'*c;
 end
 end
 
