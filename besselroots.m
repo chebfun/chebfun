@@ -1,9 +1,23 @@
-function j = besselpts(v, n) 
-%BESSELPTS    Roots of the function bessel(v, x).
-%   J = BESSELPTS(V, N) returns the first N roots the Bessel function J_V(X)
-%   with parameter -1 <= V <= 5.
+function j = besselroots(v, n) 
+%BESSELROOTS    Roots of the function J_v(x) = besselj(v, x).
+%   BESSELROOTS(V, N) returns the first N roots the Bessel function J_V(X).
+%   Both V and N must be scalars, and N must be non-negative.
+%
+%   V = 0 --> Full double precision for N <= 20 (Wolfram Alpha), and very
+%     accurate approximations for N > 20 (McMahon's expansion);
+%   -1 <= V <= 5 : V ~= 0 -> 12 decimal figures the 6 first zeros to at least
+%     (Piessens's Chebyshev series approximations), and very accurate
+%     approximations for the others (McMahon's expansion);
+%   V > 5 --> moderate approximations for the 6 first zeros and good
+%     approximations for the others (McMahon's expansion).
+
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % L. L. Peixoto, 2015
+
+% TODO: Improve accuracy to full machine precision for all roots?
+%       Store to 16 digits for integer (and half-integer) v in [-1,5]?
 
 % Trivial case:
 if ( n == 0 )
@@ -12,7 +26,7 @@ if ( n == 0 )
 end
 
 % Check inputs:
-if ( (round(n) - n ~= 0) || n < 0 || ~isscalar(n) )
+if ( ~isscalar(n) || (round(n) - n ~= 0) || n < 0 )
     error('CHEBFUN:besselroots:inputN', 'Input N must be a positive integer');
 % elseif ( v < -1 || v > 5 )
 %     error('CHEBFUN:besselroots:inputV', 'Input V must satisfy -1 <= V <= 5.');
@@ -60,6 +74,7 @@ if ( v == 0 )
         55.765510755019979
         58.906983926080942
         62.048469190227170];
+
 elseif ( v >= -1 && v <= 5 )
     % Piessens's Chebyshev series approximations (1984). Calculates the 6 first
     % zeros to at least 12 decimal figures in region -1 <= V <= 5:
