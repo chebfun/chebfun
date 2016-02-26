@@ -151,14 +151,13 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
                 % Swap arguments.
                 C = mtimes(B, A);
  
-                % TODO: We would like to do this, but it breaks nonlinear BCs.
-%             elseif ( isa(A, 'functionalBlock') )
-%                 C = mtimes(promote(A), B);
-%                 return
-%                
-%             elseif ( isa(B, 'functionalBlock') )
-%                 C = mtimes(A, promote(B));
-%                 return
+            elseif ( isa(A, 'functionalBlock') )
+                C = mtimes(promote(A), B);
+                return
+               
+            elseif ( isa(B, 'functionalBlock') )
+                C = mtimes(A, promote(B));
+                return
                 
             else
                 
@@ -391,12 +390,19 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
         %   M = OPERATORBLOCK.MULT(U, DOM) allows passing a domain on which the
         %   multiplication operator is to be constructed (useful for the
         %   ADCHEBFUN class)
+        %
+        %   M = OPERATORBLOCK.MULT(U) were U is numeric simply returns diag(U).
+        
+            if ( isnumeric(u) )
+                M = diag(u);
+                return
+            end
 
             % Check whether domain information was passed
             if ( nargin < 2 )
                 dom = u.domain;
             end
-
+            
             % Create the OPERATORBLOCK with information now available.
             M = operatorBlock(dom);
             M.stack = @(z) mult(z, u);

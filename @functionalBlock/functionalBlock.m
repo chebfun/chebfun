@@ -136,7 +136,6 @@ classdef functionalBlock < linBlock
                 end
             end
             
-            % TODO: is this right?
             B.iszero = A.iszero;
             B.diffOrder = 0;
             B.isNotDiffOrInt = true;
