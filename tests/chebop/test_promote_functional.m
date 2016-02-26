@@ -34,4 +34,13 @@ pass(5) = size(matrix(linearize(N), 3), 1) == 8;
 u = N\1;
 pass(6) = norm(N(u) - 1, inf) < tol;
 
+%% Periodic (with values):
+
+N = chebop(@(u) diff(u,2) + sum(u));
+N.bc = 'periodic';
+rhs = chebfun(@(x) cos(pi*x));
+u = N\rhs;
+pass(7) = norm(N(u) - rhs, inf) < tol;
+pass(8) = isequal(get(u.funs{1}, 'tech'), @trigtech);
+
 end
