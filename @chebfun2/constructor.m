@@ -222,7 +222,9 @@ while ( ~isHappy && ~failure )
 end
 
 % Simplifying rows and columns after they are happy.
-g = simplify( g, pref.eps );
+if ( vscale > 0 )
+    g = simplify( g, tol/vscale );
+end
 
 % Fix the rank, if in nonadaptive mode.
 g = fixTheRank( g , fixedRank );
