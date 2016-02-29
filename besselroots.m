@@ -5,7 +5,7 @@ function j = besselroots(v, n)
 %
 %   V = 0 --> Full double precision for N <= 20 (Wolfram Alpha), and very
 %     accurate approximations for N > 20 (McMahon's expansion);
-%   -1 <= V <= 5 : V ~= 0 -> 12 decimal figures the 6 first zeros to at least
+%   -1 <= V <= 5 : V ~= 0 -> 12 decimal figures the 6 first zeros
 %     (Piessens's Chebyshev series approximations), and very accurate
 %     approximations for the others (McMahon's expansion);
 %   V > 5 --> moderate approximations for the 6 first zeros and good
