@@ -97,11 +97,11 @@ for hCounter = 1:hMax
     % Compute information for Taylor testing.
 
     % Expect this to be O(h)
-    nDiff1(hCounter, :) = cellfun(@(u, v) norm(u - v), fuPert, fu);
+    nDiff1(hCounter, :) = cellfun(@(u, v) norm(u - v, inf), fuPert, fu);
     
     % Use derivative information as well. Expect this to be O(h^2)   
     nDiff2(hCounter, :) = ...
-        cellfun(@(u, v) norm(u - v - v.jacobian*pert), fuPert, fu);
+        cellfun(@(u, v) norm(u - v - v.jacobian*pert, inf), fuPert, fu);
     
 end
 

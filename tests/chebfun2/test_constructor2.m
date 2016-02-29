@@ -51,4 +51,13 @@ f = chebfun2(1,'coeffs');
 pass(12) = ( norm( f - 1 ) < tol );
 f = chebfun2('x'); z = .5 + sqrt(3)/3*1i;
 pass(13) = ( norm( f(real(z),imag(z)) - z ) < tol ) ; 
+
+% Test passing an 'eps' value.  (Just make sure it doesn't crash.)
+try
+    chebfun2(@(x, y) sin(x.*y), 'eps', 1e-6);
+    pass(14) = true;
+catch ME
+    pass(14) = false;
+end
+
 end
