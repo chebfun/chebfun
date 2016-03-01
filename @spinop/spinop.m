@@ -121,9 +121,9 @@ end
             L = @(u) 5e-3*diff(u, 2);
             N = @(u) u - u.^3;
             dom = [0 2*pi];
-            tspan = [0 300];
-            u0 = @(x) tanh(2*sin(x)) + 3*exp(-27.*(x-4.2).^2) ...
-                - 3*exp(-23.5.*(x-pi/2).^2) + 3*exp(-38.*(x-5.4).^2);
+            tspan = [0 500];
+            u0 = @(x) 1/3*tanh(2*sin(x)) - exp(-23.5*(x-pi/2).^2) ...
+                + exp(-27*(x-4.2).^2) + exp(-38*(x-5.4).^2);
             u0 = chebfun(u0, dom, 'trig');
             
         % Viscous Burgers equation:
@@ -150,8 +150,8 @@ end
             L = @(u) -1e-2*(diff(u, 2) + 1e-3*diff(u, 4));
             N = @(u) 1e-2*diff(u.^3, 2);
             dom = [-1 1];
-            tspan = [0 70];
-            u0 = chebfun('(sin(4*pi*x)).^5 - sin(pi*x)', dom, 'trig');
+            tspan = [0 100];
+            u0 = chebfun('1/5*(sin(4*pi*x)).^5 - 4/5*sin(pi*x)', dom, 'trig');
             
         % Gray-Scott equations:
         elseif ( strcmpi(pdechar, 'GS') == 1 )

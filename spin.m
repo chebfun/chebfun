@@ -49,11 +49,11 @@ function [uout, tout] = spin(varargin)
 %
 %       u_t = 5e-3*u_xx - u^3 + u,
 %
-%    on [0 2*pi] from t=0 to t=300, with initial condition 
+%    on [0 2*pi] from t=0 to t=500, with initial condition 
 %
-%       u0(x) = tanh(2*sin(x)) + 3*exp(-27*(x-4.2)^2) 
-%               - 3*exp(-23.5*(x-pi/2)^2) + 3*exp(-38*(x-5.4)^2).
-%
+%       u0(x) = 1/3*tanh(2*sin(x)) - exp(-23.5*(x-pi/2)^2) + exp(-27*(x-4.2)^2)
+%               + exp(-38*(x-5.4)^2).
+%                
 % Example 2: Viscous Burgers equation (shock formation and dissipation)
 %
 %       u = spin('Burg');
@@ -90,9 +90,9 @@ function [uout, tout] = spin(varargin)
 %
 %       u_t = 1e-2*(-u_xx - 1e-3*u_xxxx + (u^3)_xx),
 %   
-%    on [-1 1] from t=0 to t=70, with initial condition 
+%    on [-1 1] from t=0 to t=100, with initial condition 
 %
-%       u0(x) = (sin(4*pi*x))^5-sin(pi*x).
+%       u0(x) = 1/5*(sin(4*pi*x))^5 - 4/5*sin(pi*x).
 %
 % Example 5: Gray-Scott equations (pulse splitting)
 %
