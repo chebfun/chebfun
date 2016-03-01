@@ -3,12 +3,14 @@ function j = besselroots(v, n)
 %   BESSELROOTS(V, N) returns the first N roots the Bessel function J_V(X).
 %   Both V and N must be scalars, and N must be non-negative.
 %
+%   The accuracy of the returned roots can be described roughly as follows:
+%
 %   V = 0 --> Full double precision for N <= 20 (Wolfram Alpha), and very
 %     accurate approximations for N > 20 (McMahon's expansion);
-%   -1 <= V <= 5 : V ~= 0 -> 12 decimal figures the 6 first zeros
+%   -1 <= V <= 5 : V ~= 0 --> 12 decimal figures for the 6 first zeros
 %     (Piessens's Chebyshev series approximations), and very accurate
 %     approximations for the others (McMahon's expansion);
-%   V > 5 --> moderate approximations for the 6 first zeros and good
+%   V > 5 --> moderately accurate for the 6 first zeros and good
 %     approximations for the others (McMahon's expansion).
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
@@ -28,8 +30,6 @@ end
 % Check inputs:
 if ( ~isscalar(n) || (round(n) - n ~= 0) || n < 0 )
     error('CHEBFUN:besselroots:inputN', 'Input N must be a positive integer');
-% elseif ( v < -1 || v > 5 )
-%     error('CHEBFUN:besselroots:inputV', 'Input V must satisfy -1 <= V <= 5.');
 end
 
 % McMahon's expansion. This expansion gives very accurate approximation 
