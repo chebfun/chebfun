@@ -1,26 +1,25 @@
-function Nstar = adjoint(N)
+function Nstar = adjoint(N,u)
 %ADJOINT   Compute the adjoint of a linear CHEBOP.
-%   ADJOINT(N), where N is a CHEBOP, returns the adjoint CHEBOP of N.
+%   NSTAR = ADJOINT(N) returns the adjoint of a scalar CHEBOP that
+%   has either periodic or endpoint constraints. If N is nonlinear then
+%   N is first linearized around U = 0 and NSTAR is the adjoint of the 
+%   linearization.
 %
-%   NSTAR = ADJOINT(N) also returns the adjoint of a scalar CHEBOP that
-%   has either periodic or endpoint constraints.
+%   NSTAR = ADJOINT(N,U) linearizes around the function U then computes
+%   the adjoint.
 %
 % See also LINOP/ADJOINT.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Tell CHEBOP/LINEARIZE to stop if it detects nonlinearity:
-linCheck = true; 
+% set U to zero 
+if ( nargin < 2 )
+    u = 0*N.init;
+end
 
-% Linearize, thereby obtaining linearity information, a LINOP, and an input of
-% the correct dimensions to pass to N:
-[L, ~, isLinear, ~] = linearize(N, N.init, [], linCheck);
-
-% We need the entire operator (including BCs) to be linear:
-assert(all(isLinear), 'CHEBFUN:CHEBOP:adjoint:nonlinear', ...
-    ['The input operator appears to be nonlinear.\n', ...
-    'ADJOINT supports only linear CHEBOP instances.']);
+% Linearize N around u.:
+L = linearize(N, u);
 
 % Get the value of the highest derivative:
 n = L.diffOrder;

@@ -302,35 +302,59 @@ else
 
   % left
   if ( ~isempty(indsL) )
-    bcOpL = '@(u) [';
-    for ii = indsL
-      for jj = 1:n
-        if ( Bstar(ii,jj) ~= 0 )
-          bcOpL = [bcOpL,' + ',num2str(Bstar(ii,jj),'%1.15e'),...
-                   '*diff(u,',int2str(jj-1),')'];
-        end
-      end
-      bcOpL = [bcOpL,'; '];
+    if ( length(indsL) > 1 )
+      bcOpL = '@(u) [';
+    else
+      bcOpL = '@(u) ';
     end
-    bcOpL = [bcOpL,']'];
-    bcOpL = str2func(vectorize(bcOpL));
+    for ii = indsL
+      varname = genvarname(['bl', int2str(ii), int2str(n-1)]);
+      eval([varname, ' = Bstar(ii,1);']);
+      bcOpL = [bcOpL,'bl', int2str(ii), int2str(n-1), '*diff(u,', int2str(n-1), ')'];
+      for jj = 2:n-1
+        varname = genvarname(['bl', int2str(ii), int2str(n-jj)]);
+        eval([varname, ' = Bstar(ii,jj);']);
+        bcOpL = [bcOpL,' + ',['bl', int2str(ii), int2str(n-jj)],...
+                 '*diff(u,',int2str(jj-1),')'];
+      end
+      varname = genvarname(['bl', int2str(ii), int2str(0)]);
+      eval([varname, ' = Bstar(ii,n);']);
+      bcOpL = [bcOpL,' + bl', int2str(ii), '0*u; '];
+    end
+    if ( length(indsL) > 1 )
+      bcOpL = [bcOpL,'];'];
+    end
+    eval(['bcOpL = ',vectorize(bcOpL)]);
   end
 
   % right
   if ( ~isempty(indsR) )
-    bcOpR = '@(u) [';
-    for ii = indsR
-      for jj = 1:n
-        if ( Bstar(ii,n+jj) ~= 0 )
-          bcOpR = [bcOpR,' + ',num2str(Bstar(ii,n+jj),'%1.15e'),...
-                   '*diff(u,',int2str(jj-1),')'];
-        end
-      end
-      bcOpR = [bcOpR,'; '];
+    if ( length(indsR) > 1 )
+      bcOpR = '@(u) [';
+    else
+      bcOpR = '@(u) ';
     end
-    bcOpR = [bcOpR,']'];
-    bcOpR = str2func(vectorize(bcOpR));
+    for ii = indsR
+      varname = genvarname(['br', int2str(ii-indsL(end)), int2str(n-1)]);
+      eval([varname, ' = Bstar(ii,1);']);
+      bcOpR = [bcOpR,'br', int2str(ii-indsL(end)), int2str(n-1),...
+               '*diff(u,', int2str(n-1), ')'];
+      for jj = 2:n-1
+        varname = genvarname(['br', int2str(ii-indsL(end)), int2str(n-jj)]);
+        eval([varname, ' = Bstar(ii,jj);']);
+        bcOpR = [bcOpR,' + ',['br', int2str(ii-indsL(end)), int2str(n-jj)],...
+                 '*diff(u,',int2str(jj-1),')'];
+      end
+      varname = genvarname(['br', int2str(ii-indsL(end)), int2str(0)]);
+      eval([varname, ' = Bstar(ii,n);']);
+      bcOpR = [bcOpR,' + br', int2str(ii-indsL(end)), '0*u; '];
+    end
+    if ( length(indsR) > 1 )
+      bcOpR = [bcOpR,'];'];
+    end
+    eval(['bcOpR = ',vectorize(bcOpR)]);
   end
+
 
   % mixed
   if ( ~isempty(indsM) )
