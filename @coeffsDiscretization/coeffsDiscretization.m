@@ -87,5 +87,17 @@ classdef coeffsDiscretization < opDiscretization
         T = sptoeplitz(col, row)
         
     end
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% METHODS IMPLEMENTED IN THIS FILE:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    methods ( Access = public, Static = true)
+        function varargout = convertOperator(varargin)
+            error('COEFFSDISCRETIZATION:instantiate:fail', ...
+                ['Cannot represent this operator. ', ...
+                 'Suggest you use VALSDISCRETIZATION.'])
+        end
+    end
 
 end

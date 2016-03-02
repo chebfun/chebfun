@@ -309,9 +309,12 @@ classdef chebfun
         
         % Deprecated function.
         varargin = quad(varargout);
+
+        % Sample a CHEBFUN on an "appropriate" grid.
+        varargout = sample(f, n);
         
-        % Set pointValues property:
-        f = setPointValues(f, j, k, vals)
+        % Reset pointValues property to the average of left and right limits.
+        f = resetPointValues(f);
         
         % Remove all-zero layers of higher-order impulses.
         f = tidyImpulses(f)

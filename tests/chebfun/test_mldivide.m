@@ -33,7 +33,7 @@ B = (1:4).';
 X = A\B;
 X0 = feval(X, 0);
 X0_true = -2.625;
-pass(4) = abs(X0 - X0_true) < 10*eps;
+pass(4) = abs(X0 - X0_true) < 100*eps;
 
 %% Else
 

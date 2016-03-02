@@ -2,7 +2,7 @@ function varargout = sampleTest(varargin)
 %SAMPLETEST   Test an evaluation of input OP against a CHEBFUN2.
 %
 %   SAMPLETEST(F, SAMPLEOP, TOL) evaluates both the function OP and its
-%   CHEBFUN2 representation F at several points in it's domain. The difference of
+%   CHEBFUN2 representation F at several points in its domain. The difference of
 %   these values is computed, and if this is sufficiently small the test
 %   passes and returns TRUE. If the difference is large, it returns FALSE.
 %

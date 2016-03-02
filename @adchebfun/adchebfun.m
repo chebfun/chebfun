@@ -1106,10 +1106,11 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 f.linearity = f.linearity & g.linearity;
                 % Value part
                 f.func = f.func + g.func;
-                % Derivative part
-                f.jacobian = f.jacobian + g.jacobian;
                 % Jumps
                 f.jumpLocations = union(f.jumpLocations,g.jumpLocations);
+                % Derivative part 
+                f.jacobian = f.jacobian + g.jacobian;
+
             end
             
             % Need to update domain in case new breakpoints were introduced

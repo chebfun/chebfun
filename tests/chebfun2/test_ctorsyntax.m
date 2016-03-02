@@ -42,5 +42,8 @@ g = chebfun2( f, [10 15], [-2 1 -2 1]);
 pass(4) = ( m == 10 ) && (n == 15) ;
 pass(5) = any( g.domain == [-2 1 -2 1] ); 
 
+f = @(x, y) sin(x.*y);
+g = chebfun2(f, 1);
+pass(6) = rank(g) == 1;
 
 end
