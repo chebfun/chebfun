@@ -1,10 +1,10 @@
-function pass = test_advectionDiffusion1( prefs ) 
+function pass = test_advectionDiffusion1( pref )
 % Check advection diffusion equations. 
 
 if ( nargin < 1 ) 
-    prefs = chebfunpref(); 
+    pref = chebfunpref();
 end 
-tol = 1e10*prefs.techPrefs.eps; 
+tol = 1e10*pref.cheb2Prefs.chebfun2eps;
 
 % Advection-diffusion 1
 N = chebop2(@(u) diff(u,1,1) - .1*diff(u,2,2) - diff(u,1,2), [-2.5 3 0 6]); 

@@ -7,7 +7,7 @@ if ( nargin < 1 )
     pref = chebfunpref();
 end
 
-tol = pref.eps;
+tol = pref.chebfuneps;
 
 [L, C] = lebesgue(chebpts(3));
 pass(1) = abs(C - 5/4) < 10*tol;

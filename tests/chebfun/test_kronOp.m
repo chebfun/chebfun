@@ -5,7 +5,7 @@ if ( nargin < 1 )
     pref = chebfunpref(); 
 end 
 
-tol = 1000*pref.eps; 
+tol = 1000*pref.chebfuneps; 
 d = [0,1];
 x = chebfun(@(x) x, d); 
 xx1 = chebpts(200, d, 1);

@@ -4,7 +4,7 @@ function pass = test_jacobian( pref )
 if ( nargin == 0 ) 
     pref = chebfunpref; 
 end
-tol = 100*pref.eps; 
+tol = 100*pref.cheb2Prefs.chebfun2eps;
 
 
 % Check definition:

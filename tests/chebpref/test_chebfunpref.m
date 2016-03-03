@@ -55,18 +55,18 @@ pass(8) = strcmp(p.techPrefs.testPref2, 'test2');
 % chebfunpref with differences that need to be merged into that set.
 p = chebfunpref();
 p.domain = [-2 7];
-p.eps = 1.0e-6;
+p.chebfuneps = 1.0e-6;
 p.maxLength = 1337;
 p.bogusPref = true;
 
 q = chebfunpref();
 q.splitting = true;
-q.eps = 1.0e-12;
+q.chebfuneps = 1.0e-12;
 
 r = chebfunpref(p, q);
 pass(9) = isequal(r.domain, q.domain) && ...
     isequal(r.splitting, q.splitting) && ...
-    isequal(r.eps, q.eps) && ...
+    isequal(r.chebfuneps, q.chebfuneps) && ...
     isequal(r.maxLength, q.maxLength) && ...
     isequal(r.bogusPref, p.bogusPref);
 
@@ -74,12 +74,12 @@ pass(9) = isequal(r.domain, q.domain) && ...
 % with differences that need to be merged into that set.
 q = struct();
 q.splitting = true;
-q.eps = 1.0e-12;
+q.chebfuneps = 1.0e-12;
 
 r = chebfunpref(p, q);
 pass(10) = isequal(r.domain, p.domain) && ...
     isequal(r.splitting, q.splitting) && ...
-    isequal(r.eps, q.eps) && ...
+    isequal(r.chebfuneps, q.chebfuneps) && ...
     isequal(r.maxLength, p.maxLength) && ...
     isequal(r.bogusPref, p.bogusPref);
 
@@ -147,7 +147,7 @@ try
         isequal(chebfunpref().domain, [-2 7]);
 
     % Test getting defaults:
-    pass(22) = isnumeric(chebfunpref().eps);
+    pass(22) = isnumeric(chebfunpref().chebfuneps);
     pass(23) = ischar(chebfunpref().blowupPrefs.defaultSingType);
     pass(24) = ischar(chebfunpref().refinementFunction);
     

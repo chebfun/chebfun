@@ -6,7 +6,7 @@ function pass = test_threecomponents( pref )
 if ( nargin < 1 ) 
     pref = chebfunpref; 
 end 
-tol = 1e5 * pref.eps; 
+tol = 1e5 * pref.cheb2Prefs.chebfun2eps;
 j = 1;
 
 % Different calls to the constructor. 

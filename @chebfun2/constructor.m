@@ -43,7 +43,7 @@ maxSample   = tpref.maxLength;
 cheb2Prefs  = pref.cheb2Prefs;
 sampleTest  = cheb2Prefs.sampleTest;
 maxRank     = cheb2Prefs.maxRank;
-pseudoLevel = pref.eps;
+pseudoLevel = cheb2Prefs.chebfun2eps;
 
 factor  = 4; % Ratio between size of matrix and no. pivots.
 isHappy = 0; % If we are currently unresolved.
@@ -127,7 +127,7 @@ while ( ~isHappy && ~failure )
     end
     
     %% %%% PHASE 2: %%%
-    pref.eps = tol;
+    pref.chebfuneps = tol;
     % Now resolve along the column and row slices:
     n = grid;  m = grid;
     while ( ~isHappy && ~failure  )
@@ -254,7 +254,7 @@ else
     [xx, yy] = meshgrid(x, y);
 end
     
-tol = getTol(xx, yy, op, dom, pref.eps);
+tol = getTol(xx, yy, op, dom, pref.cheb2Prefs.chebfun2eps);
 
 % Perform GE with complete pivoting:
 [pivotValue, ~, rowValues, colValues] = completeACA(op, tol, 0);
@@ -621,7 +621,7 @@ if ( isEpsGiven )
 else
     pseudoLevel = 0;
 end
-pref.eps = max(pref.eps, pseudoLevel);
+pref.chebfuneps = max(pref.chebfuneps, pseudoLevel);
 
 % Look for vectorize flag:
 vectorize = find(cellfun(@(p) strncmpi(p, 'vectori', 7), varargin));
@@ -634,7 +634,7 @@ end
 
 % If the vectorize flag is off, do we need to give user a warning?
 if ( ~vectorize && ~isnumeric(op) ) % another check
-    [vectorize, op] = vectorCheck(op, dom, pref.eps);
+    [vectorize, op] = vectorCheck(op, dom, pref.chebfuneps);
 end
 
 isPadua = find(cellfun(@(p) strcmpi(p, 'padua'), varargin));

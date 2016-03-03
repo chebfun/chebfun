@@ -53,7 +53,7 @@ pass(3) = (norm(y_err, inf) < 1e2*eps*vscale(f.smoothPart) &&...
     norm(x_err, inf) < 1e2*eps*vscale(f.smoothPart));
 
 p = pref;
-p.eps = max(pref.eps, 1e-14);
+p.chebfuneps = max(pref.chebfuneps, 1e-14);
 % no fractional pole but a root at the left endpoint.
 data.exponents = [0 1+b];
 data.singType = {'none', 'root'};

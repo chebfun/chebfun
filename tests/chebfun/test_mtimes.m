@@ -213,7 +213,7 @@ pass(63) = causesDimensionError(@() Q'*Q');
 %% Chebfun2 outerproducts
 % These are the same as in test_kron, just want to ensure that the syntax works!
 % Rank 1 chebfun2 
-tol = 20*pref.eps; 
+tol = 20*pref.cheb2Prefs.chebfun2eps;
 
 f = chebfun(@(x) x.^2, pref);
 g = chebfun(@(y) sin(y), pref);

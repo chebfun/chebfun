@@ -38,7 +38,7 @@ end
 
 % Set some preferences:
 pref.minSamples = max(pref.minSamples, length(f));
-pref.eps = max(eps, pref.eps);
+pref.chebfuneps = max(eps, pref.chebfuneps);
 pref.sampleTest = false;
 
 if ( nfuns == 2 )

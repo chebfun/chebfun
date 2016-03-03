@@ -8,7 +8,7 @@ if ( nargin < 1 )
     pref = chebtech.techPref();
 end
 
-tol = 20*pref.eps;
+tol = 20*pref.chebfuneps;
 
 for n = 1:2
     if ( n == 1 )

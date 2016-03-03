@@ -108,7 +108,7 @@ classdef chebfunpref < chebpref
 %      technology.  Additionally, all techs are required to accept the following
 %      preferences:
 %
-%      eps                     - Construction tolerance.
+%      chebfuneps                     - Construction tolerance.
 %
 %        A positive floating-point number specifying the relative tolerance to
 %        which the representation should be constructed.
@@ -232,7 +232,7 @@ classdef chebfunpref < chebpref
 %    down into the tech layer, i.e., CHEBFUN needs to be able to set certain
 %    preferences that affect the constructors for the individual techs.
 %    Designers of techs should ensure that their classes respond to the
-%    following "abstract" preferences in an appropriate manner:  eps,
+%    following "abstract" preferences in an appropriate manner: chebfuneps,
 %    maxLength, fixedLength, extrapolate, and sampleTest.
 %
 %  - The original idea was that the techPrefs field of the CHEBFUNPREF would be
@@ -469,6 +469,8 @@ classdef chebfunpref < chebpref
             fprintf([padString('        proximityTol:') '%d\n'], ...
                 prefList.deltaPrefs.proximityTol');                      
             fprintf('    cheb2Prefs\n');
+            fprintf([padString('        chebfun2eps:') '%d\n'], ...
+                prefList.cheb2Prefs.chebfun2eps');            
             fprintf([padString('        maxRank:') '%d\n'], ...
                 prefList.cheb2Prefs.maxRank');
             fprintf([padString('        sampleTest:') '%d\n'], ...
@@ -702,6 +704,7 @@ classdef chebfunpref < chebpref
             factoryPrefs.tech = @chebtech2;
             factoryPrefs.techPrefs = struct();
             factoryPrefs.cheb2Prefs = struct(); 
+                factoryPrefs.cheb2Prefs.chebfun2eps = eps;   
                 factoryPrefs.cheb2Prefs.maxRank = 513;   
                 factoryPrefs.cheb2Prefs.sampleTest = 1;
         end

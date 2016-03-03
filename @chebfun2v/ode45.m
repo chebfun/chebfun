@@ -45,8 +45,8 @@ end
 nF = F.nComponents;
 dom = F.components{1}.domain; 
 
-prefs = chebfunpref;
-abstol = 100*prefs.techPrefs.eps;
+pref = chebfunpref;
+abstol = 100*pref.cheb2Prefs.chebfun2eps;
 % We don't expect 16 digits of relative tolerance, but at least require some.
 reltol = 1e8*abstol;
 

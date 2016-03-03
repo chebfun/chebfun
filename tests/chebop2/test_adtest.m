@@ -1,11 +1,11 @@
-function pass = test_adtest( prefs ) 
+function pass = test_adtest( pref )
 % Test that the AD machinery is work correctly. 
 % Alex Townsend, August 2013. 
 
 if ( nargin < 1 ) 
-    prefs = chebfunpref(); 
+    pref = chebfunpref();
 end 
-tol = prefs.techPrefs.eps; 
+tol = pref.cheb2Prefs.chebfun2eps;
 
 % simple case. 
 N = chebop2(@(u) diffx(u,2) + diffy(u,2));

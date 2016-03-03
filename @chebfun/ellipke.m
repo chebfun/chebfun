@@ -19,13 +19,13 @@ function [k, e] = ellipke(m, pref)
 tol = eps;
 if ( nargin == 1 )
     pref = chebfunpref();
-    tol = max(pref.techPrefs.eps, tol);
+    tol = max(pref.techPrefs.chebfuneps, tol);
 elseif ( isnumeric(pref) )
     tol = max(pref, tol);
     pref = chebfunpref();
-    pref.techPrefs.eps = tol;
+    pref.techPrefs.chebfuneps = tol;
 else
-    tol = max(pref.techPrefs.eps, tol);
+    tol = max(pref.techPrefs.chebfuneps, tol);
 end
 
     function x = fudge(x, tol)

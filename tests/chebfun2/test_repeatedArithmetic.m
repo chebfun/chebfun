@@ -1,11 +1,11 @@
-function pass = test_repeatedArithmetic( prefs )
+function pass = test_repeatedArithmetic( pref )
 % In version 4 repeated arithmetric lost quite a bit of accurate. 
 % With PLUS based on QR, we are in better shape. Test this. 
 
 if ( nargin < 1 ) 
-    prefs = chebfunpref(); 
+    pref = chebfunpref(); 
 end
-tol = 1e4*prefs.eps; 
+tol = 1e4*pref.cheb2Prefs.chebfun2eps;
 
 % Add 50 functions together: 
 f = chebfun2(@(x,y) cos(x.*y)); 

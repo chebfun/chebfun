@@ -86,7 +86,7 @@ end
 
 %% Create a CHEBFUN object.
 p = chebfunpref();
-p.techPrefs.eps = max(relTol); % Use the same tolerance for each column.
+p.techPrefs.chebfuneps = max(relTol); % Use the same tolerance for each column.
 p.techPrefs.happinessCheck = checker;
 p.techPrefs.sampleTest = 0;
 p.splitPrefs.splitMaxLength = 20000;
