@@ -77,8 +77,11 @@ classdef spinpref3 < spinpreference
     %% CLASS PROPERTIES:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
-        Clim                % Limits of the colorbar
-        slices              % Slices of the volumetric slice plot
+        Clim         % Limits of the colorbar (2*NVARSx1 DOUBLE)
+        slices       % Slices of the volumetric slice plot (1x3 CELL, slices{1}
+                     % is a DOUBLE of positions x corresponding to the slices 
+                     % x=constant, same for slices{2} and slices{3} with y and
+                     % z)
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

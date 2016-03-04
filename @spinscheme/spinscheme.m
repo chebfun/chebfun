@@ -38,11 +38,11 @@ classdef spinscheme
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
         
-        internalStages  % number of internal stages
-        order           % order of the method
-        scheme          % Time-stepping scheme
-        steps           % number of previous time-steps used (1 if one-step
-                        % method, > 1 if multistep method)
+        stages          % number of internal stages (1x1 DOUBLE)
+        order           % order of the method (1x1 DOUBLE)
+        scheme          % Time-stepping scheme (STRING)
+        steps           % number of previous time-steps used, 1 if one-step
+                        % method, > 1 if multistep method (1x1 DOUBLE)
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -63,19 +63,19 @@ classdef spinscheme
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 case 'abnorsett4'
                     K.order = 4;
-                    K.internalStages = 1;
+                    K.stages = 1;
                     K.steps = 4;
                     K.scheme = schemeName;
                     
                 case'abnorsett5'
                     K.order = 5;
-                    K.internalStages = 1;
+                    K.stages = 1;
                     K.steps = 5;
                     K.scheme = schemeName;
                     
                 case 'abnorsett6'
                     K.order = 6;
-                    K.internalStages = 1;
+                    K.stages = 1;
                     K.steps = 6;
                     K.scheme = schemeName;
                     
@@ -84,43 +84,43 @@ classdef spinscheme
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 case 'etdrk4'
                     K.order = 4;
-                    K.internalStages = 4;
+                    K.stages = 4;
                     K.steps = 1;
                     K.scheme = schemeName;
                     
                 case 'exprk5s8'
                     K.order = 5;
-                    K.internalStages = 8;
+                    K.stages = 8;
                     K.steps = 1;
                     K.scheme = schemeName;
                     
                 case 'friedli'
                     K.order = 4;
-                    K.internalStages = 4;
+                    K.stages = 4;
                     K.steps = 1;
                     K.scheme = schemeName;
                     
                 case 'hochbruck-ostermann'
                     K.order = 4;
-                    K.internalStages = 5;
+                    K.stages = 5;
                     K.steps = 1;
                     K.scheme = schemeName;
                     
                 case 'krogstad'
                     K.order = 4;
-                    K.internalStages = 4;
+                    K.stages = 4;
                     K.steps = 1;
                     K.scheme = schemeName;
                     
                 case 'minchev'
                     K.order = 4;
-                    K.internalStages = 4;
+                    K.stages = 4;
                     K.steps = 1;
                     K.scheme = schemeName;
                     
                 case 'strehmel-weiner'
                     K.order = 4;
-                    K.internalStages = 4;
+                    K.stages = 4;
                     K.steps = 1;
                     K.scheme = schemeName;
                     
@@ -129,13 +129,13 @@ classdef spinscheme
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 case 'ablawson4'
                     K.order = 4;
-                    K.internalStages = 1;
+                    K.stages = 1;
                     K.steps = 4;
                     K.scheme = schemeName;
                     
                 case 'lawson4'
                     K.order = 4;
-                    K.internalStages = 4;
+                    K.stages = 4;
                     K.steps = 1;
                     K.scheme = schemeName;
                     
@@ -144,31 +144,31 @@ classdef spinscheme
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 case 'genlawson41'
                     K.order = 4;
-                    K.internalStages = 4;
+                    K.stages = 4;
                     K.steps = 1;
                     K.scheme = schemeName;
                     
                 case 'genlawson42'
                     K.order = 4;
-                    K.internalStages = 4;
+                    K.stages = 4;
                     K.steps = 2;
                     K.scheme = schemeName;
                     
                 case 'genlawson43'
                     K.order = 4;
-                    K.internalStages = 4;
+                    K.stages = 4;
                     K.steps = 3;
                     K.scheme = schemeName;
                     
                 case 'genlawson44'
                     K.order = 5;
-                    K.internalStages = 4;
+                    K.stages = 4;
                     K.steps = 4;
                     K.scheme = schemeName;
                     
                 case 'genlawson45'
                     K.order = 6;
-                    K.internalStages = 4;
+                    K.stages = 4;
                     K.steps = 5;
                     K.scheme = schemeName;
                     
@@ -177,31 +177,31 @@ classdef spinscheme
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 case 'modgenlawson41'
                     K.order = 4;
-                    K.internalStages = 4;
+                    K.stages = 4;
                     K.steps = 1;
                     K.scheme = schemeName;
                     
                 case 'modgenlawson42'
                     K.order = 4;
-                    K.internalStages = 4;
+                    K.stages = 4;
                     K.steps = 2;
                     K.scheme = schemeName;
                     
                 case 'modgenlawson43'
                     K.order = 4;
-                    K.internalStages = 4;
+                    K.stages = 4;
                     K.steps = 3;
                     K.scheme = schemeName;
                     
                 case 'modgenlawson44'
                     K.order = 5;
-                    K.internalStages = 4;
+                    K.stages = 4;
                     K.steps = 4;
                     K.scheme = schemeName;
                     
                 case 'modgenlawson45'
                     K.order = 6;
-                    K.internalStages = 4;
+                    K.stages = 4;
                     K.steps = 5;
                     K.scheme = schemeName;
                     
@@ -210,49 +210,49 @@ classdef spinscheme
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 case {'pec423', 'pece423'}
                     K.order = 4;
-                    K.internalStages = 2;
+                    K.stages = 2;
                     K.steps = 3;
                     K.scheme = schemeName;
                     
                 case {'pecec433', 'pecece433'}
                     K.order = 4;
-                    K.internalStages = 3;
+                    K.stages = 3;
                     K.steps = 3;
                     K.scheme = schemeName;
                     
                 case {'pec524', 'pece524'}
                     K.order = 5;
-                    K.internalStages = 2;
+                    K.stages = 2;
                     K.steps = 4;
                     K.scheme = schemeName;
                     
                 case {'pecec534', 'pecece534'}
                     K.order = 5;
-                    K.internalStages = 3;
+                    K.stages = 3;
                     K.steps = 4;
                     K.scheme = schemeName;
                     
                 case {'pec625', 'pece625'}
                     K.order = 6;
-                    K.internalStages = 2;
+                    K.stages = 2;
                     K.steps = 5;
                     K.scheme = schemeName;
                     
                 case {'pecec635', 'pecece635'}
                     K.order = 6;
-                    K.internalStages = 3;
+                    K.stages = 3;
                     K.steps = 5;
                     K.scheme = schemeName;
                     
                 case {'pec726', 'pece726'}
                     K.order = 7;
-                    K.internalStages = 2;
+                    K.stages = 2;
                     K.steps = 6;
                     K.scheme = schemeName;
                     
                 case {'pecec736', 'pecece736'}
                     K.order = 7;
-                    K.internalStages = 3;
+                    K.stages = 3;
                     K.steps = 6;
                     K.scheme = schemeName;
                     
@@ -261,7 +261,7 @@ classdef spinscheme
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 case 'eglm433'
                     K.order = 4;
-                    K.internalStages = 3;
+                    K.stages = 3;
                     K.steps = 3;
                     K.scheme = schemeName;
                     

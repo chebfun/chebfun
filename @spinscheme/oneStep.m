@@ -31,7 +31,7 @@ function [uSol, NuSol] = oneStep(K, schemeCoeffs, Nc, Nv, nVars, uSol, NuSol)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Set-up:
-s = K.internalStages;       % internal stages
+s = K.stages;               % number of internal stages
 q = K.steps;                % number of steps (>1 for multistep methods)
 N = size(uSol{1}, 1)/nVars; % grid points
 

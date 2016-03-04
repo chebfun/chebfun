@@ -1,8 +1,8 @@
 function schemeCoeffs = computeCoeffs(K, dt, L, M, S)
 %COMPUTECOEFFS   Compute coefficients of a SPINSCHEME.
-%   SCHEMECOEFFS = COMPUTECOEFFS(K, DT, L, LR, S) computes the coefficients
+%   SCHEMECOEFFS = COMPUTECOEFFS(K, DT, L, M, S) computes the coefficients
 %   needed by the SPINSCHEME K from the time-step DT, the linear part L, the
-%   linear part for complex means LR, and the SPINOP S.
+%   number of points for complex means M, and the SPINOP S.
 %
 % See also SPINSCHEME.
 %
@@ -14,7 +14,7 @@ function schemeCoeffs = computeCoeffs(K, dt, L, M, S)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Set-up:
-s = K.internalStages;  % internal stages
+s = K.stages;          % number of stages
 q = K.steps;           % number of steps (>1 for multistep methods)
 dim = getDimension(S); % spatial dimension (1, 2 or 3)
 nVars = S.numVars;     % number of unknown functions
@@ -1406,7 +1406,7 @@ U = schemeCoeffs.U;
 V = schemeCoeffs.V;
 
 % Number of internal stages S and number of steps used Q:
-s = K.internalStages;
+s = K.stages;
 q = K.steps;
 
 % Compute the coefficients A{i,1} using the row summation property:

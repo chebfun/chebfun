@@ -76,8 +76,8 @@ classdef spinpref2 < spinpreference
     %% CLASS PROPERTIES:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
-        Clim                  % Limits of the colorbar
-        view = [0 90];        % Viewpoint of the plot
+        Clim                  % Limits of the colorbar (1x2*NVARS DOUBLE)
+        view = [0 90];        % Viewpoint of the plot (1x2 DOUBLE)
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

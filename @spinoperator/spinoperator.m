@@ -15,22 +15,26 @@ classdef spinoperator
     %% CLASS PROPERTIES:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
-        domain              % Spatial domain
-        init                % Initial condition
-        linearPart          % Linear part of the operator
-        nonlinearPart       % Nonlinear part of the operator
-        tspan               % Time interval
+        domain              % Spatial domain (1x2 DOUBLE in 1D, 1x4 in 2D, 
+                            % 1x6 in 3D)
+        init                % Initial condition (CHEBFUN in 1D, CHEBFUN2 in 2D,
+                            % CHEBFUN3 in 3D, CHEBMATRIX for systems)
+        linearPart          % Linear part of the operator (FUNCTION HANDLE)
+        nonlinearPart       % Nonlinear part of the operator (FUNCTION HANDLE)
+        tspan               % Time interval (DOUBLE)
     end
     
     % DEPENDENT PROPERTIES:
     properties ( Access = public, Dependent = true )
-        numVars             % Number of unknown functions (>1 for systems)
+        numVars             % Number of unknown functions (1x1 DOUBLE)
     end
     
     % DEPENDENT AND HIDDEN PROPERTIES:
     properties ( Access = public, Hidden = true, Dependent = true )
-        nonlinearPartCoeffs % Nonlinear part of the operator in coeff. space
-        nonlinearPartVals   % Nonlinear part of the operator in value space
+        nonlinearPartCoeffs % Differential part of the operator in coefficient
+                            % space (FUNCTION HANDLE)
+        nonlinearPartVals   % Nondifferential part of the operator in value
+                            % space (FUNCTION HANDLE)
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
