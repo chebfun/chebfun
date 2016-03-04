@@ -75,11 +75,12 @@ while ( ~isHappy && ~failure )
     end
     
     % Two-dimensional version of CHEBFUN's tolerance:
-    tol = getTol(xx, yy, vals, dom, pseudoLevel);
+    [relTol, absTol] = getTol(xx, yy, vals, dom, pseudoLevel);
+    pref.eps = relTol;
     
     %% %%% PHASE 1: %%%
     % Do GE with complete pivoting:
-    [pivotVal, pivotPos, rowVals, colVals, iFail] = completeACA(vals, tol, factor);
+    [pivotVal, pivotPos, rowVals, colVals, iFail] = completeACA(vals, absTol, factor);
     
     strike = 1;
     % grid <= 4*(maxRank-1)+1, see Chebfun2 paper.
@@ -90,11 +91,13 @@ while ( ~isHappy && ~failure )
         vals = evaluate(op, xx, yy, vectorize); % resample
         vscale = max(abs(vals(:)));
         % New tolerance:
-        tol = getTol(xx, yy, vals, dom, pseudoLevel);
+        [relTol, absTol] = getTol(xx, yy, vals, dom, pseudoLevel);
+        pref.eps = relTol;
         % New GE:
-        [pivotVal, pivotPos, rowVals, colVals, iFail] = completeACA(vals, tol, factor);
+        [pivotVal, pivotPos, rowVals, colVals, iFail] = ...
+                                 completeACA(vals, absTol, factor);
         % If the function is 0+noise then stop after three strikes.
-        if ( abs(pivotVal(1)) < 1e4*vscale*tol )
+        if ( abs(pivotVal(1)) < 1e4*vscale*relTol )
             strike = strike + 1;
         end
     end
@@ -127,7 +130,6 @@ while ( ~isHappy && ~failure )
     end
     
     %% %%% PHASE 2: %%%
-    pref.eps = tol;
     % Now resolve along the column and row slices:
     n = grid;  m = grid;
     while ( ~isHappy && ~failure  )
@@ -211,7 +213,7 @@ while ( ~isHappy && ~failure )
         sampleOP = @(x,y) evaluate(op, x, y, vectorize);
         
         % Evaluate at points in the domain:
-        pass = g.sampleTest(sampleOP, tol, vectorize);
+        pass = g.sampleTest(sampleOP, absTol, vectorize);
         if ( ~pass )
             % Increase minSamples and try again.
             minSample = gridRefine(minSample, pref);
@@ -222,9 +224,7 @@ while ( ~isHappy && ~failure )
 end
 
 % Simplifying rows and columns after they are happy.
-if ( vscale > 0 )
-    g = simplify( g, tol/vscale );
-end
+g = simplify( g, pref.eps );
 
 % Fix the rank, if in nonadaptive mode.
 g = fixTheRank( g , fixedRank );
@@ -256,10 +256,11 @@ else
     [xx, yy] = meshgrid(x, y);
 end
     
-tol = getTol(xx, yy, op, dom, pref.eps);
+[relTol, absTol] = getTol(xx, yy, op, dom, pref.eps);
+pref.eps = relTol;
 
 % Perform GE with complete pivoting:
-[pivotValue, ~, rowValues, colValues] = completeACA(op, tol, 0);
+[pivotValue, ~, rowValues, colValues] = completeACA(op, absTol, 0);
 
 % Construct a CHEBFUN2:
 g.pivotValues = pivotValue;
@@ -277,7 +278,7 @@ end
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [pivotValue, pivotElement, rows, cols, ifail] = ...
-    completeACA(A, tol, factor)
+    completeACA(A, absTol, factor)
 % Adaptive Cross Approximation with complete pivoting. This command is
 % the continuous analogue of Gaussian elimination with complete pivoting.
 % Here, we attempt to adaptively find the numerical rank of the function.
@@ -295,7 +296,7 @@ zRows = 0;                  % count number of zero cols/rows.
 [row, col] = myind2sub( size(A) , ind);
 
 % Bias toward diagonal for square matrices (see reasoning below):
-if ( ( nx == ny ) && ( max( abs( diag( A ) ) ) - infNorm ) > -tol )
+if ( ( nx == ny ) && ( max( abs( diag( A ) ) ) - infNorm ) > -absTol )
     [infNorm, ind] = max( abs ( diag( A ) ) );
     row = ind;
     col = ind;
@@ -314,7 +315,7 @@ else
     cols(:,1) = zeros(size(A, 1), 1);
 end
 
-while ( ( infNorm > tol ) && ( zRows < width / factor) ...
+while ( ( infNorm > absTol ) && ( zRows < width / factor) ...
         && ( zRows < min(nx, ny) ) )
     rows(zRows+1,:) = A(row,:);
     cols(:,zRows+1) = A(:,col);              % Extract the columns.
@@ -335,14 +336,14 @@ while ( ( infNorm > tol ) && ( zRows < width / factor) ...
     % same as nonnegative definite functions have an absolute maximum on the
     % diagonal, except there is the possibility of a tie with an off-diagonal
     % absolute maximum. Bias toward diagonal maxima to prevent this.)
-    if ( ( nx == ny ) && ( max( abs( diag( A ) ) ) - infNorm ) > -tol )
+    if ( ( nx == ny ) && ( max( abs( diag( A ) ) ) - infNorm ) > -absTol )
         [infNorm, ind] = max( abs ( diag( A ) ) );
         row = ind;
         col = ind;
     end
 end
 
-if ( infNorm <= tol )
+if ( infNorm <= absTol )
     ifail = 0;                               % We didn't fail.
 end
 if ( zRows >= (width/factor) )
@@ -507,7 +508,7 @@ end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function tol = getTol(xx, yy, vals, dom, pseudoLevel)
+function [relTol, absTol] = getTol(xx, yy, vals, dom, pseudoLevel)
 % GETTOL     Calculate a tolerance for the Chebfun2 constructor.
 %
 %  This is the 2D analogue of the tolerance employed in the chebtech
@@ -523,7 +524,8 @@ dfdy = diff(vals(:,1:n-1),1,1) ./ diff(yy(:,1:n-1),1,1); % yy diffs row-wise.
 % An approximation for the norm of the gradient over the whole domain.
 Jac_norm = max( max( abs(dfdx(:)), abs(dfdy(:)) ) );
 vscale = max( abs( vals(:) ) );
-tol = grid.^(2/3) * max( abs(dom(:) ) ) * max( Jac_norm, vscale) * pseudoLevel;
+relTol = pseudoLevel; % this should be vscale and hscale invariant
+absTol = grid.^(2/3) * max( abs(dom(:) ) ) * max( Jac_norm, vscale) * relTol;
 
 end
 
