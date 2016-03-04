@@ -202,9 +202,12 @@ Nv = S.nonlinearPartVals;
 nVars = S.numVars;
 xx = trigpts(N, dom(1:2));
 if ( dim == 2 )
-    [xx, yy] = meshgrid(xx);
+    yy = trigpts(N, dom(3:4));
+    [xx, yy] = meshgrid(xx, yy);
 elseif ( dim == 3 )
-    [xx, yy, zz] = meshgrid(xx);
+    yy = trigpts(N, dom(3:4));
+    zz = trigpts(N, dom(5:6));
+    [xx, yy, zz] = meshgrid(xx, yy, zz);
 end
 vInit = [];
 for k = 1:nVars
@@ -492,12 +495,15 @@ while ( t < tf )
                     temp = feval(u, xx);
                 elseif ( dim == 2 )
                     xx = trigpts(NN, dom(1:2));
-                    [xx, yy] = meshgrid(xx);
+                    yy = trigpts(NN, dom(3:4));
+                    [xx, yy] = meshgrid(xx, yy);
                     u = chebfun2(valsOld, dom, 'trig');   
                     temp = feval(u, xx, yy);
                 elseif ( dim == 3 )
                     xx = trigpts(NN, dom(1:2));
-                    [xx, yy, zz] = meshgrid(xx);
+                    yy = trigpts(NN, dom(3:4));
+                    zz = trigpts(NN, dom(5:6));
+                    [xx, yy, zz] = meshgrid(xx, yy, zz);
                     u = chebfun3(valsOld, dom, 'trig');
                     temp = feval(u, xx, yy, zz);
                 end

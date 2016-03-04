@@ -27,7 +27,9 @@ yyplot = [yyplot, yyplot(:,1)];
 
 % Finer grid for interploation:
 Nplot = max(N, 256);
-[xxxplot, yyyplot] = meshgrid(trigpts(Nplot, dom));
+ttx = trigpts(Nplot, dom(1:2));
+tty = trigpts(Nplot, dom(3:4));
+[xxxplot, yyyplot] = meshgrid(ttx, tty);
 xxxplot = [xxxplot, 2*xxxplot(:,end) - xxxplot(:,end-1)];
 xxxplot = [xxxplot; xxxplot(1,:)];
 yyyplot = [yyyplot; 2*yyyplot(end,:) - yyyplot(end-1,:)];

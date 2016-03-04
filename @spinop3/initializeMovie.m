@@ -13,31 +13,35 @@ nVars = S.numVars;
 vscale = max(abs(v(:)));
 dataToPlot = str2func(pref.dataToPlot);
 dom = S.domain;
-tt = trigpts(N, dom);
-tt = [tt; 2*tt(end) - tt(end-1)];
+ttx = trigpts(N, dom(1:2));
+tty = trigpts(N, dom(3:4));
+ttz = trigpts(N, dom(5:6));
+ttx = [ttx; 2*ttx(end) - ttx(end-1)];
+tty = [tty; 2*tty(end) - tty(end-1)];
+ttz = [ttz; 2*ttz(end) - ttz(end-1)];
 if ( isempty(pref.slices) == 1 )
-    Sx = tt(floor(N/2) + 1);
-    Sy = Sx;
-    Sz = Sx;
+    Sx = ttx(floor(N/2) + 1);
+    Sy = tty(floor(N/2) + 1);
+    Sz = ttz(floor(N/2) + 1);
 else
     slices = pref.slices;
     Sx = slices{1};
     for k = 1:length(Sx)
         pos = Sx(k);
-        [~, id] = min(abs(tt-pos));
-        Sx(k) = tt(id);
+        [~, id] = min(abs(ttx - pos));
+        Sx(k) = ttx(id);
     end
     Sy = slices{2};
     for k = 1:length(Sy)
         pos = Sy(k);
-        [~, id] = min(abs(tt-pos));
-        Sy(k) = tt(id);
+        [~, id] = min(abs(tty - pos));
+        Sy(k) = tty(id);
     end
     Sz = slices{3};
     for k = 1:length(Sz)
         pos = Sz(k);
-        [~, id] = min(abs(tt-pos));
-        Sz(k) = tt(id);
+        [~, id] = min(abs(ttz - pos));
+        Sz(k) = ttz(id);
     end
 end
 
@@ -54,7 +58,10 @@ zzplot = [zzplot, zzplot(:,1,:)];
 
 % Finer grid for interploation:
 Nplot = max(N, 100);
-[xxxplot, yyyplot, zzzplot] = meshgrid(trigpts(Nplot, dom));
+ttx = trigpts(Nplot, dom(1:2));
+tty = trigpts(Nplot, dom(3:4));
+ttz = trigpts(Nplot, dom(5:6));
+[xxxplot, yyyplot, zzzplot] = meshgrid(ttx, tty, ttz);
 xxxplot = [xxxplot, 2*xxxplot(:,end,:) - xxxplot(:,end-1,:)];
 xxxplot =  [xxxplot; xxxplot(1,:,:)];
 xxxplot = cat(3, xxxplot, xxxplot(:,:,1));

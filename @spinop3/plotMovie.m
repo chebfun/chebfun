@@ -27,8 +27,10 @@ zzplot = [zzplot, zzplot(:,1,:)];
 
 % Finer grid for interploation:
 Nplot = max(N, 100);
-tt = trigpts(Nplot, dom);
-[xxxplot, yyyplot, zzzplot] = meshgrid(trigpts(Nplot, dom));
+ttx = trigpts(Nplot, dom(1:2));
+tty = trigpts(Nplot, dom(3:4));
+ttz = trigpts(Nplot, dom(5:6));
+[xxxplot, yyyplot, zzzplot] = meshgrid(ttx, tty, ttz);
 xxxplot = [xxxplot, 2*xxxplot(:,end,:) - xxxplot(:,end-1,:)];
 xxxplot =  [xxxplot; xxxplot(1,:,:)];
 xxxplot = cat(3, xxxplot, xxxplot(:,:,1));
@@ -38,6 +40,9 @@ yyyplot = cat(3, yyyplot, yyyplot(:,:,1));
 zzzplot = cat(3, zzzplot, 2*zzzplot(:,:,end) - zzzplot(:,:,end-1));
 zzzplot = [zzzplot; zzzplot(1,:,:)];
 zzzplot = [zzzplot, zzzplot(:,1,:)];
+ttx = [ttx; 2*ttx(end) - ttx(end-1)];
+tty = [tty; 2*tty(end) - tty(end-1)];
+ttz = [ttz; 2*ttz(end) - ttz(end-1)];
 
 % Loop over the variables:
 for k = 1:nVars
@@ -82,7 +87,7 @@ for k = 1:nVars
         if ( Sx == 1 )
             pos = p{k}(l).XData;
             pos = pos(1);
-            [~, id] = min(abs(tt-pos));
+            [~, id] = min(abs(ttx - pos));
             set(p{k}(l), 'xdata', squeeze(xxxplot(:,id,:)))
             set(p{k}(l), 'ydata', squeeze(yyyplot(:,id,:)))
             set(p{k}(l), 'zdata', squeeze(zzzplot(:,id,:)))
@@ -90,7 +95,7 @@ for k = 1:nVars
         elseif ( Sy == 1 )
             pos = p{k}(l).YData;
             pos = pos(1);
-            [~, id] = min(abs(tt-pos));
+            [~, id] = min(abs(tty - pos));
             set(p{k}(l), 'xdata', squeeze(xxxplot(id,:,:)))
             set(p{k}(l), 'ydata', squeeze(yyyplot(id,:,:)))
             set(p{k}(l), 'zdata', squeeze(zzzplot(id,:,:)))
@@ -98,7 +103,7 @@ for k = 1:nVars
         elseif ( Sz == 1 )
             pos = p{k}(l).ZData;
             pos = pos(1);
-            [~, id] = min(abs(tt-pos));
+            [~, id] = min(abs(ttz - pos));
             set(p{k}(l), 'xdata', squeeze(xxxplot(:,:,id)))
             set(p{k}(l), 'ydata', squeeze(yyyplot(:,:,id)))
             set(p{k}(l), 'zdata', squeeze(zzzplot(:,:,id)))
