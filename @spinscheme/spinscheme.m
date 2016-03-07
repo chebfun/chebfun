@@ -67,7 +67,7 @@ classdef spinscheme
                     K.steps = 4;
                     K.scheme = schemeName;
                     
-                case'abnorsett5'
+                case 'abnorsett5'
                     K.order = 5;
                     K.stages = 1;
                     K.steps = 5;
