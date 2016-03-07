@@ -524,8 +524,8 @@ dfdy = diff(vals(:,1:n-1),1,1) ./ diff(yy(:,1:n-1),1,1); % yy diffs row-wise.
 % An approximation for the norm of the gradient over the whole domain.
 Jac_norm = max( max( abs(dfdx(:)), abs(dfdy(:)) ) );
 vscale = max( abs( vals(:) ) );
-relTol = pseudoLevel; % this should be vscale and hscale invariant
-absTol = grid.^(2/3) * max( abs(dom(:) ) ) * max( Jac_norm, vscale) * relTol;
+relTol = grid.^(2/3) * pseudoLevel; % this should be vscale and hscale invariant
+absTol = max( abs(dom(:) ) ) * max( Jac_norm, vscale) * relTol;
 
 end
 
