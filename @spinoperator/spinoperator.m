@@ -21,12 +21,13 @@ classdef spinoperator
                             % CHEBFUN3 in 3D, CHEBMATRIX for systems)
         linearPart          % Linear part of the operator (FUNCTION HANDLE)
         nonlinearPart       % Nonlinear part of the operator (FUNCTION HANDLE)
-        tspan               % Time interval (DOUBLE)
+        tspan               % Vector of strictly increasing time 
+                            % samples (DOUBLE)
     end
     
     % DEPENDENT PROPERTIES:
     properties ( Access = public, Dependent = true )
-        numVars             % Number of unknown functions (1x1 DOUBLE)
+        numVars             % Number of unknown functions (1x1 INT)
     end
     
     % DEPENDENT AND HIDDEN PROPERTIES:

@@ -38,11 +38,11 @@ classdef spinscheme
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
         
-        stages          % number of internal stages (1x1 DOUBLE)
-        order           % order of the method (1x1 DOUBLE)
+        stages          % number of internal stages (1x1 INT)
+        order           % order of the method (1x1 INT)
         scheme          % Time-stepping scheme (STRING)
         steps           % number of previous time-steps used, 1 if one-step
-                        % method, > 1 if multistep method (1x1 DOUBLE)
+                        % method, > 1 if multistep method (1x1 INT)
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
