@@ -19,12 +19,8 @@ classdef spinop2 < spinoperator
 %               @(u) A*laplacian(u) + B*biharmonic(u), 
 %
 %           for some numbers A and B, and the nonlinear part has to be of the 
-%           form, 
-%
-%               @(u) f(u), 
-%
-%           where f is a nonlinear function of u that does not involve any 
-%           derivatives of u.
+%           form @(u) f(u), where f is a nonlinear function of u that does not 
+%           involve any derivatives of u.
 %
 % Example 1: To construct a SPINOP2 corresponding to the GL2 equation on 
 %            DOM = [0 200]^2 x TSPAN = [0 10] with initial condition 

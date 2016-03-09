@@ -19,10 +19,8 @@ classdef spinop3 < spinoperator
 %               @(u) A*laplacian(u) + B*biharmonic(u), 
 %
 %           for some numbers A and B, and the nonlinear part has to be of the 
-%           form, 
-%
-%           where f is a nonlinear function of u that does not involve any 
-%           derivatives of u.
+%           form @(u) f(u), where f is a nonlinear function of u that does not 
+%           involve any derivatives of u.
 %
 % Example 1: To construct a SPINOP3 corresponding to the GL3 equation on 
 %            DOM = [0 100]^3 x TSPAN = [0 10] with random initial condition, one 
