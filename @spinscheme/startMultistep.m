@@ -38,7 +38,7 @@ while ( iter <= q-1 )
     
     [cNew, NcNew] = oneStep(K, schemeCoeffs, Nc, Nv, nVars, uSol, NuSol);
      
-    % If adpative in time, two steps in time with DT/2 and N points:
+    % If adpative in time, two steps in time with DT/2:
     if ( adaptiveTime == 1 )
         [cNew2, NcNew2] = oneStep(K, schemeCoeffs2, Nc, Nv, nVars, uSol, NuSol);
         [cNew2, NcNew2] = oneStep(K, schemeCoeffs2, Nc, Nv, nVars, cNew2, ...
@@ -53,11 +53,16 @@ while ( iter <= q-1 )
             uSol = cNew2;
             iter = iter + 1;
             
-        % Otherwise, redo the step with DT/2 and N points:
+        % Otherwise, redo all the steps with DT/2:
         else
             dt = dt/2;
             schemeCoeffs = schemeCoeffs2;
             schemeCoeffs2 = computeCoeffs(K, dt/2, L, M, S);
+            uSol = [];
+            NuSol = [];
+            uSol{1} = coeffs{q};
+            NuSol{1} = Ncoeffs{q};
+            iter = 1;
         end
         
     % If not adaptive in time, keep CNEW:
