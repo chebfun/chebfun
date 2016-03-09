@@ -1,9 +1,23 @@
 function foo
 
-problem = 1;
+problem = 0;
+
+% coupled system of odes
+if ( problem == 0)
+dom = [0,1];
+x = chebfun('x', dom);
+
+N = chebop(dom);
+%N.op = @(x,u,v) [ diff(u) + x.*v; u + cos(x).*diff(v) ];
+N.op = @(x,u,v) [diff(u) + x.*v] ;
+%N.lbc = @(u,v)  [u-1;v+3]; 
+
+L = linearize(N);
+pref = chebfunpref();
+[Lstar,op] = formalAdjoint(L,pref)
 
 % scalar ivp control problem
-if ( problem == 1)
+elseif ( problem == 1)
 dom = [0,10];
 a = 1;
 b = 1;

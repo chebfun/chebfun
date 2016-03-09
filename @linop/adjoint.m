@@ -334,20 +334,24 @@ else
     else
       bcOpR = '@(u) ';
     end
+    shft = 0; 
+    if ( ~isempty(indsL) ) 
+      shft = indsL(end);
+    end
     for ii = indsR
-      varname = genvarname(['br', int2str(ii-indsL(end)), int2str(n-1)]);
+      varname = genvarname(['br', int2str(ii-shft), int2str(n-1)]);
       eval([varname, ' = Bstar(ii,1);']);
-      bcOpR = [bcOpR,'br', int2str(ii-indsL(end)), int2str(n-1),...
+      bcOpR = [bcOpR,'br', int2str(ii-shft), int2str(n-1),...
                '*diff(u,', int2str(n-1), ')'];
       for jj = 2:n-1
-        varname = genvarname(['br', int2str(ii-indsL(end)), int2str(n-jj)]);
+        varname = genvarname(['br', int2str(ii-shft), int2str(n-jj)]);
         eval([varname, ' = Bstar(ii,jj);']);
-        bcOpR = [bcOpR,' + ',['br', int2str(ii-indsL(end)), int2str(n-jj)],...
+        bcOpR = [bcOpR,' + ',['br', int2str(ii-shft), int2str(n-jj)],...
                  '*diff(u,',int2str(jj-1),')'];
       end
-      varname = genvarname(['br', int2str(ii-indsL(end)), int2str(0)]);
+      varname = genvarname(['br', int2str(ii-shft), int2str(0)]);
       eval([varname, ' = Bstar(ii,n);']);
-      bcOpR = [bcOpR,' + br', int2str(ii-indsL(end)), '0*u; '];
+      bcOpR = [bcOpR,' + br', int2str(ii-shft), '0*u; '];
     end
     if ( length(indsR) > 1 )
       bcOpR = [bcOpR,'];'];
