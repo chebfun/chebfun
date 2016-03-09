@@ -104,24 +104,19 @@ else
 end
  
 % Nonlinear evaluation of the solution at t_{n+1}:
-switch K.scheme
-    case {'pec423', 'pecec433', 'pec524', 'pecec534', 'pec625', 'pecec635', ...
-            'pec726', 'pecec736'}
-        Nsol = NvSol{end};
-    otherwise
-        vals = ifftn(uSol{1}(1:N,:,:));
-        for k = 1:nVars-1
-            idx = k*N + 1;
-            vals = [vals; ifftn(uSol{1}(idx:idx+N-1,:,:))]; %#ok<*AGROW>
-        end
-        vals = Nv(vals);
-        coeffs = fftn(vals(1:N,:,:));
-        for k = 1:nVars-1
-            idx = k*N + 1;
-            coeffs = [coeffs; fftn(vals(idx:idx+N-1,:,:))];
-        end
-        Nsol = Nc.*coeffs;
+vals = ifftn(uSol{1}(1:N,:,:));
+for k = 1:nVars-1
+    idx = k*N + 1;
+    vals = [vals; ifftn(uSol{1}(idx:idx+N-1,:,:))]; %#ok<*AGROW>
 end
+vals = Nv(vals);
+coeffs = fftn(vals(1:N,:,:));
+for k = 1:nVars-1
+    idx = k*N + 1;
+    coeffs = [coeffs; fftn(vals(idx:idx+N-1,:,:))];
+end
+Nsol = Nc.*coeffs;
+
 
 % Update the nonlinear evaluations:
 if ( q == 1 )

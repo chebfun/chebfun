@@ -208,49 +208,49 @@ classdef spinscheme
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 % PREDICTOR-CORRECTOR:
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                case {'pec423', 'pece423'}
+                case 'pec423'
                     K.order = 4;
                     K.stages = 2;
                     K.steps = 3;
                     K.scheme = schemeName;
                     
-                case {'pecec433', 'pecece433'}
+                case 'pecec433'
                     K.order = 4;
                     K.stages = 3;
                     K.steps = 3;
                     K.scheme = schemeName;
                     
-                case {'pec524', 'pece524'}
+                case 'pec524'
                     K.order = 5;
                     K.stages = 2;
                     K.steps = 4;
                     K.scheme = schemeName;
                     
-                case {'pecec534', 'pecece534'}
+                case 'pecec534'
                     K.order = 5;
                     K.stages = 3;
                     K.steps = 4;
                     K.scheme = schemeName;
                     
-                case {'pec625', 'pece625'}
+                case 'pec625'
                     K.order = 6;
                     K.stages = 2;
                     K.steps = 5;
                     K.scheme = schemeName;
                     
-                case {'pecec635', 'pecece635'}
+                case 'pecec635'
                     K.order = 6;
                     K.stages = 3;
                     K.steps = 5;
                     K.scheme = schemeName;
                     
-                case {'pec726', 'pece726'}
+                case 'pec726'
                     K.order = 7;
                     K.stages = 2;
                     K.steps = 6;
                     K.scheme = schemeName;
                     
-                case {'pecec736', 'pecece736'}
+                case 'pecec736'
                     K.order = 7;
                     K.stages = 3;
                     K.steps = 6;

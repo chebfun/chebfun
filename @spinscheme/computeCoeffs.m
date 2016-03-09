@@ -961,7 +961,7 @@ switch schemeName
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % PREDICTOR-CORRECTOR:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    case {'pec423', 'pece423'}
+    case 'pec423'
         
         % Compute C:
         C(1) = 0;
@@ -993,7 +993,7 @@ switch schemeName
         V{1} = -phi{2} + phi{3} + 3*phi{4};
         V{2} = 1/6*phi{2} - phi{4};
         
-    case {'pecec433', 'pecece433'}
+    case 'pecec433'
         
         % Compute C:
         C(1) = 0;
@@ -1032,7 +1032,7 @@ switch schemeName
         V{1} = -phi{2} + phi{3} + 3*phi{4};
         V{2} = 1/6*phi{2} - phi{4};
         
-    case {'pec524', 'pece524'}
+    case 'pec524'
         
         % Compute C:
         C(1) = 0;
@@ -1067,7 +1067,7 @@ switch schemeName
         V{2} = 1/2*phi{2} + 1/3*phi{3} - 3*phi{4} - 4*phi{5};
         V{3} = -1/12*phi{2} - 1/12*phi{3} + 1/2*phi{4} + phi{5};
         
-    case {'pecec534', 'pecece534'}
+    case 'pecec534'
         
         % Compute C:
         C(1) = 0;
@@ -1111,7 +1111,7 @@ switch schemeName
         V{2} = 1/2*phi{2} + 1/3*phi{3} - 3*phi{4} - 4*phi{5};
         V{3} = -1/12*phi{2} - 1/12*phi{3} + 1/2*phi{4} + phi{5};
         
-    case {'pec625', 'pece625'}
+    case 'pec625'
         
         % Compute C:
         C(1) = 0;
@@ -1149,7 +1149,7 @@ switch schemeName
         V{3} = -1/3*phi{2} - 1/2*phi{3} + 7/4*phi{4} + 6*phi{5} + 5*phi{6};
         V{4} = 1/20*phi{2} + 1/12*phi{3} - 1/4*phi{4} - phi{5} - phi{6};
         
-    case {'pecec635', 'pecece635'}
+    case 'pecec635'
         
         % Compute C:
         C(1) = 0;
@@ -1196,7 +1196,7 @@ switch schemeName
         V{3} = -1/3*phi{2} - 1/2*phi{3} + 7/4*phi{4} + 6*phi{5} + 5*phi{6};
         V{4} = 1/20*phi{2} + 1/12*phi{3} - 1/4*phi{4} - phi{5} - phi{6};
         
-    case {'pec726', 'pece726'}
+    case 'pec726'
         
         % Compute C:
         C(1) = 0;
@@ -1243,7 +1243,7 @@ switch schemeName
         V{5} = -1/30*phi{2} - 13/180*phi{3} + 1/8*phi{4} + 5/6*phi{5} + ...
             3/2*phi{6} + phi{7};
         
-    case {'pecec736', 'pecece736'}
+    case 'pecec736'
         
         % Compute C:
         C(1) = 0;
