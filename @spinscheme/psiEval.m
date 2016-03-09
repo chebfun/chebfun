@@ -1,6 +1,6 @@
 function psi = psiEval(l, C, LR, N, dim, nVars)
 %PSIEVAL   Evaluate a psi function.
-%   PSI = PSIEVAL(L, LR, N, DIM, NVARS) evaluates the psi-function of index L 
+%   PSI = PSIEVAL(L, C, LR, N, DIM, NVARS) evaluates the psi-function of index L 
 %   and coefficient C with the contour LR, N grid points, in dimension DIM and 
 %   with NVARS variables.
 %

@@ -1,11 +1,11 @@
 function [uSol, NuSol] = oneStep(K, schemeCoeffs, Nc, Nv, nVars, uSol, NuSol)
 %ONESTEP   Compute solution at t_{n+1} from solution at previous time-steps.
-%   [USOL, NUSOL] = ONESTEP(K, SCHEMECOEFFS, NC, S, USOL, NUSOL) updates the 
-%   solution USOL and its nonlinear evaluations NUSOL using the coefficients 
+%   [USOL, NUSOL] = ONESTEP(K, SCHEMECOEFFS, NC, NV, NVARS, USOL, NUSOL) updates 
+%   the solution USOL and its nonlinear evaluations NUSOL using the coefficients 
 %   SCHEMECOEFFS of the SPINSCHEME K, the nonlinear parts of the PDE in 
 %   coefficient and value space NC and NV, and the number of variables NVARS.
 
-% Notes: USOL and NUSOL are cell-arrays of Fourier coefficients that represents 
+% Notes: USOL and NUSOL are cell-arrays of Fourier coefficients that represent 
 % the solution at different time-steps. They have Q entries for a multi-step 
 % scheme with Q steps. USOL{1} is the vector of Fourier coefficients of the 
 % solution at t_{n} (a matrix in 2D and a tensor in 3D), USOL{2} is the solution 
