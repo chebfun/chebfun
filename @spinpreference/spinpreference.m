@@ -1,7 +1,7 @@
 classdef spinpreference
 %SPINPREFERENCE   Abstract class for managing preferences for SPIN, SPIN2 and 
 %SPIN3.
-%   SPINPREFERENCE is an abstract class for mananig preferences when solving 
+%   SPINPREFERENCE is an abstract class for managing preferences when solving 
 %   a time-dependent PDE defined by a SPINOPERATOR. SPINPREF (for SPIN in 1D), 
 %   SPINPREF2 (for SPIN2 in 2D) and SPINPREF3 (for SPIN3 in 3D) are full 
 %   implementations.

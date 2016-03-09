@@ -16,11 +16,11 @@ classdef spinop < spinoperator
 %   S.PROP = VALUE. See Remark 1 and Example 1.
 % 
 % Remark 1: The linear part can be any linear constant-coefficient differential
-%           operator, e.g., @(u) diff(u,3) + u. The nonlinear par has to be
+%           operator, e.g., @(u) diff(u,3) + u. The nonlinear part has to be
 %           constant-coefficient and of the form @(u) C*diff(f(u), m), where C 
 %           is a number, f is a nonlinear function of u that does not involve 
 %           any derivatives of u, and m is the differentiation order. If m=0, 
-%           the nonlinear par can be of any form. The following function handles 
+%           the nonlinear part can be of any form. The following function handles 
 %           are allowed:
 %
 %               L = @(u) .5*diff(u.^2);
