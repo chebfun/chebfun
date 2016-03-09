@@ -77,7 +77,7 @@ classdef spinpref3 < spinpreference
     %% CLASS PROPERTIES:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
-        Clim         % Limits of the colorbar (2*NVARSx1 DOUBLE)
+        Clim         % Limits of the colorbar (1x2*NVARS DOUBLE)
         slices       % Slices of the volumetric slice plot (1x3 CELL, slices{1}
                      % is a DOUBLE of positions x corresponding to the slices 
                      % x=constant, same for slices{2} and slices{3} with y and
@@ -91,6 +91,9 @@ classdef spinpref3 < spinpreference
         
         function pref = spinpref3(varargin) 
             if ( nargin == 0 )
+                pref.dataToPlot = 'real';
+                pref.dealias = 'off';
+                pref.dtmin = 1e-10;
                 pref.dtmax = 5;
                 pref.errTol = 1e-2;
                 pref.iterPlot = 1;
@@ -98,11 +101,20 @@ classdef spinpref3 < spinpreference
                 pref.N = 32;
                 pref.Nmin = 32;
                 pref.Nmax = 128;
+                pref.plot = 'movie';
+                pref.scheme = 'etdrk4';
             elseif ( nargin == 1 )
                 pdechar = varargin{1};
+                pref.dataToPlot = 'real';
+                pref.dealias = 'off';
                 pref.dtmin = [];
+                pref.dtmax = [];
                 pref.errTol = 1e-2;
                 pref.M = 32;
+                pref.Nmin = [];
+                pref.Nmax = [];
+                pref.plot = 'movie';
+                pref.scheme = 'etdrk4';
                 if ( strcmpi(pdechar, 'GL3') == 1 )
                     pref.dt = 2e-1;
                     pref.iterPlot = 1;

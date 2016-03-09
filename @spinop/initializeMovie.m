@@ -55,7 +55,7 @@ for k = 1:nVars
 end
 
 % Title:
-titleString = sprintf('Nx = %i (DoFs = %i), dt = %1.1e, t = %.4f', N, ...
+titleString = sprintf('N = %i (DoFs = %i), dt = %1.1e, t = %.4f', N, ...
     nVars*N, dt, 0);
 set(gcf, 'NextPlot', 'add');
 ax = axes;

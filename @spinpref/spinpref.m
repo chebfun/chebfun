@@ -84,18 +84,30 @@ classdef spinpref < spinpreference
         
         function pref = spinpref(varargin) 
             if ( nargin == 0 )
+                pref.dataToPlot = 'real';
+                pref.dealias = 'off';
+                pref.dtmin = 1e-10;
                 pref.dtmax = 1e-1;
                 pref.errTol = 1e-6;
                 pref.iterPlot = 20;
                 pref.M = 64;
                 pref.Nmin = 256;
                 pref.Nmax = 4096;
+                pref.plot = 'movie';
+                pref.scheme = 'etdrk4';
             elseif ( nargin == 1 )
                 pdechar = varargin{1};
+                pref.dataToPlot = 'real';
+                pref.dealias = 'off';
                 pref.dtmin = [];
+                pref.dtmax = [];
                 pref.errTol = 1e-6;
                 pref.iterPlot = 20;
                 pref.M = 64;
+                pref.Nmin = [];
+                pref.Nmax = [];
+                pref.plot = 'movie';
+                pref.scheme = 'etdrk4';
                 if ( strcmpi(pdechar, 'AC') == 1 )
                     pref.dt = 1e-1;
                     pref.N = 256;  

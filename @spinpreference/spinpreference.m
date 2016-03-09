@@ -15,10 +15,10 @@ classdef spinpreference
     %% CLASS PROPERTIES:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
-        dataToPlot = 'real'; % Which data to plot when complex values (STRING)
-        dealias = 'off';     % To use dealiasing with 2/3-rule (STRING)
+        dataToPlot           % Which data to plot when complex values (STRING)
+        dealias              % To use dealiasing with 2/3-rule (STRING)
         dt                   % Time-step (1x1 DOUBLE)
-        dtmin = 1e-10;       % Min. time-step for apative time-grid (1x1 DOUBLE)
+        dtmin                % Min. time-step for apative time-grid (1x1 DOUBLE)
         dtmax                % Max. time-step for apative time-grid (1x1 DOUBLE)
         errTol               % Desired accuracy on the solution (1x1 DOUBLE)
         iterPlot             % Plot every ITERPLOT iterations (1x1 INT)
@@ -26,8 +26,8 @@ classdef spinpreference
         N                    % Number of points for space-grid (1x1 INT)
         Nmin                 % Min. # of pts for apative space-grid (1x1 INT)
         Nmax                 % Max. # of pts for apative space-grid (1x1 INT)
-        plot  = 'movie';     % Plot options (STRING)
-        scheme = 'etdrk4';   % Time-stepping scheme (STRING)
+        plot                 % Plot options (STRING)
+        scheme               % Time-stepping scheme (STRING)
     end
    
 end

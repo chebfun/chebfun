@@ -53,7 +53,7 @@ for k = 1:nVars
 end
 
 % Update title:
-titleString = sprintf('Nx = %i (DoFs = %i), dt = %1.1e, t = %.4f', N, ...
+titleString = sprintf('N = %i (DoFs = %i), dt = %1.1e, t = %.4f', N, ...
     nVars*N, dt, t);
 set(p{nVars + 1}, 'String', titleString)
 
