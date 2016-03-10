@@ -52,7 +52,7 @@ function [uout, tout] = spin2(varargin)
 %
 %    solves the Gray-Scott equations 
 %
-%       u_t = 2e-5*laplacian(u) + 3.5e-2*(1-u)*u - u*v^2,
+%       u_t = 2e-5*laplacian(u) + 3.5e-2*(1-u) - u*v^2,
 %       v_t = 1e-5*laplacian(v) - 9.5e-2*v + u*v^2,
 %
 %    on [0 1.25]^2 from t=0 to t=10000, with initial condition 
