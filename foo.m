@@ -8,11 +8,31 @@ dom = [0,1];
 x = chebfun('x', dom);
 
 N = chebop(dom);
-N.op = @(x,u,v) [ diff(u,2) + x.*v; u + cos(x).*diff(v) ];
-N.lbc = @(u,v)  [u;diff(u);v]; 
+%N.op = @(x,u1,u2) [ diff(u1,2) + x.*u2; u1 + cos(x).*diff(u2) ];
+N.op = @(x,u1,u2) [ diff(u1,2); diff(u2) ];
+N.lbc = @(u1,u2)  [u1-pi*diff(u1);sqrt(2)*diff(u1);u2/3]; 
+%N.lbc = @(u1,u2)  [u1-pi*diff(u1);sqrt(2)*diff(u1)+u2/3]; 
+%N.rbc = @(u1,u2)  u2+3; 
 
 L = linearize(N);
-[Lstar,op] = adjoint(L,'ivp')
+[Lstar,op] = adjoint(L,'bvp');
+
+f = exp(x);
+g = sin(cos(x));
+rhs = [f;g];
+
+pref = cheboppref();
+pref.discretization = @chebcolloc2;
+u = linsolve(L,rhs,pref);
+u1 = u{1}; u2 = u{2};
+subplot(2,1,1), plot([u1,u2])
+
+v = linsolve(Lstar,rhs,pref);
+v1 = v{1}; v2 = v{2};
+subplot(2,1,2), plot([v1,v2])
+
+v'*(L*u)
+(Lstar*v)'*u
 
 % scalar ivp control problem
 elseif ( problem == 1)
