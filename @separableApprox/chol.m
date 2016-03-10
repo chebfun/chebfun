@@ -74,14 +74,15 @@ if ( nargout < 2 && ~isempty( posdef ) && ~posdef )
 end
 
 % Get the CDR decomposition (already computed by constructor):
+f = chebfun2(@(x,y) feval( f, x, y ), f.domain);
 [C, D, R] = cdr( f );
 
 % Return an error if the function is not symmetric: 
 dom = f.domain; 
 r = 0.0192475;   % arbitrary point in [-1,1] 
 s = -.34756987;  % arbitrary point in [-1,1]
-r = diff(dom(1:2))*r - dom(1); 
-s = diff(dom(3:4))*s - dom(3); 
+r = diff(dom(1:2))/2*r + mean(dom(1:2)); 
+s = diff(dom(3:4))/2*s + mean(dom(3:4)); 
 symTest = abs(feval(f,r,s) - feval(f,s,r)) < 1e2*eps;
 if ( ~symTest )
     error('CHEBFUN:SEPARABLEAPPROX:chol:symmetric', ...
