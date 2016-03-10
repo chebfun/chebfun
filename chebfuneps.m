@@ -1,14 +1,18 @@
 function varargout = chebfuneps(val)
-%CHEBFUNEPS   Set chebfuneps globally.
-%   CHEBFUNEPS val, or CHEBFUNEPS(val) sets the value of chebfuneps to be equal to the 
-%   specified value val.
+%CHEBFUNEPS   Set the default value of the chebfuneps preference.
+%   CHEBFUNEPS VAL, or CHEBFUNEPS(VAL) sets the value of chebfuneps to be 
+%   equal to the specified value VAL. CHEBFUNEPS(VAL) is equivalent to 
+%   CHEBFUNPREF.SETDEFAULTS('chebfuneps', VAL).
 %
 %   CHEBFUNEPS factory, or CHEBFUNEPS('factory') sets the chebfuneps to be equal to 
 %   the factory value.
 %
 %   CHEBFUNEPS prints the current value of chebfuneps.
 %
-% See also CHEBFUN2EPS and CHEBFUN3EPS.
+%   If changing the preference is needed only for a single construction, 
+%   calling constructor with the 'eps' flag is a better option.
+%
+% See also CHEBFUN2EPS.
 
 if ( nargin == 0 )
     % Return current chebfuneps:
@@ -22,7 +26,7 @@ else
         val = prefs.techPrefs.chebfuneps;
         chebfunpref.setDefaults('chebfuneps',val);
         
-    elseif double(val)
+    elseif isnumeric(val)
         if ischar(val)
             val = str2double(val);
         end
@@ -30,7 +34,7 @@ else
         
     else
         error('CHEBFUN:chebfuneps:UnknownOption',...
-            'Unknown chebfuneps option.')
+            'Unknown CHEBFUNEPS option.')
     end
 end
 

@@ -17,8 +17,7 @@ function X = bartelsStewart(A, B, C, D, E, xsplit, ysplit)
 % Copyright 2015 by The University of Oxford and The Chebfun2 Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-pref = chebfunpref();
-tol = pref.cheb2Prefs.chebfun2eps;
+tol = eps();
 
 % If the RHS is zero then the solution is the zero solution (assuming
 % uniqueness).

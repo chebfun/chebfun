@@ -108,7 +108,7 @@ classdef chebfunpref < chebpref
 %      technology.  Additionally, all techs are required to accept the following
 %      preferences:
 %
-%      chebfuneps                     - Construction tolerance.
+%      chebfuneps              - Construction tolerance.
 %
 %        A positive floating-point number specifying the relative tolerance to
 %        which the representation should be constructed.
