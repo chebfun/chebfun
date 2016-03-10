@@ -42,9 +42,9 @@ function [uout, tout] = spin2(varargin)
 %
 %    solves the Ginzburg-Landau equation 
 %
-%        u_t = laplacian(u) + u - (1+1.3i)*u*|u|^2,
+%        u_t = laplacian(u) + u - (1+1.5i)*u*|u|^2,
 %
-%    on [0 200]^2 from t=0 to t=100, with a random initial condition.
+%    on [0 100]^2 from t=0 to t=100, with a random initial condition.
 %
 % Example 2: Gray-Scott equations (fingerprints patterns)
 %

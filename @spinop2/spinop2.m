@@ -106,8 +106,8 @@ end
         % Ginzburg-Landau equation:
         if ( strcmpi(pdechar, 'GL2') == 1 )
             L = @(u) lap(u);
-            N = @(u) u - (1 + 1.3i)*u.*(abs(u).^2);
-            dom = [0 200 0 200];
+            N = @(u) u - (1 + 1.5i)*u.*(abs(u).^2);
+            dom = [0 100 0 100];
             tspan = [0 100];
             vals = .1*randn(128, 128);
             u0 = chebfun2(vals, dom, 'trig');
