@@ -26,7 +26,7 @@ zzplot = [zzplot; zzplot(1,:,:)];
 zzplot = [zzplot, zzplot(:,1,:)];
 
 % Finer grid for interploation:
-Nplot = max(N, 100);
+Nplot = max(N, 64);
 ttx = trigpts(Nplot, dom(1:2));
 tty = trigpts(Nplot, dom(3:4));
 ttz = trigpts(Nplot, dom(5:6));

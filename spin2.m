@@ -55,7 +55,7 @@ function [uout, tout] = spin2(varargin)
 %       u_t = 2e-5*laplacian(u) + 3.5e-2*(1-u) - u*v^2,
 %       v_t = 1e-5*laplacian(v) - 9.5e-2*v + u*v^2,
 %
-%    on [0 1.25]^2 from t=0 to t=10000, with initial condition 
+%    on [0 1.25]^2 from t=0 to t=8000, with initial condition 
 %
 %       u0(x,y) = 1 - exp(-150*((x-G/2.05)^2 + (y-G/2.05)^2)),
 %       v0(x,y) = exp(-150*((x-G/2)^2 + 2*(y-G/2)^2)),

@@ -55,10 +55,10 @@ function [uout, tout] = spin3(varargin)
 %       u_t = 2e-5*laplacian(u) + 3.5e-2*(1-u)*u - u*v^2,
 %       v_t = 1e-5*laplacian(v) - 9.5e-2*v + u*v^2,
 %
-%    on [0 .75]^3 from t=0 to t=1600, with initial condition 
+%    on [0 .75]^3 from t=0 to t=3000, with initial condition 
 %
-%       u0(x,y,z) = 1 - exp(-150*((x-G/2)^2 + (y-G/2)^2 + (z-G/2)^2)),
-%       v0(x,y,z) = exp(-150*((x-G/2)^2 + 2*(y-G/2)^2 + (z-G/2)^2)),
+%       u0(x,y,z) = 1 - exp(-150*((x-G/2.15)^2 + (y-G/2.15)^2 + (z-G/2.15)^2)),
+%       v0(x,y,z) = exp(-150*((x-G/2)^2 + 2*(y-G/2)^2 + 2(z-G/2)^2)),
 %           with G=.75.
 %
 % Example 3: Schnakenberg equations (pattern formation)
