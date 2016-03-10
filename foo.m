@@ -8,13 +8,11 @@ dom = [0,1];
 x = chebfun('x', dom);
 
 N = chebop(dom);
-%N.op = @(x,u,v) [ diff(u) + x.*v; u + cos(x).*diff(v) ];
-N.op = @(x,u,v) [diff(u) + x.*v] ;
-%N.lbc = @(u,v)  [u-1;v+3]; 
+N.op = @(x,u,v) [ diff(u,2) + x.*v; u + cos(x).*diff(v) ];
+N.lbc = @(u,v)  [u;diff(u);v]; 
 
 L = linearize(N);
-pref = chebfunpref();
-[Lstar,op] = formalAdjoint(L,pref)
+[Lstar,op] = adjoint(L,'ivp')
 
 % scalar ivp control problem
 elseif ( problem == 1)

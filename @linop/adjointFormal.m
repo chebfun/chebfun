@@ -1,6 +1,6 @@
-function [Lstar, op] = formalAdjoint(L, pref)
-%FORMALADJOINT   Compute the formal adjoint of a linear differential LINOP.
-%   [LSTAR, OP] = FORMALADJOINT(L, PREF), where L is a LINOP, returns the formal 
+function [Lstar, op] = adjointFormal(L, pref)
+%ADJOINTFORMAL   Compute the formal adjoint of a linear differential LINOP.
+%   [LSTAR, OP] = ADJOINTFORMAL(L, PREF), where L is a LINOP, returns the formal 
 %   adjoint LINOP of L, LSTAR, under the condition that L is a linear 
 %   differential operator, i.e. 
 %
