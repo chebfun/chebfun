@@ -74,7 +74,6 @@ if ( nargout < 2 && ~isempty( posdef ) && ~posdef )
 end
 
 % Get the CDR decomposition (already computed by constructor):
-f = chebfun2(@(x,y) feval( f, x, y ), f.domain);
 [C, D, R] = cdr( f );
 
 % Return an error if the function is not symmetric: 
