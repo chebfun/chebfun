@@ -21,23 +21,15 @@ function varargout = chebfuneps(val)
 
 if ( nargin == 0 )
     % Return current chebfuneps:
-    chebfunepsVal = chebfunpref().techPrefs.chebfuneps;
-    varargout{1} = chebfunepsVal;
-    
+    varargout{1} = chebfunpref().techPrefs.chebfuneps;
 else
-    
     if ( strcmpi(val, 'factory') )
-        prefs = chebfunpref.getFactoryDefaults();
-        val = prefs.techPrefs.chebfuneps;
-        chebfunpref.setDefaults('chebfuneps', val);
-        
+        chebfunpref.setDefaults('chebfuneps', 'factory');
     elseif ( isnumeric(val) )
         chebfunpref.setDefaults('chebfuneps', val);
-        
     elseif ( ischar(val) )
         val = str2double(val);
         chebfunpref.setDefaults('chebfuneps', val);
-        
     else
         error('CHEBFUN:chebfuneps:unknownOption',...
             'Unknown CHEBFUNEPS option.')

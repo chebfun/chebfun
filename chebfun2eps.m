@@ -2,11 +2,12 @@ function varargout = chebfun2eps(val)
 %CHEBFUN2EPS   Set the default value of the chebfun2eps preference.
 %   CHEBFUN2EPS VAL, or CHEBFUN2EPS(VAL) sets the default value of 
 %   chebfun2eps preference to the specified value VAL. CHEBFUN2EPS(VAL) is 
-%   equivalent to 
-%   CHEBFUNPREF.SETDEFAULTS({'cheb2Prefs','chebfun2eps'}, VAL).
+%   equivalent to CHEBFUNPREF.SETDEFAULTS({'cheb2Prefs', 'chebfun2eps'}, VAL).
 %
 %   CHEBFUN2EPS factory, or CHEBFUN2EPS('factory') sets the default 
-%   chebfun2eps preference to the factory value. 
+%   chebfun2eps preference to the factory value. CHEBFUN2EPS('factory') is
+%   equivalent to CHEBFUNPREF.SETDEFAULTS({'cheb2prefs', 'chebfun2eps'},
+%   'factory').
 %
 %   CHEBFUN2EPS prints the current default value of the chebfun2eps 
 %   preference.
@@ -21,23 +22,15 @@ function varargout = chebfun2eps(val)
 
 if ( nargin == 0 )
     % Return current chebfun2eps:
-    chebfun2epsVal = chebfunpref().cheb2Prefs.chebfun2eps;
-    varargout{1} = chebfun2epsVal;
-    
+    varargout{1} = chebfunpref().cheb2Prefs.chebfun2eps;
 else
-
     if ( strcmpi(val, 'factory') )
-        prefs = chebfunpref.getFactoryDefaults();
-        val = prefs.cheb2Prefs.chebfun2eps;
-        chebfunpref.setDefaults({'cheb2Prefs','chebfun2eps'}, val);
-        
+        chebfunpref.setDefaults({'cheb2Prefs','chebfun2eps'}, 'factory');
     elseif ( isnumeric(val) )
         chebfunpref.setDefaults({'cheb2Prefs','chebfun2eps'}, val);
-        
     elseif ( ischar(val) )
         val = str2double(val);
         chebfunpref.setDefaults({'cheb2Prefs','chebfun2eps'}, val);
-        
     else
         error('CHEBFUN:chebfun2eps:unknownOption',...
             'Unknown CHEBFUN2EPS option.')
