@@ -150,6 +150,34 @@ try
     pass(22) = isnumeric(chebfunpref().chebfuneps);
     pass(23) = ischar(chebfunpref().blowupPrefs.defaultSingType);
     pass(24) = ischar(chebfunpref().refinementFunction);
+
+    % Test setting factory defaults for individual preferences.
+    chebfunpref.setDefaults('factory');
+    chebfunpref.setDefaults('domain', [-2 7]);
+    res1 = chebfunpref().domain;
+    chebfunpref.setDefaults('domain', 'factory');
+    res2 = chebfunpref().domain;
+    pass(25) = isequal(res1, [-2 7]) && isequal(res2, factoryPrefs.domain);
+
+    chebfunpref.setDefaults('factory');
+    chebfunpref.setDefaults({'cheb2Prefs', 'maxRank'}, 5);
+    res1 = chebfunpref().cheb2Prefs.maxRank;
+    chebfunpref.setDefaults({'cheb2Prefs', 'maxRank'}, 'factory');
+    res2 = chebfunpref().cheb2Prefs.maxRank;
+    pass(26) = isequal(res1, 5) && isequal(res2, factoryPrefs.cheb2Prefs.maxRank);
+
+    chebfunpref.setDefaults('factory');
+    chebfunpref.setDefaults('chebfuneps', 1e-6);
+    res1 = chebfunpref().chebfuneps;
+    chebfunpref.setDefaults('chebfuneps', 'factory');
+    res2 = chebfunpref().chebfuneps;
+    pass(27) = isequal(res1, 1e-6) && isequal(res2, factoryPrefs.chebfuneps);
+
+    chebfunpref.setDefaults('factory');
+    chebfunpref.setDefaults('bogusPref', 'abc');
+    res1 = chebfunpref().bogusPref;
+    chebfunpref.setDefaults('bogusPref', 'factory');
+    pass(28) = isequal(res1, 'abc') && ~isfield(chebfunpref().techPrefs, 'bogusPref');
     
 catch ME
     
