@@ -3,9 +3,9 @@ function H = cross( F, G )
 %   CROSS(F, G) returns the cross product of the DISKFUNV objects F and G. If F
 %   and G both have two components, then it returns the DISKFUNV representing
 %       CROSS(F,G) = F(1) * G(2) - F(2) * G(1)
-%   where F = (F(1); F(2)) and G = (G(1); G(2)). If F and G have three
-%   components then it returns the DISKFUNV representing the 3D cross 
-%   product.
+%   where F = (F(1); F(2)) and G = (G(1); G(2)). 
+
+% We have not yet implemented an option for three components. 
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information. 
@@ -33,4 +33,4 @@ Gc = G.components;
   %      'DISKFUN2V objects must be both 2- or 3-vectors.');
 end
 
-end
+

@@ -1,5 +1,8 @@
 function varargout = quiver3( F, varargin )
-%QUIVER3   3-D quiver plot of a CHEBFUN2V.
+%QUIVER3   3-D quiver plot of a DISKFUNV.
+%   This file is here in case we want it, but we have not fully implemented
+%   the use of three components in diskfunv. 
+%
 %   QUIVER3(F) plots velocity vectors as arrows with components F(1), F(2),
 %   F(3), which are CHEBFUN2 objects. QUIVER3 automatically scales the arrows to
 %   fit. The arrows are plotted on a uniform grid.
@@ -26,8 +29,8 @@ function varargout = quiver3( F, varargin )
 %
 %   H = QUIVER3(...) returns a quiver object.
 %
-%   If F is a CHEBFUN2V with two components then we recommend using
-%   CHEBFUN2V/QUIVER.
+%   If F is a DISKFUNV with two components then we recommend using
+%   DISKFUNV/QUIVER.
 %
 % See also QUIVER.
 
@@ -87,7 +90,7 @@ elseif ( isa(F, 'diskfun') && isa(varargin{1}, 'diskfunv') )
     F = varargin{1};
     % Domain check:
     if ( ~domainCheck(Z, F.components{1} ) )
-        error('CHEBFUN:CHEBFUN2V:quiver3:domain', ...
+        error('CHEBFUN:DISKFUNV:quiver3:domain', ...
             'Object are not on the same domain.');
     end
     % Workout plotting locations:
@@ -127,7 +130,7 @@ elseif ( nargin > 3 )
         F = varargin{3};
         % Check that we have the right input types: 
         if ( ~isa(yy,'double') || ~isa(zz,'double') || ~isa(F,'diskfunv') )
-            error('CHEBFUN:CHEBFUN2V:quiver3:badInputs1',...
+            error('CHEBFUN:DISKFUNV:quiver3:badInputs1',...
                 'Unrecognised input arguments.');
         end
         % Get plotting data: 
@@ -152,12 +155,12 @@ elseif ( nargin > 3 )
         F = varargin{3};
         % Check that we have the right input types: 
         if ( ~isa(Y,'diskfun') || ~isa(Z,'diskfun') || ~isa(F,'diskfunv') )
-            error('CHEBFUN:CHEBFUN2V:quiver3:badInputs2', ...
+            error('CHEBFUN:DISKFUNV:quiver3:badInputs2', ...
                 'Unrecognised input arguments.');
         end
         % Check domains: 
         if ( ~domainCheck(X, Y) || (~domainCheck(Y, Z) ) )
-            error('CHEBFUN:CHEBFUN2V:quiver3:domain',...
+            error('CHEBFUN:DISKFUNV:quiver3:domain',...
                 'Object are not on the same domain.');
         end
         
@@ -171,7 +174,7 @@ elseif ( nargin > 3 )
     end
     
 else
-    error('CHEBFUN:CHEBFUN2V:quiver3:badInputs3',...
+    error('CHEBFUN:DISKFUNV:quiver3:badInputs3',...
         'Unrecognised input arguments.');
 end
 
