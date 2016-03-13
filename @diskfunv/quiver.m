@@ -4,7 +4,7 @@ function varargout = quiver( F, varargin )
 %   attempts to scale the arrows to fit within the grid. The arrows are on a
 %   uniform grid.
 %
-% BELOW HERE NOT YET IMPLEMENTED: 
+% BELOW HERE NOT YET IMPLEMENTED:
 %   QUIVER(F,S) automatically scales the arrows to fit within the grid and then
 %   stretches them by S.  Use S=0 to plot the arrows without the automatic
 %   scaling. The arrows are on a uniform grid.
@@ -40,24 +40,19 @@ if ( isempty(varargin) )
     varargin = {};
 end
 
-dom = [-pi pi 0 1]; 
-
-%add solid disk when there is no other plot in order to make arrows more visible.
 holdState = ishold;
 if ~holdState
     hold on;
 end
 
-        if ~holdState
-            %
-            % Generate a unit disk
-            N = 200;
-            th = trigpts(N, dom(1:2)); th=[th; dom(2)];
-            r = exp(1i*th);
-            
-            clr = [255 255 204]/255;
-            fill(real(r),imag(r), clr, 'Edgecolor', 'None');             
-        end
+if ~holdState
+    %
+    % Generate a unit disk
+    N = 200;
+    th = linspace(-pi,pi,N)';
+    r = exp(1i*th);
+    plot(real(r),imag(r), 'k--');
+end
 
 % Number of points to plot
 j = 1;
@@ -80,13 +75,17 @@ if ( isa(F, 'diskfunv') )             % quiver(F,...)
     if ( nF == 3 )
         h = quiver3(F, varargin{:});   % Call quiver3 instead.
     else
-        % Plot quiver with arrows at equally spaced points: 
-        [xx, yy] = diskpts(numpts, 0, 0);
+        % Plot quiver with arrows at equally spaced points:
+        [xx, yy] = diskpts(numpts);
         F1 = F.components{1}; F2 = F.components{2};
-        vals1 = feval(F1, xx, yy, 'cart'); 
+        vals1 = feval(F1, xx, yy, 'cart');
         vals2 = feval(F2, xx, yy, 'cart');
         h = quiver(xx, yy, vals1,vals2, varargin{:});
-        axis(1.1*[-1 1 -1 1])
+        if ~holdState
+            axis tight;            
+            axis(max([max(abs(xlim)) abs(ylim)])*[-1 1 -1 1]);
+            axis equal;
+        end
     end
     
 elseif ( nargin >= 3 )                 % quiver(x,y,F,...)
@@ -94,8 +93,8 @@ elseif ( nargin >= 3 )                 % quiver(x,y,F,...)
     % First two arguments contain arrow locations: %for diskfun we need to
     % know if this is cartesian or polar...for now we assume cartesian
     
-    x = F;
-    y = varargin{1};
+    xx = F;
+    yy = varargin{1};
     
     if ( isa(varargin{2}, 'diskfunv') )
         F = varargin{2};
@@ -103,13 +102,15 @@ elseif ( nargin >= 3 )                 % quiver(x,y,F,...)
         if ( nF == 3 )
             h = quiver3(F,varargin{:}); % Call quiver3 instead.
         else
-            [xx, yy] = diskpts(0,x,y); 
             F1 = F.components{1}; F2 = F.components{2};
             vals1 = feval(F1, xx, yy, 'cart');
             vals2 = feval(F2, xx, yy, 'cart');
-            %dom = F1.domain;
             h = quiver( xx, yy, vals1, vals2, varargin{3:end} );
-            axis(1.1*[-1 1 -1 1]);
+            if ~holdState
+                axis tight;
+                axis(max([max(abs(xlim)) abs(ylim)])*[-1 1 -1 1]);
+                axis equal;
+            end
         end
     else
         error('DISKFUN:DISKFUNV:quiver:inputs', ...
@@ -118,33 +119,36 @@ elseif ( nargin >= 3 )                 % quiver(x,y,F,...)
     
 end
 
+if ~holdState
+    hold off;
+end
+
 if ( nargout > 0 )
     varargout = {h};
 end
 
-
- function [xx,yy] = diskpts(s, x,y)  % gets good spaced points on disk in cartesian coords. Will need improvement.
-                                    %for user-input coords, this throws out
-                                    % choices that are not on the unit
-                                    % disk. 
-if (s > 0) 
-x = linspace(-1,1,s); 
-y = linspace(-1,1,s);
-[xx, yy] = meshgrid(x,y); 
-else
-xx = x; 
-yy = y;
 end
 
-xx=xx(:);
-yy = yy(:);
+% Generates a nice set of points on the unit disk using the technique
+% described in Section 3.3 of 
+% D. Calhoun, C. Helzel, R. J. LeVeque. Logically rectangular grids and
+% finite volume methods for PDEs in circular and spherical domains. SIAM
+% Review Vol. 50, Issue 4, pp. 723-752. (2008)
+function [xx,yy] = diskpts(numpts)
 
-R = xx.^2+yy.^2;   
-a = find(bsxfun(@max, R, ones(length(xx),1))-R); %throw out stuff outside unit disk                                           
-xx = xx(a);
-yy = yy(a);
+% Generate equally spaced points over [-1,1]x[-1,1].  These will be mapped
+% to the unit disk according the the algorithm given in Section 3.3. of the
+% paper referenced above.
+[xc, yc] = meshgrid(linspace(-1,1,numpts));
 
-end
-   
+r1 = 1;   % map [-1,1] x [-1,1] to circle of radius r1
+d = max(abs(xc),abs(yc));
+r = sqrt(xc.^2 + yc.^2);
+r = max(r,1e-10);
+xx = r1 * d .* xc./r;
+yy = r1 * d .* yc./r;
+w = d.^2;
+xx = w.*xx + (1-w).*xc/sqrt(2);
+yy = w.*yy + (1-w).*yc/sqrt(2);
 
 end
