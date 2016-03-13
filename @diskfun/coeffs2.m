@@ -1,4 +1,4 @@
-function varargout = coeffs2( f ) 
+function varargout = coeffs2( f, m, n ) 
 % COEFFS2   Fourier--Chebyshev coefficients of a diskfun 
 % 
 %  X = COEFFS2( F ) returns the modes of the diskfun in the 
@@ -14,9 +14,18 @@ function varargout = coeffs2( f )
 % Calculate the CDR decomposition: 
 [C, D, R] = cdr( f ); 
 
-% Find the  coefficients of each slice: 
-U = C.coeffs; 
-R = R.coeffs;
+if nargin == 1
+    % Find the  coefficients of each slice: 
+    U = C.coeffs; 
+    R = R.coeffs;
+else
+    if nargin == 2
+        n = m;
+    end
+    % Find the  coefficients of each slice: 
+    U = chebtech2.alias(C.coeffs,n); 
+    R = trigtech.alias(R.coeffs,m);
+end
 
 % Prepare the output. Keep in low rank form if nargin > 1.
 if ( nargout <= 1 ) 
