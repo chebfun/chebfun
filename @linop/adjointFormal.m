@@ -31,17 +31,17 @@ for ii = 1:nrows
 end
 
 %% 
+% Get the domain and the value of the highest derivative:
+dom = L.domain;
+dor = max(max(L.diffOrder));
+
 % loop through blocks
-op = [];
+op = ';';
 argstr = '@(x';
 for ii = 1:ncols
     for jj = 1:nrows
         % get local block
         B = L.blocks{jj,ii};
-
-        % Get the domain and the value of the highest derivative:
-        dom = B.domain;
-        dor = B.diffOrder;
 
         % Get the coefficients:
         coeffs = toCoeff(B, pref);
@@ -60,30 +60,54 @@ for ii = 1:ncols
         M = @(f) operatorBlock.mult(f, dom);
         D = @(k) operatorBlock.diff(dom, k);
         for k = 0:dor
-            varname = genvarname(['a', int2str(ii), int2str(jj), int2str(k)]);
+            varname = ['a',int2str(ii),int2str(jj),'_',int2str(k)];
             eval([varname, '= adjCoeffs{dor+1-k};']);
             Lstar.blocks{ii,jj} = Lstar.blocks{ii,jj} + M(adjCoeffs{dor+1-k}) * D(k);
         end
 
         % update argstr
-        ustr = ['u',int2str(jj)];
+        vstr = ['v',int2str(jj)];
         if ( ii == 1 )
-            argstr = [argstr,',',ustr];
+            argstr = [argstr,',',vstr];
         end
 
         % set Bop
+        Bop = [];
         astr = ['a',int2str(ii),int2str(jj)];
-        Bop = [astr,'0*',ustr];
-        for k = 1:dor
-            Bop = [astr,int2str(k),'*diff(',ustr,',',int2str(k),') + ',Bop];
+        for k = 0:dor
+            acur = [astr,'_',int2str(k)];
+            % check acur for 0, 1, or -1
+            acheb = eval(acur);
+            if ( norm(acheb) == 0 )
+                acur = [];
+            elseif ( length(acheb) == 1 && acheb(0) == 1 )
+                acur = '+';
+            elseif ( length(acheb) == 1 && acheb(0) == -1 )
+                acur = '-';
+            else 
+                acur = ['+',acur,'*'];
+            end
+            % use acur to update op string
+            if ( ~isempty(acur) )
+                if ( k == 0 )
+                    Bop = [acur,vstr,Bop];
+                elseif ( k == 1 )
+                    Bop = [acur,'diff(',vstr,')',Bop];
+                else
+                    Bop = [acur,'diff(',vstr,',',int2str(k),')',Bop];
+                end
+            end
         end
  
         % update op
-        if ( jj == 1 )
-            op = [op,' ',Bop];
-        else
-            op = [op,' + ',Bop];
+        if ( ~isempty(Bop) && strcmp(op(end),';') )
+            if ( strcmp(Bop(1),'+') )
+                Bop = [' ',Bop(2:end)];
+            elseif ( strcmp(Bop(1),'-') )
+                Bop = [' ',Bop];
+            end
         end
+        op = [op,Bop];
 
     end
 
@@ -96,9 +120,9 @@ end
 
 % set op
 if ( ncols > 1 )
-    op = [argstr,') [',op,'];'];
+    op = [argstr,') [',op(2:end),' ];'];
 else
-    op = [argstr,') ',op];
+    op = [argstr,') ',op(2:end)];
 end
 eval(op);
 

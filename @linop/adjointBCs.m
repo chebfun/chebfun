@@ -18,7 +18,9 @@ dor = max(DOR);
 
 % initialize output
 Cstar = L.constraint;
-Bstar = [];
+bcOpL = [];
+bcOpR = [];
+bcOpM = [];
 
 % initialize funs
 funs = Cstar.functional;
@@ -27,8 +29,6 @@ nadjbcs = 2*sum(dor)-nbcs;
 
 % periodic case
 if ( strcmp(bcType,'periodic') )
-    bcOpL = [];
-    bcOpR = [];
     bcOpM = 'periodic';
 
 % bvp case
@@ -59,11 +59,10 @@ else
       endValsL = blkdiag( endValsL, Ul );
       endValsR = blkdiag( endValsR, Ur );
   end
-  fU
-  endVals = [ endValsL; endValsR ]
+  endVals = [ endValsL; endValsR ];
 
   % solve system to get B
-  B = (endVals'\fU')'
+  B = (endVals'\fU')';
   if ( rank(B) ~= nbcs )
     error('CHEBFUN:LINOP:adjoint:boundaryconditions', ...
     'Boundary condtions of L are not linearly independent.');
@@ -73,7 +72,6 @@ else
   B = rref(B);
   B( abs(B-1) < 10*eps ) = 1;
   B( abs(B) < 10*eps )   = 0;
-  B
 
   % label each boundary condition as 
   % left (0), right (1) or mixed (2)
@@ -85,7 +83,6 @@ else
       bcTypes(ii,:) = 0;
     end
   end
-  bcTypes
 
   % need the null space of B which we get via QR
   if ( sum(bcTypes == 2) )
@@ -102,32 +99,27 @@ else
     nulB(1:sum(dor),1:sum(dor)-nlbcs) = qBl(:,nlbcs+1:end);
     nulB(sum(dor)+1:2*sum(dor),sum(dor)-nlbcs+1:nadjbcs) = qBr(:,nrbcs+1:end);
   end
-  nulB
+  nulB = rref(nulB')';
 
   % compute complimentarity matrix
-  DOR = L.diffOrder;
   compML = cell(nout,nin);
   compMR = cell(nout,nin);
-  for ii = 1:nin
-      for jj = 1:nout
-          bloc = L.blocks{jj,ii};
-          compML{jj,ii} = compmat( dom(1), toCoeff(bloc),...
-                                  max(DOR(:,jj)), max(DOR(:,ii)) );
-          compMR{jj,ii} = compmat( dom(2), toCoeff(bloc),...
-                                  max(DOR(:,jj)), max(DOR(:,ii)) );
+  for ii = 1:nout
+      for jj = 1:nin
+          bloc = L.blocks{ii,jj};
+          compML{ii,jj} = compmat( dom(1), toCoeff(bloc) );
+          compMR{ii,jj} = compmat( dom(2), toCoeff(bloc) );
       end
   end
-  compM = blkdiag( -cell2mat(compML), cell2mat(compMR) )
+  compM = blkdiag( -cell2mat(compML), cell2mat(compMR) );
 
   % compute Bstar
-  Bstar = nulB'*compM;
-  Bstar	
+  Bstar = (compM*nulB)';
 
   % attempt to simplify rows of Bstar
   Bstar = rref(Bstar);
   Bstar( abs(Bstar-1) < 10*eps ) = 1;
   Bstar( abs(Bstar) < 10*eps )   = 0;
-  Bstar
 
   % label each boundary condition as 
   % left (0), right (1) or mixed (2)
@@ -139,21 +131,20 @@ else
       starTypes(ii,:) = 0;
     end
   end
-  starTypes
 
   % sort in ascending order
   [starTypes,ind] = sort(starTypes,'ascend');
   Bstar = Bstar(ind,:);
-  Bstar
 
   % call bchandles
   [ bcOpL, bcOpR, bcOpM ] = bcHandles( Bstar, starTypes, dor );
 
   % compute Cstar by first creating a chebop
+  order = max(dor, [], 2);
   Z = '[';
   for ii = 1:nin
       for jj = 1:nout
-          Z = [Z,'+diff(v',int2str(jj),',',int2str(DOR(ii,jj)),')'];
+          Z = [Z,'+diff(v',int2str(jj),',',int2str(order),')'];
       end
       Z = [Z,';'];
   end
@@ -288,7 +279,6 @@ if ( ~isempty(indsL) )
     % create function handle
     eval(['bcOpL = ',bcOpL]);
 end
-bcOpL
 
 % bcOpR
 if ( ~isempty(indsR) )
@@ -313,7 +303,6 @@ if ( ~isempty(indsR) )
     % create function handle
     eval(['bcOpR = ',bcOpR]);
 end
-bcOpR
 
 % bcOpM
 if ( ~isempty(indsM) )
@@ -338,21 +327,20 @@ if ( ~isempty(indsM) )
     % create function handle
     eval(['bcOpM = ',bcOpM]);
 end
-bcOpM
 
 end
 
 
 
 
-function A = compmat(x,coeffs,nrows,ncols)
+function A = compmat(x,coeffs)
 %COMPMAT - routine for computing complementarity matrix.
 
   n = length(coeffs)-1;
 
-  A = zeros(nrows,ncols);
-  for ii=0:min(n-1,nrows-1)
-    for jj=0:min(n-1-ii,ncols-1)
+  A = zeros(n);
+  for ii=0:n-1
+    for jj=0:n-1-ii
       for kk = 0:n
         if ( ii+jj <= kk-1 )
           A(ii+1,jj+1) = A(ii+1,jj+1) + (-1)^(kk-ii-1)*nchoosek(kk-ii-1,jj)*...

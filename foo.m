@@ -4,21 +4,22 @@ problem = 0;
 
 % coupled system of odes
 if ( problem == 0)
-dom = [0,1];
+dom = [-1,1];
 x = chebfun('x', dom);
 
 N = chebop(dom);
-%N.op = @(x,u1,u2) [ diff(u1,2) + x.*u2; u1 + cos(x).*diff(u2) ];
-N.op = @(x,u1,u2) [ diff(u1,2); diff(u2) ];
-N.lbc = @(u1,u2)  [u1-pi*diff(u1);sqrt(2)*diff(u1);u2/3]; 
-%N.lbc = @(u1,u2)  [u1-pi*diff(u1);sqrt(2)*diff(u1)+u2/3]; 
-%N.rbc = @(u1,u2)  u2+3; 
+N.op = @(x,u1,u2) [ diff(u1,2) + x.*diff(u2) + u2; u1 + (2+cos(x)).*diff(u2,2) ];
+%N.op = @(x,u1) [ diff(u1,2); cos(x).*u1 + diff(u1,2) ];
+%N.op = @(x,u1,u2) [ diff(u1,2) + u2; u1 + diff(u2,2) ];
+%N.op = @(x,u1,u2) [ diff(u1,2)+diff(u2); diff(u2,2) ];
+N.lbc = @(u1,u2)  [diff(u1);u2]; 
+N.rbc = @(u1,u2)  [u1;diff(u2)+u2]; 
 
 L = linearize(N);
 [Lstar,op] = adjoint(L,'bvp');
 
-f = exp(x);
-g = sin(cos(x));
+f = -sin(10*x);
+g = cos(30*x);
 rhs = [f;g];
 
 pref = cheboppref();
@@ -33,6 +34,7 @@ subplot(2,1,2), plot([v1,v2])
 
 v'*(L*u)
 (Lstar*v)'*u
+commutator = abs(v'*(L*u) - (Lstar*v)'*u)/max(norm(v),norm(u))
 
 % scalar ivp control problem
 elseif ( problem == 1)

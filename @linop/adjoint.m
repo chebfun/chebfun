@@ -23,7 +23,7 @@ end
 [Lstar, op] = adjointFormal(L, pref);
 
 % Trivial case:
-if ( L.diffOrder == 0 )
+if ( max(max(L.diffOrder)) == 0 )
     bcOpL = [];
     bcOpR = [];
     bcOpM = [];
@@ -34,7 +34,9 @@ end
 % Create adjoint linop
 % periodic boundary conditions
 if ( strcmp(bcType, 'periodic') )
-    [Cstar, bcOpL, bcOpR, bcOpM] = adjointBCs(L, bcType);
+    bcOpL = [];
+    bcOpR = [];
+    bcOpM = [];
     Lstar.constraint = L.constraint;
 % general boundary conditions
 else
@@ -45,9 +47,14 @@ end
 
 end
 
-function parseInputs(L, bcType)
 
-if ( L.diffOrder < 0 )
+
+function parseInputs(L, bcType)
+% function to parse inputs and catch errors
+
+[m,n] = size(L);
+
+if ( min(min(L.diffOrder)) < 0 )
     % Check for integral operators:
     error('CHEBFUN:LINOP:adjoint:difforder', ...
     'ADJOINT doesn''t support integral operators for the moment.')
@@ -58,10 +65,16 @@ elseif ( size(L.domain, 2) > 2 )
 elseif ( ~any(strcmp(bcType, {'periodic', 'bvp', 'ivp', 'fvp'})) )
     error('CHEBFUN:LINOP:adjoint:boundaryconditions', ...
     'ADJOINT doesn''t support this type of boundary conditions for the moment.');
-elseif ( diff(size(L)) ~= 0 )
-    % [TODO]: Support nonsquare block systems.
+elseif ( m ~= n )
+    % [TODO]: Support nonsquare systems.
     error('CHEBFUN:LINOP:adjoint:systems', ...
-    'ADJOINT doesn''t support nonsquare systems at the moment.');
+    ['ADJOINT doesn''t support nonsquare systems at the moment.']);
+elseif ( n > 1 && any(diff(max(L.diffOrder)) ~= 0) )
+    % [TODO]: Support block systems with arbitrary differential order in 
+    %         each variable.
+    error('CHEBFUN:LINOP:adjoint:systems', ...
+    ['ADJOINT doesn''t support systems with arbitrary ',...
+      'differential order in each variable at the moment.']);
 end
 
 end
