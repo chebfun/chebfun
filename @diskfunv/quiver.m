@@ -129,26 +129,62 @@ end
 
 end
 
-% Generates a nice set of points on the unit disk using the technique
-% described in Section 3.3 of 
-% D. Calhoun, C. Helzel, R. J. LeVeque. Logically rectangular grids and
-% finite volume methods for PDEs in circular and spherical domains. SIAM
-% Review Vol. 50, Issue 4, pp. 723-752. (2008)
+% Generates a nice set of points on the unit disk that are roughly equally
+% spaced.
 function [xx,yy] = diskpts(numpts)
 
-% Generate equally spaced points over [-1,1]x[-1,1].  These will be mapped
-% to the unit disk according the the algorithm given in Section 3.3. of the
-% paper referenced above.
-[xc, yc] = meshgrid(linspace(-1,1,numpts));
+% Idea is to use a polar grid (r,theta), but instead of using the same
+% number of points in theta for every r, we make it a function of r.  We
+% start with the origin, then as r increases from the origin there will be
+% 6, 9, 15, 21, ... until the outer r=1 radius is reached.  This appears to
+% give a nice sampling of the disk.
 
-r1 = 1;   % map [-1,1] x [-1,1] to circle of radius r1
-d = max(abs(xc),abs(yc));
-r = sqrt(xc.^2 + yc.^2);
-r = max(r,1e-10);
-xx = r1 * d .* xc./r;
-yy = r1 * d .* yc./r;
-w = d.^2;
-xx = w.*xx + (1-w).*xc/sqrt(2);
-yy = w.*yy + (1-w).*yc/sqrt(2);
+% The number of radii to use to get approximately numpts is 
+n = floor(numpts/sqrt(3));
+
+% Increment for the radii
+dr = 1/n;
+
+% Add the origin
+xx = 0; yy = 0;
+
+% Handle the second ring from the origin a bit differently (i.e. do 6
+% points instead of 3).
+th = trigpts(6,[-pi pi]);
+xx = [xx; dr*cos(th)];
+yy = [yy; dr*sin(th)];
+
+% Add points 3*(2*k-1) points for radii k.
+for k=2:n
+    th = trigpts(3*(2*k-1),[-pi pi]);
+    xx = [xx; dr*k*cos(th)];
+    yy = [yy; dr*k*sin(th)];
+end
 
 end
+
+% ANOTHER OPTION, BUT I DON'T THINK IT'S AS NICE.
+% % Generates a nice set of points on the unit disk using the technique
+% % described in Section 3.3 of 
+% % D. Calhoun, C. Helzel, R. J. LeVeque. Logically rectangular grids and
+% % finite volume methods for PDEs in circular and spherical domains. SIAM
+% % Review Vol. 50, Issue 4, pp. 723-752. (2008)
+% function [xx,yy] = diskpts(numpts)
+% 
+% % Generate equally spaced points over [-1,1]x[-1,1].  These will be mapped
+% % to the unit disk according the the algorithm given in Section 3.3. of the
+% % paper referenced above.
+% [xc, yc] = meshgrid(linspace(-1,1,numpts));
+% 
+% r1 = 1;   % map [-1,1] x [-1,1] to circle of radius r1
+% d = max(abs(xc),abs(yc));
+% r = sqrt(xc.^2 + yc.^2);
+% r = max(r,1e-10);
+% xx = r1 * d .* xc./r;
+% yy = r1 * d .* yc./r;
+% w = d.^2;
+% xx = w.*xx + (1-w).*xc/sqrt(2);
+% yy = w.*yy + (1-w).*yc/sqrt(2);
+% 
+% end
+
