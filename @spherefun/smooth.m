@@ -14,7 +14,7 @@ end
 K = sqrt(1/dt)*1i;
 
 % Find the length of f.
-[m, n] = length( f ); 
+[n, m] = length( f ); 
 
 % Solve the Helmholtz equation on the sphere to apply the Gaussian filter. 
 % Since, g is expected to smoother than f, and mxn discretization should

@@ -5,7 +5,7 @@ function u = Helmholtz( f, K, m, n )
 % for U with a discretization of size NxN. F should be a SPHEREFUN and the
 % solution is returned as a SPHEREFUN. 
 %
-% HELMHOLTZ( F, K, M, N) samee as HELMHOLTZ( F, K, N ), but with a
+% HELMHOLTZ( F, K, M, N) same as HELMHOLTZ( F, K, N ), but with a
 % discretization of size M x N.
 
 % DEVELOPERS NOTE:
@@ -39,11 +39,13 @@ lam0 = pi*trigpts( n );     %
 th0 = pi*trigpts( m );      % GRID
 
 % Forcing term:
-if ( isa(f, 'function_handle') || isa(f, 'spherefun') )
+if ( isa(f, 'function_handle') )
     [rhs_lam, rhs_th] = meshgrid( lam0, th0 );
     F = feval( f, rhs_lam, rhs_th );      % Get (trigvals,trigvals) of rhs
     F = trigtech.vals2coeffs( F );         % Get in Fourier basis
     F = trigtech.vals2coeffs( F.' ).';
+elseif ( isa(f, 'spherefun') )
+    F = coeffs2(f, n, m);
 end
 
 % Calculate the integral constraint constant: 
