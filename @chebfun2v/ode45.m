@@ -45,7 +45,7 @@ end
 nF = F.nComponents;
 dom = F.components{1}.domain; 
 
-pref = chebfunpref;
+prefs = chebfunpref;
 abstol = 100*prefs.techPrefs.chebfuneps;
 
 % We don't expect 16 digits of relative tolerance, but at least require some.
