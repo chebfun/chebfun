@@ -4,7 +4,7 @@ function pass = test_constructor2( pref )
 if ( nargin < 1 ) 
     pref = chebfunpref; 
 end 
-tol = 1e2 * pref.eps; 
+tol = 1e2 * pref.cheb2Prefs.chebfun2eps;
 
 
 % Test building Chebfun2 objects from sample data: 

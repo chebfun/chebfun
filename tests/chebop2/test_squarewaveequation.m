@@ -1,11 +1,11 @@
-function pass = test_squarewaveequation( prefs )
+function pass = test_squarewaveequation( pref )
 % Testing wave equation on a square domain. 
 % Alex Townsend, March 2013. 
 
 if ( nargin < 1 ) 
-    prefs = chebfunpref(); 
+    pref = chebfunpref(); 
 end 
-tol = 100*prefs.techPrefs.eps; 
+tol = 100*pref.cheb2Prefs.chebfun2eps;
 
 %%
 % First example. 

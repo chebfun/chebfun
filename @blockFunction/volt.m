@@ -54,7 +54,7 @@ function v = applyVolt(u, dom, kernel)
     p.techPrefs.sampleTest = false;
     
     % TODO: Explore the correct preferences for best behavior.
-    %    p.techPrefs.eps = nrmu*eps;
+    %    p.techPrefs.chebfuneps = nrmu*eps;
     %    p.splitting = true;
     p = chebfunpref(p);
     

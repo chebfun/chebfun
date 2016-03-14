@@ -7,7 +7,7 @@ if ( nargin == 0 )
     pref = chebfunpref();
 end
 
-tol = pref.eps;
+tol = pref.chebfuneps;
 
 d = [-1 1];
 x = chebfun('x', d, pref);

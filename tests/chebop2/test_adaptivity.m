@@ -1,10 +1,10 @@
-function pass = test_adaptivity( prefs )
+function pass = test_adaptivity( pref )
 % Test to check adaptivity decisions can be made by the user. 
 
 if ( nargin < 1 ) 
-    prefs = chebfunpref(); 
+    pref = chebfunpref();
 end
-tol = 100*prefs.techPrefs.eps;
+tol = 100*pref.cheb2Prefs.chebfun2eps;
 
 % This is the first test so remove the warning: 
 state = warning; 

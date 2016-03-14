@@ -29,7 +29,7 @@ end
 if ( nargin < 5 )
     pref = chebfunpref();
 end
-tol = max(pref.eps);
+tol = max(pref.chebfuneps);
 
 % Blowup detection is turned off in order to avoid the occurrence of spurious
 % poles inside an interval where a piecewise function was originally smooth.

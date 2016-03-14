@@ -43,7 +43,7 @@ maxSample   = tpref.maxLength;
 cheb2Prefs  = pref.cheb2Prefs;
 sampleTest  = cheb2Prefs.sampleTest;
 maxRank     = cheb2Prefs.maxRank;
-pseudoLevel = pref.eps;
+pseudoLevel = cheb2Prefs.chebfun2eps;
 
 factor  = 4; % Ratio between size of matrix and no. pivots.
 isHappy = 0; % If we are currently unresolved.
@@ -76,7 +76,7 @@ while ( ~isHappy && ~failure )
     
     % Two-dimensional version of CHEBFUN's tolerance:
     [relTol, absTol] = getTol(xx, yy, vals, dom, pseudoLevel);
-    pref.eps = relTol;
+    pref.chebfuneps = relTol;
     
     %% %%% PHASE 1: %%%
     % Do GE with complete pivoting:
@@ -92,7 +92,7 @@ while ( ~isHappy && ~failure )
         vscale = max(abs(vals(:)));
         % New tolerance:
         [relTol, absTol] = getTol(xx, yy, vals, dom, pseudoLevel);
-        pref.eps = relTol;
+        pref.chebfuneps = relTol;
         % New GE:
         [pivotVal, pivotPos, rowVals, colVals, iFail] = ...
                                  completeACA(vals, absTol, factor);
@@ -224,7 +224,7 @@ while ( ~isHappy && ~failure )
 end
 
 % Simplifying rows and columns after they are happy.
-g = simplify( g, pref.eps );
+g = simplify( g, pref.chebfuneps );
 
 % Fix the rank, if in nonadaptive mode.
 g = fixTheRank( g , fixedRank );
@@ -256,8 +256,8 @@ else
     [xx, yy] = meshgrid(x, y);
 end
     
-[relTol, absTol] = getTol(xx, yy, op, dom, pref.eps);
-pref.eps = relTol;
+[relTol, absTol] = getTol(xx, yy, op, dom, pref.cheb2Prefs.chebfun2eps);
+pref.chebfuneps = relTol;
 
 % Perform GE with complete pivoting:
 [pivotValue, ~, rowValues, colValues] = completeACA(op, absTol, 0);
@@ -625,7 +625,7 @@ if ( isEpsGiven )
 else
     pseudoLevel = 0;
 end
-pref.eps = max(pref.eps, pseudoLevel);
+pref.chebfuneps = max(pref.chebfuneps, pseudoLevel);
 
 % Look for vectorize flag:
 vectorize = find(cellfun(@(p) strncmpi(p, 'vectori', 7), varargin));
@@ -638,7 +638,7 @@ end
 
 % If the vectorize flag is off, do we need to give user a warning?
 if ( ~vectorize && ~isnumeric(op) ) % another check
-    [vectorize, op] = vectorCheck(op, dom, pref.eps);
+    [vectorize, op] = vectorCheck(op, dom, pref.chebfuneps);
 end
 
 isPadua = find(cellfun(@(p) strcmpi(p, 'padua'), varargin));

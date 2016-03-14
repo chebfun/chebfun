@@ -23,7 +23,7 @@ function f = addBreaksAtRoots(f, tol)
 if ( nargin == 1 )
     tol = 0;
 elseif ( isa(tol, 'chebfunpref') )
-    tol = tol.techPrefs.eps;
+    tol = tol.techPrefs.chebfuneps;
 end
 
 for k = 1:numel(f)

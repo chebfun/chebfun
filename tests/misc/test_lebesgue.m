@@ -7,7 +7,7 @@ if ( nargin < 1 )
     pref = chebfunpref();
 end
 
-tol = pref.eps;
+tol = pref.chebfuneps;
 
 % Test polynomial interpolation.
 [L, C] = lebesgue(chebpts(3));

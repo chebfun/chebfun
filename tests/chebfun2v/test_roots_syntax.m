@@ -4,7 +4,7 @@ function pass = test_roots_syntax( pref )
 if ( nargin < 1 ) 
     pref = chebfunpref; 
 end 
-tol = 1e3 * pref.eps; 
+tol = 1e3 * pref.cheb2Prefs.chebfun2eps;
 j = 1;
 
 % This is James Whidborne's problem that caused a silly error with the

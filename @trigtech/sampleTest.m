@@ -13,7 +13,7 @@ function pass = sampleTest(op, f, pref)
 n = length(f);
 
 % Set a tolerance:
-tol =sqrt(max(pref.eps, eps));
+tol =sqrt(max(pref.chebfuneps, eps));
 tol = tol.*max(vscale(f));
 
 % pseudo random sample points

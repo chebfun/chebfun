@@ -19,7 +19,7 @@ for n = 1:2
     pref = inputPref;
 
     % Set the tolerance:
-    tol = 10*pref.eps;
+    tol = 10*pref.chebfuneps;
     
     %%
     % Test on a scalar-valued function:
@@ -67,7 +67,7 @@ for n = 1:2
     % g1 has a few coefficients that are small but not enough to satisfy
     % strictCheck, while g2 has just enough.  g1 will still pass with
     % classicCheck.
-    pref.eps = 2^(-52);
+    pref.chebfuneps = 2^(-52);
     pref.happinessCheck = 'strict';
     f = @(x) sin(10*(x - 0.1));
 
@@ -85,7 +85,7 @@ for n = 1:2
     pass(n, 7) = ~ishappy1 && ishappy2 && ishappy3;
 
     % Test strictCheck with an array-valued input:
-    pref.eps = 2^(-52);
+    pref.chebfuneps = 2^(-52);
     pref.happinessCheck = 'strict';
     f = @(x) [sin(10*(x - 0.1)) exp(x)];
 

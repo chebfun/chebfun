@@ -1,10 +1,10 @@
-function pass = test_plus( prefs )
+function pass = test_plus( pref )
 % Quick test for chebop2/plus. 
 
 if ( nargin < 1 ) 
-    prefs = chebfunpref(); 
+    pref = chebfunpref(); 
 end
-tol = prefs.techPrefs.eps;
+tol = pref.cheb2Prefs.chebfun2eps;
 
 % Make a laplacian: 
 N1 = chebop2(@(u) diff(u,2,2)); 
