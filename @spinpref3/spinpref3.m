@@ -44,7 +44,11 @@ classdef spinpref3 < spinpreference
 %
 %   Nmax                      * Maximum number of points in each direction when   
 %     [128]                     using an adaptive grid in space.
-%                                         
+%                       
+%   Nplot                     * Number of grid points in each direction for 
+%     [128]                     plotting. If Nplot>N, the data are interpolated 
+%                               to a finer grid.
+%
 %   plot                      * Plot options: 'movie' to plot a movie of the
 %     ['movie']                 solution, 'off' otherwise.
 %      'off'
@@ -101,6 +105,7 @@ classdef spinpref3 < spinpreference
                 pref.N = 32;
                 pref.Nmin = 32;
                 pref.Nmax = 128;
+                pref.Nplot = 128;
                 pref.plot = 'movie';
                 pref.scheme = 'etdrk4';
             elseif ( nargin == 1 )
@@ -119,18 +124,21 @@ classdef spinpref3 < spinpreference
                     pref.dt = 2e-1;
                     pref.iterPlot = 1;
                     pref.N = 32;   
+                    pref.Nplot = 80;
                 elseif ( strcmpi(pdechar, 'GS3') == 1 )
                     pref.dt = 4;
                     pref.iterPlot = 8;
                     pref.N = 32;     
+                    pref.Nplot = 80;
                 elseif ( strcmpi(pdechar, 'Schnak3') == 1 )
                     pref.dt = 1;
                     pref.iterPlot = 1;
                     pref.N = 16;
                 elseif ( strcmpi(pdechar, 'SH3') == 1 )
                     pref.dt = 1;
-                    pref.iterPlot = 1;
+                    pref.iterPlot = 2;
                     pref.N = 32;
+                    pref.Nplot = 100;
                 else
                     error('SPINPREF3:CONSTRUCTOR', 'Unrecognized PDE.')
                 end

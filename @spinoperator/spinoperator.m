@@ -188,7 +188,7 @@ classdef spinoperator
         end
         
     end
-    
+
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% ABSTRACT AND NON-STATIC METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -205,11 +205,14 @@ classdef spinoperator
         dim = getDimension(S)
         
         % Initialize a movie when solving a PDE specified by a SPINOPERATOR:
-        [p, plotOptions] = initializeMovie(S, dt, pref, v, gridPoints)
+        [p, options] = initializeMovie(S, dt, pref, v, dataGrid, plotGrid)
         
         % Plot a movie when solving a PDE specified by a SPINOPERATOR:
-        plotOptions = plotMovie(S, dt, p, plotOptions, t, v, gridPoints)
+        options = plotMovie(S, dt, p, options, t, v, dataGrid, plotGrid)
         
+        % Add the (repeated) endpoints to a periodic grid in 1D, 2D or 3D:
+        grid = reshapeGrid(S, grid)
+
     end
    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

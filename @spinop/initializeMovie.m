@@ -1,4 +1,4 @@
-function [p, plotOptions] = initializeMovie(S, dt, pref, v, gridPoints)
+function [p, options] = initializeMovie(S, dt, pref, v, dataGrid, plotGrid)
 %INITIALIZEMOVIE   Initialize a movie when solving a PDE specified by a SPINOP.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
@@ -6,19 +6,12 @@ function [p, plotOptions] = initializeMovie(S, dt, pref, v, gridPoints)
 
 % Set-up:
 dom = S.domain;
-xx = gridPoints;
-N = size(xx, 1);
 nVars = S.numVars;
 vscale = max(abs(v));
 dataToPlot = str2func(pref.dataToPlot);
-
-% Grid of the computation:
-xxplot = [xx; 2*xx(end) - xx(end-1)];
-
-% Finer grid for interploation:
-Nplot = max(N, 1024);
-xxxplot = trigpts(Nplot, dom);
-xxxplot = [xxxplot; 2*xxxplot(end) - xxxplot(end-1)];
+xx = dataGrid{1};
+xxx = plotGrid{1};
+N = size(xx, 1) - 1;
 
 % Loop over the variables:
 p = cell(nVars, 1); clf reset
@@ -38,11 +31,11 @@ for k = 1:nVars
     end
     
     % Interpolate each variable on a finer grid:
-    vvvplot = interp1(xxplot, vvplot, xxxplot, 'spline');
+    vvvplot = interp1(xx, vvplot, xxx, 'spline');
     
     % Plot each variable:
     subplot(1, nVars, k)
-    p{k} = plot(xxxplot, vvvplot, 'linewidth', 3);
+    p{k} = plot(xxx, vvvplot, 'linewidth', 3);
     axis([dom(1), dom(2), Ylim(2*(k-1) + 1), Ylim(2*(k-1) + 2)])
     if ( nVars == 1 )
         xlabel('x'), ylabel('u(t,x)'), grid on
@@ -72,7 +65,7 @@ shg, pause
 
 % Outputs:
 p{nVars + 1} = h;
-plotOptions{1} = Ylim;
-plotOptions{2} = dataToPlot;
+options{1} = Ylim;
+options{2} = dataToPlot;
 
 end

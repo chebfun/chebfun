@@ -1,18 +1,23 @@
-function [p, plotOptions] = initializeMovie(S, dt, pref, v, gridPoints)
+function [p, options] = initializeMovie(S, dt, pref, v, dataGrid, plotGrid)
 %INITIALIZEMOVIE   Initialize a movie when solving a PDE specified by a SPINOP3.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Set-up:
-xx = gridPoints{1};
-yy = gridPoints{2};
-zz = gridPoints{3};
-N = size(xx, 1);
 nVars = S.numVars;
 vscale = max(abs(v(:)));
 dataToPlot = str2func(pref.dataToPlot);
 dom = S.domain;
+xx = dataGrid{1};
+yy = dataGrid{2};
+zz = dataGrid{3};
+N = size(xx, 1) - 1;
+xxx = plotGrid{1};
+yyy = plotGrid{2};
+zzz = plotGrid{3};
+
+% Slices:
 ttx = trigpts(N, dom(1:2));
 tty = trigpts(N, dom(3:4));
 ttz = trigpts(N, dom(5:6));
@@ -45,59 +50,31 @@ else
     end
 end
 
-% Grid of the computation:
-xxplot = [xx, 2*xx(:,end,:) - xx(:,end-1,:)];
-xxplot =  [xxplot; xxplot(1,:,:)];
-xxplot = cat(3, xxplot, xxplot(:,:,1));
-yyplot = [yy; 2*yy(end,:,:) - yy(end-1,:,:)];
-yyplot = [yyplot, yyplot(:,1,:)];
-yyplot = cat(3, yyplot, yyplot(:,:,1));
-zzplot = cat(3, zz, 2*zz(:,:,end) - zz(:,:,end-1));
-zzplot = [zzplot; zzplot(1,:,:)];
-zzplot = [zzplot, zzplot(:,1,:)];
-
-% Finer grid for interploation:
-Nplot = max(N, 100);
-ttx = trigpts(Nplot, dom(1:2));
-tty = trigpts(Nplot, dom(3:4));
-ttz = trigpts(Nplot, dom(5:6));
-[xxxplot, yyyplot, zzzplot] = meshgrid(ttx, tty, ttz);
-xxxplot = [xxxplot, 2*xxxplot(:,end,:) - xxxplot(:,end-1,:)];
-xxxplot =  [xxxplot; xxxplot(1,:,:)];
-xxxplot = cat(3, xxxplot, xxxplot(:,:,1));
-yyyplot = [yyyplot; 2*yyyplot(end,:,:) - yyyplot(end-1,:,:)];
-yyyplot = [yyyplot, yyyplot(:,1,:)];
-yyyplot = cat(3, yyyplot, yyyplot(:,:,1));
-zzzplot = cat(3, zzzplot, 2*zzzplot(:,:,end) - zzzplot(:,:,end-1));
-zzzplot = [zzzplot; zzzplot(1,:,:)];
-zzzplot = [zzzplot, zzzplot(:,1,:)];
-
 % Loop over the variables:
 p = cell(nVars + 1, 1); clf reset
 for k = 1:nVars
     
     % Extract each variable:
     idx = (k-1)*N + 1;
-    vvplot = dataToPlot(v(idx:idx+N-1,:,:));
-    vvplot = [vvplot, vvplot(:,1,:)]; %#ok<*AGROW>
-    vvplot = [vvplot; vvplot(1,:,:)];
-    vvplot = cat(3, vvplot, vvplot(:,:,1));
+    vv = dataToPlot(v(idx:idx+N-1,:,:));
+    vv = [vv, vv(:,1,:)]; %#ok<*AGROW>
+    vv = [vv; vv(1,:,:)];
+    vv = cat(3, vv, vv(:,:,1));
     
     % Get the CLIM for the colorbar:
     if ( isempty(pref.Clim) == 1 )
-        Clim(2*(k-1) + 1) = min(vvplot(:)) - .1*vscale;
-        Clim(2*(k-1) + 2) = max(vvplot(:)) + .1*vscale;
+        Clim(2*(k-1) + 1) = min(vv(:)) - .1*vscale;
+        Clim(2*(k-1) + 2) = max(vv(:)) + .1*vscale;
     else
         Clim = pref.Clim;
     end
     
     % Interpolate each variable on a finer grid:
-    vvvplot = interp3(xxplot, yyplot, zzplot, vvplot, xxxplot, yyyplot, ...
-        zzzplot, 'spline');
+    vvv = interp3(xx, yy, zz, vv, xxx, yyy, zzz, 'spline');
     
     % Plot each variable:
     subplot(1, nVars, k) 
-    p{k} = slice(xxxplot, yyyplot, zzzplot, vvvplot, Sx, Sy, Sz);
+    p{k} = slice(xxx, yyy, zzz, vvv, Sx, Sy, Sz);
     set(p{k}, 'edgecolor', 'none')
     ax = p{k}.Parent; set(ax, 'clim', [Clim(2*(k-1) + 1), Clim(2*(k-1) + 2)])
     axis([dom(1) dom(2) dom(3) dom(4) dom(5) dom(6)]), colorbar
@@ -124,8 +101,8 @@ shg, pause
 
 % Outputs:
 p{nVars + 1} = h;
-plotOptions{1} = Clim;
-plotOptions{2} = {Sx, Sy, Sz};
-plotOptions{3} = dataToPlot;
+options{1} = Clim;
+options{2} = {Sx, Sy, Sz};
+options{3} = dataToPlot;
 
 end

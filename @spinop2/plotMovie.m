@@ -1,4 +1,4 @@
-function plotOptions = plotMovie(S, dt, p, plotOptions, t, v, gridPoints)
+function options = plotMovie(S, dt, p, options, t, v, dataGrid, plotGrid)
 %PLOTMOVIE   Plot a movie when solving a PDE specified by a SPINOP2.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
@@ -6,41 +6,27 @@ function plotOptions = plotMovie(S, dt, p, plotOptions, t, v, gridPoints)
 
 % Set-up:
 dom = S.domain;
-xx = gridPoints{1};
-yy = gridPoints{2};
-N = size(xx, 1);
 nVars = S.numVars;
-Clim = plotOptions{1};
-dataToPlot = plotOptions{3};
-
-% Grid of the computation:
-xxplot = [xx, 2*xx(:,end) - xx(:,end-1)];
-xxplot = [xxplot; xxplot(1,:)];
-yyplot = [yy; 2*yy(end,:) - yy(end-1,:)];
-yyplot = [yyplot, yyplot(:,1)];
-
-% Finer grid for interploation:
-Nplot = max(N, 256);
-ttx = trigpts(Nplot, dom(1:2));
-tty = trigpts(Nplot, dom(3:4));
-[xxxplot, yyyplot] = meshgrid(ttx, tty);
-xxxplot = [xxxplot, 2*xxxplot(:,end) - xxxplot(:,end-1)];
-xxxplot = [xxxplot; xxxplot(1,:)];
-yyyplot = [yyyplot; 2*yyyplot(end,:) - yyyplot(end-1,:)];
-yyyplot = [yyyplot, yyyplot(:,1)];
+Clim = options{1};
+dataToPlot = options{3};
+xx = dataGrid{1};
+yy = dataGrid{2};
+N = size(xx, 1) - 1;
+xxx = plotGrid{1};
+yyy = plotGrid{2};
 
 for k = 1:nVars
     
     % Extract each variable:
     idx = (k-1)*N + 1;
-    vvplot = dataToPlot(v(idx:idx+N-1,:));
-    vvplot = [vvplot, vvplot(:,1)]; %#ok<*AGROW>
-    vvplot = [vvplot; vvplot(1,:)];
+    vv = dataToPlot(v(idx:idx+N-1,:));
+    vv = [vv, vv(:,1)]; %#ok<*AGROW>
+    vv = [vv; vv(1,:)];
     
     % Change axes if necessary:
     if ( nargout == 1 )
-        minvnew = min(vvplot(:));
-        maxvnew = max(vvplot(:));
+        minvnew = min(vv(:));
+        maxvnew = max(vv(:));
         if ( maxvnew > Clim(2*(k-1) + 2) )
             vscalenew = max(abs(minvnew), maxvnew);
             Clim(2*(k-1) + 2) = maxvnew + .1*vscalenew;
@@ -52,10 +38,10 @@ for k = 1:nVars
     end
     
     % Interpolate each variable on a finer grid:
-    vvvplot = interp2(xxplot, yyplot, vvplot, xxxplot, yyyplot, 'spline');
+    vvv = interp2(xx, yy, vv, xxx, yyy, 'spline');
     
     % Update each variable:
-    set(p{k}, 'xdata', xxxplot, 'ydata', yyyplot, 'zdata', vvvplot)
+    set(p{k}, 'xdata', xxx, 'ydata', yyy, 'zdata', vvv)
     set(p{k}.Parent, 'xlim', [dom(1), dom(2)], 'ylim', [dom(3) dom(4)])
     set(p{k}.Parent, 'clim', [Clim(2*(k-1) + 1), Clim(2*(k-1) + 2)])
     drawnow
@@ -68,6 +54,6 @@ titleString = sprintf('Nx = Ny = %i (DoFs = %i), dt = %1.1e, t = %.4f', N, ...
 set(p{nVars + 1}, 'String', titleString)
 
 % Update outputs:
-plotOptions{1} = Clim;
+options{1} = Clim;
 
 end

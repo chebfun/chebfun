@@ -278,16 +278,29 @@ if ( strcmpi(plotStyle, 'waterfall') == 1 )
     twater = 0;
 end
 
-% Plot initial condition if using MOVIE:
+% Create grids for plotting, and plot initial condition if using MOVIE:
 if ( strcmpi(plotStyle, 'movie') == 1 )
+    Nplot = max(N, pref.Nplot);
     if ( dim == 1 )
-        gridpts = xx;
+        dataGrid = {xx};
+        plotGrid = {trigpts(Nplot, dom)};
     elseif ( dim == 2 )
-        gridpts = {xx; yy};
+        dataGrid = {xx; yy};
+        ttx = trigpts(Nplot, dom(1:2));
+        tty = trigpts(Nplot, dom(3:4));
+        [xxx, yyy] = meshgrid(ttx, tty);
+        plotGrid = {xxx; yyy};
     elseif ( dim == 3 );
-        gridpts = {xx; yy; zz};
+        dataGrid = {xx; yy; zz};
+        ttx = trigpts(Nplot, dom(1:2));
+        tty = trigpts(Nplot, dom(3:4));
+        ttz = trigpts(Nplot, dom(5:6));
+        [xxx, yyy, zzz] = meshgrid(ttx, tty, ttz);
+        plotGrid = {xxx; yyy; zzz};
     end
-    [p, plotOptions] = initializeMovie(S, dt, pref, vInit, gridpts);
+    dataGrid = reshapeGrid(S, dataGrid);
+    plotGrid = reshapeGrid(S, plotGrid);
+    [p, options] = initializeMovie(S, dt, pref, vInit, dataGrid, plotGrid);
 end
 
 %% Time-stepping loop:
@@ -377,10 +390,10 @@ while ( t < tf )
                     isLimGiven = ~isempty(pref.Clim);
                 end
                 if ( isLimGiven == 1 )
-                    plotMovie(S, dt, p, plotOptions, t, v, gridpts);
+                    plotMovie(S, dt, p, options, t, v, dataGrid, plotGrid);
                 else
-                    plotOptions = plotMovie(S, dt, p, plotOptions, t, v, ...
-                        gridpts);
+                    options = plotMovie(S, dt, p, options, t, v, dataGrid, ...
+                        plotGrid);
                 end
                 
             % Store the values every ITERPLOT iterations if using WATERFALL:
@@ -530,23 +543,23 @@ while ( t < tf )
         schemeCoeffs = computeCoeffs(K, dt, L, M, S);
         schemeCoeffs2 = computeCoeffs(K, dt/2, L, M, S);
         
-        % Update the indexes for dealiasing:
+        % Update the grid for plotting and the indexes for dealiasing:
         toOne = floor(N/2) + 1 - ceil(N/6):floor(N/2) + ceil(N/6);
         if ( dim == 1 )
             ind = false(N, 1);
             ind(toOne) = 1;
-            gridpts = trigpts(N, dom(1:2));
+            dataGrid = {trigpts(N, dom(1:2))};
         elseif ( dim == 2 )
             ind = false(N, N);
             ind(toOne, toOne) = 1;  
-            gridpts = {xx; yy};
+            dataGrid = {xx; yy};
         elseif ( dim == 3 );
             ind = false(N, N, N);
             ind(toOne, toOne, toOne) = 1;              
-            gridpts = {xx; yy; zz};
+            dataGrid = {xx; yy; zz};
         end
+        dataGrid = reshapeGrid(S, dataGrid);
         ind = repmat(ind, nVars, 1);
-
         success = 0;
         
     end
@@ -557,7 +570,7 @@ end
 
 % Make sure that the solution at TF has been plotted if using MOVIE:
 if ( strcmpi(plotStyle, 'movie') == 1 )
-    plotMovie(S, dt, p, plotOptions, t, v, gridpts);
+    plotMovie(S, dt, p, options, t, v, dataGrid, plotGrid);
 end
 
 % Use WATERFALL if using WATERFALL:

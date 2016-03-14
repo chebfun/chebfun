@@ -44,7 +44,11 @@ classdef spinpref2 < spinpreference
 %
 %   Nmax                      * Maximum number of points in each direction when   
 %     [512]                     using an adaptive grid in space.
-%                                         
+%                                    
+%   Nplot                     * Number of grid points in each direction for 
+%     [256]                     plotting. If Nplot>N, the data are interpolated 
+%                               to a finer grid.
+%
 %   plot                      * Plot options: 'movie' to plot a movie of the
 %     ['movie']                 the solution, 'off' otherwise. 
 %      'off'
@@ -97,6 +101,7 @@ classdef spinpref2 < spinpreference
                 pref.N = 64;
                 pref.Nmin = 64;
                 pref.Nmax = 512;
+                pref.Nplot = 256;
                 pref.plot = 'movie';
                 pref.scheme = 'etdrk4';
             elseif ( nargin == 1 )
@@ -109,6 +114,7 @@ classdef spinpref2 < spinpreference
                 pref.M = 32;
                 pref.Nmin = [];
                 pref.Nmax = [];
+                pref.Nplot = 256;
                 pref.plot = 'movie';
                 pref.scheme = 'etdrk4';
                 if ( strcmpi(pdechar, 'GL2') == 1 )

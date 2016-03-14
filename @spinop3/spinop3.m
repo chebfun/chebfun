@@ -146,11 +146,9 @@ end
             G = 50;
             dom = G*[0 1 0 1 0 1];
             tspan = [0 200];
-            u0 = @(x,y,z) 1/4*(sin(pi*x/10) + sin(pi*y/10) + sin(pi*z/10) + ...
-                sin(pi*x/2).*sin(pi*y/2) + sin(pi*x/2).*sin(pi*z/2) + ...
-                sin(pi*z/2).*sin(pi*y/2));
-            u0 = chebfun3(u0, dom);
-    
+            vals = .1*randn(32, 32, 32);
+            u0 = chebfun3(vals, dom, 'trig');
+
         else
             error('SPINOP3:parseInputs', 'Unrecognized PDE.')
         end

@@ -41,6 +41,9 @@ classdef spinpref < spinpreference
 %   Nmax                      * Maximum number of points when using an adaptive
 %     [4096]                    grid in space.
 %                                         
+%   Nplot                     * Number of grid points for plotting. If Nplot>N,
+%     [1024]                    the data are interpolated to a finer grid.
+%    
 %   plot                      * Plot options: 'movie' to plot a movie of the 
 %     ['movie']                 solution, 'waterfall' to use the WATERFALL
 %      'waterfall'              command, 'off' otherwise.
@@ -93,6 +96,7 @@ classdef spinpref < spinpreference
                 pref.M = 64;
                 pref.Nmin = 256;
                 pref.Nmax = 4096;
+                pref.Nplot = 1024;
                 pref.plot = 'movie';
                 pref.scheme = 'etdrk4';
             elseif ( nargin == 1 )
@@ -106,6 +110,7 @@ classdef spinpref < spinpreference
                 pref.M = 64;
                 pref.Nmin = [];
                 pref.Nmax = [];
+                pref.Nplot = 1024;
                 pref.plot = 'movie';
                 pref.scheme = 'etdrk4';
                 if ( strcmpi(pdechar, 'AC') == 1 )

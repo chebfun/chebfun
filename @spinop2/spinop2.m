@@ -146,7 +146,7 @@ end
             dom = G*[0 1 0 1];
             tspan = [0 200];
             vals = .1*randn(64, 64);
-            u0 = chebfun2(vals, dom, 'trig');
+            u0 = chebfun2(vals, dom, 'trig');       
             
         else
             error('SPINOP2:parseInputs', 'Unrecognized PDE.')

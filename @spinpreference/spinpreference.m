@@ -26,6 +26,7 @@ classdef spinpreference
         N                    % Number of points for space-grid (1x1 INT)
         Nmin                 % Min. # of pts for apative space-grid (1x1 INT)
         Nmax                 % Max. # of pts for apative space-grid (1x1 INT)
+        Nplot                % Number of points for plotting grid (1x1 INT)
         plot                 % Plot options (STRING)
         scheme               % Time-stepping scheme (STRING)
     end
