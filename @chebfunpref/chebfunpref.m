@@ -108,7 +108,7 @@ classdef chebfunpref < chebpref
 %      technology.  Additionally, all techs are required to accept the following
 %      preferences:
 %
-%      chebfuneps                     - Construction tolerance.
+%      chebfuneps              - Construction tolerance.
 %
 %        A positive floating-point number specifying the relative tolerance to
 %        which the representation should be constructed.
@@ -673,18 +673,33 @@ classdef chebfunpref < chebpref
                 if ( isstruct(varargin{1}) )
                     defaultPrefs = varargin{1};
                 else
+                    factoryPrefs = chebfunpref.factoryDefaultPrefs();
                     while ( ~isempty(varargin) )
                         prefName = varargin{1};
                         prefValue = varargin{2};
+
+                        wantFactory = strcmp(prefValue, 'factory');
                         if ( iscell(prefName) && ...
-                                isfield(defaultPrefs.(prefName{1}), prefName{2}) )
+                             isfield(defaultPrefs.(prefName{1}), prefName{2}) )
+                            if ( wantFactory )
+                                prefValue = factoryPrefs.(prefName{1}).(prefName{2});
+                            end
+
                             % TODO: Revisit the syntax for assigning to second
                             % tier preferences.
                             defaultPrefs.(prefName{1}).(prefName{2}) = prefValue;
                         elseif ( isfield(defaultPrefs, prefName) )
+                            if ( wantFactory )
+                                prefValue = factoryPrefs.(prefName);
+                            end
+
                             defaultPrefs.(prefName) = prefValue;
                         else
-                            defaultPrefs.techPrefs.(prefName) = prefValue;
+                            if ( wantFactory )
+                                defaultPrefs.techPrefs = rmfield(defaultPrefs.techPrefs, prefName);
+                            else
+                                defaultPrefs.techPrefs.(prefName) = prefValue;
+                            end
                         end
                         varargin(1:2) = [];
                     end
