@@ -53,11 +53,13 @@ lam0 = pi*trigpts( n );
 th0 = pi*trigpts( m );
 
 % Forcing term:
-if ( isa(f, 'function_handle') || isa(f, 'spherefun') )
+if ( isa(f, 'function_handle') )
     [rhs_lam, rhs_theta] = meshgrid( lam0, th0 );
     F = feval( f, rhs_lam, rhs_theta );
     F = trigtech.vals2coeffs( F );
     F = Msin2 * trigtech.vals2coeffs( F.' ).';
+elseif ( isa(f, 'spherefun') )
+    F = Msin2 * coeffs2(f, n, m);
 elseif ( isa( f, 'double' ) )
     F = Msin2 * f;       % Get trigcoeffs2 of rhs.
 end
