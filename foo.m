@@ -8,32 +8,43 @@ dom = [-1,1];
 x = chebfun('x', dom);
 
 N = chebop(dom);
-N.op = @(x,u1,u2) [ diff(u1,2) + x.*diff(u2) + u2; u1 + (2+cos(x)).*diff(u2,2) ];
+N.op = @(x,u1,u2,u3) [ diff(u1,2) + u3;...
+                       diff(u2,2) + u1;...
+                       diff(u3,2) + u2 ];
 %N.op = @(x,u1) [ (2+cos(x)).*diff(u1,2) + u1 ];
 %N.op = @(x,u1,u2) [ diff(u1,2) + u2; u1 + diff(u2,2) ];
 %N.op = @(x,u1,u2) [ diff(u1,2)+diff(u2); diff(u2,2) ];
-N.rbc = @(u1,u2)  [diff(u1);u2]; 
-N.lbc = @(u1,u2)  [u1;diff(u2)]; 
+%N.rbc = @(u1,u2,u3)  [diff(u1);u2;diff(u3)]; 
+%N.lbc = @(u1,u2,u3)  [u1;diff(u2);u3]; 
+N.bc = 'periodic';
 
 L = linearize(N);
-[Lstar,op] = adjoint(L,'bvp');
+[Lstar,op] = adjoint(L,'periodic');
 
-f = x.^2;
-g = cos(30*x);
-rhs = [f;g];
+
+%f = sin(x);
+%g = cos(30*x);
+%h = g./(.1+f);
+%rhs = [f;g;h];
+rhs = [ sin(pi*x); cos(2*pi*x); exp(sin(pi*x)+cos(pi*x)) ];
 subplot(3,1,1), plot(rhs)
 
 pref = cheboppref();
-pref.discretization = @chebcolloc2;
+%pref.discretization = @chebcolloc2;
+pref.discretization = @trigcolloc;
+L.constraint = [];
+L.continuity = [];
 u = linsolve(L,rhs,pref);
 subplot(3,1,2), plot(u)
 
+Lstar.constraint = [];
+Lstar.continuity = [];
 v = linsolve(Lstar,rhs,pref);
 subplot(3,1,3), plot(v)
 
-v'*(L*u)
-(Lstar*v)'*u
-commutator = abs(v'*(L*u) - (Lstar*v)'*u)/max(norm(v),norm(u))
+ip1 = sum(sum(v.*(L*u)))
+ip2 = sum(sum((Lstar*v).*u))
+commutator = abs(ip1 - ip2)/max(norm(v),norm(u))
 
 % scalar ivp control problem
 elseif ( problem == 1)

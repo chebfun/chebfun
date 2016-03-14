@@ -31,19 +31,8 @@ if ( max(max(L.diffOrder)) == 0 )
 end
 
 %%
-% Create adjoint linop
-% periodic boundary conditions
-if ( strcmp(bcType, 'periodic') )
-    bcOpL = [];
-    bcOpR = [];
-    bcOpM = [];
-    Lstar.constraint = L.constraint;
-% general boundary conditions
-else
-    % Adjoint boundary conditions
-    [Cstar, bcOpL, bcOpR, bcOpM] = adjointBCs(L, bcType);
-    Lstar.constraint = Cstar;
-end
+% adjoint boundary conditions
+[Cstar, bcOpL, bcOpR, bcOpM] = adjointBCs(L, bcType);
 
 end
 
