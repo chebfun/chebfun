@@ -84,11 +84,7 @@ function [uout, tout] = spin3(varargin)
 %
 %       u_t = -2*laplacian(u) - biharmonic(u) - .9*u + u^2 - u^3,
 %
-%    on [0 50]^3 from t=0 to t=200, with initial condition
-%
-%       u0(x,y,z) = 1/4*(sin(pi*x/10) + sin(pi*y/10) + sin(pi*z/10)
-%                       + sin(pi*x/2).*sin(pi*y/2) + sin(pi*x/2).*sin(pi*z/2)
-%                       + sin(pi*z/2).*sin(pi*y/2)).
+%    on [0 50]^3 from t=0 to t=200,  with a random initial condition.
 %
 % See also SPINOP3, SPINPREF3, SPINSCHEME, SPIN, SPIN2.
 
