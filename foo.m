@@ -9,28 +9,27 @@ x = chebfun('x', dom);
 
 N = chebop(dom);
 N.op = @(x,u1,u2) [ diff(u1,2) + x.*diff(u2) + u2; u1 + (2+cos(x)).*diff(u2,2) ];
-%N.op = @(x,u1) [ diff(u1,2); cos(x).*u1 + diff(u1,2) ];
+%N.op = @(x,u1) [ (2+cos(x)).*diff(u1,2) + u1 ];
 %N.op = @(x,u1,u2) [ diff(u1,2) + u2; u1 + diff(u2,2) ];
 %N.op = @(x,u1,u2) [ diff(u1,2)+diff(u2); diff(u2,2) ];
-N.lbc = @(u1,u2)  [diff(u1);u2]; 
-N.rbc = @(u1,u2)  [u1;diff(u2)+u2]; 
+N.rbc = @(u1,u2)  [diff(u1);u2]; 
+N.lbc = @(u1,u2)  [u1;diff(u2)]; 
 
 L = linearize(N);
 [Lstar,op] = adjoint(L,'bvp');
 
-f = -sin(10*x);
+f = x.^2;
 g = cos(30*x);
 rhs = [f;g];
+subplot(3,1,1), plot(rhs)
 
 pref = cheboppref();
 pref.discretization = @chebcolloc2;
 u = linsolve(L,rhs,pref);
-u1 = u{1}; u2 = u{2};
-subplot(2,1,1), plot([u1,u2])
+subplot(3,1,2), plot(u)
 
 v = linsolve(Lstar,rhs,pref);
-v1 = v{1}; v2 = v{2};
-subplot(2,1,2), plot([v1,v2])
+subplot(3,1,3), plot(v)
 
 v'*(L*u)
 (Lstar*v)'*u

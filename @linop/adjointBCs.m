@@ -46,7 +46,7 @@ else
       z = zeros(1,2*dor(ii));
       U = chebpoly(0:2*dor(ii)-1,dom);
       for jj = 1:nin
-           bCol = [ bCol; E(jj,ii)*U ];
+           bCol = vertcat( bCol, E(jj,ii)*U );
       end
       fU = [ fU funs*bCol ];
 
@@ -85,21 +85,9 @@ else
   end
 
   % need the null space of B which we get via QR
-  if ( sum(bcTypes == 2) )
-    [qB,~] = qr(B');
-    nulB = qB(:,nbcs+1:end);
-  % if no mixed boundary conditions we ensure that the adjoint bcs 
-  % are strictly left and right
-  else
-    nlbcs = sum(bcTypes == 0);
-    [qBl,~] = qr(B(1:nlbcs,1:sum(dor))');
-    nrbcs = nbcs - nlbcs;
-    [qBr,~] = qr(B(nlbcs+1:end,sum(dor)+1:2*sum(dor))');
-    nulB = zeros(2*sum(dor),nadjbcs);
-    nulB(1:sum(dor),1:sum(dor)-nlbcs) = qBl(:,nlbcs+1:end);
-    nulB(sum(dor)+1:2*sum(dor),sum(dor)-nlbcs+1:nadjbcs) = qBr(:,nrbcs+1:end);
-  end
-  nulB = rref(nulB')';
+  [qB,~] = qr(B');
+  nulB = qB(:,nbcs+1:end)';
+  nulB = rref(nulB);
 
   % compute complimentarity matrix
   compML = cell(nout,nin);
@@ -114,7 +102,7 @@ else
   compM = blkdiag( -cell2mat(compML), cell2mat(compMR) );
 
   % compute Bstar
-  Bstar = (compM*nulB)';
+  Bstar = nulB*compM;
 
   % attempt to simplify rows of Bstar
   Bstar = rref(Bstar);
@@ -137,7 +125,7 @@ else
   Bstar = Bstar(ind,:);
 
   % call bchandles
-  [ bcOpL, bcOpR, bcOpM ] = bcHandles( Bstar, starTypes, dor );
+  [ bcOpL, bcOpR, bcOpM ] = bcHandles( Bstar, starTypes, dor, dom );
 
   % compute Cstar by first creating a chebop
   order = max(dor, [], 2);
@@ -169,12 +157,16 @@ end
 
 
 
-function [bcOpL, bcOpR, bcOpM] = bcHandles(Bstar,starTypes,diffOrders)
+function [bcOpL, bcOpR, bcOpM] = bcHandles(Bstar,starTypes,diffOrders,domain)
 
 % initialize ops
 bcOpL = [];
 bcOpR = [];
 bcOpM = [];
+
+% variables for left and right endpoint
+eval(['lpt = domain(1);']);
+eval(['rpt = domain(2);']);
 
 % create cell array of dual variable names
 nvars = length(diffOrders);
@@ -197,11 +189,45 @@ for ii = 1:nvars
     diffNames{ii} = set;
 end
 
+% create cell array of diffnames at left end point
+diffNamesL = cell(1,nvars);
+for ii = 1:nvars
+    set = {['feval(',varNames{ii},',lpt)']};
+    for jj = 1:diffOrders(ii)
+        if ( jj == 1 )
+            set{1,jj+1} = ['feval(diff(',varNames{ii},'),lpt)'];
+        else
+            set{1,jj+1} = ['feval(diff(',varNames{ii},',',int2str(jj),'),lpt)'];
+        end
+    end
+    diffNamesL{ii} = set;
+end
+
+% create cell array of diffnames at right end point
+diffNamesR = cell(1,nvars);
+for ii = 1:nvars
+    set = {['feval(',varNames{ii},',rpt)']};
+    for jj = 1:diffOrders(ii)
+        if ( jj == 1 )
+            set{1,jj+1} = ['feval(diff(',varNames{ii},'),rpt)'];
+        else
+            set{1,jj+1} = ['feval(diff(',varNames{ii},',',int2str(jj),'),rpt)'];
+        end
+    end
+    diffNamesR{ii} = set;
+end
+
 % convert each row of Bstar into a string regardless of starTypes
 nbcs = size(Bstar,1);
 nin = size(Bstar,2)/2;
 Bstg = cell(nbcs,1);
 for ii = 1:nbcs
+    % choose list of diffnames
+    if ( starTypes(ii) == 2 )
+       dnames = diffNamesL;
+    else
+       dnames = diffNames;
+    end
     % left bcs
     for jj = 1:nvars
         stride = (jj-1)*diffOrders(max(jj-1,1));
@@ -213,7 +239,7 @@ for ii = 1:nbcs
                 if ( ~isempty(Bstg{ii,1}) )
                     Bstg{ii,1} = [Bstg{ii,1},'+'];
                 end
-                Bstg{ii,1} = [Bstg{ii,1},diffNames{jj}{kk}];
+                Bstg{ii,1} = [Bstg{ii,1},dnames{jj}{kk}];
             elseif ( b ~= 0 )
                 % add plus sign
                 if ( ~isempty(Bstg{ii,1}) )
@@ -221,9 +247,15 @@ for ii = 1:nbcs
                 end
                 bs = ['bl',int2str(ii),int2str(stride+kk)];
                 eval([bs,'= b;']);
-                Bstg{ii,1} = [Bstg{ii,1},bs,'*',diffNames{jj}{kk}];
+                Bstg{ii,1} = [Bstg{ii,1},bs,'*',dnames{jj}{kk}];
             end
         end
+    end
+    % choose list of diffnames
+    if ( starTypes(ii) == 2 )
+       dnames = diffNamesR;
+    else
+       dnames = diffNames;
     end
     % right bcs
     for jj = 1:nvars
@@ -236,7 +268,7 @@ for ii = 1:nbcs
                 if ( ~isempty(Bstg{ii,1}) )
                     Bstg{ii,1} = [Bstg{ii,1},'+'];
                 end
-                Bstg{ii,1} = [Bstg{ii,1},diffNames{jj}{kk}];
+                Bstg{ii,1} = [Bstg{ii,1},dnames{jj}{kk}];
             elseif ( b ~= 0 )
                 % add plus sign
                 if ( ~isempty(Bstg{ii,1}) )
@@ -244,7 +276,7 @@ for ii = 1:nbcs
                 end
                 bs = ['br',int2str(ii),int2str(stride+kk)];
                 eval([bs,'= b;']);
-                Bstg{ii,1} = [Bstg{ii,1},bs,'*',diffNames{jj}{kk}];
+                Bstg{ii,1} = [Bstg{ii,1},bs,'*',dnames{jj}{kk}];
             end
         end
     end
@@ -339,12 +371,16 @@ function A = compmat(x,coeffs)
   n = length(coeffs)-1;
 
   A = zeros(n);
-  for ii=0:n-1
-    for jj=0:n-1-ii
-      for kk = 0:n
+  for kk = n:-1:1
+  % loop over diff orders
+    cf = coeffs{n-kk+1};
+    for ii=0:kk-1
+    % loop through rows
+      for jj=0:kk-1-ii
+      % loop through columns
         if ( ii+jj <= kk-1 )
           A(ii+1,jj+1) = A(ii+1,jj+1) + (-1)^(kk-ii-1)*nchoosek(kk-ii-1,jj)*...
-                         feval(diff(coeffs{n-kk+1},kk-ii-jj-1),x);
+                         feval(diff(cf,kk-ii-jj-1),x);
         end
       end
     end
