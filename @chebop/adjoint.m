@@ -1,6 +1,6 @@
 function Nstar = adjoint(N,u)
-%ADJOINT   Compute the adjoint of a linear CHEBOP.
-%   NSTAR = ADJOINT(N) returns the adjoint of a scalar CHEBOP that
+%ADJOINT   Compute the adjoint of a CHEBOP.
+%   NSTAR = ADJOINT(N) returns the adjoint of a CHEBOP that
 %   has either periodic or endpoint constraints. If N is nonlinear then
 %   N is first linearized around U = 0 and NSTAR is the adjoint of the 
 %   linearization.
@@ -22,7 +22,7 @@ end
 L = linearize(N, u);
 
 % Get the value of the highest derivative:
-n = L.diffOrder;
+n = max(max(L.diffOrder));
 
 % Trivial case:
 if ( n == 0 )

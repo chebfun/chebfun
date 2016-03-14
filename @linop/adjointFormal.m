@@ -33,6 +33,7 @@ end
 %% 
 % Get the domain and the value of the highest derivative:
 dom = L.domain;
+Lstar.domain = dom;
 dor = max(max(L.diffOrder));
 
 % loop through blocks
@@ -124,6 +125,6 @@ if ( ncols > 1 )
 else
     op = [argstr,') ',op(2:end)];
 end
-eval(op);
+eval(['op = ',op]);
 
 end

@@ -33,6 +33,7 @@ end
 %%
 % adjoint boundary conditions
 [Cstar, bcOpL, bcOpR, bcOpM] = adjointBCs(L, bcType);
+Lstar.constraint = Cstar;
 
 end
 
