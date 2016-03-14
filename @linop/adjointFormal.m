@@ -123,7 +123,7 @@ end
 if ( ncols > 1 )
     op = [argstr,') [',op(2:end),' ];'];
 else
-    op = [argstr,') ',op(2:end)];
+    op = [argstr,') ',op(2:end),';'];
 end
 eval(['op = ',op]);
 
