@@ -126,8 +126,8 @@ classdef spinpref2 < spinpreference
                     pref.iterPlot = 8;
                     pref.N = 64;
                 elseif ( strcmpi(pdechar, 'Schnak2') == 1 )
-                    pref.dt = 1;
-                    pref.iterPlot = 1;
+                    pref.dt = 5e-1;
+                    pref.iterPlot = 10;
                     pref.N = 64;
                 elseif ( strcmpi(pdechar, 'SH2') == 1 )
                     pref.dt = 1;

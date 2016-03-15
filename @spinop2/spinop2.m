@@ -128,13 +128,13 @@ end
         % Schnakenberg equations:
         elseif ( strcmpi(pdechar, 'Schnak2') == 1 )
             L = @(u,v) [lap(u); 10*lap(v)];
-            N = @(u,v) [.1 - u + u.^2.*v; .9 - u.^2.*v];
+            N = @(u,v) [3*(.1 - u + u.^2.*v); 3*(.9 - u.^2.*v)];
             G = 50;
             dom = G*[0 1 0 1];
-            tspan = [0 200];
-            u01 = @(x,y) 1 - exp(-10*((x-G/2).^2 + (y-G/2).^2));
+            tspan = [0 800];
+            u01 = @(x,y) 1 - exp(-2*((x-G/2.15).^2 + (y-G/2.15).^2));
             u01 = chebfun2(u01, dom, 'trig');
-            u02 = @(x,y) exp(-10*((x-G/2).^2 + 2*(y-G/2).^2));
+            u02 = @(x,y) .9/(.1^2+.9^2) + exp(-2*((x-G/2).^2 + 2*(y-G/2).^2));
             u02 = chebfun2(u02, dom, 'trig');
             u0 = [u01; u02];
     

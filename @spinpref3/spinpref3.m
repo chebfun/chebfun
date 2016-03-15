@@ -131,9 +131,10 @@ classdef spinpref3 < spinpreference
                     pref.N = 32;     
                     pref.Nplot = 80;
                 elseif ( strcmpi(pdechar, 'Schnak3') == 1 )
-                    pref.dt = 1;
-                    pref.iterPlot = 1;
-                    pref.N = 16;
+                    pref.dt = 5e-1;
+                    pref.iterPlot = 10;
+                    pref.N = 32;
+                    pref.Nplot = 80;
                 elseif ( strcmpi(pdechar, 'SH3') == 1 )
                     pref.dt = 1;
                     pref.iterPlot = 2;

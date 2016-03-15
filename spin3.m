@@ -67,14 +67,14 @@ function [uout, tout] = spin3(varargin)
 %
 %    solves the Schnakenberg equations 
 %
-%       u_t = laplacian(u) + .1 - u + u^2*v,
-%       v_t = 10*laplacian(v) + .9 - u^2*v,
+%       u_t = laplacian(u) + 3*(.1 - u + u^2*v),
+%       v_t = 10*laplacian(v) + 3*(.9 - u^2*v),
 %
-%    on [0 20]^3 from t=0 to t=200, with initial condition 
+%    on [0 50]^3 from t=0 to t=400, with initial condition 
 %
-%       u0(x,y,z) = 1 - exp(-10*((x-G/2)^2 + (y-G/2)^2 + (z-G/2)^2)),
-%       v0(x,y,z) = exp(-10*((x-G/2)^2 + 2*(y-G/2)^2 + (z-G/2)^2)),
-%           with G=20.
+%       u0(x,y,z) = 1 - exp(-2*((x-G/2.15)^2 + (y-G/2.15)^2 + (z-G/2.15)^2)),
+%       v0(x,y,z) = exp(-2*((x-G/2)^2 + 2*(y-G/2)^2 + 2*(z-G/2)^2)) + 
+%                       .9/(.1^2+.9^2), with G=50.
 %
 % Example 4: Swift-Hohenberg equation (Rayleigh-Benard convection)
 %
