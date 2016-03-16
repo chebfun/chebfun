@@ -321,6 +321,9 @@ else            % Unwrap the eigenvectors for output
     end
     u = chebmatrix(vertcat(u{:}));
    
+    % do one step of inverse iteration to improve accuracy
+    [u, D] = inverseIter(A,B,u,D,prefs);
+
     % Output:
     varargout = {u, D};
 end
@@ -489,3 +492,34 @@ idx = idx( keeper );
 
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function [u, D] = inverseIter(A,B,u,D,prefs)
+% function to perform one step of inverse iteration
+
+    % if B isempty set to identity
+    if ( isempty(B) )
+        B = 0*A;
+        I = operatorBlock.eye(A.domain);
+        for ii = 1:size(B,1)
+            B.blocks{ii,ii} = I;
+        end
+    end
+    B = linop(B);
+
+    % loop through diagoanal of D
+    d = diag(D);
+    for ii = 1:length(d)
+        lam = (1+1e-10)*d(ii);
+        L = linop(A-lam*B);
+        L.constraint = A.constraint;
+        rhs = B*u(:,ii);
+        v = linsolve(L,rhs,prefs);
+        u(:,ii) = v/norm(v);
+    end
+
+    % update D
+    d = diag(u'*(A*u))./diag(u'*(B*u));
+    D = diag(d);
+
+end
