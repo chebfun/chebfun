@@ -175,7 +175,7 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
             else               
                 % Loosen tolerance:
                 if ( any(obj.exponents) )
-                    pref.eps = max(pref.eps, 1e-14);
+                    pref.chebfuneps = max(pref.chebfuneps, 1e-14);
                 end
                 % Construct new function Handle by factorinf out singular terms
                 % from the operator based on the values in exponents.

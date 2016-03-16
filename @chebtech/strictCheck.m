@@ -1,27 +1,27 @@
 function [ishappy, cutoff] = strictCheck(f, values, data, pref)
-%STRICTCHECK   Attempt to trim trailing Chebyshev coefficients in a CHEBTECH.
-%   [ISHAPPY, CUTOFF] = STRICTCHECK(F, VALUES, DATA) returns an estimated
-%   location CUTOFF at which the CHEBTECH F could be truncated to maintain an
-%   accuracy of the default CHEBTECH EPS preference relative to DATA.VSCALE and
-%   DATA.HSCALE. ISHAPPY is TRUE if CUTOFF < MIN(LENGTH(F.COEFFS), 2) or
-%   VSCALE(F)=0, and FALSE otherwise.
+%STRICTCHECK   Attempt to trim trailing Chebyshev coefficients in a 
+%   CHEBTECH. [ISHAPPY, CUTOFF] = STRICTCHECK(F, VALUES, DATA) returns an 
+%   estimated location CUTOFF at which the CHEBTECH F could be truncated to
+%   maintain an accuracy of the default CHEBTECH CHEBFUNEPS preference 
+%   relative to DATA.VSCALE and DATA.HSCALE. ISHAPPY is TRUE if 
+%   CUTOFF < MIN(LENGTH(F.COEFFS), 2) or VSCALE(F)=0, and FALSE otherwise.
 %
 %   [ISHAPPY, CUTOFF] = STRICTCHECK(F, VALUES, DATA, PREF) allows
 %   additional preferences to be passed. In particular, one can adjust the
-%   target accuracy with PREF.EPS. The VALUES field is ignored, but included for
-%   consistency with other happiness checks.
+%   target accuracy with PREF.CHEBFUNEPS. The VALUES field is ignored, but 
+%   included for consistency with other happiness checks.
 %
-%   STRICTCHECK tests to see if the absolute values of the entries in the tail
-%   of coeffs, i.e., f.coeffs(1:TESTLENGTH,:), where
+%   STRICTCHECK tests to see if the absolute values of the entries in the 
+%   tail of coeffs, i.e., f.coeffs(1:TESTLENGTH,:), where
 %       TESTLENGTH = n,             for n = 1:4
 %       TESTLENGTH = 5,             for n = 5:44
 %       TESTLENGTH = round((n-1)/8) for n > 44
-%   all lie below the value in PREF.EPS.  CUTOFF is the location of the first
-%   entry above PREF.EPS in absolute value.
+%   all lie below the value in PREF.CHEBFUNEPS.  CUTOFF is the location of 
+%   the first entry above PREF.CHEBFUNEPS in absolute value.
 %
-%   STRICKCHECK differs from CLASSICCHECK() in that the tolerance PREF.EPS is
-%   not relaxed by the length of the representation of F or by any finite
-%   difference approximation of the gradient of F.
+%   STRICKCHECK differs from CLASSICCHECK() in that the tolerance 
+%   PREF.CHEBFUNEPS is not relaxed by the length of the representation of F
+%   or by any finite difference approximation of the gradient of F.
 %
 % See also STRICTCHECK, LOOSECHECK.
 
@@ -39,11 +39,11 @@ ishappy = false;
 % Grab some preferences:
 if ( nargin == 1 )
     pref = f.techPref();
-    epslevel = pref.eps;
+    epslevel = pref.chebfuneps;
 elseif ( isnumeric(pref) )
     epslevel = pref;
 else
-    epslevel = pref.eps;
+    epslevel = pref.chebfuneps;
 end
 
 % Convert scalar epslevel/tolerance inputs into vectors.

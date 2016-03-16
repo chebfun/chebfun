@@ -2,7 +2,7 @@
 
 function pass = test_chebpts(varargin)
 
-% Set a tolerance (pref.eps doesn't matter)
+% Set a tolerance (pref.chebfuneps doesn't matter)
 tol = 10*eps;
 
 % Test that n = 0 returns empty results:

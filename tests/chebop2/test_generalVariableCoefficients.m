@@ -5,7 +5,7 @@ function pass = test_generalVariableCoefficients( prefs )
 if ( nargin < 1 ) 
     prefs = chebfunpref(); 
 end 
-tol = 4000*prefs.techPrefs.eps;
+tol = 4000*prefs.cheb2Prefs.chebfun2eps;
 
 x = chebfun2(@(x,y) x); y = chebfun2(@(x,y) y); 
 m = cos(x.*y);

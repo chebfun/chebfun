@@ -5,7 +5,7 @@ if ( nargin == 0 )
     pref = chebfunpref; 
 end
 
-tol = 100*pref.eps; 
+tol = 100*pref.cheb2Prefs.chebfun2eps;
 
 f = {@cos, @sin, @tan, @cosh, @sinh, @tanh, @tand}; 
 

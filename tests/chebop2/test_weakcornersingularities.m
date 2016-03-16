@@ -1,12 +1,12 @@
-function pass = test_weakcornersingularities( prefs )
+function pass = test_weakcornersingularities( pref )
 % Check that we can correctly resolve weak corner singularities to high
 % accuracy. 
 % Alex Townsend, August 2013. 
 
 if ( nargin < 1 ) 
-    prefs = chebfunpref(); 
+    pref = chebfunpref(); 
 end 
-tol = 1e6*prefs.techPrefs.eps; 
+tol = 1e6*pref.cheb2Prefs.chebfun2eps;
 
 f = @(x,y) (x.^2+y.^2).*(log(sqrt(x.^2+y.^2)).*sin(2*atan(y./x)) + atan(y./x).*cos(2*atan(y./x)));
 
