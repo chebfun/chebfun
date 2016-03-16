@@ -10,7 +10,6 @@ function [U, S, V] = svds(L, k)
 
 % Linearize
 [ K, ~, isLinear ] = linearize( L, [], [], 1 );
-K
 
 % check linearity
 if ( any(isLinear == 0) )

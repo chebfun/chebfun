@@ -48,7 +48,11 @@ else
       for jj = 1:nin
            bCol = vertcat( bCol, E(jj,ii)*U );
       end
-      fU = [ fU funs*bCol ];
+      if ( isempty(funs) )
+          fU = [ fU 0*feval(bCol,dom(1)) ];
+      else
+          fU = [ fU funs*bCol ];
+      end
 
       % evaluate test functions at endpoints
       Ul = U(dom(1),:); Ur = U(dom(2),:);

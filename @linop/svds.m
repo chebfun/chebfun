@@ -9,7 +9,7 @@ function [U, S, V] = svds(L, k, bcType)
 Lstar = adjoint(L,bcType);
 
 % initialize superL to 0
-[m n] = size(L)
+[m n] = size(L);
 dom = L.domain;
 nm = n + m;
 superL = linop(mat2cell(zeros(nm),ones(1,nm),ones(1,nm)));
@@ -37,27 +37,35 @@ end
 C = L.constraint;
 Cstar = Lstar.constraint;
 
+% get funs
+Cfuns = C.functional; nc = size(Cfuns,1);
+Csfuns = Cstar.functional; ncs = size(Csfuns,1);
+
 % make superC
-superC.functional = cell(nm,nm)
+dor = max(max(L.diffOrder));
+superC.functional = [];
 z = functionalBlock.zero(dom);
-for ii = 1:m
+for ii = 1:nc
+    row = [];
     for jj = 1:n
-        superC.functional{ii,jj} = C.functional{ii,jj};
+        row = [row,Cfuns{ii,jj}];
     end
     for jj = 1:m
-        superC.functional{ii,n+jj} = z;
+        row = [row,z];
     end
+    superC.functional = [superC.functional;row];
 end
-for ii = 1:n
+for ii = 1:ncs
+    row = [];
     for jj = 1:n
-        superC.functional{m+ii,jj} = z;
+        row = [row,z];
     end
     for jj = 1:m
-        superC.functional{m+ii,n+jj} = Cstar.functional{ii,jj};
+        row = [row,Csfuns{ii,jj}];
     end
+    superC.functional = [superC.functional;row];
 end
-superC.functional
-superC.values = zeros(nm,1);
+superC.values = zeros(dor*nm,1);
 
 % finish superL
 superL.constraint = superC;
@@ -71,16 +79,81 @@ else
 end
 [ Q, D ] = eigs( superL, 2*k, [], pref );
 
-% sort and trim
+% make sure singular values are real
+if ( any(imag(diag(D)) ~= 0) )
+    error('CHEBFUN:LINOP:svds:real', ...
+        'Computed singular values are not strictly real.');
+end
+
+% sort
 [D,id] = sort(diag(D),'descend');
 Q = Q(:,id);
-S = diag(D(1:k));
-Q = Q(:,1:k);
+
+% one step of RQI
+I = operatorBlock.eye(superL.domain);
+for ii = 1:2*k
+    K = superL;
+    for jj = 1:size(K,1)
+        K.blocks{jj,jj} = K.blocks{jj,jj} - D(ii)*I;
+    end
+    Q(:,ii) = linsolve(K,Q(:,ii),pref);
+    Q(:,ii) = Q(:,ii)/norm(Q(:,ii));
+end
+D = diag(Q'*(superL*Q))
+
+% check for zero singular values
+% a singular value is considered 0 if it is less than pref.bvpTol
+nulls = abs(D) < pref.bvpTol;
+ids = (1:length(nulls))';
+zid = max(ids(nulls)); 
+nzs = sum([nulls;0]); 
+if ( ~isempty(zid) )
+    ids = ids(zid-k+1:zid);
+else
+    ids = ids(1:k);
+end
+
+% trim 
+S = diag(D(ids));
+Q = Q(:,ids);
 
 % rescale singular vectors
 V = Q(1:n,:); nrmV = sqrt(diag(V'*V)); 
 nrmV( nrmV == 0 ) = 1; V = V*diag(1./nrmV);
 U = Q(n+1:end,:); nrmU = sqrt(diag(U'*U));
-nrmU( nrmU == 0 ) = 1; U = U*diag(1./nrmU);
+nrmU( nrmU == 0 ) = 1; nrmU = 1./nrmU;
+if ( nzs > 0 )
+    nrmU(end-nzs+1:end) = 0;
+end
+U = U*diag(nrmU);
+
+% try to simply null vectors
+nulV = V(:,end-nzs+1:end);
+nulV = squish(nulV,pref);
+V(:,end-nzs+1:end) = nulV;
+
+end
+
+function Vnew = squish(V,pref)
+% this function attempts construct a degree-graded 
+% set of vectors Vnew from the input vectors V
+
+% convert V to quasimatrix
+V = quasi2cheb(quasimatrix(V));
+V = simplify(V,1e-8);
+
+% extract coefficients
+Vcfs = chebcoeffs(V);
+
+% reduce using partial pivoting
+Vcfs = rref(fliplr(Vcfs'));
+Vcfs = fliplr(Vcfs)';
+V = chebfun(Vcfs,domain(V),'coeffs');
+
+% reorthogonalize
+[V,~] = qr(V);
+
+% set Vnew
+Vnew = chebmatrix(V);
 
 end
