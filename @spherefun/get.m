@@ -1,12 +1,17 @@
-function val = get( f, propName )
-%GET       GET method for SPHEREFUN class.
-%   P = GET(F, PROP) returns the property P specified in the string PROP from
-%   the SPHEREFUN object F. Valid entries for the string PROP are:
+function val = get(f, propName)
+%GET    GET method for SPHEREFUN class.
+%   P = GET(F, PROPNAME) returns the property P specified in the string 
+%   PROPNAME from the SPHEREFUN object F. Valid entries for the string 
+%   PROPNAME are:
 %    'DOMAIN'
 %    'COLS'
 %    'ROWS' 
 %    'PIVOTVALUES'
 %    'PIVOTLOCATIONS'
+%    'BLOCKDIAG'
+%    'IDXPLUS'
+%    'IDXMINUS'
+%    'NONZEROPOLES'
 
 % Loop through an array of SPHEREFUN objects.
 if ( numel(f) > 1 )

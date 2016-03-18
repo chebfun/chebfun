@@ -1,5 +1,5 @@
 function varargout = quiver(fx,fy,fz)
-%QUIVER   Quiver plot of a SPHEREFUN.
+%QUIVER     Quiver plot of a SPHEREFUN.
 %   QUIVER(FX, FY, FZ) plots the vector velocity field of (FX,FY,FZ) in
 %   Cartesian coordinates on the surface of a sphere. QUIVER automatically
 %   attempts to scale the arrows to fit within the grid. The arrows are
@@ -9,7 +9,6 @@ function varargout = quiver(fx,fy,fz)
 %
 % See also GRADIENT, CURL
 
-dom = fx.domain;
 holdState = ishold;
 if ~holdState
     hold on;
@@ -17,47 +16,48 @@ end
 
 % If the plot is not being added to another then plot a solid 
 % sphere so the lines are more easily discernable.
-if ~holdState
-    %
+if ( ~holdState )
     % Generate a unit sphere.
-    %
-    [XX,YY,ZZ] = sphere(101);
+    [XX, YY, ZZ] = sphere(101);
+    
     % Color of the sphere will be yellow:
     clr = [255 255 204]/255;
-    % Plot the sphere, make it slightly smaller than unit so lines
-    % show up more clearly.
+    
+    % Plot the sphere, make it slightly smaller than unit so lines show up 
+    % more clearly.
     scl = 0.99;
-    surf(scl*XX,scl*YY,scl*ZZ,1+0*XX,'EdgeColor','None','FaceColor',clr);
+    surf(scl*XX, scl*YY, scl*ZZ, 1+0*XX, 'EdgeColor', 'None', ...
+        'FaceColor', clr);
     daspect([1 1 1]);
 end
 
-% Plot vectors at the Icosahedral nodes, which are well separated and make
+% Plot vectors at the icosahedral nodes, which are well separated and make
 % the vector field stand out much better.
-x = getIcosNodes(4,0);  % Gives 5762 nodes
+x = getIcosNodes(4, 0);  % Gives 5762 nodes
 
 % Evaluate the components of the field.
-fxv = feval(fx,x(:,1),x(:,2),x(:,3));
-fyv = feval(fy,x(:,1),x(:,2),x(:,3));
-fzv = feval(fz,x(:,1),x(:,2),x(:,3));
+fxv = feval(fx, x(:, 1), x(:, 2), x(:, 3));
+fyv = feval(fy, x(:, 1), x(:, 2), x(:, 3));
+fzv = feval(fz, x(:, 1), x(:, 2), x(:, 3));
 
-h = quiver3(x(:,1),x(:,2),x(:,3),fxv,fyv,fzv,2,'k');
+h = quiver3(x(:,1), x(:,2), x(:,3), fxv, fyv, fzv, 2, 'k');
 
 if ~holdState
-    hold off;
-    view(3);
+    hold off
+    view(3)
     daspect([1 1 1]);
-    axis([-1 1 -1 1 -1 1]);
+    axis([-1 1 -1 1 -1 1])
 end
 
 if ( nargout == 1 )
-    varargout = {h};
+    varargout = { h };
 end
 
 end
 
-function [x,tri] = getIcosNodes(k,type)
-%GETICOSNODES Computes the icosahedral node sets for the surface of the sphere.
-%
+function [x, tri] = getIcosNodes(k, type)
+%GETICOSNODES Computes the icosahedral node sets for the surface of the 
+% sphere.
 %   X = getIcosNodes(K,TYPE) returns an N-by-3 matrix containing the 
 %   icosahedral nodes of the specified type, where the columns corresponds
 %   to the (x,y,z) coordinates of the nodes.  Note that these nodes are only
@@ -84,41 +84,42 @@ function [x,tri] = getIcosNodes(k,type)
 %   nodes X.
 %
 %   Example:
-%       [x,tri] = getIcosNodes(3,1);
-%       trisurf(tri,x(:,1),x(:,2),x(:,3),double(rand(size(x,1),1)>0.5));
+%       [x, tri] = getIcosNodes(3, 1);
+%       trisurf(tri, x(:, 1), x(:, 2), x(:, 3), double(rand(size(x,1), 1)>0.5));
 %       axis equal, colormap(jet(5));
 
 % Author: Grady Wright, 2014
 
 % Here are the nodes for the base icosahedron
 p = (1+sqrt(5))/2;
-x = [[0,p,1];[0,-p,1];[0,p,-1];[0,-p,-1];[1,0,p];[-1,0,p];[1,0,-p];[-1,0,-p];[p,1,0];[-p,1,0];[p,-1,0];[-p,-1,0]];
+x = [[0, p, 1]; [0, -p, 1]; [0, p, -1]; [0, -p, -1]; [1, 0, p]; [-1, 0, p];
+    [1, 0, -p]; [-1, 0, -p]; [p, 1, 0]; [-p, 1, 0]; [p, -1, 0]; [-p, -1, 0]];
 % Scale nodes so that they are on the surface of the sphere.
 x = bsxfun(@rdivide,x,sqrt(sum(x.^2,2)));
 
 % Triangulate the points
 tri = delaunay(x);
-tri = freeBoundary(TriRep(tri,x));
+tri = freeBoundary(TriRep(tri, x));
 
-if type == 0 && k == 0
-    return;
+if ( (type == 0) && (k == 0) )
+    return
 end
 
-if type == 1
-    [x,tri] = trisectTri(x,tri);
-    if  k == 0
-        return;
+if ( type == 1 )
+    [x, tri] = trisectTri(x, tri);
+    if  ( k == 0 )
+        return
     end
 end
 
 % Now just bisect the triangles.
 for i = 1:k
-    [x,tri] = bisectTri(x,tri);
+    [x, tri] = bisectTri(x, tri);
 end
 
 end
 
-function [x,tri]=trisectTri(x,tri)
+function [x, tri] = trisectTri(x, tri)
 % Subdivide triangular mesh using triangular trisection. During this
 % operation vertices are inserted at the trisection points of the triangles
 % edges together with one vertice at the circumcenter of the triangle.
@@ -127,70 +128,71 @@ function [x,tri]=trisectTri(x,tri)
 %
 
 k = 1;
-v1 = zeros(2*size(tri,1),3);
+v1 = zeros(2*size(tri, 1), 3);
 v2 = v1;
 v3 = v1;
-for j=1:size(tri,1)
-    v1(k:k+1,:) = trisectEdge(x(tri(j,1),:),x(tri(j,2),:));
-    v2(k:k+1,:) = trisectEdge(x(tri(j,2),:),x(tri(j,3),:));
-    v3(k:k+1,:) = trisectEdge(x(tri(j,3),:),x(tri(j,1),:));
+for j=1:size(tri, 1)
+    v1(k:k+1, :) = trisectEdge(x(tri(j, 1), :), x(tri(j, 2), :));
+    v2(k:k+1, :) = trisectEdge(x(tri(j, 2), :), x(tri(j, 3), :));
+    v3(k:k+1, :) = trisectEdge(x(tri(j, 3), :), x(tri(j, 1), :));
     k = k+2;
 end
-v = [v1;v2;v3];
+v = [v1; v2; v3];
 
 % Add the circumcenter of the original triangle to the list.
-v = [v;circumcenterSphTri(tri,x)];
-% v = [v;(x(tri(:,1),:)+x(tri(:,2),:)+x(tri(:,3),:))/3];
-v = [x;v];
+v = [v; circumcenterSphTri(tri, x)];
+% v = [v;(x(tri(:, 1), :) + x(tri(:, 2), :) + x(tri(:, 3), :))/3];
+v = [x; v];
 
 % Remove repeating vertices
-x=unique(v,'rows');
+x = unique(v, 'rows');
 
 % Project the nodes to the sphere.
-x_l2=sqrt(sum(x.^2,2));
-x=bsxfun(@rdivide,x,x_l2);
+x_l2 = sqrt(sum(x.^2, 2));
+x = bsxfun(@rdivide, x, x_l2);
 
 % Triangulate the new nodes;
 tri = delaunay(x);
-tri = freeBoundary(TriRep(tri,x));
+tri = freeBoundary(TriRep(tri, x));
 end
 
-function [x,tri]=bisectTri(x,tri)
+function [x, tri]=bisectTri(x, tri)
 % Subdivide triangular mesh using triangular bisection. During this
 % operation vertices are inserted at the bisection points of the triangles
 % edges. This produces nine new triangular faces for every face of the
 % original triangle.
 
 % Number of vertices
-Nx=size(x,1);
+Nx = size(x, 1);
+
 % Number of triangles
-Nt=size(tri,1);
+Nt = size(tri, 1);
 
 % Bisect each edge
-v1=(x(tri(:,1),:)+x(tri(:,2),:))/2;
-v2=(x(tri(:,2),:)+x(tri(:,3),:))/2;
-v3=(x(tri(:,3),:)+x(tri(:,1),:))/2;
-v =[v1;v2;v3];
+v1 = (x(tri(:, 1), :) + x(tri(:, 2), :))/2;
+v2 = (x(tri(:, 2), :) + x(tri(:, 3), :))/2;
+v3 = (x(tri(:, 3), :) + x(tri(:, 1), :))/2;
+v = [v1; v2; v3];
 
 % Remove repeating vertices
-[v,~,idx] = unique(v,'rows');
+[v, ~, idx] = unique(v, 'rows');
 
 % Assign indices to the new triangle vertices
-v1= Nx + idx(1:Nt);
-v2= Nx + idx((Nt+1):2*Nt);
-v3= Nx + idx((2*Nt+1):3*Nt);
+v1 = Nx + idx(1:Nt);
+v2 = Nx + idx((Nt+1):2*Nt);
+v3 = Nx + idx((2*Nt+1):3*Nt);
 
 % Define new triangles
-t1= [tri(:,1) v1 v3];
-t2= [tri(:,2) v2 v1];
-t3= [tri(:,3) v3 v2];
-t4= [v1       v2 v3];
+t1 = [tri(:, 1) v1 v3];
+t2 = [tri(:, 2) v2 v1];
+t3 = [tri(:, 3) v3 v2];
+t4 = [v1        v2 v3];
 
 % New vertices and triangles:
-x = [x;v];
-x_l2=sqrt(sum(x.^2,2)); % Project the nodes to the sphere.
-x=bsxfun(@rdivide,x,x_l2);
-tri = [t1;t2;t3;t4];
+x = [x; v];
+x_l2 = sqrt(sum(x.^2, 2)); % Project the nodes to the sphere.
+x = bsxfun(@rdivide, x, x_l2);
+tri = [t1; t2; t3; t4];
 
 % Poor man's way of doing the same code as above.  This commented out code
 % is much, much slower.
@@ -205,7 +207,7 @@ tri = [t1;t2;t3;t4];
 end
 
 
-function x = trisectEdge(x1,x2)
+function x = trisectEdge(x1, x2)
 % Trisects the great circle arc joining x1 and x2.
 % Returns the resulting 2 points, the first being 1/3 distance from x1 to
 % x2 and the second being 2/3 the distance here the nodes are ordered as if 
@@ -224,18 +226,18 @@ function x = trisectEdge(x1,x2)
 dp = x1*x2';
 alp=1/3*acos(dp);
 denom = dp^2 - 1;
-c1 = (dp*cos(2*alp)-cos(alp))/denom;
-c2 = (dp*cos(alp)-cos(2*alp))/denom;
-x = [x1*c1 + x2*c2;x2*c1 + x1*c2];
+c1 = (dp*cos(2*alp) - cos(alp))/denom;
+c2 = (dp*cos(alp) - cos(2*alp))/denom;
+x = [x1*c1 + x2*c2; x2*c1 + x1*c2];
 
 end
 
 function xc = circumcenterSphTri(tri,nodes)
 
 % Local variables to make the code easier to read.
-x = nodes(:,1);
-y = nodes(:,2);
-z = nodes(:,3);
+x = nodes(:, 1);
+y = nodes(:, 2);
+z = nodes(:, 3);
 
 %
 % See http://en.wikipedia.org/wiki/Circumcenter for the details of the
@@ -243,26 +245,33 @@ z = nodes(:,3);
 %
 
 % For each point, compute the distances between each of the vertices.
-rd2(:,1) = 2*(1-(x(tri(:,1)).*x(tri(:,2)) + y(tri(:,1)).*y(tri(:,2)) + z(tri(:,1)).*z(tri(:,2))));
-rd2(:,2) = 2*(1-(x(tri(:,2)).*x(tri(:,3)) + y(tri(:,2)).*y(tri(:,3)) + z(tri(:,2)).*z(tri(:,3))));
-rd2(:,3) = 2*(1-(x(tri(:,1)).*x(tri(:,3)) + y(tri(:,1)).*y(tri(:,3)) + z(tri(:,1)).*z(tri(:,3))));
+rd2(:, 1) = 2*(1-(x(tri(:, 1)).*x(tri(:, 2)) + y(tri(:, 1)).*y(tri(:, 2)) ...
+    + z(tri(:, 1)).*z(tri(:, 2))));
+rd2(:, 2) = 2*(1-(x(tri(:, 2)).*x(tri(:, 3)) + y(tri(:, 2)).*y(tri(:, 3)) ...
+    + z(tri(:, 2)).*z(tri(:, 3))));
+rd2(:, 3) = 2*(1-(x(tri(:, 1)).*x(tri(:, 3)) + y(tri(:, 1)).*y(tri(:, 3)) ...
+    + z(tri(:, 1)).*z(tri(:, 3))));
 
-alpha = rd2(:,2).*dot(nodes(tri(:,1),:)-nodes(tri(:,2),:),nodes(tri(:,1),:)-nodes(tri(:,3),:),2);
-denom = 2*sum(cross(nodes(tri(:,1),:)-nodes(tri(:,2),:),nodes(tri(:,2),:)-nodes(tri(:,3),:),2).^2,2);
+alpha = rd2(:, 2).*dot(nodes(tri(:, 1), :) - nodes(tri(:, 2), :), ...
+    nodes(tri(:, 1), :)-nodes(tri(:, 3), :), 2);
+denom = 2*sum(cross(nodes(tri(:, 1), :) - nodes(tri(:, 2), :), ...
+    nodes(tri(:, 2), :) - nodes(tri(:, 3), :), 2).^2, 2);
 alpha = alpha./denom;
 
-beta = rd2(:,3).*dot(nodes(tri(:,2),:)-nodes(tri(:,1),:),nodes(tri(:,2),:)-nodes(tri(:,3),:),2);
+beta = rd2(:, 3).*dot(nodes(tri(:, 2),:) - nodes(tri(:, 1), :), ...
+    nodes(tri(:, 2), :) - nodes(tri(:, 3), :), 2);
 beta = beta./denom;
 
-gamma = rd2(:,1).*dot(nodes(tri(:,3),:)-nodes(tri(:,1),:),nodes(tri(:,3),:)-nodes(tri(:,2),:),2);
+gamma = rd2(:, 1).*dot(nodes(tri(:, 3), :) - nodes(tri(:, 1), :), ...
+    nodes(tri(:, 3), :) - nodes(tri(:, 2), :), 2);
 gamma = gamma./denom;
 
-xc = repmat(alpha,[1 3]).*nodes(tri(:,1),:) + repmat(beta,[1 3]).*nodes(tri(:,2),:) + repmat(gamma,[1 3]).*nodes(tri(:,3),:);
+xc = repmat(alpha, [1 3]).*nodes(tri(:, 1), :) + ...
+     repmat(beta, [1 3]).*nodes(tri(:, 2), :) + ...
+     repmat(gamma, [1 3]).*nodes(tri(:, 3), :);
 
-%
 % Project onto the sphere.
-%
-x_l2=sqrt(sum(xc.^2,2));
-xc=bsxfun(@rdivide,xc,x_l2);
+x_l2 = sqrt(sum(xc.^2, 2));
+xc = bsxfun(@rdivide, xc, x_l2);
 
 end

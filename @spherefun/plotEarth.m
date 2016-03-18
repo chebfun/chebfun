@@ -6,17 +6,18 @@ function varargout = plotEarth(varargin)
 %   PLOTEARTH(LINESPEC) uses the uses the color and marker from the 
 %   line specification string 'LineSpec' (See PLOT for possibilities)
 %
-% See also spherefun/SURF, spherefun/PLOT, spherefun/contour
+% See also spherefun/surf, spherefun/plot, spherefun/contour
 
 % Land masses are stored in the data file CoastData.mat
 try
-    x = load('CoastData.mat','coast');
+    x = load('CoastData.mat', 'coast');
 catch
     error('CHEBFUN:SPHEREFUN:PLOTEARTH:coastDataNotFound',...
-        'File containing the coast line data could not be found. Try reinstalling chebfun.');
+        ['File containing the coast line data could not be found. '...
+        'Try reinstalling chebfun.']);
 end
 
-if nargin > 0
+if ( nargin > 0 )
     linespec = varargin{:};
 else
     linespec = 'k-';
@@ -25,30 +26,31 @@ end
 % Get the hold state of the current axis:
 holdState = ishold;
 
-if ~holdState
-    %
+if ( ~holdState )
     % Generate a unit sphere.
-    %
     [XX,YY,ZZ] = sphere(101);
+    
     % Color of the sphere will be white:
     clr = [255 255 255]/255;
+    
     % Plot the sphere, make it slightly smaller than unit so lines
     % show up more clearly.
     scl = 0.99;
-    surf(scl*XX,scl*YY,scl*ZZ,1+0*XX,'EdgeColor','None','FaceColor',clr);
+    
+    surf(scl*XX, scl*YY, scl*ZZ, 1+0*XX, 'EdgeColor', 'None', ...
+        'FaceColor', clr);
     daspect([1 1 1]);
-    hold on;
+    hold on
 end
 
-h = plot3(x.coast(:,1),x.coast(:,2),x.coast(:,3),linespec);
+h = plot3(x.coast(:,1), x.coast(:,2), x.coast(:,3), linespec);
 
-if ~holdState
-    hold off;
+if ( ~holdState )
+    hold off
 end
 
 if ( nargout > 0 )
     varargout = { h }; 
 end
-
 
 end

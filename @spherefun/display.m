@@ -1,11 +1,11 @@
 function display(X)
-%DISPLAY   Display information about a SPHEREFUN.
-%   DISPLAY(F) outputs important information about the SPHEREFUN F to the command
-%   window, including its domain of definition, length (number of pivots used to
-%   represent it), and a summary of its structure.
+%DISPLAY    Display information about a SPHEREFUN.
+%   DISPLAY(F) outputs important information about the SPHEREFUN F to the 
+%   command window, including its domain of definition, length (number of 
+%   pivots used to represent it), and a summary of its structure.
 %
-%   It is called automatically when the semicolon is not used at the end of a
-%   statement that results in a SPHEREFUN.
+%   It is called automatically when the semicolon is not used at the end of
+%   a statement that results in a SPHEREFUN.
 %
 % See also DISP.
 
@@ -20,5 +20,3 @@ else
 end
 
 end
-
-

@@ -22,7 +22,7 @@ classdef spherefun < separableApprox
 % The SPHEREFUN software system is based on: 
 %
 % A. Townsend, H. Wilber, and G. Wright, Computing with function on
-% spherical and polar geometries I. The sphere, submitted, 2015. 
+% spherical and polar geometries I: The sphere, submitted, 2015. 
 %
 % See also CHEBFUN2, SPHEREFUNV.
 
@@ -34,7 +34,7 @@ classdef spherefun < separableApprox
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% CLASS CONSTRUCTOR:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    methods ( Access = public, Static = false )
+    methods (Access = public, Static = false)
         
         function f = spherefun(varargin)
             % The main spherefun constructor!
@@ -60,14 +60,14 @@ classdef spherefun < separableApprox
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% HIDDEN METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    methods ( Access = public, Static = false, Hidden = true )
-       f = projectOntoBMCI( f ); 
+    methods (Access = public, Static = false, Hidden = true)
+       f = projectOntoBMCI(f);
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% PUBLIC METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    methods ( Access = public, Static = false )
+    methods (Access = public, Static = false)
         
         % The main bulk of the SPHEREFUN constructor:
         g = constructor(g, op, dom, varargin);
@@ -77,23 +77,23 @@ classdef spherefun < separableApprox
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% STATIC METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    methods ( Access = public, Static = true )
+    methods (Access = public, Static = true)
   
         % Poisson solver: 
-        u = Poisson( f, const, m, n);
+        u = Poisson(f, const, m, n);
         
         % Helmholtz solver: 
-        u = Helmholtz( f, K, m, n);
+        u = Helmholtz(f, K, m, n);
         
         % Convert matrix of coefficients to a spherefun: 
-        f = coeffs2spherefun( CFS ); 
+        f = coeffs2spherefun(CFS); 
         
-        % Converts a function in spherical coordinates to one in Cartesian
+        % Convert a function in spherical coordinates to one in Cartesian
         % coordinates on the sphere.
         fdf = sphf2cartf(f, lam, th, coord);
         
         % Degree l Order m spherical harmonic.
-        Y = sphharm(l,m,coord)     
+        Y = sphharm(l, m, coord);
         
         % Plot the outline of the landmasses of earth
         h = plotEarth(linespec);
@@ -102,18 +102,17 @@ classdef spherefun < separableApprox
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Private Static methods implemented by SPHEREFUN class.
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    methods ( Access = private, Static = true )
+    methods (Access = private, Static = true)
         
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% CLASS PROPERTIES
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    properties ( Access = public )
-        % DOMAIN: default for the is [-pi,pi] x [0,pi].
-        % which corresponds to using colatitude for the elevation angle
-        % (second input argument).  Doubled-up sphere will have a domain of
-        % [-pi,pi] x [-pi,pi].        
+    properties (Access = public)
+        % DOMAIN: default is [-pi,pi] x [0,pi] which corresponds to using 
+        % colatitude for the elevation angle (second input argument). 
+        % Doubled-up sphere will have a domain of [-pi,pi] x [-pi,pi].
         idxPlus
         idxMinus
         nonZeroPoles = 0;
@@ -122,7 +121,7 @@ classdef spherefun < separableApprox
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Private constant properties
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    properties ( Constant )
+    properties (Constant)
 %         alpha = 2;  % Growth factor control.
     end
     

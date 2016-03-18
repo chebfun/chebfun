@@ -21,18 +21,18 @@ function varargout = svd( f )
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( isempty( f ) )
+if ( isempty(f) )
     varargout = {[]};
     return
 end
 
 % Get CDR decomposition of f:
-[C, D, R] = cdr( f );
+[C, D, R] = cdr(f);
 
 % Do QR in both variables, one with the weighted inner-product and one with
 % the standard L2 inner-product.
-[QwC, RwC] = sphereQR( C ); 
-[QwR, RwR] = qr( R );
+[QwC, RwC] = sphereQR(C); 
+[QwR, RwR] = qr(R);
 
 % Use the QR factorizations of the columns and rows to make up the SVD of
 % the SPHEREFUN object.  Since
@@ -40,15 +40,15 @@ end
 %        C * D * R = QwC * ( RwC * D * RwR' ) * QwR'
 %
 % we compute the SVD of ( RwC * D * RwR' ).
-[U, S, V] = svd( RwC * D * RwR.' );
+[U, S, V] = svd(RwC * D * RwR.');
 U = QwC * U;
 V = QwR * V;
 
 % Output just like the svd of a matrix.
 if ( nargout > 1 )
-    varargout = { U, S, V };
+    varargout = {U, S, V};
 else
-    varargout = { diag( S ) };
+    varargout = {diag(S)};
 end
 
 end
@@ -57,15 +57,15 @@ end
 function [Q, R] = sphereQR( A )
 % Fast version of the abstractQR code, specifically for the disk. 
 
-n = max(2*length(A),30);               % Can probably get away with a smaller n.
-[x, w] = legpts(n,[0,pi]);  % Trigpts
+n = max(2*length(A), 30);         % Can probably get away with a smaller n.
+[x, w] = legpts(n, [0, pi]);      % Trigpts
 
 % Do a weighted QR, and then unweight the QR: 
-WR = spdiags(sqrt(w.'.*sin(x)),0,n,n);
-invWR = spdiags(1./sqrt(w.'.*sin(x)),0,n,n);
+WR = spdiags(sqrt(w.' .* sin(x)), 0, n, n);
+invWR = spdiags(1./sqrt(w.' .* sin(x)), 0, n, n);
 
 % Discrete QR with inner product <u,v> = sum(sin(th)*conj(u).*v):
-[discreteQ, discreteR] = qr( WR*A(x,:), 0 );
+[discreteQ, discreteR] = qr(WR*A(x, :), 0);
 
 s = sign(diag(discreteR));    % }
 s(~s) = 1;                    %  } Enforce diag(R) >= 0
@@ -73,11 +73,12 @@ S = diag(s);                  % }
 
 % Undo the weighting: 
 discreteQ = invWR*discreteQ*S;
+
 % Correct the signs in R: 
 discreteR = S*discreteR;
 
 % Go back to continuous land: 
-Q = chebfun( legvals2chebvals( discreteQ ), [0, pi] ); 
+Q = chebfun(legvals2chebvals(discreteQ), [0, pi]); 
 R = discreteR; 
 
 end

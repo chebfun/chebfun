@@ -1,17 +1,17 @@
-function f = compose( f, op, varargin )
-% COMPOSE     compose command for SPHEREFUN objects. 
+function f = compose(f, op, varargin)
+%COMPOSE    compose command for SPHEREFUN objects.
 % 
-%  F = COMPOSE(F, OP )  returns the SPHEREFUN that approximates OP(F).
+%   F = COMPOSE(F, OP)  returns the SPHEREFUN that approximates OP(F).
 % 
-%  F = COMPOSE(F, OP, G )  returns the SPHEREFUN that approximates OP(F).
+%   F = COMPOSE(F, OP, G)  returns the SPHEREFUN that approximates OP(F).
 %
-% This command is a wrapper for the SPHEREFUN constructor. 
+%   This command is a wrapper for the SPHEREFUN constructor.
 
-if ( isempty( op ) )
+if ( isempty(op) )
     return
-elseif ( isempty( f ) )
+elseif ( isempty(f) )
     f = op;
-elseif ( nargin == 2 && nargin(op) == 1)
+elseif ( nargin == 2 && nargin(op) == 1 )
     % OP has one input variable.
     
     % Call constructor: 
@@ -21,11 +21,11 @@ elseif ( nargin == 3 && nargin(op) == 2 )
     % OP has two input variables. 
     
     g = varargin{1}; 
-    if ( isa( g, 'double' ) )     % promote
-        g = spherefun(@(x,y,z) g + 0*x, f.domain); 
+    if ( isa(g, 'double') )     % promote
+        g = spherefun(@(x,y,z) g + 0*x, f.domain);
     end
     
-    if ( isa( f, 'double' ) )     % promote
+    if ( isa(f, 'double') )     % promote
         f = spherefun(@(x,y,z) f + 0*x, g.domain); 
     end
     

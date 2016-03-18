@@ -45,7 +45,8 @@ elseif ( isa(dom, 'double') && (numel(dom) ~= 4) )
 elseif ( isa(dom,'double') && (numel(dom) == 4) && ...
         (norm(dom(:)' - [-pi pi 0 pi]) > 0) )
     error('CHEBFUN:SPHEREFUN:CONSTRUCTOR:domain',...
-        'The domain of a spherefun is always [-pi pi]x[0 pi] in intrinstic coordinates');
+        ['The domain of a spherefun is always [-pi pi]x[0 pi] in '...
+        'intrinstic coordinates']);
 end
 
 % Look for vectorize flag:
@@ -317,7 +318,6 @@ while ( (max(maxp, maxm) > tol) && (rankCount < width) && ...
     absevp = abs(evp);
     evm = Fm(j,k); 
     absevm = abs(evm);
-            
     pivotIndices = [ pivotIndices; j k];
     
     % Smallest pivots is within an acceptable multiple of larger pivot so
@@ -360,6 +360,7 @@ while ( (max(maxp, maxm) > tol) && (rankCount < width) && ...
             % Minus pivot is zero
             evm = 0;
             [maxp, idxp] = max(abs(Fp(:)));
+            
         % Negative pivot dominates
         else
             kminus = kminus + 1;
