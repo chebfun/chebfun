@@ -1,13 +1,16 @@
 function varargout = quiver(fx,fy,fz)
-%QUIVER     Quiver plot of a SPHEREFUN.
+%QUIVER     Quiver plot of a vector field described be three SPHEREFUNs.
 %   QUIVER(FX, FY, FZ) plots the vector velocity field of (FX,FY,FZ) in
 %   Cartesian coordinates on the surface of a sphere. QUIVER automatically
 %   attempts to scale the arrows to fit within the grid. The arrows are
 %   plotted on an icosahedral grid.
 %
+% See also SPHEREFUNV, SPHEREFUNV/QUIVER
+
 %   TODO: Add more options
-%
-% See also GRADIENT, CURL
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 holdState = ishold;
 if ~holdState
