@@ -1,10 +1,10 @@
 function v = sum2(f) 
 %SUM2   Double integral of a SPHEREFUN over its domain.
 %   I = SUM2(F) returns the double definite integral of a SPHEREFUN.
-
+%
 % Split f into its plus/minus terms.  The minus terms have integral zero 
 % on the sphere since the rows in this case are anti-periodic with period
-% pi.  Thus, we only need to integrate the plus terms.
+% pi. Thus, we only need to integrate the plus terms.
 [cols, d, rows] = cdr(f);
 
 % If there are no plus terms then the integral is zero
@@ -13,7 +13,7 @@ if ( isempty(f.idxPlus) )
     return
 end
 
-cols = cols(:, f.idxPlus);
+cols = cols(:, f.idxPlus); % Just keep the plus terms
 rows = rows(:, f.idxPlus);
 d = diag(d(f.idxPlus, f.idxPlus)).';
 
