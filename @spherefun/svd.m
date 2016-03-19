@@ -55,10 +55,10 @@ end
 
 
 function [Q, R] = sphereQR( A )
-% Fast version of the abstractQR code, specifically for the disk. 
+% Fast version of the abstractQR code, specifically for the sphere. 
 
 n = max(2*length(A), 30);         % Can probably get away with a smaller n.
-[x, w] = legpts(n, [0, pi]);      % Trigpts
+[x, w] = legpts(n, [0, pi]);      % Legendre points
 
 % Do a weighted QR, and then unweight the QR: 
 WR = spdiags(sqrt(w.' .* sin(x)), 0, n, n);
