@@ -1,15 +1,18 @@
-function Y = sphharm(l, m, coord)
+function Y = sphharm(l, m)
 %SPHHARM    Normalized, real-valued, spherical harmonic of degree L, order 
 %   M at a given set of locations on the sphere.
 %
-%   Y = sphHarm(L, M, COORD) returns the degree L, order M normalized
+%   Y = sphHarm(L, M) returns the degree L, order M normalized
 %   spherical harmonic on the sphere expressed in longitude-latitude
 %   coordinates (or azimuthal-elevation).  Here
-%        -pi <= lam <= pi   is the longitude (azimuthal) coordinate.
-%   The flag `coord` determines whether co-latitude or latitude is to be
-%   used:
-%     coord = 0 ---> co-latitude 0 <= th <= pi (default)
-%     coord = 1 ---> latitude -pi/2 <= th <= pi/2 
+%        -pi <= lam <= pi   is the longitude (azimuthal) coordinate, and
+%          0 <= th  <= pi   is the latitude (elevation) coordinate.
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+% TODO: Add support for constructing spherical harmonics with the latitude
+% coordinate being -pi/2 <= th <= pi/2.
 
 % The degree l must be greater than or equal to the magnitude of the order
 % m
@@ -22,9 +25,13 @@ if ( abs(l) > 75 )
     error('SPHEREFUN:sphHarm','Only spherical harmonics of degree <= 75.');
 end
 
-if ( nargin <= 2 )
-    coord = 0;
-end
+% Developer note: once support for different longitude and latitude domains
+% is added to spherefun, the following code below with coord = 0 or 
+% coord = 1 can be used.  This coord parameter should be an optional 
+% argument to the sphharm method.  For now we just always set coord to 0
+% since this cooresponds to the only domain currently supported in
+% spherefun.
+coord = 0;
 
 if ( coord == 1 )
     dom = [-pi pi -pi/2 pi/2];
@@ -36,22 +43,19 @@ Y = spherefun(@(lam, th) mySphHarm(l, m, lam, th, coord), dom);
 
 end
 
+% Main subroutine for computing the spherical harmonics.
 function Y = mySphHarm(l, m, lam, th, coord)
-%SPHHARM    Normalized, real-valued, spherical harmonic of degree
-%   L, order M at a given set of locations on the sphere.
-%
-%   Y = sphHarm(L, M, LAM, TH) returns the degree L, order M normalized
-%   spherical harmonic at the points (LAM, TH) on the sphere expressed in
-%   longitude-latitude coordinates or azimuthal-elevation (lam,th).  Here
-%        -pi <= lam <= pi   is the longitude (azimuthal) coordinate
-%
-%   The flag `coord` determines wether co-latitude or latitude is to be
-%   used:
-%     coord = 0 ---> co-latitude 0 <= th <= pi (default)
-%     coord = 1 ---> latitude -pi/2 <= th <= pi/2 
 
-%   TODO: this implementation is not stable or fast for large (l, m).  Alex,
-%   can you come up with something better?
+% TODO: This implementation is not stable or fast for large (l, m) for the
+% following reasons:
+%
+% 1. Stability: it uses the normalized spherical harmonics and the
+% normalization factors are unstable to compute for large l and m.  We
+% should switch to unnormalized spherical harmonics.
+% 
+% 2. Efficiency: the code just uses matlab's `legendre` function for 
+% computing the associated legendre polynomials and this function is dead
+% slow.  Instead a recursion formula should be used.
 
 if ( nargin <= 4 )
     coord = 0;
