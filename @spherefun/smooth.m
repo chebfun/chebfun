@@ -18,9 +18,14 @@ K = sqrt(1/dt)*1i;
 % Find the length of f.
 [n, m] = length(f); 
 
-% Solve the Helmholtz equation on the sphere to apply the Gaussian filter. 
-% Since, g is expected to be smoother than f, and mxn discretization should
-% suffice. 
+% Smoothing consists of solving the heat equation on the sphere, which is
+% equivalent to applying a low-pass Gaussian filter.  To discretize the
+% equation we use backward Euler:
+% u^{n+1} = u^{n} + dt*L*u^{n+1}.
+% which results in a Helmholtz equation with "wave-number" K = i*sqrt(1/dt)
+%            L*u^{n+1) + K*u^{n+1} = -1/dt*u^{n}
+% We only do one step of backward Euler to smooth the solution, with 
+% u^{0} = f.
 g = spherefun.Helmholtz(-1/dt*f, K, m, n);
 
 end 
