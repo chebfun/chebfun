@@ -7,6 +7,9 @@ function g = smooth(f, dt)
 %   The default to dt=1e-4, which is equivalent to running the Heat
 %   equation for time dt with the initial condition being F. 
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 if ( nargin < 2 ) 
     dt = 1e-4; 
 end
