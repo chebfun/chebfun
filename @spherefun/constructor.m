@@ -25,6 +25,9 @@ function g = constructor(g, op, dom, varargin)
 %
 % See also SPHEREFUN.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 if ( nargin == 0 )          % SPHEREFUN( )
     return
 end
