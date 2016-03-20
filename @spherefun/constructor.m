@@ -105,7 +105,7 @@ if ( isa(op, 'double') )    % SPHEREFUN( DOUBLE )
     F = [ F(n:-1:1, m/2+1:m) F(n:-1:1, 1:m/2) ];
     
     % TODO: Add a way to loosen tolerances for this type of construction.
-    [tol,vscale] = GetTol(F, 2*pi/m, pi/(n-1), dom, pseudoLevel);
+    [tol, vscale] = GetTol(F, 2*pi/m, pi/(n-1), dom, pseudoLevel);
     [pivotIndices, pivotArray, removePoles, happyRank, cols, pivots, ...
         rows, idxPlus, idxMinus] = PhaseOne(F, tol, alpha, factor);
     [x, y] = getPoints(n, m, dom);
@@ -232,8 +232,8 @@ Fm = 0.5*(B - C);
 %
 
 % Check if the poles are numerically constant and get the value.
-[pole1,constValue1] = checkPole(Fp(1, :), tol);
-[pole2,constValue2] = checkPole(Fp(m, :), tol);
+[pole1, constValue1] = checkPole(Fp(1, :), tol);
+[pole2, constValue2] = checkPole(Fp(m, :), tol);
 
 % TODO: Figure out if we really need to warn the user about their function
 % not being constant along the poles.
@@ -733,8 +733,6 @@ function f = redefine_function_handle(f)
 if ( nargin(f) == 3 )
     % Wrap f so it can be evaluated in spherical coordinates
     f = @(lam, th) spherefun.sphf2cartf(f, lam, th, 0);
-%     % Double g up.
-%     f = @(lam, th) sph2torus(f, lam, th);
 end
 
 end

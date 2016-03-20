@@ -1,10 +1,12 @@
-function F = vertcat(varargin)
+function F = vertcat( varargin )
 %VERTCAT   Vertical concatenation of SPHEREFUN objects.
 %
-% VERTCAT(F, G) is the vertical concatenation of SPHEREFUN objects F and G.
-% This function returns a SPHEREFUNV object. 
+% K = VERTCAT(F, G, H) is the vertical concatenation of SPHEREFUN objects F, 
+% G, and H. The function K is a SPHEREFUNV object. 
 % 
-% [F; G] is equivalent to VERTCAT(F, G).
+% [F ; G ; H] is equivalent to VERTCAT(F, G, H).
+%
+% VERTCAT(F, G) returns an error. SPHEREFUNV objects have three components.
 %
 % VERTCAT(F) returns the SPHEREFUN F. 
 % 
