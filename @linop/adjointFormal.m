@@ -1,17 +1,29 @@
 function [Lstar, op] = adjointFormal(L, pref)
-%ADJOINTFORMAL   Compute the formal adjoint of a linear differential LINOP.
-%   [LSTAR, OP] = ADJOINTFORMAL(L, PREF), where L is a LINOP, returns the formal 
-%   adjoint LINOP of L, LSTAR, under the condition that L is a linear 
+%ADJOINTFORMAL   Compute the formal adjoint of a LINOP.
+%   [LSTAR, OP] = ADJOINTFORMAL(L, PREF), where L is a LINOP, returns the
+%   formal adjoint LINOP of L, LSTAR, under the condition that L is a linear
 %   differential operator, i.e. 
 %
-%   LSTAR*u = a_k*diff(u,k) + ... + a_0*u.
+%   L*u = a_k*diff(u,k) + ... + a_0*u.
 %
-%   OP is a function handle that can be used to construct a CHEBOP.
+%   If L represents a system of differential equations then the differential
+%   order in each variable must be the same. Integral operators are not
+%   supported. 
 %
-% See also ?.
+%   The outputs are a LINOP LSTAR that represents the formal adjoint and a
+%   function handle OP that can be used to construct a CHEBOP.
+%
+% See also ADJOINT and ADJOINTBCS.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
+
+%% 
+% Check for 2 inputs
+if ( nargin < 2 )
+    error('CHEBFUN:LINOP:adjointFormal:inputs', ...
+    'ADJOINT requires two inputs.')
+end
 
 %%
 % Initialize Lstar and op to have correct dimensions
@@ -52,7 +64,7 @@ for ii = 1:ncols
         for k = 0:dor
             for l = 0:k
                 adjCoeffs(dor+1-l) = adjCoeffs{dor+1-l} + ...
-                    (-1)^k*nchoosek(k,l)*conj(diff(coeffs{dor+1-k}, k-l));
+		    (-1)^k*nchoosek(k,l)*conj(diff(coeffs{dor+1-k}, k-l));
             end
         end
 
@@ -63,7 +75,8 @@ for ii = 1:ncols
         for k = 0:dor
             varname = ['a',int2str(ii),int2str(jj),'_',int2str(k)];
             eval([varname, '= adjCoeffs{dor+1-k};']);
-            Lstar.blocks{ii,jj} = Lstar.blocks{ii,jj} + M(adjCoeffs{dor+1-k}) * D(k);
+            Lstar.blocks{ii,jj} = Lstar.blocks{ii,jj} + ...
+				  M(adjCoeffs{dor+1-k}) * D(k);
         end
 
         % update argstr

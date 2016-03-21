@@ -1,14 +1,29 @@
 function [Lstar, op, bcOpL, bcOpR, bcOpM] = adjoint(L, bcType)
 %ADJOINT   Compute the adjoint of a LINOP.
-%   ADJOINT(L), where L is a LINOP, returns the adjoint LINOP of L under
-%   the assumption that L only has endpoint or periodic functional constraints.
+%   [LSTAR, OP, BCOPL, BCOPR, BCOPM] = ADJOINT(L, BCTYPE) computes the adjoint
+%   of the LINOP L. ADJOINT requires that L represents a linear differential
+%   operator with either endpoint of periodic boundary conditions. If L
+%   represents a system of differential equations then the highest order
+%   derivative in each variable must be the same. Integral operators and exotic
+%   functional constraints are not supported.
 %
-%   ADJOINT(L, BCTYPE) allows for more general boundary conditions.
+%   The output is a LINOP LSTAR that represents the adjoint differential
+%   operator and adjoint constraints, as well as four function handles that can
+%   be used to construct a CHEBOP. OP is a function handle for the differential
+%   operator and BCOPL, BCOPR and BCOPM are function handles for the left,
+%   right and mixed boundary conditions respectively. 
 %
-% See also ?.
+% See also ADJOINTFORMAL and ADJOINTBCS.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
+
+%% 
+% Check for 2 inputs
+if ( nargin < 2 )
+    error('CHEBFUN:LINOP:adjoint:inputs', ...
+    'ADJOINT requires two inputs.')
+end
 
 %% 
 % Check to so if we can compute an adjoint for this operator!

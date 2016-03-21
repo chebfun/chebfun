@@ -1,11 +1,18 @@
 function [Cstar, bcOpL, bcOpR, bcOpM] = adjointBCs(L, bcType)
-%ADJOINTBCS   Compute the adjoint boundary conditions of a differential LINOP.
-%   [Cstar, BCOPL, BCOPR, BCOPM] = ADJOINTBCS(L,BCTYPE), where L is a LINOP,
+%ADJOINTBCS   Computes the adjoint boundary conditions of a LINOP.
+%   [CSTAR, BCOPL, BCOPR, BCOPM] = ADJOINTBCS(L, BCTYPE), where L is a LINOP,
 %   returns a set of functional blocks and function handles for the adjoint
 %   boundary conditions of a LINOP L under the assumption that L only has
-%   endpoint or periodic functional constraints.
+%   endpoint or periodic functional constraints. If L represents a system
+%   of differential equations then the differential order in each variable
+%   must be the same. 
 %
-% See also ?.
+%   The output is a set of functional blocks CSTAR that can be used to
+%   construct a LINOP and function handles BCOPL, BCOPR and BCOPM that
+%   represent the left, right and mixed boundary conditions respectively and
+%   can be used to construct a CHEBOP
+%
+% See also ADJOINT and ADJOINTFORMAL.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -158,10 +165,10 @@ end
 
 end
 
-
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [bcOpL, bcOpR, bcOpM] = bcHandles(Bstar,starTypes,diffOrders,domain)
+% construct function handles using Bstar matrix.
 
 % initialize ops
 bcOpL = [];
@@ -366,8 +373,7 @@ end
 
 end
 
-
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function A = compmat(x,coeffs)
 %COMPMAT - routine for computing complementarity matrix.
@@ -383,7 +389,7 @@ function A = compmat(x,coeffs)
       for jj=0:kk-1-ii
       % loop through columns
         if ( ii+jj <= kk-1 )
-          A(ii+1,jj+1) = A(ii+1,jj+1) + (-1)^(kk-ii-1)*nchoosek(kk-ii-1,jj)*...
+	  A(ii+1,jj+1) = A(ii+1,jj+1) + (-1)^(kk-ii-1)*nchoosek(kk-ii-1,jj)*...
                          feval(diff(cf,kk-ii-jj-1),x);
         end
       end
