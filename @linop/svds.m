@@ -70,6 +70,12 @@ superC.values = zeros(dor*nm,1);
 % finish superL
 superL.constraint = superC;
 
+% count number of null vectors for L and Lstar
+nulL = dor*n-nc
+
+% set number of singular values
+nsvals = 2*k-abs(nulL) 
+
 % call linop/eigs
 pref = cheboppref();
 if ( strcmp(bcType,'periodic') )
@@ -77,7 +83,7 @@ if ( strcmp(bcType,'periodic') )
 else
     pref.discretization = @chebcolloc2;
 end
-[ Q, D ] = eigs( superL, 2*k, [], pref, 'rayleigh' );
+[ Q, D ] = eigs( superL, nsvals, [], pref, 'rayleigh' );
 
 % make sure singular values are real
 if ( any(imag(diag(D)) ~= 0) )
@@ -89,59 +95,15 @@ end
 [D,id] = sort(diag(D),'descend');
 Q = Q(:,id);
 
-% check for zero singular values
-% a singular value is considered 0 if it is less than pref.bvpTol
-nulls = abs(D) < pref.bvpTol;
-ids = (1:length(nulls))';
-zid = max(ids(nulls)); 
-nzs = sum([nulls;0]); 
-if ( ~isempty(zid) )
-    ids = ids(zid-k+1:zid);
-else
-    ids = ids(1:k);
-end
-
 % trim 
-S = diag(D(ids));
-Q = Q(:,ids);
+S = diag(D(1:k));
+Q = Q(:,1:k);
 
 % rescale singular vectors
 V = Q(1:n,:); nrmV = sqrt(diag(V'*V)); 
-nrmV( nrmV == 0 ) = 1; V = V*diag(1./nrmV);
+nrmV( nrmV < pref.bvpTol ) = 1; V = V*diag(1./nrmV);
 U = Q(n+1:end,:); nrmU = sqrt(diag(U'*U));
-nrmU( nrmU == 0 ) = 1; nrmU = 1./nrmU;
-if ( nzs > 0 )
-    nrmU(end-nzs+1:end) = 0;
-end
+nrmU( nrmU < pref.bvpTol ) = 1; nrmU = 1./nrmU;
 U = U*diag(nrmU);
-
-% try to simply null vectors
-nulV = V(:,end-nzs+1:end);
-nulV = squish(nulV,pref);
-V(:,end-nzs+1:end) = nulV;
-
-end
-
-function Vnew = squish(V,pref)
-% this function attempts construct a degree-graded 
-% set of vectors Vnew from the input vectors V
-
-% convert V to quasimatrix
-V = quasi2cheb(quasimatrix(V));
-V = simplify(V,1e-8);
-
-% extract coefficients
-Vcfs = chebcoeffs(V);
-
-% reduce using partial pivoting
-Vcfs = rref(fliplr(Vcfs'));
-Vcfs = fliplr(Vcfs)';
-V = chebfun(Vcfs,domain(V),'coeffs');
-
-% reorthogonalize
-[V,~] = qr(V);
-
-% set Vnew
-Vnew = chebmatrix(V);
 
 end

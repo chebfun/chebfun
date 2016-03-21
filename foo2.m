@@ -1,7 +1,7 @@
 dom = [0,pi];
 N = chebop(dom);
 N.op = @(x,u) -diff(u,2);
-N.lbc = @(u) [diff(u)];
+N.lbc = @(u) [u;diff(u)];
 N.rbc = @(u) [diff(u)];
 
 [U,S,V] = svds(N,4);
