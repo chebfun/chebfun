@@ -77,7 +77,7 @@ if ( strcmp(bcType,'periodic') )
 else
     pref.discretization = @chebcolloc2;
 end
-[ Q, D ] = eigs( superL, 2*k, [], pref );
+[ Q, D ] = eigs( superL, 2*k, [], pref, 'rayleigh' );
 
 % make sure singular values are real
 if ( any(imag(diag(D)) ~= 0) )
@@ -88,18 +88,6 @@ end
 % sort
 [D,id] = sort(diag(D),'descend');
 Q = Q(:,id);
-
-% one step of RQI
-I = operatorBlock.eye(superL.domain);
-for ii = 1:2*k
-    K = superL;
-    for jj = 1:size(K,1)
-        K.blocks{jj,jj} = K.blocks{jj,jj} - D(ii)*I;
-    end
-    Q(:,ii) = linsolve(K,Q(:,ii),pref);
-    Q(:,ii) = Q(:,ii)/norm(Q(:,ii));
-end
-D = diag(Q'*(superL*Q))
 
 % check for zero singular values
 % a singular value is considered 0 if it is less than pref.bvpTol
