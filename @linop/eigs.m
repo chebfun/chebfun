@@ -32,6 +32,9 @@ function varargout = eigs(A, varargin)
 %   SIGMA must be chosen appropriately for the given operator. For example,
 %   'LM' for an unbounded operator will fail to converge.
 %
+%   [...] = EIGS(A, ..., 'rayleigh') performs one step of Rayleigh quotient
+%   iteration on the computed eigenpairs in an attempt to improve accuracy.
+%
 %   This version of EIGS does not use iterative methods as in the built-in
 %   EIGS for sparse matrices. Instead, it uses the built-in EIG on dense
 %   matrices of increasing size, stopping when the targeted eigenfunctions
@@ -59,6 +62,7 @@ B = [];       % no generalized operator
 k = [];       % will be made default value below
 sigma = [];   % default 'auto' mode
 prefs = [];
+rayleigh = false; % do not perform rayleigh quotient iteration by default
 gotk = false; % until we detect a value of k in inputs
 for j = 1:nargin-1
     item = varargin{j};
@@ -71,6 +75,8 @@ for j = 1:nargin-1
         % k should be given before sigma (which might also be integer)
         k = item;
         gotk = true;
+    elseif ( strcmpi(item,'rayleigh') )
+        rayleigh = true;
     elseif ( ischar(item) || isnumeric(item) )
         sigma = item;
     else
@@ -321,8 +327,10 @@ else            % Unwrap the eigenvectors for output
     end
     u = chebmatrix(vertcat(u{:}));
    
-    % do one step of inverse iteration to improve accuracy
-    [u, D] = inverseIter(A,B,u,D,prefs);
+    % do one step of Rayligh quotient iteration to improve accuracy
+    if ( rayleigh ) 
+        [u, D] = rayleighQI(A,B,u,D,prefs);
+    end
 
     % Output:
     varargout = {u, D};
@@ -494,8 +502,8 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [u, D] = inverseIter(A,B,u,D,prefs)
-% function to perform one step of inverse iteration
+function [u, D] = rayleighQI(A,B,u,D,prefs)
+% function to perform one step of Rayleigh quotient iteration
 
     % if B isempty set to identity
     if ( isempty(B) )
@@ -507,10 +515,12 @@ function [u, D] = inverseIter(A,B,u,D,prefs)
     end
     B = linop(B);
 
-    % loop through diagoanal of D
+    % compute current Rayleigh quotients
     d = diag(D);
+
+    % loop through d
     for ii = 1:length(d)
-        lam = (1+1e-10)*d(ii);
+        lam = d(ii);
         L = linop(A-lam*B);
         L.constraint = A.constraint;
         rhs = B*u(:,ii);
