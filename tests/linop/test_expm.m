@@ -108,7 +108,7 @@ err(7, 2) = length(u0) ~= length(v);
 d = [-1 1];
 [Z, I, D, C] = linop.primitiveOperators(d);
 [z, E, s] = linop.primitiveFunctionals(d);
-x = chebfun('x',dom);
+x = chebfun('x',d);
 U0 = [ sin(2*pi*x).^2; 1 + 0*x ];
 A = linop( [ D^2 Z; Z D^2 ] );
 A = addConstraint(A, [ E(-1) z ], 0);
@@ -117,7 +117,8 @@ A = addConstraint(A, [ z E(-1) ], 0);
 A = addConstraint(A, [ z E(1) ], 0);
 V = expm(A, 0, U0, pref);
 err(8, 1) = norm(U0 - V, inf);
-err(8, 2) = all(length(U0) ~= length(V));
+err(8, 2) = all(cellfun(@length,{U0{1:end}}) ~= ...
+                cellfun(@length,{V{1:end}}));
 
 %%
 
