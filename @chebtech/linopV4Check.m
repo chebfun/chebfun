@@ -24,7 +24,7 @@ function [ishappy, cutoff] = linopV4Check(f, values, pref)
 %
 %   [...] = LINOPV4CHECK(F, VALUES, PREF) allows additional
 %   preferences to be passed. In particular, one can adjust the target 
-%   accuracy with PREF.EPS.
+%   accuracy with PREF.CHEBFUNEPS.
 %
 % See also PLATEAUCHECK, STRICTCHECK, CLASSICCHECK.
 
@@ -34,12 +34,12 @@ function [ishappy, cutoff] = linopV4Check(f, values, pref)
 % Grab some preferences:
 if ( nargin == 1 )
     pref = f.techPref();
-    epslevel = pref.eps;
+    epslevel = pref.chebfuneps;
 elseif ( isnumeric(pref) )
     epslevel = pref;
     pref = f.techPref();
 else
-    epslevel = pref.eps;
+    epslevel = pref.chebfuneps;
 end
 
 % Grab the coefficients:
@@ -83,7 +83,7 @@ ishappy = false(1, numCol);
 epslevel = zeros(1, numCol);
 cutoff = zeros(1, numCol);
 for m = 1:numCol
-    [ishappy(m), epslevel(m), cutoff(m)] = checkColumn(absCoeff(:,m), pref.eps);
+    [ishappy(m), epslevel(m), cutoff(m)] = checkColumn(absCoeff(:,m), pref.chebfuneps);
     if ( ~ishappy(m) )
         % No need to continue if it fails on any column.
         break

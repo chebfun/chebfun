@@ -86,7 +86,7 @@ end
 
 %% Create a CHEBFUN object.
 p = chebfunpref();
-p.techPrefs.eps = max(relTol); % Use the same tolerance for each column.
+p.techPrefs.chebfuneps = max(relTol); % Use the same tolerance for each column.
 p.techPrefs.happinessCheck = checker;
 p.techPrefs.sampleTest = 0;
 p.splitPrefs.splitMaxLength = 20000;
@@ -101,8 +101,29 @@ if ( idx(1) > idx(2) )
 end
 
 % The output from DEVAL, based on what the ODE solvers return, is always
-% vectorized, so we can turn the vectorcheck off.
+% vectorized, so we can turn the vectorcheck off. Before constructing the
+% chebfun, we turn the splitting warning off, as we want to call the constructor
+% again if we get returned an unhappy chebfun
+s = warning('query', 'CHEBFUN:CHEBFUN:constructor:notResolved');
+warning('off', 'CHEBFUN:CHEBFUN:constructor:notResolved')
 y = chebfun(devalFun, dom, 'novectorcheck', p);
+
+% Did we get a resolved chebfun?
+if ( ~y.funs{1}.onefun.ishappy )
+    % Try again, this time with splitting on:
+    y = chebfun(devalFun, dom, 'novectorcheck', p, 'splitting', 'on');
+    
+    % If we're still not happy, issue a warning
+    happyCheck = @(fun) fun.onefun.ishappy;
+    if ( ~all(cellfun(happyCheck, y.funs)) )
+        warning('CHEBFUN:CHEBFUN:odesol:notResolved', ...
+            'Function not resolved with splitting on, using %d pts.', ...
+            p.splitPrefs.splitMaxLength);
+    end
+end
+
+% Return the warning to its previous state:
+warning(s.state, 'CHEBFUN:CHEBFUN:constructor:notResolved')
 
 % Parse outputs:
 if ( nargout > 1 )

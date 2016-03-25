@@ -45,7 +45,7 @@ coeffs = trigtech.vals2coeffs(trigtech.coeffs2vals(coeffs));
 % Use the default tolerance if none was supplied.
 if ( nargin < 2 )
     p = trigtech.techPref();
-    tol = p.eps;
+    tol = p.chebfuneps;
 end
 
 % Recast TOL as a row vector.

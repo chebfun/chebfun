@@ -4,7 +4,7 @@ function pass = test_equiOption( pref )
 if ( nargin < 1 ) 
     pref = chebfunpref; 
 end
-tol = 100*pref.eps; 
+tol = 100*pref.cheb2Prefs.chebfun2eps;
 
 % Canonical domain: 
 dom = [-1 1 -1 1];

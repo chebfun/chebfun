@@ -53,7 +53,7 @@ function cutoff = standardChop(coeffs, tol)
 % Set default if fewer than 2 inputs are supplied: 
 if ( nargin < 2 )
     p = chebfunpref;
-    tol = p.eps;
+    tol = p.chebfuneps;
 end
 
 % Check magnitude of TOL:

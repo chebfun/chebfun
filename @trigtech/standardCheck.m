@@ -11,7 +11,7 @@ function [ishappy, cutoff] = standardCheck(f, values, data, pref)
 %   the corresponding interpolation points. DATA.VSCALE is an approximation of
 %   the maximum function value of F on a possibly larger approximation
 %   interval.  PREF is a data structure used to pass in additional information,
-%   e.g. a target accuracy tolerance could be passed using PREF.EPS.
+%   e.g. a target accuracy tolerance could be passed using PREF.CHEBFUNEPS.
 %
 % See also CLASSICCHECK, STRICTCHECK, LOOSECHECK.
 
@@ -57,11 +57,11 @@ end
 % Grab some preferences.
 if ( nargin == 1 )
     pref = f.techPref();
-    tol = pref.eps;
+    tol = pref.chebfuneps;
 elseif ( isnumeric(pref) )
     tol = pref;
 else
-    tol = pref.eps;
+    tol = pref.chebfuneps;
 end
 
 % Reshape TOL.

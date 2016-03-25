@@ -7,7 +7,7 @@ if ( nargin < 1 )
     pref = chebfunpref();
 end
 
-% Set a tolerance.  (pref.eps doesn't matter here.)
+% Set a tolerance.  (pref.chebfuneps doesn't matter here.)
 tol = 10*eps;
 
 % Set a domain

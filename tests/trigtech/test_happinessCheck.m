@@ -10,7 +10,7 @@ end
 testclass = trigtech();
 
 % Set the tolerance:
-tol = 50*pref.eps;
+tol = 50*pref.chebfuneps;
     
 %%
 % Test on a scalar-valued function:

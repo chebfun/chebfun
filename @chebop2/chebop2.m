@@ -72,8 +72,8 @@ classdef chebop2
             % CHEBOP2 CONSTRUCTOR.
             
             % Get CHEBFUN2 preferences.
-            prefs = chebfunpref();
-            tol = prefs.techPrefs.eps;
+            pref = chebfunpref();
+            tol = pref.cheb2Prefs.chebfun2eps;
             
             % If empty input arguments then return an empty CHEBOP2 object.
             if ( isempty(varargin) )

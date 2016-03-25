@@ -5,7 +5,7 @@ if ( nargin == 0 )
     pref = chebfunpref; 
 end
 
-tol = 50*pref.eps; 
+tol = 50*pref.cheb2Prefs.chebfun2eps;
 
 % Check definition: 
 F = chebfun2v(@(x,y) cos(x), @(x,y) sin(y)); 

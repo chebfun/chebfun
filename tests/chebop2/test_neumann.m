@@ -1,11 +1,11 @@
-function pass = test_neumann( prefs )
+function pass = test_neumann( pref )
 % Check that we can impose Neumann boundary conditions. 
 % Alex Townsend, March 2013. 
 
 if ( nargin < 1 ) 
-    prefs = chebfunpref(); 
+    pref = chebfunpref(); 
 end 
-tol = 100*prefs.techPrefs.eps; 
+tol = 100*pref.cheb2Prefs.chebfun2eps;
 
 d = [-2 3 -1 1];
 N = chebop2(@(u) laplacian(u), d); 

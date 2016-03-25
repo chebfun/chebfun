@@ -320,7 +320,7 @@ if ( ~isreal(f) )
 else
 
     % Set a tolerance:
-    tol = 10*eps*max(vscale(f), vscale(g));
+    tol = 100*eps*max(vscale(f), vscale(g));
     hsf = hscale(f); 
     % Find the range of F:
     mmF = minandmax(f);
@@ -350,7 +350,7 @@ if ( numel(g.domain) > 2 )
         newDom = [newDom, r(:).'];
     end
 end
-newDom = unique(sort(newDom));
+newDom = chebfun.tolUnique(sort(newDom));
 
 % Restrict f to the new domain:
 f = restrict(f, newDom);

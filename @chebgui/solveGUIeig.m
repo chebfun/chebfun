@@ -80,7 +80,7 @@ end
 % Need to obtain a CHEBFUNPREF object to check what the current tolerance is set
 % at.
 chebfunp = chebfunpref;
-if ( tolNum < chebfunp.techPrefs.eps )
+if ( tolNum < chebfunp.techPrefs.chebfuneps )
     warndlg('Tolerance specified is less than current chebfun epsilon', ...
         'Warning','modal');
     uiwait(gcf)
