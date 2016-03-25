@@ -48,7 +48,7 @@ vscale = max(u.vscale, vscale);
 data.vscale = vscale;
 % TODO:  Assign hscale (to data.hscale)?
 prefTech = tech.techPref();
-prefTech.eps = pref.bvpTol;
+prefTech.chebfuneps = pref.bvpTol;
 prefTech.happinessCheck = pref.happinessCheck;
 
 for i = 1:numInt

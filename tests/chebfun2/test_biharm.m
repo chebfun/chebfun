@@ -4,7 +4,7 @@ function pass = test_biharm(pref)
 if ( nargin < 1 ) 
     pref = chebfunpref; 
 end 
-tol = 1e6*pref.eps; 
+tol = 1e6*pref.cheb2Prefs.chebfun2eps;
 
 % Function to be used:
 ff = @(x,y) x.^2.*y.^2;

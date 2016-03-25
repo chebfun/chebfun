@@ -6,7 +6,7 @@ if ( nargin == 0 )
     pref = chebfunpref();
 end
 
-tol = 100*pref.eps;
+tol = 100*pref.chebfuneps;
 dom = [0, 1];
 
 % Test values:

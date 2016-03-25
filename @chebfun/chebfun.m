@@ -309,6 +309,9 @@ classdef chebfun
         
         % Deprecated function.
         varargin = quad(varargout);
+
+        % Sample a CHEBFUN on an "appropriate" grid.
+        varargout = sample(f, n);
         
         % Reset pointValues property to the average of left and right limits.
         f = resetPointValues(f);
@@ -640,6 +643,10 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
             elseif ( strcmpi(args{2}, 'off') )
                 keywordPrefs.techPrefs.refinementFunction = 'nested';
             end
+            args(1:2) = [];
+        elseif ( any(strcmpi(args{1}, 'eps')) )
+            % Translate "eps" --> "techPrefs.chebfuneps".
+            keywordPrefs.techPrefs.chebfuneps = args{2};
             args(1:2) = [];
         elseif ( strcmpi(args{1}, 'maxdegree') )
             % Translate "maxdegree" --> "techPrefs.maxLength".

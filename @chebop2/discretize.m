@@ -49,11 +49,11 @@ if nargin < 5
 end
 
 %%
-% Get information of PDE and prefs.
+% Get information of PDE and pref.
 A = N.coeffs;
 rect = N.domain;
-prefs = chebfunpref(); 
-tol = prefs.techPrefs.eps; 
+pref = chebfunpref();
+tol = pref.cheb2Prefs.chebfun2eps;
 xorder = N.xorder;
 yorder = N.yorder;
 

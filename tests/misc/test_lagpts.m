@@ -7,7 +7,7 @@ end
 % TODO: These values were computed in V4. Should perhaps check more carefully?
 
 % Choose a tolerance:
-tol = 10*pref.eps;
+tol = 10*pref.chebfuneps;
 
 % Test a small n (using GQ)
 n = 42;

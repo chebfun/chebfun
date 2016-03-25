@@ -4,7 +4,7 @@ function pass = test_get( pref )
 if ( nargin < 1 ) 
     pref = chebfunpref; 
 end 
-tol = 1e2 * pref.eps; 
+tol = 1e2 * pref.cheb2Prefs.chebfun2eps;
 j = 1; 
 
 f = chebfun2(@(x,y) cos(x.*y)); 

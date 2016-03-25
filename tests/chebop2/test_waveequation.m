@@ -1,13 +1,13 @@
-function pass = test_waveequation( prefs )
+function pass = test_waveequation( pref )
 % Testing the wave equation on a non-square domain.  This tests if the domain is
 % being treated properly and if Neumann boundary conditions are being dealt with
 % correctly. 
 % Alex Townsend, April 2013. 
 
 if ( nargin < 1 ) 
-    prefs = chebfunpref(); 
+    pref = chebfunpref(); 
 end 
-tol = 100*prefs.techPrefs.eps; 
+tol = 100*pref.cheb2Prefs.chebfun2eps;
 
 %%  Standard wave equation on a non-square domain. 
 

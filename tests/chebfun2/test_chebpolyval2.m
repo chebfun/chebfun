@@ -4,7 +4,7 @@ function pass = test_chebpolyval2()
 if ( nargin < 1 ) 
     pref = chebfunpref; 
 end 
-tol = 100 * pref.eps; 
+tol = 100 * pref.cheb2Prefs.chebfun2eps;
 
 kind = 2;
 if ( isa( pref.tech(), 'chebtech2' ) )

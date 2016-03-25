@@ -33,9 +33,9 @@ end
 
 % Check for tolerance.
 if ( nargin == 1 || isempty(tol) )
-    tol = chebfunpref().techPrefs.eps;
+    tol = chebfunpref().techPrefs.chebfuneps;
 elseif ( isa(tol, 'chebfunpref') )
-    tol = tol.techPrefs.eps;
+    tol = tol.techPrefs.chebfuneps;
 end
 
 % Check for 'globaltol' flag.
