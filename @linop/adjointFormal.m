@@ -46,7 +46,6 @@ end
 % Get the domain and the value of the highest derivative:
 dom = L.domain;
 Lstar.domain = dom;
-dor = max(max(L.diffOrder));
 
 % loop through blocks
 op = ';';
@@ -58,6 +57,7 @@ for ii = 1:ncols
 
         % Get the coefficients:
         coeffs = toCoeff(B, pref);
+        dor = length(coeffs)-1;
 
         % Compute the coefficients of the adjoint:
         adjCoeffs = 0*coeffs;
@@ -99,7 +99,7 @@ for ii = 1:ncols
             elseif ( length(acheb) == 1 && acheb(0) == -1 )
                 acur = '-';
             else 
-                acur = ['+',acur,'*'];
+                acur = ['+',acur,'.*'];
             end
             % use acur to update op string
             if ( ~isempty(acur) )

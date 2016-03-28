@@ -379,6 +379,10 @@ function A = compmat(x,coeffs)
 %COMPMAT - routine for computing complementarity matrix.
 
   n = length(coeffs)-1;
+  if n == 0
+      A = 0;
+      return
+  end
 
   A = zeros(n);
   for kk = n:-1:1
