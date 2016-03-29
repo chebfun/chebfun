@@ -21,23 +21,5 @@ fz = diff(f, 3);   % diff in z-variable
 
 G = spherefunv(fx, fy, fz);
 
-% % Project onto the sphere which is done by (I - [x;y;z][x;y;z]')[fx;fy;fz],
-% % where [x;y;z] is the unit normal vector (which is just the position
-% % vector on the sphere).
-% 
-% % % Components of the normal vector
-% x = spherefun(@(x,y,z) x, f.domain);
-% y = spherefun(@(x,y,z) y, f.domain);
-% z = spherefun(@(x,y,z) z, f.domain);
-% 
-% dotProd = x.*fx + y.*fy + z.*fz;
-% xdot = x.*dotProd;
-% ydot = y.*dotProd;
-% zdot = z.*dotProd;
-% 
-% fx = fx - xdot;
-% fy = fy - ydot;
-% fz = fz - zdot;
-
 end
 

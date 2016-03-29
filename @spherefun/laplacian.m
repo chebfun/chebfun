@@ -1,6 +1,7 @@
 function f = laplacian(f) 
 %LAPLACIAN   Scalar laplacian of a SPHEREFUN.
-%   L = LAPLACIAN(F).
+% 
+%   L = LAPLACIAN( F ) computes the spherical laplacian of F.  
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
