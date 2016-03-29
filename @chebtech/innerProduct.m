@@ -16,12 +16,9 @@ if ( isempty(f) || isempty(g) )
     return
 end
 
-% if g is a trigtech convert it to a chebtech
-if ( isa(g, 'trigtech') )
-    g = chebtech2.make(@(x) feval(g,x));
-elseif ( ~isa(g, 'chebtech') )
+if ( ~isa(f, 'chebtech') || ~isa(g, 'chebtech') )
     error('CHEBFUN:CHEBTECH:innerProduct:input', ...
-        'innerProduct() only operates on CHEB/TRIGTECH objects.');
+        'innerProduct() only operates on two CHEBTECH objects.');
 end
 
 % Prolong to sum of current lengths (so that quadrature is exact):
