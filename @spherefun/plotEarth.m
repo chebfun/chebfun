@@ -8,6 +8,10 @@ function varargout = plotEarth(varargin)
 %
 % See also spherefun/surf, spherefun/plot, spherefun/contour
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+
 % Land masses are stored in the data file CoastData.mat
 try
     x = load('CoastData.mat', 'coast');

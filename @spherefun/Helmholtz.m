@@ -8,6 +8,9 @@ function u = Helmholtz( f, K, m, n )
 % HELMHOLTZ( F, K, M, N) same as HELMHOLTZ( F, K, N ), but with a
 % discretization of size M x N.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % DEVELOPERS NOTE:
 %
 % METHOD: Spectral method (in coeff space). We use the Fourier basis in

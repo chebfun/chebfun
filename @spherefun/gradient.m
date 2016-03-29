@@ -5,6 +5,10 @@ function G = gradient( f )
 %
 % See also DIV, CURL, VORTICITY
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+
 % Empty check.
 if isempty( f )
     G = spherefunv;

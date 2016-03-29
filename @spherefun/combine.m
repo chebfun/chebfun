@@ -10,6 +10,10 @@ function g = combine(g, h)
 %
 % See also PARTITION
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+
 if ( ~isa(g,'spherefun') || ~isa(h,'spherefun') )
     error('SPHEREFUN:combine:unknown',['Undefined function ''combine'' '...
         'for input argument of type %s and %s.'], class(g), class(h));

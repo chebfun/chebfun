@@ -12,6 +12,10 @@ function F = vertcat( varargin )
 % 
 % See also SPHEREFUNV.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+
 if ( nargin == 1 ) 
     % VERTCAT of one argument just returns the same thing back to the user:
     F = varargin{1}; 

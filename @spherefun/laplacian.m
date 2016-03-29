@@ -3,6 +3,10 @@ function f = laplacian( f )
 % 
 % L = LAPLACIAN( F )
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+
 f = laplacianE( f );
 
 end

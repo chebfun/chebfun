@@ -11,6 +11,10 @@ function f = projectOntoBMCI(f)
 % The projection is orthogonal, i.e., the correction matrix to fix up the
 % structure has the smallest possible Frobenius norm.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+
 % Even part
 feven = f;
 feven.cols = feven.cols(:, feven.idxPlus);

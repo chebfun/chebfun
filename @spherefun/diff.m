@@ -15,6 +15,10 @@ function f = diff( f, varargin )
 %
 %  See also GRADIENT, LAPLACIAN
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+
 % Check for empty:
 if ( isempty( f ) )
     return

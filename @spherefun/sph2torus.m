@@ -10,6 +10,10 @@ function fdf = sph2torus(f, lam, th, coord)
 %             coord = 1 (latitude)    --> -pi <= lam < pi, -pi/2 <= th <= pi/2
 %   Default is co-latitude
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+
 % TODO: Create separate wrapper functions for latitude/co-latitude so that
 % this if can be removed (thus improving performance.
 

@@ -13,7 +13,10 @@ function varargout = sample( f, varargin )
 %
 %   [U, D, V] = SAMPLE(F, M, N) returns the low rank representation of F 
 %   on an n-by-m tensor product grid.
-%   
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 
 % Empty check. 
 if ( isempty(f) )

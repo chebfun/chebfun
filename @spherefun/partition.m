@@ -10,6 +10,10 @@ function [fp, fm] = partition(f)
 %
 % See also COMBINE
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+
 if ( ~isa(f, 'spherefun') )
     error('SPHEREFUN:partition:unknown', ['Undefined function '...
         'partition'' for input argument of type %s.'], class(f));

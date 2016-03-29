@@ -20,6 +20,9 @@ function u = Poisson( f, int_const, m, n )
 %  u = spherefun.Poisson( f, int_const, 100);
 %  norm( spherefun(exact) - u )
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % DEVELOPERS NOTE:
 %
 % METHOD: Spectral method (in coeff space). We use the Fourier basis in

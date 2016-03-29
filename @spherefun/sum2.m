@@ -5,6 +5,11 @@ function v = sum2(f)
 % Split f into its plus/minus terms.  The minus terms have integral zero 
 % on the sphere since the rows in this case are anti-periodic with period
 % pi. Thus, we only need to integrate the plus terms.
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+
 [cols, d, rows] = cdr(f);
 
 % If there are no plus terms then the integral is zero

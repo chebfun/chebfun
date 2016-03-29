@@ -7,6 +7,10 @@ function G = grad( f )
 %
 % See also GRADIENT, DIV, CURL, VORT
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+
 G = gradient( f );
 
 end

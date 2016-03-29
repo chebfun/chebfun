@@ -8,6 +8,9 @@ function varargout = BMCsvd(f)
 %
 % See also SPHEREFUN/SVD
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % DEVELOPER'S NOTE: 
 % This is the SVD of the spherefun as if it lives on the domain
 % [-pi,pi]x[-pi,pi] with respect to the L2 innerproduct. Another
