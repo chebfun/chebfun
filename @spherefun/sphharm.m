@@ -1,5 +1,5 @@
 function Y = sphharm(l, m)
-%SPHHARM    Normalized, real-valued, spherical harmonic of degree L, order 
+%SPHHARM   Normalized, real-valued, spherical harmonic of degree L, order 
 %   M at a given set of locations on the sphere.
 %
 %   Y = sphHarm(L, M) returns the degree L, order M normalized
@@ -11,11 +11,11 @@ function Y = sphharm(l, m)
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% TODO: Add support for constructing spherical harmonics with the latitude
+% [TODO]: Add support for constructing spherical harmonics with the latitude
 % coordinate being -pi/2 <= th <= pi/2.
 
 % The degree l must be greater than or equal to the magnitude of the order
-% m
+% m:
 if ( l < abs(m) )
     error('SPHEREFUN:sphHarm', ['The degree of the spherical harmonic '...
         'must be greater than or equal to the magnitude of the order']);
@@ -43,10 +43,10 @@ Y = spherefun(@(lam, th) mySphHarm(l, m, lam, th, coord), dom);
 
 end
 
-% Main subroutine for computing the spherical harmonics.
 function Y = mySphHarm(l, m, lam, th, coord)
-
-% TODO: This implementation is not stable or fast for large (l, m) for the
+%MYSPHHARM   Main subroutine for computing the spherical harmonics.
+%
+% [TODO]: This implementation is not stable or fast for large (l, m) for the
 % following reasons:
 %
 % 1. Stability: it uses the normalized spherical harmonics and the
@@ -55,7 +55,7 @@ function Y = mySphHarm(l, m, lam, th, coord)
 % 
 % 2. Efficiency: the code just uses matlab's `legendre` function for 
 % computing the associated legendre polynomials and this function is dead
-% slow.  Instead a recursion formula should be used.
+% slow. Instead a recursion formula should be used.
 
 if ( nargin <= 4 )
     coord = 0;
@@ -67,28 +67,27 @@ else
     z = cos(th);  % Co-latitude
 end
     
-% Flatten and transpose th and lam so they work with the legendre function
+% Flatten and transpose th and lam so they work with the legendre function:
 sz = size(z); 
 z = z(:)'; 
 lam = lam(:)';
 
-% Normalization
-% a = sqrt((2*l+1)/2/pi*factorial(l-abs(m))/factorial(l+abs(m))*(2-double(m==0)));
+% Normalization:
 kk = l-abs(m)+1:l+abs(m);
 aa = exp(-sum(log(kk)));
-a = sqrt((2*l+1)/2/pi * aa * (2 - double(m==0)));
+a = sqrt((2*l + 1)/2/pi * aa * (2 - double(m==0)));
 Y = legendre(l, z);
 
-% Get the right associated legendre function
+% Get the right associated legendre function:
 Y = squeeze(Y(abs(m)+1, :, :));
 
-% Determine if the cos or sin term should be added.
+% Determine if the cos or sin term should be added:
 pos = abs(max(0, sign(m+1)));
 
-% Compute the spherical harmonic
+% Compute the spherical harmonic:
 Y = (pos*cos(m*lam) + (1-pos)*sin(m*lam)).*(a*Y);
 
 % Reshape so it is the same size as the th and lam that were passed in.
-Y = reshape(Y,sz);
+Y = reshape(Y, sz);
 
 end

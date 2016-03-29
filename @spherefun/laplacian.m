@@ -1,17 +1,15 @@
-function f = laplacian( f ) 
-% LAPLACIAN     Scalar laplacian of a spherefun 
-% 
-% L = LAPLACIAN( F )
+function f = laplacian(f) 
+%LAPLACIAN   Scalar laplacian of a SPHEREFUN.
+%   L = LAPLACIAN(F).
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-
-f = laplacianE( f );
+f = laplacianE(f);
 
 end
 
-% Compute as d2fdth2 + 1./sin(th)(cos(th) dfdth + 1./sin(th) d2fdlam2)
+% Compute as d2fdth2 + 1./sin(th)(cos(th) dfdth + 1./sin(th) d2fdlam2):
 function f = laplacianA( f )
 % We are going to work at the tech level to make things faster.
 [C, D, R] = cdr( f );
@@ -190,8 +188,9 @@ g = spherefun( sample(diff(dfdx,1),m,n/2) + ...
 
 end
 
-% Similar to D, but adds seconds derivatives together instead of sampling
-function g = laplacianE( f )
+% Similar to D, but adds seconds derivatives together instead of sampling:
+function g = laplacianE(f)
+%LAPLACIANE   Do ?.
 
 fxx = diff(f,1,2); 
 fyy = diff(f,2,2); 
@@ -204,12 +203,12 @@ fzz = diff(f,3,2);
 m = max([mxx myy mzz]);
 n = max([nxx nyy nzz]);
 
-% Ensure m and n are even
+% Ensure m and n are even:
 m = m + mod(m,2);
 n = n + mod(n,2);
 
 % g = diff(f,1,2) + diff(f,2,2) + diff(f,3,2);
-g = spherefun( sample(fxx,m,n/2) + sample(fyy,m,n/2) + sample(fzz,m,n/2) );
+g = spherefun(sample(fxx, m, n/2) + sample(fyy, m, n/2) + sample(fzz, m, n/2));
 
 end
 

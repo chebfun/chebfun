@@ -1,19 +1,19 @@
 function varargout = quiver(fx,fy,fz)
-%QUIVER     Quiver plot of a vector field described be three SPHEREFUNs.
+%QUIVER   Quiver plot of a vector field described by three SPHEREFUNs.
 %   QUIVER(FX, FY, FZ) plots the vector velocity field of (FX,FY,FZ) in
 %   Cartesian coordinates on the surface of a sphere. QUIVER automatically
 %   attempts to scale the arrows to fit within the grid. The arrows are
 %   plotted on an icosahedral grid.
 %
-% See also SPHEREFUNV, SPHEREFUNV/QUIVER
-
-%   TODO: Add more options
+% See also SPHEREFUNV, SPHEREFUNV/QUIVER.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% [TODO]: Add more options.
+
 holdState = ishold;
-if ~holdState
+if ( ~holdState )
     hold on;
 end
 
@@ -61,7 +61,7 @@ end
 function [x, tri] = getIcosNodes(k, type)
 %GETICOSNODES Computes the icosahedral node sets for the surface of the 
 % sphere.
-%   X = getIcosNodes(K,TYPE) returns an N-by-3 matrix containing the 
+%   X = getIcosNodes(K, TYPE) returns an N-by-3 matrix containing the 
 %   icosahedral nodes of the specified type, where the columns corresponds
 %   to the (x,y,z) coordinates of the nodes.  Note that these nodes are only
 %   unique up to a roataion.
@@ -83,7 +83,7 @@ function [x, tri] = getIcosNodes(k, type)
 %   number of nodes on the sphere: 
 %                            N = 10*3^2*4^k+2
 %
-%   [X,TRI] = GETICOSNODES(K,TYPE) also returns a triangulation of the
+%   [X, TRI] = GETICOSNODES(K, TYPE) also returns a triangulation of the
 %   nodes X.
 %
 %   Example:
@@ -91,12 +91,13 @@ function [x, tri] = getIcosNodes(k, type)
 %       trisurf(tri, x(:, 1), x(:, 2), x(:, 3), double(rand(size(x,1), 1)>0.5));
 %       axis equal, colormap(jet(5));
 
-% Author: Grady Wright, 2014
+% Author: Grady Wright, 2014.
 
 % Here are the nodes for the base icosahedron
 p = (1+sqrt(5))/2;
 x = [[0, p, 1]; [0, -p, 1]; [0, p, -1]; [0, -p, -1]; [1, 0, p]; [-1, 0, p];
     [1, 0, -p]; [-1, 0, -p]; [p, 1, 0]; [-p, 1, 0]; [p, -1, 0]; [-p, -1, 0]];
+
 % Scale nodes so that they are on the surface of the sphere.
 x = bsxfun(@rdivide,x,sqrt(sum(x.^2,2)));
 
@@ -123,12 +124,11 @@ end
 end
 
 function [x, tri] = trisectTri(x, tri)
-% Subdivide triangular mesh using triangular trisection. During this
-% operation vertices are inserted at the trisection points of the triangles
-% edges together with one vertice at the circumcenter of the triangle.
-% This produces nine new triangular faces for every face of the original
-% triangle. 
-%
+%TRISECTRI   Subdivide triangular mesh using triangular trisection. During this
+%operation vertices are inserted at the trisection points of the triangles
+%edges together with one vertice at the circumcenter of the triangle.
+%This produces nine new triangular faces for every face of the original
+%triangle. 
 
 k = 1;
 v1 = zeros(2*size(tri, 1), 3);
@@ -147,45 +147,45 @@ v = [v; circumcenterSphTri(tri, x)];
 % v = [v;(x(tri(:, 1), :) + x(tri(:, 2), :) + x(tri(:, 3), :))/3];
 v = [x; v];
 
-% Remove repeating vertices
+% Remove repeating vertices.
 x = unique(v, 'rows');
 
 % Project the nodes to the sphere.
 x_l2 = sqrt(sum(x.^2, 2));
 x = bsxfun(@rdivide, x, x_l2);
 
-% Triangulate the new nodes;
+% Triangulate the new nodes.
 tri = delaunay(x);
 tri = freeBoundary(TriRep(tri, x));
 end
 
-function [x, tri]=bisectTri(x, tri)
-% Subdivide triangular mesh using triangular bisection. During this
-% operation vertices are inserted at the bisection points of the triangles
-% edges. This produces nine new triangular faces for every face of the
-% original triangle.
+function [x, tri] = bisectTri(x, tri)
+%BISECTTRI   Subdivide triangular mesh using triangular bisection. During this
+%operation vertices are inserted at the bisection points of the triangles
+%edges. This produces nine new triangular faces for every face of the original
+%triangle.
 
-% Number of vertices
+% Number of vertices:
 Nx = size(x, 1);
 
-% Number of triangles
+% Number of triangles:
 Nt = size(tri, 1);
 
-% Bisect each edge
+% Bisect each edge:
 v1 = (x(tri(:, 1), :) + x(tri(:, 2), :))/2;
 v2 = (x(tri(:, 2), :) + x(tri(:, 3), :))/2;
 v3 = (x(tri(:, 3), :) + x(tri(:, 1), :))/2;
 v = [v1; v2; v3];
 
-% Remove repeating vertices
+% Remove repeating vertices:
 [v, ~, idx] = unique(v, 'rows');
 
-% Assign indices to the new triangle vertices
+% Assign indices to the new triangle vertices:
 v1 = Nx + idx(1:Nt);
 v2 = Nx + idx((Nt+1):2*Nt);
 v3 = Nx + idx((2*Nt+1):3*Nt);
 
-% Define new triangles
+% Define new triangles:
 t1 = [tri(:, 1) v1 v3];
 t2 = [tri(:, 2) v2 v1];
 t3 = [tri(:, 3) v3 v2];
@@ -211,10 +211,10 @@ end
 
 
 function x = trisectEdge(x1, x2)
-% Trisects the great circle arc joining x1 and x2.
-% Returns the resulting 2 points, the first being 1/3 distance from x1 to
-% x2 and the second being 2/3 the distance here the nodes are ordered as if 
-% starting at x1 and ending at x2.
+%TRISECTEDGE   Trisects the great circle arc joining x1 and x2.
+%Returns the resulting 2 points, the first being 1/3 distance from x1 to
+%x2 and the second being 2/3 the distance here the nodes are ordered as if 
+%starting at x1 and ending at x2.
 
 % Suppose x13 is the point 1/3 the distance from x1 to x2 (starting at x1)
 % and the x23 is the point 2/3 the distance. The code below uses the fact

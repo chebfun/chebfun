@@ -1,9 +1,9 @@
 function G = gradient( f ) 
-%GRADIENT  Numerical surface gradient of a SPHEREFUN. 
+%GRADIENT   Numerical surface gradient of a SPHEREFUN. 
 %   G = GRADIENT(F) returns the numerical surface gradient of the
 %   SPHEREFUN F as a SPHEREFUNV G.
 %
-% See also DIV, CURL, VORTICITY
+% See also DIV, CURL, VORTICITY.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

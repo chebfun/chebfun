@@ -1,6 +1,5 @@
 function u = Poisson(f, const, m, n)
 %POISSON   Fast Poisson solver for the sphere.
-%
 %   POISSON(F, CONST, N) solves
 %
 %     sin(th)^2u_{th,th} + sin(th)cos(th)u_th + u_{lam,lam} = sin(th)^2*f

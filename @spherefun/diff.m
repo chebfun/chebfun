@@ -1,6 +1,5 @@
 function f = diff(f, varargin)
 %DIFF   Tangential derivative of a spherefun in Cartesian coordinates.
-%
 %   F = DIFF(F) computes the first tangential derivative of F with respect to x.
 %   This is the projection of the surface gradient of f in the x-direction.
 %
