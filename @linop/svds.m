@@ -65,7 +65,7 @@ if ( isempty(prefs) )
 end
 
 % Check that we recieved a bcType
-if ( isempty(bctype) )
+if ( isempty(bcType) )
     error('CHEBFUN:LINOP:svds:bcType', ...
         'A bcType is required.');
 end
@@ -147,13 +147,20 @@ superC.values = zeros(dor*nm,1);
 superA.constraint = superC;
 
 % count number of null vectors for A and Astar
-nulA = dor*n-nc
+nulA = dor*n-nc;
 
 % set number of singular values
-nsvals = 2*k-abs(nulA) 
+nsvals = 2*k-abs(nulA);
 
 % call linop/eigs
+warning('off','all') % turn warnings off
+if strcmp(bcType,'periodic')
+    prefs.discretization = @trigcolloc;
+else
+    prefs.discretization = @chebcolloc2;
+end
 [ Q, D ] = eigs( superA, nsvals, [], prefs, 'rayleigh' );
+warning('on','all') % turn warnings back on
 
 % make sure singular values are real
 if ( any(imag(diag(D)) ~= 0) )
@@ -171,9 +178,9 @@ Q = Q(:,1:k);
 
 % rescale singular vectors
 V = Q(1:n,:); nrmV = sqrt(diag(V'*V)); 
-nrmV( nrmV < pref.bvpTol ) = 1; V = V*diag(1./nrmV);
+nrmV( nrmV < prefs.bvpTol ) = 1; V = V*diag(1./nrmV);
 U = Q(n+1:end,:); nrmU = sqrt(diag(U'*U));
-nrmU( nrmU < pref.bvpTol ) = 1; nrmU = 1./nrmU;
+nrmU( nrmU < prefs.bvpTol ) = 1; nrmU = 1./nrmU;
 U = U*diag(nrmU);
 
 % set output
