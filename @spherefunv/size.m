@@ -10,6 +10,10 @@ function varargout = size( F, dim )
 %   D = SIZE(F,DIM) returns the dimensions specified by the dimension DIM.
 %
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+
 % Empty check: 
 if ( isempty( F ) ) 
     varargout = { [], [] }; 

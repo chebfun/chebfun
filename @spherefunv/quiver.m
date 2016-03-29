@@ -7,9 +7,13 @@ function varargout = quiver( F )
 %
 %   H = QUIVER(F) returns a handle to the figure window.
 %
-%   TODO: Add more options
-%
 % See also GRADIENT, CURL
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+%
+%   TODO: Add more options to the command. 
 
 % Empty check:
 if ( isempty( F ) )

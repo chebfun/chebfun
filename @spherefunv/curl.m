@@ -5,6 +5,10 @@ function G = curl( F )
 %
 % See also DIVERGENCE, GRADIENT, VORTICITY.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+
 % Empty check.
 if isempty( F )
     G = spherefunv;

@@ -3,6 +3,10 @@ function F = rdivide( F, G )
 %
 % See also LDIVIDE.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+
 % Empty check: 
 if ( isempty(F) || isempty(G) )
    F = spherefunv;

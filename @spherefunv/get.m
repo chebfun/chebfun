@@ -6,6 +6,10 @@ function val = get( f, propName )
 %    'components'  - The components of the SPHEREFUN.
 %    'isTransposed' - Is the SPHEREFUNV a column or row vector?
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+
 if ( numel(f) > 1 )
     val = cell(numel(f));
     for k = 1:numel(f)

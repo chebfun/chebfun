@@ -8,6 +8,10 @@ function F = vertcat( F , G )
 %   scalar then returns a SPHEREFUNV with three components. The first is f, and
 %   the second and third are the first and second components of F.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+
 if ( isempty( F ) || isempty( G ) )
     F = spherefunv;
     return

@@ -9,6 +9,10 @@ function V = vorticity( F )
 %
 % See also VORT, DIV, GRAD, CURL
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+
 %
 % Compute the surface curl of the vector field.
 %

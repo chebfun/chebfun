@@ -7,6 +7,10 @@ function display(X)
 %   It is called automatically when the semicolon is not used at the end of a
 %   statement that results in a SPHEREFUNV.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+
 if ( isequal(get(0, 'FormatSpacing'), 'compact') )
 	disp([inputname(1), ' =']);
 	disp(X);

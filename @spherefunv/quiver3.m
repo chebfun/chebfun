@@ -4,6 +4,10 @@ function varargout = quiver3( F, varargin )
 %
 % See also QUIVER.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+
 h = quiver(F,varargin{:});
 
 if ( nargout > 0 )

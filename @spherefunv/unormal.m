@@ -10,6 +10,10 @@ function N = unormal( dom )
 %
 %   See also TANGENTIAL, DOT, CURL
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+
 if ~exist( 'dom', 'var' ) || isempty( dom )
     dom = [-pi pi 0 pi];
 end

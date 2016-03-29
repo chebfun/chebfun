@@ -6,6 +6,10 @@ function F = power( F, G )
 %   F.^G where F is a double and G is a SPHEREFUN returns from componentwise
 %   powers.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+
 % Empty check:
 if ( isempty( F ) || isempty( G ) )
     F = spherefunv;

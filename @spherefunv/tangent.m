@@ -6,6 +6,10 @@ function T = tangent( F )
 %
 %   See also NORMAL, DOT, CURL
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+
 % If the spherefunv is empty just return an empty spherefunv.
 if isempty( F )
     T = F;
