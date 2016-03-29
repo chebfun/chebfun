@@ -35,14 +35,21 @@ function u = Poisson( f, int_const, m, n )
 %
 %  Alex Townsend, July 2015.
 
+% DEVELOPERS NOTES 
+% This is designed to be almost a standalone script to reduce overhead 
+% so that it can be used for the numerical simulation of time-dependent 
+% PDEs, where this comment is executed hundreds of times. 
+
 if ( nargin < 4 )
     n = m;
 end
 % Construct useful spectral matrices:
-
-DF1m = trigspec.diffmat( m, 1 );
-DF2m = trigspec.diffmat( m, 2 );
-DF2n = trigspec.diffmat( n, 2 );
+% Please note that DF1m is different than trigspec.diff(m,1) because we 
+% take the coefficient space point-of-view and set the (1,1) entry to be 
+% nonzero.
+DF1m = (1i)*spdiags((-floor(m/2):1:ceil((m-2)/2))', 0, m, m);
+DF2m = (1i)^2*spdiags((-floor(m/2):1:ceil((m-2)/2))', 0, m, m).^2;
+DF2n = (1i)^2*spdiags((-floor(n/2):1:ceil((n-2)/2))', 0, n, n).^2;
 % multiplication for sin(theta).*cos(theta)
 Mcossin = spdiags( .25i*[-ones(m,1) ones(m,1)], [-2 2], m ,m ); 
 % multiplication for sin(theta)^2
@@ -54,8 +61,8 @@ scl = diag( DF2n );
 % solution, and even/odd symmetry.
 
 % Underlying discretization grids:
-lam0 = pi*trigpts( n );
-th0 = pi*trigpts( m );
+lam0 = linspace(-pi, pi, n+1)'; lam0( end )=[];
+th0 = linspace(-pi, pi, m+1)'; th0( end )=[];
 
 % Forcing term:
 if ( isa(f, 'function_handle') )
