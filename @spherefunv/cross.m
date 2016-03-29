@@ -8,7 +8,7 @@ function H = cross( F, G )
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-
+% TODO: Implement the following option
 %   CROSS(F, G, 'n') returns a SPHEREFUN representing the normal component
 %   of the cross product of the SPHEREFUNV objects F and G.  
 %   For two vector fields tangent to the sphere, the cross product is a
@@ -19,7 +19,7 @@ function H = cross( F, G )
 
 % Empty check: 
 if ( isempty( F ) || isempty( G ) )
-    H = spherefun;
+    H = spherefunv;
     return
 end
 
