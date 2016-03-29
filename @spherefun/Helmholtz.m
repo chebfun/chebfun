@@ -1,5 +1,5 @@
 function u = Helmholtz( f, K, m, n )
-% HELMHOLTZ  Fast Helmholtz solver for the sphere
+%HELMHOLTZ  Fast Helmholtz solver for the sphere
 %
 % U = HELMHOLTZ( F, K, N ) solves U_xx + U_yy + U_zz + K^2U = F on the sphere 
 % for U with a discretization of size NxN. F should be a SPHEREFUN and the

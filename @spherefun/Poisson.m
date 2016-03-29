@@ -1,7 +1,7 @@
 function u = Poisson( f, int_const, m, n )
-% POISSON              Fast Poisson solver for the sphere
+%POISSON     Fast Poisson solver for the sphere
 %
-% POISSON( f, const, n ) solves
+% POISSON(f, const, n ) solves
 %
 %  sin(th)^2u_thth   + sin(th)cos(th)u_th +  u_{lam,lam}  =  sin(th)^2 * f
 %
@@ -9,7 +9,7 @@ function u = Poisson( f, int_const, m, n )
 % with integral condition  sum2( u ) = const with a discretization of
 % size N x N.
 %
-% POISSON( f, const, m, n ) same as POISSON( f, const, n), but with a
+% POISSON(f, const, m, n ) same as POISSON(f, const, n), but with a
 % discretization of size m x n.
 %
 % EXAMPLE:
@@ -43,12 +43,14 @@ end
 DF1m = trigspec.diffmat( m, 1 );
 DF2m = trigspec.diffmat( m, 2 );
 DF2n = trigspec.diffmat( n, 2 );
-Mcossin = spdiags( .25i*[-ones(m,1) ones(m,1)], [-2 2], m ,m ); % multiplication for sin(theta).*cos(theta)
-Msin2 = spdiags( .5*[-.5*ones(m,1) ones(m,1) -.5*ones(m,1)], [-2 0 2], m ,m );% multiplication for sin(theta)^2
+% multiplication for sin(theta).*cos(theta)
+Mcossin = spdiags( .25i*[-ones(m,1) ones(m,1)], [-2 2], m ,m ); 
+% multiplication for sin(theta)^2
+Msin2 = spdiags( .5*[-.5*ones(m,1) ones(m,1) -.5*ones(m,1)], [-2 0 2], m ,m );
 Im = speye( m );
-scl = diag(DF2n); 
+scl = diag( DF2n ); 
 
-% There is a factor of 4 sped up here, by taking account of real 
+% There is a factor of 4 speed up here, by taking account of real 
 % solution, and even/odd symmetry.
 
 % Underlying discretization grids:
