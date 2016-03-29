@@ -30,7 +30,7 @@ if ( K == 0 )
 end
 
 % Construct useful spectral matrices:
-Im = speye(m);
+Im = speye( m );
 DF1m = trigspec.diffmat( m, 1);    % 1st order Fourier diffmat
 DF2m = trigspec.diffmat( m, 2);  % 2nd order Fourier diffmat
 DF2n = trigspec.diffmat( n, 2);

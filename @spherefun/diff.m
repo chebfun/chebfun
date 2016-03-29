@@ -1,16 +1,16 @@
 function f = diff( f, varargin )
-% DIFF  Tangential derivative of a spherefun in Cartesian coordinates.
+%DIFF  Tangential derivative of a spherefun in Cartesian coordinates.
 %
 %  F = DIFF( F ) computes the first tangential derivative of F with respect
 %  to x.  This is the projection of the surface gradient of f in the
 %  x-direction
 %  
-%  F = DIFF( F, DIM )  computes the first tangential derivative of F. If
+%  F = DIFF(F, DIM )  computes the first tangential derivative of F. If
 %  DIM = 1, the tangential derivative is taken in the x-direction. If DIM =
 %  2, the tangential derivative is taken in the y-direction and if DIM = 3,
 %  the tangential derivative is taken in the z-direction.
 %
-%  F = DIFF( F, DIM, K) computes the kth tangential derivatives of F in the
+%  F = DIFF(F, DIM, K) computes the kth tangential derivatives of F in the
 %  variable given by DIM.
 %
 %  See also GRADIENT, LAPLACIAN
@@ -59,14 +59,14 @@ function f = onediff(f, dim)
 % realf = isreal(f);
 
 % Simplify f to avoid any extra work
-f = simplify(f);
+f = simplify( f );
 
 % We are going to work at the tech level to make things faster.
 [C, D, R] = cdr( f );
 
 % Do everything with even length columns since then no special
 % modifications are required for dividing the cosine/sine series expansion.
-n = length(C)+mod(length(C),2);
+n = length(C) + mod(length(C),2);
 
 % The variable coefficients in the definitions of the derivatives means
 % that the length of the columns and rows will increase by one wave number
@@ -74,7 +74,7 @@ n = length(C)+mod(length(C),2);
 % only increases the columns wave number by 1. The means we need to pad the
 % coefficients with on extra zero negative and positive coefficient before
 % doing the computations.
-if dim ~= 3
+if ( dim ~= 3 )
     m = length(R)+2;  % Pad rows
 else
     m = length(R);
@@ -82,18 +82,18 @@ end
 n = n + 2;  % Pad columns
 
 % Matrices for multiplying by sin/cos in coefficient space.
-Msinn = .5i*spdiags(ones(n,1)*[-1,1],[-1 1],n,n);
-Msinm = .5i*spdiags(ones(m,1)*[-1,1],[-1 1],m,m);
-Mcosn = .5*spdiags(ones(n,1)*[1,1],[-1 1],n,n);
-Mcosm = .5*spdiags(ones(m,1)*[1,1],[-1 1],m,m);
+Msinn = .5i*spdiags(ones(n,1)*[-1,1], [-1 1], n, n);
+Msinm = .5i*spdiags(ones(m,1)*[-1,1], [-1 1], m, m);
+Mcosn = .5*spdiags(ones(n,1)*[1,1], [-1 1], n, n);
+Mcosm = .5*spdiags(ones(m,1)*[1,1], [-1 1], m, m);
 
 % Work at the tech level to make things faster.
 ctechs = C.funs{1}.onefun;
 rtechs = R.funs{1}.onefun;
 
 % Alias will do the padding of the coefficients.
-ctechs.coeffs = ctechs.alias(ctechs.coeffs,n);
-rtechs.coeffs = rtechs.alias(rtechs.coeffs,m);
+ctechs.coeffs = ctechs.alias(ctechs.coeffs, n);
+rtechs.coeffs = rtechs.alias(rtechs.coeffs, m);
 
 % Compute the derivatives
 dCdth = diff(ctechs)/pi;
@@ -150,7 +150,7 @@ if ( dim == 1 ) || ( dim == 2)
     % f = f1 + f2;        
     % When constructing from samples, m must be even.
     m = m + mod(m,2);
-    f = spherefun(sample(f1,m,n/2+1)+sample(f2,m,n/2+1));    
+    f = spherefun( sample(f1,m,n/2+1)+sample(f2,m,n/2+1) );    
 else
     % Calculate the C * D * R.' decomposition of sin(th) dfdth
     C1 = -Msinn*dCdth.coeffs;
@@ -163,8 +163,8 @@ else
     f.rows.funs{1}.onefun = r1techs;    
 
     % Weird feval behavior in chebfun requires this
-    f.cols.pointValues = feval(c1techs,[-1;1]);
-    f.rows.pointValues = feval(r1techs,[-1;1]); 
+    f.cols.pointValues = feval(c1techs, [-1;1]);
+    f.rows.pointValues = feval(r1techs, [-1;1]); 
 end    
 
 end

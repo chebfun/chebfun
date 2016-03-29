@@ -10,7 +10,7 @@ function G = gradient( f )
 
 
 % Empty check.
-if isempty( f )
+if ( isempty( f ) )
     G = spherefunv;
     return
 end
@@ -19,7 +19,7 @@ fx = diff(f, 1);   % diff in x-variable
 fy = diff(f, 2);   % diff in y-variable 
 fz = diff(f, 3);   % diff in z-variable
 
-G = spherefunv(fx,fy,fz);
+G = spherefunv(fx, fy, fz);
 
 % % Project onto the sphere which is done by (I - [x;y;z][x;y;z]')[fx;fy;fz],
 % % where [x;y;z] is the unit normal vector (which is just the position
