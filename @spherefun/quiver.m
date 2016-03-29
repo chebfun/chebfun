@@ -5,7 +5,7 @@ function varargout = quiver(fx,fy,fz)
 %   attempts to scale the arrows to fit within the grid. The arrows are
 %   plotted on an icosahedral grid.
 %
-% See also SPHEREFUNV, SPHEREFUNV/QUIVER.
+% See also SPHEREFUNV, QUIVER.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -103,7 +103,7 @@ x = bsxfun(@rdivide,x,sqrt(sum(x.^2,2)));
 
 % Triangulate the points
 tri = delaunay(x);
-tri = freeBoundary(TriRep(tri, x));
+tri = freeBoundary(triangulation(tri, x));
 
 if ( (type == 0) && (k == 0) )
     return
@@ -124,11 +124,14 @@ end
 end
 
 function [x, tri] = trisectTri(x, tri)
-%TRISECTRI   Subdivide triangular mesh using triangular trisection. During this
-%operation vertices are inserted at the trisection points of the triangles
-%edges together with one vertice at the circumcenter of the triangle.
-%This produces nine new triangular faces for every face of the original
-%triangle. 
+%TRISECTRI  Subdivide triangular mesh using triangular trisection. 
+%   [X,TRI] = trisectTri(X,TRI)
+%   Subdivides a triangular mesh consisting of nodes X and edges described
+%   by TRI.  The subdivsion is done by trisecting each triangle. During
+%   this operation vertices are inserted at the trisection points of the
+%   triangles edges together with one vertice at the circumcenter of the
+%   triangle. This produces nine new triangular faces for every face of the
+%   original triangle.
 
 k = 1;
 v1 = zeros(2*size(tri, 1), 3);
@@ -156,14 +159,17 @@ x = bsxfun(@rdivide, x, x_l2);
 
 % Triangulate the new nodes.
 tri = delaunay(x);
-tri = freeBoundary(TriRep(tri, x));
+tri = freeBoundary(triangulate(tri, x));
 end
 
 function [x, tri] = bisectTri(x, tri)
-%BISECTTRI   Subdivide triangular mesh using triangular bisection. During this
-%operation vertices are inserted at the bisection points of the triangles
-%edges. This produces nine new triangular faces for every face of the original
-%triangle.
+%BISECTTRI  Subdivide triangular mesh using triangular bisection. 
+%   [X,TRI] = bisectTri(X,TRI)
+%   Subdivides a triangular mesh consisting of nodes X and edges described
+%   by TRI.  The subdivsion is done by bisecting each triangle. During
+%   this operation vertices are inserted at the bisection points of the
+%   triangles edges together. This produces four new triangular faces for 
+%   every face of the original triangle.
 
 % Number of vertices:
 Nx = size(x, 1);
@@ -197,24 +203,16 @@ x_l2 = sqrt(sum(x.^2, 2)); % Project the nodes to the sphere.
 x = bsxfun(@rdivide, x, x_l2);
 tri = [t1; t2; t3; t4];
 
-% Poor man's way of doing the same code as above.  This commented out code
-% is much, much slower.
-% Triangulate the new nodes;
-% v1=(x(tri(:,1),:)+x(tri(:,2),:))/2;
-% v2=(x(tri(:,2),:)+x(tri(:,3),:))/2;
-% v3=(x(tri(:,3),:)+x(tri(:,1),:))/2;
-% x = [x;v1;v2;v3];
-% tri = delaunay(x);
-% tri = freeBoundary(TriRep(tri,x));
-% 
 end
 
 
 function x = trisectEdge(x1, x2)
-%TRISECTEDGE   Trisects the great circle arc joining x1 and x2.
-%Returns the resulting 2 points, the first being 1/3 distance from x1 to
-%x2 and the second being 2/3 the distance here the nodes are ordered as if 
-%starting at x1 and ending at x2.
+%TRISECTEDGE  Trisects a great circle arc joining two points on the sphere.
+%   X = TRISECTEDGE(X1,X2) trisects the great circle arc joining the points
+%   X1 and X2 on the sphere and returns the results in X. The first points
+%   in X is 1/3 distance from X1 to X2 and the second being 2/3 the
+%   distance. Here the nodes are ordered as if starting at X1 and ending at
+%   X2.
 
 % Suppose x13 is the point 1/3 the distance from x1 to x2 (starting at x1)
 % and the x23 is the point 2/3 the distance. The code below uses the fact
@@ -236,6 +234,9 @@ x = [x1*c1 + x2*c2; x2*c1 + x1*c2];
 end
 
 function xc = circumcenterSphTri(tri,nodes)
+%CIRCUMCENTERSPHTRI Computes the circumcenter of a spherical triangle.
+%   C = circumcenterSphTri(TRI,X) computes the circumcenters of each 
+%   triangle in the mesh described by TRI with vertices given by X.
 
 % Local variables to make the code easier to read.
 x = nodes(:, 1);

@@ -145,10 +145,12 @@ if ( dim == 1 ) || ( dim == 2)
     f2.idxPlus = f2.idxMinus;
     f2.idxMinus = temp;
 
-    % Compression plus may not preserve the expansion properties we want.
-    % So we sample each piece add them together and construct a spherefun.
-    % [TODO]: Fix this so everything is done in coefficient space, like this
-    % f = f1 + f2;        
+    % Compression plus may not preserve the expansion properties we want,
+    % i.e. the odd/even parity properites. So we sample f1 and f2
+    % separately and add their values together to construct a spherefun
+    % from their samples.
+    % [TODO]: Fix this so everything is done in coefficient space, 
+    % using compression plus.  This will make the code more efficient.
     
     % When constructing from samples, m must be even.
     m = m + mod(m,2);
