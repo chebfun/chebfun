@@ -1,48 +1,124 @@
-function [U, S, V] = svds(L, k, bcType)
-%SVDS  Find some singular values and vectors of a compact LINOP.
-%   SVDS of a LINOP is currently not supported.
+function varargout = svds(A, varargin)
+%SVDS    Eigenvalues and eigenfunctions of a linear operator.
+%   Important (1): While you can construct a LINOP and apply this method, the
+%   recommended procedure is to use CHEBOP/SVDS instead.
+%   Important (2): A CHEBOPPREF object PREFS has to be passed. When this method
+%   is called via CHEBOP/SVDS, PREFS is inherited from the CHEBOP level.
+%
+%   S = SVDS(A, PREFS) returns a vector of 6 singularvalues of the linop A.
+%   SVDS will attempt to return the singularvalues corresponding to the most
+%   easily resolved singularfunctions. (This is unlike the built-in SVDS, which
+%   returns the largest singularvalues by default.)
+%
+%   [U, S, V] = SVDS(A, PREFS) returns a diagonal 6x6 matrix S of A's most
+%   easily resolved singularvalues, and their corresponding left and right
+%   singularfunctions in the chebmatrices U and V respectively, where V{i}(:,j)
+%   is the jth singularfunction in variable i of the system.
+%
+%   [...] = SVDS(A, K, PREFS) find the K most easily resolved 
+%   singularvalues.
+%
+%   This version of SVDS does not use iterative methods as in the built-in
+%   SVDS for sparse matrices. Instead, it uses the built-in EIG on dense
+%   matrices of increasing size, stopping when the targeted singularfunctions
+%   appear to have converged, as determined by the chebfun constructor.
+%
+%   EXAMPLE: First derivative operator
+%
+%   d = [0 pi];
+%   A = linop( operatorBlock.diff(d) );
+%   prefs = cheboppref();
+%   prefs.discretization = @chebcolloc2;
+%   [U,S,V] = svds(A, 10, prefs);
+%   format long, sqrt(-diag(D))  % integers, to 14 digits
+%
+% See also CHEBOP/SVDS, CHEBOP/ADJOINT, LINOP/EIGS and LINOP/ADJIONT.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% construct adjoint
-Lstar = adjoint(L,bcType);
+% Parsing inputs.
+k = [];       % will be made default value below
+prefs = [];
+bcType = [];
+gotk = false; % until we detect a value of k in inputs
+for j = 1:nargin-1
+    item = varargin{j};
+    if ( isa(item,'cheboppref') )
+        prefs = item;
+    elseif ( ~gotk && isnumeric(item) && (item > 0) && (item == round(item) ) )
+        k = item;
+        gotk = true;
+    elseif ( strcmpi(item,'bvp') )
+        bcType = 'bvp';
+    elseif ( strcmpi(item,'periodic') )
+        bcType = 'periodic';
+    else
+        error('Could not parse argument number %i.',j+1)
+    end
+end
 
-% initialize superL to 0
-[m n] = size(L);
-dom = L.domain;
+% Check that we recieved a prefs object
+if ( isempty(prefs) )
+    error('CHEBFUN:LINOP:svds:prefs', ...
+        'A preference object is required.');
+end
+
+% Check that we recieved a bcType
+if ( isempty(bctype) )
+    error('CHEBFUN:LINOP:svds:bcType', ...
+        'A bcType is required.');
+end
+
+% Check for unbounded domains:
+if ( ~all(isfinite(A.domain)) )
+    error('CHEBFUN:LINOP:eigs:infDom', ...
+        'Unbounded domains are not supported.');
+end
+
+% Assign default to k if needed.
+if ( isempty(k) || isnan(k) )
+    k = 6;
+end
+
+% construct adjoint
+Astar = adjoint(A,bcType);
+
+% initialize superA to 0
+[m n] = size(A);
+dom = A.domain;
 nm = n + m;
-superL = linop(mat2cell(zeros(nm),ones(1,nm),ones(1,nm)));
+superA = linop(mat2cell(zeros(nm),ones(1,nm),ones(1,nm)));
 z = chebfun(0,dom);
 for ii = 1:nm
     for jj = 1:nm
-        superL.blocks{ii,jj} = operatorBlock.mult(z,z.domain);
+        superA.blocks{ii,jj} = operatorBlock.mult(z,z.domain);
     end
 end
-superL.domain = L.domain;
+superA.domain = A.domain;
 
 % fill the appropriate blocks
 for ii = 1:m
     for jj = 1:n
-        superL.blocks{n+ii,jj} = L.blocks{ii,jj};
+        superA.blocks{n+ii,jj} = A.blocks{ii,jj};
     end
 end
 for ii = 1:n
     for jj = 1:m
-        superL.blocks{ii,n+jj} = Lstar.blocks{ii,jj};
+        superA.blocks{ii,n+jj} = Astar.blocks{ii,jj};
     end
 end
 
 % get constraints
-C = L.constraint;
-Cstar = Lstar.constraint;
+C = A.constraint;
+Cstar = Astar.constraint;
 
 % get funs
 Cfuns = C.functional; nc = size(Cfuns,1);
 Csfuns = Cstar.functional; ncs = size(Csfuns,1);
 
 % make superC
-dor = max(max(L.diffOrder));
+dor = max(max(A.diffOrder));
 superC.functional = [];
 z = functionalBlock.zero(dom);
 for ii = 1:nc
@@ -67,23 +143,17 @@ for ii = 1:ncs
 end
 superC.values = zeros(dor*nm,1);
 
-% finish superL
-superL.constraint = superC;
+% finish superA
+superA.constraint = superC;
 
-% count number of null vectors for L and Lstar
-nulL = dor*n-nc
+% count number of null vectors for A and Astar
+nulA = dor*n-nc
 
 % set number of singular values
-nsvals = 2*k-abs(nulL) 
+nsvals = 2*k-abs(nulA) 
 
 % call linop/eigs
-pref = cheboppref();
-if ( strcmp(bcType,'periodic') )
-    pref.discretization = @trigcolloc;
-else
-    pref.discretization = @chebcolloc2;
-end
-[ Q, D ] = eigs( superL, nsvals, [], pref, 'rayleigh' );
+[ Q, D ] = eigs( superA, nsvals, [], prefs, 'rayleigh' );
 
 % make sure singular values are real
 if ( any(imag(diag(D)) ~= 0) )
@@ -106,4 +176,12 @@ U = Q(n+1:end,:); nrmU = sqrt(diag(U'*U));
 nrmU( nrmU < pref.bvpTol ) = 1; nrmU = 1./nrmU;
 U = U*diag(nrmU);
 
+% set output
+if nargout == 1
+    varargout = { diag(S) };
+elseif nargout == 3
+    varargout = { U, S, V };
+else
+    error('CHEBFUN:LINOP:svds:outputs', ...
+        'SVDS requires one or three outputs.');
 end
