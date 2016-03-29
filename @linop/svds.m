@@ -49,10 +49,8 @@ for j = 1:nargin-1
     elseif ( ~gotk && isnumeric(item) && (item > 0) && (item == round(item) ) )
         k = item;
         gotk = true;
-    elseif ( strcmpi(item,'bvp') )
-        bcType = 'bvp';
-    elseif ( strcmpi(item,'periodic') )
-        bcType = 'periodic';
+    elseif ( isa(item,'char') )
+        bcType = item;
     else
         error('Could not parse argument number %i.',j+1)
     end
@@ -184,7 +182,7 @@ nrmU( nrmU < prefs.bvpTol ) = 1; nrmU = 1./nrmU;
 U = U*diag(nrmU);
 
 % set output
-if nargout == 1
+if nargout <= 1
     varargout = { diag(S) };
 elseif nargout == 3
     varargout = { U, S, V };
