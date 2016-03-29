@@ -14,21 +14,20 @@ for k = [1 2 3 4]
         m = 63; n = 43;
     end
 
-%%
-nxt = 1;  
-for L = 0:3
-    for M=0:L 
+    nxt = 1;  
+    for L = 0:3
+        for M=0:L 
 
-    f = spherefun.sphharm(L, M); 
+        f = spherefun.sphharm(L, M); 
 
-    K = 100.1; 
-    u = spherefun.Helmholtz((K^2-L*(L+1))*f, K, m, n);
+        K = 100.1; 
+        u = spherefun.Helmholtz((K^2-L*(L+1))*f, K, m, n);
 
-    pass(nxt,k) = ( norm( u - f, 2 ) < 100*tol );
+        pass(nxt,k) = ( norm( u - f, 2 ) < 100*tol );
 
-    nxt = nxt + 1; 
+        nxt = nxt + 1; 
+        end
     end
-end
 
 end
 
