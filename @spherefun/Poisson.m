@@ -60,7 +60,7 @@ scl = diag( DF2n );
 % There is a factor of 4 speed up here, by taking account of real 
 % solution, and even/odd symmetry.
 
-% Underlying discretization grids:
+% Underlying discretization grid:
 lam0 = linspace(-pi, pi, n+1)'; lam0( end )=[];
 th0 = linspace(-pi, pi, m+1)'; th0( end )=[];
 
