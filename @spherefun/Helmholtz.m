@@ -1,4 +1,4 @@
-function u = Helmholtz( f, K, m, n )
+function u = Helmholtz(f, K, m, n)
 %HELMHOLTZ   Fast Helmholtz solver for the sphere.
 %
 %    U = HELMHOLTZ(F, K, N) solves U_xx + U_yy + U_zz + K^2U = F on the sphere 
