@@ -6,7 +6,7 @@ function H = ldivide( F, G )
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( ( isempty(F) ) || ( isempty(G) ) )
+if ( isempty(F) || isempty(G) )
     H = spherefunv;
     return
 end
@@ -26,7 +26,7 @@ elseif ( isa(G, 'double') )              % SPHEREFUNV .\ DOUBLE
 else                                     % SPHEREFUNV .\ SPHEREFUNV 
     H = F;
     for j = 1 : 3
-        H.components{j} = ldivide( F.components{j}, G.components{j} );
+        H.components{j} = ldivide(F.components{j}, G.components{j});
     end
 end
 

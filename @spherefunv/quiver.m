@@ -1,4 +1,4 @@
-function varargout = quiver( F )
+function varargout = quiver(F)
 %QUIVER   Quiver plot of a SPHEREFUNV.
 %   QUIVER(F) plots the vector field of the SPHEREFUNV F in
 %   Cartesian coordinates on the surface of a sphere. QUIVER automatically
@@ -7,16 +7,15 @@ function varargout = quiver( F )
 %
 %   H = QUIVER(F) returns a handle to the figure window.
 %
-% See also GRADIENT, CURL
+% See also GRADIENT, CURL.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-%
-%   TODO: Add more options to the command. 
+% [TODO]: Add more options to the command. 
 
 % Empty check:
-if ( isempty( F ) )
+if ( isempty(F) )
     h = quiver([]);
     if ( nargout > 0 )
         varargout = {h};

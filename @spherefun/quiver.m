@@ -1,4 +1,4 @@
-function varargout = quiver(fx,fy,fz)
+function varargout = quiver(fx, fy, fz)
 %QUIVER   Quiver plot of a vector field described by three SPHEREFUNs.
 %   QUIVER(FX, FY, FZ) plots the vector velocity field of (FX,FY,FZ) in
 %   Cartesian coordinates on the surface of a sphere. QUIVER automatically
@@ -59,8 +59,8 @@ end
 end
 
 function [x, tri] = getIcosNodes(k, type)
-%GETICOSNODES Computes the icosahedral node sets for the surface of the 
-% sphere.
+%GETICOSNODES    Computes the icosahedral node sets for the surface of the 
+%sphere.
 %   X = getIcosNodes(K, TYPE) returns an N-by-3 matrix containing the 
 %   icosahedral nodes of the specified type, where the columns corresponds
 %   to the (x,y,z) coordinates of the nodes.  Note that these nodes are only
@@ -124,14 +124,13 @@ end
 end
 
 function [x, tri] = trisectTri(x, tri)
-%TRISECTRI  Subdivide triangular mesh using triangular trisection. 
-%   [X,TRI] = trisectTri(X,TRI)
-%   Subdivides a triangular mesh consisting of nodes X and edges described
-%   by TRI.  The subdivsion is done by trisecting each triangle. During
-%   this operation vertices are inserted at the trisection points of the
-%   triangles edges together with one vertice at the circumcenter of the
-%   triangle. This produces nine new triangular faces for every face of the
-%   original triangle.
+%TRISECTRI   Subdivide triangular mesh using triangular trisection. 
+%   [X,TRI] = trisectTri(X,TRI) subdivides a triangular mesh consisting of nodes 
+%   X and edges described by TRI.  The subdivsion is done by trisecting each 
+%   triangle. During this operation vertices are inserted at the trisection 
+%   points of the triangles edges together with one vertice at the circumcenter 
+%   of the triangle. This produces nine new triangular faces for every face of 
+%   the original triangle.
 
 k = 1;
 v1 = zeros(2*size(tri, 1), 3);
@@ -147,7 +146,6 @@ v = [v1; v2; v3];
 
 % Add the circumcenter of the original triangle to the list.
 v = [v; circumcenterSphTri(tri, x)];
-% v = [v;(x(tri(:, 1), :) + x(tri(:, 2), :) + x(tri(:, 3), :))/3];
 v = [x; v];
 
 % Remove repeating vertices.
@@ -163,13 +161,12 @@ tri = freeBoundary(triangulate(tri, x));
 end
 
 function [x, tri] = bisectTri(x, tri)
-%BISECTTRI  Subdivide triangular mesh using triangular bisection. 
-%   [X,TRI] = bisectTri(X,TRI)
-%   Subdivides a triangular mesh consisting of nodes X and edges described
-%   by TRI.  The subdivsion is done by bisecting each triangle. During
-%   this operation vertices are inserted at the bisection points of the
-%   triangles edges together. This produces four new triangular faces for 
-%   every face of the original triangle.
+%BISECTTRI   Subdivide triangular mesh using triangular bisection. 
+%   [X, TRI] = bisectTri(X,TRI) subdivides a triangular mesh consisting of nodes 
+%   X and edges described by TRI.  The subdivsion is done by bisecting each 
+%   triangle. During this operation vertices are inserted at the bisection 
+%   points of the triangles edges together. This produces four new triangular 
+%   faces for every face of the original triangle.
 
 % Number of vertices:
 Nx = size(x, 1);
@@ -207,7 +204,7 @@ end
 
 
 function x = trisectEdge(x1, x2)
-%TRISECTEDGE  Trisects a great circle arc joining two points on the sphere.
+%TRISECTEDGE   Trisects a great circle arc joining two points on the sphere.
 %   X = TRISECTEDGE(X1,X2) trisects the great circle arc joining the points
 %   X1 and X2 on the sphere and returns the results in X. The first points
 %   in X is 1/3 distance from X1 to X2 and the second being 2/3 the
@@ -234,7 +231,7 @@ x = [x1*c1 + x2*c2; x2*c1 + x1*c2];
 end
 
 function xc = circumcenterSphTri(tri,nodes)
-%CIRCUMCENTERSPHTRI Computes the circumcenter of a spherical triangle.
+%CIRCUMCENTERSPHTRI   Computes the circumcenter of a spherical triangle.
 %   C = circumcenterSphTri(TRI,X) computes the circumcenters of each 
 %   triangle in the mesh described by TRI with vertices given by X.
 

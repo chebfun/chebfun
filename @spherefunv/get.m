@@ -1,14 +1,12 @@
-function val = get( f, propName )
+function val = get(f, propName)
 %GET   Get SPHEREFUNV properties.
-%
 %   P = GET(F, PROP) returns the property P specified in the string PROP from
 %   the SPHEREFUNV F. Valid entries for the string PROP are:
-%    'components'  - The components of the SPHEREFUN.
+%    'components'   - The components of the SPHEREFUN.
 %    'isTransposed' - Is the SPHEREFUNV a column or row vector?
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
-
 
 if ( numel(f) > 1 )
     val = cell(numel(f));

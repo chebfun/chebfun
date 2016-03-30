@@ -1,9 +1,10 @@
+classdef spherefunv
 %SPHEREFUNV   Class constructor for SPHEREFUNV objects.
 % 
-% SPHEREFUNV(F,G,H) constructs a SPHEREFUNV with two components from the
-% function handles F, G, and H.  These can also be SPHEREFUN objects or any
+% SPHEREFUNV(F, G, H) constructs a SPHEREFUNV with three components from the
+% function handles F, G, and H. These can also be SPHEREFUN objects or any
 % other object that the SPHEREFUN constructor accepts.  Each component is
-% represented as a SPHEREFUN.  The domain of F, G, and H in instrinsic
+% represented as a SPHEREFUN. The domain of F, G, and H in instrinsic
 % coordinates is [-pi,pi]x[0 pi].
 %
 % See also SPHEREFUN. 
@@ -11,9 +12,6 @@
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-
-classdef spherefunv
-    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% CLASS PROPERTIES:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -26,8 +24,8 @@ classdef spherefunv
     %% STATIC METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
-        % Unit normal vector
-        n = unormal( dom );        
+        % Unit normal vector:
+        n = unormal(dom);        
     end
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -36,7 +34,7 @@ classdef spherefunv
     methods ( Access = public, Static = false )
         
         function F = spherefunv( varargin )
-            % The main SPHEREFUNV constructor!
+            % The main SPHEREFUNV constructor.
                        
             % Return an empty SPHEREFUNV:
             if ( (nargin == 0) || isempty(varargin) )
@@ -53,21 +51,10 @@ classdef spherefunv
                 return
             end
             
-%             % Go and try find the domain: 
-%             domain = [-pi pi 0 pi];
-%             for jj = 1:numel(varargin)
-%                if ( isa( varargin{jj}, 'double') && numel( varargin{jj}) == 4 ) 
-%                    domain = varargin{jj}; 
-%                    varargin(jj) = []; 
-%                elseif ( isa( varargin{jj}, 'spherefun') ) 
-%                    domain = varargin{jj}.domain;  
-%                end
-%             end
-            
             % Go pick up vectorize flag: 
             vectorize = 0; 
             for jj = 1:numel(varargin) 
-                if ( strcmpi( varargin{jj}, 'vectorize' ) )
+                if ( strcmpi(varargin{jj}, 'vectorize') )
                     vectorize = 1;
                     varargin(jj) = []; 
                 end
@@ -107,27 +94,28 @@ classdef spherefunv
             end
 
             % Stop now if there are too many components
-            if ( numel( fh ) > 3 ) 
+            if ( numel(fh) > 3 ) 
                 error('CHEBFUN:SPHEREFUNV:spherefunv:arrayValued', ...
                           'More than three components is not supported.')
             end 
             
             % Stop now if there are too few components: 
-            if ( numel( fh ) < 3 ) 
+            if ( numel(fh) < 3 ) 
                 error('CHEBFUN:SPHEREFUNV:spherefunv:arrayValued', ...
                 'Less than three components is not supported.')
             end
 
             % Stop now if there are no components: 
-            if ( numel( fh ) == 0 ) 
+            if ( numel(fh) == 0 ) 
                 error('CHEBFUN:SPHEREFUNV:spherefunv:empty', ...
-                'The spherefunv constructor needs to be given function handles or spherefun objects.')
+                    ['The spherefunv constructor needs to be given', ...
+                     'function handles or spherefun objects.'])
             end
             
             % Check the domains of all the spherfuns are the same:
             pass = zeros(numel(fh)-1,1);
             for jj = 2:numel(fh)
-               pass(jj-1) = domainCheck( fh{1}, fh{jj});   
+               pass(jj-1) = domainCheck(fh{1}, fh{jj});   
             end
             
             if ( ~all(pass) )

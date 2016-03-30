@@ -1,7 +1,6 @@
 function f = laplacian(f) 
 %LAPLACIAN   Scalar laplacian of a SPHEREFUN.
-% 
-%   L = LAPLACIAN( F ) computes the spherical Laplacian of the spherefun F.  
+%   L = LAPLACIAN(F) computes the spherical Laplacian of the SPHEREFUN F.  
 %  
 % This is gvien, in intrinsic spherical coordinates as
 % 
@@ -23,9 +22,9 @@ function f = laplacian(f)
 % laplacian(f) = f_xx + f_yy + f_zz.
 
 % Compute the derivatives
-fxx = diff(f,1,2); 
-fyy = diff(f,2,2); 
-fzz = diff(f,3,2);
+fxx = diff(f, 1, 2); 
+fyy = diff(f, 2, 2); 
+fzz = diff(f, 3, 2);
 
 % Determine which derivative has the most coefficients in its
 % representation for the columns and rows.
@@ -37,11 +36,11 @@ m = max([mxx myy mzz]);
 n = max([nxx nyy nzz]);
 
 % Ensure m and n are even:
-m = m + mod(m,2);
-n = n + mod(n,2);
+m = m + mod(m, 2);
+n = n + mod(n, 2);
 
 % Construct a spherefun by sampling the derivatives on the same size grid.
-f = spherefun( sample(fxx, m, n/2) + sample(fyy, m, n/2) + ...
-               sample(fzz, m, n/2) );
+f = spherefun(sample(fxx, m, n/2) + sample(fyy, m, n/2) + ...
+               sample(fzz, m, n/2));
 
 end
