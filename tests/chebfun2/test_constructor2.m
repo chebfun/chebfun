@@ -64,7 +64,7 @@ end
 m = 8;
 n = 10;
 f = chebfun2( @(x,y) cos(x.*y), [m n]);
-[mf, nf] = length(f);
-pass(15) = ( mf == m && nf == n );
+[mF, nF] = length(f);
+pass(15) = ( mF == m && nF == n );
 
 end
