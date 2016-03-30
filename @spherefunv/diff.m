@@ -12,7 +12,7 @@ function F = diff(F, dim, n)
 %   DIFF(F, DIM, N) is the Nth tangential derivative of each component of F
 %   along the dimension specified.
 %
-%   See also CURL and DIV
+%   See also CURL and DIV.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

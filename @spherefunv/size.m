@@ -1,22 +1,22 @@
-function varargout = size( F, dim ) 
-%SIZE size of a SPHEREFUNV object
-%   D = SIZE(F) returns a three-element vector D = [K,M,N]. If F is a column
+function varargout = size(F, dim) 
+%SIZE   Size of a SPHEREFUNV object
+%   D = SIZE(F) returns a three-element vector D = [K, M, N]. If F is a column
 %   SPHEREFUNV object then K is the number of components in F, N and M are INF.
 %   If F is a row vector then K and M are INF and N is the number of components
 %   of F.
 %
-%   [K,M,N] = SIZE(F) returns the dimensions of F as separate output variables.
+%   [K, M, N] = SIZE(F) returns the dimensions of F as separate output 
+%   variables.
 %
-%   D = SIZE(F,DIM) returns the dimensions specified by the dimension DIM.
+%   D = SIZE(F, DIM) returns the dimensions specified by the dimension DIM.
 %
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-
 % Empty check: 
-if ( isempty( F ) ) 
-    varargout = { [], [] }; 
+if ( isempty(F) ) 
+    varargout = {[], []}; 
     return
 end
 
@@ -57,7 +57,3 @@ else
 end
 
 end
-
-
-
-    

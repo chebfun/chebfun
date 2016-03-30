@@ -1,29 +1,28 @@
-function H = mldivide( f, G )
-%\  SPHEREFUNV left divide.
+function H = mldivide(C, F)
+%\   SPHEREFUNV left divide.
+%   C\F Divides each component of the SPHEREFUNV F by the DOUBLE C. 
 %
-%  c\F Divides each component of a SPHEREFUNV by the scalar c. 
-%
-%  Only allowed to divide a SPHEREFUNV by a scalar.
+%   Only allowed to divide a SPHEREFUNV by a DOUBLE.
 %
 % See also MRDIVIDE.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( ( isempty(f) ) || ( isempty(G) ) )
+if ( isempty(C) || isempty(F) )
     H = spherefunv;
     return
 end
 
-if ( ~isa(f, 'double') )
+if ( ~isa(C, 'double') )
     error('SPHEREFUN:SPHEREFUNV:mldivide:nonScalar', ...
         'Division must be by a scalar.');
 end
 
 % Left divide.
-H = G;
+H = F;
 for j = 1 : 3
-    H.components{j} = mldivide( f, G.components{j} );
+    H.components{j} = mldivide(C, F.components{j});
 end
 
 end
