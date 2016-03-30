@@ -569,8 +569,8 @@ if ( nargin > 1 && isnumeric(varargin{1}) )
             end
         else                             % CHEBFUN2(OP, [M N])
             % The domain is not given, but perhaps the user
-            % wants a degree (dom(1),dom(2)) representation.
-            if ( d(2) - d(1) > 0 && d(1) > 0 && ...  % Valid bivariate degree?
+            % wants a representation of length M and N.
+            if ( d(1) > 0 && d(2) > 0 && ...  % Valid bivariate degree?                    
                     abs(round(d(1)) - d(1))< eps && ...
                     abs(round(d(2)) - d(2))< eps)
                 [xx, yy] = chebfun2.chebpts2(d(1), d(2));
