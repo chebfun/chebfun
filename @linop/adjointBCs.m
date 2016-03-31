@@ -53,7 +53,7 @@ else
       z = zeros(1,2*dor(ii));
       U = chebpoly(0:2*dor(ii)-1,dom);
       for jj = 1:nin
-           bCol = vertcat( bCol, E(jj,ii)*U );
+           bCol = [ bCol; E(jj,ii)*U ];
       end
       if ( isempty(funs) )
           fU = [ fU 0*feval(bCol,dom(1)) ];
@@ -182,8 +182,12 @@ eval(['rpt = domain(2);']);
 % create cell array of dual variable names
 nvars = length(diffOrders);
 varNames = cell(1,nvars);
-for ii = 1:nvars
-    varNames{1,ii} = ['v',int2str(ii)];
+if nvars == 1
+    varNames = {'v'};
+else
+    for ii = 1:nvars
+        varNames{1,ii} = ['v',int2str(ii)];
+    end
 end
 
 % create cell array of diffnames
