@@ -2,9 +2,8 @@ function out = jaccoeffs(f, n, a, b)
 %JACCOEFFS   Jacobi polynomial coefficients of a CHEBFUN.
 %   A = JACCOEFFS(F, N, ALPHA, BETA) returns the first N+1 coefficients in the
 %   Jacobi series expansion of the CHEBFUN F, so that such that F approximately
-%   equals A(1) J_N(x) + ... + A(N) J_1(x) + A(N+1) J_0(x) where J_N(x) denotes
-%   the N-th Jacobi polynomial with parameters ALPHA and BETA. A is a row
-%   vector.
+%   equals A(1) J_0(x) + ... + A(N+1) J_N(x) where J_N(x) denotes the N-th
+%   Jacobi polynomial with parameters ALPHA and BETA. A is a column vector.
 %
 %   If F is smooth (i.e., numel(f.funs) == 1), then A = JACCOEFFS(F, ALPHA,
 %   BETA) will assume that N = length(F).
