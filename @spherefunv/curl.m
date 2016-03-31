@@ -3,7 +3,7 @@ function G = curl(F)
 %   G = CURL(F) returns the numerical surface curl of the SPHEREFUNV F.
 %   This only makes mathematical sense for a tangential vector field. 
 %
-% See also DIVERGENCE, GRADIENT, VORTICITY.
+% See also SPHEREFUNV/DIVERGENCE, SPHEREFUN/GRADIENT, SPHEREFUNV/VORTICITY.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
