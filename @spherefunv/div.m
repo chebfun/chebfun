@@ -6,7 +6,7 @@ function f = div(f)
 %
 %  This is shorthand for the command DIVERGENCE. 
 % 
-% See also DIVERGENCE, GRAD, CURL.
+% See also SPHEREFUNV/DIVERGENCE, SPHEREFUN/GRAD, SPHEREFUNV/CURL.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

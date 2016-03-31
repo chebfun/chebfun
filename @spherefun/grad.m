@@ -5,7 +5,7 @@ function G = grad(f)
 %
 %   This is shorthand for the command GRADIENT.
 %
-% See also GRADIENT, DIV, CURL, VORT.
+% See also SPHEREFUN/GRADIENT, SPHEREFUNV/DIV, SPHEREFUNV/CURL, SPHEREFUNV/VORT.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

@@ -6,6 +6,12 @@ function u = Helmholtz(f, K, m, n)
 %
 %    HELMHOLTZ(F, K, M, N) same as HELMHOLTZ(F, K, N), but with a
 %    discretization of size M x N.
+%
+%  Example: 
+%    K = 100; m = 1000; n = m; 
+%    f = spherefun( @(x,y,z) cos(x.*y.*z) ); 
+%    u = spherefun.Helmholtz(f, K, m, n);
+%    plot( u )
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

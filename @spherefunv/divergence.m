@@ -4,7 +4,7 @@ function div = divergence(F)
 %   SPHEREFUNV. This operations only makes mathematical sense for F that
 %   are tanget to the sphere.
 %
-% See also DIV, GRAD, CURL, VORTICITY.
+% See also SPHEREFUNV/DIV, SPHEREFUN/GRAD, SPHEREFUNV/CURL, SPHEREFUNV/VORTICITY.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
