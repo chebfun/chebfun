@@ -5,6 +5,9 @@ function N = normal(F)
 %
 % See also TANGENT, DOT, CURL.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % If F is an empty SPHEREFUNV then:
 if ( ~isa(F, 'spherefunv') )
     error('SPHEREFUN:SPHEREFUNV:normal:type', 'Input must be a spherefunv.');

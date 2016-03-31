@@ -1,8 +1,9 @@
 function H = mrdivide(F, G)
 %/   SPHEREFUNV right divide.
-%   F/G divides each component of the SPHEREFUNV F by the DOUBLE or CHEBFUN2 G.
+%   F/G divides each component of the SPHEREFUNV F by the DOUBLE or 
+%   SPHEREFUN G.
 % 
-%   Only allowed to divide by a DOUBLE or a CHEBFUN2.
+%   Only allowed to divide by a DOUBLE or a SPHEREFUN.
 % 
 % See also MLDIVIDE.
 
