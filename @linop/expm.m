@@ -112,7 +112,7 @@ for i = 1:length(t)
         do = getExpmDimAdjust(disc);
         for k = 1:numel(u0.blocks)
             discu.dimension = disc.dimension + do(k);
-            f.blocks{k} = discu.toValues(u0.blocks{k},1);
+            f.blocks{k,1} = discu.toValues(u0.blocks{k},1);
         end
         v0 = cell2mat(f.blocks);  
         

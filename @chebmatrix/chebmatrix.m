@@ -217,7 +217,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         %   tranposed (which is consistent with the built in CELL class).
             for k = 1:numel(A.blocks)
                 % TODO: TRANSPOSE() or CTRANSPOSE()?
-                A.blocks{k} = transpose(A.blocks{k});
+                A.blocks{k} = ctranspose(A.blocks{k});
             end
             A.blocks = transpose(A.blocks);
         end
