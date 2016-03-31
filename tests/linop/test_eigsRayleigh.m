@@ -1,7 +1,10 @@
-function pass = test_eigs()
-% TAD, 10 Jan 2014
+function pass = test_eigsRayleigh(pref)
 
-tol = 1e-8;
+if ( nargin < 1 )
+    pref = cheboppref();
+end
+
+tol = 1e2*pref.bvpTol;
 
 dom = [-pi/2, pi/2];
 D2 = operatorBlock.diff(dom, 2);
