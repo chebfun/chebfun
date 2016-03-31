@@ -502,10 +502,10 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [u, D] = rayleighQI(A,B,u,D,prefs)
-% function to perform one step of Rayleigh quotient iteration
+function [u, D] = rayleighQI(A, B, u, D, prefs)
+% Function to perform one step of Rayleigh quotient iteration.
 
-    % if B isempty set to identity
+    % If B isempty set to identity
     if ( isempty(B) )
         B = 0*A;
         I = operatorBlock.eye(A.domain);
@@ -515,21 +515,21 @@ function [u, D] = rayleighQI(A,B,u,D,prefs)
     end
     B = linop(B);
 
-    % compute current Rayleigh quotients
+    % Compute current Rayleigh quotients
     d = diag(D);
 
-    % loop through d
+    % Loop through d
     for ii = 1:length(d)
         lam = d(ii);
-        L = linop(A-lam*B);
+        L = linop(A - lam*B);
         L.constraint = A.constraint;
         rhs = B*u(:,ii);
-        v = linsolve(L,rhs,prefs);
+        v = linsolve(L, rhs, prefs);
         u(:,ii) = v/norm(v);
     end
 
-    % update D
-    d = diag(u'*(A*u))./diag(u'*(B*u));
+    % Update D
+    d = diag(u'*(A*u)) ./ diag(u'*(B*u));
     D = diag(d);
 
 end
