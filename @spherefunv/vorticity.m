@@ -14,7 +14,7 @@ function V = vorticity(F)
 
 % Empty check.
 if isempty(F)
-    V = spherefunv;
+    V = spherefun;
     return
 end
 
