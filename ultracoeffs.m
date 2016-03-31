@@ -10,6 +10,10 @@ function c = ultracoeffs(f, n, lam)
 %
 %   ULTRACOEFFS does not support quasimatrices.
 %
+%   Note: This code enforces no restrictions on LAM (other than the obvious LAM
+%   >= 0). However, since the scaling of ultrapsherical polynomials is bad for
+%   LAM >> 1, the results may be inaccurate in this regime.
+%
 % See also CHEBCOEFFS, JACCOEFFS.
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
@@ -23,16 +27,24 @@ function c = ultracoeffs(f, n, lam)
 %  benefit from writing a pure ULTRACOEFFS, but for now this should suffice.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% TODO: Deal with Legendre and Chebyshev as special cases.
-
 if ( nargin == 2 )
     lam = n;
-    ab = lam - .5;
-    c = jaccoeffs(f, ab, ab);
-else
-    ab = lam - .5;
-    c = jaccoeffs(f, n, ab, ab);   
+    n = [];
 end
+
+if ( lam <= 0 )
+    error('CHEBFUN:chebfun:ultrapoly:invalidLam', ...
+        'Ultraspherical polynomials are not defined for lambda <= 0.');
+elseif ( lam == .5 )
+    c = legcoeffs(f, n);
+    return
+elseif ( lam == 1 )
+    c = chebcoeffs(f, n, 'kind', 2);
+    return
+end
+
+ab = lam - .5;
+c = jaccoeffs(f, n, ab, ab);   
 
 n = length(c) - 1;
 nn = (0:n).';
