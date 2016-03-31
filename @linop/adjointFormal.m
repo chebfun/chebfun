@@ -80,7 +80,11 @@ for ii = 1:ncols
         end
 
         % update argstr
-        vstr = ['v',int2str(jj)];
+        if nrows == 1
+            vstr = 'v';
+        else
+            vstr = ['v',int2str(jj)];
+        end
         if ( ii == 1 )
             argstr = [argstr,',',vstr];
         end
