@@ -20,9 +20,11 @@ if ( numel(f) > 1 )
         'JACCOEFFS does not support quasimatrices.');
 end
 
-if ( (numel(f.funs) == 1) && (nargin < 4 || isempty(n)) )
+if ( (numel(f.funs) == 1) && (nargin < 4) )
     b = a;
     a = n;
+    n = length(f);
+elseif ( isempty(n) )
     n = length(f);
 end
 
