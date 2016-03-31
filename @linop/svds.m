@@ -147,8 +147,14 @@ superA.constraint = superC;
 % count number of null vectors for A and Astar
 nulA = dor*n-nc;
 
-% set number of singular values
-nsvals = 2*k-abs(nulA);
+% set number of singular values 
+% If the null space is empty then there are
+% exactly 2 copies +/- of k singular values.
+% If the null space is non-empty then those
+% zero singular values won't be repeated.
+% We compute two extra just to make sure 
+% got didn't lose one to a sign change.
+nsvals = 2 + 2*k-abs(nulA);
 
 % call linop/eigs
 warning('off','all') % turn warnings off
@@ -166,13 +172,20 @@ if ( any(imag(diag(D)) ~= 0) )
         'Computed singular values are not strictly real.');
 end
 
-% sort
-[D,id] = sort(diag(D),'descend');
+% set tiny values of D to zero
+D = diag(D);
+D(abs(D) < prefs.bvpTol*max(abs(D))) = 0;
+
+% Sort by first inverting the singular values.
+% This works because for differential operators
+% the smoothest singular functions always correspond
+% to the tiniest singular values.
+[D,id] = sort(1./D,'descend');
 Q = Q(:,id);
 
-% trim 
-S = diag(D(1:k));
-Q = Q(:,1:k);
+% flip, reorder and discard unwanted functions.
+S = diag(1./D(k:-1:1));
+Q = Q(:,k:-1:1);
 
 % rescale singular vectors
 V = Q(1:n,:); nrmV = sqrt(diag(V'*V)); 
