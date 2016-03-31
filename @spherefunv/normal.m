@@ -8,9 +8,15 @@ function N = normal(F)
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% If F is an empty SPHEREFUNV then:
+% If F is not a SPHEREFUNV then:
 if ( ~isa(F, 'spherefunv') )
     error('SPHEREFUN:SPHEREFUNV:normal:type', 'Input must be a spherefunv.');
+end
+
+% If F is an empty SPHEREFUNV then:
+if ( isempty(F) )
+    N = spherefunv;
+    return;
 end
 
 Fc = F.components;

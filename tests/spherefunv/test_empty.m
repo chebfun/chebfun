@@ -22,6 +22,8 @@ try
     F.^2;
     F*F;
     F';
+    vorticity(F);
+    normal(F);
 catch
    pass = 0;  
 end
