@@ -1,5 +1,5 @@
 function pass = test_vectorRelations( ) 
-% Test Vector calculus relations. 
+% Test Vector calculus relations, div, cross, curl.
 
 tol = 2e3*chebfunpref().cheb2Prefs.chebfun2eps;
 
