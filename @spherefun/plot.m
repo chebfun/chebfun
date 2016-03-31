@@ -195,7 +195,6 @@ if ( ~isempty(varargin) )
     end
 else
     h = plot@separableApprox(f);
-    axis equal
 end
 
 if ( nargout > 0 )
