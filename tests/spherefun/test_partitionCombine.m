@@ -64,5 +64,4 @@ catch ME
     pass(12) = strcmp(ME.identifier, 'CHEBFUN:SPHEREFUN:combine:parity');
 end
 
-
 end
