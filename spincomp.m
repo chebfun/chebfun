@@ -113,12 +113,12 @@ for k = 1:nTimesteps
     for l = 1:nSchemes
         prefu.scheme = schemes{l};
         prefu.dt = timesteps(k);
-        tic, u = spinoperator.solvepde(pdechar, tspan, u0, prefu);
+        tic, u = spinoperator.solvepde(pdechar, tspan, u0, prefu);  
         time(k,l) = toc;
         if ( isa(u, 'chebmatrix') == 0 )
             u = chebmatrix(u);
         end
-        isNan = cell2mat(cellfun(@(C) isnan(C), u.blocks, 'UniformOutput', 0));
+        isNan = isNanTest(u, dim);
         if ( any(isNan) == 1 )
             err(k,l) = NaN;
         else
@@ -183,5 +183,21 @@ right = 10^(ceil(log10(max(max(time)))));
 set(gca, 'fontsize', 16), axis([left right down up])
 xlabel('Computer time (s)'), ylabel(sprintf('Relative error at t = %.3f', TF))
 legend(labels, 'Location', 'NorthEast')
+
+end
+
+function out = isNanTest(u, dim)
+
+B = u.blocks;
+if ( dim == 1 )
+    out = cell2mat(cellfun(@(C) isnan(C), B, 'UniformOutput', 0)); 
+elseif ( dim == 2 )
+    out = cell2mat(cellfun(@(C) isnan(C.cols), B, 'UniformOutput', 0)); 
+    out = out || cell2mat(cellfun(@(C) isnan(C.rows), B, 'UniformOutput', 0)); 
+elseif ( dim == 3 )
+    out = cell2mat(cellfun(@(C) isnan(C.cols), B, 'UniformOutput', 0)); 
+    out = out || cell2mat(cellfun(@(C) isnan(C.rows), B, 'UniformOutput', 0)); 
+    out = out || cell2mat(cellfun(@(C) isnan(C.tubes), B, 'UniformOutput', 0)); 
+end
 
 end
