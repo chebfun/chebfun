@@ -1,4 +1,4 @@
-function f = simplify( f, tol ) 
+function f = simplify(f, tol)
 % Simplify a SEPARABLEAPPROX
 % 
 % F = SIMPLIFY( F ) compressed the representation of F to one that is
