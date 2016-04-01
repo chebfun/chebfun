@@ -8,7 +8,7 @@ function F = mtimes(F, G)
 %   F*G calculates the inner product between F and G if size(F,3) ==
 %   size(G,1). If the sizes are appropriate then F*G = dot(F.',G).
 %
-% See also TIMES.
+% See also SPHEREFUNV/TIMES.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

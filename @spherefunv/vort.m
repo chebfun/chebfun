@@ -5,7 +5,7 @@ function V = vort(F)
 %
 %   This is shorthand for the command VORTICITY.
 %   
-% See also VORTICITY.
+% See also SPHEREFUNV/VORTICITY.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

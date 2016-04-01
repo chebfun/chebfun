@@ -7,7 +7,7 @@ function V = vorticity(F)
 %   the vector F to the sphere.  It is the generalization of the
 %   standard 2D scalar vorticity for the surface of the sphere.
 %
-% See also VORT, SPHEREFUNV/DIV, SPHEREFUN/GRAD, SPHEREFUNV/CURL.
+% See also SPHEREFUNV/VORT, SPHEREFUNV/DIV, SPHEREFUN/GRAD, SPHEREFUNV/CURL.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

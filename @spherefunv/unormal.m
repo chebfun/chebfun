@@ -8,7 +8,7 @@ function N = unormal( dom )
 %   vector to the unit sphere, using the default spherical coordinates
 %   domain, which is co-latitude.
 %
-%   See also TANGENTIAL, DOT, CURL
+%   See also SPHEREFUNV/TANGENTIAL, SPHEREFUNV/DOT, SPHEREFUNV/CURL
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

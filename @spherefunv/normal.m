@@ -3,7 +3,7 @@ function N = normal(F)
 %   N = NORMAL(F) returns a SPHEREFUNV representing the projection of F
 %   onto the normal vector to the sphere.
 %
-% See also TANGENT, DOT, CURL.
+% See also SPHEREFUNV/TANGENT, SPHEREFUNV/DOT, SPHEREFUNV/CURL.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

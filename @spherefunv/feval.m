@@ -7,7 +7,7 @@ function vals = feval(F, varargin)
 %   Y = FEVAL(F, X, Y, Z)  evaluates F at a point (X,Y,Z) in
 %   Cartesian cooridnates on the surface of a sphere.  
 %
-% See also SUBSREF.
+% See also SPHEREFUNV/SUBSREF.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

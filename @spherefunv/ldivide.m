@@ -1,7 +1,7 @@
 function H = ldivide( F, G )
 %.\   Pointwise SPHEREFUNV left divide.
 %
-% See also RDIVIDE.
+% See also SPHEREFUNV/RDIVIDE.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

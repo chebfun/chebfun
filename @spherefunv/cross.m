@@ -3,7 +3,7 @@ function H = cross(F, G)
 %   CROSS(F, G) returns a SPHEREFUNV representing the 3D cross product of
 %   the SPHEREFUNV objects F and G.
 %
-%   See also DOT.
+%   See also SPHEREFUNV/DOT.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

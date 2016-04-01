@@ -5,7 +5,7 @@ function H = mrdivide(F, G)
 % 
 %   Only allowed to divide by a DOUBLE or a SPHEREFUN.
 % 
-% See also MLDIVIDE.
+% See also SPHEREFUNV/MLDIVIDE.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

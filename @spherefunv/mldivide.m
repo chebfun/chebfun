@@ -4,7 +4,7 @@ function H = mldivide(C, F)
 %
 %   Only allowed to divide a SPHEREFUNV by a DOUBLE.
 %
-% See also MRDIVIDE.
+% See also SPHEREFUNV/MRDIVIDE.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
