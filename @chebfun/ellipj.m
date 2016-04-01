@@ -26,12 +26,12 @@ function [sn, cn, dn] = ellipj(u, m, pref)
 
 if ( nargin < 3 )
     pref = chebfunpref();
-    tol = pref.techPrefs.eps;
+    tol = pref.techPrefs.chebfuneps;
 elseif ( ~isstruct(pref) )
     tol = pref;
     pref = chebfunpref();
 else
-    tol = pref.techPrefs.eps;
+    tol = pref.techPrefs.chebfuneps;
 end
 
     function x = fudge(x, tol)

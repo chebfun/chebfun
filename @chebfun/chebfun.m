@@ -644,6 +644,10 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
                 keywordPrefs.techPrefs.refinementFunction = 'nested';
             end
             args(1:2) = [];
+        elseif ( any(strcmpi(args{1}, 'eps')) )
+            % Translate "eps" --> "techPrefs.chebfuneps".
+            keywordPrefs.techPrefs.chebfuneps = args{2};
+            args(1:2) = [];
         elseif ( strcmpi(args{1}, 'maxdegree') )
             % Translate "maxdegree" --> "techPrefs.maxLength".
             keywordPrefs.techPrefs.maxLength = args{2};

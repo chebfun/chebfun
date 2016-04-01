@@ -1,5 +1,8 @@
 function pass = test_normal2(~)
 
+pref = chebfunpref();
+tol = pref.cheb2Prefs.chebfun2eps;
+
 % Test that an indefinite covariance matrix gives an error.
 Sigma = [1 2; 2 1];
 pass(1) = false;
@@ -26,6 +29,6 @@ end
 Sigma = [4 -1.2; -1.2 4];
 p = cheb.normal2([2 6], Sigma);
 I = sum2(p);
-pass(3) = abs(I-1) < 1e-13;
+pass(3) = abs(I-1) < 1000*tol;
 
 end

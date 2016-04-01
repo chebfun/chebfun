@@ -1,10 +1,10 @@
-function pass = test_schrodinger( prefs )
+function pass = test_schrodinger( pref )
 % Check constant coefficient schrodinger equation. 
 
 if ( nargin < 1 ) 
-    prefs = chebfunpref(); 
+    pref = chebfunpref(); 
 end 
-tol = 1000*prefs.techPrefs.eps;  
+tol = 1000*pref.cheb2Prefs.chebfun2eps;
 
 % w > V
 V = 1;  %potential function 

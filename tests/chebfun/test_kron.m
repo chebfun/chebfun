@@ -5,7 +5,7 @@ if ( nargin < 1 )
     pref = chebfunpref(); 
 end 
 
-tol = 200*pref.eps; 
+tol = 200*pref.cheb2Prefs.chebfun2eps;
 
 %% Kronecker products resulting in CHEBFUN2 objects
 

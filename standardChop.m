@@ -53,7 +53,7 @@ function cutoff = standardChop(coeffs, tol)
 % Set default if fewer than 2 inputs are supplied: 
 if ( nargin < 2 )
     p = chebfunpref;
-    tol = p.eps;
+    tol = p.chebfuneps;
 end
 
 % Check magnitude of TOL:
@@ -72,16 +72,12 @@ end
 % Step 1: Convert COEFFS to a new monotonically nonincreasing
 %         vector ENVELOPE normalized to begin with the value 1.
 
-b = abs(coeffs);
-m = b(end)*ones(n, 1);
-for j = n-1:-1:1
-    m(j) = max(b(j), m(j+1));
-end   
-if ( m(1) == 0 )
+envelope = cummax(abs(coeffs),'reverse');
+if envelope(1) == 0
     cutoff = 1;
     return
 end
-envelope = m/m(1);
+envelope = envelope/envelope(1);
 
 % Step 2: Scan ENVELOPE for a value PLATEAUPOINT, the first point J-1, if any,
 % that is followed by a plateau.  A plateau is a stretch of coefficients

@@ -151,7 +151,7 @@ if ( opts.algorithm == 2 );
     % of all techs.  Do we really need to alter it here?
     pref.techPrefs.refinementFunction = 'resampling';
 end
-pref.techPrefs.eps = tol;
+pref.techPrefs.chebfuneps = tol;
 pref.techPrefs.minSamples = length(f);
 pref.techPrefs.sampleTest = 0;
 

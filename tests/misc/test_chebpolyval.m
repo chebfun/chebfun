@@ -9,7 +9,7 @@ end
 
 % Init:
 seedRNG(42)
-tol = 10*pref.eps;
+tol = 10*pref.chebfuneps;
 
 % Use CHEBPOLYVAL():
 n = 10;

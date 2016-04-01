@@ -1,11 +1,11 @@
-function pass = test_vectoriseFlag( prefs ) 
+function pass = test_vectoriseFlag( pref ) 
 % Test the vectorise flag in the constructor. 
 
 if ( nargin < 1 ) 
-    prefs = chebfunpref(); 
+    pref = chebfunpref(); 
 end 
 
-tol = 10*prefs.eps; 
+tol = 10*pref.cheb2Prefs.chebfun2eps;
 
 % All these calls to the constructor should be the same: 
 f1 = chebfun2(@(x,y) x); 

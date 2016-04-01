@@ -5,7 +5,7 @@ if ( nargin == 0)
     pref = chebfunpref; 
 end
 
-tol = 100*pref.techPrefs.eps;
+tol = 100*pref.cheb2Prefs.chebfun2eps;
 
 % circle 
 c = chebfun(@(t) exp(1i*t), [0 2*pi]);

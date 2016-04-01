@@ -51,7 +51,7 @@ F = f.make(op, data, pref);
 
 if ( f.ishappy && ~F.ishappy )
     error('CHEBFUN:TRIGTECH:restrict:notPeriodic', ...
-        'Restrict failed. Perhaps f is not perioidic in [s(1), s(2)]?');
+        'Restrict failed. Perhaps f is not periodic in [s(1), s(2)]?');
 end
 
 end
