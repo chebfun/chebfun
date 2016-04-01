@@ -15,7 +15,7 @@ function g = combine(g, h)
 
 
 if ( ~isa(g,'spherefun') || ~isa(h,'spherefun') )
-    error('SPHEREFUN:combine:unknown',['Undefined function ''combine'' '...
+    error('CHEBFUN:SPHEREFUN:combine:unknown',['Undefined function ''combine'' '...
         'for input argument of type %s and %s.'], class(g), class(h));
 end
 
@@ -34,7 +34,7 @@ idMinusH = h.idxMinus;
 % Only combine spherefuns that have one strict type of parity.
 if ( ~isempty(idPlusG) && ~isempty(idMinusG)) || (~isempty(idPlusH) && ...
         ~isempty(idMinusH) )
-    error('SPHEREFUN:combine:parity',['Inputs must have oposite ' ...
+    error('CHEBFUN:SPHEREFUN:combine:parity',['Inputs must have oposite ' ...
         'parity. Consider using plus']);
 end
 
