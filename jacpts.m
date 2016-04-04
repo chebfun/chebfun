@@ -17,7 +17,7 @@ function [x, w, v] = jacpts(n, a, b, int, meth)
 %     and their derivatives to perform Newton iteration on the WKB approximation
 %     to the roots. Default for N < 100.
 %    METHOD = 'ASY' uses the Hale-Townsend fast algorithm based upon asymptotic
-%     formulae, which is fast and accurate. Default for N >= 100 if ALPHA ~= BETA.
+%     formulae, which is fast and accurate. Default for N >= 100.
 %    METHOD = 'GW' will use the traditional Golub-Welsch eigenvalue method,
 %       which is maintained mostly for historical reasons.
 %
