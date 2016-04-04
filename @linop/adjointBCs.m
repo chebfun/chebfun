@@ -47,6 +47,7 @@ else
   endValsL = [];
   endValsR = [];
   E = eye(nin);
+  warning('off','all') % is there a better way to supress warnings
   for ii = 1:nin
       % apply functionals to test basis
       bCol = [];
@@ -70,6 +71,7 @@ else
       endValsL = blkdiag( endValsL, Ul );
       endValsR = blkdiag( endValsR, Ur );
   end
+  warning('on','all') % is there a better way to supress warnings
   endVals = [ endValsL; endValsR ];
 
   % solve system to get B
