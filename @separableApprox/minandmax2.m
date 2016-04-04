@@ -33,6 +33,7 @@ if ( iszero( f )  )
     X = [ (dom(2) + dom(1))/2 (dom(4) + dom(3))/2 ];
     X = [ X ; X ];
     Y = [0 ; 0];
+    return; 
 end
 
 % Extract low rank representation:
@@ -42,8 +43,8 @@ piv = f.pivotValues;
 dom = f.domain;
 
 % Convert rows and columns to chebfuns.
-frows = chebfun(frows,dom(1:2));
-fcols = chebfun(fcols,dom(3:4));
+frows = chebfun(frows, dom(1:2), maxsize);
+fcols = chebfun(fcols, dom(3:4), maxsize);
 
 % Share out scaling:
 sgn = sign( piv ).';
