@@ -119,7 +119,7 @@ for k = 1:nTimesteps
             u = chebmatrix(u);
         end
         isNan = isNanTest(u, dim);
-        if ( any(isNan) == 1 )
+        if ( isNan == 1 )
             err(k,l) = NaN;
         else
             for i = 1:nVars
@@ -190,14 +190,17 @@ function out = isNanTest(u, dim)
 
 B = u.blocks;
 if ( dim == 1 )
-    out = cell2mat(cellfun(@(C) isnan(C), B, 'UniformOutput', 0)); 
+    out = any(cell2mat(cellfun(@(C) isnan(C), B, 'UniformOutput', 0))); 
 elseif ( dim == 2 )
-    out = cell2mat(cellfun(@(C) isnan(C.cols), B, 'UniformOutput', 0)); 
-    out = out || cell2mat(cellfun(@(C) isnan(C.rows), B, 'UniformOutput', 0)); 
+    out = any(cell2mat(cellfun(@(C) isnan(C.cols), B, 'UniformOutput', 0))); 
+    out = out || ...
+        any(cell2mat(cellfun(@(C) isnan(C.rows), B, 'UniformOutput', 0))); 
 elseif ( dim == 3 )
-    out = cell2mat(cellfun(@(C) isnan(C.cols), B, 'UniformOutput', 0)); 
-    out = out || cell2mat(cellfun(@(C) isnan(C.rows), B, 'UniformOutput', 0)); 
-    out = out || cell2mat(cellfun(@(C) isnan(C.tubes), B, 'UniformOutput', 0)); 
+    out = any(cell2mat(cellfun(@(C) isnan(C.cols), B, 'UniformOutput', 0))); 
+    out = out || ...
+        any(cell2mat(cellfun(@(C) isnan(C.rows), B, 'UniformOutput', 0))); 
+    out = out || ...
+        any(cell2mat(cellfun(@(C) isnan(C.tubes), B, 'UniformOutput', 0))); 
 end
 
 end
