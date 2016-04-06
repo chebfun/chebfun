@@ -84,7 +84,7 @@ function [uout, tout] = spin2(varargin)
 %
 %       u_t = -2*laplacian(u) - biharmonic(u) - .9*u + u^2 - u^3,
 %
-%    on [0 50]^2 from t=0 to t=200, with a random initial condition.
+%    on [0 20]^2 from t=0 to t=200, with a random initial condition.
 %
 % See also SPINOP2, SPINPREF2, SPINSCHEME, SPIN, SPIN3.
 

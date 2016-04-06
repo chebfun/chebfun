@@ -142,7 +142,7 @@ end
         elseif ( strcmpi(pdechar, 'SH2') == 1 )
             L = @(u) -2*lap(u) - biharm(u);
             N = @(u) -.9*u + u.^2 - u.^3;
-            G = 50;
+            G = 20;
             dom = G*[0 1 0 1];
             tspan = [0 200];
             vals = .1*randn(64, 64);
