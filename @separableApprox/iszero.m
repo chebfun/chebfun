@@ -12,7 +12,7 @@ cols = f.cols;
 rows = f.rows;
 
 % Trivial check: If all the pivots are zero, then the SEPARABLEAPPROX is zero: 
-if ( norm(pivots, inf) == 0 ) 
+if ( norm(1./pivots, inf) == 0 ) 
     out = 1; 
     return 
 end

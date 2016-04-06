@@ -51,8 +51,8 @@ elseif ( isnumeric( x ) && isnumeric( y ) )  % f(x, y)
     % fast way to evaluate a separableApprox. Check for this property. 
     if ( min(size(x)) > 1 && all(size(x) == size(y)) && numel(size(x)) == 2 )
         % Check to see if the input is a meshgrid:
-        if ( max(max(abs(bsxfun(@minus, x, x(1,:))))) == 0  && ... 
-                max(max(abs(bsxfun(@minus, y, y(:,1)))) == 0 ))
+        if ( max(max(abs(bsxfun(@minus, x, x(1,:))))) <= 10*eps  && ... 
+                max(max(abs(bsxfun(@minus, y, y(:,1))))) <= 10*eps )
             % This allows someone to do: 
             % [xx,yy] = meshgrid(linspace(-1,1));
             % f(xx,yy)
@@ -60,8 +60,8 @@ elseif ( isnumeric( x ) && isnumeric( y ) )  % f(x, y)
             x = x(1,:);
             y = y(:,1);
             
-        elseif ( max(max(abs(bsxfun(@minus, y, y(1,:))))) == 0 && ... 
-                max(max(abs(bsxfun(@minus, x, x(:,1)))) == 0 ) )
+        elseif ( max(max(abs(bsxfun(@minus, y, y(1,:))))) <= 10*eps && ... 
+                max(max(abs(bsxfun(@minus, x, x(:,1))))) <= 10*eps )
             % This allows someone to do: 
             % [yy,xx] = meshgrid(linspace(-1,1));
             % f(xx,yy)
