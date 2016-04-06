@@ -58,7 +58,7 @@ classdef spinpref3 < spinpreference
 %
 %   slices                    * Slices of the volumetric slice plot when 'plot'
 %     []                        is 'movie'. Default is empty, i.e., 
-%                               automatically chosen by the code.                                                                       
+%                               automatically chosen by the code.
 %                
 % Construction:
 %
