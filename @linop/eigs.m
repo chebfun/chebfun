@@ -210,13 +210,16 @@ for dim = Dims
         [V, D] = eig(full(PA), full(PB));
     else
     % call eigs otherwise
-        [V, D] = eigs(PB, PA, k+size(C,1), sigma);
-        D = diag(1./diag(D));
+        [V, D] = eigs(PA, PB, k+size(C,1), sigma);
     end
 
-    % remove infinite eigenvalues
-    [~,idx] = sort(abs(diag(D)),'descend');
+    % remove known infinite eigenvalues
+    [alam,idx] = sort(abs(diag(D)),'descend');
     idx = idx(size(C,1)+1:end);
+    alam = alam(size(C,1)+1:end);
+
+    % remove unknown infintie eigenvalues
+    idx(alam == Inf) = [];
     D = D(idx,idx);
     V = V(:,idx);
 
@@ -229,9 +232,16 @@ for dim = Dims
         u(:,jj) = simplify(u(:,jj),prefs.bvpTol);
     end
     
-    % compute sum of lengths of each piece in each column
-    lens = cellfun(@length,{u{1:end,1:end}});
-    lens = max(reshape(lens,size(u)),[],1);
+    % get length of each fun in each variabl in each column
+    lens = [];
+    for jj = 1:size(u,2)
+        lenCol = [];
+        for ii = size(u,1)
+            lenCol = [lenCol;cellfun(@length,u{ii,jj}.funs)'];
+        end
+        lens = [lens,lenCol];
+    end
+    lenSums = sum(lens,1);
 
     % sort eigenvalues by user prescribed flag
     if ( ~isempty(sigma) )
@@ -243,23 +253,46 @@ for dim = Dims
     else
 
         % sort converged functions by length
-        inds = 1:length(lens);
-        [~,idx] = sort(lens(inds),'ascend');
+        inds = 1:length(lenSums);
+        [~,idx] = sort(lenSums,'ascend');
         inds = inds(idx);
 
     end
 
-    % sort data according to inds
-    inds = inds(1:k);
-    lens = lens(inds)
+    % update ordering
+    lens = lens(:,inds);
     D = D(inds,inds);
     u = u(:,inds);
+
+    % delete any unconverged modes
+    indConv = lens+5 < dim;
+    inds = 1:size(lens,2);
+    inds(any(indConv == 0,1)) = [];
  
     % only proceed if at least k functions have converged
-    if ( all(lens+5 < dim*numInts) )
+    if ( length(inds) >= k )
+
+        % trim to length k if SIGMA ~= []
+        if ( ~isempty(sigma) ) 
+            inds = inds(1:k);
+        end
+
+        % update ordering
+        D = D(inds,inds);
+        u = u(:,inds);
+        lenSums = lenSums(inds);
 
         % use default matlab sort
-        [lam,inds] = sort(diag(D));
+        [~,inds] = sort(diag(D));
+        
+        % flip indices if smoothest functions came last after sorting
+        lenSums = lenSums(inds);
+        if ( lenSums(end) < lenSums(1) )
+           inds = fliplr(inds);
+        end
+        inds = inds(1:k);
+
+        % update ordering
         D = D(inds,inds);
         u = u(:,inds);
 
@@ -275,7 +308,7 @@ for dim = Dims
 
         % one output
         if ( nargout <= 1 )
-            varargout = {lam};
+            varargout = {diag(D)};
         % two outputs
         elseif ( nargout == 2 )
             varargout = {u, D};
@@ -331,10 +364,6 @@ else
             error('CHEBFUN:LINOP:eigs:sigma', 'Unidentified input ''sigma''.');
     end
 end
-
-% Delete infinite values. These can arise from rank deficiencies in the
-% RHS matrix of the generalized eigenproblem.
-idx( ~isfinite(lam(idx)) ) = [];
 
 end
 
