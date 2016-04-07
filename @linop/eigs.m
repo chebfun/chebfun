@@ -179,9 +179,9 @@ numInts = discA.numIntervals;
 numVars = size(A,2);
 
 % compute adaptive grid sizes
-minDE = floor(log2(prefs.minDimension));
+minDE = max(floor(log2(prefs.minDimension)),ceil(log2(k)));
 maxDE = ceil(log2(prefs.maxDimension));
-Dims = round(2.^(minDE:.5:maxDE),0);
+Dims = 2.^(minDE:maxDE);
 Dims(1) = max(Dims(1),prefs.minDimension);
 Dims(end) = min(Dims(end),prefs.maxDimension);
 
@@ -245,7 +245,7 @@ for dim = Dims
 
     % sort data according to inds
     inds = inds(1:k);
-    lens = lens(inds);
+    lens = lens(inds)
     D = D(inds,inds);
     u = u(:,inds);
  
