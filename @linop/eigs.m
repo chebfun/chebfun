@@ -205,12 +205,18 @@ for dim = Dims
         PB = [ zeros(size(C)) ; PS ];
     end    
 
-    % call eig
-    [V, D] = eig(full(PA), full(PB));
+    if ( size(PA,1) <= 600 )
+    % call eig is PA is not too big
+        [V, D] = eig(full(PA), full(PB));
+    else
+    % call eigs otherwise
+        [V, D] = eigs(PB, PA, k+size(C,1), sigma);
+        D = diag(1./diag(D));
+    end
 
     % remove infinite eigenvalues
     [~,idx] = sort(abs(diag(D)),'descend');
-    idx = idx(size(C)+1:end);
+    idx = idx(size(C,1)+1:end);
     D = D(idx,idx);
     V = V(:,idx);
 
