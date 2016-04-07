@@ -4,7 +4,7 @@ function pass = test_periodic(pref)
 if ( nargin == 0 )
     pref = cheboppref();
 end
-tol = 1e-8;
+tol = 1e4*pref.bvpTol;
 
 %% A simple ODE:
 
@@ -48,7 +48,7 @@ B = chebop(d);
 B.op = @(x, u, v) [v + u ; diff(v)];
 
 [V, D] = eigs(A, B, 5, 0, pref);
-e = diag(D);
+e = diag(D)
 
 % Sort the eigenvalues to ensure things will work on all machines. Eigs() does
 % not appear to return the eigenvalues in a consistent way for different

@@ -261,38 +261,45 @@ for dim = Dims
 
     % update ordering
     lens = lens(:,inds);
+    lenSums = lenSums(inds);
     D = D(inds,inds);
     u = u(:,inds);
 
-    % delete any unconverged modes
-    indConv = lens+5 < dim;
-    inds = 1:size(lens,2);
-    inds(any(indConv == 0,1)) = [];
+    % compute which columns have converged
+    inds = 1:length(lenSums);
+    convInds = inds(any(lens+5 < dim,1)), pause
+
+%%%
+% This is not finished yet!
+%%%
+    
  
     % only proceed if at least k functions have converged
     if ( length(inds) >= k )
 
-        % trim to length k if SIGMA ~= []
+        % trim to length k if sigma nonempty
         if ( ~isempty(sigma) ) 
+            inds = inds(1:k);
+        end
+        lenSums = lenSums(inds);
+        D = D(inds,inds);
+        u = u(:,inds);
+
+        % use default matlab sort
+        [junk,inds] = sort(diag(D));        
+
+        % flip if smooth functions are at end
+        if ( lenSums(inds(end)) < lenSums(inds(1)) && isempty(sigma) )
+            inds = flipud(inds);
+            inds = inds(1:k);
+            inds = flipud(inds);
+        % otherwise just trim
+        elseif ( isempty(sigma) )
             inds = inds(1:k);
         end
 
         % update ordering
-        D = D(inds,inds);
-        u = u(:,inds);
         lenSums = lenSums(inds);
-
-        % use default matlab sort
-        [~,inds] = sort(diag(D));
-        
-        % flip indices if smoothest functions came last after sorting
-        lenSums = lenSums(inds);
-        if ( lenSums(end) < lenSums(1) )
-           inds = fliplr(inds);
-        end
-        inds = inds(1:k);
-
-        % update ordering
         D = D(inds,inds);
         u = u(:,inds);
 
