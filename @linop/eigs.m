@@ -264,18 +264,32 @@ for dim = Dims
     lenSums = lenSums(inds);
     D = D(inds,inds);
     u = u(:,inds);
+diag(D)
+lenSums, pause
 
     % compute which columns have converged
     inds = 1:length(lenSums);
-    convInds = inds(any(lens+5 < dim,1)), pause
+    convInds = inds(any(lens+5 < dim,1));
 
-%%%
-% This is not finished yet!
-%%%
-    
+    % count number of consecutively converged indices
+    nConv = 0;
+    if ( length(convInds) > 0 )
+        nConv = 1;
+        for ii = 2:length(convInds)
+            if ( convInds(ii) == convInds(ii-1)+1 )
+                nConv = nConv+1;
+            else
+                break
+            end
+        end
+     end
+
+     % update inds
+     inds = convInds(1:nConv);
  
     % only proceed if at least k functions have converged
-    if ( length(inds) >= k )
+    %if ( nConv >= k )
+    if ( nConv < 0 )
 
         % trim to length k if sigma nonempty
         if ( ~isempty(sigma) ) 
