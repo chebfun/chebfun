@@ -4,6 +4,9 @@ function varargout = svds(A, varargin)
 %   recommended procedure is to use CHEBOP/SVDS instead.
 %   Important (2): A CHEBOPPREF object PREFS has to be passed. When this method
 %   is called via CHEBOP/SVDS, PREFS is inherited from the CHEBOP level.
+%   Important (3): This method depends on LINOP/ADJOINT and can only be used
+%   for LINOPS representing differential operators. Strictly multiplication,
+%   integral or other exotic operators are not supported.
 %
 %   S = SVDS(A, PREFS) returns a vector of 6 singularvalues of the linop A.
 %   SVDS will attempt to return the singularvalues corresponding to the most
@@ -156,14 +159,16 @@ nulA = dor*n-nc;
 % got didn't lose one to a sign change.
 nsvals = 2 + 2*k-abs(nulA);
 
-% call linop/eigs
+% call linop/eigs using sigma = 0 since we
+% are assuming L is an unbounded differential 
+% operator
 warning('off','all') % turn warnings off
 if strcmp(bcType,'periodic')
     prefs.discretization = @trigcolloc;
 else
     prefs.discretization = @chebcolloc2;
 end
-[ Q, D ] = eigs( superA, nsvals, [], prefs, 'rayleigh' );
+[ Q, D ] = eigs( superA, nsvals, 0, prefs, 'rayleigh' );
 warning('on','all') % turn warnings back on
 
 % make sure singular values are real
