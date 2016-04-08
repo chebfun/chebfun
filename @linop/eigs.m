@@ -176,173 +176,20 @@ end
 
 % Information required for finding the eigenvalues and functions.
 numInts = discA.numIntervals;
-isFun = isFunVariable(A);
+numVars = size(A,2);
 
-% Automatic mode: find the best sigma by going where the convergence appears to
-% be fastest.
-if ( isempty(sigma) )
-    % Try to determine where the 'most interesting' eigenvalue is.
-    discA.dimension = 33*ones(1, numInts);
-    [V1, D1] = getEigenvalues(discA, discB, 33, 0);
-    discA.dimension(:) = 65;
-    [V2, D2, P] = getEigenvalues(discA, discB, 33, 0);
-    lam1 = diag(D1);
-    lam2 = diag(D2);
-    dif = bsxfun(@minus, lam1.', lam2);
-    delta = min( abs(dif) );   % diffs from 33->65
-    % These are the significantly large differences from 33->65.
-    bigDel = (delta > 1e-12*norm(lam1,Inf));
+% compute adaptive grid sizes
+minDE = max(floor(log2(prefs.minDimension)),ceil(log2(k)));
+maxDE = ceil(log2(prefs.maxDimension));
+Dims = 2.^(minDE:maxDE);
+Dims(1) = max(Dims(1),prefs.minDimension);
+Dims(end) = min(Dims(end),prefs.maxDimension);
 
-    % Trim off things that are still changing a lot (relative to new size).
-    lam1b = lam1;
-    lam1b(bigDel) = 0;
-    bigDel = logical((delta > 1e-3*norm(lam1b, inf)) + bigDel);
-
-    if ( all(bigDel) )
-        % All values changed somewhat-- choose the one changing the least.
-        [ignored, idx] = min(delta);
-        sigma = lam1(idx);
-    else
-        % One by one, convert the eigenvectors to functions and check their cheb
-        % expansion coefficients.
-        U = partition(discA, P*V2);  % each cell is array valued, for one variable
-
-        % Combine the different variable components into a single variable for
-        % coefficient conversion.
-        Z = 0;
-        for j = ( find(isFun) )
-            Z = Z + U{j};
-        end
-
-        % Convert the discrete Z values to CHEBFUN
-        z = toFunctionOut(discA, Z);
-
-        % Obtain all coefficients to use below
-        coeffs = get(z, 'coeffs', 1);
-        
-        % Compute the 1-norm of the polynomial expansions, summing over smooth
-        % pieces, for all columns.
-        onenorm = 0;
-        for j = 1:discA.numIntervals
-            onenorm = onenorm + sum(abs(coeffs{j}), 1 ).';
-        end
-        
-        [ignored, index] = min(onenorm);
-        sigma = lam2(index);
-    end
-end
-
-% Linear combination coefficients for convergence test. The convergence of the
-% combination is the same as the worst constituent function. The nontrivial
-% coefficents are to make accidental cancellations extremely unlikely.
-coeff = 1./(2*(1:k)');
-for dim = [dimVals NaN]
-    [V, D, P] = getEigenvalues(discA, discB, k, sigma);
-
-    % Combine the eigenfunctions into a composite.
-    v = V*coeff(1:size(V,2));
-
-    % Convert the different components into cells
-    u = partition(discA, P*v);
-
-    % Test the happiness of the function pieces:
-    vscale = zeros(1, sum(isFun));   % intrinsic scaling only
-    [isDone, cutoff] = testConvergence(discA, u(isFun), vscale, prefs);
-
-    if ( all(isDone) )
-        break
-    elseif ( ~isnan(dim) )
-        % Update the discretiztion dimension on unhappy pieces:
-        discA.dimension(~isDone) = dim;
-    end
-
-end
-
-if ( ~isDone )
-    warning('LINOP:EIGS:convergence', ...
-        ['Maximimum dimension reached. Solution may not have converged.\n' ...
-        'Please see help cheboppref.maxDimension for more details.']);
-end
-
-% Detect finite rank operators.
-if ( size(D,1) < k )
-    if ( gotk )
-        warning('CHEBFUN:LINOP:eigs:rank',...
-            'Input has finite rank, only %d eigenvalues returned.', size(D,1));
-    end
-    k = size(D,1);
-end
-
-% Sort eigenvalues:
-d = diag(D);
-[d, idx] = sort(d);
-V = V(:,idx);
-D = diag(d);
-
-if ( nargout < 2 )  % Return the eigenvalues only
-    varargout = { diag(D) };
-else            % Unwrap the eigenvectors for output
-
-    u = mat2fun(discA, P*V, cutoff);
-
-    % For normalizing eigenfunctions, so that they always have the same sign:
-    signMat = [];
-    
-    % Find the norm in each eigenfunction (aggregated over variables).
-    nrmsq = zeros(1,k);
-    for j = 1:length(u)
-        if ( isFun(j) )
-            % Compress the representation.
-            u{j} = simplify(u{j});
-            if ( isempty(signMat) )
-                % Find what domain we are working on:
-                dom = domain(u{j});
-                % Arbitrary point just to the right of the middle of the domain:
-                fevalPoint = dom(1) + diff([dom(1) dom(end)])*.500023981;
-                % Find out what sign the real part of the function have there:
-                fevalSigns = sign(real(feval(u{j}, fevalPoint)));
-                % Diagonal matrix with elements equal to the sign at our
-                % arbitrary point. Add 0.1 and take signs again to ensure we
-                % don't end up with any zeros (in case we were very unlucky).
-                signMat = diag(sign(fevalSigns + 0.1));
-            end
-        end
-        nrmsq = nrmsq + sum(u{j}.*conj(u{j}), 1);
-    end
-    
-    % Normalize each eigenfunction.
-    scale = diag( 1./sqrt(nrmsq') );
-    for j = 1:length(u)
-        u{j} = u{j}*scale*signMat;
-    end
-
-    % TODO: Can we move this to the CHEBMATRIX constructor?
-    % NOTE: The following is required because block entries of a CHEBMATRIX
-    % should only contain scalar objects (in particular, _not_ array-valued
-    % CHEBFUNS or quasimatrices). Here we unwrap everything so that each
-    % component of each eigenfunction is a single entry in a cell array.
-    for j = 1:numel(u)
-        % Convert each solution to it's own entry in a cell.
-        u{j} = num2cell(u{j});
-    end
-    u = chebmatrix(vertcat(u{:}));
-   
-    % do one step of Rayligh quotient iteration to improve accuracy
-    if ( rayleigh ) 
-        [u, D] = rayleighQI(A,B,u,D,prefs);
-    end
-
-    % Output:
-    varargout = {u, D};
-end
-
-end
-% END OF MAIN FUNCTION
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function [V, D, P] = getEigenvalues(discA, discB, k, sigma)
-% Formulate the discrete problem and solve for the eigenvalues
+% Loop through grids until converged.
+for dim = Dims
+     
+    % set the dimension
+    discA.dimension = dim*ones(1, numInts);
 
     % Discretize the LHS operator (incl. constraints/continuity):
     [PA, P, C, ignored, PS] = matrix(discA);
@@ -356,43 +203,172 @@ function [V, D, P] = getEigenvalues(discA, discB, k, sigma)
         PB = [ zeros(size(C)) ; PB ];
     else
         PB = [ zeros(size(C)) ; PS ];
+    end    
+
+    if ( size(PA,1) <= 600 )
+    % call eig is PA is not too big
+        [V, D] = eig(full(PA), full(PB));
+    else
+    % call eigs otherwise
+        [V, D] = eigs(PA, PB, k+size(C,1), sigma);
+    end
+
+    % remove known infinite eigenvalues
+    [alam,idx] = sort(abs(diag(D)),'descend');
+    idx = idx(size(C,1)+1:end);
+    alam = alam(size(C,1)+1:end);
+
+    % remove unknown infintie eigenvalues
+    idx(alam == Inf) = [];
+    D = D(idx,idx);
+    V = V(:,idx);
+
+    % Convert the discrete V values to CHEBMATRIX
+    u = mat2fun(discA,P*V);
+    u = vertcat(u{:});
+
+    % simplify each chebfun
+    for jj = 1:size(u,2)
+        u(:,jj) = simplify(u(:,jj),prefs.bvpTol);
     end
     
-    % Compute eigenvalues.
-    if ( length(PA) <= 2000 )
-        [V, D] = eig(full(PA), full(PB));
-        lam = diag(D);
-        
-        % Find the ones we're looking for.
-        lam = deflate(lam, size(C,1));
-        idx = nearest(lam, sigma);
-        idx = filter(idx, P*V, k, discA);
-        
-        % Extract them:
-        V = V(:,idx);
-        D = D(idx,idx);
-        
+    % get length of each fun in each variabl in each column
+    lens = [];
+    for jj = 1:size(u,2)
+        lenCol = [];
+        for ii = size(u,1)
+            lenCol = [lenCol;cellfun(@length,u{ii,jj}.funs)'];
+        end
+        lens = [lens,lenCol];
+    end
+    lenSums = sum(lens,1);
+
+    % sort eigenvalues by user prescribed flag
+    if ( ~isempty(sigma) )
+
+        % sort eigenvalues and eigenfunctions
+        inds = nearest(diag(D),sigma);
+
+    % sort according to smoothness
     else
-        % TODO: Experimental.
-        [V, D] = eigs(PA, PB, k, sigma);
+
+        % sort converged functions by length
+        inds = 1:length(lenSums);
+        [~,idx] = sort(lenSums,'ascend');
+        inds = inds(idx);
+
     end
 
+    % update ordering
+    lens = lens(:,inds);
+    lenSums = lenSums(inds);
+    D = D(inds,inds);
+    u = u(:,inds);
+
+    % compute which columns have converged
+    inds = 1:length(lenSums);
+    convInds = inds(any(lens+5 < dim,1));
+
+    % count number of consecutively converged indices
+    nConv = 0;
+    if ( length(convInds) > 0 )
+        nConv = 1;
+       for ii = 2:length(convInds)
+           if ( convInds(ii) == convInds(ii-1)+1 )
+               nConv = nConv+1;
+           else
+               break
+           end
+       end
+    end
+
+    % update inds
+    inds = convInds(1:nConv);
+ 
+    % only proceed if at least k functions have converged
+    if ( nConv >= k )
+
+        % trim to length k if sigma nonempty
+        if ( ~isempty(sigma) ) 
+            inds = inds(1:k);
+            D = D(inds,inds);
+            u = u(:,inds);
+        % try to detect correct ordering if sigma is empty
+        else
+            % update inputs
+            lenSums(inds);
+            D = D(inds,inds);
+            u = u(:,inds);
+
+            % try to sort
+            [~,inds] = sort(diag(D));        
+
+            % flip if smooth functions are at end
+	    if ( lenSums(inds(end)) < lenSums(inds(1)) && isempty(sigma) )
+                inds = flipud(inds);
+                inds = inds(1:k);
+                inds = flipud(inds);
+            % otherwise just trim
+            elseif ( isempty(sigma) )
+                inds = inds(1:k);
+            end
+            
+            % update ordering
+            D = D(inds,inds);
+            u = u(:,inds);
+
+        end
+
+        % final sorting of k eigenpairs
+        [~,inds] = sort(diag(D));        
+        D = D(inds,inds);
+        u = u(:,inds);
+
+        % normalize
+        for ii = 1:k
+            u(:,ii) = u(:,ii)/norm(u(:,ii));
+        end
+
+        % do one step of Rayleigh quotient iteration to improve accuracy
+        if ( rayleigh ) 
+            [u, D] = rayleighQI(A,B,u,D,prefs);
+        end
+
+        % one output
+        if ( nargout <= 1 )
+            varargout = {diag(D)};
+        % two outputs
+        elseif ( nargout == 2 )
+            varargout = {u, D};
+        % more than two outputs
+        else
+            error('CHEBFUN:linop:eigs','Maximum of two outputs.');
+        end
+  
+        % return
+        return
+
+    end
+
+    % throw error in max its hit
+    if ( dim == prefs.maxDimension )
+        error('CHEBFUN:linop:eigs',...
+              'Maximum dimension reached without convergence.');
+    end    
+
 end
 
-function lam = deflate(lam, m)
-% DEFLATE(LAM, M) forces that the M largest eigenvalues are deflated to INF.
-
-[junk, idx] = sort(abs(lam), 'descend');
-lam(idx(1:m)) = inf;
-
 end
+% END OF MAIN FUNCTION
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function idx = nearest(lam, sigma)
 % Returns index vector that sorts eigenvalues by the given criterion.
 
-if ( isnumeric(sigma) )
+if ( isempty(sigma) )
+    idx = 1:length(lam);
+elseif ( isnumeric(sigma) )
     if ( isinf(sigma) )
         [junk, idx] = sort(abs(lam), 'descend');
     else
@@ -416,87 +392,6 @@ else
             error('CHEBFUN:LINOP:eigs:sigma', 'Unidentified input ''sigma''.');
     end
 end
-
-% Delete infinite values. These can arise from rank deficiencies in the
-% RHS matrix of the generalized eigenproblem.
-idx( ~isfinite(lam(idx)) ) = [];
-
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function idx = filter(idx, V, k, disc)
-% Screen out spurious modes. These are dominated by high frequency for all
-% values of N. (Known to arise for some formulations in generalized
-% eigenproblems, specifically Orr-Sommerfeld.)
-
-% TODO: Explain this in more detail.
-
-N = disc.dimension;
-k = min(k, N);
-
-% Propose to keep these modes.
-queue = 1:min(k, length(idx));
-keeper = false(size(idx));
-keeper(queue) = true;
-
-% Grab some indices
-tenPercent = ceil(N/10); % We are the 10%
-iif10 = 1:tenPercent;    % Indices of first 10%
-ii90 = tenPercent:N;     % Indices of last 90%
-ii10 = (N-tenPercent):N; % Indices of last 10%
-
-% Check for high frequency energy (indicative of spurious eigenvalues) in
-% each of the remaining valid eigenfunctions.
-isFun = disc.source.isFunVariable;
-while ( ~isempty(queue) )
-    j = queue(1);
-
-    vcoeff = mat2poly(disc, V(:,idx(j)));
-    vcoeff = vcoeff(isFun);
-    vcoeffsq = 0;
-    for i = 1:numel(vcoeff)
-        for q = 1:numel(vcoeff{i})
-            % TODO: The flipud below is required to make sure that the 
-            % algorithm, designed for the old ordering of cheb-coeffs, continues
-            % to work. One can remove the following flipud but then carefull 
-            % changes will be needed in this function.
-            vcoeff{i}{q} = flipud(vcoeff{i}{q});
-            newcoeff2 = vcoeff{i}{q}.*conj(vcoeff{i}{q});
-            lnc2 = length(newcoeff2);
-            lvcs = length(vcoeffsq);
-            if ( lnc2 > lvcs )
-                % Pad with leading zeros
-                vcoeffsq = [ zeros(lnc2 - lvcs,1) ; vcoeffsq ; ]; %#ok<AGROW>
-                lvcs = length(vcoeffsq);
-            end
-            % Only the most significant rows affected
-            rows = (lvcs - lnc2 + 1):lvcs;
-            vcoeffsq(rows) = vcoeffsq(rows) + newcoeff2; %#ok<AGROW>
-        end
-    end
-    vcoeff = sqrt( flipud(sum(vcoeffsq, 2)) );
-
-    % Recipe: More than half of the energy in the last 90% of the Chebyshev
-    % modes is in the highest 10% modes, and the energy of the last 90% is
-    % not really small (1e-8) compared to the first 10% (i.e. is not noise).
-    norm90 = norm(vcoeff(ii90)); % Norm of last 90%
-    norm10 = norm(vcoeff(ii10)); % Norm of last 10%
-    normFirst10 = norm(vcoeff(iif10)); % Norm of first 10%
-    if ( norm10 > 0.5*norm90 && norm90 > 1e-8*normFirst10 )
-        keeper(j) = false;
-        if queue(end) < length(idx)
-            m = queue(end) + 1;
-            keeper(m) = true;
-            queue = [queue(:); m];
-        end
-    end
-    queue(1) = [];
-    
-end
-
-% Return the keepers.
-idx = idx( keeper );
 
 end
 

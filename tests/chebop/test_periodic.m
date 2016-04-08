@@ -4,7 +4,7 @@ function pass = test_periodic(pref)
 if ( nargin == 0 )
     pref = cheboppref();
 end
-tol = 1e-8;
+tol = 1e4*pref.bvpTol;
 
 %% A simple ODE:
 
@@ -47,7 +47,7 @@ A.bc = 'periodic';
 B = chebop(d);
 B.op = @(x, u, v) [v + u ; diff(v)];
 
-[V, D] = eigs(A, B, 5, 0, pref);
+[V, D] = eigs(A, B, 4, 0, pref);
 e = diag(D);
 
 % Sort the eigenvalues to ensure things will work on all machines. Eigs() does
@@ -61,16 +61,16 @@ e = diag(D);
 e = e(idx);
 
 e12 = e(1:2);
-e35 = e(3:5);
+e34 = e(3:4);
 [ignored, idx] = sort(imag(e12));
 e12 = e12(idx);
-[ignored, idx] = sort(imag(e35));
-e35 = e35(idx);
+[ignored, idx] = sort(imag(e34));
+e34 = e34(idx);
 
-e = [e12; e35];
+e = [e12; e34];
 
-pass(3) = norm(real(e) - [0 0 1 1 1].', inf) + ...
-    norm(imag(e) - [-1 1 -1 0 1].', inf) < tol;
+pass(3) = norm(real(e) - [0 0 1 1].', inf) + ...
+    norm(imag(e) - [-1 1 -1 1].', inf) < tol;
 pass(4) = norm(V{1}(pi) - V{1}(pi), inf) + norm(V{2}(pi) - V{2}(pi), inf) < tol;
 
 

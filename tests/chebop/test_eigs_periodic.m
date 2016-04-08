@@ -6,7 +6,7 @@ if ( nargin < 1 )
     pref = cheboppref;
 end
 
-tol = 1e-10;
+tol = 1e2*pref.bvpTol;
 
 %% EXAMPLE USING TRIGCOLLOC.
 % Solving
