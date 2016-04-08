@@ -72,12 +72,26 @@ end
 % Step 1: Convert COEFFS to a new monotonically nonincreasing
 %         vector ENVELOPE normalized to begin with the value 1.
 
-envelope = cummax(abs(coeffs),'reverse');
-if envelope(1) == 0
+b = abs(coeffs);
+m = b(end)*ones(n, 1);
+for j = n-1:-1:1
+    m(j) = max(b(j), m(j+1));
+end   
+if ( m(1) == 0 )
     cutoff = 1;
     return
 end
-envelope = envelope/envelope(1);
+envelope = m/m(1);
+
+% For Matlab version 2014b and later step 1 can be computed using the
+% cummax command.
+% envelope = cummax(abs(coeffs),'reverse');
+% if envelope(1) == 0
+%     cutoff = 1;
+%     return
+% else
+%     envelope = envelope/envelope(1);
+% end
 
 % Step 2: Scan ENVELOPE for a value PLATEAUPOINT, the first point J-1, if any,
 % that is followed by a plateau.  A plateau is a stretch of coefficients
