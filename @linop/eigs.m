@@ -264,8 +264,6 @@ for dim = Dims
     lenSums = lenSums(inds);
     D = D(inds,inds);
     u = u(:,inds);
-diag(D)
-lenSums, pause
 
     % compute which columns have converged
     inds = 1:length(lenSums);
@@ -275,45 +273,54 @@ lenSums, pause
     nConv = 0;
     if ( length(convInds) > 0 )
         nConv = 1;
-        for ii = 2:length(convInds)
-            if ( convInds(ii) == convInds(ii-1)+1 )
-                nConv = nConv+1;
-            else
-                break
-            end
-        end
-     end
+       for ii = 2:length(convInds)
+           if ( convInds(ii) == convInds(ii-1)+1 )
+               nConv = nConv+1;
+           else
+               break
+           end
+       end
+    end
 
-     % update inds
-     inds = convInds(1:nConv);
+    % update inds
+    inds = convInds(1:nConv);
  
     % only proceed if at least k functions have converged
-    %if ( nConv >= k )
-    if ( nConv < 0 )
+    if ( nConv >= k )
 
         % trim to length k if sigma nonempty
         if ( ~isempty(sigma) ) 
             inds = inds(1:k);
+            D = D(inds,inds);
+            u = u(:,inds);
+        % try to detect correct ordering if sigma is empty
+        else
+            % update inputs
+            lenSums(inds);
+            D = D(inds,inds);
+            u = u(:,inds);
+
+            % try to sort
+            [~,inds] = sort(diag(D));        
+
+            % flip if smooth functions are at end
+	    if ( lenSums(inds(end)) < lenSums(inds(1)) && isempty(sigma) )
+                inds = flipud(inds);
+                inds = inds(1:k);
+                inds = flipud(inds);
+            % otherwise just trim
+            elseif ( isempty(sigma) )
+                inds = inds(1:k);
+            end
+            
+            % update ordering
+            D = D(inds,inds);
+            u = u(:,inds);
+
         end
-        lenSums = lenSums(inds);
-        D = D(inds,inds);
-        u = u(:,inds);
 
-        % use default matlab sort
-        [junk,inds] = sort(diag(D));        
-
-        % flip if smooth functions are at end
-        if ( lenSums(inds(end)) < lenSums(inds(1)) && isempty(sigma) )
-            inds = flipud(inds);
-            inds = inds(1:k);
-            inds = flipud(inds);
-        % otherwise just trim
-        elseif ( isempty(sigma) )
-            inds = inds(1:k);
-        end
-
-        % update ordering
-        lenSums = lenSums(inds);
+        % final sorting of k eigenpairs
+        [~,inds] = sort(diag(D));        
         D = D(inds,inds);
         u = u(:,inds);
 
@@ -345,7 +352,7 @@ lenSums, pause
 
     % throw error in max its hit
     if ( dim == prefs.maxDimension )
-	error('CHEBFUN:linop:eigs',...
+        error('CHEBFUN:linop:eigs',...
               'Maximum dimension reached without convergence.');
     end    
 
