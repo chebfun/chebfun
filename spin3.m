@@ -57,8 +57,8 @@ function [uout, tout] = spin3(varargin)
 %
 %    on [0 .75]^3 from t=0 to t=3000, with initial condition 
 %
-%       u0(x,y,z) = 1 - exp(-150*((x-G/2.15)^2 + (y-G/2.15)^2 + (z-G/2.15)^2)),
-%       v0(x,y,z) = exp(-150*((x-G/2)^2 + 2*(y-G/2)^2 + 2(z-G/2)^2)),
+%       u0(x,y,z) = 1 - exp(-180*((x-G/2.15)^2 + (y-G/2.15)^2 + (z-G/2.15)^2)),
+%       v0(x,y,z) = exp(-180*((x-G/2)^2 + 2*(y-G/2)^2 + 2(z-G/2)^2)),
 %           with G=.75.
 %
 % Example 3: Schnakenberg equations (pattern formation)
@@ -70,7 +70,7 @@ function [uout, tout] = spin3(varargin)
 %       u_t = laplacian(u) + 3*(.1 - u + u^2*v),
 %       v_t = 10*laplacian(v) + 3*(.9 - u^2*v),
 %
-%    on [0 50]^3 from t=0 to t=400, with initial condition 
+%    on [0 30]^3 from t=0 to t=400, with initial condition 
 %
 %       u0(x,y,z) = 1 - exp(-2*((x-G/2.15)^2 + (y-G/2.15)^2 + (z-G/2.15)^2)),
 %       v0(x,y,z) = exp(-2*((x-G/2)^2 + 2*(y-G/2)^2 + 2*(z-G/2)^2)) + 
@@ -84,7 +84,7 @@ function [uout, tout] = spin3(varargin)
 %
 %       u_t = -2*laplacian(u) - biharmonic(u) - .9*u + u^2 - u^3,
 %
-%    on [0 50]^3 from t=0 to t=200,  with a random initial condition.
+%    on [0 20]^3 from t=0 to t=200,  with a random initial condition.
 %
 % See also SPINOP3, SPINPREF3, SPINSCHEME, SPIN, SPIN2.
 
