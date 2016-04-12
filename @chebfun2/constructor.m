@@ -625,7 +625,7 @@ if ( isEpsGiven )
 else
     pseudoLevel = 0;
 end
-pref.chebfuneps = max(pref.chebfuneps, pseudoLevel);
+pref.cheb2Prefs.chebfun2eps = max(pref.cheb2Prefs.chebfun2eps, pseudoLevel);
 
 % Look for vectorize flag:
 vectorize = find(cellfun(@(p) strncmpi(p, 'vectori', 7), varargin));
