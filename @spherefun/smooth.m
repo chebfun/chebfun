@@ -1,19 +1,24 @@
-function g = smooth(f, dt)
-%SMOOTH    Gaussian filtering on the sphere.  
+function g = smooth(f, sig)
+%SMOOTH    Gaussian filtering on the sphere.
 %   G = SMOOTH(F), applies a low-pass filter to F. This is based on 
 %   Gaussian filtering.  
 % 
-%   G = SMOOTH(F, dt), applies a low-pass filter to F with parameter dt.
-%   The default to dt=1e-4, which is equivalent to running the Heat
-%   equation for time dt with the initial condition being F. 
+%   G = SMOOTH(F, SIG), applies a low-pass filter to F with parameter SIG. 
+%   This smoothes F on the length scale of SIG, where SIG is measured in
+%   radians at the equator on the unit sphere. The default is SIG=pi/180,
+%   which corresponds to filtering at spatial scale of 1 degree.
+%   
+%   The filter is equivalent to running the diffusion equation on the unit 
+%   sphere to time t=0.5*SIG^2 with a diffusion of coefficent set to 1 and
+%   the initial condition being F. 
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin < 2 ) 
-    dt = 1e-4; 
+    sig = pi/180; 
 end
-K = sqrt(1/dt)*1i;
+dt = 0.5*sig^2;
 
 % Find the length of f.
 [n, m] = length(f); 
@@ -26,6 +31,11 @@ K = sqrt(1/dt)*1i;
 %            L*u^{n+1) + K*u^{n+1} = -1/dt*u^{n}
 % We only do one step of backward Euler to smooth the solution, with 
 % u^{0} = f.
+
+% Helmholtz parameter for the Heat equation.
+K = sqrt(1/dt)*1i;
+
+% Filter f.
 g = spherefun.Helmholtz(-1/dt*f, K, m, n);
 
 end 
