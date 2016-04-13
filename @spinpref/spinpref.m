@@ -140,6 +140,7 @@ classdef spinpref < spinpreference
                 elseif ( strcmpi(pdechar, 'NLS') == 1 )
                     pref.dt = 1.5e-3;
                     pref.N = 256;  
+                    pref.dataToPlot = 'abs';
                 else
                     error('SPINPREF:CONSTRUCTOR', 'Unrecognized PDE.')
                 end
