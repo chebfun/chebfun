@@ -23,6 +23,7 @@ end
 
 x = linspace(-pi, pi, n+1).';
 x = x./pi;
+x = (x-x(end:-1:1))/2; % enforce symmetry
 x(end) = [];
 
 if ( nargout > 1 )
