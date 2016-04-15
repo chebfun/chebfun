@@ -80,7 +80,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% CLASS METHODS:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-methods (Access = public, Static = true)
+methods (Access = public, Static = true)    
     % Outer product of tensors
     varargout = outerProd(varargin);
     
@@ -93,15 +93,15 @@ methods (Access = public, Static = true)
     % Reshape a matrix to get a tensor.
     varargout = fold(varargin);
     
+    % Tensor product of Chebyshev points:
+    [xx, yy, zz] = chebpts3(m, n, p, domain, kind);
+
     % vals2coeffs
     coeffs3D = vals2coeffs(vals3D);
     
     % coeffs2vals
     vals3D = coeffs2vals(coeffs3D);
-    
-    % Tensor product of Chebyshev points:
-    [xx, yy, zz] = chebpts3(m, n, p, domain, kind);
-    
+        
     varargout = myind2sub(varargin);
     
     varargout = discrete_hosvd(varargin);
@@ -134,10 +134,7 @@ methods (Access = public)
     % Length of a CHEBFUN3 (i.e., no of Chebyshev or Fourier points at each
     % direction)
     varargout = length(f);
-    
-    % Slice-Tucker decomposition of a CHEBFUN3
-    varargout = st(f);
-    
+                
     varargout = chebpolyval3(varargin);
     
     % Sample a CHEBFUN3 on a tensor product grid
@@ -188,6 +185,10 @@ methods (Access = public)
     
     % Number of degrees of freedom needed to represent a CHEBFUN3
     out = ndf(f);
+    
+    % Get the low-rank representation of f. ST stands for Slice-Tucker
+    % decomposition.
+    varargout = st(f);    
     
     % Definite integral of a CHEBFUN3 over its domain. out is a scalar.
     out = sum3(f);
@@ -242,7 +243,6 @@ methods (Access = public)
 end
 
 methods
-    out = domainCheck(f, g);
     
     out = uplus(f, g);
     
@@ -342,4 +342,12 @@ methods
     out = cumsum3(f);
 end
 
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% HIDDEN METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Hidden = true, Static = false )
+    
+        out = domainCheck(f, g);
+
+    end
 end

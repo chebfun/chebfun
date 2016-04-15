@@ -5,6 +5,12 @@ function W = fevalt(f, x, y, z)
 %   length(X)-by-length(Y)-by-length(Z). X, Y, and Z should be vectors of 
 %   doubles. This is equivalent to 
 %   [x,y,z] = ndgrid(x,y,z) and then W = feval(f, x, y, z).
+%   
+%   The difference with w = feval(f, x, y, z) is that feval creates a
+%   vector w, while w = feval(f, x, y, z) form w as a tensor.
+%
+%   See also chebfun3/feval.
+
 
 if ( isempty(f) )
     W = {[]}; 

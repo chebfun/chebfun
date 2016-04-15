@@ -28,10 +28,10 @@ size_T(end+1:dim) = 1;
 unContractedModes = [1:contractionMode-1, contractionMode+1:dim];  
 if ( contractionMode == 1 )
     % T will not be transposed.
-    T_mat = chebfun3.unfold(T, contractionMode, unContractedModes);
+    T_mat = chebfun3t.unfold(T, contractionMode, unContractedModes);
 else
     % T will be transposed.
-    T_mat = chebfun3.unfold(T, unContractedModes, contractionMode);
+    T_mat = chebfun3t.unfold(T, unContractedModes, contractionMode);
 end
 
 if( size(A, 2) ~= size_T(contractionMode) )
@@ -54,10 +54,10 @@ end
 
 % Fold T_mat
 if ( contractionMode == 1 )    
-    T = chebfun3.fold(T_mat, size_T, contractionMode, ...
+    T = chebfun3t.fold(T_mat, size_T, contractionMode, ...
         unContractedModes);
 else
-    T = chebfun3.fold(T_mat, size_T, unContractedModes, ...
+    T = chebfun3t.fold(T_mat, size_T, unContractedModes, ...
         contractionMode);
 end
 

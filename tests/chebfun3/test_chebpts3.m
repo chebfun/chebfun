@@ -1,4 +1,4 @@
-function pass = test_chebpts3( pref ) 
+function pass = test_chebpts3(pref)
 % Test CHEBPTS3
 
 if ( nargin == 0 ) 
@@ -10,10 +10,10 @@ tol = 10*pref.cheb3Prefs.chebfun3eps;
 % One argument: 
 n = 10; 
 [xx1, yy1, zz1] = chebfun3.chebpts3(n); 
-d = [-1, 1];
-x = chebpts(n, d); 
-y = chebpts(n, d); 
-z = chebpts(n, d);
+dom = [-1, 1];
+x = chebpts(n, dom); 
+y = chebpts(n, dom); 
+z = chebpts(n, dom);
 [xx2, yy2, zz2] = ndgrid(x, y, z); 
 pass(1) = norm(xx1(:) - xx2(:)) < tol; 
 pass(2) = norm(yy1(:) - yy2(:)) < tol;
@@ -24,10 +24,10 @@ m = 10;
 n = 7; 
 p = 12;
 [xx1, yy1, zz1] = chebfun3.chebpts3(m, n, p);
-d = [-1, 1];
-x = chebpts(m, d); 
-y = chebpts(n, d);
-z = chebpts(p, d);
+dom = [-1, 1];
+x = chebpts(m, dom); 
+y = chebpts(n, dom);
+z = chebpts(p, dom);
 [xx2, yy2, zz2] = ndgrid(x, y, z);
 pass(4) = norm(xx1(:) - xx2(:)) < tol; 
 pass(5) = norm(yy1(:) - yy2(:)) < tol;

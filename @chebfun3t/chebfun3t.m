@@ -120,7 +120,7 @@ classdef chebfun3t
        out = sin(f);
 
        %Cosine of a CHEBFUN3T
-       out = cos( f );
+       out = cos(f);
        
        out = tan(f);
        
@@ -134,10 +134,5 @@ classdef chebfun3t
        
        out = cosh(f);
     end
-
-%    methods         
-        % Convert tensor of values to tensor of coefficients.
-%        out = vals2coeffs3D(f);
-%    end
     
 end
