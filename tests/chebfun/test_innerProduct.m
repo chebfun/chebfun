@@ -87,4 +87,23 @@ err = norm(I - 1.634574774192848, inf);
 tol = max(eps*get(E,'vscale'));
 pass(6) = err < tol;
 
+% Test inner products between chebfuns based on mixed techs.  (See #1784.)
+f = chebfun(@(x) sin(pi*x));
+g = chebfun(@(x) sin(pi*x), 'trig');
+err = abs(innerProduct(f, g) - 1);
+tol = 10*eps*get(f, 'vscale');
+pass(7) = err < tol;
+
+f = chebfun(@(x) [sin(pi*x) cos(pi*x)]);
+g = chebfun(@(x) [sin(pi*x) cos(pi*x)], 'trig');
+err = norm(innerProduct(f, g) - [1 0 ; 0 1], Inf);
+tol = 10*eps*get(f, 'vscale');
+pass(8) = err < tol;
+
+f = cheb2quasi(f);
+g = cheb2quasi(g);
+err = norm(innerProduct(f, g) - [1 0 ; 0 1], Inf);
+tol = 10*eps*get(f, 'vscale');
+pass(9) = err < tol;
+
 end

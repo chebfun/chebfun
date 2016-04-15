@@ -15,6 +15,10 @@ if ( nargin < 2 )
     tol = []; 
 end
 
+% Note that we do not simplify the rank here because that would require 
+% calling the constructor and is expensive.  In almost all situations we 
+% are happy with simplifying the columns and rows only. 
+
 % Simplify the column and row slices. 
 f.cols = simplify( f.cols, tol, 'globaltol' ); 
 f.rows = simplify( f.rows, tol, 'globaltol' ); 

@@ -83,6 +83,16 @@ if ( m(1) == 0 )
 end
 envelope = m/m(1);
 
+% For Matlab version 2014b and later step 1 can be computed using the
+% cummax command.
+% envelope = cummax(abs(coeffs),'reverse');
+% if envelope(1) == 0
+%     cutoff = 1;
+%     return
+% else
+%     envelope = envelope/envelope(1);
+% end
+
 % Step 2: Scan ENVELOPE for a value PLATEAUPOINT, the first point J-1, if any,
 % that is followed by a plateau.  A plateau is a stretch of coefficients
 % ENVELOPE(J),...,ENVELOPE(J2), J2 = round(1.25*J+5) <= N, with the property
