@@ -649,7 +649,7 @@ end
 if ( nVars == 1 )
     uOut = simplify(uOut);
 else
-    doSimplify = @(f) simplify(f);
+    doSimplify = @(f) simplify(f, errTol);
     uOut.blocks = cellfun(doSimplify, uOut.blocks, 'UniformOutput', 0);
 end
 
