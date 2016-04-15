@@ -1,6 +1,6 @@
 function varargout = chebfun2eps(val)
 %CHEBFUN2EPS   Set the default value of the chebfun2eps preference.
-%   CHEBFUN2EPS VAL, or CHEBFUN2EPS(VAL) sets the default value of 
+%   CHEBFUN2EPS VAL, or CHEBFUN2EPS(VAL) sets the default value of the
 %   chebfun2eps preference to the specified value VAL. CHEBFUN2EPS(VAL) is 
 %   equivalent to CHEBFUNPREF.SETDEFAULTS({'cheb2Prefs', 'chebfun2eps'}, VAL).
 %
@@ -15,7 +15,7 @@ function varargout = chebfun2eps(val)
 %   If changing the preference is needed only for a single construction, 
 %   calling constructor with the 'eps' flag is a better option.
 %
-% See also CHEBFUNEPS.
+% See also CHEBFUNEPS and CHEBFUN3EPS.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
