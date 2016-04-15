@@ -1,7 +1,10 @@
 function disp(F)
 %DISP   Display a CHEBFUN3V.
 %
-% See also DISPLAY.
+%   See also DISPLAY.
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 loose = strcmp(get(0,'FormatSpacing'),'loose');
 

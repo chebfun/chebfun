@@ -1,7 +1,11 @@
 function F = curl(F)
 %CURL  curl of a CHEBFUN3V
-%   S = CURL(F) returns the CHEBFUN3 of the curl of F. If F is a CHEBFUN3V with
-%   with three components then it returns the CHEBFUN3V representing the 3D curl operation.
+%   S = CURL(F) returns the CHEBFUN3 of the curl of F. If F is a CHEBFUN3V 
+%   with three components then it returns the CHEBFUN3V representing the 3D
+%   curl operation.
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 
 if ( isempty( F ) )

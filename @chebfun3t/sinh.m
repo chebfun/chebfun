@@ -1,6 +1,9 @@
 function f = sinh( f )
 %SINH   Hyperbolic sine of a CHEBFUN3T.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Empty check: 
 if ( isempty( f ) )    
     return

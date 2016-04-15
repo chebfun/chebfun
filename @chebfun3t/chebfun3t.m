@@ -23,6 +23,9 @@ classdef chebfun3t
 %   f3t = chebfun3t(f,'eps', 1e-10);
 %   f3t = chebfun3t(f,[-2 2 1 2 1 3],'eps', 1e-10);
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% CLASS PROPERTIES:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

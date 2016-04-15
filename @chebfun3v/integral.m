@@ -1,4 +1,4 @@
-function v = integral( F, c )
+function v = integral(F, c)
 %INTEGRAL   Line integration of a CHEBFUN3V.
 %
 %   INTEGRAL(F, C) computes the line integral of F along the curve C, i.e.,
@@ -9,6 +9,9 @@ function v = integral( F, c )
 %                         C 
 %
 %   where the curve C is parameterised as an inf x 3 quasimatrix c(t).  
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( F.nComponents ~= 3 )
     warning('CHEBFUN:CHEBFUN3V:integral', ...

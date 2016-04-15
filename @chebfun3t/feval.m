@@ -29,6 +29,9 @@ function out = feval(f, xeval, yeval, zeval)
 % Steps 1 and 2 can be reordered so that mapping is applied not to the
 % whole tensor, but to the generating vectors.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 dom = f.domain;
 
 %% Map all the points to [-1, +1]:

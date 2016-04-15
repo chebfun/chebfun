@@ -1,5 +1,6 @@
 function F = vertcat( F , G )
 %VERTCAT Vertical concatenation of CHEBFUN3V objects.
+%
 %   [F ; f] where F is a CHEBFUN3V with two components, and f is a CHEBFUN3 or
 %   scalar then returns a CHEBFUN3V with three components.  The first and second
 %   component remain unchanged and the third component is f.
@@ -8,7 +9,10 @@ function F = vertcat( F , G )
 %   scalar then returns a CHEBFUN3V with three components. The first is f, and
 %   the second and third are the first and second components of F.
 
-if ( isempty( F ) || isempty( G ) )
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+if ( isempty(F) || isempty(G) )
     F = chebfun3v;
     return
 end
@@ -37,6 +41,6 @@ else
     op = [ {F}, G.components ]; 
 end
 
-F = chebfun3v( op, dom ); 
+F = chebfun3v(op, dom);
 
 end

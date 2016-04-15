@@ -10,7 +10,10 @@ function varargout = roots( F, varargin )
 %   [x, y, z] = ROOTS(F) returns the x-values, y-values and z-values as 
 %   three separate columns.
 %
-% See also CHEBFUN3/ROOTS, and CHEBFUN/ROOTS.
+% See also CHEBFUN3/ROOTS, and CHEBFUN3/ROOTS.
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check:
 if ( isempty(F) )

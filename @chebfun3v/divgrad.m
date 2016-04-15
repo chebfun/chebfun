@@ -7,6 +7,9 @@ function G = divgrad(F)
 %
 % Also see CHEBFUN3V/LAP.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 nComponents = F.nComponents; 
 if ( (nComponents < 3) || (nComponents > 3) ) 
     error('CHEBFUN:CHEBFUN3V:divgrad:components',...

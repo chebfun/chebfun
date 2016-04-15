@@ -1,5 +1,6 @@
-function F = plus( F, G ) 
+function F = plus(F, G) 
 % + PLUS of two CHEBFUN3V objects. 
+%
 %   F + G if F and G are CHEBFUN3V objects does componentwise addition. 
 %
 %   F + G if F is a double and G is a CHEBFUN3V does componentwise addition. 
@@ -7,6 +8,9 @@ function F = plus( F, G )
 %   F + G if F is a CHEBFUN3V and G is a double does componentwise addition.
 % 
 %   PLUS(F,G) is called for the syntax F + G. 
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 
 if ( isempty( F ) || isempty( G ) ) 

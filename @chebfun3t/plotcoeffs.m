@@ -2,6 +2,9 @@ function varargout = plotcoeffs(f, varargin)
 %PLOTCOEFFS     A scatter3 plot of the tensor of coefficients of a
 %   CHEBFUN3T that visualizes logarithm of the magnitude of each entry.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Deal with an empty input:
 if ( isempty(f) )
     if ( nargout == 1 )

@@ -11,6 +11,9 @@ function varargout = subsref( F, ref )
 %   { }
 %   Throws an error.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % check for empty CHEBFUN3V object. 
 if ( isempty( F ) )
    varargout = {[]};

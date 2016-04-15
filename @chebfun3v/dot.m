@@ -3,7 +3,10 @@ function f = dot( F, G )
 %   DOT(F, G) returns the dot product of CHEBFUN3V objects F and G. 
 %   DOT(F, G) is the same as F'*G.
 % 
-%   See also CROSS. 
+%   See also CHEBFUN3V/CROSS.
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty( F ) || isempty( G ) ) 
     f = chebfun3();
@@ -23,7 +26,7 @@ for jj = 1:nF
     Fc{jj} = times(Fc{jj}, Gc{jj}); 
 end
 
-f = chebfun3( 0, G.components{1}.domain );
+f = chebfun3(0, G.components{1}.domain);
 for jj = 1 : nF
     f = f + Fc{jj};
 end

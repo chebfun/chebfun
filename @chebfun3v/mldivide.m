@@ -5,9 +5,9 @@ function H = mldivide( f, G )
 %
 %  Only allowed to divide a CHEBFUN2V by a scalar.
 %
-% See also MRDIVIDE.
+% See also CHEBFUN3V/MRDIVIDE.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( ( isempty(f) ) || ( isempty(G) ) )

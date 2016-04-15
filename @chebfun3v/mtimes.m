@@ -1,4 +1,4 @@
-function F = mtimes( F, G )
+function F = mtimes(F, G)
 %*  mtimes for CHEBFUN3V.
 %
 %  c*F or F*c multiplies each component of a CHEBFUN3V by a scalar.
@@ -9,7 +9,10 @@ function F = mtimes( F, G )
 %  F*G calculates the inner product between F and G if size(F,4) ==
 %  size(G,1). If the sizes are appropriate then F*G = dot(F.',G).
 %
-% See also TIMES.
+% See also CHEBFUN3V/TIMES.
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check:
 if ( ( isempty(F) ) || ( isempty(G) ) )

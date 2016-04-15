@@ -3,6 +3,9 @@ function coeffs3D = vals2coeffs(vals3D)
 %
 %   See also chebfun3t/coeffs2vals.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 [m, n, p] = size(vals3D);
 
 %% Step 1:

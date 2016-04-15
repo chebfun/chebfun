@@ -3,7 +3,10 @@ function f = divergence( F )
 %   DIVERGENCE(F) returns the divergence of the CHEBFUN3V i.e.,
 %       divergence(F) = F_x + F_y + F_z.
 %
-% See also DIV.
+% See also CHEBFUN3V/DIV.
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 
 if ( isempty( F ) )
@@ -12,12 +15,10 @@ if ( isempty( F ) )
 end
 
 Fc = F.components; 
-diff1 = diff( Fc{1}, 1, 1 );
-diff2 = diff( Fc{2}, 1, 2 );
-diff3 = diff( Fc{3}, 1, 3 );
+diff1 = diff(Fc{1}, 1, 1);
+diff2 = diff(Fc{2}, 1, 2);
+diff3 = diff(Fc{3}, 1, 3);
 
-% [~, f_fiberDim] = min( rank(diff1) );
-% f = chebfun3(@(x,y,z) feval(diff1,x, y, z) + feval(diff2,x, y, z) + feval(diff3,x, y, z) , 'fiberDim',f_fiberDim(1));
 f = diff1 + diff2 + diff3; % Use compressed plus.
 
 end

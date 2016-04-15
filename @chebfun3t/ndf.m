@@ -1,5 +1,9 @@
 function out = ndf(F)
-%NDF   Number of degrees of freedom (parameters) needed to represent a Chebfun3t.
+%NDF   Number of degrees of freedom (parameters) needed to represent a 
+%   Chebfun3t.
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty(F) )
     out = 0;

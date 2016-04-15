@@ -1,7 +1,11 @@
 function h = times(f, g, tol)
 % .*   CHEBFUN3T multiplication.
-%   F.*G multiplies CHEBFUN3 objects F and G. Alternatively F or G could be a
-%   double.
+%
+%   F.*G multiplies CHEBFUN3 objects F and G. Alternatively F or G could be
+%   a double.
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if (nargin<3)
     tol = eps;

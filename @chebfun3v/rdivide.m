@@ -1,7 +1,10 @@
-function F = rdivide( F, G )
+function F = rdivide(F, G)
 %./   Pointwise CHEBFUN3V right divide.
 %
 % See also LDIVIDE.
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 
 if ( isempty(F) || isempty(G) )
@@ -17,22 +20,22 @@ if ( isa(F, 'chebfun3v') && isa(G, 'chebfun3v') )
         error('CHEBFUN:CHEBFUN3V:rdivide:dim','Dimension mismatch.');
     end
     for jj = 1 : nF 
-        F.components{jj} = rdivide( F.components{jj}, G.components{jj} ); 
+        F.components{jj} = rdivide(F.components{jj}, G.components{jj});
     end
     
 elseif ( isa(F, 'chebfun3v') && ( isa(G, 'chebfun3') || isa(G, 'double') ) ) 
     nF = F.nComponents; 
     for jj = 1 : nF 
-        F.components{jj} = rdivide( F.components{jj}, G ); 
+        F.components{jj} = rdivide(F.components{jj}, G);
     end
     
 elseif  ( isa(G, 'chebfun3v') && ( isa(F, 'chebfun3') || isa(F, 'double') ) )     
     H = G; 
     nG = G.nComponents;
     for jj = 1 : nG
-        H.components{jj} = rdivide( F, H.components{jj} ); 
+        H.components{jj} = rdivide(F, H.components{jj});
     end
-    F = H; 
+    F = H;
     
 else
    error('CHEBFUN:CHEBFUN3V:rdivide:inputs','Unrecognized input arguments.')

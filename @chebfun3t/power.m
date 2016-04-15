@@ -1,6 +1,9 @@
 function f = power( f, n )
 %.^	CHEBFUN3T power. 
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 if ( isempty( f ) || isempty( n ) )    % Check for empty objects.
     f = chebfun3t();
     

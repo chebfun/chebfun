@@ -12,6 +12,9 @@ function varargout = quiver3( F, varargin )
 %   the tip.  Use a marker of '.' to specify no marker at all.  See PLOT for
 %   other possibilities.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 %numpts = 20; 
 numpts = 7; 
 

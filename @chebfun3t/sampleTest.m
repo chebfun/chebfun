@@ -1,5 +1,8 @@
 function pass = sampleTest(f, sampleOP, tol, flag)
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Define some points to evaluate and compare the functions
 dom = f.domain;
 % xeval =[ dom(1)+1e-12; (dom(1)+dom(2))/2; dom(2)-1e-12];

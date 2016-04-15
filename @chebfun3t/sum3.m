@@ -1,8 +1,11 @@
-function I = sum3( f )
-%function I = sum3( coeffs )
-%Triple integral of a CHEBFUN3 over [-1, 1]^3.
+function I = sum3(f)
+%SUM3   Triple integral of a CHEBFUN3 over [-1, 1]^3.
+%
 % A direct generalization of the Clenshaw-Curtis quadrature as implemented
 % in Page 77 of Battles' PhD thesis.
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 coeffs = f.coeffs;
 if ( nargin == 1 )

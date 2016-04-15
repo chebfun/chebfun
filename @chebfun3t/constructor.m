@@ -3,6 +3,9 @@ function f = constructor(f, op, varargin)
 %   Classiacal full tensor approach for 3D functions. No low-rank technique
 %   is involved here.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 %TODO: add `trig` to chebfun3t: HAPPINESSCHECK here DOES NOT WORK WITH TRIGs PROPERLY.
 
 % Parse the inputs:

@@ -1,15 +1,19 @@
-function varargout = size( F, dim ) 
+function varargout = size(F, dim)
 %SIZE size of a CHEBFUN3V object
-%   D = SIZE(F) returns a four-element vector D = [K,M,N,P]. If F is a column
-%   CHEBFUN3V object then K is the number of components in F, M, N and P are INF.
-%   If F is a row vector then K, M and N are INF and P is the number of components
-%   of F.
+%   D = SIZE(F) returns a four-element vector D = [K, M, N, P]. If F is a 
+%   column CHEBFUN3V object then K is the number of components in F, M, N 
+%   and P are INF. If F is a row vector then K, M and N are INF and P is 
+%   the number of components of F.
 %
-%   [K,M,N,P] = SIZE(F) returns the dimensions of F as separate output variables.
+%   [K, M, N, P] = SIZE(F) returns the dimensions of F as separate output 
+%   variables.
 %
-%   D = SIZE(F,DIM) returns the dimensions specified by the dimension DIM.
+%   D = SIZE(F, DIM) returns the dimensions specified by the dimension DIM.
 %
 % See also CHEBFUN3/SIZE. 
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 
 if ( isempty( F ) ) 

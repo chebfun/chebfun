@@ -1,7 +1,11 @@
 function H = cross( F, G )
 %CROSS   Vector cross product.
+%
 %   CROSS(F, G) returns the CHEBFUN3V representing the 3D cross 
 %   product of the CHEBFUN3V objects F and G. 
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 
 if ( isempty( F ) || isempty( G ) )

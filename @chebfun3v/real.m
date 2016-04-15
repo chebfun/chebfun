@@ -3,6 +3,8 @@ function F = real( F )
 %   REAL(F) returns the CHEBFUN3V representing the real part.
 %   See also CONJ, IMAG.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 
 if ( isempty( F ) )

@@ -2,6 +2,9 @@ function f = exp(f)
 %EXP  Exponential of a CHEBFUN3T
 %   EXP(F) returns the exponential of a CHEBFUN3T. 
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Empty check:
 if ( isempty( f ) ) 
     return 

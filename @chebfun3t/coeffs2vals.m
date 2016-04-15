@@ -1,12 +1,16 @@
 function V = coeffs2vals(C)
 %VAL2COEFFS    Convert tensor of Chebyshev coefficients to values.
 %
-%   V = COEFFS2VALS(C) converts a tensor C of bivariate Chebyshev coefficients
-%   to a matrix of samples V corresponding to values of 
-%   sum_i sum_j C(i,j) T_{i-1}(y)T_{j-1}(x) 
-%   at a tensor Chebyshev grid of size size(C).
+%   V = COEFFS2VALS(C) converts a tensor C of trivariate Chebyshev 
+%   coefficients to a tensor of samples V corresponding to values of 
+%   sum_i sum_j sum_k C(i,j,k) T_{i-1}(x) T_{j-1}(y) T_{k-1}(z) 
+%   at a tensor Chebyshev grid of the same size as C.
 %
 %   See also chebfun3t/vals2coeffs.
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 [m, n, p] = size(C);
 
 %% Step 1:

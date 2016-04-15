@@ -6,6 +6,9 @@ function F = times( F , G )
 %   F.*G if F is a double and G is a CHEBFUN3V returns the CHEBFUN3V after
 %   componentwise multiplication.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Empty check: 
 if ( isempty( F ) || isempty( G ) )
     F = chebfun3v;

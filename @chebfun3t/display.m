@@ -1,6 +1,9 @@
 function display(F)
 %DISP   Display a CHEBFUN3T to the command line.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 loose = strcmp( get(0, 'FormatSpacing'), 'loose');
 
 % Get display style and remove trivial empty CHEBFUN3 case.
