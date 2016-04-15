@@ -1,5 +1,5 @@
 function varargout = grad(f)
-%GRAD   Numerical gradient of a CHEBFUN3.
+%GRAD   Gradient of a CHEBFUN3.
 %  This command is shorthand for GRADIENT(F).
 %
 %  See also CHEBFUN3/GRADIENT.

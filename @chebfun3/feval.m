@@ -5,10 +5,6 @@ function out = feval(f, x, y, z)
 %
 %   See also SUBSREF.
 
-% TODO: 1) do this for ROW vectors.
-% 2) Use: % Get the low rank representation for f. 
-% [fCore,fCols, fRows, fTubes] = st(f);
-
 
 % Empty check:
 if ( isempty(f) )

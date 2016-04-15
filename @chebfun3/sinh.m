@@ -1,6 +1,6 @@
 function f = sinh(f)
 %SINH   Hyperbolic sine of a CHEBFUN3.
-%   sinh(F) returns the hyperbolic cosine of F.
+%   sinh(F) returns the hyperbolic sine of F.
 
 % Empty check: 
 if ( isempty(f) )

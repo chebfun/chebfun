@@ -4,8 +4,7 @@ function g = permute(f, dims)
 %
 %   PERMUTE(F, DIMS) permutes the CHEBUFN3 object F in the order specified 
 %   by the row vector DIMS. For example, if f is a CHEBFUN3 representation 
-%   of f(x, y, z), then
-%   permute(f, [1 3 2]) 
+%   of f(x, y, z), then permute(f, [1 3 2]) 
 %   is a CHEBFUN3 representation of f(x, z, y).
 
 g = f;

@@ -2,7 +2,7 @@ function varargout = surf(f, varargin)
 %SURF  Plots three cross sections of a CHEBFUN3.
 %
 %   SURF(F) or SURF(F, 'SLIDER') plot three cross sections of a CHEBFUN3 
-%   object F. It also allows the user to chage the cross sections using 
+%   object F. It also allows the user to adjust the cross sections using 
 %   sliders.
 %
 %   If F is complex-valued, SLICE should be used instead.

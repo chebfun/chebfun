@@ -1,5 +1,5 @@
 function varargout = plotcoeffs(f, varargin)
-%PLOTCOEFFS   Display the PLOTCOEFFS of the columns, rows and tubes of a
+%PLOTCOEFFS   Display the coefficients of the columns, rows and tubes of a
 %   CHEBFUN3.
 
 % Empty check.

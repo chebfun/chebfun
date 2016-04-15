@@ -1,7 +1,7 @@
 function varargout = rank(F)
 %RANK   Multilinear rank of a CHEBFUN3 object F.
 %
-%   If three outputs are asked for, then it is the size of core tensor, 
+%   If three outputs are asked for, then it is the size of the core tensor, 
 %   i.e., r = [size(F.cols,2), size(F.rows,2), size(F.tubes,2)];
 %   If just one output is asked for, then r is the max size of the core 
 %   tensor. 

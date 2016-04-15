@@ -7,8 +7,8 @@ function varargout = slice(f, varargin)
 %   SLICE(F, 'NOSLIDER') plots three contours of a CHEBFUN3 object F at 
 %   slices corresponding roughly to the location of global maximum of F.
 %
-%   SLICE(F, sx, sy, sz) allows to set the location of the three slices of 
-%   F to be at x = sx, y = sy and z = sz.
+%   SLICE(F, sx, sy, sz) allows one to set the locations of the three
+%   slices of F to be at x = sx, y = sy and z = sz.
 % 
 %   If f is complex-valued, then phase portraits are plotted.
 %

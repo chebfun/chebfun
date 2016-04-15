@@ -2,7 +2,7 @@ function varargout = subsref(f, index)
 %SUBSREF   CHEBFUN3 subsref.
 % ( )
 %   F(X, Y, Z) returns the values of the CHEBFUN3 F evaluated at the 
-% specific point (X,Y,Z).
+% point (X,Y,Z).
 
 idx = index(1).subs;
 switch index(1).type

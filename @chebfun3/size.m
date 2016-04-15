@@ -1,6 +1,6 @@
 function varargout = size(f , dim)
 %SIZE  Size of a CHEBFUN3
-%   D = SIZE(F) returns the three-element row vector D = [inf,inf, inf].
+%   D = SIZE(F) returns the three-element row vector D = [inf,inf,inf].
 %
 %   [M, N, P] = SIZE(F) returns M = inf, N = inf and P = inf.
 %

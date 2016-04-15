@@ -6,7 +6,7 @@ function varargout = chebcoeffs3(f)
 %                                      C(i+1,j+1,k+1) T_i(x) T_j(y) T_k(z).
 %
 %   [core, C, R, T] = CHEBCOEFFS3(f) returns the same coefficients kept in
-%   the tucker form.
+%   the Tucker form.
 %
 % See also CHEBCOEFFS and CHEBCOEFFS2.
 

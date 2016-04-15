@@ -3,7 +3,7 @@ function h = max2(f, g, dims)
 %   MAX2(f) returns a 1D chebfun representing the maximum of the CHEBFUN3 
 %   along the y and z directions, i.e, MAX2(f) = @(z) max( f( :, :, z) ).
 %
-%   MAX(f, [], dims) returns a CHEBFUN representing the maximum of f along the
+%   MAX2(f, [], dims) returns a CHEBFUN representing the maximum of f along the
 %   DIMS directions. DIMS = [1, 2] means along the x and y directions, etc.
 %
 %   WARNING: This function is not always accurate to the expected precision.

@@ -5,7 +5,7 @@ function [val, loc] = max3(f)
 % Call MINANDMAX3:
 [val, loc] = minandmax3(f);   
 
-% Extract out maximum:
+% Extract maximum:
 val = val(2);
 loc = loc(2, :);
 

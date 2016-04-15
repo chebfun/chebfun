@@ -1,9 +1,9 @@
 function h = min2(f, g, dims)
 %MIN2   Minimum value of a CHEBFUN3 in two directions.
-%   MIN(F) returns a 1D chebfun representing the minimum of the CHEBFUN3 
+%   MIN2(F) returns a 1D chebfun representing the minimum of the CHEBFUN3 
 %   along the y and z directions, i.e, MIN2(F) = @(z) min(F(:, :, z)).
 %
-%   MIN(F, [], DIMS) returns a CHEBFUN representing the minimum of F along 
+%   MIN2(F, [], DIMS) returns a CHEBFUN representing the minimum of F along 
 %   the DIMS directions. DIMS = [1, 2] means along the x and y directions, etc.
 %
 %   WARNING: This function is not always accurate to the expected precision. 
