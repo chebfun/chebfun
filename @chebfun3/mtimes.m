@@ -12,7 +12,7 @@ if ( isa(f, 'chebfun3') )           % CHEBFUN3 * ???
             if ( g == 0 ) % This makes factor quasimatrices also zero and 
                 % therefore the rank of h will look better than being just 
                 % the same as rank(f).
-                h = chebfun3(@(x,y,z) 0);
+                h = chebfun3(@(x,y,z) 0, f.domain);
             else
                 h = f;
                 h.core = h.core .* g;
