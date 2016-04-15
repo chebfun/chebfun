@@ -28,6 +28,9 @@ function varargout = hosvd(f, varargin)
 % Truncation by HOSVD is helpful, but is not necessarily optimal as one
 % recalls from SVD in 2D.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 if isempty(f)
     return
 end

@@ -5,6 +5,9 @@ function h = complex(f, g)
 %
 % See also IMAG, CONJ, ABS, REAL.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 if ( ~isreal( f ) || ~isreal( g ) )
     error('CHEBFUN:CHEBFUN3:complex:notReal1', ...
         'Inputs must be real valued.');

@@ -16,6 +16,9 @@ function f = cumsum2(f, dims)
 % See also chebfun3/cumsum, chebfun3/cumsum3, chebfun3/sum, chebfun3/sum2 
 % and chebfun3/sum3.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Check for empty:
 if ( isempty(f) ) 
     f = [];

@@ -25,6 +25,9 @@ function varargout = isosurface(f, varargin)
 % Example 2: f = chebfun3(@(x,y,z) tanh(x+y-.3) + cos(x.*y.*z)./(4+x-y-z));
 %            isosurface(f)
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 if ( nargin == 1 )
         runIsosurface3GUI(f);
 else

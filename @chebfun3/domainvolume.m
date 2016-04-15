@@ -3,6 +3,9 @@ function area = domainvolume(f)
 %
 %   DOMAINVOLUME(F) returns the volume of the topological domain of f.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 if ( isempty(f) )
     area = 0;
 else

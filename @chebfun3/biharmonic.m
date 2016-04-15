@@ -6,6 +6,9 @@ function B = biharmonic(f)
 %
 %   See also CHEBFUN3/BIHARM.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % biharmonic(f) = f_xxxx + f_yyyy + f_zzzz + 2*f_xxyy + 2*f_xxzz + 2*f_yyzz.
 
 diff4x = diff(f, 4, 1); 

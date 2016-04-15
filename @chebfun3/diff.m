@@ -20,6 +20,9 @@ function F = diff(F, k, dim)
 %    
 %   See also CHEBFUN3/GRAD, CHEBFUN3/LAP and CHEBFUN3/BIHARM.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Empty check:
 if ( isempty(F) )
     return

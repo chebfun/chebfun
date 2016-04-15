@@ -7,6 +7,9 @@ function B = biharm(f)
 %
 %   See also CHEBFUN3/BIHARMONIC.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Call Biharonic: 
 B = biharmonic(f);
 

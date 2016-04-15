@@ -4,6 +4,9 @@ function varargout = length(F)
 %   just one output has been asked, then it is the max number of 
 %   coefficients in three dimensions.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 if ( isempty(F) ) 
     % Output:
     if ( nargout <= 1 )

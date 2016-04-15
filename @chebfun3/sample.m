@@ -10,6 +10,9 @@ function varargout = sample(f, varargin)
 %   [CORE, C, R, T] = SAMPLE(F,M,N,P) returns the values of F on a
 %   M-by-N-by-P tensor product grid.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Empty check. 
 if ( isempty(f) )
     varargout = {[]}; 

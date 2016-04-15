@@ -9,6 +9,9 @@ function I = integral2(f, C)
 %   I = INTEGRAL2(F, [a b c d e g]) integrate F over the cube [a b] x [c
 %   d] x [e g] provided that this cube is in the domain of F.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Empty check:
 if ( isempty(f) ) 
     I = 0;

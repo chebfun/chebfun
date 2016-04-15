@@ -1,8 +1,14 @@
 function r = roots(f,g,h,varargin)
-% Poor man's method for finding common roots of three 3D functions:
-% 1) Find some initial guesses from the tensor of values of obj_fun = f.^2+g.^2+h.^2
-% 2) Apply 10 steps of Newton's method
-% 3) Filter inaccurate results
+%roots    Poor man's method for finding common roots of three 3D functions:
+%   1) Find some initial guesses from the tensor of values of 
+%   obj_fun = f.^2+g.^2+h.^2.
+%   2) Apply 10 steps of Newton's method.
+%   3) Filter inaccurate results.
+%
+%   See also CHEBFUN3/ROOT.
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 dom = f.domain;
 f = f./f.vscale; g = g./g.vscale; h = h./h.vscale; 

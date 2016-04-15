@@ -2,6 +2,9 @@ function out = ndf(F)
 %NDF   Number of degrees of freedom (parameters) needed to represent a 
 % Chebfun3 object.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 [rank_F1, rank_F2, rank_F3] = rank(F);
 
 if ( isempty(F) )

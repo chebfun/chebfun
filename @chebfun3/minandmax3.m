@@ -1,13 +1,16 @@
 function [vals, locs] = minandmax3(f)
 %MINANDMAX3     returns the minimum and maximum value of a CHEBFUN3.
 %   VALS = minandmax3(F) returns the minimum and maximum value of a chebfun3 
-%   over its domain. VALS is a vector of length 2 such that Y(1) = min(f(x,y,z))
-%   and Y(2) = max(f(x,y,z)).
+%   over its domain. VALS is a vector of length 2 such that 
+%   Y(1) = min(f(x,y,z)) and Y(2) = max(f(x,y,z)).
 %
 %   [VALS, LOCS] = minandmax3(F) also returns the position of the minimum 
 %   and maximum.
 %
-% See also MAX2, MIN2, NORM.
+% See also CHEBFUN3/MAX2, CHEBFUN3/MIN2, CHEBFUN3/NORM.
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % check for empty CHEBFUN3.
 if ( isempty(f) )

@@ -11,6 +11,8 @@ function W = fevalt(f, x, y, z)
 %
 %   See also chebfun3/feval.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty(f) )
     W = {[]}; 

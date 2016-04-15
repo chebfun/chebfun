@@ -19,6 +19,9 @@ function varargout = slice(f, varargin)
 % 
 %   See also CHEBFUN3/PLOT, CHEBFUN3/ISOSURFACE, CHEBFUN3/SURF, and SCAN.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 if ( nargin == 1 )
         runSlice3GUI(f);
 else

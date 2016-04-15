@@ -26,6 +26,9 @@ function f = constructor(f, op, varargin)
 %
 % See also CHEBFUN2.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Parse the inputs:
 [op, dom, pref, vscaleBnd, fiberDim, vectorize, isEqui, fixedRank] = ...
     parseInputs(op, varargin{:});

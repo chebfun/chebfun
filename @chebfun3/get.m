@@ -8,6 +8,9 @@ function val = get(f, propName)
 %    'CORE'
 %    'DOMAIN'
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Loop through an array of CHEBFUN3S objects.
 if ( numel(f) > 1 )
     val = cell(numel(f));

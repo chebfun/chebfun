@@ -3,6 +3,9 @@ function f = mrdivide(f, g)
 %
 %    F/C divides the CHEBFUN3 object F by a scalar C.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 if ( isa(g, 'double') )
     f.core = f.core / g;
 else

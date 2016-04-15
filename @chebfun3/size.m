@@ -1,4 +1,4 @@
-function varargout = size(f , dim)
+function varargout = size(f, dim)
 %SIZE  Size of a CHEBFUN3
 %   D = SIZE(F) returns the three-element row vector D = [inf,inf,inf].
 %
@@ -6,6 +6,9 @@ function varargout = size(f , dim)
 %
 %   M = SIZE(F, DIM) returns the dimension specified by the scalar DIM, 
 %   which is always inf.
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( (nargin == 1) && (nargout <= 1) )
     varargout = {[Inf, Inf, Inf]};

@@ -8,6 +8,9 @@ function I = integral(f, varargin)
 %   along the curve defined by the inf x 3 quasimatrix G. Columns of G 
 %   represent parametrization of the 3D curve. 
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 if ( nargin == 1 )                         % Another way to do sum3(f) 
     %I = integral3(f); 
     I = sum3(f); 

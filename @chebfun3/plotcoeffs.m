@@ -2,6 +2,9 @@ function varargout = plotcoeffs(f, varargin)
 %PLOTCOEFFS   Display the coefficients of the columns, rows and tubes of a
 %   CHEBFUN3.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Empty check.
 if ( isempty( f ) )
     varargout = { [] }; 

@@ -5,6 +5,9 @@ function out = isequal(f, g)
 %   same CHEBFUN3 objects, up to relative machine precision. If returns 0 
 %   then F and G are not the same up to relative machine precision. 
 
+% The structure of this code is similar to `dematricize.m` from the HTUCKER 
+% toolbox of Tobler and Kressner.
+
 if ( isempty(f) )
     if ( isempty(g) )
         out = true; 

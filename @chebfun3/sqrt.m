@@ -1,6 +1,12 @@
 function f = sqrt(f)
 %SQRT   Square root.
-%   SQRT(F) returns the square root of a positive CHEBFUN3 F.
+%
+%   SQRT(F) returns the square root of a positive CHEBFUN3 object F.
+%
+%   See also CHEBFUN3/COMPOSE.
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check:
 if ( isempty(f) )

@@ -10,6 +10,9 @@ function h = min2(f, g, dims)
 % 
 %   For the global minimum use MIN3.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Empty check: 
 if ( isempty(f) ) 
     error('CHEBFUN:CHEBFUN3:min2:input', 'CHEBFUN3 is empty');

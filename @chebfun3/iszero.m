@@ -3,6 +3,9 @@ function out = iszero(f)
 %   OUT = ISZERO(F) returns 1 if the CHEBFUN3 is exactly the zero function, 
 %   and 0 otherwise. 
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Get data:
 [fCore, fCols, fRows, fTubes] = st(f);
 

@@ -1,8 +1,11 @@
 function h = times(f, g)
-%function h = times(f, g, tol)
 % .*   CHEBFUN3 multiplication.
-%   F.*G multiplies CHEBFUN3 objects F and G. Alternatively F or G could be a
-%   double.
+%
+%   F.*G multiplies CHEBFUN3 objects F and G. Alternatively F or G could 
+%   be a double.
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( isa(f, 'chebfun3') )     % CHEBFUN3 .* ???
     

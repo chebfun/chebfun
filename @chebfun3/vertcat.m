@@ -1,14 +1,17 @@
 function F = vertcat(varargin)
 %VERTCAT   Vertical concatenation of CHEBFUN3 objects.
 %
-% VERTCAT(F, G) is the vertical concatenation of CHEBFUN3 objects F and G. 
-% This function returns a CHEBFUN3V object. 
+%   VERTCAT(F, G) is the vertical concatenation of CHEBFUN3 objects F and G. 
+%   This function returns a CHEBFUN3V object. 
 % 
-% [F; G] is equivalent to VERTCAT(F, G).
+%   [F; G] is equivalent to VERTCAT(F, G).
 %
-% VERTCAT(F) returns the CHEBFUN3 object F. 
+%   VERTCAT(F) returns the CHEBFUN3 object F. 
 % 
-% See also CHEBFUN3V.
+%   See also CHEBFUN3V.
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin == 1 ) 
     % VERTCAT of one argument just returns the same thing back to the user:

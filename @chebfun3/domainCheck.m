@@ -6,6 +6,9 @@ function out = domainCheck(f, g)
 %
 % See also CHEBFUN/DOMAINCHECK.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % The CHEBFUN3 class uses this function internally to compare the domains of
 % CHEBFUN3 objects before attempting to perform operations on multiple

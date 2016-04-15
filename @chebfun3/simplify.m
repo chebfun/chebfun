@@ -11,6 +11,11 @@ function f = simplify(f, varargin)
 %   SVD gives the optimal low rank approximation, this is not necessarily 
 %   true in dimensions higher than 2. However, this usually gives a good 
 %   approximation to the best tensor of the rank (r1, r2, r3).
+%
+%   See also CHEBFUN3/HOSVD.
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin < 2 )
     % Simplify cols, rows and tubes. Tol is not given.

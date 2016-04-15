@@ -9,7 +9,10 @@ function h = rdivide(f,g)
 % 
 %   F./G is the same as the command rdivide(F,G)
 %
-% See also LDIVIDE.
+% See also CHEBFUN3/LDIVIDE.
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 
 if ( isempty( f ) || isempty( g ) ) 

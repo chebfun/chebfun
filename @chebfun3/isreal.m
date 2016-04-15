@@ -6,6 +6,9 @@ function out = isreal(f)
 %   (This is slightly different from the Matlab convention, where
 %   isreal(x) is false if x is a complex number whose imaginary part is 0.)
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 if ( isempty(f) )
     out = true;
     return

@@ -11,6 +11,9 @@ function varargout = gradient(f)
 %
 %   See also CHEBFUN3/GRAD.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 fx = diff(f, 1, 1);   % diff in x-variable
 fy = diff(f, 1, 2);   % diff in y-variable 
 fz = diff(f, 1, 3);   % diff in z-variable 

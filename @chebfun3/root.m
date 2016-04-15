@@ -1,19 +1,26 @@
 function r = root(f, g, h, varargin)
-% Find just one common roots of three 3D functions.
+%root   Find just one common roots of three 3D functions.
+%
+%   There are 3 steps in this algorithm:
+%   1) Find an initial guess from the tensor of values of obj_fun (usually,
+%   a root with 3 accurate digits).
+%   2) Turn the problem to an optimization problem: Improve that initial 
+%   guess by using MATLAB's fminsearch (typically, this make the root 
+%   accurate to 6-9 digits). Note that the value of obj_fun at the output 
+%   is usually down to machine precision. But, this root is accurate only 
+%   to 6-9 digits as a common root of f, g and h.
+%   3) Improve the root again using Newton's method (the goal of this step 
+%   is to make the root accurate to 16 digits).
+%
+%   See also chebfun2/roots.
 
-pref = chebfunpref; 
-%tol = pref.eps;
-tol = pref.chebfuneps;
-
-% There are 3 steps in this algorithm:
-% 1) Find an initial guess from the tensor of values of obj_fun (usually, a root with 3 accurate digits)
-% 2) Turn the problem to an optimization problem: Improve that initial guess by using MATLAB's fminsearch (typically, this make the root accurate to 6-9 digits)
-% Note that the value of obj_fun at the output is usually down to machine
-% precision. But, this root is accurate only to 6-9 digits as a common root
-% of f, g and h.
-% 3) Improve the root again using Newton's method (the goal of this step is to make the root accurate to 16 digits)
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % TODO: Can we remove Step 2 above?
+
+pref = chebfunpref; 
+tol = pref.chebfuneps;
 
 %obj_fun = f.^2+g.^2+h.^2;
 %len=length(obj_fun);

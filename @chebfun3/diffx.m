@@ -9,6 +9,8 @@ function g = diffx(f, n)
 % 
 % See also DIFFY, DIFFZ, and DIFF. 
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Default to first derivative:
 if ( nargin == 1 ) 

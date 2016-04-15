@@ -4,6 +4,9 @@ function f = log(f)
 %   message if the function passes through or becomes numerically close to 
 %   zero.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Empty check: 
 if ( isempty(f) ) 
     return 

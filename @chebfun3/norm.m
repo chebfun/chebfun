@@ -9,6 +9,9 @@ function [normF, normloc] = norm(f, p)
 %   Furthermore, the inf norm also returns a second output giving a 
 %   position where the max occurs.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 if ( nargin == 1 ) 
     % Default to the Frobenius norm.
     p = 'fro';

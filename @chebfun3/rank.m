@@ -5,6 +5,12 @@ function varargout = rank(F)
 %   i.e., r = [size(F.cols,2), size(F.rows,2), size(F.tubes,2)];
 %   If just one output is asked for, then r is the max size of the core 
 %   tensor. 
+%
+%   See also CHEBFUN3/HOSVD.
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 
 r = size(F.core);
 if numel(r)<3

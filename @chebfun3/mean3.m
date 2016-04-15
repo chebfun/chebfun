@@ -3,7 +3,10 @@ function v = mean3(f)
 %   V = MEAN3(F) returns the mean of a CHEBFUN3, i.e., sum3(F) / V,
 % 	where V is the volume of the domain of F.
 %
-%   See also MEAN, MEAN2 and STD3.
+%   See also CHEBFUN3/MEAN, CHEBFUN3/MEAN2 and CHEBFUN3/STD3.
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check:
 if ( isempty(f) ) 

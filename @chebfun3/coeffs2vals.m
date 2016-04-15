@@ -7,6 +7,10 @@ function V = coeffs2vals(C)
 %   at a tensor Chebyshev grid of size size(C).
 %
 %   See also chebfun3/vals2coeffs.
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 [m, n, p] = size(C);
 
 %% Step 1:

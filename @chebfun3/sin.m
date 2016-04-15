@@ -1,6 +1,12 @@
 function f = sin(f)
 %SIN   Sine of a CHEBFUN3.
+%
 %   SIN(F) returns the sine of F.
+%
+%   See also CHEBFUN3/COMPOSE.
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Check for empty:
 if ( isempty(f) )

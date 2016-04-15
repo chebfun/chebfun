@@ -8,6 +8,9 @@ function varargout = st(f)
 %
 %   CORE = ST(F) returns the core tensor used in the construction of F.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 if ( isempty(f) )
     varargout = cell(1, nargout); 
     return

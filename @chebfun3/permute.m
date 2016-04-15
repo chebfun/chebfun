@@ -7,6 +7,9 @@ function g = permute(f, dims)
 %   of f(x, y, z), then permute(f, [1 3 2]) 
 %   is a CHEBFUN3 representation of f(x, z, y).
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 g = f;
 dom = f.domain;
 if ( dims == [1 2 3] )

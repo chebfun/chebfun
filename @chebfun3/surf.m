@@ -9,6 +9,9 @@ function varargout = surf(f, varargin)
 % 
 %   See also CHEBFUN3/PLOT, CHEBFUN3/SLICE, CHEBFUN3/ISOSURFACE and SCAN.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 runSurf3GUI(f);
 end % End of function
 

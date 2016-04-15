@@ -8,6 +8,9 @@ function varargout = plot(f, varargin)
 %
 %   See also CHEBFUN3/SLICE, SCAN, CHEBFUN3/ISOSURFACE, and CHEBFUN3/SURF.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 holdState = ishold;
 dom = f.domain;
 numpts = 151;

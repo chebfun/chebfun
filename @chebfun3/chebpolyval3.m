@@ -13,6 +13,9 @@ function varargout = chebpolyval3(f, varargin)
 %   Example: For an order-3 discrete tensor R, we should have 
 %                                       R \approx chebpolyval3(chebfun3(R)).
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Empty check. 
 if ( isempty(f) )
     varargout = { [] }; 

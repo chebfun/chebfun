@@ -4,6 +4,9 @@ function varargout = grad(f)
 %
 %  See also CHEBFUN3/GRADIENT.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Call GRADIENT:
 if ( nargout <= 1 )
     out = gradient(f);

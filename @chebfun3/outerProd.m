@@ -11,6 +11,9 @@ function T = outerProd(A, B)
 % The structure of this code is similar to `ttt.m` from the HTUCKER toolbox
 % of Tobler and Kressner.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Determine number of dimensions in the inputs:
 ndimsA = ndims(A);
 ndimsB = ndims(B);

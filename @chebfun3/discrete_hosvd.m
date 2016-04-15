@@ -1,6 +1,9 @@
 function [core, U1, U2, U3] = discrete_hosvd(T)
 % Higher order SVD of a discrete tensor of order 3
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Mode-1 unfolding of T:
 T1 = chebfun3.unfold(T, 1); 
 [U1,~,~] = svd(T1, 'econ');

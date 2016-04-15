@@ -6,6 +6,9 @@ function L = lap(f)
 %   This is shorthand for LAPLACIAN(F).
 %   See also CHEBFUN3/LAPLACIAN.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Call Laplacian: 
 L = laplacian(f);
 
