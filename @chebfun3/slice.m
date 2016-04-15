@@ -163,7 +163,10 @@ end
 function h = instantiateSlice3GUI()
 % Load up the GUI from the *.fig file.
 %h = openfig('/Users/user/Desktop/My work/git/chebfun3/@chebfun3/slice.fig', 'invisible');
-h = openfig('/slice.fig', 'invisible');
+%h = openfig('/slice.fig', 'invisible');
+
+installDir = chebfunroot();
+h = openfig( [installDir '/@chebfun3/slice.fig'], 'invisible');
 
 % Do any required initialization of the handle graphics objects.
 G = get(h, 'Children');

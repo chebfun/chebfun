@@ -146,8 +146,11 @@ function h = instantiateSurf3GUI()
 
 % Load up the GUI from the *.fig file.
 %h = openfig('/Users/user/Desktop/My work/git/chebfun3/@chebfun3/surf.fig', 'invisible');
-h = openfig('/surf.fig', 'invisible');
-    
+% h = openfig('/surf.fig', 'invisible');
+
+installDir = chebfunroot();
+h = openfig( [installDir '/@chebfun3/surf.fig'], 'invisible');
+
 % Do any required initialization of the handle graphics objects.
 panels = get(h, 'Children'); % 3 panels exist in the surf3.fig.
 G1 = get(panels(1), 'Children');

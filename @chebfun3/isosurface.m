@@ -265,10 +265,11 @@ end
 function h = instantiateIsosurface3()
 
 % Load up the GUI from the *.fig file.
-%h = openfig('/Users/user/Desktop/My work/git/chebfun3/@chebfun3/isosurface.fig', 'invisible');
-h = openfig('/isosurface.fig', 'invisible');
+%h = openfig('/isosurface.fig', 'invisible');
 % The following is to be used when this goes to the main Chebfun repo:
 % [chebfunroot '@chebfun3/isosurface.fig']
+installDir = chebfunroot();
+h = openfig( [installDir '/@chebfun3/isosurface.fig'], 'invisible');
 
 % Do any required initialization of the handle graphics objects.
 G = get(h, 'Children');
