@@ -1,0 +1,171 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>slice</title><meta name="generator" content="MATLAB 8.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-11-19"><meta name="DC.source" content="slice.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="keyword">function</span> varargout = slice( f, varargin )
+</pre><pre class="codeinput"><span class="comment">%SLICE  Plots slices of a CHEBFUN3.</span>
+<span class="comment">%</span>
+<span class="comment">%   SLICE(F) if F is a CHEBFUN3 then this contains three contour plots of F</span>
+<span class="comment">%   at slices corresponding to a rough approximation of the max of F.</span>
+<span class="comment">%</span>
+<span class="comment">%   SLICE(F,sx,sy,sz) if F is a CHEBFUN3 then this contains three contour</span>
+<span class="comment">%   plots of F at slices mentioned in sx, sy and sz.</span>
+
+holdState = ishold;
+FS = <span class="string">'fontsize'</span>; FC = <span class="string">'facecolor'</span>; fs = 18;
+dom = f.domain;
+[xx, yy, zz] = meshgrid(linspace(dom(1),dom(2),40),linspace(dom(3),dom(4),40),linspace(dom(5),dom(6),40));
+<span class="comment">%[xx, yy, zz] = meshgrid(dom(1):0.05:dom(2),dom(3):0.05:dom(4),dom(5):0.05:dom(6));</span>
+<span class="comment">%[xx, yy, zz] = ndgrid(dom(1):0.05:dom(2),dom(3):0.05:dom(4),dom(5):0.05:dom(6));</span>
+<span class="comment">%[xx, yy, zz] = meshgrid(dom(1):0.025:dom(2),dom(3):0.025:dom(4),dom(5):0.025:dom(6));</span>
+v = feval(f,xx,yy,zz);
+</pre><pre class="codeinput"><span class="keyword">if</span> ( nargin&lt;2 )
+    <span class="comment">% Slices are not specified. Choose three yourself.</span>
+    [col,row,tube] = ind2sub(size(v),find(v == max(v(:))));
+    col = col(end); row = row(end); tube = tube(end);
+    xslice = xx(col,row,tube); yslice = yy(col,row,tube); zslice = zz(col,row,tube);
+    slice(xx,yy,zz,v,xslice,yslice,zslice);
+    str = sprintf(<span class="string">'Three slices: x = %2.1g, y = %2.1g, z = %2.1g'</span>, xslice, yslice, zslice);
+    title(str, FS, fs)
+    <span class="comment">%title(['Three slices: x = %3.2g' num2str(xslice) ', y = %3.2g' num2str(yslice) ', z = %3.2g' num2str(zslice)], FS, fs)</span>
+
+<span class="keyword">elseif</span> ( nargin == 4 )
+    <span class="comment">% Slices are specified.</span>
+    <span class="comment">%slices = cell2mat(varargin);</span>
+    <span class="comment">%xslice = slices(1); yslice = slices(2); zslice = slices(3);</span>
+    xslice = cell2mat(varargin(1)); yslice = cell2mat(varargin(2)); zslice = cell2mat(varargin(3));
+    slice(xx,yy,zz,v,xslice,yslice,zslice);
+<span class="keyword">end</span>
+
+    shading <span class="string">interp</span>
+    colorbar,
+    set(gca,<span class="string">'xticklabel'</span>,{[]})
+    set(gca,<span class="string">'yticklabel'</span>,{[]})
+    set(gca,<span class="string">'zticklabel'</span>,{[]})
+    xlabel(<span class="string">'x'</span>,FS, fs); ylabel(<span class="string">'y'</span>,FS, fs); zlabel(<span class="string">'z'</span>,FS, fs);
+    <span class="comment">%title(['f = ' num2str(isoval1)], FS, fs);</span>
+     axis <span class="string">tight</span>
+
+<span class="keyword">if</span> ( ~holdState )
+    hold <span class="string">off</span>
+<span class="keyword">end</span>
+</pre><pre class="codeinput"><span class="keyword">end</span> <span class="comment">% End of function</span>
+</pre><pre class="codeoutput error">The class chebfun3 has no Constant property or Static method named 'slice'.</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+function varargout = slice( f, varargin )
+%SLICE  Plots slices of a CHEBFUN3.
+%
+%   SLICE(F) if F is a CHEBFUN3 then this contains three contour plots of F 
+%   at slices corresponding to a rough approximation of the max of F.
+%
+%   SLICE(F,sx,sy,sz) if F is a CHEBFUN3 then this contains three contour 
+%   plots of F at slices mentioned in sx, sy and sz.
+
+holdState = ishold;
+FS = 'fontsize'; FC = 'facecolor'; fs = 18;
+dom = f.domain;
+[xx, yy, zz] = meshgrid(linspace(dom(1),dom(2),40),linspace(dom(3),dom(4),40),linspace(dom(5),dom(6),40));
+%[xx, yy, zz] = meshgrid(dom(1):0.05:dom(2),dom(3):0.05:dom(4),dom(5):0.05:dom(6));
+%[xx, yy, zz] = ndgrid(dom(1):0.05:dom(2),dom(3):0.05:dom(4),dom(5):0.05:dom(6));
+%[xx, yy, zz] = meshgrid(dom(1):0.025:dom(2),dom(3):0.025:dom(4),dom(5):0.025:dom(6));
+v = feval(f,xx,yy,zz);
+%%
+
+if ( nargin<2 )
+    % Slices are not specified. Choose three yourself.
+    [col,row,tube] = ind2sub(size(v),find(v == max(v(:))));
+    col = col(end); row = row(end); tube = tube(end); 
+    xslice = xx(col,row,tube); yslice = yy(col,row,tube); zslice = zz(col,row,tube); 
+    slice(xx,yy,zz,v,xslice,yslice,zslice); 
+    str = sprintf('Three slices: x = %2.1g, y = %2.1g, z = %2.1g', xslice, yslice, zslice);
+    title(str, FS, fs)
+    %title(['Three slices: x = %3.2g' num2str(xslice) ', y = %3.2g' num2str(yslice) ', z = %3.2g' num2str(zslice)], FS, fs)
+
+elseif ( nargin == 4 )
+    % Slices are specified.
+    %slices = cell2mat(varargin);
+    %xslice = slices(1); yslice = slices(2); zslice = slices(3);
+    xslice = cell2mat(varargin(1)); yslice = cell2mat(varargin(2)); zslice = cell2mat(varargin(3));
+    slice(xx,yy,zz,v,xslice,yslice,zslice); 
+end    
+
+    shading interp
+    colorbar, 
+    set(gca,'xticklabel',{[]}) 
+    set(gca,'yticklabel',{[]}) 
+    set(gca,'zticklabel',{[]}) 
+    xlabel('x',FS, fs); ylabel('y',FS, fs); zlabel('z',FS, fs);
+    %title(['f = ' num2str(isoval1)], FS, fs);
+     axis tight
+     
+if ( ~holdState )
+    hold off
+end
+
+end % End of function
+##### SOURCE END #####
+--></body></html>

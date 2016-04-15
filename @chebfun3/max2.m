@@ -1,0 +1,67 @@
+function h = max2(f, g, dims)
+%MAX2   Maximum value of a CHEBFUN3 in two directions.
+%   MAX2(f) returns a 1D chebfun representing the maximum of the CHEBFUN3 
+%   along the y and z directions, i.e, MAX2(f) = @(z) max( f( :, :, z) ).
+%
+%   MAX(f, [], dims) returns a CHEBFUN representing the maximum of f along the
+%   DIMS directions. DIMS = [1, 2] means along the x and y directions, etc.
+%
+%   WARNING: This function is not always accurate to the expected precision.
+% 
+%   For the global maximum use MAX3.
+
+% Empty check: 
+if ( isempty(f) )
+    error('CHEBFUN:CHEBFUN3:max2:input', 'CHEBFUN3 is empty');
+end
+
+% Default to max2 of one chebfun3:
+if ( nargin < 2 )
+    g = []; 
+end
+
+% Default to maximum along the x and y directions:
+if ( nargin < 3 )
+    dims = [1, 2];
+end
+
+% Do not allow max(F, G): 
+if ( nargin > 1 && ~isempty(g) )
+    error('CHEBFUN:CHEBFUN3:max2:twoCHEBFUN3Inputs', ...
+        'Unable to maximize two CHEBFUN3 objects.');
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% We have no idea how to achieve this in an efficient way. This
+% is an attempt to return a result, but typically it won't be accurate to 
+% more than 4-5 digits. 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+dom = f.domain;
+%n = 2049; 
+n = 512; 
+if ( dims == [1, 2] || dims == [2, 1] )
+    vals = sample(f, n, n, n);
+    temp = chebfun3.unfold(vals, [3]);
+    h = chebfun(max(temp, [], 2), dom(5:6), 'splitting', 'on');
+    h = simplify(h);
+elseif ( dims == [1,3] || dims == [3, 1] )
+    vals = sample(f, n, n, n);
+    temp = chebfun3.unfold(vals, [2]);
+    h = chebfun(max(temp, [], 2), dom(3:4), 'splitting', 'on');
+    h = simplify(h);
+elseif ( dims == [2, 3] || dims == [3, 2] )
+    vals = sample(f, n, n, n);  
+    temp = chebfun3.unfold(vals, [1]);
+    h = chebfun(max(temp, [], 2), dom(1:2), 'splitting', 'on');
+    h = simplify(h);
+elseif ( dims == 0 )
+    error('CHEBFUN:CHEBFUN3:max2:dims', ...
+        'Dimension arguments must be two positive integer scalars within indexing range.')
+else
+   % return the CHEBFUN3. This is analogous to that MAX() command in
+   % MATLAB.
+   h = f;
+end
+
+end

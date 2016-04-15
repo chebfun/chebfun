@@ -1,0 +1,27 @@
+function v = norm( F )
+%NORM   Frobenius norm of a CHEBFUN3V.
+%   V = NORM(F) returns the Frobenius norm of F, i.e. 
+%       V = sqrt(norm(F1).^2 + norm(F2).^2),
+%   or
+%       V = sqrt(norm(F1).^2 + norm(F2).^2 + norm(F3).^2) .
+%   where F = [F1 F2 F3]^T.
+
+% Empty check: 
+if ( isempty( F ) ) 
+    v = []; 
+    return
+end
+
+nF = F.nComponents; 
+v = 0;
+for jj = 1:nF
+% %    v = v + sum( svd( F.components{jj} ).^2 );
+%      v = v + sum2( power( F.components{jj}, 2 ) );
+    
+    v = v + norm(F.components{jj})^2;
+    %v = v + vscale(F.components{jj})^2;
+end
+%v = max(v);
+v = sqrt(v);
+
+end
