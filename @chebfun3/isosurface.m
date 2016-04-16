@@ -1,26 +1,29 @@
 function varargout = isosurface(f, varargin)
 %ISOSURFACE  Extract isosurface data from a CHEBFUN3
 %
-%   ISOSURFACE(F) plots isosurfaces of the CHEBFUN3 object F as a 
+%   ISOSURFACE(F) plots isosurface of the CHEBFUN3 object F as a 
 %   GUI so that the user can use a slider to change the isosurface.
 %
-%   ISOSURFACE(F, 'NPTS', n) plots isosurfaces of the CHEBFUN3 object F as a 
-%   GUI but allows user to adjust the grid size (i.e., the number of points)
-%   to be used for the isosurface plot. 
+%   ISOSURFACE(F, 'NPTS', n) plots isosurface of the CHEBFUN3 object F
+%   again with sliders but allows user to adjust the grid size (i.e., the 
+%   number of points) that is used to create the isosurface plot.
 %
-%   ISOSURFACE(F, 'NOSLIDER') plots isosurfaces of the CHEBFUN3 object F at 
-%   three automatically-chosen level surfaces. The slider is not shown
+%   ISOSURFACE(F, 'NOSLIDER') plots 3 isosurfaces of the CHEBFUN3 object F 
+%   at three automatically-chosen level surfaces. The slider is not shown
 %   anymore.
 %
-%   ISOSURFACE(F, LEV) plots isosurfaces of F at levels specified in the row
-%   vector LEV. At most 3 isosurfaces are allowed.
+%   ISOSURFACE(F, LEV) plots isosurface of F at a level specified in the
+%   scalar LEV. 
+%
+%   ISOSURFACE(F, LEV, 'NPTS', n) plots isosurface of the CHEBFUN3 object F
+%    at a level specified in the scalar LEV, but allows user to specify the
+%    underlying grid size for plotting.
 %
 %   Example 1: f = cheb.gallery3('runge');
 %            isosurface(f, [0.8])
-%            isosurface(f, [0.8, 0.4])
 %
 %   ISOSURFACE(F,LEV,...) allows plotting isosurfaces of F at specified 
-%   levels, colors and styles.
+%   level, color and style.
 %
 %   If F is complex-valued, then its complex magnitude is used.
 %
@@ -137,68 +140,7 @@ elseif ( nargin == 2 || (nargin == 4 && strcmp(varargin{2}, 'npts')) )
         end
         if ( nargout > 0 )
             varargout = {p};
-        end        
-        
-%     elseif ( numel(isovals)==2 ) % Two levels are already given but colors are not.
-%         isoval1 = isovals(1); 
-%         isoval2 = isovals(2);
-%         p = patch(isosurface(xx, yy, zz, v, isoval1));
-%         p.FaceColor = 'red'; 
-%         p.EdgeColor = 'none';
-%         hold on
-%         p = patch(isosurface(xx, yy, zz, v, isoval2));
-%         p.FaceColor = 'green'; 
-%         p.EdgeColor = 'none';
-%         alpha(.4) % Make objects transparent.
-%         hold off
-%         camlight('headlight')
-%         lighting gouraud
-%         view(3)
-%         xlim([dom(1) dom(2)])
-%         ylim([dom(3) dom(4)])
-%         zlim([dom(5) dom(6)])
-%         legend(sprintf('%3.2f', isoval1), sprintf('%3.2f', isoval2));
-%         axis tight
-%         if ( ~holdState )
-%             hold off
-%         end
-%         if ( nargout > 0 )
-%             varargout = {p};
-%         end
-    
-%     elseif ( numel(isovals)==3 ) % Levels are already given but colors and style are not.
-%         isoval1 = isovals(1);
-%         isoval2 = isovals(2); 
-%         isoval3 = isovals(3);
-%         p = patch(isosurface(xx, yy, zz, v, isoval1));
-%         p.FaceColor = 'red'; 
-%         p.EdgeColor = 'none';
-%         hold on
-%         p = patch(isosurface(xx, yy, zz, v, isoval2));
-%         p.FaceColor = 'green'; 
-%         p.EdgeColor = 'none';
-%         p = patch(isosurface(xx, yy, zz, v, isoval3));
-%         p.FaceColor = 'blue'; 
-%         p.EdgeColor = 'none';
-%         alpha(.4) % Make objects transparent.
-%         hold off; 
-%         camlight('headlight')
-%         lighting gouraud
-%         view(3)
-%         xlim([dom(1) dom(2)])
-%         ylim([dom(3) dom(4)])
-%         zlim([dom(5) dom(6)])
-%         
-%         legend(sprintf('%3.2f', isoval1), sprintf('%3.2f', isoval2), ...
-%             sprintf('%3.2f', isoval3));
-%         axis tight
-%         if ( ~holdState )
-%             hold off
-%         end
-%         if ( nargout > 0 )
-%             varargout = {p};
-%         end
-        
+        end
     end
     
 elseif ( nargin==3 && ~strcmp(varargin{1}, 'npts') ) % Levels, colors and/or style are specified.
