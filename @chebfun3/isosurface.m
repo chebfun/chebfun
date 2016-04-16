@@ -40,15 +40,29 @@ function varargout = isosurface(f, varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 
 
-if ( nargin == 1 )
-    runIsosurface3GUI(f);
-elseif ( nargin == 1 || (nargin == 3 && strcmp(varargin{1}, 'npts')) )
+numpts = [];
+if ( nargin > 1 )
+    for k = 1:nargin-1
+        if ( strcmp(varargin{k}, 'npts')) 
+            numpts = varargin{k+1};
+        end
+    end
+end
+if ( isempty(numpts) )
+    numpts = 51;
+end
+    
+
+
+%if ( nargin == 1 )
+%    runIsosurface3GUI(f);
+if ( nargin == 1 || (nargin == 3 && strcmp(varargin{1}, 'npts')) )
     % User has specified the size of grid to sample for the isosurface plot.
-    runIsosurface3GUI(f, varargin{2});
+    runIsosurface3GUI(f, numpts);
 else
     holdState = ishold;
     dom = f.domain;
-    numpts = 51;
+    %numpts = 51;
     [xx, yy, zz] = meshgrid(linspace(dom(1), dom(2), numpts), ...
         linspace(dom(3), dom(4), numpts), linspace(dom(5), dom(6), numpts));
     v = feval(f, xx, yy, zz);
@@ -98,7 +112,7 @@ if ( nargin == 2 && strcmp(varargin, 'noslider') ) % Levels are not specified. S
      end    
      return
     
-elseif ( nargin == 2 )
+elseif ( nargin == 2 || (nargin == 4 && strcmp(varargin{2}, 'npts')) )
     % Isovalues are given. But colors and style are not specified.
     if iscell(varargin(1))
         isovals = cell2mat(varargin(1));
@@ -125,65 +139,65 @@ elseif ( nargin == 2 )
             varargout = {p};
         end        
         
-    elseif ( numel(isovals)==2 ) % Two levels are already given but colors are not.
-        isoval1 = isovals(1); 
-        isoval2 = isovals(2);
-        p = patch(isosurface(xx, yy, zz, v, isoval1));
-        p.FaceColor = 'red'; 
-        p.EdgeColor = 'none';
-        hold on
-        p = patch(isosurface(xx, yy, zz, v, isoval2));
-        p.FaceColor = 'green'; 
-        p.EdgeColor = 'none';
-        alpha(.4) % Make objects transparent.
-        hold off
-        camlight('headlight')
-        lighting gouraud
-        view(3)
-        xlim([dom(1) dom(2)])
-        ylim([dom(3) dom(4)])
-        zlim([dom(5) dom(6)])
-        legend(sprintf('%3.2f', isoval1), sprintf('%3.2f', isoval2));
-        axis tight
-        if ( ~holdState )
-            hold off
-        end
-        if ( nargout > 0 )
-            varargout = {p};
-        end
+%     elseif ( numel(isovals)==2 ) % Two levels are already given but colors are not.
+%         isoval1 = isovals(1); 
+%         isoval2 = isovals(2);
+%         p = patch(isosurface(xx, yy, zz, v, isoval1));
+%         p.FaceColor = 'red'; 
+%         p.EdgeColor = 'none';
+%         hold on
+%         p = patch(isosurface(xx, yy, zz, v, isoval2));
+%         p.FaceColor = 'green'; 
+%         p.EdgeColor = 'none';
+%         alpha(.4) % Make objects transparent.
+%         hold off
+%         camlight('headlight')
+%         lighting gouraud
+%         view(3)
+%         xlim([dom(1) dom(2)])
+%         ylim([dom(3) dom(4)])
+%         zlim([dom(5) dom(6)])
+%         legend(sprintf('%3.2f', isoval1), sprintf('%3.2f', isoval2));
+%         axis tight
+%         if ( ~holdState )
+%             hold off
+%         end
+%         if ( nargout > 0 )
+%             varargout = {p};
+%         end
     
-    elseif ( numel(isovals)==3 ) % Levels are already given but colors and style are not.
-        isoval1 = isovals(1);
-        isoval2 = isovals(2); 
-        isoval3 = isovals(3);
-        p = patch(isosurface(xx, yy, zz, v, isoval1));
-        p.FaceColor = 'red'; 
-        p.EdgeColor = 'none';
-        hold on
-        p = patch(isosurface(xx, yy, zz, v, isoval2));
-        p.FaceColor = 'green'; 
-        p.EdgeColor = 'none';
-        p = patch(isosurface(xx, yy, zz, v, isoval3));
-        p.FaceColor = 'blue'; 
-        p.EdgeColor = 'none';
-        alpha(.4) % Make objects transparent.
-        hold off; 
-        camlight('headlight')
-        lighting gouraud
-        view(3)
-        xlim([dom(1) dom(2)])
-        ylim([dom(3) dom(4)])
-        zlim([dom(5) dom(6)])
-        
-        legend(sprintf('%3.2f', isoval1), sprintf('%3.2f', isoval2), ...
-            sprintf('%3.2f', isoval3));
-        axis tight
-        if ( ~holdState )
-            hold off
-        end
-        if ( nargout > 0 )
-            varargout = {p};
-        end
+%     elseif ( numel(isovals)==3 ) % Levels are already given but colors and style are not.
+%         isoval1 = isovals(1);
+%         isoval2 = isovals(2); 
+%         isoval3 = isovals(3);
+%         p = patch(isosurface(xx, yy, zz, v, isoval1));
+%         p.FaceColor = 'red'; 
+%         p.EdgeColor = 'none';
+%         hold on
+%         p = patch(isosurface(xx, yy, zz, v, isoval2));
+%         p.FaceColor = 'green'; 
+%         p.EdgeColor = 'none';
+%         p = patch(isosurface(xx, yy, zz, v, isoval3));
+%         p.FaceColor = 'blue'; 
+%         p.EdgeColor = 'none';
+%         alpha(.4) % Make objects transparent.
+%         hold off; 
+%         camlight('headlight')
+%         lighting gouraud
+%         view(3)
+%         xlim([dom(1) dom(2)])
+%         ylim([dom(3) dom(4)])
+%         zlim([dom(5) dom(6)])
+%         
+%         legend(sprintf('%3.2f', isoval1), sprintf('%3.2f', isoval2), ...
+%             sprintf('%3.2f', isoval3));
+%         axis tight
+%         if ( ~holdState )
+%             hold off
+%         end
+%         if ( nargout > 0 )
+%             varargout = {p};
+%         end
         
     end
     
@@ -216,23 +230,54 @@ elseif ( nargin==3 && ~strcmp(varargin{1}, 'npts') ) % Levels, colors and/or sty
      if ( nargout > 0 )
          varargout = {p};
      end
+     
+     
+elseif ( nargin==5 && strcmp(varargin{3}, 'npts') ) % Levels, colors and/or style are specified.
+    cc = regexp( varargin{2}, '[bgrcmykw]', 'match' );       % color
+        if ( isempty(cc) ) 
+            cc{1}= 'g';
+        end
     
+    if ( numel(varargin(1))==1 ) % Levels
+        if iscell(varargin(1))
+            isoval1 = cell2mat(varargin(1));
+        else
+            isoval1 = varargin(1);
+        end
+    end
+    p = patch(isosurface(xx, yy, zz, v, isoval1));
+    p.FaceColor = cc{1}; 
+    p.EdgeColor = 'none';
+    camlight('headlight')
+    lighting gouraud
+    view(3)
+    xlim([dom(1) dom(2)])
+    ylim([dom(3) dom(4)])
+    zlim([dom(5) dom(6)])
+    axis tight
+    if ( ~holdState )
+        hold off
+    end
+     if ( nargout > 0 )
+         varargout = {p};
+     end
+     
 end
 
 end % End of function
 
 
-function runIsosurface3GUI(f, npts)
+function runIsosurface3GUI(f, numpts)
 
 h = instantiateIsosurface3();
 handles = guihandles(h);
 
 dom = f.domain;
-if nargin > 1
-    numpts = npts; % User has specified the size of grid to sample
-else
-    numpts = 51;
-end
+% if nargin > 1
+%     numpts = npts; % User has specified the size of grid to sample
+% else
+%     numpts = 51;
+% end
 [xx, yy, zz] = meshgrid(linspace(dom(1), dom(2), numpts), ...
     linspace(dom(3), dom(4), numpts), linspace(dom(5), dom(6), numpts));
 v = feval(f, xx, yy, zz);
