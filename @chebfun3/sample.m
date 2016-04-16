@@ -31,7 +31,7 @@ p = max(p, 50);
 
 
 % Use ST decomposition so we can keep it in low rank form: 
-[fCore, fCols, fRows, fTubes] = st(f);
+[fCore, fCols, fRows, fTubes] = tucker(f);
 Cvals = sample(fCols, m);
 %Cvals = sample(chebfun(C,'splitting', 'on'), m);
 Rvals = sample(fRows, n);

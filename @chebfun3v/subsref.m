@@ -1,4 +1,4 @@
-function varargout = subsref( F, ref )
+function varargout = subsref(F, ref)
 %SUBSREF   CHEBFUN3V subsref.
 % 
 %   F(X,Y,Z) returns the values of the CHEBFUN3 object F evaluated on the 

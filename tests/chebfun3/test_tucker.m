@@ -1,4 +1,4 @@
-function pass = test_st(pref)
+function pass = test_tucker(pref)
 % Test ST, i.e., Slice-Tucker decomposition 
 
 if ( nargin == 0) 
@@ -9,7 +9,7 @@ tol = 1000*pref.cheb3Prefs.chebfun3eps;
 j = 1; 
 
 f = chebfun3(@(x,y,z) cos(x.*y.*z));
-[fCore, fCols, fRows, fTubes] = st(f); 
+[fCore, fCols, fRows, fTubes] = tucker(f); 
 x = linspace(-1,1)';
 [xx,yy,zz] = ndgrid(x);
 fVals = f(xx, yy, zz);
@@ -19,7 +19,7 @@ err = norm(stVal(:) - fVals(:));
 pass(j) = err < tol; j = j + 1; 
 
 f = chebfun3(@(x,y,z) cos(x.*y.*z), [-3 4 -1 3 2 4]);
-[fCore, fCols, fRows, fTubes] = st(f); 
+[fCore, fCols, fRows, fTubes] = tucker(f); 
 x = linspace(-3,4)';
 y = linspace(-1,3)';
 z = linspace(2,4)';
@@ -30,7 +30,7 @@ stVal = chebfun3.txm(chebfun3.txm(chebfun3.txm(fCore, fCols(x, :), 1), ...
 err = norm(stVal(:) - fVals(:));
 pass(j) = err < tol; j = j + 1; 
 
-core = st(f); 
+core = tucker(f); 
 pass(j) = norm( fCore(:) - core(:) ) < tol; j = j + 1; 
 
 end

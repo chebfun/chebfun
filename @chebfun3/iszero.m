@@ -7,7 +7,7 @@ function out = iszero(f)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Get data:
-[fCore, fCols, fRows, fTubes] = st(f);
+[fCore, fCols, fRows, fTubes] = tucker(f);
 
 % Trivial check: If all the pivots are zero, then the SEPARABLEAPPROX is zero: 
 if ( norm(fCore(:), inf) == 0 ) 

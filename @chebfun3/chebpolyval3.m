@@ -34,7 +34,7 @@ else
 end
 
 % Get low rank representation of f:
-[core, cols, rows, tubes] = st(f);
+[core, cols, rows, tubes] = tucker(f);
 
 tech = chebfunpref().tech(); 
 colVals = tech.coeffs2vals(chebcoeffs(cols, m));

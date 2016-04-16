@@ -20,7 +20,7 @@ if ( isempty(f) )
 end
 
 % Get the low rank representation for f. 
-[fCore,fCols, fRows, fTubes] = st(f);
+[fCore,fCols, fRows, fTubes] = tucker(f);
 
 colVals = feval(fCols, x(:));
 rowVals = feval(fRows, y(:));

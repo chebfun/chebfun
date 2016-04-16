@@ -27,7 +27,7 @@ if ( isa(f, 'chebfun3') )           % CHEBFUN3 * ???
     elseif ( isa(g, 'chebfun') )    % CHEBFUN3 * CHEBFUN: mode 1 for now (like CHEBFUN2 * CHEBFUN ).
         % The output is a CHEBFUN2. This is the continuous analogue of
         % tensor vector multiplication which makes a matrix.
-        [fCore, fCols, fRows, fTubes] = st(f);
+        [fCore, fCols, fRows, fTubes] = tucker(f);
         
         X = innerProduct(fCols, g);
         temp = squeeze(chebfun3.txm(fCore, X.'));
@@ -41,7 +41,7 @@ if ( isa(f, 'chebfun3') )           % CHEBFUN3 * ???
         % The output is another CHEBFUN3. Recall that, mode-1 contraction 
         % of an M*N*P tensor by a Q*M matrix creates a Q*N*P tensor. This 
         % is the continuous analogue of that operation.
-        [fCore, fCols, fRows, fTubes] = st(f);
+        [fCore, fCols, fRows, fTubes] = tucker(f);
         
         gRows = g.rows; % rows correspond to the 1st variable of g. This is Chebfun2's convention.
         gCols = g.cols; % cols correspond to the 2nd variable of g. This is Chebfun2's convention.

@@ -19,7 +19,7 @@ j = j+1;
 pass(j) = ( abs(sum3(f) - 8) < tol );
 
 % Runge function
-f = chebfun3.gallery3('runge');
+f = cheb.gallery3('runge');
 j = j + 1;
 pass(j) = ( abs(sum3(f) - 4.28685406230184188268) < tol );
 

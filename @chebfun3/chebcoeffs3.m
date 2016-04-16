@@ -24,7 +24,7 @@ if ( iszero(f) )
 end
 
 % Get the low rank representation for f. 
-[core, cols, rows, tubes] = st(f);
+[core, cols, rows, tubes] = tucker(f);
 
 % Get the coeffs of the columns, rows and tubes:
 cols_coeffs = chebcoeffs(cols);

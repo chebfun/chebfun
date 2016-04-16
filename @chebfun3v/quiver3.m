@@ -1,4 +1,4 @@
-function varargout = quiver3( F, varargin )
+function varargout = quiver3(F, varargin)
 %QUIVER3   3-D quiver plot of a CHEBFUN3V.
 %   QUIVER3(F) plots velocity vectors as arrows with components F(1), F(2),
 %   F(3), which are CHEBFUN3 objects. QUIVER3 automatically scales the arrows to
@@ -15,11 +15,10 @@ function varargout = quiver3( F, varargin )
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-%numpts = 20; 
 numpts = 7; 
 
 % Empty check:
-if ( isempty( F ) )
+if ( isempty(F) )
     quiver([])
     return
 end

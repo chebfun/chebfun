@@ -81,8 +81,8 @@ function h = compressed_plus(f, g)
 % B = BCore x_1 BCols x_2 BRows x_3 BTubes, then
 % A + B = ...
 
-[fCore, fCols, fRows, fTubes] = st(f);
-[gCore, gCols, gRows, gTubes] = st(g);
+[fCore, fCols, fRows, fTubes] = tucker(f);
+[gCore, gCols, gRows, gTubes] = tucker(g);
 [r1f, r2f, r3f] = rank(f); 
 [r1g, r2g, r3g] = rank(g); 
 

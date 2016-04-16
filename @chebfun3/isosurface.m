@@ -6,7 +6,7 @@ function varargout = isosurface(f, varargin)
 %
 %   ISOSURFACE(F, 'NPTS', n) plots isosurfaces of the CHEBFUN3 object F as a 
 %   GUI but allows user to adjust the grid size (i.e., the number of points)
-%   to be used for the isosurface plot.
+%   to be used for the isosurface plot. 
 %
 %   ISOSURFACE(F, 'NOSLIDER') plots isosurfaces of the CHEBFUN3 object F at 
 %   three automatically-chosen level surfaces. The slider is not shown
@@ -15,7 +15,7 @@ function varargout = isosurface(f, varargin)
 %   ISOSURFACE(F, LEV) plots isosurfaces of F at levels specified in the row
 %   vector LEV. At most 3 isosurfaces are allowed.
 %
-%   Example 1: f = chebfun3.gallery3('runge');
+%   Example 1: f = cheb.gallery3('runge');
 %            isosurface(f, [0.8])
 %            isosurface(f, [0.8, 0.4])
 %
@@ -26,11 +26,19 @@ function varargout = isosurface(f, varargin)
 %
 %   See also CHEBFUN3/PLOT, CHEBFUN3/SLICE, SCAN, and CHEBFUN3/SURF.
 %
-% Example 2: f = chebfun3(@(x,y,z) tanh(x+y-.3) + cos(x.*y.*z)./(4+x-y-z));
+%   Example 2: f = chebfun3(@(x,y,z) tanh(x+y-.3) + cos(x.*y.*z)./(4+x-y-z));
 %            isosurface(f)
+
+%   Developer Note: This code might run slow, as evalutaion is not 
+%   specially slow in Chebfun3, but because isosurface plots can be slow to
+%   render in the core MATLAB. The time spent in pure Chebfun side of this 
+%   code might be 1% the time spent just in the line that calls isosurface 
+%   command of core MATLAB. This is an issue related to how graphics are
+%   handled in MATLAB with different graphic cards.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
+
 
 if ( nargin == 1 )
     runIsosurface3GUI(f);

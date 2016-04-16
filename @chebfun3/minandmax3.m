@@ -35,7 +35,7 @@ doNewton = 1;   % Newton polishing?
 % end
 
 % Extract low rank representation:
-[fCore, fCols, fRows, fTubes] = st(f);
+[fCore, fCols, fRows, fTubes] = tucker(f);
 dom = f.domain;
 
 [m, n, p] = length(f);

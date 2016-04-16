@@ -15,7 +15,7 @@ end
 holdState = ishold;
 
 % Get the low rank representation for f. 
-[ignore, fCols, fRows, fTubes] = st(f);
+[ignore, fCols, fRows, fTubes] = tucker(f);
 
 % There are three subplots each plotting the PLOTCOEFFS of one of the 
 % fibers.

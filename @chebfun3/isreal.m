@@ -15,7 +15,7 @@ if ( isempty(f) )
 end
 
 % Get the low rank representation for f. 
-[fCore, fCols, fRows, fTubes] = st(f);
+[fCore, fCols, fRows, fTubes] = tucker(f);
 
 % Check individual columns and rows. 
 out = isreal(fCore) && isreal(fCols) && isreal(fRows) && isreal(fTubes);

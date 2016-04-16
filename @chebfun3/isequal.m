@@ -18,10 +18,10 @@ if ( isempty(f) )
 end
 
 % Get the low rank representation for f. 
-[fCore, fCols, fRows, fTubes] = st(f);
+[fCore, fCols, fRows, fTubes] = tucker(f);
 
 % Get the low rank representation for g. 
-[gCore, gCols, gRows, gTubes] = st(g);
+[gCore, gCols, gRows, gTubes] = tucker(g);
 
 % Test every part: 
 out = ( isequal(fCore, gCore) & isequal(fCols, gCols) & ...

@@ -188,9 +188,8 @@ methods (Access = public)
     % Number of degrees of freedom needed to represent a CHEBFUN3
     out = ndf(f);
     
-    % Get the low-rank representation of f. ST stands for Slice-Tucker
-    % decomposition.
-    varargout = st(f);    
+    % Get the low-rank representation (Tucker decomposition) of f.
+    varargout = tucker(f);    
     
     % Definite integral of a CHEBFUN3 over its domain. out is a scalar.
     out = sum3(f);
