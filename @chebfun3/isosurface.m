@@ -4,6 +4,10 @@ function varargout = isosurface(f, varargin)
 %   ISOSURFACE(F) plots isosurfaces of the CHEBFUN3 object F as a 
 %   GUI so that the user can use a slider to change the isosurface.
 %
+%   ISOSURFACE(F, 'NPTS', n) plots isosurfaces of the CHEBFUN3 object F as a 
+%   GUI but allows user to adjust the grid size (i.e., the number of points)
+%   to be used for the isosurface plot.
+%
 %   ISOSURFACE(F, 'NOSLIDER') plots isosurfaces of the CHEBFUN3 object F at 
 %   three automatically-chosen level surfaces. The slider is not shown
 %   anymore.
@@ -29,7 +33,10 @@ function varargout = isosurface(f, varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin == 1 )
-        runIsosurface3GUI(f);
+    runIsosurface3GUI(f);
+elseif ( nargin == 1 || (nargin == 3 && strcmp(varargin{1}, 'npts')) )
+    % User has specified the size of grid to sample for the isosurface plot.
+    runIsosurface3GUI(f, varargin{2});
 else
     holdState = ishold;
     dom = f.domain;
@@ -84,7 +91,7 @@ if ( nargin == 2 && strcmp(varargin, 'noslider') ) % Levels are not specified. S
      return
     
 elseif ( nargin == 2 )
-    % Levels are already given but colors and style are not.
+    % Isovalues are given. But colors and style are not specified.
     if iscell(varargin(1))
         isovals = cell2mat(varargin(1));
     else
@@ -172,7 +179,7 @@ elseif ( nargin == 2 )
         
     end
     
-elseif ( nargin==3 ) % Levels, colors and/or style are specified.
+elseif ( nargin==3 && ~strcmp(varargin{1}, 'npts') ) % Levels, colors and/or style are specified.
         cc = regexp( varargin{2}, '[bgrcmykw]', 'match' );       % color        
         if ( isempty(cc) ) 
             cc{1}= 'g';
@@ -207,13 +214,17 @@ end
 end % End of function
 
 
-function runIsosurface3GUI(f)
+function runIsosurface3GUI(f, npts)
 
 h = instantiateIsosurface3();
 handles = guihandles(h);
-    
+
 dom = f.domain;
-numpts = 51;
+if nargin > 1
+    numpts = npts; % User has specified the size of grid to sample
+else
+    numpts = 51;
+end
 [xx, yy, zz] = meshgrid(linspace(dom(1), dom(2), numpts), ...
     linspace(dom(3), dom(4), numpts), linspace(dom(5), dom(6), numpts));
 v = feval(f, xx, yy, zz);
@@ -233,12 +244,8 @@ set(handles.isosurfaceSlider, 'SliderStep', [1/nSteps, 1 ]);
 
 % Plot the isosurface
 p = patch(isosurface(xx, yy, zz, v, isoVal));
-
-%p = patch(isosurface(x,y,z,v,-3));
-%isonormals(x,y,z,v,p)
 p.FaceColor = 'red';
 p.EdgeColor = 'none';
-
 camlight 
 lighting gouraud
 
@@ -268,9 +275,6 @@ end
 function h = instantiateIsosurface3()
 
 % Load up the GUI from the *.fig file.
-%h = openfig('/isosurface.fig', 'invisible');
-% The following is to be used when this goes to the main Chebfun repo:
-% [chebfunroot '@chebfun3/isosurface.fig']
 installDir = chebfunroot();
 h = openfig( [installDir '/@chebfun3/isosurface.fig'], 'invisible');
 
