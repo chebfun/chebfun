@@ -32,7 +32,7 @@ elseif ( N <= 512 )
     c_jac = cheb2jac_direct(c_cheb, alpha, beta);
     
 else
-    % Call faster jac2jac and then convert Jacobi (-1/2,-1/2) to Chebyshev: 
+    % Convert Chebyshev to Jacobi (-1/2,-1/2) and then call jac2jac: 
     
     N = size(c_cheb, 1); 
     % Convert T_n -> P_n^(-1/2,1/2): 
