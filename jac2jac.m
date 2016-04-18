@@ -1,6 +1,5 @@
 function c_jac = jac2jac( c_jac, alpha, beta, gam, delta )
 %JAC2JAC   Convert Jacobi (A,B) coefficients to Jacobi (G,D) coefficients.
-%
 %   C_JAC = JAC2JAC(C_JAC, A, B, G, D) converts the vector C_JAC of Jacobi
 %   (A,B) coefficients to a vector of Jacobi (G,D) coefficients such that
 %    C_JAC(1)*P_0^{(A,B)}(x) + ... + C_JAC(N)*P_{N-1}^{(A,B)}(x) = ...
@@ -152,8 +151,8 @@ c_jac = D1 * ( C .* b(1:N,:) * ones(sz,1) );
 % Fix the first entry of the output.
 Matrow1 = T_row.*vals(1:N)'.*diag(D2)';
 Matrow1 = Matrow1/Matrow1(1);
-
 c_jac(1) = Matrow1 * v;
+
 end
 
 function v = UpJacobiConversion(v, a, b)

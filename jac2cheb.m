@@ -12,7 +12,7 @@ function c_cheb = jac2cheb( c_jac, alpha, beta )
 % Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-N = size(c_jac,1); 
+N = size(c_jac, 1); 
 
 if ( alpha == 0 && beta == 0 ) 
     % Use leg2cheb if alpha = beta = 0: 
