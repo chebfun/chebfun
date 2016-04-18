@@ -1,6 +1,6 @@
 function varargout = minandmax2(varargin)
-%MINANDMAX2   Find global minimum and maximum of a SPHEREFUN2.
-%   Y = minandmax2(F) returns the minimum and maximum value of a SPHEREFUN2 over
+%MINANDMAX2   Find global minimum and maximum of a SPHEREFUN.
+%   Y = minandmax2(F) returns the minimum and maximum value of a SPHEREFUN over
 %   its domain. Y is a vector of length 2 such that Y(1) = min(f(x,y)) and Y(2)
 %   = max(f(x,y)).
 %

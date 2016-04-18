@@ -1,5 +1,5 @@
 function varargout = tan(varargin)
-%TAN   Tangent of a SPHEREFUN2.
+%TAN   Tangent of a SPHEREFUN.
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

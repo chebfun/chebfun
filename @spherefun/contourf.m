@@ -1,5 +1,5 @@
 function varargout = contourf(varargin)
-%CONTOURF   Filled contour plot of a SPHEREFUN2.
+%CONTOURF   Filled contour plot of a SPHEREFUN.
 %   CONTOURF(...) is the same as CONTOUR(...) except that the areas between
 %   contours are filled with colors according to the Z-value for each level.
 %   Contour regions with data values at or above a given level are filled with

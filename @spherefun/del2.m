@@ -1,5 +1,5 @@
 function varargout = del2(varargin)
-%DEL2   Scaled Laplacian of a SPHEREFUN2.
+%DEL2   Scaled Laplacian of a SPHEREFUN.
 %   L = del2(F) is a numerical approximation of 
 %       del^2 F/4 = (d^2F/dx^2 + d^2F/dy^2)/4.
 %

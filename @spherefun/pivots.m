@@ -1,5 +1,5 @@
 function varargout = pivots(varargin)
-%PIVOTS   Pivot values of a SPHEREFUN2.
+%PIVOTS   Pivot values of a SPHEREFUN.
 % 
 %   PIVOTS(F) returns the pivot values taken during in the constructor by the GE
 %   algorithm.

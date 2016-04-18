@@ -1,6 +1,6 @@
 function varargout = std2(varargin)
-%STD2   Standard deviation of a SPHEREFUN2.
-%   V = STD2(F) computes the standard deviation of a SPHEREFUN2, i.e., 
+%STD2   Standard deviation of a SPHEREFUN.
+%   V = STD2(F) computes the standard deviation of a SPHEREFUN, i.e., 
 %
 %     STD2(F)^2 = 1/A*sum2(|f(x,y) - m|^2)
 %

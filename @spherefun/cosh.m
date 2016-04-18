@@ -1,5 +1,5 @@
 function varargout = cosh(varargin)
-%COSH   Hyperbolic cosine of a SPHEREFUN2.
+%COSH   Hyperbolic cosine of a SPHEREFUN.
 %   COSH(F) returns the hyperbolic cosine of F.
 % 
 % See also SINH, COS.

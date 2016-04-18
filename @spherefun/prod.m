@@ -1,5 +1,5 @@
 function varargout = prod(varargin)
-%PROD     Product integral of a SPHEREFUN2. 
+%PROD     Product integral of a SPHEREFUN. 
 %   PROD(F) returns exp( sum(log(F)) )
 % 
 %   PROD(F, DIM) returns the chebfun exp( sum(log(F), DIM) )

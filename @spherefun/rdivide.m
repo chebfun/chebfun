@@ -1,11 +1,11 @@
 function varargout = rdivide(varargin)
-%./   Pointwise right divide of SPHEREFUN2 objects.
-%   F./G if F is a SPHEREFUN2 and G is a double this returns (1/G)*F
+%./   Pointwise right divide of SPHEREFUN objects.
+%   F./G if F is a SPHEREFUN and G is a double this returns (1/G)*F
 %
 %   F./G if F is a double and G is a v this returns F/G, but this doe
 %   not work if G becomes numerically close to zero.
 %
-%   F./G we do not allow F and G to both be SPHEREFUN2 object.
+%   F./G we do not allow F and G to both be SPHEREFUN object.
 % 
 %   F./G is the same as the command rdivide(F,G)
 %

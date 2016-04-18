@@ -1,5 +1,5 @@
 function varargout = waterfall(varargin)
-%WATERFALL   Waterfall plot of a SPHEREFUN2.
+%WATERFALL   Waterfall plot of a SPHEREFUN.
 %   WATERFALL(F) displays the waterfall plot of F.
 %
 %   WATERFALL(F, S) displays the column and row chebfuns of F that are used for

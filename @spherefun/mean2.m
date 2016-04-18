@@ -1,6 +1,6 @@
 function varargout = mean2(varargin)
-%MEAN2   Mean of a SPHEREFUN2.
-%   V = MEAN2(F) returns the mean of a SPHEREFUN2: 
+%MEAN2   Mean of a SPHEREFUN.
+%   V = MEAN2(F) returns the mean of a SPHEREFUN: 
 % 
 %   V = 1/A*integral2( f )
 % 

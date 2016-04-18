@@ -1,6 +1,6 @@
 function varargout = max(varargin)
-%MAX   Maximum value of a SPHEREFUN2 in one direction.
-%   MAX(f) returns a chebfun representing the maximum of the SPHEREFUN2 along the
+%MAX   Maximum value of a SPHEREFUN in one direction.
+%   MAX(f) returns a chebfun representing the maximum of the SPHEREFUN along the
 %   y direction, i.e, MAX(f) = @(x) max( f ( x, : ) )
 %
 %   MAX(f, [], dim) returns a CHEBFUN representing the maximum of f along the

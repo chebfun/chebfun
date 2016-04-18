@@ -1,5 +1,5 @@
 function varargout = real(varargin)
-%REAL      Real part of a SPHEREFUN2.
+%REAL      Real part of a SPHEREFUN.
 %
 % See also IMAG.
 

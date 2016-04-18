@@ -1,7 +1,7 @@
 function varargout = minus(varargin)
-%-   Subtraction of two SPHEREFUN2 objects.
+%-   Subtraction of two SPHEREFUN objects.
 % 
-%   F - G subtracts G from F, where F and G are SPHEREFUN2 objects or scalars.
+%   F - G subtracts G from F, where F and G are SPHEREFUN objects or scalars.
 %
 % See also PLUS, UMINUS.
 

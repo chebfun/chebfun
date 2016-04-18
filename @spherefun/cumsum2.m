@@ -1,6 +1,6 @@
 function varargout = cumsum2(varargin)
-%CUMSUM2   Double indefinite integral of a SPHEREFUN2.
-%   F = CUMSUM2(F) returns the double indefinite integral of a SPHEREFUN2. That i
+%CUMSUM2   Double indefinite integral of a SPHEREFUN.
+%   F = CUMSUM2(F) returns the double indefinite integral of a SPHEREFUN. That i
 %                   y  x
 %                  /  /
 %   CUMSUM2(F) =  |  |   f(x,y) dx dy   for  (x,y) in [a,b] x [c,d],

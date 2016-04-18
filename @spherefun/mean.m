@@ -1,5 +1,5 @@
 function varargout = mean(varargin)
-%MEAN   Average or mean value of a SPHEREFUN2. 
+%MEAN   Average or mean value of a SPHEREFUN. 
 %   MEAN(F) takes the mean in the y-direction (default), i.e., 
 %          MEAN(F) = 1/(ymax-ymin) sum(F).
 %

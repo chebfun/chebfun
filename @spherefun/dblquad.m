@@ -1,6 +1,6 @@
 function varargout = dblquad(varargin)
-%DBLQUAD   Complete definite integral of SPHEREFUN2. 
-%   I = DBLQUAD(F, a, b, c, d), returns the definite integral of a SPHEREFUN2 over
+%DBLQUAD   Complete definite integral of SPHEREFUN. 
+%   I = DBLQUAD(F, a, b, c, d), returns the definite integral of a SPHEREFUN over
 %   the region [a, b, c, d].
 % 
 %   This function is a wrapper for quad2d.

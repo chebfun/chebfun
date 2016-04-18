@@ -1,5 +1,5 @@
 function varargout = surface(varargin)
-%SURFACE  Plot surface of a SPHEREFUN2.
+%SURFACE  Plot surface of a SPHEREFUN.
 %   SURFACE(X, Y, Z, C) adds the surface in X,Y,Z,C to the current axes.
 %
 %   SURFACE(X, Y, Z) uses C = Z, so color is proportional to surface height. 

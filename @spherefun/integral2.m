@@ -1,7 +1,7 @@
 function varargout = integral2(varargin)
-%INTEGRAL2  Double integral of a SPHEREFUN2 over its domain.
+%INTEGRAL2  Double integral of a SPHEREFUN over its domain.
 %   I = INTEGRAL2(F) returns a value representing the double integral of a
-%   SPHEREFUN2.
+%   SPHEREFUN.
 %
 %   I = INTEGRAL2(F, [a b c d]) integrate F over the rectangle region [a b] x [c
 %   d] provide this rectangle is in the domain of F.

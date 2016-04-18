@@ -1,7 +1,7 @@
 function varargout = mtimes(varargin)
-%*	   Pointwise multiplication for SPHEREFUN2 objects.
+%*	   Pointwise multiplication for SPHEREFUN objects.
 %
-%   c*F or F*c multiplies a SPHEREFUN2 F by a scalar c.
+%   c*F or F*c multiplies a SPHEREFUN F by a scalar c.
 %
 %   F*G computes the integral of F(s,y)G(x,s) over s, and this is the continuou
 %   analogue of matrix-matrix multiplication.

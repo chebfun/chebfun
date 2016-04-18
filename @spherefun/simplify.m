@@ -1,5 +1,5 @@
 function varargout = simplify(varargin)
-% Simplify a SPHEREFUN2
+% Simplify a SPHEREFUN
 % 
 % F = SIMPLIFY( F ) compressed the representation of F to one that i
 % numerically the same, but requires fewer parameters to store. Currently thi

@@ -1,5 +1,5 @@
 function varargout = std(varargin)
-%STD   Standard deviation of a SPHEREFUN2 along one variable.
+%STD   Standard deviation of a SPHEREFUN along one variable.
 %   G = STD(F) returns the standard deviation of F in the y-variable (default).
 %   That is, if F is defined on the rectangle [a,b] x [c,d] then
 %
@@ -13,7 +13,7 @@ function varargout = std(varargin)
 %   DIM = 1 and along the x-variable if DIM = 2. The FLAG is ignored and kept in
 %   this function so the syntax agrees with the Matlab STD command.
 %
-% See also CHEBFUN/STD, SPHEREFUN2/MEAN.
+% See also CHEBFUN/STD, SPHEREFUN/MEAN.
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

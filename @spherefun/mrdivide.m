@@ -1,7 +1,7 @@
 function varargout = mrdivide(varargin)
-% /   Right scalar divide for SPHEREFUN2 objects.
+% /   Right scalar divide for SPHEREFUN objects.
 %
-%   F/C divides the SPHEREFUN2 F by a scalar C.
+%   F/C divides the SPHEREFUN F by a scalar C.
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

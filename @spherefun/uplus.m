@@ -1,5 +1,5 @@
 function varargout = uplus(varargin)
-%UPLUS   Unary plus for a SPHEREFUN2. 
+%UPLUS   Unary plus for a SPHEREFUN. 
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

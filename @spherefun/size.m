@@ -1,5 +1,5 @@
 function varargout = size(varargin)
-% SIZE       Size of a SPHEREFUN2
+% SIZE       Size of a SPHEREFUN
 %   D = SIZE(F) returns the two-element row vector D = [inf,inf].
 %
 %   [M, N] = SIZE(F) returns M = inf and N = inf.

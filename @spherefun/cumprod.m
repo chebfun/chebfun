@@ -1,8 +1,8 @@
 function varargout = cumprod(varargin)
-%CUMPROD  Indefinite product integral of a SPHEREFUN2. 
-%   G = CUMPROD(F) returns the SPHEREFUN2 G = exp( cumsum(log(F)) )
+%CUMPROD  Indefinite product integral of a SPHEREFUN. 
+%   G = CUMPROD(F) returns the SPHEREFUN G = exp( cumsum(log(F)) )
 % 
-%   G = CUMPROD(F, DIM) returns the SPHEREFUN2 G = exp( cumsum(log(F), DIM) )
+%   G = CUMPROD(F, DIM) returns the SPHEREFUN G = exp( cumsum(log(F), DIM) )
 %
 % See also CUMSUM, SUM, PROD.
 

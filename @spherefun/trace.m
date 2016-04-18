@@ -1,5 +1,5 @@
 function varargout = trace(varargin)
-% TRACE integral of a SPHEREFUN2 along its diagonal 
+% TRACE integral of a SPHEREFUN along its diagonal 
 %
 % TRACE(f) is the integral of function f(x,x).
 % 

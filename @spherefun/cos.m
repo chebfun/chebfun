@@ -1,5 +1,5 @@
 function varargout = cos(varargin)
-%COS   Cosine of a SPHEREFUN2.
+%COS   Cosine of a SPHEREFUN.
 %   COS(F) returns the cosine of F.
 %
 % See also COSH.

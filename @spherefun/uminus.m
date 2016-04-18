@@ -1,5 +1,5 @@
 function varargout = uminus(varargin)
-%UMINUS   Unary minus for a SPHEREFUN2. 
+%UMINUS   Unary minus for a SPHEREFUN. 
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

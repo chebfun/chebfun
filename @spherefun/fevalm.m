@@ -1,5 +1,5 @@
 function varargout = fevalm(varargin)
-% FEVALM   Evaluate a SPHEREFUN2.
+% FEVALM   Evaluate a SPHEREFUN.
 % 
 % Z = FEVALM(F, X, Y) returns a matrix of values Z of size length(X)-by-length(Y). 
 % X and Y should be vectors of doubles. This is equivalent to making a meshgrid 

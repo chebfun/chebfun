@@ -1,6 +1,6 @@
 function varargout = length(varargin)
-%LENGTH  The rank of a SPHEREFUN2.
-%   K = LENGTH(F) returns the rank of the SPHEREFUN2 representation.
+%LENGTH  The rank of a SPHEREFUN.
+%   K = LENGTH(F) returns the rank of the SPHEREFUN representation.
 %
 %   [M, N] = LENGTH( F ) returns the length of the column and 
 %   row slices employed in the separable model.  The interpretation 

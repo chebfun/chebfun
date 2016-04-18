@@ -1,6 +1,6 @@
 function varargout = mesh(varargin)
-%MESH   3-D mesh surface of a SPHEREFUN2.
-%   MESH is not supported for SPHEREFUN2 objects, and so returns an error.
+%MESH   3-D mesh surface of a SPHEREFUN.
+%   MESH is not supported for SPHEREFUN objects, and so returns an error.
 %
 % See also SURF.
 

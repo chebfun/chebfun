@@ -1,7 +1,7 @@
 function varargout = times(varargin)
-% .*    Pointwise multiplication for SPHEREFUN2 objects.
+% .*    Pointwise multiplication for SPHEREFUN objects.
 %
-%   F.*G multiplies SPHEREFUN2 objects F and G. Alternatively F or G could be a
+%   F.*G multiplies SPHEREFUN objects F and G. Alternatively F or G could be a
 %   double.
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.

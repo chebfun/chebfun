@@ -1,10 +1,10 @@
 function varargout = integral(varargin)
-%INTEGRAL   Complete definite integral of SPHEREFUN2. 
+%INTEGRAL   Complete definite integral of SPHEREFUN. 
 %
-%   I = INTEGRAL(F), returns the definite integral of a SPHEREFUN2. Integrated
+%   I = INTEGRAL(F), returns the definite integral of a SPHEREFUN. Integrated
 %   over its domain of definition.
 % 
-%   I = INTEGRAL(F, g), returns the integral of a SPHEREFUN2 along the curve
+%   I = INTEGRAL(F, g), returns the integral of a SPHEREFUN along the curve
 %   defined by the complex-valued CHEBFUN g.
 % 
 % See also INTEGRAL2, SUM2, QUAD2D.

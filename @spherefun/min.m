@@ -1,6 +1,6 @@
 function varargout = min(varargin)
-%MIN   Minimum value of a SPHEREFUN2 in one direction.
-%   MIN(f) returns a chebfun representing the minimum of the SPHEREFUN2 along the
+%MIN   Minimum value of a SPHEREFUN in one direction.
+%   MIN(f) returns a chebfun representing the minimum of the SPHEREFUN along the
 %   y direction, i.e, MIN(f) = @(x) max( f ( x, : ) )
 %
 %   MIN(f, [], dim) returns a CHEBFUN representing the minimum of f along the

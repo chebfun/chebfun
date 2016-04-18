@@ -1,5 +1,5 @@
 function varargout = normalizeRowsAndCols(varargin)
-%NORMALIZEROWSANDCOLS   Normalize the rows and columns of a SPHEREFUN2.
+%NORMALIZEROWSANDCOLS   Normalize the rows and columns of a SPHEREFUN.
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

@@ -1,6 +1,6 @@
 function varargout = iszero(varargin)
-%ISZERO   Check if a SPHEREFUN2 is identically zero on its domain.
-%   OUT = ISZERO( F ) return 1 if the SPHEREFUN2 is exactly the zero function, and
+%ISZERO   Check if a SPHEREFUN is identically zero on its domain.
+%   OUT = ISZERO( F ) return 1 if the SPHEREFUN is exactly the zero function, and
 %   0 otherwise. 
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.

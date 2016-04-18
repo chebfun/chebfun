@@ -1,5 +1,5 @@
 function varargout = rank(varargin)
-%RANK      Rank of a SPHEREFUN2.
+%RANK      Rank of a SPHEREFUN.
 %   RANK(F) produces an estimate of the rank of the approximant F.
 %
 %   RANK(F, TOL) is the number of singular values of F greater than TOL/N, where

@@ -1,5 +1,5 @@
 function varargout = diag(varargin)
-%DIAG(F)   Diagonal of a SPHEREFUN2.
+%DIAG(F)   Diagonal of a SPHEREFUN.
 %   G = DIAG(F) returns the CHEBFUN representing g(x) = f(x, x).
 %
 %   G = diag(F,C) returns the CHEBFUN representing g(x) = f(x, x+c).

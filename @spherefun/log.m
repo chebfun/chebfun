@@ -1,5 +1,5 @@
 function varargout = log(varargin)
-%LOG   Natural logarithm of a SPHEREFUN2.
+%LOG   Natural logarithm of a SPHEREFUN.
 %   LOG(F) is the natural logarithm of F. This function does not work if the
 %   function passes through or becomes numerically close to zero.
 

@@ -1,6 +1,6 @@
 function varargout = flipdim(varargin)
-%FLIPDIM   Flip/reverse a SPHEREFUN2 in a chosen direction.
-%   G = FLIPDIM(F, DIM) returns a SPHEREFUN2 G with the same domain as F but
+%FLIPDIM   Flip/reverse a SPHEREFUN in a chosen direction.
+%   G = FLIPDIM(F, DIM) returns a SPHEREFUN G with the same domain as F but
 %   reversed in a direction, i.e., G(x,y)=F(x, c+d-y). If DIM = 2 (default) then
 %   G(x,y) = F(x, c+d-y).  Otherwise DIM = 1 and G(x,y) = F(a+b-x, y). The
 %   domain of F is [a, b, c, d].

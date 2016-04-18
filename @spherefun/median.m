@@ -1,6 +1,6 @@
 function varargout = median(varargin)
-%MEDIAN       Median value of a SPHEREFUN2.
-%   G = MEDIAN(F) returns a CHEBFUN G representing the median of the SPHEREFUN2
+%MEDIAN       Median value of a SPHEREFUN.
+%   G = MEDIAN(F) returns a CHEBFUN G representing the median of the SPHEREFUN
 %   along the y direction, i.e., G = @(x) median( F ( x, : ) ).
 %
 %   G = MEDIAN(F, DIM) returns a CHEBFUN G representing the median of F along

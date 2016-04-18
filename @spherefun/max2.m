@@ -1,5 +1,5 @@
 function varargout = max2(varargin)
-%MAX2   Global maximum of a SPHEREFUN2.
+%MAX2   Global maximum of a SPHEREFUN.
 %   Y = MAX2(F) returns the global maximum of F over its domain. 
 %   
 %   [Y, X] = MAX2(F) returns the global maximum in Y and its location X.

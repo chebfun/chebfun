@@ -1,5 +1,5 @@
 function varargout = sum(varargin)
-%SUM   Definite Integration of a SPHEREFUN2.
+%SUM   Definite Integration of a SPHEREFUN.
 %   G = sum(F,DIM) where DIM is 1 or 2 integrates only over Y or X respectively,
 %   and returns as its output a chebfun in the remaining variable.
 %

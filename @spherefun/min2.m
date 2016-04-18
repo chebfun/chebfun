@@ -1,5 +1,5 @@
 function varargout = min2(varargin)
-%MIN2   Global minimum of a SPHEREFUN2.
+%MIN2   Global minimum of a SPHEREFUN.
 %   Y = MIN2(F) returns the global minimum of F over its domain. 
 %   
 %   [Y, X] = MIN2(F) returns the global minimum in Y and its location in X.  

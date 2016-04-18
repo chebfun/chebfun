@@ -1,11 +1,11 @@
 function varargout = chol(varargin)
-%CHOL    Cholesky factorization of a SPHEREFUN2. 
+%CHOL    Cholesky factorization of a SPHEREFUN. 
 %
-% R = CHOL( F ), if F is a nonnegative definite SPHEREFUN2 then this 
+% R = CHOL( F ), if F is a nonnegative definite SPHEREFUN then this 
 % returns an upper triangular quasimatrix so that R'*R is a
 % decomposition of F. If F is not nonnegative definite then an error is thrown.
 %
-% L = CHOL(F, 'lower'), if F is a nonnegative definite SPHEREFUN2 then thi
+% L = CHOL(F, 'lower'), if F is a nonnegative definite SPHEREFUN then thi
 % produces a lower triangular quasimatrix so that L*L' is a decomposition of F.
 % If F is not nonnegative definite then an error is thrown. 
 % 
@@ -13,7 +13,7 @@ function varargout = chol(varargin)
 % nonnegative definite then p is 0 and R is the same as above. If F is 
 % symmetric but negative definite or semidefinite then p is a positive 
 % integer such that R has p columns and R'*R is a rank p nonnegative definite 
-% SPHEREFUN2 that approximates F. 
+% SPHEREFUN that approximates F. 
 % This is particular useful when F is nonnegative definite, but rounding error
 % have perturbed it to be semidefinite. 
 %

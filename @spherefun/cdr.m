@@ -1,5 +1,5 @@
 function varargout = cdr(varargin)
-%CDR decomposition of a SPHEREFUN2.
+%CDR decomposition of a SPHEREFUN.
 %   [C,D,R] = CDR(F) produces a diagonal matrix D of size length(F) by length(F)
 %   and quasimatrices C and R of size inf by length(F) such that f(x,y) = C(y,:)
 %   * D * R(x,:)'.

@@ -1,7 +1,7 @@
 function varargout = domainCheck(varargin)
-%DOMAINCHECK   True if the domains of two SPHEREFUN2 objects are the same.
+%DOMAINCHECK   True if the domains of two SPHEREFUN objects are the same.
 %   DOMAINCHECK(F, G) returns TRUE if the domains of the two
-%   SPHEREFUN2 objects F and G coincide up to a tolerance depending on their
+%   SPHEREFUN objects F and G coincide up to a tolerance depending on their
 %   horizontal scales or if both F and G are empty CHEBFUN objects.
 %
 % See also CHEBFUN/DOMAINCHECK.

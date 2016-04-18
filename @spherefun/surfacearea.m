@@ -1,7 +1,7 @@
 function varargout = surfacearea(varargin)
-%SURFACEAREA    Surface area of a SPHEREFUN2.
+%SURFACEAREA    Surface area of a SPHEREFUN.
 %
-%   SURFACEAREA(F) computes the surface area of the SPHEREFUN2 in the domain of F.
+%   SURFACEAREA(F) computes the surface area of the SPHEREFUN in the domain of F.
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

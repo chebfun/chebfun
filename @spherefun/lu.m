@@ -1,5 +1,5 @@
 function varargout = lu(varargin)
-%LU   LU factorization of a SPHEREFUN2.
+%LU   LU factorization of a SPHEREFUN.
 %
 % [L, U] = LU( F ) returns two quasimatrices L and U of size inf by k and 
 % k by inf, respectively, where k is the rank of the separableApprox F. 

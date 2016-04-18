@@ -1,5 +1,5 @@
 function varargout = conj(varargin)
-%CONJ   Complex conjugate of a SPHEREFUN2.
+%CONJ   Complex conjugate of a SPHEREFUN.
 %   CONJ(F) returns the complex conjugate of F.  For a complex F, CONJ(F) =
 %   REAL(F) - i*IMAG(F).
 %

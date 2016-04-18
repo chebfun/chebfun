@@ -1,5 +1,5 @@
 function varargout = transpose(varargin)
-% .'   SPHEREFUN2 transpose. 
+% .'   SPHEREFUN transpose. 
 %    F.' is the non-conjugate transpose of a F. 
 % 
 % See also CTRANSPOSE. 
