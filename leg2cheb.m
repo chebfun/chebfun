@@ -10,6 +10,9 @@ function c_cheb = leg2cheb( c_leg, varargin )
 %   C_CHEB = LEG2CHEB(C_LEG, 'norm') is as above, but with the Legendre
 %   polynomials normalized to be orthonormal.
 %
+%   C = LEG2CHEB(C_LEG, 'trans') returns the `transpose' of the LEG2CHEB
+%   operator applied to C_LEG. That is, if C_CHEB = B*C_LEG, then C = B'*C_LEG.
+%
 %   If C_LEG is a matrix then the LEG2CHEB operation is applied to each column.
 %
 % See also CHEB2LEG, CHEB2JAC, JAC2CHEB, JAC2JAC.
@@ -153,7 +156,6 @@ if ( ~trans )
 end
 
 end
-
 
 function L = legvandermonde(N, x)
 % Legendre-Chebyshev Vandemonde matrix:

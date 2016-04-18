@@ -40,13 +40,7 @@ trans = 0;
 for j = 1:numel(varargin)
     if ( strncmpi(varargin{j}, 'norm', 4) )
         normalize = 1;
-    elseif ( strncmpi(varargin{j}, 'trans', 4) )
-        trans = 1;
     end
-end
-
-if ( trans ) 
-    stop 
 end
 
 % Trivial case:
@@ -150,9 +144,7 @@ end
 if ( normalize ),
     c_leg  = bsxfun(@times, c_leg, 1./sqrt((0:N-1)'+.5) );
 end
-
 end
-
 
 function c_leg = cheb2leg_direct(c_cheb)
 %CHEB2LEG_DIRECT   Convert Cheb to Leg coeffs using the 3-term recurrence.

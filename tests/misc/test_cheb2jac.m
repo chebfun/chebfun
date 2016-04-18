@@ -32,4 +32,15 @@ err = cheb2jac(C, -.5, -.5) - cheb2jac(C, -.5+eps, -.5);
 err = norm(err(:), inf);
 pass(4) = err < tol;
 
+%% matrix
+C = rand(513);
+
+err = cheb2jac(C, .5, .5) - cheb2jac(C, .5+eps, .5);
+err = norm(err(:), inf);
+pass(3) = err < tol;
+
+err = cheb2jac(C, -.5, -.5) - cheb2jac(C, -.5+eps, -.5);
+err = norm(err(:), inf);
+pass(4) = err < tol;
+
 end
