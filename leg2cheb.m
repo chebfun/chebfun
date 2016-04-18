@@ -45,9 +45,9 @@ for j = 1:numel(varargin)
     end
 end
 
-if ( trans ) 
-    stop 
-end
+% if ( trans ) 
+%     stop 
+% end
 
 % Do normalization:
 if ( normalize )
@@ -58,8 +58,14 @@ if ( N < 2 )
     c_cheb = c_leg; 
     return;
 elseif ( N <= 512 ) 
+   %%%%%%%%%%%%%%%%% Use direct approach if N is small %%%%%%%%%%%%%%%%%%%
+
     L = legvandermonde(N-1, cos(pi*(0:(N-1))'/(N-1)));
-    c_cheb = idct1(L*c_leg);
+    if ( ~trans )
+        c_cheb = idct1(L*c_leg);
+    else
+        c_cheb = L.'*idct1(c_leg);
+    end
     return 
 end
 
@@ -116,21 +122,36 @@ Z = [T_row1( 1 ) ; zeros(N-1, 1)];
 
 % Fast Toeplitz matrix multiply. This is the optimized since this is the
 % majority of the cost of the code:
+
+% Toeplitz symbol: 
+if ( ~trans ) 
+    % Upper-triangular toeplitz: 
+    a = fft( [Z ; 0 ; T_row1(N:-1:2)] );
+else
+    % Lower-triangular toeplitz: 
+    a = fft( [T_row1(1:N) ; 0 ; zeros(N-1,1)] );
+    % Diagonal-scaling is on the right if trans = 0. 
+    c_leg = 2/pi*c_leg; c_leg(1,:) = c_leg(1,:)/2; 
+end
+
 if ( n == 1 )     % Column input
-    c_cheb = ifft( bsxfun(@times, fft( bsxfun(@times, C, c_leg) , 2*N ),...
-        fft( [Z ; 0 ; T_row1(N:-1:2)] ) ) );
+    c_cheb = ifft( bsxfun(@times, fft( bsxfun(@times, C, c_leg) , 2*N ), a ) );
     
     c_cheb = (c_cheb(1:N,:).*C)*ones(sz,1);
-    c_cheb = 2/pi*c_cheb; c_cheb(1) = c_cheb(1)/2;
 else              % matrix input
     c_cheb = zeros(N, n);
-    a = fft( [Z ; 0 ; T_row1(N:-1:2)] );
     for k = 1:n
-        b = ifft( bsxfun(@times, fft( bsxfun(@times, C, c_leg(:,k)) , 2*N, 1 ), a), [], 1 );
+        b = ifft( bsxfun(@times, fft( bsxfun(@times, C, c_leg(:,k)),...
+                                                    2*N, 1 ), a), [], 1 );
         c_cheb(:,k) = (b(1:N,:).*C)*ones(sz,1);
     end
+end
+
+% Diagonal-scaling is on the left if trans = 0. 
+if ( ~trans ) 
     c_cheb = 2/pi*c_cheb; c_cheb(1,:) = c_cheb(1,:)/2; 
 end
+
 end
 
 
