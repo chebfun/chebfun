@@ -21,7 +21,7 @@ for k = [1 2 3 4]
         f = spherefun.sphharm(L, M); 
 
         K = 100.1; 
-        u = spherefun.Helmholtz((K^2-L*(L+1))*f, K, m, n);
+        u = spherefun.helmholtz((K^2-L*(L+1))*f, K, m, n);
 
         pass(nxt,k) = ( norm( u - f, 2 ) < 100*tol );
 
