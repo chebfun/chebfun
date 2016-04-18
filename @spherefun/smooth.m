@@ -26,6 +26,6 @@ K = sqrt(1/dt)*1i;
 %            L*u^{n+1) + K*u^{n+1} = -1/dt*u^{n}
 % We only do one step of backward Euler to smooth the solution, with 
 % u^{0} = f.
-g = spherefun.Helmholtz(-1/dt*f, K, m, n);
+g = spherefun.helmholtz(-1/dt*f, K, m, n);
 
 end 
