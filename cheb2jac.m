@@ -1,4 +1,4 @@
-function c_jac = cheb2jac(c_cheb, alph, bet)
+function c_jac = cheb2jac( c_cheb, alpha, beta ) 
 %CHEB2JAC   Convert Chebyshev coefficients to Jacobi coefficients. 
 %   C_JAC = CHEB2LEG(C_CHEB, A, B) converts the vector C_CHEB of Chebyshev
 %   coefficients to a vector C_JAC of Jacobi coefficients such that 
@@ -7,52 +7,41 @@ function c_jac = cheb2jac(c_cheb, alph, bet)
 %   where P_k^{(A,B)} is the degree k Jacobi polynomial corresponding to the
 %   weight function w(x) = (1-X)^A * (1+X)^B.
 %
-%   If C_CHEB is a matrix then the CHEB2JAC operation is applied to each column.
-%
-% See also JAC2CHEB.
+% See also JAC2CHEB, JAC2JAC.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% DEVELOPER NOTE:
-%  This simply uses the recurrence relation to for the Jacobi-Vandermode matrix.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%% For developers %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% For more information on the algorithm for N>512, see Section 5.3 of 
+% 
+% A. Townsend, M. Webb, and S. Olver, "Fast polynomial transforms based on 
+% Toeplitz and Hankel matrices", submitted, 2016. 
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-if ( alph == 0 && bet == 0 )
-    % Special case:
-    c_jac = cheb2leg(c_cheb);
-    return
-end
+N = size(c_cheb, 1);    % Length of coefficients. 
 
-if ( alph == -.5 && bet == -.5 )
-    % Special case: alpha = beta = -.5 (scaled chebpoly1)
-    [n, m] = size(c_cheb);
-    nn = (0:n-1)';
-    scl = gamma(.5).*exp(-gammaln(nn+.5)+gammaln(nn+1));
-    if ( m == 1 )
-        c_jac = scl.*c_cheb;
-    else
-        c_jac = bsxfun(@times, scl, c_cheb);
-    end
-        
-elseif ( alph == .5 && bet == .5 )
-    % Special case: alpha = beta = .5 (scaled chebpoly2)
-    [n, m] = size(c_cheb);
-    nn = (0:n-1)';
-    scl = gamma(1.5).*exp(-gammaln(nn+1.5)+gammaln(nn+2));
-    S = ultraS.convertmat(n, 0, 0);
-    if ( m == 1 )
-        c_jac = scl.*(S*c_cheb);
-    else
-        c_jac = bsxfun(@times, scl, S*c_cheb);
-    end
+if ( alpha == 0 && beta == 0 ) 
+ % Use cheb2leg for alpha = beta = 0:
+    
+    c_jac = cheb2leg_new( c_cheb ); 
+    
+elseif ( N <= 512 ) 
+    
+    c_jac = cheb2jac_direct(c_cheb, alpha, beta);
     
 else
-    c_jac = cheb2jac_direct(c_cheb, alph, bet);
+    % Call faster jac2jac and then convert Jacobi (-1/2,-1/2) to Chebyshev: 
     
-end
+    N = size(c_cheb, 1); 
+    % Convert T_n -> P_n^(-1/2,1/2): 
+    scl = [1 cumprod((1/2:1/2+N-2)./(1:N-1))]';   % P_n^(-1/2,-1/2)(1)
+    c_jac = spdiags( scl, 0, N, N) \ c_cheb; 
+    % Now convert P_n^(-1/2,-1/2) -> P_n^(alpha,beta): 
+    c_jac = jac2jac_new( c_jac, -1/2, -1/2, alpha, beta );
 
+end
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -60,14 +49,12 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function c_jac = cheb2jac_direct(c_cheb, a, b)
-%CHEB2LEG_DIRECT   Convert Cheb to Leg coeffs using the 3-term recurrence.
+%CHEB2JAC_DIRECT   Convert Cheb to Jacobi (A,B) coeffs using direct method.
+
 [N, m] = size(c_cheb);              % Number of columns.
 N = N - 1;                          % Degree of polynomial.
 % Don't let N be too big:
-if ( N > 2^11 )
-    error('CHEBFUN:cheb2jac:arraySize', ...
-        'Maximum transform size (2048) is exceeded.');
-end
+
 if ( N <= 0 ), c_jac = c_cheb; return, end % Trivial case.
 f = chebtech2.coeffs2vals([c_cheb ; zeros(N, m)]); % Values on 2*N+1 Cheb grid.
 % 2*N+1 Chebyshev grid (reversed order) and Clenshaw-Curtis-Jacobi weights:
