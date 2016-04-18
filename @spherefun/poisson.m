@@ -1,4 +1,4 @@
-function u = Poisson(f, const, m, n)
+function u = poisson(f, const, m, n)
 %POISSON   Fast Poisson solver for the sphere.
 %   POISSON(F, CONST, N) solves
 %
@@ -15,7 +15,7 @@ function u = Poisson(f, const, m, n)
 %   exact = @(lam,th) -2*sin(lam).*sin(2*th).*sin(th).^2 -...
 %             sin(lam).*sin(th).*cos(th) + .5*sin(lam).*sin(2*th).*cos(2*th);
 %   const = 0;
-%   u = spherefun.Poisson(f, const, 100);
+%   u = spherefun.poisson(f, const, 100);
 %   norm(spherefun(exact) - u)
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
