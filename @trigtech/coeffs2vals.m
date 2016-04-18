@@ -38,7 +38,18 @@ else
 end
 coeffs = bsxfun(@times, coeffs, even_odd_fix);
 
+% test for symmetry
+isEven = max(abs(imag(coeffs)),[],1) == 0;
+isOdd = max(abs(real(coeffs)),[],1) == 0;
+
 % Shift the coefficients properly.
 values = ifft(ifftshift(n*coeffs, 1), [], 1);
+
+% correct if symmetric
+vals = [values;values(1,:)];
+evals = (vals+flipud(conj(vals)))/2;
+ovals = (vals-flipud(conj(vals)))/2;
+values(:,isEven) = evals(1:end-1,isEven);
+values(:,isOdd) = ovals(1:end-1,isOdd);
 
 end

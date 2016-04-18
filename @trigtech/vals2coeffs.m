@@ -45,8 +45,8 @@ isOdd = max(abs(vals+flipud(conj(vals))),[],1) == 0;
 coeffs = (1/n)*fftshift(fft(values, [], 1), 1);
 
 % correct if symmetric
-coeffs = real(coeffs) + 1i*bsxfun(@times,1-isEven,imag(coeffs));
-coeffs = bsxfun(@times,1-isOdd,real(coeffs)) + 1i*imag(coeffs);
+coeffs(:,isEven) = real(coeffs(:,isEven));
+coeffs(:,isOdd) = 1i*imag(coeffs(:,isOdd));
 
 % These coefficients are for interpolation defined on [0,2*pi), but we want
 % to work on [-pi,pi). To fix the coefficients for this we just need to
