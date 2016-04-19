@@ -18,6 +18,13 @@ function values = coeffs2vals(coeffs)
 % Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
+% *Note about symmetry*.  Some of the code below is designed to
+% enforce two symmetries whose failure might disturb users:
+% COEFFS exactly real ==> VALUES exactly hermitian
+% COEFFS exactly imaginary ==> VALUES exactly skew-hermitian
+% This is necessary because the MATLAB FFT code does not
+% exactly preserve symmetries.
+
 % Get the length of the input:
 n = size(coeffs, 1);
 
@@ -39,17 +46,17 @@ end
 coeffs = bsxfun(@times, coeffs, even_odd_fix);
 
 % test for symmetry
-isEven = max(abs(imag(coeffs)),[],1) == 0;
-isOdd = max(abs(real(coeffs)),[],1) == 0;
+isHerm = max(abs(imag(coeffs)),[],1) == 0;
+isSkew = max(abs(real(coeffs)),[],1) == 0;
 
 % Shift the coefficients properly.
 values = ifft(ifftshift(n*coeffs, 1), [], 1);
 
 % correct if symmetric
 vals = [values;values(1,:)];
-evals = (vals+flipud(conj(vals)))/2;
-ovals = (vals-flipud(conj(vals)))/2;
-values(:,isEven) = evals(1:end-1,isEven);
-values(:,isOdd) = ovals(1:end-1,isOdd);
+hermvals = (vals+flipud(conj(vals)))/2;
+skewvals = (vals-flipud(conj(vals)))/2;
+values(:,isHerm) = hermvals(1:end-1,isHerm);
+values(:,isSkew) = skewvals(1:end-1,isSkew);
 
 end
