@@ -1,20 +1,21 @@
 function varargout = min(varargin)
 %MIN   Minimum value of a SPHEREFUN in one direction.
 %   MIN(f) returns a chebfun representing the minimum of the SPHEREFUN along the
-%   y direction, i.e, MIN(f) = @(x) max( f ( x, : ) )
+%   latitude direction, i.e, MIN(f) = @(lambda) max( f ( lambda, : ) )
 %
 %   MIN(f, [], dim) returns a CHEBFUN representing the minimum of f along the
-%   DIM direction. If DIM = 1 is along the y-direction and DIM = 2 is along the
-%   x-direction.
+%   DIM direction. If DIM = 1 is along the latitude-direction and DIM = 2 is along the
+%   longitude-direction.
 %
 %   WARNING: This function is not always accurate to full machine precision. 
 % 
 %   For the global minimum use MIN2.
 %
-% See also MAX, MAX2, MIN2, MINANDMAX2.
+% See also SPHEREFUN/MAX, SPHEREFUN/MAX2, SPHEREFUN/MIN2, SPHEREFUN/MINANDMAX2.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-    [varargout{1:nargout}] = min@separableApprox(varargin{:});
+[varargout{1:nargout}] = min@separableApprox(varargin{:});
+
 end

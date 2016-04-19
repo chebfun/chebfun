@@ -3,10 +3,11 @@ function varargout = del2(varargin)
 %   L = del2(F) is a numerical approximation of 
 %       del^2 F/4 = (d^2F/dx^2 + d^2F/dy^2)/4.
 %
-% See also LAPLACIAN.
+% See also SPHEREFUN/LAPLACIAN.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-    [varargout{1:nargout}] = del2@separableApprox(varargin{:});
+[varargout{1:nargout}] = del2@separableApprox(varargin{:});
+
 end

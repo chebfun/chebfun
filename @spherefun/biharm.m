@@ -1,4 +1,4 @@
-function varargout = biharm(varargin)
+function biharmF = biharm(f)
 %BIHARM   Biharmonic operator of a SPHEREFUN.
 %   B = BIHARM(F) returns a SPHEREFUN representing the biharmonic operator 
 %   applied to F.
@@ -7,8 +7,10 @@ function varargout = biharm(varargin)
 %
 % See also SPHEREFUN/BIHARMONIC.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-    [varargout{1:nargout}] = biharm@separableApprox(varargin{:});
+% Implement as the laplacian of the laplacian
+biharmF = laplacian(laplacian(f));
+
 end

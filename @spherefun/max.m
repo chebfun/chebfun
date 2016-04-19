@@ -1,20 +1,21 @@
 function varargout = max(varargin)
 %MAX   Maximum value of a SPHEREFUN in one direction.
 %   MAX(f) returns a chebfun representing the maximum of the SPHEREFUN along the
-%   y direction, i.e, MAX(f) = @(x) max( f ( x, : ) )
+%   latitude direction, i.e, MAX(f) = @(lambda) max( f ( lambda, : ) )
 %
-%   MAX(f, [], dim) returns a CHEBFUN representing the maximum of f along the
-%   DIM direction. If DIM = 1 is along the y-direction and DIM = 2 is along the
-%   x-direction.
+%   MAX(f, [], dim) returns a CHEBFUN representing the maximum of f along
+%   the DIM direction. If DIM = 1 is along the latitude-direction and DIM =
+%   2 is along the longitude-direction.
 %
 %   WARNING: This function is not always accurate to full machine precision. 
 % 
 %   For the global maximum use MAX2.
 %
-% See also MIN, MAX2, MIN2, MINANDMAX2.
+% See also SPHEREFUN/MIN, SPHEREFUN/MAX2, SPHEREFUN/MIN2, SPHEREFUN/MINANDMAX2.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-    [varargout{1:nargout}] = max@separableApprox(varargin{:});
+[varargout{1:nargout}] = max@separableApprox(varargin{:});
+
 end

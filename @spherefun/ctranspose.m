@@ -3,10 +3,14 @@ function varargout = ctranspose(varargin)
 %   F' is the complex conjugate transpose of F.
 %   G = CTRANSPOSE(F) is called for the syntax F'.  
 %
-% See also CONJ, TRANSPOSE.
+%   Since only real-valued SPHEREFUNS are presently supported, this
+%   function is just the same as '.
+%
+% See also SPHEREFUN/CONJ, SPHEREFUN/TRANSPOSE.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-    [varargout{1:nargout}] = ctranspose@separableApprox(varargin{:});
+[varargout{1:nargout}] = ctranspose@separableApprox(varargin{:});
+
 end

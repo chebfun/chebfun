@@ -1,16 +1,12 @@
 function varargout = surface(varargin)
 %SURFACE  Plot surface of a SPHEREFUN.
-%   SURFACE(X, Y, Z, C) adds the surface in X,Y,Z,C to the current axes.
-%
-%   SURFACE(X, Y, Z) uses C = Z, so color is proportional to surface height. 
-%
-%   See SURF for a complete description of the various forms that X,Y,Z,C can
-%   take.
+%   See SURF for a complete description of the various forms of the input.
 % 
-% See also SURF. 
+% See also SPHEREFUN/SURF. 
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-    [varargout{1:nargout}] = surface@separableApprox(varargin{:});
+[varargout{1:nargout}] = surface@separableApprox(varargin{:});
+
 end

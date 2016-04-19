@@ -9,10 +9,11 @@ function varargout = plotcoeffs(varargin)
 %   linecolor, etc. If S contains a string 'LOGLOG', the coefficients will be
 %   displayed on a log-log scale.
 %
-% See also PLOTCOEFFS2, COEFFS2.
+% See also SPHEREFUN/PLOTCOEFFS2, SPHEREFUN/COEFFS2.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-    [varargout{1:nargout}] = plotcoeffs@separableApprox(varargin{:});
+[varargout{1:nargout}] = plotcoeffs@separableApprox(varargin{:});
+
 end

@@ -4,10 +4,11 @@ function varargout = diag(varargin)
 %
 %   G = diag(F,C) returns the CHEBFUN representing g(x) = f(x, x+c).
 %
-% See also TRACE.
+% See also SPHEREFUN/TRACE.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-    [varargout{1:nargout}] = diag@separableApprox(varargin{:});
+[varargout{1:nargout}] = diag@separableApprox(varargin{:});
+
 end

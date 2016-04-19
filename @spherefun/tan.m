@@ -1,8 +1,11 @@
 function varargout = tan(varargin)
 %TAN   Tangent of a SPHEREFUN.
+%
+% See also SPHEREFUN/SIN, SPHEREFUN/COS, SPHEREFUN/TANH
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-    [varargout{1:nargout}] = tan@separableApprox(varargin{:});
+[varargout{1:nargout}] = tan@separableApprox(varargin{:});
+
 end

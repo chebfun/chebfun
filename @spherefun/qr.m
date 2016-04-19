@@ -14,10 +14,11 @@ function varargout = qr(varargin)
 % A. Townsend and L. N. Trefethen, Continuous analogues of matrix
 % factorizations, Proc. Royal Soc. A., 2015. 
 %
-% See also LU, and CHOL. 
+% See also SPHEREFUN/LU, and SPHEREFUN/CHOL. 
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-    [varargout{1:nargout}] = qr@separableApprox(varargin{:});
+[varargout{1:nargout}] = qr@separableApprox(varargin{:});
+
 end

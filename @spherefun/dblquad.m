@@ -5,10 +5,11 @@ function varargout = dblquad(varargin)
 % 
 %   This function is a wrapper for quad2d.
 %
-% See also QUAD2D, INTEGRAL2, SUM2.
+% See also SPHEREFUN/QUAD2D, SPHEREFUN/INTEGRAL2, SPHEREFUN/SUM2.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-    [varargout{1:nargout}] = dblquad@separableApprox(varargin{:});
+[varargout{1:nargout}] = dblquad@separableApprox(varargin{:});
+
 end

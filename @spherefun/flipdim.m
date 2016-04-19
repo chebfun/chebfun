@@ -5,10 +5,11 @@ function varargout = flipdim(varargin)
 %   G(x,y) = F(x, c+d-y).  Otherwise DIM = 1 and G(x,y) = F(a+b-x, y). The
 %   domain of F is [a, b, c, d].
 % 
-% See also FLIPLR, FLIPUD.
+% See also SPHEREFUN/FLIPLR, SPHEREFUN/FLIPUD.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-    [varargout{1:nargout}] = flipdim@separableApprox(varargin{:});
+[varargout{1:nargout}] = flipdim@separableApprox(varargin{:});
+
 end

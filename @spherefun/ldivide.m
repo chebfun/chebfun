@@ -9,8 +9,9 @@ function varargout = ldivide(varargin)
 % 
 %   F.\G is the same as the command ldivide(F,G)
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-    [varargout{1:nargout}] = ldivide@separableApprox(varargin{:});
+[varargout{1:nargout}] = ldivide@separableApprox(varargin{:});
+
 end

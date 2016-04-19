@@ -6,9 +6,10 @@ function varargout = chebcoeffs2(varargin)
 %   [A, D, B] = CHEBCOEFFS2( f ) returns the same coefficients keeping them in
 %   low rank form, i.e., X = A * D * B'.
 %
-% See also PLOTCOEFFS2, CHEBCOEFFS.
+%
+% See also SPHEREFUN/PLOTCOEFFS2, SPHEREFUN/COEFFS2.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
     [varargout{1:nargout}] = chebcoeffs2@separableApprox(varargin{:});

@@ -1,6 +1,7 @@
 function varargout = contourf(varargin)
-%CONTOURF   Filled contour plot of a SPHEREFUN.
-%   CONTOURF(...) is the same as CONTOUR(...) except that the areas between
+%CONTOURF  Filled contour plot of a SPHEREFUN in latitude-longitude coordinates.
+%   CONTOURF(...) is the same as CONTOUR(...) except that the SPHEREFUN
+%   is plotted in latitude longitude coordinates and the areas between
 %   contours are filled with colors according to the Z-value for each level.
 %   Contour regions with data values at or above a given level are filled with
 %   the color that maps to the interval.
@@ -18,10 +19,11 @@ function varargout = contourf(varargin)
 %
 %   [C, H] = CONTOURF(...) also returns a handle H to a CONTOURGROUP object.
 %
-% See also CONTOUR.
+% See also SPHEREFUN/CONTOUR.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-    [varargout{1:nargout}] = contourf@separableApprox(varargin{:});
+[varargout{1:nargout}] = contourf@separableApprox(varargin{:});
+
 end

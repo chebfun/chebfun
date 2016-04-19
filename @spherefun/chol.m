@@ -24,10 +24,11 @@ function varargout = chol(varargin)
 % A. Townsend and L. N. Trefethen, Continuous analogues of matrix
 % factorizations, Proc. Royal Soc. A., 2015. 
 %
-% See also LU, and QR. 
+% See also SPHEREFUN/LU, and SPHEREFUN/QR. 
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-    [varargout{1:nargout}] = chol@separableApprox(varargin{:});
+[varargout{1:nargout}] = chol@separableApprox(varargin{:});
+
 end

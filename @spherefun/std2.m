@@ -6,10 +6,11 @@ function varargout = std2(varargin)
 %
 %   where A is the area of the domain of F.
 %
-% See also MEAN, MEAN2, STD.
+% See also SPHEREFUN/MEAN, SPHEREFUN/MEAN2, SPHEREFUN/STD.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-    [varargout{1:nargout}] = std2@separableApprox(varargin{:});
+[varargout{1:nargout}] = std2@separableApprox(varargin{:});
+
 end

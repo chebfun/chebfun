@@ -6,10 +6,11 @@ function varargout = length(varargin)
 %   row slices employed in the separable model.  The interpretation 
 %   of this quantity depends on the underlying representation. 
 %
-% See also RANK.
+% See also SPHEREFUN/RANK.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-    [varargout{1:nargout}] = length@separableApprox(varargin{:});
+[varargout{1:nargout}] = length@separableApprox(varargin{:});
+
 end

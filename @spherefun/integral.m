@@ -4,13 +4,11 @@ function varargout = integral(varargin)
 %   I = INTEGRAL(F), returns the definite integral of a SPHEREFUN. Integrated
 %   over its domain of definition.
 % 
-%   I = INTEGRAL(F, g), returns the integral of a SPHEREFUN along the curve
-%   defined by the complex-valued CHEBFUN g.
-% 
-% See also INTEGRAL2, SUM2, QUAD2D.
+% See also SPHEREFUN/INTEGRAL2, SPHEREFUN/SUM2, SPHEREFUN/QUAD2D.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-    [varargout{1:nargout}] = integral@separableApprox(varargin{:});
+[varargout{1:nargout}] = sum2(varargin{:});
+
 end

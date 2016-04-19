@@ -17,10 +17,11 @@ function varargout = waterfall(varargin)
 %
 %   H = WATERFALL(...) returns a handle to a waterfall plot object.
 %
-% See also PLOT.
+% See also SPHEREFUN/PLOT.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-    [varargout{1:nargout}] = waterfall@separableApprox(varargin{:});
+[varargout{1:nargout}] = waterfall@separableApprox(varargin{:});
+
 end

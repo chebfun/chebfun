@@ -1,15 +1,11 @@
 function varargout = complex(varargin)
 %COMPLEX Construct complex SPHEREFUN from real and imaginary parts.
-%   C = COMPLEX(A, B) returns the complex SPHEREFUN A + Bi, where A and B are
-%   real valued SPHEREFUN objects with the same domain.
-%
-%   C = COMPLEX(A) for real SPHEREFUN A returns the complex result C with real
-%   part A and all zero imaginary part. isreal(C) returns false.
-%
-% See also IMAG, CONJ, ABS, REAL.
+%   This is not allowed and returns an error.  This function exists so that the
+%   error message is meaningful to a SPHEREFUN user.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-    [varargout{1:nargout}] = complex@separableApprox(varargin{:});
+error('CHEBFUN:SPHEREFUN:COMPLEX:notSupported',...
+        'Complex-valued spherefuns are not supported.');
 end

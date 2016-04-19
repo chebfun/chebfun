@@ -4,10 +4,11 @@ function varargout = prod(varargin)
 % 
 %   PROD(F, DIM) returns the chebfun exp( sum(log(F), DIM) )
 % 
-% See also CUMPROD.
+% See also SPHEREFUN/CUMPROD.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-    [varargout{1:nargout}] = prod@separableApprox(varargin{:});
+[varargout{1:nargout}] = prod@separableApprox(varargin{:});
+
 end

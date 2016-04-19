@@ -4,12 +4,13 @@ function varargout = mean2(varargin)
 % 
 %   V = 1/A*integral2( f )
 % 
-% 	where the A is the area of the domain of F. 
+% 	where the A is the area of the sphere, i.e. 4*pi. 
 %
-% See also MEAN, STD2.
+% See also SPHEREFUN/MEAN, SPHEREFUN/STD2.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-    [varargout{1:nargout}] = mean2@separableApprox(varargin{:});
+[varargout{1:nargout}] = mean2@separableApprox(varargin{:});
+
 end

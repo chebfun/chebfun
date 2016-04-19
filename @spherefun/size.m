@@ -4,11 +4,12 @@ function varargout = size(varargin)
 %
 %   [M, N] = SIZE(F) returns M = inf and N = inf.
 %
-%   M = SIZE(F, DIM) returns the dimension specified by the scalar DIM, which i
-%   always inf.
+%   M = SIZE(F, DIM) returns the dimension specified by the scalar DIM,
+%   which is always inf.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-    [varargout{1:nargout}] = size@separableApprox(varargin{:});
+[varargout{1:nargout}] = size@separableApprox(varargin{:});
+
 end
