@@ -27,7 +27,7 @@ else
     % Call jac2jac and then convert Jacobi (-1/2,-1/2) to Chebyshev:
 
     % Convert P_n^(alpha,beta) ->  P_n^(-1/2,-1/2): 
-    c_jac = jac2jac_new( c_jac, alpha, beta, -1/2, -1/2 );
+    c_jac = jac2jac( c_jac, alpha, beta, -1/2, -1/2 );
     % Now convert P_n^(-1/2,-1/2) -> T_n:
     scl = [1 cumprod((1/2:1/2+N-2)./(1:N-1))]';   % P_n^(-1/2,-1/2)(1)
     c_cheb = spdiags( scl, 0, N, N) * c_jac; 

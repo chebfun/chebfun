@@ -48,10 +48,6 @@ for j = 1:numel(varargin)
     end
 end
 
-% if ( trans ) 
-%     stop 
-% end
-
 % Do normalization:
 if ( normalize )
     c_leg = bsxfun(@times, c_leg, sqrt((0:N-1)'+1/2) );

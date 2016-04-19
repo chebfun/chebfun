@@ -36,7 +36,6 @@ function c_leg = cheb2leg( c_cheb, varargin )
 [N, n] = size(c_cheb);
 
 normalize = 0;                                  % Default - no normalize.
-trans = 0; 
 for j = 1:numel(varargin)
     if ( strncmpi(varargin{j}, 'norm', 4) )
         normalize = 1;
