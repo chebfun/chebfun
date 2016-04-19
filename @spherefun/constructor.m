@@ -1,4 +1,4 @@
-function g = constructor(g, op, dom, varargin)
+function g = constructor(g, op, varargin)
 %CONSTRUCTOR   The main SPHEREFUN constructor.
 %
 % This code is when functions on the surface of the sphere are represented
@@ -21,7 +21,8 @@ function g = constructor(g, op, dom, varargin)
 %
 % The algorithm is fully described in:
 %  A. Townsend, H. Wilber, and G. Wright, Computing with function on
-%  spherical and polar geometries I: The sphere, submitted, 2015. 
+%  spherical and polar geometries I: The sphere, SIAM J. Sci. Comput., 
+%  Accepted, 2016. 
 %
 % See also SPHEREFUN.
 
@@ -37,58 +38,37 @@ if ( isa(op, 'spherefun') )  % SPHEREFUN( SPHEREFUN )
     return
 end
 
-% If domain is empty take it to be co-latitude.
-if ( (nargin < 3) || isempty(dom) )
-     dom = [-pi pi 0 pi]; 
-elseif ( isa(dom, 'double') && (numel(dom) ~= 4) )
-    error('CHEBFUN:SPHEREFUN:CONSTRUCTOR:domain',... 
-          ['A domain is rarely given for spherefun, ', ... 
-          'but it needs to be given by four corner values',... 
-          'in intrinstic coordinates.'])
-elseif ( isa(dom,'double') && (numel(dom) == 4) && ...
-        (norm(dom(:)' - [-pi pi 0 pi]) > 0) )
-    error('CHEBFUN:SPHEREFUN:CONSTRUCTOR:domain',...
-        ['The domain of a spherefun is always [-pi pi]x[0 pi] in '...
-        'intrinstic coordinates']);
+% Parse the inputs:
+[op, dom, pref, fixedRank, vectorize] = parseInputs(op, varargin{:});
+
+if ( isa(op, 'spherefun') )  % Return if construction is from coefficients.
+    g = op;
+    return
 end
 
-% Look for vectorize flag:
-vectorize = 0;
-if ( any(strcmpi(dom, 'vectorize')) || any(strcmpi(dom, 'vectorise')) )
-    vectorize = 1;
-    dom = [-pi pi 0 pi];
-elseif ( (nargin > 3) && (any(strcmpi(varargin{1}, 'vectorize')) ||...
-        any(strcmpi(varargin{1}, 'vectorise'))) )
-    vectorize = 1;
-else
-    dom = [-pi pi 0 pi];
-end
+% Preferences:
+tech        = pref.tech();
+tpref       = tech.techPref;
+minSample   = tpref.minSamples;
+maxSample   = tpref.maxLength;
+cheb2Prefs  = pref.cheb2Prefs;
+sampleTest  = cheb2Prefs.sampleTest;
+maxRank     = cheb2Prefs.maxRank;
+pseudoLevel = cheb2Prefs.chebfun2eps;
 
-if ( isa(op, 'char') )     % CHEBFUN2( CHAR )
+alpha = 100; % Default value for coupling parameter
+factor  = 8; % Ratio between size of matrix and no. pivots.
+
+if ( isa(op, 'char') )     % SPHEREFUN( CHAR )
     op = str2op( op );
 end
 
-% Default value for coupling parameter
-alpha = 100;
-
-% Ratio between the size of sample matrix and number of skeletons:
-factor = 8; 
-
-% TODO: Should we allow any other domains than latitude and co-latitude?
-
 % TODO: 
 % 1. Need to allow for different domains.
-% 2. Add support for preferences
-% 3. Add non-adaptive construction
-% 4. Add fixed-rank.
-% 5. Add tensor-product.
-
-maxRank = 8192; 
-maxSample = 8192;
-pseudoLevel = eps;
+% 2. Add non-adaptive construction
+% 3. Add tensor-product.
 
 if ( isa(op, 'double') )    % SPHEREFUN( DOUBLE )
-    % Should we allow coefficients to be passed in?
     
     % Only do Phase I on the values.
     F = op;
@@ -105,7 +85,7 @@ if ( isa(op, 'double') )    % SPHEREFUN( DOUBLE )
     F = [ F(n:-1:1, m/2+1:m) F(n:-1:1, 1:m/2) ];
     
     % TODO: Add a way to loosen tolerances for this type of construction.
-    [tol, vscale] = GetTol(F, 2*pi/m, pi/(n-1), dom, pseudoLevel);
+    [tol, vscale] = getTol(F, 2*pi/m, pi/(n-1), dom, pseudoLevel);
     [pivotIndices, pivotArray, removePoles, happyRank, cols, pivots, ...
         rows, idxPlus, idxMinus] = PhaseOne(F, tol, alpha, factor);
     [x, y] = getPoints(n, m, dom);
@@ -139,7 +119,7 @@ else  % SPHEREFUN( FUNCTION )
         [xx, yy] = meshgrid(x, y);
         F = evaluate(h, xx, yy, vectorize);
 
-        [tol, vscale] = GetTol(F, pi/n, pi/n, dom, pseudoLevel);
+        [tol, vscale] = getTol(F, pi/n, pi/n, dom, pseudoLevel);
         
         % Does the function blow up or evaluate to NaN?:
         if ( isinf(vscale) )
@@ -186,6 +166,8 @@ g = simplify(g);
 g = projectOntoBMCI(g);
 
 end
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [pivotIndices, pivotArray, removePole, isHappy, cols, pivots, ...
         rows, idxPlus, idxMinus] = PhaseOne(F, tol, alpha, factor)
@@ -440,6 +422,8 @@ end
 
 end
 
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 function [cols, pivots, rows, pivotLocations, idxPlus, idxMinus] = ...
     PhaseTwo(h, pivotIndices, pivotArray, n, dom, vscale, maxSample, ...
     removePoles, vectorize)
@@ -666,6 +650,8 @@ pivotLocations = [ col_pivots row_pivots ];
 
 end
 
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 function vals = evaluate(h, xx, yy, vectorize)
 % Evaluate h on an m-by-n tensor product grid.
 
@@ -683,6 +669,8 @@ end
 
 end
 
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 function [x, y] = getPoints(m, n, dom)
 
 colat = [ -pi pi 0 pi ];   % Colatitude (doubled up)
@@ -692,11 +680,9 @@ lat = [ -pi pi -pi/2 pi/2 ]; % Latitude (doubled up)
 if ( all((dom - colat) == 0) )
     x = trigpts(2*n, [-pi, pi]);   % azimuthal angle, lambda
     y = linspace(-pi, 0, m+1).';   % elevation angle, theta
-%     y = linspace(0, pi, m+1).';  % elevation angle, theta
 elseif ( all((dom - lat) == 0) )
     x = trigpts(2*n, [-pi, pi]);          % azimuthal angle, lambda
     y = linspace(-3*pi/2, -pi/2, m+1).';  % elevation angle, theta
-%     y = linspace(-pi/2, pi/2, m+1).';  % elevation angle, theta
 else
     error('SPHEREFUN:constructor:points2D:unkownDomain', ...
         'Unrecognized domain.');
@@ -704,15 +690,7 @@ end
 
 end
 
-% function pinvM = getPseudoInv( M )
-% lam1 = M(1,1)+M(1,2);  % Eigenvalues of M (which is symmetric)
-% lam2 = M(1,1)-M(1,2);
-% if abs(lam1) > abs(lam2)
-%     pinvM = ones(2)/(2*lam1);
-% else
-%     pinvM = [[1 -1];[-1 1]]/(2*lam2);
-% end
-% end
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [row, col] = myind2sub(siz, ndx)
 % Alex's version of ind2sub. In2sub is slow because it has a varargout. 
@@ -726,6 +704,8 @@ row = (vi - 1) + 1;
 
 end
 
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 function f = redefine_function_handle(f)
 % nargin(f) = 2, then we are already on the sphere, if nargin(f) = 3,
 % then do change of variables:
@@ -737,7 +717,9 @@ end
 
 end
 
-function [tol, vscale] = GetTol(F, hx, hy, dom, pseudoLevel)
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function [tol, vscale] = getTol(F, hx, hy, dom, pseudoLevel)
 % GETTOL     Calculate a tolerance for the spherefun constructor.
 %
 %  This is the 2D analogue of the tolerance employed in the trigtech
@@ -758,6 +740,8 @@ vscale = max(abs(F(:)));
 tol = grid.^(2/3) * max(abs(dom(:))) * max(Jac_norm, vscale) * pseudoLevel;
 
 end
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function pivLocNew = adjustPivotLocations(pivLoc, pivArray, colat)
 % Adjust the pivot locations so that they correspond to -pi < lam < pi and 
@@ -792,6 +776,8 @@ end
 
 end
 
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 function [pole, constVal] = checkPole(val, tol)
 % Check that the values at the pole are constant.
 
@@ -810,4 +796,135 @@ else
     constVal = 0;
 end
 
+end
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function [op, dom, pref, fixedRank, vectorize] = parseInputs(op, varargin)
+
+if ( isa(op, 'char') )     % SPHEREFUN( CHAR )
+    op = str2op(op);
+end
+
+% If the operator has one argument, then throw an error
+if ( isa(op, 'function_handle') )
+    % If the operator has one argument, then throw an error
+    if ( nargin(op) <= 1 )
+        error('CHEBFUN:SPHEREFUN:CONSTRUCTOR:toFewInputArgs',...
+            'The function %s must accept 2 or 3 input arguments.',op);
+    % If f is defined in terms of x,y,z; then convert it to
+    % (longitude,latitude).
+    elseif ( nargin(op) == 3 )
+        % Wrap op so it can be evaluated in spherical coordinates
+        op = @(lam, th) spherefun.sphf2cartf(op, lam, th, 0);
+    end
+end
+
+% Get the domain: (Always first if given)
+% The only domain presently supported is [-pi pi 0 pi], which corresponds
+% to co-latitude in spherical coordinates.
+% If domain is empty take it to be co-latitude.
+dom = [-pi, pi, 0, pi]; 
+fixedRank = 0;
+
+if ( nargin > 1 && isnumeric(varargin{1}) )
+    d = varargin{1};
+    varargin(1) = [];
+    
+    if ( numel(d) == 4 )                 % SPHEREFUN(OP, [A B C D])
+        dom = d;
+        if ( norm(dom(:)' - [-pi pi 0 pi]) > 0 )
+            error('CHEBFUN:SPHEREFUN:CONSTRUCTOR:domain',...
+                ['The only domain presently supported in spherefun is [-pi pi]x[0 pi] in '...
+                'intrinstic (spherical) coordinates, which corresponds to colatitude.']);
+        end
+    elseif ( numel(d) == 1 )             % SPHEREFUN(OP, K)
+        fixedRank = d;
+    else
+        error('CHEBFUN:SPHEREFUN:CONSTRUCTOR:domain',... 
+              ['A domain is rarely given for spherefun, ', ... 
+              'but it needs to be given by four corner values',... 
+              'in intrinstic coordinates.'])
+    end
+end
+
+% Preferences structure given?
+isPref = find(cellfun(@(p) isa(p, 'chebfunpref'), varargin));
+if ( any(isPref) )
+    pref = varargin{isPref};
+    varargin(isPref) = [];
+else
+    pref = chebfunpref();
+end
+
+isEpsGiven = find(cellfun(@(p) strcmpi(p, 'eps'), varargin));
+if ( isEpsGiven )
+    pseudoLevel = varargin{isEpsGiven+1};
+    varargin(isEpsGiven+(0:1)) = [];
+else
+    pseudoLevel = 0;
+end
+pref.cheb2Prefs.chebfun2eps = max(pref.cheb2Prefs.chebfun2eps, pseudoLevel);
+
+% Look for vectorize flag:
+vectorize = find(cellfun(@(p) strncmpi(p, 'vectori', 7), varargin));
+if ( vectorize )
+    varargin(vectorize) = [];
+    vectorize = true;
+else
+    vectorize = false;
+end
+
+% If the vectorize flag is off, do we need to give user a warning?
+if ( ~vectorize && ~isnumeric(op) ) % another check
+    [vectorize, op] = vectorCheck(op, dom, pref.chebfuneps);
+end
+
+isCoeffs = find(cellfun(@(p) strcmpi(p, 'coeffs'), varargin));
+if ( isCoeffs )
+    varargin(isCoeffs) = [];
+    op = spherefun.coeffs2spherefun(op);
+end
+
+end
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function [vectorize, op] = vectorCheck(op, dom, pseudoLevel)
+% Check for cases: @(x,y) x*y, and @(x,y) x*y'
+
+vectorize = false;
+% Evaluate at a 2-by-2 grid on the interior of the domain.
+[xx, yy] = meshgrid( dom(1:2)/3 + diff(dom(1:2))/3,...
+                     dom(3:4)/2 + diff(dom(3:4))/3);
+try
+    A = op(xx, yy);
+catch
+    throwVectorWarning();
+    vectorize = true;
+    return
+end
+if ( isscalar(A) )
+    op = @(x,y) op(x,y) + 0*x + 0*y;
+    A = op(xx, yy);
+end
+B = zeros(2);
+for j = 1:2
+    for k = 1:2
+        B(j,k) = op(dom(j), dom(2+k));
+    end
+end
+if ( any(any( abs(A - B.') > min( 1000*pseudoLevel, 1e-4 ) ) ) )
+    % Function handle probably needs vectorizing.
+    % Give user a warning and then vectorize.
+    throwVectorWarning();
+    vectorize = true;
+end
+    function throwVectorWarning()
+        warning('CHEBFUN:SPHEREFUN:constructor:vectorize',...
+            ['Function did not correctly evaluate on an array.\n', ...
+            'Turning on the ''vectorize'' flag. Did you intend this?\n', ...
+            'Use the ''vectorize'' flag in the SPHEREFUN constructor\n', ...
+            'call to avoid this warning message.']);
+    end
 end
