@@ -21,6 +21,13 @@ function values = coeffs2vals(coeffs)
 % Polynomials". Chapman & Hall/CRC (2003).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% *Note about symmetries* The code below takes steps to 
+% ensure that the following symmetries are enforced:
+% even Chebyshev COEFFS exactly zero ==> VALUES are exactly odd
+% odd Chebychev COEFFS exactly zero ==> VALUES are exactly even
+% These corrections are required because the MATLAB FFT does not
+% guarantee that these symmetries are enforced.
+
 % Get the length of the input:
 [n, m] = size(coeffs);
 
