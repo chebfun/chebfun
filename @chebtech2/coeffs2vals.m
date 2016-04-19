@@ -30,6 +30,10 @@ if ( n <= 1 )
     return
 end
 
+% check for symmetry
+isEven = max(abs(coeffs(2:2:end,:)),[],1) == 0;
+isOdd = max(abs(coeffs(1:2:end,:)),[],1) == 0;
+
 % Scale them by 1/2:
 coeffs(2:n-1,:) = coeffs(2:n-1,:)/2;
 
@@ -49,5 +53,9 @@ end
 
 % Flip and truncate:
 values = values(n:-1:1,:);
+
+% enforce symmetry
+values(:,isEven) = (values(:,isEven)+flipud(values(:,isEven)))/2;
+values(:,isOdd) = (values(:,isOdd)-flipud(values(:,isOdd)))/2;
 
 end

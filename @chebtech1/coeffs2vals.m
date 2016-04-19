@@ -30,6 +30,10 @@ if ( n <= 1 )
     return
 end
 
+% check for symmetry
+isEven = max(abs(coeffs(2:2:end,:)),[],1) == 0;
+isOdd = max(abs(coeffs(1:2:end,:)),[],1) == 0;
+
 % Computing the weight vector often accounts for at least half the cost of this
 % transformation. Given that (a) the weight vector depends only on the length of
 % the coefficients and not the coefficients themselves and (b) that we often
@@ -60,5 +64,9 @@ elseif ( isreal(1i*coeffs) )
     % Imaginary-valued case:
     values = 1i*imag(values);
 end
+
+% enforce symmetry
+values(:,isEven) = (values(:,isEven)+flipud(values(:,isEven)))/2;
+values(:,isOdd) = (values(:,isOdd)-flipud(values(:,isOdd)))/2;
 
 end
