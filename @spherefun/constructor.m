@@ -33,11 +33,6 @@ if ( nargin == 0 )          % SPHEREFUN( )
     return
 end
 
-if ( isa(op, 'spherefun') )  % SPHEREFUN( SPHEREFUN )
-    g = op;
-    return
-end
-
 % Parse the inputs:
 [op, dom, pref, fixedRank, vectorize] = parseInputs(op, varargin{:});
 
@@ -45,6 +40,8 @@ end
 % parseInputs.
 if ( isa(op, 'spherefun') )  
     g = op;
+    % Fix the rank:
+    g = fixTheRank(g, fixedRank);
     return
 end
 
@@ -202,7 +199,7 @@ if ( mod(m,2) ~= 0 )
 end
 
 % TODO: Add a way to loosen tolerances for this type of construction.
-[tol, vscale] = getTol(F, 2*pi/m, pi/(n-1), dom, pref.cheb2Prefs.chebfun2eps);
+tol = getTol(F, 2*pi/m, pi/(n-1), dom, pref.cheb2Prefs.chebfun2eps);
 pref.chebfuneps = tol;
 
 % Perform GE with complete pivoting
@@ -280,10 +277,13 @@ Fm = 0.5*(B - C);
 %
 
 % Check if the poles are numerically constant and get the value.
-[pole1, constValue1] = checkPole(Fp(1, :), tol);
-[pole2, constValue2] = checkPole(Fp(m, :), tol);
+pole1 = checkPole(Fp(1, :), tol);
+pole2 = checkPole(Fp(m, :), tol);
 
 % TODO: Figure out if we really need to warn the user about their function
+% % Check if the poles are numerically constant and get the value.
+% [pole1, constValue1] = checkPole(Fp(1, :), tol);
+% [pole2, constValue2] = checkPole(Fp(m, :), tol);
 % not being constant along the poles.
 % if ~(constValue1 || constValue1)
 %     warning('CHEBFUN:SPHEREFUN:constructor:constPoles',...
@@ -777,19 +777,6 @@ end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function f = redefine_function_handle(f)
-% nargin(f) = 2, then we are already on the sphere, if nargin(f) = 3,
-% then do change of variables:
-
-if ( nargin(f) == 3 )
-    % Wrap f so it can be evaluated in spherical coordinates
-    f = @(lam, th) spherefun.sphf2cartf(f, lam, th, 0);
-end
-
-end
-
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 function [tol, vscale] = getTol(F, hx, hy, dom, pseudoLevel)
 % GETTOL     Calculate a tolerance for the spherefun constructor.
 %
@@ -987,6 +974,11 @@ function [vectorize, op] = vectorCheck(op, dom, pseudoLevel)
 % Check for cases: @(x,y) x*y, and @(x,y) x*y'
 
 vectorize = false;
+
+if isa(op,'spherefun')
+    return;
+end
+
 % Evaluate at a 2-by-2 grid on the interior of the domain.
 [xx, yy] = meshgrid( dom(1:2)/3 + diff(dom(1:2))/3,...
                      dom(3:4)/2 + diff(dom(3:4))/3);
