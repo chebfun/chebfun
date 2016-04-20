@@ -41,15 +41,17 @@ end
 % Parse the inputs:
 [op, dom, pref, fixedRank, vectorize] = parseInputs(op, varargin{:});
 
-if ( isa(op, 'spherefun') )  % Return if construction is from coefficients.
+% Return op if construction is from coefficients which is handled in
+% parseInputs.
+if ( isa(op, 'spherefun') )  
     g = op;
     return
 end
 
 % Preferences:
-tech        = pref.tech();
+tech        = trigtech;
 tpref       = tech.techPref;
-minSample   = tpref.minSamples;
+minSample   = 4;
 maxSample   = tpref.maxLength;
 cheb2Prefs  = pref.cheb2Prefs;
 sampleTest  = cheb2Prefs.sampleTest;
@@ -57,7 +59,6 @@ maxRank     = cheb2Prefs.maxRank;
 pseudoLevel = cheb2Prefs.chebfun2eps;
 
 alpha = 100; % Default value for coupling parameter
-factor  = 8; % Ratio between size of matrix and no. pivots.
 
 if ( isa(op, 'char') )     % SPHEREFUN( CHAR )
     op = str2op( op );
@@ -68,58 +69,49 @@ end
 % 2. Add non-adaptive construction
 % 3. Add tensor-product.
 
+% Deal with constructions from numeric data:
 if ( isa(op, 'double') )    % SPHEREFUN( DOUBLE )
-    
-    % Only do Phase I on the values.
-    F = op;
-    [n, m] = size(F);
-    factor = 0;
-    
-    if ( mod(m,2) ~= 0 )
-        error('SPHEREFUN:CONSTRUCTOR:VALUES', ... 
-         'When constructing from values the number of columns must be even.');
-    end
-    
-    % Flip F arround since Phase I operates on the doubled-up portion of
-    % the sphere [-pi pi] x [-pi, 0] or [-pi pi] x [-3*pi/2 -pi/2]
-    F = [ F(n:-1:1, m/2+1:m) F(n:-1:1, 1:m/2) ];
-    
-    % TODO: Add a way to loosen tolerances for this type of construction.
-    [tol, vscale] = getTol(F, 2*pi/m, pi/(n-1), dom, pseudoLevel);
-    [pivotIndices, pivotArray, removePoles, happyRank, cols, pivots, ...
-        rows, idxPlus, idxMinus] = PhaseOne(F, tol, alpha, factor);
-    [x, y] = getPoints(n, m, dom);
-    pivotLocations = [ x(pivotIndices(:, 2)) y(pivotIndices(:, 1)) ];
-    
-else  % SPHEREFUN( FUNCTION )
-    % If f is defined in terms of x,y,z; then convert it to
-    % (longitude,latitude).
-    h = redefine_function_handle(op);
-    
-    % Check for op = @(lam,th) constant function
-    [ll, tt] = meshgrid(dom(1:2), dom(3:4));
-    if ( numel(h(ll,tt)) == 1 )
-        h1 = h;
-        h = @(ll, tt) h1(ll, tt) + 0*ll;
-    end
+    g = constructFromDouble(op, dom, alpha, pref);
+    % Fix the rank:
+    g = fixTheRank(g, fixedRank);
+    return
+end
 
-    % PHASE ONE  
-    % Sample at square grids and determine the numerical rank of the
-    % function.
-    n = 4;             % Initial grid size
-    happyRank = 0;     % Happy with phase one? 
-    failure = 0;
-    pivotIndices = [];
-    pivotArray = [];
-    while ( ~happyRank && ~failure )
-        n = 2*n;
+%
+% Construction is from a function handle.
+%
+
+% Check for op = @(lam,th) constant function
+[ll, tt] = meshgrid(dom(1:2), dom(3:4));
+if ( numel(op(ll,tt)) == 1 )
+    op1 = op;
+    op = @(ll, tt) op1(ll, tt) + 0*ll;
+end
+
+factor  = 8; % Ratio between size of matrix and no. pivots.
+isHappy = 0; % If we are currently unresolved.
+failure = 0; % Reached max discretization size without being happy.
+
+while ( ~isHappy && ~failure )
+    %
+    % Setup Phase I: GE with block 2-by-2 pivoting to determine the
+    % numerical rank and pivot locations.  Sampling is done at equally
+    % spaced square grids.
+    %
+
+    grid = minSample;          
+    happyRank = 0;             % Happy with phase one? 
+    strike = 1;
+    while ( ~happyRank && ~failure && strike < 3)
+        grid = 2*grid;
 
         % Sample function on a tensor product grid.
-        [x, y] = getPoints(n, n, dom);
+        [x, y] = getPoints(grid, grid, dom);
         [xx, yy] = meshgrid(x, y);
-        F = evaluate(h, xx, yy, vectorize);
+        F = evaluate(op, xx, yy, vectorize);
 
-        [tol, vscale] = getTol(F, pi/n, pi/n, dom, pseudoLevel);
+        [tol, vscale] = getTol(F, pi/grid, pi/grid, dom, pseudoLevel);
+        pref.chebfuneps = tol;
         
         % Does the function blow up or evaluate to NaN?:
         if ( isinf(vscale) )
@@ -129,26 +121,99 @@ else  % SPHEREFUN( FUNCTION )
             error('CHEBFUN:SPHEREFUN:constructor:nan', ...
                 'Function returned NaN when evaluated');
         end
-
+        
+        % Do GE
         [pivotIndices, pivotArray, removePoles, happyRank] = ...
             PhaseOne(F, tol, alpha, factor);
 
-        if ( n >= maxRank )
+        if ( grid > factor*(maxRank-1) )
             warning('SPHEREFUN:CONSTRUCTOR:MAXRANK', ... 
                                     'Unresolved with maximum rank.');
             failure = 1;
         end
+        
+        % If the function is 0+noise then stop after three strikes.
+        if ( max(abs(pivotArray(1,:))) < 1e4*tol )
+            strike = strike + 1;
+        end
     end
 
-    % PHASE TWO 
-    % Find the appropriate discretizations in the columns and rows. 
-    [cols, pivots, rows, pivotLocations, idxPlus, idxMinus] = ...
-        PhaseTwo(h, pivotIndices, pivotArray, n, dom, vscale, ...
-        maxSample, removePoles, vectorize);
+    % Do Phase 2: resolve along the column and row slices.
+    [cols, pivots, rows, pivotLocations, idxPlus, idxMinus, isHappy, failure] = ...
+        PhaseTwo(op, pivotIndices, pivotArray, grid, dom, vscale, ...
+        maxSample, removePoles, vectorize, pref);
+    
+    g.cols = chebfun(cols, dom(3:4)-[pi 0], 'trig', pref);
+    g.rows = chebfun(rows, dom(1:2), 'trig', pref);
+    if ( all(pivots) == 0 )
+        pivots = inf;
+    end
+    g.pivotValues = pivots;
+    g.domain = dom;
+    g.idxPlus = idxPlus;
+    g.idxMinus = idxMinus;
+    g.nonZeroPoles = removePoles;
+    g.pivotLocations = adjustPivotLocations(pivotLocations, pivotArray); 
+
+    % Sample Test:
+    if ( sampleTest )
+        % wrap the op with evaluate in case the 'vectorize' flag is on:
+        sampleOP = @(lam,th) evaluate(op, lam, th, vectorize);
+        
+        % Evaluate at points in the domain:
+        pass = g.sampleTest(sampleOP, tol, vectorize);
+        if ( ~pass )
+            % Increase minSamples and try again.
+            minSample = 2*minSample;
+            isHappy = 0;
+        end
+    end
 end
 
-g.cols = chebfun(cols, dom(3:4)-[pi 0], 'trig');
-g.rows = chebfun(rows, dom(1:2), 'trig');
+% Simplifying rows and columns after they are happy.
+g = simplify( g, pref.chebfuneps );
+
+% Fix the rank, if in nonadaptive mode.
+g = fixTheRank( g , fixedRank );
+
+% Project onto BMC-I symmetry so the function is smooth on the sphere.
+g = projectOntoBMCI( g );
+
+end
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function g = constructFromDouble(op, dom, alpha, pref)
+
+g = spherefun();
+
+% If single numerical value given
+if ( (numel( op ) == 1) )
+    g = constructor(g, @(lam,th) op + 0*lam, dom);
+    return
+end
+
+% Only do Phase I on the values.
+F = op;
+[n, m] = size(F);
+
+if ( mod(m,2) ~= 0 )
+    error('SPHEREFUN:CONSTRUCTOR:VALUES', ... 
+     'When constructing from values the number of columns must be even.');
+end
+
+% TODO: Add a way to loosen tolerances for this type of construction.
+[tol, vscale] = getTol(F, 2*pi/m, pi/(n-1), dom, pref.cheb2Prefs.chebfun2eps);
+pref.chebfuneps = tol;
+
+% Perform GE with complete pivoting
+[pivotIndices, pivotArray, removePoles, unused, cols, pivots, ...
+    rows, idxPlus, idxMinus] = PhaseOne(F, tol, alpha, 0);
+
+[x, y] = getPoints(n, m, dom);
+pivotLocations = [ x(pivotIndices(:, 2)) y(pivotIndices(:, 1)) ];
+
+g.cols = chebfun(cols, dom(3:4)-[pi 0], 'trig', pref);
+g.rows = chebfun(rows, dom(1:2), 'trig', pref);
 if ( all(pivots) == 0 )
     pivots = inf;
 end
@@ -157,8 +222,7 @@ g.domain = dom;
 g.idxPlus = idxPlus;
 g.idxMinus = idxMinus;
 g.nonZeroPoles = removePoles;
-g.pivotLocations = adjustPivotLocations(pivotLocations, pivotArray, ...
-    iscolat(g)); 
+g.pivotLocations = adjustPivotLocations(pivotLocations, pivotArray); 
 
 % Simplifying rows and columns after they are happy.
 g = simplify(g);
@@ -166,6 +230,7 @@ g = simplify(g);
 g = projectOntoBMCI(g);
 
 end
+
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -205,11 +270,12 @@ if ( m == 2 )
     return;
 end
 
-B = F(:, 1:n/2);    % (1,1) Block of F.
-C = F(:, n/2+1:n);  % (1,2) block of F.
+C = F(:, 1:n/2);    % (2,2) Block of F.
+B = F(:, n/2+1:n);  % (1,2) block of F.
 Fp = 0.5*(B + C);
 Fm = 0.5*(B - C);
 
+%
 % Deal with the poles by removing them from Fp.
 %
 
@@ -379,27 +445,23 @@ if ( nargout > 4 )
     rows = zeros(n, rankCount);
     pivots = zeros(rankCount, 1);
     if ( kplus ~= 0 )
-        cols(2:m-1, idxPlus) = colsPlus;
-        cols(m+1:2*m-2, idxPlus) = flipud(colsPlus);
+        cols(m+1:2*m-2, idxPlus) = colsPlus;
+        cols(2:m-1, idxPlus) = flipud(colsPlus);
         rows(:, idxPlus) = [ rowsPlus rowsPlus ].';
         pivotPlus = pivotArray(pivotArray(:,1) ~= 0,1);
         pivots(idxPlus) = pivotPlus;
     end
     
     if ( kminus ~= 0 )
-        cols(2:m-1, idxMinus) = colsMinus;
-        cols(m+1:2*m-2, idxMinus) = -flipud(colsMinus);
-        rows(:, idxMinus) = [ rowsMinus -rowsMinus ].';
+        cols(m+1:2*m-2, idxMinus) = colsMinus;
+        cols(2:m-1, idxMinus) = -flipud(colsMinus);
+        rows(:, idxMinus) = [ -rowsMinus rowsMinus ].';
         pivotMinus = pivotArray(pivotArray(:,2) ~= 0,2);
         pivots(idxMinus) = pivotMinus;
     end
     
-%     pivots = reshape(pivotArray.',[],1);
-%     pivots = pivots(pivots ~= 0 );
-%     pivots = pivots([idxPlus idxMinus]);
-
     if removePole
-        cols(:, 1) = [ colPole; flipud(colPole(2:m-1)) ];
+        cols(:, 1) = [ flipud(colPole); colPole(2:m-1)];
         rows(:, 1) = [ rowPole rowPole ];
         pivots(1) = rowVal;
     end
@@ -424,14 +486,19 @@ end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [cols, pivots, rows, pivotLocations, idxPlus, idxMinus] = ...
+function [cols, pivots, rows, pivotLocations, idxPlus, idxMinus, isHappy, failure] = ...
     PhaseTwo(h, pivotIndices, pivotArray, n, dom, vscale, maxSample, ...
-    removePoles, vectorize)
+    removePoles, vectorize, pref)
 
-% alpha = spherefun.alpha; % get growth rate factor.
 happy_columns = 0;   % Not happy, until proven otherwise.
 happy_rows = 0;
 m = n;
+
+% Set up the structs for the column and row trigtechs.
+colData.hscale = norm(dom(3:4), inf);
+colData.vscale = vscale;
+rowData.hscale = norm(dom(1:2), inf);
+rowData.vscale = vscale;
 
 [x, y] = getPoints(m, n, dom);
 
@@ -458,8 +525,8 @@ while ( ~(happy_columns && happy_rows) && ~failure )
     
     [x, y] = getPoints(m, n, dom);
     [xx, yy] = meshgrid(col_pivots, y);
-    newCols = evaluate(h, xx, yy, vectorize); 
-    temp = evaluate(h, xx + pi, yy, vectorize);
+    newCols = evaluate(h, xx + pi, yy, vectorize); 
+    temp = evaluate(h, xx, yy, vectorize);
     newColsPlus = 0.5*(newCols + temp);
     newColsMinus = 0.5*(newCols - temp);
     
@@ -472,8 +539,8 @@ while ( ~(happy_columns && happy_rows) && ~failure )
         newRows = newRows(:).';
     end
     
-    newRowsPlus = 0.5*(newRows(:, 1:n) + newRows(:, n+1:2*n));
-    newRowsMinus = 0.5*(newRows(:, 1:n) - newRows(:, n+1:2*n));
+    newRowsPlus = 0.5*(newRows(:, n+1:2*n) + newRows(:, 1:n));
+    newRowsMinus = 0.5*(newRows(:, n+1:2*n) - newRows(:, 1:n));
     
     colsPlus = zeros(m+1, numPosPivots);
     colsMinus = zeros(m+1, numMinusPivots);
@@ -503,7 +570,7 @@ while ( ~(happy_columns && happy_rows) && ~failure )
             
             colMinus = newColsMinus(:, ii);
             rowMinus = newRowsMinus(ii, :);
-
+            
             % Store the columns and rows
             colsPlus(:, plusCount) = colPlus;
             rowsPlus(plusCount, :) = rowPlus;
@@ -559,6 +626,10 @@ while ( ~(happy_columns && happy_rows) && ~failure )
                 colMinus = newColsMinus(:, ii);
                 rowMinus = newRowsMinus(ii, :);
 
+                if any(isnan(newRowsMinus(:))) || any(isinf(newRowsMinus(:)))
+                    fprintf('Shit\n');
+                end
+                
                 % Store the columns and rows
                 colsMinus(:, minusCount) = colMinus;
                 rowsMinus(minusCount, :) = rowMinus;
@@ -595,11 +666,9 @@ while ( ~(happy_columns && happy_rows) && ~failure )
     temp1 = sum([ colsPlus colsMinus ], 2); 
     temp2 = sum([ colsPlus -colsMinus ], 2);
 
-    colData.hscale = norm(dom(3:4), inf);
-    colData.vscale = vscale;
-    colValues = [ temp1; temp2(m:-1:2) ];
+    colValues = [ flipud(temp2); temp1(2:m) ];
     colTrigtech = trigtech.make(colValues, colData);
-    happy_columns = happinessCheck(colTrigtech, [], colValues, colData);
+    happy_columns = happinessCheck(colTrigtech, [], colValues, colData, pref);
     
     % Happiness check for rows:
     % Double up the rows
@@ -607,10 +676,8 @@ while ( ~(happy_columns && happy_rows) && ~failure )
     temp2 = sum([ rowsPlus; -rowsMinus ], 1);
 
     rowValues = [ temp1 temp2 ].';
-    rowData.hscale = norm(dom(1:2), inf);
-    rowData.vscale = vscale;
     rowTrigtech = trigtech.make(rowValues, rowData);
-    happy_rows = happinessCheck(rowTrigtech, [], rowValues, rowData);
+    happy_rows = happinessCheck(rowTrigtech, [], rowValues, rowData, pref);
     
     % Adaptive:
     if( ~happy_columns )
@@ -639,14 +706,16 @@ end
 
 % Combine the types of pivots and set-up indices to track them
 cols = zeros(2*size(colsPlus, 1)-2, totalPivots);
-cols(:, idxPlus) = [ colsPlus; flipud(colsPlus(2:end-1, :)) ];
-cols(:, idxMinus) = [ colsMinus; -flipud(colsMinus(2:end-1, :)) ];
+cols(:, idxPlus) = [ flipud(colsPlus); colsPlus(2:end-1, :)  ];
+cols(:, idxMinus) = [ -flipud(colsMinus); colsMinus(2:end-1, :)  ];
 
 rows = zeros(2*size(rowsPlus, 2), totalPivots);
 rows(:, idxPlus) = [ rowsPlus rowsPlus ].';
-rows(:, idxMinus) = [ rowsMinus -rowsMinus ].';
+rows(:, idxMinus) = [ -rowsMinus rowsMinus ].';
 
 pivotLocations = [ col_pivots row_pivots ];
+
+isHappy = happy_rows & happy_columns;
 
 end
 
@@ -679,10 +748,12 @@ lat = [ -pi pi -pi/2 pi/2 ]; % Latitude (doubled up)
 % Sample at an even number of points so that the poles are included.
 if ( all((dom - colat) == 0) )
     x = trigpts(2*n, [-pi, pi]);   % azimuthal angle, lambda
-    y = linspace(-pi, 0, m+1).';   % elevation angle, theta
+%     y = linspace(-pi, 0, m+1).';   % elevation angle, theta
+    y = linspace(0, pi, m+1).';   % elevation angle, theta
 elseif ( all((dom - lat) == 0) )
     x = trigpts(2*n, [-pi, pi]);          % azimuthal angle, lambda
-    y = linspace(-3*pi/2, -pi/2, m+1).';  % elevation angle, theta
+%     y = linspace(-3*pi/2, -pi/2, m+1).';  % elevation angle, theta
+    y = linspace(-pi/2,pi/2, m+1).';
 else
     error('SPHEREFUN:constructor:points2D:unkownDomain', ...
         'Unrecognized domain.');
@@ -743,15 +814,7 @@ end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function pivLocNew = adjustPivotLocations(pivLoc, pivArray, colat)
-% Adjust the pivot locations so that they correspond to -pi < lam < pi and 
-% 0 < th < pi or -pi/2 < th < pi/2
-if colat
-    pivLoc(:, 2) = -pivLoc(:, 2);
-else
-    pivLoc(:, 2) = -(pivLoc(:, 2) + pi);
-end
-pivLoc(:, 1) = pivLoc(:, 1) + pi;
+function pivLocNew = adjustPivotLocations(pivLoc, pivArray)
 
 % We will store the pivotLocations for both the plus and minus pieces, 
 % which could result in duplicate values being stored.  This happens 
@@ -890,6 +953,36 @@ end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+function g = fixTheRank( g , fixedRank )
+% Fix the rank of a SPHEREFUN. Used for nonadaptive calls to the constructor.
+
+if ( fixedRank < 0 )
+    error('CHEBFUN:SPHEREFUN:constructor:fixTheRank:negative', ...
+        'Nonadaptive rank should be positive.')
+elseif ( fixedRank )
+    if ( length(g.pivotValues) > fixedRank )
+        % Truncate things:
+        g.cols = g.cols(:,1:fixedRank);
+        g.rows = g.rows(:,1:fixedRank);
+        g.pivotValues = g.pivotValues(1:fixedRank);
+        g.idxPlus = g.idxPlus( g.idxPlus <= fixedRank );
+        g.idxMinus = g.idxMinus( g.idxMinus <= fixedRank );
+    elseif ( length(g.pivotValues) < fixedRank )
+        % Pad things with zero columns:
+        zcols = chebfun(0, g.cols.domain);
+        zrows = chebfun(0, g.rows.domain);
+        for jj = length(g.pivotValues) : fixedRank - 1
+            g.cols = [g.cols zcols];
+            g.rows = [g.rows zrows];
+            g.pivotValues = [g.pivotValues 0];
+        end
+    end
+end
+
+end
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 function [vectorize, op] = vectorCheck(op, dom, pseudoLevel)
 % Check for cases: @(x,y) x*y, and @(x,y) x*y'
 
@@ -911,10 +1004,10 @@ end
 B = zeros(2);
 for j = 1:2
     for k = 1:2
-        B(j,k) = op(dom(j), dom(2+k));
+        B(j,k) = op(xx(j,k), yy(j,k));
     end
 end
-if ( any(any( abs(A - B.') > min( 1000*pseudoLevel, 1e-4 ) ) ) )
+if ( any(any( abs(A - B) > min( 1000*pseudoLevel, 1e-4 ) ) ) )
     % Function handle probably needs vectorizing.
     % Give user a warning and then vectorize.
     throwVectorWarning();
