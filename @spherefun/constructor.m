@@ -1013,3 +1013,24 @@ end
             'call to avoid this warning message.']);
     end
 end
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function op = str2op( op )
+% OP = STR2OP(OP), finds the dependent variables in a string and returns an op
+% handle than can be evaluated.
+
+depvar = symvar( op );
+if ( numel(depvar) > 3)
+    error('CHEBFUN:SPHEREFUN:constructor:str2op:depvars', ...
+        'Too many dependent variables in string input.');
+elseif ( numel(depvar) == 1 )
+    % Treat as a complex variable:
+    op = eval(['@(' real(depvar{1}) + 1i*imag(depvar{1}) ')' op]);
+elseif ( numel(depvar) == 2 )
+    op = eval(['@(' depvar{1} ',' depvar{2} ')' op]);
+else
+    op = eval(['@(' depvar{1} ',' depvar{2} ',' depvar{3} ')' op]);
+end
+
+end
