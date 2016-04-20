@@ -5,9 +5,9 @@ function varargout = plotcoeffs2( f )
 %
 %   H = PLOTCOEFFS2(F) returns a handle H to the figure.
 %
-% See also PLOTCOEFFS, COEFFS2.
+% See also SPHEREFUN/PLOTCOEFFS, SPHEREFUN/COEFFS2.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Compute the bivariate coefficients, truncate them when they fall below
