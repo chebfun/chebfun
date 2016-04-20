@@ -1,4 +1,4 @@
-function u = Helmholtz(f, K, m, n)
+function u = helmholtz(f, K, m, n)
 %HELMHOLTZ   Fast Helmholtz solver for the sphere.
 %    U = HELMHOLTZ(F, K, N) solves U_xx + U_yy + U_zz + K^2U = F on the sphere 
 %    for U with a discretization of size N x N. F should be a SPHEREFUN and the
@@ -10,7 +10,7 @@ function u = Helmholtz(f, K, m, n)
 %  Example: 
 %    K = 100; m = 1000; n = m; 
 %    f = spherefun( @(x,y,z) cos(x.*y.*z) ); 
-%    u = spherefun.Helmholtz(f, K, m, n);
+%    u = spherefun.helmholtz(f, K, m, n);
 %    plot( u )
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
@@ -30,7 +30,7 @@ function u = Helmholtz(f, K, m, n)
 c = 1;  
 
 if ( K == 0 )
-    u = spherefun.Poisson(f, 0, m, n);
+    u = spherefun.poisson(f, 0, m, n);
     return
 end
 
