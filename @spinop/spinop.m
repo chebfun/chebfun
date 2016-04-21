@@ -168,9 +168,9 @@ end
             L = @(u) -diff(u, 3);
             N = @(u) -.5*diff(u.^2);
             dom = [-pi pi];
-            A = 25^2; B = 16^2;
+            A = 25; B = 16;
             tspan = [0 0.03015];
-            u0 = @(x) 3*A*sech(.5*sqrt(A)*x).^2 + 3*B*sech(.5*sqrt(B)*(x-1)).^2;
+            u0 = @(x) 3*A^2*sech(.5*A*(x+2)).^2 + 3*B^2*sech(.5*B*(x+1)).^2;
             u0 = chebfun(u0, dom, 'trig');
             
         % Kuramoto-Sivashinsky equation:

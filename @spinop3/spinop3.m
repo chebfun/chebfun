@@ -18,9 +18,10 @@ classdef spinop3 < spinoperator
 %           
 %  @(u) A*lap(u) + B*biharm(u) + C*triharm(u) + D*quadharm(u) + E*quintharm(u),
 %
-%           for some numbers A and B, and the nonlinear part has to be of the 
-%           form @(u) f(u), where f is a nonlinear function of u that does not 
-%           involve any derivatives of u.
+%           for some numbers A, B, C, D and E.
+%
+% Remark 2: The nonlinear part has to be of the form @(u) f(u), where f is a 
+%           nonlinear function of u that does not involve any derivatives of u.
 %
 % Example 1: To construct a SPINOP3 corresponding to the GL3 equation on 
 %            DOM = [0 100]^3 x TSPAN = [0 10] with random initial condition, one 

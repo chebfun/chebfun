@@ -2,7 +2,7 @@ function schemeCoeffs = computeCoeffs(K, dt, L, M, S)
 %COMPUTECOEFFS   Compute coefficients of a SPINSCHEME.
 %   SCHEMECOEFFS = COMPUTECOEFFS(K, DT, L, M, S) computes the coefficients
 %   needed by the SPINSCHEME K from the time-step DT, the linear part L, the
-%   number of points for complex means M, and the SPINOP S.
+%   number of points for complex means M, and the SPINOPERATOR S.
 %
 % See also SPINSCHEME.
 %
