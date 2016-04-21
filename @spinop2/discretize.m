@@ -47,7 +47,8 @@ else
     D2 = ifftshift(D2);
 end
 
-% Look for 'laplacian'/'lap' and 'biharmonic'/'biharm':
+% Look for 'laplacian'/'lap', 'biharmonic'/'biharm', 'triharmonic'/'triharm',
+% 'quadharmonic'/'quadharm' or 'quintharmomic'/'quintharm':
 strL = func2str(funcL);
 isLap = isempty(strfind(strL,'laplacian')) && isempty(strfind(strL,'lap'));
 isLap = ~isLap;
@@ -59,12 +60,15 @@ isTrih = ~isTrih;
 isQuadh = isempty(strfind(strL,'quadharmonic')) ...
     && isempty(strfind(strL,'quadharm'));
 isQuadh = ~isQuadh;
+isQuinth = isempty(strfind(strL,'quintharmonic')) ...
+    && isempty(strfind(strL,'quintharm'));
+isQuinth = ~isQuinth;
 
 % NxN identity matrix for the Kronecker products:
 I = eye(N);
 
-% The linear part has a A*laplacian(u) term:
-if ( isLap == 1 )
+% Construct the Laplacian operator -- needed for all the operators:
+if ( isLap || isBih || isTrih || isQuadh || isQuinth )
     
     % Compute the N^2xN^2 Laplacian with KRON:
     lapmat = kron(I, D2) + kron(D2, I);
@@ -79,19 +83,8 @@ end
 % The linear part has a B*biharmonic(u) term:
 if ( isBih == 1 )
     
-    % Fourth-order Fourier differentiation matrix:
-    D4 = trigspec.diffmat(N,4)*(2*pi/(dom(2) - dom(1)))^4;
-    if ( mod(N,2) == 0 )
-        D4 = fftshift(D4);
-    else
-        D4 = ifftshift(D4);
-    end
-    
-    % Compute the N^2xN^2 biharmonic operator with KRON:
-    bihmat = kron(I, D4) + kron(D4, I) + 2*kron(I,D2)*kron(D2,I);
-    
-    % Create a NxN matrix with the diagonal of the N^2xN^2 biharmonic operator:
-    bihmat = reshape(full(diag(bihmat)), N, N);
+    % Pointwise multiplication since we only store the diagonal elements:
+    bihmat = lapmat.^2;
     
 else
     bihmat = 0;
@@ -100,23 +93,8 @@ end
 % The linear part has a C*triharmonic(u) term:
 if ( isTrih == 1 )
     
-    % Fourth- and sixth-order Fourier differentiation matrices:
-    D4 = trigspec.diffmat(N,4)*(2*pi/(dom(2) - dom(1)))^4;
-    D6 = trigspec.diffmat(N,6)*(2*pi/(dom(2) - dom(1)))^6;
-    if ( mod(N,2) == 0 )
-        D4 = fftshift(D4);
-        D6 = fftshift(D6);
-    else
-        D4 = ifftshift(D4);
-        D6 = ifftshift(D6);
-    end
-    
-    % Compute the N^2xN^2 triharmonic operator with KRON:
-    trihmat = kron(I, D6) + kron(D6, I) + 3*kron(D2,I)*kron(I,D4) + ...
-        3*kron(D4,I)*kron(I,D2);
-    
-    % Create a NxN matrix with the diagonal of the N^2xN^2 triharm operator:
-    trihmat = reshape(full(diag(trihmat)), N, N);
+    % Pointwise multiplication since we only store the diagonal elements:
+    trihmat = lapmat.^3;
     
 else
     trihmat = 0;
@@ -125,29 +103,21 @@ end
 % The linear part has a D*quadharmonic(u) term:
 if ( isQuadh == 1 )
     
-    % Fourth-, sixth- and eigth-order Fourier differentiation matrices:
-    D4 = trigspec.diffmat(N,4)*(2*pi/(dom(2) - dom(1)))^4;
-    D6 = trigspec.diffmat(N,6)*(2*pi/(dom(2) - dom(1)))^6;
-    D8 = trigspec.diffmat(N,8)*(2*pi/(dom(2) - dom(1)))^8;
-    if ( mod(N,2) == 0 )
-        D4 = fftshift(D4);
-        D6 = fftshift(D6);
-        D8 = fftshift(D8);
-    else
-        D4 = ifftshift(D4);
-        D6 = ifftshift(D6);
-        D8 = ifftshift(D8);
-    end
-    
-    % Compute the N^2xN^2 quadharmonic operator with KRON:
-    quadhmat = kron(I, D8) + kron(D8, I) + 4*kron(D2,I)*kron(I,D6) + ...
-        4*kron(D6,I)*kron(I,D2) + 6*kron(D4,I)*kron(I,D4);
-    
-    % Create a NxN matrix with the diagonal of the N^2xN^2 quadharm operator:
-    quadhmat = reshape(full(diag(quadhmat)), N, N);
+    % Pointwise multiplication since we only store the diagonal elements:
+    quadhmat = lapmat.^4;
     
 else
     quadhmat = 0;
+end
+
+% The linear part has a E*quintharmonic(u) term:
+if ( isQuinth == 1 )
+    
+    % Pointwise multiplication since we only store the diagonal elements:
+    quinthmat = lapmat.^5;
+    
+else
+    quinthmat = 0;
 end
 
 % Convert to a string and initialize L:
@@ -163,6 +133,8 @@ str = strrep(str, 'triharmonic', '0*');
 str = strrep(str, 'triharm', '0*');
 str = strrep(str, 'quadharmonic', '0*');
 str = strrep(str, 'quadharm', '0*');
+str = strrep(str, 'quintharmonic', '0*');
+str = strrep(str, 'quintharm', '0*');
 func = eval(str);
 inputs = cell(1, nVars);
 for k = 1:nVars
@@ -179,6 +151,8 @@ str = strrep(str, 'triharmonic', '0*');
 str = strrep(str, 'triharm', '0*');
 str = strrep(str, 'quadharmonic', '0*');
 str = strrep(str, 'quadharm', '0*');
+str = strrep(str, 'quintharmonic', '0*');
+str = strrep(str, 'quintharm', '0*');
 func = eval(str);
 B = feval(func, inputs{:}); 
 
@@ -191,6 +165,8 @@ str = strrep(str, 'triharmonic', '');
 str = strrep(str, 'triharm', '');
 str = strrep(str, 'quadharmonic', '0*');
 str = strrep(str, 'quadharm', '0*');
+str = strrep(str, 'quintharmonic', '0*');
+str = strrep(str, 'quintharm', '0*');
 func = eval(str);
 C = feval(func, inputs{:}); 
 
@@ -203,12 +179,29 @@ str = strrep(str, 'triharmonic', '0*');
 str = strrep(str, 'triharm', '0*');
 str = strrep(str, 'quadharmonic', '');
 str = strrep(str, 'quadharm', '');
+str = strrep(str, 'quintharmonic', '0*');
+str = strrep(str, 'quintharm', '0*');
 func = eval(str);
 D = feval(func, inputs{:}); 
 
+% Get the constants E in front of the quintharmonic operators:
+str = strrep(strL, 'laplacian', '0*');
+str = strrep(str, 'lap', '0*');
+str = strrep(str, 'biharmonic', '0*');
+str = strrep(str, 'biharm', '0*');
+str = strrep(str, 'triharmonic', '0*');
+str = strrep(str, 'triharm', '0*');
+str = strrep(str, 'quadharmonic', '');
+str = strrep(str, 'quadharm', '');
+str = strrep(str, 'quintharmonic', '');
+str = strrep(str, 'quintharm', '');
+func = eval(str);
+E = feval(func, inputs{:}); 
+
 % Compute L:
 for k = 1:nVars
-    L = [L; A(k)*lapmat + B(k)*bihmat + C(k)*trihmat + D(k)*quadhmat]; 
+    L = [L; A(k)*lapmat + B(k)*bihmat + C(k)*trihmat + D(k)*quadhmat + ...
+        E(k)*quinthmat]; 
 end
 
 %% Disretize the differentiation term of the nonlinear part:

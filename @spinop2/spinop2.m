@@ -16,7 +16,7 @@ classdef spinop2 < spinoperator
 %
 % Remark 1: The linear part has to be of the form 
 %           
-%               @(u) A*laplacian(u) + B*biharmonic(u), 
+%  @(u) A*lap(u) + B*biharm(u) + C*triharm(u) + D*quadharm(u) + E*quintharm(u), 
 %
 %           for some numbers A and B, and the nonlinear part has to be of the 
 %           form @(u) f(u), where f is a nonlinear function of u that does not 
