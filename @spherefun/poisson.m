@@ -40,12 +40,9 @@ if ( nargin < 4 )
 end
 
 % Construct useful spectral matrices:
-% Please note that DF1m is different than trigspec.diff(m,1) because we 
-% take the coefficient space point-of-view and set the (1,1) entry to be 
-% nonzero.
-DF1m = (1i)*spdiags((-floor(m/2):1:ceil((m-2)/2))', 0, m, m);
-DF2m = (1i)^2*spdiags((-floor(m/2):1:ceil((m-2)/2))', 0, m, m).^2;
-DF2n = (1i)^2*spdiags((-floor(n/2):1:ceil((n-2)/2))', 0, n, n).^2;
+DF1m = trigspec.diffmat(m, 1, 'nozero');
+DF2m = trigspec.diffmat(m, 2);
+DF2n = trigspec.diffmat(n, 2);
 
 % Multiplication for sin(theta).*cos(theta):
 Mcossin = spdiags(.25i*[-ones(m, 1) ones(m, 1)], [-2 2], m, m); 
