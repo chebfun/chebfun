@@ -8,7 +8,7 @@ if ( nargin < 1 )
     pref = chebtech.techPref();
 end
 % Set the tolerance:
-tol = 100*pref.eps;
+tol = 100*pref.chebfuneps;
 
 % Initialize with default data:
 data = chebtech.parseDataInputs(struct());

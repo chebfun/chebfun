@@ -56,4 +56,19 @@ pass(6) = err < tol;
 n = 2500;
 w = trigBaryWeights(sort(rand(n,1)));
 pass(7) = length(w) == n;
+
+% Check for #1743.
+xk = [-1 (-1/3 - eps) (1/3 - eps) 1].';
+fvals = [1 ; 1 ; 1 ; 1 + eps];
+dom = [-pi pi];
+y = trigBary(2, fvals, xk, dom);
+pass(8) = ~isinf(y) && ~isnan(y) && (abs(y - 1) < 10*eps);
+
+% Check for #1744.
+w = trigBaryWeights(linspace(-1, 1, 4).');
+w_ex = [0.38883657630910357 ; -1.0 ; 1.0 ; -0.38883657630910357];
+err = norm(abs(w) - abs(w_ex), Inf);
+tol = 10*eps;
+pass(9) = err < tol;
+
 end

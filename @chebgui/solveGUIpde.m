@@ -115,7 +115,7 @@ end
 
 % Find out what the current CHEBFUN eps is set at.
 cpref = chebfunpref();
-if ( tol < cpref.eps )
+if ( tol < cpref.chebfuneps )
     warndlg('Tolerance specified is less than current chebfun epsilon', ...
         'Warning','modal');
     uiwait(gcf)

@@ -8,7 +8,7 @@ function pass = test_eulerTricomi( prefs )
 if ( nargin < 1 ) 
     prefs = chebfunpref(); 
 end 
-tol = 100*prefs.techPrefs.eps; 
+tol = 100*prefs.techPrefs.chebfuneps; 
 
 exact = chebfun2(@(x,y) 1+0*x);
 N = chebop2(@(x,y,u) diff(u,2,2) - x.*diff(u,2,1)); 

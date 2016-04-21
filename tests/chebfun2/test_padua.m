@@ -4,7 +4,7 @@ if ( nargin == 0 )
     pref = chebfunpref();
 end
 
-tol = 1e-13;
+tol = 1000*pref.cheb2Prefs.chebfun2eps;
 seedRNG(0)
 
 %% Test ordering of PADUAPTS is consistent with PADPTS():

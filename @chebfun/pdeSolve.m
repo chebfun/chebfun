@@ -162,7 +162,7 @@ end
             c = (1+sin(1:SYSSIZE)).'; % Arbitrarily linear combination.
             Uk2 = (Uk*c/sum(c));
             uk2 = tech.make(Uk2, pref);
-            [ishappy, cutoff] = happinessCheck(uk2, Uk2, [], [], pref);
+            [ishappy, cutoff] = happinessCheck(uk2, Uk2, [], [], pref); %#ok<ASGLU>
 
             if ( ishappy )  
 
@@ -259,7 +259,13 @@ end
 
 % Set plot options
 if ( doPlot )
-    set(axesSol, 'NextPlot','replacechildren');
+    
+    % Use linear scale. Always.
+    if ( ~ishold )
+        set(gca, 'XScale', 'Linear', 'YScale', 'Linear');
+    end
+        
+    set(axesSol, 'NextPlot', 'replacechildren');
     
     % Fix x limits
     set(axesSol, 'xLim', u0.domain);
@@ -387,13 +393,28 @@ if ( isstruct(bc) && ~isfield(bc, 'middle') )
 end
 
 % Initialise some global variables.
-leftNonlinBCLocs = [];
-middleNonlinBCLocs = [];
-rightNonlinBCLocs = [];
-BCRHS = {};
+numLinBCs = 0; % linear BCS (total)
+numLBCs = 0;   % nonlinear LBCs
+numMBCs = 0;   % nonlinear other constraints
+numRBCs = 0;   % nonlinear RBCs
+BCRHS = {};    % RHS values for BCs
+
+    % Differentiation matrices at left and right endpoints:
+    function D = neumannLeft(n)
+        x = -cos(pi*(1:n-2)/(n-1));
+        D = [0, 2./(1+x), .5]; 
+        D(1:2:end) = -D(1:2:end);
+        D(1) = -sum(D);
+    end
+    function D = neumannRight(n)
+        x = -cos(pi*(1:n-2)/(n-1));
+        D = [-.5, 2./(x-1), 0]; 
+        D(end:-2:1) = -D(end:-2:1);
+        D(end) = -sum(D);
+    end
 
 if ( ischar(bc) && any(strcmpi(bc, {'periodic', 'trig'})) )
-    %% %%%%%%%%%%%%%%%%%%%%%%%%%%% PERIODIC BCS  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%% PERIODIC BCS  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     ISPERIODIC = true;
     
@@ -416,7 +437,7 @@ if ( ischar(bc) && any(strcmpi(bc, {'periodic', 'trig'})) )
 %     BCRHS = num2cell(zeros(1, numel(r)));
     
 else
-    %% %%%%%%%%%%%%%%%%%%%%%%%%% NONPERIODIC BCS  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%% NONPERIODIC BCS  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     if ( isfield(bc, 'left') && ~isfield(bc, 'right') )
         bc.right = [];
     elseif ( isfield(bc, 'right') && ~isfield(bc, 'left') )
@@ -429,10 +450,15 @@ else
     bc.left = dealWithStructInput(bc.left);
     bc.right = dealWithStructInput(bc.right);
     
+    % Temporary chebdouble for evaluating BC function handles:
+    uTmp = chebdouble(ones(1, SYSSIZE), DOMAIN);
+    
+    %% LEFT BCS
     if ( isempty(bc.left) )
         bc.left = struct('op', []);
+        
     elseif ( ischar(bc.left) || (iscell(bc.left) && ischar(bc.left{1})) )
-        %% %%%%%%%%%%%%%%%%%%%%% DIRICHLET AND NEUMANN BCS (LEFT) %%%%%%%%%%%%%%
+        %%%%%%%%%%%%%%%%%%% DIRICHLET AND NEUMANN BCS (LEFT) %%%%%%%%%%%%%%%%%
         if ( iscell(bc.left) )
             v = bc.left{2};
             bc.left = bc.left{1};
@@ -443,51 +469,49 @@ else
             error('CHEBFUN:CHEBFUN:pde15s:nonNumericVal1', ...
                 'For BCs of the form {char, val} val must be numeric.')
         end
+        BCRHS = num2cell(repmat(v, SYSSIZE, 1));
+        numLinBCs = numel(v)*SYSSIZE;
+        
         if ( strcmpi(bc.left, 'dirichlet') )
-            A = @(n) [1 zeros(1, n - 1)];
+            A = @(n) [1, zeros(1, n-1)];
         elseif ( strcmpi(bc.left, 'neumann') )
-            % TODO: Make left diff operator explicitly.
-            A = @(n) [1 zeros(1, n-1)]*chebcolloc2.diffmat(n)*diff(DOMAIN)/2;
+            A = @(n) neumannLeft(n)*(diff(DOMAIN)/2);
         else
             error('CHEBFUN:CHEBFUN:pde15s:bcSyntax1', 'Unknown BC syntax');
         end
         bc.left = struct('op', []);
         bc.left.op = cell(SYSSIZE, 1);
         for k = 1:SYSSIZE
-            bc.left.op{k} = @(n) [zeros(1, ( k -1)*n) A(n) ...
-                zeros(1 , (SYSSIZE - k)*n)];
+            bc.left.op{k} = ...
+                @(n) [zeros(1,(k-1)*n),  A(n),  zeros(1, (SYSSIZE-k)*n)];
         end
-        BCRHS = num2cell(repmat(v, SYSSIZE, 1));
+        
     elseif ( numel(bc.left) == 1 && isa(bc.left, 'function_handle') )
-        %% %%%%%%%%%%%%%%%%%%%%%%%%%  GENERAL BCS (LEFT)  %%%%%%%%%%%%%%%%%%%%%%
-        op = parseFun(bc.left, 'lbc');
-        uTmp = chebdouble(ones(1, SYSSIZE));
-        sizeOp = size(op(0, mean(DOMAIN), uTmp));
-        leftNonlinBCLocs = 1:max(sizeOp);
+        %%%%%%%%%%%%%%%%%%%%%%%  GENERAL BCS (LEFT)  %%%%%%%%%%%%%%%%%%%%%%%%%%
+        opLBC = parseFun(bc.left, 'lbc');
+        numLBCs = max(size(opLBC(0, DOMAIN(1), uTmp)));
         bc.left = struct('op', []);
-        bc.left.op = {@(n) zeros(max(sizeOp), SYSSIZE*n)}; % Dummy entries.
-        BCRHS = num2cell(zeros(1, max(sizeOp)));
-        leftNonlinBCFuns = op;
+        
     else
         error('CHEBFUN:CHEBFUN:pde15s:bcSyntax2', 'Unknown BC syntax');
+        
     end
     
+    %% MIDDLE BCS / OTHER CONSTRAINTS
     if ( isfield(bc, 'middle') && isa(bc.middle, 'function_handle') )
-        %% %%%%%%%%%%%%%%%%%%%%%  GENERAL BCS (MIDDLE)  %%%%%%%%%%%%%%%%%%%%%%%%
-        op = parseFun(bc.middle, 'bc');
-        uTmp = chebdouble(ones(1, SYSSIZE));
-        sizeOp = size(op(0, mean(DOMAIN), uTmp));
-        middleNonlinBCLocs = 1:max(sizeOp);
+        %%%%%%%%%%%%%%%%%%%%%  GENERAL BCS (MIDDLE)  %%%%%%%%%%%%%%%%%%%%%%%%%%
+        opMBC = parseFun(bc.middle, 'bc');
+        numMBCs = max(size(opMBC(0, mean(DOMAIN), uTmp)));
         bc.middle = [];
-        bc.middle.op = {@(n) zeros(max(sizeOp), SYSSIZE*n)}; % Dummy entries.
-        BCRHS = num2cell(zeros(1, max(sizeOp)));
-        middleNonlinBCFuns = op;
+        
     end
-    
+        
+    %% RIGHT BCS
     if ( isempty(bc.right) )
         bc.right = struct('op', []);
+        
     elseif ( ischar(bc.right) || (iscell(bc.right) && ischar(bc.right{1})) )
-        %% %%%%%%%%%%%%%%%%%%%%% DIRICHLET AND NEUMANN BCS (RIGHT) %%%%%%%%%%%%%
+        %%%%%%%%%%%%%%%%%%% DIRICHLET AND NEUMANN BCS (RIGHT) %%%%%%%%%%%%%%%%%
         if ( iscell(bc.right) )
             v = bc.right{2};
             bc.right = bc.right{1};
@@ -498,36 +522,38 @@ else
             error('CHEBFUN:CHEBFUN:pde15s:nonNumericVal1', ...
                 'For BCs of the form {char, val} val must be numeric.')
         end
+        BCRHS = [BCRHS, num2cell(repmat(v, SYSSIZE, 1))];
+        numLinBCs = numLinBCs + numel(v)*SYSSIZE;
+        
         if ( strcmpi(bc.right, 'dirichlet') )
             A = @(n) [zeros(1, n-1), 1];
         elseif ( strcmpi(bc.right, 'neumann') )
-            % TODO: Make right diff operator explicitly.
-            A = @(n) [zeros(1, n-1) 1]*chebcolloc2.diffmat(n)*diff(DOMAIN)/2;
+            A = @(n) neumannRight(n)*(diff(DOMAIN)/2);
         else
             error('CHEBFUN:CHEBFUN:pde15s:bcSyntax3', 'Unknown BC syntax');
         end
         bc.right = struct('op', []);
         bc.right.op = cell(SYSSIZE, 1);
         for k = 1:SYSSIZE
-            bc.right.op{k} = @(n) [zeros(1,(k-1)*n) A(n) zeros(1,(SYSSIZE-k)*n)];
+            bc.right.op{k} = ...
+                @(n) [zeros(1,(k-1)*n),  A(n),  zeros(1,(SYSSIZE-k)*n)];
         end
-        BCRHS = [BCRHS num2cell(repmat(v, SYSSIZE, 1))];
         
     elseif ( numel(bc.right) == 1 && isa(bc.right, 'function_handle') )
-        %% %%%%%%%%%%%%%%%%%%%%%%%%  GENERAL BCS (RIGHT)  %%%%%%%%%%%%%%%%%%%%%%
-        op = parseFun(bc.right, 'rbc');
-        uTmp = chebdouble(ones(1, SYSSIZE));
-        sizeOp = size(op(0, mean(DOMAIN), uTmp));
-        rightNonlinBCLocs = 1:max(sizeOp);
+        %%%%%%%%%%%%%%%%%%%%%%  GENERAL BCS (RIGHT)  %%%%%%%%%%%%%%%%%%%%%%%%%%
+        opRBC = parseFun(bc.right, 'rbc');
+        numRBCs = max(size(opRBC(0, DOMAIN(end), uTmp)));
         bc.right = struct('op', []);
-        bc.right.op = {@(n) zeros(max(sizeOp), SYSSIZE*n)};
-        BCRHS = [BCRHS num2cell(zeros(1, max(sizeOp)))];
-        rightNonlinBCFuns = op;
+        
     else
         error('CHEBFUN:CHEBFUN:pde15s:bcSyntax4', 'Unknown BC syntax');
+        
     end
     
 end
+
+% Total number of BCs:
+numBCs = numLinBCs + numLBCs + numMBCs + numRBCs;
 
 if ( isstruct(bc) && ~isfield(bc, 'middle') )
     bc.middle.op = [];
@@ -561,7 +587,6 @@ else
     u0 = simplify(u0, tol);
 end
 tech = techHandle();
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% %%%%%%%%%%%%%%%%%%% SETUP TOLERANCES AND INITIAL CONDITION %%%%%%%%%%%%%%%%%%
@@ -609,11 +634,11 @@ uOut{1} = uCurrent;
 tOut(1) = tt(1);
 
 % Initialise variables for ONESTEP():
-B = []; q = []; rows = []; M = []; P = []; n = [];
+M = []; P = []; n = []; B = 0;
 
 % Set the preferences:
 pref = tech.techPref();
-pref.eps = tol;
+pref.chebfuneps = tol;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%% TIME CHUNKS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -628,11 +653,13 @@ if ( doPlot )
     drawnow
 end
 DONE = false;
+
 if ( ~isnan(optN) )
     % Non-adaptive in space:
+    currentLength = optN;
     tSpan = tt;
-    x = points(optN, DOMAIN);
     solvePDE(tSpan); % Do all chunks at once!
+    
 else
     % Adaptive in space
     
@@ -642,7 +669,6 @@ else
     tSpan = tt;
     while ( tCurrent < tt(end) && ~DONE )
         tSpan(tSpan < tCurrent) = [];
-        x = points(currentLength, DOMAIN);
         solvePDE(tSpan);
     end
 
@@ -656,29 +682,6 @@ end
 tOut = tOut(:);
 
 uOut = prepare4output(uOut);
-
-switch nargout
-    case 0
-    case 1
-        if ( length(tIn) == 2 )     % Only T_start and T_end were given.
-            uOut = uOut(:,[1,end]); % Strip intermediate steps.
-        end
-        varargout{1} = uOut;
-    case 2
-        varargout{1} = tOut;
-        varargout{2} = uOut;
-    case 1 + size(uOut, 1)
-        varargout{1} = tOut;
-        for varCounter = 1:size(uOut, 1)
-            varargout{varCounter + 1} = chebfun(uOut(varCounter, :));
-        end
-    otherwise
-        error('CHEBFUN:CHEBFUN:pdeSolve:nargout', ...
-            'Incorrect number of output arguments.');
-end
-
-clear global DIFFORDER
-clear global SYSSIZE
 
     function uOut = prepare4output(uIn)
         % If we only had one dependent variable, return an array valued CHEBFUN
@@ -694,6 +697,29 @@ clear global SYSSIZE
             uOut = chebmatrix(blocks); % CHEBMATRIX
         end
     end
+
+switch nargout
+    case 0
+    case 1
+        if ( length(tIn) == 2 )     % Only T_start and T_end were given.
+            uOut = uOut(:,[1,end]); % Strip intermediate steps.
+        end
+        varargout{1} = uOut;
+    case 2
+        varargout{1} = tOut;
+        varargout{2} = uOut;
+    case 1 + size(uOut, 1)
+        varargout{1} = tOut;
+        for varCounter = 1:size(uOut, 1)
+            varargout{varCounter + 1} = chebfun(uOut(varCounter,:)); %#ok<AGROW>
+        end
+    otherwise
+        error('CHEBFUN:CHEBFUN:pdeSolve:nargout', ...
+            'Incorrect number of output arguments.');
+end
+
+clear global
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  ONESTEP  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -702,35 +728,43 @@ clear global SYSSIZE
         % Constructs the result of one time chunk at fixed discretization.
 
         % Evaluate the chebfun at discrete points:
+        x = points(currentLength, DOMAIN);
         U0 = feval(uCurrent, x);
 
         if ( ISPERIODIC )
             
             % The discretisation length
-            n = length(x);
+            n = currentLength;
             
-        elseif ( isempty(n) || (n ~= length(x)) )
+        elseif ( isempty(n) || (n ~= currentLength) )
             % This depends only on the size of n. If this is the same, reuse!
             
             % The new discretisation length
-            n = length(x);
+            n = currentLength;
             
             % Linear constraints:
-            bcop = [bc.left.op ; bc.middle.op ; bc.right.op];
-            B = cell2mat(cellfun(@(f) feval(f, n), bcop, 'UniformOutput', false));
+            if ( numLinBCs > 0 )
+                bcop = [bc.left.op ; bc.middle.op ; bc.right.op];
+                B = cell2mat(cellfun(@(f) feval(f, n), bcop, 'UniformOutput', false));
+            end
+            
+            % Zero matrix for algebraic (boundary) terms:
+            Z = zeros(numBCs, SYSSIZE*n);
+            % Initialise evaluated BC rhs vector:
+            q = zeros(numBCs, 1);
             
             % Project / mass matrix.
             P = cell(1, SYSSIZE);
             M = cell(1, SYSSIZE);
             
             for kk = 1:SYSSIZE
-                xk = chebpts(n-DIFFORDER(kk), DOMAIN, 1);
+%                 xk = chebpts(n-DIFFORDER(kk), DOMAIN, 1);
+                xk = chebpts(n-DIFFORDER(kk)+2, DOMAIN, 2); xk([1,end]) = [];
                 P{kk} = barymat(xk, x);
                 M{kk} = pdeFlag(kk)*P{kk};
             end
-            P = [ 0*B ; blkdiag(P{:})];
-            M = [ 0*B ; blkdiag(M{:})];
-            rows = 1:size(B, 1);
+            P = [ Z ; blkdiag(P{:}) ];
+            M = [ Z ; blkdiag(M{:}) ];
             
             % Multiply by user-defined mass matrix
             if ( userMassSet )
@@ -745,31 +779,32 @@ clear global SYSSIZE
         
         if ( ~ISPERIODIC )
             % We have to ensure the starting condition satisfies the boundary
-            % conditions, or else we will get a singularity in time. We do this by
-            % tweaking the BC values to match the reality. Changing the IC itself is
-            % much trickier. Find out what the BC deviance from nominal really is:
-            BCVALOFFSET = 0;            % recover nominal value in next call
-            F = odeFun(tSpan(1),U0(:)); % also assigns to "rows" and "q"
+            % conditions, or else we will get a singularity in time. We do this
+            % by tweaking the BC values to match the reality. Changing the IC
+            % itself is much trickier. Find out what the BC deviance from
+            % nominal really is:
+            BCVALOFFSET = 0;             % recover nominal value in next call
+            F = odeFun(tSpan(1), U0(:)); % also assigns values to "q"
 
             % If this is for the initial chunk, check whether the initial
-            % condition nearly satisfies the BCs.
-            % We're quite lax about this, because discretization at low N can
-            % cause derivatives to look fairly bad. 
-            if ( throwBCwarning && (length(uOut) > 1) && (norm(F(rows)) > 0.05*norm(F)) )
+            % condition nearly satisfies the BCs. We're quite lax about this,
+            % because discretization at low N can cause derivatives to look
+            % fairly bad.
+            BCrows = 1:numBCs;
+            if ( throwBCwarning && (length(uOut) > 1) && ...
+                    (norm(F(BCrows)) > 0.05*norm(F)) )
                 warning('CHEBFUN:CHEBFUN:pde15s:BadIC',...
                     'Initial state may not satisfy the boundary conditions.')
                 throwBCwarning = false;
             end
             if ( adjustBCs )
-                BCVALOFFSET = F(rows) - q;
-            else
-                BCVALOFFSET = 0;
+                BCVALOFFSET = F(BCrows) - q;
             end
         end
         
         % Solve ODE over time chunk with the selected solver:
         try
-            [ignored1, ignored2] = ODESOLVER(@odeFun, tSpan, U0, opt);
+            [~, ~] = ODESOLVER(@odeFun, tSpan, U0, opt);
         catch ME
             if ( strcmp(ME.identifier, 'MATLAB:odearguments:SizeIC') )
                 error('CHEBFUN:CHEBFUN:pde15s:dims', ...
@@ -789,10 +824,8 @@ clear global SYSSIZE
             U = reshape(U, n, SYSSIZE);
             
             % Evaluate the PDEFUN:
-            Utmp = mydouble(U, DOMAIN);
-            F = pdeFun(t, x, Utmp);
-            F = double(F);
-            F = F(:);
+            myU = mydouble(U, DOMAIN);
+            F = double(pdeFun(t, x, myU));
             
             if ( ISPERIODIC )
                 return
@@ -800,50 +833,44 @@ clear global SYSSIZE
             
             % Enforce boundary constraints:
             
-            F = P*F; % Project.
-            
-            % Get the algebraic right-hand sides: (may be time-dependent)
-            for l = 1:numel(BCRHS)
-                if ( isa(BCRHS{l}, 'function_handle') )
-                    q(l, 1) = feval(BCRHS{l}, t);
-                else
-                    q(l, 1) = BCRHS{l};
-                end
-            end
+            F = P*F(:); % Project.
             
             % Replacements for the BC algebraic conditions:
-            F(rows) = B*U(:) - q;
+            if ( numLinBCs > 0 )
+                % Get the right-hand sides: (may be time-dependent)
+                for l = 1:numLinBCs
+                    if ( isa(BCRHS{l}, 'function_handle') )
+                        q(l,1) = feval(BCRHS{l}, t);
+                    else
+                        q(l,1) = BCRHS{l};
+                    end
+                end
+                indx = 1:numLinBCs;
+                F(indx) = B*U(:) - q(indx);                
+            else
+                indx = 0;
+            end
             
             % Replacements for the nonlinear BC conditions:
-            if ( ~isempty(leftNonlinBCLocs) )
-                indx = 1:length(leftNonlinBCLocs);
-                uTmp = leftNonlinBCFuns(t, x, Utmp);
-                uTmp = double(uTmp);
-                if ( size(uTmp, 1) ~= n )
-                    uTmp = reshape(uTmp, n, numel(uTmp)/n);
-                end
-                F(rows(indx)) = uTmp(1, :);
+            if ( numLBCs > 0 )
+                indx = indx(end) + (1:numLBCs);
+                fTmp = double(opLBC(t, x, myU));
+                F(indx) = fTmp(1, :);
             end
-            if ( ~isempty(middleNonlinBCLocs) )
+            if ( numMBCs > 0 )
                 % TODO: This won't work if there are also left nonlin BCs
-                indx = 1:length(middleNonlinBCLocs);
-                F(rows(indx)) = double(middleNonlinBCFuns(t, x, Utmp));
+                indx = indx(end) + (1:numMBCs);
+                F(indx) = double(opMBC(t, x, myU));
             end            
-            if ( ~isempty(rightNonlinBCLocs) )
-                indx = numel(BCRHS) + 1 - rightNonlinBCLocs;
-                uTmp = rightNonlinBCFuns(t, x, Utmp);
-                uTmp = double(uTmp);
-                if ( size(uTmp, 1) ~= n )
-                    uTmp = reshape(uTmp, n, numel(uTmp)/n);
-                end
-                F(rows(indx)) = fliplr(uTmp(end, :));
+            if ( numRBCs > 0 )
+                indx = indx(end) + (1:numRBCs);
+                fTmp = double(opRBC(t, x, myU));
+                F(indx) = fTmp(end,:);
             end
             
             % Adjust BC rows by the needed offset from original time:
-            F(rows) = F(rows) - BCVALOFFSET;
-            
-            % Reshape to back to a single column:
-            F = F(:);
+            indx = 1:numBCs;
+            F(indx) = F(indx) - BCVALOFFSET;
             
         end
     end
@@ -1000,7 +1027,6 @@ for k = 2:idx-1
     varList1 = [varList1, ',', varNamesNewOrder{k}]; %#ok<AGROW>
     varList2 = [varList2, ',', varNames{k}]; %#ok<AGROW>
 end
-
 
 % Compile the new function string:
 funList = {'@diff', '@sum', '@cumsum', '@fred'};

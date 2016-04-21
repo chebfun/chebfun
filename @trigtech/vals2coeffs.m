@@ -21,6 +21,13 @@ function coeffs = vals2coeffs(values)
 % Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
+% *Note about symmetry*.  Some of the code below is designed to
+% enforce two symmetries whose failure might disturb users:
+% VALUES exactly hermitian ==> COEFFS exactly real
+% VALUES exactly skew-hermitian ==> % COEFFS exactly imaginary
+% This is necessary because the MATLAB FFT code does not
+% exactly preserve symmetries.
+
 % Get the length of the input:
 n = size(values, 1);
 
@@ -30,7 +37,23 @@ if ( n <= 1 )
     return
 end
 
+% zero case
+if ( norm(double(values)) == 0 )
+    coeffs = values; 
+    return
+end
+
+% test for symmetry
+vals = double([values;values(1,:)]);
+isHerm = max(abs(vals-flipud(conj(vals))),[],1) == 0;
+isSkew = max(abs(vals+flipud(conj(vals))),[],1) == 0;
+
+% compute coefficients
 coeffs = (1/n)*fftshift(fft(values, [], 1), 1);
+
+% correct if symmetric
+coeffs(:,isHerm) = real(coeffs(:,isHerm));
+coeffs(:,isSkew) = 1i*imag(coeffs(:,isSkew));
 
 % These coefficients are for interpolation defined on [0,2*pi), but we want
 % to work on [-pi,pi). To fix the coefficients for this we just need to

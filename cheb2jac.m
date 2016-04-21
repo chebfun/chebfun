@@ -25,7 +25,33 @@ if ( alph == 0 && bet == 0 )
     return
 end
 
-c_jac = cheb2jac_direct(c_cheb, alph, bet);
+if ( alph == -.5 && bet == -.5 )
+    % Special case: alpha = beta = -.5 (scaled chebpoly1)
+    [n, m] = size(c_cheb);
+    nn = (0:n-1)';
+    scl = gamma(.5).*exp(-gammaln(nn+.5)+gammaln(nn+1));
+    if ( m == 1 )
+        c_jac = scl.*c_cheb;
+    else
+        c_jac = bsxfun(@times, scl, c_cheb);
+    end
+        
+elseif ( alph == .5 && bet == .5 )
+    % Special case: alpha = beta = .5 (scaled chebpoly2)
+    [n, m] = size(c_cheb);
+    nn = (0:n-1)';
+    scl = gamma(1.5).*exp(-gammaln(nn+1.5)+gammaln(nn+2));
+    S = ultraS.convertmat(n, 0, 0);
+    if ( m == 1 )
+        c_jac = scl.*(S*c_cheb);
+    else
+        c_jac = bsxfun(@times, scl, S*c_cheb);
+    end
+    
+else
+    c_jac = cheb2jac_direct(c_cheb, alph, bet);
+    
+end
 
 end
 

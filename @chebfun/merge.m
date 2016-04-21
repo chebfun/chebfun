@@ -109,7 +109,7 @@ end
 % Obtain scales of the CHEBFUN:
 vs = vscale(f);
 hs = hscale(f);
-pref.eps = max(eps, pref.eps);
+pref.chebfuneps = max(eps, pref.chebfuneps);
 mergedPts = [];
 
 % Store data from input CHEBFUN:
@@ -136,7 +136,7 @@ for k = index
 
     % Prevent merging if there are jumps:
     v = [oldPointVals(k,:); get(oldFuns{k-1}, 'rval'); get(oldFuns{k}, 'lval')];
-    if ( all( norm(v([1, 1],:) - v(2:3,:), inf) >= 1e3*pref.eps ) || any(isinf(v(:))) )
+    if ( all( norm(v([1, 1],:) - v(2:3,:), inf) >= 1e3*pref.chebfuneps ) || any(isinf(v(:))) )
         % Skip to next breakpoint:
         continue
     end

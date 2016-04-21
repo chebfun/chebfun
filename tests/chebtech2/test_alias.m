@@ -2,7 +2,7 @@
 
 function pass = test_alias(varargin)
 
-% Set a tolerance (pref.eps doesn't matter)
+% Set a tolerance (pref.chebfuneps doesn't matter)
 tol = 100*eps;
 
 %%

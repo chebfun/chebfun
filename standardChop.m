@@ -57,7 +57,7 @@ function cutoff = standardChop(coeffs, tol)
 % Set default if fewer than 2 inputs are supplied: 
 if ( nargin < 2 )
     p = chebfunpref;
-    tol = p.eps;
+    tol = p.chebfuneps;
 end
 
 % Check magnitude of TOL:
@@ -87,6 +87,16 @@ if ( m(1) == 0 )
 end
 envelope = m/m(1);
 % save step1 b envelope %%%
+
+% For Matlab version 2014b and later step 1 can be computed using the
+% cummax command.
+% envelope = cummax(abs(coeffs),'reverse');
+% if envelope(1) == 0
+%     cutoff = 1;
+%     return
+% else
+%     envelope = envelope/envelope(1);
+% end
 
 % Step 2: Scan ENVELOPE for a value PLATEAUPOINT, the first point J-1, if any,
 % that is followed by a plateau.  A plateau is a stretch of coefficients

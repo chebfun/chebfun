@@ -22,6 +22,13 @@ function coeffs = vals2coeffs(values)
 % Polynomials". Chapman & Hall/CRC (2003).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% *Note about symmetries* The code below takes steps to 
+% ensure that the following symmetries are enforced:
+% VALUES exactly even ==> odd Chebyshev COEFFS are exactly zero
+% VALUES exactly odd ==> even Chebyshev COEFFS are exactly zero
+% These corrections are required because the MATLAB FFT does not
+% guarantee that these symmetries are enforced.
+
 % Get the length of the input:
 n = size(values, 1);
 
@@ -30,6 +37,10 @@ if ( n <= 1 )
     coeffs = values; 
     return
 end
+
+% check for symmetry
+isEven = max(abs(values-flipud(values)),[],1) == 0;
+isOdd = max(abs(values+flipud(values)),[],1) == 0;
 
 % Mirror the values (to fake a DCT using an FFT):
 tmp = [values(n:-1:2,:) ; values(1:n-1,:)];
@@ -52,5 +63,9 @@ coeffs = coeffs(1:n,:);
 
 % Scale the interior coefficients:
 coeffs(2:n-1,:) = 2*coeffs(2:n-1,:);
+
+% adjust coefficients for symmetry
+coeffs(2:2:end,isEven) = 0;
+coeffs(1:2:end,isOdd) = 0;
 
 end

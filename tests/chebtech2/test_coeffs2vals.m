@@ -2,7 +2,7 @@
 
 function pass = test_coeffs2vals(varargin)
 
-% Set a tolerance (pref.eps doesn't matter)
+% Set a tolerance (pref.chebfuneps doesn't matter)
 tol = 100*eps;
 
 %%
@@ -40,5 +40,12 @@ tmp = ones(size(vTrue));
 tmp(end-1:-2:1) = -1;
 pass(7) = norm(v(:,1) - vTrue, inf) < tol && ...
           norm(v(:,2) - tmp.*vTrue, inf) < tol;
+      
+%%
+% Test for symmetry preservation
+c = kron(ones(10,1),eye(2));
+v = chebtech1.coeffs2vals(c);
+pass(8) = norm(v(:,1) - flipud(v(:,1)), inf) == 0 && ...
+          norm(v(:,2) + flipud(v(:,2)), inf) == 0;
       
 end

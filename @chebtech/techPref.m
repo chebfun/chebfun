@@ -56,7 +56,7 @@ function outPref = techPref(inPref)
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-outPref.eps                = 2^-52;
+outPref.chebfuneps         = 2^-52;
 outPref.minSamples         = 17;
 outPref.maxLength          = 2^16 + 1;
 outPref.fixedLength        = NaN;

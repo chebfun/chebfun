@@ -126,6 +126,14 @@ pass(49) = doesNotCrash(@() plot(fsr1, 'markers', 10));
 % Test plot of a complex constant:
 pass(50) = doesNotCrash(@() plot(chebfun(1i)));
 
+% Test plotting doubles alongside CHEBFUN objects
+f = @(x) exp(x);
+x = linspace(-1,1,5);
+fx = f(x);
+fc = chebfun(f);
+pass(51) = doesNotCrash(@() plot(fc, 'b', x, fx, 'or'));
+pass(52) = doesNotCrash(@() plot(x, fx, 'or', fc));
+
 close(hfig);
 
 end

@@ -98,7 +98,7 @@ end
 % interpolated:
 if ( rem(n, 2) == 0 )
     s = sum(xk);
-    if ( abs(mod(s, pi)) < 4*pi*eps )
+    if ( abs(rem(s, pi)) < 4*pi*eps )
         c = 0;
     else        
         c = cot(s/2);

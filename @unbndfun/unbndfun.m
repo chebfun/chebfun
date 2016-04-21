@@ -138,57 +138,6 @@ classdef unbndfun < classicfun
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% CLASS METHODS:
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    methods ( Access = public, Static = false )
-        
-        % Compose an UNBNDFUN with an operator or another FUN.
-        f = compose(f, op, g, data, pref)
-        
-        % Indefinite integral of an UNBNDFUN.
-        [f, rVal] = cumsum(f, dim)
-        
-        % Derivative of an UNBNDFUN.
-        f = diff(f, k, dim)
-       
-        % Change of domains of an UNBNDFUN via linear change of variables.
-        f = changeMap(f,newdom)
-        
-        % Evaluate an UNBNDFUN.
-        y = feval(f, x, varargin)
-        
-        % Flip/reverse an UNBNDFUN object.
-        f = flipud(f)
-        
-        % Compute the inner product of two UNBNDFUN objects.
-        out = innerProduct(f, g)
-        
-        % Left matrix divide for UNBNDFUN objects.
-        X = mldivide(A, B)
-
-        % Right matrix divide for an UNBNDFUN.
-        X = mrdivide(B, A)
-        
-        % Data for plotting an UNBNDFUN
-        data = plotData(f, g, h);
-                
-        % Polynomial coefficients of an UNBNDFUN.
-        out = poly(f)
-        
-        % QR factorisation for UNBNDFUN object is not supported.
-        [f, R, E] = qr(f, flag)
-
-        % Restrict an UNBNDFUN to a subinterval.
-        f = restrict(f, s)
-        
-        % Roots of an UNBNDFUN in an unbounded domain.
-        out = roots(f, varargin)
-        
-        % Definite integral of an UNBNDFUN on the its domain.
-        out = sum(f, dim)
-    end
-    
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% STATIC METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true ) 
