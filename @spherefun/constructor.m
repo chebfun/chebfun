@@ -90,6 +90,12 @@ pseudoLevel = eps;
 if ( isa(op, 'double') )    % SPHEREFUN( DOUBLE )
     % Should we allow coefficients to be passed in?
     
+    if ( ~isreal( op ) ) 
+        warning('SPHEREFUN:CONSTRUCTOR:COMPLEX', ...
+               'The values should be real, taking the real part now')
+        op = real( op );
+    end
+    
     % Only do Phase I on the values.
     F = op;
     [n, m] = size(F);
@@ -138,6 +144,12 @@ else  % SPHEREFUN( FUNCTION )
         [x, y] = getPoints(n, n, dom);
         [xx, yy] = meshgrid(x, y);
         F = evaluate(h, xx, yy, vectorize);
+        
+        if ( ~isreal( F ) ) 
+             warning('SPHEREFUN:CONSTRUCTOR:COMPLEX', ...
+               'The values should be real, taking the real part now')
+             F = real( F );   
+        end
 
         [tol, vscale] = GetTol(F, pi/n, pi/n, dom, pseudoLevel);
         
