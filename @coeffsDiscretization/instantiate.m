@@ -82,7 +82,7 @@ end
 function [M, S] = convertFunctional(disc, item)
     % Developer note: In general we can't represent functional
     % blocks via coeffs. To get around this we instantiate a
-    % TRIGCOLLOC discretization and convert it to coefficient space
+    % VALSDISCRETIZAION and convert it to coefficient space
     % using COEFFS2VALS(). (Note it's COEFFS2VALS() rather than
     % VALS2COEFFS() because it's a right-multiply (I think..).)
 
