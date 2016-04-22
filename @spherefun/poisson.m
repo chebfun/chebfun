@@ -43,21 +43,21 @@ end
 % Please note that DF1m is different than trigspec.diff(m,1) because we 
 % take the coefficient space point-of-view and set the (1,1) entry to be 
 % nonzero.
-DF1m = trigspec.diffmat( m, 1, 1);
-DF2m = trigspec.diffmat( m, 2 ); 
-DF2n = trigspec.diffmat( n, 2 ); 
+DF1m = trigspec.diffmat(m, 1, 1);
+DF2m = trigspec.diffmat(m, 2); 
+DF2n = trigspec.diffmat(n, 2); 
 
 % Multiplication for sin(theta).*cos(theta):
 % Below is equivalent to 
 % Mcossin = spdiags(.25i*[-ones(m, 1) ones(m, 1)], [-2 2], m, m); 
 cfs = trigtech(@(theta) sin(pi*theta).*cos(pi*theta));
-Mcossin = trigspec.multmat( m, cfs.coeffs ); 
+Mcossin = trigspec.multmat(m, cfs.coeffs); 
 
 % Multiplication for sin(theta)^2:
 % Below is equivalent to
 % Msin2 = spdiags(.5*[-.5*ones(m, 1) ones(m, 1) -.5*ones(m, 1)], [-2 0 2], m, m);
 cfs = trigtech(@(theta) sin(pi*theta).^2);
-Msin2 = trigspec.multmat( m, cfs.coeffs );
+Msin2 = trigspec.multmat(m, cfs.coeffs);
 Im = speye(m);
 scl = diag(DF2n); 
 
