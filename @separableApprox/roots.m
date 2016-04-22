@@ -42,11 +42,19 @@ if ( nargin == 1 )
         
         cols = f.cols;
         rows = f.rows;
-        yrts = roots( cols ) + realmin*1i;  % Add complex to ensure its not real
-        xrts = roots( rows ) + realmin*1i;
-        ry = chebfun( yrts.' );
-        rx = chebfun( xrts.' );
-        r = [ry rx];
+        yrts = 1i*(roots( cols )+realmin);  
+        xrts = roots( rows ) + realmin*1i; % Add complex to ensure its not real
+        r = chebfun; 
+        % Go though col(yrts) = 0, make into a horizontal line: 
+        for j = 1 : numel(yrts)
+            f = chebfun(@(x) x + yrts(j));
+            r = [r f];
+        end
+        % Go though row(xrts) = 0, make into a vertical line: 
+        for j = 1 : numel(xrts)
+            f = chebfun(@(x) 1i*x + xrts(j));
+            r = [r f];
+        end
         
     elseif ( isreal( f ) )
         % Function is real-valued.
