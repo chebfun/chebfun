@@ -22,7 +22,7 @@ end
 
 % Create the differentation matrix.
 if ( m > 0 )
-    if ( mod(N, 2) == 0) % N even
+    if ( mod(N, 2) == 0 ) % N even
         if ( mod(m, 2) == 1 ) % m odd
             D = (1i)^m*spdiags([0, -N/2+1:1:N/2-1]', 0, N, N).^m;
             if ( flag ) 
@@ -35,7 +35,7 @@ if ( m > 0 )
     else % N odd
         D = (1i)^m*spdiags((-(N-1)/2:1:(N-1)/2)', 0, N, N).^m;
     end
-else
+elseif ( m == 0 )
     D = speye(N);
 end
 
