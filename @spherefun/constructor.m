@@ -147,7 +147,7 @@ else  % SPHEREFUN( FUNCTION )
         
         if ( ~isreal( F ) ) 
              warning('SPHEREFUN:CONSTRUCTOR:COMPLEX', ...
-               'The values should be real, taking the real part now')
+               'The function is assumed to be real-valued, taking the real part now')
              F = real( F );   
         end
 
