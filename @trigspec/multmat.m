@@ -40,6 +40,7 @@ else
     col = a(Na:1:end-Na+N);
     row = a(Na:-1:Na-N+1);
 end
+
 M = trigspec.sptoeplitz(col, row);
 
 end
