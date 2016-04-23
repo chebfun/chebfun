@@ -63,7 +63,7 @@ function [values, giveUp] = refineResampling(op, values, pref)
     
     % Force the value at -1 to be equal to the value at 1, thus
     % enforcing symmetry.
-    valRightBoundary = feval(op,x(1)+2);
+    valRightBoundary = feval(op,1);
     
     values(1,:) = 0.5*(values(1,:) + valRightBoundary);
 end

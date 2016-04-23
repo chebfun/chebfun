@@ -25,8 +25,8 @@ end
 rts = roots@separableApprox(varargin{:});
 
 % Now make into a collection of array-valued chebfuns ready for plotting on
-% the sphere.
-x = chebpts(length(rts) + 1);
+% the sphere.  Make sure we have enough points to sample the contours.
+x = chebpts(max(length(rts),17) + 1);
 
 vals = feval(rts, x);
 r = cellmat(size(vals,2), 1);

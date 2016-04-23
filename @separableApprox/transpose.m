@@ -17,4 +17,7 @@ temp = f.cols;
 f.cols = f.rows; 
 f.rows = temp; 
 
+% Adjust the domain
+f.domain = [f.domain(3:4) f.domain(1:2)];
+
 end
