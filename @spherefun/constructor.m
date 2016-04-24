@@ -3,8 +3,8 @@ function g = constructor(g, op, dom, varargin)
 %
 % This code is when functions on the surface of the sphere are represented
 % as SPHEREFUN objects. A SPHEREFUN object is a low rank representation and
-% expresses a function as a sum of rank-0 or 1 outerproduct of univariate
-% functions in spherical coordinates.
+% expresses a real-valued function as a sum of rank-0 or 1 outerproduct of
+% univariate functions in spherical coordinates.
 %
 % The algorithm for constructing a SPHEREFUN comes in two phases:
 %
