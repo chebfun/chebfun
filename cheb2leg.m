@@ -89,19 +89,20 @@ tol = 1e-14*log(N);  % Tolerance of low rank approx.
 [mx, idx] = max(d);  % Max on diagonal (searching for first Cholesky pivot).
 while ( mx > tol )
     %C = [C, H(:,idx)];
-    pivotValues = [pivotValues ; 1./mx];        %#ok<AGROW>
+    
     newCol = vals(idx+1:idx+N-1) .* (num.*num(idx) ./ (idx + num + 1));
-    for j = 1:size(C, 2)
-        colScl = C(idx,j) * pivotValues(j);
-        newCol = newCol - ( C(:,j) * colScl );
+    if ( size(C, 2) > 0)
+        newCol = newCol - C*(C(idx,:).' .* pivotValues);
     end
-    C = [C, newCol]; %#ok<AGROW>                % Append newCol to C.
-    d = d - newCol.^2 ./ newCol(idx);           % Update diagonal.
-    [mx, idx] = max(d);                         % Find next pivot.
+    
+    pivotValues = [pivotValues ; 1./mx]; %#ok<AGROW> % Append pivtoValues.
+    C = [C, newCol]; %#ok<AGROW>                     % Append newCol to C.
+    d = d - newCol.^2 ./ newCol(idx);                % Update diagonal.
+    [mx, idx] = max(d);                              % Find next pivot.
 end
-sz = size(C, 2);                                % Numerical rank of H.
-C = C * spdiags(sqrt(pivotValues), 0, sz, sz);  % Share out scaling.
-
+sz = size(C, 2);                                     % Numerical rank of H.
+C = C * spdiags(sqrt(pivotValues), 0, sz, sz);       % Share out scaling.
+    
 % Second row of Toeplitz part:
 T_row2 = [0, 0, vals(1:N-3)'] ./ (num'-1);
 T_row2([1, 2:2:end]) = 0;
@@ -117,13 +118,19 @@ scl = (num+1/2)./num;
 
 a = fft( [Z ; T_row2(end:-1:2)'] );
 if ( n == 1 )
-    f1 = fft( bsxfun(@times, C, -c_cheb(2:end)), 2*N-2 );
-    b = ifft( bsxfun(@times, f1, a) ); b = b(1:N-1,:);
+    tmp1 = bsxfun(@times, C, -c_cheb(2:end));
+    f1 = fft( tmp1, 2*N-2 );
+    tmp2 = bsxfun(@times, f1, a);
+    b = ifft( tmp2 ); 
+    b = b(1:N-1,:);
     c_leg(2:end) = scl.*sum(C.*b, 2) + d.*c_cheb(2:end);
 else
     for k = 1:n
-        f1 = fft( bsxfun(@times, C, -c_cheb(2:end,k)), 2*N-2, 1 );
-        b = ifft( bsxfun(@times, f1, a), [], 1 ); b = b(1:N-1,:);
+        tmp1 = bsxfun(@times, C, -c_cheb(2:end,k));
+        f1 = fft( tmp1, 2*N-2, 1 );
+        tmp2 = bsxfun(@times, f1, a);
+        b = ifft( tmp2, [], 1 ); 
+        b = b(1:N-1,:);
         c_leg(2:end,k) = sum(C.*b, 2);
     end
     c_leg(2:end,:) = bsxfun(@times, scl, c_leg(2:end,:)) + ...
