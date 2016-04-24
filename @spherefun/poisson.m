@@ -1,4 +1,4 @@
-function u = Poisson(f, const, m, n)
+function u = poisson(f, const, m, n)
 %POISSON   Fast Poisson solver for the sphere.
 %   POISSON(F, CONST, N) solves
 %
@@ -15,7 +15,7 @@ function u = Poisson(f, const, m, n)
 %   exact = @(lam,th) -2*sin(lam).*sin(2*th).*sin(th).^2 -...
 %             sin(lam).*sin(th).*cos(th) + .5*sin(lam).*sin(2*th).*cos(2*th);
 %   const = 0;
-%   u = spherefun.Poisson(f, const, 100);
+%   u = spherefun.poisson(f, const, 100);
 %   norm(spherefun(exact) - u)
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
@@ -43,15 +43,21 @@ end
 % Please note that DF1m is different than trigspec.diff(m,1) because we 
 % take the coefficient space point-of-view and set the (1,1) entry to be 
 % nonzero.
-DF1m = (1i)*spdiags((-floor(m/2):1:ceil((m-2)/2))', 0, m, m);
-DF2m = (1i)^2*spdiags((-floor(m/2):1:ceil((m-2)/2))', 0, m, m).^2;
-DF2n = (1i)^2*spdiags((-floor(n/2):1:ceil((n-2)/2))', 0, n, n).^2;
+DF1m = trigspec.diffmat(m, 1, 1);
+DF2m = trigspec.diffmat(m, 2); 
+DF2n = trigspec.diffmat(n, 2); 
 
 % Multiplication for sin(theta).*cos(theta):
-Mcossin = spdiags(.25i*[-ones(m, 1) ones(m, 1)], [-2 2], m, m); 
+% Below is equivalent to 
+% Mcossin = spdiags(.25i*[-ones(m, 1) ones(m, 1)], [-2 2], m, m); 
+cfs = trigtech(@(theta) sin(pi*theta).*cos(pi*theta));
+Mcossin = trigspec.multmat(m, cfs.coeffs); 
 
 % Multiplication for sin(theta)^2:
-Msin2 = spdiags(.5*[-.5*ones(m, 1) ones(m, 1) -.5*ones(m, 1)], [-2 0 2], m, m);
+% Below is equivalent to
+% Msin2 = spdiags(.5*[-.5*ones(m, 1) ones(m, 1) -.5*ones(m, 1)], [-2 0 2], m, m);
+cfs = trigtech(@(theta) sin(pi*theta).^2);
+Msin2 = trigspec.multmat(m, cfs.coeffs);
 Im = speye(m);
 scl = diag(DF2n); 
 

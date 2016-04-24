@@ -71,4 +71,15 @@ c = trigtech.vals2coeffs([vals, -vals]);
 pass(9) = norm(c(:,1) - cTrue, inf) < tol && ...
           norm(c(:,2) + cTrue, inf) < tol;
       
+%%
+% Test for symmetry
+x = trigpts(123);
+vals = [cos(pi*x),sin(pi*x),cos(pi*x)+sin(pi*x)];
+vals(1,2) = 0;
+c = trigtech.vals2coeffs(vals);
+pass(10) = norm(c(:,1) - flipud(c(:,1)), inf) == 0 && ...
+           norm(c(:,2) + flipud(c(:,2)), inf) == 0 && ...
+           norm(c(:,3) - flipud(c(:,3)), inf) > 0 && ...
+           norm(c(:,3) + flipud(c(:,3)), inf) > 0;
+
 end

@@ -41,7 +41,7 @@ classdef trigspec < coeffsDiscretization
         end
         
         % Differentiation matrices for TRIGSPEC.
-        D = diffmat(N, m)
+        D = diffmat(N, m, flag)
         
         % Multiplication matrices for TRIGSPEC.
         D = multmat(N, f)

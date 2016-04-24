@@ -1,5 +1,5 @@
 function D = diff(disc, m)
-%DIFF    Differentiation operator for TRIGSPEC.
+%DIFF   Differentiation operator for TRIGSPEC.
 %   D = DIFF(DISC, m) returns a differentiation operator for the TRIGSPEC
 %   class that represents the mth derivative.
 

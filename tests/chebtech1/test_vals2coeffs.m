@@ -70,4 +70,11 @@ tmp = ones(size(cTrue)); tmp(end-1:-2:1) = -1;
 pass(13) = norm(c(:,1) - cTrue, inf) < tol && ...
           norm(c(:,2) - tmp.*cTrue, inf) < tol;
       
+%%
+% Test for symmetry preservation
+v = kron([1,-1;1,1],ones(10,1));
+c = chebtech1.vals2coeffs(v);
+pass(14) = norm(c(2:2:end,1), inf) == 0 && ...
+          norm(c(1:2:end,2), inf) == 0;
+      
 end
