@@ -30,15 +30,6 @@ if ( NumCols > 1 )
     end
 end
 
-% If alpha+beta<-1, then the Hankel part is now pos. def. Increase
-% alpha by 1, so that alpha+beta>-1:
-if ( alpha <= -1/2 )
-    c_jac = RightJacobiConversion(c_jac, alpha, beta);
-    c_jac = jac2jac( c_jac, alpha+1, beta, gam+1, delta );
-    c_jac = LeftJacobiConversion(c_jac, gam, delta);
-    return
-end
-
 % Move (alpha,beta) to (A,B) so that |A-alpha|<1 and |B-beta|<1
 while ( alpha <= gam - 1 )
     c_jac = RightJacobiConversion(c_jac, alpha, beta);
@@ -104,15 +95,20 @@ Lambda1 = @(z) exp( gammaln( z+alpha+beta+1 ) - gammaln(z+gam+beta+2) );
 Lambda2 = @(z) exp( gammaln( z+alpha-gam) - gammaln(z+1) );
 Lambda3 = @(z) exp( gammaln( z+gam+beta+1) - gammaln(z+beta+1) );
 Lambda4 = @(z) exp( gammaln( z+beta+1 ) - gammaln( z + alpha +beta + 1) );
+Lambda5 = @(z) exp( gammaln( z+beta+1 ) - gammaln( z + alpha +beta + 2) );
 
 % Diagonal matrices in A = D1(T.*H)D2:
 D1 = spdiags( ((2*(0:N-1)+gam+beta+1).*Lambda3([1 1:N-1]))',0,N,N ); D1(1,1) = 1;
 D2 = 1./gamma(alpha-gam)*spdiags( Lambda4([1 1:N-1])', 0, N, N );
-D2(1,1) = 1./gamma(alpha-gam)*gamma(beta+1)*(alpha+beta+1)./(gamma(alpha+beta+2));
+%D2(1,1) = 1./gamma(alpha-gam)*gamma(beta+1)*(alpha+beta+1)./(gamma(alpha+beta+2)); 
+D2(1,1) = 0; 
+% first_row = (gamma+beta+1)./gamma(alpha-gam).*Lambda4(0:N-1).*Lambda3(0).*Lambda2(0:N-1).*Lambda1(0:N-1);
+%first_col = (2*(0:N-1)'+gam+beta+1)./gamma(alpha-gam).*Lambda4(0).*Lambda3(0:N-1)'.*Lambda2(-(0:N-1)).*Lambda1(0:N-1);
 
 % Symbol of the Hankel part:
 vals = Lambda1( [1 1:2*N-1] )';
-vals(1) = gamma(alpha+beta+2)/(alpha+beta+1)/gamma(gam+beta+2);
+%vals(1) = gamma(alpha+beta+2)/(alpha+beta+1)/gamma(gam+beta+2);
+vals(1) = 0; 
 % Note that we would then usually do the following, but it is too slow:
 % H = hankel( vals(1:N), vals(N:2*N-1) );
 
@@ -159,10 +155,11 @@ b = ifft( bsxfun(@times, fft( bsxfun(@times, C, D2*v), 2*N-1, 1 ),...
 c_jac = D1 * ( C .* b(1:N,:) * ones(sz,1) );
 
 % Fix the first entry of the output.
-Matrow1 = T_row.*vals(1:N)'.*diag(D2)';
-Matrow1 = Matrow1/Matrow1(1);
+Matrow1 = gamma(gam+beta+2)./gamma(beta+1).*diag(D2)'.*T_row.*vals(1:N)';
+const = v(1); v(1) = 0;
 c_jac(1) = Matrow1 * v;
 
+c_jac(1) = c_jac(1) + const; 
 end
 
 function v = UpJacobiConversion(v, a, b)

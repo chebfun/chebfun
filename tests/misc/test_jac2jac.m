@@ -4,10 +4,10 @@ function pass = test_jac2jac( )
 rng(0)
 v = randn(10,1);
 % Run through a load of alpha, beta, gam, and delta: 
-alpha = linspace(-.99,1.1,10);
-beta = linspace(-.99,1.1,10); 
-gam = linspace(-.99,1.1,10);
-delta = linspace(-.99,1.1,10); 
+alpha = linspace(-.99,1.1,5);
+beta = linspace(-.99,1.1,5); 
+gam = linspace(-.99,1.1,5);
+delta = linspace(-.99,1.1,5); 
 
 tol = 1e-10; 
 count = 1; 
@@ -40,6 +40,22 @@ a = .46; b = -.7; g = .56; d = 1.54;
 exact = cheb2jac_direct( jac2cheb_direct( v, a, b), g, d ); 
 w = jac2jac( v, a, b, g, d );
 pass(2) = norm( exact - w, inf ) < tol;
+
+% Try alpha + beta = -1: 
+N = 513; 
+v = randn(N,1);
+a = -.6; b = -.4; g = -.65; d = -.45; 
+exact = cheb2jac_direct( jac2cheb_direct( v, a, b), g, d ); 
+w = jac2jac( v, a, b, g, d );
+pass(3) = norm( exact - w, inf ) < 2*tol;
+
+% Try alpha - gamma approx 0: 
+N = 513; 
+v = randn(N,1);
+a = .1; b = -.4; g = .10000001; d = -.4; 
+exact = cheb2jac_direct( jac2cheb_direct( v, a, b), g, d ); 
+w = jac2jac( v, a, b, g, d );
+pass(4) = norm( exact - w, inf ) < tol;
 
 end
 
