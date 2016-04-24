@@ -80,7 +80,7 @@ classdef spherefun < separableApprox
     methods (Access = public, Static = true)
   
         % Poisson solver: 
-        u = poisson(f, m, n);
+        u = poisson(f, const, m, n);
         
         % Helmholtz solver: 
         u = helmholtz(f, K, m, n);

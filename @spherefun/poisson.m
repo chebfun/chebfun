@@ -1,6 +1,6 @@
-function u = poisson(f, m, n)
+function u = poisson(f, const, m, n)
 %POISSON   Fast Poisson solver for the sphere.
-%   POISSON(F, N) solves laplacian(U) = F on the unit sphere, which in 
+%   POISSON(F, C, N) solves laplacian(U) = F on the unit sphere, which in 
 %   spherical coordinates (lam, th) is
 %
 %     sin(th)^2U_{th,th} + sin(th)cos(th)U_th + U_{lam,lam} = sin(th)^2*F
@@ -8,18 +8,19 @@ function u = poisson(f, m, n)
 %   The equation is discretized on an N x N grid in spherical coordinates.
 %   The integral of F is assumed to be zero, which is the compatibility
 %   constraint for there to exist a solution to the Poisson problem on the
-%   sphere. The integral of the solution U is enforced to be zero.  This
+%   sphere. The mean value of the solution U is set to C.  This
 %   function returns a SPHEREFUN representing the solution.
 %
-%   POISSON(F, M, N) is the same as POISSON(F, N), but with a
+%   POISSON(F, C, M, N) is the same as POISSON(F, C, N), but with a
 %   discretization of size M x N.
 %
 % EXAMPLE:
 %   f = @(lam,th) -6*(-1+5*cos(2*th)).*sin(lam).*sin(2*th);
 %   exact = @(lam,th) -2*sin(lam).*sin(2*th).*sin(th).^2 -...
 %             sin(lam).*sin(th).*cos(th) + .5*sin(lam).*sin(2*th).*cos(2*th);
-%   u = spherefun.poisson(f, 100);
+%   u = spherefun.poisson(f, 0, 100);
 %   norm(spherefun(exact) - u)
+%   mean2(u)
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -38,7 +39,7 @@ function u = poisson(f, m, n)
 % so that it can be used for the numerical simulation of time-dependent 
 % PDEs, where this comment is executed hundreds of times. 
 
-if ( nargin < 3 )
+if ( nargin < 4 )
     n = m;
 end
 
@@ -130,6 +131,6 @@ end
 
 % Second, solve: 
 CFS(:, k) = [ en ; L( ii, :) ] \ [ 0 ; F(ii, k) ];
-u = spherefun.coeffs2spherefun(CFS); 
+u = spherefun.coeffs2spherefun(CFS) + const; 
 
 end
