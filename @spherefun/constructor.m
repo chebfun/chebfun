@@ -92,7 +92,8 @@ if ( isa(op, 'double') )    % SPHEREFUN( DOUBLE )
     
     if ( ~isreal( op ) ) 
         warning('SPHEREFUN:CONSTRUCTOR:COMPLEX', ...
-               'The values should be real, taking the real part now')
+                ['Only real-valued spherefuns are supported. The '...
+                 'imaginary part is being set to zero now.'])
         op = real( op );
     end
     
@@ -146,8 +147,9 @@ else  % SPHEREFUN( FUNCTION )
         F = evaluate(h, xx, yy, vectorize);
         
         if ( ~isreal( F ) ) 
-             warning('SPHEREFUN:CONSTRUCTOR:COMPLEX', ...
-               'The function is assumed to be real-valued, taking the real part now')
+            warning('SPHEREFUN:CONSTRUCTOR:COMPLEX', ...
+                    ['Only real-valued spherefuns are supported. The '...
+                     'imaginary part is being set to zero now.'])
              F = real( F );   
         end
 
@@ -486,13 +488,13 @@ while ( ~(happy_columns && happy_rows) && ~failure )
     
     [x, y] = getPoints(m, n, dom);
     [xx, yy] = meshgrid(col_pivots, y);
-    newCols = evaluate(h, xx, yy, vectorize); 
-    temp = evaluate(h, xx + pi, yy, vectorize);
+    newCols = real(evaluate(h, xx, yy, vectorize)); 
+    temp = real(evaluate(h, xx + pi, yy, vectorize));
     newColsPlus = 0.5*(newCols + temp);
     newColsMinus = 0.5*(newCols - temp);
     
     [xx, yy] = meshgrid(x, row_pivots);
-    newRows = evaluate(h, xx, yy, vectorize);
+    newRows = real(evaluate(h, xx, yy, vectorize));
 
     % This code will be unnecessary once ticket #1532 is addressed on the
     % chebfun tracker.  Don't forget to remove it.
