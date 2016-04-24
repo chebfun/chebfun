@@ -1,21 +1,24 @@
-function u = poisson(f, const, m, n)
+function u = poisson(f, m, n)
 %POISSON   Fast Poisson solver for the sphere.
-%   POISSON(F, CONST, N) solves
+%   POISSON(F, N) solves laplacian(U) = F on the unit sphere, which in 
+%   spherical coordinates (lam, th) is
 %
-%     sin(th)^2u_{th,th} + sin(th)cos(th)u_th + u_{lam,lam} = sin(th)^2*f
+%     sin(th)^2U_{th,th} + sin(th)cos(th)U_th + U_{lam,lam} = sin(th)^2*F
 %
-%   on the unit sphere written in spherical coordinates (lam, th)
-%   with integral condition sum2(u) = CONST with a discretization of size N x N.
+%   The equation is discretized on an N x N grid in spherical coordinates.
+%   The integral of F is assumed to be zero, which is the compatibility
+%   constraint for there to exist a solution to the Poisson problem on the
+%   sphere. The integral of the solution U is enforced to be zero.  This
+%   function returns a SPHEREFUN representing the solution.
 %
-%   POISSON(F, CONST, M, N) is the same as POISSON(F, CONST, N), but with a
+%   POISSON(F, M, N) is the same as POISSON(F, N), but with a
 %   discretization of size M x N.
 %
 % EXAMPLE:
 %   f = @(lam,th) -6*(-1+5*cos(2*th)).*sin(lam).*sin(2*th);
 %   exact = @(lam,th) -2*sin(lam).*sin(2*th).*sin(th).^2 -...
 %             sin(lam).*sin(th).*cos(th) + .5*sin(lam).*sin(2*th).*cos(2*th);
-%   const = 0;
-%   u = spherefun.poisson(f, const, 100);
+%   u = spherefun.poisson(f, 100);
 %   norm(spherefun(exact) - u)
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
@@ -35,7 +38,7 @@ function u = poisson(f, const, m, n)
 % so that it can be used for the numerical simulation of time-dependent 
 % PDEs, where this comment is executed hundreds of times. 
 
-if ( nargin < 4 )
+if ( nargin < 3 )
     n = m;
 end
 
@@ -74,13 +77,35 @@ th0(end) = [];
 if ( isa(f, 'function_handle') )
     [rhs_lam, rhs_theta] = meshgrid(lam0, th0);
     F = feval(f, rhs_lam, rhs_theta);
+    tol = max(abs(F(:)))*chebfunpref().cheb2Prefs.chebfun2eps;
     F = trigtech.vals2coeffs(F);
     F = Msin2*trigtech.vals2coeffs(F.').';
 elseif ( isa(f, 'spherefun') )
+    tol = vscale(f)*chebfunpref().cheb2Prefs.chebfun2eps;
     F = Msin2*coeffs2(f, n, m);
 elseif ( isa( f, 'double' ) )
+    tol = chebfunpref().cheb2Prefs.chebfun2eps;
     F = Msin2*f;       % Get trigcoeffs2 of rhs.
 end
+
+% First, let's project the rhs to have mean zero:
+k = floor(n/2) + 1;
+floorm = floor(m/2);
+mm = (-floorm:ceil(m/2)-1);
+en = 2*pi*(1+exp(1i*pi*mm))./(1-mm.^2);
+en([floorm, floorm + 2]) = 0;
+ii = [1:floorm floorm+2:m];
+meanF = en(ii)*F(ii, k)/en(floor(m/2)+1);
+
+% Check that the mean of F is zero (or close enough).  If it is not then
+% issue a warning
+if meanF > tol
+    warning('CHEBFUN:SPHEREFUN:POISSON:meanRHS',...
+       ['The integral of the right hand side may not be zero, which is '...
+        'required for there to exist a solution to the Poisson '...
+        'equation. Subtracting the mean of the right hand side now.']);
+end        
+F(floor(m/2)+1,k) = -meanF;
 
 % Matrix for solution's coefficients:
 CFS = zeros(m, n);
@@ -101,19 +126,10 @@ for k = k_odd
 end
 
 % Now do the equation where we need the integral constraint:
-% We will take X_{n/2+1,:} en = const.
-
-% First, let's project the rhs to have mean zero:
-k = floor(n/2) + 1;
-floorm = floor(m/2);
-mm = (-floorm:ceil(m/2)-1);
-en = 2*pi*(1+exp(1i*pi*mm))./(1-mm.^2);
-en([floorm, floorm + 2]) = 0;
-ii = [1:floorm floorm+2:m];
-F(floor(m/2)+1,k) = -en(ii)*F(ii, k)./en(floor(m/2)+1);
+% We will take X_{n/2+1,:} en = 0.
 
 % Second, solve: 
-CFS(:, k) = [ en ; L( ii, :) ] \ [ const ; F(ii, k) ];
+CFS(:, k) = [ en ; L( ii, :) ] \ [ 0 ; F(ii, k) ];
 u = spherefun.coeffs2spherefun(CFS); 
 
 end

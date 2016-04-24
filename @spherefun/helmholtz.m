@@ -30,7 +30,7 @@ function u = helmholtz(f, K, m, n)
 c = 1;  
 
 if ( K == 0 )
-    u = spherefun.poisson(f, 0, m, n);
+    u = spherefun.poisson(f, m, n);
     return
 end
 
