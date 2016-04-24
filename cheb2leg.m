@@ -12,7 +12,7 @@ function c_leg = cheb2leg(c_cheb, varargin)
 %
 %   If C_CHEB is a matrix then the CHEB2LEG operation is applied to each column.
 %
-%   For N > 513 the algorithm used is the one described in [1].
+%   For N >= 513 the algorithm used is the one described in [1].
 %
 %   References:
 %     [1] A. Townsend, M. Webb, and S. Olver, "Fast polynomial transforms based 
