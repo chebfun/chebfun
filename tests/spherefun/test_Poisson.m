@@ -25,4 +25,19 @@ exact = spherefun(@(lam,th) -2*sin(lam).*sin(2*th).*sin(th).^2 -...
 u = spherefun.poisson(f, m, n);
 pass(3) = ( norm(u - exact, inf) < tol );
 
+% Check that the mean is zero.
+pass(4) = ( abs(mean2(u)) < tol );
+
+% Check that the code properly deals with a right hand side without a 
+% mean of zero.
+f = spherefun(@(x,y,z) 1 + x);
+warning('off','CHEBFUN:SPHEREFUN:POISSON:meanRHS');
+u = spherefun.poisson(f,10);
+warning('on','CHEBFUN:SPHEREFUN:POISSON:meanRHS');
+% This f - mean2(f)
+g = spherefun(@(x,y,z) x);
+% Solution with the mean of f set to zero
+v = spherefun.poisson(g,10);
+pass(5) = ( norm(u - v) < tol );
+
 end
