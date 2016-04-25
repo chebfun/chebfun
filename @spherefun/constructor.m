@@ -3,8 +3,8 @@ function g = constructor(g, op, varargin)
 %
 % This code is when functions on the surface of the sphere are represented
 % as SPHEREFUN objects. A SPHEREFUN object is a low rank representation and
-% expresses a function as a sum of rank-0 or 1 outerproduct of univariate
-% functions in spherical coordinates.
+% expresses a real-valued function as a sum of rank-0 or 1 outerproduct of
+% univariate functions in spherical coordinates.
 %
 % The algorithm for constructing a SPHEREFUN comes in two phases:
 %
@@ -95,7 +95,6 @@ while ( ~isHappy && ~failure )
     % numerical rank and pivot locations.  Sampling is done at equally
     % spaced square grids.
     %
-
     grid = minSample;          
     happyRank = 0;             % Happy with phase one? 
     strike = 1;
@@ -106,6 +105,13 @@ while ( ~isHappy && ~failure )
         [x, y] = getPoints(grid, grid, dom);
         [xx, yy] = meshgrid(x, y);
         F = evaluate(op, xx, yy, vectorize);
+        
+        if ( ~isreal( F ) ) 
+            warning('SPHEREFUN:CONSTRUCTOR:COMPLEX', ...
+                    ['Only real-valued spherefuns are supported. The '...
+                     'imaginary part is being set to zero now.'])
+             F = real( F );   
+        end
 
         [tol, vscale] = getTol(F, pi/grid, pi/grid, dom, pseudoLevel);
         pref.chebfuneps = tol;
@@ -182,6 +188,13 @@ end
 function g = constructFromDouble(op, dom, alpha, pref)
 
 g = spherefun();
+
+if ( ~isreal( op ) ) 
+    warning('SPHEREFUN:CONSTRUCTOR:COMPLEX', ...
+            ['Only real-valued spherefuns are supported. The '...
+             'imaginary part is being set to zero now.'])
+    op = real( op );
+end
 
 % If single numerical value given
 if ( (numel( op ) == 1) )
@@ -525,13 +538,13 @@ while ( ~(happy_columns && happy_rows) && ~failure )
     
     [x, y] = getPoints(m, n, dom);
     [xx, yy] = meshgrid(col_pivots, y);
-    newCols = evaluate(h, xx + pi, yy, vectorize); 
-    temp = evaluate(h, xx, yy, vectorize);
+    newCols = real(evaluate(h, xx + pi, yy, vectorize)); 
+    temp = real(evaluate(h, xx, yy, vectorize));
     newColsPlus = 0.5*(newCols + temp);
     newColsMinus = 0.5*(newCols - temp);
     
     [xx, yy] = meshgrid(x, row_pivots);
-    newRows = evaluate(h, xx, yy, vectorize);
+    newRows = real(evaluate(h, xx, yy, vectorize));
 
     % This code will be unnecessary once ticket #1532 is addressed on the
     % chebfun tracker.  Don't forget to remove it.
@@ -733,7 +746,7 @@ if ( vectorize )
         end
     end
 else
-    vals = feval(h, xx, yy );  % Matrix of values at cheb2 pts.
+    vals = feval(h, xx, yy );
 end
 
 end
@@ -748,11 +761,9 @@ lat = [ -pi pi -pi/2 pi/2 ]; % Latitude (doubled up)
 % Sample at an even number of points so that the poles are included.
 if ( all((dom - colat) == 0) )
     x = trigpts(2*n, [-pi, pi]);   % azimuthal angle, lambda
-%     y = linspace(-pi, 0, m+1).';   % elevation angle, theta
     y = linspace(0, pi, m+1).';   % elevation angle, theta
 elseif ( all((dom - lat) == 0) )
     x = trigpts(2*n, [-pi, pi]);          % azimuthal angle, lambda
-%     y = linspace(-3*pi/2, -pi/2, m+1).';  % elevation angle, theta
     y = linspace(-pi/2,pi/2, m+1).';
 else
     error('SPHEREFUN:constructor:points2D:unkownDomain', ...

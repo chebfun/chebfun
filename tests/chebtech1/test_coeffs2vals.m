@@ -69,4 +69,11 @@ v = chebtech1.coeffs2vals([c, -c]);
 pass(13) = norm(v(:,1) - vTrue, inf) < tol && ...
           norm(v(:,2) + vTrue, inf) < tol;
       
+%%
+% Test for symmetry preservation
+c = kron(ones(10,1),eye(2));
+v = chebtech1.coeffs2vals(c);
+pass(14) = norm(v(:,1) - flipud(v(:,1)), inf) == 0 && ...
+          norm(v(:,2) + flipud(v(:,2)), inf) == 0;
+      
 end
