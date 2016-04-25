@@ -101,4 +101,12 @@ f = chebfun2( @(x,y) exp(cos(x.*y)), dom, [m n], r );
 pass(21) = ( rank(f) == r && all( f.domain == dom ) && ...
              mF == m && nF == n );
 
+% Test construction from a chebfun2 with fixed length and rank gives
+% correct results.
+g = chebfun2( @(x,y) exp(cos(x.*y)) );
+r = 2; m = 8; n = 10;
+f = chebfun2( g, r, [m n] );
+[mF, nF] = length(f);
+pass(22) = ( rank(f) == r && mF == m && nF == n );
+
 end
