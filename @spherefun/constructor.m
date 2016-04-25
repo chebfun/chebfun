@@ -916,6 +916,21 @@ while ( numel(varargin) > 0 && isnumeric(varargin{1}) )
     end
 end
 
+if ( fixedLength )  % Check that m and n are positive integers
+    if ( ( m <= 0 ) || ( n <= 0 ) || ( abs(round(m)-m)  > eps ) || ...
+            ( abs(round(n)-n) > eps ) )
+        error('CHEBFUN:SPHEREFUN:constructor:parseInputs:domain2', ...
+            ['When constructing with fixed lengths, the values '...
+             'for the lengths must be positive integers.']);
+    end
+end
+
+if ( ( fixedRank < 0 ) || ( abs(round(fixedRank)-fixedRank) > eps ) )
+        error('CHEBFUN:SPHEREFUN:constructor:parseInputs:domain3', ...
+            ['When constructing with a fixed rank, the value must '...
+             'be a positive integer.']);
+end    
+
 % Preferences structure given?
 isPref = find(cellfun(@(p) isa(p, 'chebfunpref'), varargin));
 if ( any(isPref) )
@@ -958,7 +973,13 @@ end
 if ( fixedLength )
     [x, y] = getPoints(m, n, dom);
     [xx, yy] = meshgrid(x, y);
-    op = evaluate(op, xx, yy, vectorize);
+    % Handle the special case of the input being a spherefun.  We can't call
+    % evaluate here because, we have to use feval(op,xx,yy).
+    if ( isa(op,'spherefun') )
+        op = feval(op, xx, yy);
+    else
+        op = evaluate(op, xx, yy, vectorize);
+    end    
 end
 
 end

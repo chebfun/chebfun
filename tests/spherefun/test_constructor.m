@@ -102,7 +102,7 @@ try
     f = spherefun(ff,-1);
     pass(20) = false;
 catch ME
-    pass(20) = strcmp(ME.identifier,'CHEBFUN:SPHEREFUN:constructor:fixTheRank:negative');
+    pass(20) = strcmp(ME.identifier,'CHEBFUN:SPHEREFUN:constructor:parseInputs:domain3');
 end
 
 % Check the 'eps' flag works.
