@@ -887,8 +887,9 @@ end
 % If domain is empty take it to be co-latitude.
 dom = [-pi, pi, 0, pi]; 
 fixedRank = 0;
+fixedLength = 0;
 
-if ( nargin > 1 && isnumeric(varargin{1}) )
+while ( numel(varargin) > 0 && isnumeric(varargin{1}) )
     d = varargin{1};
     varargin(1) = [];
     
@@ -899,6 +900,12 @@ if ( nargin > 1 && isnumeric(varargin{1}) )
                 ['The only domain presently supported in spherefun is [-pi pi]x[0 pi] in '...
                 'intrinstic (spherical) coordinates, which corresponds to colatitude.']);
         end
+    elseif ( numel(d) == 2 )             % SPHEREFUN(OP, [M N])
+        % Interpret this as the user wants a degree (M,N)
+        % spherefun
+        fixedLength = 1;
+        m = d(1); 
+        n = d(2);        
     elseif ( numel(d) == 1 )             % SPHEREFUN(OP, K)
         fixedRank = d;
     else
@@ -945,6 +952,13 @@ isCoeffs = find(cellfun(@(p) strcmpi(p, 'coeffs'), varargin));
 if ( isCoeffs )
     varargin(isCoeffs) = [];
     op = spherefun.coeffs2spherefun(op);
+end
+
+% Deal with SPHEREFUN(OP, [M N]) now that all the other things are set.
+if ( fixedLength )
+    [x, y] = getPoints(m, n, dom);
+    [xx, yy] = meshgrid(x, y);
+    op = evaluate(op, xx, yy, vectorize);
 end
 
 end
