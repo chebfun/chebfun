@@ -654,8 +654,8 @@ end
 
 % Deal with fixed length construction CHEBFUN(OP,[M N])
 if ( fixedLength && ~isnumeric(op) )
-    x = myPoints(n, dom(1:2), pref);
-    y = myPoints(m, dom(3:4), pref);
+    x = myPoints(m, dom(1:2), pref);
+    y = myPoints(n, dom(3:4), pref);
     [xx, yy] = meshgrid(x,y);
     % Handle the special case of the input being a chebfun2.  We can't call
     % evaluate here because, we have to use feval(op,xx,yy).
