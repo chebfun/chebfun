@@ -86,7 +86,6 @@ if ( m(1) == 0 )
     return
 end
 envelope = m/m(1);
-% save step1 b envelope %%%
 
 % For Matlab version 2014b and later step 1 can be computed using the
 % cummax command.
@@ -162,7 +161,7 @@ else
     [~, d] = min(cc);
     cutoff = max(d - 1, 1);
 n2 = length(coeffs);
-save explaindata envelope plateauPoint cutoff n2 j2 cc m
+save explaindata m plateauPoint cutoff n2 j2 cc m
 end
 
 end

@@ -60,6 +60,8 @@ a = axis; if a(3)>1e-80 & a(3) < 1e-9, a(3) = 1e-20; end
           if g.vscale<1e11 & a(4) > 1e-6, a(4) = 1e2; end
 if g.vscale<1e-98, a(3) = 1e-120; a(4) = 1e-98; end
 a(2) = max(a(2),ng);
+a(3) = 1e-15*a(3);
+a(4) = 1e05*a(4);
 axis(a), set(gca,FS,9)
 
 % Plot envelope
@@ -79,16 +81,17 @@ end
 % Clean up the string in various ways for printing:
 xpos = a(1) + .95*diff(a([1 2]));
 ypos = exp( log(a(3)) + .86*diff(log(a([3 4]))) );
-ss = strrep(fstring,'*','');
+ss = fstring;
 ss = regexprep(ss,'1e-(\d*)','10^{-$1}');
 ss = regexprep(ss,'abs\((.*)\)','|$1|');
+ss = texlabel(ss);
 ss = strrep(ss,'(-332)','{-332}');
 ss = strrep(ss,'cos(90acos(x))','\,T_{90}(x)');
 ss = strrep(ss,'exp','\exp'); ss = strrep(ss,'sin','\sin');
 ss = strrep(ss,'log','\log');
 ss = strrep(ss,'randn','\hbox{randn}');
 ss = strrep(ss,'size','\hbox{size}');
-ss = strrep(ss,'acos','cos^{-1}'); ss = strrep(ss,'abs','\hbox{abs}');
+ss = strrep(ss,'acos','\cos^{-1}'); ss = strrep(ss,'abs','\hbox{abs}');
 ss = strrep(ss,'cos','\cos'); ss = strrep(ss,'abs','\hbox{abs}');
 
 % Print a label in the upper-right:
@@ -98,10 +101,15 @@ text(xpos,ypos,['$' ss '$'],FS,13,HA,'right',IN,'latex')
 plot(plateauPoint-1,gc(plateauPoint),'sb',MS,10)
 
 % Plot j2
-%plot(j2-1,envelope(j2),'^b',MS,10)
+%plot(j2-1,m(j2),'^b',MS,10)
 
 % Plot cc
-%plot(0:j2-1,10.^cc','g')
+plot(0:j2-1,m(1)*10.^cc','m')
+
+% label plateau and chopping point
+text(plateauPoint-1,1e5*m(plateauPoint),'plateau point',...
+     'Rotation',90,FS,13,IN,'latex')
+text(nf-1,1e-5*m(nf),'chopping point','Rotation',-90,FS,13,IN,'latex')
 
 hold off
 
