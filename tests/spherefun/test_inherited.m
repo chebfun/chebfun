@@ -1,7 +1,7 @@
 function pass = test_inherited( ) 
 % Test inherited commands: 
 
-tol = chebfunpref().cheb2Prefs.chebfun2eps; 
+tol = 1e2*chebfunpref().cheb2Prefs.chebfun2eps; 
 
 % abs
 f = spherefun( @(x,y,z) -1+0*x);
@@ -22,16 +22,14 @@ g = cosh( f );
 pass(3) = norm( g - h ) < tol;
 
 % conj
-f = spherefun( @(x,y,z) x+1i*y);
-h = spherefun( @(x,y,z) x-1i*y);
+f = spherefun( @(x,y,z) x);
 g = conj( f );
-pass(4) = norm( g - h ) < tol;
+pass(4) = norm( f - g ) < tol;
 
 % ctranspose
-f = spherefun( @(x,y,z) x+1i*y);
-h = spherefun( @(x,y,z) y-1i*x);
+f = spherefun( @(x,y,z) y);
 g = ctranspose( f );
-pass(5) = norm( g - h ) < tol;
+pass(5) = norm( f - g ) < tol;
 
 % diag 
 f = spherefun( @(lam,theta) sin(theta).*cos(lam));
@@ -58,8 +56,7 @@ pass(9) = ( norm( g2 - h2 ) < tol );
 pass(10) = ( norm( g2 - h3 ) + norm( g1 - h4 ) < tol ); 
 
 % imag 
-f = spherefun( @(x,y,z) x+1i*y);
-h = spherefun( @(x,y,z) y);
+f = spherefun( @(x,y,z) x );
 g = imag( f );
 pass(11) = norm( g  ) < tol;
 
@@ -73,8 +70,8 @@ g = spherefun( @(x,y,z) cos(x) + 1 );
 pass(13) = ~isequal( f, g ); 
 
 % isreal 
-f = spherefun( @(x,y,z) x+1i*y);
-pass(14) = ~isreal(f);
+f = spherefun( @(x,y,z) x);
+pass(14) = isreal(f);
 
 f = spherefun( @(x,y,z) cos(x.*y.*z));
 pass(15) = isreal(f); 
