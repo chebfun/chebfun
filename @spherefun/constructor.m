@@ -2,9 +2,9 @@ function g = constructor(g, op, dom, varargin)
 %CONSTRUCTOR   The main SPHEREFUN constructor.
 %
 % This code is when functions on the surface of the sphere are represented
-% as SPHEREFUN objects. A SPHEREFUN object is a low rank representation and
-% expresses a real-valued function as a sum of rank-0 or 1 outerproduct of
-% univariate functions in spherical coordinates.
+% as SPHEREFUN objects. A SPHEREFUN object is a real-valued function as a 
+% sum of rank 1 outerproducts of univariate functions in spherical 
+% coordinates.
 %
 % The algorithm for constructing a SPHEREFUN comes in two phases:
 %
@@ -43,7 +43,7 @@ if ( (nargin < 3) || isempty(dom) )
 elseif ( isa(dom, 'double') && (numel(dom) ~= 4) )
     error('CHEBFUN:SPHEREFUN:CONSTRUCTOR:domain',... 
           ['A domain is rarely given for spherefun, ', ... 
-          'but it needs to be given by four corner values',... 
+          'but it needs to be given by four corner values ',... 
           'in intrinstic coordinates.'])
 elseif ( isa(dom,'double') && (numel(dom) == 4) && ...
         (norm(dom(:)' - [-pi pi 0 pi]) > 0) )
