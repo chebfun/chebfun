@@ -992,6 +992,12 @@ function g = fixTheRank( g , fixedRank )
 if ( fixedRank < 0 )
     error('CHEBFUN:SPHEREFUN:constructor:fixTheRank:negative', ...
         'Nonadaptive rank should be positive.')
+elseif ( fixedRank == 0 ) 
+    g.cols = chebfun(0, g.cols.domain);
+    g.rows = chebfun(0, g.rows.domain);
+    g.pivotValues = 0; 
+    g.idxPlus = 1; 
+    g.idxMinus = 1; 
 elseif ( fixedRank )
     if ( length(g.pivotValues) > fixedRank )
         % Truncate things:
