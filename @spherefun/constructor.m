@@ -886,7 +886,7 @@ end
 % to co-latitude in spherical coordinates.
 % If domain is empty take it to be co-latitude.
 dom = [-pi, pi, 0, pi]; 
-fixedRank = 0;
+fixedRank = NaN;
 fixedLength = 0;
 
 while ( numel(varargin) > 0 && isnumeric(varargin{1}) )
@@ -992,13 +992,7 @@ function g = fixTheRank( g , fixedRank )
 if ( fixedRank < 0 )
     error('CHEBFUN:SPHEREFUN:constructor:fixTheRank:negative', ...
         'Nonadaptive rank should be positive.')
-elseif ( fixedRank == 0 ) 
-    g.cols = chebfun(0, g.cols.domain);
-    g.rows = chebfun(0, g.rows.domain);
-    g.pivotValues = 0; 
-    g.idxPlus = 1; 
-    g.idxMinus = 1; 
-elseif ( fixedRank )
+elseif ( fixedRank > 0 )
     if ( length(g.pivotValues) > fixedRank )
         % Truncate things:
         g.cols = g.cols(:,1:fixedRank);
@@ -1016,6 +1010,12 @@ elseif ( fixedRank )
             g.pivotValues = [g.pivotValues 0];
         end
     end
+elseif ( fixedRank == 0 )
+    g.cols = chebfun(0, g.cols.domain);
+    g.rows = chebfun(0, g.rows.domain); 
+    g.pivotValues = Inf;
+    g.idxPlus = [];
+    g.idxMinus = 1;
 end
 
 end
