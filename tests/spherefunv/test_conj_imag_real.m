@@ -1,4 +1,4 @@
-function pass = test_conj( pref ) 
+function pass = test_conj_imag_real( pref ) 
 % Test CONJ, IMAG, REAL
 
 if ( nargin == 0 ) 
@@ -12,13 +12,16 @@ f = spherefun(@(x,y,z) cos((x+.1).*y.*z));
 % Spherefunv
 u = grad(f);
 
+% Get some random points on the sphere for testing.
+rng(7); lam0 = rand; th0 = rand;
+
 % u is real so conjugate is real and same as u
 v = conj( u ); 
-pass(1) = ( norm( u - v ) < tol ); 
+pass(1) = ( norm( u(lam0,th0) - v(lam0,th0) ) < tol ); 
 
 % u is real so real(u) is the same as u
 v = real( u );
-pass(2) = ( norm( u - v ) < tol ); 
+pass(2) = ( norm( u(lam0,th0) - v(lam0,th0) ) < tol ); 
 
 % u is real so imag(u) is zero
 v = imag( u );
