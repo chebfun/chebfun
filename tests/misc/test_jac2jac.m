@@ -2,14 +2,14 @@ function pass = test_jac2jac( )
 % Test for jac2jac 
 
 rng(0)
-v = randn(10,1);
+v = randn(10,2);
 % Run through a load of alpha, beta, gam, and delta: 
 alpha = linspace(-.99,1.1,5);
 beta = linspace(-.99,1.1,5); 
 gam = linspace(-.99,1.1,5);
 delta = linspace(-.99,1.1,5); 
 
-tol = 1e-10; 
+tol = 2e-10; 
 count = 1; 
 ind = [];
 % Test accuracy against a direct method: 
@@ -17,12 +17,12 @@ for a = alpha
     for b = beta 
         for g = gam 
             for d = delta 
-               exact = cheb2jac_direct( jac2cheb_direct( v, a, b), g, d ); 
-               w = jac2jac( v, a, b, g, d );
-                err(count) =  norm( exact - w,inf ); 
+                exact = cheb2jac_direct( jac2cheb_direct(v, a, b), g, d ); 
+                w = jac2jac( v, a, b, g, d );
+                err(count) =  norm( exact - w, inf ); 
                 ind(count,:) =  [ a, b, g, d ];
                 pass(count) = norm( exact - w, inf ) < tol; 
-                count = count+1;
+                count = count + 1;
             end
         end
     end
@@ -31,11 +31,13 @@ end
 % Take a look at err and ind if there is a failure.
 if ( all(pass) ) 
     pass = 1; 
+else
+    pass = 0;
 end
 
 % Try something over N = 513: 
 N = 513; 
-v = randn(N,1);
+v = randn(N,2);
 a = .46; b = -.7; g = .56; d = 1.54; 
 exact = cheb2jac_direct( jac2cheb_direct( v, a, b), g, d ); 
 w = jac2jac( v, a, b, g, d );
@@ -43,7 +45,7 @@ pass(2) = norm( exact - w, inf ) < tol;
 
 % Try alpha + beta = -1: 
 N = 513; 
-v = randn(N,1);
+v = randn(N,2);
 a = -.6; b = -.4; g = -.65; d = -.45; 
 exact = cheb2jac_direct( jac2cheb_direct( v, a, b), g, d ); 
 w = jac2jac( v, a, b, g, d );
@@ -51,7 +53,7 @@ pass(3) = norm( exact - w, inf ) < 2*tol;
 
 % Try alpha - gamma approx 0: 
 N = 513; 
-v = randn(N,1);
+v = randn(N,2);
 a = .1; b = -.4; g = .10000001; d = -.4; 
 exact = cheb2jac_direct( jac2cheb_direct( v, a, b), g, d ); 
 w = jac2jac( v, a, b, g, d );

@@ -88,8 +88,7 @@ C = [];              % Store Cholesky columns.
 tol = 1e-14*log(N);  % Tolerance of low rank approx.
 [mx, idx] = max(d);  % Max on diagonal (searching for first Cholesky pivot).
 while ( mx > tol )
-    %C = [C, H(:,idx)];
-    
+
     newCol = vals(idx+1:idx+N-1) .* (num.*num(idx) ./ (idx + num + 1));
     if ( size(C, 2) > 0)
         newCol = newCol - C*(C(idx,:).' .* pivotValues);
@@ -97,8 +96,9 @@ while ( mx > tol )
     
     pivotValues = [pivotValues ; 1./mx]; %#ok<AGROW> % Append pivtoValues.
     C = [C, newCol]; %#ok<AGROW>                     % Append newCol to C.
-    d = d - newCol.^2 ./ newCol(idx);                % Update diagonal.
+    d = d - newCol.^2 ./ mx;                         % Update diagonal.
     [mx, idx] = max(d);                              % Find next pivot.
+    
 end
 sz = size(C, 2);                                     % Numerical rank of H.
 C = C * spdiags(sqrt(pivotValues), 0, sz, sz);       % Share out scaling.

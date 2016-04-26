@@ -90,10 +90,9 @@ pivotValues = [];     % Store Cholesky pivots.
 C = [];               % Store Cholesky columns.
 tol = 1e-14;          % Tolerance of low rank approx.
 k = 0;
-[mx, idx] = max( d ); % max on diagonal, searching for first Cholesky pivot.
+[mx, idx] = max( d ); % Max on diagonal, searching for first Cholesky pivot.
 while ( mx > tol )
-    % C = [C,  vals( idx:idx+N-1 )];
-
+    
     newCol = vals( idx:idx+N-1 );
     if ( size(C, 2) > 0)
         newCol = newCol - C*(C(idx,:).' .* pivotValues);

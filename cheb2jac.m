@@ -32,7 +32,8 @@ elseif ( alpha == -.5 && beta == -.5 )
     
     % Convert T_n -> P_n^(-1/2,1/2): 
     scl = [1 cumprod((1/2:1/2+N-2)./(1:N-1))]';   % P_n^(-1/2,-1/2)(1)
-    c_jac = spdiags( scl, 0, N, N) \ c_cheb;     
+    c_jac = spdiags( scl, 0, N, N) \ c_cheb;  
+    
 elseif ( N <= 512 ) 
     
     c_jac = cheb2jac_direct(c_cheb, alpha, beta);
