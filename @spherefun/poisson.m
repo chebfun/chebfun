@@ -34,10 +34,6 @@ function u = poisson(f, const, m, n)
 % linear systems. This form banded matrices.
 %
 % SOLVE COMPLEXITY:    O(M*N)  with M*N = total degrees of freedom
-%
-% This is designed to be almost a standalone script to reduce overhead 
-% so that it can be used for the numerical simulation of time-dependent 
-% PDEs, where this comment is executed hundreds of times. 
 
 if ( nargin < 4 )
     n = m;
@@ -100,11 +96,11 @@ meanF = en(ii)*F(ii, k)/en(floor(m/2)+1);
 
 % Check that the mean of F is zero (or close enough).  If it is not then
 % issue a warning
-if meanF > tol
+if ( meanF > tol )
     warning('CHEBFUN:SPHEREFUN:POISSON:meanRHS',...
        ['The integral of the right hand side may not be zero, which is '...
         'required for there to exist a solution to the Poisson '...
-        'equation. Subtracting the mean of the right hand side now.']);
+        'equation. Subtracting the mean off the right hand side now.']);
 end        
 F(floor(m/2)+1,k) = -meanF;
 
@@ -131,6 +127,6 @@ end
 
 % Second, solve: 
 CFS(:, k) = [ en ; L( ii, :) ] \ [ 0 ; F(ii, k) ];
-u = spherefun.coeffs2spherefun(CFS) + const; 
+u = spherefun.coeffs2spherefun( CFS ) + const; 
 
 end
