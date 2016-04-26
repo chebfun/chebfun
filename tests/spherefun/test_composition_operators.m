@@ -5,7 +5,7 @@ if ( nargin == 0 )
     pref = chebfunpref; 
 end
 
-tol = 1000*pref.cheb2Prefs.chebfun2eps;
+tol = 1e3*pref.cheb2Prefs.chebfun2eps;
 j = 1; 
 
 f = spherefun(@(x,y,z) cos(x.*y) + sin(x.*y) + z -.1); 
