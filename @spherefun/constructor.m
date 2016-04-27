@@ -1007,7 +1007,7 @@ elseif ( fixedRank > 0 )
         for jj = length(g.pivotValues) : fixedRank - 1
             g.cols = [g.cols zcols];
             g.rows = [g.rows zrows];
-            g.pivotValues = [g.pivotValues 0];
+            g.pivotValues = [g.pivotValues ; 0];
         end
     end
 elseif ( fixedRank == 0 )
