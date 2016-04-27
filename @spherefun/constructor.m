@@ -1002,17 +1002,17 @@ elseif ( fixedRank > 0 )
         g.idxMinus = g.idxMinus( g.idxMinus <= fixedRank );
     elseif ( length(g.pivotValues) < fixedRank )
         % Pad things with zero columns:
-        zcols = chebfun(0, g.cols.domain);
-        zrows = chebfun(0, g.rows.domain);
+        zcols = chebfun(0, g.cols.domain, 'trig');
+        zrows = chebfun(0, g.rows.domain, 'trig');
         for jj = length(g.pivotValues) : fixedRank - 1
             g.cols = [g.cols zcols];
             g.rows = [g.rows zrows];
-            g.pivotValues = [g.pivotValues 0];
+            g.pivotValues = [g.pivotValues ; 0];
         end
     end
 elseif ( fixedRank == 0 )
-    g.cols = chebfun(0, g.cols.domain);
-    g.rows = chebfun(0, g.rows.domain); 
+    g.cols = chebfun(0, g.cols.domain, 'trig');
+    g.rows = chebfun(0, g.rows.domain, 'trig'); 
     g.pivotValues = Inf;
     g.idxPlus = [];
     g.idxMinus = 1;

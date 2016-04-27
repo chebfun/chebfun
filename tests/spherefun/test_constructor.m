@@ -98,41 +98,46 @@ f = spherefun(ff);
 g = spherefun(f,7);
 pass(19) = ( rank(g) == 7 );
 
+% Test zero rank construction gives zero.
+g = spherefun(f,0);
+pass(20) = ( rank(g) == 0 );
+pass(21) = norm(g) < tol;
+
 try
     f = spherefun(ff,-1);
-    pass(20) = false;
+    pass(22) = false;
 catch ME
-    pass(20) = strcmp(ME.identifier,'CHEBFUN:SPHEREFUN:constructor:parseInputs:domain3');
+    pass(22) = strcmp(ME.identifier,'CHEBFUN:SPHEREFUN:constructor:parseInputs:domain3');
 end
 
 % Check the 'eps' flag works.
 ff = @(x,y,z) exp(-10*((x-1/sqrt(2)).^2 + (z-1/sqrt(2)).^2 + y.^2));
 f = spherefun(ff);
 g = spherefun(ff,'eps',1e-8);
-pass(21) = rank(g) < rank(f);
+pass(23) = rank(g) < rank(f);
 [mf,nf] = length(f);
 [mg,ng] = length(g);
-pass(22) = ( (mg < mf) && (ng < nf) );
+pass(24) = ( (mg < mf) && (ng < nf) );
 
 % Construction from a single value
 f = spherefun(1);
-pass(23) = norm(f-1,inf) == 0;
+pass(25) = norm(f-1,inf) == 0;
 
 % Construction from a string with (x,y,z) variables
 f = spherefun(@(x,y,z) exp(-10*((x-1/sqrt(2)).^2 + (z-1/sqrt(2)).^2 + y.^2)));
 g = spherefun('exp(-10*((x-1/sqrt(2)).^2 + (z-1/sqrt(2)).^2 + y.^2))');
-pass(24) = norm(f-g,inf) == 0;
+pass(26) = norm(f-g,inf) == 0;
 
 % Construction from a string with (l,t) variables
 f = spherefun(@(l,t) cos(l).*sin(t) );
 g = spherefun('cos(l).*sin(t)');
-pass(25) = norm(f-g,inf) == 0;
+pass(27) = norm(f-g,inf) == 0;
 
 try
     f = spherefun('x.*y.*z.*w');
-    pass(26) = false;
+    pass(28) = false;
 catch ME
-    pass(26) = strcmp(ME.identifier,'CHEBFUN:SPHEREFUN:constructor:str2op:depvars');
+    pass(28) = strcmp(ME.identifier,'CHEBFUN:SPHEREFUN:constructor:str2op:depvars');
 end
 
 end
