@@ -1,5 +1,5 @@
 function pass = test_inherited( ) 
-% Test inherited commands: 
+% Test inherited commands, abs, cos, cosh, conj, etc. 
 
 tol = 1e2*chebfunpref().cheb2Prefs.chebfun2eps; 
 
