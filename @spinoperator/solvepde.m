@@ -134,7 +134,13 @@ end
 % Convert to trigfun:
 nVars = S.numVars;
 for k = 1:nVars
-    temp = chebfun(u0{k}, 'trig');
+    if ( dim == 1 )
+        temp = chebfun(u0{k}, 'trig');
+    elseif ( dim == 2 )
+        temp = chebfun2(u0{k}, 'trig');
+    elseif ( dim == 3 )
+        temp = chebfun3(u0{k}, 'trig');
+    end
     u0(k,1) = temp;
 end
 
