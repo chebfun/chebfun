@@ -32,4 +32,8 @@ f = dot(u,v);
 g = u1.*v1 + u2.*v2 + u3.*v3;
 pass(3) = norm(g-f) < tol;
 
+% Same as dot product 
+g = u'*v;
+pass(4) = norm(g-f) < tol;
+
 end

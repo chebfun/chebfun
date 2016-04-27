@@ -1,4 +1,4 @@
-function pass = test_empty( pref ) 
+function pass = test_empty( ) 
 % For empty spherfunv objects, does each command deal with them
 % appropriately?
 
