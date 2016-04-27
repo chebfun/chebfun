@@ -558,21 +558,19 @@ while ( numel(varargin) > 0 && isnumeric(varargin{1}) )
             ends = varargin{1};
             if ( numel( ends ) == 2 )    % CHEBFUN2(OP, [A B], [C D])
                 dom = [d(:) ; ends(:)].';
-            elseif ( numel( ends ) == 1 ) % CHEBFUN2(OP, [M N], K)
-                % The domain is not given, but perhaps the user
-                % wants a representation of length M and N.
+                varargin(1) = [];                
+            elseif ( numel( ends ) == 1 || numel( ends ) == 4) 
+                % CHEBFUN2(OP, [M N], K) or CHEBFUN2(OP, [M N], [A B C D])
+                % Just get fixed length [M N].
                 fixedLength = 1;
                 m = d(1);
                 n = d(2);
-                fixedRank = ends;
             else
                 error('CHEBFUN:CHEBFUN2:constructor:parseInputs:domain', ...
                     'Domain not valid or fully determined.');
             end
-            varargin(1) = [];
         else                             % CHEBFUN2(OP, [M N])
-            % The domain is not given, but perhaps the user
-            % wants a representation of length M and N.
+            % Just get fixed length [M N].
             fixedLength = 1;
             m = d(1);
             n = d(2);

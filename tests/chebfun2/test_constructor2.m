@@ -93,7 +93,7 @@ pass(19) = ( rank(f) == r && all( f.domain == dom ) );
 f = chebfun2( @(x,y) exp(cos(x.*y)), r, dom);
 pass(20) = ( rank(f) == r && all( f.domain == dom ) );
 
-% Test making a chebfun2 with fixed rank, fixed length, and domain
+% Test making a chebfun2 with fixed domain, fixed length, and rank
 dom = [-1.5 1.5 -0.5 0.75];
 r = 3; m = 20; n = 37;
 f = chebfun2( @(x,y) exp(cos(x.*y)), dom, [m n], r );
@@ -101,12 +101,25 @@ f = chebfun2( @(x,y) exp(cos(x.*y)), dom, [m n], r );
 pass(21) = ( rank(f) == r && all( f.domain == dom ) && ...
              mF == m && nF == n );
 
-% Test construction from a chebfun2 with fixed length and rank gives
+% Test construction from a chebfun2 with fixed rank and length gives
 % correct results.
 g = chebfun2( @(x,y) exp(cos(x.*y)) );
 r = 2; m = 8; n = 10;
 f = chebfun2( g, r, [m n] );
 [mF, nF] = length(f);
 pass(22) = ( rank(f) == r && mF == m && nF == n );
+
+% Test construction from a chebfun2 with fixed length and domain
+% correct results.
+m = 8; n = 10;
+f = chebfun2( @(x,y) exp(cos(x.*y)), [m n], dom );
+[mF, nF] = length(f);
+pass(23) = ( all( f.domain == dom ) && mF == m && nF == n );
+
+% Reverse
+m = 8; n = 10;
+f = chebfun2( @(x,y) exp(cos(x.*y)), dom, [m n] );
+[mF, nF] = length(f);
+pass(24) = ( all( f.domain == dom ) && mF == m && nF == n );
 
 end
