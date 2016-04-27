@@ -131,6 +131,13 @@ if ( isempty(u0) == 1 )
     end
 end
 
+% Convert to trigfun:
+nVars = S.numVars;
+for k = 1:nVars
+    temp = chebfun(u0{k}, 'trig');
+    u0(k,1) = temp;
+end
+
 % Space interval DOM and final time TF:
 dom = u0{1}.domain;
 tf = tspan(end);
@@ -164,7 +171,11 @@ Nmax = pref.Nmax;
 adaptiveSpace = isempty(pref.N);
 if ( adaptiveSpace == 1 )
     % Adaptive in space, start with NMIN:
-    N = Nmin;
+    % (Unless NMIN is smaller than the length NU0 of the initial condition.)
+    Nu0 = max(cellfun(@(B) length(B), u0.blocks)); % Length
+    Nu0 = 2^ceil(log2(Nu0)); % Convert to a power of 2
+    Nu0 = min(Nu0, Nmax); % Make sure it's not larger than Nmax
+    N = max(Nmin, Nu0);
 else
     % Not adpative in space, i.e., use the N given by the user:
     N = pref.N;
@@ -199,7 +210,6 @@ Nv = S.nonlinearPartVals;
 
 % Set-up spatial grid, and initial condition (values VINIT and Fourier coeffs 
 % CINIT):
-nVars = S.numVars;
 xx = trigpts(N, dom(1:2));
 if ( dim == 2 )
     yy = trigpts(N, dom(3:4));

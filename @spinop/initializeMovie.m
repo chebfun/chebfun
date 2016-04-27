@@ -19,7 +19,7 @@ for k = 1:nVars
     
     % Extract each variable:
     idx = (k-1)*N + 1;
-    vvplot = dataToPlot(real(v(idx:idx+N-1)));
+    vvplot = dataToPlot(v(idx:idx+N-1));
     vvplot = [vvplot; vvplot(1)]; %#ok<*AGROW>
     
     % Get the YLIM for the y-axis:
