@@ -75,7 +75,7 @@ else                                     % SPHEREFUN + SPHEREFUN
             g = addPoles(fPole, gPole, tol);
             
             % Handle the rare case that g is zero and hp is not empty
-            if ( g.pivotValues == 0 ) && ( ~isempty( hp ) )
+            if ( iszero(g) ) && ( ~isempty( hp ) )
                 % Set g to empty spherefun
                 g = spherefun([]);
             end
