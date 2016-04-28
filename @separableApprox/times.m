@@ -17,14 +17,11 @@ if ( isa(f, 'separableApprox') )    % SEPARABLEAPPROX .* ???
             % Grady's faster times for rank 1 functions: 
             if ( length( f ) == 1 ) 
                 [C, D, R] = cdr( f ); 
-                C = C*sqrt(D); 
-                R = R*sqrt(D);
                 h = g; 
-                for k = 1:length( g ) 
-                    h.cols(:,k) = C.*(g.cols(:,k)); 
-                    h.rows(:,k) = R.*(g.rows(:,k)); 
-                end
-
+                onesForC = sqrt(abs(D))*ones(1,length(g));
+                onesForR = sign(D)*onesForC;
+                h.cols = (C*onesForC).*g.cols;
+                h.rows = (R*onesForR).*g.rows;
             elseif ( length( g ) == 1 ) 
                  h = times(g, f);
             else
