@@ -14,7 +14,21 @@ if ( isa(f, 'separableApprox') )    % SEPARABLEAPPROX .* ???
     elseif ( isa( g, 'separableApprox') )
         bol = domainCheck(f, g);
         if ( bol )
-            h = compose( f, @times, g); 
+            [mf, nf] = length(f); 
+            [mg, ng] = length(g);
+            m = max(mf, mg);
+            n = max(nf, ng); 
+            [Cf, Df, Rf] = coeffs2(f, m, n); 
+            [Cg, Dg, Rg] = coeffs2(g, m, n);
+            Cf = chebtech2.coeffs2vals( Cf ); 
+            Rf = chebtech2.coeffs2vals( Rf ); 
+            Cg = chebtech2.coeffs2vals(Cg)*sqrt(Dg);
+            Rg = chebtech2.coeffs2vals(Rg)*sqrt(Dg); 
+            H = zeros(m, n); 
+            for k = 1:size(Cg,2)
+               H = H + (bsxfun(@times, Cf, Cg(:,k)))*Df*(bsxfun(@times, Rf, Rg(:,k)))'; 
+            end
+            h = chebfun2( H, 'coeffs');
         else
             error('CHEBFUN:SEPARABLEAPPROX:times:domain', 'Inconsistent domains');
         end

@@ -1,4 +1,4 @@
-function varargout = coeffs2( f ) 
+function varargout = coeffs2( f, m, n) 
 % COEFFS2   Bivariate Cheybshev expansion coefficients of f. 
 % 
 % Same as CHEBCOEFFS2.
@@ -16,6 +16,26 @@ if ( iszero(f) )
 end
 
 [cols_coeffs, d, rows_coeffs] = chebcoeffs2( f );
+
+if ( nargin == 2 ) 
+    n = m; 
+end
+
+if ( nargin > 1 ) 
+    [mf, rf] = size(cols_coeffs); 
+    [nf, rf] = size(rows_coeffs); 
+    if ( mf <= m ) 
+        cols_coeffs = [ cols_coeffs ; zeros(m-mf,rf) ]; 
+    else
+        cols_coeffs = cols_coeffs(1:m,:);
+    end
+    if ( mf <= m ) 
+        rows_coeffs = [ rows_coeffs ; zeros(n-nf,rf) ]; 
+    else
+        rows_coeffs = rows_coeffs(1:n,:);
+    end
+end
+
 
 if ( nargout <= 1 )
     % Return the matrix of coefficients
