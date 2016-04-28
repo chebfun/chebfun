@@ -28,7 +28,7 @@ if ( isa(f, 'separableApprox') )    % SEPARABLEAPPROX .* ???
             for k = 1:size(Cg,2)
                H = H + (bsxfun(@times, Cf, Cg(:,k)))*Df*(bsxfun(@times, Rf, Rg(:,k)))'; 
             end
-            h = chebfun2( H, 'coeffs');
+            h = chebfun2( H );
         else
             error('CHEBFUN:SEPARABLEAPPROX:times:domain', 'Inconsistent domains');
         end
