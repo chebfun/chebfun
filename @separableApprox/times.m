@@ -18,7 +18,7 @@ if ( isa(f, 'separableApprox') )    % SEPARABLEAPPROX .* ???
             if ( length( f ) == 1 ) 
                 [C, D, R] = cdr( f ); 
                 h = g; 
-                onesForC = sign(D)*sqrt(abs(D))*ones(1,length(g));
+                onesForC = sqrt(abs(D))*ones(1,length(g));
                 onesForR = sign(D)*onesForC;
                 h.cols = (C*onesForC).*g.cols;
                 h.rows = (R*onesForR).*g.rows;
