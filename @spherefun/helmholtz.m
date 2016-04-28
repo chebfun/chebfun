@@ -29,10 +29,32 @@ function u = helmholtz(f, K, m, n)
 % Solve standard Helmholtz equation. This parameter is kept for developers.
 c = 1;  
 
+% If the call is helmholtz(f, K, m), then set n
+if ( nargin < 4 ) 
+    n = m;
+end
+
 if ( K == 0 )
     u = spherefun.poisson(f, 0, m, n);
     return
 end
+
+% If m or n are non-positive then throw an error
+if ( ( m <= 0 ) || ( n <= 0 ) )
+    error('CHEBFUN:SPHEREFUN:HELMHOLTZ:badInput',...
+        'Discretization sizes should be positve numbers');
+end
+
+% If m and n are 1, the solution is easy.  It's just a constant given by
+% 1/K^2*mean(F).
+if ( ( m == 1 ) && (n == 1 ) )
+    f = spherefun(f);
+    u = mean2(f)/K^2 + 0*f;
+    return;
+end
+
+% Make m even so that the pole at theta=0 is always sampled.
+m = m + mod(m,2);
 
 % Construct useful spectral matrices:
 Im = speye(m);

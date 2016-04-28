@@ -29,4 +29,8 @@ if ( exps(1) ~= 0 )
     g = simplifyExponents(g);
 end
 
+if ( ~any(g.exponents) )
+    g = g.smoothPart;
+end
+
 end

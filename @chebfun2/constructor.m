@@ -27,11 +27,6 @@ function g = constructor(g, op, varargin)
 % Copyright 2015 by The University of Oxford and The Chebfun2 Developers.
 % See http://www.chebfun.org/ for Chebfun2 information.
 
-if ( isa(op, 'chebfun2') )  % CHEBFUN2( CHEBFUN2 )
-    g = op;
-    return
-end
-
 % Parse the inputs:
 [op, dom, pref, isEqui, fixedRank, vectorize] = parseInputs(op, varargin{:});
 
@@ -48,6 +43,11 @@ pseudoLevel = cheb2Prefs.chebfun2eps;
 factor  = 4; % Ratio between size of matrix and no. pivots.
 isHappy = 0; % If we are currently unresolved.
 failure = 0; % Reached max discretization size without being happy.
+
+if ( isa(op, 'chebfun2') )  % CHEBFUN2( CHEBFUN2 )
+    g = fixTheRank(op, fixedRank);
+    return
+end
 
 % Deal with constructions from numeric data:
 if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
@@ -542,10 +542,11 @@ if ( isa(op, 'function_handle') && (nargin(op) == 1) )
     op = @(x, y) op(x + 1i*y);
 end
 
-% Get the domain: (Always first if given)
+% Determine the domain, fixed rank, and fixed length
 dom = [-1, 1, -1, 1];
 fixedRank = 0;
-if ( nargin > 1 && isnumeric(varargin{1}) )
+fixedLength = 0;
+while ( numel(varargin) > 0 && isnumeric(varargin{1}) )
     d = varargin{1};
     varargin(1) = [];
     
@@ -553,42 +554,50 @@ if ( nargin > 1 && isnumeric(varargin{1}) )
         dom = d;
         
     elseif ( numel(d) == 2 )
-        if ( (nargin > 2) && isa(varargin{1}, 'double') )
+        if ( (numel(varargin) > 0) && isa(varargin{1}, 'double') )
             ends = varargin{1};
             if ( numel( ends ) == 2 )    % CHEBFUN2(OP, [A B], [C D])
                 dom = [d(:) ; ends(:)].';
-            elseif ( numel(ends) == 4 )  % CHEBFUN2(OP, [M N], [A B C D])
-                % Interpret this as the user wants a degree (dom(1),dom(2))
-                % chebfun2 on the domain [ends].
-                [xx, yy] = chebfun2.chebpts2(d(1), d(2), ends);
-                op = op(xx, yy);
-                dom = ends;
+                varargin(1) = [];                
+            elseif ( numel( ends ) == 1 || numel( ends ) == 4) 
+                % CHEBFUN2(OP, [M N], K) or CHEBFUN2(OP, [M N], [A B C D])
+                % Just get fixed length [M N].
+                fixedLength = 1;
+                m = d(1);
+                n = d(2);
             else
-                error('CHEBFUN:CHEBFUN2:constructor:parseInputs:domain1', ...
+                error('CHEBFUN:CHEBFUN2:constructor:parseInputs:domain', ...
                     'Domain not valid or fully determined.');
             end
         else                             % CHEBFUN2(OP, [M N])
-            % The domain is not given, but perhaps the user
-            % wants a representation of length M and N.
-            if ( d(1) > 0 && d(2) > 0 && ...  % Valid bivariate degree?                    
-                    abs(round(d(1)) - d(1))< eps && ...
-                    abs(round(d(2)) - d(2))< eps)
-                [xx, yy] = chebfun2.chebpts2(d(1), d(2));
-                op = op(xx, yy);
-            else
-                error('CHEBFUN:CHEBFUN2:constructor:parseInputs:domain2', ...
-                    'Domain not valid or fully determined.');
-            end
-        end
+            % Just get fixed length [M N].
+            fixedLength = 1;
+            m = d(1);
+            n = d(2);
+       end
     elseif ( numel(d) == 1 )             % CHEBFUN2(OP, K)
-        fixedRank = d;
-        
-    elseif ( numel(d) ~= 4 )
-        error('CHEBFUN:CHEBFUN2:constructor:parseInputs:domain3', ...
-            'Domain not valid or fully determined.');
+        fixedRank = d;        
+    else
+        error('CHEBFUN:CHEBFUN2:constructor:parseInputs:unknown', ...
+            'Unknown optional arguments for constructor.');
     end
 end
 
+if ( fixedLength )  % Check that m and n are positive integers
+    if ( ( m <= 0 ) || ( n <= 0 ) || ( abs(round(m))-m  > eps ) || ...
+            ( abs(round(n))-n > eps ) )
+        error('CHEBFUN:CHEBFUN2:constructor:parseInputs:domain2', ...
+            ['When constructing with fixed lengths, the values '...
+             'for the lengths must be positive integers.']);
+    end
+end
+
+if ( ( fixedRank < 0 ) || ( abs(round(fixedRank))-fixedRank > eps ) )
+        error('CHEBFUN:CHEBFUN2:constructor:parseInputs:domain3', ...
+            ['When constructing with a fixed rank, the value must '...
+             'be a positive integer.']);
+end    
+    
 % Check for infinite domains:
 if ( any(isinf(dom) ) )
     error('CHEBFUN:CHEBFUN2:constructor:parseInputs:infDomain', ...
@@ -641,6 +650,20 @@ if ( ~vectorize && ~isnumeric(op) ) % another check
     [vectorize, op] = vectorCheck(op, dom, pref.chebfuneps);
 end
 
+% Deal with fixed length construction CHEBFUN(OP,[M N])
+if ( fixedLength && ~isnumeric(op) )
+    x = myPoints(m, dom(1:2), pref);
+    y = myPoints(n, dom(3:4), pref);
+    [xx, yy] = meshgrid(x,y);
+    % Handle the special case of the input being a chebfun2.  We can't call
+    % evaluate here because, we have to use feval(op,xx,yy).
+    if ( isa(op,'chebfun2') )
+        op = feval(op, xx, yy);
+    else
+        op = evaluate(op, xx, yy, vectorize);
+    end
+end
+
 isPadua = find(cellfun(@(p) strcmpi(p, 'padua'), varargin));
 if ( isPadua )
     varargin(isPadua) = [];
@@ -663,6 +686,12 @@ function [vectorize, op] = vectorCheck(op, dom, pseudoLevel)
 
 vectorize = false;
 [xx, yy] = meshgrid( dom(1:2), dom(3:4));
+
+if ( isa(op,'chebfun2') )
+    vectorize = false;
+    return;
+end
+
 try
     A = op(xx, yy);
 catch

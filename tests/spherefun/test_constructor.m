@@ -82,6 +82,64 @@ catch ME
     pass(15) = strcmp(ME.identifier,'CHEBFUN:SPHEREFUN:constructor:poleSamples');
 end
 
+% Test construction from coefficients.
+f = spherefun(@(x,y,z) exp(-10*((x-1/sqrt(2)).^2 + (z-1/sqrt(2)).^2 + y.^2)));
+C = coeffs2(f);
+g = spherefun(C,'coeffs');
+pass(16) = ( norm(f - g) < tol );
+
+% Test fixed rank construction
+ff = @(x,y,z) exp(-10*((x-1/sqrt(2)).^2 + (z-1/sqrt(2)).^2 + y.^2));
+f = spherefun(ff,5);
+pass(17) = ( rank(f) == 5 );
+f = spherefun(ff,6);
+pass(18) = ( rank(f) == 6 );
+f = spherefun(ff);
+g = spherefun(f,7);
+pass(19) = ( rank(g) == 7 );
+
+% Test zero rank construction gives zero.
+g = spherefun(f,0);
+pass(20) = ( rank(g) == 0 );
+pass(21) = norm(g) < tol;
+
+try
+    f = spherefun(ff,-1);
+    pass(22) = false;
+catch ME
+    pass(22) = strcmp(ME.identifier,'CHEBFUN:SPHEREFUN:constructor:parseInputs:domain3');
+end
+
+% Check the 'eps' flag works.
+ff = @(x,y,z) exp(-10*((x-1/sqrt(2)).^2 + (z-1/sqrt(2)).^2 + y.^2));
+f = spherefun(ff);
+g = spherefun(ff,'eps',1e-8);
+pass(23) = rank(g) < rank(f);
+[mf,nf] = length(f);
+[mg,ng] = length(g);
+pass(24) = ( (mg < mf) && (ng < nf) );
+
+% Construction from a single value
+f = spherefun(1);
+pass(25) = norm(f-1,inf) == 0;
+
+% Construction from a string with (x,y,z) variables
+f = spherefun(@(x,y,z) exp(-10*((x-1/sqrt(2)).^2 + (z-1/sqrt(2)).^2 + y.^2)));
+g = spherefun('exp(-10*((x-1/sqrt(2)).^2 + (z-1/sqrt(2)).^2 + y.^2))');
+pass(26) = norm(f-g,inf) == 0;
+
+% Construction from a string with (l,t) variables
+f = spherefun(@(l,t) cos(l).*sin(t) );
+g = spherefun('cos(l).*sin(t)');
+pass(27) = norm(f-g,inf) == 0;
+
+try
+    f = spherefun('x.*y.*z.*w');
+    pass(28) = false;
+catch ME
+    pass(28) = strcmp(ME.identifier,'CHEBFUN:SPHEREFUN:constructor:str2op:depvars');
+end
+
 end
 
 function f = redefine_function_handle(f)
