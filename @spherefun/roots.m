@@ -29,7 +29,7 @@ rts = roots@separableApprox(varargin{:});
 x = chebpts(max(length(rts),17) + 1);
 
 vals = feval(rts, x);
-r = cellmat(size(vals,2), 1);
+r = cell(size(vals,2), 1);
 
 % Go through each component and make it an array-valued chebfun: 
 for k = 1:size(vals, 2)
