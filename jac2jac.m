@@ -18,15 +18,6 @@ function c_jac = jac2jac( c_jac, alpha, beta, gam, delta )
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% TODO: Improve the vectorized implementation.
-numCols = size(c_jac,2);
-if ( numCols > 1 )
-    for k = 1:numCols
-        c_jac(:,k) = jac2jac( c_jac(:,k), alpha, beta, gam, delta );
-    end
-    return
-end
-
 % Move (alpha,beta) to (A,B) so that |A-alpha|<1 and |B-beta|<1:
 [c_jac, A, B] = jacobiIntegerConversion(c_jac, alpha, beta, gam, delta);
 
@@ -40,6 +31,7 @@ if ( abs( B - delta ) > 1e-15 )
     c_jac = jacobiFractionalConversion( c_jac, B, gam, delta );
     c_jac(2:2:end) = -c_jac(2:2:end);
 end
+
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -59,8 +51,6 @@ function c_jac = jacobiFractionalConversion( v, alpha, beta, gam )
 % matrix. A low rank approximation is constructed via pivoted Cholesky
 % factorization. (See [1].)
 
-N = size(v, 1);  % Size of coefficients.
-
 % Functions to define Toeplitz and Hankel part of A:
 Lambda1 = @(z) exp( gammaln( z+alpha+beta+1 ) - gammaln(z+gam+beta+2) );
 Lambda2 = @(z) exp( gammaln( z+alpha-gam) - gammaln(z+1) );
@@ -68,7 +58,9 @@ Lambda3 = @(z) exp( gammaln( z+gam+beta+1) - gammaln(z+beta+1) );
 Lambda4 = @(z) exp( gammaln( z+beta+1 ) - gammaln( z + alpha +beta + 1) );
 
 % Diagonal matrices in A = D1(T.*H)D2:
-D1 = spdiags( ((2*(0:N-1)+gam+beta+1).*Lambda3([1 1:N-1]))',0,N,N ); D1(1,1) = 1;
+[N, numCols] = size(v); % Size of coefficients.
+D1 = spdiags( ((2*(0:N-1)+gam+beta+1).*Lambda3([1 1:N-1]))',0,N,N ); 
+D1(1,1) = 1;
 D2 = 1./gamma(alpha-gam)*spdiags( Lambda4([1 1:N-1])', 0, N, N );
 D2(1,1) = 0; 
 
@@ -112,15 +104,19 @@ Z = [T_row(1) ; zeros(N-1, 1)];
 % Fast Toeplitz matrix multiply. This is the optimized since this is the
 % majority of the cost of the code:
 a  = fft( [Z ;  T_row(end:-1:2)'] );
-tmp1 = bsxfun(@times, C, D2*v);
-f1 = fft( tmp1, 2*N-1, 1 );
-tmp2 = bsxfun(@times, f1 , a );
-b = ifft( tmp2 );
-c_jac = D1 * sum(b(1:N,:).*C, 2);
+
+c_jac = D2*v;
+for k = 1:numCols
+    tmp1 = bsxfun(@times, C, c_jac(:,k));
+    f1 = fft( tmp1, 2*N-1, 1 );
+    tmp2 = bsxfun(@times, f1 , a);
+    b = ifft( tmp2 );
+    c_jac(:,k) = D1 * sum(b(1:N,:).*C, 2);
+end
 
 % Fix the first entry of the output.
 Matrow1 = gamma(gam+beta+2)./gamma(beta+1).*diag(D2)'.*T_row.*vals(1:N)';
-c_jac(1) = Matrow1*v + v(1); 
+c_jac(1,:) = Matrow1*v + v(1,:); 
 
 end
 
@@ -128,7 +124,6 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% TODO: Vectorise these codes.
 % TODO: These conversions could probably be tidied and optimised a little more.
 
 function [c_jac, alpha, beta] = ...
@@ -156,6 +151,7 @@ while ( beta >= delta + 1 )
     c_jac = DownJacobiConversion(c_jac, alpha, beta-1);
     beta = beta - 1;
 end
+
 end
 
 function v = UpJacobiConversion(v, a, b)
@@ -183,18 +179,18 @@ function v = DownJacobiConversion(v, a, b)
 N = length(v);
 
 % First row of inverse up-conversion
-topRow = [1 (a+1)/(a+b+2) (a+1)/(a+b+2)*cumprod((a+2:a+N-1)./(a+b+3:a+b+N))];
+topRow = [1, (a+1)/(a+b+2), (a+1)/(a+b+2)*cumprod((a+2:a+N-1)./(a+b+3:a+b+N))];
 topRow = (-1).^(0:N-1).*topRow;
 
 % %  Compute S\u in O(N) operations % %
 % Sum up topRow.*u' in a numerically stable way.
-vecsum = fliplr(cumsum(fliplr(topRow.*v.')));
+tmp = bsxfun(@times, topRow, v.');
+vecsum = fliplr(cumsum(fliplr(tmp), 2));
 
 % Apply inverse up-conversion to u.
 ratios = ((a+b+5:2:a+b+2*N-1)./(a+b+3:a+b+N)).*(1./topRow(3:end));
 ratios = [ 1 -(a+b+3)/(a+1) ratios];
-v = ratios.*vecsum;
-v = v.';
+v = bsxfun(@times, ratios, vecsum).';
 end
 
 function v = RightJacobiConversion(v, a, b)
