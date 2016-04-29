@@ -210,6 +210,9 @@ classdef chebdouble
             [xx, yy] = ndgrid(X{N});
             u.values = K(xx, yy) * (W{N}.'.*u.values);
             
+            % Update the difforder:
+            u.diffOrder = u.diffOrder - 1;
+            
         end
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  VOLT  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -241,6 +244,9 @@ classdef chebdouble
             
             % The Fredholm operator:
             u.values = c * (KER .* C) * (u.values);
+            
+            % Update the difforder:
+            u.diffOrder = u.diffOrder - 1;
             
         end
 

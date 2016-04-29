@@ -949,6 +949,7 @@ global DIFFORDER SYSSIZE
 tmp = chebdouble(zeros(SYSSIZE), DOMAIN);
 v = pdeFun(0, 0, tmp);
 DIFFORDER = get(v, 'diffOrder');
+DIFFORDER = max(DIFFORDER, 0);
 end
 
 function out = dealWithStructInput(in)
