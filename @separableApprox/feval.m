@@ -73,9 +73,9 @@ elseif ( isnumeric( x ) && isnumeric( y ) )  % f(x, y)
             % Evaluate at matrices, but they're not from meshgrid: 
             out = zeros( size( x ) ); 
             for jj = 1:size(out,1)
-                temp = feval(cols, y(jj,:).') * D * feval(rows, x(jj,:).').'; 
+                out(jj,:) = dot(feval(cols, y(jj,:).')*D,feval(rows, x(jj,:).'),2);
                 for kk = 1: size(out,2)
-                    out(jj, kk) = feval( f, x(jj,kk), y(jj,kk) ); 
+%                     out(jj, kk) = feval( f, x(jj,kk), y(jj,kk) ); 
 %                     out(jj, kk) = feval(cols, y(jj,kk)) * D * feval(rows, x(jj,kk)).';
                 end
             end
