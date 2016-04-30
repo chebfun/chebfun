@@ -28,6 +28,8 @@ if ( isempty(f) )
     return
 end
 
+dom = f.domain([1,end]);
+
 % We can only plot the coefficients of one CHEBFUN at a time:
 if ( any(cellfun(@(f) isa(f, 'chebfun'), varargin)) )
     error('CHEBFUN:CHEBFUN:plotcoeffs:multipleChebfuns', ...
@@ -81,7 +83,7 @@ for k = 1:numel(f)
         colk = col(k,:);
     end
     % Call the column version:
-    h{k} = columnPlotCoeffs(f{k}, colk, varargin{:});
+    h{k} = columnPlotCoeffs(f{k}, colk, varargin{:}, 'domain', dom);
 end
 
 % Return hold state to what it was before:
