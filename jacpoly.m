@@ -24,7 +24,7 @@ function p = jacpoly(n, a, b, dom)
 
 % TODO: Use QR to compute the values, as we do in LEGPOLY()?
 
-%% Parse inputs:
+% Parse inputs:
 if ( nargin < 3 )
     error('CHEBFUN:jacpoly:inputs', 'JACPOLY() requires at least 3 inputs.'); 
 end
@@ -37,8 +37,6 @@ if ( any(isinf(dom)) )
         'Jacobi polynomials are not defined over an unbounded domain.');
 end
 
-%% Setup:
-
 % Force a CHEBTECH basis.
 defaultPref = chebfunpref();
 pref = defaultPref;
@@ -47,43 +45,14 @@ if ( ~isa(tech, 'chebtech') )
     pref.tech = @chebtech2;
 end
 
-% Useful values:
-nMax = max(n);
-nMax1 = nMax + 1;
-domIn = dom;
-dom = dom([1, end]);
-x = chebpts(nMax1, 2);
+% Construct the Jacobi coefficients:
+N = max(n) + 1;
+c = eye(N);
+c = jac2cheb(c(:,n+1), a, b);
 
-% TODO: This could also be done using a weighed QR and JACPTS (see LEGPOLY).
-
-%% Recurrence relation:
-
-apb = a + b;
-aa  = a * a;
-bb  = b * b;
-P = zeros(nMax1);
-P(:,1) = 1;    
-P(:,2) = 0.5*(2*(a + 1) + (apb + 2)*(x - 1));   
-for k = 2:nMax
-    k2 = 2*k;
-    k2apb = k2 + apb;
-    q1 =  k2*(k + apb)*(k2apb - 2);
-    q2 = (k2apb - 1)*(aa - bb);
-    q3 = (k2apb - 2)*(k2apb - 1)*k2apb;
-    q4 =  2*(k + a - 1)*(k + b - 1)*k2apb;
-    P(:,k+1) = ((q2 + q3*x).*P(:,k) - q4*P(:,k-1)) / q1;
-end
-
-%% Assemble output:
-P = P(:,n+1);                    % Extract required columns
-C = chebtech2.vals2coeffs(P);    % Convert to coefficients
-
-% Construct CHEBFUN from coeffs:
-p = chebfun(C, dom, pref, 'coeffs');   
-
-if ( numel(domIn) > 2)
-    p = restrict(p, domIn);
-end
+% Construct a CHEBFUN from the coefficients:
+p = chebfun(c, dom([1, end]), 'coeffs');
+p = restrict(p, dom);
 
 % Adjust orientation:
 if ( size(n, 1) > 1 )
