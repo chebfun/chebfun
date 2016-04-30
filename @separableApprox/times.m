@@ -14,7 +14,20 @@ if ( isa(f, 'separableApprox') )    % SEPARABLEAPPROX .* ???
     elseif ( isa( g, 'separableApprox') )
         bol = domainCheck(f, g);
         if ( bol )
-            h = compose( f, @times, g); 
+            % Grady's faster times for rank 1 functions: 
+            if ( length( f ) == 1 ) 
+                [C, D, R] = cdr( f ); 
+                h = g; 
+                onesForC = sqrt(abs(D))*ones(1,length(g));
+                onesForR = sign(D)*onesForC;
+                h.cols = (C*onesForC).*g.cols;
+                h.rows = (R*onesForR).*g.rows;
+            elseif ( length( g ) == 1 ) 
+                 h = times(g, f);
+            else
+                % Give up, call the constructor: 
+                h = compose(f, @times, g); 
+            end
         else
             error('CHEBFUN:SEPARABLEAPPROX:times:domain', 'Inconsistent domains');
         end
