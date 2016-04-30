@@ -71,14 +71,20 @@ elseif ( isnumeric( x ) && isnumeric( y ) )  % f(x, y)
             takeTranspose = 1;
         else
             % Evaluate at matrices, but they're not from meshgrid: 
-            out = zeros( size( x ) ); 
-            for jj = 1:size(out,1)
-                out(jj,:) = dot(feval(cols, y(jj,:).')*D,feval(rows, x(jj,:).'),2);
-                for kk = 1: size(out,2)
-%                     out(jj, kk) = feval( f, x(jj,kk), y(jj,kk) ); 
-%                     out(jj, kk) = feval(cols, y(jj,kk)) * D * feval(rows, x(jj,kk)).';
+            [m,n] = size( x );
+            out = zeros( m, n ); 
+            % Unroll the loop that is the longest
+            if m > n 
+                for ii = 1:n
+                    out(:,ii) = dot(feval(cols, ...
+                        y(:,ii))*D,feval(rows, x(:,ii)),2);
                 end
-            end
+            else
+                for jj = 1:m
+                    out(jj,:) = dot(feval(cols, ...
+                        y(jj,:).')*D,feval(rows, x(jj,:).'),2);
+                end
+            end                
             return
         end
     else
