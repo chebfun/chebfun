@@ -1,5 +1,8 @@
 function varargout = xy
-%XY   A chebfun2 of the @(x,y)x and @(x,y)y on [-1,1]^2.
+%XY   Chebfun2 objects for the @(x,y)x and @(x,y)y on [-1,1]^2.
+%   [X, Y] = CHEB.XY returns chebfun2 objects for the functions @(x,y)x 
+%   and @(x,y)y defined on [-1,1]^2.
+%   
 %   CHEB.XY is shorthand for the expressions 
 %   CHEBFUN2(@(X,Y) X), and 
 %   CHEBFUN2(@(X,Y) Y).
@@ -11,17 +14,18 @@ x = chebfun2(@(x,y) x);
 y = chebfun2(@(x,y) y);
 
 if ( nargout > 1 )
+    
     % For the syntax [x, y] = cheb.xy:
     varargout{1} = x;
     varargout{2} = y;
+    
 else
-    % For the syntax cheb.xy we still want to put these variables into the 
-    % workspace:
+    % Put 'x' and'y' into the workspace:
     assignin('base', 'x', x)
     assignin('base', 'y', y)
-    % and display
+    
+    % And display the variables:
     display(x)
     display(y)
 end
-
 end
