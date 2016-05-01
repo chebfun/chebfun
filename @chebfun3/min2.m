@@ -42,17 +42,17 @@ end
 
 dom = f.domain;
 n = 512;
-if ( dims == [1, 2] || dims == [2, 1] )
+if ( all(dims == [1, 2]) || all(dims == [2, 1]) )
     vals = sample(f, n, n, n);
     temp = chebfun3.unfold(vals, [3]);
     h = chebfun(min(temp, [], 2), dom(5:6), 'splitting', 'on');
     h = simplify(h); 
-elseif ( dims == [1,3] || dims == [3, 1] )
+elseif ( all(dims == [1,3]) || all(dims == [3, 1]) )
     vals = sample(f, n, n, n);
     temp = chebfun3.unfold(vals, [2]);
     h = chebfun(min(temp, [], 2), dom(3:4), 'splitting', 'on');
     h = simplify(h);
-elseif ( dims == [2, 3] || dims == [3, 2] )
+elseif ( all(dims == [2, 3]) || all(dims == [3, 2]) )
     vals = sample(f, n, n, n);
     temp = chebfun3.unfold(vals, [1]);
     h = chebfun(min(temp, [], 2), dom(1:2), 'splitting', 'on');

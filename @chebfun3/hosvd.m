@@ -1,5 +1,4 @@
 function varargout = hosvd(f, varargin)
-%[sv, core, cols, rows, tubes, g] = hosvd(f, varargin)
 %HOSVD   computes the classical Tucker decomposition of CHEBFUN3.
 %
 % sv = hosvd(F) computes only a 1 x 3 cell-array containing 3 vectors of 

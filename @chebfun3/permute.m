@@ -10,6 +10,12 @@ function g = permute(f, dims)
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% check for empty CHEBFUN3.
+if ( isempty(f) )
+    g = chebfun3(); 
+    return
+end
+
 g = f;
 dom = f.domain;
 if ( dims == [1 2 3] )

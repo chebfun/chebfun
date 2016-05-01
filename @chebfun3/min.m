@@ -46,7 +46,6 @@ dom = f.domain;
 n = 512;
 if ( dim == 1 )
     vals = sample(f, n, n, n); 
-    %h = chebfun( min( vals ).', dom(1:2), 'splitting', 'on' );
     h = chebfun2(squeeze(min(vals, [], 1)), dom(3:6));
     h = simplify(h);
 elseif ( dim == 2 )

@@ -6,6 +6,12 @@ function [val, loc] = max3(f)
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+if ( isempty(f) )
+    val = []; 
+    loc = [];
+    return
+end
+
 % Call MINANDMAX3:
 [val, loc] = minandmax3(f);   
 

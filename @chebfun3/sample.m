@@ -19,10 +19,16 @@ if ( isempty(f) )
     return
 end
 
-[m,n,p] = length(f);
-m = max(m, 50);
-n = max(n, 50);
-p = max(p, 50);
+if nargin == 4
+     m = varargin{1};
+     n = varargin{2};
+     p = varargin{3};
+else
+    [m,n,p] = length(f);
+    m = max(m, 50);
+    n = max(n, 50);
+    p = max(p, 50);
+end
 
 % For now just call chebpolyval3.  In the future, this function should call
 % an appropriate sample function on the underlying tech type. This would

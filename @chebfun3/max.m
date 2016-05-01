@@ -1,7 +1,7 @@
 function h = max(f, g, dim)
 %MAX   Maximum value of a CHEBFUN3 in one direction.
 %   MAX(f) returns a chebfun2 representing the maximum of the CHEBFUN3 along the
-%   x direction, i.e, MAX(f) = @(y,z) max( f ( :, y, z ) )
+%   x direction, i.e, MAX(f) = @(y,z) max( f(:, y, z) )
 %
 %   MAX(f, [], dim) returns a CHEBFUN2 representing the maximum of f along the
 %   DIM direction. DIM = 1 means along the x-direction, DIM = 2 is along the

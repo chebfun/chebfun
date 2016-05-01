@@ -24,7 +24,7 @@ else
         ycurve = curve(:, 2); 
         zcurve = curve(:, 3);         
         diffC = diff(curve);
-        ds_squared = diffC(:,1).^2 + diffC(:,2).^2 + diffC(:,3).^2;
+        ds_squared = diffC(:, 1).^2 + diffC(:, 2).^2 + diffC(:, 3).^2;
         I = sum(feval(f, xcurve, ycurve, zcurve) .* sqrt(ds_squared), ...
             curve.domain);
     else
