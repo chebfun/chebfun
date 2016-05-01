@@ -13,14 +13,19 @@ function varargout = xy
 x = chebfun2(@(x,y) x);
 y = chebfun2(@(x,y) y);
 
-if ( nargout > 1 )
+if ( nargout > 0 )
     
     % For the syntax [x, y] = cheb.xy:
     varargout{1} = x;
     varargout{2} = y;
     
+    if ( nargout > 2 ) 
+        error('CHEB:XY:TooManyOutputs',... 
+            'Too many output arguments. CHEB.XY only returns "x" and "y".')
+    end
+    
 else
-    % Put 'x' and'y' into the workspace:
+    % Put 'x' and 'y' into the workspace:
     assignin('base', 'x', x)
     assignin('base', 'y', y)
     

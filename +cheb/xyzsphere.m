@@ -16,12 +16,17 @@ x = spherefun(@(x,y,z) x);
 y = spherefun(@(x,y,z) y);
 z = spherefun(@(x,y,z) z);
 
-if ( nargout > 1 )
+if ( nargout > 0 )
     
     % For the syntax [x, y, z] = cheb.xyzsphere:
     varargout{1} = x;
     varargout{2} = y;
     varargout{3} = z;
+    
+    if ( nargout > 3 ) 
+        error('CHEB:XYZSPHERE:TooManyOutputs',... 
+            'Too many output arguments. CHEB.XYZSPHERE only returns "x", "y", and "z".')
+    end
     
 else
     % Put 'x', 'y', and 'z' into the workspace:
