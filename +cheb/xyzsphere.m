@@ -5,9 +5,9 @@ function varargout = xyzsphere
 %   sphere. 
 %
 %   CHEB.XYZSPHERE is shorthand for the expressions 
-%   SPHEREFUN(@(X,Y,Z) X), 
-%   SPHEREFUN(@(X,Y,Z) Y), and 
-%   SPHEREFUN(@(X,Y,Z) Z). 
+%   X = SPHEREFUN(@(X,Y,Z) X), 
+%   Y = SPHEREFUN(@(X,Y,Z) Y), and 
+%   Z = SPHEREFUN(@(X,Y,Z) Z). 
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

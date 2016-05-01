@@ -4,8 +4,8 @@ function varargout = xy
 %   and @(x,y)y defined on [-1,1]^2.
 %   
 %   CHEB.XY is shorthand for the expressions 
-%   CHEBFUN2(@(X,Y) X), and 
-%   CHEBFUN2(@(X,Y) Y).
+%   X = CHEBFUN2(@(X,Y) X), and 
+%   Y = CHEBFUN2(@(X,Y) Y).
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

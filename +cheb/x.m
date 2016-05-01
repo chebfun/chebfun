@@ -1,6 +1,8 @@
 function varargout = x
 %X   A chebfun of the identity on [-1,1].
-%   CHEB.X is shorthand for the expression CHEBFUN(@(X) X).
+%   X = CHEB.X returns a chebfun object for the function @(x)x on [-1,1].
+%
+%   CHEB.X is shorthand for the expression X = CHEBFUN(@(X) X).
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
