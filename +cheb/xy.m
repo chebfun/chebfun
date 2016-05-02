@@ -1,5 +1,5 @@
 function varargout = xy
-%XY   Chebfun2 objects for the @(x,y)x and @(x,y)y on [-1,1]^2.
+%XY   Chebfun2 objects for the functions x and y on [-1,1]^2.
 %   [X, Y] = CHEB.XY returns chebfun2 objects for the functions @(x,y)x 
 %   and @(x,y)y defined on [-1,1]^2.
 %   
