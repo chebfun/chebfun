@@ -219,6 +219,10 @@ methods (Access = public)
     
     out = mean2(f, varargin);
     
+
+    % Squeeze a CHEBFUN3 into a CHEBFUN2 or a CHEBFUN:
+    out = squeeze(f);
+
     % Create a scatter plot of the core tensor of a CHEBFUN3
     varargout = coreplot(f, varargin);
     

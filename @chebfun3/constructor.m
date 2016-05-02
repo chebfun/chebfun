@@ -867,15 +867,13 @@ tech = pref.tech();
 % What is the next grid size?
 if ( isa(tech, 'chebtech2') )
     % Increase sampling by a factor of sqrt(2) on tensor grid:
-    %grid = sqrt(2)^( floor( 2*log2( grid ) ) + 1) + 1;
-    grid = floor(sqrt(2)^( floor(2*log2(grid)) + 1)) + 1;
+    grid = floor(sqrt(2)^(floor(2*log2(grid)) + 1)) + 1;
 elseif ( isa(tech, 'trigtech') )
     % Increase sampling to an even factor of sqrt(2) on tensor grid:
-    grid = round((floor(sqrt(2)^( floor( 2*log2( grid ) ) + 1)) + 1)/2)*2;
+    grid = round((floor(sqrt(2)^( floor(2*log2(grid)) + 1)) + 1)/2)*2;
     %N.B.: X = round(X./n).*n rounds to a multiple of n, in this case n = 2
 elseif ( isa(tech, 'chebtech1') )
-    %grid = 3 * grid; 
-    error('Not written yet');
+    grid = floor(sqrt(2)^(floor(2*log2(grid)) + 1)) + 1;
 else
     error('CHEBFUN:CHEBFUN3:constructor:gridRefinePhase1:techType', ...
         'Technology is unrecognized.');
@@ -900,6 +898,7 @@ elseif ( isa(tech, 'trigtech') )
     grid = 2*grid;
     nesting = 1:2:grid;
 elseif ( isa(tech, 'chebtech1' ) )
+    % Triple sampling on tensor grid:
     grid = 3 * grid; 
     nesting = 2:3:grid; 
 else
@@ -1044,6 +1043,14 @@ fiberDim = [];
 vscaleBnd = [];
 dom = [-1 1 -1 1 -1 1];
 
+% Preferences structure given?
+isPref = find(cellfun(@(p) isa(p, 'chebfunpref'), varargin));
+if ( any(isPref) )
+    pref = varargin{isPref};
+    varargin(isPref) = [];
+end
+
+
 if ( isa(op, 'char') )     % CHEBFUN3( CHAR )
     op = str2op(op);
 end
@@ -1091,6 +1098,7 @@ end
 if ( ~vectorize && ~isnumeric(op) ) % another check
     [vectorize, op] = vectorCheck(op, dom);
 end
+
 end
 
 %% 
