@@ -5,16 +5,15 @@ if ( nargin == 0)
     pref = chebfunpref; 
 end
 
+rng(2016);
 tol = 100*pref.cheb2Prefs.chebfun2eps;
 
 % Check empty chebfun2: 
 f = chebfun2; 
 s = 2*rand(5,1) - 1; 
 t = 2*rand(5,1) - 1; 
-[ss, tt] = meshgrid( s, t); 
-A = feval(f, ss, tt); 
 B = fevalm(f, s, t); 
-pass(1) = norm( A - B ) < tol; 
+pass(1) = isempty( B ); 
 
 % Check symmetric function: 
 f = chebfun2(@(x,y) cos(x.*y)); 
