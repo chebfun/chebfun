@@ -30,8 +30,8 @@ end
 
 % Use CDR decomposition so we can keep it in low rank form: 
 [C, D, R] = cdr( f ); 
-Cvals = sample(C, m);
-Rvals = sample(R, n);
+Cvals = sample(C, n);
+Rvals = sample(R, m);
 
 % Evaluate: 
 if ( nargout <= 1 )
