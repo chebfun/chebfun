@@ -58,12 +58,12 @@ end
 % bk1 = 0*x; 
 % bk2 = bk1;
 % x = 2*x;
-% for k = 1:size(c,1)-1
+% for k = (size(c,1)-1):-1:1
 %     bk = c(k) + x.*bk1 - bk2;
 %     bk2 = bk1; 
 %     bk1 = bk;
 % end
-% y = c(end) + .5*x.*bk1 - bk2;
+% y = c(1) + .5*x.*bk1 - bk2;
 % end
 
 % function y = clenshaw_vec(x, c)
@@ -73,12 +73,12 @@ end
 % bk2 = bk1;
 % e = ones(size(x, 1), 1);
 % x = 2*x;
-% for k = 1:(size(c, 1) - 1)
+% for k = (size(c,1)-1):-1:1
 %     bk = e*c(k,:) + x.*bk1 - bk2;
 %     bk2 = bk1; 
 %     bk1 = bk;
 % end
-% y = e*c(end,:) + .5*x.*bk1 - bk2;
+% y = e*c(1,:) + .5*x.*bk1 - bk2;
 % end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
