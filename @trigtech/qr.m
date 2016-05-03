@@ -124,12 +124,12 @@ end
 end
 
 function [f, R, E] = qr_builtin(f, outputFlag)
-% Quadratures are being done using trapezoidal rule, so we need to double
-% n to ensure that all integrals involving products p_n(z)*p_m(z), where
-% z = exp(i*x), are done exactly.  Additionally, we must enforce that 
+% Quadratures are being done using trapezoidal rule. We must enforce that 
 % f.coeffs has at least as many rows as columns
 [nf, mf] = size(f);
-n = 2*max(nf, mf);
+n = max(nf, mf);
+% Increasing n by one seems to make the results more accurate.
+n = n + 1;
 f = prolong(f, n);
 
 if ( nargout == 3 )
