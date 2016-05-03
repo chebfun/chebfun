@@ -124,12 +124,6 @@ end
 end
 
 function [f, R, E] = qr_builtin(f, outputFlag)
-
-% persistent W invW type
-% Persistently store these matrices, which only depend on the length of the
-% input, not the data. This is very helpful for SPHEREFUN which relies
-% heavily on QR.
-
 % Quadratures are being done using trapezoidal rule, so we need to double
 % n to ensure that all integrals involving products p_n(z)*p_m(z), where
 % z = exp(i*x), are done exactly.  Additionally, we must enforce that 
@@ -138,62 +132,32 @@ function [f, R, E] = qr_builtin(f, outputFlag)
 n = 2*max(nf, mf);
 f = prolong(f, n);
 
-% Weights in trapezoidal rule.
-w = 2/n;
-W = sqrt(w);
-invW = 1/W;    
-
-if ( n <= 4000 )
-    % Get the value of f
-    values = f.values;
-    if ( nargout == 3 )
-        [Q, R, E] = qr(W * values, 0);
-        % For consistency with the MATLAB QR behavior:
-        if ( (nargin == 1) || ~(strcmpi(outputFlag, 'vector') || isequal(outputFlag, 0)) )
-            % Return E in matrix form:
-            I = eye(mf);
-            E = I(:,E);
-        end
-    else
-        converted = W * values;
-        [Q, R] = qr(converted, 0);
+if ( nargout == 3 )
+    [Q, R, E] = qr(f.values, 0);
+    % For consistency with the MATLAB QR behavior:
+    if ( ~(strcmpi(outputFlag, 'vector') || isequal(outputFlag, 0)) )
+        % Return E in matrix form:
+        I = eye(mf);
+        E = I(:,E);
     end
-    
-    % Remove the weighting.
-    s = sign(diag(R));             % }
-    s(~s) = 1;                     % } Enforce diag(R) >= 0
-    S = spdiags(s, 0, mf, mf);     % }
-    Q = invW*Q*S;                  % Fix Q.
-    R = S*R;                       % Fix R.                
 else
-    % Where n >> 4000 we must use fast transforms as we cannot store the n x n
-    % matrices. Below is the same algorithm as the n <= 4000 above, except that
-    % we never form a large dense matrix.
-    
-    % Compute the weighted QR factorisation:
-    if ( nargout == 3 )
-        values = f.values;
-        [Q, R, E] = qr( W * values , 0);
-        % For consistency with the MATLAB QR behavior:
-        if ( (nargin == 1) || ~(strcmpi(outputFlag, 'vector') || isequal(outputFlag, 0)) )
-            % Return E in matrix form:
-            I = eye(m);
-            E = I(:,E);
-        end
-    else
-        values = f.values;
-        [Q, R] = qr(W * values, 0);
-    end
-    
-    % Remove the weighting.
-    s = sign(diag(R));               % }
-    s(~s) = 1;                       % } Enforce diag(R) >= 0
-    S = spdiags(s, 0, mf, mf);       % }
-    Q = invW*Q*S;                    % Fix Q.
-    R = S*R;                         % Fix R.
+    [Q, R] = qr(f.values, 0);
 end
 
-% Reduce the size of Q?
+% Enforce diag(R) >= 0:
+s = sign(diag(R));
+s(~s) = 1;
+S = spdiags(s, 0, mf, mf);
+Q = Q*S; % Fix Q.
+R = S*R; % Fix R.
+
+% Scaling:
+w = 2/n; % Weights in trapezoidal rule.
+W = sqrt(w);
+Q = Q/W; % Scale Q.
+R = W*R; % Scale R.
+
+% TODO: Reduce the size of Q?
 
 % Apply data to TRIGTECH:
 f.values = Q;
@@ -202,7 +166,7 @@ f.coeffs = f.vals2coeffs(Q);
 % of Q should remain real.
 f.isReal(:) = all(f.isReal);
 % Prune the unneeded coefficients.
-f = prolong(f,nf);
+f = prolong(f, nf);
 
 end
 

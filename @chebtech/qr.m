@@ -128,7 +128,7 @@ if ( n <= 4000 )
     if ( nargout == 3 )
         [Q, R, E] = qr(WP * values, 0);
         % For consistency with the MATLAB QR behavior:
-        if ( (nargin == 1) || ~(strcmpi(outputFlag, 'vector') || isequal(outputFlag, 0)) )
+        if ( ~(strcmpi(outputFlag, 'vector') || isequal(outputFlag, 0)) )
             % Return E in matrix form:
             I = eye(m);
             E = I(:,E);
@@ -159,7 +159,7 @@ else
         converted = W*chebfun.ndct( f.coeffs ); % WP * values.
         [Q, R, E] = qr( converted , 0);
         % For consistency with the MATLAB QR behavior:
-        if ( (nargin == 1) || ~(strcmpi(outputFlag, 'vector') || isequal(outputFlag, 0)) )
+        if ( ~(strcmpi(outputFlag, 'vector') || isequal(outputFlag, 0)) )
             % Return E in matrix form:
             I = eye(m);
             E = I(:,E);
