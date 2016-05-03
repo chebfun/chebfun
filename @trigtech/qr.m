@@ -157,8 +157,6 @@ W = sqrt(w);
 Q = Q/W; % Scale Q.
 R = W*R; % Scale R.
 
-% TODO: Reduce the size of Q?
-
 % Apply data to TRIGTECH:
 f.values = Q;
 f.coeffs = f.vals2coeffs(Q); 
