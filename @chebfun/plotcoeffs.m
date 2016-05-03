@@ -28,7 +28,7 @@ if ( isempty(f) )
     return
 end
 
-dom = f.domain([1,end]);
+dom = f(1).domain([1,end]);
 
 % We can only plot the coefficients of one CHEBFUN at a time:
 if ( any(cellfun(@(f) isa(f, 'chebfun'), varargin)) )
