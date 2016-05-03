@@ -23,7 +23,6 @@ else
     
    % Put 'x' into the workspace:
    assignin('base', 'x', x)
-   display(x)
    
 end
 end

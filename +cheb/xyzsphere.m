@@ -34,9 +34,5 @@ else
     assignin('base', 'y', y)
     assignin('base', 'z', z)
     
-    % And display the variables:
-    display(x)
-    display(y)
-    display(z)
 end
 end
