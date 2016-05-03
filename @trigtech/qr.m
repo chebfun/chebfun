@@ -35,8 +35,8 @@ if ( isempty(f) )
 end
 
 % Default options:
-% defaultMethod = 'built-in';
-defaultMethod = 'householder';
+defaultMethod = 'built-in';
+% defaultMethod = 'householder';
 defaultOutput = 'matrix';
 
 if ( nargin < 3 || isempty(methodFlag) )
