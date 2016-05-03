@@ -39,10 +39,8 @@ pass(15:16) = test_one_qr_with_perm(f, x);
 N = size(f, 2);
 [Q1, R1, E1] = qr(f, []);
 [Q2, R2, E2] = qr(f, 'vector');
-err = E1(:, E2) - eye(N);
+err = E1(E2, :) - eye(N);
 pass(17) = all(err(:) == 0);
-
-
 
 %%
 % Check a rank-deficient problem:
