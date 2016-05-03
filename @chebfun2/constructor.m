@@ -28,7 +28,7 @@ function g = constructor(g, op, varargin)
 % See http://www.chebfun.org/ for Chebfun2 information.
 
 % Parse the inputs:
-[op, dom, pref, isEqui, fixedRank, vectorize] = parseInputs(op, varargin{:});
+[op, dom, pref, isEqui, isTrig, fixedRank, vectorize] = parseInputs(op, varargin{:});
 
 % Preferences:
 tech        = pref.tech();
@@ -39,6 +39,14 @@ cheb2Prefs  = pref.cheb2Prefs;
 sampleTest  = cheb2Prefs.sampleTest;
 maxRank     = cheb2Prefs.maxRank;
 pseudoLevel = cheb2Prefs.chebfun2eps;
+
+% minSample needs to be a power of 2 when building periodic CHEBFUN2 objects or
+% a ones plus power of 2 otherwise.  See #1771.
+if ( isTrig )
+    minSample = 2.^(floor(log2(tpref.minSamples)));
+else
+    minSample = 2.^(floor(log2(tpref.minSamples - 1))) + 1;
+end
 
 factor  = 4; % Ratio between size of matrix and no. pivots.
 isHappy = 0; % If we are currently unresolved.
@@ -531,7 +539,7 @@ end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [op, dom, pref, isEqui, fixedRank, vectorize] = parseInputs(op, varargin)
+function [op, dom, pref, isEqui, isTrig, fixedRank, vectorize] = parseInputs(op, varargin)
 
 if ( isa(op, 'char') )     % CHEBFUN2( CHAR )
     op = str2op(op);
@@ -625,6 +633,14 @@ isTrig = find(cellfun(@(p) any(strcmpi(p, {'trig', 'periodic'})), varargin));
 if ( isTrig )
     varargin(isTrig) = [];
     pref.tech = @trigtech;
+elseif ( isa(pref.tech(), 'trigtech') )
+    % Even if the user didn't supply the 'trig' flag, we could still be doing a
+    % periodic construction if the tech preference is 'trigtech'.
+    %
+    % TODO:  The only reason this is necessary is because of the adjustments we
+    % have to make to minSample in the main construction routine above.  Can we
+    % avoid this?
+    isTrig = true;
 end
 
 isEpsGiven = find(cellfun(@(p) strcmpi(p, 'eps'), varargin));

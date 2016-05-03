@@ -41,25 +41,10 @@ end
 % Get the low rank representation for f. 
 [cols, d, rows] = cdr(f);
 
-% I really wish techs had a "sample" function too that would return m values
-% of the tech at it's natural grid.  This has been on the chebfun tracker
-% for sometime now.
-
-% Ugly!
-if ( n > 1 )
-    C = trigtech.coeffs2vals(trigtech.alias(cols.funs{:}.onefun.coeffs, ...
-        max(2*n-2, 1)));
-else
-    C = cols.funs{:}.onefun.values;
-end
+% Use CDR decomposition so we can keep it in low rank form: 
+C = real( sample(cols, max(2*n-2,1)) );
 C = C([n:2*n-2 1], :);  % Remove doubled up points.
-R = trigtech.coeffs2vals(trigtech.alias(rows.funs{:}.onefun.coeffs, m)); 
-
-% More ugliness
-if ( all(cols.funs{:}.onefun.isReal) && all(rows.funs{:}.onefun.isReal) )
-    C = real(C);
-    R = real(R);
-end
+R = real( sample(rows, m) );
 
 % Evaluate: 
 if ( nargout <= 1 )

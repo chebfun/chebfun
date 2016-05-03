@@ -85,7 +85,7 @@ if ( ~loglogPlot )
         xlim([min(normalizedWaveNumber(1),-1) -min(normalizedWaveNumber(1),-1)]);
     end
     % Set the string for the x-axis label.
-    xlabelStr = 'Normalized wave number';
+    xlabelStr = 'Wave number';
 else
     if ( isEven )
         % In this case the negative cofficients have an additional term
