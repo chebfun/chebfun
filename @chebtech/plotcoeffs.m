@@ -36,6 +36,7 @@ end
 % Set defaults:
 loglogPlot = false;
 doBar = false;
+domain = [-1,1];
 
 % Copy input arguments:
 args = varargin;
@@ -49,6 +50,9 @@ while ( j <= length(args) )
     elseif ( strcmpi(args{j}, 'barplot') )
         doBar = true;
         args(j) = [];
+    elseif ( strcmpi(args{j}, 'domain') )
+        domain = args{j+1};
+        args(j:j+1) = [];        
     else
         j = j + 1;
     end

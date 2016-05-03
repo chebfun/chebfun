@@ -30,6 +30,7 @@ end
 
 % Set defaults:
 loglogPlot = false;
+domain = [-1, 1];
 
 % Copy input arguments:
 args = varargin;
@@ -40,6 +41,9 @@ while ( j <= length(args) )
     if ( strcmpi(args{j}, 'loglog') )
         loglogPlot = true; 
         args(j) = [];
+    elseif ( strcmpi(args{j}, 'domain') )
+        domain = args{j+1};
+        args(j:j+1) = [];
     else
         j = j + 1;
     end
@@ -74,9 +78,11 @@ end
 
 if ( ~loglogPlot )
     % Plot the coefficients:
-    h = semilogy(coeffIndex, absCoeffs, args{:});
+    normalizedWaveNumber = coeffIndex*(2*pi)/diff(domain);
+    h = semilogy(normalizedWaveNumber, absCoeffs, args{:});
     if ( ~holdState )
-        xlim([min(coeffIndex(1),-1) -min(coeffIndex(1),-1)]);
+        xlim([min(normalizedWaveNumber(1),-1) -min(normalizedWaveNumber(1),-1)]);
+        xlim([min(normalizedWaveNumber(1),-1) -min(normalizedWaveNumber(1),-1)]);
     end
     % Set the string for the x-axis label.
     xlabelStr = 'Wave number';
@@ -93,15 +99,17 @@ else
     end
     coeffIndexPos = 1:size(cPos,1);
     coeffIndexNeg = 1:size(cNeg,1);
+    waveNumber = [coeffIndexPos nan coeffIndexNeg];
+    normalizedWaveNumber = waveNumber*(2*pi)/diff(domain);
 
     % Plot the coefficients for the positive and negative fourier modes
     % separately.
-    h = loglog([coeffIndexPos nan coeffIndexNeg], [cPos ; nan(1, m) ; cNeg], args{:});
+    h = loglog(normalizedWaveNumber, [cPos ; nan(1, m) ; cNeg], args{:});
 
     % Set the string for the x-axis label.  In this case we will be
     % plotting the absolute value of the wave number + 1 (since we can't
     % represent a wave number <= 0 on a logarithmic scale.
-    xlabelStr = '|Wave number|+1';
+    xlabelStr = '|Normalized wave number|+1';
 end
 
 % For constant functions, plot a dot:
