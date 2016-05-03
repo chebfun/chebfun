@@ -1,5 +1,5 @@
 
-function u = Poisson( f, bc, m, n )
+function u = poisson( f, bc, m, n )
 % POISSON               FAST POISSON SOLVER FOR THE DISK 
 % 
 % u = POISSON(F, BC, N) solves  
