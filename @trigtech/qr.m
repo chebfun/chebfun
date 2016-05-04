@@ -128,8 +128,7 @@ function [f, R, E] = qr_builtin(f, outputFlag)
 % f.coeffs has at least as many rows as columns
 [nf, mf] = size(f);
 n = max(nf, mf);
-% Increasing n by one seems to make the results more accurate.
-n = n + 1;
+isReal = all(f.isReal);
 f = prolong(f, n);
 
 if ( nargout == 3 )
@@ -162,7 +161,11 @@ f.values = Q;
 f.coeffs = f.vals2coeffs(Q); 
 % If any columns of f were not real, we cannot guarantee that the columns
 % of Q should remain real.
-f.isReal(:) = all(f.isReal);
+f.isReal(:) = isReal;
+% However, if f is real, we want to remove complex rounding errors in R.
+if (isReal)
+    R = real(R);
+end
 % Prune the unneeded coefficients.
 f = prolong(f, nf);
 
