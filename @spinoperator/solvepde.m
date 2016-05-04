@@ -700,6 +700,8 @@ end
 function out = isDemoCheck(char)
 %ISDEMO   Check whether the string which was passed corresponds to a demo.
 
+% [TODO]: This is not a good way to use exceptions handling. We should replace
+% this with a more *cosmic* solution.
 out = [];
 try spinop(char);
 catch 
