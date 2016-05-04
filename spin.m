@@ -186,6 +186,9 @@ function [uout, tout] = spin(varargin)
 %       pref = spinpref('dt', 1e-5, 'N', 256, 'plot', 'waterfall');
 %       u = spin('KdV', pref);
 %
+%   or simply,
+%        u = spin('KdV', 'dt', 1e-5, 'N', 256, 'plot', 'waterfall')
+%
 %   solves the KdV equation using a time-step dt=1e-5, N=256 grid points and 
 %   produces a WATERFALL plot as opposed to a movie.
 %
@@ -194,7 +197,9 @@ function [uout, tout] = spin(varargin)
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-for j = 1:nargin
+pref = [];
+j = 1;
+while ( j <= nargin )
     item =  varargin{j};
     if ( isa(item, 'spinoperator') == 1 )
         if ( isa(item, 'spinop2') == 1 )
@@ -203,17 +208,41 @@ for j = 1:nargin
             error('CHEBFUN:SPIN', ['Use SPIN3 for PDEs in three space ', ...
                 'dimensions.'])
         end
-    elseif ( isa(item, 'char') == 1 )
-        is2D = ~isempty(strfind(item, '2'));
-        is3D = ~isempty(strfind(item, '3'));
-        if ( is2D == 1 )
-            error('CHEBFUN:SPIN', 'Use SPIN2 for PDEs in two space dimensions.')
-        elseif ( is3D == 1 )
-            error('CHEBFUN:SPIN', ['Use SPIN3 for PDEs in three space ', ...
-                'dimensions.'])
+    elseif ( isa(item, 'char') == 1 )        
+        isDemo = spinoperator.isDemoCheck(item);
+        % This is a char for a demo, e.g., 'ks' or 'kdv':
+        if ( isDemo == 1 )
+            is2D = ~isempty(strfind(item, '2'));
+            is3D = ~isempty(strfind(item, '3'));
+            if ( is2D == 1 )
+                error('CHEBFUN:SPIN', ['Use SPIN2 for PDEs in two space ', ...
+                    'dimensions.'])
+            elseif ( is3D == 1 )
+                error('CHEBFUN:SPIN', ['Use SPIN3 for PDEs in three space ', ...
+                    'dimensions.'])
+            end
+        % This is a preference, e.g., 'N' or 'dt':
+        else
+            if ( isempty(pref) == 1 )
+                pref = spinpref();
+            end
+            pref.(item) = varargin{j+1};
+            varargin{j} = [];
+            varargin{j + 1} = [];
+            j = j + 2;
+            continue
         end
     end
+    j = j + 1;
 end
+
+% Add the preferences:
+if ( isempty(pref) == 0 )
+   varargin{end + 1} = pref;
+end
+
+% Get rid of the deleted entries:
+varargin = varargin(~cellfun(@isempty, varargin));
 
 % SPIN is a wrapper for SOLVPDE:
 [uout, tout] = spinoperator.solvepde(varargin{:});

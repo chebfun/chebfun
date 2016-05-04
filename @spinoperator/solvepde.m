@@ -29,7 +29,8 @@ pref = [];
 S = [];
 tspan = [];
 u0 = [];
-for j = 1:nargin
+j = 1;
+while ( j <= nargin )
     item =  varargin{j};
     if ( isa(item, 'char') == 1 )
         pdechar = item;
@@ -52,6 +53,7 @@ for j = 1:nargin
     else
         error('SPINOPERATOR:solvepde', 'Unrecognized input.')
     end
+    j = j + 1;
 end
 
 % A SPINOPERATOR was given by the user:
