@@ -33,20 +33,8 @@ j = 1;
 while ( j <= nargin )
     item =  varargin{j};
     if ( isa(item, 'char') == 1 )
-        isDemo = isDemoCheck(item);
-        % This is a char for a demo, e.g., 'ks' or 'kdv':
-        if ( isDemo == 1 ) 
-            pdechar = item;
-        % This is a preference, e.g., 'N' or 'dt':
-        else
-            if ( isempty(pref) == 1 )
-                pref = spinpref();
-            end
-            pref.(item) = varargin{j+1};
-            j = j + 2;
-            continue
-        end
-    elseif ( isa(item, 'double') == 1 ) 
+        pdechar = item;
+    elseif ( isa(item, 'double') == 1 && isempty(item) == 0 ) 
         tspan = item;
     elseif ( isa(item, 'chebfun') == 1 || isa(item, 'chebfun2') == 1 || ...
         isa(item, 'chebfun3') == 1 )
@@ -693,32 +681,6 @@ if ( nargout > 2 )
     if ( length(tspan) == 2 )
         tOut = tOut(2);
     end
-end
-
-end
-
-function out = isDemoCheck(char)
-%ISDEMO   Check whether the string which was passed corresponds to a demo.
-
-% [TODO]: This is not a good way to use exceptions handling. We should replace
-% this with a more *cosmic* solution.
-out = [];
-try spinop(char);
-catch 
-    try spinop2(char);
-    catch 
-        try spinop3(char);
-        catch 
-            % It's not a demo because SPINOP/SPINOP2/SPINOP3 didn't recognise
-            % it:
-            out = 0;
-        end
-    end
-end
-
-% It's a demo:
-if ( isempty(out) == 1 )
-    out = 1;
 end
 
 end

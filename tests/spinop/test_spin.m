@@ -1,3 +1,4 @@
+
 % Test file for SPIN:
 
 function pass = test_spin()
@@ -64,5 +65,13 @@ uexact = spin('ac', pref, [0 T]);
 
 % Compare:
 pass(3) = (norm(u - uexact, inf)/norm(uexact, inf)) < tol;
+
+%% AC (BIS): TEST PARSING
+
+% Same equation and same preferences, but with different syntax:
+v = spin('ac', [0 T], 'dt', dt, 'N', 256, 'plot', 'off');
+
+% Compare: (u and v should be the same);
+pass(4) = norm(u - v, inf) == 0;
 
 end

@@ -25,8 +25,8 @@ pass(1) = max(max(abs(u(xx,yy) - uexact(xx,yy))))/scale < tol;
 
 %% GS2:
 
-% Solve GS2 with dt up to T=200:
-T = 200;
+% Solve GS2 with dt up to T=100:
+T = 100;
 dt = 1;
 pref = spinpref2('dt', dt, 'N', 64, 'plot', 'off');
 u = spin2('gs2', pref, [0 T]);
@@ -39,5 +39,13 @@ uexact = spin2('gs2', pref, [0 T]);
 [xx, yy] = meshgrid(linspace(0, 100, 50));
 scale = max(max(abs(uexact{1}(xx,yy))));
 pass(2) = max(max(abs(u{1}(xx,yy) - uexact{1}(xx,yy))))/scale < tol;
+
+%% GS2 (BIS): TEST PARSING
+
+% Same equation and same preferences, but with different syntax:
+v = spin2('gs2', [0 T], 'dt', dt, 'N', 64, 'plot', 'off');
+
+% Compare: (u and v should be the same);
+pass(3) = norm(u - v, inf) == 0;
 
 end

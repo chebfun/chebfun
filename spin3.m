@@ -118,7 +118,80 @@ for j = 1:nargin
     end
 end
 
+pref = [];
+j = 1;
+while ( j <= nargin )
+    item =  varargin{j};
+    if ( isa(item, 'spinoperator') == 1 )
+        if ( isa(item, 'spinop') == 1 )
+            error('CHEBFUN:SPIN3', 'Use SPIN for PDEs in one space dimension.')
+        elseif ( isa(item, 'spinop2') == 1 )
+            error('CHEBFUN:SPIN3', ['Use SPIN2 for PDEs in two space ', ...
+                'dimensions.'])
+        end
+    elseif ( isa(item, 'char') == 1 )        
+        isDemo = isDemoCheck(item);
+        % This is a char for a demo, e.g., 'gs3' or 'gl3':
+        if ( isDemo == 1 )
+            is1D = isempty(strfind(item, '2')) && isempty(strfind(item, '3'));
+            is2D = ~isempty(strfind(item, '2'));
+            if ( is1D == 1 )
+                error('CHEBFUN:SPIN3', ['Use SPIN for PDEs in one space ', ...
+                    'dimension.'])
+            elseif ( is2D == 1 )
+                error('CHEBFUN:SPIN3', ['Use SPIN2 for PDEs in two space ', ...
+                    'dimensions.'])
+            end
+        % This is a preference, e.g., 'N' or 'dt':
+        else
+            if ( isempty(pref) == 1 )
+                pref = spinpref3();
+            end
+            pref.(item) = varargin{j+1};
+            varargin{j} = [];
+            varargin{j + 1} = [];
+            j = j + 2;
+            continue
+        end
+    end
+    j = j + 1;
+end
+
+% Add the preferences:
+if ( isempty(pref) == 0 )
+   varargin{end + 1} = pref;
+end
+
+% Get rid of the deleted entries:
+varargin = varargin(~cellfun(@isempty, varargin));
+
 % SPIN3 is a wrapper for SOLVPDE:
 [uout, tout] = spinoperator.solvepde(varargin{:});
+
+end
+
+function out = isDemoCheck(char)
+%ISDEMO   Check whether the string which was passed corresponds to a demo.
+
+% [TODO]: This is not a good way to use exceptions handling. We should replace
+% this with a more *cosmic* solution.
+out = [];
+try spinop(char);
+catch 
+    try spinop2(char);
+    catch 
+        try spinop3(char);
+        catch 
+            % It's not a demo because SPINOP/SPINOP2/SPINOP3 didn't recognise
+            % it:
+            out = 0;
+        end
+    end
+end
+
+% It's a demo:
+if ( isempty(out) == 1 )
+    out = 1;
+end
 
 end
