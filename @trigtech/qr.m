@@ -127,7 +127,7 @@ function [f, R, E] = qr_builtin(f, outputFlag)
 % Quadratures are being done using trapezoidal rule. We must enforce that 
 % f.coeffs has at least as many rows as columns
 [nf, mf] = size(f);
-n = max(nf, mf);
+n = max(nf, mf);        % We want Q to have mf columns. 
 isReal = all(f.isReal);
 f = prolong(f, n);
 if (isReal)

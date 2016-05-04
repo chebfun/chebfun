@@ -93,7 +93,8 @@ persistent WP invWP type
 % input (and the type of chebtech!), not the data. This is very helpful for
 % CHEBFUN2 which relies heavily on QR.
 
-% We must enforce that f.coeffs has at least as many rows as columns:
+% We must enforce that f.coeffs has at least as many rows as columns so 
+% Q has mf columns:
 [n, m] = size(f);
 if ( n < m )
     f = prolong(f, m);
