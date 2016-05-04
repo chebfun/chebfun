@@ -70,7 +70,7 @@ classdef chebcolloc2 < chebcolloc
             N = N-1;
             
             if ( N == 0 )
-                Q = [];
+                Q = 1;
                 return
             end
             

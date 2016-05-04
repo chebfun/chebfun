@@ -92,7 +92,7 @@ SYSSIZE = min(size(u0));
 if ( isfield(opt, 'difforder') )
     DIFFORDER = opt.difforder;
 else
-    getDIFFORDER(pdeFun);
+    getDIFFORDER(pdeFun, DOMAIN);
 end
 
 if ( (max(DIFFORDER) < 2) && isequal(ODESOLVER, @ode15s) )
@@ -942,13 +942,14 @@ end
 newFun = oldFun(varargin{:}, tmpCell{:});
 end
 
-function getDIFFORDER(pdeFun)
+function getDIFFORDER(pdeFun, DOMAIN)
 % Extract the DIFFORDER by evaluating the operator at some NaN values.
 global DIFFORDER SYSSIZE
 % Find the order of each of the variables:
-tmp = chebdouble(zeros(SYSSIZE));
+tmp = chebdouble(zeros(SYSSIZE), DOMAIN);
 v = pdeFun(0, 0, tmp);
 DIFFORDER = get(v, 'diffOrder');
+DIFFORDER = max(DIFFORDER, 0);
 end
 
 function out = dealWithStructInput(in)

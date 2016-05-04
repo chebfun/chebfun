@@ -171,7 +171,7 @@ classdef chebdouble
             c = diff(u.domain)/2; % Interval scaling.
             
             % Compute cumsum matrix:
-            if ( numel(C) ~= N )
+            if ( size(C, 2) ~= N )
                 C = chebcolloc2.cumsummat(N);
             end
             
@@ -208,32 +208,45 @@ classdef chebdouble
             
             % The Fredholm operator:
             [xx, yy] = ndgrid(X{N});
-            u = K(xx, yy) * (W{N}.'.*u.values);
+            u.values = K(xx, yy) * (W{N}.'.*u.values);
+            
+            % Update the difforder:
+            u.diffOrder = u.diffOrder - 1;
             
         end
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  VOLT  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        function u = volt(K, u)
+        function u = volt(K, u, oneVar)
             %VOLT  Volterra operator with kernel K.
             %   VOLT(K, U) computes the action of the Volterra operator with
             %   kernel K on the Chebyshev interpolant to the points in the
             %   vector U.
             
-            persistent X C
+            persistent x C
             
             % Extract the data:
             N = length(u.values);
             c = diff(u.domain)/2; % Interval scaling.
             
             % Compute cumsum matrix:
-            if ( numel(C) ~= N )
-                X = chebpts(N, u.domain);
-                C = cumsummat(N);
+            if ( size(C, 2) ~= N )
+                C = chebcolloc2.cumsummat(N);
+                x = chebpts(N, u.domain);
+            end
+            
+            % Evaluate the kernel:
+            if ( nargin == 3 && oneVar )
+                KER = K(x);
+            else
+                [X, Y] = ndgrid(x);
+                KER = K(X, Y);
             end
             
             % The Fredholm operator:
-            [xx, yy] = ndgrid(X{N});
-            u = K(xx, yy) * C * (c*u.values);
+            u.values = c * (KER .* C) * (u.values);
+            
+            % Update the difforder:
+            u.diffOrder = u.diffOrder - 1;
             
         end
 
@@ -253,6 +266,7 @@ classdef chebdouble
             end
             
             out = bary(y, u.values, x, v);
+            out = reshape(out, size(y));
         end
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  MISC  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
