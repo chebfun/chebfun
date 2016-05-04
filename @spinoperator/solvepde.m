@@ -34,7 +34,7 @@ while ( j <= nargin )
     item =  varargin{j};
     if ( isa(item, 'char') == 1 )
         pdechar = item;
-    elseif ( isa(item, 'double') == 1 && isempty(item) == 0 ) 
+    elseif ( isa(item, 'double') == 1 ) 
         tspan = item;
     elseif ( isa(item, 'chebfun') == 1 || isa(item, 'chebfun2') == 1 || ...
         isa(item, 'chebfun3') == 1 )
