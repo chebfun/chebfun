@@ -19,16 +19,14 @@ pass(1) = abs(norm(g + f) - norm(g)) < tol;
 
 v = abs(f(pi/6, pi/6, pi/6)); 
 v = v + rank(f);
-pass(2) = (v==1);
+pass(2) = (v==0);
 
 v = abs(norm(sum(f)));
-v = v + abs(integral3(f));
+v = v + abs(sum3(f));
 
 v = v + abs(norm(diff(f)));
 
 v = v + abs(norm(diff(f,1,1)));
-
-v = v + abs(svd(f));
 
 pass(3) = (v==0); 
 
