@@ -1,9 +1,9 @@
-function g = smooth(f, sig)
-%SMOOTH    Gaussian filtering on the sphere.
-%   G = SMOOTH(F), applies a low-pass filter to F. This is based on 
+function g = gaussfilt(f, sig)
+%GAUSSFILT   Gaussian filtering on the sphere.
+%   G = GAUSSFILT(F), applies a low-pass filter to F. This is based on 
 %   Gaussian filtering.  
 % 
-%   G = SMOOTH(F, SIG), applies a low-pass filter to F with parameter SIG. 
+%   G = GAUSSFILT(F, SIG), applies a low-pass filter to F with parameter SIG. 
 %   This smoothes F on the length scale of SIG, where SIG is measured in
 %   radians at the equator on the unit sphere. The default is SIG=pi/180,
 %   which corresponds to filtering at spatial scale of 1 degree.
