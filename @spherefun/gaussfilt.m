@@ -1,15 +1,15 @@
-function g = smooth(f, sig)
-%SMOOTH    Gaussian filtering on the sphere.
-%   G = SMOOTH(F), applies a low-pass filter to F. This is based on 
+function g = gaussfilt(f, sig)
+%GAUSSFILT   Gaussian filtering on the sphere.
+%   G = GAUSSFILT(F) applies a low-pass filter to F. This is based on 
 %   Gaussian filtering.  
 % 
-%   G = SMOOTH(F, SIG), applies a low-pass filter to F with parameter SIG. 
-%   This smoothes F on the length scale of SIG, where SIG is measured in
+%   G = GAUSSFILT(F, SIG) applies a low-pass filter to F with parameter SIG. 
+%   This smooths F on the length scale of SIG, where SIG is measured in
 %   radians at the equator on the unit sphere. The default is SIG=pi/180,
-%   which corresponds to filtering at spatial scale of 1 degree.
+%   which corresponds to filtering at a spatial scale of 1 degree.
 %   
 %   The filter is equivalent to running the diffusion equation on the unit 
-%   sphere to time t=0.5*SIG^2 with a diffusion of coefficent set to 1 and
+%   sphere to time t=0.5*SIG^2 with a diffusion coefficent set to 1 and
 %   the initial condition being F. 
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
@@ -32,7 +32,7 @@ dt = 0.5*sig^2;
 % We only do one step of backward Euler to smooth the solution, with 
 % u^{0} = f.
 
-% Helmholtz parameter for the Heat equation.
+% Helmholtz parameter for the heat equation.
 K = sqrt(1/dt)*1i;
 
 % Filter f.
