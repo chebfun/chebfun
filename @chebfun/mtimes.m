@@ -83,6 +83,10 @@ elseif ( isnumeric(f) && gIsChebfun )       % double * CHEBFUN
 
         f = mtimes(g.', f.').';
 
+elseif ( fIsChebfun )                       % CHEBFUN * ??? 
+
+        f = (g.'*f.').';
+
 else                                        % ??? * CHEBFUN or CHEBFUN * ???
 
     error('CHEBFUN:CHEBFUN:mtimes:unknown', ...

@@ -24,4 +24,9 @@ g2 = chebfun2(@(x,y) cos(x.*y) + 1i*y, [-1 0 -3 4]);
 pass(j) = norm( f' - g1 ) < tol; j = j + 1;
 pass(j) = norm( f.' - g2) < tol; j = j + 1;
 
+% unsymmetric domains
+f = chebfun2(@(x,y) x, [0 1 2 3]);
+g = f';
+pass(j) = norm(f.domain-g.domain([3:4,1:2])) == 0; j = j + 1;
+
 end
