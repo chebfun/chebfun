@@ -86,9 +86,7 @@ rows = [f.rows, g.rows];
 
 Z = zeros(length(fScl), length(gScl));
 D = [ fScl, Z ; Z.', gScl ];
-[U, S, V] = svd(Rcols * D * Rrows.');
-% If V is complex-valued, then conjugate: 
-V = conj( V ); 
+[U, S, V] = svd(Rcols * D * Rrows');
 % Take diagonal from SIGMA:
 s = diag(S);
 
@@ -110,7 +108,7 @@ else
     s = s(1:idx);
     h = f;
     h.cols = Qcols * U;
-    h.rows = Qrows * V;
+    h.rows = Qrows * conj(V);
     % [TODO]: PivotValues have very little meaning after this compression step.
     % For now we assign the singular values as the pivot values. 
     h.pivotValues = 1./s;
