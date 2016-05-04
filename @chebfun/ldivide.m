@@ -4,7 +4,7 @@ function h = ldivide(f,g)
 %
 % See also RDIVIDE, MLDIVIDE.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Call RDIVIDE():

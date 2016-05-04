@@ -24,7 +24,7 @@ function g = constructor(g, op, varargin)
 %
 % See also CHEBFUN2.
 
-% Copyright 2015 by The University of Oxford and The Chebfun2 Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun2 Developers.
 % See http://www.chebfun.org/ for Chebfun2 information.
 
 % Parse the inputs:
