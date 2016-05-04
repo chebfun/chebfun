@@ -206,7 +206,7 @@ while ( j <= nargin )
                 'dimensions.'])
         end
     elseif ( isa(item, 'char') == 1 )        
-        isDemo = isDemoCheck(item);
+        isDemo = spinoperator.isDemoCheck(item);
         % This is a char for a demo, e.g., 'ks' or 'kdv':
         if ( isDemo == 1 )
             is2D = ~isempty(strfind(item, '2'));
@@ -243,31 +243,5 @@ varargin = varargin(~cellfun(@isempty, varargin));
 
 % SPIN is a wrapper for SOLVPDE:
 [uout, tout] = spinoperator.solvepde(varargin{:});
-
-end
-
-function out = isDemoCheck(char)
-%ISDEMO   Check whether the string which was passed corresponds to a demo.
-
-% [TODO]: This is not a good way to use exceptions handling. We should replace
-% this with a more *cosmic* solution.
-out = [];
-try spinop(char);
-catch 
-    try spinop2(char);
-    catch 
-        try spinop3(char);
-        catch 
-            % It's not a demo because SPINOP/SPINOP2/SPINOP3 didn't recognise
-            % it:
-            out = 0;
-        end
-    end
-end
-
-% It's a demo:
-if ( isempty(out) == 1 )
-    out = 1;
-end
 
 end
