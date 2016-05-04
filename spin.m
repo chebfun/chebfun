@@ -186,6 +186,9 @@ function [uout, tout] = spin(varargin)
 %       pref = spinpref('dt', 1e-5, 'N', 256, 'plot', 'waterfall');
 %       u = spin('KdV', pref);
 %
+%   or simply,
+%        u = spin('KdV', 'dt', 1e-5, 'N', 256, 'plot', 'waterfall')
+%
 %   solves the KdV equation using a time-step dt=1e-5, N=256 grid points and 
 %   produces a WATERFALL plot as opposed to a movie.
 %
