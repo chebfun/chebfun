@@ -130,6 +130,10 @@ function [f, R, E] = qr_builtin(f, outputFlag)
 n = max(nf, mf);
 isReal = all(f.isReal);
 f = prolong(f, n);
+if (isReal)
+    % Force values to be real if f is real (avoid complex rounding errors in R)
+    f.values = real(f.values);
+end
 
 if ( nargout == 3 )
     [Q, R, E] = qr(f.values, 0);
@@ -162,10 +166,6 @@ f.coeffs = f.vals2coeffs(Q);
 % If any columns of f were not real, we cannot guarantee that the columns
 % of Q should remain real.
 f.isReal(:) = isReal;
-% However, if f is real, we want to remove complex rounding errors in R.
-if (isReal)
-    R = real(R);
-end
 % Prune the unneeded coefficients.
 f = prolong(f, nf);
 
