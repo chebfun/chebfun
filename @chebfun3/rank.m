@@ -17,6 +17,11 @@ if numel(r)<3
     r = [r, 1];
 end
 
+% Check for zero function.
+if ( all(F.core(:) == 0) )
+    r = [0, 0, 0]; 
+end
+
 % Output:
 if ( nargout <= 1 )
     varargout = {max(r(:))};

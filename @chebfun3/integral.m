@@ -11,6 +11,8 @@ function I = integral(f, varargin)
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% TODO: Surface integral
+
 if ( nargin == 1 )                         % Another way to do sum3(f) 
     %I = integral3(f); 
     I = sum3(f); 

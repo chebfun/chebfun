@@ -1,11 +1,12 @@
 function varargout = slice(f, varargin)
-%SLICE  Plots slices of a CHEBFUN3.
+%SLICE  Plots slices (cross sections) of a CHEBFUN3.
 %
 %   SLICE(F) creates a slice plot of the CHEBFUN3 object F as a GUI so that
 %   the user can move sliders.
 %
 %   SLICE(F, 'NOSLIDER') plots three contours of a CHEBFUN3 object F at 
-%   slices corresponding roughly to the location of global maximum of F.
+%   cross sections (slices) corresponding roughly to the location of global 
+%   maximum of F.
 %
 %   SLICE(F, sx, sy, sz) allows one to set the locations of the three
 %   slices of F to be at x = sx, y = sy and z = sz.

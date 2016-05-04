@@ -1,4 +1,4 @@
-function H = cross( F, G )
+function H = cross(F, G)
 %CROSS   Vector cross product.
 %
 %   CROSS(F, G) returns the CHEBFUN3V representing the 3D cross 
@@ -8,7 +8,7 @@ function H = cross( F, G )
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 
-if ( isempty( F ) || isempty( G ) )
+if ( isempty(F) || isempty(G) )
     H = chebfun3v;
     return
 end
