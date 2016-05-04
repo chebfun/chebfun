@@ -58,9 +58,6 @@ if ( size(f, 2) == 1 )
     return
 end
 
-% Simplify so that we don't do any extra work: (QR is O(m*n^2)? :/ )
-f = simplify(f);
-
 % Decide which algorithm to use:
 if ( strcmpi(methodFlag, 'householder') )
     % Call Trefethen's Householder implementation:
