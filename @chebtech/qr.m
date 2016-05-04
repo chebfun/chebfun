@@ -66,9 +66,6 @@ if ( size(f, 2) == 1 )
     return
 end
 
-% Simplify so that we don't do any extra work: (QR is O(m*n^2)? :/ )
-f = simplify(f);
-
 % Decide which algorithm to use:
 if ( strcmpi(methodFlag, 'householder') )
     % Call Trefethen's Householder implementation:
@@ -93,7 +90,8 @@ persistent WP invWP type
 % input (and the type of chebtech!), not the data. This is very helpful for
 % CHEBFUN2 which relies heavily on QR.
 
-% We must enforce that f.coeffs has at least as many rows as columns:
+% We must enforce that f.coeffs has at least as many rows as columns so 
+% Q has mf columns:
 [n, m] = size(f);
 if ( n < m )
     f = prolong(f, m);
@@ -128,7 +126,7 @@ if ( n <= 4000 )
     if ( nargout == 3 )
         [Q, R, E] = qr(WP * values, 0);
         % For consistency with the MATLAB QR behavior:
-        if ( (nargin == 1) || ~(strcmpi(outputFlag, 'vector') || isequal(outputFlag, 0)) )
+        if ( ~(strcmpi(outputFlag, 'vector') || isequal(outputFlag, 0)) )
             % Return E in matrix form:
             I = eye(m);
             E = I(:,E);
@@ -159,7 +157,7 @@ else
         converted = W*chebfun.ndct( f.coeffs ); % WP * values.
         [Q, R, E] = qr( converted , 0);
         % For consistency with the MATLAB QR behavior:
-        if ( (nargin == 1) || ~(strcmpi(outputFlag, 'vector') || isequal(outputFlag, 0)) )
+        if ( ~(strcmpi(outputFlag, 'vector') || isequal(outputFlag, 0)) )
             % Return E in matrix form:
             I = eye(m);
             E = I(:,E);
