@@ -60,7 +60,7 @@ function [Q, R] = sphereQR( A )
 n = max(length(A), 30);
 % Increase by 16 to account for the multiplication by sin(x) which can be
 % represented to machine precision using a degree 16 polynomial.
-n = n + 16;
+n = n + 9;
 [x, w] = legpts(n,[0, pi]);      % Legendre points
 
 % Do a weighted QR, and then unweight the QR: 
