@@ -45,7 +45,7 @@ else
             
         case {'op', 'operator'}
             [C, D, R] = cdr( f ); 
-            L = C * D * R; 
+            L = C * D * R.'; 
             s = svd( L ); 
             normF = s(1);      
             
