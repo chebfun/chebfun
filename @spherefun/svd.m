@@ -55,7 +55,9 @@ end
 
 
 function [Q, R] = sphereQR( A )
-% Fast version of the abstractQR code, specifically for the sphere. 
+% A faster version of the abstractQR code made specifically for the sphere.
+% 
+% See abstractQR.
 
 n = length(A);
 % Increase by 9 to account for the multiplication by sin(x) which can be
@@ -65,16 +67,22 @@ n = length(A);
 % integrated exactly for 0 < m,n < n-1, which is what we need in the QR
 % algorithm.
 n = n + 9;
-[x, w] = legpts(n,[0, pi]);      % Legendre points
+[x, w] = legpts(n, [0, pi]);      % Legendre points
+
+% Note that one may be able to reduce n + 9 to n by constructing a Gauss
+% quadrature rule with sin(x) weight on [0,pi]. 
 
 % Do a weighted QR, and then unweight the QR: 
-% WR = spdiags(sqrt(w.' .* sin(acos(x))), 0, n, n);
-% invWR = spdiags(1./sqrt(w.' .* sin(acos(x))), 0, n, n);
 WR = spdiags(sqrt(w.' .* sin(x)), 0, n, n);
 invWR = spdiags(1./sqrt(w.' .* sin(x)), 0, n, n);
 
 % Discrete QR with inner product <u,v> = sum(sin(th)*conj(u).*v):
-[discreteQ, discreteR] = qr(WR*A(x, :), 0);
+[discreteQ, discreteR] = qr(WR*A(x, :), 0);  
+
+% TODO:
+% Is it possible to change the quadrature rule above to one back on 
+% equally-spaced points and use fast transforms to evaluation A(x,:), 
+% where x = equally-spaced grid. 
 
 s = sign(diag(discreteR));    % }
 s(~s) = 1;                    %  } Enforce diag(R) >= 0
@@ -88,9 +96,6 @@ discreteR = S*discreteR;
 
 % Go back to continuous land: 
 Q = chebfun(legvals2chebvals(discreteQ),[0 pi]);
-% Q = chebfun(legvals2chebvals(discreteQ)); % On [-1 1]
-% Change to [0 pi]
-% Q = chebfun(@(x) feval(Q,cos(x)), [0 pi]);
 R = discreteR; 
 
 end
