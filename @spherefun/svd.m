@@ -57,9 +57,13 @@ end
 function [Q, R] = sphereQR( A )
 % Fast version of the abstractQR code, specifically for the sphere. 
 
-n = max(length(A), 30);
-% Increase by 16 to account for the multiplication by sin(x) which can be
+n = length(A);
+% Increase by 9 to account for the multiplication by sin(x) which can be
 % represented to machine precision using a degree 16 polynomial.
+% The Gauss quadrature formula is now exact for all polynomials of 
+% degree 2*((n-1)+9) = 2*n+16, which means p_m*p_n*sin(x) will be
+% integrated exactly for 0 < m,n < n-1, which is what we need in the QR
+% algorithm.
 n = n + 9;
 [x, w] = legpts(n,[0, pi]);      % Legendre points
 
