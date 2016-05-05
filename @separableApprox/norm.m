@@ -32,7 +32,7 @@ else
                 'SEPARABLEAPPROX does not support L1-norm, yet');
         case {2}
             error('CHEBFUN:SEPARABLEAPPROX:norm:two', ...
-                  '2-norm not supported -- use options ''fro'' or ''operator2''');
+                  '2-norm not supported -- use options ''fro'' or ''op''');
             
         case {'fro'}  % Definite integral of f.^2
             % L^2-norm is sum of squares of sv.
