@@ -2,22 +2,23 @@ function [normF, normloc] = norm( f, p )
 %NORM       Norm of a SEPARABLEAPPROX object.
 % For SEPARABLEAPPROX objects:
 %    NORM(F) = sqrt(integral of abs(F)^2).
-%    NORM(F, 2) = largest singular value of F.
-%    NORM(F,'fro') is the same as NORM(F).
-%    NORM(F, 1) = NOT IMPLEMENTED.
-%    NORM(F, inf) = global maximum in absolute value.
-%    NORM(F, 'max') = global maximum in absolute value.
-%    NORM(F, 'min') = NOT IMPLEMENTED
+%    NORM(F, 2) = please use NORM(F), NORM(F,'fro'), or NORM(F,'op').
+%    NORM(F, 'fro') is the same as NORM(F).
+%    NORM(F, 'op') = largest singular values of F.
+%    NORM(F, 1) = NOT SUPPORTED.
+%    NORM(F, inf) or NORM(F, 'inf') = global maximum in absolute value.
+%    NORM(F, 'max') = global maximum in absolute value, same as NORM(F,inf).
+%    NORM(F, 'min') = NOT SUPPORTED
 %
-% Furthermore, the inf norm for SEPARABLEAPPROX objects also returns a second output,
-% giving a position where the max occurs.
+% Furthermore, the inf norm for SEPARABLEAPPROX objects also returns a 
+% second output, giving a position where the max occurs.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin == 1 ) 
     % Default to 2-norm.
-    p = 2;
+    p = 'fro';
 end
 
 if ( isempty( f ) )  
@@ -29,8 +30,11 @@ else
         case 1
             error('CHEBFUN:SEPARABLEAPPROX:norm:norm', ...
                 'SEPARABLEAPPROX does not support L1-norm, yet');
+        case {2}
+            error('CHEBFUN:SEPARABLEAPPROX:norm:two', ...
+                  '2-norm not supported -- use options ''fro'' or ''operator2''');
             
-        case {2, 'fro'}  % Definite integral of f.^2
+        case {'fro'}  % Definite integral of f.^2
             % L^2-norm is sum of squares of sv.
             normF = sqrt( sum( svd( f ).^2 ) );  
             
@@ -44,17 +48,16 @@ else
                 'SEPARABLEAPPROX does not support this norm.');
             
         case {'op', 'operator'}
-            [C, D, R] = cdr( f ); 
-            L = C * D * R.'; 
-            s = svd( L ); 
-            normF = s(1);      
+            s = svd( f ); 
+            normF = s( 1 );      
             
         otherwise
             if ( isnumeric(p) && isreal(p) )
                 if ( abs(round(p) - p) < eps )
-                    p = round(p); f = f.^p;
+                    p = round(p); 
+                    fp = f.^p;
                     if ( ~mod(p,2) )
-                        normF = ( sum2( f ) ).^( 1/p );
+                        normF = ( sum2( fp ) ).^( 1/p );
                     else
                         error('CHEBFUN:SEPARABLEAPPROX:norm:norm', ...
                             'p-norm must have p even for now.');

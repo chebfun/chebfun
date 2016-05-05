@@ -2,12 +2,13 @@ function varargout = norm(varargin)
 %NORM       Norm of a CHEBFUN2 object.
 % For CHEBFUN2 objects:
 %    NORM(F) = sqrt(integral of abs(F)^2).
-%    NORM(F, 2) = largest singular value of F.
-%    NORM(F,'fro') is the same as NORM(F).
-%    NORM(F, 1) = NOT IMPLEMENTED.
-%    NORM(F, inf) = global maximum in absolute value.
-%    NORM(F, max) = global maximum in absolute value.
-%    NORM(F, min) = NOT IMPLEMENTED
+%    NORM(F, 2) = please use NORM(F), NORM(F,'fro'), or NORM(F,'op').
+%    NORM(F, 'fro') is the same as NORM(F).
+%    NORM(F, 'op') = largest singular values of F.
+%    NORM(F, 1) = NOT SUPPORTED.
+%    NORM(F, inf) or NORM(F, 'inf') = global maximum in absolute value.
+%    NORM(F, 'max') = global maximum in absolute value, same as NORM(F,inf).
+%    NORM(F, 'min') = NOT SUPPORTED
 %
 % Furthermore, the inf norm for CHEBFUN2 objects also returns a second output,
 % giving a position where the max occurs.
