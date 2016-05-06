@@ -140,6 +140,12 @@ catch ME
     pass(28) = strcmp(ME.identifier,'CHEBFUN:SPHEREFUN:constructor:str2op:depvars');
 end
 
+% Construction from zeros matrix should maintain a zeros coefficient
+% matrix.
+f = spherefun(zeros(5,4));
+[n,m] = length(f);
+pass(29) = (m == 5) && (n == 4);
+
 end
 
 function f = redefine_function_handle(f)

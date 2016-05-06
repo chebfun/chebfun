@@ -19,4 +19,10 @@ f = spherefun(@(lambda,theta) sin(theta).^2.*sin(lambda).*cos(lambda)+cos(theta)
 c = 1/16*[-1i 0 4 0 1i; 0 0 0 0 0; 2i 0 8 0 -2i; 0 0 0 0 0; -1i 0 4 0 1i]; 
 pass(4) = norm( coeffs2(f) - c ) < tol;
 
+% Construction from zeros matrix should maintain a zeros coefficient
+% matrix of the same size.
+f = spherefun(zeros(5,4));
+pass(5) = norm( coeffs2(f) - zeros(5,4) ) == 0;
+
+
 end
