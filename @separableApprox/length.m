@@ -18,12 +18,6 @@ if ( isempty( F ) )
     return
 end
 
-if ( iszero( F ) ) 
-    out1 = 1; 
-    out2 = 1;
-    return
-end
-
 % Extract length of underlying objects. 
 if ( nargout <= 1 )
     out1 = length( F.pivotValues );

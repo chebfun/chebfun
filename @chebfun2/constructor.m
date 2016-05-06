@@ -312,11 +312,14 @@ end
 
 scl = infNorm;
 
-% If the function is the zero function.
+% The function is the zero function.
 if ( scl == 0 )
+    % Let's pass back the zero matrix that is the same size as A. 
+    % This ensures that chebfun2( zeros(5) ) has a 5x5 (zero) coefficient 
+    % matrix.  
     pivotValue = 0;
-    rows = 0;
-    cols = 0;
+    rows = zeros(1, size(A,2));
+    cols = zeros(size(A,1), 1);
     ifail = 0;
 else
     rows(1,:) = zeros(1, size(A, 2));
