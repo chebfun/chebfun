@@ -4,7 +4,7 @@ function pass = test_gradys_function2( pref )
 if ( nargin < 1 ) 
     pref = chebfunpref; 
 end 
-tol = 1e2 * pref.eps; 
+tol = 1e2 * pref.cheb2Prefs.chebfun2eps;
 
 % Another variant on Grady's function: 
 g = @(x,y) exp(-((x-0.2).^2+(y-0.33).^2)./max(1 - ((x-0.2).^2 + (y-0.33).^2),0));

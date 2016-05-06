@@ -107,7 +107,7 @@ classdef chebfun
 %
 % See also CHEBFUNPREF, CHEBPTS.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -309,9 +309,12 @@ classdef chebfun
         
         % Deprecated function.
         varargin = quad(varargout);
+
+        % Sample a CHEBFUN on an "appropriate" grid.
+        varargout = sample(f, n);
         
-        % Set pointValues property:
-        f = setPointValues(f, j, k, vals)
+        % Reset pointValues property to the average of left and right limits.
+        f = resetPointValues(f);
         
         % Remove all-zero layers of higher-order impulses.
         f = tidyImpulses(f)
@@ -640,6 +643,10 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
             elseif ( strcmpi(args{2}, 'off') )
                 keywordPrefs.techPrefs.refinementFunction = 'nested';
             end
+            args(1:2) = [];
+        elseif ( any(strcmpi(args{1}, 'eps')) )
+            % Translate "eps" --> "techPrefs.chebfuneps".
+            keywordPrefs.techPrefs.chebfuneps = args{2};
             args(1:2) = [];
         elseif ( strcmpi(args{1}, 'maxdegree') )
             % Translate "maxdegree" --> "techPrefs.maxLength".

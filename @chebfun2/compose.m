@@ -7,7 +7,7 @@ function f = compose( f, op, varargin )
 %
 % This command is a wrapper for the CHEBFUN2 constructor. 
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin == 2 && nargin(op) == 1)

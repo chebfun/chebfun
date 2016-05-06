@@ -6,7 +6,7 @@ function varargout = pdeSolve(pdeFun, tIn, u0, bc, varargin)
 %
 % See also PDE15S, PDE23T, PDESET.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 global DIFFORDER SYSSIZE
@@ -92,7 +92,7 @@ SYSSIZE = min(size(u0));
 if ( isfield(opt, 'difforder') )
     DIFFORDER = opt.difforder;
 else
-    getDIFFORDER(pdeFun);
+    getDIFFORDER(pdeFun, DOMAIN);
 end
 
 if ( (max(DIFFORDER) < 2) && isequal(ODESOLVER, @ode15s) )
@@ -638,7 +638,7 @@ M = []; P = []; n = []; B = 0;
 
 % Set the preferences:
 pref = tech.techPref();
-pref.eps = tol;
+pref.chebfuneps = tol;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%% TIME CHUNKS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -942,13 +942,14 @@ end
 newFun = oldFun(varargin{:}, tmpCell{:});
 end
 
-function getDIFFORDER(pdeFun)
+function getDIFFORDER(pdeFun, DOMAIN)
 % Extract the DIFFORDER by evaluating the operator at some NaN values.
 global DIFFORDER SYSSIZE
 % Find the order of each of the variables:
-tmp = chebdouble(zeros(SYSSIZE));
+tmp = chebdouble(zeros(SYSSIZE), DOMAIN);
 v = pdeFun(0, 0, tmp);
 DIFFORDER = get(v, 'diffOrder');
+DIFFORDER = max(DIFFORDER, 0);
 end
 
 function out = dealWithStructInput(in)

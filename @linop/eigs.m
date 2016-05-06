@@ -32,6 +32,9 @@ function varargout = eigs(A, varargin)
 %   SIGMA must be chosen appropriately for the given operator. For example,
 %   'LM' for an unbounded operator will fail to converge.
 %
+%   [...] = EIGS(A, ..., 'rayleigh') performs one step of Rayleigh quotient
+%   iteration on the computed eigenpairs in an attempt to improve accuracy.
+%
 %   This version of EIGS does not use iterative methods as in the built-in
 %   EIGS for sparse matrices. Instead, it uses the built-in EIG on dense
 %   matrices of increasing size, stopping when the targeted eigenfunctions
@@ -51,7 +54,7 @@ function varargout = eigs(A, varargin)
 %
 % See also CHEBOPPREF, CHEBOP.EIGS.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Parsing inputs.
@@ -59,6 +62,7 @@ B = [];       % no generalized operator
 k = [];       % will be made default value below
 sigma = [];   % default 'auto' mode
 prefs = [];
+rayleigh = false; % do not perform rayleigh quotient iteration by default
 gotk = false; % until we detect a value of k in inputs
 for j = 1:nargin-1
     item = varargin{j};
@@ -71,6 +75,8 @@ for j = 1:nargin-1
         % k should be given before sigma (which might also be integer)
         k = item;
         gotk = true;
+    elseif ( strcmpi(item,'rayleigh') )
+        rayleigh = true;
     elseif ( ischar(item) || isnumeric(item) )
         sigma = item;
     else
@@ -321,6 +327,11 @@ else            % Unwrap the eigenvectors for output
     end
     u = chebmatrix(vertcat(u{:}));
    
+    % do one step of Rayligh quotient iteration to improve accuracy
+    if ( rayleigh ) 
+        [u, D] = rayleighQI(A,B,u,D,prefs);
+    end
+
     % Output:
     varargout = {u, D};
 end
@@ -489,3 +500,36 @@ idx = idx( keeper );
 
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function [u, D] = rayleighQI(A, B, u, D, prefs)
+% Function to perform one step of Rayleigh quotient iteration.
+
+    % If B isempty set to identity
+    if ( isempty(B) )
+        B = 0*A;
+        I = operatorBlock.eye(A.domain);
+        for ii = 1:size(B,1)
+            B.blocks{ii,ii} = I;
+        end
+    end
+    B = linop(B);
+
+    % Compute current Rayleigh quotients
+    d = diag(D);
+
+    % Loop through d
+    for ii = 1:length(d)
+        lam = d(ii);
+        L = linop(A - lam*B);
+        L.constraint = A.constraint;
+        rhs = B*u(:,ii);
+        v = linsolve(L, rhs, prefs);
+        u(:,ii) = v/norm(v);
+    end
+
+    % Update D
+    d = diag(u'*(A*u)) ./ diag(u'*(B*u));
+    D = diag(d);
+
+end

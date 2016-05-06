@@ -16,7 +16,7 @@ function [sn, cn, dn] = ellipj(u, m, pref)
 %
 % See also ELLIPKE.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -26,12 +26,12 @@ function [sn, cn, dn] = ellipj(u, m, pref)
 
 if ( nargin < 3 )
     pref = chebfunpref();
-    tol = pref.techPrefs.eps;
+    tol = pref.techPrefs.chebfuneps;
 elseif ( ~isstruct(pref) )
     tol = pref;
     pref = chebfunpref();
 else
-    tol = pref.techPrefs.eps;
+    tol = pref.techPrefs.chebfuneps;
 end
 
     function x = fudge(x, tol)

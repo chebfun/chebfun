@@ -17,10 +17,16 @@ function [x, w, v, t] = ultrapts(n, lambda, int, meth)
 %   method to use.
 %    METHOD = 'REC' uses the recurrence relation for the ultraspherical 
 %     polynomials and their derivatives to perform Newton-Raphson iteration. 
-%     If 0<=LAMBDA<=1 the convergence is guaranteed.
+%     If 0 < LAMBDA < 1, then the convergence is guaranteed.
+%     Default for: LAMBDA <= 3 and N < 100; 3 < LAMBDA <= 8 and N < 500; 
+%     8 < LAMBDA <= 13 and N < 1000; 13 < LAMBDA <= 20 and N < 2000;
+%     LAMBDA > 20 and N < 3000.
 %    METHOD = 'ASY' uses an algorithm adapted from the Hale-Townsend fast 
 %     algorithm based upon asymptotic formulae, which is fast and accurate.
-%     If 0<=LAMBDA<=1 the convergence is guaranteed.
+%     If 0 < LAMBDA < 1, then the convergence is guaranteed.
+%     Default for: LAMBDA <= 3 and N >= 100; 3 < LAMBDA <= 8 and N >= 500; 
+%     8 < LAMBDA <= 13 and N >= 1000; 13 < LAMBDA <= 20 and N >= 2000;
+%     LAMBDA > 20 and N >= 3000.
 %    METHOD = 'GW' will use the traditional Golub-Welsch eigensystem method,
 %       which is maintained mostly for historical reasons.
 %   
@@ -266,7 +272,7 @@ elseif ( n > 21 )
     % boundary region:
     Lam = lambda*(1-lambda);
     N = sqrt((n+lambda)^2+lambda*(1-lambda)/3);
-    bz = transpose(besselasy(lambda-.5,10)); % Approximates zeros of Bessel.
+    bz = besselroots(lambda-.5,10); % Approximates zeros of Bessel.
     x(1:10) = cos(bz/N-Lam/90.*(bz.^3+2*(lambda^2-lambda-.75).*bz)/N^5);
 end
 
@@ -578,7 +584,7 @@ Lam = lambda*(1-lambda);
 if ( lambda > 1 || lambda < 0 )
     % Gatteschi's approximation (1979):
     N = sqrt((n+lambda)^2+lambda*(1-lambda)/3);
-    bz = transpose(besselasy(lambda-.5,nbdy)); % Approximates zeros of Bessel
+    bz = besselroots(lambda-.5,nbdy); % Approximates zeros of Bessel
     t = bz/N-Lam/90.*(bz.^3+2*(lambda^2-lambda-.75).*bz)/N^5;
 else
     % This initial guess guarantees convergence for 0<lambda<1 [4]:
@@ -789,75 +795,6 @@ end
 end
 
 end
-
-
-% This function has been tidied by N. Hale.
-function j = besselasy(v, nbdy) 
-%BESSELASY    Roots of the function bessel(v, x).
-%  J = BESSELASY(V, NBDY) returns the first NBDY approximation roots the 
-%  Bessel function with parameter V>=-1.
-
-% McMahon's expansion. This expansion gives very accurate approximation 
-% for the sth zero (s >= 7) in the whole region V >=- 1, and moderate
-% approximation in other cases.
-s = (1:nbdy);
-mu = 4*v^2;
-a1 = 1 / 8;
-a3 = (7*mu-31) / 384;
-a5 = 4*(3779+mu*(-982+83*mu)) / 61440; % Evaluate via Horner's method.
-a7 = 6*(-6277237+mu*(1585743+mu*(-153855+6949*mu))) / 20643840;
-a9 = 144*(2092163573+mu*(-512062548+mu*(48010494+mu*(-2479316+70197*mu)))) ...
-     / 11890851840;
-a11 = 720*(-8249725736393+mu*(1982611456181+mu*(-179289628602+mu*(8903961290 + ...
-    mu*(-287149133+5592657*mu))))) / 10463949619200;
-a13 = 576*(423748443625564327 + mu*(-100847472093088506+mu*(8929489333108377 + ...
-    mu*(-426353946885548+mu*(13172003634537+mu*(-291245357370 + mu*4148944183)))))) ...
-     / 13059009124761600;
-b = .25*(2*v+4*s-1)*pi; % beta
-j(s) = b - (mu-1)*polyval([a13 0 a11 0 a9 0 a7 0 a5 0 a3 0 a1 0], 1./b);
-
-if (v <= 5)
-    % Piessens's Chebyshev series approximations (1984). Calculates the 6 first
-    % zeros to at least 12 decimal figures in region -1 <= V <= 5:
-    C = [
-       2.883975316228  8.263194332307 11.493871452173 14.689036505931 17.866882871378 21.034784308088
-       0.767665211539  4.209200330779  4.317988625384  4.387437455306  4.435717974422  4.471319438161
-      -0.086538804759 -0.164644722483 -0.130667664397 -0.109469595763 -0.094492317231 -0.083234240394
-       0.020433979038  0.039764618826  0.023009510531  0.015359574754  0.011070071951  0.008388073020
-      -0.006103761347 -0.011799527177 -0.004987164201 -0.002655024938 -0.001598668225 -0.001042443435
-       0.002046841322  0.003893555229  0.001204453026  0.000511852711  0.000257620149  0.000144611721
-      -0.000734476579 -0.001369989689 -0.000310786051 -0.000105522473 -0.000044416219 -0.000021469973
-       0.000275336751  0.000503054700  0.000083834770  0.000022761626  0.000008016197  0.000003337753
-      -0.000106375704 -0.000190381770 -0.000023343325 -0.000005071979 -0.000001495224 -0.000000536428
-       0.000042003336  0.000073681222  0.000006655551  0.000001158094  0.000000285903  0.000000088402
-      -0.000016858623 -0.000029010830 -0.000001932603 -0.000000269480 -0.000000055734 -0.000000014856
-       0.000006852440  0.000011579131  0.000000569367  0.000000063657  0.000000011033  0.000000002536
-      -0.000002813300 -0.000004672877 -0.000000169722 -0.000000015222 -0.000000002212 -0.000000000438
-       0.000001164419  0.000001903082  0.000000051084  0.000000003677  0.000000000448  0.000000000077
-      -0.000000485189 -0.000000781030 -0.000000015501 -0.000000000896 -0.000000000092 -0.000000000014
-       0.000000203309  0.000000322648  0.000000004736  0.000000000220  0.000000000019  0.000000000002
-      -0.000000085602 -0.000000134047 -0.000000001456 -0.000000000054 -0.000000000004               0
-       0.000000036192  0.000000055969  0.000000000450  0.000000000013               0               0
-      -0.000000015357 -0.000000023472 -0.000000000140 -0.000000000003               0               0
-       0.000000006537  0.000000009882  0.000000000043  0.000000000001               0               0
-      -0.000000002791 -0.000000004175 -0.000000000014               0               0               0
-       0.000000001194  0.000000001770  0.000000000004               0               0               0
-      -0.000000000512 -0.000000000752               0               0               0               0
-       0.000000000220  0.000000000321               0               0               0               0
-      -0.000000000095 -0.000000000137               0               0               0               0
-       0.000000000041  0.000000000059               0               0               0               0
-      -0.000000000018 -0.000000000025               0               0               0               0
-       0.000000000008  0.000000000011               0               0               0               0
-      -0.000000000003 -0.000000000005               0               0               0               0
-       0.000000000001  0.000000000002               0               0               0               0];
-    j(1:6) = chebtech.clenshaw((v-2)/3, C).';
-    j(1) = j(1) * sqrt(v+1);
-end
-
-j = j(1:nbdy);
-
-end
-
 
 % This code is from JACPTS:
 function Ja = besselTaylor(t, z, a)

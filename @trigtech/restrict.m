@@ -17,7 +17,7 @@ function F = restrict(f, s)
 %   Warning: If F is not also smooth and periodic on S, then the resulting
 %   TRIGTECH will not be happy.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with empty case:
@@ -51,7 +51,7 @@ F = f.make(op, data, pref);
 
 if ( f.ishappy && ~F.ishappy )
     error('CHEBFUN:TRIGTECH:restrict:notPeriodic', ...
-        'Restrict failed. Perhaps f is not perioidic in [s(1), s(2)]?');
+        'Restrict failed. Perhaps f is not periodic in [s(1), s(2)]?');
 end
 
 end

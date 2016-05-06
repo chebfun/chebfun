@@ -8,7 +8,7 @@ function [ishappy, cutoff] = classicCheck(f, values, data, pref)
 %
 %   [ISHAPPY, CUTOFF] = CLASSICCHECK(F, VALUES, DATA, PREF) allows additional
 %   preferences to be passed. In particular, one can adjust the target accuracy
-%   with PREF.EPS.
+%   with PREF.CHEBFUNEPS.
 %
 %   CLASSICCHECK first queries HAPPINESSREQUIREMENTS to obtain TESTLENGTH and
 %   EPSLEVEL (see documentation below). If |F.COEFFS(1:TESTLENGTH)|/VSCALE <
@@ -18,18 +18,18 @@ function [ishappy, cutoff] = classicCheck(f, values, data, pref)
 %
 %   HAPPINESSREQUIREMENTS defines what it means for a TRIGTECH to be happy.
 %   [TESTLENGTH, EPSLEVEL] = HAPPINESSREQUIREMENTS(VALUES, COEFFS, POINTS,
-%   DATA, EPS) returns two scalars TESTLENGTH and EPSLEVEL.  POINTS is the
-%   vector of points at which F was sampled to get the values in VALUES.  EPS
-%   is the desired accuracy.  A TRIGTECH is deemed to be 'happy' if the
-%   coefficients COEFFS(END-TESTLENGTH+1:END) (recall that COEFFS are stored in
-%   ascending order) are all below EPSLEVEL.  The default choice of the test
-%   length is:
+%   DATA, EPS) returns two scalars TESTLENGTH and EPSLEVEL.  POINTS 
+%   is the vector of points at which F was sampled to get the values in 
+%   VALUES.  EPS is the desired accuracy.  A TRIGTECH is deemed to be 
+%   'happy' if the coefficients COEFFS(END-TESTLENGTH+1:END) (recall that 
+%   COEFFS are stored in ascending order) are all below EPSLEVEL.  
+%   The default choice of the test length is:
 %       TESTLENGTH = n,             for n = 1:2
 %       TESTLENGTH = 3,             for n = 3:44
 %       TESTLENGTH = round((n-1)/8) for n > 44
 %
 %   EPSLEVEL is essentially the maximum of:
-%       * pref.eps
+%       * pref.chebfuneps
 %       * eps*TESTLENGTH
 %       * eps*condEst (where condEst is an estimate of the condition number
 %                      based upon a finite difference approximation to the
@@ -41,7 +41,7 @@ function [ishappy, cutoff] = classicCheck(f, values, data, pref)
 %
 % See also STRICTCHECK, LOOSECHECK.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with special cases ------------------------------------------------------
@@ -55,11 +55,11 @@ ishappy = false;
 % Grab some preferences:
 if ( nargin == 1 )
     pref = f.techPref();
-    epslevel = pref.eps;
+    epslevel = pref.chebfuneps;
 elseif ( isnumeric(pref) )
     epslevel = pref;
 else
-    epslevel = pref.eps;
+    epslevel = pref.chebfuneps;
 end
 
 % Convert scalar epslevel/tolerance inputs into vectors.

@@ -8,7 +8,7 @@ function h = mtimes(f, g)
 %
 % See also TIMES.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isa(f, 'separableApprox') )           % SEPARABLEAPPROX * ???
@@ -16,7 +16,16 @@ if ( isa(f, 'separableApprox') )           % SEPARABLEAPPROX * ???
     if ( isa(g, 'double') )         % SEPARABLEAPPROX * DOUBLE
         if ( numel(g) == 1 )
             h = f;
-            h.pivotValues = h.pivotValues ./ g;
+            if (g ~= 0)
+                h.pivotValues = h.pivotValues ./ g;
+            else
+                h.cols = 0*h.cols(:,1);
+                h.rows = 0*h.rows(:,1);
+                h.pivotValues = inf;
+                if ~isempty( h.pivotLocations )
+                    h.pivotLocations = h.pivotLocations(1,:);
+                end
+            end
         else
             error('CHEBFUN:SEPARABLEAPPROX:mtimes:size', 'Sizes are inconsistent.');
         end
@@ -40,18 +49,26 @@ if ( isa(f, 'separableApprox') )           % SEPARABLEAPPROX * ???
         % Get the columns and rows of f
         fCols = f.cols;
         fRows = f.rows;
-        fScl = diag( 1./f.pivotValues );
+        f_PivotSigns = diag( sign( f.pivotValues ) ); 
+        fScl = diag( sqrt( 1./ abs( f.pivotValues ) ) );
+        % Share out scaling: 
+        fCols = fCols * fScl * f_PivotSigns;
+        fRows = fRows * fScl; 
         
         % Get the columns and rows of g
         gCols = g.cols;
         gRows = g.rows;
-        gScl = diag( 1./g.pivotValues );
+        g_PivotSigns = diag( sign( g.pivotValues ) ); 
+        gScl = diag(sqrt( 1./ abs( g.pivotValues ) ) );
+        % Share out scaling: 
+        gCols = gCols * gScl;
+        gRows = gRows * gScl * g_PivotSigns;
         
         % Compute integral in s.
         X = innerProduct( fRows, gCols );
         
         % Construct low rank form of the result:
-        [U, S, V] = svd( fScl * X * gScl );
+        [U, S, V] = svd( X );
         h = f;
         h.cols = fCols * U;
         h.rows = gRows * V;

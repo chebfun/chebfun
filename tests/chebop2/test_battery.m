@@ -5,7 +5,7 @@ function pass = test_battery( prefs )
 if ( nargin < 1 ) 
     prefs = chebfunpref(); 
 end 
-tol = 100*prefs.techPrefs.eps; 
+tol = 100*prefs.techPrefs.chebfuneps; 
 
 % Harmonic solution to the Laplace equation
 N = chebop2(@(u) diff(u,2,1) + diff(u,2,2)); 

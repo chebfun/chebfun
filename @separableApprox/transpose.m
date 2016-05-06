@@ -4,7 +4,7 @@ function f = transpose( f )
 % 
 % See also CTRANSPOSE. 
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check:
@@ -16,5 +16,8 @@ end
 temp = f.cols; 
 f.cols = f.rows; 
 f.rows = temp; 
+
+% Adjust the domain
+f.domain = [f.domain(3:4) f.domain(1:2)];
 
 end

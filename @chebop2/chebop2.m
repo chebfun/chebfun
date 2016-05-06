@@ -41,7 +41,7 @@ classdef chebop2
 % publicly advertised.  Chebop2 cannot do nonlinear problems as more 
 % algorithmic advances are needed. 
 
-% Copyright 2015 by The University of Oxford and The Chebfun2 Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun2 Developers.
 % See http://www.chebfun.org/ for Chebfun information.
     
     %% PROPERTIES.
@@ -72,8 +72,8 @@ classdef chebop2
             % CHEBOP2 CONSTRUCTOR.
             
             % Get CHEBFUN2 preferences.
-            prefs = chebfunpref();
-            tol = prefs.techPrefs.eps;
+            pref = chebfunpref();
+            tol = pref.cheb2Prefs.chebfun2eps;
             
             % If empty input arguments then return an empty CHEBOP2 object.
             if ( isempty(varargin) )

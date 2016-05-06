@@ -3,7 +3,7 @@ function out = iszero( f )
 %   OUT = ISZERO( F ) return 1 if the SEPARABLEAPPROX is exactly the zero function, and
 %   0 otherwise. 
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Get data:
@@ -12,7 +12,7 @@ cols = f.cols;
 rows = f.rows;
 
 % Trivial check: If all the pivots are zero, then the SEPARABLEAPPROX is zero: 
-if ( norm(pivots, inf) == 0 ) 
+if ( norm(1./pivots, inf) == 0 ) 
     out = 1; 
     return 
 end

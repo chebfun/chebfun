@@ -4,7 +4,7 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
 %
 % See also LINBLOCK, LINOP, CHEBOP, CHEBOPPREF.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -150,8 +150,17 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
             elseif ( isnumeric(B) )
                 % Swap arguments.
                 C = mtimes(B, A);
-            
+ 
+            elseif ( isa(A, 'functionalBlock') )
+                C = mtimes(promote(A), B);
+                return
+               
+            elseif ( isa(B, 'functionalBlock') )
+                C = mtimes(A, promote(B));
+                return
+                
             else
+                
                 % Here, we are dealing with an OPERATORBLOCK * OPERATORBLOCK.
                 
                 % Create an OPERATORBLOCK to be returned.
@@ -195,7 +204,14 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
             elseif ( isnumeric(B) )
                 B = B*operatorBlock.eye(A.domain);
             end
-
+            
+            % Did we get passed an functionalBlock?
+            if ( isa(A, 'functionalBlock') )
+                A = promote(A);
+            elseif ( isa(B, 'functionalBlock') )
+                B = promote(B);
+            end
+            
             % Operator addition.
             dom = domain.merge(A.domain, B.domain);
             C = operatorBlock(dom);
@@ -374,12 +390,19 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
         %   M = OPERATORBLOCK.MULT(U, DOM) allows passing a domain on which the
         %   multiplication operator is to be constructed (useful for the
         %   ADCHEBFUN class)
+        %
+        %   M = OPERATORBLOCK.MULT(U) were U is numeric simply returns diag(U).
+        
+            if ( isnumeric(u) )
+                M = diag(u);
+                return
+            end
 
             % Check whether domain information was passed
             if ( nargin < 2 )
                 dom = u.domain;
             end
-
+            
             % Create the OPERATORBLOCK with information now available.
             M = operatorBlock(dom);
             M.stack = @(z) mult(z, u);

@@ -8,15 +8,23 @@ function f = simplify( f, tol )
 % F = SIMPLIFY(F, TOL) does the same as above but uses the scalar TOL instead
 % of the default simplification tolerance as the relative threshold level.
 
-% Copyright 2015 by The University of Oxford and The Chebfun2 Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun2 Developers.
 % See http://www.chebfun.org/ for Chebfun2 information.
 
 if ( nargin < 2 )
     tol = []; 
 end
 
+% Note that we do not simplify the rank here because that would require 
+% calling the constructor and is expensive.  In almost all situations we 
+% are happy with simplifying the columns and rows only. 
+
 % Simplify the column and row slices. 
 f.cols = simplify( f.cols, tol, 'globaltol' ); 
 f.rows = simplify( f.rows, tol, 'globaltol' ); 
+
+% Ensure the left and right limits match the endpoints:
+f.cols = resetPointValues(f.cols);
+f.rows = resetPointValues(f.rows);
 
 end 

@@ -12,7 +12,7 @@ classdef onefun % (Abstract)
 %
 % See also CLASSICFUN, SINGFUN, SMOOTHFUN.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -29,7 +29,7 @@ classdef onefun % (Abstract)
 %                                                   <-- [   SINGFUN   ] 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -201,6 +201,9 @@ classdef onefun % (Abstract)
 
         % Roots of a ONEFUN in the interval [-1,1].
         out = roots(f, varargin)
+
+        % Sample a ONEFUN on an "appropriate" grid.
+        varargout = sample(f, n)
 
         % Simplify the representation of a ONEFUN.
         f = simplify(f, pref, force)

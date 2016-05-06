@@ -29,7 +29,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
 %
 % See also CHEBFUN, LINBLOCK, LINOP, CHEBOP, ADCHEBFUN/SEED.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1106,10 +1106,11 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 f.linearity = f.linearity & g.linearity;
                 % Value part
                 f.func = f.func + g.func;
-                % Derivative part
-                f.jacobian = f.jacobian + g.jacobian;
                 % Jumps
                 f.jumpLocations = union(f.jumpLocations,g.jumpLocations);
+                % Derivative part 
+                f.jacobian = f.jacobian + g.jacobian;
+
             end
             
             % Need to update domain in case new breakpoints were introduced

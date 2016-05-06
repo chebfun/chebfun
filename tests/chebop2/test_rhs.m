@@ -1,12 +1,12 @@
-function pass = test_rhs( prefs )
+function pass = test_rhs( pref )
 % Check that non-zero righthand forcing terms are being dealt with
 % correctly. 
 % Alex Townsend, March 2013. 
 
 if ( nargin < 1 ) 
-    prefs = chebfunpref(); 
+    pref = chebfunpref(); 
 end 
-tol = 100*prefs.techPrefs.eps; 
+tol = 100*pref.cheb2Prefs.chebfun2eps;
 
 d = [0 pi 0 pi]; 
 N = chebop2(@(u) laplacian(u), d); 

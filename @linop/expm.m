@@ -37,7 +37,7 @@ function u = expm(L, t, u0, prefs)
 %
 % See also LINOP/ADDBC.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Store discretization type:
@@ -112,7 +112,7 @@ for i = 1:length(t)
         do = getExpmDimAdjust(disc);
         for k = 1:numel(u0.blocks)
             discu.dimension = disc.dimension + do(k);
-            f.blocks{k} = discu.toValues(u0.blocks{k},1);
+            f.blocks{k,1} = discu.toValues(u0.blocks{k},1);
         end
         v0 = cell2mat(f.blocks);  
         

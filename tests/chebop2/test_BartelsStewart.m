@@ -1,10 +1,10 @@
-function pass = test_bartelsStewart( prefs )
+function pass = test_BartelsStewart( pref )
 % Test generalized Sylvester matrix equation solver
 
 if ( nargin < 1 )
-    prefs = chebfunpref(); 
+    pref = chebfunpref();
 end
-tol = 1e4*prefs.techPrefs.eps;
+tol = 1e4*pref.cheb2Prefs.chebfun2eps;
 
 n = 10; 
 rng(0)

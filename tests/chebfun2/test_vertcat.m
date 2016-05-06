@@ -1,10 +1,10 @@
-function pass = test_vertcat( prefs ) 
+function pass = test_vertcat( pref ) 
 % Test vertical concatenation of CHEBFUN2 objects. 
 
 if ( nargin < 1 ) 
-    prefs = chebfunpref(); 
+    pref = chebfunpref(); 
 end
-tol = 10*prefs.eps;
+tol = 10*pref.cheb2Prefs.chebfun2eps;
 
 f = chebfun2(@(x,y) x); 
 g = chebfun2(@(x,y) y);

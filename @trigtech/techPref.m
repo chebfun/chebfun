@@ -13,7 +13,7 @@ function outPref = techPref(inPref)
 %
 %   ABSTRACT PREFERENCES REQUIRED OF ALL TECHS
 %
-%     eps          - Relative tolerance used in construction and subsequent
+%     chebfuneps   - Relative tolerance used in construction and subsequent
 %      [2^-52]       operations.  See TRIGTECH.HAPPINESSCHECK for more details.
 %
 %     maxLength    - Maximum number of points used by the constructor.
@@ -57,10 +57,10 @@ function outPref = techPref(inPref)
 %
 % See also TRIGTECH, CHEBTECH, CHEBTECH1, CHEBTECH2
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-outPref.eps                = 2^-52;
+outPref.chebfuneps         = 2^-52;
 outPref.gridType           = 2;
 outPref.minSamples         = 17;
 outPref.maxLength          = 2^16;

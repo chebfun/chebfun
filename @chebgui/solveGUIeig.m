@@ -20,7 +20,7 @@ function varargout = solveGUIeig(guifile, handles)
 %   VARARGOUT{1}:   A diagonal matrix containing the eigenvalues.
 %   VARARGOUT{2}:   A CHEBMATRIX of the eigenfunctions.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Handles will be an empty variable if we are solving without using the GUI
@@ -80,7 +80,7 @@ end
 % Need to obtain a CHEBFUNPREF object to check what the current tolerance is set
 % at.
 chebfunp = chebfunpref;
-if ( tolNum < chebfunp.techPrefs.eps )
+if ( tolNum < chebfunp.techPrefs.chebfuneps )
     warndlg('Tolerance specified is less than current chebfun epsilon', ...
         'Warning','modal');
     uiwait(gcf)

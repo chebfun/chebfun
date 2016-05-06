@@ -8,7 +8,7 @@ classdef coeffsDiscretization < opDiscretization
 %
 % See also OPDISCRETIZATION, TRIGSPEC, ULTRAS.
 
-%  Copyright 2015 by The University of Oxford and The Chebfun Developers.
+%  Copyright 2016 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org/ for Chebfun information.
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -66,7 +66,7 @@ classdef coeffsDiscretization < opDiscretization
             maxPow = log2(pref.maxDimension);
             
             if ( minPow > maxPow )
-                error('CHEBFUN:ULTRAS:ultraS:dimensionValues', ...
+                error('CHEBFUN:COEFFSDISCRETIZATION:dimensionValues', ...
                     ['Minimum discretiation specified is greater than ' ...
                     'maximum discretization specified']);
             end
@@ -86,6 +86,18 @@ classdef coeffsDiscretization < opDiscretization
         % Sparse Toeplitz matrix.
         T = sptoeplitz(col, row)
         
+    end
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% METHODS IMPLEMENTED IN THIS FILE:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    methods ( Access = public, Static = false )
+        function varargout = convertOperator(varargin)
+            error('COEFFSDISCRETIZATION:instantiate:fail', ...
+                ['Cannot represent this operator. ', ...
+                 'Suggest you use VALSDISCRETIZATION.'])
+        end
     end
 
 end

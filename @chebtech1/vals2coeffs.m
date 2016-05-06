@@ -12,7 +12,7 @@ function coeffs = vals2coeffs(values)
 %
 % See also COEFFS2VALS, CHEBPTS.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -22,6 +22,13 @@ function coeffs = vals2coeffs(values)
 % Polynomials". Chapman & Hall/CRC (2003).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% *Note about symmetries* The code below takes steps to 
+% ensure that the following symmetries are enforced:
+% VALUES exactly even ==> odd Chebyshev COEFFS are exactly zero
+% VALUES exactly odd ==> even Chebyshev COEFFS are exactly zero
+% These corrections are required because the MATLAB FFT does not
+% guarantee that these symmetries are enforced.
+
 % Get the length of the input:
 n = size(values, 1);
 
@@ -30,6 +37,10 @@ if ( n <= 1 )
     coeffs = values;
     return
 end
+
+% check for symmetry
+isEven = max(abs(values-flipud(values)),[],1) == 0;
+isOdd = max(abs(values+flipud(values)),[],1) == 0;
 
 % Computing the weight vector often accounts for at least half the cost of this
 % transformation. Given that (a) the weight vector depends only on the length of
@@ -59,5 +70,9 @@ elseif ( isreal(1i*values) )
     % Imaginary-valued case:
     coeffs = 1i*imag(coeffs);
 end
+
+% adjust coefficients for symmetry
+coeffs(2:2:end,isEven) = 0;
+coeffs(1:2:end,isOdd) = 0;
 
 end

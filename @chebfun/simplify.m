@@ -13,7 +13,7 @@ function F = simplify(F, tol, useGlobalTol)
 %  and FLAG == 'globaltol' each column is simplified relative to the largest
 %  VSCALE of all the columns of F.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -33,9 +33,9 @@ end
 
 % Check for tolerance.
 if ( nargin == 1 || isempty(tol) )
-    tol = chebfunpref().techPrefs.eps;
+    tol = chebfunpref().techPrefs.chebfuneps;
 elseif ( isa(tol, 'chebfunpref') )
-    tol = tol.techPrefs.eps;
+    tol = tol.techPrefs.chebfuneps;
 end
 
 % Check for 'globaltol' flag.

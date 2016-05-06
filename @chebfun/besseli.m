@@ -15,7 +15,7 @@ function g = besseli(nu, f, varargin)
 %
 % See also AIRY, BESSELH, BESSLJ, BESSELK, BESSELY.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 scl = 1i.^nu;

@@ -20,7 +20,7 @@ A = (1:4);
 x = A/B;
 x0 = feval(x, 0);
 x0_true = -2.625;
-pass(2) = abs(x0 - x0_true) < 10*eps;
+pass(2) = abs(x0 - x0_true) < 100*eps;
 
 A = eye(4);
 X = A/L;

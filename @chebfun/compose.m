@@ -18,7 +18,7 @@ function f = compose(f, op, g, pref)
 %   advance, they should be applied to F and/or G using RESTRICT() before the
 %   call to COMPOSE().
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -320,7 +320,7 @@ if ( ~isreal(f) )
 else
 
     % Set a tolerance:
-    tol = 10*eps*max(vscale(f), vscale(g));
+    tol = 100*eps*max(vscale(f), vscale(g));
     hsf = hscale(f); 
     % Find the range of F:
     mmF = minandmax(f);

@@ -43,7 +43,7 @@ pass(4) = err < 10*tol;
 c_leg = 1./(N:-1:1)'.^2; 
 c_leg(2:2:end) = -c_leg(2:2:end);
 c_cheb = leg2cheb(c_leg);
-c_cheb559 = 6.379508600687388e-04;
+c_cheb559 = 6.37950860067600201345500683285806679e-04;
 err = abs(c_cheb(559) - c_cheb559)/abs(c_cheb559);
 pass(5) = err < 10*tol;
 
@@ -107,6 +107,6 @@ seedRNG(0);
 c = rand(N,1);
 L = leg2cheb(eye(N));
 err = norm(L'*c - leg2cheb(c, 'trans'), inf);
-pass(13) = err < 10*tol;
+pass(14) = err < 10*tol;
 
 end

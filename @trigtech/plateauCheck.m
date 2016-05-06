@@ -20,11 +20,11 @@ function [ishappy, cutoff] = plateauCheck(f, values, data, pref)
 %
 %   [ISHAPPY, CUTOFF] = PLATEAUCHECK(F, VALUES, DATA, PREF) allows additional
 %   preferences to be passed. In particular, one can adjust the target accuracy
-%   with PREF.EPS.
+%   with PREF.CHEBFUNEPS.
 %
 % See also LINOPV4CHECK, STRICTCHECK, CLASSICCHECK.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % [TODO]: implement PLATEAUCHECK for TRIGTECH. For the moment, we just call

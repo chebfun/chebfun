@@ -3,7 +3,7 @@ function h = plus(f, g)
 %
 % F + G adds F and G. F and G can be scalars or SEPARABLEAPPROX objects.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( ~isa(f, 'separableApprox') ) % ??? + SEPARABLEAPPROX
@@ -87,8 +87,6 @@ rows = [f.rows, g.rows];
 Z = zeros(length(fScl), length(gScl));
 D = [ fScl, Z ; Z.', gScl ];
 [U, S, V] = svd(Rcols * D * Rrows.');
-% If V is complex-valued, then conjugate: 
-V = conj( V ); 
 % Take diagonal from SIGMA:
 s = diag(S);
 
@@ -96,9 +94,11 @@ s = diag(S);
 % [TODO]: What should EPS be in the tolerance check below?
 vf = vscale(f); 
 vg = vscale(g);
-vscl = max(vf, vg); 
+
+vscl = 2*max(vf, vg); 
 % Remove singular values that fall below eps*vscale: 
 idx = find( s > 10*eps * vscl, 1, 'last');
+
 if ( isempty(idx) )
     % Return 0 separableApprox
     h = 0*f;
@@ -108,7 +108,7 @@ else
     s = s(1:idx);
     h = f;
     h.cols = Qcols * U;
-    h.rows = Qrows * V;
+    h.rows = Qrows * conj(V);
     % [TODO]: PivotValues have very little meaning after this compression step.
     % For now we assign the singular values as the pivot values. 
     h.pivotValues = 1./s;
