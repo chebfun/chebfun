@@ -17,7 +17,8 @@ if ( isempty(f) )
 end
 
 if ( iszero(f) ) 
-    varargout = { 0 } ; 
+    [m, n] = length( f );
+    varargout = { zeros(m, n) } ; 
     return
 end
 
