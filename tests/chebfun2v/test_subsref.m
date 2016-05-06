@@ -5,14 +5,14 @@ if ( nargin == 0)
     pref = chebfunpref; 
 end
 
-tol = 1000*pref.eps; 
+tol = 1000*pref.cheb2Prefs.chebfun2eps;
 
 
 % Test recursive subsref:  
 f = chebfun2(@(x, y) sin(x.*y));
 F = [f ; f ; f];
 
-G = G(1); 
+G = F(1); 
 exact = G.pivotValues; 
 
 pass(1) = norm( exact - F(1).pivotValues ) < tol; 
