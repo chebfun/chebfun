@@ -20,9 +20,11 @@ if ( iszero(f) )
     if ( nargin == 2 ) 
         n = m; 
     elseif ( nargin == 1 )
-        [n, m] = length( f );
+        % Fix convention between degrees begin [degX, degY] = length(f) and
+        % the coefficient matrix being returned in meshgrid form. 
+        [n, m] = length( f );   % This line should not be [m,n]=length(f)!
     end
-    varargout = { zeros(n, m) } ; 
+    varargout = { zeros(m, n) } ; 
     return
 end
 
