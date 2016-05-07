@@ -28,7 +28,7 @@ catch
     pass(1) = 0 ;
 end
 
-% Test different ways to make Chebfun2 nonadaptive. 
+% Test different ways to make Chebfun3 nonadaptive. 
 dom = [-1 1 -1 1 2 5]; 
 ff = @(x,y,z) sin(x.*y.*z);
 [xx, yy, zz] = chebfun3.chebpts3(10, 15, 5, dom);
@@ -56,22 +56,26 @@ pass(6) = m == 10 && n == 15 && p == 5;
 pass(7) = all(g.domain == [-2 1 -2 1 -2 1]);
 
 % Construction with a specified rank
-g = chebfun3(ff, 'rank', [2 3 4]);
+f = chebfun3(ff);
+[r1_f, r2_f, r3_f] = rank(f);
+g = chebfun3(ff, 'rank', 1e-7);
 [r1, r2, r3] = rank(g);
-pass(8) = r1 == 2 && r2 == 3 && r3 == 4;
+pass(8) = r1 < r1_f && r2 < r2_f && r3 < r3_f;
 pass(9) = all(g.domain == [-1 1 -1 1 -1 1]);
 
 % Construction with a specified rank on a given domain:
-g = chebfun3(ff, 'rank', [2 3 4], [-2 1 -2 1 -2 1]);
+f = chebfun3(ff, [-2 1 -2 1 -2 1]);
+[r1_f, r2_f, r3_f] = rank(f);
+g = chebfun3(ff, 'rank', 1e-7, [-2 1 -2 1 -2 1]);
 [r1, r2, r3] = rank(g);
-pass(10) = r1 == 2 && r2 == 3 && r3 == 4;
+pass(10) = r1 < r1_f && r2 < r2_f && r3 < r3_f;
 pass(11) = all(g.domain == [-2 1 -2 1 -2 1]);
 
 % Construction with a specified rank on a given domain with inputs in the 
 % reverse order:
-g = chebfun3(ff, [-2 1 -2 1 -2 1], 'rank', [2 3 4]);
+g = chebfun3(ff, [-2 1 -2 1 -2 1], 'rank', 1e-7);
 [r1, r2, r3] = rank(g);
-pass(12) = r1 == 2 && r2 == 3 && r3 == 4;
+pass(12) = r1 < r1_f && r2 < r2_f && r3 < r3_f;
 pass(13) = all(g.domain == [-2 1 -2 1 -2 1]);
 
 end

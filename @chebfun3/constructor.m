@@ -52,7 +52,7 @@ elseif ( isa(op, 'double') )   % CHEBFUN3( DOUBLE )
     f = constructFromDouble(op, dom, pref, isEqui);
     if ( fixedRank )
         % Simplify the rank if requested.
-        f = simplify(f , [fixedRank(1) fixedRank(2) fixedRank(3)]);
+        f = simplify(f , 'rank', fixedRank);
     end
     return
 end
@@ -435,9 +435,9 @@ while ( ~isHappy && ~failure )
     f.cols = chebfun(colsValues, dom(1:2), pref);
     f.rows = chebfun(rowsValues, dom(3:4), pref);
     f.tubes = chebfun(fibersValues, dom(5:6), pref);    
-    f.cols = simplify(f.cols,pref.chebfuneps,'globaltol');
-    f.rows = simplify(f.rows,pref.chebfuneps,'globaltol');
-    f.tubes = simplify(f.tubes,pref.chebfuneps,'globaltol');
+    f.cols = simplify(f.cols, pref.chebfuneps, 'globaltol');
+    f.rows = simplify(f.rows, pref.chebfuneps, 'globaltol');
+    f.tubes = simplify(f.tubes, pref.chebfuneps, 'globaltol');
     
     f.core = core;
     f.domain = dom;
@@ -468,7 +468,7 @@ end
 
 if ( fixedRank )
     % Simplify the rank if asked. This truncates using HOSVD.
-    f = simplify(f , [fixedRank(1) fixedRank(2) fixedRank(3)]);
+    f = simplify(f , 'rank', fixedRank);
 end
 
 end
