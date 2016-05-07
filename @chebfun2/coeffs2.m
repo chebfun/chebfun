@@ -16,8 +16,12 @@ if ( isempty(f) )
     return
 end
 
-if ( iszero(f) ) 
-    [m, n] = length( f );
+if ( iszero(f) )
+    if ( nargin == 2 ) 
+        n = m; 
+    elseif ( nargin == 1 )
+        [m, n] = length( f );
+    end
     varargout = { zeros(n, m) } ; 
     return
 end
