@@ -20,7 +20,7 @@ if ( iszero(f) )
     if ( nargin == 2 ) 
         n = m; 
     elseif ( nargin == 1 )
-        [m, n] = length( f );
+        [n, m] = length( f );
     end
     varargout = { zeros(n, m) } ; 
     return
