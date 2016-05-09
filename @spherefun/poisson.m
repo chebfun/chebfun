@@ -100,7 +100,7 @@ if ( abs(meanF) > tol )
         'required for there to exist a solution to the Poisson '...
         'equation. Subtracting the mean off the right hand side now.']);
 end        
-F(floor(m/2)+1,k) = -meanF;
+F(floor(m/2)+1,k) = F(floor(m/2)+1,k)-meanF;
 
 % Multiply the right hand side by (sin(theta)).^2
 F = Msin2*F;
@@ -127,6 +127,8 @@ end
 % We will take X_{n/2+1,:} en = 0.
 
 % Second, solve: 
+k = floor(n/2) + 1;
+ii = [1:floorm floorm+2:m];
 CFS(:, k) = [ en ; L( ii, :) ] \ [ 0 ; F(ii, k) ];
 u = spherefun.coeffs2spherefun( CFS ) + const; 
 
