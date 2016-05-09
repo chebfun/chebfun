@@ -65,10 +65,8 @@ scl = diag(DF2n);
 % solution, and even/odd symmetry.
 
 % Underlying discretization grid:
-lam0 = linspace(-pi, pi, n+1)'; 
-lam0(end) = [];
-th0 = linspace(-pi, pi, m+1)'; 
-th0(end) = [];
+lam0 = trigpts(n,[-pi, pi]); 
+th0 = trigpts(m,[-pi, pi]); 
 
 % Forcing term:
 if ( isa(f, 'function_handle') )
@@ -76,13 +74,13 @@ if ( isa(f, 'function_handle') )
     F = feval(f, rhs_lam, rhs_theta);
     tol = max(abs(F(:)))*chebfunpref().cheb2Prefs.chebfun2eps;
     F = trigtech.vals2coeffs(F);
-    F = Msin2*trigtech.vals2coeffs(F.').';
+    F = trigtech.vals2coeffs(F.').';
 elseif ( isa(f, 'spherefun') )
     tol = vscale(f)*chebfunpref().cheb2Prefs.chebfun2eps;
-    F = Msin2*coeffs2(f, n, m);
+    F = coeffs2(f, n, m);
 elseif ( isa( f, 'double' ) )
     tol = chebfunpref().cheb2Prefs.chebfun2eps;
-    F = Msin2*f;       % Get trigcoeffs2 of rhs.
+    F = f;       % Get trigcoeffs2 of rhs.
 end
 
 % First, let's project the rhs to have mean zero:
@@ -91,18 +89,21 @@ floorm = floor(m/2);
 mm = (-floorm:ceil(m/2)-1);
 en = 2*pi*(1+exp(1i*pi*mm))./(1-mm.^2);
 en([floorm, floorm + 2]) = 0;
-ii = [1:floorm floorm+2:m];
+ii = 1:m;
 meanF = en(ii)*F(ii, k)/en(floor(m/2)+1);
 
 % Check that the mean of F is zero (or close enough).  If it is not then
 % issue a warning
-if ( meanF > tol )
+if ( abs(meanF) > tol )
     warning('CHEBFUN:SPHEREFUN:POISSON:meanRHS',...
        ['The integral of the right hand side may not be zero, which is '...
         'required for there to exist a solution to the Poisson '...
         'equation. Subtracting the mean off the right hand side now.']);
 end        
 F(floor(m/2)+1,k) = -meanF;
+
+% Multiply the right hand side by (sin(theta)).^2
+F = Msin2*F;
 
 % Matrix for solution's coefficients:
 CFS = zeros(m, n);
