@@ -72,14 +72,14 @@ th0 = trigpts(m,[-pi, pi]);
 if ( isa(f, 'function_handle') )
     [rhs_lam, rhs_theta] = meshgrid(lam0, th0);
     F = feval(f, rhs_lam, rhs_theta);
-    tol = max(abs(F(:)))*chebfunpref().cheb2Prefs.chebfun2eps;
+    tol = 1e5*max(abs(F(:)))*chebfunpref().cheb2Prefs.chebfun2eps;
     F = trigtech.vals2coeffs(F);
     F = trigtech.vals2coeffs(F.').';
 elseif ( isa(f, 'spherefun') )
-    tol = vscale(f)*chebfunpref().cheb2Prefs.chebfun2eps;
+    tol = 1e5*vscale(f)*chebfunpref().cheb2Prefs.chebfun2eps;
     F = coeffs2(f, n, m);
 elseif ( isa( f, 'double' ) )
-    tol = chebfunpref().cheb2Prefs.chebfun2eps;
+    tol = 1e5*chebfunpref().cheb2Prefs.chebfun2eps;
     F = f;       % Get trigcoeffs2 of rhs.
 end
 
