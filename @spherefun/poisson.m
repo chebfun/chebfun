@@ -112,16 +112,17 @@ CFS = zeros(m, n);
 L = Msin2*DF2m + Mcossin*DF1m;
 
 % Solve for the even modes:
-k_even = [floor(n/2)-1:-2:1 floor(n/2)+3:2:n];
-for k = k_even
+kk = [floor(n/2):-1:1 floor(n/2)+2:n];
+%k_even = [floor(n/2)-1:-2:1 floor(n/2)+3:2:n];
+for k = kk
     CFS(:,k) = (L + scl(k)*Im) \ F(:,k);
 end
 
-% Solve for the odd modes:
-k_odd = [floor(n/2):-2:1 floor(n/2)+2:2:n];
-for k = k_odd
-    CFS(:,k) = (L + scl(k)*Im) \ F(:,k);
-end
+% % Solve for the odd modes:
+% k_odd = [floor(n/2):-2:1 floor(n/2)+2:2:n];
+% for k = k_odd
+%     CFS(:,k) = (L + scl(k)*Im) \ F(:,k);
+% end
 
 % Now do the equation where we need the integral constraint:
 % We will take X_{n/2+1,:} en = 0.
