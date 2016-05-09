@@ -3,6 +3,7 @@ function val = get( f, propName )
 %   P = GET(F, PROP) returns the property P specified in the string PROP from
 %   the CHEBFUN F. Valid entries for the string PROP are:
 %    'COEFFS'
+%    'VSCALE'
 %    'DOMAIN'
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
@@ -21,8 +22,8 @@ end
 switch ( propName )
     case 'coeffs'
         val = f.coeffs;
-%     case 'length'
-%         val = f.length;
+    case 'vscale'
+        val = f.vscale;
     case 'domain'
         val = f.domain;
     otherwise

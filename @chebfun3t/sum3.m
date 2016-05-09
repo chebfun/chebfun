@@ -8,6 +8,11 @@ function I = sum3(f)
 % See http://www.chebfun.org/ for Chebfun information.
 
 coeffs = f.coeffs;
+% Rescaling factorws:
+rescaleFactor = 0.5*diff(f.domain(1:2));  %(b - a)/2
+rescaleFactor = rescaleFactor * 0.5*diff(f.domain(3:4)); % (d - c)/2
+rescaleFactor = rescaleFactor * 0.5*diff(f.domain(5:6)); % (g - e)/2
+
 if ( nargin == 1 )
     [nx, ny, nz] = size(coeffs);
     I1 = zeros(nx,ny);
@@ -22,5 +27,8 @@ if ( nargin == 1 )
     end
     I = I2(1:2:nx).'*(2./(1-(0:2:nx-1)'.^2));
 end
-   
+
+% Rescale the output:
+I = I*rescaleFactor;
+
 end

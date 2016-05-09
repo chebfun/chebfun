@@ -100,6 +100,9 @@ classdef chebfun3t
         % Number of degrees of freedom needed to represent a CHEBFUN3T
         out = ndf(f);
 
+        % Vertical scale of a CHEBFUN3T
+        out = vertscale(f);
+        
         % Definite integral of a CHEBFUN3T over its domain
         out = sum3(f);
         

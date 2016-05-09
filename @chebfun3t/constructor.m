@@ -335,3 +335,16 @@ else
 end
 end
 %%
+function op = str2op( op )
+% OP = STR2OP(OP), finds independent variables in a string and returns an op
+% handle than can be evaluated.
+
+vars = symvar(op); % Independent variables
+if ( numel(vars) > 3)
+    error('CHEBFUN:CHEBFUN3T:constructor:str2op:depvars', ...
+        'Too many independent variables in string input.');
+else
+    op = eval(['@(' vars{1} ',' vars{2} ',' vars{3} ')' op]);
+end
+
+end
