@@ -39,4 +39,20 @@ f = spherefun(@(x,y,z) sin(x.*y.*z));
 g = 2*f;
 pass(5) = ( norm(g - f - f, inf) < tol );
 
+% Check for the case where f and g are non-zero at the poles bug 
+% f+g is zero at the poles.
+f = spherefun(@(x,y,z) z);
+g = spherefun(@(x,y,z) z.^3);
+h = f - g;
+pass(6) = h.nonZeroPoles == 0;
+
+% Check for the case where f non-zero at the poles but g is zero at the
+% poles.
+f = spherefun(@(x,y,z) z.*(1-z.^2));
+g = spherefun(@(x,y,z) z);
+h = f + g;
+pass(7) = h.nonZeroPoles == 1;
+h = g + f;
+pass(8) = h.nonZeroPoles == 1;
+
 end
