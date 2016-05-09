@@ -192,6 +192,7 @@ if ( nargout > 0 )
 else
     % Otherwise, plot the function.
     plot(f)
+    title(name)
 end
 
 end
