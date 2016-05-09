@@ -24,10 +24,10 @@ if ( isa(f, 'spherefun') && isa(g, 'spherefun') )
         if ( isempty( f.idxPlus ) )  % f is a minus
             h.idxMinus = g.idxPlus;
             h.idxPlus = g.idxMinus;
-            % If f is a minus then it is zero at the poles.  Thus, whatever
-            % it multiplies will be zero at the poles.
-            h.nonZeroPoles = 0;
         end
+        % Both terms have to be non-zero at the poles for the product to be
+        % non-zero at the poles.
+        h.nonZeroPoles = f.nonZeroPoles & g.nonZeroPoles;
     elseif ( length( g ) == 1 ) 
          h = times(g, f);
     else
