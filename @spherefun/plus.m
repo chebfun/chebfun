@@ -134,7 +134,7 @@ f.pivotLocations = [nan nan];
 dom = f.domain;
 fpole1 = feval(f.cols,dom(3));
 fpole2 = feval(f.cols,dom(4));
-if fpole1 > tol || fpole2 > tol
+if abs(fpole1) > tol || abs(fpole2) > tol
     f.nonZeroPoles = 1;
 else
     f.nonZeroPoles = 0;
