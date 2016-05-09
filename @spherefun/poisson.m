@@ -100,7 +100,7 @@ if ( abs(meanF) > tol )
         'required for there to exist a solution to the Poisson '...
         'equation. Subtracting the mean off the right hand side now.']);
 end        
-F(floor(m/2)+1,k) = -meanF;
+F(floor(m/2)+1,k) = F(floor(m/2)+1,k)-meanF;
 
 % Multiply the right hand side by (sin(theta)).^2
 F = Msin2*F;
@@ -112,21 +112,24 @@ CFS = zeros(m, n);
 L = Msin2*DF2m + Mcossin*DF1m;
 
 % Solve for the even modes:
-k_even = [floor(n/2)-1:-2:1 floor(n/2)+3:2:n];
-for k = k_even
+kk = [floor(n/2):-1:1 floor(n/2)+2:n];
+%k_even = [floor(n/2)-1:-2:1 floor(n/2)+3:2:n];
+for k = kk
     CFS(:,k) = (L + scl(k)*Im) \ F(:,k);
 end
 
-% Solve for the odd modes:
-k_odd = [floor(n/2):-2:1 floor(n/2)+2:2:n];
-for k = k_odd
-    CFS(:,k) = (L + scl(k)*Im) \ F(:,k);
-end
+% % Solve for the odd modes:
+% k_odd = [floor(n/2):-2:1 floor(n/2)+2:2:n];
+% for k = k_odd
+%     CFS(:,k) = (L + scl(k)*Im) \ F(:,k);
+% end
 
 % Now do the equation where we need the integral constraint:
 % We will take X_{n/2+1,:} en = 0.
 
 % Second, solve: 
+k = floor(n/2) + 1;
+ii = [1:floorm floorm+2:m];
 CFS(:, k) = [ en ; L( ii, :) ] \ [ 0 ; F(ii, k) ];
 u = spherefun.coeffs2spherefun( CFS ) + const; 
 
