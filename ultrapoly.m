@@ -20,10 +20,10 @@ function p = ultrapoly(n, lam, dom)
 %
 % See also LEGPOLY, CHEBPOLY, JACPOLY. 
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-%% Parse inputs:
+% Parse inputs:
 if ( nargin < 2 )
     error('CHEBFUN:ultrapoly:inputs', 'ULTRAPOLY() requires at least 2 inputs.'); 
 end
@@ -50,8 +50,6 @@ elseif ( lam == 1 )
    return
 end
 
-%% Setup:
-
 % Force a CHEBTECH basis.
 defaultPref = chebfunpref();
 pref = defaultPref;
@@ -60,31 +58,15 @@ if ( ~isa(tech, 'chebtech') )
     pref.tech = @chebtech2;
 end
 
-% Useful values:
-nMax = max(n);
-nMax1 = nMax + 1;
-domIn = dom;
-dom = dom([1, end]);
-x = chebpts(nMax1, 2);
-
-%% Recurrence relation:
-P = zeros(nMax1);
-P(:,1) = 1;    
-P(:,2) = 2*lam*x;   
-for k = 1:nMax-1
-    P(:,k+2) = 2*(k+lam)/(k+1)*x.*P(:,k+1) - (k+2*lam-1)/(k+1)*P(:,k);
-end
-
-%% Assemble output:
-P = P(:,n+1);                    % Extract required columns
-C = chebtech2.vals2coeffs(P);    % Convert to coefficients
+% Construct the ultraspherical coefficients:
+nn = 0:max(n);
+scl = gamma(lam+.5)/gamma(2*lam)*exp(gammaln(2*lam+nn)-gammaln(lam+nn+.5));
+c = diag(scl);
+c = jac2cheb(c(:,n+1), lam - .5, lam - .5);
 
 % Construct CHEBFUN from coeffs:
-p = chebfun(C, dom, pref, 'coeffs');   
-
-if ( numel(domIn) > 2)
-    p = restrict(p, domIn);
-end
+p = chebfun(c, dom([1, end]), pref, 'coeffs');   
+p = restrict(p, dom);
 
 % Adjust orientation:
 if ( size(n, 1) > 1 )

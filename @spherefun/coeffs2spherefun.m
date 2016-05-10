@@ -28,9 +28,8 @@ VALS = trigtech.coeffs2vals(trigtech.coeffs2vals(X).').';
 % Restrict to the region of interest: 
 VALS = VALS([floor(m/2)+1:m 1], :);
 
-if ( (norm(imag(VALS))/max(abs(VALS(:)))) < sqrt(eps)  )
-    VALS = real(VALS); 
-end
+% Only real values are supported.
+VALS = real(VALS); 
 
 % Finally, make a spherefun object out of the values: 
 F = spherefun(VALS); 

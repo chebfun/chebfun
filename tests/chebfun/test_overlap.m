@@ -113,7 +113,7 @@ check = zeros(1,4);
 check(1) = all( fout.domain == gout.domain );
 check(2) = all( fout.domain == unique([f.domain, g.domain]) );
 check(3) = ( norm(vals_fout - vals_f, inf) < ...
-    1e3*eps*norm(vals_fout, inf) );
+    1e6*eps*norm(vals_fout, inf) );
 check(4) = ( norm(vals_gout - vals_g, inf) < ...
     1e3*eps*norm(vals_gout, inf) );
 

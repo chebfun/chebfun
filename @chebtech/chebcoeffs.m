@@ -18,7 +18,7 @@ function out = chebcoeffs(f, N, kind)
 %
 % See also LEGCOEFFS, FOURCOEFFS.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Return number of coefficients equal to length of f by default.

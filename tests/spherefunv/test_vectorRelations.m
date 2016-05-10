@@ -1,7 +1,7 @@
 function pass = test_vectorRelations( ) 
 % Test Vector calculus relations, div, cross, curl.
 
-tol = 2e3*chebfunpref().cheb2Prefs.chebfun2eps;
+tol = 3e3*chebfunpref().cheb2Prefs.chebfun2eps;
 
 f = spherefun(@(x,y,z) cos((x+.1).*y.*z));
 
