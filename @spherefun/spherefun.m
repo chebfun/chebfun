@@ -26,7 +26,7 @@ classdef spherefun < separableApprox
 %
 % See also CHEBFUN2, SPHEREFUNV.
 
-% Copyright 2015 by The University of Oxford and The CHEBFUN Developers.
+% Copyright 2016 by The University of Oxford and The CHEBFUN Developers.
 % See http://www.chebfun.org/ for CHEBFUN information.
 
 % TODO: Improve documentation of input options. 
@@ -80,10 +80,10 @@ classdef spherefun < separableApprox
     methods (Access = public, Static = true)
   
         % Poisson solver: 
-        u = Poisson(f, const, m, n);
+        u = poisson(f, const, m, n);
         
         % Helmholtz solver: 
-        u = Helmholtz(f, K, m, n);
+        u = helmholtz(f, K, m, n);
         
         % Convert matrix of coefficients to a spherefun: 
         f = coeffs2spherefun(CFS); 

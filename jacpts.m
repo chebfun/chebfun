@@ -27,15 +27,15 @@ function [x, w, v] = jacpts(n, a, b, int, meth)
 %   The cases ALPHA = BETA = -.5 and ALPHA = BETA = .5 correspond to
 %   Gauss-Chebyshev nodes and quadrature, and are treated specially (as a closed
 %   form of the nodes and weights is available). ALPHA = BETA = 0 calls LEGPTS,
-%   which is a more efficient code. ALPHA = BETA for ALPHA^2 < .25 calls
+%   which is a more efficient code. The others cases with ALPHA = BETA call
 %   ULTRAPTS, which is a faster code.
 % 
-%   When MAX(ALPHA, BETA) > 5 the results may not be accurate. 
+%   When ALPHA ~= BETA and MAX(ALPHA, BETA) > 5 the results may not be accurate. 
 %
 % See also CHEBPTS, LEGPTS, LOBPTS, RADAUPTS, HERMPTS, LAGPTS, TRIGPTS, and
 % ULTRAPTS.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers. See
+% Copyright 2016 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -60,9 +60,9 @@ method_set = 0;
 
 if ( a <= -1 || b <= -1 )
     error('CHEBFUN:jacpts:sizeAB', 'Alpha and beta must be greater than -1')
-elseif ( max(a, b) > 5 )
+elseif (a~=b && max(a, b) > 5 )
     warning('CHEBFUN:jacpts:largeAB',...
-        'MAX(ALPHA, BETA) > 5. Results may not be accurate')
+        'ALPHA~=BETA and MAX(ALPHA, BETA) > 5. Results may not be accurate')
 end
 
 
@@ -120,7 +120,7 @@ elseif ( n == 1 )
 end
 
 % Special cases:
-if ( a == b  && a*a <= .25)
+if ( a == b )
     if ( a == 0 )  % Gauss-Legendre: alpha = beta = 0
         [x, w, v] = legpts(n, method);
         [x, w] = rescale(x, w, interval, a, b);
@@ -138,8 +138,7 @@ if ( a == b  && a*a <= .25)
         v(2:2:end) = -v(2:2:end);
         [x, w] = rescale(x,w,interval,a,b);
         return
-    else % Gauss-Gegenbauer: -.5 < alpha = beta < .5
-        % [TODO]: ULTRAPTS: alpha^2 > .25
+    else % Gauss-Gegenbauer: alpha = beta
         lambda = a + .5;
         [x, w, v] = ultrapts(n, lambda, interval);
         return

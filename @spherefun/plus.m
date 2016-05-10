@@ -71,11 +71,11 @@ else                                     % SPHEREFUN + SPHEREFUN
         
         if ( ~isempty(fPole) ) || ( ~isempty(gPole) )
             % Set tolerance for determining if fPole+gPole=0.
-            tol = eps*max(vscale(f), vscale(g)); 
+            tol = 10*eps*max([vscale(f) vscale(fPole) vscale(g) vscale(gPole)]); 
             g = addPoles(fPole, gPole, tol);
             
             % Handle the rare case that g is zero and hp is not empty
-            if ( g.pivotValues == 0 ) && ( ~isempty( hp ) )
+            if ( iszero(g) ) && ( ~isempty( hp ) )
                 % Set g to empty spherefun
                 g = spherefun([]);
             end
@@ -84,7 +84,7 @@ else                                     % SPHEREFUN + SPHEREFUN
             hp.pivotValues = [ g.pivotValues; hp.pivotValues ];
             hp.pivotLocations = [ g.pivotLocations; hp.pivotLocations ];
             hp.idxPlus = 1:size(hp.cols, 2);
-            hp.nonZeroPoles = ~isempty(g);
+            hp.nonZeroPoles = g.nonZeroPoles;
         end
         
         % Put pieces back together.
@@ -118,10 +118,8 @@ if ( norm(cols) <= tol )
     fmean = 0;
     gmean = 0;
     pivot = 0;
-    nonZeroPoles = 0;
 else
     pivot = 1;
-    nonZeroPoles = 1;
 end
 
 f.cols = (fmean/f.pivotValues) * f.cols + (gmean/g.pivotValues) * g.cols;
@@ -130,6 +128,16 @@ f.pivotValues = pivot;
 
 % No idea what indices or locations should be after plus
 f.pivotLocations = [nan nan];
-f.nonZeroPoles = nonZeroPoles;
+
+% It's possible to the sum to be zero at the poles.  Check this
+% condition and set the flat appropriately.
+dom = f.domain;
+fpole1 = feval(f.cols,dom(3));
+fpole2 = feval(f.cols,dom(4));
+if abs(fpole1) > tol || abs(fpole2) > tol
+    f.nonZeroPoles = 1;
+else
+    f.nonZeroPoles = 0;
+end
 
 end

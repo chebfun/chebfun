@@ -13,10 +13,10 @@ function normA = norm(A, n)
 %
 % See also CHEBMATRIX, CHEBFUN/NORM.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% [TODO]: Add support for norms of operators (inf x inf blocks).
+% [TODO]: Add support for norms of operators.
 
 % Empty CHEBMATRIX has norm 0.
 if ( isempty(A) )
@@ -28,11 +28,15 @@ if ( nargin == 1 )
     n = 'fro'; 	% Frobenius norm is the default.
 end
 
-% The norm of a CHEBMATRIX with inf x inf block(s) is not supported.
+% The norm of a CHEBMATRIX with inf x inf block(s) that are neither 
+% CHEBFUN2 nor CHEBFUN3 is not supported:
 s = cellfun(@(b) min(size(b)), A.blocks);
+t = cellfun(@(b) isa(b, 'chebfun2') || isa(b, 'chebfun3'), A.blocks);
 if ( ~all(isfinite(s(:))) )
-    error('CHEBFUN:CHEBMATRIX:norm:notSupported', ...
-    'Norm of a chebmatrix with inf x inf block(s) is not supported.')
+    if ( ~any(t) )
+        error('CHEBFUN:CHEBMATRIX:norm:notSupported', ...
+            'Norm of a chebmatrix with operator block(s) is not supported.')
+    end
 end
 
 % Deal with different cases.
