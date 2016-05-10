@@ -30,12 +30,8 @@ end
 
 % Use CDR decomposition so we can keep it in low rank form: 
 [C, D, R] = cdr( f ); 
-% Cvals = sample(chebfun(C), m);
-% Rvals = sample(chebfun(R), n);
-% See https://github.com/chebfun/chebfun/issues/1808
-Cvals = sample(C, m);
-Rvals = sample(R, n);
-
+Cvals = sample(C, n);
+Rvals = sample(R, m);
 
 % Evaluate: 
 if ( nargout <= 1 )
