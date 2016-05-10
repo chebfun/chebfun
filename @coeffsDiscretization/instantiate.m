@@ -13,7 +13,7 @@ function [M, S] = instantiate(disc)
 %      chebfun (becomes a vector)
 %      numeric (not changed)
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 data = disc.source;
@@ -82,7 +82,7 @@ end
 function [M, S] = convertFunctional(disc, item)
     % Developer note: In general we can't represent functional
     % blocks via coeffs. To get around this we instantiate a
-    % TRIGCOLLOC discretization and convert it to coefficient space
+    % VALSDISCRETIZAION and convert it to coefficient space
     % using COEFFS2VALS(). (Note it's COEFFS2VALS() rather than
     % VALS2COEFFS() because it's a right-multiply (I think..).)
 

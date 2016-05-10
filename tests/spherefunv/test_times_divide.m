@@ -1,5 +1,5 @@
-function pass = test_times( pref ) 
-% Check the times
+function pass = test_times_divide( pref ) 
+% Check the times and divide operations.
 
 if ( nargin < 1 ) 
     pref = chebfunpref; 

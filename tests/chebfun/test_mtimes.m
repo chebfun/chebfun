@@ -266,6 +266,13 @@ pass(77) = (norm(h2 - kron(F, G')) < 1e1*tol);
 pass(78) = (norm(h1 - G*F') < 1e1*tol);
 pass(79) = (norm(h2 - F*G') < 1e1*tol);
 
+% Row quasimatrices and chebfun2
+x = chebfun('x', [-1 1], pref);
+F = [1 x x.^2 x.^4]; 
+h1 = chebfun2(@(x,y) 1 + x.*cos(y) + x.^2.*sin(y) + x.^4.*y.^5);
+
+pass(80) = (norm(F'*h1-(h1'*F)') < tol); 
+
 
 end
 

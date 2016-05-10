@@ -1,4 +1,4 @@
-function u = Helmholtz(f, K, m, n)
+function u = helmholtz(f, K, m, n)
 %HELMHOLTZ   Fast Helmholtz solver for the sphere.
 %    U = HELMHOLTZ(F, K, N) solves U_xx + U_yy + U_zz + K^2U = F on the sphere 
 %    for U with a discretization of size N x N. F should be a SPHEREFUN and the
@@ -10,7 +10,7 @@ function u = Helmholtz(f, K, m, n)
 %  Example: 
 %    K = 100; m = 1000; n = m; 
 %    f = spherefun( @(x,y,z) cos(x.*y.*z) ); 
-%    u = spherefun.Helmholtz(f, K, m, n);
+%    u = spherefun.helmholtz(f, K, m, n);
 %    plot( u )
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
@@ -29,10 +29,32 @@ function u = Helmholtz(f, K, m, n)
 % Solve standard Helmholtz equation. This parameter is kept for developers.
 c = 1;  
 
+% If the call is helmholtz(f, K, m), then set n
+if ( nargin < 4 ) 
+    n = m;
+end
+
 if ( K == 0 )
-    u = spherefun.Poisson(f, 0, m, n);
+    u = spherefun.poisson(f, 0, m, n);
     return
 end
+
+% If m or n are non-positive then throw an error
+if ( ( m <= 0 ) || ( n <= 0 ) )
+    error('CHEBFUN:SPHEREFUN:HELMHOLTZ:badInput',...
+        'Discretization sizes should be positve numbers');
+end
+
+% If m and n are 1, the solution is easy.  It's just a constant given by
+% 1/K^2*mean(F).
+if ( ( m == 1 ) && (n == 1 ) )
+    f = spherefun(f);
+    u = mean2(f)/K^2 + 0*f;
+    return;
+end
+
+% Make m even so that the pole at theta=0 is always sampled.
+m = m + mod(m,2);
 
 % Construct useful spectral matrices:
 Im = speye(m);
@@ -40,15 +62,21 @@ Im = speye(m);
 % Please note that DF1m here is different than trigspec.diff(m,1) because we 
 % take the coefficient space point-of-view and set the (1,1) entry to be 
 % nonzero.
-DF1m = (1i)*spdiags((-floor(m/2):1:ceil((m-2)/2))', 0, m, m);
-DF2m = (1i)^2*spdiags((-floor(m/2):1:ceil((m-2)/2))', 0, m, m).^2;
-DF2n = (1i)^2*spdiags((-floor(n/2):1:ceil((n-2)/2))', 0, n, n).^2;
+DF1m = trigspec.diffmat(m, 1, 1);
+DF2m = trigspec.diffmat(m, 2); 
+DF2n = trigspec.diffmat(n, 2);
 
 % Multiplication for sin(theta).*cos(theta):
-Mcossin = spdiags(.25i*[-ones(m, 1) ones(m,1)], [-2 2], m, m); 
+% Below is equivalent to 
+% Mcossin = spdiags(.25i*[-ones(m, 1) ones(m, 1)], [-2 2], m, m); 
+cfs = trigtech(@(theta) sin(pi*theta).*cos(pi*theta));
+Mcossin = trigspec.multmat(m, cfs.coeffs); 
 
 % Multiplication for sin(theta)^2:
-Msin2 = spdiags(.5*[-.5*ones(m, 1) ones(m,1) -.5*ones(m,1)], [-2 0 2], m, m);
+% Below is equivalent to
+% Msin2 = spdiags(.5*[-.5*ones(m, 1) ones(m, 1) -.5*ones(m, 1)], [-2 0 2], m, m);
+cfs = trigtech(@(theta) sin(pi*theta).^2);
+Msin2 = trigspec.multmat(m, cfs.coeffs);
 
 % Underlying discretization grid:
 lam0 = linspace(-pi, pi, n+1)'; 

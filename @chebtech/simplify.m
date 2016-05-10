@@ -12,7 +12,7 @@ function f = simplify(f, tol)
 %
 % See also STANDARDCHOP.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with empty case.

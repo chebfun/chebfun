@@ -8,7 +8,7 @@ function f = simplify( f, tol )
 % F = SIMPLIFY(F, TOL) does the same as above but uses the scalar TOL instead
 % of the default simplification tolerance as the relative threshold level.
 
-% Copyright 2015 by The University of Oxford and The Chebfun2 Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun2 Developers.
 % See http://www.chebfun.org/ for Chebfun2 information.
 
 if ( nargin < 2 )

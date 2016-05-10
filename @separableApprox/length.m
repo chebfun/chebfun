@@ -8,19 +8,13 @@ function [out1, out2] = length( F )
 %
 % See also RANK.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 
 if ( isempty( F ) ) 
     out1 = []; 
     out2 = []; 
-    return
-end
-
-if ( iszero( F ) ) 
-    out1 = 1; 
-    out2 = 1;
     return
 end
 

@@ -18,7 +18,7 @@ function varargout = svd( f )
 %   RANK(F) is the number of significant singular values of F. The relation
 %   RANK(F) <= LENGTH(F) should always hold.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty(f) )
@@ -55,17 +55,34 @@ end
 
 
 function [Q, R] = sphereQR( A )
-% Fast version of the abstractQR code, specifically for the sphere. 
+% A faster version of the abstractQR code made specifically for the sphere.
+% 
+% See abstractQR.
 
-n = max(2*length(A), 30);         % Can probably get away with a smaller n.
+n = length(A);
+% Increase by 9 to account for the multiplication by sin(x) which can be
+% represented to machine precision using a degree 16 polynomial.
+% The Gauss quadrature formula is now exact for all polynomials of 
+% degree 2*((n-1)+9) = 2*n+16, which means p_m*p_n*sin(x) will be
+% integrated exactly for 0 < m,n < n-1, which is what we need in the QR
+% algorithm.
+n = n + 9;
 [x, w] = legpts(n, [0, pi]);      % Legendre points
+
+% Note that one may be able to reduce n + 9 to n by constructing a Gauss
+% quadrature rule with sin(x) weight on [0,pi]. 
 
 % Do a weighted QR, and then unweight the QR: 
 WR = spdiags(sqrt(w.' .* sin(x)), 0, n, n);
 invWR = spdiags(1./sqrt(w.' .* sin(x)), 0, n, n);
 
 % Discrete QR with inner product <u,v> = sum(sin(th)*conj(u).*v):
-[discreteQ, discreteR] = qr(WR*A(x, :), 0);
+[discreteQ, discreteR] = qr(WR*A(x, :), 0);  
+
+% TODO:
+% Is it possible to change the quadrature rule above to one back on 
+% equally-spaced points and use fast transforms to evaluation A(x,:), 
+% where x = equally-spaced grid. 
 
 s = sign(diag(discreteR));    % }
 s(~s) = 1;                    %  } Enforce diag(R) >= 0
@@ -78,7 +95,7 @@ discreteQ = invWR*discreteQ*S;
 discreteR = S*discreteR;
 
 % Go back to continuous land: 
-Q = chebfun(legvals2chebvals(discreteQ), [0, pi]); 
+Q = chebfun(legvals2chebvals(discreteQ),[0 pi]);
 R = discreteR; 
 
 end

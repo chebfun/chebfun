@@ -17,7 +17,7 @@ function varargout = plotcoeffs(f, varargin)
 %
 % See also CHEBFUN/PLOT.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with an empty input:
@@ -27,6 +27,8 @@ if ( isempty(f) )
     end
     return
 end
+
+dom = f(1).domain([1,end]);
 
 % We can only plot the coefficients of one CHEBFUN at a time:
 if ( any(cellfun(@(f) isa(f, 'chebfun'), varargin)) )
@@ -81,7 +83,7 @@ for k = 1:numel(f)
         colk = col(k,:);
     end
     % Call the column version:
-    h{k} = columnPlotCoeffs(f{k}, colk, varargin{:});
+    h{k} = columnPlotCoeffs(f{k}, colk, varargin{:}, 'domain', dom);
 end
 
 % Return hold state to what it was before:

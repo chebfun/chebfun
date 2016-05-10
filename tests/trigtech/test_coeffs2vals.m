@@ -72,5 +72,15 @@ pass(12) = norm(v - (1+1i)*vTrue, inf) < tol;
 v = trigtech.coeffs2vals([c, -c]);
 pass(13) = norm(v(:,1) - vTrue, inf) < tol && ...
           norm(v(:,2) + vTrue, inf) < tol;
-      
+
+%%
+% Tougher even/odd case
+c = ones(100,1);
+v = trigtech.coeffs2vals(c);
+v = [v;v(1)];
+pass(14) = norm(v-flipud(conj(v))) == 0;      
+v = trigtech.coeffs2vals(1i*c);
+v = [v;v(1)];
+pass(15) = norm(v+flipud(conj(v))) == 0;      
+
 end

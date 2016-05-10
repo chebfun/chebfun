@@ -41,4 +41,11 @@ tmp(end-1:-2:1) = -1;
 pass(7) = norm(c(:,1) - cTrue, inf) < tol && ...
           norm(c(:,2) - tmp.*cTrue, inf) < tol;
       
+%%
+% Test for symmetry preservation
+v = kron([1,-1;1,1],ones(10,1));
+c = chebtech2.vals2coeffs(v);
+pass(8) = norm(c(2:2:end,1), inf) == 0 && ...
+          norm(c(1:2:end,2), inf) == 0;
+      
 end
