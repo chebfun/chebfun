@@ -1,10 +1,10 @@
-function g = constructor(g, op, dom, varargin)
+function g = constructor(g, op, varargin)
 %CONSTRUCTOR   The main SPHEREFUN constructor.
 %
 % This code is when functions on the surface of the sphere are represented
-% as SPHEREFUN objects. A SPHEREFUN object is a low rank representation and
-% expresses a function as a sum of rank-0 or 1 outerproduct of univariate
-% functions in spherical coordinates.
+% as SPHEREFUN objects. A SPHEREFUN object is a real-valued function as a 
+% sum of rank 1 outerproducts of univariate functions in spherical 
+% coordinates.
 %
 % The algorithm for constructing a SPHEREFUN comes in two phases:
 %
@@ -21,7 +21,8 @@ function g = constructor(g, op, dom, varargin)
 %
 % The algorithm is fully described in:
 %  A. Townsend, H. Wilber, and G. Wright, Computing with function on
-%  spherical and polar geometries I: The sphere, submitted, 2015. 
+%  spherical and polar geometries I: The sphere, SIAM J. Sci. Comput., 
+%  Accepted, 2016. 
 %
 % See also SPHEREFUN.
 
@@ -32,114 +33,88 @@ if ( nargin == 0 )          % SPHEREFUN( )
     return
 end
 
-if ( isa(op, 'spherefun') )  % SPHEREFUN( SPHEREFUN )
+% Parse the inputs:
+[op, dom, pref, fixedRank, vectorize] = parseInputs(op, varargin{:});
+
+% Return op if construction is from coefficients which is handled in
+% parseInputs.
+if ( isa(op, 'spherefun') )  
     g = op;
+    % Fix the rank:
+    g = fixTheRank(g, fixedRank);
     return
 end
 
-% If domain is empty take it to be co-latitude.
-if ( (nargin < 3) || isempty(dom) )
-     dom = [-pi pi 0 pi]; 
-elseif ( isa(dom, 'double') && (numel(dom) ~= 4) )
-    error('CHEBFUN:SPHEREFUN:CONSTRUCTOR:domain',... 
-          ['A domain is rarely given for spherefun, ', ... 
-          'but it needs to be given by four corner values',... 
-          'in intrinstic coordinates.'])
-elseif ( isa(dom,'double') && (numel(dom) == 4) && ...
-        (norm(dom(:)' - [-pi pi 0 pi]) > 0) )
-    error('CHEBFUN:SPHEREFUN:CONSTRUCTOR:domain',...
-        ['The domain of a spherefun is always [-pi pi]x[0 pi] in '...
-        'intrinstic coordinates']);
-end
+% Preferences:
+tech        = trigtech;
+tpref       = tech.techPref;
+minSample   = 4;
+maxSample   = tpref.maxLength;
+cheb2Prefs  = pref.cheb2Prefs;
+sampleTest  = cheb2Prefs.sampleTest;
+maxRank     = cheb2Prefs.maxRank;
+pseudoLevel = cheb2Prefs.chebfun2eps;
 
-% Look for vectorize flag:
-vectorize = 0;
-if ( any(strcmpi(dom, 'vectorize')) || any(strcmpi(dom, 'vectorise')) )
-    vectorize = 1;
-    dom = [-pi pi 0 pi];
-elseif ( (nargin > 3) && (any(strcmpi(varargin{1}, 'vectorize')) ||...
-        any(strcmpi(varargin{1}, 'vectorise'))) )
-    vectorize = 1;
-else
-    dom = [-pi pi 0 pi];
-end
+alpha = 100; % Default value for coupling parameter
 
-if ( isa(op, 'char') )     % CHEBFUN2( CHAR )
+if ( isa(op, 'char') )     % SPHEREFUN( CHAR )
     op = str2op( op );
 end
 
-% Default value for coupling parameter
-alpha = 100;
-
-% Ratio between the size of sample matrix and number of skeletons:
-factor = 8; 
-
-% TODO: Should we allow any other domains than latitude and co-latitude?
-
 % TODO: 
 % 1. Need to allow for different domains.
-% 2. Add support for preferences
-% 3. Add non-adaptive construction
-% 4. Add fixed-rank.
-% 5. Add tensor-product.
+% 2. Add non-adaptive construction
+% 3. Add tensor-product.
 
-maxRank = 8192; 
-maxSample = 8192;
-pseudoLevel = eps;
-
+% Deal with constructions from numeric data:
 if ( isa(op, 'double') )    % SPHEREFUN( DOUBLE )
-    % Should we allow coefficients to be passed in?
-    
-    % Only do Phase I on the values.
-    F = op;
-    [n, m] = size(F);
-    factor = 0;
-    
-    if ( mod(m,2) ~= 0 )
-        error('SPHEREFUN:CONSTRUCTOR:VALUES', ... 
-         'When constructing from values the number of columns must be even.');
-    end
-    
-    % Flip F arround since Phase I operates on the doubled-up portion of
-    % the sphere [-pi pi] x [-pi, 0] or [-pi pi] x [-3*pi/2 -pi/2]
-    F = [ F(n:-1:1, m/2+1:m) F(n:-1:1, 1:m/2) ];
-    
-    % TODO: Add a way to loosen tolerances for this type of construction.
-    [tol, vscale] = GetTol(F, 2*pi/m, pi/(n-1), dom, pseudoLevel);
-    [pivotIndices, pivotArray, removePoles, happyRank, cols, pivots, ...
-        rows, idxPlus, idxMinus] = PhaseOne(F, tol, alpha, factor);
-    [x, y] = getPoints(n, m, dom);
-    pivotLocations = [ x(pivotIndices(:, 2)) y(pivotIndices(:, 1)) ];
-    
-else  % SPHEREFUN( FUNCTION )
-    % If f is defined in terms of x,y,z; then convert it to
-    % (longitude,latitude).
-    h = redefine_function_handle(op);
-    
-    % Check for op = @(lam,th) constant function
-    [ll, tt] = meshgrid(dom(1:2), dom(3:4));
-    if ( numel(h(ll,tt)) == 1 )
-        h1 = h;
-        h = @(ll, tt) h1(ll, tt) + 0*ll;
-    end
+    g = constructFromDouble(op, dom, alpha, pref);
+    % Fix the rank:
+    g = fixTheRank(g, fixedRank);
+    return
+end
 
-    % PHASE ONE  
-    % Sample at square grids and determine the numerical rank of the
-    % function.
-    n = 4;             % Initial grid size
-    happyRank = 0;     % Happy with phase one? 
-    failure = 0;
-    pivotIndices = [];
-    pivotArray = [];
-    while ( ~happyRank && ~failure )
-        n = 2*n;
+%
+% Construction is from a function handle.
+%
+
+% Check for op = @(lam,th) constant function
+[ll, tt] = meshgrid(dom(1:2), dom(3:4));
+if ( numel(op(ll,tt)) == 1 )
+    op1 = op;
+    op = @(ll, tt) op1(ll, tt) + 0*ll;
+end
+
+factor  = 8; % Ratio between size of matrix and no. pivots.
+isHappy = 0; % If we are currently unresolved.
+failure = 0; % Reached max discretization size without being happy.
+
+while ( ~isHappy && ~failure )
+    %
+    % Setup Phase I: GE with block 2-by-2 pivoting to determine the
+    % numerical rank and pivot locations.  Sampling is done at equally
+    % spaced square grids.
+    %
+    grid = minSample;          
+    happyRank = 0;             % Happy with phase one? 
+    strike = 1;
+    while ( ~happyRank && ~failure && strike < 3)
+        grid = 2*grid;
 
         % Sample function on a tensor product grid.
-        [x, y] = getPoints(n, n, dom);
+        [x, y] = getPoints(grid, grid, dom);
         [xx, yy] = meshgrid(x, y);
-        F = evaluate(h, xx, yy, vectorize);
+        F = evaluate(op, xx, yy, vectorize);
+        
+        if ( ~isreal( F ) ) 
+            warning('SPHEREFUN:CONSTRUCTOR:COMPLEX', ...
+                    ['Only real-valued spherefuns are supported. The '...
+                     'imaginary part is being set to zero now.'])
+             F = real( F );   
+        end
 
-        [tol, vscale] = GetTol(F, pi/n, pi/n, dom, pseudoLevel);
+        [tol, vscale] = getTol(F, pi/grid, pi/grid, dom, pseudoLevel);
+        pref.chebfuneps = tol;
         
         % Does the function blow up or evaluate to NaN?:
         if ( isinf(vscale) )
@@ -149,26 +124,106 @@ else  % SPHEREFUN( FUNCTION )
             error('CHEBFUN:SPHEREFUN:constructor:nan', ...
                 'Function returned NaN when evaluated');
         end
-
+        
+        % Do GE
         [pivotIndices, pivotArray, removePoles, happyRank] = ...
             PhaseOne(F, tol, alpha, factor);
 
-        if ( n >= maxRank )
+        if ( grid > factor*(maxRank-1) )
             warning('SPHEREFUN:CONSTRUCTOR:MAXRANK', ... 
                                     'Unresolved with maximum rank.');
             failure = 1;
         end
+        
+        % If the function is 0+noise then stop after three strikes.
+        if ( max(abs(pivotArray(1,:))) < 1e4*tol )
+            strike = strike + 1;
+        end
     end
 
-    % PHASE TWO 
-    % Find the appropriate discretizations in the columns and rows. 
-    [cols, pivots, rows, pivotLocations, idxPlus, idxMinus] = ...
-        PhaseTwo(h, pivotIndices, pivotArray, n, dom, vscale, ...
-        maxSample, removePoles, vectorize);
+    % Do Phase 2: resolve along the column and row slices.
+    [cols, pivots, rows, pivotLocations, idxPlus, idxMinus, isHappy, failure] = ...
+        PhaseTwo(op, pivotIndices, pivotArray, grid, dom, vscale, ...
+        maxSample, removePoles, vectorize, pref);
+    
+    g.cols = chebfun(cols, dom(3:4)-[pi 0], 'trig', pref);
+    g.rows = chebfun(rows, dom(1:2), 'trig', pref);
+    if ( all(pivots) == 0 )
+        pivots = inf;
+    end
+    g.pivotValues = pivots;
+    g.domain = dom;
+    g.idxPlus = idxPlus;
+    g.idxMinus = idxMinus;
+    g.nonZeroPoles = removePoles;
+    g.pivotLocations = adjustPivotLocations(pivotLocations, pivotArray); 
+
+    % Sample Test:
+    if ( sampleTest )
+        % wrap the op with evaluate in case the 'vectorize' flag is on:
+        sampleOP = @(lam,th) evaluate(op, lam, th, vectorize);
+        
+        % Evaluate at points in the domain:
+        pass = g.sampleTest(sampleOP, tol, vectorize);
+        if ( ~pass )
+            % Increase minSamples and try again.
+            minSample = 2*minSample;
+            isHappy = 0;
+        end
+    end
 end
 
-g.cols = chebfun(cols, dom(3:4)-[pi 0], 'trig');
-g.rows = chebfun(rows, dom(1:2), 'trig');
+% Simplifying rows and columns after they are happy.
+g = simplify( g, pref.chebfuneps );
+
+% Fix the rank, if in nonadaptive mode.
+g = fixTheRank( g , fixedRank );
+
+% Project onto BMC-I symmetry so the function is smooth on the sphere.
+g = projectOntoBMCI( g );
+
+end
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function g = constructFromDouble(op, dom, alpha, pref)
+
+g = spherefun();
+
+if ( ~isreal( op ) ) 
+    warning('SPHEREFUN:CONSTRUCTOR:COMPLEX', ...
+            ['Only real-valued spherefuns are supported. The '...
+             'imaginary part is being set to zero now.'])
+    op = real( op );
+end
+
+% If single numerical value given
+if ( (numel( op ) == 1) )
+    g = constructor(g, @(lam,th) op + 0*lam, dom);
+    return
+end
+
+% Only do Phase I on the values.
+F = op;
+[n, m] = size(F);
+
+if ( mod(m,2) ~= 0 )
+    error('SPHEREFUN:CONSTRUCTOR:VALUES', ... 
+     'When constructing from values the number of columns must be even.');
+end
+
+% TODO: Add a way to loosen tolerances for this type of construction.
+tol = getTol(F, 2*pi/m, pi/(n-1), dom, pref.cheb2Prefs.chebfun2eps);
+pref.chebfuneps = tol;
+
+% Perform GE with complete pivoting
+[pivotIndices, pivotArray, removePoles, unused, cols, pivots, ...
+    rows, idxPlus, idxMinus] = PhaseOne(F, tol, alpha, 0);
+
+[x, y] = getPoints(n, m, dom);
+pivotLocations = [ x(pivotIndices(:, 2)) y(pivotIndices(:, 1)) ];
+
+g.cols = chebfun(cols, dom(3:4)-[pi 0], 'trig', pref);
+g.rows = chebfun(rows, dom(1:2), 'trig', pref);
 if ( all(pivots) == 0 )
     pivots = inf;
 end
@@ -177,15 +232,14 @@ g.domain = dom;
 g.idxPlus = idxPlus;
 g.idxMinus = idxMinus;
 g.nonZeroPoles = removePoles;
-g.pivotLocations = adjustPivotLocations(pivotLocations, pivotArray, ...
-    iscolat(g)); 
-
-% Simplifying rows and columns after they are happy.
-g = simplify(g);
+g.pivotLocations = adjustPivotLocations(pivotLocations, pivotArray); 
 
 g = projectOntoBMCI(g);
 
 end
+
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [pivotIndices, pivotArray, removePole, isHappy, cols, pivots, ...
         rows, idxPlus, idxMinus] = PhaseOne(F, tol, alpha, factor)
@@ -223,19 +277,23 @@ if ( m == 2 )
     return;
 end
 
-B = F(:, 1:n/2);    % (1,1) Block of F.
-C = F(:, n/2+1:n);  % (1,2) block of F.
+C = F(:, 1:n/2);    % (2,2) Block of F.
+B = F(:, n/2+1:n);  % (1,2) block of F.
 Fp = 0.5*(B + C);
 Fm = 0.5*(B - C);
 
+%
 % Deal with the poles by removing them from Fp.
 %
 
 % Check if the poles are numerically constant and get the value.
-[pole1, constValue1] = checkPole(Fp(1, :), tol);
-[pole2, constValue2] = checkPole(Fp(m, :), tol);
+pole1 = checkPole(Fp(1, :), tol);
+pole2 = checkPole(Fp(m, :), tol);
 
 % TODO: Figure out if we really need to warn the user about their function
+% % Check if the poles are numerically constant and get the value.
+% [pole1, constValue1] = checkPole(Fp(1, :), tol);
+% [pole2, constValue2] = checkPole(Fp(m, :), tol);
 % not being constant along the poles.
 % if ~(constValue1 || constValue1)
 %     warning('CHEBFUN:SPHEREFUN:constructor:constPoles',...
@@ -293,9 +351,10 @@ Fm = Fm(2:m-1, :);
 
 % Zero function
 if ( (maxp == 0) && (maxm == 0) && ~removePole )
-    m = 3; 
-    n = 3;
-    cols = zeros(2*m-2, 1);
+    % Pass back a zero matrix that is the same size as F. 
+    % This ensures that spherefun( zeros(5) ) has a 5x5 (zero) coefficient 
+    % matrix.      
+    cols = zeros(m, 1);
     rows = zeros(n, 1);
     idxPlus = 1;
     idxMinus = [];
@@ -397,27 +456,23 @@ if ( nargout > 4 )
     rows = zeros(n, rankCount);
     pivots = zeros(rankCount, 1);
     if ( kplus ~= 0 )
-        cols(2:m-1, idxPlus) = colsPlus;
-        cols(m+1:2*m-2, idxPlus) = flipud(colsPlus);
+        cols(m+1:2*m-2, idxPlus) = colsPlus;
+        cols(2:m-1, idxPlus) = flipud(colsPlus);
         rows(:, idxPlus) = [ rowsPlus rowsPlus ].';
         pivotPlus = pivotArray(pivotArray(:,1) ~= 0,1);
         pivots(idxPlus) = pivotPlus;
     end
     
     if ( kminus ~= 0 )
-        cols(2:m-1, idxMinus) = colsMinus;
-        cols(m+1:2*m-2, idxMinus) = -flipud(colsMinus);
-        rows(:, idxMinus) = [ rowsMinus -rowsMinus ].';
+        cols(m+1:2*m-2, idxMinus) = colsMinus;
+        cols(2:m-1, idxMinus) = -flipud(colsMinus);
+        rows(:, idxMinus) = [ -rowsMinus rowsMinus ].';
         pivotMinus = pivotArray(pivotArray(:,2) ~= 0,2);
         pivots(idxMinus) = pivotMinus;
     end
     
-%     pivots = reshape(pivotArray.',[],1);
-%     pivots = pivots(pivots ~= 0 );
-%     pivots = pivots([idxPlus idxMinus]);
-
     if removePole
-        cols(:, 1) = [ colPole; flipud(colPole(2:m-1)) ];
+        cols(:, 1) = [ flipud(colPole); colPole(2:m-1)];
         rows(:, 1) = [ rowPole rowPole ];
         pivots(1) = rowVal;
     end
@@ -440,14 +495,21 @@ end
 
 end
 
-function [cols, pivots, rows, pivotLocations, idxPlus, idxMinus] = ...
-    PhaseTwo(h, pivotIndices, pivotArray, n, dom, vscale, maxSample, ...
-    removePoles, vectorize)
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% alpha = spherefun.alpha; % get growth rate factor.
+function [cols, pivots, rows, pivotLocations, idxPlus, idxMinus, isHappy, failure] = ...
+    PhaseTwo(h, pivotIndices, pivotArray, n, dom, vscale, maxSample, ...
+    removePoles, vectorize, pref)
+
 happy_columns = 0;   % Not happy, until proven otherwise.
 happy_rows = 0;
 m = n;
+
+% Set up the structs for the column and row trigtechs.
+colData.hscale = norm(dom(3:4), inf);
+colData.vscale = vscale;
+rowData.hscale = norm(dom(1:2), inf);
+rowData.vscale = vscale;
 
 [x, y] = getPoints(m, n, dom);
 
@@ -474,13 +536,13 @@ while ( ~(happy_columns && happy_rows) && ~failure )
     
     [x, y] = getPoints(m, n, dom);
     [xx, yy] = meshgrid(col_pivots, y);
-    newCols = evaluate(h, xx, yy, vectorize); 
-    temp = evaluate(h, xx + pi, yy, vectorize);
+    newCols = real(evaluate(h, xx + pi, yy, vectorize)); 
+    temp = real(evaluate(h, xx, yy, vectorize));
     newColsPlus = 0.5*(newCols + temp);
     newColsMinus = 0.5*(newCols - temp);
     
     [xx, yy] = meshgrid(x, row_pivots);
-    newRows = evaluate(h, xx, yy, vectorize);
+    newRows = real(evaluate(h, xx, yy, vectorize));
 
     % This code will be unnecessary once ticket #1532 is addressed on the
     % chebfun tracker.  Don't forget to remove it.
@@ -488,8 +550,8 @@ while ( ~(happy_columns && happy_rows) && ~failure )
         newRows = newRows(:).';
     end
     
-    newRowsPlus = 0.5*(newRows(:, 1:n) + newRows(:, n+1:2*n));
-    newRowsMinus = 0.5*(newRows(:, 1:n) - newRows(:, n+1:2*n));
+    newRowsPlus = 0.5*(newRows(:, n+1:2*n) + newRows(:, 1:n));
+    newRowsMinus = 0.5*(newRows(:, n+1:2*n) - newRows(:, 1:n));
     
     colsPlus = zeros(m+1, numPosPivots);
     colsMinus = zeros(m+1, numMinusPivots);
@@ -519,7 +581,7 @@ while ( ~(happy_columns && happy_rows) && ~failure )
             
             colMinus = newColsMinus(:, ii);
             rowMinus = newRowsMinus(ii, :);
-
+            
             % Store the columns and rows
             colsPlus(:, plusCount) = colPlus;
             rowsPlus(plusCount, :) = rowPlus;
@@ -575,6 +637,10 @@ while ( ~(happy_columns && happy_rows) && ~failure )
                 colMinus = newColsMinus(:, ii);
                 rowMinus = newRowsMinus(ii, :);
 
+                if any(isnan(newRowsMinus(:))) || any(isinf(newRowsMinus(:)))
+                    fprintf('Shit\n');
+                end
+                
                 % Store the columns and rows
                 colsMinus(:, minusCount) = colMinus;
                 rowsMinus(minusCount, :) = rowMinus;
@@ -611,11 +677,9 @@ while ( ~(happy_columns && happy_rows) && ~failure )
     temp1 = sum([ colsPlus colsMinus ], 2); 
     temp2 = sum([ colsPlus -colsMinus ], 2);
 
-    colData.hscale = norm(dom(3:4), inf);
-    colData.vscale = vscale;
-    colValues = [ temp1; temp2(m:-1:2) ];
+    colValues = [ flipud(temp2); temp1(2:m) ];
     colTrigtech = trigtech.make(colValues, colData);
-    happy_columns = happinessCheck(colTrigtech, [], colValues, colData);
+    happy_columns = happinessCheck(colTrigtech, [], colValues, colData, pref);
     
     % Happiness check for rows:
     % Double up the rows
@@ -623,10 +687,8 @@ while ( ~(happy_columns && happy_rows) && ~failure )
     temp2 = sum([ rowsPlus; -rowsMinus ], 1);
 
     rowValues = [ temp1 temp2 ].';
-    rowData.hscale = norm(dom(1:2), inf);
-    rowData.vscale = vscale;
     rowTrigtech = trigtech.make(rowValues, rowData);
-    happy_rows = happinessCheck(rowTrigtech, [], rowValues, rowData);
+    happy_rows = happinessCheck(rowTrigtech, [], rowValues, rowData, pref);
     
     % Adaptive:
     if( ~happy_columns )
@@ -655,16 +717,20 @@ end
 
 % Combine the types of pivots and set-up indices to track them
 cols = zeros(2*size(colsPlus, 1)-2, totalPivots);
-cols(:, idxPlus) = [ colsPlus; flipud(colsPlus(2:end-1, :)) ];
-cols(:, idxMinus) = [ colsMinus; -flipud(colsMinus(2:end-1, :)) ];
+cols(:, idxPlus) = [ flipud(colsPlus); colsPlus(2:end-1, :)  ];
+cols(:, idxMinus) = [ -flipud(colsMinus); colsMinus(2:end-1, :)  ];
 
 rows = zeros(2*size(rowsPlus, 2), totalPivots);
 rows(:, idxPlus) = [ rowsPlus rowsPlus ].';
-rows(:, idxMinus) = [ rowsMinus -rowsMinus ].';
+rows(:, idxMinus) = [ -rowsMinus rowsMinus ].';
 
 pivotLocations = [ col_pivots row_pivots ];
 
+isHappy = happy_rows & happy_columns;
+
 end
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function vals = evaluate(h, xx, yy, vectorize)
 % Evaluate h on an m-by-n tensor product grid.
@@ -678,10 +744,12 @@ if ( vectorize )
         end
     end
 else
-    vals = feval(h, xx, yy );  % Matrix of values at cheb2 pts.
+    vals = feval(h, xx, yy );
 end
 
 end
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [x, y] = getPoints(m, n, dom)
 
@@ -691,12 +759,10 @@ lat = [ -pi pi -pi/2 pi/2 ]; % Latitude (doubled up)
 % Sample at an even number of points so that the poles are included.
 if ( all((dom - colat) == 0) )
     x = trigpts(2*n, [-pi, pi]);   % azimuthal angle, lambda
-    y = linspace(-pi, 0, m+1).';   % elevation angle, theta
-%     y = linspace(0, pi, m+1).';  % elevation angle, theta
+    y = linspace(0, pi, m+1).';   % elevation angle, theta
 elseif ( all((dom - lat) == 0) )
     x = trigpts(2*n, [-pi, pi]);          % azimuthal angle, lambda
-    y = linspace(-3*pi/2, -pi/2, m+1).';  % elevation angle, theta
-%     y = linspace(-pi/2, pi/2, m+1).';  % elevation angle, theta
+    y = linspace(-pi/2,pi/2, m+1).';
 else
     error('SPHEREFUN:constructor:points2D:unkownDomain', ...
         'Unrecognized domain.');
@@ -704,15 +770,7 @@ end
 
 end
 
-% function pinvM = getPseudoInv( M )
-% lam1 = M(1,1)+M(1,2);  % Eigenvalues of M (which is symmetric)
-% lam2 = M(1,1)-M(1,2);
-% if abs(lam1) > abs(lam2)
-%     pinvM = ones(2)/(2*lam1);
-% else
-%     pinvM = [[1 -1];[-1 1]]/(2*lam2);
-% end
-% end
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [row, col] = myind2sub(siz, ndx)
 % Alex's version of ind2sub. In2sub is slow because it has a varargout. 
@@ -726,18 +784,9 @@ row = (vi - 1) + 1;
 
 end
 
-function f = redefine_function_handle(f)
-% nargin(f) = 2, then we are already on the sphere, if nargin(f) = 3,
-% then do change of variables:
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-if ( nargin(f) == 3 )
-    % Wrap f so it can be evaluated in spherical coordinates
-    f = @(lam, th) spherefun.sphf2cartf(f, lam, th, 0);
-end
-
-end
-
-function [tol, vscale] = GetTol(F, hx, hy, dom, pseudoLevel)
+function [tol, vscale] = getTol(F, hx, hy, dom, pseudoLevel)
 % GETTOL     Calculate a tolerance for the spherefun constructor.
 %
 %  This is the 2D analogue of the tolerance employed in the trigtech
@@ -759,15 +808,9 @@ tol = grid.^(2/3) * max(abs(dom(:))) * max(Jac_norm, vscale) * pseudoLevel;
 
 end
 
-function pivLocNew = adjustPivotLocations(pivLoc, pivArray, colat)
-% Adjust the pivot locations so that they correspond to -pi < lam < pi and 
-% 0 < th < pi or -pi/2 < th < pi/2
-if colat
-    pivLoc(:, 2) = -pivLoc(:, 2);
-else
-    pivLoc(:, 2) = -(pivLoc(:, 2) + pi);
-end
-pivLoc(:, 1) = pivLoc(:, 1) + pi;
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function pivLocNew = adjustPivotLocations(pivLoc, pivArray)
 
 % We will store the pivotLocations for both the plus and minus pieces, 
 % which could result in duplicate values being stored.  This happens 
@@ -792,6 +835,8 @@ end
 
 end
 
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 function [pole, constVal] = checkPole(val, tol)
 % Check that the values at the pole are constant.
 
@@ -808,6 +853,234 @@ if ( (stddev <= 1e8*tol) || (stddev < eps) )
     constVal = 1;
 else
     constVal = 0;
+end
+
+end
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function [op, dom, pref, fixedRank, vectorize] = parseInputs(op, varargin)
+
+if ( isa(op, 'char') )     % SPHEREFUN( CHAR )
+    op = str2op(op);
+end
+
+% If the operator has one argument, then throw an error
+if ( isa(op, 'function_handle') )
+    % If the operator has one argument, then throw an error
+    if ( nargin(op) <= 1 )
+        error('CHEBFUN:SPHEREFUN:CONSTRUCTOR:toFewInputArgs',...
+            'The function %s must accept 2 or 3 input arguments.',op);
+    % If f is defined in terms of x,y,z; then convert it to
+    % (longitude,latitude).
+    elseif ( nargin(op) == 3 )
+        % Wrap op so it can be evaluated in spherical coordinates
+        op = @(lam, th) spherefun.sphf2cartf(op, lam, th, 0);
+    end
+end
+
+% Get the domain: (Always first if given)
+% The only domain presently supported is [-pi pi 0 pi], which corresponds
+% to co-latitude in spherical coordinates.
+% If domain is empty take it to be co-latitude.
+dom = [-pi, pi, 0, pi]; 
+fixedRank = NaN;
+fixedLength = 0;
+
+while ( numel(varargin) > 0 && isnumeric(varargin{1}) )
+    d = varargin{1};
+    varargin(1) = [];
+    
+    if ( numel(d) == 4 )                 % SPHEREFUN(OP, [A B C D])
+        dom = d;
+        if ( norm(dom(:)' - [-pi pi 0 pi]) > 0 )
+            error('CHEBFUN:SPHEREFUN:CONSTRUCTOR:domain',...
+                ['The only domain presently supported in spherefun is [-pi pi]x[0 pi] in '...
+                'intrinstic (spherical) coordinates, which corresponds to colatitude.']);
+        end
+    elseif ( numel(d) == 2 )             % SPHEREFUN(OP, [M N])
+        % Interpret this as the user wants a degree (M,N)
+        % spherefun
+        fixedLength = 1;
+        m = d(1); 
+        n = d(2);        
+    elseif ( numel(d) == 1 )             % SPHEREFUN(OP, K)
+        fixedRank = d;
+    else
+        error('CHEBFUN:SPHEREFUN:CONSTRUCTOR:domain',... 
+              ['A domain is rarely given for spherefun, ', ... 
+              'but it needs to be given by four corner values',... 
+              'in intrinstic coordinates.'])
+    end
+end
+
+if ( fixedLength )  % Check that m and n are positive integers
+    if ( ( m <= 0 ) || ( n <= 0 ) || ( abs(round(m)-m)  > eps ) || ...
+            ( abs(round(n)-n) > eps ) )
+        error('CHEBFUN:SPHEREFUN:constructor:parseInputs:domain2', ...
+            ['When constructing with fixed lengths, the values '...
+             'for the lengths must be positive integers.']);
+    end
+end
+
+if ( ( fixedRank < 0 ) || ( abs(round(fixedRank)-fixedRank) > eps ) )
+        error('CHEBFUN:SPHEREFUN:constructor:parseInputs:domain3', ...
+            ['When constructing with a fixed rank, the value must '...
+             'be a positive integer.']);
+end    
+
+% Preferences structure given?
+isPref = find(cellfun(@(p) isa(p, 'chebfunpref'), varargin));
+if ( any(isPref) )
+    pref = varargin{isPref};
+    varargin(isPref) = [];
+else
+    pref = chebfunpref();
+end
+
+isEpsGiven = find(cellfun(@(p) strcmpi(p, 'eps'), varargin));
+if ( isEpsGiven )
+    pseudoLevel = varargin{isEpsGiven+1};
+    varargin(isEpsGiven+(0:1)) = [];
+else
+    pseudoLevel = 0;
+end
+pref.cheb2Prefs.chebfun2eps = max(pref.cheb2Prefs.chebfun2eps, pseudoLevel);
+
+% Look for vectorize flag:
+vectorize = find(cellfun(@(p) strncmpi(p, 'vectori', 7), varargin));
+if ( vectorize )
+    varargin(vectorize) = [];
+    vectorize = true;
+else
+    vectorize = false;
+end
+
+% If the vectorize flag is off, do we need to give user a warning?
+if ( ~vectorize && ~isnumeric(op) ) % another check
+    [vectorize, op] = vectorCheck(op, dom, pref.chebfuneps);
+end
+
+isCoeffs = find(cellfun(@(p) strcmpi(p, 'coeffs'), varargin));
+if ( isCoeffs )
+    varargin(isCoeffs) = [];
+    op = spherefun.coeffs2spherefun(op);
+end
+
+% Deal with SPHEREFUN(OP, [M N]) now that all the other things are set.
+if ( fixedLength )
+    [x, y] = getPoints(m, n, dom);
+    [xx, yy] = meshgrid(x, y);
+    % Handle the special case of the input being a spherefun.  We can't call
+    % evaluate here because, we have to use feval(op,xx,yy).
+    if ( isa(op,'spherefun') )
+        op = feval(op, xx, yy);
+    else
+        op = evaluate(op, xx, yy, vectorize);
+    end    
+end
+
+end
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function g = fixTheRank( g , fixedRank )
+% Fix the rank of a SPHEREFUN. Used for nonadaptive calls to the constructor.
+
+if ( fixedRank < 0 )
+    error('CHEBFUN:SPHEREFUN:constructor:fixTheRank:negative', ...
+        'Nonadaptive rank should be positive.')
+elseif ( fixedRank > 0 )
+    if ( length(g.pivotValues) > fixedRank )
+        % Truncate things:
+        g.cols = g.cols(:,1:fixedRank);
+        g.rows = g.rows(:,1:fixedRank);
+        g.pivotValues = g.pivotValues(1:fixedRank);
+        g.idxPlus = g.idxPlus( g.idxPlus <= fixedRank );
+        g.idxMinus = g.idxMinus( g.idxMinus <= fixedRank );
+    elseif ( length(g.pivotValues) < fixedRank )
+        % Pad things with zero columns:
+        zcols = chebfun(0, g.cols.domain, 'trig');
+        zrows = chebfun(0, g.rows.domain, 'trig');
+        for jj = length(g.pivotValues) : fixedRank - 1
+            g.cols = [g.cols zcols];
+            g.rows = [g.rows zrows];
+            g.pivotValues = [g.pivotValues ; 0];
+        end
+    end
+elseif ( fixedRank == 0 )
+    g.cols = chebfun(0, g.cols.domain, 'trig');
+    g.rows = chebfun(0, g.rows.domain, 'trig'); 
+    g.pivotValues = Inf;
+    g.idxPlus = [];
+    g.idxMinus = 1;
+end
+
+end
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function [vectorize, op] = vectorCheck(op, dom, pseudoLevel)
+% Check for cases: @(x,y) x*y, and @(x,y) x*y'
+
+vectorize = false;
+
+if isa(op,'spherefun')
+    return;
+end
+
+% Evaluate at a 2-by-2 grid on the interior of the domain.
+[xx, yy] = meshgrid( dom(1:2)/3 + diff(dom(1:2))/3,...
+                     dom(3:4)/2 + diff(dom(3:4))/3);
+try
+    A = op(xx, yy);
+catch
+    throwVectorWarning();
+    vectorize = true;
+    return
+end
+if ( isscalar(A) )
+    op = @(x,y) op(x,y) + 0*x + 0*y;
+    A = op(xx, yy);
+end
+B = zeros(2);
+for j = 1:2
+    for k = 1:2
+        B(j,k) = op(xx(j,k), yy(j,k));
+    end
+end
+if ( any(any( abs(A - B) > min( 1000*pseudoLevel, 1e-4 ) ) ) )
+    % Function handle probably needs vectorizing.
+    % Give user a warning and then vectorize.
+    throwVectorWarning();
+    vectorize = true;
+end
+    function throwVectorWarning()
+        warning('CHEBFUN:SPHEREFUN:constructor:vectorize',...
+            ['Function did not correctly evaluate on an array.\n', ...
+            'Turning on the ''vectorize'' flag. Did you intend this?\n', ...
+            'Use the ''vectorize'' flag in the SPHEREFUN constructor\n', ...
+            'call to avoid this warning message.']);
+    end
+end
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function op = str2op( op )
+% OP = STR2OP(OP), finds the dependent variables in a string and returns an op
+% handle than can be evaluated.
+
+depvar = symvar( op );
+if ( numel(depvar) > 3)
+    error('CHEBFUN:SPHEREFUN:constructor:str2op:depvars', ...
+        'Too many dependent variables in string input.');
+elseif ( numel(depvar) == 1 )
+    % Treat as a complex variable:
+    op = eval(['@(' real(depvar{1}) + 1i*imag(depvar{1}) ')' op]);
+elseif ( numel(depvar) == 2 )
+    op = eval(['@(' depvar{1} ',' depvar{2} ')' op]);
+else
+    op = eval(['@(' depvar{1} ',' depvar{2} ',' depvar{3} ')' op]);
 end
 
 end

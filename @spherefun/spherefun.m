@@ -26,7 +26,7 @@ classdef spherefun < separableApprox
 %
 % See also CHEBFUN2, SPHEREFUNV.
 
-% Copyright 2015 by The University of Oxford and The CHEBFUN Developers.
+% Copyright 2016 by The University of Oxford and The CHEBFUN Developers.
 % See http://www.chebfun.org/ for CHEBFUN information.
 
 % TODO: Improve documentation of input options. 

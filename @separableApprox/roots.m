@@ -22,7 +22,7 @@ function r = roots( f, g, varargin )
 %  
 % See also CHEBFUN2V/ROOTS.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 
@@ -46,13 +46,17 @@ if ( nargin == 1 )
         xrts = roots( rows ) + realmin*1i; % Add complex to ensure its not real
         r = chebfun; 
         % Go though col(yrts) = 0, make into a horizontal line: 
+        dom = rows.domain;
+        len = (dom(2)-dom(1))/2; 
         for j = 1 : numel(yrts)
-            f = chebfun(@(x) x + yrts(j));
+            f = chebfun(@(x) (len*(x+1)+dom(1)) + yrts(j));
             r = [r f];
         end
         % Go though row(xrts) = 0, make into a vertical line: 
+        dom = cols.domain;
+        len = (dom(2)-dom(1))/2; 
         for j = 1 : numel(xrts)
-            f = chebfun(@(x) 1i*x + xrts(j));
+            f = chebfun(@(x) 1i*(len*(x+1)+dom(1)) + xrts(j));
             r = [r f];
         end
         

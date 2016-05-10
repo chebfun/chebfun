@@ -13,7 +13,7 @@ function r = roots( varargin )
 %  
 % See also CHEBFUN2V/ROOTS.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Check for empty:
@@ -25,11 +25,11 @@ end
 rts = roots@separableApprox(varargin{:});
 
 % Now make into a collection of array-valued chebfuns ready for plotting on
-% the sphere.
-x = chebpts(length(rts) + 1);
+% the sphere.  Make sure we have enough points to sample the contours.
+x = chebpts(max(length(rts),17) + 1);
 
 vals = feval(rts, x);
-r = cellmat(size(vals,2), 1);
+r = cell(size(vals,2), 1);
 
 % Go through each component and make it an array-valued chebfun: 
 for k = 1:size(vals, 2)

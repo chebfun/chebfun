@@ -8,7 +8,7 @@ function f = mtimes(f, g)
 %
 % See also TIMES.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 fIsChebfun = isa(f, 'chebfun');
@@ -82,6 +82,10 @@ elseif ( fIsChebfun && isnumeric(g) )       % CHEBFUN * double
 elseif ( isnumeric(f) && gIsChebfun )       % double * CHEBFUN
 
         f = mtimes(g.', f.').';
+
+elseif ( fIsChebfun )                       % CHEBFUN * ??? 
+
+        f = (g.'*f.').';
 
 else                                        % ??? * CHEBFUN or CHEBFUN * ???
 

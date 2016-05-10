@@ -31,5 +31,9 @@ for j = 1:numel(s)
 end
 pass(4) = ( norm( r - exact ) < tol );
 
+f = chebfun2( @(x,y) x.*(y-1/2), [-2 2 -3 5]);
+r = roots( f );
+exact = [chebfun( @(x) 2*x + 1i/2 ) chebfun(@(x) 1i*(4*(x+1)-3) )];
+pass(5) = ( norm( r - exact ) < tol );
 
 end
