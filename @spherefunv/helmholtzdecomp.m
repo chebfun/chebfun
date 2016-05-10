@@ -1,7 +1,7 @@
-function [u, v] = helmholtzdecomposition( f ) 
-%HELMHOLTZDECOMPOSITION   Return the Helmholtz decomposition of spherefunv.
+function [u, v] = helmholtzdecomp( f ) 
+%HELMHOLTZDECOMP   Return the Helmholtz decomposition of spherefunv.
 %
-% [U, V] = HELMHOLTZDECOMPOSITION( F ) computes the Helmholtz decomposition
+% [U, V] = HELMHOLTZDECOMP( F ) computes the Helmholtz decomposition
 % of the spherefunv F, i.e., 
 %        F   =     GRAD( U )     +    CURL( V ) 
 % where U and V are spherefun objects. F needs to be a vector field that is
