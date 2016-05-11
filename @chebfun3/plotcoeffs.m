@@ -1,6 +1,6 @@
 function varargout = plotcoeffs(f, varargin)
-%PLOTCOEFFS   Display the coefficients of the columns, rows and tubes of a
-%   CHEBFUN3.
+%PLOTCOEFFS   Display coefficients of the columns, rows and tubes of a
+%   CHEBFUN3 object.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -14,15 +14,12 @@ end
 % Store the hold state of the current axis:
 holdState = ishold;
 
-% Get the low rank representation for f. 
+% Get low rank representation of f:
 [ignore, fCols, fRows, fTubes] = tucker(f);
-
-% There are three subplots each plotting the PLOTCOEFFS of one of the 
-% fibers.
 
 % PLOTCOEFFS of cols:
 ax1 = subplot(1,3,1);
-h1 = plotcoeffs( fCols, varargin{:} ); 
+plotcoeffs(fCols, varargin{:}); 
 ylim1 = ylim(gca);
 xlabel(gca, '')
 ylabel(gca, 'Magnitude of coefficient') 
@@ -30,8 +27,9 @@ title('Cols')
 
 % PLOTCOEFFS of rows:
 ax2 = subplot(1,3,2);
-h2 = plotcoeffs( fRows, varargin{:} ); 
+plotcoeffs(fRows, varargin{:}); 
 ylim2 = ylim(gca);
+% Put just a label for the plot in the middle:
 if isa(f.cols.funs{1}.onefun,'trigtech')
     xlabel(gca, 'Wave number')
 else
@@ -42,8 +40,9 @@ title('Rows')
 
 % PLOTCOEFFS of tubes:
 ax3 = subplot(1,3,3);
-h3 = plotcoeffs( fTubes, varargin{:} ); 
+plotcoeffs(fTubes, varargin{:}); 
 ylim3 = ylim(gca);
+% Remove labels from 1D plotcoeff: 
 xlabel(' ')
 ylabel(' ')
 title('Tubes')
@@ -57,13 +56,6 @@ ylimNew = [ylimMin, ylimMax];
 ylim(ax1, ylimNew);
 ylim(ax2, ylimNew);
 ylim(ax3, ylimNew);
-
-% % Return plot handles when appropriate.
-% if ( nargout == 1 )
-%     varargout = { h1 };
-% elseif ( nargout == 3 )
-%     varargout = { h1, h2, h3 };
-% end
 
 % Return hold state to what it was before:
 if ( ~holdState )

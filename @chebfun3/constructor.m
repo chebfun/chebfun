@@ -12,9 +12,8 @@ function f = constructor(f, op, varargin)
 %   separation rank of the function. At the end of this stage we have 
 %   candidate 3D pivot locations, 3D pivot values, skeleton slices and 
 %   fibers. It also identifies the skeleton columns and rows of each slice.
-%   To do so, it uses multivariate adaptive cross approximation (MACA) 
-%   which is iterated until 3D pivot elements fall below machine epsilon.  
-%   The output is already in the block term decomposition (BTD) form.
+%   To do so, it uses multivariate adaptive cross approximation (MACA).
+%   The output of Phase 1 has the form of block term decomposition (BTD).
 %
 %   PHASE 2: The second phase attempts to resolve the corresponding 
 %   skeleton columns, rows and tubes by sampling along the fibers and 

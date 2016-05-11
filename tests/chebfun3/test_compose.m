@@ -18,11 +18,24 @@ g = chebfun3(@(x,y,z) exact(x,y,z));
 pass(j) = norm(g - f.*sin((x-.1).*(y+.4).*(z+.8))) < tol; 
 j = j + 1;
 
+% Sine
+exact = @(x,y,z) sin(cos(x.*y.*z) + sin(x.*y.*z) + y -.1); 
+g = chebfun3(@(x,y,z) exact(x,y,z));
+pass(j) = norm(g - sin(f)) < tol; 
+j = j + 1;
+
 % Cosine
 exact = @(x,y,z) cos(cos(x.*y.*z) + sin(x.*y.*z) + y -.1); 
 g = chebfun3(@(x,y,z) exact(x,y,z)); 
 pass(j) = norm(g - cos(f)) < tol; 
 j = j + 1;
+
+% Sinh
+exact = @(x,y,z) sinh(cos(x.*y.*z) + sin(x.*y.*z) + y -.1);
+g = chebfun3(@(x,y,z) exact(x,y,z));
+pass(j) = norm(g - sinh(f)) < tol; 
+j = j + 1;
+
 
 % Cosh
 exact = @(x,y,z) cosh(cos(x.*y.*z) + sin(x.*y.*z) + y -.1);
@@ -30,16 +43,16 @@ g = chebfun3(@(x,y,z) exact(x,y,z));
 pass(j) = norm( g - cosh(f) ) < tol; 
 j = j + 1;
 
-% Sine
-exact = @(x,y,z)  sin(cos(x.*y.*z) + sin(x.*y.*z) + y -.1); 
-g = chebfun3(@(x,y,z) exact(x,y,z));
-pass(j) = norm(g - sin(f)) < tol; 
+% Tanh
+exact = @(x,y,z) tanh(-(cos(x.*y.*z) + sin(x.*y.*z) + y -.1)); 
+g = chebfun3(@(x,y,z) exact(x,y,z)); 
+pass(j) = norm(g - tanh(-f)) < tol; 
 j = j + 1;
 
-% Sinh
-exact = @(x,y,z) sinh( cos(x.*y.*z) + sin(x.*y.*z) + y -.1);
-g = chebfun3(@(x,y,z) exact(x,y,z));
-pass(j) = norm(g - sinh(f)) < tol; 
+% Exp
+exact = @(x,y,z) exp(cos(x.*y.*z) + sin(x.*y.*z) + y -.1); 
+g = chebfun3(@(x,y,z) exact(x,y,z)); 
+pass(j) = norm(g - exp(f)) < tol; 
 j = j + 1;
 
 % Multiple operations: 

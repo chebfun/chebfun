@@ -30,8 +30,4 @@ else
     assignin('base', 'y', y)
     
 end
-<<<<<<< HEAD
 end
-=======
-end
->>>>>>> development

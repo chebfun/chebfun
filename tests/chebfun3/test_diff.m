@@ -7,7 +7,7 @@ end
 tol = 1e6 * pref.cheb3Prefs.chebfun3eps;
 j = 1; 
 
-% Battery:  functions, df/dx, and df/dy
+% Battery:  functions, df/dx, df/dy and df/dz.
 ff = {@(x,y,z) x, @(x,y,z) cos(x).*exp(y).*sin(z), @(x,y,z) cos(x.*y.*z), ...
     @(x,y,z) x.^2 + x.*y.^2.*z.^3};
 

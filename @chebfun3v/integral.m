@@ -26,15 +26,15 @@ else
     F1_handle = @(t) feval(F.components{1}, cx(t), cy(t), cz(t));
     F2_handle = @(t) feval(F.components{2}, cx(t), cy(t), cz(t));
     F3_handle = @(t) feval(F.components{3}, cx(t), cy(t), cz(t));
-    F1 = chebfun(F1_handle, c.domain, pref );
-    F2 = chebfun(F2_handle, c.domain, pref );
-    F3 = chebfun(F3_handle, c.domain, pref );
+    F1 = chebfun(F1_handle, c.domain, pref);
+    F2 = chebfun(F2_handle, c.domain, pref);
+    F3 = chebfun(F3_handle, c.domain, pref);
     
     % Line integral: 
     dc = diff(c); 
     
     % By definition:
-    v = sum( F1 .* dc(:,1) + F2 .* dc(:,2) + F3 .* dc(:,3) );
+    v = sum(F1 .* dc(:,1) + F2 .* dc(:,2) + F3 .* dc(:,3));
 end
 
 end
