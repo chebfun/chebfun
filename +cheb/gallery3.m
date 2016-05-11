@@ -49,97 +49,15 @@ function varargout = gallery3(name)
 % If the user did not supply an input, return a random function from the
 % gallery.
 if ( nargin == 0 )
-    names = {'wagon', 'runge', 'clebsch', 'cassini', 'barth10', ...
-        'shubert', 'rosenbrock', 'aurentz', 'genz1', 'genz2', 'genz3', ...
-        'genz4', 'griewank', 'rastrigin', 'bessel', 'doublehelix', ...
-        'hoop', 'lattice'};
+    names = {'aurentz', 'barth10', 'bessel', 'cassini', 'clebsch', ...
+            'doublehelix', 'genz1', 'genz2', 'genz3', 'genz4', ...
+            'griewank', 'hoop', 'lattice', 'levy', 'rastrigin', ...
+            'rosenbrock', 'runge', 'shubert', 'wagon'};
     name = names{randi(length(names))};
 end
 
 % The main switch statement.
 switch lower(name)
-
-   case 'doublehelix'
-       % cooked up by Trefethen 11 May 2016
-       fa = @(x,y,z) abs(((x+1i*y).*exp(1i*z)).^2-1).^2;
-       f = chebfun3(fa,[-1.5 1.5 -1.5 1.5 -6 6]);
-       % Try isosurface(f,.25,'npts',81), axis equal
-
-   case 'genz1'
-       % http://www.sfu.ca/~ssurjano/oscil.html
-       fa = @(x,y,z) cos(pi + 5 * (x+y+z));
-       f = chebfun3(fa);
-       % Try e.g., plot(sum(f))
-       
-   case 'genz2'
-       %http://www.sfu.ca/~ssurjano/copeak.html
-       fa = @(x,y,z) 1./(16 +5 * (x+y+z));
-       f = chebfun3(fa);
-       % Try e.g., surf(f)
-       
-   case 'genz3'
-       % http://www.sfu.ca/~ssurjano/gaussian.html
-       fa = @(x,y,z) exp(-25*(x.^2+y.^2+z.^2));
-       f = chebfun3(fa);
-       % Try e.g., surf(f)
-
-    case 'genz4'
-       % http://www.sfu.ca/~ssurjano/prpeak.html
-       fa = @(x,y,z) 1./((0.04+x.^2) .* (0.04+y.^2) .* (0.04+z.^2));
-       f = chebfun3(fa);
-       % Try e.g., surf(f)
-
-    case 'griewank'
-       %http://www.sfu.ca/~ssurjano/griewank.html
-       fa = @(x,y,z) x.^2/4000 + y.^2/4000 + z.^2/4000 - ...
-           cos(x).*cos(y/sqrt(2)).*cos(z/sqrt(3)) + 1;
-       f = chebfun3(fa, [-50 50 -50 50 -50 50]);
-       % Try e.g., plot(f) or surf(f)    
-
-    case 'hoop'
-       % cooked up by Trefethen 11 May 2016
-       fa = @(x,y,z) z.^2 + 0.5*(x.^2+y.^2-.5).^2;
-       f = chebfun3(fa);
-       % Try e.g. isosurface(f,.01)
-
-   case 'lattice'
-       % cooked up by Trefethen 11 May 2016
-       fa = @(x,y,z) sin(8*x).^2 + sin(8*y).^2 + sin(8*z).^2;
-       f = chebfun3(fa);
-       % Try isosurface(f,.5), axis equal   -   or plot(f)
-
-    case 'wagon'
-        % Function from Page 99 of F. Bornemann, D. Laurie, S. Wagon and J. 
-        % Waldvogel, The SIAM 100-Digit Challenge, SIAM, 2004.
-        % This function was proposed by Stan Wagon.
-        fa = @(x,y,z) exp(sin(50*x)) + sin(60*exp(y)).*sin(60*z) + ...
-            sin(70*sin(x)).*cos(10*z) + sin(sin(80*y)) - sin(10*(x+z)) +...
-            (x.^2 + y.^2 + z.^2)/4;
-        f = chebfun3(fa);
-        
-    case 'runge'
-        % A 3D Runge function:        
-        fa = @(x,y,z) 1./(1+x.^2+y.^2+z.^2);
-        f = chebfun3(fa);
-        
-    case 'shubert'
-        %Shubert Function 
-        % http://www.sfu.ca/~ssurjano/shubert.html
-        fa = @(x,y,z) (cos(2*x+1) + 2*cos(3*x+2) + 3*cos(4*x+3) + ...
-            4*cos(5*x+4) + 5*cos(4*x+5)) .* (cos(2*y+1) + 2*cos(3*y+2) + ...
-            3*cos(4*y+3) + 4*cos(5*y+4) + 5*cos(4*y+5)) .* ...
-            (cos(2*z+1) + 2*cos(3*z+2)+ 3*cos(4*z+3) + 4*cos(5*z+4) + ...
-            5*cos(4*z+5));
-        f = chebfun3(fa);
-        % Try e.g. plot(f) or scan(f)
-
-    case 'rosenbrock'
-        % Rosenbrock Function
-        % http://www.sfu.ca/~ssurjano/rosen.html
-        fa = @(x,y,z) 100*(y-x.^2).^2 + (x-1).^2 + 100*(z-y.^2).^2 + (y-1).^2;
-        %f = chebfun3(fa);
-        f = chebfun3(fa, [-2 2 -2 2 -2 2]);
-        % Try e.g., scan(f)
 
     case 'aurentz'
         % Nice function suggested by Jared Aurentz. This is a 3D radial 
@@ -148,46 +66,12 @@ switch lower(name)
         r = 0.6; 
         fa = @(x,y,t) exp(-((x-r*cos(pi*t)).^2 + (y-r*sin(pi*t)).^2)./0.1);
         f = chebfun3(fa);
-        % Try e.g., scan(f), or surf(f)  
-        
-    case 'bessel'
-        fa = @(x,y,z) besselj(0,10*sqrt(x.^2+y.^2+z.^2));
-        f = chebfun3(fa);
-        % Try e.g., surf(f)
-        
-    case 'levy'
-        % http://www.sfu.ca/~ssurjano/levy.html
-        fa = @(x,y,z) (sin(pi*(1 + (x - 1)/4))).^2 + ((z - 1)/4).^2 .* ...
-            (1+(sin(2*pi*(z - 1)/4)).^2) + (((x - 1)/4)).^2 .* ...
-            (1+10*(sin(pi*(1 + (x - 1)/4)+1)).^2) + ...
-            (((y - 1)/4)).^2 .* (1+10*(sin(pi*(1 + (y - 1)/4)+1)).^2);
-        f = chebfun3(fa, [-10 10 -10 10 -10 10]);
-        % Try e.g. surf(f)
-
-    case 'rastrigin'
-           % Rastrigin Function (http://www.sfu.ca/~ssurjano/rastr.html)
-           fa = @(x,y,z) 30 + (x.^2-10*cos(2*pi*x)) + ...
-               (y.^2-10*cos(2*pi*y)) + (z.^2-10*cos(2*pi*z));
-           f = chebfun3(fa);
-
-    case 'clebsch'
-        % Clebsch Diagonal Cubic from algebraic geometry:
-        % http://mathworld.wolfram.com/ClebschDiagonalCubic.html
-        % http://blogs.ams.org/visualinsight/2016/03/01/clebsch-surface/
-        fa = @(x,y,z) 81*(x.^3 + y.^3 + z.^3) - 189*(x.^2.*y + x.^2.*z +...
-            y.^2.*x + y.^2.*z + z.^2.*x + z.^2.*y) + 54*(x.*y.*z) + ...
-            126*(x.*y + x.*z + y.*z) - 9*(x.^2 + y.^2 + z.^2) - ...
-            9*(x + y + z) + 1;
-        f = chebfun3(fa);
-        % Try e.g. isosurface(f,0)
-        
-    case 'cassini'
-        % Cassini Surface:
-        % https://archive.lib.msu.edu/crcmath/math/math/c/c086.htm
-        a = 0.4; 
-        fa = @(x,y,z) ((x-a).^2 + y.^2) .* ((x+a).^2 + y.^2) - z.^4;
-        f = chebfun3(fa);
-        % Try e.g. isosurface(f,0) and isosurface(f,0.5)
+        % Try e.g., scan(f), or surf(f)          
+        % Return a plot if there is no output arguments.
+        if ( nargout == 0 )
+            scan(f)
+            title(name)
+        end
         
     case 'barth10'
         % Barth Decic
@@ -199,22 +83,222 @@ switch lower(name)
             2*x.^2.*z.^2 - 2*y.^2.*z.^2) + a*(3 + 5*p) .* ((x.^2 + y.^2 ...
             + z.^2 - a)).^2 .* ((x.^2 + y.^2 + z.^2 - (2-p)*a)).^2;
         f = chebfun3(fa);
-        % Try e.g. isosurface(f,0)           
+        % Try e.g. isosurface(f,0)
+        if ( nargout == 0 )
+            isosurface(f, 0)
+           str=sprintf('%s for f = %d', name, 0);
+           title(str);                       
+        end
+        
+    case 'bessel'
+        fa = @(x,y,z) besselj(0,10*sqrt(x.^2+y.^2+z.^2));
+        f = chebfun3(fa);
+        % Try e.g., surf(f)
+        if ( nargout == 0 )
+            slice(f)
+            title(name)
+        end
+        
+    case 'cassini'
+        % Cassini Surface:
+        % https://archive.lib.msu.edu/crcmath/math/math/c/c086.htm
+        a = 0.4; 
+        fa = @(x,y,z) ((x-a).^2 + y.^2) .* ((x+a).^2 + y.^2) - z.^4;
+        f = chebfun3(fa);
+        % Try e.g. isosurface(f, 0) and isosurface(f, 0.5)
+        % Only return something if there is an output argument.
+        if ( nargout == 0 )
+            isosurface(f,0), hold on
+            isosurface(f, 0.5), hold off
+           str=sprintf('%s for f = %2.2f and %2.2f', name, 0, 0.5);
+           title(str);            
+        end
+    
+    case 'clebsch'
+        % Clebsch Diagonal Cubic from algebraic geometry:
+        % http://mathworld.wolfram.com/ClebschDiagonalCubic.html
+        % http://blogs.ams.org/visualinsight/2016/03/01/clebsch-surface/
+        fa = @(x,y,z) 81*(x.^3 + y.^3 + z.^3) - 189*(x.^2.*y + x.^2.*z +...
+            y.^2.*x + y.^2.*z + z.^2.*x + z.^2.*y) + 54*(x.*y.*z) + ...
+            126*(x.*y + x.*z + y.*z) - 9*(x.^2 + y.^2 + z.^2) - ...
+            9*(x + y + z) + 1;
+        f = chebfun3(fa);
+        % Try e.g. isosurface(f,0)        
+        if ( nargout == 0 )
+            isosurface(f,0)
+           str=sprintf('%s for f = %2.2f', name, 0);
+           title(str);
+        end
+
+    case 'doublehelix'
+       % cooked up by Trefethen 11 May 2016
+       fa = @(x,y,z) abs(((x+1i*y).*exp(1i*z)).^2-1).^2;
+       f = chebfun3(fa,[-1.5 1.5 -1.5 1.5 -6 6]);
+       % Try isosurface(f,.25,'npts',81), axis equal
+        if ( nargout == 0 )
+            isosurface(f, 0.25, 'npts', 81); axis equal
+           str=sprintf('%s for f = %2.2f', name, 0.25);
+           title(str);            
+        end
+
+   case 'genz1'
+       % http://www.sfu.ca/~ssurjano/oscil.html
+       fa = @(x,y,z) cos(pi + 5 * (x+y+z));
+       f = chebfun3(fa);
+       % Try e.g., plot(sum(f))
+        if ( nargout == 0 )
+            plot(f)
+            title(name)
+        end
+       
+   case 'genz2'
+       %http://www.sfu.ca/~ssurjano/copeak.html
+       fa = @(x,y,z) 1./(16 + 5 * (x+y+z));
+       f = chebfun3(fa);
+       % Try e.g., surf(f)
+       if ( nargout == 0 )
+           slice(f, 0, 0.5, -1)
+           title(name)
+       end
+       
+   case 'genz3'
+       % http://www.sfu.ca/~ssurjano/gaussian.html
+       fa = @(x,y,z) exp(-25*(x.^2+y.^2+z.^2));
+       f = chebfun3(fa);
+       % Try e.g., surf(f)
+       if ( nargout == 0 )
+           slice(f)
+           title(name)
+       end
+
+    case 'genz4'
+       % http://www.sfu.ca/~ssurjano/prpeak.html
+       fa = @(x,y,z) 1./((0.04+x.^2) .* (0.04+y.^2) .* (0.04+z.^2));
+       f = chebfun3(fa);
+       % Try e.g., surf(f)
+       if ( nargout == 0 )
+           slice(f)
+           title(name)
+       end
+       
+    case 'griewank'
+       %http://www.sfu.ca/~ssurjano/griewank.html
+       fa = @(x,y,z) x.^2/4000 + y.^2/4000 + z.^2/4000 - ...
+           cos(x).*cos(y/sqrt(2)).*cos(z/sqrt(3)) + 1;
+       f = chebfun3(fa, [-50 50 -50 50 -50 50]);
+       % Try e.g., plot(f) or surf(f)
+       if ( nargout == 0 )
+           plot(f)
+           title(name)
+       end
+
+    case 'hoop'
+       % cooked up by Trefethen 11 May 2016
+       fa = @(x,y,z) z.^2 + 0.5*(x.^2+y.^2-.5).^2;
+       f = chebfun3(fa);
+       % Try e.g. isosurface(f,.01)
+       if ( nargout == 0 )
+           isosurface(f, 0.01)
+           str=sprintf('%s for f = %2.2f', name, 0.01);
+           title(str);           
+       end
+
+   case 'lattice'
+       % cooked up by Trefethen 11 May 2016
+       fa = @(x,y,z) sin(8*x).^2 + sin(8*y).^2 + sin(8*z).^2;
+       f = chebfun3(fa);
+       % Try isosurface(f, 0.5), axis equal   -   or plot(f)
+       if ( nargout == 0 )
+           isosurface(f, 0.5)
+           axis equal
+           str=sprintf('%s for f = %2.2f', name, 0.5);
+           title(str);
+       end
+       
+    case 'levy'
+        % http://www.sfu.ca/~ssurjano/levy.html
+        fa = @(x,y,z) (sin(pi*(1 + (x - 1)/4))).^2 + ((z - 1)/4).^2 .* ...
+            (1+(sin(2*pi*(z - 1)/4)).^2) + (((x - 1)/4)).^2 .* ...
+            (1+10*(sin(pi*(1 + (x - 1)/4)+1)).^2) + ...
+            (((y - 1)/4)).^2 .* (1+10*(sin(pi*(1 + (y - 1)/4)+1)).^2);
+        f = chebfun3(fa, [-10 10 -10 10 -10 10]);
+        % Try e.g. surf(f)
+        if ( nargout == 0 )
+            isosurface(f, 17, 'r')
+            str=sprintf('%s for f = %2.2f', name, 17);
+            title(str)
+        end
+
+    case 'rastrigin'
+           % Rastrigin Function (http://www.sfu.ca/~ssurjano/rastr.html)
+           fa = @(x,y,z) 30 + (x.^2-10*cos(2*pi*x)) + ...
+               (y.^2-10*cos(2*pi*y)) + (z.^2-10*cos(2*pi*z));
+           f = chebfun3(fa);
+        if ( nargout == 0 )
+            isosurface(f)
+            title(name)
+        end
+       
+    case 'rosenbrock'
+        % Rosenbrock Function
+        % http://www.sfu.ca/~ssurjano/rosen.html
+        fa = @(x,y,z) 100*(y-x.^2).^2 + (x-1).^2 + 100*(z-y.^2).^2 + (y-1).^2;
+        %f = chebfun3(fa);
+        f = chebfun3(fa, [-2 2 -2 2 -2 2]);
+        % Try e.g., scan(f)
+        if ( nargout == 0 )
+            contour(f(:,:,1), 0:10:100)
+            str=sprintf('%s at z = %2.2f', name, 1);
+            title(str)
+        end
+        
+    case 'runge'
+        % A 3D Runge function:        
+        fa = @(x,y,z) 1./(1+x.^2+y.^2+z.^2);
+        f = chebfun3(fa);
+        % Only return something if there is an output argument.
+        if ( nargout == 0 )
+            slice(f)
+            title(name)
+        end
+        
+    case 'shubert'
+        %Shubert Function 
+        % http://www.sfu.ca/~ssurjano/shubert.html
+        fa = @(x,y,z) (cos(2*x+1) + 2*cos(3*x+2) + 3*cos(4*x+3) + ...
+            4*cos(5*x+4) + 5*cos(4*x+5)) .* (cos(2*y+1) + 2*cos(3*y+2) + ...
+            3*cos(4*y+3) + 4*cos(5*y+4) + 5*cos(4*y+5)) .* ...
+            (cos(2*z+1) + 2*cos(3*z+2)+ 3*cos(4*z+3) + 4*cos(5*z+4) + ...
+            5*cos(4*z+5));
+        f = chebfun3(fa);
+        % Try e.g. plot(f) or scan(f)
+        if ( nargout == 0 )
+            scan(f)
+            title(name)
+        end
+
+    case 'wagon'
+        % Function from Page 99 of F. Bornemann, D. Laurie, S. Wagon and J. 
+        % Waldvogel, The SIAM 100-Digit Challenge, SIAM, 2004.
+        % This function was proposed by Stan Wagon.
+        fa = @(x,y,z) exp(sin(50*x)) + sin(60*exp(y)).*sin(60*z) + ...
+            sin(70*sin(x)).*cos(10*z) + sin(sin(80*y)) - sin(10*(x+z)) +...
+            (x.^2 + y.^2 + z.^2)/4;
+        f = chebfun3(fa);
+        if ( nargout == 0 )
+            contourf(f(-.16,:,:))
+            str=sprintf('%s at x = %2.2f', name, -0.16);
+            title(str)
+        end
            
     % Throw an error if the input is unknown.
     otherwise
-        %error('CHEB:GALLERY3:unknown:unknownFunction', ...
-        error('CHEBFUN:GALLERY3:unknown:unknownFunction', ...
+        error('CHEB:GALLERY3:unknown:unknownFunction', ...
             'Unknown function.')
 end
 
-% Only return something if there is an output argument.
 if ( nargout > 0 )
     varargout = {f, fa};
-else
-    % Otherwise, plot the function.
-    plot(f)
-    title(name)
 end
 
 end

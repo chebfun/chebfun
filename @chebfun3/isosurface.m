@@ -17,15 +17,15 @@ function varargout = isosurface(f, varargin)
 %   ISOSURFACE(F, LEV, 'NPTS', n) plots the isosurface and also lets
 %   the user specify the plotting grid.
 %
-%   Example 1: f = cheb.gallery3('runge');
-%            isosurface(f, 0.8)
-%
 %   ISOSURFACE(F,LEV,...) allows plotting of isosurfaces with specified 
 %   level, color and style.
 %
 %   If F is complex-valued, then its absolute value is plotted.
 %
 %   See also CHEBFUN3/PLOT, CHEBFUN3/SLICE, SCAN, and CHEBFUN3/SURF.
+%
+%   Example 1: f = cheb.gallery3('runge');
+%            isosurface(f, 0.8)
 %
 %   Example 2: f = chebfun3(@(x,y,z) tanh(x+y-.3) + cos(x.*y.*z)./(4+x-y-z));
 %            isosurface(f)
@@ -40,7 +40,6 @@ function varargout = isosurface(f, varargin)
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-
 numpts = [];
 if ( nargin > 1 )
     for k = 1:nargin-1
@@ -52,18 +51,13 @@ end
 if ( isempty(numpts) )
     numpts = 51;
 end
-    
 
-
-%if ( nargin == 1 )
-%    runIsosurface3GUI(f);
 if ( nargin == 1 || (nargin == 3 && strcmp(varargin{1}, 'npts')) )
     % User has specified the size of grid to sample for the isosurface plot.
     runIsosurface3GUI(f, numpts);
 else
     holdState = ishold;
     dom = f.domain;
-    %numpts = 51;
     [xx, yy, zz] = meshgrid(linspace(dom(1), dom(2), numpts), ...
         linspace(dom(3), dom(4), numpts), linspace(dom(5), dom(6), numpts));
     v = feval(f, xx, yy, zz);
@@ -93,8 +87,7 @@ if ( nargin == 2 && strcmp(varargin, 'noslider') ) % Levels are not specified. S
     % Make objects transparent.
     alpha(.4) 
     
-    hold off; 
-    %camlight; 
+    hold off;
     camlight('headlight')
     lighting gouraud
     view(3)
@@ -114,7 +107,7 @@ if ( nargin == 2 && strcmp(varargin, 'noslider') ) % Levels are not specified. S
      return
     
 elseif ( nargin == 2 || (nargin == 4 && strcmp(varargin{2}, 'npts')) )
-    % Isovalues are given. But colors and style are not specified.
+    % Isovalues are given, but colors and style are not specified.
     if iscell(varargin(1))
         isovals = cell2mat(varargin(1));
     else
@@ -169,8 +162,7 @@ elseif ( nargin==3 && ~strcmp(varargin{1}, 'npts') ) % Levels, colors and/or sty
     end
      if ( nargout > 0 )
          varargout = {p};
-     end
-     
+     end     
      
 elseif ( nargin==5 && strcmp(varargin{3}, 'npts') ) % Levels, colors and/or style are specified.
     cc = regexp( varargin{2}, '[bgrcmykw]', 'match' );       % color
@@ -213,11 +205,6 @@ h = instantiateIsosurface3();
 handles = guihandles(h);
 
 dom = f.domain;
-% if nargin > 1
-%     numpts = npts; % User has specified the size of grid to sample
-% else
-%     numpts = 51;
-% end
 [xx, yy, zz] = meshgrid(linspace(dom(1), dom(2), numpts), ...
     linspace(dom(3), dom(4), numpts), linspace(dom(5), dom(6), numpts));
 v = feval(f, xx, yy, zz);
@@ -325,7 +312,6 @@ p.EdgeColor = 'none';
 
 camlight 
 lighting gouraud
-
 
 % Put the current value of the slider on the GUI
 set(handles.printedIsoVal, 'String', num2str(isoVal));
