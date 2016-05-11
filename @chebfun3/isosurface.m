@@ -1,43 +1,41 @@
 function varargout = isosurface(f, varargin)
-%ISOSURFACE  Extract isosurface data from a CHEBFUN3
+%ISOSURFACE  Plots an isosurface of a CHEBFUN3
 %
-%   ISOSURFACE(F) plots isosurface of the CHEBFUN3 object F as a 
-%   GUI so that the user can use a slider to change the isosurface.
+%   ISOSURFACE(F) plots an isosurface of the CHEBFUN3 object F in a 
+%   GUI so that the user can use a slider to change the level.
 %
-%   ISOSURFACE(F, 'NPTS', n) plots isosurface of the CHEBFUN3 object F
-%   again with sliders but allows user to adjust the grid size (i.e., the 
-%   number of points) that is used to create the isosurface plot.
+%   ISOSURFACE(F, 'NPTS', n) plots an isosurface of F again with sliders
+%   but allows the user to adjust the grid size (the number of points
+%   in each direction) used to create the plot.  Default: n=51.
 %
-%   ISOSURFACE(F, 'NOSLIDER') plots 3 isosurfaces of the CHEBFUN3 object F 
-%   at three automatically-chosen level surfaces. The slider is not shown
-%   anymore.
+%   ISOSURFACE(F, 'NOSLIDER') plots 3 isosurfaces at three
+%   automatically-chosen levels. There is no slider.
 %
-%   ISOSURFACE(F, LEV) plots isosurface of F at a level specified in the
-%   scalar LEV. 
+%   ISOSURFACE(F, LEV) plots the isosurface of F at the level
+%   specified by the scalar LEV. 
 %
-%   ISOSURFACE(F, LEV, 'NPTS', n) plots isosurface of the CHEBFUN3 object F
-%    at a level specified in the scalar LEV, but allows user to specify the
-%    underlying grid size for plotting.
+%   ISOSURFACE(F, LEV, 'NPTS', n) plots the isosurface and also lets
+%   the user specify the plotting grid.
 %
 %   Example 1: f = cheb.gallery3('runge');
-%            isosurface(f, [0.8])
+%            isosurface(f, 0.8)
 %
-%   ISOSURFACE(F,LEV,...) allows plotting isosurfaces of F at specified 
+%   ISOSURFACE(F,LEV,...) allows plotting of isosurfaces with specified 
 %   level, color and style.
 %
-%   If F is complex-valued, then its complex magnitude is used.
+%   If F is complex-valued, then its absolute value is plotted.
 %
 %   See also CHEBFUN3/PLOT, CHEBFUN3/SLICE, SCAN, and CHEBFUN3/SURF.
 %
 %   Example 2: f = chebfun3(@(x,y,z) tanh(x+y-.3) + cos(x.*y.*z)./(4+x-y-z));
 %            isosurface(f)
 
-%   Developer Note: This code might run slow, as evalutaion is not 
-%   specially slow in Chebfun3, but because isosurface plots can be slow to
-%   render in the core MATLAB. The time spent in pure Chebfun side of this 
-%   code might be 1% the time spent just in the line that calls isosurface 
-%   command of core MATLAB. This is an issue related to how graphics are
-%   handled in MATLAB with different graphic cards.
+%   Developer Note: This code might run slowly, not because evaluation is
+%   especially slow in Chebfun3, but because isosurface plots can be slow to
+%   render in core MATLAB. The time spent on the pure Chebfun side of this 
+%   code might be 1% of the time spent just in the line that calls the
+%   isosurface command of MATLAB. This is an issue related to how graphics
+%   are handled in MATLAB with different graphic cards.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

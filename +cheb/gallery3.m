@@ -15,17 +15,20 @@ function varargout = gallery3(name)
 %   viewing in the form e.g. [plot(f)].  For more details about
 %   the functions, see the code and associated comments.
 %
-%   aurentz      A 3D radial bump function [scan(f)]
+%   aurentz      3D radial bump function [scan(f)]
 %   barth10      Barth decic from algebraic geometry
 %   bessel       Bessel function of radius r
 %   cassini      Cassini Surface from algebraic geometry
 %   clebsch      Clebsch diagonal cubic from alg. geom. [isosurface(f,0)]
+%   doublehelix  A pair of helices [isosurface(f,.25,'npts',81)]
 %   genz1        Oscillatory integration test fun. [plot(f)]
 %   genz2        Cubature test function with corner peak [surf(f)]
 %   genz3        Cubature test function with Gaussian peak [surf(f)]
 %   genz4        Cubature test function with product peak [surf(f)]
 %   griewank     Function with many local minima.  The global
 %                min. is 0 at (0,0,0). [plot(f)]
+%   hoop         Function that is zero along a circle [isosurface(f,.01)]
+%   lattice      Balls around a regular lattice of pts [isosurface(f,.5)]
 %   levy         Function with global min. 0 at (1,1,1) [surf(f)]
 %   rastrigin    Function with many local minima.  The global
 %                min. is 0 at (0,0,0).  [isosurface(f)]
@@ -48,12 +51,19 @@ function varargout = gallery3(name)
 if ( nargin == 0 )
     names = {'wagon', 'runge', 'clebsch', 'cassini', 'barth10', ...
         'shubert', 'rosenbrock', 'aurentz', 'genz1', 'genz2', 'genz3', ...
-        'genz4', 'griewank', 'rastrigin', 'bessel'};
+        'genz4', 'griewank', 'rastrigin', 'bessel', 'doublehelix', ...
+        'hoop', 'lattice'};
     name = names{randi(length(names))};
 end
 
 % The main switch statement.
 switch lower(name)
+
+   case 'doublehelix'
+       % cooked up by Trefethen 11 May 2016
+       fa = @(x,y,z) abs(((x+1i*y).*exp(1i*z)).^2-1).^2;
+       f = chebfun3(fa,[-1.5 1.5 -1.5 1.5 -6 6]);
+       % Try isosurface(f,.25,'npts',81), axis equal
 
    case 'genz1'
        % http://www.sfu.ca/~ssurjano/oscil.html
@@ -79,13 +89,25 @@ switch lower(name)
        f = chebfun3(fa);
        % Try e.g., surf(f)
 
-       case 'griewank'
+    case 'griewank'
        %http://www.sfu.ca/~ssurjano/griewank.html
        fa = @(x,y,z) x.^2/4000 + y.^2/4000 + z.^2/4000 - ...
            cos(x).*cos(y/sqrt(2)).*cos(z/sqrt(3)) + 1;
        f = chebfun3(fa, [-50 50 -50 50 -50 50]);
        % Try e.g., plot(f) or surf(f)    
-    
+
+    case 'hoop'
+       % cooked up by Trefethen 11 May 2016
+       fa = @(x,y,z) z.^2 + 0.5*(x.^2+y.^2-.5).^2;
+       f = chebfun3(fa);
+       % Try e.g. isosurface(f,.01)
+
+   case 'lattice'
+       % cooked up by Trefethen 11 May 2016
+       fa = @(x,y,z) sin(8*x).^2 + sin(8*y).^2 + sin(8*z).^2;
+       f = chebfun3(fa);
+       % Try isosurface(f,.5), axis equal   -   or plot(f)
+
     case 'wagon'
         % Function from Page 99 of F. Bornemann, D. Laurie, S. Wagon and J. 
         % Waldvogel, The SIAM 100-Digit Challenge, SIAM, 2004.
