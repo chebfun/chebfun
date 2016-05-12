@@ -34,17 +34,14 @@ end
 % If F is of low degree, then oversample: 
 m = min(max(m, 9), 41); 
 n = min(max(n, 9), 41); 
-p = min(max(p, 9), 41); % cannot afford to go over 40x40x40. 
+p = min(max(p, 9), 41); % cannot afford to go over 41x41x41. 
 
 % Calculate values on a tensor grid: 
-%vals = sample(f, m, n, p); 
 dom = f.domain;
 x = mypoints(m, dom(1:2), tech);
 y = mypoints(n, dom(3:4), tech);
 z = mypoints(p, dom(5:6), tech);
 [xx, yy, zz] = ndgrid(x, y, z);
-% [xx, yy, zz] = ndgrid(chebpts(m, dom(1:2)), chebpts(n, dom(3:4)), ...
-%     chebpts(p, dom(5:6)));
 vals = feval(f, xx, yy, zz); 
 
 % Take the absolute maximum: 

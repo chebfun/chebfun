@@ -5,13 +5,8 @@ function pass = sampleTest(f, sampleOP, tol, flag)
 
 % Define some points to evaluate and compare the functions
 dom = f.domain;
-% xeval =[ dom(1)+1e-12; (dom(1)+dom(2))/2; dom(2)-1e-12];
-% yeval =[ dom(3)+1e-12; (dom(3)+dom(4))/2; dom(4)-1e-12];
-% zeval =[ dom(5)+1e-12; (dom(5)+dom(6))/2; dom(6)-1e-12];
-% [xeval, yeval, zeval] = ndgrid(xeval, yeval,zeval);
 n = 30; 
 [xeval, yeval, zeval] = halton(n, dom);
-
 
 % Evaluate the CHEBFUN3T object:
 vFun = feval(f, xeval, yeval, zeval);   
@@ -19,22 +14,11 @@ vFun = feval(f, xeval, yeval, zeval);
 % Evaluate the op:
 vOp = feval(sampleOP, xeval,yeval,zeval);
 
-% If the CHEBTECH evaluation differs from the op evaluation, SAMPLETEST failed:
-%Fvscale = f.vscale;
-%err = bsxfun(@rdivide, abs(vOp - vFun), Fvscale); % Relative (to vscale) error.
-%err = bsxfun(@rdivide, norm(chebfun3t.unfold(vOp - vFun,1),'fro'), Fvscale); % Relative (to vscale) error.
-%err = norm(chebfun3t.unfold(vOp - vFun,1),'fro'), Fvscale); % Relative (to vscale) error.
 if ( any(max(abs(vOp - vFun)) > 100*tol) )    
     pass = false; % :(
 else
     pass = true;  % :)
 end
-
-% if ( any(max(abs(vOp - vFun)) > tol) )
-%     pass = false; % :(
-% else
-%     pass = true;  % :)
-% end
 
 end          % End of sampleTest
 

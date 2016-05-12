@@ -99,9 +99,6 @@ classdef chebfun3t
         
         % Number of degrees of freedom needed to represent a CHEBFUN3T
         out = ndf(f);
-
-        % Vertical scale of a CHEBFUN3T
-        out = vertscale(f);
         
         % Definite integral of a CHEBFUN3T over its domain
         out = sum3(f);
@@ -144,6 +141,9 @@ classdef chebfun3t
        out = sinh(f);
        
        out = cosh(f);
+       
+       out = isempty(f);
+       
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -152,7 +152,10 @@ classdef chebfun3t
     methods ( Hidden = true, Static = false )
         
         out = domainCheck(f, g);
-
+        
+        % Vertical scale of a CHEBFUN3T
+        out = vertscale(f);
+        
     end    
     
 end

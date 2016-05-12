@@ -19,7 +19,7 @@ end
 % If F is of low degree, then oversample: 
 m = min(max(m, 9), 41); 
 n = min(max(n, 9), 41); 
-p = min(max(p, 9), 41); % cannot afford to go over 40x40x40. 
+p = min(max(p, 9), 41); % cannot afford to go over 41x41x41. 
 
 % Calculate values on a tensor grid: 
 dom = f.domain;

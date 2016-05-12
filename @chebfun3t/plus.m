@@ -9,7 +9,7 @@ if ( isempty(f) || isempty(g) ) % CHEBFUN3T + [] = []
     
 elseif ( isa(g, 'double') ) % CHEBFUN3T + double
     f.coeffs(1,1,1) = f.coeffs(1,1,1) + g;
-    f.vscale = f.vscale + g;
+    f.vscale = abs(f.vscale + g);
     
 elseif ( isa(f, 'double') ) % double + CHEBFUN3T
     % Switch argument order and call PLUS again:
@@ -29,37 +29,10 @@ elseif ( isa(f, 'chebfun3t') && isa(g, 'chebfun3t') )  % CHEBFUN3T + CHEBFUN3T
         
         % Update coefficients:
         f.coeffs = fcoeffsNew + gcoeffsNew;
-        f.vscale = vertscale(f); %f.vscale + g.vscale;
+        f.vscale = vertscale(f);
     else
         error('CHEBFUN3T:plus: Inputs are not defined on the same domain.\n');
     end
     
-    %     f.coeffs = f.coeffs + g.coeffs;
-    %     % Look for a zero output:
-    %     tol = max(f.epslevel.*f.vscale, g.epslevel.*g.vscale);
-    %     absCoeffs = abs(f.coeffs);
-    %     isz = bsxfun(@lt, absCoeffs, .2*tol); % Are coeffs below .2*el*vs?
-    %     
-    %     if ( all(isz(:)) )
-    %         % Create a zero CHEBTECH:
-    %         epslevel = max(f.epslevel, g.epslevel);
-    %         ishappy = f.ishappy && g.ishappy;
-    %         z = zeros(1, size(f.coeffs, 2));
-    % 
-    %         data.vscale = z;
-    %         data.hscale = f.hscale;
-    %         f = f.make(z, data);
-    %         f.epslevel = epslevel;
-    %         f.ishappy = ishappy;
-    %     else
-    %         % Update vscale, epslevel, and ishappy:
-    %         vscaleNew = getvscl(f); 
-    %         % See CHEBTECH CLASSDEF file for documentation on this:
-    %         tmpVscaleNew = vscaleNew;
-    %         tmpVscaleNew(tmpVscaleNew == 0) = 1;  % Avoid NaNs.
-    %         epslevelBound = (f.epslevel.*f.vscale + g.epslevel.*g.vscale)./tmpVscaleNew;
-    %         f.epslevel = updateEpslevel(f, epslevelBound);
-    %         f.vscale = vscaleNew;
-    %        f.ishappy = f.ishappy && g.ishappy;
 end
 end
