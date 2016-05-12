@@ -205,8 +205,8 @@ switch lower(name)
 
    case 'lattice'
        % cooked up by Trefethen 11 May 2016
-       fa = @(x,y,z) sin(8*x).^2 + sin(8*y).^2 + sin(8*z).^2;
-       f = chebfun3(fa);
+       fa = @(x,y,z) cos(2*pi*x).^2 + cos(2*pi*y).^2 + cos(2*pi*z).^2;
+       f = chebfun3(fa, 'trig');
        % Try isosurface(f, 0.5), axis equal   -   or plot(f)
        if ( nargout == 0 )
            isosurface(f, 0.5)
