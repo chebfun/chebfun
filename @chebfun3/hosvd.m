@@ -25,7 +25,7 @@ function varargout = hosvd(f, varargin)
 
 % Singular functions are unique only up to a +-1 sign and permutations. 
 % Truncation by HOSVD is helpful, but is not necessarily optimal as one
-% recalls from SVD in 2D.
+% expects from Eckart-Young theorem in 2D.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -47,16 +47,19 @@ tempCore = chebfun3.txm(chebfun3.txm(chebfun3.txm(f.core, R1, 1), R2, ...
 
 % Create a cell of modal singular values:
 % Compute mode-1 singular values:
+sv{1} = zeros(size(core, 1), 1);
 for i = 1:size(core, 1)
     sv{1}(i) = norm(squeeze(core(i, :, :)), 'fro');
 end
 
 % Compute mode-2 singular values:
+sv{2} = zeros(size(core, 2), 1);
 for i = 1:size(core, 2)
     sv{2}(i) = norm(squeeze(core(:, i, :)), 'fro');
 end
 
 % Compute mode-3 singular values:
+sv{3} = zeros(size(core, 3), 1);
 for i = 1:size(core, 3)
     sv{3}(i) = norm(core(:, :, i), 'fro');
 end
