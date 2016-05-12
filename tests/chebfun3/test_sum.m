@@ -28,4 +28,77 @@ exact3 = chebfun2(@(x,y) 4*x.^2 + 16*y - 140, dom(1:4));
 pass(j)  = norm(sum(f, [3]) - exact3) < tol;
 j=j+1;
 
+% Make sure there is no bug when f has no x coordinate and we integrate
+% over x:
+dom = [-2 3, -2 2, -5 -3];
+f = chebfun3(@(x,y,z) cos(y) + sin(z), dom);
+g = sum(f);
+exact = chebfun2(@(y,z) diff(dom(1:2)).*(cos(y) + sin(z)), dom(3:6));
+pass(j)  = norm(g - exact) < tol;
+j=j+1;
+
+% Make sure there is no bug when f has no y coordinate and we integrate
+% over x:
+f = chebfun3(@(x,y,z) cos(x) + sin(z), dom);
+g = sum(f);
+exact = chebfun2(@(y,z) sin(3)+sin(2) + 5.*sin(z), dom(3:6));
+pass(j)  = norm(g - exact) < tol;
+j=j+1;
+
+% Make sure there is no bug when f has no z coordinate and we integrate
+% over x:
+f = chebfun3(@(x,y,z) cos(x) + sin(y), dom);
+g = sum(f);
+exact = chebfun2(@(y,z) sin(3)+sin(2) + 5.*sin(y), dom(3:6));
+pass(j)  = norm(g - exact) < tol;
+j=j+1;
+
+% Make sure there is no bug when f has no x coordinate and we integrate over 
+% y:
+f = chebfun3(@(x,y,z) cos(y)+sin(z), dom);
+g = sum(f, 2);
+exact = chebfun2(@(x,z) 2*sin(2)+4.*sin(z), [dom(1:2), dom(5:6)]);
+pass(j)  = norm(g - exact) < tol;
+j=j+1;
+
+% Make sure there is no bug when f has no y coordinate and we integrate over 
+% y:
+f = chebfun3(@(x,y,z) cos(x)+sin(z), dom);
+g = sum(f, 2);
+exact = chebfun2(@(x,z) diff(dom(3:4)).*(cos(x)+sin(z)), [dom(1:2), dom(5:6)]);
+pass(j)  = norm(g - exact) < tol;
+j=j+1;
+
+% Make sure there is no bug when f has no z coordinate and we integrate over 
+% y:
+f = chebfun3(@(x,y,z) cos(x)+sin(y), dom);
+g = sum(f, 2);
+exact = chebfun2(@(x,z) 4*cos(x), [dom(1:2), dom(5:6)]);
+pass(j)  = norm(g - exact) < tol;
+j=j+1;
+
+% Make sure there is no bug when f has no x coordinate and we integrate over 
+% z:
+f = chebfun3(@(x,y,z) cos(y)+sin(z), dom);
+g = sum(f, 3);
+exact = chebfun2(@(x,y) 2*cos(y) + cos(5) - cos(3), dom(1:4));
+pass(j)  = norm(g - exact) < tol;
+j=j+1;
+
+% Make sure there is no bug when f has no y coordinate and we integrate over 
+% z:
+f = chebfun3(@(x,y,z) cos(x)+sin(z), dom);
+g = sum(f, 3);
+exact = chebfun2(@(x,y) 2*cos(x) + cos(5) - cos(3), dom(1:4));
+pass(j)  = norm(g - exact) < tol;
+j=j+1;
+
+% Make sure there is no bug when f has no z coordinate and we integrate over 
+% z:
+f = chebfun3(@(x,y,z) cos(x)+sin(y), dom);
+g = sum(f, 3);
+exact = chebfun2(@(x,y) diff(dom(5:6))*(cos(x)+sin(y)), dom(1:4));
+pass(j)  = norm(g - exact) < tol;
+j=j+1;
+
 end
