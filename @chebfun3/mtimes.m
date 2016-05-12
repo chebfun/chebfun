@@ -52,36 +52,22 @@ if ( isa(f, 'chebfun3') )           % CHEBFUN3 * ???
         
         % Form the output:
         h = chebfun3();
-        h.cols = gCols;   % The second variable of g sits in the place of the 1st variable of h.
-        h.rows = fRows;   % The second variable of h is the 2nd variable of f.
-        h.tubes = fTubes; % The 3rd variable of h is the 3rd variable of f.
+        h.cols = gCols;   % 2nd variable of g sits in place of 1st variable of h.
+        h.rows = fRows;   % 2nd variable of h is the 2nd variable of f.
+        h.tubes = fTubes; % 3rd variable of h is 3rd variable of f.
         h.core = chebfun3.txm(temp, gPivots, 1);
         h.domain = f.domain;
-                 
-%         % Construct low rank form of the result:
-%         [U, S, V] = svd(fScl * X * gScl);
-%         h = f;
-%         h.cols = fCols * U;
-%         h.rows = gRows * V;
-%         h.pivotValues = 1 ./ diag(S);
-%          error('CHEBFUN:CHEBFUN3:mtimes', 'Not written yet.');
-          
+                           
     elseif ( isa(g, 'chebfun') )    % CHEBFUN3 * CHEBFUN3
-%         cols = f.cols;
-%         rows = f.rows;
-%         fScl = diag( 1./f.pivotValues );
-%         X = innerProduct( rows, g );
-%         h = cols * fScl * X;
         error('CHEBFUN:CHEBFUN3:mtimes', 'Not written yet.');
 
     elseif ( isa(g, 'chebfun3v') )  % CHEBFUN3 * CHEBFUN3V
-%         nG = g.nComponents; 
-%         h = g; 
-%         gc = g.components; 
-%         for jj = 1:nG 
-%            h.components{jj} = times(f, gc{jj}); 
-%         end
-          error('CHEBFUN:CHEBFUN3:mtimes', 'Not written yet.');
+        nG = g.nComponents; 
+        h = g; 
+        gc = g.components; 
+        for jj = 1:nG 
+           h.components{jj} = times(f, gc{jj}); 
+        end
         
     else
         error('CHEBFUN:CHEBFUN3:mtimes:unknown', ...
@@ -90,10 +76,6 @@ if ( isa(f, 'chebfun3') )           % CHEBFUN3 * ???
         
     end
     
-% else
-%     
-%     h = mtimes(g.', f.').';
-
 elseif ( isa(f, 'double') && isa(g, 'chebfun3') )  % DOUBLE * CHEBFUN3
     h = mtimes(g.', f.').';
 else

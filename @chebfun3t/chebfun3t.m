@@ -106,6 +106,9 @@ classdef chebfun3t
         % Definite integral of a CHEBFUN3T over its domain
         out = sum3(f);
         
+        % Norm of a CHEBFUN3T
+        out = norm(f);
+
         out = plotcoeffs(f)
 
         % Addition of two CHEBFUN3T objects
@@ -120,6 +123,8 @@ classdef chebfun3t
         % Multiplication of two CHEBFUN3T objects
         %out = times(f, g);
         out = times(f, g, tol);
+        
+        out = mtimes(f, g);
         
         out = power(varargin);
         
@@ -140,5 +145,14 @@ classdef chebfun3t
        
        out = cosh(f);
     end
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% HIDDEN METHODS:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    methods ( Hidden = true, Static = false )
+        
+        out = domainCheck(f, g);
+
+    end    
     
 end

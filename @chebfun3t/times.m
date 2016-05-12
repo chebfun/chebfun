@@ -11,28 +11,43 @@ if (nargin<3)
     tol = eps;
 end
 
-%if ( isa(f, 'chebfun3') )    % CHEBFUN3 .* ???
-if ( isa(f, 'chebfun3t') && isa(g, 'chebfun3t'))    % CHEBFUN3 .* ???    
+if ( isa(f, 'chebfun3t') )     % CHEBFUN3T .* ???
     
-%    if ( isa(g, 'double') )  % CHEBFUN2 .* DOUBLE
-%        h = mtimes(f, g);
-%    elseif ( isa( g, 'chebfun2') )
-%        bol = domainCheck(f, g);
-%        if ( bol )
+    if ( isa(g, 'double') )  % CHEBFUN3T .* DOUBLE
+        h = mtimes(f, g);
+    elseif ( isa( g, 'chebfun3t') )
+        bool = domainCheck(f, g);
+        if ( bool )
             %h = chebfun3t(@(x, y, z) feval(f, x, y, z).*feval(g, x, y, z), f.domain);
-            h = chebfun3t(@(x, y, z) feval(f, x, y, z).*feval(g, x, y, z), f.domain, 'eps', tol);
-%        else
-%            error('CHEBFUN:CHEBFUN2:times:domain', 'Inconsistent domains');
-%        end
+            h = chebfun3t(@(x, y, z) feval(f, x, y, z).*feval(g, x, y, z), ...
+                f.domain, 'eps', tol);
+        else
+           error('CHEBFUN:CHEBFUN3T:times:domain', 'Inconsistent domains');
+       end
     else
         error('CHEBFUN:CHEBFUN3T:times:unknown', ...
             ['Undefined function ''mtimes'' for input arguments of type %s ' ...
             'and %s.'], class(f), class(g));
     end
-    
-%else
-%    h = times(g, f);
-%end
+
+else 
+   h = times(g, f); 
+end
+
+% %if ( isa(f, 'chebfun3') )    % CHEBFUN3 .* ???
+% if ( isa(f, 'chebfun3t') && isa(g, 'chebfun3t'))    % CHEBFUN3 .* ???        
+%     %h = chebfun3t(@(x, y, z) feval(f, x, y, z).*feval(g, x, y, z), f.domain);
+%     h = chebfun3t(@(x, y, z) feval(f, x, y, z).*feval(g, x, y, z), ...
+%         f.domain, 'eps', tol);
+% else
+%     error('CHEBFUN:CHEBFUN3T:times:unknown', ...
+%         ['Undefined function ''mtimes'' for input arguments of type %s ' ...
+%         'and %s.'], class(f), class(g));
+% end
+% 
+% %else
+% %    h = times(g, f);
+% %end
 
 end
 

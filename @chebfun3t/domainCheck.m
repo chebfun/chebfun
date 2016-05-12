@@ -1,7 +1,7 @@
 function out = domainCheck(f, g)
-%DOMAINCHECK   True if the domains of two CHEBFUN3 objects are the same.
+%DOMAINCHECK   True if the domains of two CHEBFUN3T objects are the same.
 %   DOMAINCHECK(F, G) returns TRUE if the domains of the two
-%   CHEBFUN3 objects F and G coincide up to a tolerance depending on their
+%   CHEBFUN3T objects F and G coincide up to a tolerance depending on their
 %   horizontal scales or if both F and G are empty CHEBFUN objects.
 %
 % See also CHEBFUN/DOMAINCHECK.
@@ -10,9 +10,9 @@ function out = domainCheck(f, g)
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% The CHEBFUN3 class uses this function internally to compare the domains of
-% CHEBFUN3 objects before attempting to perform operations on multiple
-% CHEBFUN3 objects that require the CHEBFUN3 objects to reside on the same interval.
+% The CHEBFUN3T class uses this function internally to compare the domains of
+% CHEBFUN3T objects before attempting to perform operations on multiple
+% CHEBFUN3T objects that require the CHEBFUN3T objects to reside on the same interval.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Empty check: 
@@ -24,12 +24,15 @@ elseif ( xor(isempty(f), isempty(g) ) )
     return
 end
 
-% Extract columns, rows and tubes: 
-[ignore, fCols, fRows, fTubes] = tucker(f);
-[ignore, gCols, gRows, gTubes] = tucker(g);
+% Compute INF norm of the domains:
+hscaleF = norm(f.domain, inf);
+hscaleG = norm(g.domain, inf);
+hscale = max(hscaleF, hscaleG);
 
-% Call 1D domain check: 
-out = domainCheck(fCols, gCols) & domainCheck(fRows, gRows) & ...
-    domainCheck(fTubes, gTubes);
+% Compare the domains:
+err = f.domain - g.domain;
+
+% Should be less than tolerance.
+out = all(abs(err) < 1e-15*hscale);
 
 end
