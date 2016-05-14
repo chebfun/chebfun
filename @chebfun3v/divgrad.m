@@ -17,6 +17,6 @@ if ( (nComponents < 3) || (nComponents > 3) )
 end
      
 Fc = F.components; 
-G = diff(Fc{1}, 2, 1) + diff(Fc{2}, 2, 2) + diff(Fc{3}, 2,3); 
+G = diff(Fc{1}, 2, 1) + diff(Fc{2}, 2, 2) + diff(Fc{3}, 2, 3); 
  
 end

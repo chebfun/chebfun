@@ -25,11 +25,9 @@ end
 
 if ( isa(F, 'chebfun3v') && ...
         (isempty(varargin) || ~isa(varargin{1}, 'chebfun3v')) ) 
-    % quiver3(F,...)
     
-    nF = F.nComponents; 
-    if ( nF == 2 ) 
-        % h = quiver( F, varargin{:} ); 
+    nF = F.nComponents;
+    if ( nF == 2 )
         error('CHEBFUN:CHEBFUN3V:quiver3:badInputs1',...
             'Needs three CHEBFUN3 objects.');
     else
@@ -38,12 +36,11 @@ if ( isa(F, 'chebfun3v') && ...
         x = linspace(dom(1), dom(2), numpts);
         y = linspace(dom(3), dom(4), numpts);
         z = linspace(dom(5), dom(6), numpts);
-%        [xx, yy, zz] = meshgrid(x, y, z); 
-        [xx, yy, zz] = ndgrid(x, y, z); 
+        [xx, yy, zz] = ndgrid(x, y, z);
         vals1 = feval(F.components{1}, xx, yy, zz);
         vals2 = feval(F.components{2}, xx, yy, zz);
         vals3 = feval(F.components{3}, xx, yy, zz);
-        h = quiver3( xx, yy, zz, vals1, vals2, vals3, varargin{:} );
+        h = quiver3(xx, yy, zz, vals1, vals2, vals3, varargin{:});
     end
 
 else
@@ -52,7 +49,7 @@ else
 end
 
 if ( nargout > 0 )
-    varargout = { h };
+    varargout = {h};
 end
 
 end

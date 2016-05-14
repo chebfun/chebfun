@@ -14,68 +14,46 @@ function pass = sampleTest(f, sampleOP, tol, flag)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% [TODO]: Describe where we evaluate? (at low discrepancy points...)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% We evaluate at low discrepancy points.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if ( nargin < 3 ) 
     % Assume op is vectorized:
     flag = 0; 
 end
 
-% if ( nargin < 5 )
-%     fiberDim = false;
-% end
-
-domain = f.domain; 
-
+domain = f.domain;
 if ( ~flag )
-    %n = 5; 
     n = 30; 
-   [xeval, yeval, zeval] = halton( n, domain );
-%    xeval =[ (domain(1) + (domain(1)+domain(2))/2)/2; (domain(1)+domain(2))/2; (domain(2) + (domain(1)+domain(2))/2)/2];
-%    yeval =[ (domain(3) + (domain(3)+domain(4))/2)/2; (domain(3)+domain(4))/2; (domain(4) + (domain(3)+domain(4))/2)/2];
-%    zeval =[ (domain(5) + (domain(5)+domain(6))/2)/2; (domain(5)+domain(6))/2; (domain(6) + (domain(5)+domain(6))/2)/2];
-    %[xeval, yeval, zeval] = ndgrid(xeval, yeval, zeval);
-    
-%     xeval =[ domain(1)+1e-12; (domain(1) + (domain(1)+domain(2))/2)/2; (domain(1)+domain(2))/2; (domain(2) + (domain(1)+domain(2))/2)/2; domain(2)-1e-9];
-%     yeval =[ domain(3)+1e-10; (domain(3) + (domain(3)+domain(4))/2)/2; (domain(3)+domain(4))/2; (domain(4) + (domain(3)+domain(4))/2)/2; domain(4)-1e-11];
-%     zeval =[ domain(5)+1e-8; (domain(5) + (domain(5)+domain(6))/2)/2; (domain(5)+domain(6))/2; (domain(6) + (domain(5)+domain(6))/2)/2; domain(6)-1e-10];    
+   [xeval, yeval, zeval] = halton(n, domain);
     
     % Evaluate the op:
     vOp = feval(sampleOP, xeval, yeval, zeval);
 else
     % sample on less points if the op is unvectorized. 
-%    n = 3;
     n = 20;
-    [xeval, yeval, zeval] = halton( n, domain );    
+    [xeval, yeval, zeval] = halton(n, domain);
     [xeval, yeval, zeval] = ndgrid(xeval, yeval, zeval);
-%     xeval =[ domain(1)+1e-12; (domain(1) + (domain(1)+domain(2))/2)/2; (domain(1)+domain(2))/2; (domain(2) + (domain(1)+domain(2))/2)/2; domain(2)-1e-9];
-%     yeval =[ domain(3)+1e-10; (domain(3) + (domain(3)+domain(4))/2)/2; (domain(3)+domain(4))/2; (domain(4) + (domain(3)+domain(4))/2)/2; domain(4)-1e-11];
-%     zeval =[ domain(5)+1e-8; (domain(5) + (domain(5)+domain(6))/2)/2; (domain(5)+domain(6))/2; (domain(6) + (domain(5)+domain(6))/2)/2; domain(6)-1e-10];    
-    
     [n1,n2,n3] = size(xeval);
     % Evaluate the op:
-    %vOp = zeros(n , 1 );
-    vOp = zeros(n1,n2,n3);
+    vOp = zeros(n1, n2, n3);
     for jj1 = 1:n1
         for jj2 = 1:n2
             for jj3 = 1:n3
-                vOp(jj1,jj2,jj3) = feval(sampleOP, xeval(jj1,jj2,jj3), yeval(jj1,jj2,jj3), zeval(jj1,jj2,jj3));
+                vOp(jj1,jj2,jj3) = feval(sampleOP, xeval(jj1,jj2,jj3), ...
+                    yeval(jj1,jj2,jj3), zeval(jj1,jj2,jj3));
             end
         end
     end
     
 end
 
-% Evaluate the CHEBFUN3S:
-%global fiberDimCopy; fiberDimCopy = f.fiberDim;
-%global fiberDimCopy; fiberDimCopy = 1;
+% Evaluate the CHEBFUN3 object:
 vFun = feval(f, xeval, yeval, zeval);
 
 % If the CHEBTECH evaluation differs from the op evaluation, SAMPLETEST failed:
 if ( any(max(abs(vOp - vFun)) > 10*tol) )
-%if ( any(max(abs(vOp - vFun)) > 100*tol) )    
     pass = false; % :(
 else
     pass = true;  % :)
@@ -84,8 +62,7 @@ end
 end
 
 
-
-function [x, y, z] = halton( numpts, domain ) 
+function [x, y, z] = halton(numpts, domain)
 % Halton sequences are sequences used to generate points in space, which 
 % are deterministic and of low discrepancy. They appear to be random for 
 % many purposes.
@@ -115,35 +92,3 @@ y = (domain(4) - domain(3))*y + domain(3);
 z = H(:,3); 
 z = (domain(6) - domain(5))*z + domain(5); 
 end
-%%
-% 
-% 
-% if ( ~flag )
-%     n = 30; 
-%     [xeval, yeval, zeval] = halton( n, domain );
-% %     xeval =[ domain(1)+1e-12; (domain(1) + (domain(1)+domain(2))/2)/2; (domain(1)+domain(2))/2; (domain(2) + (domain(1)+domain(2))/2)/2; domain(2)-1e-9];
-% %     yeval =[ domain(3)+1e-10; (domain(3) + (domain(3)+domain(4))/2)/2; (domain(3)+domain(4))/2; (domain(4) + (domain(3)+domain(4))/2)/2; domain(4)-1e-11];
-% %     zeval =[ domain(5)+1e-8; (domain(5) + (domain(5)+domain(6))/2)/2; (domain(5)+domain(6))/2; (domain(6) + (domain(5)+domain(6))/2)/2; domain(6)-1e-10];    
-%     
-%     % Evaluate the op:
-%     vOp = feval(sampleOP, xeval, yeval, zeval);
-% else
-%     % sample on less points if the op is unvectorized. 
-%     n = 20;
-%     [xeval, yeval, zeval] = halton( n, domain );    
-% %     xeval =[ domain(1)+1e-12; (domain(1) + (domain(1)+domain(2))/2)/2; (domain(1)+domain(2))/2; (domain(2) + (domain(1)+domain(2))/2)/2; domain(2)-1e-9];
-% %     yeval =[ domain(3)+1e-10; (domain(3) + (domain(3)+domain(4))/2)/2; (domain(3)+domain(4))/2; (domain(4) + (domain(3)+domain(4))/2)/2; domain(4)-1e-11];
-% %     zeval =[ domain(5)+1e-8; (domain(5) + (domain(5)+domain(6))/2)/2; (domain(5)+domain(6))/2; (domain(6) + (domain(5)+domain(6))/2)/2; domain(6)-1e-10];    
-%     
-%     n = length(xeval);
-%     % Evaluate the op:
-%     vOp = zeros(n , 1 );
-%     for jj = 1:numel(xeval)
-%         vOp(jj) = feval(sampleOP, xeval(jj), yeval(jj), zeval(jj));
-%     end
-% end
-% 
-% % Evaluate the CHEBFUN3S:
-% %global fiberDimCopy; fiberDimCopy = f.fiberDim;
-% %global fiberDimCopy; fiberDimCopy = 1;
-% vFun = feval(f, xeval, yeval, zeval);
