@@ -6,7 +6,7 @@ function pass = sampleTest(op, f, pref)
 %   VSCALE(F)) the test passes and returns TRUE. If the difference is large,
 %   it returns FALSE.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Get the interpolation points:

@@ -48,7 +48,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
 %
 % See also CHEBOPPREF, LINOP, CHEBMATRIX.MATRIX, CHEBMATRIX.SPY.
     
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -217,7 +217,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         %   tranposed (which is consistent with the built in CELL class).
             for k = 1:numel(A.blocks)
                 % TODO: TRANSPOSE() or CTRANSPOSE()?
-                A.blocks{k} = transpose(A.blocks{k});
+                A.blocks{k} = ctranspose(A.blocks{k});
             end
             A.blocks = transpose(A.blocks);
         end

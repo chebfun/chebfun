@@ -39,10 +39,8 @@ pass(15:16) = test_one_qr_with_perm(f, x);
 N = size(f, 2);
 [Q1, R1, E1] = qr(f, []);
 [Q2, R2, E2] = qr(f, 'vector');
-err = E1(:, E2) - eye(N);
+err = E1(E2, :) - eye(N);
 pass(17) = all(err(:) == 0);
-
-
 
 %%
 % Check a rank-deficient problem:
@@ -54,16 +52,14 @@ pass(17) = all(err(:) == 0);
 f = testclass.make(@(x) [cos(pi*x) cos(pi*x) cos(pi*x)], [], pref);
 [Q, R] = qr(f, []);
 Q = simplify(Q,100*eps);
-%pass(18) = all(size(Q) == 3) && all(size(R) == 3);
-pass(18) = 1;
+pass(18) = all(size(Q) == 3) && all(size(R) == 3);
+% pass(18) = 1;
 I = eye(3);
-%pass(19) = norm(innerProduct(Q, Q) - I, inf) < ...
-%10*max(vscale(f)*eps);
+pass(19) = norm(innerProduct(Q, Q) - I, inf) < ...
+10*max(vscale(f)*eps);
 pass(19) = 1;
 % These tests should be reverted once issue #1441 is
 % fixed.
-
-
 
 %%
 % Check that the vscale comes out with the correct size for QR of an

@@ -1,4 +1,4 @@
-function c_cheb = jac2cheb(c_jac, alph, bet)
+function c_cheb = jac2cheb( c_jac, alpha, beta ) 
 %JAC2CHEB convert Legendre coefficients to Chebyshev coefficients. 
 %   C_CHEB = JAC2CHEB(C_JAC, A, B) converts the vector C_JAC of Jacobi
 %   coefficients to a vector C_CHEB of Chebyshev coefficients such that
@@ -7,52 +7,31 @@ function c_cheb = jac2cheb(c_jac, alph, bet)
 %   where P_k^{(A,B)} is the degree k Jacobi polynomial corresponding to the
 %   weight function w(x) = (1-X)^A * (1+X)^B.
 %
-%   If C_LEG is a matrix then the LEG2CHEB operation is applied to each column.
-%
-% See also CHEB2JAC. 
+% See also CHEB2JAC, JAC2JAC. 
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% DEVELOPER NOTE:
-%  This simply uses the recurrence relation to for the Jacobi-Vandermode matrix.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+N = size(c_jac, 1); 
 
-if ( alph == 0 && bet == 0 )
-    % Special case:
-    c_cheb = leg2cheb(c_jac); 
-    return
-end
-
-if ( alph == -.5 && bet == -.5 )
-    % Special case: alpha = beta = -.5 (scaled chebpoly1)
-    [n, m] = size(c_jac);
-    nn = (0:n-1)';
-    scl = exp(gammaln(nn+.5)-gammaln(nn+1))/gamma(.5);
-    if ( m == 1 )
-        c_cheb = scl.*c_jac;
-    else
-        c_cheb = bsxfun(@times, scl, c_jac);
-    end
+if ( alpha == 0 && beta == 0 ) 
+    % Use leg2cheb if alpha = beta = 0: 
+    c_cheb = leg2cheb( c_jac ); 
+    
+elseif ( N <= 512 ) 
+    
+    % Direct approach for small N: 
+    c_cheb = jac2cheb_direct(c_jac, alpha, beta);
         
-elseif ( alph == .5 && bet == .5 )
-    % Special case: alpha = beta = .5 (scaled chebpoly2)
-    [n, m] = size(c_jac);
-    nn = (0:n-1)';
-    scl = exp(gammaln(nn+1.5)-gammaln(nn+2))/gamma(1.5);
-    S = ultraS.convertmat(n, 0, 0);
-    if ( m == 1 )
-        c_cheb = S\(scl.*c_jac);
-    else
-        c_cheb = S\bsxfun(@times, scl, c_jac);
-    end
-    
 else
-    c_cheb = jac2cheb_direct(c_jac, alph, bet);
-    
-end
+    % Call jac2jac and then convert Jacobi (-1/2,-1/2) to Chebyshev:
 
+    % Convert P_n^(alpha,beta) ->  P_n^(-1/2,-1/2): 
+    c_jac = jac2jac( c_jac, alpha, beta, -1/2, -1/2 );
+    % Now convert P_n^(-1/2,-1/2) -> T_n:
+    scl = [1 cumprod((1/2:1/2+N-2)./(1:N-1))]';   % P_n^(-1/2,-1/2)(1)
+    c_cheb = spdiags( scl, 0, N, N) * c_jac; 
+end
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -62,11 +41,6 @@ end
 function c_cheb = jac2cheb_direct(c_jac, a, b)
 %JAC2CHEB_DIRECT   Convert Leg to Cheb coeffs using the 3-term recurrence.
 N = size(c_jac,1) - 1;                 % Degree of polynomial.
-% Don't let N be too big:
-if ( N > 2^11 )
-    error('CHEBFUN:jac2cheb:arraySize', ...
-        'Maximum transform size (2048) is exceeded.');
-end
 if ( N <= 0 ), c_cheb = c_jac; return, end  % Trivial case.
 tech = chebtech1;                      % Alternatively use chebtech2.
 x = tech.chebpts(N+1);                 % Chebyshev grid (reversed order).

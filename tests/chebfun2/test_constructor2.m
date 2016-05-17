@@ -29,7 +29,7 @@ pass(5) = ( norm( f1 - f2 ) < tol );
 
 f1 = chebfun2(@(x,y) cos(pi*cos(pi*x) + pi*sin(pi*y)),'trig');
 f2 = chebfun2(@(x,y) cos(pi*cos(pi*x) + pi*sin(pi*y)), [-1 1 -1 1], 'trig');
-pass(6) = ( norm(f1 -f2) < 10*tol );
+pass(6) = ( norm(f1 - f2) < 10*tol );
 % Check underlying tech is a TRIGTECH: 
 techRow = get(f1.cols.funs{1}, 'tech');
 techCol = get(f1.rows.funs{1}, 'tech');
@@ -39,7 +39,7 @@ pass(8) = ( isa(techCol(), 'trigtech') );
 % Make sure the 'periodic' flag works as well:
 f1 = chebfun2(@(x,y) cos(pi*cos(pi*x) + pi*sin(pi*y)),'periodic');
 f2 = chebfun2(@(x,y) cos(pi*cos(pi*x) + pi*sin(pi*y)), [-1 1 -1 1], 'periodic');
-pass(9) = ( norm(f1 -f2) < 10*tol );
+pass(9) = ( norm(f1 - f2) < 10*tol );
 % Check underlying tech is a TRIGTECH:
 techRow = get(f1.cols.funs{1}, 'tech');
 techCol = get(f1.rows.funs{1}, 'tech');
@@ -52,12 +52,74 @@ pass(12) = ( norm( f - 1 ) < tol );
 f = chebfun2('x'); z = .5 + sqrt(3)/3*1i;
 pass(13) = ( norm( f(real(z),imag(z)) - z ) < tol ) ; 
 
-% Test passing an 'eps' value.  (Just make sure it doesn't crash.)
-try
-    chebfun2(@(x, y) sin(x.*y), 'eps', 1e-6);
-    pass(14) = true;
-catch ME
-    pass(14) = false;
-end
+% Test passing an 'eps' value.  Make sure it affects both rank and lengths.
+ff = @(x,y) -x.*sin(sqrt(x+5+y));
+f = chebfun2(ff);
+fEps = chebfun2(ff, 'eps', 1e-5);
+[m, n] = length(f);
+[mEps, nEps] = length(fEps);
+pass(14) = length(fEps) < length(f) && mEps < m && nEps < n;
+
+% Test making a chebfun2 with a fixed length:
+m = 8;
+n = 10;
+f = chebfun2( @(x,y) cos(x.*y), [m n]);
+[mF, nF] = length(f);
+pass(15) = ( mF == m && nF == n );
+
+% Test making a chebfun2 with a fixed rank
+r = 5;
+f = chebfun2( @(x,y) exp(cos(x.*y)), r );
+pass(16) = ( rank(f) == r );
+
+% Test making a chebfun2 with fixed rank and length
+r = 2; m = 8; n = 10;
+f = chebfun2( @(x,y) exp(cos(x.*y)), r, [m n] );
+[mF, nF] = length(f);
+pass(17) = ( rank(f) == r && mF == m && nF == n );
+
+% Reverse the previous calling sequence.
+f = chebfun2( @(x,y) exp(cos(x.*y)), [m n], r );
+[mF, nF] = length(f);
+pass(18) = ( rank(f) == r && mF == m && nF == n );
+
+% Test making a chebfun2 with fixed rank and domain
+dom = [-1.5 1.5 -0.5 0.75];
+r = 3;
+f = chebfun2( @(x,y) exp(cos(x.*y)), dom, r );
+pass(19) = ( rank(f) == r && all( f.domain == dom ) );
+
+% Reverse the previous calling sequence.
+f = chebfun2( @(x,y) exp(cos(x.*y)), r, dom);
+pass(20) = ( rank(f) == r && all( f.domain == dom ) );
+
+% Test making a chebfun2 with fixed domain, fixed length, and rank
+dom = [-1.5 1.5 -0.5 0.75];
+r = 3; m = 20; n = 37;
+f = chebfun2( @(x,y) exp(cos(x.*y)), dom, [m n], r );
+[mF, nF] = length(f);
+pass(21) = ( rank(f) == r && all( f.domain == dom ) && ...
+             mF == m && nF == n );
+
+% Test construction from a chebfun2 with fixed rank and length gives
+% correct results.
+g = chebfun2( @(x,y) exp(cos(x.*y)) );
+r = 2; m = 8; n = 10;
+f = chebfun2( g, r, [m n] );
+[mF, nF] = length(f);
+pass(22) = ( rank(f) == r && mF == m && nF == n );
+
+% Test construction from a chebfun2 with fixed length and domain
+% correct results.
+m = 8; n = 10;
+f = chebfun2( @(x,y) exp(cos(x.*y)), [m n], dom );
+[mF, nF] = length(f);
+pass(23) = ( all( f.domain == dom ) && mF == m && nF == n );
+
+% Reverse
+m = 8; n = 10;
+f = chebfun2( @(x,y) exp(cos(x.*y)), dom, [m n] );
+[mF, nF] = length(f);
+pass(24) = ( all( f.domain == dom ) && mF == m && nF == n );
 
 end
