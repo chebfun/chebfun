@@ -806,7 +806,7 @@ end
 function op = vectorCheck(op, dom, vectorize)
 %VECTORCHECK   Try to determine whether op is vectorized. 
 %   It's impossible to cover all eventualities without being too expensive. 
-%   We do the best we can. "Do. Or do not. There is not try."
+%   We do the best we can.
 
 y = dom([1 end]); y = y(:);
 
