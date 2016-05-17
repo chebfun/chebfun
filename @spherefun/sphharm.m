@@ -75,7 +75,7 @@ lam = lam(:)';
 % Normalization:
 kk = l-abs(m)+1:l+abs(m);
 aa = exp(-sum(log(kk)));
-a = sqrt((2*l + 1)/2/pi * aa * (2 - double(m==0)));
+a = sqrt((2*l + 1)/4/pi * aa * (2 - double(m==0)));
 Y = legendre(l, z);
 
 % Get the right associated legendre function:
