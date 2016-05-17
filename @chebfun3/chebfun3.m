@@ -84,29 +84,31 @@ end
 %% CLASS METHODS:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 methods (Access = public, Static = true)    
-    % Outer product of tensors
+    % Outer product of discrete tensors.
     varargout = outerProd(varargin);
     
-    % tensor x matrix
+    % Tensor x matrix.
     varargout = txm(varargin);
     
-    % Unfold a tensor to create a matrix.
+    % Unfold a discrete tensor to create a matrix.
     varargout = unfold(varargin);
     
-    % Reshape a matrix to get a tensor.
+    % Reshape a discrete matrix to get a tensor.
     varargout = fold(varargin);
     
-    % Tensor product of Chebyshev points:
+    % Tensor product of Chebyshev points.
     [xx, yy, zz] = chebpts3(m, n, p, domain, kind);
 
-    % vals2coeffs
+    % Convert 3D values to 3D coefficients.
     coeffs3D = vals2coeffs(vals3D);
     
-    % coeffs2vals
+    % Convert 3D coefficients to 3D values.
     vals3D = coeffs2vals(coeffs3D);
         
+    % Faster subscripts from linear index.
     varargout = myind2sub(varargin);
     
+    % HOSVD of discrete tensors.
     varargout = discrete_hosvd(varargin);
     
 end
@@ -115,38 +117,57 @@ methods (Access = public)
     % Retrieve and modify preferences for this class.
     varargout = subsref(f, index);
     
-    % Evaluate a CHEBFUN3.
-    y = feval(f, varargin);
-    
-    % Permute a CHEBFUN3.
-    g = permute(f, varargin);
-    
-    % Evaluate at vectors to get a tensor of values.
-    y = fevalt(f, varargin);
-    
     % Get properties of a CHEBFUN3 object.
     out = get(f, idx);
-    
-    % Rank of a CHEBFUN3 (i.e., size of the core in each direction)
-    varargout = rank(f);
-    
-    % Size of a CHEBFUN3 
-    varargout = size(f);
-    
-    % Length of a CHEBFUN3 (i.e., no of Chebyshev or Fourier points at each
-    % direction)
-    varargout = length(f);
-                
+
+    % Permute a CHEBFUN3.
+    out = permute(f, varargin);
+
+    % Evaluate a CHEBFUN3.
+    out = feval(f, varargin);
+        
+    % Evaluate at vectors to get a tensor of values.
+    out = fevalt(f, varargin);
+        
+    % Evaluate on a tensor product grid.
     varargout = chebpolyval3(varargin);
     
     % Sample a CHEBFUN3 on a tensor product grid
-    varargout = sample(varargin);
+    varargout = sample(varargin);    
     
-    % Minimum of a CHEBFUN3
+    % Tucker rank of a CHEBFUN3 (i.e., size of the core in each direction).
+    varargout = rank(f);
+        
+    % Length of a CHEBFUN3 (i.e., the number of Chebyshev or Fourier points
+    % at each direction).
+    varargout = length(f);
+
+    % Size of a CHEBFUN3.
+    varargout = size(f);
+        
+    % Minimum of a CHEBFUN3 along one dimension.
     varargout = min(varargin);
     
-    % Maximum of a CHEBFUN3
+    % Maximum of a CHEBFUN3 along one dimension.
     varargout = max(varargin);
+
+    % Minimum of a CHEBFUN3 along two dimensions.
+    varargout = min2(varargin);
+    
+    % Maximum of a CHEBFUN3 along two dimensions.
+    varargout = max2(varargin);
+    
+    % Global minimum of a CHEBFUN3.
+    varargout = min3(f);
+    
+    % Global maximum of a CHEBFUN3.
+    varargout = max3(f);
+    
+    % Global minimum and maximum of a CHEBFUN3.
+    varargout = minandmax3(f);
+    
+    % Norm of a CHEBFUN3.
+    varargout = norm(f, p);    
     
     % Display a CHEBFUN3.
     varargout = disp(f, varargin);
@@ -160,47 +181,31 @@ methods (Access = public)
     % Vertical scale of a CHEBFUN3.
     out = vscale(f);
     
-    % Minimum of a CHEBFUN3 along two dimensions
-    varargout = min2(varargin);
-    
-    % Maximum of a CHEBFUN3 along two dimensions
-    varargout = max2(varargin);
-    
-    % Global minimum of a CHEBFUN3
-    varargout = min3(f);
-    
-    % Global maximum of a CHEBFUN3
-    varargout = max3(f);
-    
-    % Global minimum and maximum of a CHEBFUN3
-    varargout = minandmax3(f);
-    
-    varargout = norm(f, p);
-    
+    % Vertical concatenation of CHEBFUN3 objects.
     out = vertcat(varargin);
     
     % Just one common root of 3 CHEBFUN3 objects.
     varargout = root(f, g, h); 
     
-    % roots of a CHEBFUN3 object.
+    % Roots of a CHEBFUN3 object.
     varargout = roots(f, varargin);
     
-    % Number of degrees of freedom needed to represent a CHEBFUN3
+    % Number of degrees of freedom needed to represent a CHEBFUN3.
     out = ndf(f);
     
-    % Get the low-rank representation (Tucker decomposition) of f.
+    % Get the low-rank representation (Tucker expansion) of a CHEBFUN3.
     varargout = tucker(f);    
-    
-    % Definite integral of a CHEBFUN3 over its domain. out is a scalar.
-    out = sum3(f);
+
+    % Definite integral of a CHEBFUN3 over the domain in one
+    % direction. Output is a Chebfun2 object.
+    out = sum(varargin);
     
     % Definite integral of a CHEBFUN3 over the domain in two directions. 
-    % The output is a Chebfun object.
+    % Output is a Chebfun object.
     out = sum2(varargin);
-    
-    % Definite integral of a CHEBFUN3 over the domain in one
-    % direction. The output is a Chebfun2 object.
-    out = sum(varargin);
+
+    % Definite integral of a CHEBFUN3 over its domain.
+    out = sum3(f);    
     
     % Volume of the domain of a CHEBFUN3.
     out = domainvolume(f);
@@ -210,31 +215,38 @@ methods (Access = public)
     
     % Surface integral of a CHEBFUN3 over a surface represented as a CHEBFUN2.
     out = integral2(f, varargin);
-    
-    out = std3(f);
-    
-    out = mean3(f);
-    
+        
+    % Average or mean value of a CHEBFUN3 in one direction.
     out = mean(f, varargin);
     
-    out = mean2(f, varargin);
+    % Average or mean value of a CHEBFUN3 in two directions.
+    out = mean2(f, varargin);    
     
+    % Average or mean value of a CHEBFUN3.
+    out = mean3(f);
+    
+    % Standard deviation of a CHEBFUN3.
+    out = std3(f);
 
-    % Squeeze a CHEBFUN3 into a CHEBFUN2 or a CHEBFUN:
+    % Squeeze a CHEBFUN3 into a CHEBFUN2 or a CHEBFUN.
     out = squeeze(f);
 
-    % Create a scatter plot of the core tensor of a CHEBFUN3
+    % Create a scatter plot of the core tensor of a CHEBFUN3.
     varargout = coreplot(f, varargin);
     
+    % Plot a CHEBFUN3.
     out = plot(f, varargin);
     
+    % Plot slices of a CHEBFUN3.
     out = slice(f, varargin);
     
+    % Scan plot of a CHEBFUN3.
     out = scan(f, varargin);
     
+    % Isosurface plot of a CHEBFUN3.
     out = isosurface(f, varargin);
     
-    % SURF for a CHEBFUN3 over its domain
+    % SURF for a CHEBFUN3 over its domain.
     varargout = surf(f, varargin);
     
     % plotcoeffs of a CHEBFUN3.
@@ -249,101 +261,145 @@ end
 
 methods
     
+    % Unary plus for a CHEBFUN3.
     out = uplus(f, g);
     
+    % Plus for CHEBFUN3 objects.
     out = plus(f, g);
     
+    % Unary minus for a CHEBFUN3.
     out = uminus(f);
     
+    % Subtraction of two CHEBFUN3 objects.
     out = minus(f, g);
     
-    %out = times(f, g);
+    % Pointwise multiplication for CHEBFUN3 objects.
     out = times(f, g, varargin);
     
+    % Pointwise multiplication for CHEBFUN3 objects.
     out = mtimes(f, g, varargin);
     
+    % Pointwise power of a CHEBFUN3.
     out = power(varargin);
     
+    % Pointwise right divide of CHEBFUN3 objects.
     out = rdivide(f, g);
     
+    % Pointwise left divide of CHEBFUN3 objects.
     out = mrdivide(f, g);
     
     % Pointwise CHEBFUN3 left array divide.
     out = ldivide(f, g);
     
+    % Left divide for CHEBFUN3 objects.
     out = mldivide(f, g);
     
+    % Absolute value of a CHEBFUN3.
     out = abs(f);
     
+    % Real part of a CHEBFUN3.
     out = real(f);
     
+    % Imaginary part of a CHEBFUN3.
     out = imag(f);
     
+    % Complex conjugate of a CHEBFUN3.
     out = conj(f);
     
-    % Create f + i g
+    % Create f + i g for two CHEBFUN3 objects.
     out = complex(f, g);
     
+    % Sine of a CHEBFUN3.
     out = sin(f);
     
     % Cosine of a CHEBFUN3.
     out = cos(f);
     
+    % Tangent of a CHEBFUN3.
     out = tan(f);
       
+    % Tangent of a CHEBFUN3 (in degrees).
     out = tand(f);
       
+    % Hyperbolic tangent of a CHEBFUN3.
     out = tanh(f);
       
+    % Exponential of a CHEBFUN3.
     out = exp(f);
       
+    % Hyperbolic sine of a CHEBFUN3.
     out = sinh(f);
       
+    % Hyperbolic cosine of a CHEBFUN3.
     out = cosh(f);
             
+    % Compose command for CHEBFUN3 objects.
     out = compose(f, varargin);
       
+    % Square root of a CHEBFUN3.
     out = sqrt(f, varargin);
       
+    % Natural logarithm of a CHEBFUN3.
     out = log(f, varargin);
       
+    % HOSVD of a CHEBFUN3.
     varargout = hosvd(f, varargin);
       
+    % Test whether a CHEBFUN3 object is empty.
     out = isempty(f);
       
-    % Determine whether a CHEBFUN3 is identically zero on its domain
+    % Determine whether a CHEBFUN3 is identically zero over its domain.
     varargout = iszero(f);
         
+    % Real-valued CHEBFUN3 test.
     out = isreal(f);
 
+    % Equality test for CHEBFUN3 objects.
     out = isequal(f, g);
       
+    % Partial derivative of a CHEBFUN3 object.
     out = diff(f, varargin);
       
+    % Partial derivative of a CHEBFUN3 object in the first variable.
     out = diffx(f, varargin);
       
+    % Partial derivative of a CHEBFUN3 object in the second variable.
     out = diffy(f, varargin);
       
+    % Partial derivative of a CHEBFUN3 object in the third variable.
     out = diffz(f, varargin);
       
+    % Gradient of a CHEBFUN3.
     varargout = grad(f);
       
+    % Gradient of a CHEBFUN3.
     varargout = gradient(f);
+    
+    % Normal vector of a CHEBFUN3.
+    varargout = normal(f, varargin);
       
+    % Laplacian of a CHEBFUN3.
     out = lap(f);
       
+    % Laplacian of a CHEBFUN3.
     out = laplacian(f);
       
+    % Biharmonic operator of a CHEBFUN3.
     out = biharm(f);
-      
+    
+    % Biharmonic operator of a CHEBFUN3.
     out = biharmonic(f);
       
+    % Scaled Laplacian of a CHEBFUN3.
     out = del2(f);
       
+    % Indefinite integral of a CHEBFUN3 in one variable.
     out = cumsum(f, varargin);
       
+    % Indefinite integral of a CHEBFUN3 in two variables.
     out = cumsum2(f, varargin);
-      
+
+    % Indefinite integral of a CHEBFUN3 in all variables.
     out = cumsum3(f);
 end
 
@@ -352,6 +408,7 @@ end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Hidden = true, Static = false )
     
+        % Test if two CHEBFUN3 objects have the same domain.
         out = domainCheck(f, g);
 
     end

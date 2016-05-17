@@ -36,7 +36,7 @@ classdef chebfun3v
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
         
-        function F = chebfun3v( varargin )
+        function F = chebfun3v(varargin)
             % The main CHEBFUN3V constructor!
                        
             % Return an empty CHEBFUN3V:
@@ -57,7 +57,7 @@ classdef chebfun3v
             % Go and try find the domain: 
             domain = [-1 1 -1 1 -1 1]; 
             for jj = 1:numel(varargin)
-               if ( isa( varargin{jj}, 'double') && numel( varargin{jj}) == 6 ) 
+               if ( isa(varargin{jj}, 'double') && numel(varargin{jj}) == 6 ) 
                    domain = varargin{jj}; 
                    varargin(jj) = []; 
                elseif ( isa( varargin{jj}, 'chebfun3') ) 
@@ -76,9 +76,9 @@ classdef chebfun3v
             
             % Unwrap input arguments;
             component = 1;
-            for jj = 1:numel( varargin )
-                if ( iscell( varargin{jj} ) ) 
-                    for kk = 1:numel( varargin{jj} )
+            for jj = 1:numel(varargin)
+                if ( iscell(varargin{jj}) ) 
+                    for kk = 1:numel(varargin{jj})
                         fh{component} = varargin{jj}{kk};
                         component = component + 1; 
                     end
@@ -93,15 +93,15 @@ classdef chebfun3v
             for jj = 1:numel(varargin)
                 if ( isa( varargin{jj}, 'function_handle') )
                     if ( ~vectorize )
-                        newcheb = chebfun3( varargin{jj}, domain);
+                        newcheb = chebfun3(varargin{jj}, domain);
                     else
-                        newcheb = chebfun3( varargin{jj}, domain, 'vectorize');
+                        newcheb = chebfun3(varargin{jj}, domain, 'vectorize');
                     end
                     fh{jj} = newcheb;
-                elseif ( isa( varargin{jj}, 'chebfun3') )
+                elseif ( isa(varargin{jj}, 'chebfun3') )
                     fh{jj} = varargin{jj};
-                elseif ( isa( varargin{jj}, 'double') )
-                    fh{jj} = chebfun3( varargin{jj}, domain);  
+                elseif ( isa(varargin{jj}, 'double') )
+                    fh{jj} = chebfun3(varargin{jj}, domain);  
                 end
             end
             
@@ -112,15 +112,15 @@ classdef chebfun3v
             end 
             
             % Stop now if there are no components: 
-            if ( numel( fh ) == 0 ) 
+            if ( numel(fh) == 0 ) 
                 error('CHEBFUN:CHEBFUN3V:chebfun3v:empty', ...
                 'The Chebfun3 constructor needs to be given function handles or chebfun3 objects.')
             end
             
             % Check the domains of all the chebfun3s are the same:
-            pass = zeros(numel(fh)-1,1);
+            pass = zeros(numel(fh)-1, 1);
             for jj = 2:numel(fh)
-               pass(jj-1) = domainCheck( fh{1}, fh{jj});   
+               pass(jj-1) = domainCheck(fh{1}, fh{jj});
             end
             
             if ( ~all(pass) )
@@ -130,7 +130,7 @@ classdef chebfun3v
             
             % Assign to the Chebfun3v object: 
             F.components = fh;
-            F.nComponents = numel( fh );
+            F.nComponents = numel(fh);
             F.isTransposed = 0;
 
         end

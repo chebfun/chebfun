@@ -16,7 +16,7 @@ function varargout = gallery3(name)
 %   the functions, see the code and associated comments.
 %
 %   aurentz      3D radial bump function [scan(f)]
-%   barth10      Barth decic from algebraic geometry
+%   barth10      Barth decic from alg. geom. [contour(f(0,:,:),-10:10)]
 %   bessel       Bessel function of radius r
 %   cassini      Cassini Surface from algebraic geometry
 %   clebsch      Clebsch diagonal cubic from alg. geom. [isosurface(f,0)]
@@ -30,6 +30,7 @@ function varargout = gallery3(name)
 %   hoop         Function that is zero along a circle [isosurface(f,.01)]
 %   lattice      Balls around a regular lattice of pts [isosurface(f,.5)]
 %   levy         Function with global min. 0 at (1,1,1) [surf(f)]
+%   octant       Function with nontrivial ranks [isosurface(f,0.9)]
 %   rastrigin    Function with many local minima.  The global
 %                min. is 0 at (0,0,0).  [isosurface(f)]
 %   rosenbrock   Function with global min 0 at (1,1,1).
@@ -51,7 +52,7 @@ function varargout = gallery3(name)
 if ( nargin == 0 )
     names = {'aurentz', 'barth10', 'bessel', 'cassini', 'clebsch', ...
             'doublehelix', 'genz1', 'genz2', 'genz3', 'genz4', ...
-            'griewank', 'hoop', 'lattice', 'levy', 'rastrigin', ...
+            'griewank', 'hoop', 'lattice', 'levy', 'octant', 'rastrigin', ...
             'rosenbrock', 'runge', 'shubert', 'wagon'};
     name = names{randi(length(names))};
 end
@@ -77,7 +78,7 @@ switch lower(name)
         % Barth Decic
         % https://archive.lib.msu.edu/crcmath/math/math/b/b054.htm
         a = 1; 
-        p = (sqrt(5) + 1) / 2; % the golden section
+        p = (sqrt(5) + 1) / 2; % the golden mean
         fa = @(x,y,z) 8*(x.^2 - p^4*y.^2) .* (y.^2 - p^4*z.^2) .* ...
             (z.^2 - p^4.*x.^2) .* (x.^4 + y.^4 + z.^4 - 2*x.^2.*y.^2 -...
             2*x.^2.*z.^2 - 2*y.^2.*z.^2) + a*(3 + 5*p) .* ((x.^2 + y.^2 ...
@@ -85,9 +86,9 @@ switch lower(name)
         f = chebfun3(fa);
         % Try e.g. isosurface(f,0)
         if ( nargout == 0 )
-            isosurface(f, 0)
-           str=sprintf('%s for f = %d', name, 0);
-           title(str);                       
+            contour(f(0,:,:),-10:10)
+            str=sprintf('%s for x = %d', name, 0);
+            title(str);                       
         end
         
     case 'bessel'
@@ -226,6 +227,18 @@ switch lower(name)
         if ( nargout == 0 )
             isosurface(f, 17, 'r')
             str=sprintf('%s for f = %2.2f', name, 17);
+            title(str)
+        end
+        
+
+     case 'octant'
+         % cooked up by Trefethen 16 May 2016
+        fa = @(x,y,z) sqrt(x.^2+y.^2+z.^2);
+        f = chebfun3(fa, [0 1 0 1 0 1]);
+        if ( nargout == 0 )
+            for j = 10:-2:2, isosurface(f,j/10), hold on, end, 
+            view(-110, 20), hold off
+            str=sprintf('%s for different isovalues', name);
             title(str)
         end
 

@@ -8,7 +8,7 @@ function F = curl(F)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 
-if ( isempty( F ) )
+if ( isempty(F) )
     F = chebfun3v;
     return
 end

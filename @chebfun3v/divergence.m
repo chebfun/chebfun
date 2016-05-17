@@ -14,10 +14,16 @@ if ( isempty(F) )
     return
 end
 
-Fc = F.components; 
-diff1 = diff(Fc{1}, 1, 1);
-diff2 = diff(Fc{2}, 1, 2);
-diff3 = diff(Fc{3}, 1, 3);
-f = diff1 + diff2 + diff3;
+
+if ( F.nComponents == 3 )
+    Fc = F.components; 
+    diff1 = diff(Fc{1}, 1, 1);
+    diff2 = diff(Fc{2}, 1, 2);
+    diff3 = diff(Fc{3}, 1, 3);
+    f = diff1 + diff2 + diff3;
+else                      
+     error('CHEBFUN:CHEBFUN3V:divergence:notSupported', ...
+        'three inputs are needed.')
+end
 
 end

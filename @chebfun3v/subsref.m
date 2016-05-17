@@ -71,4 +71,10 @@ switch ( ref(1).type )
         
 end
 
+% Recurse down? E.g. for "F(1).core" where F is a CHEBFUN3V object.
+if ( numel(ref) > 1 )
+   ref(1) = []; 
+   varargout = { subsref( varargout{ : }, ref ) }; 
+end
+
 end

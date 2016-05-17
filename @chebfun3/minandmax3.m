@@ -21,11 +21,6 @@ end
 
 doNewton = 1;   % Newton polishing?
 
-% Maximum possible sample matrix size:
-%maxsize = 4e3; 
-% Maximum possible sample tensor size:
-% maxsize = 4e1; 
-
 % % Is the function the zero function?
 % if ( iszero(f)  ) 
 %     dom = f.domain;
@@ -57,8 +52,6 @@ rowVals = feval(fRows, ypts);
 tubeVals = feval(fTubes, zpts); 
 T = chebfun3.txm(chebfun3.txm(chebfun3.txm(fCore,colVals,1), rowVals,2), ...
     tubeVals,3);
-% TODO: Can't we use chebpolyVAL ? or sample.m instead of this?
-%T = sample(f);
     
 % Minimum entry in discretisation.
 [ignored, ind] = min(T(:));

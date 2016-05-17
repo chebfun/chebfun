@@ -1,4 +1,4 @@
-function r = roots(f,g,h,varargin)
+function r = roots(f, g, h, varargin)
 %roots    Poor man's method for finding common roots of three 3D functions:
 %   1) Find some initial guesses from the tensor of values of 
 %   obj_fun = f.^2+g.^2+h.^2.
