@@ -35,7 +35,7 @@ if ( nargout <= 1 )
     % Return the tensor of coefficients
     varargout = {chebfun3.txm(chebfun3.txm(chebfun3.txm(core, ...
         cols_coeffs, 1), rows_coeffs, 2), tubes_coeffs, 3)};
-elseif ( nargout <= 3 )
+elseif ( nargout == 4 )
     varargout = {core, cols_coeffs, rows_coeffs, tubes_coeffs};
 else
     % Two or three output variables are not allowed.

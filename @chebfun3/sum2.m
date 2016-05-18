@@ -1,5 +1,5 @@
 function ff = sum2(f, dims)
-%SUM   Definite Integration of a CHEBFUN3 in two variables.
+%SUM2   Definite Integration of a CHEBFUN3 in two variables.
 %
 %   G = sum2(F,DIMS) where DIM is two of the three indices 1, 2 or 3 
 %   integrates F over two of the variables X, Y or Z respectively, and 

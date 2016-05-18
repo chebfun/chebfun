@@ -16,7 +16,7 @@ function F = diff(F, k, dim)
 %
 %   DIFF(F,[k1 k2],[dim1 dim2]) means k1-th derivative of F in dimension
 %        dim1 and k2-th derivative in dimension dim2. dim1 and dim2
-%        can be 1, 2 or 3 in any order.
+%        can be 1, 2 or 3 in any order. 
 %    
 %   See also CHEBFUN3/GRAD, CHEBFUN3/LAP and CHEBFUN3/BIHARM.
 
@@ -42,8 +42,6 @@ if ( nargin == 2 )
 elseif ( nargin == 3 && numel(dim) ~= 1 && numel(dim) ~= 2 && numel(dim) ~= 3)
     error('CHEBFUN:CHEBFUN3s:diff:dim', 'Dim should have either 1, 2 or 3 entries.');
 end
-
-%len = size(F.core);
 
 % Diff the individual column, row, and tubes:
 if ( (numel(k) == 3) && (nargin < 3) )

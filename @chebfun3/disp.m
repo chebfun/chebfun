@@ -19,7 +19,12 @@ end
 
 % Get information that we want to display:
 dom = F.domain;                           % Domain
-[r1, r2, r3] = rank(F);                   % Rank
+r = size(F.core); % For the zero function we still expect to 
+% see that the core tensor is 1 x 1 x 1, rather than 0 x 0 x 0.
+if numel(r)<3
+    r = [r, 1];
+end
+r1 = r(1); r2 = r(2); r3 = r(3);
 vscl = vscale(F);                         % vertical scale
 
 % Check underlying tech is a TRIGTECH: 
@@ -35,7 +40,7 @@ else
     disp('   chebfun3 object ')
 end
 
-if all(floor(dom) == dom) % Corners of the domain are all integers.
+if ( all(floor(dom) == dom) ) % Corners of the domain are all integers.
     fprintf(['   cols: [Inf x %d chebfun]\n   rows: [Inf x %d chebfun]\n  '...
         'tubes: [Inf x %d chebfun]\n   core: [%d x %d x %d double]\n '...
         'domain: [%-2d,%2d] x [%-2d,%2d] x [%-2d,%2d]\n vertical scale '...

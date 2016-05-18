@@ -3,6 +3,9 @@ function pass = test_plotting()
 
 f = chebfun3(@(x,y,z) exp(cos(10*x.*y.*z)));
 hold off
+
+hfig = figure('Visible', 'off');
+
 % Non-GUI plots first
 plot(f),                     j = ishold;
 slice(f, 'noslider'),        j = j + ishold;

@@ -1,5 +1,5 @@
 function f = cumsum3(f)
-%CUMSUM2   Triple indefinite integral of a CHEBFUN3.
+%CUMSUM3   Triple indefinite integral of a CHEBFUN3.
 %   F = CUMSUM3(F) returns the triple indefinite integral of a CHEBFUN3. 
 % That is
 %                 z  y  x
