@@ -1,6 +1,5 @@
 classdef chebfun3
 %CHEBFUN3   CHEBFUN3 class for representing functions on [a,b]x[c,d]x[e,g].
-% 
 %   Class for approximating functions defined on finite cubes. The 
 %   functions should be smooth.
 %
@@ -35,7 +34,7 @@ classdef chebfun3
 %   CHEBFUN3(F, 'coeffs') where F is a tensor, uses F as coefficients in 
 %   a Chebyshev tensor expansion.
 %
-%   See also CHEBFUN3V and CHEBFUN3T.
+% See also CHEBFUN3V and CHEBFUN3T.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -133,7 +132,7 @@ methods (Access = public)
     varargout = chebpolyval3(varargin);
     
     % Sample a CHEBFUN3 on a tensor product grid
-    varargout = sample(varargin);    
+    varargout = sample(varargin);
     
     % Tucker rank of a CHEBFUN3 (i.e., size of the core in each direction).
     varargout = rank(f);
@@ -143,7 +142,7 @@ methods (Access = public)
     varargout = length(f);
 
     % Size of a CHEBFUN3.
-    varargout = size(f);
+    varargout = size(f, varargin);
         
     % Minimum of a CHEBFUN3 along one dimension.
     varargout = min(varargin);
@@ -265,7 +264,7 @@ methods
     out = uplus(f, g);
     
     % Plus for CHEBFUN3 objects.
-    out = plus(f, g);
+    out = plus(f, g, tol);
     
     % Unary minus for a CHEBFUN3.
     out = uminus(f);
@@ -274,10 +273,10 @@ methods
     out = minus(f, g);
     
     % Pointwise multiplication for CHEBFUN3 objects.
-    out = times(f, g, varargin);
+    out = times(f, g);
     
     % Pointwise multiplication for CHEBFUN3 objects.
-    out = mtimes(f, g, varargin);
+    out = mtimes(f, g);
     
     % Pointwise power of a CHEBFUN3.
     out = power(varargin);

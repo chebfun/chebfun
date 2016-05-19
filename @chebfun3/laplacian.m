@@ -1,9 +1,8 @@
 function L = laplacian(f)
 %LAPLACIAN   Laplacian of a CHEBFUN3.
-%
 %   L = LAPLACIAN(F) returns a CHEBFUN3 representing the Laplacian of F.
 %
-%   See also CHEBFUN3/LAP.
+% See also CHEBFUN3/LAP.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

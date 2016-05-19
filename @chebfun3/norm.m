@@ -1,5 +1,5 @@
 function [normF, normloc] = norm(f, p)
-%NORM       Norm of a CHEBFUN3 object.
+%NORM   Norm of a CHEBFUN3 object.
 %    NORM(F) = NORM(F,'fro') = sqrt(triple integral of abs(F)^2).
 %    NORM(F, 1) = NOT IMPLEMENTED AS IT NEEDS SPLITTING CAPABILITIES.
 %    NORM(F, inf) = global maximum in absolute value.

@@ -1,15 +1,18 @@
 function h = max(f, g, dim)
-%MAX   Maximum value of a CHEBFUN3 in one direction.
-%   MAX(f) returns a chebfun2 representing the maximum of the CHEBFUN3 along the
-%   x direction, i.e, MAX(f) = @(y,z) max( f(:, y, z) )
+%MAX   Maximum value of a CHEBFUN3 in one of the directions.
+%   MAX(F) returns a CHEBFUN2 representing the maximum of the CHEBFUN3 
+%   object F along the x direction, i.e, MAX(F) = @(y,z) max(F(:, y, z)).
 %
-%   MAX(f, [], dim) returns a CHEBFUN2 representing the maximum of f along the
-%   DIM direction. DIM = 1 means along the x-direction, DIM = 2 is along the
-%   y-direction, and DIM = 3 means along the z-direction.
+%   MAX(F, [], dim) returns a CHEBFUN2 representing the maximum of F along 
+%   the dimension DIM, where DIM = 1 means along the x-direction, DIM = 2 
+%   for the y-direction, and DIM = 3 means along the z-direction.
 %
-%   WARNING: This function is not always accurate to the expected precision. 
+%   WARNING: This function is not always accurate to the expected
+%   precision.
 % 
-%   For the global maximum use MAX3.
+%   Use MAX3 for the global maximum.
+%
+% See also CHEBFUN3/MAX2 and CHEBFUN3/MAX3.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

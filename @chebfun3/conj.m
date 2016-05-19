@@ -3,7 +3,7 @@ function f = conj(f)
 %   CONJ(F) returns the complex conjugate of F.  For a complex F, 
 %   CONJ(F) = REAL(F) - i*IMAG(F).
 %
-% See also REAL, IMAG. 
+% See also CHEBFUN3/REAL and CHEBFUN3/IMAG.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

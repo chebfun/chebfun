@@ -1,12 +1,11 @@
 function N = normal(F, varargin)
-%NORMAL normal vector to an implicit surface represented by a CHEBFUN3.
-%
+%NORMAL   normal vector to an implicit surface represented by a CHEBFUN3.
 %   N = NORMAL(F) returns a CHEBFUN3V representing the normal vector to the
-%   surface F. The vector has the same magntiude as the surface's tangent 
-%   vector.
+%   surface represented by a CHEBFUN3 object F. The vector has the same 
+%   magntiude as the surface's tangent vector.
 %
-%   N = NORMAL(F, 'unit') returns the unit normal vector, represented as a
-%   CHEBFUN3V, to the surface F.
+%   N = NORMAL(F, 'unit') returns the unit normal vector to the surface F, 
+%   represented as a CHEBFUN3V.
 %
 % See also CHEBFUN/NORMAL and CHEBFUN2V/NORMAL.
 

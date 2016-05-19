@@ -3,6 +3,8 @@ function f = log(f)
 %   LOG(F) is the natural logarithm of F. This function gives an error 
 %   message if the function passes through or becomes numerically close to 
 %   zero.
+%
+% See also CHEBFUN3/COMPOSE.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

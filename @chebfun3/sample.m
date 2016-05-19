@@ -1,14 +1,15 @@
 function varargout = sample(f, varargin)
-%SAMPLE     Values of f on a tensor product grid.
-%
+%SAMPLE   Values of a CHEBFUN3 object on a tensor product grid.
 %   X = SAMPLE(F) returns the tensor of values of F on a tensor product 
 %   grid.
 %
 %   [CORE, C, R, T] = SAMPLE(F) returns the low rank representation of the
-%   values of F on a tensor product grid. X = CORE x_1 C x_2 R x_3 T.
+%   values of F on a tensor product grid so that X = CORE x_1 C x_2 R x_3 T.
 %
-%   [CORE, C, R, T] = SAMPLE(F,M,N,P) returns the values of F on a
-%   M-by-N-by-P tensor product grid.
+%   [CORE, C, R, T] = SAMPLE(F, M, N, P) returns the values of F on an
+%   M x N x P tensor product grid.
+%
+% See also CHEBFUN3/FEVAL.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -30,16 +31,9 @@ else
     p = max(p, 50);
 end
 
-% For now just call chebpolyval3.  In the future, this function should call
-% an appropriate sample function on the underlying tech type. This would
-% require adding "sample" functions at the tech level.
-%[fCore, fCols, fRows, fTubes] = chebpolyval3(f, varargin{:});
-
-
-% Use ST decomposition so we can keep it in low rank form: 
+% Use Slice-Tucker decomposition so we can keep it in low rank form:
 [fCore, fCols, fRows, fTubes] = tucker(f);
 Cvals = sample(fCols, m);
-%Cvals = sample(chebfun(C,'splitting', 'on'), m);
 Rvals = sample(fRows, n);
 Tvals = sample(fTubes, p);
 

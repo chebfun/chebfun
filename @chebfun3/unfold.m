@@ -1,22 +1,21 @@
 function A = unfold(T, rowDims, colDims)
-%UNFOLD     Unfold or flatten or matricize a tensor.
-%
+%UNFOLD   Unfold (flatten or matricize) a discrete tensor.
 %   A = UNFOLD(T, ROWDIMS, COLDIMS) returns an unfolding of T, where 
-%   ROWDIMS and COLDIMS are integer vectors denoting the dimensions of T 
-%   that are merged into the rows and the columns of the matrix,
+%   ROWDIMS and COLDIMS are vectors of integers denoting the dimensions of 
+%   T that are merged into the rows and columns of the matrix A,
 %   respectively.
 %
 %   A = UNFOLD(T, ROWDIMS) chooses COLDIMS automatically to contain all 
 %   dimensions not contained in ROWDIMS. The entries of COLDIMS are
-%   arranged in ascending order.
+%   arranged in the ascending order.
 %
 %   Note that UNFOLD(T, 1:ndims(T)) is the same as to T(:).
 %
-%   Example
+%   Example:
 %   T = randn(2, 3, 4, 5);
-%   A = unfold(T, [2 4]); % returns a 15x8 matrix
+%   A = unfold(T, [2 4]); % Returns a matrix of size 15 x 8.
 %
-%   See also CHEBFUN3/FOLD.
+% See also CHEBFUN3/FOLD.
 
 % The structure of this code is similar to `matricize.m` from the HTUCKER 
 % toolbox of Tobler and Kressner.

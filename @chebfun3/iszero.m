@@ -1,7 +1,9 @@
 function out = iszero(f)
 %ISZERO   Check if a CHEBFUN3 is identically zero on its domain.
-%   OUT = ISZERO(F) returns 1 if the CHEBFUN3 is exactly the zero function, 
-%   and 0 otherwise. 
+%   OUT = ISZERO(F) returns 1 if the CHEBFUN3 object F is exactly the zero 
+%   function, and 0 otherwise.
+%
+% See also CHEBFUN2/ISZERO.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -15,7 +17,7 @@ if ( norm(fCore(:), inf) == 0 )
     return 
 end
 
-% Quick check: Evaluate on a meshgrid. If the tensor is nonzero then the
+% Quick check: Evaluate on a grid. If the tensor is nonzero then the
 % CHEBFUN3 is nonzero.
 dom = f.domain; 
 x = linspace(dom(1), dom(2), 10); 
@@ -30,7 +32,6 @@ end
 
 % Slower check: The core may be nonzero, but the columns, rows, or tubes 
 % may be zero:
-%rk = size(fcore);
 [rk1, rk2, rk3] = rank(f);
 out_cols = zeros(rk1, 1);
 out_rows = zeros(rk2, 1);

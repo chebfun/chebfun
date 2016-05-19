@@ -1,11 +1,10 @@
 function g = permute(f, dims)
-%PERMUTE   for CHEBFUN3 objects. This is a generalization of the transpose 
-%   operation for bivariate functions.
-%
+%PERMUTE   Permutation of CHEBFUN3 objects. 
 %   PERMUTE(F, DIMS) permutes the CHEBUFN3 object F in the order specified 
-%   by the row vector DIMS. For example, if f is a CHEBFUN3 representation 
-%   of f(x, y, z), then permute(f, [1 3 2]) 
-%   is a CHEBFUN3 representation of f(x, z, y).
+%   by the row vector DIMS.
+%   This is a generalization of the transpose operation for bivariate 
+%   functions. For example, if F is a CHEBFUN3 representation of f(x, y, z)
+%   then permute(f, [1 3 2]) is a CHEBFUN3 representation of f(x, z, y).
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

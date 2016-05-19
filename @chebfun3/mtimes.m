@@ -1,9 +1,8 @@
-function h = mtimes(f, g, varargin)
-%*	   Pointwise multiplication for CHEBFUN3 objects.
-%
+function h = mtimes(f, g)
+%*   Pointwise multiplication for CHEBFUN3 objects.
 %   c*F or F*c multiplies a CHEBFUN3 F by a scalar c.
 %
-% See also TIMES.
+% See also CHEBFUN3/TIMES.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -52,7 +51,7 @@ if ( isa(f, 'chebfun3') )           % CHEBFUN3 * ???
         
         % Form the output:
         h = chebfun3();
-        h.cols = gCols;   % 2nd variable of g sits in place of 1st variable of h.
+        h.cols = gCols;   % 1st variable of g sits in place of 1st variable of h.
         h.rows = fRows;   % 2nd variable of h is the 2nd variable of f.
         h.tubes = fTubes; % 3rd variable of h is 3rd variable of f.
         h.core = chebfun3.txm(temp, gPivots, 1);

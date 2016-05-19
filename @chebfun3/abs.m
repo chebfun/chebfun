@@ -1,5 +1,5 @@
 function f = abs(f)
-%ABS Absolute value of a CHEBFUN3.
+%ABS   Absolute value of a CHEBFUN3.
 %   ABS(F) returns the absolute value of a CHEBFUN3. 
 %   This function gives an error if the function passes through or becomes 
 %   numerically close to zero.

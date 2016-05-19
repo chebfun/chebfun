@@ -1,9 +1,9 @@
 function h = complex(f, g)
-%COMPLEX    Construct complex CHEBFUN3 from real and imaginary parts.
+%COMPLEX   Construct complex CHEBFUN3 from real and imaginary parts.
 %   H = COMPLEX(F, G) returns the complex CHEBFUN3 F + i G, where F and G 
 %   are real valued CHEBFUN3 objects with the same domain.
 %
-% See also IMAG, CONJ, ABS, REAL.
+% See also CHEBFUN3/IMAG, CHEBFUN3CONJ, CHEBFUN3ABS and CHEBFUN3/REAL.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

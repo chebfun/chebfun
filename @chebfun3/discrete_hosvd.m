@@ -1,5 +1,9 @@
 function [core, U1, U2, U3] = discrete_hosvd(T)
-% Higher order SVD of a discrete tensor of order 3
+%DISCRETE_HOSVD   The Higher order SVD of a discrete tensor of order 3.
+%   DISCRETE_HOSVD computes the HOSVD of a discrete tensor as introduced by
+%   De Lathauwer, De Moor and Vandewalle.
+%
+% See also CHEBFUN3/HOSVD.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

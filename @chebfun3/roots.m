@@ -1,22 +1,17 @@
 function r = roots(f, g, h, varargin)
-%roots    Poor man's method for finding common roots of three 3D functions:
+%roots   Poor man's method for finding common roots of three 3D functions:
 %   1) Find some initial guesses from the tensor of values of 
-%   obj_fun = f.^2+g.^2+h.^2.
+%   obj_fun = f.^2 + g.^2 + h.^2.
 %   2) Apply 10 steps of Newton's method.
 %   3) Filter inaccurate results.
 %
-%   See also CHEBFUN3/ROOT.
+% See also CHEBFUN3/ROOT.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 dom = f.domain;
 f = f./f.vscale; g = g./g.vscale; h = h./h.vscale; 
-
-% diffF1 = diff(f,1,1); diffF2 = diff(f,1,2); diffF3 = diff(f,1,3);
-% diffG1 = diff(g,1,1); diffG2 = diff(g,1,2); diffG3 = diff(g,1,3);
-% diffH1 = diff(h,1,1); diffH2 = diff(h,1,2); diffH3 = diff(h,1,3);
-%deg = topDeg(f,g,h,dom);
 
 [diffF1, diffF2, diffF3] = grad(f);
 [diffG1, diffG2, diffG3] = grad(g);
@@ -25,11 +20,6 @@ f = f./f.vscale; g = g./g.vscale; h = h./h.vscale;
 Jac = @(x,y,z) [feval(diffF1,x,y,z),  feval(diffF2,x,y,z),  feval(diffF3,x,y,z)
                 feval(diffG1,x,y,z),  feval(diffG2,x,y,z),  feval(diffG3,x,y,z)
                 feval(diffH1,x,y,z),  feval(diffH2,x,y,z),  feval(diffH3,x,y,z)];
-
-
-%len=length(obj_fun);
-% lenF = length(f); lenG = length(g); lenH = length(h);
-% len=max([lenF; lenG; lenH]);
 
 [mF, nF, pF] = length(f);
 [mG, nG, pG] = length(g);
@@ -192,9 +182,7 @@ end
 indices = [];
 for k=1:size(r,1)-1
     rr = r(k,:);
-    %for kk=1:size(r,1)
     for kk=k+1:size(r,1)        
-        %if ( k ~= kk && norm(rr-r(kk,:)) < tol2^(2/3) )
         if ( norm(rr-r(kk,:)) < tol2^(2/3) )
             indices = [indices; kk];
         end
@@ -231,8 +219,6 @@ end
 
 
 function deg = topDeg(f,g,h,dom)
-%dom = f.domain;
-
 temp1 = [feval(f,dom(1),dom(3),dom(5)), feval(f,dom(1),dom(4),dom(5)), feval(f,dom(1),dom(3),dom(6)),feval(f,dom(1),dom(4),dom(6))];
 
 f2 = chebfun2();

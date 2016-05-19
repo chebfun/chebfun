@@ -1,6 +1,5 @@
 function F = vertcat(varargin)
 %VERTCAT   Vertical concatenation of CHEBFUN3 objects.
-%
 %   VERTCAT(F, G) is the vertical concatenation of CHEBFUN3 objects F and G. 
 %   This function returns a CHEBFUN3V object. 
 % 
@@ -8,7 +7,7 @@ function F = vertcat(varargin)
 %
 %   VERTCAT(F) returns the CHEBFUN3 object F. 
 % 
-%   See also CHEBFUN3V.
+% See also CHEBFUN3V.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

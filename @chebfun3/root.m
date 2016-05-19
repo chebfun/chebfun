@@ -1,5 +1,5 @@
 function r = root(f, g, h, varargin)
-%root   Find just ONE common roots of three 3D functions.
+%ROOT   Find just ONE common roots of three CHEBFUN3 objects.
 %
 %   We try to find the minimum value of the following objective function:
 %   objFun = f.^2 + g.^2 + h.^2.
@@ -9,7 +9,7 @@ function r = root(f, g, h, varargin)
 %   2) Improve the initial guess using Newton's method to make the root 
 %   accurate to 16 digits).
 %
-%   See also chebfun2/roots.
+% See also CHEBFUN2/ROOTS.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

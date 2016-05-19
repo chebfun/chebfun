@@ -1,19 +1,17 @@
 function T = txm(T, A, varargin)
-%TXM    Tensor x matrix, i.e., modal contraction of a discrete tensor by a 
-%       matrix.
+%TXM   Discrete tensor-matrix contraction.
+%   Y = TXM(T, A, K) computes mode-K multiplication of a discrete tensor T 
+%   by a matrix A. Inputs must satisfy the following condition:
+%                       size(T, K) == size(A, 2).
+%   Output Y then satisfies the relation size(Y, K) = size(A, 1).
 %
-%   Y = TXM(T, A, K) computes mode-K multiplication of a tensor T by a 
-%   matrix A.
-%   The inputs must satisfy size(T, K) == size(A, 2), and the output
-%   Y satisfies size(Y, K) == size(A, 1).
-%
-%   Examples
+%   Example:
 %   T = rand([3, 5, 2, 4]);
 %   A = rand(6, 3); 
-%   S = txm(T, A, 1);  % mode-1 contraction of T with A. S will be a 
+%   Y = txm(T, A, 1);  % Mode-1 contraction of T with A. Y will be a 
 %                        tensor of size 6 x 5 x 2 x 4.
 %
-%   See also outerProd.
+% See also CHEBFUN3/outerProd.
 
 % The structure of this code is similar to `ttm.m` from the HTUCKER toolbox 
 % of Tobler and Kressner.

@@ -1,6 +1,5 @@
 function f = constructor(f, op, varargin)
 %CONSTRUCTOR   CHEBFUN3 constructor.
-%
 %   Given a function OP of three variables, this code represents it as a 
 %   CHEBFUN3 objects. A CHEBFUN3 object is a low rank representation and 
 %   expresses a function as a trilinear product of a discrete core tensor 
@@ -23,7 +22,7 @@ function f = constructor(f, op, varargin)
 %   PHASE 3: The third phase attempts to recompress the BTD form into
 %   Tucker format. This step is not an adaptive process. 
 %
-% See also CHEBFUN2.
+% See also CHEBFUN2, CHEBFUN3T and CHEBFUN3V.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

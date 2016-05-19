@@ -1,7 +1,7 @@
 function f = real(f)
-%REAL      Real part of a CHEBFUN3.
+%REAL   Real part of a CHEBFUN3.
 %
-% See also IMAG.
+% See also CHEBFUN3/IMAG and CHEBFUN3/COMPOSE.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

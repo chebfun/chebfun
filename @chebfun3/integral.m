@@ -1,10 +1,9 @@
 function I = integral(f, varargin)
 %INTEGRAL   Line integral of a CHEBFUN3 over a curve.
-%
-%   I = INTEGRAL(f), returns the definite integral of a CHEBFUN3 over its 
-%   domain of definition.
+%   I = INTEGRAL(F), returns the definite integral of the CHEBFUN3 object F
+%   over its domain of definition.
 % 
-%   I = INTEGRAL(f, G), returns the integral of the CHEBFUN3 object f
+%   I = INTEGRAL(F, G), returns the integral of the CHEBFUN3 object F
 %   along the curve defined by the inf x 3 quasimatrix G. Columns of G 
 %   represent parametrization of the 3D curve. 
 
@@ -19,7 +18,7 @@ if ( nargin == 1 )                         % Another way to do sum3(f)
     
 else
     if ( (isa(varargin{1}, 'chebfun')) && size(varargin{1}, 2) == 3 )  
-        % Line integral over an inf x 3 quasimatrix
+        % Line integral over an inf x 3 quasimatrix.
         % Get curve: 
         curve = varargin{1}; 
         xcurve = curve(:, 1); 

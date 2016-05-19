@@ -1,13 +1,12 @@
 function ff = mean2(f, dim)
-%MEAN2   Average or mean value of a CHEBFUN3 in two dimensions.
-% 
-%   G = mean2(F, DIM) where DIM contains two of the dimensions 1, 2 or 3 
-%   returns the mean of f only over X, Y, and Z respectively. The output is
-%   a chebfun in the remaining variable.
+%MEAN2   Average or mean value of a CHEBFUN3 in two dimensions. 
+%   G = mean2(F, DIM) returns the mean of F where DIM contains two of the 
+%   dimensions 1, 2 or 3 to show X, Y and Z respectively. The output is
+%   a 1D CHEBFUN in the remaining variable.
 %
-%   G = mean2(F) is the same as mean2(F, [1,2])
+%   G = mean2(F) is the same as mean2(F, [1,2]).
 %
-%   See also CHEBFUN3/MEAN and CHEBFUN3/MEAN3.
+% See also CHEBFUN3/MEAN and CHEBFUN3/MEAN3.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

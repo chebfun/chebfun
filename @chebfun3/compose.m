@@ -1,11 +1,9 @@
 function f = compose(f, op, varargin)
-% COMPOSE     compose command for CHEBFUN3 objects. 
+% COMPOSE   compose command for CHEBFUN3 objects. 
+%   F = COMPOSE(F, OP)  returns a CHEBFUN3 that approximates OP(F).
 % 
-%  F = COMPOSE(F, OP)  returns a CHEBFUN3 that approximates OP(F).
-% 
-%  F = COMPOSE(F, OP, G)  returns a CHEBFUN3 that approximates OP(F,G).
-%
-% This command is a wrapper for the CHEBFUN3 constructor. 
+%   F = COMPOSE(F, OP, G)  returns a CHEBFUN3 that approximates OP(F, G).
+%   This command is a wrapper for the CHEBFUN3 constructor. 
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

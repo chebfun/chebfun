@@ -1,11 +1,11 @@
 function [vals, locs] = minandmax3(f)
-%MINANDMAX3     returns the minimum and maximum value of a CHEBFUN3.
-%   VALS = minandmax3(F) returns the minimum and maximum value of a chebfun3 
-%   over its domain. VALS is a vector of length 2 such that 
-%   Y(1) = min(f(x,y,z)) and Y(2) = max(f(x,y,z)).
+%MINANDMAX3   returns the global minimum and maximum value of a CHEBFUN3.
+%   VALS = minandmax3(F) returns the global minimum and maximum value of a 
+%   CHEBFUN3 object F over its domain. VALS is a vector of length 2 such 
+%   that Y(1) = min3(F(x,y,z)) and Y(2) = max3(F(x,y,z)).
 %
-%   [VALS, LOCS] = minandmax3(F) also returns the position of the minimum 
-%   and maximum.
+%   [VALS, LOCS] = minandmax3(F) also returns the position of the global 
+%   minimum and maximum.
 %
 % See also CHEBFUN3/MAX2, CHEBFUN3/MIN2, CHEBFUN3/NORM.
 

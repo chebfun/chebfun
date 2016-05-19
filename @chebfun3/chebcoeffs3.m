@@ -1,5 +1,5 @@
 function varargout = chebcoeffs3(f)
-%CHEBCOEFFS3    Trivariate Chebyshev coefficients
+%CHEBCOEFFS3   Trivariate Chebyshev coefficients
 %   C = CHEBCOEFFS3(F) returns the tensor of trivariate coefficients such 
 %   that
 %   C = sum_{i=0}^{m-1}  sum_{j=0}^{n-1} sum_{k=0}^{p-1} 

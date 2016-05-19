@@ -1,6 +1,8 @@
 function varargout = plotcoeffs(f, varargin)
 %PLOTCOEFFS   Display coefficients of the columns, rows and tubes of a
 %   CHEBFUN3 object.
+%
+% See also CHEBFUN/PLOTCOEFFS and CHEBFUN2/PLOTCOEFFS.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -18,18 +20,19 @@ holdState = ishold;
 [ignore, fCols, fRows, fTubes] = tucker(f);
 
 % PLOTCOEFFS of cols:
-ax1 = subplot(1,3,1);
+ax1 = subplot(1, 3, 1);
 plotcoeffs(fCols, varargin{:}); 
 ylim1 = ylim(gca);
+% Remove labels from 1D plotcoeff: 
 xlabel(gca, '')
 ylabel(gca, 'Magnitude of coefficient') 
 title('Cols')    
 
 % PLOTCOEFFS of rows:
-ax2 = subplot(1,3,2);
+ax2 = subplot(1, 3, 2);
 plotcoeffs(fRows, varargin{:}); 
 ylim2 = ylim(gca);
-% Put just a label for the plot in the middle:
+% Put an xlabel only for the plot in the middle:
 if isa(f.cols.funs{1}.onefun,'trigtech')
     xlabel(gca, 'Wave number')
 else
@@ -39,10 +42,9 @@ ylabel(' ')
 title('Rows')
 
 % PLOTCOEFFS of tubes:
-ax3 = subplot(1,3,3);
+ax3 = subplot(1, 3, 3);
 plotcoeffs(fTubes, varargin{:}); 
 ylim3 = ylim(gca);
-% Remove labels from 1D plotcoeff: 
 xlabel(' ')
 ylabel(' ')
 title('Tubes')

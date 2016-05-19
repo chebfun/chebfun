@@ -1,34 +1,36 @@
 function varargout = isosurface(f, varargin)
-%ISOSURFACE  Plots an isosurface of a CHEBFUN3
+%ISOSURFACE   Plots an isosurface of a CHEBFUN3.
+%   ISOSURFACE(F) plots an isosurface of the CHEBFUN3 object F in a GUI so 
+%   that the user can use a slider to change the level.
 %
-%   ISOSURFACE(F) plots an isosurface of the CHEBFUN3 object F in a 
-%   GUI so that the user can use a slider to change the level.
-%
-%   ISOSURFACE(F, 'NPTS', n) plots an isosurface of F again with sliders
+%   ISOSURFACE(F, 'NPTS', N) plots an isosurface of F again with sliders
 %   but allows the user to adjust the grid size (the number of points
-%   in each direction) used to create the plot.  Default: n=51.
+%   in each direction) used to create the plot.  Default: N = 51.
 %
 %   ISOSURFACE(F, 'NOSLIDER') plots 3 isosurfaces at three
 %   automatically-chosen levels. There is no slider.
 %
-%   ISOSURFACE(F, LEV) plots the isosurface of F at the level
-%   specified by the scalar LEV. 
+%   ISOSURFACE(F, LEV) plots the isosurface of F at the level specified by 
+%   the scalar LEV. 
 %
-%   ISOSURFACE(F, LEV, 'NPTS', n) plots the isosurface and also lets
-%   the user specify the plotting grid.
+%   ISOSURFACE(F, LEV, 'NPTS', N) plots the isosurface and also lets
+%   the user specify the plotting grid size N.
 %
 %   ISOSURFACE(F,LEV,...) allows plotting of isosurfaces with specified 
 %   level, color and style.
 %
 %   If F is complex-valued, then its absolute value is plotted.
 %
-%   See also CHEBFUN3/PLOT, CHEBFUN3/SLICE, SCAN, and CHEBFUN3/SURF.
-%
 %   Example 1: f = cheb.gallery3('runge');
 %            isosurface(f, 0.8)
 %
 %   Example 2: f = chebfun3(@(x,y,z) tanh(x+y-.3) + cos(x.*y.*z)./(4+x-y-z));
 %            isosurface(f)
+%
+% See also CHEBFUN3/PLOT, CHEBFUN3/SLICE, CHEBFUN3/SCAN and CHEBFUN3/SURF.
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 %   Developer Note: This code might run slowly, not because evaluation is
 %   especially slow in Chebfun3, but because isosurface plots can be slow to
@@ -36,9 +38,6 @@ function varargout = isosurface(f, varargin)
 %   code might be 1% of the time spent just in the line that calls the
 %   isosurface command of MATLAB. This is an issue related to how graphics
 %   are handled in MATLAB with different graphic cards.
-
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org/ for Chebfun information.
 
 numpts = [];
 if ( nargin > 1 )
@@ -293,9 +292,8 @@ set(h, 'HandleVisibility', 'on');
 set(h, 'Visible', 'on');
 end
 
-
-% --- Executes on zSlider movement.
 function isosurfaceSlider_Callback(hObject, eventdata, handles)
+% --- Executes on zSlider movement.
 % hObject    handle to isosurfaceSlider (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)

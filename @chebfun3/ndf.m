@@ -1,6 +1,8 @@
 function s = ndf(f)
 %NDF   Number of degrees of freedom (parameters) needed to represent a 
-%   Chebfun3 object.
+%   CHEBFUN3 object.
+%
+% See also CHEBFUN3T/NDF.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -13,7 +15,7 @@ if ( isempty(f) )
 else
     [r1, r2, r3] = rank(f);
     [m, n, p] = length(f);
-      s = dot([r1, r2, r3],[m, n, p]) + numel(f.core);
+      s = dot([r1, r2, r3], [m, n, p]) + numel(f.core);
 end
 
 end

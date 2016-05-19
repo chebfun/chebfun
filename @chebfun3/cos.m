@@ -1,6 +1,7 @@
 function f = cos(f)
 %COS   Cosine of a CHEBFUN3.
 %   COS(F) returns the cosine of F.
+% See also CHEBFUN3/COMPOSE.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

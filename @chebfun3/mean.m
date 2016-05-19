@@ -1,12 +1,13 @@
 function s = mean(f, dim)
-%MEAN   Average or mean value of a CHEBFUN3. 
-%   MEAN(F) takes the mean in the x-direction (default), i.e., 
-%          MEAN(F) = 1/(xmax-xmin) sum(F).
+%MEAN   Average or mean value of a CHEBFUN3.
+%   MEAN(F) takes the mean of F in the x-direction (default), i.e., 
+%                                           MEAN(F) = 1/(xmax-xmin) sum(F).
 %
-%   MEAN(F, DIM) takes the mean along the direction DIM. If DIM = 1 it is the
-%   x-direction, and if DIM = 2 then it is the y-direction, and if DIM = 3 then it is the z-direction.
+%   MEAN(F, DIM) takes the mean along the direction DIM, where DIM = 1 
+%   means the x-direction, DIM = 2 means the y-direction, and DIM = 3 means 
+%   the z-direction.
 %
-%   See also MEAN2, MEAN3, and STD3.
+% See also CHEBFUN3/MEAN2, CHEBFUN3/MEAN3, and CHEBFUN3/STD3.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

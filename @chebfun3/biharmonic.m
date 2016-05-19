@@ -1,10 +1,9 @@
 function B = biharmonic(f)
 %BIHARMONIC   Biharmonic operator applied to a CHEBFUN3.
-%
 %   B = BIHARMONIC(F) returns a CHEBFUN3 representing the Biharmonic 
 %   operator applied to F.
 %
-%   See also CHEBFUN3/BIHARM.
+% See also CHEBFUN3/BIHARM.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

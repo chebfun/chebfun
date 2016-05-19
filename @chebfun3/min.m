@@ -1,16 +1,15 @@
 function h = min(f, g, dim)
 %MIN   Minimum value of a CHEBFUN3 in one direction.
-%
-%   MIN(F) returns a chebfun2 representing the minimum of the CHEBFUN3 
-%   along the x direction, i.e, MIN(F) = @(y,z) min(F(:, y, z))
+%   MIN(F) returns a CHEBFUN2 representing the minimum of the CHEBFUN3
+%   object F along the x direction, i.e, MIN(F) = @(y,z) min(F(:, y, z)).
 %
 %   MIN(F, [], DIM) returns a CHEBFUN2 representing the minimum of F along 
-%   the DIM direction. DIM = 1 means along the x-direction, DIM = 2 is 
+%   the dimension DIM, whre DIM = 1 means along the x-direction, DIM = 2
 %   along the y-direction, and DIM = 3 means along the z-direction.
 %
 %   WARNING: This function is not always accurate to the expected precision.
 % 
-%   For the global minimum use MIN3.
+% See also CHEBFUN3/MIN2 and CHEBFUN3/MIN3.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -60,7 +59,7 @@ elseif ( dim == 0 )
     error('CHEBFUN:CHEBFUN3:min:dim', ...
         'Dimension argument must be a positive integer scalar within indexing range.')
 else
-   % return the CHEBFUN3 object. This is analogous to that MIN() command in
+   % Return the CHEBFUN3 object. This is analogous to that MIN() command in
    % MATLAB.
    h = f;  
 end

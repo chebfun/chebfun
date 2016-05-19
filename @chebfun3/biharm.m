@@ -5,7 +5,7 @@ function B = biharm(f)
 %
 %   This is shorthand for BIHARMONIC( F )
 %
-%   See also CHEBFUN3/BIHARMONIC.
+% See also CHEBFUN3/BIHARMONIC.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

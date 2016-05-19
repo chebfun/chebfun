@@ -1,7 +1,7 @@
 function disp(F)
 %DISP   Display a CHEBFUN3 to the command line.
 % 
-%   See also DISPLAY.
+% See also CHEBFUN3/DISPLAY.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

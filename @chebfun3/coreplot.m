@@ -1,5 +1,5 @@
 function coreplot(f, varargin)
-%COREPLOT     A scatter3 plot of the core tensor of a CHEBFUN3 that 
+%COREPLOT   A scatter3 plot of the core tensor of a CHEBFUN3 that 
 %   visualizes logarithm of the magnitude of each entry.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.

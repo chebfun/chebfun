@@ -8,8 +8,8 @@ function f = cumsum(f, dim)
 %   DIM = 2 integration is along the y-direction, and if DIM = 3 
 %   integration is along the z-direction.
 %
-%   See also chebfun3/cumsum2, chebfun3/cumsum3, chebfun3/sum, 
-%   chebfun3/sum and chebfun3/sum3.
+% See also CHEBFUN3/CUMSUM2, CHEBFUN3/CUMSUM3, CHEBFUN3/SUM, 
+%   CHEBFUN3/SUM2 and CHEBFUN3/SUM3.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

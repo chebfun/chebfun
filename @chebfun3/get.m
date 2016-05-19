@@ -1,12 +1,12 @@
 function val = get(f, propName)
-%GET   GET method for CHEBFUN3 class.
-%   P = GET(F, PROP) returns the property P specified in the string PROP from
-%   the CHEBFUN F. Valid entries for the string PROP are:
-%    'COLS'
-%    'ROWS' 
-%    'TUBES'
-%    'CORE'
-%    'DOMAIN'
+%GET   GET method for the CHEBFUN3 class.
+%   P = GET(F, PROP) returns the property P specified in the string PROP 
+%   from the CHEBFUN3 object F. Valid entries for the string PROP are:
+%   'COLS'
+%   'ROWS' 
+%   'TUBES'
+%   'CORE'
+%   'DOMAIN'
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

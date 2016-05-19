@@ -1,31 +1,29 @@
 function varargout = hosvd(f, varargin)
 %HOSVD   computes the classical Tucker decomposition of CHEBFUN3.
+%   SV = HOSVD(F) computes only a 1 x 3 cell-array containing 3 column 
+%   vectors of modal singular values of the CHEBUFN3 object F.
 %
-% sv = hosvd(F) computes only a 1 x 3 cell-array containing 3 vectors of 
-% modal singular values of the CHEBUFN3 object F.
+%   [SV, CORE, COLS, ROWS, TUBES] = HOSVD(F) computes singular values and 
+%   also singular functions of F. It also outputs the so-called 
+%   `all-orthogonal' core tensor CORE. Each column of the quasimatrices 
+%   COLS, ROWS and TUBES in the output is a singular function of F.
 %
-% [sv, core, cols, rows, tubes] = hosvd(F) computes singular values and also
-% singular functions of F. It also outputs the so-called 'all-orthogonal' 
-% core tensor. Note that each column of the quasimatrices cols, rows and
-% tubes in the output is a singular function of F.
+%   [SV, G] = hosvd(F) forms another CHEBFUN3 object G that has the factor
+%   quasimatrices and the core tensor as computed from HOSVD of F.
 %
-% [sv, G] = hosvd(F) forms another CHEBFUN3 object G that has the factor
-% quasimatrices and the core tensor as computed from HOSVD of F.
-%
-% Note that a ``general'' Tucker representation of a chebfun3 object F is 
-% not unique (e.g., one can always multiply each factor quasimatrix e.g., 
-% by M*inv(M) for any nonsingular matrix M). The situation is made better 
-% in HOSVD by putting the following constraints on a general Tucker 
-% representation to get the classical (HOSVD) of F:
-%
-% 1) All the three factor quasimatrices should have norm 1.
-% 2) Modal singular values sv should have decreasing values (This is a 3D 
-% analogue of the decay of singular values of a matrix).
-% 3) The core tensor should be ''all orthogonal''.
+%   Note that a `general' Tucker representation of a chebfun3 object F is 
+%   not unique (e.g., one can always multiply each factor quasimatrix e.g., 
+%   by M*inv(M) for any nonsingular discrete matrix M). The situation is 
+%   made better in HOSVD by putting the following constraints on a general 
+%   Tucker representation to get the classical Tucker (i.e., HOSVD) of F:
+%   1) All the three factor quasimatrices should have norm 1.
+%   2) Modal singular values SV should have decreasing values (This is a 3D 
+%   analogue of the decay of singular values of a matrix).
+%   3) The core tensor CORE should be `all orthogonal'.
 
-% Singular functions are unique only up to a +-1 sign and permutations. 
-% Truncation by HOSVD is helpful, but is not necessarily optimal as one
-% expects from Eckart-Young theorem in 2D.
+%   Singular functions are unique only up to the sign and permutations. 
+%   Truncation by HOSVD is helpful, but is not necessarily optimal as one
+%   expects from the Eckart-Young theorem in 2D.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

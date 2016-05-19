@@ -1,18 +1,17 @@
 function f = cumsum3(f)
 %CUMSUM3   Triple indefinite integral of a CHEBFUN3.
 %   F = CUMSUM3(F) returns the triple indefinite integral of a CHEBFUN3. 
-% That is
+%   That is
 %                 z  y  x
 %                /  /  /
 %   CUMSUM3(F) =|  |  |   F(x,y,z) dx dy dz
 %              /  /  /
 %             e  c  a
 %
-%   for  (x,y,z) in [a,b] x [c,d] x [e,g], where 
-%   [a,b] x [c,d] x [e,g] is the domain of F.
+%   where [a,b] x [c,d] x [e,g] is the domain of F.
 % 
-%   See also chebfun3/cumsum, chebfun3/cumsum2, chebfun3/sum, 
-%   chebfun3/sum and chebfun3/sum3.
+% See also CHEBFUN3/CUMSUM, CHEBFUN3/CUMSUM2, CHEBFUN3/SUM, CHEBFUN3/SUM2 
+% and CHEBFUN3/SUM3.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

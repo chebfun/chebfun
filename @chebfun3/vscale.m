@@ -1,8 +1,7 @@
 function vscl = vscale(f) 
-%VSCALE   Vertical scale of a CHEBFUN3.
-% 
-% VSCL = VSCALE(F) returns the vertial scale of a CHEBFUN3 as determined
-% by evaluating on a coarse tensor-product grid. 
+%VSCALE   Vertical scale of a CHEBFUN3. 
+% VSCL = VSCALE(F) returns the vertial scale of a CHEBFUN3 object F as 
+%   determined by evaluating on a coarse tensor-product grid. 
 
 % TODO: Should this also be taking the maximum along the edges when we are
 % evaluating at 1st kind grids. 
@@ -28,7 +27,7 @@ else
 end
 
 
-% % Get the degree of the CHEBFUN3:
+% Get the degree of the CHEBFUN3:
 [m, n, p] = length(f);
 
 % If F is of low degree, then oversample: 
@@ -45,7 +44,7 @@ z = mypoints(p, dom(5:6), tech);
 vals = feval(f, xx, yy, zz); 
 
 % Take the absolute maximum: 
-vscl = max(abs(vals(:))); 
+vscl = max(abs(vals(:)));
 
 end
 
@@ -58,11 +57,11 @@ function x = mypoints(n, dom, tech)
 %tech = pref.tech();
 
 if ( isa(tech, 'chebtech2') )
-    x = chebpts( n, dom, 2 ); 
+    x = chebpts(n, dom, 2);
 elseif ( isa(tech, 'chebtech1') )
-    x = chebpts( n, dom, 1 ); 
+    x = chebpts(n, dom, 1);
 elseif ( isa(tech, 'trigtech') )
-    x = trigpts( n, dom ); 
+    x = trigpts(n, dom);
 else
     error('CHEBFUN:CHEBFUN3:vscale:mypoints:techType', ...
         'Unrecognized technology');

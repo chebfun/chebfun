@@ -1,16 +1,18 @@
-function [val, loc] = min3( f )
-%MAX3   Global minimum of a CHEBFUN3.
+function [val, pos] = min3(f)
+%MIN3   Global minimum of a CHEBFUN3.
+%   [VAL, POS] = MIN3(F) returns the global minimum VAL and the position 
+%   POS of the global minimum of a CHEBFUN3 object F.
 %
-%   See also CHEBFUN3/minandmax3.
+% See also CHEBFUN3/MINANDMAX3.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Call MINANDMAX3:
-[val, loc] = minandmax3(f);
+[val, pos] = minandmax3(f);
 
-% Extract maximum:
+% Extract minimum:
 val = val(1);
-loc = loc(1, :);
+pos = pos(1, :);
 
 end
