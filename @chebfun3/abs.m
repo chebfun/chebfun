@@ -1,8 +1,10 @@
 function f = abs(f)
 %ABS   Absolute value of a CHEBFUN3.
-%   ABS(F) returns the absolute value of a CHEBFUN3. 
-%   This function gives an error if the function passes through or becomes 
-%   numerically close to zero.
+%   ABS(F) returns the absolute value of a CHEBFUN3 object F. This function
+%   gives an error if the function passes through or becomes numerically 
+%   close to zero.
+%
+% See also CHEBFUN3/COMPOSE.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

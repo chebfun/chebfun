@@ -1,9 +1,11 @@
 classdef chebfun3t
-%CHEBFUN3T   CHEBFUN3T class for representing functions on [a,b]x[c,d]x[e,g].
+%CHEBFUN3T   class for representing functions on [a,b]x[c,d]x[e,g] using 
+%   tensor product approach.
 % 
-%   Class for approximating smooth functions defined on finite boxes using 
-%   the vanilla flavoured full tensor product approach. The output contains 
-%   a tensor of coefficients of the Chebyshev expansion of the input function.
+%   Class for approximating smooth functions defined on finite cuboids 
+%   using the vanilla flavoured full tensor product approach. The output 
+%   contains a tensor of coefficients of the Chebyshev expansion of the 
+%   input function.
 %
 %   CHEBFUN3T(F) constructs a CHEBFUN3T object representing the function F on
 %   [-1,1]x[-1 1]x[-1 1]. F should be a function handle, e.g.,
@@ -22,6 +24,8 @@ classdef chebfun3t
 %   f3t = chebfun3t(f, [-2 2 1 2 1 3]);
 %   f3t = chebfun3t(f,'eps', 1e-10);
 %   f3t = chebfun3t(f,[-2 2 1 2 1 3],'eps', 1e-10);
+%
+% See also CHEBFUN3 and CHEBFUN3V.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

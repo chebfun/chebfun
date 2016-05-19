@@ -1,9 +1,9 @@
 function G = divgrad(F)
-%DIVGRAD   Laplacian of a CHEBFUN3V.
+%DIVGRAD   Laplacian of a CHEBFUN3V object.
 %   F = DIVGRAD(F) returns the Laplacian of a CHEBFUN3V i.e.,
-%       divgrad(F) = F(1)_xx + F(2)_yy + F(3)_zz
+%                                divgrad(F) = F(1)_xx + F(2)_yy + F(3)_zz.
 %
-% This command is defined only for a chebfun3v with 3 components. 
+% This command is defined only for a CHEBFUN3V with 3 components.
 %
 % Also see CHEBFUN3V/LAP.
 

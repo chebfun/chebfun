@@ -1,8 +1,8 @@
 function L = laplacian(F)
-%LAPLACIAN Vector Laplacian of a CHEBFUN3V object.
+%LAPLACIAN   Vector Laplacian of a CHEBFUN3V object.
 %   LAPLACIAN(F) returns a CHEBFUN3V representing the vector Laplacian of F.
 %
-%   See also CHEBFUN3V/LAP.
+% See also CHEBFUN3V/LAP.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

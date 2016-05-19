@@ -1,5 +1,5 @@
-function H = ldivide( F, G )
-%.\   Pointwise CHEBFUN3V left divide.
+function H = ldivide(F, G)
+%.\   Pointwise left divide for two CHEBFUN3V objects.
 %
 % See also CHEBFUN3V/RDIVIDE.
 
@@ -11,8 +11,8 @@ if ( ( isempty(F) ) || ( isempty(G) ) )
     return
 end
 
-if ( isa( F, 'double' ) )                % DOUBLE .\ CHEBFUN3V
-    nG = G.nComponents;
+if ( isa(F, 'double') )                  % DOUBLE .\ CHEBFUN3V
+    nG = G.nComponents; 
     Gc = G.components;
     H = G;
     for j = 1:nG
@@ -35,8 +35,8 @@ else                                     % CHEBFUN3V .\ CHEBFUN3V
             'CHEBFUN3V do not have the same number of components.')
     end
     H = F;
-    for j = 1 : nF
-        H.components{j} = ldivide( F.components{j}, G.components{j} );
+    for j = 1:nF
+        H.components{j} = ldivide(F.components{j}, G.components{j});
     end
 end
 

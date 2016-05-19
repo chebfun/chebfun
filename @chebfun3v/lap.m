@@ -1,16 +1,15 @@
-function L = lap( f )
-%LAP   Laplacian of a CHEBFUN3V.
+function L = lap(f)
+%LAP   Laplacian of a CHEBFUN3V object.
+%   L = LAP(F) returns a CHEBFUN3V representing the Laplacian of F.
 %
-%   L = LAP(F) returns a CHEBFUN3V representing the Laplacian of F. 
+%   This is shorthand for LAPLACIAN(F).
 %
-%   This is shorthand for LAPLACIAN( F )
-%
-%   See also LAPLACIAN.
+% See also CHEBFUN3V/LAPLACIAN.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Call Laplacian: 
-L = laplacian( f );
+L = laplacian(f);
 
 end

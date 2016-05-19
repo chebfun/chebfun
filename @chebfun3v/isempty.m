@@ -1,6 +1,6 @@
-function out = isempty( F )
-%ISEMPTY    empty boolean check for a CHEBFUN3V object. 
-%   ISEMPTY(F) returns 1 if every component of F is an empty CHEBFUN3, and
+function out = isempty(F)
+%ISEMPTY   Empty Boolean check for a CHEBFUN3V object.
+%   ISEMPTY(F) returns 1 if every component of F is an empty CHEBFUN3V, and
 %   return 0 otherwise.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
@@ -13,6 +13,6 @@ end
 
 % Take isempty of each component:
 out = cellfun(@isempty, F.components, 'UniformOutput', false);
-out = all(cell2mat(out) );
+out = all(cell2mat(out));
 
 end

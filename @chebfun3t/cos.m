@@ -1,5 +1,5 @@
-function f = cos( f ) 
-%COS   Cosine of a CHEBFUN3T.
+function f = cos(f)
+%COS   Cosine of a CHEBFUN3T object.
 %
 %   COS(F) returns the cosine of F.
 

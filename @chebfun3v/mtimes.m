@@ -1,13 +1,13 @@
 function F = mtimes(F, G)
-%*  mtimes for CHEBFUN3V.
+%*   MTIMES for CHEBFUN3V objects.
+%   c*F or F*c multiplies each component of a CHEBFUN3V object F by a 
+%   scalar c.
 %
-%  c*F or F*c multiplies each component of a CHEBFUN3V by a scalar.
+%   A*F multiplies the vector of CHEBFUN3 objects F by the matrix A 
+%   assuming that size(A, 2) == size(F, 1).
 %
-%  A*F multiplies the vector of functions F by the matrix A assuming that
-%  size(A,2) == size(F,1).
-%
-%  F*G calculates the inner product between F and G if size(F,4) ==
-%  size(G,1). If the sizes are appropriate then F*G = dot(F.',G).
+%   F*G calculates the inner product between F and G if size(F, 4) ==
+%   size(G, 1). If the sizes are appropriate then F*G = dot(F.', G).
 %
 % See also CHEBFUN3V/TIMES.
 
@@ -30,12 +30,12 @@ end
 
 if ( isa(G, 'chebfun3v') && ~isa(F, 'chebfun3v') )
     if ( G.isTransposed )
-        F = mtimes( G.' , F.' ).' ;
+        F = mtimes(G.', F.').';
         return
     end
 end
 
-if ( isa( F, 'double' ) )      % doubles * CHEBFUN3V
+if ( isa(F, 'double') )      % doubles * CHEBFUN3V
     if ( numel(F) == 1 )       % scalar * CHEBFUN3V
         const = F;
         F = G;
@@ -63,24 +63,24 @@ if ( isa( F, 'double' ) )      % doubles * CHEBFUN3V
     
 elseif( isa(G, 'double') )          % CHEBFUN3V * double
     
-    if ( numel( G ) == 1 )          % CHEBFUN3V * scalar
-        F = mtimes( G, F );
+    if ( numel(G) == 1 )          % CHEBFUN3V * scalar
+        F = mtimes(G, F);
     else
         error('CHEBFUN:CHEBFUN3V:mtimes:double', ...
             'CHEBFUN3V and double size mismatch.');
     end
-elseif (isa(F,'chebfun3v') && isa(G,'chebfun3v') ) % dot product if dimensions are right.
+elseif ( isa(F, 'chebfun3v') && isa(G, 'chebfun3v') ) % dot product if dimensions are right.
     
-    if ( ( F.isTransposed ) && ( ~G.isTransposed ) )
-        F = dot( F, G );
+    if ( F.isTransposed && ~G.isTransposed )
+        F = dot(F, G);
     else
         error('CHEBFUN:CHEBFUN3V:mtimes:sizes', 'Dimensions mismatch.');
     end
     
 elseif isa(F,'chebfun3v') && isa(G,'chebfun3')
-    F = mtimes( G , F );
+    F = mtimes(G , F);
     
-else 
+else
     error('CHEBFUN:CHEBFUN3V:mtimes:inputs', ...
         'CHEBFUN3V can only mtimes to CHEBFUN3V or double');
 end

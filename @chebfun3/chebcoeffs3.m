@@ -19,11 +19,11 @@ if ( isempty(f) )
 end
 
 if ( iszero(f) ) 
-    varargout = {0} ; 
+    varargout = {0}; 
     return
 end
 
-% Get the low rank representation for f. 
+% Get low rank representation of f:
 [core, cols, rows, tubes] = tucker(f);
 
 % Get the coeffs of the columns, rows and tubes:
@@ -32,13 +32,13 @@ rows_coeffs = chebcoeffs(rows);
 tubes_coeffs = chebcoeffs(tubes);
 
 if ( nargout <= 1 )
-    % Return the tensor of coefficients
+    % Return the tensor of coefficients:
     varargout = {chebfun3.txm(chebfun3.txm(chebfun3.txm(core, ...
         cols_coeffs, 1), rows_coeffs, 2), tubes_coeffs, 3)};
 elseif ( nargout == 4 )
     varargout = {core, cols_coeffs, rows_coeffs, tubes_coeffs};
 else
-    % Two or three output variables are not allowed.
+    % Two or three outputs are not allowed.
     error('CHEBFUN:CHEBFUN3:chebcoeffs3:outputs', ...
         'Incorrect number of outputs.');
 end

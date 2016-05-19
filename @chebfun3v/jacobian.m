@@ -1,6 +1,5 @@
-function J = jacobian( F )
-%JACOBIAN   Jacobian determinant of a CHEBFUN3V.
-%
+function J = jacobian(F)
+%JACOBIAN   Determinant of the Jacobian of a CHEBFUN3V object.
 %   J = JACOBIAN(F) computes the determinant of the Jacobian matrix 
 %   associated with the vector-valued CHEBFUN3V object F. F must have three
 %   components.

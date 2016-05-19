@@ -1,6 +1,8 @@
 function normF = norm(f, p)
-%NORM       Frobenius norm of a CHEBFUN3T object.
-%    NORM(F) = NORM(F,'fro') = sqrt(triple integral of abs(F)^2).
+%NORM   Frobenius norm of a CHEBFUN3T object.
+%   NORM(F) = NORM(F, 'fro') = sqrt(sum3(abs(F)^2)).
+%
+% See also CHEBFUN3/NORM.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

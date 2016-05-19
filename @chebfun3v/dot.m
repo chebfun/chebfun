@@ -1,14 +1,15 @@
-function f = dot( F, G )
-%DOT   Vector dot product.
-%   DOT(F, G) returns the dot product of CHEBFUN3V objects F and G. 
+function f = dot(F, G)
+%DOT   Dot product of two CHEBFUN3V objects.
+%   DOT(F, G) returns dot product of CHEBFUN3V objects F and G. 
+%
 %   DOT(F, G) is the same as F'*G.
 % 
-%   See also CHEBFUN3V/CROSS.
+% See also CHEBFUN3V/CROSS.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( isempty( F ) || isempty( G ) ) 
+if ( isempty(F) || isempty(G) )
     f = chebfun3();
     return
 end

@@ -1,8 +1,7 @@
 function I = sum3(f)
-%SUM3   Triple integral of a CHEBFUN3 over [a, b] x [c, d] x [e g].
-%
-% A direct generalization of the Clenshaw-Curtis quadrature as implemented
-% in Page 77 of Battles' PhD thesis.
+%SUM3   Triple definite integral of a CHEBFUN3T over [a, b] x [c, d] x [e g].
+%   This is a direct generalization of Clenshaw-Curtis quadrature as 
+%   implemented in Page 77 of Battles' PhD thesis.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -14,7 +13,7 @@ end
 
 coeffs = f.coeffs;
 % Rescaling factorws:
-rescaleFactor = 0.5*diff(f.domain(1:2));  %(b - a)/2
+rescaleFactor = 0.5*diff(f.domain(1:2));                 % (b - a)/2
 rescaleFactor = rescaleFactor * 0.5*diff(f.domain(3:4)); % (d - c)/2
 rescaleFactor = rescaleFactor * 0.5*diff(f.domain(5:6)); % (g - e)/2
 

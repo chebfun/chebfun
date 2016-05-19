@@ -1,24 +1,25 @@
-function display(X)
-%DISPLAY   Display a CHEBFUN3V.
+function display(F)
+%DISPLAY   Display a CHEBFUN3V object.
+%   DISPLAY(F) outputs important information about the CHEBFUN3V object F 
+%   to the command line, including its domain of definition and a summary 
+%   of its structure.
 %
-%   DISPLAY(F) outputs important information about the CHEBFUN3V F to the
-%   command window, including its domain of definition, length (number of pivots
-%   used to represent it), and a summary of its structure.
+%   This is called automatically when the semicolon is not used at the end 
+%   of a statement that results in a CHEBFUN3V object.
 %
-%   It is called automatically when the semicolon is not used at the end of a
-%   statement that results in a CHEBFUN3V.
+% See also CHEBFUN3V/DISP and CHEBFUN3/DISPLAY.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isequal(get(0, 'FormatSpacing'), 'compact') )
 	disp([inputname(1), ' =']);
-	disp(X);
+	disp(F);
 else
 	disp(' ');
 	disp([inputname(1), ' =']);
 	disp(' ');
-    disp(X);
+    disp(F);
 end
 
 end

@@ -1,7 +1,7 @@
 function out = domainCheck(f, g)
 %DOMAINCHECK   True if the domains of two CHEBFUN3T objects are the same.
-%   DOMAINCHECK(F, G) returns TRUE if the domains of the two
-%   CHEBFUN3T objects F and G coincide up to a tolerance depending on their
+%   DOMAINCHECK(F, G) returns TRUE if the domains of the two CHEBFUN3T 
+%   objects F and G coincide up to a tolerance depending on their
 %   horizontal scales or if both F and G are empty CHEBFUN objects.
 %
 % See also CHEBFUN/DOMAINCHECK.

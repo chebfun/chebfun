@@ -1,11 +1,11 @@
-function f = tand( f )
-%TAND  Tangent of a CHEBFUN3T (in degrees)
+function f = tand(f)
+%TAND  Tangent of a CHEBFUN3T object in degrees.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 
-if ( isempty( f ) )    
+if ( isempty(f) )
     return
 end
 

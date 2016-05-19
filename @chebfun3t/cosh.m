@@ -1,5 +1,5 @@
-function f = cosh( f )
-%COSH   Hyperbolic cosine of a CHEBFUN3T.
+function f = cosh(f)
+%COSH   Hyperbolic cosine of a CHEBFUN3T object.
 %
 %   COSH(F) returns the hyperbolic cosine of F.
 
@@ -7,11 +7,11 @@ function f = cosh( f )
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Check for empty:
-if ( isempty( f ) ) 
+if ( isempty(f) )
     return 
 end 
 
-op = @(x,y,z) cosh( feval(f, x, y, z ) ) ;  % Resample. 
-f = chebfun3t( op, f.domain );          % Call constructor. 
+op = @(x,y,z) cosh(feval(f, x, y, z)) ;  % Resample.
+f = chebfun3t(op, f.domain);             % Call constructor.
 
 end

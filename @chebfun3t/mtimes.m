@@ -1,9 +1,8 @@
 function h = mtimes(f, g)
-%*	   Pointwise multiplication for CHEBFUN3T objects.
-%
+%*   Pointwise multiplication for CHEBFUN3T objects.
 %   c*F or F*c multiplies a CHEBFUN3T F by a scalar c.
 %
-% See also TIMES.
+% See also CHEBFUN3T/TIMES.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

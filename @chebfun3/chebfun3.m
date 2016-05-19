@@ -1,7 +1,7 @@
 classdef chebfun3
 %CHEBFUN3   CHEBFUN3 class for representing functions on [a,b]x[c,d]x[e,g].
-%   Class for approximating functions defined on finite cubes. The 
-%   functions should be smooth.
+%   Class for approximating functions defined on finite cuboids. The 
+%   function should be smooth.
 %
 %   CHEBFUN3(F) constructs a CHEBFUN3 object representing the function F on
 %   [-1, 1] x [-1, 1] x [-1, 1]. F should be a function handle, e.g.,

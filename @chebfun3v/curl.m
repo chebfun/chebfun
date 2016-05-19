@@ -1,6 +1,6 @@
 function F = curl(F)
-%CURL  curl of a CHEBFUN3V
-%   S = CURL(F) returns the CHEBFUN3 of the curl of F. If F is a CHEBFUN3V 
+%CURL  Curl of a CHEBFUN3V object.
+%   G = CURL(F) returns the CHEBFUN3 of the curl of F. If F is a CHEBFUN3V 
 %   with three components then it returns the CHEBFUN3V representing the 3D
 %   curl operation.
 

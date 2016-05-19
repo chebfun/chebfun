@@ -1,6 +1,10 @@
 function varargout = plotcoeffs(f, varargin)
-%PLOTCOEFFS     A scatter3 plot of the tensor of coefficients of a
-%   CHEBFUN3T that visualizes logarithm of the magnitude of each entry.
+%PLOTCOEFFS   Creates plotcoeffs of a CHEBFUN3T object.
+%   PLOTCOEFFS(F) creates a scatter3 plot of the tensor of coefficients of 
+%   the CHEBFUN3T object F that visualizes logarithm of the magnitude of 
+%   each entry.
+%
+% See also CHEBFUN3/PLOTCOEFFS.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -37,8 +41,7 @@ else
 end
 
 % Plot the coeffs:
-scatter3(x,y,z,[],log10(absCoeffs(:)),'filled')
-%scatter3(x,y,z,[],log10(abs(coeffs(:))),'*','filled')
+scatter3(x, y, z, [], log10(absCoeffs(:)), 'filled')
 
 % By default, set grid on
 grid(gca, 'on')

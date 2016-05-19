@@ -1,6 +1,6 @@
 function f = divergence(F)
-%DIVERGENCE   Divergence of a CHEBFUN3V.
-%   DIVERGENCE(F) returns the divergence of the CHEBFUN3V object F as a 
+%DIVERGENCE   Divergence of a CHEBFUN3V object.
+%   DIVERGENCE(F) returns divergence of the CHEBFUN3V object F as a 
 %   CHEBFUN3. If F = U i + V j + W k, then divergence(F) = U_x + V_y + W_z.
 %
 % See also CHEBFUN3V/DIV.

@@ -1,5 +1,5 @@
 function display(F)
-%DISP   Display a CHEBFUN3T to the command line.
+%DISP   Display a CHEBFUN3T object to the command line.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -17,8 +17,8 @@ end
 
 % Get information that we want to display:
 dom = F.domain;                           % Domain
-[m, n, p] = size(F.coeffs);             % Size of coeffs
-vscl = F.vscale;                         % vertical scale
+[m, n, p] = size(F.coeffs);               % Size of coeffs
+vscl = F.vscale;                          % vertical scale
 
 disp('   chebfun3t object ')
 

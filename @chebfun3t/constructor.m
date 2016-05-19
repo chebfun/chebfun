@@ -1,9 +1,11 @@
 function f = constructor(f, op, varargin)
-%CONSTRUCTOR   The main CHEBFUN3T constructor.
+%CONSTRUCTOR   Main CHEBFUN3T constructor.
 %   Classiacal full tensor approach for 3D functions. No low-rank technique
 %   is involved here. 
+%
+% See also CHEBFUN3.  
 
-% The 'trig' flag is NOT implemented yet.
+%   The 'trig' flag is NOT implemented yet.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

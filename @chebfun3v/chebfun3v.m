@@ -2,7 +2,7 @@
 % 
 %   CHEBFUN3V(F, G) constructs a CHEBFUN3V with two components from the 
 %   function handles F and G. F and G can also be CHEBFUN3 objects or any 
-%   other object that the CHEBFUN3 constructor accepts.  Each component is 
+%   other object that the CHEBFUN3 constructor accepts. Each component is 
 %   represented as a CHEBFUN3.
 %
 %   CHEBFUN3V(F, G, H) constructs a CHEBFUN3V with three components from 
@@ -15,7 +15,7 @@
 %   CHEBFUN3V(F, G, H, [A B C D E K]) constructs a CHEBFUN3V object from F,
 %   G, and H on the domain [A B] x [C D] x [E K].
 % 
-% See also CHEBFUN3. 
+% See also CHEBFUN3.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

@@ -1,8 +1,7 @@
-function vscl = vertscale(f) 
-%VSCALE   Vertical scale of a CHEBFUN3T.
-% 
-% VSCL = VSCALE(F) returns the vertial scale of a CHEBFUN3T as determined
-% by evaluating on a coarse tensor-product grid. 
+function vscl = vertscale(f)
+%VSCALE   Vertical scale of a CHEBFUN3T object.
+%   VSCL = VSCALE(F) returns the vertial scale of a CHEBFUN3T as determined
+%   by evaluating on a coarse tensor-product grid. 
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -19,7 +18,7 @@ end
 % If F is of low degree, then oversample: 
 m = min(max(m, 9), 41); 
 n = min(max(n, 9), 41); 
-p = min(max(p, 9), 41); % cannot afford to go over 41x41x41. 
+p = min(max(p, 9), 41); % cannot afford to go over 41 x 41 x 41. 
 
 % Calculate values on a tensor grid: 
 dom = f.domain;

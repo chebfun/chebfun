@@ -1,35 +1,34 @@
-function H = mrdivide(F,g)
-%/   CHEBFUN2V right divide.
+function H = mrdivide(F, G)
+%/   Right divide for CHEBFUN3V objects.
+%   F/c divides each component of a CHEBFUN3V by a scalar.
 %
-% F/c divides each component of a CHEBFUN2V by a scalar. 
-% 
-% Only allowed to divide by scalars. 
+%   Only allowed to divide by scalars.
 % 
 % See also CHEBFUN3V/MLDIVIDE.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( ( isempty(F) ) || ( isempty(g) ) )
-   H = chebfun2v;
+if ( isempty(F) || isempty(G) )
+   H = chebfun3v();
    return 
 end
 
-if ( ~isa(g,'double') && ~isa(g,'chebfun2') )
-    error('CHEBFUN:CHEBFUN2V:mrdivide:nonScalar', ...
+if ( ~isa(G, 'double') && ~isa(G, 'chebfun3') )
+    error('CHEBFUN:CHEBFUN3V:mrdivide:nonScalar', ...
         'Division must be scalar valued.');
 end
 
-% componentwise divide. 
-if ( isa(g,'double') )
+% Componentwise divide:
+if ( isa(G,'double') )
     H = F; 
     for j =1:F.nComponents
-        H.components{j} = mrdivide(F.components{j}, g);
+        H.components{j} = mrdivide(F.components{j}, G);
     end
 else
     H = F;
     for j = 1:F.nComponents
-        H.components{j} = rdivide(F.components{j}, g);
+        H.components{j} = rdivide(F.components{j}, G);
     end
 end
     
