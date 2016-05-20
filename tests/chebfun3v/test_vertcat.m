@@ -4,7 +4,6 @@ if ( nargin < 1 )
     pref = chebfunpref; 
 end 
 tol = 1e3 * pref.cheb3Prefs.chebfun3eps;
-j = 1;
 
 f = chebfun3(@(x,y,z) cos(x.*y.*z));
 F = [f; f];
@@ -13,26 +12,19 @@ H = [F; f];
 K = [f; F]; 
 Fc = F.components;
 Gc = G.components;
-pass(j) = norm(Fc{1} - f) < tol; 
-j = j + 1;
+pass(1) = norm(Fc{1} - f) < tol;
 
-pass(j) = norm(Fc{2} - f) < tol; 
-j = j + 1; 
+pass(2) = norm(Fc{2} - f) < tol;
 
-pass(j) = norm(Gc{1} - f) < tol; 
-j = j + 1; 
+pass(3) = norm(Gc{1} - f) < tol;
 
-pass(j) = norm(Gc{2} - f) < tol; 
-j = j + 1; 
+pass(4) = norm(Gc{2} - f) < tol;
 
-pass(j) = norm(Gc{3} - f) < tol; 
-j = j + 1; 
+pass(5) = norm(Gc{3} - f) < tol;
 
-pass(j) = norm(G - H) < tol; 
-j = j + 1; 
+pass(6) = norm(G - H) < tol;
 
-pass(j) = norm(G - K) < tol; 
-j = j + 1; 
+pass(7) = norm(G - K) < tol;
 
 f = chebfun3(@(x,y,z) cos(x.*y.*z), [-3 2 -1 2 -1 1]);
 F = [f; f];
@@ -41,25 +33,18 @@ H = [F; f];
 K = [f; F];
 Fc = F.components;
 Gc = G.components;
-pass(j) = norm(Fc{1} - f) < tol;
-j = j + 1; 
+pass(8) = norm(Fc{1} - f) < tol;
 
-pass(j) = norm(Fc{2} - f) < tol; 
-j = j + 1;
+pass(9) = norm(Fc{2} - f) < tol;
 
-pass(j) = norm(Gc{1} - f) < tol; 
-j = j + 1;
+pass(10) = norm(Gc{1} - f) < tol;
 
-pass(j) = norm(Gc{2} - f) < tol; 
-j = j + 1;
+pass(11) = norm(Gc{2} - f) < tol;
 
-pass(j) = norm(Gc{3} - f) < tol; 
-j = j + 1;
+pass(12) = norm(Gc{3} - f) < tol;
 
-pass(j) = norm(G - H) < tol; 
-j = j + 1;
+pass(13) = norm(G - H) < tol;
 
-pass(j) = norm(G - K) < tol; 
-j = j + 1; 
+pass(14) = norm(G - K) < tol;
 
 end

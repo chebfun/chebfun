@@ -1,66 +1,55 @@
-function pass = test_feval( pref ) 
+function pass = test_feval(pref)
 % Test feval
 
-if ( nargin == 0) 
+if ( nargin == 0 ) 
     pref = chebfunpref; 
 end
 tol = 100*pref.cheb3Prefs.chebfun3eps;
-j = 1;
 
 seedRNG(42);
 
 f = chebfun3(@(x,y,z) x, [-1 2 -pi/2 pi -3 1]); 
-pass(j) = (abs(f(0,0,0)) < tol*vscale(f));  
-j = j+1;
+pass(1) = (abs(f(0,0,0)) < tol*vscale(f));  
 
-pass(j) = (abs(f(pi/6,pi/12,-1)-pi/6) < tol*vscale(f));  
-j = j+1;
+pass(2) = (abs(f(pi/6,pi/12,-1)-pi/6) < tol*vscale(f));  
 
 f = chebfun3(@(x,y,z) y, [-1 2 -pi/2 pi -3 1]); 
-pass(j) = (abs(f(0,0,0)) < tol);   
-j = j+1;
+pass(3) = (abs(f(0,0,0)) < tol);   
 
-pass(j) = (abs(f(pi/6,pi/12,-1)-pi/12) < tol*vscale(f)); 
-j = j+1;
+pass(4) = (abs(f(pi/6,pi/12,-1)-pi/12) < tol*vscale(f)); 
+
 
 f = chebfun3(@(x,y,z) z, [-1 2 -pi/2 pi -3 1]); 
-pass(j) = (abs(f(0,0,0)) < tol);   
-j = j+1;
+pass(5) = (abs(f(0,0,0)) < tol);   
 
-pass(j) = (abs(f(pi/6,pi/12,-1)+1) < tol*vscale(f)); 
-j = j+1;
+pass(6) = (abs(f(pi/6,pi/12,-1)+1) < tol*vscale(f)); 
+
 
 % some harder tests. 
 f = @(x,y,z) cos(x) + sin(x.*y) + sin(z.*x); 
 g = chebfun3(f);
 pts = 2*rand(3,1) - 1;
-pass(j) = (abs(f(pts(1),pts(2),pts(3)) - g(pts(1),pts(2),pts(3)))<tol*vscale(g));
-j = j+1;
+pass(7) = (abs(f(pts(1),pts(2),pts(3)) - g(pts(1),pts(2),pts(3)))<tol*vscale(g));
 
 % Are we evaluating on arrays correctly?
 r = rand(10,1); 
 s = rand(10,1); 
 t = rand(10,1); 
 [rr, ss, tt]=meshgrid(r,s,t);
-pass(j) = (norm((f(r,s,t) - g(r,s,t))) < tol*vscale(g));
-j = j+1;
+pass(8) = (norm((f(r,s,t) - g(r,s,t))) < tol*vscale(g));
 
-pass(j) = (max(max(max(abs(f(rr,ss,tt) - g(rr,ss,tt))))) < tol*vscale(g));
-j = j+1;
+pass(9) = (max(max(max(abs(f(rr,ss,tt) - g(rr,ss,tt))))) < tol*vscale(g));
 
 % Does this work off [-1,1]^2
 g = chebfun3(f,[-pi/6 pi/2 -pi/12 sqrt(3) -3 1]); % strange domain. 
 r = 0.126986816293506; s = 0.632359246225410; t = 0.351283361405006;
 % three fixed random number in domain.
-pass(j) = (abs(f(r,s,t) - g(r,s,t))<tol*vscale(g));
-j = j+1;
+pass(10) = (abs(f(r,s,t) - g(r,s,t))<tol*vscale(g));
 
 % Are we evaluating on arrays correctly
-pass(j) = (norm((f(r,s,t) - g(r,s,t)))<tol*vscale(g));
-j = j+1;
+pass(11) = (norm((f(r,s,t) - g(r,s,t)))<tol*vscale(g));
 
-pass(j) = (max(max(max(abs(f(rr,ss,tt) - g(rr,ss,tt)))))<tol*vscale(g)); 
-j = j+1;
+pass(12) = (max(max(max(abs(f(rr,ss,tt) - g(rr,ss,tt)))))<tol*vscale(g)); 
 
 %% vector inputs
 ff = @(x,y,z) sin(pi*(x+y+z));
@@ -70,8 +59,7 @@ yy = linspace(-1, 1, 100)';
 zz = linspace(-1, 1, 100)';
 F = f(xx,yy,zz);
 FF = ff(xx,yy,zz);
-pass(j) = norm(F - FF) < 100*tol;
-j = j+1;
+pass(13) = norm(F - FF) < 100*tol;
 
 % row vector inputs
 ff = @(x,y,z) sin(pi*(x+y+z));
@@ -81,8 +69,7 @@ yy = linspace(-1, 1, 100);
 zz = linspace(-1, 1, 100);
 F = f(xx,yy,zz);
 FF = ff(xx,yy,zz);
-pass(j) = norm(F - FF) < 100*tol;
-j = j+1;
+pass(14) = norm(F - FF) < 100*tol;
 
 % 'trig' flag + vector inputs
 ff = @(x,y,z) sin(pi*(x+y+z));
@@ -92,8 +79,7 @@ yy = linspace(-1, 1, 100)';
 zz = linspace(-1, 1, 100)';
 F = f(xx,yy,zz);
 FF = ff(xx,yy,zz);
-pass(j) = norm(F - FF) < 100*tol;
-j = j+1;
+pass(15) = norm(F - FF) < 100*tol;
 
 % random vector inputs
 ff = @(x,y,z) sin(pi*(x+y+z));
@@ -103,8 +89,7 @@ yy = rand(100, 1);
 zz = rand(100, 1);
 F = f(xx,yy,zz);
 FF = ff(xx,yy,zz);
-pass(j) = norm(F - FF) < 100*tol;
-j = j+1;
+pass(16) = norm(F - FF) < 100*tol;
 
 % 'trig' flag + random vector inputs
 ff = @(x,y,z) sin(pi*(x+y+z));
@@ -114,8 +99,7 @@ yy = rand(100, 1);
 zz = rand(100, 1);
 F = f(xx,yy,zz);
 FF = ff(xx,yy,zz);
-pass(j) = norm(F - FF) < 100*tol;
-j = j+1;
+pass(17) = norm(F - FF) < 100*tol;
 
 %% Matrix input with meshgrid
 % x and y are matrix inputs (meshgrid) and z is a matrix containing copies 
@@ -127,8 +111,7 @@ xx = linspace(-1, 1, 100)';
 zz = xx(1,1)*ones(size(xx));
 F = f(xx,yy,zz);
 FF = ff(xx,yy,zz);
-pass(j) = norm(F - FF) < 100*tol;
-j = j+1;
+pass(18) = norm(F - FF) < 100*tol;
 
 % y and z are matrix inputs (meshgrid) and x is just a matrix of just one 
 % scalar
@@ -139,8 +122,7 @@ zz = linspace(-1, 1, 100)';
 xx = zz(1,1)*ones(size(xx));
 F = f(xx,yy,zz);
 FF = ff(xx,yy,zz);
-pass(j) = norm(F - FF) < 100*tol;
-j = j+1;
+pass(19) = norm(F - FF) < 100*tol;
 
 % x and z are matrix inputs (meshgrid) and y is a matrix of just one scalar
 ff = @(x,y,z) sin(pi*(x+y+z));
@@ -150,8 +132,7 @@ zz = linspace(-1, 1, 100)';
 yy = zz(1,1)*ones(size(xx));
 F = f(xx,yy,zz);
 FF = ff(xx,yy,zz);
-pass(j) = norm(F - FF) < 100*tol;
-j = j+1;
+pass(20) = norm(F - FF) < 100*tol;
 
 %% Matrix input with ndgrid
 % x and y are matrix inputs (ndgrid) and z is a matrix containing copies 
@@ -163,8 +144,7 @@ xx = linspace(-1, 1, 100)';
 zz = xx(1,1)*ones(size(xx));
 F = f(xx,yy,zz);
 FF = ff(xx,yy,zz);
-pass(j) = norm(F - FF) < 100*tol;
-j = j+1;
+pass(21) = norm(F - FF) < 100*tol;
 
 % y and z are matrix inputs (ndgrid) and x is just a matrix of just one 
 % scalar
@@ -175,8 +155,7 @@ zz = linspace(-1, 1, 100)';
 xx = zz(1,1)*ones(size(xx));
 F = f(xx,yy,zz);
 FF = ff(xx,yy,zz);
-pass(j) = norm(F - FF) < 100*tol;
-j = j+1;
+pass(22) = norm(F - FF) < 100*tol;
 
 % x and z are matrix inputs (ndgrid) and y is a matrix of just one scalar
 ff = @(x,y,z) sin(pi*(x+y+z));
@@ -186,8 +165,7 @@ zz = linspace(-1, 1, 100)';
 yy = zz(1,1)*ones(size(xx));
 F = f(xx,yy,zz);
 FF = ff(xx,yy,zz);
-pass(j) = norm(F - FF) < 100*tol;
-j = j+1;
+pass(23) = norm(F - FF) < 100*tol;
 
 %% Tensor inputs
 % Tensor input generated by meshgrid
@@ -196,8 +174,7 @@ f = chebfun3(ff);
 [xx, yy, zz] = meshgrid(linspace(-1, 1, 100));
 F = f(xx,yy,zz);
 FF = ff(xx,yy,zz);
-pass(j) = norm(F(:) - FF(:)) < 100*tol;
-j = j+1;
+pass(24) = norm(F(:) - FF(:)) < 100*tol;
 
 % 'trig' flag + meshgrid
 ff = @(x,y,z) sin(pi*(x+y+z));
@@ -205,8 +182,7 @@ f = chebfun3(ff, 'trig');
 [xx, yy, zz] = meshgrid(linspace(-1, 1, 100));
 F = f(xx,yy,zz);
 FF = ff(xx,yy,zz);
-pass(j) = norm(F(:) - FF(:)) < 100*tol;
-j = j+1;
+pass(25) = norm(F(:) - FF(:)) < 100*tol;
 
 % % Tensor input generated by ndgrid
 ff = @(x,y,z) sin(pi*(x+y+z));
@@ -214,8 +190,7 @@ f = chebfun3(ff);
 [xx, yy, zz] = ndgrid(linspace(-1, 1, 100));
 F = f(xx,yy,zz);
 FF = ff(xx,yy,zz);
-pass(j) = norm(F(:) - FF(:)) < 100*tol;
-j = j+1;
+pass(26) = norm(F(:) - FF(:)) < 100*tol;
 
 % 'trig' flag + ndgrid
 ff = @(x,y,z) sin(pi*(x+y+z));
@@ -223,8 +198,7 @@ f = chebfun3(ff, 'trig');
 [xx, yy, zz] = ndgrid(linspace(-1, 1, 100));
 F = f(xx,yy,zz);
 FF = ff(xx,yy,zz);
-pass(j) = norm(F(:) - FF(:)) < 100*tol;
-j = j+1;
+pass(27) = norm(F(:) - FF(:)) < 100*tol;
 
 % random tensor inputs
 ff = @(x,y,z) sin(pi*(x+y+z));
@@ -234,8 +208,7 @@ yy = rand(10, 20, 30);
 zz = rand(10, 20, 30);
 F = f(xx,yy,zz);
 FF = ff(xx,yy,zz);
-pass(j) = norm(F(:) - FF(:)) < 100*tol;
-j = j+1;
+pass(28) = norm(F(:) - FF(:)) < 100*tol;
 
 % 'trig' flag + random tensor inputs
 ff = @(x,y,z) sin(pi*(x+y+z));
@@ -245,8 +218,7 @@ yy = rand(10, 20, 30);
 zz = rand(10, 20, 30);
 F = f(xx,yy,zz);
 FF = ff(xx,yy,zz);
-pass(j) = norm(F(:) - FF(:)) < 100*tol;
-j = j+1;
+pass(29) = norm(F(:) - FF(:)) < 100*tol;
 
 %% Cross sections
 % Fixed x
@@ -254,62 +226,54 @@ ff = @(x,y,z) sin(x+y+z);
 f = chebfun3(ff);
 f2 = f(0.5, :, :);
 fChebfun2 = chebfun2(@(y,z) sin(0.5+y+z));
-pass(j) = norm(fChebfun2 - f2) < 100*tol;
-j = j+1;
+pass(30) = norm(fChebfun2 - f2) < 100*tol;
 
 % Fixed y
 ff = @(x,y,z) sin(x+y+z);
 f = chebfun3(ff);
 f2 = f(:, 0.5, :);
 fChebfun2 = chebfun2(@(x,z) sin(0.5+x+z));
-pass(j) = norm(fChebfun2 - f2) < 100*tol;
-j = j+1;
+pass(31) = norm(fChebfun2 - f2) < 100*tol;
 
 % Fixed z
 ff = @(x,y,z) sin(x+y+z);
 f = chebfun3(ff);
 f2 = f(:, :, 0.5);
 fChebfun2 = chebfun2(@(x,y) sin(0.5+x+y));
-pass(j) = norm(fChebfun2 - f2) < 100*tol;
-j = j+1;
+pass(32) = norm(fChebfun2 - f2) < 100*tol;
 
 % Fixed x and y
 ff = @(x,y,z) sin(x+y+z);
 f = chebfun3(ff);
 f1 = f(0.5, 0.5, :);
 fChebfun = chebfun(@(z) sin(1+z));
-pass(j) = norm(fChebfun - f1) < 100*tol;
-j = j+1;
+pass(33) = norm(fChebfun - f1) < 100*tol;
 
 % Fixed x and z
 ff = @(x,y,z) sin(x+y+z);
 f = chebfun3(ff);
 f1 = f(0.5, :, 0.5);
 fChebfun = chebfun(@(z) sin(1+z));
-pass(j) = norm(fChebfun - f1) < 100*tol;
-j = j+1;
+pass(34) = norm(fChebfun - f1) < 100*tol;
 
 % Fixed y and z
 ff = @(x,y,z) sin(x+y+z);
 f = chebfun3(ff);
 f1 = f(:, 0.5, 0.5);
 fChebfun = chebfun(@(z) sin(1+z));
-pass(j) = norm(fChebfun - f1) < 100*tol;
-j = j+1;
+pass(35) = norm(fChebfun - f1) < 100*tol;
 
 % No fixed variables
 ff = @(x,y,z) sin(x+y+z);
 f = chebfun3(ff);
 fNew = f(:, :, :);
-pass(j) = norm(fNew - f) < 100*tol;
-j = j+1;
+pass(36) = norm(fNew - f) < 100*tol;
 
 %% Evaluate at parametric 1D chebfuns
 f = chebfun3(@(x,y,z) x+y.*z);
 curve = chebfun(@(t) [cos(t) sin(t) t/(8*pi)], [0, 8*pi]);
 f1D = f(curve(:, 1), curve(:, 2), curve(:, 3));
 fExact = curve(:, 1) + curve(:, 2).*curve(:, 3);
-pass(j) = norm(fExact - f1D) < 100*tol;
-j = j+1;
+pass(37) = norm(fExact - f1D) < 100*tol;
 
 end

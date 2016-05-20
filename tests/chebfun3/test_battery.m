@@ -1,4 +1,4 @@
-function pass = test_battery( pref ) 
+function pass = test_battery(pref)
 % A large battery of functions. 
 
 if ( nargin < 1 ) 

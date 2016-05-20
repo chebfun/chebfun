@@ -28,7 +28,7 @@ v = v + abs(norm(diff(f)));
 
 v = v + abs(norm(diff(f,1,1)));
 
-pass(3) = (v==0); 
+pass(3) = v==0;
 
 
 % evaluation on an array. 

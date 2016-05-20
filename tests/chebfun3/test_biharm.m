@@ -18,6 +18,6 @@ gg = @(x,y,z) 24;
 g = chebfun3(gg);
 
 % Compare:
-pass = ( norm(fB - g) < tol );
+pass = norm(fB - g) < tol;
 
 end

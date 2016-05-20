@@ -4,7 +4,6 @@ function pass = test_chebpts3(pref)
 if ( nargin == 0 ) 
     pref = chebfunpref;
 end
-
 tol = 10*pref.cheb3Prefs.chebfun3eps;
 
 % One argument: 

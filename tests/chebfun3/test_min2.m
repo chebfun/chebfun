@@ -1,7 +1,7 @@
-function pass = test_min2( pref ) 
+function pass = test_min2(pref)
 % Test the chebfun3/min2 command.
 
-if ( nargin < 1 ) 
+if ( nargin < 1 )
     pref = chebfunpref; 
 end
 tol = 1e12*pref.cheb3Prefs.chebfun3eps;

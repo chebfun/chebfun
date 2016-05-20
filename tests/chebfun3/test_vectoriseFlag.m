@@ -1,10 +1,11 @@
-function pass = test_vectoriseFlag( pref ) 
+function pass = test_vectoriseFlag(pref)
 % Test the vectorise flag in the constructor. 
 
 if ( nargin < 1 ) 
     pref = chebfunpref(); 
 end 
 tol = 10*pref.cheb3Prefs.chebfun3eps;
+
 dom = [-1, 1, -1, 1, -1, 1];
 
 % All these calls to the constructor should be the same: 

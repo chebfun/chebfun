@@ -4,11 +4,14 @@ function h = min2(f, g, dims)
 %   along the y and z directions, i.e, MIN2(F) = @(z) min(F(:, :, z)).
 %
 %   MIN2(F, [], DIMS) returns a CHEBFUN representing the minimum of F along 
-%   the DIMS directions. DIMS = [1, 2] means along the x and y directions, etc.
+%   the DIMS directions. DIMS = [1, 2] means along the x and y directions, 
+%   etc.
 %
 %   WARNING: This function is not always accurate to the expected precision. 
 % 
-%   For the global minimum use MIN3.
+%   Use MIN3 for computing the global minimum.
+%
+% See also CHEBFUN3/MIN and CHEBFUN3/MIN3.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

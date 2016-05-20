@@ -1,4 +1,4 @@
-function pass = test_repeatedArithmetic( pref )
+function pass = test_repeatedArithmetic(pref)
 
 if ( nargin < 1 ) 
     pref = chebfunpref(); 

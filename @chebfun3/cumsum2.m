@@ -26,7 +26,6 @@ if ( isempty(f) )
 end
 
 % Default to cumsum in the 1st two variables x and y:
-%if ( nargin < 2 )
 if ( nargin == 1 )
     dims = [1, 2];
 end
@@ -35,22 +34,17 @@ if ( numel(dims) ~= 2 )
     error('CHEBFUN:CHEBFUN3:cumsum2:dims', 'Dims should have 2 entries.');
 end
 
-is1 = ismember(1, dims);
-is2 = ismember(2, dims);
-is3 = ismember(3, dims);
-if is1 % cumsum along the 1st variable
+if ismember(1, dims) 
+    % cumsum along the 1st variable
     f.cols = cumsum(f.cols);
 end
-if is2 % cumsum along the 2nd variable
+if ismember(2, dims)
+    % cumsum along the 2nd variable
     f.rows = cumsum(f.rows);
 end
-if is3 % cumsum along the 3rd variable
+if ismember(3, dims) 
+    % cumsum along the 3rd variable
     f.tubes = cumsum(f.tubes);
 end
-
-% else % dim is not 1, 2 or 3. Or, numel(k) ~= numel(dim)
-%             error('CHEBFUN:CHEBFUN3s:diff:dim', ...
-%                 'Can compute derivative in x, y or z only.');
-% end
 
 end

@@ -4,7 +4,6 @@ function pass = test_complex(pref)
 if ( nargin == 0) 
     pref = chebfunpref; 
 end
-
 tol = 1000*pref.cheb3Prefs.chebfun3eps;
 
 f = chebfun3(@(x,y,z) sin(x.*y.*z));

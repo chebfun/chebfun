@@ -16,5 +16,5 @@ pass(1) = norm(exactVals(:) - constructorVals(:)) < 10*tol;
 A = rand(3, 4, 5);
 f = chebfun3(A);
 B = chebpolyval3(f);
-pass(2) = ( norm(A(:) - B(:)) < tol);
+pass(2) = norm(A(:) - B(:)) < tol;
 end

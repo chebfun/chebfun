@@ -4,7 +4,6 @@ function pass = test_domainvolume(pref)
 if ( nargin == 0) 
     pref = chebfunpref; 
 end
-
 tol = 1000*pref.cheb3Prefs.chebfun3eps;
 
 % Default domain: 

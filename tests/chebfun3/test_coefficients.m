@@ -1,4 +1,4 @@
-function pass = test_coefficients( pref )
+function pass = test_coefficients(pref)
 % Test whether Chebfun3 can compute its bivariate tensor Chebyshev 
 % coefficients correctly.
 

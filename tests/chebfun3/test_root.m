@@ -1,8 +1,8 @@
-function pass = test_root( pref ) 
+function pass = test_root(pref)
 % Check chebfun3/root.
 
 if ( nargin < 1 ) 
-    pref = chebfunpref; 
+    pref = chebfunpref;
 end
 tol = 10*pref.cheb3Prefs.chebfun3eps;
 

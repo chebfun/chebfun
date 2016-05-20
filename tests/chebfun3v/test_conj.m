@@ -4,8 +4,8 @@ function pass = test_conj(pref)
 if ( nargin == 0 )
     pref = chebfunpref; 
 end
-
 tol = 100*pref.cheb3Prefs.chebfun3eps;
+
 ff = @(x,y,z) cos(x.*y.*z);
 
 f = chebfun3v(ff, ff); 

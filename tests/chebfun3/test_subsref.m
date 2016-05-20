@@ -1,6 +1,6 @@
 function pass = test_subsref(pref)
 
-if ( nargin < 1 ) 
+if ( nargin < 1 )
     pref = chebfunpref; 
 end
 tol = 1e4*pref.cheb3Prefs.chebfun3eps;
@@ -22,7 +22,7 @@ pass(3) = norm(f(pi/4, :, :) - cross1) < tol;
 
 pass(4) = norm(f(pi/6, :, :) - cross2) < tol; 
 
-pass(5) = norm( f(:, :, :) - f) < tol;
+pass(5) = norm(f(:, :, :) - f) < tol;
 
 % Test evaluation syntax for chebfun inputs. 
 f = chebfun3(@(x,y,z) x.*y.*z); 

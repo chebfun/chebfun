@@ -4,7 +4,6 @@ function pass = test_real(pref)
 if ( nargin == 0 ) 
     pref = chebfunpref;
 end
-
 tol = 100*pref.cheb3Prefs.chebfun3eps;
 
 f = chebfun3v(@(x,y,z) cos(x.*y.*z), @(x,y,z) cos(x.*y.*z));

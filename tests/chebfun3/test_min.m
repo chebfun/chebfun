@@ -1,4 +1,4 @@
-function pass = test_min( pref ) 
+function pass = test_min(pref)
 % Test the chebfun3/min command. 
 
 if ( nargin < 1 ) 

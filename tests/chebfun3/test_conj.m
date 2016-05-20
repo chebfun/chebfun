@@ -1,7 +1,7 @@
-function pass = test_conj( pref ) 
+function pass = test_conj(pref)
 % Test CONJ
 
-if ( nargin == 0 ) 
+if ( nargin == 0 )
     pref = chebfunpref; 
 end
 tol = 100*pref.cheb3Prefs.chebfun3eps;

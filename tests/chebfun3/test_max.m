@@ -1,4 +1,4 @@
-function pass = test_max( pref ) 
+function pass = test_max(pref)
 % Test the chebfun3/max command. 
 
 if ( nargin < 1 ) 

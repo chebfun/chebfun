@@ -5,7 +5,6 @@ function pass = test_constructor2(pref)
 if ( nargin < 1 )
     pref = chebfunpref;
 end
-
 tol = 100*pref.cheb3Prefs.chebfun3eps;
 
 % check the vectorize flag: 

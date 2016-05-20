@@ -1,4 +1,4 @@
-function pass = test_battery( pref ) 
+function pass = test_battery(pref) 
 % A large battery of functions. 
 
 if ( nargin < 1 ) 
@@ -33,9 +33,9 @@ Battery = {@(x,y,z) cos(pi*x.*y.*z),...                                        %
     @(x,y,z) 10.^(-x.*y.*z),...                                                % 25
     @(x,y,z) 10.^(-10*x.*y.*z),...                                             % 26
     @(x,y,z) sin(x+y+z),...                                                    % 27
-    @(x,y,z) exp(x+y+z).*cos(x+y+z),...                                       % 28
+    @(x,y,z) exp(x+y+z).*cos(x+y+z),...                                        % 28
     @(x,y,z) cos(pi/4+x+y+z),...                                               % 29
-    @(x,y,z) cos(pi/3+5*x+5*y+5*z),...                                        % 30
+    @(x,y,z) cos(pi/3+5*x+5*y+5*z),...                                         % 30
     @(x,y,z) (x+y+z).^12,...                                                   % 31
     @(x,y,z) exp(x.^2.*y.^2.*z.^2).*cos(x+y+z),...                             % 32
     @(x,y,z) sin(x.*y.*z)+x+y+z,...                                            % 33
@@ -93,9 +93,9 @@ exact = [
     17.816513659679896, ...
     ];
 
-for jj=1:length(Battery)
-    g = chebfun3t(Battery{jj}, [0 1 0 1 0 1]);
-    pass(jj) = (abs(sum3(g) - exact(jj)) < tol);
+for j=1:length(Battery)
+    g = chebfun3t(Battery{j}, [0 1 0 1 0 1]);
+    pass(j) = (abs(sum3(g) - exact(j)) < tol);
 end
 
 end

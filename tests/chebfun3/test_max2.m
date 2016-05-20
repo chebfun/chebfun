@@ -1,4 +1,4 @@
-function pass = test_max2( pref ) 
+function pass = test_max2(pref)
 % Test the chebfun3/max2 command. 
 
 if ( nargin < 1 ) 
@@ -9,8 +9,8 @@ tol = 1e7*pref.cheb3Prefs.chebfun3eps;
 f = chebfun3(@(x,y,z) cos(x.*y.*z));
 g = chebfun(@(x) 1 + 0*x); 
 
-h1 = max2(f); 
-h2 = max2(f, []); 
+h1 = max2(f);
+h2 = max2(f, []);
 h3 = max2(f, [], [1 2]);
 h4 = max2(f, [], [2 1]);
 

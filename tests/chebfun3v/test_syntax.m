@@ -1,5 +1,5 @@
-function pass = test_syntax( pref )
-% Check different syntax in Chebfun3v constructor.
+function pass = test_syntax(pref)
+% Check different syntax in CHEBFUN3V constructor.
 
 if ( nargin < 1 )
     pref = chebfunpref;

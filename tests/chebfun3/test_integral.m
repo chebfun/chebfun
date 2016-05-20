@@ -1,10 +1,9 @@
-function pass = test_integral( pref ) 
-% Test path integral for 3D functions
+function pass = test_integral(pref)
+% Test path integral for 3D functions.
 
-if ( nargin == 0) 
+if ( nargin == 0)
     pref = chebfunpref; 
 end
-
 tol = 1000*pref.cheb3Prefs.chebfun3eps;
 
 f = chebfun3(@(x,y,z) 2*x.*y+3*z); 

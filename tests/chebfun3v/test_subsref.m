@@ -1,4 +1,4 @@
-function pass = test_subsref( pref )
+function pass = test_subsref(pref)
 % Test Chebfun3v subsref() command.
 
 if ( nargin == 0) 

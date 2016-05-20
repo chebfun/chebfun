@@ -1,11 +1,10 @@
-function pass = test_hosvd( pref ) 
+function pass = test_hosvd(pref)
 % Test HOSVD.
 
 if ( nargin < 1 ) 
     pref = chebfunpref; 
-end 
-
-tol = 10*pref.cheb2Prefs.chebfun2eps;
+end
+tol = 10*pref.cheb3Prefs.chebfun3eps;
 
 % Example from Page 233 of: 
 % Hackbusch, Tensor Spaces and Numerical Tensor Calculus, Springer, 2012.

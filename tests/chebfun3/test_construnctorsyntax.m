@@ -6,26 +6,26 @@ f = @(x,y,z) cos(x) + sin(x.*y.*z);  % simple function.
 fstr = 'cos(x) + sin(x.*y.*z)';      % string version.
 
 try
-    % % Adaptive calls
-    % Function handle
+    % Adaptive calls
+    % Function handle:
     chebfun3(f);
     
-    % String
+    % String:
     chebfun3(fstr);
     
-    % With domain.
+    % With domain:
     chebfun3(f, [-1 1 1 2 0 2]);
     
-    % Split domain syntax
-    chebfun3(f, [-1,0], [2,3]);
+    % Split domain syntax:
+    chebfun3(f, [-1, 0], [2, 3]);
     
-    % Function handle only in one variable.
+    % Function handle only in one variable:
     chebfun3(@(x,y,z) x);
 
-    % Function handle only in two variables.
+    % Function handle in only two variables:
     chebfun3(@(x,y,z) x + cos(z));
 catch
-    pass(1) = 0 ;
+    pass(1) = 0;
 end
 
 % Test different ways to make Chebfun3 nonadaptive. 
@@ -57,25 +57,25 @@ pass(7) = all(g.domain == [-2 1 -2 1 -2 1]);
 
 % Construction with a specified rank
 f = chebfun3(ff);
-[r1_f, r2_f, r3_f] = rank(f);
+[rX_f, rY_f, rZ_f] = rank(f);
 g = chebfun3(ff, 'rank', 1e-7);
-[r1, r2, r3] = rank(g);
-pass(8) = r1 < r1_f && r2 < r2_f && r3 < r3_f;
+[rX_g, rY_g, rZ_g] = rank(g);
+pass(8) = rX_g < rX_f && rY_g < rY_f && rZ_g < rZ_f;
 pass(9) = all(g.domain == [-1 1 -1 1 -1 1]);
 
 % Construction with a specified rank on a given domain:
 f = chebfun3(ff, [-2 1 -2 1 -2 1]);
-[r1_f, r2_f, r3_f] = rank(f);
+[rX_f, rY_f, rZ_f] = rank(f);
 g = chebfun3(ff, 'rank', 1e-7, [-2 1 -2 1 -2 1]);
-[r1, r2, r3] = rank(g);
-pass(10) = r1 < r1_f && r2 < r2_f && r3 < r3_f;
+[rX_g, rY_g, rZ_g] = rank(g);
+pass(10) = rX_g < rX_f && rY_g < rY_f && rZ_g < rZ_f;
 pass(11) = all(g.domain == [-2 1 -2 1 -2 1]);
 
 % Construction with a specified rank on a given domain with inputs in the 
 % reverse order:
 g = chebfun3(ff, [-2 1 -2 1 -2 1], 'rank', 1e-7);
-[r1, r2, r3] = rank(g);
-pass(12) = r1 < r1_f && r2 < r2_f && r3 < r3_f;
+[rX_g, rY_g, rZ_g] = rank(g);
+pass(12) = rX_g < rX_f && rY_g < rY_f && rZ_g < rZ_f;
 pass(13) = all(g.domain == [-2 1 -2 1 -2 1]);
 
 end

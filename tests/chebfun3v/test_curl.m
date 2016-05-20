@@ -3,7 +3,6 @@ function pass = test_curl(pref)
 if ( nargin == 0 ) 
     pref = chebfunpref; 
 end
-
 tol = 50*pref.cheb3Prefs.chebfun3eps;
 
 % Check definition: 
