@@ -39,9 +39,10 @@ end
 m = numel(x)-1;
 Tx = zeros( m+1, n+1); 
 Tx(:,1) = ones(m+1,1);
-Tx(:,2) = x;
+x_map = 2*(x-d(1))/(d(2)-d(1)) - 1;
+Tx(:,2) = x_map;
 for k = 2:n
-    Tx(:,k+1) = 2*x.*Tx(:,k) - Tx(:,k-1);
+    Tx(:,k+1) = 2*x_map.*Tx(:,k) - Tx(:,k-1);
 end
 % Solve for coefficients (least squares)
 c = Tx\y;
