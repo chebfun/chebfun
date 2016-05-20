@@ -3,6 +3,7 @@ function L = lap(f)
 %   L = LAP(F) returns a CHEBFUN3 representing the Laplacian of F. 
 %
 %   This is shorthand for LAPLACIAN(F).
+%
 % See also CHEBFUN3/LAPLACIAN.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.

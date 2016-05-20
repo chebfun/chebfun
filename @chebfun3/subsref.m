@@ -12,14 +12,18 @@ idx = index(1).subs;
 switch index(1).type
     case '()'
         % FEVAL / COMPOSE
-        % Find where to evaluate:
-        x = idx{1}; 
-        y = idx{2}; 
-        z = idx{3};
-        out = feval(f, x, y, z); 
-        varargout = {out};
-        
-        case '.'
+        if numel(idx) == 3
+            % Find where to evaluate:
+            x = idx{1}; 
+            y = idx{2}; 
+            z = idx{3};
+            out = feval(f, x, y, z); 
+            varargout = {out};
+        else
+            error('CHEBFUN:CHEBFUN3:subsref:inputs', ...
+                'Can only evaluate at triples (X,Y,Z)')
+        end
+    case '.'
         % Call GET() for .PROP access.
         out = get(f, idx);
         if ( numel(index) > 1 )

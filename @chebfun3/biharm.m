@@ -1,9 +1,9 @@
 function B = biharm(f)
 %BIHARM   Biharmonic operator applied to a CHEBFUN3.
 %   B = BIHARM(F) returns a CHEBFUN3 object B representing the biharmonic 
-%   operator applied to a CHEBFUN object F.
+%   operator applied to a CHEBFUN3 object F.
 %
-%   This is shorthand for BIHARMONIC(F)
+%   This is shorthand for BIHARMONIC(F).
 %
 % See also CHEBFUN3/BIHARMONIC.
 

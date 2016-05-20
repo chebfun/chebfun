@@ -1,7 +1,7 @@
 function B = biharmonic(f)
 %BIHARMONIC   Biharmonic operator applied to a CHEBFUN3.
-%   B = BIHARMONIC(F) returns a CHEBFUN3 representing the Biharmonic 
-%   operator applied to F.
+%   B = BIHARMONIC(F) returns a CHEBFUN3 object B representing the 
+%   biharmonic operator applied to F.
 %
 % See also CHEBFUN3/BIHARM.
 
