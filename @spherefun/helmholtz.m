@@ -42,9 +42,9 @@ end
 % Check for eigenvalues:
 e = eig( [ -1 K^2 ; 1 0 ] ); % Is K = sqrt(l*(l+1)), where l is an integer?
 e = e(e>0); e = e(abs( e - round(e) ) < 1e-13 );
-if ( ~isempty( e ) && iszero( f ) )
+if ( ~isempty( e ) )
     error('SPHEREFUN:HELMHOLTZ:EIGENVALUE',...
-          'There are %u possible solutions.',2*e(1)+1)
+            'There are infinitely many solutions since K is an eigenvalue of the Helmholtz operator.')
 end
 
 % If m or n are non-positive then throw an error
