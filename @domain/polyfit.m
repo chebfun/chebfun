@@ -34,8 +34,15 @@ if ( size(y, 1) ~= size(x, 1) )
 end
 
 % Make Chebyshev-Vandermonde matrix:
-T = chebpoly(0:n, d);
-Tx = feval(T, x);
+% The code below is a faster version of 
+%       T = chebpoly(0:n, d); Tx = feval(T, x);
+m = numel(x)-1;
+Tx = zeros( m+1, n+1); 
+Tx(:,1) = ones(m+1,1);
+Tx(:,2) = x;
+for k = 2:n
+    Tx(:,k+1) = 2*x.*Tx(:,k) - Tx(:,k-1);
+end
 % Solve for coefficients (least squares)
 c = Tx\y;
 % Construct Chebfun:
