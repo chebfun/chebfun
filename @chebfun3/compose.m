@@ -12,7 +12,7 @@ if ( nargin == 2 && nargin(op) == 1 )
     % OP has one input variable.
     
     % Call constructor: 
-    f = chebfun3(@(x,y,z) op(feval(f, x, y, z) ), f.domain, 'fiberDim', 3);
+    f = chebfun3(@(x,y,z) op(feval(f, x, y, z)), f.domain, 'fiberDim', 3);
     
 elseif ( nargin == 3 && nargin(op) == 2 )
     % OP has two input variables. 

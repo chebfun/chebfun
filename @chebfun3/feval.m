@@ -21,26 +21,40 @@ if ( isa(x, 'chebfun') && isa(y, 'chebfun') && isa(z, 'chebfun') )
     return
 end
 
+[rX, rY, rZ] = rank(f);
+
 if ( strcmpi(x, ':') && strcmpi(y, ':') && strcmpi(z, ':') )   % f(:, :, :)
     % Simply return the CHEBFUN3 object itself.
     out = f;
-    
+
+% Developer Note: The following ugly permutaions are necessary to keep 
+% consistent with Chebfun2 constructor.
 elseif ( isnumeric(x) && strcmpi(y, ':') &&  strcmpi(z, ':') ) % f(x, :, :)
     % Make evaluation points a vector.
     x = x(:);
+    % Evaluate:
     core = squeeze(chebfun3.txm(f.core, feval(f.cols, x), 1));
-    out = chebfun2(f.tubes * core' * f.rows');
+    if ( rY == 1 || rZ == 1 )
+        core = core.';
+    end
+    out = chebfun2(f.tubes * core.' * f.rows.');
     
 elseif ( strcmpi(x, ':') && isnumeric(y) &&  strcmpi(z, ':') ) % f(:, y, :)
     % Make evaluation points a vector.
     y = y(:);
-    % Evaluate (returns a row chebfun):
+    % Evaluate:
     core = squeeze(chebfun3.txm(f.core, feval(f.rows, y), 2));
-    out = chebfun2(f.tubes * core' * f.cols');
+    if ( rX == 1 )
+        core = core.';
+    end
+    out = chebfun2(f.tubes * core.' * f.cols.');
 
 elseif ( strcmpi(x, ':') && strcmpi(y, ':') && isnumeric(z) ) % f(:, :, z)
+    % Make evaluation points a vector.
+    z = z(:);
+    % Evaluate:
     core = squeeze(chebfun3.txm(f.core, feval(f.tubes, z), 3));
-    out = chebfun2(f.rows * core' * f.cols');
+    out = chebfun2(f.rows * core.' * f.cols.');
     
 elseif ( strcmpi(x, ':') && isnumeric(y) && isnumeric(z) )  % f(:, y, z)
     core = chebfun3.txm(chebfun3.txm(f.core, feval(f.rows,y), 2), ...

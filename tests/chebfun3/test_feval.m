@@ -18,12 +18,10 @@ pass(3) = (abs(f(0,0,0)) < tol);
 
 pass(4) = (abs(f(pi/6,pi/12,-1)-pi/12) < tol*vscale(f)); 
 
-
 f = chebfun3(@(x,y,z) z, [-1 2 -pi/2 pi -3 1]); 
 pass(5) = (abs(f(0,0,0)) < tol);   
 
 pass(6) = (abs(f(pi/6,pi/12,-1)+1) < tol*vscale(f)); 
-
 
 % some harder tests. 
 f = @(x,y,z) cos(x) + sin(x.*y) + sin(z.*x); 
@@ -222,58 +220,123 @@ pass(29) = norm(F(:) - FF(:)) < 100*tol;
 
 %% Cross sections
 % Fixed x
-ff = @(x,y,z) sin(x+y+z);
-f = chebfun3(ff);
-f2 = f(0.5, :, :);
-fChebfun2 = chebfun2(@(y,z) sin(0.5+y+z));
-pass(30) = norm(fChebfun2 - f2) < 100*tol;
+ff = @(x,y,z) sin(x+y+z) + x + y; % A function with different variable-ranks
+dom = [-1 1 -4 -2 6 8];
+f = chebfun3(ff, dom);
+f2D = f(0.5, :, :);
+fChebfun2 = chebfun2(@(y,z) ff(0.5, y, z), dom(3:6));
+pass(30) = norm(fChebfun2 - f2D) < 100*tol;
+
+% APA's bug report for a function that has x-rank 1:
+ff = @(x, y, z) cos(y + z).*sin(z).*exp(x);
+f = chebfun3(ff, dom);
+f2D = f(0.5, :, :);
+fChebfun2 = chebfun2(@(y,z) ff(0.5, y, z), dom(3:6));
+pass(31) = norm(fChebfun2 - f2D) < 100*tol;
+
+% APA's bug report for a function that has y-rank 1:
+ff = @(x, y, z) cos(x + z).*sin(z).*exp(y);
+f = chebfun3(ff, dom);
+f2D = f(0.5, :, :);
+fChebfun2 = chebfun2(@(y,z) ff(0.5, y, z), dom(3:6));
+pass(32) = norm(fChebfun2 - f2D) < 100*tol;
+
+% Similar to APA's bug report for a function that has z-rank 1:
+ff = @(x, y, z) cos(x + y).*sin(y).*exp(z);
+f = chebfun3(ff, dom);
+f2D = f(0.5, :, :);
+fChebfun2 = chebfun2(@(y,z) ff(0.5, y, z), dom(3:6));
+pass(33) = norm(fChebfun2 - f2D) < 100*tol;
 
 % Fixed y
-ff = @(x,y,z) sin(x+y+z);
-f = chebfun3(ff);
-f2 = f(:, 0.5, :);
-fChebfun2 = chebfun2(@(x,z) sin(0.5+x+z));
-pass(31) = norm(fChebfun2 - f2) < 100*tol;
+ff = @(x,y,z) sin(x+y+z) + x + y; % A function with different variable-ranks
+f = chebfun3(ff, dom);
+f2D = f(:, -3, :);
+fChebfun2 = chebfun2(@(x,z) ff(x, -3, z), [dom(1:2) dom(5:6)]);
+pass(34) = norm(fChebfun2 - f2D) < 100*tol;
+
+% A function that has x-rank 1:
+ff = @(x, y, z) cos(y + z).*sin(z).*exp(x);
+f = chebfun3(ff, dom);
+f2D = f(:, -3, :);
+fChebfun2 = chebfun2(@(x, z) ff(x, -3, z), [dom(1:2) dom(5:6)]);
+pass(35) = norm(fChebfun2 - f2D) < 100*tol;
+
+% A function that has y-rank 1:
+ff = @(x, y, z) cos(x + z).*sin(z).*exp(y);
+f = chebfun3(ff, dom);
+f2D = f(:, -3, :);
+fChebfun2 = chebfun2(@(x, z) ff(x, -3, z), [dom(1:2) dom(5:6)]);
+pass(36) = norm(fChebfun2 - f2D) < 100*tol;
+
+% A function that has z-rank 1:
+ff = @(x, y, z) cos(x + y).*sin(y).*exp(z);
+f = chebfun3(ff, dom); 
+f2D = f(:, -3, :);
+fChebfun2 = chebfun2(@(x, z) ff(x, -3, z), [dom(1:2) dom(5:6)]);
+pass(37) = norm(fChebfun2 - f2D) < 100*tol;
 
 % Fixed z
-ff = @(x,y,z) sin(x+y+z);
-f = chebfun3(ff);
-f2 = f(:, :, 0.5);
-fChebfun2 = chebfun2(@(x,y) sin(0.5+x+y));
-pass(32) = norm(fChebfun2 - f2) < 100*tol;
+%ff = @(x,y,z) sin(x+y+z);
+ff = @(x,y,z) sin(x+y+z) + z + y; % A function with different variable-ranks
+f = chebfun3(ff, dom);
+f2D = f(:, :, 7);
+fChebfun2 = chebfun2(@(x,y) ff(x, y, 7), dom(1:4));
+pass(38) = norm(fChebfun2 - f2D) < 100*tol;
+
+% A function that has x-rank 1:
+ff = @(x, y, z) cos(y + z).*sin(z).*exp(x);
+f = chebfun3(ff, dom);
+f2D = f(:, :, 7);
+fChebfun2 = chebfun2(@(x, y) ff(x,y, 7), dom(1:4));
+pass(39) = norm(fChebfun2 - f2D) < 100*tol;
+
+% A function that has y-rank 1:
+ff = @(x, y, z) cos(x + z).*sin(z).*exp(y);
+f = chebfun3(ff, dom);
+f2D = f(:, :, 7);
+fChebfun2 = chebfun2(@(x, y) ff(x, y, 7), dom(1:4));
+pass(40) = norm(fChebfun2 - f2D) < 100*tol;
+
+% A function that has z-rank 1:
+ff = @(x, y, z) cos(x + y).*sin(y).*exp(z);
+f = chebfun3(ff, dom);
+f2D = f(:, :, 7);
+fChebfun2 = chebfun2(@(x, y) ff(x, y, 7), dom(1:4));
+pass(41) = norm(fChebfun2 - f2D) < 100*tol;
 
 % Fixed x and y
 ff = @(x,y,z) sin(x+y+z);
 f = chebfun3(ff);
 f1 = f(0.5, 0.5, :);
 fChebfun = chebfun(@(z) sin(1+z));
-pass(33) = norm(fChebfun - f1) < 100*tol;
+pass(42) = norm(fChebfun - f1) < 100*tol;
 
 % Fixed x and z
 ff = @(x,y,z) sin(x+y+z);
 f = chebfun3(ff);
 f1 = f(0.5, :, 0.5);
 fChebfun = chebfun(@(z) sin(1+z));
-pass(34) = norm(fChebfun - f1) < 100*tol;
+pass(43) = norm(fChebfun - f1) < 100*tol;
 
 % Fixed y and z
 ff = @(x,y,z) sin(x+y+z);
 f = chebfun3(ff);
 f1 = f(:, 0.5, 0.5);
 fChebfun = chebfun(@(z) sin(1+z));
-pass(35) = norm(fChebfun - f1) < 100*tol;
+pass(44) = norm(fChebfun - f1) < 100*tol;
 
 % No fixed variables
 ff = @(x,y,z) sin(x+y+z);
 f = chebfun3(ff);
 fNew = f(:, :, :);
-pass(36) = norm(fNew - f) < 100*tol;
+pass(45) = norm(fNew - f) < 100*tol;
 
 %% Evaluate at parametric 1D chebfuns
 f = chebfun3(@(x,y,z) x+y.*z);
 curve = chebfun(@(t) [cos(t) sin(t) t/(8*pi)], [0, 8*pi]);
 f1D = f(curve(:, 1), curve(:, 2), curve(:, 3));
 fExact = curve(:, 1) + curve(:, 2).*curve(:, 3);
-pass(37) = norm(fExact - f1D) < 100*tol;
+pass(46) = norm(fExact - f1D) < 100*tol;
 
 end

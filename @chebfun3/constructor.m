@@ -937,7 +937,7 @@ mu_z = inegral_QM2(evaluate(mu_z_numer, xx, yy, zz, vectorize), d, ...
     numpts) / QM_approx_denom;
 
 % Compute entries of the covariance matrix. The diagonal is not needed.
-covMat = zeros(3,3);
+covMat = zeros(3, 3);
 
 % Compute the X-Y entry of the covariance matrix.
 f_xy = @(x,y,z) (x-mu_x) .* (y-mu_y) .* (f(x,y,z).^2);
