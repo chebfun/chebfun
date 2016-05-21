@@ -58,7 +58,9 @@ end
 %% Dimension clustering of Bebendorf & Kuske.
 % An example where this is important. compare3(@(x,y,z) exp(-5*(x+2*y).^2-30*y.^4-7*sin(2*z).^6));
 if ( isempty(fiberDim) )
-    fiberDim = dimCluster(op, dom, vectorize);
+%    fiberDim = dimCluster(op, dom, vectorize);
+    fiberDim = dimCluster2(op, dom, vectorize, pref);
+%    fiberDim = fiberDimNew;
 end
 if ( fiberDim == 1 )
     op = @(y,z,x) op(x,y,z);
@@ -907,7 +909,74 @@ end
 end
 
 %%
-function fiberDim = dimCluster(f, d, vectorize)
+function fiberDim = dimCluster2(op, dom, vectorize, pref)
+% This is an alternative attempt for dimension clustering. Compare all the
+% three possibilites on a small grid and find which rank might be the
+% smallest. We are trying to avoid using lots of points that we need in 
+% the technique by Bebendorf and Kuske.
+grid = 10;
+[xx, yy, zz] = points3D(grid, grid, grid, dom, pref);
+vals = evaluate(op, xx, yy, zz, vectorize);
+
+% Method 1: Using SVD and 1D Chebfun:
+F1 = chebfun3.unfold(vals, 1);
+F2 = chebfun3.unfold(vals, 2);
+F3 = chebfun3.unfold(vals, 3);
+rX = rank(F1.'); % Transpose to have longer columns
+rY = rank(F2.'); % and therefore being faster
+rZ = rank(F3.'); % in MATLAB.
+r = [rX, rY, rZ];
+[ignored, ind] = find(r==min(r));
+if ( numel(ind) == 1 )
+    fiberDim = ind;
+    return
+end
+% More than one minimum ranks exist:
+tol = 1e-3;
+lenX = length(simplify(chebfun(F1(:, 1)), tol));
+lenY = length(simplify(chebfun(F2(:, 1)), tol));
+lenZ = length(simplify(chebfun(F3(:, 1)), tol));
+len = [lenX, lenY, lenZ];
+if ( numel(ind) == 2 )
+    [ignored, index] = max([len(ind(1)), len(ind(2))]);
+    fiberDim = ind(index);
+else % numel(ind) = 3
+    [ignored, fiberDim] = max(len);
+end
+
+%%
+% % Method 2: Using Chebfun2:
+% F1 = chebfun2(chebfun3.unfold(vals, 1), [dom(1:2) min(dom(3), dom(5)) max(dom(4), dom(6))]);
+% F2 = chebfun2(chebfun3.unfold(vals, 2), [dom(3:4) min(dom(1), dom(5)) max(dom(2), dom(6))]);
+% F3 = chebfun2(chebfun3.unfold(vals, 3), [dom(5:6) min(dom(1), dom(3)) max(dom(2), dom(4))]);
+% rX = numel(F1.pivotValues);
+% rY = numel(F2.pivotValues);
+% rZ = numel(F3.pivotValues);
+% r = [rX, rY, rZ];
+% [ignored, ind] = find(r==min(r));
+% if ( numel(ind) == 1 )
+%     fiberDim = ind;
+%     return
+% end
+% % More than one minimum ranks exist. So, find the variable that needs
+% % largest number of coefficients.
+% F1 = simplify(F1, 1e-3);
+% F2 = simplify(F2, 1e-3);
+% F3 = simplify(F3, 1e-3);
+% [ignored, lenX] = length(F1); % (simplified) degree needed in x
+% [ignored, lenY] = length(F2); % (simplified) degree needed in y
+% [ignored, lenZ] = length(F3); % (simplified) degree needed in z
+% len = [lenX, lenY, lenZ];
+% if ( numel(ind) == 2 )
+%     [ignored, index] = max([len(ind(1)), len(ind(2))]);
+%     fiberDim = ind(index);
+% else % numel(ind) = 3
+%     [ignored, fiberDim] = max(len);
+% end
+end
+
+%%
+function fiberDim = dimCluster(f, dom, vectorize)
 % Dimension clustering from
 % M. Bebendorf, C. Kuske, Separation of variables for function generated 
 % high-order tensors, Journal of Scientific Computing 61 (2014) 145-165.
@@ -917,23 +986,23 @@ function fiberDim = dimCluster(f, d, vectorize)
 
 % Generate Halton points to be used.
 numpts = 1e5;
-[xx, yy, zz] = halton(numpts, d);
+[xx, yy, zz] = halton(numpts, dom);
 
 % Compute the expected values.
 mu_denom = @(x,y,z) (f(x,y,z)).^2;
 QM_approx_denom = inegral_QM2(evaluate(mu_denom, xx, yy, zz, vectorize), ...
-    d, numpts);
+    dom, numpts);
 
 mu_x_numer = @(x,y,z) x .* (f(x,y,z).^2);
-mu_x = inegral_QM2(evaluate(mu_x_numer, xx, yy, zz, vectorize), d, numpts)...
+mu_x = inegral_QM2(evaluate(mu_x_numer, xx, yy, zz, vectorize), dom, numpts)...
     / QM_approx_denom;
 
 mu_y_numer = @(x,y,z) y .* (f(x,y,z).^2);
-mu_y = inegral_QM2(evaluate(mu_y_numer,xx,yy,zz,vectorize),d,numpts) ...
+mu_y = inegral_QM2(evaluate(mu_y_numer,xx,yy,zz,vectorize),dom,numpts) ...
     / QM_approx_denom;
 
 mu_z_numer = @(x,y,z) z .* (f(x,y,z).^2);
-mu_z = inegral_QM2(evaluate(mu_z_numer, xx, yy, zz, vectorize), d, ...
+mu_z = inegral_QM2(evaluate(mu_z_numer, xx, yy, zz, vectorize), dom, ...
     numpts) / QM_approx_denom;
 
 % Compute entries of the covariance matrix. The diagonal is not needed.
@@ -941,17 +1010,17 @@ covMat = zeros(3, 3);
 
 % Compute the X-Y entry of the covariance matrix.
 f_xy = @(x,y,z) (x-mu_x) .* (y-mu_y) .* (f(x,y,z).^2);
-covMat(1, 2) = inegral_QM2(evaluate(f_xy, xx, yy, zz, vectorize), d, numpts);
+covMat(1, 2) = inegral_QM2(evaluate(f_xy, xx, yy, zz, vectorize), dom, numpts);
 covMat(2, 1) = covMat(1, 2);
 
 % Compute the X-Z entry of the covariance matrix.
 f_xz = @(x,y,z) (x-mu_x) .* (z-mu_z) .* (f(x,y,z).^2);
-covMat(1, 3) = inegral_QM2(evaluate(f_xz,xx,yy,zz,vectorize), d, numpts);
+covMat(1, 3) = inegral_QM2(evaluate(f_xz,xx,yy,zz,vectorize), dom, numpts);
 covMat(3, 1) = covMat(1, 3);
 
 % Compute the Y-Z entry of the covariance matrix.
 f_yz = @(x,y,z) (y-mu_y) .* (z-mu_z) .* (f(x,y,z).^2);
-covMat(2, 3) = inegral_QM2(evaluate(f_yz, xx, yy, zz, vectorize), d, numpts);
+covMat(2, 3) = inegral_QM2(evaluate(f_yz, xx, yy, zz, vectorize), dom, numpts);
 covMat(3, 2) = covMat(2, 3);
 covMat = abs(covMat); % Negative values of covariance are as good as positive 
 % values in our case. They just mean the same amount of dependance between 
@@ -960,8 +1029,8 @@ covMat = abs(covMat); % Negative values of covariance are as good as positive
 % columns of Cov to detect the most separable variable. Graph theortical
 % interpretation described in  Bebendorf & Kuske (2014).
 
-temp = sum(covMat,1); % sum of entries in columns.
-[ignore, fiberDim] = min(temp);
+temp = sum(covMat, 1); % sum of entries in columns.
+[ignored, fiberDim] = min(temp);
 end
 
 %%
