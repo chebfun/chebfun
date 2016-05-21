@@ -59,8 +59,7 @@ end
 % An example where this is important. compare3(@(x,y,z) exp(-5*(x+2*y).^2-30*y.^4-7*sin(2*z).^6));
 if ( isempty(fiberDim) )
 %    fiberDim = dimCluster(op, dom, vectorize);
-    fiberDim = dimCluster2(op, dom, vectorize, pref);
-%    fiberDim = fiberDimNew;
+    fiberDim = dimClusterNew(op, dom, vectorize, pref);
 end
 if ( fiberDim == 1 )
     op = @(y,z,x) op(x,y,z);
@@ -909,7 +908,7 @@ end
 end
 
 %%
-function fiberDim = dimCluster2(op, dom, vectorize, pref)
+function fiberDim = dimClusterNew(op, dom, vectorize, pref)
 % This is an alternative attempt for dimension clustering. Compare all the
 % three possibilites on a small grid and find which rank might be the
 % smallest. We are trying to avoid using lots of points that we need in 

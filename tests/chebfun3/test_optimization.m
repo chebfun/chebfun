@@ -17,13 +17,11 @@ Battery = {@(x,y,z) cos(pi*x.*y.*z),...
     @(x,y,z) cos(7*pi*x.*y.*z),...
     @(x,y,z) sin(pi*x.*y.*z),...
     @(x,y,z) cos(0*pi*(x-y-z).^2),...
-    @(x,y,z) cos(pi*(x-y-z).^2),...
     @(x,y,z) cos(2*pi*(x-y-z).^2),...
     @(x,y,z) sin(x+y+z)
     };
 
 maxima = [1
-    1
     1
     1
     1
@@ -44,7 +42,6 @@ minima = [-1
     -1
      0
     +1
-    -1
     -1
      0];
 
