@@ -126,7 +126,7 @@ else
     end
 end
     
-if doNewton
+if ( doNewton )
     % Store values before applying any Newton iterations to restore if 
     % Newton was diverging.
     locsOld = locs;
@@ -148,9 +148,9 @@ if doNewton
     % minandmax3.    
     warning_state = warning('off','MATLAB:singularMatrix');
 	% Use try-catch to guarantee original warning state is restored.
-	try
+    try
         lastwarn('')
-        k = 1; % k Newton iterations
+        k = 1; % k Newton iterations:
         for iter = 1:k
             locs(1,:) = newton_opt(locs(1,:), H, gradF);
             vals(:,1) = feval(f, locs(1, 1), locs(1, 2), locs(1, 3));
@@ -204,7 +204,7 @@ end
 
 %%
 function sol = newton_opt(init, H, gradF)
-%Perform one step of multivariate optimization using the Newton's method.
+% Perform one step of multivariate optimization using the Newton's method.
 x = init(1); 
 y = init(2); 
 z = init(3);
