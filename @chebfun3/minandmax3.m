@@ -7,7 +7,7 @@ function [vals, locs] = minandmax3(f)
 %   [VALS, LOCS] = minandmax3(F) also returns the position of the global 
 %   minimum and maximum.
 %
-% See also CHEBFUN3/MAX2, CHEBFUN3/MIN2, CHEBFUN3/NORM.
+% See also CHEBFUN3/MAX, CHEBFUN3/MAX2, CHEBFUN3/NORM.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -21,17 +21,16 @@ end
 
 doNewton = 1;   % Newton polishing?
 
-% % Is the function the zero function?
-% if ( iszero(f)  ) 
-%     dom = f.domain;
-%     locs = [ (dom(2) + dom(1))/2 (dom(4) + dom(3))/2 (dom(6) + dom(5))/2];
-%     locs = [ locs; locs ];
-%     vals = [0 ; 0];
-% end
-
-% Extract low rank representation:
+% Extract low rank representation of f:
 [fCore, fCols, fRows, fTubes] = tucker(f);
 dom = f.domain;
+
+% Is f the zero function?
+if ( iszero(f) ) 
+    locs = [(dom(1) + dom(2))/2 (dom(3) + dom(4))/2 (dom(5) + dom(6))/2];
+    locs = [locs; locs];
+    vals = [0; 0];
+end
 
 [m, n, p] = length(f);
 % m =2*m; 
@@ -53,7 +52,7 @@ tubeVals = feval(fTubes, zpts);
 T = chebfun3.txm(chebfun3.txm(chebfun3.txm(fCore,colVals,1), rowVals,2), ...
     tubeVals,3);
     
-% Minimum entry in discretisation.
+% Minimum entry in the sample:
 [ignored, ind] = min(T(:));
 [col, row, tub] = ind2sub(size(T), ind);
 loc(1,1) = xpts(col);
@@ -61,7 +60,7 @@ loc(1,2) = ypts(row);
 loc(1,3) = zpts(tub);
 vals(1) = feval(f, loc(1, 1), loc(1, 2), loc(1, 3));
 
-% Maximum entry in discretisation.
+% Maximum entry in the sample:
 [ignored, ind] = max(T(:)); 
 [col, row, tub] = ind2sub(size(T), ind);
 loc(2,1) = xpts(col);
@@ -72,12 +71,9 @@ vals(2) = feval(f, loc(2, 1), loc(2, 2), loc(2, 3));
 % Get more digits with optimisation algorithms.
 lb = [dom(1); dom(3); dom(5)];
 ub = [dom(2); dom(4); dom(6)];
-    
-try
-    %If the optimization toolbox is available then use it to get a better 
-    % maximum.
-    warnstate = warning;
-    warning('off'); % Disable verbose warnings from fmincon.
+
+if ( ~isempty(ver('optim')) )
+% Matlab's Optimization Toolbox is available. So, use fmincon command.
     options = optimset('Display', 'none', 'TolFun', eps, 'TolX', eps, ...
         'algorithm', 'active-set');
     [minLoc, vals(1)] = fmincon(@(x) feval(f, x(1), x(2), x(3)), ...
@@ -88,39 +84,41 @@ try
     vals(2) = -vals(2);
     loc(1,:) = minLoc;
     loc(2,:) = maxLoc;
-    warning(warnstate);
-    vals = vals;
     locs = loc;
-    
-catch
+else
     try
-        %Try converting to an unconstrained problem and using built-in solver.
-        % Maps from [-1, 1] to [dom(1:2)], [dom(3:4)], and [dom(5:6)], respectively.
+        % Use core Matlab fminsearch command by converting to an 
+        % unconstrained optimization problem.
+        % Maps from [-1, 1] to dom(1:2), dom(3:4), and dom(5:6) 
+        % respectively.
         map1 = bndfun.createMap(dom(1:2));
         map2 = bndfun.createMap(dom(3:4));
         map3 = bndfun.createMap(dom(5:6));
         
         % Unconstrained initial guesses:
-        loc(:,1) = asin(map1.Inv(loc(:, 1)));
-        loc(:,2) = asin(map2.Inv(loc(:, 2)));
-        loc(:,3) = asin(map3.Inv(loc(:, 3)));
-        % Maps from R to [dom(1), dom(2)], [dom(3), dom(4)], and [dom(5), dom(6)] respectively.
+        loc(:, 1) = asin(map1.Inv(loc(:, 1)));
+        loc(:, 2) = asin(map2.Inv(loc(:, 2)));
+        loc(:, 3) = asin(map3.Inv(loc(:, 3)));
+        
+        % Maps from R to dom(1:2), dom(3:4), and dom(5:6) respectively.
         map1 = @(x) map1.For(sin(x));
         map2 = @(x) map2.For(sin(x));
         map3 = @(x) map3.For(sin(x));
+        
         % Set options:
         options = optimset('Display', 'off', 'TolFun', eps, 'TolX', eps);
         warnstate = warning;
         warning('off'); % Disable verbose warnings from fminsearch.
-        f_mapped = @(x) feval( f, map1(x(1)), map2(x(2)),map3(x(3)) );
+        f_mapped = @(x) feval(f, map1(x(1)), map2(x(2)),map3(x(3)));
+        
         [minLoc, vals(1)] = fminsearch(@(x) f_mapped(x), loc(1, :), options);
         [maxLoc, vals(2)] = fminsearch(@(x) -f_mapped(x), loc(2, :), options);
+        
         vals(2) = -vals(2);
-        loc(1:2,1) = map1([minLoc(1); maxLoc(1)]);
-        loc(1:2,2) = map2([minLoc(2); maxLoc(2)]);
-        loc(1:2,3) = map3([minLoc(3); maxLoc(3)]);
+        loc(1:2, 1) = map1([minLoc(1); maxLoc(1)]);
+        loc(1:2, 2) = map2([minLoc(2); maxLoc(2)]);
+        loc(1:2, 3) = map3([minLoc(3); maxLoc(3)]);
         warning(warnstate);
-        vals = vals;
         locs = loc;
         
     catch
@@ -129,22 +127,16 @@ catch
 end
     
 if doNewton
-    % Store values before doing any Newton iteration to restore if Newton
-    % was diverging.
+    % Store values before applying any Newton iterations to restore if 
+    % Newton was diverging.
     locsOld = locs;
     valsOld = vals;
     
     % If the global max or min is already on the edge or out of domain, 
     % do NOT apply Newton iteration:
-    if ( locs(1, 1) <= dom(1) || locs(1, 1) >=dom(2) || ...
-            locs(1, 2) <= dom(3) || locs(1, 2)>=dom(4) || ...
-            locs(1, 3) <= dom(5) || locs(1, 3)>=dom(6) )
+    if ( isOutOfDomain(locs, dom) )
         return
-    elseif ( locs(2, 1) <= dom(1) || locs(2, 1) >= dom(2) || ...
-            locs(2, 2) <= dom(3) || locs(2, 2) >= dom(4) || ...
-            locs(2, 3) <= dom(5) || locs(2, 3) >= dom(6) )
-        return
-    end
+    end    
     
     % A few steps of Newton for optimization (involves computing Hessian)
     H = Hessian(f);
@@ -166,7 +158,7 @@ if doNewton
             locs(2,:) = newton_opt(locs(2, :), H, gradF);
             vals(:,2) = feval(f,locs(2, 1), locs(2, 2), locs(2, 3));
         end
-        [ignored,last_warn] = lastwarn;
+        [ignored, last_warn] = lastwarn;
         if strcmp(last_warn,'MATLAB:singularMatrix')
             % Return the old value if the Hessian matrix was singular.
             locs = locsOld;
@@ -179,16 +171,9 @@ if doNewton
         rethrow(err)
     end
    
-    % Are we still inside the box? Return the old computed value otherwise.
-    if ( locs(1, 1) <= dom(1) || locs(1, 1) >=dom(2) || ...
-         locs(1, 2) <= dom(3) || locs(1, 2)>=dom(4) || ...
-         locs(1, 3) <= dom(5) || locs(1, 3)>=dom(6) )
-        locs = locsOld;
-        vals = valsOld;
-        
-    elseif ( locs(2, 1) <= dom(1) || locs(2, 1) >= dom(2) || ...
-             locs(2, 2) <= dom(3) || locs(2, 2) >= dom(4) || ...
-             locs(2, 3) <= dom(5) || locs(2, 3) >= dom(6) )
+    % If Newton's method moved us outside of the domain, then return old 
+    % value.
+    if ( isOutOfDomain(locs, dom) )
         locs = locsOld;
         vals = valsOld;
     end
@@ -227,3 +212,20 @@ rhs = -gradF(x, y, z);
 h = H(x,y,z)\rhs;
 sol = init.' + h;
 end
+
+%%
+function check = isOutOfDomain(locs, dom)
+% Check whether both points in the rows of LOCS are inside the cuboid DOM.
+if ( locs(1, 1) <= dom(1) || locs(1, 1) >=dom(2) || ...
+         locs(1, 2) <= dom(3) || locs(1, 2)>=dom(4) || ...
+         locs(1, 3) <= dom(5) || locs(1, 3)>=dom(6) )
+     check = true;
+elseif ( locs(2, 1) <= dom(1) || locs(2, 1) >= dom(2) || ...
+             locs(2, 2) <= dom(3) || locs(2, 2) >= dom(4) || ...
+             locs(2, 3) <= dom(5) || locs(2, 3) >= dom(6) )
+         check = true;
+else
+    check = false;
+end
+end
+%%
