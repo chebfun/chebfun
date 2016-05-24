@@ -73,7 +73,7 @@ failure = 0;     % Reached max discretization size without being happy.
 
 while ( ~isHappy && ~failure )
     %% Main loop of the constructor
-    [xx, yy, zz] = points3D(grid, grid, grid, dom, pref);
+    [xx, yy, zz] = points3D(grid-1, grid, grid+1, dom, pref);
     grid2D = grid;
     vals = evaluate(op, xx, yy, zz, vectorize);
     % We have vals(i,j,k) = op(X(i), Y(j), Z(k)), where                 (*)

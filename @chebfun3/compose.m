@@ -12,23 +12,23 @@ if ( nargin == 2 && nargin(op) == 1 )
     % OP has one input variable.
     
     % Call constructor: 
-    f = chebfun3(@(x,y,z) op(feval(f, x, y, z)), f.domain, 'fiberDim', 3);
+    f = chebfun3(@(x,y,z) op(feval(f, x, y, z)), f.domain);
     
 elseif ( nargin == 3 && nargin(op) == 2 )
     % OP has two input variables. 
     
     g = varargin{1}; 
     if ( isa(g, 'double') )     % promote
-        g = chebfun3(g, f.domain, 'fiberDim', 3);
+        g = chebfun3(g, f.domain);
     end
     
     if ( isa(f, 'double') )     % promote
-        f = chebfun3(f, g.domain, 'fiberDim', 3);
+        f = chebfun3(f, g.domain);
     end
     
     % Call constructor:
     f = chebfun3( @(x,y,z) op(feval(f, x, y, z), feval(g, x, y, z)), ...
-        f.domain, 'fiberDim', 3);
+        f.domain);
     
 else
     % Not sure what to do, error: 

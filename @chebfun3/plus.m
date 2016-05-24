@@ -38,7 +38,7 @@ else                                     % CHEBFUN3 + CHEBFUN3
          % constructor, so that it takes care of the case that computing 
          % f+g is subject to cancellation errors. See constructor/getTol3D.          
          h = chebfun3(@(x, y, z) feval(f, x, y, z) + feval(g, x, y, z), ...
-             f.domain, 'vscaleBnd', vscaleBnd, 'fiberDim',3);
+             f.domain, 'vscaleBnd', vscaleBnd);
          
 %         h = compressed_plus(f, g); % bypass the constructor and call the compressed version
    end 
