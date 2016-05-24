@@ -339,4 +339,15 @@ f1D = f(curve(:, 1), curve(:, 2), curve(:, 3));
 fExact = curve(:, 1) + curve(:, 2).*curve(:, 3);
 pass(46) = norm(fExact - f1D) < 100*tol;
 
+%% Test from #1898:
+ff = @(x, y, z) sin(x + 2*y + z);
+f = chebfun3(ff);
+x = linspace(-1, 1, 2).';
+y = linspace(-1, 1, 4).';
+z = 0;
+[xx, yy, zz] = meshgrid(x, y, z);
+vals = f(xx, yy, zz);
+pass(47) = all(size (xx) == size(vals));
+pass(48) = norm(ff(xx,yy,zz) - vals) < tol;
+
 end
