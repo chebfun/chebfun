@@ -422,8 +422,8 @@ while ( ~isHappy && ~failure )
         dom2D = dom(1:4); % The first 4 entries correspond to slices
         [core, colsValues, rowsValues] = btd2tucker(colsValues, ...
             rowsValues, diagValues2D, pivotVals3D, dom2D, pref, absTol);
-        % To check the validity of the new representation try the
-        % following:
+        % Developer Note: To check the validity of the new representation 
+        % try the following:
         % TuckerApprox = txm(txm(txm(core, colsValues, 1), rowsValues, 2), fibersValues, 3);
         % norm123 = norm( vals(:) -  TuckerApprox(:) )
     end
@@ -481,8 +481,8 @@ nn = numel(pivotVals3D);
 sizeIndex = zeros(nn, 1);
 pseudoLevel = pref.cheb3Prefs.chebfun3eps;
 
-globalTolCols = absTol; % Like the tolerance used to stop adding new fibers in the Phase 1 in 3D ACA
-globalTolRows = absTol;
+globalTolCols = absTol; % Like the tolerance used to stop adding new fibers
+globalTolRows = absTol; % in Phase 1 of 3D ACA.
 
 for kkk = 1:nn
     sizeIndex(kkk) = size(rowsValues{kkk}, 2);
@@ -544,7 +544,8 @@ function tol = GetTol2D(xx, yy, vals, dom, pseudoLevel)
 [m, n] = size(vals);
 grid = max(m, n);
 
-if ( n == 1 ) % f is probably rank-1, i.e., vals depend only on one of the variables
+if ( n == 1 ) % f is probably rank-1, i.e., vals depend only on one of the 
+              % variables.
     df = diff(vals, 1, 1) ./ diff(xx, 1, 1); 
     Jac_norm = max( abs(df(:)) );
 else % f probably has a higher rank than 1
@@ -642,7 +643,7 @@ ifail2D = 1;                  % Assume we fail.
 
 % Main algorithm
 zRows = 0;                  % count number of zero cols/rows.
-[infNorm, ind] = max(abs(reshape(A,numel(A), 1) ));
+[infNorm, ind] = max(abs(reshape(A, numel(A), 1)));
 [row, col] = chebfun3.myind2sub(size(A) , ind);
 
 % Bias toward diagonal for square matrices (see reasoning below):
@@ -653,7 +654,6 @@ if ( ( nx == ny ) && ( max(abs(diag(A))) - infNorm) > -tol )
 end
 
 scl = infNorm;
-
 % If the function is the zero function
 if ( scl == 0 )
     pivotValue = 0;
@@ -676,11 +676,11 @@ while ( ( infNorm > tol ) && ( zRows < width / factor) ...
     % Keep track of progress.
     zRows = zRows + 1;                       % One more row is interpolated
     pivotValue(zRows) = PivVal;              % Store value of 2D pivot
-    pivotElement(zRows, :)=[row col];         % Store index of 2D pivot
+    pivotElement(zRows, :)=[row col];        % Store index of 2D pivot
     
     % Find value and index of next 2D pivot
     [infNorm, ind] = max(abs(A(:))); % Slightly faster
-    [row, col] = chebfun3.myind2sub(size(A) , ind);
+    [row, col] = chebfun3.myind2sub(size(A), ind);
     
     % Have a bias towards the diagonal of A, so that it can be used as a test
     % for nonnegative definite functions. (Complete GE and Cholesky are the
@@ -781,8 +781,8 @@ elseif ( isa(tech, 'chebtech1'))
     y = chebpts(n, dom(3:4), 1);   % y grid.
     [xx, yy] = ndgrid(x, y);
 elseif ( isa(tech, 'trigtech'))
-    x = trigpts(m, dom(1:2));   % x grid.
-    y = trigpts(n, dom(3:4));   % y grid.
+    x = trigpts(m, dom(1:2));      % x grid.
+    y = trigpts(n, dom(3:4));      % y grid.
     [xx, yy] = ndgrid(x, y);
 else
     error('CHEBFUN:CHEBFUN3:constructor:points2D:tecType', ...
@@ -810,9 +810,9 @@ elseif ( isa(tech, 'chebtech1') )
     z = chebpts(p, dom(5:6), 1);   % z grid.
     [xx, yy, zz] = ndgrid(x, y, z); 
 elseif ( isa(tech, 'trigtech') )
-    x = trigpts(m, dom(1:2));   % x grid.
-    y = trigpts(n, dom(3:4));   % y grid.
-    z = trigpts(p, dom(5:6));   % z grid.
+    x = trigpts(m, dom(1:2));      % x grid.
+    y = trigpts(n, dom(3:4));      % y grid.
+    z = trigpts(p, dom(5:6));      % z grid.
     [xx, yy, zz] = ndgrid(x, y, z);
 else
     error('CHEBFUN:CHEBFUN3:constructor:points3D:tecType', ...
@@ -842,8 +842,8 @@ if ( flag ==1 )
         for ii = 1:size(xx, 1)
             for jj = 1:size(yy, 2)
                 for kk = 1:size(zz, 3)
-                    vals(ii, jj, kk) = oper(xx( ii, 1, 1) , ...
-                        yy(1, jj, 1 ), zz(1, 1, kk));
+                    vals(ii, jj, kk) = feval(oper, xx( ii, 1, 1), ...
+                        yy(1, jj, 1 ), zz(1, 1, kk));                    
                 end
             end
         end
@@ -1104,7 +1104,7 @@ function [vectorize, op] = vectorCheck(op, dom)
 % Check for cases like op = @(x,y,z) x*y^2*z
 
 vectorize = false;
-[xx, yy, zz] = ndgrid( dom(1:2), dom(3:4), dom(5:6));
+[xx, yy, zz] = ndgrid(dom(1:2), dom(3:4), dom(5:6));
 try
     A = op(xx, yy, zz);
 catch
@@ -1154,7 +1154,7 @@ function f = constructFromDouble(op, dom, pref, isEqui)
 pseudoLevel = pref.cheb3Prefs.chebfun3eps;
 
 f = chebfun3();
-if ( ~isEqui && numel( op ) == 1  )
+if ( ~isEqui && numel(op) == 1 )
     f = constructor(f, @(x,y,z) op + 0*x, dom);
     return;
 end
@@ -1238,7 +1238,7 @@ function [colsBtd, rowsBtd, pivotValues2D, pivotIndices2D, fibers, ...
 %   INPUTS:     A:        A given tensor of function values at 3D chebpts.
 %
 %               fiberDim: Dimension to be used for 1st separation of fibers
-%                         and slices.    
+%                         and slices.
 %
 %               tol:      A given tolerance on the magnitude of the pivots.
 %
@@ -1269,16 +1269,17 @@ function [colsBtd, rowsBtd, pivotValues2D, pivotIndices2D, fibers, ...
 %
 %                      ifail: We fail if iter >= (width/factor).
 
-%   The output of this code should satisfy the following slice decomposition:
+% Developer Note: The output of this code should satisfy the following 
+% slice decomposition:
 %       AA \approx temp, 
-    % where AA is a copy of A from input, and temp is computed as follows:
+% where AA is a copy of A from input, and temp is computed as follows:
 %   temp = zeros(size(A2)); 
 %   for i = 1:3, 
 %         temp = temp + chebfun3.outerProd(slices(:,:,i),fibers(:,i)./pivotValues3D(i));
 %   end
 %   norm(AA(:) - temp(:))
 %
-%   An analogous BTD decomposotion should also hold.
+% An analogous BTD decomposotion should also hold.
 
 pseudoLevel = pref.cheb3Prefs.chebfun3eps;
 
@@ -1297,15 +1298,14 @@ pivotIndices3D = zeros(1, 3);  % Store (col, row, tube) = entries of pivot locat
 ifail3D = 1;                   % Assume we fail in 3D ACA
 ifail2D = 1;                   % Assume we also fail in the 2D ACAs
 globalTol = [];
-sliceDim = [1 2];
+sliceDim = [1 2];              % See Developer note in the following.
 
 % Main algorithm
 iter = 0;                  % Count number of interpolated rows/slices.
-[infNorm, ind] = max( abs ( reshape(A,numel(A),1) ) ); % Complete pivoting
-[col, row, tube] = ind2sub( size(A) , ind);
+[infNorm, ind] = max(abs(reshape(A, numel(A), 1))); % Complete pivoting
+[col, row, tube] = ind2sub(size(A), ind);
 
 scl = infNorm;
-
 % If the function is the zero function.
 if ( scl == 0 )
     pivotValues3D = 0;
@@ -1328,49 +1328,59 @@ dom2D = dom(1:4);
 
 while ( ( infNorm > tol ) && ( iter < width / factor) ...
         && ( iter < width ) )
-        fibers(:, iter+1) = A(col, row, :);       % Extract skeleton tubes. 
-        % Each column in "fibers" is N3 x 1.
-
-        slices(:,:,iter+1) = A(:,:,tube);         % Extract skeleton slices to be decomposed further.
-        % Each slice in "slices" is N1 x N2.
-        
-        PivVal3D = A(col, row, tube);             % f( X(col), Y(row), Z(tube) ) in the 1st iteration
-        
-        % Use the first slice to compute globalTol for 2D ACAs applied to all slices
-        if iter == 0
-            [xx2D, yy2D] = points2D(n1, n2, dom2D, pref); % ndgrid is used now
-            globalTol = GetTol2Dv2(xx2D, yy2D, slices(:,:,1), dom2D, pseudoLevel);
-        end
-        
-        % Apply 2D ACA to each slice to form columns and rows in block term
-        % decomposition
-        [colsBtd{iter+1}, pivotValues2D{iter+1}, rowsBtd{iter+1}, ...
-            pivotIndices2D{iter+1}, ifail2DIter] = ...
-            chebfun2ACAv2(slices(:, :, iter+1), globalTol, factor);
-        
-        % Since we use globalTol for slices after 1st iteration, it might
-        % be that these 2D ACA's don't fail, while with a localTol they
-        % would fail. So, it is auaully the 1st slice which shows whether
-        % or not we got the 2D rank right. So, just use that one:
-        if iter == 0
-            ifail2D = ifail2DIter;
-        end
-        
-        % Update the tensor, i.e., compute the residual tensor:
-        A = A - chebfun3.outerProd(colsBtd{iter+1} * ...
-            (diag(1./(pivotValues2D{iter+1}))) * (rowsBtd{iter+1}.'), ...
-            fibers(:,iter+1) ./ PivVal3D);
-        %A = A - chebfun3.outerProd(slices(:,:,iter+1),fibers(:,iter+1)./PivVal3D);
+    fibers(:, iter+1) = A(col, row, :);  % Extract skeleton tubes. Each
+    % column in "fibers" is N3 x 1.
     
-    % Keep track of progress in 3D ACA
+    slices(:,:,iter+1) = A(:,:,tube);    % Extract skeleton slices to be 
+    % decomposed further. Each slice in "slices" is N1 x N2.
+    
+    % Developer Note: As the above lines show, we are always separating the
+    % last variable from the first two. The point is that the function 
+    % handle has already been permuted outside this subroutine and 
+    % therefore the tensor A here contains values of the permuted function.
+    % In this sense, here we are in essense separating the variable chosen 
+    % by the dimension clustering step, and not necessarily the last 
+    % variable z.
+    
+    PivVal3D = A(col, row, tube);        % = f(X(col), Y(row), Z(tube)) in
+                                         % the 1st iteration.
+    
+    % Use the first slice to compute globalTol for 2D ACAs applied to all 
+    % slices.
+    if iter == 0
+        [xx2D, yy2D] = points2D(n1, n2, dom2D, pref); % ndgrid is used.
+        globalTol = GetTol2Dv2(xx2D, yy2D, slices(:,:,1), dom2D, pseudoLevel);
+    end
+    
+    % Apply 2D ACA to each slice to form columns and rows in block term
+    % decomposition:
+    [colsBtd{iter+1}, pivotValues2D{iter+1}, rowsBtd{iter+1}, ...
+        pivotIndices2D{iter+1}, ifail2DIter] = ...
+        chebfun2ACAv2(slices(:, :, iter+1), globalTol, factor);
+    
+    % Developer Note: Since we use globalTol for slices after 1st 
+    % iteration, it might be that these 2D ACA's don't fail, while with a 
+    % localTol they would fail. So, it is auaully the 1st slice which shows
+    % whether or not we got the 2D rank right. So, just use that one:
+    if iter == 0
+        ifail2D = ifail2DIter;
+    end
+    
+    % Update the tensor, i.e., compute the residual tensor:
+    A = A - chebfun3.outerProd(colsBtd{iter+1} * ...
+        (diag(1./(pivotValues2D{iter+1}))) * (rowsBtd{iter+1}.'), ...
+        fibers(:,iter+1) ./ PivVal3D);
+    % Equivalently, we have: 
+    % A = A - chebfun3.outerProd(slices(:,:,iter+1),fibers(:,iter+1)./PivVal3D);
+    
+    % Keep track of progress in 3D ACA:
     iter = iter + 1;                          % One more fiber and slice are removed from A
     pivotValues3D(iter) = PivVal3D;           % Store pivot value in 3D ACA
-    pivotIndices3D(iter,:)=[col row tube];    % Store pivot location in 3D ACA
+    pivotIndices3D(iter, :)=[col row tube];    % Store pivot location in 3D ACA
     
-    % Find next 3D pivot value and its location
+    % Find next 3D pivot value and its location:
     [infNorm, ind] = max(abs(A(:)));
-    [col, row, tube] = ind2sub( size(A) , ind);
-    
+    [col, row, tube] = ind2sub(size(A), ind);
 end
 
 if ( iter>0 && all(pivotValues2D{iter} == 0) )    

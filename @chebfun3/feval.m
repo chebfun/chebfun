@@ -90,6 +90,9 @@ elseif ( isnumeric(x) && isnumeric(y) && isnumeric(z) )  % f(x, y, z)
     elseif ( length(n) == 2 && min(n) > 1 )
         % TODO: Replace the above with ndims?
         out = matrixCase(f, x, y, z);
+        if ( size(out) ~= size(x) )
+            out = out.';
+        end
 
     elseif length(n) == 3 % The inputs are tensors.
         % TODO: Replace the above with ndims?
@@ -119,7 +122,7 @@ for i = 1:size(xVec, 1) % TODO: How to vectorize this?
         colsVals(i,:), 1), rowsVals(i,:), 2), tubesVals(i,:), 3);
 end
 
-if ( (m == 1) && (n>1) )
+if ( (m == 1) && (n > 1) )
     outVec = outVec.';
 end
 
@@ -141,7 +144,7 @@ if ( max(max(max(abs(bsxfun(@minus, xeval, xeval(:, 1, 1)))))) == 0  && ...
     rowsVals = f.rows(yeval);
     tubesVals = f.tubes(zeval);
     out = chebfun3.txm(chebfun3.txm(chebfun3.txm(f.core, colsVals, 1),...
-        rowsVals, 2), tubesVals, 3);
+        rowsVals, 2), tubesVals, 3);    
     
 % Check to see if the input is obtained by meshgrid:            
 elseif ( max(max(max(abs(bsxfun(@minus, xeval, xeval(1, :, 1)))))) == 0  && ... 
@@ -162,14 +165,14 @@ else
     % Inputs are not obtained by ndgrid or meshgrid. No specific
     % pattern could be found in them and they might be e.g. random points.
     % This is slow!!! 
-    xx1 = chebfun3.unfold(xeval, 1)';
-    yy1 = chebfun3.unfold(yeval, 1)';
-    zz1 = chebfun3.unfold(zeval, 1)';
+    xx1 = chebfun3.unfold(xeval, 1).'; % Transposed to make a long matrix
+    yy1 = chebfun3.unfold(yeval, 1).'; % so that it's faster in MATLAB.
+    zz1 = chebfun3.unfold(zeval, 1).';
     fevalNew = zeros(n(2)*n(3), n(1));
     for i=1:n(1)
         fevalNew(:,i) = vectorCase(f, xx1(:,i), yy1(:,i), zz1(:,i));
     end
-    out = reshape(fevalNew', n(1), n(2), n(3));
+    out = chebfun3.fold(fevalNew.', n, 1, [2 3]);
 end
 
 end
