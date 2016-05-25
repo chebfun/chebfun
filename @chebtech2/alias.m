@@ -47,8 +47,9 @@ elseif ( m > n/2 )
 else
     % Otherwise we must do everything in a tight loop. (Which is slower!)
     for j = (m + 1):n
-        k = abs(mod(j + m - 3, 2*m - 2) - m + 2) + 1;
+        k = abs(mod(j + m - 3, 2*m - 2) - m + 2) + 1;        
         coeffs(k,:) = coeffs(k,:) + coeffs(j,:);
+        [j, k, coeffs(k)]
     end
 end
 
