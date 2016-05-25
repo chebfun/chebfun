@@ -35,6 +35,9 @@ function u = poisson(f, const, m, n)
 %
 % SOLVE COMPLEXITY:    O(M*N)  with M*N = total degrees of freedom
 
+% TODO: 
+% Make this code adaptive! 
+
 if ( nargin < 4 )
     n = m;
 end

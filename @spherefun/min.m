@@ -7,7 +7,7 @@ function varargout = min(varargin)
 %   DIM direction. If DIM = 1 is along the latitude-direction and DIM = 2 is along the
 %   longitude-direction.
 %
-%   WARNING: This function is not always accurate to full machine precision. 
+%   WARNING: This function is not always accurate to the expected precision.
 % 
 %   For the global minimum use MIN2.
 %
