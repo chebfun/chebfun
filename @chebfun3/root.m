@@ -28,6 +28,14 @@ len=max([mF, nF, pF;
 dom = f.domain;
 m = 5*len(1); n = 5*len(2); p = 5*len(3); 
 
+% If the function is easy enough, increase size of the sampling grid as 
+% much as you tolerable. See issue #1900.
+if ( max([ndf(f), ndf(g), ndf(h)]) < 5e4 )
+    m = max(m, 121);
+    n = max(n, 121);
+    p = max(p, 121);
+end
+
 xx = chebpts(m, dom(1:2)); 
 yy = chebpts(n, dom(3:4)); 
 zz = chebpts(p, dom(5:6));

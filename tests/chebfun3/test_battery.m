@@ -93,9 +93,29 @@ exact = [
     17.816513659679896, ...
     ];
 
-for jj=1:length(Battery)
-    g = chebfun3(Battery{jj}, [0 1 0 1 0 1]);
-    pass(jj) = (abs(sum3(g) - exact(jj)) < tol);
+dom = [0 1 0 1 0 1];
+for jj=1:1:length(Battery)
+    % Test construction from the function handle:
+    g = chebfun3(Battery{jj}, dom);
+    pass(5*jj-4) = abs(sum3(g) - exact(jj)) < tol;
+    
+    % Test construction from the Chebfun3 object:
+    % 1: Without specifying the variable to be separated in Phase 1:
+    h = chebfun3(@(x,y,z) g(x,y,z), dom);
+    pass(5*jj-3) = abs(sum3(h) - exact(jj)) < tol;
+    
+    % 2: Different variables specified to be separated in Phase 1. The
+    % goal is to check that constructor has no issues with any choice of
+    % variable chosen for the first separation.
+    h1 = chebfun3(@(x,y,z) g(x,y,z), dom, 'fiberDim', 1);
+    pass(5*jj-2) = abs(sum3(h1) - exact(jj)) < tol;
+    
+    h2 = chebfun3(@(x,y,z) g(x,y,z), dom, 'fiberDim', 2);
+    pass(5*jj-1) = abs(sum3(h2) - exact(jj)) < tol;
+        
+    h3 = chebfun3(@(x,y,z) g(x,y,z), dom, 'fiberDim', 3);
+    pass(5*jj) = abs(sum3(h3) - exact(jj)) < tol;
+    
 end
 
 end
