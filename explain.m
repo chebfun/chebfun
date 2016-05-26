@@ -35,7 +35,7 @@ ff = inline(vectorize(fstring));
 if nargin>1, epsval = varargin{2}; else epsval = 2^-52; end
 f = chebfun(@(x) ff(x),'eps',epsval); nf = length(f);
 n2 = max(17,2^ceil(log2(1.25*length(f)+5))+1); % length(f) before chopping)
-%disp(['estimated n2 ' int2str(n2)])
+
 load explaindata
 
 % Set parameters and abbreviations for plotting:
@@ -56,17 +56,19 @@ semilogy(0:nf-1,fc,'or',MS,ms0)
 
 % Attempt to adjust axes for consistency for comparisons:
 a = axis;
-a = axis; if a(3)>1e-80 & a(3) < 1e-9, a(3) = 1e-20; end
-          if g.vscale<1e11 & a(4) > 1e-6, a(4) = 1e2; end
-if g.vscale<1e-98, a(3) = 1e-120; a(4) = 1e-98; end
+%if a(3)>1e-80 & a(3) < 1e-9, a(3) = 1e-20; end
+%if g.vscale<1e11 & a(4) > 1e-6, a(4) = 1e2; end
+%if g.vscale<1e-98, a(3) = 1e-120; a(4) = 1e-98; end
 a(2) = max(a(2),ng);
-a(3) = 1e-15*a(3);
 a(4) = 1e05*a(4);
 axis(a), set(gca,FS,9)
 
 % Plot envelope
 m(m == 0) = a(3);
 semilogy(0:ng-1,m,'-g')
+
+% plot epsval
+semilogy(0:ng-1,0*m+epsval*m(1),'k--')
 
 % Plot zero data values, if any, on relabeled bottom axis:
 if any(gc==0)
@@ -93,6 +95,7 @@ ss = strrep(ss,'randn','\hbox{randn}');
 ss = strrep(ss,'size','\hbox{size}');
 ss = strrep(ss,'acos','\cos^{-1}'); ss = strrep(ss,'abs','\hbox{abs}');
 ss = strrep(ss,'cos','\cos'); ss = strrep(ss,'abs','\hbox{abs}');
+ss = strrep(ss,'tanh','\tanh');
 
 % Print a label in the upper-right:
 text(xpos,ypos,['$' ss '$'],FS,13,HA,'right',IN,'latex')
@@ -100,17 +103,13 @@ text(xpos,ypos,['$' ss '$'],FS,13,HA,'right',IN,'latex')
 % Plot plateauPoint
 plot(plateauPoint-1,gc(plateauPoint),'sb',MS,10)
 
-% Plot j2
-%plot(j2-1,m(j2),'^b',MS,10)
+% Plot tilt
+tilt = -tilt(end)/(length(tilt)-1);
+ruler = 10.^(tilt*(0:ng-1));
+ruler = ruler*m(plateauPoint+1)/ruler(plateauPoint+1);
+semilogy(0:ng-1,ruler,'m')
 
-% Plot cc
-plot(0:j2-1,m(1)*10.^cc','m')
-
-% label plateau and chopping point
-text(plateauPoint-1,1e5*m(plateauPoint),'plateau point',...
-     'Rotation',90,FS,13,IN,'latex')
-text(nf-1,1e-5*m(nf),'chopping point','Rotation',-90,FS,13,IN,'latex')
-
+grid on
 hold off
 
 % delete explaindata file

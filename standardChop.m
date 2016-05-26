@@ -157,11 +157,12 @@ else
     end
     cc = log10(envelope(1:j2));
     cc = cc(:);
-    cc = cc + linspace(0, (-1/3)*log10(tol), j2)';
+    tilt = linspace(0, (-1/6)*log10(envelope(plateauPoint+1)), j2)';
+    cc = cc + tilt;
     [~, d] = min(cc);
     cutoff = max(d - 1, 1);
 n2 = length(coeffs);
-save explaindata m plateauPoint cutoff n2 j2 cc m
+save explaindata m plateauPoint cutoff n2 j2 cc m tilt
 end
 
 end
