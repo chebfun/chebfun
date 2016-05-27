@@ -39,7 +39,14 @@ else
     dom = [-pi pi 0 pi];
 end
 
-Y = spherefun(@(lam, th) mySphHarm(l, m, lam, th, coord), dom);
+% Construct a matrix of values at the latitude-longitude grid
+[ll,tt] = meshgrid(trigpts(max(2*abs(m)+2,4),dom(1:2)),linspace(dom(3),dom(4),2*l+2));
+
+Y = spherefun(mySphHarm(l,m,ll,tt,coord),dom);
+
+Y = simplify(Y);
+
+% Y = spherefun(@(lam, th) mySphHarm(l, m, lam, th, coord), dom);
 
 end
 
