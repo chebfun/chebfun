@@ -16,7 +16,7 @@ function pass = test_constructor( )
 % Test the diskfun constructor 
 
 % Get tolerance: 
-tol = 2e3*chebfunpref().techPrefs.eps;
+tol = 2e3*chebfunpref().techPrefs.chebfuneps;
 
 f = @(x,y) x.^2 + y.^2 ; 
 f = redefine_function_handle( f , 0);
@@ -74,7 +74,7 @@ end
 function pass = test_feval( ) 
 % Test spherefun feval. 
 
-tol = 1e3*chebfunpref().techPrefs.eps;
+tol = 1e3*chebfunpref().techPrefs.chebfuneps;
 
 f = @(th,r) sin(r.^2.*cos(th).*sin(th)) ;
 f = redefine_function_handle( f,1 );
@@ -115,7 +115,7 @@ end
 function pass = test_sum2( ) 
 % Test diskfun sum2() command. 
 
-tol = 1e3*chebfunpref().techPrefs.eps;
+tol = 1e3*chebfunpref().techPrefs.chebfuneps;
 
 f = @(x,y) 1 + x + y; 
 f = redefine_function_handle( f,0 );
@@ -128,7 +128,7 @@ end
 function pass = test_plus( ) 
 % Test diskfun plus() command 
 
-tol = 1e3*chebfunpref().techPrefs.eps;
+tol = 1e3*chebfunpref().techPrefs.chebfuneps;
 
 f1 = @(x,y) cos(pi*x.*y);  % Strictly even/pi-periodic
 f2 = @(x,y) sin(x+y);  % Strictly odd/anti-periodic
@@ -168,7 +168,7 @@ end
 function pass = test_times( ) 
 % Test times in DISKFUN 
 
-tol = 1e3*chebfunpref().techPrefs.eps;
+tol = 1e3*chebfunpref().techPrefs.chebfuneps;
 
 f = diskfun(@(x,y) sin(x.*y), 0); 
 pass(1) = norm( f.*f - f.^2 ) < tol; 
@@ -178,7 +178,7 @@ end
 function pass = test_power( ) 
 % Test power in DISKFUN 
 
-tol = 1e3*chebfunpref().techPrefs.eps;
+tol = 1e3*chebfunpref().techPrefs.chebfuneps;
 
 f = diskfun(@(x,y) x, 0 );
 g = diskfun(@(x,y) x.^2, 0 );
@@ -189,7 +189,7 @@ end
 function pass = test_abs( ) 
 % Test abs in DISKFUN 
 
-tol = 1e3*chebfunpref().techPrefs.eps;
+tol = 1e3*chebfunpref().techPrefs.chebfuneps;
 
 f = diskfun(@(x,y) -(x.^2 + y.^2), 0 );
 pass(1) = norm( abs(f) + f ) < tol; 
@@ -198,7 +198,7 @@ end
 
 function pass = test_diff( )
 
-tol = 1e3*chebfunpref().techPrefs.eps;
+tol = 1e3*chebfunpref().techPrefs.chebfuneps;
 
 % Simple tests:
 f = diskfun(@(th, r) r.^3.*(sin(th)+cos(th)));   %avoids singularity

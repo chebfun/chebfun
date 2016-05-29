@@ -50,18 +50,19 @@ function f = onediff(f, dim)
 f=simplify(f); 
 
 % We are going to work at the tech level to make things faster.
-[C, D, R] = cdr( f );
+[C, ~, R] = cdr( f );
 
 % Do everything with even length columns since then no special
-% modifications are required for dividing the cosine/sine series expansion.
-n = length(C)+mod(length(C),2);
+% modifications are required for dividing by rho series expansion.
+parity = mod(length(C),2);
+n = length(C)+parity;
 m = length(R);
 
 % The variable coefficients in the definitions of the derivatives means
 % that the length of the columns and rows will increase by one wave number
 % after taking the derivatives with respect to x and y. 
 m = m+2;
-n=n+2;
+%n=n+2;
 
 % Matrices for multiplying by sin(theta), cos(theta) and 1/r in coefficient space.
 
@@ -72,11 +73,12 @@ Mn = ultraS.multmat(n, [0;1], 0);
 
 
 % Work at the tech level to make things faster.
-ctechs = C;
+ctechs = C.funs{1}.onefun;
 rtechs = R.funs{1}.onefun;
 
 % alias to get the extra zeros in place
-ctechs = chebfun(chebtech2.alias(C.coeffs, n), 'coeffs'); 
+%ctechs.coeffs = ctechs.alias(ctechs.coeffs, n); 
+ctechs.coeffs = [ctechs.coeffs; zeros(parity, 1)];
 rtechs.coeffs = rtechs.alias(rtechs.coeffs, m); 
 
 % Compute the derivatives
@@ -84,9 +86,9 @@ dCdr = diff(ctechs);
 dRdth = diff(rtechs)/pi;
 
 % get 1/r term
-C_cfs = chebtech2.alias(ctechs.coeffs, n);
+%C_cfs = chebtech2.alias(ctechs.coeffs, n);
 
-rinv = Mn \ C_cfs; 
+rinv = Mn \ ctechs.coeffs; 
 
 if (dim==1) %d/dx 
 
@@ -113,7 +115,8 @@ end
 
     % Put pieces back together
     f1 = f; 
-    f1.cols = chebfun(C1, 'coeffs'); 
+    c1techs = chebtech2({' ',C1}); 
+    f1.cols.funs{1}.onefun = c1techs; 
     r1techs = real(trigtech({'',R1}));
     f1.rows.funs{1}.onefun = r1techs;
     
@@ -123,7 +126,8 @@ end
     f1.idxMinus = temp;
 
     f2 = f; 
-    f2.cols = chebfun(C2, 'coeffs'); 
+    c2techs = chebtech2({'',C2}); 
+    f2.cols.funs{1}.onefun = c2techs; 
     r2techs = real(trigtech({'',R2}));
     f2.rows.funs{1}.onefun = r2techs;
 
@@ -140,6 +144,6 @@ end
     %constructor requires even m
     m = m + mod(m, 2); 
     
-    f = diskfun(sample(f1,m,n)+sample(f2,m,n));    
+    f = diskfun(sample(f1,m,n/2+1)+sample(f2,m,n/2+1));    
 end
 

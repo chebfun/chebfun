@@ -57,7 +57,7 @@ end
 function [Q, R] = diskQR( A )
 % Fast version of the abstractQR code, specifically for the disk. 
 
-n = length(A);               % Can probably get away with a smaller n.
+n = length(A)+1;               % Can probably get away with a smaller n.
 [r, w] = legpts(n,[0,1]);    % Legpts
 
 % Do a weighted QR, and then unweight the QR: 

@@ -42,7 +42,7 @@ function varargout = plot( f, varargin )
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Make a user option?
-plot_full_grid = true;
+plot_full_grid = false;
 
 if ( ~isempty(varargin) )
     
@@ -179,5 +179,6 @@ end
 if ( nargout > 0 )
     varargout = { h };
 end
-
+axis square
+view(2)
 end

@@ -20,10 +20,9 @@ classdef diskfun < separableApprox
             constructorType = 1; % Default using rank BMC preserving rank 1 updates.
             
             % Remove this code when we are done testing the constructor.
-            %NOTE: 2x2 constructor in diskfun is not up to date.
             if numel(varargin) > 1
                 if ischar(varargin{2})
-                    if strcmpi(varargin{2},'2by2')
+                    if strcmpi(varargin{2},'old')
                         constructorType = 2;
                         varargin{2} = [];
                     end
@@ -35,7 +34,7 @@ classdef diskfun < separableApprox
                 case 1
                     f = constructor(f, varargin{:});
                 case 2
-                    f = constructor2by2(f, varargin{:});
+                    f = constructoroldII(f, varargin{:});
                 otherwise
                     f = constructor(f, varargin{:});
             end
@@ -65,7 +64,7 @@ classdef diskfun < separableApprox
     methods ( Access = public, Static = false )
      
         % The main bulk of the DISKFUN constructor:
-        g = constructor(g, op, coords, dom, varargin);
+        g = constructor(g, op, dom, varargin);
         
     end
     
@@ -95,21 +94,20 @@ classdef diskfun < separableApprox
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% CLASS PROPERTIES
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    properties ( Access = public )
-        % DOMAIN: default for the is [-pi,pi] x [0,1].
-        %  Doubled-up sphere will have a domain of
-        % [-pi,pi] x [-1,1].        
+  properties (Access = public)
+        % DOMAIN: default is [-pi,pi] x [0,pi] which corresponds to using 
+        % colatitude for the elevation angle (second input argument). 
+        % Doubled-up sphere will have a domain of [-pi,pi] x [-pi,pi].
         idxPlus
         idxMinus
-        pivotIndices
-        nonZeroPoles
+        nonZeroPoles = 0;
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Private constant properties
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Constant )
-        alpha = 50;  % Growth factor control.
+        %alpha = 50;  % Growth factor control.
     end
     
 end
