@@ -19,54 +19,54 @@ function pass = test_constructor( )
 tol = 2e3*chebfunpref().techPrefs.chebfuneps;
 
 f = @(x,y) x.^2 + y.^2 ; 
+g = diskfun( f, 'cart' );
 f = redefine_function_handle( f , 0);
-g = diskfun( f );
-pass(1) = ( SampleError( f, g ) < tol ); 
+pass(1) = ( SampleError( f,g ) < tol ); 
 
 f = @(x,y) exp(-cos(pi*(x+y))); 
+g = diskfun( f, 'cart' );
 f = redefine_function_handle( f,0 );
-g = diskfun( f );
 pass(2) = ( SampleError( f, g ) < tol ); 
 
 f = @(x,y) cos(pi*x)+sin(5*y)-1; 
+g = diskfun( f, 'cart' );
 f = redefine_function_handle( f,0 );
-g = diskfun( f );
 pass(3) = ( SampleError( f, g ) < tol ); 
 
 
 f = @(x,y) exp(y); 
+g = diskfun( f, 'cart' );
 f = redefine_function_handle( f,0 );
-g = diskfun( f );
 pass(4) = ( SampleError( f, g ) < tol ); 
 
 f = @(x,y) exp(x); 
+g = diskfun( f, 'cart' );
 f = redefine_function_handle( f,0 );
-g = diskfun( f );
 pass(5) = ( SampleError( f, g ) < tol ); 
 
 f = @(x,y) exp(-x)+exp(-y) ;
+g = diskfun( f, 'cart' );
 f = redefine_function_handle( f,0 );
-g = diskfun( f );
 pass(6) = ( SampleError( f, g ) < tol ); 
 
 f = @(x,y) cos(2*x.*y);
+g = diskfun( f, 'cart' );
 f = redefine_function_handle( f, 0 );
-g = diskfun( f );
 pass(7) = ( SampleError( f, g ) < tol ); 
 
 f = @(x,y) sin(x.*y);
+g = diskfun( f, 'cart' );
 f = redefine_function_handle( f,0 );
-g = diskfun( f );
 pass(8) = ( SampleError( f, g ) < tol ); 
 
 f = @(x,y) sin(11*pi*x)-sin(3*pi*x) + sin(y);
+g = diskfun( f, 'cart' );
 f = redefine_function_handle( f,0 );
-g = diskfun( f );
 pass(8) = ( SampleError( f, g ) < tol ); 
 
 f = @(x,y) exp(-((cos(11*y)+sin(x))).^2)+sin(11*(x+y)); %rank 98
+g = diskfun( f, 'cart' );
 f = redefine_function_handle( f,0 );
-g = diskfun( f );
 pass(9) = ( SampleError( f, g ) < tol ); 
 
 end
@@ -77,7 +77,7 @@ function pass = test_feval( )
 tol = 1e3*chebfunpref().techPrefs.chebfuneps;
 
 f = @(th,r) sin(r.^2.*cos(th).*sin(th)) ;
-f = redefine_function_handle( f,1 );
+%f = redefine_function_handle( f,1 );
 g = diskfun( f );
 R = rand; TH = rand; 
 pass(1) = abs( feval(g, TH, R) - f(TH, R) ) < tol; 
@@ -118,8 +118,8 @@ function pass = test_sum2( )
 tol = 1e3*chebfunpref().techPrefs.chebfuneps;
 
 f = @(x,y) 1 + x + y; 
-f = redefine_function_handle( f,0 );
-g = diskfun( f ); 
+%f = redefine_function_handle( f,0 );
+g = diskfun( f , 'cart'); 
 exact_int = pi;
 pass(1) = abs( sum2( g ) - exact_int ) < tol;
 
@@ -132,8 +132,8 @@ tol = 1e3*chebfunpref().techPrefs.chebfuneps;
 
 f1 = @(x,y) cos(pi*x.*y);  % Strictly even/pi-periodic
 f2 = @(x,y) sin(x+y);  % Strictly odd/anti-periodic
-g1 = diskfun(f1,0);
-g2 = diskfun(f2,0);
+g1 = diskfun(f1,'cart');
+g2 = diskfun(f2,'cart');
 gplus = g1 + g2;
 fplus = redefine_function_handle( @(x,y) f1(x,y) + f2(x,y), 0 );
 TH = rand; R = rand; 
@@ -146,7 +146,7 @@ g2 = diskfun(f2);
 gplus = g1 + g2;
 fplus = @(th,r) f1(th,r) + f2(th,r) ;
 TH = rand; R = rand; 
-pass(2) = abs( feval(gplus, R, TH, 1) - fplus(R, TH) ) < tol; 
+pass(2) = abs( feval(gplus, R, TH) - fplus(R, TH) ) < tol; 
 
 % Check that compression is working: 
 f = diskfun(@(th,r) cos(th).^2 + sin(th).^2); 
@@ -159,7 +159,7 @@ pass(3) = norm( g - 11*f ) < vscale(g)*tol;
 pass(4) = ( rank( g ) - r ) == 0; 
 
 % Check what happens with cancellation errors: 
-f = diskfun(@(x,y) sin(x.*y), 0); 
+f = diskfun(@(x,y) sin(x.*y), 'cart'); 
 g = 2*f; 
 pass(5) = ( norm( g - f - f ) < tol ); 
 
@@ -170,7 +170,7 @@ function pass = test_times( )
 
 tol = 1e3*chebfunpref().techPrefs.chebfuneps;
 
-f = diskfun(@(x,y) sin(x.*y), 0); 
+f = diskfun(@(x,y) sin(x.*y), 'cart'); 
 pass(1) = norm( f.*f - f.^2 ) < tol; 
 
 end 
@@ -180,8 +180,8 @@ function pass = test_power( )
 
 tol = 1e3*chebfunpref().techPrefs.chebfuneps;
 
-f = diskfun(@(x,y) x, 0 );
-g = diskfun(@(x,y) x.^2, 0 );
+f = diskfun(@(x,y) x, 'cart' );
+g = diskfun(@(x,y) x.^2, 'cart' );
 pass(1) = norm( f.^2 - g ) < tol; 
 
 end 
@@ -191,7 +191,7 @@ function pass = test_abs( )
 
 tol = 1e3*chebfunpref().techPrefs.chebfuneps;
 
-f = diskfun(@(x,y) -(x.^2 + y.^2), 0 );
+f = diskfun(@(x,y) -(x.^2 + y.^2), 'cart');
 pass(1) = norm( abs(f) + f ) < tol; 
 
 end 
@@ -201,9 +201,9 @@ function pass = test_diff( )
 tol = 1e3*chebfunpref().techPrefs.chebfuneps;
 
 % Simple tests:
-f = diskfun(@(th, r) r.^3.*(sin(th)+cos(th)));   %avoids singularity
+f = diskfun(@(th, r) r.^3.*(sin(th)+cos(th)));  
 fx = diff(f,1);
-exact = @(th, r) r.^2.*(2*cos(th).*sin(th)+3*cos(th).^2+sin(th).^2);  
+exact = @(th, r) r.^2.*(2*(cos(th)).^2 + 2*sin(th).*cos(th)+1);  
 pass(1) = SampleError( exact, fx ) < tol;
 fy = diff(f,2);
 exact = @(th, r) r.^2.*(3*sin(th).^2+cos(th).^2+2*sin(th).*cos(th));  
@@ -223,8 +223,8 @@ pass(4) = SampleError( exact, fy ) < tol;
 % Gaussian (m1=m2=0, s1=s2=1/2, corr=0)
 
 g = @(x, y) 4/pi*exp(-4*(x.^2+y.^2));
-g=redefine_function_handle(g, 0);
-f = diskfun(g);
+f = diskfun(g, 'cart');
+%g=redefine_function_handle(g, 0);
 fx = diff(f, 1);
 exact = @(x,y) -32/pi*x.*exp(-4*(x.^2+y.^2));
 exact = redefine_function_handle(exact, 0); 
@@ -245,10 +245,10 @@ m = 6; n = m;
 [T2, R2] = meshgrid(x, y);
 F = h(T2, R2);
 % hn = pi/length(g.cols);  % Have to adjust for the shift in y points. Ugly!
-% approx = feval(g.cols,(y-hn)/pi-.5) * g.blockDiag * feval(g.rows,x/pi)';
-% sample_error = norm( F - approx , inf );
-% [C,D,R] = cdr(g);
-% approx = feval(g.cols,y/pi) * g.blockDiag * feval(g.rows,x/pi)';
+ %approx = feval(g.cols,(y-hn)/pi-.5) * g.blockDiag * feval(g.rows,x/pi)';
+ %sample_error = norm( F - approx , inf );
+ %[C,D,R] = cdr(g);
+ %approx = feval(g.cols,y/pi) * g.blockDiag * feval(g.rows,x/pi)';
 approx = fevalm(g,x,y);
 sample_error = norm( F(:) - approx(:) , inf );
 end
