@@ -15,7 +15,7 @@ if ( isa(f, 'chebfun3') )     % CHEBFUN3 .* ???
         bool = domainCheck(f, g);
         if ( bool )
             h = chebfun3(@(x, y, z) feval(f, x, y, z) .* feval(g, x, y, z), ...
-                f.domain, 'fiberDim', 3);
+                f.domain);
         else
            error('CHEBFUN:CHEBFUN3:times:domain', 'Inconsistent domains');
        end

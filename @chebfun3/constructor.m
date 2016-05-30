@@ -58,7 +58,7 @@ end
 %% Dimension clustering of Bebendorf & Kuske.
 % An example where this is important. compare3(@(x,y,z) exp(-5*(x+2*y).^2-30*y.^4-7*sin(2*z).^6));
 if ( isempty(fiberDim) )
-    fiberDim = dimCluster(op, dom, vectorize);
+    fiberDim = dimCluster(op, dom, vectorize, pref);
 end
 if ( fiberDim == 1 )
     op = @(y,z,x) op(x,y,z);
@@ -907,99 +907,70 @@ end
 end
 
 %%
-function fiberDim = dimCluster(f, d, vectorize)
-% Dimension clustering from
-% M. Bebendorf, C. Kuske, Separation of variables for function generated 
-% high-order tensors, Journal of Scientific Computing 61 (2014) 145-165.
-%
-% The cost is to computing 7 triple integrals. To do this fast, we use 
-% Halton points.
+function fiberDim = dimCluster(op, dom, vectorize, pref)
+% This is an alternative attempt for dimension clustering. Compare all the
+% three possibilites on a small grid and find which rank might be the
+% smallest. We are trying to avoid using lots of points that we need in 
+% the technique by Bebendorf and Kuske.
+grid = 10;
+[xx, yy, zz] = points3D(grid, grid, grid, dom, pref);
+vals = evaluate(op, xx, yy, zz, vectorize);
 
-% Generate Halton points to be used.
-numpts = 1e5;
-[xx, yy, zz] = halton(numpts, d);
-
-% Compute the expected values.
-mu_denom = @(x,y,z) (f(x,y,z)).^2;
-QM_approx_denom = inegral_QM2(evaluate(mu_denom, xx, yy, zz, vectorize), ...
-    d, numpts);
-
-mu_x_numer = @(x,y,z) x .* (f(x,y,z).^2);
-mu_x = inegral_QM2(evaluate(mu_x_numer, xx, yy, zz, vectorize), d, numpts)...
-    / QM_approx_denom;
-
-mu_y_numer = @(x,y,z) y .* (f(x,y,z).^2);
-mu_y = inegral_QM2(evaluate(mu_y_numer,xx,yy,zz,vectorize),d,numpts) ...
-    / QM_approx_denom;
-
-mu_z_numer = @(x,y,z) z .* (f(x,y,z).^2);
-mu_z = inegral_QM2(evaluate(mu_z_numer, xx, yy, zz, vectorize), d, ...
-    numpts) / QM_approx_denom;
-
-% Compute entries of the covariance matrix. The diagonal is not needed.
-covMat = zeros(3, 3);
-
-% Compute the X-Y entry of the covariance matrix.
-f_xy = @(x,y,z) (x-mu_x) .* (y-mu_y) .* (f(x,y,z).^2);
-covMat(1, 2) = inegral_QM2(evaluate(f_xy, xx, yy, zz, vectorize), d, numpts);
-covMat(2, 1) = covMat(1, 2);
-
-% Compute the X-Z entry of the covariance matrix.
-f_xz = @(x,y,z) (x-mu_x) .* (z-mu_z) .* (f(x,y,z).^2);
-covMat(1, 3) = inegral_QM2(evaluate(f_xz,xx,yy,zz,vectorize), d, numpts);
-covMat(3, 1) = covMat(1, 3);
-
-% Compute the Y-Z entry of the covariance matrix.
-f_yz = @(x,y,z) (y-mu_y) .* (z-mu_z) .* (f(x,y,z).^2);
-covMat(2, 3) = inegral_QM2(evaluate(f_yz, xx, yy, zz, vectorize), d, numpts);
-covMat(3, 2) = covMat(2, 3);
-covMat = abs(covMat); % Negative values of covariance are as good as positive 
-% values in our case. They just mean the same amount of dependance between 
-% 2 variables but in the opposite (linear) direction. What matters for us 
-% is just the magnitude of the correlation. We then find the minimum sum of
-% columns of Cov to detect the most separable variable. Graph theortical
-% interpretation described in  Bebendorf & Kuske (2014).
-
-temp = sum(covMat,1); % sum of entries in columns.
-[ignore, fiberDim] = min(temp);
+% Method 1: Using SVD and 1D Chebfun:
+F1 = chebfun3.unfold(vals, 1);
+F2 = chebfun3.unfold(vals, 2);
+F3 = chebfun3.unfold(vals, 3);
+rX = rank(F1.'); % Transpose to have longer columns
+rY = rank(F2.'); % and therefore being faster
+rZ = rank(F3.'); % in MATLAB.
+r = [rX, rY, rZ];
+[ignored, ind] = find(r==min(r));
+if ( numel(ind) == 1 )
+    fiberDim = ind;
+    return
+end
+% More than one minimum ranks exist:
+tol = 1e-3;
+lenX = length(simplify(chebfun(F1(:, 1)), tol));
+lenY = length(simplify(chebfun(F2(:, 1)), tol));
+lenZ = length(simplify(chebfun(F3(:, 1)), tol));
+len = [lenX, lenY, lenZ];
+if ( numel(ind) == 2 )
+    [ignored, index] = max([len(ind(1)), len(ind(2))]);
+    fiberDim = ind(index);
+else % numel(ind) = 3
+    [ignored, fiberDim] = max(len);
 end
 
 %%
-function I = inegral_QM2(vals, dom, numpts)
-% Quasi Monte Carlo cubature over numpts number of Halton points in the box
-% dom. vals are values of the 3D integrand.
-factor = (dom(2)-dom(1)) * (dom(4)-dom(3)) * (dom(6)-dom(5)); 
-% factor = 1 for dom = [0,1]^3.
-I = factor*sum(vals)/numpts;
-end
-
-%%
-function [x, y, z] = halton(numpts, domain)
-% Halton sequences are sequences used to generate points in space, which 
-% are deterministic and of low discrepancy. They appear to be random for 
-% many purposes.
-% 
-% From Chebfun2/sampleTest: Adapted from Grady Wright's code 22nd May 2014. 
-% generate Halton sequences on [0,1]^3:
-ndims = 3; % 3D
-p = [2 3 5 7 11 13]; % Prime numbers, i.e., bases to be used in 1D Halton 
-% sequence generation.
-H = zeros(numpts, ndims);
-for k = 1:ndims
-    N = p(k); v1 = 0; v2 = 0:N-1; lv1 = 1;
-    while ( lv1 <= numpts )
-        v2 = v2(1:max(2,min(N,ceil((numpts+1)/lv1))))/N;
-        [x1,x2] = meshgrid(v2,v1);
-        v1 = x1+x2; 
-        v1 = v1(:); 
-        lv1 = length(v1);
-    end
-    H(:,k) = v1(2:numpts+1);
-end
-% Scale [0,1]^3 to the domain of the chebfun3:
-x = (domain(2) - domain(1))*H(:,1) + domain(1); 
-y = (domain(4) - domain(3))*H(:,2) + domain(3); 
-z = (domain(6) - domain(5))*H(:,3) + domain(5); 
+% % Method 2: Using Chebfun2:
+% F1 = chebfun2(chebfun3.unfold(vals, 1), [dom(1:2) min(dom(3), dom(5)) max(dom(4), dom(6))]);
+% F2 = chebfun2(chebfun3.unfold(vals, 2), [dom(3:4) min(dom(1), dom(5)) max(dom(2), dom(6))]);
+% F3 = chebfun2(chebfun3.unfold(vals, 3), [dom(5:6) min(dom(1), dom(3)) max(dom(2), dom(4))]);
+% rX = numel(F1.pivotValues);
+% rY = numel(F2.pivotValues);
+% rZ = numel(F3.pivotValues);
+% r = [rX, rY, rZ];
+% [ignored, ind] = find(r==min(r));
+% if ( numel(ind) == 1 )
+%     fiberDim = ind;
+%     return
+% end
+% % More than one minimum ranks exist. So, find the variable that needs
+% % largest number of coefficients.
+% F1 = simplify(F1, 1e-3);
+% F2 = simplify(F2, 1e-3);
+% F3 = simplify(F3, 1e-3);
+% [ignored, lenX] = length(F1); % (simplified) degree needed in x
+% [ignored, lenY] = length(F2); % (simplified) degree needed in y
+% [ignored, lenZ] = length(F3); % (simplified) degree needed in z
+% len = [lenX, lenY, lenZ];
+% if ( numel(ind) == 2 )
+%     [ignored, index] = max([len(ind(1)), len(ind(2))]);
+%     fiberDim = ind(index);
+% else % numel(ind) = 3
+%     [ignored, fiberDim] = max(len);
+% end
 end
 
 %%
@@ -1135,7 +1106,7 @@ warning('CHEBFUN:CHEBFUN3:constructor:vectorize',...
     'call to avoid this warning message.']);
 end
 %%
-function op = str2op( op )
+function op = str2op(op)
 % OP = STR2OP(OP), finds independent variables in a string and returns an op
 % handle than can be evaluated.
 

@@ -23,7 +23,7 @@ if ( isa(f, 'chebfun3') && isa(g, 'chebfun3') )    % CHEBFUN3 ./ CHEBFUN3
        error('CHEBFUN:CHEBFUN3:rdivide:domains', 'Domains inconsistent.') 
     end
     h = chebfun3(@(x,y,z) feval(f, x, y, z) ./ feval(g, x, y, z), ...
-        f.domain, 'fiberDim', 3);
+        f.domain);
     
 elseif ( isa(f, 'chebfun3') && isa(g, 'double') )  % CHEBFUN3 ./ double 
     if ( g == 0 )
@@ -35,8 +35,7 @@ elseif ( isa(f, 'chebfun3') && isa(g, 'double') )  % CHEBFUN3 ./ double
 elseif ( isa(f, 'double') && isa(g, 'chebfun3') )   
        [bool, wzero] = singleSignTest(g);
        if ( ( bool == 1 ) && ( wzero == 0 ) )
-           h = chebfun3(@(x,y,z) f ./ feval(g, x, y, z), g.domain, ...
-               'fiberDim', 3);
+           h = chebfun3(@(x,y,z) f ./ feval(g, x, y, z), g.domain);
        else
           error('CHEBFUN:CHEBFUN3:rdivide:zero', ...
               'Attempting to invert a CHEBFUN3 with a root.'); 

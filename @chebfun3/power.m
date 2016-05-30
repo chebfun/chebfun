@@ -9,7 +9,7 @@ if ( isempty(f) || isempty(n) )    % Check for empty objects.
     
 elseif ( isa (f, 'double') )           % double.^CHEBFUN3    
     op = @(x,y,z) f .^ (feval(n, x, y, z));
-    f = chebfun3(op, n.domain, 'fiberDim', 3);
+    f = chebfun3(op, n.domain);
     
 elseif ( isa(n, 'double') )          % CHEBFUN3.^double
    if ( abs(round(n) - n) > eps )
@@ -21,14 +21,14 @@ elseif ( isa(n, 'double') )          % CHEBFUN3.^double
        end
    end
     op = @(x,y,z) feval(f, x, y, z) .^ n;
-    f = chebfun3(op, f.domain, 'fiberDim', 3);
+    f = chebfun3(op, f.domain);
     
 else                                   % CHEBFUN3.^CHEBFUN3
     if ( ~domainCheck(f, n) ) % check they're on the same domain.
         error('CHEBFUN:CHEBFUN3:power:domain','Domains must be the same');
     end
     op = @(x,y,z) feval(f, x, y, z) .^ (feval(n, x, y, z));
-    f = chebfun3(op, f.domain, 'fiberDim', 3);  % Resample and call constructor.
+    f = chebfun3(op, f.domain);  % Resample and call constructor.
 
 end
 

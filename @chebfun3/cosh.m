@@ -13,6 +13,6 @@ if ( isempty(f) )
 end 
 
 op = @(x,y,z) cosh(feval(f, x, y, z)) ;  % Resample. 
-f = chebfun3(op, f.domain, 'fiberDim', 3);          % Call constructor. 
+f = chebfun3(op, f.domain);          % Call constructor. 
 
 end

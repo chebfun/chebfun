@@ -15,7 +15,7 @@ vscales = [vscale(diff1) + vscale(diff2), vscale(diff3)];
 % Send two vscales to constructor
 
 L = chebfun3(@(x,y,z) feval(diff1,x, y, z) + feval(diff2,x, y, z) + ...
-    feval(diff3,x, y, z) , f.domain, 'vscaleBnd', vscales, 'fiberDim', 3);
+    feval(diff3,x, y, z) , f.domain, 'vscaleBnd', vscales);
 % Instead of calling the compressed_plus, this runs the constructor for addition. 
 
 % L = diff1 + diff2 + diff3; % Using compression_plus
