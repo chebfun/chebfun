@@ -39,14 +39,26 @@ else
     dom = [-pi pi 0 pi];
 end
 
-% Construct a matrix of values at the latitude-longitude grid
-[ll,tt] = meshgrid(trigpts(max(2*abs(m)+2,4),dom(1:2)),linspace(dom(3),dom(4),2*l+2));
-
-Y = spherefun(mySphHarm(l,m,ll,tt,coord),dom);
-
-Y = simplify(Y);
-
+% We could construct a spherical harmonic function by calling the 
+% Spherefun constructor using 
 % Y = spherefun(@(lam, th) mySphHarm(l, m, lam, th, coord), dom);
+% This would adaptively sample the function and determine "optimal" Fourier
+% degrees to represent the spherical harmonic.  However, based on the 
+% properties of the spherical harmonics, we already know ahead of time the
+% correct number of samples to use.  Each function in longtidue (lambda) is
+% a Fourier mode of degree m.  So, we can resolve this with 2|m|+2 samples.
+% Each function in latitude (theta) is a associated Legendre function of
+% theta. Specifically, it is a polynomial of cos(theta) or sin(theta)
+% if coord=0 or coord=1, respectively. The highest degree this
+% polynomial can be is l when when m=0.  So, we can resolve this using 2l+2
+% samples.  
+
+% Construct a matrix of values at the latitude-longitude grid
+[ll,tt] = meshgrid(trigpts( max( 2*abs(m)+2, 4 ), dom(1:2) ),...
+                   linspace( dom(3), dom(4), 2*l+2 ) );
+Y = spherefun( mySphHarm(l,m,ll,tt,coord), dom );
+% Simplify to get the most compressed representation.
+Y = simplify( Y );
 
 end
 
