@@ -1374,7 +1374,6 @@ end
 if ( iter > width/factor )
     ifail3D = 1;                               % We did fail in 3D ACA.
 end
-%close all; semilogy(1:numel(pivotValues)+1, abs([pivotValues, infNorm]));
 
 end
 %%
