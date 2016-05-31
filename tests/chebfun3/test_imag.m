@@ -1,4 +1,5 @@
 function pass = test_imag(pref)
+% [reviewed by LNT 31.05.16]
 % Test IMAG.
 if ( nargin == 0 ) 
     pref = chebfunpref; 
@@ -14,7 +15,7 @@ x = linspace(-1, 1, 3);
 h = f + 1i*g;
 fVals = feval(h, xx, yy, zz);
 gVals = feval(g, xx, yy, zz);
-pass(1) = norm(imag(fVals(:)) - gVals(:) ) < 10*tol;
+pass(1) = norm(imag(fVals(:)) - gVals(:) ) < tol;
 
 pass(2) = norm(imag(h) - g) < tol;
 

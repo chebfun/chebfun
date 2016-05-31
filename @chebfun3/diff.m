@@ -18,7 +18,7 @@ function F = diff(F, k, dim)
 %   DIM1 and K2-th derivative in dimension DIM2. DIM1 and DIM2 can be 1, 2 
 %   or 3 in any order.
 %    
-% See also CHEBFUN3/GRAD, CHEBFUN3/LAP and CHEBFUN3/BIHARM.
+% See also CHEBFUN3/GRAD, CHEBFUN3/LAP, and CHEBFUN3/BIHARM.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

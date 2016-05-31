@@ -1,8 +1,8 @@
 function f = constructor(f, op, varargin)
 %CONSTRUCTOR   CHEBFUN3 constructor.
 %   Given a function OP of three variables, this code represents it as a 
-%   CHEBFUN3 objects. A CHEBFUN3 object is a low rank representation and 
-%   expresses a function as a trilinear product of a discrete core tensor 
+%   CHEBFUN3 object. A CHEBFUN3 object is a low-rank representation
+%   expressing a function as a trilinear product of a discrete core tensor 
 %   and three quasimatrices consisting of univariate functions.
 %
 %   The algorithm for constructing a CHEBFUN3 has three phases:

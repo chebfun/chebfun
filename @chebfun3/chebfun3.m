@@ -23,13 +23,13 @@ classdef chebfun3
 %   CHEBFUN3(F, [m n p]) returns a representation of a trivariate 
 %   polynomial of length (m, n, p), i.e., with degree (m-1) in x, degree 
 %   (n-1) in y and degree (p-1) in z. The polynomial is compressed in low 
-%   multilinear rank form and the multilinear rank (r1, r2, r3) is still 
+%   trilinear rank form and the trilinear rank (rx, ry, rz) is still 
 %   determined adaptively.
 %
 %   CHEBFUN3(F, 'rank', [rx ry rz]) returns a CHEBFUN3 that is an 
 %   approximation to F and has the trilinear rank (rx, ry, rz).
 %
-%   CHEBFUN3(F, 'trig'), or CHEBFUN3(F, 'periodic') construct a trig-type 
+%   CHEBFUN3(F, 'trig') or CHEBFUN3(F, 'periodic') constructs a trig-type 
 %   CHEBFUN3 object if the input function handle F is triply periodic on 
 %   [-1, 1] x [-1, 1] x [-1, 1]. In this case, factor quasimatrices of the 
 %   low rank format will be represented by Fourier instead of Chebyshev
@@ -42,8 +42,8 @@ classdef chebfun3
 %   CHEBFUN3(F, 'equi') can be used if F is a discrete tensor of values at 
 %   equispaced points in 3D.
 % 
-%   CHEBFUN3(F, 'coeffs') returns a CHEBFUN3 in which coefficients of the
-%   Chebyshev expansion are entries of the discrete tensor F.
+%   CHEBFUN3(F, 'coeffs') returns a CHEBFUN3 in which the coefficients of
+%   the Chebyshev expansion are the entries of the discrete tensor F.
 %
 % See also CHEBFUN3V and CHEBFUN3T.
 

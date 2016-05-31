@@ -30,7 +30,7 @@ classdef chebfun2 < separableApprox
 %
 % The Chebfun2 software system is based on: 
 %
-% % A. Townsend and L. N. Trefethen, An extension of Chebfun to two dimensions,
+% A. Townsend and L. N. Trefethen, An extension of Chebfun to two dimensions,
 % SIAM J. Sci. Comput., 35 (2013), C495-C518.
 %
 % See also CHEBFUN, CHEBFUN2V.
