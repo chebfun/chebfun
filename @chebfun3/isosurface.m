@@ -250,12 +250,11 @@ handles.output = handles.isosurfaceSlider;
 
 end
 
-
 function h = instantiateIsosurface3()
 
 % Load up the GUI from the *.fig file.
 installDir = chebfunroot();
-h = openfig( [installDir '/@chebfun3/isosurface.fig'], 'invisible');
+h = openFigInCurrentFigure([installDir '/@chebfun3/isosurface.fig']);
 
 % Do any required initialization of the handle graphics objects.
 G = get(h, 'Children');
@@ -278,18 +277,9 @@ for (i = 1:1:length(G))
     end
 end
 
-% Add a toolbar to the GUI.
-set(h,'toolbar','figure');
-
 % Store handles to GUI objects so that the callbacks can access them. 
 guidata(h, guihandles(h));
 
-% Make the GUI window "visible" to the rest of the handle graphics
-% system so that things like gcf(), gca(), etc. work properly.
-set(h, 'HandleVisibility', 'on');
-
-% Draw the GUI.
-set(h, 'Visible', 'on');
 end
 
 function isosurfaceSlider_Callback(hObject, eventdata, handles)

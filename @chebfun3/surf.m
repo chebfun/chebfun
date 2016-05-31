@@ -130,7 +130,7 @@ function h = instantiateSurf3GUI()
 
 % Load up the GUI from the *.fig file.
 installDir = chebfunroot();
-h = openfig( [installDir '/@chebfun3/surf.fig'], 'invisible');
+h = openFigInCurrentFigure([installDir '/@chebfun3/surf.fig']);
 
 % Do any required initialization of the handle graphics objects.
 panels = get(h, 'Children'); % 3 panels exist in the surf3.fig.
@@ -180,18 +180,9 @@ for i = 1:1:length(G3)
     end    
 end
 
-% Add a toolbar to the GUI.
-set(h,'toolbar','figure');
-
 % Store handles to GUI objects so that the callbacks can access them. 
 guidata(h, guihandles(h));
-    
-% Make the GUI window "visible" to the rest of the handle graphics
-% system so that things like gcf(), gca(), etc. work properly.
-set(h, 'HandleVisibility', 'on');
 
-% Draw the GUI.
-set(h, 'Visible', 'on');
 end
 
 function xSlider_Callback(hObject, eventdata, handles)

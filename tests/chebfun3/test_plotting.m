@@ -2,7 +2,8 @@ function pass = test_plotting()
 % Check that the very basic plotting commands do not crash.
 
 f = chebfun3(@(x,y,z) exp(cos(10*x.*y.*z)));
-hold off
+
+hfig = figure('Visible', 'off');
 
 % Non-GUI plots first
 plot(f),                     j = ishold;
@@ -18,7 +19,7 @@ scan(f, 2),                  j = j + ishold;
 scan(f, 2, 'hold'),          j = j + ishold;
 scan(f, 3),                  j = j + ishold;
 scan(f, 3, 'hold'),          j = j + ishold;
-close all
+
 if ( j == 0 )
     pass(1) = 1;
 else
@@ -29,7 +30,7 @@ end
 isosurface(f),               j = j + ishold;
 slice(f),                    j = j + ishold;
 surf(f),                     j = j + ishold;
-close all
+
 if ( j == 0 )
     pass(2) = 1;
 else
@@ -42,7 +43,7 @@ plot(f)
 surf(f)
 slice(f)
 isosurface(f)
-close all
+
 pass(3) = 1;
 
 hh = @(x,y,z) .75*exp(-((9*x-2).^2 + (9*y-2).^2 + (9*z-2).^2)/9) + ...
@@ -51,7 +52,9 @@ hh = @(x,y,z) .75*exp(-((9*x-2).^2 + (9*y-2).^2 + (9*z-2).^2)/9) + ...
     .2*exp(-(9*x-4).^2 - (9*y-7).^2 - (9*z-7).^2);
 h = chebfun3(hh);
 plot(h)
-close all
+
 pass(4) = 1;
+
+close(hfig);
 
 end
