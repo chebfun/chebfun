@@ -51,6 +51,10 @@ if ( isempty(numpts) )
     numpts = 51;
 end
 
+% Call newplot() manually to prepare the figure/axes for plotting because
+% built-in isosurface() doesn't.
+newplot();
+
 if ( nargin == 1 || (nargin == 3 && strcmp(varargin{1}, 'npts')) )
     % User has specified the size of grid to sample for the isosurface plot.
     runIsosurface3GUI(f, numpts);
