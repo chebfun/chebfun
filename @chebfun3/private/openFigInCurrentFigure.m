@@ -13,14 +13,9 @@ function h = openFigInCurrentFigure(figfile)
 % current figure) instead of appearing in a new figure every time, just
 % like ordinary MATLAB plots.
 
-% Get a handle to the current figure and make it invisible while we set
-% things up.
-hgcf = gcf();
-visibilityState = get(hgcf, 'Visible');
-set(hgcf, 'Visible', 'off');
-
 % Get rid of everything in the current figure but the menu and the
 % toolbar if they exist.
+hgcf = gcf();
 for ( c = allchild(hgcf).' )
     switch ( class(c) )
         case 'matlab.ui.container.Menu'
@@ -41,8 +36,5 @@ delete(h);
 
 % Return a handle to the current figure.
 h = hgcf;
-
-% Restore the visibility state.
-set(h, 'Visible', visibilityState);
 
 end
