@@ -55,7 +55,7 @@ elseif ( isa(op, 'double') )   % CHEBFUN3( DOUBLE )
     return
 end
 
-%% Dimension clustering of Bebendorf & Kuske.
+%% Dimension clustering
 % An example where this is important. compare3(@(x,y,z) exp(-5*(x+2*y).^2-30*y.^4-7*sin(2*z).^6));
 if ( isempty(fiberDim) )
     fiberDim = dimCluster(op, dom, vectorize, pref);
@@ -850,6 +850,11 @@ if ( flag ==1 )
     end
 else % i.e., if (flag == 0)
     vals = feval(oper, xx, yy, zz);  % Tensor or vector of values at cheb3 pts.
+    if ( size(vals) ~= size(xx) )
+        % Necessary especially when a CHEBFUN2 is made out of a CHEBFUN3,
+        % e.g. in CHEBFUN3/STD.
+        vals = vals.';
+    end
 end
 
 end
@@ -908,10 +913,15 @@ end
 
 %%
 function fiberDim = dimCluster(op, dom, vectorize, pref)
-% This is an alternative attempt for dimension clustering. Compare all the
-% three possibilites on a small grid and find which rank might be the
-% smallest. We are trying to avoid using lots of points that we need in 
-% the technique by Bebendorf and Kuske.
+% Choose the right dimension for clustering in Phase 1. The 3 steps are as
+% follows: 
+% 1) Sample OP at a small tensor.
+% 2) Compare all the three modal ranks and find which rank might be the
+%    smallest. We are trying to avoid using lots of points that we need in 
+%    the technique by Bebendorf and Kuske.
+% 3) If there are more than one minimal rank, find the variable that needs
+%    more coefficients to resolve.
+
 grid = 10;
 [xx, yy, zz] = points3D(grid, grid, grid, dom, pref);
 vals = evaluate(op, xx, yy, zz, vectorize);

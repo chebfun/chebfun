@@ -235,12 +235,15 @@ methods (Access = public)
     % Average or mean value of a CHEBFUN3.
     out = mean3(f);
     
-    % Standard deviation of a CHEBFUN3.
-    out = std3(f);
-
     % Standard deviation of a CHEBFUN3 along one variable.
     out = std(f, varargin);
 
+    % Standard deviation of a CHEBFUN3 along two variables.
+    out = std2(f, varargin);
+
+    % Standard deviation of a CHEBFUN3.
+    out = std3(f);    
+    
     % Squeeze a CHEBFUN3 into a CHEBFUN2 or a CHEBFUN.
     out = squeeze(f);
 

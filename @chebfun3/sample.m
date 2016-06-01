@@ -20,15 +20,15 @@ if ( isempty(f) )
     return
 end
 
-if nargin == 4
+if ( nargin == 4 )
      m = varargin{1};
      n = varargin{2};
      p = varargin{3};
 else
     [m,n,p] = length(f);
-    m = max(m, 50);
-    n = max(n, 50);
-    p = max(p, 50);
+    m = max(m, 51);
+    n = max(n, 51);
+    p = max(p, 51);
 end
 
 % Use Slice-Tucker decomposition so we can keep it in low rank form:

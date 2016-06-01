@@ -15,10 +15,7 @@ h3 = min2(f, [], [1 2]);
 h4 = min2(f, [], [2 1]);
 
 h5 = min2(f, [], [1 3]);
-h6 = min2(f, [], [3 1]);
-
-h7 = min2(f, [], [2 3]);
-h8 = min2(f, [], [3 2]);
+h6 = min2(f, [], [2 3]);
 
 pass(1) = norm(h1 - g) < tol;
 pass(2) = norm(h2 - g) < tol;
@@ -26,7 +23,5 @@ pass(3) = norm(h3 - g) < tol;
 pass(4) = norm(h4 - g) < tol;
 pass(5) = norm(h5 - g) < tol;
 pass(6) = norm(h6 - g) < tol;
-pass(7) = norm(h7 - g) < tol;
-pass(8) = norm(h8 - g) < tol;
 
 end
