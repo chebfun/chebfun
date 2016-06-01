@@ -33,9 +33,6 @@ r = cell( size(vals,2), 1 );
 % Go through each component and make it an array-valued chebfun: 
 for k = 1:size(vals,2)
     comp = feval(rts(:,k), x); 
-    %AX = cos(real( comp )).*sin(imag( comp ));
-    %AY = sin(real( comp )).*sin(imag( comp ));
-    %AZ = cos(imag( comp ));
     AX = imag(comp).*cos(real(comp)); 
     AY = imag(comp).*sin(real(comp));
     r{k} = chebfun( [AX, AY ] ); 

@@ -77,8 +77,8 @@ ctechs = C.funs{1}.onefun;
 rtechs = R.funs{1}.onefun;
 
 % alias to get the extra zeros in place
-%ctechs.coeffs = ctechs.alias(ctechs.coeffs, n); 
-ctechs.coeffs = [ctechs.coeffs; zeros(parity, 1)];
+ctechs.coeffs = ctechs.alias(ctechs.coeffs, n); 
+%ctechs.coeffs = [ctechs.coeffs; zeros(parity, 1)];
 rtechs.coeffs = rtechs.alias(rtechs.coeffs, m); 
 
 % Compute the derivatives
