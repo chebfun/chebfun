@@ -223,11 +223,15 @@ xslice = get(hObject, 'Value');         %returns position of slider
 yslice = get(handles.ySlider, 'Value'); %returns position of slider
 zslice = get(handles.zSlider, 'Value'); %returns position of slider
 
+% The next slice command clears the title, if there was any. So, get that
+% and put it again afterwards.
+tit = get(gca(), 'Title');
+titText = tit.String;
+
 if ( isreal(handles.v) )
     handles.slice = slice(handles.xx, handles.yy, handles.zz, handles.v, ...
         xslice, yslice, zslice);
     shading interp
-    %colormap jet
     colorbar, 
 else
     handles.slice = slice(handles.xx, handles.yy, handles.zz, angle(-handles.v), ...
@@ -237,6 +241,7 @@ else
     colormap('hsv')
     axis('equal')
 end
+title(titText)
 handles.output = hObject;
 
 set(hObject.Parent, 'NextPlot', nextPlot);
@@ -256,6 +261,11 @@ yslice = get(hObject, 'Value');         %returns position of slider
 xslice = get(handles.xSlider, 'Value'); %returns position of slider
 zslice = get(handles.zSlider, 'Value'); %returns position of slider
 
+% The next slice command clears the title, if there was any. So, get that
+% and put it again afterwards.
+tit = get(gca(), 'Title');
+titText = tit.String;
+
 if ( isreal(handles.v) )
     handles.slice = slice(handles.xx, handles.yy, handles.zz, handles.v, ...
         xslice, yslice, zslice);
@@ -269,7 +279,7 @@ else
     colormap('hsv')
     axis('equal')    
 end
-
+title(titText)
 handles.output = hObject;
 
 set(hObject.Parent, 'NextPlot', nextPlot);
@@ -289,6 +299,11 @@ zslice = get(hObject, 'Value');         %returns position of slider
 xslice = get(handles.xSlider, 'Value'); %returns position of slider
 yslice = get(handles.ySlider, 'Value'); %returns position of slider
 
+% The next slice command clears the title, if there was any. So, get that
+% and put it again afterwards.
+tit = get(gca(), 'Title');
+titText = tit.String;
+
 if ( isreal(handles.v) )
     handles.slice = slice(handles.xx, handles.yy, handles.zz, handles.v, ...
         xslice, yslice, zslice);
@@ -302,7 +317,7 @@ else
     colormap('hsv')
     axis('equal')    
 end
-
+title(titText)
 handles.output = hObject;
 
 set(hObject.Parent, 'NextPlot', nextPlot);
