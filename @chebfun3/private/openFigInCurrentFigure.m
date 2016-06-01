@@ -13,19 +13,14 @@ function h = openFigInCurrentFigure(figfile)
 % current figure) instead of appearing in a new figure every time, just
 % like ordinary MATLAB plots.
 
-% Get rid of everything in the current figure but the menu and the
-% toolbar if they exist.
+% Get rid of everything in the current figure.
 hgcf = gcf();
-for ( c = allchild(hgcf).' )
-    switch ( class(c) )
-        case 'matlab.ui.container.Menu'
-        case 'matlab.ui.container.Toolbar'
-        otherwise
-            delete(c);
-    end
-end
+clf();
 
-% Open the *.fig file, again in an invisible window.
+% Reset the 'NextPlot' property.  (Should we call newplot() here instead?)
+set(hgcf, 'NextPlot', 'add');
+
+% Open the *.fig file in a hidden window.
 h = openfig(figfile, 'invisible');
 
 % Copy the graphics elements from the *.fig figure into the current figure.

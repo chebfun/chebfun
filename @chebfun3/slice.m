@@ -164,6 +164,13 @@ end
 % Update handles structure
 guidata(h, handles);
 handles.output = handles.xSlider;
+
+% Force the figure to clear when another plot is drawn on it so that GUI
+% widgets don't linger.  (NB:  This property needs to be reset to 'add' every
+% time we change the plot using a slider; otherwise, the slider movement will
+% itself clear the figure, which is not what we want.)
+set(h, 'NextPlot', 'replacechildren');
+
 end
 
 function h = instantiateSlice3GUI()
@@ -209,6 +216,9 @@ function xSlider_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+nextPlot = get(hObject.Parent, 'NextPlot');
+set(hObject.Parent, 'NextPlot', 'add');
+
 xslice = get(hObject, 'Value');         %returns position of slider
 yslice = get(handles.ySlider, 'Value'); %returns position of slider
 zslice = get(handles.zSlider, 'Value'); %returns position of slider
@@ -229,6 +239,8 @@ else
 end
 handles.output = hObject;
 
+set(hObject.Parent, 'NextPlot', nextPlot);
+
 end
 
 function ySlider_Callback(hObject, eventdata, handles)
@@ -236,6 +248,9 @@ function ySlider_Callback(hObject, eventdata, handles)
 % hObject    handle to ySlider (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+nextPlot = get(hObject.Parent, 'NextPlot');
+set(hObject.Parent, 'NextPlot', 'add');
 
 yslice = get(hObject, 'Value');         %returns position of slider
 xslice = get(handles.xSlider, 'Value'); %returns position of slider
@@ -256,6 +271,9 @@ else
 end
 
 handles.output = hObject;
+
+set(hObject.Parent, 'NextPlot', nextPlot);
+
 end
 
 function zSlider_Callback(hObject, eventdata, handles)
@@ -263,6 +281,9 @@ function zSlider_Callback(hObject, eventdata, handles)
 % hObject    handle to zSlider (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+nextPlot = get(hObject.Parent, 'NextPlot');
+set(hObject.Parent, 'NextPlot', 'add');
 
 zslice = get(hObject, 'Value');         %returns position of slider
 xslice = get(handles.xSlider, 'Value'); %returns position of slider
@@ -283,4 +304,7 @@ else
 end
 
 handles.output = hObject;
+
+set(hObject.Parent, 'NextPlot', nextPlot);
+
 end

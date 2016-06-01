@@ -123,7 +123,14 @@ if ( ~isreal(v) )
 end
 
 % Update handles structure
- guidata(h, handles); 
+guidata(h, handles); 
+
+% Force the figure to clear when another plot is drawn on it so that GUI
+% widgets don't linger.  (NB:  This property needs to be reset to 'add' every
+% time we change the plot using a slider; otherwise, the slider movement will
+% itself clear the figure, which is not what we want.)
+set(h, 'NextPlot', 'replacechildren');
+
 end
 
 function h = instantiateSurf3GUI()
@@ -190,6 +197,10 @@ function xSlider_Callback(hObject, eventdata, handles)
 % hObject    handle to xSlider (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+nextPlot = get(hObject.Parent.Parent, 'NextPlot');
+set(hObject.Parent.Parent, 'NextPlot', 'add');
+
 yy = handles.yy1;
 zz = handles.zz;
 xslice = get(hObject, 'Value'); %returns position of slider
@@ -202,6 +213,9 @@ axis(handles.axes1, 'manual')
 surf(handles.axes1, yy, zz, v)
 
 handles.output = hObject;
+
+set(hObject.Parent.Parent, 'NextPlot', nextPlot);
+
 end
 
 function ySlider_Callback(hObject, eventdata, handles)
@@ -209,6 +223,10 @@ function ySlider_Callback(hObject, eventdata, handles)
 % hObject    handle to ySlider (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+nextPlot = get(hObject.Parent.Parent, 'NextPlot');
+set(hObject.Parent.Parent, 'NextPlot', 'add');
+
 xx = handles.xx;
 zz = handles.zz;
 yslice = get(hObject, 'Value'); %returns position of slider
@@ -221,6 +239,9 @@ axis(handles.axes2, 'manual')
 surf(handles.axes2, xx, zz, v)
 
 handles.output = hObject;
+
+set(hObject.Parent.Parent, 'NextPlot', nextPlot);
+
 end
 
 function zSlider_Callback(hObject, eventdata, handles)
@@ -228,6 +249,9 @@ function zSlider_Callback(hObject, eventdata, handles)
 % hObject    handle to zSlider (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+nextPlot = get(hObject.Parent.Parent, 'NextPlot');
+set(hObject.Parent.Parent, 'NextPlot', 'add');
 
 xx = handles.xx;
 yy = handles.yy2;
@@ -241,4 +265,7 @@ axis(handles.axes3, 'manual')
 surf(handles.axes3, xx, yy, v)
 
 handles.output = hObject;
+
+set(hObject.Parent.Parent, 'NextPlot', nextPlot);
+
 end
