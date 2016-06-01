@@ -190,6 +190,10 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             f.tree = f.univariate(f.tree, 'atanh');
         end
         
+        function f = conj(f)
+            f.tree = f.univariate(f.tree, 'conj');
+        end
+        
         function f = cos(f)
             f.tree = f.univariate(f.tree, 'cos');
         end
@@ -283,6 +287,10 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
         
         function f = expm1(f)
             f.tree = f.univariate(f.tree, 'expm1');
+        end
+        
+        function f = imag(f)
+            f.tree = f.univariate(f.tree, 'imag');
         end
         
         function f = log(f)
