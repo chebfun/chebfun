@@ -1,8 +1,8 @@
 function f = constructor(f, op, varargin)
 %CONSTRUCTOR   CHEBFUN3 constructor.
 %   Given a function OP of three variables, this code represents it as a 
-%   CHEBFUN3 objects. A CHEBFUN3 object is a low rank representation and 
-%   expresses a function as a trilinear product of a discrete core tensor 
+%   CHEBFUN3 object. A CHEBFUN3 object is a low-rank representation
+%   expressing a function as a trilinear product of a discrete core tensor 
 %   and three quasimatrices consisting of univariate functions.
 %
 %   The algorithm for constructing a CHEBFUN3 has three phases:
@@ -104,8 +104,7 @@ while ( ~isHappy && ~failure )
     % size.
     [relTol, absTol] = getTol3D(xx, yy, zz, vals, grid, dom, pseudoLevel, ...
         vscaleBnd);
-    pref.chebfuneps = relTol; % tolerance to be uses in happinessCheck via 
-    % standardCheck.
+    pref.chebfuneps = relTol; % tolerance to be used in happinessCheck.
     
     %% PHASE 1: %%
     % Apply 3D ACA to tensor of values
@@ -200,8 +199,8 @@ while ( ~isHappy && ~failure )
                 fibersValues(:,k) = squeeze(evaluate(op, xx, yy, zz, vectorize));
                 % An alternative is the following, which does
                 % not form xx, yy and zz, but might be easier to read.
-		%fibersValues(:,k) = evaluate(op, repmat(pivPos3D(k, 1),p,1),
-		%repmat(pivPos3D(k, 2),p,1), Z, vectorize ).';
+		% fibersValues(:,k) = evaluate(op, repmat(pivPos3D(k, 1),p,1),
+		% repmat(pivPos3D(k, 2),p,1), Z, vectorize ).';
             end
             
             % Find location of pivots on new grid  (using nesting property).
@@ -854,6 +853,11 @@ if ( flag ==1 )
     end
 else % i.e., if (flag == 0)
     vals = feval(oper, xx, yy, zz);  % Tensor or vector of values at cheb3 pts.
+    if ( size(vals) ~= size(xx) )
+        % Necessary especially when a CHEBFUN2 is made out of a CHEBFUN3,
+        % e.g. in CHEBFUN3/STD.
+        vals = vals.';
+    end
 end
 
 end
@@ -912,10 +916,15 @@ end
 
 %%
 function fiberDim = dimCluster(op, dom, vectorize, pref)
-% This is an alternative attempt for dimension clustering. Compare all the
-% three possibilites on a small grid and find which rank might be the
-% smallest. We are trying to avoid using lots of points that we need in 
-% the technique by Bebendorf and Kuske.
+% Choose the right dimension for clustering in Phase 1. The 3 steps are as
+% follows: 
+% 1) Sample OP at a small tensor.
+% 2) Compare all the three modal ranks and find which rank might be the
+%    smallest. We are trying to avoid using lots of points that we need in 
+%    the technique by Bebendorf and Kuske.
+% 3) If there are more than one minimal rank, find the variable that needs
+%    more coefficients to resolve.
+
 grid = 10;
 [xx, yy, zz] = points3D(grid, grid, grid, dom, pref);
 vals = evaluate(op, xx, yy, zz, vectorize);

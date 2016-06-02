@@ -55,6 +55,7 @@ if ( nargin == 0 )
             'griewank', 'hoop', 'lattice', 'levy', 'octant', 'rastrigin', ...
             'rosenbrock', 'runge', 'shubert', 'wagon'};
     name = names{randi(length(names))};
+    clf
 end
 
 % The main switch statement.

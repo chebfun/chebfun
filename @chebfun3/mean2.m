@@ -1,4 +1,4 @@
-function ff = mean2(f, dim)
+function ff = mean2(f, dims)
 %MEAN2   Average or mean value of a CHEBFUN3 in two dimensions. 
 %   G = mean2(F, DIM) returns the mean of F where DIM contains two of the 
 %   dimensions 1, 2 or 3 to show X, Y and Z respectively. The output is
@@ -19,10 +19,10 @@ end
 
 % Default to x and y directions: 
 if ( nargin == 1 )
-    dim = [1 2];
+    dims = [1 2];
 end
-dim1 = dim(1); 
-dim2 = dim(2);
+dim1 = dims(1); 
+dim2 = dims(2);
 dom = f.domain; 
 
 if ( (dim1 == 1 && dim2 == 2) || (dim1 == 2 && dim2 == 1) )
@@ -42,6 +42,6 @@ else
         'Undefined function ''mean2'' for that dimension');
 end
 
-ff = sum2(f, dim) / (diff(dom2(1:2)) * diff(dom2(3:4)));
+ff = sum2(f, dims) / (diff(dom2(1:2)) * diff(dom2(3:4)));
 
 end

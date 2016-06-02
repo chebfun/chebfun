@@ -1,6 +1,12 @@
 function varargout = coeffs3(f) 
-% COEFFS3   Trivariate Cheybshev expansion coefficients of f. 
-%   This is a wrapper for chebcoeffs3.
+% COEFFS3   Trivariate Cheybshev expansion coefficients of F. 
+%   This is a wrapper for CHEBCOEFFS3.
+%   C = COEFFS3(F) returns the tensor of trivariate coefficients.
+%
+%   [core, C, R, T] = COEFFS3(f) returns the same coefficients kept in
+%   the Tucker form.
+%
+% See also CHEBCOEFFS3.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

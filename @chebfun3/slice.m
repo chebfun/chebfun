@@ -164,13 +164,20 @@ end
 % Update handles structure
 guidata(h, handles);
 handles.output = handles.xSlider;
+
+% Force the figure to clear when another plot is drawn on it so that GUI
+% widgets don't linger.  (NB:  This property needs to be reset to 'add' every
+% time we change the plot using a slider; otherwise, the slider movement will
+% itself clear the figure, which is not what we want.)
+set(h, 'NextPlot', 'replacechildren');
+
 end
 
 function h = instantiateSlice3GUI()
 
 % Load up the GUI from the *.fig file.
 installDir = chebfunroot();
-h = openfig( [installDir '/@chebfun3/slice.fig'], 'invisible');
+h = openFigInCurrentFigure([installDir '/@chebfun3/slice.fig']);
 
 % Do any required initialization of the handle graphics objects.
 G = get(h, 'Children');
@@ -198,18 +205,8 @@ for (i = 1:1:length(G))
     end
 end
 
-% Add a toolbar to the GUI.
-set(h,'toolbar','figure');
-
 % Store handles to GUI objects so that the callbacks can access them. 
 guidata(h, guihandles(h));
-
-% Make the GUI window "visible" to the rest of the handle graphics
-% system so that things like gcf(), gca(), etc. work properly.
-set(h, 'HandleVisibility', 'on');
-
-% Draw the GUI.
-set(h, 'Visible', 'on');
 
 end
 
@@ -219,15 +216,22 @@ function xSlider_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+nextPlot = get(hObject.Parent, 'NextPlot');
+set(hObject.Parent, 'NextPlot', 'add');
+
 xslice = get(hObject, 'Value');         %returns position of slider
 yslice = get(handles.ySlider, 'Value'); %returns position of slider
 zslice = get(handles.zSlider, 'Value'); %returns position of slider
+
+% The next slice command clears the title, if there was any. So, get that
+% and put it again afterwards.
+tit = get(gca(), 'Title');
+titText = tit.String;
 
 if ( isreal(handles.v) )
     handles.slice = slice(handles.xx, handles.yy, handles.zz, handles.v, ...
         xslice, yslice, zslice);
     shading interp
-    %colormap jet
     colorbar, 
 else
     handles.slice = slice(handles.xx, handles.yy, handles.zz, angle(-handles.v), ...
@@ -237,7 +241,10 @@ else
     colormap('hsv')
     axis('equal')
 end
+title(titText)
 handles.output = hObject;
+
+set(hObject.Parent, 'NextPlot', nextPlot);
 
 end
 
@@ -247,9 +254,17 @@ function ySlider_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+nextPlot = get(hObject.Parent, 'NextPlot');
+set(hObject.Parent, 'NextPlot', 'add');
+
 yslice = get(hObject, 'Value');         %returns position of slider
 xslice = get(handles.xSlider, 'Value'); %returns position of slider
 zslice = get(handles.zSlider, 'Value'); %returns position of slider
+
+% The next slice command clears the title, if there was any. So, get that
+% and put it again afterwards.
+tit = get(gca(), 'Title');
+titText = tit.String;
 
 if ( isreal(handles.v) )
     handles.slice = slice(handles.xx, handles.yy, handles.zz, handles.v, ...
@@ -264,8 +279,11 @@ else
     colormap('hsv')
     axis('equal')    
 end
-
+title(titText)
 handles.output = hObject;
+
+set(hObject.Parent, 'NextPlot', nextPlot);
+
 end
 
 function zSlider_Callback(hObject, eventdata, handles)
@@ -274,9 +292,17 @@ function zSlider_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+nextPlot = get(hObject.Parent, 'NextPlot');
+set(hObject.Parent, 'NextPlot', 'add');
+
 zslice = get(hObject, 'Value');         %returns position of slider
 xslice = get(handles.xSlider, 'Value'); %returns position of slider
 yslice = get(handles.ySlider, 'Value'); %returns position of slider
+
+% The next slice command clears the title, if there was any. So, get that
+% and put it again afterwards.
+tit = get(gca(), 'Title');
+titText = tit.String;
 
 if ( isreal(handles.v) )
     handles.slice = slice(handles.xx, handles.yy, handles.zz, handles.v, ...
@@ -291,6 +317,9 @@ else
     colormap('hsv')
     axis('equal')    
 end
-
+title(titText)
 handles.output = hObject;
+
+set(hObject.Parent, 'NextPlot', nextPlot);
+
 end

@@ -57,7 +57,6 @@ else
                     else
                         error('CHEBFUN:CHEBFUN3:norm:norm', ...
                             'p-norm must have p even for now.');
-                        % TODO: WHY?
                     end
                 else
                     error('CHEBFUN:CHEBFUN3:norm:norm', ...

@@ -51,6 +51,10 @@ if ( isempty(numpts) )
     numpts = 51;
 end
 
+% Call newplot() manually to prepare the figure/axes for plotting because
+% built-in isosurface() doesn't.
+newplot();
+
 if ( nargin == 1 || (nargin == 3 && strcmp(varargin{1}, 'npts')) )
     % User has specified the size of grid to sample for the isosurface plot.
     runIsosurface3GUI(f, numpts);
@@ -250,12 +254,11 @@ handles.output = handles.isosurfaceSlider;
 
 end
 
-
 function h = instantiateIsosurface3()
 
 % Load up the GUI from the *.fig file.
 installDir = chebfunroot();
-h = openfig( [installDir '/@chebfun3/isosurface.fig'], 'invisible');
+h = openFigInCurrentFigure([installDir '/@chebfun3/isosurface.fig']);
 
 % Do any required initialization of the handle graphics objects.
 G = get(h, 'Children');
@@ -278,18 +281,15 @@ for (i = 1:1:length(G))
     end
 end
 
-% Add a toolbar to the GUI.
-set(h,'toolbar','figure');
-
 % Store handles to GUI objects so that the callbacks can access them. 
 guidata(h, guihandles(h));
 
-% Make the GUI window "visible" to the rest of the handle graphics
-% system so that things like gcf(), gca(), etc. work properly.
-set(h, 'HandleVisibility', 'on');
+% Force the figure to clear when another plot is drawn on it so that GUI
+% widgets don't linger.  (NB:  This property needs to be reset to 'add' every
+% time we change the plot using a slider; otherwise, the slider movement will
+% itself clear the figure, which is not what we want.)
+set(h, 'NextPlot', 'replacechildren');
 
-% Draw the GUI.
-set(h, 'Visible', 'on');
 end
 
 function isosurfaceSlider_Callback(hObject, eventdata, handles)
@@ -297,6 +297,9 @@ function isosurfaceSlider_Callback(hObject, eventdata, handles)
 % hObject    handle to isosurfaceSlider (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+nextPlot = get(hObject.Parent, 'NextPlot');
+set(hObject.Parent, 'NextPlot', 'add');
 
 isoVal = get(hObject, 'Value'); %returns position of slider
 dom = handles.dom;
@@ -317,5 +320,7 @@ xlim([dom(1) dom(2)])
 ylim([dom(3) dom(4)])
 zlim([dom(5) dom(6)])
 handles.output = hObject;
+
+set(hObject.Parent, 'NextPlot', nextPlot);
 
 end

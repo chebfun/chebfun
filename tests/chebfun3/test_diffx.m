@@ -1,10 +1,11 @@
 function pass = test_diffx(pref)
 % Check the diffx command in Chebfun3
+% [reviewed by LNT 31.05.16]
 
 if ( nargin < 1 ) 
     pref = chebfunpref; 
 end 
-tol = 1e6 * pref.cheb3Prefs.chebfun3eps;
+tol = 1e3* pref.cheb3Prefs.chebfun3eps;
 j = 1; 
 
 % Battery:  functions, df/dx and d^2f/dx^2
