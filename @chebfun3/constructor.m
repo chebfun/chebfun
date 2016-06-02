@@ -1263,7 +1263,6 @@ pseudoLevel = pref.cheb3Prefs.chebfun3eps;
 
 % Set up output variables.
 [n1, n2, n3] = size(A);
-%width = min(min(n1, n2),n3); % Use to tell us how many pivots we can take
 if fiberDim == 1
     width = min(n1, n2*n3);    % Use to tell us how many pivots we can take
 elseif fiberDim == 2
