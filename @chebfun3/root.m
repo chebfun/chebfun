@@ -19,23 +19,13 @@ tol = pref.cheb3Prefs.chebfun3eps;
 
 %% Step 1: Find an initial guess via a simulated construction of the 
 % objective function f.^2 + g.^2 + h.^2.
-[mF, nF, pF] = length(f);
-[mG, nG, pG] = length(g);
-[mH, nH, pH] = length(h);
-len=max([mF, nF, pF; 
-         mG, nG, pG; 
-         mH, nH, pH]);
+% Always use a fixed grid to sample. A bigger tensor is probably not
+% possible to try and the accuracy won't be great, but at the same time 
+% this is big enough to get good accuracy at least for easy functions. See 
+% e.g., issue #1900.
+m = 121; n = 121; p = 121;
+
 dom = f.domain;
-m = 5*len(1); n = 5*len(2); p = 5*len(3); 
-
-% If the function is easy enough, increase size of the sampling grid as 
-% much as you tolerable. See issue #1900.
-if ( max([ndf(f), ndf(g), ndf(h)]) < 5e4 )
-    m = max(m, 121);
-    n = max(n, 121);
-    p = max(p, 121);
-end
-
 xx = chebpts(m, dom(1:2)); 
 yy = chebpts(n, dom(3:4)); 
 zz = chebpts(p, dom(5:6));
