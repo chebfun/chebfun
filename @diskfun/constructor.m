@@ -1,4 +1,4 @@
-function g = constructornewII(g, op, varargin)
+function g = constructor(g, op, varargin)
 %CONSTRUCTOR   The main DISKFUN constructor.
 %
 % This code is when functions on the surface of the disk are represented
@@ -165,9 +165,11 @@ while ( ~isHappy && ~failure )
     if ( sampleTest )
         % wrap the op with evaluate in case the 'vectorize' flag is on:
         sampleOP = @(th,r) evaluate(op, th, r, vectorize);
-        
+        % for now, use only real values. Delete next line once complex is
+        % supported
+        %sampleOP = real(sampleOP); 
         % Evaluate at points in the domain:
-        pass = g.sampleTest(sampleOP, tol, vectorize);
+        pass = g.sampleTest( sampleOP, tol, vectorize);
         if ( ~pass )
             % Increase minSamples and try again.
             minSample = 2*minSample;
