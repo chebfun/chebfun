@@ -27,7 +27,8 @@ function varargout = gallerydisk(name)
 %   yinyang    Yin-yang function
 %   peaks      A scaled version of the MATLAB 'peaks' function
 %   challenge  Zooms in on a portion of the function from SIAM 100-digit challenge
-%
+%   roundpeg
+%   squarepeg
 %   Gallery functions are subject to change in future releases of Chebfun.
 %
 % See also CHEB.GALLERY, CHEB.GALLERYTRIG, CHEB.GALLERY2, CHEB.GALLERY3
@@ -52,12 +53,12 @@ switch lower(name)
             sin(sin(80*y/3)) - sin(10*((x+y)/3)) + (x.^2+y.^2)./(4*3^2);
         f = diskfun(fa,'cart');
 
-    % The classic MATLAB peaks function:
+    % A scaled version of the classic MATLAB peaks function:
     case 'peaks'
-        fa = @(x,y) 3*(1-x).^2.*exp(-x.^2 - (y+1).^2) ...
-            - 10*(x/5 - x.^3 - y.^5).*exp(-x.^2 - y.^2) ...
-            - 1/3*exp(-(x+1).^2 - y.^2);
-        f = chebfun2(fa, [-3 3 -3 3]);
+        fa = @(x,y) 3*(1-2*x).^2.*exp(-(2*x).^2 - ((2*y)+1).^2) ...
+            - 10*((2*x)/5 - (2*x).^3 - (2*y).^5).*exp(-(2*x).^2 - (2*y).^2) ...
+            - 1/3*exp(-((2*x)+1).^2 - (2*y).^2);
+        f = diskfun(fa, 'cart');
         
     case 'flower'
         fa = @(t,r) sin(21*pi*(1+cos(pi*r)).* ...
@@ -72,11 +73,11 @@ switch lower(name)
         fa = f;
         
     case 'roundpeg'  % a round peg of radius 0.5
-        fa = @(x,y) cos(20*x+5*y).^2.*(1-(x.^2+y.^2));
-        f = diskfun(fa,'cart');
+        fa = @(t,r) 1./(1+(2*r).^100);
+        f = diskfun(fa);
 
     case 'squarepeg'  % a square peg in a round hole
-        fa = @(x,y) cos(20*x+5*y).^2.*(1-(x.^2+y.^2));
+        fa = @(x,y) 1./((1+(2*x).^20).*(1+(2*y).^20));
         f = diskfun(fa,'cart');
         
     case 'wave'
