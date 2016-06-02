@@ -8,7 +8,7 @@ function varargout = chebcoeffs3(f)
 %   [core, C, R, T] = CHEBCOEFFS3(f) returns the same coefficients kept in
 %   the Tucker form.
 %
-% See also CHEBCOEFFS and CHEBCOEFFS2.
+% See also CHEBCOEFFS, CHEBCOEFFS2 and COEFFS3
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
