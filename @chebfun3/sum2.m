@@ -51,7 +51,7 @@ elseif ( (dim1 == 2 && dim2 == 3) || (dim1 == 3 && dim2 == 2 ) )
     end
 else 
     error('CHEBFUN:CHEBFUN3:sum2:unknown', ...
-          'Undefined function ''sum2'' for that dimension');
+          'Undefined function ''sum2'' for specified dimensions.');
 end
 
 end
