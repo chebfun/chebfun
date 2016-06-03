@@ -15,7 +15,7 @@ elseif ( isa(n, 'double') )          % CHEBFUN3.^double
    if ( abs(round(n) - n) > eps )
        % Positive/negative test.
        [bool, wzero] = singleSignTest(f);
-       if ( bool == 0 || wzero == 1 )
+       if ( ( bool == 0 ) || ( wzero == 1 ) )
            error('CHEBFUN:CHEBFUN3:power:fractional', ...
                'A change of sign/zero has been detected, unable to represent the result.');
        end
@@ -24,7 +24,7 @@ elseif ( isa(n, 'double') )          % CHEBFUN3.^double
     f = chebfun3(op, f.domain);
     
 else                                   % CHEBFUN3.^CHEBFUN3
-    if ( ~domainCheck(f, n) ) % check they're on the same domain.
+    if ( ~domainCheck(f, n) ) % Check they're on the same domain.
         error('CHEBFUN:CHEBFUN3:power:domain','Domains must be the same');
     end
     op = @(x,y,z) feval(f, x, y, z) .^ (feval(n, x, y, z));

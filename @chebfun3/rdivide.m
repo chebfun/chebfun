@@ -30,7 +30,7 @@ elseif ( isa(f, 'chebfun3') && isa(g, 'double') )  % CHEBFUN3 ./ double
         error('CHEBFUN:CHEBFUN3:rdivide:divByZero', ...
             'Division by zero or near zero.')
     end
-    h = f .* (1/g) ;
+    h = f .* (1/g);
         
 elseif ( isa(f, 'double') && isa(g, 'chebfun3') )   
        [bool, wzero] = singleSignTest(g);
@@ -41,7 +41,7 @@ elseif ( isa(f, 'double') && isa(g, 'chebfun3') )
               'Attempting to invert a CHEBFUN3 with a root.'); 
        end
        
-elseif ( isa(f,'chebfun3') && isa(g,'chebfun3v') )
+elseif ( isa(f, 'chebfun3') && isa(g, 'chebfun3v') )
     % TODO: RDIVIDE on the components: 
     
 else
