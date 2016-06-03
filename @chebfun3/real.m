@@ -1,5 +1,6 @@
 function f = real(f)
 %REAL   Real part of a CHEBFUN3.
+%   REAL(F) returns the real part of the CHEBFUN3 object F.
 %
 % See also CHEBFUN3/IMAG and CHEBFUN3/COMPOSE.
 
