@@ -12,7 +12,7 @@ if ( isempty(f) )
     return
 end 
 
-op = @(x,y, z) sin(feval(f, x, y, z));               % Resample. 
-f = chebfun3(op, f.domain);           % Call constructor. 
+op = @(x,y,z) sin(feval(f, x, y, z));   % Resample.
+f = chebfun3(op, f.domain);             % Call constructor.
 
 end

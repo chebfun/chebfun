@@ -1,6 +1,6 @@
 function f = sinh(f)
 %SINH   Hyperbolic sine of a CHEBFUN3.
-%   SINH(F) returns the hyperbolic sine of F.
+%   SINH(F) returns the hyperbolic sine of a CHEBFUN3 object F.
 %
 % See also CHEBFUN3/COMPOSE.
 
@@ -12,7 +12,7 @@ if ( isempty(f) )
     return
 end 
 
-op = @(x,y,z) sinh(feval(f, x, y, z));               % Resample.
-f = chebfun3(op, f.domain);           % Call constructor.
+op = @(x,y,z) sinh(feval(f, x, y, z));  % Resample.
+f = chebfun3(op, f.domain);             % Call constructor.
 
 end

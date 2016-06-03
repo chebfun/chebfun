@@ -1,5 +1,5 @@
 function f = exp(f) 
-%EXP    Exponential of a CHEBFUN3 object.
+%EXP   Exponential of a CHEBFUN3 object.
 %   EXP(F) returns the exponential of a CHEBFUN3 object F. 
 %
 % See also CHEBFUN3/COMPOSE.
@@ -12,7 +12,7 @@ if ( isempty(f) )
     return 
 end 
 
-op = @(x,y,z) exp(feval(f, x, y, z));               % Resample.
-f = chebfun3(op, f.domain);          % Call constructor. 
+op = @(x,y,z) exp(feval(f, x, y, z));   % Resample.
+f = chebfun3(op, f.domain);             % Call constructor.
 
 end

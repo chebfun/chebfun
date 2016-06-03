@@ -1,5 +1,6 @@
 function f = tan(f)
 %TAN   Tangent of a CHEBFUN3.
+%   TAN(F) returns the tangent of a CHEBFUN3 object F.
 %
 % See also CHEBFUN3/COMPOSE.
 
@@ -11,7 +12,7 @@ if ( isempty(f) )
     return
 end
 
-op = @(x,y,z) tan(feval(f, x, y, z));                % Resample
-f = chebfun3(op, f.domain);           % Call constructor. 
+op = @(x,y,z) tan(feval(f, x, y, z));   % Resample
+f = chebfun3(op, f.domain);             % Call constructor.
 
 end
