@@ -1,13 +1,15 @@
 function vscl = vscale(f) 
 %VSCALE   Vertical scale of a CHEBFUN3. 
 % VSCL = VSCALE(F) returns the vertial scale of a CHEBFUN3 object F as 
-%   determined by evaluating on a coarse tensor-product grid. 
-
-% TODO: Should this also be taking the maximum along the edges when we are
-% evaluating at 1st kind grids. 
+%   determined by evaluating F on a coarse tensor-product grid. 
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
+
+
+% [TODO]: Should this also be taking the maximum along the edges when we are
+% evaluating at 1st kind grids. 
+
 
 % If f is an empty CHEBFUN3, VSCL = 0: 
 if ( isempty(f) ) 
@@ -15,7 +17,7 @@ if ( isempty(f) )
     return
 end
 
-% Check underlying tech is a TRIGTECH: 
+% Check the underlying tech:
 techCol = get(f.cols.funs{1}, 'tech');
 techRow = get(f.rows.funs{1}, 'tech');
 techTube = get(f.tubes.funs{1}, 'tech');

@@ -1,10 +1,10 @@
 function varargout = chebpolyval3(f, varargin)
-%CHEBPOLYVAL3   Values on a tensor product grid.
+%CHEBPOLYVAL3   Values of a CHEBFUN3 object F on a tensor product grid.
 %   X = CHEBPOLYVAL3(F, M, N, P) returns an M x N x P tensor of values of a
 %   CHEBFUN3 object F on a tensor product grid.
 %
-%   X = CHEBPOLYVAL3(F) does the same but sets M, N, and P equal to length 
-%   of F.
+%   X = CHEBPOLYVAL3(F) does the same but sets M, N, and P equal to the 
+%   length of F.
 %
 %   [CORE, C, R, T] = CHEBPOLYVAL3(F) returns the low rank representation 
 %   of the values of F on a tensor product grid, i.e.,

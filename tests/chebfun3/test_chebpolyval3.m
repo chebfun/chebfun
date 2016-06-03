@@ -1,5 +1,5 @@
 function pass = test_chebpolyval3()
-% Check the chebpolyval3 commands in CHEBFUN3
+% Check the chebpolyval3 command in CHEBFUN3
 
 if ( nargin < 1 ) 
     pref = chebfunpref; 

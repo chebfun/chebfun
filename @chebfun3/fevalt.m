@@ -2,11 +2,11 @@ function W = fevalt(f, x, y, z)
 %FEVALT   Evaluate a CHEBFUN3.
 %   W = FEVALT(F, X, Y, Z) returns a tensor of values W of size 
 %   length(X)-by-length(Y)-by-length(Z). X, Y and Z should be vectors of 
-%   doubles. This is equivalent to 
-%   [x,y,z] = ndgrid(x,y,z) and then W = feval(f, x, y, z).
+%   doubles. This is equivalent to fist constructing
+%   [X,Y,Z] = NDGRID(X,Y,Z) and then computing W = FEVAL(F, X, Y, Z).
 %   
-%   The difference with w = feval(f, x, y, z) is that feval creates a
-%   vector w, while w = feval(f, x, y, z) form w as a tensor.
+%   FEVALT is different from W = FEVAL(F, X, Y, Z) which creates a
+%   vector W while W = FEVALT(F, X, Y, Z) returns W as a tensor.
 %
 % See also CHEBFUN3/FEVAL.
 

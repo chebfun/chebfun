@@ -5,7 +5,7 @@ function varargout = chebcoeffs3(f)
 %   C = sum_{i=0}^{m-1}  sum_{j=0}^{n-1} sum_{k=0}^{p-1} 
 %                                      C(i+1,j+1,k+1) T_i(x) T_j(y) T_k(z).
 %
-%   [core, C, R, T] = CHEBCOEFFS3(f) returns the same coefficients kept in
+%   [CORE, C, R, T] = CHEBCOEFFS3(F) returns the same coefficients kept in
 %   the Tucker form.
 %
 % See also CHEBCOEFFS, CHEBCOEFFS2 and COEFFS3
