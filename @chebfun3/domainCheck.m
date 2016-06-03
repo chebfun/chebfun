@@ -1,5 +1,5 @@
 function out = domainCheck(f, g)
-%DOMAINCHECK    True if the domains of two CHEBFUN3 objects are the same.
+%DOMAINCHECK   True if the domains of two CHEBFUN3 objects are the same.
 %   DOMAINCHECK(F, G) returns TRUE if the domains of the two CHEBFUN3 
 %   objects F and G coincide up to a tolerance depending on their 
 %   horizontal scales or if both F and G are empty CHEBFUN objects.
@@ -12,7 +12,7 @@ function out = domainCheck(f, g)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % The CHEBFUN3 class uses this function internally to compare the domains of
 % CHEBFUN3 objects before attempting to perform operations on multiple
-% CHEBFUN3 objects that require the CHEBFUN3 objects to reside on the same interval.
+% CHEBFUN3 objects that require the CHEBFUN3 objects to reside on the same domain.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Empty check: 
