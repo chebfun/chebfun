@@ -32,6 +32,17 @@ switch index(1).type
             out = subsref(out, index);
         end
         varargout = {out};
+
+    case '{}'
+        % RESTRICT
+        if ( length(idx) == 6 ) 
+            out = restrict(f, [ idx{:} ]);
+            varargout = {out};
+        else
+            error('CHEBFUN:CHEBFUN3:subsref:dimensions', ...
+                'Index exceeds chebfun3 dimensions.')
+        end
+
 end
 
 end

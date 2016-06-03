@@ -216,6 +216,10 @@ methods (Access = public)
 
     % Definite integral of a CHEBFUN3 over its domain.
     out = sum3(f);    
+
+    % Restrict the domain of a CHEBFUN3. Output might be a scalar, Chebfun, 
+    % Chebfun2 or a Chebfun3 object.
+    out = restrict(f, varargin);
     
     % Volume of the domain of a CHEBFUN3.
     out = domainvolume(f);

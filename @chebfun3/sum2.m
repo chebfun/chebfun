@@ -50,8 +50,8 @@ elseif ( (dim1 == 2 && dim2 == 3) || (dim1 == 3 && dim2 == 2 ) )
         ff = simplify(ff);
     end
 else 
-    error('CHEBFUN:CHEBFUN3:sum:unknown', ...
-          'Undefined function ''sum'' for that dimension');
+    error('CHEBFUN:CHEBFUN3:sum2:unknown', ...
+          'Undefined function ''sum2'' for specified dimensions.');
 end
 
 end

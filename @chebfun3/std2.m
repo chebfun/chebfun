@@ -26,7 +26,7 @@ function g = std2(f, varargin)
 
 % Empty check: 
 if ( isempty(f) )
-    g = chebfun2();
+    g = chebfun();
     return
 end
 
@@ -58,7 +58,7 @@ elseif ( (dim1 == 2 && dim2 == 3) || (dim1 == 3 && dim2 == 2) )
     myz = chebfun3(@(x,y,z) feval(mean2(f, [2 3]), x), dom);
     g = sqrt(1/(diff(dom(3:4))*diff(dom(5:6))) * sum2((f - myz).^2, [2 3]));
 else
-    error('CHEBFUN:CHEBFUN3:std:dims', ...
+    error('CHEBFUN:CHEBFUN3:std2:dims', ...
         'Third argument should contain two distinct values from 1, 2 or 3.');
 end
 

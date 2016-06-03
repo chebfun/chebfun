@@ -38,9 +38,9 @@ grid            = tpref.minSamples;
 maxSample       = tpref.maxLength; % This is the maxSample used in Phase II.
 maxSamplePhase1 = 363; % maxSample in Phase I where we explicitly generate 
 % order-3 tensors.
-maxRank = pref.cheb3Prefs.maxRank;
-pseudoLevel = pref.cheb3Prefs.chebfun3eps;
 prefStruct = pref.cheb3Prefs;
+maxRank = prefStruct.maxRank;
+pseudoLevel = prefStruct.chebfun3eps;
 passSampleTest = prefStruct.sampleTest;
 
 if ( isa(op, 'chebfun3') )     % CHEBFUN3( CHEBFUN3 )
@@ -55,8 +55,9 @@ elseif ( isa(op, 'double') )   % CHEBFUN3( DOUBLE )
     return
 end
 
-%% Dimension clustering
-% An example where this is important. compare3(@(x,y,z) exp(-5*(x+2*y).^2-30*y.^4-7*sin(2*z).^6));
+%% Dimension clustering of Bebendorf & Kuske.
+% An example where this is important. compare3(@(x,y,z)
+% exp(-5*(x+2*y).^2-30*y.^4-7*sin(2*z).^6));
 if ( isempty(fiberDim) )
     fiberDim = dimCluster(op, dom, vectorize, pref);
 end
@@ -103,8 +104,7 @@ while ( ~isHappy && ~failure )
     % size.
     [relTol, absTol] = getTol3D(xx, yy, zz, vals, grid, dom, pseudoLevel, ...
         vscaleBnd);
-    pref.chebfuneps = relTol; % tolerance to be uses in happinessCheck via 
-    % standardCheck.
+    pref.chebfuneps = relTol; % tolerance to be used in happinessCheck.
     
     %% PHASE 1: %%
     % Apply 3D ACA to tensor of values
@@ -199,7 +199,8 @@ while ( ~isHappy && ~failure )
                 fibersValues(:,k) = squeeze(evaluate(op, xx, yy, zz, vectorize));
                 % An alternative is the following, which does
                 % not form xx, yy and zz, but might be easier to read.
-                %fibersValues(:,k) = evaluate(op, repmat(pivPos3D(k, 1),p,1), repmat(pivPos3D(k, 2),p,1), Z, vectorize ).';
+		% fibersValues(:,k) = evaluate(op, repmat(pivPos3D(k, 1),p,1),
+		% repmat(pivPos3D(k, 2),p,1), Z, vectorize ).';
             end
             
             % Find location of pivots on new grid  (using nesting property).
@@ -234,7 +235,7 @@ while ( ~isHappy && ~failure )
             % Find location of 3D pivots on new grid  (using nesting property).
             PI3D(:, 1) = nesting(PI3D(:, 1)); % The 1st column of PI3D contains x
             % indices and should therefore be updated.
-            % Find location of 2D pivots on new grid  (using nesting property).                 
+	    % Find location of 2D pivots on new grid  (using nesting property).
             for k = 1:sepRank
                 PI2D{k}(:,1) = nesting(PI2D{k}(:, 1));
             end
@@ -424,7 +425,8 @@ while ( ~isHappy && ~failure )
             rowsValues, diagValues2D, pivotVals3D, dom2D, pref, absTol);
         % Developer Note: To check the validity of the new representation 
         % try the following:
-        % TuckerApprox = txm(txm(txm(core, colsValues, 1), rowsValues, 2), fibersValues, 3);
+	% TuckerApprox = txm(txm(txm(core, colsValues, 1), rowsValues, 2),
+	% fibersValues, 3);
         % norm123 = norm( vals(:) -  TuckerApprox(:) )
     end
     
@@ -725,7 +727,8 @@ if ( isempty(vscaleBnd) )
     % zz changes tube-wise (3rd mode):
     df_dz = diff(vals(1:m-1, 1:n-1, :), 1, 3) ./ diff(zz(1:m-1, 1:n-1, :), 1, 3);
     J = max(max(abs(df_dx),abs(df_dy)), abs(df_dz));
-    Jac_norm = max(J(:)); % An approximation for the norm of the Jacobian over the whole domain.
+    Jac_norm = max(J(:)); % An approximation for the norm of the Jacobian over
+                          % the whole domain.
     absTol =  max(abs(dom(:))) * max(Jac_norm, vscale) * relTol;
 else % If we have a binary operation and vscale of both operand are 
     % available in the vector vscaleBnd. 
@@ -954,9 +957,12 @@ end
 
 %%
 % % Method 2: Using Chebfun2:
-% F1 = chebfun2(chebfun3.unfold(vals, 1), [dom(1:2) min(dom(3), dom(5)) max(dom(4), dom(6))]);
-% F2 = chebfun2(chebfun3.unfold(vals, 2), [dom(3:4) min(dom(1), dom(5)) max(dom(2), dom(6))]);
-% F3 = chebfun2(chebfun3.unfold(vals, 3), [dom(5:6) min(dom(1), dom(3)) max(dom(2), dom(4))]);
+% F1 = chebfun2(chebfun3.unfold(vals, 1), 
+%               [dom(1:2) min(dom(3), dom(5)) max(dom(4), dom(6))]);
+% F2 = chebfun2(chebfun3.unfold(vals, 2), 
+%               [dom(3:4) min(dom(1), dom(5)) max(dom(2), dom(6))]);
+% F3 = chebfun2(chebfun3.unfold(vals, 3), 
+%               [dom(5:6) min(dom(1), dom(3)) max(dom(2), dom(4))]);
 % rX = numel(F1.pivotValues);
 % rY = numel(F2.pivotValues);
 % rZ = numel(F3.pivotValues);
@@ -1246,7 +1252,7 @@ function [colsBtd, rowsBtd, pivotValues2D, pivotIndices2D, fibers, ...
 %                             pivot entries during the iterations. 
 %
 %               pivotIndices3D: A matrix of size rank x 3, where rank = iter. 
-%                             Each of its rows contain the index of one 3D pivotValues.
+%                         Each of its rows contain the index of one 3D pivotValues.
 %
 %                      ifail: We fail if iter >= (width/factor).
 
@@ -1256,7 +1262,7 @@ function [colsBtd, rowsBtd, pivotValues2D, pivotIndices2D, fibers, ...
 % where AA is a copy of A from input, and temp is computed as follows:
 %   temp = zeros(size(A2)); 
 %   for i = 1:3, 
-%         temp = temp + chebfun3.outerProd(slices(:,:,i),fibers(:,i)./pivotValues3D(i));
+%    temp = temp + chebfun3.outerProd(slices(:,:,i),fibers(:,i)./pivotValues3D(i));
 %   end
 %   norm(AA(:) - temp(:))
 %
@@ -1266,7 +1272,6 @@ pseudoLevel = pref.cheb3Prefs.chebfun3eps;
 
 % Set up output variables.
 [n1, n2, n3] = size(A);
-%width = min(min(n1, n2),n3); % Use to tell us how many pivots we can take
 if fiberDim == 1
     width = min(n1, n2*n3);    % Use to tell us how many pivots we can take
 elseif fiberDim == 2
@@ -1355,7 +1360,7 @@ while ( ( infNorm > tol ) && ( iter < width / factor) ...
     % A = A - chebfun3.outerProd(slices(:,:,iter+1),fibers(:,iter+1)./PivVal3D);
     
     % Keep track of progress in 3D ACA:
-    iter = iter + 1;                          % One more fiber and slice are removed from A
+    iter = iter + 1;              % One more fiber and slice are removed from A
     pivotValues3D(iter) = PivVal3D;           % Store pivot value in 3D ACA
     pivotIndices3D(iter, :)=[col row tube];    % Store pivot location in 3D ACA
     
@@ -1384,7 +1389,6 @@ end
 if ( iter > width/factor )
     ifail3D = 1;                               % We did fail in 3D ACA.
 end
-%close all; semilogy(1:numel(pivotValues)+1, abs([pivotValues, infNorm]));
 
 end
 %%
