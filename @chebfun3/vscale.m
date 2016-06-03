@@ -17,17 +17,13 @@ if ( isempty(f) )
     return
 end
 
+<<<<<<< Updated upstream
 % Check the underlying tech:
+=======
+% Check underlying tech. Currently all three quasimatrix factors have the 
+% same tech. So, we just check this cols.
+>>>>>>> Stashed changes
 techCol = get(f.cols.funs{1}, 'tech');
-techRow = get(f.rows.funs{1}, 'tech');
-techTube = get(f.tubes.funs{1}, 'tech');
-if ( isa(techCol(), 'trigtech') && isa(techRow(), 'trigtech') ...
-        && isa(techTube(), 'trigtech') )
-    tech = trigtech;
-else
-    tech = chebtech2;
-end
-
 
 % Get the degree of the CHEBFUN3:
 [m, n, p] = length(f);
@@ -39,9 +35,9 @@ p = min(max(p, 9), 41); % cannot afford to go over 41x41x41.
 
 % Calculate values on a tensor grid: 
 dom = f.domain;
-x = mypoints(m, dom(1:2), tech);
-y = mypoints(n, dom(3:4), tech);
-z = mypoints(p, dom(5:6), tech);
+x = mypoints(m, dom(1:2), techCol);
+y = mypoints(n, dom(3:4), techCol);
+z = mypoints(p, dom(5:6), techCol);
 [xx, yy, zz] = ndgrid(x, y, z);
 vals = feval(f, xx, yy, zz); 
 
@@ -56,13 +52,11 @@ function x = mypoints(n, dom, tech)
 % technology.
 
 % What tech am I based on?:
-%tech = pref.tech();
-
-if ( isa(tech, 'chebtech2') )
+if ( isa(tech(), 'chebtech2') )    
     x = chebpts(n, dom, 2);
-elseif ( isa(tech, 'chebtech1') )
+elseif ( isa(tech(), 'chebtech1') )    
     x = chebpts(n, dom, 1);
-elseif ( isa(tech, 'trigtech') )
+elseif ( isa(tech(), 'trigtech') )
     x = trigpts(n, dom);
 else
     error('CHEBFUN:CHEBFUN3:vscale:mypoints:techType', ...

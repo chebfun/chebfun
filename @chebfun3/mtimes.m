@@ -1,6 +1,9 @@
 function h = mtimes(f, g)
-%*   Pointwise multiplication for CHEBFUN3 objects.
-%   c*F or F*c multiplies a CHEBFUN3 F by a scalar c.
+%*   Apply a CHEBFUN3 object to a CHEBFUN2 or a CHEBFUN object.
+%   These are continuous analogous of tensor-matrix and tensor-vector 
+%   contractions. 
+%   This code is used also to do c*F and F*c where F is a CHEBFUN3 object
+%   and c is a scalar.
 %
 % See also CHEBFUN3/TIMES.
 
@@ -23,31 +26,32 @@ if ( isa(f, 'chebfun3') )           % CHEBFUN3 * ???
             error('CHEBFUN:CHEBFUN3:mtimes:size', 'Sizes are inconsistent.');
         end
         
-    elseif ( isa(g, 'chebfun') )    % CHEBFUN3 * CHEBFUN: mode 1 for now (like CHEBFUN2 * CHEBFUN ).
+    elseif ( isa(g, 'chebfun') )  % CHEBFUN3 * CHEBFUN: Mode-1 only for now.
         % The output is a CHEBFUN2. This is the continuous analogue of
         % tensor vector multiplication which makes a matrix.
         [fCore, fCols, fRows, fTubes] = tucker(f);
         
         X = innerProduct(fCols, g);
-        temp = squeeze(chebfun3.txm(fCore, X.'));
+        temp = squeeze(chebfun3.txm(fCore, X.', 1));
         [U, S, V] = svd(temp);
         h = chebfun2();
         h.cols = fRows * U;
         h.rows = fTubes * V;
         h.pivotValues = 1 ./ diag(S);
         
-    elseif ( isa(g, 'chebfun2') )   % CHEBFUN3 * CHEBFUN2: modes 1 for now.
+    elseif ( isa(g, 'chebfun2') ) % CHEBFUN3 * CHEBFUN2: Mode 1 only for now.
         % The output is another CHEBFUN3. Recall that, mode-1 contraction 
         % of an M*N*P tensor by a Q*M matrix creates a Q*N*P tensor. This 
         % is the continuous analogue of that operation.
         [fCore, fCols, fRows, fTubes] = tucker(f);
         
-        gRows = g.rows; % rows correspond to the 1st variable of g. This is Chebfun2's convention.
-        gCols = g.cols; % cols correspond to the 2nd variable of g. This is Chebfun2's convention.
+        gRows = g.rows; % rows correspond to the 1st variable of g. This is
+                        % Chebfun2's convention.
+        gCols = g.cols; % cols correspond to the 2nd variable of g.
         gPivots = diag(1./g.pivotValues);
         
         X = innerProduct(fCols, gRows);
-        temp = squeeze(chebfun3.txm(fCore, X.'));
+        temp = squeeze(chebfun3.txm(fCore, X.', 1));
         
         % Form the output:
         h = chebfun3();
@@ -57,8 +61,8 @@ if ( isa(f, 'chebfun3') )           % CHEBFUN3 * ???
         h.core = chebfun3.txm(temp, gPivots, 1);
         h.domain = f.domain;
                            
-    elseif ( isa(g, 'chebfun') )    % CHEBFUN3 * CHEBFUN3
-        error('CHEBFUN:CHEBFUN3:mtimes', 'Not written yet.');
+    elseif ( isa(g, 'chebfun3') )    % CHEBFUN3 * CHEBFUN3
+        error('CHEBFUN:CHEBFUN3:mtimes', 'CHEBFUN3 does not support this operation.');
 
     elseif ( isa(g, 'chebfun3v') )  % CHEBFUN3 * CHEBFUN3V
         nG = g.nComponents; 
