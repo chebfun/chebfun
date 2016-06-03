@@ -52,7 +52,7 @@ numpts = 51;
 vv = feval(f, xx, yy, zz);
 
 %%
-if ( dim == 3 && ~isHold )
+if ( ( dim == 3 ) && ~isHold )
     zslices = linspace(dom(5), dom(6), noSlices);
     
     for i=1:numel(zslices)
@@ -73,7 +73,7 @@ if ( dim == 3 && ~isHold )
         pause(pauseTime)
         drawnow
     end
-elseif ( dim == 3 && isHold )
+elseif ( ( dim == 3 ) && isHold )
     zslices = linspace(dom(5), dom(6), noHoldSlices);
     for i=1:numel(zslices)
         if isreal(vv)
@@ -93,7 +93,7 @@ elseif ( dim == 3 && isHold )
         drawnow
     end
         
-elseif ( dim == 2 && ~isHold )
+elseif ( ( dim == 2 ) && ~isHold )
     yslices = linspace(dom(3), dom(4), noSlices);
     for i=1:numel(yslices)
         if isreal(vv)
@@ -112,7 +112,7 @@ elseif ( dim == 2 && ~isHold )
         pause(pauseTime)
         drawnow
     end
-elseif ( dim == 2 && isHold )
+elseif ( ( dim == 2 ) && isHold )
     yslices = linspace(dom(3), dom(4), noHoldSlices);
     for i=1:numel(yslices)
         if ( isreal(vv) )
@@ -131,7 +131,7 @@ elseif ( dim == 2 && isHold )
         pause(pauseTime)
         drawnow
     end
-elseif ( dim == 1 && ~isHold )
+elseif ( ( dim == 1 ) && ~isHold )
     xslices = linspace(dom(1), dom(2), noSlices);
     for i=1:numel(xslices)
         if ( isreal(vv) )
@@ -150,7 +150,7 @@ elseif ( dim == 1 && ~isHold )
         pause(pauseTime)
         drawnow
     end
-elseif ( dim == 1 && isHold )
+elseif ( ( dim == 1 ) && isHold )
     xslices = linspace(dom(1), dom(2), noHoldSlices);
     for i=1:numel(xslices)
         if ( isreal(vv) )
