@@ -17,10 +17,10 @@ function varargout = hosvd(f, varargin)
 %   made better in HOSVD by putting the following constraints on a general 
 %   Tucker representation to get the classical Tucker (i.e., HOSVD) of F:
 %   1) All the three factor quasimatrices should have norm 1.
-%   2) Modal singular values SV should have decreasing values (This is a 3D 
+%   2) Modal singular values SV are in descending order (This is a 3D 
 %   analogue of the decay of singular values of a matrix).
 %   3) The core tensor CORE should be `all orthogonal'.
-
+%
 %   Singular functions are unique only up to the sign and permutations. 
 %   Truncation by HOSVD is helpful, but is not necessarily optimal as one
 %   expects from the Eckart-Young theorem in 2D.
@@ -28,7 +28,7 @@ function varargout = hosvd(f, varargin)
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if isempty(f)
+if (  isempty(f) )
     return
 end
 

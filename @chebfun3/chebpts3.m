@@ -34,7 +34,7 @@ if ( nargin == 1 )
     nz = nx;
 end
 if ( nargin < 5 ) 
-    % default to Chebyshev point of the 2nd kind. 
+    % default to Chebyshev points of the 2nd kind. 
     kind = 2; 
 end
 

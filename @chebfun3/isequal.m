@@ -1,9 +1,8 @@
 function out = isequal(f, g)
 %ISEQUAL   Equality test for CHEBFUN3. 
-%   BOOL = ISEQUAL(F, G) returns 0 or 1. If returns 1 then F and G are the 
-%   same CHEBFUN3 objects, up to relative machine precision. It returns 0 
-%   if F and G are not the same up to relative machine precision. 
-
+%   BOOL = ISEQUAL(F, G) returns logical 1 if F and G are same up to relative 
+%   machine precision. It returns logical 0 otherwise.
+%
 % The structure of this code is similar to `dematricize.m` from the HTUCKER 
 % toolbox of Tobler and Kressner.
 

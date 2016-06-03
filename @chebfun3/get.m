@@ -1,7 +1,7 @@
 function val = get(f, propName)
 %GET   GET method for the CHEBFUN3 class.
-%   P = GET(F, PROP) returns the property P specified in the string PROP 
-%   from the CHEBFUN3 object F. Valid entries for the string PROP are:
+%   P = GET(F, PROP) returns the property P of the CHEBFUN3 object F 
+%   specified in the string PROP. Valid entries for the string PROP are:
 %   'COLS'
 %   'ROWS' 
 %   'TUBES'

@@ -4,8 +4,8 @@ function h = rdivide(f, g)
 %
 %   F./G returns (1/G)*F if F is a CHEBFUN3 and G is a double.
 %
-%   F./G returns F/G if F is a double and G is a double. This does not work
-%   if G becomes numerically close to zero.
+%   F./G returns F/G if F is a double and G is a CHEBFUN3. This does not 
+%   work if G becomes numerically close to zero.
 %
 % See also CHEBFUN3/LDIVIDE.
 

@@ -1,7 +1,7 @@
 function out = iszero(f)
 %ISZERO   Check if a CHEBFUN3 is identically zero on its domain.
-%   OUT = ISZERO(F) returns 1 if the CHEBFUN3 object F is exactly the zero 
-%   function, and 0 otherwise.
+%   OUT = ISZERO(F) returns logical 1 if the CHEBFUN3 object F is exactly 
+%   the zero function, and logical 0 otherwise.
 %
 % See also CHEBFUN2/ISZERO.
 
