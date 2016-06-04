@@ -418,6 +418,10 @@ classdef  (InferiorClasses = {?chebfun}) treeVar
             h.domain = updateDomain(f, g);
         end
         
+        function f = real(f)
+            f.tree = f.univariate(f.tree, 'real');
+        end
+        
         function f = sec(f)
             f.tree = f.univariate(f.tree, 'sec');
         end
