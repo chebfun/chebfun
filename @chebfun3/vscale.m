@@ -10,19 +10,12 @@ function vscl = vscale(f)
 % [TODO]: Should this also be taking the maximum along the edges when we are
 % evaluating at 1st kind grids. 
 
-
 % If f is an empty CHEBFUN3, VSCL = 0: 
 if ( isempty(f) ) 
     vscl = 0; 
     return
 end
 
-<<<<<<< Updated upstream
-% Check the underlying tech:
-=======
-% Check underlying tech. Currently all three quasimatrix factors have the 
-% same tech. So, we just check this cols.
->>>>>>> Stashed changes
 techCol = get(f.cols.funs{1}, 'tech');
 
 % Get the degree of the CHEBFUN3:

@@ -28,6 +28,7 @@ function varargout = gallery3(name)
 %   griewank     Function with many local minima.  The global
 %                min. is 0 at (0,0,0). [plot(f)]
 %   hoop         Function that is zero along a circle [isosurface(f,.01)]
+%   kummer       Function from algebraic geometry [isosurface(f,-0.15)]
 %   lattice      Balls around a regular lattice of pts [isosurface(f,.5)]
 %   levy         Function with global min. 0 at (1,1,1) [surf(f)]
 %   octant       Function with nontrivial ranks [isosurface(f,0.9)]
@@ -52,8 +53,8 @@ function varargout = gallery3(name)
 if ( nargin == 0 )
     names = {'aurentz', 'barth10', 'bessel', 'cassini', 'clebsch', ...
             'doublehelix', 'genz1', 'genz2', 'genz3', 'genz4', ...
-            'griewank', 'hoop', 'lattice', 'levy', 'octant', 'rastrigin', ...
-            'rosenbrock', 'runge', 'shubert', 'wagon'};
+            'griewank', 'hoop', 'kummer', 'lattice', 'levy', 'octant', ...
+            'rastrigin', 'rosenbrock', 'runge', 'shubert', 'wagon'};
     name = names{randi(length(names))};
     clf
 end
@@ -204,7 +205,20 @@ switch lower(name)
            str=sprintf('%s for f = %2.2f', name, 0.01);
            title(str);           
        end
-
+       
+    case 'kummer'
+       % Kummer's surface
+        fa = @(x,y,z) x.^4 + y.^4 + z.^4 - 0.1*(x.^2 +y.^2 + z.^2) ...
+            - 0.5*(x.^2 .* y.^2 + x.^2.*z.^2 + y.^2.*z.^2) + 0.1*x.*y.*z - 1;
+       
+       f = chebfun3(fa);
+       % Try e.g. isosurface(f,-0.15)
+       if ( nargout == 0 )
+           isosurface(f, -0.15)
+           str=sprintf('%s for f = %2.2f', name, -0.15);
+           title(str);           
+       end
+       
    case 'lattice'
        % cooked up by Trefethen 11 May 2016
        fa = @(x,y,z) cos(2*pi*x).^2 + cos(2*pi*y).^2 + cos(2*pi*z).^2;
@@ -231,7 +245,6 @@ switch lower(name)
             title(str)
         end
         
-
      case 'octant'
          % cooked up by Trefethen 16 May 2016
         fa = @(x,y,z) sqrt(x.^2+y.^2+z.^2);
