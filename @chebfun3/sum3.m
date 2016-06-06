@@ -11,7 +11,7 @@ function I = sum3(f)
 
 % Empty check: 
 if ( isempty(f) ) 
-    I = []; 
+    I = [];
     return; 
 end
 

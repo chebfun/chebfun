@@ -5,7 +5,7 @@ function pass = test_sum3(pref)
 if ( nargin == 0 )
     pref = chebfunpref();
 end
-tol = 1e+4 * pref.cheb3Prefs.chebfun3eps;
+tol = 1e4 * pref.cheb3Prefs.chebfun3eps;
 
 % Check empty case
 pass(1) = isempty(sum3(chebfun3()));

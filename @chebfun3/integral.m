@@ -6,11 +6,18 @@ function I = integral(f, varargin)
 %   I = INTEGRAL(F, G), returns the integral of the CHEBFUN3 object F
 %   along the curve defined by the inf x 3 quasimatrix G. Columns of G 
 %   represent parametrization of the 3D curve. 
+%
+% See also CHEBFUN3/INTEGRAL2, CHEBFUN3/INTEGRAL3, CHEBFUN3/SUM, 
+% CHEBFUN3/SUM2, and CHEBFUN3/SUM3.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% TODO: Surface integral
+% Empty check:
+if ( isempty(f) ) 
+    I = [];
+    return
+end
 
 if ( nargin == 1 )                         % Another way to do sum3(f) 
     %I = integral3(f); 

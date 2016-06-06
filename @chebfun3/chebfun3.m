@@ -227,9 +227,13 @@ methods (Access = public)
     % Line integral of a CHEBFUN3 over a 3D parametric curve.
     out = integral(f, varargin);
     
-    % Surface integral of a CHEBFUN3 over a surface represented as a CHEBFUN2.
+    % Surface integral of a CHEBFUN3 over a parametric surface represented 
+    % as a CHEBFUN2V.
     out = integral2(f, varargin);
         
+    % Integral of a CHEBFUN3 over a restricted cuboid.
+    out = integral3(f, varargin);
+    
     % Average or mean value of a CHEBFUN3 in one direction.
     out = mean(f, varargin);
     
