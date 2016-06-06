@@ -20,7 +20,7 @@ f = singfun(@(x) (1+x).^a.*exp(x), data, pref);
 I = sum(f);
 I_exact = 2.7263886326217359442;
 
-pass(1) = ( abs(I-I_exact) < eps*abs(I_exact) );
+pass(1) = ( abs(I-I_exact) < 2*eps*abs(I_exact) );
 
 % fractional pole at the left endpoint
 data.exponents = [d 0];
