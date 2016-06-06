@@ -2,7 +2,7 @@ function f = sqrt(f)
 %SQRT   Square root of a CHEBFUN3 object.
 %   SQRT(F) returns the square root of a positive CHEBFUN3 object F.
 %
-% See also CHEBFUN3/COMPOSE.
+% See also CHEBFUN3/POWER and CHEBFUN3/COMPOSE.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

@@ -4,10 +4,10 @@ function h = ldivide(f, g)
 %
 %   F.\G returns G\F, if G is double and F is a CHEBFUN3, but this does
 %   not work if F becomes numerically close to zero.
-%
-%   F.\G we do not allow F and G both to be CHEBFUN3 objects.
 % 
 %   F.\G is the same as the command ldivide(F,G).
+%
+% See also CHEBFUN3/RDIVIDE.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

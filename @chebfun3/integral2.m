@@ -4,6 +4,8 @@ function I = integral2(f, S)
 %   parametric surface S defined as a CHEBFUN2V object.
 %
 %   I = INTEGRAL2(F) is the same as I = SUM2(F).
+%
+% See also CHEBFUN3/INTEGRAL.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

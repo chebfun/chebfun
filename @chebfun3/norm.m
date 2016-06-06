@@ -2,12 +2,12 @@ function [normF, normloc] = norm(f, p)
 %NORM   Norm of a CHEBFUN3 object.
 %   NORM(F) = NORM(F,'fro') = sqrt(triple integral of abs(F)^2).
 %   NORM(F, 1) = NOT IMPLEMENTED AS IT NEEDS SPLITTING CAPABILITIES.
-%   NORM(F, inf) = global maximum in absolute value.
-%   NORM(F, max) = global maximum in absolute value.
+%   NORM(F, inf) = global maximum in modulus.
+%   NORM(F, max) is the same as NORM(F, inf).
 %   NORM(F, min) = NOT IMPLEMENTED (NEEDS SPLITTING CAPABILITIES).
 %
-%   Furthermore, the inf norm also returns a second output giving a 
-%   position where the max occurs.
+%   The inf norm also returns a second output giving a position where the 
+%   max occurs.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -17,7 +17,7 @@ if ( nargin == 1 )
     p = 'fro';
 end
 
-if ( isempty( f ) )  
+if ( isempty(f) )  
     % Empty chebfun3.
     normF = [];
     
