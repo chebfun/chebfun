@@ -10,7 +10,6 @@ function g = diffx(f, n)
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
-% [reviewed by LNT 31.05.16]
 
 % Default to first derivative:
 if ( nargin == 1 ) 

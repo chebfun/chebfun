@@ -1,7 +1,7 @@
 function f = cumsum(f, dim)
 %CUMSUM   Indefinite integral of a CHEBFUN3.
 %   F = CUMSUM(F) returns the indefinite integral of a CHEBFUN3 with 
-%   respect to one variable and hence, returns a chebfun3 object. The 
+%   respect to one variable and hence, returns a CHEBFUN3 object. The 
 %   integration is done by default in the x-direction.
 %
 %   F = CUMSUM(F, DIM). If DIM = 1 integration is along the x-direction, if 

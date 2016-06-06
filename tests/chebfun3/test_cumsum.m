@@ -48,4 +48,12 @@ f = sin((x-.1).*(y+.1).*(z+.1));
 pass(25) = norm(cumsum(cumsum(cumsum(f), 2), 3) - cumsum3(f)) < tol; 
 pass(26) = norm(cumsum(cumsum(cumsum(f, 1), 2), 3) - cumsum3(f)) < tol; 
 
+% Look in one direction and make sure we get the right thing:
+f = chebfun(@(x) exp(x));
+f3 = chebfun3(@(x,y,z) exp(x));
+g = cumsum(f);
+g3 = cumsum(f3);
+g3x = g3(:,0,.3);
+pass(27) = norm(g3x-g) < tol;
+
 end

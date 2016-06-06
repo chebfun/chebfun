@@ -7,7 +7,6 @@ function g = diffy(f, n)
 %   in its second argument. This is the same as DIFF(F, N, 2).
 % 
 % See also CHEBFUN3/DIFFX, CHEBFUN3/DIFFZ, and CHEBFUN3/DIFF. 
-% [reviewed by LNT 31.05.16]
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

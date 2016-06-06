@@ -8,6 +8,9 @@ function varargout = subsref(f, index)
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% TODO: Implement vector inputs like f(0,0,0:1).  This kind of input
+% is permitted in Chebfun2.
+
 idx = index(1).subs;
 switch index(1).type
     case '()'
