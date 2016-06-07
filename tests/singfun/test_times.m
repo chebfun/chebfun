@@ -123,7 +123,7 @@ vals_h = feval(h, x);
 h_exact = @(x) sin(x).*(1-x).^b.*cos(x).^3.*(1+x).^(b+p);
 vals_exact = feval(h_exact, x);
 err = norm((vals_h - vals_exact)./(vals_exact), inf);
-tol = 1e2*eps;
+tol = 1e3*eps;
 
 pass(9) = all( err < tol );
 
