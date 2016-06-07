@@ -5,7 +5,7 @@ function varargout = gallerydisk(name)
 %
 %   For example,  plot(cheb.gallerydisk('yinyang')) plots Grady Wright's
 %   yin-yang function.  For details of how each function is constructed,
-%   try type +cheb/gallerydisk or edit cheb.gallerydisk.
+%   try constructed, try type +cheb/gallery2 or edit cheb.gallerydisk.
 %
 %   [F,FA] = CHEB.GALLERYDISK(NAME) also returns the anonymous function FA 
 %   used to define the function.  If the arguments are (t,r), the diskfun
@@ -27,8 +27,9 @@ function varargout = gallerydisk(name)
 %   yinyang    Yin-yang function
 %   peaks      A scaled version of the MATLAB 'peaks' function
 %   challenge  Zooms in on a portion of the function from SIAM 100-digit challenge
-%   roundpeg
-%   squarepeg
+%   roundpeg   Approx characteristic function of a disk, rank 1
+%   squarepeg  Approx characteristic function of a square, rank 33
+%   tiltedpeg  A tilted variant of squarepeg, rank 34
 %   Gallery functions are subject to change in future releases of Chebfun.
 %
 % See also CHEB.GALLERY, CHEB.GALLERYTRIG, CHEB.GALLERY2, CHEB.GALLERY3
@@ -41,7 +42,7 @@ function varargout = gallerydisk(name)
 % from the gallery.
 if ( nargin == 0 )
     names = {'challenge','flower','peaks','poisson', ...
-           'roundpeg','squarepeg','wave','yinyang'};
+           'roundpeg','squarepeg','tiltedpeg', 'wave','yinyang'};
     name = names{randi(length(names))};
 end
 
@@ -80,6 +81,13 @@ switch lower(name)
         fa = @(x,y) 1./((1+(2*x).^20).*(1+(2*y).^20));
         f = diskfun(fa,'cart');
         
+    case 'tiltedpeg'    % A tilted version of squarepeg
+         fa = @(x,y) 1./((1+(2*x+.4*y).^20).*(1+(2*y-.4*x).^20));
+         f = diskfun(fa, 'cart');
+         
+    case 'ellipsepeg' %an ellipse-shaped peg
+         fa   = @(t,r)1./(1+(4*((r.*cos(t)).^2+.5*(r.*sin(t)).^2)).^20);
+         f = diskfun(fa);    
     case 'wave'
         fa = @(x,y) cos(20*x+5*y).^2.*(1-(x.^2+y.^2));
         f = diskfun(fa,'cart');
@@ -87,6 +95,8 @@ switch lower(name)
     case 'yinyang'    % a function created by Grady Wright
         fa = @(t,r) -cos(((sin(pi*r).*cos(t) + sin(2*pi*r).*sin(t)))/4);
         f = diskfun(fa);
+
+
 
     % Raise an error if the input is unknown.
     otherwise
