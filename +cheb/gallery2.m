@@ -22,8 +22,8 @@ function varargout = gallery2(name)
 %   challenge    Function from SIAM 100-digit challenge
 %   peaks        Classic MATLAB peaks function
 %   rosenbrock   Challenging test function in optimization
-%   smokering    A halo, hoop, or hole
 %   roundpeg     Approx characteristic function of a disk, rank 45
+%   smokering    A halo, hoop, or hole
 %   squarepeg    Approx characteristic function of a square, rank 1
 %   tiltedpeg    A tilted variant of squarepeg, rank 100
 %   waffle       Function with horizontal and vertical ridges
@@ -40,7 +40,8 @@ function varargout = gallery2(name)
 % random from the gallery.
 if ( nargin == 0 )
     names = {'airyreal', 'airycomplex', 'challenge', 'bump', 'peaks', ...
-        'rosenbrock', 'smokering', 'squarepeg', 'tiltedpeg', 'waffle'};
+        'rosenbrock', 'roundpeg', 'smokering', 'squarepeg', 'tiltedpeg', ...
+        'waffle'};
     name = names{randi(length(names))};
 end
 
@@ -81,14 +82,14 @@ switch lower(name)
         fa = @(x,y) (1-x).^2 + 100*(y-x.^2).^2;
         f = chebfun2(fa, [-2 2 -1 3]);
 
-    % A halo, hoop, or hole:
-    case 'smokering'
-        fa = @(x,y) exp(-100*(x.^2 - x.*y + 2*y.^2 - 1/2).^2);
-        f = chebfun2(fa);
-
     % Approximately the characteristic function of a disk:
     case 'roundpeg'
         fa = @(x,y) 1./(1+((2*x).^2+(2*y).^2).^10);
+        f = chebfun2(fa);
+        
+    % A halo, hoop, or hole:
+    case 'smokering'
+        fa = @(x,y) exp(-100*(x.^2 - x.*y + 2*y.^2 - 1/2).^2);
         f = chebfun2(fa);
 
     % Approximately the characteristic function of a square:
