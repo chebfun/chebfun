@@ -21,7 +21,7 @@ end
 dom = F.domain;                           % Domain
 r = size(F.core); % For the zero function we still expect to 
 % see that the core tensor is 1 x 1 x 1, rather than 0 x 0 x 0.
-if numel(r)<3
+if ( numel(r) < 3 )
     r = [r, 1];
 end
 r1 = r(1); r2 = r(2); r3 = r(3);

@@ -81,7 +81,7 @@ allCores(1:r1f, 1:r2f, 1:r3f) = fCore;
 allCores(r1f+1:end, r2f+1:end, r3f+1:end) = gCore;
 allCores = chebfun3.txm(chebfun3.txm(chebfun3.txm(allCores, RCols, 1), ...
     RRows, 2), RTubes, 3);
-[core, U1, U2, U3] = chebfun3.discrete_hosvd(allCores);
+[core, U1, U2, U3] = chebfun3.discreteHOSVD(allCores);
 
 % No truncation yet
 % % Compress the format if possible. Warning: In contrast to 2D, truncating

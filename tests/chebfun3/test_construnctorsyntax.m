@@ -58,7 +58,7 @@ pass(7) = all(g.domain == [-2 1 -2 1 -2 1]);
 % Construction with a specified rank
 f = chebfun3(ff);
 [rX_f, rY_f, rZ_f] = rank(f);
-g = chebfun3(ff, 'rank', 1e-7);
+g = chebfun3(ff, 'rank', [rX_f-1, rY_f-1, rZ_f-1]);
 [rX_g, rY_g, rZ_g] = rank(g);
 pass(8) = rX_g < rX_f && rY_g < rY_f && rZ_g < rZ_f;
 pass(9) = all(g.domain == [-1 1 -1 1 -1 1]);
@@ -66,14 +66,14 @@ pass(9) = all(g.domain == [-1 1 -1 1 -1 1]);
 % Construction with a specified rank on a given domain:
 f = chebfun3(ff, [-2 1 -2 1 -2 1]);
 [rX_f, rY_f, rZ_f] = rank(f);
-g = chebfun3(ff, 'rank', 1e-7, [-2 1 -2 1 -2 1]);
+g = chebfun3(ff, 'rank', [rX_f-1, rY_f-1, rZ_f-1], [-2 1 -2 1 -2 1]);
 [rX_g, rY_g, rZ_g] = rank(g);
 pass(10) = rX_g < rX_f && rY_g < rY_f && rZ_g < rZ_f;
 pass(11) = all(g.domain == [-2 1 -2 1 -2 1]);
 
 % Construction with a specified rank on a given domain with inputs in the 
 % reverse order:
-g = chebfun3(ff, [-2 1 -2 1 -2 1], 'rank', 1e-7);
+g = chebfun3(ff, [-2 1 -2 1 -2 1], 'rank', [5 6 7]);
 [rX_g, rY_g, rZ_g] = rank(g);
 pass(12) = rX_g < rX_f && rY_g < rY_f && rZ_g < rZ_f;
 pass(13) = all(g.domain == [-2 1 -2 1 -2 1]);

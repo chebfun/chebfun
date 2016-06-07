@@ -41,7 +41,7 @@ end
 % Compute the hosvd of the discrete tensor f.core:
 tempCore = chebfun3.txm(chebfun3.txm(chebfun3.txm(f.core, R1, 1), R2, ...
     2), R3, 3);
-[core, U1, U2, U3] = chebfun3.discrete_hosvd(tempCore);
+[core, U1, U2, U3] = chebfun3.discreteHOSVD(tempCore);
 
 % Create a cell of modal singular values:
 % Compute mode-1 singular values:

@@ -50,7 +50,7 @@ elseif ( isa(op, 'double') )   % CHEBFUN3( DOUBLE )
     f = constructFromDouble(op, dom, pref, isEqui);
     if ( fixedRank )
         % Simplify the rank if requested.
-        f = simplify(f , 'rank', fixedRank);
+        f = fixTheRank(f , fixedRank);
     end
     return
 end
@@ -466,9 +466,9 @@ elseif ( fiberDim == 2 )
     % [2 3 1] brings the original [3 1 2] permutation back to [1 2 3].
 end
 
-if ( fixedRank )
-    % Simplify the rank if asked. This truncates using HOSVD.
-    f = simplify(f , 'rank', fixedRank);
+if ( all(fixedRank) )
+    % Truncate if requested.
+    f = fixTheRank(f , fixedRank);
 end
 
 end
@@ -1135,6 +1135,79 @@ else
 end
 
 end
+%%
+
+function f = fixTheRank(f , fixedRank)
+% Fix the rank of a CHEBFUN3. Used for calls to constructor with specified 
+% rank.
+
+if ( any(fixedRank) < 0 )
+    error('CHEBFUN:CHEBFUN3:constructor:fixTheRank:negative', ...
+        'Ranks should all be nonnegative.')
+elseif ( all(fixedRank) )
+    [r1, r2, r3] = rank(f);
+    t1 = fixedRank(1);
+    t2 = fixedRank(2);
+    t3 = fixedRank(3);
+    
+    % What to do with cols?
+    if ( r1 > t1 )
+        % Truncate cols:
+        f.cols = f.cols(:, 1:t1);
+        f.core = f.core(1:t1, :, :);
+        r1 = t1; % New size of core
+    elseif ( r1 < t1 )
+        % Pad cols with approprate number of zero cols:
+        zCols = chebfun(0, f.cols.domain);
+        for jj = r1 : t1 - 1
+            f.cols = [f.cols zCols];
+        end
+        % Pad mode 1 of the core tensor with zeros:
+        tempCore = zeros(t1, r2, r3);
+        tempCore(1:r1, :, :) = f.core;
+        f.core = tempCore;
+        r1 = t1; % New size of core
+    end
+    
+    % What to do with rows?
+    if ( r2 > t2 )
+        % Truncate rows:
+        f.rows = f.rows(:,1:t2);
+        f.core = f.core(:, 1:t2, :);
+        r2 = t2; % New size of core
+    elseif ( r2 < t2 )
+        % Pad rows with approprate number of zero rows:
+        zRows = chebfun(0, f.rows.domain);
+        for jj = r2 : t2 - 1        
+            f.rows = [f.rows zRows];
+        end
+        % Pad mode 2 of the core tensor with zeros:
+        tempCore = zeros(r1, t2, r3);
+        tempCore(:, 1:r2, :) = f.core;
+        f.core = tempCore;
+        r2 = t2; % New size of core
+    end
+    
+    % What to do with tubes?
+    if ( r3 > t3 )
+        % Truncate tubes:
+        f.tubes = f.tubes(:, 1:t3);
+        f.core = f.core(:, :, 1:t3);
+    elseif ( r3 < t3 )
+        % Pad tubes with approprate number of zero tubes:
+        zTubes = chebfun(0, f.tubes.domain);
+        for jj = r3 : t3 - 1
+            f.tubes = [f.tubes zTubes];
+        end
+        % Pad mode 3 of the core tensor with zeros:
+        tempCore = zeros(r1, r2, t3);
+        tempCore(:, :, 1:r3) = f.core;
+        f.core = tempCore;
+    end
+end
+
+end
+
 %%
 function f = constructFromDouble(op, dom, pref, isEqui)
 

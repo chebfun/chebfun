@@ -119,7 +119,7 @@ methods (Access = public, Static = true)
     varargout = myind2sub(varargin);
     
     % HOSVD of discrete tensors.
-    varargout = discrete_hosvd(varargin);
+    varargout = discreteHOSVD(varargin);
     
 end
 
@@ -286,7 +286,7 @@ end
 methods
     
     % Unary plus for a CHEBFUN3.
-    out = uplus(f, g);
+    out = uplus(f);
     
     % Plus for CHEBFUN3 objects.
     out = plus(f, g, tol);

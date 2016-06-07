@@ -1,6 +1,6 @@
-function [core, U1, U2, U3] = discrete_hosvd(T)
-%DISCRETE_HOSVD   The Higher order SVD of a discrete tensor of order 3.
-%   DISCRETE_HOSVD computes the HOSVD of a discrete tensor as introduced in
+function [core, U1, U2, U3] = discreteHOSVD(T)
+%DISCRETEHOSVD   The Higher order SVD of a discrete tensor of order 3.
+%   DISCRETEHOSVD computes the HOSVD of a discrete tensor as introduced in
 %
 %   L. De Lathauwer, B. De Moor and J. Vandewalle, A multilinear singular 
 %   value decomposition, SIMAX 21 (2000) 1253-1278.
