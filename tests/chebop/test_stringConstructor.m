@@ -4,7 +4,6 @@ function pass = test_stringConstructor(~)
 
 %% Linear problem, no x dependence
 % String syntax
-tic
 L1 = chebop('u``+u',[0 5]);
 L1.lbc = 1;
 L1.rbc = 2;
@@ -68,3 +67,6 @@ u2 = N2\0;
 
 % These should be identical!
 pass(4) = norm(u1-u2) == 0;
+
+%% Coupled system, no x depedence
+N1 = chebop(

@@ -148,7 +148,8 @@ for k = numel(varNames):-1:1
     end
 end 
 
-% String for independent variable names (if they appear).
+% String for independent variable names (if they appear in the problem). This
+% will allow us to return a function that starts with @(x,u)...
 if ( isempty(indVarNames{1}) )
     indVarString = '';
 elseif ( isempty(indVarNames{2}) )
@@ -175,7 +176,7 @@ end
 
 % Also return the lambda part if we are in EIG mode
 if ( strcmp(problemType, 'eig') && ~isempty(anFunLambda) )
-    anFunLambdaComplete = ['@(' varString ') ' anFunLambda];
+    anFunLambdaComplete = ['@(' indVarString varString ') ' anFunLambda];
     anFunComplete = {anFunComplete ; anFunLambdaComplete};
     anFun = {anFun ; anFunLambda};
 end

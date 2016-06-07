@@ -35,6 +35,16 @@ classdef (InferiorClasses = {?double}) chebop
 % number of dependent variables, whether specified as names or CHEBMATRIX
 % elements (see section on parameter-dependent problems below).
 %
+% For scalar problems, it is possible to specify the OP of a CHEBOP with a
+% string, where a backtick (`) is used to denote a derivative. The two scalar
+% problems above could thus be specified as
+%
+%       N.op = 'x*u` + u'
+%       N.op = 'u`` - exp(u)'
+%
+% Internally, CHEBOP will convert the string expressions to the corresponding
+% anonymous function.
+%
 % By default, the operator acts on CHEBFUN objects defined on the domain [-1,1].
 % CHEBOP(OP, D), for a vector D, gives a different domain, with breakpoints (if
 % any) described by D.
