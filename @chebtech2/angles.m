@@ -11,9 +11,7 @@ function out = angles(n)
 if ( n == 0 )
     out = [];
     return
-end
-
-if ( n == 1 )
+elseif ( n == 1 )
     out = pi/2;
     return 
 end
