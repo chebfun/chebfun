@@ -67,6 +67,3 @@ u2 = N2\0;
 
 % These should be identical!
 pass(4) = norm(u1-u2) == 0;
-
-%% Coupled system, no x depedence
-N1 = chebop(
