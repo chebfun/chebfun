@@ -7,7 +7,7 @@ if ( nargin == 0 )
 end
 
 tol = 1e-10;
-pref.errTol = tol;
+pref.bvpTol = tol;
 dom = [-1 1];
 
 %%
@@ -19,7 +19,7 @@ N.bc = @(x,u) [u(-1); u(1)];
 x = chebfun(@(x) x, dom);
 N.init =  2.*(x.^2-1).*(1-2./(1+20.*x.^2));
 
-u = solveBVP(N, rhs, pref);
+u = solvebvp(N, rhs, pref);
 
 xx = (-1:.25:1)';
 hiquality_ans = [

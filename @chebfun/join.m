@@ -14,7 +14,7 @@ function f = join(varargin)
 %
 % See also HORZCAT, VERTCAT.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Trivial cases:
@@ -32,7 +32,7 @@ numEls = cellfun(@numel, varargin);
 if ( any(numCols > 1) )
     args = cellfun(@cheb2cell, varargin, 'UniformOut', false);
     try
-        args = reshape([args{:}], nargin, max(size(args{1})));
+        args = reshape([args{:}], max(size(args{1})), nargin);
     catch
         error('CHEBFUN:CHEBFUN:join:dim', 'Matrix dimensions must agree.');
     end

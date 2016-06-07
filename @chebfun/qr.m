@@ -4,161 +4,111 @@ function [Q, R] = qr(A, econ)
 %   produces a column CHEBFUN Q with n orthonormal columns and an n x n upper
 %   triangular matrix R such that A = Q*R.
 %
-%   The algorithm used is described in L.N. Trefethen, "Householder
-%   triangularization of a quasimatrix", IMA J. Numer. Anal. (30), 887-897
-%   (2010).
-%
 % See also SVD, MRDIVIDE, RANK.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Developer note:
-%  If A contains only a single FUN, then FUN/QR is used directly. If A has
-%  multiple pieces but each of these are simple CHEBTECH objects, then
-%  QRSIMPLE() is called. This violates OOP principles, but is _much_ more
-%  efficient.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Check inputs
+% Check inputs:
 if ( (nargin == 2) && (econ ~= 0) )
     error('CHEBFUN:CHEBFUN:qr:twoargs',...
-      'Use qr(A) or qr(A, 0) for QR decomposition of an array-valued CHEBFUN.');
-end
-if ( A(1).isTransposed )
+      ['Use qr(A) or qr(A, 0) for QR decomposition of an array-valued ' ...
+      'CHEBFUN or quasimatrix']);
+elseif ( A(1).isTransposed )
     error('CHEBFUN:CHEBFUN:qr:transpose',...
         'CHEBFUN QR works only for column CHEBFUN objects.')
-end
-if ( ~all(isfinite(A(1).domain)) )
+elseif ( ~all(isfinite(A(1).domain)) )
     error('CHEBFUN:CHEBFUN:qr:infdomain', ...
         'CHEBFUN QR does not support unbounded domains.');
 end
 
-numCols = size(A,2);
-
-if ( numel(A) > 1 )
-    % Quasimatrix case:
-
-    isSimple = true;
-    for k = 1:numel(A)
-        %isSimple = isSimple && all(cellfun(@(f) isa(f.onefun, 'chebtech'), A(k).funs));
-        isSimple = isSimple && ~isdelta(A(k)) ...
-            && all(cellfun(@(f) isa(f.onefun, 'chebtech'), A(k).funs));
-    end
-
-    if ( isSimple )
-        % Simple case = all FUNs are simple (i.e., use CHEBTECHs).
-        % Convert to an array-valued CHEBFUN:
-        A = quasi2cheb(A);
-        [Q, R] = qr(A, 0);
-        
+numCols = numColumns(A);
+if ( numCols == 1 )
+    % Trivial case: If A has only one column we simply scale it.
+    R = sqrt(innerProduct(A, A));
+    if ( R ~= 0 )
+       Q = A./R;
     else
-        % Legendre matrix:
-        E = legpoly(0:numCols-1, domain(A), 'norm', 1);
-        E = restrict(E, get(A, 'domain'));
-        % Convert the Legendre-Vandermonde matrix to a quasimatrix:
-        E = cheb2quasi(E);
-        % Call abstract QR:
-        [Q, R] = abstractQR(A, E, @innerProduct, @normest);
+       Q = 1./sqrt(diff(A.domain)) + 0*A;
     end
-
-elseif ( numel(A.funs) == 1 )
-    % No breakpoints = easy case.
+    return
+end
+    
+% Attempt to convert to an array-valued CHEBFUN:
+[A, isArrayValued] = quasi2cheb(A);
+    
+if ( isArrayValued && (numel(A.funs) == 1) )
+    % Array-valued CHEBFUN with a single FUN.
     
     % Call QR at the FUN level:
     [Q, R] = qr(A.funs{1});
     Q = chebfun({Q});
+
+elseif ( isArrayValued )   
+    % Array-valued CHEBFUN with multiple FUNS.
     
-elseif ( size(A, 2) == 1 )
-    % If f has only one column we simply scale it.
-    R = sqrt(innerProduct(A, A));
-    Q = A./R;
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Developer note:
+    %   Here we essentially use a panel-factored QR which allows us to do a QR
+    %   factorization on each fun individually and then combine the result.
+    %   Here's an example of this in a 2-FUN case:
+    %    [A1] = [Q1*R^1] = [Q1 0][R^1] = [Q1 0][Q^1 ~][R] = [Q1*Q^1]R
+    %    [A2] 1 [Q2*R^2]   [0 Q2][R^2] 2 [0 Q2][Q^2 ~][0] 3 [Q2*Q^2]
+    %                                  ^
+    %                               here [Q^:=Qhat, R] = qr(Rhat:=[R^1;R^2])
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-elseif ( all(cellfun(@(f) isa(f.onefun, 'chebtech'), A.funs)) )
-    % Simple case = all FUNs are simple (i.e., use CHEBTECHs).
-    %   (If all the FUN objects have .onefuns which are CHEBTECHs, we can use a
-    %   much more efficient approach. Note, this completely violates OOP
-    %   principles, but the performance gain is worth it.)
+    numFuns = numel(A.funs);
 
-    % NOTE: We must use STRCMP here to get the expected behaviour.
-    if ( strcmp(class(A.funs{1}.onefun), 'chebtech1') )  %#ok<STISA>
-        chebType = 1;
-    else
-        chebType = 2;
+    % Step 1: Perform QR on each piece.
+    Q = cell(numFuns, 1); Rhat = Q;
+    for k = 1:numFuns
+        [Q{k}, Rhat{k}] = qr(A.funs{k});
     end
-    [Q, R] = qrSimple(A, chebType);
+    
+    % Step 2: Compute [Qhat, R] = qr(Rhat),
+    [Qhat, R] = qr(cell2mat(Rhat));
+    R = R(1:numCols,:);       % Extract first block row.
+    Qhat = Qhat(:,1:numCols); % Extract first block column.
+
+    % Step 2b: Ensure the diagonal is non-negative. (A = QR = (Q*S)*(S*R))
+    s = sign(diag(R)); s(~s) = 1;
+    S = spdiags(s, 0, numCols, numCols);
+    Qhat = Qhat*S;
+    R = S*R;
+
+    % Step 2c: Separate the segments of Qhat back into a cell.
+    m = cellfun(@(v) size(v, 1), Rhat); % m(k) = length of A.FUN{k}.
+    Qhat = mat2cell(Qhat, m, numCols);
+    
+    % Step 3: Fold Qhat back in to Q.
+    Q = cellfun(@mtimes, Q, Qhat, 'UniformOutput', false);
+    
+    % Construct a new CHEBFUN from the computed FUNS:
+    Q = chebfun(Q);
     
 else
-    % Work in the general continuous setting:
-    
+    % Quasimatrix case (tricky/slow):
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Developer note:
+    %   Currently (5th Feb 2016) the only way this is reachable is in the
+    %   case of a quasimatrix consisting of SINGFUN or DELTAFUN objects,
+    %   neither of which return anything sensible when we attempt to compute
+    %   a QR factorization. Try for example
+    %    x = chebfun('x', [0 1]);
+    %    qr([1 x sqrt(x)])
+    %
+    %   This case is not tested (which is OK)
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
     % Legendre-Vandermonde matrix:
-    E = legpoly(0:numCols-1, A.domain, 'norm', 1);
-    [A, E] = overlap(A, E);
+    L = legpoly(0:numCols-1, domain(A), 'norm', 1);
+    % Convert so that L is also quasimatrix:
+    L = cheb2quasi(L);
     % Call abstract QR:
-    [Q, R] = abstractQR(A, E, @innerProduct, @normest);
-    
-end
+    [Q, R] = abstractQR(A, L, @innerProduct, @normest);
 
 end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function [Q, R] = qrSimple(A, chebType)
-% This implementation is fast, but relies on the fact that everything is a
-% CHEBTECH on a bounded domain at heart.
-A = simplify(A);
-    
-% Get some useful values
-numCols = numColumns(A);
-tol = epslevel(A)*vscale(A);
-dom = A.domain;
-a = dom(1);
-b = dom(end);
-numFuns = length(dom) - 1;
-
-% Get the sizes of the funs in the columns of A, keeping in mind that we
-% will have to multiply with the columns of E and the norm of A's columns.
-sizes = zeros(numFuns, 1);
-for j = 1:numFuns
-    sizes(j) = 2*max(length(A.funs{j}), numCols);
-    A.funs{j}.onefun = prolong(A.funs{j}.onefun, sizes(j));
-end
-
-% Create the Chebyshev nodes and quadrature weights:
-[pts, w] = chebpts(sizes, dom, chebType);
-
-% Define the inner product as an anonymous function:
-ip = @(f, g) w * (conj(f) .* g);
-
-% Make the discrete analog of A:
-A = get(A, 'values');
-if ( iscell(A) )
-    A = cell2mat(A);
-end
-
-% Generate a discrete E (Legendre-Chebyshev-Vandermonde matrix) directly:
-xx = (pts - a)/(b - a) - (b - pts)/(b - a);  % Unscale the Chebyshev points.
-E = ones(size(A));
-E(:,2) = xx;
-for k = 3:numCols % Recurrence relation:
-    E(:,k) = ((2*k - 3)*xx.*E(:,k-1) - (k - 2)*E(:,k-2)) / (k - 1);
-end
-% Scaling:
-for k = 1:numCols
-    E(:,k) = E(:,k) * sqrt((2*k - 1) / (b - a));
-end
-
-[Q, R] = abstractQR(A, E, ip, @(v) norm(v, inf), tol);
-
-% Construct a CHEBFUN from the discrete values:
-pref = chebfunpref();
-if ( chebType == 1 )
-    pref.tech = @chebtech1;
-else
-    pref.tech = @chebtech2;
-end
-Q = mat2cell(Q, sizes, numCols);
-Q = chebfun(Q, dom, pref);
 
 end

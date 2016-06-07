@@ -7,7 +7,7 @@ function g = restrict(f, s)
 %   a cell-array of BNDFUN objects, where the cells contain F restricted to each
 %   of the subintervals defined by S.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with empty case:
@@ -17,7 +17,7 @@ if ( isempty(f) )
 end
 
 % Check if s is actually a subinterval:
-hs = diff(f.domain)*max(max(get(f, 'epslevel')), eps); % Some wiggle room.
+hs = diff(f.domain)*eps; % Some wiggle room.
 if ( s(1) < f.domain(1) )
     if ( abs(s(1) - f.domain(1)) < hs )
         s(1) = f.domain(1);

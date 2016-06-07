@@ -16,15 +16,17 @@ function F = diff(F, n, dim)
 %   DIFF(F, N, 2) is the Nth-order finite difference of F along its columns if
 %   F is a column CHEBFUN and the Nth derivative of F if F is a row CHEBFUN.
 %
+%   DIFF(F, MU), when MU is not an integer returns the MUth Riemann-Liouville
+%   fractional derivative of the CHEBFUN F. DIFF(F, MU, 'Caputo') uses instead
+%   the Caputo definition. See [1] for definitions. In either case, an error is
+%   thrown if F is not smooth or is defined on an unbounded domain.
+%
 % See also SUM, CUMSUM.
 
-%   [TODO]: Fractional derivatives. DIFF(F, ALPHA), when ALPHA is not an
-%   integer, offers some support for fractional derivatives (of degree ALPHA) of
-%   F. For ALPHA > 1 the Riemann- Liouville definition is used by default. On
-%   can switch to the Caputo definition with a call of the form DIFF(F, ALPHA,
-%   'Caputo'). [Requires SINGFUN].
+% References:
+%  [1] http://en.wikipedia.org/wiki/Fractional_calculus#Fractional_derivatives
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Trivial case:
@@ -40,16 +42,13 @@ if ( nargin < 3 )
     dim = 1;
 end
 
-if ( ~any(dim == [1, 2]) )
+if ( isnumeric(dim) && ~any(dim == [1, 2]) )
     error('CHEBFUN:CHEBFUN:diff:dim', 'Dimension must either be 1 or 2.');
 end
     
 if ( round(n) ~= n )
-    % Fractional integral:
-    % [TODO]: Implement this!
-    error('CHEBFUN:CHEBFUN:diff:notImplemented', ...
-        'Fractional derivatives not yet implemented.');
-    F = fracCalc(F, n);
+    % Fractional derivative:
+    F = fracDiff(F, n, dim);
     return
 end
 
@@ -168,7 +167,8 @@ f.pointValues = pointValues;
             data.domain = f.domain;
             data.deltaMag = deltaMag.'/2;
             data.deltaLoc = f.domain;
-            f = deltafun(f, data, pref);
+            % Add new delta functions to the existing fun:
+            f = deltafun(0, data, pref) + f;
         end
     end
 

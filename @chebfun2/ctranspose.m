@@ -1,17 +1,13 @@
-function f = ctranspose( f )
+function varargout = ctranspose(varargin)
 %'	 Complex conjugate transpose of a CHEBFUN2.
 %   F' is the complex conjugate transpose of F.
-%   G = CTRANSPOSE(F) is called for the syntax F'.  
+%   G = CTRANSPOSE(F) is called for the syntax F'.
 %
 % See also CONJ, TRANSPOSE.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Take conj part:
-f = conj( f ); 
-
-% Call transpose:
-f = transpose( f ); 
+[varargout{1:nargout}] = ctranspose@separableApprox(varargin{:});
 
 end

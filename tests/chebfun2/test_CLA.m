@@ -1,11 +1,10 @@
 function pass = test_CLA( pref )
-% Try out some basic continuous linear algebra. Mainly checking
-% epslevels...
+% Try out some basic continuous linear algebra.
 
 if ( nargin < 1 )
     pref = chebfunpref; 
 end
-tol = 200*pref.eps; 
+tol = 200*pref.cheb2Prefs.chebfun2eps;
 
 seedRNG(0)
 gam = 10;

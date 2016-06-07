@@ -1,10 +1,10 @@
 'Kuramoto-Sivashinsky equation'
 'scalar'
-domain = '[-1 1]';
+domain = '[-2 2]';
 t = '0:.01:2';
 DE = 'u_t = u*u'' - u" - 0.006*u""';
-LBC = {'u  = 1','u'' = 2'}; RBC = {'u  = 1','u'' = 2'};
+LBC = 'periodic'; RBC = 'periodic';
 init = 'u = 1 + 0.5*exp(-40*x.^2)';
 tol = '1e-4'; plotting = 'on';
-fixYaxisLower = '-30'; fixYaxisUpper = '30';
+fixYaxisLower = '-40'; fixYaxisUpper = '40';
 type  = 'pde';

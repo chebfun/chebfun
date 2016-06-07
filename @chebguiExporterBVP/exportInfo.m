@@ -11,7 +11,7 @@ function expInfo = exportInfo(guifile)
 %   EXPINFO:    A struct, containing fields with information for exporting to an
 %               .m-file.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Extract information from the GUI fields
@@ -90,8 +90,12 @@ else
 end
 
 % What discretization option do we want?
-discretization = chebguiExporter.discOption(periodic, ...
+discretization = chebguiExporter.discOption(periodic, dom, ...
     guifile.options.discretization);
+
+% Add spaces to DOM and ALLVARSTRING so it looks nices once we export
+dom = strrep(dom, ',', ', ');
+allVarString = strrep(allVarString, ',', ', ');
 
 %% Fill up the expInfo struct
 expInfo.dom = dom;
@@ -104,6 +108,7 @@ expInfo.allVarNames = allVarNames;
 expInfo.indVarNameSpace = indVarNameSpace;
 expInfo.periodic = periodic;
 expInfo.useLatest = useLatest;
+expInfo.numVars = length(allVarNames);
 
 % Information related to options set-up
 expInfo.tol = guifile.tol;

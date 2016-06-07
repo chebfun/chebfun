@@ -12,7 +12,7 @@ function r = roots(f, varargin)
 %
 % See also ONEFUN. [TODO]: Why may we also want to see ONEFUN?
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with empty case:

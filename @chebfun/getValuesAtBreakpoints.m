@@ -6,7 +6,7 @@ function vals = getValuesAtBreakpoints(funs, ends, op)
 %   limits of its neighbouring funs for interior breaks and the limits from the
 %   left and right for the VALS(1) and VALS(end), respectively.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Determine the number of intervals:
@@ -27,12 +27,12 @@ vals = zeros(numFuns+1, numCols);
 if ( (nargin < 3) || isnumeric(op) || iscell(op) )
     % Function handle not provided.
 
-    vals(1,:) = get(funs{1}, 'lval');
+    vals(1,:) = lval(funs{1});
     % Take the mean of the FUNs on either side of the break:
     for k = 2:numFuns
-        vals(k,:) = (get(funs{k-1}, 'rval') + get(funs{k}, 'lval'))/2;
+        vals(k,:) = ( rval(funs{k-1}) + lval(funs{k})) / 2;
     end
-    vals(numFuns+1,:) = get(funs{numFuns}, 'rval');
+    vals(numFuns+1,:) = rval(funs{numFuns});
 
 else
     % Function handle provided.
@@ -49,19 +49,19 @@ else
     
     mask = isnan(vals(1:numFuns+1,:));
     if ( any(mask(1,:)) )
-        lvals = get(funs{1}, 'lval');
+        lvals = lval(funs{1});
         vals(1,mask(1,:)) = lvals(mask(1,:));
     end
     
     for k = 2:numFuns
         if ( any(mask(k,:)) )
-            lrvals = (get(funs{k-1}, 'rval') + get(funs{k}, 'lval'))/2;
+            lrvals = (rval(funs{k-1}) + lval(funs{k}))/2;
             vals(k,mask(k,:)) = lrvals(mask(k,:));
         end
     end
     
     if  ( any(mask(numFuns+1,:)) )
-        rvals = get(funs{numFuns}, 'rval');
+        rvals = rval(funs{numFuns});
         vals(numFuns+1,mask(numFuns+1,:)) = rvals(mask(numFuns+1,:));
     end
     

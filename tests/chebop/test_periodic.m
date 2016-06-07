@@ -82,7 +82,7 @@ dom = [0 2*pi];
 L = chebop(@(u) diff(u) + u, dom);
 f = chebfun(@(x) cos(x), dom);
 
-% Solve with TRIGTECH technology.
+% Solve with TRIGCOLLOC.
 L.bc = 'periodic';
 u = L \ f;
 
@@ -102,7 +102,7 @@ f = chebfun(@(x) cos(2*x), dom);
 L = chebop(@(x, u) diff(u) + (1 + cos(x)).*u, dom); 
 L.bc = 'periodic';
 
-% Solve with TRIGTECH technology.
+% Solve with TRIGCOLLOC.
 u = L \ f;
 
 pass(7) = norm(L*u - f) < tol;
@@ -121,7 +121,7 @@ L = chebop(@(u) diff(u, 2) + a*diff(u) + b*u, dom);
 L.bc = 'periodic';
 f = chebfun(@(x) cos(x), dom);
 
-% Solve with TRIGTECH technology.
+% Solve with TRIGCOLLOC.
 u = L \ f;
 
 % Compare with exact solution.
@@ -144,7 +144,7 @@ f = chebfun(@(x) cos(x), dom);
 L = chebop(@(u) a.*diff(u, 2) + b.*diff(u) + c.*u, dom);
 L.bc = 'periodic';
 
-% Solve with TRIGTECH technology.
+% Solve with TRIGCOLLOC.
 u = L \ f;
 
 pass(12) = norm(L*u - f) < tol;
@@ -168,7 +168,7 @@ f = chebfun(@(x) cos(x), dom);
 L = chebop(@(u) a.*diff(u, 3) + b.*diff(u, 2) + c.*diff(u) + d.*u, dom);
 L.bc = 'periodic';
 
-% Solve with TRIGTECH technology.
+% Solve with TRIGCOLLOC.
 u = L \ f;
 
 pass(16) = norm(L*u - f) < tol;
@@ -195,7 +195,7 @@ L = chebop(@(u) a.*diff(u, 4) + b.*diff(u, 3) + c.*diff(u, 2) + ...
     d.*diff(u) + e.*u, dom);
 L.bc = 'periodic';
 
-% Solve with TRIGTECH technology.
+% Solve with TRIGCOLLOC.
 u = L \ f;
 
 pass(21) = norm(L*u - f) < tol;
@@ -216,9 +216,7 @@ u = L \ f;
 
 pass(27) = norm(L*u - f) < tol;
 pass(28) = abs(u(dom(1)) - u(dom(end))) < tol;
-discPreference = cheboppref().discretization();
-tech = discPreference.returnTech();
-pass(29) = isequal(get(u.funs{1}, 'tech'), tech);
+pass(29) = isequal(get(u.funs{1}, 'tech'), @chebtech2);
 
 %% Test breakpoint introduced by a coefficient.
 %  u'' + abs(x)u = 1, on [-1 1].
@@ -230,8 +228,51 @@ u = L \ 1;
 
 pass(30) = norm(L*u - 1) < tol;
 pass(31) = abs(u(dom(1)) - u(dom(2))) < tol;
-discPreference = cheboppref().discretization();
-tech = discPreference.returnTech();
-pass(32) = isequal(get(u.funs{1}, 'tech'), tech);
+pass(32) = isequal(get(u.funs{1}, 'tech'), @chebtech2);
+
+%% Test the TRIGSPEC class. FIRST ORDER AND VARIABLES COEFFICIENTS: 
+%  u' + (1+cos(x))u = cos(2x), on [-2*pi 2*pi].
+
+% Set domain, c, and rhs f.
+dom = [0 2*pi];
+f = chebfun(@(x) cos(2*x), dom);
+
+% Set chebop L. We construct the variable coefficient inside the chebop.
+L = chebop(@(x, u) diff(u) + (1 + cos(x)).*u, dom); 
+L.bc = 'periodic';
+
+% Solve with TRIGSPEC.
+pref.discretization = @trigspec;
+u = solvebvp(L, f, pref);
+
+pass(33) = norm(L*u - f) < tol;
+pass(34) = abs(u(dom(1)) - u(dom(2))) < tol;
+pass(35) = isequal(get(u.funs{1}, 'tech'), @trigtech);
+pass(36) = isreal(u);
+
+%% Test the TRIGSPEC class. SECOND ORDER AND VARIABLE COEFFICIENTS: 
+%  (2+cos(4x))u'' + sin(cos(2x))u' + exp(cos(x))u = cos(x), on [-pi pi].
+
+% Set domain, variable coefficients a, b and c, and rhs f.
+dom = [-pi pi];
+a = chebfun(@(x) 2 + cos(4*x), dom);
+b = chebfun(@(x) sin(cos(2*x)), dom, 'periodic');
+c = chebfun(@(x) exp(cos(x)), dom);
+f = chebfun(@(x) cos(x), dom);
+
+% Set chebop. The variale coefficients have been constructed outside the
+% chebop, some with 'periodic', some without it.
+L = chebop(@(u) a.*diff(u, 2) + b.*diff(u) + c.*u, dom);
+L.bc = 'periodic';
+
+% Solve with TRIGSPEC.
+pref.discretization = 'coeffs';
+u = solvebvp(L, f, pref);
+
+pass(37) = norm(L*u - f) < tol;
+pass(38) = abs(u(dom(1)) - u(dom(2))) < tol;
+pass(39) = abs(feval(diff(u), dom(1)) - feval(diff(u), dom(2))) < tol;
+pass(40) = isequal(get(u.funs{1}, 'tech'), @trigtech);
+pass(41) = isreal(u);
 
 end

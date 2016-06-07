@@ -5,7 +5,7 @@ if ( nargin == 0 )
     pref = chebfunpref; 
 end 
 
-tol = 100*pref.eps; 
+tol = 100*pref.cheb2Prefs.chebfun2eps;
 j = 1; 
 
 % Decomposition on [-1,1,-1,1]: 
@@ -51,5 +51,11 @@ pass(j) = norm( Q5 - Q6 ) < tol; j = j + 1;
 pass(j) = norm( R3 - R4 ) < tol; j = j + 1; 
 pass(j) = norm( R4 - R5 ) < tol; j = j + 1; 
 pass(j) = norm( R5 - R6 ) < tol; j = j + 1; 
-pass(j) = norm( E1 - E2 ) < tol; j = j + 1; 
+pass(j) = norm( E1 - E2 ) < tol; j = j + 1;
+
+%% Make sure strictly real functions have a strictly real QR: 
+f = chebfun2(@(x,y) sin(exp(x.*y)));
+[Q,R] = qr(f);
+pass(j) = norm( imag( Q ) ) == 0; j = j + 1; 
+pass(j) = norm( imag( R ) ) == 0; j = j + 1; 
 end

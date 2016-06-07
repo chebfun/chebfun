@@ -7,12 +7,11 @@ function f = and(f, g)
 %   to 0. F and G must either be identically zero or have roots in their
 %   domains. If this is not the case, garbage is returned with no warning.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 arbitraryPoint = 0.1273881594;
 f.coeffs = feval(f, arbitraryPoint) & feval(g, arbitraryPoint);
-f.vscale = abs(f.coeffs);
 f.isReal = true(1, size(f.coeffs, 2));
 
 end

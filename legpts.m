@@ -22,13 +22,14 @@ function [x, w, v, t] = legpts(n, int, meth)
 %    METHOD = 'GW' uses the traditional Golub-Welsch eigenvalue method,
 %     which is maintained mostly for historical reasons.
 %
-%   [X, W, V, T] = LEGPTS(N) returns also the arccos of the nodes, T = acos(X).
-%   In some situations (in particular with 'ASY') these can be computed to a
-%   much better relative precision than X.
+%   [X, W, V, T] = LEGPTS(...) returns also the arccos of the nodes (scaled to
+%   lie in [-1, 1] if the INTERVAL argument is used), T = acos(X).  In some
+%   situations (in particular with 'ASY') these can be computed to a much
+%   better relative precision than X.
 %
 % See also CHEBPTS, JACPTS, LOBPTS, RADAUPTS, HERMPTS, LAGPTS, and TRIGPTS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -106,14 +107,10 @@ elseif ( n == 0 )   % Return empty vectors if n == 0:
     t = [];
     return
 elseif ( n == 1 )
-    % x = midpoint of interval
-    % w = length of interval 
-    % v = 1
-    % t = 1 
     x = mean(interval);
     w = diff(interval);
     v = 1;
-    t = 1;
+    t = pi/2;
     return
 elseif ( n == 2 )
     x0 = [-1 ; 1]/sqrt(3);
@@ -272,7 +269,7 @@ function [x, w, v, t] = asy(n, nout)
 
 % Compute roots of BesselJ(0, x);
 m = ceil(n/2);
-jk = bessel0Roots(m);
+jk = besselroots(0,m);
 
 % Useful values:
 vn = 1./(n + .5);
@@ -424,52 +421,6 @@ end
 %         % The asymptotic expansion for the weights:
 %         v = vn.*sqrt(sin(a).^3./(a.*Jk2)).*(L0 + L1*vn^2 + L2*vn^4 + L3*vn^6);
 %     end
-
-end
-
-function jk = bessel0Roots(m)
-%BESSEL0ROOTS    Roots of the function bessel(0,x).
-% BESSEL0ROOTS(M) returns the first M roots of besselj(0, x).
-
-% Initialise storage:
-jk = zeros(m, 1);
-
-%%
-% First 20 roots are precomputed (using Wolfram Alpha):
-jk(1:20) = [2.4048255576957728
-            5.5200781102863106
-            8.6537279129110122
-            11.791534439014281
-            14.930917708487785
-            18.071063967910922
-            21.211636629879258
-            24.352471530749302
-            27.493479132040254
-            30.634606468431975
-            33.775820213573568
-            36.917098353664044
-            40.058425764628239
-            43.199791713176730
-            46.341188371661814
-            49.482609897397817
-            52.624051841114996
-            55.765510755019979
-            58.906983926080942
-            62.048469190227170];
-if ( m <= 20 )
-    jk = jk(1:m);
-    return
-end
-
-%%
-% Use McMahon's expansion for the remainder (NIST, 10.21.19):
-p = [1071187749376/315, 0, -401743168/105, 0, 120928/15, 0, -124/3, 0, 1, 0];
-k = (21:m).';
-ak = pi*(k-.25);
-% jk(k) = ak + polyval(p, .125./ak);
-ak82 = (.125./ak).^2;
-jk(k) = ak + .125./ak.*(1 + ak82.*(p(7) + ak82.*(p(5) + ak82.*(p(3) + ...
-    ak82.*p(1)))));
 
 end
 

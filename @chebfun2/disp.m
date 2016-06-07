@@ -3,7 +3,7 @@ function disp(F)
 % 
 % See also DISPLAY.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 loose = strcmp( get(0, 'FormatSpacing'), 'loose' );
@@ -26,7 +26,7 @@ vals = vals(:);
 vscl = vscale(F);                         % vertical scale
 
 % Display the information: 
-disp('   chebfun2 object: (1 smooth surface)')
+disp('   chebfun2 object')
 fprintf('       domain                 rank       corner values\n');
 if ( isreal(vals) )
     fprintf('[%4.2g,%4.2g] x [%4.2g,%4.2g]   %6i     [%4.2g %4.2g %4.2g %4.2g]\n', ...

@@ -84,7 +84,8 @@ h = f - g;
 hVals = feval(h, x);
 hExact = oph(x);
 err = hVals - hExact;
-pass(17) = norm(err, inf) < get(h,'epslevel').*get(h,'vscale');
+pass(17) = norm(err, inf) < 1e1*eps*get(h,'vscale');
+
 
 end
 
@@ -95,7 +96,7 @@ function result = test_sub_function_and_scalar(f, f_op, alpha, x)
     g2 = alpha - f;
     result(1) = isequal(g1, -g2);
     g_exact = @(x) f_op(x) - alpha;
-    result(2) = norm(feval(g1, x) - g_exact(x), inf) < 100*g1.vscale*g1.epslevel;
+    result(2) = norm(feval(g1, x) - g_exact(x), inf) < 100*vscale(g1)*eps;
 end
 
 % Test the subraction of two CHEBFUN objects F and G, specified by F_OP and
@@ -106,5 +107,5 @@ function result = test_sub_function_and_function(f, f_op, g, g_op, x)
     result(1) = isequal(h1, -h2);
     h_exact = @(x) f_op(x) - g_op(x);
     norm(feval(h1, x) - h_exact(x), inf);
-    result(2) = norm(feval(h1, x) - h_exact(x), inf) < 100*h1.vscale*h1.epslevel;
+    result(2) = norm(feval(h1, x) - h_exact(x), inf) < 100*vscale(h1)*eps;
 end

@@ -20,7 +20,7 @@ function g = mat2cell(f, M, N)
 %
 % See also CELL2MAT.
 %
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Return an empty result:
@@ -50,8 +50,6 @@ end
 % Split the values and the coefficients into cells of the correct size:
 values = mat2cell(f.values, n, N);
 coeffs = mat2cell(f.coeffs, n, N);
-vscale = mat2cell(f.vscale, 1, N);
-epslevel = mat2cell(f.epslevel, 1, N);
 isReal = mat2cell(f.isReal, 1, N);
 
 % Create a cell for storing the TRIGTECH objects
@@ -66,8 +64,6 @@ for k = 1:numel(N)
     gk.ishappy = f.ishappy;
     gk.values = values{k};
     gk.coeffs = coeffs{k};
-    gk.vscale = vscale{k};
-    gk.epslevel = epslevel{k};
     gk.isReal = isReal{k};
     
     % Store the TRIGTECH in the cell-array returned.

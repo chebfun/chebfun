@@ -1,8 +1,7 @@
 function y = dct(u, type)
 %CHEBFUN.DCT   Discrete cosine transform.
 %   CHEBFUN.DCT(U, TYPE) returns in the discrete cosine transform (DCT) of type
-%   KIND on the column vector U. If TYPE is not given it defaults to 2. So far,
-%   types 1-4 are supported.
+%   KIND on the column vector U. If TYPE is not given it defaults to 2.
 %
 %   If U is a matrix, the DCT is applied to each column.
 %
@@ -17,10 +16,8 @@ function y = dct(u, type)
 %
 % See also CHEBFUN.IDCT, CHEBFUN.DST, CHEBFUN.IDST.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
-
-% TODO: Implement DCT5-8. 
 
 % Default to kind 2.
 if ( nargin < 2 )
@@ -35,10 +32,11 @@ switch type
         
         % Equivalent to evaluating a ChebT expansion at 2nd kind points 
         % (up to a diagonal scaling). Implemented using the connection to 
-        % a real-even DFT, see CHEBTECH2.COEFFS2VALS().
-        
-        y = fft( [ u ; u(end-1:-1:2 ,: ) ]/2 ); 
-        y = y( 1:n, : );
+        % CHEBTECH2.COEFFS2VALS().
+
+        u([1, end],:) = .5*u([1, end],:);
+        y = chebtech2.coeffs2vals(u);
+        y = y(end:-1:1,:);
         
     case 2
         
@@ -46,35 +44,59 @@ switch type
         % (up to a diagonal scaling). Also the inverse of DCT-III 
         % (up to a diagonal scaling) and this is how it is implemented.  
         
-        u = flipud( u );
-        y = ( n / 2 ) * chebtech1.vals2coeffs( u );        
-        y(1,:) = 2 * y(1, :); 
+        y = ( n / 2 ) * chebtech1.vals2coeffs( u(end:-1:1,:) );        
+        y(1,:) = 2 * y(1,:); 
         
     case 3
         
         % Equivalent to evaluating a ChebT expansion at 1st kind points 
         % (up to a diagonal scaling). Implemented using the connection to a 
-        % real-even DFT of half-shifted output, see CHEBTECH2.COEFFS2VALS().  
+        % real-even DFT of half-shifted output, see CHEBTECH1.COEFFS2VALS().  
         
-        u(1,:) = .5*u(1, :); 
+        u(1,:) = .5*u(1,:); 
         y = chebtech1.coeffs2vals( u );    
-        y = flipud( y ); 
+        y = y(end:-1:1,:); 
         
     case 4 
         
         % Equivalent to evaluating a ChebV expansion at 1st kind points 
         % (up to a diagonal scaling).
-        
-        y = bsxfun( @times, u, cos(pi/2/n*((0:(n-1))'+1/2)) );
-        y = chebfun.dct( y, 2 );
-        y(2:n, :) = 2 * y(2:n, :);
-        for k = 2 : n
-            y(k, :) = y(k, :) - y(k-1, :); 
-        end
 
+        v = zeros(2*n, m); 
+        v(2:2:end, :) = u; 
+        y = chebfun.dct( v, 3 );
+        y = y(1:n, :);
+
+    case 5 
+        
+        % Relate DCTV of length N to a DCTI of length 2N: 
+        y = chebfun.dct( [2*u(1, :) ; u(2:end, :) ; zeros(n, m)], 1 ); 
+        y = y(1:2:end,:);
+        
+    case 6 
+        
+        % Relate DCTVI of length N to a DCTII of length 2N-1: 
+        y = chebfun.dct( [u ; zeros(n-1, m)], 2 ); 
+        y = y(1:2:end,:);
+        
+    case 7 
+        
+        % Relate DCTVII of length N to a DCTIII of length 2N-1: 
+        v = zeros(2*n-1, m); 
+        v(1:2:end,:) = u; 
+        v(1,:) = 2*v(1,:);
+        y = chebfun.dct( v, 3 );
+        y = y(1:n,:);
+        
+    case 8 
+            
+        % Relate DCTVIII of length N to a DCTII of length 2N+1:
+        y = chebfun.dct( [u ; zeros(n+1,m)], 2 );
+        y = y(2:2:end,:);
+        
     otherwise
     
-        error('CHEBEFUN:CHEBFUN:dct:type', 'Unknown/unimplemented DCT type.');
+        error('CHEBEFUN:CHEBFUN:dct:type', 'Unknown DCT type.');
         
 end
 

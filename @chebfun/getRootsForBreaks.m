@@ -15,7 +15,7 @@ function [rBreaks, rAll] = getRootsForBreaks(f, tol)
 %
 % See also ROOTS, ADDBREAKS, ADDBREAKSATROOTS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Lower bound for tolerance:
@@ -32,7 +32,7 @@ rBreaks(isnan(rBreaks)) = [];
 
 % Discard any roots which are closer than the accuracy of the CHEBFUN (NB:
 % This requires the roots to be sorted first.):
-rootTol = max(epslevel(f)*hscale(f), tol);
+rootTol = max(eps*hscale(f), tol);
 rBreaks([false ; diff(rBreaks) < rootTol]) = [];
 
 end

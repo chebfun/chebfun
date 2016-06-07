@@ -28,7 +28,7 @@ function [funOut, indexStart, problemDom, coeffs, totalDiffOrders] = ...
 %                  A vector that contains the maximum diffOrder applying to
 %                  each variable in the problem.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Independent variable on the domain
@@ -67,7 +67,7 @@ end
 
 % Ensure RHS is a CHEBMATRIX
 if ( ~isa(rhs, 'chebmatrix') )
-    rhs = chebmatrix(rhs);
+    rhs = chebmatrix(rhs, domain);
 end
 
 
@@ -85,6 +85,9 @@ problemDom = fevalResult(1).domain;
 for resCounter = 2:length(fevalResult)
     problemDom = union(problemDom, fevalResult(resCounter).domain);
 end
+
+% Ensure we also include potential breakpoints from the RHS:
+problemDom = union(problemDom, rhs.domain);
 
 % First look at all diffOrders to ensure we start with the correct indices.
 % INDEXSTART denotes at which index we should start indexing each variable from.
@@ -165,8 +168,10 @@ for wCounter = 1:length(fevalResult)
     maxDerLoc = find(expTree.diffOrder == totalDiffOrders);
     
     % Convert the derivative part to infix form.
+    % Indicate that we are converting a coeffFun
+    isCoeffFun = true;
     [infixDer, varArrayDer] = ...
-        treeVar.tree2infix(derTree, maxDerLoc, indexStartDer);
+        treeVar.tree2infix(derTree, maxDerLoc, indexStartDer, isCoeffFun);
     
     % Convert the infix form of the expression that gives us the coefficient
     % multiplying the highest order derivative appearing in the expression to an
@@ -199,8 +204,9 @@ for wCounter = 1:length(fevalResult)
     newTree = struct('method', 'minus', 'numArgs', 2, ...
         'left', rhs{wCounter}, 'right', newTree);
     % Convert current expression to infix form:
+    isCoeffFun = false;
     [infix, varArray] = ...
-        treeVar.tree2infix(newTree, maxDerLoc, indexStart);
+        treeVar.tree2infix(newTree, maxDerLoc, indexStart, isCoeffFun);
     % Store the infix form and the variables that appeared in the anonymous
     % function.
     systemInfix{maxDerLoc} = infix;

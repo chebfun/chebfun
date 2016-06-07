@@ -4,7 +4,7 @@ function pass = test_toFirstOrder()
 %% Setup
 dom = [-1, 4];
 x = chebfun(@(x) x, dom);
-tol = 1e-14;
+tol = 5e-14;
 
 %% Simple test
 % We have the expression 5*(diff(u, 2) + 3*u), so expect the first order
@@ -76,7 +76,7 @@ pass(3, problemNo) = all(domOut == dom);
 pass(4, problemNo) = ( norm(coeffs{1} - 3*(x+2).*(x+1)) < tol);
 pass(5, problemNo) = all( diffOrders == 2);
 res =  anonFun(-.5, [2 2]);
-pass(5) = all( res == [2;-4]);
+pass(5) = all( abs(res-[2;-4]) < tol );
 
 %% Introduce breakpoints
 problemNo = 6;
@@ -296,11 +296,47 @@ pass(3, problemNo) = all(domOut == dom);
 pass(4, problemNo) = norm(coeffs{1} - 4) + norm(coeffs{2} - cos(x)) < tol;
 pass(5, problemNo) = all( diffOrders == [1 1]);
 
+%% Introduce breakpoints in the RHS
+problemNo = 17;
+myfun = @(u) cos(x).*diff(u, 2) + 2*abs(sin(pi*x)).*u;
+rhs = (abs(x/2-round(x/2))<.05);
+[anonFun, idx, domOut, coeffs, diffOrders] = treeVar.toFirstOrder(myfun, rhs, dom);
+correctFun = @(x,u) [u(2); ((abs(x/2-round(x/2))<.05)-2*abs(sin(pi*x)).*u(1))./cos(x)];
+pass(1, problemNo) = norm(anonFun(.5,[2 1]) - correctFun(.5, [2 1])) < tol;
+pass(2, problemNo) = (idx == 1);
+pass(3, problemNo) = norm(domOut - union(-1:4, rhs.domain)) < tol;
+pass(4, problemNo) = norm(coeffs{1} - cos(x)) < tol;
+pass(5, problemNo) = all( diffOrders == 2);
+
+%% Coupled system, second order, breakpoints in the RHS as well
+% We have the equations 
+%   5*(diff(u,2) + 3*v) = tanh(x)
+%   cos(x)*diff(v,2) + abs(sin(pi*x)).*u = (abs(x/2-round(x/2))<.05)
+% so expect the first order system to be:
+%   u'(1) = u(2)
+%   u'(2) = tanh(x)/5 - 3*u(3)
+%   u'(3) = u(4)
+%   u'(4) = ((abs(x/2-round(x/2))<.05) - sin(x)*u(1))/cos(x)
+problemNo = 18;
+myfun = @(x,u,v) [5*(diff(u,2) + 3*v); 
+    cos(x).*diff(v,2) + abs(sin(pi*x)).*u];
+rhs = [tanh(x); (abs(x/2-round(x/2))<.05)];
+[anonFun, idx, domOut, coeffs, diffOrders] = treeVar.toFirstOrder(myfun, rhs, dom);
+correctFun = @(x,u) [u(2); tanh(x)/5 - 3*u(3); u(4); ...
+    ((abs(x/2-round(x/2))<.05) -abs(sin(pi*x)).*u(1))/cos(x)];
+evalPt = [2 1 2.4 2.3];
+pass(1, problemNo) = norm(anonFun(1, evalPt) - correctFun(1, evalPt)) < tol;
+pass(2, problemNo) = all(idx == [1 3]);
+pass(3, problemNo) = norm(domOut - union(-1:4, rhs.domain)) < tol;
+pass(4, problemNo) = norm(coeffs{1} - 5) + norm(coeffs{2} - cos(x)) < tol;
+pass(5, problemNo) = all( diffOrders == 2);
+
 %% Coupled systems -- Unsupported format, highest order derivatives in same eqn
 myfun = @(x,u,v) [diff(u,2) + diff(v,2); diff(u) + sin(v)];
 rhs = [1;2];
 try
     treeVar.toFirstOrder(myfun, rhs, dom);
+    errorPass(1) = 0;
 catch ME
     % The highest order derivatives of u and v appear in the same line -- this
     % should give us an error.
@@ -312,6 +348,7 @@ myfun = @(x,u,v) [diff(u,2).*diff(v); diff(v,2) + sin(u)];
 rhs = [1;2];
 try
     treeVar.toFirstOrder(myfun, rhs, dom);
+    errorPass(2) = 0;
 catch ME
     % We're multiplying the highest order derivative by a variable, this should
     % give an error.
@@ -319,5 +356,5 @@ catch ME
 end
 
 %% Combine the information
-pass = [all(pass) errorPass];
+pass = [pass(:)' errorPass];
 end

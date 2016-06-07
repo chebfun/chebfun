@@ -2,9 +2,9 @@ function [f, mergedPts] = merge(f, index, pref)
 %MERGE   Remove unnecessary breakpoints in from a CHEBFUN.
 %   F = MERGE(F, PREF) removes unnecessary breakpoints from a CHEBFUN F. In
 %   particular the kth breakpoint is removed if the resulting FUN on the
-%   interval [x_{k-1}, x_{k+1}] can be represented to the same accuracy as
-%   EPSLEVEL(F) with a fewer than PREF.MAXLENGTH points when PREF.SPLITTING = 0
-%   and PREF.SPLITPREFS.SPLITLENGTH points when PREF.SPLITTING = 1. If a PREF is
+%   interval [x_{k-1}, x_{k+1}] can be represented to the same accuracy as F
+%   with a fewer than PREF.MAXLENGTH points when PREF.SPLITTING = 0 and
+%   PREF.SPLITPREFS.SPLITLENGTH points when PREF.SPLITTING = 1. If a PREF is
 %   not passed, then the default CHEBFUN.PREF() is used.
 %
 %   [F, MERGEDPTS] = MERGE(F) returns the index of the merged endpoints in the
@@ -16,17 +16,15 @@ function [f, mergedPts] = merge(f, index, pref)
 %   merging the first and final breakpoints.)
 %
 %   In all cases, elimination is attempted from left to right, and non-trivial
-%   pointValues will prevent merging at the corresponding breakpoints. Unhappy
-%   subintervals are ignored when determining EPSLEVEL(F), and if PREF.EPS is
-%   larger than EPSLEVEL(F) it will be used as the target epslevel instead.
+%   pointValues will prevent merging at the corresponding breakpoints.
 %
 %   Example:
 %       f = chebfun(@(x) abs(x), 'splitting','on');
 %       [g, mergedPts] = merge(f.^2);
 %
-% See also CHEBFUNPREF, EPSLEVEL.
+% See also CHEBFUNPREF.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( numel(f) > 1 )
@@ -50,7 +48,7 @@ if ( nargin == 1 )
     pref = chebfunpref();
 elseif ( nargin == 2 )
     if ( isstruct(index) || isa(index, 'chebfunpref') ) % MERGE(F, PREF)
-        % index actually is a struct of perefernces or a CHEBFUNPREF
+        % index actually is a struct of preferences or a CHEBFUNPREF
         pref = chebfunpref(index);
         % Choose all indices by default:
         index = 2:numel(f.funs);
@@ -111,8 +109,7 @@ end
 % Obtain scales of the CHEBFUN:
 vs = vscale(f);
 hs = hscale(f);
-tol = epslevel(f, 'ignoreUnhappy');
-pref.eps = max(tol, pref.eps);
+pref.chebfuneps = max(eps, pref.chebfuneps);
 mergedPts = [];
 
 % Store data from input CHEBFUN:
@@ -139,7 +136,7 @@ for k = index
 
     % Prevent merging if there are jumps:
     v = [oldPointVals(k,:); get(oldFuns{k-1}, 'rval'); get(oldFuns{k}, 'lval')];
-    if ( all( norm(v([1, 1],:) - v(2:3,:), inf) >= 1e3*tol ) || any(isinf(v(:))) )
+    if ( all( norm(v([1, 1],:) - v(2:3,:), inf) >= 1e3*pref.chebfuneps ) || any(isinf(v(:))) )
         % Skip to next breakpoint:
         continue
     end

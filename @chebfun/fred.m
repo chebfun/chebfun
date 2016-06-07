@@ -19,7 +19,7 @@ function F = fred(k, v, onevar)
 %
 % See also CHEBFUN/VOLT, CHEBOP.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
     % Inputs in correct order. Let this slide...
@@ -51,11 +51,15 @@ function F = fred_col(k, v, onevar)
     normv = norm(v);
     d = domain(v);
 
+    % TODO:  CHEBFUN is not supposed to use the "resampling" input internally
+    % because it corresponds to the refinementFunction tech preference, which
+    % doesn't belong to the list of "abstract" preferences required of all
+    % techs.  Do we really need to alter it here?
     opt1 = {'resampling', false, 'splitting', true, 'blowup', 'off', ...
         'vscale', normv};
     int = @(x) sum(chebfun(@(y) feval(v,y).*k(x,y), d, opt1{:}));
 
-    opt2 = {'sampletest', false, 'resampling', false, 'blowup', 'off', ...
+    opt2 = {'sampleTest', false, 'resampling', false, 'blowup', 'off', ...
         'vectorize', 'vscale', normv};
     F = chebfun(int, d, opt2{:});
 

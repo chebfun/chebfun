@@ -18,7 +18,7 @@ function y = feval(f, x)
 %
 % See also BARY, CLENSHAW.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty(f) )
@@ -27,7 +27,7 @@ if ( isempty(f) )
 end
 
 % Reshape x to be a column vector for passing to CLENSHAW():
-[n, m] = size(f);
+m = size(f, 2);
 sizex = size(x);
 ndimsx = ndims(x);
 x = x(:);

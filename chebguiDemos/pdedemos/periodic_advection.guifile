@@ -1,0 +1,11 @@
+'Periodic advection with a variable coefficient'
+'scalar'
+domain = '[-pi pi]';
+t = '0:.1:15';
+DE = 'u_t = -(1+0.5*cos(2*x))*u''';
+LBC = 'periodic'; RBC = 'periodic';
+init = 'u = exp(sin(3*x))';
+tol = '1e-6'; plotting = 'on';
+fixYaxisLower = '0'; fixYaxisUpper = '3';
+pdeSolver = 'pde23t';
+type = 'pde';

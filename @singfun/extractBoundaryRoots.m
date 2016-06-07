@@ -1,4 +1,4 @@
-function [f, rootsLeft, rootsRight] = extractBoundaryRoots(f, numRoots)
+function [f, rootsLeft, rootsRight] = extractBoundaryRoots(f, varargin)
 %EXTRACTBOUNDARYROOTS   Extract boundary roots of the smooth part of a SINGFUN 
 %   and absorb them into its exponents.
 %
@@ -19,18 +19,12 @@ function [f, rootsLeft, rootsRight] = extractBoundaryRoots(f, numRoots)
 %
 % See also ROOTS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( nargin == 1 )
-    % Extract the roots from the boundaries
-    [f.smoothPart, rootsLeft, rootsRight] = ...
-        extractBoundaryRoots(f.smoothPart);
-else
-    % Extract the roots from the boundaries
-    [f.smoothPart, rootsLeft, rootsRight] = ...
-        extractBoundaryRoots(f.smoothPart, numRoots);
-end
+% Extract the roots from the boundaries
+[f.smoothPart, rootsLeft, rootsRight] = ...
+        extractBoundaryRoots(f.smoothPart, varargin{:});
 
 % Increment the exponents:
 f.exponents = f.exponents + [rootsLeft, rootsRight];

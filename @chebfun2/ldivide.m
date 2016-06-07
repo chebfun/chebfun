@@ -1,4 +1,4 @@
-function h = ldivide( f, g )
+function varargout = ldivide(varargin)
 %.\   Pointwise CHEBFUN2 left array divide.
 %   F.\G if G is a CHEBFUN2 and F is a double this returns (1/F)*G
 %
@@ -6,12 +6,12 @@ function h = ldivide( f, g )
 %   not work if F becomes numerically close to zero.
 %
 %   F.\G we do not allow F and G to both be CHEBFUN2 objects.
-% 
+%
 %   F.\G is the same as the command ldivide(F,G)
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-h = rdivide( g, f );
+[varargout{1:nargout}] = ldivide@separableApprox(varargin{:});
 
 end

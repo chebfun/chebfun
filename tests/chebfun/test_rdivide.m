@@ -24,13 +24,13 @@ pass(2) = iszero(0./f);
 f = chebfun(@(x) exp(x), [-1 -0.5 0 0.5 1], pref);
 g = 1./f;
 g_exact = @(x) exp(-x);
-pass(3) = norm(feval(g, x) - g_exact(x), inf) < 10*vscale(g)*epslevel(g);
+pass(3) = norm(feval(g, x) - g_exact(x), inf) < 10*vscale(g)*eps;
 
 f = chebfun(@(x) exp(x), [-1 -0.5 0 0.5 1], pref);
 g = chebfun(@(x) exp(-x), [-1 1], pref);
 h = f./g;
 h_exact = @(x) exp(2*x);
-pass(4) = norm(feval(h, x) - h_exact(x), inf) < 10*vscale(h)*epslevel(h);
+pass(4) = norm(feval(h, x) - h_exact(x), inf) < 10*vscale(h)*eps;
 
 %% ARRAY-VALUED
 
@@ -38,21 +38,21 @@ f = chebfun(@(x) [exp(x) exp(-x)], [-1 -0.5 0 0.5 1], pref);
 g = 1./f;
 g_exact = @(x) [exp(-x) exp(x)];
 err = feval(g, x) - g_exact(x);
-pass(5) = norm(err(:), inf) < 10*vscale(g)*epslevel(g);
+pass(5) = norm(err(:), inf) < 10*vscale(g)*eps;
 
 f = chebfun(@(x) [exp(x) exp(-x)], [-1 -0.5 0 0.5 1], pref);
 g = chebfun(@(x) [exp(-x) exp(x)], [-1 1], pref);
 h = f./g;
 h_exact = @(x) [exp(2*x) exp(-2*x)];
 err = feval(h, x) - h_exact(x);
-pass(6) = norm(err(:), inf) < 10*max(vscale(h).*epslevel(h));
+pass(6) = norm(err(:), inf) < 10*max(vscale(h)*eps);
 
 ft = f.';
 gt = g.';
 h = ft./gt;
 h_exact = @(x) [exp(2*x) exp(-2*x)].';
 err = feval(h, x) - h_exact(x);
-pass(7) = norm(err(:), inf) < 10*vscale(h)*epslevel(h);
+pass(7) = norm(err(:), inf) < 10*vscale(h)*eps;
 
 %% QUASIMATRIX
 
@@ -61,7 +61,7 @@ fq = quasimatrix(@(x) [exp(x) exp(-x)], [-1 -0.5 0 0.5 1], pref);
 g = 1./fq;
 g_exact = @(x) [exp(-x) exp(x)];
 err = feval(g, x) - g_exact(x);
-pass(8) = norm(err(:), inf) < 10*vscale(g)*epslevel(g);
+pass(8) = norm(err(:), inf) < 10*vscale(g)*eps;
 
 g = chebfun(@(x) [exp(-x) exp(x)], [-1 1], pref);
 gq = quasimatrix(@(x) [exp(-x) exp(x)], [-1 1], pref);
@@ -69,22 +69,22 @@ h_exact = @(x) [exp(2*x) exp(-2*x)];
 
 h = fq./g;
 err = feval(h, x) - h_exact(x);
-pass(9) = norm(err(:), inf) < 10*vscale(h)*epslevel(h);
+pass(9) = norm(err(:), inf) < 10*vscale(h)*eps;
 
 h = f./gq;
 err = feval(h, x) - h_exact(x);
-pass(10) = norm(err(:), inf) < 10*vscale(h)*epslevel(h);
+pass(10) = norm(err(:), inf) < 10*vscale(h)*eps;
 
 h = fq./gq;
 err = feval(h, x) - h_exact(x);
-pass(11) = norm(err(:), inf) < 10*vscale(h)*epslevel(h);
+pass(11) = norm(err(:), inf) < 10*vscale(h)*eps;
 
 fqt = fq.';
 gqt = gq.';
 h = fqt./gqt;
 h_exact = @(x) [exp(2*x) exp(-2*x)].';
 err = feval(h, x) - h_exact(x);
-pass(12) = norm(err(:), inf) < 10*vscale(h)*epslevel(h);
+pass(12) = norm(err(:), inf) < 10*vscale(h)*eps;
 
 %% Check error conditions.
 try
@@ -139,8 +139,9 @@ vals_h = feval(h, x);
 pow = pow1-pow2;
 op = @(x) (x - dom(2)).^pow.*(sin(100*x)./(cos(300*x).^2+1));
 h_exact = op(x);
-pass(16) = ( norm(vals_h-h_exact, inf) < 1e1*max(get(f, 'epslevel'), ...
-    get(g, 'epslevel'))*norm(h_exact, inf) );
+pass(16) = ( norm(vals_h-h_exact, inf) < 1e5*max(eps, ...
+    eps)*norm(h_exact, inf) );
+
 
 %% Test for function defined on unbounded domain:
 
@@ -162,9 +163,20 @@ h = f./g;
 hVals = feval(h, x);
 hExact = oph(x);
 err = hVals - hExact;
-pass(17) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
+pass(17) = norm(err, inf) < 1e1*eps*get(f,'vscale');
 
-%% Test division between a CHEBFUN and a FOURFUN.
+%%
+% Test that rdivide works correctly when the two triguns involved have 
+% widely different vscales.
+k = 10;
+z = chebfun('4*exp(1i*s)',[0 2*pi],'trig');
+f = z./((exp(z)-1));
+B10 = factorial(k)*sum((f./z.^(k+1)).*diff(z))/(2i*pi);  % 10 Bernoulli num
+exact = 5/66;
+pass(18) = abs(exact-B10) < 1e2*eps*get(f,'vscale');
+
+
+%% Test division between a CHEBFUN and a TRIGFUN.
 
 dom = [0 pi 2*pi];
 
@@ -173,21 +185,55 @@ f = chebfun(@(x) x + x.^2, dom, pref);
 g = chebfun(@(x) 2+cos(x), [dom(1) dom(end)], 'periodic');
 h1 = f./g;
 % We want the result to use the same tech as the one used by f.
-pass(18) = strcmpi(func2str(get(h1.funs{1}.onefun, 'tech')), ...
+pass(19) = strcmpi(func2str(get(h1.funs{1}.onefun, 'tech')), ...
                    func2str(get(f.funs{1}.onefun, 'tech')));
 h2 = chebfun(@(x) (x + x.^2)./(2+cos(x)), dom, pref);
-pass(19) = norm(h1-h2, inf) < get(h2,'epslevel').*get(h2,'vscale');
+pass(20) = norm(h1-h2, inf) < 1e2*eps*get(h2,'vscale');
+
 
 % 2. Quasimatrix case.
 f = chebfun(@(x) [cos(x), sin(x)], [dom(1) dom(end)], 'periodic');
 g = chebfun(@(x) [2+x, 2+x.^3], dom, pref);
 h1 = f./g;
 % We want the result to use the same tech as the one used by g.
-pass(20) = strcmpi(func2str(get(h1(:,1).funs{1}.onefun, 'tech')), ...
+pass(21) = strcmpi(func2str(get(h1(:,1).funs{1}.onefun, 'tech')), ...
                    func2str(get(g(:,1).funs{1}.onefun, 'tech')));
-pass(21) = strcmpi(func2str(get(h1(:,2).funs{1}.onefun, 'tech')), ...
+pass(22) = strcmpi(func2str(get(h1(:,2).funs{1}.onefun, 'tech')), ...
                    func2str(get(g(:,2).funs{1}.onefun, 'tech')));
 h2 = chebfun(@(x) [cos(x)./(2+x), sin(x)./(2+x.^3)], dom, pref);
-pass(22) = norm(h1-h2, inf) < get(h2,'epslevel').*get(h2,'vscale');
+pass(23) = norm(h1-h2, inf) < 1e2*eps*get(h2,'vscale');
+
+
+%%
+% #1111
+try
+    f = chebfun(@(x) exp(x));
+    g = 0;
+    f./g;
+    pass(24) = false;
+catch ME
+    pass(24) = strcmp(ME.identifier, ...
+        'CHEBFUN:CHEBFUN:rdivide:columnRdivide:divisionByZero');
+end
+
+try
+    f = chebfun(@(x) [exp(x) exp(-x)]);
+    g = [0 0];
+    f./g;
+    pass(25) = false;
+catch ME
+    pass(25) = strcmp(ME.identifier, ...
+        'CHEBFUN:CHEBFUN:rdivide:columnRdivide:divisionByZero');
+end
+
+try
+    f = chebfun(@(x) [exp(x) exp(-x) sin(x)]);
+    g = [1 0 1];
+    f./g;
+    pass(26) = false;
+catch ME
+    pass(26) = strcmp(ME.identifier, ...
+        'CHEBFUN:CHEBFUN:rdivide:columnRdivide:divisionByZero');
+end
 
 end

@@ -4,7 +4,7 @@ classdef functionalBlock < linBlock
 %
 % See also LINBLOCK, LINOP, CHEBOP, CHEBOPPREF.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -68,8 +68,7 @@ classdef functionalBlock < linBlock
         %
         %   C = A*F, where A is a FUNCTIONALBLOCK and F is a CHEBFUN, returns
         %   the CHEBFUN C which is the result of applying A to F.
-
-
+        
             % Allow functional * scalar, but put the scalar first.
             if ( isnumeric(B) && (length(B) == 1) )
                 temp = A;
@@ -86,13 +85,16 @@ classdef functionalBlock < linBlock
                 C = functionalBlock(B.domain);
                 C.stack = @(z) A*B.stack(z);
                 C.diffOrder = B.diffOrder;
-                C.iszero = ( (A == 0) || B.iszero ); 
+                C.iszero = ( (A == 0) || B.iszero );
+                C.isNotDiffOrInt = B.isNotDiffOrInt;
             elseif ( isa(B, 'operatorBlock') )
                 % Compose functional with operator.
                 C = functionalBlock(A.domain);
                 C.stack = @(z) A.stack(z) * B.stack(z);
                 C.diffOrder = A.diffOrder + B.diffOrder;
                 C.iszero  = ( A.iszero || B.iszero);
+                C.isNotDiffOrInt = ( A.isNotDiffOrInt && B.isNotDiffOrInt ) ...
+                    || C.iszero;
             else
                 error('CHEBFUN:FUNCTIONALBLOCK:mtimes:badType', ...
                     'Unrecognized operand types.')
@@ -101,14 +103,43 @@ classdef functionalBlock < linBlock
 
         function C = plus(A, B)
         %+   Functional addition.
+        %   C = A + B, where A and B are both FUNCTIONALBLOCK objects, returns
+        %   the FUNCTIONALBLOCK C that is the result of adding the operators A
+        %   and B.
         %
-        %   C = A + B, where A and B are both FUNCTIONALBLOCK objects, returns the
-        %   FUNCTIONALBLOCK C that is the result of adding the operators A and B.
-            C = functionalBlock(A.domain);
-            C.stack = @(z) A.stack(z) + B.stack(z);
-            C.diffOrder = max(A.diffOrder, B.diffOrder);
-            C.iszero = A.iszero && B.iszero;
-        end        
+        %   If one of A or B is an OPERATORBLOCK, then the other is promoted.
+        
+            if ( isa(A, 'operatorBlock') )
+                C = plus(A, promote(B));
+            elseif ( isa(B, 'operatorBlock') )
+                C = plus(promote(A), B);
+            else
+                C = functionalBlock(A.domain);
+                C.stack = @(z) A.stack(z) + B.stack(z);
+                C.diffOrder = max(A.diffOrder, B.diffOrder);
+                C.iszero = A.iszero && B.iszero;
+                C.isNotDiffOrInt = A.isNotDiffOrInt && B.isNotDiffOrInt;
+            end
+        end 
+   
+        function B = promote(A)
+        %PROMOTE  Promote a FUNCTIONALBLOCK to an OPERATORBLOCK.
+        
+            B = operatorBlock(A.domain);
+        
+            % Promote the stack (repmat the rows):
+            B.stack = @(z) promoteStack(A.stack, z);
+            function Sz = promoteStack(S, z)
+                Sz = S(z);
+                if ( isnumeric(Sz) )
+                    Sz = repmat(Sz, size(Sz, 2), 1);
+                end
+            end
+            
+            B.iszero = A.iszero;
+            B.diffOrder = 0;
+            B.isNotDiffOrInt = true;
+        end
         
         function out = iszero(A)
             out = A.iszero;
@@ -152,6 +183,7 @@ classdef functionalBlock < linBlock
             Er = functionalBlock.feval(location, dom, 1);
             El = functionalBlock.feval(location, dom, -1);
             J = (Er - El)*operatorBlock.diff(dom, order);
+            J.isNotDiffOrInt = ( order == 0 );
         end
 
         function J = jumpAt(domain)
@@ -209,6 +241,7 @@ classdef functionalBlock < linBlock
             % Create the FUNCTIONALBLOCK with information now available.
             E = functionalBlock(domain);
             E.stack = @(z) feval(z, location, direction);
+            E.isNotDiffOrInt = true;
         end
 
         function F = inner(f, domain)
@@ -227,6 +260,7 @@ classdef functionalBlock < linBlock
             end
             F.stack = @(z) inner(z, f);
             F.diffOrder = 0;
+            F.isNotDiffOrInt = true;
         end
 
         function S = sum(domain)
@@ -264,6 +298,8 @@ classdef functionalBlock < linBlock
             
             % This is the zero functional:
             Z.iszero = true;
+            % It doesn't involve any integration/differentiation
+            Z.isNotDiffOrInt = true;
         end
         
     end

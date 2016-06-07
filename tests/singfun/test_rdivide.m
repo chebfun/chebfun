@@ -70,7 +70,7 @@ fh = @(x) sin(1e2*x);
 f = singfun(fh, [], pref);
 % Remove points really close to the end points.
 pass(8) = test_divide_function_by_function(f, fh, g, gh, x(5:end-4));
-
+    
 %%
 % Check that direct construction and RDIVIDE give comparable results.
 
@@ -79,8 +79,8 @@ g = singfun(@(x) (1+x).*(1-x), [], pref);
 h1 = f./g;
 h2 = singfun(@(x) sin(x)./((1+x).*(1-x)), [], pref);
 x = x(5:end-4); % Remove some points close to the end points.
-tol = 1e2*max(get(h1, 'vscale')*get(h1, 'epslevel'), ...
-    get(h2, 'vscale')*get(h2, 'epslevel'));
+tol = 1e2*max(get(h1, 'vscale')*eps, ...
+    get(h2, 'vscale')*eps);
 pass(9) = norm(feval(h1, x) - feval(h2, x), inf) < tol;
 
 %%
@@ -112,15 +112,22 @@ dom = [1, Inf];
 r = chebfun(@(x) x, dom); 
 f = 1./r;
 err = diff(f) + f./r;
-pass(12) = ( norm(err, Inf) < 1e2*get(r, 'vscale')*get(r, 'epslevel') );
+pass(12) = ( norm(err, Inf) < 1e3*get(r, 'vscale')*eps );
+    
 
 %% Check division as negative powers
 f = 1./r - r.^-1;               % rdivide == power
 g = (1./r)./r - r.^-2;          % rdivides == times
 h = 1./(r.^2) - (1./r).^2;      % associativity
-pass(13) = ( norm(f, Inf) < get(r, 'vscale')*get(r, 'epslevel') );
-pass(14) = ( norm(g, Inf) < get(r, 'vscale')*get(r, 'epslevel') );
-pass(15) = ( norm(h, Inf) < get(r, 'vscale')*get(r, 'epslevel') );
+pass(13) = ( norm(f, Inf) < get(r, 'vscale')*eps );
+pass(14) = ( norm(g, Inf) < get(r, 'vscale')*eps );
+pass(15) = ( norm(h, Inf) < 1e2*get(r, 'vscale')*eps );
+    
+%% Check simplification of (1+x) / sqrt(1+x) has positive exponents.
+f = singfun(@(x) 1+x);
+g = singfun(@(x) sqrt(1+x), struct('exponents', [.5 0]));
+h = f./g;
+pass(16) = all(h.exponents == [.5 0]);
 
 end
 
@@ -130,7 +137,7 @@ function result = test_division_by_scalar(f, fh, c, x)
     g = f./c;
     g_exact = @(x) fh(x)./c;
     result = norm(feval(g, x) - g_exact(x), inf) <= ...
-        2e3*get(g, 'vscale')*get(g, 'epslevel');
+        2e3*get(g, 'vscale')*eps;
 end
 
 % Test the division of two SINGFUN objects F and G, specified by FH and
@@ -139,5 +146,5 @@ function result = test_divide_function_by_function(f, fh, g, gh, x)
     h = f./g;
     h_exact = @(x) fh(x)./gh(x);
     result = norm(feval(h, x) - h_exact(x), inf) <= ...
-        1e2*get(h, 'vscale')*get(h, 'epslevel');
+        1e3*get(h, 'vscale')*eps;
 end

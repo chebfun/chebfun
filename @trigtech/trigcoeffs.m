@@ -16,7 +16,7 @@ function out = trigcoeffs(f, N)
 %
 % See also CHEBCOEFFS, POLY.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin == 1 )
@@ -44,19 +44,27 @@ numCoeffs = size(c, 1);
 
 % Determine which index corresponds to the constant term:
 if ( fIsEven )
-    constIndex = numCoeffs/2;
+    constIndex = numCoeffs/2+1;
 else
     constIndex = (numCoeffs+1)/2;
 end
 
 % Use symmetry:
 if ( NisEven )
-    id = (constIndex-(N/2-1)) : (constIndex+(N/2));
+    id = (constIndex-N/2) : (constIndex+(N/2-1));
+    % Extract out the entries:
+    out = c(id,:);
+    % Need to adjust the first term so that it corresponds to the 
+    % coefficient for cos(N/2*pi*x)
+    if id(end) < numCoeffs
+        % Only do this if there are enough coefficients
+        out(1,:) = (out(1,:) + c(id(end)+1,:));
+    end
 else
     id = (constIndex-((N-1)/2)) : (constIndex+((N-1)/2));
+    out = c(id,:);
 end
 
-% Extract out the entries:
-out = c(id,:);
+
 
 end

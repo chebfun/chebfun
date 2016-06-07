@@ -7,7 +7,7 @@ function out = innerProduct(f, g)
 %   whose i,j entry is the inner product of the ith column of F with the jth
 %   column of G.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with empty case:

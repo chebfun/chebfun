@@ -7,7 +7,7 @@ function printSetup(fid, expInfo, guifile)
 %   FID:        ID of a file-writing stream.
 %   EXPINFO:    Struct containing information for printing the problem.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Extract info from the EXPINFO struct:
@@ -30,7 +30,7 @@ if ( ~generalized )
     fprintf(fid, 'N = chebop(%s, dom);\n', lhsString);
 else
     fprintf(fid, ['\n%% Assign the equation to two chebops N and B such' ...
-        'that N(u) = %s*B(u).\n'], lname);
+        ' that N(u) = %s*B(u).\n'], lname);
     fprintf(fid, 'N = chebop(%s, dom);\n', lhsString);
     fprintf(fid, 'B = chebop(%s, dom);\n', rhsString);
 end

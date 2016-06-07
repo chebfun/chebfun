@@ -4,7 +4,7 @@ if ( nargin < 1 )
     pref = chebfunpref; 
 end
 
-tol = 1000*pref.eps; 
+tol = 1000*pref.cheb2Prefs.chebfun2eps;
 
 % Evaluation 
 f = chebfun2(@(x,y) sin(x.*(y-.1)), [-2 2 -3 4]);

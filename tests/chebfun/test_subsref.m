@@ -61,7 +61,7 @@ pass(16) = isequal(feval(f, xr), f(xr)) && isequal(feval(f, x_4mtx), f(x_4mtx));
 f = chebfun(@(x) sin(x - 0.1));
 pass(17) = isequal(f, f{:});
 err = norm(f{-1, -0.1, 0.2, 1} - restrict(f, [-1 -0.1 0.2 1]));
-tol = epslevel(f);
+tol = eps;
 pass(18) = err < tol;
 
 try
@@ -92,7 +92,12 @@ end
 % Test {} syntaxes with an array-valued chebfun.
 f = chebfun(@(x) [sin(x - 0.1) cos(x - 0.2)]);
 err = norm(f{-1, -0.1, 0.2, 1} - restrict(f, [-1 -0.1 0.2 1]), inf);
-tol = epslevel(f);
+tol = eps;
 pass(22) = err < 5*tol;
+
+% Test that we get an empty chebfun back when we exceed the index
+f = chebfun(@(x) cos(x));
+g = f(:,2:end);
+pass(23) = isempty(g);
 
 end

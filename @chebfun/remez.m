@@ -45,7 +45,7 @@ function varargout = remez(f, varargin)
 %
 % See also CF.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 dom = f.domain([1, end]);
@@ -77,10 +77,10 @@ if ( n == 0 )
 end
 
 % Initial values for some parameters.
-iter = 0;       % Iteration count.
-delta = normf;  % Value for stopping criterion.
-deltamin = inf; % Minimum error encountered.
-diffx = 1;      % Maximum correction to trial reference.
+iter = 0;                 % Iteration count.
+delta = max(normf, eps);  % Value for stopping criterion.
+deltamin = inf;           % Minimum error encountered.
+diffx = 1;                % Maximum correction to trial reference.
 
 % Compute an initial reference set to start the algorithm.
 xk = getInitialReference(f, m, n, N);

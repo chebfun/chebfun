@@ -29,7 +29,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
 %
 % See also CHEBFUN, LINBLOCK, LINOP, CHEBOP, ADCHEBFUN/SEED.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -504,6 +504,135 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % f.linearity = f.linearity;
         end
         
+        function Nu = deflationFun(Nu, u, r, p, alp, type)
+            % NU = DEFLATIONFUN(NU, U, R, P, ALP)
+            %
+            % Calling sequence follows chebop/deflate. 
+            %
+            %
+            % References:
+            %   [1] Deflation techniques for finding distinct solutions of
+            %   nonlinear partial differential equations (P. E. Farrell, A.
+            %   Birkisson, S. W. Funke), In SIAM Journal on Scientific
+            %   Computing, volume 37, 2015.
+            %
+            % See also chebop/deflate .
+            
+            % Extract the function part of U (current guess of solution) and the
+            % undeflated operator:
+            u = u.func;
+            ffunc = Nu.func;
+            
+            % Ensure we're working with a cell of CHEBFUN objects, makes it
+            % easier to work with when we have multiple roots to deflate.
+            if ( isa(r,'chebfun') )
+                r = mat2cell(r);
+            end
+            
+            % Initalise a variable for the derivative of the deflated operator:
+            defDeriv = 0;
+            
+            % Compute the norms between the function and the roots. At the same
+            % time, build up the derivative of the deflation part.
+            phiVec = zeros(length(r), 1);
+            
+            if ( strcmp(type, 'L2') )
+                % Deflate each root, as described on p. 168 in [1]. The
+                % form of the derivative of the deflated operator is derived in
+                % Section 5.1.3 of [1].
+                for rCounter = 1:length(r)
+                    ur = u - r{rCounter};
+                    currNorm2 = norm(ur, 'fro')^2;
+                    currRecipNorm = 1/currNorm2;
+                    phiVec(rCounter) = currRecipNorm;
+                    
+                    defDeriv = defDeriv + kron(ffunc, currRecipNorm*ur', 'op');
+                end
+            else
+                % Differentiation operator on the domain
+                D = operatorBlock.diff(u.domain);
+
+                % Deflate each root, as described on p. 168 in [1].
+                for rCounter = 1:length(r)
+                    ur = u - r{rCounter};
+                    dur = diff(ur);
+
+                    currNorm2 = norm(ur, 'fro')^2 + norm(diff(ur), 'fro')^2;
+                    currRecipNorm = 1/currNorm2;
+                    phiVec(rCounter) = currRecipNorm;
+                    
+                    defDeriv = defDeriv + ...
+                        kron(ffunc,currRecipNorm*ur','op') + ...
+                        kron(ffunc,currRecipNorm*dur','op')*D;
+
+                end
+                
+            end
+            
+            % Multiply together all the deflation factors, and raise to the
+            % correct power.
+            phi = prod(phiVec);
+            normFun = phi^(p/2);
+            
+            % Derivative of the deflation part
+            defDeriv = (p*normFun)*defDeriv;
+            
+            % Complete derivative of the deflation operator:
+            Nu.jacobian = Nu.jacobian*(normFun + alp) - ...
+                defDeriv;
+            
+            % Deflated function
+            Nu.func = ffunc*(alp + normFun);
+        end
+        
+        
+        function f = deriv(f, xx, varargin)
+            % DERIV   Evaluate a derivative of an ADCHEBFUN.
+            %
+            %   DERIV(F, X) evaluates the first derivative of the ADCHEBFUN F at
+            %   the points in X. If F is a quasimatrix with columns F1, ..., FN,
+            %   then the result will be [F1(X), ..., FN(X)], the horizontal
+            %   concatenation of the results of evaluating each column at the
+            %   points in X.
+            %
+            %   DERIV(F, X, M) is the same as above, but returns the values of
+            %   the Mth derivative of F.
+            %
+            %   DERIV(F, X, S) or DERIV(F, X, S, M) where S is one of the
+            %   strings 'left', 'right', '+', or '-', evaluates the left- or
+            %   right-sided limit as described in chebfun/feval.
+            
+            % The most trivial case:
+            if ( isempty(f) )
+                return
+            end
+            
+            % By default, compute first derivative:
+            m = 1;
+
+            % Parse the inputs:
+            if ( nargin == 3 )
+                if ( isnumeric(varargin{1}) ) % DERIV(F, X, M)
+                    m = varargin{1};
+                    varargin = {};
+                else                          % DERIV(F, X, S)
+                    m = 1;  % By default, compute first derivative
+                end
+            elseif ( nargin == 4 )            % DERIV(F, X, S, M)
+                m = varargin{2};
+                varargin{2} = [];
+            end
+
+            if ( m == 0 )
+                % Trivial case
+                f = feval(f, xx, varargin{:});
+            else
+                f = feval(diff(f, m), xx, varargin{:});
+            end
+
+        end
+            
+                    
         function f = diff(f, k)
             % F = DIFF(F, K)   DIFF of an ADCHEBFUN
             
@@ -661,7 +790,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             f.func = expm1(f.func);      
         end
         
-        function f = feval(f, x)
+        function f = feval(f, x, varargin)
             % F = FEVAL(F,X)    Evaluate an ADCHEBFUN F at point X.
             %
             % The output will be an ADCHEBFUN with derivative representing
@@ -669,7 +798,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % dictated by the chain rule).
             
             % Create an feval linear operator at the point X.
-            E = functionalBlock.feval(x, f.domain);
+            E = functionalBlock.feval(x, f.domain, varargin{:});
             % Update derivative part
             f.jacobian = E*f.jacobian;
             % Update CHEBFUN part
@@ -677,6 +806,16 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % Evaluation is a linear operation, so no need to update linearity
             % information.
             % f.linearity = f.linearity;
+            
+            % If we had nargin > 2, we're introducing a jump (evaluation from
+            % one side), so update domain and jump info:
+            if ( nargin > 2 )
+                % Update the domain, introducing a break at the jump location
+                f.domain = union(f.domain, x);
+                % Signal that an explicit jump condition has been given, so
+                % that automatic continuity won't be applied.
+                f.jumpLocations = union(f.jumpLocations, x);
+            end
         end 
         
         function f = fred(K, f, varargin)
@@ -895,7 +1034,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 f = rdivide(f, g);
             else
                 error('CHEBFUN:ADCHEBFUN:mrdivide:dims', ...
-                    ['Matrix dimensions must agree. Use f./g to divide' ...
+                    ['Matrix dimensions must agree. Use f./g to divide ' ...
                     'ADCHEBFUN objects.']);
             end
         end
@@ -923,9 +1062,24 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             
             % TODO: Do we want this method to return an ADCHEBFUN? Makes sense
             % in the 2-norm case, in particular for 2-norm squared. Perhaps we
-            % want a speical 2-norm squared method?
-            [varargout{1:nargout}] = norm(f.func, varargin{:});
-        end     
+            % want a specical 2-norm squared method?
+            if ( ( nargin == 1 ) || strcmp(varargin{1}, 'fro') || ...
+                (varargin{1} == 2) )
+                % Linearity information
+                f.linearity = iszero(f.jacobian);
+                % Update derivative part
+                f.jacobian = functionalBlock.inner(f.func, f.domain)*f.jacobian;
+                % Update CHEBFUN part
+                f.func = norm(f.func, 2);
+                % Update Jacobian
+                f.jacobian = f.jacobian*(1/f.func);
+                % Return
+                varargout{1} = f;
+            else
+                [varargout{1:nargout}] = norm(f.func, varargin{:});
+            end
+        end
+        
         
         function varargout = plot(f, varargin)
             % PLOT      Plot the CHEBFUN part of an ADCHEBFUN
@@ -952,10 +1106,11 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 f.linearity = f.linearity & g.linearity;
                 % Value part
                 f.func = f.func + g.func;
-                % Derivative part
-                f.jacobian = f.jacobian + g.jacobian;
                 % Jumps
                 f.jumpLocations = union(f.jumpLocations,g.jumpLocations);
+                % Derivative part 
+                f.jacobian = f.jacobian + g.jacobian;
+
             end
             
             % Need to update domain in case new breakpoints were introduced
@@ -1029,14 +1184,19 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = PROD(F)       PROD of an ADCHEBFUN
             % 
             % See also chebfun/prod.
-            
-            f = exp(sum(log(f)));
+                        
+            % Temporary step to get dimensions correct
+            f = sum(log(f));
+            % Update FUNC part
+            f.func = exp(f.func);
+            % Update JACOBIAN part
+            f.jacobian = f.func*f.jacobian;
         end     
         
         function f = rdivide(f, g)
             % ./    ADCHEBFUN division
             %
-            % F./G divides F and G, where F and G may be ADHCEBFUN or CHEBFUN
+            % F./G divides F and G, where F and G may be ADCHEBFUN or CHEBFUN
             % objects or scalars.
             
             % ADCHEBFUN./SCALAR or ADCHEBFUN./CHEBFUN
@@ -1161,7 +1321,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
 
                 % Convert the cell-array to a CHEBMATRIX and assign to the
                 % derivative field of U:
-                u.jacobian = linop( blocks );
+                u.jacobian = chebmatrix( blocks );
                 
                 % Initalise linearity information. The output is linear in all
                 % variables.
@@ -1301,7 +1461,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         
             switch index(1).type
                 case '()'
-                    out = feval(f, index.subs{1});
+                    out = feval(f, index.subs{:});
                 case '{}'
                     out = f(index.subs{1});
                 case '.'
@@ -1393,7 +1553,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         function f = times(f, g)
             % .*    ADCHEBFUN multiplication
             %
-            % F.*G multiplies F and G, where F and G may be ADHCEBFUN or CHEBFUN
+            % F.*G multiplies F and G, where F and G may be ADCHEBFUN or CHEBFUN
             % objects or scalars.
                         
             if ( isnumeric(g) )                 % ADCHEBFUN.*SCALAR

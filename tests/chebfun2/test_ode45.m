@@ -4,7 +4,7 @@ function pass = test_ode45( pref )
 if ( nargin < 1 ) 
     pref = chebfunpref; 
 end 
-tol = 100 * pref.eps;                % TODO: This isn't used.
+tol = 100 * pref.cheb2Prefs.chebfun2eps;         % TODO: This isn't used.
 
 % Trivial check for ODE45 for now:
 t0 = 0; Tend = 30;

@@ -17,40 +17,42 @@ handles.panel_discretization = uibuttongroup('parent', handles.panel_buttons, ..
     discretizationSelection(hObject, eventdata, guidata(hObject)));
 
 %% Populate the discretization option panel with two buttons.
-handles.button_collocation = uicontrol('Parent', handles.panel_discretization, ...
+handles.button_discretization_values = uicontrol(...
+    'Parent', handles.panel_discretization, ...
     'Style', 'radiobutton', 'BackgroundColor', textBackgroundColour, ...
-    'String','Collocation', 'FontSize', textFontsize, ...
+    'String','Values', 'FontSize', textFontsize, ...
     'Units', 'normalized', ...
     'Position', [leftMargin vertLoc(1) 1-leftMargin textHeight]);
 
-handles.button_ultraspherical = uicontrol('Parent', handles.panel_discretization, ...
+handles.button_discretization_coeffs = uicontrol(...
+    'Parent', handles.panel_discretization, ...
     'Style', 'radiobutton', 'BackgroundColor', textBackgroundColour, ...
-    'String','Ultraspherical', 'FontSize', textFontsize, ...
+    'String','Coefficients', 'FontSize', textFontsize, ...
     'Units', 'normalized', ...
     'Position', [leftMargin vertLoc(2) 1-leftMargin textHeight]);
 
 end
 
 function discretizationSelection(hObject, eventdata, handles)
-% hObject    handle to the selected object in panel_IVPsolver
-% eventdata  structure with the following fields (see UIBUTTONGROUP)
-%	EventName: string 'SelectionChanged' (read only)
-%	OldValue: handle of the previously selected object or empty if none was 
-%             selected
-%	NewValue: handle of the currently selected object
-% handles    structure with handles and user data (see GUIDATA)
+% hObject      Handle to the selected object in panel_IVPsolver
+% eventdata    Structure with the following fields (see UIBUTTONGROUP)
+%	EventName: String 'SelectionChanged' (read only)
+%	OldValue:  Handle of the previously selected object or empty if none was 
+%              selected
+%	NewValue:  Handle of the currently selected object
+% handles      Structure with handles and user data (see GUIDATA)
 
 % What's the new IVP solver selected?
 newIVPsolver = get(eventdata.NewValue, 'String');
 
 % Change the ivpSolver option stored in handles.guifile.options based on the new
 % selection.
-if ( strcmp(newIVPsolver, get(handles.button_collocation, 'String')) )
+if ( strcmp(newIVPsolver, get(handles.button_discretization_values, 'String')) )
     % User selected time-stepping. Default time stepping method is ODE113:
-    handles.guifile.options.discretization = 'collocation';
+    handles.guifile.options.discretization = 'values';
 else
     % User selected global solver. Default global method is collocation:
-    handles.guifile.options.discretization = 'ultraspherical';
+    handles.guifile.options.discretization = 'coeffs';
 end
 
 % Update HOBJECT.

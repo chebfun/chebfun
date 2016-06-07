@@ -10,7 +10,7 @@ function [x, w] = trigpts(n, dom)
 %
 % See also CHEBPTS, LEGPTS, JACPTS, LAGPTS, and HERMPTS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Special case (no points).
@@ -23,6 +23,7 @@ end
 
 x = linspace(-pi, pi, n+1).';
 x = x./pi;
+x = (x-x(end:-1:1))/2; % enforce symmetry
 x(end) = [];
 
 if ( nargout > 1 )

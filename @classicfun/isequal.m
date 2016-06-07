@@ -4,7 +4,7 @@ function out = isequal(f, g)
 %   same domain and .onefun fields which are equal, as determined by their
 %   respective class methods.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Check whether .domains and .onefun fields agree:

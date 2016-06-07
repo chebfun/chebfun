@@ -4,13 +4,18 @@ function X = mrdivide(B, A)
 %
 % See also RDIVIDE, MLDIVIDE.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % TODO: Something is wrong with the comment lines below.
 % TODO: Give an example for each of the cases below.
 
 if ( isscalar(A) )
+    if ( A == 0 )
+        % TODO:  Return identically Inf/NaN CHEBFUN instead?
+        error('CHEBFUN:CHEBFUN:mrdivide:divisionByZero', ...
+            'Division by zero.')
+    end
     X = B*(1/A);
 
 elseif ( size(A, 2) ~= size(B, 2) )

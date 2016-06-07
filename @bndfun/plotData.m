@@ -11,7 +11,7 @@ function data = plotData(f, g, h)
 %
 % See also PLOT.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Get the data from the ONEFUN:
@@ -26,7 +26,7 @@ if ( (nargin == 1) || isempty(g) )
     data.xJumps = [f.domain(1) ; NaN ; f.domain(2)];
     data.yJumps = getJumps(f, data.yLine);
     
-    % Sort out the xLim:
+    % Overwrite the current xLim if it is provided by plotData@singfun:
     data.xLim = f.domain;
     
 elseif ( nargin == 2 )

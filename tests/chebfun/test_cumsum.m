@@ -21,7 +21,7 @@ f1 = chebfun(@cos, [-1 -0.5 0.5 1], pref);
 If1 = cumsum(f1);
 If1_exact = @(x) sin(x) - sin(-1);
 pass(2) = norm(feval(If1, xr) - If1_exact(xr), inf) < ...
-    10*vscale(If1)*epslevel(If1);
+    10*vscale(If1)*eps;
 
 %%
 % Check behavior for row chebfuns.
@@ -29,7 +29,7 @@ f1t = f1.';
 If1t = cumsum(f1t);
 If1t_exact = @(x) (sin(x) - sin(-1)).';
 pass(3) = norm(feval(If1t, xr) - If1t_exact(xr), inf) < ...
-    10*vscale(If1t)*epslevel(If1t);
+    10*vscale(If1t)*eps;
 
 %%
 % Check behavior for array-valued chebfuns.
@@ -38,32 +38,32 @@ If3 = cumsum(f3);
 If3_exact = @(x) [sin(x) cos(x) exp(x)] - ...
     repmat([sin(-1) cos(-1) exp(-1)], size(x, 1), 1);
 pass(4) = max(max(abs(feval(If3, xr) - If3_exact(xr)))) < ...
-    10*vscale(If3)*epslevel(If3);
+    10*vscale(If3)*eps;
 
 f3t = f3.';
 If3t = cumsum(f3t);
 If3t_exact = @(x) ([sin(x) cos(x) exp(x)] - ...
     repmat([sin(-1) cos(-1) exp(-1)], size(x, 1), 1)).';
 pass(5) = max(max(abs(feval(If3t, xr) - If3t_exact(xr)))) < ...
-    10*vscale(If3t)*epslevel(If3t);
+    10*vscale(If3t)*eps;
 
 f4 = chebfun(@(x) [cos(x) -sin(x)], [-1 -0.5 0.5 1], pref);
 If4 = cumsum(f4);
 If4_exact = @test_If4;
 pass(6) = max(max(abs(feval(If4, xr) - If4_exact(xr)))) < ...
-    10*vscale(If4)*epslevel(If4);
+    10*vscale(If4)*eps;
 
 % Check second argument.
 I2f1 = cumsum(f1, 2);
 I2f1_exact = @(x) -cos(x) - sin(-1)*x - (-cos(-1) - sin(-1)*-1);
 pass(7) = norm(feval(I2f1, xr) - I2f1_exact(xr), inf) < ...
-    10*vscale(I2f1)*epslevel(I2f1);
+    10*vscale(I2f1)*eps;
 
 % Check second argument.
 I2f1 = cumsum(f1, 2);
 I2f1_exact = @(x) -cos(x) - sin(-1)*x - (-cos(-1) - sin(-1)*-1);
 pass(8) = norm(feval(I2f1, xr) - I2f1_exact(xr), inf) < ...
-    10*vscale(I2f1)*epslevel(I2f1);
+    10*vscale(I2f1)*eps;
 
 I2f3 = cumsum(f3, 2);
 I2f3_exact = @(x) [-cos(x) sin(x) exp(x)] - ...
@@ -71,7 +71,7 @@ I2f3_exact = @(x) [-cos(x) sin(x) exp(x)] - ...
     repmat([(-cos(-1) - sin(-1)*-1) (sin(-1) - cos(-1)*-1) ...
             (exp(-1) - exp(-1)*-1)], size(x, 1), 1);
 pass(9) = max(max(abs(feval(I2f3, xr) - I2f3_exact(xr)))) < ...
-    10*vscale(I2f3)*epslevel(I2f3);
+    10*vscale(I2f3)*eps;
 
 %% Test on singular function:
 
@@ -89,7 +89,8 @@ vals_g = feval(g, x);
 g_exact = @(x) (x-dom(1)).^(pow+1)./(pow+1);
 vals_exact = feval(g_exact, x);
 err = vals_g - vals_exact;
-pass(10) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(10) = ( norm(err, inf) < 1e4*eps*norm(vals_exact, inf) );
+
 
 %% piecewise smooth chebfun: smoothfun + singfun & splitting off:
 
@@ -125,7 +126,7 @@ for j = 1:3
     vals_exact = feval(opi{j}, x);
     err = fval - vals_exact;
     result(j) = ( norm(err-mean(err), inf) < ...
-        1e7*get(f,'epslevel')*norm(vals_exact, inf) );
+        1e7*eps*norm(vals_exact, inf) );
 end
 pass(11) = all( result );
 
@@ -156,8 +157,9 @@ g_check = cumsum(f_check);
 vals_check = feval(g_check, x);
 err = gval - vals_check;
 err = norm(err-mean(err), inf);
-tol = 5e5*get(f,'epslevel')*norm(vals_check, inf);
-pass(12) = err < tol;
+tol = 5e5*eps*norm(vals_check, inf);
+pass(12) = err < 1e2*tol;
+
 
 %% Tests for functions defined on unbounded domain:
 
@@ -178,7 +180,7 @@ gVals = feval(g, x);
 opg = @(x) sqrt(pi)*erf(x)/2 + sqrt(pi)/2;
 gExact = opg(x);
 errg = norm(gVals - gExact, inf);
-tol = 5e4*get(g,'epslevel').*get(g,'vscale');
+tol = 5e4*eps*get(g,'vscale');
 pass(13) = errg < tol;
 
 %% Function on [a inf]:
@@ -199,7 +201,7 @@ gVals = feval(g, x);
 opg = @(x) 5*x.^2/2 - 5/2 + get(g, 'lval');
 gExact = opg(x);
 err = norm(gVals - gExact, inf);
-tol = 100*get(g,'epslevel').*get(g,'vscale');
+tol = 200*eps*get(g,'vscale');
 pass(14) = err < tol;
 
 %% Piecewise function on [-inf b]:
@@ -225,9 +227,98 @@ g1Exact = opg1(x1);
 g2Exact = opg2(x2);
 err1 = g1Vals - g1Exact;
 err2 = g2Vals - g2Exact;
-pass(15) = norm([err1 ; err2], inf) < 5e4*get(g,'epslevel').*get(g,'vscale');
+pass(15) = norm([err1 ; err2], inf) < 1e6*eps*get(g,'vscale');
+
+% Check delta functions:
+x = chebfun('x');
+f = heaviside(x+.5)+heaviside(x) + heaviside(x-.5);
+fp = diff(f);
+fpp = diff(fp);
+fp = cumsum(fpp);
+pass(16) = norm(f - cumsum(fp)) < 100*eps;
+
+% Bug reported by LNT #1289:
+f = sign(x)-x;
+f2 = cumsum(diff(f));
+pass(17) = norm(f-f2) < 100*eps;
+
+% Check quasi matrix with delta functions:
+f = heaviside(x);
+g = heaviside(x-.5);
+s = [diff(f), diff(g)];
+S = cumsum(s);
+pass(18) = norm(S(:,1) - f) < 100*eps;
+pass(19) = norm(S(:,2) - g) < 100*eps;
+
+%% Check on trigfuns
+xr = pi*xr;
+% trigfun with zero mean
+f = chebfun(@(x) cos(x+sqrt(3)) + sin(x-sqrt(2.1)), [-pi,pi], 'trig', pref);
+If = cumsum(f);
+If_exact = @(x) sin(x+sqrt(3)) - cos(x-sqrt(2.1)) - (sin(-pi+sqrt(3)) - cos(-pi-sqrt(2.1)));
+pass(20) = max(max(abs(feval(If, xr) - If_exact(xr)))) < ...
+    10*vscale(If)*eps;
+pass(21) = isPeriodicTech(If);
+
+% trigfun without zero mean - should be converted to chebfun
+f = chebfun(@(x) 1 + cos(x+sqrt(3)) + sin(x-sqrt(2.1)), [-pi,pi], 'trig', pref);
+If = cumsum(f);
+If_exact = @(x) x + sin(x+sqrt(3)) - cos(x-sqrt(2.1)) - ...
+    (-pi + sin(-pi+sqrt(3)) - cos(-pi-sqrt(2.1)));
+pass(22) = max(max(abs(feval(If, xr) - If_exact(xr)))) < ...
+    10*vscale(If)*eps;
+pass(23) = ~isPeriodicTech(If);
+
+% Array-valued trigfuns with zero-mean
+f3 = chebfun(@(x) [cos(x) -sin(x) cos(x+sqrt(3))], [-pi,pi], 'trig', pref);
+If3 = cumsum(f3);
+If3_exact = @(x) [sin(x) cos(x) sin(x+sqrt(3))] - ...
+    repmat([sin(-pi) cos(-pi) sin(-pi+sqrt(3))], size(x, 1), 1);
+pass(24) = max(max(abs(feval(If3, xr) - If3_exact(xr)))) < ...
+    10*vscale(If3)*eps;
+pass(25) = isPeriodicTech(f3);
+
+% Even length with non-zero mean
+f = chebfun( ones(32,1), [-pi,pi], 'trig'  );
+If = cumsum(f);
+If_exact = @(x) x + pi;
+pass(26) = max(max(abs(feval(If, xr) - If_exact(xr)))) < ...
+    10*vscale(If)*eps;
+pass(27) = ~isPeriodicTech(If);
+
+% Even length with zero mean
+f = chebfun( sin(trigpts(33,[-pi,pi])), [-pi,pi], 'trig'  );
+If = cumsum(f);
+If_exact = @(x) -cos(x)-1;
+pass(28) = max(max(abs(feval(If, xr) - If_exact(xr)))) < ...
+    10*vscale(If)*eps;
+pass(29) = isPeriodicTech(If);
+
+%% See #1727
+
+x = chebfun('x');
+n = 2;
+
+a1 = 0;
+b1 = .5;
+w1 = (1+x).^b1.*(1-x).^a1;
+J1 = jacpoly(n, a1, b1);
+f1 = w1.*J1;
+F1 = cumsum(f1);
+
+a2 = eps;
+b2 = .5;
+w2 = (1+x).^b2.*(1-x).^a2;
+J2 = jacpoly(n, a2, b2);
+f2 = w2.*J2;
+F2 = cumsum(f2);
+
+pass(30) = norm(F1 - F2, inf) < 10*eps;
+
+%%
 
 % [TODO]:  Check fractional antiderivatives once implemented.
+
 
 end
 

@@ -1,6 +1,6 @@
 function varargout = plot3(f, g, h, varargin)
 %PLOT3   Plot for CHEBFUN objects in 3-D space.
-%   PLOT3() is a three-dimensional analogue of PLOT().
+%   PLOT3 is a three-dimensional analogue of PLOT.
 %
 %   PLOT3(X, Y, Z), where X, Y, and Z are three CHEBFUN objects, plots a line in
 %   3-space. X, Y, and Z may be array-valued, but must have the same number of
@@ -20,7 +20,7 @@ function varargout = plot3(f, g, h, varargin)
 %
 % See also PLOT, PLOTDATA.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %% Deal with an empty input:

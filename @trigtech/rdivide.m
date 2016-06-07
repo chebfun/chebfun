@@ -10,7 +10,7 @@ function f = rdivide(f, c, pref)
 %
 % See also MRDIVIDE, TIMES.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isa(c, 'double') )
@@ -30,17 +30,14 @@ if ( isa(c, 'double') )
         % Scalar.
         f.values = f.values/c;      % Divide values.
         f.coeffs = f.coeffs/c;      % Divide coeffs.
-        f.vscale = f.vscale/abs(c); % Divide vscale.       
     else
         % Array-valued TRIGTECH.
         n = size(f.values, 1);   
         f.values = f.values./repmat(c, n, 1);   % Divide values.
         f.coeffs = f.coeffs./repmat(c, n, 1);   % Divide coeffs.
-        f.vscale = f.vscale./abs(c);            % Divide vscale.
         
         f.values(:, c == 0) = NaN;
         f.coeffs(:, c == 0) = NaN;
-        f.vscale(:, c == 0) = NaN;
     end
     f.isReal = f.isReal & isreal(c);
     

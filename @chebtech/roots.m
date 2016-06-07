@@ -41,7 +41,7 @@ function out = roots(f, varargin)
 %   matrix may be returned. The columns of R = ROOTS(F) correspond to the
 %   columns of F.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -173,10 +173,11 @@ if ( length(f) == 1 )
 end
 
 % Get scaled coefficients for the recursive call:
-c = f.coeffs/f.vscale;
+c = f.coeffs/vscale(f);
 
 % Call the recursive rootsunit function:
-r = rootsunit_coeffs(c, 100*eps*max(f.hscale, 1));
+% TODO:  Does the tolerance need to depend on some notion of hscale?
+r = rootsunit_coeffs(c, 100*eps);
 
 % Try to filter out spurious roots:
 if ( ~isempty(rootsPref.filter) )

@@ -1,26 +1,23 @@
 function varargout = plotcoeffs(f, varargin)
 %PLOTCOEFFS   Display coefficients graphically.
-%   PLOTCOEFFS(F) plots the coefficients underlying the representation of a
-%   CHEBFUN F on a semilogy scale. A horizontal line at the epslevel of F is
-%   also plotted. If F is an array-valued CHEBFUN or has breakpoints, then a
-%   curve is plotted for each FUN of each component (column) of F.
+%   PLOTCOEFFS(F) plots the absolute values of the coefficients underlying the
+%   representation of a CHEBFUN F on a semilogy scale. If F is an array-valued
+%   CHEBFUN or has breakpoints, then a curve is plotted for each FUN of each
+%   component (column) of F.
 %
 %   PLOTCOEFFS(F, S) allows further plotting options, such as linestyle,
 %   linecolor, etc, as in the standard MATLAB manner. If S contains a string
-%   'LOGLOG', the coefficients will be displayed on a log-log scale. If S
-%   contains a string 'NOEPSLEVEL', the epslevel is not plotted.
+%   'LOGLOG', the coefficients will be displayed on a log-log scale.
 %
 %   H = PLOTCOEFFS(F) returns a column vector of handles to lineseries objects.
-%   The final entry is that of the epslevel plot.
 %
-%   What 'coefficients' means in this context is dictated by the 'tech' that is
-%   being used to represent F. See the PLOTCOEFFS method at the relevant tech
-%   level for more details. Note that you can find what tech is being used by
-%   calling GET(F, 'tech').
+%   As of Chebfun version 5, the coefficients plotted by 'plotcoeffs' are either
+%   Chebyshev coefficients for Chebyshev-based chebfuns or Fourier coefficients
+%   for periodic chebfuns ('trigfuns'). 
 %
 % See also CHEBFUN/PLOT.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with an empty input:
@@ -66,20 +63,14 @@ if ( isempty(col) )
     end
 end
 
-% Deal with 'LogLog' and 'noEpsLevel' input:
-doLogLog = cellfun(@(s) strcmpi(s, 'loglog'), varargin);
-% varargin(doLoglog) = [];
-doLogLog = any(doLogLog);
-noEpsLevel = cellfun(@(s) strcmpi(s, 'noEpsLevel'), varargin);
-varargin(noEpsLevel) = []; % Strip this out, as we don't want to pass it down.
-doEpsLevel = ~any(noEpsLevel);
+% Deal with 'LogLog' and input:
+doLogLog = any(cellfun(@(s) strcmpi(s, 'loglog'), varargin));
 
 % Convert to a cell array for easy handling:
 f = mat2cell(f);
 
 % Initialise the output:
-h1 = cell(1, numel(f));
-h2 = cell(1, numel(f));
+h = cell(1, numel(f));
 
 % Loop over the columns in a quasimatrix:
 for k = 1:numel(f)
@@ -90,7 +81,7 @@ for k = 1:numel(f)
         colk = col(k,:);
     end
     % Call the column version:
-    [h1{k}, h2{k}] = columnPlotCoeffs(f{k}, colk, varargin{:});
+    h{k} = columnPlotCoeffs(f{k}, colk, varargin{:});
 end
 
 % Return hold state to what it was before:
@@ -103,37 +94,27 @@ if ( doLogLog )
     set(gca, 'xScale', 'Log');
 end
 
-% Remove epslevels if they're not wanted:
-if ( ~doEpsLevel )
-    for k = 1:numel(f)
-        set(h2{k}, 'visible', 'off');
-    end
-end
-
 % Give an output if one was requested:
 if ( nargout > 0 )
     try 
-        h1 = cell2mat(h1);
-        h2 = cell2mat(h2);
+        h = cell2mat(h);
     catch
         % shrug
     end
-    varargout = {h1, h2};
+    varargout = {h};
 end
 
 end
 
-function [h1, h2] = columnPlotCoeffs(f, col, varargin)
+function h = columnPlotCoeffs(f, col, varargin)
 numFuns = numel(f.funs);
 
 % Initialise handle storage:
-h1 = zeros(numFuns, 1);
-h2 = zeros(numFuns, 1);
+h = zeros(numFuns, 1);
 
 % Call plotcoeffs at the tech level:
 for j = 1:numFuns
-    [h1(j), h2(j)] = plotcoeffs(f.funs{j}, varargin{:}, 'color', col); hold on
+    h(j) = plotcoeffs(f.funs{j}, varargin{:}, 'color', col); hold on
 end
 
 end
-

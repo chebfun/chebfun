@@ -14,7 +14,7 @@ classdef chebguiExporter
 %   class and subclasses.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -199,11 +199,14 @@ classdef chebguiExporter
             
         end
         
-        function disc = discOption(isPeriodic, opt)
+        function disc = discOption(isPeriodic, dom, opt)
             % Do we want to use TRIGCOLLOC for the discretization? This will be
             % the case if we're solving a periodic problem, and have
-            % 'collocation' specified as the discretization option:
-            if ( isPeriodic && strcmp(opt, 'collocation') )
+            % 'collocation' specified as the discretization option. However, we
+            % don't want to use TRIGCOLLOC if there are breakpoints in the
+            % domain.
+            if ( isPeriodic && strcmp(opt, 'collocation') &&  ...
+                    ( length(str2num(dom)) == 2 ) )
                 disc = 'periodic';
             else
                 disc = opt;
@@ -235,7 +238,7 @@ classdef chebguiExporter
             
             % Print first few lines of the .m-file:
             fprintf(fid, ['%%%% %s -- an executable m-file for solving ', ...
-                '%s.\n'], filename, e.description);
+                '%s\n'], filename, e.description);
             fprintf(fid, ['%% Automatically created in CHEBGUI ', ...
                 'by user %s.\n'], userName);
             fprintf(fid, '%% Created on %s', ...

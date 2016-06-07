@@ -42,7 +42,10 @@ classdef chebfunpref < chebpref
 %
 %         This is the maximum total length of the CHEBFUN (i.e., the sum of the
 %         lengths of all the FUNs) allowed by the constructor when breakpoint
-%         detection is enabled.
+%         detection is enabled.  The constructor will give up as soon as the
+%         combined length of all the FUNs for the subintervals it has
+%         successfully resolved thus far is greater than or equal to this
+%         number.
 %
 %   blowup                     - Enable/disable singularity detection.
 %     true
@@ -105,39 +108,35 @@ classdef chebfunpref < chebpref
 %      technology.  Additionally, all techs are required to accept the following
 %      preferences:
 %
-%      eps                     - Construction tolerance.
-%       [2^(-52)]
+%      chebfuneps              - Construction tolerance.
 %
-%        Specifies the relative tolerance to which the representation should be
-%        constructed.
+%        A positive floating-point number specifying the relative tolerance to
+%        which the representation should be constructed.
 %
 %      maxLength               - Maximum representation length.
-%       [65537]
 %
-%        Maximum length of the underlying representation.
+%        A positive integer giving the maximum length of the underlying
+%        representation.
 %
 %      fixedLength             - Exact representation length.
-%       [NaN]
 %
-%        Exact length of the underlying representation to be used.  A NaN value
-%        indicates that the tech is free to choose the length (up to maxLength),
-%        e.g., as the basis of an adaptive construction procedure.
+%        A positive integer specifying the exact length of the underlying
+%        representation to be used.  A NaN value indicates that the tech is
+%        free to choose the length (up to maxLength), e.g., as the basis of an
+%        adaptive construction procedure.
 %
 %      extrapolate             - Extrapolate endpoint values.
-%        true
-%       [false]
 %
-%        If true, the tech should avoid direct evaluation of the function at
-%        the interval endpoints and "extrapolate" the values at those points if
-%        needed.  It should also extrapolate the values of any points for which
-%        the function being sampled returns NaN.
+%        A boolean which, if true, indicates that the tech should avoid direct
+%        evaluation of the function at the interval endpoints and "extrapolate"
+%        the values at those points if needed.  It should also extrapolate the
+%        values of any points for which the function being sampled returns NaN.
 %
 %      sampleTest              - Test accuracy at arbitrary point.
-%       [true]
-%        false
 %
-%        If true, the tech should check an arbitrary point for accuracy to
-%        ensure that behavior hasn't been missed, e.g., due to undersampling.
+%        A boolean which, if true, indicates that the tech should check an
+%        arbitrary point for accuracy to ensure that behavior hasn't been
+%        missed, e.g., due to undersampling.
 %
 % The default values for any of these preferences may be globally overridden
 % using CHEBFUNPREF.SETDEFAULTS(); see the documentation for that function for
@@ -217,7 +216,7 @@ classdef chebfunpref < chebpref
 %
 % See also CHEBOPPREF.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -233,7 +232,7 @@ classdef chebfunpref < chebpref
 %    down into the tech layer, i.e., CHEBFUN needs to be able to set certain
 %    preferences that affect the constructors for the individual techs.
 %    Designers of techs should ensure that their classes respond to the
-%    following "abstract" preferences in an appropriate manner:  eps,
+%    following "abstract" preferences in an appropriate manner: chebfuneps,
 %    maxLength, fixedLength, extrapolate, and sampleTest.
 %
 %  - The original idea was that the techPrefs field of the CHEBFUNPREF would be
@@ -294,6 +293,10 @@ classdef chebfunpref < chebpref
                         'second must be a CHEBFUNPREF or a struct.']);
                 elseif ( isa(varargin{2}, 'chebfunpref') )
                     inPrefList = varargin{2}.prefList;
+                    techObj = feval(inPrefList.tech);
+                    inPrefList.techPrefs = ...
+                        chebpref.mergePrefStructs(techObj.techPref(), ...
+                        inPrefList.techPrefs);
                 else
                     inPrefList = varargin{2};
                 end
@@ -353,26 +356,24 @@ classdef chebfunpref < chebpref
             switch ( ind(1).type )
                 case '.'
                     if ( isfield(pref.prefList, ind(1).subs) )
-                        out = pref.prefList.(ind(1).subs);
+                        if ( strcmp(ind(1).subs, 'techPrefs') )
+                            techObj = feval(pref.prefList.tech);
+                            fullTechPrefs = ...
+                                techObj.techPref(pref.prefList.techPrefs);
+                            ind(1) = [];
+                            if ( isempty(ind) )
+                                out = fullTechPrefs;
+                            else
+                                out = fullTechPrefs.(ind(1).subs);
+                            end
+                        else
+                            out = pref.prefList.(ind(1).subs);
+                        end
                     else
                         techObj = feval(pref.prefList.tech);
                         fullTechPrefs = ...
                             techObj.techPref(pref.prefList.techPrefs);
-                        if ( isfield(fullTechPrefs, ind(1).subs) )
-                            % Try to find the tech preference name after
-                            % merginging with the full list of tech preferences
-                            % obtained via the tech's techPref() function of the
-                            % current tech.
-                            out = fullTechPrefs.(ind(1).subs);
-                        else
-                            % If we couldn't find the tech preference name
-                            % above, it may be because it was an abstractly
-                            % named preference that got mapped to something the
-                            % tech's techPref() deemed more sensible.  So, we
-                            % also try looking in the list of tech preferences
-                            % we have prior to forming the full list.
-                            out = pref.prefList.techPrefs.(ind(1).subs);
-                        end
+                        out = fullTechPrefs.(ind(1).subs);
                     end
 
                     if ( numel(ind) > 1 )
@@ -468,6 +469,8 @@ classdef chebfunpref < chebpref
             fprintf([padString('        proximityTol:') '%d\n'], ...
                 prefList.deltaPrefs.proximityTol');                      
             fprintf('    cheb2Prefs\n');
+            fprintf([padString('        chebfun2eps:') '%d\n'], ...
+                prefList.cheb2Prefs.chebfun2eps');            
             fprintf([padString('        maxRank:') '%d\n'], ...
                 prefList.cheb2Prefs.maxRank');
             fprintf([padString('        sampleTest:') '%d\n'], ...
@@ -533,11 +536,15 @@ classdef chebfunpref < chebpref
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
             if ( isa(pref1, 'chebfunpref') )
-                pref1 = pref1.prefList.techPrefs;
+                techObj1 = feval(pref1.prefList.tech);
+                pref1 = chebpref.mergePrefStructs(techObj1.techPref(), ...
+                    pref1.prefList.techPrefs);
             end
 
             if ( isa(pref2, 'chebfunpref') )
-                pref2 = pref2.prefList.techPrefs;
+                techObj2 = feval(pref2.prefList.tech);
+                pref2 = chebpref.mergePrefStructs(techObj2.techPref(), ...
+                    pref2.prefList.techPrefs);
             end
 
             pref1 = chebpref.mergePrefStructs(pref1, pref2);
@@ -656,18 +663,33 @@ classdef chebfunpref < chebpref
                 if ( isstruct(varargin{1}) )
                     defaultPrefs = varargin{1};
                 else
+                    factoryPrefs = chebfunpref.factoryDefaultPrefs();
                     while ( ~isempty(varargin) )
                         prefName = varargin{1};
                         prefValue = varargin{2};
+
+                        wantFactory = strcmp(prefValue, 'factory');
                         if ( iscell(prefName) && ...
-                                isfield(defaultPrefs.(prefName{1}), prefName{2}) )
+                             isfield(defaultPrefs.(prefName{1}), prefName{2}) )
+                            if ( wantFactory )
+                                prefValue = factoryPrefs.(prefName{1}).(prefName{2});
+                            end
+
                             % TODO: Revisit the syntax for assigning to second
                             % tier preferences.
                             defaultPrefs.(prefName{1}).(prefName{2}) = prefValue;
                         elseif ( isfield(defaultPrefs, prefName) )
+                            if ( wantFactory )
+                                prefValue = factoryPrefs.(prefName);
+                            end
+
                             defaultPrefs.(prefName) = prefValue;
                         else
-                            defaultPrefs.techPrefs.(prefName) = prefValue;
+                            if ( wantFactory )
+                                defaultPrefs.techPrefs = rmfield(defaultPrefs.techPrefs, prefName);
+                            else
+                                defaultPrefs.techPrefs.(prefName) = prefValue;
+                            end
                         end
                         varargin(1:2) = [];
                     end
@@ -693,14 +715,11 @@ classdef chebfunpref < chebpref
             factoryPrefs.enableDeltaFunctions = true;
                 factoryPrefs.deltaPrefs.deltaTol = 1e-9;
                 factoryPrefs.deltaPrefs.proximityTol = 1e-11;
+            factoryPrefs.enableFunqui = false;
             factoryPrefs.tech = @chebtech2;
             factoryPrefs.techPrefs = struct();
-                factoryPrefs.techPrefs.eps = 2^(-52);
-                factoryPrefs.techPrefs.maxLength = 65537;
-                factoryPrefs.techPrefs.fixedLength = NaN;
-                factoryPrefs.techPrefs.extrapolate = false;
-                factoryPrefs.techPrefs.sampleTest = true;
             factoryPrefs.cheb2Prefs = struct(); 
+                factoryPrefs.cheb2Prefs.chebfun2eps = eps;   
                 factoryPrefs.cheb2Prefs.maxRank = 513;   
                 factoryPrefs.cheb2Prefs.sampleTest = 1;
         end

@@ -8,7 +8,7 @@ function handles = clear(handles)
 %  This method is called when the user presses the 'Clear' button on the CHEBGUI
 %  figure.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Clear the input fields:
@@ -20,7 +20,7 @@ set(handles.input_LBC, 'String', '');
 set(handles.input_RBC, 'String', '');
 set(handles.input_BC, 'String', '');
 set(handles.input_GUESS, 'String', '');
-set(handles.menu_tolerance, 'UserData', '1e-10'); % The default tolerance
+set(handles.menu_tolerance, 'UserData', '5e-13'); % The default tolerance
 
 % Clear the figures:
 chebguiController.initialiseFigures(handles)

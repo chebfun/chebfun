@@ -11,7 +11,7 @@ function out = islinear(N, u)
 %
 % See also LINEARIZE.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. See
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin < 2 )
@@ -19,7 +19,24 @@ if ( nargin < 2 )
     u = [];
 end
 
-% Call LINEARIZE():
-[ignored1, ignored2, out] = linearize(N, u, [], 0);
+% Call LINEARIZE(). It might occur that something non-differentiable appears in
+% the .op field of the chebop, e.g. @(u) diff(u,2) + abs(u). This will cause
+% an error down the stack, since abs is not Frechet differentiable, and the
+% corresponding ADCHEBFUN method throws an error. Thus, we wrap the call to
+% linearize in a try-catch statement, and listen out for the 'nonDifferentiable'
+% error identifier.
+try 
+    [ignored1, ignored2, out] = linearize(N, u, [], 0);
+catch ME
+    if ( ~isempty(strfind(ME.identifier, 'notDifferentiable')) || ...
+        strcmp(ME.identifier, 'CHEBFUN:CHEBOP:linearize:invalidInitialGuess') )
+        % Something non-differentiable appeared in the operator, so it can't be
+        % linear! Alternatively, the operator fails to evaluate on the initial
+        % guess passed, so it can't in that case be linear either!
+        out = false;
+    else
+        rethrow(ME);
+    end
+end
 
 end

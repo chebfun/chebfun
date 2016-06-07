@@ -2,6 +2,15 @@
 
 function pass = test_chebfunpref()
 
+% Disable some warnings issued by chebtech/trigtech involving invalid
+% preference names:  these are expected in this context, since we're going to
+% have some bogus preference names floating about to test things.
+%
+% TODO:  Is there a way to reorganize chebfunpref so that it can't excite these
+% warnings in the first place?
+warnStateC = warning('off', 'CHEBFUN:CHEBTECH:techPref:unknownPref');
+warnStateT = warning('off', 'CHEBFUN:TRIGTECH:techPref:unknownPref');
+
 % Test construction from a chebfunpref.
 p = chebfunpref();
 pass(1) = isequalNaN(p, chebfunpref(p));
@@ -46,18 +55,18 @@ pass(8) = strcmp(p.techPrefs.testPref2, 'test2');
 % chebfunpref with differences that need to be merged into that set.
 p = chebfunpref();
 p.domain = [-2 7];
-p.eps = 1.0e-6;
+p.chebfuneps = 1.0e-6;
 p.maxLength = 1337;
 p.bogusPref = true;
 
 q = chebfunpref();
 q.splitting = true;
-q.eps = 1.0e-12;
+q.chebfuneps = 1.0e-12;
 
 r = chebfunpref(p, q);
 pass(9) = isequal(r.domain, q.domain) && ...
     isequal(r.splitting, q.splitting) && ...
-    isequal(r.eps, q.eps) && ...
+    isequal(r.chebfuneps, q.chebfuneps) && ...
     isequal(r.maxLength, q.maxLength) && ...
     isequal(r.bogusPref, p.bogusPref);
 
@@ -65,12 +74,12 @@ pass(9) = isequal(r.domain, q.domain) && ...
 % with differences that need to be merged into that set.
 q = struct();
 q.splitting = true;
-q.eps = 1.0e-12;
+q.chebfuneps = 1.0e-12;
 
 r = chebfunpref(p, q);
 pass(10) = isequal(r.domain, p.domain) && ...
     isequal(r.splitting, q.splitting) && ...
-    isequal(r.eps, q.eps) && ...
+    isequal(r.chebfuneps, q.chebfuneps) && ...
     isequal(r.maxLength, p.maxLength) && ...
     isequal(r.bogusPref, p.bogusPref);
 
@@ -98,6 +107,15 @@ q.techPrefs.testPref = 'testq';
 pass(15) = isequalNaN(chebfunpref.mergeTechPrefs(p, q), ...
     chebfunpref.mergeTechPrefs(p.techPrefs, q.techPrefs));
 
+% Test that chebfunpref().techPrefs returns a complete set of tech prefs.
+p = chebfunpref();
+
+p.tech = @chebtech2;
+pass(16) = isequalNaN(p.techPrefs, chebtech2().techPref());
+
+p.tech = @trigtech;
+pass(17) = isequalNaN(p.techPrefs, trigtech().techPref());
+
 % Test functions for managing default preferences.
 savedPrefs = chebfunpref();
 
@@ -105,14 +123,14 @@ try
     chebfunpref.setDefaults('factory');
     factoryPrefs = chebfunpref.getFactoryDefaults();
     p = chebfunpref();
-    pass(16) = isequalNaN(p, factoryPrefs);
+    pass(18) = isequalNaN(p, factoryPrefs);
 
     chebfunpref.setDefaults('factory');
     p = chebfunpref();
     p.domain = [-2 7];
     p.testPref = 'testq';
     chebfunpref.setDefaults(p);
-    pass(17) = strcmp(chebfunpref().testPref, 'testq') && ...
+    pass(19) = strcmp(chebfunpref().testPref, 'testq') && ...
         isequal(chebfunpref().domain, [-2 7]);
 
     chebfunpref.setDefaults('factory');
@@ -120,18 +138,46 @@ try
     p.domain = [-2 7];
     p.testPref = 'testq';
     chebfunpref.setDefaults(p);
-    pass(18) = strcmp(chebfunpref().testPref, 'testq') && ...
+    pass(20) = strcmp(chebfunpref().testPref, 'testq') && ...
         isequal(chebfunpref().domain, [-2 7]);
 
     chebfunpref.setDefaults('factory');
     chebfunpref.setDefaults('domain', [-2 7], 'testPref', 'testq');
-    pass(19) = strcmp(chebfunpref().testPref, 'testq') && ...
+    pass(21) = strcmp(chebfunpref().testPref, 'testq') && ...
         isequal(chebfunpref().domain, [-2 7]);
 
     % Test getting defaults:
-    pass(20) = isnumeric(chebfunpref().eps);
-    pass(21) = ischar(chebfunpref().blowupPrefs.defaultSingType);
-    pass(22) = ischar(chebfunpref().refinementFunction);
+    pass(22) = isnumeric(chebfunpref().chebfuneps);
+    pass(23) = ischar(chebfunpref().blowupPrefs.defaultSingType);
+    pass(24) = ischar(chebfunpref().refinementFunction);
+
+    % Test setting factory defaults for individual preferences.
+    chebfunpref.setDefaults('factory');
+    chebfunpref.setDefaults('domain', [-2 7]);
+    res1 = chebfunpref().domain;
+    chebfunpref.setDefaults('domain', 'factory');
+    res2 = chebfunpref().domain;
+    pass(25) = isequal(res1, [-2 7]) && isequal(res2, factoryPrefs.domain);
+
+    chebfunpref.setDefaults('factory');
+    chebfunpref.setDefaults({'cheb2Prefs', 'maxRank'}, 5);
+    res1 = chebfunpref().cheb2Prefs.maxRank;
+    chebfunpref.setDefaults({'cheb2Prefs', 'maxRank'}, 'factory');
+    res2 = chebfunpref().cheb2Prefs.maxRank;
+    pass(26) = isequal(res1, 5) && isequal(res2, factoryPrefs.cheb2Prefs.maxRank);
+
+    chebfunpref.setDefaults('factory');
+    chebfunpref.setDefaults('chebfuneps', 1e-6);
+    res1 = chebfunpref().chebfuneps;
+    chebfunpref.setDefaults('chebfuneps', 'factory');
+    res2 = chebfunpref().chebfuneps;
+    pass(27) = isequal(res1, 1e-6) && isequal(res2, factoryPrefs.chebfuneps);
+
+    chebfunpref.setDefaults('factory');
+    chebfunpref.setDefaults('bogusPref', 'abc');
+    res1 = chebfunpref().bogusPref;
+    chebfunpref.setDefaults('bogusPref', 'factory');
+    pass(28) = isequal(res1, 'abc') && ~isfield(chebfunpref().techPrefs, 'bogusPref');
     
 catch ME
     
@@ -145,6 +191,10 @@ end
 
 % Reset the preferences:
 chebfunpref.setDefaults(savedPrefs);
+
+% Re-enable the warnings we disabled above.
+warning(warnStateC);
+warning(warnStateT);
 
 end
 

@@ -9,11 +9,11 @@ function C = cumsummat(N, dom, disc)
 %   domain DOM. DOM should be a 1x2 vector.
 %
 %   D = CUMSUMMAT(N, DOM, DISC) or CUMSUMMAT(N, DISC) returns the indefinite
-%   integration matrix associated with the CHEBDISCRETIZATION DISC.
+%   integration matrix associated with the OPDISCRETIZATION DISC.
 %
 % See also CUMSUM, CHEBCOLLOC2.DIFFMAT, DIFFMAT.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %% Parse the inputs:

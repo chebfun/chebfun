@@ -38,4 +38,13 @@ JJ = J(x,:);
 A = UU./JJ; 
 pass(4) = norm( A - ones(100,1)*A(1,:) ) < 1e5*tol;
 
+lambda = .25;
+U = ultrapoly([0 2 3], lambda);
+C = chebcoeffs(U);
+tru = [1 0.0625 0
+       0 0      0.078125
+  	   0 0.3125 0
+       0 0      0.234375];
+pass(5) = ( all(size(C) == size(tru)) ) && ( norm(C(:) - tru(:)) < tol );
+
 end

@@ -33,7 +33,7 @@ function h = conv(f, g, varargin)
 %   series", SIAM Journal on Scientific Computing, Vol. 36, No. 3, pages
 %   A1207-A1220, 2014.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -173,13 +173,17 @@ dom(isnan(dom)) = [];
 hs = max(hscale(f), hscale(g));
 vs = 2*max([vscale(f), vscale(g)]);
 
-% Avoid resampling for speed up:
+% Set preferences:
+%
+% TODO:  CHEBFUN is not supposed to set the refinementFunction preference
+% because it doesn't belong to the list of "abstract" preferences required of
+% all techs.  Do we really need to alter it here?
 p = chebfunpref();
 p.splitting = false;
 p.blowup = false;
 p.techPrefs.extrapolate = true;
-p.techPrefs.resampling = false;
-p.techPrefs.sampletest = false;
+p.techPrefs.refinementFunction = 'nested';
+p.techPrefs.sampleTest = false;
 
 % Construct FUNS:
 funs = cell(1, length(dom)-1);

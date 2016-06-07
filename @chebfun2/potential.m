@@ -11,12 +11,12 @@ function G = potential( f )
 % 
 % See also CHEBFUN2V/CURL.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 
 if ( isempty( f ) )
-    G = chebfun2v; 
+    G = chebfun2v( ); 
     return
 end
 

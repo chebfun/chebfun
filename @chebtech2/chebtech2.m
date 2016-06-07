@@ -46,7 +46,7 @@ classdef chebtech2 < chebtech
 %
 % See also CHEBTECH, CHEBTECH.TECHPREF, CHEBPTS, HAPPINESSCHECK, REFINE.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -88,18 +88,33 @@ classdef chebtech2 < chebtech
                 pref = chebtech.techPref(pref);
             end
 
-            data = parseDataInputs(data, pref);
+            data = chebtech.parseDataInputs(data, pref);
 
-            % Force nonadaptive construction if PREF.FIXEDLENGTH is numeric:
-            if ( ~isempty(pref.fixedLength) && ~isnan(pref.fixedLength) )
+            % Force nonadaptive construction if PREF.FIXEDLENGTH is numeric and
+            % we're not using contour integrals.
+            if ( ~(isnumeric(op) || iscell(op)) && ...
+                    ~isnan(pref.fixedLength) && ~pref.useTurbo )
                 % Evaluate op on the Chebyshev grid of given size:
                 op = feval(op, chebtech2.chebpts(pref.fixedLength));
             end
 
             % Actual construction takes place here:
-            [obj, values] = populate(obj, op, data.vscale, data.hscale, pref);
+            [obj, values] = populate(obj, op, data, pref);
 
-            if ( obj.ishappy || isnumeric(op) || iscell(op) )
+            if ( isnumeric(op) || iscell(op) )
+                % Set length of obj to PREF.FIXEDLENGTH (if it is non-trivial).
+                if ( ~isnan(pref.fixedLength ) )
+                    obj = prolong(obj, pref.fixedLength);
+                end
+
+                % No need to error check when constructing from discrete data.
+                return
+            elseif ( obj.ishappy )
+                % Use contour integrals if requested.
+                if ( pref.useTurbo )
+                    obj = constructorTurbo(obj, op, pref);
+                end
+
                 % No need to error check if we are happy:
                 return
             end
@@ -121,19 +136,6 @@ classdef chebtech2 < chebtech
                     'Function returned NaN when evaluated.')
             end
         end
-    end
-    
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% CLASS METHODS:
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    methods ( Access = public, Static = false )
-        
-        % Compose two CHEBTECH2 objects or a CHEBTECH2 with a function handle:
-        h = compose(f, op, g, data, pref)
-        
-        % Get method:
-        val = get(f, prop);
-        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -168,27 +170,15 @@ classdef chebtech2 < chebtech
         
         % Refinement function for CHEBTECH2 construction (evaluates OP on grid):
         [values, points, giveUp] = refine(op, values, pref)
+       
+        % Return the value-based discretization class which uses CHEBTECH2: 
+        function disc = returnValsDisc()
+            disc = @chebcolloc2;
+        end
         
         % Convert values to coefficients:
         coeffs = vals2coeffs(values)
         
     end
             
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% METHODS IMPLEMENTED IN THIS M-FILE:
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function data = parseDataInputs(data, pref)
-%PARSEDATAINPUTS   Parse inputs from the DATA structure and assign defaults.
-
-if ( ~isfield(data, 'vscale') || isempty(data.vscale) )
-    data.vscale = 0;
-end
-
-if ( ~isfield(data, 'hscale') || isempty(data.hscale) )
-    data.hscale = 1;
-end
-
 end

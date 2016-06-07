@@ -10,13 +10,16 @@ function f = polyfit(y, n)
 %   the domain D which corresponds to the polynomial of degree N that fits the
 %   data (X, Y) in the least-squares sense. X should be a real-valued column
 %   vector and Y should be a matrix with size(Y,1) = size(X,1).
+%   
+%   F = POLYFIT(Y, N) where Y is represented as a periodic TRIGFUN object
+%   returns the degree N trigonometric polynomial fit of length 2N+1.
 %
 %   Note CHEBFUN/POLYFIT does not not support more than one output argument in
 %   the way that MATLAB/POLYFIT does.
 %
 % See also INTERP1.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( ~isscalar(n) || round(n) ~= n )
@@ -32,6 +35,16 @@ if ( n > length(y) && numel(y.funs) == 1 && isa(y.funs{1}.onefun, 'chebtech') )
     % Nothing to do here!
     f = y;
     return
+end
+
+if ( isPeriodicTech(y) )    
+    % Get the coefficients of the least square approximation:
+    c = truncCoeffs(y.funs{1}, n);
+    
+    % Construct the fit:
+    f = chebfun(c, y.domain, 'coeffs', 'periodic');
+    return;
+    
 end
 
 % Compute first n+1 Legendre coeffs:

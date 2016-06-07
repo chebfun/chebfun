@@ -17,7 +17,7 @@ function F = restrict(f, s)
 %   Warning: If F is not also smooth and periodic on S, then the resulting
 %   TRIGTECH will not be happy.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with empty case:
@@ -44,38 +44,14 @@ if ( numInts > 1 )
 end
 
 op = @(x) feval(f, .5 * [1 - x, 1 + x] * [s(1) ; s(end)]);
-data.vscale = f.vscale;
-data.hscale = f.hscale;
+data.vscale = vscale(f);
 pref = f.techPref;
-pref.maxLength = 2*length(f);
 pref.minSamples = min(length(f), pref.minSamples);
 F = f.make(op, data, pref);
 
 if ( f.ishappy && ~F.ishappy )
     error('CHEBFUN:TRIGTECH:restrict:notPeriodic', ...
-        'Restrict failed. Perhaps f is not perioidic in [s(1), s(2)]?');
-end
-  
-% TODO: The code below produces a CHEBTECH on the subdomains. Should we do this?
-% % Simply make a new chebtech object on the restricted domains.  
-% % This handled by the linear scaling of the input arguments to f.
-% F = cell(numInts, 1);
-% for j = 1:numInts
-%     op = @(x) feval(f,.5*[1 - x, 1 + x] * [s(j) ; s(j+1)]);
-%     data.vscale = f.vscale;
-%     data.hscale = f.hscale;
-%     F{j} = f.make(op, data, f.chebtech());
-% end
-% 
-% if ( numInts == 1 )
-%     % Remove f from the cell.
-%     F = F{1};
-% end
-
+        'Restrict failed. Perhaps f is not periodic in [s(1), s(2)]?');
 end
 
-%RESTRICT   Restrict a TRIGTECH to a subinterval.
-%   Since restrictions of F will, in general, not be perioidic, RESTRICT(F, S)
-%   throws an error unless S = F.domain or ISEMPTY(F). 
-%
-%   In future, this behaviour might change.
+end

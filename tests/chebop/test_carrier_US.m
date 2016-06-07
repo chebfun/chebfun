@@ -1,13 +1,12 @@
 function pass = test_carrier_US(pref)
 % Test Carrier equation.
 %
-% Toby Driscoll / Asgeir Birkisson, Jume 2014.
+% Toby Driscoll / Asgeir Birkisson, June 2014.
 if ( nargin == 0 )
     pref = cheboppref;
 end
 
-tol = 1e-10;
-pref.errTol = tol;
+tol = 1e2*pref.bvpTol;
 dom = [-1 1];
 
 %%
@@ -19,7 +18,7 @@ N.bc = @(x,u) [u(-1); u(1)];
 x = chebfun(@(x) x, dom);
 N.init =  2.*(x.^2-1).*(1-2./(1+20.*x.^2));
 
-u = solveBVP(N, rhs, pref);
+u = solvebvp(N, rhs, pref);
 
 xx = (-1:.25:1)';
 hiquality_ans = [

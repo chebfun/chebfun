@@ -16,7 +16,7 @@ function [sn, cn, dn] = ellipj(u, m, pref)
 %
 % See also ELLIPKE.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -26,12 +26,12 @@ function [sn, cn, dn] = ellipj(u, m, pref)
 
 if ( nargin < 3 )
     pref = chebfunpref();
-    tol = pref.techPrefs.eps;
+    tol = pref.techPrefs.chebfuneps;
 elseif ( ~isstruct(pref) )
     tol = pref;
     pref = chebfunpref();
 else
-    tol = pref.techPrefs.eps;
+    tol = pref.techPrefs.chebfuneps;
 end
 
     function x = fudge(x, tol)
@@ -55,7 +55,7 @@ if ( isreal(u) )
             dn = compose(u, @(u) dnFun(u, m, tol), pref);
         end
     elseif ( isnumeric(u) )  % U = double, M = CHEBFUN
-        mTol = max(epslevel(m).*vscale(m), tol);
+        mTol = max(eps*vscale(m), tol);
         % SN
         sn = compose(m, @(m) ellipj(u, fudge(m, mTol), tol), pref);
         % CN
@@ -67,7 +67,7 @@ if ( isreal(u) )
             dn = compose(m, @(m) dnFun(u, fudge(m, mTol), tol), pref);
         end
     else                     % U = CHEBFUN, M = CHEBFUN
-        mTol = max(epslevel(m).*vscale(m), tol);
+        mTol = max(eps*vscale(m), tol);
         % SN
         sn = compose(u, @(u, m) ellipj(u, fudge(m, mTol), tol), m, pref);
         % CN

@@ -18,11 +18,11 @@ function varargout = solveGUIivp(guifile, handles)
 % If the method is called by calling the command explicitly with a CHEBGUI
 % object (e.g. [U, INFO] = SOLVEGUIVP(GUIFILE) from the command line),
 %   VARARGOUT{1}:   The solution to the problem specified by GUIFILE.
-%   VARARGOUT{2}:   The INFO struct returned by the chebop/solveivp() method.
+%   VARARGOUT{2}:   The INFO struct returned by the chebop/solveivp method.
 %
 % See also: chebgui/solveGUI, chebgui/solveGUIbvp.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Handles will be an empty variable if we are solving without using the GUI
@@ -43,6 +43,7 @@ allVarNames = expInfo.allVarNames;
 indVarNameSpace = expInfo.indVarNameSpace;
 bcInput = expInfo.bcInput;
 initInput = expInfo.initInput;
+numVars = expInfo.numVars;
 % Create the independent variable on DOM.
 xt = chebfun(@(x) x, dom);
 
@@ -119,7 +120,8 @@ end
 options = setupODEoptions(handles.guifile, expInfo);
 
 % Are we solving the problem globally, or with one of the MATLAB solvers?
-solvingGlobally = isempty(strfind(func2str(options.ivpSolver), 'chebfun'));
+solvingGlobally = strcmp(options.ivpSolver, 'values') || ...
+    strcmp(options.ivpSolver, 'coeffs');
 
 % Various things we only need to think about when in the GUI, changes GUI
 % compenents.
@@ -152,7 +154,10 @@ if ( guiMode )
         options.discretization = options.ivpSolver;
         
         % Solve!
-        [u, info] = solveBVP(N, 0, options, displayFunction);
+        [u{1:numVars, 1}, info] = solvebvp(N, 0, options, displayFunction);
+        
+        % Convert the cell-array returned above to a chebmatrix
+        u = chebmatrix(u);
         
         % Make the popup-menu for the choice of plots visible:
         set(handles.popupmenu_bottomFig, 'Visible', 'on')
@@ -217,9 +222,9 @@ if ( guiMode )
 
     % Different titles of top plot if we had a linear problem:
     if ( solvingGlobally && ~isLinear )
-        title('Solution at end of iteration');
+        set(handles.panel_figSol, 'title', 'Solution at end of iteration')
     else
-        title('Solution');
+        set(handles.panel_figSol, 'title', 'Solution')
     end
 
     % If we were solving a nonlinear problem, we show a plot of the norm of the
@@ -232,8 +237,7 @@ if ( guiMode )
         axes(handles.fig_norm)
         normDelta = info.normDelta;
         semilogy(normDelta, '-*', 'Linewidth', 2)
-        title('Norm of updates')
-        xlabel('Iteration number')
+        set(handles.panel_figNorm, 'title', 'Norm of updates')
 
         if ( length(normDelta) > 1 )
             XTickVec = 1:max(floor(length(normDelta)/5), 1):length(normDelta);
@@ -247,10 +251,23 @@ if ( guiMode )
         % If we're solving a linear problem, or using the MATLAB solvers, plot
         % the coefficients of the solution instead.
         axes(handles.fig_norm)
+        % Show the plotcoeffs plot. Grab its title, set as the title of the
+        % panel, then hide the title of the plot and the ylabel (too avoid
+        % issues at large fontsizes):
         plotcoeffs(u, 'linewidth', 2)
+        plotCoeffsTitle = get(get(handles.fig_norm, 'title'), 'String');
+        set(handles.panel_figNorm, 'title', plotCoeffsTitle);
+        title('');
+        ylabel('');
+        xlabel('');
         set(handles.popupmenu_bottomFig, 'Value', 2);
         grid on
     end
+    
+    % Update the fontsize of plots
+    set(handles.fig_sol, 'fontsize', handles.fontsizePanels);
+    set(handles.fig_norm, 'fontsize', handles.fontsizePanels);
+
     
     % Return the handles as varargout.
     varargout{1} = handles;

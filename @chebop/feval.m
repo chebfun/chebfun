@@ -32,7 +32,7 @@ function out = feval(N, varargin)
 %
 % See also CHEBOP/SUBSREF, LINOP/MTIMES, CHEBOP/MATRIX.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Support for calling a linear CHEBOP with a numerical input to get its
@@ -70,13 +70,17 @@ if ( (nargin == 2) && isnumeric(varargin{1}) )
     % cases.
     n = varargin{1};
     L = linop(N);
-    if ( ~isa(cheboppref().discretization(), 'chebcolloc2') )
+    pref = cheboppref();
+    disc = pref.discretization;
+    if ( isa(disc, 'char') && strcmpi(disc, 'values') )
+        pref.discretization = @chebcolloc2;
+    elseif ( isa(disc, 'function_handle') && ~isequal(disc, @chebcolloc2) ) 
         % We only support CHEBCOLLOC2 discretizations!
         error('CHEBFUN:CHEBOP:feval:notColloc2', ...
             ['FEVAL(N, DIM) only supports CHEBCOLLOC2 discretizations.\n', ...
              'Use MATRIX(N, DIM) or change the discretization in CHEBOPPREF.']);
     end
-    A = matrix(L, n); % has n rows but maybe more columns
+    A = matrix(L, n, pref); % has n rows but maybe more columns
 
     % We want an n by n result. We have that A is (n-d) x n where d =
     % L.diffOrder. Also, the output of A is at 1st kind points. We need to do:
@@ -184,7 +188,7 @@ elseif ( numberOfInputs == 2 )
 
     % Evaluate the operator!
     out = N.op(x, u);
-
+    
 else
     % The operator is specified on the form
     %   N.op = @(x, u, v) = [diff(u,2) + v; u + diff(v)]
@@ -224,6 +228,12 @@ else
         out = doEval(N, args);
     end
     
+end
+
+% If the operator is written in a function file or nested function, then it
+% is natural for it to be returned in cell form. Convert it to a chebmatrix:
+if ( iscell(out) )
+    out = vertcat(out{:}); % TODO: is this correct for multiple RHSs?
 end
 
 end

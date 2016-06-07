@@ -5,12 +5,11 @@ function f = logical(f)
 %   F does have roots, then LOGICAL(F) will return garbage with no warning. F
 %   may be complex.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % TODO:  Should we use a tolerance here instead of any()?
 values = f.coeffs2vals(f.coeffs); 
 f.coeffs = any(values, 1);
-f.vscale = abs(f.coeffs);
 
 end

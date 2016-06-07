@@ -1,4 +1,4 @@
-function [f, rVal] = cumsum(f, dim)
+function f = cumsum(f, dim)
 %CUMSUM   Indefinite integral of a BNDFUN.
 %   CUMSUM(F) is the indefinite integral of the BNDFUN F on an interval [a,b],
 %   with the constant of integration chosen so that F(a) = 0.
@@ -6,13 +6,9 @@ function [f, rVal] = cumsum(f, dim)
 %   CUMSUM(F, 2) will take the cumulative sum over the columns F which is an
 %   array-valued BNDFUN.
 %
-%   [F, RVAL] = CUMSUM(F) and [F, RVAL] = CUMSUM(F, 2) will do the same thing as 
-%   above, but also return the value of the integral at the right endpoint, 
-%   which will be used at CHEBFUN level for concatenating neighboring pieces.
-%
 % See also DIFF, SUM.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%

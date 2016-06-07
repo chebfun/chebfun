@@ -1,26 +1,29 @@
 function varargout = eigs(A, varargin)
 %EIGS    Eigenvalues and eigenfunctions of a linear operator.
-%   Important: While you can construct a LINOP and apply this method, the
-%   recommended procedure is to use CHEBOP.EIGS instead.
+%   Important (1): While you can construct a LINOP and apply this method, the
+%   recommended procedure is to use CHEBOP/EIGS instead.
+%   Important (2): A CHEBOPPREF object PREFS has to be passed. When this method
+%   is called via CHEBOP/EIGS, PREFS is inherited from the CHEBOP level.
 %
-%   D = EIGS(A) returns a vector of 6 eigenvalues of the linop A. EIGS will
-%   attempt to return the eigenvalues corresponding to the most easily
+%   D = EIGS(A, PREFS) returns a vector of 6 eigenvalues of the linop A. EIGS 
+%   will attempt to return the eigenvalues corresponding to the most easily
 %   resolved eigenfunctions. (This is unlike the built-in EIGS, which
 %   returns the largest eigenvalues by default.)
 %
-%   [V, D] = EIGS(A) returns a diagonal 6x6 matrix D of A's most easily
+%   [V, D] = EIGS(A, PREFS) returns a diagonal 6x6 matrix D of A's most easily
 %   resolved eigenvalues, and their corresponding eigenfunctions in the
 %   chebmatrix V, where V{i}(:,j) is the jth eigenfunction in variable i of
 %   the system.
 %
-%   [...] = EIGS(A, B) solves the generalized eigenproblem A*V = B*V*D,
+%   [...] = EIGS(A, B, PREFS) solves the generalized eigenproblem A*V = B*V*D,
 %   where B is another linop.
 %
-%   EIGS(A, K) and EIGS(A, B, K) find the K most easily resolved eigenvalues.
+%   EIGS(A, K, PREFS) and EIGS(A, B, K, PREFS) find the K most easily resolved 
+%   eigenvalues.
 %
-%   EIGS(A, K, SIGMA) and EIGS(A, B, K, SIGMA) find K eigenvalues. If SIGMA is a
-%   scalar, the eigenvalues found are the ones closest to SIGMA. Other selection
-%   possibilities for SIGMA are:
+%   EIGS(A, K, SIGMA, PREFS) and EIGS(A, B, K, SIGMA, PREFS) find K eigenvalues. 
+%   If SIGMA is a scalar, the eigenvalues found are the ones closest to SIGMA. 
+%   Other selection possibilities for SIGMA are:
 %
 %      'LM' (or Inf) and 'SM' for largest and smallest magnitude
 %      'LR' and 'SR' for largest and smallest real part
@@ -29,8 +32,8 @@ function varargout = eigs(A, varargin)
 %   SIGMA must be chosen appropriately for the given operator. For example,
 %   'LM' for an unbounded operator will fail to converge.
 %
-%   EIGS(..., PREFS) accepts a CHEBOPPREF to control the behavior of
-%   the algorithm. If empty, defaults are used.
+%   [...] = EIGS(A, ..., 'rayleigh') performs one step of Rayleigh quotient
+%   iteration on the computed eigenpairs in an attempt to improve accuracy.
 %
 %   This version of EIGS does not use iterative methods as in the built-in
 %   EIGS for sparse matrices. Instead, it uses the built-in EIG on dense
@@ -44,19 +47,22 @@ function varargout = eigs(A, varargin)
 %   E = functionalBlock.eval(d);
 %   A = addBC(A, E(0), 0);
 %   A = addBC(A, E(pi), 0);
-%   [V,D] = eigs(A, 10);
+%   prefs = cheboppref();
+%   prefs.discretization = @chebcolloc2;
+%   [V,D] = eigs(A, 10, prefs);
 %   format long, sqrt(-diag(D))  % integers, to 14 digits
 %
 % See also CHEBOPPREF, CHEBOP.EIGS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Parsing inputs.
 B = [];       % no generalized operator
 k = [];       % will be made default value below
 sigma = [];   % default 'auto' mode
-pref = [];
+prefs = [];
+rayleigh = false; % do not perform rayleigh quotient iteration by default
 gotk = false; % until we detect a value of k in inputs
 for j = 1:nargin-1
     item = varargin{j};
@@ -64,11 +70,13 @@ for j = 1:nargin-1
         % Generalized operator term
         B = item;
     elseif ( isa(item,'cheboppref') )
-        pref = item;
+        prefs = item;
     elseif ( ~gotk && isnumeric(item) && (item > 0) && (item == round(item) ) )
         % k should be given before sigma (which might also be integer)
         k = item;
         gotk = true;
+    elseif ( strcmpi(item,'rayleigh') )
+        rayleigh = true;
     elseif ( ischar(item) || isnumeric(item) )
         sigma = item;
     else
@@ -84,14 +92,13 @@ end
 
 %#ok<*ASGLU> % Prevent MLINT warnings for unused variables, which are used in 
              % many places in this code to avoid the [~, arg2] = ... syntax.
-
-% Grab defaults if needed.
-if ( isempty(pref) )
-    pref = cheboppref();
-end
              
-% Discretization type.
-discType = pref.discretization;
+% Discretization type:
+discType = prefs.discretization;
+
+% Make sure we have a valid discretization preference at this level.
+assert(~ischar(discType), 'CHEBFUN:LINOP:expm:discretization', ...
+    'pref.discretization must be a function handle, not a string.');
 
 % Assign default to k if needed.
 if ( isempty(k) || isnan(k) )
@@ -120,7 +127,7 @@ if ( isa(discType, 'function_handle') )
     discA = discType(A);
 
     % Set the allowed discretisation lengths:
-    dimVals = discA.dimensionValues(pref);
+    dimVals = discA.dimensionValues(prefs);
 
     % Update the discretiztion dimension on unhappy pieces:
     discA.dimension = repmat(dimVals(1), 1, numel(discA.domain)-1);
@@ -229,9 +236,7 @@ end
 % combination is the same as the worst constituent function. The nontrivial
 % coefficents are to make accidental cancellations extremely unlikely.
 coeff = 1./(2*(1:k)');
-
-for dim = dimVals
-
+for dim = [dimVals NaN]
     [V, D, P] = getEigenvalues(discA, discB, k, sigma);
 
     % Combine the eigenfunctions into a composite.
@@ -239,19 +244,24 @@ for dim = dimVals
 
     % Convert the different components into cells
     u = partition(discA, P*v);
-    
 
     % Test the happiness of the function pieces:
-    vscale = zeros(sum(isFun),1);   % intrinsic scaling only
-    [isDone, epsLevel] = testConvergence(discA, u(isFun), vscale, pref);
+    vscale = zeros(1, sum(isFun));   % intrinsic scaling only
+    [isDone, cutoff] = testConvergence(discA, u(isFun), vscale, prefs);
 
     if ( all(isDone) )
         break
-    else
+    elseif ( ~isnan(dim) )
         % Update the discretiztion dimension on unhappy pieces:
         discA.dimension(~isDone) = dim;
     end
 
+end
+
+if ( ~isDone )
+    warning('LINOP:EIGS:convergence', ...
+        ['Maximimum dimension reached. Solution may not have converged.\n' ...
+        'Please see help cheboppref.maxDimension for more details.']);
 end
 
 % Detect finite rank operators.
@@ -273,7 +283,7 @@ if ( nargout < 2 )  % Return the eigenvalues only
     varargout = { diag(D) };
 else            % Unwrap the eigenvectors for output
 
-    u = mat2fun(discA, P*V);
+    u = mat2fun(discA, P*V, cutoff);
 
     % For normalizing eigenfunctions, so that they always have the same sign:
     signMat = [];
@@ -283,8 +293,8 @@ else            % Unwrap the eigenvectors for output
     for j = 1:length(u)
         if ( isFun(j) )
             % Compress the representation.
-            u{j} = simplify(u{j}, max(eps,epsLevel));
-            if (isempty(signMat))
+            u{j} = simplify(u{j});
+            if ( isempty(signMat) )
                 % Find what domain we are working on:
                 dom = domain(u{j});
                 % Arbitrary point just to the right of the middle of the domain:
@@ -317,6 +327,11 @@ else            % Unwrap the eigenvectors for output
     end
     u = chebmatrix(vertcat(u{:}));
    
+    % do one step of Rayligh quotient iteration to improve accuracy
+    if ( rayleigh ) 
+        [u, D] = rayleighQI(A,B,u,D,prefs);
+    end
+
     % Output:
     varargout = {u, D};
 end
@@ -485,3 +500,36 @@ idx = idx( keeper );
 
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function [u, D] = rayleighQI(A, B, u, D, prefs)
+% Function to perform one step of Rayleigh quotient iteration.
+
+    % If B isempty set to identity
+    if ( isempty(B) )
+        B = 0*A;
+        I = operatorBlock.eye(A.domain);
+        for ii = 1:size(B,1)
+            B.blocks{ii,ii} = I;
+        end
+    end
+    B = linop(B);
+
+    % Compute current Rayleigh quotients
+    d = diag(D);
+
+    % Loop through d
+    for ii = 1:length(d)
+        lam = d(ii);
+        L = linop(A - lam*B);
+        L.constraint = A.constraint;
+        rhs = B*u(:,ii);
+        v = linsolve(L, rhs, prefs);
+        u(:,ii) = v/norm(v);
+    end
+
+    % Update D
+    d = diag(u'*(A*u)) ./ diag(u'*(B*u));
+    D = diag(d);
+
+end

@@ -4,7 +4,7 @@ function pass = test_constructor( pref )
 if ( nargin < 1 ) 
     pref = chebfunpref; 
 end 
-tol = 1e2 * pref.eps; 
+tol = 1e2 * pref.cheb2Prefs.chebfun2eps;
 
 % Can we make a chebfun2: 
 f = @(x,y) cos( x ) + sin( x .* y );  % simple function. 
@@ -47,5 +47,20 @@ p.tech = @trigtech;
 f = chebfun2(@(x,y) sin(pi*x).*cos(pi*y), p);
 g = chebfun2(@(x,y) sin(pi*x).*cos(pi*y), [-1 1 -1 1], p);
 pass(9) = norm(f - g) < tol;
+
+% Test the length of chebfun2s in different directions:
+p.tech = @chebtech2;
+f = chebfun2(@(x,y) sin(80*x+y), p);
+pass(10) = length(f.cols(:,1)) < 50;
+
+% Test whether there is a huge overesimation in the length of chebfun2s:
+f = chebfun(@(x) 1./(1+25*x.^2));
+f2 = chebfun2(@(x,y) 1./(1+25*x.^2));
+pass(11) = length(f2.rows) < length(f)+20;
+
+% Test whether reconstructing rows gives the same length.
+f = chebfun2(@(x,y) cos(pi*x.*y));
+frows = chebfun(f.rows);
+pass(12) = abs(length(frows)-length(f.rows)) < 10;
 
 end

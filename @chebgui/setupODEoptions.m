@@ -5,7 +5,7 @@ function options = setupODEoptions(guifile, expInfo)
 options = cheboppref();
 
 % Default tolerance:
-defaultTol = options.errTol;
+defaultTol = options.bvpTol;
 tolInput = guifile.tol;
 if ( isempty(tolInput) )
     tolNum = defaultTol;
@@ -16,14 +16,14 @@ end
 % We need a CHEBFUNPREF as well to ensure the tolerance requested is not
 % stricter than current CHEBFUN epsilon
 chebfunp = chebfunpref;
-if ( tolNum < chebfunp.techPrefs.eps )
+if ( tolNum < chebfunp.techPrefs.chebfuneps )
     warndlg('Tolerance specified is less than current chebfun epsilon', ...
         'Warning','modal');
     uiwait(gcf)
 end
 
 % Set the tolerance for the solution process
-options.errTol = tolNum;
+options.bvpTol = tolNum;
 
 % Always display iter. information
 options.display = 'iter';

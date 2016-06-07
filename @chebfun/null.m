@@ -5,7 +5,7 @@ function Z = null(A)
 %
 % See also ORTH, SVD, RANK, QR.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( A(1).isTransposed )
@@ -19,7 +19,7 @@ s = diag(S);
 
 % Choose a tolerance if none is given:
 if ( nargin == 1 )
-	tol = max(length(A)*eps(max(s)), vscale(A)*epslevel(A));
+	tol = max(length(A)*eps(max(s)), vscale(A)*eps);
 end
 
 % Compute the rank:

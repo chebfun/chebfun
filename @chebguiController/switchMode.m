@@ -6,7 +6,7 @@ function handles = switchMode(handles, newMode)
 %   HANDLES:    A MATLAB handle object for the CHEBGUI figure.
 %   NEWMODE:    Mode we want to switch to.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Do a lot of disabling/enabling and hiding/showing objects on the CHEBGUI
@@ -54,6 +54,7 @@ if ( strcmp(newMode, 'bvp') ) % Going into BVP mode
     % Disable IVP solver option
     set(handles.menu_ivpSolver, 'Enable', 'off');
     % Disable PDE menu options
+    set(handles.menu_pdeSolver, 'Enable', 'Off')
     set(handles.menu_pdeplotting, 'Enable', 'Off')
     set(handles.menu_pdeholdplot, 'Enable', 'Off')
     set(handles.menu_pdefix, 'Enable', 'Off')
@@ -73,6 +74,9 @@ if ( strcmp(newMode, 'bvp') ) % Going into BVP mode
         
     % Make the discretization panel visible
     set(handles.panel_discretization, 'Visible', 'on')
+    
+    % Set correct header to top figure
+    set(handles.panel_figSol, 'Title', 'Solution')
     
     % Note: The line below is a nice way to disable to objects, rather than hide
     % them.
@@ -145,6 +149,7 @@ elseif ( strcmp(newMode, 'pde') ) % Going into PDE mode
     % Disable IVP solver option
     set(handles.menu_ivpSolver, 'Enable', 'off');    
     % Enable PDE menuoptions
+    set(handles.menu_pdeSolver, 'Enable', 'On')
     set(handles.menu_pdeplotting, 'Enable', 'On')
     set(handles.menu_pdeholdplot, 'Enable', 'On')
     set(handles.menu_pdefix, 'Enable', 'On')
@@ -159,6 +164,9 @@ elseif ( strcmp(newMode, 'pde') ) % Going into PDE mode
     % Hide the discretization and IVP solver panels
     set(handles.panel_discretization, 'Visible', 'off')
     set(handles.panel_IVPsolver, 'Visible', 'off')
+    
+    % Set correct header to top figure
+    set(handles.panel_figSol, 'Title', 'Initial condition')
     
 else % Going into EIG mode
     handles.guifile.type = 'eig';
@@ -232,6 +240,7 @@ else % Going into EIG mode
     set(handles.menu_ivpSolver, 'Enable', 'off');
 
     % Disable PDE options
+    set(handles.menu_pdeSolver, 'Enable', 'Off')
     set(handles.menu_pdeplotting, 'Enable', 'Off')
     set(handles.menu_pdeholdplot, 'Enable', 'Off')
     set(handles.menu_pdefix, 'Enable', 'Off')
@@ -242,6 +251,9 @@ else % Going into EIG mode
     
     % Hide the IVP solver panel
     set(handles.panel_IVPsolver, 'Visible', 'off')
+    
+    % Set correct header to top figure
+    set(handles.panel_figSol, 'Title', 'Eigenvalues (imag vs real)')
     
     % Clear the top figure
     chebguiController.initialiseFigureTop(handles)

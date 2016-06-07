@@ -19,7 +19,7 @@ for n = 1:2
     pref = inputPref;
 
     % Set the tolerance:
-    tol = 10*pref.eps;
+    tol = 10*pref.chebfuneps;
     
     %%
     % Test on a scalar-valued function:
@@ -27,18 +27,18 @@ for n = 1:2
     f = @(x) sin(x);
     g = testclass.make(f(x));
     values = g.coeffs2vals(g.coeffs); 
-    [ishappy, epslevel, tail] = happinessCheck(g, f, values, pref);
+    [ishappy, tail] = happinessCheck(g, f, values, [], pref);
     pass(n, 1) = tail == 14;
-    pass(n, 2) = ishappy && epslevel < tol;
+    pass(n, 2) = ishappy;
     
     %%
     % Test on an array-valued function:
     f = @(x) [sin(x) cos(x) exp(x)];
     g = testclass.make(f(x));
     values = g.coeffs2vals(g.coeffs); 
-    [ishappy, epslevel, tail] = happinessCheck(g, f, values, pref);
+    [ishappy, tail] = happinessCheck(g, f, values, [], pref);
     pass(n, 3) = abs(tail - 15) < 2;
-    pass(n, 4) = ishappy && all(epslevel < tol);
+    pass(n, 4) = ishappy;
     
     %%
     k = 32;
@@ -50,7 +50,7 @@ for n = 1:2
     pref.sampleTest = 0;
     g = testclass.make(f(x));
     values = g.coeffs2vals(g.coeffs); 
-    [ishappy, epslevel, tail] = happinessCheck(g, f, values, pref);
+    [ishappy, tail] = happinessCheck(g, f, values, [], pref);
     if (n == 1)
         pass(n, 5) = ( ishappy && tail == 15);
     else
@@ -61,51 +61,51 @@ for n = 1:2
     pref.sampleTest = 1;
     g = testclass.make(f(x));
     values = g.coeffs2vals(g.coeffs); 
-    [ishappy, epslevel, tail] = happinessCheck(g, f, values, pref);
+    [ishappy, tail] = happinessCheck(g, f, values, [], pref);
     pass(n, 6) = ~ishappy && tail == 33;
 
     % g1 has a few coefficients that are small but not enough to satisfy
     % strictCheck, while g2 has just enough.  g1 will still pass with
     % classicCheck.
-    pref.eps = 2^(-52);
+    pref.chebfuneps = 2^(-52);
     pref.happinessCheck = 'strict';
     f = @(x) sin(10*(x - 0.1));
 
     g1 = testclass.make(f(testclass.chebpts(39)));
     values1 = g1.coeffs2vals(g1.coeffs);
-    ishappy1 = happinessCheck(g1, f, values1, pref);
+    ishappy1 = happinessCheck(g1, f, values1, [], pref);
 
     g2 = testclass.make(f(testclass.chebpts(41)));
     values2 = g2.coeffs2vals(g2.coeffs);
-    ishappy2 = happinessCheck(g2, f, values2, pref);
+    ishappy2 = happinessCheck(g2, f, values2, [], pref);
 
     pref.happinessCheck = 'classic';
-    ishappy3 = happinessCheck(g1, f, values1, pref);
+    ishappy3 = happinessCheck(g1, f, values1, [], pref);
 
     pass(n, 7) = ~ishappy1 && ishappy2 && ishappy3;
 
     % Test strictCheck with an array-valued input:
-    pref.eps = 2^(-52);
+    pref.chebfuneps = 2^(-52);
     pref.happinessCheck = 'strict';
     f = @(x) [sin(10*(x - 0.1)) exp(x)];
 
     g1 = testclass.make(f(testclass.chebpts(39)));
     values1 = g1.coeffs2vals(g1.coeffs);
-    ishappy1 = happinessCheck(g1, f, values1, pref);
+    ishappy1 = happinessCheck(g1, f, values1, [], pref);
 
     g2 = testclass.make(f(testclass.chebpts(41)));
     values2 = g2.coeffs2vals(g2.coeffs);
-    ishappy2 = happinessCheck(g2, f, values2, pref);
+    ishappy2 = happinessCheck(g2, f, values2, [], pref);
 
     pass(n, 8) = ~ishappy1 && ishappy2;
     
     % Test plateauCheck with an array-valued input:
     p = pref;
-    p.techPrefs.happinessCheck = @classicCheck;
+    p.happinessCheck = @classicCheck;
     f1 = testclass.make(@(x) [sin(x) cos(x)], [], p);
-    p.techPrefs.happinessCheck = @plateauCheck;
+    p.happinessCheck = @plateauCheck;
     f2 = testclass.make(@(x) [sin(x) cos(x)], [], p);
-    pass(n, 9) = normest(f1 - f2) < 10*max(f2.epslevel);
+    pass(n, 9) = normest(f1 - f2) < 10*eps;
 
 end
 

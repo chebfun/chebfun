@@ -7,7 +7,7 @@ function handles = initalizeFields(handles)
 %       HANDLES:    A Matlab handle of the CHEBGUI figure.
 %
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Set the default font and font size used:
@@ -44,7 +44,8 @@ end
 % Set the string for popup-menu for the choice of plots:
 set(handles.popupmenu_bottomFig,'String', ...
     {'Convergence of Newton iteration', ...
-    'Coefficients of the solution'});
+    'Coefficients of the solution'}, ...
+    'fontsize', handles.fontsizePanels);
 
 end
 

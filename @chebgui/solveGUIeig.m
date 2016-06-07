@@ -20,7 +20,7 @@ function varargout = solveGUIeig(guifile, handles)
 %   VARARGOUT{1}:   A diagonal matrix containing the eigenvalues.
 %   VARARGOUT{2}:   A CHEBMATRIX of the eigenfunctions.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Handles will be an empty variable if we are solving without using the GUI
@@ -35,7 +35,7 @@ end
 expInfo = chebguiExporterEIG.exportInfo(guifile);
 
 % Extract the needed fields from the EXPINFO struct.
-dom = str2num(expInfo.dom);
+dom = str2num(expInfo.dom); %#ok<ST2NM>
 allVarNames = expInfo.allVarNames;
 indVarName = expInfo.indVarName;
 eigVarName = expInfo.lname;
@@ -56,53 +56,20 @@ else
     BC = eval(expInfo.bcString);
 end
 
-% Create the LHS chebop, and try to linearize it (if that gives an error, the
-% operator is probably linear).
+% Create the LHS chebop.
 N_LHS = chebop(LHS, dom, BC);
-try
-    A = linop(N_LHS);
-catch ME
-    MEID = ME.identifier;
-    if ( guiMode && ~isempty(strfind(MEID, 'linop:nonlinear')) )
-        errordlg('Operator is not linear.', 'Chebgui error', 'modal');
-    else
-        rethrow(ME)
-    end
-    varargout{1} = handles;
-    return
-end
 
-% Create the RHS chebop if the RHSSTRING is not empty, and try to linearize it
-% (if that gives an error, the operator is probably linear).
+% Create the RHS chebop if the RHSSTRING is not empty.
 if ( ~isempty(rhsString) )
     RHS = eval(rhsString);
     N_RHS = chebop(RHS, dom);
-
-    try
-        B = linop(N_RHS);
-    catch ME
-        MEID = ME.identifier;
-        if ( guiMode  && ~isempty(strfind(MEID, 'linop:nonlinear'))  )
-            errordlg('Operator is not linear.', 'Chebgui error', 'modal');
-        else
-            rethrow(ME)
-        end
-        varargout{1} = handles;
-        return
-    end
-    
-    % Did we determine that we had to negate the LHS operator?
-    if ( expInfo.flipSigns )
-        A = -A;
-    end
-    
 end
 
 % Obtain a CHEBOPPREF object
 options = cheboppref;
 
 % Check whether the tolerance is too tight.
-defaultTol = options.errTol;
+defaultTol = options.bvpTol;
 tolInput = guifile.tol;
 if ( isempty(tolInput) )
     tolNum = defaultTol;
@@ -113,7 +80,7 @@ end
 % Need to obtain a CHEBFUNPREF object to check what the current tolerance is set
 % at.
 chebfunp = chebfunpref;
-if ( tolNum < chebfunp.techPrefs.eps )
+if ( tolNum < chebfunp.techPrefs.chebfuneps )
     warndlg('Tolerance specified is less than current chebfun epsilon', ...
         'Warning','modal');
     uiwait(gcf)
@@ -125,13 +92,6 @@ options.grid = guifile.options.grid;
 % What discretization do we want?
 options.discretization = expInfo.discretization;
 
-% If we have specified the 'periodic' option, we need to throw away the boundary
-% conditions from the LINOP A before continuing (as they're imposed by
-% construction):
-if ( strcmp(expInfo.discretization, 'periodic') )
-    A.constraint = []; 
-end
-
 % Change various GUI components (only need to bother with in GUI mode).
 if ( guiMode )
     set(handles.fig_sol, 'Visible', 'On');
@@ -141,15 +101,15 @@ end
 % Compute the eigenvalues!
 if ( generalized )
     if ( isempty(sigma) )
-        [V, D] = eigs(A, B, K, options);
+        [V, D] = eigs(N_LHS, N_RHS, K, options);
     else
-        [V, D] = eigs(A, B, K, sigma, options);
+        [V, D] = eigs(N_LHS, N_RHS, K, sigma, options);
     end
 else
     if ( isempty(sigma) )
-        [V, D] = eigs(A, K, options);
+        [V, D] = eigs(N_LHS, K, options);
     else
-        [V, D] = eigs(A, K, sigma, options);
+        [V, D] = eigs(N_LHS, K, sigma, options);
     end
 end
 
@@ -163,10 +123,10 @@ V = V(:,idx);
 if ( ~guiMode )
     % If we're not in GUI mode, we can finish here.
     if ( nargout == 1 )
-        varargout = diag(D);
+        varargout = D;
     else
-        varargout{1} = D;
-        varargout{2} = V;
+        varargout{1} = V;
+        varargout{2} = diag(D);
     end
     
 else
@@ -177,7 +137,7 @@ else
     handles.latest.type = 'eig';
     handles.latest.solution = D;
     handles.latest.solutionT = V;
-    handles.latest.chebop = A;
+    handles.latest.chebop = N_LHS;
     handles.latest.options = options;
     
     % Notify the GUI we have a solution available

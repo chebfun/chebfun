@@ -11,7 +11,7 @@ function indx = whichInterval(dom, x, direction)
 %   (the default) places such points in the interval to the left, whilst
 %   DIRECTION = 1 places them to the right.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 numInts = numel(dom) - 1;

@@ -96,7 +96,7 @@ classdef chebgui
 %                    'de','u" = sin(u)','lbc','u = 1','rbc','u = 0')
 %    show(chebg)
 %
-% See also chebop/solveBVP, chebop/eigs, chebfun/pde15s, chebfun/ode45,
+% See also chebop/solvebvp, chebop/eigs, chebfun/pde15s, chebfun/ode45,
 % chebfun/ode113, chebfun/ode15s, chebfun/bvp4c, chebfun/bvp5c.
 %
 % References:
@@ -104,7 +104,7 @@ classdef chebgui
 %   the Numerical Solution of Boundary-Value Problems,” ACM Transactions on
 %   Mathematical Software, vol. 38, no. 4, Article 26, Aug. 2012.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -120,14 +120,14 @@ classdef chebgui
         timedomain = '';    % Time domain (should include breakpoints)
         sigma = '';         % Third input to an EIGS call
         init = '';          % Initial guess/condition for nonlin BVPs/PDEs
-        tol = '1e-10';      % Solution tolerance
+        tol = '5e-13';      % Solution tolerance
 
         % This initalises the OPTIONS struct for CHEBGUI. It containts a list of
         % miscellaneous options for when solving problems with CHEBGUI, namely:
         %   damping:        Whether the Newton iteration is to be damped or not.
         %   grid:           Show grids on plots in CHEBGUI.
-        %   discretization: Discretization for ODEs ('collocation' or 
-        %                   'ultraspherical').
+        %   discretization: Discretization for ODEs ('values' or 
+        %                   'coeffs').
         %   pdeholdplot:    Hold plot during solving PDEs.
         %   fixYaxisLower:  Fix lower y axis while solving PDEs.
         %   fixYaxisUpper:  Fix upper y axis while solving PDEs.
@@ -137,8 +137,9 @@ classdef chebgui
         options = struct('damping', '1', ...
             'plotting', '0.5', ...
             'grid', 1, ...
-            'discretization', 'collocation', ...
+            'discretization', 'values', ...
             'ivpSolver', 'ode113', ...
+            'pdeSolver', 'pde15s', ...
             'pdeholdplot', 0, ...
             'fixYaxisLower', '',  ...
             'fixYaxisUpper', '', ...
@@ -210,26 +211,7 @@ classdef chebgui
     %% CLASS METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   
     methods ( Access = public, Static = false )
-       
-        % Export a BVP to an .m file
-        exportBVP2mfile(guifile, pathname, filename)
-        
-        % Export an EIG problem to an .m file
-        exportEIG2mfile(guifile, pathname, filename, handles)
-        
-        % Export a PDE to an .m file
-        exportPDE2mfile(guifile, pathname, filename)
-                
-        % Populate the fields of the GUI
-        [field, allVarString, indVarName, pdeVarNames, pdeflag, eigVarNames, ...
-            allVarNames]  = setupFields(guifile, input, type, allVarString)
-        
-        % Solve a GUI BVP
-        varargout = solveGUIbvp(guifile,handles)
-        
-        % Solve a GUI EIG problem
-        varargout = solveGUIeig(guifile,handles)
-        
+
         function allVarNames = getVarNames(guifile)
             %GETVARNAMES    Return a cell-array with all variables names
             %
@@ -249,7 +231,6 @@ classdef chebgui
             [dummy, dummy, dummy, dummy, dummy, dummy, allVarNames] = ...
                 setupFields(guifile, deInput, 'DE');
         end
-        
         
     end
     

@@ -15,8 +15,10 @@ function varargout = pdeset(varargin)
 %           Use a fixed spacial grid of size N. If N is NaN, then the automatic
 %           procedure is used.
 %
-%       Plot - Plot the solution at the end of every time chunk. [ {on} | off ]
-%              Turning this off can improve speed considerably.
+%       Plot - Plot the solution at the end of every time chunk. [ on | {off} ]
+%              Turning this off can improve speed considerably. Note that if the
+%              PDE methods are called with no output arguments, the default
+%              behaviour is to plot the solution at the end of every time chunk.
 %
 %       HoldPlot - Hold the plots after each chunk. [ on | {off} ]
 %
@@ -32,9 +34,15 @@ function varargout = pdeset(varargin)
 %                   conditions.
 %           [ logical {true} ].
 %
+%       ODESolver - Function handle determining the ODE solver to use for time
+%       stepping the method of lines solution. @ode15s is used by default, but
+%       this struggles for non-diffusive problems. In this case, @ode23t is
+%       recommended instead.
+%           [ {@ode15s} | @ode23t ].
+%
 % See also ODESET.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 %  PDE specific options
@@ -45,7 +53,8 @@ names = ['Eps      '
          'YLim     '
          'PlotStyle'
          'PDEflag  '
-         'AdjustBCs']; 
+         'AdjustBCs'
+         'ODESolver']; 
      
 m = size(names, 1);
 shortNames = cell(m, 1);
@@ -62,12 +71,13 @@ if ( nargin == 0 )
         odeset;
         fprintf('             Eps: [ positive scalar {1e-6} ]\n')
         fprintf('               N: [ {NaN} | positive integer  ]\n')        
-        fprintf('            Plot: [ {on} | off ]\n')
+        fprintf('            Plot: [ on | {off} ]\n')
         fprintf('        HoldPlot: [ on | {off} ]\n')
         fprintf('            YLim: [ 2x1 vector | {NaN} ]\n')
         fprintf('       PlotStyle: [ string | ''-'']\n')
         fprintf('         PDEflag: [ vector of logicals {true} ]\n')
         fprintf('       AdjustBCs: [ logical {true} ]\n')
+        fprintf('       ODESolver: [ {@ode15s} | @ode23t ]\n')
     else
         % Get the ODE opts:
         opts = odeset();

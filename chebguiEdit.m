@@ -3,7 +3,7 @@ function varargout = chebguiEdit(varargin)
 %   A CHEBGUIEDIT figure gets created when a user right-clicks the input fields
 %   of the CHEBGUI figure. It is not intended for use in any other context.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Suppress irritating MLINT warnings: 

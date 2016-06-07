@@ -20,7 +20,7 @@ function varargout = solveGUIpde(guifile, handles)
 %   VARARGOUT{1}:   The time range of the problem specified by GUIFILE.
 %   VARARGOUT{2}:   The a CHEBMATRIX containing the solution returned by pde15s.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Handles will be an empty variable if we are solving without using the GUI
@@ -45,6 +45,7 @@ pdeflag = expInfo.pdeflag;
 periodic = expInfo.periodic;
 lbcString = expInfo.lbcString;
 rbcString = expInfo.rbcString;
+pdeSolver = eval(['@', expInfo.pdeSolver]);
 
 % Check that we don't have any breakpoints.
 if ( length(dom) > 2 )
@@ -114,7 +115,7 @@ end
 
 % Find out what the current CHEBFUN eps is set at.
 cpref = chebfunpref();
-if ( tol < cpref.eps )
+if ( tol < cpref.chebfuneps )
     warndlg('Tolerance specified is less than current chebfun epsilon', ...
         'Warning','modal');
     uiwait(gcf)
@@ -141,13 +142,11 @@ if ( iscellstr(initInput) )
     
     if ( isempty(order) && scalarProblem )
         u0 = chebfun(vectorize(initInput{1}), dom);
-        u0 = simplify(u0, tol);
     else
         for k = 1:length(inits)
             initLoc = find(order == k);
             init_k = vectorize(inits{initLoc});
             u0k = chebfun(init_k, dom);
-            u0k = simplify(u0k, tol);
             u0 = [u0, u0k];
         end
     end
@@ -171,6 +170,8 @@ if ( guiMode )
     set(handles.fig_norm, 'Visible', 'On');
     cla(handles.fig_sol, 'reset')
     cla(handles.fig_norm, 'reset')
+    set(handles.fig_sol, 'fontsize', handles.fontsizePanels);
+    set(handles.fig_norm, 'fontsize', handles.fontsizePanels);
     handles.gui = 1;
 else
     handles.gui = 0;
@@ -206,8 +207,8 @@ end
 
 % Try solving the PDE!
 try
-    [t, u] = pde15s(DE, tt, u0, bc, opts);
-catch
+    [t, u] = pdeSolver(DE, tt, u0, bc, opts);
+catch ME
     errordlg('Error in solution process.', 'chebopbvp error', 'modal');
     varargout{1} = handles;
     return
@@ -238,7 +239,7 @@ else
 end
 
 if ( ~isa(u, 'chebmatrix') )
-    waterfall(u, t, 'simple', 'linewidth', defaultLineWidth)
+    waterfall(u, t)
 else
     cols = get(0, 'DefaultAxesColorOrder');
     
@@ -251,9 +252,11 @@ else
 %     legend(allVarNames);
 
     % CHEBMATRIX/WATERFALL()
-    waterfall(u, t, 'linewidth', defaultLineWidth, 'edgecolors', cols)
+    waterfall(u, t,'edgecolors', cols)
 end
 
+% Update the fontsize of the bottom plot 
+set(handles.fig_norm, 'fontsize', handles.fontsizePanels);
 % Axis labels:
 xlabel(indVarName{1})
 ylabel(indVarName{2})

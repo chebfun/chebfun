@@ -1,9 +1,9 @@
 function chebsnake(nodes,alpha)
 %CHEBSNAKE   Chebfun snake game.
-%   CHEBSNAKE() plays a twist on a classic game where you must feed the snake
-%   with more and more interpolation nodes, but avoid that it hits the boundary
-%   or itself! Use the arrow keys to control the snake. Any other key will quit
-%   the game.
+%   CHEBSNAKE plays a twist on a classic game where you must feed the snake
+%   with more and more interpolation nodes, but keep it from hitting the
+%   boundary or itself. Use the arrow keys to control the snake.
+%   Any other key will quit the game.
 %
 %   CHEBSNAKE(NODES) allows one to change the interpolation type. The default
 %   type 'cheby' is polynomial interpolation in Chebyshev points. Other types
@@ -11,16 +11,16 @@ function chebsnake(nodes,alpha)
 %   Floater-Hormann rational interpolation in equispaced points ('fh'). The blue
 %   dots on the snake indicate the interpolated function values.
 %
-%   CHEBSNAKE(NODES, ALPHA) allows to change the initial game speed by a factor
-%   ALPHA > 0, ALPHA > 1 increases the game speed, ALPHA < 1 decreases it
-%   (default = 1).
+%   CHEBSNAKE(NODES, ALPHA) allows you to change the initial game speed by a
+%   factor ALPHA > 0, ALPHA > 1 increases the game speed, ALPHA < 1 decreases 
+%   it (default = 1).
 %
 %   To prevent you from neglecting your actual work, the game speed increases
-%   with the total number of achieved points...
+%   with the total number of achieved points....
 %
 % See also CHEBTUNE.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Get some constants right:

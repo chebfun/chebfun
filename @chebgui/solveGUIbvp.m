@@ -18,11 +18,11 @@ function varargout = solveGUIbvp(guifile, handles)
 % If the method is called by calling the command explicitly with a CHEBGUI
 % object (e.g. [U, INFO] = SOLVEGUIBVP(GUIFILE) from the command line),
 %   VARARGOUT{1}:   The solution to the problem specified by GUIFILE.
-%   VARARGOUT{2}:   The INFO struct returned by the chebop/solveBVP() method.
+%   VARARGOUT{2}:   The INFO struct returned by the chebop/solvebvp method.
 %
 % See also: chebgui/solveGUI, chebgui/solveGUIivp.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Handles will be an empty variable if we are solving without using the GUI
@@ -44,6 +44,7 @@ indVarNameSpace = expInfo.indVarNameSpace;
 bcInput = expInfo.bcInput;
 periodic = expInfo.periodic;
 initInput = expInfo.initInput;
+numVars = expInfo.numVars;
 % Create the independent variable on DOM.
 xt = chebfun(@(x) x, dom);
 
@@ -124,17 +125,20 @@ if ( guiMode )
     set(handles.popupmenu_bottomFig, 'Value', 1);
 end
 
-% Call solveBVP with different arguments depending on whether we're in GUI
+% Call solvebvp with different arguments depending on whether we're in GUI
 % or not. If we're not in GUI mode, we can finish here.
 if ( guiMode )
     displayFunction = ...
         @(mode, varargin) chebgui.displayBVPinfo(handles, mode, varargin{:});
-    [u, info] = mldivide(N, 0, options, displayFunction);
+    [u{1:numVars,1}, info] = mldivide(N, 0, options, displayFunction);
 else
-    [u, info] = mldivide(N, 0, options);
+    [u{1:numVars,1}, info] = mldivide(N, 0, options);
     varargout{1} = u;
     varargout{2} = info;
 end
+
+% Convert the cell-array we get returned above to a chebmatrix
+u = chebmatrix(u);
 
 % ISLINEAR is returned as a vector in the INFO structure (with elements
 % corresponding to DE and BCs. Convert to a binary, 1 if everything in the
@@ -181,11 +185,9 @@ if ( guiMode )
 
     % Different titles of top plot if we had a linear problem:
     if ( ~isLinear )
-        title('Solution at end of iteration', ...
-            'fontsize', handles.fontsizePanels, 'fontweight', 'norm');
+        set(handles.panel_figSol, 'title', 'Solution at end of iteration')
     else
-        title('Solution', ...
-            'fontsize', handles.fontsizePanels, 'fontweight', 'norm');
+        set(handles.panel_figSol, 'title', 'Solution')
     end
 
     % If we were solving a nonlinear problem, we show a plot of the norm of the
@@ -198,9 +200,7 @@ if ( guiMode )
         axes(handles.fig_norm)
         normDelta = info.normDelta;
         semilogy(normDelta, '-*', 'Linewidth', 2)
-        title('Norm of updates', ...
-            'fontsize', handles.fontsizePanels, 'fontweight', 'norm')
-        xlabel('Iteration number')
+        set(handles.panel_figNorm, 'title', 'Norm of updates')
         set(handles.fig_norm, 'fontsize', handles.fontsizePanels);
 
         if ( length(normDelta) > 1 )
@@ -213,8 +213,20 @@ if ( guiMode )
         end
     else
         axes(handles.fig_norm)
+        % Show the plotcoeffs plot. Grab its title, set as the title of the
+        % panel, then hide the title of the plot and the x/ylabels (to avoid
+        % issues at large fontsizes):
         plotcoeffs(u, 'linewidth', 2)
+        plotCoeffsTitle = get(get(handles.fig_norm, 'title'), 'String');
+        set(handles.panel_figNorm, 'title', plotCoeffsTitle);
+        title('');
+        xlabel('');
+        ylabel('');
+        
         set(handles.fig_norm, 'fontsize', handles.fontsizePanels);
+        % Store an empty vector for the norm of the updates (since problem was
+        % linear)
+        handles.latest.normDelta = [];
         % In older versions of MATLAB, need to change the title font-size manually:
         if verLessThan('matlab', '8.4')
             set(get(handles.fig_norm, 'title'), 'fontsize', handles.fontsizePanels)
@@ -224,7 +236,11 @@ if ( guiMode )
         set(handles.popupmenu_bottomFig, 'Value', 2);
         grid on
     end
-    
+
+    % Update the fontsize of plots
+    set(handles.fig_sol, 'fontsize', handles.fontsizePanels);
+    set(handles.fig_norm, 'fontsize', handles.fontsizePanels);
+
     % Return the handles as varargout.
     varargout{1} = handles;
 end

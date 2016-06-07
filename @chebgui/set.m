@@ -12,18 +12,20 @@ function cg = set(cg, propName, val)
 %   'init' - initial condition/guess for nonlinear BVPs/PDEs
 %   'sigma' - desired eigenvalues: 'LM','SM','LA','SA','LR','SR','LI','SI'
 %   'options' - a structure containing the below
+%       'ivpsolver' - solver used for solving IVPs
 %       'numeigs' - number of desired eigenvalues
 %       'damping' - damping in newton iteration [true/false]
 %       'plotting' - plotting in nonlinear solves/PDEs [true/false]
 %       'grid' - display a grid on these plots [true/false]
-%       'pdeholdplot' - 
+%       'pdesolver' - solver used for solving PDEs
+%       'pdeholdplot' - keep plots for each PDE timestep (i.e. hold on)
 %       'fixn' - fixed spatial discretisation for PDEs (experimental)
 %       'fixyaxislower' - fix y axis on plots (lower)
 %       'fixyaxisupper' - fix y axis on plots (upper)
 %       'discretization' -  whether we want ultraS or colloc discretization for
 %                           ODEs
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Avoid storing {''} in fields, rather store ''
@@ -72,7 +74,8 @@ switch ( lower(propName) )
         end
         cg.options.plotting = val;
     case 'grid'
-        cg.options.grid = val;
+        % This really should be stored as a double, not a string...
+        cg.options.grid = str2double(val);
     case 'pdeholdplot'
         cg.options.pdeholdplot = val;
     case 'fixn'
@@ -87,6 +90,8 @@ switch ( lower(propName) )
         cg.options.discretization = val;
     case 'ivpsolver'
         cg.options.ivpSolver = val;
+    case 'pdesolver'
+        cg.options.pdeSolver = val;
     otherwise
         error('CHEBFUN:CHEBGUI:set:propName',...
             [propName,' is not a valid chebgui property.'])

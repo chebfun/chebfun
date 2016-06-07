@@ -8,7 +8,7 @@ function f = times(f, g, varargin)
 %
 % See also MTIMES, RDIVIDE.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % TRIGTECH * [] = []:
@@ -28,13 +28,10 @@ elseif ( isa(g, 'double') )     % TRIGTECH .* double.
     if ( size(g, 2) > 1 )
         f.values = bsxfun(@times, f.values, g);
         f.coeffs = f.vals2coeffs(f.values);
-        f.vscale = f.vscale.*abs(g);
     else
         f.values = f.values*g;
         f.coeffs = f.coeffs*g;
-        f.vscale = f.vscale*abs(g);
     end
-    f.epslevel = f.epslevel + eps(g);
     f.isReal = f.isReal & isreal(g);
     return
 
@@ -49,14 +46,12 @@ elseif ( size(f.values, 1) == 1 )
     % If we have (constant TRIGTECH).*TRIGTECH, reverse the order and call TIMES
     % again:
     f = times(g, f.values);
-    f.epslevel = max(f.epslevel, g.epslevel);
     return
     
 elseif ( size(g.values, 1) == 1)
     % If we have TRIGTECH.*(constant TRIGTECH), convert the (constant TRIGTECH)
     % to a scalar and call TIMES again:
     f = times(f, g.values); 
-    f.epslevel = max(f.epslevel, g.epslevel);
     return
 end
 
@@ -105,19 +100,7 @@ end
 f.values = values;
 f.coeffs = f.vals2coeffs(values);
 
-% Update vscale, epslevel, and ishappy:
-vscale = max(abs(f.values), [], 1);
-
-% Avoid NaNs:
-tmpVscale = vscale;
-tmpVscale(vscale == 0) = 1;
-f.vscale(f.vscale == 0) = 1;
-g.vscale(g.vscale == 0) = 1;
- 
-% See CHEBTECH CLASSDEF file for documentation on this:
-epslevelBound = (f.epslevel + g.epslevel) .* (f.vscale.*g.vscale./tmpVscale);
-f.epslevel = updateEpslevel(f, epslevelBound);
-f.vscale  = vscale;
+% Update ishappy:
 f.ishappy = f.ishappy && g.ishappy;
 
 % Simplify.

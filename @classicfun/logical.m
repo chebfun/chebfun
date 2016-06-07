@@ -5,7 +5,7 @@ function f = logical(f)
 %   does have roots, then LOGICAL(F) will return garbage with no warning. F may
 %   be complex.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 f.onefun = logical(f.onefun);

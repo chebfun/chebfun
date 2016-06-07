@@ -15,7 +15,7 @@ function [newTree, derTree] = splitTree(tree, maxOrder)
 %                  included in NEWTREE. In the example above, DERTREE is the 
 %                  syntax tree corresponding to sin(u).
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Find what variables we have actually computed derivatives of.
@@ -46,7 +46,7 @@ end
 switch tree.numArgs
     case 1
         % We're dealing with a unary operator.
-        [newTree, derTree] = splitTree(tree, maxOrder);
+        [newTree, derTree] = treeVar.splitTree(tree.center, maxOrder);
         
     case 2
         if ( any(strcmp(tree.method, {'diff', 'times', 'rdivide'})) )

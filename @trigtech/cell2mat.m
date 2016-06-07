@@ -11,7 +11,7 @@ function g = cell2mat(f)
 %
 % See also MAT2CELL.
 %
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % [TODO]: This function is probably not needed anymore.
@@ -40,9 +40,7 @@ end
 
 % Append new data to an empty TRIGTECH:
 g = f.make(); % Make an empty TRIGTECH.
-g.vscale = [ f.vscale ];
 g.ishappy = min([f.ishappy]);
-g.epslevel = [ f.epslevel ];
 g.values = cell2mat(values);
 g.coeffs = [ f.coeffs ];
 g.isReal = [ f.isReal ];

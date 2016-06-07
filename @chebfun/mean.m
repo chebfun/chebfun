@@ -5,7 +5,7 @@ function h = mean(f, g)
 %
 % See also SUM.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin == 1 )
@@ -31,7 +31,7 @@ if ( nargin == 1 )
         elseif ( all(infEnds == [1, 1]) )
             % If doubly unbounded...
             if ( abs(f.pointValues(1) - f.pointValues(end)) < ...
-                    max(vscale(f).*epslevel(f)) )
+                    max(vscale(f)*eps) )
                 % Return the impulse at left/right if they are the same.
                 h = f.pointValues(1);
             else

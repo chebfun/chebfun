@@ -1,11 +1,11 @@
-function pass = test_helmholtz( prefs )
+function pass = test_helmholtz( pref )
 % Check that the solver works for Helmholtz equation
 % Alex Townsend, March 2013. 
 
 if ( nargin < 1 ) 
-    prefs = chebfunpref(); 
+    pref = chebfunpref(); 
 end 
-tol = prefs.techPrefs.eps; 
+tol = pref.cheb2Prefs.chebfun2eps;
 
 % on [-1,1]x[-1,1]: 
 mu1 = 3/pi; mu2 = pi/6; lam = mu1^2 + mu2^2; 

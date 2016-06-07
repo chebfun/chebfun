@@ -20,7 +20,7 @@ function f = fred(kernel, A, oneVar)
 %
 % See also blockFunction/volt, linop/fred, chebop/fred.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Default oneVar to false
@@ -46,6 +46,6 @@ nrmu = norm(u);
 % TODO: Determine best options for robust behavior.
 % opt = {'resampling',false,'splitting',true,'scale',nrmu};
 int = @(x) sum( chebfun(@(y) feval(u,y).*kernel(x,y),d)); %, opt{:} );
-Fu = chebfun( int, d, 'sampletest', false, 'resampling', false, ...
+Fu = chebfun( int, d, 'sampleTest', false, 'resampling', false, ...
     'vectorize', 'vscale', nrmu);
 end

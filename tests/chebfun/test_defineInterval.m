@@ -47,23 +47,23 @@ g = chebfun(@(x) sin(x), [-.5, 0, .75], pref);
 % Use DEFINEINTERVAL:
 f = defineInterval(f, [-.5, .25], g);
 pass(9) = all(f.domain == [-1, -.5, 0, .25, 1]) && ...
-    norm(feval(f, .125) - sin(.125)) < 10*epslevel(f) && ...
-    norm(feval(f, .625) - .625) < 10*epslevel(f);
+    norm(feval(f, .125) - sin(.125)) < 10*eps && ...
+    norm(feval(f, .625) - .625) < 10*eps;
 % Use SUBSASGN:
 f{-.5, .25} = g;
 pass(10) = all(f.domain == [-1, -.5, 0, .25, 1]) && ...
-    norm(feval(f, .125) - sin(.125)) < 10*epslevel(f) && ...
-    norm(feval(f, .625) - .625) < 10*epslevel(f);
+    norm(feval(f, .125) - sin(.125)) < 10*eps && ...
+    norm(feval(f, .625) - .625) < 10*eps;
 
 % Test an array-valued CHEBFUN object redefined by a CHEBFUN.
 f = chebfun(@(x) [x, -x], [-1, 0, 1], pref);
 g = chebfun(@(x) [-2*x, 2*x], [-.5, .5], pref);
 % Use DEFINEINTERVAL:
 f = defineInterval(f, [-.5, .5], g);
-pass(11) = norm(feval(f, .25) - [-.5, .5]) < 10*epslevel(f);
+pass(11) = norm(feval(f, .25) - [-.5, .5]) < 10*eps;
 % Use SUBSASGN:
 f{-.5, .5} = g;
-pass(12) = norm(feval(f, .25) - [-.5, .5]) < 10*epslevel(f);
+pass(12) = norm(feval(f, .25) - [-.5, .5]) < 10*eps;
 
 % Test removal:
 f = chebfun(@(x) x, pref);
@@ -95,8 +95,9 @@ h{-0.8, -0.5} = g;
 % check values:
 check = zeros(1,3);
 check(1) = all(h.domain == [-2 -1 -0.8 -0.5 -0.3 -0.1 0 1]);
-check(2) = ( norm(feval(h, -0.6) - op4(-0.6)) < 1e1*epslevel(g)*get(g, 'vscale') );
-check(3) = ( norm(feval(h, -0.25) - 1) < 10*epslevel(f) );
+check(2) = ( norm(feval(h, -0.6) - op4(-0.6)) < 1e2*eps*get(g, 'vscale') );
+check(3) = ( norm(feval(h, -0.25) - 1) < 1e1*eps );
+
 
 pass(16) = all( check );
 
@@ -128,7 +129,7 @@ hExact3 = op3(x3);
 err1 = norm(hVals1 - hExact1, inf);
 err2 = norm(hVals2 - hExact2, inf);
 err3 = norm(hVals3 - hExact3, inf);
-tol = 2e1*epslevel(h)*vscale(h);
+tol = 2e1*eps*vscale(h);
 
 % check values:
 check = zeros(1,4);

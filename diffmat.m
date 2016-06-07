@@ -45,7 +45,8 @@ function D = diffmat(N, varargin)
 %   conditions.
 %
 %   D = DIFFMAT(N, 'periodic') returns the N x N first-order Fourier 
-%   differentiation matrix on the default interval [-1 1].
+%   differentiation matrix on the default interval [-1 1]. The tag
+%   'periodic' can be replaced by 'trig'.
 %
 %   D = DIFFMAT(N, P, 'periodic') returns the N x N Fourier differentiation 
 %   matrix of order P  on the default interval [-1 1].
@@ -92,7 +93,7 @@ function D = diffmat(N, varargin)
 %
 % See also DIFF, CHEBCOLLOC2.DIFFMAT, CUMSUMMAT.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -114,7 +115,7 @@ if ( strcmpi(mapFrom, mapTo) && ( m == n ) ) % Square case:
     elseif ( strcmpi(mapFrom, 'chebkind2') )
         D = chebcolloc2.diffmat(n, p);
     elseif ( strcmpi(mapFrom, 'periodic') )
-        D = trigtech.diffmat(n, p);
+        D = trigcolloc.diffmat(n, p);
     else
         [x, ignored, v] = legpts(n); %#ok<ASGLU>
         [y, ignored, w] = chebpts(n); %#ok<ASGLU>
@@ -517,9 +518,9 @@ for j = 1:numel(varargin)
                     m = n - p;
                 end
                 
-            case 'periodic'
-                mapFrom = v;
-                mapTo = v;
+            case {'periodic', 'trig'}
+                mapFrom = 'periodic';
+                mapTo = 'periodic';
                 if ( m ~= n )
                     error('CHEBFUN:diffmat:wrongInput', ...
                         ['Rectangular Fourier differentiation matrices are '...

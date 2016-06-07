@@ -48,7 +48,7 @@ vals_h = feval(h, x);
 h_exact = @(x) 1./sqrt(1+x);
 vals_exact = feval(h_exact, x);
 err = vals_h - vals_exact;
-pass(4) = all( abs(err) < 10*max(get(f, 'epslevel'), get(g, 'epslevel'))* ...
+pass(4) = all( abs(err) < 10*eps* ...
     abs(vals_exact) );
 
 % root at the left endpoint
@@ -63,7 +63,7 @@ vals_h = feval(h, x);
 h_exact = @(x) (1+x).^(3*c).*sin(x);
 vals_exact = feval(h_exact, x);
 err = vals_h - vals_exact;
-bound = 1e1*max(get(f, 'epslevel'), get(g, 'epslevel'))*norm(vals_exact, inf);
+bound = 1e1*eps*norm(vals_exact, inf);
 pass(5) = ( norm(err, inf) < bound );
 
 % fractional root at the right endpoint
@@ -78,7 +78,7 @@ vals_h = feval(h, x);
 h_exact = @(x) (1-x).^(a+c).*(cos(x).^2);
 vals_exact = feval(h_exact, x);
 err = vals_h - vals_exact;
-bound = 1e1*max(get(f, 'epslevel'), get(g, 'epslevel'))*norm(vals_exact, inf);
+bound = 1e1*eps*norm(vals_exact, inf);
 pass(6) = ( norm(err, inf) < bound );
 
 % fractional pole at the right endpoint
@@ -93,7 +93,7 @@ vals_h = feval(h, x);
 h_exact = @(x) (1-x).^b.*(x.^5).*exp(x).*sin(5*x);
 vals_exact = feval(h_exact, x);
 err = norm(vals_h - vals_exact, inf);
-tol = 10*norm(vals_h, inf)*max(get(f, 'epslevel'), get(g, 'epslevel'));
+tol = 10*norm(vals_h, inf)*eps;
 pass(7) = err < tol;
 
 % a combination of fractional pole and fractional root
@@ -108,8 +108,9 @@ vals_h = feval(h, x);
 h_exact = @(x) (1+x).^b.*sin(x).*sin(2*x).*(1-x).^c;
 vals_exact = feval(h_exact, x);
 err = vals_h - vals_exact;
-pass(8) = all( abs(err) < 1e3*max(get(f, 'epslevel'), get(g, 'epslevel')) );
-
+pass(8) = all( abs(err) < 1e4*eps );
+    
+    
 % poles at different endpoints
 data.exponents = [b b];
 data.singType = {'sing', 'sing'};
@@ -122,7 +123,8 @@ vals_h = feval(h, x);
 h_exact = @(x) sin(x).*(1-x).^b.*cos(x).^3.*(1+x).^(b+p);
 vals_exact = feval(h_exact, x);
 err = norm((vals_h - vals_exact)./(vals_exact), inf);
-tol = 5e1*max(get(f, 'epslevel'), get(g, 'epslevel'));
+tol = 1e2*eps;
+
 pass(9) = all( err < tol );
 
 % Check the trivial case with both vanishing alpha and beta.
@@ -137,7 +139,7 @@ vals_h = feval(h, x);
 h_exact = @(x) exp(x).*x.^3.*sin(2*x).*exp(1-x).^(3/2);
 vals_exact = feval(h_exact, x);
 err = norm(vals_h - vals_exact, inf);
-tol = 1e3*norm(vals_h, inf)*max(get(f, 'epslevel'), get(g, 'epslevel'));
+tol = 1e3*norm(vals_h, inf)*eps;
 pass(10) = err < tol;
 
 end

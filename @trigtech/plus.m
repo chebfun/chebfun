@@ -7,7 +7,7 @@ function f = plus(f, g)
 %
 % See also MINUS, UPLUS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty(f) || isempty(g) ) % TRIGTECH + [] = [].
@@ -34,19 +34,12 @@ elseif ( isa(g, 'double') ) % TRIGTECH + double.
     if mod(N,2) == 1
         const_index = (N+1)/2;
     else
-        const_index = N/2;
+        const_index = N/2+1;
     end
     f.coeffs(const_index,:) = f.coeffs(const_index,:) + g;
     
     % Update isReal:
     f.isReal = f.isReal & isreal(g);
-    
-    % Update scale:
-    vscaleNew = max(abs(f.values), [], 1);
-    
-    % See TRIGTECH CLASSDEF file for documentation on this:
-    f.epslevel = updateEpslevel(f);
-    f.vscale = vscaleNew;
     
 elseif ( isa(f, 'double') ) % double + TRIGTECH.
     
@@ -81,21 +74,12 @@ elseif ( isa(f, 'trigtech') && isa(g, 'trigtech') )  % TRIGTECH + TRIGTECH.
     % Look for a zero output:
     if ( ~any(f.values(:)) || ~any(f.coeffs(:)) )
         % Create a zero TRIGTECH:
-        epslevel = max(f.epslevel, g.epslevel);
         ishappy = f.ishappy && g.ishappy;
         z = zeros(1, size(f.values, 2));
         data.vscale = z;
-        data.hscale = f.hscale;
         f = f.make(z, data);
-        f.epslevel = epslevel;
         f.ishappy = ishappy;
     else
-        % Update vscale, epslevel, and ishappy:
-        vscaleNew = max(abs(f.values), [], 1);
-        % See TRIGTECH CLASSDEF file for documentation on this:
-        epslevelBound = (f.epslevel.*f.vscale + g.epslevel.*g.vscale)./vscaleNew;
-        f.epslevel = updateEpslevel(f, epslevelBound);
-        f.vscale = vscaleNew;
         f.ishappy = f.ishappy && g.ishappy;
     end
     

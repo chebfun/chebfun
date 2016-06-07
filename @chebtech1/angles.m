@@ -5,7 +5,7 @@ function out = angles(n)
 %
 % See also POINTS, CHEBPTS, LENGTH.
 %
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 out = (n-.5:-1:.5).'*pi/n;

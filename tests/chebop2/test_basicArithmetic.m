@@ -1,11 +1,11 @@
-function pass = test_basicArithmetic( prefs )
+function pass = test_basicArithmetic( pref )
 % Check that we can do the basic arithmetic on chebop2 objects. 
 % Alex Townsend, August 2013. 
 
 if ( nargin < 1 ) 
-    prefs = chebfunpref(); 
+    pref = chebfunpref(); 
 end 
-tol = 10*prefs.techPrefs.eps; 
+tol = 10*pref.cheb2Prefs.chebfun2eps; 
 
 N1 = chebop2(@(x,y,u) diff(u,2,2)); 
 N2 = chebop2(@(x,y,u) x.*diff(u,2,1));

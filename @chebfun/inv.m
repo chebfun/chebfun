@@ -16,7 +16,7 @@ function g = inv(f, varargin)
 %   CHEBFUNPREF object PREF when constructing the inverse.
 %
 %   FINV = INV(..., 'EPS', TOL) will construct with the relative tolerance set
-%   by TOL.  If no tolerance is passed, TOL = EPSLEVEL(F) is used.
+%   by TOL.  If no tolerance is passed, TOL = EPS is used.
 %
 %   FINV = INV(..., 'SPLITTING', 'ON') enables breakpoint detection locally for
 %   INV.  Setting this option (or the equivalent preference in PREF) is
@@ -38,7 +38,7 @@ function g = inv(f, varargin)
 %
 % See also ROOTS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % No quasimatrix support:
@@ -64,8 +64,8 @@ gEnds = minandmax(f).';
 fBreaks = f.domain(2:end-1);
 gBreaksL = feval(f, fBreaks, 'left');  % We must evaluate to the left and the 
 gBreaksR = feval(f, fBreaks, 'right'); % of breaks in f in case there are jumps.
-gBreaks = union(gBreaksL, gBreaksR);   % TODO: Include a tolerance?
-gDomain = union(gEnds, gBreaks);       % TODO: Include a tolerance?
+gBreaks = chebfun.tolUnion(gBreaksL, gBreaksR);
+gDomain = chebfun.tolUnion(gEnds, gBreaks);
 
 % Compute the inverse:
 if ( opts.algorithm == 1 )     % Algorithm based on ROOTS.
@@ -97,7 +97,7 @@ end
 function [tol, opts, pref] = parseInputs(f, varargin)
 
 % Default options:
-tol = epslevel(f);
+tol = eps;
 opts.monoCheck = false;
 opts.rangeCheck = false;
 opts.algorithm = 6; % Default  = brent's method.
@@ -146,9 +146,12 @@ end
 
 % Assign preferences:
 if ( opts.algorithm == 2 );
-    pref.techPrefs.resampling = 1;
+    % TODO:  CHEBFUN is not supposed to set the refinementFunction preference
+    % because it doesn't belong to the list of "abstract" preferences required
+    % of all techs.  Do we really need to alter it here?
+    pref.techPrefs.refinementFunction = 'resampling';
 end
-pref.techPrefs.eps = tol;
+pref.techPrefs.chebfuneps = tol;
 pref.techPrefs.minSamples = length(f);
 pref.techPrefs.sampleTest = 0;
 

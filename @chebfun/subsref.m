@@ -26,7 +26,7 @@ function varargout = subsref(f, index)
 %
 % See also FEVAL, COMPOSE, GET, RESTRICT, SIMPLIFY.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % TODO: Document for array-valued CHEBFUN objects and quasimatrices.
@@ -77,6 +77,8 @@ switch index(1).type
             elseif ( max(idx{2}) > columnIndex(end) )
                 error('CHEBFUN:CHEBFUN:subsref:badsubscript', ...
                     'Index exceeds CHEBFUN dimensions.');
+            elseif ( isempty(idx{2}) )
+                columnIndex = [];
             end
 
         elseif ( length(idx) == 2 && strcmp(idx{2}, ':') )

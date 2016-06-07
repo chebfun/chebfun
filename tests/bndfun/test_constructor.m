@@ -19,7 +19,7 @@ x = diff(dom) * rand(100, 1) + dom(1);
 % Test on a scalar-valued function for interpolation:
 f = @(x) sin(x)./x;
 g = bndfun(f, struct('domain', dom), pref);
-pass(1) = abs(1 - feval(g, 0)) < 10*max(get(g, 'vscale').*get(g, 'epslevel'));
+pass(1) = abs(1 - feval(g, 0)) < 10*max(get(g, 'vscale')*eps);
 
 %%
 
@@ -28,7 +28,7 @@ f = @(x) [sin(x)./x sin(x - 3)./(x - 3)];
 g = bndfun(f, struct('domain', dom), pref);
 gv = [feval(g, 0) feval(g, 3)];
 pass(2) = norm(ones(1, 2) - [gv(1) gv(4)], inf) < ...
-    10*max(get(g, 'vscale').*get(g, 'epslevel'));
+    10*max(get(g, 'vscale')*eps);
 
 %%
 % Some other tests:
@@ -79,6 +79,6 @@ f = bndfun(op, data, pref);
 vals_f = feval(f, x);
 vals_exact = feval(op, x);
 err = vals_f-vals_exact;
-pass(6) = ( norm(err, inf) < 3e2*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(6) = ( norm(err, inf) < 1e3*eps*norm(vals_exact, inf) );
 
 end

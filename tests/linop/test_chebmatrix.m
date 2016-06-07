@@ -2,6 +2,9 @@ function pass = test_chebmatrix
 
 % TODO: Tests 1 and 2 assume a chebcolloc2 discretization.
 
+pref = cheboppref();
+pref.discretization = @chebcolloc2;
+
 %% Building blocks
 dom = [-2 -0.5 1 2];
 I = operatorBlock.eye(dom);
@@ -21,7 +24,7 @@ D5 = [
 
 %%
 A = [ I,Z; D,U ];
-M = matrix(A, [5 5 5]);
+M = matrix(A, [5 5 5], pref);
 DD = blkdiag(2/1.5*D5,2/1.5*D5,2/1*D5);
 [xx, ww] = chebpts([5 5 5], dom);
 UU = diag(u(xx));
@@ -32,7 +35,7 @@ err(1) = norm( M - [ eye(15), zeros(15); DD, UU ]);
 A = [ I, x, -3*I; 
     functionalBlock.sum(dom), 5, functionalBlock.feval(dom(end),dom);
     D, chebfun(1,dom), U ];
-M = matrix(A,[5 5 5]);
+M = matrix(A, [5 5 5], pref);
 MM = [ eye(15), xx, -3*eye(15);  
     ww, 5, [zeros(1,14) 1];
     DD, ones(15,1), UU ];

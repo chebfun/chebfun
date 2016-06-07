@@ -44,7 +44,7 @@ classdef trigtech < smoothfun % (Abstract)
 %
 % See also TRIGTECH.TECHPREF, TRIGPTS, HAPPINESSCHECK, REFINE.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -63,40 +63,6 @@ classdef trigtech < smoothfun % (Abstract)
 % sampled function values. Similarly the horizontal scale HSCALE is used to
 % enforce scale invariance when the input OP has been implicitly mapped from a
 % domain other than [-1 1] before being passed to the TRIGTECH constructor.
-%
-% EPSLEVEL is the happiness level to which the TRIGTECH was constructed (See
-% HAPPINESSCHECK.m for full documentation) or a rough accuracy estimate of
-% subsequent operations, both relative to VSCALE. Therefore EPSLEVEL could be
-% regarded as the number of correct digits in the sampled value that created
-% VSCALE.
-%
-% Here is a rough guide to how scale and accuracy information is propagated in
-% subsequent operations after construction:
-%   h = f + c:
-%     h.vscale = max(abs(f.values), [], 1);
-%     h.epslevel = (f.epslevel*f.vscale + eps(c)) / h.vscale;
-%
-%   h = f * c:
-%     h.vscale = abs(c)*f.vscale;
-%     h.epslevel = f.epslevel + eps(c)/c;
-%
-%   h = f + g:
-%     h.vscale = max(abs(h.values), [], 1);
-%     h.epslevel = (f.epslevel*f.vscale + g.epslevel*g.vscale) / h.vscale
-%
-%   h = f .* g:
-%     h.vscale = max(abs(h.values), [], 1);
-%     h.epslevel = (f.epslevel + g.epslevel) * (f.vscale*g.vscale)/h.vscale
-%
-%   h = diff(f):
-%     h.vscale = max(abs(h.values), [], 1);
-%     % [TODO]: Figure this out rigourously.
-%     h.epslevel = n*log(n)*f.epslevel*f.vscale; % *(h.vscale/h.vscale)
-%     % Note we don't divide by h.vscale here as we must also multiply by it.
-%
-%   h = cumsum(f):
-%     h.vscale = max(abs(h.values), [], 1);
-%     h.epslevel = happinessCheck(h);
 %
 % If the input operator OP in a call to TRIGTECH evaluates to NaN or Inf at
 % any of the sample points used by the constructor, then an error is thrown.
@@ -130,29 +96,10 @@ classdef trigtech < smoothfun % (Abstract)
         % of a single function.
         coeffs % (nxm double)
 
-        % Vertical scale of the TRIGTECH. This is a row vector storing the
-        % magnitude of the largest entry in each column of VALUES. It is
-        % convenient to store this as a property.
-        vscale = 0 % (1xm double >= 0)
-
-        % Horizontal scale of the TRIGTECH. Although TRIGTECH objects have in
-        % principle no notion of horizontal scale invariance (since they always
-        % live on [-1,1)), the input OP may have been implicitly mapped. HSCALE
-        % is then used to enforce horizontal scale invariance in construction
-        % and other subsequent operations that require it. It defaults to 1 and
-        % is never updated.
-        hscale = 1 % (scalar > 0)
-
         % Boolean value designating whether the TRIGTECH is 'happy' or not.
         % See HAPPINESSCHECK.m for full documentation.
         ishappy % (logical)
 
-        % Happiness level to which the TRIGTECH was constructed (See
-        % HAPPINESSCHECK.m for full documentation) or a rough accuracy estimate
-        % of subsequent operations (See TRIGTECH class documentation for
-        % details).
-        epslevel % (double >= 0)
-        
         % Boolean value designating whether the TRIGTECH represents a
         % real-valued function. This allows us to always return a real result
         % for things like evaluating a TRIGTECH.
@@ -175,7 +122,7 @@ classdef trigtech < smoothfun % (Abstract)
             end
 
             if ( (nargin < 2) || isempty(data) )
-                    data = struct();
+                data = struct();
             end
 
             if ( (nargin < 3) || isempty(pref) )
@@ -184,10 +131,11 @@ classdef trigtech < smoothfun % (Abstract)
                 pref = trigtech.techPref(pref);
             end
 
-            data = parseDataInputs(data, pref);
+            data = trigtech.parseDataInputs(data, pref);
 
             % Force nonadaptive construction if PREF.FIXEDLENGTH is numeric:
-            if ( ~isempty(pref.fixedLength) && ~isnan(pref.fixedLength) )
+            if ( ~(isnumeric(op) || iscell(op)) && ...
+                    ~isempty(pref.fixedLength) && ~isnan(pref.fixedLength) )
                 % Evaluate op on the equi-spaced grid of given size:
                 vals = feval(op, trigtech.trigpts(pref.fixedLength));
                 vals(1,:) = 0.5*(vals(1,:) + feval(op, 1));
@@ -195,7 +143,13 @@ classdef trigtech < smoothfun % (Abstract)
             end
 
             % Actual construction takes place here:
-            obj = populate(obj, op, data.vscale, data.hscale, pref);
+            obj = populate(obj, op, data, pref);
+            
+            % Set length of obj to PREF.FIXEDLENGTH (if it is non-trivial).
+            if ( (isnumeric(op) || iscell(op)) && ...
+                    ~isempty(pref.fixedLength) && ~isnan(pref.fixedLength) )
+                obj = prolong(obj, pref.fixedLength);
+            end
             
         end
         
@@ -205,204 +159,12 @@ classdef trigtech < smoothfun % (Abstract)
     %% CLASS METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods
-        
-        % Absolute value of a TRIGTECH. (f should have no zeros in its domain)
-        f = abs(f, pref)
-
-        % TRIGTECH logical AND.
-        h = and(f, g)
-
-        % True if any element of a TRIGTECH is a nonzero number, ignoring NaN.
-        a = any(f, dim)
-
-        % Convert an array of TRIGTECH objects into an array-valued TRIGTECH.
-        f = cell2mat(f)
-
-        % Circular convolution of two trigtech objects.
-        f = circconv(f, g)
-        
-        % Circular shift of a trigtech object by a: f -> g(x-a).
-        g = circshift(f, a)
-
-        % Plot (semilogy) the trigonometric coefficients of a TRIGTECH object.
-        [h1, h2] = coeffsplot(f, varargin)
-
-        % Check the happiness of a TRIGTECH. (Classic definition).
-        [ishappy, epslevel, cutoff] = classicCheck(f, values, pref)
-
-        % Compose two TRIGTECH objects or a TRIGTECH with a function handle:
-        h = compose(f, op, g, data, pref)
-
-        % Complex conjugate of a TRIGTECH.
-        f = conj(f)
-        
-        % TRIGTECH objects are not transposable.
-        f = ctranspose(f)
-
-        % Indefinite integral of a TRIGTECH.
-        f = cumsum(f, dim)
-
-        % Derivative of a TRIGTECH.
-        f = diff(f, k, dim)
-        
-        % Extract information for DISPLAY.
-        info = dispData(f)
-        
-        % Extract columns of an array-valued TRIGTECH object.
-        f = extractColumns(f, columnIndex)
-
-        % Evaluate a TRIGTECH.
-        y = feval(f, x)
-        
-        % Flip columns of an array-valued TRIGTECH object.
-        f = fliplr(f)
-        
-        % Flip/reverse a TRIGTECH object.
-        f = flipud(f)
-
-        % Plot (semilogy) the trigonometric coefficients of a TRIGTECH object.
-        varargout = plotcoeffs(f, varargin)
-
-        % Get method:
-        val = get(f, prop);
-
-        % Happiness test for a TRIGTECH
-        [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, pref)
-
-        % Imaginary part of a TRIGTECH.
-        f = imag(f)
-
-        % Compute the inner product of two TRIGTECH objects.
-        out = innerProduct(f, g)
-
-        % True for an empty TRIGTECH.
-        out = isempty(f)
-
-        % Test if TRIGTECH objects are equal.
-        out = isequal(f, g)
-
-        % Test if a TRIGTECH is bounded.
-        out = isfinite(f)
-
-        % Test if a TRIGTECH is unbounded.
-        out = isinf(f)
-
-        % Test if a TRIGTECH has any NaN values.
-        out = isnan(f)
 
         function out = isPeriodicTech(f)
-        %ISPERIODICTECH    True for TRIGTECH.
+        %ISPERIODICTECH   True for TRIGTECH.
             out = 1;
         end
-        
-        % True for real TRIGTECH.
-        out = isreal(f)
-        
-        % True for zero TRIGTECH objects
-        out = iszero(f)
-        
-        % Cannot convert TRIGTECH coefficients to legendre coefficients
-        c_leg = legcoeffs(f, n)
-        
-        % Length of a TRIGTECH.
-        len = length(f)
 
-        % Convert an array-valued TRIGTECH into an ARRAY of TRIGTECH objects.
-        g = mat2cell(f, M, N)
-
-        % Global maximum of a TRIGTECH on [-1,1].
-        [maxVal, maxPos] = max(f)
-
-        % Global minimum of a TRIGTECH on [-1,1].
-        [minVal, minPos] = min(f)
-
-        % Global minimum and maximum on [-1,1].
-        [vals, pos] = minandmax(f)
-
-        % Subtraction of two TRIGTECH objects.
-        f = minus(f, g)
-
-        % Left matrix divide for TRIGTECH objects.
-        X = mldivide(A, B)
-
-        % Right matrix divide for a TRIGTECH.
-        X = mrdivide(B, A)
-
-        % Multiplication of TRIGTECH objects.
-        f = mtimes(f, c)
-
-        % TRIGTECH logical OR.
-        h = or(f, g)
-
-        % Basic linear plot for TRIGTECH objects.
-        varargout = plot(f, varargin)
-        
-        % 3-D plot for TRIGTECH objects.
-        varargout = plot3(f, g, h, varargin)
-        
-        % Obtain data used for plotting a TRIGTECH object:
-        data = plotData(f, g, h)
-
-        % Addition of two TRIGTECH objects.
-        f = plus(f, g)
-
-        % Return the points used by a TRIGTECH.
-        out = points(f)
-
-        % Complex polynomial coefficients of a TRIGTECH.
-        out = poly(f)
-
-        % Populate a TRIGTECH class with values.
-        f = populate(f, op, vscale, hscale, pref)
-        
-        % Power function of a TRIGTECH.
-        f = power(f, b)
-
-        % Adjust the number of points used in a TRIGTECH.
-        f = prolong(f, n)
-
-        % QR factorisation of an array-valued TRIGTECH.
-        [f, R, E] = qr(f, flag, methodFlag)
-
-        % Right array divide for a TRIGTECH.
-        f = rdivide(f, c, pref)
-
-        % Real part of a TRIGTECH.
-        f = real(f)
-
-        % Restrict a TRIGTECH to a subinterval.
-        f = restrict(f, s)
-
-        % Roots of a TRIGTECH in the interval [-1,1].
-        out = roots(f, varargin)
-        
-        % Test an evaluation of the input OP against a TRIGTECH approx.
-        pass = sampleTest(op, values, f)
-        
-        % Signum of a TRIGTECH. (f should have no zeros in its domain)
-        f = sign(f, pref)
-
-        % Trim trailing Chebyshev coefficients of a TRIGTECH object.
-        f = simplify(f, pref, force)
-
-        % Size of a TRIGTECH.
-        [siz1, siz2] = size(f, varargin)
-
-        % Definite integral of a TRIGTECH on the interval [-1,1].
-        out = sum(f, dim)
-
-        % TRIGTECH multiplication.
-        f = times(f, g, varargin)
-        
-        % TRIGTECH obects are not transposable.
-        f = transpose(f)
-
-        % Unary minus of a TRIGTECH.
-        f = uminus(f)
-
-        % Unary plus of a TRIGTECH.
-        f = uplus(f)   
-        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -412,7 +174,7 @@ classdef trigtech < smoothfun % (Abstract)
         
         % Aliasing:
         coeffs = alias(coeffs, m)
-        
+
         % Differentiation matrix in Fourier basis.
         D = diffmat(n, p)
         
@@ -423,6 +185,9 @@ classdef trigtech < smoothfun % (Abstract)
         % Convert coefficients to values:
         values = coeffs2vals(coeffs);
         
+        % Horner scheme for evaluation of a TRIGTECH
+        y = horner(x, c, allReal)
+
         % Make a TRIGTECH (constructor shortcut):
         f = make(varargin);
         
@@ -432,29 +197,19 @@ classdef trigtech < smoothfun % (Abstract)
         % Refinement function for TRIGTECH construction (evaluates OP on grid):
         [values, points, giveUp] = refine(op, values, pref)
         
+         % Return the value-based discretization class which uses TRIGTECH: 
+        function disc = returnValsDisc()
+            disc = @trigcolloc;
+        end
+        
         % Retrieve and modify preferences for this class.
         p = techPref(q)
 
         % Convert values to coefficients:
         coeffs = vals2coeffs(values)
 
+        % Parse inputs passed to the constructor via the DATA argument.
+        data = parseDataInputs(data, pref)
     end
     
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% METHODS IMPLEMENTED IN THIS FILE:
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function data = parseDataInputs(data, pref)
-%PARSEDATAINPUTS   Parse inputs from the DATA structure and assign defaults.
-
-if ( ~isfield(data, 'vscale') || isempty(data.vscale) )
-    data.vscale = 0;
-end
-
-if ( ~isfield(data, 'hscale') || isempty(data.hscale) )
-    data.hscale = 1;
-end
-
 end

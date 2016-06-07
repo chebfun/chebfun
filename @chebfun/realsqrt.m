@@ -5,7 +5,7 @@ function R = realsqrt(X)
 %
 % See also CHEBFUN/SQRT, CHEBFUN/REALLOG, REALSQRT.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Check for complex X:
@@ -17,7 +17,7 @@ end
 % X is real positive, so call SQRT.
 R = sqrt(X);
 
-if ( normest(imag(R)) < 100*max(epslevel(R).*vscale(R)) )
+if ( normest(imag(R)) < 100*max(eps*vscale(R)) )
     R = real(R);
 end
 

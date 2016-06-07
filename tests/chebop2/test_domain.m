@@ -5,7 +5,7 @@ function pass = test_domain( prefs )
 if ( nargin < 1 ) 
     prefs = chebfunpref(); 
 end 
-tol = 100*prefs.techPrefs.eps; 
+tol = 100*prefs.techPrefs.chebfuneps; 
 
 d = [-2 2 -2 2];
 N = chebop2(@(u) diff(u, 2, 1) + diff(u, 2, 2), d);
@@ -33,7 +33,7 @@ N.lbc = 0;
 
 u = N \ 0; 
 
-pass(5) = ( norm( u(:,d(3)) - N.dbc.' ) < tol);  
+pass(5) = ( norm( u(:,d(3)) - N.dbc.' ) < 3*tol);  
 pass(6) = ( norm( u(:,d(4)) - N.ubc.' ) < 2*tol); 
 pass(7) = ( norm( u(d(1),:) - N.lbc ) < 10*tol); 
 pass(8) = ( norm( u(d(2),:) - N.rbc ) < 10*tol);
@@ -46,5 +46,14 @@ N.lbc = @(y) bdy(d(1),y); N.rbc = @(y) bdy(d(2),y);
 N.dbc = @(x) bdy(x,d(3)); N.ubc = @(x) bdy(x,d(4)); 
 u = N \ 0; exact = chebfun2(bdy, d);
 pass(9) = ( norm( exact - u ) < 100*tol );
+
+% Check that Robin conditions are being dealt with correctly by AD: 
+N = chebop2(@(u) laplacian(u), [0 1 0 pi/6]);
+N.ubc = 0; N.rbc = 0; N.lbc = 0;
+N.dbc = @(x, u) u + 2.1*diff(u) - sin(2*pi*x);
+u = N\0;
+dudx = u + 2.1*diffy(u);
+bc = chebfun( @(x) sin(2*pi*x), [0,1] ); 
+pass(10) = ( norm( dudx(:,0) - bc' ) < 10*tol ); 
 
 end

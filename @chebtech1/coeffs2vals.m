@@ -11,7 +11,7 @@ function values = coeffs2vals(coeffs)
 %
 % See also VALS2COEFFS, CHEBPTS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -20,6 +20,13 @@ function values = coeffs2vals(coeffs)
 % [Mathematical reference]: Section 4.7 Mason & Handscomb, "Chebyshev
 % Polynomials". Chapman & Hall/CRC (2003).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% *Note about symmetries* The code below takes steps to 
+% ensure that the following symmetries are enforced:
+% even Chebyshev COEFFS exactly zero ==> VALUES are exactly odd
+% odd Chebychev COEFFS exactly zero ==> VALUES are exactly even
+% These corrections are required because the MATLAB FFT does not
+% guarantee that these symmetries are enforced.
 
 % Get the length of the input:
 [n, m] = size(coeffs);
@@ -30,21 +37,31 @@ if ( n <= 1 )
     return
 end
 
-% Pre-compute the weight vector:
-w = repmat((exp(-1i*(0:2*n-1)*pi/(2*n))/2).', 1, m);
-w(1,:) = 2*w(1, :);
-w(n+1,:) = 0;
-w(n+2:end,:) = -w(n+2:end, :);
+% check for symmetry
+isEven = max(abs(coeffs(2:2:end,:)),[],1) == 0;
+isOdd = max(abs(coeffs(1:2:end,:)),[],1) == 0;
+
+% Computing the weight vector often accounts for at least half the cost of this
+% transformation. Given that (a) the weight vector depends only on the length of
+% the coefficients and not the coefficients themselves and (b) that we often
+% perform repeated transforms of the same length, we store w persistently.
+persistent w
+if ( size(w, 1) ~= 2*n )
+    % Pre-compute the weight vector:
+    w = (exp(-1i*(0:2*n-1)*pi/(2*n))/2).';
+    w([1, n+1]) = [2*w(1); 0];
+    w(n+2:end) = -w(n+2:end);
+end
 
 % Mirror the values for FFT:
-tmp = [coeffs(1:end,:) ; ones(1, m) ; coeffs(end:-1:2,:)];
+c_mirror = [coeffs ; ones(1, m) ; coeffs(end:-1:2,:)];
 
 % Apply the weight vector:
-tmp = tmp.*w;
-values = fft(tmp);
+c_weight = bsxfun(@times, c_mirror, w);
+values = fft(c_weight);
 
-% Truncate, flip the order, and multiply the weight vector:
-values = values(n:-1:1, :);
+% Truncate and flip the order:
+values = values(n:-1:1,:);
 
 % Post-process:
 if ( isreal(coeffs) )           
@@ -54,5 +71,9 @@ elseif ( isreal(1i*coeffs) )
     % Imaginary-valued case:
     values = 1i*imag(values);
 end
+
+% enforce symmetry
+values(:,isEven) = (values(:,isEven)+flipud(values(:,isEven)))/2;
+values(:,isOdd) = (values(:,isOdd)-flipud(values(:,isOdd)))/2;
 
 end

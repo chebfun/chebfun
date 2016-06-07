@@ -14,7 +14,7 @@ function f = addBreaksAtRoots(f, tol)
 %
 % See also ADDBREAKS, ROOTS, GETROOTSFORBREAKS, DEFINEPOINT.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %TODO: return a quasimatrix from array-valued CHEBFUN input?
@@ -23,7 +23,7 @@ function f = addBreaksAtRoots(f, tol)
 if ( nargin == 1 )
     tol = 0;
 elseif ( isa(tol, 'chebfunpref') )
-    tol = tol.techPrefs.eps;
+    tol = tol.techPrefs.chebfuneps;
 end
 
 for k = 1:numel(f)

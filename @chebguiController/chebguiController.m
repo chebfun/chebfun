@@ -11,7 +11,7 @@ classdef chebguiController
 %   folder, but to increase modularity, it has been spun off to its own class.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -42,7 +42,7 @@ classdef chebguiController
         
         % Draw the Chebfun logo on the GUI:
         handles = drawLogo(handles)
-        
+
         function initialiseFigureBottom(handles)
             %INITIALISEFIGUREBOTTOM    Reset bottom figure of CHEBGUI.
 
@@ -50,17 +50,17 @@ classdef chebguiController
             axes(handles.fig_norm)
             box on
             set(handles.fig_norm, 'fontsize', handles.fontsizePanels);
+            set(handles.panel_figNorm, 'title', ' ');
         end
         
         function initialiseFigureTop(handles)
             %INITIALISEFIGURETOP    Reset top figure of CHEBGUI.
-
+            
             cla(handles.fig_sol, 'reset');
             axes(handles.fig_sol)
-            title('Solution', 'FontWeight', 'normal', ...
-                'fontsize', handles.fontsizePanels);
-            set(handles.fig_sol, 'fontsize', handles.fontsizePanels);
             box on
+            set(handles.fig_sol, 'fontsize', handles.fontsizePanels);
+            set(handles.panel_figNorm, 'title', 'Solution');
 
         end
 
@@ -122,6 +122,9 @@ classdef chebguiController
         
         % Set-up the panels on CHEBGUI
         handles = setupPanels(handles);
+
+        % Set-up the figures panel on CHEBGUI
+        handles = setupPanelFigures(handles);
         
         % Set-up the input panel on CHEBGUI
         handles = setupPanelInput(handles);

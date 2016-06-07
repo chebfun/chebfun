@@ -10,7 +10,7 @@ end
 testclass = trigtech();
 
 % Set the tolerance:
-tol = 50*pref.eps;
+tol = 50*pref.chebfuneps;
     
 %%
 % Test on a scalar-valued function:
@@ -18,18 +18,18 @@ x = testclass.trigpts(33);
 omega = 8;
 f = @(x) sin(omega*pi*x);
 g = testclass.make(f(x));
-[ishappy, epslevel, tail] = happinessCheck(g, f, [], pref);
+[ishappy, tail] = happinessCheck(g, f, [], [], pref);
 pass(1) = tail == 2*omega+1;
-pass(2) = ishappy && epslevel < tol;
+pass(2) = ishappy;
 
 %%
 % Test on an array-valued function:
 omega = 7;
 f = @(x) [sin(pi*x) cos(floor(omega/2)*pi*x) (sin(omega*pi*x)+cos(omega*pi*x))];
 g = testclass.make(f(x));
-[ishappy, epslevel, tail] = happinessCheck(g, f, [], pref);
+[ishappy, tail] = happinessCheck(g, f, [], [], pref);
 pass(3) = tail == 2*omega+1;
-pass(4) = ishappy && all(epslevel < tol);
+pass(4) = ishappy;
 
 %%
 k = 4*8; % Multiple of four;
@@ -40,13 +40,13 @@ f = @(x) sin((k+m+1)*pi*x);
 % This should be happy, as aliasing fools the happiness test:
 pref.sampleTest = 0;
 g = testclass.make(f(x));
-[ishappy, epslevel, tail] = happinessCheck(g, f, [], pref);
+[ishappy, tail] = happinessCheck(g, f, [], [], pref);
 pass(5) = ( ishappy && tail == 2*m+1);
 
 % This should be unhappy, as sampletest fixes things:
 pref.sampleTest = 1;
 g = testclass.make(f(x));
-[ishappy, epslevel, tail] = happinessCheck(g, f, [], pref);
+[ishappy, tail] = happinessCheck(g, f, [], [], pref);
 pass(6) = ~ishappy && tail == 33;
 
 end

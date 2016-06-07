@@ -1,15 +1,15 @@
-function L = lap( f )
+function varargout = lap(varargin)
 %LAP   Laplacian of a CHEBFUN2.
-%   L = LAP(F) returns a CHEBFUN2V representing the Laplacian of F. 
+%   L = LAP(F) returns a CHEBFUN2 representing the Laplacian of F.
 %
-%   This is shorthand for LAPLACIAN(F)
+%   This is shorthand for LAPLACIAN(F).
 %
-% See also LAPLACIAN.
+% See also CHEBFUN2/LAPLACIAN.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Call Laplacian: 
-L = laplacian( f );
+% Call SEPARABLEAPPROX/LAP:
+[varargout{1:nargout}] = lap@separableApprox(varargin{:});
 
 end

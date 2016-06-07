@@ -8,7 +8,7 @@ function populate(hObject, handles, chebg)
 %   CHEBG:      A CHEBGUI object, containing the information we want to fill
 %               the figure with.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Fill the String fields of the handles
@@ -52,6 +52,14 @@ set(handles.menu_tolerance, 'UserData', chebg.tol);
 if ( strcmpi(chebg.type, 'pde') )
     
     set(handles.input_timedomain, 'String', chebg.timedomain);
+
+    if ( strcmp(chebg.options.pdeSolver, 'pde15s') )
+        set(handles.menu_pdeSolver_pde15s, 'Checked', 'On');
+        set(handles.menu_pdeSolver_pde23t, 'Checked', 'Off');
+    else
+        set(handles.menu_pdeSolver_pde15s, 'Checked', 'Off');
+        set(handles.menu_pdeSolver_pde23t, 'Checked', 'On');
+    end
     
     if ( ~strcmp(chebg.options.plotting, 'off') )
         set(handles.menu_pdeplottingon, 'Checked', 'On');
@@ -120,11 +128,11 @@ elseif ( any(strcmpi(chebg.type, {'bvp', 'ivp'})) )
                 chebguiWindow('menu_ivpODE15s_Callback', hObject, [], handles)
             case 'ode45'
                 chebguiWindow('menu_ivpODE45_Callback', hObject, [], handles)
-            case 'collocation'
-                chebguiWindow('menu_ivpCollocation_Callback', ...
+            case 'values'
+                chebguiWindow('menu_ivpValues_Callback', ...
                     hObject, [], handles)
-            case 'ultraspherical'
-                chebguiWindow('menu_ivpCollocation_Ultraspherical', ...
+            case 'coeffs'
+                chebguiWindow('menu_ivpCoefficients_Callback', ...
                     hObject, [], handles)
         end
     end
@@ -208,11 +216,9 @@ if ( ~isempty(chebg.init) )
         end
         
         if ( strcmpi(chebg.type, 'bvp') )
-            title('Initial guess of solution', ...
-                'fontweight', 'normal')
+            set(handles.panel_figSol, 'title', 'Initial guess of solution')
         else
-            title('Initial condition', ...
-                'fontweight', 'normal')
+            set(handles.panel_figSol, 'title', 'Initial condition')
         end
         
     catch

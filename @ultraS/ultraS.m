@@ -1,4 +1,4 @@
-classdef ultraS < chebDiscretization
+classdef ultraS < coeffsDiscretization
 %ULTRAS   ULTRASPHERICAL class for discretizating differential operators
 %         on bounded domain.
 %
@@ -17,7 +17,7 @@ classdef ultraS < chebDiscretization
 % A. Townsend, A fast and well-conditioned spectral method, SIAM Review, 55
 % (2013), pp. 462-489.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -33,36 +33,9 @@ classdef ultraS < chebDiscretization
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
         
-        function disc = ultraS(source, dimension, dom)
-            %ULTRAS(SOURCE, DIMENSION, DOMAIN)   ULTRAS constructor.
-            
-            if ( (nargin == 0) || isempty(source) )
-                % Construct an empty ULTRAS.
-                return
-            end
-            
-            % Attach SOURCE and the DOMAIN information to the object:
-            disc.source = source;
-            disc.domain = source.domain;
-            % Obtain the coeffs and output space required for this source:
-            disc.coeffs = ultraS.getCoeffs(source);
-            % Determine the dimension adjustments and outputSpace:
-            disc.dimAdjust = ultraS.getDimAdjust(source);
-            disc.projOrder = ultraS.getProjOrder(source);
-            disc.outputSpace = ultraS.getOutputSpace(source);
-            
-            % Assign DIMENSIONS and DOMAIN if they were passed.
-            if ( nargin > 1 )
-                disc.dimension = dimension;
-            end
-            if ( nargin > 2 )
-                disc.domain = domain.merge(dom, disc.domain);
-            end
-            
+        function disc = ultraS(varargin)
+            disc = disc@coeffsDiscretization(varargin{:});
         end
-        
-        % Dimension reduction for operator matrix.
-        [PA, P, PS] = reduce(disc, A, S)
         
     end
     
@@ -95,31 +68,6 @@ classdef ultraS < chebDiscretization
         % Multiplication matrices for ultraspherical spectral method.
         D = multmat(n, f, lambda)
         
-        function dimVals = dimensionValues(pref)
-            %DIMENSIONVALUES   Return a vector of desired discretization sizes.
-            %  DIMVALS = DIMENSIONVALUES(PREF) returns a vector containing
-            %  elements that prescribe what values should be used as dimension
-            %  values for discretizating linear operators. DIMVALS is affected
-            %  by the minimum and maximum discretizations specified in the
-            %  CHEBOPPREF object PREF.
-            
-            % We simply go up in powers of 2.
-            
-            minPow = log2(pref.minDimension);
-            maxPow = log2(pref.maxDimension);
-            
-            if ( minPow > maxPow )
-                error('CHEBFUN:ULTRAS:ultraS:dimensionValues', ...
-                    ['Minimum discretiation specified is greater than ' ...
-                    'maximum discretization specified']);
-            end
-            
-            % Go up in powers of 2:
-            powVec = minPow:maxPow;
-            dimVals = round(2.^powVec);
-            
-        end
-        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -127,20 +75,11 @@ classdef ultraS < chebDiscretization
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = private, Static = true)
         
-        % Get coefficient representation of the source.
-        c = getCoeffs( source )
-        
-        % Obtain the range of the ultrapspherical spectral operator.
-        outputSpace = getOutputSpace(source)
-        
         % Compute sparse representation for conversion operators.
         T = spconvert(n, lam)
         
         % Construct a sparse Hankel operator.
         H = sphankel(r)
-        
-        % Sparse Toeplitz matrix.
-        T = sptoeplitz(col, row)
         
     end
     

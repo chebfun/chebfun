@@ -41,7 +41,7 @@ function [f, lineSegs, theta] = fov(A, pref)
 %   e = eig(A);
 %   plot(complex(e), '*k'), hold off, axis equal
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin < 2 )
@@ -53,8 +53,10 @@ end
 pref.splitting = true;
 pref.domain = [0, 2*pi];
 
-% Construct a CHEBFUN of the FOV curve:
+% Construct a CHEBFUN of the FOV curve, and try to merge any unnecessary
+% breakpoints out of the result:
 f = chebfun(@(theta) fovCurve(theta, A), pref);
+f = merge(f);
 
 if ( nargout == 1 )
     return

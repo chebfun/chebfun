@@ -8,14 +8,14 @@ function f = extractBoundaryRoots(f)
 %
 % See also ROOTS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( ~isnumeric(f) )
     
     % Get the boundary values:
     endVals = [get(f, 'lval'); get(f, 'rval')];
-    tol = 1e1*get(f, 'vscale').*get(f, 'epslevel');
+    tol = 2e1*eps*get(f, 'vscale');
     
     if ( any(any(abs(endVals) < repmat(tol, 2, 1))) )
         

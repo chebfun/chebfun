@@ -11,7 +11,7 @@ function out = get(f, prop)
 %
 % See also CHEBTECH, CHEBTECH2.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -24,6 +24,9 @@ switch prop
     case fieldnames(f)
         % Allow access to any of the properties of F via GET:
         out = f.(prop);
+    case 'vscale'
+        % Get the vscale:
+        out = vscale(f);
     case 'points'
         % Get the trigier grid corresponding to the VALUES:
         out = f.points();

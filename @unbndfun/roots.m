@@ -5,7 +5,7 @@ function r = roots(f, varargin)
 %   ROOTS(F, OPTIONS) modifies the default ROOTS properties, by passing the
 %   OPTIONS to the rootfinding method of the ONEFUN of F.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Call ROOTS@FUN.  Roots of an UNBNDFUN should always be pruned to try and
@@ -33,12 +33,12 @@ function r = unbndFilter(r, f)
 %   values of the function at some points in [-1, r] and [r, 1].
 
 % TODO: This assumes that the tech eventually used to find the roots lives on
-% [-1,1] and has .vscale and .epslevel properties. Currently this is only a
-% verbal agreement, as there is no abstract tech class.
+% [-1,1] and has a .vscale property. Currently this is only a verbal agreement,
+% as there is no abstract tech class.
 
 numRoots = length(r);
 mask = false(numRoots, 1);
-tol = f.vscale*f.epslevel;
+tol = 10*eps*get(f, 'vscale');
 
 % We sample at an arbitrary number of points between the located root and
 % the nearest enpoint. We take max(20, numRoots), with the reasoning being that

@@ -32,7 +32,7 @@ classdef bndfun < classicfun
 %
 % See also CLASSICFUN, CHEBFUNPREF, ONEFUN.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -107,61 +107,7 @@ classdef bndfun < classicfun
             obj.mapping = linmap;
         end
     end       
-    
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% CLASS METHODS:
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    methods ( Access = public, Static = false )
-        
-        % Convolution of BNDFUN F with BNDFUN G.
-        h = conv(f, g)
 
-        % Compose a BNDFUN with an operator or another BNDFUN.
-        f = compose(f, op, g, data, pref)
-        
-        % Indefinite integral of a BNDFUN.
-        [f, rVal] = cumsum(f, dim)
-        
-        % Derivative of a BNDFUN.
-        f = diff(f, k, dim)
-       
-        % Change of domains of BNDFUN via linear change of variables.
-        f = changeMap(f,newdom)
-        
-        % Evaluate a BNDFUN.
-        y = feval(f, x, varargin)
-        
-        % Flip/reverse a BNDFUN object.
-        f = flipud(f)
-
-        % Compute the inner product of two BNDFUN objects.
-        out = innerProduct(f, g)
-        
-        % Left matrix divide for BNDFUN objects.
-        X = mldivide(A, B)
-
-        % Right matrix divide for a BNDFUN.
-        X = mrdivide(B, A)
-        
-        % Data for plotting a BNDFUN
-        data = plotData(f, g, h);
-                
-        % Polynomial coefficients of a BNDFUN.
-        out = poly(f)
-        
-        % BNDFUN power function.
-        f = power(f, b)
-        
-        % QR factorisation of an array-valued BNDFUN.
-        [f, R, E] = qr(f, flag)
-        
-        % Restrict a BNDFUN to a subinterval.
-        f = restrict(f, s)
-        
-        % Definite integral of a BNDFUN on the interval [a, b].
-        out = sum(f, dim)
-    end
-    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% STATIC METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

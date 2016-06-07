@@ -1,44 +1,50 @@
-function v = null(A, pref)
+function [v, S] = null(A, prefs, nullity)
 %NULL   Null space of a LINOP.
-%   Z = NULL(A) returns a CHEBMATRIX with orthonormal columns which span the
-%   null space of the LINOP A. That is, A*Z has negligible elements, SIZE(Z, 2)
-%   is the nullity of A, and Z'*Z = I. A may contain linear boundary conditions,
-%   but they will be treated as homogeneous.
+%   Important (1): While you can construct a LINOP and apply this method, the
+%   recommended procedure is to use CHEBOP/NULL instead.
+%   Important (2): A CHEBOPPREF object PREFS has to be passed. When this method
+%   is called via CHEBOP/NULL, PREFS is inherited from the CHEBOP level.
 %
-%   NULL(A, PREF) allows additional preferences to be passed via the CHEBOPPREF,
-%   PREF.
+%   Z = NULL(A, PREFS) returns a CHEBMATRIX with orthonormal columns which span 
+%   the null space of the LINOP A. That is, A*Z has negligible elements, 
+%   SIZE(Z, 2) is the nullity of A, and Z'*Z = I. A may contain linear 
+%   boundary conditions, but they will be treated as homogeneous. The nullity 
+%   is determined by comparing the differential order of the system and the
+%   number of supplied boundary conditions.
+%
+%   Z = NULL(A, PREFS, K) or Z = NULL(A, K) attempts to find K null vectors. If
+%   the nullity of A is determined to be less than K then an warning is thrown.
+%   This is useful in situations where the nullity is known in advance and the
+%   algorithm struggles to determine it automatically.
 %
 % Example:
 %   d = domain(0, pi);
 %   A = diff(d);
-%   V = null(A);
+%   prefs = cheboppref();
+%   prefs.discretization = @chebcolloc2;
+%   V = null(A, prefs);
 %   norm(A*V)
-%
-%   Systems of equations are not yet supported.
 %
 % See also LINOP/SVDS, LINOP/EIGS, NULL.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% TODO: Add support for systems of equations.
+% Discretization type:
+discType = prefs.discretization;
+% Take the standard BVP tolerance:
+tol = prefs.bvpTol;
 
-% Grab defaults if needed.
-if ( nargin == 1 || isempty(pref) )
-    pref = cheboppref;
+if ( nargin < 3 )
+    nullity = [];
+elseif ( nullity == 0 )
+    nullity = [];
 end
-
-% Discretization type.
-discType = pref.discretization;
 
 % Check for square operator. (This is not strict enough, technically.)
 m = size(A, 2);
 if ( m ~= size(A, 1) )
-    error('CHEBFUN:LINOP:eigs:notSquare','Block size must be square.')
-end
-if ( m > 1 )
-    warning('CHEBFUN:LINOP:null:systems', ...
-        'Use of NULL on systems of equations has not yet been tested.')
+    error('CHEBFUN:LINOP:eigs:notSquare', 'Block size must be square.')
 end
 
 % Set up the discretization:
@@ -46,7 +52,7 @@ if ( isa(discType, 'function_handle') )
     % Create a discretization object
     discA = discType(A);
     % Set the allowed discretisation lengths:
-    dimVals = discA.dimensionValues(pref);
+    dimVals = discA.dimensionValues(prefs);
     % Update the discretiztion dimension on unhappy pieces:
     discA.dimension = repmat(dimVals(1), 1, numel(discA.domain)-1);
 else
@@ -59,6 +65,12 @@ end
 if ( isempty(A.continuity) )
      % Apply continuity conditions:
      discA.source = deriveContinuity(discA.source);
+end
+
+if ( isempty(nullity) )
+    nullity = sum(discA.projOrder) - ...
+    ( size(discA.source.continuity.values, 1) + ...
+      size(discA.source.constraint.values, 1) );
 end
 
 % Boundary conditions are not applied, so we want square operators:
@@ -76,7 +88,7 @@ coeff = @(n) 1./(2*(1:n).');
 for dim = dimVals
 
     % Get discrete null vectors:
-    [nullity, V, P] = getNullVectors(discA, pref.errTol);
+    [V, P, S] = getNullVectors(discA, tol, nullity);
 
     % Combine the singular vectors into a composite.
     v = V*coeff(size(V, 2));
@@ -84,8 +96,8 @@ for dim = dimVals
     v = partition(discA, P*v);
     
     % Test the happiness of the function pieces:
-    vscale = zeros(sum(isFun), 1);  % intrinsic scaling only.
-    [isDone, epsLevel] = testConvergence(discA, v(isFun), vscale, pref);
+    vscale = zeros(1, sum(isFun));  % intrinsic scaling only.
+    isDone = testConvergence(discA, v(isFun), vscale, prefs);
     
     if ( all(isDone) )
         break
@@ -96,7 +108,15 @@ for dim = dimVals
 
 end
 
-if ( nullity == 0 )
+if ( ~isempty(nullity) && max(S) > tol ) 
+    warning('CHEBFUN:linop:null:nullity', ...
+        ['Number of requested null-vectors exceeds computed ', ...
+         'nullity of the operator.\n', ...
+        '(Relative) singular value of ' num2str(norm(S, inf)) ' encountered.'])
+    V = V(:,1:(sum(S<tol) - 1));
+end
+
+if ( isempty(V) )
     v = [];
     return
 end
@@ -105,13 +125,15 @@ end
 v = mat2fun(discA, P*V);
 
 % Simplify and orthogonalize:
-epsLevel = min(epsLevel, eps(1));
-for j = 1:numel(v)
-    if ( ~isFun(j) )
-        continue
+if ( m == 1 )
+    v{1} = qr(v{1});
+    v{1} = simplify(v{1});
+else % system of eqns
+    [~, R] = qr(join(v{:}));
+    for j = 1:numel(v)
+        v{j} = v{j}/R;
+        v{j} = simplify(v{j});
     end
-    v{j} = simplify(v{j}, epsLevel);
-    v{j} = qr(v{j});
 end
 
 % TODO: Can we move this to the CHEBMATRIX constructor? NOTE: The following is
@@ -129,31 +151,36 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [nullity, V, P] = getNullVectors(discA, tol)
+function [V, P, S] = getNullVectors(discA, tol, nullity)
 % Formulate the discrete problem and solve for the eigenvalues
 
     % Discretize the LHS operator (incl. constraints/continuity):
-    [ignored, P, B, A] = matrix(discA);
+    [~, P, B, A] = matrix(discA);
     
     % Construct one big matrix from the unprojected block entries:
     A = cell2mat(A);
     
-    % Compute the discrete SVD. (Note: It saves no time to calll the built-in
+    % Compute the discrete SVD. (Note: It saves no time to call the built-in
     % NULL() method, and this simply calls the built-in SVD method.)
-    [U, S, V] = svd(full(A), 0);
-    S = diag(S);
+    [~, S, V] = svd(full(A), 0);
+    S = diag(S)/S(1);
 
     % Numerical nullity:
-    nullity = length(find(S/S(1) < tol));
+    if ( isempty(nullity) )
+        idx = sum(S < tol);
+        S = S(end-idx+1:end);
+    else
+        idx = nullity + size(B, 1);
+        S = S(end-idx+1:end);
+    end
 
     % Extract null vectors:
-    if ( nullity ~= 0 )
-        V = V(:,end+1-nullity:end);        % Numerical null vectors.
+    if ( idx ~= 0 )
+        V = V(:,end+1-idx:end);        % Numerical null vectors.
         % Enforce additional boundary conditions:
         if ( ~isempty(B) )
-            V = V*null(B*V);               % Store output in V.
+            V = V*null(B*V);           % Store output in V.
         end
-        nullity = size(V, 2);
     else
         V = V(:,end); % Check for convergence in smallest singular value.
     end

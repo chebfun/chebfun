@@ -70,9 +70,24 @@ f = singfun(@(x) x, [], pref);
 g = singfun(@(x) cos(x) - 1, [], pref);
 h1 = f + g;
 h2 = singfun(@(x) x + cos(x) - 1, [], pref);
-tol = 10*max(get(h1, 'vscale')*get(h1, 'epslevel'), ...
-    get(h2, 'vscale')*get(h2, 'epslevel'));
+tol = 10*max(get(h1, 'vscale')*eps, ...
+    get(h2, 'vscale')*eps);
 pass(14) = norm(feval(h1, x) - feval(h2, x), inf) < tol;
+
+% Check that plus handles "small" results appropriately in the case of a
+% non-integer exponent difference.
+warnState = warning('off', 'CHEBFUN:SINGFUN:plus:exponentDiff');
+
+pref_fixed = pref;
+pref_fixed.fixedLength = 256;
+op = @(x) ((x + 1)/2).^pi;
+data.exponents = [pi - 3, 0];
+f = singfun(op, data, pref);
+g = singfun(op, [], pref_fixed);
+h = f - g;
+pass(15) = get(h, 'ishappy') && (length(h) < 1024);
+
+warning(warnState);
 
 end
 
@@ -83,7 +98,7 @@ function result = test_add_function_to_scalar(f, fh, c, x)
     g2 = c + f;
     result(1) = isequal(g1, g2);
     g_exact = @(x) fh(x) + c;
-    result(2) = norm(feval(g1, x) - g_exact(x), inf) < 2e2*get(f, 'epslevel');
+    result(2) = norm(feval(g1, x) - g_exact(x), inf) < 1e3*eps;
 end
 
 % Test the addition of two SINGFUN objects F and G, specified by FH and
@@ -93,5 +108,5 @@ function result = test_add_function_to_function(f, fh, g, gh, x)
     h2 = g + f;
     result(1) = isequal(h1, h2);
     h_exact = @(x) fh(x) + gh(x);
-    result(2) = norm(feval(h1, x) - h_exact(x), inf) <= 1e3*get(f, 'epslevel');
+    result(2) = norm(feval(h1, x) - h_exact(x), inf) <= 2e3*eps;
 end

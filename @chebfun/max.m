@@ -26,7 +26,7 @@ function [y, x] = max(f, flag, dim)
 %
 % See also MIN, MINANDMAX, ROOTS.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Trivial empty case.
@@ -119,7 +119,7 @@ for k = 1:numel(f)
     %
     % [TODO]:  What if the 2nd derivative is zero, so that rounding error
     % precludes us from accurately determining the sign?
-    smallEndDer = abs(dfk_ends) < 10*vscale(dfk)*epslevel(dfk);
+    smallEndDer = abs(dfk_ends) < 1e3*vscale(dfk)*eps;
     endptMaxLoc(smallEndDer) = feval(dfk2, ends(smallEndDer)) < 0;
 
     maximaLoc(1) = endptMaxLoc(1);

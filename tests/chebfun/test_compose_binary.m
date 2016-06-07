@@ -55,8 +55,9 @@ hVals = feval(h, x);
 oph = @(x) (sin(20*x)+x.^2)./(x-dom(1));
 hExact = oph(x);
 err = hVals - hExact;
-pass(10) = ( norm(err, inf) < 1e5*vscale(h)*epslevel(h) ) && ...
+pass(10) = ( norm(err, inf) < 1e6*vscale(h)*eps ) && ...
     ( isequal(oph(dom(2)), feval(h, dom(2))) );
+
 
 
 %% Compose two functions defined on an unbounded domain, i.e. F + G:
@@ -77,7 +78,8 @@ h = compose(f, @plus, g);
 hVals = feval(h, x);
 hExact = oph(x);
 err = hVals - hExact;
-pass(11) = norm(err, inf) < get(h,'epslevel')*get(h,'vscale');
+pass(11) = norm(err, inf) < 1e1*eps*get(h,'vscale');
+
 
 end
 
@@ -94,7 +96,7 @@ function pass = test_one_compose_binary(f_exact, fdom, g_exact, gdom, op, pref)
     dom = union(fdom, gdom);
     x = ((dom(end) - dom(1))/2)*xr + dom(1) + (dom(end) - dom(1))/2;
     err = norm(feval(h, x) - h_exact(x), inf);
-    pass = (err < 20*vscale(h)*epslevel(h)) && ...
+    pass = (err < 20*vscale(h)*eps) && ...
         isequal(h_exact(dom), feval(h, dom));
 end
 
@@ -115,16 +117,16 @@ function pass = test_one_compose_binary_quasi(f_exact, fdom, g_exact, gdom, op, 
     
     h = compose(f, op, gq, pref);
     err = norm(feval(h, x) - h_exact(x), inf);
-    pass(1) = (err < 20*vscale(h)*epslevel(h)) && ...
+    pass(1) = (err < 20*vscale(h)*eps) && ...
         isequal(h_exact(dom), feval(h, dom));
     
     h = compose(fq, op, g, pref);
     err = norm(feval(h, x) - h_exact(x), inf);
-    pass(2) = (err < 20*vscale(h)*epslevel(h)) && ...
+    pass(2) = (err < 20*vscale(h)*eps) && ...
         isequal(h_exact(dom), feval(h, dom));
     
     h = compose(fq, op, gq, pref);
     err = norm(feval(h, x) - h_exact(x), inf);
-    pass(3) = (err < 20*vscale(h)*epslevel(h)) && ...
+    pass(3) = (err < 20*vscale(h)*eps) && ...
         isequal(h_exact(dom), feval(h, dom));
 end

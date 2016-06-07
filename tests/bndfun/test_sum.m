@@ -20,20 +20,20 @@ x = diff(dom) * rand(1000, 1) + dom(1);
 % Spot-check integrals for a couple of functions.
 f = bndfun(@(x) exp(x) - 1, struct('domain', dom), pref);
 pass(1) = (abs(sum(f) -  1.087497823145222e3) < ...
-    10*get(f, 'vscale')*get(f, 'epslevel'));
+    10*get(f, 'vscale')*eps);
 
 f = bndfun(@(x) 1./(1 + x.^2), struct('domain', dom), pref);
 pass(2) = (abs(sum(f) - (atan(-dom(1))+atan(dom(2)))) < ...
-    10*get(f, 'vscale')*get(f, 'epslevel'));
+    10*get(f, 'vscale')*eps);
 
 f = bndfun(@(x) cos(1e4*x), struct('domain', dom), pref);
 exact = (sin(1e4*dom(2))-sin(1e4*dom(1)))/1e4;
-pass(3) = (abs(sum(f) - exact) < 10*get(f, 'vscale')*get(f, 'epslevel'));
-
+pass(3) = (abs(sum(f) - exact) < 100*get(f, 'vscale')*eps);
+    
 z = exp(2*pi*1i/6);
 f = bndfun(@(t) sinh(t*z), struct('domain', dom), pref);
 exact = ((cos(sqrt(3) - 1i) - cos((7*sqrt(3))/2 - 7i/2))*(sqrt(3) + 1i)*1i)/2;
-pass(4) = (abs(sum(f)-exact) < 10*get(f, 'vscale')*get(f, 'epslevel'));
+pass(4) = (abs(sum(f)-exact) < 10*get(f, 'vscale')*eps);
 
 %%
 % Check a few basic properties.
@@ -47,13 +47,13 @@ fg = f.*g;
 gdf = g.*df;
 fdg = f.*dg;
 
-tol_f = 10*max(get(f, 'vscale').*get(f, 'epslevel'));
-tol_g = 10*max(get(g, 'vscale').*get(g, 'epslevel'));
-tol_fg = 10*max(get(fg, 'vscale').*get(fg, 'epslevel'));
-tol_df = 10*max(get(df, 'vscale').*get(df, 'epslevel'));
-tol_dg = 10*max(get(dg, 'vscale').*get(dg, 'epslevel'));
-tol_gdf = 10*max(get(gdf, 'vscale').*get(gdf, 'epslevel'));
-tol_fdg = 10*max(get(fdg, 'vscale').*get(fdg, 'epslevel'));
+tol_f = 10*max(get(f, 'vscale')*eps);
+tol_g = 10*max(get(g, 'vscale')*eps);
+tol_fg = 10*max(get(fg, 'vscale')*eps);
+tol_df = 10*max(get(df, 'vscale')*eps);
+tol_dg = 10*max(get(dg, 'vscale')*eps);
+tol_gdf = 10*max(get(gdf, 'vscale')*eps);
+tol_fdg = 10*max(get(fdg, 'vscale')*eps);
 
 % Linearity.
 pass(5) = (abs(sum(a*f + b*g) - (a*sum(f) + b*sum(g))) < max(tol_f, tol_g));
@@ -74,13 +74,13 @@ f = bndfun(@(x) [sin(x) x.^2 exp(1i*x)], struct('domain', dom), pref);
 I = sum(f);
 I_exact = [(cos(dom(1)) - cos(dom(2))) (dom(2)^3 - dom(1)^3)/3 ...
     1i*(exp(1i*dom(1)) - exp(1i*dom(2)))];
-pass(9) = (max(abs(I - I_exact)) < 10*max(get(f, 'vscale').*get(f, 'epslevel')));
+pass(9) = (max(abs(I - I_exact)) < 10*max(get(f, 'vscale')*eps));
 
 % DIM option with array-valued input.
 g = sum(f, 2);
 h = @(x) sin(x) + x.^2 + exp(1i*x);
 pass(10) = (norm(feval(g, x) - h(x), inf) < ...
-    10*max(get(g, 'vscale').*get(f, 'epslevel')));
+    10*max(get(g, 'vscale')*eps));
 
 % DIM option with non-array-valued input should leave everything as it was.
 h = bndfun(@(x) cos(x), struct('domain', dom), pref);
@@ -97,5 +97,6 @@ data.exponents = [pow 0];
 f = bndfun(op, data, pref);
 I = sum(f);
 I_exact = -1.92205524578386613;
-pass(12) = ( abs(I-I_exact) < 2*get(f, 'epslevel')*abs(I_exact) );
+pass(12) = ( abs(I-I_exact) < 200*eps*abs(I_exact) ); 
+    
 end

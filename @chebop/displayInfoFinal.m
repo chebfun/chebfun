@@ -21,7 +21,7 @@ function displayInfoFinal(u, delta, iterNo, errEstDE, errEstBC, displayFig, ...
 %
 % See also: displayInfo
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Obtain preferences for what we want to show
@@ -43,12 +43,14 @@ if ( strcmp(display,'iter') || strcmp(display,'final') )
     end
     
     % Show what discretization was used
-    if ( strcmpi(func2str(pref.discretization), 'ultraS') )
-        discString = 'Ultraspherical';
+    if ( strcmpi(func2str(pref.discretization), 'coeffs') || ...
+            isequal(pref.discretization, @ultraS) || ...
+            isequal(pref.discretization, @trigspec) )
+        discString = 'Coefficients';
     else
-        discString = 'Collocation';
+        discString = 'Values';
     end
-    fprintf('Discretization method used: %s. \n', discString);
+    fprintf('Discretization basis used: %s. \n', discString);
     
     % Print info about the final error estimates.
     fprintf(['Final error estimate: %.2e (differential equation) \n' ...

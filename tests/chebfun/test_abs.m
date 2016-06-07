@@ -40,19 +40,19 @@ pass(1,4) = all(feval(f1, x2) >= 0);
 f = chebfun(@(x) x, [-1 eps 1], pref);
 f1 = abs(f);
 f = chebfun(@(x) abs(x), [-1 0 1], pref);
-tol = 10*get(f, 'epslevel')*get(f, 'hscale');
+tol = 10*eps*get(f, 'hscale');
 pass(1,5) = normest(f - f1) < tol;
 
 % The absolute value of all points on the unit circle should be 1:
 f = chebfun(@(x) exp(1i*x), pref);
 g = abs(f);
-tol = 10*get(g, 'epslevel')*get(g, 'hscale');
+tol = 10*eps*get(g, 'hscale');
 pass(1,6) = normest(g-1) < tol ;
 
 % Real, imaginary and complex CHEBFUN objects:
 fHandle = {@(x) sin(pi*x), @(x) -sin(pi*x), @(x) sin(pi*x), @(x) -sin(pi*x)};
 f = chebfun(fHandle, -2:2, pref);
-tol = 20*get(f, 'epslevel')*get(f, 'hscale');
+tol = 20*eps*get(f, 'hscale');
 
 %% Real CHEBFUN
 gHandle1 = @(x) sin(pi*x);
@@ -122,7 +122,7 @@ pass(6,6) = all(all(feval(h4, x3) >= 0));
 f = chebfun(@(x) sin(1i*x).*(1i*x + exp(5i*x)));
 g = chebfun(@(x) abs(sin(1i*x).*(1i*x + exp(5i*x))), [-1 0 1]);
 h = abs(f);
-pass(7,:) = normest(g - h) < 100*get(h, 'epslevel');
+pass(7,:) = normest(g - h) < 100*eps;
 
 %% Test on singular function:
 dom = [-2 7];
@@ -138,7 +138,7 @@ g = abs(f);
 vals_g = feval(g, x); 
 vals_exact = abs(feval(op, x));
 err = vals_g - vals_exact;
-pass(7,:) = ( norm(err, inf) < 1e4*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(7,:) = ( norm(err, inf) < 1e4*eps*norm(vals_exact, inf) );
 
 %% piecewise smooth chebfun: smoothfun + singfun & splitting on.
 
@@ -161,7 +161,7 @@ vals_g = feval(g, x);
 vals_check = feval(op, x);
 err = vals_g - abs(vals_check);
 pass(8,:) = ( norm(err-mean(err), inf) < ...
-    100*get(f,'epslevel')*norm(vals_check, inf) );
+    100*eps*norm(vals_check, inf) );
 
 %% Tests for functions defined on unbounded domain:
 
@@ -181,7 +181,7 @@ gVals = feval(g, x);
 opAbs = @(x) abs((1-exp(-x.^2))./x);
 gExact = opAbs(x);
 err = gVals - gExact;
-pass(9,:) = norm(err, inf) < 1e1*epslevel(g)*vscale(g);
+pass(9,:) = norm(err, inf) < 1e1*eps*vscale(g);
 
 % Blow-up function:
 op = @(x) -x.^2.*(1+exp(-x.^2));
@@ -191,7 +191,8 @@ gVals = feval(g, x);
 opAbs = @(x) abs(-x.^2.*(1+exp(-x.^2)));
 gExact = opAbs(x);
 err = gVals - gExact;
-pass(10,:) = norm(err, inf) < 1e4*epslevel(g)*vscale(g);
+pass(10,:) = norm(err, inf) < 1e5*eps*vscale(g);
+
 
 % Functions on [a inf]:
 dom = [0 Inf];
@@ -207,6 +208,15 @@ g = abs(f);
 gVals = feval(g, x);
 gExact = opAbs(x);
 err = gVals - gExact;
-pass(11,:) = norm(err, inf) < 2e1*epslevel(g)*vscale(g);
+pass(11,:) = norm(err, inf) < 2e1*eps*vscale(g);
+
+% test trig functions
+f = chebfun(@(x) sin(3*x), [0, 2*pi], 'trig');
+h = chebfun(@(x) sin(3*x), [0, 2*pi]);
+g = abs(f);
+tech = pref.tech;
+pass(12, :) = isequal(get(g.funs{1}, 'tech'), tech);
+pass(13, :) = norm(g - abs(h), inf ) < 1e4*vscale(h)*eps;
+    
 
 end

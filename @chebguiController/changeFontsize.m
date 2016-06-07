@@ -23,10 +23,11 @@ panelLocs = strfind(names, 'panel_');
 toggleLocs = strfind(names, 'toggle_');
 popupLocs = strfind(names, 'popupmenu_');
 iterLocs = strfind(names, 'iter_');
+editLocs = strfind(names, 'edit_');
 
 % Combine all the locations of elements whose font we wish to change
 allLocs = strcat(textLocs, inputLocs, buttonLocs, panelLocs, toggleLocs, ...
-    popupLocs, iterLocs);
+    popupLocs, iterLocs, editLocs);
 
 % Deal with variable maximum for input and noninput-type handles
 for fieldCounter = 1:length(textLocs)
@@ -41,11 +42,6 @@ end
 % Change font sizes of the plots:
 set(handles.fig_sol,  'fontsize', newFontsize)
 set(handles.fig_norm, 'fontsize', newFontsize)
-
-solTitle = get(handles.fig_sol, 'title');
-normTitle = get(handles.fig_norm, 'title');
-set(solTitle, 'fontsize', newFontsize)
-set(normTitle, 'fontsize', newFontsize)
 
 % Store the new font size:
 handles.fontsizePanels = newFontsize;
