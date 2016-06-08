@@ -1,5 +1,5 @@
 function pass = test_chebpts3(pref)
-% Test CHEBPTS3
+% Test CHEBPTS3.
 
 if ( nargin == 0 ) 
     pref = chebfunpref;
@@ -8,7 +8,7 @@ tol = 10*pref.cheb3Prefs.chebfun3eps;
 
 % One argument: 
 n = 10; 
-[xx1, yy1, zz1] = chebfun3.chebpts3(n); 
+[xx1, yy1, zz1] = chebpts3(n); 
 dom = [-1, 1];
 x = chebpts(n, dom); 
 y = chebpts(n, dom); 
@@ -22,7 +22,7 @@ pass(3) = norm(zz1(:) - zz2(:)) < tol;
 m = 10; 
 n = 7; 
 p = 12;
-[xx1, yy1, zz1] = chebfun3.chebpts3(m, n, p);
+[xx1, yy1, zz1] = chebpts3(m, n, p);
 dom = [-1, 1];
 x = chebpts(m, dom); 
 y = chebpts(n, dom);
@@ -34,7 +34,7 @@ pass(6) = norm(zz1(:) - zz2(:)) < tol;
 
 % Four arguments:
 dom = [-2 1 -1 2 -5 -3];
-[xx1, yy1, zz1] = chebfun3.chebpts3(m, n, p, dom);
+[xx1, yy1, zz1] = chebpts3(m, n, p, dom);
 x = chebpts(m, dom(1:2));
 y = chebpts(n, dom(3:4));
 z = chebpts(p, dom(5:6));
@@ -46,7 +46,7 @@ pass(9) = norm(zz1(:) - zz2(:)) < tol;
 % Five arguments:
 dom = [-2 1 -1 2 -5 -3];
 kind = 1;
-[xx1, yy1, zz1] = chebfun3.chebpts3(m, n, p, dom, kind);
+[xx1, yy1, zz1] = chebpts3(m, n, p, dom, kind);
 x = chebpts(m, dom(1:2), kind);
 y = chebpts(n, dom(3:4), kind);
 z = chebpts(p, dom(5:6), kind);

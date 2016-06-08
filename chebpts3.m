@@ -1,5 +1,5 @@
 function [xx, yy, zz] = chebpts3(nx, ny, nz, dom, kind)
-%CHEBPTS3   Chebyshev tensor product grid.
+%CHEBPTS3   3D tensor product Chebyshev grid.
 %   [XX YY ZZ] = CHEBPTS3(N) constructs an N by N by N grid of Chebyshev 
 %   tensor points on [-1 1]^3.
 %
@@ -22,7 +22,7 @@ if ( nargin > 3 )
    % Third argument should be a domain. 
    dom = dom(:).';  % make a row vector.   
    if ( ~all(size(dom) == [1 6]) )
-        error('CHEBFUN:CHEBFUN3:chebpts3:domain', 'Unrecognised domain.');
+        error('CHEBFUN:chebpts3:domain', 'Unrecognised domain.');
    end
 else  % Default to the canoncial domain.
     dom = [-1, 1, -1, 1, -1, 1];

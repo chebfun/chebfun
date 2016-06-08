@@ -172,6 +172,7 @@ while ( ~isHappy && ~failure )
                 yy(1,pivotIndices2D{k}(:, 2), 1).'];
         end
         PI2D = pivotIndices2D;
+        diagValues2D = cell(sepRank, 1);
         for k=1:sepRank
             diagValues2D{k} = diag(1./pivotVals2D{k});
         end
@@ -197,10 +198,6 @@ while ( ~isHappy && ~failure )
             for k=1:sepRank
                 [xx, yy, zz] = ndgrid(pivPos3D(k, 1), pivPos3D(k, 2), Z);
                 fibersValues(:,k) = squeeze(evaluate(op, xx, yy, zz, vectorize));
-                % An alternative is the following, which does
-                % not form xx, yy and zz, but might be easier to read.
-		% fibersValues(:,k) = evaluate(op, repmat(pivPos3D(k, 1),p,1),
-		% repmat(pivPos3D(k, 2),p,1), Z, vectorize ).';
             end
             
             % Find location of pivots on new grid  (using nesting property).
@@ -423,11 +420,6 @@ while ( ~isHappy && ~failure )
         dom2D = dom(1:4); % The first 4 entries correspond to slices
         [core, colsValues, rowsValues] = btd2tucker(colsValues, ...
             rowsValues, diagValues2D, pivotVals3D, dom2D, pref, absTol);
-        % Developer Note: To check the validity of the new representation 
-        % try the following:
-	% TuckerApprox = txm(txm(txm(core, colsValues, 1), rowsValues, 2),
-	% fibersValues, 3);
-        % norm123 = norm( vals(:) -  TuckerApprox(:) )
     end
     
     % Construct a CHEBFUN3 object, simplify skeletons and call a
@@ -929,7 +921,7 @@ grid = 10;
 [xx, yy, zz] = points3D(grid, grid, grid, dom, pref);
 vals = evaluate(op, xx, yy, zz, vectorize);
 
-% Method 1: Using SVD and 1D Chebfun:
+% Using SVD and 1D Chebfun:
 F1 = chebfun3.unfold(vals, 1);
 F2 = chebfun3.unfold(vals, 2);
 F3 = chebfun3.unfold(vals, 3);
@@ -937,7 +929,7 @@ rX = rank(F1.'); % Transpose to have longer columns
 rY = rank(F2.'); % and therefore being faster
 rZ = rank(F3.'); % in MATLAB.
 r = [rX, rY, rZ];
-[ignored, ind] = find(r==min(r));
+[~, ind] = find(r==min(r));
 if ( numel(ind) == 1 )
     fiberDim = ind;
     return
@@ -949,44 +941,12 @@ lenY = length(simplify(chebfun(F2(:, 1)), tol));
 lenZ = length(simplify(chebfun(F3(:, 1)), tol));
 len = [lenX, lenY, lenZ];
 if ( numel(ind) == 2 )
-    [ignored, index] = max([len(ind(1)), len(ind(2))]);
+    [~, index] = max([len(ind(1)), len(ind(2))]);
     fiberDim = ind(index);
 else % numel(ind) = 3
-    [ignored, fiberDim] = max(len);
+    [~, fiberDim] = max(len);
 end
 
-%%
-% % Method 2: Using Chebfun2:
-% F1 = chebfun2(chebfun3.unfold(vals, 1), 
-%               [dom(1:2) min(dom(3), dom(5)) max(dom(4), dom(6))]);
-% F2 = chebfun2(chebfun3.unfold(vals, 2), 
-%               [dom(3:4) min(dom(1), dom(5)) max(dom(2), dom(6))]);
-% F3 = chebfun2(chebfun3.unfold(vals, 3), 
-%               [dom(5:6) min(dom(1), dom(3)) max(dom(2), dom(4))]);
-% rX = numel(F1.pivotValues);
-% rY = numel(F2.pivotValues);
-% rZ = numel(F3.pivotValues);
-% r = [rX, rY, rZ];
-% [ignored, ind] = find(r==min(r));
-% if ( numel(ind) == 1 )
-%     fiberDim = ind;
-%     return
-% end
-% % More than one minimum ranks exist. So, find the variable that needs
-% % largest number of coefficients.
-% F1 = simplify(F1, 1e-3);
-% F2 = simplify(F2, 1e-3);
-% F3 = simplify(F3, 1e-3);
-% [ignored, lenX] = length(F1); % (simplified) degree needed in x
-% [ignored, lenY] = length(F2); % (simplified) degree needed in y
-% [ignored, lenZ] = length(F3); % (simplified) degree needed in z
-% len = [lenX, lenY, lenZ];
-% if ( numel(ind) == 2 )
-%     [ignored, index] = max([len(ind(1)), len(ind(2))]);
-%     fiberDim = ind(index);
-% else % numel(ind) = 3
-%     [ignored, fiberDim] = max(len);
-% end
 end
 
 %%
@@ -1006,6 +966,9 @@ fiber1Chebtech = tech.make(sum(fibersValues, 2), fiber1Data);
 resolvedFibers  = happinessCheck(fiber1Chebtech, [], sum(fibersValues, 2), ...
     [], pref);
 
+%slice1Chebtech = tech.make(sum(cell2mat(colsValues), 2), fiber2Data);
+% resolvedSlice1  = happinessCheck(slice1Chebtech, [], sum(cell2mat(colsValues), 2),...
+%     [], pref);
 slice1Chebtech = tech.make(sum(colsValues{1}, 2), fiber2Data);
 resolvedSlice1  = happinessCheck(slice1Chebtech, [], sum(colsValues{1}, 2),...
     [], pref);
@@ -1058,7 +1021,7 @@ for k = 1:length(varargin)
                 % Interpret this as the user wants a fixed degree chebfun3 
                 % on the domain DOM.
                 len = varargin{k};
-                [xx, yy, zz] = chebfun3.chebpts3(len(1), len(2), len(3), dom);
+                [xx, yy, zz] = chebpts3(len(1), len(2), len(3), dom);
                 op = op(xx, yy, zz);
             end
         end
@@ -1250,11 +1213,12 @@ if numel(size(op)) == 3 % We have a tensor of values.
     % Perform 3D ACA with complete pivoting:
     fiberDim = 3;
     factor = 0;
-    [colsValues, rowsValues, pivotVals2D, ignore, tubesValues, ...
-        pivotVals3D, ignore, ignore, ignore] = completeACA3D(op, ...
+    [colsValues, rowsValues, pivotVals2D, ~, tubesValues, ...
+        pivotVals3D, ~, ~, ~] = completeACA3D(op, ...
         fiberDim, absTol, factor, dom, pref);
     
     sepRank = numel(pivotVals3D); % first separation rank
+    diagValues2D = cell(sepRank, 1);
     for k=1:sepRank
         diagValues2D{k} = diag(1./pivotVals2D{k});
     end
@@ -1274,12 +1238,6 @@ if numel(size(op)) == 3 % We have a tensor of values.
         f.rows = chebfun(rowsValues, dom(3:4), 'equi', pref);
         f.tubes = chebfun(tubesValues, dom(5:6), 'equi', pref);
     end
-    
-    % TODO: Do we want to simplify when constructing from doubles?
-    % The following causes the 2nd test in test_construnctorsyntax() fail.
-%     f.cols = simplify(f.cols, pref.chebfuneps, 'globaltol');
-%     f.rows = simplify(f.rows, pref.chebfuneps, 'globaltol');
-%     f.tubes = simplify(f.tubes, pref.chebfuneps, 'globaltol');
     
     f.core = core;
     f.domain = dom;

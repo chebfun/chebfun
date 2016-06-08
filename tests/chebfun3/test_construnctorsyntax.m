@@ -31,7 +31,7 @@ end
 % Test different ways to make Chebfun3 nonadaptive. 
 dom = [-1 1 -1 1 2 5]; 
 ff = @(x,y,z) sin(x.*y.*z);
-[xx, yy, zz] = chebfun3.chebpts3(10, 15, 5, dom);
+[xx, yy, zz] = chebpts3(10, 15, 5, dom);
 vals = ff(xx,yy,zz);
 g = chebfun3(vals, dom);
 [m, n, p] = length(g); % This won't work if 'simplify' is applied in the constructor.

@@ -106,9 +106,6 @@ methods (Access = public, Static = true)
     % Reshape a discrete matrix to get a tensor.
     varargout = fold(varargin);
     
-    % Tensor product of Chebyshev points.
-    [xx, yy, zz] = chebpts3(m, n, p, domain, kind);
-
     % Convert 3D values to 3D coefficients.
     coeffs3D = vals2coeffs(vals3D);
     
