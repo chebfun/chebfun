@@ -11,9 +11,7 @@ if isempty( f )
     return;
 end
 
-% On the disk in Cartesian cooridnates the curl of a scalar is just
-% cross(n,gradient(f)), where n is the normal vector (which is just
-% [x,y,z]^T).
+
 %   surface curl of F is curl(0, 0,F) = (F_y, -F_x)
 
 G = diskfunv(diff(f, 2), -diff(f, 1));

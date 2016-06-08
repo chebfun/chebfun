@@ -150,6 +150,19 @@ end
 [X, Y] = pol2cart(xx, yy); 
 % Contour plot:
 [c, h] = contourf( X, Y, vals, argin{:} );
+axis square
+
+%add unit circle
+holdState = ishold; 
+c = trigpts(100); 
+hold on 
+plot(cos(c*pi), sin(c*pi), 'k-', 'Linewidth', .3)
+
+if holdState
+     hold on;
+else
+    hold off;
+end
 
 % return plot handle if appropriate.
 if ( nargout == 1 )

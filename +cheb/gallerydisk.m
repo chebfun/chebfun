@@ -45,7 +45,7 @@ if ( nargin == 0 )
            'roundpeg','squarepeg','tiltedpeg', 'wave','yinyang'};
     name = names{randi(length(names))};
 end
-
+type=0;
 % The main switch statement.
 switch lower(name)
     
@@ -53,14 +53,14 @@ switch lower(name)
         fa = @(x,y) exp(sin(50*x/3)) + sin(60*exp(y/3)) + sin(70*sin(x/3)) + ...
             sin(sin(80*y/3)) - sin(10*((x+y)/3)) + (x.^2+y.^2)./(4*3^2);
         f = diskfun(fa);
-
+        type =2; %contourf plot instead
     % A scaled version of the classic MATLAB peaks function:
     case 'peaks'
-        fa = @(x,y) 3*(1-2*x).^2.*exp(-(2*x).^2 - ((2*y)+1).^2) ...
+        fa = @(x,y) 2*(1-2*x).^2.*exp(-(2*x).^2 - ((2*y)+1).^2) ...
             - 10*((2*x)/5 - (2*x).^3 - (2*y).^5).*exp(-(2*x).^2 - (2*y).^2) ...
             - 1/3*exp(-((2*x)+1).^2 - (2*y).^2);
         f = diskfun(fa);
-        
+        type=1; %set to view(3)
     case 'flower'
         fa = @(t,r) sin(21*pi*(1+cos(pi*r)).* ...
             (r.^2-2*r.^5.*cos(5*(t-0.11))));
@@ -91,12 +91,10 @@ switch lower(name)
     case 'wave'
         fa = @(x,y) cos(20*x+5*y).^2.*(1-(x.^2+y.^2));
         f = diskfun(fa);
-
+        type = 1; %view(3)
     case 'yinyang'    % a function created by Grady Wright
         fa = @(t,r) -cos(((sin(pi*r).*cos(t) + sin(2*pi*r).*sin(t)))/4);
         f = diskfun(fa, 'polar');
-
-
 
     % Raise an error if the input is unknown.
     otherwise
@@ -107,8 +105,15 @@ end
 % Only return something if there is an output argument.
 if ( nargout > 0 )
     varargout = {f, fa};
-else
+elseif type==1
     % Otherwise, plot the function.
+        plot(f), axis off
+        view(3)
+        title([name ', rank = ' num2str(length(f))])
+elseif type==2
+        contourf(f), axis off
+        title([name ', rank = ' num2str(length(f))])
+else   
     plot(f), axis off
     title([name ', rank = ' num2str(length(f))])
 end
