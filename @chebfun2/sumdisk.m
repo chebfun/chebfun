@@ -1,8 +1,8 @@
 function [Integral] = sumdisk(f)
 %SUM2DISK   Double integral of a CHEBFUN2 over the unit disk.
 %   I = SUM2DISK(F) returns the double integral of a CHEBFUN2 over the unit
-%   disk. The integral is evaluated using a truncated 2D Chebyshev
-%   polynomial with certain maximal degree that resolve the function to
+%   disk. The integral is evaluated using a truncated tensor product 2D Chebyshev
+%   polynomial  that resolve the function to
 %   machine precision
 %
 % See also INTEGRAL2, INTEGRAL, QUAD2D, SUM2.
@@ -25,7 +25,7 @@ ChebCoeffMatColNum = size(ChebCoeffMat,2);
 
 Integral = 0;
 
-% Loop through the entries off the matrix of Chebyshev coefficients
+% Loop through the entries of the matrix of Chebyshev coefficients
 for I = 1:ChebCoeffMatRowNum
     for J = 1:ChebCoeffMatColNum
         Integral = Integral + ChebCoeffMat(I,J)*GetTixTjyDiscIntegral(I-1,J-1);
