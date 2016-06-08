@@ -2,7 +2,7 @@ function v = std3(f)
 %STD3   Standard deviation of a CHEBFUN3.
 %   V = STD3(F) computes the standard deviation of the CHEBFUN3 object F, 
 %   i.e.,
-%                   STD3(F)^2 = 1/V*sum3(|F(x,y,z) - M|^2)
+%             STD3(F)^2 = 1 / V*sum3(|F(x,y,z) - M|^2)
 %
 %   where V is the volume of the domain of F and M is the mean of F.
 %

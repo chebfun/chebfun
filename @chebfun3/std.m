@@ -11,10 +11,9 @@ function g = std(f, varargin)
 %
 %   The output G is a CHEBFUN2 object over the rectangle [c, d] x [e, g]. 
 %
-%   G = STD(F, FLAG, DIM) takes the standard deviation along the x-variable
-%   if DIM = 1, along the y-variable if DIM = 2 and along the z-variable if
-%   DIM = 3. The FLAG is ignored and kept in this function so the syntax 
-%   agrees with the Matlab STD command.
+%   G = STD(F, FLAG, DIM) takes the standard deviation along the x, y, or
+%   z directions if DIM = 1, 2, or 3, respectively.  FLAG is ignored and
+%   kept in this function so the syntax agrees with the Matlab STD command.
 %
 % See also CHEBFUN/STD, CHEBFUN2/STD, CHEBFUN2/STD2, CHEBFUN3/STD2 and 
 % CHEBFUN3/STD3.
@@ -41,12 +40,15 @@ end
 if ( dim == 1 )          % x-variable.
     mx = chebfun3(@(x,y,z) feval(mean(f, 1), y, z), dom);
     g = sqrt(1/(diff(dom(1:2))) * sum((f - mx).^2, 1)) ;
+    
 elseif ( dim == 2 )      % y-variable.
     my = chebfun3(@(x,y,z) feval(mean(f, 2), x, z), dom);
     g = sqrt(1/(diff(dom(3:4))) * sum((f - my).^2, 2));
+    
 elseif ( dim == 3 )      % z-variable.
     mz = chebfun3(@(x,y,z) feval(mean(f, 3), x, y), dom);
     g = sqrt(1/(diff(dom(5:6))) * sum((f - mz).^2, 3));
+    
 else
     error('CHEBFUN:CHEBFUN3:std:dim', ...
         'Third argument should have value 1, 2 or 3.');

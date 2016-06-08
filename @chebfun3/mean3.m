@@ -10,6 +10,7 @@ function v = mean3(f)
 
 % Empty check:
 if ( isempty(f) ) 
+    v = [];
     return
 end
 

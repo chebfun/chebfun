@@ -1,8 +1,8 @@
 function display(F)
 %DISPLAY    Display information about a CHEBFUN3.
-%   DISPLAY(F) outputs important information about the CHEBFUN3 F to the 
-%   command window, including its domain of definition, trilinear rank 
-%   used to represent it), and a summary of its structure.
+%   DISPLAY(F) outputs information about the CHEBFUN3 F to the 
+%   command window, including its domain of definition, trilinear rank, 
+%   and a summary of its structure.
 %
 %   It is called automatically when the semicolon is not used at the end of
 %   a statement that results in a CHEBFUN3.

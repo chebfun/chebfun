@@ -1,8 +1,8 @@
 function g = sum(f, dim)
-%SUM   Definite Integration of a CHEBFUN3.
+%SUM   Definite integration of a CHEBFUN3.
 %   G = sum(F, DIM) returns a CHEBFUN2 that represnts the definite integral
 %   of a CHEBFUN3 object F along the variable specified in DIM. DIM should
-%   be either 1, 2 or 3 to integrate over X, Y or Z, respectively.
+%   be 1, 2 or 3 to integrate over X, Y or Z, respectively.
 %
 %   G = sum(F) is the same as sum(F, 1).
 %

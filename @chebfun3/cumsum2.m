@@ -4,14 +4,14 @@ function f = cumsum2(f, dims)
 %   By default, that means cumsum in the first 2 variables, i.e., x and y:
 %                   y  x
 %                  /  /
-%   CUMSUM2(F) =  |  |   f(x,y,z) dx dy
+%   CUMSUM2(F) =  |  |   F(x,y,z) dx dy
 %                 /  /
 %                c  a
 %
-%   where [a,b] x [c,d] x [e,g] is the domain of f.
+%   where [a,b] x [c,d] x [e,g] is the domain of F.
 % 
-%   DIMS is a vector containing two of the three indices 1,2,3 to show two 
-%   of the dimensions to be used for CUMSUM2.
+%   DIMS is a vector containing two of the three indices 1,2,3 to show
+%   which two of the dimensions are to be used.
 % 
 % See also CHEBFUN3/CUMSUM, CHEBFUN3/CUMSUM3, CHEBFUN3/SUM, CHEBFUN3/SUM2 
 % and CHEBFUN3/SUM3.
@@ -25,7 +25,7 @@ if ( isempty(f) )
     return
 end
 
-% Default to cumsum in the 1st two variables x and y:
+% Default to cumsum in the first two variables x and y:
 if ( nargin == 1 )
     dims = [1, 2];
 end
