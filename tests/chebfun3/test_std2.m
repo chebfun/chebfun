@@ -12,7 +12,7 @@ f1 = chebfun3(@(x,y,z) x.^2 + z); % f1 has (x,y)-std equal to sqrt(4/45).
 f2 = chebfun3(@(x,y,z) z.^2 + y); % f2 has (x,z)-std equal to sqrt(4/45). 
 f3 = chebfun3(@(x,y,z) y.^2 + x); % f3 has (y,z)-std equal to sqrt(4/45).
 
-exact = chebfun(@(x) sqrt(4/45));
+exact = chebfun(@(x) sqrt(4/45)); % (x,y)-std of z equals 0.
 
 h1 = std2(f1); 
 h2 = std2(f1,[],[1,2]); 
