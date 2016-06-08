@@ -19,6 +19,18 @@ if ( isempty( f ) )
     return
 end
 
+% Check f is a chebfun2 or a trigfun2
+
+colsTechf = get(f.cols.funs{1}, 'tech');
+
+if ( isequal(colsTechf,@trigtech) )
+    f = chebfun2(@(x,y) f(x,y));            % slow way to convert a chebfun2 to a trigfun 2
+% else ( isequal(colsTechf,@trigtech) )     % No need to check
+end
+
+% will add the arbitrary domain later
+
+
 ChebCoeffMat = chebcoeffs2(f);                  % Matrix of Chebyshev coefficients
 ChebCoeffMatRowNum = size(ChebCoeffMat,1);      
 ChebCoeffMatColNum = size(ChebCoeffMat,2);
