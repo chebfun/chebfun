@@ -882,8 +882,19 @@ isCart = find(strcmp(varargin,'cart'));
 if ( any(isCart) )
     coords = 0;
     op = @(th, r) diskfun.pol2cartf(op,th, r); %switch to polar coords
-else
-    coords=1;
+%else
+   % coords=1;
+end
+%end
+
+%polar coords
+isCart = find(strcmp(varargin,'polar'));
+if ( any(isCart) )
+    coords = 1;
+    %op = @(th, r) diskfun.pol2cartf(op,th, r); %switch to polar coords
+else  
+    coords=0; %default to Cartesian coords.
+    op = @(th, r) diskfun.pol2cartf(op,th, r); %switch to polar coords
 end
 end
 %coords=1 -> polar
