@@ -52,19 +52,19 @@ switch lower(name)
     case 'challenge'
         fa = @(x,y) exp(sin(50*x/3)) + sin(60*exp(y/3)) + sin(70*sin(x/3)) + ...
             sin(sin(80*y/3)) - sin(10*((x+y)/3)) + (x.^2+y.^2)./(4*3^2);
-        f = diskfun(fa,'cart');
+        f = diskfun(fa);
 
     % A scaled version of the classic MATLAB peaks function:
     case 'peaks'
         fa = @(x,y) 3*(1-2*x).^2.*exp(-(2*x).^2 - ((2*y)+1).^2) ...
             - 10*((2*x)/5 - (2*x).^3 - (2*y).^5).*exp(-(2*x).^2 - (2*y).^2) ...
             - 1/3*exp(-((2*x)+1).^2 - (2*y).^2);
-        f = diskfun(fa, 'cart');
+        f = diskfun(fa);
         
     case 'flower'
         fa = @(t,r) sin(21*pi*(1+cos(pi*r)).* ...
             (r.^2-2*r.^5.*cos(5*(t-0.11))));
-        f = diskfun(fa);
+        f = diskfun(fa, 'polar');
         
     case 'poisson'   % solution to a Poisson problem
         rhs = @(t,r) -exp(-40*(r.^2-1).^4).* ...
@@ -75,26 +75,26 @@ switch lower(name)
         
     case 'roundpeg'  % a round peg of radius 0.5
         fa = @(t,r) 1./(1+(2*r).^100);
-        f = diskfun(fa);
+        f = diskfun(fa, 'polar');
 
     case 'squarepeg'  % a square peg in a round hole
         fa = @(x,y) 1./((1+(2*x).^20).*(1+(2*y).^20));
-        f = diskfun(fa,'cart');
+        f = diskfun(fa);
         
     case 'tiltedpeg'    % A tilted version of squarepeg
          fa = @(x,y) 1./((1+(2*x+.4*y).^20).*(1+(2*y-.4*x).^20));
-         f = diskfun(fa, 'cart');
+         f = diskfun(fa);
          
     case 'ellipsepeg' %an ellipse-shaped peg
          fa   = @(t,r)1./(1+(4*((r.*cos(t)).^2+.5*(r.*sin(t)).^2)).^20);
-         f = diskfun(fa);    
+         f = diskfun(fa, 'polar');    
     case 'wave'
         fa = @(x,y) cos(20*x+5*y).^2.*(1-(x.^2+y.^2));
-        f = diskfun(fa,'cart');
+        f = diskfun(fa);
 
     case 'yinyang'    % a function created by Grady Wright
         fa = @(t,r) -cos(((sin(pi*r).*cos(t) + sin(2*pi*r).*sin(t)))/4);
-        f = diskfun(fa);
+        f = diskfun(fa, 'polar');
 
 
 
