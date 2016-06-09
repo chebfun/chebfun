@@ -1,5 +1,4 @@
 function cutoff = standardChop(coeffs, tol)
-%disp(length(coeffs)-1)
 %STANDARDCHOP  A sequence chopping rule of "standard" (as opposed to "loose" or
 % "strict") type, that is, with an input tolerance TOL that is applied with some
 % flexibility.  This code is used in all parts of Chebfun that make chopping
@@ -157,12 +156,13 @@ else
     end
     cc = log10(envelope(1:j2));
     cc = cc(:);
-    tilt = linspace(0, (-1/6)*log10(envelope(plateauPoint+1)), j2)';
-    cc = cc + tilt;
+    cc = cc + linspace(0, (-1/3)*log10(tol), j2)';
     [~, d] = min(cc);
     cutoff = max(d - 1, 1);
+end
+
+tilt = linspace(0, (-1/3)*log10(tol), j2)';
 n2 = length(coeffs);
 save explaindata m plateauPoint cutoff n2 j2 cc m tilt
-end
 
 end

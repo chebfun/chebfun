@@ -36,7 +36,12 @@ if nargin>1, epsval = varargin{2}; else epsval = 2^-52; end
 f = chebfun(@(x) ff(x),'eps',epsval); nf = length(f);
 n2 = max(17,2^ceil(log2(1.25*length(f)+5))+1); % length(f) before chopping)
 
-load explaindata
+try
+    load explaindata
+catch
+    clf
+    error('Constructor didn''t converge.');
+end
 
 % Set parameters and abbreviations for plotting:
 MS = 'markersize'; FS = 'fontsize';
@@ -60,7 +65,8 @@ a = axis;
 %if g.vscale<1e11 & a(4) > 1e-6, a(4) = 1e2; end
 %if g.vscale<1e-98, a(3) = 1e-120; a(4) = 1e-98; end
 a(2) = max(a(2),ng);
-a(4) = 1e05*a(4);
+a(4) = 1e03*a(4);
+a(3) = 1e-3*a(3);
 axis(a), set(gca,FS,9)
 
 % Plot envelope
@@ -71,14 +77,14 @@ semilogy(0:ng-1,m,'-g')
 semilogy(0:ng-1,0*m+epsval*m(1),'k--')
 
 % Plot zero data values, if any, on relabeled bottom axis:
-if any(gc==0)
-  gzeros = find(gc==0);
-  semilogy(gzeros-1,a(3)*ones(1,length(gzeros)),'.k',MS,ms)
-  fzeros = find(fc==0);
-  semilogy(fzeros-1,a(3)*ones(1,length(fzeros)),'or',MS,ms0)
-  yy = get(gca,'yticklabel');
-  yy{1} = 'Zero'; set(gca,'yticklabel',yy);
-end
+%if any(gc==0)
+%  gzeros = find(gc==0);
+%  semilogy(gzeros-1,a(3)*ones(1,length(gzeros)),'.k',MS,ms)
+%  fzeros = find(fc==0);
+%  semilogy(fzeros-1,a(3)*ones(1,length(fzeros)),'or',MS,ms0)
+%  yy = get(gca,'yticklabel');
+%  yy{1} = 'Zero'; set(gca,'yticklabel',yy);
+%end
 
 % Clean up the string in various ways for printing:
 xpos = a(1) + .95*diff(a([1 2]));
@@ -96,6 +102,7 @@ ss = strrep(ss,'size','\hbox{size}');
 ss = strrep(ss,'acos','\cos^{-1}'); ss = strrep(ss,'abs','\hbox{abs}');
 ss = strrep(ss,'cos','\cos'); ss = strrep(ss,'abs','\hbox{abs}');
 ss = strrep(ss,'tanh','\tanh');
+ss = strrep(ss,'\\cos','\cos');
 
 % Print a label in the upper-right:
 text(xpos,ypos,['$' ss '$'],FS,13,HA,'right',IN,'latex')
@@ -105,9 +112,9 @@ plot(plateauPoint-1,gc(plateauPoint),'sb',MS,10)
 
 % Plot tilt
 tilt = -tilt(end)/(length(tilt)-1);
-ruler = 10.^(tilt*(0:ng-1));
-ruler = ruler*m(plateauPoint+1)/ruler(plateauPoint+1);
-semilogy(0:ng-1,ruler,'m')
+ruler = 10.^(tilt*(0:j2-1));
+ruler = ruler*m(cutoff+1)/ruler(cutoff+1);
+semilogy(0:j2-1,ruler,'m')
 
 grid on
 hold off
@@ -115,3 +122,4 @@ hold off
 % delete explaindata file
 delete explaindata.mat
 
+end
