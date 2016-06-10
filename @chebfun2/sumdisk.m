@@ -27,7 +27,6 @@ elseif ( isequal(colsTechf,@chebtech2) ~= 1 )
     error('Error: The input argument is not chebfun2 or trigfun2 object')
 end
 
-% TODO: muse allow for domains other than the unit disk
 
 coeffs = chebcoeffs2(f);                 % matrix of Chebyshev coefficients
 
