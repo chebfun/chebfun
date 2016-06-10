@@ -46,6 +46,6 @@ else
     row = a(Na:-1:Na-N+1);
 end
 
-M = sparse(toeplitz(col, row));
+M = trigspec.sptoeplitz(col, row);
 
 end
