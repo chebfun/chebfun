@@ -73,7 +73,10 @@ failure = 0;     % Reached max discretization size without being happy.
 
 while ( ~isHappy && ~failure )
     %% Main loop of the constructor
-    [xx, yy, zz] = points3D(grid, grid, grid, dom, pref);
+    out = tech.tensorGrid([grid, grid, grid], dom);
+    xx = out{1};
+    yy = out{2};
+    zz = out{3};
     grid2D = grid;
     vals = evaluate(op, xx, yy, zz, vectorize);
     % We have vals(i,j,k) = op(X(i), Y(j), Z(k)), where                 (*)
@@ -81,8 +84,8 @@ while ( ~isHappy && ~failure )
     %                                           Y = chebpts(n,[c,d]);
     %                                           Z = chebpts(p,[e,g]);
     %                                 [xx, yy, zz] = ndgrid(X, Y, Z);
-    % and ndgrid is used here in ``points3D``.
-    % If we have used meshgrid, instead of ndgrid, in ``points3D``, then 
+    % and ndgrid is used here in ``tensorGrid``.
+    % If we have used meshgrid, instead of ndgrid, in ``tensorGrid``, then 
     % what holds, instead of (*) above, is 
     % vals(i,j,k) = op(X(j), Y(i), Z(k)) which can be confusing.
     % Users who want to create a chebfun3 from a DISCRETE tensor of values 
@@ -117,10 +120,16 @@ while ( ~isHappy && ~failure )
         % Refine sampling on tensor grid:
         if ( iFail3D )
             grid = gridRefinePhase1(grid, pref);
-            [xx, yy, zz] = points3D(grid, grid, grid, dom, pref);
+            out = tech.tensorGrid([grid, grid, grid], dom);
+            xx = out{1};
+            yy = out{2};
+            zz = out{3};
         elseif ( iFail2D )
             grid2D = gridRefinePhase1(grid2D, pref);
-            [xx, yy, zz] = points3D(grid2D, grid2D, grid, dom, pref);
+            out = tech.tensorGrid([grid2D, grid2D, grid], dom);
+            xx = out{1};
+            yy = out{2};
+            zz = out{3};
         end
         
         vals = evaluate(op, xx, yy, zz, vectorize); % Resample
@@ -193,7 +202,7 @@ while ( ~isHappy && ~failure )
         if ( ~resolvedTubs )
             % Double sampling along skeleton tubes
             [p, nesting] = gridRefinePhase2(p, pref);
-            Z = mypoints(p, dom(5:6), pref);
+            Z = tech.tensorGrid(p, dom(5:6));
             fibersValues = zeros(p, sepRank);
             for k=1:sepRank
                 [xx, yy, zz] = ndgrid(pivPos3D(k, 1), pivPos3D(k, 2), Z);
@@ -205,7 +214,7 @@ while ( ~isHappy && ~failure )
             % z indices and should therefore be updated.
         else
             fibersValues = zeros(p, sepRank);
-            Z = mypoints(p, dom(5:6), pref);
+            Z = tech.tensorGrid(p, dom(5:6));
             for k=1:sepRank
                 [xx, yy, zz] = ndgrid(pivPos3D(k, 1), pivPos3D(k, 2), Z);
                 fibersValues(:, k) = squeeze(evaluate(op, xx, yy, zz, vectorize));
@@ -215,8 +224,8 @@ while ( ~isHappy && ~failure )
         if ( ~resolvedCols && resolvedRows )
             % Double sampling along the column slices only, i.e., in x. 
             [m, nesting] = gridRefinePhase2(m, pref); 
-            X = mypoints(m, dom(1:2), pref);
-            Y = mypoints(n, dom(3:4), pref);
+            X = tech.tensorGrid(m, dom(1:2));
+            Y = tech.tensorGrid(n, dom(3:4));
             colsValues = {};
             for k=1:sepRank
                 [xx, yy, zz] = ndgrid(X, pivPos2D{k}(:,2), pivPos3D(k, 3));
@@ -239,9 +248,8 @@ while ( ~isHappy && ~failure )
             
         elseif ( resolvedCols && ~resolvedRows )
             [n, nesting] = gridRefinePhase2(n, pref);
-            X = mypoints(m, dom(1:2), pref);
-            Y = mypoints(n, dom(3:4), pref);
-
+            X = tech.tensorGrid(m, dom(1:2));
+            Y = tech.tensorGrid(n, dom(3:4));
             colsValues = {};
             for k=1:sepRank
                 [xx, yy, zz] = ndgrid(X, pivPos2D{k}(:, 2), pivPos3D(k, 3));
@@ -263,9 +271,8 @@ while ( ~isHappy && ~failure )
         elseif ( ~resolvedCols && ~resolvedRows )
             [m, nesting1] = gridRefinePhase2(m, pref);
             [n, nesting2] = gridRefinePhase2(n, pref);
-            X = mypoints(m, dom(1:2), pref);
-            Y = mypoints(n, dom(3:4), pref);
-            
+            X = tech.tensorGrid(m, dom(1:2));
+            Y = tech.tensorGrid(n, dom(3:4));
             colsValues = {};
             for k=1:sepRank
                 [xx, yy, zz] = ndgrid(X, pivPos2D{k}(:, 2), pivPos3D(k, 3));
@@ -558,11 +565,14 @@ function [col, pivotVals, row, pivotLoc] = chebfun2ACA(op, dom, pref, ...
     flag_funVals, globalTol)
 
 pseudoLevel = pref.cheb3Prefs.chebfun3eps;
+tech = pref.tech();
 if ( ~isempty(globalTol) )
     tol = globalTol;
 else
     if flag_funVals
-        [xx2D, yy2D] = points2D(size(op,1), size(op,2), dom, pref); 
+        out = tech.tensorGrid([size(op,1), size(op,2)], dom);
+        xx2D = out{1};
+        yy2D = out{2};
         % ndgrid is used here.
         tol = GetTol2D(xx2D, yy2D, op, dom, pseudoLevel);
     else
@@ -717,83 +727,6 @@ end
 end
 
 %%
-function x = mypoints(n, dom, pref)
-% Get the sample points that correspond to the right grid for a particular
-% technology.
-
-% What tech am I based on?:
-tech = pref.tech();
-
-if ( isa(tech, 'chebtech2'))
-    x = chebpts(n, dom, 2);
-elseif ( isa(tech, 'chebtech1'))
-    x = chebpts(n, dom, 1);
-elseif ( isa(tech, 'trigtech'))
-    x = trigpts(n, dom);
-else
-    error('CHEBFUN:CHEBFUN3:constructor:mypoints:techType', ...
-        'Unrecognized technology');
-end
-
-end
-
-%%
-function [xx, yy] = points2D(m, n, dom, pref)
-% Get the sample points that correspond to the right grid for a particular
-% technology.
-
-% What tech am I based on?:
-tech = pref.tech();
-
-if ( isa(tech, 'chebtech2') )
-    x = chebpts(m, dom(1:2), 2);   % x grid.
-    y = chebpts(n, dom(3:4), 2);   % y grid.
-    [xx, yy] = ndgrid(x, y);
-elseif ( isa(tech, 'chebtech1'))
-    x = chebpts(m, dom(1:2), 1);   % x grid.
-    y = chebpts(n, dom(3:4), 1);   % y grid.
-    [xx, yy] = ndgrid(x, y);
-elseif ( isa(tech, 'trigtech'))
-    x = trigpts(m, dom(1:2));      % x grid.
-    y = trigpts(n, dom(3:4));      % y grid.
-    [xx, yy] = ndgrid(x, y);
-else
-    error('CHEBFUN:CHEBFUN3:constructor:points2D:tecType', ...
-        'Unrecognized technology');
-end
-
-end
-
-%%
-function [xx, yy, zz] = points3D(m, n, p, dom, pref)
-% Get the sample points that correspond to the right grid for a particular
-% technology.
-
-% What tech am I based on?:
-tech = pref.tech();
-
-if ( isa(tech, 'chebtech2') )
-    x = chebpts(m, dom(1:2), 2);   % x grid.
-    y = chebpts(n, dom(3:4), 2);   % y grid.
-    z = chebpts(p, dom(5:6), 2);   % z grid.
-    [xx, yy, zz] = ndgrid(x, y, z); 
-elseif ( isa(tech, 'chebtech1') )
-    x = chebpts(m, dom(1:2), 1);   % x grid.
-    y = chebpts(n, dom(3:4), 1);   % y grid.
-    z = chebpts(p, dom(5:6), 1);   % z grid.
-    [xx, yy, zz] = ndgrid(x, y, z); 
-elseif ( isa(tech, 'trigtech') )
-    x = trigpts(m, dom(1:2));      % x grid.
-    y = trigpts(n, dom(3:4));      % y grid.
-    z = trigpts(p, dom(5:6));      % z grid.
-    [xx, yy, zz] = ndgrid(x, y, z);
-else
-    error('CHEBFUN:CHEBFUN3:constructor:points3D:tecType', ...
-        'Unrecognized technology');
-end
-end
-
-%%
 function vals = evaluate(oper, xx, yy, zz, flag)
 % EVALUATE  Wrap the function handle in a FOR loop if the vectorize flag is
 % turned on.
@@ -896,7 +829,11 @@ function fiberDim = dimCluster(op, dom, vectorize, pref)
 %    more coefficients to resolve.
 
 grid = 10;
-[xx, yy, zz] = points3D(grid, grid, grid, dom, pref);
+tech = pref.tech();
+out = tech.tensorGrid([grid, grid, grid], dom);
+xx = out{1};
+yy = out{2};
+zz = out{3};
 vals = evaluate(op, xx, yy, zz, vectorize);
 
 % Using SVD and 1D Chebfun:
@@ -1153,6 +1090,7 @@ end
 function f = constructFromDouble(op, dom, pref, isEqui)
 
 pseudoLevel = pref.cheb3Prefs.chebfun3eps;
+tech = pref.tech();
 
 f = chebfun3();
 if ( ~isEqui && numel(op) == 1 )
@@ -1171,11 +1109,17 @@ if numel(size(op)) == 3 % We have a tensor of values.
     % If we knew beforehand that ALL users WILL generate their tensor of 
     % values ONLY from meshgrid pts, all we need is to say 
     % vals = permute(vals,[2 1 3]); to generate a tensor corresponding to 
-    % ''meshgrid'', in which case a copy of ``points3D`` should also be 
+    % ''meshgrid'', in which case a copy of ``tensorGrid`` should also be 
     % used accordingly. op = permute(op,[2 1 3]);
     
     if ( ~isEqui )
-        [xx, yy, zz] = points3D(size(op,1), size(op,2), size(op,3), dom, pref);
+        m = size(op, 1);
+        n = size(op, 2);
+        p = size(op, 3);
+        out = tech.tensorGrid([m, n, p], dom);
+        xx = out{1};
+        yy = out{2};
+        zz = out{3};
     else
         % Equispaced points from ndgrid, not meshgrid!
         x = linspace(dom(1), dom(2), size(op, 1));
@@ -1278,6 +1222,7 @@ function [colsBtd, rowsBtd, pivotValues2D, pivotIndices2D, fibers, ...
 % An analogous BTD decomposotion should also hold.
 
 pseudoLevel = pref.cheb3Prefs.chebfun3eps;
+tech = pref.tech();
 
 % Set up output variables.
 [n1, n2, n3] = size(A);
@@ -1343,7 +1288,9 @@ while ( ( infNorm > tol ) && ( iter < width / factor) ...
     % Use the first slice to compute globalTol for 2D ACAs applied to all 
     % slices.
     if iter == 0
-        [xx2D, yy2D] = points2D(n1, n2, dom2D, pref); % ndgrid is used.
+        out = tech.tensorGrid([n1, n2], dom2D);
+        xx2D = out{1};
+        yy2D = out{2};
         globalTol = GetTol2Dv2(xx2D, yy2D, slices(:,:,1), dom2D, pseudoLevel);
     end
     
