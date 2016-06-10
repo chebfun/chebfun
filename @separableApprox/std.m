@@ -34,11 +34,11 @@ else
 end
 
 if ( dim == 1 )          % y-variable.
-    mx = chebfun2( @(x,y) feval( mean(f, 2), x ), dom );
-    g = sqrt( 1/( diff( dom(3:4) ) ) * sum( ( f - mx ).^2, 1 ) ) ;
+    mx = chebfun2(@(x,y) feval( mean(f, 1).', x), dom);
+    g = sqrt(1/(diff(dom(3:4))) * sum((f - mx).^2, 1)).' ;
 elseif ( dim == 2 )      %  x-variable.
-    my = chebfun2( @(x,y) feval( mean(f, 1).', y), dom );
-    g = sqrt( 1/( diff( dom(1:2) ) ) * sum( ( f - my ).^2, 2 ) );
+    my = chebfun2(@(x,y) feval( mean(f, 2), y), dom);
+    g = sqrt(1/(diff(dom(1:2))) * sum((f - my).^2, 2));
 else
     error('CHEBFUN:SEPARABLEAPPROX:std:dim', ...
         'Third argument should have value 1 or 2.');
