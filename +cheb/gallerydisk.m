@@ -21,15 +21,14 @@ function varargout = gallerydisk(name)
 %   CHEB.GALLERYDISK with no output argument creates a plot of the selected
 %   function.
 %
-%   flower     A pretty function with 5-fold symmetry
-%   paper      An example from the paper by Townsend, Wilber, and Wright
-%   wave       A wavy function
-%   yinyang    Yin-yang function
-%   peaks      A scaled version of the MATLAB 'peaks' function
 %   challenge  Zooms in on a portion of the function from SIAM 100-digit challenge
+%   ellipsepeg An ellipse-shaped peg, rank 52
+%   flower     A pretty function with 5-fold symmetry
 %   roundpeg   Approx characteristic function of a disk, rank 1
 %   squarepeg  Approx characteristic function of a square, rank 33
 %   tiltedpeg  A tilted variant of squarepeg, rank 34
+%   wave       A wavy function
+%   yinyang    Yin-yang function
 %   Gallery functions are subject to change in future releases of Chebfun.
 %
 % See also CHEB.GALLERY, CHEB.GALLERYTRIG, CHEB.GALLERY2, CHEB.GALLERY3
@@ -41,7 +40,7 @@ function varargout = gallerydisk(name)
 % If the user did not supply an input, return a function chosen at random
 % from the gallery.
 if ( nargin == 0 )
-    names = {'challenge','flower','peaks','poisson', ...
+    names = {'challenge','flower','poisson', 'ellipsepeg'...
            'roundpeg','squarepeg','tiltedpeg', 'wave','yinyang'};
     name = names{randi(length(names))};
 end
@@ -55,12 +54,12 @@ switch lower(name)
         f = diskfun(fa);
         type =2; %contourf plot instead
     % A scaled version of the classic MATLAB peaks function:
-    case 'peaks'
-        fa = @(x,y) 2*(1-2*x).^2.*exp(-(2*x).^2 - ((2*y)+1).^2) ...
-            - 10*((2*x)/5 - (2*x).^3 - (2*y).^5).*exp(-(2*x).^2 - (2*y).^2) ...
-            - 1/3*exp(-((2*x)+1).^2 - (2*y).^2);
-        f = diskfun(fa);
-        type=1; %set to view(3)
+    %case 'peaks'
+      %  fa = @(x,y) 2*(1-2*x).^2.*exp(-(2*x).^2 - ((2*y)+1).^2) ...
+       %     - 10*((2*x)/5 - (2*x).^3 - (2*y).^5).*exp(-(2*x).^2 - (2*y).^2) ...
+       %     - 1/3*exp(-((2*x)+1).^2 - (2*y).^2);
+       % f = diskfun(fa);
+       % type=1; %set to view(3)
     case 'flower'
         fa = @(t,r) sin(21*pi*(1+cos(pi*r)).* ...
             (r.^2-2*r.^5.*cos(5*(t-0.11))));
