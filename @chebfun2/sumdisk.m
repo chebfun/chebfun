@@ -1,101 +1,74 @@
-function [Integral] = sumdisk(f)
-%SUM2DISK   Double integral of a CHEBFUN2 over the unit disk.
-%   I = SUM2DISK(F) returns the double integral of a CHEBFUN2 over the unit
-%   disk. The integral is evaluated using a truncated tensor product 2D Chebyshev
-%   polynomial  that resolve the function to
-%   machine precision
+function I = sumdisk(f)
+%SUMDISK   Double integral of a CHEBFUN2 over the unit disk.
+%   I = SUMDISK(F) returns the double integral of the CHEBFUN2 F over the
+%   unit disk if F is defined on the unit square; otherwise the result is
+%   scaled appropriately for a different square or rectangle.  The integral
+%   is evaluated by using formulas based on the bivariate Chebyshev 
+%   expansion of F.
 %
 % See also INTEGRAL2, INTEGRAL, QUAD2D, SUM2.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Note for developers: This method supposes that the CHEBFUN2 is based on
-% Chebyshev polynomials.
-
 % Empty check:
 if ( isempty( f ) ) 
-    Integral = 0;
+    I = 0;
     return
 end
 
-% Check f is a chebfun2 or a trigfun2
+% If f is a trigfun2, convert it to a chebfun2
 
 colsTechf = get(f.cols.funs{1}, 'tech');
 
 if ( isequal(colsTechf,@trigtech) )
-    f = chebfun2(@(x,y) f(x,y));            % slow way to convert a chebfun2 to a trigfun 2
-% else ( isequal(colsTechf,@trigtech) )     % No need to check
+    f = chebfun2(@(x,y) f(x,y));         % not as clean as we would like
+elseif ( isequal(colsTechf,@chebtech2) ~= 1 )
+    error('Error: The input argument is not chebfun2 or trigfun2 object')
 end
 
-% will add the arbitrary domain later
+% TODO: muse allow for domains other than the unit disk
 
+coeffs = chebcoeffs2(f);                 % matrix of Chebyshev coefficients
 
-ChebCoeffMat = chebcoeffs2(f);                  % Matrix of Chebyshev coefficients
-ChebCoeffMatRowNum = size(ChebCoeffMat,1);      
-ChebCoeffMatColNum = size(ChebCoeffMat,2);
+% Extract -2, 0, 2 diagonal of the coeff matrix
+CoeffsDiag0 = diag(coeffs,0);
+CoeffsDiag2 = diag(coeffs,2);
+CoeffsDiagm2 = diag(coeffs,-2);
 
-Integral = 0;
+% Extract the even entries
+CoeffsDiag0 = CoeffsDiag0(1:2:end);
+CoeffsDiag2 = CoeffsDiag2(1:2:end);
+CoeffsDiagm2 = CoeffsDiagm2(1:2:end);
 
-% Loop through the entries of the matrix of Chebyshev coefficients
-for I = 1:ChebCoeffMatRowNum
-    for J = 1:ChebCoeffMatColNum
-        Integral = Integral + ChebCoeffMat(I,J)*GetTixTjyDiscIntegral(I-1,J-1);
-        % use the local function GETIXTJYDISCINTEGRAL() to compute the
-        % integral of T_i(x)T_j(y) over the unit disk.
-    end
-end
+Diag0Length = length(CoeffsDiag0);
+Diag2Length = length(CoeffsDiag2);
+Diagm2Length = length(CoeffsDiagm2);
 
+% Compute the integral of T_i(x)T_j(y) over the unit disk for the
+% appropriate i,j
 
-end
+kVec = 2*(0:(Diag0Length-1))';
+Diag0Int = (pi*(-1).^(kVec/2))./(2-2*kVec.^2);
+Diag0Int(1,1) = pi;
 
-%%
-% This local function computes the integral of T_i(x)T_j(y) over the unit
-% disk.
+kVec = 2*(0:(max(Diag2Length,Diagm2Length))-1)';
+DiagMax2m2Int = (pi*(-1).^(1+kVec/2))./(4*kVec + 4);
+DiagMax2m2Int(1,1) = -pi/2;
 
-function [ DiscIntegral ] = GetTixTjyDiscIntegral(I,J)
-%TixTjy_DiscIntegral_Fn   Computes the integral of product of Chebyshev
-%   polynomials T_i(x)T_j(y) in the unit disc. Slevinsky formula is used
-%   here.
-%
-%   Detailed explanation goes here
+Diag2Int = DiagMax2m2Int(1:Diag2Length);
+Diagm2Int = DiagMax2m2Int(1:Diagm2Length);
 
-
-if mod(I,2) == 1
-    DiscIntegral = 0;
-elseif mod(J,2) == 1
-    DiscIntegral = 0;
-else
+% [TODO: what is this?]
+% % If nrows and ncols are big enough, you can do the following
+% % Of course you'll hto modify this a little in case they're not big enough:
+% 
+% I = pi*C(1,1) - (pi/2)*(C(1,3)+C(3,1);
+% for i = 3:2:min(ncols,nrows)
+%     I = I + xxx*C(i,i);
+%     etc.
     
-    if J == 0
-        if I == 0
-            DiscIntegral = pi;
-        elseif I == 2
-            DiscIntegral = -pi/2;
-        else
-            DiscIntegral = 0;
-        end
-        
-    end
-    
-    
-    if J>0
-        if I == J-2 && J~=2
-            DiscIntegral = (pi/2)*((-1)^(J/2))/(2*(J-1));
-        elseif I == J
-            DiscIntegral = (pi/2)*(((-1)^(J/2))/(2*(J+1)) - ((-1)^(J/2))/(2*(J-1)));
-        elseif I == J+2
-            DiscIntegral = -(pi/2)*((-1)^(J/2))/(2*(J+1));
-        elseif I == 0 && J == 2
-            DiscIntegral = -(pi/2);
-        else
-            DiscIntegral = 0;
-        end
-    end
-    
-    
-end
+I = (Diag0Int')*CoeffsDiag0 + (Diag2Int')*CoeffsDiag2 + (Diagm2Int')*CoeffsDiagm2;
 
 end
-
 
