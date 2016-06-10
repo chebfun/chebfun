@@ -37,15 +37,14 @@ n = length(row(:));
 % Only use toeplitz if you have too... fairly slow. 
 if ( (m < 2e3) && (n < 2e3) )
     % Note: nnz(col) -- Number of nonzero elements in col
-    
-    % TODO: Add a line what's going on? AB, 12/2/14
-    if ( nnz(col) == 1 )
+    if ( nnz(col) == 1 && nnz(row) == 1 )
         Ic = find(col);
+        Ir = find(row);
         if ( Ic == 1 )
             T = spdiags(col(Ic)*ones(m, 1), 0, m, n);
         else
-            T = spdiags([col(Ic)*ones(m, 1) col(Ic)*ones(m , 1)], ...
-                [-Ic + 1, Ic - 1], m, n);
+            T = spdiags([col(Ic)*ones(m, 1) row(Ir)*ones(m , 1)], ...
+                [-Ic + 1, Ir - 1], m, n);
         end
     else
         T = toeplitz(col, row);
