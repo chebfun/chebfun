@@ -9,7 +9,7 @@ tol = 10*pref.cheb3Prefs.chebfun3eps;
 % Scale invariant
 f = chebfun3(@(x,y,z) cos(x.*y.*z));
 g = chebfun3(@(x,y,z) eps*cos(x.*y.*z));
-err = norm( eps*f - g);
+err = norm(eps*f - g);
 pass(1) = err  <  tol;
 
 % hscale invariant 
