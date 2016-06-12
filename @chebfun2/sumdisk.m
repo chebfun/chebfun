@@ -70,7 +70,7 @@ Diagm2Int = DiagMax2m2Int(1:Diagm2Length);
 I = (Diag0Int')*CoeffsDiag0 + (Diag2Int')*CoeffsDiag2 + (Diagm2Int')*CoeffsDiagm2;
 
 
-% Rescale the integral for non-default 
+% Rescale the integral for non-default domain
 Domainf = f.domain;
 
 if ( Domainf ~= [-1 1 -1 1] )
