@@ -15,11 +15,17 @@ if ( isempty(f) || isempty(n) )        % Check for empty objects.
     f = chebfun3();
     
 elseif ( isa (f, 'double') )           % double .^ CHEBFUN3    
-    op = @(x,y,z) f .^ (feval(n, x, y, z));
-    f = chebfun3(op, n.domain);
+    if ( ~isscalar(f) )
+        error('CHEBFUN:CHEBFUN3:power:scalar','Both inputs must be scalars.')
+    else
+        op = @(x,y,z) f .^ (feval(n, x, y, z));
+        f = chebfun3(op, n.domain);
+    end
     
 elseif ( isa(n, 'double') )            % CHEBFUN3 .^ double
-   if ( abs(round(n) - n) > eps )
+    if ( ~isscalar(n) )
+        error('CHEBFUN:CHEBFUN3:power:scalar','Both inputs must be scalars.')
+    elseif ( abs(round(n) - n) > eps )
        % Positive/negative test.
        [bool, wzero] = singleSignTest(f);
        if ( ( bool == 0 ) || ( wzero == 1 ) )
@@ -32,7 +38,7 @@ elseif ( isa(n, 'double') )            % CHEBFUN3 .^ double
     
 else                                   % CHEBFUN3 .^ CHEBFUN3
     if ( ~domainCheck(f, n) )          % Check they're on the same domain.
-        error('CHEBFUN:CHEBFUN3:power:domain','Domains must be the same');
+        error('CHEBFUN:CHEBFUN3:power:domain','Domains must be the same.');
     end
     op = @(x,y,z) feval(f, x, y, z) .^ (feval(n, x, y, z));   % Resample
     f = chebfun3(op, f.domain);        % Call constructor
