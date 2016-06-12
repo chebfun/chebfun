@@ -51,7 +51,7 @@ kVec = 2*(0:(Diag0Length-1))';
 Diag0Int = (pi*(-1).^(kVec/2))./(2-2*kVec.^2);
 Diag0Int(1,1) = pi;
 
-kVec = 2*(0:(max(Diag2Length,Diagm2Length))-1)';
+kVec = 2*(0:(max(Diag2Length,Diagm2Length)-1))';
 DiagMax2m2Int = (pi*(-1).^(1+kVec/2))./(4*kVec + 4);
 DiagMax2m2Int(1,1) = -pi/2;
 
