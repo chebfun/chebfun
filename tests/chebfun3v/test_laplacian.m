@@ -4,7 +4,7 @@ function pass = test_laplacian(pref)
 if ( nargin == 0 )
     pref = chebfunpref; 
 end
-tol = 50*pref.cheb3Prefs.chebfun3eps;
+tol = 1e2*pref.cheb3Prefs.chebfun3eps;
 
 % Check definition: 
 F = chebfun3v(@(x,y,z) cos(x), @(x,y,z) sin(y), @(x,y,z) exp(z));

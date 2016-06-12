@@ -12,11 +12,20 @@ diff2 = diff(f, 2, 2);
 diff3 = diff(f, 2, 3);
 
 vscales = [vscale(diff1) + vscale(diff2), vscale(diff3)];
-% Send two vscales to constructor
+% Developer Note: Instead of calling 
+% L = diff1 + diff2 + diff3; which needs to call the constructor twice, we
+% use the following to call it just once. See CHEBFUN3/PLUS for more
+% details.
 
+m = 51; % size of sampling grid
+LVals = sample(diff1, m, m, m) + sample(diff2, m, m, m) + ...
+    sample(diff3, m, m, m);
+LVscale = max(abs(LVals(:)));
+kappa = sum(vscales)/LVscale;
+pref = chebfunpref(); prefStruct = pref.cheb3Prefs;
+eps = prefStruct.chebfun3eps;
+tol = eps*kappa;
 L = chebfun3(@(x,y,z) feval(diff1,x, y, z) + feval(diff2,x, y, z) + ...
-    feval(diff3,x, y, z) , f.domain, 'vscaleBnd', vscales);
-% Instead of calling the compressed_plus, this runs the constructor for addition. 
+    feval(diff3,x, y, z) , f.domain, 'eps', tol);
 
-% L = diff1 + diff2 + diff3; % Using compression_plus
 end

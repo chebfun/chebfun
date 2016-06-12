@@ -32,7 +32,18 @@ else
                 'not implemented yet');
     
         case {'fro'}
-            normF = sqrt(sum3(f.^2));  
+            % Instead of normF = sqrt(sum3(f.^2)), which needs explicitly 
+            % forming the object f.^2, we use HOSVD and the invariance of 
+            % the Frobenius norm under unitary modal multiplication by 
+            % orthogonal factor quasimatrices. We have: 
+            % norm(F, 'fro') = norm(core, 'fro')
+            % where core is discrete core tensor of the HOSVD of f:
+            [~, g] = hosvd(f);
+            core = g.core;
+            normF = norm(core(:), 'fro');
+            % Alternatively, a rough approximation could also be computed
+            % by sampling f on a discrete tensor F and then computing 
+            % Frobenius norm of F.
             
         case {inf, 'inf', 'max'}
             [vals, locs] = minandmax3(f);

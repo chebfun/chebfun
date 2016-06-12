@@ -32,14 +32,31 @@ else                                     % CHEBFUN3 + CHEBFUN3
         h = g;
     elseif ( iszero(g) )
         h = f;
-    else
+    else        
         % Add together two nonzero CHEBFUN3 objects:
-         vscaleBnd = [vscale(f), vscale(g)]; % Send both vscales to the
-         % constructor, so that it takes care of the case that computing 
-         % f+g is subject to cancellation errors. See constructor/getTol3D.          
-         h = chebfun3(@(x, y, z) feval(f, x, y, z) + feval(g, x, y, z), ...
-             f.domain, 'vscaleBnd', vscaleBnd);
-         
+        % Developer Note: If f+g has values close to zero, i.e., when 
+        % computing f+g is subject to cancellation errors, the tolerance
+        % computed in Chebfun3 constructor, used to stop adding new terms
+        % to the BTD, will be roughly eps^2 which we cannot attain anyway.
+        % See constructor/getTol3D. Here, the idea is to send an absolute 
+        % tolerance to the constructor for computing f+g. In other words,
+        % we do not expect accuracy better than the condition number of the
+        % plus operation times CHEBFUN3EPS. Let's compute the condition 
+        % number of the plus operation f + g, i.e., ||f|| + ||g|| / ||f+g||
+        % We first compute a rough approximate vscale for f+g:
+        m = 51; % size of sampling grid
+        hVals = sample(f, m, m, m) + sample(g, m, m, m);
+        hVscale = max(abs(hVals(:)));
+        vscaleFG = [vscale(f), vscale(g)];
+        kappa = sum(vscaleFG)/hVscale;
+        % Developer Note: Since kappa is big, if g ~= -f, this helps us 
+        % find out cases prone to cancellation errors, i.e., in this case 
+        % we expect less from the constructor. 
+        pref = chebfunpref(); prefStruct = pref.cheb3Prefs;
+        eps = prefStruct.chebfun3eps;
+        tol = eps*kappa;
+        h = chebfun3(@(x, y, z) feval(f, x, y, z) + feval(g, x, y, z), ...
+            f.domain, 'eps', tol);         
 %         h = compressed_plus(f, g); % bypass the constructor and call the compressed version
    end 
     

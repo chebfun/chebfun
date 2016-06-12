@@ -28,7 +28,7 @@ function f = constructor(f, op, varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Parse the inputs:
-[op, dom, pref, vscaleBnd, fiberDim, vectorize, isEqui, fixedRank] = ...
+[op, dom, pref, fiberDim, vectorize, isEqui, fixedRank] = ...
     parseInputs(op, varargin{:});
 
 % Set preferences:
@@ -105,8 +105,7 @@ while ( ~isHappy && ~failure )
     factor = 2*sqrt(2); % Ratio between width of tensor and rank (=no. of pivots).
     % 3D version of CHEBFUN's tolerance: to be used in the ACA for pivot
     % size.
-    [relTol, absTol] = getTol3D(xx, yy, zz, vals, grid, dom, pseudoLevel, ...
-        vscaleBnd);
+    [relTol, absTol] = getTol3D(xx, yy, zz, vals, grid, dom, pseudoLevel);
     pref.chebfuneps = relTol; % tolerance to be used in happinessCheck.
     
     %% PHASE 1: %%
@@ -126,6 +125,7 @@ while ( ~isHappy && ~failure )
             zz = out{3};
         elseif ( iFail2D )
             grid2D = gridRefinePhase1(grid2D, pref);
+            % TODO: Do we need a bound on grid2D?
             out = tech.tensorGrid([grid2D, grid2D, grid], dom);
             xx = out{1};
             yy = out{2};
@@ -136,7 +136,7 @@ while ( ~isHappy && ~failure )
         vscale = max(abs(vals(:)));
         % New tolerance:
         [relTol, absTol] = getTol3D(xx, yy, zz, vals, grid, dom, ...
-            pseudoLevel, vscaleBnd);
+            pseudoLevel);
         pref.chebfuneps = relTol;
         
         % New 3D ACA:
@@ -654,43 +654,27 @@ end
 
 %%
 function [relTol, absTol] = getTol3D(xx, yy, zz, vals, grid, dom, ...
-    pseudoLevel, vscaleBnd)
+    pseudoLevel)
 
 relTol = 2*grid^(4/5) * pseudoLevel; % this should be vscale and hscale invariant
 vscale = max(abs(vals(:)));
+[m,n,p] = size(vals);
+% Remove some edge values so that df_dx, df_dy and df_dz have the same size. 
+% xx changes in the first mode:
+df_dx = diff(vals(:, 1:n-1, 1:p-1), 1, 1) ./ diff(xx(:, 1:n-1, 1:p-1), 1, 1);
+% yy changes row-wise (2nd mode):
+df_dy = diff(vals(1:m-1, :, 1:p-1), 1, 2) ./ diff(yy(1:m-1, :, 1:p-1), 1, 2);
+% zz changes tube-wise (3rd mode):
+df_dz = diff(vals(1:m-1, 1:n-1, :), 1, 3) ./ diff(zz(1:m-1, 1:n-1, :), 1, 3);
+gradNorms = [max(abs(df_dx(:))), max(abs(df_dy(:))), max(abs(df_dz(:)))];
+% A vector of gradient information over the domain.
 
-if ( isempty(vscaleBnd) )
-    [m,n,p] = size(vals);
-    % Remove some edge values so that df_dx, df_dy and df_dz have the same size. 
-    % xx changes in the first mode:
-    df_dx = diff(vals(:, 1:n-1, 1:p-1), 1, 1) ./ diff(xx(:, 1:n-1, 1:p-1), 1, 1);
-    % yy changes row-wise (2nd mode):
-    df_dy = diff(vals(1:m-1, :, 1:p-1), 1, 2) ./ diff(yy(1:m-1, :, 1:p-1), 1, 2);
-    % zz changes tube-wise (3rd mode):
-    df_dz = diff(vals(1:m-1, 1:n-1, :), 1, 3) ./ diff(zz(1:m-1, 1:n-1, :), 1, 3);
-    gradNorms = [max(abs(df_dx(:))), max(abs(df_dy(:))), max(abs(df_dz(:)))];
-    % A vector of gradient information over the domain.
+domDiff = [diff(dom(1:2)) diff(dom(3:4)) diff(dom(5:6))];
+absTol = max(max(gradNorms.*domDiff), vscale) * relTol;
+% absTol should depend on the vscale of the function while it also uses
+% derivative information to prevent issues like the one mentioned in
+% https://github.com/chebfun/chebfun/issues/1491.
     
-    domDiff = [diff(dom(1:2)) diff(dom(3:4)) diff(dom(5:6))];
-    absTol = max(max(gradNorms.*domDiff), vscale) * relTol;
-    % absTol should depend on the vscale of the function while it also uses 
-    % derivative information to prevent issues like the one mentioned in
-    % https://github.com/chebfun/chebfun/issues/1491.
-    
-else % If we have a binary operation and vscale of both operand are 
-    % available in the vector vscaleBnd. 
-    kappa = sum(vscaleBnd)/vscale; % condition number of the plus operation 
-    % f + g is ||f|| + ||g|| / ||f+g||. 
-    absTol = max(abs(dom(:))) * max(kappa, vscale) * relTol;
-    % Since kappa is big, if g ~= -f, this helps us find out cases prone to 
-    % cancellation errors, i.e., in this case we expect less from the
-    % constructor. How less is exactly according to how much cancellation
-    % there might be. Check e.g. the value of kappa for f+g with
-    % f = chebfun3(@(x,y,z) x ); g = f-0.9*f;
-    % and
-    % f = chebfun3(@(x,y,z) x ); g = f-0.99999999*f;
-end
-
 end
 
 %%
@@ -862,7 +846,7 @@ resolvedSlice2  = happinessCheck(slice2Chebtech, [], sum(rowsValues{1}, 2),...
 end
 
 %%
-function [op, dom, pref, vscaleBnd, fiberDim, vectorize, isEqui, ...
+function [op, dom, pref, fiberDim, vectorize, isEqui, ...
     fixedRank] = parseInputs(op, varargin)
 vectorize = 0;
 isEqui = 0;
@@ -870,7 +854,6 @@ isCoeffs = 0;
 fixedRank = 0;
 pref = chebfunpref();
 fiberDim = [];
-vscaleBnd = [];
 dom = [-1 1 -1 1 -1 1];
 
 % Preferences structure given?
@@ -906,8 +889,6 @@ for k = 1:length(varargin)
                 op = op(xx, yy, zz);
             end
         end
-    elseif strcmpi(varargin{k}, 'vscaleBnd')
-        vscaleBnd = varargin{k+1};        
     elseif strcmpi(varargin{k}, {'fiberDim'})
         fiberDim = varargin{k+1};
     elseif any(strcmpi(varargin{k}, {'vectorize', 'vectorise'}))
@@ -1094,7 +1075,7 @@ if ( numel(size(op)) == 3 ) % We have a tensor of values.
         [xx, yy, zz] = ndgrid(x, y, z);
     end
     [relTol, absTol] = getTol3D(xx, yy, zz, op, max(size(op)), dom, ...
-        pseudoLevel, []);
+        pseudoLevel);
     pref.chebfuneps = relTol;
     
     % Perform 3D ACA with complete pivoting:
