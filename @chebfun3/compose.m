@@ -27,7 +27,7 @@ elseif ( ( nargin == 3 ) && ( nargin(op) == 2 ) )
     end
     
     % Call constructor:
-    f = chebfun3( @(x,y,z) op(feval(f, x, y, z), feval(g, x, y, z)), ...
+    f = chebfun3(@(x,y,z) op(feval(f, x, y, z), feval(g, x, y, z)), ...
         f.domain);
     
 else
