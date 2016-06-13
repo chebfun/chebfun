@@ -1,11 +1,11 @@
 function f = constructor(f, op, varargin)
 %CONSTRUCTOR   Main CHEBFUN3T constructor.
-%   Classiacal full tensor approach for 3D functions. No low-rank technique
-%   is involved here. 
+%   Classical full tensor approach for 3D functions. No low-rank technique
+%   is involved here. This is experimental code, not for ordinary use.
 %
 % See also CHEBFUN3.  
 
-%   The 'trig' flag is NOT implemented yet.
+%   The 'trig' flag is NOT implemented.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -56,7 +56,7 @@ for i=1:10
     isHappy = isHappyX & isHappyY & isHappyZ;
     
     %% PHASE II
-    % This phase refines the grid ONLY in ``unhappy`` the directions.
+    % This phase refines the grid ONLY in "unhappy" directions.
     % We don't refine here if ALL the directions are nonhappy (as mentioned 
     % in the following). If, however, less than 3 directions are nonhappy, 
     % we refine in those directions only.

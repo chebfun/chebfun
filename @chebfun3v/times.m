@@ -1,6 +1,8 @@
 function F = times(F, G)
-%.*   Multiplication of of two CHEBFUN3V objects.
-%   F.*G computes componentwise multiplication of a CHEBFUN3V and a double.
+%.*   Pointwise multiplication of two CHEBFUN3V objects.
+%   F.*G computes pointwise, componentwise multiplication of two
+%   CHEBFUN3V objects, a CHEBFUN3V and a CHEBFUN3, or a CHBFUN3V 
+%   and a double.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -24,7 +26,8 @@ if ( isa(G, 'double') )             % CHEBFUN3V .* double
         for jj = 1:nF 
             F.components{jj} = times(F.components{jj}, scalar); 
         end
-    elseif ( (size(G, 1) == nF) || ( F.isTransposed && (size(G, 2) == nF) ) ) % CHEBFUN3V .* vector
+    elseif ( (size(G, 1) == nF) || ( F.isTransposed && (size(G, 2) == nF) ) ) 
+                                    % CHEBFUN3V .* vector
         for jj = 1 : nF 
             F.components{jj} = times(F.components{jj}, G(jj));
         end
@@ -33,10 +36,10 @@ if ( isa(G, 'double') )             % CHEBFUN3V .* double
             'CHEBFUN3V and double size mismatch.');
     end  
     
-elseif ( isa(G, 'chebfun3v') )      % CHEBFUN3V . * CHEBFUN3V
+elseif ( isa(G, 'chebfun3v') )      % CHEBFUN3V .* CHEBFUN3V
     nG = G.nComponents; 
     if ( nF ~= nG ) 
-         error('CHEBFUN:CHEBFUN3V:times:times', ...
+         error('CHEBFUN:CHEBFUN3V:times:numel', ...
              'CHEBFUN3V components mismatch.');
     end
     for jj = 1:nF 

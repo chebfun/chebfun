@@ -10,7 +10,7 @@ function h = complex(f, g)
 
 if ( ~isreal(f) || ~isreal(g) )
     error('CHEBFUN:CHEBFUN3:complex:notReal1', ...
-        'Inputs must be real valued.');
+        'Inputs must be real.');
 end
 h = f + 1i*g;
 

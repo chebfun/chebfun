@@ -12,7 +12,7 @@ if ( isempty(f) )
 end
 
 coeffs = f.coeffs;
-% Rescaling factorws:
+% Rescaling factors:
 rescaleFactor = 0.5*diff(f.domain(1:2));                 % (b - a)/2
 rescaleFactor = rescaleFactor * 0.5*diff(f.domain(3:4)); % (d - c)/2
 rescaleFactor = rescaleFactor * 0.5*diff(f.domain(5:6)); % (g - e)/2

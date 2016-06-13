@@ -1,6 +1,8 @@
 classdef chebfun3t
-%CHEBFUN3T   class for representing functions on [a,b]x[c,d]x[e,g] using 
+%CHEBFUN3T   Class for representing functions on [a,b]x[c,d]x[e,g] using 
 %   tensor product approach.
+%
+%   This is experimental code, not for ordinary use.
 % 
 %   Class for approximating smooth functions defined on finite cuboids 
 %   using the vanilla flavoured full tensor product approach. The output 
@@ -123,9 +125,9 @@ classdef chebfun3t
         out = minus(f, g);
         
         % Pointwise multiplication of two CHEBFUN3T objects.
-        out = times(f, g, tol);
+        out = times(f, g);
         
-        % Pointwise multiplication of two CHEBFUN3T objects.
+        % Scalar multiplication for CHEBFUN3T objects.
         out = mtimes(f, g);
         
         % Pointwise power of a CHEBFUN3T.

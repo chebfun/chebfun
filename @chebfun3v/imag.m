@@ -12,7 +12,7 @@ if ( isempty(F) )
     return
 end
 
-% Take imag part of each component:
+% Take imaginary part of each component:
 F.components = cellfun(@imag, F.components, 'UniformOutput', false);
 
 end

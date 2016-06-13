@@ -31,7 +31,7 @@ elseif ( isa(f, 'chebfun3t') && isa(g, 'chebfun3t') )  % CHEBFUN3T + CHEBFUN3T
         f.coeffs = fCoeffsNew + gCoeffsNew;
         f.vscale = vertscale(f);
     else
-        error('CHEBFUN3T:plus: Inputs are not defined on the same domain.\n');
+        error('CHEBFUN3T:plus: Inputs are not defined on the same domain.');
     end
     
 end

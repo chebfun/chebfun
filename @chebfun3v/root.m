@@ -1,13 +1,13 @@
 function varargout = root(F, varargin)
-%ROOTS   Find one common zero of a CHEBFUN3V object.
+%ROOT   Find one common zero of a CHEBFUN3V object.
 %   R = ROOT(F) finds one common zero of the three CHEBFUN3 objects F(1), 
 %   F(2) and F(3) in their domain of definition under the assumption 
 %   that the solution set is zero-dimensional. R is a matrix with three 
 %   columns storing the x-value, y-value, and z-value of the common root.
-%   This script is also called by the syntax ROOT(F, G, H), where F, G and
+%   This function is also called by the syntax ROOT(F, G, H), where F, G and
 %   H are CHEBFUN3 objects.
 %
-%   [x, y, z] = ROOTS(F) returns the x-value, y-value and z-value as 
+%   [x, y, z] = ROOT(F) returns the x-value, y-value and z-value as 
 %   three separate columns.
 %
 % See also CHEBFUN3/ROOTS and CHEBFUN2/ROOTS.
