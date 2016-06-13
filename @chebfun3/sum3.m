@@ -12,10 +12,13 @@ function I = sum3(f)
 % Empty check: 
 if ( isempty(f) ) 
     I = [];
-    return; 
+    return
 end
 
-I = chebfun3.txm(chebfun3.txm(chebfun3.txm(f.core, sum(f.cols), 1), ...
-    sum(f.rows), 2), sum(f.tubes), 3);
+I = chebfun3.txm( ...
+        chebfun3.txm( ...
+            chebfun3.txm(f.core, sum(f.cols), 1), ... % integrals wrt x
+        sum(f.rows), 2), ...                          % integrals wrt y
+    sum(f.tubes), 3);                                 % integrals wrt z
 
 end

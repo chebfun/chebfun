@@ -1,8 +1,8 @@
 function ff = sum2(f, dims)
-%SUM2   Definite Integration of a CHEBFUN3 in two variables.
+%SUM2   Definite integration of a CHEBFUN3 in two variables.
 %   G = SUM2(F, DIMS) integrates F over two of the variables X, Y or Z 
-%   where DIM is two of the three indices 1, 2 or 3, respectively. The
-%   output is a 1D CHEBFUN in the remaining variable.
+%   where DIMS is a row vector containing two of the three indices
+%   1, 2 or 3. The output is a 1D CHEBFUN in the remaining variable.
 %
 %   G = SUM2(F) is the same as SUM(F, [1, 2]).
 %
@@ -15,7 +15,7 @@ function ff = sum2(f, dims)
 % Empty check: 
 if ( isempty(f) ) 
     ff = []; 
-    return; 
+    return
 end
 
 % Default to x and y directions: 
@@ -36,7 +36,7 @@ if ( (dim1 == 1 && dim2 == 2) || (dim1 == 2 && dim2 == 1))
 elseif ( (dim1 == 1 && dim2 == 3) || (dim1 == 3 && dim2 == 1) )
     % Integrate over x and z: 
     core = chebfun3.txm(chebfun3.txm(f.core, sum(f.cols), 1), ...
-        sum(f.tubes), 3)';
+        sum(f.tubes), 3).';
     ff = f.rows * core;    
     if ( isa(ff, 'chebfun') )
         ff = simplify(ff);
@@ -50,8 +50,8 @@ elseif ( (dim1 == 2 && dim2 == 3) || (dim1 == 3 && dim2 == 2 ) )
         ff = simplify(ff);
     end
 else 
-    error('CHEBFUN:CHEBFUN3:sum2:unknown', ...
-          'Undefined function ''sum2'' for specified dimensions.');
+    error('CHEBFUN:CHEBFUN3:sum2:dims', ...
+          'dims must be a row vector containing two of 1, 2, and 3.');
 end
 
 end

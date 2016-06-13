@@ -1,6 +1,6 @@
 function g = sum(f, dim)
 %SUM   Definite integration of a CHEBFUN3.
-%   G = sum(F, DIM) returns a CHEBFUN2 that represnts the definite integral
+%   G = sum(F, DIM) returns a CHEBFUN2 that represents the definite integral
 %   of a CHEBFUN3 object F along the variable specified in DIM. DIM should
 %   be 1, 2 or 3 to integrate over X, Y or Z, respectively.
 %
@@ -15,7 +15,7 @@ function g = sum(f, dim)
 % Empty check: 
 if ( isempty(f) ) 
     g = []; 
-    return; 
+    return
 end
 
 % Default to x direction: 
@@ -55,8 +55,7 @@ elseif ( dim == 3 )
     g = simplify(g);
 
 else 
-    error('CHEBFUN:CHEBFUN3:sum:unknown', ...
-          'Undefined function ''sum'' for that dimension');
+    error('CHEBFUN:CHEBFUN3:sum:dim', 'dim must be 1, 2, or 3.');
 end
 
 end
