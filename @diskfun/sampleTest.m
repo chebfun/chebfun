@@ -46,7 +46,7 @@ end
 % for now, we need to restrict the OP to real values: 
 vOp = real(vOp); 
 % Evaluate the DISKFUN:
-vFun = feval(f, xeval, yeval);
+vFun = feval(f, xeval, yeval, 'polar');
 
 
 % If the TECHS evaluation differs from the op evaluation, SAMPLETEST failed:

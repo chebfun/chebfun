@@ -101,6 +101,7 @@ classdef diskfun < separableApprox
         idxPlus
         idxMinus
         nonZeroPoles = 0;
+        coords = 'cart'; %default: results returned in Cartesian coordinates
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

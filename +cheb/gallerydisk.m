@@ -60,6 +60,9 @@ switch lower(name)
        %     - 1/3*exp(-((2*x)+1).^2 - (2*y).^2);
        % f = diskfun(fa);
        % type=1; %set to view(3)
+    case 'ellipsepeg' %an ellipse-shaped peg
+         fa   = @(t,r)1./(1+(4*((r.*cos(t)).^2+.5*(r.*sin(t)).^2)).^20);
+         f = diskfun(fa, 'polar'); 
     case 'flower'
         fa = @(t,r) sin(21*pi*(1+cos(pi*r)).* ...
             (r.^2-2*r.^5.*cos(5*(t-0.11))));
@@ -75,7 +78,9 @@ switch lower(name)
     case 'roundpeg'  % a round peg of radius 0.5
         fa = @(t,r) 1./(1+(2*r).^100);
         f = diskfun(fa, 'polar');
-
+    case 'translatepeg'  % a translated round peg of radius 0.5
+        fa = @(x,y) 1./(1+(2*((x-.2).^2+x.^2).^20));
+        f = diskfun(fa);
     case 'squarepeg'  % a square peg in a round hole
         fa = @(x,y) 1./((1+(2*x).^20).*(1+(2*y).^20));
         f = diskfun(fa);
@@ -83,10 +88,7 @@ switch lower(name)
     case 'tiltedpeg'    % A tilted version of squarepeg
          fa = @(x,y) 1./((1+(2*x+.4*y).^20).*(1+(2*y-.4*x).^20));
          f = diskfun(fa);
-         
-    case 'ellipsepeg' %an ellipse-shaped peg
-         fa   = @(t,r)1./(1+(4*((r.*cos(t)).^2+.5*(r.*sin(t)).^2)).^20);
-         f = diskfun(fa, 'polar');    
+   
     case 'wave'
         fa = @(x,y) cos(20*x+5*y).^2.*(1-(x.^2+y.^2));
         f = diskfun(fa);

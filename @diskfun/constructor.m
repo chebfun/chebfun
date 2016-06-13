@@ -1,6 +1,5 @@
 function g = constructor(g, op, varargin)
 %CONSTRUCTOR   The main DISKFUN constructor.
-%
 % This code is when functions on the surface of the disk are represented
 % as DISKFUN objects. A DISKFUN object is a real-valued function as a 
 % sum of rank 1 outerproducts of univariate functions in polar 
@@ -160,14 +159,11 @@ while ( ~isHappy && ~failure )
     g.idxMinus = idxMinus;
     g.nonZeroPoles = removePoles;
     g.pivotLocations = adjustPivotLocations(pivotLocations, pivotArray); 
-
+   
     % Sample Test:
     if ( sampleTest )
         % wrap the op with evaluate in case the 'vectorize' flag is on:
         sampleOP = @(th,r) evaluate(op, th, r, vectorize);
-        % for now, use only real values. Delete next line once complex is
-        % supported
-        %sampleOP = real(sampleOP); 
         % Evaluate at points in the domain:
         pass = g.sampleTest( sampleOP, tol, vectorize);
         if ( ~pass )

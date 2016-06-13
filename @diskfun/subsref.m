@@ -1,15 +1,20 @@
 function varargout = subsref(f, index)
 %SUBSREF       DISKFUN subsref 
 %( )
-%   F(TH, R) returns the values of the DISKFUN F evaluated at the
+%   F(TH, R, 'polar') returns the values of the DISKFUN F evaluated at the
 %   value(s) (TH, R) in polar coordinates. See CHEBFUN/FEVAL for
 %   further details. 
-%   F(:, R) returns a chebfun representing the function F along that radial
-%   slice, and F(TH, :) returns a chebfun representing F along that angular 
-%   slice. F(:, :) returns F.
-%   F(X, Y, 'cart') returns the values of the DISKFUN F evaluated at the
-%   value(s) (X,Y) in Cartesian coordinates. The colon operator for Cartesian coordinates is not supported 
-%   except for F(:, :) which just returns F.
+%   F(:, R) returns a chebfun representing the function F along a radial
+%   slice fixed by R, and F(TH, :) returns a chebfun representing F along 
+%   an angular slice. 
+%   F(:, :) returns F.
+%   F(X, Y) or F(X,Y, 'cart') returns the values of the DISKFUN F evaluated 
+%   at the value(s) (X,Y) in Cartesian coordinates. 
+%   The colon operator for Cartesian coordinates is not supported, 
+%   except for F(:, :), which just returns F.
+%   F(c) where c is a complex-valued chebfun evaluates F along the contour
+%   parametrized by the real and imaginary parts of c, and returns a 
+%   chebfun representing the values of F along the contour.
 %
 % 
 %   F.PROP returns the property PROP of F as defined by GET(F, 'PROP').
@@ -28,23 +33,26 @@ function varargout = subsref(f, index)
 idx = index(1).subs;
 
 % Check for the cases that must be explicitly handled here, which are
-% 1. f(x, y), x, y are numeric, cart flag is present.
-% 2. f(:, :)
-% 3. f(x), x is a diskfunv. 
+% 1. f(x, y), x, y are numeric, cartesian flag.
+% 2. f(t,r) t,r are numeric, polar flag.
 % Pass the other cases off to separableApprox/subsref.
 
 if ( strcmp(index(1).type, '()') )
     x = idx{1};
-    if ( length(idx) == 3 )&& (strcmp(idx{3}, 'cart'))
+    if ( length(idx) == 3 )&& (strcmp(idx{3}, 'polar'))
+        y = idx{2};
+        out = feval(f, x, y, 'polar');
+        varargout = { out };     
+    elseif ( length(idx) == 3 )&& (strcmp(idx{3}, 'cart'))
         y = idx{2};
         out = feval(f, x, y, 'cart');
-        varargout = { out };     
-    elseif ( length(idx) == 2 )
+        varargout = { out };    
+    else  %pass to separableapprox
         out = subsref@separableApprox(f, index);
         varargout = { out };
-    else
-        error('CHEBFUN:SPHEREFUN:subsref:inputs', ...
-                'Can only evaluate diskfuns at (X,Y) or (TH,R)');    
+    %else
+      % error('CHEBFUN:SPHEREFUN:subsref:inputs', ...
+               % 'Can only evaluate diskfuns at (X,Y) or (TH,R)');    
     end
 elseif ( strcmp(index(1).type,'()') )
     if ( numel(idx)==4 )

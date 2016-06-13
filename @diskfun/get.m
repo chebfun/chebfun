@@ -39,6 +39,8 @@ switch ( propName )
         val = f.idxMinus;
     case 'nonZeroPoles'
         val = f.nonZeroPoles;
+    case 'coords'
+        val = f.coords; 
     otherwise
         error('CHEBFUN:DISKFUN:get:propName', ...
             [propName,' is not a valid DISKFUN property.'])
