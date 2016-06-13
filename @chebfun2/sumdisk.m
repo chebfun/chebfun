@@ -18,64 +18,105 @@ if ( isempty( f ) )
 end
 
 % If f is a trigfun2, convert it to a chebfun2
-
+Domainf = f.domain;
 colsTechf = get(f.cols.funs{1}, 'tech');
 
 if ( isequal(colsTechf,@trigtech) )
-    f = chebfun2(@(x,y) f(x,y));         % not as clean as we would like
+    f = chebfun2(@(x,y) f(x,y), Domainf, 'vectorize');         % not as clean as we would like
 elseif ( isequal(colsTechf,@chebtech2) ~= 1 )
     error('Error: The input argument is not chebfun2 or trigfun2 object')
 end
 
+% Compute the integral
 
 coeffs = chebcoeffs2(f);                 % matrix of Chebyshev coefficients
+[nRow, nCol] = size(coeffs);
 
-% Extract -2, 0, 2 diagonal of the coeff matrix
-CoeffsDiag0 = diag(coeffs,0);
-CoeffsDiag2 = diag(coeffs,2);
-CoeffsDiagm2 = diag(coeffs,-2);
 
-% Extract the even entries
-CoeffsDiag0 = CoeffsDiag0(1:2:end);
-CoeffsDiag2 = CoeffsDiag2(1:2:end);
-CoeffsDiagm2 = CoeffsDiagm2(1:2:end);
+if ( nCol > 1 && nRow > 1 )
+    
+    % Extract 0 diagonal of the coeff matrix
+    % Note that the command 
+    %diag behaves differently when the its input argument is a row/column vector
+    CoeffsDiag0 = diag(coeffs,0);               
+    
+    % Extract the even entries
+    CoeffsDiag0 = CoeffsDiag0(1:2:end);
+    Diag0Length = length(CoeffsDiag0);
+    
+    % Compute the integral of T_i(x)T_j(y) over the unit disk for the
+    % appropriate i,j
+    
+    kVec = 2*(0:(Diag0Length-1))';
+    Diag0Int = (pi*(-1).^(kVec/2))./(2-2*kVec.^2);
+    Diag0Int(1,1) = pi;
+    
+else
+    
+    CoeffsDiag0 = coeffs(1,1);
+    Diag0Int = pi;
+    
+end
 
-Diag0Length = length(CoeffsDiag0);
-Diag2Length = length(CoeffsDiag2);
-Diagm2Length = length(CoeffsDiagm2);
+if ( nCol > 2 )
+    
+    if ( nRow > 1 )
+    CoeffsDiag2 = diag(coeffs,2);
+    CoeffsDiag2 = CoeffsDiag2(1:2:end);
+    Diag2Length = length(CoeffsDiag2);
+    
+    kVec = 2*(0:(Diag2Length - 1))';
+    Diag2Int = (pi*(-1).^(1+kVec/2))./(4*kVec + 4);
+    Diag2Int(1,1) = -pi/2;
+    else
+        CoeffsDiag2 = coeffs(1,3);
+        Diag2Int = -pi/2;
+    end
+    
+else
+    CoeffsDiag2 = 0;
+    Diag2Int = 0;
+end
 
-% Compute the integral of T_i(x)T_j(y) over the unit disk for the
-% appropriate i,j
-
-kVec = 2*(0:(Diag0Length-1))';
-Diag0Int = (pi*(-1).^(kVec/2))./(2-2*kVec.^2);
-Diag0Int(1,1) = pi;
-
-kVec = 2*(0:(max(Diag2Length,Diagm2Length)-1))';
-DiagMax2m2Int = (pi*(-1).^(1+kVec/2))./(4*kVec + 4);
-DiagMax2m2Int(1,1) = -pi/2;
-
-Diag2Int = DiagMax2m2Int(1:Diag2Length);
-Diagm2Int = DiagMax2m2Int(1:Diagm2Length);
+if ( nRow > 2 )
+    
+    if ( nCol > 1 )
+    CoeffsDiagm2 = diag(coeffs,-2);
+    CoeffsDiagm2 = CoeffsDiagm2(1:2:end);
+    Diagm2Length = length(CoeffsDiagm2);
+    
+    kVec = 2*(0:(Diagm2Length - 1))';
+    Diagm2Int = (pi*(-1).^(1+kVec/2))./(4*kVec + 4);
+    Diagm2Int(1,1) = -pi/2;
+    else
+        CoeffsDiag2 = coeffs(3,1);
+        Diagm2Int = -pi/2;
+    end
+else
+    CoeffsDiagm2 = 0;
+    Diagm2Int = 0;
+end
 
 % [TODO: what is this?]
 % % If nrows and ncols are big enough, you can do the following
 % % Of course you'll hto modify this a little in case they're not big enough:
-% 
+%
 % I = pi*C(1,1) - (pi/2)*(C(1,3)+C(3,1);
 % for i = 3:2:min(ncols,nrows)
 %     I = I + xxx*C(i,i);
 %     etc.
-    
+
+
 I = (Diag0Int')*CoeffsDiag0 + (Diag2Int')*CoeffsDiag2 + (Diagm2Int')*CoeffsDiagm2;
 
 
 % Rescale the integral for non-default domain
-Domainf = f.domain;
 
-if ( Domainf ~= [-1 1 -1 1] )
+
+if ( any(Domainf ~= [-1 1 -1 1]) )
     I = I * (Domainf(2) - Domainf(1))*(Domainf(4) - Domainf(3))/4;
 end
+
 
 
 end
