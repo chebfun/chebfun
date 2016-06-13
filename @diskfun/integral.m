@@ -1,13 +1,15 @@
 function I = integral( f, varargin )
-%INTEGRAL   Complete definite integral of SEPARABLEAPPROX. 
+%INTEGRAL   Complete definite integral of DISKFUN. 
 %
-%   I = INTEGRAL(F), returns the definite integral of a SEPARABLEAPPROX. Integrated
+%   I = INTEGRAL(F), returns the definite integral of a DISKFUN integrated
 %   over its domain of definition.
 % 
-%   I = INTEGRAL(F, g), returns the integral of a SEPARABLEAPPROX along the curve
-%   defined by the complex-valued CHEBFUN g.
+%   I = INTEGRAL(F, g), returns the integral of F along the 
+%   curve defined by the complex-valued CHEBFUN g.
 % 
-% See also INTEGRAL2, SUM2, QUAD2D.
+%   I = INTEGRAL(F, 'unitcircle') returns the integral of F along the 
+%   unit circle. 
+% See also SUM2. 
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
