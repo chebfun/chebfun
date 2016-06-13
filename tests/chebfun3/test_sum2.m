@@ -28,4 +28,15 @@ pass(6)  = norm(sum2(f, [1 3]) - exact13) < tol;
 
 pass(7)  = norm(sum2(f, [3 1]) - exact13) < tol;
 
+% A complex-valued function
+f = chebfun3(@(x,y,z) 1i*x.^2 + 2i*y.^2 + z.^2);
+exactZ = chebfun(@(z) 4*z.^2 + 4i);
+pass(8)  = norm(sum2(f) - exactZ) < tol;
+
+exactY = chebfun(@(y) 8i*y.^2 + 4/3*(1+1i));
+pass(9)  = norm(sum2(f, [1 3]) - exactY) < tol;
+
+exactX = chebfun(@(x) 1i*(4*x.^2+8/3) + 4/3);
+pass(10)  = norm(sum2(f, [2 3]) - exactX) < tol;
+
 end

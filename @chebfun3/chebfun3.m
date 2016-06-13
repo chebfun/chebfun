@@ -410,10 +410,7 @@ methods
     
     % Biharmonic operator of a CHEBFUN3.
     out = biharmonic(f);
-      
-    % Scaled Laplacian of a CHEBFUN3.
-    out = del2(f);
-      
+    
     % Indefinite integral of a CHEBFUN3 in one variable.
     out = cumsum(f, varargin);
       
