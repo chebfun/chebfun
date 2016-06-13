@@ -98,7 +98,7 @@ classdef (InferiorClasses = {?chebfun}) linBlock
             % Convert the LINBLOCK to a CHEBFUN of coefficients multiplying the
             % powers of the derivative.
             B = blockCoeff(A, varargin{:});
-            c = chebmatrix( B.coeffs );
+            c = chebmatrix(B.coeffs);
         end
         
         function C = minus(A, B)
@@ -107,7 +107,7 @@ classdef (InferiorClasses = {?chebfun}) linBlock
                
         function C = horzcat(varargin)
             kill = cellfun(@isempty, varargin);   % skip empties         
-            C = chebmatrix( varargin(~kill) );
+            C = chebmatrix(varargin(~kill));
         end
         
         function spy(A, varargin)
@@ -118,7 +118,7 @@ classdef (InferiorClasses = {?chebfun}) linBlock
         
         function C = vertcat(varargin)
             kill = cellfun(@isempty, varargin);   % skip empties         
-            C = chebmatrix( varargin(~kill)' );
+            C = chebmatrix(varargin(~kill)');
         end
                                         
     end
