@@ -35,7 +35,10 @@ isHappy = 0;
 m = grid; n = grid; p = grid;
 for i=1:10
     %% Compute values at 3D chebpts
-    [xx, yy, zz] = points3D(m, n, p, dom, pref);
+    out = tech.tensorGrid([m, n, p], dom);
+    xx = out{1};
+    yy = out{2};
+    zz = out{3};
     F = op(xx,yy,zz);
     
     % Does the function blow up or evaluate to NaN?:
@@ -83,7 +86,10 @@ for i=1:10
         if (~isHappyZ)
             p2 = gridRefinePhase2(p2, pref);
         end
-        [xx, yy, zz] = points3D(m2, n2, p2, dom, pref);
+        out = tech.tensorGrid([m2, n2, p2], dom);
+        xx = out{1};
+        yy = out{2};
+        zz = out{3};
         F = op(xx,yy,zz);
         coeffs3D = chebfun3t.vals2coeffs(F);
         [isHappyX, isHappyY, isHappyZ, cutoffX2, cutoffY2, cutoffZ2] = ...
@@ -127,35 +133,6 @@ end
 
 end
 
-%%
-function [xx, yy, zz] = points3D(m, n, p, dom, pref)
-% Get the sample points that correspond to the right grid for a particular
-% technology.
-
-% What tech am I based on?:
-tech = pref.tech();
-
-if ( isa(tech, 'chebtech2') )
-    x = chebpts(m, dom(1:2), 2);   % x grid.
-    y = chebpts(n, dom(3:4), 2);
-    z = chebpts(p, dom(5:6), 2);
-    [xx, yy, zz] = ndgrid(x, y, z); 
-elseif ( isa(tech, 'chebtech1') )
-    x = chebpts(m, dom(1:2), 1);   % x grid.
-    y = chebpts(n, dom(3:4), 1); 
-    z = chebpts(p, dom(5:6), 1);
-    [xx, yy, zz] = ndgrid(x, y, z); 
-elseif ( isa(tech, 'trigtech') )
-    x = trigpts(m, dom(1:2));   % x grid.
-    y = trigpts(n, dom(3:4));
-    z = trigpts(p, dom(5:6));
-    [xx, yy, zz] = ndgrid(x, y, z);
-else
-    error('CHEBFUN:CHEBFUN3T:constructor:points3D:tecType', ...
-        'Unrecognized technology');
-end
-
-end
 %%
 function [isHappyX, isHappyY, isHappyZ, cutoffX2, cutoffY2, cutoffZ2] = ...
     happinessCheck3D(simple_3D_coeffs, pref)

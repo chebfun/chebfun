@@ -306,7 +306,7 @@ methods
     % Pointwise right divide of CHEBFUN3 objects.
     out = rdivide(f, g);
     
-    % Pointwise left divide of CHEBFUN3 objects.
+    % Right divide for CHEBFUN3 objects.
     out = mrdivide(f, g);
     
     % Pointwise CHEBFUN3 left array divide.

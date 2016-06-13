@@ -8,11 +8,11 @@ function h = times(f, g)
 
 if ( isa(f, 'chebfun3t') )     % CHEBFUN3T .* ???
     
-    if ( isa(g, 'double') )  % CHEBFUN3T .* DOUBLE
+    if ( isa(g, 'double') )    % CHEBFUN3T .* DOUBLE
         h = mtimes(f, g);
-    elseif ( isa( g, 'chebfun3t') )
-        samedom = domainCheck(f, g);
-        if ( samedom )
+    elseif ( isa(g, 'chebfun3t') )
+        sameDom = domainCheck(f, g);
+        if ( sameDom )
             h = chebfun3t(@(x, y, z) feval(f, x, y, z).*feval(g, x, y, z), ...
                 f.domain);
         else

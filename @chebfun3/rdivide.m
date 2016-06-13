@@ -33,8 +33,8 @@ elseif ( isa(f, 'chebfun3') && isa(g, 'double') )  % CHEBFUN3 ./ double
     h = f .* (1/g);
         
 elseif ( isa(f, 'double') && isa(g, 'chebfun3') )   
-       [bool, wzero] = singleSignTest(g);
-       if ( ( bool == 1 ) && ( wzero == 0 ) )
+       [ss, zeroVal] = singleSignTest(g);
+       if ( ( ss == 1 ) && ( zeroVal == 0 ) )
            h = chebfun3(@(x,y,z) f ./ feval(g, x, y, z), g.domain);
        else
           error('CHEBFUN:CHEBFUN3:rdivide:zero', ...

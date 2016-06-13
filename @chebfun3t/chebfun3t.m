@@ -130,6 +130,15 @@ classdef chebfun3t
         % Scalar multiplication for CHEBFUN3T objects.
         out = mtimes(f, g);
         
+        % Pointwise right divide of CHEBFUN3T objects.
+        out = rdivide(f, g);
+        
+        % Pointwise left divide of CHEBFUN3T objects.
+        out = ldivide(f, g);
+        
+        % Right divide for CHEBFUN3T objects.
+        out = mrdivide(f, g);        
+        
         % Pointwise power of a CHEBFUN3T.
         out = power(varargin);
         
