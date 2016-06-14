@@ -10,7 +10,7 @@ function H = mldivide(F, G)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( ( isempty(F) ) || ( isempty(G) ) )
-    H = chebfun2v;
+    H = chebfun3v;
     return
 end
 
