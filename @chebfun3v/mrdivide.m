@@ -16,20 +16,19 @@ end
 
 if ( ~isa(G, 'double') && ~isa(G, 'chebfun3') )
     error('CHEBFUN:CHEBFUN3V:mrdivide:nonScalar', ...
-        'Division must be scalar valued.');
+        'Division must be by a scalar or a CHEBFUN3 object.');
 end
 
+H = F; 
 % Componentwise divide:
 if ( isa(G,'double') )
-    H = F; 
     for j =1:F.nComponents
         H.components{j} = mrdivide(F.components{j}, G);
     end
 else
-    H = F;
     for j = 1:F.nComponents
         H.components{j} = rdivide(F.components{j}, G);
     end
 end
-    
+
 end

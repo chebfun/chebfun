@@ -20,7 +20,8 @@ diff3 = diff(F, 2, 3);
 dom = diff1.components{1}.domain;
 
 % laplacian = F_xx + F_yy + F_zz
-L = chebfun3v;
+L = chebfun3v();
+L.nComponents = diff1.nComponents;
 vscales1 = [vscale(diff1.components{1}) + vscale(diff2.components{1}), ...
     vscale(diff3.components{1})];
 % Developer Note: Instead of calling e.g. L1 = diff1 + diff2 + diff3; which

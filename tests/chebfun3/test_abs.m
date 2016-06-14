@@ -1,6 +1,5 @@
 function pass = test_abs(pref)
-%Test abs. 
-% [Reviewed by LNT 31.05.16]
+%Test chebfun3/abs.
 
 if ( nargin == 0) 
     pref = chebfunpref; 

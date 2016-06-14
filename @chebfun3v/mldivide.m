@@ -14,15 +14,21 @@ if ( ( isempty(F) ) || ( isempty(G) ) )
     return
 end
 
-if ( ~isa(F, 'double') )
-    error('CHEBFUN:CHEBFUN2V:mldivide:nonScalar', ...
-        'Division must be by a scalar.');
+if ( ~isa(F, 'double') && ~isa(F, 'chebfun3') )
+    error('CHEBFUN:CHEBFUN3V:mldivide:nonScalar', ...
+        'Division must be by a scalar or a CHEBFUN3.');
 end
 
-% Left divide.
-H = G;
-for j = 1:G.nComponents
-    H.components{j} = mldivide(F, G.components{j});
+H = G; 
+% Left Componentwise divide:
+if ( isa(F,'double') )
+    for j =1:G.nComponents
+        H.components{j} = mldivide(F, G.components{j});
+    end
+else
+    for j = 1:G.nComponents
+        H.components{j} = ldivide(F, G.components{j});
+    end
 end
-
+    
 end

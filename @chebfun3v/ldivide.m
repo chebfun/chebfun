@@ -11,7 +11,7 @@ if ( ( isempty(F) ) || ( isempty(G) ) )
     return
 end
 
-if ( isa(F, 'double') )                  % DOUBLE .\ CHEBFUN3V
+if ( isa(F, 'double') || isa(F, 'chebfun3') ) % CHEBFUN3 .\ CHEBFUN3V
     nG = G.nComponents; 
     Gc = G.components;
     H = G;
@@ -19,7 +19,7 @@ if ( isa(F, 'double') )                  % DOUBLE .\ CHEBFUN3V
         H.components{j} = ldivide(F, Gc{j});
     end
     
-elseif ( isa(G, 'double') )              % CHEBFUN3V .\ DOUBLE 
+elseif ( isa(G, 'double') || isa(G, 'chebfun3'))  % CHEBFUN3V .\ CHEBFUN3
     nF = F.nComponents;
     Fc = F.components;
     H = F;
