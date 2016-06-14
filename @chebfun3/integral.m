@@ -20,7 +20,7 @@ if ( isempty(f) )
 end
 
 if ( nargin == 1 )                         % Another way to do sum3(f) 
-    %I = integral3(f); 
+    % Triple definite integral:
     I = sum3(f); 
     
 else
@@ -28,12 +28,12 @@ else
         % Line integral over an inf x 3 quasimatrix.
         % Get curve: 
         curve = varargin{1}; 
-        xcurve = curve(:, 1); 
-        ycurve = curve(:, 2); 
-        zcurve = curve(:, 3);         
+        xCurve = curve(:, 1); 
+        yCurve = curve(:, 2); 
+        zCurve = curve(:, 3);         
         diffC = diff(curve);
         ds_squared = diffC(:, 1).^2 + diffC(:, 2).^2 + diffC(:, 3).^2;
-        I = sum(feval(f, xcurve, ycurve, zcurve) .* sqrt(ds_squared), ...
+        I = sum(feval(f, xCurve, yCurve, zCurve) .* sqrt(ds_squared), ...
             curve.domain);
     else
         error('CHEBFUN:CHEBFUN3:integral:badInputs',...

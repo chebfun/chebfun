@@ -33,10 +33,10 @@ zz = chebpts(p, dom(5:6));
 f = f./f.vscale; 
 g = g./g.vscale; 
 h = h./h.vscale;
-T = chebpolyval3(f,m,n,p).^2 + chebpolyval3(g,m,n,p).^2 + ...
-    chebpolyval3(h,m,n,p).^2;
+T = chebpolyval3(f, m, n, p).^2 + chebpolyval3(g, m, n, p).^2 + ...
+    chebpolyval3(h, m, n, p).^2;
 
-[ignore, ind]=min(abs(T(:)));
+[ignore, ind] = min(abs(T(:)));
 [indX, indY, indZ] = ind2sub(size(T), ind);
 r = [xx(indX, indY, indZ), yy(indX, indY, indZ), zz(indX, indY, indZ)];
 
@@ -51,17 +51,12 @@ Jac = @(x,y,z) [feval(diffF1, x, y, z),  feval(diffF2, x, y, z),  feval(diffF3, 
             
 update = 1; 
 iter = 1;
-while ( norm(update) > 10*tol && iter < 10 )
-    update = Jac(r(1),r(2),r(3))\ [feval(f,r(1),r(2),r(3)); 
-                                   feval(g,r(1),r(2),r(3)); 
-                                   feval(h,r(1),r(2),r(3))];
+while ( ( norm(update) > 10*tol ) && ( iter < 10 ) )
+    update = Jac(r(1), r(2), r(3)) \ [ feval(f, r(1), r(2), r(3)); 
+                                       feval(g, r(1), r(2), r(3)); 
+                                       feval(h, r(1), r(2), r(3)) ];
     r = r - update.'; 
     iter = iter + 1;
 end
 
 end
-
-%% TODO: Could Step 2 be improved with the following alternative?
-% options = optimset('Display', 'off', 'TolFun', eps, 'TolX', eps);
-% ff = @(x) feval(obj_fun, x(1), x(2), x(3));
-% [r, val_obj_f] = fminsearch(@(x) ff(x), r, options);

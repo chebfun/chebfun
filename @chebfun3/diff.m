@@ -40,7 +40,7 @@ if ( nargin == 2 )
         dim = 1;
     end
 elseif ( nargin == 3 && numel(dim) ~= 1 && numel(dim) ~= 2 && numel(dim) ~= 3)
-    error('CHEBFUN:CHEBFUN3s:diff:dim', 'Dim should have either 1, 2 or 3 entries.');
+    error('CHEBFUN:CHEBFUN3:diff:dim', 'Dim should have either 1, 2 or 3 entries.');
 end
 
 % Diff the individual column, row, and tubes:

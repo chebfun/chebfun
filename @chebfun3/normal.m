@@ -4,8 +4,8 @@ function N = normal(F, varargin)
 %   surface represented by a CHEBFUN3 object F. The vector has the same 
 %   magnitude as the surface's tangent vector.
 %
-%   N = NORMAL(F, 'unit') returns the unit normal vector to the surface F, 
-%   represented as a CHEBFUN3V.
+%   N = NORMAL(F, 'unit') returns the unit normal vector to the implicit 
+%   surface F represented as a CHEBFUN3.
 %
 % See also CHEBFUN/NORMAL and CHEBFUN2V/NORMAL.
 
@@ -18,7 +18,7 @@ if ( nargin > 1 )
     if ( strcmpi(varargin{1}, 'unit') )
         nrm = norm(N);
         if ( nrm == 0 )
-            error('CHEBFUN:CHEBFUN2V:normal:zeroNormal2', ...
+            error('CHEBFUN:CHEBFUN3:normal:zeroNormal', ...
                 'Normal vector is zero');
         else
             N = N ./ nrm;
