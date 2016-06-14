@@ -18,7 +18,7 @@ holdState = ishold;
 dom = f.domain;
 numpts = 151;
 [xx, yy, zz] = meshgrid(linspace(dom(1), dom(2), numpts), ...
-    linspace(dom(3), dom(4),numpts), linspace(dom(5), dom(6), numpts));
+    linspace(dom(3), dom(4), numpts), linspace(dom(5), dom(6), numpts));
 v = feval(f, xx, yy, zz);
 
 xSlices = [dom(1) dom(2)];

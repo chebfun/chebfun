@@ -15,7 +15,7 @@ if ( isempty(f) )
 else
     [r1, r2, r3] = rank(f);
     [m, n, p] = length(f);
-      s = dot([r1, r2, r3], [m, n, p]) + numel(f.core);
+    s = dot([r1, r2, r3], [m, n, p]) + numel(f.core);
 end
 
 end

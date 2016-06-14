@@ -17,7 +17,7 @@ end
 holdState = ishold;
 
 % Get low rank representation of f:
-[ignore, fCols, fRows, fTubes] = tucker(f);
+[~, fCols, fRows, fTubes] = tucker(f);
 
 % PLOTCOEFFS of cols:
 ax1 = subplot(1, 3, 1);

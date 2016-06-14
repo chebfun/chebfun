@@ -1,7 +1,7 @@
 function varargout = subsref(f, index)
 %SUBSREF   CHEBFUN3 subsref.
-%   F(X, Y, Z) returns the values of the CHEBFUN3 F evaluated at the point 
-%   (X, Y, Z).
+%   F(X, Y, Z) returns the values of the CHEBFUN3 object F evaluated at the
+%   point (X, Y, Z).
 % 
 %   F.PROP returns the property of F specified in PROP.
 
