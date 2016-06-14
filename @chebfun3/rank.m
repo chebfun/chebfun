@@ -1,10 +1,10 @@
 function varargout = rank(F)
 %RANK   Trilinear or Tucker rank of a CHEBFUN3 object.
-%   [rX, rY, rZ] = RANK(F) returns size of the core tensor, i.e., rX is the
+%   [rX, rY, rZ] = RANK(F) returns the size of the core tensor, i.e., rX is the
 %   number of columns in factor quasimatrix F.cols, rY is the number of 
 %   columns in F.rows and rZ is the number of columns in F.tubes.
 %
-%   r = RANK(F) returns maximum entry in the size of the core tensor.
+%   r = RANK(F) returns the maximum entry in the size of the core tensor.
 %
 %   An exception is the zero CHEBFUN3 object for which rank is defined to 
 %   be zero. 

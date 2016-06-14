@@ -38,7 +38,6 @@ p = length(F.tubes);
 if ( nargout <= 1 )
     varargout = {max([m, n, p])};
 else
-    % Slice-Tucker decomposition:
     varargout = {m, n, p};
 end
 

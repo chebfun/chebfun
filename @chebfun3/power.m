@@ -19,8 +19,16 @@ elseif ( isa (f, 'double') && isscalar(f))          % DOUBLE .^ CHEBFUN3
     f = chebfun3(op, n.domain);
     
 elseif ( isa(n, 'double') && isscalar(n) )          % CHEBFUN3 .^ DOUBLE
-    op = @(x,y,z) feval(f, x, y, z) .^ n;
-    f = chebfun3(op, f.domain);
+   if ( round(n) ~= n )
+       % Fractional power --> positive/negative test for the base.
+       [ss, zeroVal] = singleSignTest(f);
+       if ( ss == 0 || zeroVal == 1 )
+           error('CHEBFUN:CHEBFUN3:power:fractional', ...
+               'A change of sign/zero has been detected, unable to represent the result.');
+       end
+   end
+   op = @(x,y,z) feval(f, x, y, z) .^ n;
+   f = chebfun3(op, f.domain);
         
 elseif ( (isa(f, 'chebfun3')) && isa(n,'chebfun3') )  % CHEBFUN3 .^ CHEBFUN3
     if ( ~domainCheck(f, n) )          % Check they're on the same domain.

@@ -7,7 +7,7 @@
 %
 %   CHEBFUN3V(F, G, H) constructs a CHEBFUN3V with three components from 
 %   the function handles F, G, and H.  F, G, and H can also be CHEBFUN3 
-%   objects or any other object that the CHEBFUN3 constructor accepts.
+%   objects or any other objects that the CHEBFUN3 constructor accepts.
 %
 %   CHEBFUN3V(F, G, [A B C D E K]) constructs a CHEBFUN3V object from F and
 %   G on the domain [A B] x [C D] x [E K].
@@ -54,7 +54,7 @@ classdef chebfun3v
                 return
             end
             
-            % Go and try find the domain: 
+            % Find the domain: 
             domain = [-1 1 -1 1 -1 1]; 
             for jj = 1:numel(varargin)
                if ( isa(varargin{jj}, 'double') && numel(varargin{jj}) == 6 ) 
@@ -65,7 +65,7 @@ classdef chebfun3v
                end
             end
             
-            % Go pick up vectorize flag: 
+            % Pick up vectorize flag: 
             vectorize = 0; 
             for jj = 1:numel(varargin) 
                 if ( strcmpi( varargin{jj}, 'vectorize' ) )
@@ -105,26 +105,27 @@ classdef chebfun3v
                 end
             end
             
-            % Stop now if there are too many components
+            % Stop if there are too many components
             if ( numel( fh ) > 3 ) 
-                error('CHEBFUN:CHEBFUN3V:chebfun3v:arrayValued', ...
+                error('CHEBFUN:CHEBFUN3V:arrayValued', ...
                           'More than three components is not supported.')
             end 
             
-            % Stop now if there are no components: 
+            % Stop if there are no components: 
             if ( numel(fh) == 0 ) 
-                error('CHEBFUN:CHEBFUN3V:chebfun3v:empty', ...
-                'The Chebfun3 constructor needs to be given function handles or chebfun3 objects.')
+                error('CHEBFUN:CHEBFUN3V:empty', ...
+                ['The Chebfun3 constructor needs to be given function ' ...
+                     'handles or chebfun3 objects.'])
             end
             
-            % Check the domains of all the chebfun3s are the same:
+            % Check the domains of all the chebfun3 objects are the same:
             pass = zeros(numel(fh)-1, 1);
             for jj = 2:numel(fh)
                pass(jj-1) = domainCheck(fh{1}, fh{jj});
             end
             
             if ( ~all(pass) )
-                error('CHEBFUN:CHEBFUN3V:chebfun3v:domainCheck', ...
+                error('CHEBFUN:CHEBFUN3V:domainCheck', ...
                     'All chebfun3 objects need to have the same domain.');
             end
             

@@ -306,7 +306,7 @@ methods
     % Pointwise right divide of CHEBFUN3 objects.
     out = rdivide(f, g);
     
-    % Pointwise left divide of CHEBFUN3 objects.
+    % Right divide for CHEBFUN3 objects.
     out = mrdivide(f, g);
     
     % Pointwise CHEBFUN3 left array divide.
@@ -410,10 +410,7 @@ methods
     
     % Biharmonic operator of a CHEBFUN3.
     out = biharmonic(f);
-      
-    % Scaled Laplacian of a CHEBFUN3.
-    out = del2(f);
-      
+    
     % Indefinite integral of a CHEBFUN3 in one variable.
     out = cumsum(f, varargin);
       

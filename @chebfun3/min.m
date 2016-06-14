@@ -30,7 +30,7 @@ if ( nargin < 3 )
 end
 
 % Do not allow min(F, G): 
-if ( nargin > 1 && ~isempty( g ) )
+if ( nargin > 1 && ~isempty(g) )
     error('CHEBFUN:CHEBFUN3:min:twoCHEBFUN3Inputs', ...
         'Unable to minimize two CHEBFUN3 objects.');
 end
@@ -47,17 +47,20 @@ if ( dim == 1 )
     vals = sample(f, n, n, n); 
     h = chebfun2(squeeze(min(vals, [], 1)), dom(3:6));
     h = simplify(h);
+    
 elseif ( dim == 2 )
     vals = sample(f, n, n, n);
     h = chebfun2(squeeze(min(vals, [], 2)), [dom(1:2), dom(5:6)]);
     h = simplify(h);
+    
 elseif ( dim == 3 )
     vals = sample(f, n, n, n);  
     h = chebfun2(min(vals, [], 3), dom(1:4));
-    h = simplify(h);        
+    h = simplify(h);
+    
 elseif ( dim == 0 )
     error('CHEBFUN:CHEBFUN3:min:dim', ...
-        'Dimension argument must be a positive integer scalar within indexing range.')
+        'dim must be 1, 2, or 3.')
 else
    % Return the CHEBFUN3 object. This is analogous to that MIN() command in
    % MATLAB.

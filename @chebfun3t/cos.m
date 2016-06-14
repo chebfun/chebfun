@@ -7,11 +7,11 @@ function f = cos(f)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Check for empty:
-if ( isempty( f ) )
+if ( isempty(f) )
     return
 end 
 
-op = @(x,y,z) cos( feval( f, x, y, z ) );  % Resample. 
+op = @(x,y,z) cos(feval(f, x, y, z));  % Resample. 
 f = chebfun3t(op, f.domain);           % Call constructor. 
 
 end

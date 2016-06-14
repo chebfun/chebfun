@@ -8,7 +8,7 @@ function varargout = plotcoeffs(f, varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check.
-if ( isempty( f ) )
+if ( isempty(f) )
     varargout = { [] }; 
     return
 end
@@ -17,7 +17,7 @@ end
 holdState = ishold;
 
 % Get low rank representation of f:
-[ignore, fCols, fRows, fTubes] = tucker(f);
+[~, fCols, fRows, fTubes] = tucker(f);
 
 % PLOTCOEFFS of cols:
 ax1 = subplot(1, 3, 1);
@@ -50,9 +50,8 @@ ylabel(' ')
 title('Tubes')
 
 % Find a proper ylim for all the three subplots:
-ylimMin = min(min(min(ylim1), min(ylim2)), min(ylim3));
-ylimMax = max(max(max(ylim1), max(ylim2)), max(ylim3));
-ylimNew = [ylimMin, ylimMax];
+yLims = [ylim1; ylim2; ylim3];
+ylimNew = [min(yLims(:, 1)), max(yLims(:, 2))];
 
 % Set the ylim of the plots again to be similar.
 ylim(ax1, ylimNew);

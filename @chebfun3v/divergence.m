@@ -33,8 +33,8 @@ if ( F.nComponents == 3 )
     pref = chebfunpref().cheb3Prefs;
     eps = pref.chebfun3eps;
     tol = eps*kappa;
-    f = chebfun3(@(x,y,z) feval(diff1,x, y, z) + feval(diff2,x, y, z) + ...
-        feval(diff3,x, y, z) , Fc{1}.domain, 'eps', tol);
+    f = chebfun3(@(x,y,z) feval(diff1, x, y, z) + feval(diff2, x, y, z) + ...
+        feval(diff3, x, y, z) , Fc{1}.domain, 'eps', tol);
     
 else                      
      error('CHEBFUN:CHEBFUN3V:divergence:notSupported', ...

@@ -27,15 +27,12 @@ dom = f.domain;
 
 % Is f the zero function?
 if ( iszero(f) ) 
-    locs = [(dom(1) + dom(2))/2 (dom(3) + dom(4))/2 (dom(5) + dom(6))/2];
+    locs = [(dom(1) + dom(2))/2  (dom(3) + dom(4))/2  (dom(5) + dom(6))/2];
     locs = [locs; locs];
     vals = [0; 0];
 end
 
 [m, n, p] = length(f);
-% m =2*m; 
-% n=2*n; 
-% p=2*p;
 if ( ndf(f) > 5e4 )
     m = min(m, 121);
     n = min(n, 121);
@@ -122,7 +119,8 @@ else
         locs = loc;
         
     catch
-        % Nothing is going to work so initial guesses will have to do.
+        % Nothing is going to work. So we will have to go with initial 
+        % guesses.
     end
 end
     
@@ -204,7 +202,7 @@ end
 
 %%
 function sol = newton_opt(init, H, gradF)
-% Perform one step of multivariate optimization using the Newton's method.
+% Perform one step of multivariate optimization using Newton's method.
 x = init(1); 
 y = init(2); 
 z = init(3);

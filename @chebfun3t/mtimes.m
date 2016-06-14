@@ -1,5 +1,5 @@
 function h = mtimes(f, g)
-%*   Pointwise multiplication for CHEBFUN3T objects.
+%*  Scalar multiplication for CHEBFUN3T objects.
 %   c*F or F*c multiplies a CHEBFUN3T F by a scalar c.
 %
 % See also CHEBFUN3T/TIMES.

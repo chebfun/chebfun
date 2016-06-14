@@ -1,5 +1,5 @@
 function varargout = tucker(f)
-%TUCKER   SLICE-TUCKER expansion of a CHEBFUN3.
+%TUCKER   SLICE-TUCKER expansion of a CHEBFUN3 object.
 %   [CORE, COLS, ROWS, TUBES] = TUCKER(F) returns the core tensor CORE and 
 %   the three factor quasimatrices COLS, ROWS, and TUBES in the low-rank 
 %   representation of a CHEBFUN3 object F. The factor quasimatrices are of 

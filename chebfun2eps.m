@@ -26,15 +26,16 @@ if ( nargin == 0 )
 else
     if ( strcmpi(val, 'factory') )
         chebfunpref.setDefaults({'cheb2Prefs','chebfun2eps'}, 'factory');
-    elseif ( isnumeric(val) )
-        chebfunpref.setDefaults({'cheb2Prefs','chebfun2eps'}, val);
-    elseif ( ischar(val) )
-        val = str2double(val);
-        chebfunpref.setDefaults({'cheb2Prefs','chebfun2eps'}, val);
     else
-        error('CHEBFUN:chebfun2eps:unknownOption',...
-            'Unknown CHEBFUN2EPS option.')
+        eval(['val=',val,';'])
+        if ( isnumeric(val) )
+            chebfunpref.setDefaults({'cheb2Prefs','chebfun2eps'}, val);
+        else
+            error('CHEBFUN:chebfun2eps:unknownOption',...
+                'Unknown CHEBFUN2EPS option.')
+        end
     end
 end
+
 
 end

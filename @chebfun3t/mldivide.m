@@ -1,9 +1,7 @@
 function h = mldivide(f, g)
-%\   Left divide for CHEBFUN3 objects.
-%   MLDIVIDE(F, G) computes left dividison for CHEBFUN3 objects F and G. 
+%\   Left divide for CHEBFUN3T objects.
+%   MLDIVIDE(F, G) computes left dividison for CHEBFUN3T objects F and G. 
 %   Only allowed to divide by scalars.
-%
-% See also CHEBFUN3/MRDIVIDE.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -19,7 +17,7 @@ elseif ( isempty(g) )
 end
 
 if ( ~isa(f, 'double') )
-    error('CHEBFUN:CHEBFUN3:mldivide:nonScalar', ...
+    error('CHEBFUN:CHEBFUN3T:mldivide:nonScalar', ...
         'Division must be by a scalar.');
 end
 

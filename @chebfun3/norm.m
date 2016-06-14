@@ -32,15 +32,17 @@ else
                 'not implemented yet');
     
         case {'fro'}
-            % Instead of normF = sqrt(sum3(f.^2)), which needs explicitly 
-            % forming the object f.^2, we use HOSVD and the invariance of 
-            % the Frobenius norm under unitary modal multiplication by 
-            % orthogonal factor quasimatrices. We have: 
-            % norm(F, 'fro') = norm(core, 'fro')
-            % where core is discrete core tensor of the HOSVD of f:
-            [~, g] = hosvd(f);
-            core = g.core;
-            normF = norm(core(:), 'fro');
+            % Developer Note: Instead of normF = sqrt(sum3(f.^2)), which 
+            % needs explicitly forming the object f.^2, we use HOSVD and 
+            % the invariance of the Frobenius norm under unitary modal 
+            % multiplication by orthogonal factor quasimatrices. We have: 
+            % norm(f, 'fro') = norm(CORE, 'fro') = norm(sv{i}, 'fro') 
+            % where CORE is discrete core tensor of the HOSVD of f and
+            % sv{i} is the vector of mode-i singular values of f:
+            % See chebfun3/hosvd for a reference to the discreteHOSVD paper.
+            sv = hosvd(f);
+            normF = norm(sv{1}, 'fro');
+            
             % Alternatively, a rough approximation could also be computed
             % by sampling f on a discrete tensor F and then computing 
             % Frobenius norm of F.
@@ -52,11 +54,11 @@ else
             
         case {-inf, '-inf', 'min'}
             error('CHEBFUN:CHEBFUN3:norm:norm', ...
-                'not implemented yet');
+                'not implemented.');
             
         case {'op', 'operator'}
             error('CHEBFUN:CHEBFUN3:norm:norm', ...
-                'not implemented yet');
+                'not implemented.');
             
         otherwise
             if ( isnumeric(p) && isreal(p) )
