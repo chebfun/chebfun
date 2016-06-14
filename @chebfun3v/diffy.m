@@ -1,7 +1,7 @@
 function G = diffy(F, k)
 %DIFFY   Differentiate a CHEBFUN3V with respect to its second argument.
 %   DIFFY(F) returns a CHEBFUN3V representing the derivative of F in its 
-%   first argument. This is the same as DIFF(F, 1, 2).
+%   second argument. This is the same as DIFF(F, 1, 2).
 %
 %   DIFFY(F, K) returns a CHEBFUN3V representing the Kth derivative of F in
 %   its second argument. This is the same as DIFF(F, K, 2).

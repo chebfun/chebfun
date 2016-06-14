@@ -4,7 +4,7 @@ function G = diffz(F, k)
 %   third argument. This is the same as DIFF(F, 1, 3).
 %
 %   DIFFY(F, K) returns a CHEBFUN3V representing the Kth derivative of F in 
-%   its second argument. This is the same as DIFF(F, K, 3).
+%   its third argument. This is the same as DIFF(F, K, 3).
 % 
 % See also CHEBFUN3V/DIFFX, CHEBFUN3V/DIFFY and CHEBFUN3V/DIFF.
 

@@ -9,7 +9,7 @@ function F = diff(F, n, dim)
 %     DIM = 2 is the derivative in the y-direction.
 %     DIM = 3 is the derivative in the z-direction.
 %
-%   DIFF(F,[NX NY NZ]) is the partial derivative of NX of F in the first 
+%   DIFF(F,[NX NY NZ]) is the NX-th partial derivative of F in the first 
 %   variable, NY-th derivative of F in the second variable and NZ-th 
 %   derivative of F is the third variable. For example, DIFF(F,[2 3 1]) is
 %   d^6F/d^2xd^3ydz.
@@ -27,7 +27,7 @@ if ( isempty(F) )
 end
 
 % Defaults:
-if ( nargin == 1 || isempty(n) )
+if ( ( nargin == 1 ) || isempty(n) )
     n = 1;
 end
 if ( nargin < 3 ) 
