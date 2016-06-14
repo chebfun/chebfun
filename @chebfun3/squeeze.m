@@ -1,9 +1,9 @@
 function g = squeeze(f)
 %SQUEEZE   Squeeze a CHEBFUN3 to a CHEBFUN2 or a CHEBFUN if possible.
 %   G = squeeze(F) returns a CHEBFUN3 if F depends on all of the three 
-%   variables x, y and z. If F depends only on any two of the variables 
-%   then a CHEBFUN2 is returned. If F depends only on one of the variables 
-%   x, y or z, then a column CHEBFUN is returned.
+%   variables x, y and z. If F only depends on two of the variables, 
+%   then a CHEBFUN2 is returned. If F only depends on one of the variables, 
+%   then a CHEBFUN is returned.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
