@@ -21,7 +21,7 @@ if ( isa(F, 'double') )                  % DOUBLE .\ CHEBFUN3V
     
 elseif ( isa(G, 'double') )              % CHEBFUN3V .\ DOUBLE 
     nF = F.nComponents;
-    Fc = F.nComponents;
+    Fc = F.components;
     H = F;
     for j = 1:nF
         H.components{j} = ldivide(Fc{j}, G);
