@@ -16,7 +16,7 @@ function varargout = size(F, dim)
 
 % Empty check: 
 if ( isempty( F ) ) 
-    varargout = { [], [] }; 
+    varargout = { [], [], [], [] };
     return
 end
 
