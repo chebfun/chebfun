@@ -30,25 +30,22 @@ if ( (dim1 == 1 && dim2 == 2) || (dim1 == 2 && dim2 == 1))
     core = squeeze(chebfun3.txm(chebfun3.txm(f.core, sum(f.cols), 1), ...
         sum(f.rows), 2));
     ff = f.tubes * core;
-    if ( isa(ff, 'chebfun') )
-        ff = simplify(ff); 
-    end
+    ff = simplify(ff); 
+
 elseif ( (dim1 == 1 && dim2 == 3) || (dim1 == 3 && dim2 == 1) )
     % Integrate over x and z: 
     core = chebfun3.txm(chebfun3.txm(f.core, sum(f.cols), 1), ...
         sum(f.tubes), 3).';
     ff = f.rows * core;    
-    if ( isa(ff, 'chebfun') )
-        ff = simplify(ff);
-    end
+    ff = simplify(ff);
+    
 elseif ( (dim1 == 2 && dim2 == 3) || (dim1 == 3 && dim2 == 2 ) )
     % Integrate over y and z:
     core = chebfun3.txm(chebfun3.txm(f.core, sum(f.rows), 2), ...
         sum(f.tubes), 3);
     ff = f.cols * core;
-    if ( isa(ff, 'chebfun') )
-        ff = simplify(ff);
-    end
+    ff = simplify(ff);
+    
 else 
     error('CHEBFUN:CHEBFUN3:sum2:dims', ...
           'dims must be a row vector containing two of 1, 2, and 3.');
