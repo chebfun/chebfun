@@ -9,14 +9,14 @@ function F = diff(F, k, dim)
 %   DIM = 2 is the derivative in the 2nd variable.
 %   DIM = 3 is the derivative in the 3rd varialbe.
 %
-%   DIFF(F, [NX NY NZ]) is the NX-th partial derivative of F in the first 
-%   variable, NY-th partial derivative of F in the second variable and 
-%   NZ-th partial derivative of F in the third variable. 
-%   For example, DIFF(F,[1 2 3]) is d^6F/(dx d^2y d^3z).
-%
 %   DIFF(F, [K1 K2], [DIM1 DIM2]) means K1-th derivative of F in dimension
 %   DIM1 and K2-th derivative in dimension DIM2. DIM1 and DIM2 can be 1, 2 
 %   or 3 in any order.
+%
+%   DIFF(F, [K1 K2 K3]) is the K1-th partial derivative of F in the first 
+%   variable, K2-th partial derivative of F in the second variable and 
+%   K3-th partial derivative of F in the third variable. 
+%   For example, DIFF(F, [1 2 3]) is d^6F/(dx d^2y d^3z).
 %    
 % See also CHEBFUN3/GRAD, CHEBFUN3/LAP, and CHEBFUN3/BIHARM.
 
@@ -39,8 +39,10 @@ if ( nargin == 2 )
     if ( numel(k) == 1 )    
         dim = 1;
     end
-elseif ( nargin == 3 && numel(dim) ~= 1 && numel(dim) ~= 2 && numel(dim) ~= 3)
-    error('CHEBFUN:CHEBFUN3:diff:dim', 'Dim should have either 1, 2 or 3 entries.');
+elseif ( nargin == 3 && numel(dim) ~= 1 && numel(dim) ~= 2 )
+    error('CHEBFUN:CHEBFUN3:diff:dim', 'Dim should have either 1 or 2 entries.');
+    % Developer Note: If K has three entries, we always assume that dim is 
+    % [1 2 3]. So, we don't accept dim with 3 indices.
 end
 
 % Diff the individual column, row, and tubes:

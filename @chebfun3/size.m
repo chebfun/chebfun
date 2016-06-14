@@ -13,7 +13,7 @@ function varargout = size(f, dim)
 if ( (nargin == 1) && (nargout <= 1) )
     varargout = {[Inf, Inf, Inf]};
     
-elseif ( (nargout == 2) && (nargout <=1) )
+elseif ( (nargin <=1) && (nargout == 3) )
     varargout = {Inf, Inf, Inf};
     
 elseif ( (nargin == 2) && ( (dim == 1) || (dim == 2) || (dim == 3) ) )
