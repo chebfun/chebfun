@@ -1,30 +1,39 @@
 function explain(varargin)
 %EXPLAIN   Shows exactly how Chebfun chops a Chebyshev series
-%   EXPLAIN(S), where is a string, produces a "plotcoeffs plot for
+%   EXPLAIN(S), where S is a string, produces a "plotcoeffs plot for
 %   experts" showing how the Chebfun code standardChop chops a Chebyshev
 %   series to produce a chebfun for the function defined by S.
 %
-%   EXPLAIN(S,EPS) does the same using the specified Chebfun tolerance
-%   parameter instead of the current Chebfun default (normally 2^(-52)).
+%   EXPLAIN(S,EPS) does the same using EPS as the Chebfun tolerance
+%   parameter instead of the current Chebfun value of CHEBFUNEPS
+%   (normally 2^(-52)).
 %
 %   For example, explain('1/(1+25*x^2)') produces such a plot for
-%   the Runge function.  Notice that the string is vectorized, so 
+%   the Runge function.  Note that the string is vectorized, so 
 %   dots to indicate pointwise operations are not needed.
 %
 %   The plot contains:
 %
 %   (1) Black dots showing Cheb coeffs on the final grid sampled.
-%   (2) Red circles showing coeffs are retained after chopping.
+%   (2) Red circles showing coeffs retained after chopping.
 %       The position of the final circle marks cutoff-1 in [AT] notation.
 %   (3) A blue square marking plateauPoint-1 in [AT] notation.
 %   (4) Solid green line showing upper envelope in [AT] notation.
 %   (5) Solid magenta line showing tilted ruler in [AT] notation.
-%   (6) Text defining the function in the upper-right corner
+%   (6) Text defining the function in the upper-right corner.
 %
-%   [AT] = Aurentz and Trefethen, http://arxiv.org/abs/1512.01803.
+%   [AT] = Aurentz and Trefethen, "Chopping a Chebyshev series",
+%        available at http://arXiv.org/abs/1512.01803 and also
+%        expected to appear in ACM Trans. Math. Softw.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
+
+% NOTE TO DEVELOPERS.  Since standardChop only produces one output, it
+% has been necessary to include in this code a copy of standardChop 
+% modified to output more information.  It follows that this code
+% is *not* directly tied to standardChop, and if standardChop is ever
+% changed, it will be necessary to change this code too.
 
 % Construct anonymous function ff corresponding to string input:
 fstring = varargin{1};
@@ -60,7 +69,7 @@ a(4) = 1e03*a(4);
 a(3) = 1e-3*a(3);
 axis(a), set(gca,FS,9)
 
-% create envelope from gc
+% create envelope from gc as in Step 1 of standardChop algorithm
 m = gc(end)*ones(ng, 1);
 for j = ng-1:-1:1
     m(j) = max(gc(j), m(j+1));
@@ -73,7 +82,11 @@ semilogy(0:ng-1,m,'-g')
 % plot epsval
 semilogy(0:ng-1,0*m+epsval*m(1),'k--')
 
-% Clean up the string in various ways for printing:
+% Clean up the string in various ways for printing.
+% This is a rather arbitrary collection of tricks that make
+% various inputs display nicely; it is most definitely not
+% systematic or complete!  Without the tricks, however, the
+% plot produced by EXPLAIN would often be less pretty.
 xpos = a(1) + .95*diff(a([1 2]));
 ypos = exp( log(a(3)) + .86*diff(log(a([3 4]))) );
 ss = fstring;
@@ -94,10 +107,10 @@ ss = strrep(ss,'\\cos','\cos');
 % Print a label in the upper-right:
 text(xpos,ypos,['$' ss '$'],FS,13,HA,'right',IN,'latex')
 
-% Plot plateauPoint
+% Plot plateauPoint as determined in Step 2 of the standardChop algorithm
 plot(pp-1,gc(pp),'sb',MS,10)
 
-% Plot ruler
+% Plot ruler from Step 3 of the standardChop algorithm
 tilt = (1/3)*log10(epsval)/(j2-1);
 ruler = 10.^(tilt*(0:j2-1));
 ruler = ruler*m(nf+1)/ruler(nf+1);
@@ -118,10 +131,10 @@ for ii=3:16
      % current length
      m = 2^ii+1;
   
-     % get compute coeffs
+     % compute coeffs
      cfs = chebtech2.vals2coeffs(ff(chebpts(m)));
   
-     % call standardChop
+     % call local modified version of standardChop
      [cutoff, plateauPoint, j2] = standardChop(cfs,tol);
    
      % construct f and g
