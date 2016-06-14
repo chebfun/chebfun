@@ -17,14 +17,13 @@ function explain(varargin)
 %   (2) Red circles showing coeffs are retained after chopping.
 %       The position of the final circle marks cutoff-1 in [AT] notation.
 %   (3) A blue square marking plateauPoint-1 in [AT] notation.
-%   (4) Dots on the bottom axis, labeled "Zero", for coeffs exactly zero.
-%   (5) Text defining the function in the upper-right corner
+%   (4) Solid green line showing upper envelope in [AT] notation.
+%   (5) Solid magenta line showing tilted ruler in [AT] notation.
+%   (6) Text defining the function in the upper-right corner
 %
 %   [AT] = Aurentz and Trefethen, http://arxiv.org/abs/1512.01803.
 
-% Nick Trefethen, December 2015
-%
-% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Construct anonymous function ff corresponding to string input:
@@ -33,25 +32,20 @@ ff = inline(vectorize(fstring));
 
 % Set epsval and construct chebfun f:
 if nargin>1, epsval = varargin{2}; else epsval = 2^-52; end
-f = chebfun(@(x) ff(x),'eps',epsval); nf = length(f);
-n2 = max(17,2^ceil(log2(1.25*length(f)+5))+1); % length(f) before chopping)
+[f,g,pp,j2] = basicChebfun(ff,epsval);
+nf = length(f); ng = length(g);
 
-try
-    load explaindata
-catch
-    clf
-    error('Constructor didn''t converge.');
+% warning if not converged
+if ( nf == ng )
+     clf, error('CHEBFUN:EXPLAIN:Constructor failed to converge.');
 end
 
 % Set parameters and abbreviations for plotting:
 MS = 'markersize'; FS = 'fontsize';
 HA = 'horizontalalignment'; IN = 'interpret';
 ms = 3; ms0 = 5;
-if n2<1000, ms = 5; ms0 = 4.5; end
-if n2<100, ms = 7; ms0 = 5; end
-
-% Make chebfun g corresponding to final grid before chopping:
-g = chebfun(@(x) ff(x),n2); ng = length(g);
+if ng<1000, ms = 5; ms0 = 4.5; end
+if ng<100, ms = 7; ms0 = 5; end
 
 % Plot Chebyshev coeffs of f and g
 gc = abs(chebcoeffs(g));
@@ -61,13 +55,16 @@ semilogy(0:nf-1,fc,'or',MS,ms0)
 
 % Attempt to adjust axes for consistency for comparisons:
 a = axis;
-%if a(3)>1e-80 & a(3) < 1e-9, a(3) = 1e-20; end
-%if g.vscale<1e11 & a(4) > 1e-6, a(4) = 1e2; end
-%if g.vscale<1e-98, a(3) = 1e-120; a(4) = 1e-98; end
 a(2) = max(a(2),ng);
 a(4) = 1e03*a(4);
 a(3) = 1e-3*a(3);
 axis(a), set(gca,FS,9)
+
+% create envelope from gc
+m = gc(end)*ones(ng, 1);
+for j = ng-1:-1:1
+    m(j) = max(gc(j), m(j+1));
+end   
 
 % Plot envelope
 m(m == 0) = a(3);
@@ -75,16 +72,6 @@ semilogy(0:ng-1,m,'-g')
 
 % plot epsval
 semilogy(0:ng-1,0*m+epsval*m(1),'k--')
-
-% Plot zero data values, if any, on relabeled bottom axis:
-%if any(gc==0)
-%  gzeros = find(gc==0);
-%  semilogy(gzeros-1,a(3)*ones(1,length(gzeros)),'.k',MS,ms)
-%  fzeros = find(fc==0);
-%  semilogy(fzeros-1,a(3)*ones(1,length(fzeros)),'or',MS,ms0)
-%  yy = get(gca,'yticklabel');
-%  yy{1} = 'Zero'; set(gca,'yticklabel',yy);
-%end
 
 % Clean up the string in various ways for printing:
 xpos = a(1) + .95*diff(a([1 2]));
@@ -108,18 +95,171 @@ ss = strrep(ss,'\\cos','\cos');
 text(xpos,ypos,['$' ss '$'],FS,13,HA,'right',IN,'latex')
 
 % Plot plateauPoint
-plot(plateauPoint-1,gc(plateauPoint),'sb',MS,10)
+plot(pp-1,gc(pp),'sb',MS,10)
 
-% Plot tilt
-tilt = -tilt(end)/(length(tilt)-1);
+% Plot ruler
+tilt = (1/3)*log10(epsval)/(j2-1);
 ruler = 10.^(tilt*(0:j2-1));
-ruler = ruler*m(cutoff+1)/ruler(cutoff+1);
+ruler = ruler*m(nf+1)/ruler(nf+1);
 semilogy(0:j2-1,ruler,'m')
 
 grid on
 hold off
 
-% delete explaindata file
-delete explaindata.mat
+end
+
+
+function [f, g, plateauPoint, j2] = basicChebfun(ff,tol)
+%BASCICHEBFUN   Simplified CHEBFUN constructor.
+
+% loop through powers of 2
+for ii=3:16
+
+     % current length
+     m = 2^ii+1;
+  
+     % get compute coeffs
+     cfs = chebtech2.vals2coeffs(ff(chebpts(m)));
+  
+     % call standardChop
+     [cutoff, plateauPoint, j2] = standardChop(cfs,tol);
+   
+     % construct f and g
+     f = chebfun(cfs(1:cutoff),'coeffs');
+     g = chebfun(cfs,'coeffs');
+
+     % check convergence
+     if ( cutoff < m ), return, end
+
+end
+
+end
+
+
+
+function [cutoff, plateauPoint, j2] = standardChop(coeffs, tol)
+%STANDARDCHOP  Modified version of standardChop.
+
+% STANDARDCHOP normally chops COEFFS at a point beyond which it is smaller than
+% TOL^(2/3).  COEFFS will never be chopped unless it is of length at least 17 and
+% falls at least below TOL^(1/3).  It will always be chopped if it has a long
+% enough final segment below TOL, and the final entry COEFFS(CUTOFF) will never
+% be smaller than TOL^(7/6).  All these statements are relative to
+% MAX(ABS(COEFFS)) and assume CUTOFF > 1.  These parameters result from
+% extensive experimentation involving functions such as those presented in
+% the paper cited above.  They are not derived from first principles and
+% there is no claim that they are optimal.
+
+% initialize PLATEAUPOINT and J2
+plateauPoint = length(coeffs);
+j2 = length(coeffs);
+
+% Set default if fewer than 2 inputs are supplied: 
+if ( nargin < 2 )
+    p = chebfunpref;
+    tol = p.chebfuneps;
+end
+
+% Check magnitude of TOL:
+if ( tol >= 1 ) 
+    cutoff = 1;
+    return
+end
+
+% Make sure COEFFS has length at least 17:
+n = length(coeffs);
+cutoff = n;
+if ( n < 17 )
+    return
+end
+  
+% Step 1: Convert COEFFS to a new monotonically nonincreasing
+%         vector ENVELOPE normalized to begin with the value 1.
+
+b = abs(coeffs);
+m = b(end)*ones(n, 1);
+for j = n-1:-1:1
+    m(j) = max(b(j), m(j+1));
+end   
+if ( m(1) == 0 )
+    cutoff = 1;
+    return
+end
+envelope = m/m(1);
+
+% For Matlab version 2014b and later step 1 can be computed using the
+% cummax command.
+% envelope = cummax(abs(coeffs),'reverse');
+% if envelope(1) == 0
+%     cutoff = 1;
+%     return
+% else
+%     envelope = envelope/envelope(1);
+% end
+
+% Step 2: Scan ENVELOPE for a value PLATEAUPOINT, the first point J-1, if any,
+% that is followed by a plateau.  A plateau is a stretch of coefficients
+% ENVELOPE(J),...,ENVELOPE(J2), J2 = round(1.25*J+5) <= N, with the property
+% that ENVELOPE(J2)/ENVELOPE(J) > R.  The number R ranges from R = 0 if
+% ENVELOPE(J) = TOL up to R = 1 if ENVELOPE(J) = TOL^(2/3).  Thus a potential
+% plateau whose starting value is ENVELOPE(J) ~ TOL^(2/3) has to be perfectly
+% flat to count, whereas with ENVELOPE(J) ~ TOL it doesn't have to be flat at
+% all.  If a plateau point is found, then we know we are going to chop the
+% vector, but the precise chopping point CUTOFF still remains to be determined
+% in Step 3.
+
+for j = 2:n
+    j2 = round(1.25*j + 5); 
+    if ( j2 > n )
+        % there is no plateau: exit
+        return
+    end      
+    e1 = envelope(j);
+    e2 = envelope(j2);
+    r = 3*(1 - log(e1)/log(tol));
+    plateau = (e1 == 0) | (e2/e1 > r);
+    if ( plateau )
+        % a plateau has been found: go to Step 3
+        plateauPoint = j - 1;
+        break
+    end
+end
+
+% Step 3: fix CUTOFF at a point where ENVELOPE, plus a linear function
+% included to bias the result towards the left end, is minimal.
+%
+% Some explanation is needed here.  One might imagine that if a plateau is
+% found, then one should simply set CUTOFF = PLATEAUPOINT and be done, without
+% the need for a Step 3. However, sometimes CUTOFF should be smaller or larger
+% than PLATEAUPOINT, and that is what Step 3 achieves.
+%
+% CUTOFF should be smaller than PLATEAUPOINT if the last few coefficients made
+% negligible improvement but just managed to bring the vector ENVELOPE below the
+% level TOL^(2/3), above which no plateau will ever be detected.  This part of
+% the code is important for avoiding situations where a coefficient vector is
+% chopped at a point that looks "obviously wrong" with PLOTCOEFFS.
+%
+% CUTOFF should be larger than PLATEAUPOINT if, although a plateau has been
+% found, one can nevertheless reduce the amplitude of the coefficients a good
+% deal further by taking more of them.  This will happen most often when a
+% plateau is detected at an amplitude close to TOL, because in this case, the
+% "plateau" need not be very flat.  This part of the code is important to
+% getting an extra digit or two beyond the minimal prescribed accuracy when it
+% is easy to do so.
+
+if ( envelope(plateauPoint) == 0 )
+    cutoff = plateauPoint;
+else
+    j3 = sum(envelope >= tol^(7/6));
+    if ( j3 < j2 )
+        j2 = j3 + 1;
+        envelope(j2) = tol^(7/6);
+    end
+    cc = log10(envelope(1:j2));
+    cc = cc(:);
+    cc = cc + linspace(0, (-1/3)*log10(tol), j2)';
+    [~, d] = min(cc);
+    cutoff = max(d - 1, 1);
+end
 
 end
