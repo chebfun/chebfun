@@ -45,8 +45,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 dom = f.domain;
-%n = 2049; 
-n = 512; 
+n = 161;
 if ( all(dims == [1, 2]) || all(dims == [2, 1]) )
     vals = sample(f, n, n, n);
     temp = chebfun3.unfold(vals, [3]);

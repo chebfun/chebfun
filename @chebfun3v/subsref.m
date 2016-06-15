@@ -26,8 +26,8 @@ switch ( ref(1).type )
             % This is a get call to get a property. 
             varargout = {get(F, indx)};
         else
-            % Probably .^ or maybe .*
-            t2 = index(2).type;
+            % Probably F.components{1} or ...
+            t2 = ref(2).type;
             if ( strcmp(t2,'.') )
                 out = get(F, indx, ref(2).subs{:});
             else
@@ -65,7 +65,7 @@ switch ( ref(1).type )
         
     otherwise
         error('CHEBFUN:CHEBFUN3V:subsref:unexpectedType', ...
-            ['??? Unexpected index.type of ' index(1).type]);
+            ['??? Unexpected index.type of ' indx(1).type]);
         
 end
 

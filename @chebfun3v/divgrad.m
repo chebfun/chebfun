@@ -13,7 +13,7 @@ function G = divgrad(F)
 nComponents = F.nComponents; 
 if ( (nComponents < 3) || (nComponents > 3) ) 
     error('CHEBFUN:CHEBFUN3V:divgrad:components',...
-        'Command is defined only for CHEBFUN3V objects with 3 components.')
+        'Defined only for CHEBFUN3V objects with three components.')
 end
      
 Fc = F.components; 

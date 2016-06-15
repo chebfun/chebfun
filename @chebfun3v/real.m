@@ -1,6 +1,6 @@
 function F = real(F)
 %REAL   Real part of a CHEBFUN3V object.
-%   REAL(F) returns the CHEBFUN3V representing the real part of F.
+%   REAL(F) returns the real part of a CHEBFUN3V object.
 %
 % See also CHEBFUN3V/IMAG and CHEBFUN3V/CONJ.
 

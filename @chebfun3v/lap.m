@@ -1,6 +1,6 @@
 function L = lap(f)
-%LAP   Laplacian of a CHEBFUN3V object.
-%   L = LAP(F) returns a CHEBFUN3V representing the Laplacian of F.
+%LAP   Vector Laplacian of a CHEBFUN3V object.
+%   L = LAP(F) returns a CHEBFUN3V representing the vector Laplacian of F.
 %
 %   This is shorthand for LAPLACIAN(F).
 %

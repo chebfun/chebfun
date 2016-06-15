@@ -13,7 +13,7 @@ function I = integral2(f, S)
 
 % Developer Note: If F = F(x,y,z) is a CHEBFUN3 and 
 % S = {(u,v)\in DOM, s.t. x = x(u,v), y = y(u,v) and z = z(u,v)}, is a
-% parametric surface represented by a CHEBFUN2V, then
+% parametric surface represented by a CHEBFUN2V object, then
 % \int \int_S F(x,y,z) dS = \int \int_DOM F(x(u,v), y(u,v), z(u,v))) ...
 %                                                 norm(cross(r_u, r_v)) dA.
 % Note that the domain of f should contain the range of S.
@@ -60,5 +60,5 @@ function ds = cross(F, G)
 H = [F(2).*G(3) - F(3).*G(2); 
      F(3).*G(1) - F(1).*G(3);
      F(1).*G(2) - F(2).*G(1)];
-ds = sqrt(H(1).^2+H(2).^2+H(3).^2);
+ds = sqrt(H(1).^2 + H(2).^2 + H(3).^2);
 end

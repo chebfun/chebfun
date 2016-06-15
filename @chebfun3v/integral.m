@@ -1,13 +1,14 @@
-function v = integral(F, c)
-%INTEGRAL   Line integration of a CHEBFUN3V object.
-%   INTEGRAL(F, C) computes the line integral of F along the curve C, i.e.,
+function v = integral(F, curve)
+%INTEGRAL   Line integration of a CHEBFUN3V object over a parametric curve.
+%   INTEGRAL(F, C) computes the line integral of F along the parametric 
+%   curve C. If F = <P(x,y,z), Q(x,y,z), R(x,y,z)> and C is a parametric 
+%   curve represented as an Inf x 3 quasimatrix C(t) = [x(t) y(t) z(t)]
+%   then
 %                  
 %                           /
-%       INTEGRAL(F, C) =   |  < F(r), dr > 
+%       INTEGRAL(F, C) =   |  P dx + Q dy + R dz.
 %                          /
 %                         C 
-%
-%   where the curve C is parameterised as an Inf x 3 quasimatrix c(t).
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -18,24 +19,24 @@ if ( F.nComponents ~= 3 )
 else
     % Get tolerance we think things can be resolved to:
     pref = chebfunpref(); 
-    pref.techPrefs.chebfuneps = eps*vscale(c);
-    cx = c(:,1); 
-    cy = c(:,2); 
-    cz = c(:,3); 
+    pref.techPrefs.chebfuneps = eps*vscale(curve);
+    cX = curve(:, 1);
+    cY = curve(:, 2);
+    cZ = curve(:, 3);
     
     % Restrict to the chebfun domains: 
-    F1_handle = @(t) feval(F.components{1}, cx(t), cy(t), cz(t));
-    F2_handle = @(t) feval(F.components{2}, cx(t), cy(t), cz(t));
-    F3_handle = @(t) feval(F.components{3}, cx(t), cy(t), cz(t));
-    F1 = chebfun(F1_handle, c.domain, pref);
-    F2 = chebfun(F2_handle, c.domain, pref);
-    F3 = chebfun(F3_handle, c.domain, pref);
+    P_handle = @(t) feval(F.components{1}, cX(t), cY(t), cZ(t));
+    Q_handle = @(t) feval(F.components{2}, cX(t), cY(t), cZ(t));
+    R_handle = @(t) feval(F.components{3}, cX(t), cY(t), cZ(t));
+    P = chebfun(P_handle, curve.domain, pref);
+    Q = chebfun(Q_handle, curve.domain, pref);
+    R = chebfun(R_handle, curve.domain, pref);
     
     % Line integral: 
-    dc = diff(c); 
+    dc = diff(curve); 
     
     % By definition:
-    v = sum(F1 .* dc(:,1) + F2 .* dc(:,2) + F3 .* dc(:,3));
+    v = sum(P .* dc(:, 1) + Q .* dc(:, 2) + R .* dc(:, 3));
 end
 
 end

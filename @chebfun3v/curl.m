@@ -21,7 +21,7 @@ if ( F.nComponents == 3 )   % 3D curl
         diff(Fc{2}, 1, 1) - diff(Fc{1}, 1, 2)];
 else                      
      error('CHEBFUN:CHEBFUN3V:curl:notSupported', ...
-        'Three inputs are needed.')
+        'Defined only for CHEBFUN3V objects with three components.')
 end
 
 end

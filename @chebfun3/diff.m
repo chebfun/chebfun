@@ -1,5 +1,5 @@
 function F = diff(F, k, dim)
-%DIFF   Derivative of a CHEBFUN3.
+%DIFF   Partial derivative of a CHEBFUN3.
 %   DIFF(F) is the 1st derivative of F along the 1st input variable.
 %
 %   DIFF(F, K) is the K-th derivative of F along the 1st input variable.

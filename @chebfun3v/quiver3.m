@@ -11,6 +11,8 @@ function varargout = quiver3(F, varargin)
 %   velocity vectors.  Any marker in LINESPEC is drawn at the base instead 
 %   of an arrow on the tip. Use a marker of '.' to specify no marker at 
 %   all.
+%
+% See also quiver3.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -19,7 +21,7 @@ numpts = 7;
 
 % Empty check:
 if ( isempty(F) )
-    quiver([])
+    h = quiver3([], [], [], []);
     return
 end
 
