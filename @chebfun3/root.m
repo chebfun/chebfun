@@ -1,5 +1,5 @@
 function r = root(f, g, h)
-%ROOT   Find just ONE common roots of three CHEBFUN3 objects.
+%ROOT   Find just ONE common root of three CHEBFUN3 objects.
 %
 %   We try to find the minimum value of the following objective function:
 %   objFun = f.^2 + g.^2 + h.^2.

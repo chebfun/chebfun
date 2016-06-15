@@ -45,7 +45,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 dom = f.domain;
-n = 161; 
+n = 129; 
 if ( dim == 1 )
     vals = sample(f, n, n, n); 
     h = chebfun2(squeeze(max(vals, [], 1)), dom(3:6));

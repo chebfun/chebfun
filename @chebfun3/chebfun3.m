@@ -193,10 +193,7 @@ methods (Access = public)
     
     % Just one common root of 3 CHEBFUN3 objects.
     varargout = root(f, g, h); 
-    
-    % Roots of a CHEBFUN3 object.
-    varargout = roots(f, varargin);
-    
+        
     % Number of degrees of freedom needed to represent a CHEBFUN3.
     out = ndf(f);
     

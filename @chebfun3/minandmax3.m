@@ -34,9 +34,9 @@ end
 
 [m, n, p] = length(f);
 if ( ndf(f) > 5e4 )
-    m = min(m, 121);
-    n = min(n, 121);
-    p = min(p, 121);
+    m = min(m, 129);
+    n = min(n, 129);
+    p = min(p, 129);
 end
 
 % We seek a fast initial guess. So we first discretize the object.
