@@ -4,8 +4,8 @@ function h = min(f, g, dim)
 %   object F along the x direction, i.e, MIN(F) = @(y,z) min(F(:, y, z)).
 %
 %   MIN(F, [], DIM) returns a CHEBFUN2 representing the minimum of F along 
-%   the dimension DIM, whre DIM = 1 means along the x-direction, DIM = 2
-%   along the y-direction, and DIM = 3 means along the z-direction.
+%   the dimension DIM. DIM should be 1, 2 or 3 to minimize over X, Y or Z,
+%   respectively.
 %
 %   WARNING: This function is not always accurate to the expected precision.
 % 
@@ -29,7 +29,7 @@ if ( nargin < 3 )
     dim = 1;
 end
 
-% Do not allow min(F, G): 
+% Do not allow min(F, G):
 if ( nargin > 1 && ~isempty(g) )
     error('CHEBFUN:CHEBFUN3:min:twoCHEBFUN3Inputs', ...
         'Unable to minimize two CHEBFUN3 objects.');
@@ -42,7 +42,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 dom = f.domain;
-n = 512;
+n = 161;
 if ( dim == 1 )
     vals = sample(f, n, n, n); 
     h = chebfun2(squeeze(min(vals, [], 1)), dom(3:6));
@@ -59,8 +59,7 @@ elseif ( dim == 3 )
     h = simplify(h);
     
 elseif ( dim == 0 )
-    error('CHEBFUN:CHEBFUN3:min:dim', ...
-        'dim must be 1, 2, or 3.')
+    error('CHEBFUN:CHEBFUN3:min:dim', 'dim must be 1, 2, or 3.')
 else
    % Return the CHEBFUN3 object. This is analogous to that MIN() command in
    % MATLAB.

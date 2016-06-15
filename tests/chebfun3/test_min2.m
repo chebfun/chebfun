@@ -9,8 +9,8 @@ tol = 1e12*pref.cheb3Prefs.chebfun3eps;
 f = chebfun3(@(x,y,z) x.^2 + y.^2 + z.^2);
 g = chebfun(@(z) z.^2);
 
-h1 = min2(f); 
-h2 = min2(f, []); 
+h1 = min2(f);
+h2 = min2(f, []);
 h3 = min2(f, [], [1 2]);
 h4 = min2(f, [], [2 1]);
 

@@ -23,8 +23,8 @@ end
 
 Fc = F.components; 
 Gc = G.components; 
-for jj = 1:nF 
-    Fc{jj} = times(Fc{jj}, Gc{jj}); 
+for jj = 1:nF
+    Fc{jj} = times(conj(Fc{jj}), Gc{jj});
 end
 
 f = chebfun3(0, G.components{1}.domain);

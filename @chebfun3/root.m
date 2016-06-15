@@ -1,4 +1,4 @@
-function r = root(f, g, h, varargin)
+function r = root(f, g, h)
 %ROOT   Find just ONE common roots of three CHEBFUN3 objects.
 %
 %   We try to find the minimum value of the following objective function:
@@ -23,7 +23,7 @@ tol = pref.cheb3Prefs.chebfun3eps;
 % possible to try and the accuracy won't be great, but at the same time 
 % this is big enough to get good accuracy at least for easy functions. See 
 % e.g., issue #1900.
-m = 121; n = 121; p = 121;
+m = 161; n = m; p = m;
 
 dom = f.domain;
 xx = chebpts(m, dom(1:2)); 
@@ -36,7 +36,7 @@ h = h./h.vscale;
 T = chebpolyval3(f, m, n, p).^2 + chebpolyval3(g, m, n, p).^2 + ...
     chebpolyval3(h, m, n, p).^2;
 
-[ignore, ind] = min(abs(T(:)));
+[~, ind] = min(abs(T(:)));
 [indX, indY, indZ] = ind2sub(size(T), ind);
 r = [xx(indX, indY, indZ), yy(indX, indY, indZ), zz(indX, indY, indZ)];
 
