@@ -2,9 +2,8 @@ function varargout = trigremez(f, varargin)
 %TRIGREMEZ   Best trigonometric polynomial approximation for real-valued chebfuns.
 %   P = TRIGREMEZ(F, M) computes the best trigonometric polynomial approximation 
 %   of degree M to the real CHEBFUN F in the infinity norm using the Remez 
-%   algorithm. F may be Chebyshev interpolant to an underlying continuous function 
-%   or a trigonometric interpolant to an underlying continous function on the 
-%   unit circle.
+%   algorithm. F must be a continuous periodic function but it need not be
+%   represented in 'trig' format.
 %
 %   [...] = TRIGREMEZ(..., 'tol', TOL) uses the value TOL as the termination
 %   tolerance on the increase of the levelled error.
