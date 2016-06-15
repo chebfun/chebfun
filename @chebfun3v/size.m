@@ -1,5 +1,5 @@
 function varargout = size(F, dim)
-%SIZE size of a CHEBFUN3V object.
+%SIZE   size of a CHEBFUN3V object.
 %   D = SIZE(F) returns a four-element vector D = [K, M, N, P]. If F is a 
 %   column CHEBFUN3V object then K is the number of components in F, and 
 %   M, N and P are INF. If F is a row vector then K, M and N are INF and P 
@@ -16,7 +16,7 @@ function varargout = size(F, dim)
 
 % Empty check: 
 if ( isempty( F ) ) 
-    varargout = { [], [] }; 
+    varargout = { [], [], [], [] };
     return
 end
 

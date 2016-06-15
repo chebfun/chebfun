@@ -8,7 +8,7 @@ function F = uminus(F)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 
-if (isempty(F) )
+if ( isempty(F) )
     return
 end
 

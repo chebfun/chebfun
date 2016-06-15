@@ -21,7 +21,7 @@ if ( ( isempty(F) ) || ( isempty(G) ) )
     return
 end
 
-% If the input CHEBFUN3V object is transposed, then make the output also a 
+% If the input CHEBFUN3V object is transposed, then make the output also a
 % row CHEBFUN3V object:
 if ( isa(F, 'chebfun3v') && ~isa(G, 'chebfun3v') )
     if ( F.isTransposed )
@@ -47,7 +47,7 @@ if ( isa(F, 'double') )        % doubles * CHEBFUN3V
     elseif ( size(F, 2) == G.nComponents )   % matrix * column CHEBFUN3V
         vec = F;
         nG = G.nComponents;
-        if ( size(vec, 1) == 1 ) 
+        if ( size(vec, 1) == 1 )
             F = vec(1, 1) * G.components{1};
             for jj = 2:nG
                 F = F + vec(1, jj) * G.components{jj};
@@ -63,8 +63,9 @@ if ( isa(F, 'double') )        % doubles * CHEBFUN3V
         error('CHEBFUN:CHEBFUN3V:mtimes:double', 'Dimension mismatch.');
     end
     
-elseif( isa(G, 'double') )          % CHEBFUN3V * double
-    if ( numel(G) == 1 )            % CHEBFUN3V * scalar
+elseif ( isa(G, 'double') )          % CHEBFUN3V * double
+    
+    if ( numel(G) == 1 )          % CHEBFUN3V * scalar
         F = mtimes(G, F);
     else
         error('CHEBFUN:CHEBFUN3V:mtimes:double', ...

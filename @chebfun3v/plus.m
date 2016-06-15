@@ -41,7 +41,7 @@ elseif ( isa(G, 'chebfun3v') )       % CHEBFUN3V + CHEBFUN3V
     nG = G.nComponents; 
     if ( nG ~= nF ) 
         error('CHEBFUN:CHEBFUN3V:plus:components', ...
-            'The chebfun3v objects do not have the same components.')
+            'The chebfun3v objects do not have the same number of components.')
     end
     if ( G.isTransposed ~= F.isTransposed )
         error('CHEBFUN:CHEBFUN3V:plus:transposed', 'Dimension mismatch.')

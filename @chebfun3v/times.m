@@ -48,7 +48,7 @@ elseif ( isa(G, 'chebfun3v') )      % CHEBFUN3V .* CHEBFUN3V
     
 elseif ( isa(G, 'chebfun3') )       % CHEBFUN3V .* CHEBFUN3
     for jj = 1 : nF 
-            F.components{jj} = times(F.components{jj}, G); 
+        F.components{jj} = times(F.components{jj}, G);
     end
     
 else  % error
