@@ -9,7 +9,7 @@ function A = unfold(T, rowDims, colDims)
 %   dimensions not contained in ROWDIMS. The entries of COLDIMS are
 %   arranged in the ascending order.
 %
-%   Note that UNFOLD(T, 1:ndims(T)) is the same as to T(:).
+%   Note that UNFOLD(T, 1:ndims(T)) is the same as T(:).
 %
 %   Example:
 %   T = randn(2, 3, 4, 5);

@@ -1,7 +1,7 @@
 classdef chebfun3
 %CHEBFUN3   CHEBFUN3 class for representing functions on [a,b]x[c,d]x[e,g].
 %   Class for approximating functions defined on finite cuboids. The 
-%   function should be smooth.
+%   functions should be smooth.
 %
 %   CHEBFUN3(F) constructs a CHEBFUN3 object representing the function F on
 %   [-1, 1] x [-1, 1] x [-1, 1]. 
@@ -211,8 +211,8 @@ methods (Access = public)
     % Definite integral of a CHEBFUN3 over its domain.
     out = sum3(f);    
 
-    % Restrict the domain of a CHEBFUN3. Output might be a scalar, Chebfun, 
-    % Chebfun2 or a Chebfun3 object.
+    % Restrict the domain of a CHEBFUN3. Output might be a scalar, 
+    % a Chebfun, a Chebfun2 or a Chebfun3 object.
     out = restrict(f, varargin);
     
     % Volume of the domain of a CHEBFUN3.
@@ -366,7 +366,7 @@ methods
     % Test whether a CHEBFUN3 object is empty.
     out = isempty(f);
       
-    % Determine whether a CHEBFUN3 is identically zero over its domain.
+    % Test if a CHEBFUN3 is identically zero over its domain.
     varargout = iszero(f);
         
     % Real-valued CHEBFUN3 test.

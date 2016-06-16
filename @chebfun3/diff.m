@@ -5,9 +5,9 @@ function F = diff(F, k, dim)
 %   DIFF(F, K) is the K-th derivative of F along the 1st input variable.
 %  
 %   DIFF(F, K, DIM) is the K-th derivative of F along the dimension DIM.
-%   DIM = 1 (default) is the derivative in the 1st input variable.
-%   DIM = 2 is the derivative in the 2nd variable.
-%   DIM = 3 is the derivative in the 3rd varialbe.
+%   DIM = 1 (default) returns the derivative in the 1st input variable.
+%   DIM = 2 returns the derivative in the 2nd variable.
+%   DIM = 3 returns the derivative in the 3rd varialbe.
 %
 %   DIFF(F, [K1 K2], [DIM1 DIM2]) means K1-th derivative of F in dimension
 %   DIM1 and K2-th derivative in dimension DIM2. DIM1 and DIM2 can be 1, 2 
@@ -55,34 +55,41 @@ elseif ( (numel(k) == 2) && (nargin == 3) && (numel(k) == numel(dim)) )
     [is1,loc1] = ismember(1, dim);
     [is2,loc2] = ismember(2, dim);
     [is3,loc3] = ismember(3, dim);
-    if is1 % k1-th diff in the 1st variable
+    if ( is1 )
+        % k1-th diff in the 1st variable
         k1 = k(loc1);
         F.cols = diff(F.cols, k1);
     end
-    if is2 % k2-th diff in the 2nd variable.
+    if ( is2 ) 
+        % k2-th diff in the 2nd variable.
         k2 = k(loc2);
         F.rows = diff(F.rows, k2);
     end
-    if is3 % k3-th diff in the 3rd variable.
+    if ( is3 )
+        % k3-th diff in the 3rd variable.
         k3 = k(loc3);
         F.tubes = diff(F.tubes, k3);
     end
     
-elseif ( dim == 1 ) % numel(k) = 1 & dim = 1. So, we want k-th diff in the 
+elseif ( dim == 1 ) 
+    % numel(k) = 1 & dim = 1. So, we want k-th diff in the 
     % 1st variable.
     F.cols = diff(F.cols, k);
     
-elseif ( dim == 2 ) % numel(k)=1 & dim = 2. So, k-th diff in the 
+elseif ( dim == 2 ) 
+    % numel(k)=1 & dim = 2. So, k-th diff in the 
     % y-direction. Call Chebfun2/diff.
     F.rows = diff(F.rows, k);
     
-elseif ( dim == 3 )% numel(k)=1 & dim=3. So, k-th diff in the z-direction. 
+elseif ( dim == 3 )
+    % numel(k)=1 & dim=3. So, k-th diff in the z-direction. 
     % Call Chebfun2/diff.
     F.tubes = diff(F.tubes, k);
 
-else % dim is not 1, 2 or 3. Or, numel(k) ~= numel(dim)
-            error('CHEBFUN:CHEBFUN3s:diff:dim', ...
-                'Can compute derivative in x, y or z only.');
+else
+    % dim is not 1, 2 or 3. Or, numel(k) ~= numel(dim)
+    error('CHEBFUN:CHEBFUN3s:diff:dim', ...
+          'Can compute derivative in x, y or z only.');
 end
 
 end
