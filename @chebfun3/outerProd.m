@@ -27,10 +27,10 @@ sizeB = size(B);
 sizeB(end+1:ndimsB) = 1;
 
 % Vectorize both input matrices:
-%vecA = chebfun3.unfold(A, [1:ndimsA], []);
+% Call chebfun3.unfold:
 vecA = A(:);
 
-%vecB = chebfun3.unfold(B, [1:ndimsB], []);
+% Call chebfun3.unfold:
 vecB = B(:);
 
 % Calculate matricization of T_mat, i.e., T_mat = vecA * vecB.'

@@ -36,7 +36,7 @@ else
     T_mat = chebfun3.unfold(T, unContractedModes, contractionMode);
 end
 
-if( size(A, 2) ~= size_T(contractionMode) )
+if ( size(A, 2) ~= size_T(contractionMode) )
     error('CHEBFUN:CHEBFUN3:txm', 'Tensor-matrix dimensions do not agree');
 end
 
