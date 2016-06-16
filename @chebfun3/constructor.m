@@ -359,29 +359,32 @@ while ( ~isHappy && ~failure )
         end
         
         %% 3D HAPPINESSCHECK again only on non-happy fibers:
-        fiber1Data.hscale = norm(dom(1:2), inf);
-        fiber1Data.vscale = max(abs(colsValues{1}(:)));
+        colsData.hscale = norm(dom(1:2), inf);
+        colsData.vscale = max(abs(colsValues{1}(:)));        
         if ( ~resolvedCols )
-            colsChebtech = tech.make(sum(colsValues{1}, 2), fiber1Data);
-            resolvedCols  = happinessCheck(colsChebtech ,[], ...
-                sum(colsValues{1}, 2), [], pref);
+            colsChebtech = tech.make(colsValues{1}, colsData);
+            colsChebtech.coeffs = sum(abs(colsChebtech.coeffs), 2);
+            resolvedCols  = happinessCheck(colsChebtech, [], ...
+                colsChebtech.coeffs, [], pref);
         end
-
-        fiber2Data.hscale = norm(dom(3:4), inf);
-        fiber2Data.vscale = max(abs(rowsValues{1}(:)));
+        
+        rowsData.hscale = norm(dom(3:4), inf);
+        rowsData.vscale = max(abs(rowsValues{1}(:)));
         if ( ~resolvedRows )
-            rowsChebtech = tech.make(sum(rowsValues{1}, 2), fiber2Data);
+            rowsChebtech = tech.make(rowsValues{1}, rowsData);
+            rowsChebtech.coeffs = sum(abs(rowsChebtech.coeffs), 2);
             resolvedRows  = happinessCheck(rowsChebtech, [], ...
-                sum(rowsValues{1}, 2), [], pref);
+                rowsChebtech.coeffs, [], pref);
         end
 
-        fiber3Data.hscale = norm(dom(5:6), inf);
-        fiber3Data.vscale = max(abs(fibersValues(:)));
-        if ( ~resolvedTubs )
-            fiber3Chebtech = tech.make(sum(fibersValues, 2), fiber3Data);
+        tubesData.hscale = norm(dom(5:6), inf);
+        tubesData.vscale = max(abs(fibersValues(:)));
+        if ( ~resolvedTubs )          
+            fiber3Chebtech = tech.make(fibersValues, tubesData);
+            fiber3Chebtech.coeffs = sum(abs(fiber3Chebtech.coeffs), 2);
             resolvedTubs  = happinessCheck(fiber3Chebtech, [], ...
-                sum(fibersValues, 2), [], pref);
-        end        
+                fiber3Chebtech.coeffs, [], pref);
+        end
         isHappy = resolvedCols & resolvedRows & resolvedTubs;
         
         if ( ~resolvedCols )
@@ -824,6 +827,8 @@ end
 %%
 function [resolvedFibers, resolvedSlice1, resolvedSlice2] = ...
     happinessCheckBTD(fibersValues, colsValues, rowsValues, dom, pref, tech)
+% Happiness-check for the BTD: It uses all the fibers and columns and rows 
+% in the first term of the BTD.
 vsclFib = max(abs(fibersValues(:,1)));
 vsclSli = max(abs(colsValues{1}(:)));
 vsclSli = max(vsclSli, max(abs(rowsValues{1}(:))));
@@ -834,20 +839,23 @@ fiber2Data.vscale = vsclSli;
 fiber3Data.hscale = norm(dom(3:4), inf);
 fiber3Data.vscale = vsclSli;
 
-fiber1Chebtech = tech.make(sum(fibersValues, 2), fiber1Data);
-resolvedFibers  = happinessCheck(fiber1Chebtech, [], sum(fibersValues, 2), ...
-    [], pref);
+% Convert to coefficients:
+fiber1Chebtech = tech.make(fibersValues, fiber1Data); 
+% Add absolute value of all the coefficients:
+fiber1Chebtech.coeffs = sum(abs(fiber1Chebtech.coeffs), 2);
+% Check for happiness using the corresponding tech:
+resolvedFibers  = happinessCheck(fiber1Chebtech, [], ...
+    fiber1Chebtech.coeffs, [], pref);
 
-%slice1Chebtech = tech.make(sum(cell2mat(colsValues), 2), fiber2Data);
-% resolvedSlice1  = happinessCheck(slice1Chebtech, [], sum(cell2mat(colsValues), 2),...
-%     [], pref);
-slice1Chebtech = tech.make(sum(colsValues{1}, 2), fiber2Data);
-resolvedSlice1  = happinessCheck(slice1Chebtech, [], sum(colsValues{1}, 2),...
-    [], pref);
-
-slice2Chebtech = tech.make(sum(rowsValues{1}, 2), fiber3Data);
-resolvedSlice2  = happinessCheck(slice2Chebtech, [], sum(rowsValues{1}, 2),...
-    [], pref);
+slice1Chebtech = tech.make(colsValues{1}, fiber2Data);
+slice1Chebtech.coeffs = sum(abs(slice1Chebtech.coeffs), 2);
+resolvedSlice1  = happinessCheck(slice1Chebtech, [], ...
+    slice1Chebtech.coeffs, [], pref);
+    
+slice2Chebtech = tech.make(rowsValues{1}, fiber3Data);
+slice2Chebtech.coeffs = sum(abs(slice2Chebtech.coeffs), 2);
+resolvedSlice2  = happinessCheck(slice2Chebtech, [], ...
+    slice2Chebtech.coeffs, [], pref);
 
 end
 

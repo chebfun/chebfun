@@ -17,28 +17,23 @@ function f = simplify(f, varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin == 1 )
-    
     % Simplify cols, rows and tubes. Tol is not given.
     f.cols = simplify(f.cols, [], 'globaltol');
     f.rows = simplify(f.rows, [], 'globaltol');
-    f.tubes = simplify(f.tubes, [], 'globaltol');  
-    
+    f.tubes = simplify(f.tubes, [], 'globaltol');
     return
     
 elseif ( nargin == 2 )
-    
     % Simplify cols, rows and tubes. Tol is given.
     tol = varargin{1};
     f.cols = simplify(f.cols, tol, 'globaltol');
     f.rows = simplify(f.rows, tol, 'globaltol');
     f.tubes = simplify(f.tubes, tol, 'globaltol');
-    
     return
     
 end
 
 if ( nargin == 3 )
-    
     % Simplify the rank:
     tol = varargin{2};
     [sv, F] = hosvd(f);
