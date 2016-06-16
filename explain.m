@@ -40,7 +40,11 @@ fstring = varargin{1};
 ff = inline(vectorize(fstring));
 
 % Set epsval and construct chebfun f:
-if nargin>1, epsval = varargin{2}; else epsval = 2^-52; end
+if ( nargin>1 )
+    epsval = varargin{2}; 
+else 
+    epsval = chebfuneps; 
+end
 [f,g,pp,j2] = basicChebfun(ff,epsval);
 nf = length(f); ng = length(g);
 
@@ -53,8 +57,14 @@ end
 MS = 'markersize'; FS = 'fontsize';
 HA = 'horizontalalignment'; IN = 'interpret';
 ms = 3; ms0 = 5;
-if ng<1000, ms = 5; ms0 = 4.5; end
-if ng<100, ms = 7; ms0 = 5; end
+if ( ng<1000) 
+    ms = 5; 
+    ms0 = 4.5; 
+end
+if ( ng<100 ) 
+    ms = 7; 
+    ms0 = 5; 
+end
 
 % Plot Chebyshev coeffs of f and g
 gc = abs(chebcoeffs(g));
@@ -126,7 +136,7 @@ function [f, g, plateauPoint, j2] = basicChebfun(ff,tol)
 %BASCICHEBFUN   Simplified CHEBFUN constructor.
 
 % loop through powers of 2
-for ii=3:16
+for ii=4:16
 
      % current length
      m = 2^ii+1;
@@ -142,7 +152,9 @@ for ii=3:16
      g = chebfun(cfs,'coeffs');
 
      % check convergence
-     if ( cutoff < m ), return, end
+     if ( cutoff < m )
+         return
+     end
 
 end
 
