@@ -57,7 +57,8 @@ else                                     % CHEBFUN3 + CHEBFUN3
         tol = eps*kappa;
         h = chebfun3(@(x, y, z) feval(f, x, y, z) + feval(g, x, y, z), ...
             f.domain, 'eps', tol);         
-%         h = compressed_plus(f, g); % bypass the constructor and call the compressed version
+%         h = compressed_plus(f, g); % bypass the constructor and call the
+%         compressed version
    end 
     
 end
@@ -170,6 +171,7 @@ end
 % %   In chebfun (line 219) 
 
 % 2 related problems for Chebfun2:
-% 1) computing laplacian of a harmonic function with "compression_plus" being disabled.
+% 1) computing laplacian of a harmonic function with "compression_plus" being
+% disabled.
 % 2) https://github.com/chebfun/chebfun/issues/1536
 % Here we are calling 2D constructor for "times" on an object close to zero.

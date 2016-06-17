@@ -11,7 +11,7 @@ diff1 = diff(f, 2, 1);
 diff2 = diff(f, 2, 2); 
 diff3 = diff(f, 2, 3);
 
-vscales = [vscale(diff1) + vscale(diff2), vscale(diff3)];
+vscales = vscale(diff1) + vscale(diff2) + vscale(diff3);
 % Developer Note: Instead of calling 
 % L = diff1 + diff2 + diff3; which needs to call the constructor twice, we
 % use the following to call it just once. See CHEBFUN3/PLUS for more
@@ -22,7 +22,7 @@ m = 51; % size of sampling grid
 LVals = sample(diff1, m, m, m) + sample(diff2, m, m, m) + ...
     sample(diff3, m, m, m);
 LVscale = max(abs(LVals(:)));
-kappa = sum(vscales)/LVscale;
+kappa = vscales/LVscale;
 pref = chebfunpref(); prefStruct = pref.cheb3Prefs;
 eps = prefStruct.chebfun3eps;
 tol = eps*kappa;
