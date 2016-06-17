@@ -29,9 +29,11 @@ sizeB(end+1:ndimsB) = 1;
 % Vectorize both input matrices:
 % Call chebfun3.unfold:
 vecA = A(:);
+% The same as vecA = chebfun3.unfold(A, [1:ndimsA], []);
 
 % Call chebfun3.unfold:
 vecB = B(:);
+% The same as vecB = chebfun3.unfold(B, [1:ndimsB], []);
 
 % Calculate matricization of T_mat, i.e., T_mat = vecA * vecB.'
 % The outer product is performed in the vector level.
