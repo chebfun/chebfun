@@ -56,8 +56,6 @@ elseif ( isa(op, 'double') )   % CHEBFUN3( DOUBLE )
 end
 
 %% Dimension clustering
-% An example where this is important. compare3(@(x,y,z)
-% exp(-5*(x+2*y).^2-30*y.^4-7*sin(2*z).^6));
 if ( isempty(fiberDim) )
     fiberDim = dimCluster(op, dom, vectorize, pref);
 end
@@ -114,8 +112,6 @@ while ( ~isHappy && ~failure )
         pivotVals3D, pivotIndices3D, iFail3D, iFail2D] = completeACA3D(...
         vals, fiberDim, absTol, factor, dom, pref);
     
-%    strike = 1;
-%    while ( (iFail3D || iFail2D) && grid < maxSamplePhase1 && strike < 3)
     while ( (iFail3D || iFail2D) && grid < maxSamplePhase1 )
         % Refine sampling on tensor grid:
         if ( iFail3D )
@@ -143,11 +139,6 @@ while ( ~isHappy && ~failure )
         [colsValues, rowsValues, pivotVals2D, pivotIndices2D, ...
             fibersValues, pivotVals3D, pivotIndices3D, iFail3D, iFail2D] ...
             = completeACA3D(vals, fiberDim, absTol, factor, dom, pref);
-%         if ( abs(pivotVals3D(1)) < 1e4*relTol )
-%         % If the function is 0+noise, then it is probably not low-rank. 
-%         % So, don't try very hard and stop after three strikes.
-%             strike = strike + 1;
-%         end
     end
     
     % If the rank of the function is above maxRank then stop.
