@@ -6,15 +6,12 @@ if ( nargin < 1 )
 end
 tol = 1e4*pref.cheb3Prefs.chebfun3eps;
 
-% Check the MIN3 function for Wagon's function from cheb.gallery3.
-% This is a variation of Problem 4 in the SIAM 100-Digit Challenge
-f = cheb.gallery3('wagon');
-
-% Solution from the book: 
-exactVal = -3.3283383456632;
-exactLoc = [-0.158036820468905, 0.291023048609152, -0.289297798732570];
-[val, loc] = min3(f);
-pass(1) = norm(loc - exactLoc) < tol;
-pass(2) = abs(val - exactVal) < tol;
+a = 0.3;
+b = -0.4322;
+c = -0.83343;
+f = chebfun3(@(x,y,z) (x-a).^2 + (y-b).^2 + (z-c).^2);
+exactVal = 0;
+[val, ~] = min3(f);
+pass = abs(val - exactVal) < tol;
 
 end
