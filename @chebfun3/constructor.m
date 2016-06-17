@@ -957,7 +957,16 @@ function op = str2op(op)
 % handle than can be evaluated.
 
 vars = symvar(op); % Independent variables
-if ( numel(vars) > 3)
+if ( numel(vars) == 0 )
+    op = @(x,y,z) eval (op);
+    
+elseif ( numel(vars) == 1 )
+    op = eval(['@(' vars{1} ', myVarBeta, myVarGamma)' op]);
+    
+elseif ( numel(vars) == 2 )
+    op = eval(['@(' vars{1} ',' vars{2} ', myVarGamma)' op]);
+
+elseif ( numel(vars) > 3)
     error('CHEBFUN:CHEBFUN3:constructor:str2op:depvars', ...
         'Too many independent variables in string input.');
 else

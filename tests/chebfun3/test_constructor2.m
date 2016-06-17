@@ -66,4 +66,20 @@ pass(13) = mEps < m && nEps < n && pEps < p ;
 [r1Eps, r2Eps, r3Eps] = rank(fEps);
 pass(14) = r1Eps < r1 && r2Eps < r2 && r3Eps < r3 ;
 
+% Construct from a string of constant type:
+f = chebfun3('pi');
+pass(15) = f(0,0,0) - pi < tol;
+
+% Construct from a string of a univariate function
+f = chebfun3('cos(alpha)');
+pass(16) = f(0,0,0) - cos(0) < tol;
+
+% Construct from a string of a bivariate function
+f = chebfun3('x+y');
+pass(17) = f(0.25,0.5,0) - 0.75 < tol;
+
+% Construct from a string of a trivariate function
+f = chebfun3('cos(x+y+z)');
+pass(18) = f(0.25,0.5,-0.3) - cos(0.25+0.5-0.3) < tol;
+
 end
