@@ -66,7 +66,7 @@ TestFn_Cell{12,3} = [-3 3 -1 4];
 
 TestFn_Cell{13,1} = 'linear fn';
 TestFn_Cell{13,2} = @(x,y) x + y;
-TestFn_Cell{13,3} = [-3 6 0 4];
+TestFn_Cell{13,3} = [-3 0 0 3];
 
 TestFn_Cell{14,1} = 'quadratic fn 3';
 TestFn_Cell{14,2} = @(x,y) x.^2 + y.^2;
