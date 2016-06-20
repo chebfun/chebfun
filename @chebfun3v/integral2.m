@@ -18,25 +18,25 @@ function v = integral2(F, S)
 
 % Check that F is a chebfun3v object with 3 components:
 if ( F.nComponents ~= 3 )
-    error('CHEBFUN:CHEBFUN3V:fluxintegral', ...
+    error('CHEBFUN:CHEBFUN3V:integral2:dimChebfun3v', ...
         'The chebfun3v object must have 3 components.')
 end
 
-% Check that the second input is a chebfun2v object with 2 components:
+% Check that S is a chebfun2v object with 3 components:
 if ( isa(S, 'chebfun2v') )
     if ( S.nComponents ~= 3 )
-        error('CHEBFUN:CHEBFUN3V:fluxintegral', ...
+        error('CHEBFUN:CHEBFUN3V:integral2:dimChebfun2v', ...
             'The parametrisation must have 3 components.')
     end
 else
-    error('CHEBFUN:CHEBFUN3V:fluxintegral', ...
+    error('CHEBFUN:CHEBFUN3V:integral2:notaChebfun2v', ...
         'The parametrisation must be a chebfun2v object.')
 end
 
 % Get components of F:
-F1 = F(1);
-F2 = F(2);
-F3 = F(3);
+F1 = F.components{1};
+F2 = F.components{2};
+F3 = F.components{3};
 
 % Get components of the surface S:
 S1 = S(1);
@@ -45,7 +45,7 @@ S3 = S(3);
 
 % Build the composition F(S):
 FS1_handle = @(x,y) feval(F1, feval(S1, x, y), feval(S2, x, y), ...
-    feval(S3,x,y));
+    feval(S3, x, y));
 
 FS2_handle = @(x,y) feval(F2, feval(S1, x, y), feval(S2, x, y), ...
     feval(S3, x, y));
