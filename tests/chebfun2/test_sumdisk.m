@@ -89,10 +89,12 @@ TestFn_Cell{18,2} = @(x,y) 1./(sin(2*pi*x) + 2);
 TestFn_Cell{18,3} = [10 12 -2 2];
 
 
-% display the test functions
+% display the test functions on the default domain
+disp('Display the test functions on the default domain.')
+
 figure(1)
 for I = 1:ListLength
-    disp(['Display Test function' num2str(I)])
+    disp(['Display Test function ' num2str(I)])
     f = TestFn_Cell{I,2};
     f_Chebfun2 = chebfun2(f,'vectorize');
     subplot(3,6,I)
@@ -103,7 +105,7 @@ end
 % Test sumdisk using chebfun2 test functions defined on the unit disk
 disp('Test sumdisk using chebfun2 test functions defined on the unit disk')
 
-Int_Err_Vec = zeros(14,1);
+Int_Err_Vec = zeros(36,1);
 
 for I = 1:14
 
@@ -117,14 +119,12 @@ for I = 1:14
     Integral_Disc_sumdisk = sumdisk(f_Chebfun2);
     disp(['sumdisk gives I = ' num2str(Integral_Disc_sumdisk,20)])
     
-    Int_Err_Vec(I) = Integral_Disc_integral2 - Integral_Disc_sumdisk;
+    Int_Err_Vec(j) = Integral_Disc_integral2 - Integral_Disc_sumdisk;
     disp(['Err = ' num2str(Int_Err_Vec(I))])
     pass(j) = abs(Int_Err_Vec(I) < tol);
     j = j+1;
 end
 
-Max_Err = max(abs(Int_Err_Vec));
-disp(['Maximum error among all test functions (trigfun2 on unit disk) = ' num2str(Max_Err,20)])
 
 % Test sumdisk using trigfun2 test functions defined on the unit disk
 disp('Test sumdisk using trigfun2 test functions defined on the unit disk')
@@ -142,15 +142,11 @@ for I = 15:18
     Integral_Disc_sumdisk = sumdisk(f_Chebfun2);
     disp(['sumdisk gives I = ' num2str(Integral_Disc_sumdisk,20)])
     
-    Int_Err_Vec(I) = Integral_Disc_integral2 - Integral_Disc_sumdisk;
-    disp(['Err = ' num2str(Int_Err_Vec(I))])
+    Int_Err_Vec(j) = Integral_Disc_integral2 - Integral_Disc_sumdisk;
+    disp(['Err = ' num2str(Int_Err_Vec(I),20)])
     pass(j) = abs(Int_Err_Vec(I) < tol);
     j = j+1;
 end
-
-Max_Err = max(abs(Int_Err_Vec));
-disp(['Maximum error among all test functions (trigfun2 on unit disk) = ' num2str(Max_Err,20)])
-
 
 % Test sumdisk using chebfun2 test functions defined on the non-default
 % domain
@@ -175,14 +171,11 @@ for I = 1:14
     Integral_Disc_sumdisk = sumdisk(f_Chebfun2);
     disp(['sumdisk gives I = ' num2str(Integral_Disc_sumdisk,20)])
     
-    Int_Err_Vec(I) = Integral_Disc_integral2 - Integral_Disc_sumdisk;
-    disp(['Err = ' num2str(Int_Err_Vec(I))])
+    Int_Err_Vec(j) = Integral_Disc_integral2 - Integral_Disc_sumdisk;
+    disp(['Err = ' num2str(Int_Err_Vec(I),20)])
     pass(j) = abs(Int_Err_Vec(I) < tol);
     j = j+1;
 end
-
-Max_Err = max(abs(Int_Err_Vec));
-disp(['Maximum error among all test functions (trigfun2 on unit disk) = ' num2str(Max_Err,20)])
  
 % Test sumdisk using trigfun2 test functions defined on the non-default
 % domain
@@ -207,14 +200,14 @@ for I = 15:18
     Integral_Disc_sumdisk = sumdisk(f_Chebfun2);
     disp(['sumdisk gives I = ' num2str(Integral_Disc_sumdisk,20)])
     
-    Int_Err_Vec(I) = Integral_Disc_integral2 - Integral_Disc_sumdisk;
-    disp(['Err = ' num2str(Int_Err_Vec(I))])
+    Int_Err_Vec(j) = Integral_Disc_integral2 - Integral_Disc_sumdisk;
+    disp(['Err = ' num2str(Int_Err_Vec(I),20)])
     pass(j) = abs(Int_Err_Vec(I) < tol);
     j = j+1;
 end
 
 Max_Err = max(abs(Int_Err_Vec));
-disp(['Maximum error among all test functions (trigfun2 on non-defualt domain) = ' num2str(Max_Err,20)])
+disp(['Maximum error among all tests = ' num2str(Max_Err,20)])
  
 
 
