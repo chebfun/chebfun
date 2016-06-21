@@ -132,7 +132,7 @@ TestFn_Cell{18,5} = 3.6400923025513156617;
 
 % display the test functions on the default domain
 disp('Display the test functions on the default domain.')
-
+fprintf('\n')
 figure(1)
 for I = 1:ListLength
     disp(['Display Test function ' num2str(I)])
@@ -142,16 +142,18 @@ for I = 1:ListLength
     plot(f_Chebfun2)
     title(TestFn_Cell{I,1},'FontSize',10)
 end
-
+fprintf('\n')
 % Test sumdisk using chebfun2 test functions defined on the unit disk
 disp('Test sumdisk using chebfun2 test functions defined on the unit disk')
-
+fprintf('\n')
 Int_Err_Vec = zeros(36,1);
 
 for I = 1:14
 
-    disp(['Test fn ' num2str(I)])
+    disp(['Test fn ' num2str(I) ', f ='])
     f = TestFn_Cell{I,2};
+    disp(f)
+    disp('Domain [-1 1 -1 1]')
 %     polarfun = @(theta,r) f(r.*cos(theta),r.*sin(theta)).*r;
 %     Integral_Disc_integral2 = integral2(polarfun,0,2*pi,0,1,'AbsTol',1e-15,'RelTol',1e-15);
     Integral_Disc_integral2 = TestFn_Cell{I,4};
@@ -165,17 +167,20 @@ for I = 1:14
     disp(['Err = ' num2str(Int_Err_Vec(j))])
     pass(j) = abs(Int_Err_Vec(j) < tol);
     j = j+1;
+    fprintf('\n')
 end
 
 
 % Test sumdisk using trigfun2 test functions defined on the unit disk
 disp('Test sumdisk using trigfun2 test functions defined on the unit disk')
-
+fprintf('\n')
 Int_Err_Vec = zeros(14,1);
 
 for I = 15:18
-    disp(['Test fn ' num2str(I)])
+    disp(['Test fn ' num2str(I) ' f = '])
     f = TestFn_Cell{I,2};
+    disp(f)
+    disp('Domain [-1 1 -1 1]')
 %     polarfun = @(theta,r) f(r.*cos(theta),r.*sin(theta)).*r;
 %     Integral_Disc_integral2 = integral2(polarfun,0,2*pi,0,1,'AbsTol',1e-15,'RelTol',1e-15);
     Integral_Disc_integral2 = TestFn_Cell{I,4};
@@ -189,21 +194,24 @@ for I = 15:18
     disp(['Err = ' num2str(Int_Err_Vec(j),20)])
     pass(j) = abs(Int_Err_Vec(j) < tol);
     j = j+1;
+    fprintf('\n')
 end
 
 % Test sumdisk using chebfun2 test functions defined on the non-default
 % domain
 disp('Test sumdisk using chebfun2 test functions defined on non-default domain')
-
+fprintf('\n')
 Int_Err_Vec = zeros(14,1);
 
 for I = 1:14
 
-    disp(['Test fn ' num2str(I)])
+    disp(['Test fn ' num2str(I) ', f = '])
     fdomain = TestFn_Cell{I,3};
+    f = TestFn_Cell{I,2};
+    disp(f)
     disp(['Domain [' num2str(fdomain) ']'])
 
-    f = TestFn_Cell{I,2};
+    
 %     g = @(x,y) f(((fdomain(2) - fdomain(1))/2)*x + (fdomain(2) + fdomain(1))/2,((fdomain(4) - fdomain(3))/2)*y + (fdomain(4) + fdomain(3))/2);
 %     polarfun = @(theta,r) g(r.*cos(theta),r.*sin(theta)).*r;
 %     Integral_Disc_integral2 = integral2(polarfun,0,2*pi,0,1,'AbsTol',1e-15,'RelTol',1e-15);
@@ -220,21 +228,24 @@ for I = 1:14
     disp(['Err = ' num2str(Int_Err_Vec(j),20)])
     pass(j) = abs(Int_Err_Vec(j) < tol);
     j = j+1;
+    fprintf('\n')
 end
  
 % Test sumdisk using trigfun2 test functions defined on the non-default
 % domain
 disp('Test sumdisk using trigfun2 test functions defined on non-default domain')
-
+fprintf('\n')
 Int_Err_Vec = zeros(14,1);
 
 for I = 15:18
 
-    disp(['Test fn ' num2str(I)])
+    disp(['Test fn ' num2str(I) ', f = '])
     fdomain = TestFn_Cell{I,3};
+    f = TestFn_Cell{I,2};
+    disp(f)
     disp(['Domain [' num2str(fdomain) ']'])
     
-    f = TestFn_Cell{I,2};
+    
 %     g = @(x,y) f(((fdomain(2) - fdomain(1))/2)*x + (fdomain(2) + fdomain(1))/2,((fdomain(4) - fdomain(3))/2)*y + (fdomain(4) + fdomain(3))/2);
 %     polarfun = @(theta,r) g(r.*cos(theta),r.*sin(theta)).*r;
 %     Integral_Disc_integral2 = integral2(polarfun,0,2*pi,0,1,'AbsTol',1e-15,'RelTol',1e-15);
@@ -251,6 +262,7 @@ for I = 15:18
     disp(['Err = ' num2str(Int_Err_Vec(j),20)])
     pass(j) = abs(Int_Err_Vec(j) < tol);
     j = j+1;
+    fprintf('\n')
 end
 
 Max_Err = max(abs(Int_Err_Vec));
