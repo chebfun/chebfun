@@ -9,7 +9,7 @@ function fx = bary(x, fvals)
 %
 %   Example:
 %     xcheb = chebtech2.chebpts(14);
-%     fx = 1./( 1 + 25*xcheb.^2 );
+%     fx = 1./( 1 + 25*x.^2 );
 %     xx = linspace(-1, 1, 1000);
 %     [xx, yy] = meshgrid(xx, xx);
 %     ff = bary(xx + 1i*yy, fx);

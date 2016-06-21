@@ -20,11 +20,13 @@ if ( n == 0 )     % Special case (no points)
     x = []; 
     w = []; 
     v = []; 
+    t = [];
     
 elseif ( n == 1 ) % Special case (single point)
     x = 0; 
     w = 2; 
-    v = 1;     
+    v = 1; 
+    t = pi/2;
     
 else              % General case
     % Chebyshev points:
