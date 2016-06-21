@@ -43,7 +43,7 @@ if ( (m < 2e3) && (n < 2e3) )
         if ( Ic == 1 )
             T = spdiags(col(Ic)*ones(m, 1), 0, m, n);
         else
-            T = spdiags([col(Ic)*ones(m, 1) row(Ir)*ones(m , 1)], ...
+            T = spdiags([col(Ic)*ones(m, 1) row(Ir)*ones(n , 1)], ...
                 [-Ic + 1, Ir - 1], m, n);
         end
     else
