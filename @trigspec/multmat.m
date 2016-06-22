@@ -28,6 +28,11 @@ if ( numel(a) == 1 )
     return
 end
 
+% Deal with even case.
+if ( mod(length(a), 2) == 0 )
+    a = [a(1)/2; a(2:end); a(1)/2];
+end
+
 % Position of constant term.
 Na = floor(numel(a)/2) + 1;
 
