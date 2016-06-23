@@ -77,7 +77,6 @@ for j = ng-1:-1:1
 end   
 
 % Plot envelope
-m(m == 0) = a(3);
 semilogy(0:ng-1,m,'-g'), hold on
 
 % Plot Chebyshev coeffs of f and g
@@ -89,10 +88,23 @@ a = axis;
 a(2) = max(a(2),ng);
 a(4) = 1e03*a(4);
 a(3) = 1e-3*a(3);
-axis(a), set(gca,FS,9)
 
-% plot epsval
+% clear and replot with new axis
+clf
+
+% re-plot envelope
+m(m == 0) = a(3);
+semilogy(0:ng-1,m,'-g'), hold on
+
+% re-plot epsval
 semilogy(0:ng-1,0*m+epsval*m(1),'k--')
+
+% re-plot Chebyshev coeffs of f and g
+semilogy(0:ng-1,gc,'.k',MS,ms)
+semilogy(0:nf-1,fc,'or',MS,ms0)
+
+% rescale axis
+axis(a), set(gca,FS,9)
 
 % Clean up the string in various ways for printing.
 % This is a rather arbitrary collection of tricks that make
