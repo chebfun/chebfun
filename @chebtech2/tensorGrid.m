@@ -1,7 +1,6 @@
 function out = tensorGrid(N, dom)
 
 dim = numel(N);
-out = cell(dim, 1);
 if ( dim == 1 )
     m = N(1);
     out = chebpts(m, dom(1:2));
