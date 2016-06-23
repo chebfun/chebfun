@@ -5,7 +5,7 @@ if ( nargin < 1 )
     pref = chebfunpref; 
 end 
 
-tol = 1000*eps;
+tol = 100*eps;  % intentionally scaled to macheps, not chebfun2eps
 j = 1; 
 pass = [];
 
@@ -14,18 +14,16 @@ pass = [];
 ListLength = 18;
 
 TestFn_Cell = cell(ListLength,5);           
-% 1st column function name, 2nd colnum function itself
+% 1st column function name, 2nd column function itself
 % 3rd column is a non-defult domain
 % 4th column excat intergal on default domain given by integral 2
 % 5th column excat intergal on non-default domain given by integral 2
 
-
 TestFn_Cell{1,1} = 'Exp fn';
-TestFn_Cell{1,2} = @(x,y) exp(-30.*(x.^2+y.^2));
+TestFn_Cell{1,2} = @(x,y) exp(-30*(x.^2+y.^2));
 TestFn_Cell{1,3} = [0 3 0 3];
 TestFn_Cell{1,4} = 0.10471975511965049555;
 TestFn_Cell{1,5} = 6.5047850792584266207e-08;
-
 
 TestFn_Cell{2,1} = 'Bessel fn';
 TestFn_Cell{2,2} = @(x,y) besselj(0,10*sqrt(x.^2+y.^2));
@@ -129,145 +127,79 @@ TestFn_Cell{18,3} = [10 12 -2 2];
 TestFn_Cell{18,4} = 1.8200461512756580529;
 TestFn_Cell{18,5} = 3.6400923025513156617;
 
-
-% display the test functions on the default domain
-disp('Display the test functions on the default domain.')
-fprintf('\n')
-figure(1)
-for I = 1:ListLength
-    disp(['Display Test function ' num2str(I)])
-    f = TestFn_Cell{I,2};
-    f_Chebfun2 = chebfun2(f,'vectorize');
-    subplot(3,6,I)
-    plot(f_Chebfun2)
-    title(TestFn_Cell{I,1},'FontSize',10)
-end
-fprintf('\n')
 % Test sumdisk using chebfun2 test functions defined on the unit disk
-disp('Test sumdisk using chebfun2 test functions defined on the unit disk')
-fprintf('\n')
 Int_Err_Vec = zeros(36,1);
 
 for I = 1:14
 
-    disp(['Test fn ' num2str(I) ', f ='])
     f = TestFn_Cell{I,2};
-    disp(f)
-    disp('Domain [-1 1 -1 1]')
-%     polarfun = @(theta,r) f(r.*cos(theta),r.*sin(theta)).*r;
-%     Integral_Disc_integral2 = integral2(polarfun,0,2*pi,0,1,'AbsTol',1e-15,'RelTol',1e-15);
+   
     Integral_Disc_integral2 = TestFn_Cell{I,4};
-    disp(['integral2 gives I = ' num2str(Integral_Disc_integral2,20)])
     
-    f_Chebfun2 = chebfun2(f, [-1 1 -1 1], 'vectorize');
+    f_Chebfun2 = chebfun2(f, [-1 1 -1 1]);
     Integral_Disc_sumdisk = sumdisk(f_Chebfun2);
-    disp(['sumdisk gives I = ' num2str(Integral_Disc_sumdisk,20)])
     
     Int_Err_Vec(j) = Integral_Disc_integral2 - Integral_Disc_sumdisk;
-    disp(['Err = ' num2str(Int_Err_Vec(j))])
-    pass(j) = abs(Int_Err_Vec(j) < tol);
+    pass(j) = abs(Int_Err_Vec(j) < tol*vscale(f_Chebfun2));
     j = j+1;
-    fprintf('\n')
 end
 
-
 % Test sumdisk using trigfun2 test functions defined on the unit disk
-disp('Test sumdisk using trigfun2 test functions defined on the unit disk')
-fprintf('\n')
+
 Int_Err_Vec = zeros(14,1);
 
 for I = 15:18
-    disp(['Test fn ' num2str(I) ' f = '])
     f = TestFn_Cell{I,2};
-    disp(f)
-    disp('Domain [-1 1 -1 1]')
-%     polarfun = @(theta,r) f(r.*cos(theta),r.*sin(theta)).*r;
-%     Integral_Disc_integral2 = integral2(polarfun,0,2*pi,0,1,'AbsTol',1e-15,'RelTol',1e-15);
+  
     Integral_Disc_integral2 = TestFn_Cell{I,4};
-    disp(['integral2 gives I = ' num2str(Integral_Disc_integral2,20)])
     
-    f_Chebfun2 = chebfun2(f, [-1 1 -1 1], 'vectorize','trig');
+    f_Chebfun2 = chebfun2(f, 'trig');
     Integral_Disc_sumdisk = sumdisk(f_Chebfun2);
-    disp(['sumdisk gives I = ' num2str(Integral_Disc_sumdisk,20)])
     
     Int_Err_Vec(j) = Integral_Disc_integral2 - Integral_Disc_sumdisk;
-    disp(['Err = ' num2str(Int_Err_Vec(j),20)])
-    pass(j) = abs(Int_Err_Vec(j) < tol);
+    pass(j) = abs(Int_Err_Vec(j) < tol*vscale(f_Chebfun2));
     j = j+1;
-    fprintf('\n')
 end
 
 % Test sumdisk using chebfun2 test functions defined on the non-default
 % domain
-disp('Test sumdisk using chebfun2 test functions defined on non-default domain')
-fprintf('\n')
 Int_Err_Vec = zeros(14,1);
 
 for I = 1:14
 
-    disp(['Test fn ' num2str(I) ', f = '])
     fdomain = TestFn_Cell{I,3};
     f = TestFn_Cell{I,2};
-    disp(f)
-    disp(['Domain [' num2str(fdomain) ']'])
-
     
-%     g = @(x,y) f(((fdomain(2) - fdomain(1))/2)*x + (fdomain(2) + fdomain(1))/2,((fdomain(4) - fdomain(3))/2)*y + (fdomain(4) + fdomain(3))/2);
-%     polarfun = @(theta,r) g(r.*cos(theta),r.*sin(theta)).*r;
-%     Integral_Disc_integral2 = integral2(polarfun,0,2*pi,0,1,'AbsTol',1e-15,'RelTol',1e-15);
-%     Integral_Disc_integral2 = Integral_Disc_integral2 * (fdomain(2) - fdomain(1)) * (fdomain(4) - fdomain(3))/4;
-%     
     Integral_Disc_integral2 = TestFn_Cell{I,5};
-    disp(['integral2 gives I = ' num2str(Integral_Disc_integral2,20)])
     
-    f_Chebfun2 = chebfun2(f, fdomain, 'vectorize');
+    f_Chebfun2 = chebfun2(f, fdomain);
     Integral_Disc_sumdisk = sumdisk(f_Chebfun2);
-    disp(['sumdisk gives I = ' num2str(Integral_Disc_sumdisk,20)])
     
     Int_Err_Vec(j) = Integral_Disc_integral2 - Integral_Disc_sumdisk;
-    disp(['Err = ' num2str(Int_Err_Vec(j),20)])
-    pass(j) = abs(Int_Err_Vec(j) < tol);
+    pass(j) = abs(Int_Err_Vec(j) < tol*vscale(f_Chebfun2));
     j = j+1;
-    fprintf('\n')
 end
  
 % Test sumdisk using trigfun2 test functions defined on the non-default
 % domain
-disp('Test sumdisk using trigfun2 test functions defined on non-default domain')
-fprintf('\n')
+
 Int_Err_Vec = zeros(14,1);
 
 for I = 15:18
 
-    disp(['Test fn ' num2str(I) ', f = '])
     fdomain = TestFn_Cell{I,3};
-    f = TestFn_Cell{I,2};
-    disp(f)
-    disp(['Domain [' num2str(fdomain) ']'])
+    f = TestFn_Cell{I,2};    
     
-    
-%     g = @(x,y) f(((fdomain(2) - fdomain(1))/2)*x + (fdomain(2) + fdomain(1))/2,((fdomain(4) - fdomain(3))/2)*y + (fdomain(4) + fdomain(3))/2);
-%     polarfun = @(theta,r) g(r.*cos(theta),r.*sin(theta)).*r;
-%     Integral_Disc_integral2 = integral2(polarfun,0,2*pi,0,1,'AbsTol',1e-15,'RelTol',1e-15);
-%     Integral_Disc_integral2 = Integral_Disc_integral2 * (fdomain(2) - fdomain(1)) * (fdomain(4) - fdomain(3))/4;
-%     
     Integral_Disc_integral2 = TestFn_Cell{I,5};
-    disp(['integral2 gives I = ' num2str(Integral_Disc_integral2,20)])
     
-    f_Chebfun2 = chebfun2(f, fdomain, 'trig', 'vectorize');
+    f_Chebfun2 = chebfun2(f, fdomain, 'trig');
     Integral_Disc_sumdisk = sumdisk(f_Chebfun2);
-    disp(['sumdisk gives I = ' num2str(Integral_Disc_sumdisk,20)])
     
     Int_Err_Vec(j) = Integral_Disc_integral2 - Integral_Disc_sumdisk;
-    disp(['Err = ' num2str(Int_Err_Vec(j),20)])
-    pass(j) = abs(Int_Err_Vec(j) < tol);
+    pass(j) = abs(Int_Err_Vec(j) < tol*vscale(f_Chebfun2));
     j = j+1;
-    fprintf('\n')
 end
 
 Max_Err = max(abs(Int_Err_Vec));
-disp(['Maximum error among all tests = ' num2str(Max_Err,20)])
- 
-
 
 end

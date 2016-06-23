@@ -26,13 +26,12 @@ if ( isequal(colsTechf,@trigtech) )
     f = chebfun2(@(x,y) feval(f, x, y), Domainf, 'vectorize');
 end
 
-% Compute the integral
-coeffs = chebcoeffs2(f);                 % matrix of Chebyshev coefficients
-coeffs = coeffs(1:2:end, 1:2:end);       % Extract the even entries
+% Extract even-index Chebyshev coefficients
+coeffs = chebcoeffs2(f);              
+coeffs = coeffs(1:2:end, 1:2:end); 
 [nRow, nCol] = size(coeffs);
 
-
-% Entires on the main diagonal
+% Entries on the main diagonal
 if ( nRow == 1 )
     CoeffsDiag0 = coeffs(1, 1);
     Diag0Int = pi;
@@ -41,7 +40,7 @@ elseif ( nCol == 1 )
     CoeffsDiag0 = coeffs(1,1);
     Diag0Int = pi;
     
-else    % nRow > 1 or nCol > 1
+else    % nRow > 1 and nCol > 1
     % Extract 0 diagonal of the coeff matrix
     CoeffsDiag0 = diag(coeffs, 0);               
     Diag0Length = length(CoeffsDiag0);
@@ -53,7 +52,7 @@ else    % nRow > 1 or nCol > 1
     Diag0Int(1, 1) = pi;
 end
 
-% Entires on the +2 diagonal
+% Entries on the +2 diagonal
 
 if ( nCol == 1 )
     CoeffsDiag2 = 0;
@@ -74,7 +73,7 @@ else   % nCol > 1
     
 end
 
-% Entires on the -2 diagonal
+% Entries on the -2 diagonal
 if ( nRow == 1 )
     CoeffsDiagm2 = 0;
     Diagm2Int = 0;
@@ -92,11 +91,9 @@ else   % nRow > 1
     end
 end
 
-
 % Sum up all the terms
 I = (Diag0Int')*CoeffsDiag0 + (Diag2Int')*CoeffsDiag2 + ...
     (Diagm2Int')*CoeffsDiagm2;
-
 
 % Rescale the integral for non-default domain
 if ( any(Domainf ~= [-1 1 -1 1]) )
