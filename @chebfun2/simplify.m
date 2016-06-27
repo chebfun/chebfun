@@ -1,5 +1,5 @@
 function varargout = simplify(varargin)
-% Simplify a CHEBFUN2
+% Simplify a CHEBFUN2.
 %
 % F = SIMPLIFY( F ) compressed the representation of F to one that is
 % numerically the same, but requires fewer parameters to store. This

@@ -43,8 +43,18 @@ elseif ( isnumeric( x ) && strcmpi(y, ':') ) % f(x, :)
     % Simplify:
     out = simplify( out, [], 'globaltol' );
     
-elseif ( isnumeric( x ) && isnumeric( y ) )  % f(x, y)
-    
+elseif ( isnumeric(x) && isnumeric(y) )  % f(x, y)    
+    if ( ndims(x) >= 3 && isequal(size(x), size(y)) )
+        % x and y are tensors. Call from CHEBFUN3.
+        sizeX = size(x);
+        x = x(:);
+        y = y(:);
+        out = feval(f, x, y);
+        %% RESHAPE FOR OUTPUT:
+        out = reshape(out, sizeX);
+        return
+    end
+   
     takeTranspose = 0;
     
     % If the evaluation points are derived from meshgrid, then there is a

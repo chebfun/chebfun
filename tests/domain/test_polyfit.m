@@ -68,7 +68,7 @@ y = x.^2;
 dom = domain([0 1000]);
 f = polyfit(x, y, 2, dom);
 err = norm(feval(f, x) - y);
-pass(7) = err < 5e1*eps*vscale(f);
+pass(7) = err < 100*eps*vscale(f);
 
 %% Test POLYFIT for array-valued inputs:
 x = linspace(-1, 1, 10)';

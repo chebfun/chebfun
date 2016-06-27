@@ -234,9 +234,6 @@ g.idxMinus = idxMinus;
 g.nonZeroPoles = removePoles;
 g.pivotLocations = adjustPivotLocations(pivotLocations, pivotArray); 
 
-% Simplifying rows and columns after they are happy.
-g = simplify(g);
-
 g = projectOntoBMCI(g);
 
 end
@@ -354,9 +351,10 @@ Fm = Fm(2:m-1, :);
 
 % Zero function
 if ( (maxp == 0) && (maxm == 0) && ~removePole )
-    m = 3; 
-    n = 3;
-    cols = zeros(2*m-2, 1);
+    % Pass back a zero matrix that is the same size as F. 
+    % This ensures that spherefun( zeros(5) ) has a 5x5 (zero) coefficient 
+    % matrix.      
+    cols = zeros(m, 1);
     rows = zeros(n, 1);
     idxPlus = 1;
     idxMinus = [];

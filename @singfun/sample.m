@@ -1,4 +1,4 @@
-function varargout = sample(f, varargin{:})
+function varargout = sample(f, varargin)
 %SAMPLE   Sample a SINGFUN on an "appropriate" grid.
 %   VALUES = SAMPLE(F, N) returns a vector VALUES of the values of F at N
 %   "appropriately-chosen" points.  What "appropriately-chosen" means depends
