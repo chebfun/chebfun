@@ -113,7 +113,7 @@ end
 % Check the 'eps' flag works.
 ff = @(x,y,z) exp(-10*((x-1/sqrt(2)).^2 + (z-1/sqrt(2)).^2 + y.^2));
 f = spherefun(ff);
-g = spherefun(ff,'eps',1e-8);
+g = spherefun(ff,'eps', 1e-5);
 pass(23) = rank(g) < rank(f);
 [mf,nf] = length(f);
 [mg,ng] = length(g);
