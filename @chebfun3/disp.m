@@ -53,7 +53,7 @@ if ( all(floor(dom) == dom) )
     
 else    
     domainFormatString = ['domain: [%-3.3g, %3.3g] x [%-3.3g, %3.3g] x '...
-        '[%-3.3g, %3.3g]\n '];
+        '[%-3.3g, %3.3g]\n'];
 end
 
 str = ['   cols: Inf x %-' wid 'd chebfun\n   rows: Inf x %-' wid 'd '...
