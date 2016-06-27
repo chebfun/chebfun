@@ -10,14 +10,24 @@ if ( isa(f, 'chebfun3') )     % CHEBFUN3 .* ???
     
     if ( isa(g, 'double') )  % CHEBFUN3 .* DOUBLE
         h = mtimes(f, g);
-    elseif ( isa( g, 'chebfun3') )
+        
+    elseif ( isa(g, 'chebfun3') )
         bool = domainCheck(f, g);
         if ( bool )
             h = chebfun3(@(x, y, z) feval(f, x, y, z) .* feval(g, x, y, z), ...
                 f.domain);
         else
            error('CHEBFUN:CHEBFUN3:times:domain', 'Inconsistent domains');
-       end
+        end
+        
+    elseif ( isa(g, 'chebfun3v') )
+        nG = g.nComponents;
+        h = g;
+        gc = g.components;
+        for jj = 1:nG
+           h.components{jj} = times(f, gc{jj});
+        end
+
     else
         error('CHEBFUN:CHEBFUN3:times:unknown', ...
             ['Undefined function ''mtimes'' for input arguments of type %s ' ...
