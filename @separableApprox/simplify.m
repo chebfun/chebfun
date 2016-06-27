@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 function f = simplify( f, tol, rank_flag )
-=======
-function f = simplify(f, tol)
->>>>>>> origin/development
 % Simplify a SEPARABLEAPPROX
 %
 % F = SIMPLIFY( F ) compressed the representation of F to one that is
