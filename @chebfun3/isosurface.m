@@ -69,7 +69,8 @@ else
     end
 end
 
-if ( nargin == 2 && strcmp(varargin, 'noslider') ) % Levels are not specified. So, choose 3 levels yourself.
+if ( nargin == 2 && strcmp(varargin, 'noslider') ) 
+    % Levels are not specified. So, choose 3 levels yourself.
     fMin = min(v(:)); 
     fMax = max(v(:)); 
     fMean = (fMin + fMax)/2;
@@ -119,22 +120,21 @@ elseif ( nargin == 2 || (nargin == 4 && strcmp(varargin{2}, 'npts')) )
     
     if ( numel(isovals) == 1 )
          p = patch(isosurface(xx, yy, zz, v, isovals));
-         p.FaceColor = 'green'; 
+         p.FaceColor = 'red'; 
          p.EdgeColor = 'none';
          
-        isosurface(xx, yy, zz, v, isovals);
-        camlight('headlight')
-        lighting gouraud
-        view(3)
-        xlim([dom(1) dom(2)])
-        ylim([dom(3) dom(4)])
-        zlim([dom(5) dom(6)])
-        if ( ~holdState )
-            hold off
-        end
-        if ( nargout > 0 )
-            varargout = {p};
-        end
+         camlight('headlight')
+         lighting gouraud
+         view(3)
+         xlim([dom(1) dom(2)])
+         ylim([dom(3) dom(4)])
+         zlim([dom(5) dom(6)])
+         if ( ~holdState )
+             hold off
+         end
+         if ( nargout > 0 )
+             varargout = {p};
+         end
     end
     
 elseif ( nargin==3 && ~strcmp(varargin{1}, 'npts') ) % Levels, colors and/or style are specified.
@@ -159,7 +159,6 @@ elseif ( nargin==3 && ~strcmp(varargin{1}, 'npts') ) % Levels, colors and/or sty
     xlim([dom(1) dom(2)])
     ylim([dom(3) dom(4)])
     zlim([dom(5) dom(6)])
-    axis tight
     if ( ~holdState )
         hold off
     end
