@@ -182,6 +182,9 @@ classdef trigtech < smoothfun % (Abstract)
         % and barycentric (v) weights:
         [x, w] = trigpts(n);
         
+        % Tensor product grid of equispaced points in 1D, 2D or 3D:
+        out = tensorGrid(N, dom)
+        
         % Convert coefficients to values:
         values = coeffs2vals(coeffs);
         

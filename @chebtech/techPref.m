@@ -13,7 +13,7 @@ function outPref = techPref(inPref)
 %
 %   ABSTRACT PREFERENCES REQUIRED OF ALL TECHS
 %
-%     eps          - Relative tolerance used in construction and subsequent
+%     chebfuneps          - Relative tolerance used in construction and subsequent
 %      [2^-52]       operations.  See CHEBTECH.HAPPINESSCHECK for more details.
 %
 %     maxLength    - Maximum number of points used by the constructor.
