@@ -83,7 +83,7 @@ if ( isa(f, 'double') )
         f = argin{2};
         argin(1:2) = [];
         % Evaluate separableApprox: 
-        vals = feval(f, xx, yy);
+        vals = feval(f, xx, yy, 'polar');
         
     else
         error('CHEBFUN:SEPARABLEAPPROX:contour:badInputs', ...
@@ -100,7 +100,7 @@ elseif ( isa(f, 'separableApprox') )
         x = linspace( dom(1), dom(2), minplotnum );
         y = linspace( dom(3), dom(4), minplotnum );
         [xx, yy] = meshgrid(x, y);
-        vals = feval( f, xx, yy );
+        vals = feval( f, xx, yy, 'polar' );
 
     elseif ( (nargin >= 3) && isa(argin{1},'separableApprox') && isa(argin{2},'separableApprox') )
         % CONTOUR plot on a surface.
@@ -123,7 +123,7 @@ elseif ( isa(f, 'separableApprox') )
         [mxx, myy] = meshgrid(x, y);
         xx = feval(xx, mxx, myy); 
         yy = feval(yy, mxx, myy);
-        vals = feval(f, mxx, myy);
+        vals = feval(f, mxx, myy, 'polar');
 
     elseif ( ( nargin == 1) || ( ( nargin > 1 ) && ( isa(argin{1},'double') ) ) )    
         % CONTOUR(f) 
@@ -134,7 +134,7 @@ elseif ( isa(f, 'separableApprox') )
         [xx, yy] = meshgrid(x, y);
         
        
-        vals = feval(f, xx, yy );
+        vals = feval(f, xx, yy, 'polar' );
         
        
         
