@@ -1,4 +1,4 @@
-function y = feval(f, c1,c2,c3)
+function y = feval(varargin)
 %FEVAL  Evaluate a DISKFUN at one or more points.
 %   Y = FEVAL( F, THETA, r, 'polar')  evaluates a diskfun F at (THETA,
 %   r) where THETA and r are doubles representing central angle in radians 
@@ -11,34 +11,16 @@ function y = feval(f, c1,c2,c3)
 %   See also SUBSREF.
 
 %figure out if cartesian or polar
+ iscart = diskfun.coordsetting(varargin{:});
 
-%first check global setting and apply
-if strcmpi(f.coords,'cart')
-    iscart =1; 
-elseif strcmpi(f.coords, 'polar')
-    iscart =0; 
-end
-
-%second search for user-supplied 'polar' setting in feval: 
-if nargin > 3
-if strcmpi(c3, 'polar')
-    iscart = 0; 
-end
-
-%third search for user-supplied 'cart' setting in feval:
-if ~iscart
-    if strcmpi(c3, 'cart')
-        iscart=1;
-    end
-end
-end
 %now evaluate
+f = varargin{1};
 if nargin < 3 %only possibility for now is eval on a contour parametrized as complex chebfun
-    c1 = imag(c1);
-    c2 = real(c1); 
-   % y = chebfun(@(t) feval(f, c1(t), c2(t)), 'cart') 
+    c1 = varargin{2};
     y = chebfun(@(t) feval(f, real(c1(t)), imag(c1(t)), 'cart'), c1.domain, 'vectorize' );
 else
+    c1 = varargin{2};
+    c2 = varargin{3};
     if ( isnumeric(c1) && isnumeric(c2) ) %eval at a point
         if iscart
             [theta,r] = cart2pol(c1,c2); %convert to polar
@@ -66,7 +48,7 @@ else
          y = chebfun(@(t) feval(f, t.*cos(c1), ...
                               t.*sin(c1)) );
     else
-        error('CHEBFUN:DISKFUN:feval:argin',['Unkown input '...
+        error('CHEBFUN:DISKFUN:feval:argin',['Unknown input '...
             'feval(%s,%s)',c1,c2]);
     end
 end

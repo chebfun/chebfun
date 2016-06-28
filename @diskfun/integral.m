@@ -18,9 +18,9 @@ if ( nargin == 1 )                         % Another way to do sum2(f)
     
    I = integral2( f ); 
    
-else
+else  
     if strcmpi(varargin{1},'unitcircle')
-            c = chebfun(@(t) exp(1i*t), [-pi, pi])
+            c = chebfun(@(t) exp(1i*t), [-pi, pi]); 
     else
              c = varargin{1}; 
     end
@@ -36,6 +36,7 @@ else
         % Line integral: 
         I = sum( feval(f, c ) .* abs( diff( c ) ) );
     end
+    
     
 end
 

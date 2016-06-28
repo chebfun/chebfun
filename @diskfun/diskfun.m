@@ -81,7 +81,12 @@ classdef diskfun < separableApprox
         fdf = pol2cartf(f, r, th);
         
         % Disk harmonics
-        Y = diskharm(l,m,type)          
+        Y = diskharm(l,m,type) ;   
+        
+        %coordsettings: determines whether a function has input/wants output in
+         %polar or cartesian coords. 
+        
+        iscart = coordsetting(varargin);
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
