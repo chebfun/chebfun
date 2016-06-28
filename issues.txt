@@ -1,0 +1,46 @@
+
+
+
+Some standardChop-related issues still on my mind           LNT 21 Dec. 2015
+
+
+
+
+1. IMPERFECTIONS IN STANDARDCHOP BEHAVIOUR?
+
+
+1.1.  exp(3i*x) gives a bad plotcoeffs picture
+
+
+1.2.  Figs 5 vs 6 in examples/approx/Noisy are surprising
+
+
+
+2. THINGS WE MIGHT DO QUICKLY
+
+
+2.1.  Should Chebfun simplify after addition?
+ 
+
+2.2.  Should chebfun eps be renamed chebeps?  The current name is confusing.
+
+
+2.3.  The EXPLAIN code.  Better name?  Avoiding saving data?
+
+
+
+
+3. OTHER MATTERS
+
+
+3.1.  Can we work in a fixed length?  (Cf. ode-nonlin/Logistic2)
+
+
+3.2.  One day we should make solution of ODE IVPs scale-invariant.
+
+
+3.3.  What theorems can we prove concerning behaviour of standardChop?
+
+
+3.4.  Why do we get so many exactly zero coeffs?  From DCT doubling?
+      See e.g. the example of 1.1 above.
