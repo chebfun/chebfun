@@ -24,15 +24,15 @@ disp('   chebfun3t object ')
 
 if ( all(floor(dom) == dom) ) 
     % Corners of the domain are all integers.
-    domainFormatString = 'domain: [%-2d,%2d] x [%-2d,%2d] x [%-2d,%2d]';
+    domainFormatString = 'domain: [%-d, %d] x [%-d, %d] x [%-d, %d]';
     
 else    
-    domainFormatString = ['domain: [%-3.3g, %3.3g] x [%-3.3g, %3.3g] x '...
-        '[%-3.3g, %3.3g]'];
+    domainFormatString = ['domain: [%-.3g, %.3g] x [%-.3g, %.3g] x '...
+        '[%-.3g, %.3g]'];
 end
     
 str = ['   coeffs: %d x %d x %d \n   '...
-    domainFormatString '\n vertical scale = %-4.2g\n'];
+    domainFormatString '\n vertical scale = %-.2g\n'];
         
 fprintf(str, m, n, p, dom(1), dom(2), dom(3), dom(4), dom(5), dom(6), vscl);
 
