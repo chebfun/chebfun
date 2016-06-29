@@ -110,7 +110,7 @@ while ( ~isHappy && ~failure )
     % Apply 3D ACA to tensor of values
     [colsValues, rowsValues, pivotVals2D, pivotIndices2D, fibersValues, ...
         pivotVals3D, pivotIndices3D, iFail3D, iFail2D] = completeACA3D(...
-        vals, fiberDim, absTol, factor, dom, pref);
+        vals, absTol, factor, dom, pref);
     
     while ( (iFail3D || iFail2D) && grid < maxSamplePhase1 )
         % Refine sampling on tensor grid:
@@ -138,7 +138,7 @@ while ( ~isHappy && ~failure )
         % New 3D ACA:
         [colsValues, rowsValues, pivotVals2D, pivotIndices2D, ...
             fibersValues, pivotVals3D, pivotIndices3D, iFail3D, iFail2D] ...
-            = completeACA3D(vals, fiberDim, absTol, factor, dom, pref);
+            = completeACA3D(vals, absTol, factor, dom, pref);
     end
     
     % If the rank of the function is above maxRank then stop.
@@ -923,14 +923,14 @@ function [vectorize, op] = vectorCheck(op, dom)
 vectorize = false;
 [xx, yy, zz] = ndgrid(dom(1:2), dom(3:4), dom(5:6));
 try
-    A = op(xx, yy, zz);
+    A = feval(op, xx, yy, zz);
 catch
     throwVectorWarning();
     vectorize = true;
     return
 end
 
-A = op(xx, yy, zz);
+A = feval(op, xx, yy, zz);
 if ( any(isinf(A(:) ) ) )
     error('CHEBFUN:CHEBFUN3:constructor:inf', ...
         'Function returned INF when evaluated');
@@ -1092,10 +1092,9 @@ end
 pref.chebfuneps = relTol;
 
 % Perform 3D ACA with complete pivoting:
-fiberDim = 3;
 factor = 0;
 [colsValues, rowsValues, pivotVals2D, ~, tubesValues, pivotVals3D, ~, ~, ...
-    ~] = completeACA3D(op, fiberDim, absTol, factor, dom, pref);
+    ~] = completeACA3D(op, absTol, factor, dom, pref);
 
 sepRank = numel(pivotVals3D); % first separation rank
 diagValues2D = cell(sepRank, 1);
@@ -1126,14 +1125,11 @@ end
 %%
 function [colsBtd, rowsBtd, pivotValues2D, pivotIndices2D, fibers, ...
     pivotValues3D, pivotIndices3D, ifail3D, ifail2D] = completeACA3D(A, ...
-    fiberDim, tol, factor, dom, pref)
+    tol, factor, dom, pref)
 %   Non-adaptive (fixed-size) MACA, i.e., a 3D analogue of Gaussian 
 %   elimination with complete pivoting.
 %
 %   INPUTS:     A:        A given tensor of function values at 3D chebpts.
-%
-%               fiberDim: Dimension to be used for 1st separation of fibers
-%                         and slices.
 %
 %               tol:      A given tolerance on the magnitude of the pivots.
 %
@@ -1181,13 +1177,8 @@ tech = pref.tech();
 
 % Set up output variables.
 [n1, n2, n3] = size(A);
-if fiberDim == 1
-    width = min(n1, n2*n3);    % Use to tell us how many pivots we can take
-elseif fiberDim == 2
-    width = min(n2, n1*n3);   
-else
-   width = min(n3, n1*n2);
-end
+width = min(n3, n1*n2);        % Use to tell us how many pivots we can take
+                               % See Developer note in the following.
 pivotValues3D = zeros(1);      % Store an unknown number of Pivot values
 pivotIndices3D = zeros(1, 3);  % Store (col, row, tube) = entries of pivot location
 ifail3D = 1;                   % Assume we fail in 3D ACA
@@ -1196,7 +1187,7 @@ globalTol = [];
 sliceDim = [1 2];              % See Developer note in the following.
 
 % Main algorithm
-iter = 0;                  % Count number of interpolated rows/slices.
+iter = 0;                      % Count number of interpolated rows/slices.
 [infNorm, ind] = max(abs(reshape(A, numel(A), 1))); % Complete pivoting
 [col, row, tube] = ind2sub(size(A), ind);
 

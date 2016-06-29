@@ -43,6 +43,7 @@ if ( isa(F, 'chebfun3v') && ...
         vals2 = feval(F.components{2}, xx, yy, zz);
         vals3 = feval(F.components{3}, xx, yy, zz);
         h = quiver3(xx, yy, zz, vals1, vals2, vals3, varargin{:});
+        axis([x(1), x(end), y(1), y(end), z(1), z(end)])        
     end
 
 else

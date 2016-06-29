@@ -51,7 +51,8 @@ if ( nargin == 1 )
            I = sum2(f, S);
        end
 else
-    error('CHEBFUN:CHEBFUN3:integral2:nargin', 'Incorrect number of input arguments.');
+    error('CHEBFUN:CHEBFUN3:integral2:nargin', ['Incorrect number of '...
+        'input arguments.']);
 end
 
 end
@@ -60,5 +61,12 @@ function ds = cross(F, G)
 H = [F(2).*G(3) - F(3).*G(2); 
      F(3).*G(1) - F(1).*G(3);
      F(1).*G(2) - F(2).*G(1)];
-ds = sqrt(H(1).^2 + H(2).^2 + H(3).^2);
+% Developer note: In principle, here we should use
+% ds = sqrt(H(1).^2 + H(2).^2 + H(3).^2);
+% which uses chebfun2/sqrt. But, that code calls a singleSingTest
+% subroutine which sometimes gives error even in this case where the input
+% to sqrt is always nonnegative. We bypass that code by calling chebfun2
+% constructor as follows:
+ds = chebfun2(@(u,v) sqrt(abs(feval(H(1),u,v).^2 + feval(H(2), u, v).^2 +...
+    feval(H(3), u, v).^2)), H(1).domain);
 end

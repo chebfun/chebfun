@@ -14,11 +14,37 @@ if ( isempty(F) )
 end
 
 nF = F.nComponents;
-vals = zeros(nF, length(x));
+if ( isnumeric(x) && isnumeric(y) && isnumeric(z) )
+    
+    vals = zeros(nF, length(x));
+    % Evaluate each component:
+    for jj = 1:nF
+        vals(jj, :) = feval(F.components{jj}, x, y, z);  
+    end
 
-% Evaluate each component:
-for jj = 1:nF
-   vals(jj, :) = feval(F.components{jj}, x, y, z);  
+elseif ( isnumeric(x) && strcmpi(y, ':') && strcmpi(z, ':') ||...
+        strcmpi(x, ':') && isnumeric(y) && strcmpi(z, ':') ||...
+        strcmpi(x, ':') && strcmpi(y, ':') && isnumeric(z) )
+    % Is the output supposed to be a chebfun2v object?
+    
+    vals = chebfun2v();
+    vals.nComponents = nF;
+    vals.isTransposed = F.isTransposed;
+    % Evaluate each component:
+    for jj = 1:nF
+        vals.components{jj} = feval(F.components{jj}, x, y, z);
+    end
+    
+elseif( isnumeric(x) && isnumeric(y) &&  strcmpi(z, ':') || ...
+        isnumeric(x) && strcmpi(y, ':') && isnumeric(z) || ...
+        strcmpi(x, ':') && isnumeric(y) && isnumeric(z) )
+    % Is the output supposed to be a vector of 1D chebfuns, i.e., a 
+    % quasimatrix?
+    vals = chebfun(zeros(length(x), nF));
+    for jj = 1:nF
+        vals(:, jj) = feval(F.components{jj}, x, y, z);
+    end
+    
 end
 
 end
