@@ -24,7 +24,7 @@ function explain(varargin)
 %
 %   [AT] = Aurentz and Trefethen, "Chopping a Chebyshev series",
 %        available at http://arXiv.org/abs/1512.01803 and also
-%        expected to appear in ACM Trans. Math. Softw.
+%        to appear in ACM Trans. Math. Softw.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
