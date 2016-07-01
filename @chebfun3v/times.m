@@ -1,7 +1,7 @@
 function F = times(F, G)
 %.*   Pointwise multiplication of two CHEBFUN3V objects.
 %   F.*G computes pointwise, componentwise multiplication of two
-%   CHEBFUN3V objects, a CHEBFUN3V and a CHEBFUN3, or a CHBFUN3V 
+%   CHEBFUN3V objects, a CHEBFUN3V and a CHEBFUN3, or a CHEBFUN3V 
 %   and a double.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.

@@ -1,10 +1,10 @@
 function [normF, normloc] = norm(f, p)
 %NORM   Norm of a CHEBFUN3 object.
 %   NORM(F) = NORM(F,'fro') = sqrt(triple integral of abs(F)^2).
-%   NORM(F, 1) = NOT IMPLEMENTED AS IT NEEDS SPLITTING CAPABILITIES.
+%   NORM(F, 1) = NOT IMPLEMENTED
 %   NORM(F, inf) = global maximum in modulus.
-%   NORM(F, max) is the same as NORM(F, inf).
-%   NORM(F, min) = NOT IMPLEMENTED (NEEDS SPLITTING CAPABILITIES).
+%   NORM(F, 'max') is the same as NORM(F, inf).
+%   NORM(F, 'min') = NOT IMPLEMENTED
 %
 %   The inf norm also returns a second output giving a position where the 
 %   max occurs.
@@ -25,11 +25,11 @@ else
     switch ( p )  % Different cases on different norms.
         case 1
             error('CHEBFUN:CHEBFUN3:norm:norm', ...
-                'CHEBFUN3 does not support L1-norm, yet');
+                'CHEBFUN3 does not support L1-norm');
         
         case {2}  
             error('CHEBFUN:CHEBFUN3:norm:norm', ...
-                'not implemented yet');
+                'not implemented');
     
         case {'fro'}
             % Developer Note: Instead of normF = sqrt(sum3(f.^2)), which 

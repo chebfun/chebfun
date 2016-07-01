@@ -28,7 +28,7 @@ else
     switch ( p )  % Different cases on different norms.
         case 1
             error('CHEBFUN:SEPARABLEAPPROX:norm:norm', ...
-                'SEPARABLEAPPROX does not support L1-norm, yet');
+                'SEPARABLEAPPROX does not support L1-norm');
             
         case {2, 'fro'}  % Definite integral of f.^2
             % L^2-norm is sum of squares of sv.
