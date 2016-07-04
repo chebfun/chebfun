@@ -48,9 +48,14 @@ else
             % Frobenius norm of F.
             
         case {inf, 'inf', 'max'}
+            if ( isreal(f) )
             [vals, locs] = minandmax3(f);
             [normF, idx] = max(abs(vals));
             normloc = locs(idx, :);
+            else
+                [normF, normloc] = max3(conj(f).*f);
+                normF = sqrt(normF);
+            end    
             
         case {-inf, '-inf', 'min'}
             error('CHEBFUN:CHEBFUN3:norm:norm', ...
@@ -62,18 +67,10 @@ else
             
         otherwise
             if ( isnumeric(p) && isreal(p) )
-                if ( abs(round(p) - p) < eps )
-                    p = round(p); 
-                    f = f.^p;
-                    if ( ~mod(p,2) )
-                        normF = (sum3(f)) .^ (1/p);
-                    else
-                        error('CHEBFUN:CHEBFUN3:norm:norm', ...
-                            'p-norm must have p even for now.');
-                    end
+                if ( mod(p, 2) == 0 )
+                    normF = sum3((conj(f).*f).^(p/2))^(1/p);
                 else
-                    error('CHEBFUN:CHEBFUN3:norm:norm', ...
-                        'CHEBFUN3 does not support this norm.');
+                    normF = sum3(abs(f).^p)^(1/p);
                 end
             else
                 error('CHEBFUN:CHEBFUN3:norm:unknown', 'Unknown norm.');
