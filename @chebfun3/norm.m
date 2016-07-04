@@ -29,7 +29,7 @@ else
         
         case {2}  
             error('CHEBFUN:CHEBFUN3:norm:norm', ...
-                'not implemented');
+                'Not implemented');
     
         case {'fro'}
             % Developer Note: Instead of normF = sqrt(sum3(f.^2)), which 
@@ -59,18 +59,18 @@ else
             
         case {-inf, '-inf', 'min'}
             error('CHEBFUN:CHEBFUN3:norm:norm', ...
-                'not implemented.');
+                'Not implemented.');
             
         case {'op', 'operator'}
             error('CHEBFUN:CHEBFUN3:norm:norm', ...
-                'not implemented.');
+                'Not implemented.');
             
         otherwise
-            if ( isnumeric(p) && isreal(p) )
+            if ( isnumeric(p) && isreal(p) )                
                 if ( mod(p, 2) == 0 )
                     normF = sum3((conj(f).*f).^(p/2))^(1/p);
                 else
-                    normF = sum3(abs(f).^p)^(1/p);
+                    error('CHEBFUN:CHEBFUN3:norm:norm', 'Not implemented.');
                 end
             else
                 error('CHEBFUN:CHEBFUN3:norm:unknown', 'Unknown norm.');
