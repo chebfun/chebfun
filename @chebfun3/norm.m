@@ -49,13 +49,14 @@ else
             
         case {inf, 'inf', 'max'}
             if ( isreal(f) )
-            [vals, locs] = minandmax3(f);
-            [normF, idx] = max(abs(vals));
-            normloc = locs(idx, :);
+                [vals, locs] = minandmax3(f);
+                [normF, idx] = max(abs(vals));
+                normloc = locs(idx, :);
             else
-                [normF, normloc] = max3(conj(f).*f);
-                normF = sqrt(normF);
-            end    
+                [vals, locs] = minandmax3(conj(f).*f);
+                [normF, idx] = max(sqrt(abs(vals)));
+                normloc = locs(idx, :);                
+            end
             
         case {-inf, '-inf', 'min'}
             error('CHEBFUN:CHEBFUN3:norm:norm', ...
