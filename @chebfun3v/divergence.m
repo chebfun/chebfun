@@ -15,7 +15,11 @@ if ( isempty(F) )
 end
 
 
-if ( F.nComponents == 3 )
+if ( F.nComponents == 2 )
+    Fc = F.componentes;
+    f = diff(Fc{1}, 1, 1) + diff(Fc{2}, 1, 2);
+
+elseif ( F.nComponents == 3 )
     Fc = F.components; 
     diff1 = diff(Fc{1}, 1, 1);
     diff2 = diff(Fc{2}, 1, 2);
@@ -36,9 +40,6 @@ if ( F.nComponents == 3 )
     f = chebfun3(@(x,y,z) feval(diff1, x, y, z) + feval(diff2, x, y, z) + ...
         feval(diff3, x, y, z) , Fc{1}.domain, 'eps', tol);
     
-else                      
-     error('CHEBFUN:CHEBFUN3V:divergence:notSupported', ...
-        'three inputs are needed.')
 end
 
 end
