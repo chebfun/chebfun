@@ -371,7 +371,7 @@ z = y/4/np;
 mnxi = 2*np*( sqrt(z).*sqrt(1 - z) - acos(sqrt(z) ) ); % = -n*xin/i
 d = z - 1;
 if T == 1
-    p = real( 2/z^(1/4 + alpha/2)/(1 - z + 0i)^(1/4)*cos(acos(2*z - 1)*...
+    p = real( 2/z^(1/4 + alpha/2)/(1 - z)^(1/4)*cos(acos(2*z - 1)*...
         (1/2 + alpha/2) - mnxi - pi/4) );
     return;
 end
@@ -435,7 +435,7 @@ elseif (alpha == 1)
     end
     if ( T >= 3 )
         R1 = R1 + (-0.00048828125*z^(-1) )/np^2;
-        R2 = R2 + (+0.007812500000000007*z^(-1) )/np^2;
+        R2 = R2 + (+0.0078125*z^(-1) )/np^2;
         R1 = R1 + (+0.0004882812499999989*d^(-1) -0.01177300347222222*d^(-2) )/np^2;
         R2 = R2 + (-0.0529513888888889*d^(-1) -0.1154513888888889*d^(-2) )/np^2;
         R1 = R1 + (-0.02468532986111112*d^(-3) )/np^2;
@@ -446,8 +446,8 @@ elseif (alpha == 1)
     R1 = R1 + (-0.046875*d^(-1) -0.02604166666666667*d^(-2) )/np^1 + 1;
     R2 = R2 + (-0.2447916666666667*d^(-1) -0.02604166666666667*d^(-2) )/np^1;
 end
-p = real( 2/z^(1/4+alpha/2)*(cos(acos(2*z-1)*(1/2+alpha/2)-mnxi-pi/4)*R1 ...
-    -cos(acos(2*z-1)*(-1/2+alpha/2)-mnxi-pi/4)*R2)/(1-z+0i)^(1/4) );
+p = real( 2/z^(1/4 + alpha/2)*(cos(acos(2*z-1)*(1/2+alpha/2) - mnxi-pi/4)*R1 ...
+    -cos(acos(2*z-1)*(-1/2+alpha/2)-mnxi-pi/4)*R2)/(1 - z)^(1/4) );
 
 end
 
@@ -455,8 +455,7 @@ end
 
 % Compute the expansion of the orthonormal polynomial near zero without e^(x/2)
 function p = asyBessel(np, y, alpha, T)
-% z = y/4/np;
-z = (1+eps*1i)*y/4/np;
+z = y/4/np;
 npb = 2*np*(pi/2 + sqrt(z).*sqrt(1 - z) - acos(sqrt(z) ) ); % = 2i n sqrtphitn
 
 if T == 1
@@ -540,7 +539,7 @@ elseif ( alpha == 1 )
     R1 = R1 + (-0.03481481481481481*z^3 -0.003174603174603177*z^2 )/np^1;
     R2 = R2 + (+0.1358730158730159*z^3 +0.1476190476190476*z^2 )/np^1;
     R1 = R1 + (+0.03333333333333333*z^1 +0.08333333333333333 )/np^1 + 1;
-    R2 = R2 + (+0.1333333333333333*z^1 +0.5000000000000001 )/np^1;
+    R2 = R2 + (+0.1333333333333333*z^1 +0.5 )/np^1;
 end
 
 p = real( sqrt(2*pi)*(-1)^np*sqrt(npb)/z^(1/4)/ ...
@@ -548,8 +547,7 @@ p = real( sqrt(2*pi)*(-1)^np*sqrt(npb)/z^(1/4)/ ...
     pi*alpha/2)*R1 -sin( (alpha - 1)/2*acos(2*z - 1) - pi*alpha/2)*...
     R2)*besselj(alpha, npb) + (cos( (alpha + 1)/2*acos(2*z - ...
     1)- pi*alpha/2)*R1 - cos( (alpha - 1)/2*acos(2*z - 1) - pi*alpha/2)*...
-    R2)*(besselj(alpha-1, npb) - ...
-    alpha/npb*besselj(alpha, npb) ) ) );
+    R2)*(besselj(alpha-1, npb) - alpha/npb*besselj(alpha, npb) ) ) );
 
 end
 
@@ -643,7 +641,7 @@ end
 p = real( 4*sqrt(pi)/z^(1/4)/d^(1/4)*z^(-alpha/2)* ...
     ( (R1*cos( (alpha + 1)/2*acos(2*z - 1) ) -cos( (alpha - 1)/2* ...
     acos(2*z - 1) )*R2)*fn^(1/4)*airy(0,fn) + ...
-    (-sin( (alpha + 1)/2*acos(2*z - 1) )*R1 -sin( (alpha - 1)/2*...
+     1i*(-sin( (alpha + 1)/2*acos(2*z - 1) )*R1 +sin( (alpha - 1)/2*...
     acos(2*z - 1) )*R2)*fn^(-1/4)*airy(1,fn) ) );
 
 end
