@@ -15,7 +15,7 @@ function [x, w, v] = lagpts(n, int, meth)
 %   Glaser-Liu-Rokhlin fast algorithm, which is much faster for large N.
 %   METHOD = 'RH' will use asymptotics of Laguerre polynomials, and METHOD =
 %   'RHW' is O(sqrt(n)) as it stops when the weights are below realmin.
-%   By default LAGPTS uses 'GW' when N < 128, 'FAST' when N is in [128, 4200]
+%   By default LAGPTS uses 'GW' when N < 128, 'FAST' when N is in [128, 148]
 %   and else 'RH'.
 %
 % References:
@@ -91,7 +91,7 @@ if ( strcmpi(method,'GW') || ( ( n < 128 ) && strcmpi(method,'default') ) )
     v = v./max(v);
     v(2:2:n) = -v(2:2:n);
     
-elseif ( strcmpi(method,'fast') || ( ( n < 4200) && strcmpi(method,'default') ) )
+elseif ( strcmpi(method,'fast') || ( ( n < 149) && strcmpi(method,'default') ) )
     % Fast, see [2]
     [x, ders] = alg0_Lag(n);              % Nodes and L_n'(x)
     w = exp(-x)./(x.*ders.^2); w = w';    % Quadrature weights
@@ -302,6 +302,7 @@ factorw = -(1 - 1/(n + 1) )^(n + 1)*(1 - 1/n)*exp(1 + 2*log(2) )*4*pi*...
 % This is a heuristic for the number of terms in the expansions that follow.
 T = ceil(25/log(n) );
 
+noUnderflow = 1;
 for k = 1:mn
     if ( k > 3 ) % Use quadratic extrapolation for the initial guesses.
         x(k) = 3*x(k-1) - 3*x(k-2) + x(k-3);
@@ -310,7 +311,7 @@ for k = 1:mn
     l = 0; % Newton-Raphson iteration number
     ov = inf; % Previous/old value
     ox = x(k); % Old x
-    % [FIXME] Accuracy of the expansions up to eps would lower this bound.
+    % Accuracy of the expansions up to eps would lower this bound.
     while ( ( abs(step) > eps*400*x(k) ) && ( l < 20) )
         l = l + 1;
         pe = polyAsyRH(n, x(k), 0, T);
@@ -326,14 +327,17 @@ for k = 1:mn
         x(k) = x(k) -step;
         ov = pe;
     end
-    w(k) = factorw/polyAsyRH(n-1,x(k), 1,T)/polyAsyRH(n+1,x(k), 0,T)/exp(x(k));
-    if ( w(k) == 0 ) && ( k > 1 ) && ( w(k-1) > 0 ) % We could stop now.
+    if noUnderflow
+        w(k) = factorw/polyAsyRH(n-1,x(k),1,T)/polyAsyRH(n+1,x(k),0,T)/exp(x(k));
+    end
+    if noUnderflow && ( w(k) == 0 ) && ( k > 1 ) && ( w(k-1) > 0 )
         if compRepr
             w = w(1:k-1);
             x = x(1:k-1);
             return;
         else
             warning( ['Weights are < realmin from k about ' num2str(k) '.'] );
+            noUnderflow = 0;
         end
     end
 end
@@ -356,7 +360,7 @@ function p = polyAsyRH(np, y, alpha, T)
         return
     elseif y > 3.7*(np+alpha)
         % Use the expansion in terms of the (expensive) Airy function, although 
-        % the weights will underflow already for n = 300.
+        % all corresponding weights will underflow already for n = 186.
         p = asyAiry(np, y, alpha, T);
         return
     end
@@ -556,7 +560,7 @@ end
 % Compute the expansion of the orthonormal polynomial near 4n without e^(x/2)
 function p = asyAiry(np, y, alpha, T)
 z = y/4/np;
-fn = (np*3*1i*( sqrt(z).*sqrt(1 - z) - acos(sqrt(z) ) ))^(2/3);
+fn = (np*3i*( sqrt(z).*sqrt(1 - z) - acos(sqrt(z) ) ))^(2/3);
 d = z - 1;
 if T == 1
     p = real( 4*sqrt(pi)/z^(1/4)/d^(1/4)*z^(-alpha/2)* ...
