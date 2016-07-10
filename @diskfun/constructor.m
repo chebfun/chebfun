@@ -33,7 +33,7 @@ if ( nargin == 0 )          % DISKFUN( )
 end
 
 % Parse the inputs:
-[op, dom, pref, fixedRank, vectorize] = parseInputs(op, varargin{:});
+[op, dom, pref, fixedRank, vectorize, coords] = parseInputs(op, varargin{:});
 
 % Return op if construction is from coefficients which is handled in
 % parseInputs.
@@ -159,7 +159,12 @@ while ( ~isHappy && ~failure )
     g.idxMinus = idxMinus;
     g.nonZeroPoles = removePoles;
     g.pivotLocations = adjustPivotLocations(pivotLocations, pivotArray); 
-   
+    g.coords = coords; 
+    %if coords == 0 
+     %   g.coords = 'cart'
+    %else
+     %   g.coords = 'polar'
+    %end
     % Sample Test:
     if ( sampleTest )
         % wrap the op with evaluate in case the 'vectorize' flag is on:
@@ -236,7 +241,7 @@ g.idxPlus = idxPlus;
 g.idxMinus = idxMinus;
 g.nonZeroPoles = removePoles;
 g.pivotLocations = adjustPivotLocations(pivotLocations, pivotArray); 
-
+g.coords = coords;
 %g = projectOntoBMCI(g); %FIX THIS
 
 end
@@ -859,7 +864,7 @@ end
 end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [op, dom, pref, fixedRank, vectorize] = parseInputs(op, varargin)
+function [op, dom, pref, fixedRank, vectorize, coords] = parseInputs(op, varargin)
 
 if ( isa(op, 'char') )     % DISKFUN( CHAR )
     op = str2op(op);
@@ -874,22 +879,22 @@ if ( isa(op, 'function_handle') )
     end
 
 % Cartesian coords?
-isCart = find(strcmp(varargin,'cart'));
-if ( any(isCart) )
-    coords = 0;
-    op = @(th, r) diskfun.pol2cartf(op,th, r); %switch to polar coords
+%isCart = find(strcmp(varargin,'cart'));
+%if ( any(isCart) )
+ %   coords = 'cart';
+  %  op = @(th, r) diskfun.pol2cartf(op,th, r); %switch to polar coords
 %else
    % coords=1;
-end
+%end
 %end
 
 %polar coords
-isCart = find(strcmp(varargin,'polar'));
-if ( any(isCart) )
-    coords = 1;
+ispolar = find(strcmp(varargin,'polar'));
+if ( any(ispolar) )
+    coords = 'polar';
     %op = @(th, r) diskfun.pol2cartf(op,th, r); %switch to polar coords
 else  
-    coords=0; %default to Cartesian coords.
+    coords= 'cart'; %default to Cartesian coords.
     op = @(th, r) diskfun.pol2cartf(op,th, r); %switch to polar coords
 end
 end
