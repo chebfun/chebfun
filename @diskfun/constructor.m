@@ -241,7 +241,7 @@ g.idxPlus = idxPlus;
 g.idxMinus = idxMinus;
 g.nonZeroPoles = removePoles;
 g.pivotLocations = adjustPivotLocations(pivotLocations, pivotArray); 
-g.coords = coords;
+g.coords = 'cart';
 %g = projectOntoBMCI(g); %FIX THIS
 
 end
@@ -897,6 +897,8 @@ else
     coords= 'cart'; %default to Cartesian coords.
     op = @(th, r) diskfun.pol2cartf(op,th, r); %switch to polar coords
 end
+else
+    coords = 'cart';
 end
 %coords=1 -> polar
 %coords=0 -> cartesian

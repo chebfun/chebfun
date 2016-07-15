@@ -130,7 +130,7 @@ elseif ( isa(f, 'separableApprox') )
          
         y = linspace( dom(3), dom(4), minplotnum );
         [xx, yy] = meshgrid(x, y);
-        vals = feval(f, xx, yy );
+        vals = feval(f, xx, yy, 'polar' );
         
          
         %vals = feval(f, xx, yy );

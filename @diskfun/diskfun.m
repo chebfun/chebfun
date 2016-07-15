@@ -1,4 +1,31 @@
 classdef diskfun < separableApprox
+% DISKFUN class for representing functions on the unit disk.
+% 
+%   Class for approximating functions defined on the unit disk. The 
+%   functions should be smooth.
+%
+% DISKFUN(F) constructs a DISKFUN object representing the function F on
+% the unit. F can have the following form:
+%    1. A function handle in Cartesian coordinates (x,y), e.g., @(x,y) x.*y + cos(x).
+%    2. A function handle in polar coordinates (theta,r), where
+%       theta is the angular variable and satisfies -pi <= theta <= pi
+%       and r is the radial variable and satisfies 0 <= r < 1,
+%       e.g., @(theta,r) cos(r.*sin(theta))
+%    3. A matrix of numbers. 
+% If F is a function handle then it should allow for vectorized 
+% evaluations.
+%
+% If F is a matrix, F = (f_ij), the numbers fij are used as function values
+% at tensor Fourier-Chebyshev points in the polar coordinate 
+% system (theta, r) in [-pi,pi]x[0,1].
+%
+% The DISKFUN software system is based on: 
+%
+% A. Townsend, H. Wilber, and G. Wright, Computing with function on
+% spherical and polar geometries II: The disk, submitted, 2016. 
+%
+% See also CHEBFUN2, SPHEREFUN, DISKFUNV.
+
     
     % TODO: Improve documentation of input options.
     
