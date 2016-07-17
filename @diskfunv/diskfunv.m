@@ -98,13 +98,13 @@ classdef diskfunv
                     iscart = 1; 
                  else
              %if two diskfuns are given, set to match or go and get flag if present.
-                 iscart = diskfun.coordsetting(varargin);  
+                 iscart = diskfun.coordsetting(varargin{:});  
                  end
-             end
+             
              
              %diskfun and a function given; grab diskfun setting and look
              %for flag
-             if isa(varargin{1}, 'diskfun') && isa(varargin{2}, 'function_handle')
+             elseif isa(varargin{1}, 'diskfun') && isa(varargin{2}, 'function_handle')
                  iscart = diskfun.coordsetting(varargin);
              elseif isa(varargin{1}, 'function_handle') && isa(varargin{2}, 'diskfun')
                  iscart = diskfun.coordsetting(varargin{2}, varargin{3:end});
