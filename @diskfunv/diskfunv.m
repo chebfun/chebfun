@@ -22,6 +22,7 @@ classdef diskfunv
         isTransposed % transposed?
         domain % Domain of F
         nComponents % number of components. 
+        coords % polar or Cartesian coordinates.
     end
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -84,9 +85,45 @@ classdef diskfunv
                 end
             end
             
-            % Unwrap input arguments;
+            
+            % determine if coordinate system has been provided
+            % if conflicting coord systems are used, default to Cartesian.
+             if isa(varargin{1}, 'diskfun') && isa(varargin{2}, 'diskfun')
+                 if ((nargin < 3) && (~strcmpi(varargin{1}.coords, varargin{2}.coords)) )
+                     warning('DISKFUNV:CONSTRUCTOR:COORDS', ...
+                    ['The two components have different coordinate' ...
+                    'settings. Now setting the diskfunv object to evaluate'...
+                    'in Cartesian coordinates. Add the flag ''polar'' to'...
+                    'change.'])
+                    iscart = 1; 
+                 else
+             %if two diskfuns are given, set to match or go and get flag if present.
+                 iscart = diskfun.coordsetting(varargin);  
+                 end
+             end
+             
+             %diskfun and a function given; grab diskfun setting and look
+             %for flag
+             if isa(varargin{1}, 'diskfun') && isa(varargin{2}, 'function_handle')
+                 iscart = diskfun.coordsetting(varargin);
+             elseif isa(varargin{1}, 'function_handle') && isa(varargin{2}, 'diskfun')
+                 iscart = diskfun.coordsetting(varargin{2}, varargin{3:end});
+             else %just check for flag
+                 ispolar = find(strcmp(varargin,'polar'));
+                    if ( any(ispolar) )
+                    iscart = 0;
+                    else  
+                    iscart= 1; %default to Cartesian coords.
+                    end
+             end
+            if ~iscart  %set coord sys for constructing diskfuns
+                coordset = 'polar';
+            else
+                coordset = 'cart';
+            end
+            % Unwrap input arguments; first two inputs are components
             component = 1;
-            for jj = 1:numel( varargin )
+            for jj = 1:2
                 if ( iscell( varargin{jj} ) ) 
                     for kk = 1:numel( varargin{jj} )
                         fh{component} = varargin{jj}{kk};
@@ -100,28 +137,29 @@ classdef diskfunv
             varargin = fh; 
             
             % Convert all function handles to diskfun objects: 
-            for jj = 1:numel(varargin)
+            for jj = 1:2
                 if ( isa( varargin{jj}, 'function_handle') )
                     if ( ~vectorize )
-                        newcheb = diskfun( varargin{jj}, dom);
+                        newcheb = diskfun( varargin{jj}, coordset);
                     else
-                        newcheb = diskfun( varargin{jj}, dom, 'vectorize');
+                        newcheb = diskfun( varargin{jj}, 'vectorize', coordset);
                     end
                     fh{jj} = newcheb;
                 elseif ( isa( varargin{jj}, 'diskfun') )
                     fh{jj} = varargin{jj};
+                    fh{jj}.coords = coordset;
                 elseif ( isa( varargin{jj}, 'chebfun') )
-                    fh{jj} = diskfunfun( varargin{jj}, dom);
+                    fh{jj} = diskfunfun( varargin{jj}, coordset);
                 elseif ( isa( varargin{jj}, 'double') )
-                    fh{jj} = diskfun( varargin{jj}, dom);  
+                    fh{jj} = diskfun( varargin{jj}, coordset);
                 end
             end
 
             % Stop now if there are too many components
-            if ( numel( fh ) > 3 ) 
-                error('DISKFUN:DISKFUNV:diskfunv:arrayValued', ...
-                          'More than three components is not supported.')
-            end 
+            %if ( numel( fh ) > 3 ) 
+             %   error('DISKFUN:DISKFUNV:diskfunv:arrayValued', ...
+             %             'More than three components is not supported.')
+            %end 
             
             % Stop now if there are too few components: 
             if ( numel( fh ) < 2 ) 
@@ -151,6 +189,7 @@ classdef diskfunv
             F.isTransposed = 0;
             F.domain = dom;
             F.nComponents = numel(fh);
+            F.coords = coordset;
         end
     end 
     

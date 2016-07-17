@@ -6,6 +6,7 @@ function val = get( f, propName )
 %    'components'  - The DISKFUNs making up the components of F.
 %    'nComponents'  - The number of components in a DISKFUN.
 %    'isTransposed' - Is the DISKFUNV a column or row vector?
+%    'coords' - coordinate system the diskfunv is evaluated in.
 
 % Copyright 2015 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -26,6 +27,8 @@ switch propName
         val = f.nComponents; 
     case 'isTransposed'
         val = f.isTransposed;
+    case 'coords'
+        val = f.coords;
     otherwise
         error('DISKFUN:DISKFUNV:get:propName', ...
             [propName, ' is not a valid DSIKFUNV property.'])

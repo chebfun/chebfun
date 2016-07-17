@@ -897,8 +897,9 @@ else
     coords= 'cart'; %default to Cartesian coords.
     op = @(th, r) diskfun.pol2cartf(op,th, r); %switch to polar coords
 end
-else
-    coords = 'cart';
+
+%else
+ %   coords = 'cart';
 end
 %coords=1 -> polar
 %coords=0 -> cartesian

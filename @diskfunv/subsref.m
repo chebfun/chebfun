@@ -53,7 +53,7 @@ switch ( ref(1).type )
         if ( length(indx) > 1 )
             x = indx{1}; 
             y = indx{2}; % where to evaluate
-            vals = feval(F, x, y, 'cart'); 
+            vals = feval(F, x, y, ref(1).subs{:}); 
             varargout = { vals }; 
         else
             if ( isa(indx{1},'double') )

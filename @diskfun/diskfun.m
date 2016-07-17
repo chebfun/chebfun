@@ -74,7 +74,15 @@ classdef diskfun < separableApprox
     %% CLASS METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods
-        %f = conj(f);
+        function f = set.coords(f, propName)
+            if (strcmp(propName, 'polar') || strcmp(propName, 'cart'))
+                f.coords = propName;
+            else  %error if unacceptable setting is provided
+    error('CHEBFUN:DISKFUN:setcoords:propName', ...
+            'Coordinate setting must be either ''polar'' or ''cart''')
+            end
+        end
+        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -101,7 +109,7 @@ classdef diskfun < separableApprox
     methods ( Access = public, Static = true )
         
         % Fast Poisson solver: 
-        u = Poisson( f, bc, m, n );
+        u = poisson( f, bc, m, n );
         
         % Converts a function in polar coordinates to one in Cartesian
         % coordinates on the disk
@@ -143,4 +151,5 @@ classdef diskfun < separableApprox
         %alpha = 50;  % Growth factor control.
     end
     
+   
 end

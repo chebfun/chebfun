@@ -11,6 +11,7 @@ function val = get( f, propName )
 %    'idxPlus'
 %    'idxMinus'
 %    'nonZeroPoles'
+%    'coords'
 
 % Loop through an array of DISKFUN objects.
 if ( numel(f) > 1 )
