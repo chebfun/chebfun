@@ -25,16 +25,19 @@ throwBCwarning = true;  % Throw a warning for inconsistent BCs
 timeChunks = 51;        % Default number of time slices if not specified
 
 % Parse the variable inputs:
-opt = pdeset();
-for k = 1:numel(varargin)
-    if ( isstruct(varargin{k}) )
-        opt = varargin{k};
-        varargin(k) = [];
-        break
+if ( numel(varargin) == 2 )
+    opt = varargin{1};
+    opt.N = varargin{2};
+elseif ( numel(varargin) == 1 )
+    if ( isstruct(varargin{1}) )
+        opt = varargin{1};
+    else
+        opt = pdeset;
+        opt.N = varargin{1};
     end
+else
+    opt = pdeset;
 end
-opt = pdeset(opt, varargin{:});
-
 optN = opt.N;
 if ( isempty(optN) )
     optN = NaN;
