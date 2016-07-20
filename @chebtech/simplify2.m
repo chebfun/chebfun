@@ -1,4 +1,4 @@
-function f = simplify(f, tol)
+function f = simplify2(f, tol)
 %SIMPLIFY  Remove small trailing Chebyshev coeffs of a happy CHEBTECH object.
 %  G = SIMPLIFY(F) attempts to compute a 'simplified' version G of the happy
 %  CHEBTECH object F such that LENGTH(G) <= LENGTH(F) but ||G - F|| is small in
@@ -41,6 +41,30 @@ f = prolong(f,N);
 coeffs = f.coeffs;
 [n, m] = size(coeffs);
 coeffs = chebtech2.vals2coeffs(chebtech2.coeffs2vals(coeffs));
+
+%%%% MODIFICATION FOR "EXTEND2"
+
+v = chebtech2.coeffs2vals(coeffs);  % Chebyshev transform
+ii = (1:n)';                        % indices of all points
+di = [0;sign(randn(n-2,1));0];      % random perturbations of the indices
+jj = ii + di;                       % indices perturbed
+xx = chebpts(n);                    % relevant Cheb points
+dx = diff(xx);                      % distances between Cheb pts
+dd = 0*xx;                          % perturbation distances
+ll = find(di<0);                    % indices that perturb to the left
+dd(ll) = -dx(ll-1);                 % associated signed distance
+rr = find(di>0);                    % indices that perturb to the right
+dd(rr) = dx(rr);                    % associated distance
+yy = v(jj)-v;                       % vertical jump with perturbation
+ep = 0.5*2^(-52);                   % typical epsilon on [-1,1]
+ww = 0*xx;                          % local weights
+mm = find(di~=0);                   % indices that move
+ww(mm) = ep./dd(mm);                % local weights
+ww = ww.*rand(n,1);                 % randomized weight
+v2 = v + ww.*yy;                    % perturbed data
+coeffs = chebtech2.vals2coeffs(v2); % inverse Chebyshev transform
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Use the default tolerance if none was supplied.
 if ( nargin < 2 )

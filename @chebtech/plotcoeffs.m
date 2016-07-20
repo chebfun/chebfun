@@ -72,7 +72,7 @@ if ( vscl > 0 )
     else
         % Min of eps*vscale and the minimum non-zero coefficient:
         absCoeffs(~absCoeffs) = min( min(eps*vscl), ...
-                                 min(absCoeffs(logical(absCoeffs))) );                             
+                                 0 ); %min(absCoeffs(logical(absCoeffs))) );                             
     end
 else
     % Add eps for zero CHEBTECHs:
@@ -89,7 +89,9 @@ if ( any(doBar) )
 end
 
 % Plot the coeffs:
-h = semilogy(xx, yy, args{:}); 
+NN = length(xx);
+ms = 4 + 80/sqrt(NN+4);
+h = semilogy(xx, yy, '.','markersize',ms);    % args{:}); 
 hold on
 
 % Do a loglog plot:
