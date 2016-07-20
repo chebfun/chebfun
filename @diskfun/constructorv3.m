@@ -160,7 +160,11 @@ while ( ~isHappy && ~failure )
     g.nonZeroPoles = removePoles;
     g.pivotLocations = adjustPivotLocations(pivotLocations, pivotArray); 
     g.coords = coords; 
-  
+    %if coords == 0 
+     %   g.coords = 'cart'
+    %else
+     %   g.coords = 'polar'
+    %end
     % Sample Test:
     if ( sampleTest )
         % wrap the op with evaluate in case the 'vectorize' flag is on:
@@ -181,8 +185,8 @@ g = simplify( g, pref.chebfuneps );
 % Fix the rank, if in nonadaptive mode.
 g = fixTheRank( g , fixedRank );
 
-% Project onto BMC-II symmetry so the function is smooth on the sphere.
-%g = projectOntoBMCII( g );  
+% Project onto BMC-I symmetry so the function is smooth on the sphere.
+%g = projectOntoBMCI( g );  %CHANGE THIS
 
 end
 
@@ -238,7 +242,7 @@ g.idxMinus = idxMinus;
 g.nonZeroPoles = removePoles;
 g.pivotLocations = adjustPivotLocations(pivotLocations, pivotArray); 
 g.coords = 'cart';
-%g = projectOntoBMCII(g); 
+%g = projectOntoBMCI(g); %FIX THIS
 
 end
 
@@ -253,7 +257,7 @@ function [pivotIndices, pivotArray, removePoles, isHappy, cols, pivots, ...
 % Setup
 [m, n] = size(F);
 minSize = min(m, n);
-width = minSize/factor;  
+width = minSize/factor;  %WHAT IS THIS FOR
 pivotIndices = []; 
 pivotArray = [];
 isHappy = 0;  % Assume we are not happy
@@ -281,8 +285,8 @@ if ( m == 1 )
     return;
 end
 
-C = F(:, 1:n/2);   % (2,2) block of F.
-B = F(:, n/2+1:n); % (1,2) Block of F.
+B = F(:, 1:n/2);   % (1,2) block of F.
+C = F(:, n/2+1:n); % (2,2) Block of F.
 Fp = 0.5*(B + C);  %SHOULD WE ADD A TEST FOR EVEN-ODD? 
 Fm = 0.5*(B - C);
 
@@ -347,10 +351,8 @@ end
 % Remove the rows corresponding to the poles before determining the
 % rank.  We do this because then F is an even BMC matrix, which is what the
 % code below requires.
-%Fp = Fp(1:m-1, :);
-%Fm = Fm(1:m-1, :);
-Fp = Fp(2:m, :);
-Fm = Fm(2:m, :);
+Fp = Fp(1:m-1, :);
+Fm = Fm(1:m-1, :);
 
 [maxp, idxp] = max(abs(Fp(:)));
 [maxm, idxm] = max(abs(Fm(:)));
@@ -462,36 +464,34 @@ if ( nargout > 4 )
     rows = zeros(n, rankCount);
     pivots = zeros(rankCount, 1);
     if ( kplus ~= 0 )
-        %cols(1:m-1,idxPlus) = colsPlus;
-        cols(m+1:2*m-1,idxPlus) = colsPlus;
-        cols(1:m-1,idxPlus) = flipud(colsPlus);
+        cols(1:m-1,idxPlus) = colsPlus;
+        cols(m+1:2*m-1,idxPlus) = flipud(colsPlus);
         rows(:, idxPlus) = [ rowsPlus rowsPlus ].';
         pivotPlus = pivotArray(pivotArray(:,1) ~= 0,1);
         pivots(idxPlus) = pivotPlus;
     end
     
     if ( kminus ~= 0 )
-        cols(m+1:2*m-1, idxMinus) = colsMinus;
-        cols(1:m-1, idxMinus) = -flipud(colsMinus);
-        rows(:, idxMinus) = [ -rowsMinus rowsMinus ].';
+        cols(1:m-1, idxMinus) = colsMinus;
+        cols(m+1:2*m-1, idxMinus) = -flipud(colsMinus);
+        rows(:, idxMinus) = [ rowsMinus -rowsMinus ].';
         pivotMinus = pivotArray(pivotArray(:,2) ~= 0,2);
         pivots(idxMinus) = pivotMinus;
     end
     
     if removePoles
-        cols(:, 1) = [ flipud(colPole); colPole(2:m)];
+        cols(:, 1) = [ colPole; flipud(colPole(1:m-1))];
         rows(:, 1) = [ rowPole rowPole ];
         pivots(1) = rowVal;
     end
 
 end
 
-
 % Adjust the pivot locations so that they now correspond to F having the 
 % poles. (if pole is added to end, this shouldn't affect pivot indices)
-if ( ~isempty(pivotIndices) )
-    pivotIndices(:, 1) = pivotIndices(:, 1) + 1;
-end
+%if ( ~isempty(pivotIndices) )
+ %   pivotIndices(:, 1) = pivotIndices(:, 1) + 1;
+%end
 
 % Put the poles at the begining of the pivot locations array and also 
 % include the pivot matrix.
@@ -544,8 +544,8 @@ while ( ~(happy_columns && happy_rows) && ~failure )
     
     [x, y] = getPoints(m, n);
     [xx, yy] = meshgrid(col_pivots, y);
-    newCols = real(evaluate(h, xx +pi , yy, vectorize)); 
-    temp = real(evaluate(h, xx, yy, vectorize));
+    newCols = real(evaluate(h, xx , yy, vectorize)); 
+    temp = real(evaluate(h, xx+pi, yy, vectorize));
     newColsPlus = 0.5*(newCols + temp);
     newColsMinus = 0.5*(newCols - temp);
     
@@ -559,7 +559,7 @@ while ( ~(happy_columns && happy_rows) && ~failure )
     end
     
     newRowsPlus = 0.5*(newRows(:, 1:n) + newRows(:, n+1:2*n));
-    newRowsMinus = 0.5*(-newRows(:, 1:n)+ newRows(:, n+1:2*n) );
+    newRowsMinus = 0.5*(newRows(:, 1:n)-newRows(:, n+1:2*n) );
     
     colsPlus = zeros(m+1, numPosPivots);
     colsMinus = zeros(m+1, numMinusPivots);
@@ -664,16 +664,16 @@ while ( ~(happy_columns && happy_rows) && ~failure )
     end
     
     if ( removePoles )
-        colsPlus(1, 2:end) = 0;
-        %colsPlus(end, 2:end) = 0;
+        %colsPlus(1, 2:end) = 0;
+        colsPlus(end, 2:end) = 0;
     elseif ( ~isempty(colsPlus) )
-        colsPlus(1,:) = 0;
-        %colsPlus(end,:) = 0;
+        %colsPlus(1,:) = 0;
+        colsPlus(end,:) = 0;
     end
     
     if ~isempty(colsMinus)
-        colsMinus(1, :) = 0;
-        %colsMinus(end, :) = 0;
+        %colsMinus(1, :) = 0;
+        colsMinus(end, :) = 0;
     end
     
         % Happiness check for columns:
@@ -682,8 +682,7 @@ while ( ~(happy_columns && happy_rows) && ~failure )
     temp1 = sum([colsPlus colsMinus],2); 
     temp2 = sum([colsPlus -colsMinus],2);
     
-    %colValues = [temp1;temp2(m:-1:1)];
-    colValues = [ flipud(temp2); temp1(2:m)];
+    colValues = [temp1;temp2(m:-1:1)];
     colData.hscale = norm(dom(3:4), inf);
     colData.vscale = vscale;
     colChebtech1 = chebtech2.make(colValues, colData);
@@ -704,7 +703,7 @@ while ( ~(happy_columns && happy_rows) && ~failure )
     % Adaptive:
     if( ~happy_columns )
         m = 2*m;
-        ii = [1:2:m+1 m+2:2:2*m]; 
+        ii = [1:2:m-1 m+2:2:2*m]; 
         id_rows = ii(id_rows); 
     end
     
@@ -728,12 +727,12 @@ end
 
 % Combine the types of pivots and set-up indices to track them
 cols = zeros(2*size(colsPlus, 1)-1, totalPivots);
-cols(:, idxPlus) = [ flipud(colsPlus) ;colsPlus(2:end, :)  ];
-cols(:, idxMinus) = [ -flipud(colsMinus); colsMinus(2:end, :)];
+cols(:, idxPlus) = [ colsPlus ;flipud(colsPlus(1:end-1, :))  ];
+cols(:, idxMinus) = [ colsMinus; -flipud(colsMinus(1:end-1, :))];
 
 rows = zeros(2*size(rowsPlus, 2), totalPivots);
 rows(:, idxPlus) = [ rowsPlus rowsPlus ].';
-rows(:, idxMinus) = [ -rowsMinus rowsMinus ].';
+rows(:, idxMinus) = [ rowsMinus -rowsMinus ].';
 
 pivotLocations = [ col_pivots row_pivots ];
 
@@ -766,8 +765,10 @@ function [x, y] = getPoints( m, n)
 
 x = trigpts(2*n, [-pi, pi]);
 y =  chebpts(2*m+1, [-1, 1]); %doubled;
-y = y((2*m)/2+1:end); %this includes pole (r=0), which needs evaluated. 
-                    %currently gives [0, 1] with 0 at start 
+y = y(1:(2*m)/2+1); %this includes pole (r=0), which needs evaluated. 
+                    %currently gives [-1, 0] with 0 at end (eventually
+                    %should be changed so that we work on more "natural"
+                    % quadrants/match spherefun)
 end
 
 
@@ -822,8 +823,8 @@ function pivLocNew = adjustPivotLocations(pivLoc, pivArray)
 % write. If this is changed then look the combine and partition methods
 % need to also be changed.
 
-%pivLoc(:,2) = -pivLoc(:,2); %vertical in [0 1]
-%pivLoc(:,1) = pivLoc(:,1) + pi;
+pivLoc(:,2) = -pivLoc(:,2); %vertical in [0 1]
+pivLoc(:,1) = pivLoc(:,1) + pi;
 
 pivLocNew = zeros(sum(sum(pivArray ~= 0)), 2);
 count = 1;

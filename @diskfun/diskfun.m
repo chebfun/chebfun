@@ -89,7 +89,7 @@ classdef diskfun < separableApprox
     %% HIDDEN METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false, Hidden = true )
-        
+        f = projectOntoBMCII(f);
     end
       
        

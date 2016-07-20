@@ -38,8 +38,8 @@ end
 %C = C(n+1:2*n+1,:);  % Remove doubled up points.
 %R = trigtech.coeffs2vals(trigtech.alias( rows.funs{:}.onefun.coeffs, m )); 
 C = sample(cols, max(2*n+1, 1));
-C = C(1:n+1, :); %Remove doubled points, origin at bottom
-%C = flip(C(n+1:end, :));
+%C = C(1:n+1, :); %Remove doubled points, origin at bottom
+C = C(n+1:end, :);
 % More ugliness
 %if  all(rows.funs{:}.onefun.isReal)
    % R = real(R);
