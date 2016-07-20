@@ -1,5 +1,5 @@
 function varargout = chebcoeffs2(varargin)
-%CHEBCOEFFS2    Bivariate expansion coefficient
+%CHEBCOEFFS2    Bivariate expansion coefficients
 %   X = CHEBCOEFFS2(F) returns the matrix of bivariate coefficients such that
 %       F= sum_{i=0}^{n-1} ( sum_{j=0}^{n-1} X(i+1,j+1) T_i(y) T_j(x) ).
 %
