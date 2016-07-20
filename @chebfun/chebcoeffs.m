@@ -1,5 +1,8 @@
 function out = chebcoeffs(f, varargin)
 %CHEBCOEFFS   Chebyshev polynomial coefficients of a CHEBFUN.
+%   A = CHEBCOEFFS(F) returns the Chebyshev coefficients of F assuming
+%   it is a global (not piecewise) chebfun.
+
 %   A = CHEBCOEFFS(F, N) returns the first N Chebyshev coefficients of F is
 %   the column vector A such that F = A(1) T_0(x) +  A(2) T_1(x) + ... + 
 %   A(N) T_(N-1)(x), where T_M(x) denotes the M-th Chebyshev polynomial of the
