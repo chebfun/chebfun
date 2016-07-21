@@ -12,7 +12,7 @@ function out = chebcoeffs(f, varargin)
 %   coefficients are those of F transplanted to [-1,1].
 %
 %   If F is a piecewise chebfun, you can extract the Chebyshev
-%   coefficients of the pieces with, e.g., A = CHEBCOEFFS(F.FUNS{1}).
+%   coefficients of the pieces with GET(F, 'COEFFS').
 %
 %   Alternatively, A = CHEBCOEFFS(F, N) returns the first N Chebyshev
 %   coefficients of a piecewise chebfun F even though F is not
