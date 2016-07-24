@@ -5,9 +5,6 @@ function varargout = plot( f, varargin )
 %   the same as surf(F). If F is a complex valued then this returns a domain
 %   colouring plot of F.
 %
-%   PLOT(F) if F is a complex-valued DISKFUN then we do Wegert's phase portrait
-%   plots.
-%
 %   PLOT(F, S) Plotting with option string plots the column and row slices, and
 %   pivot locations used in the construction of F.
 %
@@ -31,12 +28,8 @@ function varargout = plot( f, varargin )
 %                               p     pentagram
 %                               h     hexagram
 %
-%   For phase portraits see: E. Wegert, Visual Complex Functions: An
-%   introduction with Phase Portraits, Springer Basel, 2012, or for MATLAB code
-%   to produce many different styles of phase portraits go to:
-%   http://www.visual.wegert.com
 %
-% See also SURF, MESH.
+% See also SURF.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

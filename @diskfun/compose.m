@@ -11,22 +11,22 @@ if ( nargin == 2 && nargin(op) == 1)
     % OP has one input variable.
     
     % Call constructor: 
-    f = diskfun(@(x,y) op( feval(f, x, y) ), f.domain);
+    f = diskfun(@(x,y) op( feval(f, x, y, 'cart') ));
     
 elseif ( nargin == 3 && nargin(op) == 2 )
     % OP has two input variables. 
     
     g = varargin{1}; 
     if ( isa( g, 'double' ) )     % promote
-        g = diskfun(@(x,y) g + 0*x, f.domain); 
+        g = diskfun(@(x,y) g + 0*x); 
     end
     
     if ( isa( f, 'double' ) )     % promote
-        f = diskfun(@(x,y) f + 0*x, g.domain); 
+        f = diskfun(@(x,y) f + 0*x); 
     end
     
     % Call constructor: 
-    f = diskfun(@(x,y) op( feval(f, x, y), feval(g, x, y) ), f.domain); %polar
+    f = diskfun(@(x,y) op( feval(f, x, y, 'cart'), feval(g, x, y, 'cart') )); 
 else
     % Not sure what to do, error: 
     error('CHEBFUN:DISKFUN:COMPOSE:OP', 'NARGIN(OP) not correct.')

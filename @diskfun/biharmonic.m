@@ -1,6 +1,6 @@
 function biharmF = biharmonic(f)
-%BIHARMONIC   Biharmonic operator of a SPHEREFUN.
-%   B = BIHARMONIC(F) returns a SPHEREFUN representing the biharmonic 
+%BIHARMONIC   Biharmonic operator of a DISKFUN.
+%   B = BIHARMONIC(F) returns a DISKFUN representing the biharmonic 
 %   operator applied to F.
 %
 % See also DISKFUN/BIHARM.

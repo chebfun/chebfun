@@ -1,8 +1,5 @@
 function varargout = contour( f, varargin )
 %CONTOUR  contour plot of a DISKFUN.
-%NOTE: THIS IS STILL IN PROG: there are some instances where the plots look
-% ugly because the pieces of the contours don't always meet up when plotted
-% on the disk. 
 %   CONTOUR(F) is a contour plot of F treating the values of F as heights above
 %   a plane. A contour plot are the level curves of F for some values V. The
 %   values V are chosen automatically.

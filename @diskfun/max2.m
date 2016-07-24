@@ -5,7 +5,8 @@ function varargout = max2(varargin)
 %   [M, LOC] = MAX2(F) returns the global maximum in M and its location in
 %   LOC (as a default, LOC is returned in Cartesian coordinates).
 %   
-%   If the flag 'polar' is included, LOC is returned in polar coordinates.
+%   If the flag 'polar' is included or the diskfun is set to evaluate in
+%   polar coords, LOC is returned in polar coordinates.
 %
 %  This command may be faster if the OPTIMIZATION TOOLBOX is installed.
 % 

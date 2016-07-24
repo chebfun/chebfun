@@ -1,6 +1,4 @@
 function varargout = contourf( f, varargin )
-% NOTE: This is in prog. This function doesn't work quite right for several
-% examples. 
 %CONTOURF   Filled contour plot of a DISKFUN.
 %   CONTOURF(...) is the same as CONTOUR(...) except that the areas between
 %   contours are filled with colors according to the Z-value for each level.

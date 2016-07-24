@@ -9,7 +9,7 @@ function varargout = minandmax2(varargin)
 %
 %       F(LOC(1,1),LOC(1,2)) = M(1)  and  F(LOC(2,1),LOC(2,2)) = M(2)
 %
-% See also SPHEREFUN/MAX2, SPHEREFUN/MIN2, SPHEREFUN/NORM.
+% See also DISKFUN/MAX2, DISKFUN/MIN2, DISKFUN/NORM.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

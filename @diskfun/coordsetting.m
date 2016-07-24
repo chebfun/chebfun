@@ -1,6 +1,6 @@
 function iscart = coordsetting(varargin)
-%coordsetting
-%  Given input to a function, determines whether the coordinate setting is polar or
+% Given input to a function, determines whether the coordinate setting 
+% is polar or
 % cartesian.
 % first element input must be a diskfun. 
 

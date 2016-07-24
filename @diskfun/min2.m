@@ -7,7 +7,7 @@ function varargout = min2(varargin)
 %
 %  This command may be faster if the OPTIMIZATION TOOLBOX is installed.
 %
-% See also SPHEREFUN/MAX2, SPHEREFUN/MINANDMAX2.
+% See also DISKFUN/MAX2, DISKFUN/MINANDMAX2.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
