@@ -1,4 +1,4 @@
-function varargout = quad2d(varargin)
+eefunction varargout = quad2d(varargin)
 %QUAD2D  Complete definite integral of DISKFUN. 
 %   I = QUAD2D( F ), returns the definite integral of a DISKFUN integrated
 %   over its domain of definition.
