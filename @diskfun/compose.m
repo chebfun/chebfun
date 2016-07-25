@@ -9,10 +9,11 @@ function f = compose( f, op, varargin )
 
 if ( nargin == 2 && nargin(op) == 1)
     % OP has one input variable.
-    
-    % Call constructor: 
+     
+    % Save coord setting and then call constructor: 
+    crds = f.coords;
     f = diskfun(@(x,y) op( feval(f, x, y, 'cart') ));
-    
+    f.coords = crds;
 elseif ( nargin == 3 && nargin(op) == 2 )
     % OP has two input variables. 
     
@@ -25,8 +26,10 @@ elseif ( nargin == 3 && nargin(op) == 2 )
         f = diskfun(@(x,y) f + 0*x); 
     end
     
-    % Call constructor: 
+    % save coord setting and then call constructor:
+    crds = f.coords; 
     f = diskfun(@(x,y) op( feval(f, x, y, 'cart'), feval(g, x, y, 'cart') )); 
+    f.coords = crds; 
 else
     % Not sure what to do, error: 
     error('CHEBFUN:DISKFUN:COMPOSE:OP', 'NARGIN(OP) not correct.')

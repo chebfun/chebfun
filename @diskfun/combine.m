@@ -72,6 +72,6 @@ g.pivotLocations = locations;
 g.idxPlus = idxPlus;
 g.idxMinus = idxMinus;
 g.nonZeroPoles = g.nonZeroPoles || h.nonZeroPoles;
-
+g.coords = h.coords;
 end
 
