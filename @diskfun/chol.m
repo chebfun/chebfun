@@ -29,6 +29,10 @@ function varargout = chol(varargin)
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-[varargout{1:nargout}] = chol@separableApprox(varargin{:});
+%requires evaluations of f in polar coords once passed to separableApprox:
+f=varargin{1};
+f.coords='polar';
+
+[varargout{1:nargout}] = chol@separableApprox(f, varargin{2:end});
 
 end

@@ -118,6 +118,8 @@ classdef diskfun < separableApprox
         % Disk harmonics
         Y = diskharm(l,m,type) ;   
         
+        %convert coeffs to a diskfun
+        f = coeffs2diskfun(CFS); 
         %coordsettings: determines whether a function has input/wants output in
          %polar or cartesian coords. 
         

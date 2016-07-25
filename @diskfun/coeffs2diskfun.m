@@ -17,19 +17,18 @@ if ( mod(n, 2) == 1 )
     X = [ zeros(m, 1) X ]; 
 end
 
-if ( mod(m, 2) == 1 ) 
-    X = [ zeros(1, n+1); X  ];
-    m = m + 1; 
-end
+%if ( mod(m, 2) == 1 ) %m can be/should be odd.
+ %   X = [ zeros(1, n+1); X  ];
+  %  m = m + 1; 
+%end
 
 % Convert to values on the grid: 
-VALS = chebtech.coeffs2vals(trigtech.coeffs2vals(X).').'; 
-
+VALS = trigtech.coeffs2vals(chebtech2.coeffs2vals(X).').'; 
+VALS = real(VALS);
 % Restrict to the region of interest: 
-VALS = VALS([floor(m/2)+1:m 1], :);
+VALS = VALS(floor(m/2)+1:m, :);
 
-% Only real values are supported.
-VALS = real(VALS); 
+
 
 % Finally, make a diskfun object out of the values: 
 F = diskfun(VALS); 
