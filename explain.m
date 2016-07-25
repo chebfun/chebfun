@@ -24,7 +24,7 @@ function explain(varargin)
 %
 %   [AT] = Aurentz and Trefethen, "Chopping a Chebyshev series",
 %        available at http://arXiv.org/abs/1512.01803 and also
-%        expected to appear in ACM Trans. Math. Softw.
+%        to appear in ACM Trans. Math. Softw.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -40,7 +40,11 @@ fstring = varargin{1};
 ff = inline(vectorize(fstring));
 
 % Set epsval and construct chebfun f:
-if nargin>1, epsval = varargin{2}; else epsval = 2^-52; end
+if ( nargin>1 )
+    epsval = varargin{2}; 
+else 
+    epsval = chebfuneps; 
+end
 [f,g,pp,j2] = basicChebfun(ff,epsval);
 nf = length(f); ng = length(g);
 
@@ -53,21 +57,18 @@ end
 MS = 'markersize'; FS = 'fontsize';
 HA = 'horizontalalignment'; IN = 'interpret';
 ms = 3; ms0 = 5;
-if ng<1000, ms = 5; ms0 = 4.5; end
-if ng<100, ms = 7; ms0 = 5; end
+if ( ng<1000) 
+    ms = 5; 
+    ms0 = 4.5; 
+end
+if ( ng<100 ) 
+    ms = 7; 
+    ms0 = 5; 
+end
 
-% Plot Chebyshev coeffs of f and g
+% get Chebyshev coeffs of f and g
 gc = abs(chebcoeffs(g));
-semilogy(0:ng-1,gc,'.k',MS,ms), hold on
 fc = abs(chebcoeffs(f)); 
-semilogy(0:nf-1,fc,'or',MS,ms0)
-
-% Attempt to adjust axes for consistency for comparisons:
-a = axis;
-a(2) = max(a(2),ng);
-a(4) = 1e03*a(4);
-a(3) = 1e-3*a(3);
-axis(a), set(gca,FS,9)
 
 % create envelope from gc as in Step 1 of standardChop algorithm
 m = gc(end)*ones(ng, 1);
@@ -76,11 +77,34 @@ for j = ng-1:-1:1
 end   
 
 % Plot envelope
-m(m == 0) = a(3);
-semilogy(0:ng-1,m,'-g')
+semilogy(0:ng-1,m,'-g'), hold on
 
-% plot epsval
+% Plot Chebyshev coeffs of f and g
+semilogy(0:ng-1,gc,'.k',MS,ms)
+semilogy(0:nf-1,fc,'or',MS,ms0)
+
+% Attempt to adjust axes for consistency for comparisons:
+a = axis;
+a(2) = max(a(2),ng);
+a(4) = 1e03*a(4);
+a(3) = 1e-3*a(3);
+
+% clear and replot with new axis
+clf
+
+% re-plot envelope
+m(m == 0) = a(3);
+semilogy(0:ng-1,m,'-g'), hold on
+
+% re-plot epsval
 semilogy(0:ng-1,0*m+epsval*m(1),'k--')
+
+% re-plot Chebyshev coeffs of f and g
+semilogy(0:ng-1,gc,'.k',MS,ms)
+semilogy(0:nf-1,fc,'or',MS,ms0)
+
+% rescale axis
+axis(a), set(gca,FS,9)
 
 % Clean up the string in various ways for printing.
 % This is a rather arbitrary collection of tricks that make
@@ -126,7 +150,7 @@ function [f, g, plateauPoint, j2] = basicChebfun(ff,tol)
 %BASCICHEBFUN   Simplified CHEBFUN constructor.
 
 % loop through powers of 2
-for ii=3:16
+for ii=4:16
 
      % current length
      m = 2^ii+1;
@@ -142,7 +166,9 @@ for ii=3:16
      g = chebfun(cfs,'coeffs');
 
      % check convergence
-     if ( cutoff < m ), return, end
+     if ( cutoff < m )
+         return
+     end
 
 end
 
