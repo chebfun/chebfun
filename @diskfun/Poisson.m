@@ -121,8 +121,8 @@ end
 VALS = trigtech.coeffs2vals( chebtech2.coeffs2vals( CFS.' ).' ); 
 
 % Now restrict down to region of interest:
-%VALS = VALS(:, (m-1)/2+1:m ); 
-VALS = VALS(:, 1:(m-1)/2+1 ); 
+VALS = VALS(:, (m-1)/2+1:m ); 
+%VALS = VALS(:, 1:(m-1)/2+1 ); 
 % Finally, make a diskfun object out of the values: 
 u = diskfun( real( VALS ).' ); 
 

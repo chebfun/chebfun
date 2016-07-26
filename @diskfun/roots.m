@@ -21,12 +21,16 @@ if ( isempty( varargin{ 1 }  ) )
     return
 end
 
-rts = roots@separableApprox( varargin{ : } );
+% we need the f.coords to be polar
+% for now deal with the case where we find roots of one diskfun
+f = varargin{1}; 
+f.coords = 'polar'
+rts = roots@separableApprox(f, varargin{2 :end } );
 
 % Now make into a collection of array-valued chebfuns ready for plotting on
 % the disk. 
 %x = chebpts( length( rts ) + 1 );
-x = chebpts(length(rts));
+x = chebpts(max(length(rts),17)+1);
 
 vals = feval( rts, x );
 r = cell( size(vals,2), 1 ); 

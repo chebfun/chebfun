@@ -42,10 +42,10 @@ else
         y = f;
     elseif ( strcmp(c1, ':') && isnumeric(c2) ) %angular slice
          y = chebfun(@(t) feval(f, c2.*cos(t), ...
-                              c2.*sin(t)), [-pi, pi], 'trig');
+                              c2.*sin(t), 'cart'), [-pi, pi], 'trig');
     elseif (isnumeric(c1) && strcmp(c2, ':')) %radial slice
          y = chebfun(@(t) feval(f, t.*cos(c1), ...
-                              t.*sin(c1)) );
+                              t.*sin(c1), 'cart') );
     else
         error('CHEBFUN:DISKFUN:feval:argin',['Unknown input '...
             'feval(%s,%s)',c1,c2]);

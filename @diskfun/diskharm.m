@@ -9,7 +9,7 @@ if ( nargin < 3 || isempty(type))
 end
 
 dom = [-pi pi 0 1];
-    Y=diskfun(@(theta, r) mydiskharm(theta, r, L, m, type), 1, dom);
+    Y=diskfun(@(theta, r) mydiskharm(theta, r, L, m, type), 'polar');
    
 %create disk harmonic function 
 
