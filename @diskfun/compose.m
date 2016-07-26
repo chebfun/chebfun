@@ -12,7 +12,7 @@ if ( nargin == 2 && nargin(op) == 1)
      
     % Save coord setting and then call constructor: 
     crds = f.coords;
-    f = diskfun(@(x,y) op( feval(f, x, y, 'cart') ));
+    f = diskfun(@(x,y) op( feval(f, x, y, 'polar') ), 'polar');
     f.coords = crds;
 elseif ( nargin == 3 && nargin(op) == 2 )
     % OP has two input variables. 
@@ -28,7 +28,7 @@ elseif ( nargin == 3 && nargin(op) == 2 )
     
     % save coord setting and then call constructor:
     crds = f.coords; 
-    f = diskfun(@(x,y) op( feval(f, x, y, 'cart'), feval(g, x, y, 'cart') )); 
+    f = diskfun(@(x,y) op( feval(f, x, y, 'polar'), feval(g, x, y, 'polar') ), 'polar'); 
     f.coords = crds; 
 else
     % Not sure what to do, error: 
