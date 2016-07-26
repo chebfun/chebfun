@@ -8,8 +8,8 @@ function varargout = coeffs2( f, m, n )
 % 
 
 % Developers note:
-% if there was a class between separableApprox and spherefun, then this
-% function could implement both coeffs2 for spherefun and diskfun. 
+% if there was a class between separableApprox and diskfun, then this
+% function could implement both coeffs2 for diskfun and diskfun. 
 
 % Calculate the CDR decomposition: 
 [C, D, R] = cdr( f ); 

@@ -1,10 +1,10 @@
 
 
 function g = constructor2by2( g, op, dom, varargin )
-%CONSTRUCTOR2by2 This is a SPHEREFUN constructor using the 2-by-2 pivot
+%CONSTRUCTOR2by2 This is a DISKFUN constructor using the 2-by-2 pivot
 % matrices directly.
 %
-% The algorithm for constructing a SPHEREFUN comes in three phases:
+% The algorithm for constructing a DISKFUN comes in three phases:
 %
 % PHASE 1: The first phase attempts to determine the numerical rank of the
 % function by performing Gaussian elimination with special 2x2 pivoting matrices 
@@ -20,15 +20,15 @@ function g = constructor2by2( g, op, dom, varargin )
 % PHASE 3: The decomposition is reduced to CDR form such that the BMC
 % structure is maintained.
 
-if ( nargin == 0 )          % SPHEREFUN( )
+if ( nargin == 0 )          % DISKFUN( )
     return
 end
 
-if ( nargin == 0 )          % SPHEREFUN( )
+if ( nargin == 0 )          % DISKFUN( )
     return
 end
 
-if ( isa(op, 'spherefun') )  % SPHEREFUN( SPHEREFUN )
+if ( isa(op, 'diskfun') )  % DISKFUN( DISKFUN )
     g = op;
     return
 end
@@ -40,7 +40,7 @@ end
 
 % TODO: Should we allow any other domains that latitude and co-latitude?
 
-if ( isa(op, 'spherefun') )  % SPHEREFUN( SPHEREFUN )
+if ( isa(op, 'diskfun') )  % DISKFUN( DISKFUN )
     g = op;
     return
 end
@@ -77,7 +77,7 @@ while ( ~happy_rank && ~failure )
 
     [ pivotIndices, pivotMatrices, happy_rank, removePoles ] = PhaseOne( F, tol );
     if ( n >= maxRank  )
-        warning('SPHEREFUN:CONSTRUCTOR:MAXRANK', ... 
+        warning('DISKFUN:CONSTRUCTOR:MAXRANK', ... 
                                 'Unresolved with maximum rank.');
         failure = true;
     end
@@ -91,7 +91,7 @@ end
 % Put in CDR form
 [cols, rows, pivots, idxPlus, idxMinus] = PhaseThree( cols, blockDiag, rows.' );
 
-% Make a spherefun, we are done. 
+% Make a diskfun, we are done. 
 % g.cols = trigtech( cols );
 % g.rows = trigtech( rows );
 g.cols = chebfun( cols, dom(3:4)-[pi 0], 'trig');
@@ -108,7 +108,7 @@ end
 function [pivotIndices, pivotMatrices, happy, removePole] = PhaseOne( F, tol )
 
 % Phase 1: Go find rank, plus pivot locations, ignore cols and rows.
-alpha = spherefun.alpha; % get growth rate factor.
+alpha = diskfun.alpha; % get growth rate factor.
 [m, n] = size( F );
 pivotIndices = []; pivotMatrices = [];
 vscl = norm( F( : ), inf);
@@ -201,7 +201,7 @@ end
 
 function [cols, blockDiag, rows, pivotLocations] = PhaseTwo( h, pivotIndices, pivotMatrices, n, dom, tol, maxSample, removePoles)
 
-alpha = spherefun.alpha; % get growth rate factor.
+alpha = diskfun.alpha; % get growth rate factor.
 happy_columns = 0;   % Not happy, until proven otherwise.
 happy_rows = 0;
 m = n;
@@ -218,7 +218,7 @@ row_pivots = y(id_rows);
 numPivots = 2*rk;
 bmcColPerm = (1:numPivots) - (-1).^(1:numPivots);
 
-% Phase 2: Calculate decomposition on sphere.
+% Phase 2: Calculate decomposition on disk.
 failure = false;
 while ( ~(happy_columns && happy_rows) && ~failure)
     
@@ -324,7 +324,7 @@ while ( ~(happy_columns && happy_rows) && ~failure)
     end
     
     if ( max(m, n) >= maxSample ) 
-        warning('SPHEREFUN:constructor:notResolved', ...
+        warning('DISKFUN:constructor:notResolved', ...
         'Unresolved with maximum length: %u.', maxSample);
         failure = true;
     end 
@@ -434,7 +434,7 @@ plusFlag = idx <= numel(dplus);
 idxPlus = find( plusFlag );
 idxMinus = find( ~plusFlag );
 
-% % Now make a new spherefun:
+% % Now make a new diskfun:
 % fp = f;
 % fp.cols = trigtech( Cplus );
 % fp.rows = trigtech( Rplus );
@@ -479,7 +479,7 @@ elseif all( (dom-lat) == 0 )
     y = trigpts( 2*m, [-3*pi/2, pi/2] );
     % y = linspace( -3*pi/2, -pi/2, m+1 ).';  % elevation angle, theta
 else
-    error('SPHEREFUN:constructor:points2D:unkownDomain', ...
+    error('DISKFUN:constructor:points2D:unkownDomain', ...
         'Unrecognized domain.');
 end
 
@@ -499,7 +499,7 @@ end
 %     lam = trigpts( 2*n, [-pi,pi] );
 %     th = trigpts( 2*m, [-pi/2,3*pi/2] );
 % else
-%     error('SPHEREFUN:constructor:points2D:unkownDomain', ...
+%     error('DISKFUN:constructor:points2D:unkownDomain', ...
 %         'Unrecognized domain.');
 % end
 % [LL, TT] = meshgrid( lam, th ); 
@@ -535,12 +535,12 @@ end
 
 
 function f = redefine_function_handle( f )
-% nargin( f ) = 2, then we are already on the sphere, if nargin( f ) = 3,
+% nargin( f ) = 2, then we are already on the disk, if nargin( f ) = 3,
 % then do change of variables:
 
 if ( nargin( f ) == 3 )
     % Wrap f so it can be evaluated in spherical coordinates
-    f = @(lam, th) spherefun.sphf2cartf(f,lam,th,0);
+    f = @(lam, th) diskfun.sphf2cartf(f,lam,th,0);
 %     % Double g up.
 %     f = @(lam, th) sph2torus(f,lam,th);
 end
@@ -548,7 +548,7 @@ end
 end
 
 function tol = GetTol(F, hx, hy, dom, pseudoLevel)
-% GETTOL     Calculate a tolerance for the spherefun constructor.
+% GETTOL     Calculate a tolerance for the diskfun constructor.
 %
 %  This is the 2D analogue of the tolerance employed in the trigtech
 %  constructors. It is based on a finite difference approximation to the

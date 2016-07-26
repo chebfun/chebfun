@@ -77,7 +77,7 @@ else                                     % DISKFUN + DISKFUN
             g = addPoles(fPole,gPole,tol);
             % Handle the rare case that g is zero and hp is not empty
             if ( g.pivotValues == 0 ) && ( ~isempty( hp ) )
-                % Set g to empty spherefun
+                % Set g to empty diskfun
                 g = diskfun([]);
             end
             hp.cols = [g.cols hp.cols];

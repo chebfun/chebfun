@@ -14,15 +14,15 @@ function g = constructor( g, op, coords, dom, varargin )
 % on the skeleton.   Sampling along each slice is increased until the Fourier 
 % coefficients of the slice fall below machine precision.
 
-if ( nargin == 0 )          % SPHEREFUN( )
+if ( nargin == 0 )          % DISKFUN( )
     return
 end
 
-if ( nargin == 0 )          % SPHEREFUN( )
+if ( nargin == 0 )          % DISKFUN( )
     return
 end
 
-if ( isa(op, 'diskfun') )  % SPHEREFUN( SPHEREFUN )
+if ( isa(op, 'diskfun') )  % DISKFUN( DISKFUN )
     g = op;
     return
 end
@@ -40,7 +40,7 @@ end
 %coords=0 -> cartesian
 
 
-if ( isa(op, 'diskfun') )  % SPHEREFUN( SPHEREFUN )
+if ( isa(op, 'diskfun') )  % DISKFUN( DISKFUN )
     g = op;
     return
 end
@@ -82,7 +82,7 @@ while ( ~happy_rank && ~failure )
      %tol=3e-14;
     [ pivotIndices, pivotMatrices, happy_rank, removePoles ] = PhaseOne( F, tol );
     if ( n >= maxRank  )
-        warning('SPHEREFUN:CONSTRUCTOR:MAXRANK', ... 
+        warning('DISKFUN:CONSTRUCTOR:MAXRANK', ... 
                                 'Unresolved with maximum rank.');
         failure = true;
     end
@@ -106,7 +106,7 @@ end
 function [pivotIndices, pivotMatrices, happy, removePole] = PhaseOne( F, tol )
 
 % Phase 1: Go find rank, plus pivot locations, ignore cols and rows.
-alpha = 2;%spherefun.alpha; % get growth rate factor.
+alpha = 2;%diskfun.alpha; % get growth rate factor.
 [m, n] = size( F );
 pivotIndices = []; pivotMatrices = [];
 vscl = norm( F( : ), inf);
@@ -206,7 +206,7 @@ end
 
 function [cols, pivots, rows, pivotLocations, idxPlus, idxMinus] = PhaseTwo( h, pivotIndices, pivotMatrices, n, dom, tol, maxSample, removePoles)
 
-alpha = 2;%spherefun.alpha; % get growth rate factor.
+alpha = 2;%diskfun.alpha; % get growth rate factor.
 happy_columns = 0;   % Not happy, until proven otherwise.
 happy_rows = 0;
 m = n;
@@ -229,7 +229,7 @@ numMinusPivots = sum( abs( pivotMatrices(:,2) ) > 0 );
 pivotPlus = zeros(numPosPivots,1);
 pivotMinus = zeros(numMinusPivots,1);
 
-% Phase 2: Calculate decomposition on sphere.
+% Phase 2: Calculate decomposition on disk.
 failure = false;
 while ( ~(happy_columns && happy_rows) && ~failure)
     
@@ -456,7 +456,7 @@ end
 %end
 
 function tol = GetTol(F, hx, hy, dom, pseudoLevel)
-% GETTOL     Calculate a tolerance for the spherefun constructor.
+% GETTOL     Calculate a tolerance for the diskfun constructor.
 %
 %  This is the 2D analogue of the tolerance employed in the trigtech
 %  constructors. It is based on a finite difference approximation to the

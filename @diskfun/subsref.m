@@ -51,7 +51,7 @@ if ( strcmp(index(1).type, '()') )
         out = subsref@separableApprox(f, index);
         varargout = { out };
     %else
-      % error('CHEBFUN:SPHEREFUN:subsref:inputs', ...
+      % error('CHEBFUN:DISKFUN:subsref:inputs', ...
                % 'Can only evaluate diskfuns at (X,Y) or (TH,R)');    
     end
 elseif ( strcmp(index(1).type,'()') )
@@ -59,7 +59,7 @@ elseif ( strcmp(index(1).type,'()') )
         % This intentionally fails: 
         varargout = { restrict(f,[idx{1}, idx{2}, idx{3}, idx{4}]) };
     else
-        error('CHEBFUN:SPHEREFUN:SUBSREF:restrict',...
+        error('CHEBFUN:DISKFUN:SUBSREF:restrict',...
               'Restriction domain is given by four corners');
     end
 else

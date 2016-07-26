@@ -20,7 +20,7 @@ function g = constructor(g, op, varargin)
 %
 % The algorithm is fully described in:
 %  A. Townsend, H. Wilber, and G. Wright, Computing with function on
-%  spherical and polar geometries I: The sphere, SIAM J. Sci. Comput., 
+%  spherical and polar geometries I: The disk, SIAM J. Sci. Comput., 
 %  Accepted, 2016. 
 %
 % See also DISKFUN.
@@ -185,7 +185,7 @@ g = simplify( g, pref.chebfuneps );
 % Fix the rank, if in nonadaptive mode.
 g = fixTheRank( g , fixedRank );
 
-% Project onto BMC-I symmetry so the function is smooth on the sphere.
+% Project onto BMC-I symmetry so the function is smooth on the disk.
 %g = projectOntoBMCI( g );  %CHANGE THIS
 
 end
@@ -538,7 +538,7 @@ pivots = zeros(totalPivots, 1);
 idxPlus = zeros(numPosPivots, 1);
 idxMinus = zeros(numMinusPivots, 1);
 
-% Phase 2: Calculate decomposition on sphere.
+% Phase 2: Calculate decomposition on disk.
 failure = false;
 while ( ~(happy_columns && happy_rows) && ~failure )
     
@@ -768,7 +768,7 @@ y =  chebpts(2*m+1, [-1, 1]); %doubled;
 y = y(1:(2*m)/2+1); %this includes pole (r=0), which needs evaluated. 
                     %currently gives [-1, 0] with 0 at end (eventually
                     %should be changed so that we work on more "natural"
-                    % quadrants/match spherefun)
+                    % quadrants/match diskfun)
 end
 
 

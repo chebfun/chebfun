@@ -24,7 +24,7 @@ classdef diskfun < separableApprox
 % A. Townsend, H. Wilber, and G. Wright, Computing with function on
 % spherical and polar geometries II: The disk, submitted, 2016. 
 %
-% See also CHEBFUN2, SPHEREFUN, DISKFUNV.
+% See also CHEBFUN2, DISKFUN, DISKFUNV.
 
     
     % TODO: Improve documentation of input options.
@@ -43,31 +43,8 @@ classdef diskfun < separableApprox
                 return
             end
             
-            % Type of construction
-            constructorType = 1; % Default using rank BMC preserving rank 1 updates.
-            
-            % Remove this code when we are done testing the constructor.
-            if numel(varargin) > 1
-                if ischar(varargin{2})
-                    if strcmpi(varargin{2},'old')
-                        constructorType = 2;
-                        varargin{2} = [];
-                    end
-                end
-            end
-            
-            % Call the constructor, all the work is done here:
-            switch constructorType
-                case 1
-                    f = constructor(f, varargin{:});
-                case 2
-                    f = constructoroldII(f, varargin{:});
-                otherwise
-                    f = constructor(f, varargin{:});
-            end
-                    
+            f = constructor(f, varargin{:});       
         end
-        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -122,7 +99,6 @@ classdef diskfun < separableApprox
         f = coeffs2diskfun(CFS); 
         %coordsettings: determines whether a function has input/wants output in
          %polar or cartesian coords. 
-        
         iscart = coordsetting(varargin);
     end
     
@@ -139,7 +115,7 @@ classdef diskfun < separableApprox
   properties (Access = public)
         % DOMAIN: default is [-pi,pi] x [0,pi] which corresponds to using 
         % colatitude for the elevation angle (second input argument). 
-        % Doubled-up sphere will have a domain of [-pi,pi] x [-pi,pi].
+        % Doubled-up disk will have a domain of [-pi,pi] x [-pi,pi].
         idxPlus
         idxMinus
         nonZeroPoles = 0;

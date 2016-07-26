@@ -29,7 +29,7 @@ idmg = g.idxMinus;
 idmh = h.idxMinus;
 
 
-% Only combine spherefuns that have one strict type of parity.
+% Only combine diskfuns that have one strict type of parity.
 if (~isempty(idpg) && ~isempty(idmg)) || (~isempty(idph) && ~isempty(idmh))
     error('DISKFUN:combine:parity','Inputs must have oposite parity. Consider using plus');
 end
