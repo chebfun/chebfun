@@ -1,4 +1,4 @@
-function [x, w, v] = lagpts(n, int, meth, aqm)
+function [x, w, v] = lagpts(n, int, meth, alf)
 %LAGPTS  Laguerre points and Gauss-Laguerre Quadrature Weights.
 %   LAGPTS(N) returns N Laguerre points X in (0,inf).
 %
@@ -11,23 +11,21 @@ function [x, w, v] = lagpts(n, int, meth, aqm)
 %
 %   [X, W] = LAGPTS(N, METHOD) allows the user to select which method to use.
 %   METHOD = 'GW' will use the traditional Golub-Welsch eigenvalue method,
-%   which is best for when N is small. METHOD = 'RH' will use asymptotics of 
-%   Laguerre polynomials, and METHOD = 'RHW' is O(sqrt(n)) as it stops when the 
-%   weights are below realmin. Specifying aqm will use asymptotics of 
-%   generalised Laguerre polynomials with alpha = aqm, or with weight function
-%   x^(aqm(1))*exp(aqm(2)*x^aqm(3) ). Adding 'i' will use initial guesses
-%   throughout for the nodes instead of quadratic extrapolation.
-%   By default LAGPTS uses 'GW' when N < 128, 'FAST' when N is in [128, 148]
-%   and else 'RH'.
+%   which is best for when N is small. METHOD = 'RH' will use asymptotics of
+%   Laguerre polynomials, and METHOD = 'RHW' is O(sqrt(n)) as it stops when the
+%   weights are below realmin. Calling lagpts(round( (n/17)^2), 'RHW') gives 
+%   about n weights above realmin for large n.
+
+%   [X, W] = LAGPTS(N, alpha) or LAGPTS(N, [0, inf], 'RH', alpha) will use
+%   the Golub-Welsch method or asymptotics of generalised Laguerre polynomials.
+%
+%   By default LAGPTS uses 'GW' when N < 128, and else 'RH'.
 %
 % References:
 %   [1] G. H. Golub and J. A. Welsch, "Calculation of Gauss quadrature rules",
 %       Math. Comp. 23:221-230, 1969,
-%   [2] A. Glaser, X. Liu and V. Rokhlin, "A fast algorithm for the calculation
-%       of the roots of special functions", SIAM Journal on Scientific
-%       Computing", 29(4):1420-1438, 2007.
-%   [3] P. Opsomer, (in preparation).
-%   [4] M. Vanlessen, "Strong asymptotics of Laguerre-Type orthogonal
+%   [2] P. Opsomer, (in preparation).
+%   [3] M. Vanlessen, "Strong asymptotics of Laguerre-Type orthogonal
 %       polynomials and applications in Random Matrix Theory", Constr. Approx.,
 %       25:125-175, 2007.
 %
@@ -37,16 +35,15 @@ function [x, w, v] = lagpts(n, int, meth, aqm)
 % See http://www.chebfun.org/ for Chebfun information.
 %
 % 'GW' by Nick Trefethen, March 2009 - algorithm adapted from [1].
-% 'FAST' by Nick Hale, March 2010 - algorithm adapted from [2].
-% 'RH' by Peter Opsomer, June 2016 - algorithm adapted from [3], based on [4].
+% 'RH' by Peter Opsomer, June 2016 - algorithm adapted from [2], based on [3].
 
 % Defaults:
 method = 'default';
 interval = [0, inf];
+alpha = 0;
 
 if ( n < 0 )
-    error('CHEBFUN:lagpts:n', ...
-        'First input should be a positive integer.');
+    error('CHEBFUN:lagpts:n', 'First input should be a positive integer.');
 end
 
 % Return empty vector if n = 0.
@@ -57,19 +54,27 @@ end
 
 % Check the inputs.
 if ( nargin > 1 )
-    if ( nargin >= 3 )
+    if ( nargin == 4 )
+        interval = int;
+        method = meth;
+        alpha = alf;
+    elseif ( nargin == 3 )
         interval = int;
         method = meth;
     elseif ( nargin == 2 )
         if ( ischar(int) )
             method = int;
+        elseif ( length(int) == 1 )
+            alpha = int;
         else
             interval = int;
         end
     end
-    if ( ~any(strcmpi(method, {'default', 'GW', 'fast', ...
-            'RH', 'RHW', 'RHi', 'RHWi'})) )
+    if ( ~any(strcmpi(method, {'default', 'GW', 'fast', 'RH', 'RHW'})) )
         error('CHEBFUN:lagpts:inputs', 'Unrecognised input string %s.', method);
+    elseif ( imag(alpha) ~= 0 ) || ( alpha < -1 )
+        error('CHEBFUN:lagpts:inputs', ['alpha = ' num2str(alpha) ...
+            ' is not allowed.']);
     end
     if ( numel(interval) > 2 )
         warning('CHEBFUN:lagpts:domain',...
@@ -82,17 +87,13 @@ if ( sum(isinf(interval)) ~= 1 )
     error('CHEBFUN:lagpts:inf', 'LAGPTS only supports semi-infinite domains.');
 end
 
-% Decide to use GW, FAST or RH.
+% Decide to use GW or RH.
 
-if exist('aqm','var') && (length(aqm) == 3)
-    [x, w] = alg_rhgen(n, strcmpi(method, 'RHW'),aqm, method(end) ~= 'i');
-    v = sqrt(w'.*x);
-    v = -v./max(abs(v));
-    
-elseif ( strcmpi(method,'GW') || ( ( n < 128 ) && strcmpi(method,'default') ) )
+if ( strcmpi(method,'GW') || ( ( n < 128 ) && strcmpi(method,'default') ) )
     % GW, see [1]
-    alpha = 2*(1:n)-1;  beta = 1:n-1;     % 3-term recurrence coeffs
-    T = diag(beta,1) + diag(alpha) + diag(beta,-1);  % Jacobi matrix
+    alph = 2*(1:n)-1 + alpha;  % 3-term recurrence coeffs
+    beta = sqrt( (1:n-1).*(alpha + (1:n-1) ) );
+    T = diag(beta,1) + diag(alph) + diag(beta,-1);  % Jacobi matrix
     [V, D] = eig(T);                      % eigenvalue decomposition
     [x, indx] = sort(diag(D));            % Laguerre points
     w = V(1,indx).^2;                     % Quadrature weights
@@ -101,16 +102,13 @@ elseif ( strcmpi(method,'GW') || ( ( n < 128 ) && strcmpi(method,'default') ) )
     v(2:2:n) = -v(2:2:n);
     
 else
-    if ~exist('aqm','var')
-        aqm = 0;
-    end
-    % RH, see [3] and [4]
-    [x, w] = alg_rh(n, strcmpi(method, 'RHW'), aqm, method(end) ~= 'i');
-    v = sqrt(w'.*x);
+    % RH, see [2] and [3]
+    [x, w] = alg_rh(n, strcmpi(method, 'RHW'), alpha);  % Nodes and weights
+    v = sqrt(w'.*x);                      % Barycentric weights
     v = -v./max(abs(v));
     
 end
-w = (1/sum(w))*w;                          % Normalise so that sum(w) = 1
+w = (1/sum(w))*w;                         % Normalise so that sum(w) = 1
 
 % Nonstandard interval
 if ( ~all(interval == [0, inf]) )
@@ -132,7 +130,7 @@ end
 %% %%%%%%%%%%%%%%%%%%%%%%% Routines for RH algorithm %%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [x, w] = alg_rh(n, compRepr, alpha, qe)
+function [x, w] = alg_rh(n, compRepr, alpha)
 
 if compRepr
     % Get a heuristic for the indices where the weights are about above realmin.
@@ -140,75 +138,64 @@ if compRepr
 else
     mn = n;
 end
-w = zeros(1, mn);
-if qe
-    x = [ besselroots(alpha, 3).^2/(4*n + 2).*(1 + (besselroots(alpha, 3).^2 + ...
-        2*(0 - 1) )/(4*n + 2)^2/3 ); zeros(mn-3, 1) ];
-else % Above and below [Tricomi 1947 pg. 296]
-    bta = min(round(0.455*n),mn); % Heuristic for switching the initial approximations
-    bes = besselroots(alpha, bta).^2;
-    x = bes/(4*n + 2*alpha+2).*(1 + (bes + 2*(alpha^2 - 1) )/(4*n + 2*alpha+2)^2/3 );
-    
-    ak = [-11.93601556323626; -11.00852430373326; -10.04017434155809; ...
-        -9.02265085340981; -7.944133587120853; -6.786708090071759; ...
-        -5.520559828095551; -4.08794944413097; -2.338107410459767];
-    t = 3*pi/2*((mn-bta:-1:10)'-0.25);
-    ak = [-t.^(2/3).*(1+5/48./t.^2-5/36./t.^4+77125/82944./t.^6 -10856875/...
-        6967296./t.^8); ak(max(1,9-mn+bta):end)]; % [DLMF (9.9.6)]
-    nu = 4*n+2*alpha+2; % [Gatteshi 2002 (4.9)] 
-    x = [x; (nu+ak*(4*nu)^(1/3)+ ak.^2*(nu/16)^(-1/3)/5 + (11/35-alpha^2-...
-        12/175*ak.^3)/nu + (16/1575*ak+92/7875*ak.^4)*2^(2/3)*nu^(-5/3) ...
-        -(15152/3031875*ak.^5+1088/121275*ak.^2)*2^(1/3)*nu^(-7/3))];
-end
+itric = round(3.6*n^0.188);
+% Heuristics to switch between Bessel, extrapolation and Airy initial guesses.
+igatt = round(mn + 1.31*n^0.4 - n);
 
-if alpha == 0
-    factor0 = 2.757254379232566e-04*n^(-6) + 1.511212766999818e-03*n^(-5) - ...
-        8.937757201646138e-04*n^(-4) - 4.783950617283954e-03*n^(-3) +...
-        1.388888888888890e-02*n^(-2) + 1.666666666666667e-01*n^(-1) + 1;
-    factor1 = 1.786938204923081e-03*(n-1)^(-6) + 6.174370468351152e-04*(n-1)^(-5)...
-        - 5.677726337448679e-03*(n-1)^(-4) + 9.104938271604964e-03*(n-1)^(-3) + ...
-        1.805555555555556e-01*(n-1)^(-2) + 1.166666666666667*(n-1)^(-1) + 1;
-    % We factored out some constants from the ratio or product of the asymptotics.
-    factorx = sqrt(factor0/factor1)/(2 - 2/n);
-    factorw = -(1 - 1/(n + 1) )^(n + 1)*(1 - 1/n)*exp(1 + 2*log(2) )*4*pi*...
-        sqrt(factor0*factor1);
-else
-    fact = zeros(2,1);
-    for k = 1:2
-        a = alpha + k - 1;
-        fact(k) = fact(k) + (1/3840*a^10 - 5/2304*a^9 + 11/2304*a^8 + 7/1920*a^7 ...
-            - 229/11520*a^6 + 107/34560*a^5 + 2653/103680*a^4 - 989/155520*a^3 - ...
-            3481/311040*a^2 + 139/103680*a + 9871/6531840)/n^5;
-        fact(k) = fact(k) + (1/384*a^8 - 1/96*a^7 + 1/576*a^6 + 43/1440*a^5 ...
-            - 5/384*a^4 - 23/864*a^3 + 163/25920*a^2 + 31/6480*a - 139/155520)/n^4;
-        fact(k) = fact(k) + (1/48*a^6 - 1/48*a^5 - 1/24*a^4 + 5/144*a^3 + ...
-            1/36*a^2 - 1/144*a - 31/6480)/n^3;
-        fact(k) = fact(k) + (1/8*a^4 + 1/12*a^3 - 1/24*a^2 + 1/72)/n^2;
-        fact(k) = fact(k) + (1/2*a^2 + 1/2*a + 1/6)/n^1;
-    end
-    factorx = sqrt(fact(1)/fact(2) )/2/(1 - 1/n)^(1+alpha/2);
-    factorw =  -(1 - 1/(n + 1) )^(n + 1+ alpha/2)*(1 - 1/n)^(1 + alpha/2)*...
-        exp(1 + 2*log(2) )*4^(1+alpha)*pi*n^alpha*sqrt(prod(fact))*...
-        (1 + 1/n)^(alpha/2);
+bes = besselroots(alpha, itric).^2; % [Tricomi 1947 pg. 296]
+bes = bes/(4*n + 2*alpha+2).*(1 + (bes + 2*(alpha^2 - 1) )/(4*n + 2*alpha+2)^2/3 );
+
+ak = [-13.69148903521072; -12.828776752865757; -11.93601556323626;...
+    -11.00852430373326; -10.04017434155809; -9.02265085340981; -7.944133587120853;...
+    -6.786708090071759; -5.520559828095551; -4.08794944413097; -2.338107410459767];
+t = 3*pi/2*( (igatt:-1:12)'-0.25); % [DLMF (9.9.6)]
+ak = [-t.^(2/3).*(1 + 5/48./t.^2 - 5/36./t.^4 + 77125/82944./t.^6 ...
+    -10856875/6967296./t.^8); ak(max(1,12-igatt):end)];
+nu = 4*n+2*alpha+2; % [Gatteshi 2002 (4.9)]
+air = (nu+ak*(4*nu)^(1/3)+ ak.^2*(nu/16)^(-1/3)/5 + (11/35-alpha^2-12/175*...
+    ak.^3)/nu + (16/1575*ak+92/7875*ak.^4)*2^(2/3)*nu^(-5/3) -(15152/3031875*...
+    ak.^5+1088/121275*ak.^2)*2^(1/3)*nu^(-7/3));
+
+w = zeros(1, mn);
+x = [ bes; zeros(mn - itric -max(igatt,0), 1) ; air];
+fact = zeros(2,1);
+for k = 1:2
+    a = alpha + k - 1;
+    fact(k) = fact(k) + (1/3840*a^10 - 5/2304*a^9 + 11/2304*a^8 + 7/1920*a^7 ...
+        - 229/11520*a^6 + 107/34560*a^5 + 2653/103680*a^4 - 989/155520*a^3 - ...
+        3481/311040*a^2 + 139/103680*a + 9871/6531840)/(n - k + 1)^5;
+    fact(k) = fact(k) + (1/384*a^8 - 1/96*a^7 + 1/576*a^6 + 43/1440*a^5 - 5/384*...
+        a^4 - 23/864*a^3 + 163/25920*a^2 + 31/6480*a - 139/155520)/(n - k + 1)^4;
+    fact(k) = fact(k) + (1/48*a^6 - 1/48*a^5 - 1/24*a^4 + 5/144*a^3 + ...
+        1/36*a^2 - 1/144*a - 31/6480)/(n - k + 1)^3;
+    fact(k) = fact(k) + (1/8*a^4 + 1/12*a^3 - 1/24*a^2 + 1/72)/(n - k + 1)^2;
+    fact(k) = fact(k) + (1/2*a^2 + 1/2*a + 1/6)/(n - k + 1)^1 +1;
 end
+% We factored out some constants from the ratio or product of the asymptotics.
+factorx = sqrt(fact(1)/fact(2) )/2/(1 - 1/n)^(1+alpha/2);
+factorw =  -(1 - 1/(n + 1) )^(n + 1+ alpha/2)*(1 - 1/n)^(1 + alpha/2)*...
+    exp(1 + 2*log(2) )*4^(1+alpha)*pi*n^alpha*sqrt(prod(fact))*...
+    (1 + 1/n)^(alpha/2);
 
 % This is a heuristic for the number of terms in the expansions that follow.
-T = ceil(25/log(n) );
-
+T = ceil(34/log(n) );
+if ( alpha^2/n > 1 )
+    warning('CHEBFUN:lagpts:inputs',['A large alpha may lead to inaccurate ' ...
+        'results because the weight is low and R(z) is not close to identity.']);
+end
 noUnderflow = 1;
 for k = 1:mn
-    if ( k > 3 ) && qe % Use quadratic extrapolation for the initial guesses.
-        x(k) = 3*x(k-1) - 3*x(k-2) + x(k-3);
+    if ( x(k) == 0 ) % Use sextic extrapolation for the initial guesses.
+        x(k) = 7*x(k-1)-21*x(k-2)+35*x(k-3)-35*x(k-4)+21*x(k-5)-7*x(k-6)+x(k-7);
     end
     step = x(k);
     l = 0; % Newton-Raphson iteration number
     ov = inf; % Previous/old value
     ox = x(k); % Old x
-    % Accuracy of the expansions up to eps would lower this bound.
-    while ( ( abs(step) > eps*400*x(k) ) && ( l < 20) )
+    while ( ( abs(step) > eps*40*x(k) ) && ( l < 5) )
         l = l + 1;
         pe = polyAsyRH(n, x(k), alpha, T);
-        if (abs(pe) >= abs(ov)*(1-5e5*eps) )
+        if (abs(pe) >= abs(ov)*(1-50*eps) )
             % The function values do not decrease enough any more due to
             % roundoff errors, so set to the previous value and quit.
             x(k) = ox;
@@ -220,11 +207,15 @@ for k = 1:mn
         x(k) = x(k) -step;
         ov = pe;
     end
+    if ( x(k) < 0 ) || ( x(k) > 4*n + 2*alpha + 2 ) || ( l == 5 ) || ...
+            ( ( k ~= 1 ) && ( x(k - 1) >= x(k) ) )
+        error('CHEBFUN:lagpts:conv','Newton method did not converge correctly.');
+    end
     if noUnderflow
         w(k) = factorw/polyAsyRH(n-1, x(k), alpha + 1, T)/...
             polyAsyRH(n+1, x(k), alpha, T)/exp( x(k) );
     end
-    if noUnderflow && ( w(k) == 0 ) && ( k > 1 ) && ( w(k-1) > 0 )
+    if noUnderflow && ( w(k) == 0 ) && ( k > 1 ) && ( w(k - 1) > 0 )
         if compRepr
             w = w(1:k-1);
             x = x(1:k-1);
@@ -238,25 +229,25 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Compute the expansion of the orthonormal polynomial without e^(x/2) nor a 
+% Compute the expansion of the orthonormal polynomial without e^(x/2) nor a
 % constant factor based on some heuristics
 function p = polyAsyRH(np, y, alpha, T)
-    % We could avoid these tests by splitting the loop k=1:mn into three parts 
-    % with heuristics for the bounding indices. np + alpha is always n, so we 
-    % do not risk dividing by the derivative of an expansion in another region.
-    if y < sqrt(np+alpha)
-        % The fixed delta in the RHP would mean this bound has to be 
-        % proportional to n, but x(1:k) are O(1/n) so choose the bound in between
-        % them to make more use of the (cheap) expansion in the bulk.
-        p = asyBessel(np, y, alpha, T);
-        return
-    elseif y > 3.7*(np+alpha)
-        % Use the expansion in terms of the (expensive) Airy function, although 
-        % all corresponding weights will underflow already for n = 186.
-        p = asyAiry(np, y, alpha, T);
-        return
-    end
-    p = asyBulk(np, y, alpha, T);
+% We could avoid these tests by splitting the loop k=1:mn into three parts
+% with heuristics for the bounding indices. np + alpha is always n, so we
+% do not risk dividing by the derivative of an expansion in another region.
+if y < sqrt(np+alpha)
+    % The fixed delta in the RHP would mean this bound has to be
+    % proportional to n, but x(1:k) are O(1/n) so choose the bound in between
+    % them to make more use of the (cheap) expansion in the bulk.
+    p = asyBessel(np, y, alpha, T);
+    return
+elseif y > 3.7*(np+alpha)
+    % Use the expansion in terms of the (expensive) Airy function, although
+    % the corresponding weights will start underflowing for n >= 186.
+    p = asyAiry(np, y, alpha, T);
+    return
+end
+p = asyBulk(np, y, alpha, T);
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -272,10 +263,40 @@ if T == 1
     return;
 end
 % Getting the higher order terms is hard-coded for speed and code length, but
-% can be made to get arbitrary orders for general weight functions.
+% can be made to get arbitrary orders for even more general weight functions.
 R1 = 0.0;
 R2 = 0.0;
 if (alpha == 0)
+    if ( T >= 7 )
+        R1 = R1 + (+6.975493821675553e-05*z^(-1) +2.308068495174802e-05*z^(-2) )/np^6;
+        R2 = R2 + (-8.294589753829749e-05*z^(-1) -0.0001387411504294034*z^(-2) )/np^6;
+        R1 = R1 + (+3.465393092483285e-06*z^(-3) )/np^6;
+        R2 = R2 + (-0.0001432362478226424*z^(-3) )/np^6;
+        R1 = R1 + (-6.975493821675553e-05*d^(-1) +2.944141339480553e-05*d^(-2) )/np^6;
+        R2 = R2 + (+1.401453805748335e-05*d^(-1) -4.189865305987762e-06*d^(-2) )/np^6;
+        R1 = R1 + (-3.343882101991324e-05*d^(-3) +2.53485975588054e-05*d^(-4) )/np^6;
+        R2 = R2 + (-1.993525079283811e-06*d^(-3) -9.103419242066082e-06*d^(-4) )/np^6;
+        R1 = R1 + (+1.652740321445771e-05*d^(-5) -8.823225788038024e-05*d^(-6) )/np^6;
+        R2 = R2 + (+0.0001048908434950015*d^(-5) -0.005941442455789839*d^(-6) )/np^6;
+        R1 = R1 + (-0.001224011071160469*d^(-7) -0.002439398363695296*d^(-8) )/np^6;
+        R2 = R2 + (-0.04919568821745263*d^(-7) -0.09585400629108581*d^(-8) )/np^6;
+        R1 = R1 + (-0.001482771554403024*d^(-9) )/np^6;
+        R2 = R2 + (-0.05337977595850887*d^(-9) )/np^6;
+    end
+    if ( T >= 6 )
+        R1 = R1 + (-6.169113234727972e-05*z^(-1) -0.0001287894944349925*z^(-2) )/np^5;
+        R2 = R2 + (-0.0002803040936650563*z^(-1) -0.000105773409207662*z^(-2) )/np^5;
+        R1 = R1 + (-0.0001108925789594651*z^(-3) )/np^5;
+        R2 = R2 + (+0.0001108925789594651*z^(-3) )/np^5;
+        R1 = R1 + (+6.169113234728014e-05*d^(-1) -2.735243584977629e-05*d^(-2) )/np^5;
+        R2 = R2 + (-9.749909808489811e-05*d^(-1) +7.023189392787169e-05*d^(-2) )/np^5;
+        R1 = R1 + (+2.342076600182224e-05*d^(-3) -7.31386404171321e-05*d^(-4) )/np^5;
+        R2 = R2 + (-6.224353508098193e-05*d^(-3) +0.0001481373301066077*d^(-4) )/np^5;
+        R1 = R1 + (+0.0001987962105882525*d^(-5) -0.001539873713001479*d^(-6) )/np^5;
+        R2 = R2 + (-0.004849931367753502*d^(-5) -0.03068677518409481*d^(-6) )/np^5;
+        R1 = R1 + (-0.01282539667078748*d^(-7) -0.01377542605380878*d^(-8) )/np^5;
+        R2 = R2 + (-0.04227630754444762*d^(-7) -0.01377542605380878*d^(-8) )/np^5;
+    end
     if ( T >= 5 )
         R1 = R1 + (-0.0001123610837959949*z^(-1) -1.490116119384768e-05*z^(-2) )/np^4;
         R2 = R2 + (+0.0002556506498360341*z^(-1) +0.000452995300292969*z^(-2) )/np^4;
@@ -309,6 +330,36 @@ if (alpha == 0)
     R1 = R1 + (+0.015625*d^(-1) -0.02604166666666667*d^(-2) )/np^1 + 1;
     R2 = R2 + (-0.05729166666666667*d^(-1) -0.02604166666666667*d^(-2) )/np^1;
 elseif (alpha == 1)
+    if ( T >= 7 )
+        R1 = R1 + (+4.421050825524612e-05*z^(-1) -9.845300465477299e-05*z^(-2) )/np^6;
+        R2 = R2 + (-0.0004130488626772792*z^(-1) -0.0002886747975868209*z^(-2) )/np^6;
+        R1 = R1 + (-0.0001284762402065099*z^(-3) )/np^6;
+        R2 = R2 + (+0.0002936599776148798*z^(-3) )/np^6;
+        R1 = R1 + (-4.42105082552552e-05*d^(-1) +3.097987510232154e-05*d^(-2) )/np^6;
+        R2 = R2 + (-3.368568855349101e-05*d^(-1) +2.181357967052824e-05*d^(-2) )/np^6;
+        R1 = R1 + (-2.025154726419684e-05*d^(-3) +1.804009902887319e-06*d^(-4) )/np^6;
+        R2 = R2 + (-5.460950725967714e-05*d^(-3) +0.0004144046920969578*d^(-4) )/np^6;
+        R1 = R1 + (+8.838002681793751e-05*d^(-5) -0.005903692556356525*d^(-6) )/np^6;
+        R2 = R2 + (-0.02360578463834522*d^(-5) -0.2085459891532966*d^(-6) )/np^6;
+        R1 = R1 + (-0.04927174711746236*d^(-7) -0.09714545248363038*d^(-8) )/np^6;
+        R2 = R2 + (-0.4808177876586013*d^(-7) -0.4040791642450564*d^(-8) )/np^6;
+        R1 = R1 + (-0.05486254751291189*d^(-9) )/np^6;
+        R2 = R2 + (-0.1067595519170177*d^(-9) )/np^6;
+    end
+    if ( T >= 6 )
+        R1 = R1 + (-0.0001335134292826253*z^(-1) -5.663062135378524e-05*z^(-2) )/np^5;
+        R2 = R2 + (+1.53532918588624e-05*z^(-1) +0.0007243330279986067*z^(-2) )/np^5;
+        R1 = R1 + (+0.0001355353742837906*z^(-3) )/np^5;
+        R2 = R2 + (-0.0001355353742837906*z^(-3) )/np^5;
+        R1 = R1 + (+0.0001335134292826214*d^(-1) -0.0001154726233560362*d^(-2) )/np^5;
+        R2 = R2 + (-0.0001697125535676412*d^(-1) +7.79156868957573e-05*d^(-2) )/np^5;
+        R1 = R1 + (+0.0001007355757637324*d^(-3) +1.598066688109512e-05*d^(-4) )/np^5;
+        R2 = R2 + (+0.0003025175562278589*d^(-3) -0.01889981810881747*d^(-4) )/np^5;
+        R1 = R1 + (-0.004761903800468913*d^(-5) -0.03071486300933196*d^(-6) )/np^5;
+        R2 = R2 + (-0.1327588315026021*d^(-5) -0.2290429970088575*d^(-6) )/np^5;
+        R1 = R1 + (-0.04132627816142633*d^(-7) -0.01377542605380878*d^(-8) )/np^5;
+        R2 = R2 + (-0.1277789520163642*d^(-7) -0.01377542605380878*d^(-8) )/np^5;
+    end
     if ( T >= 5 )
         R1 = R1 + (-4.915484675654808e-05*z^(-1) +0.0003713369369506837*z^(-2) )/np^4;
         R2 = R2 + (+0.001377543696650754*z^(-1) -0.0009346008300781254*z^(-2) )/np^4;
@@ -331,7 +382,7 @@ elseif (alpha == 1)
     end
     if ( T >= 3 )
         R1 = R1 + (-0.00048828125*z^(-1) )/np^2;
-        R2 = R2 + (+0.0078125*z^(-1) )/np^2;
+        R2 = R2 + (+0.007812500000000007*z^(-1) )/np^2;
         R1 = R1 + (+0.0004882812499999989*d^(-1) -0.01177300347222222*d^(-2) )/np^2;
         R2 = R2 + (-0.0529513888888889*d^(-1) -0.1154513888888889*d^(-2) )/np^2;
         R1 = R1 + (-0.02468532986111112*d^(-3) )/np^2;
@@ -343,34 +394,69 @@ elseif (alpha == 1)
     R2 = R2 + (-0.2447916666666667*d^(-1) -0.02604166666666667*d^(-2) )/np^1;
 else
     if ( T >= 5 )
-        R1 = R1 + (5/49152*alpha^8 - 35/49152*alpha^7 + 67/49152*alpha^6 + 11/36864*alpha^5 - 1529/589824*alpha^4 + 1891/2359296*alpha^3 + 26827/26542080*alpha^2 - 109/524288*alpha - 190867/1698693120)*z^(-1)/np^4;
-        R2 = R2 + (-1/3072*alpha^8 + 89/49152*alpha^7 - 421/294912*alpha^6 - 1465/294912*alpha^5 + 2525/589824*alpha^4 + 10907/2359296*alpha^3 - 424361/212336640*alpha^2 - 229/262144*alpha + 13571/53084160)*z^(-1)/np^4;
-        R1 = R1 + (-1/32768*alpha^8 + 5/49152*alpha^7 + 5/18432*alpha^6 - 175/196608*alpha^5 - 1253/2359296*alpha^4 + 1295/786432*alpha^3 + 415/2359296*alpha^2 - 375/1048576*alpha - 125/8388608)*z^(-2)/np^4;
-        R2 = R2 + (1/24576*alpha^8 - 5/49152*alpha^7 - 143/294912*alpha^6 + 175/196608*alpha^5 + 2107/1179648*alpha^4 - 1295/786432*alpha^3 - 10517/4718592*alpha^2 + 375/1048576*alpha + 475/1048576)*z^(-2)/np^4;
-        R1 = R1 + (-5/49152*alpha^8 + 35/49152*alpha^7 - 67/49152*alpha^6 - 11/36864*alpha^5 + 1529/589824*alpha^4 - 1891/2359296*alpha^3 - 26827/26542080*alpha^2 + 109/524288*alpha + 190867/1698693120)*d^(-1)/np^4;
-        R2 = R2 + (-1/3072*alpha^8 + 13/16384*alpha^7 + 293/294912*alpha^6 - 3683/1474560*alpha^5 - 605/589824*alpha^4 + 14383/7077888*alpha^3 + 30179/70778880*alpha^2 - 34231/106168320*alpha - 5129/159252480)*d^(-1)/np^4;
-        R1 = R1 + (-1/32768*alpha^8 - 1/6144*alpha^7 + 145/147456*alpha^6 - 1999/2949120*alpha^5 - 327/262144*alpha^4 + 2897/3538944*alpha^3 + 3127/7077888*alpha^2 - 63391/424673280*alpha - 423983/10192158720)*d^(-2)/np^4;
-        R2 = R2 + (-1/24576*alpha^8 - 17/24576*alpha^7 - 107/147456*alpha^6 + 1751/983040*alpha^5 + 1535/1179648*alpha^4 - 853/884736*alpha^3 - 7583/26542080*alpha^2 + 14131/141557760*alpha - 12829/1274019840)*d^(-2)/np^4;
-        R1 = R1 + (-1/16384*alpha^7 - 35/49152*alpha^6 + 1127/1474560*alpha^5 + 973/1179648*alpha^4 - 1051/7077888*alpha^3 - 2093/3538944*alpha^2 - 533/21233664*alpha + 258491/2548039680)*d^(-3)/np^4;
-        R2 = R2 + (-1/16384*alpha^7 - 49/32768*alpha^6 - 4249/737280*alpha^5 - 2009/294912*alpha^4 - 9077/2359296*alpha^3 - 94099/70778880*alpha^2 + 18133/212336640*alpha + 31979/212336640)*d^(-3)/np^4;
-        R1 = R1 + (-1001/589824*alpha^5 - 5005/2359296*alpha^4 - 1001/589824*alpha^3 + 5005/7077888*alpha^2 + 32461/141557760*alpha - 674531/3397386240)*d^(-4)/np^4;
-        R2 = R2 + (-1001/589824*alpha^5 - 5005/393216*alpha^4 - 101101/3538944*alpha^3 - 695695/21233664*alpha^2 - 8411117/424673280*alpha - 6174311/1274019840)*d^(-4)/np^4;
+        R1 = R1 + (5/49152*alpha^8 - 35/49152*alpha^7 + 67/49152*alpha^6 + ...
+            11/36864*alpha^5 - 1529/589824*alpha^4 + 1891/2359296*alpha^3 + ...
+            26827/26542080*alpha^2 - 109/524288*alpha - 190867/1698693120)*z^(-1)/np^4;
+        R2 = R2 + (-1/3072*alpha^8 + 89/49152*alpha^7 - 421/294912*alpha^6 - ...
+            1465/294912*alpha^5 + 2525/589824*alpha^4 + 10907/2359296*alpha^3 - ...
+            424361/212336640*alpha^2 - 229/262144*alpha + 13571/53084160)*z^(-1)/np^4;
+        R1 = R1 + (-1/32768*alpha^8 + 5/49152*alpha^7 + 5/18432*alpha^6 - 175/...
+            196608*alpha^5 - 1253/2359296*alpha^4 + 1295/786432*alpha^3 + ...
+            415/2359296*alpha^2 - 375/1048576*alpha - 125/8388608)*z^(-2)/np^4;
+        R2 = R2 + (1/24576*alpha^8 - 5/49152*alpha^7 - 143/294912*alpha^6 + ...
+            175/196608*alpha^5 + 2107/1179648*alpha^4 - 1295/786432*alpha^3 - ...
+            10517/4718592*alpha^2 + 375/1048576*alpha + 475/1048576)*z^(-2)/np^4;
+        R1 = R1 + (-5/49152*alpha^8 + 35/49152*alpha^7 - 67/49152*alpha^6 - ...
+            11/36864*alpha^5 + 1529/589824*alpha^4 - 1891/2359296*alpha^3 - ...
+            26827/26542080*alpha^2 + 109/524288*alpha + 190867/1698693120)*d^(-1)/np^4;
+        R2 = R2 + (-1/3072*alpha^8 + 13/16384*alpha^7 + 293/294912*alpha^6 - ...
+            3683/1474560*alpha^5 - 605/589824*alpha^4 + 14383/7077888*alpha^3 + ...
+            30179/70778880*alpha^2 - 34231/106168320*alpha - 5129/159252480)*d^(-1)/np^4;
+        R1 = R1 + (-1/32768*alpha^8 - 1/6144*alpha^7 + 145/147456*alpha^6 - ...
+            1999/2949120*alpha^5 - 327/262144*alpha^4 + 2897/3538944*alpha^3 + ...
+            3127/7077888*alpha^2 - 63391/424673280*alpha - 423983/10192158720)*d^(-2)/np^4;
+        R2 = R2 + (-1/24576*alpha^8 - 17/24576*alpha^7 - 107/147456*alpha^6 + ...
+            1751/983040*alpha^5 + 1535/1179648*alpha^4 - 853/884736*alpha^3 - ...
+            7583/26542080*alpha^2 + 14131/141557760*alpha - 12829/1274019840)*d^(-2)/np^4;
+        R1 = R1 + (-1/16384*alpha^7 - 35/49152*alpha^6 + 1127/1474560*alpha^5 + ...
+            973/1179648*alpha^4 - 1051/7077888*alpha^3 - 2093/3538944*alpha^2 - ...
+            533/21233664*alpha + 258491/2548039680)*d^(-3)/np^4;
+        R2 = R2 + (-1/16384*alpha^7 - 49/32768*alpha^6 - 4249/737280*alpha^5 - ...
+            2009/294912*alpha^4 - 9077/2359296*alpha^3 - 94099/70778880*alpha^2 + ...
+            18133/212336640*alpha + 31979/212336640)*d^(-3)/np^4;
+        R1 = R1 + (-1001/589824*alpha^5 - 5005/2359296*alpha^4 - 1001/589824*...
+            alpha^3 + 5005/7077888*alpha^2 + 32461/141557760*alpha - ...
+            674531/3397386240)*d^(-4)/np^4;
+        R2 = R2 + (-1001/589824*alpha^5 - 5005/393216*alpha^4 - 101101/...
+            3538944*alpha^3 - 695695/21233664*alpha^2 - 8411117/424673280*...
+            alpha - 6174311/1274019840)*d^(-4)/np^4;
         R1 = R1 + (-85085/7077888*alpha^3 - 425425/42467328*alpha - 833833/1019215872)*d^(-5)/np^4;
-        R2 = R2 + (-85085/7077888*alpha^3 - 1616615/42467328*alpha^2 - 85085/1769472*alpha - 1446445/63700992)*d^(-5)/np^4;
+        R2 = R2 + (-85085/7077888*alpha^3 - 1616615/42467328*alpha^2 - ...
+            85085/1769472*alpha - 1446445/63700992)*d^(-5)/np^4;
         R1 = R1 + (-1616615/84934656*alpha - 1616615/2038431744)*d^(-6)/np^4;
         R2 = R2 + (-1616615/84934656*alpha - 1616615/84934656)*d^(-6)/np^4;
     end
     if ( T >= 4 )
-        R1 = R1 + (1/1024*alpha^6 - 5/1536*alpha^5 + 31/24576*alpha^4 + 7/2048*alpha^3 - 13/9216*alpha^2 - 1/1536*alpha + 305/1179648)*z^(-1)/np^3;
-        R2 = R2 + (-1/384*alpha^6 + 19/3072*alpha^5 + 41/8192*alpha^4 - 11/1024*alpha^3 - 737/147456*alpha^2 + 113/49152*alpha + 1153/1179648)*z^(-1)/np^3;
-        R1 = R1 + (-1/6144*alpha^6 + 35/24576*alpha^4 - 259/98304*alpha^2 + 75/131072)*z^(-2)/np^3;
-        R2 = R2 + (1/6144*alpha^6 - 35/24576*alpha^4 + 259/98304*alpha^2 - 75/131072)*z^(-2)/np^3;
-        R1 = R1 + (-1/1024*alpha^6 + 5/1536*alpha^5 - 31/24576*alpha^4 - 7/2048*alpha^3 + 13/9216*alpha^2 + 1/1536*alpha - 305/1179648)*d^(-1)/np^3;
-        R2 = R2 + (-1/384*alpha^6 - 1/1024*alpha^5 + 133/24576*alpha^4 + 19/9216*alpha^3 - 287/147456*alpha^2 - 83/147456*alpha + 11603/53084160)*d^(-1)/np^3;
-        R1 = R1 + (-1/6144*alpha^6 - 1/512*alpha^5 + 5/2048*alpha^4 + 23/18432*alpha^3 - 151/294912*alpha^2 - 1/4608*alpha - 389/26542080)*d^(-2)/np^3;
-        R2 = R2 + (-1/6144*alpha^6 - 13/3072*alpha^5 - 145/12288*alpha^4 - 83/9216*alpha^3 - 51/32768*alpha^2 + 83/147456*alpha + 1109/13271040)*d^(-2)/np^3;
-        R1 = R1 + (-35/8192*alpha^4 - 35/18432*alpha^3 - 217/147456*alpha^2 + 19633/53084160)*d^(-3)/np^3;
-        R2 = R2 + (-35/8192*alpha^4 - 35/1536*alpha^3 - 2611/73728*alpha^2 - 3619/147456*alpha - 114089/17694720)*d^(-3)/np^3;
+        R1 = R1 + (1/1024*alpha^6 - 5/1536*alpha^5 + 31/24576*alpha^4 + 7/2048*...
+            alpha^3 - 13/9216*alpha^2 - 1/1536*alpha + 305/1179648)*z^(-1)/np^3;
+        R2 = R2 + (-1/384*alpha^6 + 19/3072*alpha^5 + 41/8192*alpha^4 - 11/1024*...
+            alpha^3 - 737/147456*alpha^2 + 113/49152*alpha + 1153/1179648)*z^(-1)/np^3;
+        R1 = R1 + (-1/6144*alpha^6 + 35/24576*alpha^4 - 259/98304*alpha^2 + ...
+            75/131072)*z^(-2)/np^3;
+        R2 = R2 + (1/6144*alpha^6 - 35/24576*alpha^4 + 259/98304*alpha^2 ...
+            - 75/131072)*z^(-2)/np^3;
+        R1 = R1 + (-1/1024*alpha^6 + 5/1536*alpha^5 - 31/24576*alpha^4 - ...
+            7/2048*alpha^3 + 13/9216*alpha^2 + 1/1536*alpha - 305/1179648)*d^(-1)/np^3;
+        R2 = R2 + (-1/384*alpha^6 - 1/1024*alpha^5 + 133/24576*alpha^4 + ...
+            19/9216*alpha^3 - 287/147456*alpha^2 - 83/147456*alpha + 11603/53084160)*d^(-1)/np^3;
+        R1 = R1 + (-1/6144*alpha^6 - 1/512*alpha^5 + 5/2048*alpha^4 + 23/18432*...
+            alpha^3 - 151/294912*alpha^2 - 1/4608*alpha - 389/26542080)*d^(-2)/np^3;
+        R2 = R2 + (-1/6144*alpha^6 - 13/3072*alpha^5 - 145/12288*alpha^4 - 83/9216*...
+            alpha^3 - 51/32768*alpha^2 + 83/147456*alpha + 1109/13271040)*d^(-2)/np^3;
+        R1 = R1 + (-35/8192*alpha^4 - 35/18432*alpha^3 - 217/147456*alpha^2 + ...
+            19633/53084160)*d^(-3)/np^3;
+        R2 = R2 + (-35/8192*alpha^4 - 35/1536*alpha^3 - 2611/73728*alpha^2 - ...
+            3619/147456*alpha - 114089/17694720)*d^(-3)/np^3;
         R1 = R1 + (-5005/294912*alpha^2 - 1001/442368)*d^(-4)/np^3;
         R2 = R2 + (-5005/294912*alpha^2 - 5005/147456*alpha - 107107/5308416)*d^(-4)/np^3;
         R1 = R1 + (-85085/10616832)*d^(-5)/np^3;
@@ -418,6 +504,18 @@ end
 R1 = 0.0;
 R2 = 0.0;
 if ( alpha == 0 )
+    if ( T >= 7 )
+        R1 = R1 + (-0.01196102063075393*z^2 -0.00277571228121701*z^1 )/np^6;
+        R2 = R2 + (+0.1904949571852236*z^2 +0.01937961523964843*z^1 )/np^6;
+        R1 = R1 + (-0.0003486406879182943 )/np^6;
+        R2 = R2 + (+0.0004183688255019682 )/np^6;
+    end
+    if ( T >= 6 )
+        R1 = R1 + (-0.6637971470977652*z^3 -0.1730340465711127*z^2 )/np^5;
+        R2 = R2 + (+0.3913221799067465*z^3 +0.1312375428294408*z^2 )/np^5;
+        R1 = R1 + (-0.03190107388066272*z^1 -0.003136156886880289 )/np^5;
+        R2 = R2 + (+0.03048894498589488*z^1 +0.003920196108600354 )/np^5;
+    end
     if ( T >= 5 )
         R1 = R1 + (+0.001501174033247706*z^4 +0.006473841918350666*z^3 )/np^4;
         R2 = R2 + (-0.9524842232974917*z^4 -0.3550440568543063*z^3 )/np^4;
@@ -453,6 +551,18 @@ if ( alpha == 0 )
     R1 = R1 + (-0.03888888888888889*z^1 -3.469446951953614e-18 )/np^1 + 1;
     R2 = R2 + (+0.0388888888888889*z^1 +0.08333333333333333 )/np^1;
 elseif ( alpha == 1 )
+    if ( T >= 7 )
+        R1 = R1 + (+0.1888634820675584*z^2 +0.01806148723662363*z^1 )/np^6;
+        R2 = R2 + (-0.2473524833501428*z^2 -0.02552670106483584*z^1 )/np^6;
+        R1 = R1 + (+6.972813758367975e-05 )/np^6;
+        R2 = R2 + (+0.0003920196108599757 )/np^6;
+    end
+    if ( T >= 6 )
+        R1 = R1 + (+0.2500575428553918*z^3 +0.07916956633223091*z^2 )/np^5;
+        R2 = R2 + (+0.381735599523504*z^3 +0.03570599642395061*z^2 )/np^5;
+        R1 = R1 + (+0.01519177406366366*z^1 +0.0007840392217200875 )/np^5;
+        R2 = R2 + (-0.006645317399079066*z^1 -0.0001147360468107504 )/np^5;
+    end
     if ( T >= 5 )
         R1 = R1 + (-0.9842194497752994*z^4 -0.3638886994207212*z^3 )/np^4;
         R2 = R2 + (+0.4445716141609543*z^4 +0.2691722827926532*z^3 )/np^4;
@@ -486,7 +596,7 @@ elseif ( alpha == 1 )
     R1 = R1 + (-0.03481481481481481*z^3 -0.003174603174603177*z^2 )/np^1;
     R2 = R2 + (+0.1358730158730159*z^3 +0.1476190476190476*z^2 )/np^1;
     R1 = R1 + (+0.03333333333333333*z^1 +0.08333333333333333 )/np^1 + 1;
-    R2 = R2 + (+0.1333333333333333*z^1 +0.5 )/np^1;
+    R2 = R2 + (+0.1333333333333333*z^1 +0.5000000000000001 )/np^1;
 else
     if ( T >= 5 )
         R1 = R1 + (-1/70761600*alpha^17 + 1/9580032*alpha^16 + 8209/6793113600*alpha^15 - 12557/1277337600*alpha^14 - 4529803/149448499200*alpha^13 + 32533/106444800*alpha^12 + 322620017/1207084032000*alpha^11 - 14482007/3359232000*alpha^10 - 16413757/36578304000*alpha^9 + 2685618697/86220288000*alpha^8 -...
@@ -594,6 +704,18 @@ end
 R1 = 0.0;
 R2 = 0.0;
 if ( alpha == 0 )
+    if ( T >= 7 )
+        R1 = R1 + (+1.309628097160176e-05*d^2 -6.505325803676646e-06*d^1 )/np^6;
+        R2 = R2 + (-0.001326131973043531*d^2 +0.0007635409517350945*d^1 )/np^6;
+        R1 = R1 + (+2.100224847639528e-06 )/np^6;
+        R2 = R2 + (-0.000344405038138915 )/np^6;
+    end
+    if ( T >= 6 )
+        R1 = R1 + (+0.001509301781329904*d^3 -0.0009676950522129104*d^2 )/np^5;
+        R2 = R2 + (-0.0001802687708021319*d^3 -0.0001238977582304063*d^2 )/np^5;
+        R1 = R1 + (+0.00053567814019176*d^1 -0.0002131630878045043 )/np^5;
+        R2 = R2 + (+0.0003181332313542115*d^1 -0.0004025677940905445 )/np^5;
+    end
     if ( T >= 5 )
         R1 = R1 + (-2.796022042244435e-05*d^4 +2.011295619003682e-05*d^3 )/np^4;
         R2 = R2 + (+0.002475382540803074*d^4 -0.002022143985881445*d^3 )/np^4;
@@ -629,6 +751,18 @@ if ( alpha == 0 )
     R1 = R1 + (+0.01063492063492063*d^1 -0.009523809523809525 )/np^1 + 1;
     R2 = R2 + (-0.009365079365079364*d^1 +0.007142857142857144 )/np^1;
 elseif ( alpha == 1 )
+    if ( T >= 7 )
+        R1 = R1 + (-0.001116872178853068*d^2 +0.0006145274231811699*d^1 )/np^6;
+        R2 = R2 + (+0.0003914779895445831*d^2 +0.0001817422654701506*d^1 )/np^6;
+        R1 = R1 + (-0.0002421391621335997 )/np^6;
+        R2 = R2 + (-0.0004609315000727462 )/np^6;
+    end
+    if ( T >= 6 )
+        R1 = R1 + (-0.001217631725961165*d^3 +0.0007064505509263123*d^2 )/np^5;
+        R2 = R2 + (-0.001284213690985701*d^3 +0.00112752157728142*d^2 )/np^5;
+        R1 = R1 + (-0.0003330216038310101*d^1 +9.757071356383969e-05 )/np^5;
+        R2 = R2 + (-0.0008332130005899818*d^1 +0.0004030585196629511 )/np^5;
+    end
     if ( T >= 5 )
         R1 = R1 + (+0.001882808665107142*d^4 -0.001505607402838352*d^3 )/np^4;
         R2 = R2 + (-0.003079494756738815*d^4 +0.0021480231321534*d^3 )/np^4;
@@ -775,483 +909,7 @@ end
 p = real( 4*sqrt(pi)/z^(1/4)/d^(1/4)*z^(-alpha/2)* ...
     ( (R1*cos( (alpha + 1)/2*acos(2*z - 1) ) -cos( (alpha - 1)/2* ...
     acos(2*z - 1) )*R2)*fn^(1/4)*airy(0,fn) + ...
-     1i*(-sin( (alpha + 1)/2*acos(2*z - 1) )*R1 +sin( (alpha - 1)/2*...
+    1i*(-sin( (alpha + 1)/2*acos(2*z - 1) )*R1 +sin( (alpha - 1)/2*...
     acos(2*z - 1) )*R2)*fn^(-1/4)*airy(1,fn) ) );
 
 end
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Routines for RH algorithm with general w(x) = x^aqm(1)*exp(-aqm(2)*x^aqm(3)) %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function [x, w] = alg_rhgen(n, compRepr, aqm, qe)
-
-T = ceil(25/log(n) );
-% Above heuristic for polynomials, but we might need more accuracy for factor0&1 
-cT = T+1; %max(T,7);
-UQ0 = getUQ(aqm,cT);
-
-if compRepr
-    mn = min(n,ceil(17*sqrt(n)));
-else
-    mn = n;
-end
-w = zeros(1, mn);
-if qe
-    x = [ besselroots(aqm(1), 3).^2/(4*n + 2).*(1 + (besselroots(aqm(1), 3).^2 + ...
-        2*(0 - 1) )/(4*n + 2)^2/3 ); zeros(mn-3, 1) ];
-else % Above and below [Tricomi 1947 pg. 296]
-    bta = min(round(0.455*n),mn); % Heuristic for switching the initial approximations
-    bes = besselroots(aqm(1), bta).^2;
-    x = bes/(4*n + 2*aqm(1)+2).*(1 + (bes + 2*(aqm(1)^2 - 1) )/(4*n + 2*aqm(1)+2)^2/3 );
-    
-    ak = [-11.93601556323626; -11.00852430373326; -10.04017434155809; ...
-        -9.02265085340981; -7.944133587120853; -6.786708090071759; ...
-        -5.520559828095551; -4.08794944413097; -2.338107410459767];
-    t = 3*pi/2*((mn-bta:-1:10)'-0.25);
-    ak = [-t.^(2/3).*(1+5/48./t.^2-5/36./t.^4+77125/82944./t.^6 -10856875/...
-        6967296./t.^8); ak(max(1,9-mn+bta):end)]; % [DLMF (9.9.6)]
-    nu = 4*n+2*aqm(1)+2; % [Gatteshi 2002 (4.9)] 
-    x = [x; (nu+ak*(4*nu)^(1/3)+ ak.^2*(nu/16)^(-1/3)/5 + (11/35-aqm(1)^2-...
-        12/175*ak.^3)/nu + (16/1575*ak+92/7875*ak.^4)*2^(2/3)*nu^(-5/3) ...
-        -(15152/3031875*ak.^5+1088/121275*ak.^2)*2^(1/3)*nu^(-7/3))];
-end
-
-% Use finite differences for derivative of polynomial when not x^alpha*exp(-x) 
-% and use the same initial approximations
-useFinDiff = (aqm(3) ~= 1) || (aqm(2) ~= 1);
-if ~useFinDiff
-    aqm1 = aqm; aqm1(1) = aqm(1) + 1;
-    UQ1 = getUQ(aqm1,cT);
-    factor0 = 1-4i*4^aqm(1)*sum((UQ0(1,2,1:(cT-1),1, 2) + UQ0(1,2,1:(cT-1),1))./...
-        n.^reshape(1:(cT-1),[1,1,cT-1]) );
-    factor1 = 1-4i*4^(aqm(1)+1)*sum((UQ1(1,2,1:(cT-1),1, 2) + UQ1(1,2,1:(cT-1),...
-        1))./n.^reshape(1:(cT-1),[1,1,cT-1]) );
-    
-    factorx = sqrt(factor1/factor0)/(2 - 2/n);
-    factorw = -(1 - 1/(n + 1) )^(n + 1)*(1 - 1/n)*exp(1 + 2*log(2) )*4*pi*...
-        sqrt(factor0*factor1);
-end
-noUnderflow = 1;
-for k = 1:mn
-    if ( k > 3 )
-        x(k) = 3*x(k-1) - 3*x(k-2) + x(k-3);
-    end
-    step = x(k);
-    l = 0;
-    ov = inf;
-    ox = x(k);
-    while ( ( abs(step) > eps*400*x(k) ) && ( l < 20) )
-        l = l + 1;
-        pe = polyAsyRHgen(n, x(k), aqm, T, UQ0);
-        if (abs(pe) >= abs(ov)*(1-5e5*eps) )
-            x(k) = ox;
-            break
-        end
-        if useFinDiff
-            hh = max(sqrt(eps)*x(k), sqrt(eps) );
-            step = pe*hh/(polyAsyRHgen(n, x(k)+hh, aqm, T, UQ0) - pe);
-        else
-            step = pe/(polyAsyRHgen(n-1, x(k), [aqm(1)+1, aqm(2:end)], T, UQ1)*factorx - pe/2);
-        end
-        ox = x(k);
-        x(k) = x(k) -step;
-        ov = pe;
-    end
-    if noUnderflow && useFinDiff
-        w(k) = hh/(polyAsyRHgen(n-1,x(k)+hh,aqm,T,UQ0)-polyAsyRHgen(n-1,x(k),aqm,T,UQ0))/...
-            polyAsyRHgen(n+1,x(k),aqm,T, UQ0)/exp(x(k));
-    elseif noUnderflow
-        w(k) = factorw/polyAsyRHgen(n-1,x(k),[aqm(1)+1,aqm(2:end)],T,UQ1)/...
-            polyAsyRHgen(n+1,x(k),aqm,T, UQ0)/exp(x(k));
-    end
-    if noUnderflow && ( w(k) == 0 ) && ( k > 1 ) && ( w(k-1) > 0 )
-        if compRepr
-            w = w(1:k-1);
-            x = x(1:k-1);
-            return;
-        end
-        noUnderflow = 0;
-    end
-end
-
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function p = polyAsyRHgen(np, y, aqm, T, UQ)
-
-if (aqm(3) == 1) && (aqm(2) == 1)
-    z = y/4/np;
-    mnxi = 2*np*( sqrt(z).*sqrt(1 - z) - acos(sqrt(z) ) ); % = -n*xin/i
-else
-    A = zeros(aqm(3)+1,1);
-    for k =0:aqm(3)
-        A(k+1) = prod((2*(1:k)-1)/2./(1:k));
-    end
-    z = y/(np*2/aqm(3)/aqm(2)/A(end) )^(1/aqm(3));
-    % Also correct but much slower: Hn = 4*aqm(3)/(2*aqm(3)-1)*...
-    %   double(hypergeom([1, 1-aqm(3)], 3/2-aqm(3), z))/aqm(3);
-    Hn = 2/A(aqm(3)+1)*z.^(0:aqm(3)-1)*A(aqm(3)-(0:aqm(3)-1))/aqm(3);
-    mnxi = np*(sqrt(z).*sqrt(1-z).*Hn/2 -2*acos(sqrt(z)));
-end
-% Don't add alpha to ensure having the same bound for when computing the
-% the derivative because alpha is not zero here
-if y < sqrt(np)
-    p = asyBesselgen(np, z, aqm, T, UQ, mnxi + pi*np);
-    return
-elseif y > 3.7*np
-    p = asyAirygen(np, z, aqm, T, UQ, (mnxi*3i/2)^(2/3) );
-    return
-end
-p = asyBulkgen(np, z, aqm, T, UQ, mnxi);
-
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function p = asyBulkgen(np, z, aqm, T, UQ, mnxi)
-if T == 1
-    p = real( 2/z^(1/4 + aqm(1)/2)/(1 - z)^(1/4)*cos(acos(2*z - 1)*...
-        (1/2 + aqm(1)/2) - mnxi - pi/4) );
-    return;
-end
-
-R = [1 0];
-for k = 1:T-1
-    for m = 1:ceil(3*T/2)
-        R = R + (UQ(1,:,k,m,1)/(z-1)^m + UQ(1,:,k,m,2)/z^m)/np^k;
-    end
-end
-
-p = real( 2/z^(1/4 + aqm(1)/2)*(cos(acos(2*z-1)*(1/2+aqm(1)/2) - mnxi-pi/4)*R(1) ...
-    -cos(acos(2*z-1)*(-1/2+aqm(1)/2)-mnxi-pi/4)*R(2))/(1 - z)^(1/4) );
-end
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function p = asyBesselgen(np, z, aqm, T,UQ, npb)
-
-if T == 1
-    p = real( sqrt(2*pi)*(-1)^np*sqrt(npb)/z^(1/4)/(1 - z)^(1/4)*...
-        z^(-aqm(1)/2)*(sin( (aqm(1) + 1)/2*acos(2*z - 1) - pi*aqm(1)/2)*...
-        besselj(aqm(1),npb) + cos( (aqm(1) + 1)/2*acos(2*z - 1) - ...
-        pi*aqm(1)/2)*(besselj(aqm(1)-1,npb) - aqm(1)/(npb)*...
-        besselj(aqm(1), npb) ) ) );
-    return
-end
-R = [1 0];
-for k = 1:T-1
-    for m = 1:max(size(UQ,4),9-k)
-        R = R + UQ(1, :, k, m, 4)*z^(m-1)/np^k;
-    end
-end
-p = real( sqrt(2*pi)*(-1)^np*sqrt(npb)/z^(1/4)/ ...
-    (1 - z)^(1/4)*z^(-aqm(1)/2)*( (sin( (aqm(1) + 1)/2*acos(2*z - 1) - ...
-    pi*aqm(1)/2)*R(1) -sin( (aqm(1) - 1)/2*acos(2*z - 1) - pi*aqm(1)/2)*...
-    R(2))*besselj(aqm(1), npb) + (cos( (aqm(1) + 1)/2*acos(2*z - ...
-    1)- pi*aqm(1)/2)*R(1) - cos( (aqm(1) - 1)/2*acos(2*z - 1) - pi*aqm(1)/2)*...
-    R(2))*(besselj(aqm(1)-1, npb) - aqm(1)/npb*besselj(aqm(1), npb) ) ) );
-
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function p = asyAirygen(np, z, aqm, T, UQ, fn)
-d = z - 1;
-if T == 1
-    p = real( 4*sqrt(pi)/z^(1/4)/d^(1/4)*z^(-aqm(1)/2)* ...
-        (cos( (aqm(1) + 1)/2*acos(2*z - 1) )*fn^(1/4)*airy(0,fn) + ...
-        -1i*sin( (aqm(1) + 1)/2*acos(2*z - 1) )*fn^(-1/4)*airy(1,fn) ) );
-    return
-end
-R = [1 0];
-for k = 1:T-1
-    for m = 1:max(size(UQ,4),9-k)
-        R = R + UQ(1, :, k, m, 3)*d^(m-1)/np^k;
-    end
-end
-p = real( 4*sqrt(pi)/z^(1/4)/d^(1/4)*z^(-aqm(1)/2)* ...
-    ( (R(1)*cos( (aqm(1) + 1)/2*acos(2*z - 1) ) -cos( (aqm(1) - 1)/2* ...
-    acos(2*z - 1) )*R(2))*fn^(1/4)*airy(0,fn) + ...
-     1i*(-sin( (aqm(1) + 1)/2*acos(2*z - 1) )*R(1) +sin( (aqm(1) - 1)/2*...
-    acos(2*z - 1) )*R(2))*fn^(-1/4)*airy(1,fn) ) );
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Additional short functions
-function p = poch(x,n)
-% 'pochhammer' needs symbolic toolbox
-p = prod(x+(0:(n-1)) );
-end
-function b = binom(x,n)
-% 'nchoosek' only works for integer x
-b = prod(x:-1:(x-n+1) )/prod(1:n);
-end
-function nu = nuk(n)
-nu = -gamma(3*n-1/2)*2^n/27^n/2/n/sqrt(pi)/gamma(n*2);
-end
-function mu = muk(n)
-mu = 3*gamma(3*n-1/2)*2^n/27^n/sqrt(pi)/gamma(n*2);
-end
-function b = brac(n,alpha)
-b = prod(4*alpha^2-(2*(1:n)-1).^2 )/(2^(2*n)*factorial(n));
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Compute the V-matrices to construct the asymptotic expansion of R.
-% Input
-%   aqm          - Factors in the weight function w(x) = x^alpha*exp(-qm*x^m)
-%   maxOrder     - The maximum order of the error
-%   r            - 1 when computing Wright, -1 when computing Wleft
-% Output
-%   WV           - Coefficient matrices for (z + 1/2 \pm 1/2)^m of Delta_k(z)
-function WV = getV(aqm,maxOrder,r)
-alpha = aqm(1);
-m = aqm(3);
-
-mo = ceil(3*maxOrder/2)+4;
-ns = 0:mo;
-f = nan*zeros(mo+1,1); % Coefficients in the expansion of \bar{phi}_n(z) or \xi_n(z)
-g = nan*zeros(maxOrder-1,mo+1);
-
-A = zeros(m+1,1);
-for k =0:m
-    A(k+1) = prod((2*(1:k)-1)/2./(1:k));
-end
-
-if (r == 1) % Right disk: near z=1
-    ns = [ns, ns(end)+1]; % Extend by one because f(1) = 0 while not for left
-    u = zeros(ns(end)+1,ns(end)+1);
-    v = zeros(ns(end)+1,ns(end)+1); 
-    u(1,1) = 1;
-    v(1,1) = 1;
-    for n = [ns, ns(end)+1]
-        u(2,n+1) = binom(1/2,n+1);
-        v(2,n+1) = binom(1/2,n+2);
-    end
-    for kt = 2:ns(end)
-        for n = ns
-            u(kt+1,n+1) = sum(u(kt,(0:n)+1).*u(2,n-(0:n)+1));
-            v(kt+1,n+1) = sum(v(kt,(0:n)+1).*v(2,n-(0:n)+1));
-        end
-    end
-    q = zeros(ns(end)+1,1);
-    rr = zeros(ns(end)+1,1); % Coeffs in the expansion of sqrt(2-2*sqrt(1-w))
-    for kt = ns
-        for l = 0:kt
-            q(kt+1) = q(kt+1) + poch(1/2,kt-l)*u(kt-l+1,l+1)/(-2)^(kt-l)/...
-                factorial(kt-l)/(1+2*(kt-l) );
-            rr(kt+1) = rr(kt+1) + binom(1/2,kt-l)*v(kt-l+1,l+1)*2^(kt-l);
-        end
-    end
-    if (m == 1)
-        for n = ns
-            f(n+1,1) = -2*binom(1/2,n);
-            for l = 0:n
-                f(n+1,1) = f(n+1,1) + 2*q(l+1)*rr(n-l+1);
-            end
-        end
-    else
-        for j = ns
-            f(j+1,1) = 0;
-            for i=0:min(j,m-1)
-                f(j+1,1) = f(j+1,1) + binom(1/2,j-i)*(-1)^(m-i-1)*...
-                    gamma(-1/2-i)/gamma(1/2-m)/gamma(m-i);
-            end
-            f(j+1,1) = -f(j+1)/m/A(m+1);
-            for l = 0:j
-                f(j+1,1) = f(j+1,1) + 2*q(l+1)*rr(j-l+1);
-            end
-        end
-    end
-    if(abs(f(1)) > 10*eps)
-        error('xi_n should be O( (z-1)^(3/2) ): Expected f(1) to be zero');
-    end
-    ns = ns(1:end-1); % Reset ns to its value before computing f's
-    g(1,1,1) = -1/f(2,1);
-    for n = 1:mo
-        g(1,n+1,1) = -g(1,1:n,1)*f((n+2):-1:3,1)/f(2,1);
-    end
-elseif 1 % Left disk: near z=0
-    if (m == 1)
-        for n = ns
-            f(n+1,1) = -(binom(1/2,n)*(-1)^n + poch(1/2,n)./(1+2*n)./factorial(n));
-        end
-    else
-        for n = ns
-            f(n+1,1) = 0;
-            for k = 0:min(m-1,n)
-                f(n+1,1) = f(n+1,1) + binom(1/2,n-k)*(-1)^(n-k)*A(m-k);
-            end
-            f(n+1,1) = -f(n+1,1)/2/m/A(m+1)-poch(1/2,n)./(1+2*n)./factorial(n);
-        end
-    end
-    g(1,1,1) = 1/f(1,1);
-    for n = 1:mo
-        g(1,n+1,1) = -g(1,1:n,1)*f((n+1):-1:2,1)/f(1,1);
-    end
-end
-
-rho = zeros(maxOrder,mo+1); 
-for n = ns
-    rho(2,n+1) = poch(1/2,n)/factorial(n)/(1+2*n)*(-r)^n;
-end
-rho(1,1) = 1;
-
-for i = 2:max(mo*2+2,(maxOrder-1))
-    for n = ns
-        g(i,n+1) = sum(g(i-1,1:(n+1) ).*g(1,(n+1):-1:1) );      
-        rho(i+1,n+1) = sum(rho(i,1:(n+1) ).*rho(2,(n+1):-1:1) );       
-    end
-end
-
-OmOdd = zeros(mo+1,1); OmEven = zeros(mo+1,1);
-XiOdd = zeros(mo+1,1); XiEven = zeros(mo+1,1); 
-ThOdd = zeros(mo+1,1); ThEven = zeros(mo+1,1);
-
-OmO = zeros(mo+1,1); OmE = zeros(mo+1,1);
-XiO = zeros(mo+1,1); XiE = zeros(mo+1,1);
-ThO = zeros(mo+1,1); ThE = zeros(mo+1,1);
-for n = ns
-    js = 0:n;
-    for j = js
-        OmOdd(n+1) = OmOdd(n+1) + (-1)^j/factorial(2*j)*(-2*alpha/...
-            sqrt(-r))^(2*j)*rho(2*j+1,n-j+1);
-        XiOdd(n+1) = XiOdd(n+1) + (-1)^j/factorial(2*j)*(-2*(alpha+1)/...
-            sqrt(-r))^(2*j)*rho(2*j+1,n-j+1);
-        ThOdd(n+1) = ThOdd(n+1) + (-1)^j/factorial(2*j)*(-2*(alpha-1)/...
-            sqrt(-r))^(2*j)*rho(2*j+1,n-j+1);
-        
-        OmEven(n+1) = OmEven(n+1) + (-1)^j/factorial(2*j+1)*(-2*alpha/...
-            sqrt(-r))^(2*j+1)*rho(2*j+2,n-j+1);
-        XiEven(n+1) = XiEven(n+1) + (-1)^j/factorial(2*j+1)*(-2*(alpha+1)/...
-            sqrt(-r))^(2*j+1)*rho(2*j+2,n-j+1);
-        ThEven(n+1) = ThEven(n+1) + (-1)^j/factorial(2*j+1)*(-2*(alpha-1)/...
-            sqrt(-r))^(2*j+1)*rho(2*j+2,n-j+1);
-    end
-    for j = js
-        OmO(n+1) = OmO(n+1) + binom(-1/2,j)*(r)^j*OmOdd(n-j+1);
-        XiO(n+1) = XiO(n+1) + binom(-1/2,j)*(r)^j*XiOdd(n-j+1);
-        ThO(n+1) = ThO(n+1) + binom(-1/2,j)*(r)^j*ThOdd(n-j+1);
-        
-        OmE(n+1) = OmE(n+1) + binom(-1/2,j)*(r)^j*OmEven(n-j+1);
-        XiE(n+1) = XiE(n+1) + binom(-1/2,j)*(r)^j*XiEven(n-j+1);
-        ThE(n+1) = ThE(n+1) + binom(-1/2,j)*(r)^j*ThEven(n-j+1);
-    end
-end
-Ts = zeros(2,2,mo+1); % = G_{k,n}^{odd/even} dep. on k, overwr. on each new k
-WV = zeros(2,2,maxOrder-1,mo+1);
-for k = 1:(maxOrder-1)
-    Ts(:,:,:) = 0;
-    if r == 1
-        if mod(k,2)
-            for n = 0:mo
-                Ts(:,:,n+1) = nuk(k)*[-2*(2*binom(-1/2,n-1)*(n>0)+binom(-1/2,...
-                    n)), 2i*4^(-alpha)*binom(-1/2,n) ; ...
-                    2j*4^(alpha)*binom(-1/2,n), 2*(2*binom(-1/2,n-1)*(n>0) ...
-                    +binom(-1/2,n))] + muk(k)*[-2*OmO(n+1), 4^(-alpha)*2j*...
-                    XiO(n+1); 4^(alpha)*2j*ThO(n+1), 2*OmO(n+1)];
-                WV(:,:,k,n+1) = sum(repmat(reshape(g(k,1:(n+1) ),[1,1,n+1]),...
-                    [2,2,1]).*Ts(:,:,(n+1):-1:1),3)/8;
-            end
-        else
-            for n = 0:mo
-                 Ts(:,:,n+1) = nuk(k)*4*(n==0)*eye(2) -muk(k)*[-2i*OmE(n+1), ...
-                     -2*4^(-alpha)*XiE(n+1); -2*4^alpha*ThE(n+1), 2i*OmE(n+1)];
-                 WV(:,:,k,n+1) = sum(repmat(reshape(g(k,1:(n+1) ),[1,1,n+1]),...
-                     [2,2,1]).*Ts(:,:,(n+1):-1:1),3)/8;
-            end
-        end
-    else
-      if mod(k,2)
-        for n = 0:mo	
-            Ts(:,:,n+1) = -(alpha^2+k/2-1/4)/k*[-(-1)^n*(2*binom(-1/2,n-1)*...
-                (n>0)+binom(-1/2,n))*2, -1i*4^(-alpha)*2*(-1)^n*...
-                binom(-1/2,n) ; -1j*4^(alpha)*2*(-1)^n*binom(-1/2,n), ...
-                (-1)^n*(2*binom(-1/2,n-1)*(n>0) +binom(-1/2,n))*2] - ...
-               (k-1/2)*[2*OmO(n+1), 4^(-alpha)*2j*XiO(n+1); 4^(alpha)*2j*...
-               ThO(n+1), -2*OmO(n+1)]; % binom(-1/2,-1) should be zero  
-            WV(:,:,k,n+1) = -(-1)^(ceil(k/2)+1)*(1j*sqrt(2))^k*(-2)^(-k/2)/...
-                4^(k+1)*brac(k-1,alpha)*sum(repmat(reshape(...
-                g(k,1:(n+1) ),[1,1,n+1]),[2,2,1]).*Ts(:,:,(n+1):-1:1),3);
-        end
-      else
-        for n = 0:mo
-            Ts(:,:,n+1) = (alpha^2+k/2-1/4)/k*4*(n==0)*eye(2)  -2*(k-1/2)*[...
-                OmE(n+1), 4^(-alpha)*1j*XiE(n+1); 4^alpha*1j*ThE(n+1), -OmE(n+1)];
-            WV(:,:,k,n+1) = -(-1)^(ceil(k/2)+1)*(1j*sqrt(2))^k*(-2)^(-k/2)/...
-                4^(k+1)*brac(k-1,alpha)*sum(repmat(reshape(g(k,1:(n+1) ),[1,1,n+1]),...
-                [2,2,1]).*Ts(:,:,(n+1):-1:1),3);
-        end
-      end
-    end
-end
-
-end
-
-% Get the U-matrices to construct the asymptotic expansion of R using the
-% procedure with the convolutions as explained in the paper. Optionally,
-% specify the method.
-% Input
-%   aqm          - Vector containing alpha, qm and m
-%   maxOrder     - The maximal order of the error
-% Output
-%   UQ           - Coefficient matrices of R_k(z) for (z-1)^(-m) [Uright], 
-%        for z^(-m) [Uleft] of R_k^{right}(z) for (z-1)^n [Qright] and of
-%        R_k^{left}(z) for z^n [Qleft]
-function UQ = getUQ(aqm,maxOrder)
-Vr = getV(aqm, maxOrder, 1);
-Vl = getV(aqm, maxOrder, -1);
-UQ = zeros(2,2,maxOrder-1,ceil(3*maxOrder/2)+2, 4);
-for kt = 0:(maxOrder-2) 
-    % Uright(:,:,(maxOrder-1)+1,:) will not be used later on because first term 
-    % in expansions is without U's
-    for mt = 0:(ceil(3*(kt+1)/2)-1)
-        UQ(:,:,kt+1,mt+1,1) = Vr(:,:,kt+1,ceil(3*(kt+1)/2)-mt);
-        for j = 0:(kt-1)
-            for l = 0:(ceil(3*(j+1)/2)-mt-1)
-                UQ(:,:,kt+1,mt+1,1) = UQ(:,:,kt+1,mt+1,1) + ...
-                    UQ(:,:,kt-j,l+1,3)*Vr(:,:,j+1,ceil(3*(j+1)/2)-l-mt);
-            end
-        end
-    end
-    for mt = 0:(ceil((kt+1)/2)-1)
-        UQ(:,:,kt+1,mt+1,2) = Vl(:,:,kt+1,ceil((kt+1)/2)-mt);
-        for j= 0:(kt-1)
-            for l = 0:(ceil((j+1)/2)-mt-1)
-                UQ(:,:,kt+1,mt+1,2) = UQ(:,:,kt+1,mt+1,2) + ...
-                    UQ(:,:,kt-j,l+1,4)*Vl(:,:,j+1,ceil((j+1)/2)-l-mt);
-            end
-        end
-    end
-    for n = 0:(ceil(3*(maxOrder-kt+1)/2)-1)
-        UQ(:,:,kt+1,n+1,3) = -Vr(:,:,kt+1,ceil(3*(kt+1)/2)+1+n);
-        UQ(:,:,kt+1,n+1,4) = -Vl(:,:,kt+1,ceil((kt+1)/2)+1+n);
-        for i = 0:(ceil((kt+1)/2)-1)
-            UQ(:,:,kt+1,n+1,3) = UQ(:,:,kt+1,n+1,3) + ...
-                poch(-i-n,n)/factorial(n)*UQ(:,:,kt+1,i+1,2);
-        end
-        for i = 0:(ceil(3*(kt+1)/2)-1)
-            UQ(:,:,kt+1,n+1,4) = UQ(:,:,kt+1,n+1,4) + ...
-                poch(-i-n,n)*(-1)^(-i-1-n)/factorial(n)*UQ(:,:,kt+1,i+1,1);
-        end
-        for j = 0:(kt-1)
-            for l = 0:(round((j+1)/2)+n)
-                UQ(:,:,kt+1,n+1,4) = UQ(:,:,kt+1,n+1,4) ...
-                    -UQ(:,:,kt-j,l+1,4)*Vl(:,:,j+1,n-l+1+ceil((j+1)/2) );
-            end
-            for l = 0:(round(3*(j+1)/2)+n)
-                UQ(:,:,kt+1,n+1,3) = UQ(:,:,kt+1,n+1,3) ...
-                    -UQ(:,:,kt-j,l+1,3)*Vr(:,:,j+1,n-l+1+round(3*(j+1)/2) );
-            end
-        end
-    end
-end
-
-end
-
