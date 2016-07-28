@@ -1,4 +1,3 @@
-
 function u = poisson( f, bc, m, n )
 % POISSON               FAST POISSON SOLVER FOR THE DISK 
 % 
