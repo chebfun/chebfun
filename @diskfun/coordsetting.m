@@ -1,13 +1,11 @@
 function iscart = coordsetting(varargin)
-% Given input to a function, determines whether the coordinate setting 
-% is polar or
-% cartesian.
-% first element input must be a diskfun. 
+% COORDSETTING: Given input to a function, determine whether the
+% function evaluation should occur with respect to polar or Cartesian coordinates. 
+% The first input element must be a diskfun. 
 
-%figure out if cartesian or polar
+%figure out if Cartesian or polar
 f = varargin{1}; 
-%f = f{1};
-%vars = varargin{:};
+
 %first check global setting and apply
 if strcmpi(f.coords,'cart')
     iscart =1; 

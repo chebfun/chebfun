@@ -58,7 +58,8 @@ if ( ~isempty(varargin) )
             r = exp(1i*th);
             
             clr = [255 255 204]/255;
-            fill(real(r),imag(r), clr, 'Edgecolor', 'None');             
+            fill(real(r),imag(r), clr, 'Edgecolor', 'None'); 
+            %plot(real(r),imag(r), 'Linewidth', .55); 
         end
         
         

@@ -17,10 +17,6 @@ if ( mod(n, 2) == 1 )
     X = [ zeros(m, 1) X ]; 
 end
 
-%if ( mod(m, 2) == 1 ) %m can be/should be odd.
- %   X = [ zeros(1, n+1); X  ];
-  %  m = m + 1; 
-%end
 
 % Convert to values on the grid: 
 VALS = trigtech.coeffs2vals(chebtech2.coeffs2vals(X).').'; 

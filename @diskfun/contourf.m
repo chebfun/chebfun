@@ -44,7 +44,7 @@ while ( ~isempty( varargin ) )
     elseif ( strcmpi(varargin{1}, 'pivots') ) % If given numpts then use them.
         doPivotPlot = 1;
         if ( length( varargin ) < 2 ) 
-            error('CHEBFUN:SEPARABLEAPPROX:contourf:pivotStyle', ...
+            error('CHEBFUN:DISKFUN:contourf:pivotStyle', ...
                 'Pivot style undefined.')
         end
         argin{j} = varargin{2};
@@ -58,19 +58,21 @@ end
 
 % Did the user want a plot of the pivot locations?
 if ( doPivotPlot )    % Do pivot plot. 
-    if ( ( ~isempty(argin) ) && ( length(argin{1}) < 5 ) )
+    %if ( ( ~isempty(argin) ) && ( length(argin{1}) < 5 ) )
         % Column, row, pivot plot
-        plot( f, argin{:} ), hold on
-        argin(1) = [];
-        contourf( f, argin{:} ), hold off
-        return
-    end
+       % plot( f, argin{:} ), hold on
+       % argin(1) = [];
+       % contourf( f, argin{:} ), hold off
+       % return
+    %end
+    error('CHEBFUN:DISKFUN:contourf:', ...
+            'Pivots cannot be plotted with ''contourf''. Use ''contour'' instead.');
 end
 
 if ( isa(f, 'double') )                
     % CONTOUR(xx, yy, F,...)
     
-    if ( (nargin >= 3) && isa(argin{1}, 'double') && isa(argin{2}, 'separableApprox') )
+    if ( (nargin >= 3) && isa(argin{1}, 'double') && isa(argin{2}, 'diskfun') )
         % Extract inputs:
         xx = f; 
         yy = argin{1}; 
@@ -80,14 +82,14 @@ if ( isa(f, 'double') )
         vals = feval(f, xx, yy);
         
     else
-        error('CHEBFUN:SEPARABLEAPPROX:contourf:inputs1', ...
+        error('CHEBFUN:DISKFUN:contourf:inputs1', ...
             'Unrecognised input arguments.');
     end
     
-elseif ( isa(f, 'separableApprox') ) 
+elseif ( isa(f, 'diskfun') ) 
     
     dom = f.domain;
-    if ( (nargin == 3) || (nargin > 3) && ~isa(argin{1},'separableApprox') ) 
+    if ( (nargin == 3) || (nargin > 3) && ~isa(argin{1},'diskfun') ) 
         % CONTOUR(xx, yy, f)
         
         % Evaluate f at equally spaced points.
@@ -96,7 +98,7 @@ elseif ( isa(f, 'separableApprox') )
         [xx, yy] = meshgrid(x, y);
         vals = feval( f, xx, yy );
 
-    elseif ( (nargin >= 3) && isa(argin{1},'separableApprox') && isa(argin{2},'separableApprox') )
+    elseif ( (nargin >= 3) && isa(argin{1},'diskfun') && isa(argin{2},'diskfun') )
         % CONTOUR plot on a surface.
         
         % Extract inputs:
@@ -107,8 +109,8 @@ elseif ( isa(f, 'separableApprox') )
         
         % Check CONTOUR objects are on the same domain.
         if ( ~domainCheck(xx, yy) || ~domainCheck(yy, f) )
-            error('CHEBFUN:SEPARABLEAPPROX:contourf:domainMismatch', ...
-                'Domains of SEPARABLEAPPROX objects are not consistent.');
+            error('CHEBFUN:DISKFUN:contourf:domainMismatch', ...
+                'Domains of DISKFUN objects are not consistent.');
         end
         
         % Evaluate f on equally spaced grid:
@@ -117,7 +119,7 @@ elseif ( isa(f, 'separableApprox') )
         [mxx, myy] = meshgrid(x, y);
         xx = feval(xx, mxx, myy); 
         yy = feval(yy, mxx, myy);
-        vals = feval(f, mxx, myy);
+        vals = feval(f, mxx, myy, 'polar');
 
     elseif ( ( nargin == 1) || ( ( nargin > 1 ) && ( isa(argin{1},'double') ) ) )    
         % CONTOUR(f) 
@@ -134,13 +136,13 @@ elseif ( isa(f, 'separableApprox') )
         %vals = feval(f, xx, yy );
         
     else
-        error('CHEBFUN:SEPARABLEAPPROX:contourf:inputs2', ...
+        error('CHEBFUN:DISKFUN:contourf:inputs2', ...
             'Unrecognised input arguments.');
     end
     
 else
     
-    error('CHEBFUN:SEPARABLEAPPROX:contourf:inputs3', ...
+    error('CHEBFUN:DISKFUN:contourf:inputs3', ...
         'Unrecognised input arguments.');
     
 end

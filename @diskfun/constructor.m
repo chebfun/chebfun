@@ -291,7 +291,7 @@ Fm = 0.5*(B - C);
 %
 
 % Check if the poles are numerically constant and get the value.
-pole1 = checkPole(Fp(m, :), tol);
+pole1 = checkPole(Fp(1, :), tol);
 %pole2 = checkPole(Fp(m, :), tol);
 
 % TODO: Figure out if we really need to warn the user about their function
