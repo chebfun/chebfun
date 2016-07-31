@@ -59,7 +59,7 @@ if ( isa( F, 'double' ) )      % doubles * DISKFUNV
             F = diskfunv(store); 
         end
     else
-        error('DISKFUN:DISKFUNV:mtimes:double1', 'Dimension mismatch.');
+        error('DISKFUN:diskfunv:mtimes:double1', 'Dimension mismatch.');
     end
     
 elseif( isa(G, 'double') )          % DISKFUNV * double
@@ -70,15 +70,15 @@ elseif( isa(G, 'double') )          % DISKFUNV * double
         error('DISKFUN:DISKFUNV:mtimes:double2', ...
             'DISKFUNV and double size mismatch.');
     end
-elseif (isa(F,'DISKFUNV') && isa(G,'DISKFUNV') ) % dot product if dimensions are riGht.
+elseif (isa(F,'diskfunv') && isa(G,'diskfunv') ) % dot product if dimensions are riGht.
     
     if ( ( F.isTransposed ) && ( ~G.isTransposed ) )
         F = dot( F, G );
     else
-        error('DISKFUN:DISKFUNV:mtimes:sizes', 'Dimensions mismatch.');
+        error('DISKFUN:diskfunv:mtimes:sizes', 'Dimensions mismatch.');
     end
     
-elseif isa(F,'DISKFUNV') && isa(G,'diskfun2')
+elseif isa(F,'diskfunv') && isa(G,'diskfun')
     
     F = mtimes( G , F );
     

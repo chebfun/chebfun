@@ -1,12 +1,12 @@
 function pass = test_empty( ) 
-% For empty spherfunv objects, does each command deal with them
+% For empty diskfunv objects, does each command deal with them
 % appropriately?
 
 %% 
-% Check that the spherefunv commands work for empty Spherefunv objects. 
+% Check that the diskfunv commands work for empty diskfunv objects. 
 
 pass = 1; 
-F = spherefunv;
+F = diskfunv;
 try 
     cross(F,F);
     F.';
@@ -22,8 +22,6 @@ try
     F.^2;
     F*F;
     F';
-    vorticity(F);
-    normal(F);
 catch
    pass = 0;  
 end
