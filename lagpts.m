@@ -1,5 +1,5 @@
 function [x, w, v] = lagpts(n, int, meth, alf)
-%LAGPTS  Laguerre points and Gauss-Laguerre Quadrature Weights.
+%LAGPTS  Laguerre points and Gauss-Laguerre quadrature weights.
 %   LAGPTS(N) returns N Laguerre points X in (0,inf).
 %
 %   [X, W] = LAGPTS(N) returns also a row vector W of weights for Gauss-Laguerre
@@ -12,15 +12,30 @@ function [x, w, v] = lagpts(n, int, meth, alf)
 %   [X, W] = LAGPTS(N, METHOD) allows the user to select which method to use.
 %   METHOD = 'GW' will use the traditional Golub-Welsch eigenvalue method,
 %   which is best for when N is small. METHOD = 'RH' will use asymptotics of
-%   Laguerre polynomials, and METHOD = 'RHW' is O(sqrt(n)) as it stops when the
-%   weights are below realmin. Calling lagpts(round( (n/17)^2), 'RHW') gives 
-%   about n weights above realmin for large n.
-
-%   [X, W] = LAGPTS(N, alpha) or LAGPTS(N, [0, inf], 'RH', alpha) will use
-%   the Golub-Welsch method or asymptotics of generalised Laguerre polynomials.
+%   Laguerre polynomials, and METHOD = 'RHW' is the same as 'RH' except it 
+%   costs only O(sqrt(n)) operations. This is because it stops when the
+%   weights fall below realmin. The command 
+%   [X, W] = lagpts(round( (n/17)^2), 'RHW') returns about n nodes and 
+%   weights above realmin for large n.
+%
+%   [X, W] = LAGPTS(N, alpha) or LAGPTS(N, [0, inf], 'RH', alpha) will return
+%   the nodes and weights for the generalised Laguerre polynomials with 
+%   parameter alpha.
 %
 %   By default LAGPTS uses 'GW' when N < 128, and else 'RH'.
 %
+% See also CHEBPTS, LEGPTS, HERMPTS, and JACPTS.
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% DEVELOPER NOTES AND REFERENCES:
+% 
+% Methods:
+% 'GW' by Nick Trefethen, March 2009 - algorithm adapted from [1].
+% 'RH' by Peter Opsomer, June 2016 - algorithm adapted from [2], based on [3].
+% 
 % References:
 %   [1] G. H. Golub and J. A. Welsch, "Calculation of Gauss quadrature rules",
 %       Math. Comp. 23:221-230, 1969,
@@ -28,14 +43,12 @@ function [x, w, v] = lagpts(n, int, meth, alf)
 %   [3] M. Vanlessen, "Strong asymptotics of Laguerre-Type orthogonal
 %       polynomials and applications in Random Matrix Theory", Constr. Approx.,
 %       25:125-175, 2007.
-%
-% See also CHEBPTS, LEGPTS, HERMPTS, and JACPTS.
-
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org/ for Chebfun information.
-%
-% 'GW' by Nick Trefethen, March 2009 - algorithm adapted from [1].
-% 'RH' by Peter Opsomer, June 2016 - algorithm adapted from [2], based on [3].
+% 
+% Historical note:
+%   March 2009 - GW [1] algorithm.
+%   April 2009 - GLR [3] added for N >= 129.
+%   July 2016 - RH and RHW replace GLR [2].
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Defaults:
 method = 'default';
@@ -209,7 +222,7 @@ for k = 1:mn
     end
     if ( x(k) < 0 ) || ( x(k) > 4*n + 2*alpha + 2 ) || ( l == 5 ) || ...
             ( ( k ~= 1 ) && ( x(k - 1) >= x(k) ) )
-        error('CHEBFUN:lagpts:conv','Newton method did not converge correctly.');
+        error('CHEBFUN:lagpts:converge','Newton method may not have converged.');
     end
     if noUnderflow
         w(k) = factorw/polyAsyRH(n-1, x(k), alpha + 1, T)/...
@@ -491,7 +504,7 @@ function p = asyBessel(np, y, alpha, T)
 z = y/4/np;
 npb = 2*np*(pi/2 + sqrt(z).*sqrt(1 - z) - acos(sqrt(z) ) ); % = 2i n sqrtphitn
 
-if T == 1
+if ( T == 1 )
     p = real( sqrt(2*pi)*(-1)^np*sqrt(npb)/z^(1/4)/(1 - z)^(1/4)*...
         z^(-alpha/2)*(sin( (alpha + 1)/2*acos(2*z - 1) - pi*alpha/2)*...
         besselj(alpha,npb) + cos( (alpha + 1)/2*acos(2*z - 1) - ...
