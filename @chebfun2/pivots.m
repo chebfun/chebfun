@@ -1,7 +1,7 @@
 function varargout = pivots(varargin)
 %PIVOTS   Pivot values of a CHEBFUN2.
 %
-%   PIVOTS(F) returns the pivot values taken during in the constructor by the GE
+%   PIVOTS(F) returns the pivots used during the construction by the GE
 %   algorithm.
 %
 %   PIVOTS(F, 'normalize'), returns the normalised pivot values. These numbers
