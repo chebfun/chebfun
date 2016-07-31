@@ -13,7 +13,7 @@ if ( isempty( F ) )
     v = []; 
     return
 end
-V = sum( svd( F.components{1} ).^2 ) + sum( svd( F.components{2} ).^2 );
+v = sum( svd( F.components{1} ).^2 ) + sum( svd( F.components{2} ).^2 );
  
 v = sqrt(v); 
 

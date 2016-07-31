@@ -26,7 +26,7 @@ th1 = 0.2;
 slice1 = chebfun(@(rad) feval(ff,th1, rad));
 th2 = 1.7;
 slice2 = chebfun(@(rad) feval(ff,th2, rad));
-pass(5) = ( norm( f([th1 th2],:) - [slice1 slice2] ) < tol );
+pass(5) = ( norm( [f(th1,:) f(th2,:)] - [slice1 slice2] ) < tol );
 
 % change coordsetting and still should return r slice
 f.coords = 'cart';

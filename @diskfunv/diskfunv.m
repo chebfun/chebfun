@@ -74,6 +74,13 @@ classdef diskfunv
                 return
             end
             
+            
+             % Stop now if there are too few components: 
+            if ( nargin < 2 ) 
+                error('CHEBFUN:DISKFUNV:diskfunv:arrayValued', ...
+                'Less than two components is not supported.')
+            end
+
             %domain will always be the same: (in polar coords)
             dom = [-pi pi 0 1]; 
             
@@ -84,6 +91,7 @@ classdef diskfunv
                 if ( strcmpi( varargin{jj}, 'vectorize' ) )
                     vectorize = 1;
                     varargin(jj) = []; 
+                    break
                 end
             end
             
@@ -92,7 +100,7 @@ classdef diskfunv
             % if conflicting coord systems are used, default to Cartesian.
              if isa(varargin{1}, 'diskfun') && isa(varargin{2}, 'diskfun')
                  if ((nargin < 3) && (~strcmpi(varargin{1}.coords, varargin{2}.coords)) )
-                     warning('DISKFUNV:CONSTRUCTOR:COORDS',...
+                     warning('CHEBFUN:DISKFUNV:diskfunv:coords',...
                     'The two components have different coordinate settings. Now setting the diskfunv to evaluate with Cartesian coordinates.')
                     iscart = 1; 
                  else
@@ -125,6 +133,7 @@ classdef diskfunv
             for jj = 1:numel(varargin) 
                 if ( strcmpi( varargin{jj}, 'cart' )|| strcmpi( varargin{jj}, 'polar' ) )
                     varargin(jj) = []; 
+                    break
                 end
             end
             % Unwrap input arguments; first two inputs are components
@@ -142,23 +151,18 @@ classdef diskfunv
             end
             varargin = fh; 
             
+            %check if there was only one component
+            if ( numel(fh) < 2 ) 
+                error('CHEBFUN:DISKFUNV:diskfunv:arrayValued', ...
+                'Less than two components is not supported.')
+            end
             % Stop now if there are too many components
             if ( numel( fh ) > 2 ) 
                 error('CHEBFUN:DISKFUNV:diskfunv:arrayValued', ...
                           'More than two components is not supported.')
             end 
             
-            % Stop now if there are too few components: 
-            if ( numel( fh ) < 2 ) 
-                error('DISKFUN:DISKFUNV:diskfunv:arrayValued', ...
-                'Less than two components is not supported.')
-            end
 
-            % Stop now if there are no components: 
-            if ( numel( fh ) == 0 ) 
-                error('DISKFUN:DISKFUNV:diskfunv:empty', ...
-                'The diskfun constructor needs to be given function handles or diskfun objects.')
-            end
             
             % Convert all function handles to diskfun objects: 
             for jj = 1:2
