@@ -18,7 +18,7 @@ function u = poisson( f, bc, m, n )
 % EXAMPLE: 
 %  bc = @(th) 0*th;              
 %  f = @(th, r) -1 + 0*th;            
-%  u = diskfun.Poisson( f, bc, 100); 
+%  u = diskfun.poisson( f, bc, 100); 
 
 % DEVELOPER'S NOTE: 
 %
@@ -37,14 +37,13 @@ function u = poisson( f, bc, m, n )
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if isa(f, 'double')
-    [m, n] = size(f);
-else
-    if( nargin < 4 )
-        n = m;
-    end
-    m = 2*m+1; 
+% TO DO: too much transposing. 
+
+if( nargin < 4 )
+    n = m;
 end
+m = 2*m+1; 
+
  
 %construct operators
 D1 = ultraS.diffmat( m, 1 );              % 1st order ultraS diffmat
@@ -73,8 +72,10 @@ elseif ( isa(f, 'diskfun') )
     F = F.';  
 elseif ( isa( f, 'double' ) ) %assume these are chebyshev coeffs
     tol = 1e5*chebfunpref().cheb2Prefs.chebfun2eps; 
+    f = chebtech2.alias(trigtech.alias(f.', n).',m); %get correct size
     F = S1*Mr2c*f; %r.^2*rhs in C^{2}
     F = F.';
+    
 end
 
 

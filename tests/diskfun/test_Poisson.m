@@ -1,32 +1,39 @@
 function pass = test_Poisson( ) 
-% Check correctness of Poisson solver on the sphere: 
+% Check correctness of Poisson solver on the disk: 
 
 % Discretization sizes: 
-m = 256; 
-n = 256;
-tol = 1e3*chebfunpref().cheb2Prefs.chebfun2eps;
+
+tol = 2e3*chebfunpref().cheb2Prefs.chebfun2eps;
  
-% Example 1: 
-f = diskfun(@(x,y) -9*pi^2*cos(3*pi*x.*y).*(y.^2+x.^2)); %rhs
-exact = diskfun(@(x,y) cos(3*pi*x.*y));
-bc  = @(t) cos(3*pi*cos(t).*sin(t)); 
-u = diskfun.poisson(f, bc, m, n);
-pass(1) = ( norm(u - exact, inf) < tol ); 
 
-% Example 2: 
-f = spherefun(@(lam,th) -4*(3*cos(th)+5*cos(3*th)).*sin(lam).*sin(th)); 
-exact = spherefun(@(lam,th) -2*sin(lam).*sin(2*th).*sin(th).^2);
-u = spherefun.poisson(f, 0, m, n);
-pass(2) = ( norm(u - exact, inf) < tol ); 
+% Simple examples
+% Example 1: use laplacian to check; use nonzero bcs 
 
-% Inline example: 
-f = spherefun(@(lam,th) -6*(-1+5*cos(2*th)).*sin(lam).*sin(2*th));
-exact = spherefun(@(lam,th) -2*sin(lam).*sin(2*th).*sin(th).^2 -...
-            sin(lam).*sin(th).*cos(th) + .5*sin(lam).*sin(2*th).*cos(2*th));
-u = spherefun.poisson(f, 0, m, n);
-pass(3) = ( norm(u - exact, inf) < tol );
+%input is a diskfun
+tru = @(t,r) exp(-r.*cos(t)-r.^2.*sin(2*t));
+tru = diskfun(tru, 'polar'); 
+bc = @(t,r) exp(-cos(t)-sin(2*t)); 
+rhs = laplacian(tru); 
+u = diskfun.poisson(rhs,bc, 100); 
+pass(1) = ( norm(u - tru, inf) < 1e3*tol ); 
 
+%input coeffs 
+rhs = coeffs2(rhs); 
+u2 = diskfun.poisson(rhs,bc, 100); 
+pass(2) = ( norm(u2-u) < tol) ; 
 
+% Example 2: use function handle
+bc = @(th) 0*th;              
+f = @(th, r) -1 + 0*th;            
+u = diskfun.poisson( f, bc, 100);
+exact = diskfun(@(t,r) -.25*r.^2+.25, 'polar');
+pass(3) = ( norm(u - exact, inf) < tol ); 
 
+%Example 3: eigenfunction
+lam = 5.52007811028631;
+rhs = -(lam)^2*diskfun.harmonic(0,2);
+tru = diskfun.harmonic(0,2); 
+u = diskfun.poisson(rhs, @(t) 0*t, 100); 
+pass(4) = ( norm(tru-u) < tol) ;
 
 end
