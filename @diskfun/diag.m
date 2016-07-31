@@ -1,8 +1,9 @@
-function F = diag(f,c)
+function F = diag(f,varargin)
 %DIAG(F)   Diagonal of a DISKFUN.
-%   G = DIAG(F) returns the CHEBFUN representing g(x) = f(x, x).
+%   G = DIAG(F) returns the CHEBFUN representing g(x) = f(pi/4, r).
 %
-%   G = diag(F,C) returns the CHEBFUN representing g(x) = f(x, x+c).
+%   G = diag(F,T) returns the CHEBFUN representing g(x) = f(T, r), where 
+%  -pi < T < pi. 
 %
 % See also DISKFUN/TRACE.
 
@@ -11,16 +12,24 @@ function F = diag(f,c)
 
 %[varargout{1:nargout}] = diag@separableApprox(varargin{:});
 
+if ( isempty( f ) ) 
+    F = chebfun;
+    return
+end 
 
 f.coords = 'polar';
 
-%when c = 0, choose the diagonal radial slice
-F = f(pi/4,:); 
+%when c = 0, choose the diagonal radial slice for t = pi/4
+if varargin 
+    F = f(pi/4,:); 
+else 
+c = varargin{1};
+    if abs(c) > pi
+        error('CHEBFUN:DISKFUN:diag: diagonal parameter must be between -pi and pi.')
+    else    
+    F = f(varargin{1},:); 
+    end
+end
 
-%when not(c=0), need to make a chebfun with correct domain: 
-
-
-
-
-
+ 
 end

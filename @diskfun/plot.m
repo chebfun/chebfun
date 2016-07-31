@@ -57,9 +57,9 @@ if ( ~isempty(varargin) )
             th = trigpts(N, dom(1:2)); th=[th; dom(2)];
             r = exp(1i*th);
             
-            clr = [255 255 204]/255;
-            fill(real(r),imag(r), clr, 'Edgecolor', 'None'); 
-            %plot(real(r),imag(r), 'Linewidth', .55); 
+            %clr = [255 255 204]/255;
+            %fill(real(r),imag(r), clr, 'Edgecolor', 'None'); 
+            plot(real(r),imag(r),'-k', 'Linewidth', 2); 
         end
         
         
@@ -174,5 +174,6 @@ if ( nargout > 0 )
     varargout = { h };
 end
 axis square
+%axis off
 view(2)
 end

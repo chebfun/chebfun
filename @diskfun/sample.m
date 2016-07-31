@@ -29,21 +29,11 @@ end
 % Get the low rank representation for f. 
 [cols, d, rows] = cdr(f);
 
-% I really wish techs had a "sample" function too that would return m values
-% of the tech at it's natural grid.  This has been on the chebfun tracker
-% for sometime now.
-
-% Ugly!
-%C = chebtech2.coeffs2vals(chebtech2.alias( cols.funs{:}.onefun.coeffs, 2*n+1 ));
-%C = C(n+1:2*n+1,:);  % Remove doubled up points.
-%R = trigtech.coeffs2vals(trigtech.alias( rows.funs{:}.onefun.coeffs, m )); 
+ 
 C = sample(cols, max(2*n+1, 1));
-%C = C(1:n+1, :); %Remove doubled points, origin at bottom
+
 C = C(n+1:end, :);
-% More ugliness
-%if  all(rows.funs{:}.onefun.isReal)
-   % R = real(R);
-%end
+
 R = real( sample(rows, m)); 
 
 % Evaluate: 

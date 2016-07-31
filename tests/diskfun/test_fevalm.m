@@ -1,5 +1,5 @@
 function pass = test_fevalm( pref ) 
-% Test spherefun/fevalm 
+% Test diskfun/fevalm 
 
 if ( nargin == 0) 
     pref = chebfunpref; 
@@ -8,29 +8,30 @@ end
 tol = 100*pref.cheb2Prefs.chebfun2eps;
 rng(2016);
 
-% Check empty spherefun: 
-f = spherefun;
-s = pi*(2*rand(5,1) - 1); 
-t = pi/2*rand(5,1); 
-B = fevalm(f, s, t); 
+% Check empty diskfun: 
+f = diskfun;
+t = pi*(2*rand(5,1) - 1); 
+r = 2*rand(5,1)-1; 
+B = fevalm(f, t, r); %need flag because empty default is cart
 pass(1) = isempty( B );
 
-% Check rank 1 spherefun: 
-f = chebfun2(@(lam,th) cos(lam).*sin(th)); 
-s = pi*(2*rand(5,1) - 1); 
-t = pi/2*rand(5,1); 
-[ss, tt] = meshgrid( s, t); 
-A = feval(f, ss, tt); 
-B = fevalm(f, s, t); 
+% Check rank 1 diskfun: 
+f = diskfun(@(t,r) r.*sin(t), 'polar'); 
+t = pi*(2*rand(5,1) - 1); 
+r = rand(5,1); 
+[tt, rr] = meshgrid( t, r); 
+A = feval(f, tt, rr); 
+B = fevalm(f,t,r); 
 pass(2) = norm( A - B ) < tol; 
 
 % Check essentially one dimensional function:
-f = spherefun(@(lam,th) exp(-(cos(th)-1).^2)); 
-s = pi*(2*rand(5,1) - 1); 
-t = pi/2*rand(5,1); 
-[ss, tt] = meshgrid( s, t); 
-A = feval(f, ss, tt); 
-B = fevalm(f, s, t); 
+f = diskfun(@(t,r) exp(-r.^2), 'polar'); 
+t = pi*(2*rand(5,1) - 1); 
+r = rand(5,1); 
+[tt, rr] = meshgrid( t, r); 
+A = feval(f, tt, rr); 
+B = fevalm(f, t, r); 
 pass(3) = norm( A - B ) < tol; 
+
 
 end

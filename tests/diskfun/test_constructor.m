@@ -1,167 +1,163 @@
 function pass = test_constructor( ) 
-% Test the spherefun constructor 
+% Test the diskfun constructor 
 
 % Get tolerance: 
 tol = 2e3*chebfunpref().cheb2Prefs.chebfun2eps;
 
-f = @(x,y,z) x.^2 + y.^2 + z.^2;
-f = redefine_function_handle(f);
-g = spherefun(f);
-pass(1) = ( SampleError(f, g) < tol );
+f = @(t,r) (r.*cos(t)).^2 + (r.*sin(t)).^2 ; 
+g = diskfun( f, 'polar' );
+pass(1) = ( SampleError( f,g ) < tol ); 
 
-f = @(x,y,z) exp(-cos(pi*(x+y+z)));
-f = redefine_function_handle(f);
-g = spherefun(f);
-pass(2) = ( SampleError(f, g) < tol ); 
+f = @(x,y) exp(-cos(pi*(x+y))); 
+g = diskfun( f );
+f = redefine_function_handle( f);
+pass(2) = ( SampleError( f, g ) < tol ); 
 
-f = @(x,y,z) 1-exp(x);
-g = spherefun(f);
-f = redefine_function_handle(f);
-pass(3) = ( SampleError(f, g) < tol ); 
+f = @(t,r) cos(pi*r.*cos(t))+sin(5*(r.*sin(t)))-1; 
+g = diskfun( f, 'polar' );
+pass(3) = ( SampleError( f, g ) < tol ); 
 
-f = @(x,y,z) exp(y);
-g = spherefun(f);
-f = redefine_function_handle(f);
-pass(4) = ( SampleError(f, g) < tol ); 
+f = @(x,y) exp(y); 
+g = diskfun( f );
+f = redefine_function_handle( f);
+pass(4) = ( SampleError( f, g ) < tol ); 
 
-f = @(x,y,z) exp(z);
-g = spherefun(f);
-f = redefine_function_handle(f);
-pass(5) = ( SampleError(f, g) < tol ); 
+f = @(x,y) 1-exp(x); 
+g = diskfun( f );
+f = redefine_function_handle( f);
+pass(5) = ( SampleError( f, g ) < tol ); 
 
-f = @(x,y,z) cos(x.*y);
-g = spherefun(f);
-f = redefine_function_handle(f);
-pass(6) = ( SampleError(f, g) < tol ); 
+f = @(x,y) exp(-x)+exp(-y) ; %test passing in cart option
+g = diskfun( f , 'cart');
+f = redefine_function_handle( f );
+pass(6) = ( SampleError( f, g ) < tol ); 
 
-f = @(x,y,z) sin(x.*y.*z);
-g = spherefun(f);
-f = redefine_function_handle(f);
-pass(7) = ( SampleError(f, g) < tol ); 
+f = @(x,y) cos(2*x.*y); 
+g = diskfun( f, 'cart' );
+f = redefine_function_handle( f);
+pass(7) = ( SampleError( f, g ) < tol ); 
 
-f = @(x,y,z) sin(x+ y.*z);
-f = redefine_function_handle(f);
-g = spherefun(f);
-pass(8) = ( SampleError(f, g) < tol ); 
+f = @(x,y) sin(x.*y);
+g = diskfun( f );
+f = redefine_function_handle( f );
+pass(8) = ( SampleError( f, g ) < tol ); 
 
-f = @(x,y,z) sin(x+ y.*z) + 1;
-f = redefine_function_handle(f);
-g = spherefun(f);
-pass(9) = ( SampleError(f, g) < tol ); 
+f = @(x,y) sin(11*pi*x)-sin(3*pi*x) + sin(y);
+g = diskfun( f );
+f = redefine_function_handle( f );
+pass(9) = ( SampleError( f, g ) < tol ); 
 
-f = @(x,y,z) 0*x;
-g = spherefun(f);
-pass(10) = ( norm(g, inf) == 0 ); 
+f = @(x,y) sech(cos(9*y)+sin(7*(x-1))); %rank 102
+g = diskfun( f);
+f = redefine_function_handle( f);
+pass(10) = ( SampleError( f, g ) < 2e1*tol );
+
+
+f = @(x,y) 0*x;
+g = diskfun(f);
+h = diskfun(f, 'polar');
+pass(11) = ( norm(g, inf) == 0 ); 
+pass(12) = (norm(h, inf) ==0);
 
 % Test the vectorize flag is working: 
-f = spherefun(@(x,y,z) cos(z));
-g = spherefun(@(x,y,z) cos(z), 'vectorize');
-pass(11) = ( norm(f - g) < tol );
-
-f = spherefun(@(x,y,z) x.*y.*z);
-g = spherefun(@(x,y,z) x*y*z, 'vectorize');
-pass(12) = ( norm(f - g) < tol );
-
-% Test construction from samples
-f = spherefun(@(x,y,z) 1 + x.*sin(x.*y));
-[m,n] = length(f);
-F = sample(f, m + mod(m, 2), n);
-g = spherefun(F);
+f = diskfun(@(x,y) cos(x));
+g = diskfun(@(x,y) cos(x), 'vectorize');
 pass(13) = ( norm(f - g) < tol );
 
-f = spherefun(@(x,y,z) 1 + 0*x);
-F = ones(2, 2);
-g = spherefun(F);
+f = diskfun(@(t,r) r.*sin(t), 'polar');
+g = diskfun(@(t,r) r*sin(t), 'polar', 'vectorize');
 pass(14) = ( norm(f - g) < tol );
 
-F = ones(1, 2);
-try
-    g = spherefun(F);
-    pass(15) = false;
-catch ME
-    pass(15) = strcmp(ME.identifier,'CHEBFUN:SPHEREFUN:constructor:poleSamples');
-end
+f = diskfun(@(x,y) x.*y);
+g = diskfun(@(x,y) x*y, 'vectorize');
+pass(15) = ( norm(f-g) < tol ); 
 
-% Test construction from coefficients.
-f = spherefun(@(x,y,z) exp(-10*((x-1/sqrt(2)).^2 + (z-1/sqrt(2)).^2 + y.^2)));
-C = coeffs2(f);
-g = spherefun(C,'coeffs');
+% Test construction from samples
+f = diskfun(@(x,y) 1 + x.*sin((x-.5).*y));
+[m,n] = length(f);
+F = sample(f,m+mod(m,2),n);
+g = diskfun(F);
 pass(16) = ( norm(f - g) < tol );
 
+f = diskfun(@(x,y) 1 + 0*x);
+F = ones(1, 1);
+g = diskfun(F);
+pass(17) = ( norm(f - g) < tol );
+
+
+
+% Test construction from coefficients.
+f = diskfun(@(x,y) exp(-10*((x-.1).^2  + y.^2)));
+C = coeffs2(f);
+g = diskfun(C,'coeffs');
+pass(18) = ( norm(f - g) < tol );
+
 % Test fixed rank construction
-ff = @(x,y,z) exp(-10*((x-1/sqrt(2)).^2 + (z-1/sqrt(2)).^2 + y.^2));
-f = spherefun(ff,5);
-pass(17) = ( rank(f) == 5 );
-f = spherefun(ff,6);
-pass(18) = ( rank(f) == 6 );
-f = spherefun(ff);
-g = spherefun(f,7);
-pass(19) = ( rank(g) == 7 );
+ff = @(x,y) exp(-10*((x-.1).^2  + y.^2));
+f = diskfun(ff,5);
+pass(19) = ( rank(f) == 5 );
+f = diskfun(ff,6);
+pass(20) = ( rank(f) == 6 );
+f = diskfun(ff);
+g = diskfun(f,7);
+pass(21) = ( rank(g) == 7 );
+ff = @(t, r) exp(-10*((r.*cos(t)-.1).^2+(r.*sin(t)).^2));  %polar
+f = diskfun(ff, 5, 'polar'); 
+pass(22) = ( rank(f)== 5 ); 
 
 % Test zero rank construction gives zero.
-g = spherefun(f,0);
-pass(20) = ( rank(g) == 0 );
-pass(21) = norm(g) < tol;
+g = diskfun(f,0);
+pass(23) = ( rank(g) == 0 );
+pass(24) = norm(g) < tol;
 
 try
-    f = spherefun(ff,-1);
-    pass(22) = false;
+    f = diskfun(ff,-1);
+    pass(25) = false;
 catch ME
-    pass(22) = strcmp(ME.identifier,'CHEBFUN:SPHEREFUN:constructor:parseInputs:domain3');
+    pass(25) = strcmp(ME.identifier,'CHEBFUN:DISKFUN:constructor:parseInputs:domain3');
 end
 
 % Check the 'eps' flag works.
-ff = @(x,y,z) exp(-10*((x-1/sqrt(2)).^2 + (z-1/sqrt(2)).^2 + y.^2));
-f = spherefun(ff);
-g = spherefun(ff,'eps', 1e-5);
-pass(23) = rank(g) < rank(f);
+ff = @(x,y) exp(-10*((x-.1).^2  + y.^2));
+f = diskfun(ff);
+g = diskfun(ff,'eps', 1e-5);
+pass(26) = rank(g) < rank(f);
 [mf,nf] = length(f);
 [mg,ng] = length(g);
-pass(24) = ( (mg < mf) && (ng < nf) );
+pass(27) = ( (mg < mf) && (ng < nf) );
 
 % Construction from a single value
-f = spherefun(1);
-pass(25) = norm(f-1,inf) == 0;
+f = diskfun(1);
+pass(28) = norm(f-1,inf) == 0;
 
 % Construction from a string with (x,y,z) variables
-f = spherefun(@(x,y,z) exp(-10*((x-1/sqrt(2)).^2 + (z-1/sqrt(2)).^2 + y.^2)));
-g = spherefun('exp(-10*((x-1/sqrt(2)).^2 + (z-1/sqrt(2)).^2 + y.^2))');
-pass(26) = norm(f-g,inf) == 0;
+f = diskfun(@(x,y) exp(-10*((x-.1).^2  + y.^2)));
+g = diskfun('exp(-10*((x-.1).^2  + y.^2))');
+pass(29) = norm(f-g,inf) == 0;
 
-% Construction from a string with (l,t) variables
-f = spherefun(@(l,t) cos(l).*sin(t) );
-g = spherefun('cos(l).*sin(t)');
-pass(27) = norm(f-g,inf) == 0;
+% Construction from a string with (t,r) variables
+f = diskfun(@(t,r) r.*cos(t), 'polar' );
+g = diskfun('y.*cos(x)', 'polar'); %alphabetic order; can't use r and t
+pass(30) = norm(f-g,inf) == 0;
 
 try
-    f = spherefun('x.*y.*z.*w');
-    pass(28) = false;
+    f = diskfun('x.*y.*z');
+    pass(31) = false;
 catch ME
-    pass(28) = strcmp(ME.identifier,'CHEBFUN:SPHEREFUN:constructor:str2op:depvars');
+    pass(31) = strcmp(ME.identifier,'CHEBFUN:DISKFUN:constructor:str2op:depvars');
 end
 
 % Construction from zeros matrix should maintain a zeros coefficient
 % matrix.
-f = spherefun(zeros(5,4));
+f = diskfun(zeros(5,4));
 [n,m] = length(f);
-pass(29) = (m == 5) && (n == 4);
-
-end
-
-function f = redefine_function_handle(f)
-% nargin(f) = 2, then we are already on the sphere, if nargin(f) = 3,
-% then do change of variables:
-
-if ( nargin(f) == 3 )
-    % Wrap f so it can be evaluated in spherical coordinates
-    f = @(lam, th) spherefun.sphf2cartf(f, lam, th, 0);
-end
+pass(32) = (m == 5) && (n == 4);
 
 end
 
 function sample_error = SampleError(h, g)
-m = 6; 
-n = m;
+m = 7; 
+n = m-1;
 [x, y] = getPoints(m, n);
 [L2, T2] = meshgrid(x, y);
 F = h(L2, T2);
@@ -172,6 +168,15 @@ end
 function [x, y] = getPoints(m, n)
 
 x = trigpts(2*n, [-pi pi]);
-y = linspace(0, pi, m).';
+y = chebpts(m);
+y = y(ceil(m/2):end); 
+
+end
+
+function f = redefine_function_handle(f)
+    % Wrap Cartesian f so it can be evaluated in polar coordinates
+    %if (coords=='cart')
+    f = @(th, r) diskfun.pol2cartf(f,th, r);
+    %end
 
 end

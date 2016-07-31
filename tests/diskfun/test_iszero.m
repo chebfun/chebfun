@@ -1,10 +1,10 @@
 function pass = test_iszero() 
-% Test spherefun iszero() command.
+% Test diskfun iszero() command.
 
-f = spherefun( @(x,y,z) 0 + 0*x ); 
+f = diskfun( @(x,y) 0 + 0*x ); 
 pass(1) = iszero( f ); 
 
-f = spherefun( @(x,y,z) cos(x) );
+f = diskfun( @(x,y) cos(x) );
 pass(2) = ~iszero( f ); 
 
 end 

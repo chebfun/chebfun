@@ -1,9 +1,9 @@
 function pass = test_emptyObjects( pref ) 
-% For empty spherefun objects, does each command deal with them
+% For empty diskfun objects, does each command deal with them
 % appropriately?
 
-% Check things work for empty spherefuns.
-f = spherefun();
+% Check things work for empty diskfuns.
+f = diskfun();
 try
     f + f;
     2*f;

@@ -1,10 +1,10 @@
 function pass = test_isempty() 
-% Test spherefun isempty() command.
+% Test diskfun isempty() command.
 
-f = spherefun( ); 
+f = diskfun( ); 
 pass(1) = isempty( f ); 
 
-f = spherefun( @(x,y,z) cos(x) );
+f = diskfun( @(x,y) cos(x) );
 pass(2) = ~isempty( f ); 
 
 end 

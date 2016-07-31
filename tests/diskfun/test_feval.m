@@ -1,81 +1,64 @@
 function pass = test_feval( ) 
-% Test spherefun feval. 
+% Test diskfun feval. 
 
 tol = 1000*chebfunpref().cheb2Prefs.chebfun2eps;
 
 % See the random number generator.
 rng(9);
 
-f = @(x,y,z) sin(x+ y.*z) + 1;
-f = redefine_function_handle(f);
-g = spherefun(f);
-lambda = rand; 
-theta = rand; 
-pass(1) = abs( g(theta, lambda) - f(theta, lambda) ) < tol;
+f = @(t,r) sin(r.^2.*cos(t).*sin(t)) ;
+g = diskfun( f, 'polar' );
+R = rand; TH = rand*pi; 
+pass(1) = abs( feval(g, TH, R, 'polar') - f(TH, R) ) < tol; 
+pass(2) = abs ( feval(g, TH, R) -f(TH, R) ) < tol; 
 
 % feval at vectors: 
-lambda = rand(10, 1);
-theta = rand(10, 1); 
-pass(2) = norm( g(theta, lambda) - f(theta, lambda), inf ) < tol; 
+TH = 2*pi*rand(10,1)-pi; R = 2*rand(10,1)-1; 
+pass(3) = norm( feval(g, TH, R, 'polar') - f(TH, R) ) < tol;
+tol = 1000*chebfunpref().cheb2Prefs.chebfun2eps;
+%check that coordsetting works correctly
+g.coords = 'cart';
+pass(4) = norm( feval(g, TH, R, 'polar') - f(TH, R) ) < tol;
+g.coords = 'polar';
 
 % feval at row vectors: 
-lambda = rand(1, 10);
-theta = rand(1, 10);
-pass(3) = norm(g(theta, lambda) - f(theta, lambda) ) < tol;
+TH = pi*rand(1, 10);
+R = rand(1, 10);
+pass(5) = norm(g(TH, R) - f(TH, R) ) < tol;
 
 % feval at vectors:
-lambda = rand(2, 10); 
-theta = rand(2, 10);
-pass(4) = norm(g(theta, lambda) - f(theta, lambda), inf ) < tol;
+TH= pi*rand(2, 10); 
+R = rand(2, 10);
+pass(6) = norm(g(TH, R) - f(TH, R), inf ) < tol;
 
 % feval at meshgrid: 
-[lambda, theta] = meshgrid(rand(3, 1));
-pass(5) = norm(g(theta, lambda) - f(theta, lambda), inf) < tol;
+[TH, R] = meshgrid(rand(3, 1));
+pass(7) = norm(g(TH, R) - f(TH, R), inf) < tol;
+g.coords = 'cart';
+pass(8) = norm(g(TH, R, 'polar') - f(TH, R), inf) < tol;
 
 % feval using Cartesian coordinates
-f = @(x,y,z) sin(x+ y.*z) + 1;
-x = rand(1, 3); 
-x = x/sqrt(sum(x.^2)); 
-y = x(1, 2);
-z = x(1, 3);
-x = x(1, 1);
-pass(6) = norm(g(x, y, z) - f(x, y, z), inf) < tol;
+f = @(x,y) sin(x.*y); 
+[X, Y] = meshgrid((rand(3,2))-.5);
+pass(9) = norm(g(X,Y)-f(X,Y), inf) < tol; 
+pass(10) = norm(g(X,Y, 'cart') -f(X,Y), inf) < tol;
+g.coords = 'polar';
+pass(11) = norm(g(X,Y, 'cart')-f(X,Y), inf) < tol; 
+g.coords = 'cart';
 
-% feval using Cartesian coordinates at a vector of points
-x = rand(10, 3); 
-nrm = sqrt(sum(x.^2,2));
-y = x(:, 2)./nrm; 
-z = x(:, 3)./nrm; 
-x = x(:, 1)./nrm;
-pass(7) = norm(g(x, y, z) - f(x, y, z), inf) < tol;
+%feval Cartesian vectors and points 
+X = rand(10,1)-.5;
+Y = rand(10,1)-.5;
+pass(12) = norm(g(X,Y)-f(X,Y), inf) < tol; 
 
-% feval using Cartesian coordinates at a vector of points
-x = rand(10, 3); 
-y = rand(10, 3); 
-z = rand(10, 3);
-nrm = sqrt(x.^2 + y.^2 + z.^2); 
-y = y./nrm; 
-z = z./nrm; 
-x = x./nrm;
-pass(8) = norm(g(x, y, z) - f(x, y, z), inf) < tol;
 
 % Check for the appropriate error flag.
 try
-    y = g(1,1,1);
-    pass(9) = false;
+    y = g(1,1);
+    pass(13) = false;
 catch ME
-    pass(9) = strcmp(ME.identifier,'CHEBFUN:SPHEREFUN:FEVAL:pointsNotOnSphere');
+    pass(13) = strcmp(ME.identifier,'CHEBFUN:DISKFUN:FEVAL:pointsNotOnDisk');
 end
  
 end 
 
-function f = redefine_function_handle(f)
-% nargin(f) = 2, then we are already on the sphere, if nargin(f) = 3,
-% then do change of variables:
-
-if ( nargin(f) == 3 )
-    % Wrap f so it can be evaluated in spherical coordinates
-    f = @(lam, th) spherefun.sphf2cartf(f, lam, th, 0);
-end
-
-end

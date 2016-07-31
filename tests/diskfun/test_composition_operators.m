@@ -8,39 +8,50 @@ end
 tol = 1e3*pref.cheb2Prefs.chebfun2eps;
 j = 1; 
 
-f = spherefun(@(x,y,z) cos(x.*y) + sin(x.*y) + z -.1); 
+f = diskfun(@(x,y) cos(x.*y) + sin(x.*(y)) ); 
 
-% Multiplication
-x = spherefun(@(x,y,z) x); 
-y = spherefun(@(x,y,z) y);
-z = spherefun(@(x,y,z) z);
-exact = @(x,y,z) (cos(x.*y) + sin(x.*y) + z -.1).*sin(z.*(x-.1).*(y+.4)); 
-g = spherefun(@(x,y,z) exact(x,y,z)); 
-pass(j) = ( norm( g - f.*sin(z.*(x-.1).*(y+.4)) ) < tol ); j = j + 1;
+% Multiplication 
+x = diskfun(@(x,y) x); 
+y = diskfun(@(x,y) y);
+exact = @(x,y) (cos(x.*y) + sin(x.*y)).*sin((x-.1).*(y+.4)); 
+g = diskfun(@(x,y) exact(x,y)); 
+pass(j) = ( norm( g - f.*sin((x-.1).*(y+.4)) ) < tol ); j = j + 1;
+
+%try with polar coord setting to be sure evaluation is done correctly
+x.coords = 'polar';
+y.coords = 'polar';
+f.coords = 'polar';
+
+pass(j) = ( norm( g - f.*sin((x-.1).*(y+.4)) ) < tol ); j=j+1;
+
+%mixed coord setting
+x.coords = 'cart';
+pass(j) = ( norm( g - f.*sin((x-.1).*(y+.4)) ) < tol );j=j+1;
+
 
 % Cosine
-exact = @(x,y,z) cos(cos(x.*y) + sin(x.*y) + z -.1); 
-g = spherefun(@(x,y,z) exact(x,y,z)); 
+exact = @(x,y) cos(cos(x.*y) + sin(x.*y)); 
+g = diskfun(@(x,y) exact(x,y)); 
 pass(j) = ( norm( g - cos(f) ) < tol ); j = j + 1;
 
 % Cosh
-exact = @(x,y,z) cosh( cos(x.*y) + sin(x.*y) + z -.1); 
-g = spherefun(@(x,y,z) exact(x,y,z)); 
+exact = @(x,y) cosh( cos(x.*y) + sin(x.*y) ); 
+g = diskfun(@(x,y) exact(x,y)); 
 pass(j) = ( norm( g - cosh(f) ) < tol ); j = j + 1;
 
 % Sine
-exact = @(x,y,z)  sin(cos(x.*y) + sin(x.*y) + z -.1); 
-g = spherefun(@(x,y,z) exact(x,y,z)); 
+exact = @(x,y)  sin(cos(x.*y) + sin(x.*y)); 
+g = diskfun(@(x,y,z) exact(x,y)); 
 pass(j) = ( norm( g - sin(f) ) < tol ); j = j + 1;
 
 % Sinh
-exact = @(x,y,z) sinh( cos(x.*y) + sin(x.*y) + z -.1); 
-g = spherefun(@(x,y,z) exact(x,y,z)); 
+exact = @(x,y) sinh( cos(x.*y) + sin(x.*y)); 
+g = diskfun(@(x,y) exact(x,y)); 
 pass(j) = ( norm( g - sinh(f) ) < tol ); j = j + 1;
 
 % Multiple operations: 
-f = spherefun(@(x,y,z) z + sin(pi*x.*y));
+f = diskfun(@(x,y)  sin(pi*x.*y));
 pass(j) = (norm(f+f+f-3*f) < 100*tol); j=j+1; 
-pass(j) = (norm(f.*f-f.^2) < tol); j=j+1; 
+pass(j) = (norm(f.*f-f.^2) < tol); 
 
 end

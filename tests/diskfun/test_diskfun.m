@@ -79,7 +79,7 @@ tol = 1e3*chebfunpref().techPrefs.chebfuneps;
 f = @(th,r) sin(r.^2.*cos(th).*sin(th)) ;
 %f = redefine_function_handle( f,1 );
 g = diskfun( f, 'polar' );
-R = rand; TH = rand; 
+R = rand; TH = pi*rand; 
 pass(1) = abs( feval(g, TH, R, 'polar') - f(TH, R) ) < tol; 
 
 % feval at vectors: 

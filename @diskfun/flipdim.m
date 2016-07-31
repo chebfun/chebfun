@@ -1,15 +1,15 @@
-function varargout +AD0- flipdim(varargin)
-+ACU-FLIPDIM   Flip/reverse a DISKFUN in a chosen direction.
-+ACU-   G +AD0- FLIPDIM(F, DIM) returns a DISKFUN G with the same domain as F but
-+ACU-   reversed in a direction, i.e., G(x,y)+AD0-F(x, cy). If DIM +AD0- 2 (default) then
-+ACU-   G(x,y) +AD0- F(x, cy).  Otherwise DIM +AD0- 1 and G(x,y) +AD0- F(ax, y). The
-+ACU-   domain of F is +AFs-a, b, c, d+AF0-.
-+ACU- 
-+ACU- See also DISKFUN/FLIPLR, DISKFUN/FLIPUD.
+function varargout = flipdim(varargin)
+%FLIPDIM   Flip/reverse a SPHEREFUN in a chosen direction.
+%   G = FLIPDIM(F, DIM) returns a SPHEREFUN G with the same domain as F but
+%   reversed in a direction, i.e., G(x,y)=F(x, c+d-y). If DIM = 2 (default) then
+%   G(x,y) = F(x, c+d-y).  Otherwise DIM = 1 and G(x,y) = F(a+b-x, y). The
+%   domain of F is [a, b, c, d].
+% 
+% See also SPHEREFUN/FLIPLR, SPHEREFUN/FLIPUD.
 
-+ACU- Copyright 2016 by The University of Oxford and The Chebfun Developers.
-+ACU- See http://www.chebfun.org/ for Chebfun information.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
-+AFs-varargout+AHs-1:nargout+AH0AXQ- +AD0- flipdim+AEA-separableApprox(varargin+AHs-:+AH0-)+ADs-
+[varargout{1:nargout}] = flipdim@separableApprox(varargin{:});
 
 end

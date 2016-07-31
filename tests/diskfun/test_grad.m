@@ -3,13 +3,13 @@ function pass = test_grad( )
 
 tol = 1e2*chebfunpref().cheb2Prefs.chebfun2eps;
 
-% Check gradient of an empty spherefun is an empty spherefunv.
-u = spherefun;
+% Check gradient of an empty diskfun is an empty diskfunv.
+u = diskfun;
 f = grad(u);
-pass(1) = isempty(f) & isa(f,'spherefunv');
+pass(1) = isempty(f) & isa(f,'diskfunv');
 
 % Check gradient of the zero function is zero
-f = spherefun(@(x,y,z) 0*x);
+f = diskfun(@(x,y) 0*x);
 pass(2) = norm(grad(f)) < tol; 
 
 %
@@ -17,74 +17,32 @@ pass(2) = norm(grad(f)) < tol;
 %
 
 % Example 1
-u = grad(spherefun(@(x,y,z) (x-y).*z));
+u = grad(diskfun(@(x,y,z) x.^4.*(y-y.^2)) );
 % Exact gradient
-f = spherefun(@(x,y,z) (1+2*x.*(y-x)).*z);
-g = spherefun(@(x,y,z) (-1+2*y.*(y-x)).*z);
-h = spherefun(@(x,y,z) -(x-y).*(2*z.^2 - 1));
-exact = spherefunv(f,g,h);
+f = diskfun(@(x,y) 4*x.^3.*(y-y.^2));
+g = diskfun(@(x,y) x.^4.*(1-2*y));
+exact = diskfunv(f,g);
 pass(3) = norm(u-exact) < tol; 
 
 % Example 2
-u = grad(spherefun(@(x,y,z) cos(4*z)));
+u = grad(diskfun(@(x,y) cos(4*x).*sin(x.*y)));
 % Exact gradient
-f = spherefun(@(x,y,z) 4*x.*z.*sin(4*z));
-g = spherefun(@(x,y,z) 4*y.*z.*sin(4*z));
-h = spherefun(@(x,y,z) -4*(1-z.^2).*sin(4*z));
-exact = spherefunv(f,g,h);
-pass(4) = norm(u-exact) < tol; 
+f = diskfun(@(x,y) -4*sin(4*x).*sin(x.*y)+cos(4*x).*cos(x.*y).*y);
+g = diskfun(@(x,y) cos(4*x).*cos(x.*y).*x);
+exact = diskfunv(f,g);
+pass(4) = norm(u-exact) < 2*tol; 
 
 % Example 3
-u = grad(spherefun(@(x,y,z) cos(4*x)));
+u = grad(diskfun(@(x,y) exp(-3*(x.^2+(y+.2).^2)) ));
 % Exact gradient
-f = spherefun(@(x,y,z) 4*(x.^2-1).*sin(4*x));
-g = spherefun(@(x,y,z) 4*x.*y.*sin(4*x));
-h = spherefun(@(x,y,z) 4*x.*z.*sin(4*x));
-exact = spherefunv(f,g,h);
+f = diskfun(@(x,y) -6.*x.*exp(-3*(x.^2+(y+.2).^2)));
+g = diskfun(@(x,y) -6.*(y+.2).*exp(-3*(x.^2+(y+.2).^2)));
+exact = diskfunv(f,g);
 pass(5) = norm(u-exact) < 10*tol; 
 
-% Example 4
-u = grad(spherefun(@(x,y,z) cos(4*y)));
-% Exact gradient
-f = spherefun(@(x,y,z) 4*x.*y.*sin(4*y));
-g = spherefun(@(x,y,z) 4*(y.^2-1).*sin(4*y));
-h = spherefun(@(x,y,z) 4*y.*z.*sin(4*y));
-exact = spherefunv(f,g,h);
-pass(6) = norm(u-exact) < 10*tol; 
 
 % Check that the grad and gradient give the same result.
-gradientu = gradient(spherefun(@(x,y,z) cos(4*y)));
-pass(7) = isequal(u,gradientu);
-
-% 
-% % Example 2
-% f = spherefun(@(x,y,z) 4*x.*z.*sin(4*z));
-% g = spherefun(@(x,y,z) 4*y.*z.*sin(4*z));
-% h = spherefun(@(x,y,z) -4*(1-z.^2).*sin(4*z));
-% u = spherefunv(f,g,h);
-% divu = div(u);
-% % Exact divergence
-% exact = spherefun(@(x,y,z) -8*(2*(1-z.^2).*cos(4*z) - z.*sin(4*z)));
-% pass(5) = norm(divu-exact, inf) < 100*tol; 
-% 
-% % Example 3
-% f = spherefun(@(x,y,z) 4*(x.^2-1).*sin(4*x));
-% g = spherefun(@(x,y,z) 4*x.*y.*sin(4*x));
-% h = spherefun(@(x,y,z) 4*x.*z.*sin(4*x));
-% u = spherefunv(f,g,h);
-% divu = div(u);
-% % Exact divergence
-% exact = spherefun(@(x,y,z) -8*(2*(1-x.^2).*cos(4*x) - x.*sin(4*x)));
-% pass(6) = norm(divu-exact, inf) < 100*tol; 
-% 
-% % Example 4
-% f = spherefun(@(x,y,z) 4*x.*y.*sin(4*y));
-% g = spherefun(@(x,y,z) 4*(y.^2-1).*sin(4*y));
-% h = spherefun(@(x,y,z) 4*y.*z.*sin(4*y));
-% u = spherefunv(f,g,h);
-% divu = div(u);
-% % Exact divergence
-% exact = spherefun(@(x,y,z) -8*(2*(1-y.^2).*cos(4*y) - y.*sin(4*y)));
-% pass(7) = norm(divu-exact, inf) < 100*tol; 
+gradientu = gradient(diskfun(@(x,y) exp(-3*(x.^2+(y+.2).^2)) ));
+pass(6) = isequal(u,gradientu);
 
 end

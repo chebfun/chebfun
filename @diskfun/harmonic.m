@@ -1,4 +1,4 @@
-function Y = diskharm(L,m, type)
+function Y = harmonic(L,m, type)
 % HARMONIC  Normalized, real-valued, fixed-height cylindrical harmonic.
 %
 % The cylindrical harmonics are an orthogonal basis of functions in cylindrical 

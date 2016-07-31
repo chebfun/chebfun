@@ -182,7 +182,7 @@ g = simplify( g, pref.chebfuneps );
 g = fixTheRank( g , fixedRank );
 
 % Project onto BMC-II symmetry so the function is smooth on the disk.
-%g = projectOntoBMCII( g );  
+g = projectOntoBMCII( g );  
 
 end
 
@@ -238,7 +238,7 @@ g.idxMinus = idxMinus;
 g.nonZeroPoles = removePoles;
 g.pivotLocations = adjustPivotLocations(pivotLocations, pivotArray); 
 g.coords = 'cart';
-%g = projectOntoBMCII(g); 
+g = projectOntoBMCII(g); 
 
 end
 
@@ -665,15 +665,12 @@ while ( ~(happy_columns && happy_rows) && ~failure )
     
     if ( removePoles )
         colsPlus(1, 2:end) = 0;
-        %colsPlus(end, 2:end) = 0;
     elseif ( ~isempty(colsPlus) )
         colsPlus(1,:) = 0;
-        %colsPlus(end,:) = 0;
     end
     
     if ~isempty(colsMinus)
         colsMinus(1, :) = 0;
-        %colsMinus(end, :) = 0;
     end
     
         % Happiness check for columns:
@@ -682,12 +679,11 @@ while ( ~(happy_columns && happy_rows) && ~failure )
     temp1 = sum([colsPlus colsMinus],2); 
     temp2 = sum([colsPlus -colsMinus],2);
     
-    %colValues = [temp1;temp2(m:-1:1)];
     colValues = [ flipud(temp2); temp1(2:m)];
     colData.hscale = norm(dom(3:4), inf);
     colData.vscale = vscale;
     colChebtech1 = chebtech2.make(colValues, colData);
-    happy_columns = happinessCheck(colChebtech1, [], colValues, colData);
+    happy_columns = happinessCheck(colChebtech1, [], colValues, colData, pref);
     
     % Happiness check for rows:
     
@@ -699,7 +695,7 @@ while ( ~(happy_columns && happy_rows) && ~failure )
     rowData.hscale = norm(dom(1:2), inf);
     rowData.vscale = vscale;
     rowTrigtech = trigtech.make(rowValues, rowData);
-    happy_rows = happinessCheck(rowTrigtech, [], rowValues, rowData);
+    happy_rows = happinessCheck(rowTrigtech, [], rowValues, rowData, pref);
     
     % Adaptive:
     if( ~happy_columns )
@@ -877,15 +873,6 @@ if ( isa(op, 'function_handle') )
             'The function %s must accept 2 input arguments.',op);
     end
 
-% Cartesian coords?
-%isCart = find(strcmp(varargin,'cart'));
-%if ( any(isCart) )
- %   coords = 'cart';
-  %  op = @(th, r) diskfun.pol2cartf(op,th, r); %switch to polar coords
-%else
-   % coords=1;
-%end
-%end
 
 %polar coords
 ispolar = find(strcmp(varargin,'polar'));
@@ -1096,7 +1083,7 @@ function op = str2op( op )
 % handle than can be evaluated.
 
 depvar = symvar( op );
-if ( numel(depvar) > 3)
+if ( numel(depvar) > 2)
     error('CHEBFUN:DISKFUN:constructor:str2op:depvars', ...
         'Too many dependent variables in string input.');
 elseif ( numel(depvar) == 1 )

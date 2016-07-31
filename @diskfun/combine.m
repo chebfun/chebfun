@@ -31,7 +31,7 @@ idmh = h.idxMinus;
 
 % Only combine diskfuns that have one strict type of parity.
 if (~isempty(idpg) && ~isempty(idmg)) || (~isempty(idph) && ~isempty(idmh))
-    error('DISKFUN:combine:parity','Inputs must have oposite parity. Consider using plus');
+    error('CHEBFUN:DISKFUN:combine:parity','Inputs must have oposite parity. Consider using plus');
 end
 
 pivots = [g.pivotValues(idpg);h.pivotValues(idph);...

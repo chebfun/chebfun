@@ -12,6 +12,9 @@ function u = poisson( f, bc, m, n )
 % u = POISSON(F, BC, M, N) is the same as POISSON(F, BC, N) but uses a
 % discretization size of M x N. (N must be even)
 %
+% F may be a function handle in polar coordinates, a diskfun, or a set of 
+% Fourier-Chebyshev coefficients. 
+% 
 % EXAMPLE: 
 %  bc = @(th) 0*th;              
 %  f = @(th, r) -1 + 0*th;            
@@ -23,64 +26,76 @@ function u = poisson( f, bc, m, n )
 % periodic theta-direction and the Ultraspherical spectral method in the
 % radial direction.   
 %
-% LINEAR ALGEBRA: Matrix equations (a generalized Sylvester matrix
-% equation). Remarkably, the matrix equation decouples into n linear systems. 
-% This are of the form tridiagonal + rank-2 and are solved using the Woodbury
-% formula. *Update: using parity properties of Fourier coeffs on the disk,
-% this reduces to a tridiagonal + rank-1 (this special case of the Woodbury
-% formula is equivalent to the Sherman-Morrison formula)
+% LINEAR ALGEBRA: The matrix equation decouples into n linear systems. 
+% Using parity properties, these can be expressed as tridiagonal + rank-1 matrices
+% and are solved using the Sherman-Morrison (Woodbury) formula. 
 %
 % SOLVE COMPLEXITY:    O( m*n )  N = m*n = total degrees of freedom
 %
 %   Alex Townsend, July 2015. (Updated Feb 2016,  Heather Wilber)
 
-if ( nargin < 4 ) 
-    n = m; 
-end
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
-% Double up to use DFS method: 
-m = 2*m+1; 
-f = @(r,th) feval(f, th, r);  % switch convention 
+if isa(f, 'double')
+    [m, n] = size(f);
+else
+    if( nargin < 4 )
+        n = m;
+    end
+    m = 2*m+1; 
+end
+ 
+%construct operators
+D1 = ultraS.diffmat( m, 1 );              % 1st order ultraS diffmat
+D2 = ultraS.diffmat( m, 2 );              % 2nd order ultraS diffmat
+Mr = ultraS.multmat(m,[0;1],1);           % multiplication of r in ChebU 
+Mr2 = ultraS.multmat(m,[.5;0;.5],2);      % multiplication of r^2 in ultra2
+Mr2c = ultraS.multmat(m,[.5;0;.5],0);      % multiplication of r^2 in Cheb
+S1 = ultraS.convertmat( m, 0, 1 );        % convert chebT coeffs -> ultra2
+S12 = ultraS.convertmat( m, 1, 1);        % convert chebU coeffs -> ultra2
 
 % Discretization grid:
 x0 = chebpts( m );    
 th0 = pi*trigpts( n );
 
+% Forcing term:
+if ( isa(f, 'function_handle') )
+f = @(r,th) feval(f, th, r);  % switch convention 
 [rhs_r, rhs_theta] = meshgrid( x0, th0 ); 
-F = rhs_r.^2.*feval( f, rhs_r, rhs_theta );           % Get (chebvals,trigvals) of rhs
+F = rhs_r.^2.*feval( f, rhs_r, rhs_theta );     % Get (chebvals,trigvals) of rhs
+F = (S1*chebtech2.vals2coeffs( F.' )).';        % Get (C^{(2)},trigvals) basis
+F = trigtech.vals2coeffs( F );
+elseif ( isa(f, 'diskfun') )
+    tol = 1e5*vscale(f)*chebfunpref().cheb2Prefs.chebfun2eps;
+    F = coeffs2(f, n, m);
+    F = S1*Mr2c*F; %r.^2*rhs in C^{2}
+    F = F.';  
+elseif ( isa( f, 'double' ) ) %assume these are chebyshev coeffs
+    tol = 1e5*chebfunpref().cheb2Prefs.chebfun2eps; 
+    F = S1*Mr2c*f; %r.^2*rhs in C^{2}
+    F = F.';
+end
+
 
 %if F is real-valued, we will use symmetry to reduce # computations
 rv = isreal(F); 
-d = (-n/2)*rv+n +rv; %how many Fourier coeffs we need to solve for? (n if rv=0, n/2 +1 if rv=1)
+d = (-n/2)*rv+n +rv; %how many Fourier coeffs we need to solve for? 
+                     %(n if rv=0, n/2 +1 if rv=1)
 
-
-D1 = ultraS.diffmat( m, 1 );              % 1st order ultraS diffmat
-D2 = ultraS.diffmat( m, 2 );              % 2nd order ultraS diffmat
-Mr = ultraS.multmat(m,[0;1],1);           % multiplication of r in ChebU 
-Mr2 = ultraS.multmat(m,[.5;0;.5],2);      % multiplication of r^2 in ultra2
-S1 = ultraS.convertmat( m, 0, 1 );        % convert chebT coeffs -> ultra2
-S12 = ultraS.convertmat( m, 1, 1);        % convert chebU coeffs -> ultra2
-
-% set up static elements of LHS
+% set up  LHS
 L = Mr2*D2 + S12*Mr*D1;
 L = L(1:end-2, :); %eliminate last two rows to make room for BCs.
 
-% Boundary conditions (because of even-odd parity, only one explicit BC is needed) 
+% Boundary conditions 
 bcvals = feval(bc, th0);
 bc = trigtech.vals2coeffs(bcvals); 
+S1 = S1(1:end-2, :); %make S1 the right size for including BCs.
 
-F = (S1*chebtech2.vals2coeffs( F.' )).';        % Get (C^{(2)},trigvals) basis
-F = trigtech.vals2coeffs( F );
-
-S1 = S1(1:end-2, :); %make S1 the right size for including BCs in later computations.
-
-%set up static vectors for Sherman-Morrison solve
+%set up for Sherman-Morrison solve
 W = [1 ;zeros((m-1)/2, 1)]; 
 
-
-
-CFS = zeros(n,m);
-
+CFS = zeros(m,n);
 %main loop
 for k = 1 : d
     j = -n/2 + k-1; %wave number 
@@ -95,7 +110,6 @@ for k = 1 : d
     %on wave number)
     w = W(1:end-(a-1));
     
-    
     %set up RHS
     b = [bc(k); F(k,a:2:end-2).'];
 
@@ -105,25 +119,19 @@ for k = 1 : d
     invBb = kB\b; 
     invBw = kB\w; 
     
-    %CFS(k, a:2:end) = invBb-(invBw*v*invBb)/(1+v*invBw); 
+    %CFS(a:2:end, k) = invBb-(invBw*v*invBb)/(1+v*invBw); 
     %rewrite using the fact that  v=[0 1 1 1 ... 1]: 
-    CFS(k, a:2:end) = invBb-sum(invBb(2:end))*invBw/(1+sum(invBw(2:end)));
+    CFS(a:2:end,k) = invBb-sum(invBb(2:end))*invBw/(1+sum(invBw(2:end)));
     
 end
 
-
 %when F is real-valued, this gets the rest of the Fourier coeffs
 if rv==1
-CFS(d+1:n,:) = flip(conj(CFS(2:d-1,:)));
+CFS(:,d+1:n) = flip(conj(CFS(:,2:d-1)));
 end
 
-VALS = trigtech.coeffs2vals( chebtech2.coeffs2vals( CFS.' ).' ); 
-
-% Now restrict down to region of interest:
-VALS = VALS(:, (m-1)/2+1:m ); 
-%VALS = VALS(:, 1:(m-1)/2+1 ); 
-% Finally, make a diskfun object out of the values: 
-u = diskfun( real( VALS ).' ); 
+%solution returned as a diskfun:
+u = diskfun.coeffs2diskfun(CFS); 
 
 end
 

@@ -24,7 +24,7 @@ end
 % we need the f.coords to be polar
 % for now deal with the case where we find roots of one diskfun
 f = varargin{1}; 
-f.coords = 'polar'
+f.coords = 'polar';
 rts = roots@separableApprox(f, varargin{2 :end } );
 
 % Now make into a collection of array-valued chebfuns ready for plotting on
