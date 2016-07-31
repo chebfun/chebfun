@@ -1,15 +1,15 @@
 function L = laplacian( F )
-%LAPLACIAN Vector Laplacian of a CHEBFUN2V.
-%   LAPLACIAN(F) returns a CHEBFUN2V representing the vector Laplacian of F.
+%LAPLACIAN Vector Laplacian of a DISKFUNV.
+%   LAPLACIAN(F) returns a DISKFUNV representing the vector Laplacian of F.
 %
-% See also CHEBFUN2V/LAP.
+% See also DISKFUNV/LAP.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 
 if ( isempty( F ) )
-    L = chebfun2v;
+    L = diskfunv;
     return
 end
 

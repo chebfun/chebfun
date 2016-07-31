@@ -8,7 +8,7 @@ function F = plus( F, G )
 % 
 %   PLUS(F,G) is called for the syntax F + G. 
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information. 
 
 % Empty check: 
@@ -26,32 +26,24 @@ nF = F.nComponents;
 
 if ( isa(G, 'double') )              % DISKFUNV + DOUBLE
     if ( numel(G) == 1 )             % DISKFUNV + SCALAR
-        for jj = 1 : nF 
-            F.components{jj} = plus(F.components{jj}, G);
-        end
+       F.components{1} = plus(F.components{1}, G);
+       F.components{2} = plus(F.components{2}, G); 
     elseif ( numel(G) == nF )        % DISKFUNV + MATRIX
-        for jj = 1 : nF 
-             F.components{jj} = plus(F.components{jj}, G(jj));
-        end          
+        F.components{1} = plus(F.components{1}, G(1));
+        F.components{2} = plus(F.components{2}, G(2));         
     else
         error('CHEBFUN:DISKFUNV:plus:doubleSize', 'Dimension mismatch.')
     end
-elseif ( isa(G, 'diskfun') )        % DISKFUNV + CHEBFUN
-    for jj = 1 : nF 
-        F.components{jj} = plus(F.components{jj}, G);
-    end
+elseif ( isa(G, 'diskfun') )        % DISKFUNV + DISKFUN
+    F.components{1} = plus(F.components{1}, G);
+    F.components{2} = plus(F.components{2}, G);  
 elseif ( isa(G, 'diskfunv') )       % DISKFUNV + DISKFUNV
-    nG = G.nComponents; 
-    if ( nG ~= nF ) 
-        error('CHEBFUN:DISKFUNV:plus:components', ...
-            'The DISKFUNV objects do not have the same components.')
-    end
     if ( G.isTransposed ~= F.isTransposed )
         error('CHEBFUN:DISKFUNV:plus:transposed', 'Dimension mismatch.')
     end
-    for jj = 1 : nF                  % Add each component together
-        F.components{jj} = plus(F.components{jj}, G.components{jj});
-    end
+                   % Add each component together
+    F.components{1} = plus(F.components{1}, G.components{1});
+    F.components{2} = plus(F.components{2}, G.components{2});
 else
     error('CHEBFUN:DISKFUNV:plus:type', 'Unrecongized input arguments')
 end

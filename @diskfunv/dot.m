@@ -1,11 +1,11 @@
 function f = dot( F, G )
 %DOT   Vector dot product.
-%   DOT(F, G) returns the dot product of the CHEBFUN2V objects F and G. DOT(F,
+%   DOT(F, G) returns the dot product of the DISKFUNV objects F and G. DOT(F,
 %   G) is the same as F'*G.
 % 
 % See also CROSS. 
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information. 
 
 if ( isempty( F ) || isempty( G ) ) 
@@ -13,22 +13,11 @@ if ( isempty( F ) || isempty( G ) )
     return
 end
 
-nF = F.nComponents; 
-nG = G.nComponents; 
-if ( nG ~= nF ) 
-    error('DISKFUN:DISKFUNV:dot:components', ...
-        'DISKFUNV object should have the same number of components.');
-end
 
 Fc = F.components; 
 Gc = G.components; 
-for jj = 1:nF 
-    Fc{jj} = times(Fc{jj}, Gc{jj}); 
-end
 
-f = diskfun;
-for jj = 1 : nF
-    f = f + Fc{jj};
-end
+f = times(Fc{1}, Gc{1})+times(Fc{2}, Gc{2}); 
+
 
 end

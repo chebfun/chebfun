@@ -3,7 +3,7 @@ function F = mtimes( F, G )
 %
 %  c*F or F*c multiplies each component of a DISKFUNV by a scalar.
 %
-%  A*F multiplies the vector of functions F by the matrix A assuminG that
+%  A*F multiplies the vector of functions F by the matrix A assuming that
 %  size(A,2) == size(F,1).
 %
 %  F*G calculates the inner product between F and G if size(F,3) ==
@@ -11,7 +11,7 @@ function F = mtimes( F, G )
 %
 % See also TIMES.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 

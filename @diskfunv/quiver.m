@@ -4,7 +4,6 @@ function varargout = quiver( F, varargin )
 %   attempts to scale the arrows to fit within the grid. The arrows are on a
 %   uniform grid.
 %
-% BELOW HERE NOT YET IMPLEMENTED:
 %   QUIVER(F,S) automatically scales the arrows to fit within the grid and then
 %   stretches them by S.  Use S=0 to plot the arrows without the automatic
 %   scaling. The arrows are on a uniform grid.
@@ -20,12 +19,9 @@ function varargout = quiver( F, varargin )
 %   QUIVER(...,'numpts',N) plots arrows on a N by N uniform grid.
 %
 %   H = QUIVER(...) returns a quivergroup handle.
-%
-%   If F is a DISKFUN with three non-zero components then this calls
-%   QUIVER3. (this is currently not implemented in diskfun)
-%
-% See also QUIVER3.
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 numpts = 30;
@@ -71,10 +67,6 @@ varargin = argin;
 
 if ( isa(F, 'diskfunv') )             % quiver(F,...)
     
-    nF = F.nComponents;
-    if ( nF == 3 )
-        h = quiver3(F, varargin{:});   % Call quiver3 instead.
-    else
         % Plot quiver with arrows at equally spaced points:
         [xx, yy] = diskpts(numpts);
         F1 = F.components{1}; F2 = F.components{2};
@@ -86,22 +78,17 @@ if ( isa(F, 'diskfunv') )             % quiver(F,...)
             axis(max([max(abs(xlim)) abs(ylim)])*[-1 1 -1 1]);
             axis equal;
         end
-    end
+   
     
 elseif ( nargin >= 3 )                 % quiver(x,y,F,...)
     
-    % First two arguments contain arrow locations: %for diskfun we need to
-    % know if this is cartesian or polar...for now we assume cartesian
-    
+    % First two arguments contain arrow locations: we assume these are
+    % Cartesian coords. 
     xx = F;
     yy = varargin{1};
     
     if ( isa(varargin{2}, 'diskfunv') )
         F = varargin{2};
-        nF = F.nComponents;
-        if ( nF == 3 )
-            h = quiver3(F,varargin{:}); % Call quiver3 instead.
-        else
             F1 = F.components{1}; F2 = F.components{2};
             vals1 = feval(F1, xx, yy, 'cart');
             vals2 = feval(F2, xx, yy, 'cart');
@@ -111,7 +98,6 @@ elseif ( nargin >= 3 )                 % quiver(x,y,F,...)
                 axis(max([max(abs(xlim)) abs(ylim)])*[-1 1 -1 1]);
                 axis equal;
             end
-        end
     else
         error('DISKFUN:DISKFUNV:quiver:inputs', ...
             'Third argument should be a diskfunv.');

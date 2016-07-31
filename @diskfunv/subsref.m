@@ -1,20 +1,19 @@
 function varargout = subsref( F, ref )
 %SUBSREF   DISKFUNV subsref.
-% 
-% ( )
-%   F(X,Y) returns the values of the DISKFUNV F evaluated on the array (theta,r) in polar coords.
-%   F(X,Y, 'cart') returns values of the DISKFUNV F evaluated on the array
+%
+%   F(t,r, 'polar') returns the values of the DISKFUNV F evaluated on the 
+%   array (theta,r) in polar coords.
+%   F(X,Y) or F(X,Y, 'cart')
+%   returns values of the DISKFUNV F evaluated on the array
 %   (X,Y) in Cartesian coords. 
 %   F(k) returns the first component of F if k=1, the second if k=2, and
 %   the third if k=3. 
 %
-%  .
-%   F.PROP returns the property PROP of F as defined by GET(F,'PROP').
 %  
-% { }
-%    Throws an error.
+%   F.PROP returns the property PROP of F as defined by GET(F,'PROP').
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % check for empty DISKFUNV object. 
@@ -65,7 +64,7 @@ switch ( ref(1).type )
                     varargout = F.components(3);
                 else
                     error('CHEBFUN:DISKFUNV:subsref:index', ...
-                        'DISKFUNV only contains two/three components');
+                        'DISKFUNV only contains two components');
                 end
             end
         end

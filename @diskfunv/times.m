@@ -6,7 +6,7 @@ function F = times( F , G )
 %   F.*G if F is a double and G is a DISKFUNV returns the DISKFUNV after
 %   componentwise multiplication.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 
@@ -25,32 +25,23 @@ nF = F.nComponents;
 if ( isa(G, 'double') )             % DISKFUNV.*double
     if ( numel(G) == 1 )            % DISKFUNV.*scalar
         scalar = G;
-        for jj = 1 : nF 
-            F.components{jj} = times(F.components{jj}, scalar); 
-        end
+        F.components{1} = times(F.components{1}, scalar); 
+        F.components{2} = times(F.components{2}, scalar); 
     elseif ( (size(G, 1) == nF) || ( F.isTransposed && (size(G, 2) == nF) ) )
-        for jj = 1 : nF 
-            F.components{jj} = times( F.components{jj}, G(jj) ); 
-        end   
+        F.components{1} = times( F.components{1}, G(1) );
+        F.components{2} = times( F.components{1}, G(2) );    
     else
         error('CHEBFUN:DISKFUNV:times:double', ...
             'DISKFUNV and double size mismatch.');
     end  
     
 elseif ( isa(G, 'diskfunv') )      % DISKFUNV . * DISKFUNV
-    nG = G.nComponents; 
-    if ( nF ~= nG ) 
-         error('CHEBFUN:DISKFUNV:times:times', ...
-             'DISKFUNV components mismatch.');
-    end
-    for jj = 1:nF 
-        F.components{jj} = times(F.components{jj}, G.components{jj}); 
-    end
+    F.components{1} = times(F.components{1}, G.components{1}); 
+    F.components{2} = times(F.components{2}, G.components{2}); 
     
 elseif ( isa(G, 'diskfun') )       % DISKFUN * DISKFUNV
-    for jj = 1 : nF 
-            F.components{jj} = times(F.components{jj}, G); 
-    end
+     F.components{1} = times(F.components{1}, G); 
+     F.components{2} = times(F.components{2}, G); 
     
 else  % error
     error( 'CHEBFUN:DISKFUNV:times:inputs', 'Unrecognized input arguments.' );

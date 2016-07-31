@@ -55,7 +55,7 @@ classdef diskfun < separableApprox
             if (strcmp(propName, 'polar') || strcmp(propName, 'cart'))
                 f.coords = propName;
             else  %error if unacceptable setting is provided
-    error('CHEBFUN:DISKFUN:setcoords:propName', ...
+            error('CHEBFUN:DISKFUN:setcoords:propName', ...
             'Coordinate setting must be either ''polar'' or ''cart''')
             end
         end

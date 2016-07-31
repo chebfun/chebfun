@@ -6,7 +6,7 @@ function F = power( F, G )
 %   F.^G where F is a double and G is a CHEBFUN2 returns from componentwise
 %   powers.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check:
@@ -20,9 +20,9 @@ if ( isa( F ,'double' ) )       % scalar . ^ DISKFUNV
     if ( numel(F) == 1 )
         scalar = F;
         F = G;
-        for jj = 1 : F.nComponents
-            F.components{jj} = power( scalar, G.components{jj} );
-        end
+        
+        F.components{1} = power( scalar, G.components{1} );
+        F.components{2} = power( scalar, G.components{2} );
     else
         error('CHEBFUN:DISKFUNV:power:double', 'Dimension mismatch.');
     end
@@ -31,9 +31,8 @@ elseif ( isa(G, 'double') )      % DISKFUNV . ^ scalar
     
     if ( numel(G) == 1 )
         scalar = G;
-        for jj = 1 : F.nComponents
-            F.components{jj} = power( F.components{jj}, scalar );
-        end
+        F.components{1} = power( F.components{1}, scalar );
+        F.components{2} = power( F.components{2}, scalar );
     else
         error('CHEBFUN:DISKFUNV:power:double', ...
             'DISKFUNV and double size mismatch.');

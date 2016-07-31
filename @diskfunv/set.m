@@ -6,11 +6,13 @@ function f = set(f, prop, propName)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % TO DO: allow changing the domain setting? 
-
+% Empty check.
     
     switch prop
-        case 'coords'
+        case 'coords' %set diskfunv and each component. 
                 f.coords = propName;
+                f.components{1}.coords = propName; 
+                f.components{2}.coords = propName; 
         otherwise
             error('CHEBFUN:DISKFUN:set:Prop', ...
                 'Unknown DISKFUN property.')

@@ -1,14 +1,14 @@
 function F = vertcat( F , G )
-%VERTCAT Vertical concatenation of CHEBFUN2V objects.
-%   [F ; f] where F is a CHEBFUN2V with two components, and f is a CHEBFUN2 or
-%   scalar then returns a CHEBFUN2V with three components.  The first and second
+%VERTCAT Vertical concatenation of DISKFUNV objects.
+%   [F ; f] where F is a DISKFUNV with two components, and f is a CHEBFUN2 or
+%   scalar then returns a DISKFUNV with three components.  The first and second
 %   component remain unchanged and the third component is f.
 % 
-%   [f ; F] where F is a CHEBFUN2V with two components, and f is a CHEBFUN2 or
-%   scalar then returns a CHEBFUN2V with three components. The first is f, and
+%   [f ; F] where F is a DISKFUNV with two components, and f is a CHEBFUN2 or
+%   scalar then returns a DISKFUNV with three components. The first is f, and
 %   the second and third are the first and second components of F.
 
-% Copyright 2015 by The University of Oxford and The Chebfun2 Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun2 Developers.
 % See http://www.chebfun.org/ for Chebfun2 information.
 
 if ( isempty( F ) || isempty( G ) )
@@ -26,11 +26,11 @@ elseif ( isa(F, 'double') )
     F = diskfun( F, Gc{1}.domain ); 
 elseif ( isa(G, 'diskfun') )
     if ( ~domainCheck(F.components{1}, G) ) 
-        error('CHEBFUN:CHEBFUN2V:vertcat:domain', 'Inconsistent domains.')
+        error('CHEBFUN:DISKFUNV:vertcat:domain', 'Inconsistent domains.')
     end
     dom = G.domain; 
 else
-    error('CHEBFUN:CHEBFUN2V:vertcat:notSupported', ...
+    error('CHEBFUN:DISKFUNV:vertcat:notSupported', ...
         'Vertical concatenation of these objects is not supported.')
 end
 

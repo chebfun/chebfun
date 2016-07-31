@@ -1,13 +1,13 @@
 function H = mrdivide(F,g)
 %/   DISKFUNV right divide.
 %
-% F/c divides each component of a DISKFUNV by a scalar. 
+% F/g divides each component of a DISKFUNV by a scalar g. 
 % 
 % Only allowed to divide by scalars. 
 % 
 % See also MLDIVIDE.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( ( isempty(F) ) || ( isempty(g) ) )
@@ -15,23 +15,13 @@ if ( ( isempty(F) ) || ( isempty(g) ) )
    return 
 end
 
-if ( ~isa(g,'double') && ~isa(g,'diskfun') )
-    error('CHEBFUN:CHEBFUN2V:mrdivide:nonScalar', ...
+if ( ~isa(g,'double') )
+    error('CHEBFUN:DISKFUNV:mrdivide:nonScalar', ...
         'Division must be scalar valued.');
 end
-
-
 % componentwise divide. 
-if ( isa(g,'double') )
-    H = F; 
-    for j = 1 : F.nComponents
-        H.components{j} = mrdivide(F.components{j}, g);
-    end
-else
-    H = F;
-    for j = 1 : F.nComponents
-        H.components{j} = rdivide(F.components{j}, g);
-    end
-end
-    
+H.components{1} = mrdivide(F.components{1}, g);
+H.components{2} = mrdivide(F.components{2}, g);
+
+
 end

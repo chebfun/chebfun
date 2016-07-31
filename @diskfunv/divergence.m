@@ -2,18 +2,18 @@ function div = divergence( F )
 %DIVERGENCE  Numerical  divergence of a DISKFUNV. 
 %   D = DIVERGENCE( F ) returns the numerical divergence of the
 %   DISKFUNV. 
-
-% Note that divergence of a 3-vector is the same, because the functions are
-% of two variables.
 %
 % See also DIV, GRAD, CURL.
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information. 
+
+
 % Empty check: 
 if ( isempty( F ) )
     div = diskfun;
     return
 end
-
-
 
 Fc = F.components; 
 

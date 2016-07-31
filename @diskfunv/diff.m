@@ -9,10 +9,13 @@ function F = diff(F, dim, n)
 %     DIM = 2 is the derivative in the y-direction.
 %    
 %
-%   DIFF(F, DIM, N) is the Nth tangential derivative of each component of F
+%   DIFF(F, DIM, N) is the Nth derivative each component of F
 %   along the dimension specified.
 %
 %   See also CURL and DIV
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information. 
 
 % Empty check:
 if ( isempty(F) ) 
@@ -28,8 +31,7 @@ if ( nargin < 3 )
 end
 
 % Diff each component. 
-for j = 1:F.nComponents
-    F.components{j} = diff(F.components{j}, dim, n); 
-end
-  
+F.components{1} = diff(F.components{1}, dim, n); 
+F.components{2} = diff(F.components{2}, dim, n); 
+
 end

@@ -7,7 +7,7 @@ function H = cross( F, G )
 
 % We have not yet implemented an option for three components. 
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information. 
 
 % Empty check: 
@@ -16,21 +16,14 @@ if ( isempty( F ) || isempty( G ) )
     return
 end
 
-% Get number of components: 
+% Get components: 
 Fc = F.components; 
 Gc = G.components; 
 
 % Do curl: 
-%if ( F.nComponents == 2 && G.nComponents == 2 )  % 2D cross 
-    H = Fc{1} .* Gc{2} - Fc{2} .* Gc{1}; 
-%elseif ( F.nComponents == 3 && G.nComponents == 3 ) % 3D cross
- %         x= Fc{2} .* Gc{3} - Fc{3} .* Gc{2} ; 
-  %        y = Fc{3} .* Gc{1} - Fc{1} .* Gc{3} ; 
-   %       z = Fc{1} .* Gc{2} - Fc{2} .* Gc{1} ;
-    % H = diskfunv(x, y, z); 
-%else
- %   error('DISKFUN:DISKFUN2V:cross:components', ...
-  %      'DISKFUN2V objects must be both 2- or 3-vectors.');
+  
+    H = Fc{1} .* Gc{2} - Fc{2} .* Gc{1}; % 2D cross
+    
 end
 
 

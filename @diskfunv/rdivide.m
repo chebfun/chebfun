@@ -3,7 +3,7 @@ function F = rdivide( F, G )
 %
 % See also LDIVIDE.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 
@@ -15,29 +15,20 @@ end
 % Componentwise divide. 
 if ( isa(F, 'diskfunv') && isa(G, 'diskfunv') )
     
-    nF = F.nComponents; 
-    nG = F.nComponents; 
-    if ( nF ~= nG ) 
-        error('CHEBFUN:DISKFUNV:rdivide:dim','Dimension mismatch.');
-    end
-    for jj = 1 : nF 
-        F.components{jj} = rdivide( F.components{jj}, G.components{jj} ); 
-    end
-    
+    F.components{1} = rdivide( F.components{1}, G.components{1} ); 
+    F.components{2} = rdivide( F.components{2}, G.components{2} ); 
+     
 elseif ( isa(F, 'diskfunv') && ( isa(G, 'diskfun') || isa(G, 'double') ) ) 
     
-    nF = F.nComponents; 
-    for jj = 1 : nF 
-        F.components{jj} = rdivide( F.components{jj}, G ); 
-    end
-    
+    F.components{1} = rdivide( F.components{1}, G ); 
+    F.components{2} = rdivide( F.components{2}, G ); 
+       
 elseif  ( isa(G, 'diskfunv') && ( isa(F, 'diskfun') || isa(F, 'double') ) ) 
     
     H = G; 
-    nG = G.nComponents;
-    for jj = 1 : nG
-        H.components{jj} = rdivide( F, H.components{jj} ); 
-    end
+    
+    H.components{1} = rdivide( F, H.components{1} ); 
+    H.components{2} = rdivide( F, H.components{2} );
     F = H; 
     
 else
