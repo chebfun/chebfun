@@ -1,12 +1,9 @@
 function varargout = plot(varargin)
 %PLOT  Surface plot of a CHEBFUN2.
 %
-%   PLOT(F) if F is a real-valued CHEBFUN2 then this is the surface plot and is
-%   the same as surf(F). If F is a complex valued then this returns a domain
-%   colouring plot of F.
-%
-%   PLOT(F) if F is a complex-valued CHEBFUN2 then we do Wegert's phase portrait
-%   plots.
+%   PLOT(F) if F is a real-valued CHEBFUN2 gives a surface plot, 
+%   the same as surf(F). If F is complex-valued, it gives a phase
+%   portrait.
 %
 %   PLOT(F, S) Plotting with option string plots the column and row slices, and
 %   pivot locations used in the construction of F.
