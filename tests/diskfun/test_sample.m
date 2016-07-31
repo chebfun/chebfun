@@ -24,47 +24,51 @@ n = 120;
 pass(3) = (m == mm) && (n == nn);
 
 % Check samples are correct.
-% m and n even
+% m even and n odd
 m = 30; 
-n = 20;
-[t,r] = meshgrid(trigpts(m, [-pi, pi]), chebpts(n));
+n = 2*20+1;
+cp = chebpts(n); 
+[t,r] = meshgrid(trigpts(m, [-pi, pi]), cp((n+1)/2:end));
 F = f(t,r, 'polar');
-G = sample(f, t, r);
+G = sample(f, m, (n+1)/2);
 pass(4) = norm(F(:) - G(:), inf) < tol;
-[U, D, V] = sample(f, m, n);
+[U, D, V] = sample(f, m, (n+1)/2);
 G = U * D * V.';
 pass(5) = norm(F(:) - G(:), inf) < tol;
 
-% m even and n odd
-m = 30; 
-n = 21;
-[t, r] = meshgrid(trigpts(m, [-pi, pi]), chebpts(n));
-F = f(t, r, 'polar');
-G = sample(f, m, n);
+% m odd and n odd
+m = 31; 
+n = 2*20+1;
+cp = chebpts(n); 
+[t,r] = meshgrid(trigpts(m, [-pi, pi]), cp((n+1)/2:end));
+F = f(t,r, 'polar');
+G = sample(f, m, (n+1)/2);
 pass(6) = norm(F(:) - G(:), inf) < tol;
-[U, D, V] = sample(f, m, n);
+[U, D, V] = sample(f, m, (n+1)/2);
 G = U * D * V.';
 pass(7) = norm(F(:) - G(:), inf) < tol;
 
 % m odd and n even
 m = 31; 
-n = 20;
-[lam, th] = meshgrid(trigpts(m, [-pi, pi]), chebpts(n));
-F = f(t, r, 'polar');
-G = sample(f, m, n);
+n = 2*20-1;
+cp = chebpts(n); 
+[t,r] = meshgrid(trigpts(m, [-pi, pi]), cp((n+1)/2:end));
+F = f(t,r, 'polar');
+G = sample(f, m, (n+1)/2);
 pass(8) = norm(F(:) - G(:), inf) < tol;
-[U, D, V] = sample(f, m, n);
+[U, D, V] = sample(f, m, (n+1)/2);
 G = U * D * V.';
 pass(9) = norm(F(:) - G(:), inf) < tol;
 
-% m odd and n odd
-m = 31; 
-n= 21;
-[t, r] = meshgrid(trigpts(m, [-pi, pi]), chebpts(n));
-F = f(t, r, 'polar');
-G = sample(f, m, n);
+% m even and n even
+m = 30; 
+n = 2*20-1;
+cp = chebpts(n); 
+[t,r] = meshgrid(trigpts(m, [-pi, pi]), cp((n+1)/2:end));
+F = f(t,r, 'polar');
+G = sample(f, m, (n+1)/2);
 pass(10) = norm(F(:) - G(:), inf) < tol;
-[U, D, V] = sample(f, m, n);
+[U, D, V] = sample(f, m, (n+1)/2);
 G = U * D * V.';
 pass(11) = norm(F(:) - G(:), inf) < tol;
 
@@ -78,14 +82,14 @@ try
     F = sample(f, 0, 20);
     pass(13) = false;
 catch ME
-    pass(13) = strcmp(ME.identifier, 'CHEBFUN:diskfun:sample:inputs');
+    pass(13) = strcmp(ME.identifier, 'CHEBFUN:DISKFUN:sample:inputs');
 end
 
 try
     F = sample(f, 20, 0);
     pass(14) = false;
 catch ME
-    pass(14) = strcmp(ME.identifier, 'CHEBFUN:diskfun:sample:inputs');
+    pass(14) = strcmp(ME.identifier, 'CHEBFUN:DISKFUN:sample:inputs');
 end
 
 end

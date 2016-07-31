@@ -20,19 +20,23 @@ if ( nargin == 1 )
     % Get degrees:
     [m, n] = length( f );  
 elseif ( nargin == 2 ) 
-    error('DISKFUN:sample:inputs', 'Dimension not specified.'); 
+    error('CHEBFUN:DISKFUN:sample:inputs', 'Dimension not specified.'); 
 else
     m = varargin{ 1 }; 
     n = varargin{ 2 }; 
+    if ( (m <= 0) || (n <= 0) )
+        error('CHEBFUN:DISKFUN:sample:inputs', ['Number of sample ' ...
+             'points must be positive.']);
+    end
 end
 
 % Get the low rank representation for f. 
 [cols, d, rows] = cdr(f);
 
  
-C = sample(cols, max(2*n+1, 1));
+C = sample(cols, max(2*n-1, 1));
 
-C = C(n+1:end, :);
+C = C(n:end, :);
 
 R = real( sample(rows, m)); 
 
