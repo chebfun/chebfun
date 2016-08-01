@@ -7,6 +7,8 @@
 %
 % See also DISKFUN. 
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 
 classdef diskfunv
@@ -73,7 +75,6 @@ classdef diskfunv
                 F = varargin{1};
                 return
             end
-            
             
              % Stop now if there are too few components: 
             if ( nargin < 2 ) 

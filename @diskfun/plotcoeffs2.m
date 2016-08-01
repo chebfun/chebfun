@@ -16,7 +16,6 @@ X = abs(coeffs2(f)); % Absolute value of coefficients.
 [m, n] = size(X);
 
 % Use a stem3 plot changing the axis to log scale. 
-%wavem = -ceil((m-1)/2):floor((m-1)/2);
 wavem = 1:size(X,1);
 waven = -ceil((n-1)/2):floor((n-1)/2);
 

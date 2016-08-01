@@ -6,7 +6,7 @@ tol = 3e7*chebfunpref().cheb2Prefs.chebfun2eps;
 f = diskfun(@(x,y) cos((y+.1).*x));
 
 % Div of gradient field is laplacian: 
-pass(1) = norm(2*divgrad(f)-div(grad(f)) - laplacian(f), inf) < tol; 
+pass(1) = norm(div(grad(f)) - laplacian(f), inf) < tol; 
 
 
 % Div of curl is zero: 

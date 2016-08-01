@@ -13,6 +13,10 @@ function val = get( f, propName )
 %    'nonZeroPoles'
 %    'coords'
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+
 % Loop through an array of DISKFUN objects.
 if ( numel(f) > 1 )
     val = cell(numel(f));

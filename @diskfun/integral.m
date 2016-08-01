@@ -24,19 +24,14 @@ else
     else
              c = varargin{1}; 
     end
-    if ( ~isa( c, 'chebfun' ) )  % Line integral over a CHEBFUN
+    if ( ~isa( c, 'chebfun' ) )  
         I = integral2( f, varargin{ : } );
-    else                                  
-        % Get curve: 
-        
-        %c = varargin{1}; 
-        
+    else                            % Line integral over a CHEBFUN       
         % Make complex: 
         c = c + realmin*1i;   
         % Line integral: 
         I = sum( feval(f, c ) .* abs( diff( c ) ) );
     end
-    
     
 end
 

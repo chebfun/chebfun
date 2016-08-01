@@ -6,6 +6,9 @@ function G = curl( f )
 %    function): see DISKFUNV/curl.
 % See also GRADIENT.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Empty check.
 if isempty( f )
     G = diskfunv;
@@ -13,7 +16,6 @@ if isempty( f )
 end
 
 %   surface curl of F is curl(0, 0,F) = (F_y, -F_x)
-
 G = diskfunv(diff(f, 2), -diff(f, 1));
 
 end

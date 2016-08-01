@@ -1,9 +1,14 @@
 function v = sum2( f ) 
-% Definite integration of a diskfun. 
-
+%SUM2   Double integral of a DISKFUN over its domain.
+%   I = SUM2(F) returns the double definite integral of a DISKFUN.
+%
 % Split f into its plus/minus terms.  The minus terms have integral zero 
-% on the disk since the rows in this case are anti-periodic with period
-% pi.  Thus, we only need to integrate the plus terms.
+% on the sphere since the rows in this case are anti-periodic with period
+% pi. Thus, we only need to integrate the plus terms.
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 [cols,d,rows] = cdr(f);
 
 % If there are no plus terms then the integral is zero

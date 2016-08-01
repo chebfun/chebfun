@@ -1,17 +1,17 @@
 function varargout = std(varargin)
 %STD   Standard deviation of a DISKFUN along one variable.
-%   G = STD(F) returns the standard deviation of F in the theta-variable
-%   (or latitude), which is the default.
-%   That is, if F is defined on the rectangle [-pi,pi] x [0,pi] then
+%   G = STD(F) returns the standard deviation of F in the r-variable
+%   (or radius), which is the default.
+%   That is, if F is defined on the rectangle [-pi,pi] x [0,1] then
 %
-%                         pi 
+%                         1 
 %                        /
-%     std(F)^2 = 1/pi    | ( F(LAMBDA,THETA) - mean(F,1) )^2 dTHETA
+%     std(F)^2 = 1/pi    | ( F(THETA,R) - mean(F,1) )^2 dTHETA
 %                        /
 %                        0
 %
 %   G = STD(F, FLAG, DIM) takes the standard deviation along the
-%   theta-variable if DIM = 1 and along the lambda-variable (longitude) if
+%   r-variable if DIM = 1 and along the theta-variable (angular) if
 %   DIM = 2. The FLAG is ignored and kept in this function so the syntax
 %   agrees with the Matlab STD command.
 %

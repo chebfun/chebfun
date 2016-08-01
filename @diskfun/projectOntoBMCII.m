@@ -1,7 +1,7 @@
 function f = projectOntoBMCII(f)
 % PROJECTONTOBMCI  Projection onto BMC-I symmetry.
 %
-% f = projectOntoBMCI(f) is the orthogonal projection of f onto BMC-I 
+% f = projectOntoBMCII(f) is the orthogonal projection of f onto BMC-II 
 % symmetry, i.e., a function that is
 % 1. even in r for every even wave number in theta;
 % 2. odd in r for every odd wave number in theta;
@@ -68,43 +68,16 @@ if ( ~isempty(evenModes) )
     % where A =[1 -1 1 -1..] . 
     % The solution is 
     % C = A'*((A*A')\(A*X)). 
-    %odd modes in r are zero, they won't contribute
+    %odd modes in r are zero, they won't contribute.
     even = 1:2:m;
     Xe = X(even, evenModes); 
     factor = 1/length(even)*(sum(Xe(1:2:end, :))-sum(Xe(2:2:end, :)));
     C = ((-1*ones(length(even), 1)).^((2:length(even)+1)'))*factor; 
     %now add C to X
     X(even, evenModes) = Xe+C; 
-    % Second do the even, non-zero modes in theta
-
-    % First enforce these are even as above.
-    %C = 0.5*(X(1:m, evenModes) - X(m:-1:1, evenModes));
-    %X(:, evenModes) = X(:, evenModes) - C;
-    
-    % Now enforce these are zero at the poles (evenness is preserved)
-    % Letting 
-    % A = [ones(1,m); (-1).^waveNumbers];
-    % We want to find the C with smallest two-norm such that 
-    % A*(X + C) = 0
-    
-    % However, we can again work out the solution in close form because of
-    % the special structure of the matrix equation.
-    %X(1:2:m, evenModes) = bsxfun(@minus,...
-        %X(1:2:m, evenModes), (2/(m+1))*sum(X(1:2:m, evenModes), 1));
-   %X(2:2:m, evenModes) = bsxfun(@minus,...
-        %X(2:2:m, evenModes), (2/(m-1))*sum(X(2:2:m, evenModes), 1));   
-    
-       
-       
+     
 end
 
-% If m is even we need to remove the mode that was appended
-%if ( isevenM )
- %   X(1, :) = (X(1, :) + X(end, :));
- %   X = X(1:m-1, :);
-%end
-
-%ctechs = real(chebtech2({'', X}));
 ctechs = chebtech2({'',X}); 
 f.cols.funs{1}.onefun = ctechs;
 
@@ -145,33 +118,8 @@ X = f.cols.funs{1}.onefun.coeffs;
 % Get size: 
 m = size(X, 1);
 
-%isevenM = false;
-%if ( mod(m, 2) == 0 )
-  %  X(1, :) = 0.5*X(1, :);
-   % X = [X; X(1,:)];
-   % m = m + 1;
-   % isevenM = true;
-%end
+X(1:2:end, :) = 0; 
 
- X(1:2:end, :) = 0; 
-% I = eye(m); A = I + fliplr(I); 
-% A = A(1:(m-1)/2+1, :); A((m-1)/2+1, (m-1)/2+1) = 1;
-% 
-% % Solution to underdetermined system A*(X + Y) = 0 with smallest Frobenius
-% % norm: 
-% C = A\(A*X);
-%C = 0.5*(X(1:m, :)+X(m:-1:1, :));
-
-% Update coeff matrix: 
-%X = X - C;
-
-% If m is even we need to remove the mode that was appended 
-%if ( isevenM )
-    %X(1, :) = (X(1, :)+X(end, :));
-    %X = X(1:m-1, :);
-%end
-
-%ctechs = real(trigtech({'', X}));
 ctechs = chebtech2({'',X}); 
 f.cols.funs{1}.onefun = ctechs;
 

@@ -5,7 +5,6 @@ function H = cross( F, G )
 %       CROSS(F,G) = F(1) * G(2) - F(2) * G(1)
 %   where F = (F(1); F(2)) and G = (G(1); G(2)). 
 
-% We have not yet implemented an option for three components. 
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information. 

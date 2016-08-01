@@ -15,7 +15,7 @@ function varargout = max2(varargin)
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% we want to search over polar coords for the max: 
+% will search over polar coords for the max: 
 iscart = diskfun.coordsetting(varargin{:}); 
 f = varargin{1}; 
 f.coords = 'polar';

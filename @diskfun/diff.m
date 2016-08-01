@@ -12,6 +12,10 @@ function f = diff( f, varargin )
 %
 %  See also LAPLACIAN
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+
 if ( isempty(f) )
     return
 end
@@ -82,15 +86,12 @@ rtechs = R.funs{1}.onefun;
 
 % alias to get the extra zeros in place
 ctechs.coeffs = ctechs.alias(ctechs.coeffs, n); 
-%ctechs.coeffs = [ctechs.coeffs; zeros(parity, 1)];
 rtechs.coeffs = rtechs.alias(rtechs.coeffs, m); 
 
 % Compute the derivatives
 dCdr = diff(ctechs);
 dRdth = diff(rtechs)/pi;
 
-% get 1/r term
-%C_cfs = chebtech2.alias(ctechs.coeffs, n);
 
 rinv = Mn \ ctechs.coeffs; 
 
@@ -101,7 +102,6 @@ if (dim==1) %d/dx
     R1 = -Msinm*dRdth.coeffs;
     
     %CDR for costh.*d/dr
-    
     C2 = dCdr.coeffs;
     R2 = Mcosm*rtechs.coeffs;
     
@@ -112,7 +112,6 @@ else  %d/dy
     R1 = Mcosm*dRdth.coeffs;
     
     %CDR for sinth.*d/dr
-    
     C2 = dCdr.coeffs;
     R2 = Msinm*rtechs.coeffs;
 end

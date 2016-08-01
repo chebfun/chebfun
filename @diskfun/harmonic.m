@@ -6,7 +6,7 @@ function Y = harmonic(L,m, type)
 % harmonics are the eigenfunctions of Laplace's equation on the disk. 
 % For Dirichlet boundary conditions, they are of the form 
 % V_L^M(t, r) = A*exp(iLt).*J_L(a_Mr), 
-% where J_L is the Lth j-Bessel function, and a_M is the Mth positive zero 
+% where J_L is the Lth j-Bessel function, a_M is the Mth positive zero 
 % of the function, and A is a normalization factor.
 %
 % Y = harmonic(L, M) returns the cylindrical harmonic V_L^M(t,r) with Dirichlet

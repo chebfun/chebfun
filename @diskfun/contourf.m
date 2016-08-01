@@ -23,7 +23,6 @@ function varargout = contourf( f, varargin )
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% TODO: Refactor to reduce duplication.
 
 if ( isempty( f ) )  % Empty check.
     contourf( [] );
@@ -65,7 +64,7 @@ if ( doPivotPlot )    % Do pivot plot.
        % contourf( f, argin{:} ), hold off
        % return
     %end
-    error('CHEBFUN:DISKFUN:contourf:', ...
+    error('CHEBFUN:DISKFUN:contourf:pivotstyle', ...
             'Pivots cannot be plotted with ''contourf''. Use ''contour'' instead.');
 end
 
@@ -131,9 +130,6 @@ elseif ( isa(f, 'diskfun') )
         y = linspace( dom(3), dom(4), minplotnum );
         [xx, yy] = meshgrid(x, y);
         vals = feval(f, xx, yy, 'polar' );
-        
-         
-        %vals = feval(f, xx, yy );
         
     else
         error('CHEBFUN:DISKFUN:contourf:inputs2', ...

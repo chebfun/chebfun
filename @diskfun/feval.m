@@ -10,12 +10,16 @@ function y = feval(varargin)
 %
 %   See also SUBSREF.
 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+
 %figure out if cartesian or polar
  iscart = diskfun.coordsetting(varargin{:});
 
 %now evaluate
 f = varargin{1};
-if nargin < 3 %only possibility for now is eval on a contour parametrized as complex chebfun
+if nargin < 3 %eval on a contour parametrized as complex chebfun
     c1 = varargin{2};
     y = chebfun(@(t) feval(f, real(c1(t)), imag(c1(t)), 'cart'), c1.domain, 'vectorize' );
 else

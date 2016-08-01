@@ -1,8 +1,8 @@
 function F = diag(f,varargin)
 %DIAG(F)   Diagonal of a DISKFUN.
-%   G = DIAG(F) returns the CHEBFUN representing g(x) = f(pi/4, r).
+%   G = DIAG(F) returns the CHEBFUN representing g(r) = f(pi/4, r).
 %
-%   G = diag(F,T) returns the CHEBFUN representing g(x) = f(T, r), where 
+%   G = diag(F,T) returns the CHEBFUN representing g(r) = f(T, r), where 
 %  -pi < T < pi. 
 %
 % See also DISKFUN/TRACE.
@@ -10,7 +10,7 @@ function F = diag(f,varargin)
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-%[varargout{1:nargout}] = diag@separableApprox(varargin{:});
+
 
 if ( isempty( f ) ) 
     F = chebfun;

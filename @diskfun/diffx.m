@@ -4,7 +4,7 @@ function g = diffx(f, n)
 %   G = DIFFX(F) returns a DISKFUN representing the derivative of F in its
 %   first argument. This is the same as DIFF(F,1,1).
 %
-%   G = DIFFX(F,N) returns a CHEBFUN2 representing the Nth derivative of F in
+%   G = DIFFX(F,N) returns a DISKFUN representing the Nth derivative of F in
 %   its first argument. This is the same as DIFF(F,1, N).
 %
 %   This command is for convenience as the syntax for DIFF, inherited from the

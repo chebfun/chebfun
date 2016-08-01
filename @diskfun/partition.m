@@ -8,7 +8,11 @@ function [fp,fm] = partition(f)
 %   fp has a CDR decomposition such that C is even and R is pi periodic
 %   fm has a CDR decomposition such that C is odd and R is pi anti-periodic
 %
-% See also COMBINE
+% See also COMBINE.
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 
 if ~isa(f,'diskfun')
     error('DISKFUN:partition:unknown',['Undefined function ''partition'' for ' ...

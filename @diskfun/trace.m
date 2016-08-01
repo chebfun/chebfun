@@ -1,7 +1,7 @@
 function varargout = trace(varargin)
 % TRACE integral of a DISKFUN along its diagonal 
 %
-% TRACE(f) is the integral of function f(x,x) in spherical coordinates.
+% TRACE(f) is the integral of function f(x,x) in polar coordinates.
 % 
 % See also DIAG.
 

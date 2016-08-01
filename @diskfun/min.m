@@ -4,8 +4,8 @@ function varargout = min(varargin)
 %   latitude direction, i.e, MIN(f) = @(lambda) max( f ( lambda, : ) )
 %
 %   MIN(f, [], dim) returns a CHEBFUN representing the minimum of f along the
-%   DIM direction. If DIM = 1 is along the latitude-direction and DIM = 2 is along the
-%   longitude-direction.
+%   DIM direction. If DIM = 1 is along the radial-direction and DIM = 2 is along the
+%   angular-direction.
 %
 %   WARNING: This function is not always accurate to the expected precision.
 % 

@@ -31,7 +31,7 @@ function varargout = plot( f, varargin )
 %
 % See also SURF.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Make a user option?

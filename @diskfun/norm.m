@@ -8,9 +8,11 @@ function [ normF ] = norm( f, p )
 %    DISKFUN(F, inf) = global maximum in absolute value.
 %    DISKFUN(F, max) = global maximum in absolute value.
 %    DISKFUN(F, min) = NOT IMPLEMENTED
-%
-% Furthermore, the inf norm for DISKFUN objects also returns a second output,
-% giving a position where the max occurs.
+
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 
 if ( nargin == 1 ) 
     % Default to 2-norm.

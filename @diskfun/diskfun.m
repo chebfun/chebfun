@@ -25,9 +25,6 @@ classdef diskfun < separableApprox
 % spherical and polar geometries II: The disk, submitted, 2016. 
 %
 % See also CHEBFUN2, DISKFUN, DISKFUNV.
-
-    
-    % TODO: Improve documentation of input options.
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% CLASS CONSTRUCTOR:
@@ -58,8 +55,7 @@ classdef diskfun < separableApprox
             error('CHEBFUN:DISKFUN:setcoords:propName', ...
             'Coordinate setting must be either ''polar'' or ''cart''')
             end
-        end
-        
+        end   
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -67,6 +63,7 @@ classdef diskfun < separableApprox
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false, Hidden = true )
         f = projectOntoBMCII(f);
+        
     end
       
        
@@ -97,29 +94,32 @@ classdef diskfun < separableApprox
         
         %convert coeffs to a diskfun
         f = coeffs2diskfun(CFS); 
-        %coordsettings: determines whether a function has input/wants output in
-         %polar or cartesian coords. 
+        
+        %coordsetting: determines whether a function has input/wants output in
+        %polar or cartesian coords. 
         iscart = coordsetting(varargin);
+        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Private Static methods implemented by DISKFUN class.
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = private, Static = true )
-        
+    
+
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% CLASS PROPERTIES
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   properties (Access = public)
-        % DOMAIN: default is [-pi,pi] x [0,pi] which corresponds to using 
-        % colatitude for the elevation angle (second input argument). 
-        % Doubled-up disk will have a domain of [-pi,pi] x [-pi,pi].
+        % DOMAIN: default is [-pi,pi] x [0,1] which corresponds to using 
+        % polar coordinates. 
+        % Doubled-up disk will have a domain of [-pi,pi] x [-1,1].
         idxPlus
         idxMinus
         nonZeroPoles = 0;
-        coords = 'cart'; %default: results returned in Cartesian coordinates
+        coords = 'cart'; %default: results returned in Cartesian coordinates.
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

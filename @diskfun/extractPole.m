@@ -1,11 +1,14 @@
 function [f,h] = extractPole(f)
-% EXTRACTPOLE  Removes from F the term accounting for non-zero pole
+% EXTRACTPOLE  Removes from F the term accounting for non-zero pole/origin
 %
-% [G,H] = EXTRACTPOLE(F) if F is non-zero at the pole, then this function
+% [G,H] = EXTRACTPOLE(F) if F is non-zero at the origin, then this function
 % returns DISKFUNs G and H, such that H is rank 1, G = F - H, and G is
-% zero at the poles. If F is zero at the poles then G is an empty
+% zero at the origin. If F is zero at the origin then G is an empty
 % DISKFUN.
-%
+
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 
 if ~isempty(f) && f.nonZeroPoles
     h = f;
@@ -16,11 +19,9 @@ if ~isempty(f) && f.nonZeroPoles
     h.pivotValues = f.pivotValues(1);
     h.idxPlus = 1;
     h.idxMinus = [];
-%    h.pivotIndices = f.pivotIndices(1,:);
     h.pivotLocations = f.pivotLocations(1,:);
     
     % Now remove these rows and columns from f
-    
     if size(f.cols,2) > 1
         f.cols = f.cols(:,2:end);
         f.rows = f.rows(:,2:end);

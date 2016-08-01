@@ -23,8 +23,7 @@ function varargout = chol(varargin)
 % For more information about the factorization: 
 % A. Townsend and L. N. Trefethen, Continuous analogues of matrix
 % factorizations, Proc. Royal Soc. A., 2015. 
-%
-% See also DISKFUN/LU, and DISKFUN/QR. 
+
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

@@ -20,8 +20,8 @@ function g = constructor(g, op, varargin)
 %
 % The algorithm is fully described in:
 %  A. Townsend, H. Wilber, and G. Wright, Computing with function on
-%  spherical and polar geometries I: The disk, SIAM J. Sci. Comput., 
-%  Accepted, 2016. 
+%  spherical and polar geometries II: The disk, SIAM J. Sci. Comput., 
+%  Submitted, 2016. 
 %
 % See also DISKFUN.
 
@@ -45,7 +45,7 @@ if ( isa(op, 'diskfun') )
 end
 
 % Preferences:
-tech        = chebtech2;  %need to check this
+tech        = chebtech2;  
 tpref       = tech.techPref;
 minSample   = 4;
 maxSample   = tpref.maxLength;
@@ -65,8 +65,7 @@ end
 % 2. Add non-adaptive construction
 % 3. Add tensor-product.
 % 4. Construction from samples/values: need a check about orientation of
-% the sample and check for symmetry, etc... 
-% Maybe allow user to pass in a meshgrid of nodes along with sample values? 
+% the sample.
 
 % Deal with constructions from numeric data:
 if ( isa(op, 'double') )    % DISKFUN( DOUBLE )
@@ -94,9 +93,9 @@ failure = 0; % Reached max discretization size without being happy.
 while ( ~isHappy && ~failure )
     %
     % Setup Phase I: GE with block 2-by-2 pivoting to determine the
-    % numerical rank and pivot locations.  Sampling is done at equally
-    % spaced square grids.
-    %
+    % numerical rank and pivot locations.  Sampling is done on
+    % Fourier-Chebyshev grid.
+    
     grid = minSample;          
     happyRank = 0;             % Happy with phase one? 
     strike = 1;
@@ -258,15 +257,6 @@ pivotIndices = [];
 pivotArray = [];
 isHappy = 0;  % Assume we are not happy
 
-% If given a 1xn matrix, then this only gives us a function samples at origin
-%, which is simple to deal with.
-%if ( m <= 1 ) 
- %   error('CHEBFUN:DISKFUN:constructor:Samples',...
-  %      ['Matrix of function samples contains < 2 rows. ',...
-  %      'This is not enough information to reconstruct the function. ',...
-  %      'Please increase samples in the radial direction.'])
-%end
-
 % Only information at the origin is given.
 if ( m == 1 ) 
     cols = F(:, 1);
@@ -283,7 +273,7 @@ end
 
 C = F(:, 1:n/2);   % (2,2) block of F.
 B = F(:, n/2+1:n); % (1,2) Block of F.
-Fp = 0.5*(B + C);  %SHOULD WE ADD A TEST FOR EVEN-ODD? 
+Fp = 0.5*(B + C);  
 Fm = 0.5*(B - C);
 
 %
@@ -292,18 +282,7 @@ Fm = 0.5*(B - C);
 
 % Check if the poles are numerically constant and get the value.
 pole1 = checkPole(Fp(1, :), tol);
-%pole2 = checkPole(Fp(m, :), tol);
 
-% TODO: Figure out if we really need to warn the user about their function
-% % Check if the poles are numerically constant and get the value.
-% [pole1, constValue1] = checkPole(Fp(1, :), tol);
-% [pole2, constValue2] = checkPole(Fp(m, :), tol);
-% not being constant along the poles.
-% if ~(constValue1 || constValue1)
-%     warning('CHEBFUN:DISKFUN:constructor:constPoles',...
-%         ['Results may be inaccurate as the function may not be constant '...
-%          'at either the north or south poles.']);
-% end
 
 colsPlus = []; 
 rowsPlus = []; 
@@ -315,10 +294,8 @@ kminus = 0;
 idxMinus = [];
 rankCount = 0;    % keep track of the rank of the approximation.
 
-% If the the values at both poles are not zero then we need to add zero
-% them out before removing these entries from F.
-% If the the value at pole is not zero then we need to zero
-% out before removing these entries from F.
+% If the the value at the pole (origin) is not zero, then we need to zero
+% it out before removing these entries from F.
 removePoles = false;
 if  abs(pole1) > tol
     % Determine the column with maximum inf-norm
@@ -327,28 +304,16 @@ if  abs(pole1) > tol
      rowPole = rowVal*ones(1, n/2);
     colPole = Fp(:, poleCol);
     Fp = Fp - colPole*(rowPole/rowVal);
-%     kplus = kplus + 1;
     % Do we need to keep track of the pivot locations?
     removePoles = true;
     % Update the rank count
     rankCount = rankCount + 1;
-%     idxPlus(kplus) = rankCount;
 end
 
-% If given a 1xn matrix, then this only gives us a function samples at the 
-% two poles, which is simple to deal with.
-if ( m <= 1 ) 
-    error('CHEBFUN:DISKFUN:constructor:poleSamples',...
-        ['Matrix of function samples contains < 2 rows. ',...
-        'This is not enough information to reconstruct the function. '...
-        'Please increase samples in the latitudinal direction.'])
-end
 
-% Remove the rows corresponding to the poles before determining the
+% Remove the row corresponding to the origin before determining the
 % rank.  We do this because then F is an even BMC matrix, which is what the
 % code below requires.
-%Fp = Fp(1:m-1, :);
-%Fm = Fm(1:m-1, :);
 Fp = Fp(2:m, :);
 Fm = Fm(2:m, :);
 
@@ -462,7 +427,6 @@ if ( nargout > 4 )
     rows = zeros(n, rankCount);
     pivots = zeros(rankCount, 1);
     if ( kplus ~= 0 )
-        %cols(1:m-1,idxPlus) = colsPlus;
         cols(m+1:2*m-1,idxPlus) = colsPlus;
         cols(1:m-1,idxPlus) = flipud(colsPlus);
         rows(:, idxPlus) = [ rowsPlus rowsPlus ].';
@@ -488,12 +452,12 @@ end
 
 
 % Adjust the pivot locations so that they now correspond to F having the 
-% poles. (if pole is added to end, this shouldn't affect pivot indices)
+% pole. 
 if ( ~isempty(pivotIndices) )
     pivotIndices(:, 1) = pivotIndices(:, 1) + 1;
 end
 
-% Put the poles at the begining of the pivot locations array and also 
+% Put the pole/origin at the begining of the pivot locations array and also 
 % include the pivot matrix.
 if ( removePoles )
     pivotIndices = [ 1 poleCol; pivotIndices ];
@@ -673,8 +637,10 @@ while ( ~(happy_columns && happy_rows) && ~failure )
         colsMinus(1, :) = 0;
     end
     
-        % Happiness check for columns:
-
+    %
+    % Happiness check for columns:
+    %
+    
     % Double up the columns.
     temp1 = sum([colsPlus colsMinus],2); 
     temp2 = sum([colsPlus -colsMinus],2);
@@ -685,7 +651,9 @@ while ( ~(happy_columns && happy_rows) && ~failure )
     colChebtech1 = chebtech2.make(colValues, colData);
     happy_columns = happinessCheck(colChebtech1, [], colValues, colData, pref);
     
+    %
     % Happiness check for rows:
+    %
     
     % Double up the rows.
     temp1 = sum([rowsPlus; rowsMinus],1); 
@@ -762,8 +730,10 @@ function [x, y] = getPoints( m, n)
 
 x = trigpts(2*n, [-pi, pi]);
 y =  chebpts(2*m+1, [-1, 1]); %doubled;
-y = y((2*m)/2+1:end); %this includes pole (r=0), which needs evaluated. 
-                    %currently gives [0, 1] with 0 at start 
+
+%need to pole (r=0), which needs evaluated. 
+%orientation: currently gives [0, 1] with 0 at start. 
+y = y((2*m)/2+1:end);
 end
 
 
@@ -818,9 +788,6 @@ function pivLocNew = adjustPivotLocations(pivLoc, pivArray)
 % write. If this is changed then look the combine and partition methods
 % need to also be changed.
 
-%pivLoc(:,2) = -pivLoc(:,2); %vertical in [0 1]
-%pivLoc(:,1) = pivLoc(:,1) + pi;
-
 pivLocNew = zeros(sum(sum(pivArray ~= 0)), 2);
 count = 1;
 for j = 1:size(pivLoc, 1)
@@ -873,24 +840,20 @@ if ( isa(op, 'function_handle') )
             'The function %s must accept 2 input arguments.',op);
     end
 
+%figure out coord system:
 
-%polar coords
+%check for polar coords
 ispolar = find(strcmp(varargin,'polar'));
-if ( any(ispolar) )
-    coords = 'polar';
-    %op = @(th, r) diskfun.pol2cartf(op,th, r); %switch to polar coords
-else  
-    coords= 'cart'; %default to Cartesian coords.
-    op = @(th, r) diskfun.pol2cartf(op,th, r); %switch to polar coords
+    if ( any(ispolar) )
+        coords = 'polar';
+    else  
+        coords= 'cart'; %default to Cartesian coords.
+        op = @(th, r) diskfun.pol2cartf(op,th, r); %wrap for polar eval
+    end
+else
+    coords = 'cart'; %default to cart
 end
 
-else
-    coords = 'cart';
-end
-%coords=1 -> polar
-%coords=0 -> cartesian
-    
-    
 % Get the domain: (Always first if given)
 % The only domain presently supported is [-pi pi 0 1].
 dom = [-pi, pi, 0, 1]; 

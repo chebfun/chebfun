@@ -1,5 +1,5 @@
 function varargout = coeffs2( f, m, n ) 
-% COEFFS2   Fourier--Chebyshev coefficients of a diskfun 
+% COEFFS2   Fourier--Chebyshev coefficients of a diskfun. 
 % 
 %  X = COEFFS2( F ) returns the modes of the diskfun in the 
 %  Fourier--Chebyshev bases. 
@@ -7,9 +7,8 @@ function varargout = coeffs2( f, m, n )
 % [C, D, R] = COEFFS2( F ) returns a low rank approximation to the modes. 
 % 
 
-% Developers note:
-% if there was a class between separableApprox and diskfun, then this
-% function could implement both coeffs2 for diskfun and diskfun. 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Calculate the CDR decomposition: 
 [C, D, R] = cdr( f ); 
@@ -33,7 +32,7 @@ if ( nargout <= 1 )
 elseif ( nargout <= 3 )
     varargout = {U, D, R};
 else
-    error('DISKFUN::COEFFS::NARGOUT',...
+    error('DISKFUN:COEFFS:NARGOUT',...
             'Too many output arguments')
 end
 

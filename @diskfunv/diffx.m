@@ -4,7 +4,7 @@ function G = diffx( F, n )
 %   first argument. This is the same as DIFF(F,1,2).
 %
 % 	DIFFX(F,N) returns a DISKFUNV representing the Nth derivative of F in
-%   its first argument. This is the same as DIFF(F,N,2).
+%   its first argument. This is the same as DIFF(F,1,N).
 %
 %   This command is for convenience as the syntax for DIFF, inherited from the
 %   DIFF command for matrices, can be confusing.

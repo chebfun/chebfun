@@ -1,5 +1,5 @@
 function varargout = complex(varargin)
-%COMPLEX Construct complex DISKFUN from real and imaginary parts.
+% COMPLEX  Construct complex DISKFUN from real and imaginary parts.
 %   This is not allowed and returns an error.  This function exists so that the
 %   error message is meaningful to a DISKFUN user.
 
@@ -7,5 +7,5 @@ function varargout = complex(varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 
 error('CHEBFUN:DISKFUN:COMPLEX:notSupported',...
-        'Complex-valued diskfuns are not supported.');
+        'Complex-valued diskfuns are currently not supported.');
 end

@@ -4,7 +4,7 @@ function s = mean(f, dim)
 %          MEAN(F) = 1/pi sum(F).
 %
 %   MEAN(F, DIM) takes the mean along the direction DIM. If DIM = 1 it is the
-%   latitude-direction and if DIM = 2 then it is the longitude-direction.
+%   radial-direction and if DIM = 2 then it is the angular-direction.
 %
 % See also DISKFUN/MEAN2, DISKFUN/STD2.
 

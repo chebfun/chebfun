@@ -1,9 +1,10 @@
 function vals = feval(varargin)
 %FEVAL pointwise evaluate a DISKFUNV.
-%   feval(F, X,Y) returns the evaluation of F at the polar coordinates (theta,r).
-%   F(F,X, Y, 'cart') returns the evaluation of F at the Cartesian
+%   feval(F, t,r, 'polar') returns the evaluation of F at polar coordinates
+%   (t = angular, r = radial).
+%   feval(F,X, Y) returns the evaluation of F at the Cartesian
 %   coordinates (X, Y)
-% See also SUBSREF.
+%   See also SUBSREF.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

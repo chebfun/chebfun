@@ -37,7 +37,6 @@ function u = poisson( f, bc, m, n )
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% TO DO: too much transposing. 
 
 if( nargin < 4 )
     n = m;

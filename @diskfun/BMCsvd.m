@@ -1,5 +1,6 @@
 function varargout = BMCsvd( f )
-% BMCSVD      Singular value decomposition of a diskfun on [-pi,pi]x[0,1]
+% BMCSVD   Unweighted singular value decomposition of a diskfun 
+% on [-pi,pi]x[0,1].
 % 
 % S = BMCSVD( F )  returns the singular values of F
 %
@@ -7,15 +8,32 @@ function varargout = BMCsvd( f )
 %
 % Also see: DISKFUN/SVD
 
-% TODO: Check if this is good enough, structure and orthongonality may
-% not be preserved. :(
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+% DEVELOPER'S NOTE: 
+% This is the SVD of the diskfun as if it lives on the domain
+% [-pi,pi]x[-1,1] with respect to the L2 inner product. Another
+% interpretation of the SVD is on the disk with respect to the polar
+% measure.  
         
 
 [C,D,R] = cdr(f);
 
-% Split into the plus/minus decomposition and do SVD on each piece.
-% Does this actually work???
+%the zero function requires extra care: 
+if ( norm(D) == 0 )
+    if ( nargout > 1 )
+        f = diskfun(@(x,y) ones(size(x)), dom);
+        U = 1/sqrt(width) * simplify(f.cols);
+        V = 1/sqrt(height) * simplify(f.rows);
+        varargout = { U, 0, V };
+    else
+        varargout = { 0 };
+    end
+    return
+end
 
+% Split into the plus/minus decomposition and do SVD on each piece.
 if ~isempty(f.idxPlus);
     Cplus = C(:,f.idxPlus);
     Rplus = R(:,f.idxPlus);
