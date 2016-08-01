@@ -1,7 +1,7 @@
 function varargout = grad(varargin)
-%GRAD   Numerical gradient of a CHEBFUN2.
-%   [FX FY] = GRAD(F) returns the numerical gradient of the CHEBFUN2 F, where FX
-%   is the derivative of F in the x direction and FY is the derivative of F in
+%GRAD   Gradient of a CHEBFUN2.
+%   [FX FY] = GRAD(F) returns the gradient of the CHEBFUN2 F, where FX
+%   is the derivative of F in the x direction and FY is the derivative in
 %   the y direction. Both derivatives are returned as CHEBFUN2 objects.
 %
 %   G = GRAD(F) returns a CHEBFUN2V which represents

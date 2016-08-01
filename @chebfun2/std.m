@@ -10,8 +10,8 @@ function varargout = std(varargin)
 %                        c
 %
 %   G = STD(F, FLAG, DIM) takes the standard deviation along the y-variable if
-%   DIM = 1 and along the x-variable if DIM = 2. The FLAG is ignored and kept in
-%   this function so the syntax agrees with the Matlab STD command.
+%   DIM = 1 and along the x-variable if DIM = 2. FLAG is ignored and kept in
+%   this function so the syntax agrees with that of the Matlab STD command.
 %
 % See also CHEBFUN/STD, CHEBFUN2/MEAN.
 

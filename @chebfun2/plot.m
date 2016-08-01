@@ -9,7 +9,7 @@ function varargout = plot(varargin)
 %   pivot locations used in the construction of F.
 %
 %   When the first argument in options is a string giving details about
-%   linestyle, markerstyle or colour then pivot locations are plotted. Various
+%   linestyle, markerstyle or colour, pivot locations are plotted. Various
 %   line types, plot symbols and colors may be obtained with plot(F,S) where S
 %   is a character string made from one element from any or all the following 3
 %   columns, similar as in the usual plot command:
