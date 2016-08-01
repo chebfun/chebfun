@@ -9,17 +9,15 @@ tol = 1e5 * pref.cheb2Prefs.chebfun2eps;
 
 for jj = 1 : 2
     
-    f = @(x,y,z) jj*sin(x.*y.*z);  % simple function.
-    g = @(lam,th) exp((cos(lam).*sin(th)).^jj);
-    h = @(x,y,z) cos(jj*x) + f(x,y,z);
+    f = @(x,y) jj*sin(x.*y);  % simple function.
+    g = @(x,y ) jj*cos(x.*y);
     
-    fsphere = spherefun(f);
-    gsphere = spherefun(g);
-    hsphere = spherefun(h);
-    
-    F1 = spherefunv( f, g, h );
-    F2 = spherefunv( {f; g; h} );
-    F3 = spherefunv( fsphere, gsphere, hsphere );
+    fd = diskfun(f);
+    gd = diskfun(g);
+
+    F1 = diskfunv( f, g);
+    F2 = diskfunv( fd, gd);
+    F3 =  [ fd; gd]; 
     
     pass(1, jj) = ( norm(F1 - F2) < tol ); 
     pass(2, jj) = ( norm(F2 - F3) < tol );

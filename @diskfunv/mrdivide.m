@@ -20,6 +20,7 @@ if ( ~isa(g,'double') )
         'Division must be scalar valued.');
 end
 % componentwise divide. 
+H = F; 
 H.components{1} = mrdivide(F.components{1}, g);
 H.components{2} = mrdivide(F.components{2}, g);
 

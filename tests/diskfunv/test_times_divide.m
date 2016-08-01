@@ -7,11 +7,11 @@ end
 tol = 1e3 * pref.cheb2Prefs.chebfun2eps;
 j = 1;
 
-f = spherefun(@(x,y,z) sin(y.*z) + cos(2*x.*y)); 
-F = [f ; f; f]; 
-G = [2*f ; 2*f; 2*f]; 
-H = [f/2 ; f/2 ; f/2];
-K = [f.^2 ; f.^2; f.^2]; 
+f = diskfun(@(x,y) sin(y) + cos(2*x.*y)); 
+F = [f ; f]; 
+G = [2*f ; 2*f]; 
+H = [f/2 ; f/2 ];
+K = [f.^2 ; f.^2]; 
 
 
 pass(j) = norm( 2*F - G ) < tol; j = j + 1; 

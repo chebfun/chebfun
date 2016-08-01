@@ -1,17 +1,19 @@
 function pass = test_vectorRelations( ) 
-% Test Vector calculus relations, div, cross, curl.
+% Test Vector calculus relations, div, grad, curl.
 
-tol = 3e3*chebfunpref().cheb2Prefs.chebfun2eps;
+tol = 3e7*chebfunpref().cheb2Prefs.chebfun2eps;
 
-f = spherefun(@(x,y,z) cos((x+.1).*y.*z));
+f = diskfun(@(x,y) cos((y+.1).*x));
 
 % Div of gradient field is laplacian: 
-pass(1) = norm(div(grad(f)) - laplacian(f), inf) < tol; 
+pass(1) = norm(2*divgrad(f)-div(grad(f)) - laplacian(f), inf) < tol; 
+
 
 % Div of curl is zero: 
 pass(2) = norm(div(curl(f)), inf) < tol;
 
-% Vort of a gradient field is zero: 
-pass(3) = norm(vort(grad(f)), inf) < tol; 
+% curl of a gradient field is zero: 
+pass(3) = norm(curl(grad(f)), inf) < tol; 
+
 
 end

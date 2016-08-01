@@ -1,5 +1,5 @@
 function pass = test_feval( ) 
-% Test spherefunv feval. 
+% Test diskfunv feval. 
 
 tol = 1000*chebfunpref().cheb2Prefs.chebfun2eps;
 
@@ -7,55 +7,59 @@ tol = 1000*chebfunpref().cheb2Prefs.chebfun2eps;
 rng(9);
 
 % feval in Cartesian coordinates at one point
-f = @(x,y,z) sin(x+ y.*z) + 1;
-g = @(x,y,z) cos(x+ y.*z) + 1;
-h = @(x,y,z) z.*(x+ y.*z) + 1;
-u = spherefunv(f,g,h);
-uexact = @(x,y,z) [f(x,y,z) g(x,y,z) h(x,y,z)];
-x = rand(1, 3); x = x/sqrt(sum(x.^2)); 
-y = x(1, 2); z = x(1, 3); x = x(1, 1);
-pass(1) = norm( u(x,y,z) - uexact(x,y,z)',inf ) < tol;
+f = @(x,y) sin(x+ y) + 1;
+g = @(x,y) cos(x+ y) + 1;
+u = diskfunv(f,g);
+uexact = @(x,y) [f(x,y) g(x,y) ];
+x = rand(1, 2); x = x/sqrt(sum(x.^2)); 
+y = x(1, 2); ; x = x(1, 1);
+pass(1) = norm( u(x,y) - uexact(x,y)',inf ) < tol;
+%try flag
+pass(2)  = norm( u(x,y, 'cart') - uexact(x,y)',inf ) < tol;
+u.coords='polar';
+pass(3) = norm( u(x,y, 'cart') - uexact(x,y)',inf ) < tol;
 
 % feval in Cartesian coordinates at a vector of points
-x = rand(10, 3); nrm = sqrt(sum(x.^2,2));
-y = x(:, 2)./nrm; z = x(:, 3)./nrm; x = x(:, 1)./nrm;
-pass(2) = norm(u(x,y,z) - uexact(x,y,z)', inf) < tol;
-
-% feval in spherical coordinates at one point
-f = @(x,y,z) sin(x+ y.*z) + 1;
-g = @(x,y,z) cos(x+ y.*z) + 1;
-h = @(x,y,z) z.*(x+ y.*z) + 1;
-u = spherefunv(f,g,h);
+x = rand(10, 2); nrm = sqrt(sum(x.^2,2));
+y = x(:, 2)./nrm;  x = x(:, 1)./nrm;
+pass(4) = norm(u(x,y, 'cart') - uexact(x,y)', inf) < tol;
+u.coords = 'cart'; 
+pass(5) = norm(u(x,y) - uexact(x,y)', inf) < tol;
+% feval in polar coordinates at one point
+f = @(x,y) sin(x+ y) + 1;
+g = @(x,y) cos(x+ y) + 1;
+u = diskfunv(f,g);
 f = redefine_function_handle(f);
 g = redefine_function_handle(g);
-h = redefine_function_handle(h);
-uexact = @(lam,th) [f(lam,th) g(lam,th) h(lam,th)];
-lambda = rand; 
-theta = rand; 
-pass(3) = norm( u(theta, lambda) - uexact(theta, lambda)',inf ) < tol;
+uexact = @(t,r) [f(t,r) g(t,r)];
+th = 2*rand-1; 
+rad= pi*(2*rand-1); 
+pass(6) = norm( u(th, rad, 'polar') - uexact(th, rad)',inf ) < tol;
+%set polar
+u.coords='polar';
+pass(7) = norm( u(th, rad) - uexact(th, rad)',inf ) < tol;
 
-% feval in spherical coordinates at a vector of points
-lambda = rand(10, 1);
-theta = rand(10, 1); 
-pass(4) = norm( u(theta, lambda) - uexact(theta, lambda)',inf ) < tol;
+% feval in polar coordinates at a vector of points
+th = pi*(2*rand(10, 1)-1);
+rad = 2*rand(10, 1)-1; 
+pass(8) = norm( u(th, rad) - uexact(th, rad)',inf ) < tol;
+u.coords='cart'; 
+pass(9) = norm( u(th, rad, 'polar') - uexact(th, rad)',inf ) < tol;
+
 
 % Check for the appropriate error flag.
 try
-    y = u(1,1,1);
-    pass(5) = false;
+    y = u(1,2);
+    pass(10) = false;
 catch ME
-    pass(5) = strcmp(ME.identifier,'CHEBFUN:SPHEREFUN:FEVAL:pointsNotOnSphere');
+    pass(10) = strcmp(ME.identifier,'CHEBFUN:DISKFUN:FEVAL:pointsNotOnDisk');
 end
  
 end 
 
 function f = redefine_function_handle(f)
-% nargin(f) = 2, then we are already on the sphere, if nargin(f) = 3,
-% then do change of variables:
-
-if ( nargin(f) == 3 )
-    % Wrap f so it can be evaluated in spherical coordinates
-    f = @(lam, th) spherefun.sphf2cartf(f, lam, th, 0);
-end
-
+    % Wrap Cartesian f so it can be evaluated in polar coordinates
+    
+    f = @(th, r) diskfun.pol2cartf(f,th, r);
+  
 end

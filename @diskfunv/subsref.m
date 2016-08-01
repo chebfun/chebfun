@@ -34,7 +34,8 @@ switch ( ref(1).type )
             varargout = { get(F, indx) };
         else
             % Probably .^ or maybe .* 
-            t2 = index(2).type;
+            %t2 = index(2).type;
+            t2 = ref(2).type; 
             if ( strcmp(t2,'.') )
                 out = get(F, indx, ref(2).subs{:});
             else
@@ -60,8 +61,6 @@ switch ( ref(1).type )
                     varargout = F.components(1);
                 elseif ( all( indx{1} == 2 ) )
                     varargout = F.components(2);
-                elseif ( ( all(indx{1} == 3) ) && ( ~isempty(F.components(3)) ) )
-                    varargout = F.components(3);
                 else
                     error('CHEBFUN:DISKFUNV:subsref:index', ...
                         'DISKFUNV only contains two components');
@@ -73,6 +72,12 @@ switch ( ref(1).type )
         error('CHEBFUN:DISKFUNV:subsref:unexpectedType', ...
             ['??? Unexpected index.type of ' index(1).type]);
         
+end
+
+% Recurse down: 
+if ( numel( ref ) > 1 )
+   ref(1) = []; 
+   varargout = { subsref( varargout{ : }, ref ) }; 
 end
 
 end
