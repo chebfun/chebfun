@@ -1,5 +1,5 @@
 function [x, w, v, t] = legpts(n, int, meth)
-%LEGPTS    Legendre points and Gauss-Legendre Quadrature Weights.
+%LEGPTS    Legendre points and Gauss-Legendre quadrature weights.
 %   LEGPTS(N) returns N Legendre points X in (-1,1).
 %
 %   [X, W] = LEGPTS(N) returns also a row vector W of weights for Gauss-Legendre
