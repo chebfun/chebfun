@@ -1,24 +1,27 @@
 function u = poisson( f, bc, m, n )
-% POISSON               FAST POISSON SOLVER FOR THE DISK 
-% 
-% u = POISSON(F, BC, N) solves  
+% POISSON      Fast Poisson solver for the disk. 
+%   U = POISSON(F, BC, N) solves laplacian(U) = F on the unit disk, which
+%   in polar coordinates (theta, r) is 
 %  
 %       r^2 u_rr   +   r u_r   +  u_{theta theta}   =   r.^2 * f   
 %
-% on the unit disk written in polar coordinates (r, theta) with Dirichlet
-% data  u(1,theta) = @(theta) bc(theta) and a discretization size of N x N.
-% The solution is returned as a diskfun object. (N must be even)
+%   The equation is discretized on an N x N grid in polar coordinates. The
+%   solution is imposed to satisfy the Dirichlet data 
+%   U(1,theta) = @(theta) BC(theta). The solution is returned as a 
+%   diskfun object. (N must be even.)
 %
-% u = POISSON(F, BC, M, N) is the same as POISSON(F, BC, N) but uses a
-% discretization size of M x N. (N must be even)
+%   U = POISSON(F, BC, M, N) is the same as POISSON(F, BC, N) but uses a
+%   discretization size of M x N. (N must be even.)
 %
-% F may be a function handle in polar coordinates, a diskfun, or a set of 
-% Fourier-Chebyshev coefficients. 
+%   F may be a function handle in polar coordinates, a diskfun, or a matrix 
+%   of Fourier-Chebyshev coefficients. 
 % 
-% EXAMPLE: 
-%  bc = @(th) 0*th;              
-%  f = @(th, r) -1 + 0*th;            
-%  u = diskfun.poisson( f, bc, 100); 
+%   EXAMPLE: 
+%    bc = @(th) 0*th;              
+%    f = @(th, r) -1 + 0*th;            
+%    u = diskfun.poisson( f, bc, 100); 
+%
+% See also SPHEREFUN/POISSON
 
 % DEVELOPER'S NOTE: 
 %
@@ -37,14 +40,17 @@ function u = poisson( f, bc, m, n )
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-
 if( nargin < 4 )
     n = m;
 end
 m = 2*m+1; 
 
- 
-%construct operators
+% Is n even? 
+if ( mod(n, 2) == 1 ) 
+    error('DISKFUN:POISSON:N', 'The Fourier discretization size must be even.')
+end
+
+% Construct operators
 D1 = ultraS.diffmat( m, 1 );              % 1st order ultraS diffmat
 D2 = ultraS.diffmat( m, 2 );              % 2nd order ultraS diffmat
 Mr = ultraS.multmat(m,[0;1],1);           % multiplication of r in ChebU 
@@ -59,28 +65,27 @@ th0 = pi*trigpts( n );
 
 % Forcing term:
 if ( isa(f, 'function_handle') )
-f = @(r,th) feval(f, th, r);  % switch convention 
-[rhs_r, rhs_theta] = meshgrid( x0, th0 ); 
-F = rhs_r.^2.*feval( f, rhs_r, rhs_theta );     % Get (chebvals,trigvals) of rhs
-F = (S1*chebtech2.vals2coeffs( F.' )).';        % Get (C^{(2)},trigvals) basis
-F = trigtech.vals2coeffs( F );
+    f = @(r,th) feval(f, th, r);  % switch convention 
+    [rhs_r, rhs_theta] = meshgrid( x0, th0 ); 
+    F = rhs_r.^2.*feval( f, rhs_r, rhs_theta );     % Get (chebvals,trigvals) of rhs
+    F = (S1*chebtech2.vals2coeffs( F.' )).';        % Get (C^{(2)},trigvals) basis
+    F = trigtech.vals2coeffs( F );
 elseif ( isa(f, 'diskfun') )
-    tol = 1e5*vscale(f)*chebfunpref().cheb2Prefs.chebfun2eps;
+%     tol = 1e5*vscale(f)*chebfunpref().cheb2Prefs.chebfun2eps;
     F = coeffs2(f, n, m);
     F = S1*Mr2c*F; %r.^2*rhs in C^{2}
     F = F.';  
 elseif ( isa( f, 'double' ) ) %assume these are chebyshev coeffs
-    tol = 1e5*chebfunpref().cheb2Prefs.chebfun2eps; 
+%     tol = 1e5*chebfunpref().cheb2Prefs.chebfun2eps; 
     f = chebtech2.alias(trigtech.alias(f.', n).',m); %get correct size
     F = S1*Mr2c*f; %r.^2*rhs in C^{2}
     F = F.';
     
 end
 
-
 %if F is real-valued, we will use symmetry to reduce # computations
-rv = isreal(F); 
-d = (-n/2)*rv+n +rv; %how many Fourier coeffs we need to solve for? 
+realValued = isreal(F); 
+d = (-n/2)*realValued+n +realValued; %how many Fourier coeffs we need to solve for? 
                      %(n if rv=0, n/2 +1 if rv=1)
 
 % set up  LHS
@@ -126,12 +131,12 @@ for k = 1 : d
 end
 
 %when F is real-valued, this gets the rest of the Fourier coeffs
-if rv==1
-CFS(:,d+1:n) = flip(conj(CFS(:,2:d-1)));
+if ( realValued == 1 )
+    CFS(:,d+1:n) = flip(conj(CFS(:,2:d-1)));
 end
 
 %solution returned as a diskfun:
-u = diskfun.coeffs2diskfun(CFS); 
+u = diskfun.coeffs2diskfun( CFS ); 
 
 end
 
