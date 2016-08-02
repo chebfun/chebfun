@@ -19,7 +19,7 @@ function Y = harmonic(L, m, type)
 %   function, a_M is the Mth positive zero of the function, and A is a
 %   normalization factor.
 %
-% See also SPHEREFUN.HARMONIC 
+% See also SPHEREFUN.SPHHARM 
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
