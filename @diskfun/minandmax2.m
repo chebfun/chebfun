@@ -1,10 +1,10 @@
 function varargout = minandmax2(varargin)
 %MINANDMAX2   Find global minimum and maximum of a DISKFUN.
-%   M = minandmax2(F) returns the minimum and maximum value of a DISKFUN
-%   over its domain. M is a vector of length 2 such that 
+%   M = minandmax2(F) returns the minimum and maximum values of a DISKFUN. 
+%   M is a vector of length 2 such that 
 %   M(1) = min(f(lambda,theta)) and M(2) = max(f(lambda,theta)).
 %
-%   [M, LOC] = minandmax2(F) also returns the position of the minimum and 
+%   [M, LOC] = minandmax2(F) also returns the positions of the minimum and 
 %   maximum. For example,
 %
 %       F(LOC(1,1),LOC(1,2)) = M(1)  and  F(LOC(2,1),LOC(2,2)) = M(2)

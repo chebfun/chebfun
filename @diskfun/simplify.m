@@ -1,7 +1,7 @@
 function varargout = simplify(varargin)
 % Simplify a DISKFUN
 % 
-% F = SIMPLIFY( F ) compressed the representation of F to one that is
+% F = SIMPLIFY( F ) compresses the representation of F to one that is
 % numerically the same, but requires fewer parameters to store. Currently
 % this simplifies the polynomial degree of F, but not the rank.
 %

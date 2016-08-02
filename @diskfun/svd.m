@@ -4,14 +4,12 @@ function varargout = svd( f )
 %   SVD(F) returns the singular values of F. The number of singular values
 %   returned is equal to the rank of the DISKFUN.
 %
-%   S = SVD(F) returns the singular values of F. S is a vector of singular
-%   values in decreasing order.
+%   S = SVD(F) returns S, a vector of singular values in decreasing order.
 %
-%   [U, S, V] = SVD(F) returns the SVD of F. V is a quasi-matrix of
-%   orthogonal CHEBFUN objects, U is a quasimatrix of CHEBFUN objects that
-%   are orthogonal with respect to the r weight on [0,1] (derived from the
-%   measure on the disk) and S is a diagonal matrix with the singular
-%   values on the diagonal.
+%   [U, S, V] = SVD(F). V is a quasimatrix of orthogonal CHEBFUN objects, 
+%   U is a quasimatrix of CHEBFUN objects that are orthogonal with respect 
+%   to the r weight on [0,1] (derived from the measure on the disk) and S 
+%   is a diagonal matrix with the singular values on the diagonal.
 %
 %   The length and rank of a DISKFUN are slightly different quantities.
 %   LENGTH(F) is the number of pivots used by the constructor, and

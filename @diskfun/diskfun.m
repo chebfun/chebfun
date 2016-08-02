@@ -1,30 +1,30 @@
 classdef diskfun < separableApprox
 % DISKFUN class for representing functions on the unit disk.
 % 
-%   Class for approximating functions defined on the unit disk. The 
-%   functions should be smooth.
+%   Class for approximating smooth functions defined on the unit disk. The 
+%   functions should be smooth. Diskfun objects can be constructed in a 
+%   variety of ways: 
 %
-% DISKFUN(F) constructs a DISKFUN object representing the function F on
-% the unit. F can have the following form:
-%    1. A function handle in Cartesian coordinates (x,y), e.g., @(x,y) x.*y + cos(x).
-%    2. A function handle in polar coordinates (theta,r), where
-%       theta is the angular variable and satisfies -pi <= theta <= pi
-%       and r is the radial variable and satisfies 0 <= r < 1,
+%    1. Y = diskfun(F), where F is a function handle in Cartesian 
+%       coordinates (x,y), e.g., @(x,y) x.*y + cos(x).
+%    2. Y = diskfun(F, 'polar'), where F is a function handle in polar 
+%       coordinates (theta,r). Here, theta is the angular variable satisfying
+%       -pi <= theta <= pi, and r is the radial variable satisfying 0 <= r < 1,
 %       e.g., @(theta,r) cos(r.*sin(theta))
-%    3. A matrix of numbers. 
+%    3. Y = diskfun(F), where F is a matrix of numbers. 
+%
 % If F is a function handle then it should allow for vectorized 
 % evaluations.
 %
 % If F is a matrix, F = (f_ij), the numbers fij are used as function values
-% at tensor Fourier-Chebyshev points in the polar coordinate 
-% system (theta, r) in [-pi,pi]x[0,1].
+% at the tensor Fourier-Chebyshev points on the rectangle [-pi,pi]x[0,1].
 %
 % The DISKFUN software system is based on: 
 %
-% A. Townsend, H. Wilber, and G. Wright, Computing with function on
+% A. Townsend, H. Wilber, and G. Wright, Computing with functions in
 % spherical and polar geometries II: The disk, submitted, 2016. 
 %
-% See also CHEBFUN2, DISKFUN, DISKFUNV.
+% See also CHEBFUN2, SPHEREFUN, DISKFUNV.
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% CLASS CONSTRUCTOR:
