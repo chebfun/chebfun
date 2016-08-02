@@ -33,106 +33,95 @@ h = diskfun( @(x,y) exp(cos(x)+sin(y)));
 g = exp( f );
 pass(5) = norm( g - h ) < tol;
 
-% flipdim, fliplr, flipud
-f = diskfun( @(t,r) r.*sin(t), 'polar');
-g1 = diskfun( @(t,r) r.*sin(-t), 'polar');
-g2 = diskfun( @(t,r) -r.*sin(t), 'polar');
-h1 = fliplr( f ); 
-h2 = flipud( f ); 
-h3 = flipdim( f, 1); 
-h4 = flipdim( f, 2); 
-pass(6) = ( norm( g1 - h1 ) < tol );
-pass(7) = ( norm( g2 - h2 ) < tol );
-pass(8) = ( norm( g2 - h3 ) + norm( g1 - h4 ) < tol ); 
 
 % imag 
 f = diskfun( @(x,y) x );
 g = imag( f );
-pass(9) = norm( g  ) < tol;
+pass(6) = norm( g  ) < tol;
 
 % isequal 
 f = diskfun( @(x,y) cos(x));
 g = diskfun( @(x,y) cos(-x) );
-pass(10) = isequal( f, g ); 
+pass(7) = isequal( f, g ); 
 
 f = diskfun( @(x,y) cos(x));
 g = diskfun( @(x,y) cos(x) + 1 );
-pass(11) = ~isequal( f, g ); 
+pass(8) = ~isequal( f, g ); 
 
 % isreal 
 f = diskfun( @(x,y) x);
-pass(12) = isreal(f);
+pass(9) = isreal(f);
 
 f = diskfun( @(x,y) cos(x.*y));
-pass(13) = isreal(f); 
+pass(10) = isreal(f); 
 
 % iszero 
 f = diskfun( @(x,y) 0*cos(x.*y));
-pass(14) = iszero( f ); 
+pass(11) = iszero( f ); 
 f = diskfun( zeros(10) ); 
-pass(15) = iszero( f );
+pass(12) = iszero( f );
 
 % length
 f = diskfun( @(t,r) r.^2, 'polar');
 [m, n] = length( f ); 
-pass(16) = (m == 1);
+pass(13) = (m == 1);
 
 % log 
 f = diskfun( @(x,y) exp(x));
 h = diskfun( @(x,y) x);
 g = log( f );
-pass(17) = norm( g - h ) < tol;
+pass(14) = norm( g - h ) < tol;
 
 
 % sin 
 f = diskfun( @(x,y) cos(x.*y));
 h = diskfun( @(x,y) sin(cos(x.*y)));
 g = sin( f );
-pass(18) = norm( g - h ) < tol;
+pass(15) = norm( g - h ) < tol;
 
 % sinh 
 f = diskfun( @(x,y) cos(x.*y));
 h = diskfun( @(x,y) sinh(cos(x.*y)));
 g = sinh( f );
-pass(19) = norm( g - h ) < tol;
+pass(16) = norm( g - h ) < tol;
 
 % size 
-pass(20) = (size( f,1 ) == inf && size( f,2 ) == inf);
+pass(17) = (size( f,1 ) == inf && size( f,2 ) == inf);
 
 % sqrt 
 f = diskfun( @(x,y) cos(x.*y).^2);
 h = diskfun( @(x,y) cos(x.*y));
 g = sqrt( f );
-pass(21) = norm( g - h ) < tol;
+pass(18) = norm( g - h ) < tol;
 
 % tan 
 f = diskfun( @(x,y) cos(x.*y));
 h = diskfun( @(x,y) tan(cos(x.*y)));
 g = tan( f );
-pass(22) = norm( g - h ) < 10*tol;
+pass(19) = norm( g - h ) < 10*tol;
 
 % tand 
 f = diskfun( @(x,y) cos(x.*y));
 h = diskfun( @(x,y) tand(cos(x.*y)));
 g = tand( f );
-pass(23) = norm( g - h ) < tol;
+pass(20) = norm( g - h ) < tol;
 
 % tanh
 f = diskfun( @(x,y) cos(x.*y));
 h = diskfun( @(x,y) tanh(cos(x.*y)));
 g = tanh( f );
-pass(24) = norm( g - h ) < tol;
+pass(21) = norm( g - h ) < tol;
 
 % uminus 
 f = diskfun( @(x,y) cos(x.*y));
 h = diskfun( @(x,y) -(cos(x.*y)));
 g = uminus( f );
-pass(25) = norm( g - h ) < tol;
+pass(22) = norm( g - h ) < tol;
 
 % uplus 
 f = diskfun( @(x,y) cos(x.*y));
 h = diskfun( @(x,y) +(cos(x.*y)));
 g = uplus( f );
-pass(26) = norm( g - h ) < tol;
+pass(23) = norm( g - h ) < tol;
 
 end

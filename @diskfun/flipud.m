@@ -1,13 +1,19 @@
-function varargout = flipud(varargin)
-%FLIPUD   Flip/reverse a DISKFUN in the latitude-direction.
-%   G = FLIPUD(F) returns a DISKFUN G with the same domain as F but reversed;
-%   that is, G(x,y) = F(x, c+d-y), where the domain is [a, b, c, d].
+function f = flipud(g)
+%FLIPUD   Flip/reverse a DISKFUN in the y direction.
 %
-% See also DISKFUN/FLIPLR, DISKFUN/FLIPDIM. 
+%   G = FLIPUD(F) returns a DISKFUN G that is flipped over the 
+%   x axis, that is G(x,y) = F(x, -y).
+%
+% See also DISKFUN/FLIPLR, DISKFUN/FLIPDIM, DISKFUN/ROTATE. 
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-[varargout{1:nargout}] = flipud@separableApprox(varargin{:});
+if ( isempty( g ) ) 
+    f = diskfun;
+    return
+end 
+f = diskfun(@(x,y) feval(g, x, -y, 'cart'));
+
 
 end

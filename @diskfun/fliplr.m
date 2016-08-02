@@ -1,13 +1,21 @@
-function varargout = fliplr(varargin)
-%FLIPLR   Flip/reverse a DISKFUN in the longitude-direction.
-%   G = FLIPLR( F ) returns a DISKFUN G with the same domain as F but reversed;
-%   that is, G(x,y) = F(a+b-x,y), where the domain is [a, b, c, d].
+function f = fliplr(g)
+%FLIPLR   Flip/reverse a DISKFUN over the x axis. 
 %
-% See also DISKFUN/FLIPUD.
+%   G = FLIPLR( F ) returns a DISKFUN G that is flipped over the y-axis
+%   that is, G(x,y) = F(-x,y).
+%
+% See also DISKFUN/FLIPUD, DISKFUN/ROTATE.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-[varargout{1:nargout}] = fliplr@separableApprox(varargin{:});
+%check for empty
+
+if ( isempty( g ) ) 
+    return
+end 
+
+f = diskfun(@(x,y) feval(g, -x, y, 'cart'));
+
 
 end
