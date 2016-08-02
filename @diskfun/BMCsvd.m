@@ -2,9 +2,10 @@ function varargout = BMCsvd( f )
 % BMCSVD   Unweighted singular value decomposition of a diskfun 
 % on [-pi,pi]x[0,1].
 % 
-% S = BMCSVD( F )  returns the singular values of F
+% S = BMCSVD( F )  returns the unweighted singular values of F
 %
-% [U, S, V] = BMCSVD( F ) returns the singular value decomposition of F.
+% [U, S, V] = BMCSVD( F ) returns the unweighted singular value
+%             decomposition of F.
 %
 % Also see: DISKFUN/SVD
 
@@ -17,10 +18,9 @@ function varargout = BMCsvd( f )
 % interpretation of the SVD is on the disk with respect to the polar
 % measure.  
         
-
 [C,D,R] = cdr(f);
 
-%the zero function requires extra care: 
+% If the function is the zero function then special care is required.
 if ( norm(D) == 0 )
     if ( nargout > 1 )
         f = diskfun(@(x,y) ones(size(x)), dom);
@@ -75,9 +75,7 @@ end
 end
 
 function [U, S, V] = svdCDR(C,D,R)
-
-% Standard stuff.
-%
+% Standard skinny QR algorithm for computing SVD: 
 % Algorithm:
 %   f = C D R'                 (cdr decomposition)
 %   C = Q_C R_C                (qr decomposition)
