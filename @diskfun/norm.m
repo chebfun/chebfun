@@ -1,5 +1,6 @@
-function [ normF ] = norm( f, p )
-%NORM  
+function [ normF, normloc ] = norm( f, p )
+%NORM   Norm of a diskfun
+% 
 % For DISKFUN objects:
 %    DISKFUN(F) = sqrt(integral of abs(F)^2).
 %    DISKFUN(F, 2) = largest singular value of F.
@@ -8,7 +9,6 @@ function [ normF ] = norm( f, p )
 %    DISKFUN(F, inf) = global maximum in absolute value.
 %    DISKFUN(F, max) = global maximum in absolute value.
 %    DISKFUN(F, min) = NOT IMPLEMENTED
-
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -20,8 +20,8 @@ if ( nargin == 1 )
 end
 
 if ( isempty( f ) )  
-    % Empty diskfun has norm 0.
-    normF = [];
+    % Empty diskfun has norm empty.
+    normF = [ ];
     
 else
     switch ( p )  % Different cases on different norms.
@@ -50,11 +50,14 @@ else
 %             normF = s(1);
             
         otherwise
-           % TODO:
-            error 
+
             if ( isnumeric(p) && isreal(p) )
+                
                 if ( abs(round(p) - p) < eps )
-                    p = round(p); f = f.^p;
+                    
+                    p = round(p); 
+                    f = f.^p;
+                    
                     if ( ~mod(p,2) )
                         normF = ( sum2( f ) ).^( 1/p );
                     else

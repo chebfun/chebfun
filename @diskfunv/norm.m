@@ -1,5 +1,5 @@
 function v = norm( F )
-%NORM   Frobenius norm of a DISKFUNV.
+%NORM     Frobenius norm of a DISKFUNV.
 %   V = NORM(F) returns the Frobenius norm of the two/three components, i.e. 
 %       V = sqrt(norm(F1).^2 + norm(F2).^2),
 %   or
@@ -10,11 +10,12 @@ function v = norm( F )
 
 % Empty check: 
 if ( isempty( F ) ) 
-    v = []; 
+    v = [ ]; 
     return
 end
-v = sum( svd( F.components{1} ).^2 ) + sum( svd( F.components{2} ).^2 );
- 
-v = sqrt(v); 
+
+% Frobenius norm is sum of squares of singular values: 
+v = sqrt( sum( svd( F.components{1} ).^2 ) + ...
+          sum( svd( F.components{2} ).^2 ) );
 
 end
