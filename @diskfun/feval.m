@@ -37,6 +37,11 @@ else
         else
             theta = c1;
             r = c2;
+            if ((any(r > 1+1e-8) )) %check for points off disk
+                error('CHEBFUN:DISKFUN:FEVAL:pointsNotOnDisk',...
+                ['The specified points to evaluate the function do not '...
+                'lie sufficiently close to the unit disk.']);
+            end 
         	y = feval@separableApprox( f, theta, r);
         end
         if ( (size(theta, 1) == 1) && (size(r,1) == 1) )

@@ -1,7 +1,7 @@
 function varargout = chol(varargin)
 %CHOL    Cholesky factorization of a DISKFUN. 
 %
-% R = CHOL( F ), if F is a nonnegative definite DISKFUN (in polar coords)
+% R = CHOL( F ), if F is a nonnegative definite DISKFUN 
 % then this returns an upper triangular quasimatrix so that R'*R is a
 % decomposition of F. If F is not nonnegative definite then an error is thrown.
 %

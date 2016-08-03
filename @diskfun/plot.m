@@ -59,7 +59,7 @@ if ( ~isempty(varargin) )
             
             %clr = [255 255 204]/255;
             %fill(real(r),imag(r), clr, 'Edgecolor', 'None'); 
-            plot(real(r),imag(r),'-k', 'Linewidth', 2); 
+            plot(real(r),imag(r),'--', 'Linewidth', .5); 
         end
         
         
@@ -141,13 +141,23 @@ if ( ~isempty(varargin) )
                     temp = [cos(pivots(k,1)) sin(pivots(k,1))];
                     colSlices = [colSlices; temp;-temp;[nan nan]];
                     %rowcircs use theta pts set up earlier
+                    if pivotsCart(k,2)==0
+                        rowCircs = [rowCircs; 0 ];
+                        rowCircs = [rowCircs;nan ];
+                    else
                     rowCircs = [rowCircs; pivots(k,2)*exp(1i*th)];
-                    rowCircs = [rowCircs;nan];
+                    rowCircs = [rowCircs;nan  ];
+                    end
                 else   %case where x=0 so slope is undef
                     colSlices = [colSlices; zeros(2,1) [-1 ; 1]];
                     colSlices = [colSlices; nan nan];
+                    if pivotsCart(k,2)==0
+                        rowCircs = [rowCircs; 0 ];
+                        rowCircs = [rowCircs;nan ];
+                    else
                     rowCircs = [rowCircs; pivots(k,2)*exp(1i*th)];
-                    rowCircs = [rowCircs;nan];
+                    rowCircs = [rowCircs;nan ];
+                    end
                 end
             end
             opts = {};
