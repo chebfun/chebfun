@@ -15,7 +15,9 @@ if ( isempty( g ) )
     return
 end 
 
-f = diskfun(@(x,y) feval(g, -x, y, 'cart'));
-
+%f = diskfun(@(x,y) feval(g, -x, y, 'cart'));
+f =g; 
+f.cols = flipud(g.cols); 
+f.rows = flipud(g.rows); 
 
 end
