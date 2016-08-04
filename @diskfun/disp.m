@@ -22,7 +22,7 @@ len = length(F);                          % Numerical rank
 vscl = vscale(F);                         % vertical scale
 
 % Display the information: 
-disp('     diskfun object: ')
+disp('     diskfun object ')
 fprintf('       domain        rank    vertical scale\n');
 fprintf('      unit disk   %6i          %3.2g\n', len, vscl);
 

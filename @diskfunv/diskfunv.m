@@ -10,18 +10,17 @@
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-
 classdef diskfunv
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% CLASS PROPERTIES:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
-        components   % Array of DISKFUN objects.
-        isTransposed % transposed?
-        domain % Domain of F
-        nComponents % number of components. 
-        coords % polar or Cartesian coordinates.
+        components      % Array of DISKFUN objects.
+        isTransposed    % transposed?
+        domain          % Domain of F
+        nComponents     % number of components. 
+        coords          % polar or Cartesian coordinates.
     end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% CLASS METHODS:
@@ -33,8 +32,8 @@ classdef diskfunv
                 f.components{1}.coords=propName;
                 f.components{2}.coords=propName;
             else  %error if unacceptable setting is provided
-            error('CHEBFUN:DISKFUNV:setcoords:propName', ...
-            'Coordinate setting must be either ''polar'' or ''cart''')
+                error('CHEBFUN:DISKFUNV:setcoords:propName', ...
+                    'Coordinate setting must be either ''polar'' or ''cart''')
             end
         end 
     end
@@ -44,14 +43,10 @@ classdef diskfunv
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
         % Unit normal vector
-        n = unormal( dom );        
-    end
-    
-       methods ( Access = public, Static = true )
+%         n = unormal( dom );   
         % Unit normal vector for r (radius) and theta (angle)
-        n = unit(a);        
+%         n = unit(a); 
     end
-     
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% CLASS CONSTRUCTOR:
@@ -105,7 +100,7 @@ classdef diskfunv
                     'The two components have different coordinate settings. Now setting the diskfunv to evaluate with Cartesian coordinates.')
                     iscart = 1; 
                  else
-             %if two diskfuns are given, set to match or go and get flag if present.
+                %if two diskfuns are given, set to match or go and get flag if present.
                  iscart = diskfun.coordsetting(varargin{:});  
                  end
              
@@ -119,9 +114,9 @@ classdef diskfunv
              else %just check for flag
                  ispolar = find(strcmp(varargin,'polar'));
                     if ( any(ispolar) )
-                    iscart = 0;
+                        iscart = 0;
                     else  
-                    iscart= 1; %default to Cartesian coords.
+                        iscart= 1; %default to Cartesian coords.
                     end
              end
             if ~iscart  %set coord sys for constructing diskfuns
@@ -162,8 +157,6 @@ classdef diskfunv
                 error('CHEBFUN:DISKFUNV:diskfunv:arrayValued', ...
                           'More than two components is not supported.')
             end 
-            
-
             
             % Convert all function handles to diskfun objects: 
             for jj = 1:2
