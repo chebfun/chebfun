@@ -41,4 +41,9 @@ g = f{-1,1,-.5,.25};
 exact = chebfun2(@(x,y) sin(x.*(y-.1)), [-1,1,-.5,.25]);
 pass(11) = ( norm( g -  exact ) < 10*tol );
 
+% Evaluation of complex-valued Chebfun2 objects, #1956
+f = chebfun2(@(z) z);
+pass(12) = norm(f(1i) -  1i) < tol; 
+pass(13) = norm(f(1) -  1) < tol; 
+
 end
