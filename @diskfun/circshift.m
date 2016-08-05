@@ -1,4 +1,4 @@
-function f = rotate(h, alpha)
+function f = circshift(h, alpha)
 %CIRCSHIFT: Circular (periodic) shift of a diskfun by alpha units in the 
 %   angular (polar) direction.
 %
