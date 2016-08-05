@@ -1,11 +1,15 @@
 function varargout = coeffs2( f, m, n ) 
-% COEFFS2   Fourier--Chebyshev coefficients of a diskfun. 
+%COEFFS2   Fourier--Chebyshev coefficients of a diskfun. 
 % 
-%  X = COEFFS2( F ) returns the coefficients of the diskfun in the 
-%  Fourier--Chebyshev basis. 
+% X = COEFFS2( F ) returns the coefficients of the diskfun F in the
+% Fourier--Chebyshev basis, where the columns are the Chebyshev
+% coefficients and the rows are Fourier coefficients.
 % 
-% [C, D, R] = COEFFS2( F ) returns a low rank approximation to the coefficients. 
-% 
+% [C, D, R] = COEFFS2( F ) returns a low rank approximation to the
+% coefficients. 
+%
+% X = COEFFS2(F, M, N) returns bivariate coefficients with N Chebyshev 
+% modes in the radial direction and M Fourier modes in angular direction. 
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
