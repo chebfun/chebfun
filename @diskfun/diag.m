@@ -17,17 +17,16 @@ if ( isempty( f ) )
     return
 end 
 
-f.coords = 'polar';
-
+f.coords = 'polar'; 
 %when c = 0, choose the diagonal radial slice for t = pi/4
-if varargin 
-    F = f(pi/4,:); 
+if (nargin<2) 
+    F = feval(f, pi/4,':'); 
 else 
 c = varargin{1};
     if abs(c) > pi
         error('CHEBFUN:DISKFUN:diag: diagonal parameter must be between -pi and pi.')
     else    
-    F = f(varargin{1},:); 
+    F = feval(f, varargin{1},':'); 
     end
 end
 

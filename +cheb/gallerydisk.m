@@ -72,7 +72,7 @@ switch lower(name)
         rhs = @(t,r) -exp(-40*(r.^2-1).^4).* ...
               sinh(5*(1-r.^11.*cos(11*(t-1/sqrt(2)))));
         bc = @(t) 0*t+1;  
-        f = diskfun.Poisson(rhs, bc, 512);
+        f = diskfun.poisson(rhs, bc, 512);
         fa = f;
         
     case 'roundpeg'  % a round peg of radius 0.5
