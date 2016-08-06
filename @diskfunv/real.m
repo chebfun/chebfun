@@ -1,11 +1,11 @@
 function F = real( F )
 %REAL  Real part of a DISKFUNV.
-%   REAL(F) returns the DISKFUNV representing the real part.
+%   REAL(F) returns the DISKFUNV representing the real part of F.
 %
-%   Since only real DISKFUNV objects are supported, the result of this
-%   function is always just the original function F.
+%   Since all DISKFUNV objects are real-valued, the result of this
+%   function is always the original function F.
 %
-%   See also DISKFUNV/CONJ, DISKFUNV/IMAG.
+% See also DISKFUNV/CONJ, DISKFUNV/IMAG.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

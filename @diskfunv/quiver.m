@@ -20,7 +20,6 @@ function varargout = quiver( F, varargin )
 %
 %   H = QUIVER(...) returns a quivergroup handle.
 
-
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
@@ -28,26 +27,25 @@ numpts = 30;
 
 % Empty check:
 if ( isempty( F ) )
-    quiver([])
+    quiver( [] )
     return
 end
 
-if ( isempty(varargin) )
+if ( isempty( varargin ) )
     varargin = {};
 end
 
 holdState = ishold;
-if ~holdState
+if ( ~holdState )
     hold on;
 end
 
-if ~holdState
-    %
+if ( ~holdState )
     % Generate a unit disk
     N = 200;
-    th = linspace(-pi,pi,N)';
-    r = exp(1i*th);
-    plot(real(r),imag(r), 'k--');
+    th = linspace(-pi, pi, N)';
+    r = exp( 1i*th );
+    plot(real(r), imag(r), 'k--');
 end
 
 % Number of points to plot
@@ -69,16 +67,16 @@ if ( isa(F, 'diskfunv') )             % quiver(F,...)
     
         % Plot quiver with arrows at equally spaced points:
         [xx, yy] = diskpts(numpts);
-        F1 = F.components{1}; F2 = F.components{2};
+        F1 = F.components{1}; 
+        F2 = F.components{2};
         vals1 = feval(F1, xx, yy, 'cart');
         vals2 = feval(F2, xx, yy, 'cart');
         h = quiver(xx, yy, vals1,vals2, varargin{:});
-        if ~holdState
+        if ( ~holdState )
             axis tight;            
-            axis(max([max(abs(xlim)) abs(ylim)])*[-1 1 -1 1]);
+            axis( max([max(abs(xlim)) abs(ylim)])*[-1 1 -1 1] );
             axis equal;
         end
-   
     
 elseif ( nargin >= 3 )                 % quiver(x,y,F,...)
     
@@ -88,24 +86,29 @@ elseif ( nargin >= 3 )                 % quiver(x,y,F,...)
     yy = varargin{1};
     
     if ( isa(varargin{2}, 'diskfunv') )
+        
         F = varargin{2};
-            F1 = F.components{1}; F2 = F.components{2};
+            F1 = F.components{1}; 
+            F2 = F.components{2};
             vals1 = feval(F1, xx, yy, 'cart');
             vals2 = feval(F2, xx, yy, 'cart');
             h = quiver( xx, yy, vals1, vals2, varargin{3:end} );
-            if ~holdState
+            if ( ~holdState )
                 axis tight;
                 axis(max([max(abs(xlim)) abs(ylim)])*[-1 1 -1 1]);
                 axis equal;
             end
+            
     else
+        
         error('DISKFUN:DISKFUNV:quiver:inputs', ...
-            'Third argument should be a diskfunv.');
+                                  'Third argument should be a diskfunv.');
+        
     end
     
 end
 
-if ~holdState
+if ( ~holdState )
     hold off;
 end
 
@@ -118,7 +121,6 @@ end
 % Generates a nice set of points on the unit disk that are roughly equally
 % spaced.
 function [xx,yy] = diskpts(numpts)
-
 % Idea is to use a polar grid (r,theta), but instead of using the same
 % number of points in theta for every r, we make it a function of r.  We
 % start with the origin, then as r increases from the origin there will be
@@ -126,13 +128,14 @@ function [xx,yy] = diskpts(numpts)
 % give a nice sampling of the disk.
 
 % The number of radii to use to get approximately numpts is 
-n = floor(numpts/sqrt(3));
+n = floor( numpts/sqrt(3) );
 
 % Increment for the radii
 dr = 1/n;
 
 % Add the origin
-xx = 0; yy = 0;
+xx = 0; 
+yy = 0;
 
 % Handle the second ring from the origin a bit differently (i.e. do 6
 % points instead of 3).
@@ -141,12 +144,11 @@ xx = [xx; dr*cos(th)];
 yy = [yy; dr*sin(th)];
 
 % Add points 3*(2*k-1) points for radii k.
-for k=2:n
-    th = trigpts(3*(2*k-1),[-pi pi]);
-    xx = [xx; dr*k*cos(th)];
-    yy = [yy; dr*k*sin(th)];
+for k = 2:n
+    th = trigpts(3*(2*k-1), [-pi pi]);
+    xx = [xx ; dr*k*cos(th)];
+    yy = [yy ; dr*k*sin(th)];
 end
-
 end
 
 % ANOTHER OPTION, BUT I DON'T THINK IT'S AS NICE.
@@ -173,4 +175,3 @@ end
 % yy = w.*yy + (1-w).*yc/sqrt(2);
 % 
 % end
-

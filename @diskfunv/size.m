@@ -1,11 +1,12 @@
 function varargout = size( F, dim ) 
-%SIZE size of a DISKFUNV object
+%SIZE   Size of a DISKFUNV object
 %   D = SIZE(F) returns a three-element vector D = [K,M,N]. If F is a column
 %   DISKFUNV object then K is the number of components in F, N and M are INF.
-%   If F is a row vector then K and M are INF and N is the number of components
-%   of F.
+%   If F is a row vector then K and M are INF and N is the number of 
+%   components of F.
 %
-%   [K,M,N] = SIZE(F) returns the dimensions of F as separate output variables.
+%   [K,M,N] = SIZE(F) returns the dimensions of F as separate output 
+%   variables.
 %
 %   D = SIZE(F,DIM) returns the dimensions specified by the dimension DIM.
 %
@@ -20,11 +21,12 @@ if ( isempty( F ) )
     return
 end
 
+% Get number of components: 
 nF = F.nComponents; 
-tr = F.isTransposed; 
+trans = F.isTransposed; 
 
 % Manually work out the size: 
-if ( ~tr ) 
+if ( ~trans ) 
     K = nF; 
     M = inf; 
     N = inf; 
@@ -34,30 +36,38 @@ else
     M = inf; 
 end
 
-% Default to vector:
+% Default to a vector:
 if ( nargin == 1 )
     dim = 0; 
 end
 
 % Manually work out what should be displayed:
 if ( dim == 1 ) 
+    % K = SIZE( F, 1 ): 
     varargout = { K };
+    
 elseif ( dim == 2 )
+    % M = SIZE( F, 2 ):
     varargout = { M }; 
+    
 elseif ( dim == 3 )
+    % N = SIZE( F, 3 ):
     varargout = { N }; 
+    
 elseif ( ( dim == 0 ) && ( nargin == 1 ) )
+    
     if ( nargout <= 1 )
+        % SIZE(F) and K = SIZE( F ): 
         varargout = { [K, M, N] };
+        
     else
+        % [K, M, N] = SIZE( F ): 
         varargout = { K, M, N }; 
+        
     end
+    
 else
     error('CHEBFUN:DISKFUNV:size:dim', 'Unrecognised dimension.');
 end
 
 end
-
-
-
-    
