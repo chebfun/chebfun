@@ -8,15 +8,16 @@ function div = divergence( F )
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information. 
 
-
 % Empty check: 
 if ( isempty( F ) )
-    div = diskfun;
+    div = diskfun();
     return
 end
 
+% Extract components: 
 Fc = F.components; 
 
+% Calculate the divergence: 
 div = diff(Fc{1}, 1) + diff(Fc{2}, 2);
 
 end

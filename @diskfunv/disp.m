@@ -14,18 +14,13 @@ if ( isempty( F ) )
     return
 end
 
-if ( F.isTransposed )
-    tString = 'Row vector';
-else
-    tString = 'Column vector';
-end
-
-disp(['diskfunv object containing' ])
+% Title in display: 
+disp('diskfunv object containing')
 if ( loose )
     fprintf('\n');
 end
 
-% Display its two DISKFUN components.
+% Display the two DISKFUN components.
 for j = 1:F.nComponents
     disp( F.components{j} );
 end
