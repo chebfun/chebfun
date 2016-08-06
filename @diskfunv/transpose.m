@@ -3,7 +3,7 @@ function F = transpose( F )
 %    F = TRANSPOSE(F) is the same as F.'. The orientation of the DISKFUNV 
 %    is transposed. 
 %
-% See also DISKFUNV/CTRANSPOSE 
+%    See also DISKFUNV/CTRANSPOSE 
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

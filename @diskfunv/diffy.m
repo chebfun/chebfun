@@ -1,13 +1,13 @@
 function G = diffy( F, n )
-%DIFFY   Differentiate a DISKFUNV with respect to its first argument
-%   DIFFY(F) returns a DISKFUNV representing the derivative of F in its first
-%   argument. This is the same as DIFF(F,2,1).
+%DIFFY   Differentiate a DISKFUNV with respect to its second argument
+%   DIFFY(F) returns a DISKFUNV representing the derivative of F in its
+%   second argument. This is the same as DIFF(F,2,1).
 %
-%   DIFFY(F,N) returns a DISKFUNV representing the Nth derivative of F in its
-%   first argument. This is the same as DIFF(F,2,N).
+%   DIFFY(F,N) returns a DISKFUNV representing the Nth derivative of F in 
+%   its second argument. This is the same as DIFF(F, 2, N).
 %
-%   This command is for convenience as the syntax for DIFF, inherited from the
-%   DIFF command for matrices, can be confusing.
+%   This command is for convenience as the syntax for DIFF, inherited from 
+%   the DIFF command for matrices, can be confusing.
 % 
 % See also DIFFX, DIFF. 
 
@@ -19,6 +19,7 @@ if ( nargin == 1 )
     n = 1; 
 end
 
-G = diff( F, 2,n);
+% Call DISKFUNV/DIFF:
+G = diff( F, 2, n);
 
 end
