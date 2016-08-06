@@ -15,38 +15,43 @@ if ( isempty( F ) || isempty( G ) )
     return
 end
 
-if ( isa( F ,'double' ) )       % scalar . ^ DISKFUNV
+if ( isa( F, 'double' ) )       % scalar . ^ DISKFUNV
     
     if ( numel(F) == 1 )
-        scalar = F;
-        F = G;
         
+        scalar = F;
+        F = G;  
         F.components{1} = power( scalar, G.components{1} );
         F.components{2} = power( scalar, G.components{2} );
+        
     else
+        
         error('CHEBFUN:DISKFUNV:power:double', 'Dimension mismatch.');
+    
     end
     
 elseif ( isa(G, 'double') )      % DISKFUNV . ^ scalar
     
     if ( numel(G) == 1 )
+        
         scalar = G;
         F.components{1} = power( F.components{1}, scalar );
         F.components{2} = power( F.components{2}, scalar );
+        
     else
-        error('CHEBFUN:DISKFUNV:power:double', ...
-            'DISKFUNV and double size mismatch.');
+        
+        error('CHEBFUN:DISKFUNV:power:double',...
+                     'DISKFUNV and scalar dimension mismatch.');
+                 
     end
     
-elseif (isa(F,'diskfunv') && isa(G,'diskfunv') )  % DISKFUNV.^DISKFUNV
+elseif ( isa(F,'diskfunv') && isa(G,'diskfunv') )  % DISKFUNV.^DISKFUNV
     
-    error('CHEBFUN:DISKFUNV:power:size', ...
-        'DISKFUNV dimension mismatch.');
+    error('CHEBFUN:DISKFUNV:power:size', 'DISKFUNV dimension mismatch.');
     
 else  % error
     
-    error('CHEBFUN:DISKFUNV:power:inputs', ...
-        'Unrecognized input arguments.');
+    error('CHEBFUN:DISKFUNV:power:inputs', 'Unrecognized input arguments.');
     
 end
 

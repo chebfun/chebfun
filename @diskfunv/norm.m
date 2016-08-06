@@ -3,7 +3,9 @@ function v = norm( F )
 %   V = NORM(F) returns the Frobenius norm of the two/three components, i.e. 
 %       V = sqrt(norm(F1).^2 + norm(F2).^2),
 %   or
-%       V = sqrt(norm(F1).^2 + norm(F2).^2 + norm(F3).^2) .
+%       V = sqrt(norm(F1).^2 + norm(F2).^2 + norm(F3).^2).
+% 
+% See also DISKFUN/NORM
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information. 

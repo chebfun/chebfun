@@ -1,28 +1,30 @@
-function H = mldivide( f, G )
+function G = mldivide( a, F )
 %\  DISKFUNV left divide.
 %
-%  f\F Divides each component of a DISKFUNV by the scalar f. 
+%  a\F Divides each component of a DISKFUNV F by the scalar a. 
 %
-%  Only allowed to divide a DISKFUNV by a scalar.
+%  One is only allowed to divide a DISKFUNV by a scalar.
 %
 % See also MRDIVIDE.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( ( isempty(f) ) || ( isempty(G) ) )
-    H = diskfunv;
+% Empty check: 
+if ( ( isempty(a) ) || ( isempty(F) ) )
+    G = diskfunv();
     return
 end
 
-if ( ~isa(f, 'double') )
+% Only allow a\F, where a is a scalar:
+if ( ~isa(a, 'double') )
     error('DISKFUN:DISKFUNV:mldivide:nonScalar', ...
         'Division must be by a scalar.');
 end
 
-% Left divide.
-H = G;
-H.components{1} = mldivide( f, G.components{1} );
-H.components{2} = mldivide( f, G.components{2} );
+% Left divide:
+G = F;
+G.components{1} = mldivide( a, F.components{1} );
+G.components{2} = mldivide( a, F.components{2} );
 
 end
