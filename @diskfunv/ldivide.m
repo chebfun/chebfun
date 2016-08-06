@@ -1,13 +1,22 @@
 function H = ldivide( F, G )
 %.\   Pointwise DISKFUNV left divide.
+%   F.\G if G is a DISKFUNV and F is a double this returns (1/F)*G
+%
+%   F.\G if G is a double and F is a DISKFUNV this returns G\F, but this
+%   does not work if F becomes numerically close to zero.
+%
+%   F.\G is not allowed if both F and G are DISKFUNV objects.
+% 
+%   F.\G is the same as the command LDIVIDE(F, G)
 %
 % See also RDIVIDE.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Empty check: 
 if ( ( isempty(F) ) || ( isempty(G) ) )
-    H = diskfunv;
+    H = diskfunv();
     return
 end
 

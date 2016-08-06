@@ -1,16 +1,16 @@
-function val = get( f, propName )
+function val = get(f, propName )
 %GET   Get DISKFUNV properties.
 %
 %   P = GET(F, PROP) returns the property P specified in the string PROP from
 %   the DISKFUNV F. Valid entries for the string PROP are:
-%    'components'  - The DISKFUNs making up the components of F.
-%    'nComponents'  - The number of components in a DISKFUN.
+%    'components'   - An array containing the components of F.
+%    'nComponents'  - The number of components in a DISKFUNV.
 %    'isTransposed' - Is the DISKFUNV a column or row vector?
-%    'coords' - coordinate system the diskfunv is evaluated in.
+%    'coords' - The coordinate system that F is evaluated in: either polar 
+%               or cart.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
-
 
 if ( numel(f) > 1 )
     val = cell(numel(f));
@@ -20,7 +20,7 @@ if ( numel(f) > 1 )
     return
 end
 
-switch propName
+switch ( propName )
     case 'components'
         val = f.components;
     case 'nComponents'

@@ -6,12 +6,14 @@ function out = isempty( F )
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information. 
 
+% Definite an empty DISKFUNV if it's components field is empty: 
 if ( isempty( F.components ) ) 
     out = 1; 
     return
 end
 
-% Take isempty of each component:
+% Also an empty DISKFUNV if the components field is not empty, but contains
+% empty fields. We check this by calling isempty of each component:
 out = cellfun( @isempty, F.components, 'UniformOutput', false );
 out = all(cell2mat( out ) );
 
