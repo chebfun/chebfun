@@ -4,7 +4,7 @@ function F = conj( F )
 %   REAL(F) - i*IMAG(F).
 %
 %   Since only real DISKFUNV objects are supported, the result of this
-%   function is always just the original function F.
+%   function is always the original function F.
 %
 %   See also DISKFUNV/IMAG, DISKFUNV/REAL.
 
