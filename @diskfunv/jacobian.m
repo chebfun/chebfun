@@ -13,7 +13,7 @@ function J = jacobian( F )
 
 % Empty check: 
 if ( isempty( F ) )  
-    J = [ ]; 
+    J = diskfun; 
     return 
 end
 
