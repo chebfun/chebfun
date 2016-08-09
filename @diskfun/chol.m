@@ -5,7 +5,7 @@ function varargout = chol(varargin)
 % an upper triangular quasimatrix so that R'*R is a decomposition of F. If
 % F is not nonnegative definite then an error is thrown.
 %
-% L = CHOL(F, 'lower'), if F is a nonnegative definite DISKFUN then thi
+% L = CHOL(F, 'lower'), if F is a nonnegative definite DISKFUN then this
 % produces a lower triangular quasimatrix so that L*L' is a decomposition
 % of F. If F is not nonnegative definite then an error is thrown.
 % 
@@ -27,9 +27,11 @@ function varargout = chol(varargin)
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Requires evaluations of f in polar coords once passed to separableApprox:
+% Requires evaluations of f in polar coords once passed to separableApprox, 
+% so we make a chebfun2 (via CDR):
 f=varargin{1};
-f.coords='polar';
+[c, d, r] = crd(f);
+f = c*d*r.'; 
 
 [varargout{1:nargout}] = chol@separableApprox(f, varargin{2:end});
 

@@ -12,7 +12,7 @@ function f = circshift(h, alpha)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % This is the only way to get this to work for now:
-f = diskfun(@(t, r) feval(h, t-alpha, r), 'polar'); %rotate by alpha
+f = diskfun(@(t, r) feval(h, t-alpha, r, 'polar'), 'polar'); %rotate by alpha
 
 % It is faster to make it work like this, but this is breaking encapsulation: 
 % if nargin == 1

@@ -17,6 +17,7 @@ function f = diff( f, varargin )
 
 
 if ( isempty(f) )
+    f = diskfun;
     return
 end
 

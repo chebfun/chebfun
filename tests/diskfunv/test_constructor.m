@@ -12,49 +12,47 @@ pass(1) = ( SampleError(f, u, v) < tol );
 u2 = @(x,y) x.^2 + y.^2;
 f = diskfunv(u2, u2);
 pass(2) = ( SampleError(f, u, v) < tol );
-%try unneeded flag
-g = diskfunv(u2, u2, 'cart'); 
-pass(3) = ( norm(f-g) < tol ) ; 
+
 
 u = redefine_function_handle(@(x,y) exp(-cos(pi*(x+y))));
 v = redefine_function_handle(@(x,y) x.*sin(x.*y));
 f = diskfunv(u, v, 'polar');
-pass(4) = ( SampleError(f, u, v) < tol );
+pass(3) = ( SampleError(f, u, v) < tol );
 
 u = redefine_function_handle(@(x,y) x.*y);
 uv = redefine_function_handle(@(x,y) x*y);
 f = diskfunv(u, u);
 g = diskfunv(uv, uv, 'vectorize');
-pass(5) = ( norm(f - g) < tol );
+pass(4) = ( norm(f - g) < tol );
 %vectorize and polar 
 u = @(t,r) r.*cos(t);
 uv = @(t,r)  r*cos(t);
 f = diskfunv(u, u, 'polar');
 g = diskfunv(uv, uv, 'vectorize', 'polar');
-pass(3) = ( norm(f - g) < tol );
+pass(5) = ( norm(f - g) < tol );
 
 
 % Test errors
 u = @(x,y) x;
 try
     g = diskfunv(u);
-    pass(4) = false;
+    pass(6) = false;
 catch ME
-    pass(4) = strcmp(ME.identifier, 'CHEBFUN:DISKFUNV:diskfunv:arrayValued');
+    pass(6) = strcmp(ME.identifier, 'CHEBFUN:DISKFUNV:diskfunv:arrayValued');
 end
 
 try
     g = diskfunv(u, u, u);
-    pass(5) = false;
+    pass(7) = false;
 catch ME
-    pass(5) = strcmp(ME.identifier, 'CHEBFUN:DISKFUNV:diskfunv:arrayValued');
+    pass(7) = strcmp(ME.identifier, 'CHEBFUN:DISKFUNV:diskfunv:arrayValued');
 end
 
 try 
-g = diskfunv(u,'cart');
-    pass(6) = false;
+g = diskfunv(u, 'polar');
+    pass(8) = false;
 catch ME
-    pass(6) = strcmp(ME.identifier, 'CHEBFUN:DISKFUNV:diskfunv:arrayValued');
+    pass(8) = strcmp(ME.identifier, 'CHEBFUN:DISKFUNV:diskfunv:arrayValued');
 end
 end
 

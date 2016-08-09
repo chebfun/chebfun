@@ -17,8 +17,8 @@ f = @(t,r) cos(pi*r.*cos(t))+sin(5*(r.*sin(t)))-1;
 g = diskfun( f, 'polar' );
 pass(3) = ( SampleError( f, g ) < tol ); 
 
-f = @(x,y) exp(y); 
-g = diskfun( f );
+f = @(x,y) exp(y); % is it ok to throw in 'cart', even though not needed?
+g = diskfun( f , 'cart');
 f = redefine_function_handle( f);
 pass(4) = ( SampleError( f, g ) < tol ); 
 
@@ -27,13 +27,13 @@ g = diskfun( f );
 f = redefine_function_handle( f);
 pass(5) = ( SampleError( f, g ) < tol ); 
 
-f = @(x,y) exp(-x)+exp(-y) ; %test passing in cart option
-g = diskfun( f , 'cart');
+f = @(x,y) exp(-x)+exp(-y) ; 
+g = diskfun( f );
 f = redefine_function_handle( f );
 pass(6) = ( SampleError( f, g ) < tol ); 
 
 f = @(x,y) cos(2*x.*y); 
-g = diskfun( f, 'cart' );
+g = diskfun( f );
 f = redefine_function_handle( f);
 pass(7) = ( SampleError( f, g ) < tol ); 
 
@@ -130,7 +130,7 @@ pass(27) = ( (mg < mf) && (ng < nf) );
 f = diskfun(1);
 pass(28) = norm(f-1,inf) == 0;
 
-% Construction from a string with (x,y,z) variables
+% Construction from a string with (x,y) variables
 f = diskfun(@(x,y) exp(-10*((x-.1).^2  + y.^2)));
 g = diskfun('exp(-10*((x-.1).^2  + y.^2))');
 pass(29) = norm(f-g,inf) == 0;
@@ -175,8 +175,8 @@ end
 
 function f = redefine_function_handle(f)
     % Wrap Cartesian f so it can be evaluated in polar coordinates
-    %if (coords=='cart')
+    
     f = @(th, r) diskfun.pol2cartf(f,th, r);
-    %end
+  
 
 end

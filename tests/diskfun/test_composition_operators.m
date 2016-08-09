@@ -17,17 +17,6 @@ exact = @(x,y) (cos(x.*y) + sin(x.*y)).*sin((x-.1).*(y+.4));
 g = diskfun(@(x,y) exact(x,y)); 
 pass(j) = ( norm( g - f.*sin((x-.1).*(y+.4)) ) < tol ); j = j + 1;
 
-%try with polar coord setting to be sure evaluation is done correctly
-x.coords = 'polar';
-y.coords = 'polar';
-f.coords = 'polar';
-
-pass(j) = ( norm( g - f.*sin((x-.1).*(y+.4)) ) < tol ); j=j+1;
-
-%mixed coord setting
-x.coords = 'cart';
-pass(j) = ( norm( g - f.*sin((x-.1).*(y+.4)) ) < tol );j=j+1;
-
 
 % Cosine
 exact = @(x,y) cos(cos(x.*y) + sin(x.*y)); 

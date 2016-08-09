@@ -48,14 +48,7 @@ classdef diskfun < separableApprox
     %% CLASS METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods
-        function f = set.coords(f, propName)
-            if (strcmp(propName, 'polar') || strcmp(propName, 'cart'))
-                f.coords = propName;
-            else  %error if unacceptable setting is provided
-            error('CHEBFUN:DISKFUN:setcoords:propName', ...
-            'Coordinate setting must be either ''polar'' or ''cart''')
-            end
-        end   
+  
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -95,9 +88,10 @@ classdef diskfun < separableApprox
         %convert coeffs to a diskfun
         f = coeffs2diskfun(CFS); 
         
-        %coordsetting: determines whether a function has input/wants output in
+        
+        %isCartesian: determines whether input is in
         %polar or cartesian coords. 
-        iscart = coordsetting(varargin);
+        iscart = isCartesian(varargin);
         
     end
     
@@ -119,7 +113,6 @@ classdef diskfun < separableApprox
         idxPlus
         idxMinus
         nonZeroPoles = 0;
-        coords = 'cart'; %default: results returned in Cartesian coordinates.
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

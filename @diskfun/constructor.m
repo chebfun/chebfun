@@ -33,7 +33,7 @@ if ( nargin == 0 )          % DISKFUN( )
 end
 
 % Parse the inputs:
-[op, dom, pref, fixedRank, vectorize, coords] = parseInputs(op, varargin{:});
+[op, dom, pref, fixedRank, vectorize] = parseInputs(op, varargin{:});
 
 % Return op if construction is from coefficients which is handled in
 % parseInputs.
@@ -158,7 +158,6 @@ while ( ~isHappy && ~failure )
     g.idxMinus = idxMinus;
     g.nonZeroPoles = removePoles;
     g.pivotLocations = adjustPivotLocations(pivotLocations, pivotArray); 
-    g.coords = coords; 
   
     % Sample Test:
     if ( sampleTest )
@@ -236,7 +235,6 @@ g.idxPlus = idxPlus;
 g.idxMinus = idxMinus;
 g.nonZeroPoles = removePoles;
 g.pivotLocations = adjustPivotLocations(pivotLocations, pivotArray); 
-g.coords = 'cart';
 g = projectOntoBMCII(g); 
 
 end
@@ -826,7 +824,7 @@ end
 end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [op, dom, pref, fixedRank, vectorize, coords] = parseInputs(op, varargin)
+function [op, dom, pref, fixedRank, vectorize] = parseInputs(op, varargin)
 
 if ( isa(op, 'char') )     % DISKFUN( CHAR )
     op = str2op(op);
@@ -840,18 +838,11 @@ if ( isa(op, 'function_handle') )
             'The function %s must accept 2 input arguments.',op);
     end
 
-%figure out coord system:
-
 %check for polar coords
 ispolar = find(strcmp(varargin,'polar'));
-    if ( any(ispolar) )
-        coords = 'polar';
-    else  
-        coords= 'cart'; %default to Cartesian coords.
+    if ( ~any(ispolar) )
         op = @(th, r) diskfun.pol2cartf(op,th, r); %wrap for polar eval
     end
-else
-    coords = 'cart'; %default to cart
 end
 
 % Get the domain: (Always first if given)

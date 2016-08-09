@@ -11,7 +11,7 @@ function val = get( f, propName )
 %    'idxPlus'
 %    'idxMinus'
 %    'nonZeroPoles'
-%    'coords'
+
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -44,8 +44,6 @@ switch ( propName )
         val = f.idxMinus;
     case 'nonZeroPoles'
         val = f.nonZeroPoles;
-    case 'coords'
-        val = f.coords; 
     otherwise
         error('CHEBFUN:DISKFUN:get:propName', ...
             [propName,' is not a valid DISKFUN property.'])

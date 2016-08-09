@@ -41,6 +41,8 @@ else                                     % DISKFUN + DISKFUN
         h = g;
     elseif ( iszero(g) )
         h = f;
+    elseif ( isequal(f, -g) )
+        h = 0*f;
     else
         % Add together two nonzero DISKFUN objects:
         % The algorithm is as follows: Split f and g into their plus/minus
@@ -61,6 +63,10 @@ else                                     % DISKFUN + DISKFUN
         [gp,gm] = partition(g);
         
         hp = plus@separableApprox(fp,gp);
+        %if iszero(hp)          
+          %  hp.idxPlus=hp.idxMinus; 
+         %   hp.idxMinus=[];
+        %end
         r = size(hp.cols,2);
         hp.idxPlus = 1:r;
         % Indices or locations of the pivots do not make sense after a

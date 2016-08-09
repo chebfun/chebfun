@@ -1,0 +1,17 @@
+test_arithmetic
+test_conj_imag_real
+test_constructor
+test_cross
+test_curl
+test_div
+test_dot
+test_empty
+test_feval
+test_plotting
+test_size
+test_subsref
+test_syntax
+test_times_divide
+test_transpose
+test_vectorRelations
+test_vertcat

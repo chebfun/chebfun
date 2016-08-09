@@ -3,7 +3,7 @@ function y = feval(varargin)
 %   Y = FEVAL( F, THETA, r, 'polar')  evaluates a diskfun F at (THETA,
 %   r) where THETA and r are doubles representing central angle in radians 
 %   and radius on the disk.
-%   Y = FEVAL( F, X, Y, 'cart' ) or FEVAL(F, X, Y) evaluates a diskfun F 
+%   Y = FEVAL( F, X, Y) evaluates a diskfun F 
 %   at a point (X,Y) in Cartesian cooridnates.  
 %   Y = FEVAL(F, c), where c is a complex-valued chebfun representing a
 %   contour, evaluates F along the contour.
@@ -15,13 +15,13 @@ function y = feval(varargin)
 
 
 %figure out if cartesian or polar
- iscart = diskfun.coordsetting(varargin{:});
+ iscart = diskfun.isCartesian(varargin{:});
 
 %now evaluate
 f = varargin{1};
 if nargin < 3 %eval on a contour parametrized as complex chebfun
     c1 = varargin{2};
-    y = chebfun(@(t) feval(f, real(c1(t)), imag(c1(t)), 'cart'), c1.domain, 'vectorize' );
+    y = chebfun(@(t) feval(f, real(c1(t)), imag(c1(t))), c1.domain, 'vectorize' );
 else
     c1 = varargin{2};
     c2 = varargin{3};
@@ -50,13 +50,9 @@ else
     elseif ( strcmp(c1, ':') && strcmp(c2, ':') ) %return the diskfun
         y = f;
     elseif ( strcmp(c1, ':') && isnumeric(c2) ) %angular slice
-%          y = chebfun(@(t) feval(f, c2.*cos(t), ...
-%                               c2.*sin(t), 'cart'), [-pi, pi], 'trig');
          y = chebfun(@(t) feval(f, bsxfun(@times, c2, cos(t) ), ...
                              bsxfun(@times, c2, sin(t) ) , 'cart'), [-pi, pi], 'trig');             
     elseif (isnumeric(c1) && strcmp(c2, ':')) %radial slice
-%          y = chebfun(@(t) feval(f, t.*cos(c1), ...
-%                               t.*sin(c1), 'cart') );
         y = chebfun(@(t) feval(f, bsxfun(@times, cos(c1), t ),...
                          bsxfun(@times, sin(c1), t ), 'cart') );                  
     else

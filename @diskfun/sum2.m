@@ -1,7 +1,7 @@
 function v = sum2( f ) 
 %SUM2   Double integral of a DISKFUN over its domain.
 %   I = SUM2(F) returns the double definite integral of a DISKFUN.
-%
+
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

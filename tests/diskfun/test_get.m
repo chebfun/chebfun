@@ -14,7 +14,7 @@ pass(j) = norm( C - f.cols ) < tol; j = j + 1;
 pass(j) = norm( R - f.rows ) < tol; j = j + 1; 
 pass(j) = norm( 1./diag(D) - f.pivotValues ) < tol; j = j + 1; 
 pass(j) = all( size(f.pivotLocations) == [length(f), 2] ); j = j + 1;
-pass(j) = ( f.nonZeroPoles ) & ( abs(f(0,0)) > tol ); j= j +1 ;
-pass(j) = strcmp(f.coords, 'cart');
+pass(j) = ( f.nonZeroPoles ) & ( abs(f(0,0)) > tol ); 
+
 
 end

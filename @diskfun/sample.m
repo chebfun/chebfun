@@ -1,7 +1,8 @@
 function varargout = sample( f, varargin )
 %SAMPLE      Samples f on a tensor product grid.
-%   X = SAMPLE(F) returns the matrix of values of F on a tensor
-%   product grid.
+%   X = SAMPLE(F) returns the matrix of values of F(theta, r) on a 
+%   Fourier-Chebyshev tensor product grid. (theta, r) are polar coordinates, 
+%   with -pi <= theta <= pi and 0 <= r <= 1. 
 %
 %   [U, D, V] = SAMPLE(F) returns the low rank representation of the
 %   values of F on a tensor product grid. X = U * D * V'.

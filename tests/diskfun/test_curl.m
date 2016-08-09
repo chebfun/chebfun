@@ -3,7 +3,7 @@ function pass = test_curl( )
 
 tol = 1e2*chebfunpref().cheb2Prefs.chebfun2eps;
 
-% Check curl of a spherefun is a spherefunv.
+% Check curl of a diskfun is a diskfunv.
 u = diskfun(@(x,y) x.*y);
 u = curl(u);
 pass(1) = isa(u,'diskfunv');

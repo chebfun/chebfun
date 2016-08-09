@@ -11,17 +11,16 @@ tol = 100*pref.cheb2Prefs.chebfun2eps;
 f = diskfun(@(x,y) cos((x+.1).*y));
 % diskfunv
 u = grad(f);
-u.coords='polar';
 % Get some random points on the disk for testing.
 rng(7); r0 = rand; th0 = pi*(2*rand-1);
 
 % u is real so conjugate is real and same as u
 v = conj( u ); 
-pass(1) = ( norm( u(th0,r0) - v(th0,r0) ) < tol ); 
+pass(1) = ( norm( u(th0,r0, 'polar') - v(th0,r0, 'polar') ) < tol ); 
 
 % u is real so real(u) is the same as u
 v = real( u );
-pass(2) = ( norm( u(th0,r0) - v(th0,r0) ) < tol ); 
+pass(2) = ( norm( u(th0,r0, 'polar') - v(th0,r0, 'polar') ) < tol ); 
 
 % u is real so imag(u) is zero
 v = imag( u );
