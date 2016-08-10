@@ -174,9 +174,10 @@ f = chebfun(7, [1 3]);
 pass(21) = (y == 7) && (x == 2);
 
 % Ensure max is not fooled by .pointValues (see #1959):
-f = chebfun(@(x) x.^2, [-1,1]);
+f = chebfun(@(x) x.^2, [-1,1], pref);
 f([-1,1]) = 0;
 [y, x] = max(f);
+tol = 10*pref.chebfuneps;
 pass(22) = abs(y - 1) < tol && abs(abs(x)-1) < tol && abs(f(x) - y) < tol;
 
 %% Check max of a CHEBFUN and a scalar:
