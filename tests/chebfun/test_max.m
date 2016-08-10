@@ -168,15 +168,21 @@ err1 = abs(y - y_exact);
 err2 = abs(feval(f, x) - y_exact);
 pass(20) = err1 < tol && err2 < tol;
 
-% Ensure minimum of a constant function is returned at the middle of the domain:
+% Ensure maximum of a constant function is returned at the middle of the domain:
 f = chebfun(7, [1 3]);
 [y, x] = max(f);
 pass(21) = (y == 7) && (x == 2);
 
+% Ensure max is not fooled by .pointValues (see #1959):
+f = chebfun(@(x) x.^2, [-1,1]);
+f([-1,1]) = 0;
+[y, x] = max(f);
+pass(22) = abs(y - 1) < tol && abs(abs(x)-1) < tol && abs(f(x) - y) < tol;
+
 %% Check max of a CHEBFUN and a scalar:
 f = chebfun(@(x) [sin(x) cos(x)]);
 h = max(f, .75);
-pass(22) = norm(h([-.9 0 .8 .9].') - ...
+pass(23) = norm(h([-.9 0 .8 .9].') - ...
     [.75 .75 ;.75 1 ; .75 .75 ; sin(.9) .75]) < 10*eps*vscale(h);
 
 %% Test on function defined on unbounded domain:
@@ -193,7 +199,7 @@ yExact = exp(-1);
 xExact = 1;
 errY = y - yExact;
 errX = x - xExact;
-pass(23) = norm([errY errX], inf) < 1e3*eps*vscale(f);
+pass(24) = norm([errY errX], inf) < 1e3*eps*vscale(f);
 
 
 end

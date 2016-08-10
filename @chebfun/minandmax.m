@@ -113,6 +113,9 @@ yy = zeros(nfuns, 2);
 xx = zeros(nfuns, 2);
 for k = 1:nfuns
     [yy(k,:), xx(k,:)] = minandmax(f.funs{k});
+    % If min/max at ends of domain, shift inwards slightly (see #1959)
+    xx(k, xx(k,:) == dom(k))   = dom(k)   + eps(dom(k));
+    xx(k, xx(k,:) == dom(k+1)) = dom(k+1) - eps(dom(k+1));
 end
 [y(1), I1] = min(yy(:,1));
 [y(2), I2] = max(yy(:,2));
@@ -127,7 +130,7 @@ if ( ~isempty(ind) )
     x(1) = dom(ind(k));
 end
 ind = find(f.pointValues(:,1) > y(2));
-if ~isempty(ind)
+if ( ~isempty(ind) )
     [y(2), k] = max(f.pointValues(ind,1));
     x(2) = dom(ind(k));
 end
