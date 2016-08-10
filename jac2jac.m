@@ -110,7 +110,6 @@ Z = [T_row(1) ; zeros(N-1, 1)];
 a  = fft( [Z ;  T_row(end:-1:2)'] );
 
 c_jac = D2*v;
-C = full(C);
 for k = 1:numCols
     tmp1 = bsxfun(@times, C, c_jac(:,k));
     f1 = fft( tmp1, 2*N-1, 1 );
