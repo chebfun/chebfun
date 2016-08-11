@@ -24,6 +24,7 @@ vals = real( vals );
 
 % Restrict to the region of interest: 
 vals = vals(floor(m/2)+1:m, :);
+ 
 
 % Finally, make a diskfun object out of the values: 
 F = diskfun( vals );   % constructor
