@@ -28,7 +28,7 @@ end
 % In any other case f must be real.
 if ( ~isreal(f) )
     error('CHEBFUN:CHEBFUN3V:COMPOSE:Complex', ...
-        'The first Chebfun3v object must be real-valued.')
+        'The first CHEBFUN3V object must be real-valued.')
 end
 
 
@@ -37,7 +37,7 @@ if ( f.nComponents == 1 )
     f = compose(f.components{1}, op);
     
 elseif ( f.nComponents == 2 )
-    % f has 2 components, so we can compose with a CHEBFUN2 or CCHEBFUN2V.
+    % f has 2 components, so we can compose with a CHEBFUN2 or CHEBFUN2V.
     
     if ( isa(op, 'chebfun2') )
         f1 = f.components{1};

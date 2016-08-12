@@ -1,7 +1,7 @@
 function f = compose(f, op, varargin)
-%COMPOSE   Compose command for CHEBFUN3 objects. 
+%COMPOSE   Compose command for CHEBFUN3 objects.
 %   F = COMPOSE(F, OP) returns a CHEBFUN3 that approximates OP(F).
-% 
+%
 %   F = COMPOSE(F, OP, G) returns a CHEBFUN3 that approximates OP(F, G).
 %   This command is a wrapper for the CHEBFUN3 constructor.
 %
@@ -23,12 +23,12 @@ if ( isa(op, 'chebfun') )
     end
     
     % TO DO: Should we add the following domain check?
-%     % Check that image(f) is contained in domain(OP).
-%     vals = minandmax3(f);
-%     if ( ( vals(1) < op.domain(1) ) || ( vals(2) > op.domain(2) ) )
-%         error('CHEBFUN3:CHEBFUN3:COMPOSE:DomainMismatch', ...
-%             'Composition op(f) not defined, because the image of f is not contained in the domain of op.')
-%     end
+    %     % Check that image(f) is contained in domain(OP).
+    %     vals = minandmax3(f);
+    %     if ( ( vals(1) < op.domain(1) ) || ( vals(2) > op.domain(2) ) )
+    %         error('CHEBFUN:CHEBFUN3:COMPOSE:DomainMismatch', ...
+    %             'Composition op(f) not defined, because the image of f is not contained in the domain of op.')
+    %     end
     
     nColumns = size(op, 2);
     if ( nColumns == 1 )
@@ -93,13 +93,13 @@ elseif ( isa(op, 'chebfun2') || isa(op, 'chebfun2v') )
 elseif ( ( nargin == 2 ) && ( nargin(op) == 1 ) )
     % OP has one input variable.
     
-    % Call constructor: 
+    % Call constructor:
     f = chebfun3(@(x,y,z) op(feval(f, x, y, z)), f.domain);
     
 elseif ( ( nargin == 3 ) && ( nargin(op) == 2 ) )
-    % OP has two input variables. 
+    % OP has two input variables.
     
-    g = varargin{1}; 
+    g = varargin{1};
     if ( isa(g, 'double') )     % promote
         g = chebfun3(g, f.domain);
     end
@@ -113,7 +113,7 @@ elseif ( ( nargin == 3 ) && ( nargin(op) == 2 ) )
         f.domain);
     
 else
-    % Not sure what to do, error: 
+    % Not sure what to do, error:
     error('CHEBFUN:CHEBFUN3:COMPOSE:OP', 'NARGIN(OP) not correct.')
     
 end

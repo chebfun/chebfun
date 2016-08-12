@@ -2,7 +2,7 @@ function out = isreal(f)
 %ISREAL   Test if a CHEBFUN3V object F is real-valued.
 %   ISREAL(F) returns logical true if F does not have any nonzero imaginary
 %   part and false otherwise.
-%  
+%
 %   (This is slightly different from the Matlab convention, where isreal(x)
 %   is false if x is a complex number whose imaginary part is 0.)
 %
