@@ -42,4 +42,25 @@ f = chebfun2(@(x,y) sin(10*x.*y),[-1 2 -1 1]);
 pass(j) = (norm(f+f+f-3*f) < 100*tol); j=j+1; 
 pass(j) = (norm(f.*f-f.^2) < tol); j=j+1; 
 
+% g(f) with a CHEBFUN2 f and g a CHEBFUN
+f = chebfun2(@(x,y) x+y);
+g = chebfun(@(t) t.^2);
+G = chebfun(@(t) [t, t.^2]);
+h = compose(f, g);
+h_expected = chebfun2(@(x,y) (x+y).^2);
+pass(j) = ( norm(h - h_expected) < tol ); j=j+1;
+
+f = chebfun2(@(x,y) x+y);
+G = chebfun(@(t) [t, t.^2]);
+H = compose(f, G);
+H_expected = chebfun2v(@(x,y) x+y, @(x,y) (x+y).^2);
+pass(j) = ( norm(H - H_expected) < tol ); j=j+1;
+
+% g(f) with a CHEBFUN2 and g a CHEBMATRIX
+f = chebfun2(@(x,y) x+y);
+G = [chebfun(@(t) t); chebfun(@(t) t.^2)];
+H = compose(f, G);
+H_expected = chebfun2v(@(x,y) x+y, @(x,y) (x+y).^2);
+pass(j) = ( norm(H - H_expected) < tol ); j=j+1;
+
 end
