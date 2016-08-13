@@ -3,6 +3,12 @@ function varargout = subsref(f, index)
 %   F(X, Y, Z) returns the values of the CHEBFUN3 object F evaluated at the
 %   point (X, Y, Z).
 %
+%   F(G) where G is a CHEBFUN3V returns the CHEBFUN3 representing the
+%   composition F(G).  If G is a CHEBFUN2V, then F(G) is a CHEBFUN2.
+%
+%   F(X, Y, Z) where X, Y, Z are CHEBFUN3 objects is a CHEBFUN3 representing the
+%   composition.  If X, Y, Z are CHEBFUN2 objects, F(X, Y, Z) is a CHEBFUN2.
+%
 %   F.PROP returns the property of F specified in PROP.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
@@ -20,7 +26,7 @@ switch index(1).type
             x = idx{1};
             y = idx{2};
             z = idx{3};
-            % If x, y, z are CHEBFUN2 or CHEBFUN3, do composition, else feval.
+            % If x, y, z are CHEBFUN2 or CHEBFUN3, call compose; else feval.
             if ( isa(x, 'chebfun2') && isa(y, 'chebfun2') && isa(z, 'chebfun2') )
                 out = compose([x; y; z], f);
             elseif ( isa(x, 'chebfun3') && isa(y, 'chebfun3') && isa(z, 'chebfun3') )
