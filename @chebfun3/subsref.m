@@ -36,13 +36,8 @@ switch index(1).type
             end
             varargout = {out};
             
-        elseif ( isa(idx{1}, 'chebfun3v') )
-            % Composition F(CHEBFUN3V):
-            out = compose(idx{1}, f);
-            varargout = {out};
-            
-        elseif ( isa(idx{1}, 'chebfun2v') )
-            % Composition F(CHEBFUN2V):
+        elseif ( isa(idx{1}, 'chebfun2v') || isa(idx{1}, 'chebfun3v') )
+            % Composition F(CHEBFUN2V) or F(CHEBFUN3V):
             out = compose(idx{1}, f);
             varargout = {out};
             
