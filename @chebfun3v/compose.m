@@ -55,7 +55,8 @@ elseif ( f.nComponents == 2 )
         f = F;
         
     else
-        error('CHEBFUN:CHEBFUN3V:COMPOSE:OP2', 'OP not recognized.')
+        error('CHEBFUN:CHEBFUN3V:COMPOSE:OP2', ...
+            'Can compose only with a CHEBFUN2 or CHEBFUN2V, since F has 2 components.')
         
     end
     
@@ -80,7 +81,8 @@ elseif ( f.nComponents == 3 )
         f = F;
         
     else
-        error('CHEBFUN:CHEBFUN3V:COMPOSE:OP3', 'OP not recognized.')
+        error('CHEBFUN:CHEBFUN3V:COMPOSE:OP3', ...
+            'Can compose only with a CHEBFUN3 or CHEBFUN3V, since F has 3 components.')
         
     end
     
