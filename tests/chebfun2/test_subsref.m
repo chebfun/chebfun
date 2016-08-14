@@ -91,4 +91,33 @@ h = g(f1, f2);
 h_true = chebfun2(@(x,y) x + y);
 pass(18) = ( norm(h - h_true) < tol );
 
+% Test composition with a CHEBMATRIX:
+t = chebfun(@(t) t);
+F = [t; t];
+g = chebfun2(@(x,y) x + y);
+h = g(F);
+h_true = chebfun(@(t) 2*t);
+pass(19) = ( norm(h - h_true) < tol );
+
+% Test composition with one inf by 2 CHEBFUN:
+F = chebfun(@(t) [t, t]);
+g = chebfun2(@(x,y) x + y);
+h = g(F);
+h_true = chebfun(@(t) 2*t);
+pass(20) = ( norm(h - h_true) < tol );
+
+% Test composition with two CHEBFUNs:
+f = chebfun(@(t) t);
+g = chebfun2(@(x,y) x + y);
+h = g(f, f);
+h_true = chebfun(@(t) 2*t);
+pass(21) = ( norm(h - h_true) < tol );
+
+% Test composition with a complex-valued CHEBFUN:
+f = chebfun(@(t) t + 2i*t);
+g = chebfun2(@(x,y) x + y);
+h = g(f);
+h_true = chebfun(@(t) 3*t);
+pass(22) = ( norm(h - h_true) < tol );
+
 end

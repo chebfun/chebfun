@@ -7,11 +7,11 @@ function varargout = subsref(F, ref)
 %   second if k=2, and the third if k=3.
 %
 %   F(G) where G is a CHEBFUN3V returns the CHEBFUN3V representing the
-%   composition F(G).  If G is a CHEBFUN2V, then F(G) is a CHEBFUN2V.
+%   composition F(G).  If G is a CHEBFUN2V, then F(G) is a CHEBFUN2V.  If G is a
+%   CHEBMATRIX or CHEBFUN with three columns, then F(G) is a CHEBMATRIX.
 %
 %   F(X, Y, Z) where X, Y, Z are CHEBFUN3 objects is a CHEBFUN3V representing
-%   the composition.  If X, Y, Z are CHEBFUN2 objects, F(X, Y, Z) is a
-%   CHEBFUN2V.
+%   the composition.  Similarly if X, Y, Z are CHEBFUN or CHEBFUN2 objects.
 %
 %   F.PROP returns the property PROP of F as defined by GET(F,'PROP').
 %   Throws an error.
@@ -53,8 +53,11 @@ switch ( ref(1).type )
             x = indx{1}; % Where to evaluate?
             y = indx{2};
             z = indx{3};
-            % If x,y,z are Chebfun2 or Chebfun3, call compose; else feval.
-            if ( isa(x, 'chebfun2') && isa(y, 'chebfun2') && isa(z, 'chebfun2') )
+            % If x, y, z are CHEBFUN, CHEBFUN2 or CHEBFUN3, concatenate (also
+            % checks that domains are compatible) and call compose; else feval.
+            if ( isa(x, 'chebfun') && isa(y, 'chebfun') && isa(z, 'chebfun') )
+                out = compose([x; y; z], F);
+            elseif ( isa(x, 'chebfun2') && isa(y, 'chebfun2') && isa(z, 'chebfun2') )
                 out = compose([x; y; z], F);
             elseif ( isa(x, 'chebfun3') && isa(y, 'chebfun3') && isa(z, 'chebfun3') )
                 out = compose([x; y; z], F);
@@ -63,10 +66,22 @@ switch ( ref(1).type )
             end
             varargout = {out};
             
-        elseif ( isa(indx{1}, 'chebfun2v') || isa(indx{1}, 'chebfun3v') )
-            % Composition F(CHEBFUN2V) or F(CHEBFUN3V):
+        elseif ( isa(indx{1}, 'chebmatrix') || isa(indx{1}, 'chebfun2v') || ...
+                isa(indx{1}, 'chebfun3v') )
+            % Composition F(CHEBMATRIX), F(CHEBFUN2V) or F(CHEBFUN3V):
             out = compose(indx{1}, F);
             varargout = {out};
+            
+        elseif ( isa(indx{1}, 'chebfun') )
+            % Composition F([X(t), Y(t), Z(t)]):
+            if ( size(indx{1}, 2) == 3 )
+                g = indx{1};
+                out = compose([ g(:,1); g(:,2); g(:,3) ], F);
+                varargout = {out};
+            else
+                error('CHEBFUN:CHEBFUN3V:subsref:ChebfunSize', ...
+                    'Can compose only with one inf by 3 CHEBFUN, or three inf by 1 CHEBFUNs.')
+            end
             
         else
             if ( isa(indx{1}, 'double') )

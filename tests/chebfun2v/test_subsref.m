@@ -110,5 +110,40 @@ G = chebfun2v(@(x,y) x, @(x,y) y, @(x,y) x + y);
 H = G(f);
 H_true = chebfun3v(@(x,y,z) x + y, @(x,y,z) 0*y, @(x,y,z) x + y);
 pass(j) = ( norm(H - H_true) < tol );
+j = j+1;
+
+% Test composition with a CHEBMATRIX:
+t = chebfun(@(t) t);
+F = [ t; t ];
+G = chebfun2v(@(x,y) x + y, @(x,y) x);
+H = G(F);
+H_true = [ 2*t; t ];
+pass(j) = ( norm(H - H_true) < tol );
+j = j+1;
+
+% Test composition with one inf by 2 CHEBFUN:
+F = chebfun(@(t) [ t, t ]);
+G = chebfun2v(@(x,y) x + y, @(x,y) x);
+H = G(F);
+t = chebfun(@(t) t);
+H_true = [ 2*t; t ];
+pass(j) = ( norm(H - H_true) < tol );
+j = j+1;
+
+% Test composition with two CHEBFUNs:
+f = chebfun(@(t) t);
+G = chebfun2v(@(x,y) x + y, @(x,y) x);
+H = G(f, f);
+H_true = [ 2*f; f ];
+pass(j) = ( norm(H - H_true) < tol );
+j = j+1;
+
+% Test composition with a complex-valued CHEBFUN:
+f = chebfun(@(t) t + 1i*t);
+G = chebfun2v(@(x,y) x + y, @(x,y) x);
+H = G(f);
+t = chebfun(@(t) t);
+H_true = [ 2*t; t ];
+pass(j) = ( norm(H - H_true) < tol );
 
 end
