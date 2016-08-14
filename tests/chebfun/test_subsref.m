@@ -100,4 +100,25 @@ f = chebfun(@(x) cos(x));
 g = f(:,2:end);
 pass(23) = isempty(g);
 
+% Test that g(f) with g = chebfun and f = chebfun2 works.
+f = chebfun2(@(x,y) x + y);
+g = chebfun(@(t) t);
+h = g(f);
+pass(24) = ( norm(h - f) < 10 * tol );
+pass(25) = isequal(h, compose(f, g));
+
+% Test that g(f) with g = chebfun and f = chebfun2 works.
+f = chebfun3(@(x,y,z) x + y + z);
+g = chebfun(@(t) t);
+h = g(f);
+pass(26) = ( norm(h - f) < 100 * tol );
+pass(27) = isequal(h, compose(f, g));
+
+% Test that g(f) works if g has several columns:
+f = chebfun3(@(x,y,z) x + y + z);
+G = chebfun(@(t) [ t, t.^2 ]);
+H = G(f);
+H_true = chebfun3v(@(x,y,z) x + y + z, @(x,y,z) (x + y + z).^2);
+pass(28) = ( norm(H - H_true) < 100 * tol );
+
 end
