@@ -8,7 +8,7 @@ function varargout = subsref(F, ref)
 %
 %   F(G) where G is a CHEBFUN3V returns the CHEBFUN3V representing the
 %   composition F(G).  If G is a CHEBFUN2V, then F(G) is a CHEBFUN2V.  If G is a
-%   CHEBMATRIX or CHEBFUN with three columns, then F(G) is a CHEBMATRIX.
+%   CHEBFUN with three columns, then F(G) is a CHEBFUN.
 %
 %   F(X, Y, Z) where X, Y, Z are CHEBFUN3 objects is a CHEBFUN3V representing
 %   the composition.  Similarly if X, Y, Z are CHEBFUN or CHEBFUN2 objects.
@@ -56,7 +56,7 @@ switch ( ref(1).type )
             % If x, y, z are CHEBFUN, CHEBFUN2 or CHEBFUN3, concatenate (also
             % checks that domains are compatible) and call compose; else feval.
             if ( isa(x, 'chebfun') && isa(y, 'chebfun') && isa(z, 'chebfun') )
-                out = compose([x; y; z], F);
+                out = compose([x, y, z], F);
             elseif ( isa(x, 'chebfun2') && isa(y, 'chebfun2') && isa(z, 'chebfun2') )
                 out = compose([x; y; z], F);
             elseif ( isa(x, 'chebfun3') && isa(y, 'chebfun3') && isa(z, 'chebfun3') )
@@ -66,22 +66,11 @@ switch ( ref(1).type )
             end
             varargout = {out};
             
-        elseif ( isa(indx{1}, 'chebmatrix') || isa(indx{1}, 'chebfun2v') || ...
+        elseif ( isa(indx{1}, 'chebfun') || isa(indx{1}, 'chebfun2v') || ...
                 isa(indx{1}, 'chebfun3v') )
-            % Composition F(CHEBMATRIX), F(CHEBFUN2V) or F(CHEBFUN3V):
+            % Composition F(CHEBFUN), F(CHEBFUN2V) or F(CHEBFUN3V):
             out = compose(indx{1}, F);
             varargout = {out};
-            
-        elseif ( isa(indx{1}, 'chebfun') )
-            % Composition F([X(t), Y(t), Z(t)]):
-            if ( size(indx{1}, 2) == 3 )
-                g = indx{1};
-                out = compose([ g(:,1); g(:,2); g(:,3) ], F);
-                varargout = {out};
-            else
-                error('CHEBFUN:CHEBFUN3V:subsref:ChebfunSize', ...
-                    'Can compose only with one inf by 3 CHEBFUN, or three inf by 1 CHEBFUNs.')
-            end
             
         else
             if ( isa(indx{1}, 'double') )

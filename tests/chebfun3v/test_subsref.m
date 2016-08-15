@@ -72,21 +72,11 @@ H_true = chebfun3v(@(x,y,z) 3*x + y + z + 1, @(x,y,z) x - y);
 pass(j) = ( norm(H - H_true) < tol );
 j = j+1;
 
-% Test composition with a CHEBMATRIX:
-t = chebfun(@(t) t);
-F = [ t; t; t ];
-G = chebfun3v(@(x,y,z) x + y + z, @(x,y,z) x);
-H = G(F);
-H_true = [ 3*t; t ];
-pass(j) = ( norm(H - H_true) < tol );
-j = j+1;
-
 % Test composition with one inf by 3 CHEBFUN:
 F = chebfun(@(t) [ t, t, t ]);
 G = chebfun3v(@(x,y,z) x + y + z, @(x,y,z) x);
 H = G(F);
-t = chebfun(@(t) t);
-H_true = [ 3*t; t ];
+H_true = chebfun(@(t) [ 3*t, t ]);
 pass(j) = ( norm(H - H_true) < tol );
 j = j+1;
 
@@ -94,7 +84,7 @@ j = j+1;
 f = chebfun(@(t) t);
 G = chebfun3v(@(x,y,z) x + y + z, @(x,y,z) x);
 H = G(f, f, f);
-H_true = [ 3*f; f ];
+H_true = chebfun(@(t) [ 3*t, t ]);
 pass(j) = ( norm(H - H_true) < tol );
 
 end
