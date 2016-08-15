@@ -5,11 +5,11 @@ function f = compose(f, op, varargin)
 %   F = COMPOSE(F, OP, G) returns the CHEBFUN2 that approximates OP(F,G).
 %   This command is a wrapper for the CHEBFUN2 constructor.
 %
-%   F = COMPOSE(F, G) with a CHEBFUN G returns a CHEBFUN2 object that
-%   approximates G(F).  If G has 2 or 3 columns, the result is a CHEBFUN2V.
+%   F = COMPOSE(F, G) with a CHEBFUN G with one column returns a CHEBFUN2 object
+%   that approximates G(F).  If G has 2 or 3 columns, the result is a CHEBFUN2V.
 %
-%   F = COMPOSE(F, G) with a CHEBMATRIX G of size n by 1 (n = 1,2,3) returns a
-%   CHEBFUN2 or CHEBFUN2V object that approximates G(F).
+%   F = COMPOSE(F, G) for a CHEBFUN2 or CHEBFUN2V G returns G(F) interpreted as
+%   G(real(F), imag(F)), regardless whether F is real or complex valued.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -31,57 +31,22 @@ if ( isa(op, 'chebfun') )
     %     end
     
     nColumns = size(op, 2);
-    if ( nColumns == 1 )
-        % Call constructor:
-        f = chebfun2(@(x,y) op(feval(f, x, y)), f.domain);
+    if ( nColumns <= 3 )
+        % Compute first entry:
+        opcolumn = op(:,1);
+        F = chebfun2(@(x,y) opcolumn(feval(f, x, y)), f.domain);
         
-    elseif ( nColumns == 2 );
-        % Extract columns of OP:
-        op1 = op(:,1);
-        op2 = op(:,2);
-        
-        % Call constructor:
-        f = chebfun2v(@(x,y) op1(feval(f, x, y)), ...
-            @(x,y) op2(feval(f, x, y)), f.domain);
-        
-    elseif ( nColumns == 3 )
-        % Extract columns of OP:
-        op1 = op(:,1);
-        op2 = op(:,2);
-        op3 = op(:,3);
-        
-        % Call constructor:
-        f = chebfun2v(@(x,y) op1(feval(f, x, y)), ...
-            @(x,y) op2(feval(f, x, y)), @(x,y) op3(feval(f, x, y)), ...
-            f.domain);
+        % Add additional components:
+        for jj = 2:nColumns
+            opcolumn = op(:,jj);
+            F = [ F; chebfun2(@(x,y) opcolumn(feval(f, x, y)), f.domain) ];
+        end
+        f = F;
         
     else
         % The CHEBFUN object OP has a wrong number of columns.
         error('CHEBFUN:CHEBFUN2:COMPOSE:Columns', ...
             'The CHEBFUN object must have 1, 2, or 3 columns.')
-        
-    end
-    
-elseif ( isa(op, 'chebmatrix') )
-    % Composition OP(f) of the CHEBFUN2 object f and the CHEBMATRIX OP.
-    
-    if ( ~isreal(f) )
-        error('CHEBFUN:CHEBFUN2:COMPOSE:Complex', ...
-            'Composition of a CHEBMATRIX and a complex CHEBFUN2 is not defined.')
-    end
-    
-    [m, n] = size(op);
-    if ( ( m > 3 ) || ( n > 1 ) )
-        error('CHEBFUN:CHEBFUN2:COMPOSE:ChebmatrixFormat', ...
-            'The CHEBMATRIX must by n by 1 with n=1,2,3.')
-        
-    else
-        F = f;
-        % Compose each entry of OP with F.
-        f = compose(F, op{1});
-        for iRow = 2:m
-            f = [f; compose(F, op{iRow})];
-        end
         
     end
     
