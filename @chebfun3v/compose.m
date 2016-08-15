@@ -48,9 +48,9 @@ elseif ( f.nComponents == 2 )
             f1.domain);
         
     elseif ( isa(op, 'chebfun2v') )
-        F = compose(f, op.components{1});
-        for j = 2:op.nComponents
-            F = [F; compose(f, op(j))];
+        F = compose(f, op(1));
+        for jj = 2:op.nComponents
+            F = [F; compose(f, op(jj))];
         end
         f = F;
         
@@ -75,8 +75,8 @@ elseif ( f.nComponents == 3 )
         
     elseif ( isa(op, 'chebfun3v') )
         F = compose(f, op.components{1});
-        for j = 2:op.nComponents
-            F = [F; compose(f, op.components{j})];
+        for jj = 2:op.nComponents
+            F = [F; compose(f, op.components{jj})];
         end
         f = F;
         
