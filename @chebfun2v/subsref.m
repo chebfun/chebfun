@@ -7,17 +7,15 @@ function varargout = subsref(F, ref)
 %   F(k) returns the first component of F if k=1, the second if k=2, and
 %   the third if k=3.
 %
-%   F(G) where G is a CHEBFUN2V with two components returns the CHEBFUN2V
-%   representing the composition F(G).  If G is a CHEBFUN3V, then F(G) is a
-%   CHEBFUN3V.  If G is a CHEBMATRIX or a real CHEBFUN with two columns, then
-%   F(G) is a CHEBMATRIX. If G is a CHEBFUN, CHEBFUN2 or CHEBFUN3, then F(G) is
-%   interpreted as F([real(G); imag(G)]), regardless whether G is real or
-%   complex.
+%   F(G) computes the composition with a CHEBFUN with two columns, a CHEBFUN2V
+%   or a CHEBFUN3V with two components.  If G is a CHEBFUN with one column, a
+%   CHEBFUN2 or a CHEBFUN3, F(G) is interpreted as F(real(G), imag(G)),
+%   regardless whether G is real or complex.
 %
 %   F(X, Y) where X and Y are CHEBFUN2 objects returns the CHEBFUN2V
 %   representing the composition.  If X and Y are CHEBFUN3 objects, then
 %   F(X, Y) is a CHEBFUN3V.  If X and Y are CHEBFUNs, then F(X, Y) is a
-%   CHEBMATRIX.
+%   CHEBFUN.
 %
 %  .
 %   F.PROP returns the property PROP of F as defined by GET(F,'PROP').
@@ -67,7 +65,7 @@ switch ( ref(1).type )
             % If x, y, z are CHEBFUN, CHEBFUN2 or CHEBFUN3, concatenate (also
             % checks that domains are compatible) and call compose; else feval.
             if ( isa(x, 'chebfun') && isa(y, 'chebfun') )
-                out = compose([ x; y ], F);
+                out = compose([ x, y ], F);
             elseif ( isa(x, 'chebfun2') && isa(y, 'chebfun2') )
                 out = compose([ x; y ], F);
             elseif ( isa(x, 'chebfun3') && isa(y, 'chebfun3') )
@@ -82,10 +80,10 @@ switch ( ref(1).type )
             % Composition F(X(t)):
             if ( size(x, 2) == 1 )
                 % Interpret as F(real(X(t)), iag(X(t))):
-                out = compose([ real(x); imag(x) ], F);
+                out = compose([ real(x), imag(x) ], F);
             elseif ( size(x, 2) == 2 )
                 % Composition F([X(t), Y(t)]):
-                out = compose([ x(:,1); x(:,2) ], F);
+                out = compose([ x(:,1), x(:,2) ], F);
             else
                 error('CHEBFUN:CHEBFUN2:subsref:ChebfunSize', ...
                     'Can compose only with a CHEBFUN with values in C or R^2.')
@@ -98,9 +96,8 @@ switch ( ref(1).type )
             out = compose(indx{1}, F);
             varargout = {out};
             
-        elseif ( isa(indx{1}, 'chebmatrix') || isa(indx{1}, 'chebfun2v') || ...
-                isa(indx{1}, 'chebfun3v') )
-            % Composition F(CHEBMATRIX), F(CHEBFUN2V) or F(CHEBFUN3V):
+        elseif ( isa(indx{1}, 'chebfun2v') || isa(indx{1}, 'chebfun3v') )
+            % Composition F(CHEBFUN2V) or F(CHEBFUN3V):
             out = compose(indx{1}, F);
             varargout = {out};
             
