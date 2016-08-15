@@ -108,21 +108,23 @@ pass(26) = norm(f+f+f-3*f) < 100*tol;
 
 pass(27) = norm(f.*f-f.^2) < tol;
 
-%% g(f) with CHEBFUN3 f and CHEBFUN g
+%% Compose a CHEBFUN3 f with a CHEBFUN g (one column):
 f = chebfun3(@(x,y,z) x);
 g = chebfun(@(t) t.^2);
 h = compose(f, g);
-pass(28) = ( norm(h-f.^2) < tol );
+pass(28) = ( norm(h - f.^2) < tol );
 
-%% g(f) with CHEBFUN3 f and CHEBMATRIX g (n by 1, n=1,2,3)
+%% Compose a CHEBFUN3 f with a CHEBFUN g (two columns):
 f = chebfun3(@(x,y,z) x);
-g = [ chebfun(@(t) t); chebfun(@(t) t.^2) ];
+g = chebfun(@(t) [ t, t.^2 ]);
 h = compose(f, g);
 pass(29) = ( norm(h - [ f; f.^2 ]) < tol );
 
-f = chebfun3(@(x,y,z) x);
-g = [ chebfun(@(t) t); chebfun(@(t) t.^2); chebfun(@(t) t-1) ];
+%% Compose a complex-valued CHEBFUN3 f with a CHEBFUN2 g:
+f = chebfun3(@(x,y,z) x + y + 1i*z);
+g = chebfun2(@(x,y) x.^2 + y.^2);
+h_true = chebfun3(@(x,y,z) (x + y).^2 + z.^2);
 h = compose(f, g);
-pass(30) = ( norm(h - [ f; f.^2; f-1 ]) < tol );
+pass(30) = ( norm(h - h_true) < tol );
 
 end
