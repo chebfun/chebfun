@@ -107,7 +107,7 @@ h = g(f);
 pass(24) = ( norm(h - f) < 10 * tol );
 pass(25) = isequal(h, compose(f, g));
 
-% Test that g(f) with g = chebfun and f = chebfun2 works.
+% Test that g(f) with g = chebfun and f = chebfun3 works.
 f = chebfun3(@(x,y,z) x + y + z);
 g = chebfun(@(t) t);
 h = g(f);

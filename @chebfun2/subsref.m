@@ -6,14 +6,14 @@ function varargout = subsref(varargin)
 %   the function F along that column slice, and F(X, :) returns a chebfun
 %   representing F along that row slice. F(:, :) returns F.
 %
-%   F(G), where G is a CHEBFUN with two columns, or a CHEBMATRIX, CHEBFUN2V or
-%   CHEBFUN3V with two components, computes the composition of F and G.  If G is
-%   a CHEBFUN, CHEBFUN2 or CHEBFUN3, it is interpreted as F([real(G); imag(G)]),
-%   regardles of G being real or complex.
+%   F(G) computes the composition with a CHEBFUN with two columns, a CHEBFUN2V
+%   or a CHEBFUN3V with two components.  If G is a CHEBFUN with one column, a
+%   CHEBFUN2 or a CHEBFUN3, F(G) is interpreted as F(real(G), imag(G)),
+%   regardless whether G is real or complex.
 %
-%   F(X, Y) where X and Y are CHEBFUN2 objects returns the CHEBFUN2 representing
-%   the composition.  If X and Y are CHEBFUN3 objects, then F(X, Y) is a
-%   CHEBFUN3.  If X and Y are CHEBFUNs, then F(X, Y) is a CHEBFUN.
+%   F(X, Y) with CHEBFUNs X and Y returns the CHEBFUN G(t) = F(X(t), Y(t)).
+%   If X and Y are CHEBFUN2 objects, then F(X, Y) is a CHEBFUN2.
+%   If X and Y are CHEBFUN3 objects, then F(X, Y) is a CHEBFUN3.
 %
 % .
 %   F.PROP returns the property PROP of F as defined by GET(F, 'PROP').
