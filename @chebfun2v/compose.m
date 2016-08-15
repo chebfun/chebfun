@@ -47,6 +47,7 @@ elseif ( f.nComponents == 2 )
         f = chebfun2(@(x,y) op(feval(f1, x, y), feval(f2, x, y)), f1.domain);
         
     elseif ( isa(op, 'chebfun2v') )
+        % Call compose for each component:
         F = compose(f, op.components{1});
         for j = 2:op.nComponents
             F = [F; compose(f, op.components{j})];
@@ -72,6 +73,7 @@ elseif ( f.nComponents == 3 )
             feval(f3, x, y)), f1.domain);
         
     elseif ( isa(op, 'chebfun3v') )
+        % Call compose for each component:
         F = compose(f, op.components{1});
         for j = 2:op.nComponents
             F = [F; compose(f, op(j))];
