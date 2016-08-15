@@ -153,6 +153,7 @@ axis square
 %add unit circle
 holdState = ishold; 
 c = trigpts(100); 
+c = [c; 1];
 hold on 
 plot(cos(c*pi), sin(c*pi), 'k-', 'Linewidth', .3)
 hold off
