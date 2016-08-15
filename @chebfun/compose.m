@@ -11,6 +11,11 @@ function f = compose(f, op, g, pref)
 %   also CHEBFUN objects. If the range of F is not contained in the domain of G,
 %   or if F and G do not have the same dimensions, then an error is thrown.
 %
+%   COMPOSE(F, G) where G is a CHEBFUN3 or CHEBFUN3V and F has three real
+%   columns returns a CHEBFUN representing G(F).  Similarly if G is a CHEBFUN2
+%   or CHEBFUN2V and F has two real columns.  If F has one column, then G(F) is
+%   iterpreted as G(real(F), imag(F)), regardless whether F is real or complex.
+%
 %   COMPOSE(F, OP, PREF), COMPOSE(F, OP, G, PREF), and COMPOSE(F, G, PREF) use
 %   the options passed by the CHEBFUNPREF object PREF.
 %
@@ -108,6 +113,79 @@ if ( isa(op, 'chebfun') )
         end
         f = h;
     end
+    
+elseif ( isa(op, 'chebfun2') )
+    if ( size(f, 2) == 1 )
+        % Interpret as OP(real(f), imag(f)), regardless whether f is real- or
+        % complex-valued.
+        f = compose([ real(f), imag(f) ], op);
+    elseif ( size(f, 2) == 2 )
+        % Extract the two columns of f:
+        x = extractColumns(f, 1);
+        y = extractColumns(f, 2);
+        
+        % Make sure each column is real-valued:
+        if ( ~isreal(x) || ~isreal(y) )
+            error('CHEBFUN:CHEBFUN:compose:complex2', ...
+                'CHEBFUN2(f) is defined for a chebfun f with one complex or two real columns.')
+        end
+        
+        % Compose:
+        f = chebfun(@(t) op(feval(x, t), feval(y, t)), x.domain);
+    else
+        error('CHEBFUN:CHEBFUN:compose:Cheb2ofCheb', ...
+            'CHEBFUN2(f) is defined for a chebfun f with one complex or two real columns.')
+    end
+    
+elseif ( isa(op, 'chebfun2v') )
+    if ( size(f, 2) == 1 )
+        % Interpret as OP(real(f), imag(f)), regardless whether f is real- or
+        % complex-valued.
+        f = compose([ real(f), imag(f) ], op);
+    elseif ( size(f, 2) == 2 )
+        % Call compose for each component of OP.
+        F = compose(f, op(1));
+        for jj = 2:op.nComponents
+            F = [ F, compose(f, op(jj)) ];
+        end
+        f = F;
+    else
+        error('CHEBFUN:CHEBFUN:compose:Cheb2VofCheb', ...
+            'CHEBFUN2V(f) is defined for a chebfun f with one complex or two real columns.')
+    end
+    
+elseif ( isa(op, 'chebfun3') )
+    if ( size(f, 2) == 3 )
+        % Extract the columns of f:
+        x = extractColumns(f, 1);
+        y = extractColumns(f, 2);
+        z = extractColumns(f, 3);
+        
+        % Make sure all components are real-valued.
+        if ( ~isreal(x) || ~isreal(y) || ~isreal(z) )
+            error('CHEBFUN:CHEBFUN:compose:complex3', ...
+                'CHEBFUN3(F) is defined for a chebfun F with three real columns.')
+        end
+        
+        % Compose:
+        f = chebfun(@(t) op(feval(x, t), feval(y, t), feval(z, t)), x.domain);
+    else
+        error('CHEBFUN:CHEBFUN:compose:Cheb3ofCheb', ...
+            'CHEBFUN3(F) is defined for a chebfun F with three columns.')
+    end
+    
+elseif ( isa(op, 'chebfun3v') )
+    if ( size(f, 2) == 3 )
+        % Call compose for each component of OP.
+        F = compose(f, op(1));
+        for jj = 2:op.nComponents
+            F = [ F, compose(f, op(jj)) ];
+        end
+        f = F;
+    else
+       error('CHEBFUN:CHEBFUN:compose:Cheb3VofCheb', ...
+            'CHEBFUN3V(F) is defined for a chebfun F with three columns.')
+    end 
         
 elseif ( opIsBinary )
     % Binary composition:

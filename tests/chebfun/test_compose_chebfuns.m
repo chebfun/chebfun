@@ -92,6 +92,49 @@ x = chebfun('x');
 F = (abs(x) < ep)/(2*ep);
 pass(12) = get(F(x), 'ishappy');
 
+%% Test composition with a CHEBFUN2:
+Fr = chebfun(@(t) [ cos(t), sin(t) ], [ -pi, pi ]); % Two real columns.
+Fc = chebfun(@(t) exp(1i*t), [ -pi, pi ]);          % One complex column.
+g = chebfun2(@(x,y) x.^2 + y.^2);
+h_true = chebfun(@(t) 1 + 0*t, [ -pi, pi ]);
+hr = compose(Fr, g);
+hc = compose(Fc, g);
+pass(13) = ( norm(hr - h_true) < 100 * eps );
+pass(14) = ( norm(hc - h_true) < 100 * eps );
+
+%% Test composition with a CHEBFUN2V:
+Fr = chebfun(@(t) [ cos(t), sin(t) ], [ -pi, pi ]); % Two real columns.
+Fc = chebfun(@(t) exp(1i*t), [ -pi, pi ]);          % One complex column.
+G = chebfun2v(@(x,y) x.^2 + y.^2, @(x,y) x);
+H_true = chebfun(@(t) [ 1 + 0*t, cos(t) ], [ -pi, pi ]);
+Hr = compose(Fr, G);
+Hc = compose(Fc, G);
+pass(15) = ( norm(Hr - H_true) < 100 * eps );
+pass(16) = ( norm(Hc - H_true) < 100 * eps );
+
+%% Test composition with a CHEBFUN3:
+F = chebfun(@(t) [ cos(t), sin(t), t ], [ -pi, pi ]);
+g = chebfun3(@(x,y,z) x.^2 + y.^2 + z.^2);
+h_true = chebfun(@(t) 1 + t.^2, [ -pi, pi ]);
+h = compose(F, g);
+pass(17) = ( norm(h - h_true) < 100 * eps );
+
+F = chebfun(@(t) [ cos(t), sin(t), 1i*t ], [ -pi, pi ]);
+g = chebfun3(@(x,y,z) x.^2 + y.^2 + z.^2);
+try
+    h = compose(F, g);
+    pass(18) = 0;
+catch EM
+   pass(18) = strcmp(EM.identifier, 'CHEBFUN:CHEBFUN:compose:complex3');
+end
+
+%% Test composition with a CHEBFUN3V:
+F = chebfun(@(t) [ cos(t), sin(t), t ], [ -pi, pi ]);
+G = chebfun3v(@(x,y,z) x.^2 + y.^2, @(x,y,z) z);
+H_true = chebfun(@(t) [ 1 + 0*t, t ], [ -pi, pi ]);
+H = compose(F, G);
+pass(19) = ( norm(H - H_true) < 100 * eps );
+
 end
 
 % Test composition of two chebfuns.
