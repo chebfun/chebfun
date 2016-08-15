@@ -84,26 +84,18 @@ f3 = chebfun3(@(x,y,z) z);
 h = g(f1, f2, f3);
 pass(15) = ( norm(h - g) < tol );
 
-% Test composition with a CHEBMATRIX:
-t = chebfun(@(t) t);
-F = [t; t; t];
-g = chebfun3(@(x,y,z) x + y + z);
-h = g(F);
-h_true = chebfun(@(t) 3*t);
-pass(16) = ( norm(h - h_true) < tol );
-
 % Test composition with one inf by 3 CHEBFUN:
 F = chebfun(@(t) [t, t, t]);
 g = chebfun3(@(x,y,z) x + y + z);
 h = g(F);
 h_true = chebfun(@(t) 3*t);
-pass(17) = ( norm(h - h_true) < tol );
+pass(16) = ( norm(h - h_true) < tol );
 
 % Test composition with three CHEBFUNs:
 f = chebfun(@(t) t);
 g = chebfun3(@(x,y,z) x + y + z);
 h = g(f, f, f);
 h_true = chebfun(@(t) 3*t);
-pass(18) = ( norm(h - h_true) < tol );
+pass(17) = ( norm(h - h_true) < tol );
 
 end
