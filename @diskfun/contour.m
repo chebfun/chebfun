@@ -1,22 +1,22 @@
 function varargout = contour( f, varargin )
-%CONTOUR  contour plot of a DISKFUN.
-%   CONTOUR(F) is a contour plot of F treating the values of F as heights above
-%   a plane. A contour plot are the level curves of F for some values V. The
-%   values V are chosen automatically.
+%CONTOUR   contour plot of a DISKFUN.
+%   CONTOUR(F) is a contour plot of F treating the values of F as heights
+%   above a plane. A contour plot shows the level curves of F for some
+%   values V. The values V are chosen automatically.
 %
-%   CONTOUR(F, N) draw N contour lines, overriding the automatic number. The
-%   values V are still chosen automatically.
+%   CONTOUR(F, N) draw N contour lines, overriding the automatic number.
+%   The values V are still chosen automatically.
 %   
-%   CONTOUR(F, V) draw LENGTH(V) contour lines at the values specified in vector
-%   V. Use contour(F, [v, v]) to compute a single contour at the level v.
-%
+%   CONTOUR(F, V) draws LENGTH(V) contour lines at the values specified in
+%   vector V. Use contour(F, [v, v]) to compute a single contour at the
+%   level v.
 %  
-%   [C, H] = contour(...) returns contour matrix C as described in CONTOURC and
-%   a handle H to a contourgroup object.  This handle can be used as input to
-%   CLABEL.
+%   [C, H] = contour(...) returns contour matrix C as described in CONTOURC
+%   and a handle H to a contourgroup object.  This handle can be used as
+%   input to CLABEL.
 %
-%   CONTOUR(F, 'NUMPTS', N) plots the contour lines on a N by N uniform grid. If
-%   NUMPTS is not given then we plot on an 200 by 200 grid.
+%   CONTOUR(F, 'NUMPTS', N) plots the contour lines on a N by N uniform
+%   grid. If NUMPTS is not given then we plot on an 200 by 200 grid.
 %
 %   CONTOUR(F, 'PIVOTS', STR) plots the contour lines with the pivot locations
 %   used during constructor.
@@ -31,18 +31,18 @@ if ( isempty( f ) )  % Empty check.
     return
 end
 
-% Minimum number of plotting points:
+% Minimum number of plotting points.
 minplotnum = 200;
 doPivotPlot = 0; 
 
-% Extract from the inputs the user defined options: 
+% Extract from the inputs the user defined options.
 j = 1; 
 argin = {};
 while ( ~isempty( varargin ) )
     if ( strcmpi( varargin{1}, 'numpts') ) % If given numpts then use them.
         minplotnum = varargin{2};
         varargin(1:2) = [];
-    elseif ( strcmpi(varargin{1}, 'pivots') ) % If given numpts then use them.
+    elseif ( strcmpi(varargin{1}, 'pivots') ) % If the pivots are to be plotted
         doPivotPlot = 1;
         if ( length( varargin ) < 2 ) 
             error('CHEBFUN:DISKFUN:contour:pivotStyle', ...
@@ -61,9 +61,13 @@ end
 if ( doPivotPlot )    % Do pivot plot. 
     if ( ( ~isempty(argin) ) && ( length(argin{1}) < 5 ) )
         % Column, row, pivot plot
+        holdState = ishold;
         plot( f, argin{:} ), hold on
         argin(1) = [];
-        contour( f, argin{:} ), hold off
+        contour( f, argin{:} )
+        if ( ~holdState )
+            hold off;
+        end
         return
     end
 end
@@ -119,7 +123,6 @@ elseif ( isa(f, 'diskfun') )
         xx = feval(xx, mxx, myy); 
         yy = feval(yy, mxx, myy);
         vals = feval(f, mxx, myy, 'polar');
-
     elseif ( ( nargin == 1) || ( ( nargin > 1 ) && ( isa(argin{1},'double') ) ) )    
         % CONTOUR(f) 
         
@@ -127,35 +130,33 @@ elseif ( isa(f, 'diskfun') )
         x = linspace( dom(1), dom(2), minplotnum );
         y = linspace( dom(3), dom(4), minplotnum );
         [xx, yy] = meshgrid(x, y);
-        
-       
         vals = feval(f, xx, yy, 'polar' );
-        
-       
-        
+        % This code would be faster:
+%         % Evaluate at Fourier-Chebyshev grid: 
+%         x = [trigpts( minplotnum-1, [dom(1) dom(2)] ); dom(1)];
+%         y = chebpts(2*minplotnum-1,[-1 1]); y = y(minplotnum:end);
+%         [xx, yy] = meshgrid(x, y);
+%         vals = sample(f, minplotnum-1, minplotnum);
+%         vals = [vals vals(:,1)];
     else
         error('CHEBFUN:DISKFUN:contour:inputs1', ...
             'Unrecognised input arguments.');
     end
-    
 else
-    
     error('CHEBFUN:DISKFUN:contour:inputs2', ...
         'Unrecognised input arguments.');
-    
 end
 
- [X, Y] = pol2cart(xx, yy); 
+[X, Y] = pol2cart(xx, yy); 
 % Contour plot:
 [c, h] = contour( X, Y, vals, argin{:} );
 axis square
 
-%add unit circle
+% Add unit circle
 holdState = ishold; 
-c = trigpts(100); 
-c = [c; 1];
+c = exp(1i*pi*linspace(-1,1,101));
 hold on 
-plot(cos(c*pi), sin(c*pi), 'k-', 'Linewidth', .3)
+plot(real(c), imag(c), 'k-', 'Linewidth', .3)
 hold off
 
 if holdState
@@ -164,8 +165,7 @@ else
     hold off;
 end
 
-
-% return plot handle if appropriate.
+% Return plot handle if appropriate.
 if ( nargout == 1 )
     varargout = {h};
 elseif ( nargout == 2 )
