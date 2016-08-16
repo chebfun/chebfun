@@ -1,10 +1,10 @@
 function f = cart2pol(f, varargin)
-%CART2POL    Transforms a diskfun F(x,y) in Cartesian coordinates to a 
-%   chebfun2 F(th, r) in polar coordinates, with -pi <= th <= pi, and 0 <=
+%CART2POL    Transforms a DISKFUN F(x,y) in Cartesian coordinates to a 
+%   CHEBFUN2 F(th, r) in polar coordinates, with -pi <= th <= pi, and 0 <=
 %   r <=1. Working with F in this setting does not ensure that F is smooth
 %   at the origin of the disk (i.e. r=0), and can reduce the
 %   accuracy of some computations. It may be better to use the 'polar' flag
-%   in Diskfun, or to work directly with the CDR decomposition of F.
+%   in DISKFUN, or to work directly with the CDR decomposition of F.
 % 
 %   F = cart2pol(f, 'cdr') returns F(th, r) with -pi <= th <= pi and
 %   -1 <= r <= 1. This is equivalent to the CDR decomposition of F. 
