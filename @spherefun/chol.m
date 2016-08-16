@@ -5,7 +5,7 @@ function varargout = chol(varargin)
 % an upper triangular quasimatrix so that R'*R is a decomposition of F. If
 % F is not nonnegative definite then an error is thrown.
 %
-% L = CHOL(F, 'lower'), if F is a nonnegative definite SPHEREFUN then thi
+% L = CHOL(F, 'lower'), if F is a nonnegative definite SPHEREFUN then this
 % produces a lower triangular quasimatrix so that L*L' is a decomposition
 % of F. If F is not nonnegative definite then an error is thrown.
 % 
