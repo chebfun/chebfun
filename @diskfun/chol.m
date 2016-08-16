@@ -28,10 +28,8 @@ function varargout = chol(varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Requires evaluations of f in polar coords once passed to separableApprox, 
-% so we make a chebfun2 (via CDR):
-f=varargin{1};
-[c, d, r] = crd(f);
-f = c*d*r.'; 
+% so we make a chebfun2:
+f = cart2pol(varargin{1});
 
 [varargout{1:nargout}] = chol@separableApprox(f, varargin{2:end});
 
