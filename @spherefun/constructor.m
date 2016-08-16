@@ -1,10 +1,9 @@
 function g = constructor(g, op, varargin)
 %CONSTRUCTOR   The main SPHEREFUN constructor.
-%
-% This code is when functions on the surface of the sphere are represented
-% as SPHEREFUN objects. A SPHEREFUN object is a real-valued function as a 
-% sum of rank 1 outerproducts of univariate functions in spherical 
-% coordinates.
+% This code is for generating a SPHEREFUN object that represents a function
+% on the unit sphere. A SPHEREFUN object is a real-valued function that is
+% represented as a sum of rank 1 outerproducts of univariate functions in
+% `doubled-up' spherical coordinates.
 %
 % The algorithm for constructing a SPHEREFUN comes in two phases:
 %
@@ -22,7 +21,7 @@ function g = constructor(g, op, varargin)
 % The algorithm is fully described in:
 %  A. Townsend, H. Wilber, and G. Wright, Computing with function on
 %  spherical and polar geometries I: The sphere, SIAM J. Sci. Comput., 
-%  Accepted, 2016. 
+%  38-4 (2016), C403-C425. 
 %
 % See also SPHEREFUN.
 

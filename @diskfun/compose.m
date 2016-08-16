@@ -1,9 +1,9 @@
 function f = compose( f, op, varargin )
-% COMPOSE     compose command for DISKFUN objects. 
+% COMPOSE   compose command for DISKFUN objects. 
 % 
-%  F = COMPOSE(F, OP )  returns the DISKFUN that approximates OP(F).
+%   F = COMPOSE(F, OP ) returns the DISKFUN that approximates OP(F).
 % 
-%  F = COMPOSE(F, OP, G )  returns the DISKFUN that approximates OP(F, G).
+%   F = COMPOSE(F, OP, G ) returns the DISKFUN that approximates OP(F, G).
 %
 % This command is a wrapper for the DISKFUN constructor. 
 
@@ -13,7 +13,6 @@ function f = compose( f, op, varargin )
 if ( nargin == 2 && nargin(op) == 1)
     % OP has one input variable.
     f = diskfun(@(x,y) op( feval(f, x, y, 'polar') ), 'polar');
-
 elseif ( nargin == 3 && nargin(op) == 2 )
     % OP has two input variables. 
     g = varargin{1}; 
@@ -26,11 +25,9 @@ elseif ( nargin == 3 && nargin(op) == 2 )
     end
     
     f = diskfun(@(x,y) op( feval(f, x, y, 'polar'), feval(g, x, y, 'polar') ), 'polar'); 
-
 else
     % Not sure what to do, error: 
     error('CHEBFUN:DISKFUN:COMPOSE:OP', 'NARGIN(OP) not correct.')
-    
 end
 
 end 
