@@ -1,15 +1,15 @@
 function varargout = coeffs2( f, m, n ) 
-%COEFFS2   Fourier--Chebyshev coefficients of a diskfun. 
+%COEFFS2   Fourier--Chebyshev coefficients of a DISKFUN. 
 % 
-% X = COEFFS2( F ) returns the coefficients of the diskfun F in the
-% Fourier--Chebyshev basis, where the columns are the Chebyshev
-% coefficients and the rows are Fourier coefficients.
+%   X = COEFFS2( F ) returns the coefficients of the DISKFUN F in the
+%   Fourier--Chebyshev basis, where the columns are the Chebyshev
+%   coefficients and the rows are Fourier coefficients.
 % 
-% [C, D, R] = COEFFS2( F ) returns a low rank approximation to the
-% coefficients. 
+%   [C, D, R] = COEFFS2( F ) returns a low rank approximation to the
+%   coefficients. 
 %
-% X = COEFFS2(F, M, N) returns bivariate coefficients with N Chebyshev 
-% modes in the radial direction and M Fourier modes in angular direction. 
+%   X = COEFFS2(F, M, N) returns bivariate coefficients with N Chebyshev 
+%   modes in the radial direction and M Fourier modes in angular direction. 
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -18,14 +18,14 @@ function varargout = coeffs2( f, m, n )
 [C, D, R] = cdr( f ); 
 
 if nargin == 1
-    % Find the  coefficients of each slice: 
+    % Find the coefficients of each slice: 
     U = C.coeffs; 
     R = R.coeffs;
 else
     if nargin == 2
         n = m;
     end
-    % Find the  coefficients of each slice: 
+    % Find the coefficients of each slice: 
     U = chebtech2.alias(C.coeffs,n); 
     R = trigtech.alias(R.coeffs,m);
 end
