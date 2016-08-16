@@ -1,6 +1,6 @@
 function varargout = BMCsvd( f )
 % BMCSVD   Unweighted singular value decomposition of a diskfun 
-% on [-pi,pi]x[0,1].
+% on [-pi,pi]x[-1,1].
 % 
 % S = BMCSVD( F )  returns the unweighted singular values of F
 %
