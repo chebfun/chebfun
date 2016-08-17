@@ -1,7 +1,11 @@
 function iscart = isCartesian( varargin )
-% COORDSETTING     Decide if the function is in polar or Cartesian:
-%   ISCART = COORDSETTING(F ) returns ISCART = 1 unless the flag 'polar'
-% is present. Then, ISCART=0.
+% COORDSETTING  This function searches for the 'polar' flag, which 
+% may be present in a call to the diskfun constructor or in feval. 
+% When the 'polar' flag is present, evaluations should be done
+% with respect to polar coordinates instead of Cartesian coordinates. 
+%
+% ISCART = COORDSETTING(varargin). If the flag 'polar' is included
+% in varargin, ISCART = 0. Otherwise, ISCART = 1. 
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
