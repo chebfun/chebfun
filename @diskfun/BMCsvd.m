@@ -1,11 +1,11 @@
 function varargout = BMCsvd( f )
-% BMCSVD   Unweighted singular value decomposition of a diskfun 
-% on [-pi,pi]x[0,1].
+% BMCSVD   Unweighted singular value decomposition of a DISKFUN 
+% on [-pi,pi]x[-1,1].
 % 
-% S = BMCSVD( F )  returns the unweighted singular values of F
+%    S = BMCSVD( F )  returns the unweighted singular values of F
 %
-% [U, S, V] = BMCSVD( F ) returns the unweighted singular value
-%             decomposition of F.
+%    [U, S, V] = BMCSVD( F ) returns the unweighted singular value
+%                decomposition of F.
 %
 % Also see: DISKFUN/SVD
 

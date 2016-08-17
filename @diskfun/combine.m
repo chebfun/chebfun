@@ -1,19 +1,18 @@
 function g = combine(g,h)
-% COMBINE  Combines two diskfuns together.  
+%COMBINE   Combines two diskfuns together.  
 %
-% f = combine(g,h) combines g and h into one diskfun.  This is useful
-% when g and h have the following properties:
+%   f = combine(g,h) combines g and h into one diskfun.  This is useful
+%   when g and h have the following properties:
 % 
-%   g has a CDR decomposition such that C is even and R is pi periodic
-%   h has a CDR decomposition such that C is odd and R is pi anti-periodic
+%     g has a CDR decomposition such that C is even and R is pi periodic
+%     h has a CDR decomposition such that C is odd and R is pi anti-periodic
 %
-% If they do not have this property then g+h or plus(g,h) should be used.
+%   If they do not have this property then g+h or plus(g,h) should be used.
 %
 % See also PARTITION.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
-
 
 if ~isa(g,'diskfun') || ~isa(h,'diskfun')
     error('CHEBFUN:DISKFUN:combine:unknown',['Undefined function ''combine'' for ' ...

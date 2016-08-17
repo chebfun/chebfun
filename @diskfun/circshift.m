@@ -11,22 +11,22 @@ function f = circshift(h, alpha)
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% This is the only way to get this to work for now:
-f = diskfun(@(t, r) feval(h, t-alpha, r, 'polar'), 'polar'); %rotate by alpha
+% This is what we want to do.  However, we can do it much master by
+% drilling down to the trigtechs representing the rows.  If one is worried
+% about encapsulation then use this commented out code segement and remove
+% the code starting at the if.
+% h = diskfun(@(t, r) feval(h, t-alpha, r, 'polar'), 'polar'); %rotate by alpha
 
-% It is faster to make it work like this, but this is breaking encapsulation: 
-% if nargin == 1
-%     f = h;
-%     return
-% else   
-%     f = h;  
-%     %get trigtech
-%     rtechs = f.rows.funs{1}.onefun;
-%     rtechs = circshift(rtechs, alpha/pi);
-%     f.rows.funs{1}.onefun = rtechs;
-%     r = f.rows; 
-%     r.pointValues = chebfun.getValuesAtBreakpoints(r.funs, r.domain);
-%     f.rows = r; 
-% end
+if nargin == 1
+    f = h;
+    return
+else   
+    f = h;  
+    % Operate at the trigtech level to make things fast
+    rtechs = circshift(f.rows.funs{1}.onefun, alpha/pi);
+    f.rows.funs{1}.onefun = rtechs;
+    % Weird feval behavior in CHEBFUN requires this:
+    f.rows.pointValues = feval(rtechs, [-1;1]); 
+end
 
 end

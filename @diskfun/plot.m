@@ -61,10 +61,10 @@ if ( ~isempty(varargin) )
             %fill(real(r),imag(r), clr, 'Edgecolor', 'None'); 
             plot(real(r),imag(r),'--', 'Linewidth', .5); 
         end
-        
-        
-        
-        %% Column, row, pivot plot
+                
+        % 
+        % Column, row, pivot plot
+        %
         
         % Only option with <=3 letters is a colour, marker, line
         ll = regexp( varargin{1}, '[-:.]+', 'match' );

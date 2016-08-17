@@ -1,9 +1,9 @@
 function g = constructor(g, op, varargin)
 %CONSTRUCTOR   The main DISKFUN constructor.
-% This code is when functions on the surface of the disk are represented
-% as DISKFUN objects. A DISKFUN object is a real-valued function as a 
-% sum of rank 1 outerproducts of univariate functions in polar 
-% coordinates.
+% This code is for generating a DISKFUN object that represents a function
+% on the unit disk. A DISKFUN object is a real-valued function that is
+% represented as a sum of rank 1 outerproducts of univariate functions in
+% `doubled-up' poloar coordinates.
 %
 % The algorithm for constructing a DISKFUN comes in two phases:
 %
@@ -15,8 +15,9 @@ function g = constructor(g, op, varargin)
 %
 % PHASE 2: The second phase attempts to resolve the corresponding column
 % and row slices by sampling along the slices and performing GE (pivoting
-% at 2x2 matrices) on the skeleton. Sampling along each slice is increased 
-% until the Fourier/Chebyshev coefficients of the slice fall below machine precision.
+% at 2x2 matrices) on the skeleton. Sampling along each slice is increased
+% until the Fourier/Chebyshev coefficients of the slice fall below machine
+% precision.
 %
 % The algorithm is fully described in:
 %  A. Townsend, H. Wilber, and G. Wright, Computing with function on
@@ -161,7 +162,7 @@ while ( ~isHappy && ~failure )
   
     % Sample Test:
     if ( sampleTest )
-        % wrap the op with evaluate in case the 'vectorize' flag is on:
+        % Wrap the op with evaluate in case the 'vectorize' flag is on:
         sampleOP = @(th,r) evaluate(op, th, r, vectorize);
         % Evaluate at points in the domain:
         pass = g.sampleTest( sampleOP, tol, vectorize);
@@ -216,7 +217,6 @@ end
 tol = getTol(F, 2*pi/m, pi/(n-1), dom, pref.cheb2Prefs.chebfun2eps);
 pref.chebfuneps = tol;
 
-%%
 % Perform GE with complete pivoting
 [pivotIndices, pivotArray, removePoles, unused, cols, pivots, ...
     rows, idxPlus, idxMinus] = PhaseOne(F, tol, alpha, 0);
@@ -240,7 +240,7 @@ g = projectOntoBMCII(g);
 end
 
 
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [pivotIndices, pivotArray, removePoles, isHappy, cols, pivots, ...
         rows, idxPlus, idxMinus] = PhaseOne(F, tol, alpha, factor)
@@ -308,9 +308,8 @@ if  abs(pole1) > tol
     rankCount = rankCount + 1;
 end
 
-
 % Remove the row corresponding to the origin before determining the
-% rank.  We do this because then F is an even BMC matrix, which is what the
+% rank. We do this because then F is an even BMC matrix, which is what the
 % code below requires.
 Fp = Fp(2:m, :);
 Fm = Fm(2:m, :);
@@ -465,7 +464,7 @@ end
 
 end
 
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [cols, pivots, rows, pivotLocations, idxPlus, idxMinus, isHappy, failure] = ...
     PhaseTwo(h, pivotIndices, pivotArray, n, dom, vscale, maxSample, ...
@@ -503,7 +502,6 @@ idxMinus = zeros(numMinusPivots, 1);
 % Phase 2: Calculate decomposition on disk.
 failure = false;
 while ( ~(happy_columns && happy_rows) && ~failure )
-    
     [x, y] = getPoints(m, n);
     [xx, yy] = meshgrid(col_pivots, y);
     newCols = real(evaluate(h, xx +pi , yy, vectorize)); 
@@ -539,7 +537,6 @@ while ( ~(happy_columns && happy_rows) && ~failure )
     end
     
     for ii = 1:rk
-        
         % Get the pivots
         evp = pivotArray(ii, 1);
         evm = pivotArray(ii, 2);
@@ -703,8 +700,7 @@ isHappy = happy_rows & happy_columns;
 
 end
 
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function vals = evaluate(h, xx, yy, vectorize)
 % Evaluate h on an m-by-n tensor product grid.
 
@@ -722,22 +718,18 @@ end
 
 end
 
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [x, y] = getPoints( m, n)
 
 x = trigpts(2*n, [-pi, pi]);
-y =  chebpts(2*m+1, [-1, 1]); %doubled;
+y =  chebpts(2*m+1, [-1, 1]); % Doubled
 
-%need to pole (r=0), which needs evaluated. 
-%orientation: currently gives [0, 1] with 0 at start. 
+% Need to include the pole (r=0).
+% Orientation: currently gives [0, 1] with 0 at start. 
 y = y((2*m)/2+1:end);
 end
 
-
-
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [row, col] = myind2sub(siz, ndx)
 % Alex's version of ind2sub. In2sub is slow because it has a varargout. 
 % Since this is at the very inner part of the constructor and slowing 
@@ -750,15 +742,14 @@ row = (vi - 1) + 1;
 
 end
 
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [tol, vscale] = getTol(F, hx, hy, dom, pseudoLevel)
 % GETTOL     Calculate a tolerance for the DISKFUN constructor.
 %
-%  This is the 2D analogue of the tolerance employed in the trigtech
-%  constructors. It is based on a finite difference approximation to the
-%  gradient, the size of the approximation domain, the internal working
-%  tolerance, and an arbitrary (2/3) exponent. 
+% This is the 2D analogue of the tolerance employed in the trigtech
+% constructors. It is based on a finite difference approximation to the
+% gradient, the size of the approximation domain, the internal working
+% tolerance, and an arbitrary (2/3) exponent. 
 
 [m, n] = size(F);
 grid = max(m, n);
@@ -774,8 +765,7 @@ tol = grid.^(2/3) * max(abs(dom(:))) * max(Jac_norm, vscale) * pseudoLevel;
 
 end
 
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function pivLocNew = adjustPivotLocations(pivLoc, pivArray)
 
 % We will store the pivotLocations for both the plus and minus pieces, 
@@ -812,7 +802,7 @@ pole = mean(val);
 % Compute their standard deviation
 stddev = std(val);
 
-% If the standard deviation does not exceed the 100*tolearnce then the pole
+% If the standard deviation does not exceed the 1e8*tolearnce then the pole
 % is "constant".
 % TODO: Get a better feel for the tolerance check.
 if ( (stddev <= 1e8*tol) || (stddev < eps) )
@@ -823,7 +813,7 @@ end
 
 end
 
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [op, dom, pref, fixedRank, vectorize] = parseInputs(op, varargin)
 
 if ( isa(op, 'char') )     % DISKFUN( CHAR )
@@ -838,8 +828,8 @@ if ( isa(op, 'function_handle') )
             'The function %s must accept 2 input arguments.',op);
     end
 
-%check for polar coords
-ispolar = find(strcmp(varargin,'polar'));
+    % Check for polar coords
+    ispolar = find(strcmp(varargin,'polar'));
     if ( ~any(ispolar) )
         op = @(th, r) diskfun.pol2cartf(op,th, r); %wrap for polar eval
     end
@@ -948,8 +938,7 @@ end
 
 
 
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function g = fixTheRank( g , fixedRank )
 % Fix the rank of a DISKFUN. Used for nonadaptive calls to the constructor.
 
@@ -984,8 +973,7 @@ end
 
 end
 
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [vectorize, op] = vectorCheck(op, dom, pseudoLevel)
 % Check for cases: @(x,y) x*y, and @(x,y) x*y'
 
@@ -1030,11 +1018,10 @@ end
     end
 end
 
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function op = str2op( op )
-% OP = STR2OP(OP), finds the dependent variables in a string and returns an op
-% handle than can be evaluated.
+% OP = STR2OP(OP), finds the dependent variables in a string and returns an
+% op handle than can be evaluated.
 
 depvar = symvar( op );
 if ( numel(depvar) > 2)

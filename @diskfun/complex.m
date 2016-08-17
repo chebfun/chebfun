@@ -1,7 +1,7 @@
 function varargout = complex(varargin)
 % COMPLEX  Construct complex DISKFUN from real and imaginary parts.
-%   This is not allowed and returns an error.  This function exists so that the
-%   error message is meaningful to a DISKFUN user.
+%   This is not allowed and returns an error.  This function exists so that
+%   the error message is meaningful to a DISKFUN user.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
