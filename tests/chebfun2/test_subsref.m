@@ -29,7 +29,7 @@ c1 = chebfun(@(t) 1 + 0*t);
 c2 = chebfun(@(t) -.3 + 0*t);
 pass(6) = ( norm( f(c1, c2) +.3 ) < tol );
 pass(7) = ( norm( f(c1 + 1i*c2) +.3 ) < tol );
-pass(8) = ( norm( feval(f, c1, c2) - f(c1, c2) ) < tol );
+pass(8) = ( norm( compose([ c1, c2 ], f) - f(c1, c2) ) < tol );
 
 % GET properties
 f = chebfun2(@(x,y) x);

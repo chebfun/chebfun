@@ -3,11 +3,8 @@ function out = feval(f, x, y)
 %   FEVAL(F, X, Y) evaluates the SEPARABLEAPPROX F and the point(s) in (X, Y),
 %   where X and Y are doubles.
 %
-%   FEVAL(F, X) evaluates the SEPARABLEAPPROX F along the complex valued CHEBFUN
-%   X and returns g(t) = F(real(X(t)), imag(X(t)))
-%
-%   FEVAL(F, X, Y) returns g(t) = F(X(t), Y(t)), where X and Y are real valued
-%   CHEBFUN objects with the same domain.
+%   FEVAL(F, X) evaluates the SEPARABLEAPPROX F at the point(s) in X, where X
+%   is a double, interpreted as F(real(X), imag(X)).
 %
 % See also SUBSREF.
 
@@ -111,30 +108,6 @@ elseif ( isnumeric(x) && isnumeric(y) )  % f(x, y)
     % Take transpose:
     if ( takeTranspose )
         out = transpose( out );
-    end
-    
-elseif ( isa(x, 'chebfun') )
-    if ( min( size( x ) ) > 1 )
-        error('CHEBFUN:SEPARABLEAPPROX:feval:arrayValued', ...
-            'Cannot evaluate a SEPARABLEAPPROX at an array-valued CHEBFUN.');
-    end
-    
-    if ( ~isreal(x) )      % Complex valued chebfun.
-        % Extract chebfun along the path,  F(real(X(t)), imag(X(t)))
-        out = chebfun(@(t) feval(f, real(x(t))', imag(x(t))'), x.domain, 'vectorize');
-    elseif ( isa(y, 'chebfun') )
-        if ( isreal( y ) ) % Both x and y are real valued.
-            % Check domains of x and y match
-            if ( domainCheck(x, y) )
-                out = chebfun(@(t) feval(f, x(t), y(t)), x.domain, 'vectorize');
-            else
-                error('CHEBFUN:SEPARABLEAPPROX:feval:path', ...
-                    'CHEBFUN path has domain inconsistency.');
-            end
-        else
-            error('CHEBFUN:SEPARABLEAPPROX:feval:complex', ...
-                'Cannot evaluate along complex-valued CHEBFUN.');
-        end
     end
     
 else
