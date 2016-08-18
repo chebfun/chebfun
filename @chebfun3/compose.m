@@ -22,6 +22,13 @@ if ( isa(op, 'chebfun') )
             'Composition of a CHEBFUN and a complex CHEBFUN3 is not defined.')
     end
     
+    if ( length(op.domain) > 2 )
+        % If OP has several pices, OP(CHEBFUN3) might be inaccurate.
+        warning('CHEBFUN:CHEBFUN3:compose:pieces', ...
+            ['The composition of a CHEBFUN with several pieces and a CHEBFUN3\n', ...
+            'might be inaccurate.']);
+    end
+    
     % TO DO: Should we add the following domain check?
     %     % Check that image(f) is contained in domain(OP).
     %     vals = minandmax3(f);
