@@ -91,6 +91,7 @@ ep = 0.25;
 x = chebfun('x');
 F = (abs(x) < ep)/(2*ep);
 pass(12) = get(F(x), 'ishappy');
+j = 13;
 
 %% Test composition with a CHEBFUN2:
 Fr = chebfun(@(t) [ cos(t), sin(t) ], [ -pi, pi ]); % Two real columns.
@@ -99,8 +100,28 @@ g = chebfun2(@(x,y) x.^2 + y.^2);
 h_true = chebfun(@(t) 1 + 0*t, [ -pi, pi ]);
 hr = compose(Fr, g);
 hc = compose(Fc, g);
-pass(13) = ( norm(hr - h_true) < 100 * eps );
-pass(14) = ( norm(hc - h_true) < 100 * eps );
+pass(j) = ( norm(hr - h_true) < 100 * eps );
+j = j + 1;
+pass(j) = ( norm(hc - h_true) < 100 * eps );
+j = j + 1;
+
+%% Test composition of a periodic CHEBFUN with a CHEBFUN2:
+F = chebfun(@(t) [ cos(t), sin(t) ], [ -pi, pi ], 'trig');
+g = chebfun2(@(x,y) x + y);
+h_true = chebfun(@(t) cos(t) + sin(t), [ -pi, pi ], 'trig');
+h = compose(F, g);
+pass(j) = ( norm(h - h_true) < 100 * eps );
+j = j + 1;
+pass(j) = isPeriodicTech(h);
+j = j + 1;
+
+%% Test composition [periodic, nonperiodic] with a CHEBFUN2:
+F = [ chebfun(@(t) cos(t), [ -pi, pi ], 'trig'), ...
+    chebfun(@(t) sin(t), [ -pi, pi ]) ];
+g = chebfun2(@(x,y) x + y);
+h = compose(F, g);
+pass(j) = ~isPeriodicTech(h);
+j = j + 1;
 
 %% Test composition with a CHEBFUN2V:
 Fr = chebfun(@(t) [ cos(t), sin(t) ], [ -pi, pi ]); % Two real columns.
@@ -109,31 +130,60 @@ G = chebfun2v(@(x,y) x.^2 + y.^2, @(x,y) x);
 H_true = chebfun(@(t) [ 1 + 0*t, cos(t) ], [ -pi, pi ]);
 Hr = compose(Fr, G);
 Hc = compose(Fc, G);
-pass(15) = ( norm(Hr - H_true) < 100 * eps );
-pass(16) = ( norm(Hc - H_true) < 100 * eps );
+pass(j) = ( norm(Hr - H_true) < 100 * eps );
+j = j + 1;
+pass(j) = ( norm(Hc - H_true) < 100 * eps );
+j = j + 1;
+
+%% Test composition of a periodic CHEBFUN with a CHEBFUN2V
+F = chebfun(@(t) [ cos(t), sin(t) ], [ -pi, pi ], 'trig');
+g = chebfun2v(@(x,y) x, @(x,y) y);
+h_true = chebfun(@(t) [ cos(t) , sin(t) ], [ -pi, pi ], 'trig');
+h = compose(F, g);
+pass(j) = ( norm(h - h_true) < 100 * eps );
+j = j + 1;
+pass(j) = isPeriodicTech(h);
+j = j + 1;
 
 %% Test composition with a CHEBFUN3:
 F = chebfun(@(t) [ cos(t), sin(t), t ], [ -pi, pi ]);
 g = chebfun3(@(x,y,z) x.^2 + y.^2 + z.^2);
 h_true = chebfun(@(t) 1 + t.^2, [ -pi, pi ]);
 h = compose(F, g);
-pass(17) = ( norm(h - h_true) < 100 * eps );
+pass(j) = ( norm(h - h_true) < 100 * eps );
+j = j + 1;
 
 F = chebfun(@(t) [ cos(t), sin(t), 1i*t ], [ -pi, pi ]);
 g = chebfun3(@(x,y,z) x.^2 + y.^2 + z.^2);
 try
     h = compose(F, g);
-    pass(18) = 0;
+    pass(j) = 0;
 catch EM
-   pass(18) = strcmp(EM.identifier, 'CHEBFUN:CHEBFUN:compose:complex3');
+   pass(j) = strcmp(EM.identifier, 'CHEBFUN:CHEBFUN:compose:complex3');
 end
+j = j + 1;
 
 %% Test composition with a CHEBFUN3V:
 F = chebfun(@(t) [ cos(t), sin(t), t ], [ -pi, pi ]);
 G = chebfun3v(@(x,y,z) x.^2 + y.^2, @(x,y,z) z);
 H_true = chebfun(@(t) [ 1 + 0*t, t ], [ -pi, pi ]);
 H = compose(F, G);
-pass(19) = ( norm(H - H_true) < 100 * eps );
+pass(j) = ( norm(H - H_true) < 100 * eps );
+j = j + 1;
+
+%% Test composition of a periodic CHEBFUN with a CHEBFUN3 and CHEBFUN3V:
+F = chebfun(@(t) [ cos(t), sin(t), cos(2*t) ], [ -pi, pi ], 'trig');
+g = chebfun3(@(x,y,z) x.^2 + y.^2 + z.^2);
+h_true = chebfun(@(t) 1 + cos(2*t).^2, [ -pi, pi ], 'trig');
+h = compose(F, g);
+pass(j) = ( norm(h - h_true) < 10 * eps );
+j = j + 1;
+pass(j) = isPeriodicTech(h);
+j = j + 1;
+
+G = chebfun3v(@(x,y,z) x.^2 + y.^2, @(x,y,z) z);
+H = G(F);
+pass(j) = isPeriodicTech(H);
 
 end
 

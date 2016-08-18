@@ -131,7 +131,12 @@ elseif ( isa(op, 'chebfun2') )
         end
         
         % Compose:
-        f = chebfun(@(t) op(feval(x, t), feval(y, t)), x.domain);
+        if ( isPeriodicTech(x) && isPeriodicTech(y) )
+            % OP(f) should be periodic if f is:
+            f = chebfun(@(t) op(feval(x, t), feval(y, t)), x.domain, 'trig');
+        else
+            f = chebfun(@(t) op(feval(x, t), feval(y, t)), x.domain);
+        end
     else
         error('CHEBFUN:CHEBFUN:compose:Cheb2ofCheb', ...
             'CHEBFUN2(f) is defined for a chebfun f with one complex or two real columns.')
@@ -168,7 +173,14 @@ elseif ( isa(op, 'chebfun3') )
         end
         
         % Compose:
-        f = chebfun(@(t) op(feval(x, t), feval(y, t), feval(z, t)), x.domain);
+        if ( isPeriodicTech(x) && isPeriodicTech(y) && isPeriodicTech(z) )
+            % OP(f) should be periodic if f is:
+            f = chebfun(@(t) op(feval(x, t), feval(y, t), feval(z, t)), ...
+                x.domain, 'trig');
+        else
+            f = chebfun(@(t) op(feval(x, t), feval(y, t), feval(z, t)), ...
+                x.domain);
+        end
     else
         error('CHEBFUN:CHEBFUN:compose:Cheb3ofCheb', ...
             'CHEBFUN3(F) is defined for a chebfun F with three columns.')
