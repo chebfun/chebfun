@@ -49,6 +49,8 @@ h = compose(f, g);
 h_true = chebfun2(@(x,y) (x + y).^2);
 pass(j) = ( norm(h - h_true) < tol );
 j = j + 1;
+pass(j) = ~isPeriodicTech(h);
+j = j + 1;
 
 % Compose a CHEBFUN2 f with a CHEBFUN G (two columns):
 f = chebfun2(@(x,y) x + y);
@@ -58,11 +60,36 @@ H_true = chebfun2v(@(x,y) x + y, @(x,y) (x + y).^2);
 pass(j) = ( norm(H - H_true) < tol );
 j = j + 1;
 
+% Compose a periodic CHEBFUN2 with a CHEBFUN g:
+f = chebfun2(@(x,y) cos(pi*x) .* sin(y), [ -1, 1, -pi, pi ], 'trig');
+g = chebfun(@(t) t.^2);
+h = compose(f, g);
+pass(j) = isPeriodicTech(h);
+% j = j + 1;t
+pass(j) = ( norm(h.domain - f.domain) < tol );
+j = j + 1;
+
+g = chebfun(@(t) [ t, cos(t) ]);
+h = compose(f, g);
+pass(j) = isPeriodicTech(h);
+j = j + 1;
+
 % Compose a complex-valued CHEBFUN2 f with a CHEBFUN2 g:
 f = chebfun2(@(x,y) x + 1i*y);
 g = chebfun2(@(x,y) x.^2 + y.^2);
 h_true = chebfun2(@(x,y) x.^2 + y.^2);
 h = compose(f, g);
 pass(j) = ( norm(h - h_true) < tol );
+j = j + 1;
+
+% Compose a periodic complex CHEBFUN2 f with a CHEBFUN2 g:
+f = chebfun2(@(x,y) exp(1i * pi * x), 'trig');
+g = chebfun2(@(x,y) x);
+h = compose(f, g);
+pass(j) = isPeriodicTech(h);
+j = j + 1;
+G = chebfun2v(@(x,y) x, @(x,y) y);
+H = compose(f, G);
+pass(j) = isPeriodicTech(H);
 
 end

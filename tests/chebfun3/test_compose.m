@@ -126,5 +126,24 @@ g = chebfun2(@(x,y) x.^2 + y.^2);
 h_true = chebfun3(@(x,y,z) (x + y).^2 + z.^2);
 h = compose(f, g);
 pass(30) = ( norm(h - h_true) < tol );
+pass(31) = ~isPeriodicTech(h);
+
+%% Compose a periodic CHEBFUN3 f with a CHEBFUN g
+f = chebfun3(@(x,y,z) cos(pi*x), 'trig');
+g = chebfun(@(t) t.^2);
+h = compose(f, g);
+pass(32) = isPeriodicTech(h);
+G = chebfun(@(t) [ t.^2, cos(t) ]);
+H = compose(f, G);
+pass(33) = isPeriodicTech(H);
+
+%% Compose a periodic complex CHEBFUN3 f with a CHEBFUN2 or CHEBFUN2V g:
+f = chebfun3(@(x,y,z) exp(1i*pi*x), 'trig');
+g = chebfun2(@(x,y) x + y);
+h = compose(f, g);
+pass(34) = isPeriodicTech(h);
+G = chebfun2v(@(x,y) x, @(x,y) y);
+H = compose(f, G);
+pass(35) = isPeriodicTech(H);
 
 end

@@ -41,12 +41,24 @@ if ( isa(op, 'chebfun') )
     if ( nColumns <= 3 )
         % Compute first entry:
         opcolumn = op(:,1);
-        F = chebfun2(@(x,y) opcolumn(feval(f, x, y)), f.domain);
         
-        % Add additional components:
-        for jj = 2:nColumns
-            opcolumn = op(:,jj);
-            F = [ F; chebfun2(@(x,y) opcolumn(feval(f, x, y)), f.domain) ];
+        if ( isPeriodicTech(f) )
+            % OP(f) should be periodic if f is:
+            F = chebfun2(@(x,y) opcolumn(feval(f, x, y)), f.domain, 'trig');
+            % Add additional components:
+            for jj = 2:nColumns
+                opcolumn = op(:,jj);
+                F = [ F; chebfun2(@(x,y) opcolumn(feval(f, x, y)), ...
+                    f.domain, 'trig') ];
+            end
+            
+        else
+            F = chebfun2(@(x,y) opcolumn(feval(f, x, y)), f.domain);
+            % Add additional components:
+            for jj = 2:nColumns
+                opcolumn = op(:,jj);
+                F = [ F; chebfun2(@(x,y) opcolumn(feval(f, x, y)), f.domain) ];
+            end
         end
         f = F;
         
@@ -66,7 +78,11 @@ elseif ( ( nargin == 2 ) && ( nargin(op) == 1 ) )
     % OP has one input variable.
     
     % Call constructor:
-    f = chebfun2(@(x,y) op(feval(f, x, y)), f.domain);
+    if ( isPeriodicTech(f) )
+        f = chebfun2(@(x,y) op(feval(f, x, y)), f.domain, 'trig');
+    else
+        f = chebfun2(@(x,y) op(feval(f, x, y)), f.domain);
+    end
     
 elseif ( ( nargin == 3 ) && ( nargin(op) == 2 ) )
     % OP has two input variables.

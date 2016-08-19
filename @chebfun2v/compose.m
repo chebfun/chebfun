@@ -44,7 +44,14 @@ elseif ( f.nComponents == 2 )
         f2 = f.components{2};
         
         % Call constructor:
-        f = chebfun2(@(x,y) op(feval(f1, x, y), feval(f2, x, y)), f1.domain);
+        if ( isPeriodicTech(f) )
+            % OP(f) should be periodic if f is:
+            f = chebfun2(@(x,y) op(feval(f1, x, y), feval(f2, x, y)), ...
+                f1.domain, 'trig');
+        else
+            f = chebfun2(@(x,y) op(feval(f1, x, y), feval(f2, x, y)), ...
+                f1.domain);
+        end
         
     elseif ( isa(op, 'chebfun2v') )
         % Call compose for each component:
@@ -69,8 +76,14 @@ elseif ( f.nComponents == 3 )
         f3 = f.components{3};
         
         % Call constructor:
-        f = chebfun2(@(x,y) op(feval(f1, x, y), feval(f2, x, y), ...
-            feval(f3, x, y)), f1.domain);
+        if ( isPeriodicTech(f) )
+            % OP(f) should be periodic if f is:
+            f = chebfun2(@(x,y) op(feval(f1, x, y), feval(f2, x, y), ...
+                feval(f3, x, y)), f1.domain, 'trig');
+        else
+            f = chebfun2(@(x,y) op(feval(f1, x, y), feval(f2, x, y), ...
+                feval(f3, x, y)), f1.domain);
+        end
         
     elseif ( isa(op, 'chebfun3v') )
         % Call compose for each component:

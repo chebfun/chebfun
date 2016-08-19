@@ -51,5 +51,31 @@ G = chebfun2v(@(x,y) x + y, @(x,y) x - y, @(x,y) x .* y);
 H = compose(F, G);
 H_true = chebfun3v(@(x,y,z) x + y, @(x,y,z) x - y, @(x,y,z) x .* y);
 pass(j) = ( norm(H - H_true) < tol );
+j = j + 1;
+
+%% Compose a periodic CHEBFUN3V F (2 components) with a CHEBFUN2 and CHEBFUN2V:
+f1 = chebfun3(@(x,y,z) cos(pi*x).*sin(pi*y), 'trig');
+f2 = chebfun3(@(x,y,z) sin(pi*x).*sin(pi*y), 'trig');
+F = [ f1; f2 ];
+g = chebfun2(@(x,y) x);
+h = compose(F, g);
+pass(j) = isPeriodicTech(h);
+j = j + 1;
+G = chebfun2v(@(x,y) x, @(x,y) y);
+H = compose(F, G);
+pass(j) = isPeriodicTech(H);
+j = j + 1;
+
+%% Compose a periodic CHEBFUN3V F (3 components) with a CHEBFUN3 and CHEBFUN3V:
+f1 = chebfun3(@(x,y,z) cos(pi*x).*sin(pi*y), 'trig');
+f2 = chebfun3(@(x,y,z) sin(pi*x).*sin(pi*y), 'trig');
+F = [ f1; f2; f1 ];
+g = chebfun3(@(x,y,z) x);
+h = compose(F, g);
+pass(j) = isPeriodicTech(h);
+j = j + 1;
+G = chebfun3v(@(x,y,z) x, @(x,y,z) y);
+H = compose(F, G);
+pass(j) = isPeriodicTech(H);
 
 end

@@ -53,4 +53,28 @@ H_true = chebfun2v(@(x,y) x+y, @(x,y) x - y, @(x,y) x + y);
 pass(j) = ( norm(H - H_true) < tol );
 j = j+1;
 
+%% F = peridioc CHEBFUN2V, G = CHEBFUN2 and CHEBFUN2V
+f1 = chebfun2(@(x,y) cos(pi*x) .* sin(pi*y), 'trig');
+f2 = chebfun2(@(x,y) cos(pi*x) .* cos(pi*y), 'trig');
+F = [f1; f2];
+g = chebfun2(@(x,y) x.^2 + y.^2);
+h = g(F);
+pass(j) = isPeriodicTech(h);
+j = j + 1;
+
+G = chebfun2v(@(x,y) x.^2 + y.^2, @(x,y) x);
+H = G(F);
+pass(j) = isPeriodicTech(H);
+j = j + 1;
+
+%% F = periodic CHEBFUN2V and G = CHEBFUN3 or CHEBFUN3V
+F = [f1; f2; f1];
+g = chebfun3(@(x,y,z) exp(x) .* cos(y) + 1);
+h = g(F);
+pass(j) = isPeriodicTech(h);
+j = j + 1;
+G = chebfun3v(@(x,y,z) exp(x), @(x,y,z) x.^2 + y.^2, @(x,y,z) z-2);
+H = G(F);
+pass(j) = isPeriodicTech(H);
+
 end
