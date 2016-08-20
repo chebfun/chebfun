@@ -31,7 +31,7 @@ j=j+1;
 
 %% F = CHEBFUN2V, g = CHEBFUN3
 F = chebfun2v(@(x,y) x, @(x,y) y, @(x,y) x + y);
-g = chebfun3(@(x,y,z) x + y + z);
+g = chebfun3(@(x,y,z) x + y + z, [ -1, 1, -1, 1, -2, 2 ]);
 h = compose(F, g);
 h_true = chebfun2(@(x,y) 2*x + 2*y);
 pass(j) = ( norm(h - h_true) < tol );
@@ -39,7 +39,7 @@ j = j+1;
 
 %% F = CHEBFUN2V, G = CHEBFUN3V with 2 components
 F = chebfun2v(@(x,y) x, @(x,y) y, @(x,y) x + y);
-G = chebfun3v(@(x,y,z) x + y, @(x,y,z) z - x);
+G = chebfun3v(@(x,y,z) x + y, @(x,y,z) z - x, [ -1, 1, -1, 1, -2, 2 ]);
 H = compose(F, G);
 H_true = chebfun2v(@(x,y) x+y, @(x,y) y);
 pass(j) = ( norm(H - H_true) < tol );
@@ -47,7 +47,7 @@ j = j+1;
 
 %% F = CHEBFUN2V, G = CHEBFUN3V with 3 components
 F = chebfun2v(@(x,y) x, @(x,y) y, @(x,y) x + y);
-G = chebfun3v(@(x,y,z) x + y, @(x,y,z) x - y, @(x,y,z) z);
+G = chebfun3v(@(x,y,z) x + y, @(x,y,z) x - y, @(x,y,z) z, [ -1, 1, -1, 1, -2, 2 ]);
 H = compose(F, G);
 H_true = chebfun2v(@(x,y) x+y, @(x,y) x - y, @(x,y) x + y);
 pass(j) = ( norm(H - H_true) < tol );

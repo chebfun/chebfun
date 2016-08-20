@@ -44,7 +44,7 @@ pass(j) = (norm(f.*f-f.^2) < tol); j=j+1;
 
 % Compose a CHEBFUN2 f with a CHEBFUN g (one column):
 f = chebfun2(@(x,y) x + y);
-g = chebfun(@(t) t.^2);
+g = chebfun(@(t) t.^2, [-2, 2]);
 h = compose(f, g);
 h_true = chebfun2(@(x,y) (x + y).^2);
 pass(j) = ( norm(h - h_true) < tol );
@@ -54,7 +54,7 @@ j = j + 1;
 
 % Compose a CHEBFUN2 f with a CHEBFUN G (two columns):
 f = chebfun2(@(x,y) x + y);
-G = chebfun(@(t) [t, t.^2]);
+G = chebfun(@(t) [t, t.^2], [-2, 2]);
 H = compose(f, G);
 H_true = chebfun2v(@(x,y) x + y, @(x,y) (x + y).^2);
 pass(j) = ( norm(H - H_true) < tol );

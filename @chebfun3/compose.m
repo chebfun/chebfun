@@ -29,13 +29,12 @@ if ( isa(op, 'chebfun') )
             'might be inaccurate.']);
     end
     
-    % TO DO: Should we add the following domain check?
-    %     % Check that image(f) is contained in domain(OP).
-    %     vals = minandmax3(f);
-    %     if ( ( vals(1) < op.domain(1) ) || ( vals(2) > op.domain(2) ) )
-    %         error('CHEBFUN:CHEBFUN3:COMPOSE:DomainMismatch', ...
-    %             'Composition op(f) not defined, because the image of f is not contained in the domain of op.')
-    %     end
+    % Check that image(f) is contained in domain(OP).
+    vals = minandmax3est(f);    % Estimate of image(f).
+    if ( ~isSubset(vals, op.domain) )
+        error('CHEBFUN:CHEBFUN3:COMPOSE:DomainMismatch', ...
+            'OP(F) is not defined, since image(F) is not contained in domain(OP).')
+    end
     
     nColumns = size(op, 2);
     if ( nColumns <= 3 )

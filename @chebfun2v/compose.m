@@ -6,8 +6,6 @@ function f = compose(f, op)
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% TO DO: Add test that range(f) is in domain(OP).
-
 % Deal with empty CHEBFUN objects:
 if ( isempty(f) || isempty(op) )
     if ( isa(op, 'chebfun2v') || isa(op, 'chebfun3v') )
@@ -31,6 +29,8 @@ if ( ~isreal(f) )
         'The first CHEBFUN2V object must be real-valued.')
 end
 
+% Get estimate for the image of f:
+rangef = minandmax2est(f);
 
 if ( f.nComponents == 1 )
     % If F has only one component, send to CHEBFUN2 compose:
@@ -40,6 +40,13 @@ elseif ( f.nComponents == 2 )
     % f has 2 components, so we can compose with a CHEBFUN2 or CHEBFUN2V.
     
     if ( isa(op, 'chebfun2') )
+        % Check that the image of f is in the domain of op:
+        if ( ~isSubset(rangef, op.domain) )
+            error('CHEBFUN:CHEBFUN2V:COMPOSE:DomainMismatch2', ...
+                'OP(F) is not defined, since image(F) is not contained in domain(OP).')
+        end
+        
+        % Get components of f:
         f1 = f.components{1};
         f2 = f.components{2};
         
@@ -70,6 +77,12 @@ elseif ( f.nComponents == 3 )
     % f has 3 components, so we can compose with a CHEBFUN3 or CHEBFUN3V.
     
     if ( isa(op, 'chebfun3') )
+        % Check that the image of f is in the domain of op:
+        if ( ~isSubset(rangef, op.domain) )
+            error('CHEBFUN:CHEBFUN2V:COMPOSE:DomainMismatch3', ...
+                'OP(F) is not defined, since image(F) is not contained in domain(OP).')
+        end
+        
         % Get components:
         f1 = f.components{1};
         f2 = f.components{2};
