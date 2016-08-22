@@ -15,7 +15,13 @@ function y = feval(varargin)
 
 
 %figure out if cartesian or polar
- iscart = diskfun.isCartesian(varargin{:});
+ iscart = 1; 
+% search for user-supplied 'polar' flag in arguments: 
+isPolar = find(strcmp(varargin, 'polar'));
+if ( any( isPolar ) )
+    iscart = 0; 
+end
+
 
 %now evaluate
 f = varargin{1};
