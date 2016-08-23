@@ -115,6 +115,7 @@ elseif ( isa(f, 'diskfun') )
         yy = feval(yy, mxx, myy, 'polar');
         [xx,yy] = cart2pol(xx,yy);
         vals = feval(f, xx, yy, 'polar');
+        
     elseif ( (nargin == 3) || (nargin > 3) && ~isa(argin{1},'diskfun') ) 
         % CONTOUR(xx, yy, f)
         
@@ -123,7 +124,7 @@ elseif ( isa(f, 'diskfun') )
         y = linspace( dom(3), dom(4), minplotnum );
         [xx, yy] = meshgrid(x, y);
         vals = feval( f, xx, yy, 'polar' );
-
+        
     elseif ( ( nargin == 1) || ( ( nargin > 1 ) && ( isa(argin{1},'double') ) ) )    
         % CONTOUR(f) 
         
@@ -155,13 +156,13 @@ axis square
 
 % Add unit circle
 holdState = ishold; 
-c = exp(1i*pi*linspace(-1,1,101));
+circ = exp(1i*pi*linspace(-1,1,101));
 hold on 
-plot(real(c), imag(c), 'k-', 'Linewidth', .3)
+plot(real(circ), imag(circ), 'k-', 'Linewidth', .3)
 hold off
 
 if holdState
-     hold on;
+    hold on;
 else
     hold off;
 end
