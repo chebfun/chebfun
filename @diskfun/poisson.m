@@ -71,21 +71,25 @@ th0 = pi*trigpts( n );
 if ( isa(f, 'function_handle') )
     f = @(r,th) feval(f, th, r);  % switch convention 
     [rhs_r, rhs_theta] = meshgrid( x0, th0 ); 
-    F = rhs_r.^2.*feval( f, rhs_r, rhs_theta );     % Get (chebvals,trigvals) of rhs
+    F = rhs_r.^2.*feval( f, rhs_r, rhs_theta );
+    % If F is real-valued, we will use symmetry to reduce # computations
+    realValued = isreal(F); 
     F = (S1*chebtech2.vals2coeffs( F.' )).';        % Get (C^{(2)},trigvals) basis
     F = trigtech.vals2coeffs( F );
 elseif ( isa(f, 'diskfun') )
+    realValued = 1; %for now assume diskfuns are real
     F = coeffs2(f, n, m);
     F = S1*Mr2c*F; % r.^2*rhs in C^{2}
     F = F.';  
 elseif ( isa( f, 'double' ) ) % assume these are chebyshev coeffs
+    %add check if real-valued; for now we will just assume not.
+    realValued = 0; 
     f = chebtech2.alias(trigtech.alias(f.', n).',m); % get correct size
     F = S1*Mr2c*f; % r.^2*rhs in C^{2}
     F = F.';
 end
 
-% If F is real-valued, we will use symmetry to reduce # computations
-realValued = isreal(F); 
+% If F is real-valued, we will use symmetry to reduce # computations 
 % How many Fourier coeffs we need to solve for? n if rv=0, n/2 +1 if rv=1
 d = (-n/2)*realValued+n +realValued; 
 
@@ -132,7 +136,7 @@ end
 
 % When F is real-valued, this gets the rest of the Fourier coeffs
 if ( realValued == 1 )
-    CFS(:,d+1:n) = flip(conj(CFS(:,2:d-1)));
+    CFS(:, d+1:n) = fliplr(conj(CFS(:,2:d-1)));
 end
 
 % Solution returned as a diskfun:
