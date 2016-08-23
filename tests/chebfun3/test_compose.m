@@ -139,10 +139,10 @@ pass(33) = isPeriodicTech(H);
 
 %% Compose a periodic complex CHEBFUN3 f with a CHEBFUN2 or CHEBFUN2V g:
 f = chebfun3(@(x,y,z) exp(1i*pi*x), 'trig');
-g = chebfun2(@(x,y) x + y);
+g = chebfun2(@(x,y) x + y, [-2, 2, -2, 2 ]);
 h = compose(f, g);
 pass(34) = isPeriodicTech(h);
-G = chebfun2v(@(x,y) x, @(x,y) y);
+G = chebfun2v(@(x,y) x, @(x,y) y, [ -2, 2, -2, 2 ]);
 H = compose(f, G);
 pass(35) = isPeriodicTech(H);
 

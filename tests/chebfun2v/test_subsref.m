@@ -22,7 +22,7 @@ j = j+1;
 % Composition of a CHEBFUN2V (2 components) with two CHEBFUN2 objects.
 f1 = chebfun2(@(x,y) x + 1);
 f2 = chebfun2(@(x,y) 2*y);
-G = chebfun2v(@(x,y) x + y, @(x,y) x - y);
+G = chebfun2v(@(x,y) x + y, @(x,y) x - y, [ 0, 2, -2, 2 ]);
 H = G(f1, f2);
 H_true = chebfun2v(@(x,y) x + 2*y + 1, @(x,y) x - 2*y + 1);
 pass(j) = ( norm(H - H_true) < tol );
@@ -33,7 +33,7 @@ j = j+1;
 % Composition of a CHEBFUN2V (3 components) with two CHEBFUN2 objects.
 f1 = chebfun2(@(x,y) x + 1);
 f2 = chebfun2(@(x,y) 2*y);
-G = chebfun2v(@(x,y) x + y, @(x,y) x - y, @(x,y) x.*y );
+G = chebfun2v(@(x,y) x + y, @(x,y) x - y, @(x,y) x.*y , [ 0, 2, -2, 2 ]);
 H = G(f1, f2);
 H_true = chebfun2v(@(x,y) x + 2*y + 1, @(x,y) x - 2*y + 1, ...
     @(x,y) 2*(x + 1).*y);
@@ -43,7 +43,7 @@ j = j+1;
 % Composition of a CHEBFUN2V with two CHEBFUN3 objects.
 f1 = chebfun3(@(x,y,z) x);
 f2 = chebfun3(@(x,y,z) y + z);
-G = chebfun2v(@(x,y) x, @(x,y) y, @(x,y) x + y);
+G = chebfun2v(@(x,y) x, @(x,y) y, @(x,y) x + y, [-1, 1, -2, 2 ]);
 H = G(f1, f2);
 H_true = chebfun3v(@(x,y,z) x, @(x,y,z) y + z, @(x,y,z) x + y + z);
 pass(j) = ( norm(H - H_true) < tol );
@@ -65,7 +65,7 @@ j = j+1;
 
 % Composition of a CHEBFUN2V (2 components) with a CHEBFUN3V.
 F = chebfun3v(@(x,y,z) x, @(x,y,z) y + z);
-G = chebfun2v(@(x,y) x + y, @(x,y) x - y);
+G = chebfun2v(@(x,y) x + y, @(x,y) x - y, [ -1, 1, -2, 2 ]);
 H = G(F);
 H_true = chebfun3v(@(x,y,z) x + y + z, @(x,y,z) x - y - z);
 pass(j) = ( norm(H - H_true) < tol );
@@ -73,7 +73,7 @@ j = j+1;
 
 % Composition of a CHEBFUN2V (3 components) with a CHEBFUN3V.
 F = chebfun3v(@(x,y,z) x, @(x,y,z) y + z);
-G = chebfun2v(@(x,y) x + y, @(x,y) x - y, @(x,y) x.*y);
+G = chebfun2v(@(x,y) x + y, @(x,y) x - y, @(x,y) x.*y, [ -1, 1, -2, 2 ]);
 H = G(F);
 H_true = chebfun3v(@(x,y,z) x + y + z, @(x,y,z) x - y - z, @(x,y,z) x.*(y + z));
 pass(j) = ( norm(H - H_true) < tol );
@@ -98,7 +98,7 @@ j = j+1;
 % Composition of a CHEBFUN2V with a CHEBFUN3, which will be interpreted as the
 % CHEBFUN3V [real(f); imag(f)].  (Regardless if f is real or complex.)
 f = chebfun3(@(x,y,z) x + y + 1i*z);
-G = chebfun2v(@(x,y) x, @(x,y) y, @(x,y) x + y);
+G = chebfun2v(@(x,y) x, @(x,y) y, @(x,y) x + y, [ -2, 2, -1, 1 ]);
 H = G(f);
 H_true = chebfun3v(@(x,y,z) x + y, @(x,y,z) z, @(x,y,z) x + y + z);
 pass(j) = ( norm(H - H_true) < tol );
@@ -106,7 +106,7 @@ j = j+1;
 
 % With real f:
 f = chebfun3(@(x,y,z) x + y);
-G = chebfun2v(@(x,y) x, @(x,y) y, @(x,y) x + y);
+G = chebfun2v(@(x,y) x, @(x,y) y, @(x,y) x + y, [ -2, 2, -2, 2 ]);
 H = G(f);
 H_true = chebfun3v(@(x,y,z) x + y, @(x,y,z) 0*y, @(x,y,z) x + y);
 pass(j) = ( norm(H - H_true) < tol );
