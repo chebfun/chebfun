@@ -5,7 +5,8 @@ function varargout = subsref(f, index)
 %
 %   F(G) where G is a CHEBFUN3V returns the CHEBFUN3 representing the
 %   composition F(G).  If G is a CHEBFUN2V, then F(G) is a CHEBFUN2.  If G is a
-%   CHEBFUN with three columns, then F(G) is a CHEBFUN.
+%   CHEBFUN with three columns, then F(G) is a CHEBFUN.  If G is a SPHEREFUNV,
+%   then F(G) is a SPHEREFUN.
 %
 %   F(X, Y, Z) where X, Y, Z are CHEBFUN3 objects is a CHEBFUN3 representing the
 %   composition.  Similarly if X, Y, Z are CHEBFUN or CHEBFUN2 objects.
@@ -41,8 +42,8 @@ switch index(1).type
             varargout = {out};
             
         elseif ( isa(idx{1}, 'chebfun') || isa(idx{1}, 'chebfun2v') || ...
-                isa(idx{1}, 'chebfun3v') )
-            % Composition F(CHEBFUN), F(CHEBFUN2V) or F(CHEBFUN3V):
+                isa(idx{1}, 'chebfun3v') || isa(idx{1}, 'spherefunv') )
+            % Composition with a CHEBFUN, CHEBFUN2V, CHEBFUN3V, or SPHEREFUN:
             out = compose(idx{1}, f);
             varargout = {out};
             

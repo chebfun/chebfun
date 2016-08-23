@@ -88,5 +88,13 @@ G = chebfun3v(@(x,y,z) x + y + z, @(x,y,z) x);
 H = G(f, f, f);
 H_true = chebfun(@(t) [ 3*t, t ]);
 pass(j) = ( norm(H - H_true) < tol );
+j = j + 1;
+
+% Test composition with a SPHEREFUNV:
+f = spherefunv(@(x,y,z) x, @(x,y,z) y, @(x,y,z) z);
+g = chebfun3v(@(x,y,z) x, @(x,y,z) 2*y, @(x,y,z) z);
+h_true = spherefunv(@(x,y,z) x, @(x,y,z) 2*y, @(x,y,z) z);
+h = g(f);
+pass(j) = ( norm(h - h_true) < tol );
 
 end

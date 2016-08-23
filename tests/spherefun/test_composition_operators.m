@@ -43,4 +43,20 @@ f = spherefun(@(x,y,z) z + sin(pi*x.*y));
 pass(j) = (norm(f+f+f-3*f) < 100*tol); j=j+1; 
 pass(j) = (norm(f.*f-f.^2) < tol); j=j+1; 
 
+% Composition of a spherefun with a chebfun (1 column):
+f = spherefun(@(x,y,z) z + sin(pi*x.*y));
+g = chebfun(@(t) t.^2, [ -1.5, 1.5 ]);
+h_true = spherefun(@(x,y,z) (z + sin(pi*x.*y)).^2);
+h = compose(f, g);
+pass(j) = ( norm(h - h_true) < tol );
+j = j + 1;
+
+% Composition of a spherefun with a chebfun (3 columns):
+f = spherefun(@(x,y,z) z + sin(pi*x.*y));
+G = chebfun(@(t) [ t.^2, t, -t.^2 ], [ -1.5, 1.5 ]);
+H_true = spherefunv(@(x,y,z) (z + sin(pi*x.*y)).^2, ...
+    @(x,y,z) z + sin(pi*x.*y), @(x,y,z) -(z + sin(pi*x.*y)).^2);
+H = compose(f, G);
+pass(j) = ( norm(H - H_true) < tol );
+
 end
