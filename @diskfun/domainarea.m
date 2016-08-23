@@ -5,7 +5,6 @@ function area = domainarea(f)
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-
 % TODO: Account for radius if we ever add this parameter.
 area = pi;
 
