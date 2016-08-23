@@ -1,7 +1,7 @@
 function varargout = contour( f, varargin )
 %CONTOUR   contour plot of a DISKFUN.
 %   CONTOUR(F) is a contour plot of F treating the values of F as heights
-%   above a plane. A contour plot shows the level curves of F for some
+%   above the disk. A contour plot shows the level curves of F for some
 %   values V. The values V are chosen automatically.
 %
 %   CONTOUR(F, N) draw N contour lines, overriding the automatic number.
@@ -92,16 +92,7 @@ if ( isa(f, 'double') )
 elseif ( isa(f, 'diskfun') ) 
     
     dom = f.domain;
-    if ( (nargin == 3) || (nargin > 3) && ~isa(argin{1},'diskfun') ) 
-        % CONTOUR(xx, yy, f)
-        
-        % Evaluate f at equally spaced points.
-        x = linspace( dom(1), dom(2), minplotnum );
-        y = linspace( dom(3), dom(4), minplotnum );
-        [xx, yy] = meshgrid(x, y);
-        vals = feval( f, xx, yy, 'polar' );
-
-    elseif ( (nargin >= 3) && isa(argin{1},'diskfun') && isa(argin{2},'diskfun') )
+    if ( (nargin >= 3) && isa(argin{1},'diskfun') && isa(argin{2},'diskfun') )
         % CONTOUR plot on a surface.
         
         % Extract inputs:
@@ -111,7 +102,7 @@ elseif ( isa(f, 'diskfun') )
         argin(1:2) = [];
         
         % Check CONTOUR objects are on the same domain.
-        if ( ~domainCheck(xx, yy) || ~domainCheck(yy, f) )
+        if ( ~domainCheck(xx, yy) )
             error('CHEBFUN:DISKFUN:contour:domains', ...
                 'Domains of DISKFUN objects are not consistent.');
         end
@@ -120,9 +111,19 @@ elseif ( isa(f, 'diskfun') )
         x = linspace( dom(1), dom(2), minplotnum );
         y = linspace( dom(3), dom(4), minplotnum );
         [mxx, myy] = meshgrid(x, y);
-        xx = feval(xx, mxx, myy); 
-        yy = feval(yy, mxx, myy);
-        vals = feval(f, mxx, myy, 'polar');
+        xx = feval(xx, mxx, myy, 'polar'); 
+        yy = feval(yy, mxx, myy, 'polar');
+        [xx,yy] = cart2pol(xx,yy);
+        vals = feval(f, xx, yy, 'polar');
+    elseif ( (nargin == 3) || (nargin > 3) && ~isa(argin{1},'diskfun') ) 
+        % CONTOUR(xx, yy, f)
+        
+        % Evaluate f at equally spaced points.
+        x = linspace( dom(1), dom(2), minplotnum );
+        y = linspace( dom(3), dom(4), minplotnum );
+        [xx, yy] = meshgrid(x, y);
+        vals = feval( f, xx, yy, 'polar' );
+
     elseif ( ( nargin == 1) || ( ( nargin > 1 ) && ( isa(argin{1},'double') ) ) )    
         % CONTOUR(f) 
         
