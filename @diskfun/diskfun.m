@@ -86,13 +86,7 @@ classdef diskfun < separableApprox
         Y = harmonic(l,m,type) ;   
         
         %convert coeffs to a diskfun
-        f = coeffs2diskfun(CFS); 
-        
-        
-        %isCartesian: determines whether input is in
-        %polar or cartesian coords. 
-        iscart = isCartesian(varargin);
-        
+        f = coeffs2diskfun(CFS);        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
