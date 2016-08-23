@@ -10,7 +10,7 @@ function g = diffx(f, n)
 %   This command is for convenience as the syntax for DIFF, inherited from the
 %   DIFF command for matrices, can be confusing.
 % 
-% See also DIFFY, DIFF. 
+% See also DISKFUN/DIFFY, DISKFUN/DIFF. 
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
