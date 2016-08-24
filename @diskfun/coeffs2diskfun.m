@@ -19,6 +19,13 @@ if ( mod(n, 2) == 1 )
     X = [ zeros(m, 1) X ]; 
 end
 
+%If m is even, we need it to be odd so pole is dealt with correctly: 
+if (mod(m, 2) == 0)
+    m=m+1;
+    X = chebtech2.alias(X, m); 
+end
+
+
 % Convert to values on the grid.
 vals = trigtech.coeffs2vals(chebtech2.coeffs2vals(X).').'; 
 
