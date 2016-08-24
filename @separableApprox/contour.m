@@ -90,16 +90,7 @@ if ( isa(f, 'double') )
 elseif ( isa(f, 'separableApprox') ) 
     
     dom = f.domain;
-    if ( (nargin == 3) || (nargin > 3) && ~isa(argin{1},'separableApprox') ) 
-        % CONTOUR(xx, yy, f)
-        
-        % Evaluate f at equally spaced points.
-        x = linspace( dom(1), dom(2), minplotnum );
-        y = linspace( dom(3), dom(4), minplotnum );
-        [xx, yy] = meshgrid(x, y);
-        vals = feval( f, xx, yy );
-
-    elseif ( (nargin >= 3) && isa(argin{1},'separableApprox') && isa(argin{2},'separableApprox') )
+    if ( (nargin >= 3) && isa(argin{1},'separableApprox') && isa(argin{2},'separableApprox') )
         % CONTOUR plot on a surface.
         
         % Extract inputs:
@@ -109,7 +100,7 @@ elseif ( isa(f, 'separableApprox') )
         argin(1:2) = [];
         
         % Check CONTOUR objects are on the same domain.
-        if ( ~domainCheck(xx, yy) || ~domainCheck(yy, f) )
+        if ( ~domainCheck(xx, yy) )
             error('CHEBFUN:SEPARABLEAPPROX:contour:domains', ...
                 'Domains of SEPARABLEAPPROX objects are not consistent.');
         end
@@ -120,7 +111,15 @@ elseif ( isa(f, 'separableApprox') )
         [mxx, myy] = meshgrid(x, y);
         xx = feval(xx, mxx, myy); 
         yy = feval(yy, mxx, myy);
-        vals = feval(f, mxx, myy);
+        vals = feval(f, xx, yy);
+    elseif ( (nargin == 3) || (nargin > 3) && ~isa(argin{1},'separableApprox') ) 
+        % CONTOUR(xx, yy, f)
+        
+        % Evaluate f at equally spaced points.
+        x = linspace( dom(1), dom(2), minplotnum );
+        y = linspace( dom(3), dom(4), minplotnum );
+        [xx, yy] = meshgrid(x, y);
+        vals = feval( f, xx, yy );
 
     elseif ( ( nargin == 1) || ( ( nargin > 1 ) && ( isa(argin{1},'double') ) ) )    
         % CONTOUR(f) 

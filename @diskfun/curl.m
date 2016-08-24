@@ -1,10 +1,13 @@
 function G = curl( f ) 
-%CURL   Numerical surface curl of a scalar DISKFUN. 
-%   G = CURL(F) returns a DISKFUNV G representing the numerical surface
-%   curl of the scalar DISKFUN F, which is curl(0, 0,F). This is different
-%   from the curl of a diskfunv (i.e., curl(V), where V is a vector-valued 
-%    function): see DISKFUNV/curl.
-% See also GRADIENT.
+%CURL   Numerical curl of a scalr DISKFUN times the normal to the disk.
+%   G = CURL(F) returns a DISKFUNV G representing the numerical
+%   curl of the scalar DISKFUN F times the normal to the disk, i.e.
+%   curl([0 0 F]). This is equivalent to taking the gradient of F and 
+%   crossing it with the normal component to the disk. Note that this is
+%   different from the curl of a diskfunv (i.e., curl(V), where V is a
+%   vector-valued function): see DISKFUNV/curl.
+%
+% See also DISKFUN/GRADIENT.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -15,7 +18,7 @@ if isempty( f )
     return;
 end
 
-%   surface curl of F is curl(0, 0,F) = (F_y, -F_x)
+% Curl of F is curl(0, 0,F) = (F_y, -F_x)
 G = diskfunv(diff(f, 2), -diff(f, 1));
 
 end

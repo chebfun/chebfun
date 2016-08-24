@@ -56,8 +56,6 @@ if ( isa(f,'diskfun') )
         C = fevalm(f, t, r); 
         [tt, rr] = meshgrid(t, r);
         
-       
-        
         xx=rr.*cos(tt);
         yy=rr.*sin(tt);
         % Make some corrections to C for prettier plotting.

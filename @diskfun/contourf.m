@@ -57,19 +57,12 @@ end
 
 % Did the user want a plot of the pivot locations?
 if ( doPivotPlot )    % Do pivot plot. 
-    %if ( ( ~isempty(argin) ) && ( length(argin{1}) < 5 ) )
-        % Column, row, pivot plot
-       % plot( f, argin{:} ), hold on
-       % argin(1) = [];
-       % contourf( f, argin{:} ), hold off
-       % return
-    %end
     error('CHEBFUN:DISKFUN:contourf:pivotstyle', ...
             'Pivots cannot be plotted with ''contourf''. Use ''contour'' instead.');
 end
 
 if ( isa(f, 'double') )                
-    % CONTOUR(xx, yy, F,...)
+    % CONTOURF(xx, yy, F,...)
     
     if ( (nargin >= 3) && isa(argin{1}, 'double') && isa(argin{2}, 'diskfun') )
         % Extract inputs:
@@ -78,27 +71,18 @@ if ( isa(f, 'double') )
         f = argin{2};
         argin(1:2) = [];
         % Evaluate separableApprox: 
-        vals = feval(f, xx, yy);
+        vals = feval(f, xx, yy, 'polar');
         
     else
-        error('CHEBFUN:DISKFUN:contourf:inputs1', ...
+        error('CHEBFUN:DISKFUN:contourf:badInputs', ...
             'Unrecognised input arguments.');
     end
     
 elseif ( isa(f, 'diskfun') ) 
     
     dom = f.domain;
-    if ( (nargin == 3) || (nargin > 3) && ~isa(argin{1},'diskfun') ) 
-        % CONTOUR(xx, yy, f)
-        
-        % Evaluate f at equally spaced points.
-        x = linspace( dom(1), dom(2), minplotnum );
-        y = linspace( dom(3), dom(4), minplotnum );
-        [xx, yy] = meshgrid(x, y);
-        vals = feval( f, xx, yy );
-
-    elseif ( (nargin >= 3) && isa(argin{1},'diskfun') && isa(argin{2},'diskfun') )
-        % CONTOUR plot on a surface.
+    if ( (nargin >= 3) && isa(argin{1},'diskfun') && isa(argin{2},'diskfun') )
+        % CONTOURF plot on a surface.
         
         % Extract inputs:
         xx = f; 
@@ -107,8 +91,8 @@ elseif ( isa(f, 'diskfun') )
         argin(1:2) = [];
         
         % Check CONTOUR objects are on the same domain.
-        if ( ~domainCheck(xx, yy) || ~domainCheck(yy, f) )
-            error('CHEBFUN:DISKFUN:contourf:domainMismatch', ...
+        if ( ~domainCheck(xx, yy) )
+            error('CHEBFUN:DISKFUN:contourf:domains', ...
                 'Domains of DISKFUN objects are not consistent.');
         end
         
@@ -116,31 +100,42 @@ elseif ( isa(f, 'diskfun') )
         x = linspace( dom(1), dom(2), minplotnum );
         y = linspace( dom(3), dom(4), minplotnum );
         [mxx, myy] = meshgrid(x, y);
-        xx = feval(xx, mxx, myy); 
-        yy = feval(yy, mxx, myy);
-        vals = feval(f, mxx, myy, 'polar');
-
+        xx = feval(xx, mxx, myy, 'polar'); 
+        yy = feval(yy, mxx, myy, 'polar');
+        [xx,yy] = cart2pol(xx,yy);
+        vals = feval(f, xx, yy, 'polar');
+        
+    elseif ( (nargin == 3) || (nargin > 3) && ~isa(argin{1},'diskfun') ) 
+        % CONTOURF(xx, yy, f)
+        
+        % Evaluate f at equally spaced points.
+        x = linspace( dom(1), dom(2), minplotnum );
+        y = linspace( dom(3), dom(4), minplotnum );
+        [xx, yy] = meshgrid(x, y);
+        vals = feval( f, xx, yy, 'polar' );
+        
     elseif ( ( nargin == 1) || ( ( nargin > 1 ) && ( isa(argin{1},'double') ) ) )    
-        % CONTOUR(f) 
+        % CONTOURF(f) 
         
         % Evaluate at equally spaced grid: 
         x = linspace( dom(1), dom(2), minplotnum );
-
-         
         y = linspace( dom(3), dom(4), minplotnum );
         [xx, yy] = meshgrid(x, y);
         vals = feval(f, xx, yy, 'polar' );
-        
+        % This code would be faster:
+%         % Evaluate at Fourier-Chebyshev grid: 
+%         x = [trigpts( minplotnum-1, [dom(1) dom(2)] ); dom(1)];
+%         y = chebpts(2*minplotnum-1,[-1 1]); y = y(minplotnum:end);
+%         [xx, yy] = meshgrid(x, y);
+%         vals = sample(f, minplotnum-1, minplotnum);
+%         vals = [vals vals(:,1)];
     else
-        error('CHEBFUN:DISKFUN:contourf:inputs2', ...
+        error('CHEBFUN:DISKFUN:contourf:inputs1', ...
             'Unrecognised input arguments.');
     end
-    
 else
-    
-    error('CHEBFUN:DISKFUN:contourf:inputs3', ...
+    error('CHEBFUN:DISKFUN:contourf:inputs2', ...
         'Unrecognised input arguments.');
-    
 end
 
 [X, Y] = pol2cart(xx, yy); 
@@ -148,19 +143,20 @@ end
 [c, h] = contourf( X, Y, vals, argin{:} );
 axis square
 
-%add unit circle
+% Add unit circle
 holdState = ishold; 
-c = trigpts(100); 
+circ = exp(1i*pi*linspace(-1,1,101));
 hold on 
-plot(cos(c*pi), sin(c*pi), 'k-', 'Linewidth', .3)
+plot(real(circ), imag(circ), 'k-', 'Linewidth', .3)
+hold off
 
 if holdState
-     hold on;
+    hold on;
 else
     hold off;
 end
 
-% return plot handle if appropriate.
+% Return plot handle if appropriate.
 if ( nargout == 1 )
     varargout = {h};
 elseif ( nargout == 2 )
