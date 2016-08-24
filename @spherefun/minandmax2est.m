@@ -6,7 +6,7 @@ function varargout = minandmax2est(varargin)
 %
 %   mM = MINANDMAX2EST(F, N) returns estimates for the minimum and maximum of
 %   the SPHEREFUN F over its domain, based on the evaluation on an N by N
-%   Chebyshev grid in the domain of F (N = 32 by default).
+%   Chebyshev grid in the domain of F (N = 33 by default).
 % 
 % See also SPHEREFUN/MINANDMAX2.
 

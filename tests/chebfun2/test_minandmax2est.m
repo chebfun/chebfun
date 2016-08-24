@@ -9,6 +9,6 @@ j = 1;
 
 f = chebfun2(@(x,y) x, [ -3, 4, -1, 2 ]);
 mM = minandmax2est(f);
-pass(j) = ( norm(mM - [ -3, 4]) < tol );
+pass(j) = isSubset(mM, [ -3, 4]);
 
 end

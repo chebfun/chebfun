@@ -6,7 +6,7 @@ function mM = minandmax2est(f, N)
 %
 %   mM = MINANDMAX2EST(F, N) returns estimates for the minimum and maximum of
 %   the SEPARABLEAPPROX F over its domain, based on the evaluation on an N by N
-%   Chebyshev grid in the domain of F (N = 32 by default).
+%   Chebyshev grid in the domain of F (N = 33 by default).
 %
 % See also MINANDMAX2.
 
@@ -19,8 +19,8 @@ if ( isempty(f) )
 end
 
 if ( ( nargin < 2 ) || isempty(N) )
-    % Default to N = 32:
-    N = 32;
+    % Default to N = 33:
+    N = 33;
 end
 
 % Create N by N Chebyshev grid:
