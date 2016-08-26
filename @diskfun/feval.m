@@ -15,7 +15,7 @@ function y = feval(varargin)
 
 
 %figure out if cartesian or polar
- iscart = 1; 
+iscart = 1; 
 % search for user-supplied 'polar' flag in arguments: 
 isPolar = find(strcmp(varargin, 'polar'));
 if ( any( isPolar ) )

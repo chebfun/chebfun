@@ -1,15 +1,14 @@
 function tr = trace(f)
-% TRACE integral of a DISKFUN along its diagonal 
+%TRACE   Integral of a DISKFUN along its diagonal.
+%   TRACE(F) is the integral of the radial slice of the DISKFUN F occuring 
+%   at the angle theta = pi/4.
 %
-% TRACE(f) is the integral of the radial slice of the disk
-% occuring at the angle theta=pi/4. 
-% 
-% See also DIAG.
+% See also DISKFUN/DIAG.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( isempty( f ) ) 
+if ( isempty(f) )
     tr = [];
     return
 end 
