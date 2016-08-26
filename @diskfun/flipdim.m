@@ -20,8 +20,7 @@ if ( dim == 1 )
 elseif ( dim == 2 )
     f = fliplr( g ); 
 else
-    error('CHEBFUN:SEPARABLEAPPROX:flipdim:badDim2', 'Dimension not recognised.');
+    error('CHEBFUN:DISKFUN:flipdim:badDim2', 'Dimension not recognised.');
 end
-
 
 end

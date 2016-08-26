@@ -1,5 +1,5 @@
 function [f,h] = extractPole(f)
-% EXTRACTPOLE  Removes from F the term accounting for non-zero pole/origin
+%EXTRACTPOLE  Removes from F the term accounting for non-zero pole/origin
 %
 % [G,H] = EXTRACTPOLE(F) if F is non-zero at the origin, then this function
 % returns DISKFUNs G and H, such that H is rank 1, G = F - H, and G is
@@ -9,8 +9,7 @@ function [f,h] = extractPole(f)
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-
-if ~isempty(f) && f.nonZeroPoles
+if ( ~isempty(f) && f.nonZeroPoles )
     h = f;
     % The col and row for the pole is always assumed to be at the first
     % index

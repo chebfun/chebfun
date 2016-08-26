@@ -1,8 +1,8 @@
 function f = flipud(g)
-%FLIPUD   Flip/reverse a DISKFUN in the y direction.
+%FLIPUD   Flip/reverse a DISKFUN over the x-axis.
 %
 %   G = FLIPUD(F) returns a DISKFUN G that is flipped over the 
-%   x axis, that is G(x,y) = F(x, -y).
+%   x-axis, that is G(x,y) = F(x, -y).
 %
 % See also DISKFUN/FLIPLR, DISKFUN/FLIPDIM, DISKFUN/ROTATE. 
 
