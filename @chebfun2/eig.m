@@ -13,7 +13,7 @@ function varargout = eig(f)
 %   on the diagonal.
 %
 %   If d is an eigenvalue of F with eigenfunction w, then this holds: 
-%   \int f(x,y)w(x)dx = w(y). 
+%   \int f(x,y)w(x)dx = d w(y). 
 %   This can be checked as follows: 
 %   [V,D] = eig(f);
 %   w = V(:,1); d = D(1,1);
