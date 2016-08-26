@@ -153,6 +153,12 @@ f = diskfun(zeros(5,4));
 [n,m] = length(f);
 pass(32) = (m == 5) && (n == 4);
 
+% Fixed length test.
+m = 24; n = 10;
+f = diskfun(@(x,y) exp(-10*((x-0.5/sqrt(2)).^2 + (y-0.5/sqrt(2)).^2)),[m n]);
+[nf,mf] = length(f);
+pass(33) = (mf == m+1) && (nf == 2*n);
+
 end
 
 function sample_error = SampleError(h, g)

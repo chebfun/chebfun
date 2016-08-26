@@ -923,7 +923,9 @@ end
 
 % Deal with DISKFUN(OP, [M N]) now that all the other things are set.
 if ( fixedLength )
-    [x, y] = getPoints(m, n);
+    % m is interpreted to mean the degree of the polynomial in r over the
+    % entire domain [-1,1] hence we get ceil(m/2) values in y over [0,1].
+    [x, y] = getPoints(ceil(m/2), n);
     [xx, yy] = meshgrid(x, y);
     % Handle the special case of the input being a DISKFUN.  We can't call
     % evaluate here because, we have to use feval(op,xx,yy).
