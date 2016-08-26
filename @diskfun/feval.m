@@ -8,7 +8,7 @@ function y = feval(varargin)
 %   Y = FEVAL(F, c), where c is a complex-valued chebfun representing a
 %   contour, evaluates F along the contour.
 %
-%   See also SUBSREF.
+% See also SUBSREF.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

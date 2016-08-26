@@ -7,7 +7,7 @@ function varargout = lu(varargin)
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-error('CHEBFUN:DISKFUN:CUMPROD:notSupported',...
+error('CHEBFUN:DISKFUN:LU:notSupported',...
         'LU factorization of a DISKFUN is not supported.');
 
 end

@@ -83,7 +83,7 @@ classdef diskfun < separableApprox
         fdf = pol2cartf(f, r, th);
         
         % Disk harmonics
-        Y = harmonic(l,m,type) ;   
+        Y = harmonic(l,m,type);
         
         %convert coeffs to a diskfun
         f = coeffs2diskfun(CFS);        

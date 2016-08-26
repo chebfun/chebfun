@@ -1,5 +1,5 @@
 function varargout = length(varargin)
-%LENGTH  The rank of a DISKFUN.
+%LENGTH   The rank of a DISKFUN.
 %   K = LENGTH(F) returns the rank of the DISKFUN representation.
 %
 %   [M, N] = LENGTH( F ) returns the length of the column and 
