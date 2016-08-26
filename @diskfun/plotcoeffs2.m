@@ -1,11 +1,11 @@
-function varargout = plotcoeffs2( f )
-%PLOTCOEFFS2    Display two-dimensional Fourier-Chebyshev coefficients graphically.
+function varargout = plotcoeffs2(f)
+%PLOTCOEFFS2   Display two-dimensional Fourier-Chebyshev coefficients graphically.
 %   PLOTCOEFFS2(F) plots the two-dimensional coefficients in a stem3 plot
 %   with a semilogy scale.
 %
 %   H = PLOTCOEFFS2(F) returns a handle H to the figure.
 %
-% See also DISKFUN/PLOTCOEFFS, DISKFUN/COEFFS2.
+% See also DISKFUN/PLOTCOEFFS and DISKFUN/COEFFS2.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -32,7 +32,7 @@ ylabel(gca, 'Degree of Chebyshev polynomial (columns)')
 zlabel(gca, 'Magnitude of coefficient')
 
 % output handle
-if ( nargout ~=0 )
+if ( nargout ~= 0 )
     varargout = { h };
 end
 

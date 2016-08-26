@@ -1,11 +1,10 @@
 function varargout = plot( f, varargin )
 %PLOT  Surface plot of a DISKFUN.
-%
-%   PLOT(F) if F is a real-valued DISKFUN then this is the surface plot and is
-%   the same as surf(F). If F is a complex valued then this returns a domain
+%   PLOT(F) creates a surface plot and is the same as surf(F) if F is a 
+%   real-valued DISKFUN. If F is complex valued then this returns a domain 
 %   colouring plot of F.
 %
-%   PLOT(F, S) Plotting with option string plots the column and row slices, and
+%   PLOT(F, S) with option string plots the column and row slices, and 
 %   pivot locations used in the construction of F.
 %
 %   When the first argument in options is a string giving details about
@@ -29,7 +28,7 @@ function varargout = plot( f, varargin )
 %                               h     hexagram
 %
 %
-% See also SURF.
+% See also DISKFUN/SURF.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -43,15 +42,14 @@ if ( ~isempty(varargin) )
     if ( length(varargin{1}) < 5 )
         dom = f.domain;
         holdState = ishold;
-        if ~holdState
-            hold on;
+        if ( ~holdState )
+            hold on
         end
-        N = 100; %used to generate solid disk as well as plot slicing lines
+        N = 100; % Used to generate solid disk as well as plot slicing lines
         th = trigpts(N, dom); th=[th; dom(2)];
         % If the plot is not being added to another then plot a solid
         % disk so the lines are more easily discernable.
-        if ~holdState
-            %
+        if ( ~holdState )
             % Generate a unit disk
             N = 200;
             th = trigpts(N, dom(1:2)); th=[th; dom(2)];
@@ -80,7 +78,7 @@ if ( ~isempty(varargin) )
                 ll{1} = '-';
             end
         end
-        plotline = ~isempty(ll);  % plot row and col pivot lines?
+        plotline = ~isempty(ll);  % Plot row and col pivot lines?
         if ( isempty(mm) )
             mm{1}= '.';
         end
@@ -99,7 +97,6 @@ if ( ~isempty(varargin) )
         
         
         % Plot pivots:
-        
         % Convert pivots to Cartesian coordinates
         pivots = f.pivotLocations;
         pivotsCart = zeros(size(pivots,1),2);
@@ -110,7 +107,7 @@ if ( ~isempty(varargin) )
         XX1 = RR1.*cos(TT1);
         YY1 = RR1.*sin(TT1);
 
-        if plot_full_grid
+        if ( plot_full_grid )
             % Plot grayed out grid
             clrGrid = [192 192 192]/256;
             plot(XX1,YY1,'-','Color',clrGrid);
@@ -124,12 +121,11 @@ if ( ~isempty(varargin) )
         defaultopts = { 'MarkerSize', 7 };
         extraopts = { 'Marker', mm{:}, 'LineStyle', 'none', 'Color', cc{:} };
         if ( length(varargin) < 2 )
-            h = plot( pivotsCart(:,1), pivotsCart(:,2), ...
-                extraopts{:}, defaultopts{:} );
+            h = plot(pivotsCart(:,1), pivotsCart(:,2), extraopts{:}, ...
+                defaultopts{:});
         else
-            h = plot( pivotsCart(:,1), pivotsCart(:,2), ...
-                extraopts{:}, defaultopts{:}, ...
-                varargin{2:end} );
+            h = plot(pivotsCart(:,1), pivotsCart(:,2), extraopts{:}, ...
+                defaultopts{:}, varargin{2:end});
         end
         if ( plotline )
 
@@ -137,26 +133,26 @@ if ( ~isempty(varargin) )
             rowCircs = [];
             
             for k=1:size(pivots,1)
-                if abs(pivotsCart(k,1))>100*eps  %special case if x=0
+                if ( abs(pivotsCart(k,1)) > 100*eps )  %special case if x=0
                     temp = [cos(pivots(k,1)) sin(pivots(k,1))];
-                    colSlices = [colSlices; temp;-temp;[nan nan]];
+                    colSlices = [colSlices; temp;-temp; [nan nan]];
                     %rowcircs use theta pts set up earlier
-                    if pivotsCart(k,2)==0
-                        rowCircs = [rowCircs; 0 ];
-                        rowCircs = [rowCircs;nan ];
+                    if ( pivotsCart(k,2) == 0 )
+                        rowCircs = [rowCircs; 0];
+                        rowCircs = [rowCircs;nan];
                     else
-                    rowCircs = [rowCircs; pivots(k,2)*exp(1i*th)];
-                    rowCircs = [rowCircs;nan  ];
+                        rowCircs = [rowCircs; pivots(k,2)*exp(1i*th)];
+                        rowCircs = [rowCircs; nan];
                     end
-                else   %case where x=0 so slope is undef
+                else %case where x=0 so slope is undef
                     colSlices = [colSlices; zeros(2,1) [-1 ; 1]];
                     colSlices = [colSlices; nan nan];
-                    if pivotsCart(k,2)==0
-                        rowCircs = [rowCircs; 0 ];
-                        rowCircs = [rowCircs;nan ];
+                    if ( pivotsCart(k, 2) == 0 )
+                        rowCircs = [rowCircs; 0];
+                        rowCircs = [rowCircs; nan];
                     else
-                    rowCircs = [rowCircs; pivots(k,2)*exp(1i*th)];
-                    rowCircs = [rowCircs;nan ];
+                        rowCircs = [rowCircs; pivots(k,2)*exp(1i*th)];
+                        rowCircs = [rowCircs; nan];
                     end
                 end
             end
@@ -164,20 +160,22 @@ if ( ~isempty(varargin) )
             if ( ~isempty(ll) )
                 opts = { opts{:}, 'LineStyle', ll{:}, 'color', cc{:} };
             end
+            
             % Plot column lines:
-            plot(colSlices(:,1),colSlices(:,2), opts{:} );
+            plot(colSlices(:,1), colSlices(:,2), opts{:});
+            
             % Plot row lines:
-            plot(rowCircs, opts{:} );
+            plot(rowCircs, opts{:});
         end
-        if ~holdState
-            hold off;
+        if ( ~holdState )
+            hold off
         end
     else
         %% Standard surface plot
         h = surf(f, varargin{:});
     end
 else
-    h = plot@separableApprox( f );
+    h = plot@separableApprox(f);
 end
 
 if ( nargout > 0 )

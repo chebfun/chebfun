@@ -1,36 +1,29 @@
 function h = plus(f, g)
 %+   Plus for DISKFUN objects.
-%
 % F + G adds F and G. F and G can be scalars or DISKFUN objects.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( ~isa(f, 'diskfun') ) % ??? + DISKFUN
-    
     h = plus(g, f);
     
 elseif ( isempty(g) ) % DISKFUN + []
-    
     h = f; 
     
 elseif ( isempty(f) ) % [] + DISKFUN
-    
     h = g; 
     
-elseif ( isa( g, 'double' ) )           % DISKFUN + DOUBLE
-    
+elseif ( isa(g, 'double') )           % DISKFUN + DOUBLE
     g = compose( 0*f,@plus, g);   % promote double to object class.  
     h = plus(f, g); 
     
 elseif ( ~isa(g, 'diskfun') )          % DISKFUN + ???
-    
     error( 'DISKFUN:plus:unknown', ...
         ['Undefined function ''plus'' for input arguments of type %s ' ...
-        'and %s.'], class( f ), class( g ));
+        'and %s.'], class(f), class(g));
         
 else                                     % DISKFUN + DISKFUN
-    
     % Domain Check:
     if ( ~domainCheck(f, g) )
         error('DISKFUN:plus:domain', 'Inconsistent domains.');
@@ -39,15 +32,18 @@ else                                     % DISKFUN + DISKFUN
     % Check for zero DISKFUN objects:
     if ( iszero(f) )
         h = g;
+        
     elseif ( iszero(g) )
         h = f;
+        
     elseif ( isequal(f, -g) )
         h = 0*f;
+        
     else
         % Add together two nonzero DISKFUN objects:
         % The algorithm is as follows: Split f and g into their plus/minus
         % components.  Do the compression_plus algorithm described in
-        % @separableApprox/compression plus on each pair of plus and minus
+        % @separableApprox/compression_plus on each pair of plus and minus
         % components.
         
         % Check if the pole is non-zero.  If it is then we need to strip
@@ -56,50 +52,50 @@ else                                     % DISKFUN + DISKFUN
         % compression plus needs to be zero at the poles if what is to be
         % returned is zero at the poles.  Including one column that is
         % non-zero at the poles can screw everything up.
-        [f,fPole] = extractPole(f);
-        [g,gPole] = extractPole(g);
+        [f, fPole] = extractPole(f);
+        [g, gPole] = extractPole(g);
 
-        [fp,fm] = partition(f);
-        [gp,gm] = partition(g);
+        [fp, fm] = partition(f);
+        [gp, gm] = partition(g);
         
-        hp = plus@separableApprox(fp,gp);
+        hp = plus@separableApprox(fp, gp);
         %if iszero(hp)          
           %  hp.idxPlus=hp.idxMinus; 
          %   hp.idxMinus=[];
         %end
-        r = size(hp.cols,2);
+        r = size(hp.cols, 2);
         hp.idxPlus = 1:r;
         % Indices or locations of the pivots do not make sense after a
         % compression plus, so we set them to NaN.
         %hp.pivotIndices = nan(r,2);
-        hp.pivotLocations = nan(r,2);  % This should be done at the separableApprox level.
+        hp.pivotLocations = nan(r, 2);  % This should be done at the separableApprox level.
         
-        hm = plus@separableApprox(fm,gm);
-        r = size(hm.cols,2);
+        hm = plus@separableApprox(fm, gm);
+        r = size(hm.cols, 2);
         hm.idxMinus = 1:r;
         %hm.pivotIndices = nan(r,2);
-        hm.pivotLocations = nan(r,2);
+        hm.pivotLocations = nan(r, 2);
                 
-        if ( ~isempty( fPole ) ) || ( ~isempty( gPole ) )
+        if ( ~isempty(fPole) ) || ( ~isempty(gPole) )
             % Set tolerance for determining if fPole+gPole=0.
-            tol = eps*max(vscale(f),vscale(g)); 
-            g = addPoles(fPole,gPole,tol);
+            tol = eps*max(vscale(f), vscale(g)); 
+            g = addPoles(fPole, gPole, tol);
             % Handle the rare case that g is zero and hp is not empty
-            if ( g.pivotValues == 0 ) && ( ~isempty( hp ) )
+            if ( g.pivotValues == 0 ) && ( ~isempty(hp) )
                 % Set g to empty diskfun
                 g = diskfun([]);
             end
             hp.cols = [g.cols hp.cols];
             hp.rows = [g.rows hp.rows];
-            hp.pivotValues = [g.pivotValues;hp.pivotValues];
+            hp.pivotValues = [g.pivotValues; hp.pivotValues];
             %hp.pivotIndices = [g.pivotIndices;hp.pivotIndices];
-            hp.pivotLocations = [g.pivotLocations;hp.pivotLocations];
+            hp.pivotLocations = [g.pivotLocations; hp.pivotLocations];
             hp.idxPlus = 1:size(hp.cols,2);
             hp.nonZeroPoles = ~isempty(g);
         end
             
         % Put pieces back together.
-        h = combine(hp,hm);
+        h = combine(hp, hm);
 
     end 
     
@@ -107,11 +103,12 @@ end
 
 end
 
-function f = addPoles(f,g,tol)
+function f = addPoles(f, g, tol)
 
-if isempty(g)
+if ( isempty(g) )
     return;
-elseif isempty(f)
+    
+elseif ( isempty(f) )
     f = g;
     return;
 end
@@ -119,10 +116,10 @@ end
 fmean = mean(f.rows);
 gmean = mean(g.rows);
 
-cols = (fmean/f.pivotValues)*f.cols + (gmean/g.pivotValues)*g.cols;
+cols = (fmean/f.pivotValues) * f.cols + (gmean/g.pivotValues) * g.cols;
 
 % If cols is numerically zero then return an empty result
-if norm(cols) <= tol
+if ( norm(cols) <= tol )
     fmean = 0;
     gmean = 0;
     pivot = 0;
@@ -141,6 +138,3 @@ f.pivotLocations = [nan nan];
 f.nonZeroPoles = nonZeroPoles;
 
 end
-
-
-

@@ -1,5 +1,5 @@
 function varargout = mesh(varargin)
-%MESH   mesh surface of a DISKFUN.
+%MESH   Mesh surface of a DISKFUN.
 %   MESH is not supported for DISKFUN objects, and so returns an error.
 %
 % See also DISKFUN/SURF.

@@ -1,5 +1,5 @@
 function varargout = median(varargin)
-%MEDIAN       Median value of a DISKFUN.
+%MEDIAN   Median value of a DISKFUN.
 %   G = MEDIAN(F) returns a CHEBFUN G representing the median of the DISKFUN
 %   along the y direction, i.e., G = @(x) median( F ( x, : ) ).
 %
