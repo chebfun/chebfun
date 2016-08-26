@@ -2,7 +2,8 @@ function varargout = eig(f)
 %EIG    Eigenvalues and eigenfunctions of a CHEBFUN2.
 %   EIG(F) returns the eigenvalues of F. The number of nonzero eigenvalues
 %   returned is at most the rank of the CHEBFUN2. F.domain needs to be
-%   square: [a b a b].
+%   square: [a b a b], just as matrices need to be square for eigenvalues
+%   to be defined. 
 %
 %   S = EIG(F) returns the eigenvalues of F. S is a vector of 
 %   eigenvalues.
