@@ -22,6 +22,9 @@ pass(2) = ( norm( flipud(f) - g)  < tol) ;
 pass(3) = ( norm( flipud(w) - ud) < tol);
 pass(4) = ( norm( fliplr(w) -lr) < tol);
 pass(5) = ( norm( flipxy(w)-tp) < tol); 
+pass(6) = ( norm( flipdim(w,1)-ud) < tol); 
+pass(7) = ( norm( flipdim(w,2)-lr) < tol); 
+
 %test rotate/circshift
 th = [0, pi/2, 5*pi/7,  -pi/3, -pi/4, -5*pi ]; 
 [theta, rad] = meshgrid(trigpts(30, [-pi, pi]), chebpts(30, [0, 1])); 
@@ -30,7 +33,7 @@ f = diskfun(w, 'polar');
 for j = 1:length(th) 
     g = rotate(f, th(j));
     m = circshift(f, th(j)); 
-    pass(j+5) = ( norm(w(theta-th(j), rad)-g(theta, rad, 'polar'))  < tol ...
+    pass(j+7) = ( norm(w(theta-th(j), rad)-g(theta, rad, 'polar'))  < tol ...
         || norm(g-m) ==0);
 end
 
