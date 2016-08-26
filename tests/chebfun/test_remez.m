@@ -46,4 +46,16 @@ pbest = remez(f, 2);
 pbest_exact = 0*x;
 pass(6) = norm(pbest(xx) - pbest_exact(xx), inf) < 10*eps;
 
+%% Tests giving trouble on 26 Aug 2016:
+f = abs(x);
+[p,q] = remez(f,0,0);
+err = norm(f-p./q,inf);
+pass(7) = (abs(err-.5) < 1e-10);
+
+[p,q] = remez(f,2,2);
+err = norm(f-p./q,inf);
+pass(8) = (abs(err-.043689) < 1e-3);
+
+
+
 end
