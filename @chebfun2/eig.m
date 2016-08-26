@@ -24,7 +24,7 @@ function varargout = eig(f)
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-    dom = f.domain; 
+dom = f.domain; 
 if ( (dom(1) ~= dom(3)) || (dom(2) ~= dom(4)) )% domain check
     error('CHEBFUN2:CHEBFUN2:eig:domainerr',...
           'Domain of chebfun2 needs to be in form [a b a b]');
