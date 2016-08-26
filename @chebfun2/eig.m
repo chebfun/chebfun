@@ -29,8 +29,8 @@ if ( (dom(1) ~= dom(3)) || (dom(2) ~= dom(4)) )% domain check
           'Domain of chebfun2 needs to be in form [a b a b]');
 end    
 
-    [u,S,v] = svd( f ); % SVD of chebfun2
-    [V,D] = eig( v'*u*S ); % eig(AB) = eig(BA)
+    [u, S, v] = svd( f ); % SVD of chebfun2
+    [V, D] = eig( v'*u*S ); % eig(AB) = eig(BA)
     V = u * S * V; % eigenfunctions
 
     if ( nargout > 1 )
