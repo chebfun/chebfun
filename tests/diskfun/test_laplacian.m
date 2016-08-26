@@ -14,11 +14,11 @@ for ell = [ 1 2 3 4]
         jzero = roots(chebfun(@(x) besselj(ell,x), [sqrt((3/4)^2*pi^2+ell^2) (m+ell/2)*pi]));
         jzero=jzero(m);
         f = diskfun.harmonic(ell, m);
-        lap = laplacian(f);
+        lapf = laplacian(f);
         %pass(k, 1) = numel(lap2.pivotValues) == numel(f.pivotValues);
         %%NOTE: doesn't always get rank right
-        err(k) = SampleError(-(jzero)^2*f, lap)/(jzero)^2;
-        pass(k) = SampleError(-(jzero)^2*f, lap) < (jzero)^2*tol;
+        err(k) = SampleError(-(jzero)^2*f, lapf)/(jzero)^2;
+        pass(k) = SampleError(-(jzero)^2*f, lapf) < (jzero)^2*tol;
         k = k+1;
     end
 end
@@ -26,10 +26,13 @@ end
 %exponential
 g = @(x,y) exp(-3*x).*y.^4; 
 f = diskfun(g);
-lap = laplacian(f); 
+lapf = laplacian(f); 
 exact = @(x,y) (-3)^2*exp(-3*x).*y.^4+12*y.^2.*exp(-3*x);
-pass(11) = SampleError(diskfun(exact), lap) < 4e1*tol;
+pass(11) = SampleError(diskfun(exact), lapf) < 4e1*tol;
 
+%check that lap gives the same result
+lapf = lap(f); 
+pass(12) = SampleError(diskfun(exact), lapf) < 4e1*tol;
 
 end
 
