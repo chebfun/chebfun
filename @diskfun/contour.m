@@ -56,6 +56,7 @@ while ( ~isempty( varargin ) )
         j = j+1;
     end
 end
+numargs = numel(argin);
 
 % Did the user want a plot of the pivot locations?
 if ( doPivotPlot )    % Do pivot plot. 
@@ -75,7 +76,7 @@ end
 if ( isa(f, 'double') )                
     % CONTOUR(xx, yy, F,...)
     
-    if ( (nargin >= 3) && isa(argin{1}, 'double') && isa(argin{2}, 'diskfun') )
+    if ( (numargs >= 2) && isa(argin{1}, 'double') && isa(argin{2}, 'diskfun') )
         % Extract inputs:
         xx = f; 
         yy = argin{1}; 
@@ -92,7 +93,7 @@ if ( isa(f, 'double') )
 elseif ( isa(f, 'diskfun') ) 
     
     dom = f.domain;
-    if ( (nargin >= 3) && isa(argin{1},'diskfun') && isa(argin{2},'diskfun') )
+    if ( (numargs >= 2) && isa(argin{1},'diskfun') && isa(argin{2},'diskfun') )
         % CONTOUR plot on a surface.
         
         % Extract inputs:
@@ -116,7 +117,7 @@ elseif ( isa(f, 'diskfun') )
         [xx,yy] = cart2pol(xx,yy);
         vals = feval(f, xx, yy, 'polar');
         
-    elseif ( (nargin == 3) || (nargin > 3) && ~isa(argin{1},'diskfun') ) 
+    elseif ( (numargs == 2) || (numargs > 2) && ~isa(argin{1},'diskfun') ) 
         % CONTOUR(xx, yy, f)
         
         % Evaluate f at equally spaced points.
@@ -125,7 +126,7 @@ elseif ( isa(f, 'diskfun') )
         [xx, yy] = meshgrid(x, y);
         vals = feval( f, xx, yy, 'polar' );
         
-    elseif ( ( nargin == 1) || ( ( nargin > 1 ) && ( isa(argin{1},'double') ) ) )    
+    elseif ( ( numargs == 0) || ( ( numargs > 0 ) && ( isa(argin{1},'double') ) ) )    
         % CONTOUR(f) 
         
         % Evaluate at equally spaced grid: 
