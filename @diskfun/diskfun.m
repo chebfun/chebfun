@@ -22,9 +22,9 @@ classdef diskfun < separableApprox
 %
 % DISKFUN(F, [m n]) returns a representation of F using a degree m
 % Chebyshev approximation of F in the radial direction and a degree n
-% approximation in the angular direction. The result is compressed in low
-% rank form and the rank k is still determined adaptively (satisfying
-% k<=min(m,n)+1).
+% trigonometric approximation in the angular direction. The result is
+% compressed in low rank form and the rank k is still determined adaptively
+% (satisfying k<=min(m,n)+1).
 % 
 % The DISKFUN software system is based on: 
 %
@@ -32,7 +32,12 @@ classdef diskfun < separableApprox
 % spherical and polar geometries II: The disk, submitted, 2016. 
 %
 % See also CHEBFUN2, SPHEREFUN, DISKFUNV.
-    
+
+% Copyright 2016 by The University of Oxford and The CHEBFUN Developers.
+% See http://www.chebfun.org/ for CHEBFUN information.
+
+% TODO: Include documentation of fixed eps construction
+
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% CLASS CONSTRUCTOR:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -46,7 +51,7 @@ classdef diskfun < separableApprox
                 f.domain = [-pi pi 0 1];
                 return
             end
-            
+            % Call the constructor, all the work is done here:
             f = constructor(f, varargin{:});       
         end
     end
@@ -62,6 +67,7 @@ classdef diskfun < separableApprox
     %% HIDDEN METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false, Hidden = true )
+        % Make f have BMC-II symmetry.
         f = projectOntoBMCII(f);
         
     end
@@ -92,7 +98,7 @@ classdef diskfun < separableApprox
         % Disk harmonics
         Y = harmonic(l,m,type);
         
-        %convert coeffs to a diskfun
+        % Convert coeffs to a diskfun
         f = coeffs2diskfun(CFS);        
     end
     
@@ -107,7 +113,7 @@ classdef diskfun < separableApprox
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% CLASS PROPERTIES
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  properties (Access = public)
+    properties (Access = public)
         % DOMAIN: default is [-pi,pi] x [0,1] which corresponds to using 
         % polar coordinates. 
         % Doubled-up disk will have a domain of [-pi,pi] x [-1,1].
@@ -120,6 +126,7 @@ classdef diskfun < separableApprox
     %% Private constant properties
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Constant )
+        % TODO: Add support for this constant here.
         %alpha = 50;  % Growth factor control.
     end
     
