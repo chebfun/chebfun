@@ -1,11 +1,9 @@
 function varargout = rdivide(varargin)
 %./   Pointwise right divide of DISKFUN objects.
-%   F./G if F is a DISKFUN and G is a double this returns (1/G)*F
+%   F./G returns (1/G)*F if F is a DISKFUN and G is a double.
 %
-%   F./G if F is a double and G is a v this returns F/G, but this doe
-%   not work if G becomes numerically close to zero.
-%
-%   F./G we do not allow F and G to both be DISKFUN object.
+%   F./G returns F/G if F is a double and G is a DISKFUN. This does not 
+%   work if G becomes numerically close to zero.
 % 
 %   F./G is the same as the command rdivide(F,G)
 %

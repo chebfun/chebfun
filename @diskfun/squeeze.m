@@ -9,4 +9,5 @@ function varargout = squeeze(varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 
 [varargout{1:nargout}] = squeeze@separableApprox(varargin{:});
+
 end

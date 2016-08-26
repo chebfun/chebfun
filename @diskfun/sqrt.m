@@ -1,5 +1,5 @@
 function varargout = sqrt(varargin)
-%SQRT   Square root.
+%SQRT   Square root of a DISKFUN object.
 %   SQRT(F) returns the square root of a positive DISKFUN F.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
