@@ -1,7 +1,7 @@
 function varargout = sin(varargin)
-%SIN   Sine of a CHEBFUN2.
+%SIN   Sine of a DISKFUN.
 %
-% See also DISKFUN/SINH and DISKFUN/COS
+% See also DISKFUN/SINH and DISKFUN/COS.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

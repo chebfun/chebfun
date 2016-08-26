@@ -1,5 +1,5 @@
 function f = circshift(h, alpha)
-%CIRCSHIFT: Circular (periodic) shift of a diskfun by alpha units in the 
+%CIRCSHIFT   Circular (periodic) shift of a diskfun by alpha units in the 
 %   angular (polar) direction.
 %
 %   f = CIRCSHIFT(h, ALPHA) rotates h by the angle ALPHA. Positive ALPHA

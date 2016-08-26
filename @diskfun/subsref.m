@@ -1,21 +1,24 @@
 function varargout = subsref(f, index)
-%SUBSREF       DISKFUN subsref 
+%SUBSREF   DISKFUN subsref.
 %( )
 %   F(TH, R, 'polar') returns the values of the DISKFUN F evaluated at the
 %   value(s) (TH, R) in polar coordinates. See CHEBFUN/FEVAL for
-%   further details. 
+%   further details.
+%
 %   F(:, R) returns a chebfun representing the function F along a radial
 %   slice fixed by R, and F(TH, :) returns a chebfun representing F along 
 %   an angular slice. 
+%
 %   F(:, :) returns F.
+%
 %   F(X, Y) or F(X,Y, 'cart') returns the values of the DISKFUN F evaluated 
 %   at the value(s) (X,Y) in Cartesian coordinates. 
 %   The colon operator for Cartesian coordinates is not supported, 
 %   except for F(:, :), which just returns F.
+%
 %   F(c) where c is a complex-valued chebfun evaluates F along the contour
 %   parametrized by the real and imaginary parts of c, and returns a 
 %   chebfun representing the values of F along the contour.
-%
 % 
 %   F.PROP returns the property PROP of F as defined by GET(F, 'PROP').
 %
@@ -25,7 +28,7 @@ function varargout = subsref(f, index)
 %   F{[S1,S2, S3, S4]} is not supported due to the behaviour of the MATLAB 
 %   subsref() command.
 %
-% See also FEVAL, GET, RESTRICT.
+% See also DISKFUN/FEVAL, DISKFUN/GET and DISKFUN/RESTRICT.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -34,7 +37,7 @@ idx = index(1).subs;
 
 % Check for the cases that must be explicitly handled here, which are
 % 1. f(x, y), x, y are numeric, cartesian flag.
-% 2. f(t,r) t,r are numeric, polar flag.
+% 2. f(t,r) t, r are numeric, polar flag.
 % Pass the other cases off to separableApprox/subsref.
 
 if ( strcmp(index(1).type, '()') )

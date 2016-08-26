@@ -1,11 +1,11 @@
 function varargout = min(varargin)
 %MIN   Minimum value of a DISKFUN in one direction.
-%   MIN(f) returns a chebfun representing the minimum of the DISKFUN along the
-%   latitude direction, i.e, MIN(f) = @(lambda) max( f ( lambda, : ) )
+%   MIN(f) returns a chebfun representing the minimum of the DISKFUN along 
+%   the latitude direction, i.e, MIN(f) = @(lambda) max( f ( lambda, : ) ).
 %
-%   MIN(f, [], dim) returns a CHEBFUN representing the minimum of f along the
-%   DIM direction. If DIM = 1 is along the radial-direction and DIM = 2 is along the
-%   angular-direction.
+%   MIN(f, [], dim) returns a CHEBFUN representing the minimum of f along
+%   direction DIM. DIM = 1 is used to compute max along the radial-direction
+%   and DIM = 2 along the angular-direction.
 %
 %   WARNING: This function is not always accurate to the expected precision.
 % 

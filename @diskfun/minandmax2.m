@@ -14,8 +14,7 @@ function varargout = minandmax2(varargin)
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% we want to search over polar coords for the max and min: 
-
+% We want to search over polar coords for the max and min:
 
 f = varargin{1}; 
 %check empty

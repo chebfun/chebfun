@@ -1,11 +1,11 @@
 function varargout = max(varargin)
 %MAX   Maximum value of a DISKFUN in one direction.
-%   MAX(f) returns a chebfun representing the maximum of the DISKFUN along the
-%   angular direction, i.e, MAX(f) = @(theta) max( f ( theta, : ) )
+%   MAX(f) returns a chebfun representing the maximum of the DISKFUN along 
+%   the angular direction, i.e, MAX(f) = @(theta) max( f ( theta, : ) ).
 %
 %   MAX(f, [], dim) returns a CHEBFUN representing the maximum of f along
-%   the DIM direction. If DIM = 1 is along the angular-direction and DIM =
-%   2 is along the radial-direction.
+%   direction DIM. DIM = 1 is used when computing max along the 
+%   angular-direction and DIM = 2 along the radial-direction.
 %
 %   WARNING: This function is not always accurate to the expected precision.
 % 

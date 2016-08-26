@@ -77,4 +77,3 @@ g.idxMinus = idxMinus;
 g.nonZeroPoles = g.nonZeroPoles || h.nonZeroPoles;
 
 end
-

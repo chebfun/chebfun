@@ -1,6 +1,5 @@
 function varargout = mrdivide(varargin)
 % /   Right scalar divide for DISKFUN objects.
-%
 %   F/C divides the DISKFUN F by a scalar C.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.

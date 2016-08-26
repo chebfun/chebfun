@@ -1,14 +1,14 @@
-function [ normF, normloc ] = norm( f, p )
-%NORM   Norm of a diskfun
+function [normF, normloc] = norm(f, p)
+%NORM   Norm of a DISKFUN.
 % 
 % For DISKFUN objects:
-%    DISKFUN(F) = sqrt(integral of abs(F)^2).
-%    DISKFUN(F, 2) = largest singular value of F.
-%    DISKFUN(F,'fro') is the same as NORM(F).
-%    DISKFUN(F, 1) = NOT IMPLEMENTED.
-%    DISKFUN(F, inf) = global maximum in absolute value.
-%    DISKFUN(F, max) = global maximum in absolute value.
-%    DISKFUN(F, min) = NOT IMPLEMENTED
+%    NORM(F) = sqrt(integral of abs(F)^2).
+%    NORM(F, 2) = largest singular value of F.
+%    NORM(F,'fro') is the same as NORM(F).
+%    NORM(F, 1) NOT IMPLEMENTED.
+%    NORM(F, inf) = global maximum in absolute value.
+%    NORM(F, max) = global maximum in absolute value.
+%    NORM(F, min) NOT IMPLEMENTED.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -27,17 +27,16 @@ else
     switch ( p )  % Different cases on different norms.
         case 1
             error('CHEBFUN:DISKFUN:norm:norm', ...
-                'DISKFUN does not support L1-norm, yet');
+                'DISKFUN does not support L1-norm.');
             
-        case {2, 'fro'}  % Definite integral of f.^2
-            % 
-            s = svd( f ); 
-            normF = sqrt( sum( s.^2 ) );  
+        case {2, 'fro'}  % Definite integral of f.^2.
+            s = svd(f); 
+            normF = sqrt(sum(s.^2));  
             
          case {inf, 'inf', 'max'}
              [Y, X] = minandmax2(f);
-             [normF, idx] = max( abs( Y ) );
-             normloc = X( idx, : );
+             [normF, idx] = max(abs(Y));
+             normloc = X(idx, :);
             
         case {-inf, '-inf', 'min'}
             error('CHEBFUN:DISKFUN:norm:norm', ...
@@ -59,7 +58,7 @@ else
                     f = f.^p;
                     
                     if ( ~mod(p,2) )
-                        normF = ( sum2( f ) ).^( 1/p );
+                        normF = ( sum2(f) ).^(1/p);
                     else
                         error('CHEBFUN:DISKFUN:norm:norm', ...
                             'p-norm must have p even for now.');

@@ -1,11 +1,11 @@
 function varargout = pivotplot(varargin)
 %PIVOTPLOT   Semilogy plot of pivot values.
-%   PIVOTPLOT( F ) semilogy plot related to the pivots values taken during
+%   PIVOTPLOT(F) returns semilogy plot of the pivots values taken during
 %   the construction of the DISKFUN F.
 %
-%   H = PIVOTPLOT( F ) returns a handle H to the figure.
+%   H = PIVOTPLOT(F) returns a handle H to the figure.
 %
-%   PIVOTPLOT( F, S ) allows further plotting options, such as linestyle,
+%   PIVOTPLOT(F, S) allows further plotting options, such as linestyle,
 %   linecolor, etc. If S contains a string 'LOGLOG', the pseudo sig will be
 %   displayed on a log-log scale.
 

@@ -18,14 +18,15 @@ if ( isempty(f) )
     return
 end
 
-%give CDR to separable approx so it evaluates in polar. 
-[c, d, r] = cdr(f); 
-f = c*d*r.'; 
+% Give CDR to separableApprox so it evaluates in polar.
+[C, D, R] = cdr(f); 
+f = C*D*R.'; 
+
 [out{1:nargout}] = max2@separableApprox(f);
 if numel(out) == 1
     varargout = out;
 else
-    %return loc var as Cartesian coords
+    % Return loc in Cartesian coords.
     [val, loc] = out{:};
      t = loc(1); 
      loc(1) = loc(2).*cos(t); 
@@ -34,7 +35,3 @@ else
 end
 
 end
-    
-
-
-

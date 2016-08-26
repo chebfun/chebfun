@@ -1,6 +1,5 @@
 function varargout = mtimes(varargin)
-%*	   Pointwise multiplication for DISKFUN objects.
-%
+%*   Pointwise multiplication for DISKFUN objects.
 %   c*F or F*c multiplies a DISKFUN F by a scalar c.
 %
 %   F*G computes the integral of F(s,t)G(l,s) over s, and this is the 
