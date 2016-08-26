@@ -8,7 +8,7 @@ f = diskfun(@(x,y) 1 + 0*x);
 % Add noise to the samples then construct a diskfun from the samples
 U = sample(f, 16, 17) + (1-2*rand(17,16))*1e-10;
 g = diskfun(U);
-% Sample the spherefun.
+% Sample the diskfun.
 m = 101;
 [t,r] = meshgrid(linspace(-pi, pi, m), chebpts(m));
 V = g(t, r, 'polar');
@@ -24,10 +24,10 @@ pass(2) = norm(V(id1, id1) - V(id3, id2), inf) < tol && ...
       
 % Test a more complicated function plus noise
 f = diskfun(@(x,y) cos(pi*x.*y) + sin(3*pi*x));
-% Add noise to the samples then construct a spherefun from the samples
+% Add noise to the samples then construct a diskfun from the samples
 U = sample(f, 16, 17) + (1-2*rand(17,16))*1e-10;
 g = diskfun(U);
-% Sample the spherefun.
+% Sample the diskfun.
 m = 101;
 [t,r] = meshgrid(linspace(-pi, pi, m), chebpts(m));
 V = g(t,r, 'polar');

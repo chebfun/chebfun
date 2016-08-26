@@ -34,7 +34,5 @@ for j = 1:length(th)
         || norm(g-m) ==0);
 end
 
-
-
 end 
 

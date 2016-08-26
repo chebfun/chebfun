@@ -1,5 +1,5 @@
 function pass = test_coeffs2( ) 
-% test spherefun coeff2() command
+% test diskfun coeff2() command
 
 tol = 1000*chebfunpref().cheb2Prefs.chebfun2eps;
 
