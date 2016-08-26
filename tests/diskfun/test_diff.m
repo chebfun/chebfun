@@ -21,14 +21,28 @@ fy = diff(f,2);
 exact = @(th,r) cos(a)+0*th;
 pass(4) = SampleError( exact, fy ) < tol;
 
-
 % Gaussian
 g = @(x, y) 4/pi*exp(-4*((x-.3).^2+(y+.4).^2));
 f = diskfun(g);
+% dx using diff(f, 1)
 fx = diff(f, 1);
 exact = @(x,y) -32/pi*(x-.3).*exp(-4*((x-.3).^2+(y+.4).^2));
 exact = redefine_function_handle(exact); 
 pass(5) = SampleError( exact, fx ) < 2e1*tol;
+
+% dx using diffx(f)
+fx = diffx(f);
+pass(6) = SampleError( exact, fx ) < 2e1*tol;
+
+% dy using diff(f, 2)
+fy = diff(f, 2);
+exact = @(x,y) -32/pi*(y+.4).*exp(-4*((x-.3).^2+(y+.4).^2));
+exact = redefine_function_handle(exact); 
+pass(7) = SampleError( exact, fy ) < 2e1*tol;
+
+% dy using diffy(f)
+fy = diffy(f);
+pass(8) = SampleError( exact, fy ) < 2e1*tol;
 
 end
 %%%%%%%%%%%%%%%%%%%%%
