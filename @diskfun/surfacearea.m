@@ -1,7 +1,7 @@
 function varargout = surfacearea(varargin)
-%SURFACEAREA    Surface area of a DISKFUN.
-%
-%   SURFACEAREA(F) computes the surface area of the DISKFUN in the domain of F.
+%SURFACEAREA   Surface area of a DISKFUN.
+%   SURFACEAREA(F) computes the surface area of the DISKFUN in the domain 
+%   of F.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

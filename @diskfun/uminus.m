@@ -1,5 +1,5 @@
 function varargout = uminus(varargin)
-%UMINUS   Unary minus for a DISKFUN. 
+%UMINUS   Unary minus for a DISKFUN.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

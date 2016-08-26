@@ -1,6 +1,6 @@
-function varargout = surf( f, varargin )
-%SURF  Surface plot of a DISKFUN.
-%   SURF( F ) plots the F on the surface of the unit disk.
+function varargout = surf(f, varargin)
+%SURF   Surface plot of a DISKFUN.
+%   SURF(F) plots the DISKFUN object F on the surface of the unit disk.
 %
 %   SURF(X, Y, F, ...) calls separableApprox/SURF.  See this function for
 %   details.
@@ -9,9 +9,9 @@ function varargout = surf( f, varargin )
 %   surface property. Multiple property values can be set with a single
 %   statement.
 %
-%   H = SURF(...) returns a handle to a surface plot object.
+%   H = SURF(...) returns a handle to the figure.
 %
-% See also SEPARABLEAPPROX/SURF, PLOT.
+% See also DISKFUN/PLOT and SEPARABLEAPPROX/SURF.
 
 % Empty check:
 if ( isempty(f) )
@@ -27,9 +27,10 @@ minPlotNum = 200;
 defaultOpts = {'facecolor', 'interp', 'edgealpha', .5, 'edgecolor', 'none'};
 
 % Number of points to plot
-j = 1; argin = {};
+j = 1; 
+argin = {};
 while ( ~isempty(varargin) )
-    if strcmpi(varargin{1}, 'numpts')
+    if ( strcmpi(varargin{1}, 'numpts') )
         minPlotNum = varargin{2};
         varargin(1:2) = [];
     else
@@ -59,7 +60,7 @@ if ( isa(f,'diskfun') )
         xx=rr.*cos(tt);
         yy=rr.*sin(tt);
         % Make some corrections to C for prettier plotting.
-        if ( norm(C - C(1,1),inf) < 1e-10 )
+        if ( norm(C - C(1,1), inf) < 1e-10 )
             % If vals are very close up to round off then the color scale is
             % hugely distorted. This fixes that.
             [n, m] = size(C);

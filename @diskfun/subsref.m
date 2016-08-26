@@ -42,29 +42,34 @@ idx = index(1).subs;
 
 if ( strcmp(index(1).type, '()') )
     x = idx{1};
-    if ( length(idx) == 3 )&& (strcmp(idx{3}, 'polar'))
+    if ( length(idx) == 3 ) && (strcmp(idx{3}, 'polar'))
         y = idx{2};
         out = feval(f, x, y, 'polar');
-        varargout = { out };     
-    elseif ( length(idx) == 3 )&& (strcmp(idx{3}, 'cart'))
+        varargout = { out };
+        
+    elseif ( length(idx) == 3 ) && (strcmp(idx{3}, 'cart'))
         y = idx{2};
         out = feval(f, x, y, 'cart');
-        varargout = { out };    
-    else  %pass to separableapprox
+        varargout = { out };
+        
+    else  % Pass to separableApprox.
         out = subsref@separableApprox(f, index);
         varargout = { out };
     %else
       % error('CHEBFUN:DISKFUN:subsref:inputs', ...
                % 'Can only evaluate diskfuns at (X,Y) or (TH,R)');    
     end
+    
 elseif ( strcmp(index(1).type,'()') )
     if ( numel(idx)==4 )
         % This intentionally fails: 
         varargout = { restrict(f,[idx{1}, idx{2}, idx{3}, idx{4}]) };
+        
     else
         error('CHEBFUN:DISKFUN:SUBSREF:restrict',...
-              'Restriction domain is given by four corners');
+              'Restriction domain should be given by four corners');
     end
+    
 else
     [varargout{1:nargout}] = subsref@separableApprox(f, index);
 end

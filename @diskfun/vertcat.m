@@ -1,13 +1,11 @@
-function F = vertcat( varargin )
+function F = vertcat(varargin)
 %VERTCAT   Vertical concatenation of DISKFUN objects.
-%
-% K = VERTCAT(F, G, H) is the vertical concatenation of DISKFUN objects F, 
-% G, and H. The function K is a DISKFUNV object. 
+%   K = VERTCAT(F, G, H) is the vertical concatenation of DISKFUN objects F, 
+%   G, and H. The output K is a DISKFUNV object.
 % 
-% [F ; G ] is equivalent to VERTCAT(F, G).
+%   [F ; G] is equivalent to VERTCAT(F, G).
 %
-%
-% VERTCAT(F) returns the DISKFUN F. 
+%   VERTCAT(F) returns the DISKFUN F. 
 % 
 % See also DISKFUNV.
 
@@ -17,14 +15,17 @@ function F = vertcat( varargin )
 
 if ( nargin == 1 ) 
     % VERTCAT of one argument just returns the same thing back to the user:
-    F = varargin{1}; 
+    F = varargin{1};
+    
 elseif ( nargin == 2 )
-    if all( cellfun(@(F) isa(F,'diskfun'), varargin) )
-        F = diskfunv( varargin{:} );
+    if ( all(cellfun(@(F) isa(F,'diskfun'), varargin)) )
+        F = diskfunv(varargin{:});
+        
     else
         error('DISKFUN:vertcat:tooManyComponents', ...
             'Only DISKFUN objects are valid to concatenate.');
     end
+    
 else
     error('DISKFUN:vertcat:tooManyInputs', ...
         'Can only vertically concatenate two DISKFUN objects.');

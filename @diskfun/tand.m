@@ -1,7 +1,7 @@
 function varargout = tand(varargin)
-%TAND  Tangent of a DISKFUN (in degrees)
+%TAND   Tangent of a DISKFUN (in degrees).
 %
-% See also DISKFUN/TAN
+% See also DISKFUN/TAN.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
