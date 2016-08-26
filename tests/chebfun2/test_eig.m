@@ -4,15 +4,14 @@ function pass = test_eig( pref )
 if ( nargin == 0 ) 
     pref = chebfunpref;
 end 
-
-tol = 100*pref.cheb2Prefs.chebfun2eps;
+tol = 1e4*pref.cheb2Prefs.chebfun2eps;
 
 % Decomposition on a square domain.
 f = cheb.gallery2('challenge');
 [V, D] = eig(f);
 
 % Is it correct?
-pass(1) = norm(f * V - V * D') < tol;
+pass(1) = norm(f * V - V * D) < tol;
 
 %%
 % The following should give an error message as the domain is not square.
