@@ -248,9 +248,9 @@ if ( max(abs(c(2:2:end)))/vscale(f) < eps )   % f is even.
 elseif ( max(abs(c(1:2:end)))/vscale(f) < eps ) % f is odd.
     if ( mod(m, 2) == mod(n, 2) ) % reduce one degree 
         if ( n >= m )
-        n = max(0, n - 1);            
+            n = max(0, n - 1);
         else
-        m = max(0, m - 1);
+            m = max(0, m - 1);
         end
     end
 
