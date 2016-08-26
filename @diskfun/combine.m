@@ -9,7 +9,7 @@ function g = combine(g,h)
 %
 %   If they do not have this property then g+h or plus(g,h) should be used.
 %
-% See also PARTITION.
+% See also DISKFUN/PARTITION.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

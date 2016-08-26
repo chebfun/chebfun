@@ -22,7 +22,7 @@ if (nargin<2)
 else
     c = varargin{1};
     if abs(c) >= pi
-        error('CHEBFUN:DISKFUN:diag: diagonal parameter must be between -pi and pi.')
+        error('CHEBFUN:DISKFUN:diag:angleOutOfRange','Diagonal parameter must be between -pi and pi.');
     else
         F = feval(f, varargin{1},':', 'polar');
     end
