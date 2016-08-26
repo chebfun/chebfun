@@ -1,8 +1,7 @@
 function varargout = std(varargin)
 %STD   Standard deviation of a DISKFUN along one variable.
-%   G = STD(F) returns the standard deviation of F in the r-variable
-%   (or radius), which is the default.
-%   That is, if F is defined on the rectangle [-pi,pi] x [0,1] then
+%   G = STD(F) returns the standard deviation of F in the radial variable
+%   (default).If F is defined on the rectangle [-pi,pi] x [0,1] then
 %
 %                         1 
 %                        /

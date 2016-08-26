@@ -18,7 +18,7 @@ if ( isempty( f ) )
 end 
 
 if ( nargin == 1) 
-    % Default to the y-direction:
+    % Default to the radial direction.
     dim = 1;    
 end
 dom = f.domain;
