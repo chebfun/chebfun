@@ -21,7 +21,6 @@ end
 % Give CDR to separableApprox so it evaluates in polar.
 [C, D, R] = cdr(f); 
 f = C*D*R.'; 
-f = cart2pol(f, 'cdr');
 
 [out{1:nargout}] = max2@separableApprox(f);
 if numel(out) == 1
