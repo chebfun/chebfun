@@ -15,9 +15,7 @@ function varargout = eig(f)
 %   \int f(x,y) w(x) dx = d w(y).
 %   This can be checked as follows: 
 %   [V, D] = eig(f);
-%   w = V(:,1); d = D(1,1);
-%   fw = chebfun(@(y) sum(chebfun(@(x) f(x, y), w.domain).*w), w.domain);
-%   and check that norm(fw-d*w) is O(eps).
+%   and check that norm(f*V-V*D) is O(eps).
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
