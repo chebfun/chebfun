@@ -56,7 +56,7 @@ if ( ( length(tspan) == 2 ) || ~restartSolver )
             varargout{1} = joinedFun;
         else
             timeFun = join(chebfun([tspan(1);tspan(2)],[tspan(1) tspan(2)]), ...
-                chebfun([tspan(2); oldEnd], [tspan(2) oldEnd]))
+                chebfun([tspan(2); oldEnd], [tspan(2) oldEnd]));
             
             varargout{1} = timeFun;
             varargout{2} = joinedFun;

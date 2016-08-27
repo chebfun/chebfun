@@ -247,7 +247,7 @@ maxNorm = pref.maxNorm;
 % TODO: Should just need this in case opts.Events is not Inf. Move to end of
 % file?
     function [position,isterminal,direction] = applyEventsFcn(t,y)
-        position = abs(y(varIndex))-maxNorm; % The value that we want to be zero
+        position = abs(y(varIndex))-maxNorm(:); % The value that we want to be zero
         isterminal = 1+0*maxNorm;  % Halt integration in call cases
         direction = 0;   % The zero can be approached from either direction
     end
