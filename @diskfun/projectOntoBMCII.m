@@ -1,19 +1,17 @@
 function f = projectOntoBMCII(f)
-% PROJECTONTOBMCI  Projection onto BMC-I symmetry.
+%PROJECTONTOBMCII   Projection onto BMC-II symmetry.
+%   F = projectOntoBMCII(F) is the orthogonal projection of f onto BMC-II 
+%   symmetry, i.e., a function that is
+%   1. even in r for every even wave number in theta.
+%   2. odd in r for every odd wave number in theta.
+%   Additionally, for all but the k=0 mode in theta, the resulting 
+%   projection enforces the diskfun is zero at the origin.
 %
-% f = projectOntoBMCII(f) is the orthogonal projection of f onto BMC-II 
-% symmetry, i.e., a function that is
-% 1. even in r for every even wave number in theta;
-% 2. odd in r for every odd wave number in theta;
-% Additionally, for all but the k=0 mode in theta, the resulting projection
-% enforces the diskfun is zero at the origin. 
-%
-% The projection is orthogonal, i.e., the correction matrix to fix up the
-% structure has the smallest possible Frobenius norm.
+%   The projection is orthogonal, i.e., the correction matrix to fix up the
+%   structure has the smallest possible Frobenius norm.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
-
 
 % Even part
 feven = f;
@@ -62,7 +60,6 @@ evenModes = 2:n;
     
 
 if ( ~isempty(evenModes) )
-    
     % to enforce that f(r) = 0 for each column function, 
     % we want C with smallest 2-norm such that  A*(X(1:2:end, 2:end)+C) = 0, 
     % where A =[1 -1 1 -1..] . 
@@ -81,11 +78,11 @@ end
 ctechs = chebtech2({'',X}); 
 f.cols.funs{1}.onefun = ctechs;
 
-% Now operate on the rows. The coefficients for the rows of an even BMCI
+% Now operate on the rows. The coefficients for the rows of an even BMC-II
 % function should only contain even wave numbers. The projection is to
 % simply zero out the odd wave numbers.
 X = f.rows.funs{1}.onefun.coeffs;
-n = size(X, 1); 
+n = size(X, 1);
 zeroMode = floor(n/2) + 1;
 oddModes = [fliplr(zeroMode-1:-2:1) zeroMode+1:2:n];
 X(oddModes, :) = 0;
@@ -99,10 +96,10 @@ f.rows.pointValues = feval(rtechs, [-1; 1]);
 end
 
 function f = projectOntoOddBMCII(f)
-% Project a spherefun to have odd BMC-I symmetry, i.e., a spherefun that is
-% pi-anti-periodic in theta and even in r. The projection is
-% orthogonal, i.e., the correction matrix to fix up the structure has the
-% smallest possible Frobenius norm.
+% Project a diskfun to have odd BMC-II symmetry, i.e., a diskfun that is
+% pi-anti-periodic in theta and even in r. The projection is orthogonal, 
+% i.e., the correction matrix to fix up the structure has the smallest 
+% possible Frobenius norm.
 
 % Nothing to project
 if isempty(f)
@@ -114,16 +111,12 @@ end
 % Operate on the column coefficients first to project them onto odd
 % functions.
 X = f.cols.funs{1}.onefun.coeffs;
-
-% Get size: 
-m = size(X, 1);
-
 X(1:2:end, :) = 0; 
 
 ctechs = chebtech2({'',X}); 
 f.cols.funs{1}.onefun = ctechs;
 
-% Now operate on the rows. The coefficients for the rows of an odd BMCI
+% Now operate on the rows. The coefficients for the rows of an odd BMC-II
 % function should only contain odd wave numbers. The projection is to
 % simply zero out the even wave numbers.
 X = f.rows.funs{1}.onefun.coeffs;

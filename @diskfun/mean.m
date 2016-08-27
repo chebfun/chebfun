@@ -12,18 +12,17 @@ function s = mean(f, dim)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check:
-if ( isempty( f ) )
+if ( isempty(f) )
     s = chebfun;
     return
 end 
 
-if ( nargin == 1) 
+if ( nargin == 1)
     % Default to the radial direction.
     dim = 1;    
 end
-dom = f.domain;
 
-s = sum( f, dim ); 
+s = sum(f, dim);
 if ( dim == 1 )
     s = s / 1; % Mean in the radial direction (default)
 elseif ( dim == 2 )
@@ -34,4 +33,3 @@ else
 end
 
 end
-
