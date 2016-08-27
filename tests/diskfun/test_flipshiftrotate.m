@@ -1,4 +1,4 @@
-function pass = test_flip( ) 
+function pass = test_flipshiftrotate( ) 
 % Test diskfun flip, rotate, flipxy and circshift functions. 
 
 tol = 1000*chebfunpref().cheb2Prefs.chebfun2eps;

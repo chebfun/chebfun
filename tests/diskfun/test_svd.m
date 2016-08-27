@@ -3,12 +3,12 @@ function pass = test_svd( )
 
 tol = 1000*chebfunpref().cheb2Prefs.chebfun2eps;
 
-f = diskfun(@(x,y) cos(x.*y) ); 
+f = diskfun(@(x,y) cos(x.*y.^2) ); 
 s = svd( f ); 
 pass(1) = abs( norm(f).^2 - sum(s.^2) ) < tol ; 
 
 % Check resolved: 
-pass(2) = ( s(end) < 3e1*tol );
+pass(2) = ( s(end) < 1e1*tol );
 
 % Scale invariant: 
 g = 100*f; 
