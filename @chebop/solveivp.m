@@ -241,6 +241,21 @@ opts.happinessCheck = pref.happinessCheck;
 % Do we want to restart the solver at breakpoints?
 opts.restartSolver = pref.ivpRestartSolver;
 
+% Break out of solver if solution exceeds maximum norm?
+maxNorm = pref.maxNorm;
+
+% TODO: Should just need this in case opts.Events is not Inf. Move to end of
+% file?
+    function [position,isterminal,direction] = applyEventsFcn(t,y)
+        position = abs(y(varIndex))-maxNorm; % The value that we want to be zero
+        isterminal = 1+0*maxNorm;  % Halt integration in call cases
+        direction = 0;   % The zero can be approached from either direction
+    end
+
+if ( ~all(isinf(pref.maxNorm) ))
+    opts.Events = @applyEventsFcn;
+end
+
 % Solve!
 [t, y]= solver(anonFun, odeDom, initVals, opts);
 

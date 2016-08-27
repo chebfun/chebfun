@@ -36,7 +36,34 @@ end
 if ( ( length(tspan) == 2 ) || ~restartSolver )
     % We don't want to restart the solver, or we just have one interval.
     sol = solver(odefun, tspan, uinit, varargin{:});
-    [varargout{1:nargout}] = chebfun.odesol(sol, tspan, varargin{:});
+    
+    % Did we detect a blowup event?
+    if ( isfield(sol,'ie') && ~isempty(sol.ie))
+        oldEnd = tspan(2);
+        tspan(2) = sol.xe; % Blowup time
+
+        % Function for the solution where it's well defined:
+        solFun = chebfun.odesol(sol, tspan, varargin{:});
+        
+        % Function of NaNs
+        nanFun = chebfun(NaN(1, size(sol.y, 1)), [tspan(2), oldEnd]);
+
+        % Joined fun:
+        joinedFun = join(solFun, nanFun);
+        
+        % Did we request a time output as well?
+        if ( nargout == 1 )
+            varargout{1} = joinedFun;
+        else
+            timeFun = join(chebfun([tspan(1);tspan(2)],[tspan(1) tspan(2)]), ...
+                chebfun([tspan(2); oldEnd], [tspan(2) oldEnd]))
+            
+            varargout{1} = timeFun;
+            varargout{2} = joinedFun;
+        end
+    else
+        [varargout{1:nargout}] = chebfun.odesol(sol, tspan, varargin{:});
+    end
     
 else
     % Here, we wish to restart the solver at each breakpoint encountered.
