@@ -22,6 +22,10 @@ function varargout = waterfall(varargin)
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-[varargout{1:nargout}] = waterfall@separableApprox(varargin{:});
+%switch to polar
+f = varargin{1}; 
+f = cart2pol(f, 'cdr'); 
+
+[varargout{1:nargout}] = waterfall@separableApprox(f,varargin{2:end});
 
 end

@@ -20,8 +20,7 @@ if ( isempty(f) )
 end
 
 % Give cdr to separableApprox.
-[c, d, r] = cdr(f); 
-f = c*d*r.'; 
+f = cart2pol(f, 'cdr'); 
 [out{1:nargout}] = min2@separableApprox(f);
 if numel(out) == 1
     varargout = out;

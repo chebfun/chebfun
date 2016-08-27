@@ -10,7 +10,7 @@ function f = diff( f, varargin )
 %   F = DIFF( F, DIM, K) computes the kth derivatives of F in the variable
 %   given by DIM.
 %
-% See also DISKFUN/LAPLACIAN
+% See also DISKFUN/LAPLACIAN, DISKFUN/DIFFX, DISKFUN/DIFFY
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

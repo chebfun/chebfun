@@ -3,7 +3,7 @@ function g = constructor(g, op, varargin)
 % This code is for generating a DISKFUN object that represents a function
 % on the unit disk. A DISKFUN object is a real-valued function that is
 % represented as a sum of rank 1 outerproducts of univariate functions in
-% `doubled-up' poloar coordinates.
+% `doubled-up' polar coordinates.
 %
 % The algorithm for constructing a DISKFUN comes in two phases:
 %

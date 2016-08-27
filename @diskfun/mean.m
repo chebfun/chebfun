@@ -30,7 +30,7 @@ elseif ( dim == 2 )
     s = s / 2*pi; % Mean in the angular direction
 else
     error('CHEBFUN:DISKFUN:mean:dim', ...
-        'Mean not in angular (THETA) or radial (R) direction.')
+        'dim must be 1 or 2.')
 end
 
 end

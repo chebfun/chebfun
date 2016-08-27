@@ -19,14 +19,12 @@ function varargout = minandmax2(varargin)
 f = varargin{1}; 
 %check empty
 if ( isempty(f) )
-    X = [];
-    Y = [];
+    varargout = {[], []};
     return
 end
 
 %give cdr to separableApprox 
-[c, d,r] = cdr(f); 
-f = c*d*r.';
+f = cart2pol(f, 'cdr'); 
 [out{1:nargout}] = minandmax2@separableApprox(f);
 if numel(out) == 1
     varargout = out;
