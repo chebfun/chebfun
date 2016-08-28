@@ -238,22 +238,19 @@ c = chebcoeffs(f, length(f));
 c(end) = 2*c(end);
 
 % Check for symmetries and reduce degrees accordingly.
-if ( max(abs(c(2:2:end)))/vscale(f) < eps )   % f is even.
+if ( max(abs(c(2:2:end)))/vscale(f) < eps )   % f is even.        
     if ( mod(m, 2) == 1 )
-        m = max(0, m - 1);
+        m = m - 1;
     end
     if ( mod(n, 2) == 1 )
-        n = max(0, n - 1);
+        n = n - 1;
     end
-elseif ( max(abs(c(1:2:end)))/vscale(f) < eps ) % f is odd.
-    if ( mod(m, 2) == mod(n, 2) ) % reduce one degree 
-        if ( n >= m )
-        n = max(0, n - 1);            
-        else
-        m = max(0, m - 1);
-        end
-    end
-
+elseif ( max(abs(c(1:2:end)))/vscale(f) < eps ) % f is odd. obtain (odd,even) type
+    if ( ~mod(m,2) && ~mod(n,2) ), 
+        m = m - 1; 
+    elseif (mod(m,2) && mod(n,2)), 
+        n = n - 1; 
+    end    
 end
 
 end
