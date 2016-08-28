@@ -238,7 +238,7 @@ c = chebcoeffs(f, length(f));
 c(end) = 2*c(end);
 
 % Check for symmetries and reduce degrees accordingly.
-if ( max(abs(c(2:2:end)))/vscale(f) < eps )   % f is even.        
+if ( max(abs(c(2:2:end)))/vscale(f) < eps )   % f is even.
     if ( mod(m, 2) == 1 )
         m = m - 1;
     end
