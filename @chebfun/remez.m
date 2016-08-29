@@ -247,11 +247,12 @@ if ( max(abs(c(2:2:end)))/vscale(f) < eps )   % f is even.
     end
 
 elseif ( max(abs(c(1:2:end)))/vscale(f) < eps ) % f is odd. obtain (odd,even) type
-    if ( ~mod(m,2) && ~mod(n,2) ), 
-        m = max(m - 1,0); 
-    elseif (mod(m,2) && mod(n,2)), 
-        n = n - 1; 
-    end    
+     if ( ~mod(m,2) )
+         m = max(0, m-1);
+     end
+     if ( mod(n,2) )
+         n = n - 1;
+     end   
 
 end
 
