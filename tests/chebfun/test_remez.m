@@ -56,6 +56,14 @@ pass(7) = (abs(err-.5) < 1e-10);
 err = norm(f-p./q,inf);
 pass(8) = (abs(err-.043689) < 1e-3);
 
-
+%%
+% Make sure that it works for m=0 and odd f.
+f = x.^3;
+try
+    [p,q] = remez(f,0,2);
+    pass(9) = 1;
+catch ME 
+    pass(9) = false;
+end
 
 end
