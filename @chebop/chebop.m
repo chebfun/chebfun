@@ -212,7 +212,7 @@ classdef (InferiorClasses = {?double}) chebop
 % possible to enforce solver for IVPs to bail out of the solution process if a
 % maximum norm of the solution is exceeded. This is particularly useful for
 % problems that blow up in finite time. The information is passed through the
-% MAXNORM field of the chebop. In case of a coupled system, a vector can be
+% MAXNORM field of the CHEBOP. In case of a coupled system, a vector can be
 % passed.
 %
 %   Example (scalar problem, stop solver once |u| > 10 )

@@ -71,21 +71,70 @@ else
     % Number of pieces of the solution:
     numPieces = length(tspan) - 1;
     
-    % Initialize a struct for storing the individual SOL pieces:
-    sol(numPieces) = struct('solver', '', 'extdata', struct(), ...
-        'x', [], 'y', [], 'stats', struct(), 'idata', struct());
+    % Initialize a struct for storing the individual SOL pieces. Need extra
+    % fields if event detection is on:
+    if ( ~isempty(varargin) && ~isempty(varargin{1}.Events) )
+        eventDetectionOn = true;
+        sol(numPieces) = struct('solver', '', 'extdata', struct(), ...
+            'x', [], 'y', [], 'stats', struct(), 'idata', struct(), ...
+            'xe', [], 'ye', [], 'ie', []);
+    else
+        eventDetectionOn = false;
+        sol(numPieces) = struct('solver', '', 'extdata', struct(), ...
+            'x', [], 'y', [], 'stats', struct(), 'idata', struct());
+    end
+    
+    % Keep track of whether the solver stopped due to event detection
+    solverStopped = false;
 
     % Loop through the pieces
     for k = 1:numPieces
         % Compute the solution for the current interval
         sol(k) = solver(odefun, tspan(k:k+1), uinit, varargin{:});
-        % Obtain a new initial condition for the next piece
-        uinit = sol(k).y(:,end);    
+        
+        % Check if event detection is on, and if so, if we are to bail:
+        if ( eventDetectionOn && ~isempty(sol(k).ie) )
+            solverStopped = true;
+            break
+        else
+            % Obtain a new initial condition for the next piece
+            uinit = sol(k).y(:,end);
+        end
     end
     
-    % Convert all the pieces into a CHEBFUN:  
-    [varargout{1:nargout}] = chebfun.odesol(sol, tspan, varargin{:});
-    
+    % Convert all the pieces into a CHEBFUN:
+    if ( ~solverStopped )
+        % Easy case, event detection was off, or no stopping event detected:
+        [varargout{1:nargout}] = chebfun.odesol(sol, tspan, varargin{:});
+    else
+        % Previously specified end time
+        oldEnd = tspan(end);
+        % Time periods where we have good solutions:
+        tspan = tspan(1:k+1);
+        
+        % Blowup time
+        tspan(end) = sol(k).xe; % Blowup time
+
+        % Function for the solution where it's well defined:
+        [timeFun, solFun] = chebfun.odesol(sol(1:k), tspan, varargin{:});
+        
+        % Function of NaNs
+        nanFun = chebfun(NaN(1, size(sol(1).y, 1)), [tspan(end), oldEnd]);
+
+        % Joined fun:
+        joinedFun = join(solFun, nanFun);
+        
+        % Did we request a time output as well?
+        if ( nargout == 1 )
+            varargout{1} = joinedFun;
+        else
+            timeFun = join(timeFun, ...
+                chebfun([tspan(2); oldEnd], [tspan(2) oldEnd]));
+            
+            varargout{1} = timeFun;
+            varargout{2} = joinedFun;
+        end
+    end
 end
 
 end
