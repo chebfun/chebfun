@@ -67,7 +67,7 @@ pass(j) = ( norm(H - H_true) < tol );
 j = j+1;
 
 % Composition of a CHEBFUN3V with a CHEBFUN3V.
-G = chebfun3v(@(x,y,z) x + y + z, @(x,y,z) x - y, [ -2, 2, -2, 2, -1, 2 ]);
+G = chebfun3v(@(x,y,z) x + y + z, @(x,y,z) x - y, [ -2, 2, -2, 2, 0, 2 ]);
 F = chebfun3v(@(x,y,z) 2*x, @(x,y,z) x + y, @(x,y,z) z + 1);
 H = G(F);
 H_true = chebfun3v(@(x,y,z) 3*x + y + z + 1, @(x,y,z) x - y);

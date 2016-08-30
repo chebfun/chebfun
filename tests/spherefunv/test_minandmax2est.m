@@ -9,6 +9,6 @@ j = 1;
 
 F = spherefunv(@(x,y,z) x, @(x,y,z) y, @(x,y,z) z);
 rangeF = minandmax2est(F);
-pass(j) = isSubset(rangeF, [ -1, 1, -1, 1, -1, 1 ]);
+pass(j) = isSubset(rangeF, [ -1, 1, -1, 1, -1, 1 ], tol);
 
 end

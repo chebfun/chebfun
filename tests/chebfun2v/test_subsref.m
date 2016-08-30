@@ -98,7 +98,7 @@ j = j+1;
 % Composition of a CHEBFUN2V with a CHEBFUN3, which will be interpreted as the
 % CHEBFUN3V [real(f); imag(f)].  (Regardless if f is real or complex.)
 f = chebfun3(@(x,y,z) x + y + 1i*z);
-G = chebfun2v(@(x,y) x, @(x,y) y, @(x,y) x + y, [-2.1, 2.1, -1.1, 1.1]);
+G = chebfun2v(@(x,y) x, @(x,y) y, @(x,y) x + y, [-2, 2, -1, 1]);
 H = G(f);
 H_true = chebfun3v(@(x,y,z) x + y, @(x,y,z) z, @(x,y,z) x + y + z);
 pass(j) = ( norm(H - H_true) < tol );

@@ -29,8 +29,6 @@ if ( ~isreal(f) )
         'The first CHEBFUN3V object must be real-valued.')
 end
 
-% Get estimate for the image of f:
-rangef = minandmax3est(f);
 
 if ( f.nComponents == 1 )
     % If F has only one component, send to CHEBFUN3 compose:
@@ -40,15 +38,18 @@ elseif ( f.nComponents == 2 )
     % f has 2 components, so we can compose with a CHEBFUN2 or CHEBFUN2V.
     
     if ( isa(op, 'chebfun2') )
-        % Check that the image of f is in the domain of op:
-        if ( ~isSubset(rangef, op.domain) )
-            error('CHEBFUN:CHEBFUN3V:COMPOSE:DomainMismatch2', ...
-                'OP(F) is not defined, since image(F) is not contained in domain(OP).')
-        end
-        
         % Get components:
         f1 = f.components{1};
         f2 = f.components{2};
+        
+        % Check that the image of f is in the domain of op:
+        rangef = minandmax3est(f);          % Estimate of image(f).
+        tol = 100 * chebfun3eps * max(vscale(f), vscale(op)) * ...
+            norm(f1.domain, inf);           % Tolerance.
+        if ( ~isSubset(rangef, op.domain, tol) )
+            error('CHEBFUN:CHEBFUN3V:COMPOSE:DomainMismatch2', ...
+                'OP(F) is not defined, since image(F) is not contained in domain(OP).')
+        end
         
         % Call constructor:
         if ( isPeriodicTech(f) )
@@ -77,16 +78,19 @@ elseif ( f.nComponents == 3 )
     % f has 3 components, so we can compose with a CHEBFUN3 or CHEBFUN3V.
     
     if ( isa(op, 'chebfun3') )
-        % Check that the image of f is in the domain of op:
-        if ( ~isSubset(rangef, op.domain) )
-            error('CHEBFUN:CHEBFUN3V:COMPOSE:DomainMismatch3', ...
-                'OP(F) is not defined, since image(F) is not contained in domain(OP).')
-        end
-        
         % Get components:
         f1 = f.components{1};
         f2 = f.components{2};
         f3 = f.components{3};
+        
+        % Check that the image of f is in the domain of op:
+        rangef = minandmax3est(f);          % Estimate of image(f).
+        tol = 100 * chebfun3eps * max(vscale(f), vscale(op)) * ...
+            norm(f1.domain, inf);           % Tolerance.
+        if ( ~isSubset(rangef, op.domain, tol) )
+            error('CHEBFUN:CHEBFUN3V:COMPOSE:DomainMismatch3', ...
+                'OP(F) is not defined, since image(F) is not contained in domain(OP).')
+        end
         
         % Call constructor:
         if ( isPeriodicTech(f) )

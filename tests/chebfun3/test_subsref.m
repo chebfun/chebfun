@@ -57,13 +57,13 @@ catch ME
 end
 
 % Test composition with a CHEBFUN2V or three CHEBFUN2
-g = chebfun3(@(x,y,z) x + y + z, [ -2, 2, -2, 2, -2, 2 ]);
+g = chebfun3(@(x,y,z) x + y + z, [ -1, 1, -1, 1, -2, 2 ]);
 F = chebfun2v(@(x,y) x, @(x,y) y, @(x,y) x + y);
 h = g(F);
 h_true = chebfun2(@(x,y) 2*x + 2*y);
 pass(12) = ( norm(h - h_true) < tol );
 
-g = chebfun3(@(x,y,z) x + y + z, [ -2, 2, -2, 2, -2, 2 ]);
+g = chebfun3(@(x,y,z) x + y + z, [ -1, 1, -1, 1, -2, 2 ]);
 f1 = chebfun2(@(x,y) x);
 f2 = chebfun2(@(x,y) y);
 f3 = f1 + f2;

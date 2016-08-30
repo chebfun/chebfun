@@ -17,6 +17,17 @@ exact = G.pivotValues;
 
 pass(1) = norm( exact - F(1).pivotValues ) < tol; 
 
+j = 2;
+F = spherefunv(@(x,y,z) x, @(x,y,z) y, @(x,y,z) z);
+g = chebfun3(@(x,y,z) x + y + z);
+h_true = spherefun(@(x,y,z) x + y + z);
+h = g(F);
+pass(j) = ( norm(h - h_true) < tol );
+j = j + 1;
 
+G = chebfun3v(@(x,y,z) x, @(x,y,z) y, @(x,y,z) z);
+H_true = spherefunv(@(x,y,z) x, @(x,y,z) y, @(x,y,z) z);
+H = G(F);
+pass(j) = ( norm(H - H_true) < tol );
 
 end

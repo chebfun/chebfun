@@ -16,22 +16,22 @@ if ( isempty(f) || isempty(op) )
 end
 
 % F is real and has three components, so we can compose with a CHEBFUN3 or
-% CHEBFUN3V
-
-% Get estimate of the range of f:
-rangef = minandmax2est(f);
+% CHEBFUN3V.
 
 if ( isa(op, 'chebfun3') )
-    % Check that image(f) is in domain(op):
-    if ( ~isSubset(rangef, op.domain) )
-        error('CHEBFUN:SPHEREFUNV:COMPOSE:DomainMismatch3', ...
-            'OP(F) is not defined, since image(F) is not contained in domain(OP).')
-    end
-    
     % Get components of F:
     f1 = f.components{1};
     f2 = f.components{2};
     f3 = f.components{3};
+    
+    % Check that image(f) is in domain(op):
+    rangef = minandmax2est(f);              % Estimate of image(f).
+    tol = 100 * chebfun2eps * max(vscale(f), vscale(op)) * ...
+            norm(f1.domain, inf);           % Tolerance.
+    if ( ~isSubset(rangef, op.domain, tol) )
+        error('CHEBFUN:SPHEREFUNV:COMPOSE:DomainMismatch3', ...
+            'OP(F) is not defined, since image(F) is not contained in domain(OP).')
+    end
     
     % Call constructor:
     f = spherefun(@(x,y,z) op(feval(f1, x, y, z), feval(f2, x, y, z), ...
@@ -49,8 +49,16 @@ elseif ( isa(op, 'chebfun3v') )
     op2 = op(2);
     op3 = op(3);
     
+    % Get components of f:
+    f1 = f.components{1};
+    f2 = f.components{2};
+    f3 = f.components{3};
+    
     % Check that image(f) is in domain(op):
-    if ( ~isSubset(rangef, op1.domain) )
+    rangef = minandmax2est(f);              % Estimate of image(f).
+    tol = 100 * chebfun2eps * max(vscale(f), vscale(op)) * ...
+            norm(f1.domain, inf);           % Tolerance.
+    if ( ~isSubset(rangef, op1.domain, tol) )
         error('CHEBFUN:SPHEREFUNV:COMPOSE:DomainMismatch3v', ...
             'OP(F) is not defined, since image(F) is not contained in domain(OP).')
     end
@@ -58,11 +66,6 @@ elseif ( isa(op, 'chebfun3v') )
     % Calling directly the constructor for [ op1(f), op2(f), op3(f) ] as below
     % seems to be slightly faster than building a spherefun for each component
     % and then calling the spherefunv constructor on the three spherefuns.
-    
-    % Get components of f:
-    f1 = f.components{1};
-    f2 = f.components{2};
-    f3 = f.components{3};
     
     % Call constructor:
     f = spherefunv(@(x,y,z) op1(feval(f1, x, y, z), feval(f2, x, y, z), ...

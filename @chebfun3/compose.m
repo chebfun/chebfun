@@ -23,15 +23,17 @@ if ( isa(op, 'chebfun') )
     end
     
     if ( length(op.domain) > 2 )
-        % If OP has several pices, OP(CHEBFUN3) might be inaccurate.
+        % If OP has several pieces, OP(CHEBFUN3) might be inaccurate.
         warning('CHEBFUN:CHEBFUN3:compose:pieces', ...
             ['The composition of a CHEBFUN with several pieces and a CHEBFUN3\n', ...
             'might be inaccurate.']);
     end
     
     % Check that image(f) is contained in domain(OP).
-    vals = minandmax3est(f);    % Estimate of image(f).
-    if ( ~isSubset(vals, op.domain) )
+    vals = minandmax3est(f);        % Estimate of image(f).
+    tol = 100 * chebfun3eps * max(vscale(f), vscale(op)) * ...
+            norm(f.domain, inf);    % Tolerance.
+    if ( ~isSubset(vals, op.domain, tol) )
         error('CHEBFUN:CHEBFUN3:COMPOSE:DomainMismatch', ...
             'OP(F) is not defined, since image(F) is not contained in domain(OP).')
     end
