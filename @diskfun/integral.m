@@ -14,6 +14,13 @@ function I = integral( f, varargin )
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+%check for empty
+if isempty(f)
+    I = 0;
+    return
+end
+
+
 % Another way to do sum2(f)
 if ( nargin == 1 )                         
     I = integral2( f );
