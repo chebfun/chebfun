@@ -69,6 +69,14 @@ end
 % Parse the inputs.
 [m, n, N, rationalMode, opts] = parseInputs(f, varargin{:});
 
+% If m=-1, this means f=odd and input (m,n)=(0,n); return constant 0. 
+if ( m == -1 )
+    q = chebfun(1, dom);
+    p = chebfun(0, dom);
+    varargout = {p, q, @(x) feval(p, x)./feval(q, x), norm(f,'inf'), []};    
+    return
+end
+
 % With zero denominator degree, the denominator polynomial is trivial.
 if ( n == 0 )
     qk = 1;
@@ -194,7 +202,11 @@ end
 N = m + n;
 
 % Parse name-value option pairs.
-opts.tol = 1e-16*(N^2 + 10); % Relative tolerance for deciding convergence.
+if rationalMode
+opts.tol = 1e-16*(10*N^2 + 100); % Relative tolerance for deciding convergence.    
+else
+opts.tol = 1e-16*(N^2 + 10); % Polynomial case is much more robust. 
+end
 opts.maxIter = 20;           % Maximum number of allowable iterations.
 opts.displayIter = false;    % Print output after each iteration.
 opts.plotIter = false;       % Plot approximation at each iteration.
@@ -247,8 +259,9 @@ if ( max(abs(c(2:2:end)))/vscale(f) < eps )   % f is even.
     end
 
 elseif ( max(abs(c(1:2:end)))/vscale(f) < eps ) % f is odd. obtain (odd,even) type
-     if ( ~mod(m,2) )
-         m = max(0, m-1);
+     if ( ~mod(m,2) ) 
+         m = m - 1;  
+% Note: if input was (0,n), detect by m=-1 and return constant function         
      end
      if ( mod(n,2) )
          n = n - 1;
