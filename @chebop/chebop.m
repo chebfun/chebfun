@@ -222,12 +222,14 @@ classdef (InferiorClasses = {?double}) chebop
 %
 %   Example (Lotka-Volterra, stop if |u| > 1 or |v| > 5 )
 %       N = chebop(@(t,u,v) [diff(u)-2.*u+u.*v; diff(v)+v-u.*v], [0 10]);
-%       N.lbc = @(u, v) [u-3; v-1]; N.maxnorm = [1 5];
+%       N.lbc = @(u, v) [u-.5; v-1]; N.maxnorm = [1 5];
 %       [u,v] = N\0; plot([u, v])
 %
 % If the solver bails out before the specified end time T, the solution returned
 % will include a piece of a NaN CHEBFUN on the time interval from when the
-% solver stops until T.
+% solver stops until T. Note that the detection only works if the solution
+% crosses the threshold, so if the initial condition violates the maxnorm
+% condition, the solver is likely to miss it.
 %
 %
 % See also CHEBOP/MTIMES, CHEBOP/MLDIVIDE, CHEBOP/SOLVEBVP, CHEBOP/SOLVEIVP, 
