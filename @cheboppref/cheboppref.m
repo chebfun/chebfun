@@ -133,15 +133,6 @@ classdef cheboppref < chebpref
 %   The maximum number of steps that the (damped) Newton iteration is allowed to
 %   take, before it is considered to be non-convergent.
 %
-%   maxNorm                     - Threshold for stopping integration of IVPs
-%     [Inf]
-%
-%   The maximum norm of the solution components before integration of IVPs is
-%   stopped. This option is useful for problems where the solution blows up in
-%   finite time. For coupled systems, the value of this option should be a
-%   vector that contains threshold for each solution component. Internally, it
-%   sets up an event function to be passed to MATLAB's ODE solvers.
-%
 %   minDimension
 %     [32]
 %
@@ -304,8 +295,6 @@ classdef cheboppref < chebpref
                 prefList.maxDimension);
             fprintf([padString('    maxIter:') '%d\n'], ...
                 prefList.maxIter);
-            fprintf([padString('    maxNorm:') '%d\n'], ...
-                prefList.maxNorm);
             fprintf([padString('    minDimension:') '%d\n'], ...
                 prefList.minDimension);
             fprintf([padString('    plotting:') '%s\n'], ...
@@ -479,7 +468,6 @@ classdef cheboppref < chebpref
             factoryPrefs.lambdaMin = 1e-6;
             factoryPrefs.maxDimension = 4096;
             factoryPrefs.maxIter = 25;
-            factoryPrefs.maxNorm = Inf;
             factoryPrefs.minDimension = 32;
             factoryPrefs.plotting = 'off';
             factoryPrefs.vectorize = true;

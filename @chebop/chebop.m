@@ -206,6 +206,30 @@ classdef (InferiorClasses = {?double}) chebop
 % the default CHEBOPPREF via cheboppref.setDefaults('vectorize', false).
 %
 %
+% %% MAXNORM %%
+%
+% Through the events capabilities of Matlab's built-in ODE solvers, it is
+% possible to enforce solver for IVPs to bail out of the solution process if a
+% maximum norm of the solution is exceeded. This is particularly useful for
+% problems that blow up in finite time. The information is passed through the
+% MAXNORM field of the chebop. In case of a coupled system, a vector can be
+% passed.
+%
+%   Example (scalar problem, stop solver once |u| > 10 )
+%       T = 30 ; N = chebop(0,T); t = chebfun('t',[0,T]); N.maxnorm = 10;
+%       N.op = @(t,y) diff(y,2)+y-0.09*y^3; N.lbc = [-1; 0];
+%       y = N\sin(0.05*t); plot(y,diff(y))
+%
+%   Example (Lotka-Volterra, stop if |u| > 1 or |v| > 5 )
+%       N = chebop(@(t,u,v) [diff(u)-2.*u+u.*v; diff(v)+v-u.*v], [0 10]);
+%       N.lbc = @(u, v) [u-3; v-1]; N.maxnorm = [1 5];
+%       [u,v] = N\0; plot([u, v])
+%
+% If the solver bails out before the specified end time T, the solution returned
+% will include a piece of a NaN CHEBFUN on the time interval from when the
+% solver stops until T.
+%
+%
 % See also CHEBOP/MTIMES, CHEBOP/MLDIVIDE, CHEBOP/SOLVEBVP, CHEBOP/SOLVEIVP, 
 %   CHEBOPPREF.
 
@@ -223,10 +247,11 @@ classdef (InferiorClasses = {?double}) chebop
         rbc = [];       % Right boundary condition(s)
         rbcShow = [];   % Pretty print right boundary condition(s)
         bc = [];        % Other/internal/mixed boundary conditions
-        bcShow = [];   % Pretty print other boundary condition(s)
+        bcShow = [];    % Pretty print other boundary condition(s)
         init = [];      % Initial guess of a solution
         numVars = [];   % Number of variables the CHEBOP operates on.
         vectorize = []; % Automatic vectorization?
+        maxnorm = [];   % Maximum norm of solution before IVP solver bailing.
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

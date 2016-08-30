@@ -242,7 +242,7 @@ opts.happinessCheck = pref.happinessCheck;
 opts.restartSolver = pref.ivpRestartSolver;
 
 % Break out of solver if solution exceeds maximum norm?
-maxNorm = pref.maxNorm;
+maxNorm = N.maxnorm;
 
 % TODO: Should just need this in case opts.Events is not Inf. Move to end of
 % file?
@@ -252,7 +252,7 @@ maxNorm = pref.maxNorm;
         direction = 0;   % The zero can be approached from either direction
     end
 
-if ( ~all(isinf(pref.maxNorm) ))
+if ( ~isempty(maxNorm) && ~all(isinf(maxNorm) ))
     opts.Events = @applyEventsFcn;
 end
 
