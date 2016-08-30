@@ -202,7 +202,11 @@ end
 N = m + n;
 
 % Parse name-value option pairs.
-opts.tol = 1e-16*(N^2 + 10); % Relative tolerance for deciding convergence.
+if rationalMode
+opts.tol = 1e-16*(10*N^2 + 100); % Relative tolerance for deciding convergence.    
+else
+opts.tol = 1e-16*(N^2 + 10); % Polynomial case is much more robust. 
+end
 opts.maxIter = 20;           % Maximum number of allowable iterations.
 opts.displayIter = false;    % Print output after each iteration.
 opts.plotIter = false;       % Plot approximation at each iteration.
