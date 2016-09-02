@@ -26,13 +26,16 @@ end
 [cols, D, rows] = cdr(f);
 dom = f.domain; 
 %restrict cols to match domain
-cols = restrict(cols, [0 1]); 
+ 
 
 if ( dim == 1 )  
-    % Integrate over y: 
+    % Integrate over r. Need to include the measure on the disk.
+    r = chebfun('x');
+    cols = r.*cols;
+    cols = restrict(cols, [0 1]);
     f = rows * ( sum(cols) * D ).';
     if ( isa(f, 'chebfun') ) 
-        f = simplify( f.', [], 'globaltol' ); 
+        f = simplify( f, [], 'globaltol' ); 
     else
         % f = double 
         f = chebfun(f, dom(1:2)).'; 
@@ -40,7 +43,7 @@ if ( dim == 1 )
 elseif ( dim == 2 )
     f = cols * ( D * sum( rows ).' );
     if  ( isa(f, 'chebfun') ) 
-        f = simplify( f, [], 'globaltol' );
+        f = simplify( f.', [], 'globaltol' );
     else
         f = chebfun( f, dom(3:4) ); 
     end

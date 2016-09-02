@@ -4,7 +4,8 @@ function s = mean(f, dim)
 %          MEAN(F) = sum(F).
 %
 %   MEAN(F, DIM) takes the mean along the direction DIM. If DIM = 1 it is the
-%   radial direction, and if DIM = 2 then it is the angular direction.
+%   radial direction, and if DIM = 2 then it is the angular direction,
+%   i.e., MEAN(F,2) = 1/(2*pi)*sum(F,2).
 %
 % See also DISKFUN/MEAN2, DISKFUN/STD2.
 

@@ -4,9 +4,9 @@ function pass = test_median( )
 tol = 1000*chebfunpref().cheb2Prefs.chebfun2eps;
 
 g = diskfun();
-pass(1) = isempty(median(g)); 
+pass(1) = (isempty(median(g))); 
 
 g = diskfun(@(x,y) 0*x+1); 
-pass(2) = (abs(median(g)-1) < tol);
+pass(2) = ( norm(median(g)-1) < tol);
 
 end

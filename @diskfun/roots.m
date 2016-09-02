@@ -11,7 +11,7 @@ function r = roots(varargin)
 %   In the special case when F is of length 1 then the zero contours are found
 %   to full precision.
 %  
-% See also CHEBFUN2V/ROOTS.
+% See also DISKFUN2V/ROOTS, CHEBFUN2/ROOTS, CHEBFUN2V/ROOTS
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -22,11 +22,30 @@ if ( isempty(varargin{ 1 }) )
     return
 end
 
-% for now deal with the case where we find roots of one diskfun
-%give CDR to separableApprox
+% convert f to a polar chebfun2
 f = varargin{1};
-[c, d, r]= cdr(f); 
-f = c*d*r.';
+f = cart2pol(f, 'cdr');
+
+
+%check for a second diskfun
+if nargin > 1
+    if isa(varargin{2}, 'diskfun')
+        g = varargin{2};
+        dom = [-pi pi 0 1];
+        % we require f and g to be chebfuns. Cart2pol isn't enough because
+        % it keeps the rows represented in the Fourier basis.
+        f = chebfun2(@(t,r) feval(f, t, r), dom);
+        g = chebfun2(@(t,r) feval(g, t, r, 'polar'), dom); 
+        r = roots@separableApprox(f,g, varargin{3:end});
+        
+        %convert to cartesian
+        
+        [x,y] = pol2cart(r(:,1),r(:,2));
+        r = [x,y];
+        return
+    end
+end
+
 rts = roots@separableApprox(f, varargin{2:end});
 
 % Now make into a collection of array-valued chebfuns ready for plotting on
