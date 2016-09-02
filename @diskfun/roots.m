@@ -8,6 +8,9 @@ function r = roots(varargin)
 %   cannot reliably compute isolated real roots of F or zero curves lying 
 %   close to the boundary of the domain. 
 %
+%   R = ROOTS(F, G) returns the isolated points of F and G.
+%
+%
 %   In the special case when F is of length 1 then the zero contours are found
 %   to full precision.
 %  
