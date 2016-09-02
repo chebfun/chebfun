@@ -68,7 +68,7 @@ if ( ~isempty(evenModes) )
     %odd modes in r are zero, they won't contribute.
     even = 1:2:m;
     Xe = X(even, evenModes); 
-    factor = 1/length(even)*(sum(Xe(1:2:end, :))-sum(Xe(2:2:end, :)));
+    factor = 1/length(even)*(sum(Xe(1:2:end, :),1)-sum(Xe(2:2:end, :),1));
     C = ((-1*ones(length(even), 1)).^((2:length(even)+1)'))*factor; 
     %now add C to X
     X(even, evenModes) = Xe+C; 
