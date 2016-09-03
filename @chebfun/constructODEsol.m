@@ -73,6 +73,7 @@ else
     
     % Initialize a struct for storing the individual SOL pieces. Need extra
     % fields if event detection is on:
+    %%% Birkisson suspects trouble here in older Matlab versions %%%
     if ( ~isempty(varargin) && ~isempty(varargin{1}.Events) )
         eventDetectionOn = true;
         sol(numPieces) = struct('solver', '', 'extdata', struct(), ...
