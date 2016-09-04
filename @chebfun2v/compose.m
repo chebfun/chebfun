@@ -50,15 +50,15 @@ elseif ( f.nComponents == 2 )
                 'OP(F) is not defined, since image(F) is not contained in domain(OP).')
         end
         
-        % Call constructor:
+        % If f is periodic, then OP(f) should be periodic:
+        pref = chebfunpref;
         if ( isPeriodicTech(f) )
-            % OP(f) should be periodic if f is:
-            f = chebfun2(@(x,y) op(feval(f1, x, y), feval(f2, x, y)), ...
-                f1.domain, 'trig');
-        else
-            f = chebfun2(@(x,y) op(feval(f1, x, y), feval(f2, x, y)), ...
-                f1.domain);
+            pref.tech = get(f1.rows(:,1).funs{1}, 'tech');
         end
+        
+        % Call constructor:
+        f = chebfun2(@(x,y) op(feval(f1, x, y), feval(f2, x, y)), ...
+            f1.domain, pref);
         
     elseif ( isa(op, 'chebfun2v') )
         % Call compose for each component:
@@ -91,15 +91,15 @@ elseif ( f.nComponents == 3 )
                 'OP(F) is not defined, since image(F) is not contained in domain(OP).')
         end
         
-        % Call constructor:
+        % If f is periodic, then OP(f) should be periodic:
+        pref = chebfunpref;
         if ( isPeriodicTech(f) )
-            % OP(f) should be periodic if f is:
-            f = chebfun2(@(x,y) op(feval(f1, x, y), feval(f2, x, y), ...
-                feval(f3, x, y)), f1.domain, 'trig');
-        else
-            f = chebfun2(@(x,y) op(feval(f1, x, y), feval(f2, x, y), ...
-                feval(f3, x, y)), f1.domain);
+            pref.tech = get(f1.rows(:,1).funs{1}, 'tech');
         end
+        
+        % Call constructor:
+        f = chebfun2(@(x,y) op(feval(f1, x, y), feval(f2, x, y), ...
+            feval(f3, x, y)), f1.domain, pref);
         
     elseif ( isa(op, 'chebfun3v') )
         % Call compose for each component:

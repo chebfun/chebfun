@@ -32,7 +32,7 @@ if ( isa(op, 'chebfun') )
     % Check that image(f) is contained in domain(OP).
     vals = minandmax3est(f);        % Estimate of image(f).
     tol = 100 * chebfun3eps * max(vscale(f), vscale(op)) * ...
-            norm(f.domain, inf);    % Tolerance.
+        norm(f.domain, inf);        % Tolerance.
     if ( ~isSubset(vals, op.domain, tol) )
         error('CHEBFUN:CHEBFUN3:COMPOSE:DomainMismatch', ...
             'OP(F) is not defined, since image(F) is not contained in domain(OP).')
@@ -40,28 +40,20 @@ if ( isa(op, 'chebfun') )
     
     nColumns = size(op, 2);
     if ( nColumns <= 3 )
+        % If f is periodic, then OP(f) should be periodic:
+        pref = chebfunpref;
+        if ( isPeriodicTech(f) )
+            pref.tech = get(f.rows(:,1).funs{1}, 'tech');
+        end
+        
         % Compute first entry:
         opcolumn = op(:,1);
-        
-        if ( isPeriodicTech(f) )
-            % OP(f) should be periodic if f is:
-            F = chebfun3(@(x,y,z) opcolumn(feval(f, x, y, z)), f.domain, ...
-                'trig');
-            % Add additional components:
-            for jj = 2:nColumns
-                opcolumn = op(:,jj);
-                F = [ F; chebfun3(@(x,y,z) opcolumn(feval(f, x, y, z)), ...
-                    f.domain, 'trig') ];
-            end
-            
-        else
-            F = chebfun3(@(x,y,z) opcolumn(feval(f, x, y, z)), f.domain);
-            % Add additional components:
-            for jj = 2:nColumns
-                opcolumn = op(:,jj);
-                F = [ F; chebfun3(@(x,y,z) opcolumn(feval(f, x, y, z)), ...
-                    f.domain) ];
-            end
+        F = chebfun3(@(x,y,z) opcolumn(feval(f, x, y, z)), f.domain, pref);
+        % Add additional components:
+        for jj = 2:nColumns
+            opcolumn = op(:,jj);
+            F = [ F; chebfun3(@(x,y,z) opcolumn(feval(f, x, y, z)), ...
+                f.domain, pref) ];
         end
         f = F;
         
@@ -71,7 +63,7 @@ if ( isa(op, 'chebfun') )
             'The CHEBFUN object must have 1, 2, or 3 columns.')
         
     end
-        
+    
 elseif ( isa(op, 'chebfun2') || isa(op, 'chebfun2v') )
     % Interpret OP(f) as OP(real(f), imag(f))
     F = [real(f); imag(f)];
@@ -80,13 +72,14 @@ elseif ( isa(op, 'chebfun2') || isa(op, 'chebfun2v') )
 elseif ( ( nargin == 2 ) && ( nargin(op) == 1 ) )
     % OP has one input variable.
     
-    % Call constructor:
+    % If f is periodic, then OP(f) should be periodic:
+    pref = chebfunpref;
     if ( isPeriodicTech(f) )
-        % OP(f) should be periodic if f is:
-        f = chebfun3(@(x,y,z) op(feval(f, x, y, z)), f.domain, 'trig');
-    else
-        f = chebfun3(@(x,y,z) op(feval(f, x, y, z)), f.domain);
+        pref.tech = get(f.rows(:,1).funs{1}, 'tech');
     end
+    
+    % Call constructor:
+    f = chebfun3(@(x,y,z) op(feval(f, x, y, z)), f.domain, pref);
     
 elseif ( ( nargin == 3 ) && ( nargin(op) == 2 ) )
     % OP has two input variables.
