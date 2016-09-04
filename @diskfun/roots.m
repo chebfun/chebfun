@@ -29,9 +29,8 @@ end
 f = varargin{1};
 f = cart2pol(f, 'cdr');
 
-
 %check for a second diskfun
-if nargin > 1
+if ( nargin > 1 )
     if isa(varargin{2}, 'diskfun')
         g = varargin{2};
         dom = [-pi pi 0 1];
@@ -42,7 +41,6 @@ if nargin > 1
         r = roots@separableApprox(f,g, varargin{3:end});
         
         %convert to cartesian
-        
         [x,y] = pol2cart(r(:,1),r(:,2));
         r = [x,y];
         return

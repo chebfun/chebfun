@@ -14,16 +14,12 @@ function [Y, X] = minandmax2( f )
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-
 % check for empty DISKFUN.
 if ( isempty( f ) )
     Y = []; 
     X = [];
     return
 end
-
-
-
 
 f = cart2pol(f,'cdr'); 
 % Maximum possible sample matrix size:
