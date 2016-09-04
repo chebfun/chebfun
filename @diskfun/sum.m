@@ -1,4 +1,4 @@
-function f = sum3( f, dim )
+function f = sum( f, dim )
 %SUM   Definite Integration of a DISKFUN.
 %   G = sum(F,DIM) where DIM is 1 or 2 integrates only over theta 
 %   (angular direction) or r (radial direction) respectively,
@@ -17,7 +17,7 @@ if ( isempty( f ) )
     return; 
 end
 
-% Default to y direction: 
+% Default to radial direction: 
 if ( nargin == 1 )
     dim = 1;
 end
