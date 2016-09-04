@@ -1,9 +1,10 @@
-function varargout = quiver( F, varargin )
-%QUIVER   Quiver plot of DISKFUNV.
-%   QUIVER(F) plots the vector velocity field of F. QUIVER automatically
-%   attempts to scale the arrows to fit within the grid. 
+function varargout = quiver( F, G, varargin )
+%QUIVER   Quiver plot of DISKFUN.
+%   QUIVER(F,G) plots the vector velocity field of (F,G). QUIVER automatically
+%   attempts to scale the arrows to fit within the grid. This returns the 
+%   same plot as QUIVER([F ; G]).
 %
-%   QUIVER(F,S) automatically scales the arrows to fit within the grid and then
+%   QUIVER(F,G, S) automatically scales the arrows to fit within the grid and then
 %   stretches them by S.  Use S=0 to plot the arrows without the automatic
 %   scaling. 
 %
@@ -18,6 +19,8 @@ function varargout = quiver( F, varargin )
 %   QUIVER(...,'numpts',N) plots arrows on a N by N grid.
 %
 %   H = QUIVER(...) returns a quivergroup handle.
+%
+%   See also, DISKFUNV/QUIVER
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -62,14 +65,12 @@ while ( ~isempty( varargin ) )
 end
 varargin = argin;
 
-if ( isa(F, 'diskfunv') )             % quiver(F,...)
+if ( isa(F, 'diskfun') && isa(G, 'diskfun' ) )            % quiver(F,G,...)
     
         % Plot quiver with arrows at equally spaced points:
         [xx, yy] = diskpts(numpts);
-        F1 = F.components{1}; 
-        F2 = F.components{2};
-        vals1 = feval(F1, xx, yy, 'cart');
-        vals2 = feval(F2, xx, yy, 'cart');
+        vals1 = feval(F, xx, yy, 'cart');
+        vals2 = feval(G, xx, yy, 'cart');
         h = quiver(xx, yy, vals1,vals2, varargin{:});
         if ( ~holdState )
             axis tight;            
@@ -82,15 +83,14 @@ elseif ( nargin >= 3 )                 % quiver(x,y,F,...)
     % First two arguments contain arrow locations: we assume these are
     % Cartesian coords. 
     xx = F;
-    yy = varargin{1};
+    yy = G;
     
-    if ( isa(varargin{2}, 'diskfunv') )
+    if ( isa(varargin{3}, 'diskfun') && isa(varargin{4},'diskfun')  )
         
-        F = varargin{2};
-            F1 = F.components{1}; 
-            F2 = F.components{2};
-            vals1 = feval(F1, xx, yy, 'cart');
-            vals2 = feval(F2, xx, yy, 'cart');
+        F = varargin{3};
+        G = varargin{4};
+            vals1 = feval(F, xx, yy, 'cart');
+            vals2 = feval(G, xx, yy, 'cart');
             h = quiver( xx, yy, vals1, vals2, varargin{3:end} );
             if ( ~holdState )
                 axis tight;
@@ -101,7 +101,7 @@ elseif ( nargin >= 3 )                 % quiver(x,y,F,...)
     else
         
         error('DISKFUN:DISKFUNV:quiver:inputs', ...
-                                  'Third argument should be a diskfunv.');
+                                  'Third and fourth arguments should be diskfuns.');
         
     end
     
