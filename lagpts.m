@@ -113,13 +113,12 @@ if ( strcmpi(method,'GW') || ( ( n < 128 ) && strcmpi(method,'default') ) )
     v = sqrt(x).*abs(V(1,indx)).';        % Barycentric weights
     v = v./max(v);
     v(2:2:n) = -v(2:2:n);
-    
 else
     % RH, see [2] and [3]
     [x, w] = alg_rh(n, strcmpi(method, 'RHW'), alpha);  % Nodes and weights
     v = sqrt(w'.*x);                      % Barycentric weights
     v = -v./max(abs(v));
-    
+    v(1:2:n) = -v(1:2:n);
 end
 w = (1/sum(w))*w;                         % Normalise so that sum(w) = 1
 
