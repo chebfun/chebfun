@@ -109,6 +109,32 @@ elseif ( strcmpi(schemeName, 'abnorsett6') == 1 )
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
 % ETD RUNGE-KUTTA:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+elseif ( strcmpi(schemeName, 'etdrk2') == 1 )
+    
+    % Compute C:
+    C(1) = 0;
+    C(2) = 1;
+
+    % Compute the phi-functions:
+    phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
+    phi{2} = spinscheme.phiEval(2, LR, N, dim, nVars);
+    
+    % Compute the psi-functions:
+    psi{1,2} = spinscheme.psiEval(1, C(2), LR, N, dim, nVars);
+    
+    % Take real part for diffusive problems (real eigenvalues):
+    if ( isreal(L) == 1 )
+        phi = cellfun(@(f) real(f), phi, 'UniformOutput', 0);
+        psi = cellfun(@(f) real(f), psi, 'UniformOutput', 0);
+    end
+    
+    % Compute A:
+    A{2,1} = phi{1};
+    
+    % Compute B:
+    B{1} = phi{1} - 2*phi{2};
+    B{2} = phi{2};
+    
 elseif ( strcmpi(schemeName, 'etdrk4') == 1 )
     
     % Compute C:

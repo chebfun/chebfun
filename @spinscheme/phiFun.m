@@ -1,6 +1,6 @@
 function phi = phiFun(l)
-%PHIFUN   Get a function handle to a phi function.
-%   PHI = PHIFUN(L) returns a function handle to the phi function of index L.
+%PHIFUN   Get a function handle to a phi-function.
+%   PHI = PHIFUN(L) returns a function handle to the phi-function of index L.
 %
 % See also SPINSCHEME/PHIEVAL, SPINSCHEME/PSIFUN.
 

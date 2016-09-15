@@ -227,6 +227,8 @@ elseif ( dim == 3 )
     zz = trigpts(N, dom(5:6));
     [xx, yy, zz] = meshgrid(xx, yy, zz);
 end
+
+% Initial values at grid points:
 vInit = [];
 for k = 1:nVars
     if ( dim == 1 )
@@ -237,19 +239,18 @@ for k = 1:nVars
         vInit = [vInit; feval(u0{k}, xx, yy, zz)];
     end
 end
+
+% Transform to coefficients:
 cInit{1} = [];
 for k = 1:nVars
     idx = (k-1)*N + 1;
     cInit{1} = [cInit{1}; fftn(vInit(idx:idx+N-1,:,:))];
 end
 
-% Store the nonlinear evaluation of the initial data in NCINIT:
-vals = ifftn(cInit{1}(1:N,:,:));
-for k = 1:nVars-1
-    idx = k*N + 1;
-    vals = [vals; ifftn(cInit{1}(idx:idx+N-1,:,:))];
-end
-vals = Nv(vals);
+% Nonlinear evaluation of the initial condition (in value space):
+vals = Nv(vInit);
+
+% Transform to coefficients:
 coeffs = fftn(vals(1:N,:,:));
 for k = 1:nVars-1
     idx = k*N + 1;
@@ -260,8 +261,7 @@ NcInit{1} = coeffs;
     
 % Get enough initial data when using a multistep scheme:
 if ( q > 1 )
-    [cInit, NcInit, dt] = startMultistep(K, adaptiveTime, dt, L, Nc, Nv, ...
-        pref, S, cInit, NcInit);
+    [cInit, NcInit] = startMultistep(K, dt, L, Nc, Nv, pref, S, cInit, NcInit);
 end
 vInit = ifftn(cInit{1}(1:N,:,:));
 for k = 1:nVars-1
@@ -669,12 +669,12 @@ else
 end
 
 % Simpliyfy:
-if ( nVars == 1 )
-    uOut = simplify(uOut);
-else
-    doSimplify = @(f) simplify(f, errTol);
-    uOut.blocks = cellfun(doSimplify, uOut.blocks, 'UniformOutput', 0);
-end
+% if ( nVars == 1 )
+%     uOut = simplify(uOut);
+% else
+%     doSimplify = @(f) simplify(f, errTol);
+%     uOut.blocks = cellfun(doSimplify, uOut.blocks, 'UniformOutput', 0);
+% end
 
 % Output TOUT:
 if ( nargout > 2 )

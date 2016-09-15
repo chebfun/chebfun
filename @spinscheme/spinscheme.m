@@ -80,6 +80,12 @@ classdef spinscheme
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             % ETD RUNGE-KUTTA:
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            elseif ( strcmpi(schemeName, 'etdrk2') == 1 )
+                K.order = 2;
+                K.stages = 2;
+                K.steps = 1;
+                K.scheme = schemeName;
+                
             elseif ( strcmpi(schemeName, 'etdrk4') == 1 )
                 K.order = 4;
                 K.stages = 4;
@@ -267,6 +273,12 @@ classdef spinscheme
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Abstract = false, Static = true )
         
+        % Get a function handle to a gamma-function:
+        g = gammaFun(j, k)
+        
+        %  Evaluate a phi-function:
+        g = gammaEval(j, k, LR, N, dim, nVars)
+        
         %  Evaluate a phi-function:
         phi = phiEval(l, LR, N, dim, nVars)
         
@@ -290,8 +302,7 @@ classdef spinscheme
         [uSol, NuSol] = oneStep(K, schemeCoeffs, Nc, Nv, nVars, uSol, NuSol)
         
         % Get enough initial data when using a multistep SPINSCHEME:
-        [uSol, NuSol, dt] = startMultistep(K, adaptiveTime, dt, L, Nc, Nv, ...
-            pref, S, uSol, NuSol);
+        [uSol, NuSol] = startMultistep(K, dt, L, Nc, Nv, pref, S, uSol, NuSol)
         
     end
     
