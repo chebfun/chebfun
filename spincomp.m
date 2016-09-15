@@ -80,8 +80,9 @@ elseif ( isa(pref, 'spinpref2') == 1 )
 elseif ( isa(pref, 'spinpref3') == 1 )
     prefuexact = spinpref3();
 end
-prefuexact.scheme = 'pecec736';
-prefuexact.dt = min(timesteps)/2;
+%prefuexact.scheme = 'pecec736';
+prefuexact.scheme = 'etdrk4'; % to change
+prefuexact.dt = min(timesteps)/2; 
 prefuexact.plot = 'off';
 prefuexact.M = pref.M;
 prefuexact.N = pref.N;

@@ -263,11 +263,11 @@ NcInit{1} = coeffs;
 if ( q > 1 )
     [cInit, NcInit] = startMultistep(K, dt, L, Nc, Nv, pref, S, cInit, NcInit);
 end
-vInit = ifftn(cInit{1}(1:N,:,:));
-for k = 1:nVars-1
-    idx = k*N + 1;
-    vInit = [vInit; ifftn(cInit{1}(idx:idx+N-1,:,:))];
-end
+% vInit = ifftn(cInit{1}(1:N,:,:));
+% for k = 1:nVars-1
+%     idx = k*N + 1;
+%     vInit = [vInit; ifftn(cInit{1}(idx:idx+N-1,:,:))];
+% end
 
 % Compute the coefficients of the scheme:
 schemeCoeffs = computeCoeffs(K, dt, L, M, S);
@@ -667,14 +667,6 @@ else
         end
     end
 end
-
-% Simpliyfy:
-% if ( nVars == 1 )
-%     uOut = simplify(uOut);
-% else
-%     doSimplify = @(f) simplify(f, errTol);
-%     uOut.blocks = cellfun(doSimplify, uOut.blocks, 'UniformOutput', 0);
-% end
 
 % Output TOUT:
 if ( nargout > 2 )

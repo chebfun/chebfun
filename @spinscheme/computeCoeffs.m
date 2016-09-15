@@ -119,20 +119,16 @@ elseif ( strcmpi(schemeName, 'etdrk2') == 1 )
     phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
     phi{2} = spinscheme.phiEval(2, LR, N, dim, nVars);
     
-    % Compute the psi-functions:
-    psi{1,2} = spinscheme.psiEval(1, C(2), LR, N, dim, nVars);
-    
     % Take real part for diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
         phi = cellfun(@(f) real(f), phi, 'UniformOutput', 0);
-        psi = cellfun(@(f) real(f), psi, 'UniformOutput', 0);
     end
     
     % Compute A:
     A{2,1} = phi{1};
     
     % Compute B:
-    B{1} = phi{1} - 2*phi{2};
+    B{1} = phi{1} - phi{2};
     B{2} = phi{2};
     
 elseif ( strcmpi(schemeName, 'etdrk4') == 1 )
@@ -1344,8 +1340,9 @@ schemeCoeffs.U = U;
 schemeCoeffs.V = V;
 
 % Compute the missing oefficients using the summation properties of the coeffs:
-% (Unless the scheme is ABLAWSON4 or LAWSON4.)
-if ( ~strcmpi(schemeName, 'lawson4') && ~strcmpi(schemeName, 'ablawson4') ) 
+% (Unless the scheme is ABLAWSON4, LAWSON4 or ETDRK2.)
+if ( ~strcmpi(schemeName, 'lawson4') && ~strcmpi(schemeName, 'ablawson4') && ...
+     ~strcmpi(schemeName, 'etdrk2') ) 
     schemeCoeffs = computeMissingCoeffs(K, schemeCoeffs, phi, psi);
 end
 

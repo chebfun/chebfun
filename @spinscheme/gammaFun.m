@@ -12,6 +12,12 @@ if ( j == 0 )
     g = @(z) (exp(k*z) - 1)./z;
     
 % Compute them recursively using the recurrence formula:
+elseif ( j == 1 )
+    if ( k == 0 ) 
+        g = @(z) ((exp(k*z) - 1)./z)./z;
+    elseif ( k == 1 )
+        g = @(z) ((exp(k*z) - 1)./z - 1)./z;
+    end
 else
     g = @(z) 0*z;
     for m = 1:j
