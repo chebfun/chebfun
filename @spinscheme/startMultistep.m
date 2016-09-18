@@ -18,7 +18,7 @@ function [uSol, NuSol] = startMultistep(K, dt, L, Nc, Nv, pref, S, uInit, NuInit
 % Set-up:
 M = pref.M;                 % points for the contour integral
 q = K.steps;                % number of steps 
-errTol = max(1e-10, dt^q);  % error tolerance 
+errTol = max(1e-12, dt^q);  % error tolerance 
 nVars = S.numVars;          % number of unknown functions
 N = size(L, 1)/nVars;       % grid points
 dim = getDimension(S);      % spatial dimension (1, 2 or 3)
@@ -67,6 +67,7 @@ if ( isreal(L) == 1 )
     g0 = cellfun(@(f) real(f), g0, 'UniformOutput', 0);
 end
 
+fprintf('dt = %1.1e\n', dt)
 % Fixed point iteration to achieve ERRTOL:
 err = 1;
 uOld = uSol;
@@ -83,7 +84,19 @@ while ( err > errTol )
             uNew{q-j} = uNew{q-j} + dt*g{l,j}.*temp;
         end
         err = max(err, norm(uOld{q-j} - uNew{q-j}, inf));
-        NuNew{q-j} = Nc.*fft(Nv(ifft(uNew{q-j})));
+        fprintf('error = %1.1e\n', err)
+        vals = ifftn(uNew{q-j}(1:N,:,:));
+        for k = 1:nVars-1
+            idx = k*N + 1;
+            vals = [vals; ifftn(uNew{q-j}(idx:idx+N-1,:,:))]; %#ok<*AGROW>
+        end
+        vals = Nv(vals);
+        coeffs = fftn(vals(1:N,:,:));
+        for k = 1:nVars-1
+            idx = k*N + 1;
+            coeffs = [coeffs; fftn(vals(idx:idx+N-1,:,:))];
+        end
+        NuNew{q-j} = Nc.*coeffs;
     end
     uNew{q} = uOld{q};
     NuNew{q} = NuOld{q};
