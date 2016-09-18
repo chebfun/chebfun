@@ -18,7 +18,7 @@ function [uSol, NuSol] = startMultistep(K, dt, L, Nc, Nv, pref, S, uInit, NuInit
 % Set-up:
 M = pref.M;                 % points for the contour integral
 q = K.steps;                % number of steps 
-errTol = max(1e-12, dt^q);  % error tolerance 
+errTol = max(1e-10, dt^q);  % error tolerance 
 nVars = S.numVars;          % number of unknown functions
 N = size(L, 1)/nVars;       % grid points
 dim = getDimension(S);      % spatial dimension (1, 2 or 3)
@@ -67,7 +67,6 @@ if ( isreal(L) == 1 )
     g0 = cellfun(@(f) real(f), g0, 'UniformOutput', 0);
 end
 
-fprintf('dt = %1.1e\n', dt)
 % Fixed point iteration to achieve ERRTOL:
 err = 1;
 uOld = uSol;
