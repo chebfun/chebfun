@@ -84,7 +84,6 @@ while ( err > errTol )
             uNew{q-j} = uNew{q-j} + dt*g{l,j}.*temp;
         end
         err = max(err, norm(uOld{q-j} - uNew{q-j}, inf));
-        fprintf('error = %1.1e\n', err)
         vals = ifftn(uNew{q-j}(1:N,:,:));
         for k = 1:nVars-1
             idx = k*N + 1;
