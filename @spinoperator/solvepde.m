@@ -1,4 +1,4 @@
-function [uOut, tOut] = solvepde(varargin)
+function [uOut, tOut, computingTime] = solvepde(varargin)
 %SOLVEPDE   Solve a PDE defined by a SPINOP, a SPINOP2 or a SPINOP3.
 %   SOLVEPDE is called by SPIN, SPIN2 and SPIN3. It is not called directly by
 %   the user. Appropriate help texts can be found in SPIN, SPIN2 and SPIN3.
@@ -323,6 +323,7 @@ end
 
 %% Time-stepping loop:
 
+tic
 iter = 0;
 t = (q-1)*dt;
 success = 0;
@@ -583,6 +584,7 @@ while ( t < tf )
     end
     
 end
+computingTime = toc;
 
 %% Post-processing:
 

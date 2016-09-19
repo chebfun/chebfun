@@ -113,8 +113,8 @@ for k = 1:nTimesteps
     for l = 1:nSchemes
         prefu.scheme = schemes{l};
         prefu.dt = timesteps(k);
-        tic, u = spinoperator.solvepde(pdechar, tspan, u0, prefu);  
-        time(k,l) = toc;
+        [u, ~, t] = spinoperator.solvepde(pdechar, tspan, u0, prefu);  
+        time(k,l) = t;
         if ( isa(u, 'chebmatrix') == 0 )
             u = chebmatrix(u);
         end

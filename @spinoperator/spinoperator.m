@@ -221,7 +221,7 @@ classdef spinoperator
     methods ( Access = public, Abstract = false, Static = true )
         
         % Solve a PDE defined by a SPINOPERATOR:
-        [uout, tout] = solvepde(varargin)
+        [uout, tout, computingTime] = solvepde(varargin)
         
         % Check if in DEMO mode:
         out = isDemoCheck(in)
