@@ -4,7 +4,7 @@ function pass = test_spinop()
 
 % Construction from STRING for KS equation:
 S = spinop('ks');
-L = S.linearPart;
+L = S.lin;
 pass(1) = strcmpi(func2str(L), '@(u)-diff(u,2)-diff(u,4)');
 
 % Construction from DOM/TSPAN:

@@ -64,8 +64,8 @@ classdef spinop < spinoperator
             elseif ( nargin == 1 )
                 if ( isa(varargin{1}, 'char') == 1 )
                     [L, N, dom, tspan, u0] = parseInputs(varargin{1});
-                    S.linearPart = L;
-                    S.nonlinearPart = N;
+                    S.lin = L;
+                    S.nonlin = N;
                     S.domain = dom;
                     S.tspan = tspan;
                     S.init = u0;
