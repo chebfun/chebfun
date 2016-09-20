@@ -1,7 +1,7 @@
 function out = fevalm(f, x, y)
 % FEVALM   Evaluate a SEPARABLEAPPROX.
 % 
-% Z = FEVALM(F, X, Y) returns a matrix of values Z of size length(X)-by-length(Y). 
+% Z = FEVALM(F, X, Y) returns a matrix of values Z of size length(Y)-by-length(X). 
 % X and Y should be vectors of doubles. This is equivalent to making a meshgrid 
 % of the vectors X and Y and then using FEVAL to evaluate at that grid.
 % 

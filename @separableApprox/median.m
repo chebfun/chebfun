@@ -24,9 +24,9 @@ dom = f.domain;
 % We do not know how to achieve this in an efficient way so we are just going to
 % the do the tensor product median.
 
-sample = 2049;
-vals = sample( f, sample, sample );   % sample on tensor grid. 
-mX = median( vals, dim );                   % discrete median.
+grid = 2049;
+vals = sample(f, grid, grid);   % sample on tensor grid. 
+mX = median(vals, dim);         % discrete median.
 mX = mX(:);              
 
 if ( dim == 1 )
@@ -35,7 +35,7 @@ else
     interval = dom( 3:4 );
 end
 
-g = chebfun(mX, interval);    % Form CHEBFUN. 
-g = simplify( g, [], 'globaltol' );            % Simplify.
+g = chebfun(mX, interval);             % Form CHEBFUN. 
+g = simplify( g, [], 'globaltol' );    % Simplify.
 
 end
