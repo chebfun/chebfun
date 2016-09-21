@@ -37,17 +37,16 @@ if ( nargin > 1 )
     [mf, ignored] = size(cols_coeffs); 
     [nf, rf] = size(rows_coeffs); 
     if ( mf <= m ) 
-        cols_coeffs = [ cols_coeffs ; zeros(m-mf,rf) ]; 
+        cols_coeffs = [ cols_coeffs ; zeros(m-mf, rf) ];
     else
         cols_coeffs = cols_coeffs(1:m,:);
     end
     if ( mf <= m ) 
-        rows_coeffs = [ rows_coeffs ; zeros(n-nf,rf) ]; 
+        rows_coeffs = [ rows_coeffs ; zeros(n-nf, rf) ];
     else
-        rows_coeffs = rows_coeffs(1:n,:);
+        rows_coeffs = rows_coeffs(1:n, :);
     end
 end
-
 
 if ( nargout <= 1 )
     % Return the matrix of coefficients
@@ -61,5 +60,3 @@ else
 end
 
 end
-
-
