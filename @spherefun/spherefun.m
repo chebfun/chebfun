@@ -19,17 +19,25 @@ classdef spherefun < separableApprox
 % at tensor equally-spaced points in the intrinsic spherical coordinate 
 % system, i.e., [-pi,pi]x[0,pi].
 %
+% DISKFUN(F, k) returns a rank k approximation to F.
+%
+% DISKFUN(F, [m n]) returns a representation of F using a degree m
+% trigonometric approximation of F in the radial direction and a degree n
+% approximation in the angular direction. The result is compressed in low
+% rank form and the rank k is still determined adaptively (satisfying
+% k<=min(m,n)+1).
+%
 % The SPHEREFUN software system is based on: 
 %
 % A. Townsend, H. Wilber, and G. Wright, Computing with function on
 % spherical and polar geometries I: The sphere, submitted, 2015. 
 %
-% See also CHEBFUN2, SPHEREFUNV.
+% See also CHEBFUN2, DISKFUN, SPHEREFUNV
 
 % Copyright 2016 by The University of Oxford and The CHEBFUN Developers.
 % See http://www.chebfun.org/ for CHEBFUN information.
 
-% TODO: Improve documentation of input options. 
+% TODO: Include documentation of fixed eps construction
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% CLASS CONSTRUCTOR:
@@ -122,18 +130,8 @@ classdef spherefun < separableApprox
     %% Private constant properties
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties (Constant)
-%         alpha = 2;  % Growth factor control.
+        % TODO: Add support for this constant here.
+        % alpha = 50;  % Growth factor control.
     end
-    
-    %
-    %     methods
-    %         function g = spherefun( varargin )
-    %             if( nargin == 0 )
-    %
-    %             else
-    %                 g = constructor(g , varargin{:} );  % pass to constructor.
-    %             end
-    %         end
-    %     end
-    
+        
 end

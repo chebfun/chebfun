@@ -342,18 +342,18 @@ end
 %% Locate breakpoints in G:
 
 % If g has breakpoints, find the corresponding x-points in the domain of f:
-newDom = f.domain;
 if ( numel(g.domain) > 2 )
+    newDom = f.domain;
     gDom = g.domain(2:end-1);
     for k = 1:length(gDom)
         r = roots(f - gDom(k));
         newDom = [newDom, r(:).'];
     end
+    newDom = chebfun.tolUnique(sort(newDom));
+    
+    % Restrict f to the new domain:
+    f = restrict(f, newDom);
 end
-newDom = chebfun.tolUnique(sort(newDom));
-
-% Restrict f to the new domain:
-f = restrict(f, newDom);
 
 %% Call COMPOSE():
 

@@ -175,9 +175,9 @@ end
 % Get scaled coefficients for the recursive call:
 c = f.coeffs/vscale(f);
 
-% Call the recursive rootsunit function:
-% TODO:  Does the tolerance need to depend on some notion of hscale?
-r = rootsunit_coeffs(c, 100*eps);
+% Call the recursive roots_main function:
+% TODO: Does the tolerance need to depend on some notion of hscale?
+r = roots_main(c, 100*eps);
 
 % Try to filter out spurious roots:
 if ( ~isempty(rootsPref.filter) )
@@ -195,12 +195,16 @@ else
     out = r;
 end
 
-    function r = rootsunit_coeffs(c, htol)
+    function r = roots_main(c, htol)
     % Computes the roots of the polynomial given by the coefficients c on the
     % unit interval.
+    
+        % Maximum eigenvalue problem size we are willing to solve (otherwise 
+        % we suddivide and recurse):
+        maxEigSize = 50;
 
         % Define these as persistent, need to compute only once.
-        persistent Tleft Tright
+        persistent TLeft TRight
 
         % Simplify the coefficients:
         tailMmax = eps*norm(c, 1);
@@ -257,7 +261,7 @@ end
             end
 
         % Is n small enough for the roots to be calculated directly?
-        elseif ( ~rootsPref.recurse || (n <= 50) )
+        elseif ( ~rootsPref.recurse || (n <= maxEigSize) )
 
             % Adjust the coefficients for the colleague matrix:
             cOld = c(:); 
@@ -313,54 +317,59 @@ end
         elseif ( n <= 513 )
             
             % Have we assembled the matrices TLEFT and TRIGHT?
-            if ( isempty(Tleft) )
+            if ( isempty(TLeft) )
                 % Create the coefficients for TLEFT using the FFT directly:
                 x = chebptsAB(513, [-1, splitPoint]);
-                Tleft = ones(513); 
-                Tleft(:,2) = x;
+                TLeft = ones(513); 
+                TLeft(:,2) = x;
                 for k = 3:513
-                    Tleft(:,k) = 2 * x .* Tleft(:,k-1) - Tleft(:,k-2); 
+                    TLeft(:,k) = 2 * x .* TLeft(:,k-1) - TLeft(:,k-2); 
                 end
-                Tleft = [ Tleft(513:-1:2,:) ; Tleft(1:512,:) ];
-                Tleft = real(fft(Tleft) / 512);
-                Tleft = triu( [ 0.5*Tleft(1,:) ; Tleft(2:512,:) ; 0.5*Tleft(513,:) ] );
+                TLeft = [ TLeft(513:-1:2,:) ; TLeft(1:512,:) ];
+                TLeft = real(fft(TLeft) / 512);
+                TLeft = triu( [ 0.5*TLeft(1,:) ; TLeft(2:512,:) ; 0.5*TLeft(513,:) ] );
 
                 % Create the coefficients for TRIGHT much in the same way:
                 x = chebptsAB(513, [splitPoint,1]);
-                Tright = ones(513); 
-                Tright(:,2) = x;
+                TRight = ones(513); 
+                TRight(:,2) = x;
                 for k = 3:513
-                    Tright(:,k) = 2 * x .* Tright(:,k-1) - Tright(:,k-2); 
+                    TRight(:,k) = 2 * x .* TRight(:,k-1) - TRight(:,k-2); 
                 end
-                Tright = [ Tright(513:-1:2,:) ; Tright(1:512,:) ];
-                Tright = real(fft(Tright) / 512);
-                Tright = triu( [ 0.5*Tright(1,:) ; Tright(2:512,:) ; 0.5*Tright(513,:) ] );
+                TRight = [ TRight(513:-1:2,:) ; TRight(1:512,:) ];
+                TRight = real(fft(TRight) / 512);
+                TRight = triu( [ 0.5*TRight(1,:) ; TRight(2:512,:) ; 0.5*TRight(513,:) ] );
             end
 
             % Compute the new coefficients:
-            cleft = Tleft(1:n,1:n) * c;
-            cright = Tright(1:n,1:n) * c;
+            cLeft = TLeft(1:n,1:n) * c;
+            cRight = TRight(1:n,1:n) * c;
 
             % Recurse:
-            r = [ (splitPoint - 1)/2 + (splitPoint + 1)/2*rootsunit_coeffs(cleft, 2*htol) ;
-                  (splitPoint + 1)/2 + (1 - splitPoint)/2*rootsunit_coeffs(cright, 2*htol) ];
+            rLeft = roots_main(cLeft, 2*htol);
+            rRight = roots_main(cRight, 2*htol);
+            r = [ (splitPoint - 1)/2 + (splitPoint + 1)/2*rLeft ;
+                  (splitPoint + 1)/2 + (1 - splitPoint)/2*rRight ];
 
         % Otherwise, split using more traditional methods (i.e., Clenshaw):
         else
             
             % Evaluate the polynomial on both intervals:
-            v = chebtech.clenshaw([ chebptsAB(n, [ -1, splitPoint ]) ; ...
-                chebptsAB(n, [ splitPoint, 1 ]) ], c);
+            xLeft = chebptsAB(n, [ -1, splitPoint ]);
+            xRight = chebptsAB(n, [ splitPoint, 1 ]); 
+            v = chebtech.clenshaw([xLeft ; xRight], c);
 
             % Get the coefficients on the left:
-            cleft = chebtech2.vals2coeffs(v(1:n));            
+            cLeft = chebtech2.vals2coeffs(v(1:n));            
 
             % Get the coefficients on the right:
-            cright = chebtech2.vals2coeffs(v(n+1:end));           
+            cRight = chebtech2.vals2coeffs(v(n+1:end));           
 
             % Recurse:
-            r = [ (splitPoint - 1)/2 + (splitPoint + 1)/2*rootsunit_coeffs(cleft, 2*htol) ;
-                  (splitPoint + 1)/2 + (1 - splitPoint)/2*rootsunit_coeffs(cright, 2*htol) ];
+            rLeft = roots_main(cLeft, 2*htol);
+            rRight = roots_main(cRight, 2*htol);
+            r = [ (splitPoint - 1)/2 + (splitPoint + 1)/2*rLeft ;
+                  (splitPoint + 1)/2 + (1 - splitPoint)/2*rRight ];
 
         end
 

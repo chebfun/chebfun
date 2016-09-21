@@ -10,7 +10,7 @@ function out = legcoeffs(f, varargin)
 %
 %   LEGCOEFFS does not support quasimatrices.
 %
-% See also CHEBCOEFFS, JACCOEFFS, FOURCOEFFS.
+% See also CHEBCOEFFS, JACCOEFFS, TRIGCOEFFS.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

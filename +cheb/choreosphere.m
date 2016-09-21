@@ -12,8 +12,13 @@ function choreosphere
 % The algorithm uses trigonometric interpolation, stereographic projection and
 % quasi-Newton methods. See [1] for details.
 %
+% Example: at the prompt, specify 5 bodies, angular rotation 0, radius 2.
+% Then either draw a curve (if your machine has imfreehand) or click
+% in 10 or 15 points (if it doesn't) roughly along a figure-8.  Type
+% <Enter>, and in a few seconds you will see a choreograpy.
+%
 % [1] H. Montanelli and N. I. Gushterov, Computing planar and spherical
-% choreographies, SIAM Journal on Applied Dynamical Systems, to appear.
+% choreographies, SIAM Journal on Applied Dynamical Systems 15 (2016),
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
