@@ -39,8 +39,8 @@ end
 
 % test for symmetry
 vals = double([values;values(1,:)]);
-isHerm = max(abs(vals-conj(vals(end:-1:1))),[],1) == 0;
-isSkew = max(abs(vals+conj(vals(end:-1:1))),[],1) == 0;
+isHerm = max(abs(vals-conj(vals(end:-1:1, :))),[],1) == 0;
+isSkew = max(abs(vals+conj(vals(end:-1:1, :))),[],1) == 0;
 
 % compute coefficients
 coeffs = (1/n)*fftshift(fft(values, [], 1), 1);
