@@ -23,7 +23,7 @@ function varargout = roots( F, varargin )
 %
 % See also CHEBFUN2/ROOTS, CHEBFUN/ROOTS.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Maximum degree for resultant method:
@@ -896,8 +896,8 @@ function [xroots, yroots] = roots_marchingSquares( f )
 
 fx = f.components{1}; 
 fy = f.components{2};
-prefs = chebfunpref; 
-tol = prefs.eps;
+pref = chebfunpref;
+tol = pref.cheb2Prefs.chebfun2eps;
 num = 0; 
 r = zeros(1,2); 
 dom = fy.domain;

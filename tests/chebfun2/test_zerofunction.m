@@ -5,7 +5,7 @@ function pass = test_zerofunction( pref )
 if ( nargin < 1 ) 
     pref = chebfunpref; 
 end 
-tol = 100 * pref.eps; 
+tol = 100 * pref.cheb2Prefs.chebfun2eps;
 
 % construction
 f = chebfun2(0); 
@@ -40,5 +40,8 @@ v = f(r,r);
 if all(size(v) == size(r))
     pass(4) = 1; 
 end
+
+f = chebfun2( zeros(5,4) ); 
+pass(5) = (norm( coeffs2(f) - zeros(5,4) ) == 0 );
 
 end

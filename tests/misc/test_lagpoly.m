@@ -4,7 +4,7 @@ function pass = test_lagpoly( prefs )
 if ( nargin < 1 ) 
     prefs = chebfunpref(); 
 end
-tol = 1e5*prefs.techPrefs.eps;
+tol = 1e5*prefs.techPrefs.chebfuneps;
 
 % Laguerre polynomials:
 h0 = lagpoly(0); 

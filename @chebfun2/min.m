@@ -7,13 +7,13 @@ function varargout = min(varargin)
 %   DIM direction. If DIM = 1 is along the y-direction and DIM = 2 is along the
 %   x-direction.
 %
-%   WARNING: This function is not always accurate to full machine precision.
+%   WARNING: This function is not always accurate to the expected precision.
 %
 %   For the global minimum use MIN2.
 %
 % See also MAX, MAX2, MIN2, MINANDMAX2.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 [varargout{1:nargout}] = min@separableApprox(varargin{:});

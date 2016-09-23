@@ -87,7 +87,15 @@ diffOrder = L.diffOrder;
 while ( ~terminate )
     
     % Compute a Newton update:
-    [delta, disc] = linsolve(L, res, pref, vscale(u));
+    [delta, disc, converged] = linsolve(L, res, pref, vscale(u));
+    
+    % If solving for the Newton update did not converge, we have a gibberish
+    % update. This will cause the solution process to halt (we're solving
+    % something that's way too noisy), so bail out of the Newton iteration:
+    if ( ~converged )
+        giveUp = true;
+        break
+    end
 
     % We had two output arguments above, need to negate DELTA.
     delta = -delta;
@@ -239,6 +247,7 @@ end
 % Return useful information in the INFO structure
 info.normDelta = normDeltaVec(1:newtonCounter);
 info.error = errEst;
+info.converged = success;
 
 end
 

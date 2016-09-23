@@ -23,7 +23,7 @@ function [order1, order2, nDiff2] = taylorTesting(f, hMax, numOut, plotting)
 %
 % See also: TAYLORTESTINGBINARY, VALUETESTING, VALUETESTINGBINARY.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % The following is taken from Birkisson's DPhil thesis [TODO: Citation?].
@@ -97,11 +97,11 @@ for hCounter = 1:hMax
     % Compute information for Taylor testing.
 
     % Expect this to be O(h)
-    nDiff1(hCounter, :) = cellfun(@(u, v) norm(u - v), fuPert, fu);
+    nDiff1(hCounter, :) = cellfun(@(u, v) norm(u - v, inf), fuPert, fu);
     
     % Use derivative information as well. Expect this to be O(h^2)   
     nDiff2(hCounter, :) = ...
-        cellfun(@(u, v) norm(u - v - v.jacobian*pert), fuPert, fu);
+        cellfun(@(u, v) norm(u - v - v.jacobian*pert, inf), fuPert, fu);
     
 end
 

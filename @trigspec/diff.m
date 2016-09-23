@@ -1,9 +1,9 @@
 function D = diff(disc, m)
-%DIFF    Differentiation operator for TRIGSPEC.
+%DIFF   Differentiation operator for TRIGSPEC.
 %   D = DIFF(DISC, m) returns a differentiation operator for the TRIGSPEC
 %   class that represents the mth derivative.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Useful information:

@@ -41,7 +41,7 @@ err2 = norm(g2Vals - fExact2, inf);
 err3 = norm(g3Vals - fExact3, inf);
 tol1 = 10*eps*get(g{1},'vscale');
 tol2 = 10*eps*get(g{2},'vscale');
-tol3 = 10*pref.eps;
+tol3 = 10*pref.chebfuneps;
 pass(1) = ( err1 < tol1 && err2 < tol2 && err3 < tol3);
 
 % Blow-up function:

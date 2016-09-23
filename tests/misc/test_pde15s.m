@@ -3,7 +3,7 @@ function pass = test_pde15s(pref, varargin)
 if ( nargin == 0 )
     pref = chebfunpref();
 end
-tol = 1e5*pref.eps;
+tol = 1e5*pref.chebfuneps;
 
 
 %% Test chebtech1 works (see #910)

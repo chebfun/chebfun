@@ -26,7 +26,7 @@ classdef classicfun < fun % (Abstract)
 %
 % See also CHEBFUNPREF, ONEFUN, BNDFUN, UNBNDFUN.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -152,141 +152,16 @@ classdef classicfun < fun % (Abstract)
         f = make(varargin);
     end
     
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%       
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% CONCRETE METHODS (IMPLEMENTED BY THIS ABSTRACT CLASS.)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
-        
-        % Extract information for DISPLAY.
-        info = dispData(f)
-        
-        % Extract columns of an array-valued CLASSICFUN object.
-        f = extractColumns(f, columnIndex);
-
-        % Round a CLASSICFUN towards zero.
-        g = fix(f);
-        
-        % Round a CLASSICFUN towards minus infinity.
-        g = floor(f);
-
-        % Flip columns of an array-valued CLASSICFUN object.
-        f = fliplr(f)
-        
-        % Get properties of a CLASSICFUN.
-        out = get(f, prop);
-        
-        % Imaginary part of a CLASSICFUN.
-        f = imag(f)
-
-        % Always returns false, since CLASSICFUNs don't handle delta functions.
-        out = isdelta(f)
-
-        % True for an empty CLASSICFUN.
-        out = isempty(f)
-
-        % Test if CLASSICFUN objects are equal.
-        out = isequal(f, g)
-
-        % Test if a CLASSICFUN is bounded.
-        out = isfinite(f)
-
-        % Test if a CLASSICFUN is unbounded.
-        out = isinf(f)
-
-        % Test if a CLASSICFUN has any NaN values.
-        out = isnan(f)
 
         function out = isPeriodicTech(f)
         %ISPERIODICTECH   Test if the smooth part of f is is constructed with a
         %basis of periodic functions.
-            
-            % Calls ISPERIODICTECH on the ONEFUN part.
             out = isPeriodicTech(f.onefun);
         end
-        
-        % True for real CLASSICFUN.
-        out = isreal(f)
-        
-        % Test if a CLASSICFUN object is built upon SINGCLASSICFUN.
-        out = issing(f)
-        
-        % True for zero CLASSICFUN objects
-        out = iszero(f)
-        
-        % Length of a CLASSICFUN.
-        len = length(f)
-
-        % CLASSICFUN logical.
-        f = logical(f)
-
-        % Convert an array-valued CLASSICFUN into a cell array of CLASSICFUN objects.
-        g = mat2cell(f, M, N)
-
-        % Global maximum of a CLASSICFUN on [a,b].
-        [maxVal, maxPos] = max(f)
-
-        % Global minimum of a CLASSICFUN on [a,b].
-        [minVal, minPos] = min(f)
-
-        % Global minimum and maximum on [a,b].
-        [vals, pos] = minandmax(f)
-
-        % Subtraction of two CLASSICFUN objects.
-        f = minus(f, g)
-
-        % Multiplication of CLASSICFUN objects.
-        f = mtimes(f, c)
-
-        % CLASSICFUN logical NOT.
-        f = not(f)
-
-        % CLASSICFUN logical OR.
-        h = or(f, g)
-
-        % Basic linear plot for CLASSICFUN objects.
-        varargout = plot(f, varargin)
-        
-        % 3-D plot for CLASSICFUN objects.
-        varargout = plot3(f, g, h, varargin)
-
-        % Addition of two CLASSICFUN objects.
-        f = plus(f, g)
-        
-        % CLASSICFUN power function.
-        f = power(f, b)
-        
-        % Right array divide for a CLASSICFUN.
-        f = rdivide(f, c, pref)
-
-        % Real part of a CLASSICFUN.
-        f = real(f)
-
-        % Roots of a CLASSICFUN in the interval [a,b].
-        out = roots(f, varargin)
-        
-        % Round a CLASSICFUN towards nearest integer.
-        g = round(f)
-        
-        % Signum of a CLASSICFUN. (f should have no zeros in its domain)
-        f = sign(f, pref)
-    
-        % Simplify the ONEFUN of a CLASSICFUN object.
-        f = simplify(f, tol)
-
-        % Size of a CLASSICFUN.
-        [size1, size2] = size(f, varargin)
-
-        % CLASSICFUN multiplication.
-        f = times(f, g, varargin)
-        
-        % CLASSICFUN objects are not transposable.
-        f = transpose(f)
-
-        % Unary minus of a CLASSICFUN.
-        f = uminus(f)
-
-        % Unary plus of a CLASSICFUN.
-        f = uplus(f)
 
     end
 end

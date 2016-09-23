@@ -7,12 +7,12 @@ function [normF, normloc] = norm( f, p )
 %    NORM(F, 1) = NOT IMPLEMENTED.
 %    NORM(F, inf) = global maximum in absolute value.
 %    NORM(F, 'max') = global maximum in absolute value.
-%    NORM(F, 'min') = NOT IMPLEMENTED
+%    NORM(F, 'min') = NOT IMPLEMENTED.
 %
 % Furthermore, the inf norm for SEPARABLEAPPROX objects also returns a second output,
 % giving a position where the max occurs.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin == 1 ) 
@@ -28,16 +28,22 @@ else
     switch ( p )  % Different cases on different norms.
         case 1
             error('CHEBFUN:SEPARABLEAPPROX:norm:norm', ...
-                'SEPARABLEAPPROX does not support L1-norm, yet');
+                'SEPARABLEAPPROX does not support L1-norm');
             
         case {2, 'fro'}  % Definite integral of f.^2
             % L^2-norm is sum of squares of sv.
             normF = sqrt( sum( svd( f ).^2 ) );  
             
-        case {inf, 'inf', 'max'}
-            [Y, X] = minandmax2(f);
-            [normF, idx] = max( abs( Y ) );
-            normloc = X( idx, : );
+        case {inf, 'inf', 'max'}            
+            if ( isreal(f) )
+                [Y, X] = minandmax2(f);
+                [normF, idx] = max(abs(Y));
+                normloc = X(idx, :);
+            else
+                [Y, X] = minandmax2(conj(f).*f);
+                [normF, idx] = max(sqrt(abs(Y)));
+                normloc = X(idx, :);
+            end
             
         case {-inf, '-inf', 'min'}
             error('CHEBFUN:SEPARABLEAPPROX:norm:norm', ...

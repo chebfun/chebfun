@@ -42,7 +42,7 @@ function [u, dampingInfo] = dampingErrorBased(N, u, rhs, delta, L, disc, damping
 %        Problems for Ordinary Differential Equations in the Continuous
 %        Framework. DPhil Thesis, Oxford, 2013.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Extract info from the dampingInfo struct
@@ -126,7 +126,17 @@ while ( ~accept )
     
     % Compute a simplified Newton step using the current derivative of the
     % operator, but with a new right-hand side.
-    [deltaBar, disc] = linsolve(L, deResFunTrial, disc, vscale(u), pref);
+    [deltaBar, disc, converged] = linsolve(L, deResFunTrial, disc, ...
+        vscale(u), pref);
+    
+    % If solving for the simplified Newton update did not converge, we have a
+    % gibberish update. This will cause the solution process to halt (we're
+    % solving something that's way too noisy), so bail out of the Newton
+    % iteration:
+    if ( ~converged )
+        giveUp = true;
+        break
+    end
     
     % We had two output arguments above, need to negate deltaBar:
     deltaBar = -deltaBar;    

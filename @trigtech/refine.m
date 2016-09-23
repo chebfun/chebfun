@@ -1,7 +1,7 @@
 function [values, giveUp] = refine(op, values, pref)
 %REFINE   Refinement method for TRIGTECH construction.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Obtain some preferences:
@@ -63,7 +63,7 @@ function [values, giveUp] = refineResampling(op, values, pref)
     
     % Force the value at -1 to be equal to the value at 1, thus
     % enforcing symmetry.
-    valRightBoundary = feval(op,x(1)+2);
+    valRightBoundary = feval(op,1);
     
     values(1,:) = 0.5*(values(1,:) + valRightBoundary);
 end

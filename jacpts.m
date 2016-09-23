@@ -27,15 +27,15 @@ function [x, w, v] = jacpts(n, a, b, int, meth)
 %   The cases ALPHA = BETA = -.5 and ALPHA = BETA = .5 correspond to
 %   Gauss-Chebyshev nodes and quadrature, and are treated specially (as a closed
 %   form of the nodes and weights is available). ALPHA = BETA = 0 calls LEGPTS,
-%   which is a more efficient code. ALPHA = BETA for ALPHA^2 < .25 calls
+%   which is a more efficient code. The others cases with ALPHA = BETA call
 %   ULTRAPTS, which is a faster code.
 % 
-%   When MAX(ALPHA, BETA) > 5 the results may not be accurate. 
+%   When ALPHA ~= BETA and MAX(ALPHA, BETA) > 5 the results may not be accurate. 
 %
 % See also CHEBPTS, LEGPTS, LOBPTS, RADAUPTS, HERMPTS, LAGPTS, TRIGPTS, and
 % ULTRAPTS.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers. See
+% Copyright 2016 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -60,26 +60,26 @@ method_set = 0;
 
 if ( a <= -1 || b <= -1 )
     error('CHEBFUN:jacpts:sizeAB', 'Alpha and beta must be greater than -1')
-elseif ( max(a, b) > 5 )
+elseif (a~=b && max(a, b) > 5 )
     warning('CHEBFUN:jacpts:largeAB',...
-        'MAX(ALPHA, BETA) > 5. Results may not be accurate')
+        'ALPHA~=BETA and MAX(ALPHA, BETA) > 5. Results may not be accurate')
 end
 
 
 % Check inputs:
 if ( nargin > 3 )
     if ( nargin == 5 )
-        % Calling sequence = LEGPTS(N, INTERVAL, METHOD)
+        % Calling sequence = JACPTS(N, INTERVAL, METHOD)
         interval = int;
         method = meth;
         method_set = 1;
     elseif ( nargin == 4 )
         if ( ischar(int) )
-            % Calling sequence = LEGPTS(N, METHOD)
+            % Calling sequence = JACPTS(N, METHOD)
             method = int;
             method_set = true;
         else
-            % Calling sequence = LEGPTS(N, INTERVAL)
+            % Calling sequence = JACPTS(N, INTERVAL)
             interval = int;
         end
     end
@@ -120,7 +120,7 @@ elseif ( n == 1 )
 end
 
 % Special cases:
-if ( a == b  && a*a <= .25)
+if ( a == b )
     if ( a == 0 )  % Gauss-Legendre: alpha = beta = 0
         [x, w, v] = legpts(n, method);
         [x, w] = rescale(x, w, interval, a, b);
@@ -138,8 +138,7 @@ if ( a == b  && a*a <= .25)
         v(2:2:end) = -v(2:2:end);
         [x, w] = rescale(x,w,interval,a,b);
         return
-    else % Gauss-Gegenbauer: -.5 < alpha = beta < .5
-        % [TODO]: ULTRAPTS: alpha^2 > .25
+    else % Gauss-Gegenbauer: alpha = beta
         lambda = a + .5;
         [x, w, v] = ultrapts(n, lambda, interval);
         return
@@ -159,12 +158,20 @@ else
     
 end
 
-% Compute the constant for weights:
+% Compute the constant for the weights:
 if ( ~strcmpi(method,'GW') )
-    C = 2^(a+b+1) * exp( gammaln(n+a+1) - gammaln(n+a+b+1) + ...
-                         gammaln(n+b+1) - gammaln(n+1) ); 
-                     
-    w = C*w; 
+    if ( n >= 100 )
+        cte1 = ratioOfGammaFunctions(n+a+1, b);
+        cte2 = ratioOfGammaFunctions(n+1, b);
+        C = 2^(a+b+1)*(cte2/cte1);
+    else
+        C = 2^(a+b+1) * exp( gammaln(n+a+1) - gammaln(n+a+b+1) + ...
+            gammaln(n+b+1) - gammaln(n+1) );   
+        % An alternative approach could be used: 
+        %   C = 2^(a+b+1)*beta(a+1, b+1)/sum(w), 
+        % but we prefer compute the weights independently.
+    end
+    w = C*w;
 end
 
 % Scale the nodes and quadrature weights:
@@ -186,6 +193,27 @@ function [x, w] = rescale(x, w, interval, a, b)
         x = c1 + c2*x;    
     end
 end
+
+function cte = ratioOfGammaFunctions(m,delta)
+%RATIOGAMMA Compute the ratio gamma(m+delta)/gamma(m). See [2].
+    % cte = gamma(m+delta)/gamma(m)
+    ds = .5*delta^2/(m-1);
+    s = ds;
+    j = 1;
+    while ( abs(ds/s) > eps/100 ) % Taylor series in expansion 
+        j = j+1;
+        ds = -delta*(j-1)/(j+1)/(m-1)*ds;
+        s = s + ds;
+    end
+    p2 = exp(s)*sqrt(1+delta/(m-1))*(m-1)^(delta);
+    % Stirling's series:
+    g = [1, 1/12, 1/288, -139/51840, -571/2488320, 163879/209018880, ...
+        5246819/75246796800, -534703531/902961561600, ...
+        -4483131259/86684309913600, 432261921612371/514904800886784000];
+    f = @(z) sum(g.*[1, cumprod(ones(1, 9)./z)]);
+    cte = p2*(f(m+delta-1)/f(m-1));
+end
+
 
 %% ------------------------- Routines for GW ----------------------------
     
@@ -534,7 +562,7 @@ function [x, w, v] = asy2(n, a, b, npts)
 
 % Use Newton iterations to find the first few Bessel roots:
 smallK = min(30, npts);
-jk = besselAsy(a, min(npts, smallK));
+jk = besselroots(a, min(npts, smallK));
 % Use asy formula for larger ones (See NIST 10.21.19, Olver 1974 p247)
 if ( npts > smallK )
     mu = 4*a^2;
@@ -651,74 +679,6 @@ v = sin(t)./ders;
 
 end
 
-function j = besselAsy(v, nbdy) 
-%BESSELASY    Roots of the function bessel(v, x).
-%   J = BESSELASY(V, NBDY) returns the first NBDY roots the Bessel function with
-%   parameter -1<=V<=5.
-
-% L. L. Peixoto, 2015
-
-% Piessens's Chebyshev series approximations (1984). Calculates the 6 first
-% zeros to at least 12 decimal figures in region -1 <= V <= 5:
-C = [
-   2.883975316228  8.263194332307 11.493871452173 14.689036505931 17.866882871378 21.034784308088
-   0.767665211539  4.209200330779  4.317988625384  4.387437455306  4.435717974422  4.471319438161
-  -0.086538804759 -0.164644722483 -0.130667664397 -0.109469595763 -0.094492317231 -0.083234240394
-   0.020433979038  0.039764618826  0.023009510531  0.015359574754  0.011070071951  0.008388073020
-  -0.006103761347 -0.011799527177 -0.004987164201 -0.002655024938 -0.001598668225 -0.001042443435
-   0.002046841322  0.003893555229  0.001204453026  0.000511852711  0.000257620149  0.000144611721
-  -0.000734476579 -0.001369989689 -0.000310786051 -0.000105522473 -0.000044416219 -0.000021469973
-   0.000275336751  0.000503054700  0.000083834770  0.000022761626  0.000008016197  0.000003337753
-  -0.000106375704 -0.000190381770 -0.000023343325 -0.000005071979 -0.000001495224 -0.000000536428
-   0.000042003336  0.000073681222  0.000006655551  0.000001158094  0.000000285903  0.000000088402
-  -0.000016858623 -0.000029010830 -0.000001932603 -0.000000269480 -0.000000055734 -0.000000014856
-   0.000006852440  0.000011579131  0.000000569367  0.000000063657  0.000000011033  0.000000002536
-  -0.000002813300 -0.000004672877 -0.000000169722 -0.000000015222 -0.000000002212 -0.000000000438
-   0.000001164419  0.000001903082  0.000000051084  0.000000003677  0.000000000448  0.000000000077
-  -0.000000485189 -0.000000781030 -0.000000015501 -0.000000000896 -0.000000000092 -0.000000000014
-   0.000000203309  0.000000322648  0.000000004736  0.000000000220  0.000000000019  0.000000000002
-  -0.000000085602 -0.000000134047 -0.000000001456 -0.000000000054 -0.000000000004               0
-   0.000000036192  0.000000055969  0.000000000450  0.000000000013               0               0
-  -0.000000015357 -0.000000023472 -0.000000000140 -0.000000000003               0               0
-   0.000000006537  0.000000009882  0.000000000043  0.000000000001               0               0
-  -0.000000002791 -0.000000004175 -0.000000000014               0               0               0
-   0.000000001194  0.000000001770  0.000000000004               0               0               0
-  -0.000000000512 -0.000000000752               0               0               0               0
-   0.000000000220  0.000000000321               0               0               0               0
-  -0.000000000095 -0.000000000137               0               0               0               0
-   0.000000000041  0.000000000059               0               0               0               0
-  -0.000000000018 -0.000000000025               0               0               0               0
-   0.000000000008  0.000000000011               0               0               0               0
-  -0.000000000003 -0.000000000005               0               0               0               0
-   0.000000000001  0.000000000002               0               0               0               0];
-j = chebtech.clenshaw((v-2)/3, C).';
-j(1) = j(1) * sqrt(v+1);
-      
-if ( nbdy <= 6 )
-    % Trim unnecessary points (if nbdy < 6 ).
-    j = j(1:nbdy);
-    return
-end
-
-% McMahon's expansion. This expansion gives very accurate approximation 
-% for the sth zero (s >= 7) in the whole region v >=- 1:
-s = (7:nbdy);
-mu = 4*v^2;
-a1 = 1 / 8;
-a3 = (7*mu-31) / 384;
-a5 = 4*(3779+mu*(-982+83*mu)) / 61440; % Evaluate via Horner's method.
-a7 = 6*(-6277237+mu*(1585743+mu*(-153855+6949*mu))) / 20643840;
-a9 = 144*(2092163573+mu*(-512062548+mu*(48010494+mu*(-2479316+70197*mu)))) ...
-     / 11890851840;
-a11 = 720*(-8249725736393+mu*(1982611456181+mu*(-179289628602+mu*(8903961290 + ...
-    mu*(-287149133+5592657*mu))))) / 10463949619200;
-a13 = 576*(423748443625564327 + mu*(-100847472093088506+mu*(8929489333108377 + ...
-    mu*(-426353946885548+mu*(13172003634537+mu*(-291245357370 + mu*4148944183)))))) ...
-     / 13059009124761600;
-b = .25*(2*v+4*s-1)*pi; % beta
-j(s) = b - (mu-1)*polyval([a13 0 a11 0 a9 0 a7 0 a5 0 a3 0 a1 0], 1./b);
-
-end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % [TODO]: The codes below are only here temporarily.
@@ -853,43 +813,8 @@ K = C*(f.*tB2);
 A3 = .5*(D*tB2) - (.5+alph)*B2 - .5*K;
 A3 = A3 - A3(1);
 
-if ( nargout < 6 )
-    % Make function for output
-    tB1 = @(theta) bary(theta, tB1, t, v);
-    A2 = @(theta) bary(theta, A2, t, v);
-    tB2 = @(theta) bary(theta, tB2, t, v);
-    A3 = @(theta) bary(theta, A3, t, v);
-    return
-end
-
-% A2p:
-A3p = D*A3;
-A3p = A3p - A3p(1);
-A3p_t = A3p./t;
-% Extrapolate point at t = 0:
-w = pi/2-t(2:end);
-w(2:2:end) = -w(2:2:end);
-A3p_t(1) = sum(w.*A3p_t(2:end))/sum(w);
-
-% B2:
-tB3 = -.5*A3p - (.5+alph)*(C*A3p_t) + .5*C*(f.*A3);
-B3 = tB3./t;
-% Extrapolate point at t = 0
-B3(1) = sum(w.*B3(2:end))/sum(w);
-
-% A3:
-K = C*(f.*tB3);
-A4 = .5*(D*tB3) - (.5+alph)*B3 - .5*K;
-A4 = A4 - A4(1);
-
-% Make function for output:
 tB1 = @(theta) bary(theta, tB1, t, v);
 A2 = @(theta) bary(theta, A2, t, v);
 tB2 = @(theta) bary(theta, tB2, t, v);
 A3 = @(theta) bary(theta, A3, t, v);
-tB3 = @(theta) bary(theta, tB3, t, v);
-A4 = @(theta) bary(theta, A4, t, v);
-
 end
-
-

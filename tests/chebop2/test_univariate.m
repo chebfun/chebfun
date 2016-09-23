@@ -1,12 +1,12 @@
-function pass = test_univariate( prefs )
+function pass = test_univariate( pref )
 % Rank-1 PDEs can be solved by univariate spectral methods.  Do the results
 % match. 
 % Alex Townsend, March 2013. 
 
 if ( nargin < 1 ) 
-    prefs = chebfunpref(); 
+    pref = chebfunpref(); 
 end 
-tol = 1000*prefs.techPrefs.eps; 
+tol = 1000*pref.cheb2Prefs.chebfun2eps;
 
 % Simple example in y-variable.
 N = chebop2(@(u) diff(u,2,1) + u); N.dbc = 1; N.ubc = 1; u = N \ 0; 

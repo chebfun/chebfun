@@ -10,7 +10,7 @@ function [h, ishappy] = merge(f, g, vscale, hscale, pref)
 %   ... = MERGE(F, G, VSCALE, HSCALE, PREF) uses uses the values VSCALE and
 %   HSCALE and the CHEBFUNPREF object PREF in the construction of the new FUN.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Extract domain info:
@@ -29,7 +29,7 @@ end
 if ( nargin < 5 )
     pref = chebfunpref();
 end
-tol = max(pref.eps);
+tol = max(pref.chebfuneps);
 
 % Blowup detection is turned off in order to avoid the occurrence of spurious
 % poles inside an interval where a piecewise function was originally smooth.

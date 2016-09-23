@@ -25,7 +25,7 @@ for j = 1:numel(FF);
     
     err = norm(feval(f, xx) - feval(F, xx), inf);
     pass(j, k+1) = err < 50*eps;
-    pass(j, k+2) = err < 1000*pref.eps;
+    pass(j, k+2) = err < 1000*pref.chebfuneps;
 
 end
 
@@ -69,7 +69,7 @@ g = abs(f);
 gVals = feval(g, x);
 gExact = opAbs(x);
 err = gVals - gExact;
-pass(j+2,:) = norm(err, inf) < 1e3*eps*vscale(g);
+pass(j+2,:) = norm(err, inf) < 1e6*eps*vscale(g);
 
 
 end

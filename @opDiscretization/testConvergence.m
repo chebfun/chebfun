@@ -15,7 +15,7 @@ function [isDone, cutoff, vscale] = testConvergence(disc, values, vscale, pref)
 %              be chopped. If ~ISDONE then CUTOFF = LENGTH(DISC).
 %      VSCALE: Maximum of the input VSCALE and the computed VSCALE of DISC.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin < 3 )
@@ -48,7 +48,7 @@ vscale = max(u.vscale, vscale);
 data.vscale = vscale;
 % TODO:  Assign hscale (to data.hscale)?
 prefTech = tech.techPref();
-prefTech.eps = pref.bvpTol;
+prefTech.chebfuneps = pref.bvpTol;
 prefTech.happinessCheck = pref.happinessCheck;
 
 for i = 1:numInt

@@ -12,7 +12,7 @@ function f = simplify(f, tol)
 %
 % See also STANDARDCHOP.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with empty case.
@@ -45,7 +45,7 @@ coeffs = chebtech2.vals2coeffs(chebtech2.coeffs2vals(coeffs));
 % Use the default tolerance if none was supplied.
 if ( nargin < 2 )
     p = chebtech.techPref();
-    tol = p.eps;
+    tol = p.chebfuneps;
 end
 
 % Recast TOL as a row vector.

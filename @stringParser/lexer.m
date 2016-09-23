@@ -25,7 +25,7 @@ function [out, varNames, pdeVarNames, eigVarNames, indVarNames] = ...
 %
 % See also STRINGPARSER/PARSER.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Initialize an empty output.

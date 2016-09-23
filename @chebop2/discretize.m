@@ -40,7 +40,7 @@ function [CC, rhs, bb, gg, Px, Py, xsplit, ysplit] = discretize(N, f, m, n, flag
 % Returns RHS with degrees of freedom removed and bb which stores
 % elminated boundary conditions, gg eliminated boundary rows.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Parse inputs.
@@ -49,11 +49,11 @@ if nargin < 5
 end
 
 %%
-% Get information of PDE and prefs.
+% Get information of PDE and pref.
 A = N.coeffs;
 rect = N.domain;
-prefs = chebfunpref(); 
-tol = prefs.techPrefs.eps; 
+pref = chebfunpref();
+tol = pref.cheb2Prefs.chebfun2eps;
 xorder = N.xorder;
 yorder = N.yorder;
 

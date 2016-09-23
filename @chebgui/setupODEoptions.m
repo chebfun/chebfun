@@ -16,7 +16,7 @@ end
 % We need a CHEBFUNPREF as well to ensure the tolerance requested is not
 % stricter than current CHEBFUN epsilon
 chebfunp = chebfunpref;
-if ( tolNum < chebfunp.techPrefs.eps )
+if ( tolNum < chebfunp.techPrefs.chebfuneps )
     warndlg('Tolerance specified is less than current chebfun epsilon', ...
         'Warning','modal');
     uiwait(gcf)

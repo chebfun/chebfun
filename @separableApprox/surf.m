@@ -17,7 +17,7 @@ function varargout = surf( f, varargin )
 %
 % See also PLOT, SURFC.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check:
@@ -92,7 +92,7 @@ if ( isa(f,'separableApprox') )
         x = feval(x, xx, yy);
         y = feval(y, xx, yy);
         if ( isa(argin{2}, 'separableApprox') )         % surf(x,y,f,...)
-            vals = feval(argin{2}, xx, yy);
+            vals = feval(argin{2}, x, y);
             if ( nargin < 4 )                    % surf(x,y,f)
                 C = vals;
             elseif ( isa(argin{3}, 'double') )   % surf(x,y,f,C,...)

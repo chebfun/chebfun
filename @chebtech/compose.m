@@ -16,7 +16,7 @@ function f = compose(f, op, g, data, pref)
 %   one can set PREF.REFINEMENTFUNCTION to be a function which takes advantage
 %   of F and possibly OP or G being CHEBTECH objects.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Parse inputs:
@@ -38,7 +38,7 @@ end
 
 % Set some preferences:
 pref.minSamples = max(pref.minSamples, length(f));
-pref.eps = max(eps, pref.eps);
+pref.chebfuneps = max(eps, pref.chebfuneps);
 pref.sampleTest = false;
 
 if ( nfuns == 2 )

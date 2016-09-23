@@ -26,7 +26,7 @@ function f = volt(kernel, A, oneVar)
 %
 % See also blockFunction/fred, linop/volt, chebop/volt.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Default oneVar to false
@@ -54,7 +54,7 @@ function v = applyVolt(u, dom, kernel)
     p.techPrefs.sampleTest = false;
     
     % TODO: Explore the correct preferences for best behavior.
-    %    p.techPrefs.eps = nrmu*eps;
+    %    p.techPrefs.chebfuneps = nrmu*eps;
     %    p.splitting = true;
     p = chebfunpref(p);
     

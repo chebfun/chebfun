@@ -22,7 +22,7 @@ pass(8) = abs(x(38) - 9.704505777068543E+00) < tol;
 pass(9) = abs(w(38) - 1.018229378664342E-01) < tol;
 pass(10) = abs(v(38) + 2.449177929215358E-01) < tol;
 
-% Test a larger n (using ASY without guaranteed convergence)
+% Test a larger n
 lambda = .8;
 n = 251;
 x = ultrapts(n, lambda);
@@ -41,24 +41,27 @@ pass(18) = abs(x(38) - 5.486606034997460E-01 ) < tol;
 pass(19) = abs(w(38) - 4.655102134393607E-02) < tol;
 pass(20) = abs(v(38) + 2.427562206703888E-01 ) < tol;
 
-% Test a larger n (using ASY with guaranteed convergence)
-lambda = .8;
-n = 251;
-x = ultrapts(n, lambda,'asy',1);
+% Test a larger n with a larger lambda
+lambda = 7;
+n = 551;
+x = ultrapts(n, lambda,'asy');
 pass(21) = all(size(x) == [n, 1]);
-[x, w, v] = ultrapts(n, lambda,'asy',1);
+[x, w, v] = ultrapts(n, lambda,'asy');
 pass(22) = all(size(x) == [n, 1]) && all(size(w) == [1, n]) && all(size(v) == [n, 1]);
-pass(23) = abs(w*x) < tol && abs(w*x.^2 - 0.4744211549960596) < tol;
-pass(24) = abs(x(37) + 8.958806879214126E-01) < tol;
-pass(25) = abs(w(37) - 3.406945649865882E-03) < tol;
-pass(26) = abs(v(37) - 2.321704534650446E-01) < tol;
+pass(23) = abs(w*x) < tol && abs(w*x.^2 - (429/32768)*pi) < tol;
+pass(24) = abs(x(37) + 9.748144265829347E-01) < tol;
+pass(25) = abs(w(37) - 4.244751593204416E-12) < tol;
+pass(26) = abs(v(37) - 6.123401324799126E-06) < tol;
 
-% Test on [0, 10]:
-[x, w, v] = ultrapts(n, lambda, [0, 10], 'asy', 1);
-pass(27) = abs(w*x - 112.1472319135050) < 100*tol && abs(w*x.^2 - 716.4962038918374) < 100*tol;
-pass(28) = abs(x(38) - 5.486606034997460E-01) < tol;
-pass(29) = abs(w(38) - 4.655102134393607E-02) < tol;
-pass(30) = abs(v(38) + 2.427562206703888E-01) < tol;
+% Test a larger n with a larger lambda
+lambda = 25.5;
+n = 5e3;
+x = ultrapts(n, lambda,'asy');
+pass(27) = all(size(x) == [n, 1]);
+[x, w, v] = ultrapts(n, lambda,'asy');
+pass(28) = all(size(x) == [n, 1]) && all(size(w) == [1, n]) && all(size(v) == [n, 1]);
+pass(29) = abs(w*x) < tol && abs(w*x.^2 - 281474976710656/42710983650155457) < tol;
+pass(30) = abs(sum(w) - 281474976710656/805867616040669 ) < tol;
 
 % Test n = 1: 
 lambda = .6;

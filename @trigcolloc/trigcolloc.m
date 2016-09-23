@@ -11,7 +11,7 @@ classdef trigcolloc < valsDiscretization
 %
 % See also COLLOC, OPDISCRETIZATION, CHEBOPPREF, CHEBOP.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -25,9 +25,6 @@ classdef trigcolloc < valsDiscretization
             disc.dimAdjust = 0; 
             disc.projOrder = 0; 
         end
-        
-        % Dimension reduction for operator matrix.
-        [PA, P, PS] = reduce(disc, A, S);
         
     end
     

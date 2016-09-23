@@ -1,9 +1,9 @@
 function f = log( f )
 %LOG   Natural logarithm of a SEPARABLEAPPROX.
-%   LOG(F) is the natural logarithm of F. This function does not work if the
-%   function passes through or becomes numerically close to zero.
+%   LOG(F) is the natural logarithm of F. This function returns an error 
+%   if the function passes through or becomes numerically close to zero.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 

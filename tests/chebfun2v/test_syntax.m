@@ -5,7 +5,7 @@ function pass = test_syntax( pref )
 if ( nargin < 1 )
     pref = chebfunpref;
 end
-tol = 1e5 * pref.eps; 
+tol = 1e5 * pref.cheb2Prefs.chebfun2eps;
 
 D = [-1 1 -1 1; -1 1 1 2];
 

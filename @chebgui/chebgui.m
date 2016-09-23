@@ -104,7 +104,7 @@ classdef chebgui
 %   the Numerical Solution of Boundary-Value Problems,” ACM Transactions on
 %   Mathematical Software, vol. 38, no. 4, Article 26, Aug. 2012.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -211,26 +211,7 @@ classdef chebgui
     %% CLASS METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   
     methods ( Access = public, Static = false )
-       
-        % Export a BVP to an .m file
-        exportBVP2mfile(guifile, pathname, filename)
-        
-        % Export an EIG problem to an .m file
-        exportEIG2mfile(guifile, pathname, filename, handles)
-        
-        % Export a PDE to an .m file
-        exportPDE2mfile(guifile, pathname, filename)
-                
-        % Populate the fields of the GUI
-        [field, allVarString, indVarName, pdeVarNames, pdeflag, eigVarNames, ...
-            allVarNames]  = setupFields(guifile, input, type, allVarString)
-        
-        % Solve a GUI BVP
-        varargout = solveGUIbvp(guifile,handles)
-        
-        % Solve a GUI EIG problem
-        varargout = solveGUIeig(guifile,handles)
-        
+
         function allVarNames = getVarNames(guifile)
             %GETVARNAMES    Return a cell-array with all variables names
             %
@@ -250,7 +231,6 @@ classdef chebgui
             [dummy, dummy, dummy, dummy, dummy, dummy, allVarNames] = ...
                 setupFields(guifile, deInput, 'DE');
         end
-        
         
     end
     

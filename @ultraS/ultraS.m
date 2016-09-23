@@ -17,7 +17,7 @@ classdef ultraS < coeffsDiscretization
 % A. Townsend, A fast and well-conditioned spectral method, SIAM Review, 55
 % (2013), pp. 462-489.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -36,9 +36,6 @@ classdef ultraS < coeffsDiscretization
         function disc = ultraS(varargin)
             disc = disc@coeffsDiscretization(varargin{:});
         end
-        
-        % Dimension reduction for operator matrix.
-        [PA, P, PS] = reduce(disc, A, S)
         
     end
     

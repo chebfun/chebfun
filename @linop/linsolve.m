@@ -1,4 +1,4 @@
-function [u, disc] = linsolve(L, f, varargin)
+function [u, disc, converged] = linsolve(L, f, varargin)
 %LINSOLVE  Solve a linear differential/integral equation.
 %   Important: A CHEBOPPREF object PREFS has to be passed. When this method
 %   is called via CHEBOP/MLDIVIDE, PREFS is inherited from the CHEBOP level.
@@ -15,6 +15,11 @@ function [u, disc] = linsolve(L, f, varargin)
 %   LINSOLVE(...,PREFS) accepts a CHEBOPPREF to control the behavior of
 %   the algorithms. If empty, defaults are used.
 %
+%   [U, DISC, CONVERGED] = LINSOLVE(L, ...) also returns the OPDISCRETIZATION
+%   object DISC, used for solving the linear differential/integral equation, and
+%   the Boolean flag CONVERGED, which has value TRUE if the linear system
+%   solution converged, and FALSE otherwise.
+%
 %   EXAMPLE:
 %     d = [0,pi];
 %     [Z,I,D] = linop.primitiveOperators(d);
@@ -27,7 +32,7 @@ function [u, disc] = linsolve(L, f, varargin)
 %
 % See also CHEBOPPREF, CHEBOP.MLDIVIDE.
 
-%  Copyright 2015 by The University of Oxford and The Chebfun Developers.
+%  Copyright 2016 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -155,9 +160,11 @@ for dim = [dimVals inf]
     
 end
 
+converged = true;
 if ( ~all(isDone) )
     warning('CHEBFUN:LINOP:linsolve:noConverge', ...
         'Linear system solution may not have converged.')
+    converged = false;
 end
 
 %% Tidy the solution for output:

@@ -21,7 +21,7 @@ function u = solvepde(N, f, varargin)
 % Warning: This PDE solver is an experimental new feature. It has not been
 % publicly advertised.  
         
-% Copyright 2015 by The University of Oxford and The Chebfun2 Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun2 Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Try and make a CHEBFUN2 out of right hand side.
@@ -36,9 +36,9 @@ end
 % Go get stuff we will need: 
 rect = N.domain; 
 f = chebfun2(f, rect);
-prefs = chebfunpref();
-tol = max(prefs.techPrefs.eps, 1e-14); % Be gentle!    
-maxDiscretise_x = 2*prefs.cheb2Prefs.maxRank; % Use maxRank to get maxDisc. 
+pref = chebfunpref();
+tol = max(pref.cheb2Prefs.chebfun2eps, 1e-14); % Be gentle!
+maxDiscretise_x = 2*pref.cheb2Prefs.maxRank; % Use maxRank to get maxDisc.
 maxDiscretise_y = maxDiscretise_x;
 minsample = 9;
 
@@ -143,7 +143,7 @@ end
 X = cutTrailingCoefficients(X);
 
 % Form a CHEBFUN2 object to represent the solution:
-u = chebfun2(X, 'coeffs', rect); 
+u = chebfun2(X, rect, 'coeffs'); 
 
 end
 

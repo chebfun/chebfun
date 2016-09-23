@@ -22,7 +22,7 @@ function [order1, order2, nDiff2] = taylorTestingBinary(func, hMax, plotting)
 %
 % See also: TAYLORTESTING, VALUETESTING, VALUETESTINGBINARY.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %% Parse inputs and initialise
@@ -111,11 +111,11 @@ for hCounter = 1:hMax
     % Compute information for Taylor testing.
     
     % Expect this to be O(h)
-    nDiff1(hCounter,1) = norm(v1v2Pert - v1v2);
-    nDiff1(hCounter,2) = norm(u1w2Pert - u1w2);
-    nDiff1(hCounter,3) = norm(w1u2Pert - w1u2);
-    nDiff1(hCounter,4) = norm(u1s2Pert - u1s2);
-    nDiff1(hCounter,5) = norm(s1u2Pert - s1u2);
+    nDiff1(hCounter,1) = norm(v1v2Pert - v1v2, inf);
+    nDiff1(hCounter,2) = norm(u1w2Pert - u1w2, inf);
+    nDiff1(hCounter,3) = norm(w1u2Pert - w1u2, inf);
+    nDiff1(hCounter,4) = norm(u1s2Pert - u1s2, inf);
+    nDiff1(hCounter,5) = norm(s1u2Pert - s1u2, inf);
     
     % Use derivative information as well. Expect this to be O(h^2) for nonlinear
     % operators, and machine error for linear operators.
@@ -126,11 +126,11 @@ for hCounter = 1:hMax
     % cast everything to a CHEBMATRIX to ensure that the call to the first
     % element below works.
     v1v2JacPert = chebmatrix(v1v2Jac*[pert1; pert2]);
-    nDiff2(hCounter,1) = norm(v1v2Pert - v1v2 - v1v2JacPert{1});
-    nDiff2(hCounter,2) = norm(u1w2Pert - u1w2 - u1w2Jac*(pert1));
-    nDiff2(hCounter,3) = norm(w1u2Pert - w1u2 - w1u2Jac*(pert2));
-    nDiff2(hCounter,4) = norm(u1s2Pert - u1s2 - u1s2Jac*(pert1));
-    nDiff2(hCounter,5) = norm(s1u2Pert - s1u2 - s1u2Jac*(pert2));
+    nDiff2(hCounter,1) = norm(v1v2Pert - v1v2 - v1v2JacPert{1}, inf);
+    nDiff2(hCounter,2) = norm(u1w2Pert - u1w2 - u1w2Jac*(pert1), inf);
+    nDiff2(hCounter,3) = norm(w1u2Pert - w1u2 - w1u2Jac*(pert2), inf);
+    nDiff2(hCounter,4) = norm(u1s2Pert - u1s2 - u1s2Jac*(pert1), inf);
+    nDiff2(hCounter,5) = norm(s1u2Pert - s1u2 - s1u2Jac*(pert2), inf);
 end
 
 %% Compute the orders of convergence

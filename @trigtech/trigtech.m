@@ -44,7 +44,7 @@ classdef trigtech < smoothfun % (Abstract)
 %
 % See also TRIGTECH.TECHPREF, TRIGPTS, HAPPINESSCHECK, REFINE.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -159,210 +159,12 @@ classdef trigtech < smoothfun % (Abstract)
     %% CLASS METHODS:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods
-        
-        % Absolute value of a TRIGTECH. (f should have no zeros in its domain)
-        f = abs(f, pref)
-
-        % TRIGTECH logical AND.
-        h = and(f, g)
-
-        % True if any element of a TRIGTECH is a nonzero number, ignoring NaN.
-        a = any(f, dim)
-
-        % Convert an array of TRIGTECH objects into an array-valued TRIGTECH.
-        f = cell2mat(f)
-
-        % Circular convolution of two trigtech objects.
-        f = circconv(f, g)
-        
-        % Circular shift of a trigtech object by a: f -> g(x-a).
-        g = circshift(f, a)
-
-        % Plot (semilogy) the trigonometric coefficients of a TRIGTECH object.
-        [h1, h2] = coeffsplot(f, varargin)
-
-        % Check the happiness of a TRIGTECH. (Classic definition).
-        [ishappy, cutoff] = classicCheck(f, values, data, pref)
-
-        % Compose two TRIGTECH objects or a TRIGTECH with a function handle:
-        h = compose(f, op, g, data, pref)
-
-        % Complex conjugate of a TRIGTECH.
-        f = conj(f)
-        
-        % TRIGTECH objects are not transposable.
-        f = ctranspose(f)
-
-        % Indefinite integral of a TRIGTECH.
-        f = cumsum(f, dim)
-
-        % Derivative of a TRIGTECH.
-        f = diff(f, k, dim)
-        
-        % Extract information for DISPLAY.
-        info = dispData(f)
-        
-        % Extract columns of an array-valued TRIGTECH object.
-        f = extractColumns(f, columnIndex)
-
-        % Evaluate a TRIGTECH.
-        y = feval(f, x)
-        
-        % Flip columns of an array-valued TRIGTECH object.
-        f = fliplr(f)
-        
-        % Flip/reverse a TRIGTECH object.
-        f = flipud(f)
-        
-        % Fractional integral of a TRIGTECH object.
-        varargout = fracInt(varargin)
-
-        % Plot (semilogy) the trigonometric coefficients of a TRIGTECH object.
-        varargout = plotcoeffs(f, varargin)
-
-        % Get method:
-        val = get(f, prop);
-
-        % Happiness test for a TRIGTECH
-        [ishappy, cutoff] = happinessCheck(f, op, values, data, pref)
-
-        % Imaginary part of a TRIGTECH.
-        f = imag(f)
-
-        % Compute the inner product of two TRIGTECH objects.
-        out = innerProduct(f, g)
-
-        % True for an empty TRIGTECH.
-        out = isempty(f)
-
-        % Test if TRIGTECH objects are equal.
-        out = isequal(f, g)
-
-        % Test if a TRIGTECH is bounded.
-        out = isfinite(f)
-
-        % Test if a TRIGTECH is unbounded.
-        out = isinf(f)
-
-        % Test if a TRIGTECH has any NaN values.
-        out = isnan(f)
 
         function out = isPeriodicTech(f)
         %ISPERIODICTECH   True for TRIGTECH.
             out = 1;
         end
-        
-        % True for real TRIGTECH.
-        out = isreal(f)
-        
-        % True for zero TRIGTECH objects
-        out = iszero(f)
-        
-        % Cannot convert TRIGTECH coefficients to legendre coefficients
-        c_leg = legcoeffs(f, n)
-        
-        % Length of a TRIGTECH.
-        len = length(f)
 
-        % Convert an array-valued TRIGTECH into an ARRAY of TRIGTECH objects.
-        g = mat2cell(f, M, N)
-
-        % Global maximum of a TRIGTECH on [-1,1].
-        [maxVal, maxPos] = max(f)
-
-        % Global minimum of a TRIGTECH on [-1,1].
-        [minVal, minPos] = min(f)
-
-        % Global minimum and maximum on [-1,1].
-        [vals, pos] = minandmax(f)
-
-        % Subtraction of two TRIGTECH objects.
-        f = minus(f, g)
-
-        % Left matrix divide for TRIGTECH objects.
-        X = mldivide(A, B)
-
-        % Right matrix divide for a TRIGTECH.
-        X = mrdivide(B, A)
-
-        % Multiplication of TRIGTECH objects.
-        f = mtimes(f, c)
-
-        % TRIGTECH logical OR.
-        h = or(f, g)
-
-        % Basic linear plot for TRIGTECH objects.
-        varargout = plot(f, varargin)
-        
-        % 3-D plot for TRIGTECH objects.
-        varargout = plot3(f, g, h, varargin)
-        
-        % Obtain data used for plotting a TRIGTECH object:
-        data = plotData(f, g, h)
-
-        % Addition of two TRIGTECH objects.
-        f = plus(f, g)
-
-        % Return the points used by a TRIGTECH.
-        out = points(f)
-
-        % Complex polynomial coefficients of a TRIGTECH.
-        out = poly(f)
-
-        % Populate a TRIGTECH class with values.
-        f = populate(f, op, vscale, hscale, pref)
-        
-        % Power function of a TRIGTECH.
-        f = power(f, b)
-
-        % Adjust the number of points used in a TRIGTECH.
-        f = prolong(f, n)
-
-        % QR factorisation of an array-valued TRIGTECH.
-        [f, R, E] = qr(f, flag, methodFlag)
-
-        % Right array divide for a TRIGTECH.
-        f = rdivide(f, c, pref)
-
-        % Real part of a TRIGTECH.
-        f = real(f)
-
-        % Restrict a TRIGTECH to a subinterval.
-        f = restrict(f, s)
-
-        % Roots of a TRIGTECH in the interval [-1,1].
-        out = roots(f, varargin)
-        
-        % Test an evaluation of the input OP against a TRIGTECH approx.
-        pass = sampleTest(op, f, pref)
-        
-        % Signum of a TRIGTECH. (f should have no zeros in its domain)
-        f = sign(f, pref)
-
-        % Trim trailing Chebyshev coefficients of a TRIGTECH object.
-        f = simplify(f, pref, force)
-
-        % Size of a TRIGTECH.
-        [siz1, siz2] = size(f, varargin)
-
-        % Definite integral of a TRIGTECH on the interval [-1,1].
-        out = sum(f, dim)
-
-        % TRIGTECH multiplication.
-        f = times(f, g, varargin)
-        
-        % TRIGTECH obects are not transposable.
-        f = transpose(f)
-        
-        % Coefficients for degree N least square approximation of F:
-        c = truncCoeffs(f, n)
-
-        % Unary minus of a TRIGTECH.
-        f = uminus(f)
-
-        % Unary plus of a TRIGTECH.
-        f = uplus(f)   
-        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -379,6 +181,9 @@ classdef trigtech < smoothfun % (Abstract)
         % Compute trigonometric points (x) and optionally quadrature (w)
         % and barycentric (v) weights:
         [x, w] = trigpts(n);
+        
+        % Tensor product grid of equispaced points in 1D, 2D or 3D:
+        out = tensorGrid(N, dom)
         
         % Convert coefficients to values:
         values = coeffs2vals(coeffs);

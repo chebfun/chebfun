@@ -5,7 +5,7 @@ function g = fracInt(f, mu)
 %   Currently this only supports the situation where F is  is smooth at the
 %   right boundary (i.e., F.exponents(2) = 0).
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Attempt to simplify the exponents as we must have zero at the right.
@@ -27,6 +27,10 @@ g.exponents = f.exponents + [mu, 0];
 if ( exps(1) ~= 0 )
     % Simplify the exponents again.
     g = simplifyExponents(g);
+end
+
+if ( ~any(g.exponents) )
+    g = g.smoothPart;
 end
 
 end

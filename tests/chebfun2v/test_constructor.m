@@ -6,7 +6,7 @@ if ( nargin < 1 )
     pref = chebfunpref;
 end
 
-tol = 100*pref.eps;
+tol = 100*pref.cheb2Prefs.chebfun2eps;
 
 D = [-1 1 -1 1; -2 3 0 1];
 

@@ -22,7 +22,7 @@ function fx = trigBary(x, fvals, xk, dom)
 %
 % See also BARY(), TRIGBARYWEIGHTS()
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Parse inputs:
@@ -98,7 +98,7 @@ end
 % interpolated:
 if ( rem(n, 2) == 0 )
     s = sum(xk);
-    if ( abs(mod(s, pi)) < 4*pi*eps )
+    if ( abs(rem(s, pi)) < 4*pi*eps )
         c = 0;
     else        
         c = cot(s/2);

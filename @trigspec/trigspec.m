@@ -5,7 +5,7 @@ classdef trigspec < coeffsDiscretization
 %
 % See also TRIGCOLLOC.
 %
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -28,9 +28,6 @@ classdef trigspec < coeffsDiscretization
             disc.projOrder = 0;
         end
         
-        % Dimension reduction for operator matrix.
-        [PA, P, PS] = reduce(disc, A, S)
-        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -44,7 +41,7 @@ classdef trigspec < coeffsDiscretization
         end
         
         % Differentiation matrices for TRIGSPEC.
-        D = diffmat(N, m)
+        D = diffmat(N, m, flag)
         
         % Multiplication matrices for TRIGSPEC.
         D = multmat(N, f)

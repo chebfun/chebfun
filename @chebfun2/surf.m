@@ -15,9 +15,9 @@ function varargout = surf(varargin)
 %
 %   H = SURF(...) returns a handle to a surface plot object.
 %
-% See also PLOT, SURFC.
+% See also PLOT.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 [varargout{1:nargout}] = surf@separableApprox(varargin{:});
