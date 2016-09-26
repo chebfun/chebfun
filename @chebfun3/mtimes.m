@@ -56,15 +56,16 @@ if ( isa(f, 'chebfun3') )           % CHEBFUN3 * ???
         
         % Form the output:
         h = chebfun3();
-        h.cols = gCols;   % 1st variable of g sits in place of 1st variable of h.
-        h.rows = fRows;   % 2nd variable of h is the 2nd variable of f.
-        h.tubes = fTubes; % 3rd variable of h is 3rd variable of f.
+        h.cols = gCols;  % 1st variable of g sits in place of 1st variable of h.
+        h.rows = fRows;  % 2nd variable of h is the 2nd variable of f.
+        h.tubes = fTubes;% 3rd variable of h is 3rd variable of f.
         h.core = chebfun3.txm(temp, gPivots, 1);
         h.domain(1:2) = g.domain(3:4);
         h.domain(3:6) = f.domain(3:6);
                            
     elseif ( isa(g, 'chebfun3') )    % CHEBFUN3 * CHEBFUN3
-        error('CHEBFUN:CHEBFUN3:mtimes', 'CHEBFUN3 does not support this operation.');
+        error('CHEBFUN:CHEBFUN3:mtimes', ['CHEBFUN3 does not support this', ...
+            'operation.']);
  
     elseif ( isa(g, 'chebfun3v') )  % CHEBFUN3 * CHEBFUN3V
         nG = g.nComponents; 
@@ -78,7 +79,6 @@ if ( isa(f, 'chebfun3') )           % CHEBFUN3 * ???
         error('CHEBFUN:CHEBFUN3:mtimes:unknown', ...
             ['Undefined function ''mtimes'' for input arguments of type %s ' ...
             'and %s.'], class(f), class(g));
-        
     end
     
 elseif ( isa(f, 'double') && isa(g, 'chebfun3') )  % DOUBLE * CHEBFUN3
