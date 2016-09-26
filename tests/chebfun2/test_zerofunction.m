@@ -41,4 +41,7 @@ if all(size(v) == size(r))
     pass(4) = 1; 
 end
 
+f = chebfun2( zeros(5,4) ); 
+pass(5) = (norm( coeffs2(f) - zeros(5,4) ) == 0 );
+
 end

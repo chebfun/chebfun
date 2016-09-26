@@ -222,6 +222,9 @@ classdef spinoperator
         
         % Solve a PDE defined by a SPINOPERATOR:
         [uout, tout] = solvepde(varargin)
+        
+        % Check if in DEMO mode:
+        out = isDemoCheck(in)
    
     end
 

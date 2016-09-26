@@ -7,7 +7,7 @@ function M = multmat(N, f)
 %  M = MULTMAT(N, F) also works when F is a vector of Fourier
 %  coefficients.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isa(f, 'chebfun') ) 
@@ -26,6 +26,11 @@ end
 if ( numel(a) == 1 )
     M = a*speye(N);
     return
+end
+
+% Deal with even case.
+if ( mod(length(a), 2) == 0 )
+    a = [a(1)/2; a(2:end); a(1)/2];
 end
 
 % Position of constant term.

@@ -13,7 +13,7 @@ function r = roots( varargin )
 %  
 % See also CHEBFUN2V/ROOTS.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Check for empty:
@@ -29,7 +29,7 @@ rts = roots@separableApprox(varargin{:});
 x = chebpts(max(length(rts),17) + 1);
 
 vals = feval(rts, x);
-r = cellmat(size(vals,2), 1);
+r = cell(size(vals,2), 1);
 
 % Go through each component and make it an array-valued chebfun: 
 for k = 1:size(vals, 2)

@@ -7,7 +7,7 @@ function legcoeffs = legvals2legcoeffs(legvals)
 % 
 % See also CHEBFUN.IDLT, LEGPTS.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % This command is a wrapper for chebfun/idlt.

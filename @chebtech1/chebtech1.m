@@ -44,7 +44,7 @@ classdef chebtech1 < chebtech
 %
 % See also CHEBTECH, CHEBTECH.TECHPREF, CHEBPTS, HAPPINESSCHECK, REFINE.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -145,6 +145,9 @@ classdef chebtech1 < chebtech
         % Compute Chebyshev points (x) and optionally quadrature (w)
         % and barycentric (v) weights.
         [x, w, v, t] = chebpts(n)
+        
+        % Tensor product grid of Chebyshev points in 1D, 2D or 3D:
+        out = tensorGrid(N, dom)
         
         % Convert coefficients to values:
         values = coeffs2vals(coeffs)

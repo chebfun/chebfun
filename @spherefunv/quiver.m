@@ -24,9 +24,6 @@ if ( isempty(F) )
 end
 
 holdState = ishold;
-if ~holdState
-    hold on;
-end
 
 % If the plot is not being added to another then plot a solid 
 % sphere so the lines are more easily discernable.
@@ -41,6 +38,7 @@ if ~holdState
     % show up more clearly.
     scl = 0.99;
     surf(scl*XX,scl*YY,scl*ZZ,1+0*XX,'EdgeColor','None','FaceColor',clr);
+    hold on
 end
 
 % Plot vectors at the Icosahedral nodes, which are well separated and make

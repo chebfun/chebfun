@@ -91,7 +91,9 @@ function [uout, tout] = spin2(varargin)
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-for j = 1:nargin
+pref = [];
+j = 1;
+while ( j <= nargin )
     item =  varargin{j};
     if ( isa(item, 'spinoperator') == 1 )
         if ( isa(item, 'spinop') == 1 )
@@ -100,17 +102,41 @@ for j = 1:nargin
             error('CHEBFUN:SPIN2', ['Use SPIN3 for PDEs in three space ', ...
                 'dimensions.'])
         end
-    elseif ( isa(item, 'char') == 1 )
-        is1D = isempty(strfind(item, '2')) && isempty(strfind(item, '3'));
-        is3D = ~isempty(strfind(item, '3'));
-        if ( is1D == 1 )
-            error('CHEBFUN:SPIN2', 'Use SPIN for PDEs in one space dimension.')
-        elseif ( is3D == 1 )
-            error('CHEBFUN:SPIN2', ['Use SPIN3 for PDEs in three space ', ...
-                'dimensions.'])
+    elseif ( isa(item, 'char') == 1 )        
+        isDemo = spinoperator.isDemoCheck(item);
+        % This is a char for a demo, e.g., 'gs2' or 'gl2':
+        if ( isDemo == 1 )
+            is1D = isempty(strfind(item, '2')) && isempty(strfind(item, '3'));
+            is3D = ~isempty(strfind(item, '3'));
+            if ( is1D == 1 )
+                error('CHEBFUN:SPIN2', ['Use SPIN for PDEs in one space ', ...
+                    'dimension.'])
+            elseif ( is3D == 1 )
+                error('CHEBFUN:SPIN2', ['Use SPIN3 for PDEs in three space ', ...
+                    'dimensions.'])
+            end
+        % This is a preference, e.g., 'N' or 'dt':
+        else
+            if ( isempty(pref) == 1 )
+                pref = spinpref2();
+            end
+            pref.(item) = varargin{j+1};
+            varargin{j} = [];
+            varargin{j + 1} = [];
+            j = j + 2;
+            continue
         end
     end
+    j = j + 1;
 end
+
+% Add the preferences:
+if ( isempty(pref) == 0 )
+   varargin{end + 1} = pref;
+end
+
+% Get rid of the deleted entries:
+varargin = varargin(~cellfun(@isempty, varargin));
 
 % SPIN2 is a wrapper for SOLVPDE:
 [uout, tout] = spinoperator.solvepde(varargin{:});

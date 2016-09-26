@@ -15,7 +15,7 @@ function g = std( f, varargin )
 %
 % See also CHEBFUN/STD, SEPARABLEAPPROX/MEAN.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 
@@ -34,7 +34,7 @@ else
 end
 
 if ( dim == 1 )          % y-variable.
-    mx = chebfun2( @(x,y) feval( mean(f, 2), x ), dom );
+    mx = chebfun2( @(x,y) feval( mean(f, 2), xx ), dom );
     g = sqrt( 1/( diff( dom(3:4) ) ) * sum( ( f - mx ).^2, 1 ) ) ;
 elseif ( dim == 2 )      %  x-variable.
     my = chebfun2( @(x,y) feval( mean(f, 1), y), dom );

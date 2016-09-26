@@ -31,8 +31,7 @@ switch ( ref(1).type )
             % This is a get call to get a property. 
             varargout = { get(F, indx) };
         else
-            % Probably .^ or maybe .*
-            t2 = index(2).type;
+            t2 = ref(2).type;
             if ( strcmp(t2,'.') )
                 out = get(F, indx, ref(2).subs{:});
             else
@@ -77,6 +76,12 @@ switch ( ref(1).type )
         error('SPHEREFUN:SPHEREFUNV:subsref:unexpectedType', ...
             ['??? Unexpected index.type of ' index(1).type]);
         
+end
+
+% Recurse down: 
+if ( numel( ref ) > 1 )
+   ref(1) = []; 
+   varargout = { subsref( varargout{ : }, ref ) }; 
 end
 
 end
