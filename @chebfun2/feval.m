@@ -1,6 +1,6 @@
 function varargout = feval(varargin)
 %FEVAL  Evaluate a CHEBFUN2 at one or more points.
-%   FEVAL(F,X,Y) evaluates the CHEBFUN2 F and the point(s) in (X,Y), where X and
+%   FEVAL(F,X,Y) evaluates the CHEBFUN2 F at the point(s) in (X,Y), where X and
 %   Y are doubles.
 %
 %   FEVAL(F,X) evaluates the CHEBFUN2 F along the complex valued CHEBFUN X and

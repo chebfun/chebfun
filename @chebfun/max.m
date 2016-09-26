@@ -84,7 +84,7 @@ function [y, x] = globalMax(f)
 % Call MINANDMAX():
 [y, x] = minandmax(f);
 
-% Extract the minimum:
+% Extract the maximum:
 y = y(2,:);
 x = x(2,:);
 

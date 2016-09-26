@@ -48,7 +48,7 @@ function varargout = gallery(name)
 %
 %   Gallery functions are subject to change in future releases of Chebfun.
 %
-% See also CHEB.GALLERYTRIG, CHEB.GALLERY2.
+% See also CHEB.GALLERYTRIG, CHEB.GALLERY2, CHEB.GALLERY3.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

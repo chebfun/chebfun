@@ -159,6 +159,9 @@ classdef chebtech2 < chebtech
         % and barycentric (v) weights:
         [x, w, v, t] = chebpts(n);
         
+        % Tensor product grid of Chebyshev points in 1D, 2D or 3D:
+        out = tensorGrid(N, dom)
+        
         % Convert coefficients to values:
         values = coeffs2vals(coeffs);
         
