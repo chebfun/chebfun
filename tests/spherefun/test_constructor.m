@@ -113,7 +113,7 @@ end
 % Check the 'eps' flag works.
 ff = @(x,y,z) exp(-10*((x-1/sqrt(2)).^2 + (z-1/sqrt(2)).^2 + y.^2));
 f = spherefun(ff);
-g = spherefun(ff,'eps',1e-8);
+g = spherefun(ff,'eps', 1e-5);
 pass(23) = rank(g) < rank(f);
 [mf,nf] = length(f);
 [mg,ng] = length(g);
@@ -139,6 +139,12 @@ try
 catch ME
     pass(28) = strcmp(ME.identifier,'CHEBFUN:SPHEREFUN:constructor:str2op:depvars');
 end
+
+% Construction from zeros matrix should maintain a zeros coefficient
+% matrix.
+f = spherefun(zeros(5,4));
+[n,m] = length(f);
+pass(29) = (m == 5) && (n == 4);
 
 end
 

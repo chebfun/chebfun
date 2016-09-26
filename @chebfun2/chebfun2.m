@@ -18,9 +18,10 @@ classdef chebfun2 < separableApprox
 % 
 % CHEBFUN2(F, k) returns a rank k approximation to F.
 %
-% CHEBFUN2(F, [m n]) returns a representation of a bivariate polynomial of 
-% degree m in x and n in y. The polynomial is compressed in low rank form 
-% and the rank k is still determined adaptively (satisfying k<=min(m,n)+1).
+% CHEBFUN2(F, [m n]) returns a representation of a bivariate polynomial
+% with m coefficients in x and n coefficients in y. The polynomial is
+% compressed in low rank form and the rank k is still determined adaptively
+% (satisfying k<=min(m,n)+1).
 %
 % CHEBFUN2(F, k, [A B C D]) or CHEBFUN2(F, [m,n], [A B C D]) is nonadaptive in
 % rank or degrees, as above, returning a chebfun2 on the domain [A B]x[C D]. 
@@ -30,7 +31,7 @@ classdef chebfun2 < separableApprox
 %
 % The Chebfun2 software system is based on: 
 %
-% % A. Townsend and L. N. Trefethen, An extension of Chebfun to two dimensions,
+% A. Townsend and L. N. Trefethen, An extension of Chebfun to two dimensions,
 % SIAM J. Sci. Comput., 35 (2013), C495-C518.
 %
 % See also CHEBFUN, CHEBFUN2V.

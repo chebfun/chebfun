@@ -3,7 +3,7 @@ function g = constructor(g, op, varargin)
 %
 % This code is when functions of two variables are represented as CHEBFUN2
 % objects. A CHEBFUN2 object is a low rank representation and expresses a
-% function as a sum of rank-0 or 1 outerproduct of univariate functions.
+% function as a sum of rank-0 or 1 outer products of univariate functions.
 %
 % The algorithm for constructing a CHEBFUN2 comes in two phases:
 %
@@ -312,11 +312,14 @@ end
 
 scl = infNorm;
 
-% If the function is the zero function.
+% The function is the zero function.
 if ( scl == 0 )
+    % Let's pass back the zero matrix that is the same size as A. 
+    % This ensures that chebfun2( zeros(5) ) has a 5x5 (zero) coefficient 
+    % matrix.  
     pivotValue = 0;
-    rows = 0;
-    cols = 0;
+    rows = zeros(1, size(A,2));
+    cols = zeros(size(A,1), 1);
     ifail = 0;
 else
     rows(1,:) = zeros(1, size(A, 2));

@@ -92,7 +92,7 @@ classdef coeffsDiscretization < opDiscretization
     %% METHODS IMPLEMENTED IN THIS FILE:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    methods ( Access = public, Static = true)
+    methods ( Access = public, Static = false )
         function varargout = convertOperator(varargin)
             error('COEFFSDISCRETIZATION:instantiate:fail', ...
                 ['Cannot represent this operator. ', ...

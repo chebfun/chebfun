@@ -40,10 +40,16 @@ else
             % L^2-norm is sum of squares of sv.
             normF = sqrt( sum( svd( f ).^2 ) );  
             
-        case {inf, 'inf', 'max'}
-            [Y, X] = minandmax2(f);
-            [normF, idx] = max( abs( Y ) );
-            normloc = X( idx, : );
+        case {inf, 'inf', 'max'}            
+            if ( isreal(f) )
+                [Y, X] = minandmax2(f);
+                [normF, idx] = max(abs(Y));
+                normloc = X(idx, :);
+            else
+                [Y, X] = minandmax2(conj(f).*f);
+                [normF, idx] = max(sqrt(abs(Y)));
+                normloc = X(idx, :);
+            end
             
         case {-inf, '-inf', 'min'}
             error('CHEBFUN:SEPARABLEAPPROX:norm:norm', ...

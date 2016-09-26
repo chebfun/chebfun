@@ -10,7 +10,7 @@ function varargout = norm(varargin)
 %    NORM(F, 'max') = global maximum in absolute value, same as NORM(F,inf).
 %    NORM(F, 'min') = NOT SUPPORTED
 %
-% Furthermore, the inf norm for CHEBFUN2 objects also returns a second output,
+% The inf norm for CHEBFUN2 objects also optionally returns a second output,
 % giving a position where the max occurs.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.

@@ -25,12 +25,12 @@ function p = interp1(x, y, method, dom)
 %       'pchip'    - shape-preserving piecewise cubic interpolation
 %       'cubic'    - same as 'pchip'
 %       'poly'     - polynomial interpolation, as described above
-%       'trig'     - triginometric polynomial interpolation, as above.
+%       'trig'     - trigonometric polynomial interpolation, as above.
 %       'periodic' - same as the 'trig' option.
 %   
 %   For the trigonometric case, if the end points of the domain coincide
 %   with the first and the last interpolation points, the average of the 
-%   corresponding fucntion values are interpolated.
+%   corresponding function values are interpolated.
 % 
 %   P = CHEBFUN.INTERP1(X, Y, METHOD, DOM) restricts the result P to the domain
 %   DOM.

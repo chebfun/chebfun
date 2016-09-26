@@ -3,7 +3,7 @@ function varargout = mtimes(varargin)
 %
 %   c*F or F*c multiplies a CHEBFUN2 F by a scalar c.
 %
-%   F*G computes the integral of F(s,y)G(x,s) over s, and this is the continuous
+%   F*G computes the integral of F(s,y)G(x,s) over s, the continuous
 %   analogue of matrix-matrix multiplication.
 %
 % See also TIMES.
