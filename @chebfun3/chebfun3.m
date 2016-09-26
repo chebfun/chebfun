@@ -273,8 +273,8 @@ methods (Access = public)
     % Tensor of coefficients of a CHEBFUN3.
     varargout = chebcoeffs3(f);
     
-    % A wrapper for chebcoeffs3.
-    varargout = coeffs3(f);
+    % Tensor of coefficients of a CHEBFUN3 of specified size.
+    varargout = coeffs3(f, varargin);
 end
 
 methods

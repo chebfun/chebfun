@@ -1,10 +1,10 @@
 function varargout = roots(varargin)
 %ROOTS   Zero contours of a CHEBFUN2.
-%   R = ROOTS(F), returns the zero contours of F as a quasimatrix of chebfuns.
+%   R = ROOTS(F) returns the zero contours of F as a quasimatrix of chebfuns.
 %   Each column of R is one zero contour. This command only finds contours when
 %   there is a change of sign and it can also group intersecting contours in a
 %   non-optimal way. Contours are computed to, roughly, four digits of
-%   precision. In particular, this command cannot reliably compute isolated real
+%   accuracy. In particular, this command cannot reliably compute isolated real
 %   roots of F or zero curves lying close to the boundary of the domain.
 %
 %   In the special case when F is of length 1 then the zero contours are found

@@ -1,7 +1,7 @@
 function varargout = simplify(varargin)
 % Simplify a CHEBFUN2.
 %
-% F = SIMPLIFY( F ) compressed the representation of F to one that is
+% F = SIMPLIFY( F ) compresses the representation of F to one that is
 % numerically the same, but requires fewer parameters to store. This
 % simplifies the bivariate polynomial degree of F, but not its rank.
 %
@@ -9,7 +9,7 @@ function varargout = simplify(varargin)
 % TOL instead of the default simplification tolerance as the relative 
 % threshold level for compression.
 %
-% F = SIMPLIFY(F, 'rank') compressed the rank of the representation for F 
+% F = SIMPLIFY(F, 'rank') compresses the rank of the representation for F 
 % to one that is numerically the same. 
 %
 % F = SIMPLIFY(F, TOL, 'rank') does the same as SIMPLIFY(F, 'rank') but 

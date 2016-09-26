@@ -85,6 +85,17 @@ else
             fprintf('\n')
         end
     end
+    
+    if ( ~isempty(A.maxnorm) )
+        mn = A.maxnorm;
+        mn = mn(:)'; % Ensure row vector for printing
+        if ( length(mn) > 1 )
+            maxnormString = ['[' num2str(mn) ']'];
+        else
+            maxnormString = num2str(mn);
+        end
+        fprintf('   enforcing a maximum norm of solution: %s\n', maxnormString);
+    end
 
 end
 
