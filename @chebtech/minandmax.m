@@ -73,7 +73,12 @@ function [vals, pos] = minandmaxColumn(f, fp, xpts)
     % Initialise output
     pos = [ 0; 0 ];
     vals = [ 0; 0 ];
-
+    
+    if ( length(f) == 1 )
+        vals = feval(f, pos);
+        return
+    end
+    
     % Compute turning points:
     r = roots(fp);
     r = [ -1; r; 1 ];

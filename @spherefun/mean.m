@@ -27,7 +27,7 @@ s = sum( f, dim );
 if ( dim == 1 )
     s = s / pi; % Mean in the latitude direction (default)
 elseif ( dim == 2 )
-    s = s / 2*pi; % Mean in the longitude direction
+    s = s / (2*pi); % Mean in the longitude direction
 else
     error('CHEBFUN:SPHEREFUN:mean:dim', ...
         'Mean not in longitude (LAMBDA) or latitude (THETA) direction.')
