@@ -14,11 +14,12 @@ if ( isempty(F) )
     return
 end
 
-
+% Two components:
 if ( F.nComponents == 2 )
-    Fc = F.componentes;
+    Fc = F.components;
     f = diff(Fc{1}, 1, 1) + diff(Fc{2}, 1, 2);
 
+% Three components:
 elseif ( F.nComponents == 3 )
     Fc = F.components; 
     diff1 = diff(Fc{1}, 1, 1);
@@ -39,7 +40,6 @@ elseif ( F.nComponents == 3 )
     tol = eps*kappa;
     f = chebfun3(@(x,y,z) feval(diff1, x, y, z) + feval(diff2, x, y, z) + ...
         feval(diff3, x, y, z) , Fc{1}.domain, 'eps', tol);
-    
 end
 
 end
