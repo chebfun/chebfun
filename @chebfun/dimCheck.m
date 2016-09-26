@@ -1,10 +1,10 @@
 function out = dimCheck(f, g, ~)
 %DIMCHECK   Check dimension compatability of two CHEBFUN objects.
-%   In MATLAB 2015b and below DIMCHECK(F, G) returns:
+%   In MATLAB 2016a and below DIMCHECK(F, G) returns:
 %       1    if numColumns(F) == numColumns(G)
 %     error  otherwise.
 %
-%   In MATLAB 2016a and above DIMCHECK(F, G) returns:
+%   In MATLAB 2016b and above DIMCHECK(F, G) returns:
 %       1    if numColumns(F) == numColumns(G)
 %      -1    if numColumns(F) == 1 or numColumns(G) == 1
 %     error  otherwise.
@@ -29,7 +29,7 @@ else
 end
 
 % Adjust for MATLAB version if out = -1:
-if ( (out == -1 ) && verLessThan('matlab', '8.6') )
+if ( (out == -1 ) && verLessThan('matlab', '9.1') )
    out = 0; 
 end
 
