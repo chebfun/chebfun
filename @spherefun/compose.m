@@ -4,7 +4,7 @@ function f = compose(f, op, varargin)
 % 
 %   F = COMPOSE(F, OP, G)  returns the SPHEREFUN that approximates OP(F).
 %
-%   F = COMPOSE(F, G) with a SPHEREFUN G with one column returns a SPHEREFUN
+%   F = COMPOSE(F, G) with a CHEBFUN G with one column returns a SPHEREFUN
 %   that approximates G(F).  If G has 3 columns, the result is a SPHEREFUNV.
 %
 %   This command is a wrapper for the SPHEREFUN constructor.
