@@ -9,8 +9,8 @@ function varargout = subsref(F, ref)
 %
 %   F(G) computes the composition with a CHEBFUN with two columns, a CHEBFUN2V
 %   or a CHEBFUN3V with two components.  If G is a CHEBFUN with one column, a
-%   CHEBFUN2 or a CHEBFUN3, F(G) is interpreted as F(real(G), imag(G)),
-%   regardless whether G is real or complex.
+%   CHEBFUN2, a CHEBFUN3 or a SPHEREFUN, F(G) is interpreted as 
+%   F(real(G), imag(G)), regardless whether G is real or complex.
 %
 %   F(X, Y) where X and Y are CHEBFUN2 objects returns the CHEBFUN2V
 %   representing the composition.  If X and Y are CHEBFUN3 objects, then
@@ -90,9 +90,11 @@ switch ( ref(1).type )
             end
             varargout = {out};
             
-        elseif ( isa(indx{1}, 'chebfun2') || isa(indx{1}, 'chebfun3') )
-            % Composition F(G) where G is a CHEBFUN2 or CHEBFUN3, interpreted as
-            % [real(G), imag(G)], regardless whether G is real or complex.
+        elseif ( isa(indx{1}, 'chebfun2') || isa(indx{1}, 'chebfun3') || ...
+            isa(indx{1}, 'spherefun') )
+            % Composition F(G) where G is a CHEBFUN2, CHEBFUN3 or SPHEREFUN,
+            % interpreted as F(real(G), imag(G)), regardless whether G is real
+            % or complex.
             out = compose(indx{1}, F);
             varargout = {out};
             

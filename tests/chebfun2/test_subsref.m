@@ -125,4 +125,11 @@ h = g(f);
 h_true = chebfun(@(t) 3*t);
 pass(24) = ( norm(h - h_true) < tol );
 
+% Test composition with a SPHEREFUN:
+f = spherefun(@(x,y,z) x + y + z);
+g = chebfun2(@(x,y) x + y, [-2, 2, -2, 2]);
+h = g(f);
+h_true = f;
+pass(25) = ( norm(h - h_true) < tol );
+
 end

@@ -57,4 +57,17 @@ H_true = spherefunv(@(x,y,z) (z + sin(pi*x.*y)).^2, ...
 H = compose(f, G);
 pass(9) = ( norm(H - H_true) < tol );
 
+% Composition of a spherefun with a Chebfun2:
+f = spherefun(@(x,y,z) z + sin(pi*x.*y));
+g = chebfun2(@(x,y) x + y, [-2, 2, -2, 2]);
+h_true = f;
+h = compose(f, g);
+pass(10) = ( norm(h - h_true) < tol );
+
+% ... and with a Chebfun2v:
+G = [g; g; g];
+H_true = [f; f; f];
+H = compose(f, G);
+pass(11) = ( norm(H - H_true) < tol );
+
 end

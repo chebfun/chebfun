@@ -121,4 +121,11 @@ t = chebfun(@(t) t);
 H_true = [ 2*t, t ];
 pass(16) = ( norm(H - H_true) < tol );
 
+% Test composition with a SPHEREFUN:
+f = spherefun(@(x,y,z) x);
+G = chebfun2v(@(x,y) x + y, @(x,y) 2*x, @(x,y) y.^2);
+H = G(f);
+H_true = spherefunv(@(x,y,z) x, @(x,y,z) 2*x, @(x,y,z) 0*x);
+pass(17) = ( norm(H - H_true) < tol );
+
 end
