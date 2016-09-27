@@ -31,10 +31,10 @@ else
     switch ( p )  % Different cases on different norms.
         case 1
             error('CHEBFUN:SEPARABLEAPPROX:norm:norm', ...
-                'SEPARABLEAPPROX does not support L1-norm, yet');
+                'SEPARABLEAPPROX does not support L1-norm, yet.');
         case {2}
             error('CHEBFUN:SEPARABLEAPPROX:norm:two', ...
-                  '2-norm not supported -- use options ''fro'' or ''op''');
+                  '2-norm not supported -- use options ''fro'' or ''op''.');
             
         case {'fro'}  % Definite integral of f.^2
             % L^2-norm is sum of squares of sv.
@@ -63,14 +63,16 @@ else
             % Operator 1-norm of a separableApprox
             % We want the maximum column integral of abs(f)
             dom = f.domain(3:4);
-            slices = chebfun(@(x) sum(abs(f.feval(x,:)))', dom, 'splitting', 'on');
+            slices = chebfun(@(x) sum(abs(f.feval(x,:)))', dom, ...
+                'splitting', 'on');
             normF = max( slices );
             
         case {'operatorinf', 'operatorInf', 'opinf', 'opInf'}
             % Operator inf-norm of a separableApprox
             % We want the maximum row integral of abs(f)
             dom = f.domain(1:2);
-            slices = chebfun(@(y) sum(abs(f.feval(:,y))), dom, 'splitting', 'on');
+            slices = chebfun(@(y) sum(abs(f.feval(:,y))), dom, ...
+                'splitting', 'on');
             normF = max(slices);
             
         otherwise
