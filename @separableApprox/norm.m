@@ -19,7 +19,7 @@ function [normF, normloc] = norm( f, p )
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin == 1 ) 
-    % Default to 2-norm.
+    % Default to Frobenius norm.
     p = 'fro';
 end
 
