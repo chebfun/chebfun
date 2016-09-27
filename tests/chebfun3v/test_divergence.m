@@ -15,4 +15,9 @@ pass(1) = norm(divF - divergence(F)) < tol;
 f = chebfun3(@(x,y,z) cos(x.*y.*z));
 pass(2) = norm(laplacian(f) - divergence(gradient(f))) < tol;
 
+% Check definition for a Chebfun3v with two components:
+F = chebfun3v(@(x,y,z) cos(x), @(x,y,z) sin(y) .* exp(z));
+divF = chebfun3(@(x,y,z) - sin(x) + cos(y).*exp(z));
+pass(3) = ( norm(divF - divergence(F), inf) < tol );
+
 end
