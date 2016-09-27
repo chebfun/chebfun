@@ -5,17 +5,14 @@ if ( nargin == 0 )
     pref = chebfunpref;
 end
 tol = 1000*pref.cheb2Prefs.chebfun2eps;
-j = 1;
 
 f = chebfun2v(@(x,y) x, @(x,y) y);
-pass(j) = isreal(f);
-j = j+1;
+pass(1) = isreal(f);
 
 f = chebfun2v(@(x,y) x, @(x,y) 1i*y);
-pass(j) = ~isreal(f);
-j = j+1;
+pass(2) = ~isreal(f);
 
 f = real(chebfun2v(@(x,y) 1i*x + y, @(x,y) y-x));
-pass(j) = isreal(f);
+pass(3) = isreal(f);
 
 end

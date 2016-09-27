@@ -1,5 +1,5 @@
 function pass = test_integral2(pref)
-% Test INTEGRAL()
+% Test INTEGRAL2()
 
 if ( nargin == 0)
     pref = chebfunpref;

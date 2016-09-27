@@ -1,17 +1,13 @@
 function pass = test_isreal()
 % Test chebfun3v/isreal.
 
-j = 1;
-
 f = chebfun3v(@(x,y,z) x, @(x,y,z) y - z);
-pass(j) = isreal(f);
-j = j+1;
+pass(1) = isreal(f);
 
 f = chebfun3v(@(x,y,z) 1i*x, @(x,y,z) y - z);
-pass(j) = ~isreal(f);
-j = j+1;
+pass(2) = ~isreal(f);
 
 f = real(chebfun3v(@(x,y,z) 1i*x, @(x,y,z) y - z));
-pass(j) = isreal(f);
+pass(3) = isreal(f);
 
 end

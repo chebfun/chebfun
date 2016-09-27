@@ -6,10 +6,9 @@ if ( nargin == 0 )
 end
 
 tol = 1e3*pref.cheb2Prefs.chebfun2eps;
-j = 1; 
 
 f = spherefun(@(x,y,z) z);
 mM = minandmax2est(f);
-pass(j) = ( norm(mM - [ -1, 1 ]) < tol );
+pass(1) = ( norm(mM - [ -1, 1 ]) < tol );
 
 end
