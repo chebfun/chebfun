@@ -135,4 +135,16 @@ h_true = spherefunv(@(x,y,z) x, @(x,y,z) x.^2, @(x,y,z) x.^3);
 h = g(f);
 pass(30) = ( norm(h - h_true) < tol );
 
+% Test g(f) with a diskfun f and a chebfun g:
+f = diskfun(@(x,y) x);
+g = chebfun(@(t) t.^2);
+h_true = diskfun(@(x,y) x.^2);
+h = g(f);
+pass(31) = ( norm(h - h_true) < tol );
+
+G = chebfun(@(t) [t.^2, exp(t)]);
+H_true = diskfunv(@(x,y) x.^2, @(x,y) exp(x));
+H = G(f);
+pass(32) = ( norm(H - H_true) < tol );
+
 end

@@ -132,4 +132,18 @@ h = g(f);
 h_true = f;
 pass(25) = ( norm(h - h_true) < tol );
 
+% Test composition with a DISKFUN:
+f = diskfun(@(x,y) x + y);
+g = chebfun2(@(x,y) x.^2 + y, [-2, 2, -2, 2]);
+h = g(f);
+h_true = diskfun(@(x,y) (x + y).^2);
+pass(26) = ( norm(h - h_true) < tol );
+
+% Test composition with a DISKFUNV:
+F = diskfunv(@(x,y) x, @(x,y) y);
+g = chebfun2(@(x,y) x + y);
+h = g(F);
+h_true = diskfun(@(x,y) x + y);
+pass(27) = ( norm(h - h_true) < tol );
+
 end

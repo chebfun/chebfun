@@ -7,9 +7,9 @@ function varargout = subsref(varargin)
 %   representing F along that row slice. F(:, :) returns F.
 %
 %   F(G) computes the composition with a CHEBFUN with two columns, a CHEBFUN2V
-%   or a CHEBFUN3V with two components.  If G is a CHEBFUN with one column, a
-%   CHEBFUN2, a CHEBFUN3 or a SPHEREFUN, F(G) is interpreted as 
-%   F(real(G), imag(G)), regardless whether G is real or complex.
+%   or a CHEBFUN3V with two components, or a DISKFUNV.  If G is a CHEBFUN with
+%   one column, a CHEBFUN2, a CHEBFUN3, a DISKFUN or a SPHEREFUN, F(G) is
+%   interpreted as F(real(G), imag(G)), regardless whether G is real or complex.
 %
 %   F(X, Y) with CHEBFUNs X and Y returns the CHEBFUN G(t) = F(X(t), Y(t)).
 %   If X and Y are CHEBFUN2 objects, then F(X, Y) is a CHEBFUN2.

@@ -128,4 +128,18 @@ H = G(f);
 H_true = spherefunv(@(x,y,z) x, @(x,y,z) 2*x, @(x,y,z) 0*x);
 pass(17) = ( norm(H - H_true) < tol );
 
+% Test composition with a DISKFUN:
+f = diskfun(@(x,y) x + y);
+G = chebfun2v(@(x,y) x, @(x,y) y, [-2, 2, -2, 2]);
+H = G(f);
+H_true = diskfunv(@(x,y) x + y, @(x,y) 0*x);
+pass(18) = ( norm(H - H_true) < tol );
+
+% Test composition with a DISKFUNV:
+F = diskfunv(@(x,y) x, @(x,y) y);
+G = chebfun2v(@(x,y) x + y, @(x,y) x - y);
+H = G(F);
+H_true = diskfunv(@(x,y) x + y, @(x,y) x - y);
+pass(19) = ( norm(H - H_true) < tol );
+
 end

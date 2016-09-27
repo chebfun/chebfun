@@ -14,8 +14,8 @@ function varargout = subsref(f, index)
 %
 %   F(G), where G is also a CHEBFUN, computes the composition of F and G. See
 %   CHEBFUN/COMPOSE for further details.  This also works if G is a CHEBFUN2,
-%   CHEBFUN3, or SPHEREFUN, see CHEBFUN2/COMPOSE, CHEBFUN3/COMPOSE or
-%   SPHEREFUN/COMPOSE for further details.
+%   CHEBFUN3, DISKFUN or SPHEREFUN, see CHEBFUN2/COMPOSE, CHEBFUN3/COMPOSE,
+%   DISKFUN/COMPOSE or SPHEREFUN/COMPOSE for further details.
 %
 % .
 %   F.PROP returns the property PROP of F as defined by GET(F, 'PROP').
@@ -112,7 +112,7 @@ switch index(1).type
             out = out(:, outCols(:), extraColons{:});
 
         elseif ( isa(x, 'chebfun') || isa(x, 'chebfun2') || ...
-                isa(x, 'chebfun3') || isa(x, 'spherefun') )
+                isa(x, 'chebfun3') || isa(x, 'diskfun') || isa(x, 'spherefun') )
             % Call COMPOSE():
             out = compose(x, f);
             

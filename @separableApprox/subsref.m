@@ -7,9 +7,9 @@ function varargout = subsref(f, index)
 %   representing F along that row slice. F(:, :) returns F.
 %
 %   F(G) computes the composition with a CHEBFUN with two columns, a CHEBFUN2V
-%   or a CHEBFUN3V with two components.  If G is a CHEBFUN with one column, a
-%   CHEBFUN2, a CHEBFUN3 or a SPHEREFUN, F(G) is interpreted as 
-%   F(real(G), imag(G)), regardless whether G is real or complex.
+%   or a CHEBFUN3V with two components, or a DISKFUNV.  If G is a CHEBFUN with
+%   one column, a CHEBFUN2, a CHEBFUN3, a DISKFUN or a SPHEREFUN, F(G) is
+%   interpreted as F(real(G), imag(G)), regardless whether G is real or complex.
 %
 %   F(X, Y) with CHEBFUNs X and Y returns the CHEBFUN G(t) = F(X(t), Y(t)).
 %   If X and Y are CHEBFUN2 objects, then F(X, Y) is a CHEBFUN2.
@@ -55,16 +55,17 @@ switch index(1).type
             return
             
         elseif ( isa(x, 'chebfun2') || isa(x, 'chebfun3') || ...
-                isa(x, 'spherefun') )
-            % Composition F(X) where X is a CHEBFUN2, CHEBFUN3 or SPHEREFUN,
-            % interpreted as F(real(X), imag(X)), regardless whether X is real
-            % or complex.
+                isa(x, 'diskfun') || isa(x, 'spherefun') )
+            % Composition F(X) where X is a CHEBFUN2, CHEBFUN3, DISKFUN or
+            % SPHEREFUN, interpreted as F(real(X), imag(X)), regardless whether
+            % X is real or complex.
             out = compose(x, f);
             varargout = {out};
             return
             
-        elseif ( isa(x, 'chebfun2v') || isa(x, 'chebfun3v') )
-            % Composition F(CHEBFUN2V) or F(CHEBFUN3V):
+        elseif ( isa(x, 'chebfun2v') || isa(x, 'chebfun3v') || ...
+                isa(x, 'diskfunv') )
+            % Composition F(CHEBFUN2V), F(CHEBFUN3V) or F(DISKFUNV):
             out = compose(x, f);
             varargout = {out};
             return
