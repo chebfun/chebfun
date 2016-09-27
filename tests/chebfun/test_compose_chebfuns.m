@@ -185,6 +185,18 @@ G = chebfun3v(@(x,y,z) x.^2 + y.^2, @(x,y,z) z);
 H = G(F);
 pass(j) = isPeriodicTech(H);
 
+%% Test composition g(f) of a periodic chebfun f and a chebfun g.  See #1963.
+f = chebfun(@(x) sin(pi*x), 'trig');
+cheb.x
+g = x.^2;
+h = g(f);
+pass(13) = isPeriodicTech(h);
+
+G = [exp(x), abs(x)];
+H = G(f);
+pass(14) = isPeriodicTech(H(:,1));
+pass(15) = ~isPeriodicTech(H(:,2));
+
 end
 
 % Test composition of two chebfuns.
