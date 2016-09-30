@@ -34,7 +34,10 @@ if ( size(f, 2) == size(g, 2) && size(f, 2) == size(h, 2) )
     k.cols = f; 
     k.rows = g; 
     k.tubes = h;
-    k.core = ones(size(f, 2), size(g, 2), size(h, 2));
+    k.core = zeros(size(f, 2), size(g, 2), size(h, 2));
+    for i=1:size(f, 2)
+        k.core(i,i,i) = 1;
+    end    
     k.domain = dom; 
 else
     error('CHEBFUN:CHEBFUN3:outerProd:sizes', ...
