@@ -41,7 +41,7 @@ if ( nargin > 1 )
     else
         cols_coeffs = cols_coeffs(1:m,:);
     end
-    if ( mf <= m ) 
+    if ( nf <= n )
         rows_coeffs = [ rows_coeffs ; zeros(n-nf, rf) ];
     else
         rows_coeffs = rows_coeffs(1:n, :);
