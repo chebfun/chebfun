@@ -79,13 +79,13 @@ for n = 1:2
     try 
         h = f - g; %#ok<NASGU>
         pass(n, 18) = false;
-        if ( verLessThan('matlab', '8.6') )
+        if ( verLessThan('matlab', '9.1') )
             pass(n, 18) = false;
         else
             pass(n, 18) = true;
         end
     catch ME
-        if ( verLessThan('matlab', '8.6') )
+        if ( verLessThan('matlab', '9.1') )
             pass(n, 18) = strcmp(ME.identifier, 'Matrix dimensions must agree.');
         else
             pass(n, 18) = false;
