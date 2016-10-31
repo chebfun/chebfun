@@ -86,7 +86,7 @@ for n = 1:2
         end
     catch ME
         if ( verLessThan('matlab', '9.1') )
-            pass(n, 18) = strcmp(ME.identifier, 'Matrix dimensions must agree.');
+            pass(n, 18) = strcmp(ME.identifier, 'MATLAB:dimagree')
         else
             pass(n, 18) = false;
         end
