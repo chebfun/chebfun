@@ -2,7 +2,7 @@ function varargout = norm(varargin)
 %NORM       Norm of a CHEBFUN2 object.
 % For CHEBFUN2 objects:
 %    NORM(F) = sqrt(integral of abs(F)^2).
-%    NORM(F, 2) largest singular value of F.
+%    NORM(F, 2) = largest singular value of F.
 %    NORM(F,'fro') is the same as NORM(F).
 %    NORM(F,'nuc') = sum of singular values of F.
 %    NORM(F, 1) = NOT IMPLEMENTED.
