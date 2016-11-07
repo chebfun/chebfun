@@ -1,7 +1,7 @@
 function f = compose(f, op)
 %COMPOSE   Compose command for SPHEREFUNV objects.
-%   F = COMPOSE(F, G) returns the composition G(F) of the SPHEREFUNV object F
-%   and a CHEBFUN3 or CHEBFUN3V with three components G.
+%   F = COMPOSE(F, G) returns the composition G(F) of the SPHEREFUNV object
+%   F and a CHEBFUN3 or CHEBFUN3V with three components G.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -17,6 +17,7 @@ end
 
 % F is real and has three components, so we can compose with a CHEBFUN3 or
 % CHEBFUN3V.
+% TODO? compose when op is a spherefun object?
 
 if ( isa(op, 'chebfun3') )
     % Get components of F:

@@ -4,7 +4,6 @@ function pass = test_integral(pref)
 if ( nargin == 0)
     pref = chebfunpref;
 end
-
 tol = 100*pref.cheb2Prefs.chebfun2eps;
 
 % circle

@@ -1,13 +1,15 @@
 function box = minandmax2est(f, N)
 %MINANDMAX2EST   Estimates the range of a SPHEREFUNV.
-%   BOX = MINANDMAX2EST(F) returns estimates for the minimum and maximum of each
-%   component of the SPHEREFUNV F over its domain.  BOX is a vector of length
-%   six, containing the estimated minimum and maximum of each component.
+%   BOX = MINANDMAX2EST(F) returns estimates for the minimum and maximum of
+%   each component of the SPHEREFUNV object F over its domain.  BOX is a
+%   row vector of length six, containing the estimated minimum and maximum 
+%   of each component.
 %
-%   BOX = MINANDMAX2EST(F, N) returns estimates for the minimum and maximum of
-%   each component of the SPHEREFUNV F over its domain, based on the evaluation
-%   on an N by N Chebyshev grid in the domain of F (N = 33 by default).
-% 
+%   BOX = MINANDMAX2EST(F, N) returns estimates for the minimum and maximum
+%   of each component of the SPHEREFUNV F over its domain, based on the 
+%   evaluation on an N by N Chebyshev grid in the domain of F (N = 33 by 
+%   default).
+%
 % See also SPHEREFUN/MINANDMAX2EST.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.

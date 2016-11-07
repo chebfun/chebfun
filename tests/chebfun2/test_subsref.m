@@ -4,7 +4,6 @@ function pass = test_subsref(pref)
 if ( nargin < 1 )
     pref = chebfunpref;
 end
-
 tol = 1000*pref.cheb2Prefs.chebfun2eps;
 
 % Evaluation

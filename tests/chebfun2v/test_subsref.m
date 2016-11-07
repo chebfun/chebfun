@@ -4,9 +4,7 @@ function pass = test_subsref( pref )
 if ( nargin == 0)
     pref = chebfunpref;
 end
-
 tol = 1000*pref.cheb2Prefs.chebfun2eps;
-
 
 % Test recursive subsref:
 f = chebfun2(@(x, y) sin(x.*y));

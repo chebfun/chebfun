@@ -5,11 +5,12 @@ function f = compose(f, op, varargin)
 %   F = COMPOSE(F, OP, G) returns the CHEBFUN2 that approximates OP(F,G).
 %   This command is a wrapper for the CHEBFUN2 constructor.
 %
-%   F = COMPOSE(F, G) with a CHEBFUN G with one column returns a CHEBFUN2 that
-%   approximates G(F).  If G has 2 or 3 columns, the result is a CHEBFUN2V.
+%   F = COMPOSE(F, G) with a CHEBFUN G with one column returns a CHEBFUN2 
+%   that approximates G(F). If G has 2 or 3 columns, the result is a CHEBFUN2V.
 %
-%   F = COMPOSE(F, G) for a CHEBFUN2 or CHEBFUN2V G returns G(F) interpreted as
-%   G(real(F), imag(F)), regardless whether F is real or complex valued.
+%   F = COMPOSE(F, G) for a CHEBFUN2 or CHEBFUN2V G returns G(F) 
+%   interpreted as G(real(F), imag(F)), regardless of whether F is real or 
+%   complex valued.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -60,7 +61,6 @@ if ( isa(op, 'chebfun') )
         % The CHEBFUN object OP has a wrong number of columns.
         error('CHEBFUN:CHEBFUN2:COMPOSE:Columns', ...
             'The CHEBFUN object must have 1, 2, or 3 columns.')
-        
     end
     
 elseif ( isa(op, 'chebfun2') || isa(op, 'chebfun2v') )
@@ -97,8 +97,7 @@ elseif ( ( nargin == 3 ) && ( nargin(op) == 2 ) )
     
 else
     % Not sure what to do, error:
-    error('CHEBFUN:CHEBFUN2:COMPOSE:OP', 'NARGIN(OP) not correct.')
-    
+    error('CHEBFUN:CHEBFUN2:COMPOSE:OP', 'NARGIN(OP) not correct.')   
 end
 
 end

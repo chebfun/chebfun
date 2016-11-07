@@ -7,13 +7,6 @@ function out = isPeriodicTech(f)
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-out = isPeriodicTech(f.cols) .* isPeriodicTech(f.rows);
-
-% TO DO: would the following be safer?
-% out = 1;
-% for jj = 1:rank(f)
-%     out = out .* isPeriodicTech(f.cols(:,jj));
-%     out = out .* isPeriodicTech(f.rows(:,jj));
-% end
+out = isPeriodicTech(f.cols) & isPeriodicTech(f.rows);
 
 end

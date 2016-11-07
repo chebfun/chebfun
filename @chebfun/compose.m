@@ -3,25 +3,27 @@ function f = compose(f, op, g, pref)
 %   COMPOSE(F, OP) returns a CHEBFUN representing OP(F), where F is also a
 %   CHEBFUN object and OP is a function handle.
 %
-%   COMPOSE(F, OP, G) returns OP(F, G), where F and G are CHEBFUN objects and OP
-%   is a function handle. The domains and dimensions of F and G should be
-%   compatible.
+%   COMPOSE(F, OP, G) returns OP(F, G), where F and G are CHEBFUN objects 
+%   and OP is a function handle. The domains and dimensions of F and G 
+%   should be compatible.
 %
-%   COMPOSE(F, G) returns a CHEBFUN representing G(F), where both F and G are
-%   also CHEBFUN objects. If the range of F is not contained in the domain of G,
-%   or if F and G do not have the same dimensions, then an error is thrown.
+%   COMPOSE(F, G) returns a CHEBFUN representing G(F), where both F and G 
+%   are also CHEBFUN objects. If the range of F is not contained in the 
+%   domain of G, or if F and G do not have the same dimensions, then an 
+%   error is thrown.
 %
 %   COMPOSE(F, G) where G is a CHEBFUN3 or CHEBFUN3V and F has three real
-%   columns returns a CHEBFUN representing G(F).  Similarly if G is a CHEBFUN2
-%   or CHEBFUN2V and F has two real columns.  If F has one column, then G(F) is
-%   iterpreted as G(real(F), imag(F)), regardless whether F is real or complex.
+%   columns returns a CHEBFUN representing G(F).  Similarly if G is a 
+%   CHEBFUN2 or CHEBFUN2V and F has two real columns.  If F has one column,
+%   then G(F) is iterpreted as G(real(F), imag(F)), regardless of whether F
+%   is real or complex.
 %
-%   COMPOSE(F, OP, PREF), COMPOSE(F, OP, G, PREF), and COMPOSE(F, G, PREF) use
-%   the options passed by the CHEBFUNPREF object PREF.
+%   COMPOSE(F, OP, PREF), COMPOSE(F, OP, G, PREF), and COMPOSE(F, G, PREF) 
+%   use the options passed by the CHEBFUNPREF object PREF.
 %
-%   Note: If the locations of required breakpoints in the output are known in
-%   advance, they should be applied to F and/or G using RESTRICT() before the
-%   call to COMPOSE().
+%   Note: If the locations of required breakpoints in the output are known 
+%   in advance, they should be applied to F and/or G using RESTRICT() 
+%   before the call to COMPOSE().
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -45,7 +47,7 @@ function f = compose(f, op, g, pref)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% [TODO]: vscale and tolerance?
+% [TODO]: vscale?
 
 % [TODO]: 
 %  The lower level constructors and compose() methods all accept a 'data'
