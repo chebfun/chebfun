@@ -103,10 +103,14 @@ elseif ( isa(op, 'chebfun2v') )
             'OP(F) is not defined, since image(F) is not contained in domain(OP).')
     end
     
+    % Get real and imaginary parts of f:
+    realf = real(f);
+    imagf = imag(f);
+    
     % Call constructor:
-    f = spherefunv(@(x,y) op1(feval(real(f), x, y), feval(imag(f), x, y)), ...
-        @(x,y) op2(feval(real(f), x, y), feval(imag(f), x, y)), ...
-        @(x,y) op3(feval(real(f), x, y), feval(imag(f), x, y)));
+    f = spherefunv(@(x,y) op1(feval(realf, x, y), feval(imagf, x, y)), ...
+        @(x,y) op2(feval(realf, x, y), feval(imagf, x, y)), ...
+        @(x,y) op3(feval(realf, x, y), feval(imagf, x, y)));
     
 elseif ( nargin == 2 && nargin(op) == 1 )
     % OP has one input variable.
