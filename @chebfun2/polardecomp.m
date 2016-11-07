@@ -1,12 +1,12 @@
-function [U,H] = pd(f)
-%PD   Polar Decomposition of a CHEBFUN2.
-%   U = PD(F) returns the unitary polar factor of F. 
+function [U,H] = polardecomp(f)
+%POLARDECOMP   Polar Decomposition of a CHEBFUN2.
+%   U = POLARDECOMP(F) returns the unitary polar factor of F. 
 %   This is the partial isometry with same x-, and y-space as F. 
 %   (Note that strictly speaking, U is not unitary but a partial isometry, 
 %   with rank(F) copies of singular values at 1. 
 %   (as in the so-called "canonical polar decomposition"). 
 %
-%   [U,H] = PD(F) returns the unitary polar factor, along with H, a
+%   [U,H] = POLARDECOMP(F) returns the unitary polar factor, along with H, a
 %   symmetric positive semidefinite bivariate function 
 %   (its eigenvalues are all positive). They should satisfy F = U*H. 
 %

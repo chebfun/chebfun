@@ -1,9 +1,9 @@
 function [normF, normloc] = norm( f, p )
 %NORM       Norm of a SEPARABLEAPPROX object.
 % For SEPARABLEAPPROX objects:
-%    NORM(F) = largest singular value of F.
-%    NORM(F, 2) is the same as NORM(F).
-%    NORM(F,'fro') sqrt(integral of abs(F)^2).
+%    NORM(F) = sqrt(integral of abs(F)^2).
+%    NORM(F, 2) largest singular value of F.
+%    NORM(F,'fro') is the same as NORM(F).
 %    NORM(F,'nuc') = sum of singular values of F.
 %    NORM(F, 1) = NOT IMPLEMENTED.
 %    NORM(F, inf) = global maximum in absolute value.
@@ -17,8 +17,8 @@ function [normF, normloc] = norm( f, p )
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin == 1 ) 
-    % Default to 2-norm.
-    p = 2;
+    % Default to Frobenius norm.
+    p = 'fro';
 end
 
 if ( isempty( f ) )  
