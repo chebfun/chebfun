@@ -1,15 +1,15 @@
 function out = isPeriodicTech(f)
-%ISPERIODICTECH   Test if a CHEBFUN3V object is built upon a TECH of periodic
-%functions.
-%   out = ISPERIODICTECH(F) returns logical true if the columns and rows of F
-%   are made of a TECH of periodic functions and false otherwise.
+%ISPERIODICTECH   Test if a CHEBFUN3V object is built upon a TECH of 
+%periodic functions.
+%   out = ISPERIODICTECH(F) returns logical true if the columns and rows of
+%   F are made of a TECH of periodic functions and false otherwise.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-out = 1;
-for jj = 1:f.nComponents
-    out = out * isPeriodicTech(f.components{jj});
+for j = 1:f.nComponents
+    out(j) = isPeriodicTech(f.components{j});
 end
+out = all(out);
 
 end
