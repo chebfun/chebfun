@@ -5,8 +5,8 @@ function varargout = minandmax2est(varargin)
 %   the estimated minimum and mM(2) is the estimated maximum.
 %
 %   mM = MINANDMAX2EST(F, N) returns estimates for the minimum and maximum of
-%   the CHEBFUN2 F over its domain, based on the evaluation on an N by N
-%   Chebyshev grid in the domain of F (N = 33 by default).
+%   the CHEBFUN2 F over its domain, based on samples on an N by N grid
+%   (N = 33 by default).
 % 
 % See also MINANDMAX2.
 

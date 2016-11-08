@@ -6,8 +6,8 @@ function box = minandmax3est(f, N)
 %   maximum of each component.
 %
 %   BOX = MINANDMAX3EST(F, N) returns estimates for the minimum and maximum of
-%   each component of the CHEBFUN3V F over its domain, based on the evaluation
-%   on an N by N by N Chebyshev grid in the domain of F (N = 25 by default).
+%   each component of the CHEBFUN3V F over its domain, based on samples on
+%   an N by N by N grid (N = 25 by default).
 % 
 % See also CHEBFUN3/MINANDMAX3EST.
 

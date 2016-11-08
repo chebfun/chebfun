@@ -5,8 +5,8 @@ function mM = minandmax2est(f, N)
 %   mM(1) is the estimated minimum and mM(2) is the estimated maximum.
 %
 %   mM = MINANDMAX2EST(F, N) returns estimates for the minimum and maximum of
-%   the SEPARABLEAPPROX F over its domain, based on the evaluation on an N by N
-%   Chebyshev grid in the domain of F (N = 33 by default).
+%   the SEPARABLEAPPROX F over its domain, based on samples on an N by N grid
+%   (N = 33 by default).
 %
 % See also MINANDMAX2.
 
@@ -23,13 +23,13 @@ if ( ( nargin < 2 ) || isempty(N) )
     N = 33;
 end
 
-% Create N by N Chebyshev grid:
-[XX, YY] = chebpts2(N, N, f.domain);
-% Evaluate f on the grid:
-vals = feval(f, XX, YY);
+% Sample f on an appropriate grid:
+vals = sample(f, N, N);
+
 % Make result a column vector:
 vals = vals(:);
 
+% Get min and max:
 mM = [ min(vals), max(vals) ];
 
 end

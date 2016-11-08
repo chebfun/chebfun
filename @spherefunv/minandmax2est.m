@@ -6,9 +6,8 @@ function box = minandmax2est(f, N)
 %   of each component.
 %
 %   BOX = MINANDMAX2EST(F, N) returns estimates for the minimum and maximum
-%   of each component of the SPHEREFUNV F over its domain, based on the 
-%   evaluation on an N by N Chebyshev grid in the domain of F (N = 33 by 
-%   default).
+%   of each component of the SPHEREFUNV F over its domain, based on samples
+%   on an N by N grid (N = 33 by default).
 %
 % See also SPHEREFUN/MINANDMAX2EST.
 

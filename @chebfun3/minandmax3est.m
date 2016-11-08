@@ -5,10 +5,10 @@ function mM = minandmax3est(f, N)
 %   mM(1) is the estimated minimum and mM(2) is the estimated maximum.
 %
 %   mM = MINANDMAX3EST(F, N) returns estimates for the minimum and maximum of
-%   the CHEBFUN3 F over its domain, based on the evaluation on an N by N by N
-%   Chebyshev grid in the domain of F (N = 25 by default).
+%   the CHEBFUN3 F over its domain, based on samples on an N by N by N grid
+%   (N = 25 by default).
 %
-% See also MINANDMAX3.
+% See also CHEBFUN3/MINANDMAX3.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -23,13 +23,13 @@ if ( ( nargin < 2 ) || isempty(N) )
     N = 25;
 end
 
-% Create N by N by N Chebyshev grid:
-[XX, YY, ZZ] = chebpts3(N, N, N, f.domain);
-% Evaluate f on the grid:
-vals = feval(f, XX, YY, ZZ);
+% Sample f on an appropriate grid:
+vals = sample(f, N, N, N);
+
 % Make result a column vector:
 vals = vals(:);
 
+% Get min and max:
 mM = [ min(vals), max(vals) ];
 
 end

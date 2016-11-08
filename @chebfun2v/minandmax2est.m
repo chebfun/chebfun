@@ -6,8 +6,8 @@ function box = minandmax2est(f, N)
 %   maximum of each component.
 %
 %   BOX = MINANDMAX2EST(F, N) returns estimates for the minimum and maximum of
-%   each component of the CHEBFUN2V F over its domain, based on the evaluation
-%   on an N by N Chebyshev grid in the domain of F (N = 33 by default).
+%   each component of the CHEBFUN2V F over its domain, based on samples on
+%   an N by N grid (N = 33 by default).
 % 
 % See also CHEBFUN2/MINANDMAX2EST.
 
