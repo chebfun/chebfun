@@ -21,33 +21,33 @@ pass(3) = doesNotCrash(@() slice(f1, 0.5, -0.3, 0.9));
 pass(4) = doesNotCrash(@() isosurface(f1, 'noslider'));
 pass(5) = doesNotCrash(@() isosurface(f1, [0.5, -0.6]));
 pass(6) = doesNotCrash(@() scan(f1));
-pass(7) = doesNotCrash(@() scan(f1, 'hold'));
-pass(8) = doesNotCrash(@() scan(f1, 1));
-pass(9) = doesNotCrash(@() scan(f1, 1, 'hold'));
-pass(10) = doesNotCrash(@() scan(f1, 2));
-pass(11) = doesNotCrash(@() scan(f1, 3));
+% pass(7) = doesNotCrash(@() scan(f1, 'hold'));
+pass(6) = doesNotCrash(@() scan(f1, 1));
+pass(7) = doesNotCrash(@() scan(f1, 1, 'hold'));
+% pass(10) = doesNotCrash(@() scan(f1, 2));
+pass(8) = doesNotCrash(@() scan(f1, 3));
 % GUI-based plots:
-pass(12) = doesNotCrash(@() isosurface(f1));
-pass(13) = doesNotCrash(@() slice(f1));
-pass(14) = doesNotCrash(@() surf(f1));
+pass(9) = doesNotCrash(@() isosurface(f1));
+pass(10) = doesNotCrash(@() slice(f1));
+pass(11) = doesNotCrash(@() surf(f1));
 
 %% Complex-valued function
 % Non-GUI plots
-pass(15) = doesNotCrash(@() plot(f2));
-pass(16) = doesNotCrash(@() slice(f2, 'noslider'));
-pass(17) = doesNotCrash(@() slice(f2, 0.5, -0.3, 0.9));
-pass(18) = doesNotCrash(@() isosurface(f2, 'noslider'));
-pass(19) = doesNotCrash(@() isosurface(f2, [0.5, -0.6]));
-pass(20) = doesNotCrash(@() scan(f2));
-pass(21) = doesNotCrash(@() scan(f2, 'hold'));
-pass(22) = doesNotCrash(@() scan(f2, 1));
-pass(23) = doesNotCrash(@() scan(f2, 1, 'hold'));
-pass(24) = doesNotCrash(@() scan(f2, 2, 'hold'));
-pass(25) = doesNotCrash(@() scan(f2, 3, 'hold'));
+pass(12) = doesNotCrash(@() plot(f2));
+pass(13) = doesNotCrash(@() slice(f2, 'noslider'));
+pass(14) = doesNotCrash(@() slice(f2, 0.5, -0.3, 0.9));
+pass(15) = doesNotCrash(@() isosurface(f2, 'noslider'));
+pass(16) = doesNotCrash(@() isosurface(f2, [0.5, -0.6]));
+pass(17) = doesNotCrash(@() scan(f2));
+pass(18) = doesNotCrash(@() scan(f2, 'hold'));
+%pass(22) = doesNotCrash(@() scan(f2, 1));
+%pass(23) = doesNotCrash(@() scan(f2, 1, 'hold'));
+pass(19) = doesNotCrash(@() scan(f2, 2, 'hold'));
+%pass(25) = doesNotCrash(@() scan(f2, 3, 'hold'));
 % GUI-based plots:
-pass(26) = doesNotCrash(@() isosurface(f2));
-pass(27) = doesNotCrash(@() slice(f2));
-pass(28) = doesNotCrash(@() surf(f2));
+pass(20) = doesNotCrash(@() isosurface(f2));
+pass(21) = doesNotCrash(@() slice(f2));
+pass(22) = doesNotCrash(@() surf(f2));
 
 close(hfig);
 
