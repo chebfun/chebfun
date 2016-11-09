@@ -13,13 +13,14 @@ if ( isempty(f) ) % check for empty CHEBFUN3.
     return 
 end 
 
-% Positive/negative test. 
-bool = singleSignTest(f);  % Returns TRUE if there is no sign change.
-
-if ( ~bool )
-   error('CHEBFUN:CHEBFUN3:abs:notSmooth', ...
-       'Sign change detected. Unable to represent the result.'); 
-end
+if ( isreal(f) )
+    % Positive/negative test.
+    ss = singleSignTest( f );  % Returns TRUE if there is no sign change.
+    if ( ~ss )
+        error('CHEBFUN:CHEBFUN3:abs:notSmooth', ...
+            'Sign change detected. Unable to represent the result.'); 
+    end
+end      
 
 % Still call the constructor in case we missed a change of sign. 
 f = compose(f, @abs);
