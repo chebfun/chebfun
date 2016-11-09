@@ -66,7 +66,7 @@ switch ( ref(1).type )
             % CHEBFUN2 or CHEBFUN3, concatenate (also checks that domains are
             % compatible) and call compose().
             if ( ( isnumeric(x) || strcmpi(x, ':') ) && ...
-                    ( isnumeric(y) || strcmpi(y, ':') )
+                    ( isnumeric(y) || strcmpi(y, ':') ) )
                 out = feval(F, x, y);
             elseif ( isa(x, 'chebfun') && isa(y, 'chebfun') )
                 out = compose([ x, y ], F);
