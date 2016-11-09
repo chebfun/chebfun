@@ -10,13 +10,14 @@ if ( isempty( f ) )
     return
 end
 
-% Positive/negative test.
-[bol, wzero] = singleSignTest( f );
-
-if ( ( bol == 0 ) || ( wzero == 1 ) )
-    error('CHEBFUN:SEPARABLEAPPROX:sqrt:notSmooth', ...
-        'A change of sign/zero has been detected, unable to represent the result.');
-end
+if ( isreal(f) )
+    % Positive/negative test.
+    bool = singleSignTest(f);  % Returns TRUE if there is no sign change.
+    if ( ~bool )
+        error('CHEBFUN:SEPARABLEAPPROX:sqrt:notSmooth', ...
+            'Sign change detected. Unable to represent the result.'); 
+    end
+end       
 
 f = compose( f, @sqrt ); 
 

@@ -1,4 +1,4 @@
-function [out, wzero] = singleSignTest( F )
+function [out, wzero] = singleSignTest(F)
 %SINGLESIGNTEST( F )   Heuristic check to see if F changes sign.
 % 
 %   SINGLESIGNTEST( F ) returns 1 if the values of F on a tensor grid are of the
@@ -16,10 +16,11 @@ function [out, wzero] = singleSignTest( F )
 % Copyright 2016 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
+tol = chebfun2eps;
 out = false;                  % Assume false
 
 % Evaluate on a grid:
-X = sample( F );
+X = sample(F);
 
 X = X(:);
 
@@ -29,6 +30,6 @@ elseif ( all( X <= tol * F.vscale))  % If all values are not positive
     out = true; 
 end
 
-wzero = any( X == 0 );        % Any exact zeros on the grid?
+wzero = any(X == 0);        % Any exact zeros on the grid?
 
 end
