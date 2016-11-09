@@ -108,4 +108,42 @@ pass(26) = norm(f+f+f-3*f) < 100*tol;
 
 pass(27) = norm(f.*f-f.^2) < tol;
 
+%% Compose a CHEBFUN3 f with a CHEBFUN g (one column):
+f = chebfun3(@(x,y,z) x);
+g = chebfun(@(t) t.^2);
+h = compose(f, g);
+pass(28) = ( norm(h - f.^2) < tol );
+
+%% Compose a CHEBFUN3 f with a CHEBFUN g (two columns):
+f = chebfun3(@(x,y,z) x);
+g = chebfun(@(t) [ t, t.^2 ]);
+h = compose(f, g);
+pass(29) = ( norm(h - [ f; f.^2 ]) < tol );
+
+%% Compose a complex-valued CHEBFUN3 f with a CHEBFUN2 g:
+f = chebfun3(@(x,y,z) x + y + 1i*z);
+g = chebfun2(@(x,y) x.^2 + y.^2, [-2, 2, -1, 1]);
+h_true = chebfun3(@(x,y,z) (x + y).^2 + z.^2);
+h = compose(f, g);
+pass(30) = ( norm(h - h_true) < tol );
+pass(31) = ~isPeriodicTech(h);
+
+%% Compose a periodic CHEBFUN3 f with a CHEBFUN g
+f = chebfun3(@(x,y,z) cos(pi*x), 'trig');
+g = chebfun(@(t) t.^2, [-1, 1]);
+h = compose(f, g);
+pass(32) = isPeriodicTech(h);
+G = chebfun(@(t) [ t.^2, cos(t) ], [-1, 1]);
+H = compose(f, G);
+pass(33) = isPeriodicTech(H);
+
+%% Compose a periodic complex CHEBFUN3 f with a CHEBFUN2 or CHEBFUN2V g:
+f = chebfun3(@(x,y,z) exp(1i*pi*x), 'trig');
+g = chebfun2(@(x,y) x + y, [-2, 2, -2, 2 ]);
+h = compose(f, g);
+pass(34) = isPeriodicTech(h);
+G = chebfun2v(@(x,y) x, @(x,y) y, [ -2, 2, -2, 2 ]);
+H = compose(f, G);
+pass(35) = isPeriodicTech(H);
+
 end
