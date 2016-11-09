@@ -21,10 +21,8 @@ pass(3) = doesNotCrash(@() slice(f1, 0.5, -0.3, 0.9));
 pass(4) = doesNotCrash(@() isosurface(f1, 'noslider'));
 pass(5) = doesNotCrash(@() isosurface(f1, [0.5, -0.6]));
 pass(6) = doesNotCrash(@() scan(f1));
-% pass(7) = doesNotCrash(@() scan(f1, 'hold'));
 pass(6) = doesNotCrash(@() scan(f1, 1));
 pass(7) = doesNotCrash(@() scan(f1, 1, 'hold'));
-% pass(10) = doesNotCrash(@() scan(f1, 2));
 pass(8) = doesNotCrash(@() scan(f1, 3));
 % GUI-based plots:
 pass(9) = doesNotCrash(@() isosurface(f1));
@@ -40,10 +38,7 @@ pass(15) = doesNotCrash(@() isosurface(f2, 'noslider'));
 pass(16) = doesNotCrash(@() isosurface(f2, [0.5, -0.6]));
 pass(17) = doesNotCrash(@() scan(f2));
 pass(18) = doesNotCrash(@() scan(f2, 'hold'));
-%pass(22) = doesNotCrash(@() scan(f2, 1));
-%pass(23) = doesNotCrash(@() scan(f2, 1, 'hold'));
 pass(19) = doesNotCrash(@() scan(f2, 2, 'hold'));
-%pass(25) = doesNotCrash(@() scan(f2, 3, 'hold'));
 % GUI-based plots:
 pass(20) = doesNotCrash(@() isosurface(f2));
 pass(21) = doesNotCrash(@() slice(f2));
