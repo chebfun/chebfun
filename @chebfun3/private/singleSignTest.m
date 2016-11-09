@@ -15,14 +15,17 @@ function [out, wzero] = singleSignTest(F)
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+tol = chebfun3eps;
 out = false;                  % Assume false
 
 X = chebpolyval3(F);          % Evaluate on a grid using FFTs. 
 X = X(:);
 
-if ( all( X >=0 ))            % If all values are nonnegative 
+%if ( all( X >=0 ))            % If all values are nonnegative 
+if ( all( X > -tol * F.vscale ))            % If all values are nonnegative     
     out = true;  
-elseif ( all( X <= 0))        % If all values are not positive
+%elseif ( all( X <= 0))        % If all values are not positive
+elseif ( all( X < tol * F.vscale))        % If all values are not positive
     out = true; 
 end
 

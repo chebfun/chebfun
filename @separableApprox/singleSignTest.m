@@ -23,9 +23,9 @@ X = sample( F );
 
 X = X(:);
 
-if ( all( X >=0 ))            % If all values are nonnegative 
+if ( all( X >= -tol * F.vscale ))   % If all values are nonnegative         
     out = true;  
-elseif ( all( X <= 0))        % If all values are not positive
+elseif ( all( X <= tol * F.vscale))  % If all values are not positive
     out = true; 
 end
 
