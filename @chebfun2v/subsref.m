@@ -62,16 +62,22 @@ switch ( ref(1).type )
             % where to evaluate
             x = indx{1};
             y = indx{2};
-            % If x, y, z are CHEBFUN, CHEBFUN2 or CHEBFUN3, concatenate (also
-            % checks that domains are compatible) and call compose; else feval.
-            if ( isa(x, 'chebfun') && isa(y, 'chebfun') )
+            % If x, y are numeric or ':' call feval().  If x, y are CHEBFUN,
+            % CHEBFUN2 or CHEBFUN3, concatenate (also checks that domains are
+            % compatible) and call compose().
+            if ( ( isnumeric(x) || strcmpi(x, ':') ) && ...
+                    ( isnumeric(y) || strcmpi(y, ':') )
+                out = feval(F, x, y);
+            elseif ( isa(x, 'chebfun') && isa(y, 'chebfun') )
                 out = compose([ x, y ], F);
             elseif ( isa(x, 'chebfun2') && isa(y, 'chebfun2') )
                 out = compose([ x; y ], F);
             elseif ( isa(x, 'chebfun3') && isa(y, 'chebfun3') )
                 out = compose([ x; y ], F);
             else
-                out = feval(F, x, y);
+                % Don't know what to do.
+                error('CHEBFUN:CHEBFUN2V:subsref:input', ...
+                    'Unrecognized input.')
             end
             varargout = {out};
             
