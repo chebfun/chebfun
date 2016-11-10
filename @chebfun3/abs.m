@@ -11,18 +11,25 @@ function f = abs(f)
 
 if ( isempty(f) ) % check for empty CHEBFUN3.
     return 
-end 
+end
 
 if ( isreal(f) )
     % Positive/negative test.
-    ss = singleSignTest( f );  % Returns TRUE if there is no sign change.
-    if ( ~ss )
+    [ss, ~, ispos] = singleSignTest(f); % Returns TRUE if there is no sign change.
+    if ( ss )
+        if (ispos)
+            return
+        else
+            f = uminus(f);
+            return
+        end
+    elseif( ~ss )
         error('CHEBFUN:CHEBFUN3:abs:notSmooth', ...
-            'Sign change detected. Unable to represent the result.'); 
+            'Sign change detected. Unable to represent the result.');
     end
-end      
-
-% Still call the constructor in case we missed a change of sign. 
-f = compose(f, @abs);
+else
+    % Still call the constructor in case we missed a change of sign. 
+    f = compose(f, @abs);
+end
 
 end

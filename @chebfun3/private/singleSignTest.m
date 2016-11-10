@@ -1,10 +1,10 @@
-function [ss, wzero] = singleSignTest(F)
+function [ss, wzero, ispos] = singleSignTest(F)
 %SINGLESIGNTEST   Heuristic check for sign change.
 %   SINGLESIGNTEST(F) returns 1 if the values of F on a tensor grid are of 
 %   the same sign.
 %
-%   [SS, WZERO] = SINGLESIGNTEST(F) returns WZERO = 1 if a zero has been
-%   found.
+%   [SS, WZERO, ISPOS] = SINGLESIGNTEST(F) returns WZERO = 1 if a zero has 
+%   been found and ISPOS = 1 if F is positive-valued.
 %
 %   The algorithm works by sampling F on a tensor grid and checking if
 %   those values are of the same sign. This command is mainly for internal 
@@ -17,18 +17,18 @@ function [ss, wzero] = singleSignTest(F)
 
 tol = chebfun3eps;
 ss = false;                  % Assume false
+ispos = false;
 
-X = chebpolyval3(F);          % Evaluate on a grid using FFTs. 
+X = sample(F);  % Evaluate on a grid using FFTs.
 X = X(:);
 
-%if ( all( X >=0 ))            % If all values are nonnegative 
-if ( all( X > -tol * F.vscale ))            % If all values are nonnegative     
-    ss = true;  
-%elseif ( all( X <= 0))        % If all values are not positive
+if ( all( X > -tol * F.vscale ))  % If all values are nonnegative     
+    ss = true;
+    ispos = true;
 elseif ( all( X < tol * F.vscale))        % If all values are not positive
-    ss = true; 
+    ss = true;
 end
 
-wzero = any( X == 0 );        % Any exact zeros on the grid?
+wzero = any(X == 0);        % Any exact zeros on the grid?
 
 end

@@ -16,7 +16,7 @@ end
 
 if ( isreal(f) )
     % Positive/negative test.
-    ss = singleSignTest( f );  % Returns TRUE if there is no sign change.
+    ss = singleSignTest(f);  % Returns TRUE if there is no sign change.
     if ( ~ss )
         error('CHEBFUN:CHEBFUN3:log:notSmooth', ...
             'Sign change detected. Unable to represent the result.'); 
