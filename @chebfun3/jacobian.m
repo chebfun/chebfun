@@ -1,7 +1,6 @@
 function J = jacobian(f, g, h)
 %JACOBIAN   Jacobian determinant of three CHEBFUN3 objects.
-%   J = JACOBIAN(F,G,H) returns the Jacobian determinant of the Jacobian 
-%   matrix.
+%   J = JACOBIAN(F,G,H) returns the determinant of the Jacobian matrix.
 %
 %   Note we return the determinant of the Jacobian matrix and not the 
 %   Jacobian matrix itself.

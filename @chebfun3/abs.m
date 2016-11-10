@@ -28,7 +28,7 @@ if ( isreal(f) )
             'Sign change detected. Unable to represent the result.');
     end
 else
-    % Still call the constructor in case we missed a change of sign. 
+    % Call the constructor for complex f:
     f = compose(f, @abs);
 end
 

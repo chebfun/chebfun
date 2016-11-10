@@ -6,7 +6,7 @@ function f = sqrt( f )
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check:
-if ( isempty( f ) )
+if ( isempty(f) )
     return
 end
 
@@ -15,10 +15,10 @@ if ( isreal(f) )
     bool = singleSignTest(f);  % Returns TRUE if there is no sign change.
     if ( ~bool )
         error('CHEBFUN:SEPARABLEAPPROX:sqrt:notSmooth', ...
-            'Sign change detected. Unable to represent the result.'); 
+            'Sign change detected. Unable to represent the result.');
     end
-end       
+end
 
-f = compose( f, @sqrt ); 
+f = compose(f, @sqrt);
 
 end

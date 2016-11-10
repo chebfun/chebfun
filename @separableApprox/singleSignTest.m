@@ -1,11 +1,11 @@
 function [out, wzero] = singleSignTest(F)
-%SINGLESIGNTEST( F )   Heuristic check to see if F changes sign.
+%SINGLESIGNTEST   Heuristic check to see if F changes sign.
 % 
-%   SINGLESIGNTEST( F ) returns 1 if the values of F on a tensor grid are of the
+%   SINGLESIGNTEST(F) returns 1 if the values of F on a tensor grid are of the
 %   same sign.
 %
-%   [OUT, WZERO] = SINGLESIGNTEST( F ), returns WZERO = 1 if a zero has been
-%   found. 
+%   [OUT, WZERO] = SINGLESIGNTEST(F), returns WZERO = 1 if a zero has been
+%   found.
 %
 %   The algorithm works by sampling F on a tensor-grid and checking if
 %   those values are of the same sign. This command is mainly for internal use
