@@ -71,7 +71,6 @@ for n = 1:4
     pass(n, 6) = norm(hvalues - gvalues, inf) < ...
         10*max(10*vscale(h)*eps); 
         
-    
     % Compose g(f), when f and g are CHEBTECH objects:
     f = testclass.make(@(x) x.^2);
     g = testclass.make(@(x) sin(x));
@@ -108,14 +107,23 @@ for n = 1:4
         pass(n, 10) = strcmp(ME.identifier, 'CHEBFUN:CHEBTECH:compose:arrval');
     end
     
-    % We cannot expect to compose two array-valued CHEBTECH objects in this way:
+    % We cannot expect to compose two array-valued CHEBTECH objects in this way.
+    % (Actually, we can in R2016a anda above!)
     try 
         f = testclass.make(@(x) [x x.^2]);
         g = testclass.make(@(x) sin(x));
-        compose(f, @plus, g)
-        pass(n, 11) = false;
+        compose(f, @plus, g);
+        if ( verLessThan('matlab', '9.1') )
+            pass(n, 11) = false;
+        else
+            pass(n, 11) = true;
+        end
     catch ME
-        pass(n, 11) = strcmp(ME.identifier, 'CHEBFUN:CHEBTECH:compose:dim');
+        if ( verLessThan('matlab', '9.1') )
+            pass(n, 11) = strcmp(ME.message, 'Matrix dimensions must agree.');
+        else
+            pass(n, 11) = false;
+        end
     end
     
     % Removed by NH Apr 2014. This should be checked at a hgiher level.
