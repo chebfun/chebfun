@@ -395,6 +395,9 @@ methods
     
     % Normal vector of a CHEBFUN3.
     varargout = normal(f, varargin);
+    
+    % Determinant of Jacobian of three CHEBFUN3 objects.
+    f = jacobian(f, g, h);    
       
     % Laplacian of a CHEBFUN3.
     out = lap(f);
