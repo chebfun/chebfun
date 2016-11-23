@@ -276,6 +276,9 @@ classdef chebfun
         
         % Multiplication operator.
         M = diag(f)
+        
+        % Dimension check based on Matlab version
+        out = dimCheck(f, g)
 
         % Useful information for DISPLAY.
         [name, data] = dispData(f)
