@@ -1,10 +1,17 @@
 function varargout = plot(f, varargin)
+%surf3(x,y,z,varargin)
 %PLOT   Plots a CHEBFUN3 object.
 %   Plot(F) creates six contour plots at boundary cross sections 
 %   of the domain of F.
 % 
-%   If F is complex-valued, then six phase portraits are plotted at 
+%   If F is complex-valued, then plot(F) plots six phase portraits at 
 %   boundary cross sections.
+%
+%   PLOT(X,Y,Z,F) where X, Y, Z, and F are all CHEBFUN3 objects, plots F as
+%   above but also allows for domains that are more general than the cube.
+%
+%   PLOT(X,Y,Z) puts F = Z, i.e., colors the plot according to the
+%   Z-values. This is analogous to MATLAB's surf(x,y,z).
 %
 %   Example: 
 %   plot(chebfun3(@(x,y,z) sin(i*x+z)+cos(y))); campos([-10 -11 -8])
@@ -16,6 +23,55 @@ function varargout = plot(f, varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 
 holdState = ishold;
+
+% if nargin > 1
+%     f = varargin{1};
+%elseif nargin <= 2
+if nargin <= 2
+    h = plot3(f);
+elseif nargin == 3
+    x = f;
+    y = varargin{1};
+    z = varargin{2};
+    h = surf3(x,y,z,f);
+elseif nargin == 4
+    x = f;
+    y = varargin{1};
+    z = varargin{2};
+    f = varargin{3};
+    h = surf3(x,y,z,f);
+elseif nargin >= 5
+    x = f;
+    y = varargin{1};
+    z = varargin{2};
+    f = varargin{3};
+    h = surf3(x,y,z,f);
+end
+%     
+% %         f = varargin{1};
+% %         if numel(varargin) >1
+% %             opt = {varargin{2:end}};
+% %         else 
+% %             opt = {};
+% %         end
+%     end
+% else
+%     f = z;
+%     opt = {};
+% end
+
+
+if ( ~holdState )
+    hold off
+end
+if ( nargout > 0 )
+    varargout = {h};
+end
+
+end
+
+function h = plot3(f)
+
 dom = f.domain;
 numpts = 151;
 [xx, yy, zz] = meshgrid(linspace(dom(1), dom(2), numpts), ...
@@ -41,11 +97,16 @@ else
     axis('equal') 
 end
 
-if ( ~holdState )
-    hold off
 end
-if ( nargout > 0 )
-    varargout = {h};
-end
-
+    
+function h = surf3(x,y,z,f)
+d = x.domain;
+surf(x(d(1),:,:), y(d(1),:,:), z(d(1),:,:), f(d(1),:,:))
+hold on
+surf(x(d(2),:,:), y(d(2),:,:), z(d(2),:,:), f(d(2),:,:))
+surf(x(:,d(3),:), y(:,d(3),:), z(:,d(3),:), f(:,d(3),:))
+surf(x(:,d(4),:), y(:,d(4),:), z(:,d(4),:), f(:,d(4),:))
+surf(x(:,:,d(5)), y(:,:,d(5)), z(:,:,d(5)), f(:,:,d(5)))
+h = surf(x(:,:,d(6)), y(:,:,d(6)), z(:,:,d(6)), f(:,:,d(6)))
+hold off
 end
