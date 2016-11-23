@@ -43,7 +43,7 @@ function varargout = trigratinterp(fk, m, n, varargin)
 %
 %   Same thing but with robustness disabled:
 %
-%     [p, q, r] = ratinterp(@(x) 1./(x - 0.2), 5, 5);
+%     [p, q, r] = ratinterp(@(x) 1./(sin(pi*x) - 0.2), 5, 5);
 %
 %   References:
 %
@@ -267,10 +267,9 @@ end
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Functions for computing the numerator and denominator coefficients.
-% Check symmetries, for trigonometric functions, this means 
-function [fEven, fOdd] = checkSymmetries(f, xi, xi_type, tol)
 
+function [fEven, fOdd] = checkSymmetries(f, xi, xi_type, tol)
+% Check symmetries, for trigonometric functions
 fEven = false;
 fOdd = false;
 N = length(xi);
@@ -460,7 +459,6 @@ end
 function [p, q, r] = constructTrigRatApprox(xi_type, ac, bc, mu, nu, dom, method, tol)
 
 if ( strncmpi(xi_type, 'equi', 4) )         
-    %[p, q, r] = constructTrigRatApproxEqui(a, b, mu, nu, dom);   
     [p, q, r] = constructTrigRatApproxArbi(ac, bc, mu, nu, dom, method, tol);   
 elseif ( strncmpi(xi_type, 'arbi', 4) )                              % Arbitrary points.
     [p, q, r] = constructTrigRatApproxArbi(ac, bc, mu, nu, dom, method, tol);
@@ -503,25 +501,24 @@ function c = sincosine_to_exponential(a)
 end
 
 function [p, q, r] = constructTrigRatApproxArbi(ac, bc, mu, nu, dom, method, tol)
-stdDomain = [-1, 1];
-
+% Make sure that small coefficients are 
+% discarded
 ac = chopCoeffs(ac, tol);
 bc = chopCoeffs(bc, tol);
 
 
+% Construct chebfuns on the standard domain
+stdDomain = [-1, 1];
 p = chebfun(ac, 'coeffs', 'trig');
 q = chebfun(bc, 'coeffs', 'trig');
 
 
+% Map to new domain if needed
 if ( any(dom ~= stdDomain) )
     p = newDomain(p, dom);
     q = newDomain(q, dom);
 end
 
 r = @(x) p(x)./q(x);
-xx = linspace(dom(1), dom(end), 2001);
-if ( norm(imag(r(xx)), inf) < 1e3*tol )
-    r = @(x) real(r(x));
-end
 
 end
