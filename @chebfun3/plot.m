@@ -47,18 +47,6 @@ elseif nargin >= 5
     f = varargin{3};
     h = surf3(x,y,z,f);
 end
-%     
-% %         f = varargin{1};
-% %         if numel(varargin) >1
-% %             opt = {varargin{2:end}};
-% %         else 
-% %             opt = {};
-% %         end
-%     end
-% else
-%     f = z;
-%     opt = {};
-% end
 
 
 if ( ~holdState )
@@ -100,13 +88,24 @@ end
 end
     
 function h = surf3(x,y,z,f)
-d = x.domain;
-surf(x(d(1),:,:), y(d(1),:,:), z(d(1),:,:), f(d(1),:,:))
+% d = x.domain;
+% surf(x(d(1),:,:), y(d(1),:,:), z(d(1),:,:), f(d(1),:,:))
+% hold on
+% surf(x(d(2),:,:), y(d(2),:,:), z(d(2),:,:), f(d(2),:,:))
+% surf(x(:,d(3),:), y(:,d(3),:), z(:,d(3),:), f(:,d(3),:))
+% surf(x(:,d(4),:), y(:,d(4),:), z(:,d(4),:), f(:,d(4),:))
+% surf(x(:,:,d(5)), y(:,:,d(5)), z(:,:,d(5)), f(:,:,d(5)))
+% h = surf(x(:,:,d(6)), y(:,:,d(6)), z(:,:,d(6)), f(:,:,d(6)))
+d = x.domain; d1 = d(1); d2 = d(2); d3 = d(3); d4 = d(4); d5 = d(5); 
+d6 = d(6); 
+feval(x,d1,:,:)
+
+surf(feval(x,d1,:,:), feval(y,d1,:,:), feval(zd1,:,:), feval(f,d1,:,:))
 hold on
-surf(x(d(2),:,:), y(d(2),:,:), z(d(2),:,:), f(d(2),:,:))
-surf(x(:,d(3),:), y(:,d(3),:), z(:,d(3),:), f(:,d(3),:))
-surf(x(:,d(4),:), y(:,d(4),:), z(:,d(4),:), f(:,d(4),:))
-surf(x(:,:,d(5)), y(:,:,d(5)), z(:,:,d(5)), f(:,:,d(5)))
-h = surf(x(:,:,d(6)), y(:,:,d(6)), z(:,:,d(6)), f(:,:,d(6)))
+surf(feval(x,d2,:,:), feval(y,d2,:,:), feval(z,d2,:,:), feval(f,d2,:,:))
+surf(feval(x,:,d3,:), feval(y,:,d3,:), feval(z,:, d3, :), feval(f,:,d3,:))
+surf(feval(x,:,d4,:), feval(y,:,d4,:), feval(z,:,d4,:), feval(f,:,d4,:))
+surf(feval(x,:,:,d5), feval(y,:,:,d5), feval(z,:,:,d5), feval(f,:,:,d5))
+h = surf(feval(x,:,:,d6), feval(y,:,:,d6), feval(z,:,:,d6), feval(f,:,:,d6))
 hold off
 end
