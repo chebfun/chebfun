@@ -44,10 +44,19 @@ pass(20) = doesNotCrash(@() isosurface(f2));
 pass(21) = doesNotCrash(@() slice(f2));
 pass(22) = doesNotCrash(@() surf(f2));
 
+%% Test plotting on a non-standard domain
+r = chebfun3(@(r,t,p) r, [0 1 0 2*pi pi/4 pi/2]);
+t = chebfun3(@(r,t,p) t, [0 1 0 2*pi pi/4 pi/2]);
+p = chebfun3(@(r,t,p) p, [0 1 0 2*pi pi/4 pi/2]);
+x = r.*cos(t).*cos(p);
+y = r.*sin(t).*cos(p);
+z = r.*sin(p);
+density = sin(10*t).*cos(10*r)+1;
+pass(23) = doesNotCrash(@() plot(x,y,z,density));
+
 close(hfig);
 
 end
-
 
 function pass = doesNotCrash(fn)
 try
