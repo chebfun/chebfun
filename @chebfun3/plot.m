@@ -55,19 +55,22 @@ if ( nargin == 3 )
     x = f;
     y = varargin{1};
     z = varargin{2};
-elseif ( nargin == 4 )
-    x = f;
-    y = varargin{1};
-    z = varargin{2};
-    f = varargin{3};
-elseif ( nargin >= 5 )
+elseif ( nargin >= 4 )
     x = f;
     y = varargin{1};
     z = varargin{2};
     f = varargin{3};
 end
 
+
+% Check that x, y, z and f have the same domain:
+if ( ~domainCheck(x, y) || ~domainCheck(x, z) || ~domainCheck(x, f) )
+    error('CHEBFUN:CHEBFUN3:PLOT:domain', ...
+        'The Chebfun3 objects must have the same domain.')
+end
 d = x.domain;
+
+% Plot each boundary surface:
 index.type = '()';
 index.subs = {[d(1)]  ':'  ':'};
 surf(subsref(x,index),subsref(y,index),subsref(z,index),subsref(f,index));
