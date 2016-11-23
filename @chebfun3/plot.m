@@ -24,7 +24,7 @@ function varargout = plot(f, varargin)
 
 holdState = ishold;
 
-if nargin <= 2
+if ( nargin <= 2 )
     dom = f.domain;
     numpts = 151;
     [xx, yy, zz] = meshgrid(linspace(dom(1), dom(2), numpts), ...
@@ -51,16 +51,16 @@ if nargin <= 2
     return
 end
 
-if nargin == 3
+if ( nargin == 3 )
     x = f;
     y = varargin{1};
     z = varargin{2};
-elseif nargin == 4
+elseif ( nargin == 4 )
     x = f;
     y = varargin{1};
     z = varargin{2};
     f = varargin{3};
-elseif nargin >= 5
+elseif ( nargin >= 5 )
     x = f;
     y = varargin{1};
     z = varargin{2};
