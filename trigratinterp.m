@@ -1,26 +1,26 @@
 function varargout = trigratinterp(fk, m, n, varargin)
 %RATINTERP  Robust trigonometric rational interpolation or least-squares.
 %   [P, Q, R_HANDLE] = TRIGRATINTERP(F, M, N) computes the (M, N) 
-%   trigonometric rational interpolant of F on the 2*(M + N) + 1 
+%   trigonometric rational interpolant of F on the 2(M+N)+1 
 %   equidistant points. F can be a CHEBFUN, a function handle or a column 
-%   vector of 2*(M + N) + 1 data points.  If F is a CHEBFUN, the rational 
+%   vector of 2(M+N)+1 data points.  If F is a CHEBFUN, the rational 
 %   interpolant is constructed on the domain of F. Otherwise, the domain 
 %   [-1, 1] is used. P and Q are periodic CHEBFUNs such that 
-%   P(x)./Q(x) = F(x). R_HANDLE is an anonymous function evaluating the 
+%   P(x)./Q(x) = F(x). R_HANDLE is a function handle evaluating the 
 %   rational interpolant directly.
 %
 %   [P, Q, R_HANDLE] = TRIGRATINTERP(F, M, N, NN) computes a (M, N) 
 %   trigonometric rational linear least-squares approximant of F over NN 
-%   equidistant points. If NN = 2*(M + N) + 1 or NN = [], a rational 
-%   interpolant is computed.
+%   equidistant points. If NN = 2(M+N)+1 or NN = [], a rational interpolant 
+%   is computed.
 %
 %   [P, Q, R_HANDLE] = TRIGRATINTERP(F, M, N, NN, XI) computes a (M, N) 
-%   trigonometric rational interpolant or approximant of F over the nodes 
-%   XI. NN is ignored if XI in this case. However, XI can also be the 
-%   strings 'equidistant', in which case NN equidistant nodes are created 
-%   on the interval [-1, 1].
+%   trigonometric rational interpolant or approximant of F over the vector of 
+%   nodes XI. NN is ignored in this case. However, XI can also be the 
+%   strings 'equi' or 'equidistant', in which case NN equidistant nodes are 
+%   created on the interval [-1, 1) using TRIGPTS.
 %
-%   [P, Q, R_HANDLE, MU, NU] = TRIGRATINTERP(F, M, N, 'tol', TOL, 'robustness', 'on') 
+%   [P, Q, R_HANDLE, MU, NU] = TRIGRATINTERP(F, M, N, 'tol', TOL) 
 %   computes a robustified (M, N) trigonometric rational interpolant or 
 %   approximant of F, in which components contributing less than 
 %   the relative tolerance TOL to the solution are discarded. If no value 
@@ -29,7 +29,7 @@ function varargout = trigratinterp(fk, m, n, varargin)
 %   denominator degrees. Note that if the degree is decreased, a rational 
 %   least-squares approximation is computed over the 2(M+N)+1 points.
 %
-%   [P, Q, R_HANDLE, MU, NU, POLES, RES] = TRIGRATINTERP(F, M, N, NN, XI, 'robustness', 'on', 'tol', TOL)
+%   [P, Q, R_HANDLE, MU, NU, POLES, RES] = TRIGRATINTERP(F, M, N, NN, XI)
 %   returns the poles POLES of the rational interpolant on the real axis as
 %   well as the residues RES at those points. If any of the nodes XI lie in the
 %   complex plane, the complex poles are returned as well.
@@ -47,13 +47,13 @@ function varargout = trigratinterp(fk, m, n, varargin)
 %
 %   References:
 %
-%   [1] Mohsin Javed, "ROBUST TRIGONOMERIC RATIONAL
-%       INTERPOLATION AND LEAST-SQUARES", In preparation.
+%   [1] Mohsin Javed, "ALGORITHMS FOR TRIGONOMETRIC POLYNOMIAL AND RATIONAL 
+%   APPROXIMATION" Dphil thesis. 
 %
 %
 % See also RATINTERP, INTERP1, CHEBPADE.
 
-% Copyright 2015 by The University of Oxford and The Chebfun Developers.
+% Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % TODO:  Deal with array-valued CHEBFUNs / quasimatrices.
@@ -135,7 +135,7 @@ N = [];
 xi = [];
 xi_type = [];
 method = 'real'; % default
-robustness_flag = false;
+robustness_flag = true;
 tol = [];
 if ( isfloat(f) )
     N = length(f);
@@ -258,6 +258,9 @@ end
 if ( isempty(tol) )
     % robustness tolerance:
     tol = 1e-14;
+elseif ( tol == 0 )
+    % turn off robustness if tolerance is zero:
+    robustness_flag = false;
 end
 
 interpolation_flag = false;
