@@ -128,7 +128,7 @@ classdef cheboppref < chebpref
 %     operator.
 %
 %   maxIter                     - Maximum number of Newton steps
-%     25
+%     [25]
 %
 %   The maximum number of steps that the (damped) Newton iteration is allowed to
 %   take, before it is considered to be non-convergent.

@@ -1,6 +1,6 @@
 function vscl = vscale(f) 
 %VSCALE   Vertical scale of a CHEBFUN3. 
-% VSCL = VSCALE(F) returns the vertial scale of a CHEBFUN3 object F as 
+%   VSCL = VSCALE(F) returns the vertical scale of a CHEBFUN3 object F as
 %   determined by evaluating F on a coarse tensor-product grid. 
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.

@@ -10,9 +10,6 @@ function pass = sampleTest(op, values, f, data, pref)
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Get the interpolation points:
-n = length(f);
-
 % Set a tolerance:
 tol = sqrt(max(eps, pref.chebfuneps));
 

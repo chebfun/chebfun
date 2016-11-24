@@ -1,5 +1,5 @@
 function out = isreal(f)
-%ISREAL   Test if a CHEBFUN3 object F is Real-valued.
+%ISREAL   Test if a CHEBFUN3 object F is real-valued.
 %   ISREAL(F) returns logical true if F does not have any nonzero imaginary
 %   part and false otherwise.
 %  

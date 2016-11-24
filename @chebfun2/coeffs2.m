@@ -15,9 +15,15 @@ if ( isempty(f) )
     return
 end
 
-if ( iszero(f) ) 
-    [m, n] = length( f );
-    varargout = { zeros(n, m) } ; 
+if ( iszero(f) )
+    if ( nargin == 2 ) 
+        n = m; 
+    elseif ( nargin == 1 )
+        % Fix convention between degrees begin [degX, degY] = length(f) and
+        % the coefficient matrix being returned in meshgrid form. 
+        [n, m] = length( f );   % This line should not be [m,n]=length(f)!
+    end
+    varargout = { zeros(m, n) } ; 
     return
 end
 
@@ -31,17 +37,16 @@ if ( nargin > 1 )
     [mf, ignored] = size(cols_coeffs); 
     [nf, rf] = size(rows_coeffs); 
     if ( mf <= m ) 
-        cols_coeffs = [ cols_coeffs ; zeros(m-mf,rf) ]; 
+        cols_coeffs = [ cols_coeffs ; zeros(m-mf, rf) ];
     else
         cols_coeffs = cols_coeffs(1:m,:);
     end
-    if ( mf <= m ) 
-        rows_coeffs = [ rows_coeffs ; zeros(n-nf,rf) ]; 
+    if ( nf <= n )
+        rows_coeffs = [ rows_coeffs ; zeros(n-nf, rf) ];
     else
-        rows_coeffs = rows_coeffs(1:n,:);
+        rows_coeffs = rows_coeffs(1:n, :);
     end
 end
-
 
 if ( nargout <= 1 )
     % Return the matrix of coefficients
@@ -55,5 +60,3 @@ else
 end
 
 end
-
-
