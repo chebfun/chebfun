@@ -1,7 +1,7 @@
 function varargout = trigratinterp(fk, m, n, varargin)
 %RATINTERP  Robust trigonometric rational interpolation or least-squares.
 %   [P, Q, R_HANDLE] = TRIGRATINTERP(F, M, N) computes the (M, N) 
-%   trigonometric rational interpolant of F on the 2(M+N)+1 
+%   trigonometric rational interpolant of F on 2(M+N)+1 
 %   equidistant points. F can be a CHEBFUN, a function handle or a column 
 %   vector of 2(M+N)+1 data points.  If F is a CHEBFUN, the rational 
 %   interpolant is constructed on the domain of F. Otherwise, the domain 
@@ -31,15 +31,15 @@ function varargout = trigratinterp(fk, m, n, varargin)
 %
 %   [P, Q, R_HANDLE, MU, NU, POLES, RES] = TRIGRATINTERP(F, M, N, NN, XI)
 %   returns the poles POLES of the rational interpolant on the real axis as
-%   well as the residues RES at those points. If any of the nodes XI lie in the
-%   complex plane, the complex poles are returned as well.
+%   well as the residues RES at those points. If any of the nodes XI are
+%   complex, the complex poles are returned as well.
 %
 %   Examples:
 %
 %   Compute a type-(5, 5) robustified rational interpolant to 1/(sin(pi*x) -
 %   0.2) on [-1, 1] in equispaced nodes:
 %
-%     [p, q, r] = trigratinterp(@(x) 1./(sin(pi*x) - 0.2), 5, 5, 'robustness', 'on');
+%     [p, q, r] = trigratinterp(@(x) 1./(sin(pi*x) - 0.2), 5, 5);
 %
 %   Same thing but with robustness disabled:
 %
