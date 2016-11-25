@@ -131,7 +131,6 @@ end
 
 
 %% Deal with N
-N = [];
 xi = [];
 xi_type = [];
 method = 'real'; % default
@@ -263,6 +262,7 @@ elseif ( tol == 0 )
     robustness_flag = false;
 end
 
+% Check if we are interpolating or doing least-squares:
 interpolation_flag = false;
 if ( N == 2*(m+n)+1 )
     interpolation_flag = true;
@@ -348,17 +348,23 @@ end
 end
 
 function [P, Q] = construct_matrices(th, m, n, T)
-% Input, the points of interpolation, m, n and period T
+% Input: th has the points of interpolation, m, n 
+%        are degrees of p and q and T is the period
 % Output P: matrix of dim length(th) x 2*m+1
 % Output Q: matrix of dim length(th) x 2*n+1
+
+% Initialize output matrices
 P = zeros(length(th), 2*m+1);
-Q = zeros(length(th), 2*n+1);       
+Q = zeros(length(th), 2*n+1);
+
+% Construct P:
 P(:, 1) = ones(length(th), 1);
 for j = 1:m
     P(:, 2*j)   = sin(2*j*pi/T*th);
     P(:, 2*j+1) = cos(2*j*pi/T*th);    
 end
 
+% Construct Q:
 Q(:, 1) = ones(length(th), 1);
 for j = 1:n
     Q(:, 2*j)   = sin(2*j*pi/T*th);   
@@ -368,6 +374,12 @@ end
 end
 
 function [ac, bc] = getCoeffs(U, S, V, m, n, fEven, fOdd)
+% Input: U, S, V is the SVD decomposition of the matrix 
+% which solves the interpolation problem. m, n are degrees
+% of p and q and fEven and fOdd are flags indicating symmetries
+% Output: The coefficients of p and q are returned in 
+% the complex exponential basis
+
 if ( fEven || fOdd )    
     if ( fEven )
         a = V(1:m+1, end);
@@ -392,6 +404,8 @@ else
     a = V(1:2*m+1, end);
     b = V(2*m+2:end, end);    
 end
+
+
 ac = sincosine_to_exponential(a);
 bc = sincosine_to_exponential(b);    
 
@@ -403,7 +417,8 @@ stdDomain = [-1, 1];
 fEven = 0;
 fOdd = 0;
 T = stdDomain(end)-stdDomain(1);
-while (1)       
+while (1)     
+    % Set up the matrices
     [P, Q] = construct_matrices(th, m, n, T);
     N = m + n;
     if ( fEven && interpolation_flag )
@@ -417,21 +432,33 @@ while (1)
         P = P(1:N, 2:2:end); % only sines
         Q = Q(1:N, 1:2:end); % only cosines
     end
-           
+    
+    % Diagonal matrix of function values:
     D = diag(fk);
 
+    % Scale the matrix whose null space we want to find:
     sysMat = [P, -D*Q];
     for i = 1:length(fk)    
         sysMat(i, :) = 1/max([abs(fk(i)), 1]) * sysMat(i, :);    
     end
 
+    % apply SVD to find the null space
     [U, S, V] = svd(sysMat);
+    
+    % Get the coefficients of p and q in complex exponential basis:
     [ac, bc ] = getCoeffs(U, S, V, m, n, fEven, fOdd);
+    
+    % Chop small coefficients at ends:
     ac = chopCoeffs(ac, tol);
     bc = chopCoeffs(bc, tol);
 
+    % Singular values of the problem:
     s = diag(S);    
         
+    % Degree reduction based on small singular values.
+    % The code exits the loop if there are less than 
+    % 2 small singular values.
+    
     m = min([(length(ac)-1)/2, m]);
 
     n_big_sing_vals = find(abs(s) > tol, 1, 'last');
@@ -460,50 +487,6 @@ end
 % Functions for assembling the rational interpolant.
 
 function [p, q, r] = constructTrigRatApprox(xi_type, ac, bc, mu, nu, dom, method, tol)
-
-if ( strncmpi(xi_type, 'equi', 4) )         
-    [p, q, r] = constructTrigRatApproxArbi(ac, bc, mu, nu, dom, method, tol);   
-elseif ( strncmpi(xi_type, 'arbi', 4) )                              % Arbitrary points.
-    [p, q, r] = constructTrigRatApproxArbi(ac, bc, mu, nu, dom, method, tol);
-end
-
-end
-
-function b = chopCoeffs(a, tol)
-% Assume double sided coeffs with wavenumbers
-% -k to k where k = (length(a)-1)/2
-if (  isempty(a) )
-    b = a;
-    return
-end
-
-n = length(a);
-if ( n <= 1 )
-    b = a;
-    return
-end
-
-if ( mod(n,2) == 0 )
-    error('CHEBFUN:trigratinterp:chopCoeffs', 'coefficients must be odd in length');
-end
-
-midIdx = (n+1)/2;
-a1 = abs(a(midIdx:end));
-a2 = abs(a(midIdx:-1:1));
-aa = (a1 + a2)/2;
-idx = find(abs(aa) > tol, 1, 'last');
-b = a(midIdx-idx+1:midIdx+idx-1);
-
-end
-
-function c = sincosine_to_exponential(a)
-% Input vector a has a_1 + a_2 sin + a_3 cos + a_4 sin + ...
-% Output vector has ... + c_-1exp() + c_0 + c_1 exp() + ...
-    tmp = (a(3:2:end)-1i*a(2:2:end))/2;
-    c = [flipud(conj(tmp)); a(1); tmp];
-end
-
-function [p, q, r] = constructTrigRatApproxArbi(ac, bc, mu, nu, dom, method, tol)
 % Make sure that small coefficients are 
 % discarded
 ac = chopCoeffs(ac, tol);
@@ -522,6 +505,49 @@ if ( any(dom ~= stdDomain) )
     q = newDomain(q, dom);
 end
 
+% Return the function handle:
+% [TODO]: this should use trigbary instead
 r = @(x) p(x)./q(x);
 
+end
+
+function b = chopCoeffs(a, tol)
+% Input: Assume double sided coeffs in vector a with 
+%       wavenumbers -k to k where k = (length(a)-1)/2
+% Output: b is a vector such that at least one of 
+%       b_k and b{-k} are greather than tol in abs value.
+% 
+
+% Handle the empty case:
+if ( isempty(a) )
+    b = a;
+    return
+end
+
+% The trivial case of a constant:
+n = length(a);
+if ( n <= 1 )
+    b = a;
+    return
+end
+
+if ( mod(n,2) == 0 )
+    error('CHEBFUN:trigratinterp:chopCoeffs', 'coefficients must be odd in length');
+end
+
+% Chop the tails:
+midIdx = (n+1)/2;
+a1 = abs(a(midIdx:end));
+a2 = abs(a(midIdx:-1:1));
+aa = (a1 + a2)/2;
+idx = find(abs(aa) > tol, 1, 'last');
+b = a(midIdx-idx+1:midIdx+idx-1);
+
+end
+
+function c = sincosine_to_exponential(a)
+% Input vector a has a_1 + a_2 sin + a_3 cos + a_4 sin + ...
+% Output vector has ... + c_-1exp() + c_0 + c_1 exp() + ...
+    tmp = (a(3:2:end)-1i*a(2:2:end))/2;
+    c = [flipud(conj(tmp)); a(1); tmp];
 end
