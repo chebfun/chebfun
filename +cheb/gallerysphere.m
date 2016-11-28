@@ -31,6 +31,8 @@ function varargout = gallerysphere(name)
 %               centered at (x,y,z) = (-1/sqrt(3),-1/sqrt(3),1/sqrt(3)).
 %   geomag      Radial component of the International Geomagnetic Reference
 %               field from the IGRF-12 model for 2015.
+%   peaks       A peaks like function on the sphere taken from the geopeaks
+%               function in the MATLAB mapping toolbox.
 %
 %   Gallery functions are subject to change in future releases of Chebfun.
 %
@@ -129,6 +131,12 @@ switch lower(name)
         type = 3;
         addEarthPlot = 1;
         cntrlvl = -60000:5000:60000;
+    case 'peaks'
+        fa = @(x,y,z) 8*(1-x).^2.*exp(-4*(x - 0.059).^2 - 2*(y + 0.337).^2 - 2*(z + 0.940).^2) - ...
+            30*(z/10 - x.^3 - y.^5) .* exp(-3*(x - 0.250).^2 - 2*(y - 0.433).^2 - 3*(z - 0.866).^2) + ...
+            (20*y - 8*z.^3) .* exp(-2*(x + 0.696).^2 - 3*(y + 0.123).^2 - 2*(z - 0.707).^2) + ...
+            (7*y - 10*x + 10*z.^3) .* exp(-3*(x - 0.296).^2 - 3*(y + 0.814).^2 - 3*(z + 0.5).^2);
+        f = spherefun(fa);
     otherwise
         error('CHEB:GALLERYSPHERE:unknown:unknownFunction', ...
             'Unknown function.')
