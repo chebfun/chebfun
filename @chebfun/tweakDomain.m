@@ -91,7 +91,7 @@ end
 if ( isempty(tol) )
     % Set a tolerance relative to the horizontal scale:
     hs = max(hscale(f), hscale(g));
-    tol = 1e-15*hs;
+    tol = 2e-15*hs;
 end
 
 if ( nargin < 4 || isempty(side) )

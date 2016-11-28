@@ -42,11 +42,6 @@ pref.chebfuneps = max(eps, pref.chebfuneps);
 pref.sampleTest = false;
 
 if ( nfuns == 2 )
-    
-    if ( size(f, 2) ~= size(g, 2) )
-        error('CHEBFUN:CHEBTECH:compose:dim', ...
-              'Matrix dimensions must agree.')
-    end
 
     % Grab some data from G:
     pref.minSamples = max(pref.minSamples, length(g));

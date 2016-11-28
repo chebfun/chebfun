@@ -27,7 +27,7 @@ function p = ultrapoly(n, lam, dom)
 if ( nargin < 2 )
     error('CHEBFUN:ultrapoly:inputs', 'ULTRAPOLY() requires at least 2 inputs.'); 
 end
-if ( nargin < 4 )
+if ( nargin < 3 )
     dom = [-1, 1]; 
 end
 % Unbounded domains aren't supported/defined.

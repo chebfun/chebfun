@@ -31,6 +31,9 @@ end
 V = u * S * V; % eigenfunctions
 
 if ( nargout > 1 )
+    for ii = 1:size(V,2) 
+    V(:,ii) = V(:,ii) / norm(V(:,ii)); % normalize eigenfunctions
+    end
     varargout = { V, D };
 else
     varargout = { diag(D) };
