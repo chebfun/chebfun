@@ -144,7 +144,7 @@ if ( ~isempty(varargin) )
     N = varargin{1};
     if (isfloat(N) && length(N) == 1 )
         if ( rem(N, 2) == 0 )
-            warning('CHEBFUN:trigratinterp:npoints', 'number of points should be odd');
+            warning('CHEBFUN:trigratinterp:npoints', 'Number of points should be odd.');
         end
         varargin(1) = [];
     elseif ( isfloat(N) && length(N) > 1 )
@@ -152,7 +152,7 @@ if ( ~isempty(varargin) )
         xi = N;
         N = length(xi);            
         if ( N < 2*(m+n) + 1)
-            error('CHEBFUN:trigratinterp:npoints', 'NN must be >= 2*(M+N)+1');
+            error('CHEBFUN:trigratinterp:npoints', 'NN must be >= 2*(M+N)+1.');
         end
         varargin(1) = [];
     elseif( ~isfloat(N) )
@@ -181,7 +181,7 @@ while ( ~isempty(varargin) )
     elseif ( strncmpi(varargin{1}, 'equi', 4) )
         xi_type = 'equi';
         varargin(1) = [];
-    elseif ( strncmpi(varargin{1}, 'robust', 6) )        
+    elseif ( strncmpi(varargin{1}, 'robust', 6) )
         if ( strcmpi(varargin{2}, 'on') )
             robustness_flag = true;
         elseif( strcmpi(varargin{2}, 'off') )
@@ -199,7 +199,7 @@ while ( ~isempty(varargin) )
         end
         
     else
-        error('CHEBFUN:trigratinterp:unknow', 'argument unknown')
+        error('CHEBFUN:trigratinterp:unknow', 'Argument unknown.')
     end
 end
     
@@ -230,7 +230,7 @@ elseif ( isfloat(xi) )                                      % Arbitrary nodes.
     
     if ( min(xi) == -1 && max(xi) == 1 )
         error('CHEBFUN:trigratinterp:duplicate', ...
-            'Periodic interval cannot have beoth -1 and 1 as points of interpolation');
+            'Periodic interval cannot have both -1 and 1 as points of interpolation.');
     end
 elseif ( ischar(xi) )
     xi_type = xi;
