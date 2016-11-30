@@ -18,7 +18,7 @@ th = sort(-1 + 2*rand(2*N+1,1));
 fh = @(t) tan(pi*t);
 fk = fh(th);
 
-[p, q, r] = trigratinterp(fk, m, n, th, 'tol', 0);
+[p, q, r] = trigratinterp(fk, m, n, [], th, 0);
 pass(1) = length(p) == 2*m+1;
 pass(2) = length(q) == 2*n+1;
 pass(3) = norm(p(th)./q(th) - fh(th), inf) < tol;
@@ -27,7 +27,7 @@ pass(4) = norm((p(tt)./q(tt)-fh(tt)), inf) < 1e3*tol;
 
 %% Check least squres
 N = 101;
-[p, q, r] = trigratinterp(fh, m, n, N, 'tol', 0);
+[p, q, r] = trigratinterp(fh, m, n, N, [], 0);
 pass(5) = length(p) == 2*m+1;
 pass(6) = length(q) == 2*n+1;
 pass(7) = norm(p(th)./q(th) - fh(th), inf) < tol;
@@ -58,7 +58,7 @@ N = m+n;
 fh = @(t) exp(-4*sin(pi*t/2).^2);
 f = chebfun(fh, 'trig');
 th = -1+2*rand(2*N+1, 1);
-[p, q, r] = trigratinterp(f, m, n, th, 'tol', 0);
+[p, q, r] = trigratinterp(f, m, n, [], th, 0);
 pass(13) = length(p) == 2*m+1;
 pass(14) = length(q) == 2*n+1;
 th = trigpts(2*N+1);
@@ -82,7 +82,7 @@ pass(18) = norm((p(tt)./q(tt)-fh(tt)), inf) < 1e3*tol;
 fh = @(x) exp(sin(x));
 a = 2; b = 2 + 2*pi;
 f = chebfun(fh, [a, b], 'trig');
-[p, q, r] = trigratinterp(f, 6, 6, 2 + 2*pi/(50)*(0:49));  
+[p, q, r] = trigratinterp(f, 6, 6, [], 2 + 2*pi/(50)*(0:49));  
 xx = linspace(a, b, 10001);
 pass(19) = norm(fh(xx) - r(xx), inf) < tol;
 

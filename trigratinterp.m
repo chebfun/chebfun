@@ -20,7 +20,7 @@ function varargout = trigratinterp(fk, m, n, varargin)
 %   strings 'equi' or 'equidistant', in which case NN equidistant nodes are 
 %   created on the interval [-1, 1) using TRIGPTS.
 %
-%   [P, Q, R_HANDLE, MU, NU] = TRIGRATINTERP(F, M, N, 'tol', TOL) 
+%   [P, Q, R_HANDLE, MU, NU] = TRIGRATINTERP(F, M, [], [], TOL) 
 %   computes a robustified (M, N) trigonometric rational interpolant or 
 %   approximant of F, in which components contributing less than 
 %   the relative tolerance TOL to the solution are discarded. If no value 
@@ -48,7 +48,7 @@ function varargout = trigratinterp(fk, m, n, varargin)
 %   References:
 %
 %   [1] Mohsin Javed, "ALGORITHMS FOR TRIGONOMETRIC POLYNOMIAL AND RATIONAL 
-%   APPROXIMATION" Dphil thesis. 
+%   APPROXIMATION" DPhil thesis. 
 %
 %
 % See also RATINTERP, INTERP1, CHEBPADE.
@@ -59,7 +59,7 @@ function varargout = trigratinterp(fk, m, n, varargin)
 % TODO:  Deal with array-valued CHEBFUNs / quasimatrices.
 
 % Parse the inputs.
-[dom, fk, m, n, NN, th, th_type, method, robustness_flag, ...
+[dom, fk, m, n, NN, th, th_type, robustness_flag, ...
     interpolation_flag, tol] = ...
     parseInputs(fk, m, n, varargin{:});
 
@@ -71,7 +71,7 @@ ts = tol*norm(fk, inf);
 
 % Form matrices for the linear system for the coefficients.
 [ac, bc, s] = trig_rat_interp(fk, m, n, th, ...
-    th_type, fEven, fOdd, method, robustness_flag, interpolation_flag, tol);
+    th_type, fEven, fOdd, robustness_flag, interpolation_flag, tol);
 
 % Get the exact numerator and denominator degrees.
 mu = (length(ac) - 1)/2;
@@ -79,7 +79,7 @@ nu = (length(bc) - 1)/2;
 
 % Build the numerator and denominator polynomials and create the output
 % function handle for evaluating the rational approximation.
-[p, q, r] = constructTrigRatApprox(th_type, ac, bc, mu, nu, dom, method, ts);
+[p, q, r] = constructTrigRatApprox(th_type, ac, bc, mu, nu, dom, ts);
 
 % Compute poles and residues if requested.
 poles = [];
@@ -118,7 +118,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Input parsing.
 
-function [dom, f, m, n, N, xi, xi_type, method, robustness_flag, interpolation_flag, tol] = parseInputs(f, m, n, varargin)
+function [dom, f, m, n, NN, xi, xi_type, robustness_flag, interpolation_flag, tol] = parseInputs(f, m, n, varargin)
 
 % Make sure we have the correct number of arguments.
 if ( nargin < 3 )
@@ -130,38 +130,7 @@ if ( m < 0 || n < 0 || m ~= round(m) || n ~= round(n) )
 end
 
 
-%% Deal with N
-xi = [];
-xi_type = [];
-method = 'real'; % default
-robustness_flag = true;
-tol = [];
-if ( isfloat(f) )
-    N = length(f);
-end
-    
-if ( ~isempty(varargin) )
-    N = varargin{1};
-    if (isfloat(N) && length(N) == 1 )
-        if ( rem(N, 2) == 0 )
-            warning('CHEBFUN:trigratinterp:npoints', 'Number of points should be odd.');
-        end
-        varargin(1) = [];
-    elseif ( isfloat(N) && length(N) > 1 )
-        % first varargin are the points themselves
-        xi = N;
-        N = length(xi);            
-        if ( N < 2*(m+n) + 1)
-            error('CHEBFUN:trigratinterp:npoints', 'NN must be >= 2*(M+N)+1.');
-        end
-        varargin(1) = [];
-    elseif( ~isfloat(N) )
-        N = 2*(m+n)+1;
-    end        
-else
-    %% number of points not provided, use default
-    N = 2*(m+n)+1;
-end
+%% Deal with various inputs
 
 % Default domains:
 if ( isfloat(f) || isa(f, 'function_handle') )
@@ -170,39 +139,75 @@ elseif ( isa(f, 'chebfun') )
     dom = f.domain([1, end]);
 end
 
-
-while ( ~isempty(varargin) )
-    if ( strncmpi(varargin{1}, 'dom', 3) )
-        dom = varargin{2};
-        varargin([1, 2]) = [];
-    elseif ( strncmpi(varargin{1}, 'tol', 3) )
-        tol = varargin{2};
-        varargin([1, 2]) = [];
-    elseif ( strncmpi(varargin{1}, 'equi', 4) )
-        xi_type = 'equi';
-        varargin(1) = [];
-    elseif ( strncmpi(varargin{1}, 'robust', 6) )
-        if ( strcmpi(varargin{2}, 'on') )
-            robustness_flag = true;
-        elseif( strcmpi(varargin{2}, 'off') )
-            robustness_flag = false;
-        else
-            error('CHEBFUN:trigratinterp:unknown', 'robustness_type');
-        end
-        varargin([1, 2]) = [];
-    elseif( strcmpi(varargin{1}, 'method') )
-        method = varargin{2};
-        if ( ~any(strcmpi(method, {'real', 'complex'})) )
-            error('CHEBFUN:trigratinterp:unknown', 'method');
-        else
-            varargin([1, 2]) = [];
-        end
-        
-    else
-        error('CHEBFUN:trigratinterp:unknow', 'Argument unknown.')
+% Check if domain is passed:
+if ( ~isempty(varargin) )    
+    domStrIndex = find(strcmpi('dom', varargin));
+    if ( ~isempty( domStrIndex ))
+        dom = varargin(domStrIndex + 1);
+        if ( isa(f, 'chebfun') && any(dom ~= f.domain([1, end])) )            
+            error('CHEBFUN:trigratinterp:npoints', 'F has different domain from the one passed');
+        end               
+        varargin([domStrIndex, domStrIndex+1]) = [];
     end
 end
     
+
+% Now process the reset of the varargin
+% varargin can only have NN, xi, tol now
+
+% First deal with NN
+if ( ~isempty(varargin) )
+    NN = varargin{1};    
+    if (isfloat(NN) && length(NN) == 1 )
+        if ( rem(NN, 2) == 0 )
+            warning('CHEBFUN:trigratinterp:npoints', 'Number of points should be odd.');
+        end
+        if ( NN < 2*(m+n) + 1)
+            error('CHEBFUN:trigratinterp:npoints', 'NN must be >= 2*(M+N)+1.');
+        end
+    elseif ( isempty(NN) )                
+        NN = 2*(m+n)+1;        
+    else
+        error('CHEBFUN:trigratinterp:npoints', 'can not recognize NN.');        
+    end
+    varargin(1) = [];
+else
+    %% number of points not provided, use default
+    NN = 2*(m+n)+1;
+end
+
+
+% Now deal with xi or xi_type
+% Check if a string spcifying the types of points is passed:   
+if ( ~isempty(varargin) )
+    xi = varargin{1};
+    if ( strncmpi('equi', xi, 4) || isempty(xi) )            
+        xi_type = 'equi';
+        xi = trigpts(NN, dom);
+    elseif ( isfloat(xi) && min(size(xi)) == 1 )
+        % overwrite the length of points NN        
+        NN = length(xi);
+        % points are arbitrary:
+        xi_type = 'arbi';    
+    else
+        error('CHEBFUN:trigratinterp:xi', 'can not parse points XI.');        
+    end
+    varargin(1) = [];
+else
+    xi_type = 'equi';
+    xi = trigpts(NN, dom);
+end
+
+if ( ~isempty(varargin) )
+    % tol should be 0 for no robustness:
+    tol = varargin{1};
+    if ( (tol < 0) || all(size(tol) ~= [1, 1] ) )
+        error('CHEBFUN:trigratinterp:tol', 'tol must be a positive number.');
+    end
+else
+    % default robustness tolerance:
+    tol = 1e-14;
+end        
 
 % Make sure domain is valid:
 if ( ~isfloat(dom) || ~isequal(size(dom), [1 2]) )
@@ -215,58 +220,45 @@ if ( diff(dom) <= 0 )
 end
 
 % Construct the interpolation nodes and get their type.
-if ( isempty(xi) )
-    xi = trigpts(N, [-1, 1]);
-    xi_type = 'equi';
-elseif ( isfloat(xi) )                                      % Arbitrary nodes.
-    if ( length(xi) ~= N )
-        error('CHEBFUN:trigratinterp:lengthXI', ...
-            'Input vector XI does not have the correct length.');
-    end
-    xi = 2.0 * ( xi - 0.5*sum(dom) ) / diff(dom);  % Scale nodes to [-1 1].
-    if ( isempty(xi_type) )
-        xi_type = 'arbitrary';
-    end
+if ( length(xi) ~= NN )
+    error('CHEBFUN:trigratinterp:lengthXI', ...
+        'Input vector XI does not have the correct length.');
+end
+
+xi = sort(xi);
+if ( min(xi) < dom(1) || max(xi) > dom(2) )
+    error('CHEBFUN:trigratinterp:domXI', ...
+        'Input vector XI must be within the domain.');
+end
+xi = 2.0 * ( xi - 0.5*sum(dom) ) / diff(dom);  % Scale nodes to [-1 1].
     
-    if ( min(xi) == -1 && max(xi) == 1 )
-        error('CHEBFUN:trigratinterp:duplicate', ...
-            'Periodic interval cannot have both -1 and 1 as points of interpolation.');
-    end
-elseif ( ischar(xi) )
-    xi_type = xi;
-    if ( strncmpi(xi, 'equi', 4) )                      % Equispaced.
-        xi = trigpts(N, [-1, 1]);
-    else
-        error('CHEBFUN:trigratinterp:badXIType', ...
-            'Unrecognized type of nodes XI.');
-    end
-else
-    error('CHEBFUN:trigratinterp:badXI', ...
-        'XI must be a vector of nodes or a string.');
+if ( min(xi) == -1 && max(xi) == 1 )
+    error('CHEBFUN:trigratinterp:duplicate', ...
+        'Periodic interval cannot have both -1 and 1 as points of interpolation.');
 end
 
 % If we were given a function handle or CHEBFUN, sample it on the grid.
 if ( ~isfloat(f) )
     f = f(0.5*sum(dom) + 0.5*diff(dom)*xi);
-elseif ( length(f) ~= N )
+elseif ( length(f) ~= NN )
     error( 'CHEBFUN:trigratinterp:lengthF', ...
         'Input vector F does not have the correct length.');
 end
 
 % Set the default robustness tolerance.
-if ( isempty(tol) )
-    % robustness tolerance:
-    tol = 1e-14;
-elseif ( tol == 0 )
+if ( tol == 0 )
     % turn off robustness if tolerance is zero:
     robustness_flag = false;
+else
+    robustness_flag = true;
 end
 
 % Check if we are interpolating or doing least-squares:
 interpolation_flag = false;
-if ( N == 2*(m+n)+1 )
+if ( NN == 2*(m+n)+1 )
     interpolation_flag = true;
 end
+
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -412,7 +404,7 @@ bc = sincosine_to_exponential(b);
 end
 
 function [ac, bc, s] = trig_rat_interp(fk, m, n, th, ...
-    th_type, fEven, fOdd, method, robustness_flag, interpolation_flag, tol)
+    th_type, fEven, fOdd, robustness_flag, interpolation_flag, tol)
 stdDomain = [-1, 1];
 fEven = 0;
 fOdd = 0;
@@ -486,7 +478,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Functions for assembling the rational interpolant.
 
-function [p, q, r] = constructTrigRatApprox(xi_type, ac, bc, mu, nu, dom, method, tol)
+function [p, q, r] = constructTrigRatApprox(xi_type, ac, bc, mu, nu, dom, tol)
 % Make sure that small coefficients are 
 % discarded
 ac = chopCoeffs(ac, tol);
