@@ -1,20 +1,15 @@
 function varargout = plot(f, varargin)
-%surf3(x,y,z,varargin)
 %PLOT   Plots a CHEBFUN3 object.
-%   Plot(F) creates six contour plots at boundary cross sections 
-%   of the domain of F.
+%   PLOT(F) creates a plot showing F on the surface of its cube (box).
 % 
-%   If F is complex-valued, then plot(F) plots six phase portraits at 
-%   boundary cross sections.
+%   If F is complex-valued, phase portraits are shown.
 %
 %   PLOT(X,Y,Z,F) where X, Y, Z, and F are all CHEBFUN3 objects, plots F as
 %   above but also allows for domains that are more general than the cube.
+%   See e.g., http://www.chebfun.org/examples/approx3/changeVar3D.html.
 %
 %   PLOT(X,Y,Z) puts F = Z, i.e., colors the plot according to the
 %   Z-values. This is analogous to MATLAB's surf(x,y,z).
-%
-%   Example: 
-%   plot(chebfun3(@(x,y,z) sin(i*x+z)+cos(y))); campos([-10 -11 -8])
 %
 % See also CHEBFUN3/SLICE, CHEBFUN3/SCAN, CHEBFUN3/ISOSURFACE, and 
 % CHEBFUN3/SURF.
@@ -55,6 +50,7 @@ if ( nargin == 3 )
     x = f;
     y = varargin{1};
     z = varargin{2};
+    f = z;
 elseif ( nargin >= 4 )
     x = f;
     y = varargin{1};
