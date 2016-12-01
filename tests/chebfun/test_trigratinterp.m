@@ -86,5 +86,14 @@ f = chebfun(fh, [a, b], 'trig');
 xx = linspace(a, b, 10001);
 pass(19) = norm(fh(xx) - r(xx), inf) < tol;
 
+% test a simple discrete case
+fi = [2, 3, 1];
+xi = [-1, 0.5, 0.8];
+[p, q, r ] = trigratinterp(fi, 1, 0, 3, xi);
+pass(20) = norm(p(xi)./q(xi) - fi, inf) < 10*tol;
+pass(21) = norm(r(xi) - fi, inf) < 10*tol;
+pass(22) = length(p) == 3;
+pass(23) = length(q) == 1;
+
 
 
