@@ -1,23 +1,24 @@
 function Y = harmonic(L, m, type)
-%HARMONIC   Normalized, real-valued, fixed-height cylindrical harmonic.
+%HARMONIC   Normalized, real-valued, eigenfunction of the Laplacian 
+%           on the disk.
 %
-%   Y = HARMONIC(L, M) returns the cylindrical harmonic V_L^M(t,r) with 
+%   Y = HARMONIC(L, M) returns the eigenfunction  V_L^M(t,r) with 
 %   homogeneous Dirichlet boundary conditions. Here,
 %        -pi <= t <= pi  is the angular coordinate, and
 %          0 <= r  <= 1  is the radial coordinate.
 %
 %   Y = HARMONIC(L, M, 'dirichlet') is the same as Y = HARMONIC(L, M).
 %
-%   Y = HARMONIC(L, M,'neumann') returns the cylindrical harmonic V_L^M(t,r)
+%   Y = HARMONIC(L, M,'neumann') returns the eigenfunction V_L^M(t,r)
 %   with Neumann boundary conditions.
 %
-%   The cylindrical harmonics are an orthogonal basis of functions in
-%   cylindrical coordinates. If the height variable is set as a fixed
-%   value, then cylindrical harmonics are the eigenfunctions of the
-%   Laplacian on the disk. For Dirichlet boundary conditions, they are of
-%   the form V_L^M(t, r) = A*exp(iLt).*J_L(a_Mr), where J_L is the Lth
+%   The harmonic functions are the eigenfunctions of the  Laplacian on 
+%   the disk, and they form an orthogonal basis with respect to the polar 
+%   measure. For Dirichlet boundary conditions and L selected >= 0, they 
+%   are of the form V_L^M(t, r) = A*cos(iLt).*J_L(a_Mr), where J_L is the Lth
 %   j-Bessel function, a_M is the Mth positive zero of the function, and A
-%   is a normalization factor.
+%   is a normalization factor. When L is specified as a negative value, 
+%   they are of the form V_L^M(t, r) = A*sin(i|L|t).*J_|L|(a_Mr). 
 %
 % See also SPHEREFUN/SPHHARM.
 
@@ -28,8 +29,9 @@ if ( nargin < 3 || isempty(type) )
     type = 'dirichlet';
 end
 
+Lsign = sign( L+1 );
 L = abs( L );
-% Lsign = sign( L+1 );
+
 
 if ( strcmpi(type, 'dirichlet') )
     % Calculate the mth positive zero of the Lth Bessel function
@@ -46,7 +48,7 @@ if ( strcmpi(type, 'dirichlet') )
     nrmlz = sqrt(2)/(sqrt((1+double(L==0))*pi)*abs(besselj(L+1, Jzero)));
 
     % Create a diskfun object for cylindrical harmonic:
-    if ( abs( max(0, sign(L+1)) ) == 1 )
+    if ( abs( max(0, Lsign) ) == 1 )
         % Use cosine(L*theta) basis
         Y = diskfun(@(theta, r) cos(L*theta).*besselj(L, r*Jzero)*nrmlz, 'polar');
     else
@@ -66,8 +68,8 @@ elseif ( strcmpi(type, 'neumann') )
         % Compute the normalization
         nrmlz = sqrt(2)/(sqrt((1-L^2/Jzero^2)*(1+double(L==0))*pi)*abs(besselj(L,Jzero)));
 
-        % Create a diskfun object for cylindrical harmonic:
-        if ( abs( max(0, sign(L+1)) ) == 1 )
+        % Create a diskfun object for the harmonic:
+        if ( abs( max(0, Lsign) ) == 1 )
             % Use cosine(L*theta) basis
             Y = diskfun(@(theta, r) cos(L*theta).*besselj(L, r*Jzero)*nrmlz, 'polar');
         else
