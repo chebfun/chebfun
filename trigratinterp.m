@@ -20,7 +20,7 @@ function varargout = trigratinterp(fk, m, n, varargin)
 %   strings 'equi' or 'equidistant', in which case NN equidistant nodes are 
 %   created on the interval [-1, 1) using TRIGPTS.
 %
-%   [P, Q, R_HANDLE, MU, NU] = TRIGRATINTERP(F, M, [], [], TOL) 
+%   [P, Q, R_HANDLE, MU, NU] = TRIGRATINTERP(F, M, N, [], [], TOL)
 %   computes a robustified (M, N) trigonometric rational interpolant or 
 %   approximant of F, in which components contributing less than 
 %   the relative tolerance TOL to the solution are discarded. If no value 
@@ -36,7 +36,7 @@ function varargout = trigratinterp(fk, m, n, varargin)
 %
 %   Examples:
 %
-%   Compute a type-(5, 5) robustified rational interpolant to 1/(sin(pi*x) -
+%   Compute a type (5, 5) robustified rational interpolant to 1/(sin(pi*x) -
 %   0.2) on [-1, 1] in equispaced nodes:
 %
 %     [p, q, r] = trigratinterp(@(x) 1./(sin(pi*x) - 0.2), 5, 5);
@@ -90,7 +90,7 @@ if ( nargout > 5 )
         [residues, poles] = residue(p, q);
         [poles, ind] = sort(poles);
         residues = residues(ind);
-
+        
         % Residues are the coefficients of 1/(x - poles(j))
         for j = 1:(length(poles) - 1)
             if ( poles(j+1) == poles(j) )
@@ -101,7 +101,7 @@ if ( nargout > 5 )
         poles = roots(q, 'all');
     end
 end
-    
+
 outArgs = {p, q, r, s, mu, nu, poles, residues};
 % Return the output based on nargout:
 if ( nargout <= 1  )
@@ -110,7 +110,7 @@ elseif ( nargout <= 7  )
     [varargout{1:nargout}] = outArgs{1:nargout};
 else
     error('CHEBFUN:CHEBFUN:ratinterp:nargout', ...
-        'Incorrect number of output arguments.'); 
+        'Incorrect number of output arguments.');
 end
 
 end
@@ -140,57 +140,57 @@ elseif ( isa(f, 'chebfun') )
 end
 
 % Check if domain is passed:
-if ( ~isempty(varargin) )    
+if ( ~isempty(varargin) )
     domStrIndex = find(strcmpi('dom', varargin));
-    if ( ~isempty( domStrIndex ))
-        dom = varargin(domStrIndex + 1);
-        if ( isa(f, 'chebfun') && any(dom ~= f.domain([1, end])) )            
+    if ( ~isempty(domStrIndex) )
+        dom = varargin{domStrIndex + 1};
+        if ( isa(f, 'chebfun') && any(dom ~= f.domain([1, end])) )
             error('CHEBFUN:trigratinterp:npoints', 'F has different domain from the one passed');
-        end               
+        end
         varargin([domStrIndex, domStrIndex+1]) = [];
     end
 end
-    
+
 
 % Now process the reset of the varargin
 % varargin can only have NN, xi, tol now
 
 % First deal with NN
 if ( ~isempty(varargin) )
-    NN = varargin{1};    
-    if (isfloat(NN) && length(NN) == 1 )
+    NN = varargin{1};
+    if ( isfloat(NN) && ( length(NN) == 1 ) )
         if ( rem(NN, 2) == 0 )
             warning('CHEBFUN:trigratinterp:npoints', 'Number of points should be odd.');
         end
-        if ( NN < 2*(m+n) + 1)
+        if ( NN < 2*(m+n) + 1 )
             error('CHEBFUN:trigratinterp:npoints', 'NN must be >= 2*(M+N)+1.');
         end
-    elseif ( isempty(NN) )                
-        NN = 2*(m+n)+1;        
+    elseif ( isempty(NN) )
+        NN = 2*(m+n)+1;
     else
-        error('CHEBFUN:trigratinterp:npoints', 'can not recognize NN.');        
+        error('CHEBFUN:trigratinterp:npoints', 'Can not recognize NN.');
     end
     varargin(1) = [];
 else
-    %% number of points not provided, use default
+    % Number of points not provided, use default:
     NN = 2*(m+n)+1;
 end
 
 
 % Now deal with xi or xi_type
-% Check if a string spcifying the types of points is passed:   
+% Check if a string specifying the types of points is passed:
 if ( ~isempty(varargin) )
     xi = varargin{1};
-    if ( strncmpi('equi', xi, 4) || isempty(xi) )            
+    if ( strncmpi('equi', xi, 4) || isempty(xi) )
         xi_type = 'equi';
         xi = trigpts(NN, dom);
-    elseif ( isfloat(xi) && min(size(xi)) == 1 )
-        % overwrite the length of points NN        
+    elseif ( isfloat(xi) && ( min(size(xi)) == 1 ) )
+        % Overwrite the length of points NN:
         NN = length(xi);
         % points are arbitrary:
-        xi_type = 'arbi';    
+        xi_type = 'arbi';
     else
-        error('CHEBFUN:trigratinterp:xi', 'can not parse points XI.');        
+        error('CHEBFUN:trigratinterp:xi', 'Can not parse points XI.');
     end
     varargin(1) = [];
 else
@@ -201,13 +201,13 @@ end
 if ( ~isempty(varargin) )
     % tol should be 0 for no robustness:
     tol = varargin{1};
-    if ( (tol < 0) || all(size(tol) ~= [1, 1] ) )
+    if ( all(tol < 0) || all(size(tol) ~= [1, 1]) )
         error('CHEBFUN:trigratinterp:tol', 'tol must be a positive number.');
     end
 else
     % default robustness tolerance:
     tol = 1e-14;
-end        
+end
 
 % Make sure domain is valid:
 if ( ~isfloat(dom) || ~isequal(size(dom), [1 2]) )
@@ -226,13 +226,13 @@ if ( length(xi) ~= NN )
 end
 
 xi = sort(xi);
-if ( min(xi) < dom(1) || max(xi) > dom(2) )
+if ( ( min(xi) < dom(1) ) || ( max(xi) > dom(2) ) )
     error('CHEBFUN:trigratinterp:domXI', ...
         'Input vector XI must be within the domain.');
 end
 xi = 2.0 * ( xi - 0.5*sum(dom) ) / diff(dom);  % Scale nodes to [-1 1].
-    
-if ( min(xi) == -1 && max(xi) == 1 )
+
+if ( ( min(xi) == -1 ) && ( max(xi) == 1 ) )
     error('CHEBFUN:trigratinterp:duplicate', ...
         'Periodic interval cannot have both -1 and 1 as points of interpolation.');
 end
@@ -275,22 +275,22 @@ if ( strncmpi(xi_type, 'equi', 4) )
         M = floor(N/2);
         fl = f(2:M+1);
         fr = f(end:-1:M+2);
-    else                      
+    else
         M = N/2;
         fl = f(2:M+1);
-        fr = f(end:-1:M+1);        
+        fr = f(end:-1:M+1);
     end
     fEven = norm(fl - fr, inf) < tol;
-    fOdd = norm(fl + fr, inf) < tol;    
+    fOdd = norm(fl + fr, inf) < tol;
 else
-    % Other nodes.         
+    % Other nodes.
     [xi, idx] = sort(xi);
     f = f(idx);
     if ( xi(1) == -1 )
         if ( mod(N,2) == 1 )
             M = floor(N/2);
             xl = xi(2:M+1);
-            xr = xi(end:-1:M+2);    
+            xr = xi(end:-1:M+2);
             fl = f(2:M+1);
             fr = f(end:-1:M+2);
         else
@@ -298,13 +298,13 @@ else
             xl = xi(2:M+1);
             xr = xi(end:-1:M+1);
             fl = f(2:M+1);
-            fr = f(end:-1:M+1);                    
-        end        
+            fr = f(end:-1:M+1);
+        end
     elseif ( xi(end) == 1 )
         if ( mod(N,2) == 1 )
             M = floor(N/2);
             xl = xi(1:M);
-            xr = xi(end-1:-1:M+1);    
+            xr = xi(end-1:-1:M+1);
             fl = f(1:M);
             fr = f(end-1:-1:M+1);
         else
@@ -312,13 +312,13 @@ else
             xl = xi(1:M);
             xr = xi(end-1:-1:M);
             fl = f(1:M);
-            fr = f(end-1:-1:M);                    
-        end        
+            fr = f(end-1:-1:M);
+        end
     else
         if ( mod(N,2) == 1)
             M = ceil(N/2);
             xl = xi(1:M);
-            xr = xi(end:-1:M);    
+            xr = xi(end:-1:M);
             fl = f(1:M);
             fr = f(end:-1:M);
         else
@@ -331,16 +331,16 @@ else
     end
     
     if ( norm(xl + xr, inf) < tol )
-        % the nodes are symmetric, check values:        
+        % the nodes are symmetric, check values:
         fEven = norm(fl - fr, inf) < tol;
         fOdd = norm(fl + fr, inf) < tol;
-    end        
+    end
 end
 
 end
 
 function [P, Q] = construct_matrices(th, m, n, T)
-% Input: th has the points of interpolation, m, n 
+% Input: th has the points of interpolation, m, n
 %        are degrees of p and q and T is the period
 % Output P: matrix of dim length(th) x 2*m+1
 % Output Q: matrix of dim length(th) x 2*n+1
@@ -353,26 +353,26 @@ Q = zeros(length(th), 2*n+1);
 P(:, 1) = ones(length(th), 1);
 for j = 1:m
     P(:, 2*j)   = sin(2*j*pi/T*th);
-    P(:, 2*j+1) = cos(2*j*pi/T*th);    
+    P(:, 2*j+1) = cos(2*j*pi/T*th);
 end
 
 % Construct Q:
 Q(:, 1) = ones(length(th), 1);
 for j = 1:n
-    Q(:, 2*j)   = sin(2*j*pi/T*th);   
+    Q(:, 2*j)   = sin(2*j*pi/T*th);
     Q(:, 2*j+1) = cos(2*j*pi/T*th);
 end
 
 end
 
 function [ac, bc] = getCoeffs(U, S, V, m, n, fEven, fOdd)
-% Input: U, S, V is the SVD decomposition of the matrix 
+% Input: U, S, V is the SVD decomposition of the matrix
 % which solves the interpolation problem. m, n are degrees
 % of p and q and fEven and fOdd are flags indicating symmetries
-% Output: The coefficients of p and q are returned in 
+% Output: The coefficients of p and q are returned in
 % the complex exponential basis
 
-if ( fEven || fOdd )    
+if ( fEven || fOdd )
     if ( fEven )
         a = V(1:m+1, end);
         b = V(m+2:end, end);
@@ -390,16 +390,16 @@ if ( fEven || fOdd )
         a = tmp;
         tmp = zeros(2*n+1, 1);
         tmp(1:2:end) = b;
-        b = tmp;        
+        b = tmp;
     end
 else
     a = V(1:2*m+1, end);
-    b = V(2*m+2:end, end);    
+    b = V(2*m+2:end, end);
 end
 
 
 ac = sincosine_to_exponential(a);
-bc = sincosine_to_exponential(b);    
+bc = sincosine_to_exponential(b);
 
 end
 
@@ -409,13 +409,13 @@ stdDomain = [-1, 1];
 fEven = 0;
 fOdd = 0;
 T = stdDomain(end)-stdDomain(1);
-while (1)     
+while (1)
     % Set up the matrices
     [P, Q] = construct_matrices(th, m, n, T);
     N = m + n;
     if ( fEven && interpolation_flag )
         th = th(1:N+1);
-        fk = fk(1:N+1);        
+        fk = fk(1:N+1);
         P = P(1:N+1, 1:2:end); % only cosines
         Q = Q(1:N+1, 1:2:end); % only cosines
     elseif( fOdd && interpolation_flag )
@@ -427,13 +427,13 @@ while (1)
     
     % Diagonal matrix of function values:
     D = diag(fk);
-
+    
     % Scale the matrix whose null space we want to find:
     sysMat = [P, -D*Q];
-    for i = 1:length(fk)    
-        sysMat(i, :) = 1/max([abs(fk(i)), 1]) * sysMat(i, :);    
+    for i = 1:length(fk)
+        sysMat(i, :) = 1/max([abs(fk(i)), 1]) * sysMat(i, :);
     end
-
+    
     % apply SVD to find the null space
     [U, S, V] = svd(sysMat);
     
@@ -443,18 +443,18 @@ while (1)
     % Chop small coefficients at ends:
     ac = chopCoeffs(ac, tol);
     bc = chopCoeffs(bc, tol);
-
+    
     % Singular values of the problem:
-    s = diag(S);    
-        
+    s = diag(S);
+    
     % Degree reduction based on small singular values.
-    % The code exits the loop if there are less than 
+    % The code exits the loop if there are less than
     % 2 small singular values.
     
     m = min([(length(ac)-1)/2, m]);
-
+    
     n_big_sing_vals = find(abs(s) > tol, 1, 'last');
-    n_small_sing_vals = length(s) - n_big_sing_vals;    
+    n_small_sing_vals = length(s) - n_big_sing_vals;
     if ( fEven || fOdd )
         if ( n_small_sing_vals < 2 || ~robustness_flag)
             break
@@ -462,9 +462,9 @@ while (1)
             reduction = n_small_sing_vals;
         end
     elseif ( n_small_sing_vals < 2 || ~robustness_flag)
-            break
-        else
-            reduction = floor(n_small_sing_vals/2);
+        break
+    else
+        reduction = floor(n_small_sing_vals/2);
     end
     n_new = n - reduction;
     if ( n_new >= 0 )
@@ -479,7 +479,7 @@ end
 % Functions for assembling the rational interpolant.
 
 function [p, q, r] = constructTrigRatApprox(xi_type, ac, bc, mu, nu, dom, tol)
-% Make sure that small coefficients are 
+% Make sure that small coefficients are
 % discarded
 ac = chopCoeffs(ac, tol);
 bc = chopCoeffs(bc, tol);
@@ -504,11 +504,11 @@ r = @(x) p(x)./q(x);
 end
 
 function b = chopCoeffs(a, tol)
-% Input: Assume double sided coeffs in vector a with 
+% Input: Assume double sided coeffs in vector a with
 %       wavenumbers -k to k where k = (length(a)-1)/2
-% Output: b is a vector such that at least one of 
+% Output: b is a vector such that at least one of
 %       b_k and b{-k} are greather than tol in abs value.
-% 
+%
 
 % Handle the empty case:
 if ( isempty(a) )
@@ -540,6 +540,6 @@ end
 function c = sincosine_to_exponential(a)
 % Input vector a has a_1 + a_2 sin + a_3 cos + a_4 sin + ...
 % Output vector has ... + c_-1exp() + c_0 + c_1 exp() + ...
-    tmp = (a(3:2:end)-1i*a(2:2:end))/2;
-    c = [flipud(conj(tmp)); a(1); tmp];
+tmp = (a(3:2:end)-1i*a(2:2:end))/2;
+c = [flipud(conj(tmp)); a(1); tmp];
 end
