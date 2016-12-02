@@ -118,7 +118,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Input parsing.
 
-function [dom, f, m, n, NN, xi, xi_type, robustness_flag, interpolation_flag, tol] = parseInputs(f, m, n, varargin)
+function [dom, fk, m, n, NN, xi, xi_type, robustness_flag, interpolation_flag, tol] = parseInputs(f, m, n, varargin)
 
 % Make sure we have the correct number of arguments.
 if ( nargin < 3 )
@@ -137,6 +137,8 @@ if ( isfloat(f) || isa(f, 'function_handle') )
     dom = [-1, 1];
 elseif ( isa(f, 'chebfun') )
     dom = f.domain([1, end]);
+else
+    error('CHEBFUN:trigratinterp:parseInput', 'Can not recognize the input function F');
 end
 
 % Check if domain is passed:
@@ -219,33 +221,34 @@ if ( diff(dom) <= 0 )
     error('CHEBFUN:trigratinterp:badDom2', 'Invalid domain.');
 end
 
-% Construct the interpolation nodes and get their type.
-if ( length(xi) ~= NN )
-    error('CHEBFUN:trigratinterp:lengthXI', ...
-        'Input vector XI does not have the correct length.');
-end
-
+% Sort the nodes and make sure they are within the domain:
 xi = sort(xi);
 if ( ( min(xi) < dom(1) ) || ( max(xi) > dom(2) ) )
     error('CHEBFUN:trigratinterp:domXI', ...
         'Input vector XI must be within the domain.');
 end
-xi = 2.0 * ( xi - 0.5*sum(dom) ) / diff(dom);  % Scale nodes to [-1 1].
 
+
+if ( isfloat(f) )
+    fk = f;
+else
+    % If we were given a function handle or CHEBFUN, sample it on the grid.
+    fk = f(xi);
+end
+
+if ( length(fk) ~= NN )
+    error( 'CHEBFUN:trigratinterp:lengthF', ...
+        'Input vector F does not have the correct length.');
+end
+
+% Scale nodes to [-1 1].
+xi = 2.0 * ( xi - 0.5*sum(dom) ) / diff(dom); 
 if ( ( min(xi) == -1 ) && ( max(xi) == 1 ) )
     error('CHEBFUN:trigratinterp:duplicate', ...
         'Periodic interval cannot have both -1 and 1 as points of interpolation.');
 end
 
-% If we were given a function handle or CHEBFUN, sample it on the grid.
-if ( ~isfloat(f) )
-    f = f(0.5*sum(dom) + 0.5*diff(dom)*xi);
-elseif ( length(f) ~= NN )
-    error( 'CHEBFUN:trigratinterp:lengthF', ...
-        'Input vector F does not have the correct length.');
-end
-
-% Set the default robustness tolerance.
+% Check if robustness is disabled:
 if ( tol == 0 )
     % turn off robustness if tolerance is zero:
     robustness_flag = false;
