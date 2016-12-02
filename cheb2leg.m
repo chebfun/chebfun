@@ -32,7 +32,7 @@ end
 if ( N < 2 )
     % Trivial case:
     c_leg = c_cheb;
-elseif ( N < 512 ) % <-- determined experimentally
+elseif ( N < 513 ) % <-- determined experimentally
     % Use direct approach: 
     c_leg = cheb2leg_direct( c_cheb, normalize );
 else
