@@ -32,7 +32,7 @@ end
 if ( N < 2 )
     % Trivial case:
     c_leg = c_cheb;
-elseif ( N < 2 ) % <-- determined experimentally
+elseif ( N < 512 ) % <-- determined experimentally
     % Use direct approach: 
     c_leg = cheb2leg_direct( c_cheb, normalize );
 else
@@ -102,7 +102,6 @@ while ( mx > tol )
 end
 sz = size(C, 2);                                     % Numerical rank of H.
 C = C * spdiags(sqrt(pivotValues), 0, sz, sz);       % Share out scaling.
-C = full(C); % spdiags above sometimes makes C sparse which breaks fft() below.
     
 % Second row of Toeplitz part:
 T_row2 = [0, 0, vals(1:N-3)'] ./ (num'-1);
