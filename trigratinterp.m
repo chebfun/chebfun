@@ -43,7 +43,7 @@ function varargout = trigratinterp(fk, m, n, varargin)
 %
 %   Same thing but with robustness disabled:
 %
-%     [p, q, r] = ratinterp(@(x) 1./(sin(pi*x) - 0.2), 5, 5);
+%     [p, q, r] = trigratinterp(@(x) 1./(sin(pi*x) - 0.2), 5, 5, [], [], 0);
 %
 %   References:
 %
@@ -91,7 +91,7 @@ if ( nargout > 5 )
         [poles, ind] = sort(poles);
         residues = residues(ind);
         
-        % Residues are the coefficients of 1/(x - poles(j))
+        % Residues are the coefficients of 1/(x - poles(j)):
         for j = 1:(length(poles) - 1)
             if ( poles(j+1) == poles(j) )
                 residues(j+1) = residues(j);
@@ -125,8 +125,8 @@ if ( nargin < 3 )
     error('CHEBFUN:trigratinterp:tooFewArgs', 'Not enough input arguments.');
 end
 
-if ( m < 0 || n < 0 || m ~= round(m) || n ~= round(n) )
-    error('CHEBFUN:trigratinterp:integers', 'M and N must be non-negative integers');
+if ( m < 0 || n < 0 || ( m ~= round(m) ) || ( n ~= round(n) ) )
+    error('CHEBFUN:trigratinterp:integers', 'M and N must be non-negative integers.');
 end
 
 
@@ -138,7 +138,7 @@ if ( isfloat(f) || isa(f, 'function_handle') )
 elseif ( isa(f, 'chebfun') )
     dom = f.domain([1, end]);
 else
-    error('CHEBFUN:trigratinterp:parseInput', 'Can not recognize the input function F');
+    error('CHEBFUN:trigratinterp:parseInput', 'Can not recognize the input function F.');
 end
 
 % Check if domain is passed:
@@ -149,12 +149,12 @@ if ( ~isempty(varargin) )
         if ( isa(f, 'chebfun') && any(dom ~= f.domain([1, end])) )
             error('CHEBFUN:trigratinterp:npoints', 'F has different domain from the one passed');
         end
-        varargin([domStrIndex, domStrIndex+1]) = [];
+        varargin([domStrIndex, domStrIndex + 1]) = [];
     end
 end
 
 
-% Now process the reset of the varargin
+% Now process the rest of the varargin
 % varargin can only have NN, xi, tol now
 
 % First deal with NN
@@ -242,7 +242,7 @@ if ( length(fk) ~= NN )
 end
 
 % Scale nodes to [-1 1].
-xi = 2.0 * ( xi - 0.5*sum(dom) ) / diff(dom); 
+xi = 2.0 * (xi - 0.5*sum(dom)) / diff(dom);
 if ( ( min(xi) == -1 ) && ( max(xi) == 1 ) )
     error('CHEBFUN:trigratinterp:duplicate', ...
         'Periodic interval cannot have both -1 and 1 as points of interpolation.');
@@ -250,7 +250,7 @@ end
 
 % Check if robustness is disabled:
 if ( tol == 0 )
-    % turn off robustness if tolerance is zero:
+    % Turn off robustness if tolerance is zero:
     robustness_flag = false;
 else
     robustness_flag = true;
@@ -267,13 +267,13 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [fEven, fOdd] = checkSymmetries(f, xi, xi_type, tol)
-% Check symmetries, for trigonometric functions
+% Check symmetries for trigonometric functions.
 fEven = false;
 fOdd = false;
 N = length(xi);
 if ( strncmpi(xi_type, 'equi', 4) )
     % The point at the left end i.e. f(-1) is left out while
-    % checking for symmetry
+    % checking for symmetry.
     if ( mod(N, 2) == 1 )
         M = floor(N/2);
         fl = f(2:M+1);
@@ -290,7 +290,7 @@ else
     [xi, idx] = sort(xi);
     f = f(idx);
     if ( xi(1) == -1 )
-        if ( mod(N,2) == 1 )
+        if ( mod(N, 2) == 1 )
             M = floor(N/2);
             xl = xi(2:M+1);
             xr = xi(end:-1:M+2);
@@ -304,7 +304,7 @@ else
             fr = f(end:-1:M+1);
         end
     elseif ( xi(end) == 1 )
-        if ( mod(N,2) == 1 )
+        if ( mod(N, 2) == 1 )
             M = floor(N/2);
             xl = xi(1:M);
             xr = xi(end-1:-1:M+1);
@@ -318,7 +318,7 @@ else
             fr = f(end-1:-1:M);
         end
     else
-        if ( mod(N,2) == 1)
+        if ( mod(N, 2) == 1)
             M = ceil(N/2);
             xl = xi(1:M);
             xr = xi(end:-1:M);
@@ -334,7 +334,7 @@ else
     end
     
     if ( norm(xl + xr, inf) < tol )
-        % the nodes are symmetric, check values:
+        % The nodes are symmetric, check values:
         fEven = norm(fl - fr, inf) < tol;
         fOdd = norm(fl + fr, inf) < tol;
     end
@@ -370,7 +370,7 @@ end
 
 function [ac, bc] = getCoeffs(U, S, V, m, n, fEven, fOdd)
 % Input: U, S, V is the SVD decomposition of the matrix
-% which solves the interpolation problem. m, n are degrees
+% of the (linearized) interpolation problem. m, n are degrees
 % of p and q and fEven and fOdd are flags indicating symmetries
 % Output: The coefficients of p and q are returned in
 % the complex exponential basis
@@ -411,9 +411,9 @@ function [ac, bc, s] = trig_rat_interp(fk, m, n, th, ...
 stdDomain = [-1, 1];
 fEven = 0;
 fOdd = 0;
-T = stdDomain(end)-stdDomain(1);
+T = stdDomain(end) - stdDomain(1);
 while (1)
-    % Set up the matrices
+    % Set up the matrices:
     [P, Q] = construct_matrices(th, m, n, T);
     N = m + n;
     if ( fEven && interpolation_flag )
@@ -437,11 +437,11 @@ while (1)
         sysMat(i, :) = 1/max([abs(fk(i)), 1]) * sysMat(i, :);
     end
     
-    % apply SVD to find the null space
+    % Apply SVD to find the null space:
     [U, S, V] = svd(sysMat);
     
     % Get the coefficients of p and q in complex exponential basis:
-    [ac, bc ] = getCoeffs(U, S, V, m, n, fEven, fOdd);
+    [ac, bc] = getCoeffs(U, S, V, m, n, fEven, fOdd);
     
     % Chop small coefficients at ends:
     ac = chopCoeffs(ac, tol);
@@ -459,12 +459,12 @@ while (1)
     n_big_sing_vals = find(abs(s) > tol, 1, 'last');
     n_small_sing_vals = length(s) - n_big_sing_vals;
     if ( fEven || fOdd )
-        if ( n_small_sing_vals < 2 || ~robustness_flag)
+        if ( ( n_small_sing_vals < 2 ) || ~robustness_flag )
             break
         else
             reduction = n_small_sing_vals;
         end
-    elseif ( n_small_sing_vals < 2 || ~robustness_flag)
+    elseif ( ( n_small_sing_vals < 2 ) || ~robustness_flag )
         break
     else
         reduction = floor(n_small_sing_vals/2);
@@ -482,8 +482,7 @@ end
 % Functions for assembling the rational interpolant.
 
 function [p, q, r] = constructTrigRatApprox(xi_type, ac, bc, mu, nu, dom, tol)
-% Make sure that small coefficients are
-% discarded
+% Make sure that small coefficients are discarded:
 ac = chopCoeffs(ac, tol);
 bc = chopCoeffs(bc, tol);
 
@@ -531,7 +530,7 @@ if ( mod(n,2) == 0 )
 end
 
 % Chop the tails:
-midIdx = (n+1)/2;
+midIdx = (n + 1)/2;
 a1 = abs(a(midIdx:end));
 a2 = abs(a(midIdx:-1:1));
 aa = (a1 + a2)/2;
@@ -543,6 +542,6 @@ end
 function c = sincosine_to_exponential(a)
 % Input vector a has a_1 + a_2 sin + a_3 cos + a_4 sin + ...
 % Output vector has ... + c_-1exp() + c_0 + c_1 exp() + ...
-tmp = (a(3:2:end)-1i*a(2:2:end))/2;
+tmp = (a(3:2:end) - 1i*a(2:2:end))/2;
 c = [flipud(conj(tmp)); a(1); tmp];
 end
