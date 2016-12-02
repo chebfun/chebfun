@@ -31,8 +31,7 @@ function varargout = trigratinterp(fk, m, n, varargin)
 %
 %   [P, Q, R_HANDLE, MU, NU, POLES, RES] = TRIGRATINTERP(F, M, N, NN, XI)
 %   returns the poles POLES of the rational interpolant on the real axis as
-%   well as the residues RES at those points. If any of the nodes XI are
-%   complex, the complex poles are returned as well.
+%   well as the residues RES at those points.
 %
 %   Examples:
 %
@@ -59,7 +58,7 @@ function varargout = trigratinterp(fk, m, n, varargin)
 % TODO:  Deal with array-valued CHEBFUNs / quasimatrices.
 
 % Parse the inputs.
-[dom, fk, m, n, NN, th, th_type, robustness_flag, ...
+[dom, fk, m, n, ~, th, th_type, robustness_flag, ...
     interpolation_flag, tol] = ...
     parseInputs(fk, m, n, varargin{:});
 
@@ -228,6 +227,15 @@ if ( ( min(xi) < dom(1) ) || ( max(xi) > dom(2) ) )
         'Input vector XI must be within the domain.');
 end
 
+if ( rem(length(xi), 2) == 0 )
+    warning('CHEBFUN:trigratinterp:evenNumberOfPoints', ...
+        'Input vector XI does not have odd number of points.');
+end
+
+if ( ~isreal(xi) )
+    error('CHEBFUN:trigratinterp:realXI', ...
+        'Input vector XI must be real.');
+end
 
 if ( isfloat(f) )
     fk = f;

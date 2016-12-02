@@ -82,7 +82,7 @@ pass(18) = norm((p(tt)./q(tt)-fh(tt)), inf) < 1e3*tol;
 fh = @(x) exp(sin(x));
 a = 2; b = 2 + 2*pi;
 f = chebfun(fh, [a, b], 'trig');
-[p, q, r] = trigratinterp(f, 6, 6, [], 2 + 2*pi/(50)*(0:49));  
+[p, q, r] = trigratinterp(f, 6, 6, [], 2 + 2*pi/(51)*(0:50));  
 xx = linspace(a, b, 10001);
 pass(19) = norm(fh(xx) - r(xx), inf) < 10 * tol;
 
