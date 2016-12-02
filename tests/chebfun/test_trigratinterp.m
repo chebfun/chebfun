@@ -84,7 +84,7 @@ a = 2; b = 2 + 2*pi;
 f = chebfun(fh, [a, b], 'trig');
 [p, q, r] = trigratinterp(f, 6, 6, [], 2 + 2*pi/(50)*(0:49));  
 xx = linspace(a, b, 10001);
-pass(19) = norm(fh(xx) - r(xx), inf) < tol;
+pass(19) = norm(fh(xx) - r(xx), inf) < 10 * tol;
 
 % test a simple discrete case
 fi = [2, 3, 1];
@@ -96,4 +96,4 @@ pass(22) = length(p) == 3;
 pass(23) = length(q) == 1;
 
 
-
+end
