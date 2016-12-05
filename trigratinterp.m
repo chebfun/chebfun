@@ -77,7 +77,7 @@ nu = (length(bc) - 1)/2;
 
 % Build the numerator and denominator polynomials and create the output
 % function handle for evaluating the rational approximation.
-[p, q, r] = constructTrigRatApprox(th_type, ac, bc, mu, nu, dom, ts);
+[p, q, r] = constructTrigRatApprox(ac, bc, dom, ts);
 
 % Compute poles and residues if requested.
 poles = [];
@@ -485,7 +485,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Functions for assembling the rational interpolant.
 
-function [p, q, r] = constructTrigRatApprox(xi_type, ac, bc, mu, nu, dom, tol)
+function [p, q, r] = constructTrigRatApprox(ac, bc, dom, tol)
 % Make sure that small coefficients are discarded:
 ac = chopCoeffs(ac, tol);
 bc = chopCoeffs(bc, tol);
