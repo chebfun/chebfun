@@ -47,7 +47,7 @@ fk = f(th);
 pass(9) = length(p) == 3;
 pass(10) = length(q) == 3;
 th = trigpts(2*N+1);
-pass(11) = norm(p(th)./q(th) - fh(th), inf) < 1e2*tol;
+pass(11) = norm(p(th)./q(th) - fh(th), inf) < 1e3*tol;
 tt = 2 * rand(100, 1) - 1;
 pass(12) = norm((p(tt)./q(tt)-fh(tt)), inf) < 1e3*tol;
 
