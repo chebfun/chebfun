@@ -69,8 +69,7 @@ ts = tol*norm(fk, inf);
 [fEven, fOdd] = checkSymmetries(fk, th, th_type, ts);
 
 % Form matrices for the linear system for the coefficients.
-[ac, bc, s] = trig_rat_interp(fk, m, n, th, ...
-    th_type, fEven, fOdd, robustness_flag, interpolation_flag, tol);
+[ac, bc, ~] = trig_rat_interp(fk, m, n, th, fEven, fOdd, robustness_flag, interpolation_flag, ts);
 
 % Get the exact numerator and denominator degrees.
 mu = (length(ac) - 1)/2;
@@ -101,7 +100,7 @@ if ( nargout > 5 )
     end
 end
 
-outArgs = {p, q, r, s, mu, nu, poles, residues};
+outArgs = {p, q, r, mu, nu, poles, residues};
 % Return the output based on nargout:
 if ( nargout <= 1  )
     varargout{1} = r;
@@ -376,7 +375,7 @@ end
 
 end
 
-function [ac, bc] = getCoeffs(U, S, V, m, n, fEven, fOdd)
+function [ac, bc] = getCoeffs(V, m, n, fEven, fOdd)
 % Input: U, S, V is the SVD decomposition of the matrix
 % of the (linearized) interpolation problem. m, n are degrees
 % of p and q and fEven and fOdd are flags indicating symmetries
@@ -414,8 +413,7 @@ bc = sincosine_to_exponential(b);
 
 end
 
-function [ac, bc, s] = trig_rat_interp(fk, m, n, th, ...
-    th_type, fEven, fOdd, robustness_flag, interpolation_flag, tol)
+function [ac, bc, s] = trig_rat_interp(fk, m, n, th, fEven, fOdd, robustness_flag, interpolation_flag, tol)
 stdDomain = [-1, 1];
 fEven = 0;
 fOdd = 0;
@@ -441,15 +439,13 @@ while (1)
     
     % Scale the matrix whose null space we want to find:
     sysMat = [P, -D*Q];
-    for i = 1:length(fk)
-        sysMat(i, :) = 1/max([abs(fk(i)), 1]) * sysMat(i, :);
-    end
-    
+    sysMat = diag(1./max(abs(fk), 1)) * sysMat;
+
     % Apply SVD to find the null space:
-    [U, S, V] = svd(sysMat);
+    [~, S, V] = svd(sysMat);
     
     % Get the coefficients of p and q in complex exponential basis:
-    [ac, bc] = getCoeffs(U, S, V, m, n, fEven, fOdd);
+    [ac, bc] = getCoeffs(V, m, n, fEven, fOdd);
     
     % Chop small coefficients at ends:
     ac = chopCoeffs(ac, tol);
