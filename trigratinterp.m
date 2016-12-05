@@ -486,10 +486,6 @@ end
 % Functions for assembling the rational interpolant.
 
 function [p, q, r] = constructTrigRatApprox(ac, bc, dom, tol)
-% Make sure that small coefficients are discarded:
-ac = chopCoeffs(ac, tol);
-bc = chopCoeffs(bc, tol);
-
 
 % Construct chebfuns on the standard domain
 stdDomain = [-1, 1];
