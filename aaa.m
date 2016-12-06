@@ -12,13 +12,14 @@ function [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, varargin)
 %   barycentric representation of R.
 %
 %   [R, POL, RES, ZER, ZJ, FJ, WJ, ERRVEC] = AAA(F, Z) also returns the
-%   vector of errors ||f-r||_infty in subsequent iteration steps of AAA.
+%   vector of errors ||f-r||_infty in successive iteration steps of AAA.
 %
 %   R = AAA(F, Z, NAME, VALUE) sets the following parameters:
 %   - 'tol', TOL: relative tolerance (default TOL = 1e-13),
 %   - 'mmax', MMAX: maximal number of terms in the barycentric representation
 %       (default MMAX = 100).
-%   - 'cleanup', 'off': turns cleanup off.
+%   - 'cleanup', 'off': turns off automatic removal of numerical Froissart
+%       doublets
 %
 %   One can also execute R = AAA(F), with no specification of a set Z.
 %   This is equivalent to defining Z = LINSPACE(-1,1,1000) if F is a
@@ -26,8 +27,8 @@ function [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, varargin)
 %   domain [A,B], and Z = LINSPACE(-1,1,LENGTH(F)) if F is a vector.
 %
 %   Reference:
-%   [1] Yuji Nakatsukasa, Olivier Sète, Lloyd Nick Trefethen, "The AAA algorithm
-%   for rational approximation".
+%   [1] Yuji Nakatsukasa, Olivier Sète, Lloyd N. Trefethen, "The AAA algorithm
+%   for rational approximation", arXiv:1612.00337.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
