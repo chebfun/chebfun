@@ -33,6 +33,9 @@ function varargout = gallerysphere(name)
 %               field from the IGRF-12 model for 2015.
 %   peaks       A peaks like function on the sphere taken from the geopeaks
 %               function in the MATLAB mapping toolbox.
+%   neamtu      A function created by Mike Neamtu for testing various spline
+%               interpolation methods on the sphere (see Alfeld, Neamtu,
+%               Schumaker, J. Comput. Appl. Math. 1996)
 %
 %   Gallery functions are subject to change in future releases of Chebfun.
 %
@@ -136,6 +139,9 @@ switch lower(name)
             30*(z/10 - x.^3 - y.^5) .* exp(-3*(x - 0.250).^2 - 2*(y - 0.433).^2 - 3*(z - 0.866).^2) + ...
             (20*y - 8*z.^3) .* exp(-2*(x + 0.696).^2 - 3*(y + 0.123).^2 - 2*(z - 0.707).^2) + ...
             (7*y - 10*x + 10*z.^3) .* exp(-3*(x - 0.296).^2 - 3*(y + 0.814).^2 - 3*(z + 0.5).^2);
+        f = spherefun(fa);
+    case 'neamtu'
+        fa = @(x,y,z) 1 + x.^8 + exp(2*y.^3) + exp(2*z.^2) + 10*x.*y.*z;
         f = spherefun(fa);
     otherwise
         error('CHEB:GALLERYSPHERE:unknown:unknownFunction', ...
