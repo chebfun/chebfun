@@ -27,7 +27,7 @@ function [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, varargin)
 %   domain [A,B], and Z = LINSPACE(-1,1,LENGTH(F)) if F is a vector.
 %
 %   Reference:
-%   [1] Yuji Nakatsukasa, Olivier Sète, Lloyd N. Trefethen, "The AAA algorithm
+%   [1] Yuji Nakatsukasa, Olivier Sete, Lloyd N. Trefethen, "The AAA algorithm
 %   for rational approximation", arXiv:1612.00337.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
@@ -39,7 +39,6 @@ function [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, varargin)
 %   function handle or a chebfun.
 % - Once adaptivity is implemented, add domains other than [-1, 1]:
 %   possibility of other domains? 'unit' (roots of unity), [a,b].
-% - cleanup(): remove one or possibly many support points?
 
 % Parse inputs:
 [F, Z, M, tol, mmax, cleanup_flag] = parseInputs(F, varargin{:});
@@ -124,7 +123,7 @@ if ( isempty(varargin) || ~isnumeric(varargin{1}) )
     % Set of sample points Z is not given, default to equispaced points.
     numpts = 1000;
     if ( isnumeric(F) )
-        % F is given as data values, pick according number of sample points:
+        % F is given as data values, pick same number of sample points:
         Z = linspace(-1, 1, length(F));
         
     elseif ( isa(F, 'chebfun') )
@@ -191,15 +190,13 @@ end
 
 end
 
-
-
 %% Evaluate rational function in barycentric form
 
 function r = reval(zz, zj, fj, wj)
 % Evaluate rational function in barycentric form.
 zv = zz(:);                             % vectorize zz if necessary
-CC = 1./bsxfun(@minus, zv, zj.');        % Cauchy matrix
-r = (CC*(wj.*fj))./(CC*wj);                % vector of values
+CC = 1./bsxfun(@minus, zv, zj.');       % Cauchy matrix
+r = (CC*(wj.*fj))./(CC*wj);             % vector of values
 
 % Deal with input inf: r(inf) = lim r(zz) = sum(w.*f) / sum(w):
 r(isinf(zv)) = sum(wj.*fj)./sum(wj);
@@ -261,19 +258,17 @@ ni = length(ii);
 if ni == 0
     % Nothing to do.
     return
+elseif ni == 1
+    fprintf('1 Froissart doublet.\n')
+else
+    fprintf('%d Froissart doublets.\n', ni)
 end
-
-fprintf('%d Froissart doublets.\n', ni)
 
 % For each spurious pole find and remove closest support point:
 for j = 1:ni
     azp = abs(z-pol(ii(j)));
-    jj = find(azp == min(azp));
-    % TODO: this finds ALL support points with minimal distance to zj, is that
-    % what we want?
-    % If we want only one, then replace the previous two lines by
-    %     [~, jj] = min(abs(z-pol(ii(j))));
-    
+    jj = find(azp == min(azp),1);
+   
     % Remove support point(s):
     z(jj) = [];
     f(jj) = [];
