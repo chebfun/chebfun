@@ -7,11 +7,11 @@ function [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, varargin)
 %   [R, POL, RES, ZER] = AAA(F, Z) returns vectors of poles POL,
 %   residues RES, and zeros ZER of R.
 %
-%   [R, POL, RES, ZER, ZJ, WJ, FJ] = AAA(F, Z) also returns the vectors
+%   [R, POL, RES, ZER, ZJ, FJ, WJ] = AAA(F, Z) also returns the vectors
 %   of support points ZJ, weights WJ and function values FJ of the
 %   barycentric representation of R.
 %
-%   [R, POL, RES, ZER, ZJ, WJ, FJ, ERRVEC] = AAA(F, Z) also returns the
+%   [R, POL, RES, ZER, ZJ, FJ, WJ, ERRVEC] = AAA(F, Z) also returns the
 %   vector of errors ||f-r||_infty in subsequent iteration steps of AAA.
 %
 %   R = AAA(F, Z, NAME, VALUE) sets the following parameters:
