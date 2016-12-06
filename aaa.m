@@ -8,7 +8,7 @@ function [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, varargin)
 %   residues RES, and zeros ZER of R.
 %
 %   [R, POL, RES, ZER, ZJ, FJ, WJ] = AAA(F, Z) also returns the vectors
-%   of support points ZJ, weights WJ and function values FJ of the
+%   of support points ZJ, function values FJ, and weights WJ of the
 %   barycentric representation of R.
 %
 %   [R, POL, RES, ZER, ZJ, FJ, WJ, ERRVEC] = AAA(F, Z) also returns the
@@ -27,7 +27,7 @@ function [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, varargin)
 %   domain [A,B], and Z = LINSPACE(-1,1,LENGTH(F)) if F is a vector.
 %
 %   Reference:
-%   [1] Yuji Nakatsukasa, Olivier Sète, Lloyd N. Trefethen, "The AAA algorithm
+%   [1] Yuji Nakatsukasa, Olivier SÃ¨te, Lloyd N. Trefethen, "The AAA algorithm
 %   for rational approximation", arXiv:1612.00337.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
