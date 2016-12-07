@@ -33,8 +33,9 @@ function varargout = gallerysphere(name)
 %               field from the IGRF-12 model for 2015.
 %   peaks       A peaks like function on the sphere taken from the geopeaks
 %               function in the MATLAB mapping toolbox.
-%   rand        A function formed by a random combination of all real 
-%               spherical harmonics of exact degree 40.
+%   randn       A function formed by a random linear combination of all real 
+%               spherical harmonics of exact degree 40.  The coefficients
+%               are generated from a i.i.d. Gaussian distribution.
 %   neamtu      A function created by Mike Neamtu for testing various spline
 %               interpolation methods on the sphere (see Alfeld, Neamtu,
 %               Schumaker, J. Comput. Appl. Math. 1996)
@@ -146,7 +147,7 @@ switch lower(name)
     case 'neamtu'
         fa = @(x,y,z) 1 + x.^8 + exp(2*y.^3) + exp(2*z.^2) + 10*x.*y.*z;
         f = spherefun(fa);
-    case 'rand'
+    case 'randn'
         % Compute a random combination of degree 40 spherical harmonics
         deg = 40;
         % c = 1-2*rand(2*deg+1,1);  % Unform random distribution
