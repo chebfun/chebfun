@@ -58,7 +58,7 @@ end
 % bk1 = 0*x; 
 % bk2 = bk1;
 % x = 2*x;
-% for k = (size(c,1)-1):-1:1
+% for k = (size(c,1)-1):-1:2
 %     bk = c(k) + x.*bk1 - bk2;
 %     bk2 = bk1; 
 %     bk1 = bk;
@@ -73,7 +73,7 @@ end
 % bk2 = bk1;
 % e = ones(size(x, 1), 1);
 % x = 2*x;
-% for k = (size(c,1)-1):-1:1
+% for k = (size(c,1)-1):-1:2
 %     bk = e*c(k,:) + x.*bk1 - bk2;
 %     bk2 = bk1; 
 %     bk1 = bk;
