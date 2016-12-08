@@ -31,18 +31,19 @@ function varargout = gallerysphere(name)
 %               centered at (x,y,z) = (-1/sqrt(3),-1/sqrt(3),1/sqrt(3)).
 %   geomag      Radial component of the International Geomagnetic Reference
 %               field from the IGRF-12 model for 2015.
-%   peaks       A peaks like function on the sphere taken from the geopeaks
+%   peaks       Peaks like function on the sphere taken from the geopeaks
 %               function in the MATLAB mapping toolbox.
-%   randn       A function formed by a random linear combination of all real 
-%               spherical harmonics of exact degree 40.  The coefficients
-%               are generated from a i.i.d. Gaussian distribution.
-%   neamtu      A function created by Mike Neamtu for testing various spline
+%   randn       Random linear combination of all real spherical harmonics 
+%               of exact degree 40.  The coefficients are generated from a 
+%               i.i.d. Gaussian (normal) distribution with std=1.
+%   moire       Moire pattern from waves generated at two point sources
+%   neamtu      Function created by Mike Neamtu for testing various spline
 %               interpolation methods on the sphere (see Alfeld, Neamtu,
 %               Schumaker, J. Comput. Appl. Math. 1996)
 %
 %   Gallery functions are subject to change in future releases of Chebfun.
 %
-% See also CHEB.GALLERY, CHEB.GALLERYTRIG, CHEB.GALLERY2, CHEB.GALLERY3
+% See also CHEB.GALLERY, CHEB.GALLERYTRIG, CHEB.GALLERY2, CHEB.GALLERY3, CHEB.GALLERYDISK.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -52,17 +53,17 @@ function varargout = gallerysphere(name)
 % from the gallery.
 if ( nargin == 0 )
     names = {'football','soccerball','deathstar', 'vortices'...
-        'roundpeg','squarepeg','tiltedpeg', 'wave','yinyang'};
+        'gaussian','reprodkern','geomag','peaks','neamtu','randn','moire'};
     name = names{randi(length(names))};
 end
+
 type=1;                  % Default plotting type
 addEarthPlot = 0;        % Flag on whether or not to plot the earth (1=yes)
 viewAngle = [-37.5 30];  % Default viewing angle
 clrmap = parula(64);
 
 % The main switch statement.
-switch lower(name)
-    
+switch lower(name)    
     case {'football','soccerball'}
         f = spherefun.sphharm(6,0) + sqrt(14/11)*spherefun.sphharm(6,5);
         fa = f;
@@ -72,12 +73,14 @@ switch lower(name)
         fa = @(x,y,z) -(exp(-30*((y+sqrt(3)/2).^2 + x.^2 + (z-1/2).^2)) + exp(-100*z.^2));
         f = spherefun(fa);
         type = 1;
+        clrmap = flipud(jet);
     case 'vortices'
         rho = @(th) 3*(sin(th)); w = @(th) (3*sqrt(2)/2*sech(rho(th)).^2.*tanh(rho(th)))./(rho(th)+eps);
         fa = @(lam,th) -tanh(rho(th)/5.*sin(lam-20*w(th)));
         f = spherefun(fa);
         cntrlvl = [0 0];
         type = 3;
+        clrmap = jet;
     case 'gaussian'
         % Coordinate of Braunschweig where Gauss was born;
         coords = [10.516667 52.266667]/180*pi;
@@ -86,16 +89,7 @@ switch lower(name)
         f = spherefun(@(x,y,z) fa(x,y,z,xc,yc,zc));
         addEarthPlot = 1;
         viewAngle = [80 15];
-        % A scaled version of the classic MATLAB peaks function:
-        %case 'peaks'
-        %  fa = @(x,y) 2*(1-2*x).^2.*exp(-(2*x).^2 - ((2*y)+1).^2) ...
-        %     - 10*((2*x)/5 - (2*x).^3 - (2*y).^5).*exp(-(2*x).^2 - (2*y).^2) ...
-        %     - 1/3*exp(-((2*x)+1).^2 - (2*y).^2);
-        % f = diskfun(fa);
-        % type=1; %set to view(3)
     case 'reprodkern'
-        % Coordinates of Boise where the kernel will be centered
-        % coords = [-116.2 90-43.616667]/180*pi;
         [lam0,th0] = cart2sph(-1/sqrt(3),-1/sqrt(3),1/sqrt(3));
         f = spherefun(@(lam,th) sphRPK(lam,th,lam0,pi/2-th0,20));
         fa = f;
@@ -156,6 +150,25 @@ switch lower(name)
         fa = f;
         type = 1;
         clrmap = gray(2);
+    case 'moire'
+        % Centers of the beacons
+        boise = [-116.237651 43.613739]*pi/180;
+        oxford = [-1.257778 51.751944]*pi/180;
+        % ithaca = [-76.5 42.443333]*pi/180;
+        % stellenbosh = [18.86 -33.92]*pi/180;
+        [xb,yb,zb] = sph2cart(boise(1),boise(2),1);
+        [xo,yo,zo] = sph2cart(oxford(1),oxford(2),1);
+        % Pick the number of oscillations and make each of the "waves" 
+        % vanish at the anti-podal points from their centers.
+        omega = besselroots(0,30); omega = omega(end)/2;
+        % Use a combination of the J0 bessel functions centered at Boise
+        % and Oxford to generate the Moire pattern.
+        fa = @(x,y,z,omega) 2 + besselj(0,omega*sqrt((x-xb).^2+(y-yb).^2+(z-zb).^2)) + ...
+            2 + besselj(0,omega*sqrt((x-xo).^2+(y-yo).^2+(z-zo).^2));
+        f = spherefun(@(x,y,z) fa(x,y,z,omega));
+        type = 1;
+        addEarthPlot = 1;
+        viewAngle = [32 8];
     otherwise
         error('CHEB:GALLERYSPHERE:unknown:unknownFunction', ...
             'Unknown function.')
