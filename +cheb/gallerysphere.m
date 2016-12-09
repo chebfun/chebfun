@@ -177,7 +177,7 @@ switch lower(name)
         type = 3;
         cntrlvl = [1 1];
         viewAngle = [-36 8];
-        clrmap = jet;
+        clrmap = hot;
     case ':)'
         fa = @(x,y,z) exp(-20*(4*(x+cos(pi/6)*sin(pi/4)).^2 + 4*(y+sin(pi/6)*sin(pi/4)).^2 + (z-cos(pi/4)).^2)) + ...
                       exp(-20*(4*(x+cos(-pi/6)*sin(pi/4)).^2 + 4*(y+sin(-pi/6)*sin(pi/4)).^2 + (z-cos(pi/4)).^2)) + ...
