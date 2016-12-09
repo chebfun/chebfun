@@ -365,7 +365,8 @@ for n = 5:14
     % On Z(n):
     err(1,1) = norm(F(Z) - r(Z), inf);
     
-    Zrefined = linspace(dom(1), dom(2), round(1.5 * (1 + 2^(n+1)))).';
+    Zrefined = linspace(dom(1)+1.37e-8*diff(dom), dom(2)-3.08e-9*diff(dom), ...
+        round(1.5 * (1 + 2^(n+1)))).';
     err(2,1) = norm(F(Zrefined) - r(Zrefined), inf);
     
     if ( all(err < reltol) )
