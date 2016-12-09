@@ -18,13 +18,16 @@ function [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, varargin)
 %   - 'tol', TOL: relative tolerance (default TOL = 1e-13),
 %   - 'mmax', MMAX: maximal number of terms in the barycentric representation
 %       (default MMAX = 100).
-%   - 'cleanup', 'off': turns off automatic removal of numerical Froissart
+%   - 'dom', DOM: domain (default DOM = [-1, 1]). No effect if Z is provided.
+%   - 'cleanup', 'off' ou 0: turns off automatic removal of numerical Froissart
 %       doublets
 %
 %   One can also execute R = AAA(F), with no specification of a set Z.
-%   This is equivalent to defining Z = LINSPACE(-1,1,1000) if F is a
-%   function handle, Z = LINSPACE(A,B,1000) if F is a chebfun with
-%   domain [A,B], and Z = LINSPACE(-1,1,LENGTH(F)) if F is a vector.
+%   This is equivalent to defining Z = LINSPACE(DOM(1), DOM(2), LENGTH(F)) if F
+%   is a vector (by default DOM = [-1, 1]).
+%   If F is a function handle or a chebfun, AAA attempts to resolve F on its
+%   domain DOM.  By default, DOM = [-1, 1] for a function handle, and
+%   DOM = F.DOMAIN([1, END]) for a chebfun.
 %
 %   Reference:
 %   [1] Yuji Nakatsukasa, Olivier Sete, Lloyd N. Trefethen, "The AAA algorithm
@@ -34,14 +37,15 @@ function [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 
 
-% TODO:
-% - Adaptive choice of the number of sample points when Z omitted and F is a
-%   function handle or a chebfun.
-% - Once adaptivity is implemented, add domains other than [-1, 1]:
-%   possibility of other domains? 'unit' (roots of unity), [a,b].
-
 % Parse inputs:
-[F, Z, M, tol, mmax, cleanup_flag] = parseInputs(F, varargin{:});
+[F, Z, M, dom, tol, mmax, cleanup_flag, needZ] = parseInputs(F, varargin{:});
+
+if ( needZ )
+    % Z was not provided.  Try to resolve F on its domain.
+    [r, pol, res, zer, zj, fj, wj, errvec] = ...
+        aaa_autoZ(F, dom, tol, mmax, cleanup_flag);
+    return
+end
 
 % Relative tolerance:
 reltol = tol * norm(F, inf);
@@ -115,82 +119,121 @@ end % of AAA()
 
 %% parse Inputs:
 
-function [F, Z, M, tol, mmax, cleanup_flag] = parseInputs(F, varargin)
+function [F, Z, M, dom, tol, mmax, cleanup_flag, needZ] = ...
+    parseInputs(F, varargin)
 % Input parsing for AAA.
 
-% Sample points:
-if ( isempty(varargin) || ~isnumeric(varargin{1}) )
-    % Set of sample points Z is not given, default to equispaced points.
-    numpts = 1000;
-    if ( isnumeric(F) )
-        % F is given as data values, pick same number of sample points:
-        Z = linspace(-1, 1, length(F));
-        
-    elseif ( isa(F, 'chebfun') )
-        if ( size(F, 2) ~= 1 )
-            error('CHEBFUN:aaa:NonscalarF', 'The chebfun F must be scalar.')
-        end
-        % Default to the domain of F:
-        dom = F.domain;
-        Z = linspace(dom(1), dom(end), numpts);
-        
-    else
-        % Default Z to [-1, 1]:
-        Z = linspace(-1, 1, numpts);
+% Check if F is empty:
+if ( isempty(F) )
+    error('CHEBFUN:aaa:emptyF', 'No function given.')
+elseif ( isa(F, 'chebfun') )
+    if ( size(F, 2) ~= 1 )
+        error('CHEBFUN:aaa:nColF', 'Input chebfun must have one column.')
     end
-else %if ( isnumeric(varargin{1}) )
+end
+
+% Sample points:
+if ( ~isempty(varargin) && isfloat(varargin{1}) )
+    % Z is given.
     Z = varargin{1};
+    if ( isempty(Z) )
+        error('CHEBFUN:aaa:emptyZ', ...
+            'If sample set is provided, it must be nonempty.')
+    end
     varargin(1) = [];
 end
 
-% Work with column vectors:
-Z = Z(:);
-M = length(Z);
-
-
-% Function values:
-if ( isa(F, 'function_handle') || isa(F, 'chebfun') )
-    % Sample F on Z:
-    F = F(Z);
-elseif ( isnumeric(F) )
-    % Work with column vector and check that it has correct length.
-    F = F(:);
-    if ( length(F) ~= M )
-        error('CHEBFUN:aaa:lengthFZ', ...
-            'Inputs F and Z must have the same length.')
-    end
-else
-    error('CHEBFUN:aaa:UnknownF', 'Input for F not recognized.')
-end
-
-% Further parameters:
-
-% Set defaults:
+% Set defaults for other parameters:
 tol = 1e-13;        % Relative tolerance.
 mmax = 100;         % Maximum number of terms.
+% Domain:
+if ( isa(F, 'chebfun') )
+    dom = F.domain([1, end]);
+else
+    dom = [-1, 1];
+end
 cleanup_flag = 1;   % Cleanup on.
 
-% Check further inputs:
+% Check if parameters have been provided:
 while ( ~isempty(varargin) )
     if ( strncmpi(varargin{1}, 'tol', 3) )
-        tol = varargin{2};
+        if ( isfloat(varargin{2}) && isequal(size(varargin{2}), [1, 1]) )
+            tol = varargin{2};
+        end
         varargin([1, 2]) = [];
+        
     elseif ( strncmpi(varargin{1}, 'mmax', 4) )
-        mmax = varargin{2};
+        if ( isfloat(varargin{2}) && isequal(size(varargin{2}), [1, 1]) )
+            mmax = varargin{2};
+        end
         varargin([1, 2]) = [];
+        
+    elseif ( strncmpi(varargin{1}, 'dom', 3) )
+        if ( isfloat(varargin{2}) && isequal(size(varargin{2}), [1, 2]) )
+            dom = varargin{2};
+        end
+        varargin([1, 2]) = [];
+        if ( isa(F, 'chebfun') )
+            if ( ~isequal(dom, F.domain([1, end])) )
+                warning('CHEBFUN:aaa:dom', ...
+                    ['Given domain does not match the domain of the chebfun.\n', ...
+                    'Results may be inaccurate.'])
+            end
+        end
+        
     elseif ( strncmpi(varargin{1}, 'cleanup', 7) )
-        if ( strncmpi(varargin{2}, 'off', 3) )
+        if ( strncmpi(varargin{2}, 'off', 3) || ( varargin{2} == 0 ) )
             cleanup_flag = 0;
         end
         varargin([1, 2]) = [];
+        
     else
         error('CHEBFUN:aaa:UnknownArg', 'Argument unknown.')
     end
 end
 
+
+% Deal with Z and F:
+if ( ~exist('Z', 'var') && isfloat(F) )
+    % F is given as data values, pick same number of sample points:
+    Z = linspace(dom(1), dom(2), length(F)).';
 end
 
-%% Evaluate rational function in barycentric form
+if ( exist('Z', 'var') )
+    % Z is given:
+    needZ = 0;
+    
+    % Work with column vector:
+    Z = Z(:);
+    M = length(Z);
+    
+    % Function values:
+    if ( isa(F, 'function_handle') || isa(F, 'chebfun') )
+        % Sample F on Z:
+        F = F(Z);
+    elseif ( isnumeric(F) )
+        % Work with column vector and check that it has correct length.
+        F = F(:);
+        if ( length(F) ~= M )
+            error('CHEBFUN:aaa:lengthFZ', ...
+                'Inputs F and Z must have the same length.')
+        end
+    else
+        error('CHEBFUN:aaa:UnknownF', 'Input for F not recognized.')
+    end
+    
+else
+    % Z was not given.  Set flag that Z needs to be determined.
+    % Also set Z and M since they are needed as output.
+    needZ = 1;
+    Z = [];
+    M = length(Z);
+end
+
+end % End of PARSEINPUT().
+
+
+%% Evaluate rational function in barycentric form.
 
 function r = reval(zz, zj, fj, wj)
 % Evaluate rational function in barycentric form.
@@ -204,8 +247,9 @@ r(isinf(zv)) = sum(wj.*fj)./sum(wj);
 % Deal with NaN:
 ii = find(isnan(r));
 for jj = 1:length(ii)
-    if ( isnan(zv(ii)) )
+    if ( isnan(zv(ii(jj))) || ~any(zv(ii(jj)) == zj) )
         % r(NaN) = NaN is fine.
+        % The second case may happen if r(zv(ii)) = 0/0 at some point.
     else
         % Clean up values NaN = inf/inf at support points.
         % Find the corresponding node and set entry to correct value:
@@ -216,7 +260,7 @@ end
 % Reshape to input format:
 r = reshape(r, size(zz));
 
-end % of REVAL()
+end % End of REVAL().
 
 
 %% Compute poles, residues and zeros.
@@ -243,8 +287,7 @@ zer = eig(E, B);
 % Remove zeros of numerator at infinity:
 zer = zer(~isinf(zer));
 
-end % end of PRZ()
-
+end % End of PRZ().
 
 
 %% Cleanup
@@ -255,10 +298,10 @@ function [r, pol, res, zer, z, f, w] = cleanup(r, pol, res, zer, z, f, w, Z, F)
 % Find negligible residues:
 ii = find(abs(res) < 1e-13);
 ni = length(ii);
-if ni == 0
+if ( ni == 0 )
     % Nothing to do.
     return
-elseif ni == 1
+elseif ( ni == 1 )
     fprintf('1 Froissart doublet.\n')
 else
     fprintf('%d Froissart doublets.\n', ni)
@@ -268,7 +311,7 @@ end
 for j = 1:ni
     azp = abs(z-pol(ii(j)));
     jj = find(azp == min(azp),1);
-   
+    
     % Remove support point(s):
     z(jj) = [];
     f(jj) = [];
@@ -296,4 +339,51 @@ w = V(:,m);
 r = @(zz) reval(zz, z, f, w);
 [pol, res, zer] = prz(r, z, f, w);
 
-end % of CLEANUP()
+end % End of CLEANUP().
+
+
+%% Automated choice of sample set
+
+function [r, pol, res, zer, zj, fj, wj, errvec] = ...
+    aaa_autoZ(F, dom, tol, mmax, cleanup_flag)
+%
+
+% Flag if function has been resolved:
+isResolved = 0;
+
+% Main loop:
+for n = 4:16
+    % Sample points:
+    Z = linspace(dom(1), dom(2), 1 + 2^n).';
+    [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, Z, 'tol', tol, ...
+        'mmax', mmax, 'cleanup', cleanup_flag);
+    
+    % Test if rational approximant is accurate:
+    reltol = tol * norm(F(Z), inf);
+    
+    % On Z(n):
+    err(1,1) = norm(F(Z) - r(Z), inf);
+    
+    Zrefined = linspace(dom(1), dom(2), round(1.5 * (1 + 2^(n+1)))).';
+    err(2,1) = norm(F(Zrefined) - r(Zrefined), inf);
+    
+    if ( all(err < reltol) )
+        % Final check that the function is resolved, inspired by sampleTest().
+        % Pseudo random sample points in [-1, 1]:
+        xeval = [-0.357998918959666; 0.036785641195074];
+        % Scale to dom:
+        xeval = (dom(2) - dom(1))/2 * xeval + (dom(2) + dom(1))/2;
+        
+        if ( norm(F(xeval) - r(xeval), inf) < reltol )
+            isResolved = 1;
+            break
+        end
+    end
+end
+
+if ( isResolved == 0 )
+    warning('CHEBFUN:aaa:notResolved', ...
+        'Function not resolved using %d pts.', length(Z))
+end
+
+end % End of AAA_AUTOZ().
