@@ -20,7 +20,7 @@ function varargout = gallerysphere(name)
 %   CHEB.GALLERYSPHERE with no output argument creates a plot of the selected
 %   function.
 %
-%   deathstar   A function resembling the Death Star when plotted
+%   deathstar   A function resembling the surface of the Death Star
 %   gaussian    Gaussian function on the sphere centered at Gauss's birth place
 %   geomag      Radial component of the International Geomagnetic Reference
 %               field from the IGRF-12 model for 2015.
