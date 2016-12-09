@@ -20,26 +20,25 @@ function varargout = gallerysphere(name)
 %   CHEB.GALLERYSPHERE with no output argument creates a plot of the selected
 %   function.
 %
-%   football    Icosahedral pattern found on a traditional soccer ball
-%   soccerball  Same as football, but for the American users
 %   deathstar   A function resembling the Death Star when plotted
-%   vortices    Two antipodal vortices taken from  Nair, C\^ot\'e, and 
-%               Stainforth (1999)
-%   gaussian    Gaussian function on the sphere centered at Gauss's birth 
-%               place
-%   reprodkern  Reproducing kernel for spherical harmonics of degree 10
-%               centered at (x,y,z) = (-1/sqrt(3),-1/sqrt(3),1/sqrt(3)).
+%   gaussian    Gaussian function on the sphere centered at Gauss's birth place
 %   geomag      Radial component of the International Geomagnetic Reference
 %               field from the IGRF-12 model for 2015.
+%   football    Icosahedral pattern found on a traditional soccer ball
+%   moire       Moire pattern from waves generated at two point sources
+%   neamtu      Function created by Mike Neamtu for testing various spline
+%               interpolation methods on the sphere (see Alfeld, Neamtu,
+%               Schumaker, J. Comput. Appl. Math. 1996)
 %   peaks       Peaks like function on the sphere taken from the geopeaks
 %               function in the MATLAB mapping toolbox.
 %   randn       Random linear combination of all real spherical harmonics 
 %               of exact degree 40.  The coefficients are generated from a 
 %               i.i.d. Gaussian (normal) distribution with std=1.
-%   moire       Moire pattern from waves generated at two point sources
-%   neamtu      Function created by Mike Neamtu for testing various spline
-%               interpolation methods on the sphere (see Alfeld, Neamtu,
-%               Schumaker, J. Comput. Appl. Math. 1996)
+%   reprodkern  Reproducing kernel for spherical harmonics of degree 10
+%               centered at (x,y,z) = (-1/sqrt(3),-1/sqrt(3),1/sqrt(3)).
+%   soccerball  Same as football, but for the American users
+%   vortices    Two antipodal vortices taken from  Nair, C\^ot\'e, and 
+%               Stainforth (1999)
 %   :)          A function to make you happy
 %
 %   Gallery functions are subject to change in future releases of Chebfun.
