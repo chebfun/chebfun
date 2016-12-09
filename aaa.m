@@ -352,7 +352,7 @@ function [r, pol, res, zer, zj, fj, wj, errvec] = ...
 isResolved = 0;
 
 % Main loop:
-for n = 4:16
+for n = 5:14
     % Sample points:
     Z = linspace(dom(1), dom(2), 1 + 2^n).';
     [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, Z, 'tol', tol, ...
