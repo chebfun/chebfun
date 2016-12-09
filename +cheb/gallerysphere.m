@@ -40,6 +40,7 @@ function varargout = gallerysphere(name)
 %   neamtu      Function created by Mike Neamtu for testing various spline
 %               interpolation methods on the sphere (see Alfeld, Neamtu,
 %               Schumaker, J. Comput. Appl. Math. 1996)
+%   :)          A function to make you happy
 %
 %   Gallery functions are subject to change in future releases of Chebfun.
 %
@@ -169,6 +170,12 @@ switch lower(name)
         type = 1;
         addEarthPlot = 1;
         viewAngle = [32 8];
+    case ':)'
+        fa = @(x,y,z) exp(-20*(4*(x+cos(pi/6)*sin(pi/4)).^2 + 4*(y+sin(pi/6)*sin(pi/4)).^2 + (z-cos(pi/4)).^2)) + ...
+                      exp(-20*(4*(x+cos(-pi/6)*sin(pi/4)).^2 + 4*(y+sin(-pi/6)*sin(pi/4)).^2 + (z-cos(pi/4)).^2)) + ...
+                   9*exp(-100*((x + 1).^2 - x.*z + (z - 1/2).^2 - 1/10).^2);
+        f = spherefun(fa);
+        viewAngle = [-75 20];
     otherwise
         error('CHEB:GALLERYSPHERE:unknown:unknownFunction', ...
             'Unknown function.')
