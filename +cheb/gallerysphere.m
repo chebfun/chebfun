@@ -37,6 +37,7 @@ function varargout = gallerysphere(name)
 %   reprodkern  Reproducing kernel for spherical harmonics of degree 10
 %               centered at (x,y,z) = (-1/sqrt(3),-1/sqrt(3),1/sqrt(3)).
 %   soccerball  Same as football, but for the American users
+%   stripes     Alternating striped pattern 
 %   vortices    Two antipodal vortices taken from  Nair, C\^ot\'e, and 
 %               Stainforth (1999)
 %   :)          A function to make you happy
@@ -74,6 +75,7 @@ switch lower(name)
         f = spherefun(fa);
         type = 1;
         clrmap = flipud(jet);
+        viewAngle = [-35 8];
     case 'vortices'
         rho = @(th) 3*(sin(th)); w = @(th) (3*sqrt(2)/2*sech(rho(th)).^2.*tanh(rho(th)))./(rho(th)+eps);
         fa = @(lam,th) -tanh(rho(th)/5.*sin(lam-20*w(th)));
@@ -169,6 +171,13 @@ switch lower(name)
         type = 1;
         addEarthPlot = 1;
         viewAngle = [32 8];
+    case 'stripes'
+        fa = @(x,y,z) (1 + cos(10*pi*x)).*exp(-exp(-20*z)) + (1 - cos(10*pi*x)).*exp(-exp(20*z));
+        f = spherefun(fa);
+        type = 3;
+        cntrlvl = [1 1];
+        viewAngle = [-36 8];
+        clrmap = jet;
     case ':)'
         fa = @(x,y,z) exp(-20*(4*(x+cos(pi/6)*sin(pi/4)).^2 + 4*(y+sin(pi/6)*sin(pi/4)).^2 + (z-cos(pi/4)).^2)) + ...
                       exp(-20*(4*(x+cos(-pi/6)*sin(pi/4)).^2 + 4*(y+sin(-pi/6)*sin(pi/4)).^2 + (z-cos(pi/4)).^2)) + ...
