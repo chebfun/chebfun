@@ -2,7 +2,7 @@ function Y = harmonic(L, m, type)
 %HARMONIC   Normalized, real-valued, eigenfunction of the Laplacian 
 %           on the disk.
 %
-%   Y = HARMONIC(L, M) returns the eigenfunction  V_L^M(t,r) with 
+%   Y = HARMONIC(L, M) returns the eigenfunction  V_L^M(t,r) for
 %   homogeneous Dirichlet boundary conditions. Here,
 %        -pi <= t <= pi  is the angular coordinate, and
 %          0 <= r  <= 1  is the radial coordinate.
@@ -10,7 +10,7 @@ function Y = harmonic(L, m, type)
 %   Y = HARMONIC(L, M, 'dirichlet') is the same as Y = HARMONIC(L, M).
 %
 %   Y = HARMONIC(L, M,'neumann') returns the eigenfunction V_L^M(t,r)
-%   with Neumann boundary conditions.
+%   for homogeneous Neumann boundary conditions.
 %
 %   The harmonic functions are the eigenfunctions of the  Laplacian on 
 %   the disk, and they form an orthogonal basis with respect to the polar 
