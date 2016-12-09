@@ -38,4 +38,17 @@ r = aaa(F, Z);
 pass(10) = ( norm(F - r(Z), inf) < tol );
 pass(11) = ( r(inf) == -inf );
 
+% Check for exact scale-invariance
+Z = linspace(0.3,1.5);
+F = exp(Z)./(1+1i);
+r1 = aaa(F, Z);
+r2 = aaa(2^311*F, Z);
+r3 = aaa(2^-311*F, Z);
+pass(12) = ( r1(0.2i) == 2^-311*r2(0.2i) ); 
+pass(13) = ( r1(1.4) == 2^311*r3(1.4) ); 
+
+% Make sure the gamma function gives something reasonable:
+r = aaa(@gamma);
+pass(14) = abs(r(1.5) - gamma(1.5)) < 1e-3;
+
 end

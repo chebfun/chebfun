@@ -19,7 +19,7 @@ function [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, varargin)
 %   - 'mmax', MMAX: maximal number of terms in the barycentric representation
 %       (default MMAX = 100).
 %   - 'dom', DOM: domain (default DOM = [-1, 1]). No effect if Z is provided.
-%   - 'cleanup', 'off' ou 0: turns off automatic removal of numerical Froissart
+%   - 'cleanup', 'off' or 0: turns off automatic removal of numerical Froissart
 %       doublets
 %
 %   One can also execute R = AAA(F), with no specification of a set Z.
@@ -296,7 +296,7 @@ function [r, pol, res, zer, z, f, w] = cleanup(r, pol, res, zer, z, f, w, Z, F)
 % Remove spurious pole-zero pairs.
 
 % Find negligible residues:
-ii = find(abs(res) < 1e-13);
+ii = find(abs(res) < 1e-13 * norm(F, inf));
 ni = length(ii);
 if ( ni == 0 )
     % Nothing to do.
@@ -354,7 +354,8 @@ isResolved = 0;
 % Main loop:
 for n = 5:14
     % Sample points:
-    Z = linspace(dom(1), dom(2), 1 + 2^n).';
+    % Next line enables us to do pretty well near poles
+    Z = linspace(dom(1)+1.37e-8*diff(dom), dom(2)-3.08e-9*diff(dom), 1 + 2^n).';
     [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, Z, 'tol', tol, ...
         'mmax', mmax, 'cleanup', cleanup_flag);
     
