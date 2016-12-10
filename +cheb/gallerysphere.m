@@ -4,7 +4,7 @@ function varargout = gallerysphere(name)
 %   See the listing below for available names.
 %
 %   For example,  plot(cheb.gallerysphere('football')) plots the classic
-%   icosahedral pattern of the Addias Telestar football (or soccerball for
+%   icosahedral pattern of the Addias Telestar football (or soccer ball for
 %   Americans).  For details of how each function is constructed,
 %   try constructed, try type +cheb/gallery2 or edit cheb.gallerysphere.
 %
@@ -37,7 +37,7 @@ function varargout = gallerysphere(name)
 %               centered at (x,y,z) = (-1/sqrt(3),-1/sqrt(3),1/sqrt(3)).
 %   soccerball  Same as football, but for the American users
 %   stripes     Alternating striped pattern 
-%   vortices    Two antipodal vortices taken from  Nair, C\^ot\'e, and 
+%   vortices    Two antipodal vortices taken from  Nair, Cote, and 
 %               Stainforth (1999)
 %   :)          A function to make you happy
 %
@@ -90,7 +90,7 @@ switch lower(name)
         
     % A simple Gaussian
     case 'gaussian'
-        % Coordinate of Braunschweig where Gauss was born;
+        % Coordinates of Braunschweig, where Gauss was born;
         coords = [10.516667 52.266667]/180*pi;
         [xc,yc,zc] = sph2cart(coords(1),coords(2),1);
         fa = @(x,y,z,xc,yc,zc) exp(-20*((x-xc).^2 + (y-yc).^2 + (z-zc).^2));
@@ -261,7 +261,7 @@ end
 function F = sphHarmFixedDegRand(lam,th,l,c)
 %SPHHARMFIXEDDEGRAND Random combination of all spherical harmonics of fixed degree
 %   F = SPHHARMFIXEDDEGRAND(LAM,TH,DEG,C) is a random combination all
-%   spherical harmonics of a given degree DEG.  The random coefficiencts
+%   spherical harmonics of a given degree DEG.  The random coefficients
 %   for the combination are given in C, which must be equal to 2*DEG+1.
 
 % Determine whether the input is on a tensor product grid.  If it is then
@@ -273,10 +273,10 @@ if m > 1 && n > 1
     th = th(:,1);
     tensorGrid = 1;
 else
-    % Flatten theta so it works with matlab's Legendre function
+    % Flatten theta so it works with Matlab's Legendre function
     th = th(:).'; 
 end
-% Flatten lambda so it works with matlab's Legendre function
+% Flatten lambda so it works with Matlab's Legendre function
 lam = lam(:).';
 
 % Normalization terms for the associated Legendre functions.
