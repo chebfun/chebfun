@@ -173,13 +173,23 @@ cleanup_flag = 1;   % Cleanup on.
 % Check further inputs:
 while ( ~isempty(varargin) )
     if ( strncmpi(varargin{1}, 'tol', 3) )
-        tol = varargin{2};
+        if ( ~isempty(varargin{2}) && isfloat(varargin{2}) && ...
+                isequal(size(varargin{2}), [1, 1]) )
+            tol = varargin{2};
+        else
+            error('CHEBFUN:aaa:inputTOL', 'Input TOL must be a scalar.')
+        end
         varargin([1, 2]) = [];
     elseif ( strncmpi(varargin{1}, 'mmax', 4) )
-        mmax = varargin{2};
+        if ( ~isempty(varargin{2}) && isfloat(varargin{2}) && ...
+                isequal(size(varargin{2}), [1, 1]) )
+            mmax = varargin{2};
+        else
+            error('CHEBFUN:aaa:inputMMAX', 'Input MMAX must be a scalar.')
+        end
         varargin([1, 2]) = [];
     elseif ( strncmpi(varargin{1}, 'cleanup', 7) )
-        if ( strncmpi(varargin{2}, 'off', 3) )
+        if ( strncmpi(varargin{2}, 'off', 3) || ( varargin{2} == 0 ) )
             cleanup_flag = 0;
         end
         varargin([1, 2]) = [];
@@ -255,10 +265,10 @@ function [r, pol, res, zer, z, f, w] = cleanup(r, pol, res, zer, z, f, w, Z, F)
 % Find negligible residues:
 ii = find(abs(res) < 1e-13);
 ni = length(ii);
-if ni == 0
+if ( ni == 0 )
     % Nothing to do.
     return
-elseif ni == 1
+elseif ( ni == 1 )
     fprintf('1 Froissart doublet.\n')
 else
     fprintf('%d Froissart doublets.\n', ni)
