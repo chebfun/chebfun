@@ -5,7 +5,7 @@ function varargout = gallerydisk(name)
 %
 %   For example,  plot(cheb.gallerydisk('yinyang')) plots Grady Wright's
 %   yin-yang function.  For details of how each function is constructed,
-%   try constructed, try type +cheb/gallery2 or edit cheb.gallerydisk.
+%   try 'type +cheb/gallerydisk' or 'edit cheb.gallerydisk'.
 %
 %   [F,FA] = CHEB.GALLERYDISK(NAME) also returns the anonymous function FA 
 %   used to define the function.  If the arguments are (t,r), the diskfun
