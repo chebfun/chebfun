@@ -18,9 +18,9 @@ if ( isempty( f ) )
 end
 
 tangentf = tangent( f );
-tol1 = 10*vscale(f.components{1})*chebfunpref().cheb2Prefs.chebfun2eps;
-tol2 = 10*vscale(f.components{2})*chebfunpref().cheb2Prefs.chebfun2eps;
-tol3 = 10*vscale(f.components{3})*chebfunpref().cheb2Prefs.chebfun2eps;
+tol1 = 100*vscale(f.components{1})*chebfunpref().cheb2Prefs.chebfun2eps;
+tol2 = 100*vscale(f.components{2})*chebfunpref().cheb2Prefs.chebfun2eps;
+tol3 = 100*vscale(f.components{3})*chebfunpref().cheb2Prefs.chebfun2eps;
 if ( norm( f - tangentf ) ) > tol1+tol2+tol3 
     warning( 'SPHEREFUNV:HELMHOLTZDECOMPOSITON:TANGENT', ...
         ['The vector field needs to be tangent to the surface of the',...

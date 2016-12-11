@@ -4,7 +4,7 @@ function f = simplify(f, varargin)
 %   cols, rows and tubes are chopped to the input tolerance tol. This
 %   simplifies only the factor quasimatrices and not the core tensor.
 %
-%   SIMPLIFY(F, 'rank', tol) truncates F via HOSVD to make the core tensor
+%   SIMPLIFY(F, tol, 'rank') truncates F via HOSVD to make the core tensor
 %   smaller. The number of columns in the factor quasimatrices are adjusted 
 %   accordingly. Note that unlike the 2D case, where truncation by SVD gives 
 %   optimal low rank approximation, this is not necessarily true in dimensions 
@@ -35,7 +35,7 @@ end
 
 if ( nargin == 3 )
     % Simplify the rank:
-    tol = varargin{2};
+    tol = varargin{1};
     [sv, F] = hosvd(f);
     tRankX = find(sv{1} > tol, 1, 'last');
     tRankY = find(sv{2} > tol, 1, 'last');

@@ -4,10 +4,11 @@ function [normF, normloc] = norm( f, p )
 %    NORM(F) = sqrt(integral of abs(F)^2).
 %    NORM(F, 2) = largest singular value of F.
 %    NORM(F,'fro') is the same as NORM(F).
+%    NORM(F,'nuc') = sum of singular values of F.
 %    NORM(F, 1) = NOT IMPLEMENTED.
 %    NORM(F, inf) = global maximum in absolute value.
 %    NORM(F, 'max') = global maximum in absolute value.
-%    NORM(F, 'min') = NOT IMPLEMENTED
+%    NORM(F, 'min') = NOT IMPLEMENTED.
 %
 % Furthermore, the inf norm for SEPARABLEAPPROX objects also returns a second output,
 % giving a position where the max occurs.
@@ -16,8 +17,8 @@ function [normF, normloc] = norm( f, p )
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin == 1 ) 
-    % Default to 2-norm.
-    p = 2;
+    % Default to Frobenius norm.
+    p = 'fro';
 end
 
 if ( isempty( f ) )  
@@ -28,27 +29,38 @@ else
     switch ( p )  % Different cases on different norms.
         case 1
             error('CHEBFUN:SEPARABLEAPPROX:norm:norm', ...
-                'SEPARABLEAPPROX does not support L1-norm, yet');
+                'SEPARABLEAPPROX does not support L1-norm');
             
-        case {2, 'fro'}  % Definite integral of f.^2
+        case {'fro'}  % Definite integral of f.^2
             % L^2-norm is sum of squares of sv.
             normF = sqrt( sum( svd( f ).^2 ) );  
             
-        case {inf, 'inf', 'max'}
-            [Y, X] = minandmax2(f);
-            [normF, idx] = max( abs( Y ) );
-            normloc = X( idx, : );
+        case {inf, 'inf', 'max'}            
+            if ( isreal(f) )
+                [Y, X] = minandmax2(f);
+                [normF, idx] = max(abs(Y));
+                normloc = X(idx, :);
+            else
+                [Y, X] = minandmax2(conj(f).*f);
+                [normF, idx] = max(sqrt(abs(Y)));
+                normloc = X(idx, :);
+            end
             
         case {-inf, '-inf', 'min'}
             error('CHEBFUN:SEPARABLEAPPROX:norm:norm', ...
                 'SEPARABLEAPPROX does not support this norm.');
             
-        case {'op', 'operator'}
+        case {2, 'op', 'operator'}
             [C, D, R] = cdr( f ); 
-            L = C * D * R; 
+            L = C * D * R'; 
             s = svd( L ); 
             normF = s(1);      
-            
+
+        case {'nuc', 'nuclear'}
+            [C, D, R] = cdr( f ); 
+            L = C * D * R';             
+            normF = sum(svd( L )); 
+                        
         otherwise
             if ( isnumeric(p) && isreal(p) )
                 if ( abs(round(p) - p) < eps )
