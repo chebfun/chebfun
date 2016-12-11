@@ -13,7 +13,7 @@ function [Lstar, op, bcOpL, bcOpR, bcOpM] = adjoint(L, bcType)
 %   operator and BCOPL, BCOPR and BCOPM are function handles for the left,
 %   right and mixed boundary conditions respectively. 
 %
-% See also ADJOINTFORMAL and ADJOINTBCS.
+% See also ADJOINTFORMAL, ADJOINTBCS.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.

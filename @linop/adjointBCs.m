@@ -12,7 +12,7 @@ function [Cstar, bcOpL, bcOpR, bcOpM] = adjointBCs(L, bcType)
 %   represent the left, right and mixed boundary conditions respectively and
 %   can be used to construct a CHEBOP
 %
-% See also ADJOINT and ADJOINTFORMAL.
+% See also ADJOINT, ADJOINTFORMAL.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -63,13 +63,15 @@ else
       end
 
       % evaluate test functions at endpoints
-      Ul = U(dom(1),:); Ur = U(dom(2),:);
+      Ul = U(dom(1),:); 
+      Ur = U(dom(2),:);
       for jj = 1:dor(ii)-1
           U = diff(U);
-          Ul = [Ul;U(dom(1),:)]; Ur = [Ur;U(dom(2),:)];
+          Ul = [Ul; U(dom(1),:)]; 
+          Ur = [Ur; U(dom(2),:)];
       end
-      endValsL = blkdiag( endValsL, Ul );
-      endValsR = blkdiag( endValsR, Ur );
+      endValsL = blkdiag(endValsL, Ul);
+      endValsR = blkdiag(endValsR, Ur);
   end
   warning('on','all') % is there a better way to supress warnings
   endVals = [ endValsL; endValsR ];
@@ -84,10 +86,9 @@ else
   % attempt to simplify rows of B
   B = rref(B);
   B( abs(B-1) < 10*eps ) = 1;
-  B( abs(B) < 10*eps )   = 0;
+  B( abs(B) < 10*eps ) = 0;
 
-  % label each boundary condition as 
-  % left (0), right (1) or mixed (2)
+  % label each boundary condition as left (0), right (1) or mixed (2)
   bcTypes = 2*ones(nbcs,1);
   for ii = 1:nbcs
     if ( max(abs(B(ii,1:sum(dor)))) == 0 )
@@ -103,16 +104,16 @@ else
   nulB = rref(nulB);
 
   % compute complimentarity matrix
-  compML = cell(nout,nin);
-  compMR = cell(nout,nin);
+  compML = cell(nout, nin);
+  compMR = cell(nout, nin);
   for ii = 1:nout
       for jj = 1:nin
           bloc = L.blocks{ii,jj};
-          compML{ii,jj} = compmat( dom(1), toCoeff(bloc) );
-          compMR{ii,jj} = compmat( dom(2), toCoeff(bloc) );
+          compML{ii,jj} = compmat(dom(1), toCoeff(bloc));
+          compMR{ii,jj} = compmat(dom(2), toCoeff(bloc));
       end
   end
-  compM = blkdiag( -cell2mat(compML), cell2mat(compMR) );
+  compM = blkdiag(-cell2mat(compML), cell2mat(compMR));
 
   % compute Bstar
   Bstar = nulB*compM;
@@ -120,39 +121,39 @@ else
   % attempt to simplify rows of Bstar
   Bstar = rref(Bstar);
   Bstar( abs(Bstar-1) < 10*eps ) = 1;
-  Bstar( abs(Bstar) < 10*eps )   = 0;
+  Bstar( abs(Bstar) < 10*eps ) = 0;
 
   % label each boundary condition as 
   % left (0), right (1) or mixed (2)
   starTypes = 2*ones(nadjbcs,1);
   for ii = 1:nadjbcs
-    if ( max(abs(Bstar(ii,1:sum(dor)))) == 0 )
+    if ( max(abs(Bstar(ii, 1:sum(dor)))) == 0 )
       starTypes(ii,:) = 1;
-    elseif ( max(abs(Bstar(ii,sum(dor)+1:end))) == 0 )
+    elseif ( max(abs(Bstar(ii, sum(dor)+1:end))) == 0 )
       starTypes(ii,:) = 0;
     end
   end
 
   % sort in ascending order
-  [starTypes,ind] = sort(starTypes,'ascend');
+  [starTypes, ind] = sort(starTypes, 'ascend');
   Bstar = Bstar(ind,:);
 
   % call bchandles
-  [ bcOpL, bcOpR, bcOpM ] = bcHandles( Bstar, starTypes, dor, dom );
+  [ bcOpL, bcOpR, bcOpM ] = bcHandles(Bstar, starTypes, dor);
 
   % compute Cstar by first creating a chebop
   order = max(dor, [], 2);
   Z = '[';
   for ii = 1:nin
       for jj = 1:nout
-          Z = [Z,'+diff(v',int2str(jj),',',int2str(order),')'];
+          Z = [Z, '+diff(v', int2str(jj), ',', int2str(order), ')'];
       end
       Z = [Z,';'];
   end
-  Z = [Z(1:end-1),']'];
+  Z = [Z(1:end-1), ']'];
   op = '@(x';
   for ii = 1:nout
-      op = [op,',v',int2str(ii)];
+      op = [op, ',v', int2str(ii)];
   end
   op = [op,') ',Z,';'];
   N = chebop(dom);
@@ -167,10 +168,8 @@ end
 
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function [bcOpL, bcOpR, bcOpM] = bcHandles(Bstar,starTypes,diffOrders,domain)
-% construct function handles using Bstar matrix.
+function [bcOpL, bcOpR, bcOpM] = bcHandles(Bstar, starTypes, diffOrders)
+%BCHANDLES   Construct function handles using Bstar matrix.
 
 % initialize ops
 bcOpL = [];
@@ -178,66 +177,68 @@ bcOpR = [];
 bcOpM = [];
 
 % variables for left and right endpoint
-eval(['lpt = domain(1);']);
-eval(['rpt = domain(2);']);
+eval('lpt = domain(1);');
+eval('rpt = domain(2);');
 
 % create cell array of dual variable names
 nvars = length(diffOrders);
-varNames = cell(1,nvars);
+varNames = cell(1, nvars);
 if nvars == 1
     varNames = {'v'};
 else
     for ii = 1:nvars
-        varNames{1,ii} = ['v',int2str(ii)];
+        varNames{1,ii} = ['v', int2str(ii)];
     end
 end
 
 % create cell array of diffnames
-diffNames = cell(1,nvars);
+diffNames = cell(1, nvars);
 for ii = 1:nvars
     set = {varNames{ii}};
     for jj = 1:diffOrders(ii)
         if ( jj == 1 )
-            set{1,jj+1} = ['diff(',set{1,1},')'];
+            set{1,jj+1} = ['diff(', set{1,1}, ')'];
         else
-            set{1,jj+1} = ['diff(',set{1,1},',',int2str(jj),')'];
+            set{1,jj+1} = ['diff(', set{1,1}, ',', int2str(jj), ')'];
         end
     end
     diffNames{ii} = set;
 end
 
 % create cell array of diffnames at left end point
-diffNamesL = cell(1,nvars);
+diffNamesL = cell(1, nvars);
 for ii = 1:nvars
     set = {['feval(',varNames{ii},',lpt)']};
     for jj = 1:diffOrders(ii)
         if ( jj == 1 )
-            set{1,jj+1} = ['feval(diff(',varNames{ii},'),lpt)'];
+            set{1,jj+1} = ['feval(diff(', varNames{ii}, '),lpt)'];
         else
-            set{1,jj+1} = ['feval(diff(',varNames{ii},',',int2str(jj),'),lpt)'];
+            set{1,jj+1} = ['feval(diff(', varNames{ii}, ',', int2str(jj), ...
+                '),lpt)'];
         end
     end
     diffNamesL{ii} = set;
 end
 
 % create cell array of diffnames at right end point
-diffNamesR = cell(1,nvars);
+diffNamesR = cell(1, nvars);
 for ii = 1:nvars
-    set = {['feval(',varNames{ii},',rpt)']};
+    set = {['feval(', varNames{ii}, ',rpt)']};
     for jj = 1:diffOrders(ii)
         if ( jj == 1 )
-            set{1,jj+1} = ['feval(diff(',varNames{ii},'),rpt)'];
+            set{1,jj+1} = ['feval(diff(', varNames{ii}, '),rpt)'];
         else
-            set{1,jj+1} = ['feval(diff(',varNames{ii},',',int2str(jj),'),rpt)'];
+            set{1,jj+1} = ['feval(diff(', varNames{ii}, ',', int2str(jj), ...
+                '),rpt)'];
         end
     end
     diffNamesR{ii} = set;
 end
 
 % convert each row of Bstar into a string regardless of starTypes
-nbcs = size(Bstar,1);
-nin = size(Bstar,2)/2;
-Bstg = cell(nbcs,1);
+nbcs = size(Bstar, 1);
+nin = size(Bstar, 2)/2;
+Bstg = cell(nbcs, 1);
 for ii = 1:nbcs
     % choose list of diffnames
     if ( starTypes(ii) == 2 )
@@ -254,17 +255,17 @@ for ii = 1:nbcs
             if ( b == 1 )
                 % add plus sign
                 if ( ~isempty(Bstg{ii,1}) )
-                    Bstg{ii,1} = [Bstg{ii,1},'+'];
+                    Bstg{ii,1} = [Bstg{ii,1}, '+'];
                 end
-                Bstg{ii,1} = [Bstg{ii,1},dnames{jj}{kk}];
+                Bstg{ii,1} = [Bstg{ii,1}, dnames{jj}{kk}];
             elseif ( b ~= 0 )
                 % add plus sign
                 if ( ~isempty(Bstg{ii,1}) )
-                    Bstg{ii,1} = [Bstg{ii,1},'+'];
+                    Bstg{ii,1} = [Bstg{ii,1}, '+'];
                 end
                 bs = ['bl',int2str(ii),int2str(stride+kk)];
                 eval([bs,'= b;']);
-                Bstg{ii,1} = [Bstg{ii,1},bs,'*',dnames{jj}{kk}];
+                Bstg{ii,1} = [Bstg{ii,1}, bs, '*', dnames{jj}{kk}];
             end
         end
     end
@@ -276,24 +277,24 @@ for ii = 1:nbcs
     end
     % right bcs
     for jj = 1:nvars
-        stride = nin+(jj-1)*diffOrders(max(jj-1,1));
+        stride = nin+(jj-1)*diffOrders(max(jj-1, 1));
         for kk = 1:diffOrders(jj)
             % add nonzero terms in row
             b = Bstar(ii,stride+kk);
             if ( b == 1 )
                 % add plus sign
                 if ( ~isempty(Bstg{ii,1}) )
-                    Bstg{ii,1} = [Bstg{ii,1},'+'];
+                    Bstg{ii,1} = [Bstg{ii,1}, '+'];
                 end
-                Bstg{ii,1} = [Bstg{ii,1},dnames{jj}{kk}];
+                Bstg{ii,1} = [Bstg{ii,1}, dnames{jj}{kk}];
             elseif ( b ~= 0 )
                 % add plus sign
                 if ( ~isempty(Bstg{ii,1}) )
-                    Bstg{ii,1} = [Bstg{ii,1},'+'];
+                    Bstg{ii,1} = [Bstg{ii,1}, '+'];
                 end
-                bs = ['br',int2str(ii),int2str(stride+kk)];
+                bs = ['br', int2str(ii), int2str(stride+kk)];
                 eval([bs,'= b;']);
-                Bstg{ii,1} = [Bstg{ii,1},bs,'*',dnames{jj}{kk}];
+                Bstg{ii,1} = [Bstg{ii,1}, bs, '*', dnames{jj}{kk}];
             end
         end
     end
@@ -308,33 +309,33 @@ indsM = inds(starTypes == 2);
 % bcOpL
 if ( ~isempty(indsL) )
     % create variable list
-    bcOpL = ['@(',varNames{1,1}];
+    bcOpL = ['@(', varNames{1,1}];
     for ii = 2:nvars
-        bcOpL = [bcOpL,',',varNames{1,ii}];
+        bcOpL = [bcOpL, ',', varNames{1,ii}];
     end
-    bcOpL = [bcOpL,')'];
+    bcOpL = [bcOpL, ')'];
     % opening bracket if vectorized
     if ( length(indsL) > 1 )
-        bcOpL = [bcOpL,'['];
+        bcOpL = [bcOpL, '['];
     end
     % loop through indsL
     for ii = 1:length(indsL)
-        bcOpL = [bcOpL,' ',Bstg{indsL(ii),1},';'];
+        bcOpL = [bcOpL, ' ', Bstg{indsL(ii),1}, ';'];
     end 
     % closing bracket if vectorized
     if ( length(indsL) > 1 )
-        bcOpL = [bcOpL(1:end-1),'];'];
+        bcOpL = [bcOpL(1:end-1), '];'];
     end
     % create function handle
-    eval(['bcOpL = ',bcOpL]);
+    eval(['bcOpL = ', bcOpL]);
 end
 
 % bcOpR
 if ( ~isempty(indsR) )
     % create variable list
-    bcOpR = ['@(',varNames{1,1}];
+    bcOpR = ['@(', varNames{1,1}];
     for ii = 2:nvars
-        bcOpR = [bcOpR,',',varNames{1,ii}];
+        bcOpR = [bcOpR, ',', varNames{1,ii}];
     end
     bcOpR = [bcOpR,')'];
     % opening bracket if vectorized
@@ -343,46 +344,44 @@ if ( ~isempty(indsR) )
     end
     % loop through indsR
     for ii = 1:length(indsR)
-        bcOpR = [bcOpR,' ',Bstg{indsR(ii),1},';'];
+        bcOpR = [bcOpR, ' ', Bstg{indsR(ii),1}, ';'];
     end 
     % closing bracket if vectorized
     if ( length(indsR) > 1 )
-        bcOpR = [bcOpR(1:end-1),'];'];
+        bcOpR = [bcOpR(1:end-1), '];'];
     end
     % create function handle
-    eval(['bcOpR = ',bcOpR]);
+    eval(['bcOpR = ', bcOpR]);
 end
 
 % bcOpM
 if ( ~isempty(indsM) )
     % create variable list
-    bcOpM = ['@(x,',varNames{1,1}];
+    bcOpM = ['@(x,', varNames{1,1}];
     for ii = 2:nvars
-        bcOpM = [bcOpM,',',varNames{1,ii}];
+        bcOpM = [bcOpM, ',', varNames{1,ii}];
     end
-    bcOpM = [bcOpM,')'];
+    bcOpM = [bcOpM, ')'];
     % opening bracket if vectorized
     if ( length(indsM) > 1 )
-        bcOpM = [bcOpM,' ['];
+        bcOpM = [bcOpM, ' ['];
     end
     % loop through indsM
     for ii = 1:length(indsM)
-        bcOpM = [bcOpM,' ',Bstg{indsM(ii),1},';'];
+        bcOpM = [bcOpM, ' ', Bstg{indsM(ii),1}, ';'];
     end 
     % closing bracket if vectorized
     if ( length(indsM) > 1 )
-        bcOpM = [bcOpM(1:end-1),'];'];
+        bcOpM = [bcOpM(1:end-1), '];'];
     end
     % create function handle
-    eval(['bcOpM = ',bcOpM]);
+    eval(['bcOpM = ', bcOpM]);
 end
 
 end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function A = compmat(x,coeffs)
-%COMPMAT - routine for computing complementarity matrix.
+%COMPMAT   Routine for computing complementarity matrix.
 
   n = length(coeffs)-1;
   if n == 0
@@ -394,9 +393,9 @@ function A = compmat(x,coeffs)
   for kk = n:-1:1
   % loop over diff orders
     cf = coeffs{n-kk+1};
-    for ii=0:kk-1
+    for ii = 0:kk-1
     % loop through rows
-      for jj=0:kk-1-ii
+      for jj = 0:kk-1-ii
       % loop through columns
         if ( ii+jj <= kk-1 )
 	  A(ii+1,jj+1) = A(ii+1,jj+1) + (-1)^(kk-ii-1)*nchoosek(kk-ii-1,jj)*...

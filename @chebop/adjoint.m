@@ -1,10 +1,10 @@
-function Nstar = adjoint(N,u)
+function Nstar = adjoint(N, u)
 %ADJOINT   Compute the adjoint of a CHEBOP.
 %   NSTAR = ADJOINT(N) returns the adjoint of a CHEBOP that has either periodic
 %   or endpoint boundary conditions. If N is nonlinear then N is first
 %   linearized around U = 0 and NSTAR is the adjoint of the linearization.
 %
-%   NSTAR = ADJOINT(N,U) linearizes around the function U then computes
+%   NSTAR = ADJOINT(N, U) linearizes around the function U then computes
 %   the adjoint.
 %
 % See also LINOP/ADJOINT.

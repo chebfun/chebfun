@@ -1,5 +1,5 @@
 function bcType = getBCType(N)
-%GETBCTYPE  Detects the type of boundary conditions of a CHEBOP.
+%GETBCTYPE   Detects the type of boundary conditions of a CHEBOP.
 %   BCTYPE = GETBCTYPE(N) returns a string identifying the type of boundary
 %   conditions used by a CHEBOP.
 %

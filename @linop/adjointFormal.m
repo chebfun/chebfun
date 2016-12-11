@@ -32,7 +32,7 @@ Lstar = linop(op);
 % If L.blocks{ii,jj} is a chebfun convert to operator block:
 for ii = 1:nrows
     for jj = 1:ncols
-        if ( strcmp(class(L.blocks{ii,jj}), 'chebfun') )
+        if ( isa(L.blocks{ii,jj}, 'chebfun') )
             b = L.blocks{ii,jj};
             L.blocks{ii,jj} = operatorBlock.mult(b, b.domain);
         end
@@ -110,7 +110,7 @@ for ii = 1:ncols
             % Use acur to update op string:
             if ( ~isempty(acur) )
                 if ( k == 0 )
-                    Bop = [acur,vstr,Bop];
+                    Bop = [acur, vstr, Bop];
                 elseif ( k == 1 )
                     Bop = [acur, 'diff(', vstr, ')', Bop];
                 else
@@ -127,7 +127,7 @@ for ii = 1:ncols
                 Bop = [' ', Bop];
             end
         end
-        op = [op,Bop];
+        op = [op, Bop];
 
     end
 

@@ -212,7 +212,7 @@ classdef blockCoeff
         end
         
         function A = uminus(A)
-            A.coeffs = cellfun( @uminus, A.coeffs, 'uniform', false );
+            A.coeffs = cellfun(@uminus, A.coeffs, 'uniform', false);
          end
         
         function A = uplus(A)

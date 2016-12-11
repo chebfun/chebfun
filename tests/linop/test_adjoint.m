@@ -123,5 +123,4 @@ pass(39) = norm(Ls.constraint.values) == 0;
 % check commutator
 pass(40) = abs([v1;v2]'*(L*[u1;u2]) - (Ls*[v1;v2])'*[u1;u2]) < nrm*tol;
 
-
 end
