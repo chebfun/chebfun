@@ -41,5 +41,5 @@ pass(7) = abs(norm(f,2) - exact) < tol; % spectral (operator) norm
 
 exact =  2.925303491814361;
 pass(8) = abs(norm(f,'nuc') - exact) < tol; % Frobenius norm 
->>>>>>> origin/development
+
 end
