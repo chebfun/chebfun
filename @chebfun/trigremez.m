@@ -69,7 +69,7 @@ if ( isdelta(f) )
 end
 
 % Parse the inputs.
-[m, N, opts] = parseInputs(f, varargin{:});
+[m, n, N, rational_mode, opts] = parseInputs(f, varargin{:});
 
 % Initial values for some parameters.
 iter = 0;       % Iteration count.
@@ -83,6 +83,10 @@ a = dom(1);
 b = dom(end);
 f = newDomain(f, [-pi, pi]);
 
+% default denominator 
+q = chebfun(1, [-pi, pi], 'trig');
+qmin = q;
+
 % Compute an initial reference set to start the algorithm:
 xk = trigpts(N, [-pi, pi]);
 xo = xk;
@@ -95,22 +99,32 @@ end
 % Run the main algorithm.
 while ( (delta/normf > opts.tol) && (iter < opts.maxIter) && (diffx > 0) )
     fk = feval(f, xk);     % Evaluate on the exchange set.
-    w = trigBaryWeights(xk);
     
-    % Compute trial function and levelled reference error.
-    [p, h] = computeTrialFunctionPolynomial(fk, xk, w, m, N, [-pi, pi]);
+    if ( rational_mode )
+        [p, q, r, h, xk] = computeTrialFunctionRational(fk, xk, m, n, [-pi, pi]);        
+    else
+        w = trigBaryWeights(xk);
+        % Compute trial function and levelled reference error.
+        [p, h] = computeTrialFunctionPolynomial(fk, xk, w, m, N, [-pi, pi]);    
+    end
     
     % Perturb exactly-zero values of the levelled error.
     if ( h == 0 )
         h = 1e-19;
     end
 
+    if ( rational_mode )
+        g = r;
+    else
+        g = p;
+    end
+    
     % Update the exchange set using the Remez algorithm with full exchange.
-    [xk, err, err_handle] = exchange(xk, h, 2, f, p, N);
+    [xk, err, err_handle] = exchange(xk, h, 2, f, g, N);
 
     % If overshoot, recompute with one-point exchange.
     if ( err/normf > 1e5 )
-        [xk, err, err_handle] = exchange(xo, h, 1, f, p, N);
+        [xk, err, err_handle] = exchange(xo, h, 1, f, g, N);
     end
 
     % Update max. correction to trial reference and stopping criterion.
@@ -120,6 +134,9 @@ while ( (delta/normf > opts.tol) && (iter < opts.maxIter) && (diffx > 0) )
     % Store approximation with minimum norm.
     if ( delta < deltamin )
         pmin = p;
+        if ( n > 0 )
+            qmin = q;
+        end
         errmin = err;
         xkmin = xk;
         deltamin = delta;
@@ -140,13 +157,13 @@ end
 
 % Take best results of all the iterations we ran.
 p = pmin;
+q = qmin;
 err = errmin;
+delta = deltamin;
 
 % Map the points back on the original domain:
 forwardMap = @(y) b*(y + pi)/(2*pi) + a*(pi - y)/(2*pi); 
 xk = forwardMap(xkmin);
-
-delta = deltamin;
 
 % Warn the user if we failed to converge.
 if ( delta/normf > opts.tol )
@@ -163,27 +180,47 @@ status.xk = xk;
 
 % Map the approximation back to the original domain:
 p = newDomain(p, [a, b]);
+q = newDomain(q, [a, b]);
 
 % return:
-varargout = {p, err, status};
+if ( rational_mode )
+    varargout = {p, q, @(x) feval(p, x)./feval(q, x), err, status};
+else
+    varargout = {p, err, status};
+end
+
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Input parsing.
-
-function [m, N, opts] = parseInputs(f, varargin)
+function [m, n, N, rationalMode, opts] = parseInputs(f, varargin)
 
 m = varargin{1};
+rationalMode = false;
+if ( length(varargin) > 1 )
+    n = varargin{2};    
+    if ( isfloat(n) && length(n) == 1 )
+        if ( n > 0 )
+            rationalMode = true;
+        end
+        varargin = varargin(3:end);
+    else
+        n = 0;
+        varargin = varargin(2:end);
+    end
+else
+    n = 0;
+end
+        
 
-if ( m < 0 || m ~= round(m) )
+if ( m < 0 || n < 0 || m ~= round(m) || n ~= round(n) )
     error('CHEBFUN:CHEBFUN:trigremez:parseInputs', ...
         'Degree of approximation must be a nonnegative integer.');
 end
 
-varargin = varargin(2:end);
 
 % Number of points for equioscillation:
-N = 2*m+2;
+N = 2*(m+n)+2;
 
 % Parse name-value option pairs.
 baseTol = 1e-12;
@@ -208,7 +245,6 @@ for k = 1:2:length(varargin)
 end
 
 end
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Functions implementing the core part of the algorithm.
 
@@ -226,12 +262,77 @@ p = chebfun(@(x) trigBary(x, pk, xk, dom), dom, 2*m+1, 'trig');
 
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Functions implementing the core part of the algorithm.
+function [p, q, r, hk, th] = computeTrialFunctionRational(f_th, th, m, n, dom)
 
+% tolerance for neglecting imaginary part:
+imag_tol = 1e-12;
+
+% default period
+T = dom(end) - dom(1);
+
+% Construct interpolation matrices
+P(:, 1) = ones(length(th), 1);
+for j = 1:m
+    P(:, 2*j)   = cos(2*j*pi/T*th);
+    P(:, 2*j+1) = sin(2*j*pi/T*th);
+end
+
+Q(:, 1) = ones(length(th), 1);
+for j = 1:n
+    Q(:, 2*j)   = cos(2*j*pi/T*th);
+    Q(:, 2*j+1) = sin(2*j*pi/T*th);
+end
+
+N = m + n;
+% Solve the generalized eigenvalue problem:
+F = diag(f_th);
+A = [P, -F*Q];
+I = diag((-1).^(0:2*N+1));
+B = -I*[zeros(size(P)), Q];
+
+[V, h] = eig(A, B);
+h = diag(h);
+
+valid_count = 0;
+for j = 1:size(V, 2)
+    if ( isinf(h(j)) || abs(imag(h(j))) > imag_tol)
+        continue
+    end
+    a = V(1:2*m+1, j);
+    b = V(2*m+2:end, j);
+    tmp = (a(2:2:end)-1i*a(3:2:end))/2;
+    ac = [flipud(conj(tmp)); a(1); tmp];
+
+    tmp = (b(2:2:end)-1i*b(3:2:end))/2;
+    bc = [flipud(conj(tmp)); b(1); tmp];        
+    q_tmp = chebfun(bc, dom, 'coeffs', 'trig');
+    roots_q = roots(q_tmp);
+    if ( isempty(roots_q) )            
+        q = q_tmp;
+        p = chebfun(ac, dom, 'coeffs', 'trig');
+        r = p./q;
+        valid_count = valid_count + 1;            
+        hk = h(j);
+    end        
+end
+
+if ( valid_count == 0 )        
+    error('trigremez:computeTrialFunctionRationl', ...
+        'no pole free approximation found')    
+end
+
+end
+
+
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % TODO: There is a lot of overlap between the present case of trigonometric
 % remez and the usual polynomial remez. The common parts of the code should
 % factored out in future.
 
-function [xk, norme, err_handle, flag] = exchange(xk, h, method, f, p, Npts)
+function [xk, norme, err_handle, flag] = exchange(xk, h, method, f, g, Npts)
 %EXCHANGE   Modify an equioscillation reference using the Remez algorithm.
 %   EXCHANGE(XK, H, METHOD, F, P) performs one step of the Remez algorithm
 %   for the best polynomial approximation of the CHEBFUN F of the target function
@@ -253,14 +354,16 @@ function [xk, norme, err_handle, flag] = exchange(xk, h, method, f, p, Npts)
 %   initial trial function rather than an initial trial reference.
 
 % Compute extrema of the error.
-e_num = diff(f - p);
+e_num = diff(f-g);
+% Function handle output for evaluating the error.
+err_handle = @(x) feval(f, x) - feval(g, x);
+
 rts = roots(e_num, 'nobreaks');
 % Do not include the other end of the domain, since the domain
 % is assumed to be periodic:
 rr = [f.domain(1) ; rts];
 
-% Function handle output for evaluating the error.
-err_handle = @(x) feval(f, x) - feval(p, x);
+
 
 % Select exchange method.
 if ( method == 1 )                             % One-point exchange.
@@ -309,6 +412,10 @@ else
     xk = s;
     flag = 0;
 end
+
+
+
+
 
 end
 
