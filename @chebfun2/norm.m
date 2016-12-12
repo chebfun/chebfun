@@ -4,6 +4,7 @@ function varargout = norm(varargin)
 %    NORM(F) = sqrt(integral of abs(F)^2).
 %    NORM(F, 2) = largest singular value of F.
 %    NORM(F,'fro') is the same as NORM(F).
+%    NORM(F,'nuc') = sum of singular values of F.
 %    NORM(F, 1) = NOT IMPLEMENTED.
 %    NORM(F, inf) = global maximum in absolute value.
 %    NORM(F, 'max') = global maximum in absolute value.

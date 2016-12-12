@@ -23,4 +23,7 @@ pass(j) = norm( X - Exact ) < tol; j = j + 1;
 Z = chebfun2.vals2coeffs( chebpolyval2( f ) );
 pass(j) = norm( Z - Exact ) < tol; j = j + 1; 
 
+f = chebfun2( @(x,y) x + y );
+pass(j) = isequal( size(coeffs2(f,2,1)), [2 1] ); j = j + 1;
+
 end

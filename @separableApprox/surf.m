@@ -92,7 +92,7 @@ if ( isa(f,'separableApprox') )
         x = feval(x, xx, yy);
         y = feval(y, xx, yy);
         if ( isa(argin{2}, 'separableApprox') )         % surf(x,y,f,...)
-            vals = feval(argin{2}, x, y);
+            vals = feval(argin{2}, xx, yy);
             if ( nargin < 4 )                    % surf(x,y,f)
                 C = vals;
             elseif ( isa(argin{3}, 'double') )   % surf(x,y,f,C,...)
