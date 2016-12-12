@@ -3,29 +3,24 @@ function [uout, tout] = spin(varargin)
 %Fourier spectral method and an exponential integrator time-stepping scheme.
 %
 %   UOUT = SPIN(PDECHAR) solves the PDE specified by the string PDECHAR, and 
-%   plots a movie of the solution as it computes it. The space and time 
-%   intervals and the initial condition are chosen to produce beautiful movies. 
-%   Strings available include 'AC' for Allen-Cahn equation, 'KS' for 
-%   Kuramoto-Sivashinsky equation and 'KdV' for Korteweg-de Vries equation. 
-%   Many other PDEs are available, see Remark 1 and Examples 1-9. The output 
-%   UOUT is a CHEBFUN corresponding to the solution at the final time 
+%   plots a movie of the solution as it computes it -- it is a preloaded demo.
+%   The space and time intervals and the initial condition are chosen to produce 
+%   beautiful movies. Strings available include 'AC' for Allen-Cahn equation, 
+%   'KS' for Kuramoto-Sivashinsky equation and 'KdV' for Korteweg-de Vries 
+%   equation. Many other PDEs are available, see Remark 1 and Examples 1-9. The 
+%   output UOUT is a CHEBFUN corresponding to the solution at the final time 
 %   (a CHEBMATRIX for systems of equations, each row representing one variable). 
 %
-%   UOUT = SPIN(PDECHAR, TSPAN) solves the PDE from TPSAN(1) to TSPAN(END)
-%   where TSPAN=[0 T1 T2 ... TF] is a vector of time chunks. The output UOUT is 
-%   a CHEBMATRIX, each row corresponding to one variable and each column to one 
-%   time chunk (unless TSPAN=[0 TF] and there is only one variable, in which 
-%   case the output is a CHEBFUN at TF).
+%   UOUT = SPIN(S, N, DT) solves the PDE specified by the SPINOP S with N grid
+%   points and a time-step DT. It plots a movie of the solution as it computes 
+%   it. See HELP/SPINOP and Example 10.
 %
-%   UOUT = SPIN(PDECHAR, TSPAN, U0) solves the PDE with initial condition a 
-%   CHEBFUN U0 (one variable) or a CHEBMATRIX U0 (systems). See Example 10.
-%
-%   UOUT = SPIN(S) solves the PDE specified by the SPINOP S and plots a movie of 
-%   the solution as it computes it. See HELP/SPINOP and Example 11.
-%
-%   UOUT = SPIN(..., PREF) allows one to use the preferences specified by the 
-%   SPINPREF object PREF. See HELP/SPINPREF and Example 12.
+%   UOUT = SPIN(S, N, DT, PREF) allows one to use the preferences specified by 
+%   the SPINPREF object PREF. See HELP/SPINPREF and Example 11.
 % 
+%   UOUT = SPIN(S, N, DT, 'PREF1', VALUEPREF1, 'PREF2', VALUEPREF2, ...) is an
+%   alternative to the previous syntax. See Example 12.
+%
 %   [UOUT, TOUT] = SPIN(...) also returns the times chunks TOUT at which UOUT
 %   was computed.
 %
@@ -197,53 +192,92 @@ function [uout, tout] = spin(varargin)
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-pref = [];
-j = 1;
-while ( j <= nargin )
-    item =  varargin{j};
-    if ( isa(item, 'spinoperator') == 1 )
-        if ( isa(item, 'spinop2') == 1 )
-            error('CHEBFUN:SPIN', 'Use SPIN2 for PDEs in two space dimensions.')
-        elseif ( isa(item, 'spinop3') == 1 )
-            error('CHEBFUN:SPIN', ['Use SPIN3 for PDEs in three space ', ...
-                'dimensions.'])
-        end
-    elseif ( isa(item, 'char') == 1 )        
-        isDemo = spinoperator.isDemoCheck(item);
-        % This is a char for a demo, e.g., 'ks' or 'kdv':
-        if ( isDemo == 1 )
-            is2D = ~isempty(strfind(item, '2'));
-            is3D = ~isempty(strfind(item, '3'));
-            if ( is2D == 1 )
-                error('CHEBFUN:SPIN', ['Use SPIN2 for PDEs in two space ', ...
-                    'dimensions.'])
-            elseif ( is3D == 1 )
-                error('CHEBFUN:SPIN', ['Use SPIN3 for PDEs in three space ', ...
-                    'dimensions.'])
-            end
-        % This is a preference, e.g., 'N' or 'dt':
-        else
-            if ( isempty(pref) == 1 )
-                pref = spinpref();
-            end
-            pref.(item) = varargin{j+1};
-            varargin{j} = [];
-            varargin{j + 1} = [];
-            j = j + 2;
-            continue
-        end
+% pref = [];
+% j = 1;
+% while ( j <= nargin )
+%     item =  varargin{j};
+%     if ( isa(item, 'spinoperator') == 1 )
+%         if ( isa(item, 'spinop2') == 1 )
+%             error('CHEBFUN:SPIN', 'Use SPIN2 for PDEs in two space dimensions.')
+%         elseif ( isa(item, 'spinop3') == 1 )
+%             error('CHEBFUN:SPIN', ['Use SPIN3 for PDEs in three space ', ...
+%                 'dimensions.'])
+%         end
+%     elseif ( isa(item, 'char') == 1 )        
+%         isDemo = spinoperator.isDemoCheck(item);
+%         % This is a char for a demo, e.g., 'ks' or 'kdv':
+%         if ( isDemo == 1 )
+%             is2D = ~isempty(strfind(item, '2'));
+%             is3D = ~isempty(strfind(item, '3'));
+%             if ( is2D == 1 )
+%                 error('CHEBFUN:SPIN', ['Use SPIN2 for PDEs in two space ', ...
+%                     'dimensions.'])
+%             elseif ( is3D == 1 )
+%                 error('CHEBFUN:SPIN', ['Use SPIN3 for PDEs in three space ', ...
+%                     'dimensions.'])
+%             end
+%         % This is a preference, e.g., 'N' or 'dt':
+%         else
+%             if ( isempty(pref) == 1 )
+%                 pref = spinpref();
+%             end
+%             pref.(item) = varargin{j+1};
+%             varargin{j} = [];
+%             varargin{j + 1} = [];
+%             j = j + 2;
+%             continue
+%         end
+%     end
+%     j = j + 1;
+% end
+% 
+% % Add the preferences:
+% if ( isempty(pref) == 0 )
+%    varargin{end + 1} = pref;
+% end
+% 
+% % Get rid of the deleted entries:
+% varargin = varargin(~cellfun(@isempty, varargin));
+
+if ( nargin == 1 ) % e.g., u = spin('kdv')
+    try spinop(varargin{1})
+    catch
+        error('Unrecognized PDE. See HELP/SPIN for the list of PDEs.')
     end
-    j = j + 1;
+    pref = spinpref(varargin{1});
+    varargin{2} = pref;
+elseif ( nargin == 3 ) % e.g., u = spin(S, 256, 1e-5)
+    pref = spinpref();
+    pref.N = varargin{2};
+    pref.dt = varargin{3};
+    varargin{end + 1} = pref;
+    varargin{2} = [];
+    varargin{3} = [];
+    varargin = varargin(~cellfun(@isempty, varargin));
+elseif ( nargin == 4 ) % e.g., u = spin(S, 256, 1e-5, pref)
+    pref = varargin{4};
+    pref.N = varargin{2};
+    pref.dt = varargin{3};
+    varargin{2} = [];
+    varargin{3} = [];
+    varargin = varargin(~cellfun(@isempty, varargin));
+elseif ( nargin >= 5 ) % u.g., u = spin(S, 256, 1e-5, 'plot', 'off')
+    pref = spinpref();
+    pref.N = varargin{2};
+    pref.dt = varargin{3};
+    varargin{2} = [];
+    varargin{3} = [];
+    j = 4;
+    while j < nargin
+        pref.(varargin{j}) = varargin{j+1};
+        varargin{j} = [];
+        varargin{j+1} = [];
+        j = j + 2;
+    end
+    varargin{end + 1} = pref;
+    varargin = varargin(~cellfun(@isempty, varargin));
 end
-
-% Add the preferences:
-if ( isempty(pref) == 0 )
-   varargin{end + 1} = pref;
-end
-
-% Get rid of the deleted entries:
-varargin = varargin(~cellfun(@isempty, varargin));
-
+    
 % SPIN is a wrapper for SOLVPDE:
 [uout, tout] = spinoperator.solvepde(varargin{:});
 

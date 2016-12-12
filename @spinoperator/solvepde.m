@@ -8,7 +8,7 @@ function [uOut, tOut, computingTime] = solvepde(varargin)
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-%% Inputs:
+%% Parse inputs:
 
 % Throw an error if no input:
 if ( nargin == 0 )
@@ -26,36 +26,30 @@ end
 
 % Get the inputs:
 pref = [];
-S = [];
+%S = [];
 tspan = [];
-u0 = [];
-j = 1;
-while ( j <= nargin )
-    item =  varargin{j};
-    if ( isa(item, 'char') == 1 )
-        pdechar = item;
-    elseif ( isa(item, 'double') == 1 )
-        tspan = item;
-    elseif ( isa(item, 'chebfun') == 1 || isa(item, 'chebfun2') == 1 || ...
-            isa(item, 'chebfun3') == 1 )
-        u0 = chebmatrix(item);
-    elseif ( isa(item, 'chebfun2v') == 1 || isa(item, 'chebfun3v') == 1 )
-        u0 = chebmatrix(item(1));
-        for k = 2:size(item, 1)
-            u0(k,1) = item(k);
-        end
-    elseif ( isa(item, 'chebmatrix') == 1 )
-        u0 = item;
-    elseif ( isa(item, 'spinoperator') == 1 )
-        S = item;
-    elseif ( isa(item, 'spinpreference') == 1 )
-        pref = item;
-    else
-        error('SPINOPERATOR:solvepde', 'Unrecognized input.')
-    end
-    j = j + 1;
-end
-
+% j = 1;
+% while ( j <= nargin )
+%     item =  varargin{j};
+%     if ( isa(item, 'char') == 1 )
+%         pdechar = item;
+%     elseif ( isa(item, 'double') == 1 )
+%         tspan = item;
+%     elseif ( isa(item, 'spinoperator') == 1 )
+%         S = item;
+%     elseif ( isa(item, 'spinpreference') == 1 )
+%         pref = item;
+%     else
+%         error('SPINOPERATOR:solvepde', 'Unrecognized input.')
+%     end
+%     j = j + 1;
+% end
+% if ( nargin == 1 )
+%     pdechar = varargin{1};
+% elseif ( nargin == 3 )
+%     N
+% end
+S
 % A SPINOPERATOR was given by the user:
 if ( isempty(S) == 0 )
     dim = getDimension(S);
@@ -71,46 +65,27 @@ if ( isempty(S) == 0 )
         end
     end
     
-    % DEMO mode, i.e., a STRING was given by the user:
+% DEMO mode, i.e., a STRING was given by the user:
 else
     
-    % Create a SPINOPERATOR:
+    % Create a SPINOPERATOR and PREFERENCES:
     is2D = ~isempty(strfind(pdechar, '2'));
     is3D = ~isempty(strfind(pdechar, '3'));
     is1D = ( is2D == 0 && is3D == 0 );
     if ( is1D == 1 )
         dim = 1;
         S = spinop(pdechar);
+        pref = spinpref(pdechar);
     elseif ( is2D == 1 )
         dim = 2;
         S = spinop2(pdechar);
+        pref = spinpref2(pdechar);
     elseif ( is3D == 1 )
         dim = 3;
         S = spinop3(pdechar);
+        pref = spinpref3(pdechar);
     end
-    
-    % Create a SPINPREFERENCE object if none:
-    if ( isempty(pref) == 1 )
-        if ( dim == 1 )
-            if ( isempty(tspan) == 1 )
-                pref = spinpref(pdechar);
-            else
-                pref = spinpref();
-            end
-        elseif ( dim == 2 )
-            if ( isempty(tspan) == 1 )
-                pref = spinpref2(pdechar);
-            else
-                pref = spinpref2();
-            end
-        elseif ( dim == 3 )
-            if ( isempty(tspan) == 1 )
-                pref = spinpref3(pdechar);
-            else
-                pref = spinpref3();
-            end
-        end
-    end
+
 end
 
 % Time interval TSPAN:
@@ -119,18 +94,16 @@ if ( isempty(tspan) == 1 )
 end
 
 % Initial condition U0:
-if ( isempty(u0) == 1 )
-    u0 = S.init;
-    if ( isa(u0, 'chebfun') == 1 || isa(u0, 'chebfun2') == 1 || ...
-            isa(u0, 'chebfun3') == 1 )
-        u0 = chebmatrix(u0);
-    elseif ( isa(u0, 'chebfun2v') == 1 || isa(u0, 'chebfun3v') == 1 )
-        temp = chebmatrix(u0(1));
-        for k = 2:size(u0, 1)
-            temp(k,1) = u0(k);
-        end
-        u0 = temp;
+u0 = S.init;
+if ( isa(u0, 'chebfun') == 1 || isa(u0, 'chebfun2') == 1 || ...
+        isa(u0, 'chebfun3') == 1 )
+    u0 = chebmatrix(u0);
+elseif ( isa(u0, 'chebfun2v') == 1 || isa(u0, 'chebfun3v') == 1 )
+    temp = chebmatrix(u0(1));
+    for k = 2:size(u0, 1)
+        temp(k,1) = u0(k);
     end
+    u0 = temp;
 end
 
 % Convert to trigfun:
@@ -323,8 +296,8 @@ while ( t < tf )
             options = plotMovie(S, dt, p, options, t, v, dataGrid, plotGrid);
         end
         
-        % Store the values every ITERPLOT iterations if using WATERFALL:
-        % (Remark: Only in dimension 1.)
+    % Store the values every ITERPLOT iterations if using WATERFALL:
+    % (Remark: Only in dimension 1.)
     elseif ( strcmpi(plotStyle, 'waterfall') == 1 && mod(iter, iterplot) == 0 )
         v = [];
         for k = 1:nVars
