@@ -10,8 +10,8 @@ function [normF, normloc] = norm( f, p )
 %    NORM(F, 'max') = global maximum in absolute value.
 %    NORM(F, 'min') = NOT IMPLEMENTED.
 %
-% Furthermore, the inf norm for SEPARABLEAPPROX objects also returns a second output,
-% giving a position where the max occurs.
+% Furthermore, the inf norm for SEPARABLEAPPROX objects also returns a 
+% second output, giving a position where the max occurs.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -29,8 +29,8 @@ else
     switch ( p )  % Different cases on different norms.
         case 1
             error('CHEBFUN:SEPARABLEAPPROX:norm:norm', ...
-                'SEPARABLEAPPROX does not support L1-norm');
-            
+                'SEPARABLEAPPROX does not support L1-norm, yet.');
+
         case {'fro'}  % Definite integral of f.^2
             % L^2-norm is sum of squares of sv.
             normF = sqrt( sum( svd( f ).^2 ) );  
@@ -64,9 +64,10 @@ else
         otherwise
             if ( isnumeric(p) && isreal(p) )
                 if ( abs(round(p) - p) < eps )
-                    p = round(p); f = f.^p;
+                    p = round(p); 
+                    fp = f.^p;
                     if ( ~mod(p,2) )
-                        normF = ( sum2( f ) ).^( 1/p );
+                        normF = ( sum2( fp ) ).^( 1/p );
                     else
                         error('CHEBFUN:SEPARABLEAPPROX:norm:norm', ...
                             'p-norm must have p even for now.');
