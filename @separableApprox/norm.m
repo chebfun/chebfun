@@ -2,15 +2,13 @@ function [normF, normloc] = norm( f, p )
 %NORM       Norm of a SEPARABLEAPPROX object.
 % For SEPARABLEAPPROX objects:
 %    NORM(F) = sqrt(integral of abs(F)^2).
-%    NORM(F, 2) = please use NORM(F), NORM(F,'fro'), or NORM(F,'op').
-%    NORM(F, 'fro') is the same as NORM(F).
-%    NORM(F, 'op') = largest singular values of F.
-%    NORM(F, inf) or NORM(F, 'inf') = global maximum in absolute value.
-%    NORM(F, 'max') = global maximum in absolute value, same as NORM(F,inf).
-%    NORM(F, 'operator1') = maximum column integral of abs(f)
-%    NORM(F, 'operatorInf') = maximum row integral of abs(f)
-%    NORM(F, 1) = NOT SUPPORTED.
-%    NORM(F, 'min') = NOT SUPPORTED
+%    NORM(F, 2) = largest singular value of F.
+%    NORM(F,'fro') is the same as NORM(F).
+%    NORM(F,'nuc') = sum of singular values of F.
+%    NORM(F, 1) = NOT IMPLEMENTED.
+%    NORM(F, inf) = global maximum in absolute value.
+%    NORM(F, 'max') = global maximum in absolute value.
+%    NORM(F, 'min') = NOT IMPLEMENTED.
 %
 % Furthermore, the inf norm for SEPARABLEAPPROX objects also returns a 
 % second output, giving a position where the max occurs.
@@ -32,10 +30,7 @@ else
         case 1
             error('CHEBFUN:SEPARABLEAPPROX:norm:norm', ...
                 'SEPARABLEAPPROX does not support L1-norm, yet.');
-        case {2}
-            error('CHEBFUN:SEPARABLEAPPROX:norm:two', ...
-                  '2-norm not supported -- use options ''fro'' or ''op''.');
-            
+
         case {'fro'}  % Definite integral of f.^2
             % L^2-norm is sum of squares of sv.
             normF = sqrt( sum( svd( f ).^2 ) );  
@@ -55,26 +50,17 @@ else
             error('CHEBFUN:SEPARABLEAPPROX:norm:norm', ...
                 'SEPARABLEAPPROX does not support this norm.');
             
-        case {'op', 'operator'}
-            s = svd( f ); 
-            normF = s( 1 );   
-            
-        case {'operator1', 'op1'} 
-            % Operator 1-norm of a separableApprox
-            % We want the maximum column integral of abs(f)
-            dom = f.domain(3:4);
-            slices = chebfun(@(x) sum(abs(f.feval(x,:)))', dom, ...
-                'splitting', 'on');
-            normF = max( slices );
-            
-        case {'operatorinf', 'operatorInf', 'opinf', 'opInf'}
-            % Operator inf-norm of a separableApprox
-            % We want the maximum row integral of abs(f)
-            dom = f.domain(1:2);
-            slices = chebfun(@(y) sum(abs(f.feval(:,y))), dom, ...
-                'splitting', 'on');
-            normF = max(slices);
-            
+        case {2, 'op', 'operator'}
+            [C, D, R] = cdr( f ); 
+            L = C * D * R'; 
+            s = svd( L ); 
+            normF = s(1);      
+
+        case {'nuc', 'nuclear'}
+            [C, D, R] = cdr( f ); 
+            L = C * D * R';             
+            normF = sum(svd( L )); 
+                        
         otherwise
             if ( isnumeric(p) && isreal(p) )
                 if ( abs(round(p) - p) < eps )

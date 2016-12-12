@@ -29,22 +29,17 @@ pass(5) = abs(norm(f, 'inf') - exact) < tol;
 exact = (4/5)^(1/4);
 pass(6) = abs(norm(f, 4) - exact) < tol;
 
-%% Check more norm() syntax. 
-f = chebfun2(@(x,y) 1+x.^2.*y.^2 );
-s = svd(f);
-% Frobeius norm: 
-pass(7) = abs( norm( f ) - sqrt(sum(s.^2)) ) < tol; 
+%% functions with rank>1
+f = chebfun2(@(x,y) exp(x.*y));
 
-% Frobeius norm:
-pass(8) = abs( norm( f, 'fro' ) - sqrt(sum(s.^2)) ) < tol; 
+exact = 2.236768845167052;
+pass(7) = abs(norm(f) - exact) < tol; % default is the Frobenius norm 
+pass(8) = abs(norm(f,'fro') - exact) < tol; % Frobenius norm 
 
-% Operator norm, largest singular value: 
-pass(9) = abs( norm( f, 'op' ) - s(1) ) < tol; 
+exact =  2.119814813637055;
+pass(7) = abs(norm(f,2) - exact) < tol; % spectral (operator) norm 
 
-% inf norm: 
-pass(10) = abs( norm( f, 'inf' ) - 2 ) < tol; 
-pass(11) =  abs( norm( f, inf ) - 2 ) < tol;
-
-% max norm: 
-pass(12) = abs( norm( f, 'max'  ) - 2 ) < tol;  
+exact =  2.925303491814361;
+pass(8) = abs(norm(f,'nuc') - exact) < tol; % Frobenius norm 
+>>>>>>> origin/development
 end
