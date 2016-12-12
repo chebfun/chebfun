@@ -118,6 +118,7 @@ if ( ~isempty(varargin) )
 else
     if ( isreal( f ) )
         h = surf( f );
+        colormap default
         
     else
         %% Phase Protrait plot 
