@@ -4,6 +4,13 @@ function varargout = trigremez(f, varargin)
 %   of degree M to the real CHEBFUN F in the infinity norm using the Remez 
 %   algorithm. F must be a continuous periodic function but it need not be
 %   represented in 'trig' format.
+%    
+%   [P, Q] = TRIGREMEZ(F, M, N) computes the best trigonometric rational 
+%   approximation P/Q of type (M, N) to the real CHEBFUN F using the 
+%   Remez algorithm.
+%
+%   [P, Q, R_HANDLE] = TRIGREMEZ(F, M, N) does the same but additionally returns a
+%   function handle R_HANDLE for evaluating the rational function P/Q.
 %
 %   [...] = TRIGREMEZ(..., 'tol', TOL) uses the value TOL as the termination
 %   tolerance on the increase of the levelled error.
@@ -28,8 +35,8 @@ function varargout = trigremez(f, varargin)
 %
 % References:
 %
-%   [1] Javed, M. and Trefethen, L. N.  "Remez and CF approximations of 
-%    Periodic Functions". In preparation.
+%   [1] Javed, M. "Algorithms for trigonometric polynomail and 
+%   rational approximation". DPhil thesis, Oxford.
 %
 % See also REMEZ, CF.
 
@@ -195,24 +202,29 @@ end
 % Input parsing.
 function [m, n, N, rationalMode, opts] = parseInputs(f, varargin)
 
+%%
+% Catch m and discard it from the input list
 m = varargin{1};
+varargin(1) = [];
+
+% By default, we are assuming polynomial approximation
 rationalMode = false;
-if ( length(varargin) > 1 )
-    n = varargin{2};    
+% Check if n is passed for a rational approximation
+if ( length(varargin) >= 1 )   
+    n = varargin{1};    
     if ( isfloat(n) && length(n) == 1 )
         if ( n > 0 )
             rationalMode = true;
         end
-        varargin = varargin(3:end);
-    else
-        n = 0;
         varargin = varargin(2:end);
+    else
+        n = 0;        
     end
 else
     n = 0;
 end
         
-
+% validate m and n
 if ( m < 0 || n < 0 || m ~= round(m) || n ~= round(n) )
     error('CHEBFUN:CHEBFUN:trigremez:parseInputs', ...
         'Degree of approximation must be a nonnegative integer.');
@@ -222,13 +234,15 @@ end
 % Number of points for equioscillation:
 N = 2*(m+n)+2;
 
-% Parse name-value option pairs.
-baseTol = 1e-12;
-opts.tol = baseTol*(N^2 + 10); % Relative tolerance for deciding convergence.
+
+% set defaults
+baseTol = 1e-15;
+opts.tol = baseTol*(N/2 + 10); % Relative tolerance for deciding convergence.
 opts.maxIter = 100;            % Maximum number of allowable iterations.
 opts.displayIter = false;      % Print output after each iteration.
 opts.plotIter = false;         % Plot approximation at each iteration.
 
+% Parse name-value option pairs.
 for k = 1:2:length(varargin)
     if ( strcmpi('tol', varargin{k}) )
         opts.tol = varargin{k+1};
@@ -267,7 +281,7 @@ end
 function [p, q, r, hk, th] = computeTrialFunctionRational(f_th, th, m, n, dom)
 
 % tolerance for neglecting imaginary part:
-imag_tol = 1e-12;
+imag_tol = 1e-13;
 
 % default period
 T = dom(end) - dom(1);
@@ -295,6 +309,8 @@ B = -I*[zeros(size(P)), Q];
 [V, h] = eig(A, B);
 h = diag(h);
 
+% Check if there is an eigenvector which 
+% gives a pole free solution
 valid_count = 0;
 for j = 1:size(V, 2)
     if ( isinf(h(j)) || abs(imag(h(j))) > imag_tol)
