@@ -38,12 +38,12 @@ function [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, varargin)
 
 
 % Parse inputs:
-[F, Z, M, dom, tol, mmax, cleanup_flag, needZ] = parseInputs(F, varargin{:});
+[F, Z, M, dom, tol, mmax, cleanup_flag, needZ, mmax_flag] = parseInputs(F, varargin{:});
 
 if ( needZ )
     % Z was not provided.  Try to resolve F on its domain.
     [r, pol, res, zer, zj, fj, wj, errvec] = ...
-        aaa_autoZ(F, dom, tol, mmax, cleanup_flag);
+        aaa_autoZ(F, dom, tol, mmax, cleanup_flag, mmax_flag);
     return
 end
 
@@ -119,7 +119,7 @@ end % of AAA()
 
 %% parse Inputs:
 
-function [F, Z, M, dom, tol, mmax, cleanup_flag, needZ] = ...
+function [F, Z, M, dom, tol, mmax, cleanup_flag, needZ, mmax_flag] = ...
     parseInputs(F, varargin)
 % Input parsing for AAA.
 
@@ -153,6 +153,7 @@ else
     dom = [-1, 1];
 end
 cleanup_flag = 1;   % Cleanup on.
+mmax_flag = 0;
 
 % Check if parameters have been provided:
 while ( ~isempty(varargin) )
@@ -165,6 +166,7 @@ while ( ~isempty(varargin) )
     elseif ( strncmpi(varargin{1}, 'mmax', 4) )
         if ( isfloat(varargin{2}) && isequal(size(varargin{2}), [1, 1]) )
             mmax = varargin{2};
+            mmax_flag = 1;
         end
         varargin([1, 2]) = [];
         
@@ -345,7 +347,7 @@ end % End of CLEANUP().
 %% Automated choice of sample set
 
 function [r, pol, res, zer, zj, fj, wj, errvec] = ...
-    aaa_autoZ(F, dom, tol, mmax, cleanup_flag)
+    aaa_autoZ(F, dom, tol, mmax, cleanup_flag, mmax_flag)
 %
 
 % Flag if function has been resolved:
@@ -383,7 +385,7 @@ for n = 5:14
     end
 end
 
-if ( isResolved == 0 )
+if ( ( isResolved == 0 ) && ~mmax_flag )
     warning('CHEBFUN:aaa:notResolved', ...
         'Function not resolved using %d pts.', length(Z))
 end
