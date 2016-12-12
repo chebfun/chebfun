@@ -290,7 +290,7 @@ while ( t < tf )
     
     % One step in time with DT and N points:
     [cNew, NcNew] = oneStep(K, schemeCoeffs, Nc, Nv, nVars, cOld, NcOld);
-        iter = iter + 1;
+    iter = iter + 1;
     t = (iter + q - 1)*dt;
     cOld = cNew;
     NcOld = NcNew;
@@ -306,7 +306,7 @@ while ( t < tf )
         for k = 1:nVars
             idx = (k-1)*N + 1;
             temp = ifftn(cNew{1}(idx:idx+N-1,:,:));
-            if ( max(abs(imag(temp(:)))) < max(abs(temp(:)))*eps )
+            if ( max(abs(imag(temp(:)))) < max(abs(temp(:)))*1e-10 )
                 temp = real(temp);
             end
             v = [v; temp];
@@ -323,14 +323,14 @@ while ( t < tf )
             options = plotMovie(S, dt, p, options, t, v, dataGrid, plotGrid);
         end
         
-    % Store the values every ITERPLOT iterations if using WATERFALL:
-    % (Remark: Only in dimension 1.)
+        % Store the values every ITERPLOT iterations if using WATERFALL:
+        % (Remark: Only in dimension 1.)
     elseif ( strcmpi(plotStyle, 'waterfall') == 1 && mod(iter, iterplot) == 0 )
         v = [];
         for k = 1:nVars
             idx = (k-1)*N + 1;
             temp = ifft(cNew{1}(idx:idx+N-1));
-            if ( max(abs(imag(temp(:)))) < max(abs(temp(:)))*eps )
+            if ( max(abs(imag(temp(:)))) < max(abs(temp(:)))*1e-10 )
                 temp = real(temp);
             end
             v = [v; temp];
@@ -347,7 +347,7 @@ while ( t < tf )
             for k = 1:nVars
                 idx = (k-1)*N + 1;
                 temp = ifftn(cNew{1}(idx:idx+N-1,:,:));
-                if ( max(abs(imag(temp(:)))) < max(abs(temp(:)))*eps )
+                if ( max(abs(imag(temp(:)))) < max(abs(temp(:)))*1e-10 )
                     temp = real(temp);
                 end
                 v = [v; temp];
@@ -363,7 +363,7 @@ while ( t < tf )
     
     % Make sure that the solution is computed at the entries of TSPAN:
     if ( t + 2*dt > tspan(pos) && t ~= tspan(pos) )
-        if ( abs(t + dt - tspan(pos)) < 1e-10 || adaptiveTime == 0 )
+        if ( abs(t + dt - tspan(pos)) < 1e-10 )
             continue
         else
             dt = (tspan(pos) - t)/2;
@@ -380,6 +380,7 @@ computingTime = toc;
 % Make sure that the solution at TF has been plotted if using MOVIE:
 if ( strcmpi(plotStyle, 'movie') == 1 )
     plotMovie(S, dt, p, options, t, v, dataGrid, plotGrid);
+   set(gcf, 'NextPlot', 'replace')
 end
 
 % Use WATERFALL if using WATERFALL:

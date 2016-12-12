@@ -69,29 +69,21 @@ for k = 1:nVars
             pos = p{k}(l).XData;
             pos = pos(1);
             [~, id] = min(abs(ttx - pos));
-            set(p{k}(l), 'xdata', squeeze(xxx(:,id,:)))
-            set(p{k}(l), 'ydata', squeeze(yyy(:,id,:)))
-            set(p{k}(l), 'zdata', squeeze(zzz(:,id,:)))
             set(p{k}(l), 'cdata', squeeze(vvv(:,id,:)))
         elseif ( Sy == 1 )
             pos = p{k}(l).YData;
             pos = pos(1);
             [~, id] = min(abs(tty - pos));
-            set(p{k}(l), 'xdata', squeeze(xxx(id,:,:)))
-            set(p{k}(l), 'ydata', squeeze(yyy(id,:,:)))
-            set(p{k}(l), 'zdata', squeeze(zzz(id,:,:)))
             set(p{k}(l), 'cdata', squeeze(vvv(id,:,:)))
         elseif ( Sz == 1 )
             pos = p{k}(l).ZData;
             pos = pos(1);
             [~, id] = min(abs(ttz - pos));
-            set(p{k}(l), 'xdata', squeeze(xxx(:,:,id)))
-            set(p{k}(l), 'ydata', squeeze(yyy(:,:,id)))
-            set(p{k}(l), 'zdata', squeeze(zzz(:,:,id)))
             set(p{k}(l), 'cdata', squeeze(vvv(:,:,id)))
         end
     end
-    ax = p{k}.Parent; set(ax, 'clim', [Clim(2*(k-1) + 1), Clim(2*(k-1) + 2)])
+    ax = p{k}.Parent; 
+    set(ax, 'clim', [Clim(2*(k-1) + 1), Clim(2*(k-1) + 2)])
     drawnow
     
 end
