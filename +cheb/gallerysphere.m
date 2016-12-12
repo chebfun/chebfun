@@ -24,6 +24,7 @@ function varargout = gallerysphere(name)
 %   geomag      Radial component of the International Geomagnetic Reference
 %               field from the IGRF-12 model for 2015.
 %   football    Icosahedral pattern found on a traditional soccer ball.
+%   jet         A zonal jet stream over the mid-latitudes of the northern hemisphere.
 %   moire       Moire pattern from waves generated at two point sources.
 %   neamtu      Function created by Mike Neamtu for testing various spline
 %               interpolation methods on the sphere (see Alfeld, Neamtu,
@@ -202,6 +203,15 @@ switch lower(name)
         cntrlvl = [1 1];
         viewAngle = [-36 8];
         clrmap = hot;
+        
+    % A zonal jet stream in the mid-latitudes of the northern hemisphere.
+    case 'jet'
+        fa = spherefun(@(lam,th) sin(th-(pi/4+0.01*cos(12*lam))).*exp(-300*(1-cos(th-(pi/4+0.01*cos(12*lam))))));
+        f = spherefun(fa);
+        type = 1;
+        clrmap = jet;
+        viewAngle = [32 8];
+        addEarthPlot = 1;
         
     % A smiley face emoticon
     case ':)'
