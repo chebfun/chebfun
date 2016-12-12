@@ -12,18 +12,7 @@ classdef spinpref < spinpreference
 %     ['off']                   wavenumbers.
 %      'on'
 %
-%   dt                        * Time-step for time discretization. Default is 
-%     []                        empty, i.e., adaptively chosen by the code to 
-%                               achieve errTol. 
-%
-%   dtmax                     * Maximum time-step when using an apative grid in
-%     [1e-1]                    time.
-%
-%   dtmin                     * Minimum time-step when using an apative grid in
-%     [1e-10]                   time.
-%
-%   errTol                    * Desired accuracy on the solution.
-%     [1e-6]
+%   dt                        * Time-step for time discretization.
 %
 %   iterPlot                  * Plot the solution every ITERPLOT iterations of
 %     [20]                      the time-stepping loop if 'plot' is 'movie'.
@@ -32,14 +21,6 @@ classdef spinpref < spinpreference
 %     [64]                      the phi-functions.
 %
 %   N                         * Number points for spatial discretization. 
-%     []                        Default is empty, i.e., adaptively chosen by the 
-%                               code to achieve errTol.
-%
-%   Nmin                      * Minimum number of points when using an adaptive
-%     [256]                     grid in space.
-%
-%   Nmax                      * Maximum number of points when using an adaptive
-%     [4096]                    grid in space.
 %                                         
 %   Nplot                     * Number of grid points for plotting. If Nplot>N,
 %     [1024]                    the data are interpolated to a finer grid.
@@ -89,13 +70,8 @@ classdef spinpref < spinpreference
             if ( nargin == 0 )
                 pref.dataToPlot = 'real';
                 pref.dealias = 'off';
-                pref.dtmin = 1e-10;
-                pref.dtmax = 1e-1;
-                pref.errTol = 1e-6;
                 pref.iterPlot = 20;
                 pref.M = 64;
-                pref.Nmin = 256;
-                pref.Nmax = 4096;
                 pref.Nplot = 1024;
                 pref.plot = 'movie';
                 pref.scheme = 'etdrk4';
@@ -103,13 +79,8 @@ classdef spinpref < spinpreference
                 pdechar = varargin{1};
                 pref.dataToPlot = 'real';
                 pref.dealias = 'off';
-                pref.dtmin = [];
-                pref.dtmax = [];
-                pref.errTol = 1e-6;
                 pref.iterPlot = 20;
                 pref.M = 64;
-                pref.Nmin = [];
-                pref.Nmax = [];
                 pref.Nplot = 1024;
                 pref.plot = 'movie';
                 pref.scheme = 'etdrk4';

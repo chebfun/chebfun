@@ -20,15 +20,6 @@ classdef spinpref3 < spinpreference
 %     []                        empty, i.e., adaptively chosen by the code to 
 %                               achieve errTol. 
 %
-%   dtmax                     * Maximum time-step when using an apative grid in
-%     [5]                       time.
-%
-%   dtmin                     * Minimum time-step when using an apative grid in
-%     [1e-10]                   time.
-%
-%   errTol                    * Desired accuracy on the solution.
-%     [1e-2]
-%
 %   iterPlot                  * Plot the solution every ITERPLOT iterations of
 %     [1]                       the time-stepping loop if 'plot' is 'movie'.
 %
@@ -36,14 +27,7 @@ classdef spinpref3 < spinpreference
 %     [32]                      the phi-functions.
 %
 %   N                         * Number points in each direction for spatial 
-%     [32]                      discretization. To switch to adaptive grid, set
-%                               N=[].
-%
-%   Nmin                      * Minimum number of points in each direction when 
-%     [32]                      using an adaptive grid in space.
-%
-%   Nmax                      * Maximum number of points in each direction when   
-%     [128]                     using an adaptive grid in space.
+%     [32]                      discretization. 
 %                       
 %   Nplot                     * Number of grid points in each direction for 
 %     [128]                     plotting. If Nplot>N, the data are interpolated 
@@ -97,14 +81,9 @@ classdef spinpref3 < spinpreference
             if ( nargin == 0 )
                 pref.dataToPlot = 'real';
                 pref.dealias = 'off';
-                pref.dtmin = 1e-10;
-                pref.dtmax = 5;
-                pref.errTol = 1e-2;
                 pref.iterPlot = 1;
                 pref.M = 32;
                 pref.N = 32;
-                pref.Nmin = 32;
-                pref.Nmax = 128;
                 pref.Nplot = 128;
                 pref.plot = 'movie';
                 pref.scheme = 'etdrk4';
@@ -112,12 +91,7 @@ classdef spinpref3 < spinpreference
                 pdechar = varargin{1};
                 pref.dataToPlot = 'real';
                 pref.dealias = 'off';
-                pref.dtmin = [];
-                pref.dtmax = [];
-                pref.errTol = 1e-2;
                 pref.M = 32;
-                pref.Nmin = [];
-                pref.Nmax = [];
                 pref.plot = 'movie';
                 pref.scheme = 'etdrk4';
                 if ( strcmpi(pdechar, 'GL3') == 1 )

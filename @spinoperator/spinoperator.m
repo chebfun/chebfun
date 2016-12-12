@@ -194,9 +194,6 @@ classdef spinoperator
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Abstract = true, Static = false )
         
-        % Check if the solution is resolved in space:
-        ishappy = checkHappiness(S, c, pref)
-        
         % Discretize a SPINOPERATOR:
         [L, Nc] = discretize(S, N)
 

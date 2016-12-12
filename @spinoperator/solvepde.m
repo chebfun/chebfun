@@ -11,17 +11,17 @@ function [uOut, tOut, computingTime] = solvepde(varargin)
 %% Inputs:
 
 % Throw an error if no input:
-if ( nargin == 0 ) 
+if ( nargin == 0 )
     error('SPINOPERATOR:solvepde', 'Not enough input arguments.')
 end
 
 % Throw an error if the first input is not appropriate:
 if ( nargin == 1 )
-   item = varargin{1};
-   if ( isa(item, 'spinoperator') == 0 && isa(item, 'char') == 0 )
-       error('SPINOPERATOR:solvepde', ['Firt input should be a ', ...
-           'SPINOPERATOR or a STRING.'])
-   end
+    item = varargin{1};
+    if ( isa(item, 'spinoperator') == 0 && isa(item, 'char') == 0 )
+        error('SPINOPERATOR:solvepde', ['Firt input should be a ', ...
+            'SPINOPERATOR or a STRING.'])
+    end
 end
 
 % Get the inputs:
@@ -34,10 +34,10 @@ while ( j <= nargin )
     item =  varargin{j};
     if ( isa(item, 'char') == 1 )
         pdechar = item;
-    elseif ( isa(item, 'double') == 1 ) 
+    elseif ( isa(item, 'double') == 1 )
         tspan = item;
     elseif ( isa(item, 'chebfun') == 1 || isa(item, 'chebfun2') == 1 || ...
-        isa(item, 'chebfun3') == 1 )
+            isa(item, 'chebfun3') == 1 )
         u0 = chebmatrix(item);
     elseif ( isa(item, 'chebfun2v') == 1 || isa(item, 'chebfun3v') == 1 )
         u0 = chebmatrix(item(1));
@@ -71,7 +71,7 @@ if ( isempty(S) == 0 )
         end
     end
     
-% DEMO mode, i.e., a STRING was given by the user:    
+    % DEMO mode, i.e., a STRING was given by the user:
 else
     
     % Create a SPINOPERATOR:
@@ -112,17 +112,17 @@ else
         end
     end
 end
-   
+
 % Time interval TSPAN:
 if ( isempty(tspan) == 1 )
     tspan = S.tspan;
 end
-    
+
 % Initial condition U0:
 if ( isempty(u0) == 1 )
     u0 = S.init;
     if ( isa(u0, 'chebfun') == 1 || isa(u0, 'chebfun2') == 1 || ...
-        isa(u0, 'chebfun3') == 1 )
+            isa(u0, 'chebfun3') == 1 )
         u0 = chebmatrix(u0);
     elseif ( isa(u0, 'chebfun2v') == 1 || isa(u0, 'chebfun3v') == 1 )
         temp = chebmatrix(u0(1));
@@ -161,62 +161,24 @@ end
 
 %% Pre-processing:
 
-% Dealiasing:
-dealias = pref.dealias;
-
-% Error tolerance:
-errTol = pref.errTol;
-
-% Points for complex means:
-M = pref.M;
-
-% Plot every ITERPLOT iterations if 'movie':
-iterplot = pref.iterPlot;
-
-% Number of grid points N:
-Nmin = pref.Nmin;
-Nmax = pref.Nmax;
-adaptiveSpace = isempty(pref.N);
-if ( adaptiveSpace == 1 )
-    % Adaptive in space, start with NMIN:
-    % (Unless NMIN is smaller than the length NU0 of the initial condition.)
-    Nu0 = max(cellfun(@(B) length(B), u0.blocks)); % Length
-    Nu0 = 2^ceil(log2(Nu0)); % Convert to a power of 2
-    Nu0 = min(Nu0, Nmax); % Make sure it's not larger than Nmax
-    N = max(Nmin, Nu0);
-else
-    % Not adpative in space, i.e., use the N given by the user:
-    N = pref.N;
-end
-
-% Time-step dt:
-dtmin = pref.dtmin;
-dtmax = pref.dtmax;
-adaptiveTime = isempty(pref.dt);
-if ( adaptiveTime == 1 )
-    % Adaptive in time, start with DTMAX: 
-    % (Unless the interval is shorter than DTMAX.)
-    dt = min(tspan(end), dtmax);
-else
-    % Not adpative in time, i.e., use the dt given by the user:
-    dt = pref.dt;
-end
-
-% Plot options:
-plotStyle = pref.plot;
+% Get the preferences:
+dealias = pref.dealias;   % Use a dealiasing procedure if DEALIAS = 1
+M = pref.M;               % Points for complex means:
+iterplot = pref.iterPlot; % plot every ITERPLOT iterations if 'movie'
+N = pref.N;               % Number of grid points
+dt = pref.dt;             % Time-step
+plotStyle = pref.plot;    % Plotting options
 
 % Create a time-stepping scheme:
 schemeName = pref.scheme;
 K = spinscheme(schemeName);
-
-% Get the number of steps of the scheme:
-q = K.steps;
+q = K.steps; % Number of steps of the scheme:
 
 % Operators (linear part L, and nonlinear parts Nc and Nv):
 [L, Nc] = discretize(S, N);
 Nv = S.nonlinearPartVals;
 
-% Set-up spatial grid, and initial condition (values VINIT and Fourier coeffs 
+% Set-up spatial grid, and initial condition (values VINIT and Fourier coeffs
 % CINIT):
 xx = trigpts(N, dom(1:2));
 if ( dim == 2 )
@@ -258,7 +220,7 @@ for k = 1:nVars-1
 end
 coeffs = Nc.*coeffs;
 NcInit{1} = coeffs;
-    
+
 % Get enough initial data when using a multistep scheme:
 if ( q > 1 )
     [cInit, NcInit] = startMultistep(K, dt, L, Nc, Nv, pref, S, cInit, NcInit);
@@ -267,14 +229,9 @@ end
 % Compute the coefficients of the scheme:
 schemeCoeffs = computeCoeffs(K, dt, L, M, S);
 
-% If adaptive in time, get the coefficients with DT/2:
-if ( adaptiveTime == 1 )
-    schemeCoeffs2 = computeCoeffs(K, dt/2, L, M, S);
-end
-
 % Indexes for dealiasing:
 toOne = floor(N/2) + 1 - ceil(N/6):floor(N/2) + ceil(N/6);
-if ( dim == 1 ) 
+if ( dim == 1 )
     ind = false(N, 1);
     ind(toOne) = 1;
 elseif ( dim == 2 )
@@ -326,261 +283,93 @@ end
 tic
 iter = 0;
 t = (q-1)*dt;
-success = 0;
 pos = 2;
 cOld = cInit;
 NcOld = NcInit;
 while ( t < tf )
-
+    
     % One step in time with DT and N points:
     [cNew, NcNew] = oneStep(K, schemeCoeffs, Nc, Nv, nVars, cOld, NcOld);
-    valuesUpdated = 0;
+        iter = iter + 1;
+    t = (iter + q - 1)*dt;
+    cOld = cNew;
+    NcOld = NcNew;
     
     % Dealiasing procedure:
     if ( strcmpi(dealias, 'on') == 1 )
         cNew{1}(ind) = 0;
     end
     
-    % Check if N is large enough (i.e., check resolution in space):
-    if ( adaptiveSpace == 1 )
-        ishappySpace = checkHappiness(S, cNew, pref);
+    % Plot every ITERPLOT iterations if using MOVIE:
+    if ( strcmpi(plotStyle, 'movie') == 1 && mod(iter,iterplot) == 0 )
+        v = [];
+        for k = 1:nVars
+            idx = (k-1)*N + 1;
+            temp = ifftn(cNew{1}(idx:idx+N-1,:,:));
+            if ( max(abs(imag(temp(:)))) < max(abs(temp(:)))*eps )
+                temp = real(temp);
+            end
+            v = [v; temp];
+        end
+        valuesUpdated = 1;
+        if ( dim == 1 )
+            isLimGiven = ~isempty(pref.Ylim);
+        elseif ( dim == 2 || dim == 3 )
+            isLimGiven = ~isempty(pref.Clim);
+        end
+        if ( isLimGiven == 1 )
+            plotMovie(S, dt, p, options, t, v, dataGrid, plotGrid);
+        else
+            options = plotMovie(S, dt, p, options, t, v, dataGrid, plotGrid);
+        end
         
-    % If not adaptive in space, set ISHAPPYSPACE=1:
-    else
-        ishappySpace = 1;
+    % Store the values every ITERPLOT iterations if using WATERFALL:
+    % (Remark: Only in dimension 1.)
+    elseif ( strcmpi(plotStyle, 'waterfall') == 1 && mod(iter, iterplot) == 0 )
+        v = [];
+        for k = 1:nVars
+            idx = (k-1)*N + 1;
+            temp = ifft(cNew{1}(idx:idx+N-1));
+            if ( max(abs(imag(temp(:)))) < max(abs(temp(:)))*eps )
+                temp = real(temp);
+            end
+            v = [v; temp];
+        end
+        valuesUpdated = 1;
+        vWater{iter/iterplot + 1} = v;
+        twater = [twater, t];
     end
     
-    % If happy with the resolution in space or N>=Nmax:
-    if ( ishappySpace == 1 || N >= Nmax )
-        
-        % Two steps in time with DT/2 and N points (if adpative in time):
-        if ( adaptiveTime == 1 )
-            [cNew2, NcNew2] = oneStep(K, schemeCoeffs2, Nc, Nv, nVars, ...
-                cOld, NcOld);
-            if ( strcmpi(dealias, 'on') == 1 )
-                cNew2{1}(ind) = 0;
-            end
-            [cNew2, NcNew2] = oneStep(K, schemeCoeffs2, Nc, Nv, nVars, ...
-                cNew2, NcNew2);
-            if ( strcmpi(dealias, 'on') == 1 )
-                cNew2{1}(ind) = 0;
-            end
-            err = max(abs(cNew{1}(:) - cNew2{1}(:)));
-            err = err/max(abs(cNew2{1}(:)));
-            ishappyTime = ( err <= errTol );
-            
-        % If not adaptive in time, set CNEW2=CNEW and ISHAPPYTIME=1:
-        else
-            cNew2 = cNew;
-            NcNew2 = NcNew;
-            ishappyTime = 1;
-        end
-        
-        % If happy with the resolution in time or DT<=DTMIN:
-        if (  ishappyTime == 1 || dt <= dtmin )
-            
-            % Update time T, iteration ITER and Fourier coefficients C:
-            iter = iter + 1;
-            if ( adaptiveTime == 1 )
-                t = t + dt;
-            else
-                t = (iter + q - 1)*dt;
-            end
-            success = success + 1;
-            cOld = cNew2;
-            NcOld = NcNew2;
-            
-            % Plot every ITERPLOT iterations if using MOVIE:
-            if ( strcmpi(plotStyle, 'movie') == 1 && ...
-                    mod(iter,iterplot) == 0 )
-                v = [];
-                for k = 1:nVars
-                    idx = (k-1)*N + 1;
-                    temp = ifftn(cOld{1}(idx:idx+N-1,:,:));
-                    if ( max(abs(imag(temp(:)))) < errTol )
-                        temp = real(temp);
-                    end
-                    v = [v; temp];
-                end
-                valuesUpdated = 1;
-                if ( dim == 1 )
-                    isLimGiven = ~isempty(pref.Ylim);
-                elseif ( dim == 2 || dim == 3 ) 
-                    isLimGiven = ~isempty(pref.Clim);
-                end
-                if ( isLimGiven == 1 )
-                    plotMovie(S, dt, p, options, t, v, dataGrid, plotGrid);
-                else
-                    options = plotMovie(S, dt, p, options, t, v, dataGrid, ...
-                        plotGrid);
-                end
-                
-            % Store the values every ITERPLOT iterations if using WATERFALL:
-            % (Remark: Only in dimension 1.)
-            elseif ( strcmpi(plotStyle, 'waterfall') == 1 && ...
-                    mod(iter, iterplot) == 0 )
-                v = [];
-                for k = 1:nVars
-                    idx = (k-1)*N + 1;
-                    temp = ifft(cOld{1}(idx:idx+N-1));
-                    if ( max(abs(imag(temp(:)))) < errTol )
-                        temp = real(temp);
-                    end
-                    v = [v; temp];
-                end
-                valuesUpdated = 1;
-                vWater{iter/iterplot + 1} = v;
-                twater = [twater, t];
-            end
-                      
-            % Output the solution if T correponds to an entry of TSPAN:
-            if ( abs(t - tspan(pos)) < 1e-10 )
-                if ( valuesUpdated == 0 )
-                    v = [];
-                    for k = 1:nVars
-                        idx = (k-1)*N + 1;
-                        temp = ifftn(cOld{1}(idx:idx+N-1,:,:));
-                        if ( max(abs(imag(temp(:)))) < errTol )
-                            temp = real(temp);
-                        end
-                        v = [v; temp];
-                    end
-                end
-                vOut{pos} = v;
-                tOut(pos) = t;
-                pos = pos + 1;
-                if ( pos > length(tspan) )
-                    break
-                end
-            end
-          
-            % Make sure that the solution is computed at the entries of TSPAN:
-            if ( t + 2*dt > tspan(pos) && t ~= tspan(pos) )
-                if ( abs(t + dt - tspan(pos)) < 1e-10 || adaptiveTime == 0 )
-                    continue
-                else
-                    dt = (tspan(pos) - t)/2;
-                    schemeCoeffs = computeCoeffs(K, dt, L, M, S);
-                    schemeCoeffs2 = computeCoeffs(K, dt/2, L, M, S);
-                    success = 0;
-                    continue
-                end
-            end
-
-            % If 50 consecutive steps have been successful, double DT, and
-            % update quantities which depend on DT:
-            if ( adaptiveTime == 1 && success >= 50 && 2*dt < dtmax )
-                dt = 2*dt;
-                schemeCoeffs2 = schemeCoeffs;
-                schemeCoeffs = computeCoeffs(K, dt, L, M, S);
-                success = 0;
-            end
-            
-        % If |cnew - cnew2| is not small enough, half DT, update quantities
-        % which depend on DT, and redo the step:
-        else
-            
-            % Half DT only if DT/2>DTMIN:
-            if ( dt/2 > dtmin )
-                dt = dt/2;
-                
-            % Othewise use DTMIN:
-            else
-                dt = dtmin;
-                warning(['The time-step has been set to its minimum ', ...
-                    'value %1.1e.\n'], dtmin)
-            end
-            
-            % Update quantities:
-            schemeCoeffs = schemeCoeffs2;
-            schemeCoeffs2 = computeCoeffs(K, dt/2, L, M, S);
-            success = 0;
-            
-        end
-        
-    % If not resolved in space, increase N, update quantities which depend on N,
-    % and redo the step:
-    else
-        
-        % Increase N:
-        if ( dim == 1 )
-            NN = 2*N;
-        elseif ( dim == 2 )
-            NN = 1.5*N;
-        elseif ( dim == 3 )
-            NN = 1.25*N;
-        end
-        
-        % Update L and NC:
-        [L, Nc] = discretize(S, NN);
-        
-        % Loop over the number of steps of the method:
-        for i = 1:q
-            coeffs = [];
-            vals = [];
+    % Output the solution if T correponds to an entry of TSPAN:
+    if ( abs(t - tspan(pos)) < 1e-10 )
+        if ( valuesUpdated == 0 )
+            v = [];
             for k = 1:nVars
                 idx = (k-1)*N + 1;
-                valsOld = ifftn(cOld{i}(idx:idx+N-1,:,:));
-                if ( dim == 1 )
-                    xx = trigpts(NN);
-                    u = trigtech({valsOld, trigtech.vals2coeffs(valsOld)});
-                    temp = feval(u, xx);
-                elseif ( dim == 2 )
-                    xx = trigpts(NN, dom(1:2));
-                    yy = trigpts(NN, dom(3:4));
-                    [xx, yy] = meshgrid(xx, yy);
-                    u = chebfun2(valsOld, dom, 'trig');   
-                    temp = feval(u, xx, yy);
-                elseif ( dim == 3 )
-                    xx = trigpts(NN, dom(1:2));
-                    yy = trigpts(NN, dom(3:4));
-                    zz = trigpts(NN, dom(5:6));
-                    [xx, yy, zz] = meshgrid(xx, yy, zz);
-                    u = chebfun3(valsOld, dom, 'trig');
-                    temp = feval(u, xx, yy, zz);
+                temp = ifftn(cNew{1}(idx:idx+N-1,:,:));
+                if ( max(abs(imag(temp(:)))) < max(abs(temp(:)))*eps )
+                    temp = real(temp);
                 end
-                vals = [vals; temp];
-                coeffs = [coeffs; fftn(temp)];
+                v = [v; temp];
             end
-            
-            % Update the Fourier coefficients:
-            cOld{i} = coeffs;
-            vals = Nv(vals);
-            coeffs = fftn(vals(1:NN,:,:));
-            for k = 1:nVars-1
-                idx = k*NN + 1;
-                coeffs = [coeffs; fftn(vals(idx:idx+NN-1,:,:))];
-            end
-            
-            % Update the nonlinear evaluations:
-            NcOld{i} = Nc.*coeffs;
-            
         end
-        
-        % Compute the new coefficients for the scheme:
-        N = NN;
-        schemeCoeffs = computeCoeffs(K, dt, L, M, S);
-        schemeCoeffs2 = computeCoeffs(K, dt/2, L, M, S);
-        
-        % Update the grid for plotting and the indexes for dealiasing:
-        toOne = floor(N/2) + 1 - ceil(N/6):floor(N/2) + ceil(N/6);
-        if ( dim == 1 )
-            ind = false(N, 1);
-            ind(toOne) = 1;
-            dataGrid = {trigpts(N, dom(1:2))};
-        elseif ( dim == 2 )
-            ind = false(N, N);
-            ind(toOne, toOne) = 1;  
-            dataGrid = {xx; yy};
-        elseif ( dim == 3 );
-            ind = false(N, N, N);
-            ind(toOne, toOne, toOne) = 1;              
-            dataGrid = {xx; yy; zz};
+        vOut{pos} = v;
+        tOut(pos) = t;
+        pos = pos + 1;
+        if ( pos > length(tspan) )
+            break
         end
-        dataGrid = reshapeGrid(S, dataGrid);
-        ind = repmat(ind, nVars, 1);
-        success = 0;
-        
+    end
+    
+    % Make sure that the solution is computed at the entries of TSPAN:
+    if ( t + 2*dt > tspan(pos) && t ~= tspan(pos) )
+        if ( abs(t + dt - tspan(pos)) < 1e-10 || adaptiveTime == 0 )
+            continue
+        else
+            dt = (tspan(pos) - t)/2;
+            schemeCoeffs = computeCoeffs(K, dt, L, M, S);
+            continue
+        end
     end
     
 end
@@ -602,7 +391,7 @@ if ( strcmpi(plotStyle, 'waterfall') == 1 )
             N = length(vWater{l})/nVars;
             idx = (k-1)*N + 1;
             uwater = [ uwater, chebfun(real(vWater{l}(idx:idx+N-1)), dom, ...
-                'trig') ]; 
+                'trig') ];
         end
         subplot(1, nVars, k)
         waterfall(uwater, twater), axis([dom(1), dom(end), 0, tf])
@@ -651,7 +440,7 @@ if ( length(tspan) == 2 )
     end
 else
     N = length(vOut{1})/nVars;
-    uOut = chebmatrix(fun(vOut{1}(1:N,:,:), dom, 'trig')); 
+    uOut = chebmatrix(fun(vOut{1}(1:N,:,:), dom, 'trig'));
     for k = 2:nVars
         idx = (k-1)*N + 1;
         uOut(k,1) = fun(vOut{1}(idx:idx+N-1,:,:), dom, 'trig');
@@ -660,7 +449,7 @@ else
         N = length(vOut{l})/nVars;
         for k = 1:nVars
             idx = (k-1)*N + 1;
-            uOut(k,l) = fun(vOut{l}(idx:idx+N-1,:,:), dom, 'trig'); 
+            uOut(k,l) = fun(vOut{l}(idx:idx+N-1,:,:), dom, 'trig');
         end
     end
 end
