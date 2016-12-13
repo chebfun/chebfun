@@ -162,17 +162,17 @@ if ( strcmpi(pdechar, 'GL3') == 1 )
     pref.Nplot = 80;
 elseif ( strcmpi(pdechar, 'GS3') == 1 )
     dt = 4;
-    pref.iterPlot = 8;
+    pref.iterplot = 8;
     N = 32;
     pref.Nplot = 80;
 elseif ( strcmpi(pdechar, 'Schnak3') == 1 )
     dt = 5e-1;
-    pref.iterPlot = 10;
+    pref.iterplot = 10;
     N = 32;
     pref.Nplot = 80;
 elseif ( strcmpi(pdechar, 'SH3') == 1 )
     dt = 1;
-    pref.iterPlot = 2;
+    pref.iterplot = 2;
     N = 32;
     pref.Nplot = 100;
 end
