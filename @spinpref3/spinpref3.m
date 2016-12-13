@@ -7,28 +7,21 @@ classdef spinpref3 < spinpreference
 %     []                        Default is empty, i.e., automatically chosen by 
 %                               the code. 
 %
-%   dataToPlot                * What data to plot when the solution is complex-
-%     ['real']                  valued.
+%   dataplot                  * Plotting options when the solution is complex.
+%     ['real']                  
 %      'imag'
 %      'abs'
 %
 %   dealias                   * If it is 'on', use the 2/3-rule to zero high 
 %     ['off']                   wavenumbers.
 %      'on'
-% 
-%   dt                        * Time-step for time discretization. Default is 
-%     []                        empty, i.e., adaptively chosen by the code to 
-%                               achieve errTol. 
 %
-%   iterPlot                  * Plot the solution every ITERPLOT iterations of
+%   iterplot                  * Plot the solution every ITERPLOT iterations of
 %     [1]                       the time-stepping loop if 'plot' is 'movie'.
 %
 %   M                         * Number of points for complex means to evaluate
 %     [32]                      the phi-functions.
 %
-%   N                         * Number points in each direction for spatial 
-%     [32]                      discretization. 
-%                       
 %   Nplot                     * Number of grid points in each direction for 
 %     [128]                     plotting. If Nplot>N, the data are interpolated 
 %                               to a finer grid.
@@ -47,11 +40,6 @@ classdef spinpref3 < spinpreference
 % Construction:
 %
 %   PREF = SPINPREF3() creates a SPINPREF3 object with the default values.
-%
-%   PREF = SPINPREF3(PDECHAR) creates a SPINPREF3 object corresponding to the 
-%   preferences used for the SPIN3(PDECHAR) demo. Strings available include
-%   'GL3' for Ginzburg-Landau equation and 'GS3' for Gray-Scott equations. 
-%   Other PDEs are available, see HELP/SPIN3.
 %
 %   PREF = SPINPREF3(PROP1, VALUE1, PROP2, VALUE2, ...) creates a SPINPREF3
 %   object with the properties PROP1 and PROP2 set to VALUE1 and VALUE2.
@@ -79,11 +67,10 @@ classdef spinpref3 < spinpreference
         
         function pref = spinpref3(varargin) 
             if ( nargin == 0 )
-                pref.dataToPlot = 'real';
+                pref.dataplot = 'real';
                 pref.dealias = 'off';
-                pref.iterPlot = 1;
+                pref.iterplot = 1;
                 pref.M = 32;
-                pref.N = 32;
                 pref.Nplot = 128;
                 pref.plot = 'movie';
                 pref.scheme = 'etdrk4';

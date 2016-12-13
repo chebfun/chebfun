@@ -3,29 +3,24 @@ function [uout, tout] = spin2(varargin)
 %Fourier spectral method and an exponential integrator time-stepping scheme.
 %
 %   UOUT = SPIN2(PDECHAR) solves the PDE specified by the string PDECHAR, and 
-%   plots a movie of the solution as it computes it. The space and time 
-%   intervals and the initial condition are chosen to produce beautiful movies. 
-%   Strings available include include 'GL2' for Ginzburg-Landau equation and 
-%   'GS2' for Gray-Scott equations. Many other PDEs are available, see Remark 1 
-%   and Examples 1-4. The output UOUT is a CHEBFUN2 corresponding to the 
-%   solution at the final time (a CHEBMATRIX for systems of equations, each row 
-%   representing one variable). 
+%   plots a movie of the solution as it computes it; it is a demo mode. 
+%   The space and time intervals and the initial condition are chosen to produce 
+%   beautiful movies. Strings available include 'GL2' for Ginzburg-Landau 
+%   equation and 'GS2' for Gray-Scott equations. Many other PDEs are available, 
+%   see Remark 1 and Examples 1-4. The output UOUT is a CHEBFUN2 corresponding 
+%   to the solution at the final time (a CHEBMATRIX for systems of equations, 
+%   each row representing one variable). 
 %
-%   UOUT = SPIN2(PDECHAR, TSPAN) solves the PDE from TPSAN(1) to TSPAN(END)
-%   where TSPAN=[0 T1 T2 ... TF] is a vector of time chunks. The output UOUT is 
-%   a CHEBMATRIX, each row corresponding to one variable and each column to one 
-%   time chunk (unless TSPAN=[0 TF] and there is only one variable, in which 
-%   case the output is a CHEBFUN2 at TF).
+%   UOUT = SPIN2(S, N, DT) solves the PDE specified by the SPINOP2 S with N grid
+%   points in each direction and a time-step DT. It plots a movie of the 
+%   solution as it computes it. See HELP/SPINOP2 and Example 5.
 %
-%   UOUT = SPIN2(PDECHAR, TSPAN, U0) solves the PDE with initial condition a 
-%   CHEBFUN2 U0 (one variable) or a CHEBMATRIX U0 (systems). 
+%   UOUT = SPIN2(S, N, DT, PREF) allows one to use the preferences specified by
+%   the SPINPREF2 object PREF. See HELP/SPINPREF2 and Example 6.
 %
-%   UOUT = SPIN2(S) solves the PDE specified by the SPINOP2 S and plots a movie
-%   of the solution as it computes it. See HELP/SPINOP2.
+%   UOUT = SPIN2(S, N, DT, 'PREF1', VALUEPREF1, 'PREF2', VALUEPREF2, ...) is an
+%   alternative to the previous syntax. See Example 6.
 %
-%   UOUT = SPIN2(..., PREF) allows one to use the preferences specified by the 
-%   SPINPREF object PREF. See HELP/SPINPREF2.
-% 
 %   [UOUT, TOUT] = SPIN2(...) also returns the times chunks TOUT at which UOUT
 %   was computed.
 %

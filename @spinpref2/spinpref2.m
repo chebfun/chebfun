@@ -7,25 +7,20 @@ classdef spinpref2 < spinpreference
 %     []                        Default is empty, i.e., automatically chosen by 
 %                               the code. 
 %
-%   dataToPlot                * What data to plot when the solution is complex-
-%     ['real']                  valued.
+%   dataplot                  * Plotting options when the solution is complex.
+%     ['real']                 
 %      'imag'
 %      'abs'
 %
 %   dealias                   * If it is 'on', use the 2/3-rule to zero high 
 %     ['off']                   wavenumbers.
 %      'on'
-% 
-%   dt                        * Time-step for time discretization. 
 %
-%   iterPlot                  * Plot the solution every ITERPLOT iterations of
+%   iterplot                  * Plot the solution every ITERPLOT iterations of
 %     [1]                       the time-stepping loop if 'plot' is 'movie'.
 %
 %   M                         * Number of points for complex means to evaluate
 %     [32]                      the phi-functions.
-%
-%   N                         * Number points in each direction for spatial 
-%                               discretization. 
 %
 %   Nplot                     * Number of grid points in each direction for 
 %     [256]                     plotting. If Nplot>N, the data are interpolated 
@@ -44,11 +39,6 @@ classdef spinpref2 < spinpreference
 % Construction:
 %
 %   PREF = SPINPREF2() creates a SPINPREF2 object with the default values.
-%
-%   PREF = SPINPREF2(PDECHAR) creates a SPINPREF2 object corresponding to the 
-%   preferences used for the SPIN2(PDECHAR) demo. Strings available include
-%   'GL2' for Ginzburg-Landau equation and 'GS2' for Gray-Scott equations. 
-%   Other PDEs are available, see HELP/SPIN2.
 %
 %   PREF = SPINPREF2(PROP1, VALUE1, PROP2, VALUE2, ...) creates a SPINPREF2 
 %   object with the properties PROP1 and PROP2 set to VALUE1 and VALUE2.
@@ -73,11 +63,10 @@ classdef spinpref2 < spinpreference
         
         function pref = spinpref2(varargin) 
             if ( nargin == 0 )
-                pref.dataToPlot = 'real';
+                pref.dataplot = 'real';
                 pref.dealias = 'off';
-                pref.iterPlot = 1;
+                pref.iterplot = 1;
                 pref.M = 32;
-                pref.N = 64;
                 pref.Nplot = 256;
                 pref.plot = 'movie';
                 pref.scheme = 'etdrk4';

@@ -10,88 +10,45 @@ function [uOut, tOut, computingTime] = solvepde(varargin)
 
 %% Parse inputs:
 
-% Throw an error if no input:
-if ( nargin == 0 )
-    error('SPINOPERATOR:solvepde', 'Not enough input arguments.')
-end
-
-% Throw an error if the first input is not appropriate:
-if ( nargin == 1 )
-    item = varargin{1};
-    if ( isa(item, 'spinoperator') == 0 && isa(item, 'char') == 0 )
-        error('SPINOPERATOR:solvepde', ['Firt input should be a ', ...
-            'SPINOPERATOR or a STRING.'])
-    end
-end
+% SOLVEPDE has been called by SPIN/SPIN2/SPIN3. The inputs have been parsed in 
+% those files and are expeceted to be:
+%
+% OPTION 1.     SOLVEPDE(S, N, DT), S is a SPINOPERATOR object, N is the number
+%               of grid points and DT is the time-step.
+%
+% OPTION 2.     SOLVEPDE(S, N, DT, PREF), PREF is a SPINPREFERENCE.
 
 % Get the inputs:
 pref = [];
-%S = [];
-tspan = [];
-% j = 1;
-% while ( j <= nargin )
-%     item =  varargin{j};
-%     if ( isa(item, 'char') == 1 )
-%         pdechar = item;
-%     elseif ( isa(item, 'double') == 1 )
-%         tspan = item;
-%     elseif ( isa(item, 'spinoperator') == 1 )
-%         S = item;
-%     elseif ( isa(item, 'spinpreference') == 1 )
-%         pref = item;
-%     else
-%         error('SPINOPERATOR:solvepde', 'Unrecognized input.')
-%     end
-%     j = j + 1;
-% end
-% if ( nargin == 1 )
-%     pdechar = varargin{1};
-% elseif ( nargin == 3 )
-%     N
-% end
-S
-% A SPINOPERATOR was given by the user:
-if ( isempty(S) == 0 )
-    dim = getDimension(S);
-    
-    % Create a SPINPREFERENCE object if none:
-    if ( isempty(pref) == 1 )
-        if ( dim == 1 )
-            pref = spinpref();
-        elseif ( dim == 2 )
-            pref = spinpref2();
-        elseif ( dim == 3 )
-            pref = spinpref3();
-        end
-    end
-    
-% DEMO mode, i.e., a STRING was given by the user:
-else
-    
-    % Create a SPINOPERATOR and PREFERENCES:
-    is2D = ~isempty(strfind(pdechar, '2'));
-    is3D = ~isempty(strfind(pdechar, '3'));
-    is1D = ( is2D == 0 && is3D == 0 );
-    if ( is1D == 1 )
-        dim = 1;
-        S = spinop(pdechar);
-        pref = spinpref(pdechar);
-    elseif ( is2D == 1 )
-        dim = 2;
-        S = spinop2(pdechar);
-        pref = spinpref2(pdechar);
-    elseif ( is3D == 1 )
-        dim = 3;
-        S = spinop3(pdechar);
-        pref = spinpref3(pdechar);
-    end
-
+if ( nargin == 3 ) % OPTION 1
+    S = varargin{1};
+    N = varargin{2};
+    dt = varargin{3};
+elseif ( nargin == 4 ) % OPTION 2
+    S = varargin{1};
+    N = varargin{2};
+    dt = varargin{3};
+    pref = varargin{4};
 end
+
+% Dimension:
+dim = getDimension(S);
+
+% Create a SPINPREFERENCE object if none:
+if ( isempty(pref) == 1 )
+    if ( dim == 1 )
+        pref = spinpref();
+    elseif ( dim == 2 )
+        pref = spinpref2();
+    elseif ( dim == 3 )
+        pref = spinpref3();
+    end
+end
+
+%% Pre-processing:
 
 % Time interval TSPAN:
-if ( isempty(tspan) == 1 )
-    tspan = S.tspan;
-end
+tspan = S.tspan;
 
 % Initial condition U0:
 u0 = S.init;
@@ -106,7 +63,7 @@ elseif ( isa(u0, 'chebfun2v') == 1 || isa(u0, 'chebfun3v') == 1 )
     u0 = temp;
 end
 
-% Convert to trigfun:
+% Convert initial condition to trigfun:
 nVars = S.numVars;
 for k = 1:nVars
     if ( dim == 1 )
@@ -132,20 +89,16 @@ if ( isempty(S) == 0 )
     end
 end
 
-%% Pre-processing:
-
 % Get the preferences:
 dealias = pref.dealias;   % Use a dealiasing procedure if DEALIAS = 1
 M = pref.M;               % Points for complex means:
-iterplot = pref.iterPlot; % plot every ITERPLOT iterations if 'movie'
-N = pref.N;               % Number of grid points
-dt = pref.dt;             % Time-step
+iterplot = pref.iterplot; % plot every ITERPLOT iterations if 'movie'
 plotStyle = pref.plot;    % Plotting options
 
 % Create a time-stepping scheme:
 schemeName = pref.scheme;
 K = spinscheme(schemeName);
-q = K.steps; % Number of steps of the scheme:
+q = K.steps; % Number of steps of the scheme
 
 % Operators (linear part L, and nonlinear parts Nc and Nv):
 [L, Nc] = discretize(S, N);
@@ -255,6 +208,7 @@ end
 
 tic
 iter = 0;
+valuesUpdated = 0;
 t = (q-1)*dt;
 pos = 2;
 cOld = cInit;
@@ -334,17 +288,6 @@ while ( t < tf )
         end
     end
     
-    % Make sure that the solution is computed at the entries of TSPAN:
-    if ( t + 2*dt > tspan(pos) && t ~= tspan(pos) )
-        if ( abs(t + dt - tspan(pos)) < 1e-10 )
-            continue
-        else
-            dt = (tspan(pos) - t)/2;
-            schemeCoeffs = computeCoeffs(K, dt, L, M, S);
-            continue
-        end
-    end
-    
 end
 computingTime = toc;
 
@@ -401,18 +344,18 @@ elseif ( dim == 3 )
 end
 
 % Output a CHEBFUN/CHEBMATRIX from values VOUT:
-if ( length(tspan) == 2 )
+if ( length(tspan) == 2 ) % e.g., tspan = [0 T], output only the solution at T
     N = length(vOut{end})/nVars;
     if ( nVars == 1 )
         uOut = fun(vOut{end}(1:N,:,:), dom, 'trig');
-    else
+    else % for systems, use a CHEBAMTRIX
         uOut = chebmatrix(fun(vOut{end}(1:N,:,:), dom, 'trig'));
         for k = 2:nVars
             idx = (k-1)*N + 1;
             uOut(k,1) = fun(vOut{end}(idx:idx+N-1,:,:), dom, 'trig');
         end
     end
-else
+else % e.g., tspan = [0, t1, t2], output the solutions at t = 0, t1 and t2
     N = length(vOut{1})/nVars;
     uOut = chebmatrix(fun(vOut{1}(1:N,:,:), dom, 'trig'));
     for k = 2:nVars
