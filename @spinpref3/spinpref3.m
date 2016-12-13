@@ -56,8 +56,7 @@ classdef spinpref3 < spinpreference
         Clim         % Limits of the colorbar (1x2*NVARS DOUBLE)
         slices       % Slices of the volumetric slice plot (1x3 CELL, slices{1}
                      % is a DOUBLE of positions x corresponding to the slices 
-                     % x=constant, same for slices{2} and slices{3} with y and
-                     % z)
+                     % x=cst, same for slices{2} and slices{3} with y and z)
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -74,36 +73,6 @@ classdef spinpref3 < spinpreference
                 pref.Nplot = 128;
                 pref.plot = 'movie';
                 pref.scheme = 'etdrk4';
-            elseif ( nargin == 1 )
-                pdechar = varargin{1};
-                pref.dataToPlot = 'real';
-                pref.dealias = 'off';
-                pref.M = 32;
-                pref.plot = 'movie';
-                pref.scheme = 'etdrk4';
-                if ( strcmpi(pdechar, 'GL3') == 1 )
-                    pref.dt = 2e-1;
-                    pref.iterPlot = 1;
-                    pref.N = 32;   
-                    pref.Nplot = 80;
-                elseif ( strcmpi(pdechar, 'GS3') == 1 )
-                    pref.dt = 4;
-                    pref.iterPlot = 8;
-                    pref.N = 32;     
-                    pref.Nplot = 80;
-                elseif ( strcmpi(pdechar, 'Schnak3') == 1 )
-                    pref.dt = 5e-1;
-                    pref.iterPlot = 10;
-                    pref.N = 32;
-                    pref.Nplot = 80;
-                elseif ( strcmpi(pdechar, 'SH3') == 1 )
-                    pref.dt = 1;
-                    pref.iterPlot = 2;
-                    pref.N = 32;
-                    pref.Nplot = 100;
-                else
-                    error('SPINPREF3:CONSTRUCTOR', 'Unrecognized PDE.')
-                end
             else
                 pref = spinpref3();
                 for k = 1:nargin/2

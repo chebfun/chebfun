@@ -7,7 +7,7 @@ function [p, options] = initializeMovie(S, dt, pref, v, dataGrid, plotGrid)
 % Set-up:
 nVars = S.numVars;
 vscale = max(abs(v(:)));
-dataToPlot = str2func(pref.dataToPlot);
+dataplot = str2func(pref.dataplot);
 dom = S.domain;
 xx = dataGrid{1};
 yy = dataGrid{2};
@@ -56,7 +56,7 @@ for k = 1:nVars
     
     % Extract each variable:
     idx = (k-1)*N + 1;
-    vv = dataToPlot(v(idx:idx+N-1,:,:));
+    vv = dataplot(v(idx:idx+N-1,:,:));
     vv = [vv, vv(:,1,:)]; %#ok<*AGROW>
     vv = [vv; vv(1,:,:)];
     vv = cat(3, vv, vv(:,:,1));
@@ -103,6 +103,6 @@ shg, pause
 p{nVars + 1} = h;
 options{1} = Clim;
 options{2} = {Sx, Sy, Sz};
-options{3} = dataToPlot;
+options{3} = dataplot;
 
 end

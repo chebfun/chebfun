@@ -162,9 +162,9 @@ function [uout, tout] = spin(varargin)
 %       S.linearPart = @(u) -diff(u,2)-diff(u,4);
 %       S.nonlinearPart = @(u) -.5*diff(u.^2);
 %       S.init = chebfun(@(x) cos(x/16).*(1 + sin(x/16)), dom, 'trig');
-%       u = spin(S, );
+%       u = spin(S, 256, 5e-2);
 %
-%   is equivalent to u = spin('KS', 256, 5e-2).
+%   is equivalent to u = spin('KS');
 %
 % Example 11: Using preferences
 %
@@ -192,7 +192,7 @@ function [uout, tout] = spin(varargin)
 %       SPINOPERATOR.SOLVEPDE(S, N, dt, pref)
 %
 % where S is a SPINOP object, N is the number of grid points, DT is the 
-% time-step and PREF is a SPINPREFE oject.
+% time-step and PREF is a SPINPREF oject.
 
 if ( nargin == 1 ) % e.g., u = spin('kdv')
     try spinop(varargin{1})

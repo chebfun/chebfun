@@ -70,33 +70,6 @@ classdef spinpref2 < spinpreference
                 pref.Nplot = 256;
                 pref.plot = 'movie';
                 pref.scheme = 'etdrk4';
-            elseif ( nargin == 1 )
-                pdechar = varargin{1};
-                pref.dataToPlot = 'real';
-                pref.dealias = 'off';
-                pref.M = 32;
-                pref.Nplot = 256;
-                pref.plot = 'movie';
-                pref.scheme = 'etdrk4';
-                if ( strcmpi(pdechar, 'GL2') == 1 )
-                    pref.dt = 2e-1;
-                    pref.iterPlot = 1;
-                    pref.N = 64;
-                elseif ( strcmpi(pdechar, 'GS2') == 1 )
-                    pref.dt = 4;
-                    pref.iterPlot = 8;
-                    pref.N = 64;
-                elseif ( strcmpi(pdechar, 'Schnak2') == 1 )
-                    pref.dt = 5e-1;
-                    pref.iterPlot = 10;
-                    pref.N = 64;
-                elseif ( strcmpi(pdechar, 'SH2') == 1 )
-                    pref.dt = 1;
-                    pref.iterPlot = 1;
-                    pref.N = 64; 
-                else
-                    error('SPINPREF2:CONSTRUCTOR', 'Unrecognized PDE.')
-                end
             else
                 pref = spinpref2();
                 for k = 1:nargin/2
