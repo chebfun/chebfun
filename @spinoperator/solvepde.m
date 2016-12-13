@@ -217,6 +217,9 @@ while ( t < tf )
     
     % One step in time with DT and N points:
     [cNew, NcNew] = oneStep(K, schemeCoeffs, Nc, Nv, nVars, cOld, NcOld);
+    if ( any(isnan(cNew{1})) )
+        error('The solution blew up. Try a smaller time-step.')
+    end
     iter = iter + 1;
     t = (iter + q - 1)*dt;
     cOld = cNew;
