@@ -107,10 +107,12 @@ while ( err > errTol && iter < maxIter )
 end
 uSol = uNew;
 NuSol = NuNew;
+
 if ( iter >= maxIter )
     warning('Fixed-point iteration might not have converged.')    
 end
 if ( any(isnan(uNew{1})) ) 
     error('Fixed-point iteration diverged. Try a smaller time-step.')
 end
+
 end
