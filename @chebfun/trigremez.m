@@ -350,11 +350,11 @@ end
 
 function [xk, norme, err_handle, flag] = exchange(xk, h, method, f, g, Npts)
 %EXCHANGE   Modify an equioscillation reference using the Remez algorithm.
-%   EXCHANGE(XK, H, METHOD, F, P) performs one step of the Remez algorithm
+%   EXCHANGE(XK, H, METHOD, F, G) performs one step of the Remez algorithm
 %   for the best polynomial approximation of the CHEBFUN F of the target function
 %   according to the first method (METHOD = 1), i.e. exchanges only one point,
 %   or the second method (METHOD = 2), i.e. exchanges all the reference points.
-%   XK is a column vector with the reference, H is the levelled error, P is the
+%   XK is a column vector with the reference, H is the levelled error, G is the
 %   trigonometric polynomial.
 %
 %   [XK, NORME, E_HANDLE, FLAG] = EXCHANGE(...) returns the modified reference
@@ -364,8 +364,8 @@ function [xk, norme, err_handle, flag] = exchange(xk, h, method, f, g, Npts)
 %   were at least Npts alternating extrema of the error to form the next
 %   reference (FLAG = 1) or not (FLAG = 0).
 %
-%   [XK, ...] = EXCHANGE([], 0, METHOD, F, P, Q, N) returns a grid of N
-%   points XK where the error F - P alternates in sign (but not necessarily
+%   [XK, ...] = EXCHANGE([], 0, METHOD, F, G, Q, N) returns a grid of N
+%   points XK where the error F - G alternates in sign (but not necessarily
 %   equioscillates). This feature of EXCHANGE is useful to start TRIGREMEZ from an
 %   initial trial function rather than an initial trial reference.
 
