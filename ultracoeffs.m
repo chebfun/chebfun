@@ -46,7 +46,7 @@ end
 ab = lam - .5;
 c = jaccoeffs(f, n, ab, ab);   
 
-n = length(c) - 1;
+n = size(c,1) - 1;
 nn = (0:n).';
 % scl = feval(jacpoly(nn, lam-.5, lam-.5), 1)./feval(ultrapoly(nn, lam), 1);
 scl = ( gamma(2*lam) ./ gamma(lam+.5) ) * ...
