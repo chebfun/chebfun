@@ -236,8 +236,8 @@ N = 2*(m+n)+2;
 
 
 % set defaults
-baseTol = 1e-12;
-opts.tol = baseTol*(N^2 + 10); % Relative tolerance for deciding convergence.
+baseTol = 1e-15;
+opts.tol = baseTol*(N/2 + 10); % Relative tolerance for deciding convergence.
 opts.maxIter = 100;            % Maximum number of allowable iterations.
 opts.displayIter = false;      % Print output after each iteration.
 opts.plotIter = false;         % Plot approximation at each iteration.
