@@ -102,6 +102,12 @@ if ( M == 2 )
     errvec(2) = 0;
 end
 
+% Remove support points with zero weight:
+I = find(wj == 0);
+zj(I) = [];
+wj(I) = [];
+fj(I) = [];
+
 % Construct function handle:
 r = @(zz) reval(zz, zj, fj, wj);
 
