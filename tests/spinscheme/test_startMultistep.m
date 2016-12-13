@@ -17,7 +17,7 @@ S.tspan = [0 10*dt];
 umulti = spin(S, N, dt, 'plot', 'off', 'scheme', 'pecec736');
 
 % Solve with ETDRK4: 
-u = spin2(S, N, dt, 'plot', 'off', 'scheme', 'etdrk4');
+u = spin(S, N, dt, 'plot', 'off', 'scheme', 'etdrk4');
 
 % Compare:
 pass(1) = norm(u - umulti, inf)/norm(u, inf) < tol;
