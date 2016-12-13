@@ -296,7 +296,7 @@ computingTime = toc;
 % Make sure that the solution at TF has been plotted if using MOVIE:
 if ( strcmpi(plotStyle, 'movie') == 1 )
     plotMovie(S, dt, p, options, t, v, dataGrid, plotGrid);
-   set(gcf, 'NextPlot', 'replace')
+    set(gcf, 'NextPlot', 'replace')
 end
 
 % Use WATERFALL if using WATERFALL:

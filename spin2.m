@@ -96,14 +96,12 @@ function [uout, tout] = spin2(varargin)
 %
 %       pref = spinpref2('plot', 'off', 'scheme', 'pecec433');
 %       S = spinop2('sh2');
-%       u = spin2(S, 128, 1e-1, pref);
-%
+%       u = spin2(S, 64, 5e-1, pref);
 %   or simply,
+%       u = spin2(S, 64, 5e-1, 'plot', 'off', 'scheme', 'pecec433');
 %
-%        u = spin2(S, 128, 1e-1, 'plot', 'off', 'scheme', 'pecec433');
-%
-%   solves the Swift-Hohenberg equation using N=128 grid points in each
-%   direction, a time-step dt=1e-1, doesn't produce any movie use the
+%   solves the Swift-Hohenberg equation using N=64 grid points in each
+%   direction, a time-step dt=5e-1, doesn't produce any movie use the
 %   time-stepping scheme PECEC433.
 %
 % See also SPINOP2, SPINPREF2, SPINSCHEME, SPIN, SPIN3.
