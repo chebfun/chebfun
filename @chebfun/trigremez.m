@@ -236,8 +236,8 @@ N = 2*(m+n)+2;
 
 
 % set defaults
-baseTol = 1e-15;
-opts.tol = baseTol*(N/2 + 10); % Relative tolerance for deciding convergence.
+baseTol = 1e-12;
+opts.tol = baseTol*(N^2 + 10); % Relative tolerance for deciding convergence.
 opts.maxIter = 100;            % Maximum number of allowable iterations.
 opts.displayIter = false;      % Print output after each iteration.
 opts.plotIter = false;         % Plot approximation at each iteration.
@@ -346,7 +346,7 @@ end
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % TODO: There is a lot of overlap between the present case of trigonometric
 % remez and the usual polynomial remez. The common parts of the code should
-% factored out in future.
+% be factored out in future.
 
 function [xk, norme, err_handle, flag] = exchange(xk, h, method, f, g, Npts)
 %EXCHANGE   Modify an equioscillation reference using the Remez algorithm.
@@ -441,7 +441,7 @@ end
 % Function called when opts.plotIter is set.
 function doPlotIter(xo, xk, err_handle, dom)
 
-xxk = linspace(dom(1), dom(end), 300);
+xxk = linspace(dom(1), dom(end), 5000);
 plot(xo, 0*xo, 'or', 'MarkerSize', 12)   % Old reference.
 holdState = ishold;
 hold on
