@@ -10,9 +10,9 @@ classdef spinop2 < spinoperator
 %   'GS2' for Gray-Scott equations. Other PDEs are available, see HELP/SPIN2.
 %
 %   S = SPINOP2(DOM, TSPAN) creates a SPINOP2 object S on DOM x TSPAN. The other
-%   fields of a SPINOP2 are its linear part S.LINEARPART, its nonlienar part
-%   S.NONLINEARPART and the initial condition S.INIT. The fields can be set via
-%   S.PROP = VALUE. See Remark 1 and Example 1.
+%   fields of a SPINOP2 are its linear part S.LIN, its nonlienar part S.NONLIN
+%   and the initial condition S.INIT. The fields can be set via S.PROP = VALUE. 
+%   See Remark 1 and Example 1.
 %
 % Remark 1: The linear part has to be of the form 
 %           
@@ -29,8 +29,8 @@ classdef spinop2 < spinoperator
 %
 %            dom = [0 200 0 200]; tspan = [0 10];
 %            S = spinop2(dom, tspan);
-%            S.linearPart = @(u) lap(u);
-%            S.nonlinearPart = @(u) u - (1+1.3i)*u.*(abs(u).^2);
+%            S.lin = @(u) lap(u);
+%            S.nonlin = @(u) u - (1+1.3i)*u.*(abs(u).^2);
 %            S.init = chebfun2(@(x,y) cos(pi*x/100).*sin(y*pi/100), dom);
 %
 % See also SPINOPERATOR, SPINOP2, SPINOP3, SPIN2.
@@ -53,8 +53,8 @@ classdef spinop2 < spinoperator
             elseif ( nargin == 1 )
                 if ( isa(varargin{1}, 'char') == 1 )
                     [L, N, dom, tspan, u0] = parseInputs(varargin{1});
-                    S.linearPart = L;
-                    S.nonlinearPart = N;
+                    S.lin = L;
+                    S.nonlin = N;
                     S.domain = dom;
                     S.tspan = tspan;
                     S.init = u0;

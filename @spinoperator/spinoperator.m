@@ -19,8 +19,8 @@ classdef spinoperator
                             % 1x6 in 3D)
         init                % Initial condition (CHEBFUN in 1D, CHEBFUN2 in 2D,
                             % CHEBFUN3 in 3D, CHEBMATRIX for systems)
-        linearPart          % Linear part of the operator (FUNCTION HANDLE)
-        nonlinearPart       % Nonlinear part of the operator (FUNCTION HANDLE)
+        lin                 % Linear part of the operator (FUNCTION HANDLE)
+        nonlin              % Nonlinear part of the operator (FUNCTION HANDLE)
         tspan               % Vector of strictly increasing time 
                             % samples (DOUBLE)
     end
@@ -46,7 +46,7 @@ classdef spinoperator
         % METHOD for numVars:
         function nVars = get.numVars(S)
             
-            nVars = nargin(S.linearPart);
+            nVars = nargin(S.lin);
             
         end
         
@@ -54,7 +54,7 @@ classdef spinoperator
         function Nc = get.nonlinearPartCoeffs(S)
             
             % Extract the nonlinear part:
-            N = S.nonlinearPart;
+            N = S.nonlin;
             
             % If N is empty, we are done:
             if ( isempty(N) == 1 )
@@ -115,7 +115,7 @@ classdef spinoperator
         function Nv = get.nonlinearPartVals(S)
             
             % Extract the nonlinear part:
-            N = S.nonlinearPart;
+            N = S.nonlin;
             
             % If N is empty, we are done:
             if ( isempty(N) == 1 )
@@ -124,7 +124,6 @@ classdef spinoperator
             end
             
             % Else, get the variables of the workspace:
-            N = S.nonlinearPart;
             func = functions(N);
             wrk = func.workspace{1};
             names = fieldnames(wrk);
@@ -194,9 +193,6 @@ classdef spinoperator
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Abstract = true, Static = false )
         
-        % Check if the solution is resolved in space:
-        ishappy = checkHappiness(S, c, pref)
-        
         % Discretize a SPINOPERATOR:
         [L, Nc] = discretize(S, N)
 
@@ -221,10 +217,7 @@ classdef spinoperator
     methods ( Access = public, Abstract = false, Static = true )
         
         % Solve a PDE defined by a SPINOPERATOR:
-        [uout, tout] = solvepde(varargin)
-        
-        % Check if in DEMO mode:
-        out = isDemoCheck(in)
+        [uout, tout, computingTime] = solvepde(varargin)
    
     end
 

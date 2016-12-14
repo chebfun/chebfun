@@ -11,9 +11,9 @@ classdef spinop < spinoperator
 %   Many other PDEs are available, see HELP/SPIN.
 %
 %   S = SPINOP(DOM, TSPAN) creates a SPINOP object S on DOM x TSPAN. The other
-%   fields of a SPINOP are its linear part S.LINEARPART, its nonlienar part
-%   S.NONLINEARPART and the initial condition S.INIT. The fields can be set via
-%   S.PROP = VALUE. See Remark 1 and Example 1.
+%   fields of a SPINOP are its linear part S.LIN, its nonlienar part S.NONLIN 
+%   and the initial condition S.INIT. The fields can be set via S.PROP = VALUE. 
+%   See Remark 1 and Example 1.
 % 
 % Remark 1: The linear part can be any linear constant-coefficient differential
 %           operator, e.g., @(u) diff(u,3) + u. The nonlinear part has to be
@@ -40,8 +40,8 @@ classdef spinop < spinoperator
 %
 %            dom = [-pi pi]; tspan = [0 1e-2];
 %            S = spinop(dom, tspan);
-%            S.linearPart = @(u) -diff(u,3);
-%            S.nonlinearPart = @(u) -.5*diff(u.^2);
+%            S.lin = @(u) -diff(u,3);
+%            S.nonlin = @(u) -.5*diff(u.^2);
 %            S.init = chebfun(@(x) 100*sin(x), dom);
 %
 % See also SPINOPERATOR, SPINOP2, SPINOP3, SPIN.
@@ -64,8 +64,8 @@ classdef spinop < spinoperator
             elseif ( nargin == 1 )
                 if ( isa(varargin{1}, 'char') == 1 )
                     [L, N, dom, tspan, u0] = parseInputs(varargin{1});
-                    S.linearPart = L;
-                    S.nonlinearPart = N;
+                    S.lin = L;
+                    S.nonlin = N;
                     S.domain = dom;
                     S.tspan = tspan;
                     S.init = u0;

@@ -81,7 +81,7 @@ elseif ( isa(pref, 'spinpref3') == 1 )
     prefuexact = spinpref3();
 end
 prefuexact.scheme = 'pecec736';
-prefuexact.dt = min(timesteps)/2;
+prefuexact.dt = min(timesteps)/2; 
 prefuexact.plot = 'off';
 prefuexact.M = pref.M;
 prefuexact.N = pref.N;
@@ -113,8 +113,8 @@ for k = 1:nTimesteps
     for l = 1:nSchemes
         prefu.scheme = schemes{l};
         prefu.dt = timesteps(k);
-        tic, u = spinoperator.solvepde(pdechar, tspan, u0, prefu);  
-        time(k,l) = toc;
+        [u, ~, t] = spinoperator.solvepde(pdechar, tspan, u0, prefu);  
+        time(k,l) = t;
         if ( isa(u, 'chebmatrix') == 0 )
             u = chebmatrix(u);
         end

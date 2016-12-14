@@ -11,8 +11,8 @@ function out = feval(S, varargin)
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-L = S.linearPart;
-N = S.nonlinearPart;
+L = S.lin;
+N = S.nonlin;
 
 % CASE 1: S(U).
 if ( nargin == 2 )

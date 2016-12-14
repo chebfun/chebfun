@@ -18,7 +18,7 @@ function [L, Nc] = discretize(S, N)
 % Get the domain DOM, the linear part LFUN, the nonlinear part NFUN, and the 
 % number of variables NVARS from S:
 dom = S.domain;
-funcL = S.linearPart;
+funcL = S.lin;
 nVars = nargin(funcL);
 
 % Get the variables of the workspace:
