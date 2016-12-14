@@ -1,5 +1,5 @@
 function varargout = trigremez(f, varargin)
-%TRIGREMEZ   Best trigonometric polynomial approximation for real-valued chebfuns.
+%TRIGREMEZ   Best trigonometric polynomial or rational approximation for real-valued chebfuns.
 %   P = TRIGREMEZ(F, M) computes the best trigonometric polynomial approximation 
 %   of degree M to the real CHEBFUN F in the infinity norm using the Remez 
 %   algorithm. F must be a continuous periodic function but it need not be
@@ -25,8 +25,8 @@ function varargout = trigremez(f, varargin)
 %
 %   [P, ERR] = TRIGREMEZ(...) returns the maximum error ERR.
 %
-%   [P, ERR, STATUS] = TRIGREMEZ(...)  also return a structure array STATUS 
-%   with the following fields:
+%   [P, ERR, STATUS] = TRIGREMEZ(...) and [P, Q, R_HANDLE, ERR, STATUS] = TRIGREMEZ(...)
+%   also return a structure array STATUS with the following fields:
 %      STATUS.DELTA  - Obtained tolerance.
 %      STATUS.ITER   - Number of iterations performed.
 %      STATUS.DIFFX  - Maximum correction in last trial reference.
@@ -35,7 +35,7 @@ function varargout = trigremez(f, varargin)
 %
 % References:
 %
-%   [1] Javed, M. "Algorithms for trigonometric polynomail and 
+%   [1] Javed, M. "Algorithms for trigonometric polynomial and 
 %   rational approximation". DPhil thesis, Oxford.
 %
 % See also REMEZ, CF.
@@ -90,11 +90,11 @@ a = dom(1);
 b = dom(end);
 f = newDomain(f, [-pi, pi]);
 
-% default denominator 
+% Default denominator. 
 q = chebfun(1, [-pi, pi], 'trig');
 qmin = q;
 
-% Compute an initial reference set to start the algorithm:
+% Compute the initial reference set used to start the algorithm.
 xk = trigpts(N, [-pi, pi]);
 xo = xk;
 
@@ -168,7 +168,7 @@ q = qmin;
 err = errmin;
 delta = deltamin;
 
-% Map the points back on the original domain:
+% Map the points back on the original domain.
 forwardMap = @(y) b*(y + pi)/(2*pi) + a*(pi - y)/(2*pi); 
 xk = forwardMap(xkmin);
 
@@ -185,11 +185,11 @@ status.iter = iter;
 status.diffx = diffx;
 status.xk = xk;
 
-% Map the approximation back to the original domain:
+% Map the approximation back to the original domain.
 p = newDomain(p, [a, b]);
 q = newDomain(q, [a, b]);
 
-% return:
+% Return values.
 if ( rational_mode )
     varargout = {p, q, @(x) feval(p, x)./feval(q, x), err, status};
 else
@@ -203,13 +203,13 @@ end
 function [m, n, N, rationalMode, opts] = parseInputs(f, varargin)
 
 %%
-% Catch m and discard it from the input list
+% Catch m and discard it from the input list.
 m = varargin{1};
 varargin(1) = [];
 
-% By default, we are assuming polynomial approximation
+% By default, we are assuming polynomial approximation.
 rationalMode = false;
-% Check if n is passed for a rational approximation
+% Check if n is passed for a rational approximation.
 if ( length(varargin) >= 1 )   
     n = varargin{1};    
     if ( isfloat(n) && length(n) == 1 )
@@ -224,18 +224,18 @@ else
     n = 0;
 end
         
-% validate m and n
+% Validate m and n.
 if ( m < 0 || n < 0 || m ~= round(m) || n ~= round(n) )
     error('CHEBFUN:CHEBFUN:trigremez:parseInputs', ...
         'Degree of approximation must be a nonnegative integer.');
 end
 
 
-% Number of points for equioscillation:
+% Number of expected equioscillation points.
 N = 2*(m+n)+2;
 
 
-% set defaults
+% Default parameters.
 baseTol = 1e-15;
 opts.tol = baseTol*(N/2 + 10); % Relative tolerance for deciding convergence.
 opts.maxIter = 100;            % Maximum number of allowable iterations.
@@ -271,7 +271,7 @@ sigma(2:2:end) = -1;
 h = (w'*fk) / (w'*sigma);             % Levelled reference error.
 pk = (fk - h*sigma);                  % Vals. of r*q in reference.
 
-% Trial polynomial by interpolation:
+% Trial polynomial by interpolation.
 p = chebfun(@(x) trigBary(x, pk, xk, dom), dom, 2*m+1, 'trig');
 
 end
@@ -280,13 +280,13 @@ end
 % Functions implementing the core part of the algorithm.
 function [p, q, r, hk, th] = computeTrialFunctionRational(f_th, th, m, n, dom)
 
-% tolerance for neglecting imaginary part:
+% Tolerance for neglecting imaginary part.
 imag_tol = 1e-13;
 
-% default period
+% Default period.
 T = dom(end) - dom(1);
 
-% Construct interpolation matrices
+% Construct interpolation matrices.
 P(:, 1) = ones(length(th), 1);
 for j = 1:m
     P(:, 2*j)   = cos(2*j*pi/T*th);
@@ -300,7 +300,7 @@ for j = 1:n
 end
 
 N = m + n;
-% Solve the generalized eigenvalue problem:
+% Solve the resulting generalized eigenvalue problem.
 F = diag(f_th);
 A = [P, -F*Q];
 I = diag((-1).^(0:2*N+1));
@@ -310,7 +310,7 @@ B = -I*[zeros(size(P)), Q];
 h = diag(h);
 
 % Check if there is an eigenvector which 
-% gives a pole free solution
+% gives a pole free solution.
 valid_count = 0;
 for j = 1:size(V, 2)
     if ( isinf(h(j)) || abs(imag(h(j))) > imag_tol)
@@ -325,7 +325,8 @@ for j = 1:size(V, 2)
     bc = [flipud(conj(tmp)); b(1); tmp];        
     q_tmp = chebfun(bc, dom, 'coeffs', 'trig');
     roots_q = roots(q_tmp);
-    if ( isempty(roots_q) )            
+    if ( isempty(roots_q) )
+        % Trial numerator and denominator.
         q = q_tmp;
         p = chebfun(ac, dom, 'coeffs', 'trig');
         r = p./q;
@@ -351,11 +352,11 @@ end
 function [xk, norme, err_handle, flag] = exchange(xk, h, method, f, g, Npts)
 %EXCHANGE   Modify an equioscillation reference using the Remez algorithm.
 %   EXCHANGE(XK, H, METHOD, F, G) performs one step of the Remez algorithm
-%   for the best polynomial approximation of the CHEBFUN F of the target function
-%   according to the first method (METHOD = 1), i.e. exchanges only one point,
-%   or the second method (METHOD = 2), i.e. exchanges all the reference points.
-%   XK is a column vector with the reference, H is the levelled error, G is the
-%   trigonometric polynomial.
+%   for the best rational trigonometric approximation of the CHEBFUN F of
+%   the target function according to the first method (METHOD = 1), i.e.
+%   exchanges only one point, or the second method (METHOD = 2), i.e. exchanges
+%   all the reference points. XK is a column vector with the reference, H
+%   is the levelled error, G is the trial trigonometric rational function.
 %
 %   [XK, NORME, E_HANDLE, FLAG] = EXCHANGE(...) returns the modified reference
 %   XK, the supremum norm of the error NORME (included as an output argument,
@@ -364,10 +365,10 @@ function [xk, norme, err_handle, flag] = exchange(xk, h, method, f, g, Npts)
 %   were at least Npts alternating extrema of the error to form the next
 %   reference (FLAG = 1) or not (FLAG = 0).
 %
-%   [XK, ...] = EXCHANGE([], 0, METHOD, F, G, Q, N) returns a grid of N
+%   [XK, ...] = EXCHANGE([], 0, METHOD, F, G, N) returns a grid of N
 %   points XK where the error F - G alternates in sign (but not necessarily
-%   equioscillates). This feature of EXCHANGE is useful to start TRIGREMEZ from an
-%   initial trial function rather than an initial trial reference.
+%   equioscillates). This feature of EXCHANGE is useful to start TRIGREMEZ
+%   from an initial trial function rather than an initial trial reference.
 
 % Compute extrema of the error.
 e_num = diff(f-g);
@@ -376,7 +377,7 @@ err_handle = @(x) feval(f, x) - feval(g, x);
 
 rts = roots(e_num, 'nobreaks');
 % Do not include the other end of the domain, since the domain
-% is assumed to be periodic:
+% is assumed to be periodic.
 rr = [f.domain(1) ; rts];
 
 
@@ -386,7 +387,7 @@ if ( method == 1 )                             % One-point exchange.
     [ignored, pos] = max(abs(feval(err_handle, rr)));
     pos = pos(1);
 else                                           % Full exchange.
-    pos = find(abs(err_handle(rr)) >= abs(h)); % Values above levelled error
+    pos = find(abs(err_handle(rr)) >= abs(h)); % Values above levelled error.
 end
 
 % Add extrema nearest to those which are candidates for exchange to the
