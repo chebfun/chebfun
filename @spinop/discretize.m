@@ -18,7 +18,7 @@ function [L, Nc] = discretize(S, N)
 % Get the domain DOM, the linear part FUNCL, the nonlinear part FUNCN, and the 
 % number of variables NVARS:
 dom = S.domain;
-funcL = S.linearPart;
+funcL = S.lin;
 funcNc = S.nonlinearPartCoeffs;
 nVars = nargin(funcL);
 

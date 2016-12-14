@@ -85,8 +85,8 @@ function [uout, tout] = spin2(varargin)
 %
 %       dom = [0 100 0 100]; tspan = [0 100];
 %       S = spinop2(dom, tspan);
-%       S.linearPart = @(u) lap(u);
-%       S.nonlinearPart = @(u) u - (1 + 1.5i)*u.*(abs(u).^2);
+%       S.lin = @(u) lap(u);
+%       S.nonlin = @(u) u - (1 + 1.5i)*u.*(abs(u).^2);
 %       S.init = chebfun2(.1*randn(128, 128), dom, 'trig')
 %       u = spin2(S, 64, 2e-1);
 %
