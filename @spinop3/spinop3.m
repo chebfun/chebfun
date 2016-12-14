@@ -10,9 +10,9 @@ classdef spinop3 < spinoperator
 %   'GS3' for Gray-Scott equations. Other PDEs are available, see HELP/SPIN3.
 %
 %   S = SPINOP3(DOM, TSPAN) creates a SPINOP3 object S on DOM x TSPAN. The other
-%   fields of a SPINOP3 are its linear part S.LINEARPART, its nonlienar part
-%   S.NONLINEARPART and the initial condition S.INIT. The fields can be set via
-%   S.PROP = VALUE. See Remark 1 and Example 1.
+%   fields of a SPINOP3 are its linear part S.LIN, its nonlienar part S.NONLIN
+%   and the initial condition S.INIT. The fields can be set via S.PROP = VALUE. 
+%   See Remark 1 and Example 1.
 %
 % Remark 1: The linear part has to be of the form 
 %           
@@ -29,8 +29,8 @@ classdef spinop3 < spinoperator
 %
 %            dom = [0 100 0 100 0 100]; tspan = [0 10];
 %            S = spinop3(dom, tspan);
-%            S.linearPart = @(u) lap(u);
-%            S.nonlinearPart = @(u) u - (1+1.3i)*u.*(abs(u).^2);
+%            S.lin = @(u) lap(u);
+%            S.nonlin = @(u) u - (1+1.3i)*u.*(abs(u).^2);
 %            S.init = chebfun3(.1*randn(32,32,32), dom);
 %
 % See also SPINOPERATOR, SPINOP, SPINOP2, SPIN3.

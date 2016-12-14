@@ -159,8 +159,8 @@ function [uout, tout] = spin(varargin)
 %
 %       dom = [0 32*pi]; tspan = [0 300];
 %       S = spinop(dom, tspan);
-%       S.linearPart = @(u) -diff(u,2)-diff(u,4);
-%       S.nonlinearPart = @(u) -.5*diff(u.^2);
+%       S.lin = @(u) -diff(u,2)-diff(u,4);
+%       S.nonlin = @(u) -.5*diff(u.^2);
 %       S.init = chebfun(@(x) cos(x/16).*(1 + sin(x/16)), dom, 'trig');
 %       u = spin(S, 256, 5e-2);
 %
