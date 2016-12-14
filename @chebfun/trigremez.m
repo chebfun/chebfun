@@ -276,8 +276,7 @@ p = chebfun(@(x) trigBary(x, pk, xk, dom), dom, 2*m+1, 'trig');
 
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Functions implementing the core part of the algorithm.
+
 function [p, q, r, hk, th] = computeTrialFunctionRational(f_th, th, m, n, dom)
 
 % Tolerance for neglecting imaginary part.
@@ -443,11 +442,16 @@ end
 function doPlotIter(xo, xk, err_handle, dom)
 
 xxk = linspace(dom(1), dom(end), 5000);
+dxxk = linspace(-pi, pi, 5000);
+% Map the points back on the original domain.
+forwardMap = @(y) dom(end)*(y + pi)/(2*pi) + dom(1)*(pi - y)/(2*pi); 
+xo = forwardMap(xo);
 plot(xo, 0*xo, 'or', 'MarkerSize', 12)   % Old reference.
 holdState = ishold;
 hold on
+xk = forwardMap(xk);
 plot(xk, 0*xk, '*k', 'MarkerSize', 12)   % New reference.
-plot(xxk, err_handle(xxk))               % Error function.
+plot(xxk, err_handle(dxxk))              % Error function.
 if ( ~holdState )                        % Return to previous hold state.
     hold off
 end
