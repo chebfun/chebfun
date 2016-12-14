@@ -82,7 +82,7 @@ end
 
 % Check for op = @(lam,th) constant function
 [ll, tt] = meshgrid(dom(1:2), dom(3:4));
-if ( numel(op(ll,tt)) == 1 )
+if ( ~vectorize && numel(op(ll,tt)) == 1 )
     op1 = op;
     op = @(ll, tt) op1(ll, tt) + 0*ll;
 end
