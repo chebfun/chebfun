@@ -8,7 +8,7 @@ function [p, options] = initializeMovie(S, dt, pref, v, dataGrid, plotGrid)
 dom = S.domain;
 nVars = S.numVars;
 vscale = max(abs(v));
-dataToPlot = str2func(pref.dataToPlot);
+dataplot = str2func(pref.dataplot);
 xx = dataGrid{1};
 xxx = plotGrid{1};
 N = size(xx, 1) - 1;
@@ -19,7 +19,7 @@ for k = 1:nVars
     
     % Extract each variable:
     idx = (k-1)*N + 1;
-    vvplot = dataToPlot(v(idx:idx+N-1));
+    vvplot = dataplot(v(idx:idx+N-1));
     vvplot = [vvplot; vvplot(1)]; %#ok<*AGROW>
     
     % Get the YLIM for the y-axis:
@@ -66,6 +66,6 @@ shg, pause
 % Outputs:
 p{nVars + 1} = h;
 options{1} = Ylim;
-options{2} = dataToPlot;
+options{2} = dataplot;
 
 end

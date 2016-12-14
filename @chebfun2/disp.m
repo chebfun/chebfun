@@ -25,8 +25,16 @@ vals = feval(F, xx, yy ).';               % Corner values
 vals = vals(:);
 vscl = vscale(F);                         % vertical scale
 
+% Check underlying tech is a TRIGTECH: 
+techCol = get(F.cols.funs{1}, 'tech');
+techRow = get(F.rows.funs{1}, 'tech');
+
 % Display the information: 
-disp('   chebfun2 object')
+if ( isa(techCol(), 'trigtech') && isa(techRow(), 'trigtech') )
+    disp('   chebfun2 object  (trig)')
+else
+    disp('   chebfun2 object')
+end
 fprintf('       domain                 rank       corner values\n');
 if ( isreal(vals) )
     fprintf('[%4.2g,%4.2g] x [%4.2g,%4.2g]   %6i     [%4.2g %4.2g %4.2g %4.2g]\n', ...

@@ -73,11 +73,18 @@ g_op = @(x) sin(x);
 g = bndfun(g_op, data, pref);
 try
     h = f + g; %#ok<NASGU>
-    pass(18) = false;
+    if ( verLessThan('matlab', '9.1') )
+        pass(18) = false;
+    else
+        pass(18) = true;
+    end
 catch ME
-    pass(18) = strcmp(ME.message, 'Matrix dimensions must agree.');
+    if ( verLessThan('matlab', '9.1') )
+        pass(18) = strcmp(ME.message, 'Matrix dimensions must agree.');
+    else
+        pass(18) = false;
+    end
 end
-
 
 %% 
 % Check that direct construction and PLUS give comparable results.

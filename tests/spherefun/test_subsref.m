@@ -65,4 +65,17 @@ pass(9) = ( norm(f.cols - chebfun(@(th) sin(th),[-pi pi],'trig')) < tol || ...
     norm(f.cols + chebfun(@(th) sin(th),[-pi pi],'trig')) < tol ); 
 pass(10) = ( norm( f.domain - [-pi pi 0 pi] ) < tol ); 
 
+% Composition of a spherefun with a chebfun (1 and 3 columns):
+f = spherefun(@(x,y,z) z + sin(pi*x.*y));
+g = chebfun(@(t) t.^2, [ -1.5, 1.5 ]);
+h_true = spherefun(@(x,y,z) (z + sin(pi*x.*y)).^2);
+h = g(f);
+pass(11) = ( norm(h - h_true) < tol );
+
+G = chebfun(@(t) [ t.^2, t, -t.^2 ], [ -1.5, 1.5 ]);
+H_true = spherefunv(@(x,y,z) (z + sin(pi*x.*y)).^2, ...
+    @(x,y,z) z + sin(pi*x.*y), @(x,y,z) -(z + sin(pi*x.*y)).^2);
+H = G(f);
+pass(12) = ( norm(H - H_true) < tol );
+
 end

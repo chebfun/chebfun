@@ -5,7 +5,6 @@ function options = plotMovie(S, dt, p, options, t, v, dataGrid, plotGrid)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Set-up:
-dom = S.domain;
 nVars = S.numVars;
 Ylim = options{1};
 dataToPlot = options{2};
@@ -38,8 +37,7 @@ for k = 1:nVars
     vvv = interp1(xx, vv, xxx, 'spline');
     
     % Update each variable:
-    set(p{k}, 'xdata', xxx), set(p{k}, 'ydata', vvv)
-    set(p{k}.Parent, 'xlim', [dom(1), dom(2)])
+    set(p{k}, 'ydata', vvv)
     set(p{k}.Parent, 'ylim', [Ylim(2*(k-1) + 1), Ylim(2*(k-1) + 2)])
     drawnow
     

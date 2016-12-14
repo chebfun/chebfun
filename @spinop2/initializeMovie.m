@@ -9,7 +9,7 @@ dom = S.domain;
 nVars = S.numVars;
 viewSpec = pref.view;
 vscale = max(abs(v(:)));
-dataToPlot = str2func(pref.dataToPlot);
+dataplot = str2func(pref.dataplot);
 defaultPref = spinpref2();
 defaultView = defaultPref.view;
 while ( length(viewSpec) < 2*nVars )
@@ -27,7 +27,7 @@ for k = 1:nVars
     
     % Extract each variable:
     idx = (k-1)*N + 1;
-    vv = dataToPlot(v(idx:idx+N-1,:));
+    vv = dataplot(v(idx:idx+N-1,:));
     vv = [vv, vv(:,1)]; %#ok<*AGROW>
     vv = [vv; vv(1,:)];
     
@@ -73,6 +73,6 @@ shg, pause
 p{nVars + 1} = h;
 options{1} = Clim;
 options{2} = viewSpec;
-options{3} = dataToPlot;
+options{3} = dataplot;
 
 end

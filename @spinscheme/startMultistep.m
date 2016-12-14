@@ -18,7 +18,7 @@ function [uSol, NuSol] = startMultistep(K, dt, L, Nc, Nv, pref, S, uInit, NuInit
 % Set-up:
 M = pref.M;                 % points for the contour integral
 q = K.steps;                % number of steps 
-errTol = max(1e-10, dt^q);  % error tolerance 
+errTol = min(1e-2, max(1e-10, dt^q));  % error tolerance 
 nVars = S.numVars;          % number of unknown functions
 N = size(L, 1)/nVars;       % grid points
 dim = getDimension(S);      % spatial dimension (1, 2 or 3)
@@ -71,7 +71,10 @@ end
 err = 1;
 uOld = uSol;
 NuOld = NuSol;
-while ( err > errTol )
+iter = 0;
+maxIter = 100;
+while ( err > errTol && iter < maxIter )
+    iter = iter + 1;
     err = 0;
     for j = 1:q-1
         uNew{q-j} = exp(j*dt*L).*uOld{q} + dt*g0{j}.*NuOld{q};
@@ -82,7 +85,8 @@ while ( err > errTol )
             end
             uNew{q-j} = uNew{q-j} + dt*g{l,j}.*temp;
         end
-        err = max(err, norm(uOld{q-j} - uNew{q-j}, inf));
+        temp = abs(uOld{q-j} - uNew{q-j});
+        err = max(err, max(temp(:)));
         vals = ifftn(uNew{q-j}(1:N,:,:));
         for k = 1:nVars-1
             idx = k*N + 1;
@@ -103,5 +107,12 @@ while ( err > errTol )
 end
 uSol = uNew;
 NuSol = NuNew;
+
+if ( iter >= maxIter )
+    warning('Fixed-point iteration might not have converged.')    
+end
+if ( any(isnan(uNew{1})) ) 
+    error('Fixed-point iteration diverged. Try a smaller time-step.')
+end
 
 end
