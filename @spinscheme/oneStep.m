@@ -117,7 +117,6 @@ for k = 1:nVars-1
 end
 Nsol = Nc.*coeffs;
 
-
 % Update the nonlinear evaluations:
 if ( q == 1 )
     NuSol{1} = Nsol;

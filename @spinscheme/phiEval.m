@@ -1,6 +1,6 @@
 function phi = phiEval(l, LR, N, dim, nVars)
-%PHIEVAL   Evaluate a phi function.
-%   PHI = PHIEVAL(L, LR, N, DIM, NVARS) evaluates the phi function of index L 
+%PHIEVAL   Evaluate a phi-function.
+%   PHI = PHIEVAL(L, LR, N, DIM, NVARS) evaluates the phi-function of index L 
 %   with the contour LR, N grid points, in dimension DIM and with NVARS
 %   variables.
 %
@@ -9,7 +9,7 @@ function phi = phiEval(l, LR, N, dim, nVars)
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Get a function handle to the phi function of index L:
+% Get a function handle to the phi-function of index L:
 phi = spinscheme.phiFun(l);
 
 % Evaluate it with a contour integral:

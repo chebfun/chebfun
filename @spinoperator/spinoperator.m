@@ -194,9 +194,6 @@ classdef spinoperator
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Abstract = true, Static = false )
         
-        % Check if the solution is resolved in space:
-        ishappy = checkHappiness(S, c, pref)
-        
         % Discretize a SPINOPERATOR:
         [L, Nc] = discretize(S, N)
 
@@ -221,10 +218,7 @@ classdef spinoperator
     methods ( Access = public, Abstract = false, Static = true )
         
         % Solve a PDE defined by a SPINOPERATOR:
-        [uout, tout] = solvepde(varargin)
-        
-        % Check if in DEMO mode:
-        out = isDemoCheck(in)
+        [uout, tout, computingTime] = solvepde(varargin)
    
     end
 
