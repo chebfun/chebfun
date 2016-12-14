@@ -72,92 +72,94 @@ f = diskfun(@(x,y) x.*y);
 g = diskfun(@(x,y) x*y, 'vectorize');
 pass(15) = ( norm(f-g) < tol ); 
 
+f = diskfun(@(x,y) 1);
+g = diskfun(@(x,y) 1, 'vectorize');
+pass(16) = ( norm(f - g) < tol );
+
 % Test construction from samples
 f = diskfun(@(x,y) 1 + x.*sin((x-.5).*y));
 [m,n] = length(f);
 F = sample(f,m+mod(m,2),n);
 g = diskfun(F);
-pass(16) = ( norm(f - g) < tol );
+pass(17) = ( norm(f - g) < tol );
 
 f = diskfun(@(x,y) 1 + 0*x);
 F = ones(1, 1);
 g = diskfun(F);
-pass(17) = ( norm(f - g) < tol );
-
-
+pass(18) = ( norm(f - g) < tol );
 
 % Test construction from coefficients.
 f = diskfun(@(x,y) exp(-10*((x-.1).^2  + y.^2)));
 C = coeffs2(f);
 g = diskfun(C,'coeffs');
-pass(18) = ( norm(f - g) < tol );
+pass(19) = ( norm(f - g) < tol );
 
 % Test fixed rank construction
 ff = @(x,y) exp(-10*((x-.1).^2  + y.^2));
 f = diskfun(ff,5);
-pass(19) = ( rank(f) == 5 );
+pass(20) = ( rank(f) == 5 );
 f = diskfun(ff,6);
-pass(20) = ( rank(f) == 6 );
+pass(21) = ( rank(f) == 6 );
 f = diskfun(ff);
 g = diskfun(f,7);
-pass(21) = ( rank(g) == 7 );
+pass(22) = ( rank(g) == 7 );
 ff = @(t, r) exp(-10*((r.*cos(t)-.1).^2+(r.*sin(t)).^2));  %polar
 f = diskfun(ff, 5, 'polar'); 
-pass(22) = ( rank(f)== 5 ); 
+pass(23) = ( rank(f)== 5 ); 
 
 % Test zero rank construction gives zero.
 g = diskfun(f,0);
-pass(23) = ( rank(g) == 0 );
-pass(24) = norm(g) < tol;
+pass(24) = ( rank(g) == 0 );
+pass(25) = norm(g) < tol;
 
 try
     f = diskfun(ff,-1);
-    pass(25) = false;
+    pass(26) = false;
 catch ME
-    pass(25) = strcmp(ME.identifier,'CHEBFUN:DISKFUN:constructor:parseInputs:domain3');
+    pass(26) = strcmp(ME.identifier,'CHEBFUN:DISKFUN:constructor:parseInputs:domain3');
 end
 
 % Check the 'eps' flag works.
 ff = @(x,y) exp(-10*((x-.1).^2  + y.^2));
 f = diskfun(ff);
 g = diskfun(ff,'eps', 1e-5);
-pass(26) = rank(g) < rank(f);
+pass(27) = rank(g) < rank(f);
 [mf,nf] = length(f);
 [mg,ng] = length(g);
-pass(27) = ( (mg < mf) && (ng < nf) );
+pass(28) = ( (mg < mf) && (ng < nf) );
 
 % Construction from a single value
 f = diskfun(1);
-pass(28) = norm(f-1,inf) == 0;
+pass(29) = norm(f-1,inf) == 0;
 
 % Construction from a string with (x,y) variables
 f = diskfun(@(x,y) exp(-10*((x-.1).^2  + y.^2)));
 g = diskfun('exp(-10*((x-.1).^2  + y.^2))');
-pass(29) = norm(f-g,inf) == 0;
+pass(30) = norm(f-g,inf) == 0;
 
 % Construction from a string with (t,r) variables
 f = diskfun(@(t,r) r.*cos(t), 'polar' );
 g = diskfun('y.*cos(x)', 'polar'); %alphabetic order; can't use r and t
-pass(30) = norm(f-g,inf) == 0;
+pass(31) = norm(f-g,inf) == 0;
 
 try
     f = diskfun('x.*y.*z');
-    pass(31) = false;
+    pass(32) = false;
 catch ME
-    pass(31) = strcmp(ME.identifier,'CHEBFUN:DISKFUN:constructor:str2op:depvars');
+    pass(32) = strcmp(ME.identifier,'CHEBFUN:DISKFUN:constructor:str2op:depvars');
 end
 
 % Construction from zeros matrix should maintain a zeros coefficient
 % matrix.
 f = diskfun(zeros(5,4));
 [n,m] = length(f);
-pass(32) = (m == 5) && (n == 4);
+pass(33) = (m == 5) && (n == 4);
 
 % Fixed length test.
 m = 24; n = 10;
 f = diskfun(@(x,y) exp(-10*((x-0.5/sqrt(2)).^2 + (y-0.5/sqrt(2)).^2)),[m n]);
 [nf,mf] = length(f);
-pass(33) = (mf == m+1) && (nf == 2*n);
+pass(34) = (mf == m+1) && (nf == 2*n);
 
 end
 
