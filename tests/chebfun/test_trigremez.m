@@ -44,4 +44,29 @@ n = 2;
 err = p-f;   
 xk = status.xk;
 pass(7) = norm(abs(err(xk))-errMax, inf) < 100*tol;
+
+%% test for the rational case
+m = 2; 
+n = 2;
+x = chebfun('x');
+f = abs(x);
+[p, q, r, err, status] = trigremez(f, m, n);
+pass(8) = (length(p) == 2*m+1) & (length(q) == 2*n+1);
+xk = status.xk;
+equi_err = f(xk) - r(xk);
+pass(9) = std(abs(equi_err)) < tol;
+if ( equi_err(1) < 0 )
+    equi_err = -equi_err;
+end
+pass(10) = all(sign(equi_err(1:2:end)) == 1);
+pass(11) = all(sign(equi_err(2:2:end)) == -1);
+
+%% another test for the rational case
+m = 6; 
+n = 6;
+x = chebfun('x');
+f = exp(sin(pi*x));
+[p, q, r, err, status] = trigremez(f, m, n);
+pass(12) = norm(f-p./q, inf) < tol;
+pass(13) = (length(p) == 2*m+1) & (length(q) == 2*n+1);
 end
