@@ -69,6 +69,7 @@ m = length(R);
 % that the length of the columns and rows will increase by one wave number
 % after taking the derivatives with respect to x and y. 
 m = m+2;
+n = n+2;
 
 % Matrices for multiplying by sin(theta), cos(theta) and 1/r in coefficient space.
 Msinm = .5i*spdiags(ones(m,1)*[-1,1],[-1 1],m,m);
