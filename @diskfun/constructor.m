@@ -175,7 +175,7 @@ while ( ~isHappy && ~failure )
 end
 
 % Simplifying rows and columns after they are happy.
-g = simplify( g, pref.chebfuneps );
+g = simplify( g, pseudoLevel );
 
 % Fix the rank, if in nonadaptive mode.
 g = fixTheRank( g , fixedRank );
@@ -640,7 +640,7 @@ while ( ~(happy_columns && happy_rows) && ~failure )
     temp1 = sum([colsPlus colsMinus],2); 
     temp2 = sum([colsPlus -colsMinus],2);
     
-    colValues = [ flipud(temp2); temp1(2:m)];
+    colValues = [flipud(temp2); temp1(2:end)];
     colData.hscale = norm(dom(3:4), inf);
     colData.vscale = vscale;
     colChebtech1 = chebtech2.make(colValues, colData);
@@ -663,7 +663,7 @@ while ( ~(happy_columns && happy_rows) && ~failure )
     % Adaptive:
     if( ~happy_columns )
         m = 2*m;
-        ii = [1:2:m+1 m+2:2:2*m]; 
+        ii = 1:2:m+1;
         id_rows = ii(id_rows); 
     end
     

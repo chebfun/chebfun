@@ -29,8 +29,8 @@ if ( nargin < 3 )
         simplifyRank = 1; 
         pref = chebfunpref; 
         tol = pref.cheb2Prefs.chebfun2eps; 
-    else
-       tol = []; 
+%     else
+%        tol = []; 
     end
 end
 
