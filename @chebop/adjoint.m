@@ -7,7 +7,15 @@ function Nstar = adjoint(N, u)
 %   NSTAR = ADJOINT(N, U) linearizes around the function U then computes
 %   the adjoint.
 %
-% See also LINOP/ADJOINT.
+% Examples:
+%   L = chebop(-1,1); L.op = @(x,u) diff(u,2) + x*u;
+%   L.lbc = 0; L.rbc = 'neumann', Ls = adjoint(L)
+%
+%   N = chebop(0,3); N.op = @(x,u) diff(u) + u^2;
+%   u = chebfun('exp(x)',[0 3]);
+%   N.lbc = 1, Ns = adjoint(N,u)
+%
+% See also LINOP/LINOPADJOINT.
 
 % Copyright 2016 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -30,7 +38,7 @@ if ( n == 0 )
 end
 
 % Call linop adjoint:
-[Lstar, op, bcOpL, bcOpR, bcOpM] = adjoint(L, getBCType(N));
+[Lstar, op, bcOpL, bcOpR, bcOpM] = linopAdjoint(L, getBCType(N));
 
 % Construct chebop of the adjoint with pretty print bcs:
 Nstar = chebop(Lstar.domain);
