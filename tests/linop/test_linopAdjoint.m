@@ -1,4 +1,4 @@
-function pass = test_adjoint(pref)
+function pass = test_linopAdjoint(pref)
 
 % Get preferences:
 if ( nargin < 1 )
@@ -26,7 +26,7 @@ nrm = norm(u);
 L = linop(-D^2+C);
 L = addbc(L,El,0);
 L = addbc(L,Er,0);
-[Ls,op,bcOpL,bcOpR,bcOpM] = adjoint(L,'bvp');
+[Ls,op,bcOpL,bcOpR,bcOpM] = linopAdjoint(L,'bvp');
 % test action of operator and function handle
 pass(1) = norm(-diff(u,2)+c.*u - Ls*u) < nrm*tol;
 pass(2) = norm(-diff(u,2)+c.*u - op(x,u)) < nrm*tol;
@@ -45,7 +45,7 @@ pass(8) = abs(u'*(L*u) - (Ls*u)'*u) < nrm*tol;
 u = (x-dom(1)).*(x-dom(end)).*exp(x); % function that satisfies BCs
 nrm = norm(u);
 L = linop(-D^2+C);
-[Ls,op,bcOpL,bcOpR,bcOpM] = adjoint(L,'periodic');
+[Ls,op,bcOpL,bcOpR,bcOpM] = linopAdjoint(L,'periodic');
 % test action of operator and function handle
 pass(9) = norm(-diff(u,2)+c.*u - Ls*u) < nrm*tol;
 pass(10) = norm(-diff(u,2)+c.*u - op(x,u)) < nrm*tol;
@@ -65,7 +65,7 @@ u = exp(x); % test function for L
 v = (x-dom(1)).*(x-dom(end)).*exp(x); % test function for Ls
 nrm = norm(u)+norm(v);
 L = linop(D);
-[Ls,op,bcOpL,bcOpR,bcOpM] = adjoint(L,'bvp');
+[Ls,op,bcOpL,bcOpR,bcOpM] = linopAdjoint(L,'bvp');
 % test action of operator and function handle
 pass(17) = norm(-diff(v) - Ls*v) < nrm*tol;
 pass(18) = norm(-diff(v) - op(x,v)) < nrm*tol;
@@ -87,7 +87,7 @@ nrm = norm(u1)+norm(u2)+norm(v1)+norm(v2);
 L = linop([D,I;I,D]);
 L = addbc(L,[El,z],0);
 L = addbc(L,[z,El],0);
-[Ls,op,bcOpL,bcOpR,bcOpM] = adjoint(L,'bvp');
+[Ls,op,bcOpL,bcOpR,bcOpM] = linopAdjoint(L,'bvp');
 % test action of operator and function handle
 pass(25) = norm([-diff(v1)+v2;v1-diff(v2)] - Ls*[v1;v2]) < nrm*tol;
 pass(26) = norm([-diff(v1)+v2;v1-diff(v2)] - op(x,v1,v2)) < nrm*tol;
@@ -109,7 +109,7 @@ nrm = norm(u1)+norm(u2)+norm(v1)+norm(v2);
 L = linop([D,-D;I,D]);
 L = addbc(L,[Er,z],0);
 L = addbc(L,[z,Er],0);
-[Ls,op,bcOpL,bcOpR,bcOpM] = adjoint(L,'bvp');
+[Ls,op,bcOpL,bcOpR,bcOpM] = linopAdjoint(L,'bvp');
 % test action of operator and function handle
 pass(33) = norm([-diff(v1)+v2;diff(v1)-diff(v2)] - Ls*[v1;v2]) < nrm*tol;
 pass(34) = norm([-diff(v1)+v2;diff(v1)-diff(v2)] - op(x,v1,v2)) < nrm*tol;
