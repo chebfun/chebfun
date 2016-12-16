@@ -6,7 +6,7 @@ function schemeCoeffs = computeCoeffs(K, dt, L, M, S)
 %
 % See also SPINSCHEME.
 %
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1369,7 +1369,7 @@ function schemeCoeffs = computeMissingCoeffs(K, schemeCoeffs, phi, psi)
 %   summation properties to compute the SCHEMECOEFFS A{i,1} and B{1} of the
 %   SPINSCHEME K, using and the phi- and psi-functions.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Get the coefficients:

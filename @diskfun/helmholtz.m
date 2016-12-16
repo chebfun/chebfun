@@ -32,7 +32,7 @@ function u = helmholtz( f, K, bc, m, n )
 % SOLVE COMPLEXITY:    O( m*n )  N = m*n = total degrees of freedom
 %
 %
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if( nargin < 5 )

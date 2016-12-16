@@ -4,7 +4,7 @@ function varargout = cos(varargin)
 %
 % See also SPHEREFUN/COSH and SPHEREFUN/SIN
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 [varargout{1:nargout}] = cos@separableApprox(varargin{:});

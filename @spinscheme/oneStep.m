@@ -27,7 +27,7 @@ function [uSol, NuSol] = oneStep(K, schemeCoeffs, Nc, Nv, nVars, uSol, NuSol)
 %                                    + h*sum_{i=1}^{q-1} V_{i}*N(u_{n-i})
 %
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Set-up:

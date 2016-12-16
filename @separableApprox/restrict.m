@@ -5,7 +5,7 @@ function f = restrict(f, dom)
 % approximates F on that domain.  DOM should be a vector of length 4 giving the
 % coordinates of the corners.
 
-% Copyright 2016 by The University of Oxford and The Chebfun2 Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun2 Developers.
 % See http://www.chebfun.org/ for Chebfun2 information.
 
 if ( isa( dom, 'double' ) )    

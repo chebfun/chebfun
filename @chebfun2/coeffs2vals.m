@@ -11,7 +11,7 @@ function varargout = coeffs2vals( U, varargin )
 % 
 % See also VALS2COEFFS.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin == 1 )

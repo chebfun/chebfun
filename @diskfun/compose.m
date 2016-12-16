@@ -12,7 +12,7 @@ function f = compose(f, op, varargin)
 %
 % This command is a wrapper for the DISKFUN constructor. 
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isa(op, 'chebfun') )

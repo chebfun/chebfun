@@ -11,7 +11,7 @@ function varargout = gradient(f)
 %
 % See also CHEBFUN3/GRAD.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 F = chebfun3v(diffx(f), diffy(f), diffz(f));

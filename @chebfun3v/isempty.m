@@ -3,7 +3,7 @@ function out = isempty(F)
 %   ISEMPTY(F) returns 1 if every component of F is an empty CHEBFUN3V, and
 %   return 0 otherwise.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty(F.components) )

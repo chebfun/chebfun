@@ -7,7 +7,7 @@ function [core, U1, U2, U3] = discreteHOSVD(T)
 %
 % See also CHEBFUN3/HOSVD.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Mode-1 unfolding of T:

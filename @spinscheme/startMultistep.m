@@ -6,7 +6,7 @@ function [uSol, NuSol] = startMultistep(K, dt, L, Nc, Nv, pref, S, uInit, NuInit
 %    using the linear part L, the nonlinear parts in coeff and value space NC
 %    and NV, the SPINPREFERENCE object PREF, and the SPINOPERATOR S.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Note for developers. The algorithm is in two parts:

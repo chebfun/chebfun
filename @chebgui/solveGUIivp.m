@@ -22,7 +22,7 @@ function varargout = solveGUIivp(guifile, handles)
 %
 % See also: chebgui/solveGUI, chebgui/solveGUIbvp.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Handles will be an empty variable if we are solving without using the GUI

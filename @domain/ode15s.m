@@ -3,7 +3,7 @@ function varargout = ode15s(varargin)
 %   
 % This syntax is deprecated. Please use chebfun.ode15s(...) instead.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 warning('CHEBFUN:DOMAIN:ode15s:deprecated', ...

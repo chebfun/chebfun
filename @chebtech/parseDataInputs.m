@@ -10,7 +10,7 @@ function data = parseDataInputs(data, pref)
 %   function handle that is sampled or numeric data that is used to build the
 %   CHEBTECH) and the constructor preferences.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( ~isfield(data, 'vscale') || isempty(data.vscale) )

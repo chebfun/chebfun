@@ -4,7 +4,7 @@ function F = curl(F)
 %   with three components then it returns the CHEBFUN3V representing the 3D
 %   curl operation.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 

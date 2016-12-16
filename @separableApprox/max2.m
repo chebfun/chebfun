@@ -8,7 +8,7 @@ function [Y, X] = max2( f )
 % 
 % See also MIN2, MINANDMAX2.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Check for empty:

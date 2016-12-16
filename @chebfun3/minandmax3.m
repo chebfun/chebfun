@@ -9,7 +9,7 @@ function [vals, locs] = minandmax3(f)
 %
 % See also CHEBFUN3/MAX, CHEBFUN3/MAX2, CHEBFUN3/NORM.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % check for empty CHEBFUN3.

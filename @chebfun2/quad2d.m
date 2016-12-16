@@ -8,7 +8,7 @@ function varargout = quad2d(varargin)
 %
 % See also INTEGRAL2, SUM2, INTEGRAL.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 [varargout{1:nargout}] = quad2d@separableApprox(varargin{:});

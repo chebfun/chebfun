@@ -17,7 +17,7 @@ function [x, w, v, t] = points(varargin)
 %   angles T so that T = COS(X). This can often be computed more accurately than
 %   X itself.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin == 2 )

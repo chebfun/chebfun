@@ -1,7 +1,7 @@
 function handles = drawLogo(handles)
 %DRAWLOGO    Create an axes object in CHEBGUI, and draw the Chebfun logo
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Create a new axes object, store in HANDLES. Hide it until we've finished

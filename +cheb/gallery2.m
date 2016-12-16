@@ -32,7 +32,7 @@ function varargout = gallery2(name)
 %
 % See also CHEB.GALLERY, CHEB.GALLERYTRIG, CHEB.GALLERY3, CHEB.GALLERYDISK, CHEB.GALLERYSPHERE.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 

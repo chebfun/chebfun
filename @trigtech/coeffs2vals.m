@@ -15,7 +15,7 @@ function values = coeffs2vals(coeffs)
 %
 % See also VALS2COEFFS, TRIGPTS.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % *Note about symmetry*.  Some of the code below is designed to

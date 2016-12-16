@@ -29,7 +29,7 @@ function varargout = isosurface(f, varargin)
 %
 % See also CHEBFUN3/PLOT, CHEBFUN3/SLICE, CHEBFUN3/SCAN and CHEBFUN3/SURF.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %   Developer Note: This code might run slowly, not because evaluation is

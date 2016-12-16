@@ -20,7 +20,7 @@ function varargout = solveGUIpde(guifile, handles)
 %   VARARGOUT{1}:   The time range of the problem specified by GUIFILE.
 %   VARARGOUT{2}:   The a CHEBMATRIX containing the solution returned by pde15s.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Handles will be an empty variable if we are solving without using the GUI

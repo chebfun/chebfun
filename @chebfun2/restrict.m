@@ -5,7 +5,7 @@ function varargout = restrict(varargin)
 % F on that domain.  DOM should be a vector of length 4 giving the coordinates
 % of the corners.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 [varargout{1:nargout}] = restrict@separableApprox(varargin{:});

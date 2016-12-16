@@ -17,7 +17,7 @@ function Nstar = adjoint(N, u)
 %
 % See also LINOP/LINOPADJOINT.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Set U to zero:
@@ -54,7 +54,7 @@ function bcType = getBCType(N)
 %   BCTYPE = GETBCTYPE(N) returns a string identifying the type of boundary
 %   conditions used by a CHEBOP.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty(N.bc) )

@@ -8,7 +8,7 @@ function val = get(f, propName )
 %    'isTransposed' - Is the DISKFUNV a column or row vector?
 
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( numel(f) > 1 )

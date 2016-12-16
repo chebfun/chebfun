@@ -11,7 +11,7 @@ function varargout = integral2(varargin)
 %
 % See also DISKFUN/INTEGRAL, DISKFUN/SUM2, DISKFUN/QUAD2D.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 [varargout{1:nargout}] = quad2d(varargin{:});

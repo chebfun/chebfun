@@ -21,7 +21,7 @@ function funOut = vectorizeOp(funIn)
 %
 % See also: vectorize, chebop.set.op
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. See
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.
 
 % The input function on vectorized form:

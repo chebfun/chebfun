@@ -6,7 +6,7 @@ function F = coeffs2spherefun(X)
 %  Fourier--Fourier matrix of coefficients X.  This is useful for
 %  computing quantities on the sphere with the function F.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Get size: 

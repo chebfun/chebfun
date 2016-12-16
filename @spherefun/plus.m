@@ -3,7 +3,7 @@ function h = plus(f, g)
 %
 % F + G adds F and G. F and G can be scalars or SPHEREFUN objects.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 

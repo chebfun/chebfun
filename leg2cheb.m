@@ -23,7 +23,7 @@ function c_cheb = leg2cheb(c_leg, varargin)
 %
 % See also CHEB2LEG, CHEB2JAC, JAC2CHEB, JAC2JAC.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 [N, n] = size(c_leg); % Number of columns.

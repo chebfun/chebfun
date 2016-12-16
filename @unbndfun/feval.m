@@ -2,7 +2,7 @@ function out = feval(f, x, varargin)
 %FEVAL   Evaluate the specified function.
 %   Y = FEVAL(F, X) evaluates the UNBNDFUN F at the points X. 
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Map the input:

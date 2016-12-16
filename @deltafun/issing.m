@@ -3,7 +3,7 @@ function out = issing(f)
 %   out = ISSING(F) returns logical true if the FUNPART of F is made of a 
 %   SINGFUN and false otherwise.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( ~issing(f.funPart) )

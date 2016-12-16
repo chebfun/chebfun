@@ -7,7 +7,7 @@ function h = outerProduct(f, g)
 %   This command is for internal use only. Users are expected to use  f*g' or
 %   f*g.'
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % TODO: This command could use a compression-like algorithm, but instead we will

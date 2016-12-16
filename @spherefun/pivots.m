@@ -7,7 +7,7 @@ function varargout = pivots(varargin)
 %   PIVOTS(F, 'normalize'), returns the normalised pivot values. These number
 %   are scaled so that the columns and rows have unit 2-norm.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 [varargout{1:nargout}] = pivots@separableApprox(varargin{:});

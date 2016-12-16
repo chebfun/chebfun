@@ -41,7 +41,7 @@ function u = poisson( f, bc, m, n )
 % H. Wilber, Numerical computing with functions on the sphere and disk,
 % Master?s thesis, Boise State University, 2016.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if( nargin < 4 )

@@ -8,7 +8,7 @@ function g = diffy(f, n)
 % 
 % See also CHEBFUN3/DIFFX, CHEBFUN3/DIFFZ, and CHEBFUN3/DIFF. 
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Default to first derivative: 

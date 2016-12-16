@@ -35,7 +35,7 @@ function varargout = str2anon(str, problemType, fieldType)
 %    commaSeparated: Equal to 1 if the input expression was comma-separated, 
 %                    e.g., 'u(-1) = 0, u(1) = 1'. Equal to 0 otherwise.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin < 3 )

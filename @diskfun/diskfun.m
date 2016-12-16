@@ -33,7 +33,7 @@ classdef diskfun < separableApprox
 %
 % See also CHEBFUN2, SPHEREFUN, DISKFUNV.
 
-% Copyright 2016 by The University of Oxford and The CHEBFUN Developers.
+% Copyright 2017 by The University of Oxford and The CHEBFUN Developers.
 % See http://www.chebfun.org/ for CHEBFUN information.
 
 % TODO: Include documentation of fixed eps construction

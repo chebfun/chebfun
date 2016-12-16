@@ -1,7 +1,7 @@
 function F = uplus(F)
 %+   Unary plus of a DISKFUNV.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % We have spent several months deliberating over the correct algorithm for

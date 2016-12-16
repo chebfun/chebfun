@@ -5,7 +5,7 @@ function f = power(f, n)
 %   SEPARABLEAPPROX power G, or a SEPARABLEAPPROX F to the SEPARABLEAPPROX
 %   power G.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty(f) )    % Check for empty objects.

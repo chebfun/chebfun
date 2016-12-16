@@ -8,7 +8,7 @@ function out = cat(dim, varargin)
 %
 % See also HORZCAT, VERTCAT, NUM2CELL.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isa(dim, 'chebfun') )

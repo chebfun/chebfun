@@ -13,7 +13,7 @@ function varargout = subsref(f, index)
 %
 %   F.PROP returns the property of F specified in PROP.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % TODO: Implement vector inputs like f(0,0,0:1).  This kind of input

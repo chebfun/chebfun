@@ -7,7 +7,7 @@ function varargout = xy
 %   X = CHEBFUN2(@(X,Y) X), and 
 %   Y = CHEBFUN2(@(X,Y) Y).
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 x = chebfun2(@(x,y) x);

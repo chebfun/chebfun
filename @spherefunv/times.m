@@ -9,7 +9,7 @@ function F = times( F , G )
 %   F.*G if F is a double and G is a SPHEREFUNV returns the SPHEREFUNV
 %   after multiplication of F by each component of G.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 

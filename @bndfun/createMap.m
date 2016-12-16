@@ -6,7 +6,7 @@ function map = createMap(ends)
 %      MAP.INV is the inverse map.
 %      MAP.DER is the derivative of the map defined in MAP.FOR
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 map = mapping.linear(ends);

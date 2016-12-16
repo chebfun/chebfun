@@ -106,7 +106,7 @@ function [uout, tout] = spin2(varargin)
 %
 % See also SPINOP2, SPINPREF2, SPINSCHEME, SPIN, SPIN3.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % We are going to parse the inputs and call SOLVEPDE in the following ways,

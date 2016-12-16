@@ -16,7 +16,7 @@ function f = simplify( f, tol, rank_flag )
 % uses the scalar TOL instead of the default simplification tolerance as 
 % the relative threshold level for compression.
 
-% Copyright 2016 by The University of Oxford and The Chebfun2 Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun2 Developers.
 % See http://www.chebfun.org/ for Chebfun2 information.
 
 simplifyRank = 0;   % do not simplify the rank by default.

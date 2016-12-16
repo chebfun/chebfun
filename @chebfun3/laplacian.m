@@ -4,7 +4,7 @@ function L = laplacian(f)
 %
 % See also CHEBFUN3/LAP.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 diff1 = diff(f, 2, 1); 

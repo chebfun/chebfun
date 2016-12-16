@@ -5,7 +5,7 @@ function F = plus(F, G)
 %   One of the inputs F and G can be a double. PLUS(F,G) is called for the 
 %   syntax F + G.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 

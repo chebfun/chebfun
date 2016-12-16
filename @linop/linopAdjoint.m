@@ -13,7 +13,7 @@ function [Lstar, op, bcOpL, bcOpR, bcOpM] = linopAdjoint(L, bcType)
 %   operator and BCOPL, BCOPR and BCOPM are function handles for the left,
 %   right and mixed boundary conditions respectively. 
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Check for 2 inputs:
@@ -92,7 +92,7 @@ function [Lstar, op] = adjointFormal(L, pref)
 %   The outputs are a LINOP LSTAR that represents the formal adjoint and a
 %   function handle OP that can be used to construct a CHEBOP.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Check for 2 inputs:
@@ -239,7 +239,7 @@ function [Cstar, bcOpL, bcOpR, bcOpM] = adjointBCs(L, bcType)
 %   represent the left, right and mixed boundary conditions respectively and
 %   can be used to construct a CHEBOP
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Get the domain and the value of the highest derivative:

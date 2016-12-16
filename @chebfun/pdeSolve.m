@@ -6,7 +6,7 @@ function varargout = pdeSolve(pdeFun, tIn, u0, bc, varargin)
 %
 % See also PDE15S, PDE23T, PDESET.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 global DIFFORDER SYSSIZE
