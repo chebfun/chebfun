@@ -15,7 +15,7 @@ function [ss, wzero, ispos] = singleSignTest(F)
 % Copyright 2016 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-tol = chebfun3eps;
+tol = 2*chebfun3eps;
 ss = false;                  % Assume false
 ispos = false;
 
