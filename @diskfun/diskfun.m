@@ -88,8 +88,9 @@ classdef diskfun < separableApprox
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
         
-        % Fast Poisson solver: 
+        % Fast Poisson & Helmholtz solvers: 
         u = poisson( f, bc, m, n );
+        u = helmholtz( f, k, bc, m, n); 
         
         % Converts a function in polar coordinates to one in Cartesian
         % coordinates on the disk
