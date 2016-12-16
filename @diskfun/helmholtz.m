@@ -1,4 +1,4 @@
-function u = helmholtz( f,K, bc, m, n )
+function u = helmholtz( f, K, bc, m, n )
 % HELMHOLTZ   Fast Helmholtz solver with Dirichlet boundary conditions for the disk. 
 %   U = HELMHOLTZ(F, K BC, N) solves laplacian(U) + K^2(U) = F on the unit disk, which
 %   in polar coordinates (theta, r) is 
@@ -44,13 +44,6 @@ m = 2*m+1;
 if ( mod(n, 2) == 1 ) 
     error('DISKFUN:POISSON:N', 'The Fourier discretization size must be even.')
 end
-
-%K = 0 is poisson's eqn
-if ( K == 0 )
-    u = diskfun.poisson(f, bc, m, n);
-    return
-end
-
 
 % Construct operators
 D1 = ultraS.diffmat( m, 1 );              % 1st order ultraS diffmat
