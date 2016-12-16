@@ -16,6 +16,8 @@ N = size(xx, 1) - 1;
 xxx = plotGrid{1};
 yyy = plotGrid{2};
 zzz = plotGrid{3};
+FS = 'fontsize';
+fs = 12;
 
 % Slices:
 ttx = trigpts(N, dom(1:2));
@@ -78,7 +80,7 @@ for k = 1:nVars
     set(p{k}, 'edgecolor', 'none')
     ax = p{k}.Parent; set(ax, 'clim', [Clim(2*(k-1) + 1), Clim(2*(k-1) + 2)])
     axis([dom(1) dom(2) dom(3) dom(4) dom(5) dom(6)]), colorbar
-    xlabel('x'), ylabel('y'), zlabel('z'), set(gca, 'FontSize', 16), box on
+    xlabel('x'), ylabel('y'), zlabel('z'), set(gca, FS, fs), box on
     drawnow
     
 end
@@ -89,7 +91,7 @@ titleString = sprintf('Nx = Ny = Nz = %i (DoFs = %i), dt = %1.1e, t = %.4f', ...
 set(gcf, 'NextPlot', 'add');
 ax = axes;
 h = title(titleString);
-set(ax, 'Visible', 'off', 'HandleVisibility', 'off', 'Fontsize', 16)
+set(ax, 'Visible', 'off', 'HandleVisibility', 'on', FS, fs)
 set(h, 'Visible', 'on', 'Position', [.47 1.01 .5])
 
 % Ask the user to press SPACE:

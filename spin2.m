@@ -119,7 +119,7 @@ function [uout, tout] = spin2(varargin)
 % time-step and PREF is a SPINPREF2 oject.
 
 if ( nargin == 1 ) % e.g., u = spin2('gl2')
-    try spinop2(varargin{1})
+    try spinop2(varargin{1});
     catch
         error('Unrecognized PDE. See HELP/SPIN2 for the list of PDEs.')
     end
