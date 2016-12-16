@@ -193,7 +193,7 @@ function [uout, tout] = spin(varargin)
 % time-step and PREF is a SPINPREF oject.
 
 if ( nargin == 1 ) % e.g., u = spin('kdv')
-    try spinop(varargin{1})
+    try spinop(varargin{1});
     catch
         error('Unrecognized PDE. See HELP/SPIN for the list of PDEs.')
     end

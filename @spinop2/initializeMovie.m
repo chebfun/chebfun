@@ -20,6 +20,8 @@ yy = dataGrid{2};
 N = size(xx, 1) - 1;
 xxx = plotGrid{1};
 yyy = plotGrid{2};
+FS = 'fontsize';
+fs = 12;
 
 % Loop over the variables:
 p = cell(nVars + 1, 1); clf reset
@@ -48,7 +50,7 @@ for k = 1:nVars
     set(p{k}.Parent, 'clim', [Clim(2*(k-1) + 1), Clim(2*(k-1) + 2)])
     axis([dom(1) dom(2) dom(3) dom(4)])
     view(viewSpec(2*(k - 1) + 1 : 2*(k - 1) + 2)), colorbar
-    xlabel('x'), ylabel('y'), set(gca, 'FontSize', 16), box on
+    xlabel('x'), ylabel('y'), set(gca, FS, fs), box on
     drawnow
     
 end
@@ -59,7 +61,7 @@ titleString = sprintf('Nx = Ny = %i (DoFs = %i), dt = %1.1e, t = %.4f', N, ...
 set(gcf, 'NextPlot', 'add');
 ax = axes;
 h = title(titleString);
-set(ax, 'Visible', 'off', 'HandleVisibility', 'off', 'Fontsize', 16);
+set(ax, 'Visible', 'off', 'HandleVisibility', 'on', FS, fs);
 set(h, 'Visible', 'on', 'Position', [.47 1.01 .5])
 
 % Ask the user to press SPACE:

@@ -12,6 +12,8 @@ dataplot = str2func(pref.dataplot);
 xx = dataGrid{1};
 xxx = plotGrid{1};
 N = size(xx, 1) - 1;
+FS = 'fontsize';
+fs = 12;
 
 % Loop over the variables:
 p = cell(nVars, 1); clf reset
@@ -42,7 +44,7 @@ for k = 1:nVars
     else
         xlabel('x'), ylabel(['u_',num2str(k),'(t,x)']), grid on
     end
-    set(gca, 'FontSize', 16), box on
+    set(gca, FS, fs), box on
     drawnow
     
 end
@@ -53,7 +55,7 @@ titleString = sprintf('N = %i (DoFs = %i), dt = %1.1e, t = %.4f', N, ...
 set(gcf, 'NextPlot', 'add');
 ax = axes;
 h = title(titleString);
-set(ax, 'Visible', 'off', 'HandleVisibility', 'off', 'Fontsize', 16);
+set(ax, 'Visible', 'off', 'HandleVisibility', 'on', FS, fs);
 set(h, 'Visible', 'on', 'Position', [.5 1.00 .5])
 
 % Ask the user to press SPACE:
