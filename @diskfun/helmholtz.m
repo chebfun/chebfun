@@ -42,7 +42,7 @@ m = 2*m+1;
 
 % Is n even? 
 if ( mod(n, 2) == 1 ) 
-    error('DISKFUN:POISSON:N', 'The Fourier discretization size must be even.')
+    error('DISKFUN:HELMHOLTZ:N', 'The Fourier discretization size must be even.')
 end
 
 % Construct operators
