@@ -686,7 +686,8 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
     
     % It doesn't make sense to construct from values and coeffs at the same
     % time.
-    if ( ~isnumeric(op) || ~isempty(keywordPrefs.tech) )
+    if ( iscell(op) && isnumeric(op) && isfield(keywordPrefs, 'tech') && ...
+            ~isempty(keywordPrefs.tech) )
         error('CHEBFUN:CHEBFUN:parseInputs:coeffschebkind', ...
             [' ''coeffs'' and ''chebkind'' should not be ' ...
             'specified simultaneously.']);
