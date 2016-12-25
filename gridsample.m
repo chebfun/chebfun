@@ -8,7 +8,7 @@ function v = gridsample(f, n, dom, type)
 % "Block operators and spectral discretizations", and is not
 % yet fully compliant with standard Chebfun coding practices.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin == 2 )

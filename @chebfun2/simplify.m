@@ -16,7 +16,7 @@ function varargout = simplify(varargin)
 % uses the scalar TOL instead of the default simplification tolerance as 
 % the relative threshold level for compression.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 [varargout{1:nargout}] = simplify@separableApprox(varargin{:});

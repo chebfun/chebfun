@@ -25,7 +25,7 @@ function f = compose(f, op, g, pref)
 %   in advance, they should be applied to F and/or G using RESTRICT() 
 %   before the call to COMPOSE().
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -8,7 +8,7 @@ function G = diffx(F, k)
 % 
 % See also CHEBFUN3V/DIFFY, CHEBFUN3V/DIFFZ and CHEBFUN3V/DIFF.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin == 1 )

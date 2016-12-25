@@ -180,7 +180,7 @@ function [uout, tout] = spin(varargin)
 %
 % See also SPINOP, SPINPREF, SPINSCHEME, SPIN2, SPIN3.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % We are going to parse the inputs and call SOLVEPDE in the following ways,
@@ -193,7 +193,7 @@ function [uout, tout] = spin(varargin)
 % time-step and PREF is a SPINPREF oject.
 
 if ( nargin == 1 ) % e.g., u = spin('kdv')
-    try spinop(varargin{1})
+    try spinop(varargin{1});
     catch
         error('Unrecognized PDE. See HELP/SPIN for the list of PDEs.')
     end

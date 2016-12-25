@@ -3,7 +3,6 @@ function pass = test_Poisson( )
 
 tol = 2e3*chebfunpref().cheb2Prefs.chebfun2eps;
  
-
 % Simple examples
 
 % Example 1: use laplacian to check; use nonzero bcs 

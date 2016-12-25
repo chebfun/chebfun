@@ -106,7 +106,7 @@ function [uout, tout] = spin3(varargin)
 %
 % See also SPINOP3, SPINPREF3, SPINSCHEME, SPIN, SPIN2.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % We are going to parse the inputs and call SOLVEPDE in the following ways,
@@ -119,7 +119,7 @@ function [uout, tout] = spin3(varargin)
 % time-step and PREF is a SPINPREF3 oject.
 
 if ( nargin == 1 ) % e.g., u = spin3('gl3')
-    try spinop3(varargin{1})
+    try spinop3(varargin{1});
     catch
         error('Unrecognized PDE. See HELP/SPIN3 for the list of PDEs.')
     end

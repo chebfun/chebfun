@@ -9,7 +9,7 @@ function w = wronskian(N, varargin)
 %   CHEBFUN or a CHEBMATRIX. If F is a CHEBMATRIX, then the form of F is assumed
 %   to be a CHEBMATRIX with a single column with n CHEBFUNs.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Convert to a Linop (if possible):

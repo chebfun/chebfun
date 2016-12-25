@@ -5,7 +5,7 @@ function out = isSubset(A, B, tol)
 %   or chebfun3 (i.e., vectors of size 1x2, 1x4 or 1x6 with A(1) <= A(2), 
 %   A(3) <= A(4), A(5) <= A(6)).
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty(A) )

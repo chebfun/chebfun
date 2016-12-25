@@ -11,7 +11,7 @@ function f = cart2pol(f, varargin)
 % 
 % See also CDR.  
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
  
 % Use the CDR to build a chebfun2 with trigfuns for rows and chebfuns for

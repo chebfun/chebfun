@@ -29,11 +29,19 @@ function [r, pol, res, zer, zj, fj, wj, errvec] = aaa(F, varargin)
 %   domain DOM.  By default, DOM = [-1, 1] for a function handle, and
 %   DOM = F.DOMAIN([1, END]) for a chebfun.
 %
+% Examples:
+%   r = aaa(@exp); xx = linspace(-1,1); plot(xx,r(xx)-exp(xx))
+%
+%   Z = exp(2i*pi*linspace(0,1,500)); 
+%   [r,pol,res] = aaa(@tan,Z); disp([pol res])
+%
 %   Reference:
 %   [1] Yuji Nakatsukasa, Olivier Sete, Lloyd N. Trefethen, "The AAA algorithm
 %   for rational approximation", arXiv:1612.00337.
+%
+% See also CF, CHEBPADE, PADEAPPROX, RATINTERP, REMEZ
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 

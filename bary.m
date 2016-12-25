@@ -24,7 +24,7 @@ function fx = bary(x, fvals, xk, vk)
 %
 % See also CHEBTECH.CLENSHAW.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Parse inputs:

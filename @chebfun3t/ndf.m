@@ -3,7 +3,7 @@ function out = ndf(f)
 %
 % See also CHEBFUN3/NDF.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty(f) )

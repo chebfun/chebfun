@@ -7,7 +7,7 @@ function [f, g] = overlap(f, g)
 %
 % See also RESTRICT.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Check that the domains are valid:

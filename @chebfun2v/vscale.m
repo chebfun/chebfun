@@ -4,7 +4,7 @@ function out = vscale(F)
 %   CHEBFUN2V object F as determined by evaluating F on a coarse tensor-product
 %   grid.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 for jj = 1:F.nComponents

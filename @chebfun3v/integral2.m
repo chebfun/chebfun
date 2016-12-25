@@ -13,7 +13,7 @@ function v = integral2(F, S)
 % See also CHEBFUN3V/INTEGRAL, CHEBFUN3/INTEGRAL, CHEBFUN3/INTEGRAL2,
 % CHEBFUN3/INTEGRAL3, CHEBFUN3/SUM, CHEBFUN3/SUM2 and CHEBFUN3/SUM3.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Check that F is a chebfun3v object with 3 components:

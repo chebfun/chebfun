@@ -1,7 +1,7 @@
 function varargout = poly(varargin) %#ok<STOUT>
 %POLY   POLY does not support SINGFUN objects.
 %
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 error('CHEBFUN:SINGFUN:poly:noSupport', ...

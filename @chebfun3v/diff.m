@@ -19,7 +19,7 @@ function F = diff(F, k, dim)
 %   K3-th partial derivative of F in the third variable. 
 %   For example, DIFF(F, [1 2 3]) is d^6F/(dx d^2y d^3z).
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check:

@@ -3,7 +3,7 @@ function F = rdivide(F, G)
 %
 % See also CHEBFUN3V/LDIVIDE.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 

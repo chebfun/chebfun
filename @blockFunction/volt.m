@@ -26,7 +26,7 @@ function f = volt(kernel, A, oneVar)
 %
 % See also blockFunction/fred, linop/volt, chebop/volt.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Default oneVar to false

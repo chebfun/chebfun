@@ -32,7 +32,7 @@ function out = feval(N, varargin)
 %
 % See also CHEBOP/SUBSREF, LINOP/MTIMES, CHEBOP/MATRIX.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Support for calling a linear CHEBOP with a numerical input to get its

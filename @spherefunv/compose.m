@@ -3,7 +3,7 @@ function f = compose(f, op)
 %   F = COMPOSE(F, G) returns the composition G(F) of the SPHEREFUNV object
 %   F and a CHEBFUN3 or CHEBFUN3V with three components G.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with empty CHEBFUN objects:

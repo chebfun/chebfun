@@ -5,7 +5,7 @@ function c_leg = chebvals2legcoeffs(v_cheb, varargin)
 % 	a vector LEGCOEFFS of Legendre coefficients, where the degree k Legendre
 % 	polynomial P{k} is normalized so that max(|P{k}|) = 1.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 c_cheb = chebvals2chebcoeffs(v_cheb);  % Convert to Chebyshev coefficients.

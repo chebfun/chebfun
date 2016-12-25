@@ -13,7 +13,7 @@ function u = helmholtz(f, K, m, n)
 %    u = spherefun.helmholtz(f, K, m, n);
 %    plot( u )
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % DEVELOPERS NOTE:

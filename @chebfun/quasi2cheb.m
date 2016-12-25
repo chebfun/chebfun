@@ -9,7 +9,7 @@ function [F, isArrayValued] = quasi2cheb(F)
 %
 % See also QUASIMATRIX, CHEB2QUASI, NUM2CELL.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( numel(F) < 2 )

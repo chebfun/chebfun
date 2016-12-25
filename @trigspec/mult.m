@@ -3,7 +3,7 @@ function M = mult(disc, f)
 %   M = MULT(A, F) returns the multiplication operator that represents 
 %   u(x) -> F(x)u(x), in the Fourier basis. 
 % 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Obtaining some useful information:

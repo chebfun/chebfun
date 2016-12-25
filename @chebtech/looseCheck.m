@@ -3,7 +3,7 @@ function [ishappy, cutoff] = looseCheck(f, values, data, pref) %#ok<INUSD,STOUT>
 %   [ISHAPPY, CUTOFF] = LOOSECHECK(F, VALUES, DATA, PREF). This function
 %   is not yet implemented.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 error('CHEBFUN:CHEBTECH:looseCheck:notDone', ...

@@ -13,7 +13,7 @@ function f = chebpoly(n, d, kind)
 %
 % See also LEGPOLY, TRIGPOLY, and CHEBPTS.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % TODO: Add support for 3rd and 4th kind polynomials?

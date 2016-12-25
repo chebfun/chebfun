@@ -1,6 +1,6 @@
 function pass = test_biharm( )
 
-tol = 100*1e4*chebfunpref().cheb2Prefs.chebfun2eps;
+tol = 1e7*chebfunpref().cheb2Prefs.chebfun2eps;
 
 %  Test some cylindrical harmonics
 %k = [];

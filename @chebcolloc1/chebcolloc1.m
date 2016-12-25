@@ -10,7 +10,7 @@ classdef chebcolloc1 < chebcolloc
 %
 % See also CHEBCOLLOC, COLLOC, OPDISCRETIZATION, CHEBOPPREF, CHEBOP.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % No subclass-specific properties needed, and no special constructor either.

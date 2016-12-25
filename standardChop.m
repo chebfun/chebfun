@@ -37,7 +37,7 @@ function cutoff = standardChop(coeffs, tol)
  
 % Jared Aurentz and Nick Trefethen, July 2015.
 %
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % STANDARDCHOP normally chops COEFFS at a point beyond which it is smaller than

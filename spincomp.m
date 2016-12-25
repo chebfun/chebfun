@@ -33,7 +33,7 @@ function [err, time] = spincomp(pdechar, tspan, u0, pref)
 %
 % See also SPIN, SPIN2, SPIN3, SPINPREF, SPINPREF2, SPINPREF3, SPINSCHEME.
 %
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Get the schemes:

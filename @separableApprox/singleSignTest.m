@@ -13,7 +13,7 @@ function [out, wzero] = singleSignTest(F)
 %
 % See also ABS, SQRT, LOG. 
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 tol = chebfun2eps;

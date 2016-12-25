@@ -4,7 +4,7 @@ function f = laplacian( f )
 %
 % See also DISKFUN/DIFF, DISKFUN/GRADIENT.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 f = diff(f, 1, 2) + diff( f, 2, 2); 

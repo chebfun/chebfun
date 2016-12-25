@@ -18,7 +18,7 @@ function g = std(f, varargin)
 % See also CHEBFUN/STD, CHEBFUN2/STD, CHEBFUN2/STD2, CHEBFUN3/STD2 and 
 % CHEBFUN3/STD3.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 

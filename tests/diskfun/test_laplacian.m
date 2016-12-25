@@ -1,7 +1,7 @@
 function pass = test_laplacian( )
 
 
-tol = 4*1e3*chebfunpref().cheb2Prefs.chebfun2eps;
+tol = 4*1e4*chebfunpref().cheb2Prefs.chebfun2eps;
 
 %  Test some cylindrical harmonics
 %k = [];

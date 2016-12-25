@@ -6,7 +6,7 @@ function phi = phiEval(l, LR, N, dim, nVars)
 %
 % See also SPINSCHEME/PHIFUN, SPINSCHEME/PSIFUN.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Get a function handle to the phi-function of index L:

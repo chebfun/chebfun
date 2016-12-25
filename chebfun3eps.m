@@ -17,7 +17,7 @@ function varargout = chebfun3eps(val)
 %
 % See also CHEBFUNEPS and CHEBFUN2EPS.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin == 0 )

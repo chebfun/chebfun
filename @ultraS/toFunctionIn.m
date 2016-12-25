@@ -4,7 +4,7 @@ function f = toFunctionIn(disc, coeffs)
 %   CHEBFUN. The input may be piecewise smooth, as indicated by the dimension
 %   property of the discretization.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 dom = disc.domain;         % Domain we're working on, including breakpoints

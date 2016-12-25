@@ -59,7 +59,7 @@ function varargout = quiver(N, varargin)
 %   plot(u, v, 'linewidth', 2)
 %   plot(0.5, 1,'m*','markersize',15) % Mark initial condition
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. See
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.
 
 % Set default values:

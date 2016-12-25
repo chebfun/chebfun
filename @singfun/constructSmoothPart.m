@@ -5,7 +5,7 @@ function s = constructSmoothPart(op, data, pref)
 %   and preferences for the SMOOTHFUN class can be passed through the
 %   corresponding arguments.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty(pref) )

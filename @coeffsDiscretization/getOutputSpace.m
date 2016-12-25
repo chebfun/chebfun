@@ -9,7 +9,7 @@ function outputSpace = getOutputSpace(source)
 %   range should be represented in the C^{(K)} polynomial basis. For TRIGSPEC,
 %   the operator is always sparse.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isa(source, 'chebmatrix') )

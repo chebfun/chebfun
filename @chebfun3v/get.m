@@ -6,7 +6,7 @@ function val = get(f, propName)
 %   'nComponents'  - The number of components in a CHEBFUN3.
 %   'isTransposed' - Is the CHEBFUN3V a column or row vector?
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( numel(f) > 1 )

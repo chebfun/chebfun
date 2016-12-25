@@ -4,7 +4,7 @@ function h = openFigInCurrentFigure(figfile)
 %   figure specified by the string FIGFILE but does some additional work
 %   to force it to be opened in the current figure instead of in a new one.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Developer note:  This function exists to allow a user to force the

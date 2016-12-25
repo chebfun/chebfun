@@ -21,7 +21,7 @@ function T = fold(A, sizeT, rowDims, colDims)
 % The structure of this code is similar to `dematricize.m` from the HTUCKER 
 % toolbox of Tobler and Kressner.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 sizeT(end+1:2) = 1;

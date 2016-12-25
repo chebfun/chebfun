@@ -3,7 +3,7 @@ function v = sum2( f )
 %   I = SUM2(F) returns the double definite integral of a DISKFUN.
 
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 [cols,d,rows] = cdr(f);
