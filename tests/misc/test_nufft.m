@@ -8,19 +8,8 @@ end
 tol = eps;
 rng(0)
 
-% Test NUFFT-I:
+% Test NUFFT-I 
 count = 1; 
-for N = 10.^(0:4)
-    x = linspace(0,1,N+1)'; x(end) = [];
-    x = x + 1.2/N;
-    c = rand(N,1) + 1i*rand(N,1);
-    exact = nudft2( c, x ); 
-    fast = chebfun.nufft( c, x );
-    pass(count) = norm( exact - fast, inf ) < 300*N*tol*norm(c,1);
-    count = count + 1; 
-end
-
-% Test NUFFT-II 
 for N = 10.^(0:4)
     omega = (0:N-1)'; 
     omega = omega + 1.2*rand(N,1)/N;
@@ -29,6 +18,17 @@ for N = 10.^(0:4)
     fast = chebfun.nufft( c, omega, 1 );
     pass(count) = norm( exact - fast, inf ) < 300*N*tol*norm(c,1);
     count = count + 1;
+end
+
+% Test NUFFT-II:
+for N = 10.^(0:4)
+    x = linspace(0,1,N+1)'; x(end) = [];
+    x = x + 1.2/N;
+    c = rand(N,1) + 1i*rand(N,1);
+    exact = nudft2( c, x ); 
+    fast = chebfun.nufft( c, x );
+    pass(count) = norm( exact - fast, inf ) < 300*N*tol*norm(c,1);
+    count = count + 1; 
 end
 
 % Test NUFFT-III
@@ -44,7 +44,7 @@ for N = 10.^(0:4)
     count = count + 1;
 end
 
-% pass = all(pass);
+pass = all(pass);
 end
 
 

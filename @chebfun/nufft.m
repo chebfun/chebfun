@@ -5,17 +5,16 @@ function [f, p] = nufft( c, x, omega, type)
 % vector. F = P(C) is a planned version of the fast transform. 
 %
 % F = CHEBFUN.NUFFT( C, X ) is a nonuniform fast Fourier transform of type
-% 1,
-% which computes the following sums in quasi-optimal complexity:
+% 2, which computes the following sums in quasi-optimal complexity:
 %
 %       F_j = \sum_{k=0}^{N-1} C(K)*exp(-2*pi*1i*X(j)*k/N), 0<=j<=N-1.
 %
 % C and X must be column vectors of the same length.
 %
-% F = CHEBFUN.NUFFT( C, X, 1 ) is the same as CHEBFUN.NUFFT( C, X )
+% F = CHEBFUN.NUFFT( C, X, 2 ) is the same as CHEBFUN.NUFFT( C, X )
 %
-% F = CHEBFUN.NUFFT( C, OMEGA, 2 ) is a nonuniform fast Fourier transform
-% of type 2, which computes the following sums in quasi-optimal complexity:
+% F = CHEBFUN.NUFFT( C, OMEGA, 1 ) is a nonuniform fast Fourier transform
+% of type 1, which computes the following sums in quasi-optimal complexity:
 %
 %       F_j = \sum_{k=0}^{N-1} C(K)*exp(-2*pi*1i*j*OMEGA(k)/N), 0<=j<=N-1.
 %
@@ -28,7 +27,7 @@ function [f, p] = nufft( c, x, omega, type)
 % and F = CHEBFUN.NUFFT( C, X, OMEGA, TOL ) are the same as above but with
 % a tolerance of TOL. By default, TOL = eps.
 %
-% See also chebfun.ndct, chebfun.dct, chebfun.dst.
+% See also chebfun.nuifft and chebfun.ndct. 
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -40,9 +39,6 @@ function [f, p] = nufft( c, x, omega, type)
 % based on low rank approximation", in preparation, 2016.
 %
 % This paper related the NUFFT to a FFT by low rank approximation.
-%
-% A faster MATLAB implementation outside of the Chebfun system
-% is available from the author. Please email: townsend@cornell.edu.
 
 if ( nargin == 1 )
     p = @(c) fft(c);
@@ -80,7 +76,7 @@ end
 
 function [f, p] = nufft1( c, omega, tol )
 % NUFFT1   Compute the nonuniform FFT of type 1
-% This is equivalent to tilde{F}_2*c, where we write
+% This is equivalent to tilde{F}_1*c, where we write
 %          tilde{F}_1*c = \tilde{F}_2^T*c.
 
 N = size(omega,1);
@@ -94,9 +90,9 @@ end
 
 function [f, p] = nufft2( c, x, tol )
 % NUFFT2  Compute the nonuniform FFT of type 2
-% This is equivalent to tilde{F}_1*c, where we write
+% This is equivalent to tilde{F}_2*c. We write
 %
-%  tilde{F}_2*c \approx  (A_K.*F)*c,
+%          tilde{F}_2*c \approx (A_K.*F)*c,
 %
 % where A_K is a rank K matrix and F is the DFT matrix.
 
