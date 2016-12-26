@@ -367,6 +367,9 @@ classdef chebfun
         
         % Non-uniform discrete cosine transform:
         y = ndct(u);
+        
+        % Non-uniform fast Fourier transform: 
+        [y, p] = nufft( varargin );
 
         % ODE113 with CHEBFUN output.
         [t, y] = ode113(varargin);
