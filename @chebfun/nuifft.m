@@ -1,8 +1,8 @@
-function f = nuifft( c, x, omega, type)
+function [f, p] = nuifft( c, x, omega, type)
 % CHEBFUN.NUIFFT   Nonuniform inverse fast Fourier transform
 %
-% F = CHEBFUN.NUIFFT( C ) is the same as ifft( C ). C must be a column
-% vector. 
+% [F, P]= CHEBFUN.NUIFFT( C ) is the same as ifft( C ). C must be a column
+% vector. F = P(C) is a planned version of the fast transform. 
 %
 % F = CHEBFUN.NUIFFT( C, X ) is a nonuniform inverse fast Fourier transform 
 % of type 2, which computes A\C, where
@@ -43,17 +43,17 @@ if ( nargin == 1 )
     f = p(c);
 elseif ( nargin == 2 )
     % default to type 2 nufft
-    f = nuifft2( c, x, eps );
+    [f, p] = nuifft2( c, x, eps );
 elseif ( nargin == 3 )
     type = omega;
     if ( numel(type) == 1 )
         if ( type == 1 )
-            f = nuifft1( c, x, eps);
+            [f, p] = nuifft1( c, x, eps);
         elseif ( type == 2 )
-            f = nuifft2( c, x, eps);
+            [f, p] = nuifft2( c, x, eps);
         elseif ( type<1 && type>0 && numel(c)>1 )
             tol = type;
-            f = nuifft1( c, x, tol);
+            [f, p] = nuifft1( c, x, tol);
         elseif ( numel(c) == 1 )
             error('CHEBFUN::NUIFFT::3','Type 3 NUIFFT has not been implemented')
         else
@@ -72,7 +72,7 @@ elseif ( nargin == 4 )
 end
 end
 
-function f = nuifft1( c, omega, tol ) 
+function [f,p] = nuifft1( c, omega, tol ) 
 % NUIFFT1  Compute the nonuniform IFFT of type 1.
 % We do this by solving the normal equations (F'*F)*f=F'*c, where F is the
 % NUDFT1 matrix. 
@@ -85,9 +85,10 @@ p_trans = @(c) conj( p_trans( conj( c ) ) );
 
 % Plan conjugate gradient method on normal equations: 
 [f, ~] = pcg(@(c) p_trans( p( c ) ), p_trans(c), 100*tol, 50 );
+p = @(c) pcg(@(c) p_ctrans( p_forw(c) ), p_ctrans(c), 100*tol, 50 );
 end
 
-function f = nuifft2( c, x, tol )
+function [f,p] = nuifft2( c, x, tol )
 % NUIFFT2  Compute the nonuniform IFFT of type 2.
 % We do this by solving the normal equations (F'*F)*f=F'*c, where F is the
 % NUDFT2 matrix.
@@ -100,4 +101,5 @@ p_ctrans = @(y) conj( p_ctrans( conj( y ) ) );
 
 % Plan conjugate gradient method on normal equations: 
 [f, ~] = pcg(@(c) p_ctrans( p_forw(c) ), p_ctrans(c), 100*tol, 50 );
+p = @(c) pcg(@(c) p_ctrans( p_forw(c) ), p_ctrans(c), 100*tol, 50 );
 end

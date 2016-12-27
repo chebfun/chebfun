@@ -372,7 +372,7 @@ classdef chebfun
         [y, p] = nufft( varargin );
         
         % Non-uniform inverse fast Fourier transform: 
-        y = nuifft( varargin );
+        [y, p] = nuifft( varargin );
 
         % ODE113 with CHEBFUN output.
         [t, y] = ode113(varargin);
