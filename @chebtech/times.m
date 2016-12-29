@@ -83,8 +83,8 @@ function [coeffs, pos] = coeff_times_main(f, g)
 [fn, fm] = size(f);
 [gn, gm] = size(g);
 
-% Prolong:
-f((fn+1):(fn+gn-1),:) = 0;
+% Prolong: 
+f((fn+1):(fn+gn-1),:) = 0; % length(f*g) = length(f) + length(g) - 1
 g((gn+1):(fn+gn-1),:) = 0;
 
 % Check dimensions:
