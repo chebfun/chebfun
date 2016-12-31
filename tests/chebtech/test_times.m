@@ -155,7 +155,14 @@ for n = 1:2
     pass(n, 24) = (~g.ishappy) && (~h.ishappy);
     warning on; % Re-enable warnings.
     
-
+    %%
+    % Test polynomial multiplication results in the correct degree.
+    xi = linspace(-1,1,4);
+    y = testclass.make(@(x) x);
+    p1 = ( (y-xi(2)).*(y-xi(3)).*(y-xi(4)) ).^2;
+    p = (y-xi(1)).*p1;
+    pass(n, 25) = length(p) == 8 && length(p1) == 7;
+    
 end
 
 end
