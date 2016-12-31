@@ -27,7 +27,7 @@ function [f, p] = nufft( c, x, omega, type)
 % and F = CHEBFUN.NUFFT( C, X, OMEGA, TOL ) are the same as above but with
 % a tolerance of TOL. By default, TOL = eps.
 %
-% See also chebfun.nuifft and chebfun.ndct. 
+% See also chebfun.inufft and chebfun.ndct. 
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

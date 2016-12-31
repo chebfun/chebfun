@@ -1,25 +1,25 @@
-function [f, p] = nuifft( c, x, omega, type)
-% CHEBFUN.NUIFFT   Nonuniform inverse fast Fourier transform
+function [f, p] = inufft( c, x, omega, type)
+% CHEBFUN.INUFFT   Inverse nonuniform fast Fourier transform
 %
-% [F, P]= CHEBFUN.NUIFFT( C ) is the same as ifft( C ). C must be a column
+% [F, P]= CHEBFUN.INUFFT( C ) is the same as ifft( C ). C must be a column
 % vector. F = P(C) is a planned version of the fast transform. 
 %
-% F = CHEBFUN.NUIFFT( C, X ) is a nonuniform inverse fast Fourier transform 
+% F = CHEBFUN.INUFFT( C, X ) is an inverse nonuniform fast Fourier transform 
 % of type 2, which computes A\C, where
 % 
 %        A_{jk} = exp(-2*pi*1i*X(j)*k/N), 0<=j,K<=N-1. 
 %
 % C and X must be column vectors of the same length.
 %
-% F = CHEBFUN.NUIFFT( C, X, 2 ) is the same as CHEBFUN.NUIFFT( C, X )
+% F = CHEBFUN.INUFFT( C, X, 2 ) is the same as CHEBFUN.INUFFT( C, X )
 %
-% F = CHEBFUN.NUIFFT( C, OMEGA, 1 ) is a nonuniform inverse fast Fourier 
+% F = CHEBFUN.INUFFT( C, OMEGA, 1 ) is an inverse nonuniform fast Fourier 
 % transform of type 1, which computes A\C, where
 %
 %        A_{jk} = exp(-2*pi*1i*j/N*OMEGA(k)), 0<=j,K<=N-1. 
 %
-% F = CHEBFUN.NUFFT( C, X, 1, TOL), F = CHEBFUN.NUFFT(C, OMEGA, 2, TOL),
-% and F = CHEBFUN.NUFFT( C, X, OMEGA, TOL ) are the same as above but with
+% F = CHEBFUN.INUFFT( C, X, 1, TOL), F = CHEBFUN.INUFFT(C, OMEGA, 2, TOL),
+% and F = CHEBFUN.INUFFT( C, X, OMEGA, TOL ) are the same as above but with
 % a tolerance of TOL. By default, TOL = eps.
 %
 % See also chebfun.nufft and chebfun.ndct.
