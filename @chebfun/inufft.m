@@ -74,21 +74,32 @@ end
 
 function [f,p] = nuifft1( c, omega, tol )
 % NUIFFT1  Compute the nonuniform IFFT of type 1.
-% We do this by solving the normal equations (F'*F)*f=F'*c, where F is the
-% NUDFT1 matrix.
 
-% TODO: Speed this code up by using the fact that F*F' is a toeplitz
-% matrix. 
+% This is done by noting that 
+% 
+%    inv(A) = A^*inv(AA^*)
+% 
+%  for any matrix A.  Therefore, Ax = b can be solved in two steps: 
+% 
+%   1)  Solve (A*A^*)x = b for x,
+%   2)  Compute   A^*x 
+% 
+% When A = tilde(F)_1, then (A*A^*) is a Toeplitz matrix. 
 
-% Plan the NUFFTs:
 N = size(omega,1);
 [~, p] = chebfun.nufft( c, omega, 1);
 [~, p_trans] = chebfun.nufft(c, omega/N, 2);
 p_trans = @(c) conj( p_trans( conj( c ) ) );
+toeplitz_col = p( ones(N,1) );
+toeplitz_row = conj( p( ones(N,1) ) );
+toeplitz_row(1) = toeplitz_col(1); 
 
-% Plan conjugate gradient method on normal equations:
-[f, ~] = pcg(@(c) p_trans( p( c ) ), p_trans(c), 100*tol, 50 );
-p = @(c) pcg(@(c) p_ctrans( p_forw(c) ), p_ctrans(c), 100*tol, 50 );
+toeplitz_matvec = @(c) fastToeplitz( toeplitz_col, toeplitz_row, c );
+[f, ~] = pcg(toeplitz_matvec, c, 100*tol, 50 );
+f = p_trans( f ); 
+
+% Planning is unavailable because of the pcg() command. 
+p = [];
 end
 
 function [f,p] = nuifft2( c, x, tol )
@@ -108,6 +119,7 @@ toeplitz_row(1) = toeplitz_col(1);
 % Conjugate gradient method on normal equations:
 toeplitz_matvec = @(c) fastToeplitz(toeplitz_col, toeplitz_row, c);
 [f, ~] = pcg(toeplitz_matvec, p_ctrans(c), 100*tol, 50 );
+% Plan: 
 p = @(c) pcg(toeplitz_matvec, p_ctrans(c), 100*tol, 50 );
 end
 
