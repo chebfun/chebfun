@@ -3,15 +3,15 @@ function varargout = trigpade(f, m, n, varargin)
 %   [P, Q, R_HANDLE] = TRIGPADE(F, M, N) computes trigonometric polynomials 
 %   P and Q of degree M and N, respectively, such that the trigonometric 
 %   rational function P/Q is the type (M,N) Fourier-Pade approximation of 
-%   the CHEBFUN F. That is, the Fourier series of P/Q coincides with that 
-%   for the CHEBFUN F up to the maximum possible order for the polynomial 
-%   degrees permitted. R_HANDLE is a function handle for evaluating the 
-%   trigonometric rational function.
+%   the periodic CHEBFUN F. That is, the Fourier series of P/Q coincides 
+%   with that for the CHEBFUN F up to the maximum possible order for the 
+%   polynomial degrees permitted. R_HANDLE is a function handle for 
+%   evaluating the trigonometric rational function P/Q.
 % 
 %   [P, Q, R_HANDLE, TN_P, TD_P, TN_M, TD_M] = TRIGPADE(F, M, N) also
 %   returns the four trigonometric polynomials TN_P, TD_P, TN_M and TD_M
 %   such that P/Q = TN_P./TD_P + TN_M./TD_M.
-
+%
 %   In both of the above cases, if only one output argument is specified
 %   then R_HANDLE is returned, while P and Q are returned if two or more 
 %   output arguments are specified. 
@@ -33,6 +33,11 @@ function varargout = trigpade(f, m, n, varargin)
 if ( isempty(f) )
     varargout{1} = f;
     return
+end
+
+if ( ~isPeriodicTech(f) )
+    error('CHEBFUN:CHEBFUN:trigpade:trig', ...
+        'Input chebfun F must have a periodic representation');
 end
 
 dom = f.domain([1, end]);
@@ -73,8 +78,8 @@ bb_p = [zeros(length(b_p)-1, 1); b_p];
 
 % _d is for denominator, _n is for numerator
 % Denonminator and numerator for the +ve part
-td_p = chebfun(aa_p, 'coeffs', 'trig' );
-tn_p = chebfun(bb_p, 'coeffs', 'trig' );
+tn_p = chebfun(aa_p, 'coeffs', 'trig' );
+td_p = chebfun(bb_p, 'coeffs', 'trig' );
 
 % Pad coefficients with zeros
 aa_m = [zeros(length(a_m)-1, 1); a_m];
@@ -83,17 +88,17 @@ bb_m = [zeros(length(b_m)-1, 1); b_m];
 bb_m = flipud(bb_m);
 
 % denonminator and numerator for the -ve part
-td_m = chebfun(aa_m, dom, 'coeffs', 'trig' );
-tn_m = chebfun(bb_m, dom, 'coeffs', 'trig' );
+tn_m = chebfun(aa_m, dom, 'coeffs', 'trig' );
+td_m = chebfun(bb_m, dom, 'coeffs', 'trig' );
 
 % Construct the full approximation:
-p = td_p.*tn_m + td_m.*tn_p; 
-q = tn_p.*tn_m;
+p = tn_p.*td_m + tn_m.*td_p; 
+q = td_p.*td_m;
 r_h = @(t) p(t)./q(t);
 
 % Discard the imaginary rounding errors:
 if ( isreal(f) && (norm(imag(p)) + norm(imag(q)) > 100*norm(f)* eps ) )
-	warning('Chebfun:trigpade:imag', 'imaginary part not negligible.');
+	warning('CHEBFUN:CHEBFUN:trigpade:imag', 'imaginary part not negligible.');
 else
 	p = real(p);
     q = real(q);
