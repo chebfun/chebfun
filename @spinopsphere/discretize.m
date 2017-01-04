@@ -17,7 +17,6 @@ function [L, Nc] = discretize(S, N)
  
 % Get the domain DOM, the linear part LFUN, the nonlinear part NFUN, and the 
 % number of variables NVARS from S:
-dom = S.domain;
 funcL = S.lin;
 nVars = nargin(funcL);
 
@@ -32,94 +31,25 @@ if ( isempty(names) == 0 )
     end
 end
  
-% Create a CHEBOPPREF object with TRIGSPEC discretization:
-pref = cheboppref();
-pref.discretization = @trigspec;
-
 %% Discretize the linear part:
 
-% Second-order Fourier differentiation matrix with TRIGSPEC (sparse diagonal 
-% matrix):
-D2 = trigspec.diffmat(N,2)*(2*pi/(dom(2) - dom(1)))^2;
-if ( mod(N,2) == 0 )
-    D2 = fftshift(D2);
-else
-    D2 = ifftshift(D2);
-end
-
-% Look for 'laplacian'/'lap', 'biharmonic'/'biharm', 'triharmonic'/'triharm',
-% 'quadharmonic'/'quadharm' or 'quintharmomic'/'quintharm':
-strL = func2str(funcL);
-isLap = isempty(strfind(strL,'laplacian')) && isempty(strfind(strL,'lap'));
-isLap = ~isLap;
-isBih = isempty(strfind(strL,'biharmonic')) && isempty(strfind(strL,'biharm'));
-isBih = ~isBih;
-isTrih = isempty(strfind(strL,'triharmonic')) ...
-    && isempty(strfind(strL,'triharm'));
-isTrih = ~isTrih;
-isQuadh = isempty(strfind(strL,'quadharmonic')) ...
-    && isempty(strfind(strL,'quadharm'));
-isQuadh = ~isQuadh;
-isQuinth = isempty(strfind(strL,'quintharmonic')) ...
-    && isempty(strfind(strL,'quintharm'));
-isQuinth = ~isQuinth;
-
-% NxN identity matrix for the Kronecker products:
-I = eye(N);
-
-% Construct the Laplacian operator -- needed for all the operators:
-if ( isLap || isBih || isTrih || isQuadh || isQuinth )
-    
-    % Compute the N^2xN^2 Laplacian with KRON:
-    lapmat = kron(I, D2) + kron(D2, I);
-    
-    % Create a NxN matrix with the diagonal of the N^2xN^2 Laplacian:
-    lapmat = reshape(full(diag(lapmat)), N, N);
-    
-else
-    lapmat = 0;
-end
-
-% The linear part has a B*biharmonic(u) term:
-if ( isBih == 1 )
-    
-    % Pointwise multiplication since we only store the diagonal elements:
-    bihmat = lapmat.^2;
-    
-else
-    bihmat = 0;
-end
-
-% The linear part has a C*triharmonic(u) term:
-if ( isTrih == 1 )
-    
-    % Pointwise multiplication since we only store the diagonal elements:
-    trihmat = lapmat.^3;
-    
-else
-    trihmat = 0;
-end
-
-% The linear part has a D*quadharmonic(u) term:
-if ( isQuadh == 1 )
-    
-    % Pointwise multiplication since we only store the diagonal elements:
-    quadhmat = lapmat.^4;
-    
-else
-    quadhmat = 0;
-end
-
-% The linear part has a E*quintharmonic(u) term:
-if ( isQuinth == 1 )
-    
-    % Pointwise multiplication since we only store the diagonal elements:
-    quinthmat = lapmat.^5;
-    
-else
-    quinthmat = 0;
-end
-
+% Construct Laplacian matrix (multiplied by Tsin2):
+m = N; 
+n = N;
+Dm = spdiags(1i*[0,-m/2+1:m/2-1]', 0, m, n);
+D2m = spdiags(-(-m/2:m/2-1).^2', 0, m, n);
+D2n = spdiags(-(-n/2:n/2-1).^2', 0, m, n);
+Im = speye(m); In = speye(n);
+P = speye(m+1); P = P(:, 1:m); P(1,1) = .5; P(m+1,1) = .5;
+Q = speye(m+1+4); Q = Q(3:m+2,:); Q(1,3) = 1; Q(1,m+3) = 1;
+Msin2 = toeplitz([1/2, 0, -1/4, zeros(1, m+2)]);
+Msin2 = sparse(Msin2(:, 3:m+3));
+Tsin2 = round(Q*Msin2*P, 15);
+Mcossin = toeplitz([0, 0, 1i/4, zeros(1, m+2)]);
+Mcossin = sparse(Mcossin(:, 3:m+3));
+Tcossin = round(Q*Mcossin*P, 15);
+lapmat = kron(In, Tsin2*D2m + Tcossin*Dm) + kron(D2n, Im);
+ 
 % Convert to a string and initialize L:
 strL = func2str(funcL);
 L = [];
@@ -127,14 +57,6 @@ L = [];
 % Get the constants A in front of the Laplacians:
 str = strrep(strL, 'laplacian', '');
 str = strrep(str, 'lap', '');
-str = strrep(str, 'biharmonic', '0*');
-str = strrep(str, 'biharm', '0*');
-str = strrep(str, 'triharmonic', '0*');
-str = strrep(str, 'triharm', '0*');
-str = strrep(str, 'quadharmonic', '0*');
-str = strrep(str, 'quadharm', '0*');
-str = strrep(str, 'quintharmonic', '0*');
-str = strrep(str, 'quintharm', '0*');
 func = eval(str);
 inputs = cell(1, nVars);
 for k = 1:nVars
@@ -142,66 +64,9 @@ for k = 1:nVars
 end
 A = feval(func, inputs{:}); 
 
-% Get the constants B in front of the biharmonic operators:
-str = strrep(strL, 'laplacian', '0*');
-str = strrep(str, 'lap', '0*');
-str = strrep(str, 'biharmonic', '');
-str = strrep(str, 'biharm', '');
-str = strrep(str, 'triharmonic', '0*');
-str = strrep(str, 'triharm', '0*');
-str = strrep(str, 'quadharmonic', '0*');
-str = strrep(str, 'quadharm', '0*');
-str = strrep(str, 'quintharmonic', '0*');
-str = strrep(str, 'quintharm', '0*');
-func = eval(str);
-B = feval(func, inputs{:}); 
-
-% Get the constants C in front of the triharmonic operators:
-str = strrep(strL, 'laplacian', '0*');
-str = strrep(str, 'lap', '0*');
-str = strrep(str, 'biharmonic', '0*');
-str = strrep(str, 'biharm', '0*');
-str = strrep(str, 'triharmonic', '');
-str = strrep(str, 'triharm', '');
-str = strrep(str, 'quadharmonic', '0*');
-str = strrep(str, 'quadharm', '0*');
-str = strrep(str, 'quintharmonic', '0*');
-str = strrep(str, 'quintharm', '0*');
-func = eval(str);
-C = feval(func, inputs{:}); 
-
-% Get the constants D in front of the quadharmonic operators:
-str = strrep(strL, 'laplacian', '0*');
-str = strrep(str, 'lap', '0*');
-str = strrep(str, 'biharmonic', '0*');
-str = strrep(str, 'biharm', '0*');
-str = strrep(str, 'triharmonic', '0*');
-str = strrep(str, 'triharm', '0*');
-str = strrep(str, 'quadharmonic', '');
-str = strrep(str, 'quadharm', '');
-str = strrep(str, 'quintharmonic', '0*');
-str = strrep(str, 'quintharm', '0*');
-func = eval(str);
-D = feval(func, inputs{:}); 
-
-% Get the constants E in front of the quintharmonic operators:
-str = strrep(strL, 'laplacian', '0*');
-str = strrep(str, 'lap', '0*');
-str = strrep(str, 'biharmonic', '0*');
-str = strrep(str, 'biharm', '0*');
-str = strrep(str, 'triharmonic', '0*');
-str = strrep(str, 'triharm', '0*');
-str = strrep(str, 'quadharmonic', '');
-str = strrep(str, 'quadharm', '');
-str = strrep(str, 'quintharmonic', '');
-str = strrep(str, 'quintharm', '');
-func = eval(str);
-E = feval(func, inputs{:}); 
-
 % Compute L:
 for k = 1:nVars
-    L = [L; A(k)*lapmat + B(k)*bihmat + C(k)*trihmat + D(k)*quadhmat + ...
-        E(k)*quinthmat]; 
+    L = [L; A(k)*lapmat];
 end
 
 %% Disretize the differentiation term of the nonlinear part:

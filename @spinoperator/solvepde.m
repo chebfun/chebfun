@@ -1,7 +1,7 @@
 function [uOut, tOut, computingTime] = solvepde(varargin)
 %SOLVEPDE   Solve a PDE defined by a SPINOP, SPINOP2, SPINOP3 or SPINOPSPHERE.
-%   SOLVEPDE is called by SPIN, SPIN2, SPIN3 and SPINSPHERE. It is not called 
-%   directly by the user. Appropriate help texts can be found in SPIN, SPIN2, 
+%   SOLVEPDE is called by SPIN, SPIN2, SPIN3 and SPINSPHERE. It is not called
+%   directly by the user. Appropriate help texts can be found in SPIN, SPIN2,
 %   SPIN3 and SPINSPHERE.
 %
 % See also SPIN, SPIN2, SPIN3, SPINSPHERE.
@@ -11,7 +11,7 @@ function [uOut, tOut, computingTime] = solvepde(varargin)
 
 %% Parse inputs:
 
-% SOLVEPDE has been called by SPIN/SPIN2/SPIN3. The inputs have been parsed in 
+% SOLVEPDE has been called by SPIN/SPIN2/SPIN3. The inputs have been parsed in
 % those files and are expeceted to be:
 %
 % OPTION 1.     SOLVEPDE(S, N, DT), S is a SPINOPERATOR object, N is the number
@@ -58,7 +58,7 @@ u0 = S.init;
 if ( isa(u0, 'chebfun') == 1 || isa(u0, 'chebfun2') == 1 || ...
         isa(u0, 'chebfun3') == 1 || isa(u0, 'spherefun') == 1 )
     u0 = chebmatrix(u0);
-elseif ( isa(u0, 'chebfun2v') == 1 || isa(u0, 'chebfun3v') == 1 || ... 
+elseif ( isa(u0, 'chebfun2v') == 1 || isa(u0, 'chebfun3v') == 1 || ...
         isa(u0, 'spherefunv') == 1 )
     temp = chebmatrix(u0(1));
     for k = 2:size(u0, 1)
@@ -103,7 +103,7 @@ Nv = S.nonlinearPartVals;
 % Set-up spatial grid, and initial condition (values VINIT and Fourier coeffs
 % CINIT):
 xx = trigpts(N, dom(1:2));
-if ( dim == 2 )
+if ( dim == 2 || strcmpi(dim, 'unit sphere') == 1 )
     yy = trigpts(N, dom(3:4));
     [xx, yy] = meshgrid(xx, yy);
 elseif ( dim == 3 )
@@ -112,44 +112,85 @@ elseif ( dim == 3 )
     [xx, yy, zz] = meshgrid(xx, yy, zz);
 end
 
-% Initial values at grid points:
-vInit = [];
-for k = 1:nVars
-    if ( dim == 1 )
-        vInit = [vInit; feval(u0{k}, xx)]; %#ok<*AGROW>
-    elseif ( dim == 2 )
-        vInit = [vInit; feval(u0{k}, xx, yy)];
-    elseif ( dim == 3 )
-        vInit = [vInit; feval(u0{k}, xx, yy, zz)];
+% Get the values to coeffs and coeffs to values transform:
+v2c = getVals2CoeffsTransform(S);
+c2v = getCoeffs2ValsTransform(S);
+
+% In 1D/2D/3D:
+if ( isa(dim, 'double') == 1 )
+    
+    % Initial values at grid points:
+    vInit = [];
+    for k = 1:nVars
+        if ( dim == 1 )
+            vInit = [vInit; feval(u0{k}, xx)]; %#ok<*AGROW>
+        elseif ( dim == 2 )
+            vInit = [vInit; feval(u0{k}, xx, yy)];
+        elseif ( dim == 3 )
+            vInit = [vInit; feval(u0{k}, xx, yy, zz)];
+        end
     end
+    
+    % Transform to coefficients:
+    cInit{1} = [];
+    for k = 1:nVars
+        idx = (k-1)*N + 1;
+        cInit{1} = [cInit{1}; v2c(vInit(idx:idx+N-1,:,:))];
+    end
+    
+    % Nonlinear evaluation of the initial condition (in value space):
+    vals = Nv(vInit);
+    
+    % Transform to coefficients:
+    coeffs = v2c(vals(1:N,:,:));
+    for k = 1:nVars-1
+        idx = k*N + 1;
+        coeffs = [coeffs; v2c(vals(idx:idx+N-1,:,:))];
+    end
+    coeffs = Nc.*coeffs;
+    NcInit{1} = coeffs;
+    
+% On the sphere:
+else
+    
+    % Get the coefficients:
+    cInit{1} = coeffs2(u0{1});
+    for k = 2:nVars
+        cInit{1} = [cInit{1}; coeffs2(u0{k});];
+    end
+    
+    % Transform to values:
+    vInit = c2v(cInit{1}(1:N^2));
+    for k = 1:nVars-1
+        idx = k*N^2 + 1;
+        vInit = [vInit; c2v(cInit{1}(idx:idx+N^2-1))];
+    end
+    
+    % Nonlinear evaluation of the initial condition (in value space):
+    vals = Nv(vInit);
+    
+    % Transform to coefficients:
+    coeffs = v2c(vals(1:N^2));
+    for k = 1:nVars-1
+        idx = k*N^2 + 1;
+        coeffs = [coeffs; v2c(cInit{1}(idx:idx+N^2-1))];
+    end
+    coeffs = Nc*coeffs;
+    NcInit{1} = coeffs;
 end
-
-% Transform to coefficients:
-cInit{1} = [];
-for k = 1:nVars
-    idx = (k-1)*N + 1;
-    cInit{1} = [cInit{1}; fftn(vInit(idx:idx+N-1,:,:))];
-end
-
-% Nonlinear evaluation of the initial condition (in value space):
-vals = Nv(vInit);
-
-% Transform to coefficients:
-coeffs = fftn(vals(1:N,:,:));
-for k = 1:nVars-1
-    idx = k*N + 1;
-    coeffs = [coeffs; fftn(vals(idx:idx+N-1,:,:))];
-end
-coeffs = Nc.*coeffs;
-NcInit{1} = coeffs;
 
 % Get enough initial data when using a multistep scheme:
 if ( q > 1 )
     [cInit, NcInit] = startMultistep(K, dt, L, Nc, Nv, pref, S, cInit, NcInit);
 end
+% [TODO]: Implement the above for IMEX schemes.
 
-% Compute the coefficients of the scheme:
-schemeCoeffs = computeCoeffs(K, dt, L, M, S);
+% Compute the coefficients of the scheme for the exponential integrators:
+if ( strcmpi(K.type, 'expint') == 1 )
+    schemeCoeffs = computeCoeffs(K, dt, L, M, S);
+else
+    schemeCoeffs = [];
+end
 
 % Indexes for dealiasing:
 toOne = floor(N/2) + 1 - ceil(N/6):floor(N/2) + ceil(N/6);
@@ -181,7 +222,7 @@ if ( strcmpi(plotStyle, 'movie') == 1 )
     if ( dim == 1 )
         dataGrid = {xx};
         plotGrid = {trigpts(Nplot, dom)};
-    elseif ( dim == 2 )
+    elseif ( dim == 2 || strcmpi(dim, 'unit sphere') == 1 )
         dataGrid = {xx; yy};
         ttx = trigpts(Nplot, dom(1:2));
         tty = trigpts(Nplot, dom(3:4));
