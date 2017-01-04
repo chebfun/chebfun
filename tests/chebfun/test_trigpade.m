@@ -6,12 +6,13 @@ if ( nargin < 1 )
 end
 
 % Set an error tolerance.
-tol = 1.0e-12;
+tol = 1.0e-13;
 
 %% check for emptiness:
 p = trigpade(chebfun);
 pass(1) = isempty(p);
 
+%%
 f = chebfun(@(t) sin(pi*t), 'trig');
 [p, q, r] = trigpade(f, 1, 0);
 pass(2) = length(p) == 3;
@@ -45,10 +46,11 @@ pass(10) = length(q) == 3;
 r = p./q;
 pass(11) = norm(f-r, inf) < tol;
 
-%% Check another periodic function
+%% Check another periodic function 
 f = chebfun(@(t) exp(sin(pi*t)), 'trig');
 m = 15;
 n = 3;
 [p, q, r_h] = trigpade(f, m, n);
 pass(12) = norm(f-p./q, inf) < tol;
+
 end
