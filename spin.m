@@ -178,7 +178,7 @@ function [uout, tout] = spin(varargin)
 %   produces a WATERFALL plot as opposed to a movie and use the time-stepping
 %   scheme PECEC433.
 %
-% See also SPINOP, SPINPREF, SPINSCHEME, SPIN2, SPIN3.
+% See also SPINOP, SPINPREF, SPINSCHEME, SPIN2, SPIN3, SPINSPHERE.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

@@ -1,9 +1,9 @@
-function [uout, tout] = spin2(varargin)
-%SPIN2  Solve a time-dependent PDE in 2D with periodicity in space, using a
-%Fourier spectral method and an exponential integrator time-stepping scheme.
+function [uout, tout] = spinsphere(varargin)
+%SPINSPHERE  Solve a time-dependent PDE on the sphere with the double Fourier 
+%sphere method and an IMEX time-stepping algorithm.
 %
-%   UOUT = SPIN2(PDECHAR) solves the PDE specified by the string PDECHAR, and
-%   plots a movie of the solution as it computes it; it is a demo mode.
+%   UOUT = SPINSPHERE(PDECHAR) solves the PDE specified by the string PDECHAR,
+%   and plots a movie of the solution as it computes it; it is a demo mode.
 %   The space and time intervals and the initial condition are chosen to produce
 %   beautiful movies. Strings available include 'GL2' for Ginzburg-Landau
 %   equation and 'GS2' for Gray-Scott equations. Many other PDEs are available,
@@ -11,17 +11,17 @@ function [uout, tout] = spin2(varargin)
 %   to the solution at the final time (a CHEBMATRIX for systems of equations,
 %   each row representing one variable).
 %
-%   UOUT = SPIN2(S, N, DT) solves the PDE specified by the SPINOP2 S with N grid
+%   UOUT = SPINSPHERE(S, N, DT) solves the PDE specified by the SPINOP2 S with N grid
 %   points in each direction and a time-step DT. It plots a movie of the
 %   solution as it computes it. See HELP/SPINOP2 and Example 5.
 %
-%   UOUT = SPIN2(S, N, DT, PREF) allows one to use the preferences specified by
+%   UOUT = SPINSPHERE(S, N, DT, PREF) allows one to use the preferences specified by
 %   the SPINPREF2 object PREF. See HELP/SPINPREF2 and Example 6.
 %
-%   UOUT = SPIN2(S, N, DT, 'PREF1', VALUEPREF1, 'PREF2', VALUEPREF2, ...) is an
+%   UOUT = SPINSPHERE(S, N, DT, 'PREF1', VALUEPREF1, 'PREF2', VALUEPREF2, ...) is an
 %   alternative to the previous syntax. See Example 6.
 %
-%   [UOUT, TOUT] = SPIN2(...) also returns the times chunks TOUT at which UOUT
+%   [UOUT, TOUT] = SPINSPHERE(...) also returns the times chunks TOUT at which UOUT
 %   was computed.
 %
 % Remark 1: Available (case-insensitive) strings PDECHAR are
@@ -81,7 +81,7 @@ function [uout, tout] = spin2(varargin)
 %
 %    on [0 20]^2 from t=0 to t=200, with a random initial condition.
 %
-% Example 5: PDE specified by a SPINOP2
+% Example 5: PDE specified by a SPINOPSPHERE
 %
 %       dom = [0 100 0 100]; tspan = [0 100];
 %       S = spinop2(dom, tspan);
@@ -104,7 +104,7 @@ function [uout, tout] = spin2(varargin)
 %   direction, a time-step dt=5e-1, doesn't produce any movie use the
 %   time-stepping scheme PECEC433.
 %
-% See also SPINOP2, SPINPREF2, SPINSCHEME, SPIN, SPIN3, SPINSPHERE.
+% See also SPINOPSPHERE, SPINPREFSPHERE, SPINSCHEME, SPIN, SPIN2, SPIN3.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -115,26 +115,26 @@ function [uout, tout] = spin2(varargin)
 %  or
 %       SPINOPERATOR.SOLVEPDE(S, N, dt, pref)
 %
-% where S is a SPINOP2 object, N is the number of grid points in each direction, 
-% DT is the time-step and PREF is a SPINPREF2 oject.
+% where S is a SPINOPSPHERE object, N is the number of grid points in each 
+% direction, DT is the time-step and PREF is a SPINPREFSPHERE oject.
 
-if ( nargin == 1 ) % e.g., u = spin2('gl2')
-    try spinop2(varargin{1});
+if ( nargin == 1 ) % e.g., u = spinsphere('gl2')
+    try spinopsphere(varargin{1});
     catch
-        error('Unrecognized PDE. See HELP/SPIN2 for the list of PDEs.')
+        error('Unrecognized PDE. See HELP/SPINSPHERE for the list of PDEs.')
     end
     [S, N, dt, pref] = parseInputs(varargin{1});
     varargin{1} = S;
     varargin{2} = N;
     varargin{3} = dt;
     varargin{4} = pref;
-elseif ( nargin == 3 ) % e.g., u = spin2(S, 128, 1e-1)
+elseif ( nargin == 3 ) % e.g., u = spinsphere(S, 128, 1e-1)
     % Nothing to do here.
-elseif ( nargin == 4 ) % e.g., u = spin2(S, 128, 1e-1, pref)
+elseif ( nargin == 4 ) % e.g., u = spinsphere(S, 128, 1e-1, pref)
     % Nothing to do here.
-elseif ( nargin >= 5 ) % u.g., u = spin2(S, 128, 1e-1, 'plot', 'off')
-    % In this case, put the options in a SPINPREF2 object.
-    pref = spinpref2();
+elseif ( nargin >= 5 ) % u.g., u = spinsphere(S, 128, 1e-1, 'plot', 'off')
+    % In this case, put the options in a SPINPREFSPHERE object.
+    pref = spinprefsphere();
     j = 4;
     while j < nargin
         pref.(varargin{j}) = varargin{j+1};
@@ -146,7 +146,7 @@ elseif ( nargin >= 5 ) % u.g., u = spin2(S, 128, 1e-1, 'plot', 'off')
     varargin = varargin(~cellfun(@isempty, varargin));
 end
 
-% SPIN2 is a wrapper for SOLVPDE:
+% SPINSPHERE is a wrapper for SOLVPDE:
 [uout, tout] = spinoperator.solvepde(varargin{:});
 
 end
@@ -154,21 +154,10 @@ end
 function [S, N, dt, pref] = parseInputs(pdechar)
 %PARSEINPUTS   Parse the inputs.
 
-pref = spinpref2();
-S = spinop2(pdechar);
+pref = spinprefsphere();
+S = spinopsphere(pdechar);
 if ( strcmpi(pdechar, 'GL2') == 1 )
     dt = 2e-1;
-    N = 64;
-elseif ( strcmpi(pdechar, 'GS2') == 1 )
-    dt = 4;
-    pref.iterplot = 8;
-    N = 64;
-elseif ( strcmpi(pdechar, 'Schnak2') == 1 )
-    dt = 5e-1;
-    pref.iterplot = 10;
-    N = 64;
-elseif ( strcmpi(pdechar, 'SH2') == 1 )
-    dt = 1;
     N = 64;
 end
 

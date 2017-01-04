@@ -1,15 +1,15 @@
 classdef spinscheme
-%SPINSCHEME   Class for representing exponential integrators time-stepping 
-%schemes.
-%   SPINSCHEME is a class for representing exponential integrators. It is used 
-%   by SPIN, SPIN2 and SPIN3 when solving PDEs in 1D, 2D and 3D.
+%SPINSCHEME   Class for representing time-stepping schemes.
+%   SPINSCHEME is a class for representing time-stepping schemes, including 
+%   exponential integrators for SPIN, SPIN2 and SPIN3 and IMEX schems for 
+%   SPINSPHERE.
 %
 % Construction: 
 %
 %   K = SPINSCHEME(SCHEME) constructs a SPINSCHEME object corresponding to
-%   the exponential integrator SCHEME. SCHEME is a STRING.
+%   the exponential integrator SCHEME. SCHEME is a (case-insensitive) STRING.
 %
-% Available (case-insensitive) strings are:
+% Available exponential integrators (for SPIN, SPIN2, SPIN3):
 %
 %   ETD ADAMS-BASHFORTH: 'abnorsett4', 'abnorsett5', 'abnorsett6'
 %
@@ -28,7 +28,11 @@ classdef spinscheme
 %   PREDICTOR-CORRECTOR: 'pec423', 'pecec433', 'pec524', 'pecec534', 'pec625',
 %                        'pecec635', 'pec726', 'pecec736'
 %
-% See also SPINSCHEME/COMPUTECOEFFS, SPIN, SPIN2, SPIN3.
+% Available IMEX schemes (for SPINSPHERE):
+%
+%   IMEX RUNGE-KUTTA: 'lirk4'
+%
+% See also SPINSCHEME/COMPUTECOEFFS, SPIN, SPIN2, SPIN3, SPINSPHERE.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -43,6 +47,7 @@ classdef spinscheme
         scheme          % Time-stepping scheme (STRING)
         steps           % number of previous time-steps used, 1 if one-step
                         % method, > 1 if multistep method (1x1 INT)
+        type            % 'expint' or 'imex'
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -56,6 +61,8 @@ classdef spinscheme
                 return
             end
             
+            K.type = 'expint';
+                           
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             % ETD ADAMS-BASHFORTH:
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -64,7 +71,7 @@ classdef spinscheme
                 K.stages = 1;
                 K.steps = 4;
                 K.scheme = schemeName;
-                
+
             elseif ( strcmpi(schemeName, 'abnorsett5') == 1 )
                 K.order = 5;
                 K.stages = 1;
@@ -260,6 +267,16 @@ classdef spinscheme
                 K.steps = 6;
                 K.scheme = schemeName;
                 
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            % IMEX RUNGE-KUTTA:
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            elseif ( strcmpi(schemeName, 'lirk4') == 1 )
+                K.order = 4;
+                K.stages = 5;
+                K.steps = 1;
+                K.scheme = schemeName;
+                K.type = 'imex';
+  
             else
                 error('SPINSCHEME:constructor', 'Unrecognized scheme.')
             end

@@ -1,9 +1,10 @@
 function [uOut, tOut, computingTime] = solvepde(varargin)
-%SOLVEPDE   Solve a PDE defined by a SPINOP, a SPINOP2 or a SPINOP3.
-%   SOLVEPDE is called by SPIN, SPIN2 and SPIN3. It is not called directly by
-%   the user. Appropriate help texts can be found in SPIN, SPIN2 and SPIN3.
+%SOLVEPDE   Solve a PDE defined by a SPINOP, SPINOP2, SPINOP3 or SPINOPSPHERE.
+%   SOLVEPDE is called by SPIN, SPIN2, SPIN3 and SPINSPHERE. It is not called 
+%   directly by the user. Appropriate help texts can be found in SPIN, SPIN2, 
+%   SPIN3 and SPINSPHERE.
 %
-% See also SPIN, SPIN2, SPIN3.
+% See also SPIN, SPIN2, SPIN3, SPINSPHERE.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -42,6 +43,8 @@ if ( isempty(pref) == 1 )
         pref = spinpref2();
     elseif ( dim == 3 )
         pref = spinpref3();
+    elseif ( strcmpi(dim, 'unit sphere') == 1 )
+        pref = spinprefsphere();
     end
 end
 
@@ -53,9 +56,10 @@ tspan = S.tspan;
 % Initial condition U0:
 u0 = S.init;
 if ( isa(u0, 'chebfun') == 1 || isa(u0, 'chebfun2') == 1 || ...
-        isa(u0, 'chebfun3') == 1 )
+        isa(u0, 'chebfun3') == 1 || isa(u0, 'spherefun') == 1 )
     u0 = chebmatrix(u0);
-elseif ( isa(u0, 'chebfun2v') == 1 || isa(u0, 'chebfun3v') == 1 )
+elseif ( isa(u0, 'chebfun2v') == 1 || isa(u0, 'chebfun3v') == 1 || ... 
+        isa(u0, 'spherefunv') == 1 )
     temp = chebmatrix(u0(1));
     for k = 2:size(u0, 1)
         temp(k,1) = u0(k);
@@ -63,18 +67,8 @@ elseif ( isa(u0, 'chebfun2v') == 1 || isa(u0, 'chebfun3v') == 1 )
     u0 = temp;
 end
 
-% Convert initial condition to trigfun:
+% Number of variables:
 nVars = S.numVars;
-for k = 1:nVars
-    if ( dim == 1 )
-        temp = chebfun(u0{k}, 'trig');
-    elseif ( dim == 2 )
-        temp = chebfun2(u0{k}, 'trig');
-    elseif ( dim == 3 )
-        temp = chebfun3(u0{k}, 'trig');
-    end
-    u0(k,1) = temp;
-end
 
 % Space interval DOM and final time TF:
 dom = u0{1}.domain;
@@ -91,13 +85,15 @@ end
 
 % Get the preferences:
 dealias = pref.dealias;   % Use a dealiasing procedure if DEALIAS = 1
-M = pref.M;               % Points for complex means:
 iterplot = pref.iterplot; % plot every ITERPLOT iterations if 'movie'
 plotStyle = pref.plot;    % Plotting options
 
 % Create a time-stepping scheme:
 schemeName = pref.scheme;
 K = spinscheme(schemeName);
+if ( strcmpi(K.type, 'expint') == 1 )
+    M = pref.M;               % Points for complex means
+end
 q = K.steps; % Number of steps of the scheme
 
 % Operators (linear part L, and nonlinear parts Nc and Nv):

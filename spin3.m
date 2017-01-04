@@ -104,7 +104,7 @@ function [uout, tout] = spin3(varargin)
 %   direction, a time-step dt=5e-1, doesn't produce any movie use the
 %   time-stepping scheme PECEC433.
 %
-% See also SPINOP3, SPINPREF3, SPINSCHEME, SPIN, SPIN2.
+% See also SPINOP3, SPINPREF3, SPINSCHEME, SPIN, SPIN2, SPINSPHERE.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -115,8 +115,8 @@ function [uout, tout] = spin3(varargin)
 %  or
 %       SPINOPERATOR.SOLVEPDE(S, N, dt, pref)
 %
-% where S is a SPINOP3 object, N is the number of grid points, DT is the
-% time-step and PREF is a SPINPREF3 oject.
+% where S is a SPINOP3 object, N is the number of grid points in each direction, 
+% DT is the time-step and PREF is a SPINPREF3 oject.
 
 if ( nargin == 1 ) % e.g., u = spin3('gl3')
     try spinop3(varargin{1});

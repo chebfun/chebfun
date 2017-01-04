@@ -54,6 +54,7 @@ classdef spinpref3 < spinpreference
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
         Clim         % Limits of the colorbar (1x2*NVARS DOUBLE)
+        M            % Number of points for complex means (1x1 INT)
         slices       % Slices of the volumetric slice plot (1x3 CELL, slices{1}
                      % is a DOUBLE of positions x corresponding to the slices 
                      % x=cst, same for slices{2} and slices{3} with y and z)
