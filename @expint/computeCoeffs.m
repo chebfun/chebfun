@@ -1,11 +1,11 @@
 function schemeCoeffs = computeCoeffs(K, dt, L, M, S)
-%COMPUTECOEFFS   Compute coefficients of a SPINSCHEME.
+%COMPUTECOEFFS   Compute coefficients of an EXPINT.
 %   SCHEMECOEFFS = COMPUTECOEFFS(K, DT, L, M, S) computes the coefficients
-%   needed by the SPINSCHEME K from the time-step DT, the linear part L, the
+%   needed by the EXPINT K from the time-step DT, the linear part L, the
 %   number of points for complex means M, and the SPINOPERATOR S.
 %
-% See also SPINSCHEME.
-%
+% See also EXPINT.
+
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
@@ -1363,11 +1363,11 @@ schemeCoeffs.V = cellfun(@(V) dt*V, schemeCoeffs.V, 'UniformOutput', 0);
 end
 
 function schemeCoeffs = computeMissingCoeffs(K, schemeCoeffs, phi, psi)
-%COMPUTEMISSINGCOEFFS   Compute the missing oefficients of a SPINSCHEME using
+%COMPUTEMISSINGCOEFFS   Compute the missing oefficients of an EXPINT using
 %the summation properties of the coefficients.
 %   SCHEMECOEFFS = COMPUTEMISSINGCOEFFS(K, SCHEMECOEFFS, PHI, PSI) uses the row
 %   summation properties to compute the SCHEMECOEFFS A{i,1} and B{1} of the
-%   SPINSCHEME K, using and the phi- and psi-functions.
+%   EXPINT K, using and the phi- and psi-functions.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

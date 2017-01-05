@@ -92,7 +92,7 @@ end
 
         % Ginzburg-Landau equation:
         if ( strcmpi(pdechar, 'GL2') == 1 )
-            L = @(u) lap(u);
+            L = @(u) 1e-3*lap(u);
             N = @(u) u - (1 + 1.5i)*u.*(abs(u).^2);
             tspan = [0 100];
             u0 = spherefun.sphharm(8, 2);

@@ -111,7 +111,9 @@ end
 
 % Exponential integrators use contour integrals for computing the phi-functions:
 if ( isa(K, 'expint') == 1 )
-    M = pref.M;                       % Number of points for complex means
+    M = pref.M; % Number of points for complex means
+else
+    M = [];
 end
 
 % Operators: linear part L, and nonlinear parts Nc (in coefficient space) and 
@@ -249,7 +251,7 @@ NcOld = NcInit;
 while ( t < tf )
     
     % One step in time with DT and N points:
-    [cNew, NcNew] = oneStep(K, schemeCoeffs, Nc, Nv, nVars, cOld, NcOld);
+    [cNew, NcNew] = oneStep(K, dt, schemeCoeffs, Nc, Nv, nVars, S, cOld, NcOld);
     if ( any(isnan(cNew{1})) )
         error('The solution blew up. Try a smaller time-step.')
     end
@@ -265,27 +267,28 @@ while ( t < tf )
     
     % Plot every ITERPLOT iterations if using MOVIE:
     if ( strcmpi(plotStyle, 'movie') == 1 && mod(iter,iterplot) == 0 )
-        v = [];
-        for k = 1:nVars
-            idx = (k-1)*N + 1;
-            temp = ifftn(cNew{1}(idx:idx+N-1,:,:));
-            if ( max(abs(imag(temp(:)))) < max(abs(temp(:)))*1e-10 )
-                temp = real(temp);
-            end
-            v = [v; temp];
-        end
-        valuesUpdated = 1;
-        if ( dim == 1 )
-            isLimGiven = ~isempty(pref.Ylim);
-        elseif ( dim == 2 || dim == 3 )
-            isLimGiven = ~isempty(pref.Clim);
-        end
-        if ( isLimGiven == 1 )
-            updateMovie(S, dt, p, opts, t, v, compGrid, plotGrid);
-        else
-            opts = updateMovie(S, dt, p, opts, t, v, compGrid, plotGrid);
-        end
-        
+%         v = [];
+%         for k = 1:nVars
+%             idx = (k-1)*N + 1;
+%             temp = ifftn(cNew{1}(idx:idx+N-1,:,:));
+%             if ( max(abs(imag(temp(:)))) < max(abs(temp(:)))*1e-10 )
+%                 temp = real(temp);
+%             end
+%             v = [v; temp];
+%         end
+%         valuesUpdated = 1;
+%         if ( dim == 1 )
+%             isLimGiven = ~isempty(pref.Ylim);
+%         elseif ( dim == 2 || dim == 3 )
+%             isLimGiven = ~isempty(pref.Clim);
+%         end
+%         if ( isLimGiven == 1 )
+%             updateMovie(S, dt, p, opts, t, v, compGrid, plotGrid);
+%         else
+%             opts = updateMovie(S, dt, p, opts, t, v, compGrid, plotGrid);
+%         end
+        v = c2v(cNew{1});
+        opts = updateMovie(S, dt, p, opts, t, v, compGrid, plotGrid);
     % Store the values every ITERPLOT iterations if using WATERFALL:
     % (Remark: Only in dimension 1.)
     elseif ( strcmpi(plotStyle, 'waterfall') == 1 && mod(iter, iterplot) == 0 )
@@ -366,7 +369,6 @@ elseif ( dim == 2 )
     fun = @chebfun2;
 elseif ( dim == 3 )
     fun = @chebfun3;
-    
     % The data come from MESHGRID, need to permute them because the CHEBFUN3
     % constructor assumes that the data come from NDGRID:
     for l = 1:size(vOut, 2)
@@ -376,7 +378,6 @@ elseif ( dim == 3 )
             vOut{l}(idx:idx+N-1,:,:) = permute(vals, [2 1 3]);
         end
     end
-    
 end
 
 % Output a CHEBFUN/CHEBMATRIX from values VOUT:

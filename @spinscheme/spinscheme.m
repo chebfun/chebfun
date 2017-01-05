@@ -30,7 +30,7 @@ classdef spinscheme
         schemeCoeffs = computeCoeffs(K, dt, L, M, S)
         
         % Do one step of a SPINSCHEME:
-        [uSol, NuSol] = oneStep(K, schemeCoeffs, Nc, Nv, nVars, uSol, NuSol)
+        [uSol, NuSol] = oneStep(K, dt, schemeCoeffs, Nc, Nv, nVars, S, uSol, NuSol)
         
         % Get enough initial data when using a multistep SPINSCHEME:
         [uSol, NuSol] = startMultistep(K, dt, L, Nc, Nv, pref, S, uSol, NuSol)
