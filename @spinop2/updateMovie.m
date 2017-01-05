@@ -13,6 +13,7 @@ yy = compGrid{2};
 N = size(xx, 1) - 1;
 xxx = plotGrid{1};
 yyy = plotGrid{2};
+Nplot = size(xxx, 1) - 1;
 
 for k = 1:nVars
     
@@ -37,7 +38,11 @@ for k = 1:nVars
     end
     
     % Interpolate each variable on a finer grid:
-    vvv = interp2(xx, yy, vv, xxx, yyy, 'spline');
+    if ( Nplot > N )
+        vvv = interp2(xx, yy, vv, xxx, yyy, 'spline');
+    else
+        vvv = vv;
+    end
     
     % Update each variable:
     set(p{k}, 'zdata', vvv)

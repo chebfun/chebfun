@@ -8,9 +8,10 @@ function options = updateMovie(S, dt, p, options, t, v, compGrid, plotGrid)
 nVars = S.numVars;
 Ylim = options{1};
 dataToPlot = options{2};
-xx = compGrid{1};
+xx = compGrid{1}; 
 xxx = plotGrid{1};
 N = size(xx, 1) - 1;
+Nplot = size(xxx, 1) - 1;
 
 for k = 1:nVars
     
@@ -34,7 +35,11 @@ for k = 1:nVars
     end
     
     % Interpolate each variable on a finer grid:
-    vvv = interp1(xx, vv, xxx, 'spline');
+    if ( Nplot > N )
+        vvv = interp1(xx, vv, xxx, 'spline');
+    else
+        vvv = vv;
+    end
     
     % Update each variable:
     set(p{k}, 'ydata', vvv)

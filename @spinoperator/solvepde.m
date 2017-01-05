@@ -233,7 +233,7 @@ if ( strcmpi(plotStyle, 'movie') == 1 )
         plotGrid = getGrid(S, pref.Nplot, dom);
     % Otherwise, use the same grid:
     else
-        plotGrid = dataGrid;
+        plotGrid = compGrid;
     end
     % Add the (periodic) endpoints to the grid:
     compGrid = reshapeGrid(S, compGrid); 

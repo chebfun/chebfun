@@ -12,6 +12,7 @@ dataplot = str2func(pref.dataplot);
 xx = dataGrid{1};
 xxx = plotGrid{1};
 N = size(xx, 1) - 1;
+Nplot = size(xxx, 1) - 1;
 FS = 'fontsize';
 fs = 12;
 
@@ -21,23 +22,27 @@ for k = 1:nVars
     
     % Extract each variable:
     idx = (k-1)*N + 1;
-    vvplot = dataplot(v(idx:idx+N-1));
-    vvplot = [vvplot; vvplot(1)]; %#ok<*AGROW>
+    vv = dataplot(v(idx:idx+N-1));
+    vv = [vv; vv(1)]; %#ok<*AGROW>
     
     % Get the YLIM for the y-axis:
     if ( isempty(pref.Ylim) == 1 )
-        Ylim(2*(k-1) + 1) = min(vvplot) - .1*vscale;
-        Ylim(2*(k-1) + 2) = max(vvplot) + .1*vscale;
+        Ylim(2*(k-1) + 1) = min(vv) - .1*vscale;
+        Ylim(2*(k-1) + 2) = max(vv) + .1*vscale;
     else
         Ylim = pref.Ylim;
     end
     
     % Interpolate each variable on a finer grid:
-    vvvplot = interp1(xx, vvplot, xxx, 'spline');
+    if ( Nplot > N )
+        vvv = interp1(xx, vv, xxx, 'spline');
+    else
+        vvv = vv;
+    end
     
     % Plot each variable:
     subplot(1, nVars, k)
-    p{k} = plot(xxx, vvvplot, 'linewidth', 3);
+    p{k} = plot(xxx, vvv, 'linewidth', 3);
     axis([dom(1), dom(2), Ylim(2*(k-1) + 1), Ylim(2*(k-1) + 2)])
     if ( nVars == 1 )
         xlabel('x'), ylabel('u(t,x)'), grid on

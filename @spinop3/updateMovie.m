@@ -51,7 +51,11 @@ for k = 1:nVars
     end
     
     % Interpolate each variable on a finer grid:
-    vvv = interp3(xx, yy, zz, vv, xxx, yyy, zzz, 'spline'); 
+    if ( Nplot > N )
+        vvv = interp3(xx, yy, zz, vv, xxx, yyy, zzz, 'spline');
+    else
+        vvv = vv;
+    end
     
     % Loop over the surfaces:
     for l = 1:length(p{k})

@@ -20,6 +20,7 @@ yy = dataGrid{2};
 N = size(xx, 1) - 1;
 xxx = plotGrid{1};
 yyy = plotGrid{2};
+Nplot = size(xxx, 1) - 1;
 FS = 'fontsize';
 fs = 12;
 
@@ -42,11 +43,15 @@ for k = 1:nVars
     end
     
     % Interpolate each variable on a finer grid:
-    vvv = interp2(xx, yy, vv, xxx, yyy, 'spline');
+    if ( Nplot > N ) 
+        vvv = interp2(xx, yy, vv, xxx, yyy, 'spline');
+    else
+        vvv = vv;
+    end
     
     % Plot each variable:
     subplot(1, nVars, k)
-    p{k} = surf(xxx, yyy, vvv, 'edgecolor', 'none');
+    p{k} = surf(xxx, yyy, vvv, 'edgecolor', 'none', 'facecolor', 'interp');
     set(p{k}.Parent, 'clim', [Clim(2*(k-1) + 1), Clim(2*(k-1) + 2)])
     axis([dom(1) dom(2) dom(3) dom(4)])
     view(viewSpec(2*(k - 1) + 1 : 2*(k - 1) + 2)), colorbar

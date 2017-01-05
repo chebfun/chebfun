@@ -68,7 +68,7 @@ classdef spinpref2 < spinpreference
                 pref.dealias = 'off';
                 pref.iterplot = 1;
                 pref.M = 32;
-                pref.Nplot = 256;
+                pref.Nplot = 128;
                 pref.plot = 'movie';
                 pref.scheme = 'etdrk4';
             else

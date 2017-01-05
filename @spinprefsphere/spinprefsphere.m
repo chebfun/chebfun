@@ -66,7 +66,7 @@ classdef spinprefsphere < spinpreference
                 pref.dataplot = 'real';
                 pref.dealias = 'off';
                 pref.iterplot = 1;
-                pref.Nplot = 256;
+                pref.Nplot = 128;
                 pref.plot = 'movie';
                 pref.scheme = 'lirk4';
             else
