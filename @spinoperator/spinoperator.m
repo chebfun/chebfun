@@ -214,6 +214,10 @@ classdef spinoperator
         % Returns the transform values -> coeffs:
         F = getVals2CoeffsTransform(S)
 
+        % Returns 1 if the linear part of the SPINOPERATOR is diagonal, 
+        % 0 otherwise:
+        out = isDiag(S)
+        
         % Initialize a movie when solving a PDE specified by a SPINOPERATOR:
         [p, options] = initializeMovie(S, dt, pref, v, dataGrid, plotGrid)
         

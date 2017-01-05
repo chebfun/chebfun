@@ -70,7 +70,7 @@ classdef spinprefsphere < spinpreference
                 pref.plot = 'movie';
                 pref.scheme = 'lirk4';
             else
-                pref = spinpref2();
+                pref = spinprefsphere();
                 for k = 1:nargin/2
                     pref.(varargin{2*(k-1)+1}) = varargin{2*k};
                 end

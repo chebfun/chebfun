@@ -85,14 +85,28 @@ schemeName = pref.scheme;
 K = spinscheme(schemeName);
 q = K.steps;  % Number of steps of the scheme (q>1 for multistep schemes)
 
+% Diagonal SPINOPERATOR objects (1D/2D/3D) use exponential integtrators while
+% nondiagonal SPINOPERATOR objects (sphere) use IMEX schemes. Check we're using
+% the right scheme:
+if ( isDiag(S) == 1 ) % 1D/2D/3D
+    if ( strcmpi(K.type, 'expint') ~= 1 )
+        error(['Use exponential integrators with SPIN/SPIN2/SPIN3. ', ...
+            'See HELP/SPINSCHEME.'])
+    end
+else % sphere
+    if ( strcmpi(K.type, 'imex') ~= 1 )
+        error('Use IMEX schemes with SPINSPHERE. See HELP/SPINSCHEME.')
+    end
+end
+
 % Exponential integrators use contour integrals for computing the phi-functions:
 if ( strcmpi(K.type, 'expint') == 1 )
     M = pref.M;                       % Number of points for complex means
 end
 
 % Operators: linear part L, and nonlinear parts Nc (in coefficient space) and 
-% Nv (in value space). The nonlinear opeartor applied to the Fourier 
-% coefficients is written as 
+% Nv (in value space). The nonlinear opeartor, acting on the Fourier coeffs
+% is written as 
 %           
 %        N(coeffs) = Nc(fft(Nv(ifft(coeffs)))).
 %          
@@ -110,21 +124,22 @@ grid = getGrid(S, N, dom);
 v2c = getVals2CoeffsTransform(S);
 c2v = getCoeffs2ValsTransform(S);
 
-% Get the values VINIT and Fourier coeffs CINIT of the initial condition:
-% In 1D/2D/3D:
-if ( isa(dim, 'double') == 1 )
+% Get the values VINIT and Fourier coeffs CINIT of the initial condition.
+% Also store the nonlinear evaluation of the initial Fourier coefficients 
+% in NCINIT.
+if ( isDiag(S) == 1 ) % the linear part of the operartor is diagonal (1D/2D/3D)
     
-    % Initial values at grid points:
+    % Initial values VINIT:
     vInit = [];
     for k = 1:nVars
-        if ( dim == 1 )
+        if ( dim == 1 ) % 1D
             xx = grid{1};
             vInit = [vInit; feval(u0{k}, xx)]; %#ok<*AGROW>
-        elseif ( dim == 2 )
+        elseif ( dim == 2 ) % 2D 
             xx = grid{1};
             yy = grid{2};
             vInit = [vInit; feval(u0{k}, xx, yy)];
-        elseif ( dim == 3 )
+        elseif ( dim == 3 ) % 3D
             xx = grid{1}; 
             yy = grid{2};
             zz = grid{3};
@@ -132,59 +147,62 @@ if ( isa(dim, 'double') == 1 )
         end
     end
     
-    % Transform to coefficients:
+    % Initial Fourier coefficients CINIT:
     cInit{1} = [];
     for k = 1:nVars
         idx = (k-1)*N + 1;
-        cInit{1} = [cInit{1}; v2c(vInit(idx:idx+N-1,:,:))];
+        cInit{1} = [cInit{1}; v2c(vInit(idx:idx+N-1,:,:))]; 
     end
     
-    % Nonlinear evaluation of the initial condition (in value space):
-    vals = Nv(vInit);
-    
-    % Transform to coefficients:
-    coeffs = v2c(vals(1:N,:,:));
+    % Nonlinear evaluation of the initial Fourier coefficients NCINIT:
+    vals = Nv(vInit);            % apply NV in value space
+    coeffs = v2c(vals(1:N,:,:)); % transform to coefficients
     for k = 1:nVars-1
         idx = k*N + 1;
         coeffs = [coeffs; v2c(vals(idx:idx+N-1,:,:))];
     end
-    coeffs = Nc.*coeffs;
+    coeffs = Nc.*coeffs;         % apply NC in coefficient space
     NcInit{1} = coeffs;
     
-% On the sphere:
-else
+else % the linear part of the operartor is not diagonal (sphere)
     
-    % Get the coefficients:
-    cInit{1} = coeffs2(u0{1});
-    for k = 2:nVars
-        cInit{1} = [cInit{1}; coeffs2(u0{k});];
+    if ( strcmpi(dim, 'unit sphere') == 1 ) % sphere
+        
+        % Initial Fourier coefficients CINIT:
+        cInit{1} = reshape(coeffs2(u0{1}, N, N), N*N, 1);
+        for k = 2:nVars
+            cInit{1} = [cInit{1}; reshape(coeffs2(u0{k}, N, N), N*N, 1);];
+        end
+        
+        % Initial values VINIT:
+        vInit = c2v(cInit{1}(1:N^2));
+        for k = 1:nVars-1
+            idx = k*N^2 + 1;
+            vInit = [vInit; c2v(cInit{1}(idx:idx+N^2-1))];
+        end
+        
+        % Nonlinear evaluation of the initial Fourier coefficients NCINIT:
+        vals = Nv(vInit);           % apply NV in value space
+        coeffs = v2c(vals(1:N,:));  % transform to coefficients
+        for k = 1:nVars-1
+            idx = k*N + 1;
+            coeffs = [coeffs; v2c(vals(idx:idx+N-1,:))];
+        end
+        coeffs = Nc*coeffs;         % apply NC in coefficient space
+        NcInit{1} = coeffs;
     end
-    
-    % Transform to values:
-    vInit = c2v(cInit{1}(1:N^2));
-    for k = 1:nVars-1
-        idx = k*N^2 + 1;
-        vInit = [vInit; c2v(cInit{1}(idx:idx+N^2-1))];
-    end
-    
-    % Nonlinear evaluation of the initial condition (in value space):
-    vals = Nv(vInit);
-    
-    % Transform to coefficients:
-    coeffs = v2c(vals(1:N^2));
-    for k = 1:nVars-1
-        idx = k*N^2 + 1;
-        coeffs = [coeffs; v2c(cInit{1}(idx:idx+N^2-1))];
-    end
-    coeffs = Nc*coeffs;
-    NcInit{1} = coeffs;
 end
 
 % Get enough initial data when using a multistep scheme:
 if ( q > 1 )
-    [cInit, NcInit] = startMultistep(K, dt, L, Nc, Nv, pref, S, cInit, NcInit);
+    if ( strcmpi(K.type, 'expint') == 1 ) % exponential integrators
+        [cInit, NcInit] = startMultistep(K, dt, L, Nc, Nv, pref, S, cInit, ...
+            NcInit);
+    else % imex
+        % [TODO]: Implement multistep IMEX schemes.
+        error('Multistep IMEX schemes are not supported.')
+    end
 end
-% [TODO]: Implement the above for IMEX schemes.
 
 % Compute the coefficients of the scheme for the exponential integrators:
 if ( strcmpi(K.type, 'expint') == 1 )
