@@ -117,8 +117,8 @@ end
 [L, Nc] = discretize(S, N);
 Nv = S.nonlinearPartVals;
 
-% Set-up spatial grid:
-grid = getGrid(S, N, dom);
+% Set-up spatial grid for computation:
+compGrid = getGrid(S, N, dom);
 
 % Get the values to coeffs and coeffs to values transform:
 v2c = getVals2CoeffsTransform(S);
@@ -133,16 +133,16 @@ if ( isDiag(S) == 1 ) % the linear part of the operartor is diagonal (1D/2D/3D)
     vInit = [];
     for k = 1:nVars
         if ( dim == 1 ) % 1D
-            xx = grid{1};
+            xx = compGrid{1};
             vInit = [vInit; feval(u0{k}, xx)]; %#ok<*AGROW>
         elseif ( dim == 2 ) % 2D 
-            xx = grid{1};
-            yy = grid{2};
+            xx = compGrid{1};
+            yy = compGrid{2};
             vInit = [vInit; feval(u0{k}, xx, yy)];
         elseif ( dim == 3 ) % 3D
-            xx = grid{1}; 
-            yy = grid{2};
-            zz = grid{3};
+            xx = compGrid{1}; 
+            yy = compGrid{2};
+            zz = compGrid{3};
             vInit = [vInit; feval(u0{k}, xx, yy, zz)];
         end
     end
@@ -204,26 +204,16 @@ if ( q > 1 )
     end
 end
 
-% Compute the coefficients of the scheme for the exponential integrators:
+% Compute the coefficients of the exponential integrators (phi-functions):
 if ( strcmpi(K.type, 'expint') == 1 )
     schemeCoeffs = computeCoeffs(K, dt, L, M, S);
+% Nothing to do for IMEX schemes:
 else
     schemeCoeffs = [];
 end
 
 % Indexes for dealiasing:
-toOne = floor(N/2) + 1 - ceil(N/6):floor(N/2) + ceil(N/6);
-if ( dim == 1 )
-    ind = false(N, 1);
-    ind(toOne) = 1;
-elseif ( dim == 2 )
-    ind = false(N, N);
-    ind(toOne, toOne) = 1;
-elseif ( dim == 3 )
-    ind = false(N, N, N);
-    ind(toOne, toOne, toOne) = 1;
-end
-ind = repmat(ind, nVars, 1);
+ind = getDealiasingIndexes(S, N, nVars);
 
 % Values VOUT and times TOUT to output:
 vOut{1} = vInit;
@@ -237,27 +227,18 @@ end
 
 % Create grids for plotting, and plot initial condition if using MOVIE:
 if ( strcmpi(plotStyle, 'movie') == 1 )
-    Nplot = max(N, pref.Nplot);
-    if ( dim == 1 )
-        computationGrid = {xx};
-        plottingGrid = {trigpts(Nplot, dom)};
-    elseif ( dim == 2 || strcmpi(dim, 'unit sphere') == 1 )
-        computationGrid = {xx; yy};
-        ttx = trigpts(Nplot, dom(1:2));
-        tty = trigpts(Nplot, dom(3:4));
-        [xxx, yyy] = meshgrid(ttx, tty);
-        plottingGrid = {xxx; yyy};
-    elseif ( dim == 3 );
-        computationGrid = {xx; yy; zz};
-        ttx = trigpts(Nplot, dom(1:2));
-        tty = trigpts(Nplot, dom(3:4));
-        ttz = trigpts(Nplot, dom(5:6));
-        [xxx, yyy, zzz] = meshgrid(ttx, tty, ttz);
-        plottingGrid = {xxx; yyy; zzz};
+    % NPLOT is the number of grid points for the finer grid used for plotting
+    % data. If NPLOT > N, create a finer grid:
+    if ( pref.Nplot > N )
+        plotGrid = getGrid(S, pref.Nplot, dom);
+    % Otherwise, use the same grid:
+    else
+        plotGrid = dataGrid;
     end
-    computationGrid = reshapeGrid(S, computationGrid); 
-    plottingGrid = reshapeGrid(S, plottingGrid); 
-    [p, options] = initializeMovie(S, dt, pref, vInit, computationGrid, plottingGrid);
+    % Add the (periodic) endpoints to the grid:
+    compGrid = reshapeGrid(S, compGrid); 
+    plotGrid = reshapeGrid(S, plotGrid); 
+    [p, opts] = initializeMovie(S, dt, pref, vInit, compGrid, plotGrid);
 end
 
 %% Time-stepping loop:
@@ -304,9 +285,9 @@ while ( t < tf )
             isLimGiven = ~isempty(pref.Clim);
         end
         if ( isLimGiven == 1 )
-            plotMovie(S, dt, p, options, t, v, computationGrid, plottingGrid);
+            updateMovie(S, dt, p, opts, t, v, compGrid, plotGrid);
         else
-            options = plotMovie(S, dt, p, options, t, v, computationGrid, plottingGrid);
+            opts = updateMovie(S, dt, p, opts, t, v, compGrid, plotGrid);
         end
         
     % Store the values every ITERPLOT iterations if using WATERFALL:
@@ -354,7 +335,7 @@ computingTime = toc;
 
 % Make sure that the solution at TF has been plotted if using MOVIE:
 if ( strcmpi(plotStyle, 'movie') == 1 )
-    plotMovie(S, dt, p, options, t, v, computationGrid, plottingGrid);
+    updateMovie(S, dt, p, opts, t, v, compGrid, plotGrid);
     set(gcf, 'NextPlot', 'replace')
 end
 

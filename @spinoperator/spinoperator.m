@@ -199,6 +199,9 @@ classdef spinoperator
         % Discretize a SPINOPERATOR:
         [L, Nc] = discretize(S, N)
 
+        % Returns indexes for dealiasing procedure (2/3-rule):
+        idx = getDealiasingIndexes(S, N, nVars)
+        
         % Returns the transform coeffs -> values:
         F = getCoeffs2ValsTransform(S)
 
@@ -219,10 +222,10 @@ classdef spinoperator
         out = isDiag(S)
         
         % Initialize a movie when solving a PDE specified by a SPINOPERATOR:
-        [p, options] = initializeMovie(S, dt, pref, v, dataGrid, plotGrid)
+        [p, opts] = initializeMovie(S, dt, pref, v, compGrid, plotGrid)
         
-        % Plot a movie when solving a PDE specified by a SPINOPERATOR:
-        options = plotMovie(S, dt, p, options, t, v, dataGrid, plotGrid)
+        % Update the movie when solving a PDE specified by a SPINOPERATOR:
+        opts = updateMovie(S, dt, p, options, t, v, compGrid, plotGrid)
         
         % Add the (repeated) endpoints to a periodic grid:
         grid = reshapeGrid(S, grid)

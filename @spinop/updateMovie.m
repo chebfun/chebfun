@@ -1,5 +1,5 @@
-function options = plotMovie(S, dt, p, options, t, v, dataGrid, plotGrid)
-%PLOTMOVIE   Plot a movie when solving a PDE specified by a SPINOP.
+function options = updateMovie(S, dt, p, options, t, v, compGrid, plotGrid)
+%UPDATEMOVIE   Update the movie when solving a PDE specified by a SPINOP.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -8,7 +8,7 @@ function options = plotMovie(S, dt, p, options, t, v, dataGrid, plotGrid)
 nVars = S.numVars;
 Ylim = options{1};
 dataToPlot = options{2};
-xx = dataGrid{1};
+xx = compGrid{1};
 xxx = plotGrid{1};
 N = size(xx, 1) - 1;
 
