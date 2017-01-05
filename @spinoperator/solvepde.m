@@ -82,25 +82,35 @@ plotStyle = pref.plot;    % Plotting options
 
 % Create a time-stepping scheme:
 schemeName = pref.scheme;
-K = spinscheme(schemeName);
+K = [];
+try K = expint(schemeName);
+catch
+end
+try K = imex(schemeName);
+catch
+end
+if ( isempty(K) == 1 )
+    error(['Unrecognized time-stepping scheme. See HELP/EXPINT and ', ...
+        'HELP/IMEX for a list of available schemes.'])
+end
 q = K.steps;  % Number of steps of the scheme (q>1 for multistep schemes)
 
 % Diagonal SPINOPERATOR objects (1D/2D/3D) use exponential integtrators while
 % nondiagonal SPINOPERATOR objects (sphere) use IMEX schemes. Check we're using
 % the right scheme:
 if ( isDiag(S) == 1 ) % 1D/2D/3D
-    if ( strcmpi(K.type, 'expint') ~= 1 )
+    if ( isa(K, 'expint') ~= 1 )
         error(['Use exponential integrators with SPIN/SPIN2/SPIN3. ', ...
-            'See HELP/SPINSCHEME.'])
+            'See HELP/EXPINT.'])
     end
 else % sphere
-    if ( strcmpi(K.type, 'imex') ~= 1 )
-        error('Use IMEX schemes with SPINSPHERE. See HELP/SPINSCHEME.')
+    if ( isa(K, 'imex') ~= 1 )
+        error('Use IMEX schemes with SPINSPHERE. See HELP/IMEX.')
     end
 end
 
 % Exponential integrators use contour integrals for computing the phi-functions:
-if ( strcmpi(K.type, 'expint') == 1 )
+if ( isa(K, 'expint') == 1 )
     M = pref.M;                       % Number of points for complex means
 end
 
@@ -192,22 +202,11 @@ end
 
 % Get enough initial data when using a multistep scheme:
 if ( q > 1 )
-    if ( strcmpi(K.type, 'expint') == 1 ) % exponential integrators
-        [cInit, NcInit] = startMultistep(K, dt, L, Nc, Nv, pref, S, cInit, ...
-            NcInit);
-    else % imex
-        % [TODO]: Implement multistep IMEX schemes.
-        error('Multistep IMEX schemes are not supported.')
-    end
+    [cInit, NcInit] = startMultistep(K, dt, L, Nc, Nv, pref, S, cInit, NcInit);
 end
 
 % Compute the coefficients of the exponential integrators (phi-functions):
-if ( strcmpi(K.type, 'expint') == 1 )
-    schemeCoeffs = computeCoeffs(K, dt, L, M, S);
-% Nothing to do for IMEX schemes:
-else
-    schemeCoeffs = [];
-end
+schemeCoeffs = computeCoeffs(K, dt, L, M, S);
 
 % Indexes for dealiasing:
 ind = getDealiasingIndexes(S, N, nVars);
