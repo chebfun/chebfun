@@ -1,4 +1,4 @@
-function F = getVals2CoeffsTransform(S)
+function F = getVals2CoeffsTransform(~)
 %GETVALS2COEFFSTRANSFORM   Returns the FFT in 1D.
 %
 % See also SPINOP.

@@ -1,4 +1,4 @@
-function dim = getDimension(S)
+function dim = getDimension(~)
 %GETDIMENSION   Returns 'UNIT SPHERE' for a SPINOPSPHERE.
 %
 % See also SPINOPSPHERE.

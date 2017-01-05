@@ -1,4 +1,4 @@
-function F = getCoeffs2ValsTransform(S)
+function F = getCoeffs2ValsTransform(~)
 %GETCOEFFS2VALSTRANSFORM   Returns the IFFTN in 3D.
 %
 % See also SPINOP3.

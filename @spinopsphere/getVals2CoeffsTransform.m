@@ -1,4 +1,4 @@
-function F = getVals2CoeffsTransform(S)
+function F = getVals2CoeffsTransform(~)
 %GETVALS2COEFFSTRANSFORM   Returns the values to coeffs transform on the sphere.
 %
 % See also SPINOPSPHERE.

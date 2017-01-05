@@ -37,15 +37,7 @@ dim = getDimension(S);
 
 % Create a SPINPREFERENCE object if none:
 if ( isempty(pref) == 1 )
-    if ( dim == 1 )
-        pref = spinpref();
-    elseif ( dim == 2 )
-        pref = spinpref2();
-    elseif ( dim == 3 )
-        pref = spinpref3();
-    elseif ( strcmpi(dim, 'unit sphere') == 1 )
-        pref = spinprefsphere();
-    end
+    pref = getPreference(S);
 end
 
 %% Pre-processing:
@@ -91,31 +83,34 @@ plotStyle = pref.plot;    % Plotting options
 % Create a time-stepping scheme:
 schemeName = pref.scheme;
 K = spinscheme(schemeName);
-if ( strcmpi(K.type, 'expint') == 1 )
-    M = pref.M;               % Points for complex means
-end
-q = K.steps; % Number of steps of the scheme
+q = K.steps;  % Number of steps of the scheme (q>1 for multistep schemes)
 
-% Operators (linear part L, and nonlinear parts Nc and Nv):
+% Exponential integrators use contour integrals for computing the phi-functions:
+if ( strcmpi(K.type, 'expint') == 1 )
+    M = pref.M;                       % Number of points for complex means
+end
+
+% Operators: linear part L, and nonlinear parts Nc (in coefficient space) and 
+% Nv (in value space). The nonlinear opeartor applied to the Fourier 
+% coefficients is written as 
+%           
+%        N(coeffs) = Nc(fft(Nv(ifft(coeffs)))).
+%          
+% For example, for u_t = Lu + (u^2)_x,
+%
+%        N(coeffs) = 1i*fft(ifft(coeffs)^2) with Nv(u) = u^2 and Nc(u) = 1i*u.
+%
 [L, Nc] = discretize(S, N);
 Nv = S.nonlinearPartVals;
 
-% Set-up spatial grid, and initial condition (values VINIT and Fourier coeffs
-% CINIT):
-xx = trigpts(N, dom(1:2));
-if ( dim == 2 || strcmpi(dim, 'unit sphere') == 1 )
-    yy = trigpts(N, dom(3:4));
-    [xx, yy] = meshgrid(xx, yy);
-elseif ( dim == 3 )
-    yy = trigpts(N, dom(3:4));
-    zz = trigpts(N, dom(5:6));
-    [xx, yy, zz] = meshgrid(xx, yy, zz);
-end
+% Set-up spatial grid:
+grid = getGrid(S, N, dom);
 
 % Get the values to coeffs and coeffs to values transform:
 v2c = getVals2CoeffsTransform(S);
 c2v = getCoeffs2ValsTransform(S);
 
+% Get the values VINIT and Fourier coeffs CINIT of the initial condition:
 % In 1D/2D/3D:
 if ( isa(dim, 'double') == 1 )
     
@@ -123,10 +118,16 @@ if ( isa(dim, 'double') == 1 )
     vInit = [];
     for k = 1:nVars
         if ( dim == 1 )
+            xx = grid{1};
             vInit = [vInit; feval(u0{k}, xx)]; %#ok<*AGROW>
         elseif ( dim == 2 )
+            xx = grid{1};
+            yy = grid{2};
             vInit = [vInit; feval(u0{k}, xx, yy)];
         elseif ( dim == 3 )
+            xx = grid{1}; 
+            yy = grid{2};
+            zz = grid{3};
             vInit = [vInit; feval(u0{k}, xx, yy, zz)];
         end
     end
@@ -220,25 +221,25 @@ end
 if ( strcmpi(plotStyle, 'movie') == 1 )
     Nplot = max(N, pref.Nplot);
     if ( dim == 1 )
-        dataGrid = {xx};
-        plotGrid = {trigpts(Nplot, dom)};
+        computationGrid = {xx};
+        plottingGrid = {trigpts(Nplot, dom)};
     elseif ( dim == 2 || strcmpi(dim, 'unit sphere') == 1 )
-        dataGrid = {xx; yy};
+        computationGrid = {xx; yy};
         ttx = trigpts(Nplot, dom(1:2));
         tty = trigpts(Nplot, dom(3:4));
         [xxx, yyy] = meshgrid(ttx, tty);
-        plotGrid = {xxx; yyy};
+        plottingGrid = {xxx; yyy};
     elseif ( dim == 3 );
-        dataGrid = {xx; yy; zz};
+        computationGrid = {xx; yy; zz};
         ttx = trigpts(Nplot, dom(1:2));
         tty = trigpts(Nplot, dom(3:4));
         ttz = trigpts(Nplot, dom(5:6));
         [xxx, yyy, zzz] = meshgrid(ttx, tty, ttz);
-        plotGrid = {xxx; yyy; zzz};
+        plottingGrid = {xxx; yyy; zzz};
     end
-    dataGrid = reshapeGrid(S, dataGrid);
-    plotGrid = reshapeGrid(S, plotGrid);
-    [p, options] = initializeMovie(S, dt, pref, vInit, dataGrid, plotGrid);
+    computationGrid = reshapeGrid(S, computationGrid); 
+    plottingGrid = reshapeGrid(S, plottingGrid); 
+    [p, options] = initializeMovie(S, dt, pref, vInit, computationGrid, plottingGrid);
 end
 
 %% Time-stepping loop:
@@ -285,9 +286,9 @@ while ( t < tf )
             isLimGiven = ~isempty(pref.Clim);
         end
         if ( isLimGiven == 1 )
-            plotMovie(S, dt, p, options, t, v, dataGrid, plotGrid);
+            plotMovie(S, dt, p, options, t, v, computationGrid, plottingGrid);
         else
-            options = plotMovie(S, dt, p, options, t, v, dataGrid, plotGrid);
+            options = plotMovie(S, dt, p, options, t, v, computationGrid, plottingGrid);
         end
         
     % Store the values every ITERPLOT iterations if using WATERFALL:
@@ -335,7 +336,7 @@ computingTime = toc;
 
 % Make sure that the solution at TF has been plotted if using MOVIE:
 if ( strcmpi(plotStyle, 'movie') == 1 )
-    plotMovie(S, dt, p, options, t, v, dataGrid, plotGrid);
+    plotMovie(S, dt, p, options, t, v, computationGrid, plottingGrid);
     set(gcf, 'NextPlot', 'replace')
 end
 

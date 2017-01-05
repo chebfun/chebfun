@@ -202,9 +202,14 @@ classdef spinoperator
         % Returns the transform coeffs -> values:
         F = getCoeffs2ValsTransform(S)
 
-        % Returns the spatial dimension (1 for SPINOP, 2 for SPINOP2, 3 for 
-        % SPINOP3 and 'unit sphere' for SPINOPSPHERE):
+        % Returns a grid correspoding to a SPINOPRERATOR object:
+        grid = getGrid(S, N, dom)
+        
+        % Returns the spatial dimension:
         dim = getDimension(S)
+        
+        % Returns the adequate SPINPREFERENCE object:
+        pref = getPreference(S)
         
         % Returns the transform values -> coeffs:
         F = getVals2CoeffsTransform(S)

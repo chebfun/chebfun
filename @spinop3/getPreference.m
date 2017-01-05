@@ -1,11 +1,11 @@
-function F = getVals2CoeffsTransform(~)
-%GETVALS2COEFFSTRANSFORM   Returns the FFTN in 3D.
+function pref = getPreference(~)
+%GETPREFERENCE  Returns a SPINPREF3 object for a SPINOP3.
 %
-% See also SPINOP3.
+% See also SPINPREF3.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-F = @(u) fftn(u);
+pref = spinpref3();
     
 end
