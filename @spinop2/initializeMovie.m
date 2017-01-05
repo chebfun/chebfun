@@ -1,4 +1,4 @@
-function [p, options] = initializeMovie(S, dt, pref, v, dataGrid, plotGrid)
+function [p, options] = initializeMovie(S, dt, pref, v, compGrid, plotGrid)
 %INITIALIZEMOVIE   Initialize a movie when solving a PDE specified by a SPINOP2.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
@@ -15,8 +15,8 @@ defaultView = defaultPref.view;
 while ( length(viewSpec) < 2*nVars )
     viewSpec = [viewSpec, defaultView];
 end
-xx = dataGrid{1};
-yy = dataGrid{2};
+xx = compGrid{1};
+yy = compGrid{2};
 N = size(xx, 1) - 1;
 xxx = plotGrid{1};
 yyy = plotGrid{2};

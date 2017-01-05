@@ -166,31 +166,28 @@ if ( isDiag(S) == 1 ) % the linear part of the operartor is diagonal (1D/2D/3D)
     
 else % the linear part of the operartor is not diagonal (sphere)
     
-    if ( strcmpi(dim, 'unit sphere') == 1 ) % sphere
-        
-        % Initial Fourier coefficients CINIT:
-        cInit{1} = reshape(coeffs2(u0{1}, N, N), N*N, 1);
-        for k = 2:nVars
-            cInit{1} = [cInit{1}; reshape(coeffs2(u0{k}, N, N), N*N, 1);];
-        end
-        
-        % Initial values VINIT:
-        vInit = c2v(cInit{1}(1:N^2));
-        for k = 1:nVars-1
-            idx = k*N^2 + 1;
-            vInit = [vInit; c2v(cInit{1}(idx:idx+N^2-1))];
-        end
-        
-        % Nonlinear evaluation of the initial Fourier coefficients NCINIT:
-        vals = Nv(vInit);           % apply NV in value space
-        coeffs = v2c(vals(1:N,:));  % transform to coefficients
-        for k = 1:nVars-1
-            idx = k*N + 1;
-            coeffs = [coeffs; v2c(vals(idx:idx+N-1,:))];
-        end
-        coeffs = Nc*coeffs;         % apply NC in coefficient space
-        NcInit{1} = coeffs;
+    % Initial Fourier coefficients CINIT:
+    cInit{1} = reshape(coeffs2(u0{1}, N, N), N*N, 1);
+    for k = 2:nVars
+        cInit{1} = [cInit{1}; reshape(coeffs2(u0{k}, N, N), N*N, 1);];
     end
+    
+    % Initial values VINIT:
+    vInit = c2v(cInit{1}(1:N^2));
+    for k = 1:nVars-1
+        idx = k*N^2 + 1;
+        vInit = [vInit; c2v(cInit{1}(idx:idx+N^2-1))];
+    end
+    
+    % Nonlinear evaluation of the initial Fourier coefficients NCINIT:
+    vals = Nv(vInit);           % apply NV in value space
+    coeffs = v2c(vals(1:N,:));  % transform to coefficients
+    for k = 1:nVars-1
+        idx = k*N + 1;
+        coeffs = [coeffs; v2c(vals(idx:idx+N-1,:))];
+    end
+    coeffs = Nc*coeffs;         % apply NC in coefficient space
+    NcInit{1} = coeffs;
 end
 
 % Get enough initial data when using a multistep scheme:
