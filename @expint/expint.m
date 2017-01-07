@@ -27,7 +27,7 @@ classdef expint < spinscheme
 %   PREDICTOR-CORRECTOR: 'pec423', 'pecec433', 'pec524', 'pecec534', 'pec625',
 %                        'pecec635', 'pec726', 'pecec736'
 %
-% See also SPIN, SPIN2, SPIN3.
+% See also SPIN, SPIN2, SPIN3, IMEX.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

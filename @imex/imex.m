@@ -12,7 +12,7 @@ classdef imex < spinscheme
 %
 %   IMEX RUNGE-KUTTA: 'lirk4'
 %
-% See also SPINSPHERE.
+% See also SPINSPHERE, EXPINT.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

@@ -9,6 +9,31 @@ function schemeCoeffs = computeCoeffs(K, dt, L, M, S)
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Note (1): At the end of the method the coefficients will be stored in 
+% SCHEMECOEFFS, a STRUCT object with the following fields:
+%
+% SCHEMECOEFFS.A -> sxs CELL-ARRAY that stores the coefficients A, functions of 
+%                   the phi-functions
+% SCHEMECOEFFS.B -> sx1 CELL-ARRAY that stores the coefficients B, functions of
+%                   the phi-functions
+% SCHEMECOEFFS.C -> sx1 CELL-ARRAY that stores the numbers C
+% SCHEMECOEFFS.E -> (s+1)x1 CELL-ARRAY that stores the s matrix exponentials
+%                    e^{C(i)*dt*L}, i=1,..,s, and e^{*dt*L}
+% SCHEMECOEFFS.U -> sx(q-1) CELL-ARRAY that stores the coefficients U, functions 
+%                   of the phi-functions
+% SCHEMECOEFFS.V -> (q-1)x1 CELL-ARRAY that stores the coefficients V, functions 
+%                   of the phi-functions
+%
+% where s is the number of number of internal stages and q is number of steps 
+% (>1 for multistep methods). For informations about what these coefficients
+% are, see [1].
+%
+% [1] H. Montanelli and N. Bootland, Solving periodic semilinear stiff PDEs in 
+% 1D/2D/3D with exponential integrators, submitted (2016). 
+
+% Note (2): EXPINT schemes are used for solving PDEs with diagonal linear 
+% operators, e.g., periodic PDEs in 1D/2D/3D with SPIN/SPIN2/SPIN3.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % PRE-PROCESSING:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -21,7 +46,7 @@ nVars = S.numVars;     % number of unknown functions
 schemeName = K.scheme; % scheme
 N = size(L, 1)/nVars;  % grid points
 
-% Coefficients of the scheme:
+% Initialize the coefficients of the scheme:
 A = cell(s);
 B = cell(s, 1);
 C = zeros(s, 1);

@@ -18,39 +18,42 @@ function [uSol, NuSol] = oneStep(~, dt, schemeCoeffs, gc, gv, ~, S, uSol, NuSol)
 % shifted from a position to the right, i.e., USOL{2}=USOL{1}, USOL{3}=USOL{2}, 
 % ..., USOL{Q}=USOL{Q-1}. Same for NUSOL. 
 
-% Note (2): For the moment, we only support the LIRK4 scheme.
+% Note (2): For the moment, we only support the (one-step) LIRK4 scheme and 
+% PDEs with linear part = Laplacian.
 
 % Get the values to coeffs and coeffs to values transform:
 v2c = getVals2CoeffsTransform(S);
 c2v = getCoeffs2ValsTransform(S);
 
-% Coefficients of the scheme:
-Tsin2 = schemeCoeffs.multmat;
-Lap = schemeCoeffs.L;
-L = schemeCoeffs.LU{1, 1};
-U = schemeCoeffs.LU{2, 1};
-La = schemeCoeffs.LU{1, 2};
-Ua = schemeCoeffs.LU{2, 2};
+% Extract the coefficients of the scheme:
+P = schemeCoeffs.precond;
+Lap = schemeCoeffs.linmat;
+L = schemeCoeffs.lufactors{1, 1};
+U = schemeCoeffs.lufactors{2, 1};
+La = schemeCoeffs.lufactors{1, 2};
+Ua = schemeCoeffs.lufactors{2, 2};
   
+% The values and the nonlinear evaluations are stored in USOL and NUSOL:
 v = uSol{1};
 Nv = NuSol{1};
 
-w = Tsin2*v;
-wa = w + dt*Tsin2*1/4*Nv;
+% One step of LIRK4:
+w = P*v;
+wa = w + dt*P*1/4*Nv;
 a = Ua\(La\wa); 
 Na = gc*v2c(gv(c2v(a)));
-wb = w + dt*Lap*1/2*a + dt*Tsin2*(-1/4*Nv + Na);
+wb = w + dt*Lap*1/2*a + dt*P*(-1/4*Nv + Na);
 b = Ua\(La\wb); 
 Nb = gc*v2c(gv(c2v(b)));
-wc = w + dt*Lap*(17/50*a - 1/25*b) + dt*Tsin2*(-13/100*Nv + 43/75*Na + 8/75*Nb);
+wc = w + dt*Lap*(17/50*a - 1/25*b) + dt*P*(-13/100*Nv + 43/75*Na + 8/75*Nb);
 c = Ua\(La\wc); 
 Nc = gc*v2c(gv(c2v(c)));
 wd = w + dt*Lap*(371/1360*a - 137/2720*b + 15/544*c) ...
-    + dt*Tsin2*(-6/85*Nv + 42/85*Na + 179/1360*Nb - 15/272*Nc);
+    + dt*P*(-6/85*Nv + 42/85*Na + 179/1360*Nb - 15/272*Nc);
 d = Ua\(La\wd); 
 Nd = gc*v2c(gv(c2v(d)));
 we = w + dt*Lap*(25/24*a - 49/48*b + 125/16*c - 85/12*d) ...
-    + dt*Tsin2*(79/24*Na - 5/8*Nb + 25/2*Nc - 85/6*Nd);
+    + dt*P*(79/24*Na - 5/8*Nb + 25/2*Nc - 85/6*Nd);
 e = Ua\(La\we); 
 Ne = gc*v2c(gv(c2v(e)));
 v = v + dt*(U\(L\(Lap*(25/24*a - 49/48*b + 125/16*c - 85/12*d + 1/4*e)))) ...
