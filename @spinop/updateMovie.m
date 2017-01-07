@@ -1,4 +1,4 @@
-function options = updateMovie(S, dt, p, options, t, v, compGrid, plotGrid)
+function opts = updateMovie(S, dt, p, opts, t, v, compGrid, plotGrid)
 %UPDATEMOVIE   Update the movie when solving a PDE specified by a SPINOP.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
@@ -6,8 +6,8 @@ function options = updateMovie(S, dt, p, options, t, v, compGrid, plotGrid)
 
 % Set-up:
 nVars = S.numVars;
-Ylim = options{1};
-dataToPlot = options{2};
+Ylim = opts{1};
+dataToPlot = opts{2};
 xx = compGrid{1}; 
 xxx = plotGrid{1};
 N = size(xx, 1) - 1;
@@ -54,6 +54,6 @@ titleString = sprintf('N = %i (DoFs = %i), dt = %1.1e, t = %.4f', N, ...
 set(p{nVars + 1}, 'String', titleString)
 
 % Update outputs:
-options{1} = Ylim;
+opts{1} = Ylim;
 
 end

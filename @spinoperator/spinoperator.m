@@ -80,12 +80,9 @@ classdef spinoperator
             % Get the number of variables NVARS:
             nVars = nargin(N);
             
-            % Get the dimension DIM:
-            dim = getDimension(S);
-            
             % For scalar equations in 1D, we support nonlinearities of the form
             % diff(f(u),m) with m>=0:
-            if ( dim == 1 && nVars == 1 )
+            if ( isa(S, 'spinop') == 1 && nVars == 1 )
                 
                 % Compute the differentiation order to get NC=diff(u,m):
                 diffOrderTwoOrGreater = regexp(strN, ',\d*', 'match');
@@ -142,12 +139,9 @@ classdef spinoperator
             % Get the number of variables NVARS:
             nVars = nargin(N);
             
-            % Get the dimension DIM:
-            dim = getDimension(S);
-            
             % For scalar equations in 1D, we support nonlinearities of the form
             % diff(f(u),m) with m>=0:
-            if ( isa(dim, 'double') == 1 && dim == 1 && nVars == 1 )
+            if ( isa(S, 'spinop') == 1 && nVars == 1 )
                 
                 % Get rid of the differentiation part in STRN to get NV=f(u):
                 oldString = {'diff', ',\d*)'};
@@ -202,14 +196,17 @@ classdef spinoperator
         % Returns indexes for dealiasing procedure (2/3-rule):
         idx = getDealiasingIndexes(S, N, nVars)
         
+        % Returns the type of CHEBFUN on which the SPINOPERATOR acts:
+        out = getChebfunType(S)
+        
         % Returns the transform coeffs -> values:
         F = getCoeffs2ValsTransform(S)
-
-        % Returns a grid correspoding to a SPINOPRERATOR object:
-        grid = getGrid(S, N, dom)
         
         % Returns the spatial dimension:
         dim = getDimension(S)
+        
+        % Returns a grid correspoding to a SPINOPRERATOR object:
+        grid = getGrid(S, N, dom)
         
         % Returns the adequate SPINPREFERENCE object:
         pref = getPreference(S)

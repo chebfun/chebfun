@@ -1,4 +1,4 @@
-function options = updateMovie(S, dt, p, options, t, v, compGrid, plotGrid)
+function opts = updateMovie(S, dt, p, opts, t, v, compGrid, plotGrid)
 %UPDATEMOVIE   Update the movie when solving a PDE specified by a SPINOP3.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
@@ -7,8 +7,8 @@ function options = updateMovie(S, dt, p, options, t, v, compGrid, plotGrid)
 % Set-up:
 nVars = S.numVars;
 dom = S.domain;
-Clim = options{1};
-dataToPlot = options{3};
+Clim = opts{1};
+dataToPlot = opts{3};
 xx = compGrid{1};
 yy = compGrid{2};
 zz = compGrid{3};
@@ -98,6 +98,6 @@ titleString = sprintf('Nx = Ny = Nz = %i (DoFs = %i), dt = %1.1e, t = %.4f', ...
 set(p{nVars + 1}, 'String', titleString)
 
 % Update outputs:
-options{1} = Clim;
+opts{1} = Clim;
 
 end

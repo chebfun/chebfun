@@ -140,7 +140,22 @@ c2v = getCoeffs2ValsTransform(S);
 % Also store the nonlinear evaluation of the initial Fourier coefficients 
 % in NCINIT.
 if ( isDiag(S) == 1 ) % the linear part of the operartor is diagonal (1D/2D/3D)
-    
+% Note: In this case, we store the values/coeffs as a Nx1 vector in 1D,
+% NxN matrix in 2D and NxNxN tensor in 3D. When there is more than one variable
+% (i.e., for systems of PDEs), we store the values/coeffs as a (NVARS*N)x1 
+% vector in 1D, (NVARS*N)xN matrix in 2D and (N*NVARS)xNxN tensor in 3D; NVARS
+% is the number of variables. E.g., in 2D with NVARS=2:
+%
+%                  --------------
+%                  |            |
+%                  | NxN matrix |  <-- First variable
+%                  |            |
+%    VINIT    =    --------------
+% (2*N)xN matrix   |            |
+%                  | NxN matrix |  <-- Second variable
+%                  |            |
+%                  --------------
+%
     % Initial values VINIT:
     vInit = [];
     for k = 1:nVars
@@ -177,7 +192,28 @@ if ( isDiag(S) == 1 ) % the linear part of the operartor is diagonal (1D/2D/3D)
     NcInit{1} = coeffs;
     
 else % the linear part of the operartor is not diagonal (sphere)
-    
+% Note: In this case, we store the values/coeffs as a (N*N)x1 vector. For
+% systems of equations, we store the values/coeffs as a (NVARS*N*N)x1 vector.
+% E.g., with NVARS=2:
+%
+%                   ---------
+%                   |(N*N)x1|
+%                   | V     |
+%                   | E     |
+%                   | C     |   <-- First variable
+%                   | T     |
+%                   | O     |
+%                   | R     |
+%    CINIT    =     --------- 
+% (2*N*N)x1 vector  |(N*N)x1|
+%                   | V     |
+%                   | E     |
+%                   | C     |
+%                   | T     |   <-- Second variable
+%                   | O     |
+%                   | R     |
+%                   ---------
+%
     % Initial Fourier coefficients CINIT:
     cInit{1} = reshape(coeffs2(u0{1}, N, N), N*N, 1);
     for k = 2:nVars
@@ -267,35 +303,52 @@ while ( t < tf )
     
     % Plot every ITERPLOT iterations if using MOVIE:
     if ( strcmpi(plotStyle, 'movie') == 1 && mod(iter,iterplot) == 0 )
-%         v = [];
-%         for k = 1:nVars
-%             idx = (k-1)*N + 1;
-%             temp = ifftn(cNew{1}(idx:idx+N-1,:,:));
-%             if ( max(abs(imag(temp(:)))) < max(abs(temp(:)))*1e-10 )
-%                 temp = real(temp);
-%             end
-%             v = [v; temp];
-%         end
-%         valuesUpdated = 1;
-%         if ( dim == 1 )
-%             isLimGiven = ~isempty(pref.Ylim);
-%         elseif ( dim == 2 || dim == 3 )
-%             isLimGiven = ~isempty(pref.Clim);
-%         end
-%         if ( isLimGiven == 1 )
-%             updateMovie(S, dt, p, opts, t, v, compGrid, plotGrid);
-%         else
-%             opts = updateMovie(S, dt, p, opts, t, v, compGrid, plotGrid);
-%         end
-        v = c2v(cNew{1});
-        opts = updateMovie(S, dt, p, opts, t, v, compGrid, plotGrid);
+        v = [];
+        
+        % Remove small imaginary parts:
+        for k = 1:nVars
+            if ( isDiag(S) == 1 ) % 1D/2D/3D
+                idx = (k-1)*N + 1;
+                temp = c2v(cNew{1}(idx:idx+N-1,:,:));
+            else % sphere
+                idx = (k-1)*N^2 + 1;
+                temp = c2v(cNew{1}(idx:idx+N^2-1));
+            end
+            if ( max(abs(imag(temp(:)))) < max(abs(temp(:)))*1e-10 )
+                temp = real(temp);
+            end
+            v = [v; temp];
+            valuesUpdated = 1;
+        end
+        
+        % Check if the user gave limits for the y-axis (in 1D; PREF.YLIM)
+        % or for the colorbar (in 2D/3D and on the sphere; PREF.CLIM):
+        if ( isa(S, 'spinop') == 1 ) % 1D
+            isLimGiven = ~isempty(pref.Ylim);
+        else % 2D/3D and sphere
+            isLimGiven = ~isempty(pref.Clim);
+            
+        end
+        % If that's the case, then we're going to use these limits:
+        % (See individual INITIALIZEMOVIE codes for details.)
+        if ( isLimGiven == 1 )
+            updateMovie(S, dt, p, opts, t, v, compGrid, plotGrid);
+            
+        % Otherwise, the code will automatically chose and update these limits
+        % and store them in the first entry of the CELL-ARRAY OPTS:
+        % (OPTS also stores other informations relative to graphics; see 
+        % individual INITIALIZEMOVIE codes for details.)
+        else
+            opts = updateMovie(S, dt, p, opts, t, v, compGrid, plotGrid);
+        end
+
     % Store the values every ITERPLOT iterations if using WATERFALL:
-    % (Remark: Only in dimension 1.)
+    % (Remark: Only in 1D.)
     elseif ( strcmpi(plotStyle, 'waterfall') == 1 && mod(iter, iterplot) == 0 )
         v = [];
         for k = 1:nVars
             idx = (k-1)*N + 1;
-            temp = ifft(cNew{1}(idx:idx+N-1));
+            temp = c2v(cNew{1}(idx:idx+N-1));
             if ( max(abs(imag(temp(:)))) < max(abs(temp(:)))*1e-10 )
                 temp = real(temp);
             end
@@ -309,16 +362,21 @@ while ( t < tf )
     % Output the solution if T correponds to an entry of TSPAN:
     if ( abs(t - tspan(pos)) < 1e-10 )
         if ( valuesUpdated == 0 )
-            v = [];
-            for k = 1:nVars
+            if ( isDiag(S) == 1 ) % 1D/2D/3D
                 idx = (k-1)*N + 1;
-                temp = ifftn(cNew{1}(idx:idx+N-1,:,:));
-                if ( max(abs(imag(temp(:)))) < max(abs(temp(:)))*1e-10 )
-                    temp = real(temp);
-                end
-                v = [v; temp];
+                temp = c2v(cNew{1}(idx:idx+N-1,:,:));
+            else % sphere
+                idx = (k-1)*N^2 + 1;
+                temp = c2v(cNew{1}(idx:idx+N^2-1));
             end
+            if ( max(abs(imag(temp(:)))) < max(abs(temp(:)))*1e-10 )
+                temp = real(temp);
+            end
+            v = [v; temp];
+            valuesUpdated = 1;
         end
+        
+        % Outpute values and times:
         vOut{pos} = v;
         tOut(pos) = t;
         pos = pos + 1;
@@ -339,7 +397,7 @@ if ( strcmpi(plotStyle, 'movie') == 1 )
 end
 
 % Use WATERFALL if using WATERFALL:
-if ( strcmpi(plotStyle, 'waterfall') == 1 )
+if ( strcmpi(plotStyle, 'waterfall') == 1 ) % 1D only
     clf reset
     for k = 1:nVars
         uwater = [];
@@ -351,7 +409,7 @@ if ( strcmpi(plotStyle, 'waterfall') == 1 )
         end
         subplot(1, nVars, k)
         waterfall(uwater, twater), axis([dom(1), dom(end), 0, tf])
-        set(gca, 'FontSize', 16), box on
+        set(gca, 'FontSize', 12), box on
         xlabel('x'), ylabel('t')
         if ( nVars == 1 )
             zlabel('u(t,x)')
@@ -363,14 +421,11 @@ if ( strcmpi(plotStyle, 'waterfall') == 1 )
 end
 
 % Get the right type of CHEBFUN:
-if ( dim == 1 )
-    fun = @chebfun;
-elseif ( dim == 2 )
-    fun = @chebfun2;
-elseif ( dim == 3 )
-    fun = @chebfun3;
-    % The data come from MESHGRID, need to permute them because the CHEBFUN3
-    % constructor assumes that the data come from NDGRID:
+fun = getChebfunType(S);
+
+% In 3D, the data comes from MESHGRID, need to permute it because the CHEBFUN3
+% constructor assumes that the data comes from NDGRID:
+if ( dim == 3 ) 
     for l = 1:size(vOut, 2)
         for k = 1:nVars
             idx = (k-1)*N + 1;
@@ -380,19 +435,40 @@ elseif ( dim == 3 )
     end
 end
 
-% Output a CHEBFUN/CHEBMATRIX from values VOUT:
-if ( length(tspan) == 2 ) % e.g., tspan = [0 T], output only the solution at T
+for k = 1:lengt(vOut)
+    vOut{k} = reshapeData(vOut{k});
+end
+
+% Output a CHEBFUN/CHEBMATRIX from values VOUT.
+% Case 1; TSPAN = [0 T], output only the solution at T:
+if ( length(tspan) == 2 ) 
+    
     N = length(vOut{end})/nVars;
+    
+    % Case 1.1; one variable:
     if ( nVars == 1 )
-        uOut = fun(vOut{end}(1:N,:,:), dom, 'trig');
-    else % for systems, use a CHEBAMTRIX
-        uOut = chebmatrix(fun(vOut{end}(1:N,:,:), dom, 'trig'));
-        for k = 2:nVars
-            idx = (k-1)*N + 1;
-            uOut(k,1) = fun(vOut{end}(idx:idx+N-1,:,:), dom, 'trig');
+        % Values have been 'doubled-up' on the sphere, extract the right half:
+        if ( isa(S, 'spinopsphere') == 1 ) % sphere
+            vOut{end} = vOut{end}([floor(N/2)+1:N 1], :);
+        end
+        uOut = fun(vOut{end}, dom, 'trig');
+        
+    % Case 1.2; systems, use a CHEBAMTRIX:
+    else
+        if ( isDiag(S) == 1 ) % 1D/2D/3D
+            uOut = chebmatrix(fun(vOut{end}(1:N,:,:), dom, 'trig'));
+            for k = 2:nVars
+                idx = (k-1)*N + 1;
+                uOut(k,1) = fun(vOut{end}(idx:idx+N-1,:,:), dom, 'trig');
+            end
+        else
         end
     end
-else % e.g., tspan = [0, t1, t2], output the solutions at t = 0, t1 and t2
+    
+% Case 2; TSPAN = [0, t1, t2], output the solutions at t = 0, t1 and t2:
+% (We store the functions in a CHEBMATRIX. The rows correspond to the different
+% variables while the columns correspond to the different times.)
+else
     N = length(vOut{1})/nVars;
     uOut = chebmatrix(fun(vOut{1}(1:N,:,:), dom, 'trig'));
     for k = 2:nVars

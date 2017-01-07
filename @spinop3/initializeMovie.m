@@ -1,8 +1,14 @@
-function [p, options] = initializeMovie(S, dt, pref, v, compGrid, plotGrid)
+function [p, opts] = initializeMovie(S, dt, pref, v, compGrid, plotGrid)
 %INITIALIZEMOVIE   Initialize a movie when solving a PDE specified by a SPINOP3.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
+
+% Note: P is a (NVARS+1)x1 CELL-ARRAY that stores the NVARS plots in its first 
+% NVARS entries, and the title in its (NVARS+1)st entry. OPTS is a 3x1
+% CELL-ARRAY that stores the limits of the colorbar in OPTS{1}, the slices of
+% the volumetric slice plot in OPTS{2} and what kind of data to plot in OPTS{3} 
+% (real/imag/abs; when the data is complex-valued).
 
 % Set-up:
 nVars = S.numVars;
@@ -108,8 +114,8 @@ shg, pause
 
 % Outputs:
 p{nVars + 1} = h;
-options{1} = Clim;
-options{2} = {Sx, Sy, Sz};
-options{3} = dataplot;
+opts{1} = Clim;
+opts{2} = {Sx, Sy, Sz};
+opts{3} = dataplot;
 
 end

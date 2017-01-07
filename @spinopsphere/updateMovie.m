@@ -1,4 +1,4 @@
-function options = updateMovie(S, dt, p, options, t, v, compGrid, plotGrid)
+function opts = updateMovie(S, dt, p, opts, t, v, compGrid, plotGrid)
 %UPDATEMOVIE   Update the movie when solving a PDE specified by a SPINOPSPHERE.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
@@ -6,8 +6,8 @@ function options = updateMovie(S, dt, p, options, t, v, compGrid, plotGrid)
 
 % Set-up:
 nVars = S.numVars;
-Clim = options{1};
-dataToPlot = options{3};
+Clim = opts{1};
+dataToPlot = opts{3};
 ll = compGrid{1};
 tt = compGrid{2};
 N = size(ll, 1);
@@ -56,6 +56,6 @@ titleString = sprintf('n = m = %i (DoFs = %i), dt = %1.1e, t = %.4f', N, ...
 set(p{nVars + 1}, 'String', titleString)
 
 % Update outputs:
-options{1} = Clim;
+opts{1} = Clim;
 
 end
