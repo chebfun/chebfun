@@ -223,6 +223,12 @@ classdef spinoperator
         
         % Update the movie when solving a PDE specified by a SPINOPERATOR:
         opts = updateMovie(S, dt, p, options, t, v, compGrid, plotGrid)
+         
+        % Reshape the data that will be used for constructing the solution at
+        % the end of the time-stepping: (For example, for SPINOPSPEHRE, it 
+        % extracts half of the data, since the data has been doubled-up with
+        % the DFS method.)
+        data = reshapeData(S, data, nVars)
         
         % Add the (repeated) endpoints to a periodic grid:
         grid = reshapeGrid(S, grid)

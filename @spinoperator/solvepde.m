@@ -192,9 +192,8 @@ if ( isDiag(S) == 1 ) % the linear part of the operartor is diagonal (1D/2D/3D)
     NcInit{1} = coeffs;
     
 else % the linear part of the operartor is not diagonal (sphere)
-% Note: In this case, we store the values/coeffs as a (N*N)x1 vector. For
-% systems of equations, we store the values/coeffs as a (NVARS*N*N)x1 vector.
-% E.g., with NVARS=2:
+% Note: In this case, we store the values as above but the coeffs as a (N*N)x1 
+% vector and as a (NVARS*N*N)x1 vector for systems. E.g., with NVARS=2:
 %
 %                   ---------
 %                   |(N*N)x1|
@@ -435,33 +434,25 @@ if ( dim == 3 )
     end
 end
 
-for k = 1:lengt(vOut)
-    vOut{k} = reshapeData(vOut{k});
-end
+% Reshape the data that will be used for constructing the solution: 
+% (For example, for SPINOPSPEHRE, it extracts half of the data, since the data 
+% has been doubled-up with the DFS method.)
+vOut = reshapeData(S, vOut, nVars);
 
 % Output a CHEBFUN/CHEBMATRIX from values VOUT.
 % Case 1; TSPAN = [0 T], output only the solution at T:
 if ( length(tspan) == 2 ) 
     
-    N = length(vOut{end})/nVars;
-    
     % Case 1.1; one variable:
     if ( nVars == 1 )
-        % Values have been 'doubled-up' on the sphere, extract the right half:
-        if ( isa(S, 'spinopsphere') == 1 ) % sphere
-            vOut{end} = vOut{end}([floor(N/2)+1:N 1], :);
-        end
         uOut = fun(vOut{end}, dom, 'trig');
         
     % Case 1.2; systems, use a CHEBAMTRIX:
     else
-        if ( isDiag(S) == 1 ) % 1D/2D/3D
-            uOut = chebmatrix(fun(vOut{end}(1:N,:,:), dom, 'trig'));
-            for k = 2:nVars
-                idx = (k-1)*N + 1;
-                uOut(k,1) = fun(vOut{end}(idx:idx+N-1,:,:), dom, 'trig');
-            end
-        else
+        uOut = chebmatrix(fun(vOut{end}(1:N,:,:), dom, 'trig'));
+        for k = 2:nVars
+            idx = (k-1)*N + 1;
+            uOut(k,1) = fun(vOut{end}(idx:idx+N-1,:,:), dom, 'trig');
         end
     end
     
