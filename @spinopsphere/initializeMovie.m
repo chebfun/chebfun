@@ -66,7 +66,7 @@ for k = 1:nVars
     view(viewSpec(2*(k - 1) + 1 : 2*(k - 1) + 2)), colorbar
     axis square
     set(gca, 'xtick', [-1 0 1], 'ytick', [-1 0 1], 'ztick', [-1 0 1])
-    xlabel('x'), ylabel('z'), zlabel('z'), set(gca, FS, fs), box on
+    xlabel('x'), ylabel('y'), zlabel('z'), set(gca, FS, fs), box on
     drawnow
     
 end
