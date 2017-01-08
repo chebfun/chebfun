@@ -12,8 +12,8 @@ function [uout, tout] = spin2(varargin)
 %   each row representing one variable).
 %
 %   UOUT = SPIN2(S, N, DT) solves the PDE specified by the SPINOP2 S with N grid
-%   points in each direction and a time-step DT. It plots a movie of the
-%   solution as it computes it. See HELP/SPINOP2 and Example 5.
+%   points in each direction and time-step DT. It plots a movie of the solution
+%   as it computes it. See HELP/SPINOP2 and Example 5.
 %
 %   UOUT = SPIN2(S, N, DT, PREF) allows one to use the preferences specified by
 %   the SPINPREF2 object PREF. See HELP/SPINPREF2 and Example 6.
@@ -104,7 +104,7 @@ function [uout, tout] = spin2(varargin)
 %   direction, a time-step dt=5e-1, doesn't produce any movie use the
 %   time-stepping scheme PECEC433.
 %
-% See also SPINOP2, SPINPREF2, SPINSCHEME, SPIN, SPIN3, SPINSPHERE.
+% See also SPINOP2, SPINPREF2, SPINSCHEME.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

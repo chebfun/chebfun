@@ -25,13 +25,13 @@ classdef spinopsphere < spinoperator
 %           nonlinear nondifferential operator with constant coefficients.
 %
 % Example 1: To construct a SPINOPSPHERE corresponding to the GL2 equation on 
-%            the sphere with TSPAN = [0 10] and initial condition 
+%            the sphere with TSPAN = [0 100] and initial condition 
 %            u0(lam,th) = Y_8^2(lam,th), one can type
 %
-%            tspan = [0 10];
+%            tspan = [0 100];
 %            S = spinopsphere(tspan);
 %            S.lin = @(u) 1e-3*lap(u);
-%            S.nonlin = @(u) u - (1+1.3i)*u.*(abs(u).^2);
+%            S.nonlin = @(u) u - (1+1.5i)*u.*(abs(u).^2);
 %            S.init = spherefun.sphharm(8, 2);
 %
 % See also SPINOPERATOR, SPINSPHERE.
@@ -46,14 +46,15 @@ classdef spinopsphere < spinoperator
         
         function S = spinopsphere(varargin)
             
-            S.domain = [-pi pi 0 pi];
-            
             % Zero input argument:
             if ( nargin == 0 )
                 return
-            
+                        
             % One input argument:
             elseif ( nargin == 1 )
+                            
+                S.domain = [-pi pi 0 pi];
+                            
                 if ( isa(varargin{1}, 'char') == 1 )
                     [L, N, tspan, u0] = parseInputs(varargin{1});
                     S.lin = L;
@@ -90,13 +91,29 @@ end
         %   the nonlinear parts of the PDE represented by PDECHAR, the time 
         %   interval TSPAN and the initial condition U0.
 
+        % Allen-Cahn equation:
+        if ( strcmpi(pdechar, 'AC2') == 1 )
+            L = @(u) 1e-2*lap(u);
+            N = @(u) u - u.^3;
+            tspan = [0 50];
+            u0 = .9*spherefun(@(x,y,z) exp(-20*(x.^2 + y.^2 + (z-1).^2)));
+            u0 = u0 - .1*spherefun(@(x,y,z) exp(-2*((x+1).^2 + y.^2 + z.^2)));
+            u0 = u0 + 1.1*spherefun(@(x,y,z) exp(-5*(x.^2 + (y+1).^2 + z.^2)));
+            
         % Ginzburg-Landau equation:
-        if ( strcmpi(pdechar, 'GL2') == 1 )
+        elseif ( strcmpi(pdechar, 'GL2') == 1 )
             L = @(u) 1e-3*lap(u);
             N = @(u) u - (1 + 1.5i)*u.*(abs(u).^2);
-            tspan = [0 100];
+            tspan = [0 50];
             u0 = spherefun.sphharm(8, 2);
             
+        % Focusing nonlinear Schroedinger equation
+        elseif ( strcmpi(pdechar, 'NLS2') == 1 )
+            L = @(u) 1i*lap(u);
+            N = @(u) 1i*u.*abs(u).^2;
+            tspan = [0 20];
+            u0 = .1*spherefun.sphharm(3, 2);
+            u0 = u0 + spherefun(@(x,y,z) exp(-(x.^2 + y.^2 + (z-1).^2)));
         else
             error('SPINOPSPHERE:parseInputs', 'Unrecognized PDE.')
         end

@@ -30,7 +30,7 @@ classdef spinop2 < spinoperator
 %            dom = [0 200 0 200]; tspan = [0 10];
 %            S = spinop2(dom, tspan);
 %            S.lin = @(u) lap(u);
-%            S.nonlin = @(u) u - (1+1.3i)*u.*(abs(u).^2);
+%            S.nonlin = @(u) u - (1+1.5i)*u.*(abs(u).^2);
 %            S.init = chebfun2(@(x,y) cos(pi*x/100).*sin(y*pi/100), dom);
 %
 % See also SPINOPERATOR, SPIN2.

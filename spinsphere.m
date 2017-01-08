@@ -5,106 +5,91 @@ function [uout, tout] = spinsphere(varargin)
 %   UOUT = SPINSPHERE(PDECHAR) solves the PDE specified by the string PDECHAR,
 %   and plots a movie of the solution as it computes it; it is a demo mode.
 %   The space and time intervals and the initial condition are chosen to produce
-%   beautiful movies. Strings available include 'GL2' for Ginzburg-Landau
-%   equation and 'GS2' for Gray-Scott equations. Many other PDEs are available,
-%   see Remark 1 and Examples 1-4. The output UOUT is a CHEBFUN2 corresponding
-%   to the solution at the final time (a CHEBMATRIX for systems of equations,
-%   each row representing one variable).
+%   beautiful movies. Strings available include 'AC2' for Allen-Cahn equation, 
+%   'GL2' for Ginzburg-Landau equation and 'NLS2' for nonlinear Schrodinger 
+%   equation. See Remark 1 and Examples 1-3. The output UOUT is a SPHEREFUN 
+%   corresponding to the solution at the final time (a CHEBMATRIX for systems 
+%   of equations, each row representing one variable).
 %
-%   UOUT = SPINSPHERE(S, N, DT) solves the PDE specified by the SPINOP2 S with N grid
-%   points in each direction and a time-step DT. It plots a movie of the
-%   solution as it computes it. See HELP/SPINOP2 and Example 5.
+%   UOUT = SPINSPHERE(S, N, DT) solves the PDE specified by the SPINOPSPHERE S 
+%   with N grid points in each direction and time-step DT. It plots a movie of 
+%   the solution as it computes it. See HELP/SPINOPSPHERE and Example 4.
 %
-%   UOUT = SPINSPHERE(S, N, DT, PREF) allows one to use the preferences specified by
-%   the SPINPREF2 object PREF. See HELP/SPINPREF2 and Example 6.
+%   UOUT = SPINSPHERE(S, N, DT, PREF) allows one to use the preferences 
+%   specified by the SPINPREFSPHERE object PREF. See HELP/SPINPREFSPHERE and 
+%   Example 5.
 %
-%   UOUT = SPINSPHERE(S, N, DT, 'PREF1', VALUEPREF1, 'PREF2', VALUEPREF2, ...) is an
-%   alternative to the previous syntax. See Example 6.
+%   UOUT = SPINSPHERE(S, N, DT, 'PREF1', VALUEPREF1, 'PREF2', VALUEPREF2, ...) 
+%   is an alternative to the previous syntax. See Example 6.
 %
-%   [UOUT, TOUT] = SPINSPHERE(...) also returns the times chunks TOUT at which UOUT
-%   was computed.
+%   [UOUT, TOUT] = SPINSPHERE(...) also returns the times chunks TOUT at which 
+%   UOUT was computed.
 %
 % Remark 1: Available (case-insensitive) strings PDECHAR are
 %
+%    - 'AC2' for Allen-Cahn equation,
 %    - 'GL2' for Ginzburg-Landau equation,
-%    - 'GS2' for Gray-Scott equations,
-%    - 'Schnak2' for Schnakenberg equations,
-%    - 'SH2' for Swift-Hohenberg equation.
+%    - 'NLS2' for focusing nonlinear Schroedinger equation.
 %
-% Example 1: Ginzburg-Landau equation (spiral waves)
+% Example 1: Allen-Cahn equation
 %
-%       u = spin2('GL2');
+%        u = spinsphere('AC2');
+%
+%    solves the Allen-Cahn equation
+%
+%        u_t = 1e-2*lapplacian(u) + u - u^3
+%
+%    on the sphere from t=0 to t=, with initial condition
+%
+%        u0(lam, th) = 
+%
+% Example 2: Ginzburg-Landau equation 
+%
+%        u = spinsphere('GL2');
 %
 %    solves the Ginzburg-Landau equation
 %
-%        u_t = laplacian(u) + u - (1+1.5i)*u*|u|^2,
+%        u_t = 1e-3*laplacian(u) + u - (1+1.5i)*u*|u|^2,
 %
-%    on [0 100]^2 from t=0 to t=100, with a random initial condition.
+%    on the sphere from t=0 to t=, with initial condition
 %
-% Example 2: Gray-Scott equations (fingerprints patterns)
+%        u0(lam, th) = 
 %
-%       u = spin2('GS2');
+% Example 3: Focusing nonlinear Schroedinger equation
 %
-%    solves the Gray-Scott equations
+%        u = spinsphere('NLS2');
 %
-%       u_t = 2e-5*laplacian(u) + 3.5e-2*(1-u) - u*v^2,
-%       v_t = 1e-5*laplacian(v) - 9.5e-2*v + u*v^2,
+%    solves the focusing nonlinear Schroedinger equation
 %
-%    on [0 1.25]^2 from t=0 to t=8000, with initial condition
+%        u_t = 1i*laplacian(u) + 1i*u|u|^2,
 %
-%       u0(x,y) = 1 - exp(-150*((x-G/2.05)^2 + (y-G/2.05)^2)),
-%       v0(x,y) = exp(-150*((x-G/2)^2 + 2*(y-G/2)^2)),
-%           with G=1.25.
+%    on the sphere from t=0 to t=, with initial condition
 %
-% Example 3: Schnakenberg equations (pattern formation)
+%        u0(lam, th) = 
 %
-%       u = spin2('Schnak2');
+% Example 4: PDE specified by a SPINOPSPHERE
 %
-%    solves the Schnakenberg equations
-%
-%       u_t = laplacian(u) + 3*(.1 - u + u^2*v),
-%       v_t = 10*laplacian(v) + 3*(.9 - u^2*v),
-%
-%    on [0 30]^2 from t=0 to t=800, with initial condition
-%
-%       u0(x,y) = 1 - exp(-2*((x-G/2.15)^2 + (y-G/2.15)^2)),
-%       v0(x,y) = .9/(.1^2+.9^2) + exp(-2*((x-G/2)^2 + 2*(y-G/2)^2)),
-%           with G=50.
-%
-% Example 4: Swift-Hohenberg equation (Rayleigh-Benard convection)
-%
-%       u = spin2('SH2');
-%
-%    solves the Swift-Hohenberg equation
-%
-%       u_t = -2*laplacian(u) - biharmonic(u) - .9*u + u^2 - u^3,
-%
-%    on [0 20]^2 from t=0 to t=200, with a random initial condition.
-%
-% Example 5: PDE specified by a SPINOPSPHERE
-%
-%       dom = [0 100 0 100]; tspan = [0 100];
-%       S = spinop2(dom, tspan);
-%       S.lin = @(u) lap(u);
+%       tspan = [0 ];
+%       S = spinopsphere(tspan);
+%       S.lin = @(u) 1e-3*lap(u);
 %       S.nonlin = @(u) u - (1 + 1.5i)*u.*(abs(u).^2);
-%       S.init = chebfun2(.1*randn(128, 128), dom, 'trig')
-%       u = spin2(S, 64, 2e-1);
+%       S.init = spherefun.sphharm(8, 2);
+%       u = spinsphere(S, 64, 2e-1);
 %
-%   is equivalent to u = spin2('GL2');
+%   is equivalent to u = spinsphere('GL2');
 %
-% Example 6: Using preferences
+% Example 5: Using preferences
 %
-%       pref = spinpref2('plot', 'off', 'scheme', 'pecec433');
-%       S = spinop2('sh2');
-%       u = spin2(S, 64, 5e-1, pref);
+%       pref = spinprefsphere('Clim', [0 1]);
+%       S = spinopsphere('ac2');
+%       u = spinsphere(S, 64, 5e-1, pref);
 %   or simply,
-%       u = spin2(S, 64, 5e-1, 'plot', 'off', 'scheme', 'pecec433');
+%       u = spinsphere(S, 64, 5e-1, 'Clim', [0 1]);
 %
-%   solves the Swift-Hohenberg equation using N=64 grid points in each
-%   direction, a time-step dt=5e-1, doesn't produce any movie use the
-%   time-stepping scheme PECEC433.
+%   solves the Allen-Cahn equation using N=64 grid points in each direction,
+%   a time-step dt=5e-1 and set the limits of the colobar to [0 1].
 %
-% See also SPINOPSPHERE, SPINPREFSPHERE, SPINSCHEME, SPIN, SPIN2, SPIN3.
+% See also SPINOPSPHERE, SPINPREFSPHERE, SPINSCHEME.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -156,9 +141,15 @@ function [S, N, dt, pref] = parseInputs(pdechar)
 
 pref = spinprefsphere();
 S = spinopsphere(pdechar);
-if ( strcmpi(pdechar, 'GL2') == 1 )
+if ( strcmpi(pdechar, 'AC2') == 1 )
     dt = 2e-1;
-    N = 64;
+    N = 128;
+elseif ( strcmpi(pdechar, 'GL2') == 1 )
+    dt = 2e-1;
+    N = 128;
+elseif ( strcmpi(pdechar, 'NLS2') == 1 )
+    dt = 5e-2;
+    N = 128;
 end
 
 end
