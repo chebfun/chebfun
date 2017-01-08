@@ -10,16 +10,19 @@ Clim = opts{1};
 dataToPlot = opts{3};
 ll = compGrid{1};
 tt = compGrid{2};
-N = size(ll, 1);
+N = 2*(size(ll, 1) - 1);
 lll = plotGrid{1};
 ttt = plotGrid{2};
-Nplot = size(lll, 1);
+Nplot = 2*(size(lll, 1) - 1);
 
 for k = 1:nVars
     
     % Extract each variable:
     idx = (k-1)*N + 1;
     vv = dataToPlot(v(idx:idx+N-1,:));
+    vv = [vv, vv(:,1)]; %#ok<*AGROW> add repeated values (periodic endpoints)
+    vv = [vv; vv(1,:)];
+    vv = vv([N/2+1:N 1], :); % extract values that correspond to theta in [0,pi]
     
     % Change axes if necessary:
     if ( nargout == 1 )
@@ -43,7 +46,6 @@ for k = 1:nVars
     end
     
     % Update each variable:
-    vvv = vvv([floor(Nplot/2)+1:Nplot 1], :);
     set(p{k}, 'cdata', vvv)
     set(p{k}.Parent, 'clim', [Clim(2*(k-1) + 1), Clim(2*(k-1) + 2)])
     drawnow

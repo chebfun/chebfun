@@ -20,7 +20,7 @@ for k = 1:nVars
     % Extract each variable:
     idx = (k-1)*N + 1;
     vv = dataToPlot(v(idx:idx+N-1,:));
-    vv = [vv, vv(:,1)]; %#ok<*AGROW>
+    vv = [vv, vv(:,1)]; %#ok<*AGROW> add repeated values (periodic endpoints)
     vv = [vv; vv(1,:)];
     
     % Change axes if necessary:

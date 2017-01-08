@@ -23,10 +23,10 @@ while ( length(viewSpec) < 2*nVars )
 end
 ll = compGrid{1};
 tt = compGrid{2};
-N = size(ll, 1);
+N = 2*(size(ll, 1) - 1);
 lll = plotGrid{1};
 ttt = plotGrid{2};
-Nplot = size(lll, 1);
+Nplot = 2*(size(lll, 1) - 1);
 FS = 'fontsize';
 fs = 12;
 
@@ -37,6 +37,9 @@ for k = 1:nVars
     % Extract each variable:
     idx = (k-1)*N + 1;
     vv = dataplot(v(idx:idx+N-1,:));
+    vv = [vv, vv(:,1)]; %#ok<*AGROW> add repeated values (periodic endpoints)
+    vv = [vv; vv(1,:)];
+    vv = vv([N/2+1:N 1], :); % extract values that correspond to theta in [0,pi]
     
     % Get the CLIM for the colorbar:
     if ( isempty(pref.Clim) == 1 )
@@ -55,12 +58,7 @@ for k = 1:nVars
     
     % Plot each variable:
     subplot(1, nVars, k)
-    vvv = vvv([floor(Nplot/2)+1:Nplot 1], :);
-    lam = linspace(-pi, pi, Nplot);
-    th = linspace(0, pi, Nplot/2+1);
-    [lam, th] = meshgrid(lam, th);
-    th = pi/2 - th;
-    [xxx, yyy, zzz] = sph2cart(lam, th, ones(size(lam)));
+    [xxx, yyy, zzz] = sph2cart(lll, pi/2 - ttt, ones(size(lll)));
     p{k} = surf(xxx, yyy, zzz, vvv, 'edgecolor', 'none', 'facecolor', 'interp');
     set(p{k}.Parent, 'clim', [Clim(2*(k-1) + 1), Clim(2*(k-1) + 2)])
     view(viewSpec(2*(k - 1) + 1 : 2*(k - 1) + 2)), colorbar

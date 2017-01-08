@@ -37,8 +37,8 @@ for k = 1:nVars
     % Extract each variable:
     idx = (k-1)*N + 1;
     vv = dataplot(v(idx:idx+N-1,:));
-    vv = [vv, vv(:,1)]; %#ok<*AGROW>
-    vv = [vv; vv(1,:)];
+    vv = [vv, vv(:,1)]; %#ok<*AGROW> add repeated values (periodic endpoints)
+    vv = [vv; vv(1,:)]; 
     
     % Get the CLIM for the colorbar:
     if ( isempty(pref.Clim) == 1 )
