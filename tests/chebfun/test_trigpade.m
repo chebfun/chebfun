@@ -93,7 +93,34 @@ pass(24) = length(p) <= 2*m + 1;
 pass(25) = length(q) <= 2*n + 1;
 
 
+%% Ex 1 p. 381, Baker 1996 Pade Approximant
+N = 16;
+h = 1/9;k = 1/h+1;
+b = 2; c = 1;
+c_p = h.^(1:N).';
+c_m = k.^(-N:-1).';
+c_k = [c_m; b+c; c_p];
+f = chebfun(c_k, 'coeffs', 'trig');
+m = 1;
+n = 2;
+[p, q] = trigpade(f, m, n);
+r = p./q;
+pass(26) = norm(f-r, inf) < tol;
+% degree of q should be reduced
+pass(27) = length(q) == 2*(n-1)+1; 
+pass(28) = length(p) == 2*m+1;
 
+
+%% Test a complex valued function
+f = chebfun(@(t) 1i./(1+25*sin(pi*(t+.5)/2).^2) + exp(sin(3*pi*t)+cos(pi*t)), 'trig');
+m = 1; n = 3;
+[p, q] = trigpade(f, m, n);
+r = p./q;
+pass(29) = compare_coeffs(f, r, m+n, tol);
+m = 5; n = 2;
+[p, q] = trigpade(f, m, n);
+r = p./q;
+pass(30) = compare_coeffs(f, r, m+n, tol);
 end
 
 

@@ -135,6 +135,10 @@ end
 
 pk = conv(ap, bm) + conv(am, bp);
 qk = conv(bm, bp);
+% discard small coeffs:
+pk = chop_coeffs(pk, tol);
+qk = chop_coeffs(qk, tol);
+
 p = chebfun(pk, dom, 'coeffs', 'trig');
 q = chebfun(qk, dom, 'coeffs', 'trig');
 p = simplify(p);
@@ -158,8 +162,6 @@ if ( norm(coeffs - conj(flipud(coeffs)), inf) < tol )
 end
 
 end
-
-
 
 %%
 function [ap, bp, am, bm] = laurent_pade(c, m, n, tol)
@@ -218,7 +220,7 @@ if ( norm(c-conj(c_rev), inf) < 10*tol )
     bm = conj(bp);
 else
     % Compute the second Laurent approximation
-    [am, bm] = laurent_approx(c_rev, m, n, N);
+    [am, bm] = laurent_approx(c_rev, m, n, N, tol);
 end
 
 % Pad coefficients with zeros:
@@ -291,4 +293,16 @@ C = tril(C);
 bb = [b; zeros(M+1-length(b), 1)];
 a = C*bb;
 
+end
+
+
+function a = chop_coeffs(c, tol)
+% Discard small coeffs from either 
+% end of c using tol, preserving 
+% the maximum fourier mode if asymmetric
+mid = (length(c)+1)/2;
+nm = mid - find(abs(c)>tol, 1, 'first');
+np = find(abs(c)>tol, 1, 'last') - mid;
+nn = max([nm, np]);
+a = c(mid-nn:mid+nn);
 end
