@@ -79,6 +79,12 @@ nu = (length(bc) - 1)/2;
 % function handle for evaluating the rational approximation.
 [p, q, r] = constructTrigRatApprox(ac, bc, dom, ts);
 
+% Normalize q to 1 if a type (m, 0) approximation is computed
+if ( n == 0 || nu == 0 )
+    p = p./q;
+    q = q./q;
+end
+
 % Compute poles and residues if requested.
 poles = [];
 residues = [];

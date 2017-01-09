@@ -4,7 +4,7 @@ function varargout = trigpade(f, m, n, varargin)
 %   P and Q of degree M and N, respectively, such that the trigonometric 
 %   rational function P/Q is the type (M,N) Fourier-Pade approximation of 
 %   the periodic CHEBFUN F. That is, the Fourier series of P/Q coincides 
-%   with that for the CHEBFUN F up to the maximum possible order for the 
+%   with that of the CHEBFUN F up to the maximum possible order for the 
 %   polynomial degrees permitted. R_HANDLE is a function handle for 
 %   evaluating the trigonometric rational function P/Q.
 % 
@@ -16,8 +16,23 @@ function varargout = trigpade(f, m, n, varargin)
 %   then R_HANDLE is returned, while P and Q are returned if two or more 
 %   output arguments are specified. 
 %
-%   References:
+%   Examples:
 %
+%   Compute a type (1, 3) trigonometric Pade approximation of 
+%   exp(sin(pi*x)) on [-1, 1]:
+% 
+%     f = chebfun(@(t) exp(sin(pi*t)), 'trig')      
+%     [p, q, r] = trigpade(f, 1, 3);
+%     plotcoeffs(f-p./q, '.')
+%   
+%   Compute a type (2, 2) trgonometric Pade approximation of
+%   exp(-80*(x-.5).^2) on [-1, 1]:
+% 
+%     f = chebfun(@(t) exp(-80*(t-.5).^2), 'trig')
+%     [p, q, r] = trigpade(f, 2, 4);
+%     plotcoeffs(f-p./q, '.')
+
+%   References:
 %   [1] G. A. Baker and P. R. Graves-Morris. Pade Approximants. 
 %   Cambridge University Press, second edition, 1996.
 %
@@ -49,54 +64,24 @@ if ( N ~= round(N) )
     error('c must have odd length')
 end
 
-% Make sure that we have sufficiently long
-% Laurent series to avoid indexing issues.
-d = 2*max([m, n]) - N;
-if ( d > 0 )
-    % Pad with zeros if this is not the case:
-    coeffs = [zeros(d, 1); coeffs; zeros(d, 1)];    
-end
+% set tolerance:
+tol = 100*eps*norm(coeffs, inf);
 
-[a_p, b_p, a_m, b_m] = laurent_pade(coeffs, m, n);
-
-%% Construct the four trigonometric polynomials of Fourier Pade approximaiton
-
-% Pad coefficients with zeros:
-aa_p = [zeros(length(a_p)-1, 1); a_p];
-bb_p = [zeros(length(b_p)-1, 1); b_p];
-
-% _d is for denominator, _n is for numerator
-% Denonminator and numerator for the +ve part
-tn_p = chebfun(aa_p, dom, 'coeffs', 'trig' );
-td_p = chebfun(bb_p, dom, 'coeffs', 'trig' );
-
-% Pad coefficients with zeros
-aa_m = [zeros(length(a_m)-1, 1); a_m];
-aa_m = flipud(aa_m);
-bb_m = [zeros(length(b_m)-1, 1); b_m];
-bb_m = flipud(bb_m);
-
-% denonminator and numerator for the -ve part
-tn_m = chebfun(aa_m, dom, 'coeffs', 'trig' );
-td_m = chebfun(bb_m, dom, 'coeffs', 'trig' );
-
-% Construct the full approximation:
-p = tn_p.*td_m + tn_m.*td_p; 
-q = td_p.*td_m;
-r_h = @(t) p(t)./q(t);
-
-% Discard the imaginary rounding errors:
-tol = 1e-13;
-if ( norm(coeffs - conj(flipud(coeffs)), inf) < tol ) 
-    % The input function is real, check the imaginary part
-    % of the approximation
-    if ( norm(imag(p./q)) > tol )        
-        warning('CHEBFUN:CHEBFUN:trigpade:imag', 'imaginary part not negligible.');
+% Handle the trivial case:
+if ( n == 0 )
+    if ( m >= N )
+        p = f;
     else
-        p = real(p);
-        q = real(q);
-        r_h = @(t) p(t)./q(t);
+        p = chebfun(coeffs(N+1-m:N+1+m), dom, 'trig');
     end
+    q = chebfun(1, dom, 'trig');
+    r_h = @(x) feval(p, x);
+    tn_p = p/2;
+    tn_m = p/2;
+    td_p = q;
+    td_m = q;
+else
+    [p, q, r_h, tn_p, td_p, tn_m, td_m] = trig_pade(coeffs, m, n, N, dom, tol);
 end
 
 % Form the outputs
@@ -114,22 +99,95 @@ end
 end
 
 %%
-function [a_p, b_p, a_m, b_m] = laurent_pade(c, m, n)
+function [p, q, r_h, tn_p, td_p, tn_m, td_m] = trig_pade(coeffs, m, n, N, dom, tol)
+% Make sure that we have sufficiently long
+% Laurent series to avoid indexing issues.
+d = 2*max([m, n]) - N;
+if ( d > 0 )
+    % Pad with zeros if needed:
+    coeffs = [zeros(d, 1); coeffs; zeros(d, 1)];    
+end
+
+[ap, bp, am, bm] = laurent_pade(coeffs, m, n);
+
+%% Construct the four trigonometric polynomials of Fourier Pade approximaiton
+
+% _d is for denominator, _n is for numerator
+% Denonminator and numerator for the +ve part
+tn_p = chebfun(ap, dom, 'coeffs', 'trig' );
+td_p = chebfun(bp, dom, 'coeffs', 'trig' );
+
+
+% denonminator and numerator for the -ve part
+tn_m = chebfun(am, dom, 'coeffs', 'trig' );
+td_m = chebfun(bm, dom, 'coeffs', 'trig' );
+
+
+L = (max([length(am),length(ap), length(bm), length(bp)])-1)/2;
+am = [zeros(L-(length(am)-1)/2, 1); am; zeros(L-(length(am)-1)/2, 1)];
+bm = [zeros(L-(length(bm)-1)/2, 1); bm; zeros(L-(length(bm)-1)/2, 1)];
+ap = [zeros(L-(length(ap)-1)/2, 1); ap; zeros(L-(length(ap)-1)/2, 1)];
+bp = [zeros(L-(length(bp)-1)/2, 1); bp; zeros(L-(length(bp)-1)/2, 1)];
+
+if ( ~all([length(am),length(ap), length(bm), length(bp)] == 2*L+1) ) 
+    error('all vectors of coefficients should be of same length')
+end
+
+pk = conv(ap, bm) + conv(am, bp);
+qk = conv(bm, bp);
+p = chebfun(pk, dom, 'coeffs', 'trig');
+q = chebfun(qk, dom, 'coeffs', 'trig');
+p = simplify(p);
+q = simplify(q);
+% Construct the full approximation:
+%p = tn_p.*td_m + tn_m.*td_p; 
+%q = td_p.*td_m;
+r_h = @(t) feval(p, t)./feval(q, t);
+
+% Discard the imaginary rounding errors:
+if ( norm(coeffs - conj(flipud(coeffs)), inf) < tol ) 
+    % The input function is real, check the imaginary part
+    % of the approximation
+    if ( norm(imag(p./q)) > tol )        
+        warning('CHEBFUN:CHEBFUN:trigpade:imag', 'imaginary part not negligible.');
+    else
+        p = real(p);
+        q = real(q);
+        r_h = @(t) feval(p, t)./feval(q, t);
+    end
+end
+
+end
+
+
+
+%%
+function [ap, bp, am, bm] = laurent_pade(c, m, n, tol)
 %   Compute the Laurent-Pade approximation from the 
 %   given Laurent coefficients in c. 
 %   Inputs: It is assumed that c has the form 
 %   [c{-N}, ..., c_{-1}, c0, c_1, ..., c_{N}].'
 %   In particular, c has odd length 2N+1
-%   m and n are non-negative integers
+%   m and n are non-negative integers and tol is 
+%   a tolerance.
 %
 %   Outputs are the coefficients of Laurent fractions
 %   The coefficients for a_p/b_p form p+/q+
 %   a_m/b_m form p-/q-
-%   The output vectors correspond to polynomials
-%   a(1) + a(2)z + ... + a(m) z^m, etc. The ordering
-%   is sucht that the lowest order coeff is at the 
-%   top of each output vector
+%   The output vectors are ready to be used by 
+%   the chebfun trig constructor, for example
+%   ap is of the form [..., 0, 0, a_0, a1, a_2, ...]
+%   while am has the form 
+%   [ ..., a_{-2}, a_{-1}, a_0, 0, 0, ...]. 
+%   Zero padding is also done on each side of the
+%   output vectors.
        
+
+% Set default tolerance
+if ( nargin < 4 )
+    tol = 100*eps*norm(c, inf);
+end
+
 % make sure c is a column vector
 c = c(:);
 
@@ -138,32 +196,45 @@ N = (length(c)-1)/2;
 
 % Handle the special case:
 if ( n == 0 )
-    b_p = 1;
-    b_m = 1;
-    a_p = c(N+1:N+1+m);
-    a_m = c(N+1:-1:N+1-m);
-    a_p(1) = a_p(1)/2;
-    a_m(1) = a_m(1)/2;
+    bp = 1;
+    bm = 1;
+    ap = c(N+1:N+1+m);
+    am = c(N+1:-1:N+1-m);
+    ap(1) = ap(1)/2;
+    am(1) = am(1)/2;
+    ap = [zeros(length(ap)-1, 1); ap];
+    am = [zeros(length(am)-1, 1); am];
     return
 end
 
 % Compute one sided Laurent approximation
-[a_m, b_m] = laurent_approx(c, m, n, N);
+[ap, bp] = laurent_approx(c, m, n, N, tol);
 c_rev = flipud(c);
 
-if ( norm(c-conj(c_rev), inf) < 1e-13 )
+if ( norm(c-conj(c_rev), inf) < 10*tol )
     % Function is real, don't solve the 
     % same problem again:
-    a_p = conj(a_m);
-    b_p = conj(b_m);
+    am = conj(ap);
+    bm = conj(bp);
 else
     % Compute the second Laurent approximation
-    [a_p, b_p] = laurent_approx(c_rev, m, n, N);
+    [am, bm] = laurent_approx(c_rev, m, n, N);
 end
+
+% Pad coefficients with zeros:
+ap = [zeros(length(ap)-1, 1); ap];
+bp = [zeros(length(bp)-1, 1); bp];
+
+
+% Pad coefficients with zeros
+am = [zeros(length(am)-1, 1); am];
+am = flipud(am);
+bm = [zeros(length(bm)-1, 1); bm];
+bm = flipud(bm);
 
 end
 
-function [a, b] = laurent_approx(c, m, n, N)
+function [a, b] = laurent_approx(c, m, n, N, tol)
 
 % Input: It is assumed that the laurent
 % coefficients are stored in an array 
@@ -173,14 +244,15 @@ function [a, b] = laurent_approx(c, m, n, N)
 % an offset of N+1 is needed.
 % c_0 is indexed at N + 1
 % c_k is indexed at k + N + 1
-% c_{-N} is indexed 1
-% c_{N} is indexed at 2N+1
+% c_{-N} is indexed at 1 and so on
 % 
 % m, n are non-negative integers
+% and tol is a tolerance for zero detection
 %
 % Output: a and b are vectors with coefficents 
-% for a Pade approximation of the negative 
-% coefficients within c
+% for a Pade approximation of the power series with
+% coefficients c_0, c_1, ...
+
 
 % Each column has n rows
 col = c((m+1)+(N+1):(m+n)+(N+1));
@@ -198,12 +270,22 @@ if ( size(b, 2) > 1)
     b = b(:, 1);
 end
 
+% Normalize b, the derivation following Baker and Graves-Morris
+% requires this nomraliztion 
+if ( abs(b(1)) < tol )
+    error('CHEBFUN:TRIGPADE:laurent_approx', 'denominator zero at the origin detected')
+else
+    b = b/b(1);
+end
+
 % Compute the coefficients of the numerator
 M = max([m, n]);
 col = c(0+(N+1):M+(N+1));
 col(1) = col(1)/2;
 % C is an (M+1) X (M+1) square matrix
-C = toeplitz(col);
+% Note: it is curcial to say toeplitz(col, col) to 
+% avoid hermitian formation of the following matrix
+C = toeplitz(col, col);
 C = tril(C);
 % Make sure bb has length M+1
 bb = [b; zeros(M+1-length(b), 1)];
