@@ -40,6 +40,7 @@ function [uout, tout] = spin3(varargin)
 %        u_t = laplacian(u) + u - (1+1.5i)*u*|u|^2,
 %
 %    on [0 100]^3 from t=0 to t=70, with a random initial condition.
+%    The movie plots the real part of u.
 %
 % Example 2: Gray-Scott equations (fingerprints patterns)
 %

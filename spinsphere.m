@@ -1,6 +1,6 @@
 function [uout, tout] = spinsphere(varargin)
 %SPINSPHERE  Solve a time-dependent PDE on the sphere with the double Fourier 
-%sphere method and an IMEX time-stepping algorithm.
+%sphere method and IMEX time-stepping algorithms.
 %
 %   UOUT = SPINSPHERE(PDECHAR) solves the PDE specified by the string PDECHAR,
 %   and plots a movie of the solution as it computes it; it is a demo mode.
@@ -39,9 +39,9 @@ function [uout, tout] = spinsphere(varargin)
 %
 %        u_t = 1e-2*lapplacian(u) + u - u^3
 %
-%    on the sphere from t=0 to t=, with initial condition
+%    on the sphere from t=0 to t=60, with initial condition
 %
-%        u0(lam, th) = 
+%        u0(x, y, z) = cos(cosh(5*x.*z) - 10*y)).
 %
 % Example 2: Ginzburg-Landau equation 
 %
@@ -51,9 +51,8 @@ function [uout, tout] = spinsphere(varargin)
 %
 %        u_t = 1e-3*laplacian(u) + u - (1+1.5i)*u*|u|^2,
 %
-%    on the sphere from t=0 to t=, with initial condition
-%
-%        u0(lam, th) = 
+%    on the sphere from t=0 to t=100, with a random initial condition.
+%    The movie plots the real part of u.
 %
 % Example 3: Focusing nonlinear Schroedinger equation
 %
@@ -63,31 +62,34 @@ function [uout, tout] = spinsphere(varargin)
 %
 %        u_t = 1i*laplacian(u) + 1i*u|u|^2,
 %
-%    on the sphere from t=0 to t=, with initial condition
+%    on the sphere from t=0 to t=10, with initial condition
 %
-%        u0(lam, th) = 
+%     u0(lam, th) = (2*B^2./(2-sqrt(2)*sqrt(2-B^2)*cos(A*B*th)))*Y_4^3(lam, th)
+%           with A=2 and B=1.
+%
+%    The movie plots the absolute value of u.
 %
 % Example 4: PDE specified by a SPINOPSPHERE
 %
-%       tspan = [0 ];
+%       tspan = [0 100];
 %       S = spinopsphere(tspan);
 %       S.lin = @(u) 1e-3*lap(u);
 %       S.nonlin = @(u) u - (1 + 1.5i)*u.*(abs(u).^2);
-%       S.init = spherefun.sphharm(8, 2);
-%       u = spinsphere(S, 64, 2e-1);
+%       S.init = spherefun(.1*randn(128));
+%       u = spinsphere(S, 128, 2e-1);
 %
 %   is equivalent to u = spinsphere('GL2');
 %
 % Example 5: Using preferences
 %
-%       pref = spinprefsphere('Clim', [0 1]);
+%       pref = spinprefsphere('Clim', [-2 2]);
 %       S = spinopsphere('ac2');
-%       u = spinsphere(S, 64, 5e-1, pref);
+%       u = spinsphere(S, 64, 2e-1, pref);
 %   or simply,
-%       u = spinsphere(S, 64, 5e-1, 'Clim', [0 1]);
+%       u = spinsphere(S, 64, 2e-1, 'Clim', [-2 2]);
 %
 %   solves the Allen-Cahn equation using N=64 grid points in each direction,
-%   a time-step dt=5e-1 and set the limits of the colobar to [0 1].
+%   a time-step dt=2e-1 and set the limits of the colobar to [-2 2].
 %
 % See also SPINOPSPHERE, SPINPREFSPHERE, SPINSCHEME.
 
@@ -143,13 +145,14 @@ pref = spinprefsphere();
 S = spinopsphere(pdechar);
 if ( strcmpi(pdechar, 'AC2') == 1 )
     dt = 2e-1;
-    N = 128;
+    N = 64;
 elseif ( strcmpi(pdechar, 'GL2') == 1 )
     dt = 2e-1;
     N = 128;
 elseif ( strcmpi(pdechar, 'NLS2') == 1 )
-    dt = 5e-2;
-    N = 128;
+    dt = 1e-2;
+    N = 64;
+    pref.dataplot = 'abs';
 end
 
 end

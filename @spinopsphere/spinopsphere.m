@@ -95,25 +95,25 @@ end
         if ( strcmpi(pdechar, 'AC2') == 1 )
             L = @(u) 1e-2*lap(u);
             N = @(u) u - u.^3;
-            tspan = [0 50];
-            u0 = .9*spherefun(@(x,y,z) exp(-20*(x.^2 + y.^2 + (z-1).^2)));
-            u0 = u0 - .1*spherefun(@(x,y,z) exp(-2*((x+1).^2 + y.^2 + z.^2)));
-            u0 = u0 + 1.1*spherefun(@(x,y,z) exp(-5*(x.^2 + (y+1).^2 + z.^2)));
+            tspan = [0 60];
+            u0 = spherefun(@(x,y,z) cos(cosh(5*x.*z)-10*y));
             
         % Ginzburg-Landau equation:
         elseif ( strcmpi(pdechar, 'GL2') == 1 )
             L = @(u) 1e-3*lap(u);
             N = @(u) u - (1 + 1.5i)*u.*(abs(u).^2);
-            tspan = [0 50];
-            u0 = spherefun.sphharm(8, 2);
+            tspan = [0 100];
+            u0 = spherefun(.1*randn(128));
             
         % Focusing nonlinear Schroedinger equation
         elseif ( strcmpi(pdechar, 'NLS2') == 1 )
             L = @(u) 1i*lap(u);
             N = @(u) 1i*u.*abs(u).^2;
-            tspan = [0 20];
-            u0 = .1*spherefun.sphharm(3, 2);
-            u0 = u0 + spherefun(@(x,y,z) exp(-(x.^2 + y.^2 + (z-1).^2)));
+            tspan = [0 10];
+            A = 2; B = 1;
+            u0 = @(lam,th) (2*B^2./(2 - sqrt(2)*sqrt(2-B^2)*cos(A*B*th)));
+            u0 = spherefun(u0);
+            u0 = u0.*spherefun.sphharm(4, 3);
         else
             error('SPINOPSPHERE:parseInputs', 'Unrecognized PDE.')
         end

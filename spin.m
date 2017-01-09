@@ -152,8 +152,9 @@ function [uout, tout] = spin(varargin)
 %    on [-pi pi] from t=0 to t=18, with initial condition
 %
 %       u0(x) = 2*B^2/(2 - sqrt(2)*sqrt(2-B^2)*cos(A*B*x)) - 1)*A,
-%           with A=2 and B=1.%
+%           with A=2 and B=1.
 %
+%    The movie plots the absolute value of u.
 %
 % Example 10: PDE specified by a SPINOP
 %
