@@ -302,9 +302,9 @@ while ( t < tf )
     
     % Plot every ITERPLOT iterations if using MOVIE:
     if ( strcmpi(plotStyle, 'movie') == 1 && mod(iter,iterplot) == 0 )
-        v = [];
         
         % Remove small imaginary parts:
+        v = [];
         for k = 1:nVars
             if ( isDiag(S) == 1 ) % 1D/2D/3D
                 idx = (k-1)*N + 1;
@@ -361,17 +361,20 @@ while ( t < tf )
     % Output the solution if T correponds to an entry of TSPAN:
     if ( abs(t - tspan(pos)) < 1e-10 )
         if ( valuesUpdated == 0 )
-            if ( isDiag(S) == 1 ) % 1D/2D/3D
-                idx = (k-1)*N + 1;
-                temp = c2v(cNew{1}(idx:idx+N-1,:,:));
-            else % sphere
-                idx = (k-1)*N^2 + 1;
-                temp = c2v(cNew{1}(idx:idx+N^2-1));
+            v = [];
+            for k = 1:nVars
+                if ( isDiag(S) == 1 ) % 1D/2D/3D
+                    idx = (k-1)*N + 1;
+                    temp = c2v(cNew{1}(idx:idx+N-1,:,:));
+                else % sphere
+                    idx = (k-1)*N^2 + 1;
+                    temp = c2v(cNew{1}(idx:idx+N^2-1));
+                end
+                if ( max(abs(imag(temp(:)))) < max(abs(temp(:)))*1e-10 )
+                    temp = real(temp);
+                end
+                v = [v; temp];
             end
-            if ( max(abs(imag(temp(:)))) < max(abs(temp(:)))*1e-10 )
-                temp = real(temp);
-            end
-            v = [v; temp];
             valuesUpdated = 1;
         end
         
