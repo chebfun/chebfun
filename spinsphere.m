@@ -64,10 +64,10 @@ function [uout, tout] = spinsphere(varargin)
 %
 %    on the sphere from t=0 to t=10, with initial condition
 %
-%     u0(lam, th) = (2*B^2./(2-sqrt(2)*sqrt(2-B^2)*cos(A*B*th)))*Y_4^3(lam, th)
-%           with A=2 and B=1.
+%     u0(lam, th) = (2*B^2./(2 - sqrt(2)*sqrt(2-B^2)*cos(A*B*th)) - 1)*A 
+%                  + 4*Y_6^6(lam, th), with A=2 and B=1.
 %
-%    The movie plots the absolute value of u.
+%    The movie plots the real value of u.
 %
 % Example 4: PDE specified by a SPINOPSPHERE
 %
@@ -152,7 +152,7 @@ elseif ( strcmpi(pdechar, 'GL2') == 1 )
 elseif ( strcmpi(pdechar, 'NLS2') == 1 )
     dt = 1e-2;
     N = 64;
-    pref.dataplot = 'abs';
+    pref.colormap = 'jet';
 end
 
 end

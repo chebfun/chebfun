@@ -90,7 +90,8 @@ for k = 1:nVars
     p{k} = slice(xxx, yyy, zzz, vvv, Sx, Sy, Sz);
     set(p{k}, 'edgecolor', 'none', 'facecolor', 'interp')
     ax = p{k}.Parent; set(ax, 'clim', [Clim(2*(k-1) + 1), Clim(2*(k-1) + 2)])
-    axis([dom(1) dom(2) dom(3) dom(4) dom(5) dom(6)]), colorbar
+    axis([dom(1) dom(2) dom(3) dom(4) dom(5) dom(6)])
+    colorbar, colormap(pref.colormap)
     xlabel('x'), ylabel('y'), zlabel('z'), set(gca, FS, fs), box on
     drawnow
     

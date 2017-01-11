@@ -60,7 +60,8 @@ for k = 1:nVars
     p{k} = surf(xxx, yyy, vvv, 'edgecolor', 'none', 'facecolor', 'interp');
     set(p{k}.Parent, 'clim', [Clim(2*(k-1) + 1), Clim(2*(k-1) + 2)])
     axis([dom(1) dom(2) dom(3) dom(4)])
-    view(viewSpec(2*(k - 1) + 1 : 2*(k - 1) + 2)), colorbar
+    view(viewSpec(2*(k - 1) + 1 : 2*(k - 1) + 2))
+    colorbar, colormap(pref.colormap)
     xlabel('x'), ylabel('y'), set(gca, FS, fs), box on
     drawnow
     

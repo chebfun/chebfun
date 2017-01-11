@@ -8,6 +8,9 @@ classdef spinprefsphere < spinpreference
 %     []                        Default is empty, i.e., automatically chosen by 
 %                               the code. 
 %
+%   colormap                  * Color look-up table. See HELP/COLORMAP.
+%     ['parula'] 
+%
 %   dataplot                  * Plotting options when the solution is complex.
 %     ['real']                 
 %      'imag'
@@ -53,7 +56,8 @@ classdef spinprefsphere < spinpreference
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
         Clim                  % Limits of the colorbar (1x2*NVARS DOUBLE)
-        view = [-37.5 30];        % Viewpoint of the plot (1x2 DOUBLE)
+        colormap              % Color look-up table (STRING)
+        view = [-37.5 30];    % Viewpoint of the plot (1x2 DOUBLE)
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -63,6 +67,7 @@ classdef spinprefsphere < spinpreference
         
         function pref = spinprefsphere(varargin) 
             if ( nargin == 0 )
+                pref.colormap = 'parula';
                 pref.dataplot = 'real';
                 pref.dealias = 'off';
                 pref.iterplot = 1;

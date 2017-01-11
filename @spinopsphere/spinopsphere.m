@@ -111,9 +111,9 @@ end
             N = @(u) 1i*u.*abs(u).^2;
             tspan = [0 10];
             A = 2; B = 1;
-            u0 = @(lam,th) (2*B^2./(2 - sqrt(2)*sqrt(2-B^2)*cos(A*B*th)));
+            u0 = @(lam,th) (2*B^2./(2 - sqrt(2)*sqrt(2-B^2)*cos(A*B*th)) - 1)*A;
             u0 = spherefun(u0);
-            u0 = u0.*spherefun.sphharm(4, 3);
+            u0 = u0 + 4*spherefun.sphharm(6, 6);
         else
             error('SPINOPSPHERE:parseInputs', 'Unrecognized PDE.')
         end
