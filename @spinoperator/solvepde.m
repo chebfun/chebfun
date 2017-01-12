@@ -452,6 +452,7 @@ if ( length(tspan) == 2 )
         
     % Case 1.2; systems, use a CHEBAMTRIX:
     else
+        N = size(vOut{1}, 1)/nVars;
         uOut = chebmatrix(fun(vOut{end}(1:N,:,:), dom, 'trig'));
         for k = 2:nVars
             idx = (k-1)*N + 1;
@@ -463,7 +464,7 @@ if ( length(tspan) == 2 )
 % (We store the functions in a CHEBMATRIX. The rows correspond to the different
 % variables while the columns correspond to the different times.)
 else
-    N = length(vOut{1})/nVars;
+    N = size(vOut{1}, 1)/nVars;
     uOut = chebmatrix(fun(vOut{1}(1:N,:,:), dom, 'trig'));
     for k = 2:nVars
         idx = (k-1)*N + 1;

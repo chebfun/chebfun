@@ -50,7 +50,21 @@ if ( isa(S, 'spinopsphere') == 1 )
     Tsin2 = round(Q*Msin2*P, 15);
     In = speye(n);
     Tsin2 = kron(In, Tsin2);
-    schemeCoeffs.precond = Tsin2;
+    schemeCoeffs.precond = kron(speye(nVars), Tsin2); 
+    % Note: For example, if one wants to solve the following system (nVars=2),
+    %
+    %       u_t = A*lap(u) + Nu(u,v),
+    %       v_t = B*lap(v) + Nv(u,v),
+    %
+    %   which can be rewriten as
+    %
+    %       |u|      |A*lap      | |u|   |Nu(u,v)|
+    %       |v|_t  = |      B*lap| |v| + |Nv(u,v)|,
+    %
+    %   then the preconditioner is 
+    %
+    %       |Tsin2      |
+    %       |      Tsin2|.  
 end
 
 % Compute LU factorizations of LIRK4 matrices:

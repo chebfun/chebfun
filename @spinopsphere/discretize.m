@@ -52,7 +52,6 @@ lapmat = kron(In, Tsin2*D2m + Tcossin*Dm) + kron(D2n, Im);
  
 % Convert to a string and initialize L:
 strL = func2str(funcL);
-L = [];
 
 % Get the constants A in front of the Laplacians:
 str = strrep(strL, 'laplacian', '');
@@ -65,9 +64,11 @@ end
 A = feval(func, inputs{:}); 
 
 % Compute L:
+L = cell(nVars, 1);
 for k = 1:nVars
-    L = [L; A(k)*lapmat];
+    L{k} = A(k)*lapmat;
 end
+L = blkdiag(L{:});
 
 %% Disretize the differentiation term of the nonlinear part:
 

@@ -16,7 +16,7 @@ nVars = S.numVars;
 viewSpec = pref.view;
 vscale = max(abs(v(:)));
 dataplot = str2func(pref.dataplot);
-defaultPref = spinpref2();
+defaultPref = spinprefsphere();
 defaultView = defaultPref.view;
 while ( length(viewSpec) < 2*nVars )
     viewSpec = [viewSpec, defaultView];
