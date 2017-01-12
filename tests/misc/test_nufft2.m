@@ -7,7 +7,7 @@ end
 rng(0);
 M = 100; N = 103; 
 m = 105; n = 101; 
-C = rand(m, n);
+C = rand(m, n) + 1i*rand(m,n);
 
 x = rand(M, N); 
 y = rand(M, N);

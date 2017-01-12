@@ -1,4 +1,4 @@
-function f = nufft2( c, x, y)
+function f = nufft2( c, x, y, tol)
 % CHEBFUN.NUFFT2   Two-dimensional nonuniform fast Fourier transform
 %
 % F = CHEBFUN.NUFFT2( C ) is the same as fft2( C ).
@@ -23,14 +23,27 @@ function f = nufft2( c, x, y)
 %
 % This paper related the NUFFT to a FFT by low rank approximation.
 
-tol = 100*eps; 
+% Default tolerance. 
+if ( nargin < 4 )
+    tol = 100*eps; 
+end
     
+% Get size of sample vectors 
+% (We use this to reshape the final vector at the end.) 
 [M, N] = size( x ); 
+if ( all( size(y) == [M,N] ) )
+    error('CHEBFUN::NUFFT2::SampleArrays', ...
+          'The dimensions of X and Y are not the same.');
+end
+
+% Size of Fourier coefficient matrix:
 [m, n] = size( c );
 
+% Make samples columns: 
 x = x(:); 
 y = y(:);
 
+% Find nearest equispaced grid to the sample points (x,y):
 xj = round(n*x)/n;
 xt = mod(round(n*x),n)+1;
 yj = round(m*y)/m; 
@@ -56,6 +69,7 @@ scl = exp(-1i*pi*er);
 U2 = repmat(scl,1,K2).*(ChebP(K2-1,er/gam)*Bessel_cfs(K2, gam));
 V2 = ChebP(K2-1, 2*(0:n-1)'/n - 1);
 
+% See paper [1] for explanation on this code: 
 f = zeros(M*N, 1);
 for r = 1:K2 
     Ar = fft( bsxfun(@times,c.',V2(:,r)) ).';
@@ -65,7 +79,7 @@ for r = 1:K2
     end
 end
 
-% Reshape: 
+% Reshape vector to match input vectors x and y: 
 f = reshape( f, M, N); 
 end
 

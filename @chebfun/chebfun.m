@@ -375,7 +375,7 @@ classdef chebfun
         [y, p] = nufft( varargin );
         
         % Two-dimensional NUFFT: 
-        f = nufft2( C, x, y ); 
+        f = nufft2( varargin ); 
 
         % ODE113 with CHEBFUN output.
         [t, y] = ode113(varargin);
