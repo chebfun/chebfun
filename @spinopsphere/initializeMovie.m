@@ -61,8 +61,9 @@ for k = 1:nVars
     [xxx, yyy, zzz] = sph2cart(lll, pi/2 - ttt, ones(size(lll)));
     p{k} = surf(xxx, yyy, zzz, vvv, 'edgecolor', 'none', 'facecolor', 'interp');
     set(p{k}.Parent, 'clim', [Clim(2*(k-1) + 1), Clim(2*(k-1) + 2)])
+    axis equal, axis off
     view(viewSpec(2*(k - 1) + 1 : 2*(k - 1) + 2))
-    colorbar, colormap(pref.colormap), axis equal, axis off
+    colorbar, colormap(pref.colormap)
     set(gca, 'xtick', [-1 0 1], 'ytick', [-1 0 1], 'ztick', [-1 0 1])
     xlabel('x'), ylabel('y'), zlabel('z'), set(gca, FS, fs), box on
     drawnow
