@@ -21,7 +21,7 @@ function [uout, tout] = spin(varargin)
 %   UOUT = SPIN(S, N, DT, 'PREF1', VALUEPREF1, 'PREF2', VALUEPREF2, ...) is an
 %   alternative to the previous syntax. See Example 11.
 %
-%   [UOUT, TOUT] = SPIN(...) also returns the times chunks TOUT at which UOUT
+%   [UOUT, TOUT] = SPIN(...) also returns the time chunks TOUT at which UOUT
 %   was computed.
 %
 % Remark 1: Available (case-insensitive) strings PDECHAR are
@@ -179,7 +179,7 @@ function [uout, tout] = spin(varargin)
 %   produces a WATERFALL plot as opposed to a movie and use the time-stepping
 %   scheme PECEC433.
 %
-% See also SPINOP, SPINPREF, SPINSCHEME.
+% See also SPINOP, SPINPREF, EXPINT.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

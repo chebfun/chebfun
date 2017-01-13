@@ -20,7 +20,7 @@ function [uout, tout] = spinsphere(varargin)
 %   Example 5.
 %
 %   UOUT = SPINSPHERE(S, N, DT, 'PREF1', VALUEPREF1, 'PREF2', VALUEPREF2, ...) 
-%   is an alternative to the previous syntax. See Example 6.
+%   is an alternative to the previous syntax. See Example 5.
 %
 %   [UOUT, TOUT] = SPINSPHERE(...) also returns the times chunks TOUT at which 
 %   UOUT was computed.
@@ -37,11 +37,11 @@ function [uout, tout] = spinsphere(varargin)
 %
 %    solves the Allen-Cahn equation
 %
-%        u_t = 1e-2*lapplacian(u) + u - u^3
+%        u_t = 1e-2*laplacian(u) + u - u^3
 %
 %    on the sphere from t=0 to t=60, with initial condition
 %
-%        u0(x, y, z) = cos(cosh(5*x.*z) - 10*y)).
+%        u0(x, y, z) = cos(cosh(5*x.*z) - 10*y).
 %
 % Example 2: Ginzburg-Landau equation 
 %
@@ -91,7 +91,7 @@ function [uout, tout] = spinsphere(varargin)
 %   solves the Allen-Cahn equation using N=64 grid points in each direction,
 %   a time-step dt=2e-1 and set the limits of the colobar to [-2 2].
 %
-% See also SPINOPSPHERE, SPINPREFSPHERE, SPINSCHEME.
+% See also SPINOPSPHERE, SPINPREFSPHERE, IMEX.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
