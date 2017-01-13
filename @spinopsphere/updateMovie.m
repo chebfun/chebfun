@@ -46,16 +46,16 @@ for k = 1:nVars
     end
     
     % Update each variable:
-    set(p{k}, 'cdata', vvv)
-    set(p{k}.Parent, 'clim', [Clim(2*(k-1) + 1), Clim(2*(k-1) + 2)])
-    drawnow
+    set(p{1,k}, 'cdata', vvv)
+    set(p{1,k}.Parent, 'clim', [Clim(2*(k-1) + 1), Clim(2*(k-1) + 2)])
     
-end
+    % Update title:
+    titleString = sprintf('n = m = %i (DoFs = %i), dt = %1.1e, t = %.4f', N, ...
+        nVars*N^2, dt, t);
+    set(p{2,k}, 'String', titleString)
+    drawnow
 
-% Update title:
-titleString = sprintf('n = m = %i (DoFs = %i), dt = %1.1e, t = %.4f', N, ...
-    nVars*N^2, dt, t);
-set(p{nVars + 1}, 'String', titleString)
+end
 
 % Update outputs:
 opts{1} = Clim;

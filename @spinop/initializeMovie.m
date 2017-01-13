@@ -4,10 +4,10 @@ function [p, opts] = initializeMovie(S, dt, pref, v, compGrid, plotGrid)
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Note: P is a (NVARS+1)x1 CELL-ARRAY that stores the NVARS plots in its first 
-% NVARS entries, and the title in its (NVARS+1)st entry. OPTS is a 2x1
-% CELL-ARRAY that stores the limits of the y-axis in OPTS{1} and what kind of
-% data to plot in OPTS{2} (real/imag/abs; when the data is complex-valued).
+% Note: P is a NVARSx2 CELL-ARRAY that stores the NVARS plots in the first 
+% row, and the NVARS titles in the second row. OPTS is a 2x1 CELL-ARRAY that 
+% stores the limits of the y-axis in OPTS{1} and what kind of data to plot in 
+% OPTS{2} (real/imag/abs; when the data is complex-valued).
 
 % Set-up:
 dom = S.domain;
@@ -22,7 +22,7 @@ FS = 'fontsize';
 fs = 12;
 
 % Loop over the variables:
-p = cell(nVars, 1); clf reset
+p = cell(2, nVars); clf reset
 for k = 1:nVars
     
     % Extract each variable:
@@ -47,7 +47,7 @@ for k = 1:nVars
     
     % Plot each variable:
     subplot(1, nVars, k)
-    p{k} = plot(xxx, vvv, 'linewidth', 3);
+    p{1,k} = plot(xxx, vvv, 'linewidth', 3);
     axis([dom(1), dom(2), Ylim(2*(k-1) + 1), Ylim(2*(k-1) + 2)])
     if ( nVars == 1 )
         xlabel('x'), ylabel('u(t,x)'), grid on
@@ -55,18 +55,14 @@ for k = 1:nVars
         xlabel('x'), ylabel(['u_',num2str(k),'(t,x)']), grid on
     end
     set(gca, FS, fs), box on
+    
+    % Plot each title:
+    titleString = sprintf('N = %i (DoFs = %i), dt = %1.1e, t = %.4f', N, ...
+        nVars*N, dt, 0);
+    p{2,k} = title(titleString);
     drawnow
     
 end
-
-% Title:
-titleString = sprintf('N = %i (DoFs = %i), dt = %1.1e, t = %.4f', N, ...
-    nVars*N, dt, 0);
-set(gcf, 'NextPlot', 'add');
-ax = axes;
-h = title(titleString);
-set(ax, 'Visible', 'off', 'HandleVisibility', 'on', FS, fs);
-set(h, 'Visible', 'on', 'Position', [.5 1.00 .5])
 
 % Ask the user to press SPACE:
 state = pause;
@@ -76,7 +72,6 @@ end
 shg, pause
 
 % Outputs:
-p{nVars + 1} = h;
 opts{1} = Ylim;
 opts{2} = dataplot;
 

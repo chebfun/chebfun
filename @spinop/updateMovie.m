@@ -42,16 +42,16 @@ for k = 1:nVars
     end
     
     % Update each variable:
-    set(p{k}, 'ydata', vvv)
-    set(p{k}.Parent, 'ylim', [Ylim(2*(k-1) + 1), Ylim(2*(k-1) + 2)])
+    set(p{1,k}, 'ydata', vvv)
+    set(p{1,k}.Parent, 'ylim', [Ylim(2*(k-1) + 1), Ylim(2*(k-1) + 2)])
+    
+    % Update each title:
+    titleString = sprintf('N = %i (DoFs = %i), dt = %1.1e, t = %.4f', N, ...
+        nVars*N, dt, t);
+    set(p{2,k}, 'String', titleString)
     drawnow
     
 end
-
-% Update title:
-titleString = sprintf('N = %i (DoFs = %i), dt = %1.1e, t = %.4f', N, ...
-    nVars*N, dt, t);
-set(p{nVars + 1}, 'String', titleString)
 
 % Update outputs:
 opts{1} = Ylim;

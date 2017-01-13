@@ -4,11 +4,11 @@ function [p, opts] = initializeMovie(S, dt, pref, v, compGrid, plotGrid)
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Note: P is a (NVARS+1)x1 CELL-ARRAY that stores the NVARS plots in its first 
-% NVARS entries, and the title in its (NVARS+1)st entry. OPTS is a 3x1
-% CELL-ARRAY that stores the limits of the colorbar in OPTS{1}, the viewpoint 
-% specification in OPTS{2} and what kind of data to plot in OPTS{3} 
-% (real/imag/abs; when the data is complex-valued).
+% Note: P is a NVARSx2 CELL-ARRAY that stores the NVARS plots in the first row
+% and the NVARS titles in the second row. OPTS is a 3x1 CELL-ARRAY that stores
+% the limits of the colorbar in OPTS{1}, the viewpoint specification in OPTS{2}
+% and what kind of data to plot in OPTS{3} (real/imag/abs; when the data is
+% complex-valued).
 
 % Set-up:
 dom = S.domain;
@@ -31,7 +31,7 @@ FS = 'fontsize';
 fs = 12;
 
 % Loop over the variables:
-p = cell(nVars + 1, 1); clf reset
+p = cell(2, nVars); clf reset
 for k = 1:nVars
     
     % Extract each variable:
@@ -57,24 +57,20 @@ for k = 1:nVars
     
     % Plot each variable:
     subplot(1, nVars, k)
-    p{k} = surf(xxx, yyy, vvv, 'edgecolor', 'none', 'facecolor', 'interp');
-    set(p{k}.Parent, 'clim', [Clim(2*(k-1) + 1), Clim(2*(k-1) + 2)])
+    p{1,k} = surf(xxx, yyy, vvv, 'edgecolor', 'none', 'facecolor', 'interp');
+    set(p{1,k}.Parent, 'clim', [Clim(2*(k-1) + 1), Clim(2*(k-1) + 2)])
     axis equal, axis([dom(1) dom(2) dom(3) dom(4)])
     view(viewSpec(2*(k - 1) + 1 : 2*(k - 1) + 2))
     colorbar, colormap(pref.colormap)
     xlabel('x'), ylabel('y'), set(gca, FS, fs), box on
+    
+    % Plot each title:
+    titleString = sprintf('Nx = Ny = %i (DoFs = %i), dt = %1.1e, t = %.4f', N, ...
+        nVars*N^2, dt, 0);
+    p{2,k} = title(titleString);
     drawnow
     
 end
-
-% Title:
-titleString = sprintf('Nx = Ny = %i (DoFs = %i), dt = %1.1e, t = %.4f', N, ...
-    nVars*N^2, dt, 0);
-set(gcf, 'NextPlot', 'add');
-ax = axes;
-h = title(titleString);
-set(ax, 'Visible', 'off', 'HandleVisibility', 'on', FS, fs);
-set(h, 'Visible', 'on', 'Position', [.47 1.01 .5])
 
 % Ask the user to press SPACE:
 state = pause;
@@ -84,7 +80,6 @@ end
 shg, pause
 
 % Outputs:
-p{nVars + 1} = h;
 opts{1} = Clim;
 opts{2} = viewSpec;
 opts{3} = dataplot;
