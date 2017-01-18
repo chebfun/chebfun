@@ -39,7 +39,7 @@ elseif ( nargin == 4 ) % Cartesian coordinates used.
             theta = pi/2 - theta;
         end
         y = feval@separableApprox(f, lambda, theta);
-%         y = FastSphereEval( f, lambda, theta );
+
         if ( (size(lambda, 1) == 1) && (size(theta,1) == 1) )
             y = y.';
         end
