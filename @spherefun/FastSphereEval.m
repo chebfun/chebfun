@@ -139,11 +139,3 @@ for k = 2:n
     T(:,k+1) = twoX.*T(:,k) - T(:,k-1);
 end
 end
-
-function Aij = getEntries( cols, rows, ii, jj )
-
-Aij = zeros(numel(ii),1);
-for s = 1:numel(ii)
-    Aij(s) = cols(ii(s),:)*rows(:,jj(s));
-end
-end
