@@ -25,7 +25,7 @@ function varargout = trigpade(f, m, n, varargin)
 %     [p, q, r] = trigpade(f, 1, 3);
 %     plotcoeffs(f-p./q, '.')
 %   
-%   Compute a type (2, 2) trgonometric Pade approximation of
+%   Compute a type (2, 2) trigonometric Pade approximation of
 %   exp(-80*(x-.5).^2) on [-1, 1]:
 % 
 %     f = chebfun(@(t) exp(-80*(t-.5).^2), 'trig')
@@ -113,12 +113,12 @@ end
 %% Construct the four trigonometric polynomials of Fourier Pade approximaiton
 
 % _d is for denominator, _n is for numerator
-% Denonminator and numerator for the +ve part
+% Denominator and numerator for the +ve part
 tn_p = chebfun(ap, dom, 'coeffs', 'trig' );
 td_p = chebfun(bp, dom, 'coeffs', 'trig' );
 
 
-% denonminator and numerator for the -ve part
+% denominator and numerator for the -ve part
 tn_m = chebfun(am, dom, 'coeffs', 'trig' );
 td_m = chebfun(bm, dom, 'coeffs', 'trig' );
 
@@ -168,7 +168,7 @@ function [ap, bp, am, bm] = laurent_pade(c, m, n, tol)
 %   Compute the Laurent-Pade approximation from the 
 %   given Laurent coefficients in c. 
 %   Inputs: It is assumed that c has the form 
-%   [c{-N}, ..., c_{-1}, c0, c_1, ..., c_{N}].'
+%   [c_{-N}, ..., c_{-1}, c_0, c_1, ..., c_{N}].'
 %   In particular, c has odd length 2N+1
 %   m and n are non-negative integers and tol is 
 %   a tolerance.
@@ -178,7 +178,7 @@ function [ap, bp, am, bm] = laurent_pade(c, m, n, tol)
 %   a_m/b_m form p-/q-
 %   The output vectors are ready to be used by 
 %   the chebfun trig constructor, for example
-%   ap is of the form [..., 0, 0, a_0, a1, a_2, ...]
+%   ap is of the form [..., 0, 0, a_0, a_1, a_2, ...]
 %   while am has the form 
 %   [ ..., a_{-2}, a_{-1}, a_0, 0, 0, ...]. 
 %   Zero padding is also done on each side of the
@@ -193,7 +193,7 @@ end
 % make sure c is a column vector
 c = c(:);
 
-% Middle of the laurent series, location of c_{-1}
+% Middle of the Laurent series, location of c_{-1}
 N = (length(c)-1)/2;
 
 % Handle the special case:
@@ -215,7 +215,7 @@ c_rev = flipud(c);
 
 if ( norm(c-conj(c_rev), inf) < 10*tol )
     % Function is real, don't solve the 
-    % same problem again:
+    % same problem again
     am = conj(ap);
     bm = conj(bp);
 else
@@ -223,7 +223,7 @@ else
     [am, bm] = laurent_approx(c_rev, m, n, N, tol);
 end
 
-% Pad coefficients with zeros:
+% Pad coefficients with zeros
 ap = [zeros(length(ap)-1, 1); ap];
 bp = [zeros(length(bp)-1, 1); bp];
 
@@ -238,11 +238,11 @@ end
 
 function [a, b] = laurent_approx(c, m, n, N, tol)
 
-% Input: It is assumed that the laurent
+% Input: It is assumed that the Laurent
 % coefficients are stored in an array 
 % [c_{-N}, ..., c_{-1}, c_0, c_1, ..., c{N}]
 % and the length of the array is 2N + 1.
-% To convert a laurent index to matlab index
+% To convert a Laurent index to matlab index
 % an offset of N+1 is needed.
 % c_0 is indexed at N + 1
 % c_k is indexed at k + N + 1
@@ -262,7 +262,7 @@ col = c((m+1)+(N+1):(m+n)+(N+1));
 % Each row has n+1 columns
 row = c((m+1)+(N+1):-1:(m+1-n)+(N+1));
 
-% C is of size n x (n+1):
+% C is of size n x (n+1)
 C = toeplitz(col, row);
 
 % It has at least one null vector, which 
@@ -273,7 +273,7 @@ if ( size(b, 2) > 1)
 end
 
 % Normalize b, the derivation following Baker and Graves-Morris
-% requires this nomraliztion 
+% requires this normalization 
 if ( abs(b(1)) < tol )
     error('CHEBFUN:TRIGPADE:laurent_approx', 'denominator zero at the origin detected')
 else
@@ -285,7 +285,7 @@ M = max([m, n]);
 col = c(0+(N+1):M+(N+1));
 col(1) = col(1)/2;
 % C is an (M+1) X (M+1) square matrix
-% Note: it is curcial to say toeplitz(col, col) to 
+% Note: it is crucial to say toeplitz(col, col) to 
 % avoid hermitian formation of the following matrix
 C = toeplitz(col, col);
 C = tril(C);
@@ -299,7 +299,7 @@ end
 function a = chop_coeffs(c, tol)
 % Discard small coeffs from either 
 % end of c using tol, preserving 
-% the maximum fourier mode if asymmetric
+% the maximum Fourier mode if asymmetric
 mid = (length(c)+1)/2;
 nm = mid - find(abs(c)>tol, 1, 'first');
 np = find(abs(c)>tol, 1, 'last') - mid;
