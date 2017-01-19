@@ -470,7 +470,6 @@ else
         uOut(k,1) = fun(vOut{1}(idx:idx+N-1,:,:), dom, 'trig');
     end
     for l = 2:size(vOut, 2)
-        N = length(vOut{l})/nVars;
         for k = 1:nVars
             idx = (k-1)*N + 1;
             uOut(k,l) = fun(vOut{l}(idx:idx+N-1,:,:), dom, 'trig');
