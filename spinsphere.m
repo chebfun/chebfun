@@ -51,7 +51,7 @@ function [uout, tout] = spinsphere(varargin)
 %
 %        u_t = 1e-3*laplacian(u) + u - (1+1.5i)*u*|u|^2,
 %
-%    on the sphere from t=0 to t=50, with initial condition
+%    on the sphere from t=0 to t=30, with initial condition
 %
 %      u0(x,y,z) = cos(3*x) + cos(3*y) + cos(3*z), rotated by pi/8
 %          around the y-axis.
