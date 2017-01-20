@@ -5,8 +5,8 @@ function [uout, tout] = spinsphere(varargin)
 %   UOUT = SPINSPHERE(PDECHAR) solves the PDE specified by the string PDECHAR,
 %   and plots a movie of the solution as it computes it; it is a demo mode.
 %   The space and time intervals and the initial condition are chosen to produce
-%   beautiful movies. Strings available include 'AC2' for Allen-Cahn equation, 
-%   'GL2' for Ginzburg-Landau equation and 'NLS2' for nonlinear Schrodinger 
+%   beautiful movies. Strings available include 'AC' for Allen-Cahn equation, 
+%   'GL' for Ginzburg-Landau equation and 'NLS' for nonlinear Schrodinger 
 %   equation. See Remark 1 and Examples 1-3. The output UOUT is a SPHEREFUN 
 %   corresponding to the solution at the final time (a CHEBMATRIX for systems 
 %   of equations, each row representing one variable).
@@ -27,13 +27,13 @@ function [uout, tout] = spinsphere(varargin)
 %
 % Remark 1: Available (case-insensitive) strings PDECHAR are
 %
-%    - 'AC2' for Allen-Cahn equation,
-%    - 'GL2' for Ginzburg-Landau equation,
-%    - 'NLS2' for focusing nonlinear Schroedinger equation.
+%    - 'AC' for Allen-Cahn equation,
+%    - 'GL' for Ginzburg-Landau equation,
+%    - 'NLS' for focusing nonlinear Schroedinger equation.
 %
 % Example 1: Allen-Cahn equation
 %
-%        u = spinsphere('AC2');
+%        u = spinsphere('AC');
 %
 %    solves the Allen-Cahn equation
 %
@@ -45,7 +45,7 @@ function [uout, tout] = spinsphere(varargin)
 %
 % Example 2: Ginzburg-Landau equation 
 %
-%        u = spinsphere('GL2');
+%        u = spinsphere('GL');
 %
 %    solves the Ginzburg-Landau equation
 %
@@ -56,7 +56,7 @@ function [uout, tout] = spinsphere(varargin)
 %
 % Example 3: Focusing nonlinear Schroedinger equation
 %
-%        u = spinsphere('NLS2');
+%        u = spinsphere('NLS');
 %
 %    solves the focusing nonlinear Schroedinger equation
 %
@@ -78,7 +78,7 @@ function [uout, tout] = spinsphere(varargin)
 %       S.init = spherefun(.1*randn(128));
 %       u = spinsphere(S, 128, 2e-1);
 %
-%   is equivalent to u = spinsphere('GL2');
+%   is equivalent to u = spinsphere('GL');
 %
 % Example 5: Using preferences
 %
@@ -105,7 +105,7 @@ function [uout, tout] = spinsphere(varargin)
 % where S is a SPINOPSPHERE object, N is the number of grid points in each 
 % direction, DT is the time-step and PREF is a SPINPREFSPHERE oject.
 
-if ( nargin == 1 ) % e.g., u = spinsphere('gl2')
+if ( nargin == 1 ) % e.g., u = spinsphere('gl')
     try spinopsphere(varargin{1});
     catch
         error('Unrecognized PDE. See HELP/SPINSPHERE for the list of PDEs.')
@@ -143,13 +143,13 @@ function [S, N, dt, pref] = parseInputs(pdechar)
 
 pref = spinprefsphere();
 S = spinopsphere(pdechar);
-if ( strcmpi(pdechar, 'AC2') == 1 )
+if ( strcmpi(pdechar, 'AC') == 1 )
     dt = 2e-1;
     N = 64;
-elseif ( strcmpi(pdechar, 'GL2') == 1 )
+elseif ( strcmpi(pdechar, 'GL') == 1 )
     dt = 2e-1;
     N = 128;
-elseif ( strcmpi(pdechar, 'NLS2') == 1 )
+elseif ( strcmpi(pdechar, 'NLS') == 1 )
     dt = 1e-2;
     N = 64;
     pref.colormap = 'jet';

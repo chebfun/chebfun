@@ -6,8 +6,8 @@ classdef spinopsphere < spinoperator
 %   L is a linear operator and N is a nonlinear operator. 
 %
 %   S = SPINOPSPHERE(PDECHAR) creates a SPINOPSPHERE object S defined by the 
-%   string PDECHAR. Strings available include 'AC2' for the Allen-Cahn equation,
-%   GL2' for the Ginzburg-Landau equation and 'NLS2' for the nonlinear 
+%   string PDECHAR. Strings available include 'AC' for the Allen-Cahn equation,
+%   GL' for the Ginzburg-Landau equation and 'NLS' for the nonlinear 
 %   Schroedinger equation.
 %
 %   S = SPINOPSPHERE(TSPAN) creates a SPINOPSPHERE object S on SPHERE x TSPAN. 
@@ -24,7 +24,7 @@ classdef spinopsphere < spinoperator
 % Remark 2: The nonlinear part has to be of the form @(u) f(u), where f is a 
 %           nonlinear nondifferential operator with constant coefficients.
 %
-% Example 1: To construct a SPINOPSPHERE corresponding to the GL2 equation on 
+% Example 1: To construct a SPINOPSPHERE corresponding to the GL equation on 
 %            the sphere with TSPAN = [0 100] and initial condition 
 %            u0(lam,th) = Y_8^2(lam,th), one can type
 %
@@ -92,21 +92,21 @@ end
         %   interval TSPAN and the initial condition U0.
 
         % Allen-Cahn equation:
-        if ( strcmpi(pdechar, 'AC2') == 1 )
+        if ( strcmpi(pdechar, 'AC') == 1 )
             L = @(u) 1e-2*lap(u);
             N = @(u) u - u.^3;
             tspan = [0 60];
             u0 = spherefun(@(x,y,z) cos(cosh(5*x.*z)-10*y));
             
         % Ginzburg-Landau equation:
-        elseif ( strcmpi(pdechar, 'GL2') == 1 )
+        elseif ( strcmpi(pdechar, 'GL') == 1 )
             L = @(u) 1e-3*lap(u);
             N = @(u) u - (1 + 1.5i)*u.*(abs(u).^2);
             tspan = [0 100];
             u0 = spherefun(.1*randn(128));
             
         % Focusing nonlinear Schroedinger equation
-        elseif ( strcmpi(pdechar, 'NLS2') == 1 )
+        elseif ( strcmpi(pdechar, 'NLS') == 1 )
             L = @(u) 1i*lap(u);
             N = @(u) 1i*u.*abs(u).^2;
             tspan = [0 10];
