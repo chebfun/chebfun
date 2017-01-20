@@ -1,4 +1,4 @@
-% Test file for SPINOP/SPINOP:
+% Test file for SPINOP:
 
 function pass = test_spinop()
 
