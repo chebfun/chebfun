@@ -51,7 +51,11 @@ function [uout, tout] = spinsphere(varargin)
 %
 %        u_t = 1e-3*laplacian(u) + u - (1+1.5i)*u*|u|^2,
 %
-%    on the sphere from t=0 to t=100, with a random initial condition.
+%    on the sphere from t=0 to t=50, with initial condition
+%
+%      u0(x,y,z) = cos(3*x) + cos(3*y) + cos(3*z), rotated by pi/8
+%          around the y-axis.
+%        
 %    The movie plots the real part of u.
 %
 % Example 3: Focusing nonlinear Schroedinger equation
@@ -83,7 +87,7 @@ function [uout, tout] = spinsphere(varargin)
 % Example 5: Using preferences
 %
 %       pref = spinprefsphere('Clim', [-2 2]);
-%       S = spinopsphere('ac2');
+%       S = spinopsphere('ac');
 %       u = spinsphere(S, 64, 2e-1, pref);
 %   or simply,
 %       u = spinsphere(S, 64, 2e-1, 'Clim', [-2 2]);
