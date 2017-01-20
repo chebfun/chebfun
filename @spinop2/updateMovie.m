@@ -1,25 +1,26 @@
-function options = plotMovie(S, dt, p, options, t, v, dataGrid, plotGrid)
-%PLOTMOVIE   Plot a movie when solving a PDE specified by a SPINOP2.
+function opts = updateMovie(S, dt, p, opts, t, v, compGrid, plotGrid)
+%UPDATEMOVIE   Update the movie when solving a PDE specified by a SPINOP2.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Set-up:
 nVars = S.numVars;
-Clim = options{1};
-dataToPlot = options{3};
-xx = dataGrid{1};
-yy = dataGrid{2};
+Clim = opts{1};
+dataToPlot = opts{3};
+xx = compGrid{1};
+yy = compGrid{2};
 N = size(xx, 1) - 1;
 xxx = plotGrid{1};
 yyy = plotGrid{2};
+Nplot = size(xxx, 1) - 1;
 
 for k = 1:nVars
     
     % Extract each variable:
     idx = (k-1)*N + 1;
     vv = dataToPlot(v(idx:idx+N-1,:));
-    vv = [vv, vv(:,1)]; %#ok<*AGROW>
+    vv = [vv, vv(:,1)]; %#ok<*AGROW> add repeated values (periodic endpoints)
     vv = [vv; vv(1,:)];
     
     % Change axes if necessary:
@@ -37,21 +38,25 @@ for k = 1:nVars
     end
     
     % Interpolate each variable on a finer grid:
-    vvv = interp2(xx, yy, vv, xxx, yyy, 'spline');
+    if ( Nplot > N )
+        vvv = interp2(xx, yy, vv, xxx, yyy, 'spline');
+    else
+        vvv = vv;
+    end
     
     % Update each variable:
-    set(p{k}, 'zdata', vvv)
-    set(p{k}.Parent, 'clim', [Clim(2*(k-1) + 1), Clim(2*(k-1) + 2)])
-    drawnow
+    set(p{1,k}, 'zdata', vvv)
+    set(p{1,k}.Parent, 'clim', [Clim(2*(k-1) + 1), Clim(2*(k-1) + 2)])
     
+    % Update each title:
+    titleString = sprintf('Nx = Ny = %i (DoFs = %i), dt = %1.1e, t = %.4f', N, ...
+        nVars*N^2, dt, t);
+    set(p{2,k}, 'String', titleString)
+    drawnow
+
 end
 
-% Update title:
-titleString = sprintf('Nx = Ny = %i (DoFs = %i), dt = %1.1e, t = %.4f', N, ...
-    nVars*N^2, dt, t);
-set(p{nVars + 1}, 'String', titleString)
-
 % Update outputs:
-options{1} = Clim;
+opts{1} = Clim;
 
 end

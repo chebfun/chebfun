@@ -1,9 +1,10 @@
-function [uSol, NuSol] = oneStep(K, schemeCoeffs, Nc, Nv, nVars, uSol, NuSol)
+function [uSol, NuSol] = oneStep(K, ~, schemeCoeffs, Nc, Nv, nVars, S, uSol, NuSol)
 %ONESTEP   Compute solution at t_{n+1} from solution at previous time-steps.
 %   [USOL, NUSOL] = ONESTEP(K, SCHEMECOEFFS, NC, NV, NVARS, USOL, NUSOL) updates 
 %   the solution USOL and its nonlinear evaluations NUSOL using the coefficients 
-%   SCHEMECOEFFS of the SPINSCHEME K, the nonlinear parts of the PDE in 
-%   coefficient and value space NC and NV, and the number of variables NVARS.
+%   SCHEMECOEFFS of the EXPINT K, the nonlinear parts of the PDE in coefficient
+%   and value space NC and NV, the number of variables NVARS and the
+%   SPINOPERATOR S.
 
 % Notes: USOL and NUSOL are cell-arrays of Fourier coefficients that represent 
 % the solution at different time-steps. They have Q entries for a multi-step 
@@ -34,6 +35,10 @@ function [uSol, NuSol] = oneStep(K, schemeCoeffs, Nc, Nv, nVars, uSol, NuSol)
 s = K.stages;               % number of internal stages
 q = K.steps;                % number of steps (>1 for multistep methods)
 N = size(uSol{1}, 1)/nVars; % grid points
+
+% Get the values to coeffs and coeffs to values transform:
+v2c = getVals2CoeffsTransform(S);
+c2v = getCoeffs2ValsTransform(S);
 
 % Coefficients of the scheme:
 A = schemeCoeffs.A;
@@ -68,16 +73,16 @@ for i = 2:s
     end
     
     % Nonlinear evaluation of the internal stages with IFFT/FFT:
-    vals = ifftn(vSol{i}(1:N,:,:));
+    vals = c2v(vSol{i}(1:N,:,:));
     for k = 1:nVars-1
         idx = k*N + 1;
-        vals = [vals; ifftn(vSol{i}(idx:idx+N-1,:,:))];
+        vals = [vals; c2v(vSol{i}(idx:idx+N-1,:,:))];
     end
     vals = Nv(vals);
-    coeffs = fftn(vals(1:N,:,:));
+    coeffs = v2c(vals(1:N,:,:));
     for k = 1:nVars-1
         idx = k*N + 1;
-        coeffs = [coeffs; fftn(vals(idx:idx+N-1,:,:))];
+        coeffs = [coeffs; v2c(vals(idx:idx+N-1,:,:))];
     end
     NvSol{i} = Nc.*coeffs;
     
@@ -104,16 +109,16 @@ else
 end
  
 % Nonlinear evaluation of the solution at t_{n+1}:
-vals = ifftn(uSol{1}(1:N,:,:));
+vals = c2v(uSol{1}(1:N,:,:));
 for k = 1:nVars-1
     idx = k*N + 1;
-    vals = [vals; ifftn(uSol{1}(idx:idx+N-1,:,:))]; %#ok<*AGROW>
+    vals = [vals; c2v(uSol{1}(idx:idx+N-1,:,:))]; %#ok<*AGROW>
 end
 vals = Nv(vals);
-coeffs = fftn(vals(1:N,:,:));
+coeffs = v2c(vals(1:N,:,:));
 for k = 1:nVars-1
     idx = k*N + 1;
-    coeffs = [coeffs; fftn(vals(idx:idx+N-1,:,:))];
+    coeffs = [coeffs; v2c(vals(idx:idx+N-1,:,:))];
 end
 Nsol = Nc.*coeffs;
 

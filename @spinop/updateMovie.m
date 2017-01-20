@@ -1,23 +1,24 @@
-function options = plotMovie(S, dt, p, options, t, v, dataGrid, plotGrid)
-%PLOTMOVIE   Plot a movie when solving a PDE specified by a SPINOP.
+function opts = updateMovie(S, dt, p, opts, t, v, compGrid, plotGrid)
+%UPDATEMOVIE   Update the movie when solving a PDE specified by a SPINOP.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Set-up:
 nVars = S.numVars;
-Ylim = options{1};
-dataToPlot = options{2};
-xx = dataGrid{1};
+Ylim = opts{1};
+dataToPlot = opts{2};
+xx = compGrid{1}; 
 xxx = plotGrid{1};
 N = size(xx, 1) - 1;
+Nplot = size(xxx, 1) - 1;
 
 for k = 1:nVars
     
     % Extract each variable:
     idx = (k-1)*N + 1;
     vv = dataToPlot(v(idx:idx+N-1));
-    vv = [vv; vv(1)]; %#ok<*AGROW>
+    vv = [vv; vv(1)]; %#ok<*AGROW> add repeated values (periodic endpoints)
     
     % Change axes if necessary:
     if ( nargout == 1 )
@@ -34,21 +35,25 @@ for k = 1:nVars
     end
     
     % Interpolate each variable on a finer grid:
-    vvv = interp1(xx, vv, xxx, 'spline');
+    if ( Nplot > N )
+        vvv = interp1(xx, vv, xxx, 'spline');
+    else
+        vvv = vv;
+    end
     
     % Update each variable:
-    set(p{k}, 'ydata', vvv)
-    set(p{k}.Parent, 'ylim', [Ylim(2*(k-1) + 1), Ylim(2*(k-1) + 2)])
+    set(p{1,k}, 'ydata', vvv)
+    set(p{1,k}.Parent, 'ylim', [Ylim(2*(k-1) + 1), Ylim(2*(k-1) + 2)])
+    
+    % Update each title:
+    titleString = sprintf('N = %i (DoFs = %i), dt = %1.1e, t = %.4f', N, ...
+        nVars*N, dt, t);
+    set(p{2,k}, 'String', titleString)
     drawnow
     
 end
 
-% Update title:
-titleString = sprintf('N = %i (DoFs = %i), dt = %1.1e, t = %.4f', N, ...
-    nVars*N, dt, t);
-set(p{nVars + 1}, 'String', titleString)
-
 % Update outputs:
-options{1} = Ylim;
+opts{1} = Ylim;
 
 end

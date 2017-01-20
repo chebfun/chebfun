@@ -1,13 +1,38 @@
 function schemeCoeffs = computeCoeffs(K, dt, L, M, S)
-%COMPUTECOEFFS   Compute coefficients of a SPINSCHEME.
+%COMPUTECOEFFS   Compute coefficients of an EXPINT.
 %   SCHEMECOEFFS = COMPUTECOEFFS(K, DT, L, M, S) computes the coefficients
-%   needed by the SPINSCHEME K from the time-step DT, the linear part L, the
+%   needed by the EXPINT K from the time-step DT, the linear part L, the
 %   number of points for complex means M, and the SPINOPERATOR S.
 %
-% See also SPINSCHEME.
-%
+% See also EXPINT.
+
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
+
+% Note (1): At the end of the method the coefficients will be stored in 
+% SCHEMECOEFFS, a STRUCT object with the following fields:
+%
+% SCHEMECOEFFS.A -> sxs CELL-ARRAY that stores the coefficients A, functions of 
+%                   the phi-functions
+% SCHEMECOEFFS.B -> sx1 CELL-ARRAY that stores the coefficients B, functions of
+%                   the phi-functions
+% SCHEMECOEFFS.C -> sx1 CELL-ARRAY that stores the numbers C
+% SCHEMECOEFFS.E -> (s+1)x1 CELL-ARRAY that stores the s matrix exponentials
+%                    e^{C(i)*dt*L}, i=1,..,s, and e^{*dt*L}
+% SCHEMECOEFFS.U -> sx(q-1) CELL-ARRAY that stores the coefficients U, functions 
+%                   of the phi-functions
+% SCHEMECOEFFS.V -> (q-1)x1 CELL-ARRAY that stores the coefficients V, functions 
+%                   of the phi-functions
+%
+% where s is the number of number of internal stages and q is number of steps 
+% (>1 for multistep methods). For informations about what these coefficients
+% are, see [1].
+%
+% [1] H. Montanelli and N. Bootland, Solving periodic semilinear stiff PDEs in 
+% 1D/2D/3D with exponential integrators, submitted (2016). 
+
+% Note (2): EXPINT schemes are used for solving PDEs with diagonal linear 
+% operators, e.g., periodic PDEs in 1D/2D/3D with SPIN/SPIN2/SPIN3.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % PRE-PROCESSING:
@@ -21,7 +46,7 @@ nVars = S.numVars;     % number of unknown functions
 schemeName = K.scheme; % scheme
 N = size(L, 1)/nVars;  % grid points
 
-% Coefficients of the scheme:
+% Initialize the coefficients of the scheme:
 A = cell(s);
 B = cell(s, 1);
 C = zeros(s, 1);
@@ -37,13 +62,13 @@ LR = computeLR(S, dt, L, M);
 if ( strcmpi(schemeName, 'abnorsett4') == 1 )
     
     % Compute the phi-functions:
-    phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
-    phi{2} = spinscheme.phiEval(2, LR, N, dim, nVars);
-    phi{3} = spinscheme.phiEval(3, LR, N, dim, nVars);
-    phi{4} = spinscheme.phiEval(4, LR, N, dim, nVars);
+    phi{1} = expint.phiEval(1, LR, N, dim, nVars);
+    phi{2} = expint.phiEval(2, LR, N, dim, nVars);
+    phi{3} = expint.phiEval(3, LR, N, dim, nVars);
+    phi{4} = expint.phiEval(4, LR, N, dim, nVars);
     
     % Compute the psi-functions:
-    psi{1,1} = spinscheme.psiEval(1, C(1), LR, N, dim, nVars);
+    psi{1,1} = expint.psiEval(1, C(1), LR, N, dim, nVars);
     
     % Take real part for diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
@@ -59,14 +84,14 @@ if ( strcmpi(schemeName, 'abnorsett4') == 1 )
 elseif ( strcmpi(schemeName, 'abnorsett5') == 1 )
     
     % Compute the phi-functions:
-    phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
-    phi{2} = spinscheme.phiEval(2, LR, N, dim, nVars);
-    phi{3} = spinscheme.phiEval(3, LR, N, dim, nVars);
-    phi{4} = spinscheme.phiEval(4, LR, N, dim, nVars);
-    phi{5} = spinscheme.phiEval(5, LR, N, dim, nVars);
+    phi{1} = expint.phiEval(1, LR, N, dim, nVars);
+    phi{2} = expint.phiEval(2, LR, N, dim, nVars);
+    phi{3} = expint.phiEval(3, LR, N, dim, nVars);
+    phi{4} = expint.phiEval(4, LR, N, dim, nVars);
+    phi{5} = expint.phiEval(5, LR, N, dim, nVars);
     
     % Compute the psi-functions:
-    psi{1,1} = spinscheme.psiEval(1, C(1), LR, N, dim, nVars);
+    psi{1,1} = expint.psiEval(1, C(1), LR, N, dim, nVars);
     
     % Take real part for diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
@@ -83,15 +108,15 @@ elseif ( strcmpi(schemeName, 'abnorsett5') == 1 )
 elseif ( strcmpi(schemeName, 'abnorsett6') == 1 )
     
     % Compute the phi-functions:
-    phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
-    phi{2} = spinscheme.phiEval(2, LR, N, dim, nVars);
-    phi{3} = spinscheme.phiEval(3, LR, N, dim, nVars);
-    phi{4} = spinscheme.phiEval(4, LR, N, dim, nVars);
-    phi{5} = spinscheme.phiEval(5, LR, N, dim, nVars);
-    phi{6} = spinscheme.phiEval(6, LR, N, dim, nVars);
+    phi{1} = expint.phiEval(1, LR, N, dim, nVars);
+    phi{2} = expint.phiEval(2, LR, N, dim, nVars);
+    phi{3} = expint.phiEval(3, LR, N, dim, nVars);
+    phi{4} = expint.phiEval(4, LR, N, dim, nVars);
+    phi{5} = expint.phiEval(5, LR, N, dim, nVars);
+    phi{6} = expint.phiEval(6, LR, N, dim, nVars);
     
     % Compute the psi-functions:
-    psi{1,1} = spinscheme.psiEval(1, C(1), LR, N, dim, nVars);
+    psi{1,1} = expint.psiEval(1, C(1), LR, N, dim, nVars);
     
     % Take real part for diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
@@ -116,8 +141,8 @@ elseif ( strcmpi(schemeName, 'etdrk2') == 1 )
     C(2) = 1;
 
     % Compute the phi-functions:
-    phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
-    phi{2} = spinscheme.phiEval(2, LR, N, dim, nVars);
+    phi{1} = expint.phiEval(1, LR, N, dim, nVars);
+    phi{2} = expint.phiEval(2, LR, N, dim, nVars);
     
     % Take real part for diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
@@ -140,14 +165,14 @@ elseif ( strcmpi(schemeName, 'etdrk4') == 1 )
     C(4) = 1;
     
     % Compute the phi-functions:
-    phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
-    phi{2} = spinscheme.phiEval(2, LR, N, dim, nVars);
-    phi{3} = spinscheme.phiEval(3, LR, N, dim, nVars);
+    phi{1} = expint.phiEval(1, LR, N, dim, nVars);
+    phi{2} = expint.phiEval(2, LR, N, dim, nVars);
+    phi{3} = expint.phiEval(3, LR, N, dim, nVars);
     
     % Compute the psi-functions:
-    psi{1,2} = spinscheme.psiEval(1, C(2), LR, N, dim, nVars);
-    psi{1,3} = spinscheme.psiEval(1, C(3), LR, N, dim, nVars);
-    psi{1,4} = spinscheme.psiEval(1, C(4), LR, N, dim, nVars);
+    psi{1,2} = expint.psiEval(1, C(2), LR, N, dim, nVars);
+    psi{1,3} = expint.psiEval(1, C(3), LR, N, dim, nVars);
+    psi{1,4} = expint.psiEval(1, C(4), LR, N, dim, nVars);
     
     % Take real part for diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
@@ -177,28 +202,28 @@ elseif ( strcmpi(schemeName, 'exprk5s8') == 1 )
     C(8) = 1;
     
     % Compute the phi-functions:
-    phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
-    phi{2} = spinscheme.phiEval(2, LR, N, dim, nVars);
-    phi{3} = spinscheme.phiEval(3, LR, N, dim, nVars);
-    phi{4} = spinscheme.phiEval(4, LR, N, dim, nVars);
+    phi{1} = expint.phiEval(1, LR, N, dim, nVars);
+    phi{2} = expint.phiEval(2, LR, N, dim, nVars);
+    phi{3} = expint.phiEval(3, LR, N, dim, nVars);
+    phi{4} = expint.phiEval(4, LR, N, dim, nVars);
     
     % Compute the psi-functions:
-    psi{1,2} = spinscheme.psiEval(1, C(2), LR, N, dim, nVars);
+    psi{1,2} = expint.psiEval(1, C(2), LR, N, dim, nVars);
     psi{1,3} = psi{1,2};
-    psi{1,4} = spinscheme.psiEval(1, C(4), LR, N, dim, nVars);
+    psi{1,4} = expint.psiEval(1, C(4), LR, N, dim, nVars);
     psi{1,5} = psi{1,2};
-    psi{1,6} = spinscheme.psiEval(1, C(6), LR, N, dim, nVars);
-    psi{1,7} = spinscheme.psiEval(1, C(7), LR, N, dim, nVars);
+    psi{1,6} = expint.psiEval(1, C(6), LR, N, dim, nVars);
+    psi{1,7} = expint.psiEval(1, C(7), LR, N, dim, nVars);
     psi{1,8} = phi{1};
-    psi{2,2} = spinscheme.psiEval(2, C(2), LR, N, dim, nVars);
-    psi{2,4} = spinscheme.psiEval(2, C(4), LR, N, dim, nVars);
-    psi{2,6} = spinscheme.psiEval(2, C(6), LR, N, dim, nVars);
-    psi{2,7} = spinscheme.psiEval(2, C(7), LR, N, dim, nVars);
-    psi{3,2} = spinscheme.psiEval(3, C(2), LR, N, dim, nVars);
-    psi{3,6} = spinscheme.psiEval(3, C(6), LR, N, dim, nVars);
-    psi{3,7} = spinscheme.psiEval(3, C(7), LR, N, dim, nVars);
-    psi{4,6} = spinscheme.psiEval(4, C(6), LR, N, dim, nVars);
-    psi{4,7} = spinscheme.psiEval(4, C(7), LR, N, dim, nVars);
+    psi{2,2} = expint.psiEval(2, C(2), LR, N, dim, nVars);
+    psi{2,4} = expint.psiEval(2, C(4), LR, N, dim, nVars);
+    psi{2,6} = expint.psiEval(2, C(6), LR, N, dim, nVars);
+    psi{2,7} = expint.psiEval(2, C(7), LR, N, dim, nVars);
+    psi{3,2} = expint.psiEval(3, C(2), LR, N, dim, nVars);
+    psi{3,6} = expint.psiEval(3, C(6), LR, N, dim, nVars);
+    psi{3,7} = expint.psiEval(3, C(7), LR, N, dim, nVars);
+    psi{4,6} = expint.psiEval(4, C(6), LR, N, dim, nVars);
+    psi{4,7} = expint.psiEval(4, C(7), LR, N, dim, nVars);
     
     % Take real part for diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
@@ -236,15 +261,15 @@ elseif ( strcmpi(schemeName, 'friedli') == 1 )
     C(4) = 1;
     
     % Compute the phi-functions:
-    phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
-    phi{2} = spinscheme.phiEval(2, LR, N, dim, nVars);
-    phi{3} = spinscheme.phiEval(3, LR, N, dim, nVars);
+    phi{1} = expint.phiEval(1, LR, N, dim, nVars);
+    phi{2} = expint.phiEval(2, LR, N, dim, nVars);
+    phi{3} = expint.phiEval(3, LR, N, dim, nVars);
     
     % Compute the psi-functions:
-    psi{1,2} = spinscheme.psiEval(1, C(2), LR, N, dim, nVars);
-    psi{1,3} = spinscheme.psiEval(1, C(3), LR, N, dim, nVars);
-    psi{1,4} = spinscheme.psiEval(1, C(4), LR, N, dim, nVars);
-    psi{2,2} = spinscheme.psiEval(2, C(2), LR, N, dim, nVars);
+    psi{1,2} = expint.psiEval(1, C(2), LR, N, dim, nVars);
+    psi{1,3} = expint.psiEval(1, C(3), LR, N, dim, nVars);
+    psi{1,4} = expint.psiEval(1, C(4), LR, N, dim, nVars);
+    psi{2,2} = expint.psiEval(2, C(2), LR, N, dim, nVars);
     
     % Take real part for diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
@@ -271,17 +296,17 @@ elseif ( strcmpi(schemeName, 'hochbruck-ostermann') == 1 )
     C(5) = 1/2;
     
     % Compute the phi-functions:
-    phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
-    phi{2} = spinscheme.phiEval(2, LR, N, dim, nVars);
-    phi{3} = spinscheme.phiEval(3, LR, N, dim, nVars);
+    phi{1} = expint.phiEval(1, LR, N, dim, nVars);
+    phi{2} = expint.phiEval(2, LR, N, dim, nVars);
+    phi{3} = expint.phiEval(3, LR, N, dim, nVars);
     
     % Compute the psi-functions:
-    psi{1,2} = spinscheme.psiEval(1, C(2), LR, N, dim, nVars);
-    psi{1,3} = spinscheme.psiEval(1, C(3), LR, N, dim, nVars);
-    psi{1,4} = spinscheme.psiEval(1, C(4), LR, N, dim, nVars);
-    psi{1,5} = spinscheme.psiEval(1, C(5), LR, N, dim, nVars);
-    psi{2,2} = spinscheme.psiEval(2, C(2), LR, N, dim, nVars);
-    psi{3,2} = spinscheme.psiEval(3, C(2), LR, N, dim, nVars);
+    psi{1,2} = expint.psiEval(1, C(2), LR, N, dim, nVars);
+    psi{1,3} = expint.psiEval(1, C(3), LR, N, dim, nVars);
+    psi{1,4} = expint.psiEval(1, C(4), LR, N, dim, nVars);
+    psi{1,5} = expint.psiEval(1, C(5), LR, N, dim, nVars);
+    psi{2,2} = expint.psiEval(2, C(2), LR, N, dim, nVars);
+    psi{3,2} = expint.psiEval(3, C(2), LR, N, dim, nVars);
     
     % Take real part for diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
@@ -310,15 +335,15 @@ elseif ( strcmpi(schemeName, 'krogstad') == 1 )
     C(4) = 1;
     
     % Compute the phi-functions:
-    phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
-    phi{2} = spinscheme.phiEval(2, LR, N, dim, nVars);
-    phi{3} = spinscheme.phiEval(3, LR, N, dim, nVars);
+    phi{1} = expint.phiEval(1, LR, N, dim, nVars);
+    phi{2} = expint.phiEval(2, LR, N, dim, nVars);
+    phi{3} = expint.phiEval(3, LR, N, dim, nVars);
     
     % Compute the psi-functions:
-    psi{1,2} = spinscheme.psiEval(1, C(2), LR, N, dim, nVars);
-    psi{1,3} = spinscheme.psiEval(1, C(3), LR, N, dim, nVars);
-    psi{1,4} = spinscheme.psiEval(1, C(4), LR, N, dim, nVars);
-    psi{2,2} = spinscheme.psiEval(2, C(2), LR, N, dim, nVars);
+    psi{1,2} = expint.psiEval(1, C(2), LR, N, dim, nVars);
+    psi{1,3} = expint.psiEval(1, C(3), LR, N, dim, nVars);
+    psi{1,4} = expint.psiEval(1, C(4), LR, N, dim, nVars);
+    psi{2,2} = expint.psiEval(2, C(2), LR, N, dim, nVars);
     
     % Take real part for diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
@@ -344,16 +369,16 @@ elseif ( strcmpi(schemeName, 'minchev') == 1 )
     C(4) = 1;
     
     % Compute the phi-functions:
-    phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
-    phi{2} = spinscheme.phiEval(2, LR, N, dim, nVars);
-    phi{3} = spinscheme.phiEval(3, LR, N, dim, nVars);
-    phi{4} = spinscheme.phiEval(4, LR, N, dim, nVars);
+    phi{1} = expint.phiEval(1, LR, N, dim, nVars);
+    phi{2} = expint.phiEval(2, LR, N, dim, nVars);
+    phi{3} = expint.phiEval(3, LR, N, dim, nVars);
+    phi{4} = expint.phiEval(4, LR, N, dim, nVars);
     
     % Compute the psi-functions:
-    psi{1,2} = spinscheme.psiEval(1, C(2), LR, N, dim, nVars);
-    psi{1,3} = spinscheme.psiEval(1, C(3), LR, N, dim, nVars);
-    psi{1,4} = spinscheme.psiEval(1, C(4), LR, N, dim, nVars);
-    psi{2,2} = spinscheme.psiEval(2, C(2), LR, N, dim, nVars);
+    psi{1,2} = expint.psiEval(1, C(2), LR, N, dim, nVars);
+    psi{1,3} = expint.psiEval(1, C(3), LR, N, dim, nVars);
+    psi{1,4} = expint.psiEval(1, C(4), LR, N, dim, nVars);
+    psi{2,2} = expint.psiEval(2, C(2), LR, N, dim, nVars);
     
     % Take real part for diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
@@ -380,15 +405,15 @@ elseif ( strcmpi(schemeName, 'strehmel-weiner') == 1 )
     C(4) = 1;
     
     % Compute the phi-functions:
-    phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
-    phi{2} = spinscheme.phiEval(2, LR, N, dim, nVars);
-    phi{3} = spinscheme.phiEval(3, LR, N, dim, nVars);
+    phi{1} = expint.phiEval(1, LR, N, dim, nVars);
+    phi{2} = expint.phiEval(2, LR, N, dim, nVars);
+    phi{3} = expint.phiEval(3, LR, N, dim, nVars);
     
     % Compute the psi-functions:
-    psi{1,2} = spinscheme.psiEval(1, C(2), LR, N, dim, nVars);
-    psi{1,3} = spinscheme.psiEval(1, C(3), LR, N, dim, nVars);
-    psi{1,4} = spinscheme.psiEval(1, C(4), LR, N, dim, nVars);
-    psi{2,2} = spinscheme.psiEval(2, C(2), LR, N, dim, nVars);
+    psi{1,2} = expint.psiEval(1, C(2), LR, N, dim, nVars);
+    psi{1,3} = expint.psiEval(1, C(3), LR, N, dim, nVars);
+    psi{1,4} = expint.psiEval(1, C(4), LR, N, dim, nVars);
+    psi{2,2} = expint.psiEval(2, C(2), LR, N, dim, nVars);
     
     % Take real part for diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
@@ -412,11 +437,11 @@ elseif ( strcmpi(schemeName, 'ablawson4') == 1 )
     
     
     % Compute the phi-functions:
-    phi0 = spinscheme.phiEval(0, LR, N, dim, nVars);
-    phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
+    phi0 = expint.phiEval(0, LR, N, dim, nVars);
+    phi{1} = expint.phiEval(1, LR, N, dim, nVars);
     
     % Compute the psi-functions:
-    psi{1,1} = spinscheme.psiEval(1, C(1), LR, N, dim, nVars);
+    psi{1,1} = expint.psiEval(1, C(1), LR, N, dim, nVars);
     
     % Take real part for diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
@@ -446,14 +471,14 @@ elseif ( strcmpi(schemeName, 'lawson4') == 1 )
     C(4) = 1;
     
     % Compute the phi-functions:
-    phi0 = spinscheme.phiEval(0, LR, N, dim, nVars);
-    phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
+    phi0 = expint.phiEval(0, LR, N, dim, nVars);
+    phi{1} = expint.phiEval(1, LR, N, dim, nVars);
     
     % Compute the psi-functions:
-    psi02 = spinscheme.psiEval(0, C(2), LR, N, dim, nVars);
-    psi{1,2} = spinscheme.psiEval(1, C(2), LR, N, dim, nVars);
-    psi{1,3} = spinscheme.psiEval(1, C(3), LR, N, dim, nVars);
-    psi{1,4} = spinscheme.psiEval(1, C(4), LR, N, dim, nVars);
+    psi02 = expint.psiEval(0, C(2), LR, N, dim, nVars);
+    psi{1,2} = expint.psiEval(1, C(2), LR, N, dim, nVars);
+    psi{1,3} = expint.psiEval(1, C(3), LR, N, dim, nVars);
+    psi{1,4} = expint.psiEval(1, C(4), LR, N, dim, nVars);
     
     % Take real part for diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
@@ -486,13 +511,13 @@ elseif ( strcmpi(schemeName, 'genlawson41') == 1 )
     C(4) = 1;
     
     % Compute the phi-functions:
-    phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
+    phi{1} = expint.phiEval(1, LR, N, dim, nVars);
     
     % Compute the psi-functions:
-    psi02 = spinscheme.psiEval(0, C(2), LR, N, dim, nVars);
-    psi{1,2} = spinscheme.psiEval(1, C(2), LR, N, dim, nVars);
-    psi{1,3} = spinscheme.psiEval(1, C(3), LR, N, dim, nVars);
-    psi{1,4} = spinscheme.psiEval(1, C(4), LR, N, dim, nVars);
+    psi02 = expint.psiEval(0, C(2), LR, N, dim, nVars);
+    psi{1,2} = expint.psiEval(1, C(2), LR, N, dim, nVars);
+    psi{1,3} = expint.psiEval(1, C(3), LR, N, dim, nVars);
+    psi{1,4} = expint.psiEval(1, C(4), LR, N, dim, nVars);
     
     % Take real part for diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
@@ -519,15 +544,15 @@ elseif ( strcmpi(schemeName, 'genlawson42') == 1 )
     C(4) = 1;
     
     % Compute the phi-functions:
-    phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
-    phi{2} = spinscheme.phiEval(2, LR, N, dim, nVars);
+    phi{1} = expint.phiEval(1, LR, N, dim, nVars);
+    phi{2} = expint.phiEval(2, LR, N, dim, nVars);
     
     % Compute the psi-functions:
-    psi02 = spinscheme.psiEval(0, C(2), LR, N, dim, nVars);
-    psi{1,2} = spinscheme.psiEval(1, C(2), LR, N, dim, nVars);
-    psi{1,3} = spinscheme.psiEval(1, C(3), LR, N, dim, nVars);
-    psi{1,4} = spinscheme.psiEval(1, C(4), LR, N, dim, nVars);
-    psi{2,2} = spinscheme.psiEval(2, C(2), LR, N, dim, nVars);
+    psi02 = expint.psiEval(0, C(2), LR, N, dim, nVars);
+    psi{1,2} = expint.psiEval(1, C(2), LR, N, dim, nVars);
+    psi{1,3} = expint.psiEval(1, C(3), LR, N, dim, nVars);
+    psi{1,4} = expint.psiEval(1, C(4), LR, N, dim, nVars);
+    psi{2,2} = expint.psiEval(2, C(2), LR, N, dim, nVars);
     
     % Take real part for diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
@@ -562,17 +587,17 @@ elseif ( strcmpi(schemeName, 'genlawson43') == 1 )
     C(4) = 1;
     
     % Compute the phi-functions:
-    phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
-    phi{2} = spinscheme.phiEval(2, LR, N, dim, nVars);
-    phi{3} = spinscheme.phiEval(3, LR, N, dim, nVars);
+    phi{1} = expint.phiEval(1, LR, N, dim, nVars);
+    phi{2} = expint.phiEval(2, LR, N, dim, nVars);
+    phi{3} = expint.phiEval(3, LR, N, dim, nVars);
     
     % Compute the psi-functions:
-    psi02 = spinscheme.psiEval(0, C(2), LR, N, dim, nVars);
-    psi{1,2} = spinscheme.psiEval(1, C(2), LR, N, dim, nVars);
-    psi{1,3} = spinscheme.psiEval(1, C(3), LR, N, dim, nVars);
-    psi{1,4} = spinscheme.psiEval(1, C(4), LR, N, dim, nVars);
-    psi{2,2} = spinscheme.psiEval(2, C(2), LR, N, dim, nVars);
-    psi{3,2} = spinscheme.psiEval(3, C(2), LR, N, dim, nVars);
+    psi02 = expint.psiEval(0, C(2), LR, N, dim, nVars);
+    psi{1,2} = expint.psiEval(1, C(2), LR, N, dim, nVars);
+    psi{1,3} = expint.psiEval(1, C(3), LR, N, dim, nVars);
+    psi{1,4} = expint.psiEval(1, C(4), LR, N, dim, nVars);
+    psi{2,2} = expint.psiEval(2, C(2), LR, N, dim, nVars);
+    psi{3,2} = expint.psiEval(3, C(2), LR, N, dim, nVars);
     
     % Take real part for diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
@@ -611,19 +636,19 @@ elseif ( strcmpi(schemeName, 'genlawson44') == 1 )
     C(4) = 1;
     
     % Compute the phi-functions:
-    phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
-    phi{2} = spinscheme.phiEval(2, LR, N, dim, nVars);
-    phi{3} = spinscheme.phiEval(3, LR, N, dim, nVars);
-    phi{4} = spinscheme.phiEval(4, LR, N, dim, nVars);
+    phi{1} = expint.phiEval(1, LR, N, dim, nVars);
+    phi{2} = expint.phiEval(2, LR, N, dim, nVars);
+    phi{3} = expint.phiEval(3, LR, N, dim, nVars);
+    phi{4} = expint.phiEval(4, LR, N, dim, nVars);
     
     % Compute the psi-functions:
-    psi02 = spinscheme.psiEval(0, C(2), LR, N, dim, nVars);
-    psi{1,2} = spinscheme.psiEval(1, C(2), LR, N, dim, nVars);
-    psi{1,3} = spinscheme.psiEval(1, C(3), LR, N, dim, nVars);
-    psi{1,4} = spinscheme.psiEval(1, C(4), LR, N, dim, nVars);
-    psi{2,2} = spinscheme.psiEval(2, C(2), LR, N, dim, nVars);
-    psi{3,2} = spinscheme.psiEval(3, C(2), LR, N, dim, nVars);
-    psi{4,2} = spinscheme.psiEval(4, C(2), LR, N, dim, nVars);
+    psi02 = expint.psiEval(0, C(2), LR, N, dim, nVars);
+    psi{1,2} = expint.psiEval(1, C(2), LR, N, dim, nVars);
+    psi{1,3} = expint.psiEval(1, C(3), LR, N, dim, nVars);
+    psi{1,4} = expint.psiEval(1, C(4), LR, N, dim, nVars);
+    psi{2,2} = expint.psiEval(2, C(2), LR, N, dim, nVars);
+    psi{3,2} = expint.psiEval(3, C(2), LR, N, dim, nVars);
+    psi{4,2} = expint.psiEval(4, C(2), LR, N, dim, nVars);
     
     % Take real part for diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
@@ -666,21 +691,21 @@ elseif ( strcmpi(schemeName, 'genlawson45') == 1 )
     C(4) = 1;
     
     % Compute the phi-functions:
-    phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
-    phi{2} = spinscheme.phiEval(2, LR, N, dim, nVars);
-    phi{3} = spinscheme.phiEval(3, LR, N, dim, nVars);
-    phi{4} = spinscheme.phiEval(4, LR, N, dim, nVars);
-    phi{5} = spinscheme.phiEval(5, LR, N, dim, nVars);
+    phi{1} = expint.phiEval(1, LR, N, dim, nVars);
+    phi{2} = expint.phiEval(2, LR, N, dim, nVars);
+    phi{3} = expint.phiEval(3, LR, N, dim, nVars);
+    phi{4} = expint.phiEval(4, LR, N, dim, nVars);
+    phi{5} = expint.phiEval(5, LR, N, dim, nVars);
     
     % Compute the psi-functions:
-    psi02 = spinscheme.psiEval(0, C(2), LR, N, dim, nVars);
-    psi{1,2} = spinscheme.psiEval(1, C(2), LR, N, dim, nVars);
-    psi{1,3} = spinscheme.psiEval(1, C(3), LR, N, dim, nVars);
-    psi{1,4} = spinscheme.psiEval(1, C(4), LR, N, dim, nVars);
-    psi{2,2} = spinscheme.psiEval(2, C(2), LR, N, dim, nVars);
-    psi{3,2} = spinscheme.psiEval(3, C(2), LR, N, dim, nVars);
-    psi{4,2} = spinscheme.psiEval(4, C(2), LR, N, dim, nVars);
-    psi{5,2} = spinscheme.psiEval(5, C(2), LR, N, dim, nVars);
+    psi02 = expint.psiEval(0, C(2), LR, N, dim, nVars);
+    psi{1,2} = expint.psiEval(1, C(2), LR, N, dim, nVars);
+    psi{1,3} = expint.psiEval(1, C(3), LR, N, dim, nVars);
+    psi{1,4} = expint.psiEval(1, C(4), LR, N, dim, nVars);
+    psi{2,2} = expint.psiEval(2, C(2), LR, N, dim, nVars);
+    psi{3,2} = expint.psiEval(3, C(2), LR, N, dim, nVars);
+    psi{4,2} = expint.psiEval(4, C(2), LR, N, dim, nVars);
+    psi{5,2} = expint.psiEval(5, C(2), LR, N, dim, nVars);
     
     % Take real part for diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
@@ -734,14 +759,14 @@ elseif ( strcmpi(schemeName, 'modgenlawson41') == 1 )
     C(4) = 1;
     
     % Compute the phi-functions:
-    phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
-    phi{2} = spinscheme.phiEval(2, LR, N, dim, nVars);
+    phi{1} = expint.phiEval(1, LR, N, dim, nVars);
+    phi{2} = expint.phiEval(2, LR, N, dim, nVars);
     
     % Compute the psi-functions:
-    psi02 = spinscheme.psiEval(0, C(2), LR, N, dim, nVars);
-    psi{1,2} = spinscheme.psiEval(1, C(2), LR, N, dim, nVars);
-    psi{1,3} = spinscheme.psiEval(1, C(3), LR, N, dim, nVars);
-    psi{1,4} = spinscheme.psiEval(1, C(4), LR, N, dim, nVars);
+    psi02 = expint.psiEval(0, C(2), LR, N, dim, nVars);
+    psi{1,2} = expint.psiEval(1, C(2), LR, N, dim, nVars);
+    psi{1,3} = expint.psiEval(1, C(3), LR, N, dim, nVars);
+    psi{1,4} = expint.psiEval(1, C(4), LR, N, dim, nVars);
     
     % Take real part for diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
@@ -768,16 +793,16 @@ elseif ( strcmpi(schemeName, 'modgenlawson42') == 1 )
     C(4) = 1;
     
     % Compute the phi-functions:
-    phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
-    phi{2} = spinscheme.phiEval(2, LR, N, dim, nVars);
-    phi{3} = spinscheme.phiEval(3, LR, N, dim, nVars);
+    phi{1} = expint.phiEval(1, LR, N, dim, nVars);
+    phi{2} = expint.phiEval(2, LR, N, dim, nVars);
+    phi{3} = expint.phiEval(3, LR, N, dim, nVars);
     
     % Compute the psi-functions:
-    psi02 = spinscheme.psiEval(0, C(2), LR, N, dim, nVars);
-    psi{1,2} = spinscheme.psiEval(1, C(2), LR, N, dim, nVars);
-    psi{1,3} = spinscheme.psiEval(1, C(3), LR, N, dim, nVars);
-    psi{1,4} = spinscheme.psiEval(1, C(4), LR, N, dim, nVars);
-    psi{2,2} = spinscheme.psiEval(2, C(2), LR, N, dim, nVars);
+    psi02 = expint.psiEval(0, C(2), LR, N, dim, nVars);
+    psi{1,2} = expint.psiEval(1, C(2), LR, N, dim, nVars);
+    psi{1,3} = expint.psiEval(1, C(3), LR, N, dim, nVars);
+    psi{1,4} = expint.psiEval(1, C(4), LR, N, dim, nVars);
+    psi{2,2} = expint.psiEval(2, C(2), LR, N, dim, nVars);
     
     % Take real part for diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
@@ -812,18 +837,18 @@ elseif ( strcmpi(schemeName, 'modgenlawson43') == 1 )
     C(4) = 1;
     
     % Compute the phi-functions:
-    phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
-    phi{2} = spinscheme.phiEval(2, LR, N, dim, nVars);
-    phi{3} = spinscheme.phiEval(3, LR, N, dim, nVars);
-    phi{4} = spinscheme.phiEval(4, LR, N, dim, nVars);
+    phi{1} = expint.phiEval(1, LR, N, dim, nVars);
+    phi{2} = expint.phiEval(2, LR, N, dim, nVars);
+    phi{3} = expint.phiEval(3, LR, N, dim, nVars);
+    phi{4} = expint.phiEval(4, LR, N, dim, nVars);
     
     % Compute the psi-functions:
-    psi02 = spinscheme.psiEval(0, C(2), LR, N, dim, nVars);
-    psi{1,2} = spinscheme.psiEval(1, C(2), LR, N, dim, nVars);
-    psi{1,3} = spinscheme.psiEval(1, C(3), LR, N, dim, nVars);
-    psi{1,4} = spinscheme.psiEval(1, C(4), LR, N, dim, nVars);
-    psi{2,2} = spinscheme.psiEval(2, C(2), LR, N, dim, nVars);
-    psi{3,2} = spinscheme.psiEval(3, C(2), LR, N, dim, nVars);
+    psi02 = expint.psiEval(0, C(2), LR, N, dim, nVars);
+    psi{1,2} = expint.psiEval(1, C(2), LR, N, dim, nVars);
+    psi{1,3} = expint.psiEval(1, C(3), LR, N, dim, nVars);
+    psi{1,4} = expint.psiEval(1, C(4), LR, N, dim, nVars);
+    psi{2,2} = expint.psiEval(2, C(2), LR, N, dim, nVars);
+    psi{3,2} = expint.psiEval(3, C(2), LR, N, dim, nVars);
     
     % Take real part for diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
@@ -862,20 +887,20 @@ elseif ( strcmpi(schemeName, 'modgenlawson44') == 1 )
     C(4) = 1;
     
     % Compute the phi-functions:
-    phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
-    phi{2} = spinscheme.phiEval(2, LR, N, dim, nVars);
-    phi{3} = spinscheme.phiEval(3, LR, N, dim, nVars);
-    phi{4} = spinscheme.phiEval(4, LR, N, dim, nVars);
-    phi{5} = spinscheme.phiEval(5, LR, N, dim, nVars);
+    phi{1} = expint.phiEval(1, LR, N, dim, nVars);
+    phi{2} = expint.phiEval(2, LR, N, dim, nVars);
+    phi{3} = expint.phiEval(3, LR, N, dim, nVars);
+    phi{4} = expint.phiEval(4, LR, N, dim, nVars);
+    phi{5} = expint.phiEval(5, LR, N, dim, nVars);
     
     % Compute the psi-functions:
-    psi02 = spinscheme.psiEval(0, C(2), LR, N, dim, nVars);
-    psi{1,2} = spinscheme.psiEval(1, C(2), LR, N, dim, nVars);
-    psi{1,3} = spinscheme.psiEval(1, C(3), LR, N, dim, nVars);
-    psi{1,4} = spinscheme.psiEval(1, C(4), LR, N, dim, nVars);
-    psi{2,2} = spinscheme.psiEval(2, C(2), LR, N, dim, nVars);
-    psi{3,2} = spinscheme.psiEval(3, C(2), LR, N, dim, nVars);
-    psi{4,2} = spinscheme.psiEval(4, C(2), LR, N, dim, nVars);
+    psi02 = expint.psiEval(0, C(2), LR, N, dim, nVars);
+    psi{1,2} = expint.psiEval(1, C(2), LR, N, dim, nVars);
+    psi{1,3} = expint.psiEval(1, C(3), LR, N, dim, nVars);
+    psi{1,4} = expint.psiEval(1, C(4), LR, N, dim, nVars);
+    psi{2,2} = expint.psiEval(2, C(2), LR, N, dim, nVars);
+    psi{3,2} = expint.psiEval(3, C(2), LR, N, dim, nVars);
+    psi{4,2} = expint.psiEval(4, C(2), LR, N, dim, nVars);
     
     % Take real part for diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
@@ -920,22 +945,22 @@ elseif ( strcmpi(schemeName, 'modgenlawson45') == 1 )
     C(4) = 1;
     
     % Compute the phi-functions:
-    phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
-    phi{2} = spinscheme.phiEval(2, LR, N, dim, nVars);
-    phi{3} = spinscheme.phiEval(3, LR, N, dim, nVars);
-    phi{4} = spinscheme.phiEval(4, LR, N, dim, nVars);
-    phi{5} = spinscheme.phiEval(5, LR, N, dim, nVars);
-    phi{6} = spinscheme.phiEval(6, LR, N, dim, nVars);
+    phi{1} = expint.phiEval(1, LR, N, dim, nVars);
+    phi{2} = expint.phiEval(2, LR, N, dim, nVars);
+    phi{3} = expint.phiEval(3, LR, N, dim, nVars);
+    phi{4} = expint.phiEval(4, LR, N, dim, nVars);
+    phi{5} = expint.phiEval(5, LR, N, dim, nVars);
+    phi{6} = expint.phiEval(6, LR, N, dim, nVars);
     
     % Compute the psi-functions:
-    psi02 = spinscheme.psiEval(0, C(2), LR, N, dim, nVars);
-    psi{1,2} = spinscheme.psiEval(1, C(2), LR, N, dim, nVars);
-    psi{1,3} = spinscheme.psiEval(1, C(3), LR, N, dim, nVars);
-    psi{1,4} = spinscheme.psiEval(1, C(4), LR, N, dim, nVars);
-    psi{2,2} = spinscheme.psiEval(2, C(2), LR, N, dim, nVars);
-    psi{3,2} = spinscheme.psiEval(3, C(2), LR, N, dim, nVars);
-    psi{4,2} = spinscheme.psiEval(4, C(2), LR, N, dim, nVars);
-    psi{5,2} = spinscheme.psiEval(5, C(2), LR, N, dim, nVars);
+    psi02 = expint.psiEval(0, C(2), LR, N, dim, nVars);
+    psi{1,2} = expint.psiEval(1, C(2), LR, N, dim, nVars);
+    psi{1,3} = expint.psiEval(1, C(3), LR, N, dim, nVars);
+    psi{1,4} = expint.psiEval(1, C(4), LR, N, dim, nVars);
+    psi{2,2} = expint.psiEval(2, C(2), LR, N, dim, nVars);
+    psi{3,2} = expint.psiEval(3, C(2), LR, N, dim, nVars);
+    psi{4,2} = expint.psiEval(4, C(2), LR, N, dim, nVars);
+    psi{5,2} = expint.psiEval(5, C(2), LR, N, dim, nVars);
     
     % Take real part for diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
@@ -988,13 +1013,13 @@ elseif ( strcmpi(schemeName, 'pec423') == 1 )
     C(2) = 1;
     
     % Compute the phi-functions:
-    phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
-    phi{2} = spinscheme.phiEval(2, LR, N, dim, nVars);
-    phi{3} = spinscheme.phiEval(3, LR, N, dim, nVars);
-    phi{4} = spinscheme.phiEval(4, LR, N, dim, nVars);
+    phi{1} = expint.phiEval(1, LR, N, dim, nVars);
+    phi{2} = expint.phiEval(2, LR, N, dim, nVars);
+    phi{3} = expint.phiEval(3, LR, N, dim, nVars);
+    phi{4} = expint.phiEval(4, LR, N, dim, nVars);
     
     % Compute the psi-functions:
-    psi{1,2} = spinscheme.psiEval(1, C(2), LR, N, dim, nVars);
+    psi{1,2} = expint.psiEval(1, C(2), LR, N, dim, nVars);
     
     % Take real part for diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
@@ -1021,14 +1046,14 @@ elseif ( strcmpi(schemeName, 'pecec433') == 1 )
     C(3) = 1;
     
     % Compute the phi-functions:
-    phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
-    phi{2} = spinscheme.phiEval(2, LR, N, dim, nVars);
-    phi{3} = spinscheme.phiEval(3, LR, N, dim, nVars);
-    phi{4} = spinscheme.phiEval(4, LR, N, dim, nVars);
+    phi{1} = expint.phiEval(1, LR, N, dim, nVars);
+    phi{2} = expint.phiEval(2, LR, N, dim, nVars);
+    phi{3} = expint.phiEval(3, LR, N, dim, nVars);
+    phi{4} = expint.phiEval(4, LR, N, dim, nVars);
     
     % Compute the psi-functions:
-    psi{1,2} = spinscheme.psiEval(1, C(2), LR, N, dim, nVars);
-    psi{1,3} = spinscheme.psiEval(1, C(3), LR, N, dim, nVars);
+    psi{1,2} = expint.psiEval(1, C(2), LR, N, dim, nVars);
+    psi{1,3} = expint.psiEval(1, C(3), LR, N, dim, nVars);
     
     % Take real part for diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
@@ -1059,14 +1084,14 @@ elseif ( strcmpi(schemeName, 'pec524') == 1 )
     C(2) = 1;
     
     % Compute the phi-functions:
-    phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
-    phi{2} = spinscheme.phiEval(2, LR, N, dim, nVars);
-    phi{3} = spinscheme.phiEval(3, LR, N, dim, nVars);
-    phi{4} = spinscheme.phiEval(4, LR, N, dim, nVars);
-    phi{5} = spinscheme.phiEval(5, LR, N, dim, nVars);
+    phi{1} = expint.phiEval(1, LR, N, dim, nVars);
+    phi{2} = expint.phiEval(2, LR, N, dim, nVars);
+    phi{3} = expint.phiEval(3, LR, N, dim, nVars);
+    phi{4} = expint.phiEval(4, LR, N, dim, nVars);
+    phi{5} = expint.phiEval(5, LR, N, dim, nVars);
     
     % Compute the psi-functions:
-    psi{1,2} = spinscheme.psiEval(1, C(2), LR, N, dim, nVars);
+    psi{1,2} = expint.psiEval(1, C(2), LR, N, dim, nVars);
     
     % Take real part for diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
@@ -1095,15 +1120,15 @@ elseif ( strcmpi(schemeName, 'pecec534') == 1 )
     C(3) = 1;
     
     % Compute the phi-functions:
-    phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
-    phi{2} = spinscheme.phiEval(2, LR, N, dim, nVars);
-    phi{3} = spinscheme.phiEval(3, LR, N, dim, nVars);
-    phi{4} = spinscheme.phiEval(4, LR, N, dim, nVars);
-    phi{5} = spinscheme.phiEval(5, LR, N, dim, nVars);
+    phi{1} = expint.phiEval(1, LR, N, dim, nVars);
+    phi{2} = expint.phiEval(2, LR, N, dim, nVars);
+    phi{3} = expint.phiEval(3, LR, N, dim, nVars);
+    phi{4} = expint.phiEval(4, LR, N, dim, nVars);
+    phi{5} = expint.phiEval(5, LR, N, dim, nVars);
     
     % Compute the psi-functions:
-    psi{1,2} = spinscheme.psiEval(1, C(2), LR, N, dim, nVars);
-    psi{1,3} = spinscheme.psiEval(1, C(3), LR, N, dim, nVars);
+    psi{1,2} = expint.psiEval(1, C(2), LR, N, dim, nVars);
+    psi{1,3} = expint.psiEval(1, C(3), LR, N, dim, nVars);
     
     % Take real part for diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
@@ -1138,15 +1163,15 @@ elseif ( strcmpi(schemeName, 'pec625') == 1 )
     C(2) = 1;
     
     % Compute the phi-functions:
-    phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
-    phi{2} = spinscheme.phiEval(2, LR, N, dim, nVars);
-    phi{3} = spinscheme.phiEval(3, LR, N, dim, nVars);
-    phi{4} = spinscheme.phiEval(4, LR, N, dim, nVars);
-    phi{5} = spinscheme.phiEval(5, LR, N, dim, nVars);
-    phi{6} = spinscheme.phiEval(6, LR, N, dim, nVars);
+    phi{1} = expint.phiEval(1, LR, N, dim, nVars);
+    phi{2} = expint.phiEval(2, LR, N, dim, nVars);
+    phi{3} = expint.phiEval(3, LR, N, dim, nVars);
+    phi{4} = expint.phiEval(4, LR, N, dim, nVars);
+    phi{5} = expint.phiEval(5, LR, N, dim, nVars);
+    phi{6} = expint.phiEval(6, LR, N, dim, nVars);
     
     % Compute the psi-functions:
-    psi{1,2} = spinscheme.psiEval(1, C(2), LR, N, dim, nVars);
+    psi{1,2} = expint.psiEval(1, C(2), LR, N, dim, nVars);
     
     % Take real part for diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
@@ -1177,16 +1202,16 @@ elseif ( strcmpi(schemeName, 'pecec635') == 1 )
     C(3) = 1;
     
     % Compute the phi-functions:
-    phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
-    phi{2} = spinscheme.phiEval(2, LR, N, dim, nVars);
-    phi{3} = spinscheme.phiEval(3, LR, N, dim, nVars);
-    phi{4} = spinscheme.phiEval(4, LR, N, dim, nVars);
-    phi{5} = spinscheme.phiEval(5, LR, N, dim, nVars);
-    phi{6} = spinscheme.phiEval(6, LR, N, dim, nVars);
+    phi{1} = expint.phiEval(1, LR, N, dim, nVars);
+    phi{2} = expint.phiEval(2, LR, N, dim, nVars);
+    phi{3} = expint.phiEval(3, LR, N, dim, nVars);
+    phi{4} = expint.phiEval(4, LR, N, dim, nVars);
+    phi{5} = expint.phiEval(5, LR, N, dim, nVars);
+    phi{6} = expint.phiEval(6, LR, N, dim, nVars);
     
     % Compute the psi-functions:
-    psi{1,2} = spinscheme.psiEval(1, C(2), LR, N, dim, nVars);
-    psi{1,3} = spinscheme.psiEval(1, C(3), LR, N, dim, nVars);
+    psi{1,2} = expint.psiEval(1, C(2), LR, N, dim, nVars);
+    psi{1,3} = expint.psiEval(1, C(3), LR, N, dim, nVars);
     
     % Take real part for diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
@@ -1223,16 +1248,16 @@ elseif ( strcmpi(schemeName, 'pec726') == 1 )
     C(2) = 1;
     
     % Compute the phi-functions:
-    phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
-    phi{2} = spinscheme.phiEval(2, LR, N, dim, nVars);
-    phi{3} = spinscheme.phiEval(3, LR, N, dim, nVars);
-    phi{4} = spinscheme.phiEval(4, LR, N, dim, nVars);
-    phi{5} = spinscheme.phiEval(5, LR, N, dim, nVars);
-    phi{6} = spinscheme.phiEval(6, LR, N, dim, nVars);
-    phi{7} = spinscheme.phiEval(7, LR, N, dim, nVars);
+    phi{1} = expint.phiEval(1, LR, N, dim, nVars);
+    phi{2} = expint.phiEval(2, LR, N, dim, nVars);
+    phi{3} = expint.phiEval(3, LR, N, dim, nVars);
+    phi{4} = expint.phiEval(4, LR, N, dim, nVars);
+    phi{5} = expint.phiEval(5, LR, N, dim, nVars);
+    phi{6} = expint.phiEval(6, LR, N, dim, nVars);
+    phi{7} = expint.phiEval(7, LR, N, dim, nVars);
     
     % Compute the psi-functions:
-    psi{1,2} = spinscheme.psiEval(1, C(2), LR, N, dim, nVars);
+    psi{1,2} = expint.psiEval(1, C(2), LR, N, dim, nVars);
     
     % Take real part for diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
@@ -1271,17 +1296,17 @@ elseif ( strcmpi(schemeName, 'pecec736') == 1 )
     C(3) = 1;
     
     % Compute the phi-functions:
-    phi{1} = spinscheme.phiEval(1, LR, N, dim, nVars);
-    phi{2} = spinscheme.phiEval(2, LR, N, dim, nVars);
-    phi{3} = spinscheme.phiEval(3, LR, N, dim, nVars);
-    phi{4} = spinscheme.phiEval(4, LR, N, dim, nVars);
-    phi{5} = spinscheme.phiEval(5, LR, N, dim, nVars);
-    phi{6} = spinscheme.phiEval(6, LR, N, dim, nVars);
-    phi{7} = spinscheme.phiEval(7, LR, N, dim, nVars);
+    phi{1} = expint.phiEval(1, LR, N, dim, nVars);
+    phi{2} = expint.phiEval(2, LR, N, dim, nVars);
+    phi{3} = expint.phiEval(3, LR, N, dim, nVars);
+    phi{4} = expint.phiEval(4, LR, N, dim, nVars);
+    phi{5} = expint.phiEval(5, LR, N, dim, nVars);
+    phi{6} = expint.phiEval(6, LR, N, dim, nVars);
+    phi{7} = expint.phiEval(7, LR, N, dim, nVars);
     
     % Compute the psi-functions:
-    psi{1,2} = spinscheme.psiEval(1, C(2), LR, N, dim, nVars);
-    psi{1,3} = spinscheme.psiEval(1, C(3), LR, N, dim, nVars);
+    psi{1,2} = expint.psiEval(1, C(2), LR, N, dim, nVars);
+    psi{1,3} = expint.psiEval(1, C(3), LR, N, dim, nVars);
     
     % Take real part for diffusive problems (real eigenvalues):
     if ( isreal(L) == 1 )
@@ -1363,11 +1388,11 @@ schemeCoeffs.V = cellfun(@(V) dt*V, schemeCoeffs.V, 'UniformOutput', 0);
 end
 
 function schemeCoeffs = computeMissingCoeffs(K, schemeCoeffs, phi, psi)
-%COMPUTEMISSINGCOEFFS   Compute the missing oefficients of a SPINSCHEME using
+%COMPUTEMISSINGCOEFFS   Compute the missing oefficients of an EXPINT using
 %the summation properties of the coefficients.
 %   SCHEMECOEFFS = COMPUTEMISSINGCOEFFS(K, SCHEMECOEFFS, PHI, PSI) uses the row
 %   summation properties to compute the SCHEMECOEFFS A{i,1} and B{1} of the
-%   SPINSCHEME K, using and the phi- and psi-functions.
+%   EXPINT K, using and the phi- and psi-functions.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

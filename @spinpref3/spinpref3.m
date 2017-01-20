@@ -7,6 +7,9 @@ classdef spinpref3 < spinpreference
 %     []                        Default is empty, i.e., automatically chosen by 
 %                               the code. 
 %
+%   colormap                  * Color look-up table. See HELP/COLORMAP.
+%     ['parula'] 
+%
 %   dataplot                  * Plotting options when the solution is complex.
 %     ['real']                  
 %      'imag'
@@ -54,6 +57,8 @@ classdef spinpref3 < spinpreference
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     properties ( Access = public )
         Clim         % Limits of the colorbar (1x2*NVARS DOUBLE)
+        colormap     % Color look-up table (STRING)
+        M            % Number of points for complex means (1x1 INT)
         slices       % Slices of the volumetric slice plot (1x3 CELL, slices{1}
                      % is a DOUBLE of positions x corresponding to the slices 
                      % x=cst, same for slices{2} and slices{3} with y and z)
@@ -66,11 +71,12 @@ classdef spinpref3 < spinpreference
         
         function pref = spinpref3(varargin) 
             if ( nargin == 0 )
+                pref.colormap = 'parula';
                 pref.dataplot = 'real';
                 pref.dealias = 'off';
                 pref.iterplot = 1;
                 pref.M = 32;
-                pref.Nplot = 128;
+                pref.Nplot = 64;
                 pref.plot = 'movie';
                 pref.scheme = 'etdrk4';
             else

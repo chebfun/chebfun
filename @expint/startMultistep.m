@@ -1,10 +1,10 @@
 function [uSol, NuSol] = startMultistep(K, dt, L, Nc, Nv, pref, S, uInit, NuInit)
-%STARTMULTISTEP  Get enough initial data when using a multistep scheme.
+%STARTMULTISTEP   Get enough initial data when using a multistep scheme.
 %    [USOL, NUSOL] = STARTMULTISTEP(K, dt, L, NC, NV, pref, S, uInit, NuInit)
 %    uses a one-step algorithm with time-step DT, combined with a fixed point
-%    algorithm, to get enough initial data to start the multistep SPINSCHEME K
-%    using the linear part L, the nonlinear parts in coeff and value space NC
-%    and NV, the SPINPREFERENCE object PREF, and the SPINOPERATOR S.
+%    algorithm, to get enough initial data to start the multistep EXPINT K using
+%    the linear part L, the nonlinear parts in coeff and value space NC and NV,
+%    the SPINPREFERENCE object PREF, and the SPINOPERATOR S.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -23,6 +23,10 @@ nVars = S.numVars;          % number of unknown functions
 N = size(L, 1)/nVars;       % grid points
 dim = getDimension(S);      % spatial dimension (1, 2 or 3)
 
+% Get the values to coeffs and coeffs to values transform:
+v2c = getVals2CoeffsTransform(S);
+c2v = getCoeffs2ValsTransform(S);
+
 % Create a cell-array to store the coefficients at the Q steps:
 uSol = cell(q, 1);
 NuSol = cell(q, 1);
@@ -32,14 +36,14 @@ uSol{q} = uInit{1};
 NuSol{q} = NuInit{1};
 
 % Set-up the scheme:
-K = spinscheme('etdrk2');
+K = expint('etdrk2');
 schemeCoeffs = computeCoeffs(K, dt, L, M, S);
 
 % Do (Q-1) steps:
 uOld = uInit;
 NuOld = NuInit;
 for j = 1:(q-1)
-    [uNew, NuNew] = oneStep(K, schemeCoeffs, Nc, Nv, nVars, uOld, NuOld);
+    [uNew, NuNew] = oneStep(K, [], schemeCoeffs, Nc, Nv, nVars, S, uOld, NuOld);
     uSol{q-j} = uNew{1};
     NuSol{q-j} = NuNew{1};
     uOld = uNew;
@@ -55,9 +59,9 @@ LR = computeLR(S, dt, L, M);
 g = cell(q-1);
 g0 = cell(q-1, 1);
 for j = 1:q-1
-    g0{j} = spinscheme.gammaEval(0, j, LR, N, dim, nVars);
+    g0{j} = expint.gammaEval(0, j, LR, N, dim, nVars);
     for k = 1:q-1
-        g{j, k} = spinscheme.gammaEval(j, k, LR, N, dim, nVars);
+        g{j, k} = expint.gammaEval(j, k, LR, N, dim, nVars);
     end
 end
 
@@ -87,16 +91,16 @@ while ( err > errTol && iter < maxIter )
         end
         temp = abs(uOld{q-j} - uNew{q-j});
         err = max(err, max(temp(:)));
-        vals = ifftn(uNew{q-j}(1:N,:,:));
+        vals = c2v(uNew{q-j}(1:N,:,:));
         for k = 1:nVars-1
             idx = k*N + 1;
-            vals = [vals; ifftn(uNew{q-j}(idx:idx+N-1,:,:))]; %#ok<*AGROW>
+            vals = [vals; c2v(uNew{q-j}(idx:idx+N-1,:,:))]; %#ok<*AGROW>
         end
         vals = Nv(vals);
-        coeffs = fftn(vals(1:N,:,:));
+        coeffs = v2c(vals(1:N,:,:));
         for k = 1:nVars-1
             idx = k*N + 1;
-            coeffs = [coeffs; fftn(vals(idx:idx+N-1,:,:))];
+            coeffs = [coeffs; v2c(vals(idx:idx+N-1,:,:))];
         end
         NuNew{q-j} = Nc.*coeffs;
     end

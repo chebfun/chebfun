@@ -12,8 +12,8 @@ function [uout, tout] = spin(varargin)
 %   (a CHEBMATRIX for systems of equations, each row representing one variable).
 %
 %   UOUT = SPIN(S, N, DT) solves the PDE specified by the SPINOP S with N grid
-%   points and a time-step DT. It plots a movie of the solution as it computes
-%   it. See HELP/SPINOP and Example 10.
+%   points and time-step DT. It plots a movie of the solution as it computes it.
+%   See HELP/SPINOP and Example 10.
 %
 %   UOUT = SPIN(S, N, DT, PREF) allows one to use the preferences specified by
 %   the SPINPREF object PREF. See HELP/SPINPREF and Example 11.
@@ -21,7 +21,7 @@ function [uout, tout] = spin(varargin)
 %   UOUT = SPIN(S, N, DT, 'PREF1', VALUEPREF1, 'PREF2', VALUEPREF2, ...) is an
 %   alternative to the previous syntax. See Example 11.
 %
-%   [UOUT, TOUT] = SPIN(...) also returns the times chunks TOUT at which UOUT
+%   [UOUT, TOUT] = SPIN(...) also returns the time chunks TOUT at which UOUT
 %   was computed.
 %
 % Remark 1: Available (case-insensitive) strings PDECHAR are
@@ -152,8 +152,9 @@ function [uout, tout] = spin(varargin)
 %    on [-pi pi] from t=0 to t=18, with initial condition
 %
 %       u0(x) = 2*B^2/(2 - sqrt(2)*sqrt(2-B^2)*cos(A*B*x)) - 1)*A,
-%           with A=2 and B=1.%
+%           with A=2 and B=1.
 %
+%    The movie plots the absolute value of u.
 %
 % Example 10: PDE specified by a SPINOP
 %
@@ -178,7 +179,7 @@ function [uout, tout] = spin(varargin)
 %   produces a WATERFALL plot as opposed to a movie and use the time-stepping
 %   scheme PECEC433.
 %
-% See also SPINOP, SPINPREF, SPINSCHEME, SPIN2, SPIN3.
+% See also SPINOP, SPINPREF, EXPINT.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
