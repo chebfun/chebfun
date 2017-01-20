@@ -375,7 +375,6 @@ while ( t < tf )
                 end
                 v = [v; temp];
             end
-            valuesUpdated = 1;
         end
         
         % Outpute values and times:
