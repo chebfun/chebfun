@@ -10,7 +10,7 @@ function varargout = trigpade(f, m, n, varargin)
 % 
 %   [P, Q, R_HANDLE, TN_P, TD_P, TN_M, TD_M] = TRIGPADE(F, M, N) also
 %   returns the four trigonometric polynomials TN_P, TD_P, TN_M and TD_M
-%   such that P/Q = TN_P./TD_P + TN_M./TD_M.
+%   such that P/Q = TN_P/TD_P + TN_M/TD_M.
 %
 %   In both of the above cases, if only one output argument is specified
 %   then R_HANDLE is returned, while P and Q are returned if two or more 
@@ -18,26 +18,26 @@ function varargout = trigpade(f, m, n, varargin)
 %
 %   Examples:
 %
-%   Compute a type (1, 3) trigonometric Pade approximation of 
+%   Compute a type (1,3) trigonometric Pade approximation of 
 %   exp(sin(pi*x)) on [-1, 1]:
 % 
 %     f = chebfun(@(t) exp(sin(pi*t)), 'trig')      
 %     [p, q, r] = trigpade(f, 1, 3);
 %     plotcoeffs(f-p./q, '.')
 %   
-%   Compute a type (2, 2) trigonometric Pade approximation of
-%   exp(-80*(x-.5).^2) on [-1, 1]:
+%   Compute a type (4,2) trigonometric Pade approximation of
+%   exp(-160*(x-.5).^2) on [-1, 1]:
 % 
-%     f = chebfun(@(t) exp(-80*(t-.5).^2), 'trig')
-%     [p, q, r] = trigpade(f, 2, 4);
+%     f = chebfun(@(t) exp(-160*(t-.5).^2), 'trig')
+%     [p, q, r] = trigpade(f, 4, 2);
 %     plotcoeffs(f-p./q, '.')
 
 %   References:
-%   [1] G. A. Baker and P. R. Graves-Morris. Pade Approximants. 
-%   Cambridge University Press, second edition, 1996.
+%   [1] G. A. Baker and P. R. Graves-Morris. Pade Approximants,
+%   2nd ed., Cambridge University Press, 1996.
 %
 %   [2] M. Javed. Algorithms for trigonometric polynomial and rational 
-%   approximation. DPhil thesis, Oxford.
+%   approximation. DPhil thesis, Oxford, 2017.
 %
 % See also PADEAPPROX and CHEBPADE
 
@@ -113,12 +113,12 @@ end
 %% Construct the four trigonometric polynomials of Fourier Pade approximaiton
 
 % _d is for denominator, _n is for numerator
-% Denominator and numerator for the +ve part
+% Denominator and numerator for the positive part
 tn_p = chebfun(ap, dom, 'coeffs', 'trig' );
 td_p = chebfun(bp, dom, 'coeffs', 'trig' );
 
 
-% denominator and numerator for the -ve part
+% denominator and numerator for the negative part
 tn_m = chebfun(am, dom, 'coeffs', 'trig' );
 td_m = chebfun(bm, dom, 'coeffs', 'trig' );
 
@@ -242,7 +242,7 @@ function [a, b] = laurent_approx(c, m, n, N, tol)
 % coefficients are stored in an array 
 % [c_{-N}, ..., c_{-1}, c_0, c_1, ..., c{N}]
 % and the length of the array is 2N + 1.
-% To convert a Laurent index to matlab index
+% To convert a Laurent index to Matlab index
 % an offset of N+1 is needed.
 % c_0 is indexed at N + 1
 % c_k is indexed at k + N + 1
@@ -251,7 +251,7 @@ function [a, b] = laurent_approx(c, m, n, N, tol)
 % m, n are non-negative integers
 % and tol is a tolerance for zero detection
 %
-% Output: a and b are vectors with coefficents 
+% Output: a and b are vectors with coefficients 
 % for a Pade approximation of the power series with
 % coefficients c_0, c_1, ...
 
@@ -266,7 +266,7 @@ row = c((m+1)+(N+1):-1:(m+1-n)+(N+1));
 C = toeplitz(col, row);
 
 % It has at least one null vector, which 
-% forms the coefficents of the denominator
+% forms the coefficients of the denominator
 b = null(C);
 if ( size(b, 2) > 1)
     b = b(:, 1);
