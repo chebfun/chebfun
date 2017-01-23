@@ -6,7 +6,7 @@ function F = coeffs2spherefun(X)
 %  Fourier--Fourier matrix of coefficients X.  This is useful for
 %  computing quantities on the sphere with the function F.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Get size: 
@@ -14,17 +14,17 @@ function F = coeffs2spherefun(X)
 
 % If n is odd, then make it even. 
 if ( mod(n, 2) == 1 ) 
-    X = [ zeros(m, 1) X ]; 
+    X = [ zeros(m, 1) X ];
+    n = n+1;
 end
 
 if ( mod(m, 2) == 1 ) 
-    X = [ zeros(1, n+1); X  ];
+    X = [ zeros(1, n); X  ];
     m = m + 1; 
 end
 
 % Convert to values on the grid: 
 VALS = trigtech.coeffs2vals(trigtech.coeffs2vals(X).').'; 
-
 % Restrict to the region of interest: 
 VALS = VALS([floor(m/2)+1:m 1], :);
 

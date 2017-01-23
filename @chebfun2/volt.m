@@ -14,7 +14,7 @@ function f = volt(K, v)
 %
 % See also FRED.
 
-% Copyright 2016 by The University of Oxford and The Chebfun2 Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun2 Developers.
 % See http://www.chebfun.org/ for Chebfun2 information.
 
 if ( ~isa(K, 'chebfun2') )

@@ -10,7 +10,7 @@ function [L, Nc] = discretize(S, N)
 %
 % See also SPINOP3.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %% Set-up:
@@ -18,7 +18,7 @@ function [L, Nc] = discretize(S, N)
 % Get the domain DOM, the linear part LFUN, the nonlinear part NFUN, and the 
 % number of variables NVARS from S:
 dom = S.domain;
-funcL = S.linearPart;
+funcL = S.lin;
 nVars = nargin(funcL);
 
 % Get the variables of the workspace:

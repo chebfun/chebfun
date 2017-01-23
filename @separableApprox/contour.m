@@ -25,7 +25,7 @@ function varargout = contour( f, varargin )
 %
 % See also CONTOURF.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty( f ) )  % Empty check.
@@ -58,6 +58,7 @@ while ( ~isempty( varargin ) )
         j = j+1;
     end
 end
+numargs = numel(argin);
 
 % Did the user want a plot of the pivot locations?
 if ( doPivotPlot )    % Do pivot plot. 
@@ -73,7 +74,7 @@ end
 if ( isa(f, 'double') )                
     % CONTOUR(xx, yy, F,...)
     
-    if ( (nargin >= 3) && isa(argin{1}, 'double') && isa(argin{2}, 'separableApprox') )
+    if ( (numargs >= 2) && isa(argin{1}, 'double') && isa(argin{2}, 'separableApprox') )
         % Extract inputs:
         xx = f; 
         yy = argin{1}; 
@@ -90,16 +91,7 @@ if ( isa(f, 'double') )
 elseif ( isa(f, 'separableApprox') ) 
     
     dom = f.domain;
-    if ( (nargin == 3) || (nargin > 3) && ~isa(argin{1},'separableApprox') ) 
-        % CONTOUR(xx, yy, f)
-        
-        % Evaluate f at equally spaced points.
-        x = linspace( dom(1), dom(2), minplotnum );
-        y = linspace( dom(3), dom(4), minplotnum );
-        [xx, yy] = meshgrid(x, y);
-        vals = feval( f, xx, yy );
-
-    elseif ( (nargin >= 3) && isa(argin{1},'separableApprox') && isa(argin{2},'separableApprox') )
+    if ( (numargs >= 2) && isa(argin{1},'separableApprox') && isa(argin{2},'separableApprox') )
         % CONTOUR plot on a surface.
         
         % Extract inputs:
@@ -109,7 +101,7 @@ elseif ( isa(f, 'separableApprox') )
         argin(1:2) = [];
         
         % Check CONTOUR objects are on the same domain.
-        if ( ~domainCheck(xx, yy) || ~domainCheck(yy, f) )
+        if ( ~domainCheck(xx, yy) )
             error('CHEBFUN:SEPARABLEAPPROX:contour:domains', ...
                 'Domains of SEPARABLEAPPROX objects are not consistent.');
         end
@@ -120,9 +112,17 @@ elseif ( isa(f, 'separableApprox') )
         [mxx, myy] = meshgrid(x, y);
         xx = feval(xx, mxx, myy); 
         yy = feval(yy, mxx, myy);
-        vals = feval(f, mxx, myy);
+        vals = feval(f, xx, yy);
+    elseif ( (numargs == 2) || (numargs > 2) && ~isa(argin{1},'separableApprox') ) 
+        % CONTOUR(xx, yy, f)
+        
+        % Evaluate f at equally spaced points.
+        x = linspace( dom(1), dom(2), minplotnum );
+        y = linspace( dom(3), dom(4), minplotnum );
+        [xx, yy] = meshgrid(x, y);
+        vals = feval( f, xx, yy );
 
-    elseif ( ( nargin == 1) || ( ( nargin > 1 ) && ( isa(argin{1},'double') ) ) )    
+    elseif ( ( numargs == 0) || ( ( numargs > 0 ) && ( isa(argin{1},'double') ) ) )    
         % CONTOUR(f) 
         
         % Evaluate at equally spaced grid: 

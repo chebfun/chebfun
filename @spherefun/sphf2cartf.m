@@ -11,7 +11,7 @@ function g = sphf2cartf(f, lam, th, coord)
 %  at x = cos(lam).*cos(th), y = sin(lam).*cos(th), z = sin(th). This is
 %  the latitude spherical coordinate system.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 

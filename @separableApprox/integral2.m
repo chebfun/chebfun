@@ -12,7 +12,7 @@ function I = integral2( f, c )
 %
 % See also INTEGRAL, SUM2, QUAD2D.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check:

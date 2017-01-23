@@ -18,7 +18,7 @@ function coeffs = vals2coeffs(values)
 %
 % See also COEFFS2VALS, TRIGPTS.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % *Note about symmetry*.  Some of the code below is designed to
@@ -37,16 +37,10 @@ if ( n <= 1 )
     return
 end
 
-% zero case
-if ( norm(double(values)) == 0 )
-    coeffs = values; 
-    return
-end
-
 % test for symmetry
 vals = double([values;values(1,:)]);
-isHerm = max(abs(vals-flipud(conj(vals))),[],1) == 0;
-isSkew = max(abs(vals+flipud(conj(vals))),[],1) == 0;
+isHerm = max(abs(vals-conj(vals(end:-1:1, :))),[],1) == 0;
+isSkew = max(abs(vals+conj(vals(end:-1:1, :))),[],1) == 0;
 
 % compute coefficients
 coeffs = (1/n)*fftshift(fft(values, [], 1), 1);

@@ -16,7 +16,7 @@ function varargout = odesol(sol, dom, opt)
 %   [T, Y] = ODESOL(SOL, DOM, OPT) returns also the linear CHEBFUN T on the
 %   domain of Y.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 %% Parse inputs:

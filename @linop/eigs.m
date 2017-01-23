@@ -54,7 +54,7 @@ function varargout = eigs(A, varargin)
 %
 % See also CHEBOPPREF, CHEBOP.EIGS.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Parsing inputs.

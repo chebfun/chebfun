@@ -83,7 +83,7 @@ function out = get(f, prop, simpLevel)
 %
 %   The default value of SIMPLEVEL is 2.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Try to simplify the output as much as possible by default.

@@ -16,9 +16,9 @@ function out = chebcoeffs(f, N, kind)
 %
 %   If F is array-valued with P columns, then A is an MxP matrix.
 %
-% See also LEGCOEFFS, FOURCOEFFS.
+% See also LEGCOEFFS, TRIGCOEFFS.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Return number of coefficients equal to length of f by default.

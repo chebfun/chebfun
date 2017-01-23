@@ -1,13 +1,13 @@
 function out = fevalm(f, x, y)
 % FEVALM   Evaluate a SEPARABLEAPPROX.
 % 
-% Z = FEVALM(F, X, Y) returns a matrix of values Z of size length(X)-by-length(Y). 
+% Z = FEVALM(F, X, Y) returns a matrix of values Z of size length(Y)-by-length(X). 
 % X and Y should be vectors of doubles. This is equivalent to making a meshgrid 
 % of the vectors X and Y and then using FEVAL to evaluate at that grid.
 % 
 % See also separableApprox/feval.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Check for empty separableApprox object: 

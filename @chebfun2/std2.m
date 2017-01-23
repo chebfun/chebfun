@@ -8,7 +8,7 @@ function varargout = std2(varargin)
 %
 % See also MEAN, MEAN2, STD.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 [varargout{1:nargout}] = std2@separableApprox(varargin{:});

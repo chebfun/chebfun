@@ -7,7 +7,7 @@ function coeffs = alias(coeffs, m)
 %
 % See also PROLONG.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -47,7 +47,7 @@ elseif ( m > n/2 )
 else
     % Otherwise we must do everything in a tight loop. (Which is slower!)
     for j = (m + 1):n
-        k = abs(mod(j + m - 3, 2*m - 2) - m + 2) + 1;
+        k = abs(mod(j + m - 3, 2*m - 2) - m + 2) + 1;        
         coeffs(k,:) = coeffs(k,:) + coeffs(j,:);
     end
 end

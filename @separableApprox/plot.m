@@ -38,7 +38,7 @@ function varargout = plot( f, varargin )
 % 
 % See also SURF, MESH.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information. 
 
 holdState = ishold;
@@ -118,6 +118,7 @@ if ( ~isempty(varargin) )
 else
     if ( isreal( f ) )
         h = surf( f );
+        colormap default
         
     else
         %% Phase Protrait plot 

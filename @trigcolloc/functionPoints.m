@@ -1,7 +1,7 @@
 function varargout = functionPoints(disc)
 %FUNCTIONPOINTS   Points at which functions are discretized.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 pointsFun = @(n) trigtech.trigpts(n);

@@ -9,7 +9,7 @@ function f = fracDiff(f, mu, type)
 %   Currently this only supports the situation where F is smooth (i.e., it has
 %   no breakpoints or endpoint singularities) and on a finite domain.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Default to Riemann-Liouville:

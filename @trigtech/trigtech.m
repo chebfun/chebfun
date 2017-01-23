@@ -44,7 +44,7 @@ classdef trigtech < smoothfun % (Abstract)
 %
 % See also TRIGTECH.TECHPREF, TRIGPTS, HAPPINESSCHECK, REFINE.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -181,6 +181,9 @@ classdef trigtech < smoothfun % (Abstract)
         % Compute trigonometric points (x) and optionally quadrature (w)
         % and barycentric (v) weights:
         [x, w] = trigpts(n);
+        
+        % Tensor product grid of equispaced points in 1D, 2D or 3D:
+        out = tensorGrid(N, dom)
         
         % Convert coefficients to values:
         values = coeffs2vals(coeffs);

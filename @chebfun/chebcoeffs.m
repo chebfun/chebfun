@@ -1,24 +1,37 @@
 function out = chebcoeffs(f, varargin)
-%CHEBCOEFFS   Chebyshev polynomial coefficients of a CHEBFUN.
-%   A = CHEBCOEFFS(F, N) returns the first N Chebyshev coefficients of F is
-%   the column vector A such that F = A(1) T_0(x) +  A(2) T_1(x) + ... + 
-%   A(N) T_(N-1)(x), where T_M(x) denotes the M-th Chebyshev polynomial of the
-%   first kind.
+%CHEBCOEFFS   Chebyshev coefficients of a CHEBFUN.
+%   A = CHEBCOEFFS(F) returns the Chebyshev coefficients of F assuming 
+%   it is a global (not piecewise) chebfun.  This is column vector of
+%   coefficients such that  F = A(1) T_0(x) + ... + A(N) T_(N-1)(x),
+%   where N is the length of F.
 %
-%   If F has a 'finite' Chebyshev expansion (i.e., it is a smooth CHEBFUN with
-%   no breakpoints or endpoint singularities and is based on a CHEBTECH), then
-%   CHEBCOEFFS(F) is equivalent to CHEBCOEFFS(F, LENGTH(F)). This syntax should
-%   be used with caution, and passing N is preferred.
+%   If F is an array-valued chebfun, then A is a matrix with the
+%   same number of columns as F.
 %
-%   If F is array-valued with M columns, then A is an NxM matrix.
+%   If the domain of F is [a,b] rather than [-1,1], then the 
+%   coefficients are those of F transplanted to [-1,1].
 %
-%   C = CHEBCOEFFS(F, N, 'kind', 2) returns the vector of coefficients of F
-%   such that F = C(1) + C(2) U_1(x) + ... + C(N) U_(N-1)(x), where U_M(x)
-%   denotes the M-th Chebyshev polynomial of the second kind.
+%   If F is a piecewise chebfun, you can extract the Chebyshev
+%   coefficients of the pieces with GET(F, 'COEFFS').
 %
-% See also LEGCOEFFS, FOURCOEFFS.
+%   Alternatively, A = CHEBCOEFFS(F, N) returns the first N Chebyshev
+%   coefficients of a piecewise chebfun F even though F is not
+%   represented by a global Chebyshev expansion.  Chebfun does this
+%   by evaluating appropriate integrals. 
+%
+%   A = CHEBCOEFFS(F, 'kind', 2) or A = CHEBCOEFFS(F, N, 'kind', 2)
+%   return vectors or matrices corresponding to expansions 
+%   F = A(1) U_0(x) + ... + A(N) U_(N-1)(x) in Chebyshev polynomials
+%   of the second kind.
+%
+%   Examples:
+%    x = chebfun('x');
+%    chebcoeffs(exp(x))
+%    chebcoeffs(abs(x),10)
+%
+% See also LEGCOEFFS, TRIGCOEFFS.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Trivial empty case:

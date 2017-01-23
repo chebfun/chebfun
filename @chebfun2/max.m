@@ -7,13 +7,13 @@ function varargout = max(varargin)
 %   DIM direction. If DIM = 1 is along the y-direction and DIM = 2 is along the
 %   x-direction.
 %
-%   WARNING: This function is not always accurate to full machine precision.
+%   WARNING: This function is not always accurate to the expected precision.
 %
 %   For the global maximum use MAX2.
 %
 % See also MIN, MAX2, MIN2, MINANDMAX2.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 [varargout{1:nargout}] = max@separableApprox(varargin{:});

@@ -1,20 +1,20 @@
 function [xx, yy] = chebpts2(nx, ny, D, kind)
 %CHEBPTS2   Chebyshev tensor product grid.
 %   [XX YY] = CHEBPTS2(N) constructs an N by N grid of Chebyshev tensor points
-%   on [-1 1]^2.
+%   on [-1,1]^2.
 %
 %   [XX YY] = CHEBPTS2(NX,NY) constructs an NX by NY grid of Chebyshev tensor
-%   points on [-1 1]^2.
+%   points on [-1,1]^2.
 %
 %   [XX YY] = CHEBPTS2(NX,NY,D) constructs an NX by NY grid of Chebyshev tensor
-%   points on the rectangle [a b] x [c d], where D = [a b c d].
+%   points on the rectangle [a,b] x [c,d], where D = [a b c d].
 %
-%   [XX YY] = CHEBPTS2(NX,NY,D,KIND) constructor Chebyshev tensor grid of
-%   the kind KIND. KIND = 2 is default. 
+%   [XX YY] = CHEBPTS2(NX,NY,D,KIND) constructs a Chebyshev tensor grid of
+%   the kind KIND. KIND = 2 is the default. 
 % 
 % See also CHEBPTS.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin > 2 )  

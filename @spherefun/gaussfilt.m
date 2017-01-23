@@ -12,7 +12,7 @@ function g = gaussfilt(f, sig)
 %   sphere to time t=0.5*SIG^2 with a diffusion coefficent set to 1 and
 %   the initial condition being F. 
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin < 2 ) 

@@ -10,7 +10,7 @@ function f = polyfit(x, y, n, d)
 %
 % See also CHEBFUN/POLYFIT.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Convert domain to a double:
@@ -34,8 +34,16 @@ if ( size(y, 1) ~= size(x, 1) )
 end
 
 % Make Chebyshev-Vandermonde matrix:
-T = chebpoly(0:n, d);
-Tx = feval(T, x);
+% The code below is a faster version of 
+%       T = chebpoly(0:n, d); Tx = feval(T, x);
+m = numel(x)-1;
+Tx = zeros( m+1, n+1); 
+Tx(:,1) = ones(m+1,1);
+x_map = 2*(x-d(1))/(d(2)-d(1)) - 1;
+Tx(:,2) = x_map;
+for k = 2:n
+    Tx(:,k+1) = 2*x_map.*Tx(:,k) - Tx(:,k-1);
+end
 % Solve for coefficients (least squares)
 c = Tx\y;
 % Construct Chebfun:

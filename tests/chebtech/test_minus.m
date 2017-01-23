@@ -73,13 +73,23 @@ for n = 1:2
     pass(n, 16:17) = test_sub_function_and_function(f, f_op, g, g_op, x);
     
     % This should fail with a dimension mismatch error.
+    % (Actually, we can do this in R2016a anda above!)
     g_op = @(x) sin(x);
     g = testclass.make(g_op, [], pref);
-    try
+    try 
         h = f - g; %#ok<NASGU>
         pass(n, 18) = false;
+        if ( verLessThan('matlab', '9.1') )
+            pass(n, 18) = false;
+        else
+            pass(n, 18) = true;
+        end
     catch ME
-        pass(n, 18) = strcmp(ME.message, 'Matrix dimensions must agree.');
+        if ( verLessThan('matlab', '9.1') )
+            pass(n, 18) = strcmp(ME.identifier, 'MATLAB:dimagree');
+        else
+            pass(n, 18) = false;
+        end
     end
     
     %%

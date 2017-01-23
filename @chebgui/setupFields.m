@@ -34,7 +34,7 @@ function [field, allVarString, indVarName, pdeVarNames, pdeflag, ...
 %   ALLVARNAMES:    A cell array of string, containing the name of all variables
 %                   that appear in a problem.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % For BCs, we need to check whether varNames contains anything not found in

@@ -1,5 +1,5 @@
 function varargout = xyzsphere
-%XYYSPHERE  Spherefun objects for x, y, and z on the surface of the sphere.
+%XYZSPHERE  Spherefun objects for x, y, and z on the surface of the sphere.
 %   [X, Y, Z] = CHEB.XYZSPHERE returns spherefun objects for the functions 
 %   @(x,y,z) x, @(x,y,z) y, and @(x,y,z) z defined on the surface of the
 %   sphere. 
@@ -9,7 +9,7 @@ function varargout = xyzsphere
 %   Y = SPHEREFUN(@(X,Y,Z) Y), and 
 %   Z = SPHEREFUN(@(X,Y,Z) Z). 
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 x = spherefun(@(x,y,z) x);

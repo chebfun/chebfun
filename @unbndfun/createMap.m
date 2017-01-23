@@ -7,7 +7,7 @@ function m = createMap(ends)
 %    M.INV is the inverse map.
 %    M.DER is the derivative of the map defined in MAP.FOR.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 m = mapping.unbounded(ends);

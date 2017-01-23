@@ -45,7 +45,7 @@ function varargout = remez(f, varargin)
 %
 % See also CF.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 dom = f.domain([1, end]);
@@ -68,6 +68,14 @@ end
 
 % Parse the inputs.
 [m, n, N, rationalMode, opts] = parseInputs(f, varargin{:});
+
+% If m=-1, this means f=odd and input (m,n)=(0,n); return constant 0. 
+if ( m == -1 )
+    q = chebfun(1, dom);
+    p = chebfun(0, dom);
+    varargout = {p, q, @(x) feval(p, x)./feval(q, x), norm(f,'inf'), []};    
+    return
+end
 
 % With zero denominator degree, the denominator polynomial is trivial.
 if ( n == 0 )
@@ -194,7 +202,11 @@ end
 N = m + n;
 
 % Parse name-value option pairs.
-opts.tol = 1e-16*(N^2 + 10); % Relative tolerance for deciding convergence.
+if rationalMode
+opts.tol = 1e-16*(10*N^2 + 100); % Relative tolerance for deciding convergence.    
+else
+opts.tol = 1e-16*(N^2 + 10); % Polynomial case is much more robust. 
+end
 opts.maxIter = 20;           % Maximum number of allowable iterations.
 opts.displayIter = false;    % Print output after each iteration.
 opts.plotIter = false;       % Plot approximation at each iteration.
@@ -238,20 +250,23 @@ c = chebcoeffs(f, length(f));
 c(end) = 2*c(end);
 
 % Check for symmetries and reduce degrees accordingly.
-if ( max(abs(c(end-1:-2:1)))/vscale(f) < eps )   % f is even.
+if ( max(abs(c(2:2:end)))/vscale(f) < eps )   % f is even.
     if ( mod(m, 2) == 1 )
         m = m - 1;
     end
     if ( mod(n, 2) == 1 )
         n = n - 1;
     end
-elseif ( max(abs(c(end:-2:1)))/vscale(f) < eps ) % f is odd.
-    if ( mod(m, 2) == 0 )
-        m = m - 1;
-    end
-    if ( mod(n, 2) == 1 )
-        n = n - 1;
-    end
+
+elseif ( max(abs(c(1:2:end)))/vscale(f) < eps ) % f is odd. obtain (odd,even) type
+     if ( ~mod(m,2) ) 
+         m = m - 1;  
+% Note: if input was (0,n), detect by m=-1 and return constant function         
+     end
+     if ( mod(n,2) )
+         n = n - 1;
+     end   
+
 end
 
 end

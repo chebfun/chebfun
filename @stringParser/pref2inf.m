@@ -6,7 +6,7 @@ function [infixOut, notaVAR] = pref2inf(prefixIn)
 %   corresponds to the second variable in the kernel for FRED and VOLT
 %   operators.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 prefCounter = 1;

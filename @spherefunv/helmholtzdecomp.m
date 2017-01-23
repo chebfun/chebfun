@@ -7,7 +7,7 @@ function [u, v] = helmholtzdecomp( f )
 % where U and V are spherefun objects. F needs to be a vector field that is
 % tangential to the surface of the sphere. 
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 
@@ -18,9 +18,9 @@ if ( isempty( f ) )
 end
 
 tangentf = tangent( f );
-tol1 = 10*vscale(f.components{1})*chebfunpref().cheb2Prefs.chebfun2eps;
-tol2 = 10*vscale(f.components{2})*chebfunpref().cheb2Prefs.chebfun2eps;
-tol3 = 10*vscale(f.components{3})*chebfunpref().cheb2Prefs.chebfun2eps;
+tol1 = 100*vscale(f.components{1})*chebfunpref().cheb2Prefs.chebfun2eps;
+tol2 = 100*vscale(f.components{2})*chebfunpref().cheb2Prefs.chebfun2eps;
+tol3 = 100*vscale(f.components{3})*chebfunpref().cheb2Prefs.chebfun2eps;
 if ( norm( f - tangentf ) ) > tol1+tol2+tol3 
     warning( 'SPHEREFUNV:HELMHOLTZDECOMPOSITON:TANGENT', ...
         ['The vector field needs to be tangent to the surface of the',...

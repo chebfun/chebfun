@@ -4,7 +4,7 @@ function vscl = vscale(f)
 % VSCL = VSCALE(F) returns the vertial scale of a SEPARABLEAPPROX as determined
 % by evaluating on a coarse tensor-product grid. 
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % TODO: Should this also be taking the maximum along the edges when we are

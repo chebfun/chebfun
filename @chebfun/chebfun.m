@@ -107,7 +107,7 @@ classdef chebfun
 %
 % See also CHEBFUNPREF, CHEBPTS.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -276,6 +276,9 @@ classdef chebfun
         
         % Multiplication operator.
         M = diag(f)
+        
+        % Dimension check based on Matlab version
+        out = dimCheck(f, g)
 
         % Useful information for DISPLAY.
         [name, data] = dispData(f)
@@ -680,7 +683,16 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
             end
         end
     end
-
+    
+    % It doesn't make sense to construct from values and coeffs at the same
+    % time.
+    if ( iscell(op) && iscell(op{1}) && isfield(keywordPrefs, 'tech') && ...
+            ~isempty(keywordPrefs.tech) )
+        error('CHEBFUN:CHEBFUN:parseInputs:coeffschebkind', ...
+            [' ''coeffs'' and ''chebkind'' should not be ' ...
+            'specified simultaneously.']);
+    end
+    
     % Override preferences supplied via a preference object with those supplied
     % via keyword.
     if ( prefWasPassed )
@@ -806,26 +818,14 @@ end
 function op = vectorCheck(op, dom, vectorize)
 %VECTORCHECK   Try to determine whether op is vectorized. 
 %   It's impossible to cover all eventualities without being too expensive. 
-%   We do the best we can. "Do. Or do no. There is not try."
+%   We do the best we can.
+
+y = dom([1 end]); y = y(:);
 
 % Make a slightly narrower domain to evaluate on. (Endpoints can be tricky).
-y = dom([1 end]);
 % This used to be fixed at 0.01. But this can cause troubles at very narrow
 % domains, where 1.01*y(1) might actually be larger than y(end)!
-del = diff(y)/200;
-if ( y(1) > 0 )
-    y(1) = (1+del)*y(1); 
-else
-    y(1) = (1-del)*y(1); 
-end
-
-if ( y(end) > 0 )
-    y(end) = (1-del)*y(end); 
-else
-    y(end) = (1+del)*y(end); 
-end
-
-y = y(:);
+y = y + [1;-1].*diff(y)/200;
 
 if ( vectorize )
     op = vec(op, y(1));

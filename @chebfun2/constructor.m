@@ -3,7 +3,7 @@ function g = constructor(g, op, varargin)
 %
 % This code is when functions of two variables are represented as CHEBFUN2
 % objects. A CHEBFUN2 object is a low rank representation and expresses a
-% function as a sum of rank-0 or 1 outerproduct of univariate functions.
+% function as a sum of rank-0 or 1 outer products of univariate functions.
 %
 % The algorithm for constructing a CHEBFUN2 comes in two phases:
 %
@@ -24,7 +24,7 @@ function g = constructor(g, op, varargin)
 %
 % See also CHEBFUN2.
 
-% Copyright 2016 by The University of Oxford and The Chebfun2 Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun2 Developers.
 % See http://www.chebfun.org/ for Chebfun2 information.
 
 % Parse the inputs:

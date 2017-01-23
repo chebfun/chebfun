@@ -12,9 +12,9 @@ function out = poly(f)
 %   This strange behaviour is a result of MATLAB's decision to return a row
 %   vector from the POLY command, even for column vector input.
 %
-% See also CHEBCOEFFS, FOURCOEFFS, LEGCOEFFS.
+% See also CHEBCOEFFS, TRIGCOEFFS, LEGCOEFFS.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

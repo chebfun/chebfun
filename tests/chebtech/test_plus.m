@@ -76,11 +76,20 @@ for n = 1:2
     % This should fail with a dimension mismatch error.
     g_op = @(x) sin(x);
     g = testclass.make(g_op, [], pref);
-    try
+    try 
         h = f + g; %#ok<NASGU>
         pass(n, 18) = false;
+        if ( verLessThan('matlab', '9.1') )
+            pass(n, 18) = false;
+        else
+            pass(n, 18) = true;
+        end
     catch ME
-        pass(n, 18) = strcmp(ME.message, 'Matrix dimensions must agree.');
+        if ( verLessThan('matlab', '9.1') )
+            pass(n, 18) = strcmp(ME.identifier, 'MATLAB:dimagree');
+        else
+            pass(n, 18) = false;
+        end
     end
     
     %%

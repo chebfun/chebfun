@@ -17,7 +17,7 @@ function f = constructorTurbo(f, op, pref)
 %         expansion coefficients of analytic functions.  Technical Report
 %         TW-645, K.U. Leuven, 2015.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % How many coefficients do we want to compute?

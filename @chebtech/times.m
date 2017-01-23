@@ -8,7 +8,7 @@ function f = times(f, g, varargin)
 %
 % See also MTIMES, RDIVIDE.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty(f) || isempty(g) )
@@ -83,9 +83,9 @@ function [coeffs, pos] = coeff_times_main(f, g)
 [fn, fm] = size(f);
 [gn, gm] = size(g);
 
-% Prolong:
-f((fn+1):(fn+gn+1),:) = 0;
-g((gn+1):(fn+gn+1),:) = 0;
+% Prolong: 
+f((fn+1):(fn+gn-1),:) = 0; % length(f*g) = length(f) + length(g) - 1
+g((gn+1):(fn+gn-1),:) = 0;
 
 % Check dimensions:
 if ( fm ~= gm )

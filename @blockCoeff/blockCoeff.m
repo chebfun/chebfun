@@ -4,7 +4,7 @@ classdef blockCoeff
 %
 % See also LINOP, CHEBOP, CHEBOPPREF.
     
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -46,7 +46,7 @@ classdef blockCoeff
                 if ( nargin == 2 )
                     dummy.pref = varargin{2};
                 end
-                A = L.stack( dummy );
+                A = L.stack(dummy);
 
             % If the constructor is called with data, just make a regular object
             % out of it. 
@@ -72,15 +72,15 @@ classdef blockCoeff
         % These are the basic constructors.
         
         function I = eye(A)
-            I = blockCoeff( chebfun(1, A.domain, A.pref), A.domain );
+            I = blockCoeff(chebfun(1, A.domain, A.pref), A.domain);
         end
         
         function I = zeros(A)
-            I = blockCoeff( chebfun(0, A.domain, A.pref), A.domain );
+            I = blockCoeff(chebfun(0, A.domain, A.pref), A.domain);
         end
         
         function F = mult(A, f)
-            F = blockCoeff( f, A.domain );
+            F = blockCoeff(f, A.domain);
         end
         
         function C = cumsum(A, m)
@@ -212,7 +212,7 @@ classdef blockCoeff
         end
         
         function A = uminus(A)
-            A.coeffs = cellfun( @uminus, A.coeffs, 'uniform', false );
+            A.coeffs = cellfun(@uminus, A.coeffs, 'uniform', false);
          end
         
         function A = uplus(A)

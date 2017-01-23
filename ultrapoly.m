@@ -20,14 +20,14 @@ function p = ultrapoly(n, lam, dom)
 %
 % See also LEGPOLY, CHEBPOLY, JACPOLY. 
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Parse inputs:
 if ( nargin < 2 )
     error('CHEBFUN:ultrapoly:inputs', 'ULTRAPOLY() requires at least 2 inputs.'); 
 end
-if ( nargin < 4 )
+if ( nargin < 3 )
     dom = [-1, 1]; 
 end
 % Unbounded domains aren't supported/defined.

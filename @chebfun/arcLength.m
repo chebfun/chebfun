@@ -17,7 +17,7 @@ function out = arcLength(f, a, b)
 %   f = chebfun(@(x) sin(x), [0 1]);
 %   L = arcLength(f);
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty CHEBFUN:

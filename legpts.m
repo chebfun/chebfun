@@ -1,5 +1,5 @@
 function [x, w, v, t] = legpts(n, int, meth)
-%LEGPTS    Legendre points and Gauss-Legendre Quadrature Weights.
+%LEGPTS    Legendre points and Gauss-Legendre quadrature weights.
 %   LEGPTS(N) returns N Legendre points X in (-1,1).
 %
 %   [X, W] = LEGPTS(N) returns also a row vector W of weights for Gauss-Legendre
@@ -29,7 +29,7 @@ function [x, w, v, t] = legpts(n, int, meth)
 %
 % See also CHEBPTS, JACPTS, LOBPTS, RADAUPTS, HERMPTS, LAGPTS, and TRIGPTS.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

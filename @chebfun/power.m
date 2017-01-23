@@ -7,7 +7,7 @@ function g = power(f, b, pref)
 %
 % See also SQRT, COMPOSE.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Initialise an empty CHEBFUN g:
@@ -26,10 +26,7 @@ end
 if ( isa(f, 'chebfun') && isa(b, 'chebfun') )
     
     % Check the number of columns match:
-    if ( numColumns(f) ~= numColumns(b) )
-        error('CHEBFUN:CHEBFUN:power:quasi', ...
-            'Chebfun quasimatrix dimensions must agree.')
-    end
+    dimCheck(f, b);
     
     if ( numel(f) == 1 && numel(b) == 1 )
         % Array-valued CHEBFUN case:
@@ -40,10 +37,22 @@ if ( isa(f, 'chebfun') && isa(b, 'chebfun') )
         % Convert to a cell array:
         f = mat2cell(f);
         b = mat2cell(b);
+        
         % Loop over the columns:
-        for k = numel(f):-1:1
-            g(k) = columnPower(f{k}, b{k}, pref);
+        if ( numel(f) == 1 )
+            for k = numel(b):-1:1
+                g(k) = columnPower(f{1}, b{k}, pref);
+            end
+        elseif ( numel(b) == 1 )
+            for k = numel(f):-1:1
+                g(k) = columnPower(f{k}, b{1}, pref);
+            end
+        else % numel(f) = numel(g)
+            for k = numel(f):-1:1
+                g(k) = columnPower(f{k}, b{k}, pref);
+            end
         end
+        
     end
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% CHEBFUN .^ constant %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    

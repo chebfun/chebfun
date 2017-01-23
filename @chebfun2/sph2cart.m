@@ -10,7 +10,7 @@ function [x, y, z] = sph2cart( th, phi, r )
 %
 % See also POL2CART.
 
-% Copyright 2016 by The University of Oxford and The Chebfun2 Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun2 Developers. 
 % See http://www.chebfun.org/ for Chebfun2 information. 
 
 % Spherical coordinates: 

@@ -44,7 +44,7 @@ function N = deflate(N, r, p, alp, type)
 %   partial differential equations (P. E. Farrell, Á. Birkisson, S. W. Funke),
 %   In SIAM Journal on Scientific Computing, volume 37, 2015.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin < 5 )

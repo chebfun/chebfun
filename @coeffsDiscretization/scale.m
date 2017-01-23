@@ -10,7 +10,7 @@ function scl = scale(disc, uFun)
 % if a vector in LINOP/EXPM represents values or coefficients. SCALE allows 
 % the resposibility to be on the underlying DISC method. 
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Convert each vector to values and then take the absolute maximum: 

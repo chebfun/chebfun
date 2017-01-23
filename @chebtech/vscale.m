@@ -5,7 +5,7 @@ function vscl = vscale( f )
 %   interpolation data. If F is an array-valued CHEBTECH with K columns, then
 %   the result is a row vector of length K.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Get the coefficients:

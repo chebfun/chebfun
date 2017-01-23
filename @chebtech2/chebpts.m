@@ -13,18 +13,20 @@ function [x, w, v, t] = chebpts(n)
 %
 % See also BARY, QUADWTS, BARYWTS, TRIGPTS, LEGPTS, JACPTS, LAGPTS, and HERMPTS.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( n == 0 )     % Special case (no points)
     x = []; 
     w = []; 
     v = []; 
+    t = [];
     
 elseif ( n == 1 ) % Special case (single point)
     x = 0; 
     w = 2; 
-    v = 1;     
+    v = 1; 
+    t = pi/2;
     
 else              % General case
     % Chebyshev points:

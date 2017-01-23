@@ -3,7 +3,7 @@ function N = mtimes(N, u)
 %
 % N = mtimes(N, u) is the same as N evaluated at the CHEBFUN2 u.
 
-% Copyright 2016 by The University of Oxford and The Chebfun Developers.
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isa(u, 'chebfun2') )
