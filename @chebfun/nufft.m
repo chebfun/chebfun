@@ -11,7 +11,7 @@ function [f, p] = nufft( c, x, omega, type)
 %
 % C and X must be column vectors of the same length.
 %
-% F = CHEBFUN.NUFFT( C, X, 2 ) is the same as CHEBFUN.NUFFT( C, X )
+% F = CHEBFUN.NUFFT( C, X, 2 ) is the same as CHEBFUN.NUFFT( C, X ).
 %
 % F = CHEBFUN.NUFFT( C, OMEGA, 1 ) is a nonuniform fast Fourier transform
 % of type 1, which computes the following sums in quasi-optimal complexity:
