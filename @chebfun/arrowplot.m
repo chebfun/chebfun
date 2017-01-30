@@ -1,4 +1,4 @@
-function arrowplotNew(u,opts)
+function varargout = arrowplot(f,varargin)
 %ARROWPLOT   Chebfun plot with arrowhead at end
 %   ARROWPLOT(F,G), where F and G are CHEBFUNs with the same
 %   domain, plots the curve (F,G) in the plane with an arrowhead.
@@ -18,20 +18,36 @@ function arrowplotNew(u,opts)
 %
 %   h = exp((-.2+3i)*t); arrowplot(h,'color','r')
 %
-%   A = []; for k = 1:3, A = [A exp(-.1*k+1i)*t]; arrowplot(A) 
-if nargin < 2
-    opts = {};
+%   A = []; for k = 1:3, A = [A exp((-.1*k+1i)*t)]; end, arrowplot(A,'color','k')
+if ~isreal(f)
+    if nargin < 2
+        opts = {};
+    end
+else
+    g = varargin{1};
+    varargin(1) = [];
+    f = f + 1i*g;
+    if nargin < 3
+        opts = {};
+    end
 end
-f = u + 1i*diff(u);
 fp = diff(f);
-fend = f(end);
-fpend = fp(end);
-fpend = .2*fpend/norm(fpend,2);
-plot(f,opts{:});
-h=annotation('arrow');
-set(h,'parent', gca, ...
-    'position', [real(fend) imag(fend) real(fpend) imag(fpend)], ...
-    'HeadLength', 10, 'HeadWidth', 10, 'HeadStyle', 'vback2', ...
-    opts{:});
+fdom = domain(f);
+fend = feval(f, fdom(end));
+fpend = feval(fp, fdom(end));
+fpend = .001*fpend/norm(fpend,2);
+pp = plot(f,varargin{:});
+for aCounter=1:length(fend)
+    h(aCounter)=annotation('arrow');
+    set(h(aCounter),'parent', gca, ...
+        'position', [real(fend(aCounter)) imag(fend(aCounter)) ...
+            real(fpend(aCounter)) imag(fpend(aCounter))], ...
+        'HeadLength', 10, 'HeadWidth', 10, 'HeadStyle', 'vback2', ...
+        'Color', pp(aCounter).Color, varargin{:});
+end
+
+if ( nargout == 1)
+    varargout{1} = pp;
+end
 
 end
