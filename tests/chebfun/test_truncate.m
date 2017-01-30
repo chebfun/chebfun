@@ -26,4 +26,10 @@ pass(6) = length(g) == 10;
 tech = get(g.funs{1}, 'tech');
 pass(7) = isa(tech(), 'trigtech');
 
+%% Test trig-based on a non-standard interval:
+f = chebfun('exp(sin(t))', [0, 2*pi]);
+p = chebfun(f,'trunc', 31,'trig');
+pass(8) = all(domain(p) == [0, 2*pi]);
+pass(9) = norm(f-p) < 100*eps;
+
 end
