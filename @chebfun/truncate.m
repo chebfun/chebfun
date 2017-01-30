@@ -48,7 +48,7 @@ function g = truncate(f, n)
     % Construct the truncated representation:
     g = chebfun(c, 'coeffs', pref);
     
-    % map back to [-1, 1]:
+    % Map back to the original domain:
     if ( any( dom ~= [-1, 1] ) )
         g = newDomain(g, dom);
     end
