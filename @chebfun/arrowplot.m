@@ -1,4 +1,24 @@
-function arrowplotNew(u,opts)  % plot chebfun with arrow on end
+function arrowplotNew(u,opts)
+%ARROWPLOT   Chebfun plot with arrowhead at end
+%   ARROWPLOT(F,G), where F and G are CHEBFUNs with the same
+%   domain, plots the curve (F,G) in the plane with an arrowhead.
+%
+%   ARROWPLOT(F), where F is a complex CHEBFUN, plots the curve
+%   (real(F),imag(F)) in the plane with an arrowhead.
+%
+%   Arguments can also be quasimatrices, in which case several
+%   curves are plotted.
+%
+%   Plotting options can be passed in the usual fashion.
+%
+% Examples:
+%
+%   t = chebfun('t',[0,6]);
+%   f = sin(t); g = cos(t), arrowplot(f,g);
+%
+%   h = exp((-.2+3i)*t); arrowplot(h,'color','r')
+%
+%   A = []; for k = 1:3, A = [A exp(-.1*k+1i)*t]; arrowplot(A) 
 if nargin < 2
     opts = {};
 end
