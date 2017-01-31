@@ -25,6 +25,12 @@ function g = truncate(f, n)
 % appropriate function handle for returning the 'coeffs' of a CHEBFUN.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+    % Make sure the function is mapped to [-1, 1]:
+    dom = f.domain([1, end]);
+    if ( any( dom ~= [-1, 1] ) )
+        f = newDomain(f, [-1, 1]);
+    end
+    
     % Grab the tech of the first fun:
     tech = get(f.funs{1}, 'tech');
     
@@ -40,6 +46,11 @@ function g = truncate(f, n)
     pref.tech = tech;
     
     % Construct the truncated representation:
-    g = chebfun(c, f.domain([1,end]), 'coeffs', pref);
+    g = chebfun(c, 'coeffs', pref);
+    
+    % Map back to the original domain:
+    if ( any( dom ~= [-1, 1] ) )
+        g = newDomain(g, dom);
+    end
     
 end
