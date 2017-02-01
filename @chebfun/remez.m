@@ -158,7 +158,7 @@ function xk = AAALawsonInit(f,m,n) % aaa-Lawson initialization for functions wit
     for ii = 1:length(xk)-1
         Z = [Z linspace(xk(ii),xk(ii+1),num)];    % equispaced sampling between each reference pts
     end
-    Z = unique(Z); Z = Z(:); F = f(Z);
+    Z = unique(Z); Z = Z(:); F = feval(f,Z);
     [r,~,~,~,xk] = aaamn_lawson(Z,F,m,n); % Do AAA-Lawson with updated sample pts
     xk = findreference(f,r,m,n,xk); 
     end    
