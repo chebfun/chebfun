@@ -771,7 +771,7 @@ end
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% find extrema of error function
+% find extrema of error function, in AAALawson
 function xk = findreference(f,r,m,n,z) 
     % f: function  
     % r: rational approximant 
@@ -782,21 +782,19 @@ function xk = findreference(f,r,m,n,z)
     xk = findExtrema(f,r, sort(z,'ascend'));      % find extrema points as usual
     
     % Deal with length(xk) not equal to the desired m+n+2
-    if length(xk) > m+n+2
+    if length(xk) > m+n+2 % reduce reference pts becuse too many found 
         xkori = xk;   
         xkdiff = diff(xk);                        
         [~,ix] = sort(xkdiff,'descend'); % take those with largest gaps
         xk = [xk(1);xk(1+ix(1:m+n+1))];
-        xk = sort(xk,'ascend');
-        warning(['reduce reference pts becuse too many found by aaa-Lawson:',num2str(length(xkori)),' found, reduced to m+n+2=',num2str(length(xk))])
-    elseif length(xk) < m+n+2
+        xk = sort(xk,'ascend');        
+    elseif length(xk) < m+n+2 % increase reference pts becuse too few found 
         xkori = xk;
         xkdiff = diff(xk);                        
         add = m+n+2-length(xk);          % we need to add this many reference points 
         [~,ix] = sort(xkdiff,'descend'); % take those with largest gaps and fill midpoints
         xk = [xk;(xk(ix(1:add))+xk(ix(1:add)+1))/2];
         xk = sort(xk,'ascend');
-        warning(['increase reference pts becuse too few found by aaa-Lawson:',num2str(length(xkori)),' found, increased to m+n+2=',num2str(length(xk))])        
     end    
 end
 
