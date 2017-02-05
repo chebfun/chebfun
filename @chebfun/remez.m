@@ -82,7 +82,7 @@ if(isempty(xk)) % no initial reference is given by the user
         varargout = {p,q,rh,err,status};
         catch
         disp('CF-based initialization failed, turning to AAA-Lawson')
-        status.success = 0; % cf didn't work
+        status.success = 0; % CF didn't work
         end
         
         % If CF doesn't give a satisfactory answer, we try AAA-Lawson
@@ -107,7 +107,7 @@ if(isempty(xk)) % no initial reference is given by the user
             varargout = {p,q,rh,err,status};
         end
     end
-else  % the user has also given a reference vector for starting the exchange algorithm
+else  % the user has also given a starting reference
     if(n == 0)
         [p,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts);
         varargout = {p,err,status};
@@ -140,23 +140,26 @@ function xk = cfInit(f, m, n)
 end
 
 
-% Now turn to initialization via AAA-Lawson, this is more expensive than CF but less than CDF (which follows if this fails). 
+% Now turn to initialization via AAA-Lawson, this is more expensive than CF
+% but less so than CDF (which follows if this fails). 
 % 
-function xk = AAALawsonInit(f,m,n) % aaa-Lawson initialization for functions with breakpoints
+function xk = AAALawsonInit(f,m,n) % AAA-Lawson initialization for functions with breakpoints
     NN = max(10*max(m,n),round(1e5/max(m,n))); 
     dom = domain(f);
     Z = linspace(dom(1),dom(end),NN);   
     F = feval(f,Z);
-    [r,~,~,~,xk] = aaamn_lawson(Z,F,m,n);    % 1st aaa-Lawson
+    [r,~,~,~,xk] = aaamn_lawson(Z,F,m,n);    % 1st AAA-Lawson
     xk = findreference(f,r,m,n,xk);
-    % Iterate twice during which sample points are refiined. 
-    % This is done to find the nonsmooth parts of the function and sample
-    % more densely there. 
+    
+    % Iterate twice during which sample points are refined. 
+    % This is done to find the nonsmooth parts of the function
+    % and sample more densely there. 
     for it = 1:2 
     num = round(NN/length(xk));             
     Z = [];
     for ii = 1:length(xk)-1
-        Z = [Z linspace(xk(ii),xk(ii+1),num)];    % equispaced sampling between each reference pts
+        Z = [Z linspace(xk(ii),xk(ii+1),num)];  % equispaced sampling between
+                                                % each pair of reference pts
     end
     Z = unique(Z); Z = Z(:); F = feval(f,Z);
     [r,~,~,~,xk] = aaamn_lawson(Z,F,m,n); % Do AAA-Lawson with updated sample pts
@@ -199,7 +202,7 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
     
     % need an initialization strategy that has a high chance
     % of working without problem for the small degree case;
-    % use CF for now (subject to change)
+    % CF is used for now
     
     
     xk = cfInit(f, startM, startN);
@@ -481,9 +484,9 @@ p = chebfun(@(x) bary(x, pk, xk, w), dom, m + 1);
 end
 
 function [p, q, rh, h, interpSuccess,xsupport] = computeTrialFunctionRational(f, xk, m, n, hpre, dialogFlag)
-%computeTrialFunctionRational find rational approximation to f via the 
-% remez algorithm. This uses the barycentric representation for improved
-% numerical stability. 
+% computeTrialFunctionRational finds a rational approximation to f at an 
+% iteration of the Remez algorithm. This uses the barycentric representation
+% for improved numerical stability. 
 % f: function 
 % xk: approximate reference points
 % m,n: degree
@@ -510,7 +513,7 @@ num = abs((max(m,n)+1-length(xsupport)));
 if m~=n
     xsupport = [xsupport;xadd(1:max(m,n)+1-length(xsupport))]; % add any lacking supp pts
 end
-xsupport = sort(xsupport,'ascend');      % not necessary but why not
+xsupport = sort(xsupport,'ascend');
 
 if m~=n % force coefficients to lie in null space of Vandermonde
     mndiff = abs(m-n);
@@ -543,14 +546,14 @@ BB = -diag(sigma)*[zeros(length(xk),size(Qmn,2)) C];
 end
 
 % key operation; this forces (F+hsigma)N=D, where N/D is rational approximant. 
-% The eigenvector v conatin the coefficients for 
+% The eigenvector v containing the coefficients for 
 % N(x)=v_i/(x-xsupport_i), D(x)=v_{m+i}/(x-xsupport_{m+i}). 
 
 [v,d,~] = eig(AA,BB);    
 
 % Among the (m+n+2) eigenvalues, only one can be the solution. The correct
-% one needs to have no sign change in denominator polynomial D(x)*node(x),
-% where node(x) = prod(x-xsupport). 
+% one needs to have no sign changes in the denominator polynomial
+% D(x)*node(x), where node(x) = prod(x-xsupport). 
 
 if m<=n % values of D at xk
 Dvals = C(:,1:n+1)*v(m+1+1:end,:); 
@@ -605,11 +608,11 @@ D = @(x)-D(x); % flip back sign
 rh = @(zz) feval(@rr,zz,xsupport,wN,wD); % rational approximant as function handle
 interpSuccess = 1; 
 
-% form chebfuns of p and q (note: could be numerically unstable but provided for convenience)
-% find values of node polynomial at Chebyshev points
+% Form chebfuns of p and q (note: could be numerically unstable but provided for convenience)
+% Find values of node polynomial at Chebyshev points
 x = chebpts(m+n+1);
 nodex = zeros(length(x),1); for ii = 1:length(x),    nodex(ii) = node(x(ii)); end 
-qvals = nodex.*feval(D,x);  % values of p and q at Chebyshev points
+qvals = nodex.*feval(D,x);  % Values of p and q at Chebyshev points
 pvals = nodex.*feval(N,x);
 
 % NOTE: in the final version we will probably simplify these so that they
@@ -771,7 +774,7 @@ end
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% find extrema of error function, in AAALawson
+% find extrema of error function, in AAA-Lawson
 function xk = findreference(f,r,m,n,z) 
     % f: function  
     % r: rational approximant 

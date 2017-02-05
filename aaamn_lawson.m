@@ -112,14 +112,15 @@ Rori = R;
             end
                         
             if doplot
-            subplot(2,1,1)
-            plot(Z,F-Rori,'r.','markersize',12,'linewidth',.5)
-            grid on,hold on
-            if exist('hh'), set(hh,'color',(0.8)*[1 1 1]); end
-            hh = plot(Z,F-R,'k.','markersize',12,'linewidth',.5);                        
-            ylim(err*[-1 1]); drawnow, shg            
+                subplot(2,1,1)
+                plot(Z,F-Rori,'r.','markersize',12,'linewidth',.5)
+                grid on,hold on
+                if exist('hh'), set(hh,'color',(0.8)*[1 1 1]); end
+                subplot(2,1,2)
+                hh = plot(Z,F-R,'k.','markersize',12,'linewidth',.5);                        
+                ylim(err*[-1 1]); drawnow, shg            
             end
-            subplot(2,1,2)
+            
           end          
 
     % compute poles and roots
