@@ -95,7 +95,6 @@ if(isempty(xk)) % no initial reference is given by the user
 
         % A final attempt using cumulative distribution functions
         if(status.success == 0)
-            disp('Trying CDF-based initialization...');
             xk = cdfInit(f,m,n,symFlag,opts,1);
             [p,q,rh,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
             varargout = {p,q,rh,err,status};
@@ -191,6 +190,8 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
     if(symFlag > 0) % dealing with symmetry (even or odd)
         stepSize = 2*step;
     end
+    text = ['Trying CDF-based initialization with step size ', num2str(stepSize),'...'];
+    disp(text);
     
     % Choose small starting degree
     minValue = min(m,n);
