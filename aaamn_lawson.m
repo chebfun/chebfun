@@ -1,6 +1,6 @@
 function [r, pol, res, zer, z, f, w, errvec, p, q] = aaamn_lawson(Z,F,m,n,tol,Lawsoniter,doplot)
-% aaamn_lawson near-best rational approximation of data F on set Z of type
-% (MMAX,NMAX). 
+% [r, pol, res, zer, z, f, w, errvec, p, q] = aaamn_lawson(Z,F,m,n,tol,Lawsoniter,doplot)
+% near-best rational approximation of data F on set Z of type (MMAX,NMAX). 
 % It first finds a AAA rational approximant to F \approx r(Z), then
 % attempts to refine the approximant by a Lawson process, i.e. an iterative
 % reweighting. 
@@ -8,12 +8,15 @@ function [r, pol, res, zer, z, f, w, errvec, p, q] = aaamn_lawson(Z,F,m,n,tol,La
 % This code is originally designed for computing good reference points for the
 % rational remez code to follow, but can be used independently for
 % constructing a rational approximation r that can be much closer than AAA
-% to the best rational approximant. Note that 
+% to the best rational approximant. 
 %
 % Input:  Z = vector of sample points
 %         F = vector of data values, or a function handle
+%         m, n: max type is (m,n), set to 10 if omitted
 %         tol = relative tolerance tol, default: 1e-13 
-%         m, n: max type is (m,n), set to 100 if omitted
+%         Lawsoniter: max. iteration number of Lawson updates (default 10)
+%         doplot: 1 to plot error curve history (default 0)
+%         
 %
 % Output: r = AAA-Lawson approximant to F (function handle)
 %         pol,res,zer = vectors of poles, residues, zeros
@@ -22,14 +25,16 @@ function [r, pol, res, zer, z, f, w, errvec, p, q] = aaamn_lawson(Z,F,m,n,tol,La
 %         p,q = chebfuns s.t. r= p/q (note this can be numerically unstable)
 
 M = length(Z);                            % number of sample points
-if ( nargin<3 | isempty(m) ), m = 100; end                 % default max type (99,99)
-if ( nargin<4 | isempty(n) ), n = m; end
-if ( nargin<5 | isempty(tol)), tol = 1e-13; end             % default relative tol 1e-13
+if ( (nargin < 3) || isempty(m) ), m = 10;% default max type (10,10) 
+    disp('No input type given; will compute type (10,10) approximant')
+end                 
+if ( (nargin < 4) || isempty(n) ), n = m; end
+if ( (nargin < 5) || isempty(tol) ), tol = 1e-13; end % default relative tol 
 mmax = m+1; nmax = n+1;                   % for coding convenience
-if ( nargin<6 | isempty(Lawsoniter))      % number of Lawson updates
+if ( (nargin < 6) || isempty(Lawsoniter) )% number of Lawson updates
     Lawsoniter = max([5 min([20,mmax,nmax])]); 
 end 
-if ( nargin<7 | isempty(doplot)), doplot = 0;  end  % plot Lawson updates
+if ( (nargin < 7) || isempty(doplot)), doplot = 0;  end  % plot Lawson updates
 if ~isfloat(F), F = F(Z); end             % convert function handle to vector
 Z = Z(:); F = F(:);                       % work with column vectors
 SF = spdiags(F,0,M,M);                    % left scaling matrix
