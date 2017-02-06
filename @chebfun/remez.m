@@ -220,7 +220,8 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
     if(status.success == 1)
         xk = refGen(f, status.xk, m + n + 2, symFlag);
     else
-        disp('CDF failed');
+        text = ['Initialization failed using CDF with step size ', num2str(stepSize)];
+        disp(text);
         [~,~,status] = remez(f,m+n); xk = status.xk;
     end
     
