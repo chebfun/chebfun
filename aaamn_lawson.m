@@ -22,12 +22,14 @@ function [r, pol, res, zer, z, f, w, errvec, p, q] = aaamn_lawson(Z,F,m,n,tol,La
 %         p,q = chebfuns s.t. r= p/q (note this can be numerically unstable)
 
 M = length(Z);                            % number of sample points
-if nargin<3, m = 100; end                 % default max type (99,99)
-if nargin<4, n = m; end
-if nargin<5, tol = 1e-13; end             % default relative tol 1e-13
+if ( nargin<3 | isempty(m) ), m = 100; end                 % default max type (99,99)
+if ( nargin<4 | isempty(n) ), n = m; end
+if ( nargin<5 | isempty(tol)), tol = 1e-13; end             % default relative tol 1e-13
 mmax = m+1; nmax = n+1;                   % for coding convenience
-if nargin<6, Lawsoniter = max([5 min([20,mmax,nmax])]); end % number of Lawson updates
-if nargin<7, doplot = 0;  end             % plot Lawson updates
+if ( nargin<6 | isempty(Lawsoniter))      % number of Lawson updates
+    Lawsoniter = max([5 min([20,mmax,nmax])]); 
+end 
+if ( nargin<7 | isempty(doplot)), doplot = 0;  end  % plot Lawson updates
 if ~isfloat(F), F = F(Z); end             % convert function handle to vector
 Z = Z(:); F = F(:);                       % work with column vectors
 SF = spdiags(F,0,M,M);                    % left scaling matrix
@@ -114,10 +116,14 @@ Rori = R;
             if doplot
                 subplot(2,1,1)
                 plot(Z,F-Rori,'r.','markersize',12,'linewidth',.5)
-                grid on,hold on
-                if exist('hh'), set(hh,'color',(0.8)*[1 1 1]); end
+                title('AAA error')
+                grid on, hold on
+                if exist('hh','var'), set(hh,'color',(0.8)*[1 1 1]); end
                 subplot(2,1,2)
+                title('AAA-Lawson error')
                 hh = plot(Z,F-R,'k.','markersize',12,'linewidth',.5);                        
+                grid on, hold on
+                plot(z,0*z,'m.','markersize',14)
                 ylim(err*[-1 1]); drawnow, shg            
             end
             
