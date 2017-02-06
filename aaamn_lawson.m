@@ -34,8 +34,12 @@ mmax = m+1; nmax = n+1;                   % for coding convenience
 if ( (nargin < 6) || isempty(Lawsoniter) )% number of Lawson updates
     Lawsoniter = max([5 min([20,mmax,nmax])]); 
 end 
-if ( (nargin < 7) || isempty(doplot)), doplot = 0;  end  % plot Lawson updates
-if ~isfloat(F), F = F(Z); end             % convert function handle to vector
+if ( (nargin < 7) || isempty(doplot))     % plot Lawson updates
+    doplot = 0;  
+end  
+if ~isfloat(F), 
+    fori = F;                             % store function (used as chebfun)
+    F = feval(F,Z); end                   % convert function handle to vector
 Z = Z(:); F = F(:);                       % work with column vectors
 SF = spdiags(F,0,M,M);                    % left scaling matrix
 J = 1:M;                                  % indices that are not support pts
@@ -70,9 +74,9 @@ for mn = 1:max(mmax,nmax)
   errvec = [errvec; err];                 % max error at sample points
   if err < tol*norm(F,inf), break, end    % stop if converged
 end
-r = @(zz) feval(@rr,zz,z,w,f);            % AAA approximant as function handle
-
-Rori = R;
+    r = @(zz) feval(@rr,zz,z,w,f);            % AAA approximant as function handle
+    Rori = R;
+    
 % now start Lawson, in this mode we leave interpolation and work with
 % 'alpha-beta' mode. 
           wei = ones(length(J),1);
@@ -86,12 +90,14 @@ Rori = R;
                 A =[SF*C -C*Q];                   
               end
           else
-            A =[SF*C -C]; % diagonal case
+            A =[SF*C -C];  % diagonal case
           end
           
+          rate = 1;        % default Lawson rate
+          nrmincreased = 0;% initialization    
 	      for it = 1:Lawsoniter
               weiold = wei; 
-              wei = wei .* sqrt(abs(F(J)-R(J)));       % update Lawson weights
+              wei = wei .* power(abs(F(J)-R(J)),rate); % update Lawson weights
               wei = wei/sum(wei);                      % normalize 
               if norm(weiold-wei)/norm(wei)< sqrt(tol) % declare Lawson converged
                   break
@@ -99,6 +105,7 @@ Rori = R;
               D = spdiags(sqrt(wei),0,length(wei),length(wei)); % diagonal weight matrix
 
               [~,~,V] = svd(D*A(J,:),0);     % weighted least-squares via SVD
+              
           if mn > min(nmax,mmax)
               if mn > nmax
                 w = Q*V(1:nmax,end); wf = V(nmax+1:end,end);            
@@ -113,23 +120,38 @@ Rori = R;
             R = F; R(J) = N(J)./D(J);           % rational approximation
             err = norm(F-R,inf);            
             errvec = [errvec; err];                 % max error at sample points                            
-            if err < nrmbest        % adopt best so far
+            if ( err < nrmbest )       % adopt best so far
             nrmbest = norm(F-R,'inf'); 
-            r = @(zz) feval(@rrab,zz,z,w,wf,f); % AAA approximant as function handle                      
+            weibest = wei;                      % store best weight
+            r = @(zz) feval(@rrab,zz,z,w,wf,f); % AAA approximant as function handle
+            else
+                nrmincreased = nrmincreased + 1;
             end
-                        
+            if ( nrmincreased >= 3 )     % perhaps not converging
+            rate = max( rate/2,0.01 );   % make Lawson update conservative
             if doplot
+                disp(['Lawson rate shrunk to ',num2str(rate)])
+            end
+              nrmincreased = 0; 
+            end
+
+            if doplot  % plot error functions (hopefully near-equioscillating)
                 subplot(2,1,1)
-                plot(Z,F-Rori,'r.','markersize',12,'linewidth',.5)
+                plot(Z,F-Rori,'r.','markersize',8)
                 title('AAA error')
                 grid on, hold on
-                if exist('hh','var'), set(hh,'color',(0.8)*[1 1 1]); end
+                if exist('hh','var')
+                    set(hh,'color',(0.8)*[1 1 1]); 
+                end
                 subplot(2,1,2)
                 title('AAA-Lawson error')
-                hh = plot(Z,F-R,'k.','markersize',12,'linewidth',.5);                        
+                hh = plot(Z,F-R,'k.','markersize',8);                        
                 grid on, hold on
-                plot(z,0*z,'m.','markersize',14)
+                h2 = plot(z,0*z,'m.','markersize',12);
                 ylim(err*[-1 1]); drawnow, shg            
+                if it == Lawsoniter % plot best function 
+                plot(Z,F-r(Z),'b.','markersize',10);
+                end
             end
             
           end          
@@ -198,3 +220,4 @@ if ( nargin < 3 ), q = ones(length(z),1); end
                 end
             [Q,~] = qr(Q); Q = conj(Q(:,dim+1:end)); % desired null space
 end
+
