@@ -395,7 +395,7 @@ N = m + n;
 
 % Parse name-value option pairs.
 if rationalMode
-    opts.tol = 1e-4;                        % Relative tolerance for deciding convergence.
+    opts.tol = 1e-5;                        % Relative tolerance for deciding convergence.
     opts.maxIter = 30+round(max(m,n)/2);    % Maximum number of allowable iterations.
 else
     opts.tol = 1e-16*(N^2 + 10); % Polynomial case is much more robust. 
@@ -617,10 +617,9 @@ nodex = zeros(length(x),1); for ii = 1:length(x),    nodex(ii) = node(x(ii)); en
 qvals = nodex.*feval(D,x);  % Values of p and q at Chebyshev points
 pvals = nodex.*feval(N,x);
 
-% NOTE: in the final version we will probably simplify these so that they
-% have exactly degrees deg(p)=m, deg(q)=n. 
+ 
 p = chebfun(pvals); q = chebfun(qvals);
-% p = simplify(p); q = simplify(q); % or
+p = simplify(p); q = simplify(q); % or
 % p = chebfun(p,m+1); qp = chebfun(q,n+1); 
 
 end
@@ -823,7 +822,6 @@ end
 xlim(dom)
 legend('Current Ref.', 'Next Ref.', 'Error')
 drawnow
-pause(0.5)
 
 end
 
