@@ -59,7 +59,7 @@ cd(installDir)
 % Check they _really_ want to do this!
 if ( ~force )
     
-    fprintf(2, ['Warning!\nUpdating will permenently remove your ', ...
+    fprintf(2, ['Warning!\nUpdating will permanently remove your ', ...
         'Chebfun root directory,\n%s/, and all contents.\n'], installDir);
     yesno = '';
     while ( ~any(strcmp(yesno, {'yes', 'no'}))  )
