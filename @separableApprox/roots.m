@@ -25,14 +25,13 @@ function r = roots( f, g, varargin )
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-
 % Check for empty:
 if ( isempty( f ) )
     r = []; 
     return
 end 
 
-tol = 1e-5; % Go for five digits.
+tol = 1e-7; % Go for seven digits.
 dom = f.domain;
 
 if ( nargin == 1 )
@@ -43,7 +42,7 @@ if ( nargin == 1 )
         cols = f.cols;
         rows = f.rows;
         yrts = 1i*(roots( cols )+realmin);  
-        xrts = roots( rows ) + realmin*1i; % Add complex to ensure its not real
+        xrts = roots( rows ) + realmin*1i; % Add complex to ensure it's not real
         r = chebfun; 
         % Go though col(yrts) = 0, make into a horizontal line: 
         dom = rows.domain;
@@ -80,7 +79,12 @@ if ( nargin == 1 )
         while ( j < length(C) )
             k = j + C(2, j);
             D = C(:, j+1:k);
-            f = chebfun( (D(1,:) +  1i*(D(2,:)+realmin)).' );
+            Dc = ( D(1, :) + 1i*(D(2, :)+realmin) ).';
+	    s = [0; cumsum(abs(diff(Dc)))];   % empirical arc length
+	    s = 2*s/s(end) - 1;               % for better interpolation
+	    chebgrid = chebpts(length(Dc));
+            newdata = interp1(s, Dc, chebgrid, 'spline');
+            f = chebfun( newdata );
             f = simplify( f, tol, 'globaltol' );
             j = k + 1;
             r = [ r , f ];
