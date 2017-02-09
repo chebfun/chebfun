@@ -3,11 +3,11 @@ function r = roots( f, g, varargin )
 %   R = ROOTS(F), returns the zero contours of F as a quasimatrix of chebfuns.
 %   Each column of R is one zero contour. This command only finds contours when
 %   there is a change of sign and it can also group intersecting contours in a
-%   non-optimal way. Contours are computed to, roughly, four digits of
+%   non-optimal way. Contours are computed to, roughly, eight digits of
 %   precision. In particular, this command cannot reliably compute isolated real
 %   roots of F or zero curves lying close to the boundary of the domain. 
 %
-%   In the special case when F is of length 1 then the zero contours are found
+%   In the special case when F is of length 1, the zero contours are found
 %   to full precision.
 %
 %   R = ROOTS(F, G) returns the isolated points of F and G.
@@ -25,25 +25,24 @@ function r = roots( f, g, varargin )
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-
 % Check for empty:
 if ( isempty( f ) )
     r = []; 
     return
 end 
 
-tol = 1e-5; % Go for five digits.
+tol = 1e-10; % Go for ten digits. 
 dom = f.domain;
 
 if ( nargin == 1 )
     
     if ( length( f ) == 1 )  
-        % The SEPARABLEAPPROX is rank 1:
+        % The SEPARABLEAPPROX is of rank 1:
         
         cols = f.cols;
         rows = f.rows;
         yrts = 1i*(roots( cols )+realmin);  
-        xrts = roots( rows ) + realmin*1i; % Add complex to ensure its not real
+        xrts = roots( rows ) + realmin*1i; % Add complex to ensure it's not real
         r = chebfun; 
         % Go though col(yrts) = 0, make into a horizontal line: 
         dom = rows.domain;
@@ -64,9 +63,9 @@ if ( nargin == 1 )
         % Function is real-valued.
         
         % Use Matlab's contourc function (Marching Squares). Note n = 502 is
-        % chosen so that use a grid that does not involve the boundary of the
+        % chosen to use a grid that does not involve the boundary of the
         % domain.
-        n = 502; % disc size.
+        n = 502; % discretization size.
         x = linspace( dom(1), dom(2), n );
         x(1) = []; x(end) = []; 
         y = linspace( dom(3), dom(4), n );
@@ -74,16 +73,35 @@ if ( nargin == 1 )
         [xx, yy] = meshgrid( x, y );
         vals = feval( f, xx, yy );
         C = contourc( x, y, vals, 0*[1 1] );
+        [fx, fy] = grad(f);        
         
         % Store solution in complex-valued CHEBFUNs:
         j = 1; r = chebfun;
         while ( j < length(C) )
             k = j + C(2, j);
             D = C(:, j+1:k);
-            f = chebfun( (D(1,:) +  1i*(D(2,:)+realmin)).' );
-            f = simplify( f, tol, 'globaltol' );
+            Dc = ( D(1, :) + 1i*(D(2, :)+realmin) ).';            
+            
+        % Take one Newton step to improve curve data
+            fxval = feval( fx, D(1,:), D(2,:) );
+            fyval = feval( fy, D(1,:), D(2,:) );        
+            gradf = fxval + 1i*fyval; 
+            fval = feval( f, D(1,:), D(2,:) );                                                
+            Dcnew = Dc - fval.*( gradf./abs(gradf).^2 );
+            fvalnew = feval( f, real(Dcnew), imag(Dcnew) );  
+            failures = find(abs(fval) < abs(fvalnew));
+            Dcnew(failures) = Dc(failures);
+            Dc = Dcnew; 
+            
+        % Empirical arc length for better interpolation
+    	    s = [0; cumsum(abs(diff(Dc)))];   
+    	    s = 2*s/s(end) - 1;               
+    	    chebgrid = chebpts(length(Dc));
+            newdata = interp1(s, Dc, chebgrid, 'spline');
+            fnew = chebfun( newdata );            
+            fnew = simplify( fnew, tol, 'globaltol' );
             j = k + 1;
-            r = [ r , f ];
+            r = [ r , fnew ];
         end
     else
         % Function is complex-valued.
