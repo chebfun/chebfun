@@ -45,7 +45,7 @@ pass(6) = abs(area - pi/4) < 1e-3;
 f = chebfun2( @(x,y) x.^2 + (10*y).^2 - 1/4 );
 c = roots(f);
 arclength = sum(abs(diff(c)));
-pass(7) = abs(arclength - 2.03199) < 1e-2;
+pass(7) = abs(arclength -   2.031987090050447) < 1e-3;
 
 area = abs(sum(real(c).*diff(imag(c))));
 pass(8) = abs(area - pi/40) < 1e-3;
