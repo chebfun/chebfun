@@ -7,7 +7,7 @@ function [f, p] = nufft( c, x, omega, type)
 % F = CHEBFUN.NUFFT( C, X ) is a nonuniform fast Fourier transform of type
 % 2, which computes the following sums in quasi-optimal complexity:
 %
-%       F_j = \sum_{k=0}^{N-1} C(K)*exp(-2*pi*1i*X(j)*k/N), 0<=j<=N-1.
+%       F_j = \sum_{k=0}^{N-1} C(K)*exp(-2*pi*1i*X(j)*k), 0<=j<=N-1.
 %
 % C and X must be column vectors of the same length.
 %
@@ -36,12 +36,12 @@ function [f, p] = nufft( c, x, omega, type)
 % The algorithm in this MATLAB script is based on the paper:
 %
 % [1] D. Ruiz--Antoln and A. Townsend, "A nonuniform fast Fourier transform
-% based on low rank approximation", in preparation, 2016.
+% based on low rank approximation", submitted, 2017.
 %
 % This paper related the NUFFT to a FFT by low rank approximation.
 
 if ( nargin == 1 )
-    p = @(c) fft(c);
+    p = @(coeffs) fft(coeffs);
     f = p(c);
 elseif ( nargin == 2 )
     % default to type 2 nufft
@@ -80,11 +80,11 @@ function [f, p] = nufft1( c, omega, tol )
 %          tilde{F}_1*c = \tilde{F}_2^T*c.
 
 N = size(omega,1);
-[~, t, gam] = FindAlgorithmicParameters( omega/N );
+[~, t, gam] = FindAlgorithmicParameters( omega/N, size(c,1) );
 K = ceil(5*gam*exp(lambertw(log(10/tol)/gam/7)));
 [u, v] = constructAK( omega/N, (0:N-1)', K );
 In = speye( N );
-p = @(c) sum( v.*(N*conj( ifft( full( In(:,t)*conj( repmat(c,1,K).*u )  ), [], 1) ) ), 2);
+p = @(coeffs) sum( v.*(N*conj( ifft( full( In(:,t)*conj( repmat(coeffs,1,K).*u )  ), [], 1) ) ), 2);
 f = p(c); 
 end
 
@@ -96,11 +96,11 @@ function [f, p] = nufft2( c, x, tol )
 %
 % where A_K is a rank K matrix and F is the DFT matrix.
 
-[~, t, gam] = FindAlgorithmicParameters( x );
-K = ceil(5*gam*exp(lambertw(log(10/tol)/gam/7)));
-[u, v] = constructAK( x, (0:size(x,1)-1)', K );
+[~, t, gam] = FindAlgorithmicParameters( x, size(c,1) );
+K = ceil(5*(gam+eps)*exp(lambertw(log(10/tol)/(gam+eps)/7)));
+[u, v] = constructAK( x, (0:size(c,1)-1)', K );
 In = speye(size(c,1));
-p = @(c) sum(u.*(In(t,:)*fft( repmat(c,1,K).*v,[],1 )),2);
+p = @(coeffs) sum(u.*(In(t,:)*fft( repmat(coeffs,1,K).*v,[],1 )),2);
 f = p(c);
 end
 
@@ -109,7 +109,7 @@ function [f, p] = nufft3( c, x, omega, tol)
 % This is equivalent to tilde{F}_3*c. 
 
 N = size(x, 1); 
-[s, t, gam] = FindAlgorithmicParameters( x );
+[s, t, gam] = FindAlgorithmicParameters( x, size(c,1) );
 K = ceil(5*gam*exp(lambertw(log(10/tol)/gam/7)));
 t_vec = t - 1; 
 
@@ -135,14 +135,13 @@ end
 p = [];
 end
 
-function [s, t, gam] = FindAlgorithmicParameters( x )
+function [s, t, gam] = FindAlgorithmicParameters( x, N )
 % Find algorithmic parameters.
 %
 %  s/N = closest equispaced gridpoint to x
 %  t/N = closest equispaced FFT sample to x
 %  gam = perturbation parameter
 
-N = size(x, 1);
 s = round(N*x);
 t = mod(s, N) + 1;
 gam = norm( N*x - s, inf);
@@ -151,12 +150,12 @@ end
 function [u, v] = constructAK( x, omega, K )
 % Construct a low rank approximation to
 %
-%     A_{jk} = exp(-2*pi*1i*(x-s_j/N)*k), 0<=j,k<=N-1,
+%     A_{jk} = exp(-2*pi*1i*(x_j-s_j/N)*k), 0<=j,k<=N-1,
 %
 % where |x_j-j/N|<= gam <=1/2.  See [1].
 
-N = size(x, 1);
-[s, ~, gam] = FindAlgorithmicParameters( x );
+N = size(omega,1);
+[s, ~, gam] = FindAlgorithmicParameters( x, N );
 er = N*x - s;
 scl = exp(-1i*pi*er);
 u = repmat(scl,1,K).*(ChebP(K-1,er/gam)*Bessel_cfs(K, gam));
@@ -182,6 +181,9 @@ function T = ChebP( n, x )
 N = size(x, 1);
 T = zeros(N, n+1);
 T(:,1) = 1;
+if ( n == 0 )
+    return
+end
 T(:,2) = x;
 twoX = 2*x;
 for k = 2:n
