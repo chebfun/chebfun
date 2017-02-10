@@ -31,7 +31,7 @@ end
 % Get size of sample vectors 
 % (We use this to reshape the final vector at the end.) 
 [M, N] = size( x ); 
-if ( all( size(y) == [M,N] ) )
+if ( ~all( size(y) == [M, N] ) )
     error('CHEBFUN::NUFFT2::SampleArrays', ...
           'The dimensions of X and Y are not the same.');
 end
