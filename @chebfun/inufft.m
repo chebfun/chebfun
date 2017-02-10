@@ -1,25 +1,25 @@
-function [f, p] = inufft( c, x, omega, type)
+function [c, p] = inufft( f, x, omega, type)
 % CHEBFUN.INUFFT   Inverse nonuniform fast Fourier transform
 %
-% [F, P]= CHEBFUN.INUFFT( C ) is the same as ifft( C ). C must be a column
-% vector. F = P(C) is a planned version of the fast transform.
+% [C, P]= CHEBFUN.INUFFT( F ) is the same as ifft( F ). F must be a column
+% vector. C = P(F) is a planned version of the fast transform.
 %
-% F = CHEBFUN.INUFFT( C, X ) is an inverse nonuniform fast Fourier transform
-% of type 2, which computes A\C, where
+% C = CHEBFUN.INUFFT( F, X ) is an inverse nonuniform fast Fourier transform
+% of type 2, which computes C = A\F, where
 %
 %        A_{jk} = exp(-2*pi*1i*X(j)*k), 0<=j,K<=N-1.
 %
-% C and X must be column vectors of the same length.
+% F and X must be column vectors of the same length.
 %
-% F = CHEBFUN.INUFFT( C, X, 2 ) is the same as CHEBFUN.INUFFT( C, X ).
+% C = CHEBFUN.INUFFT( F, X, 2 ) is the same as CHEBFUN.INUFFT( F, X ).
 %
-% F = CHEBFUN.INUFFT( C, OMEGA, 1 ) is an inverse nonuniform fast Fourier
-% transform of type 1, which computes A\C, where
+% C = CHEBFUN.INUFFT( F, OMEGA, 1 ) is an inverse nonuniform fast Fourier
+% transform of type 1, which computes C=A\F, where
 %
 %        A_{jk} = exp(-2*pi*1i*j/N*OMEGA(k)), 0<=j,K<=N-1.
 %
-% F = CHEBFUN.INUFFT( C, X, 1, TOL), F = CHEBFUN.INUFFT(C, OMEGA, 2, TOL),
-% and F = CHEBFUN.INUFFT( C, X, OMEGA, TOL ) are the same as above but with
+% C = CHEBFUN.INUFFT( F, X, 1, TOL), C = CHEBFUN.INUFFT(F, OMEGA, 2, TOL),
+% and C = CHEBFUN.INUFFT( F, X, OMEGA, TOL ) are the same as above but with
 % a tolerance of TOL. By default, TOL = eps.
 %
 % See also chebfun.nufft and chebfun.ndct.
@@ -39,27 +39,27 @@ function [f, p] = inufft( c, x, omega, type)
 % is available from the author. Please email: townsend@cornell.edu.
 
 if ( nargin == 1 )
-    p = @(coeffs) ifft(coeffs);
-    f = p(c);
+    p = @(fvals) ifft(fvals);
+    c = p(f);
 elseif ( nargin == 2 )
     % default to type 2 nufft
-    [f, p] = inufft2( c, x, eps );
+    [c, p] = inufft2( f, x, eps );
 elseif ( nargin == 3 )
     type = omega;
     if ( numel(type) == 1 )
         if ( type == 1 )
-            [f, p] = inufft1( c, x, eps);
+            [c, p] = inufft1( f, x, eps);
         elseif ( type == 2 )
-            [f, p] = inufft2( c, x, eps);
-        elseif ( type<1 && type>0 && numel(c)>1 )
+            [c, p] = inufft2( f, x, eps);
+        elseif ( type<1 && type>0 && numel(f)>1 )
             tol = type;
-            [f, p] = inufft1( c, x, tol);
-        elseif ( numel(c) == 1 )
+            [c, p] = inufft1( f, x, tol);
+        elseif ( numel(f) == 1 )
             error('CHEBFUN::NUIFFT::3','Type 3 NUIFFT has not been implemented')
         else
             error('CHEBFUN::NUFFT::TYPE','Unrecognised NUFFT type.');
         end
-    elseif ( numel(type) == size(c,1) )
+    elseif ( numel(type) == size(f,1) )
         % NUFFT-III:
         error('CHEBFUN::NUIFFT::3','Type 3 NUIFFT has not been implemented')
     else
@@ -72,7 +72,7 @@ elseif ( nargin == 4 )
 end
 end
 
-function [f,p] = inufft1( c, omega, tol )
+function [c, p] = inufft1( f, omega, tol )
 % NUIFFT1  Compute the nonuniform IFFT of type 1.
 
 % This is done by noting that 
@@ -87,22 +87,22 @@ function [f,p] = inufft1( c, omega, tol )
 % When A = tilde(F)_1, then (A*A^*) is a Toeplitz matrix. 
 
 N = size(omega,1);
-[~, p] = chebfun.nufft( c, omega, 1);
-[~, p_trans] = chebfun.nufft(c, omega/N, 2);
-p_trans = @(c) conj( p_trans( conj( c ) ) );
+[~, p] = chebfun.nufft( f, omega, 1);
+[~, p_trans] = chebfun.nufft(f, omega/N, 2);
+p_trans = @(fvals) conj( p_trans( conj( fvals ) ) );
 toeplitz_col = p( ones(N,1) );
 toeplitz_row = conj( p( ones(N,1) ) );
 toeplitz_row(1) = toeplitz_col(1); 
 
-toeplitz_matvec = @(c) fastToeplitz( toeplitz_col, toeplitz_row, c );
-[f, ~] = pcg(toeplitz_matvec, c, 100*tol, 50 );
-f = p_trans( f ); 
+toeplitz_matvec = @(fvals) fastToeplitz( toeplitz_col, toeplitz_row, fvals );
+[c, ~] = pcg(toeplitz_matvec, f, 100*tol, 50 );
+c = p_trans( c ); 
 
 % Planning is unavailable because of the pcg() command. 
 p = [];
 end
 
-function [f,p] = inufft2( c, x, tol )
+function [c, p] = inufft2( f, x, tol )
 % NUIFFT2  Compute the nonuniform IFFT of type 2.
 % We do this by solving the normal equations (F'*F)*f=F'*c, where F is the
 % NUDFT2 matrix and using the conjugate gradient method. 
@@ -110,7 +110,7 @@ function [f,p] = inufft2( c, x, tol )
 N = size(x,1);
 
 % tilde{F}_2^*tilde{F}_2 is a Toeplitz matrix, calculate this: 
-[~, p_ctrans] = chebfun.nufft(conj(c), N*x, 1);
+[~, p_ctrans] = chebfun.nufft(conj(f), N*x, 1);
 toeplitz_row = p_ctrans( ones(N,1) );
 p_ctrans = @(y) conj( p_ctrans( conj( y ) ) );
 toeplitz_col = p_ctrans( ones(N,1) ); 
@@ -118,12 +118,12 @@ toeplitz_row(1) = toeplitz_col(1);
 
 % Conjugate gradient method on normal equations:
 toeplitz_matvec = @(c) fastToeplitz(toeplitz_col, toeplitz_row, c);
-[f, ~] = pcg(toeplitz_matvec, p_ctrans(c), 100*tol, 50 );
+[c, ~] = pcg(toeplitz_matvec, p_ctrans(f), 100*tol, 50 );
 % Plan: 
-p = @(coeffs) pcg(toeplitz_matvec, p_ctrans(coeffs), 100*tol, 50 );
+p = @(fvals) pcg(toeplitz_matvec, p_ctrans(fvals), 100*tol, 50 );
 end
 
-function b = fastToeplitz( c, r, x )
+function b = fastToeplitz( col, row, x )
 % Compute b = Ax, where A is a Toeplitz matrix with its first
 % column given by the vector c and first row given by r.
 % Note r(1) should be equal to c(1).
@@ -138,7 +138,7 @@ m = size( x, 1 );
 %       T12 T11];      % circulant
 %
 %  Use this fact to compute the matrix-vector multiply using FFT.
-b = fastCirculant( [c ; 0 ; r(end:-1:2)], [x ; zeros(m,1) ] );
+b = fastCirculant( [col ; 0 ; row(end:-1:2)], [x ; zeros(m,1) ] );
 b = b(1:m);
 
 % In the 1st line, notice [v ; zeros(n,1) ], which is zeroing out the
@@ -152,11 +152,11 @@ b = b(1:m);
 
 end
 
-function b = fastCirculant( c, x )
+function b = fastCirculant( col, x )
 % Compute b = Ax, where A is a circulant matrix with its first
 % column given by the vector c.
 
-d = fft( c );             % eigenvalues of A
+d = fft( col );             % eigenvalues of A
 b = ifft( d.*fft( x ) );  % FFT diagonalizes A
 
 end
