@@ -11,7 +11,7 @@ function [f, p] = inufft( c, x, omega, type)
 %
 % C and X must be column vectors of the same length.
 %
-% F = CHEBFUN.INUFFT( C, X, 2 ) is the same as CHEBFUN.INUFFT( C, X )
+% F = CHEBFUN.INUFFT( C, X, 2 ) is the same as CHEBFUN.INUFFT( C, X ).
 %
 % F = CHEBFUN.INUFFT( C, OMEGA, 1 ) is an inverse nonuniform fast Fourier
 % transform of type 1, which computes A\C, where
@@ -82,7 +82,7 @@ function [f,p] = inufft1( c, omega, tol )
 %  for any matrix A.  Therefore, Ax = b can be solved in two steps: 
 % 
 %   1)  Solve (A*A^*)x = b for x,
-%   2)  Compute   A^*x 
+%   2)  Compute A^*x 
 % 
 % When A = tilde(F)_1, then (A*A^*) is a Toeplitz matrix. 
 
