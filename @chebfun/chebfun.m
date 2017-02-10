@@ -361,12 +361,21 @@ classdef chebfun
         
         % Interpolate data:
         f = interp1(x, y, method, dom);
+        
+        % Inverse nonuniform fast Fourier transform: 
+        [y, p] = inufft( varargin );
 
         % Compute Lagrange basis functions for a given set of points.
         f = lagrange(x, varargin);
         
         % Non-uniform discrete cosine transform:
         y = ndct(u);
+        
+        % Non-uniform fast Fourier transform: 
+        [y, p] = nufft( varargin );
+        
+        % Two-dimensional NUFFT: 
+        f = nufft2( varargin ); 
 
         % ODE113 with CHEBFUN output.
         [t, y] = ode113(varargin);
