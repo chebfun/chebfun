@@ -7,7 +7,7 @@ function [f, p] = inufft( c, x, omega, type)
 % F = CHEBFUN.INUFFT( C, X ) is an inverse nonuniform fast Fourier transform
 % of type 2, which computes A\C, where
 %
-%        A_{jk} = exp(-2*pi*1i*X(j)*k/N), 0<=j,K<=N-1.
+%        A_{jk} = exp(-2*pi*1i*X(j)*k), 0<=j,K<=N-1.
 %
 % C and X must be column vectors of the same length.
 %
@@ -39,21 +39,21 @@ function [f, p] = inufft( c, x, omega, type)
 % is available from the author. Please email: townsend@cornell.edu.
 
 if ( nargin == 1 )
-    p = @(c) ifft(c);
+    p = @(coeffs) ifft(coeffs);
     f = p(c);
 elseif ( nargin == 2 )
     % default to type 2 nufft
-    [f, p] = nuifft2( c, x, eps );
+    [f, p] = inufft2( c, x, eps );
 elseif ( nargin == 3 )
     type = omega;
     if ( numel(type) == 1 )
         if ( type == 1 )
-            [f, p] = nuifft1( c, x, eps);
+            [f, p] = inufft1( c, x, eps);
         elseif ( type == 2 )
-            [f, p] = nuifft2( c, x, eps);
+            [f, p] = inufft2( c, x, eps);
         elseif ( type<1 && type>0 && numel(c)>1 )
             tol = type;
-            [f, p] = nuifft1( c, x, tol);
+            [f, p] = inufft1( c, x, tol);
         elseif ( numel(c) == 1 )
             error('CHEBFUN::NUIFFT::3','Type 3 NUIFFT has not been implemented')
         else
@@ -72,7 +72,7 @@ elseif ( nargin == 4 )
 end
 end
 
-function [f,p] = nuifft1( c, omega, tol )
+function [f,p] = inufft1( c, omega, tol )
 % NUIFFT1  Compute the nonuniform IFFT of type 1.
 
 % This is done by noting that 
@@ -102,7 +102,7 @@ f = p_trans( f );
 p = [];
 end
 
-function [f,p] = nuifft2( c, x, tol )
+function [f,p] = inufft2( c, x, tol )
 % NUIFFT2  Compute the nonuniform IFFT of type 2.
 % We do this by solving the normal equations (F'*F)*f=F'*c, where F is the
 % NUDFT2 matrix and using the conjugate gradient method. 
@@ -120,7 +120,7 @@ toeplitz_row(1) = toeplitz_col(1);
 toeplitz_matvec = @(c) fastToeplitz(toeplitz_col, toeplitz_row, c);
 [f, ~] = pcg(toeplitz_matvec, p_ctrans(c), 100*tol, 50 );
 % Plan: 
-p = @(c) pcg(toeplitz_matvec, p_ctrans(c), 100*tol, 50 );
+p = @(coeffs) pcg(toeplitz_matvec, p_ctrans(coeffs), 100*tol, 50 );
 end
 
 function b = fastToeplitz( c, r, x )
