@@ -8,7 +8,7 @@ function f = nufft2( c, x, y, tol)
 % complexity:
 %
 %  F_{st} = \sum_{j=0}^{m-1}\sum_{k=0}^{n-1} 
-%           C(j,k)*exp(-2*pi*1i*X(s,t)*k)*exp(-2*pi*1i*Y(s,t)*j),
+%           C(j,k)*exp(-2*pi*1i*X(s,t)*k/N)*exp(-2*pi*1i*Y(s,t)*j/N),
 % 
 % See also chebfun.nufft and chebfun.inufft. 
 
