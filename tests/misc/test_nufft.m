@@ -44,6 +44,17 @@ for N = 10.^(0:4)
     count = count + 1;
 end
 
+% Test NUFFT-II on nonsquare inputs: 
+n = 101; 
+m = 3; 
+x = linspace(0,1,m+1)'; x(end) = [];
+x = x + 1.01/m;
+c = rand(n,1); 
+exact = nudft2( c, x );
+fast = chebfun.nufft( c, x );
+pass(count) = norm( exact - fast, inf ) < 100*tol*norm(c,1);
+count = count + 1;
+
 pass = all(pass);
 end
 
@@ -59,7 +70,7 @@ end
 function f = nudft2( c, x) 
 
 f = zeros(size(x,1),1);
-omega = 0:size(x,1)-1;
+omega = 0:size(c,1)-1;
 for j = 1:numel(f)
     f(j) = exp(-2*pi*1i*x(j)*omega)*c;
 end
