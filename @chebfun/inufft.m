@@ -31,7 +31,7 @@ function [f, p] = inufft( c, x, omega, type)
 % The algorithm in this MATLAB script is based on the paper:
 %
 % [1] D. Ruiz--Antoln and A. Townsend, "A nonuniform fast Fourier transform
-% based on low rank approximation", in preparation, 2016.
+% based on low rank approximation", submitted, 2017.
 %
 % This paper related the NUFFT to a FFT by low rank approximation.
 %
