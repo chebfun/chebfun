@@ -88,22 +88,28 @@ if ( nargin == 1 )  % Seek zero curves of scalar function
             k = j + C(2, j);
             D = C(:, j+1:k);
             data = ( D(1, :) + 1i*(D(2, :)+realmin) ).';            
-            data = snap2boundary(data);
+data([1 end])
+data = snap(data);
+data([1 end])
             err = 999; errnew = 1e-2;
             while errnew < err                           
                 err = errnew;
                 curve = chebfun(data);               % make chebfun
+data([1 end])
                 s = [0; cumsum(abs(diff(data)))];    % empirical arclength
                 s = 2*s/s(end) - 1;                  % normalize to [-1,1]
                 data = interp1(s, data, chebpts ...  % interpolate
                     (length(data)), 'spline');
+%data = snap(data);
                 curve = chebfun(data);               % make chebfun
                 curve = simplify(curve);             % simplify it
                 data = curve(chebpts(1000));         % sample finely
+%data = snap(data);   
                 ff = fval(data);                     % function values
                 g = gradf(data);                     % gradient values
-                errnew = norm(ff,inf);               % max error
+                errnew = norm(ff,inf), pause         % max error
                 data = data - ff.*( g./abs(g).^2 );  % Newton step
+%data = snap(data);
             end
             j = k + 1;
             r = [ r , curve ];
@@ -122,7 +128,7 @@ elseif ( isa(g, 'separableApprox') )  % seek zero points of vector function
     
 end
 
-function d = snap2boundary(d);
+function d = snap(d);      % adjust endpoints to snap to boundary of domain
     n = length(d);
     dr = real(d); di = imag(d);
     if abs(dr(1)-dom(1))<.02, dr(1) = dom(1); end  % snap to left boundary
