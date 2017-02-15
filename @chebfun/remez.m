@@ -108,10 +108,10 @@ if(isempty(xk)) % no initial reference is given by the user
     end
 else  % the user has also given a starting reference
     if(n == 0)
-        [p,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts);
+        [p,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
         varargout = {p,err,status};
     else
-        [p,q,rh,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts);
+        [p,q,rh,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
         varargout = {p,q,rh,err,status};
     end
 end
@@ -395,7 +395,7 @@ N = m + n;
 
 % Parse name-value option pairs.
 if rationalMode
-    opts.tol = 1e-5;                        % Relative tolerance for deciding convergence.
+    opts.tol = 1e-3;                        % Relative tolerance for deciding convergence.
     opts.maxIter = 30+round(max(m,n)/2);    % Maximum number of allowable iterations.
 else
     opts.tol = 1e-16*(N^2 + 10); % Polynomial case is much more robust. 
@@ -529,6 +529,7 @@ if m~=n % force coefficients to lie in null space of Vandermonde
     end
     [Q,~] = qr(Q);
     Qmn = Q(:,mndiff+1:end);            % This is the orthogonal subspace
+    [Qmnall,~] = qr(Qmn);
 end
 
 C = zeros(length(xk),length(xsupport)); % Cauchy (basis) matrix
@@ -536,9 +537,22 @@ for ii = 1:length(xk)
 C(ii,:) = 1./(xk(ii)-xsupport);
 end
 
+for ii = 1:length(xk)    
+%wt(ii) = prod(xk(ii)-xsupport);
+%wxdiff(ii) = prod(xk(ii)-xk([1:ii-1 ii+1:end]));    
+wt(ii) = exp(sum(log(abs(prod(xk(ii)-xsupport)))));
+wxdiff(ii) = exp(sum(log(abs(xk(ii)-xk([1:ii-1 ii+1:end])))));    
+Delta(ii) = -exp(2*sum(log(abs(prod(xk(ii)-xsupport))))-sum(log(abs(xk(ii)-xk([1:ii-1 ii+1:end])))));
+end
+
+%Deltaold = diag(-(wt.^2)./wxdiff);
+Delta = diag(Delta); 
+
+%DD = diag(1./norms(sqrt(abs(Delta))*C)); % scaling
+DD = eye(size(C,2));
 if ( m == n )
-AA = [C diag(fk)*C];     % solving N  = FD (1 pm h) 
-BB = -diag(sigma)*[zeros(length(xk),m+1) C];
+AA = [C*DD diag(fk)*C*DD];     % solving N  = FD (1 pm h) 
+BB = -diag(sigma)*[zeros(length(xk),m+1) C*DD];
 elseif ( m > n )
 AA = [C diag(fk)*C*Qmn]; % solving N  = FD (1 pm h) 
 BB = -diag(sigma)*[zeros(length(xk),m+1) C*Qmn];
@@ -547,20 +561,58 @@ AA = [C*Qmn diag(fk)*C]; % solving N  = FD (1 pm h)
 BB = -diag(sigma)*[zeros(length(xk),size(Qmn,2)) C];
 end
 
+%wt = @(x) prod(x-xsupport);
+%wx = @(x) prod(x-xk);
+
+if m==n
+[Q,R] = qr(sqrt(abs(Delta))*C,0);
+elseif m>n
+[Q,R] = qr(sqrt(abs(Delta))*C*Qmn,0);    
+[Qall,Rall] = qr(sqrt(abs(Delta))*C*Qmnall,0);
+else % m<n
+[Q,R] = qr(sqrt(abs(Delta))*C,0);
+[Qpart,Rpart] = qr(sqrt(abs(Delta))*C*Qmn,0);
+end
+
+S = diag((-1).^[0:length(xk)-1]);
+Q2 = S*Q; 
+%svd(Q'*Q2) % these should be zeros
+
+QSQ = Q'*S*diag(fk)*Q;
+QSQ = (QSQ+QSQ')/2;
+
+[VR,d] = eig(-QSQ); % symmetric eigenproblem
+beta = R\VR;
+
+if m==n
+%alpha = Rall\(-Qall'*diag(fk)*Qall*VR);    
+alpha = R\(-Q'*diag(fk)*Q*VR);    
+elseif m>n
+%alpha = Rall\(-Qall'*diag(fk)*Qall*Qmn*VR);
+alpha = Qmnall*((Rall)\((Qall'*diag(-fk)*Q*VR)));
+else % m<n
+alpha = (Rpart)\(Qpart'*diag(-fk)*Q*VR);    
+%alpha = R\(-Q'*diag(fk)*Q*VR);
+end
+vt = [alpha;beta];
+
+disp([cond(C) cond(sqrt(abs(Delta))*C) cond(sqrt(abs(Delta))) cond(C*DD) cond(sqrt(abs(Delta))*C*DD) m n])
+
 % key operation; this forces (F+hsigma)N=D, where N/D is rational approximant. 
 % The eigenvector v containing the coefficients for 
 % N(x)=v_i/(x-xsupport_i), D(x)=v_{m+i}/(x-xsupport_{m+i}). 
 
-[v,d,~] = eig(AA,BB);    
+% [v,dd,~] = eig(AA,BB);    % old (GEP) code
+
 
 % Among the (m+n+2) eigenvalues, only one can be the solution. The correct
 % one needs to have no sign changes in the denominator polynomial
 % D(x)*node(x), where node(x) = prod(x-xsupport). 
 
 if m<=n % values of D at xk
-Dvals = C(:,1:n+1)*v(m+1+1:end,:); 
+Dvals = C(:,1:n+1)*(DD*vt(m+1+1:end,:)); 
 else
-Dvals = C*(Qmn*v(m+1+1:end,:)); 
+Dvals = C*(Qmn*vt(m+1+1:end,:)); 
 end
 node = @(z) prod(z-xsupport); % needed to check sign
 
@@ -590,14 +642,14 @@ h = -d(pos, pos);                % Levelled reference error.
 
 % coefficients for barycentric representations
 if ( m <= n )
-wD = v(m+2:end,pos);
+wD = (DD*vt(m+2:end,pos));
 else
-wD = Qmn*v(m+2:end,pos);    
+wD = Qmn*vt(m+2:end,pos);    
 end
 if ( m >= n )
-wN = v(1:m+1,pos);
+wN = DD(1:m+1,1:m+1)*vt(1:m+1,pos);
 else
-wN = Qmn*v(1:m+1,pos);    
+wN = Qmn*vt(1:m+1,pos);    
 end
 
 D = @(x) 0; N = @(x) 0;    % form function handle rh = N/D 
