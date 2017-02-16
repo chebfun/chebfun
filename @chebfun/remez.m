@@ -10,7 +10,7 @@ function varargout = remez(f, varargin)
 %   function handle R_HANDLE for evaluating the rational function P/Q.
 %
 %   [...] = REMEZ(..., 'tol', TOL) uses the value TOL as the termination
-%   tolerance on the increase of the levelled error.
+%   tolerance on the relative equioscillation error.
 %
 %   [...] = REMEZ(..., 'display', 'iter') displays output at each iteration.
 %
@@ -127,7 +127,7 @@ function xk = cfInit(f, m, n)
     if ( numel(f.funs) == 1 )
         [p, q] = cf(f, m, n);
     else
-        [p, q] = cf(f, m, n, 50*(m+n));
+        [p, q] = cf(f, m, n, 50*(m+n) );
     end
     pqh = @(x) feval(p, x)./feval(q, x);
     [xk, ~, ~, flag] = exchange([], 0, 2, f, p, pqh, m+n+2, n);
@@ -478,6 +478,14 @@ while ( (abs(abs(h)-abs(hpre))/abs(h) > opts.tol) && (iter < opts.maxIter) && (d
             [xk, err, err_handle, ~] = exchange(xk, h, 2, f, p, rh, N+2, n);
             diffx = max(abs(xo - xk));
             delta = err - abs(h);
+            %disp(err_handle(xk))
+            
+            if opts.tol*norm(err_handle(xk),'inf') < normf*1e-14
+                % relative tolerance is below machine precision, make it
+                % reasonable
+                opts.tol = normf*1e-14/norm(err_handle(xk),'inf');
+                opts.tol = min( opts.tol, 0.1 );
+            end
         end
     end
  
@@ -702,36 +710,24 @@ for ii = 1:length(xk)
 C(ii,:) = 1./(xk(ii)-xsupport);
 end
 
+% find Delta diag matrix 
 for ii = 1:length(xk)    
-%wt(ii) = prod(xk(ii)-xsupport);
-%wxdiff(ii) = prod(xk(ii)-xk([1:ii-1 ii+1:end]));    
+% wt(ii) = prod(xk(ii)-xsupport);
+% wxdiff(ii) = prod(xk(ii)-xk([1:ii-1 ii+1:end]));    
+% Delta = diag(-(wt.^2)./wxdiff);
+% do above in a way that avoids underflow, overflow
 wt(ii) = exp(sum(log(abs(prod(xk(ii)-xsupport)))));
 wxdiff(ii) = exp(sum(log(abs(xk(ii)-xk([1:ii-1 ii+1:end])))));    
 Delta(ii) = -exp(2*sum(log(abs(prod(xk(ii)-xsupport))))-sum(log(abs(xk(ii)-xk([1:ii-1 ii+1:end])))));
 end
-
-%Deltaold = diag(-(wt.^2)./wxdiff);
 Delta = diag(Delta); 
 
-%DD = diag(1./norms(sqrt(abs(Delta))*C)); % scaling
+%DD = diag(1./norms(sqrt(abs(Delta))*C)); % scaling, might help 
 DD = eye(size(C,2));
+
 if ( m == n )
-AA = [C*DD diag(fk)*C*DD];     % solving N  = FD (1 pm h) 
-BB = -diag(sigma)*[zeros(length(xk),m+1) C*DD];
-elseif ( m > n )
-AA = [C diag(fk)*C*Qmn]; % solving N  = FD (1 pm h) 
-BB = -diag(sigma)*[zeros(length(xk),m+1) C*Qmn];
-else % m<n
-AA = [C*Qmn diag(fk)*C]; % solving N  = FD (1 pm h) 
-BB = -diag(sigma)*[zeros(length(xk),size(Qmn,2)) C];
-end
-
-%wt = @(x) prod(x-xsupport);
-%wx = @(x) prod(x-xk);
-
-if m==n
 [Q,R] = qr(sqrt(abs(Delta))*C,0);
-elseif m>n
+elseif ( m > n )
 [Q,R] = qr(sqrt(abs(Delta))*C*Qmn,0);    
 [Qall,Rall] = qr(sqrt(abs(Delta))*C*Qmnall,0);
 else % m<n
@@ -744,37 +740,32 @@ Q2 = S*Q;
 %svd(Q'*Q2) % these should be zeros
 
 QSQ = Q'*S*diag(fk)*Q;
-QSQ = (QSQ+QSQ')/2;
+QSQ = (QSQ+QSQ')/2; % force symmetry as it's supposed to be
 
+% key operation; this forces (F+hsigma)N=D, where N/D is rational approximant. 
+% The eigenvector VR containing the coefficients for 
+% D(x)= sum_i VR_{i}/(x-xsupport_{i}). 
 [VR,d] = eig(-QSQ); % symmetric eigenproblem
-beta = R\VR;
+beta = R\VR;        % Denominator coefficients in barycentric form
 
-if m==n
-%alpha = Rall\(-Qall'*diag(fk)*Qall*VR);    
+% obtain alpha (the Numerator coefficients in bary form) from beta
+if ( m == n )
 alpha = R\(-Q'*diag(fk)*Q*VR);    
-elseif m>n
-%alpha = Rall\(-Qall'*diag(fk)*Qall*Qmn*VR);
+elseif ( m > n )
 alpha = Qmnall*((Rall)\((Qall'*diag(-fk)*Q*VR)));
 else % m<n
 alpha = (Rpart)\(Qpart'*diag(-fk)*Q*VR);    
-%alpha = R\(-Q'*diag(fk)*Q*VR);
 end
 vt = [alpha;beta];
 
-disp([cond(C) cond(sqrt(abs(Delta))*C) cond(sqrt(abs(Delta))) cond(C*DD) cond(sqrt(abs(Delta))*C*DD) m n])
+% conditioning check,if wanted
+%disp([cond(C) cond(sqrt(abs(Delta))*C) cond(sqrt(abs(Delta))) cond(C*DD) cond(sqrt(abs(Delta))*C*DD) m n])
 
-% key operation; this forces (F+hsigma)N=D, where N/D is rational approximant. 
-% The eigenvector v containing the coefficients for 
-% N(x)=v_i/(x-xsupport_i), D(x)=v_{m+i}/(x-xsupport_{m+i}). 
-
-% [v,dd,~] = eig(AA,BB);    % old (GEP) code
-
-
-% Among the (m+n+2) eigenvalues, only one can be the solution. The correct
+% Among the n+1 eigenvalues, only one can be the solution. The correct
 % one needs to have no sign changes in the denominator polynomial
 % D(x)*node(x), where node(x) = prod(x-xsupport). 
 
-if m<=n % values of D at xk
+if ( m <= n ) % values of D at xk
 Dvals = C(:,1:n+1)*(DD*vt(m+1+1:end,:)); 
 else
 Dvals = C*(Qmn*vt(m+1+1:end,:)); 
@@ -798,7 +789,7 @@ if isempty(pos)               % sad sad, no solution with same signs..
     
     p = []; q = []; rh = []; h = 1e-19;
     return
-elseif(length(pos) > 1)       % curious, more than one solution with no sign changes..
+elseif ( length(pos) > 1 )       % curious, more than one solution with no sign changes.. try something
     [~,ix] = min(abs(hpre)-diag(abs(d(pos,pos))));
     pos = pos(ix);
 end    
@@ -818,7 +809,7 @@ wN = Qmn*vt(1:m+1,pos);
 end
 
 D = @(x) 0; N = @(x) 0;    % form function handle rh = N/D 
-for ii = 1:length(xsupport)
+for ( ii = 1:length(xsupport) )
    D = @(x) D(x) + wD(ii)./(x-xsupport(ii));
    N = @(x) N(x) + wN(ii)./(x-xsupport(ii));   
 end
@@ -833,7 +824,6 @@ x = chebpts(m+n+1);
 nodex = zeros(length(x),1); for ii = 1:length(x),    nodex(ii) = node(x(ii)); end 
 qvals = nodex.*feval(D,x);  % Values of p and q at Chebyshev points
 pvals = nodex.*feval(N,x);
-
  
 p = chebfun(pvals); q = chebfun(qvals);
 p = simplify(p); q = simplify(q); % or

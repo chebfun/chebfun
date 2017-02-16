@@ -74,7 +74,7 @@ function [r, pol, res, zer, z, Z, f, w, wf, errvec, p, q] = aaamn_lawson(F, vara
 %   [1] Yuji Nakatsukasa, Olivier Sete, Lloyd N. Trefethen, "The AAA algorithm
 %   for rational approximation", arXiv:1612.00337.
 %
-%   [2] (Bernhard Beckermann), Silviu Filip, Yuji Nakatsukasa, rational
+%   [2] Bernhard Beckermann, Silviu Filip, Yuji Nakatsukasa, rational
 %   remez paper, in preparation (2017).  
 %
 % See also AAA, CF, CHEBPADE, PADEAPPROX, RATINTERP, REMEZ
@@ -95,11 +95,11 @@ end
 if ~isfloat(F), 
     fori = F;                             % store function (used as chebfun)
     F = feval(F,Z); end                   % convert function handle to vector
-Z = Z(:); F = F(:);                       % work with column vectors
-SF = spdiags(F,0,M,M);                    % left scaling matrix
-J = 1:M;                                  % indices that are not support pts
-z = []; f = []; C = [];                   % initializations
-errvec = []; R = mean(F); 
+ Z = Z(:); F = F(:);                       % work with column vectors
+ SF = spdiags(F,0,M,M);                    % left scaling matrix
+ J = 1:M;                                  % indices that are not support pts
+ z = []; f = []; C = [];                   % initializations
+ errvec = []; R = mean(F); 
 for mn = 1:max(mmax,nmax)
   [~,j] = max(abs(F-R));                  % select next support point
   z = [z; Z(j)];                          % update set of support points
@@ -109,25 +109,25 @@ for mn = 1:max(mmax,nmax)
   Sf = diag(f);                           % right scaling matrix
   A = SF*C - C*Sf;                        % Loewner matrix
     
-           if mn > min(nmax,mmax) % nondiagonal case, find projection subspace 
-                if mmax < nmax
-                q = f(:);
-                else
-                q = ones(length(z),1);
-                end
-                Q = orthspace(z,mn-min(mmax,nmax),q);   % projection subspace 
-                [~,~,V] = svd(A(J,:)*Q,0);              % SVD on projected subspace
-                w = Q*V(:,end);
-           else             
-                [~,~,V] = svd(A(J,:),0);               % SVD, no projection needed
-                w = V(:,mn);                           % weight vector             
-           end     
+        if ( mn > min(nmax,mmax) ) % nondiagonal case, find projection subspace 
+             if mmax < nmax
+             q = f(:);
+             else
+             q = ones(length(z),1);
+             end
+             Q = orthspace(z,mn-min(mmax,nmax),q);   % projection subspace 
+             [~,~,V] = svd(A(J,:)*Q,0);              % SVD on projected subspace
+             w = Q*V(:,end);
+        else             
+             [~,~,V] = svd(A(J,:),0);               % SVD, no projection needed
+             w = V(:,mn);                           % weight vector             
+        end     
   wf = w.*f;
   N = C*(w.*f); D = C*w;                  % numerator and denominator
   R = F; R(J) = N(J)./D(J);               % rational approximation
   err = norm(F-R,inf);
   errvec = [errvec; err];                 % max error at sample points
-  if err < tol*norm(F,inf), break, end    % stop if converged
+  if ( err < tol*norm(F,inf) ), break, end    % stop if converged
 end
     r = @(zz) feval(@rr,zz,z,w,f);            % AAA approximant as function handle
     Rori = R;
@@ -136,7 +136,7 @@ end
 % 'alpha-beta' mode. 
           wei = ones(length(J),1);
           nrmbest = inf;
-          if mn > min(nmax,mmax)  % Deal with projection for m neq n                                             
+          if ( mn > min(nmax,mmax) )  % Deal with projection for m neq n                                             
               if mn>nmax
                 A =[SF*C*Q -C];        
               else % need to redefine Q as not the same as AAA above        
@@ -145,11 +145,11 @@ end
                 A =[SF*C -C*Q];                   
               end
           else
-            A =[SF*C -C];  % diagonal case
+            A =[SF*C -C];   % diagonal case
           end
           
-          rate = 1;        % default Lawson rate
-          nrmincreased = 0;% initialization    
+          rate = 1;         % default Lawson rate, will shrink if not converging
+          nrmincreased = 0; % initialization    
 	      for it = 1:Lawsoniter
               weiold = wei; 
               wei = wei .* power(abs(F(J)-R(J)),rate); % update Lawson weights
@@ -161,8 +161,8 @@ end
 
               [~,~,V] = svd(D*A(J,:),0);     % weighted least-squares via SVD
               
-          if mn > min(nmax,mmax)
-              if mn > nmax
+          if ( mn > min(nmax,mmax) )    % deal with nondiagonal case
+              if ( mn > nmax )
                 w = Q*V(1:nmax,end); wf = V(nmax+1:end,end);            
               else
                 w = V(1:nmax,end); wf = Q*V(nmax+1:end,end); 
@@ -174,15 +174,15 @@ end
             N = C*wf; D = C*w;                  % numerator and denominator               
             R = F; R(J) = N(J)./D(J);           % rational approximation
             err = norm(F-R,inf);            
-            errvec = [errvec; err];                 % max error at sample points                            
-            if ( err < nrmbest )       % adopt best so far
+            errvec = [errvec; err];             % max error at sample points                            
+            if ( err < nrmbest )    % adopt best so far
             nrmbest = norm(F-R,'inf'); 
             weibest = wei;                      % store best weight
             r = @(zz) feval(@rrab,zz,z,w,wf,f); % AAA approximant as function handle
             else
                 nrmincreased = nrmincreased + 1;
             end
-            if ( nrmincreased >= 3 )     % perhaps not converging
+            if ( nrmincreased >= 3 )     % perhaps not converging,
             rate = max( rate/2,0.01 );   % make Lawson update conservative
             if doplot
                 warning(['Lawson rate made conservative to ',num2str(rate)])
@@ -204,11 +204,10 @@ end
                 grid on, hold on
                 h2 = plot(z,0*z,'m.','markersize',12);
                 ylim(err*[-1 1]); drawnow, shg            
-                if it == Lawsoniter % plot best function 
+                if ( it == Lawsoniter ) % plot best function 
                 plot(Z,F-r(Z),'b.','markersize',10);
                 end
-            end
-            
+            end            
           end          
 
     % compute poles and roots
@@ -230,7 +229,7 @@ end
     x = chebpts(mmax+nmax+1,dom);
     node = @(x) prod(x-z);              % needed to check sign
     nodex = zeros(length(x),1);         % setup node values    
-    for ii = 1:length(x),    nodex(ii) = node(x(ii)); end
+    for ii = 1:length(x), nodex(ii) = node(x(ii)); end
     qvals = nodex.*feval(D,x);          % values of p,q
     pvals = nodex.*feval(N,x);
     p = chebfun(pvals,dom); q = chebfun(qvals,dom); % form chebfuns    
