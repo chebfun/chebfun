@@ -90,7 +90,7 @@ if(isempty(xk)) % no initial reference is given by the user
         if(status.success == 0)
             disp('Trying AAA-Lawson-based initialization...');
             xk = AAALawsonInit(f, m, n);
-            [p,q,rh,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
+            [p,q,rh,err,status] = remezKernel(f, m, n, N, rationalMode, xk, opts, 1);
             varargout = {p,q,rh,err,status};
         end
 
@@ -216,6 +216,9 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
             while(startM < m - stepSize && (status.success == 1))
                 startM = startM + stepSize;
                 startN = startN + stepSize;
+            if opts.displayIter
+                disp(['CDF (m, n) = ',num2str(startM),', ',num2str(startN)])
+            end                
                 xk = refGen(f, status.xk, startM + startN + 2, symFlag);
                 [~,~,~,~,status] = remezKernel(f, startM, startN, startM+startN, true, xk, opts, 0);
             end
@@ -243,8 +246,11 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
             
             if(status.success == 1)   
                 while(startN < hN - stepSize && (status.success == 1))
-                    startN = startN + stepSize;
+                    startN = startN + stepSize;                    
                     xk = refGen(f, status.xk, hM + startN + 2, 0);
+                if opts.displayIter
+                    disp(['CDF (m, n) = ',num2str(hM+startN),', ',num2str(startN)])
+                end                                    
                     [~,~,~,~,status] = remezKernel(f, hM, startN, hM+startN, true, xk, opts, 0);
                 end
             end
@@ -261,6 +267,9 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
                     hM = hM + stepSize;
                     hN = hN + stepSize;
                     xk = refGen(f, status.xk, hM + hN + 2, symFlag);
+                if opts.displayIter
+                    disp(['CDF (m, n) = ',num2str(hM),', ',num2str(hN)])
+                end                                    
                     [~,~,~,~,status] = remezKernel(f, hM, hN, hM+hN, true, xk, opts, 0);
             end
 
@@ -287,6 +296,9 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
                 while(startM < m - stepSize && (status.success == 1))
                     startM = startM + stepSize;
                     startN = startN + stepSize;
+                if opts.displayIter
+                    disp(['CDF (m, n) = ',num2str(startM),', ',num2str(startN)])
+                end                                    
                     xk = refGen(f, status.xk, startM + startN + 2, symFlag);
                     [~,~,~,~,status] = remezKernel(f, startM, startN, startM+startN, true, xk, opts, 0);
                 end
@@ -1037,10 +1049,10 @@ end
 % Function called when opts.displayIter is set.
 function doDisplayIter(iter, err, h, delta, normf, diffx, m, n)
 
-disp([num2str(iter), '      ', num2str(err, '%5.4e'), '      ', ...
+disp([num2str(iter,'%3g'), '      ', num2str(err, '%5.4e'), '      ', ...
     num2str(abs(h), '%5.4e'), '      ', ...
     num2str(delta/normf, '%5.4e'), '      ', num2str(diffx, '%5.4e'),...
-    '    ', num2str(m, '%4g'),'  ', num2str(m, '%4g')])
+    '    ', num2str(m, '%4g'),'  ', num2str(n, '%4g')])
 
 end
 
