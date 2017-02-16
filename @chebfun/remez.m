@@ -394,7 +394,7 @@ end
 
 
 
-function varargout = remezKernel(f,m, n, N, rationalMode, xk, opts, dialogFlag)
+function varargout = remezKernel(f, m, n, N, rationalMode, xk, opts, dialogFlag)
 
 % This core function should only ever be called with a nonempty initial set
 % of xk reference values
@@ -424,7 +424,7 @@ xo = xk;
 
 % Print header for text output display if requested.
 if ( opts.displayIter && dialogFlag)
-    disp('It.     Max(|Error|)       |ErrorRef|      Delta ErrorRef      Delta Ref')
+    disp('It.   Max(|Error|)     |ErrorRef|    Delta ErrorRef    Delta Ref      m  n')
 end
 
 h = -1; hpre = 0;
@@ -497,7 +497,7 @@ while ( (abs(abs(h)-abs(hpre))/abs(h) > opts.tol) && (iter < opts.maxIter) && (d
     end
  
     if ( opts.displayIter && dialogFlag)
-        doDisplayIter(iter, err, h, delta, normf, diffx);
+        doDisplayIter(iter, err, h, delta, normf, diffx, m, n);
     end
  
     xo = xk;
@@ -711,6 +711,7 @@ C(ii,:) = 1./(xk(ii)-xsupport);
 end
 
 % find Delta diag matrix 
+wt = zeros( 1,length(xk) );
 for ii = 1:length(xk)    
 % wt(ii) = prod(xk(ii)-xsupport);
 % wxdiff(ii) = prod(xk(ii)-xk([1:ii-1 ii+1:end]));    
@@ -718,13 +719,15 @@ for ii = 1:length(xk)
 % do above in a way that avoids underflow, overflow
 wt(ii) = exp(sum(log(abs(prod(xk(ii)-xsupport)))));
 wxdiff(ii) = exp(sum(log(abs(xk(ii)-xk([1:ii-1 ii+1:end])))));    
-Delta(ii) = -exp(2*sum(log(abs(prod(xk(ii)-xsupport))))-sum(log(abs(xk(ii)-xk([1:ii-1 ii+1:end])))));
+Delta(ii) = -exp(2*sum(log(abs(prod(xk(ii)-xsupport)))) ...
+    - sum(log(abs(xk(ii)-xk([1:ii-1 ii+1:end])))));
 end
 Delta = diag(Delta); 
 
-%DD = diag(1./norms(sqrt(abs(Delta))*C)); % scaling, might help 
+%DD = diag(1./norms(sqrt(abs(Delta))*C)); % scaling, might help stability
 DD = eye(size(C,2));
 
+% prepare QR factorizations; these lead to symmetric eigenproblem
 if ( m == n )
 [Q,R] = qr(sqrt(abs(Delta))*C,0);
 elseif ( m > n )
@@ -736,8 +739,7 @@ else % m<n
 end
 
 S = diag((-1).^[0:length(xk)-1]);
-Q2 = S*Q; 
-%svd(Q'*Q2) % these should be zeros
+%Q2 = S*Q; for sanity check svd(Q'*Q2) or svd(Qpart'*Q2) when m<n, should be O(eps)
 
 QSQ = Q'*S*diag(fk)*Q;
 QSQ = (QSQ+QSQ')/2; % force symmetry as it's supposed to be
@@ -758,8 +760,8 @@ alpha = (Rpart)\(Qpart'*diag(-fk)*Q*VR);
 end
 vt = [alpha;beta];
 
-% conditioning check,if wanted
-%disp([cond(C) cond(sqrt(abs(Delta))*C) cond(sqrt(abs(Delta))) cond(C*DD) cond(sqrt(abs(Delta))*C*DD) m n])
+% conditioning check, might help
+% disp([cond(C) cond(sqrt(abs(Delta))*C) cond(sqrt(abs(Delta))) cond(C*DD) cond(sqrt(abs(Delta))*C*DD) m n])
 
 % Among the n+1 eigenvalues, only one can be the solution. The correct
 % one needs to have no sign changes in the denominator polynomial
@@ -1033,11 +1035,12 @@ drawnow
 end
 
 % Function called when opts.displayIter is set.
-function doDisplayIter(iter, err, h, delta, normf, diffx)
+function doDisplayIter(iter, err, h, delta, normf, diffx, m, n)
 
-disp([num2str(iter), '        ', num2str(err, '%5.4e'), '        ', ...
-    num2str(abs(h), '%5.4e'), '        ', ...
-    num2str(delta/normf, '%5.4e'), '        ', num2str(diffx, '%5.4e')])
+disp([num2str(iter), '      ', num2str(err, '%5.4e'), '      ', ...
+    num2str(abs(h), '%5.4e'), '      ', ...
+    num2str(delta/normf, '%5.4e'), '      ', num2str(diffx, '%5.4e'),...
+    '    ', num2str(m, '%4g'),'  ', num2str(m, '%4g')])
 
 end
 
