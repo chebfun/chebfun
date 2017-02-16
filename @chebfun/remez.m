@@ -72,7 +72,8 @@ if(isempty(xk)) % no initial reference is given by the user
     if(n == 0) % polynomial case
         xk = chebpts(N + 2, f.domain([1, end]));
         [p,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
-        varargout = {p,err,status};
+        q = chebfun('1');
+        varargout = {p,q,p,err,status};
     else % rational case
         % A first attempt is using CF as an initial guess
         disp('Trying CF-based initialization...');
@@ -134,7 +135,7 @@ function xk = cfInit(f, m, n)
     % If the above procedure failed to produce a reference
     % with enough oscillation points, use polynomial Remez.
     if ( flag == 0 )
-        [~,~,status] = remez(f,m+n); xk = status.xk;
+        [~,~,~,~,status] = remez(f,m+n); xk = status.xk;
     end
 end
 
@@ -147,7 +148,7 @@ function xk = AAALawsonInit(f,m,n) % AAA-Lawson initialization for functions wit
     dom = domain(f);
     Z = linspace(dom(1),dom(end),NN);   
     F = feval(f,Z);
-    [r,~,~,~,xk] = aaamn_lawson(Z,F,m,n);    % 1st AAA-Lawson
+    [r,~,~,~,xk] = aaamn_lawson(F,Z,m,n);    % 1st AAA-Lawson
     xk = findreference(f,r,m,n,xk);
     
     % Iterate twice during which sample points are refined. 
@@ -161,7 +162,7 @@ function xk = AAALawsonInit(f,m,n) % AAA-Lawson initialization for functions wit
                                                 % each pair of reference pts
     end
     Z = unique(Z); Z = Z(:); F = feval(f,Z);
-    [r,~,~,~,xk] = aaamn_lawson(Z,F,m,n); % Do AAA-Lawson with updated sample pts
+    [r,~,~,~,xk] = aaamn_lawson(F,Z,m,n); % Do AAA-Lawson with updated sample pts
     xk = findreference(f,r,m,n,xk); 
     end    
 end    
@@ -185,6 +186,126 @@ end
 % degrees increasing by k. The step parameter determines the value of k.
 
 function xk = cdfInit(f,m,n,symFlag,opts,step)
+    
+    stepSize = step;
+    if(symFlag > 0) % dealing with symmetry (even or odd)
+        stepSize = 2*step;
+    end
+    text = ['Trying CDF-based initialization with step size ', num2str(stepSize),'...'];
+    disp(text);
+    
+    
+    if(abs(m-n) <= 2)
+        % Choose small starting degree
+        minValue = min(m,n);
+        minValue = minValue - rem(minValue,stepSize);
+        k = minValue/stepSize;
+        k = k - (3 - step);
+        startM = m - stepSize * k;
+        startN = n - stepSize * k;
+    
+        % need an initialization strategy that has a high chance
+        % of working without problem for the small degree case;
+        % CF is used for now
+    
+    
+        xk = cfInit(f, startM, startN);
+        [~,~,~,~,status] = remezKernel(f, startM, startN, startM+startN, true, xk, opts, 0);
+    
+        if(status.success == 1)   
+            while(startM < m - stepSize && (status.success == 1))
+                startM = startM + stepSize;
+                startN = startN + stepSize;
+                xk = refGen(f, status.xk, startM + startN + 2, symFlag);
+                [~,~,~,~,status] = remezKernel(f, startM, startN, startM+startN, true, xk, opts, 0);
+            end
+        end
+    
+        if(status.success == 1)
+            xk = refGen(f, status.xk, m + n + 2, symFlag);
+        else
+            text = ['Initialization failed using CDF with step size ', num2str(stepSize)];
+            disp(text);
+            [~,~,~,~,status] = remez(f,m+n); xk = status.xk;
+        end
+    else
+        if(m < n)
+            minValue = m - rem(m,stepSize);
+            k = minValue/stepSize;
+            hM = m - stepSize * k;
+            hN = n - stepSize * k;
+            
+            hminValue = hN - rem(hN,stepSize);
+            hk = hminValue/stepSize;
+            startN = hN - stepSize * hk;
+            xk = cfInit(f, hM, startN);
+            [~,~,~,~,status] = remezKernel(f, hM, startN, hM+startN, true, xk, opts, 0);
+            
+            if(status.success == 1)   
+                while(startN < hN - stepSize && (status.success == 1))
+                    startN = startN + stepSize;
+                    xk = refGen(f, status.xk, hM + startN + 2, 0);
+                    [~,~,~,~,status] = remezKernel(f, hM, startN, hM+startN, true, xk, opts, 0);
+                end
+            end
+            
+            if(status.success == 1)
+                %xk = refGen(f, status.xk, hM + hN + 2, symFlag);
+                xk = refGen(f, status.xk, hM + hN + 2, 0);
+            else
+                [~,~,~,~,status] = remez(f,hM+hN); xk = status.xk;
+            end
+            
+            status.success = 1;  
+            while(hM < m - stepSize && (status.success == 1))
+                    hM = hM + stepSize;
+                    hN = hN + stepSize;
+                    xk = refGen(f, status.xk, hM + hN + 2, symFlag);
+                    [~,~,~,~,status] = remezKernel(f, hM, hN, hM+hN, true, xk, opts, 0);
+            end
+
+    
+            if(status.success == 1)
+                %xk = refGen(f, status.xk, m + n + 2, symFlag);
+                xk = refGen(f, status.xk, m + n + 2, 0);
+            else
+                text = ['Initialization failed using CDF with step size ', num2str(stepSize)];
+                disp(text);
+                [~,~,~,~,status] = remez(f,m+n); xk = status.xk;
+            end     
+            
+            
+        else % m > n
+            minValue = n - rem(n,stepSize);
+            k = minValue/stepSize;
+            startM = m - stepSize * k;
+            startN = n - stepSize * k;
+            xk = cfInit(f, startM, startN);
+            [~,~,~,~,status] = remezKernel(f, startM, startN, startM+startN, true, xk, opts, 0);
+    
+            if(status.success == 1)   
+                while(startM < m - stepSize && (status.success == 1))
+                    startM = startM + stepSize;
+                    startN = startN + stepSize;
+                    xk = refGen(f, status.xk, startM + startN + 2, symFlag);
+                    [~,~,~,~,status] = remezKernel(f, startM, startN, startM+startN, true, xk, opts, 0);
+                end
+            end
+    
+            if(status.success == 1)
+                xk = refGen(f, status.xk, m + n + 2, symFlag);
+            else
+                text = ['Initialization failed using CDF with step size ', num2str(stepSize)];
+                disp(text);
+                [~,~,~,~,status] = remez(f,m+n); xk = status.xk;
+            end
+        end
+    end
+    
+end
+
+
+function xk = cdfInit3(f,m,n,symFlag,opts,step)
     
     stepSize = step;
     if(symFlag > 0) % dealing with symmetry (even or odd)
@@ -223,10 +344,54 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
     else
         text = ['Initialization failed using CDF with step size ', num2str(stepSize)];
         disp(text);
-        [~,~,status] = remez(f,m+n); xk = status.xk;
+        [~,~,~,~,status] = remez(f,m+n); xk = status.xk;
     end
     
 end
+
+function xk = cdfInit2(f,m,n,symFlag,opts,step)
+    
+    stepSize = step;
+    if(symFlag > 0) % dealing with symmetry (even or odd)
+        stepSize = 2*step;
+    end
+    text = ['Trying CDF-based initialization with step size ', num2str(stepSize),'...'];
+    disp(text);
+    
+    % Choose small starting degree
+    minValue = min(m,n);
+    minValue = minValue - rem(minValue,stepSize);
+    k = minValue/stepSize;
+    startM = m + stepSize * k;
+    startN = n - stepSize * k;
+    
+    % need an initialization strategy that has a high chance
+    % of working without problem for the small degree case;
+    % CF is used for now
+    
+    
+    xk = cfInit(f, startM, startN);
+    [~,~,~,~,status] = remezKernel(f, startM, startN, startM+startN, true, xk, opts, 0);
+    
+    if(status.success == 1)   
+        while(startN < n && (status.success == 1))
+            startM = startM - stepSize;
+            startN = startN + stepSize;
+            xk = status.xk;
+            [~,~,~,~,status] = remezKernel(f, startM, startN, startM+startN, true, xk, opts, 0);
+        end
+    end
+    
+    if(status.success == 1)
+        xk = status.xk;
+    else
+        text = ['Initialization failed using CDF with step size ', num2str(stepSize)];
+        disp(text);
+        [~,~,~,~,status] = remez(f,m+n); xk = status.xk;
+    end
+    
+end
+
 
 
 function varargout = remezKernel(f,m, n, N, rationalMode, xk, opts, dialogFlag)
@@ -395,7 +560,7 @@ N = m + n;
 
 % Parse name-value option pairs.
 if rationalMode
-    opts.tol = 1e-3;                        % Relative tolerance for deciding convergence.
+    opts.tol = 1e-6;                        % Relative tolerance for deciding convergence.
     opts.maxIter = 30+round(max(m,n)/2);    % Maximum number of allowable iterations.
 else
     opts.tol = 1e-16*(N^2 + 10); % Polynomial case is much more robust. 
