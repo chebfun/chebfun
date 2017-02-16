@@ -1,6 +1,7 @@
-function [r, pol, res, zer, z, f, w, errvec, p, q] = aaamn_lawson(Z,F,m,n,tol,Lawsoniter,doplot)
-% [r, pol, res, zer, z, f, w, errvec, p, q] = aaamn_lawson(Z,F,m,n,tol,Lawsoniter,doplot)
-% near-best rational approximation of data F on set Z of type (MMAX,NMAX). 
+function [r, pol, res, zer, z, f, w, errvec, p, q] = aaamn_lawson(F, varargin)
+%AAAMN_Lawson
+% [r, pol, res, zer, z, f, w, errvec, p, q] = aaamn_lawson(F,Z,m,n)
+% near-best rational approximation of data F on set Z of type (m,n). 
 % It first finds a AAA rational approximant to F \approx r(Z), then
 % attempts to refine the approximant by a Lawson process, i.e. an iterative
 % reweighting. 
@@ -16,6 +17,9 @@ function [r, pol, res, zer, z, f, w, errvec, p, q] = aaamn_lawson(Z,F,m,n,tol,La
 %         tol = relative tolerance tol, default: 1e-13 
 %         Lawsoniter: max. iteration number of Lawson updates (default 10)
 %         doplot: 1 to plot error curve history (default 0)
+%     R = AAAMN_Lawson(F, Z, m, n, NAME, VALUE) sets the following parameters:
+%   - 'tol', TOL: relative tolerance for Lawson iteration (default 1e-5)
+%   - 'iter', IT: maximal number of Lawson iterations (default MMAX = max([5 min([20, m, n])])).
 %         
 %
 % Output: r = AAA-Lawson approximant to F (function handle)
@@ -24,19 +28,15 @@ function [r, pol, res, zer, z, f, w, errvec, p, q] = aaamn_lawson(Z,F,m,n,tol,La
 %         z,f,w = vectors of support pts, function values, weights
 %         p,q = chebfuns s.t. r= p/q (note this can be numerically unstable)
 
+% parse inputs
+[F, Z, m, n, Lawsoniter, tolLawson, doplot, tol ] = ...
+    parseInputs(F, varargin{:});
+
 M = length(Z);                            % number of sample points
-if ( (nargin < 3) || isempty(m) ), m = 10;% default max type (10,10) 
-    disp('No input type given; will compute type (10,10) approximant')
-end                 
-if ( (nargin < 4) || isempty(n) ), n = m; end
-if ( (nargin < 5) || isempty(tol) ), tol = 1e-13; end % default relative tol 
 mmax = m+1; nmax = n+1;                   % for coding convenience
 if ( (nargin < 6) || isempty(Lawsoniter) )% number of Lawson updates
     Lawsoniter = max([5 min([20,mmax,nmax])]); 
 end 
-if ( (nargin < 7) || isempty(doplot))     % plot Lawson updates
-    doplot = 0;  
-end  
 if ~isfloat(F), 
     fori = F;                             % store function (used as chebfun)
     F = feval(F,Z); end                   % convert function handle to vector
@@ -60,7 +60,7 @@ for mn = 1:max(mmax,nmax)
                 else
                 q = ones(length(z),1);
                 end
-                Q = orthspace(z,mn-min(mmax,nmax),q);     % projection subspace                              
+                Q = orthspace(z,mn-min(mmax,nmax),q);   % projection subspace 
                 [~,~,V] = svd(A(J,:)*Q,0);              % SVD on projected subspace
                 w = Q*V(:,end);
            else             
@@ -99,7 +99,7 @@ end
               weiold = wei; 
               wei = wei .* power(abs(F(J)-R(J)),rate); % update Lawson weights
               wei = wei/sum(wei);                      % normalize 
-              if norm(weiold-wei)/norm(wei)< sqrt(tol) % declare Lawson converged
+              if norm(weiold-wei)/norm(wei)< tolLawson % declare Lawson converged
                   break
               end
               D = spdiags(sqrt(wei),0,length(wei),length(wei)); % diagonal weight matrix
@@ -130,7 +130,7 @@ end
             if ( nrmincreased >= 3 )     % perhaps not converging
             rate = max( rate/2,0.01 );   % make Lawson update conservative
             if doplot
-                disp(['Lawson rate shrunk to ',num2str(rate)])
+                warning(['Lawson rate made conservative to ',num2str(rate)])
             end
               nrmincreased = 0; 
             end
@@ -183,7 +183,143 @@ end
 end    
 
 
+%% parse Inputs:
 
+function [F, Z, m, n, Lawsoniter, tolLawson, doplot, tol ] = ...
+    parseInputs(F, varargin)
+% Input parsing for AAAmn_lawson.
+
+% Check if F is empty:
+if ( isempty(F) )
+    error('CHEBFUN:aaamn_lawson:emptyF', 'No function given.')
+elseif ( isa(F, 'chebfun') )
+    if ( size(F, 2) ~= 1 )
+        error('CHEBFUN:aaamn_lawson:nColF', 'Input chebfun must have one column.')
+    end
+end
+
+% Sample points and m,n:
+if ( ~isempty(varargin) && isfloat(varargin{1}) )
+    if length(varargin{1})>2   % function values Z is given. 
+    Z = varargin{1};
+    varargin(1) = [];    
+    end
+end
+
+% m,n
+if ( ~isempty(varargin) && isfloat(varargin{1}) )
+    if length(varargin{1})>1 % input (f,Z,[m n])
+    mn = varargin{1};
+    m = mn(1); n = mn(2);
+    varargin(1) = [];    
+    elseif isfloat(varargin{2}) % input (f,Z,m,n)
+    m = varargin{1};        
+    n = varargin{2};    
+    varargin([1, 2]) = [];
+    else
+    m = varargin{1};        
+    n = m; % input (f,Z,m), default to diagonal type (m,m)
+    varargin(1) = [];
+    end
+end
+
+
+% Set defaults for other parameters:
+tolLawson = 1e-5;                       % Relative tolerance for Lawson update.
+tol = 1e-15;                            % AAA tolerance
+Lawsoniter = max([5 min([20, m, n])]);  % Maximum number of terms.
+doplot = 0;                             % Plot intermediate functions. 
+
+% Domain:
+if ( isa(F, 'chebfun') )
+    dom = F.domain([1, end]);
+else
+    dom = [-1, 1];
+end
+
+% Check if parameters have been provided:
+while ( ~isempty(varargin) )
+    if ( strncmpi(varargin{1}, 'tol', 3) |  strncmpi(varargin{1}, 'tolLawson', 3) )
+        if ( isfloat(varargin{2}) && isequal(size(varargin{2}), [1, 1]) )
+            tolLawson = varargin{2};   % Lawson tolerance
+        end
+        varargin([1, 2]) = [];
+
+    elseif ( strncmpi(varargin{1}, 'iter', 4) | strncmpi(varargin{1}, 'maxit', 5))
+        if ( isfloat(varargin{2}) && isequal(size(varargin{2}), [1, 1]) )
+            Lawsoniter = varargin{2};  % maximum Lawson iterations
+        else
+        warning(['CHEBFUN:aaamn_lawson:iter unspecified, use default itermax ', num2str(Lawsoniter)])
+        end
+        varargin([1, 2]) = [];
+        
+    elseif ( strncmpi(varargin{1}, 'dom', 3) )
+        if ( isfloat(varargin{2}) && isequal(size(varargin{2}), [1, 2]) )
+            dom = varargin{2};
+        end
+        varargin([1, 2]) = [];
+        if ( isa(F, 'chebfun') )
+            if ( ~isequal(dom, F.domain([1, end])) )
+                warning('CHEBFUN:aaamn_lawson:dom', ...
+                    ['Given domain does not match the domain of the chebfun.\n', ...
+                    'Results may be inaccurate.'])
+            end
+        end
+        
+    elseif strncmpi(varargin{1}, 'plot', 4)  % plot error functions
+        if isfloat(varargin{2})
+            doplot = varargin{2};
+        elseif strncmpi(varargin{2}, 'true', 4) 
+            doplot = 1;
+        end
+        varargin([1, 2]) = [];                
+    else
+        error('CHEBFUN:aaamn_lawson:UnknownArg', 'Argument unknown.')
+    end
+end
+
+
+% Deal with Z and F:
+if ( ~exist('Z', 'var') && isfloat(F) )
+    % F is given as data values, pick same number of sample points:
+    Z = linspace(dom(1), dom(2), length(F)).';
+end
+
+if ( exist('Z', 'var') )
+    % Z is given:
+    needZ = 0;
+    
+    % Work with column vector:
+    Z = Z(:);
+    M = length(Z);
+    
+    % Function values:
+    if ( isa(F, 'function_handle') || isa(F, 'chebfun') )
+        % Sample F on Z:
+        F = F(Z);
+    elseif ( isnumeric(F) )
+        % Work with column vector and check that it has correct length.
+        F = F(:);
+        if ( length(F) ~= M )
+            error('CHEBFUN:aaamn_lawson:lengthFZ', ...
+                'Inputs F and Z must have the same length.')
+        end
+    else
+        error('CHEBFUN:aaamn_lawson:UnknownF', 'Input for F not recognized.')
+    end
+    
+else
+    % Z was not given.  Set flag that Z needs to be determined.
+    % Also set Z and M since they are needed as output.
+    % in AAA this is done adaptively. This can be done with Lawson, but
+    % probably safe to take as many points as reasonably possible here. 
+    Z = linspace(dom(1), dom(end), 4000).';    
+end
+
+end % End of PARSEINPUT().
+
+
+%% generate function handle, interpolatory mode
 function r = rr(zz,z,w,f)                 % evaluate r at zz
 zv = zz(:);                               % vectorize zz if necessary
 CC = 1./bsxfun(@minus,zv,z.');            % Cauchy matrix 
@@ -195,6 +331,7 @@ end
 r = reshape(r,size(zz));                  % AAA approx
 end
 
+%% generate function handle, non-interpolatory mode
 function r = rrab(zz,z,w,wf,f)                 % evaluate r at zz
 zv = zz(:);                               % vectorize zz if necessary
 CC = 1./bsxfun(@minus,zv,z.');            % Cauchy matrix 
@@ -208,6 +345,7 @@ end
 r = reshape(r,size(zz));                  % AAA approx
 end
 
+%% null space for m~=n
 function Q = orthspace(z,dim,q)       % orthonormal projection space for (m,n)
 if ( dim == 0 ), Q = eye(length(z)); end 
 if ( nargin < 3 ), q = ones(length(z),1); end
