@@ -1,8 +1,36 @@
-function [r, pol, res, zer, z, f, w, errvec, p, q] = aaamn_lawson(F, varargin)
-%AAAMN_Lawson
-% [r, pol, res, zer, z, f, w, errvec, p, q] = aaamn_lawson(F,Z,m,n)
-% near-best rational approximation of data F on set Z of type (m,n). 
-% It first finds a AAA rational approximant to F \approx r(Z), then
+function [r, pol, res, zer, z, Z, f, w, wf, errvec, p, q] = aaamn_lawson(F, varargin)
+%AAAMN_Lawson   near-best rational approximation of F. 
+% 
+% R = aaamn_lawson(F) computes a rational aproximant of (default) type
+% (10,10) on the default interval [-1,1]
+%
+% [R, POL, RES, ZER] = aaamn_lawson(...) outputs the poles, residues and zeros
+% of R. The poles, zeros will approximate those of F (not well if R-F is not small)
+% 
+% [R, POL, RES, ZER, z, Z, F, W,WF, ERRVEC, P, Q] = aaamn_lawson(...) 
+% outputs additionally the sample points Z, support points z, values
+% F=f(Z), weights w and wf (see below) and AAA errvec, and p,q = chebfuns 
+% s.t. r= p/q (note this can be numerically unstable)
+%
+% [...] = aaamn_lawson(F,m,n) specifies the type to (m,n).
+%
+% [...] = aaamn_lawson(F,Z,m,n) also specifies the sample points Z
+% (recommended). 
+%
+% [...] = aaamn_lawson(F,Z,m,n,'plot','on') will plot the error functions
+% as the Lawson iterations proceed. 
+%
+% [...] = aaamn_lawson(F,m,n,'dom',[-1,2]) specifies the domain (this has no effect 
+% if Z is specified)
+%
+% [...] = aaamn_lawson(F,m,n,'tol',1e-5) specifies the Lawson iterate
+% relative stopping criterion (here to 1e-5)
+%
+% [...] = aaamn_lawson(F,m,n,'iter',10) limits the Lawson maximum
+% iterations to 10. 
+% 
+% 
+% The algorithm first finds a AAA rational approximant to F \approx r(Z), then
 % attempts to refine the approximant by a Lawson process, i.e. an iterative
 % reweighting. 
 % 
@@ -25,8 +53,35 @@ function [r, pol, res, zer, z, f, w, errvec, p, q] = aaamn_lawson(F, varargin)
 % Output: r = AAA-Lawson approximant to F (function handle)
 %         pol,res,zer = vectors of poles, residues, zeros
 %         errvec = vector of errors at each step
-%         z,f,w = vectors of support pts, function values, weights
+%         z,f,w,wf = vectors of support pts, function values, weights
+%         s.t. r = N/D, N(x) = sum_i wf(i)/(x-z(i)) and 
+%         D(x) = sum_i w(i)/(x-z(i)).
 %         p,q = chebfuns s.t. r= p/q (note this can be numerically unstable)
+%
+% Examples:
+%    r = aaamn_lawson(@abs,10,10)
+%    r = aaamn_lawson(@abs,10,10,'plot','on')
+%    [r, pol, res, zer, z, f, w, wf, errvec, p, q] = aaamn_lawson(@abs,10,10,'plot','on','dom',[-1 2])
+%    r = aaamn_lawson(@exp,4,2,'plot','on','dom',[-1 2])
+%    r = aaamn_lawson(@(x)log(1.1-x),5,5,'plot','on')
+%
+%    f = chebfun(@(x)-1./(log(abs(x)).^2),[-.1,.1],'splitting','on'); 
+%    [r,pol,res] = aaamn_lawson(f,linspace(-.1,.1,1e4),18,18,'plot','on')
+%
+%
+%
+%   Reference:
+%   [1] Yuji Nakatsukasa, Olivier Sete, Lloyd N. Trefethen, "The AAA algorithm
+%   for rational approximation", arXiv:1612.00337.
+%
+%   [2] (Bernhard Beckermann), Silviu Filip, Yuji Nakatsukasa, rational
+%   remez paper, in preparation (2017).  
+%
+% See also AAA, CF, CHEBPADE, PADEAPPROX, RATINTERP, REMEZ
+
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 
 % parse inputs
 [F, Z, m, n, Lawsoniter, tolLawson, doplot, tol ] = ...
@@ -158,7 +213,7 @@ end
 
     % compute poles and roots
     B = eye(mn+1); B(1,1) = 0;                 
-    E = [0 w.'; ones(mn,1) diag(z)];      
+    E = [0 wf.'; ones(mn,1) diag(z)];      
     zer = eig(E,B); zer = zer(~isinf(zer));   % zeros  
     E = [0 w.'; ones(mn,1) diag(z)];      
     pol = eig(E,B); pol = pol(~isinf(pol));   % poles
@@ -198,11 +253,20 @@ elseif ( isa(F, 'chebfun') )
     end
 end
 
-% Sample points and m,n:
+% Domain:
+if ( isa(F, 'chebfun') )
+    dom = F.domain([1, end]);
+else
+    dom = [-1, 1];
+end
+
+% Sample points:
 if ( ~isempty(varargin) && isfloat(varargin{1}) )
-    if length(varargin{1})>2   % function values Z is given. 
+    if length(varargin{1})>2   % sample points Z given. 
     Z = varargin{1};
     varargin(1) = [];    
+    else                       % sample points not given.
+        
     end
 end
 
@@ -223,19 +287,16 @@ if ( ~isempty(varargin) && isfloat(varargin{1}) )
     end
 end
 
+if ( ~exist('m', 'var') ) 
+     warning('CHEBFUN:aaamn_lawson: type (m,n) not specified, default to (10,10)')
+     m = 10; n = 10; 
+end
 
 % Set defaults for other parameters:
 tolLawson = 1e-5;                       % Relative tolerance for Lawson update.
 tol = 1e-15;                            % AAA tolerance
 Lawsoniter = max([5 min([20, m, n])]);  % Maximum number of terms.
-doplot = 0;                             % Plot intermediate functions. 
-
-% Domain:
-if ( isa(F, 'chebfun') )
-    dom = F.domain([1, end]);
-else
-    dom = [-1, 1];
-end
+doplot = 0;                             % Don't plot intermediate functions unless specified
 
 % Check if parameters have been provided:
 while ( ~isempty(varargin) )
@@ -269,7 +330,7 @@ while ( ~isempty(varargin) )
     elseif strncmpi(varargin{1}, 'plot', 4)  % plot error functions
         if isfloat(varargin{2})
             doplot = varargin{2};
-        elseif strncmpi(varargin{2}, 'true', 4) 
+        elseif ( strncmpi(varargin{2}, 'true', 4) | strncmpi(varargin{2}, 'on', 2) )
             doplot = 1;
         end
         varargin([1, 2]) = [];                
@@ -278,7 +339,6 @@ while ( ~isempty(varargin) )
     end
 end
 
-
 % Deal with Z and F:
 if ( ~exist('Z', 'var') && isfloat(F) )
     % F is given as data values, pick same number of sample points:
@@ -286,9 +346,6 @@ if ( ~exist('Z', 'var') && isfloat(F) )
 end
 
 if ( exist('Z', 'var') )
-    % Z is given:
-    needZ = 0;
-    
     % Work with column vector:
     Z = Z(:);
     M = length(Z);
