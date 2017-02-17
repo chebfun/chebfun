@@ -440,9 +440,10 @@ if ( opts.displayIter && dialogFlag)
 end
 
 h = -1; hpre = 0;
+err = normf;
 interpSuccess = 1;
 % Run the main algorithm.
-while ( (abs(abs(h)-abs(hpre))/abs(h) > opts.tol) && (iter < opts.maxIter) && (diffx > 0) && (interpSuccess == 1))
+while ( (abs(abs(h)-abs(err))/abs(err) > opts.tol) && (iter < opts.maxIter) && (diffx > 0) && (interpSuccess == 1))
     hpre = h;
  
     % Compute trial function and levelled reference error.
@@ -528,7 +529,7 @@ end
 
 
 % Warn the user if we failed to converge.
-if ( abs(abs(h)-abs(hpre))/abs(h) > opts.tol && dialogFlag)
+if ( abs(abs(h)-abs(err))/abs(err) > opts.tol && dialogFlag)
     warning('CHEBFUN:CHEBFUN:remez:convergence', ...
         ['Remez algorithm did not converge after ', num2str(iter), ...
          ' iterations to the tolerance ', num2str(opts.tol), '.']);
