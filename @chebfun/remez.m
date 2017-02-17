@@ -149,7 +149,7 @@ function xk = AAALawsonInit(f,m,n) % AAA-Lawson initialization for functions wit
     Z = linspace(dom(1),dom(end),NN);   
     F = feval(f,Z);
     [r,~,~,~,xk] = aaamn_lawson(F,Z,m,n);    % 1st AAA-Lawson
-    xk = findreference(f,r,m,n,xk);
+    xk = findReference(f,r,m,n,xk);
     
     % Iterate twice during which sample points are refined. 
     % This is done to find the nonsmooth parts of the function
@@ -163,7 +163,7 @@ function xk = AAALawsonInit(f,m,n) % AAA-Lawson initialization for functions wit
     end
     Z = unique(Z); Z = Z(:); F = feval(f,Z);
     [r,~,~,~,xk] = aaamn_lawson(F,Z,m,n); % Do AAA-Lawson with updated sample pts
-    xk = findreference(f,r,m,n,xk); 
+    xk = findReference(f,r,m,n,xk); 
     end    
 end    
 
@@ -316,96 +316,6 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
     
 end
 
-
-function xk = cdfInit3(f,m,n,symFlag,opts,step)
-    
-    stepSize = step;
-    if(symFlag > 0) % dealing with symmetry (even or odd)
-        stepSize = 2*step;
-    end
-    text = ['Trying CDF-based initialization with step size ', num2str(stepSize),'...'];
-    disp(text);
-    
-    % Choose small starting degree
-    minValue = min(m,n);
-    minValue = minValue - rem(minValue,stepSize);
-    k = minValue/stepSize;
-    k = k - (3 - step);
-    startM = m - stepSize * k;
-    startN = n - stepSize * k;
-    
-    % need an initialization strategy that has a high chance
-    % of working without problem for the small degree case;
-    % CF is used for now
-    
-    
-    xk = cfInit(f, startM, startN);
-    [~,~,~,~,status] = remezKernel(f, startM, startN, startM+startN, true, xk, opts, 0);
-    
-    if(status.success == 1)   
-        while(startM < m - stepSize && (status.success == 1))
-            startM = startM + stepSize;
-            startN = startN + stepSize;
-            xk = refGen(f, status.xk, startM + startN + 2, symFlag);
-            [~,~,~,~,status] = remezKernel(f, startM, startN, startM+startN, true, xk, opts, 0);
-        end
-    end
-    
-    if(status.success == 1)
-        xk = refGen(f, status.xk, m + n + 2, symFlag);
-    else
-        text = ['Initialization failed using CDF with step size ', num2str(stepSize)];
-        disp(text);
-        [~,~,~,~,status] = remez(f,m+n); xk = status.xk;
-    end
-    
-end
-
-function xk = cdfInit2(f,m,n,symFlag,opts,step)
-    
-    stepSize = step;
-    if(symFlag > 0) % dealing with symmetry (even or odd)
-        stepSize = 2*step;
-    end
-    text = ['Trying CDF-based initialization with step size ', num2str(stepSize),'...'];
-    disp(text);
-    
-    % Choose small starting degree
-    minValue = min(m,n);
-    minValue = minValue - rem(minValue,stepSize);
-    k = minValue/stepSize;
-    startM = m + stepSize * k;
-    startN = n - stepSize * k;
-    
-    % need an initialization strategy that has a high chance
-    % of working without problem for the small degree case;
-    % CF is used for now
-    
-    
-    xk = cfInit(f, startM, startN);
-    [~,~,~,~,status] = remezKernel(f, startM, startN, startM+startN, true, xk, opts, 0);
-    
-    if(status.success == 1)   
-        while(startN < n && (status.success == 1))
-            startM = startM - stepSize;
-            startN = startN + stepSize;
-            xk = status.xk;
-            [~,~,~,~,status] = remezKernel(f, startM, startN, startM+startN, true, xk, opts, 0);
-        end
-    end
-    
-    if(status.success == 1)
-        xk = status.xk;
-    else
-        text = ['Initialization failed using CDF with step size ', num2str(stepSize)];
-        disp(text);
-        [~,~,~,~,status] = remez(f,m+n); xk = status.xk;
-    end
-    
-end
-
-
-
 function varargout = remezKernel(f, m, n, N, rationalMode, xk, opts, dialogFlag)
 
 % This core function should only ever be called with a nonempty initial set
@@ -439,7 +349,7 @@ if ( opts.displayIter && dialogFlag)
     disp('It.   Max(|Error|)     |ErrorRef|    Delta ErrorRef    Delta Ref      m  n')
 end
 
-h = -1; hpre = 0;
+h = -1;
 err = normf;
 interpSuccess = 1;
 % Run the main algorithm.
@@ -679,11 +589,7 @@ function [p, q, rh, h, interpSuccess,xsupport] = computeTrialFunctionRational(f,
 % xk: approximate reference points
 % m,n: degree
 
-% Vector of alternating signs. Needed for sigma in (F+h*sigma)q = p
-N = m + n;
-sigma = ones(N + 2, 1);
-sigma(2:2:end) = -1;
-
+% The function values at the current reference points
 fk = feval(f, xk);
 % Take barycentric support points to be alternating values of two reference points
 xsupport = (xk(1:2:end-1)+xk(2:2:end))/2;  
@@ -718,9 +624,9 @@ if m~=n % force coefficients to lie in null space of Vandermonde
     [Qmnall,~] = qr(Qmn);
 end
 
-C = zeros(length(xk),length(xsupport)); % Cauchy (basis) matrix
+    C = zeros(length(xk),length(xsupport)); % Cauchy (basis) matrix
 for ii = 1:length(xk)
-C(ii,:) = 1./(xk(ii)-xsupport);
+    C(ii,:) = 1./(xk(ii)-xsupport);
 end
 
 % find Delta diag matrix 
@@ -730,10 +636,10 @@ for ii = 1:length(xk)
 % wxdiff(ii) = prod(xk(ii)-xk([1:ii-1 ii+1:end]));    
 % Delta = diag(-(wt.^2)./wxdiff);
 % do above in a way that avoids underflow, overflow
-wt(ii) = exp(sum(log(abs(prod(xk(ii)-xsupport)))));
-wxdiff(ii) = exp(sum(log(abs(xk(ii)-xk([1:ii-1 ii+1:end])))));    
-Delta(ii) = -exp(2*sum(log(abs(prod(xk(ii)-xsupport)))) ...
-    - sum(log(abs(xk(ii)-xk([1:ii-1 ii+1:end])))));
+    wt(ii) = exp(sum(log(abs(prod(xk(ii)-xsupport)))));
+%wxdiff(ii) = exp(sum(log(abs(xk(ii)-xk([1:ii-1 ii+1:end])))));    
+    Delta(ii) = -exp(2*sum(log(abs(prod(xk(ii)-xsupport)))) ...
+        - sum(log(abs(xk(ii)-xk([1:ii-1 ii+1:end])))));
 end
 Delta = diag(Delta); 
 
@@ -742,16 +648,16 @@ DD = eye(size(C,2));
 
 % prepare QR factorizations; these lead to symmetric eigenproblem
 if ( m == n )
-[Q,R] = qr(sqrt(abs(Delta))*C,0);
+    [Q,R] = qr(sqrt(abs(Delta))*C,0);
 elseif ( m > n )
-[Q,R] = qr(sqrt(abs(Delta))*C*Qmn,0);    
-[Qall,Rall] = qr(sqrt(abs(Delta))*C*Qmnall,0);
+    [Q,R] = qr(sqrt(abs(Delta))*C*Qmn,0);    
+    [Qall,Rall] = qr(sqrt(abs(Delta))*C*Qmnall,0);
 else % m<n
-[Q,R] = qr(sqrt(abs(Delta))*C,0);
-[Qpart,Rpart] = qr(sqrt(abs(Delta))*C*Qmn,0);
+    [Q,R] = qr(sqrt(abs(Delta))*C,0);
+    [Qpart,Rpart] = qr(sqrt(abs(Delta))*C*Qmn,0);
 end
 
-S = diag((-1).^[0:length(xk)-1]);
+S = diag((-1).^(0:length(xk)-1));
 %Q2 = S*Q; for sanity check svd(Q'*Q2) or svd(Qpart'*Q2) when m<n, should be O(eps)
 
 QSQ = Q'*S*diag(fk)*Q;
@@ -765,11 +671,11 @@ beta = R\VR;        % Denominator coefficients in barycentric form
 
 % obtain alpha (the Numerator coefficients in bary form) from beta
 if ( m == n )
-alpha = R\(-Q'*diag(fk)*Q*VR);    
+    alpha = R\(-Q'*diag(fk)*Q*VR);    
 elseif ( m > n )
-alpha = Qmnall*((Rall)\((Qall'*diag(-fk)*Q*VR)));
+    alpha = Qmnall*((Rall)\((Qall'*diag(-fk)*Q*VR)));
 else % m<n
-alpha = (Rpart)\(Qpart'*diag(-fk)*Q*VR);    
+    alpha = (Rpart)\(Qpart'*diag(-fk)*Q*VR);    
 end
 vt = [alpha;beta];
 
@@ -781,19 +687,19 @@ vt = [alpha;beta];
 % D(x)*node(x), where node(x) = prod(x-xsupport). 
 
 if ( m <= n ) % values of D at xk
-Dvals = C(:,1:n+1)*(DD*vt(m+1+1:end,:)); 
+    Dvals = C(:,1:n+1)*(DD*vt(m+1+1:end,:)); 
 else
-Dvals = C*(Qmn*vt(m+1+1:end,:)); 
+    Dvals = C*(Qmn*vt(m+1+1:end,:)); 
 end
 node = @(z) prod(z-xsupport); % needed to check sign
 
 nodevec = xk;
 for ii = 1:length(xk)
-nodevec(ii) = node(xk(ii));   % values of node polynomial
+    nodevec(ii) = node(xk(ii));   % values of node polynomial
 end
 % Find position without sign changes in D*node. Ignore ones with too small
 % Dvals. 
-pos = find(abs(sum(sign(diag(nodevec)*Dvals))) == N + 2 & sum(abs(Dvals))>1e-4);  
+pos = find(abs(sum(sign(diag(nodevec)*Dvals))) == m+n+2 & sum(abs(Dvals))>1e-4);  
 
 if isempty(pos)               % sad sad, no solution with same signs..
     if(dialogFlag)
@@ -813,18 +719,18 @@ h = -d(pos, pos);                % Levelled reference error.
 
 % coefficients for barycentric representations
 if ( m <= n )
-wD = (DD*vt(m+2:end,pos));
+    wD = (DD*vt(m+2:end,pos));
 else
-wD = Qmn*vt(m+2:end,pos);    
+    wD = Qmn*vt(m+2:end,pos);    
 end
 if ( m >= n )
-wN = DD(1:m+1,1:m+1)*vt(1:m+1,pos);
+    wN = DD(1:m+1,1:m+1)*vt(1:m+1,pos);
 else
-wN = Qmn*vt(1:m+1,pos);    
+    wN = Qmn*vt(1:m+1,pos);    
 end
 
 D = @(x) 0; N = @(x) 0;    % form function handle rh = N/D 
-for ( ii = 1:length(xsupport) )
+for ii = 1:length(xsupport)
    D = @(x) D(x) + wD(ii)./(x-xsupport(ii));
    N = @(x) N(x) + wN(ii)./(x-xsupport(ii));   
 end
@@ -833,7 +739,8 @@ D = @(x)-D(x); % flip back sign
 rh = @(zz) feval(@rr,zz,xsupport,wN,wD); % rational approximant as function handle
 interpSuccess = 1; 
 
-% Form chebfuns of p and q (note: could be numerically unstable but provided for convenience)
+% Form chebfuns of p and q (note: could be numerically unstable but
+% provided for convenience)
 % Find values of node polynomial at Chebyshev points
 x = chebpts(m+n+1);
 nodex = zeros(length(x),1); for ii = 1:length(x),    nodex(ii) = node(x(ii)); end 
@@ -998,7 +905,7 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % find extrema of error function, in AAA-Lawson
-function xk = findreference(f,r,m,n,z) 
+function xk = findReference(f,r,m,n,z) 
     % f: function  
     % r: rational approximant 
     % m,n: (m,n) is type of rational approximant
@@ -1009,13 +916,13 @@ function xk = findreference(f,r,m,n,z)
     
     % Deal with length(xk) not equal to the desired m+n+2
     if length(xk) > m+n+2 % reduce reference pts becuse too many found 
-        xkori = xk;   
+   
         xkdiff = diff(xk);                        
         [~,ix] = sort(xkdiff,'descend'); % take those with largest gaps
         xk = [xk(1);xk(1+ix(1:m+n+1))];
         xk = sort(xk,'ascend');        
     elseif length(xk) < m+n+2 % increase reference pts becuse too few found 
-        xkori = xk;
+
         xkdiff = diff(xk);                        
         add = m+n+2-length(xk);          % we need to add this many reference points 
         [~,ix] = sort(xkdiff,'descend'); % take those with largest gaps and fill midpoints
@@ -1107,7 +1014,7 @@ if(symType == 0)
 % handling of even symmetries
 
 elseif(symType == 1)
-    
+
     halfSize = length(xx)/2;
     halfn = n/2;
 
@@ -1120,6 +1027,8 @@ elseif(symType == 1)
         nxk = pwiselin(xx(1:halfSize), xk(1:halfSize),halfn, linspace(xx(1),xx(halfSize),halfn));
         nxk = [nxk; -nxk(1:end-1); f.domain(end)];
         nxk = sort(nxk,'ascend');
+    else
+        nxk = pwiselin(xx, xk, n, linspace(-1,1,n));
     end
 
 % handling of odd symmetries
@@ -1136,6 +1045,8 @@ halfn = (n-1)/2;
         nxk = pwiselin(xx(1:halfSize+1), xk(1:halfSize+1),halfn, linspace(xx(1),xx(halfSize+1),halfn));
         nxk = [nxk; -nxk(1:end); f.domain(end)];
         nxk = sort(nxk,'ascend');
+    else
+        nxk = pwiselin(xx, xk, n, linspace(-1,1,n));
     end
 
 end
