@@ -3,8 +3,7 @@ function r = roots( f, g, varargin )
 %   R = ROOTS(F) returns the zero contours of F as a quasimatrix of chebfuns.
 %   Each column of R is one zero contour.  This command only finds contours when
 %   there is a change of sign, and it can also group intersecting contours in a
-%   non-optimal way.  It may be inaccurate for components near the boundary
-%   of the domain.
+%   non-optimal way.
 %
 %   R = ROOTS(F, G) returns the isolated mutual roots of F and G.
 %
@@ -84,34 +83,45 @@ if ( nargin == 1 )  % Seek zero curves of scalar function
         % of the curves component by component, using complex arithmetic
         % for convenience.
         j = 1; r = chebfun;
+%sizeC = size(C)
         while ( j < length(C) )
             k = j + C(2, j);
             D = C(:, j+1:k);
             data = ( D(1, :) + 1i*(D(2, :)+realmin) ).';            
-data([1 end])
+            npts = length(data);
+%plot(data,'.'), hold on
+%data([1 end])
 data = snap(data);
-data([1 end])
+%data([1 end])
             err = 999; errnew = 1e-2;
-            while errnew < err                           
+            stepno = 0;
+            curvenew = chebfun(data);
+            while (errnew < err) && (stepno < 8)
+                stepno = stepno+1;
                 err = errnew;
-                curve = chebfun(data);               % make chebfun
-data([1 end])
+                curve = curvenew;
+%data([1 end])
                 s = [0; cumsum(abs(diff(data)))];    % empirical arclength
                 s = 2*s/s(end) - 1;                  % normalize to [-1,1]
                 data = interp1(s, data, chebpts ...  % interpolate
                     (length(data)), 'spline');
-%data = snap(data);
-                curve = chebfun(data);               % make chebfun
-                curve = simplify(curve);             % simplify it
-                data = curve(chebpts(1000));         % sample finely
-%data = snap(data);   
+data = snap(data);
+                curvenew = chebfun(data);            % make chebfun
+                curvenew = simplify(curvenew);       % simplify it
+                data = curvenew(chebpts(npts));      % sample finely
+data = snap(data);   
                 ff = fval(data);                     % function values
                 g = gradf(data);                     % gradient values
-                errnew = norm(ff,inf), pause         % max error
+                errnew = norm(ff,inf)/vscale(f);     % max rel error
+%disp(errnew), % pause
                 data = data - ff.*( g./abs(g).^2 );  % Newton step
-%data = snap(data);
+                curvenew = chebfun(data);            % make chebfun
+                curvenew = simplify(curvenew);       % simplify it
+data = snap(data);
             end
             j = k + 1;
+%disp('adding a component')
+%pause
             r = [ r , curve ];
         end
 
@@ -130,15 +140,16 @@ end
 
 function d = snap(d);      % adjust endpoints to snap to boundary of domain
     n = length(d);
+    scl = norm(dom,inf);
     dr = real(d); di = imag(d);
-    if abs(dr(1)-dom(1))<.02, dr(1) = dom(1); end  % snap to left boundary
-    if abs(dr(n)-dom(1))<.02, dr(n) = dom(1); end
-    if abs(dr(1)-dom(2))<.02, dr(1) = dom(2); end  % snap to right boundary
-    if abs(dr(n)-dom(2))<.02, dr(n) = dom(2); end
-    if abs(di(1)-dom(3))<.02, di(1) = dom(3); end  % snap to bottom boundary
-    if abs(di(n)-dom(3))<.02, di(n) = dom(3); end
-    if abs(di(1)-dom(4))<.02, di(1) = dom(4); end  % snap to top boundary
-    if abs(di(n)-dom(4))<.02, di(n) = dom(4); end
+    if abs(dr(1)-dom(1))<.02*scl, dr(1) = dom(1); end  % snap to left bndry
+    if abs(dr(n)-dom(1))<.02*scl, dr(n) = dom(1); end
+    if abs(dr(1)-dom(2))<.02*scl, dr(1) = dom(2); end  % snap to right bndry
+    if abs(dr(n)-dom(2))<.02*scl, dr(n) = dom(2); end
+    if abs(di(1)-dom(3))<.02*scl, di(1) = dom(3); end  % snap to bottom bndry
+    if abs(di(n)-dom(3))<.02*scl, di(n) = dom(3); end
+    if abs(di(1)-dom(4))<.02*scl, di(1) = dom(4); end  % snap to top bndry
+    if abs(di(n)-dom(4))<.02*scl, di(n) = dom(4); end
     d = complex(dr,di);
 end
 
