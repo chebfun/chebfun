@@ -403,7 +403,7 @@ while ( (abs(abs(h)-abs(err))/abs(err) > opts.tol) && (iter < opts.maxIter) && (
             delta = err - abs(h);
             %disp(err_handle(xk))
             
-            if opts.tol*norm(err_handle(xk),'inf') < normf*1e-13
+            if opts.tol*norm(err_handle(xk),'inf') < normf*1e-14
                 % relative tolerance is below machine precision, make it
                 % reasonable
                 opts.tol = normf*1e-13/norm(err_handle(xk),'inf');
@@ -492,7 +492,7 @@ N = m + n;
 % Parse name-value option pairs.
 if rationalMode
     opts.tol = 1e-6;                        % Relative tolerance for deciding convergence.
-    opts.maxIter = 30+round(max(m,n)/2);    % Maximum number of allowable iterations.
+    opts.maxIter = 10+round(max(m,n)/2);    % Maximum number of allowable iterations.
 else
     opts.tol = 1e-16*(N^2 + 10); % Polynomial case is much more robust. 
     opts.maxIter = 20;           % Maximum number of allowable iterations.

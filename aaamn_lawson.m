@@ -92,9 +92,7 @@ mmax = m+1; nmax = n+1;                   % for coding convenience
 if ( (nargin < 6) || isempty(Lawsoniter) )% number of Lawson updates
     Lawsoniter = max([5 min([20,mmax,nmax])]); 
 end 
-if ~isfloat(F), 
-    fori = F;                             % store function (used as chebfun)
-    F = feval(F,Z); end                   % convert function handle to vector
+if ~isfloat(F), F = feval(F,Z); end        % convert function handle to vector
  Z = Z(:); F = F(:);                       % work with column vectors
  SF = spdiags(F,0,M,M);                    % left scaling matrix
  J = 1:M;                                  % indices that are not support pts
@@ -208,7 +206,7 @@ end
                 plot(Z,F-r(Z),'b.','markersize',10);
                 end
             end            
-          end          
+	      end          
 
     % compute poles and roots
     B = eye(mn+1); B(1,1) = 0;                 
