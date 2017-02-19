@@ -83,16 +83,11 @@ if ( nargin == 1 )  % Seek zero curves of scalar function
         % of the curves component by component, using complex arithmetic
         % for convenience.
         j = 1; r = chebfun;
-%sizeC = size(C)
         while ( j < length(C) )
             k = j + C(2, j);
             D = C(:, j+1:k);
             data = ( D(1, :) + 1i*(D(2, :)+realmin) ).';            
             npts = length(data);
-%plot(data,'.'), hold on
-%data([1 end])
-data = snap(data);
-%data([1 end])
             err = 999; errnew = 1e-2;
             stepno = 0;
             curvenew = chebfun(data);
@@ -100,28 +95,21 @@ data = snap(data);
                 stepno = stepno+1;
                 err = errnew;
                 curve = curvenew;
-%data([1 end])
                 s = [0; cumsum(abs(diff(data)))];    % empirical arclength
                 s = 2*s/s(end) - 1;                  % normalize to [-1,1]
                 data = interp1(s, data, chebpts ...  % interpolate
                     (length(data)), 'spline');
-data = snap(data);
                 curvenew = chebfun(data);            % make chebfun
-                curvenew = simplify(curvenew);       % simplify it
                 data = curvenew(chebpts(npts));      % sample finely
-data = snap(data);   
+                data = snap(data);                   % snap to boundary
                 ff = fval(data);                     % function values
                 g = gradf(data);                     % gradient values
                 errnew = norm(ff,inf)/vscale(f);     % max rel error
-%disp(errnew), % pause
                 data = data - ff.*( g./abs(g).^2 );  % Newton step
                 curvenew = chebfun(data);            % make chebfun
                 curvenew = simplify(curvenew);       % simplify it
-data = snap(data);
             end
             j = k + 1;
-%disp('adding a component')
-%pause
             r = [ r , curve ];
         end
 
@@ -138,7 +126,7 @@ elseif ( isa(g, 'separableApprox') )  % seek zero points of vector function
     
 end
 
-function d = snap(d);      % adjust endpoints to snap to boundary of domain
+function d = snap(d);   % adjust endpoints to snap to boundary of domain
     n = length(d);
     scl = norm(dom,inf);
     dr = real(d); di = imag(d);
