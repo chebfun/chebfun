@@ -35,6 +35,7 @@ if ( isempty( f ) )
 end 
 
 dom = f.domain;
+scl = norm(dom,inf);
 
 if ( nargin == 1 )  % Seek zero curves of scalar function
     
@@ -87,6 +88,8 @@ if ( nargin == 1 )  % Seek zero curves of scalar function
             k = j + C(2, j);
             D = C(:, j+1:k);
             data = ( D(1, :) + 1i*(D(2, :)+realmin) ).';            
+            ii = find(abs(diff(data)) < 1e-8*scl);
+            data(ii) = [];                           % eliminate repetitions
             npts = length(data);
             err = 999; errnew = 1e-2;
             stepno = 0;
@@ -128,7 +131,6 @@ end
 
 function d = snap(d);   % adjust endpoints to snap to boundary of domain
     n = length(d);
-    scl = norm(dom,inf);
 
     if abs(real(d(1))-dom(2)) < .02*scl                 % snap to right bndry
         dx0 = dom(2)-real(d(2)); dx = real(d(1)-d(2));

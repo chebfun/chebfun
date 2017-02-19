@@ -164,4 +164,16 @@ arclength = sum(abs(diff(c)));
 err = arclength - 2.957885715089195;
 pass(23) = abs(err) < tol2;
 
+f = chebfun2( @(x,y) y.^2-x.^2-.1,[-1 1 -1.5 1.5]);  % hyperbola
+c = roots(f);
+arclength = sum(abs(diff(c)));
+err = arclength - [1 1]*2.51829399795912;
+pass(24) = norm(err,inf) < tol2;
+
+f = chebfun2( @(x,y) y.^2-x.^2);  % cross
+c = roots(f);
+arclength = sum(abs(diff(c)));
+err = arclength - [1 1]*sqrt(8);
+pass(25) = norm(err,inf) < tol4;
+
 end
