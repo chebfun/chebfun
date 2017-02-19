@@ -18,7 +18,12 @@ function varargout = arrowplot(f,varargin)
 %
 %   h = exp((-.2+3i)*t); arrowplot(h,'color','r')
 %
-%   A = []; for k = 1:3, A = [A exp((-.1*k+1i)*t)]; end, arrowplot(A,'color','k')
+%   A = []; for k = 1:3, A = [A exp((-.1*k+1i)*t)]; end, arrowplot(A)
+
+% Copyright 2017 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+% Parse arguments
 if ~isreal(f)
     if nargin < 2
         opts = {};
@@ -31,21 +36,36 @@ else
         opts = {};
     end
 end
+
+% Evaluate the derivative of input CHEBFUNs to get slope information
 fp = diff(f);
+
+% Get domain information, and evaluate functions and derivatives at the correct
+% point:
 fdom = domain(f);
 fend = feval(f, fdom(end));
 fpend = feval(fp, fdom(end));
-fpend = .001*fpend/norm(fpend,2);
+
+% Normalise the slopes
+for aCounter=1:length(fpend)
+    fpend(aCounter) = 0.001*fpend(aCounter)/norm(fpend(aCounter),2);
+end
+
+% Plot the complex valued CHEBFUNs
 pp = plot(f,varargin{:});
+
+% Loop through the pieces, and plot arrows at the end
 for aCounter=1:length(fend)
-    h(aCounter)=annotation('arrow');
+    % Create a vector of arrow annotations, then set their properties below
+    h(aCounter) = annotation('arrow');
     set(h(aCounter),'parent', gca, ...
         'position', [real(fend(aCounter)) imag(fend(aCounter)) ...
             real(fpend(aCounter)) imag(fpend(aCounter))], ...
-        'HeadLength', 10, 'HeadWidth', 10, 'HeadStyle', 'vback2', ...
+        'HeadLength', 7, 'HeadWidth', 7, ...
         'Color', pp(aCounter).Color, varargin{:});
 end
 
+% Return a handle to the plot if method called with an output
 if ( nargout == 1)
     varargout{1} = pp;
 end
