@@ -146,7 +146,22 @@ err = area - pi/4;
 pass(20) = abs(err) < tol2;
 %disp([int2str(pass(20)) '  vertical scaling 2  ' int2str(length(c))])
 
-f = chebfun2( @(x,y) x.^2 + (10*y).^2 - 1/4 );
+f = chebfun2( @(x,y) y-sin(x),[-pi pi,-1.1 1.3]);
 c = roots(f);
+arclength = sum(abs(diff(c)));
+err = arclength - 7.640395578055424035;
+pass(21) = abs(err) < tol2;
+
+f = chebfun2( @(x,y) x-tanh(y));
+c = roots(f);
+arclength = sum(abs(diff(c)));
+err = arclength - 2.53182746833076;
+pass(22) = abs(err) < tol2;
+
+f = chebfun2( @(x,y) y-x.^2);
+c = roots(f);
+arclength = sum(abs(diff(c)));
+err = arclength - 2.957885715089195;
+pass(23) = abs(err) < tol2;
 
 end

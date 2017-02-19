@@ -91,7 +91,7 @@ if ( nargin == 1 )  % Seek zero curves of scalar function
             err = 999; errnew = 1e-2;
             stepno = 0;
             curvenew = chebfun(data);
-            while (errnew < err) && (stepno < 8)
+            while (errnew < err) && (stepno < 6)
                 stepno = stepno+1;
                 err = errnew;
                 curve = curvenew;
@@ -129,16 +129,43 @@ end
 function d = snap(d);   % adjust endpoints to snap to boundary of domain
     n = length(d);
     scl = norm(dom,inf);
-    dr = real(d); di = imag(d);
-    if abs(dr(1)-dom(1))<.02*scl, dr(1) = dom(1); end  % snap to left bndry
-    if abs(dr(n)-dom(1))<.02*scl, dr(n) = dom(1); end
-    if abs(dr(1)-dom(2))<.02*scl, dr(1) = dom(2); end  % snap to right bndry
-    if abs(dr(n)-dom(2))<.02*scl, dr(n) = dom(2); end
-    if abs(di(1)-dom(3))<.02*scl, di(1) = dom(3); end  % snap to bottom bndry
-    if abs(di(n)-dom(3))<.02*scl, di(n) = dom(3); end
-    if abs(di(1)-dom(4))<.02*scl, di(1) = dom(4); end  % snap to top bndry
-    if abs(di(n)-dom(4))<.02*scl, di(n) = dom(4); end
-    d = complex(dr,di);
+
+    if abs(real(d(1))-dom(2)) < .02*scl                 % snap to right bndry
+        dx0 = dom(2)-real(d(2)); dx = real(d(1)-d(2));
+        d(1) = d(2) + (dx0/dx)*(d(1)-d(2));
+    end
+    if abs(real(d(n))-dom(2)) < .02*scl
+        dx0 = dom(2)-real(d(n-1)); dx = real(d(n)-d(n-1));
+        d(n) = d(n-1) + (dx0/dx)*(d(n)-d(n-1));
+    end
+
+    if abs(real(d(1))-dom(1)) < .02*scl                 % snap to left bndry
+        dx0 = dom(1)-real(d(2)); dx = real(d(1)-d(2));
+        d(1) = d(2) + (dx0/dx)*(d(1)-d(2));
+    end
+    if abs(real(d(n))-dom(1)) < .02*scl
+        dx0 = dom(1)-real(d(n-1)); dx = real(d(n)-d(n-1));
+        d(n) = d(n-1) + (dx0/dx)*(d(n)-d(n-1));
+    end
+
+    if abs(imag(d(1))-dom(4)) < .02*scl                 % snap to top bndry
+        dy0 = dom(4)-imag(d(2)); dy = imag(d(1)-d(2));
+        d(1) = d(2) + (dy0/dy)*(d(1)-d(2));
+    end
+    if abs(imag(d(n))-dom(4)) < .02*scl
+        dy0 = dom(4)-imag(d(n-1)); dy = imag(d(n)-d(n-1));
+        d(n) = d(n-1) + (dy0/dy)*(d(n)-d(n-1));
+    end
+
+    if abs(imag(d(1))-dom(3)) < .02*scl                 % snap to bottom bndry
+        dy0 = dom(3)-imag(d(2)); dy = imag(d(1)-d(2));
+        d(1) = d(2) + (dy0/dy)*(d(1)-d(2));
+    end
+    if abs(imag(d(n))-dom(3)) < .02*scl
+        dy0 = dom(3)-imag(d(n-1)); dy = imag(d(n)-d(n-1));
+        d(n) = d(n-1) + (dy0/dy)*(d(n)-d(n-1));
+    end
+
 end
 
 end
