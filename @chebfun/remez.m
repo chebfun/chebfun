@@ -444,9 +444,6 @@ end
 % Warn the user if we failed to converge.
 if ( abs(abs(h)-abs(err))/abs(err) > opts.tol && ...
         abs(abs(h)-abs(err))/normf >= 1e-14 && dialogFlag && interpSuccess)
-    text = ['This warning was generated for a degree (', num2str(m), ',',...
-        num2str(n), ') approximation'];
-    disp(text);
     warning('CHEBFUN:CHEBFUN:remez:convergence', ...
         ['Remez algorithm did not converge after ', num2str(iter), ...
          ' iterations to the tolerance ', num2str(opts.tol), '.']);
@@ -891,7 +888,6 @@ doms = unique([f.domain(1); xk; f.domain(end)]).';
 % Initial trial
 if ( isempty(xk) )
     ek = chebfun(@(x) err_handle(x), f.domain, 'eps', relTol, 'splitting', 'on');
-    keyboard
     rts = roots(diff(ek), 'nobreaks');
 else
     for k = 1:length(doms)-1
