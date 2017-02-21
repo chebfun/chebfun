@@ -10,6 +10,9 @@ function X = mrdivide(B, A)
 % TODO: Something is wrong with the comment lines below.
 % TODO: Give an example for each of the cases below.
 
+% TODO: Document that 1/f is equivalent to 1./f, NOT the trivial least squares
+% problem.
+
 if ( isscalar(A) )
     if ( A == 0 )
         % TODO:  Return identically Inf/NaN CHEBFUN instead?
@@ -21,6 +24,9 @@ if ( isscalar(A) )
 elseif ( size(A, 2) ~= size(B, 2) )
     error('CHEBFUN:CHEBFUN:mrdivide:dimensions', ...
         'Matrix dimensions must agree.')
+    
+elseif ( isscalar(B) )
+    X = B./A;
     
 elseif ( isnumeric(A) )
     % [INF x M] * [M x N] = [INF x N]:

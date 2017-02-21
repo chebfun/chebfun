@@ -22,14 +22,16 @@ elseif ( fIsChebfun && gIsChebfun )         % CHEBFUN * CHEBFUN
 
     % We can't do MTIMES() on two CHEBFUNs that have the same transpose state.
     if ( f(1).isTransposed == g(1).isTransposed )
-        if ( numColumns(f) ~= numColumns(g) )
-            error('CHEBFUN:CHEBFUN:mtimes:dims', ...
-                ['Matrix dimensions must agree. Use f.*g to multiply ' ...
-                 'two CHEBFUN objects.']);
-        else
-            error('CHEBFUN:CHEBFUN:mtimes:dims', ...
-                'Matrix dimensions must agree.');
-        end
+        f = times(f,g);
+        return
+%         if ( numColumns(f) ~= numColumns(g) )
+%             error('CHEBFUN:CHEBFUN:mtimes:dims', ...
+%                 ['Matrix dimensions must agree. Use f.*g to multiply ' ...
+%                  'two CHEBFUN objects.']);
+%         else
+%             error('CHEBFUN:CHEBFUN:mtimes:dims', ...
+%                 'Matrix dimensions must agree.');
+%         end
     end
 
     if ( f(1).isTransposed && ~g(1).isTransposed ) % Row times column.
