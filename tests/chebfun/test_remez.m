@@ -1,5 +1,4 @@
 % Test file for @chebfun/remez.m.
-% Based on the Chebfun v4 test written by LNT, March. 27, 2009.
 
 function pass = test_remez(pref)
 
@@ -24,13 +23,13 @@ pass(2) = norm(pcf - pbest) < 0.0003;
 
 % Test rational mode.
 f = ((x + 3).*(x - 0.5))./(x.^2 - 4);
-[pbest, qbest, rbest] = remez(f, 2, 2, 'tol', 1e-12, 'maxIter', 20);
+[~, ~, rbest] = remez(f, 2, 2, 'tol', 1e-12, 'maxIter', 20);
 pass(3) =  norm(f(xx) - rbest(xx), inf) < 1e-10;
 
 % Test an example with a breakpoint.
 x = chebfun(@(x) x, [-1 0 1]);
 f = ((x - 3).*(x + 0.2).*(x - 0.7))./((x - 1.5).*(x + 2.1));
-[pbest, qbest, rbest] = remez(f, 3, 2);
+[~, ~, rbest] = remez(f, 3, 2);
 pass(4) =  norm(f(xx) - rbest(xx), inf) < 1e-10;
 
 % Test an example from ATAP.
@@ -60,10 +59,35 @@ pass(8) = (abs(err-.043689) < 1e-3);
 % Make sure that it works for m=0 and odd f.
 f = x.^3;
 try
-    [p,q] = remez(f,0,2);
+    [~,~] = remez(f,0,2);
     pass(9) = 1;
 catch ME 
     pass(9) = false;
 end
+
+%%
+% A function with huge amplitude
+f1 = chebfun('exp(x)'); p1 = remez(f1,7); err1 = norm(f1-p1,inf);
+f2 = chebfun('1e100*exp(x)'); p2 = remez(f2,7); err2 = norm(f2-p2,inf);
+pass(10) = abs(err1-err2/1e100) < 1e-3;
+
+%%
+% A function with tiny amplitude
+f1 = chebfun('exp(x)'); [~,~,r1] = remez(f1,1,3); sample1 = r1(.3)-f1(.3);
+f2 = chebfun('1e-100*exp(x)'); [~,~,r2] = remez(f2,1,3); sample2 = r2(.3)-f2(.3);
+pass(11) = abs(sample1-sample2*1e100) < 1e-3;
+
+%%
+% A function on a big domain
+x = chebfun('x',1e30*[-1 2]);
+f = abs(x);
+p = remez(f,30);
+pass(12) = (norm(f-p,inf)/1e30 - .0135210) < .01;
+
+%% Higher degree abs(x) approximation
+x = chebfun('x');
+f = abs(x);
+[~, ~, rbest] = remez(f, 20, 20);
+pass(13) =  norm(f(xx) - rbest(xx), inf) < 1e-5;
 
 end

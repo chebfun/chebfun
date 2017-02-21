@@ -1,13 +1,13 @@
 function varargout = remez(f, varargin)
 %REMEZ   Best polynomial or rational approximation for real valued chebfuns.
-%   P = REMEZ(F, M) computes the best polynomial approximation of degree M to
-%   the real CHEBFUN F in the infinity norm using the Remez algorithm.
+%   P = REMEZ(F, M) computes the minimax polynomial approximation of degree M
+%   to the real CHEBFUN F using the Remez algorithm.
 %
-%   [P, Q] = REMEZ(F, M, N) computes the best rational approximation P/Q of type
-%   (M, N) to the real CHEBFUN F using the Remez algorithm.
+%   [P, Q] = REMEZ(F, M, N) computes the minimax rational approximation P/Q
+%   of type (M, N).
 %
-%   [P, Q, R_HANDLE] = REMEZ(F, M, N) does the same but additionally returns a
-%   function handle R_HANDLE for evaluating the rational function P/Q.
+%   [P, Q, R_HANDLE] = REMEZ(F, M, N) additionally returns a function handle
+%   for evaluating P/Q.
 %
 %   [...] = REMEZ(..., 'tol', TOL) uses the value TOL as the termination
 %   tolerance on the relative equioscillation error.
@@ -20,34 +20,34 @@ function varargout = remez(f, varargin)
 %   [...] = REMEZ(..., 'plotfcns', 'error') plots the error after each iteration
 %   while the algorithm executes.
 %
-%   [P, ERR] = REMEZ(...) and [P, Q, R_HANDLE, ERR] = REMEZ(...) also returns
-%   the maximum error ERR.
+%   [P, ERR] = REMEZ(...) and [P, Q, R_HANDLE, ERR] = REMEZ(...) returns the
+%   maximum error ERR.
 %
 %   [P, ERR, STATUS] = REMEZ(...) and [P, Q, R_HANDLE, ERR, STATUS] = REMEZ(...)
-%   also return a structure array STATUS with the following fields:
+%   return a structure array STATUS with the following fields:
 %      STATUS.DELTA  - Obtained tolerance.
 %      STATUS.ITER   - Number of iterations performed.
 %      STATUS.DIFFX  - Maximum correction in last trial reference.
 %      STATUS.XK     - Last trial reference on which the error equioscillates.
 %
-%   This code is quite reliable for polynomial approximations but rather
-%   fragile for rational approximations.  Better results can often be obtained
-%   with CF(), especially if f is smooth.
+%   This code is quite reliable for polynomial approximations but may sometimes
+%   have difficulties in the rational case.
 %
 % References:
 %
-%   [1] Pachon, R. and Trefethen, L. N.  "Barycentric-Remez algorithms for best
+%   [1] S. Filip and Y. Nakatsukasa, manuscript in preparation.
+%
+%   [2] R. Pachon and L. N. Trefethen, "Barycentric-Remez algorithms for best
 %   polynomial approximation in the chebfun system", BIT Numerical Mathematics,
 %   49:721-742, 2009.
 %
-%   [2] Pachon, R.  "Algorithms for Polynomial and Rational Approximation".
+%   [3] R. Pachon, "Algorithms for Polynomial and Rational Approximation".
 %   D. Phil. Thesis, University of Oxford, 2010 (Chapter 6).
 %
 % See also CF.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
-
 
 if ( ~isreal(f) )
     error('CHEBFUN:CHEBFUN:remez:real', ...
@@ -66,6 +66,14 @@ end
 
 % Parse the inputs.
 [m, n, N, rationalMode, symFlag, xk, opts] = parseInputs(f, varargin{:});
+
+% If m=-1, this means f=odd and input (m,n)=(0,n); return constant 0. 
+if ( m == -1 )
+    q = chebfun(1, f.domain([1,end]));
+    p = chebfun(0, f.domain([1,end]));
+    varargout = {p, q, @(x) feval(p, x)./feval(q, x), norm(f,'inf'), []};    
+    return
+end
 
 if(isempty(xk)) % no initial reference is given by the user
     % Several initialization attempts are made
@@ -139,7 +147,6 @@ function xk = cfInit(f, m, n)
     end
 end
 
-
 % Now turn to initialization via AAA-Lawson, this is more expensive than CF
 % but less so than CDF (which follows if this fails). 
 % 
@@ -167,7 +174,6 @@ function xk = AAALawsonInit(f,m,n) % AAA-Lawson initialization for functions wit
     end    
 end    
 
-
 % Cumulative distribution function-based initialization of the rational
 % version of the exchange algorithm. If we want to compute a degree (m,n)
 % approximation, the following steps are performed:
@@ -194,7 +200,6 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
     text = ['Trying CDF-based initialization with step size ', num2str(stepSize),'...'];
     disp(text);
     
-    
     if(abs(m-n) <= 2)
         % Choose small starting degree
         minValue = min(m,n);
@@ -207,7 +212,6 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
         % need an initialization strategy that has a high chance
         % of working without problem for the small degree case;
         % CF is used for now
-    
     
         xk = cfInit(f, startM, startN);
         [~,~,~,~,status] = remezKernel(f, startM, startN, startM+startN, true, xk, opts, 0);
@@ -232,15 +236,17 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
             [~,~,~,~,status] = remez(f,m+n); xk = status.xk;
         end
     else
+
         if(m < n)
             minValue = m - rem(m,stepSize);
             k = minValue/stepSize;
             hM = m - stepSize * k;
             hN = n - stepSize * k;
             
+            
             hminValue = hN - rem(hN,stepSize);
             hk = hminValue/stepSize;
-            startN = hN - stepSize * hk;
+            startN = hN - stepSize * hk
             xk = cfInit(f, hM, startN);
             [~,~,~,~,status] = remezKernel(f, hM, startN, hM+startN, true, xk, opts, 0);
             
@@ -249,7 +255,7 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
                     startN = startN + stepSize;                    
                     xk = refGen(f, status.xk, hM + startN + 2, 0);
                 if opts.displayIter
-                    disp(['CDF (m, n) = ',num2str(hM+startN),', ',num2str(startN)])
+                    disp(['CDF (m, n) = ',num2str(hM),', ',num2str(startN)])
                 end                                    
                     [~,~,~,~,status] = remezKernel(f, hM, startN, hM+startN, true, xk, opts, 0);
                 end
@@ -272,7 +278,6 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
                 end                                    
                     [~,~,~,~,status] = remezKernel(f, hM, hN, hM+hN, true, xk, opts, 0);
             end
-
     
             if(status.success == 1)
                 %xk = refGen(f, status.xk, m + n + 2, symFlag);
@@ -282,7 +287,6 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
                 disp(text);
                 [~,~,~,~,status] = remez(f,m+n); xk = status.xk;
             end     
-            
             
         else % m > n
             minValue = n - rem(n,stepSize);
@@ -300,7 +304,8 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
                     disp(['CDF (m, n) = ',num2str(startM),', ',num2str(startN)])
                 end                                    
                     xk = refGen(f, status.xk, startM + startN + 2, symFlag);
-                    [~,~,~,~,status] = remezKernel(f, startM, startN, startM+startN, true, xk, opts, 0);
+                    [~,~,~,~,status] = remezKernel(f, startM, startN, ...
+                        startM+startN, true, xk, opts, 0);
                 end
             end
     
@@ -327,7 +332,7 @@ dom = opts.dom;
 if ( m == -1 )
     q = chebfun(1, dom);
     p = chebfun(0, dom);
-    varargout = {p, q, @(x) feval(p, x)./feval(q, x), norm(f,'inf'), []};    
+    varargout = {p, q, @(x) feval(p, x)./feval(q, x), norm(f,inf), []};    
     return
 end
 
@@ -353,9 +358,12 @@ h = -1;
 err = normf;
 interpSuccess = 1;
 % Run the main algorithm.
-while ( (abs(abs(h)-abs(err))/abs(err) > opts.tol) && (iter < opts.maxIter) && (diffx > 0) && (interpSuccess == 1))
+while ( (abs(abs(h)-abs(err))/abs(err) > opts.tol) && ...
+    (iter < opts.maxIter) && (diffx > 0) && (interpSuccess == 1))
     hpre = h;
- 
+    if (abs(abs(h)-abs(err))/normf < 1e-14)
+        break
+    end
     % Compute trial function and levelled reference error.
     if ( n == 0 )
         fk = feval(f, xk);     % Evaluate on the exchange set.
@@ -390,7 +398,8 @@ while ( (abs(abs(h)-abs(err))/abs(err) > opts.tol) && (iter < opts.maxIter) && (
          
     else
         err = inf;
-        [p, q, rh, h, interpSuccess, ~] = computeTrialFunctionRational(f, xk, m, n, hpre, dialogFlag);
+        [p, q, rh, h, interpSuccess, ~] = ...
+            computeTrialFunctionRational(f, xk, m, n, hpre, dialogFlag);
    
         % Perturb exactly-zero values of the levelled error.
         if ( h == 0 )
@@ -401,18 +410,15 @@ while ( (abs(abs(h)-abs(err))/abs(err) > opts.tol) && (iter < opts.maxIter) && (
             [xk, err, err_handle, ~] = exchange(xk, h, 2, f, p, rh, N+2, n);
             diffx = max(abs(xo - xk));
             delta = err - abs(h);
-            %disp(err_handle(xk))
             
-            if opts.tol*norm(err_handle(xk),'inf') < normf*1e-14
+            if opts.tol*norm(err_handle(xk),inf) < normf*1e-14
                 % relative tolerance is below machine precision, make it
                 % reasonable
-                opts.tol = normf*1e-13/norm(err_handle(xk),'inf');
+                opts.tol = normf*1e-13/norm(err_handle(xk),inf);
                 opts.tol = min( opts.tol, 0.1 );
             end
         end
     end
- 
- 
  
     % Display diagnostic information as requested.
     if ( opts.plotIter && interpSuccess && dialogFlag)
@@ -435,16 +441,16 @@ if (n == 0)
     delta = deltamin;
 end
  
- 
-
-
 % Warn the user if we failed to converge.
-if ( abs(abs(h)-abs(err))/abs(err) > opts.tol && dialogFlag)
+if ( abs(abs(h)-abs(err))/abs(err) > opts.tol && ...
+        abs(abs(h)-abs(err))/normf >= 1e-14 && dialogFlag && interpSuccess)
+    text = ['This warning was generated for a degree (', num2str(m), ',',...
+        num2str(n), ') approximation'];
+    disp(text);
     warning('CHEBFUN:CHEBFUN:remez:convergence', ...
         ['Remez algorithm did not converge after ', num2str(iter), ...
          ' iterations to the tolerance ', num2str(opts.tol), '.']);
 end
-
  
 % Form the outputs.
 status.delta = delta/normf;
@@ -491,10 +497,10 @@ N = m + n;
 
 % Parse name-value option pairs.
 if rationalMode
-    opts.tol = 1e-6;                        % Relative tolerance for deciding convergence.
+    opts.tol = 1e-4;                        % Relative tolerance for deciding convergence.
     opts.maxIter = 10+round(max(m,n)/2);    % Maximum number of allowable iterations.
 else
-    opts.tol = 1e-16*(N^2 + 10); % Polynomial case is much more robust. 
+    opts.tol = 1e-14*(N^2 + 10); % Polynomial case is much more robust. 
     opts.maxIter = 20;           % Maximum number of allowable iterations.
 end
 
@@ -557,11 +563,11 @@ if ( max(abs(c(2:2:end)))/vscale(f) < eps )   % f is even.
     end
 elseif ( max(abs(c(1:2:end)))/vscale(f) < eps ) % f is odd.
     symFlag = 2;
-    if ( mod(m, 2) == 0 )
-        m = max(m - 1, 0);
+    if ( ~mod(m, 2) )
+        m = m - 1;
     end
-    if ( mod(n, 2) ~= 0 )
-        n = max(n - 1, 0);
+    if ( mod(n, 2) )
+        n = n - 1;
     end
 end
 
@@ -581,7 +587,8 @@ p = chebfun(@(x) bary(x, pk, xk, w), dom, m + 1);
 
 end
 
-function [p, q, rh, h, interpSuccess,xsupport] = computeTrialFunctionRational(f, xk, m, n, hpre, dialogFlag)
+function [p, q, rh, h, interpSuccess,xsupport] = ...
+    computeTrialFunctionRational(f, xk, m, n, hpre, dialogFlag)
 % computeTrialFunctionRational finds a rational approximation to f at an 
 % iteration of the Remez algorithm. This uses the barycentric representation
 % for improved numerical stability. 
@@ -680,7 +687,8 @@ end
 vt = [alpha;beta];
 
 % conditioning check, might help
-% disp([cond(C) cond(sqrt(abs(Delta))*C) cond(sqrt(abs(Delta))) cond(C*DD) cond(sqrt(abs(Delta))*C*DD) m n])
+% disp([cond(C) cond(sqrt(abs(Delta))*C) cond(sqrt(abs(Delta))) ...
+%     cond(C*DD) cond(sqrt(abs(Delta))*C*DD) m n])
 
 % Among the n+1 eigenvalues, only one can be the solution. The correct
 % one needs to have no sign changes in the denominator polynomial
@@ -701,21 +709,20 @@ end
 % Dvals. 
 pos = find(abs(sum(sign(diag(nodevec)*Dvals))) == m+n+2 & sum(abs(Dvals))>1e-4);  
 
-if isempty(pos)               % sad sad, no solution with same signs..
+if isempty(pos)                   % unfortunately no solution with same signs.
     if(dialogFlag)
-        warning('CHEBFUN:CHEBFUN:remez:badGuess', ...
-            'Trial interpolant too far from optimal (no single-sign denominator)');
+        disp('Trial interpolant too far from optimal.')
     end
     interpSuccess = 0; 
     
     p = []; q = []; rh = []; h = 1e-19;
     return
-elseif ( length(pos) > 1 )       % curious, more than one solution with no sign changes.. try something
+elseif ( length(pos) > 1 )        % more than one solution with no sign changes.. try something
     [~,ix] = min(abs(hpre)-diag(abs(d(pos,pos))));
     pos = pos(ix);
 end    
 
-h = -d(pos, pos);                % Levelled reference error.
+h = -d(pos, pos);                 % levelled reference error.
 
 % coefficients for barycentric representations
 if ( m <= n )
@@ -757,7 +764,7 @@ end
 function r = rr(zz,xsupport,wN,wD)        % evaluate r at zz
 zv = zz(:);                               % vectorize zz if necessary
 CC = 1./bsxfun(@minus,zv,xsupport.');     % Cauchy matrix 
-r = -(CC*(wN))./(CC*wD);                   % barycentric approx as vector
+r = -(CC*(wN))./(CC*wD);                  % barycentric approx as vector
 r = reshape(r,size(zz));                  % barycentric approx
 end
 
@@ -866,8 +873,6 @@ end
 
 end
 
-
-
 function rts = findExtrema(f,rh,xk)
 % finds all the local maxima and minima
 % of f-p./q
@@ -876,20 +881,19 @@ function rts = findExtrema(f,rh,xk)
 % h is the current leveled error
 
 err_handle = @(x) feval(f, x) - rh(x);
+sample_points = linspace(f.domain(1),f.domain(end),1000);
+scale_of_error = norm(err_handle(sample_points),inf);
+relTol =  1e-15 * (vscale(f)/scale_of_error);  % adjust to make this right!
 rts = [];
 
-doms = unique([f.domain(1); xk; f.domain(end)]);
+doms = unique([f.domain(1); xk; f.domain(end)]).';
 
 % Initial trial
 if ( isempty(xk) )
-    
-    ek = chebfun(@(x) err_handle(x), doms.', 'splitting', 'on');
+    ek = chebfun(@(x) err_handle(x), f.domain, 'eps', relTol, 'splitting', 'on');
+    keyboard
     rts = roots(diff(ek), 'nobreaks');
-    
-    rts = unique([f.domain(1); rts; f.domain(end)]);
-end
-   
-if ( ~isempty(xk) )
+else
     for k = 1:length(doms)-1
         ek = chebfun(@(x) err_handle(x), [doms(k), doms(k+1)], 33, 'eps', 1e-12); 
         ek = simplify(ek);
@@ -898,13 +902,12 @@ if ( ~isempty(xk) )
 end
 
 % Append end points of the domain:
-rts = [f.domain(1) ; rts; f.domain(end)];
+rts = unique([f.domain(1) ; rts; f.domain(end)]);
 
 end
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% find extrema of error function, in AAA-Lawson
+% find extrema of error function in AAA-Lawson
 function xk = findReference(f,r,m,n,z) 
     % f: function  
     % r: rational approximant 
@@ -964,8 +967,6 @@ disp([num2str(iter,'%3g'), '      ', num2str(err, '%5.4e'), '      ', ...
 
 end
 
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Functions used by the CDF-based initialization routine
 
@@ -996,7 +997,6 @@ function yi = pwiselin(xd, yd, ni, xi)
   return
 end
 
-
 % Generate a set of n reference points which follow a distribution
 % of the xk nodes. The symType flag tells us if we are dealing with
 % an even or odd function, in which case the new reference nodes are
@@ -1005,7 +1005,6 @@ end
 function nxk = refGen(f, xk, n, symType)
 
 xx = linspace(-1,1,length(xk));
-
 
 if(symType == 0)
 
@@ -1020,11 +1019,13 @@ elseif(symType == 1)
 
 
     if (xk(1) == f.domain(1))
-        nxk = pwiselin(xx(halfSize+1:end), xk(halfSize+1:end),halfn, linspace(xx(halfSize+1),xx(end),halfn));
+        nxk = pwiselin(xx(halfSize+1:end), xk(halfSize+1:end),halfn, ...
+            linspace(xx(halfSize+1),xx(end),halfn));
         nxk = [nxk; -nxk(2:end); f.domain(1)];
         nxk = sort(nxk,'ascend');
     elseif (xk(end) == f.domain(end))
-        nxk = pwiselin(xx(1:halfSize), xk(1:halfSize),halfn, linspace(xx(1),xx(halfSize),halfn));
+        nxk = pwiselin(xx(1:halfSize), xk(1:halfSize),halfn, ...
+            linspace(xx(1),xx(halfSize),halfn));
         nxk = [nxk; -nxk(1:end-1); f.domain(end)];
         nxk = sort(nxk,'ascend');
     else
@@ -1038,11 +1039,13 @@ halfSize = (length(xx)-1) / 2;
 halfn = (n-1)/2;
 
     if (xk(1) == f.domain(1))
-        nxk = pwiselin(xx(halfSize+2:end), xk(halfSize+2:end),halfn, linspace(xx(halfSize+2),xx(end),halfn));
+        nxk = pwiselin(xx(halfSize+2:end), xk(halfSize+2:end),halfn, ...
+            linspace(xx(halfSize+2),xx(end),halfn));
         nxk = [nxk; -nxk(1:end); f.domain(1)];
         nxk = sort(nxk,'ascend');
     elseif (xk(end) == f.domain(end))
-        nxk = pwiselin(xx(1:halfSize+1), xk(1:halfSize+1),halfn, linspace(xx(1),xx(halfSize+1),halfn));
+        nxk = pwiselin(xx(1:halfSize+1), xk(1:halfSize+1),halfn, ...
+            linspace(xx(1),xx(halfSize+1),halfn));
         nxk = [nxk; -nxk(1:end); f.domain(end)];
         nxk = sort(nxk,'ascend');
     else
