@@ -87,6 +87,7 @@ pass(12) = (norm(f-p,inf)/1e30 - .0135210) < .01;
 %% Higher degree abs(x) approximation
 x = chebfun('x');
 f = abs(x);
-[~, ~, rbest] = remez(f, 20, 20);
+[~, ~, ~,err,~] = remez(f, 20, 20);
+pass(13) = abs(err-4.875957512631913e-6)/4.875957512631913e-6 < 1e-4;
 
 end

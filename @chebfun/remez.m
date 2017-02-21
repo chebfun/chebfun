@@ -16,7 +16,8 @@ function varargout = remez(f, varargin)
 %
 %   [...] = REMEZ(..., 'maxiter', MAXITER) sets the maximum number of allowable
 %   iterations to MAXITER.
-%
+%   [...] = REMEZ(..., 'init', XK) allows the user to specify the vector XK as
+%   the starting reference.
 %   [...] = REMEZ(..., 'plotfcns', 'error') plots the error after each iteration
 %   while the algorithm executes.
 %
@@ -35,7 +36,7 @@ function varargout = remez(f, varargin)
 %
 % References:
 %
-%   [1] S. Filip and Y. Nakatsukasa, manuscript in preparation.
+%   [1] B. Beckermann, S. Filip and Y. Nakatsukasa, manuscript in preparation.
 %
 %   [2] R. Pachon and L. N. Trefethen, "Barycentric-Remez algorithms for best
 %   polynomial approximation in the chebfun system", BIT Numerical Mathematics,
@@ -65,7 +66,7 @@ if ( issing(f) )
 end
 
 % Parse the inputs.
-[m, n, N, rationalMode, symFlag, xk, opts] = parseInputs(f, varargin{:});
+[m, n, N, rationalMode, polyOutput, symFlag, xk, opts] = parseInputs(f, varargin{:});
 
 % If m=-1, this means f=odd and input (m,n)=(0,n); return constant 0. 
 if ( m == -1 )
@@ -81,10 +82,13 @@ if(isempty(xk)) % no initial reference is given by the user
         xk = chebpts(N + 2, f.domain([1, end]));
         [p,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
         q = chebfun('1');
-        varargout = {p,q,p,err,status};
+        if(polyOutput)
+            varargout = {p,err,status};
+        else
+            varargout = {p,q,p,err,status};
+        end
     else % rational case
         % A first attempt is using CF as an initial guess
-        disp('Trying CF-based initialization...');
         try
         xk = cfInit(f, m, n);
         [p,q,rh,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
@@ -118,7 +122,12 @@ if(isempty(xk)) % no initial reference is given by the user
 else  % the user has also given a starting reference
     if(n == 0)
         [p,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
-        varargout = {p,err,status};
+        q = chebfun('1');
+        if(polyOutput)
+            varargout = {p,err,status};
+        else
+            varargout = {p,q,p,err,status};
+        end
     else
         [p,q,rh,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
         varargout = {p,q,rh,err,status};
@@ -132,18 +141,20 @@ end
 
 % CF-based initialization
 function xk = cfInit(f, m, n)
+    warning off
     if ( numel(f.funs) == 1 )
         [p, q] = cf(f, m, n);
     else
         [p, q] = cf(f, m, n, 50*(m+n) );
     end
+    warning on
     pqh = @(x) feval(p, x)./feval(q, x);
     [xk, ~, ~, flag] = exchange([], 0, 2, f, p, pqh, m+n+2, n);
 
     % If the above procedure failed to produce a reference
     % with enough oscillation points, use polynomial Remez.
     if ( flag == 0 )
-        [~,~,~,~,status] = remez(f,m+n); xk = status.xk;
+        [~,~,status] = remez(f,m+n); xk = status.xk;
     end
 end
 
@@ -177,7 +188,7 @@ end
 % Cumulative distribution function-based initialization of the rational
 % version of the exchange algorithm.
 function xk = cdfInit(f,m,n,symFlag,opts,step)
-    
+    newlineCounter = 0;
     stepSize = step; % Increase in degree of numerator and/or denominator
                      % at each step.
     if(symFlag > 0) % Dealing with symmetry (even or odd).
@@ -212,9 +223,12 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
             while(startM < m - stepSize && (status.success == 1))
                 startM = startM + stepSize;
                 startN = startN + stepSize;
-            if opts.displayIter
-                disp(['CDF (m, n) = ',num2str(startM),', ',num2str(startN)])
-            end
+                newlineCounter = newlineCounter + 1;
+                if(newlineCounter == 10)
+                    newlineCounter = 0;
+                    fprintf('\n');
+                end
+                fprintf('(%d,%d) ',startM, startN);
                 % Use the distribution information from the previous
                 % reference to construct a starting reference for the new,
                 % larger degree problem.
@@ -233,7 +247,7 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
             text = ['Initialization failed using CDF with step size ', ...
                                             num2str(stepSize)];
             disp(text);
-            [~,~,~,~,status] = remez(f,m+n); xk = status.xk;
+            [~,~,status] = remez(f,m+n); xk = status.xk;
         end
     else
         % Similar strategy to the diagonal case.
@@ -259,9 +273,12 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
                 while(startN < hN - stepSize && (status.success == 1))
                     startN = startN + stepSize;                    
                     xk = refGen(f, status.xk, hM + startN + 2, 0);
-                if opts.displayIter
-                    disp(['CDF (m, n) = ',num2str(hM),', ',num2str(startN)])
-                end                                    
+                    newlineCounter = newlineCounter + 1;
+                    if(newlineCounter == 10)
+                        newlineCounter = 0;
+                        fprintf('\n');
+                    end
+                    fprintf('(%d,%d) ',hM, startN);
                     [~,~,~,~,status] = remezKernel(f, hM, startN, ...
                                             hM+startN, true, xk, opts, 0);
                 end
@@ -271,7 +288,7 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
                 %xk = refGen(f, status.xk, hM + hN + 2, symFlag);
                 xk = refGen(f, status.xk, hM + hN + 2, 0);
             else
-                [~,~,~,~,status] = remez(f,hM+hN); xk = status.xk;
+                [~,~,status] = remez(f,hM+hN); xk = status.xk;
             end
             
             % Go to the initial degree by now simultaneously increasing
@@ -281,9 +298,12 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
                     hM = hM + stepSize;
                     hN = hN + stepSize;
                     xk = refGen(f, status.xk, hM + hN + 2, symFlag);
-                if opts.displayIter
-                    disp(['CDF (m, n) = ',num2str(hM),', ',num2str(hN)])
-                end                                    
+                    newlineCounter = newlineCounter + 1;
+                    if(newlineCounter == 10)
+                        newlineCounter = 0;
+                        fprintf('\n');
+                    end
+                    fprintf('(%d,%d) ',hM, hN);
                     [~,~,~,~,status] = remezKernel(f, hM, hN, hM+hN, ...
                                                 true, xk, opts, 0);
             end
@@ -295,7 +315,7 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
                 text = ['Initialization failed using CDF with step size ', ...
                                 num2str(stepSize)];
                 disp(text);
-                [~,~,~,~,status] = remez(f,m+n); xk = status.xk;
+                [~,~,status] = remez(f,m+n); xk = status.xk;
             end     
             
         else % m > n
@@ -313,9 +333,12 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
                 while(startM < m - stepSize && (status.success == 1))
                     startM = startM + stepSize;
                     startN = startN + stepSize;
-                if opts.displayIter
-                    disp(['CDF (m, n) = ',num2str(startM),', ',num2str(startN)])
-                end                                    
+                    newlineCounter = newlineCounter + 1;
+                    if(newlineCounter == 10)
+                        newlineCounter = 0;
+                        fprintf('\n');
+                    end
+                    fprintf('(%d,%d) ',startM, startN);
                     xk = refGen(f, status.xk, startM + startN + 2, symFlag);
                     [~,~,~,~,status] = remezKernel(f, startM, startN, ...
                                         startM+startN, true, xk, opts, 0);
@@ -328,11 +351,11 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
                 text = ['Initialization failed using CDF with step size ', ...
                           num2str(stepSize)];
                 disp(text);
-                [~,~,~,~,status] = remez(f,m+n); xk = status.xk;
+                [~,~,status] = remez(f,m+n); xk = status.xk;
             end
         end
     end
-    
+    fprintf('\n');
 end
 
 function varargout = remezKernel(f, m, n, N, rationalMode, xk, opts, dialogFlag)
@@ -486,9 +509,10 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Input parsing.
 
-function [m, n, N, rationalMode, symFlag, xk, opts] = parseInputs(f, varargin)
+function [m, n, N, rationalMode, polyOutput, symFlag, xk, opts] = parseInputs(f, varargin)
 
 % Detect polynomial / rational approximation type and parse degrees.
+polyOutput = true;
 if ( ~mod(nargin, 2) ) % Even number of inputs --> polynomial case.
     m = varargin{1};
     n = 0;
@@ -496,6 +520,7 @@ if ( ~mod(nargin, 2) ) % Even number of inputs --> polynomial case.
     symFlag = 0;
     varargin = varargin(2:end);
 else                   % Odd number of inputs --> rational case.
+    polyOutput = false;
     [m, n, symFlag] = adjustDegreesForSymmetries(f, varargin{1}, varargin{2});
     if ( n == 0 )
         rationalMode = false;
@@ -721,7 +746,7 @@ end
 % Dvals. 
 pos = find(abs(sum(sign(diag(nodevec)*Dvals))) == m+n+2 & sum(abs(Dvals))>1e-4);  
 
-if isempty(pos)  % unfortunately, no solution with same signs.
+if isempty(pos)  % Unfortunately, no solution with same signs.
     if(dialogFlag)
         disp('Trial interpolant too far from optimal.')
     end
@@ -761,12 +786,12 @@ interpSuccess = 1;
 % Form chebfuns of p and q (note: could be numerically unstable, but
 % provided for convenience)
 % Find values of node polynomial at Chebyshev points
-x = chebpts(m+n+1);
+x = chebpts(m+n+1,f.domain([1,end]));
 nodex = zeros(length(x),1); for ii = 1:length(x),    nodex(ii) = node(x(ii)); end 
 qvals = nodex.*feval(D,x);  % Values of p and q at Chebyshev points
 pvals = nodex.*feval(N,x);
  
-p = chebfun(pvals); q = chebfun(qvals);
+p = chebfun(pvals,f.domain([1,end])); q = chebfun(qvals,f.domain([1,end]));
 p = simplify(p); q = simplify(q); % or
 % p = chebfun(p,m+1); qp = chebfun(q,n+1); 
 
@@ -891,7 +916,7 @@ function rts = findExtrema(f,rh,xk)
 % rh is a handle to p/q
 
 err_handle = @(x) feval(f, x) - rh(x);
-sample_points = linspace(f.domain(1),f.domain(end),10000);
+sample_points = linspace(f.domain(1),f.domain(end),5000);
 scale_of_error = norm(err_handle(sample_points),inf);
 relTol =  1e-15 * (vscale(f)/scale_of_error);
 rts = [];
@@ -900,9 +925,9 @@ doms = unique([f.domain(1); xk; f.domain(end)]).';
 
 % Initial trial
 if ( isempty(xk) )
-    %warning off
+    warning off
     ek = chebfun(@(x) err_handle(x), f.domain, 'eps', relTol, 'splitting', 'on');
-    %warning on
+    warning on
     rts = roots(diff(ek), 'nobreaks');
 else
     for k = 1:length(doms)-1
