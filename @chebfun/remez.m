@@ -175,81 +175,86 @@ function xk = AAALawsonInit(f,m,n) % AAA-Lawson initialization for functions wit
 end    
 
 % Cumulative distribution function-based initialization of the rational
-% version of the exchange algorithm. If we want to compute a degree (m,n)
-% approximation, the following steps are performed:
-%
-% 1) compute a type (m-diff,n-diff) best approximation, where 0 < diff < min(m,n);
-%
-% 2) look at how the references for this approximation are distributed
-% inside the domain and determine a piecewise linear approximation of
-% their distribution function;
-%
-% 3) use this function to retrieve a starting reference for a degree
-% (m-diff+k,n-diff+k) approximation (k is a divisor of diff, i.e., diff=k*m)
-% to f.
-
-% These steps are repeated m times, each time the numerator and denominator
-% degrees increasing by k. The step parameter determines the value of k.
-
+% version of the exchange algorithm.
 function xk = cdfInit(f,m,n,symFlag,opts,step)
     
-    stepSize = step;
-    if(symFlag > 0) % dealing with symmetry (even or odd)
+    stepSize = step; % Increase in degree of numerator and/or denominator
+                     % at each step.
+    if(symFlag > 0) % Dealing with symmetry (even or odd).
         stepSize = 2*step;
     end
-    text = ['Trying CDF-based initialization with step size ', num2str(stepSize),'...'];
+    text = ['Trying CDF-based initialization with step size ', ...
+                                num2str(stepSize),'...'];
     disp(text);
     
+    % The approximation is close to being diagonal; start from an
+    % approximation where both the numerator and denominator degrees
+    % are decreased by the same value.
     if(abs(m-n) <= 2)
-        % Choose small starting degree
+
         minValue = min(m,n);
         minValue = minValue - rem(minValue,stepSize);
         k = minValue/stepSize;
         k = k - (3 - step);
+        % Starting small degree problem.
         startM = m - stepSize * k;
         startN = n - stepSize * k;
     
-        % need an initialization strategy that has a high chance
+        % We need an initialization strategy that has a high chance
         % of working without problem for the small degree case;
-        % CF is used for now
-    
+        % CF is used for now.
         xk = cfInit(f, startM, startN);
-        [~,~,~,~,status] = remezKernel(f, startM, startN, startM+startN, true, xk, opts, 0);
-    
+        [~,~,~,~,status] = remezKernel(f, startM, startN, startM+startN, ...
+                                        true, xk, opts, 0);
+        % If Remez worked on the small degree problem, start increasing
+        % the degrees in both the numerator and denominator.
         if(status.success == 1)   
             while(startM < m - stepSize && (status.success == 1))
                 startM = startM + stepSize;
                 startN = startN + stepSize;
             if opts.displayIter
                 disp(['CDF (m, n) = ',num2str(startM),', ',num2str(startN)])
-            end                
+            end
+                % Use the distribution information from the previous
+                % reference to construct a starting reference for the new,
+                % larger degree problem.
                 xk = refGen(f, status.xk, startM + startN + 2, symFlag);
-                [~,~,~,~,status] = remezKernel(f, startM, startN, startM+startN, true, xk, opts, 0);
+                [~,~,~,~,status] = remezKernel(f, startM, startN, ...
+                                        startM+startN, true, xk, opts, 0);
             end
         end
     
+
         if(status.success == 1)
             xk = refGen(f, status.xk, m + n + 2, symFlag);
         else
-            text = ['Initialization failed using CDF with step size ', num2str(stepSize)];
+            % There was a failure somewhere, use reference from polynomial
+            % Remez (might work sometimes).
+            text = ['Initialization failed using CDF with step size ', ...
+                                            num2str(stepSize)];
             disp(text);
             [~,~,~,~,status] = remez(f,m+n); xk = status.xk;
         end
     else
-
+        % Similar strategy to the diagonal case.
         if(m < n)
+            % Construct the 'corner' instance.
+            % (m - stepSize*k, n - stepSize*k), where m - stepSize * k will
+            % usually be 0 or 1.
             minValue = m - rem(m,stepSize);
             k = minValue/stepSize;
             hM = m - stepSize * k;
             hN = n - stepSize * k;
             
-            
+            % Now decrease the degree only in the denominator.
             hminValue = hN - rem(hN,stepSize);
             hk = hminValue/stepSize;
-            startN = hN - stepSize * hk
+            startN = hN - stepSize * hk;
             xk = cfInit(f, hM, startN);
-            [~,~,~,~,status] = remezKernel(f, hM, startN, hM+startN, true, xk, opts, 0);
-            
+            [~,~,~,~,status] = remezKernel(f, hM, startN, hM+startN, ...
+                                            true, xk, opts, 0);
+            % Construct approximations by successively increasing the
+            % denominator degree.
             if(status.success == 1)   
                 while(startN < hN - stepSize && (status.success == 1))
                     startN = startN + stepSize;                    
@@ -257,7 +262,8 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
                 if opts.displayIter
                     disp(['CDF (m, n) = ',num2str(hM),', ',num2str(startN)])
                 end                                    
-                    [~,~,~,~,status] = remezKernel(f, hM, startN, hM+startN, true, xk, opts, 0);
+                    [~,~,~,~,status] = remezKernel(f, hM, startN, ...
+                                            hM+startN, true, xk, opts, 0);
                 end
             end
             
@@ -268,6 +274,8 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
                 [~,~,~,~,status] = remez(f,hM+hN); xk = status.xk;
             end
             
+            % Go to the initial degree by now simultaneously increasing
+            % both numerator and denominator degree.
             status.success = 1;  
             while(hM < m - stepSize && (status.success == 1))
                     hM = hM + stepSize;
@@ -276,25 +284,30 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
                 if opts.displayIter
                     disp(['CDF (m, n) = ',num2str(hM),', ',num2str(hN)])
                 end                                    
-                    [~,~,~,~,status] = remezKernel(f, hM, hN, hM+hN, true, xk, opts, 0);
+                    [~,~,~,~,status] = remezKernel(f, hM, hN, hM+hN, ...
+                                                true, xk, opts, 0);
             end
     
             if(status.success == 1)
                 %xk = refGen(f, status.xk, m + n + 2, symFlag);
                 xk = refGen(f, status.xk, m + n + 2, 0);
             else
-                text = ['Initialization failed using CDF with step size ', num2str(stepSize)];
+                text = ['Initialization failed using CDF with step size ', ...
+                                num2str(stepSize)];
                 disp(text);
                 [~,~,~,~,status] = remez(f,m+n); xk = status.xk;
             end     
             
         else % m > n
+            % Construction of the 'corner' instance by decreasing the
+            % degree in both numerator and denominator.
             minValue = n - rem(n,stepSize);
             k = minValue/stepSize;
             startM = m - stepSize * k;
             startN = n - stepSize * k;
             xk = cfInit(f, startM, startN);
-            [~,~,~,~,status] = remezKernel(f, startM, startN, startM+startN, true, xk, opts, 0);
+            [~,~,~,~,status] = remezKernel(f, startM, startN, ...
+                                       startM+startN, true, xk, opts, 0);
     
             if(status.success == 1)   
                 while(startM < m - stepSize && (status.success == 1))
@@ -305,14 +318,15 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
                 end                                    
                     xk = refGen(f, status.xk, startM + startN + 2, symFlag);
                     [~,~,~,~,status] = remezKernel(f, startM, startN, ...
-                        startM+startN, true, xk, opts, 0);
+                                        startM+startN, true, xk, opts, 0);
                 end
             end
     
             if(status.success == 1)
                 xk = refGen(f, status.xk, m + n + 2, symFlag);
             else
-                text = ['Initialization failed using CDF with step size ', num2str(stepSize)];
+                text = ['Initialization failed using CDF with step size ', ...
+                          num2str(stepSize)];
                 disp(text);
                 [~,~,~,~,status] = remez(f,m+n); xk = status.xk;
             end
@@ -361,6 +375,7 @@ interpSuccess = 1;
 while ( (abs(abs(h)-abs(err))/abs(err) > opts.tol) && ...
     (iter < opts.maxIter) && (diffx > 0) && (interpSuccess == 1))
     hpre = h;
+    % Approximation error is at the level of machine precision, stop.
     if (abs(abs(h)-abs(err))/normf < 1e-14)
         break
     end
@@ -412,8 +427,8 @@ while ( (abs(abs(h)-abs(err))/abs(err) > opts.tol) && ...
             delta = err - abs(h);
             
             if opts.tol*norm(err_handle(xk),inf) < normf*1e-14
-                % relative tolerance is below machine precision, make it
-                % reasonable
+                % Relative tolerance below machine precision, make it
+                % reasonable.
                 opts.tol = normf*1e-13/norm(err_handle(xk),inf);
                 opts.tol = min( opts.tol, 0.1 );
             end
@@ -468,7 +483,7 @@ end
 
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Input parsing.
 
 function [m, n, N, rationalMode, symFlag, xk, opts] = parseInputs(f, varargin)
@@ -494,11 +509,11 @@ N = m + n;
 
 % Parse name-value option pairs.
 if rationalMode
-    opts.tol = 1e-4;                        % Relative tolerance for deciding convergence.
-    opts.maxIter = 10+round(max(m,n)/2);    % Maximum number of allowable iterations.
+    opts.tol = 1e-4;                     % Relative tolerance for deciding convergence.
+    opts.maxIter = 10+round(max(m,n)/2); % Maximum number of allowable iterations.
 else
     opts.tol = 1e-14*(N^2 + 10); % Polynomial case is much more robust. 
-    opts.maxIter = 20;           % Maximum number of allowable iterations.
+    opts.maxIter = 30;           % Maximum number of allowable iterations.
 end
 
 opts.displayIter = false;    % Print output after each iteration.
@@ -576,8 +591,8 @@ function [p, h] = computeTrialFunctionPolynomial(fk, xk, w, m, N, dom)
 sigma = ones(N + 2, 1);
 sigma(2:2:end) = -1;
 
-h = (w'*fk) / (w'*sigma);                          % Levelled reference error.
-pk = (fk - h*sigma);                               % Vals. of r*q in reference.
+h = (w'*fk) / (w'*sigma);           % Levelled reference error.
+pk = (fk - h*sigma);                % Vals. of r*q in reference.
 
 % Trial polynomial.
 p = chebfun(@(x) bary(x, pk, xk, w), dom, m + 1);
@@ -587,7 +602,7 @@ end
 function [p, q, rh, h, interpSuccess,xsupport] = ...
     computeTrialFunctionRational(f, xk, m, n, hpre, dialogFlag)
 % computeTrialFunctionRational finds a rational approximation to f at an 
-% iteration of the Remez algorithm. This uses the barycentric representation
+% iteration of the Remez algorithm. It uses a barycentric representation
 % for improved numerical stability. 
 % f: function 
 % xk: approximate reference points
@@ -597,16 +612,16 @@ function [p, q, rh, h, interpSuccess,xsupport] = ...
 fk = feval(f, xk);
 % Take barycentric support points to be alternating values of two reference points
 xsupport = (xk(1:2:end-1)+xk(2:2:end))/2;  
-xadd = (xk(2:2:end-1)+xk(3:2:end))/2;   % when m~=n, we need more support points
+xadd = (xk(2:2:end-1)+xk(3:2:end))/2; % when m~=n, we need more support points
 
-if ismember(f.domain(1),xk) == 0        % if endpoints aren't included, add them
+if ismember(f.domain(1),xk) == 0      % if endpoints aren't included, add them
     xadd = [(f.domain(1)+xk(1))/2;xadd]; 
 end
 if ismember(f.domain(end),xk) == 0
     xadd = [(f.domain(end)+xk(end))/2;xadd];
 end
 num = abs((max(m,n)+1-length(xsupport)));
-[xadd, ~] = leja(xadd, 1, num);          % take Leja points from the remaining ref pts
+[xadd, ~] = leja(xadd, 1, num);  % take Leja points from the remaining ref pts
 
 if m~=n
     xsupport = [xsupport;xadd(1:max(m,n)+1-length(xsupport))]; % add any lacking supp pts
@@ -706,7 +721,7 @@ end
 % Dvals. 
 pos = find(abs(sum(sign(diag(nodevec)*Dvals))) == m+n+2 & sum(abs(Dvals))>1e-4);  
 
-if isempty(pos)                   % unfortunately no solution with same signs.
+if isempty(pos)  % unfortunately, no solution with same signs.
     if(dialogFlag)
         disp('Trial interpolant too far from optimal.')
     end
@@ -714,7 +729,7 @@ if isempty(pos)                   % unfortunately no solution with same signs.
     
     p = []; q = []; rh = []; h = 1e-19;
     return
-elseif ( length(pos) > 1 )        % more than one solution with no sign changes.. try something
+elseif ( length(pos) > 1 ) % more than one solution with no sign changes...
     [~,ix] = min(abs(hpre)-diag(abs(d(pos,pos))));
     pos = pos(ix);
 end    
@@ -743,7 +758,7 @@ D = @(x)-D(x); % flip back sign
 rh = @(zz) feval(@rr,zz,xsupport,wN,wD); % rational approximant as function handle
 interpSuccess = 1; 
 
-% Form chebfuns of p and q (note: could be numerically unstable but
+% Form chebfuns of p and q (note: could be numerically unstable, but
 % provided for convenience)
 % Find values of node polynomial at Chebyshev points
 x = chebpts(m+n+1);
@@ -813,7 +828,7 @@ if(n == 0) % polynomial case
     rr = [f.domain(1) ; rts; f.domain(end)];
     % Function handle output for evaluating the error.
     err_handle = @(x) feval(f, x) - feval(p, x);
-else       % rational case
+else       % Rational case.
     rr = findExtrema(f, rh, xk);
     err_handle = @(x) feval(f, x) - rh(x);
 end
@@ -823,7 +838,7 @@ if ( method == 1 )                           % One-point exchange.
     [~, pos] = max(abs(feval(err_handle, rr)));
     pos = pos(1);
 else                                           % Full exchange.
-    pos = find(abs(err_handle(rr)) >= abs(h)); % Values above levelled error
+    pos = find(abs(err_handle(rr)) >= abs(h)); % Values above levelled error.
 end
 
 % Add extrema nearest to those which are candidates for exchange to the
@@ -856,8 +871,8 @@ end
 
 
 
-% Of the points we kept, choose n + 2 consecutive ones that include the maximum
-% of the error.
+% Of the points we kept, choose n + 2 consecutive ones that include the
+% maximum of the error.
 [norme, index] = max(abs(es));
 d = max(index - Npts + 1, 1);
 if ( Npts <= length(s) )
@@ -871,23 +886,23 @@ end
 end
 
 function rts = findExtrema(f,rh,xk)
-% finds all the local maxima and minima
-% of f-p./q
+% Finds all the local maxima and minima of f-rh.
 % xk is the present reference
 % rh is a handle to p/q
-% h is the current leveled error
 
 err_handle = @(x) feval(f, x) - rh(x);
-sample_points = linspace(f.domain(1),f.domain(end),1000);
+sample_points = linspace(f.domain(1),f.domain(end),10000);
 scale_of_error = norm(err_handle(sample_points),inf);
-relTol =  1e-15 * (vscale(f)/scale_of_error);  % adjust to make this right!
+relTol =  1e-15 * (vscale(f)/scale_of_error);
 rts = [];
 
 doms = unique([f.domain(1); xk; f.domain(end)]).';
 
 % Initial trial
 if ( isempty(xk) )
+    %warning off
     ek = chebfun(@(x) err_handle(x), f.domain, 'eps', relTol, 'splitting', 'on');
+    %warning on
     rts = roots(diff(ek), 'nobreaks');
 else
     for k = 1:length(doms)-1
@@ -897,40 +912,41 @@ else
     end    
 end
 
-% Append end points of the domain:
+% Append end points of the domain.
 rts = unique([f.domain(1) ; rts; f.domain(end)]);
 
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% find extrema of error function in AAA-Lawson
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Find extrema of error function in AAA-Lawson
 function xk = findReference(f,r,m,n,z) 
     % f: function  
     % r: rational approximant 
-    % m,n: (m,n) is type of rational approximant
+    % m,n: (m,n) is the type of our rational approximant
     % z: barycentric support points 
     % OUTPUT: reference points xk
         
-    xk = findExtrema(f,r, sort(z,'ascend'));      % find extrema points as usual
+    xk = findExtrema(f,r, sort(z,'ascend')); % Find extrema points as usual.
     
-    % Deal with length(xk) not equal to the desired m+n+2
-    if length(xk) > m+n+2 % reduce reference pts becuse too many found 
+    % Deal with length(xk) not equal to the desired m+n+2.
+    if length(xk) > m+n+2 % Reduce reference pts becuse too many found. 
    
         xkdiff = diff(xk);                        
-        [~,ix] = sort(xkdiff,'descend'); % take those with largest gaps
+        [~,ix] = sort(xkdiff,'descend'); % Take those with largest gaps.
         xk = [xk(1);xk(1+ix(1:m+n+1))];
         xk = sort(xk,'ascend');        
-    elseif length(xk) < m+n+2 % increase reference pts becuse too few found 
+    elseif length(xk) < m+n+2 % Increase # of reference pts if too few found. 
 
         xkdiff = diff(xk);                        
-        add = m+n+2-length(xk);          % we need to add this many reference points 
-        [~,ix] = sort(xkdiff,'descend'); % take those with largest gaps and fill midpoints
+        add = m+n+2-length(xk);  % We need to add this many reference points. 
+        % Take those with largest gaps and fill midpoints.
+        [~,ix] = sort(xkdiff,'descend');
         xk = [xk;(xk(ix(1:add))+xk(ix(1:add)+1))/2];
         xk = sort(xk,'ascend');
     end    
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Functions for displaying diagnostic information.
 
 % Function called when opts.plotIter is set.
@@ -963,7 +979,7 @@ disp([num2str(iter,'%3g'), '      ', num2str(err, '%5.4e'), '      ', ...
 
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Functions used by the CDF-based initialization routine
 
 % Constructs a piecewise linear function which interpolates the data
