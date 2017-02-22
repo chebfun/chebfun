@@ -247,6 +247,7 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
         else
             % There was a failure somewhere, use reference from polynomial
             % Remez (might work sometimes).
+            fprintf('\n');
             text = ['Initialization failed using CDF with step size ', ...
                                             num2str(stepSize)];
             disp(text);
@@ -316,6 +317,7 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
                 xk = refGen(f, status.xk, m + n + 2, 0);
                 fprintf('(%d,%d)\n',m, n);
             else
+                fprintf('\n');
                 text = ['Initialization failed using CDF with step size ', ...
                                 num2str(stepSize)];
                 disp(text);
@@ -353,6 +355,7 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
                 xk = refGen(f, status.xk, m + n + 2, symFlag);
                 fprintf('(%d,%d)\n',m, n);
             else
+                fprintf('\n');
                 text = ['Initialization failed using CDF with step size ', ...
                           num2str(stepSize)];
                 disp(text);
