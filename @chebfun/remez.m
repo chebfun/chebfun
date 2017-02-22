@@ -16,8 +16,10 @@ function varargout = remez(f, varargin)
 %
 %   [...] = REMEZ(..., 'maxiter', MAXITER) sets the maximum number of allowable
 %   iterations to MAXITER.
+%
 %   [...] = REMEZ(..., 'init', XK) allows the user to specify the vector XK as
 %   the starting reference.
+%
 %   [...] = REMEZ(..., 'plotfcns', 'error') plots the error after each iteration
 %   while the algorithm executes.
 %
@@ -241,6 +243,7 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
 
         if(status.success == 1)
             xk = refGen(f, status.xk, m + n + 2, symFlag);
+            fprintf('(%d,%d)\n',m, n);
         else
             % There was a failure somewhere, use reference from polynomial
             % Remez (might work sometimes).
@@ -311,6 +314,7 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
             if(status.success == 1)
                 %xk = refGen(f, status.xk, m + n + 2, symFlag);
                 xk = refGen(f, status.xk, m + n + 2, 0);
+                fprintf('(%d,%d)\n',m, n);
             else
                 text = ['Initialization failed using CDF with step size ', ...
                                 num2str(stepSize)];
@@ -347,6 +351,7 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
     
             if(status.success == 1)
                 xk = refGen(f, status.xk, m + n + 2, symFlag);
+                fprintf('(%d,%d)\n',m, n);
             else
                 text = ['Initialization failed using CDF with step size ', ...
                           num2str(stepSize)];
