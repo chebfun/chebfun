@@ -1166,7 +1166,8 @@ function [r, pol, res, zer, z, Z, f, w, wf, errvec, p, q] = aaamn_lawson(F, vara
 % Examples:
 %    r = aaamn_lawson(@abs,10,10)
 %    r = aaamn_lawson(@abs,10,10,'plot','on')
-%    [r, pol, res, zer, z, f, w, wf, errvec, p, q] = aaamn_lawson(@abs,10,10,'plot','on','dom',[-1 2])
+%    [r, pol, res, zer, z, f, w, wf, errvec, p, q] = aaamn_lawson(@abs,10,10,...
+%                                        'plot','on','dom',[-1 2])
 %    r = aaamn_lawson(@exp,4,2,'plot','on','dom',[-1 2])
 %    r = aaamn_lawson(@(x)log(1.1-x),5,5,'plot','on')
 %
