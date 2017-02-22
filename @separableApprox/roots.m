@@ -76,11 +76,11 @@ if ( nargin == 1 )  % Seek zero curves of scalar function
         vals = feval( f, xx, yy );
         C = contourc( x, y, vals, 0*[1 1] );
         [fx, fy] = grad(f);        
-        gradf = @(data) feval( fx, real(data), imag(data)) ...;
+        gradf = @(data) feval( fx, real(data), imag(data)) ...
                    + 1i*feval( fy, real(data), imag(data));
         fval = @(data) feval( f, real(data), imag(data));
         
-        % The contruction of chebfuns proceeds by improving the accuracy
+        % The construction of chebfuns proceeds by improving the accuracy
         % of the curves component by component, using complex arithmetic
         % for convenience.
         j = 1; r = chebfun;
@@ -129,7 +129,7 @@ elseif ( isa(g, 'separableApprox') )  % seek zero points of vector function
     
 end
 
-function d = snap(d);   % adjust endpoints to snap to boundary of domain
+function d = snap(d)   % adjust endpoints to snap to boundary of domain
     n = length(d);
 
     if abs(real(d(1))-dom(2)) < .02*scl                 % snap to right bndry
