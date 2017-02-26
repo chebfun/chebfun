@@ -1,15 +1,19 @@
 function varargout = arrowplot(f,varargin)
 %ARROWPLOT   Chebfun plot with arrowhead at end
-%   ARROWPLOT(F,G), where F and G are CHEBFUNs with the same
-%   domain, plots the curve (F,G) in the plane with an arrowhead.
+%   ARROWPLOT(F,G), where F and G are CHEBFUNs with the same domain, plots the
+%   curve (F,G) in the plane with an arrowhead.
 %
 %   ARROWPLOT(F), where F is a complex CHEBFUN, plots the curve
 %   (real(F),imag(F)) in the plane with an arrowhead.
 %
-%   Arguments can also be quasimatrices, in which case several
-%   curves are plotted.
+%   Arguments can also be quasimatrices, in which case several curves are
+%   plotted.
 %
-%   Plotting options can be passed in the usual fashion.
+%   Plotting options can be passed in the usual fashion. Furthermore, there is
+%   an option 'ystretch', for manually adjusting the slope of the arrowhead, so
+%   that the slope is 'ystretch' times greater than the computed slope dictates.
+%   This is useful for plots which are rescaled, or have their axes adjusted
+%   after plotting.
 %
 % Examples:
 %
@@ -37,6 +41,16 @@ else
     end
 end
 
+% Did the user pass in ystretch argument?
+findStretch = find(strcmp(varargin,'ystretch'));
+if ~isempty(findStretch)
+    ystretch = varargin{findStretch + 1};
+    varargin(findStretch:findStretch+1) = [];
+else
+    ystretch = 1;
+end
+
+
 % Evaluate the derivative of input CHEBFUNs to get slope information
 fp = diff(f);
 
@@ -60,7 +74,7 @@ for aCounter=1:length(fend)
     h(aCounter) = annotation('arrow');
     set(h(aCounter),'parent', gca, ...
         'position', [real(fend(aCounter)) imag(fend(aCounter)) ...
-            real(fpend(aCounter)) imag(fpend(aCounter))], ...
+            real(fpend(aCounter)) ystretch*imag(fpend(aCounter))], ...
         'HeadLength', 7, 'HeadWidth', 7, ...
         'Color', pp(aCounter).Color, varargin{:});
 end
