@@ -33,6 +33,14 @@ else
     c1 = varargin{2};
     c2 = varargin{3};
     if ( isnumeric(c1) && isnumeric(c2) ) % Eval at a point
+    tns =0;    
+        if ( ndims(c1) >= 3 && isequal(size(c1), size(c2)) )
+            % x and y are tensors. Call from CHEBFUN3.
+            sizec1 = size(c1);
+            c1 = c1(:);
+            c2 = c2(:);
+            tns =1;
+        end
         if iscart
             [theta,r] = cart2pol(c1,c2); % Convert to polar
             if ((any(r > 1+1e-8) )) % Check for points off disk
@@ -53,6 +61,9 @@ else
         end
         if ( (size(theta, 1) == 1) && (size(r,1) == 1) )
             y = y.';
+        end
+        if tns==1
+            y = reshape(y, sizec1);
         end
     elseif ( strcmp(c1, ':') && strcmp(c2, ':') ) % Return the diskfun
         y = f;
