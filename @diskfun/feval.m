@@ -35,7 +35,7 @@ else
     if ( isnumeric(c1) && isnumeric(c2) ) % Eval at a point
     tns =0;    
         if ( ndims(c1) >= 3 && isequal(size(c1), size(c2)) )
-            % x and y are tensors. Call from CHEBFUN3.
+            % x and y are tensors. 
             sizec1 = size(c1);
             c1 = c1(:);
             c2 = c2(:);
