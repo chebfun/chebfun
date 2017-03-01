@@ -83,7 +83,7 @@ if(isempty(xk)) % no initial reference is given by the user
     if(n == 0) % polynomial case
         xk = chebpts(N + 2, f.domain([1, end]));
         [p,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
-        q = chebfun('1');
+        q = chebfun('1', f.domain([1,end]));
         if(polyOutput)
             varargout = {p,err,status};
         else
@@ -1466,7 +1466,7 @@ end
 end % End of PARSEINPUT().
 
 
-%% generate function handle, interpolatory mode
+% generate function handle, interpolatory mode
 function r = rrint(zz,z,w,f)                 % evaluate r at zz
 zv = zz(:);                               % vectorize zz if necessary
 CC = 1./bsxfun(@minus,zv,z.');            % Cauchy matrix 
