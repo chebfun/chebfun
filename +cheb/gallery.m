@@ -44,7 +44,7 @@ function varargout = gallery(name)
 %   vandercheb   Chebyshev-Vandermonde quasimatrix
 %   vandermonde  Vandermonde quasimatrix
 %   wiggly       One of the Chebfun team's favorites
-%   wild         An iteratively definded function on [-1 1]
+%   wild         An iteratively defined function on [-1 1]
 %   zigzag       Degree 10000 polynomial that looks piecewise linear
 %
 %   Gallery functions are subject to change in future releases of Chebfun.
