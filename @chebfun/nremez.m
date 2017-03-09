@@ -1,4 +1,4 @@
-function varargout = remez(f, varargin)
+function varargout = nremez(f, varargin)
 %REMEZ   Best polynomial or rational approximation for real valued chebfuns.
 %   P = REMEZ(F, M) computes the minimax polynomial approximation of degree M
 %   to the real CHEBFUN F using the Remez algorithm.
@@ -52,88 +52,132 @@ function varargout = remez(f, varargin)
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( ~isreal(f) )
-    error('CHEBFUN:CHEBFUN:remez:real', ...
-        'REMEZ only supports real valued functions.');
-end
-
-if ( numColumns(f) > 1 )
-    error('CHEBFUN:CHEBFUN:remez:quasi', ...
-        'REMEZ does not currently support quasimatrices.');
-end
-
-if ( issing(f) )
-    error('CHEBFUN:CHEBFUN:remez:singularFunction', ...
-        'REMEZ does not currently support functions with singularities.');
+% multi-interval approximation
+if ( iscell(f) )
+    functionCheck(f{1});
+    for i = 2:length(f)
+        functionCheck(f{i});
+        if (f{i}.domain(1) <= f{i-1}.domain(end))
+            error('CHEBFUN:CHEBFUN:remez:multi', ...
+            'REMEZ only supports functions with disjoint domains.');
+        end
+    end
+else
+    functionCheck(f);
 end
 
 % Parse the inputs.
 [m, n, N, rationalMode, polyOutput, symFlag, xk, opts] = parseInputs(f, varargin{:});
 
-% If m=-1, this means f=odd and input (m,n)=(0,n); return constant 0. 
-if ( m == -1 )
-    q = chebfun(1, f.domain([1,end]));
-    p = chebfun(0, f.domain([1,end]));
-    varargout = {p, q, @(x) feval(p, x)./feval(q, x), norm(f,'inf'), []};    
-    return
-end
+if( ~iscell(f) )
+    % If m=-1, this means f=odd and input (m,n)=(0,n); return constant 0. 
+    if ( m == -1 )
+        q = chebfun(1, f.domain([1,end]));
+        p = chebfun(0, f.domain([1,end]));
+        varargout = {p, q, @(x) feval(p, x)./feval(q, x), norm(f,'inf'), []};    
+        return
+    end
 
-if(isempty(xk)) % no initial reference is given by the user
-    % Several initialization attempts are made
-    if(n == 0) % polynomial case
-        xk = chebpts(N + 2, f.domain([1, end]));
-        [p,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
-        q = chebfun('1', f.domain([1,end]));
-        if(polyOutput)
-            varargout = {p,err,status};
-        else
-            varargout = {p,q,p,err,status};
-        end
-    else % rational case
-        % A first attempt is using CF as an initial guess
-        try
-        xk = cfInit(f, m, n);
-        [p,q,rh,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
-        varargout = {p,q,rh,err,status};
-        catch
-        disp('CF-based initialization failed, turning to AAA-Lawson')
-        status.success = 0; % CF didn't work
-        end
+    if(isempty(xk)) % no initial reference is given by the user
+        % Several initialization attempts are made
+        if(n == 0) % polynomial case
+            xk = chebpts(N + 2, f.domain([1, end]));
+            [p,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
+            q = chebfun('1', f.domain([1,end]));
+            if(polyOutput)
+                varargout = {p,err,status};
+            else
+                varargout = {p,q,p,err,status};
+            end
+        else % rational case
+            % A first attempt is using CF as an initial guess
+            try
+            xk = cfInit(f, m, n);
+            [p,q,rh,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
+            varargout = {p,q,rh,err,status};
+            catch
+                disp('CF-based initialization failed, turning to AAA-Lawson')
+                status.success = 0; % CF didn't work
+            end
         
-        % If CF doesn't give a satisfactory answer, we try AAA-Lawson
-        if(status.success == 0)
-            disp('Trying AAA-Lawson-based initialization...');
+            % If CF doesn't give a satisfactory answer, we try AAA-Lawson
+            if(status.success == 0)
+                disp('Trying AAA-Lawson-based initialization...');
+                xk = AAALawsonInit(f, m, n);
+                [p,q,rh,err,status] = remezKernel(f, m, n, N, rationalMode, xk, opts, 1);
+                varargout = {p,q,rh,err,status};
+            end
+
+            % A final attempt using cumulative distribution functions
+            if(status.success == 0)
+                xk = cdfInit(f,m,n,symFlag,opts,1);
+                [p,q,rh,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
+                varargout = {p,q,rh,err,status};
+            end
+        
+            if(status.success == 0)
+                xk = cdfInit(f,m,n,symFlag,opts,2);
+                [p,q,rh,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
+                varargout = {p,q,rh,err,status};
+            end
+        end
+    else  % the user has also given a starting reference
+        if(n == 0)
+            [p,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
+            q = chebfun('1');
+            if(polyOutput)
+                varargout = {p,err,status};
+            else
+                varargout = {p,q,p,err,status};
+            end
+        else
+            [p,q,rh,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
+            varargout = {p,q,rh,err,status};
+        end
+    end
+else  % multi-interval case
+    % If m=-1, this means f=odd and input (m,n)=(0,n); return constant 0. 
+    if ( m == -1 )
+        q = chebfun(1, [f{1}.domain(1), f{end}.domain(end)]);
+        p = chebfun(0, [f{1}.domain(1), f{end}.domain(end)]);
+        % TODO: fix next line
+        varargout = {p, q, @(x) feval(p, x)./feval(q, x), norm(f{1},'inf'), []};    
+        return
+    end
+
+    if(isempty(xk)) % no initial reference is given by the user
+        % Several initialization attempts are made
+        if(n == 0) % polynomial case
+            % TODO: need to add appropriate initialization strategy for
+            % multi-interval domains (polynomial doesn't work yet!!!)
+            xk = chebpts(N + 2, f.domain([1, end]));
+            [p,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
+            q = chebfun('1', f.domain([1,end]));
+            if(polyOutput)
+                varargout = {p,err,status};
+            else
+                varargout = {p,q,p,err,status};
+            end
+        else % rational case  
+            % If CF doesn't give a satisfactory answer, we try AAA-Lawson
             xk = AAALawsonInit(f, m, n);
             [p,q,rh,err,status] = remezKernel(f, m, n, N, rationalMode, xk, opts, 1);
             varargout = {p,q,rh,err,status};
         end
-
-        % A final attempt using cumulative distribution functions
-        if(status.success == 0)
-            xk = cdfInit(f,m,n,symFlag,opts,1);
-            [p,q,rh,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
-            varargout = {p,q,rh,err,status};
-        end
-        
-        if(status.success == 0)
-            xk = cdfInit(f,m,n,symFlag,opts,2);
-            [p,q,rh,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
-            varargout = {p,q,rh,err,status};
-        end
-    end
-else  % the user has also given a starting reference
-    if(n == 0)
-        [p,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
-        q = chebfun('1');
-        if(polyOutput)
-            varargout = {p,err,status};
+    else  % the user has also given a starting reference
+        if(n == 0)
+            [p,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
+            q = chebfun('1');
+            if(polyOutput)
+                varargout = {p,err,status};
+            else
+                varargout = {p,q,p,err,status};
+            end
         else
-            varargout = {p,q,p,err,status};
+            [p,q,rh,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
+            varargout = {p,q,rh,err,status};
         end
-    else
-        [p,q,rh,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
-        varargout = {p,q,rh,err,status};
-    end
+    end    
 end
 
 end
@@ -156,36 +200,151 @@ function xk = cfInit(f, m, n)
     % If the above procedure failed to produce a reference
     % with enough oscillation points, use polynomial Remez.
     if ( flag == 0 )
-        [~,~,status] = remez(f,m+n); xk = status.xk;
+        [~,~,status] = nremez(f,m+n); xk = status.xk;
     end
 end
 
 % Now turn to initialization via AAA-Lawson, this is more expensive than CF
 % but less so than CDF (which follows if this fails). 
 % 
+
 function xk = AAALawsonInit(f,m,n) % AAA-Lawson initialization for functions with breakpoints
-    NN = max(10*max(m,n),round(1e5/max(m,n))); 
-    dom = domain(f);
-    Z = linspace(dom(1),dom(end),NN);   
-    F = feval(f,Z);
-    [r,~,~,~,xk] = aaamn_lawson(F,Z,m,n);    % 1st AAA-Lawson    
-    xk = findReference(f,r,m,n,xk);
+    NN = max(10*max(m,n),round(2e5/max(m,n)));
+    if ( ~iscell(f) )
+        dom = domain(f);
+        Z = linspace(dom(1),dom(end),NN);   
+        F = feval(f,Z);
+        [r,~,~,~,xk] = aaamn_lawson(F,Z,m,n);    % 1st AAA-Lawson    
+        xk = findReference(f,r,m,n,xk);
+    else
+        Z = []; F = [];
+        for ii = 1:length(f)
+            Zi = linspace(f{ii}.domain(1), f{ii}.domain(end),NN/2);
+            Fi = feval(f{ii},Zi);
+            Z = [Z Zi];
+            F = [F Fi];
+        end
+        [r,~,~,~,xk] = aaamn_lawson(F,Z,m,n);%,'plot','on');
+
+        %{
+        clf;
+        for ii = 1:length(f)
+            err_handle = @(x) feval(f{ii}, x) - r(x);
+            xxk = linspace(f{ii}.domain(1), f{ii}.domain(end), 10000);
+            plot(xxk,err_handle(xxk)); hold on;
+            pause();
+        end
+        hold off;
+        %}
+
+
+        xk = sort(xk,'ascend');
+        nxk = [];
+        for ii = 1:length(f)
+            xki = xk(xk >= f{ii}.domain(1));
+            xki = xki(xki <= f{ii}.domain(end));
+            xki = unique([xki; f{ii}.domain']);
+            xki = findExtrema(f{ii},r,sort(xki,'ascend'));
+            xki = unique([xki; f{ii}.domain']);
+            err_handle = @(x) feval(f{ii}, x) - r(x);
+            er = err_handle(xki);
+            s = xki(1);
+            es = er(1);
+            % TODO: factor this out (see also exchange method!)
+            for i = 2:length(xki)
+                if ( (sign(er(i)) == sign(es(end))) && (abs(er(i)) > abs(es(end))) )
+                    s(end) = xki(i);
+                    es(end) = er(i);
+                elseif ( sign(er(i)) ~= sign(es(end)) )
+                    s = [s ; xki(i)];    %#ok<AGROW>
+                    es = [es ; er(i)]; %#ok<AGROW>
+                end
+            end
+            xki = s;
+            nxk = [nxk; xki];
+        end
+        xk = nxk;
+        if length(xk) > m+n+2 % Reduce reference pts becuse too many found. 
+            xkdiff = diff(xk);                        
+            [~,ix] = sort(xkdiff,'descend'); % Take those with largest gaps.
+            xk = [xk(1);xk(1+ix(1:m+n+1))];
+            xk = sort(xk,'ascend');
+        end
+    end
     
     % Iterate twice during which sample points are refined. 
     % This is done to find the nonsmooth parts of the function
     % and sample more densely there. 
     for it = 1:2 
-    num = round(NN/length(xk));             
-    Z = [];
-    for ii = 1:length(xk)-1
-        Z = [Z linspace(xk(ii),xk(ii+1),num)];  % equispaced sampling between
-                                                % each pair of reference pts
-    end
-    Z = unique(Z); Z = Z(:); F = feval(f,Z);
-    [r,~,~,~,xk] = aaamn_lawson(F,Z,m,n); % Do AAA-Lawson with updated sample pts
-    xk = findReference(f,r,m,n,xk); 
-    end    
-end    
+        Z = []; F = [];
+        if ( ~iscell(f) )
+            num = round(NN/length(xk));
+            for ii = 1:length(xk)-1
+                Z = [Z linspace(xk(ii),xk(ii+1),num)];  % equispaced sampling between
+                                                        % each pair of reference pts
+            end
+            Z = unique(Z); Z = Z(:); F = feval(f,Z);
+            [r,~,~,~,xk] = aaamn_lawson(F,Z,m,n); % Do AAA-Lawson with updated sample pts
+            xk = findReference(f,r,m,n,xk);
+        else
+            num = round(NN/(length(xk)*length(f)));
+            for ii = 1:length(f)
+                xki = xk(xk >= f{ii}.domain(1));
+                xki = xki(xki <= f{ii}.domain(end));
+                Zi = [];
+                for jj = 1:length(xki)-1
+                    Zi = [Zi linspace(xki(jj),xki(jj+1),num)];
+                end
+                Zi = unique(Zi); Fi = feval(f{ii},Zi(:));
+                Z = [Z Zi];
+                F = [F; Fi];
+            end
+
+            [r,~,~,~,xk] = aaamn_lawson(F,Z,m,n);%,'plot','on');
+
+            clf;
+            xk = sort(xk,'ascend');
+            nxk = [];
+            for ii = 1:length(f)
+                xki = xk(xk >= f{ii}.domain(1));
+                xki = xki(xki <= f{ii}.domain(end));
+                xki = unique([xki; f{ii}.domain']);
+                xki = findExtrema(f{ii},r,sort(xki,'ascend'));
+                xki = unique([xki; f{ii}.domain']);
+                err_handle = @(x) feval(f{ii}, x) - r(x);
+                er = err_handle(xki);
+                s = xki(1);
+                es = er(1);
+                % TODO: factor this out (see also exchange method!)
+                for i = 2:length(xki)
+                    if ( (sign(er(i)) == sign(es(end))) && (abs(er(i)) > abs(es(end))) )
+                        s(end) = xki(i);
+                        es(end) = er(i);
+                    elseif ( sign(er(i)) ~= sign(es(end)) )
+                        s = [s ; xki(i)];    %#ok<AGROW>
+                        es = [es ; er(i)]; %#ok<AGROW>
+                    end
+                end
+                xki = s;
+                %{
+                xxk = linspace(f{ii}.domain(1), f{ii}.domain(end), 10000);
+                plot(xxk,err_handle(xxk)); hold on;
+                plot(xki, err_handle(xki), '*k', 'MarkerSize', 4)
+                pause();
+                %}
+                nxk = [nxk; xki];
+            end
+            %hold off;
+            xk = nxk;        
+            if length(xk) > m+n+2 % Reduce reference pts becuse too many found. 
+                xkdiff = diff(xk);                        
+                [~,ix] = sort(xkdiff,'descend'); % Take those with largest gaps.
+                xk = [xk(1);xk(1+ix(1:m+n+1))];
+                xk = sort(xk,'ascend');
+            end
+        end
+    end 
+end 
 
 % Cumulative distribution function-based initialization of the rational
 % version of the exchange algorithm.
@@ -251,7 +410,7 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
             text = ['Initialization failed using CDF with step size ', ...
                                             num2str(stepSize)];
             disp(text);
-            [~,~,status] = remez(f,m+n); xk = status.xk;
+            [~,~,status] = nremez(f,m+n); xk = status.xk;
         end
     else
         % Similar strategy to the diagonal case.
@@ -292,7 +451,7 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
                 %xk = refGen(f, status.xk, hM + hN + 2, symFlag);
                 xk = refGen(f, status.xk, hM + hN + 2, 0);
             else
-                [~,~,status] = remez(f,hM+hN); xk = status.xk;
+                [~,~,status] = nremez(f,hM+hN); xk = status.xk;
             end
             
             % Go to the initial degree by now simultaneously increasing
@@ -321,7 +480,7 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
                 text = ['Initialization failed using CDF with step size ', ...
                                 num2str(stepSize)];
                 disp(text);
-                [~,~,status] = remez(f,m+n); xk = status.xk;
+                [~,~,status] = nremez(f,m+n); xk = status.xk;
             end     
             
         else % m > n
@@ -359,7 +518,7 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
                 text = ['Initialization failed using CDF with step size ', ...
                           num2str(stepSize)];
                 disp(text);
-                [~,~,status] = remez(f,m+n); xk = status.xk;
+                [~,~,status] = nremez(f,m+n); xk = status.xk;
             end
         end
     end
@@ -1504,4 +1663,22 @@ if ( nargin < 3 ), q = ones(length(z),1); end
                 Q = [Q Qtmp]; 
                 end
             [Q,~] = qr(Q); Q = conj(Q(:,dim+1:end)); % desired null space
+end
+
+function isFunc = functionCheck(f)
+    if ( ~isreal(f) )
+        error('CHEBFUN:CHEBFUN:remez:real', ...
+            'REMEZ only supports real valued functions.');
+    end
+
+    if ( numColumns(f) > 1 )
+        error('CHEBFUN:CHEBFUN:remez:quasi', ...
+            'REMEZ does not currently support quasimatrices.');
+    end
+
+    if ( issing(f) )
+        error('CHEBFUN:CHEBFUN:remez:singularFunction', ...
+            'REMEZ does not currently support functions with singularities.');
+    end
+    isFunc = 1;
 end
