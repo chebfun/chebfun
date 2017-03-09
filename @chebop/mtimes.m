@@ -40,9 +40,7 @@ elseif ( isnumeric(A) )
     
     % Multiplication of anonymous functions is not supported in Matlab. Need to
     % work around that.
-    funString = func2str(C.op);                       % Anon. func. string
-    firstRightParLoc = min(strfind(funString, ')'));  % First ) in string
-    funArgs = funString(2:firstRightParLoc);          % Grab variables name
+    funArgs = getFunArgs(C);
     C.op = eval(['@', funArgs, 'A*C.op', funArgs]);   % Create new anon. func
     
 elseif ( isa(A,'chebop') && isa(B,'chebop') )       

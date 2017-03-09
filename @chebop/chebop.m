@@ -365,6 +365,13 @@ classdef (InferiorClasses = {?double}) chebop
         % Clear periodic boundary conditions.
         [N, L] = clearPeriodicBCs(N, L)
         
+        function funArgs = getFunArgs(N)
+            % GETFUNARGS  Get input argument list of a CHEBOP .op fiels as a string
+            funString = func2str(N.op);                       % Anon. func. string
+            firstRightParLoc = min(strfind(funString, ')'));  % First ) in string
+            funArgs = funString(2:firstRightParLoc);          % Grab variables name
+        end
+        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -418,7 +425,7 @@ classdef (InferiorClasses = {?double}) chebop
         % Solve a linear problem posed with CHEBOP.
         [u, info] = solvebvpLinear(L, rhs, Ninit, displayInfo, pref)
         
-    end
+    end 
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
     %% METHODS IMPLEMENTED IN THIS FILE:
@@ -584,5 +591,26 @@ classdef (InferiorClasses = {?double}) chebop
                 isempty(N.rbc) && isempty(N.bc) && isempty(N.init);
         end
         
+        function out = hasbc(N)
+            %HASBC   Test for BCs in a CHEBOP.
+            %   HASBC(N) returns logical true if N has a non-empty BC, LBC, or
+            %   RBC field.
+            out = ~isempty(N.rbc) || ~isempty(N.bc) || ~isempty(N.init);
+        end
+        
+        function I = eye(A)
+            %EYE   Create an identity CHEBOP
+            %   I = eye(A) creates an identity CHEBOP with the same domain and
+            %   size(i.e., number of variables) as the CHEBOP A.
+            I = chebop(A.domain);
+            funArgs = getFunArgs(A);
+            if ( length(funArgs) <= 5 )
+                I.op = eval(['@', funArgs, funArgs(2)]);% Create new anon. func
+            else
+                newArgs = ['[', strrep(funArgs(4:end-1), ',', ';'), ']'];
+                I.op = eval(['@', funArgs, newArgs]);   % Create new anon. func
+            end
+        end
+       
     end    
 end
