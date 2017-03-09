@@ -124,7 +124,7 @@ if(isempty(xk)) % no initial reference is given by the user
 else  % the user has also given a starting reference
     if(n == 0)
         [p,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
-        q = chebfun('1');
+        q = chebfun('1', f.domain([1,end]));
         if(polyOutput)
             varargout = {p,err,status};
         else
