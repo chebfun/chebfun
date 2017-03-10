@@ -365,11 +365,31 @@ classdef (InferiorClasses = {?double}) chebop
         % Clear periodic boundary conditions.
         [N, L] = clearPeriodicBCs(N, L)
         
-        function funArgs = getFunArgs(N)
+        function [funArgs, funArgsList] = getFunArgs(N)
             % GETFUNARGS  Get input argument list of a CHEBOP .op fiels as a string
+            if ( isempty(N.op) )
+                funArgs = '()';
+                funArgsList = {};
+                return
+            end
             funString = func2str(N.op);                       % Anon. func. string
             firstRightParLoc = min(strfind(funString, ')'));  % First ) in string
             funArgs = funString(2:firstRightParLoc);          % Grab variables name
+            if ( nargout == 2 )
+                funArgsList = {};
+                args = funArgs(2:end-1);
+                k = 1;
+                while ( ~isempty(args) )
+                    idx = strfind(args, ',');
+                    if ( isempty(idx) )
+                        funArgsList{k} = args;
+                        break
+                    end
+                    funArgsList{k} = args(1:idx(1)-1);
+                    args(1:idx(1)) = [];
+                    k = k + 1;
+                end
+            end
         end
         
     end
@@ -602,14 +622,27 @@ classdef (InferiorClasses = {?double}) chebop
             %EYE   Create an identity CHEBOP
             %   I = eye(A) creates an identity CHEBOP with the same domain and
             %   size(i.e., number of variables) as the CHEBOP A.
-            I = chebop(A.domain);
-            funArgs = getFunArgs(A);
-            if ( length(funArgs) <= 5 )
-                I.op = eval(['@', funArgs, funArgs(2)]);% Create new anon. func
+            if ( isempty(A) )
+                I = chebop(@(u) u);
+                return
             else
-                newArgs = ['[', strrep(funArgs(4:end-1), ',', ';'), ']'];
-                I.op = eval(['@', funArgs, newArgs]);   % Create new anon. func
+                I = chebop(A.domain);
             end
+            [funArgsStr, funArgsList] = getFunArgs(A);
+            nVars = numel(funArgsList);
+            if ( nVars == 0 )
+                funArgsStr = 'u';
+                opStr = 'u';
+            elseif ( nVars <= 2 )
+                opStr = funArgsList{nVars};
+            else
+                opStr = '[';
+                for k = 2:nVars-1
+                    opStr = [opStr, ';' funArgsList{k}];
+                end
+                opStr = [opStr, ';' funArgsList{end} ']'];
+            end
+            I.op = eval(['@', funArgsStr, opStr]);   % Create new anon. func
         end
        
     end    
