@@ -1,4 +1,4 @@
-function varargout = multiremez(f, m, n)
+function varargout = multiremez(f, varargin)
 %MULTIREMEZ   Best polynomial or rational approximation for real valued chebfuns.
 %   P = REMEZ(F, M) computes the minimax polynomial approximation of degree M
 %   to the real CHEBFUN F using the Remez algorithm.
@@ -68,8 +68,7 @@ else
 end
 
 % Parse the inputs.
-argin = {m, n};
-[m, n, N, rationalMode, polyOutput, symFlag, xk, opts] = parseInputs(f, argin{:});
+[m, n, N, rationalMode, polyOutput, symFlag, xk, opts] = parseInputs(f, varargin{:});
 
 if( ~iscell(f) )
     % If m=-1, this means f=odd and input (m,n)=(0,n); return constant 0. 
@@ -986,9 +985,20 @@ nodevec = xk;
 for ii = 1:length(xk)
     nodevec(ii) = node(xk(ii));   % values of node polynomial
 end
+if(~iscell(f))
 % Find position without sign changes in D*node. Ignore ones with too small
 % Dvals. 
-pos = find(abs(sum(sign(diag(nodevec)*Dvals))) == m+n+2 & sum(abs(Dvals))>1e-4);  
+    pos = find(abs(sum(sign(diag(nodevec)*Dvals))) == m+n+2 & sum(abs(Dvals))>1e-4); 
+else
+    subD = sign(diag(nodevec)*Dvals);
+        idx = find(xk >= f{1}.domain(1) & xk <= f{1}.domain(end));
+        pos = find(abs(sum(subD(idx,:))) == length(idx) & sum(abs(Dvals(idx,:)))>1e-4);
+    for ii = 2:length(f)
+        idx = find(xk >= f{ii}.domain(1) & xk <= f{ii}.domain(end));
+        posi = find(abs(sum(subD(idx,:))) == length(idx) & sum(abs(Dvals(idx,:)))>1e-4);
+        pos = intersect(pos, posi);
+    end
+end
 
 if isempty(pos)  % Unfortunately, no solution with same signs.
     if(dialogFlag)
@@ -999,6 +1009,7 @@ if isempty(pos)  % Unfortunately, no solution with same signs.
     p = []; q = []; rh = []; h = 1e-19;
     return
 elseif ( length(pos) > 1 ) % more than one solution with no sign changes...
+    % TODO: treat this in a more 'convincing' manner
     [~,ix] = min(abs(hpre)-diag(abs(d(pos,pos))));
     pos = pos(ix);
 end    
