@@ -365,31 +365,15 @@ classdef (InferiorClasses = {?double}) chebop
         % Clear periodic boundary conditions.
         [N, L] = clearPeriodicBCs(N, L)
         
-        function [funArgs, funArgsList] = getFunArgs(N)
-            % GETFUNARGS  Get input argument list of a CHEBOP .op fiels as a string
+        function funArgs = getFunArgs(N)
+            % GETFUNARGS  Get input argument list of a CHEBOP .op fields as a string
             if ( isempty(N.op) )
                 funArgs = '()';
-                funArgsList = {};
                 return
             end
             funString = func2str(N.op);                       % Anon. func. string
             firstRightParLoc = min(strfind(funString, ')'));  % First ) in string
             funArgs = funString(2:firstRightParLoc);          % Grab variables name
-            if ( nargout == 2 )
-                funArgsList = {};
-                args = funArgs(2:end-1);
-                k = 1;
-                while ( ~isempty(args) )
-                    idx = strfind(args, ',');
-                    if ( isempty(idx) )
-                        funArgsList{k} = args;
-                        break
-                    end
-                    funArgsList{k} = args(1:idx(1)-1);
-                    args(1:idx(1)) = [];
-                    k = k + 1;
-                end
-            end
         end
         
     end
@@ -616,33 +600,6 @@ classdef (InferiorClasses = {?double}) chebop
             %   HASBC(N) returns logical true if N has a non-empty BC, LBC, or
             %   RBC field.
             out = ~isempty(N.rbc) || ~isempty(N.bc) || ~isempty(N.init);
-        end
-        
-        function I = eye(A)
-            %EYE   Create an identity CHEBOP
-            %   I = eye(A) creates an identity CHEBOP with the same domain and
-            %   size(i.e., number of variables) as the CHEBOP A.
-            if ( isempty(A) )
-                I = chebop(@(u) u);
-                return
-            else
-                I = chebop(A.domain);
-            end
-            [funArgsStr, funArgsList] = getFunArgs(A);
-            nVars = numel(funArgsList);
-            if ( nVars == 0 )
-                funArgsStr = 'u';
-                opStr = 'u';
-            elseif ( nVars <= 2 )
-                opStr = funArgsList{nVars};
-            else
-                opStr = '[';
-                for k = 2:nVars-1
-                    opStr = [opStr, ';' funArgsList{k}];
-                end
-                opStr = [opStr, ';' funArgsList{end} ']'];
-            end
-            I.op = eval(['@', funArgsStr, opStr]);   % Create new anon. func
         end
        
     end    
