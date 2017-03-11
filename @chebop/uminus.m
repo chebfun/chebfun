@@ -13,7 +13,7 @@ else
     % Multiplication of anonymous functions is not supported in Matlab. 
     % Need to work around that.
     funArgs = getFunArgs(A);
-    A.op = eval(['@', funArgs, '-A.op', funArgs]); % Create new anon. func
+    A.op = eval(['@(', funArgs, ') -A.op(', funArgs, ')']);
 end
     
 end

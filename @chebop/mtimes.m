@@ -41,7 +41,7 @@ elseif ( isnumeric(A) )
     % Multiplication of anonymous functions is not supported in Matlab. Need to
     % work around that.
     funArgs = getFunArgs(C);
-    C.op = eval(['@', funArgs, 'A*C.op', funArgs]);   % Create new anon. func
+    C.op = eval(['@(', funArgs, ') A*C.op(', funArgs, ')']);
     
 elseif ( isa(A,'chebop') && isa(B,'chebop') )       
     % CHEBOP composition is not yet supported. It will probably be a mess once

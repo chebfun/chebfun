@@ -368,12 +368,12 @@ classdef (InferiorClasses = {?double}) chebop
         function funArgs = getFunArgs(N)
             % GETFUNARGS  Get input argument list of a CHEBOP .op fields as a string
             if ( isempty(N.op) )
-                funArgs = '()';
+                funArgs = '';
                 return
             end
             funString = func2str(N.op);                       % Anon. func. string
             firstRightParLoc = min(strfind(funString, ')'));  % First ) in string
-            funArgs = funString(2:firstRightParLoc);          % Grab variables name
+            funArgs = funString(3:firstRightParLoc-1);        % Grab variables name
         end
         
     end
