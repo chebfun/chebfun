@@ -334,10 +334,11 @@ for j = 1:ni
 end
 
 % Remove support points z from sample set:
+rmind = [];     % indices to be removed
 for jj = 1:length(z)
-    Z(Z == z(jj)) = [];
-    F(Z == z(jj)) = [];
+    rmind = [rmind;find(Z == z(jj))];
 end
+F(rmind) = []; Z(rmind) = [];
 m = length(z);
 M = length(Z);
 
