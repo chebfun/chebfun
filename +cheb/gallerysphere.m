@@ -235,7 +235,8 @@ end
 ptitle = [name ', rank = ' num2str(length(f))];
 if type==1
     % Otherwise, plot the function.
-    plot(f)
+    %plot(f)
+    surf(f,'grid','k-')
     axis off, title(ptitle)
 elseif type==2
     contour(f)
@@ -245,7 +246,8 @@ elseif type==3
     contour(f,cntrlvl,'k-'), hold off
     axis off, title(ptitle)
 else
-    plot(f)
+%     plot(f)
+    surf(f,'grid','k-')
     axis off, title(ptitle)
 end
 view(viewAngle);
