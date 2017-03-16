@@ -335,8 +335,8 @@ end
 
 % Remove support points z from sample set:
 for jj = 1:length(z)
-    Z(Z == z(jj)) = [];
     F(Z == z(jj)) = [];
+    Z(Z == z(jj)) = [];
 end
 m = length(z);
 M = length(Z);
