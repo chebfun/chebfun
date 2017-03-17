@@ -83,6 +83,7 @@ if( ~iscell(f) )
         % Several initialization attempts are made
         if(n == 0) % polynomial case
             xk = chebpts(N + 2, f.domain([1, end]));
+
             [p,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
             q = chebfun('1', f.domain([1,end]));
             if(polyOutput)
@@ -149,11 +150,31 @@ else  % multi-interval case
     if(isempty(xk)) % no initial reference is given by the user
         % Several initialization attempts are made
         if(n == 0) % polynomial case
-            % TODO: need to add appropriate initialization strategy for
-            % multi-interval domains (polynomial doesn't work yet!!!)
-            xk = chebpts(N + 2, f.domain([1, end]));
+            % construct the set of candidate reference points
+            candxk = [];
+            for ii = 1:length(f)
+                candxk = [candxk; chebpts(m+2,[f{ii}.domain(1),f{ii}.domain(end)])];
+            end
+            % build the Chebyshev-Vandermonde matrix used for the
+            % extraction of the extremal set
+            Cv = [];
+            for ii = 1:m+2
+                Cp = chebpoly(ii-1);
+                Cv = [Cv, Cp(candxk)];
+            end
+            [~,R1]=qr(Cv,0);
+            [Q,~]=qr(Cv/R1,0);
+            w=Cv\ones(length(candxk),1); 
+            ind=find(abs(w)>0);
+            xk=candxk(ind,:);
+            if (length(xk) < m+2)
+                error('AFP construction failed!');
+            else
+                xk = xk(1:m+2);
+                xk = sort(xk,'ascend');
+            end
             [p,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
-            q = chebfun('1', f.domain([1,end]));
+            q = chebfun('1', [f{1}.domain(1),f{end}.domain(end)]);
             if(polyOutput)
                 varargout = {p,err,status};
             else
@@ -225,9 +246,9 @@ function xk = AAALawsonInit(f,m,n) % AAA-Lawson initialization for functions wit
             Z = [Z Zi];
             F = [F Fi];
         end
-        [r,~,~,~,xk] = aaamn_lawson(F,Z,m,n);%,'plot','on');
+        [r,~,~,~,xk] = aaamn_lawson(F,Z,m,n,'iter',20);%,'plot','on');
 
-        %{
+
         clf;
         for ii = 1:length(f)
             err_handle = @(x) feval(f{ii}, x) - r(x);
@@ -236,7 +257,7 @@ function xk = AAALawsonInit(f,m,n) % AAA-Lawson initialization for functions wit
             pause();
         end
         hold off;
-        %}
+
 
 
         xk = sort(xk,'ascend');
@@ -285,7 +306,7 @@ function xk = AAALawsonInit(f,m,n) % AAA-Lawson initialization for functions wit
                                                         % each pair of reference pts
             end
             Z = unique(Z); Z = Z(:); F = feval(f,Z);
-            [r,~,~,~,xk] = aaamn_lawson(F,Z,m,n); % Do AAA-Lawson with updated sample pts
+            [r,~,~,~,xk] = aaamn_lawson(F,Z,m,n,'iter',20); % Do AAA-Lawson with updated sample pts
             xk = findReference(f,r,m,n,xk);
         else
             num = round(NN/(length(xk)*length(f)));
@@ -301,7 +322,7 @@ function xk = AAALawsonInit(f,m,n) % AAA-Lawson initialization for functions wit
                 F = [F; Fi];
             end
 
-            [r,~,~,~,xk] = aaamn_lawson(F,Z,m,n);%,'plot','on');
+            [r,~,~,~,xk] = aaamn_lawson(F,Z,m,n,'iter',20);%,'plot','on');
 
             clf;
             xk = sort(xk,'ascend');
@@ -327,12 +348,12 @@ function xk = AAALawsonInit(f,m,n) % AAA-Lawson initialization for functions wit
                     end
                 end
                 xki = s;
-                %{
+
                 xxk = linspace(f{ii}.domain(1), f{ii}.domain(end), 10000);
                 plot(xxk,err_handle(xxk)); hold on;
                 plot(xki, err_handle(xki), '*k', 'MarkerSize', 4)
                 pause();
-                %}
+
                 nxk = [nxk; xki];
             end
             %hold off;
@@ -585,10 +606,34 @@ while ( (abs(abs(h)-abs(err))/abs(err) > opts.tol) && ...
     end
     % Compute trial function and levelled reference error.
     if ( n == 0 )
-        % TODO: multi-interval polynomial to handle here
-        fk = feval(f, xk);     % Evaluate on the exchange set.
+        if(~iscell(f))
+            fk = feval(f, xk);     % Evaluate on the exchange set.
+        else
+            fk = [];
+            for ii = 1:length(f)
+                xki = xk(xk >= f{ii}.domain(1));
+                xki = xki(xki <= f{ii}.domain(end));
+                fk = [fk; feval(f{ii},xki)];
+            end
+        end
         w = baryWeights(xk);   % Barycentric weights for exchange set.
-        [p, h] = computeTrialFunctionPolynomial(fk, xk, w, m, N, dom);
+        if(~iscell(f))
+            [p, h] = computeTrialFunctionPolynomial(fk, xk, w, m, N, dom);
+        else
+            [p, h] = computeTrialFunctionPolynomial(fk, xk, w, m, N, [dom{1}(1),dom{end}(end)]);
+        end
+        
+        % TODO: err_handle is not set for multi-interval cases
+        if(iscell(f))
+            clf;
+            for ii = 1:length(f)
+                err_handle = @(x) feval(f{ii}, x) - p(x);
+                xxk = linspace(f{ii}.domain(1), f{ii}.domain(end), 10000);
+                plot(xxk,err_handle(xxk)); hold on;
+                pause();
+            end
+            hold off;
+        end
          
         % Perturb exactly-zero values of the levelled error.
         if ( h == 0 )
@@ -607,6 +652,7 @@ while ( (abs(abs(h)-abs(err))/abs(err) > opts.tol) && ...
         % Update max. correction to trial reference and stopping criterion.
         diffx = max(abs(xo - xk));
         delta = err - abs(h);
+        
  
         % Store approximation with minimum norm.
         if ( delta < deltamin )
@@ -639,6 +685,7 @@ while ( (abs(abs(h)-abs(err))/abs(err) > opts.tol) && ...
          
         if(interpSuccess == 1)
             [xk, err, err_handle, ~] = exchange(xk, h, 2, f, p, rh, N+2, n);
+            xk = xk(length(xk)-length(xo) + 1:length(xk));
             diffx = max(abs(xo - xk));
             delta = err - abs(h);
             
@@ -837,7 +884,6 @@ sigma(2:2:end) = -1;
 
 h = (w'*fk) / (w'*sigma);           % Levelled reference error.
 pk = (fk - h*sigma);                % Vals. of r*q in reference.
-
 % Trial polynomial.
 p = chebfun(@(x) bary(x, pk, xk, w), dom, m + 1);
 
@@ -990,13 +1036,16 @@ if(~iscell(f))
 % Dvals. 
     pos = find(abs(sum(sign(diag(nodevec)*Dvals))) == m+n+2 & sum(abs(Dvals))>1e-4); 
 else
-    subD = sign(diag(nodevec)*Dvals);
-        idx = find(xk >= f{1}.domain(1) & xk <= f{1}.domain(end));
-        pos = find(abs(sum(subD(idx,:))) == length(idx) & sum(abs(Dvals(idx,:)))>1e-4);
-    for ii = 2:length(f)
-        idx = find(xk >= f{ii}.domain(1) & xk <= f{ii}.domain(end));
-        posi = find(abs(sum(subD(idx,:))) == length(idx) & sum(abs(Dvals(idx,:)))>1e-4);
-        pos = intersect(pos, posi);
+    pos = find(abs(sum(sign(diag(nodevec)*Dvals))) == m+n+2 & sum(abs(Dvals))>1e-4); 
+    if(isempty(pos))
+        subD = sign(diag(nodevec)*Dvals);
+            idx = find(xk >= f{1}.domain(1) & xk <= f{1}.domain(end));
+            pos = find(abs(sum(subD(idx,:))) == length(idx) & sum(abs(Dvals(idx,:)))>1e-4);
+        for ii = 2:length(f)
+            idx = find(xk >= f{ii}.domain(1) & xk <= f{ii}.domain(end));
+            posi = find(abs(sum(subD(idx,:))) == length(idx) & sum(abs(Dvals(idx,:)))>1e-4);
+            pos = intersect(pos, posi);
+        end
     end
 end
 
@@ -1172,7 +1221,19 @@ if (~iscell(f))
     end    
 else % multi-interval case
     if(n == 0)
-        %TODO: polynomial case
+        rr = [];
+        err = [];
+        for ii = 1:length(f)
+            xki = xk(xk >= f{ii}.domain(1));
+            xki = xki(xki <= f{ii}.domain(end));
+            xki = unique([xki; f{ii}.domain']);
+            xki = findExtrema(f{ii},p,sort(xki,'ascend'));
+            xki = unique([xki; f{ii}.domain']);
+            xki = sort(xki,'ascend');
+            err_handle = @(x) feval(f{ii}, x) - p(x);
+            rr = [rr; xki];
+            err = [err; err_handle(xki)];
+        end
     else
         rr = [];
         err = [];
@@ -1187,56 +1248,57 @@ else % multi-interval case
             rr = [rr; xki];
             err = [err; err_handle(xki)];
         end
-        
-        % Select exchange method.
-        if( method == 1 )
-            [~,pos] = max(abs(err));
-            pos = pos(1);
-        else
-            pos = find(abs(err) >= abs(h));
-        end
-        
-        % Add extrema nearest to those which are candidates for exchange to the
-        % existing exchange set.
-        [r, m] = sort([rr(pos) ; xk]);
-        v = ones(Npts, 1);
-        v(2:2:end) = -1;
-        er = [err(pos); v*h];
-        er = er(m);
-
-        % Delete repeated points.
-        repeated = diff(r) == 0;
-        r(repeated) = [];
-        er(repeated) = [];
-        
-        
-        % Determine points and values to be kept for the reference set.
-        s = r(1);    % Points to be kept.
-        es = er(1);  % Values to be kept.
-        for i = 2:length(r)
-            if ( (sign(er(i)) == sign(es(end))) && (abs(er(i)) > abs(es(end))) )
-                % Given adjacent points with the same sign, keep one with largest value.
-                s(end) = r(i);
-                es(end) = er(i);
-            elseif ( sign(er(i)) ~= sign(es(end)) )
-                % Keep points which alternate in sign.
-                s = [s ; r(i)];    %#ok<AGROW>
-                es = [es ; er(i)]; %#ok<AGROW>
-            end
-        end
-        
-        % Of the points we kept, choose n + 2 consecutive ones that include the
-        % maximum of the error.
-        [norme, index] = max(abs(es));
-        d = max(index - Npts + 1, 1);
-        if ( Npts <= length(s) )
-            xk = s(d:d+Npts-1);
-            flag = 1;
-        else
-            xk = s;
-            flag = 0;
-        end
     end
+    
+    % Select exchange method.
+    if( method == 1 )
+        [~,pos] = max(abs(err));
+        pos = pos(1);
+    else
+        pos = find(abs(err) >= abs(h));
+    end
+        
+    % Add extrema nearest to those which are candidates for exchange to the
+    % existing exchange set.
+    [r, m] = sort([rr(pos) ; xk]);
+    v = ones(Npts, 1);
+    v(2:2:end) = -1;
+    er = [err(pos); v*h];
+    er = er(m);
+
+    % Delete repeated points.
+    repeated = diff(r) == 0;
+    r(repeated) = [];
+    er(repeated) = [];
+        
+        
+    % Determine points and values to be kept for the reference set.
+    s = r(1);    % Points to be kept.
+    es = er(1);  % Values to be kept.
+    for i = 2:length(r)
+       if ( (sign(er(i)) == sign(es(end))) && (abs(er(i)) > abs(es(end))) )
+           % Given adjacent points with the same sign, keep one with largest value.
+           s(end) = r(i);
+           es(end) = er(i);
+       elseif ( sign(er(i)) ~= sign(es(end)) )
+           % Keep points which alternate in sign.
+           s = [s ; r(i)];    %#ok<AGROW>
+           es = [es ; er(i)]; %#ok<AGROW>
+       end
+    end
+        
+    % Of the points we kept, choose n + 2 consecutive ones that include the
+    % maximum of the error.
+    [norme, index] = max(abs(es));
+    d = max(index - Npts + 1, 1);
+    if ( Npts <= length(s) )
+        xk = s(d:d+Npts-1);
+        flag = 1;
+    else
+        xk = s;
+        flag = 0;
+    end
+    
 end
 
 end
