@@ -138,8 +138,8 @@ classdef trigtech < smoothfun % (Abstract)
                     ~isempty(pref.fixedLength) && ~isnan(pref.fixedLength) )
                 % Evaluate op on the equi-spaced grid of given size. Include
                 % the right end point and use this to get the average value
-                % of the function at it's two ends to redefine f(-1) as
-                % f(-1) = 0.5*(f(1) + f(-1)).  This approach is prefered
+                % of the function at its two ends to redefine f(-1) as
+                % f(-1) = 0.5*(f(1) + f(-1)).  This approach is preferred
                 % since f may not make sense to evaluate pointwise if, for
                 % example, it is the result of an integral equation.
                 vals = feval(op, [trigtech.trigpts(pref.fixedLength);1]);
