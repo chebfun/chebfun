@@ -63,6 +63,7 @@ if ( doPivotPlot )    % Do pivot plot.
         plot( f, argin{:} ), hold on
         argin(1) = [];
         contourf( f, argin{:} ), hold off
+        colormap default
         return
     end
 end
@@ -142,6 +143,7 @@ end
 
 % Contour plot:
 [c, h] = contourf( xx, yy, vals, argin{:} );
+colormap default
 
 % return plot handle if appropriate.
 if ( nargout == 1 )
