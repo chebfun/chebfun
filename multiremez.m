@@ -84,7 +84,8 @@ if( ~iscell(f) )
         if(n == 0) % polynomial case
             xk = chebpts(N + 2, f.domain([1, end]));
 
-            [p,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
+            [p,err,status] = remezKernel(f,m, n, N, ...
+                rationalMode, xk, opts, 1);
             q = chebfun('1', f.domain([1,end]));
             if(polyOutput)
                 varargout = {p,err,status};
@@ -95,7 +96,8 @@ if( ~iscell(f) )
             % A first attempt is using CF as an initial guess
             try
             xk = cfInit(f, m, n);
-            [p,q,rh,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
+            [p,q,rh,err,status] = remezKernel(f,m, n, N, ...
+                rationalMode, xk, opts, 1);
             varargout = {p,q,rh,err,status};
             catch
                 disp('CF-based initialization failed, turning to AAA-Lawson')
@@ -106,26 +108,30 @@ if( ~iscell(f) )
             if(status.success == 0)
                 disp('Trying AAA-Lawson-based initialization...');
                 xk = AAALawsonInit(f, m, n);
-                [p,q,rh,err,status] = remezKernel(f, m, n, N, rationalMode, xk, opts, 1);
+                [p,q,rh,err,status] = remezKernel(f, m, n, N, ...
+                    rationalMode, xk, opts, 1);
                 varargout = {p,q,rh,err,status};
             end
 
             % A final attempt using cumulative distribution functions
             if(status.success == 0)
                 xk = cdfInit(f,m,n,symFlag,opts,1);
-                [p,q,rh,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
+                [p,q,rh,err,status] = remezKernel(f,m, n, N, ...
+                    rationalMode, xk, opts, 1);
                 varargout = {p,q,rh,err,status};
             end
         
             if(status.success == 0)
                 xk = cdfInit(f,m,n,symFlag,opts,2);
-                [p,q,rh,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
+                [p,q,rh,err,status] = remezKernel(f,m, n, N, ...
+                    rationalMode, xk, opts, 1);
                 varargout = {p,q,rh,err,status};
             end
         end
     else  % the user has also given a starting reference
         if(n == 0)
-            [p,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
+            [p,err,status] = remezKernel(f,m, n, N, rationalMode, ...
+                xk, opts, 1);
             q = chebfun('1', f.domain([1,end]));
             if(polyOutput)
                 varargout = {p,err,status};
@@ -133,7 +139,8 @@ if( ~iscell(f) )
                 varargout = {p,q,p,err,status};
             end
         else
-            [p,q,rh,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
+            [p,q,rh,err,status] = remezKernel(f,m, n, N, rationalMode, ...
+                xk, opts, 1);
             varargout = {p,q,rh,err,status};
         end
     end
@@ -142,13 +149,18 @@ else  % multi-interval case
     if ( m == -1 )
         q = chebfun(1, [f{1}.domain(1), f{end}.domain(end)]);
         p = chebfun(0, [f{1}.domain(1), f{end}.domain(end)]);
-        % TODO: fix next line
-        varargout = {p, q, @(x) feval(p, x)./feval(q, x), norm(f{1},'inf'), []};    
+        normf = norm(f{1},'inf');
+        for ii=2:length(f)
+            nnorm = norm(f{ii},'inf');
+            if nnorm > normf
+                normf = nnorm;
+            end
+        end
+        varargout = {p, q, @(x) feval(p, x)./feval(q, x), normf, []};    
         return
     end
 
     if(isempty(xk)) % no initial reference is given by the user
-        % Several initialization attempts are made
         if(n == 0) % polynomial case
             % construct the set of candidate reference points
             candxk = [];
@@ -165,7 +177,7 @@ else  % multi-interval case
             [~,R1]=qr(Cv,0);
             [Q,~]=qr(Cv/R1,0);
             w=Q'\ones(m+2,1); 
-            ind=find(abs(w)>0);
+            ind= abs(w)>0;
             xk=candxk(ind,:);
             if (length(xk) < m+2)
                 error('AFP construction failed!');
@@ -173,7 +185,8 @@ else  % multi-interval case
                 xk = xk(1:m+2);
                 xk = sort(xk,'ascend');
             end
-            [p,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
+            [p,err,status] = remezKernel(f,m, n, N, rationalMode, ...
+                xk, opts, 1);
             q = chebfun('1', [f{1}.domain(1),f{end}.domain(end)]);
             if(polyOutput)
                 varargout = {p,err,status};
@@ -183,12 +196,14 @@ else  % multi-interval case
         else % rational case  
             % If CF doesn't give a satisfactory answer, we try AAA-Lawson
             xk = AAALawsonInit(f, m, n);
-            [p,q,rh,err,status] = remezKernel(f, m, n, N, rationalMode, xk, opts, 1);
+            [p,q,rh,err,status] = remezKernel(f, m, n, N, rationalMode, ...
+                xk, opts, 1);
             varargout = {p,q,rh,err,status};
         end
     else  % the user has also given a starting reference
         if(n == 0)
-            [p,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
+            [p,err,status] = remezKernel(f,m, n, N, rationalMode, ...
+                xk, opts, 1);
             q = chebfun('1', f.domain([1,end]));
             if(polyOutput)
                 varargout = {p,err,status};
@@ -196,7 +211,8 @@ else  % multi-interval case
                 varargout = {p,q,p,err,status};
             end
         else
-            [p,q,rh,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
+            [p,q,rh,err,status] = remezKernel(f,m, n, N, rationalMode, ...
+                xk, opts, 1);
             varargout = {p,q,rh,err,status};
         end
     end    
@@ -228,9 +244,8 @@ end
 
 % Now turn to initialization via AAA-Lawson, this is more expensive than CF
 % but less so than CDF (which follows if this fails). 
-% 
 
-function xk = AAALawsonInit(f,m,n) % AAA-Lawson initialization for functions with breakpoints
+function xk = AAALawsonInit(f,m,n)
     NN = max(10*max(m,n),round(2e5/max(m,n)));
     if ( ~iscell(f) )
         dom = domain(f);
@@ -246,21 +261,7 @@ function xk = AAALawsonInit(f,m,n) % AAA-Lawson initialization for functions wit
             Z = [Z Zi];
             F = [F Fi];
         end
-        [r,~,~,~,xk] = aaamn_lawson(F,Z,m,n,'iter',20);%,'plot','on');
-
-        %{
-        clf;
-        for ii = 1:length(f)
-            err_handle = @(x) feval(f{ii}, x) - r(x);
-            xxk = linspace(f{ii}.domain(1), f{ii}.domain(end), 10000);
-            plot(xxk,err_handle(xxk)); hold on;
-            pause();
-        end
-        hold off;
-        %}
-
-
-
+        [r,~,~,~,xk] = aaamn_lawson(F,Z,m,n,'iter',20);
         xk = sort(xk,'ascend');
         nxk = [];
         for ii = 1:length(f)
@@ -273,14 +274,14 @@ function xk = AAALawsonInit(f,m,n) % AAA-Lawson initialization for functions wit
             er = err_handle(xki);
             s = xki(1);
             es = er(1);
-            % TODO: factor this out (see also exchange method!)
             for i = 2:length(xki)
-                if ( (sign(er(i)) == sign(es(end))) && (abs(er(i)) > abs(es(end))) )
+                if ( (sign(er(i)) == sign(es(end))) && ...
+                        (abs(er(i)) > abs(es(end))) )
                     s(end) = xki(i);
                     es(end) = er(i);
                 elseif ( sign(er(i)) ~= sign(es(end)) )
-                    s = [s ; xki(i)];    %#ok<AGROW>
-                    es = [es ; er(i)]; %#ok<AGROW>
+                    s = [s ; xki(i)];
+                    es = [es ; er(i)];
                 end
             end
             xki = s;
@@ -307,7 +308,8 @@ function xk = AAALawsonInit(f,m,n) % AAA-Lawson initialization for functions wit
                                                         % each pair of reference pts
             end
             Z = unique(Z); Z = Z(:); F = feval(f,Z);
-            [r,~,~,~,xk] = aaamn_lawson(F,Z,m,n,'iter',20); % Do AAA-Lawson with updated sample pts
+            % Do AAA-Lawson with updated sample pts
+            [r,~,~,~,xk] = aaamn_lawson(F,Z,m,n,'iter',20);
             xk = findReference(f,r,m,n,xk);
         else
             num = round(NN/(length(xk)*length(f)));
@@ -323,9 +325,7 @@ function xk = AAALawsonInit(f,m,n) % AAA-Lawson initialization for functions wit
                 F = [F; Fi];
             end
 
-            [r,~,~,~,xk] = aaamn_lawson(F,Z,m,n,'iter',20);%,'plot','on');
-
-            clf;
+            [r,~,~,~,xk] = aaamn_lawson(F,Z,m,n,'iter',20);
             xk = sort(xk,'ascend');
             nxk = [];
             for ii = 1:length(f)
@@ -338,28 +338,19 @@ function xk = AAALawsonInit(f,m,n) % AAA-Lawson initialization for functions wit
                 er = err_handle(xki);
                 s = xki(1);
                 es = er(1);
-                % TODO: factor this out (see also exchange method!)
                 for i = 2:length(xki)
-                    if ( (sign(er(i)) == sign(es(end))) && (abs(er(i)) > abs(es(end))) )
+                    if ( (sign(er(i)) == sign(es(end))) && ...
+                            (abs(er(i)) > abs(es(end))) )
                         s(end) = xki(i);
                         es(end) = er(i);
                     elseif ( sign(er(i)) ~= sign(es(end)) )
-                        s = [s ; xki(i)];    %#ok<AGROW>
-                        es = [es ; er(i)]; %#ok<AGROW>
+                        s = [s ; xki(i)];
+                        es = [es ; er(i)];
                     end
                 end
                 xki = s;
-
-                %{
-                xxk = linspace(f{ii}.domain(1), f{ii}.domain(end), 10000);
-                plot(xxk,err_handle(xxk)); hold on;
-                plot(xki, err_handle(xki), '*k', 'MarkerSize', 4)
-                pause();
-                %}
-
                 nxk = [nxk; xki];
             end
-            %hold off;
             xk = nxk;        
             if length(xk) > m+n+2 % Reduce reference pts becuse too many found. 
                 xkdiff = diff(xk);                        
@@ -473,10 +464,9 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
             end
             
             if(status.success == 1)
-                %xk = refGen(f, status.xk, hM + hN + 2, symFlag);
-                xk = refGen(f, status.xk, hM + hN + 2, 0);
+                status.xk = refGen(f, status.xk, hM + hN + 2, 0);
             else
-                [~,~,status] = nremez(f,hM+hN); xk = status.xk;
+                [~,~,status] = nremez(f,hM+hN);
             end
             
             % Go to the initial degree by now simultaneously increasing
@@ -497,7 +487,6 @@ function xk = cdfInit(f,m,n,symFlag,opts,step)
             end
     
             if(status.success == 1)
-                %xk = refGen(f, status.xk, m + n + 2, symFlag);
                 xk = refGen(f, status.xk, m + n + 2, 0);
                 fprintf('(%d,%d)\n',m, n);
             else
@@ -623,22 +612,9 @@ while ( (abs(abs(h)-abs(err))/abs(err) > opts.tol) && ...
         if(~iscell(f))
             [p, h] = computeTrialFunctionPolynomial(fk, xk, w, m, N, dom);
         else
-            [p, h] = computeTrialFunctionPolynomial(fk, xk, w, m, N, [dom{1}(1),dom{end}(end)]);
+            [p, h] = computeTrialFunctionPolynomial(fk, xk, w, m, N, ...
+                [dom{1}(1),dom{end}(end)]);
         end
-        
-        % TODO: err_handle is not set for multi-interval cases
-        %{
-        if(iscell(f))
-            clf;
-            for ii = 1:length(f)
-                err_handle = @(x) feval(f{ii}, x) - p(x);
-                xxk = linspace(f{ii}.domain(1), f{ii}.domain(end), 10000);
-                plot(xxk,err_handle(xxk)); hold on;
-            end
-            hold off;
-            pause();
-        end
-        %}
          
         % Perturb exactly-zero values of the levelled error.
         if ( h == 0 )
@@ -647,11 +623,11 @@ while ( (abs(abs(h)-abs(err))/abs(err) > opts.tol) && ...
  
         rh = @(x) 0;
         % Update the exchange set using the Remez algorithm with full exchange.
-        [xk, err, err_handle, ~] = exchange(xk, h, 2, f, p, rh, N + 2, n);
+        [xk, err, ~, ~] = exchange(xk, h, 2, f, p, rh, N + 2, n);
  
         % If overshoot, recompute with one-point exchange.
         if ( err/normf > 1e5 )
-            [xk, err, err_handle, ~] = exchange(xo, h, 1, f, p, rh, N + 2, n);
+            [xk, err, ~, ~] = exchange(xo, h, 1, f, p, rh, N + 2, n);
         end
  
         % Update max. correction to trial reference and stopping criterion.
@@ -677,19 +653,6 @@ while ( (abs(abs(h)-abs(err))/abs(err) > opts.tol) && ...
         if ( h == 0 )
             h = 1e-19;
         end
-        
-        %{
-        if(iscell(f))
-            clf;
-            for ii = 1:length(f)
-                err_handle = @(x) feval(f{ii}, x) - rh(x);
-                xxk = linspace(f{ii}.domain(1), f{ii}.domain(end), 10000);
-                plot(xxk,err_handle(xxk)); hold on;
-            end
-            hold off;
-            pause();
-        end
-        %}
          
         if(interpSuccess == 1)
             [xk, err, err_handle, ~] = exchange(xk, h, 2, f, p, rh, N+2, n);
@@ -713,8 +676,7 @@ while ( (abs(abs(h)-abs(err))/abs(err) > opts.tol) && ...
  
     % Display diagnostic information as requested.
     if ( opts.plotIter && interpSuccess && dialogFlag)
-        %doPlotIter(xo, xk, err_handle, h, dom);
-        doPlotIter2(xo, xk, f, rh, h);
+        doPlotIter(xo, xk, f, rh, h);
     end
  
     if ( opts.displayIter && dialogFlag)
@@ -763,7 +725,8 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Input parsing.
 
-function [m, n, N, rationalMode, polyOutput, symFlag, xk, opts] = parseInputs(f, varargin)
+function [m, n, N, rationalMode, polyOutput, symFlag, xk, opts] = ...
+    parseInputs(f, varargin)
 
 % Detect polynomial / rational approximation type and parse degrees.
 polyOutput = true;
@@ -777,7 +740,8 @@ if ( ~mod(nargin, 2) ) % Even number of inputs --> polynomial case.
 else                   % Odd number of inputs --> rational case.
     polyOutput = false;
     if( ~iscell(f) )
-        [m, n, symFlag] = adjustDegreesForSymmetries(f, varargin{1}, varargin{2});
+        [m, n, symFlag] = adjustDegreesForSymmetries(f, varargin{1}, ...
+            varargin{2});
     else
         % TODO: maybe more checks are needed here
         symFlag = 0;
@@ -924,7 +888,8 @@ xsupport = (xk(1:2:end-1)+xk(2:2:end))/2;
 xadd = (xk(2:2:end-1)+xk(3:2:end))/2; % when m~=n, we need more support points
 
 if(~iscell(f))
-    if ismember(f.domain(1),xk) == 0      % if endpoints aren't included, add them
+    % if endpoints aren't included, add them
+    if ismember(f.domain(1),xk) == 0      
         xadd = [(f.domain(1)+xk(1))/2;xadd]; 
     end
     if ismember(f.domain(end),xk) == 0
@@ -935,7 +900,8 @@ else
         xki = xk(xk >= f{ii}.domain(1));
         xki = xki(xki <= f{ii}.domain(end));
         xki = sort(xki,'ascend');
-        if ismember(f{ii}.domain(1),xki) == 0      % if endpoints aren't included, add them
+        % if endpoints aren't included, add them
+        if ismember(f{ii}.domain(1),xki) == 0  
             xadd = [(f{ii}.domain(1)+xki(1))/2;xadd]; 
         end
         if ismember(f{ii}.domain(end),xki) == 0
@@ -944,10 +910,12 @@ else
     end
 end
 num = abs((max(m,n)+1-length(xsupport)));
-[xadd, ~] = leja(xadd, 1, num);  % take Leja points from the remaining ref pts
+% take Leja points from the remaining ref pts
+[xadd, ~] = leja(xadd, 1, num);  
 
 if m~=n
-    xsupport = [xsupport;xadd(1:max(m,n)+1-length(xsupport))]; % add any lacking supp pts
+    % add any lacking supp pts
+    xsupport = [xsupport;xadd(1:max(m,n)+1-length(xsupport))];
 end
 xsupport = sort(xsupport,'ascend');
 
@@ -974,18 +942,12 @@ end
 % find Delta diag matrix 
 wt = zeros( 1,length(xk) );
 for ii = 1:length(xk)    
-% wt(ii) = prod(xk(ii)-xsupport);
-% wxdiff(ii) = prod(xk(ii)-xk([1:ii-1 ii+1:end]));    
-% Delta = diag(-(wt.^2)./wxdiff);
 % do above in a way that avoids underflow, overflow
-    wt(ii) = exp(sum(log(abs(prod(xk(ii)-xsupport)))));
-%wxdiff(ii) = exp(sum(log(abs(xk(ii)-xk([1:ii-1 ii+1:end])))));    
+    wt(ii) = exp(sum(log(abs(prod(xk(ii)-xsupport)))));   
     Delta(ii) = -exp(2*sum(log(abs(prod(xk(ii)-xsupport)))) ...
         - sum(log(abs(xk(ii)-xk([1:ii-1 ii+1:end])))));
 end
 Delta = diag(Delta); 
-
-%DD = diag(1./norms(sqrt(abs(Delta))*C)); % scaling, might help stability
 DD = eye(size(C,2));
 
 % prepare QR factorizations; these lead to symmetric eigenproblem
@@ -1000,7 +962,6 @@ else % m<n
 end
 
 S = diag((-1).^(0:length(xk)-1));
-%Q2 = S*Q; for sanity check svd(Q'*Q2) or svd(Qpart'*Q2) when m<n, should be O(eps)
 
 QSQ = Q'*S*diag(fk)*Q;
 QSQ = (QSQ+QSQ')/2; % force symmetry as it's supposed to be
@@ -1043,16 +1004,20 @@ end
 if(~iscell(f))
 % Find position without sign changes in D*node. Ignore ones with too small
 % Dvals. 
-    pos = find(abs(sum(sign(diag(nodevec)*Dvals))) == m+n+2 & sum(abs(Dvals))>1e-4); 
+    pos = find(abs(sum(sign(diag(nodevec)*Dvals))) == m+n+2 ...
+        & sum(abs(Dvals))>1e-4); 
 else
-    pos = find(abs(sum(sign(diag(nodevec)*Dvals))) == m+n+2 & sum(abs(Dvals))>1e-4); 
+    pos = find(abs(sum(sign(diag(nodevec)*Dvals))) == m+n+2 ...
+        & sum(abs(Dvals))>1e-4); 
     if(isempty(pos))
         subD = sign(diag(nodevec)*Dvals);
             idx = find(xk >= f{1}.domain(1) & xk <= f{1}.domain(end));
-            pos = find(abs(sum(subD(idx,:))) == length(idx) & sum(abs(Dvals(idx,:)))>1e-4);
+            pos = find(abs(sum(subD(idx,:))) == length(idx) & ...
+                sum(abs(Dvals(idx,:)))>1e-4);
         for ii = 2:length(f)
             idx = find(xk >= f{ii}.domain(1) & xk <= f{ii}.domain(end));
-            posi = find(abs(sum(subD(idx,:))) == length(idx) & sum(abs(Dvals(idx,:)))>1e-4);
+            posi = find(abs(sum(subD(idx,:))) == length(idx) & ...
+                sum(abs(Dvals(idx,:)))>1e-4);
             pos = intersect(pos, posi);
         end
     end
@@ -1093,7 +1058,8 @@ for ii = 1:length(xsupport)
 end
 D = @(x)-D(x); % flip back sign
 
-rh = @(zz) feval(@rr,zz,xsupport,wN,wD); % rational approximant as function handle
+% rational approximant as function handle
+rh = @(zz) feval(@rr,zz,xsupport,wN,wD);
 interpSuccess = 1; 
 
 % Form chebfuns of p and q (note: could be numerically unstable, but
@@ -1105,7 +1071,8 @@ else
     x = chebpts(m+n+1,[f{1}.domain(1),f{end}.domain(end)]);
 end
 
-nodex = zeros(length(x),1); for ii = 1:length(x),    nodex(ii) = node(x(ii)); end 
+nodex = zeros(length(x),1);
+for ii = 1:length(x),    nodex(ii) = node(x(ii)); end 
 qvals = nodex.*feval(D,x);  % Values of p and q at Chebyshev points
 pvals = nodex.*feval(N,x);
 if(~iscell(f)) 
@@ -1152,7 +1119,8 @@ end
 end
 
 
-function [xk, norme, err_handle, flag] = exchange(xk, h, method, f, p, rh, Npts, n)
+function [xk, norme, err_handle, flag] = exchange(xk, h, method, ...
+    f, p, rh, Npts, n)
 %EXCHANGE   Modify an equioscillation reference using the Remez algorithm.
 %   EXCHANGE(XK, H, METHOD, F, P, RH, NPTS, N) performs one step of the Remez algorithm
 %   for the best rational approximation of the CHEBFUN F of the target function
@@ -1328,12 +1296,14 @@ doms = unique([f.domain(1); xk; f.domain(end)]).';
 % Initial trial
 if ( isempty(xk) )
     warning off
-    ek = chebfun(@(x) err_handle(x), f.domain, 'eps', relTol, 'splitting', 'on');
+    ek = chebfun(@(x) err_handle(x), f.domain, 'eps', relTol, ...
+        'splitting', 'on');
     warning on
     rts = roots(diff(ek), 'nobreaks');
 else
     for k = 1:length(doms)-1
-        ek = chebfun(@(x) err_handle(x), [doms(k), doms(k+1)], 33, 'eps', 1e-12); 
+        ek = chebfun(@(x) err_handle(x), [doms(k), doms(k+1)], 33, ...
+            'eps', 1e-12); 
         ek = simplify(ek);
         rts = [rts; roots(diff(ek), 'nobreaks')];  %#ok<AGROW>
     end    
@@ -1376,27 +1346,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Functions for displaying diagnostic information.
 
-% Function called when opts.plotIter is set.
-function doPlotIter(xo, xk, err_handle, h, dom)
-
-xxk = linspace(dom(1), dom(end), 10000);
-plot(xo, err_handle(xo), 'or', 'MarkerSize', 4)   % Old reference.
-holdState = ishold;
-hold on
-plot(xk, err_handle(xk), '*k', 'MarkerSize', 4)   % New reference.
-plot(xxk, err_handle(xxk))               % Error function.
-plot(xxk, ones(size(xxk))*h,'r');
-plot(xxk, -ones(size(xxk))*h,'r');
-if ( ~holdState )                        % Return to previous hold state.
-    hold off
-end
-xlim(dom)
-legend('Current Ref.', 'Next Ref.', 'Error')
-drawnow
-
-end
-
-function doPlotIter2(xo, xk, f, rh, h)
+function doPlotIter(xo, xk, f, rh, h)
 
 if(~iscell(f))
     xxk = linspace(f.domain(1), f.domain(end), 10000);
@@ -1543,7 +1493,8 @@ end
 
 end
 
-function [r, pol, res, zer, z, Z, f, w, wf, errvec, p, q] = aaamn_lawson(F, varargin)
+function [r, pol, res, zer, z, Z, f, w, wf, errvec, p, q] = ...
+    aaamn_lawson(F, varargin)
 %AAAMN_Lawson   near-best rational approximation of F. 
 % 
 % R = aaamn_lawson(F) computes a rational aproximant of (default) type
