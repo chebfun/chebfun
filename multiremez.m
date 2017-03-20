@@ -164,7 +164,7 @@ else  % multi-interval case
             end
             [~,R1]=qr(Cv,0);
             [Q,~]=qr(Cv/R1,0);
-            w=Cv\ones(length(candxk),1); 
+            w=Q'\ones(m+2,1); 
             ind=find(abs(w)>0);
             xk=candxk(ind,:);
             if (length(xk) < m+2)
@@ -248,7 +248,7 @@ function xk = AAALawsonInit(f,m,n) % AAA-Lawson initialization for functions wit
         end
         [r,~,~,~,xk] = aaamn_lawson(F,Z,m,n,'iter',20);%,'plot','on');
 
-
+        %{
         clf;
         for ii = 1:length(f)
             err_handle = @(x) feval(f{ii}, x) - r(x);
@@ -257,6 +257,7 @@ function xk = AAALawsonInit(f,m,n) % AAA-Lawson initialization for functions wit
             pause();
         end
         hold off;
+        %}
 
 
 
@@ -349,10 +350,12 @@ function xk = AAALawsonInit(f,m,n) % AAA-Lawson initialization for functions wit
                 end
                 xki = s;
 
+                %{
                 xxk = linspace(f{ii}.domain(1), f{ii}.domain(end), 10000);
                 plot(xxk,err_handle(xxk)); hold on;
                 plot(xki, err_handle(xki), '*k', 'MarkerSize', 4)
                 pause();
+                %}
 
                 nxk = [nxk; xki];
             end
@@ -624,16 +627,18 @@ while ( (abs(abs(h)-abs(err))/abs(err) > opts.tol) && ...
         end
         
         % TODO: err_handle is not set for multi-interval cases
+        %{
         if(iscell(f))
             clf;
             for ii = 1:length(f)
                 err_handle = @(x) feval(f{ii}, x) - p(x);
                 xxk = linspace(f{ii}.domain(1), f{ii}.domain(end), 10000);
                 plot(xxk,err_handle(xxk)); hold on;
-                pause();
             end
             hold off;
+            pause();
         end
+        %}
          
         % Perturb exactly-zero values of the levelled error.
         if ( h == 0 )
@@ -661,6 +666,7 @@ while ( (abs(abs(h)-abs(err))/abs(err) > opts.tol) && ...
             xkmin = xk;
             deltamin = delta;
         end
+        rh = p;
          
     else
         err = inf;
@@ -672,16 +678,18 @@ while ( (abs(abs(h)-abs(err))/abs(err) > opts.tol) && ...
             h = 1e-19;
         end
         
+        %{
         if(iscell(f))
             clf;
             for ii = 1:length(f)
                 err_handle = @(x) feval(f{ii}, x) - rh(x);
                 xxk = linspace(f{ii}.domain(1), f{ii}.domain(end), 10000);
                 plot(xxk,err_handle(xxk)); hold on;
-                pause();
             end
             hold off;
+            pause();
         end
+        %}
          
         if(interpSuccess == 1)
             [xk, err, err_handle, ~] = exchange(xk, h, 2, f, p, rh, N+2, n);
@@ -705,7 +713,8 @@ while ( (abs(abs(h)-abs(err))/abs(err) > opts.tol) && ...
  
     % Display diagnostic information as requested.
     if ( opts.plotIter && interpSuccess && dialogFlag)
-        doPlotIter(xo, xk, err_handle, h, dom);
+        %doPlotIter(xo, xk, err_handle, h, dom);
+        doPlotIter2(xo, xk, f, rh, h);
     end
  
     if ( opts.displayIter && dialogFlag)
@@ -1385,6 +1394,54 @@ xlim(dom)
 legend('Current Ref.', 'Next Ref.', 'Error')
 drawnow
 
+end
+
+function doPlotIter2(xo, xk, f, rh, h)
+
+if(~iscell(f))
+    xxk = linspace(f.domain(1), f.domain(end), 10000);
+    err_handle = @(x) feval(f, x) - rh(x);
+    plot(xo, err_handle(xo), 'or', 'MarkerSize', 4)   % Old reference.
+    holdState = ishold;
+    hold on
+    plot(xk, err_handle(xk), '*k', 'MarkerSize', 4)   % New reference.
+    plot(xxk, err_handle(xxk))               % Error function.
+    plot(xxk, ones(size(xxk))*h,'r');
+    plot(xxk, -ones(size(xxk))*h,'r');
+    if ( ~holdState )                        % Return to previous hold state.
+        hold off
+    end
+    xlim([f.domain(1), f.domain(end)]);
+    legend('Current Ref.', 'Next Ref.', 'Error')
+    drawnow
+else
+    holdState = ishold;
+    for ii = 1:length(f)
+        err_handle = @(x) feval(f{ii}, x) - rh(x);
+        xxk = linspace(f{ii}.domain(1), f{ii}.domain(end), 10000);
+        plot(xxk,err_handle(xxk)); hold on;
+        ax = gca;
+        ax.ColorOrderIndex = 1;
+        
+        xki = xk(xk >= f{ii}.domain(1));
+        xki = xki(xki <= f{ii}.domain(end));
+        xki = unique([xki; f{ii}.domain']);    
+        plot(xki, err_handle(xki), '*k', 'MarkerSize', 4)   % New reference.
+
+        xoi = xo(xo >= f{ii}.domain(1));
+        xoi = xoi(xoi <= f{ii}.domain(end));
+        xoi = unique([xoi; f{ii}.domain']);
+        plot(xoi, err_handle(xoi), 'or', 'MarkerSize', 4)   % Old reference.
+    end
+    xxk = linspace(f{1}.domain(1), f{end}.domain(end), 10000);
+    plot(xxk, ones(size(xxk))*h,'r');
+    plot(xxk, -ones(size(xxk))*h,'r');
+    if ( ~holdState )                        % Return to previous hold state.
+        hold off
+    end
+    xlim([f{1}.domain(1),f{end}.domain(end)])
+    drawnow
+end
 end
 
 % Function called when opts.displayIter is set.
