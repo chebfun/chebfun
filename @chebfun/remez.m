@@ -90,7 +90,8 @@ if(isempty(xk)) % no initial reference is given by the user
             varargout = {p,q,p,err,status};
         end
     else % rational case
-        % A first attempt is using CF as an initial guess
+        % A first attempt is using CF as an initial guess                
+        
         try
         xk = cfInit(f, m, n);
         [p,q,rh,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
@@ -98,7 +99,7 @@ if(isempty(xk)) % no initial reference is given by the user
         catch
         disp('CF-based initialization failed, turning to AAA-Lawson')
         status.success = 0; % CF didn't work
-        end
+        end        
         
         % If CF doesn't give a satisfactory answer, we try AAA-Lawson
         if(status.success == 0)
@@ -107,6 +108,7 @@ if(isempty(xk)) % no initial reference is given by the user
             [p,q,rh,err,status] = remezKernel(f, m, n, N, rationalMode, xk, opts, 1);
             varargout = {p,q,rh,err,status};
         end
+        
 
         % A final attempt using cumulative distribution functions
         if(status.success == 0)
@@ -114,6 +116,8 @@ if(isempty(xk)) % no initial reference is given by the user
             [p,q,rh,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
             varargout = {p,q,rh,err,status};
         end
+        
+
         
         if(status.success == 0)
             xk = cdfInit(f,m,n,symFlag,opts,2);
@@ -174,7 +178,7 @@ function xk = AAALawsonInit(f,m,n) % AAA-Lawson initialization for functions wit
     % Iterate twice during which sample points are refined. 
     % This is done to find the nonsmooth parts of the function
     % and sample more densely there. 
-    for it = 1:2 
+    for it = 1:1 % (maybe helps to run more)
     num = round(NN/length(xk));             
     Z = [];
     for ii = 1:length(xk)-1
@@ -788,7 +792,9 @@ for ii = 1:length(xsupport)
 end
 D = @(x)-D(x); % flip back sign
 
-rh = @(zz) feval(@rr,zz,xsupport,wN,wD); % rational approximant as function handle
+%rh = @(zz) feval(@rr,zz,xsupport,wN,wD); % rational approximant as function handle
+rh = @(zz) reval(zz, xsupport, N, D, wN, wD);
+
 interpSuccess = 1; 
 
 % Form chebfuns of p and q (note: could be numerically unstable, but
@@ -804,6 +810,51 @@ p = simplify(p); q = simplify(q); % or
 % p = chebfun(p,m+1); qp = chebfun(q,n+1); 
 
 end
+
+function r = reval(zz, xsupport, N, D, wN, wD)
+zv = zz(:);
+r = N(zv)./D(zv);
+ii = find(isnan(r));
+for jj = 1:length(ii)
+    if ( isnan(zv(ii(jj))) || ~any(zv(ii(jj)) == xsupport) )
+        % r(NaN) = NaN is fine.
+        % The second case may happen if r(zv(ii)) = 0/0 at some point.
+    else
+        % Clean up values NaN = inf/inf at support points.
+        % Find the corresponding node and set entry to correct value:
+        pos = zv(ii(jj)) == xsupport; 
+        r(ii(jj)) = wN(pos)./wD(pos);
+    end    
+end
+r = reshape(r, size(zz));
+end
+
+function r = revalaaa(zz, zj, fj, wj)
+% Evaluate rational function in barycentric form.
+zv = zz(:);                             % vectorize zz if necessary
+CC = 1./bsxfun(@minus, zv, zj.');       % Cauchy matrix
+r = (CC*(wj.*fj))./(CC*wj);             % vector of values
+
+% Deal with input inf: r(inf) = lim r(zz) = sum(w.*f) / sum(w):
+r(isinf(zv)) = sum(wj.*fj)./sum(wj);
+
+% Deal with NaN:
+ii = find(isnan(r));
+for jj = 1:length(ii)
+    if ( isnan(zv(ii(jj))) || ~any(zv(ii(jj)) == zj) )
+        % r(NaN) = NaN is fine.
+        % The second case may happen if r(zv(ii)) = 0/0 at some point.
+    else
+        % Clean up values NaN = inf/inf at support points.
+        % Find the corresponding node and set entry to correct value:
+        r(ii(jj)) = fj(zv(ii(jj)) == zj);
+    end
+end
+
+% Reshape to input format:
+r = reshape(r, size(zz));
+
+end % End of REVAL().
 
 
 function r = rr(zz,xsupport,wN,wD)        % evaluate r at zz
@@ -924,25 +975,50 @@ function rts = findExtrema(f,rh,xk)
 % rh is a handle to p/q
 
 err_handle = @(x) feval(f, x) - rh(x);
+%{
 sample_points = linspace(f.domain(1),f.domain(end),5000);
 scale_of_error = norm(err_handle(sample_points),inf);
 relTol =  1e-15 * (vscale(f)/scale_of_error);
+%}
 rts = [];
 
 doms = unique([f.domain(1); xk; f.domain(end)]).';
 
 % Initial trial
 if ( isempty(xk) )
+    %{
     warning off
     ek = chebfun(@(x) err_handle(x), f.domain, 'eps', relTol, 'splitting', 'on');
     warning on
     rts = roots(diff(ek), 'nobreaks');
+    %}
+    xk = linspace(f.domain(1),f.domain(end),10);
+    doms = unique([f.domain xk]).'; doms = sort(doms,'ascend');
+    for k = 1:length(doms)-1                
+    rts = [rts; rootsdiff(err_handle,[doms(k) doms(k+1)],2^5)];    
+    end
 else
-    for k = 1:length(doms)-1
+    nn = 2^3+1; % sampling pts in each subinterval
+    mid = (doms(1:end-1)+doms(2:end))/2; % midpoints
+    rad = (doms(2:end)-doms(1:end-1))/2; % radius
+    xx = ones(nn+1,1)*mid+cos(pi*((nn:-1:0).')/nn)*rad; % sample matrix
+    valerr = feval(f,xx)-rh(xx);
+    rts = zeros(5*length(xk),1);
+    pos = 1;
+    for k = 1:length(doms)-1                
+        %{
         ek = chebfun(@(x) err_handle(x), [doms(k), doms(k+1)], 33, 'eps', 1e-12); 
         ek = simplify(ek);
         rts = [rts; roots(diff(ek), 'nobreaks')];  %#ok<AGROW>
+        if length(roots(diff(ek), 'nobreaks'))>=1 
+            rr = roots(diff(ek), 'nobreaks');
+        end
+        %}        
+        %rts = [rts; rootsdiff(valerr(:,k),[doms(k) doms(k+1)])];
+        rnow = rootsdiff(valerr(:,k),[doms(k) doms(k+1)]);
+        rts(pos:pos+length(rnow)-1) = rnow;pos = pos+length(rnow);
     end    
+    rts(pos:end) = [];
 end
 
 % Append end points of the domain.
@@ -1504,4 +1580,32 @@ if ( nargin < 3 ), q = ones(length(z),1); end
                 Q = [Q Qtmp]; 
                 end
             [Q,~] = qr(Q); Q = conj(Q(:,dim+1:end)); % desired null space
+end
+
+function r = rootsdiff(vals,dom,n) % vals is either a function or values at chebpts
+% returns the roots of diff(vals) via ChebyshevU-colleague
+if length(vals)<=1
+if nargin<3, n = 2^5; end    
+xx = chebpts(n+1,dom);    
+vals = vals(xx);
+else 
+n = length(vals)-1;
+end
+
+cc = fft([vals(end:-1:1);vals(2:end-1)])/n;
+cc(1) = cc(1)/2;
+c = cc(1:n+1); % coeffs of f=err_handle in T
+cU = c(2:end).*(1:length(c)-1).'; % coeffs of df in U
+% simplify; no need to get full accuracy. Then reorder to highest coeffs first. 
+len = max(find((abs(cU)/norm(cU)>1e-12))); cU = flipud(cU(1:len)); 
+if length(cU)<=1, r = []; return; end % constant function
+
+% now construct colleague matrix for ChebyshevU
+    oh = ones(len-2,1)/2;
+    C = diag(oh,1) + diag(oh,-1);
+    cU = -cU(2:end)/cU(1)/2;cU(2) = cU(2)+.5;
+    C(1,:) = cU.';
+ei = eig(C);
+ei = real(ei(abs(imag(ei))<1e-5 & abs(ei)<=1+1e-7)); % remove irrelevant roots
+r = (dom(1)+dom(2))/2 + ei*(dom(2)-dom(1))/2; % map back to the subinterval
 end
