@@ -178,7 +178,7 @@ function xk = AAALawsonInit(f,m,n) % AAA-Lawson initialization for functions wit
     % Iterate twice during which sample points are refined. 
     % This is done to find the nonsmooth parts of the function
     % and sample more densely there. 
-    for it = 1:1 % (maybe helps to run more)
+    for it = 1:2 % (maybe helps to run more)
     num = round(NN/length(xk));             
     Z = [];
     for ii = 1:length(xk)-1
@@ -823,7 +823,7 @@ for jj = 1:length(ii)
         % Clean up values NaN = inf/inf at support points.
         % Find the corresponding node and set entry to correct value:
         pos = zv(ii(jj)) == xsupport; 
-        r(ii(jj)) = wN(pos)./wD(pos);
+        r(ii(jj)) = -wN(pos)./wD(pos);
     end    
 end
 r = reshape(r, size(zz));
@@ -975,30 +975,28 @@ function rts = findExtrema(f,rh,xk)
 % rh is a handle to p/q
 
 err_handle = @(x) feval(f, x) - rh(x);
-%{
-sample_points = linspace(f.domain(1),f.domain(end),5000);
-scale_of_error = norm(err_handle(sample_points),inf);
-relTol =  1e-15 * (vscale(f)/scale_of_error);
-%}
-rts = [];
 
 doms = unique([f.domain(1); xk; f.domain(end)]).';
 
 % Initial trial
 if ( isempty(xk) )
-    %{
+sample_points = linspace(f.domain(1),f.domain(end),5000);
+scale_of_error = norm(err_handle(sample_points),inf);
+relTol =  1e-15 * (vscale(f)/scale_of_error);   
     warning off
     ek = chebfun(@(x) err_handle(x), f.domain, 'eps', relTol, 'splitting', 'on');
     warning on
     rts = roots(diff(ek), 'nobreaks');
-    %}
+    %{ 
+    % faster but maybe unstable 
     xk = linspace(f.domain(1),f.domain(end),10);
     doms = unique([f.domain xk]).'; doms = sort(doms,'ascend');
     for k = 1:length(doms)-1                
     rts = [rts; rootsdiff(err_handle,[doms(k) doms(k+1)],2^5)];    
     end
+    %}
 else
-    nn = 2^3+1; % sampling pts in each subinterval
+    nn = 2^3; % sampling pts in each subinterval (try low number first)
     mid = (doms(1:end-1)+doms(2:end))/2; % midpoints
     rad = (doms(2:end)-doms(1:end-1))/2; % radius
     xx = ones(nn+1,1)*mid+cos(pi*((nn:-1:0).')/nn)*rad; % sample matrix
@@ -1015,7 +1013,7 @@ else
         end
         %}        
         %rts = [rts; rootsdiff(valerr(:,k),[doms(k) doms(k+1)])];
-        rnow = rootsdiff(valerr(:,k),[doms(k) doms(k+1)]);
+        rnow = rootsdiff(valerr(:,k),[doms(k) doms(k+1)],err_handle,f,rh);
         rts(pos:pos+length(rnow)-1) = rnow;pos = pos+length(rnow);
     end    
     rts(pos:end) = [];
@@ -1582,22 +1580,33 @@ if ( nargin < 3 ), q = ones(length(z),1); end
             [Q,~] = qr(Q); Q = conj(Q(:,dim+1:end)); % desired null space
 end
 
-function r = rootsdiff(vals,dom,n) % vals is either a function or values at chebpts
+function r = rootsdiff(vals,dom,err_handle,f,rh) % vals is either a function or values at chebpts
 % returns the roots of diff(vals) via ChebyshevU-colleague
 if length(vals)<=1
 if nargin<3, n = 2^5; end    
 xx = chebpts(n+1,dom);    
 vals = vals(xx);
 else 
-n = length(vals)-1;
+n = size(vals,1)-1;
 end
 
+tol = 1e-3; % no need for high tolerance
+c = 1;   % initialize
+while ( (abs(c(end)/c(1))>tol) & (n<=2^6) )% sample until happy
 cc = fft([vals(end:-1:1);vals(2:end-1)])/n;
 cc(1) = cc(1)/2;
-c = cc(1:n+1); % coeffs of f=err_handle in T
+c = real(cc(1:n+1)); % coeffs of f=err_handle in T
 cU = c(2:end).*(1:length(c)-1).'; % coeffs of df in U
 % simplify; no need to get full accuracy. Then reorder to highest coeffs first. 
-len = max(find((abs(cU)/norm(cU)>1e-12))); cU = flipud(cU(1:len)); 
+len = max( find((abs(cU)/norm(cU)>1e-14)) ); cU = flipud(cU(1:len)); 
+if ( length(cU)<=1 | norm(cU)<1e-14 ), r = []; return; end % constant function
+if abs(c(end)/c(1))>tol  % resample at finer grid
+    n = 2*n;
+    vals = feval(err_handle,(dom(1)+dom(end))/2 + ...
+        cos(pi*((n:-1:0).')/n)*(dom(end)-dom(1))/2);
+end
+end
+
 if length(cU)<=1, r = []; return; end % constant function
 
 % now construct colleague matrix for ChebyshevU
