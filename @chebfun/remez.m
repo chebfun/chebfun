@@ -987,14 +987,6 @@ relTol =  1e-15 * (vscale(f)/scale_of_error);
     ek = chebfun(@(x) err_handle(x), f.domain, 'eps', relTol, 'splitting', 'on');
     warning on
     rts = roots(diff(ek), 'nobreaks');
-    %{ 
-    % faster but maybe unstable 
-    xk = linspace(f.domain(1),f.domain(end),10);
-    doms = unique([f.domain xk]).'; doms = sort(doms,'ascend');
-    for k = 1:length(doms)-1                
-    rts = [rts; rootsdiff(err_handle,[doms(k) doms(k+1)],2^5)];    
-    end
-    %}
 else
     nn = 2^3; % sampling pts in each subinterval (try low number first)
     mid = (doms(1:end-1)+doms(2:end))/2; % midpoints
@@ -1004,17 +996,9 @@ else
     rts = zeros(5*length(xk),1);
     pos = 1;
     for k = 1:length(doms)-1                
-        %{
-        ek = chebfun(@(x) err_handle(x), [doms(k), doms(k+1)], 33, 'eps', 1e-12); 
-        ek = simplify(ek);
-        rts = [rts; roots(diff(ek), 'nobreaks')];  %#ok<AGROW>
-        if length(roots(diff(ek), 'nobreaks'))>=1 
-            rr = roots(diff(ek), 'nobreaks');
-        end
-        %}        
-        %rts = [rts; rootsdiff(valerr(:,k),[doms(k) doms(k+1)])];
-        rnow = rootsdiff(valerr(:,k),[doms(k) doms(k+1)],err_handle,f,rh);
-        rts(pos:pos+length(rnow)-1) = rnow;pos = pos+length(rnow);
+       rnow = rootsdiff(valerr(:,k),[doms(k) doms(k+1)],err_handle,f,rh);
+       rts(pos:pos+length(rnow)-1) = rnow; % update reference points
+       pos = pos+length(rnow);
     end    
     rts(pos:end) = [];
 end
