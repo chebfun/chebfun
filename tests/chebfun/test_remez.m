@@ -88,7 +88,7 @@ pass(12) = (norm(f-p,inf)/1e30 - .0135210) < .01;
 x = chebfun('x');
 f = abs(x);
 [~, ~, ~,err,~] = remez(f, 20, 20);
-pass(13) = abs(err-4.875957512631913e-6)/4.875957512631913e-6 < 1e-4;
+pass(13) = abs(err-4.875957512631913e-6)/4.875957512631913e-6 < 1e-3;
 
 % Check correct output formatting for polynomial Remez
 f = chebfun('exp(x)');
