@@ -83,6 +83,18 @@ f = chebfun(op, dom, 'splitting', 'on');
 M = mean(f);
 pass(13) = abs(M - 0.75) < 1e2*eps*vscale(f);
 
+x = chebfun('x');
+f = mean([x 3*x], 2)
+pass(14) = norm(f-2*x) < 1e2*eps;
+
+f = mean([x 3*x], 1);
+pass(15) = norm( f - mean([x 3*x]) ) == 0;
+
+pass(16) = (norm(mean(x,1) - mean(x.',2)) == 0);
+
+pass(17) = (norm(mean(x') - 0) < 1e2*eps);
+
+pass(18) = (norm(mean(x',1) - x') == 0);
 
 end
 
@@ -97,5 +109,4 @@ else
 end
 
 out = norm(feval(f, x), inf);
-
 end
