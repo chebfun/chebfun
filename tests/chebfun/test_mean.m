@@ -84,7 +84,7 @@ M = mean(f);
 pass(13) = abs(M - 0.75) < 1e2*eps*vscale(f);
 
 x = chebfun('x');
-f = mean([x 3*x], 2)
+f = mean([x 3*x], 2);
 pass(14) = norm(f-2*x) < 1e2*eps;
 
 f = mean([x 3*x], 1);

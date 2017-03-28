@@ -15,7 +15,7 @@ if ( f(1).isTransposed )
         g = 2;
     end
 
-    if isscalar(g) && (g==1 | g==2)
+    if isscalar(g) && (g==1 || g==2)
         h = mean(f.', 3-g).';
     else
         h = mean(f.', g.').';
@@ -64,7 +64,6 @@ else    % f is not transposed
         else
         % Take the mean of two inputs:
             h = 0.5*(f + g);
-    
         end
     end
 
