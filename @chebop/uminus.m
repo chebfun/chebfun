@@ -1,6 +1,7 @@
 function A = uminus(A)
 %-   CHEBOP unary minus.
-%   -A negates the operator the CHEBOP A. Boundary conditions are not affected.
+%   -A negates the operator of the CHEBOP A. Boundary conditions are not
+%   affected.
 %
 %   UMINUS(A) is called for the syntax '-A'.
 

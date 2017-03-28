@@ -13,9 +13,8 @@ function C = mrdivide(A, B)
 if ( isnumeric(B) )
     C = mtimes(A, 1./B);
 else
-    error('CHEBOP:MRDIVIDE:NotSupported', ...
-        ['A/B is not supported for objects of type A = ' class(A) ...
-         ' and B = ' class(B) '.']);
+    error('CHEBOP:MRDIVIDE:NotSupported', '%s/%s is not supported.', ...
+        class(A), class(B));
 end
     
 end

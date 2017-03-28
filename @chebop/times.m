@@ -13,9 +13,8 @@ function C = times(A, B)
 if ( isnumeric(A) || isnumeric(B) )
     C = mtimes(A, B);
 else
-    error('CHEBOP:TIMES:NotSupported', ...
-        ['A.*B is not supported for objects of type A = ' class(A) ...
-         ' and B = ' class(B) '.']);
+    error('CHEBOP:TIMES:NotSupported', '%s.*%s is not supported.', ...
+        class(A), class(B));
 end
     
 end

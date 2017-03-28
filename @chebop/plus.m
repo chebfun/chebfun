@@ -52,7 +52,7 @@ elseif ( isa(A,'chebop') && isa(B,'chebop') )
     funArgs = getFunArgs(C);
     if ( ~strcmp(funArgs, getFunArgs(A)) )
         error('CHEBFUN:CHEBOP:plus:inputArgs', ...
-        'Incompatable operator input arguments in A.op and B.op.');
+        'Incompatable input arguments in A.op and B.op.');
     end
     C.op = eval(['@(',funArgs,') C.op(',funArgs,') + A.op(',funArgs,')']);         
     
