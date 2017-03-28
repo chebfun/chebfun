@@ -27,7 +27,7 @@ if ( isnumeric(A) )
     % Addition of anonymous functions is not supported in Matlab. 
     % Need to work around that.
     funArgs = getFunArgs(C);
-    C.op = eval(['@', funArgs, 'A + C.op', funArgs]); % Create new anon. func
+    C.op = eval(['@(', funArgs, ') A + C.op(', funArgs, ')']); % Create new anon. func
     
 elseif ( isnumeric(B) )
     C = B + A;
