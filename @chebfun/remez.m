@@ -114,7 +114,7 @@ if(isempty(xk)) % no initial reference is given by the user
         if(status.success == 0)
             xk = cdfInit(f,m,n,symFlag,opts,1);
             [p,q,rh,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
-            varargout = {p,q,rh,err,status};
+            varargout = {p,q,rh,err,status};            
         end
         
 
@@ -123,6 +123,10 @@ if(isempty(xk)) % no initial reference is given by the user
             xk = cdfInit(f,m,n,symFlag,opts,2);
             [p,q,rh,err,status] = remezKernel(f,m, n, N, rationalMode, xk, opts, 1);
             varargout = {p,q,rh,err,status};
+        end
+        
+        if(status.success == 0) % all attempts failed
+        disp('Failed to produce the best approximant.')            
         end
     end
 else  % the user has also given a starting reference
@@ -760,7 +764,7 @@ pos = find(abs(sum(sign(diag(nodevec)*Dvals))) == m+n+2 & sum(abs(Dvals))>1e-4);
 
 if isempty(pos)  % Unfortunately, no solution with same signs.
     if(dialogFlag)
-        disp('Trial interpolant too far from optimal.')
+        disp('Trial interpolant too far from optimal...')
     end
     interpSuccess = 0; 
     
