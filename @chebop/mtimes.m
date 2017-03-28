@@ -1,18 +1,18 @@
 function C = mtimes(A, B)
-%*    CHEBOP composition, multiplication, or application.
-%   C = A*B, where either A or B are scalar, returns a CHEBOP C representing
-%   scalar multiplication of the original operator. In this case, boundary
-%   conditions are copied into the new operator (but not scaled).
+%*   CHEBOP composition, multiplication, or application.
+%   C = A*B, where either A is B a scalar, returns a CHEBOP C representing
+%   scalar multiplication of the original operator.  Boundary conditions
+%   are copied from A or B to C.
 %
-%   If N is a CHEBOP and U a CHEBFUN or CHEBMATRIX of dimension compatible with
-%   N.op, then N*U is equaivalent to FEVAL(N, U).
+%   If N is a CHEBOP and U a CHEBFUN or CHEBMATRIX of dimension compatible
+%   with N.op, then N*U is equivalent to FEVAL(N, U).
 %
 %   C = A*B, where A and B are CHEBOP objects, should return a CHEBOP C
 %   representing the composition of the operators of A and B. Boundary
 %   conditions on A or B are destroyed by this process. Note this is not yet
 %   supported.
 %
-% See also CHEBOP/MLDIVIDE, CHEBOP/FEVAL
+% See also CHEBOP/PLUS, CHEBOP/MINUS, CHEBOP/MLDIVIDE, CHEBOP/FEVAL
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

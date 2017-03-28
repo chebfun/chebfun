@@ -1,15 +1,21 @@
 function C = plus(A, B)
-%+    CHEBOP addition.
+%+   CHEBOP plus.
 %   C = A + B, where A is a CHEBOP and B is a scalar, returns a CHEBOP C with
-%   C.op = A.op + B. Boundary conditions are copied from A to C but not
-%   adjusted. The case when A is a scalar and B is a CHEBOP is similar.
+%   C.op = A.op + B*I. Boundary conditions are copied from A to C.
+%   The case when A is a scalar and B is a CHEBOP is similar.
 %
 %   C = A + B, where A and B are CHEBOP objects, returns a CHEBOP C representing
 %   the addition of the operators of A and B. Boundary conditions on A or B are
 %   maintained, but only one of A and B should have boundary conditions. The .op
 %   fields of A and B must have the same number of inputs.
+% 
+% Example:
 %
-% See also CHEBOP/MLDIVIDE, CHEBOP/FEVAL
+%   L = chebop(@(u) -diff(u,2), [0,pi], 'dirichlet');
+%   I = chebop(@(u) u, [0,pi]);
+%   eigs(L+I)
+%
+% See also CHEBOP/MINUS, CHEBOP/MTIMES, CHEBOP/MLDIVIDE, CHEBOP/FEVAL
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
