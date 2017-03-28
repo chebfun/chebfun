@@ -10,7 +10,7 @@ function C = minus(A, B)
 %   I = chebop(@(u) u, [0,pi]);
 %   eigs(L-I)
 %
-% See CHEBOP/PLUS.
+% See CHEBOP/PLUS, CHEBOP/MTIMES.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

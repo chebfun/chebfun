@@ -15,7 +15,7 @@ function C = plus(A, B)
 %   I = chebop(@(u) u, [0,pi]);
 %   eigs(L+I)
 %
-% See also CHEBOP/MINUS, CHEBOP/MLDIVIDE, CHEBOP/FEVAL
+% See also CHEBOP/MINUS, CHEBOP/MTIMES, CHEBOP/MLDIVIDE, CHEBOP/FEVAL
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
