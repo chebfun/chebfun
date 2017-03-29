@@ -10,9 +10,12 @@ function f = randnfun(varargin)
 %
 %   F = RANDNFUN(DX, N) returns a quasimatrix with N independent columns.
 %
-%   Combinations RANDNFUN(DX, N, DOM) or RANDNFUN(DX, DOM, N) are
-%   also allowed.  Commands RANDNFUN() or RANDNFUN(DOM) use the
-%   default value DX = 1.
+%   F = RANDNFUN(DX, 'norm') normalizes the output by dividing it
+%   by SQRT(DX), so that white noise is approached in the limit DX -> 0.
+%
+%   F = RANDNFUN() uses the default value DX = 1.  Combinations such
+%   as RANDNFUN(DOM), RANDNFUN('norm', DX) are allowed so long as
+%   DX, if present, precedes N, if present.
 %
 % Examples:
 %
@@ -21,34 +24,41 @@ function f = randnfun(varargin)
 %
 %   X = randnfun(.01,2); cov(X)
 %
-%   f = randnfun([0 100]); plot(cumsum(f))
+%   f = randnfun(0.1,'norm',[0 10]); plot(cumsum(f))
 %
 % See also RANDNFUNTRIG.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-[dx, n, dom] = parseInputs(varargin{:});
+[dx, n, dom, normalize] = parseInputs(varargin{:});
 
 % Call RANDNFUNTRIG on interval of approximately double length.
 % and then restrict the result to the prescribed interval.
 
 m = 2*round(diff(dom)/dx)+1;
 dom2 = dom(1) + [0 m*dx];
-f = randnfuntrig(dx, n, dom2);
+if normalize
+    f = randnfuntrig(dx, n, dom2, 'norm');
+else
+    f = randnfuntrig(dx, n, dom2);
+end
 f = f{dom(1),dom(2)};
 
 end
 
-function [dx, n, dom] = parseInputs(varargin)
+function [dx, n, dom, normalize] = parseInputs(varargin)
 
 dx = NaN;
 n = NaN;
 dom = NaN;
+normalize = 0;
 
 for j = 1:nargin
     v = varargin{j};
-    if ~isscalar(v)
+    if ischar(v)
+        normalize = 1;
+    elseif ~isscalar(v)
         dom = v;
     elseif isnan(dx)
         dx = v;

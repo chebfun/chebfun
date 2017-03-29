@@ -11,9 +11,12 @@ function f = randnfuntrig(varargin)
 %
 %   F = RANDNFUNTRIG(DX, N) returns a quasimatrix with N independent columns.
 %
-%   Combinations RANDNFUNTRIG(DX, N, DOM) or RANDNFUNTRIG(DX, DOM, N) are
-%   also allowed.  Commands RANDNFUNTRIG() or RANDNFUNTRIG(DOM) use
-%   the default value DX = 1.
+%   F = RANDNFUNTRIG(DX, 'norm') normalizes the output by dividing it
+%   by SQRT(DX), so that white noise is approached in the limit DX -> 0.
+%
+%   F = RANDNFUNTRIG() uses the default value DX = 1.  Combinations such
+%   as RANDNFUNTRIG(DOM), RANDNFUNTRIG('norm', DX) are allowed so long as
+%   DX, if present, precedes N, if present.
 %
 % Examples:
 %
@@ -22,14 +25,14 @@ function f = randnfuntrig(varargin)
 %
 %   X = randnfuntrig(.01,2); cov(X)
 %
-%   f = randnfuntrig([0 100]); plot(cumsum(f))
+%   f = randnfuntrig(0.1,'norm',[0 10]); plot(cumsum(f))
 %
 % See also RANDNFUN.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-[dx, n, dom] = parseInputs(varargin{:});
+[dx, n, dom, normalize] = parseInputs(varargin{:});
 
 % Although the output is real, complex arithmetic is used for the
 % construction since the 'trig', 'coeffs' mode is only documented
@@ -39,18 +42,24 @@ m = round(diff(dom)/dx);
 c = randn(2*m+1, n) + 1i*randn(2*m+1, n);
 c = (c + flipud(conj(c)))/2;
 f = chebfun(c/sqrt(2*m+1), dom, 'trig', 'coeffs');
+if normalize
+    f = f/sqrt(dx);
+end
 
 end
 
-function [dx, n, dom] = parseInputs(varargin)
+function [dx, n, dom, normalize] = parseInputs(varargin)
 
 dx = NaN;  
 n = NaN;  
 dom = NaN;
+normalize = 0;
 
 for j = 1:nargin
     v = varargin{j};
-    if ~isscalar(v)
+    if ischar(v)
+        normalize = 1;
+    elseif ~isscalar(v)
         dom = v;
     elseif isnan(dx) 
         dx = v;
