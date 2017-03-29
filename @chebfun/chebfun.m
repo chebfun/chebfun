@@ -361,12 +361,21 @@ classdef chebfun
         
         % Interpolate data:
         f = interp1(x, y, method, dom);
+        
+        % Inverse nonuniform fast Fourier transform: 
+        [y, p] = inufft( varargin );
 
         % Compute Lagrange basis functions for a given set of points.
         f = lagrange(x, varargin);
         
         % Non-uniform discrete cosine transform:
         y = ndct(u);
+        
+        % Non-uniform fast Fourier transform: 
+        [y, p] = nufft( varargin );
+        
+        % Two-dimensional NUFFT: 
+        f = nufft2( varargin ); 
 
         % ODE113 with CHEBFUN output.
         [t, y] = ode113(varargin);
@@ -548,6 +557,10 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
             % Vector check for function_handles.
             doVectorCheck = false;
             args(1) = [];
+        elseif ( strcmpi(args{1}, 'vectorcheck') )
+            % Vector check for function_handles.
+            doVectorCheck = strcmpi(args{2}, 'on');
+            args(1:2) = [];            
         elseif ( strcmpi(args{1}, 'doublelength') )
             % Construct Chebfun twice as long as usually would be constructed.
             flags.doubleLength = true;
@@ -859,6 +872,7 @@ try
                 % be caught in the try-catch statement.
                 error('CHEBFUN:CHEBFUN:vectorCheck:numColumns', ...
                     'Number of columns increases with length(x).');
+                
             end
                 
         end
@@ -899,7 +913,7 @@ catch ME
         rethrow(ME)
         
     else
-        % Try vectorizing.
+        % Try vectorizing. (This is now done silently.)
         op = vectorCheck(op, dom, 1);
     end
     
