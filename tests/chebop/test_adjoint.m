@@ -92,4 +92,10 @@ pass(16) = min(feval(Ls.lbc(o,o),dom(1)));
 % check commutator
 pass(17) = abs([v1;v2]'*(L*[u1;u2]) - (Ls*[v1;v2])'*[u1;u2]) < nrm*tol;
 
+%% Test L' syntax
+
+Ls1 = adjoint(L);
+Ls2 = L';
+pass(18) = norm((Ls1*[v1;v2]) - (Ls2*[v1;v2])) < nrm*tol;
+
 end
