@@ -102,7 +102,6 @@ try
     f/g;
     pass(10) = false;
 catch ME
-    ME.identifier
     pass(10) = strfind(ME.identifier, 'divisionByZero');
 end
 
