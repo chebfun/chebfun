@@ -36,12 +36,4 @@ pass(6) = norm(A(u)/2 - C(u)) == 0;
 C = A./2;
 pass(7) = norm(A(u)/2 - C(u)) == 0;
 
-% Add scalar
-C = A + 1;
-pass(8) = norm((A(u)+1) - C(u)) == 0;
-
-% Subtract scalar
-C = A - 1;
-pass(9) = norm((A(u)-1) - C(u)) == 0;
-
 end
