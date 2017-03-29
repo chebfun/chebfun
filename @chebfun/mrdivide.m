@@ -14,7 +14,7 @@ function X = mrdivide(B, A, flag)
 if ( nargin < 3 )
     flag = 0;
 else
-    flag = any(strcmpi(flag, {'least-squares', ls}));
+    flag = any(strcmpi(flag, {'least-squares', 'ls'}));
 end
 
 if ( ~flag ) % B./A
@@ -27,6 +27,7 @@ end
 
 function X = mrdivide_ls(B, A)
 % TODO: Give an example for each of the cases below.
+
 if ( isscalar(A) )
     if ( A == 0 )
         % TODO:  Return identically Inf/NaN CHEBFUN instead?
@@ -42,13 +43,13 @@ elseif ( size(A, 2) ~= size(B, 2) )
 elseif ( isnumeric(A) )
     % [INF x M] * [M x N] = [INF x N]:
     [Q, R] = qr(B, 0);
-    X = Q * (R\A);
+    X = Q * mrdivide(R,A);
     % X = B*(eye(size(B,2))/A);
     
 elseif ( ~A(1).isTransposed )
     % [M x INF] * [INF x N] = [M x N]:
     [Q, R] = qr(A, 0);
-    X = (B\R) * Q';
+    X = mrdivide_ls(B, R) * Q';
    
 else
     % [M x N] * [N x INF] = [M x INF]:
@@ -58,7 +59,7 @@ else
     % X R^* Q^* = B
     % X = (BQ)R^{-*}
     [Q, R] = qr(A', 0);
-    X = (B*Q) / R';
+    X = mrdivide_ls((B*Q), R');
 
 end
 
