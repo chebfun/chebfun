@@ -36,4 +36,9 @@ pass(6) = norm(A(u)/2 - C(u)) == 0;
 C = A./2;
 pass(7) = norm(A(u)/2 - C(u)) == 0;
 
+% eye
+I = eye(A);
+pass(8) = norm(u - I(u)) == 0;
+pass(9) = norm((A-I)*u - (A(u)-u)) == 0;
+
 end

@@ -79,7 +79,7 @@ pass(14) = abs([v1;v2]'*(L*[u1;u2]) - (Ls*[v1;v2])'*[u1;u2]) < nrm*tol;
 
 %% Block operator (FVP): L(u1,u2) = [ u1'-u2'; u1+u2' ]
 u1 = (x-dom(end)).*exp(x); u2 = (x-dom(end)).*sin(x); % test functions for L
-v1 = (x-dom(1)).*exp(x); v2 = (x-dom(1)).*sin(x); % test functions for Ls
+v1 = (x-dom(1)).*cos(x); v2 = (x-dom(1)).*sin(x); % test functions for Ls
 nrm = norm(u1)+norm(u2)+norm(v1)+norm(v2);
 clear L; L = chebop(dom);
 L.op = @(x,u1,u2) [diff(u1)-diff(u2);u1+diff(u2)];
@@ -92,10 +92,11 @@ pass(16) = min(feval(Ls.lbc(o,o),dom(1)));
 % check commutator
 pass(17) = abs([v1;v2]'*(L*[u1;u2]) - (Ls*[v1;v2])'*[u1;u2]) < nrm*tol;
 
-%% Test L' syntax
+%% Test L' syntax, and self-adjoint part
 
 Ls1 = adjoint(L);
 Ls2 = L';
 pass(18) = norm((Ls1*[v1;v2]) - (Ls2*[v1;v2])) < nrm*tol;
+pass(19) = abs(imag([v1;v2]'*((L+L')*[v1;v2]))) < nrm*tol;
 
 end

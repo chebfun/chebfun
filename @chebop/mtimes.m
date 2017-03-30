@@ -1,6 +1,6 @@
 function C = mtimes(A, B)
 %*   CHEBOP composition, multiplication, or application.
-%   C = A*B, where either A is B a scalar, returns a CHEBOP C representing
+%   C = A*B, where either A or B is a scalar, returns a CHEBOP C representing
 %   scalar multiplication of the original operator.  Boundary conditions
 %   are copied from A or B to C.
 %
