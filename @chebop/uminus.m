@@ -11,9 +11,19 @@ function A = uminus(A)
 if ( isempty(A.op ) )
     return
 else
+    
+    % Make the pretty string:
+    funArgs = getFunArgs(A);
+    argStr = ['@(',funArgs,')'];
+    if ( ~isempty(A.opShow) )
+        op = A.opShow;
+    else
+        op = func2str(A.op);
+    end
+    A.opShow = strrep(op, argStr, [argStr, '-']);
+    
     % Multiplication of anonymous functions is not supported in Matlab. 
     % Need to work around that.
-    funArgs = getFunArgs(A);
     A.op = eval(['@(', funArgs, ') -A.op(', funArgs, ')']);
 end
     

@@ -1,10 +1,10 @@
-function C = plus(A, B)
+function C = plus(A, B, p)
 %+   CHEBOP plus.
 %   C = A + B, where A and B are CHEBOP objects, returns a CHEBOP C
 %   representing the addition of the operators of A and B. Boundary
 %   conditions on A or B are maintained, but only one of A and B should
-%   have boundary conditions. The .op fields of A and B must have the same
-%   input variables.
+%   have boundary conditions. The .op fields of A and B should have the
+%   same input variables, but this is not validated with this PLUS method.s
 % 
 % Example:
 %
@@ -28,18 +28,41 @@ if ( isa(A,'chebop') && isa(B,'chebop') )
     if ( hasbc(A) )
         C = A;
         A = B;
+        flip = true;
     else
         C = B;
+        flip = false;
     end
 
-    % Create new anon. func
-    funArgs = getFunArgs(C);
-    if ( ~strcmp(funArgs, getFunArgs(A)) )
-        error('CHEBFUN:CHEBOP:plus:inputArgs', ...
-        'Incompatable input arguments in A.op and B.op.');
+    funArgs1 = getFunArgs(C);
+    funArgs2 = getFunArgs(A);
+    argStr1 = ['@(',funArgs1,')'];
+    argStr2 = ['@(',funArgs2,')'];
+    
+    % Pretty print:
+    if ( ~isempty(C.opShow) )
+        op = C.opShow;
+    else
+        op = func2str(C.op);
+    end
+    op = strrep(op, argStr1, '');
+    if ( ~isempty(A.opShow) )
+        op2 = A.opShow;
+    else
+        op2 = func2str(A.op);
+    end
+    op2 = strrep(op2, argStr2, '');
+    if ( nargin == 2 )
+        p = '+';
+    end
+    if ( flip )
+        C.opShow = ['@(',funArgs1,')' op p op2];
+    else
+        C.opShow = ['@(',funArgs1,')' op2 p op];
     end
     
-    C.op = eval(['@(',funArgs,') C.op(',funArgs,') + A.op(',funArgs,')']);         
+    % Create new anon. func:
+    C.op = eval(['@(',funArgs1,') C.op(',funArgs1,') + A.op(',funArgs1,')']);         
     
 else 
     error('CHEBFUN:CHEBOP:plus:notSupported', ...

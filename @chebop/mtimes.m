@@ -38,9 +38,18 @@ elseif ( isnumeric(A) )
     % Initialize C as a CHEBOP
     C = B;
     
+    % Make the pretty string:
+    funArgs = getFunArgs(C);
+    argStr = ['@(',funArgs,')'];
+    if ( ~isempty(C.opShow) )
+        op = C.opShow;
+    else
+        op = func2str(C.op);
+    end
+    C.opShow = strrep(op, argStr, [argStr num2str(A) '*']);
+    
     % Multiplication of anonymous functions is not supported in Matlab. Need to
     % work around that.
-    funArgs = getFunArgs(C);
     C.op = eval(['@(', funArgs, ') A*C.op(', funArgs, ')']);
     
 elseif ( isa(A,'chebop') && isa(B,'chebop') )       

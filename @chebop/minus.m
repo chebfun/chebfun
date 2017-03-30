@@ -16,6 +16,6 @@ function C = minus(A, B)
 % See http://www.chebfun.org/ for Chebfun information.
 
 
-C = plus(A, uminus(B));
+C = plus(A, uminus(B), '');
     
 end

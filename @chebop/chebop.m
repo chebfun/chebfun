@@ -254,6 +254,7 @@ classdef (InferiorClasses = {?double}) chebop
     properties ( Access = public )
         domain = [];    % Domain of the operator
         op = [];        % The operator
+        opShow = [];    % Pretty print the operator
         lbc = [];       % Left boundary condition(s)
         lbcShow = [];   % Pretty print left boundary condition(s)
         rbc = [];       % Right boundary condition(s)
