@@ -557,6 +557,10 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
             % Vector check for function_handles.
             doVectorCheck = false;
             args(1) = [];
+        elseif ( strcmpi(args{1}, 'vectorcheck') )
+            % Vector check for function_handles.
+            doVectorCheck = strcmpi(args{2}, 'on');
+            args(1:2) = [];            
         elseif ( strcmpi(args{1}, 'doublelength') )
             % Construct Chebfun twice as long as usually would be constructed.
             flags.doubleLength = true;
@@ -909,14 +913,8 @@ catch ME
         rethrow(ME)
         
     else
-        % Try vectorizing.
+        % Try vectorizing. (This is now done silently.)
         op = vectorCheck(op, dom, 1);
-%         warning('CHEBFUN:CHEBFUN:vectorcheck:vectorize',...
-%         ['Function failed to evaluate on array inputs.\n',...
-%         'Vectorizing the function may speed up its evaluation\n',...
-%         'and avoid the need to loop over array elements.\n',...
-%         'Use ''vectorize'' flag in the CHEBFUN constructor call\n', ...
-%         'to avoid this warning message.'])
     end
     
 end
