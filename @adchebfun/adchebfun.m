@@ -1685,26 +1685,40 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             f.jacobian.domain = f.domain;
         end
         
-        function f = vectorizeOp(f, g, op)
+        function out = vectorizeOp(f, g, op)     
+            % Wrapper to allow for array-valued ADCHEBFUN objects.
+            
+            % Ensure f, g, and out are ADCHEBFUNS:
+            if ( isa(f, 'adchebfun') )
+                out = f;
+                if ( ~isa(g, 'adchebfun') )
+                    g = adchebfun(g, f.domain);
+                end
+            else
+                f = adchebfun(f, g.domain);
+                out = g;
+            end
             nf = numel(f);
             ng = numel(g);
+            % Vectorize the operator:
             if ( ng == nf )
                 for k = 1:ng
-                    f(k) = op(f(k), g(k));
+                    out(k) = op(f(k), g(k));
                 end
             elseif ( ng == 1 )
                 for k = 1:nf
-                    f(k) = op(f(k), g);
+                    out(k) = op(f(k), g);
                 end 
             elseif ( nf == 1 )
                 for k = 1:ng
-                    g(k) = op(f, g(k));
+                   out(k) = op(f, g(k));
                 end         
-                f = g;
             else
-                error('Dimension mismatch');
+                error('CHEBFUN:ADCHEBFUN:vectorizeOp:dimagree', ...
+                    'Matrix dimensions must agree.');
             end
         end
+
         
     end
     
