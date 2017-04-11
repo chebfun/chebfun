@@ -30,6 +30,9 @@ else
     if ( ~isempty(A.op) )
         fprintf(':\n')
         [str, args] = formatOperator(A.op);
+        if ( ~isempty(A.opShow) )
+            str = A.opShow;
+        end
         fprintf('      %s\n', str);
         if ( loose )
             fprintf('\n')
