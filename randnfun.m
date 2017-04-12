@@ -4,7 +4,7 @@ function f = randnfun(varargin)
 %   wave number about 2pi/DX and standard normal distribution N(0,1)
 %   at each point.  F can be regarded as one sample path of a Gaussian
 %   process.  It is obtained by calling RANDNFUNTRIG on an interval
-%   of about twice the length and restricting the result to [-1,1].
+%   of length about 20% longer and restricting the result to [-1,1].
 %
 %   F = RANDNFUN(DX, DOM) returns a result with domain DOM = [A, B].
 %
@@ -33,17 +33,22 @@ function f = randnfun(varargin)
 
 [dx, n, dom, normalize] = parseInputs(varargin{:});
 
-% Call RANDNFUNTRIG on interval of approximately double length.
-% and then restrict the result to the prescribed interval.
+% Call RANDNFUNTRIG on interval of approximately 20% greater length
 
-m = 2*round(diff(dom)/dx)+1;
+m = 1.2*round(diff(dom)/dx)+1;
 dom2 = dom(1) + [0 m*dx];
 if normalize
     f = randnfuntrig(dx, n, dom2, 'norm');
 else
     f = randnfuntrig(dx, n, dom2);
 end
-f = f{dom(1),dom(2)};
+
+% Restrict the result to the prescribed interval.  Explicit rather than
+% adaptive constructive gives speedup by a factor of about 3.
+
+x = chebpts(5*m, dom);    % 5*m is large enough...
+f = chebfun(f(x), dom);   % ...so that this is equivalent to f{dom(1),dom(2)}
+f = simplify(f, 1e-13);   % loosened tolerance gives cleanest Chebyshev series
 
 end
 
