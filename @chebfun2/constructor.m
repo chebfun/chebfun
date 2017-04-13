@@ -692,8 +692,13 @@ end
 
 isCoeffs = find(cellfun(@(p) strcmpi(p, 'coeffs'), varargin));
 if ( isCoeffs )
-    varargin(isCoeffs) = [];
-    op = chebfun2.coeffs2vals(op);
+    if ( isTrig )
+        varargin(isCoeffs) = [];
+        op = trigtech.coeffs2vals(trigtech.coeffs2vals( op ).').'; 
+    else
+        varargin(isCoeffs) = [];
+        op = chebfun2.coeffs2vals(op);
+    end
 end
 
 end
