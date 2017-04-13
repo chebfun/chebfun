@@ -37,6 +37,12 @@ end
 % Parse inputs:
 if ( nargin == 1 )
     n = 1;
+else
+    if ( ~isnumeric(n) )
+        error('CHEBFUN:CHEBFUN:diff:n', ...
+            ['Second argument must be an integer; ', ...
+            'diff(F,G) no longer implemented']);
+    end
 end
 if ( nargin < 3 )
     dim = 1;
