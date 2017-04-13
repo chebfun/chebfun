@@ -16,4 +16,16 @@ for jj = 1:numel(f)
     pass(jj) = ( norm(h - exact) < tol ); 
 end
 
+% Make a rank-1 'trig' chebfun2 from coeffs: 
+u = rand(10,1); 
+v = rand(10,1); 
+u = chebfun(u,'trig'); 
+v = chebfun(v,'trig'); 
+exact = u*v.';
+ 
+coeffs = trigcoeffs(u)*trigcoeffs(v).';
+f = chebfun2(coeffs,'coeffs','trig');
+
+pass(jj+1) = norm( f - exact ) < tol; 
+
 end
