@@ -39,9 +39,12 @@ if ( nargin == 1 )
     n = 1;
 else
     if ( ~isnumeric(n) )
+        if ( isa(n, 'chebfun') )
+            error('CHEBFUN:CHEBFUN:diff:n', ...
+                'diff(F,G) no longer implemented.');
+        end
         error('CHEBFUN:CHEBFUN:diff:n', ...
-            ['Second argument must be an integer; ', ...
-            'diff(F,G) no longer implemented']);
+            'Second argument must be an integer.');
     end
 end
 if ( nargin < 3 )
