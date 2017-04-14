@@ -21,5 +21,9 @@ rng(0), f1 = randnfun('norm',1/64,[0 3]);
 rng(0), f2 = 8*randnfun(1/64, 1, [0 3]);
 pass(5) = norm(f1-f2) == 0;
 
+rng(0), f1 = randnfun(1,[0 4]);
+rng(0), f2 = randnfun(1/4,[0 1]);
+pass(6) = norm(f1([.8 1.2])-f2([.2 .3])) == 0;
+
 
 end

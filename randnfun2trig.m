@@ -16,8 +16,9 @@ function f = randnfun2trig(varargin)
 %
 % Examples:
 %
-%   f = randnfun2trig(0.1); mean2(f), plot(f)
-%   f = randnfun2trig(0.25); plot(roots(f)), axis equal
+%   f = randnfun2trig(0.2); mean2(f), plot(f)
+%   view(0,90), colormap(gray(2)), axis equal
+%   plot(roots(f)), axis equal
 %
 % See also RANDNFUNTRIG.
 
@@ -26,18 +27,18 @@ function f = randnfun2trig(varargin)
 
 [dt, dom, normalize] = parseInputs(varargin{:});
 
-mx = round(diff(dom(1:2))/dt);
-mx2 = 2*mx+1;
-my = round(diff(dom(3:4))/dt);
-my2 = 2*my+1;
-c = randn(my2, mx2) + 1i*randn(my2, mx2); % random coefficients on a square
-[x,y] = meshgrid(-mx:mx,-my:my);
-c = c.*((x/mx).^2 + (y/my).^2 <= 1);      % confine to a disk for isotropy
-c = c/sqrt(nnz(c));                       % ensure var = 1 at each point
+m = round(diff(dom(1:2))/dt);
+m2 = 2*m+1;
+n = round(diff(dom(3:4))/dt);
+n2 = 2*n+1;
+c = randn(n2, m2) + 1i*randn(n2, m2);  % random coefficients on a square
+[x,y] = meshgrid(-m:m,-n:n);
+c = c.*((x/m).^2 + (y/n).^2 <= 1);     % confine to a disk for isotropy
+c = c/sqrt(nnz(c));                    % ensure var = 1 at each point
 f = chebfun2(c, dom, 'coeffs', 'trig');
 f = real(f);
 if normalize
-    f = f/sqrt(dt);                       % normalize for 2D white noise
+    f = f/sqrt(dt);                    % normalize for 2D white noise
 end
 
 end

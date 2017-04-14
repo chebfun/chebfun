@@ -28,21 +28,19 @@ function f = randnfun2(varargin)
 
 % Call RANDNFUN2TRIG on domain of approximately 20% greater dimensions
 
+m = round(1.2*(dom(2)-dom(1))/dt+2);
+n = round(1.2*(dom(4)-dom(3))/dt+2);
+dom2 = [ dom(1) dom(1)+m*dt dom(3) dom(3)+n*dt ];
+
 if normalize
-    f = randnfuntrig(dt2, n, dom, 'norm');
+    f = randnfun2trig(dt, dom2, 'norm');
 else
-    f = randnfuntrig(dt2, n, dom);
+    f = randnfun2trig(dt, dom2);
 end
 
-% Restrict the result to the prescribed domain.  Explicit rather than
-% adaptive construction probably gives speedup, but not tested yet.
+% Restrict the result to the prescribed domain.
 
-x = chebpts2(
-x = chebpts(5*m, dom);    % 5*m is large enough...
-f = chebfun(f(x), dom);   % ...so that this is equivalent to f{dom(1),dom(2)}
-f = simplify(f, 1e-13);   % loosened tolerance gives cleanest Chebyshev series
-
-
+f = f{dom(1),dom(2),dom(3),dom(4)};
 
 end
 
