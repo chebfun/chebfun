@@ -75,8 +75,9 @@ switch index(1).type
             if ( isreal( f ) && isreal( idx{1} ) ) 
                 % The input of the function should be two real variables: 
                 error('SEPARABLEAPPROX:SUBSREF:REAL',...
-                    'Object is a function of two real variables');
+                    'Object is a function of two real variables.');
             else
+                % We have f(x+1i*y): 
                 x = real(idx{1});
                 y = imag(idx{1});
                 out = feval(f, x, y);
