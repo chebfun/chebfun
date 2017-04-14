@@ -71,12 +71,18 @@ switch index(1).type
             return
             
         elseif ( length(idx) == 1 )
-            x = real(idx{1});
-            y = imag(idx{1});
-            out = feval(f, x, y);
-            varargout = {out};
+            % We have f(z): 
+            if ( isreal( f ) && isreal( idx{1} ) ) 
+                % The input of the function should be two real variables: 
+                error('SEPARABLEAPPROX:SUBSREF:REAL',...
+                    'Object is a function of two real variables');
+            else
+                x = real(idx{1});
+                y = imag(idx{1});
+                out = feval(f, x, y);
+                varargout = {out};
             return
-
+            end
         else
             error('CHEBFUN:SEPARABLEAPPROX:subsref:inputs', ...
                 'Can only evaluate at functions (X,Y)')
