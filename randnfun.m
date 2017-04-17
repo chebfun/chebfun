@@ -35,6 +35,14 @@ function f = randnfun(varargin)
 
 % Call RANDNFUNTRIG on interval of approximately 20% greater length
 
+if dt == inf
+    f = chebfun(randn, dom);    % random constant function
+    if normalize
+        f = f/sqrt(dt);         % zero function
+    end
+    return
+end
+
 m = round(1.2*diff(dom)/dt+2);
 dom2 = dom(1) + [0 m*dt];
 if normalize

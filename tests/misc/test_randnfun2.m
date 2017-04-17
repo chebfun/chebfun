@@ -16,3 +16,7 @@ pass(3) = abs( f(.5,.5) - g(3.5,.5) ) < 1e-12;
 rng(0) 
 h = randnfun2(.2,[-2 2 0 4]);
 pass(4) = abs( f(.5,.5) - h(1,3) ) < 1e-12;
+
+f = randnfun2(1e6);
+pass(5) = norm(diff(f),'fro') < 1e-4;
+

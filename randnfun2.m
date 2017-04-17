@@ -28,6 +28,14 @@ function f = randnfun2(varargin)
 
 % Call RANDNFUN2TRIG on domain of approximately 20% greater dimensions
 
+if dt == inf
+    f = chebfun2(randn, dom);    % random constant function
+    if normalize
+        f = f/sqrt(dt);          % zero function
+    end
+    return
+end
+
 m = round(1.2*(dom(2)-dom(1))/dt+2);
 n = round(1.2*(dom(4)-dom(3))/dt+2);
 dom2 = [ dom(1) dom(1)+m*dt dom(3) dom(3)+n*dt ];

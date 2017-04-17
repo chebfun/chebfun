@@ -32,5 +32,7 @@ rng(0), f1 = randnfuntrig([0 4]);
 rng(0), f2 = randnfuntrig([4 8]);
 pass(8) = norm(f1([.8 1.2])-f2([4.8 5.2])) < 1e-14;
 
+f = randnfuntrig(6);
+pass(9) = norm(diff(f)) == 0;
 
 end

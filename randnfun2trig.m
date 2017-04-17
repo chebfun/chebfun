@@ -31,14 +31,16 @@ m = round(diff(dom(1:2))/dt);
 m2 = 2*m+1;
 n = round(diff(dom(3:4))/dt);
 n2 = 2*n+1;
-c = randn(n2, m2) + 1i*randn(n2, m2);  % random coefficients on a square
+c = randn(n2, m2) + 1i*randn(n2, m2);   % random coefficients on a square
 [x,y] = meshgrid(-m:m,-n:n);
-c = c.*((x/m).^2 + (y/n).^2 <= 1);     % confine to a disk for isotropy
-c = c/sqrt(nnz(c));                    % ensure var = 1 at each point
+if ( m>0 & n>0 )
+    c = c.*((x/m).^2 + (y/n).^2 <= 1);  % confine to a disk for isotropy
+end
+c = c/sqrt(nnz(c));                     % ensure var = 1 at each point
 f = chebfun2(c, dom, 'coeffs', 'trig');
 f = real(f);
 if normalize
-    f = f/sqrt(dt);                    % normalize for 2D white noise
+    f = f/sqrt(dt);                     % normalize for 2D white noise
 end
 
 end

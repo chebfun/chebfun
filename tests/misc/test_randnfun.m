@@ -25,5 +25,10 @@ rng(0), f1 = randnfun(1,[0 4]);
 rng(0), f2 = randnfun(1/4,[0 1]);
 pass(6) = norm(f1([.8 1.2])-f2([.2 .3])) == 0;
 
+f = randnfun(1e6);
+pass(7) = norm(diff(f)) < 1e-4; 
+
+f = randnfun(inf);
+pass(8) = norm(diff(f)) == 0; 
 
 end
