@@ -24,4 +24,15 @@ rng(0), f1 = randnfuntrig(1/16,'norm')/4;
 rng(0), f2 = randnfuntrig(1/16);
 pass(6) = norm(f1-f2) == 0;
 
+rng(0), f1 = randnfuntrig(1,[0 4]);
+rng(0), f2 = randnfuntrig(1/4,[0 1]);
+pass(7) = norm(f1([.8 1.2])-f2([.2 .3])) == 0;
+
+rng(0), f1 = randnfuntrig([0 4]);
+rng(0), f2 = randnfuntrig([4 8]);
+pass(8) = norm(f1([.8 1.2])-f2([4.8 5.2])) < 1e-14;
+
+f = randnfuntrig(6);
+pass(9) = norm(diff(f)) == 0;
+
 end

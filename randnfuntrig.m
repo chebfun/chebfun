@@ -1,22 +1,22 @@
 function f = randnfuntrig(varargin)
 %RANDNFUNTRIG   Random smooth periodic function
-%   F = RANDNFUNTRIG(DX) returns a smooth periodic chebfun (trigfun)
-%   on [-1,1] with maximum wave number about 2pi/DX and standard normal
+%   F = RANDNFUNTRIG(DT) returns a smooth periodic CHEBFUN (trigfun)
+%   on [-1,1] with maximum frequency about 2pi/DT and standard normal
 %   distribution N(0,1) at each point.  F can be regarded as one sample
 %   path of a Gaussian process.  It is obtained from a finite Fourier series
 %   with independent normally distributed coefficients of equal variance.
 %   (This code is preliminary and the definition may change in the future.)
 %
-%   F = RANDNFUNTRIG(DX, DOM) returns a result with domain DOM = [A, B].
+%   F = RANDNFUNTRIG(DT, DOM) returns a result with domain DOM = [A, B].
 %
-%   F = RANDNFUNTRIG(DX, N) returns a quasimatrix with N independent columns.
+%   F = RANDNFUNTRIG(DT, N) returns a quasimatrix with N independent columns.
 %
-%   F = RANDNFUNTRIG(DX, 'norm') normalizes the output by dividing it
-%   by SQRT(DX), so that white noise is approached in the limit DX -> 0.
+%   F = RANDNFUNTRIG(DT, 'norm') normalizes the output by dividing it
+%   by SQRT(DT), so that white noise is approached in the limit DT -> 0.
 %
-%   F = RANDNFUNTRIG() uses the default value DX = 1.  Combinations such
-%   as RANDNFUNTRIG(DOM), RANDNFUNTRIG('norm', DX) are allowed so long as
-%   DX, if present, precedes N, if present.
+%   F = RANDNFUNTRIG() uses the default value DT = 1.  Combinations such
+%   as RANDNFUNTRIG(DOM), RANDNFUNTRIG('norm', DT) are allowed so long as
+%   DT, if present, precedes N, if present.
 %
 % Examples:
 %
@@ -32,25 +32,25 @@ function f = randnfuntrig(varargin)
 % Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-[dx, n, dom, normalize] = parseInputs(varargin{:});
+[dt, n, dom, normalize] = parseInputs(varargin{:});
 
 % Although the output is real, complex arithmetic is used for the
 % construction since the 'trig', 'coeffs' mode is only documented
 % in this case.
 
-m = round(diff(dom)/dx);
+m = round(diff(dom)/dt);
 c = randn(2*m+1, n) + 1i*randn(2*m+1, n);
 c = (c + flipud(conj(c)))/2;
 f = chebfun(c/sqrt(2*m+1), dom, 'trig', 'coeffs');
 if normalize
-    f = f/sqrt(dx);
+    f = f/sqrt(dt);
 end
 
 end
 
-function [dx, n, dom, normalize] = parseInputs(varargin)
+function [dt, n, dom, normalize] = parseInputs(varargin)
 
-dx = NaN;  
+dt = NaN;  
 n = NaN;  
 dom = NaN;
 normalize = 0;
@@ -61,15 +61,15 @@ for j = 1:nargin
         normalize = 1;
     elseif ~isscalar(v)
         dom = v;
-    elseif isnan(dx) 
-        dx = v;
+    elseif isnan(dt) 
+        dt = v;
     else
         n = v;
     end
 end
 
-if isnan(dx)
-   dx = 1;          % default space scale
+if isnan(dt)
+   dt = 1;          % default space scale
 end
 if isnan(n)
    n = 1;           % default number of columns
