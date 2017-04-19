@@ -57,6 +57,11 @@ if ( isa(op, 'chebfun2') )  % CHEBFUN2( CHEBFUN2 )
     return
 end
 
+% The 'equi' flag can be used only with numeric data:
+if ( isEqui && ~isa(op, 'double') )
+    error('CHEBFUN:CHEBFUN2:constructor:equi', ...
+        'The EQUI flag is valid only when constructing from numeric data');
+end
 % Deal with constructions from numeric data:
 if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
     g = constructFromDouble(op, dom, pref, isEqui);
