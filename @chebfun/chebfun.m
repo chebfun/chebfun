@@ -548,6 +548,10 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
             % Enable FUNQUI when dealing with equispaced data.
             keywordPrefs.enableFunqui = true;
             args(1) = [];
+            if ( ~isnumeric(op) && (isempty(args) || ~isscalar(args{1})) )
+                error('CHEBFUN:CHEBFUN:parseInputs:equi', ...
+                'Cannot construct CHEBFUN adaptively from equispaced data.');
+            end
         elseif ( strcmpi(args{1}, 'vectorize') || ...
                  strcmpi(args{1}, 'vectorise') )
             % Vectorize flag for function_handles.
