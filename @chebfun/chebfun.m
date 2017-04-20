@@ -533,6 +533,7 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
     vectorize = false;
     doVectorCheck = true;
     isFixedLength = false;
+    
     while ( ~isempty(args) )
         if ( isstruct(args{1}) || isa(args{1}, 'chebfunpref') )
             % Preference object input.  (Struct inputs not tied to a keyword
