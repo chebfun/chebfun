@@ -532,6 +532,7 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
     isPeriodic = false;
     vectorize = false;
     doVectorCheck = true;
+    
     while ( ~isempty(args) )
         if ( isstruct(args{1}) || isa(args{1}, 'chebfunpref') )
             % Preference object input.  (Struct inputs not tied to a keyword
@@ -695,6 +696,16 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
                     'Could not parse input argument sequence.');
             end
         end
+    end
+    
+    % Construction from equispaced data requires the number of points to be
+    % specified
+    if ( ~isnumeric(op) && isfield(keywordPrefs, 'enableFunqui') && ...
+            (~isfield(keywordPrefs, 'techPrefs') || ...
+            (isfield(keywordPrefs, 'techPrefs') && ...
+            ~isfield(keywordPrefs.techPrefs,'fixedLength'))) )
+        error('CHEBFUN:CHEBFUN:parseInputs:equi', ...
+            '''equi'' flag requires the number of points to be specified.');
     end
     
     % It doesn't make sense to construct from values and coeffs at the same

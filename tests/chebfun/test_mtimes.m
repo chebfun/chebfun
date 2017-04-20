@@ -100,7 +100,6 @@ try
     h = f*'X';
     pass(18) = false;
 catch ME
-    ME
     pass(18) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:mtimes:unknown');
 end
 
@@ -108,7 +107,6 @@ try
     h = f*f1;
     pass(19) = true;
 catch ME
-    ME
     pass(19) = strcmp(ME.identifier, 'CHEBFUN:CHEBFUN:dimCheck:dim');
 end
 
