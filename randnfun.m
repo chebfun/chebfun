@@ -30,7 +30,7 @@ function f = randnfun(varargin)
 %
 %   f = randnfun(0.1,'norm',[0 10]); plot(cumsum(f))
 %
-% See also RANDNFUN2
+% See also RANDNFUN2.
 
 % Copyright 2017 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -62,10 +62,10 @@ else       % nonperiodic case: call periodic case and restrict
     if normalize
         f = randnfun(dt, n, dom2, 'norm', 'trig');
     else
-        f = randnfuntrig(dt, n, dom2, 'trig');
+        f = randnfun(dt, n, dom2, 'trig');
     end
 
-    % Restrict the result to the prescribed interval.
+           % restrict the result to the prescribed interval
 
     x = chebpts(5*m, dom);    % 5*m is large enough...
     f = chebfun(f(x), dom);   % ...so this is equiv. to f{dom(1),dom(2)}
