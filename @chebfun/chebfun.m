@@ -550,7 +550,7 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
             args(1) = [];
             if ( ~isnumeric(op) && (isempty(args) || ~isscalar(args{1})) )
                 error('CHEBFUN:CHEBFUN:parseInputs:equi', ...
-                'Cannot construct CHEBFUN adaptively from equispaced data.');
+                '''equi'' flag requires the number of points to be specified.');
             end
         elseif ( strcmpi(args{1}, 'vectorize') || ...
                  strcmpi(args{1}, 'vectorise') )
