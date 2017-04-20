@@ -532,7 +532,6 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
     isPeriodic = false;
     vectorize = false;
     doVectorCheck = true;
-    isFixedLength = false;
     
     while ( ~isempty(args) )
         if ( isstruct(args{1}) || isa(args{1}, 'chebfunpref') )
@@ -550,11 +549,6 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
             % Enable FUNQUI when dealing with equispaced data.
             keywordPrefs.enableFunqui = true;
             args(1) = [];
-            if ( ~isnumeric(op) && ~isFixedLength && ...
-                    (isempty(args) || ~isscalar(args{1})) )
-                error('CHEBFUN:CHEBFUN:parseInputs:equi', ...
-                '''equi'' flag requires the number of points to be specified.');
-            end
         elseif ( strcmpi(args{1}, 'vectorize') || ...
                  strcmpi(args{1}, 'vectorise') )
             % Vectorize flag for function_handles.
@@ -594,7 +588,6 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
             keywordPrefs.splitting = true;
         elseif ( isnumeric(args{1}) && isscalar(args{1}) )
             % g = chebfun(@(x) f(x), N)
-            isFixedLength = true;
             keywordPrefs.techPrefs.fixedLength = args{1};
             args(1) = [];
         elseif ( strcmpi(args{1}, 'splitting') )
@@ -703,6 +696,16 @@ function [op, dom, data, pref, flags] = parseInputs(op, varargin)
                     'Could not parse input argument sequence.');
             end
         end
+    end
+    
+    % Construction from equispaced data requires the number of points to be
+    % specified
+    if ( ~isnumeric(op) && isfield(keywordPrefs, 'enableFunqui') && ...
+            (~isfield(keywordPrefs, 'techPrefs') || ...
+            (isfield(keywordPrefs, 'techPrefs') && ...
+            ~isfield(keywordPrefs.techPrefs,'fixedLength'))) )
+        error('CHEBFUN:CHEBFUN:parseInputs:equi', ...
+            '''equi'' flag requires the number of points to be specified.');
     end
     
     % It doesn't make sense to construct from values and coeffs at the same
