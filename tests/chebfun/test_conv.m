@@ -130,7 +130,6 @@ g5 = conv(fX2, fX3);
 g6 = conv(g5, fX1);
 pass(13) = normest( g2 - g6 ) < 1e1*tol; 
 
-
 %% test 'same' option
 f = chebfun(@(x) exp(-x.^2), [-10 10]);
 g = chebfun(@(x) exp(-x.^2), [-20 20]);
@@ -139,6 +138,15 @@ pass(14) = norm(h.domain([1, end]) - [-10 10], inf) < eps*10;
 
 h = conv(f, g, 'same');
 pass(15) = norm(h.domain([1, end]) - [-10 10], inf) < eps*10;
+
+%% test quasimatrix option
+f = chebfun(@sin);
+g = chebfun(@cos);
+fg = [f g];
+gg = [g g];
+h1 = conv(fg, gg);
+h2 = [conv(f,g), conv(g,g)];
+pass(16) = norm(h1 - h2) < eps*10;
 
 end
 
