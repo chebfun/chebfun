@@ -48,7 +48,7 @@ transState = f(1).isTransposed;
 % Support for quasimatrices:
 nf = numColumns(f);
 ng = numColumns(g);
-if ( nf > 1 && ng > 1 )
+if ( nf > 1 || ng > 1 )
     if ( nf == ng )
         f = mat2cell(f);
         g = mat2cell(g);
@@ -63,6 +63,7 @@ if ( nf > 1 && ng > 1 )
             h{k} = conv(f, g{k}, varargin{:});
         end
     elseif ( ng == 1 )
+        nf
         f = mat2cell(f);
         h = f;
         for k = 1:nf
