@@ -63,7 +63,6 @@ if ( nf > 1 || ng > 1 )
             h{k} = conv(f, g{k}, varargin{:});
         end
     elseif ( ng == 1 )
-        nf
         f = mat2cell(f);
         h = f;
         for k = 1:nf
